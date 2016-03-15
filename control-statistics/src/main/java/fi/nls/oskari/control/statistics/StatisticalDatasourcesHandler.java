@@ -1,7 +1,5 @@
 package fi.nls.oskari.control.statistics;
 
-import java.util.List;
-
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.ActionHandler;
@@ -10,9 +8,10 @@ import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.ResponseHelper;
-
 import org.json.JSONArray;
 import org.json.JSONObject;
+
+import java.util.List;
 
 
 /**

@@ -2,27 +2,26 @@ package fi.nls.oskari.control.view;
 
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.ActionDeniedException;
-import fi.nls.oskari.log.LogFactory;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.ActionHandler;
 import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.domain.User;
 import fi.nls.oskari.domain.map.view.View;
+import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.view.ViewService;
 import fi.nls.oskari.map.view.ViewServiceIbatisImpl;
 import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.RequestHelper;
 import fi.nls.oskari.util.ResponseHelper;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 @OskariActionRoute("UpdateView")
 public class UpdateViewHandler extends ActionHandler {
 
+    private static final Logger LOG = LogFactory.getLogger(UpdateViewHandler.class);
     private ViewService vs = new ViewServiceIbatisImpl();
-    private static final Logger log = LogFactory.getLogger(UpdateViewHandler.class);
 
     @Override
     public void handleAction(ActionParameters params) throws ActionException {
@@ -40,10 +39,21 @@ public class UpdateViewHandler extends ActionHandler {
 
             final String description = RequestHelper.getString(
             		params.getRequest().getParameter("newDescription"), view.getDescription());
-            
-            log.debug("Renaming view to: " + name + " with description :" + description);
+
+            final boolean isDefault = ConversionHelper.getBoolean(
+                    params.getHttpParam("newIsDefault"), false);
+
+
+            LOG.debug("Renaming view to: " + name + " with description :" + description + " is_default: " + isDefault);
             view.setName(name);
             view.setDescription(description);
+            view.setIsDefault(isDefault);
+            //set is_default to false for all other this user's views.
+            if (isDefault) {
+                LOG.debug("Reset the user's default views: " + user.getId());
+                vs.resetUsersDefaultViews(user.getId());
+            }
+
             vs.updateView(view);
     
             try {
@@ -51,10 +61,11 @@ public class UpdateViewHandler extends ActionHandler {
                 resp.put("name", view.getName());
                 resp.put("id", view.getId());
                 resp.put("isPublic", view.isPublic());
+                resp.put("isDefault", view.isDefault());
                 ResponseHelper.writeResponse(params, resp);
             } catch (JSONException jsonex) {
                 throw new ActionException("User tried to rename view:" + 
-                        log.getAsString(view) + "- User:" + log.getAsString(user));
+                        LOG.getAsString(view) + "- User:" + LOG.getAsString(user));
             }
         }
     }

@@ -1,0 +1,22 @@
+{
+    "setup" : [
+        "create-empty-db",
+        "register-bundles",
+        "postgres-add-myplaces",
+        "postgres-add-analysis",
+        "postgres-add-userlayers",
+        "postgres-add-users",
+        "postgres-add-JAAS",
+        "populate-inspire-themes-and-groups"
+    ],
+    "views" : [
+        "default-finnish-view.json",
+        "ol3-publisher-template-view.json",
+        "ol2-publisher-template-view.json"
+    ],
+    "sql" : [
+        "add_oskari_wfs_parser_config.sql",
+        "example-wfslayer.sql",
+        "example-permissions.sql"
+    ]
+}

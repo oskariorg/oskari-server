@@ -4,14 +4,13 @@ import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.pojo.SessionStore;
 import fi.nls.oskari.util.IOHelper;
-import fi.nls.oskari.wfs.pojo.WFSLayerStore;
 import fi.nls.oskari.wfs.WFSParser;
+import fi.nls.oskari.wfs.pojo.WFSLayerStore;
 import org.geotools.feature.FeatureCollection;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 
 /**
  * Job for WFS Map Layer

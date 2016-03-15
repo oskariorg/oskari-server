@@ -1,14 +1,13 @@
 package fi.nls.oskari.wfs;
 
-import static org.junit.Assert.*;
-import static org.junit.Assume.assumeTrue;
-
 import fi.nls.oskari.cache.JedisManager;
 import fi.nls.oskari.utils.TestHelper;
 import org.eclipse.xsd.XSDSchema;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
+
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assume.assumeTrue;
 
 public class CachingSchemaLocatorTest {
 	private static CachingSchemaLocator locator;

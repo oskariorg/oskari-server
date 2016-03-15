@@ -4,8 +4,13 @@ import fi.nls.oskari.view.modifier.ModifierException;
 import fi.nls.oskari.view.modifier.ModifierParams;
 import fi.nls.oskari.view.modifier.ViewModifier;
 
-public abstract class ParamHandler extends ViewModifier {
+public abstract class ParamHandler extends ViewModifier implements Comparable<ParamHandler> {
 
+    public static final int DEFAULT_PRIORITY = 500;
+
+    public int getPriority() {
+        return DEFAULT_PRIORITY;
+    }
     /**
      * Modifies base view based on http parameters
      * @param params
@@ -14,4 +19,11 @@ public abstract class ParamHandler extends ViewModifier {
      */
     public abstract boolean handleParam(final ModifierParams params) throws ModifierException;
 
+    @Override
+    public int compareTo(ParamHandler o) {
+        if(o != null) {
+            return getPriority() - o.getPriority();
+        }
+        return 0;
+    }
 }

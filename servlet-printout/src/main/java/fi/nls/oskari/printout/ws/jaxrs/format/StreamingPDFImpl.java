@@ -1,18 +1,13 @@
 package fi.nls.oskari.printout.ws.jaxrs.format;
 
-import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.net.URISyntaxException;
-import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.StreamingOutput;
-import javax.xml.stream.FactoryConfigurationError;
-import javax.xml.stream.XMLStreamException;
-
+import com.vividsolutions.jts.geom.Envelope;
+import com.vividsolutions.jts.geom.Point;
+import fi.nls.oskari.printout.imaging.ScaleOps;
+import fi.nls.oskari.printout.input.layers.LayerDefinition;
+import fi.nls.oskari.printout.input.maplink.MapLink;
+import fi.nls.oskari.printout.output.layer.AsyncLayerProcessor;
+import fi.nls.oskari.printout.output.map.MapProducer;
+import fi.nls.oskari.printout.printing.PDFProducer;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.pdfbox.exceptions.COSVisitorException;
@@ -22,15 +17,17 @@ import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.NoSuchAuthorityCodeException;
 import org.opengis.referencing.operation.TransformException;
 
-import com.vividsolutions.jts.geom.Envelope;
-import com.vividsolutions.jts.geom.Point;
-
-import fi.nls.oskari.printout.imaging.ScaleOps;
-import fi.nls.oskari.printout.input.layers.LayerDefinition;
-import fi.nls.oskari.printout.input.maplink.MapLink;
-import fi.nls.oskari.printout.output.layer.AsyncLayerProcessor;
-import fi.nls.oskari.printout.output.map.MapProducer;
-import fi.nls.oskari.printout.printing.PDFProducer;
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.StreamingOutput;
+import javax.xml.stream.FactoryConfigurationError;
+import javax.xml.stream.XMLStreamException;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.net.URISyntaxException;
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Outputs (and creates) PDF document as a result from JAX-RS request.

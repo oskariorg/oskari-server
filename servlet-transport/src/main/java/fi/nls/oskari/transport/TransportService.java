@@ -1,46 +1,36 @@
 package fi.nls.oskari.transport;
 
+import com.vividsolutions.jts.geom.Coordinate;
+import fi.nls.oskari.cache.JedisManager;
+import fi.nls.oskari.log.LogFactory;
+import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.pojo.*;
+import fi.nls.oskari.service.OskariComponentManager;
+import fi.nls.oskari.util.ConversionHelper;
+import fi.nls.oskari.util.PropertyUtil;
+import fi.nls.oskari.utils.GeometryJSONOutputModule;
+import fi.nls.oskari.wfs.CachingSchemaLocator;
+import fi.nls.oskari.wfs.WFSImage;
+import fi.nls.oskari.wfs.pojo.WFSLayerStore;
+import fi.nls.oskari.wfs.util.HttpHelper;
+import fi.nls.oskari.work.*;
+import fi.nls.oskari.work.hystrix.HystrixJobQueue;
+import fi.nls.oskari.worker.Job;
+import fi.nls.oskari.worker.JobQueue;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.cometd.bayeux.Message;
+import org.cometd.bayeux.server.BayeuxServer;
+import org.cometd.bayeux.server.ServerSession;
+import org.cometd.server.AbstractService;
+import org.cometd.server.JacksonJSONContextServer;
+import org.cometd.server.JettyJSONContextServer;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-
-import fi.nls.oskari.service.OskariComponentManager;
-import fi.nls.oskari.utils.GeometryJSONOutputModule;
-import fi.nls.oskari.work.*;
-import fi.nls.oskari.work.hystrix.HystrixJobQueue;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.cometd.bayeux.Message;
-import org.cometd.bayeux.server.BayeuxServer;
-import org.cometd.bayeux.server.ServerSession;
-import org.cometd.server.AbstractService;
-
-import com.vividsolutions.jts.geom.Coordinate;
-
-import fi.nls.oskari.cache.JedisManager;
-import fi.nls.oskari.log.LogFactory;
-import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.pojo.GeoJSONFilter;
-import fi.nls.oskari.pojo.Grid;
-import fi.nls.oskari.pojo.Layer;
-import fi.nls.oskari.pojo.Location;
-import fi.nls.oskari.pojo.PropertyFilter;
-import fi.nls.oskari.pojo.SessionStore;
-import fi.nls.oskari.pojo.Tile;
-import fi.nls.oskari.pojo.WFSCustomStyleStore;
-import fi.nls.oskari.pojo.WFSLayerPermissionsStore;
-import fi.nls.oskari.util.ConversionHelper;
-import fi.nls.oskari.util.PropertyUtil;
-import fi.nls.oskari.wfs.CachingSchemaLocator;
-import fi.nls.oskari.wfs.WFSImage;
-import fi.nls.oskari.wfs.pojo.WFSLayerStore;
-import fi.nls.oskari.wfs.util.HttpHelper;
-import fi.nls.oskari.worker.Job;
-import fi.nls.oskari.worker.JobQueue;
-import org.cometd.server.JacksonJSONContextServer;
-import org.cometd.server.JettyJSONContextServer;
 
 
 /**
@@ -340,9 +330,22 @@ public class TransportService extends AbstractService {
 
         // layers
         Map<String, Layer> layers = store.getLayers();
+        int hiddenLayers = 0;
         for (Layer layer : layers.values()) {
+            if(!layer.isVisible()) {
+                hiddenLayers++;
+                continue;
+            }
             layer.setTiles(store.getGrid().getBounds()); // init bounds to tiles (render all)
         	initMapLayerJob(-1, store, layer.getId(), false);
+        }
+        if(hiddenLayers == layers.values().size()) {
+            // notify successful init if no layer jobs are started
+            // frontend expexts a started message for requestId -1 to detect successful init
+            ResultProcessor proc = createResultProcessor(-1);
+            Map<String, String> data = new HashMap<>();
+            data.put("message", "started");
+            proc.addResults(client.getId(), ResultProcessor.CHANNEL_STATUS, data);
         }
     }
 

@@ -83,9 +83,8 @@ public abstract class MyPlacesService extends OskariComponent {
         }
 
         final WMSCapabilities capabilities = new WMSCapabilities();
-        // gfi
+        // enable gfi
         capabilities.setQueryable(true);
-        // capabilities.setFormats([]); // possibly needed
 
         JSONObject myPlaceLayer = JSON_FORMATTER.getJSON(layer, lang, modifyURLs, capabilities);
         // flag with metaType for frontend

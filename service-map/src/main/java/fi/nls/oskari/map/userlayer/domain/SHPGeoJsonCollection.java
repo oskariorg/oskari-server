@@ -1,6 +1,7 @@
 package fi.nls.oskari.map.userlayer.domain;
 
 
+import com.vividsolutions.jts.geom.Geometry;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.userlayer.service.GeoJsonWorker;
@@ -16,11 +17,9 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.type.FeatureType;
-import com.vividsolutions.jts.geom.Geometry;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.MathTransform;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 
 public class SHPGeoJsonCollection extends GeoJsonCollection implements GeoJsonWorker {

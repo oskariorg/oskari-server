@@ -1,7 +1,9 @@
 package fi.nls.oskari.work.fe;
 
-import java.util.List;
-
+import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.Envelope;
+import fi.nls.oskari.pojo.SessionStore;
+import fi.nls.oskari.wfs.pojo.WFSLayerStore;
 import fi.nls.oskari.work.JobType;
 import org.apache.http.client.utils.URIBuilder;
 import org.geotools.geometry.jts.ReferencedEnvelope;
@@ -9,11 +11,7 @@ import org.opengis.geometry.DirectPosition;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.MathTransform;
 
-import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.Envelope;
-
-import fi.nls.oskari.pojo.SessionStore;
-import fi.nls.oskari.wfs.pojo.WFSLayerStore;
+import java.util.List;
 
 /* A PoC WFS GET Builder */
 public class FEWFSGetQueryArgsBuilder implements FEQueryArgsBuilder {

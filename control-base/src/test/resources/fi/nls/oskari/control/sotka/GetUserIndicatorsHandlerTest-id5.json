@@ -1,19 +1,20 @@
 {
   "id": 5,
   "title": {
-    "fi": Otsikko,
-    "sv": Otsikkosv,
-    "en": Title
+    "fi": "Otsikko",
+    "sv": "Otsikkosv",
+    "en": "Title"
   },
   "description": {
-    "fi": Kuvaus,
-    "sv": Beskrivning,
-    "en": Description
+    "fi": "Kuvaus",
+    "sv": "Beskrivning",
+    "en": "Description"
   },
   "organization": {
-    title: {
-    "fi": Indicator source }
-    } ,
+    "title": {
+      "fi": "Indicator source"
+    }
+  },
   "public": true,
   "layerId": 515,
   "year": 2013,

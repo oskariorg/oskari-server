@@ -4,5 +4,6 @@
     ],
     "sql" : [
         "example-myplaces-wfs-baselayer.sql"
-    ]
+    ],
+    "isPartial" : true
 }

@@ -4,17 +4,15 @@ import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.control.view.GetAppSetupHandler;
 import fi.nls.oskari.control.view.modifier.param.ParamControl;
 import fi.nls.oskari.domain.map.view.View;
+import fi.nls.oskari.domain.map.view.ViewTypes;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.view.ViewService;
 import fi.nls.oskari.map.view.ViewServiceIbatisImpl;
+import fi.nls.oskari.map.view.util.ViewHelper;
 import fi.nls.oskari.spring.EnvHelper;
 import fi.nls.oskari.spring.extension.OskariParam;
-import fi.nls.oskari.util.ConversionHelper;
-import fi.nls.oskari.util.JSONHelper;
-import fi.nls.oskari.util.PropertyUtil;
-import fi.nls.oskari.util.ResponseHelper;
-import static fi.nls.oskari.control.ActionConstants.*;
+import fi.nls.oskari.util.*;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -27,6 +25,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import static fi.nls.oskari.control.ActionConstants.*;
 
 /**
  * Handles the map UI based on requested application and user role default applications
@@ -144,18 +144,39 @@ public class MapController {
         log.debug("getting a view and setting Render parameters");
         HttpServletRequest request = params.getRequest();
 
-        final long viewId = ConversionHelper.getLong(params.getHttpParam(PARAM_VIEW_ID),
-                viewService.getDefaultViewId(params.getUser()));
-
-        log.debug("user view: " + viewService.getDefaultViewId(params.getUser()));
-
         final String uuId = params.getHttpParam(PARAM_UUID);
+        long viewId = params.getHttpParam(PARAM_VIEW_ID, -1);
+        boolean useDefault = viewId == -1;
+        if(uuId == null && useDefault) {
+            // get personalized or system default view
+            if(params.getHttpParam(PARAM_RESET, false)) {
+                viewId = viewService.getSystemDefaultViewId(params.getUser().getRoles());
+            } else {
+                viewId = viewService.getDefaultViewId(params.getUser());
+            }
+        }
 
-        final View view = getView(uuId, viewId);
+        log.debug("Loading view with id:", viewId);
+
+        final View view = getView(uuId, viewId, useDefault);
         if (view == null) {
             log.debug("no such view");
             ResponseHelper.writeError(params, "No such view (id:" + viewId + ")");
             return null;
+        }
+
+        // Checking referer for published domain
+        if (view.getType().equals(ViewTypes.PUBLISHED)) {
+            final String referer = RequestHelper.getDomainFromReferer(params.getHttpHeader(IOHelper.HEADER_REFERER));
+            final String pubDomain = view.getPubDomain();
+            if (ViewHelper.isRefererDomain(referer, pubDomain)) {
+                log.info("Granted access to published view in domain:",pubDomain, "for referer", referer);
+            } else {
+                log.debug("Referer: ", params.getHttpHeader(IOHelper.HEADER_REFERER), " -> ", referer);
+                log.warn("Denied access to published view in domain:", pubDomain, "for referer", referer);
+                ResponseHelper.writeError(params, "Denied access to published view for domain: " + referer);
+                return null;
+            }
         }
 
         log.debug("Serving view with id:", view.getId());
@@ -176,7 +197,8 @@ public class MapController {
         }
 
 
-        JSONHelper.putValue(controlParams, "ssl", request.getParameter("ssl"));
+        JSONHelper.putValue(controlParams, PARAM_SECURE, request.getParameter(PARAM_SECURE));
+        JSONHelper.putValue(controlParams, GetAppSetupHandler.PARAM_NO_SAVED_STATE, request.getParameter(GetAppSetupHandler.PARAM_NO_SAVED_STATE));
         model.addAttribute(KEY_CONTROL_PARAMS, controlParams.toString());
 
         model.addAttribute(KEY_PRELOADED, !isDevelopmentMode);
@@ -210,14 +232,19 @@ public class MapController {
         return viewJSP;
     }
 
-    private View getView(String uuId, long viewId){
+    private View getView(String uuId, long viewId, boolean isDefault){
         if(uuId != null){
-            log.debug("Using Uuid to fetch a view");
+            log.debug("Using Uuid to fetch a view:", uuId);
             return viewService.getViewWithConfByUuId(uuId);
-        }else{
-            log.debug("Using id to fetch a view");
-            return viewService.getViewWithConf(viewId);
         }
+
+        log.debug("Using id to fetch a view:", viewId);
+        View view = viewService.getViewWithConf(viewId);
+        if(!isDefault && view.isOnlyForUuId()) {
+            log.warn("View can only be loaded by uuid. ViewId:", viewId);
+            return null;
+        }
+        return view;
     }
 
     /**

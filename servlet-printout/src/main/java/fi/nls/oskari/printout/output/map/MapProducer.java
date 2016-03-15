@@ -1,23 +1,23 @@
 package fi.nls.oskari.printout.output.map;
 
-import java.awt.Graphics2D;
-import java.awt.Rectangle;
-import java.awt.RenderingHints;
-import java.awt.geom.AffineTransform;
-import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.net.URLEncoder;
-import java.text.ParseException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Vector;
-
-import javax.xml.stream.FactoryConfigurationError;
-import javax.xml.stream.XMLStreamException;
-
+import com.vividsolutions.jts.geom.Envelope;
+import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.Polygon;
+import com.vividsolutions.jts.io.WKTReader;
+import com.vividsolutions.jts.util.GeometricShapeFactory;
+import fi.nls.oskari.printout.breeding.ChangeSet;
+import fi.nls.oskari.printout.breeding.ChangeSetEntry;
+import fi.nls.oskari.printout.breeding.WorkingSet;
+import fi.nls.oskari.printout.breeding.breeder.IChangeSetEntryTransaction;
+import fi.nls.oskari.printout.breeding.breeder.IWorkingSetTileBreeder.StatusChangeCallBack;
+import fi.nls.oskari.printout.breeding.maplink.MapLinkWorkingSetProcessor;
+import fi.nls.oskari.printout.breeding.maplink.MapLinkWorkingSetTileBreeder;
+import fi.nls.oskari.printout.config.ConfigValue;
+import fi.nls.oskari.printout.input.layers.LayerDefinition;
+import fi.nls.oskari.printout.output.layer.AsyncDirectTileLayer;
+import fi.nls.oskari.printout.output.layer.AsyncLayerProcessor;
+import fi.nls.oskari.printout.output.layer.DirectFeatureLayer;
+import fi.nls.oskari.printout.output.layer.DirectTileLayer;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.geotools.data.collection.CollectionDataStore;
@@ -45,25 +45,17 @@ import org.opengis.referencing.NoSuchAuthorityCodeException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.TransformException;
 
-import com.vividsolutions.jts.geom.Envelope;
-import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.Polygon;
-import com.vividsolutions.jts.io.WKTReader;
-import com.vividsolutions.jts.util.GeometricShapeFactory;
-
-import fi.nls.oskari.printout.breeding.ChangeSet;
-import fi.nls.oskari.printout.breeding.ChangeSetEntry;
-import fi.nls.oskari.printout.breeding.WorkingSet;
-import fi.nls.oskari.printout.breeding.breeder.IChangeSetEntryTransaction;
-import fi.nls.oskari.printout.breeding.breeder.IWorkingSetTileBreeder.StatusChangeCallBack;
-import fi.nls.oskari.printout.breeding.maplink.MapLinkWorkingSetProcessor;
-import fi.nls.oskari.printout.breeding.maplink.MapLinkWorkingSetTileBreeder;
-import fi.nls.oskari.printout.config.ConfigValue;
-import fi.nls.oskari.printout.input.layers.LayerDefinition;
-import fi.nls.oskari.printout.output.layer.AsyncDirectTileLayer;
-import fi.nls.oskari.printout.output.layer.AsyncLayerProcessor;
-import fi.nls.oskari.printout.output.layer.DirectFeatureLayer;
-import fi.nls.oskari.printout.output.layer.DirectTileLayer;
+import javax.xml.stream.FactoryConfigurationError;
+import javax.xml.stream.XMLStreamException;
+import java.awt.*;
+import java.awt.geom.AffineTransform;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.net.URLEncoder;
+import java.text.ParseException;
+import java.util.*;
+import java.util.List;
 
 /* 
  *

@@ -59,6 +59,7 @@ public class ELFGeoLocatorParser {
         this(null);
     }
     public ELFGeoLocatorParser(final String serviceSrs) {
+
         // use provided SRS or default to EPSG:4258
         if(serviceSrs != null) {
             log.debug("Using", serviceSrs, "as native SRS");
@@ -100,7 +101,9 @@ public class ELFGeoLocatorParser {
             DocumentBuilder db = DocumentBuilderFactory.newInstance().newDocumentBuilder();
             InputStream datain = new ByteArrayInputStream(data.getBytes("UTF-8"));
             Document d = db.parse(datain);
-            d.getDocumentElement().removeAttribute("xsi:schemaLocation");
+            if(d.getDocumentElement().hasAttribute("xsi:schemaLocation")){
+                d.getDocumentElement().removeAttribute("xsi:schemaLocation");
+            }
 
             // Back to input stream
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();

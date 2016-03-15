@@ -6,6 +6,8 @@ import org.xml.sax.SAXException;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPathExpressionException;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 public class SpatialJoinStatisticsMethodParams extends AnalysisMethodParams {
 
@@ -23,6 +25,7 @@ public class SpatialJoinStatisticsMethodParams extends AnalysisMethodParams {
     private String properties2 = "";
     private String geojson2 = "";
     private String wps_reference_type2 = "";
+    Map<String, String> localemap = new HashMap<String, String>();
     private String intersection_mode = "";  // SECOND intersect features (default) or SECOND_CONTAINS contains features
 
 
@@ -90,6 +93,13 @@ public class SpatialJoinStatisticsMethodParams extends AnalysisMethodParams {
         this.dataAttribute = dataAttribute;
     }
 
+    public Map<String, String> getLocalemap() {
+        return localemap;
+    }
+
+    public void setLocalemap(Map<String, String> localemap) {
+        this.localemap = localemap;
+    }
 
     public String getGeojson2() {
         if(geojson2 == null) return "";
@@ -145,6 +155,17 @@ public class SpatialJoinStatisticsMethodParams extends AnalysisMethodParams {
         
         // Filter
         String wfsfilter = this.getWfsFilter1();
+
+        if (this.getNoDataValue() != null) {
+            if(isDoNoDataCount()){
+                // No data count filter  - use WPS count aggregate method
+                // and calculate the count of no data value items
+                wfsfilter = this.appendNoDataCountFilter(wfsfilter, this.getDataAttribute());
+            } else {
+                // Append no_data filter
+                wfsfilter = this.appendNoDataFilter(wfsfilter, this.getDataAttribute());
+            }
+        }
 
         reference1 = reference1.replace(FILTER, wfsfilter);
 

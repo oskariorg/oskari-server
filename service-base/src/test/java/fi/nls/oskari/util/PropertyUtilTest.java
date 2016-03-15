@@ -1,7 +1,5 @@
 package fi.nls.oskari.util;
 
-import fi.nls.oskari.log.LogFactory;
-import fi.nls.oskari.log.Logger;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -10,10 +8,8 @@ import java.io.IOException;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
-import java.util.Set;
 
 import static org.junit.Assert.*;
-import static org.junit.Assert.assertEquals;
 
 /**
  * @author SMAKINEN

@@ -6,7 +6,6 @@ import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.service.UserService;
-
 import org.apache.commons.codec.digest.DigestUtils;
 
 import java.util.*;

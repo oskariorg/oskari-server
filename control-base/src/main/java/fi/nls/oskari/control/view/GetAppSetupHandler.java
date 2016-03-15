@@ -5,6 +5,7 @@ import fi.nls.oskari.control.*;
 import fi.nls.oskari.control.view.modifier.bundle.BundleHandler;
 import fi.nls.oskari.control.view.modifier.param.ParamControl;
 import fi.nls.oskari.domain.Role;
+import fi.nls.oskari.domain.User;
 import fi.nls.oskari.domain.map.view.Bundle;
 import fi.nls.oskari.domain.map.view.View;
 import fi.nls.oskari.domain.map.view.ViewTypes;
@@ -19,14 +20,14 @@ import fi.nls.oskari.view.modifier.ModifierException;
 import fi.nls.oskari.view.modifier.ModifierParams;
 import fi.nls.oskari.view.modifier.ViewModifier;
 import fi.nls.oskari.view.modifier.ViewModifierManager;
-
-import java.net.URLDecoder;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.net.URLDecoder;
 import java.util.*;
+
+import static fi.nls.oskari.control.ActionConstants.PARAM_SECURE;
 
 @OskariActionRoute("GetAppSetup")
 public class GetAppSetupHandler extends ActionHandler {
@@ -43,7 +44,6 @@ public class GetAppSetupHandler extends ActionHandler {
     public static final String PARAM_NO_SAVED_STATE = "noSavedState";
     public static final String VIEW_DATA = "viewData";
     public static final String STATE = "state";
-    public static final String PARAM_SSL = "ssl";
 
     private static final String KEY_STARTUP = "startupSequence";
     private static final String KEY_CONFIGURATION = "configuration";
@@ -54,12 +54,12 @@ public class GetAppSetupHandler extends ActionHandler {
     private final static long DEFAULT_USERID = 10110;
     private String SECURE_AJAX_PREFIX = "";
 
-    private String[] UNRESTRICTED_USAGE_DOMAINS = new String[0];
 
     // for adding extra bundle(s) for users with specific roles
     private Map<String, List<Bundle>> bundlesForRole = new HashMap<String, List<Bundle>>();
 
-    private final Set<String> paramHandlers = new HashSet<String>();
+    // params need to be in a list that keeps order since there is a priority order
+    private final List<String> paramHandlers = new ArrayList<>();
     private final Map<String, BundleHandler> bundleHandlers = new HashMap<String, BundleHandler>();
 
     public void setViewService(final ViewService service) {
@@ -85,7 +85,6 @@ public class GetAppSetupHandler extends ActionHandler {
         }
         // Returns names of @OskariViewModifier annotated classes of type ParamHandler from classpath
         paramHandlers.addAll(ParamControl.getHandlerKeys());
-        UNRESTRICTED_USAGE_DOMAINS = PropertyUtil.getCommaSeparatedList("view.published.usage.unrestrictedDomains");
 
         // Loads @OskariViewModifier annotated classes of type BundleHandler from classpath
         final Map<String, BundleHandler> handlers = ViewModifierManager.getModifiersOfType(BundleHandler.class);
@@ -122,13 +121,14 @@ public class GetAppSetupHandler extends ActionHandler {
                 }
             }
         }
-        SECURE_AJAX_PREFIX = PropertyUtil.get("actionhandler.GetAppSetup.secureAjaxUrlPrefix");
+        SECURE_AJAX_PREFIX = PropertyUtil.get("actionhandler.GetAppSetup.secureAjaxUrlPrefix", "");
     }
 
     public void handleAction(final ActionParameters params) throws ActionException {
         // oldId => support for migrated published maps
-        final long oldId = ConversionHelper.getLong(params.getHttpParam(PARAM_OLD_ID), -1);
-        final long defaultViewId = viewService.getDefaultViewId(params.getUser());
+        final long oldId = params.getHttpParam(PARAM_OLD_ID, -1);
+        final User user = params.getUser();
+        final long defaultViewId = viewService.getDefaultViewId(user);
         final View view = getView(params, defaultViewId, oldId);
 
         if (view == null) {
@@ -137,13 +137,13 @@ public class GetAppSetupHandler extends ActionHandler {
         // Strictly necessary only if oldId used
         final long viewId = view.getId();
         final String referer = RequestHelper.getDomainFromReferer(params
-                .getHttpHeader("Referer"));
+                .getHttpHeader(IOHelper.HEADER_REFERER));
 
-        // ignore saved state for ancient published maps (having oldId), non-default views or if
-        // explicit param is given
-        boolean ignoreSavedState = oldId != -1
-                || viewId != defaultViewId
-                || ConversionHelper.getBoolean(params.getHttpParam(PARAM_NO_SAVED_STATE), false);
+        // ignore saved state when loading:
+        //   - views that are not system default views
+        //   - when explicitly told with parameter
+        boolean ignoreSavedState = !viewService.isSystemDefaultView(viewId)
+                || params.getHttpParam(PARAM_NO_SAVED_STATE, false);
         // restore state from cookie if not
         if (!ignoreSavedState) {
             log.debug("Modifying map view if saved state is available");
@@ -169,7 +169,7 @@ public class GetAppSetupHandler extends ActionHandler {
         if (view.getType().equals(ViewTypes.PUBLISHED)) {
             // Check referrer
             final String pubDomain = view.getPubDomain();
-            if(isRefererDomain(referer, pubDomain)) {
+            if(ViewHelper.isRefererDomain(referer, pubDomain)) {
                 log.info("Granted access to published view in domain:",
                         pubDomain, "for referer", referer);
             } else {
@@ -234,6 +234,7 @@ UNRESTRICTED_USAGE_ROLE = PropertyUtil.get("view.published.usage.unrestrictedRol
         int locationModified = 0;
         for (String paramKey : paramHandlers) {
             final String value = params.getHttpParam(paramKey);
+            log.debug("Handling parameter", paramKey);
             modifierParams.setParamValue(value);
             try {
                 if (value != null
@@ -298,23 +299,6 @@ UNRESTRICTED_USAGE_ROLE = PropertyUtil.get("view.published.usage.unrestrictedRol
         }
     }
 
-    /**
-     * Checks if it's ok to continue loading requested map based on referer/views pubdomain.
-     * @param referer from headers
-     * @param pubdomain domain the map is published to
-     * @return true if referer ends with domains in UNRESTRICTED_USAGE_DOMAINS or the domain defined for the view.
-     */
-    private boolean isRefererDomain(final String referer, final String pubdomain) {
-        if(referer == null) {
-            return false;
-        }
-        for (String domain : UNRESTRICTED_USAGE_DOMAINS) {
-            if(domain.equals("*") || referer.endsWith(domain)) {
-                return true;
-            }
-        }
-         return referer.endsWith(pubdomain);
-    }
 
     private boolean updateUsageData(final View view)  {
         try {
@@ -398,7 +382,7 @@ UNRESTRICTED_USAGE_ROLE = PropertyUtil.get("view.published.usage.unrestrictedRol
      * @return
      */
     public static boolean isSecure(final ActionParameters params) {
-        return ConversionHelper.getBoolean(params.getHttpParam(PARAM_SSL), false);
+        return params.getHttpParam(PARAM_SECURE, params.getRequest().isSecure());
     }
 
     private void modifyView(final View view, JSONObject myview) {

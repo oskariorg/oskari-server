@@ -12,10 +12,10 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import javax.sql.DataSource;
-import java.io.IOException;
-import java.io.InputStream;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.sql.*;
 import java.util.Properties;
 
@@ -101,6 +101,7 @@ public class DBHandler {
 
     public static void createContentIfNotCreated(DataSource ds) {
         try {
+            datasource = ds;
             Connection conn = ds.getConnection();
             DatabaseMetaData dbmeta = conn.getMetaData();
 
@@ -196,12 +197,12 @@ public class DBHandler {
                     final Object tmp = setupFiles.get(i);
                     if (tmp instanceof JSONObject) {
                         final JSONObject setupObj = (JSONObject) tmp;
-                        System.out.println("/-  as inline JSON");
+                        log.info("/-  as inline JSON");
                         createContent(conn, dbname, setupObj);
                     }
                     else {
                         final String setupFileName = (String) tmp;
-                        System.out.println("/-  " + setupFileName);
+                        log.info("/-  " + setupFileName);
                         createContent(conn, dbname, setupFileName);
                     }
                 }
@@ -221,6 +222,21 @@ public class DBHandler {
                     }
                 }
             }
+
+            // core migrations are needed after db is created
+            // since setup can link to other setups which can be described as "partial" setups -> tag these
+            // with isPartial: true to NOT try migrate the db with flyway until the "main" setup has reached this point.
+            // View and layers can be registered correctly using services after db is fully up to date
+            if(!setup.optBoolean("isPartial", false)) {
+                log.info("/- flyway migration for core db");
+                try {
+                    FlywaydbMigrator.migrate(getDataSource());
+                    log.info("Oskari core DB migrated successfully");
+                } catch (Exception e) {
+                    log.error(e, "DB migration for Oskari core failed!");
+                }
+            }
+
             if(setup.has("views")) {
                 log.info("/- adding views using ibatis");
                 final JSONArray viewsListing = setup.getJSONArray("views");

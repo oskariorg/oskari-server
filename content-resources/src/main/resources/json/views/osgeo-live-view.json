@@ -17,7 +17,6 @@
             "id" : "mapfull",
             "config" : {
                 "globalMapAjaxUrl": "[REPLACED BY HANDLER]",
-                "imageLocation": "/Oskari/resources",
                 "plugins" : [
                     { "id" : "Oskari.mapframework.bundle.mapmodule.plugin.LayersPlugin" },
                     { "id" : "Oskari.mapframework.mapmodule.WmsLayerPlugin" },
@@ -70,6 +69,11 @@
         { "id" : "layerselection2" },
         { "id" : "coordinatedisplay" },
         { "id" : "metadataflyout" },
-        { "id" : "featuredata2" }
+        {
+            "id" : "featuredata2",
+            "config": {
+                "selectionTools": true
+            }
+        }
     ]
 }

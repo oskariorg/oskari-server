@@ -1,10 +1,11 @@
 package fi.nls.oskari.fe.input.jackson;
 
 
-import java.util.Set;
-
-import com.fasterxml.jackson.core.*;
+import com.fasterxml.jackson.core.JsonLocation;
+import com.fasterxml.jackson.core.JsonStreamContext;
 import com.fasterxml.jackson.core.io.CharTypes;
+
+import java.util.Set;
 
 /**
  * Extension of {@link JsonStreamContext}, which implements

@@ -6,9 +6,7 @@ import fi.nls.oskari.domain.map.analysis.Analysis;
 import fi.nls.oskari.domain.map.analysis.AnalysisStyle;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.map.analysis.domain.AnalysisLayer;
-import fi.nls.oskari.map.analysis.domain.AnalysisMethodParams;
-import fi.nls.oskari.map.analysis.domain.IntersectJoinMethodParams;
+import fi.nls.oskari.map.analysis.domain.*;
 import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.JSONHelper;
@@ -66,7 +64,8 @@ public class AnalysisDataService {
             analysis.setName(analysislayer.getName());
             analysis.setStyle_id(style.getId());
             analysis.setUuid(user.getUuid());
-            if(analysislayer.getOverride_sld() != null && !analysislayer.getOverride_sld().isEmpty()) analysis.setOverride_SLD(analysislayer.getOverride_sld());
+            if (analysislayer.getOverride_sld() != null && !analysislayer.getOverride_sld().isEmpty())
+                analysis.setOverride_SLD(analysislayer.getOverride_sld());
             log.debug("Adding analysis row", analysis);
             analysisService.insertAnalysisRow(analysis);
 
@@ -98,6 +97,8 @@ public class AnalysisDataService {
             // Check, if any inserted data
             if (response.indexOf("totalInserted>0") > -1) return null;
 
+            // Set fields and field order, if fields are known before analysis
+
 
             // Update col mapping and WPS layer Id into analysis table
             // ---------------------------------------
@@ -111,6 +112,12 @@ public class AnalysisDataService {
             }
             // if analysis in analysis and second layer is analysislayer - fix field names to original
             fields = this.SwapSecondAnalysisFieldNames(fields, analysislayer);
+
+            // Reorder  columns for difference method
+            fields = this.FitFixedFieldOrder4Difference(fields, analysislayer);
+
+            // Localize  Spatial join aggregate fields
+            fields = this.LocalizeFields4spAggregate(fields, analysislayer);
 
             analysis.setCols(fields);
 
@@ -205,7 +212,7 @@ public class AnalysisDataService {
                 for (int j = 1; j < 11; j++) {
                     String colx = analysis.getColx(j);
                     if (colx != null && !colx.isEmpty()) {
-                        if (colx.indexOf("=") != -1) {
+                        if (colx.contains("=")) {
                             columnNames.put(colx.split("=")[0],
                                     colx.split("=")[1]);
                         }
@@ -230,6 +237,7 @@ public class AnalysisDataService {
         }
         return getAnalysisNativeColumns(ConversionHelper.getLong(analysis_id, 0));
     }
+
     /**
      * Get analysis columns to Json string
      *
@@ -248,7 +256,7 @@ public class AnalysisDataService {
      * @return analysis columns in a JSON string or null if parameter is null
      */
     public String getAnalysisNativeColumns(final Analysis analysis) {
-        if(analysis == null) {
+        if (analysis == null) {
             return null;
         }
         final List<String> columnNames = new ArrayList<String>();
@@ -330,34 +338,57 @@ public class AnalysisDataService {
         }
         return fieldsin;
     }
+
     /**
      * Replace analysislayer internal field names in 2 layers analysis
      * when second layer is analysislayer
-     * @param fieldsin    raw field names mapping
+     *
+     * @param fieldsin raw field names mapping
      * @return List of field names mapping
      */
     public List<String> SwapSecondAnalysisFieldNames(List<String> fieldsin, AnalysisLayer analysisLayer) {
 
 
-          if (analysisLayer.getAnalysisMethodParams() instanceof IntersectJoinMethodParams) {
-                IntersectJoinMethodParams params = (IntersectJoinMethodParams) analysisLayer.getAnalysisMethodParams();
-                if (params.getWps_reference_type2().equals(
-                        ANALYSIS_INPUT_TYPE_GS_VECTOR)) {
-                    if(params.getLayer_id2() != null){
-                        Map<String, String> colnames = this.getAnalysisColumns(params.getLayer_id2());
-                        // Replace internal analysis field names (t1,...)
-                        for (int i = 0; i < fieldsin.size(); i++) {
-                            String col = fieldsin.get(i);
-                            if (!col.isEmpty()) {
-                                if (col.indexOf("=") != -1) {
-                                    String[] cola = col.split("=");
-                                    // Remove join body field part
-                                    cola[1] = cola[1].replace(transformationService.stripNamespace(params.getTypeName2())+"_","");
-                                    if (colnames.containsKey(cola[1])) {
-                                        fieldsin.set(i, cola[0] + "=" + transformationService.stripNamespace(params.getTypeName2())+"_" + colnames.get(cola[1]));
-                                    }
-
+        if (analysisLayer.getAnalysisMethodParams() instanceof IntersectJoinMethodParams) {
+            IntersectJoinMethodParams params = (IntersectJoinMethodParams) analysisLayer.getAnalysisMethodParams();
+            if (params.getWps_reference_type2().equals(
+                    ANALYSIS_INPUT_TYPE_GS_VECTOR)) {
+                if (params.getLayer_id2() != null) {
+                    Map<String, String> colnames = this.getAnalysisColumns(params.getLayer_id2());
+                    // Replace internal analysis field names (t1,...)
+                    for (int i = 0; i < fieldsin.size(); i++) {
+                        String col = fieldsin.get(i);
+                        if (!col.isEmpty()) {
+                            if (col.indexOf("=") != -1) {
+                                String[] cola = col.split("=");
+                                // Remove join body field part
+                                cola[1] = cola[1].replace(transformationService.stripNamespace(params.getTypeName2()) + "_", "");
+                                if (colnames.containsKey(cola[1])) {
+                                    fieldsin.set(i, cola[0] + "=" + transformationService.stripNamespace(params.getTypeName2()) + "_" + colnames.get(cola[1]));
                                 }
+
+                            }
+                        }
+
+                    }
+
+                }
+
+            }
+
+        } else if (analysisLayer.getAnalysisMethodParams() instanceof SpatialJoinStatisticsMethodParams) {
+            SpatialJoinStatisticsMethodParams params = (SpatialJoinStatisticsMethodParams) analysisLayer.getAnalysisMethodParams();
+            if (params.getWps_reference_type2().equals(
+                    ANALYSIS_INPUT_TYPE_GS_VECTOR)) {
+                if (params.getLayer_id2() != null) {
+                    Map<String, String> colnames = this.getAnalysisColumns(params.getLayer_id2());
+                    // Replace internal analysis field names (t1,...)
+                    for (int i = 0; i < fieldsin.size(); i++) {
+                        String col = fieldsin.get(i);
+                        if (!col.isEmpty() && col.contains("=")) {
+                            String[] cola = col.split("=");
+                            if (colnames.containsKey(cola[1])) {
+                                fieldsin.set(i, cola[0] + "=" + transformationService.stripNamespace(colnames.get(cola[1])));
                             }
 
                         }
@@ -368,9 +399,81 @@ public class AnalysisDataService {
 
             }
 
+        }
+
+
         return fieldsin;
     }
 
+    /**
+     * ReOrder analysis columns - only for difference method
+     *
+     * @param fieldsin raw field names mapping based on gml featurecollection
+     * @return List of field names mapping
+     */
+    public List<String> FitFixedFieldOrder4Difference(List<String> fieldsin, AnalysisLayer analysisLayer) {
+
+
+        if (analysisLayer.getAnalysisMethodParams() instanceof DifferenceMethodParams) {
+            List<String> fields = new ArrayList<String>();
+
+            // Reorder analysis field names (t1,...)
+            for (int k = 0; k < analysisLayer.getFields().size(); k++) {
+                String orderedCol = analysisLayer.getFields().get(k);
+
+                for (int i = 0; i < fieldsin.size(); i++) {
+                    String col = fieldsin.get(i);
+                    if (!col.isEmpty()) {
+                        if (col.contains(orderedCol)) {
+                            fields.add(col);
+                            break;
+                        }
+                    }
+
+                }
+            }
+            if (fields.size() == fieldsin.size()) {
+                return fields;
+            }
+        }
+
+        return fieldsin;
+    }
+
+    /**
+     * Localize  Wps generated  aggregate fields
+     * - this is only for spatial join aggregate method
+     * @param fieldsin
+     * @param analysisLayer
+     * @return
+     */
+
+    public List<String> LocalizeFields4spAggregate(List<String> fieldsin, AnalysisLayer analysisLayer) {
+
+
+        if (analysisLayer.getAnalysisMethodParams() instanceof SpatialJoinStatisticsMethodParams) {
+            SpatialJoinStatisticsMethodParams params = (SpatialJoinStatisticsMethodParams) analysisLayer.getAnalysisMethodParams();
+            // Rename analysis field names (t1,...)
+            for (Map.Entry<String, String> entry : params.getLocalemap().entrySet()) {
+                String id = entry.getKey();
+                String label = entry.getValue();
+                for (int i = 0; i < fieldsin.size(); i++) {
+                    String col = fieldsin.get(i);
+                    if (!col.isEmpty()) {
+                        if (col.contains("=")) {
+                            String[] cola = col.split("=");
+                            if (cola[1].equals(id))
+                                fieldsin.set(i, cola[0] + "=" + label);
+                        }
+                    }
+
+                }
+            }
+
+        }
+
+        return fieldsin;
+    }
     /**
      * Switch field name to analysis field name
      * (nop, if field name already analysis field name)

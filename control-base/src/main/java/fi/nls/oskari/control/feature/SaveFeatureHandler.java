@@ -74,7 +74,7 @@ public class SaveFeatureHandler extends ActionHandler {
 			pass = lc.getPassword();
 			geometryProperty = lc.getGMLGeometryProperty();
 			final Resource resource = permissionsService.findResource(new OskariLayerResource(lay));
-            final boolean hasPermssion = resource.hasPermission(params.getUser(), Permissions.PERMISSION_TYPE_EDIT_LAYER);
+            final boolean hasPermssion = resource.hasPermission(params.getUser(), Permissions.PERMISSION_TYPE_EDIT_LAYER_CONTENT);
             if(hasPermssion) {
             	ClearLayerTiles(lay.getId());
 				StringBuilder requestData = new StringBuilder("<wfs:Transaction service='WFS' version='1.1.0' xmlns:ogc='http://www.opengis.net/ogc' xmlns:wfs='http://www.opengis.net/wfs'><wfs:Update typeName='"+ lay.getName() +"'>");

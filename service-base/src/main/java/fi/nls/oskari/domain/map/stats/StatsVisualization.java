@@ -1,13 +1,12 @@
 package fi.nls.oskari.domain.map.stats;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-
+import fi.nls.oskari.util.JSONHelper;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import fi.nls.oskari.util.JSONHelper;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 public class StatsVisualization {
 

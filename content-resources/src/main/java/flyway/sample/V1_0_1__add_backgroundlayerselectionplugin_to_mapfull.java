@@ -7,7 +7,6 @@ import fi.nls.oskari.map.layer.OskariLayerService;
 import fi.nls.oskari.map.layer.OskariLayerServiceIbatisImpl;
 import fi.nls.oskari.map.view.ViewService;
 import fi.nls.oskari.map.view.ViewServiceIbatisImpl;
-import fi.nls.oskari.util.JSONHelper;
 import org.flywaydb.core.api.migration.jdbc.JdbcMigration;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -43,7 +42,6 @@ public class V1_0_1__add_backgroundlayerselectionplugin_to_mapfull implements Jd
 
     private boolean addPlugin(final Bundle mapfull) throws JSONException {
         final JSONObject config = mapfull.getConfigJSON();
-        final JSONObject state = mapfull.getStateJSON();
         final JSONArray plugins = config.optJSONArray("plugins");
         if(plugins == null) {
             throw new RuntimeException("No plugins" + config.toString(2));

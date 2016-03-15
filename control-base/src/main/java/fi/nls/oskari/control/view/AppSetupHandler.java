@@ -29,7 +29,7 @@ import java.util.Set;
 import static fi.nls.oskari.control.ActionConstants.*;
 
 /**
- * This will replace the PublishHandler functionality for publisher2 bundle
+ * This replaces the fi.nls.oskari.control.view.PublishHandler. Usable with publisher2 bundle
  */
 @OskariActionRoute("AppSetup")
 public class AppSetupHandler extends RestActionHandler {
@@ -37,7 +37,6 @@ public class AppSetupHandler extends RestActionHandler {
     private static final Logger LOG = LogFactory.getLogger(AppSetupHandler.class);
 
     public static final String PROPERTY_DRAW_TOOLS_ENABLED = "actionhandler.Publish.drawToolsRoles";
-    static final String PROPERTY_PUBLISH_TEMPLATE = "view.template.publish";
     static final String PROPERTY_VIEW_UUID = "oskari.publish.only.with.uuid";
 
     static final String KEY_PUBDATA = "pubdata";
@@ -206,14 +205,21 @@ public class AppSetupHandler extends RestActionHandler {
         for(String bundleid : SIMPLE_BUNDLES) {
             if(viewdata.has(bundleid)) {
                 setupBundle(view, viewdata, bundleid);
+
+                //toolbar -> add style info from metadata
+                if (bundleid.equals(ViewModifier.BUNDLE_TOOLBAR)) {
+                    setupToolbarStyleInfo(view);
+                }
             }
         }
 
         // Setup publishedmyplaces2 bundle if user has configured it/has permission to do so
         if(!user.hasAnyRoleIn(drawToolsEnabledRoles)) {
             // remove myplaces functionality if user doesn't have permission to add them
-            viewdata.remove(ViewModifier.BUNDLE_PUBLISHEDMYPLACES2);
-            LOG.warn("User tried to add draw tools, but doesn't have any of the permitted roles. Removing draw tools!");
+            Object drawTools = viewdata.remove(ViewModifier.BUNDLE_PUBLISHEDMYPLACES2);
+            if(drawTools != null) {
+                LOG.warn("User tried to add draw tools, but doesn't have any of the permitted roles. Removing draw tools!");
+            }
         }
 
         final Bundle myplaces = setupBundle(view, viewdata, ViewModifier.BUNDLE_PUBLISHEDMYPLACES2);
@@ -228,6 +234,16 @@ public class AppSetupHandler extends RestActionHandler {
             LOG.error(je, "Could not create JSON response.");
             ResponseHelper.writeResponse(params, false);
         }
+    }
+
+    private void setupToolbarStyleInfo(final View view) throws ActionParamsException {
+        final Bundle toolbarBundle = view.getBundleByName(ViewModifier.BUNDLE_TOOLBAR);
+        if (toolbarBundle == null) {
+            throw new ActionParamsException("Could not find toolbar bundle from template view: " + view.getId());
+        }
+
+        JSONObject toolbarConfig = toolbarBundle.getConfigJSON();
+        JSONHelper.putValue(toolbarConfig, KEY_STYLE, view.getMetadata().optJSONObject(KEY_STYLE));
     }
 
     protected void parseMetadata(final View view, final User user) throws ActionException {
@@ -436,10 +452,10 @@ public class AppSetupHandler extends RestActionHandler {
     private View getPublishTemplate()
             throws ActionException {
         if (PUBLISHED_VIEW_TEMPLATE_ID == -1) {
-            PUBLISHED_VIEW_TEMPLATE_ID = PropertyUtil.getOptional(PROPERTY_PUBLISH_TEMPLATE, -1);
+            PUBLISHED_VIEW_TEMPLATE_ID = PropertyUtil.getOptional(ViewService.PROPERTY_PUBLISH_TEMPLATE, -1);
             if (PUBLISHED_VIEW_TEMPLATE_ID == -1) {
                 // TODO: maybe try checking for view of type PUBLISH from DB?
-                LOG.warn("Publish template id not configured (property:", PROPERTY_PUBLISH_TEMPLATE, ")!");
+                LOG.warn("Publish template id not configured (property:", ViewService.PROPERTY_PUBLISH_TEMPLATE, ")!");
             } else {
                 LOG.info("Using publish template id: ", PUBLISHED_VIEW_TEMPLATE_ID);
             }

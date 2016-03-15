@@ -2,14 +2,13 @@ package fi.nls.oskari.control.view.modifier.param;
 
 import fi.nls.oskari.domain.map.view.Bundle;
 import fi.nls.oskari.log.LogFactory;
+import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.view.BundleService;
 import fi.nls.oskari.map.view.BundleServiceIbatisImpl;
-import fi.nls.oskari.util.PropertyUtil;
-import org.json.JSONObject;
-
-import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.view.modifier.ModifierParams;
 import fi.nls.oskari.util.JSONHelper;
+import fi.nls.oskari.util.PropertyUtil;
+import fi.nls.oskari.view.modifier.ModifierParams;
+import org.json.JSONObject;
 
 public abstract class WFSHighlightParamHandler extends ParamHandler {
 

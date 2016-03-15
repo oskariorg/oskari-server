@@ -1,9 +1,5 @@
 package fi.nls.oskari.printout.output.factory;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 import org.geotools.feature.NameImpl;
 import org.geotools.filter.FunctionFactory;
 import org.opengis.feature.type.Name;
@@ -11,6 +7,10 @@ import org.opengis.filter.capability.FunctionName;
 import org.opengis.filter.expression.Expression;
 import org.opengis.filter.expression.Function;
 import org.opengis.filter.expression.Literal;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class RenderSupportFuncFactory implements FunctionFactory {
 

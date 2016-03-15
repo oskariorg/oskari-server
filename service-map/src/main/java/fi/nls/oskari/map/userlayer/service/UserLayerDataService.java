@@ -49,7 +49,7 @@ public class UserLayerDataService {
      * @return user layer data in user_layer table
      */
 
-    public UserLayer storeUserData(GeoJsonWorker gjsWorker, User user, Map<String, String> fparams) {
+    public UserLayer storeUserData(GeoJsonWorker gjsWorker, User user, Map<String, String> fparams) throws ServiceException {
 
 
         final UserLayer userLayer = new UserLayer();
@@ -87,6 +87,15 @@ public class UserLayerDataService {
 
             log.debug("Adding user_layer row", userLayer);
             userLayerService.insertUserLayerRow(userLayer);
+        } catch (Exception e) {
+            if(userLayer.getId() > 0){
+                userLayerService.deleteUserLayer(userLayer.getId());
+            }
+            log.error(e, "Unable to store user layer  data");
+            return null;
+        }
+
+        try {
 
             // Insert user_layer data rows
             // --------------------
@@ -95,12 +104,14 @@ public class UserLayerDataService {
             log.info("stored ", count, " rows");
 
             if (count == 0) {
+                userLayerService.deleteUserLayer(userLayer.getId());
                 return null;
-                //TODO:  delete user_layer row if no rows
+
             }
 
         } catch (Exception e) {
-            log.error(e, "Unable to store user layer data");
+            userLayerService.deleteUserLayer(userLayer.getId());
+            log.error(e, "Unable to store user layer data data");
             return null;
         }
 

@@ -1,14 +1,13 @@
 package fi.nls.oskari.printout.ws.jaxrs.resource;
 
-import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
-
+import fi.nls.oskari.printout.ws.WsTestResources;
 import org.apache.commons.collections.map.MultiKeyMap;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import fi.nls.oskari.printout.ws.WsTestResources;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 public class PostJsonTest {
 

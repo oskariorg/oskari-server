@@ -28,13 +28,9 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.io.Writer;
 import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 import java.lang.reflect.Method;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.TreeSet;
+import java.lang.reflect.Modifier;
+import java.util.*;
 
 /**
  * A JSONObject is an unordered collection of name/value pairs. Its

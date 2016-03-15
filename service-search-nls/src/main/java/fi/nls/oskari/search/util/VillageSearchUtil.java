@@ -1,10 +1,10 @@
 package fi.nls.oskari.search.util;
 
-import java.util.Map;
-import java.util.Set;
-
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+
+import java.util.Map;
+import java.util.Set;
 
 public class VillageSearchUtil {
 	

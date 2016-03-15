@@ -1,13 +1,11 @@
 package fi.nls.oskari.pojo;
 
 import fi.nls.oskari.log.LogFactory;
+import fi.nls.oskari.log.Logger;
 import org.codehaus.jackson.annotate.JsonIgnore;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import fi.nls.oskari.log.Logger;
 
 /**
  * Handles user's active WFS feature filtering

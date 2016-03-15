@@ -11,10 +11,10 @@ import fi.nls.oskari.map.layer.LayerGroupService;
 import fi.nls.oskari.map.layer.LayerGroupServiceIbatisImpl;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.JSONHelper;
+import fi.nls.oskari.util.PropertyUtil;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import fi.nls.oskari.util.PropertyUtil;
 
 import java.net.URL;
 import java.util.HashMap;
@@ -29,13 +29,16 @@ import java.util.Map;
  */
 public class LayerJSONFormatter {
 
-    public final static String PROPERTY_AJAXURL = "oskari.ajax.url.prefix";
+    public static final String PROPERTY_AJAXURL = "oskari.ajax.url.prefix";
+    public static final String KEY_STYLES = "styles";
 
     private static final InspireThemeService inspireThemeService = new InspireThemeServiceIbatisImpl();
     private static final LayerGroupService groupService = new LayerGroupServiceIbatisImpl();
 
     private static final String KEY_ID = "id";
     private static final String KEY_TYPE = "type";
+    private static final String KEY_ADMIN = "admin";
+    protected static final String[] STYLE_KEYS ={"name", "title", "legend"};
 
     private static Logger log = LogFactory.getLogger(LayerJSONFormatter.class);
     // map different layer types for JSON formatting
@@ -109,16 +112,8 @@ public class LayerJSONFormatter {
             // is proxied with a proxy for example: /proxythis/<actual wmsurl>
             JSONHelper.putValue(layerJson, "url", layer.getUrl(isSecure));
             JSONHelper.putValue(layerJson, "layerName", layer.getName());
-            // TODO: wmsUrl and wmsName are deprecated, use url and layerName instead.
-            // Adding them here so frontend doesn't break.
-            JSONHelper.putValue(layerJson, "wmsUrl", layer.getUrl(isSecure));
-            JSONHelper.putValue(layerJson, "wmsName", layer.getName());
-
             if (useProxy(layer)) {
-                Map<String, String> urlParams = new HashMap<String, String>();
-                urlParams.put("action_route", "GetLayerTile");
-                urlParams.put(KEY_ID, Integer.toString(layer.getId()));
-                JSONHelper.putValue(layerJson, "url", IOHelper.constructUrl(PropertyUtil.get(PROPERTY_AJAXURL),urlParams));
+                JSONHelper.putValue(layerJson, "url", getProxyUrl(layer));
             }
         }
 
@@ -171,6 +166,25 @@ public class LayerJSONFormatter {
         }
         return layerJson;
     }
+    public void removeAdminInfo(final JSONObject layer) {
+        if(layer == null) {
+            return;
+        }
+        layer.remove(KEY_ADMIN);
+    }
+
+    public void addInfoForAdmin(final JSONObject layer, final String key, final Object value) {
+        if(layer == null) {
+            return;
+        }
+        // ensure we have the admin block in place
+        JSONObject additionalData = layer.optJSONObject(KEY_ADMIN);
+        if(additionalData == null) {
+            additionalData = new JSONObject();
+            JSONHelper.putValue(layer, KEY_ADMIN, additionalData);
+        }
+        JSONHelper.putValue(additionalData, key, value);
+    }
 
     protected boolean useProxy(final OskariLayer layer) {
         boolean forceProxy = false;
@@ -180,11 +194,18 @@ public class LayerJSONFormatter {
         return ((layer.getUsername() != null) && (layer.getUsername().length() > 0)) || forceProxy;
     }
 
+    public String getProxyUrl(final OskariLayer layer) {
+        Map<String, String> urlParams = new HashMap<String, String>();
+        urlParams.put("action_route", "GetLayerTile");
+        urlParams.put(KEY_ID, Integer.toString(layer.getId()));
+        return IOHelper.constructUrl(PropertyUtil.get(PROPERTY_AJAXURL), urlParams);
+    }
 
-    public JSONObject createStylesJSON(String name, String title, String legend) {
-        final JSONObject style = JSONHelper.createJSONObject("name", name);
-        JSONHelper.putValue(style, "title", title);
-        JSONHelper.putValue(style, "legend", legend);
+
+    public static JSONObject createStylesJSON(String name, String title, String legend) {
+        final JSONObject style = JSONHelper.createJSONObject(STYLE_KEYS[0], name);
+        JSONHelper.putValue(style, STYLE_KEYS[1], title);
+        JSONHelper.putValue(style, STYLE_KEYS[2], legend);
         return style;
     }
 

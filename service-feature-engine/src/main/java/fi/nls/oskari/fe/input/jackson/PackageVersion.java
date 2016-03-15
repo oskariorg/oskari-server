@@ -1,7 +1,7 @@
 package fi.nls.oskari.fe.input.jackson;
+
 import com.fasterxml.jackson.core.Version;
 import com.fasterxml.jackson.core.Versioned;
-import com.fasterxml.jackson.core.util.VersionUtil;
 
 
 public  final class PackageVersion implements Versioned {

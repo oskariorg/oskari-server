@@ -4,12 +4,9 @@ import fi.mml.portti.service.search.ChannelSearchResult;
 import fi.mml.portti.service.search.SearchCriteria;
 import fi.mml.portti.service.search.SearchResultItem;
 import fi.nls.oskari.map.geometry.ProjectionHelper;
-import fi.nls.oskari.util.PropertyUtil;
 import org.geotools.referencing.CRS;
 import org.junit.Ignore;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 /**
  * Created by SMAKINEN on 15.9.2015.

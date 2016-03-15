@@ -1,9 +1,8 @@
 package fi.nls.oskari.fe.input;
 
+import javax.xml.stream.XMLStreamException;
 import java.io.IOException;
 import java.io.InputStream;
-
-import javax.xml.stream.XMLStreamException;
 
 public interface InputProcessor {
 

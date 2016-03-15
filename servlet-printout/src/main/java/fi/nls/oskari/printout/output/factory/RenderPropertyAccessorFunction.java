@@ -1,9 +1,5 @@
 package fi.nls.oskari.printout.output.factory;
 
-import static org.geotools.filter.capability.FunctionNameImpl.parameter;
-
-import java.util.List;
-
 import org.geotools.filter.capability.FunctionNameImpl;
 import org.geotools.util.Converters;
 import org.opengis.filter.capability.FunctionName;
@@ -11,6 +7,10 @@ import org.opengis.filter.expression.Expression;
 import org.opengis.filter.expression.ExpressionVisitor;
 import org.opengis.filter.expression.Function;
 import org.opengis.filter.expression.Literal;
+
+import java.util.List;
+
+import static org.geotools.filter.capability.FunctionNameImpl.parameter;
 
 public class RenderPropertyAccessorFunction implements Function {
 

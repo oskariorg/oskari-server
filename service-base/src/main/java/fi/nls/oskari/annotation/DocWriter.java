@@ -3,7 +3,9 @@ package fi.nls.oskari.annotation;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.tools.FileObject;
 import javax.tools.JavaFileManager.Location;
-import java.io.*;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.Writer;
 
 /**
  * Writes an md document under docs/routes/[routename].md. Used when parsing custom annotation

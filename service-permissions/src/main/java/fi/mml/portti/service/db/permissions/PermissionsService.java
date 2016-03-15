@@ -1,14 +1,14 @@
 package fi.mml.portti.service.db.permissions;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import fi.mml.portti.domain.permissions.Permissions;
 import fi.mml.portti.domain.permissions.UniqueResourceName;
 import fi.nls.oskari.domain.User;
 import fi.nls.oskari.permission.domain.Resource;
 import fi.nls.oskari.service.db.BaseService;
+
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public interface PermissionsService extends BaseService<Permissions> {
 	

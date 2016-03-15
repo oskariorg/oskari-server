@@ -1,12 +1,11 @@
 package fi.nls.oskari.work.fe;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-
+import com.vividsolutions.jts.geom.Geometry;
+import fi.nls.oskari.fe.iri.Resource;
+import fi.nls.oskari.fe.output.OutputProcessor;
+import fi.nls.oskari.fe.schema.XSDDatatype;
+import fi.nls.oskari.log.LogFactory;
+import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.util.JSONHelper;
 import org.apache.commons.lang3.tuple.Pair;
 import org.geotools.data.DataUtilities;
@@ -22,13 +21,8 @@ import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.MathTransform;
 import org.opengis.referencing.operation.TransformException;
 
-import com.vividsolutions.jts.geom.Geometry;
-
-import fi.nls.oskari.fe.iri.Resource;
-import fi.nls.oskari.fe.output.OutputProcessor;
-import fi.nls.oskari.fe.schema.XSDDatatype;
-import fi.nls.oskari.log.LogFactory;
-import fi.nls.oskari.log.Logger;
+import java.io.IOException;
+import java.util.*;
 
 public class FEOutputProcessor implements OutputProcessor {
     protected static final Logger log = LogFactory
@@ -274,5 +268,57 @@ public class FEOutputProcessor implements OutputProcessor {
             log.debug("Local href subfeature merge failed:", ee);
         }
     }
+
+    /**
+     * Make property element jsonarrays to equal size
+     *
+     * @param multiElemmap elements to make equal size
+
+     */
+    public void equalizePropertyArraySize(Map<String, Integer> multiElemmap, Map<String, Resource> resmap) {
+        if (multiElemmap.size() < 1) return;
+        try {
+            // loop hashmap
+            Resource res = null;
+            int maxsize = 0;
+            for (Map.Entry<String, Integer> entry : multiElemmap.entrySet()) {
+                res = resmap.get(entry.getKey());
+                maxsize = entry.getValue();
+                // Get index of resource
+                Integer keyInd = selectedPropertiesIndex.get(res);
+                if (keyInd == null) return;
+
+                //Loop features and equalize size
+                for (List lis : list) {
+                    // Href key
+                    Object val = lis.get(keyInd);
+                    if (val instanceof List) {
+                        ArrayList<Object> valList = (ArrayList<Object>) val;
+                        if(valList.size() < maxsize){
+                            for(int i=0; i < (maxsize - valList.size()); i++){
+                                valList.add(null);
+                            }
+                            lis.set(keyInd,valList);
+                        }
+
+                    } else {
+                        ArrayList<Object> newList = new ArrayList<Object>();
+                        newList.add(val);
+                        for(int i=0; i < (maxsize - 1); i++){
+                            newList.add(null);
+                        }
+                        lis.set(keyInd,newList);
+                    }
+                }
+
+
+            }
+        } catch (Exception ee) {
+            log.debug("Array size equalizing failed:", ee);
+        }
+
+
+    }
+
 
 };

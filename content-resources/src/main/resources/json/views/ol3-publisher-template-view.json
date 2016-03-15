@@ -1,0 +1,208 @@
+{
+    "name" : "Publisher template for OL3",
+    "type" : "PUBLISH",
+    "default" : false,
+    "public" : false,
+    "oskari" : {
+        "application" : "servlet_published_ol3",
+        "page" : "published",
+        "development_prefix" : "/applications/sample"
+    },
+    "bundles" : [
+        {
+            "id": "mapfull",
+            "startup": {
+                "title": "Map",
+                "bundlename": "mapfull",
+                "metadata": {
+                    "Import-Bundle": {
+                        "mapwmts": {
+                            "bundlePath": "/Oskari/packages/mapping/ol3/"
+                        },
+                        "mapwfs2": {
+                            "bundlePath": "/Oskari/packages/mapping/ol3/"
+                        },
+                        "mapanalysis": {
+                            "bundlePath": "/Oskari/packages/mapping/ol3/"
+                        },
+                        "mapuserlayers": {
+                            "bundlePath": "/Oskari/packages/mapping/ol3/"
+                        },
+                        "maparcgis": {
+                            "bundlePath": "/Oskari/packages/mapping/ol3/"
+                        },
+                        "mapstats": {
+                          "bundlePath": "/Oskari/packages/mapping/ol3/"
+                        },
+                        "mapmodule": {
+                            "bundlePath": "/Oskari/packages/mapping/ol3/"
+                        },
+                        "service-base": {
+                            "bundlePath": "/Oskari/packages/framework/bundle/"
+                        },
+                        "event-map-layer": {
+                            "bundlePath": "/Oskari/packages/framework/bundle/"
+                        },
+                        "request-map-layer": {
+                            "bundlePath": "/Oskari/packages/framework/bundle/"
+                        },
+                        "ui-components": {
+                            "bundlePath": "/Oskari/packages/framework/bundle/"
+                        },
+                        "event-base": {
+                            "bundlePath": "/Oskari/packages/framework/bundle/"
+                        },
+                        "mapfull": {
+                            "bundlePath": "/Oskari/packages/framework/bundle/"
+                        },
+                        "core-base": {
+                            "bundlePath": "/Oskari/packages/framework/bundle/"
+                        },
+                        "oskariui": {
+                            "bundlePath": "/Oskari/packages/framework/bundle/"
+                        },
+                        "request-base": {
+                            "bundlePath": "/Oskari/packages/framework/bundle/"
+                        },
+                        "domain": {
+                            "bundlePath": "/Oskari/packages/framework/bundle/"
+                        },
+                        "core-map": {
+                            "bundlePath": "/Oskari/packages/framework/bundle/"
+                        },
+                        "request-map": {
+                            "bundlePath": "/Oskari/packages/framework/bundle/"
+                        },
+                        "sandbox-base": {
+                            "bundlePath": "/Oskari/packages/framework/bundle/"
+                        },
+                        "service-map": {
+                            "bundlePath": "/Oskari/packages/framework/bundle/"
+                        },
+                        "sandbox-map": {
+                            "bundlePath": "/Oskari/packages/framework/bundle/"
+                        },
+                        "event-map": {
+                            "bundlePath": "/Oskari/packages/framework/bundle/"
+                        }
+                    }
+                }
+            },
+            "config": {
+                "mapOptions": {
+                    "srsName": "EPSG:3067",
+                    "maxExtent": {
+                        "bottom": 6291456,
+                        "left": -548576,
+                        "right": 1548576,
+                        "top": 8388608
+                    },
+                    "resolutions": [2048, 1024, 512, 256, 128, 64, 32, 16, 8, 4, 2, 1, 0.5, 0.25]
+                },
+                "globalMapAjaxUrl": "[REPLACED BY HANDLER]",
+                "plugins": [
+                    {
+                        "id": "Oskari.mapframework.bundle.mapmodule.plugin.LayersPlugin"
+                    }, {
+                        "id": "Oskari.mapframework.mapmodule.WmsLayerPlugin"
+                    }, {
+                        "id": "Oskari.mapframework.bundle.mapwfs2.plugin.WfsLayerPlugin"
+                    }, {
+                        "id": "Oskari.mapframework.wmts.mapmodule.plugin.WmtsLayerPlugin"
+                    }, {
+                        "id": "Oskari.mapframework.bundle.mapstats.plugin.StatsLayerPlugin"
+                    }, {
+                        "id": "Oskari.mapframework.bundle.mapmodule.plugin.RealtimePlugin"
+                    }, {
+                        "id": "Oskari.mapframework.bundle.mapmodule.plugin.LogoPlugin"
+                    }, {
+                        "id" : "Oskari.mapframework.bundle.myplacesimport.plugin.UserLayersLayerPlugin"
+                    }, {
+                        "id" : "Oskari.mapframework.bundle.mapanalysis.plugin.AnalysisLayerPlugin"
+                    }, {
+                        "id": "Oskari.arcgis.bundle.maparcgis.plugin.ArcGisLayerPlugin"
+                    }, {
+                        "id": "Oskari.mapframework.mapmodule.MarkersPlugin",
+                        "config" : {
+                            "markerButton" : false
+                        }
+                    }, {
+                        "id": "Oskari.mapframework.mapmodule.VectorLayerPlugin"
+                    }
+                ],
+                "layers": []
+            },
+            "state": {
+                "zoom": 3,
+                "srs": "EPSG:3067",
+                "east": 395640.5,
+                "north": 6715992.5,
+                "selectedLayers": []
+            }
+        },
+      {
+        "id" : "infobox",
+        "startup": {
+          "title": "Infobox OL3",
+          "bundlename": "infobox",
+          "metadata": {
+            "Import-Bundle": {
+              "infobox": {
+                "bundlePath": "/Oskari/packages/mapping/ol3/"
+              }
+            }
+          }
+        }
+      },
+      {
+        "id" : "toolbar",
+        "startup": {
+          "title": "Toolbar OL3",
+          "bundlename": "toolbar",
+          "metadata": {
+            "Import-Bundle": {
+              "toolbar": {
+                "bundlePath": "/Oskari/packages/mapping/ol3/"
+              }
+            }
+          }
+        },
+        "config" : {
+          "basictools": {
+            "measurearea": false,
+            "measureline": false,
+            "select": false,
+            "zoombox": false
+
+          },
+          "history": {
+            "history_back": false,
+            "history_forward": false,
+            "reset": false
+          },
+          "viewtools": {
+            "link": false
+          },
+          "toolbarId": "PublisherToolbar",
+          "hasContentContainer": true,
+          "defaultToolbarContainer": ".publishedToolbarContent"
+        }
+      },
+      { "id" : "publishedstatehandler" },
+      { "id" : "drawtools",
+        "startup": {
+          "title": "Drawtools OL3",
+          "bundlename": "drawtools",
+          "metadata": {
+            "Import-Bundle": {
+              "drawtools": {
+                "bundlePath": "/Oskari/packages/mapping/ol3/"
+              }
+            }
+          }
+        }
+      },
+      { "id" : "routingService" },
+      { "id" : "rpc" }
+    ]
+}

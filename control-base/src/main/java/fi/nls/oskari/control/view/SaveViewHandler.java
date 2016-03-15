@@ -2,6 +2,7 @@ package fi.nls.oskari.control.view;
 
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.*;
+import fi.nls.oskari.domain.User;
 import fi.nls.oskari.domain.map.view.Bundle;
 import fi.nls.oskari.domain.map.view.View;
 import fi.nls.oskari.domain.map.view.ViewTypes;
@@ -10,11 +11,9 @@ import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.view.ViewException;
 import fi.nls.oskari.map.view.ViewService;
 import fi.nls.oskari.map.view.ViewServiceIbatisImpl;
-import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.ResponseHelper;
 import org.apache.commons.lang.StringEscapeUtils;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 
@@ -27,6 +26,7 @@ public class SaveViewHandler extends ActionHandler {
     private final static String VIEW_NAME = "viewName";
     private final static String VIEW_DESCRIPTION = "viewDescription";
     private final static String VIEW_DATA = "viewData";
+    private final static String IS_DEFAULT = "isDefault";
 
     public void handleAction(final ActionParameters params) throws ActionException {
 
@@ -36,10 +36,18 @@ public class SaveViewHandler extends ActionHandler {
 
         // Cloned view based on user based default view
         final View view = getBaseView(params);
+        final User user = params.getUser();
 
         // Merge client parameters to view
         mergeViewStates(view, getViewJson(params));
         try {
+
+            //set is_default to false for all other this user's views.
+            if (view.isDefault()) {
+                log.debug("Add View: Reset the user's default views: "+user.getId());
+                viewService.resetUsersDefaultViews(user.getId());
+            }
+
             final long newViewId = viewService.addView(view);
             view.setId(newViewId);
         } catch (ViewException e) {
@@ -76,6 +84,7 @@ public class SaveViewHandler extends ActionHandler {
 
         final String viewName = params.getHttpParam(VIEW_NAME);
         final String viewDescription = params.getHttpParam(VIEW_DESCRIPTION);
+        final boolean isDefault = params.getHttpParam(IS_DEFAULT, false);
         if (viewName == null) {
             throw new ActionParamsException("Parameter missing:" + VIEW_NAME);
         }
@@ -97,6 +106,8 @@ public class SaveViewHandler extends ActionHandler {
 
         view.setName(viewName);
         view.setDescription(viewDescription);
+
+        view.setIsDefault(isDefault);
         // application/page/devpath should be left as is in "template view"
         return view;
     }

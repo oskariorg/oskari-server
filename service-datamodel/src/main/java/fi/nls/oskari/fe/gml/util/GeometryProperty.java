@@ -3,7 +3,6 @@ package fi.nls.oskari.fe.gml.util;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.vividsolutions.jts.geom.Geometry;
-
 import fi.nls.oskari.fe.xml.util.Reference;
 
 /*

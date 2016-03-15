@@ -1,10 +1,7 @@
 package fi.nls.oskari.pojo;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import fi.nls.oskari.log.LogFactory;
-
+import fi.nls.oskari.log.Logger;
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
@@ -14,7 +11,8 @@ import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.MathTransform;
 import org.opengis.referencing.operation.TransformException;
 
-import fi.nls.oskari.log.Logger;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Handles the user's current location on the map

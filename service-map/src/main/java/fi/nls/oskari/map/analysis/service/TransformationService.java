@@ -55,6 +55,8 @@ public class TransformationService {
 
         String geomcol = "";
         Boolean members_case = false;
+        int ncount = 0;
+        int tcount = 0;
 
         // iterate through wpsDoc's gml:featureMember elements or gml:featureMembers
         // NodeList featureMembers =
@@ -96,8 +98,10 @@ public class TransformationService {
             Node geometry = null;
             List<String> textFeatures = new ArrayList<String>();
             List<Double> numericFeatures = new ArrayList<Double>();
-            int ncount = 1;
-            int tcount = 1;
+            if ( ncount == 0) {
+                ncount = 1;
+                tcount = 1;
+            }
             for (int j = 0; j < features.getLength(); j++) {
                 Node feature = features.item(j);
 
@@ -140,7 +144,7 @@ public class TransformationService {
                 }
 
             }
-            buildWfsInsertElement(sb, geometry, geomcol, textFeatures, numericFeatures, uuid, analysis_id );
+            buildWfsInsertElement(sb, geometry, geomcol, textFeatures, numericFeatures, uuid, analysis_id);
         }
         sb.append(WFSTTEMPLATEEND);
         return sb.toString();
@@ -194,21 +198,31 @@ public class TransformationService {
      * @param fieldTypes  field types like in WFS DescribeFeatureType
      * @return true, if numeric value (int,double,long,..)
      */
-    private Double getFieldAsNumeric(String fieldName, String strVal, Map<String,String> fieldTypes)
-    {
+    private Double getFieldAsNumeric(String fieldName, String strVal, Map<String, String> fieldTypes) {
         Double numericValue = null;
-       if(fieldTypes.containsKey(fieldName))
-       {
-           //Check type
-           if(fieldTypes.get(fieldName).equals(NUMERIC_FIELD_TYPE))
-           {
-               try {
-                   numericValue = Double.parseDouble(strVal);
-               } catch (NumberFormatException nfe) {
-                   // ignore
-               }
-           }
-       }
+        if (fieldTypes.containsKey(fieldName)) {
+            //Check type
+            if (fieldTypes.get(fieldName).equals(NUMERIC_FIELD_TYPE)) {
+                try {
+                    numericValue = Double.parseDouble(strVal);
+                } catch (NumberFormatException nfe) {
+                    // ignore
+                }
+            }
+        } else {
+            // Field name could be composed with layer name
+            for (Map.Entry<String, String> entry : fieldTypes.entrySet()) {
+                String key = entry.getKey();
+                String value = entry.getValue();
+                if (fieldName.lastIndexOf(key) > 0 && value.equals(NUMERIC_FIELD_TYPE)) {
+                    try {
+                        numericValue = Double.parseDouble(strVal);
+                    } catch (NumberFormatException nfe) {
+                        // ignore
+                    }
+                }
+            }
+        }
         return numericValue;
     }
 
@@ -354,7 +368,9 @@ public class TransformationService {
 
                             }
                             for (int j = 0; j < colvalues.size(); j++) {
-                                feature.appendChild(colvalues.get(colOrder.get(j)));
+                                if(colvalues.get(colOrder.get(j)) != null) {
+                                    feature.appendChild(colvalues.get(colOrder.get(j)));
+                                }
                             }
 
                         }

@@ -3,6 +3,7 @@ package fi.nls.oskari.control.view.modifier.param;
 import fi.nls.oskari.annotation.OskariViewModifier;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.view.modifier.ModifierException;
 import fi.nls.oskari.view.modifier.ModifierParams;
 import org.json.JSONArray;
@@ -15,6 +16,11 @@ import org.json.JSONObject;
 public class ShowMarkerParamHandler extends MarkersParamHandler {
 
     private static final Logger log = LogFactory.getLogger(ShowMarkerParamHandler.class);
+
+    @Override
+    public int getPriority() {
+        return DEFAULT_PRIORITY * 10000;
+    }
 
     public boolean handleParam(final ModifierParams params) throws ModifierException {
         if(params.getParamValue() == null) {
@@ -35,6 +41,8 @@ public class ShowMarkerParamHandler extends MarkersParamHandler {
                 return false;
             }
 
+            // flag as transient so it isn't saved in state
+            JSONHelper.putValue(centerMarker, KEY_TRANSIENT, true);
             final JSONObject markersPluginState = getMarkersPluginState(mapfullState);
             final JSONArray existing = getMarkersFromPluginState(markersPluginState);
             if(existing == null) {

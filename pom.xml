@@ -6,7 +6,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>fi.nls.oskari</groupId>
     <artifactId>oskari-parent</artifactId>
-    <version>1.32.2</version>
+    <version>1.35.0</version>
     <packaging>pom</packaging>
 
     <name>Oskari parent POM</name>
@@ -161,6 +161,12 @@
 
             <dependency>
                 <groupId>fi.nls.oskari.service</groupId>
+                <artifactId>oskari-control-rating</artifactId>
+                <version>${fi.nls.oskari.service.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>fi.nls.oskari.service</groupId>
                 <artifactId>oskari-control-statistics</artifactId>
                 <version>${fi.nls.oskari.service.version}</version>
             </dependency>
@@ -225,6 +231,13 @@
                 <artifactId>oskari-search-nls</artifactId>
                 <version>${fi.nls.oskari.service.version}</version>
             </dependency>
+
+            <dependency>
+                <groupId>fi.nls.oskari.service</groupId>
+                <artifactId>oskari-search-opendata</artifactId>
+                <version>${fi.nls.oskari.service.version}</version>
+            </dependency>
+
             <dependency>
                 <groupId>fi.nls.oskari.service</groupId>
                 <artifactId>oskari-wfs</artifactId>
@@ -263,6 +276,12 @@
             <dependency>
                 <groupId>fi.nls.oskari.service</groupId>
                 <artifactId>oskari-myplaces</artifactId>
+                <version>${fi.nls.oskari.service.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>fi.nls.oskari.service</groupId>
+                <artifactId>oskari-rating</artifactId>
                 <version>${fi.nls.oskari.service.version}</version>
             </dependency>
 
@@ -895,9 +914,11 @@
         <module>service-map</module>
         <module>service-wfs</module>
         <module>service-myplaces</module>
+        <module>service-rating</module>
 
         <module>service-search</module>
         <module>service-search-nls</module>
+        <module>service-search-opendata</module>
         <module>service-spatineo-monitor</module>
         <module>service-control</module>
         <module>service-scheduler</module>
@@ -909,6 +930,7 @@
         <module>control-base</module>
         <module>control-example</module>
         <module>control-myplaces</module>
+        <module>control-rating</module>
         <module>control-admin</module>
         <module>control-statistics</module>
         <module>content-resources</module>

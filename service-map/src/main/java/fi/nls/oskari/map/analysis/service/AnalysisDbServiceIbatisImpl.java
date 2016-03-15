@@ -10,7 +10,6 @@ import fi.nls.oskari.map.analysis.domain.AnalysisLayer;
 import fi.nls.oskari.permission.domain.Resource;
 import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.service.db.BaseIbatisService;
-import fi.nls.oskari.util.ConversionHelper;
 
 import java.sql.SQLException;
 import java.util.HashMap;

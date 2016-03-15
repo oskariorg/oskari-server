@@ -1,17 +1,16 @@
 package fi.mml.map.mapwindow.service.wms;
 
-import java.util.*;
-
-import javax.xml.namespace.QName;
-
 import fi.mml.capabilities.DimensionDocument.Dimension;
 import fi.mml.capabilities.KeywordDocument;
-import fi.mml.capabilities.WMSCapabilitiesDocument;
 import fi.mml.capabilities.LayerDocument.Layer;
 import fi.mml.capabilities.LegendURLDocument.LegendURL;
 import fi.mml.capabilities.StyleDocument.Style;
+import fi.mml.capabilities.WMSCapabilitiesDocument;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+
+import javax.xml.namespace.QName;
+import java.util.*;
 
 /**
  * 
@@ -40,6 +39,8 @@ public class WebMapServiceV1_3_0_Impl extends AbstractWebMapService {
     private String[] keywords = new String[0];
 
 	private List<String> time = new ArrayList<>();
+
+    private String[] CRSs = new String[0];
 
 	/** url for request */
 	private String getCapabilitiesUrl;
@@ -83,7 +84,9 @@ public class WebMapServiceV1_3_0_Impl extends AbstractWebMapService {
 			gatherStylesAndLegends(rootLayer, rootStyles);
 			styles.putAll(rootStyles);
 
-			getFormats(wmtms);			
+			getFormats(wmtms);
+
+            getCRSs(wmtms);
 			
 			/* continue to childs */
 			Layer[] layers = rootLayer.getLayerArray();
@@ -180,8 +183,18 @@ public class WebMapServiceV1_3_0_Impl extends AbstractWebMapService {
 		formats = wmtms.getWMSCapabilities().getCapability().getRequest().getGetFeatureInfo().getFormatArray();
 		
 	}
-	
-	
+
+    /**
+     * Get supported crss  of the service from the parent layer
+     *
+     * @param wmtms
+     */
+    private void getCRSs(WMSCapabilitiesDocument wmtms) {
+
+        CRSs = wmtms.getWMSCapabilities().getCapability().getLayer().getCRSArray();
+
+    }
+
 	/**
 	 * Parses Styles, legends and queryable value from given layer. In case of non valid layer, it tries to do recursion on
 	 * sublayers that this layer might contain
@@ -283,4 +296,8 @@ public class WebMapServiceV1_3_0_Impl extends AbstractWebMapService {
 	public List<String> getTime() {
 		return time;
 	}
+
+    public String[] getCRSs() {
+        return CRSs;
+    }
 }

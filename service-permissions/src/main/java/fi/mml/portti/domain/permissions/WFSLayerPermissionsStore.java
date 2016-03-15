@@ -1,16 +1,15 @@
 package fi.mml.portti.domain.permissions;
 
-import java.io.IOException;
-import java.util.List;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import fi.nls.oskari.log.LogFactory;
-
-import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.cache.JedisManager;
+import fi.nls.oskari.log.LogFactory;
+import fi.nls.oskari.log.Logger;
+
+import java.io.IOException;
+import java.util.List;
 
 /**
  * handles user's permissions

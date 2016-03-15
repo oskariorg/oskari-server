@@ -1,18 +1,16 @@
 package fi.nls.oskari.domain.map.wfs;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import fi.nls.oskari.cache.JedisManager;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import fi.nls.oskari.util.JSONHelper;
-import fi.nls.oskari.cache.JedisManager;
-
 import javax.xml.namespace.QName;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Handles layer's configuration
@@ -117,7 +115,7 @@ public class WFSLayerConfiguration {
     private JSONObject tileBuffer;
 	private String WMSLayerId;
     private String wps_params;  // WPS params for WFS layer eg {input_type:gs_vector}
-    private int templateModelId;  //id of portti_wfs_template_model row (FE configs when jobtype=feature-engine
+    private int templateModelId = 0;  //id of portti_wfs_template_model row (FE configs when jobtype=feature-engine
     private String jobType;
     private String requestImpulse;
     private JSONObject attributes = new JSONObject();

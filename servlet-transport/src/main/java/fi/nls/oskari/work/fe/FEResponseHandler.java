@@ -1,11 +1,10 @@
 package fi.nls.oskari.work.fe;
 
-import java.io.BufferedInputStream;
-import java.io.IOException;
-import java.nio.charset.Charset;
-
-import javax.xml.stream.XMLStreamException;
-
+import fi.nls.oskari.fe.engine.FeatureEngine;
+import fi.nls.oskari.fe.input.InputProcessor;
+import fi.nls.oskari.fe.output.OutputProcessor;
+import fi.nls.oskari.log.LogFactory;
+import fi.nls.oskari.log.Logger;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.StatusLine;
@@ -14,11 +13,10 @@ import org.apache.http.client.HttpResponseException;
 import org.apache.http.client.ResponseHandler;
 import org.apache.http.entity.ContentType;
 
-import fi.nls.oskari.fe.engine.FeatureEngine;
-import fi.nls.oskari.fe.input.InputProcessor;
-import fi.nls.oskari.fe.output.OutputProcessor;
-import fi.nls.oskari.log.LogFactory;
-import fi.nls.oskari.log.Logger;
+import javax.xml.stream.XMLStreamException;
+import java.io.BufferedInputStream;
+import java.io.IOException;
+import java.nio.charset.Charset;
 
 public class FEResponseHandler implements ResponseHandler<Boolean> {
     protected static final Logger log = LogFactory

@@ -1,12 +1,10 @@
 package fi.nls.oskari.printout.output.layer;
 
-import java.awt.Color;
-import java.awt.Graphics2D;
-import java.awt.geom.AffineTransform;
-import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.net.MalformedURLException;
-
+import com.mortennobel.imagescaling.ResampleFilter;
+import com.mortennobel.imagescaling.ResampleFilters;
+import com.mortennobel.imagescaling.ResampleOp;
+import com.vividsolutions.jts.geom.Envelope;
+import fi.nls.oskari.printout.input.layers.LayerDefinition;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.geotools.feature.DefaultFeatureCollection;
@@ -16,12 +14,11 @@ import org.geotools.map.MapContent;
 import org.geotools.map.MapViewport;
 import org.opengis.feature.simple.SimpleFeature;
 
-import com.mortennobel.imagescaling.ResampleFilter;
-import com.mortennobel.imagescaling.ResampleFilters;
-import com.mortennobel.imagescaling.ResampleOp;
-import com.vividsolutions.jts.geom.Envelope;
-
-import fi.nls.oskari.printout.input.layers.LayerDefinition;
+import java.awt.*;
+import java.awt.geom.AffineTransform;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.net.MalformedURLException;
 
 /* 
  * Class that draws given Images to GeoTools MapContent

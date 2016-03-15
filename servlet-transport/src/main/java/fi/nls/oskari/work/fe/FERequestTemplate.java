@@ -1,30 +1,9 @@
 package fi.nls.oskari.work.fe;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
-import javax.xml.XMLConstants;
-import javax.xml.namespace.NamespaceContext;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathExpression;
-import javax.xml.xpath.XPathExpressionException;
-import javax.xml.xpath.XPathFactory;
-
+import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.Envelope;
+import fi.nls.oskari.pojo.SessionStore;
+import fi.nls.oskari.wfs.pojo.WFSLayerStore;
 import fi.nls.oskari.work.JobType;
 import org.apache.http.client.utils.URIBuilder;
 import org.geotools.geometry.jts.ReferencedEnvelope;
@@ -37,11 +16,25 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.Envelope;
-
-import fi.nls.oskari.pojo.SessionStore;
-import fi.nls.oskari.wfs.pojo.WFSLayerStore;
+import javax.xml.XMLConstants;
+import javax.xml.namespace.NamespaceContext;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.xpath.*;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 public class FERequestTemplate {
 
@@ -188,19 +181,7 @@ public class FERequestTemplate {
             }
 
         }
-
-        if (featureName != null) {
-            XPathExpression expr = xpath
-                    .compile("//*[@typeNames='tns:[FEATURENAME]']");
-
-            Node nd = (Node) expr.evaluate(doc, XPathConstants.NODE);
-            if (nd != null) {
-                nd.getAttributes().getNamedItem("typeNames")
-                        .setTextContent("tns:" + featureName);
-            }
-
-        }
-        if (featureName != null && featurePrefix != null) {
+        if (featureName != null && featurePrefix != null && !featurePrefix.isEmpty()) {
             XPathExpression expr = xpath
                     .compile("//*[@typeNames='[FEATURENAME]']");
 
@@ -209,8 +190,35 @@ public class FERequestTemplate {
                 nd.getAttributes().getNamedItem("typeNames")
                         .setTextContent(featurePrefix+ ":" + featureName);
             }
+            XPathExpression expr2 = xpath
+                    .compile("//*[@typeName='[FEATURENAME]']");
 
+            Node nd2 = (Node) expr2.evaluate(doc, XPathConstants.NODE);
+            if (nd2 != null) {
+                nd2.getAttributes().getNamedItem("typeName")
+                        .setTextContent(featurePrefix + ":" + featureName);
+            }
         }
+
+        else if (featureName != null) {
+            XPathExpression expr = xpath
+                    .compile("//*[@typeNames='tns:[FEATURENAME]']");
+
+            Node nd = (Node) expr.evaluate(doc, XPathConstants.NODE);
+            if (nd != null) {
+                nd.getAttributes().getNamedItem("typeNames")
+                        .setTextContent("tns:" + featureName);
+            }
+            XPathExpression expr2 = xpath
+                    .compile("//*[@typeName='[FEATURENAME]']");
+
+            Node nd2 = (Node) expr2.evaluate(doc, XPathConstants.NODE);
+            if (nd2 != null) {
+                nd2.getAttributes().getNamedItem("typeName")
+                        .setTextContent(featureName);
+            }
+        }
+
 
         String addns = doc.getDocumentElement().getAttribute("xmlns:tns");
 
@@ -218,7 +226,6 @@ public class FERequestTemplate {
             doc.getDocumentElement().removeAttribute("xmlns:tns");
             doc.getDocumentElement().setAttribute("xmlns:"+featurePrefix,featureNs);
         }
-
         if (maxcount != null) {
             XPathExpression expr = xpath
                     .compile("//*[@count='[MAXCOUNT]']");
@@ -227,6 +234,25 @@ public class FERequestTemplate {
             if (nd != null) {
                 nd.getAttributes().getNamedItem("count")
                         .setTextContent(maxcount);
+            }
+            XPathExpression expr2 = xpath
+                    .compile("//*[@maxFeatures='[MAXCOUNT]']");
+
+            Node nd2 = (Node) expr2.evaluate(doc, XPathConstants.NODE);
+            if (nd2 != null) {
+                nd2.getAttributes().getNamedItem("maxFeatures")
+                        .setTextContent(maxcount);
+            }
+        }
+
+        if (featureNs != null) {
+            XPathExpression expr = xpath
+                    .compile("//*[@targetNamespace='[ADD_NSURI]']");
+
+            Node nd = (Node) expr.evaluate(doc, XPathConstants.NODE);
+            if (nd != null) {
+                nd.getAttributes().getNamedItem("targetNamespace")
+                        .setTextContent(featureNs);
             }
 
         }

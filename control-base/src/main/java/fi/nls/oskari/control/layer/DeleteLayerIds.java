@@ -1,8 +1,7 @@
 package fi.nls.oskari.control.layer;
 
-import fi.nls.oskari.annotation.OskariActionRoute;
-
 import fi.mml.portti.domain.permissions.WFSLayerPermissionsStore;
+import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.ActionHandler;
 import fi.nls.oskari.control.ActionParameters;

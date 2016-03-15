@@ -8,9 +8,7 @@
         "development_prefix" : "/applications/sample"
     },
 
-    "selectedLayers" : [
-        "wmslayer-openstreetmap-demo-fi.json"
-    ],
+    "selectedLayers" : [],
     "bundles" : [
         { "id" : "openlayers-default-theme",
           "startup" :{
@@ -32,7 +30,6 @@
             "id" : "mapfull",
             "config" : {
                 "globalMapAjaxUrl": "[REPLACED BY HANDLER]",
-                "imageLocation": "/Oskari/resources",
                 "plugins" : [
                     { "id" : "Oskari.mapframework.bundle.mapmodule.plugin.LayersPlugin" },
                     { "id" : "Oskari.mapframework.mapmodule.WmsLayerPlugin" },

@@ -1,19 +1,18 @@
 package fi.nls.oskari.wfs;
 
-import java.sql.SQLException;
-import java.util.List;
-import java.util.Map;
-
 import com.ibatis.sqlmap.client.SqlMapClient;
 import com.ibatis.sqlmap.client.SqlMapSession;
 import fi.nls.oskari.domain.map.wfs.WFSLayerConfiguration;
 import fi.nls.oskari.domain.map.wfs.WFSParserConfig;
+import fi.nls.oskari.domain.map.wfs.WFSSLDStyle;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.service.db.BaseIbatisService;
-import fi.nls.oskari.domain.map.wfs.WFSSLDStyle;
-import fi.nls.oskari.wfs.util.WFSParserConfigs;
+
+import java.sql.SQLException;
+import java.util.List;
+import java.util.Map;
 
 public class WFSLayerConfigurationServiceIbatisImpl extends BaseIbatisService<WFSLayerConfiguration> implements WFSLayerConfigurationService {
 

@@ -1,8 +1,5 @@
 package fi.nls.oskari.wfs;
 
-import fi.nls.oskari.cache.JedisManager;
-import fi.nls.oskari.log.LogFactory;
-import fi.nls.oskari.log.Logger;
 // import org.quartz.Job;
 // import org.quartz.JobExecutionContext;
 // import org.quartz.JobExecutionException;

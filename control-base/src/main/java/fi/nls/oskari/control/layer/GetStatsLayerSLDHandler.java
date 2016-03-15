@@ -1,7 +1,5 @@
 package fi.nls.oskari.control.layer;
 
-import java.util.Enumeration;
-
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.ActionHandler;
@@ -14,10 +12,10 @@ import fi.nls.oskari.map.stats.VisualizationService;
 import fi.nls.oskari.map.stats.VisualizationServiceIbatisImpl;
 import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.ResponseHelper;
-
 import org.apache.axiom.om.OMElement;
 
 import javax.servlet.http.HttpServletResponse;
+import java.util.Enumeration;
 
 @OskariActionRoute("GetStatsLayerSLD")
 public class GetStatsLayerSLDHandler extends ActionHandler {

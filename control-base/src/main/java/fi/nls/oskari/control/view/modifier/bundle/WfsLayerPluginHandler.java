@@ -4,10 +4,7 @@ import fi.nls.oskari.domain.map.view.ViewTypes;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.util.JSONHelper;
-import fi.nls.oskari.util.PropertyUtil;
 import org.json.JSONObject;
-
-import java.util.Map;
 
 /**
  *  modifier for WfsLayerPlugin config

@@ -1,8 +1,8 @@
 package fi.nls.oskari.domain.geo.comparator;
 
-import java.util.Comparator;
-
 import fi.nls.oskari.domain.geo.Point;
+
+import java.util.Comparator;
 
 public class LatComparator implements Comparator<Point> {
 

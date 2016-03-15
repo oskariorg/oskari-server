@@ -17,39 +17,29 @@
  */
 package org.geoserver.wps.oskari.oskari;
 
-import java.awt.geom.AffineTransform;
-import java.text.DecimalFormat;
-import java.util.Iterator;
-import java.util.NoSuchElementException;
-
-import org.geotools.geometry.jts.JTS;
-import org.geotools.process.factory.DescribeParameter;
-import org.geotools.process.factory.DescribeProcess;
-import org.geotools.process.factory.DescribeResult;
-import org.geotools.process.gs.GSProcess;
-import org.geotools.process.gs.WrappingIterator;
+import com.vividsolutions.jts.geom.*;
 import org.geotools.data.collection.ListFeatureCollection;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.data.simple.SimpleFeatureIterator;
 import org.geotools.feature.AttributeTypeBuilder;
-import org.geotools.feature.collection.DecoratingSimpleFeatureCollection;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
 import org.geotools.feature.type.GeometryTypeImpl;
+import org.geotools.geometry.jts.JTS;
 import org.geotools.geometry.jts.ReferencedEnvelope;
+import org.geotools.process.factory.DescribeParameter;
+import org.geotools.process.factory.DescribeProcess;
+import org.geotools.process.factory.DescribeResult;
+import org.geotools.process.gs.GSProcess;
 import org.geotools.referencing.operation.transform.AffineTransform2D;
-import org.geotools.util.Converters;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.AttributeDescriptor;
-
-import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.GeometryFactory;
-import com.vividsolutions.jts.geom.MultiPolygon;
-import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.Polygon;
-import com.vividsolutions.jts.geom.LinearRing;
 import org.opengis.referencing.operation.MathTransform;
+
+import java.awt.geom.AffineTransform;
+import java.text.DecimalFormat;
+import java.util.NoSuchElementException;
 
 /**
  * ZoneSectors a feature collection using a certain distance

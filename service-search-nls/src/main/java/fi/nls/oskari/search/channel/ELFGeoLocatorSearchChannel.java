@@ -29,10 +29,10 @@ import java.util.Map;
 public class ELFGeoLocatorSearchChannel extends SearchChannel {
 
     private Logger log = LogFactory.getLogger(this.getClass());
-    private String serviceURL = null;
+    public String serviceURL = null;
 
     public static final String ID = "ELFGEOLOCATOR_CHANNEL";
-    private static final String PROPERTY_SERVICE_URL = "search.channel.ELFGEOLOCATOR_CHANNEL.service.url";
+    public static final String PROPERTY_SERVICE_URL = "search.channel.ELFGEOLOCATOR_CHANNEL.service.url";
     private static final String PROPERTY_SERVICE_SRS = "search.channel.ELFGEOLOCATOR_CHANNEL.service.srs";
     private static final String PROPERTY_SERVICE_REVERSEGEOCODE_TEMPLATE = "search.channel.ELFGEOLOCATOR_CHANNEL.service.reversegeocode.template";
     private static final String PROPERTY_SERVICE_GETFEATUREAU_TEMPLATE = "search.channel.ELFGEOLOCATOR_CHANNEL.service.getfeatureau.template";
@@ -51,8 +51,8 @@ public class ELFGeoLocatorSearchChannel extends SearchChannel {
     public static final String DEFAULT_GETFEATUREAU_TEMPLATE = "?SERVICE=WFS&VERSION=2.0.0&REQUEST=GetFeatureInAu&NAME=_PLACE_HOLDER_&AU=_AU_HOLDER_&LANGUAGE=_LANG_";
     public static final String DEFAULT_FUZZY_TEMPLATE = "?SERVICE=WFS&VERSION=2.0.0&REQUEST=FuzzyNameSearch&LANGUAGE=_LANG_&NAME=";
     public static final String DEFAULT_GETFEATURE_TEMPLATE = "?SERVICE=WFS&VERSION=2.0.0&REQUEST=GetFeature&TYPENAMES=SI_LocationInstance&language=_LANG_&FILTER=";
-    public static final String GETFEATURE_FILTER_TEMPLATE = "%3Cfes:Filter%20xmlns:fes=%22http://www.opengis.net/fes/2.0%22%20xmlns:xsi=%22http://www.w3.org/2001/XMLSchema-instance%22%20xmlns:iso19112=%22http://www.isotc211.org/19112%22%20xsi:schemaLocation=%22http://www.opengis.net/fes/2.0%20http://schemas.opengis.net/filter/2.0/filterAll.xsd%22%3E%3Cfes:PropertyIsEqualTo%3E%3Cfes:ValueReference%3Eiso19112:alternativeGeographicIdentifiers/iso19112:alternativeGeographicIdentifier/iso19112:name%3C/fes:ValueReference%3E%3Cfes:Literal%3E_PLACE_HOLDER_%3C/fes:Literal%3E%3C/fes:PropertyIsEqualTo%3E%3C/fes:Filter%3E";
-    public static final String ADMIN_FILTER_TEMPLATE = "%3Cfes:Filter%20xmlns:fes=%22http://www.opengis.net/fes/2.0%22%20xmlns:xsi=%22http://www.w3.org/2001/XMLSchema-instance%22%20xmlns:iso19112=%22http://www.isotc211.org/19112%22%20xmlns:gmdsf1=%22http://www.isotc211.org/2005/gmdsf1%22%20xsi:schemaLocation=%22http://www.opengis.net/fes/2.0%20http://schemas.opengis.net/filter/2.0/filterAll.xsd%22%3E%3Cfes:And%3E%3Cfes:PropertyIsEqualTo%3E%3Cfes:ValueReference%3Eiso19112:alternativeGeographicIdentifiers/iso19112:alternativeGeographicIdentifier/iso19112:name%3C/fes:ValueReference%3E%3Cfes:Literal%3E_PLACE_HOLDER_%3C/fes:Literal%3E%3C/fes:PropertyIsEqualTo%3E%3Cfes:PropertyIsEqualTo%3E%3Cfes:ValueReference%3Eiso19112:administrator/gmdsf1:CI_ResponsibleParty/gmdsf1:organizationName%3C/fes:ValueReference%3E%3Cfes:Literal%3E_ADMIN_HOLDER_%3C/fes:Literal%3E%3C/fes:PropertyIsEqualTo%3E%3C/fes:And%3E%3C/fes:Filter%3E";
+    public static final String GETFEATURE_FILTER_TEMPLATE = "%3Cfes:Filter%20xmlns:fes=%22http://www.opengis.net/fes/2.0%22%20xmlns:xsi=%22http://www.w3.org/2001/XMLSchema-instance%22%20xmlns:iso19112=%22http://www.isotc211.org/19112%22%20xsi:schemaLocation=%22http://www.opengis.net/fes/2.0%20http://schemas.opengis.net/filter/2.0/filterAll.xsd%22%3E%3Cfes:PropertyIsEqualTo%20matchCase=%22false%22%3E%3Cfes:ValueReference%3Eiso19112:alternativeGeographicIdentifiers/iso19112:alternativeGeographicIdentifier/iso19112:name%3C/fes:ValueReference%3E%3Cfes:Literal%3E_PLACE_HOLDER_%3C/fes:Literal%3E%3C/fes:PropertyIsEqualTo%3E%3C/fes:Filter%3E";
+    public static final String ADMIN_FILTER_TEMPLATE = "%3Cfes:Filter%20xmlns:fes=%22http://www.opengis.net/fes/2.0%22%20xmlns:xsi=%22http://www.w3.org/2001/XMLSchema-instance%22%20xmlns:iso19112=%22http://www.isotc211.org/19112%22%20xmlns:gmdsf1=%22http://www.isotc211.org/2005/gmdsf1%22%20xsi:schemaLocation=%22http://www.opengis.net/fes/2.0%20http://schemas.opengis.net/filter/2.0/filterAll.xsd%22%3E%3Cfes:And%3E%3Cfes:PropertyIsEqualTo%20matchCase=%22false%22%3E%3Cfes:ValueReference%3Eiso19112:alternativeGeographicIdentifiers/iso19112:alternativeGeographicIdentifier/iso19112:name%3C/fes:ValueReference%3E%3Cfes:Literal%3E_PLACE_HOLDER_%3C/fes:Literal%3E%3C/fes:PropertyIsEqualTo%3E%3Cfes:PropertyIsEqualTo%3E%3Cfes:ValueReference%3Eiso19112:administrator/gmdsf1:CI_ResponsibleParty/gmdsf1:organizationName%3C/fes:ValueReference%3E%3Cfes:Literal%3E_ADMIN_HOLDER_%3C/fes:Literal%3E%3C/fes:PropertyIsEqualTo%3E%3C/fes:And%3E%3C/fes:Filter%3E";
     public static final String REQUEST_REVERSEGEOCODE_TEMPLATE = PropertyUtil.get(PROPERTY_SERVICE_REVERSEGEOCODE_TEMPLATE, DEFAULT_REVERSEGEOCODE_TEMPLATE);
     public static final String REQUEST_GETFEATUREAU_TEMPLATE = PropertyUtil.get(PROPERTY_SERVICE_GETFEATUREAU_TEMPLATE, DEFAULT_GETFEATUREAU_TEMPLATE);
     public static final String REQUEST_FUZZY_TEMPLATE = PropertyUtil.get(PROPERTY_SERVICE_FUZZY_TEMPLATE, DEFAULT_FUZZY_TEMPLATE);
@@ -63,20 +63,23 @@ public class ELFGeoLocatorSearchChannel extends SearchChannel {
 
     private static final String PARAM_NORMAL = "normal";
     private static final String PARAM_REGION = "region";
-    private static final String PARAM_COUNTRY = "country";
+    public static final String PARAM_COUNTRY = "country";
     private static final String PARAM_FILTER = "filter";
     private static final String PARAM_FUZZY = "fuzzy";
     private static final String PARAM_EXONYM = "exonym";
     private static final String PARAM_LON = "lon";
     private static final String PARAM_LAT = "lat";
+    private static final String PARAM_GEO_NAMES = "geographical_names";
+    private static final String PARAM_ADDRESSES = "addresses";
     private static final String METHOD_REVERSE = "reverse";
+
     private static Map<String, Double> elfScalesForType = new HashMap<String, Double>();
     private static Map<String, Integer> elfLocationPriority = new HashMap<String, Integer>();
     private static JSONObject elfCountryMap = null;
     private final String geolocatorCountries = "geolocator-countries.json";
 
 
-    private ELFGeoLocatorParser elfParser = null;
+    public ELFGeoLocatorParser elfParser = null;
 
     @Override
     public void init() {
@@ -84,13 +87,17 @@ public class ELFGeoLocatorSearchChannel extends SearchChannel {
         serviceURL = PropertyUtil.getOptional(PROPERTY_SERVICE_URL);
 
         log.debug("ServiceURL set to " + serviceURL);
-
-        InputStream inp = this.getClass().getResourceAsStream(geolocatorCountries);
-        if(inp != null) {
-            InputStreamReader reader = new InputStreamReader(inp);
-            JSONTokener tokenizer = new JSONTokener(reader);
-            this.elfCountryMap = JSONHelper.createJSONObject4Tokener(tokenizer);
+        try {
+            InputStream inp = this.getClass().getResourceAsStream(geolocatorCountries);
+            if (inp != null) {
+                InputStreamReader reader = new InputStreamReader(inp, "UTF-8");
+                JSONTokener tokenizer = new JSONTokener(reader);
+                this.elfCountryMap = JSONHelper.createJSONObject4Tokener(tokenizer);
+            }
+        } catch (Exception e) {
+            log.info("Country mapping setup failed for country based search", e);
         }
+
 
         InputStream inp2 = this.getClass().getResourceAsStream(LOCATIONTYPE_ATTRIBUTES);
         if(inp2 == null){
@@ -149,13 +156,12 @@ public class ELFGeoLocatorSearchChannel extends SearchChannel {
      * @return Result data in JSON format.
      * @throws Exception
      */
-    private String getData(SearchCriteria searchCriteria) throws Exception {
+    public String getData(SearchCriteria searchCriteria) throws Exception {
 
         if (serviceURL == null) {
             log.warn("ServiceURL not configured. Add property with key", PROPERTY_SERVICE_URL);
             return null;
         }
-
         // Language
         Locale locale = new Locale(searchCriteria.getLocale());
         String lang3 = locale.getISO3Language();
@@ -199,6 +205,7 @@ public class ELFGeoLocatorSearchChannel extends SearchChannel {
             buf.append(filter);
         }
 
+
         return IOHelper.readString(getConnection(buf.toString()));
     }
 
@@ -208,7 +215,7 @@ public class ELFGeoLocatorSearchChannel extends SearchChannel {
      * @param param
      * @return
      */
-    private boolean hasParam(SearchCriteria sc, final String param) {
+    public boolean hasParam(SearchCriteria sc, final String param) {
         final Object obj = sc.getParam(param);
         return obj != null && !obj.toString().isEmpty();
     }
@@ -228,6 +235,7 @@ public class ELFGeoLocatorSearchChannel extends SearchChannel {
      */
     public ChannelSearchResult doSearch(SearchCriteria searchCriteria) {
         try {
+
             String data = getData(searchCriteria);
             Locale locale = new Locale(searchCriteria.getLocale());
 

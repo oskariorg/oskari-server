@@ -10,14 +10,11 @@ import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.service.UserService;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.ResponseHelper;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 @OskariActionRoute("Users")
 public class UsersHandler extends RestActionHandler {
@@ -30,6 +27,7 @@ public class UsersHandler extends RestActionHandler {
     private static final String PARAM_LASTNAME = "lastName";
     private static final String PARAM_SCREENNAME = "user";
     private static final String PARAM_PASSWORD = "pass";
+    private static final String PARAM_EMAIL = "email";
 
     @Override
     public void init() {
@@ -173,6 +171,7 @@ public class UsersHandler extends RestActionHandler {
         user.setFirstname(params.getRequiredParam(PARAM_FIRSTNAME));
         user.setLastname(params.getRequiredParam(PARAM_LASTNAME));
         user.setScreenname(params.getRequiredParam(PARAM_SCREENNAME));
+        user.setEmail(params.getRequiredParam(PARAM_EMAIL));
     }
 
     private JSONObject user2Json(User user) throws JSONException {
@@ -181,6 +180,7 @@ public class UsersHandler extends RestActionHandler {
         uo.put("firstName", user.getFirstname());
         uo.put("lastName", user.getLastname());
         uo.put("user", user.getScreenname());
+        uo.put("email", user.getEmail());
         
         JSONArray rolesArray = new JSONArray();
         for(Role role : user.getRoles()){

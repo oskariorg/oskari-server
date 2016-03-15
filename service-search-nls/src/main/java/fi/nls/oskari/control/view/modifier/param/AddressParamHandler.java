@@ -1,14 +1,14 @@
 package fi.nls.oskari.control.view.modifier.param;
 
-import fi.nls.oskari.search.channel.MaastoAddressChannelSearchService;
 import fi.mml.portti.service.search.*;
 import fi.nls.oskari.annotation.OskariViewModifier;
+import fi.nls.oskari.control.view.modifier.bundle.MapfullHandler;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.search.channel.MaastoAddressChannelSearchService;
+import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.view.modifier.ModifierException;
 import fi.nls.oskari.view.modifier.ModifierParams;
-import fi.nls.oskari.control.view.modifier.bundle.MapfullHandler;
-import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.view.modifier.ViewModifier;
 import org.json.JSONObject;
 
@@ -21,6 +21,11 @@ public class AddressParamHandler extends ParamHandler {
     private static final Logger log = LogFactory.getLogger(AddressParamHandler.class);
     //private static final String PARAM_ADDRESS = "address";
     private static SearchService searchService = new SearchServiceImpl();
+
+    @Override
+    public int getPriority() {
+        return 10;
+    }
 
     public boolean handleParam(final ModifierParams params) throws ModifierException {
         if(params.getParamValue() == null) {

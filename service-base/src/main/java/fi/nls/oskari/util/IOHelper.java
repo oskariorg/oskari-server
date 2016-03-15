@@ -13,6 +13,7 @@ import java.net.URLEncoder;
 import java.security.SecureRandom;
 import java.security.cert.X509Certificate;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.zip.GZIPInputStream;
@@ -28,6 +29,7 @@ public class IOHelper {
     public static final String HEADER_AUTHORIZATION = "Authorization";
     public static final String HEADER_CONTENTTYPE = "Content-Type";
     public static final String HEADER_USERAGENT = "User-Agent";
+    public static final String HEADER_REFERER = "Referer";
     public static final String HEADER_ACCEPT = "Accept";
 
     public static final String DEFAULT_CHARSET = "UTF-8";
@@ -755,6 +757,20 @@ public class IOHelper {
             return urlBuilder.substring(0, urlBuilder.length()-1);
         }
         return urlBuilder.append(queryString).toString();
+    }
+
+    /**
+     * Convenience method for just adding one param to an URL.
+     * Using constructUrl(String, Map<String, String>) is more efficent with multiple params.
+     * @param url
+     * @param key
+     * @param value
+     * @return
+     */
+    public static String addUrlParam(final String url, String key, String value) {
+        final Map<String, String> params = new HashMap<>(1);
+        params.put(key, value);
+        return constructUrl(url, params);
     }
 
     public static String getParams(Map<String, String> params) {

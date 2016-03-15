@@ -2,6 +2,7 @@ package fi.nls.oskari.fe.input.format.gml.recipe;
 
 import fi.nls.oskari.eu.elf.recipe.universal.ELF_path_parse_worker;
 import fi.nls.oskari.fe.input.format.gml.FEPullParser;
+import fi.nls.oskari.fi.rysp.generic.WFS11_path_parse_worker;
 
 /* Backwards compatibility for Groovy impls */
 @Deprecated
@@ -33,6 +34,10 @@ public abstract class AbstractGroovyGMLParserRecipe extends
 
     }
     public void setParseWorker(ELF_path_parse_worker worker){
+
+
+    }
+    public void setWFS11ParseWorker(WFS11_path_parse_worker worker){
 
 
     }

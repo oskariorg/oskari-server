@@ -4,24 +4,16 @@ package fi.nls.oskari.annotation;
 // http://www.developer.com/java/other/article.php/3853556/Implement-Automatic-Discovery-in-Your-Java-Code-with-Annotations.htm
 // just moved it to a more convenient package with the rest of the code
 
-import java.io.Reader;
-import java.io.Writer;
-import java.io.PrintWriter;
-import java.io.IOException;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-
-import java.util.Set;
-import java.util.List;
-import java.util.HashSet;
-import java.util.ArrayList;
-
 import javax.annotation.processing.Filer;
 import javax.annotation.processing.ProcessingEnvironment;
-
-import javax.tools.FileObject;
 import javax.tools.Diagnostic.Kind;
+import javax.tools.FileObject;
 import javax.tools.JavaFileManager.Location;
+import java.io.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * <p>

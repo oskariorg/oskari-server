@@ -25,26 +25,7 @@
                         </Stroke>
                     </PolygonSymbolizer>
                 </Rule>
-                <Rule>
-                    <Title>Polygons n1 lt 0 </Title>
-                    <ogc:Filter>
- 
-                            <ogc:PropertyIsLessThan>
-                                <ogc:PropertyName>n1</ogc:PropertyName>
-                                <ogc:Literal>0.0</ogc:Literal>
-                            </ogc:PropertyIsLessThan>
-      
-                    </ogc:Filter>
-                    <PolygonSymbolizer>
-                        <Fill>
-                            <CssParameter name="fill">#0571B0</CssParameter>
-                        </Fill>
-                        <Stroke>
-                            <CssParameter name="stroke">#C0C0C0</CssParameter>
-                            <CssParameter name="stroke-width">1</CssParameter>
-                        </Stroke>
-                    </PolygonSymbolizer>
-                </Rule>
+              
                 <Rule>
                     <Title>Polygons gt 0</Title>
                     <ogc:Filter>
@@ -65,7 +46,52 @@
                         </Stroke>
                     </PolygonSymbolizer>
                 </Rule>
-              
+              <Rule>
+                    <Title>Polygons n1 lt 0 </Title>
+                    <ogc:Filter>
+                            <ogc:And>
+                              <ogc:Not>
+                                 <ogc:PropertyIsEqualTo>
+                                <ogc:PropertyName>n1</ogc:PropertyName>
+                                <ogc:Literal>-111111111.0</ogc:Literal>
+                            </ogc:PropertyIsEqualTo>
+                              </ogc:Not>
+                            <ogc:PropertyIsLessThan>
+                                <ogc:PropertyName>n1</ogc:PropertyName>
+                                <ogc:Literal>0.0</ogc:Literal>
+                            </ogc:PropertyIsLessThan>
+                       </ogc:And>
+                    </ogc:Filter>
+                    <PolygonSymbolizer>
+                        <Fill>
+                            <CssParameter name="fill">#0571B0</CssParameter>
+                        </Fill>
+                        <Stroke>
+                            <CssParameter name="stroke">#C0C0C0</CssParameter>
+                            <CssParameter name="stroke-width">1</CssParameter>
+                        </Stroke>
+                    </PolygonSymbolizer>
+                </Rule>
+                 <Rule>
+                    <Title>Polygons eq -111111111</Title>
+                    <ogc:Filter>
+            
+                             <ogc:PropertyIsEqualTo>
+                                <ogc:PropertyName>n1</ogc:PropertyName>
+                                <ogc:Literal>-111111111.0</ogc:Literal>
+                            </ogc:PropertyIsEqualTo>
+          
+                    </ogc:Filter>
+                    <PolygonSymbolizer>
+                        <Fill>
+                            <CssParameter name="fill">#707070</CssParameter>
+                        </Fill>
+                        <Stroke>
+                            <CssParameter name="stroke">#C0C0C0</CssParameter>
+                            <CssParameter name="stroke-width">1</CssParameter>
+                        </Stroke>
+                    </PolygonSymbolizer>
+                </Rule>
             </FeatureTypeStyle>
         </UserStyle>
     </NamedLayer>

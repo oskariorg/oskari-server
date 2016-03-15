@@ -1,15 +1,14 @@
 package fi.nls.oskari.fe.output;
 
-import java.io.IOException;
-import java.util.List;
-
-import org.apache.commons.lang3.tuple.Pair;
-
 import com.vividsolutions.jts.geom.Geometry;
-
 import fi.nls.oskari.fe.iri.Resource;
 import fi.nls.oskari.fe.schema.XSDDatatype;
+import org.apache.commons.lang3.tuple.Pair;
 import org.json.JSONObject;
+
+import java.io.IOException;
+import java.util.List;
+import java.util.Map;
 
 public interface OutputProcessor {
 
@@ -48,5 +47,7 @@ public interface OutputProcessor {
             throws IOException;
 
     public void merge(final List<JSONObject> list, Resource href) throws  IOException;
+
+    public void equalizePropertyArraySize(Map<String,Integer> multiElemmap,  Map<String, Resource> resmap) throws  IOException;
 
 }

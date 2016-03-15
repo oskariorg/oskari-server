@@ -1,9 +1,9 @@
 package fi.nls.oskari.map.publish.service;
 
-import java.sql.Timestamp;
-
 import fi.nls.oskari.map.publish.domain.TermsOfUse;
 import fi.nls.oskari.service.db.BaseIbatisService;
+
+import java.sql.Timestamp;
 
 public class PublishTermsOfUseServiceIbatisImpl extends BaseIbatisService<TermsOfUse> implements PublishTermsOfUseService {
     @Override

@@ -4,7 +4,6 @@ import com.ibatis.sqlmap.client.SqlMapSession;
 import fi.nls.oskari.domain.map.userlayer.UserLayer;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.map.userlayer.service.UserLayerDbService;
 import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.service.db.BaseIbatisService;
 
@@ -108,6 +107,21 @@ public class UserLayerDbServiceIbatisImpl extends
             endSession(session);
         }
     }
+
+    public void deleteUserLayer(final long id) throws ServiceException {
+
+        final SqlMapSession session = openSession();
+        try {
+            session.startTransaction();
+            session.delete(getNameSpace() + ".delete-userLayer", id);
+            session.commitTransaction();
+        } catch (Exception e) {
+            throw new ServiceException("Error deleting userLayer data with id:" + id, e);
+        } finally {
+            endSession(session);
+        }
+    }
+
 
 
 
