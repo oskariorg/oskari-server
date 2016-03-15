@@ -16,6 +16,7 @@ import fi.nls.oskari.util.ResponseHelper;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import static fi.nls.oskari.control.ActionConstants.*;
 
 /**
  * Created by SMAKINEN on 26.6.2015.
@@ -27,12 +28,10 @@ public class RoutingHandler extends ActionHandler {
     private RoutingService service = new RoutingServiceOpenTripPlannerImpl();
 
 
-    private static final String PARAM_LANG = "lang";
     private static final String PARAM_FROM_LAT = "fromlat";
     private static final String PARAM_FROM_LON = "fromlon";
     private static final String PARAM_TO_LAT = "tolat";
     private static final String PARAM_TO_LON = "tolon";
-    private static final String PARAM_SRS = "srs";
     private static final String PARAM_DATE = "date";
     private static final String PARAM_TIME = "time";
     private static final String PARAM_ARRIVEBY = "arriveby";
@@ -66,7 +65,7 @@ public class RoutingHandler extends ActionHandler {
         routeparams.setIsShowIntermediateStops("true".equals(params.getHttpParam(PARAM_SHOW_INTERMEDIATE_STOPS)));
 
         routeparams.setSrs(params.getHttpParam(PARAM_SRS));
-        routeparams.setLang(params.getHttpParam(PARAM_LANG));
+        routeparams.setLang(params.getHttpParam(PARAM_LANGUAGE));
         routeparams.setMaxWalkDistance(ConversionHelper.getLong(params.getHttpParam(PARAM_MAX_WALK_DISTANCE, PropertyUtil.get("routing.default.maxwalkdistance")), 1000));
         routeparams.setMode(params.getHttpParam(PARAM_MODE, PropertyUtil.get("routing.default.mode")));
 

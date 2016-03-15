@@ -18,11 +18,6 @@ public class WebMapServiceV1_1_1_Impl extends AbstractWebMapService {
 	private Map<String, String> styles = new HashMap<String, String>();
 	
 	/**
-	 * Available styles key: name, value: onlineResource
-	 */
-	private Map<String, String> legends = new HashMap<String, String>();
-	
-	/**
 	 * Available formats
 	 */
 	private String[] formats = new String[0];
@@ -161,7 +156,6 @@ public class WebMapServiceV1_1_1_Impl extends AbstractWebMapService {
 			}
 		}
 	}
-	
 	/**
 	 * Gathers get feature info formats from feature info
 	 * 

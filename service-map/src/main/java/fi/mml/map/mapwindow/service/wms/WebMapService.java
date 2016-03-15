@@ -21,7 +21,13 @@ public interface WebMapService {
 	 * @return List of Strings
 	 */
 	Map<String, String> getSupportedLegends();
-	
+
+	/**
+	 * Return legend image for given style
+	 *
+	 * @return legend image url
+	 */
+	String getLegendForStyle(String key);
 	
 	/**
 	 * returns getCapabilitiesUrl

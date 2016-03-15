@@ -1,6 +1,7 @@
 package fi.nls.oskari.map.layer.formatters;
 
 import fi.mml.map.mapwindow.service.wms.WebMapService;
+import fi.mml.map.mapwindow.service.wms.WebMapServiceV1_3_0_Impl;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
@@ -166,9 +167,9 @@ public class LayerJSONFormatterWMS extends LayerJSONFormatter {
     public static List<JSONObject> createStylesArray(final WebMapService capabilities) {
         final List<JSONObject> styles = new ArrayList<>();
         final Map<String, String> stylesMap = capabilities.getSupportedStyles();
-        final Map<String, String> legends = capabilities.getSupportedLegends();
         for (String styleName : stylesMap.keySet()) {
-            styles.add(createStylesJSON(styleName, stylesMap.get(styleName), legends.get(styleName)));
+            String legend = capabilities.getLegendForStyle(styleName);
+            styles.add(createStylesJSON(styleName, stylesMap.get(styleName), legend));
         }
         return styles;
     }
