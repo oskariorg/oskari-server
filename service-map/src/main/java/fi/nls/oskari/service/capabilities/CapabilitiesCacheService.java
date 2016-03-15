@@ -141,7 +141,7 @@ public abstract class CapabilitiesCacheService extends OskariComponent {
     }
 
     // TODO: maybe use some lib instead?
-    private static String getEncodingFromXml(final String response) {
+    public static String getEncodingFromXml(final String response) {
         if(response == null) {
             return null;
         }

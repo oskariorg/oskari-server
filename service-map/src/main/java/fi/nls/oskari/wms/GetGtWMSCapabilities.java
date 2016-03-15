@@ -2,7 +2,6 @@ package fi.nls.oskari.wms;
 
 import fi.mml.map.mapwindow.service.wms.WebMapService;
 import fi.mml.map.mapwindow.service.wms.WebMapServiceFactory;
-import fi.mml.map.mapwindow.service.wms.WebMapServiceV1_3_0_Impl;
 import fi.mml.map.mapwindow.util.OskariLayerWorker;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.log.LogFactory;
@@ -12,21 +11,16 @@ import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.service.capabilities.CapabilitiesCacheService;
 import fi.nls.oskari.service.capabilities.CapabilitiesCacheServiceMybatisImpl;
 import fi.nls.oskari.service.capabilities.OskariLayerCapabilities;
-import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
-import org.deegree.ogcwebservices.getcapabilities.CapabilitiesService;
 import org.geotools.data.ows.*;
 import org.geotools.data.ows.WMSCapabilities;
-import org.geotools.data.wms.WebMapServer;
 import org.geotools.data.wms.xml.MetadataURL;
 import org.geotools.data.wms.xml.WMSSchema;
 import org.geotools.xml.DocumentFactory;
 import org.geotools.xml.handlers.DocumentHandler;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.opengis.util.InternationalString;
-
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.net.URL;
@@ -51,13 +45,16 @@ public class GetGtWMSCapabilities {
     }
 
     // based on https://github.com/geotools/geotools/blob/master/modules/extension/wms/src/test/java/org/geotools/data/wms/test/WMS1_0_0_OnlineTest.java#L253-L276
-    public static WMSCapabilities createCapabilities(String xml) {
+    public static WMSCapabilities createCapabilities(String xml, String encoding) {
         if(xml == null || xml.isEmpty()) {
             return null;
         }
+        if (encoding == null) {
+            encoding = StandardCharsets.UTF_8.toString();
+        }
         final Map hints = new HashMap();
         hints.put(DocumentHandler.DEFAULT_NAMESPACE_HINT_KEY, WMSSchema.getInstance());
-        try(InputStream stream = new ByteArrayInputStream(xml.getBytes())) {
+        try(InputStream stream = new ByteArrayInputStream(xml.getBytes(encoding))) {
             final Object object = DocumentFactory.getInstance(stream, hints, Level.WARNING);
             if(object instanceof WMSCapabilities) {
                 return (WMSCapabilities) object;
@@ -85,7 +82,8 @@ public class GetGtWMSCapabilities {
             capabilities = service.getCapabilities(rurl, "wmslayer", user, pwd);
 
             String capabilitiesXML = capabilities.getData();
-            WMSCapabilities caps = createCapabilities(capabilitiesXML);
+            String encoding = CapabilitiesCacheService.getEncodingFromXml(capabilitiesXML);
+            WMSCapabilities caps = createCapabilities(capabilitiesXML, encoding);
             // caps to json
             return parseLayer(caps.getLayer(), rurl, caps, capabilitiesXML);
         } catch (Exception ex) {
@@ -229,8 +227,6 @@ OnlineResource xlink:type="simple" xlink:href="http://www.paikkatietohakemisto.f
         try {
             // setup capabilities json for layer, styles etc
             JSONObject oskariLayerCapabilities = getLayerCapabilitiesAsJson(capabilitiesLayer, caps);
-
-            JSONArray oldStyles = (JSONArray)oskariLayerCapabilities.get("styles");
             //using an implementation of our own instead...
             WebMapService wmsImpl = WebMapServiceFactory.createFromXML(oskariLayer.getName(), capabilitiesXML);
             Map<String, String> supportedStyles = wmsImpl.getSupportedStyles();
