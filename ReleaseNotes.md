@@ -10,15 +10,6 @@ A bugfix to legend image parsing when there were multiple styles with the same n
 
 Added indexes for oskari_resource and oskari_permission tables.
 
-### extras
-
-Added a new folder for optional Oskari-compatible modules that are bound to Oskari version, but are optional 
-and contain code that isn't universal (search-service-nls should be moved here).
-
-#### nlsfi-projections
-
-A wrapper for a coordinate transform library made by NLSFI. Only usable for Finnish projections. 
-
 ### control-base
 
 #### MapfullHandler 

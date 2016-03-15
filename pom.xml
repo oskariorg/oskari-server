@@ -960,9 +960,6 @@
         <module>servlet-printout</module>
         <!-- setup -->
         <module>webapp-setup</module>
-
-        <!-- optional extras -->
-        <module>extras/nlsfi-projections</module>
     </modules>
 
 </project>
