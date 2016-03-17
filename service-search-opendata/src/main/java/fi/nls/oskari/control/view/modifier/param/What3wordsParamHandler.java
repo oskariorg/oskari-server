@@ -1,23 +1,15 @@
 package fi.nls.oskari.control.view.modifier.param;
 
-import fi.mml.portti.service.search.ChannelSearchResult;
 import fi.mml.portti.service.search.SearchCriteria;
-import fi.mml.portti.service.search.SearchResultItem;
 import fi.nls.oskari.SearchWorker;
 import fi.nls.oskari.annotation.OskariViewModifier;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.search.What3WordsSearchChannel;
-import fi.nls.oskari.search.channel.SearchChannel;
-import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.view.modifier.ModifierException;
 import fi.nls.oskari.view.modifier.ModifierParams;
 import fi.nls.oskari.view.modifier.ViewModifier;
-import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.util.List;
 
 @OskariViewModifier("what3words")
 public class What3wordsParamHandler extends ParamHandler {
@@ -84,6 +76,4 @@ public class What3wordsParamHandler extends ParamHandler {
         }
         return coords;
     }
-
-    
 }

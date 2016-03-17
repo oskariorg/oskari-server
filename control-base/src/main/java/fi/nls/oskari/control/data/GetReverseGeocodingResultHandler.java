@@ -36,8 +36,6 @@ public class GetReverseGeocodingResultHandler extends ActionHandler {
     private int buffer = 1000;
 
     private String[] channels = new String[0];
-    private List<String> requestedChannels = new ArrayList<String>();
-
 
     public void init() {
         channels = PropertyUtil.getCommaSeparatedList(PROPERTY_CHANNELS);
@@ -68,6 +66,7 @@ public class GetReverseGeocodingResultHandler extends ActionHandler {
         sc.setSRS(epsg);
 
         // Requested channels. Option to use only e.g. one channel for to request the result
+        List<String> requestedChannels = new ArrayList<String>();
         final String channelIds = params.getHttpParam(PARAM_OPTIONAL_CHANNEL_IDS_KEY);
         if (channelIds != null) {
             requestedChannels = Arrays.asList(channelIds.split(","));
