@@ -55,6 +55,14 @@ Takes `lan`, `lot`, `srs` and `targetSRS` parameters and returns a JSONObject wi
 
 New action parameter **channels_ids** for selecting a spesific reverse search channel(s) instead all available channels
 
+#### CoordinateToolHandler
+
+When coordinatetool bundle is part of the setup. And it has configuration to do client-side transforms the handler populates
+ missing projection definitions for mapfull config projectionDefs. It uses the same mechanic as mapfullhandler and the 
+ same projection defs in:
+ 
+    control-base\src\main\resources\fi\nls\oskari\control\view\modifier\bundle\epsg_proj4_formats.json
+    
 ### transport && control-base
 
 **WFS-T**  functionality is added to oskari-server package
