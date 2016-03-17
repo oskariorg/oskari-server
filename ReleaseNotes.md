@@ -54,6 +54,7 @@ Takes `lan`, `lot`, `srs` and `targetSRS` parameters and returns a JSONObject wi
 #### GetReverseGeocodingResultHandler
 
 New action parameter **channels_ids** for selecting a spesific reverse search channel(s) instead all available channels
+e.g. &action_route=GetReverseGeocodingResult&lang=fi&epsg=EPSG:3067&lon=368978.93&lat=6670688.861&channel_ids=WHAT3WORDS_CHANNEL
 
 #### CoordinateToolHandler
 
