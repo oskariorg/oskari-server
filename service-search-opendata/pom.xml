@@ -21,6 +21,10 @@
 			<groupId>fi.nls.oskari.service</groupId>
 			<artifactId>oskari-search</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>fi.nls.oskari.service</groupId>
+			<artifactId>oskari-control-base</artifactId>
+		</dependency>
        <dependency>
 			<groupId>org.geotools</groupId>
 			<artifactId>gt-epsg-hsql</artifactId>

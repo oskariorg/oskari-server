@@ -8,6 +8,7 @@ import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.ActionHandler;
 import fi.nls.oskari.control.ActionParameters;
+import fi.nls.oskari.control.ActionParamsException;
 import fi.nls.oskari.search.channel.SearchableChannel;
 import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.PropertyUtil;
@@ -28,11 +29,15 @@ public class GetReverseGeocodingResultHandler extends ActionHandler {
     private static final String PROPERTY_CHANNELS = "actionhandler.GetReverseGeocodingResult.channels";
     private static final String PROPERTY_MAXFEATURES = "actionhandler.GetReverseGeocodingResult.maxfeatures";
     private static final String PROPERTY_BUFFER = "actionhandler.GetReverseGeocodingResult.buffer";
+    // Reverese seacrh is executed only to requested channels, if channel_ids parameter is in
+    private static final String PARAM_OPTIONAL_CHANNEL_IDS_KEY = "channel_ids";
 
     private int maxFeatures = 1;
     private int buffer = 1000;
 
     private String[] channels = new String[0];
+    private List<String> requestedChannels = new ArrayList<String>();
+
 
     public void init() {
         channels = PropertyUtil.getCommaSeparatedList(PROPERTY_CHANNELS);
@@ -61,6 +66,13 @@ public class GetReverseGeocodingResultHandler extends ActionHandler {
         sc.setReverseGeocode(ConversionHelper.getDouble(lat, -1), ConversionHelper.getDouble(lon, -1));
         // eg. EPSG:3067
         sc.setSRS(epsg);
+
+        // Requested channels. Option to use only e.g. one channel for to request the result
+        final String channelIds = params.getHttpParam(PARAM_OPTIONAL_CHANNEL_IDS_KEY);
+        if (channelIds != null) {
+            requestedChannels = Arrays.asList(channelIds.split(","));
+        }
+
         // max result feature count
         sc.setMaxResults(params.getHttpParam(PARAM_MAXFEATURES, maxFeatures));
         // Search distance around the point (unit m)
@@ -68,8 +80,14 @@ public class GetReverseGeocodingResultHandler extends ActionHandler {
         sc.setLocale(params.getLocale().getLanguage());
 
         for (String channelId : channels) {
-            sc.addChannel(channelId);
+            if (requestedChannels.size() == 0 || requestedChannels.contains(channelId)) {
+                sc.addChannel(channelId);
+            }
         }
+        if (sc.getChannels().size() == 0) {
+            throw new ActionParamsException("No reverse geocoding channels available or configured or invalid channel ID");
+        }
+
         // TODO: enforce max features if there are multiple channels!
         final JSONObject result = SearchWorker.doSearch(sc);
         ResponseHelper.writeResponse(params, result);

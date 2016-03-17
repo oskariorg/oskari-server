@@ -10,6 +10,12 @@ A bugfix to legend image parsing when there were multiple styles with the same n
 
 Added indexes for oskari_resource and oskari_permission tables.
 
+### service-search-opendata
+
+New url parameter **&what3words** for positioning the map in startup
+e.g. http://www.paikkatietoikkuna.fi/web/en/map-window?ver=1.17&zoomLevel=6&what3words=examine.flying.daytime&mapLayers=base_35+100+default&showMarker=true
+
+
 ### control-base
 
 #### MapfullHandler 
@@ -44,6 +50,10 @@ Takes `lan`, `lot`, `srs` and `targetSRS` parameters and returns a JSONObject wi
           lot : 456,
           srs : "EPSG:789"
       }
+      
+#### GetReverseGeocodingResultHandler
+
+New action parameter **channels_ids** for selecting a spesific reverse search channel(s) instead all available channels
 
 ### transport && control-base
 
