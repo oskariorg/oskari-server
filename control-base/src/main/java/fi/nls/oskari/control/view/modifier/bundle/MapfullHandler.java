@@ -200,26 +200,23 @@ public class MapfullHandler extends BundleHandler {
         return DEFAULT_MAP_SRS;
     }
 
-    public void setProjDefsForMapConfig(final JSONObject mapfullConfig, final String mapSRS) {
-        if (mapfullConfig == null) {
+    public void setProjDefsForMapConfig(final JSONObject mapfullConfig, final String... srs) {
+        if (mapfullConfig == null || srs == null) {
             return;
         }
-        final String mapSRSProjDef = getMapSRSProjDef(mapSRS);
-
-        if (mapSRSProjDef == null) {
-            return;
+        JSONObject defs = JSONHelper.getJSONObject(mapfullConfig, KEY_PROJ_DEFS);
+        if(defs == null) {
+            defs = new JSONObject();
+            JSONHelper.putValue(mapfullConfig, KEY_PROJ_DEFS, defs);
         }
-        final JSONObject projDef = new JSONObject();
-        JSONHelper.putValue(projDef, mapSRS, mapSRSProjDef);
+        for(String mapSRS : srs) {
+            final String mapSRSProjDef = getMapSRSProjDef(mapSRS);
 
-        if (mapfullConfig.isNull(KEY_PROJ_DEFS)) {
-            JSONHelper.putValue(mapfullConfig, KEY_PROJ_DEFS, projDef);
-        } else {
-            final JSONObject configProjDefs = JSONHelper.getJSONObject(mapfullConfig, KEY_PROJ_DEFS);
-            if (!configProjDefs.has(mapSRS)) {
-                JSONHelper.putValue(configProjDefs, mapSRS, mapSRSProjDef);
+            // couldn't get data or already defined -> go to next one
+            if (mapSRSProjDef == null || defs.has(mapSRS)) {
+                continue;
             }
-
+            JSONHelper.putValue(defs, mapSRS, mapSRSProjDef);
         }
     }
 
@@ -561,7 +558,7 @@ public class MapfullHandler extends BundleHandler {
         }
     }
 
-    private  void epsgInit() {
+    void epsgInit() {
 
         try {
             InputStream inp = this.getClass().getResourceAsStream(EPSG_PROJ4_FORMATS);
