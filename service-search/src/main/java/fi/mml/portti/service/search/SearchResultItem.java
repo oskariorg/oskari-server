@@ -25,6 +25,7 @@ public class SearchResultItem implements Comparable<SearchResultItem>, Serializa
     public static final String KEY_ZOOMLEVEL = "zoomLevel";
     public static final String KEY_ZOOMSCALE = "zoomScale";
     public static final String KEY_VILLAGE = "village";
+	public static final String KEY_CHANNELID = "channelId";
 
     public static final String KEY_BBOX = "bbox";
     public static final String KEY_LEFT = "left";
@@ -37,6 +38,7 @@ public class SearchResultItem implements Comparable<SearchResultItem>, Serializa
 	private String title;
 	private String resourceNameSpace;
 	private String resourceId;
+	private String channelId;
     private String natureOfTarget;
 	private String description;
 	private String contentURL;
@@ -238,6 +240,9 @@ public class SearchResultItem implements Comparable<SearchResultItem>, Serializa
 			
 		this.description = description;
 	}
+
+	public String getChannelId() { return channelId;	}
+	public void setChannelId(String channelId) { this.channelId = channelId; }
 	public String getContentURL() {
 		return contentURL;
 	}
@@ -418,6 +423,7 @@ public class SearchResultItem implements Comparable<SearchResultItem>, Serializa
 
         JSONHelper.putValue(node, KEY_RANK, getRank());
         JSONHelper.putValue(node, KEY_TYPE, getType());
+		JSONHelper.putValue(node, KEY_CHANNELID, getChannelId());
 
         // Village (?)
         // TODO: Shouldn't this be 'municipality' or sth?
