@@ -63,6 +63,10 @@ When coordinatetool bundle is part of the setup. And it has configuration to do 
  same projection defs in:
  
     control-base\src\main\resources\fi\nls\oskari\control\view\modifier\bundle\epsg_proj4_formats.json
+
+#### AppSetupHandler
+
+Coordinatetool is now allowed bundle for publisher.
     
 ### transport && control-base
 

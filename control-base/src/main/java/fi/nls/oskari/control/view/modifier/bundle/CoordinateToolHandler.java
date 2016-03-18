@@ -13,7 +13,6 @@ import java.util.Iterator;
 @OskariViewModifier("coordinatetool")
 public class CoordinateToolHandler extends MapfullHandler {
 
-    private static final Logger LOG = LogFactory.getLogger(CoordinateToolHandler.class);
     private static final String KEY_PROJECTIONS = "supportedProjections";
 
     @Override
@@ -28,17 +27,6 @@ public class CoordinateToolHandler extends MapfullHandler {
             return false;
         }
         final String[] projs = getProjections(toolConfig.opt(KEY_PROJECTIONS));
-
-/*
-        // can be like:
-        supportedProjections : {
-            EPSG:3035: "891fb410-099a-44db-9af1-39a49a84e59a",
-            EPSG:3857: "4d0e81c4-9c60-8a6d-133c-df561a1ab8ec"
-        }
-        // OR
-        supportedProjections : ["EPSG:3035", "EPSG:3857"]
-*/
-
         final JSONObject mapfullConfig = getBundleConfig(params.getConfig(), BUNDLE_MAPFULL);
         if (mapfullConfig == null) {
             return false;
@@ -47,6 +35,15 @@ public class CoordinateToolHandler extends MapfullHandler {
         return false;
     }
 
+    /**
+     *  Projections can be like:
+        supportedProjections : {
+            EPSG:3035: "891fb410-099a-44db-9af1-39a49a84e59a",
+            EPSG:3857: "4d0e81c4-9c60-8a6d-133c-df561a1ab8ec"
+        }
+        // OR
+        supportedProjections : ["EPSG:3035", "EPSG:3857"]
+    */
     private String[] getProjections(Object obj) {
         if(obj instanceof JSONArray) {
             return getProjections((JSONArray) obj);
