@@ -14,6 +14,7 @@ import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.apache.ibatis.transaction.TransactionFactory;
 import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
 
+import fi.nls.oskari.annotation.Oskari;
 import fi.nls.oskari.control.statistics.plugins.StatisticalDatasourcePlugin;
 import fi.nls.oskari.control.statistics.plugins.StatisticalIndicator;
 import fi.nls.oskari.control.statistics.plugins.db.PluginLayer;
@@ -25,8 +26,10 @@ import fi.nls.oskari.db.DatasourceHelper;
 import fi.nls.oskari.domain.User;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.service.OskariComponent;
 
-public class KapaStatisticalDatasourcePlugin implements StatisticalDatasourcePlugin {
+@Oskari("KAPA")
+public class KapaStatisticalDatasourcePlugin extends OskariComponent implements StatisticalDatasourcePlugin {
     private final static Logger LOG = LogFactory.getLogger(KapaStatisticalDatasourcePlugin.class);
     private KapaIndicatorsParser indicatorsParser;
     
@@ -55,13 +58,17 @@ public class KapaStatisticalDatasourcePlugin implements StatisticalDatasourcePlu
         final DataSource dataSource = helper.getDataSource(helper.getOskariDataSourceName());
         SqlSessionFactory factory = initializeIBatis(dataSource);
         final SqlSession session = factory.openSession();
-        final List<PluginLayer> layerRows = session.selectList("getAllForPlugin",
-                "fi.nls.oskari.control.statistics.plugins.kapa.KapaStatisticalDatasourcePlugin");
-        layerMappings = new HashMap<>();
-        for (PluginLayer row : layerRows) {
-            layerMappings.put(row.getPluginLayerId().toLowerCase(), row.getOskariLayerId());
+        try {
+            final List<PluginLayer> layerRows = session.selectList("getAllForPlugin",
+                    "fi.nls.oskari.control.statistics.plugins.kapa.KapaStatisticalDatasourcePlugin");
+            layerMappings = new HashMap<>();
+            for (PluginLayer row : layerRows) {
+                layerMappings.put(row.getPluginLayerId().toLowerCase(), row.getOskariLayerId());
+            }
+            System.out.println("KaPa layer mappings: " + String.valueOf(layerMappings));
+        } finally {
+            session.close();
         }
-        System.out.println("KaPa layer mappings: " + String.valueOf(layerMappings));
     }
     
     private SqlSessionFactory initializeIBatis(final DataSource dataSource) {

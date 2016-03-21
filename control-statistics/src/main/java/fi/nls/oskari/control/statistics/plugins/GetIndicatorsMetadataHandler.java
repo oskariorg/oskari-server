@@ -45,19 +45,6 @@ public class GetIndicatorsMetadataHandler extends ActionHandler {
     @Override
     public void init() {
         pluginManager.init();
-
-        // Refreshing the cache at boot, everything but the user indicators.
-        // Refreshing in the background for every 8 hours also.
-        scheduler.scheduleAtFixedRate(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    GetIndicatorsMetadataHandler.this.getIndicatorsMetadataJSON(null, true);
-                } catch (ActionException e) {
-                    e.printStackTrace();
-                }
-            }
-        }, 0, 8, TimeUnit.HOURS);
     }
     
     @Override
@@ -73,21 +60,22 @@ public class GetIndicatorsMetadataHandler extends ActionHandler {
      */
     JSONObject getIndicatorsMetadataJSON(User user, boolean refreshCache) throws ActionException {
         JSONObject response = new JSONObject();
-        Collection<StatisticalDatasourcePlugin> plugins = pluginManager.getPlugins();
-        for (StatisticalDatasourcePlugin plugin : plugins) {
-            String cacheKey = CACHE_PREFIX + plugin.getClass().getCanonicalName();
+        Map<String, StatisticalDatasourcePlugin> plugins = pluginManager.getPlugins();
+        for (String id : plugins.keySet()) {
+            StatisticalDatasourcePlugin plugin = plugins.get(id);
+            String cacheKey = CACHE_PREFIX + id;
             if (plugin.canCache() && !refreshCache) {
                 final String cachedData = JedisManager.get(cacheKey);
                 if (cachedData != null && !cachedData.isEmpty()) {
                     try {
-                        response.put(plugin.getClass().getCanonicalName(), new JSONObject(cachedData));
+                        response.put(id, new JSONObject(cachedData));
                         continue;
                     } catch (JSONException e) {
                         // Failed serializing. Skipping the cache.
                     }
                 }
             }
-            String locale = pluginManager.getPluginLocale(plugin.getClass());
+            String locale = pluginManager.getPluginLocale(id);
             JSONObject pluginMetadata = new JSONObject();
             try {
                 pluginMetadata.put("locale", new JSONObject(locale));
@@ -97,7 +85,7 @@ public class GetIndicatorsMetadataHandler extends ActionHandler {
                     pluginIndicators.put(indicator.getId(), pluginIndicatorJSON);
                 }
                 pluginMetadata.put("indicators", pluginIndicators);
-                response.put(plugin.getClass().getCanonicalName(), pluginMetadata);
+                response.put(id, pluginMetadata);
                 // Note that there is an another layer of caches in the plugins doing the web queries.
                 // Two layers are necessary, because deserialization and conversion to the internal data model
                 // is pretty heavy operation.

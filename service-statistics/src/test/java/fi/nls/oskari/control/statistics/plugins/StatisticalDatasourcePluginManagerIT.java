@@ -61,9 +61,9 @@ public class StatisticalDatasourcePluginManagerIT {
     public void testRegisteringPluginsAndRetrievingThem()
             throws ClassNotFoundException, InstantiationException, IllegalAccessException {
         manager.reset();
-        manager.registerPlugin("fi.nls.oskari.control.statistics.plugins.MockPlugin", null);
+        manager.registerPlugin("fi.nls.oskari.control.statistics.plugins.MockPlugin", null, new MockPlugin());
         assertEquals(1, manager.getPlugins().size());
-        assertThat(manager.getPlugins().iterator().next(),
+        assertThat(manager.getPlugins().values().iterator().next(),
                 instanceOf(MockPlugin.class));
     }
 
@@ -71,10 +71,11 @@ public class StatisticalDatasourcePluginManagerIT {
     public void testSotkaPlugin()
             throws ClassNotFoundException, InstantiationException, IllegalAccessException {
         manager.reset();
-        manager.registerPlugin("fi.nls.oskari.control.statistics.plugins.sotka.SotkaStatisticalDatasourcePlugin", null);
+        manager.registerPlugin("fi.nls.oskari.control.statistics.plugins.sotka.SotkaStatisticalDatasourcePlugin", null,
+                new MockPlugin());
         assertEquals(1, manager.getPlugins().size());
         StatisticalDatasourcePlugin sotkaPlugin = null;
-        Iterator<StatisticalDatasourcePlugin> pluginsIterator = manager.getPlugins().iterator();
+        Iterator<StatisticalDatasourcePlugin> pluginsIterator = manager.getPlugins().values().iterator();
         while (sotkaPlugin == null && pluginsIterator.hasNext()) {
             StatisticalDatasourcePlugin nextPlugin = pluginsIterator.next();
             if (nextPlugin instanceof SotkaStatisticalDatasourcePlugin) {

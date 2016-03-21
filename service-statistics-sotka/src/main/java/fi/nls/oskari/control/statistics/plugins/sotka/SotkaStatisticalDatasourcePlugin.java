@@ -14,6 +14,7 @@ import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.apache.ibatis.transaction.TransactionFactory;
 import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
 
+import fi.nls.oskari.annotation.Oskari;
 import fi.nls.oskari.control.statistics.plugins.APIException;
 import fi.nls.oskari.control.statistics.plugins.StatisticalDatasourcePlugin;
 import fi.nls.oskari.control.statistics.plugins.StatisticalIndicator;
@@ -26,8 +27,10 @@ import fi.nls.oskari.db.DatasourceHelper;
 import fi.nls.oskari.domain.User;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.service.OskariComponent;
 
-public class SotkaStatisticalDatasourcePlugin implements StatisticalDatasourcePlugin {
+@Oskari("SotkaNET")
+public class SotkaStatisticalDatasourcePlugin extends OskariComponent implements StatisticalDatasourcePlugin {
     private final static Logger LOG = LogFactory.getLogger(SotkaStatisticalDatasourcePlugin.class);
     
     private SotkaIndicatorsParser indicatorsParser = null;
@@ -66,13 +69,17 @@ public class SotkaStatisticalDatasourcePlugin implements StatisticalDatasourcePl
         final DataSource dataSource = helper.getDataSource(helper.getOskariDataSourceName());
         SqlSessionFactory factory = initializeIBatis(dataSource);
         final SqlSession session = factory.openSession();
-        final List<PluginLayer> layerRows = session.selectList("getAllForPlugin",
-                "fi.nls.oskari.control.statistics.plugins.sotka.SotkaStatisticalDatasourcePlugin");
-        layerMappings = new HashMap<>();
-        for (PluginLayer row : layerRows) {
-            layerMappings.put(row.getPluginLayerId().toLowerCase(), row.getOskariLayerId());
+        try {
+            final List<PluginLayer> layerRows = session.selectList("getAllForPlugin",
+                    "fi.nls.oskari.control.statistics.plugins.sotka.SotkaStatisticalDatasourcePlugin");
+            layerMappings = new HashMap<>();
+            for (PluginLayer row : layerRows) {
+                layerMappings.put(row.getPluginLayerId().toLowerCase(), row.getOskariLayerId());
+            }
+            System.out.println("SotkaNET layer mappings: " + String.valueOf(layerMappings));
+        } finally {
+            session.close();
         }
-        System.out.println("SotkaNET layer mappings: " + String.valueOf(layerMappings));
     }
     
     private SqlSessionFactory initializeIBatis(final DataSource dataSource) {

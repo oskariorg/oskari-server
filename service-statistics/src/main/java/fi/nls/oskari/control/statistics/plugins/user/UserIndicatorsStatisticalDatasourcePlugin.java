@@ -5,14 +5,17 @@ import java.util.List;
 
 import fi.mml.map.mapwindow.service.db.UserIndicatorService;
 import fi.mml.map.mapwindow.service.db.UserIndicatorServiceImpl;
+import fi.nls.oskari.annotation.Oskari;
 import fi.nls.oskari.control.statistics.plugins.StatisticalDatasourcePlugin;
 import fi.nls.oskari.control.statistics.plugins.StatisticalIndicator;
 import fi.nls.oskari.domain.User;
 import fi.nls.oskari.domain.map.indicator.UserIndicator;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.service.OskariComponent;
 
-public class UserIndicatorsStatisticalDatasourcePlugin implements StatisticalDatasourcePlugin {
+@Oskari("UserStats")
+public class UserIndicatorsStatisticalDatasourcePlugin extends OskariComponent implements StatisticalDatasourcePlugin {
     private final static Logger LOG = LogFactory.getLogger(UserIndicatorsStatisticalDatasourcePlugin.class);
     private static UserIndicatorService userIndicatorService = new UserIndicatorServiceImpl();
 

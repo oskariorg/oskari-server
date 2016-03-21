@@ -124,10 +124,11 @@ public class KapaPluginIT {
     public void testKapaPlugin()
             throws ClassNotFoundException, InstantiationException, IllegalAccessException {
         manager.reset();
-        manager.registerPlugin("fi.nls.oskari.control.statistics.plugins.kapa.KapaStatisticalDatasourcePlugin", null);
+        manager.registerPlugin("fi.nls.oskari.control.statistics.plugins.kapa.KapaStatisticalDatasourcePlugin", null,
+                new KapaStatisticalDatasourcePlugin());
         assertEquals(1, manager.getPlugins().size());
         StatisticalDatasourcePlugin kapaPlugin = null;
-        Iterator<StatisticalDatasourcePlugin> pluginsIterator = manager.getPlugins().iterator();
+        Iterator<StatisticalDatasourcePlugin> pluginsIterator = manager.getPlugins().values().iterator();
         while (kapaPlugin == null && pluginsIterator.hasNext()) {
             StatisticalDatasourcePlugin nextPlugin = pluginsIterator.next();
             if (nextPlugin instanceof KapaStatisticalDatasourcePlugin) {

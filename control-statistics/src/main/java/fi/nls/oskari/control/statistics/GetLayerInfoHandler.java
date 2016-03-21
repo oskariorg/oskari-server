@@ -82,13 +82,17 @@ public class GetLayerInfoHandler extends ActionHandler {
         final DataSource dataSource = helper.getDataSource(helper.getOskariDataSourceName());
         SqlSessionFactory factory = initializeIBatis(dataSource);
         final SqlSession session = factory.openSession();
-        this.layerMetadata = new HashMap<>();
-        List<LayerMetadata> layerMetadataRows = session.selectList("getAllMetadata");
-        for (LayerMetadata row : layerMetadataRows) {
-            this.layerMetadata.put(row.getOskariLayerId(),
-                    row);
+        try {
+            this.layerMetadata = new HashMap<>();
+            List<LayerMetadata> layerMetadataRows = session.selectList("getAllMetadata");
+            for (LayerMetadata row : layerMetadataRows) {
+                this.layerMetadata.put(row.getOskariLayerId(),
+                        row);
+            }
+            LOG.debug("Oskari layer metadatas: ", this.layerMetadata);
+        } finally {
+            session.close();
         }
-        LOG.debug("Oskari layer metadatas: ", this.layerMetadata);
     }
     
     private SqlSessionFactory initializeIBatis(final DataSource dataSource) {

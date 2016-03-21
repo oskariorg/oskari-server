@@ -6,20 +6,21 @@ package fi.nls.oskari.control.statistics.plugins.db;
  */
 public class StatisticalDatasource {
     /**
-     * A fully qualified name for the implementing class, for example:
-     * 'fi.nls.oskari.control.statistics.plugins.sotka.SotkaStatisticalDatasourcePlugin'
-     * The plugin class must implement StatisticalDatasourcePlugin interface and be situated in the classpath.
+     * The <name> in the plugin implementing class @Oskari("<name>") annotation.
+     * 
+     * The plugin class must extend OskariComponent and implement StatisticalDatasourcePlugin interface
+     * and be situated in the classpath.
      */
-    private String className;
+    private String componentId;
     /**
      * Localized strings in JSON, specifically for "name".
      */
     private String locale;
-    public String getClassName() {
-        return className;
+    public String getComponentId() {
+        return componentId;
     }
-    public void setClassName(String className) {
-        this.className = className;
+    public void setComponentId(String componentId) {
+        this.componentId = componentId;
     }
     public String getLocale() {
         return locale;
