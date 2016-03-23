@@ -266,7 +266,7 @@ public class NLSNearestFeatureParser {
      * @param epsg source Crs
      * @return
      */
-    public String transformLonLat(String lon, String lat, String epsg) {
+    public String transformLonLat(double lon, double lat, String epsg) {
 
         Point p2 = ProjectionHelper.transformPoint(lon, lat, epsg, SERVICE_SRS);
 

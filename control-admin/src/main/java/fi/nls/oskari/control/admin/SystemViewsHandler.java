@@ -32,7 +32,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import static fi.nls.oskari.control.ActionConstants.PARAM_ID;
+import static fi.nls.oskari.control.ActionConstants.*;
 
 @OskariActionRoute("SystemViews")
 public class SystemViewsHandler extends RestActionHandler {
@@ -127,7 +127,7 @@ public class SystemViewsHandler extends RestActionHandler {
                 layerIdList.add(layer.optString(PARAM_ID));
             }
 
-            final List<OskariLayer> notAvailableForGuest = getLayersNotAvailableForGuest(layerIdList);
+            final List<OskariLayer> notAvailableForGuest = getLayersNotAvailableForGuest(layerIdList, state);
             if(!notAvailableForGuest.isEmpty()) {
                 final JSONArray list = new JSONArray();
                 for (OskariLayer layer :notAvailableForGuest) {
@@ -151,8 +151,8 @@ public class SystemViewsHandler extends RestActionHandler {
     }
 
     private void setupLocation(final ActionParameters params, final JSONObject state) throws ActionException {
-        final String srs = params.getRequiredParam("srs");
-        if(state.optString("srs").equalsIgnoreCase(srs)) {
+        final String srs = params.getRequiredParam(PARAM_SRS);
+        if(state.optString(PARAM_SRS).equalsIgnoreCase(srs)) {
             // TODO: projection conversion if SRS is different
             throw new ActionParamsException("Views have different projections, not implemented yet");
         }
@@ -168,8 +168,8 @@ public class SystemViewsHandler extends RestActionHandler {
         JSONHelper.putValue(state, ViewModifier.KEY_ZOOM, params.getRequiredParamInt(ViewModifier.KEY_ZOOM));
     }
 
-    private List<OskariLayer> getLayersNotAvailableForGuest(final List<String> layerIdList) throws ActionException {
-        final List<OskariLayer> layers = layerService.find(layerIdList);
+    private List<OskariLayer> getLayersNotAvailableForGuest(final List<String> layerIdList, final JSONObject state) throws ActionException {
+        final List<OskariLayer> layers = layerService.find(layerIdList, state.optString(PARAM_SRS));
         final List<OskariLayer> notAvailable = new ArrayList<OskariLayer>();
         try {
             User guest = UserService.getInstance().getGuestUser();

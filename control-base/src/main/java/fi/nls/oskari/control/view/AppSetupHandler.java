@@ -53,11 +53,11 @@ public class AppSetupHandler extends RestActionHandler {
     // Simple bundles don't require extra processing
     private static final Set<String> SIMPLE_BUNDLES = ConversionHelper.asSet(
             ViewModifier.BUNDLE_INFOBOX, ViewModifier.BUNDLE_TOOLBAR,
-            ViewModifier.BUNDLE_PUBLISHEDGRID, ViewModifier.BUNDLE_FEATUREDATA2);
+            ViewModifier.BUNDLE_PUBLISHEDGRID, ViewModifier.BUNDLE_FEATUREDATA2, ViewModifier.BUNDLE_COORDINATETOOL);
 
     // Bundles that require divmanazer to be loaded for them to work
     private static final Set<String> BUNDLE_REQUIRES_DIVMANAZER =
-            ConversionHelper.asSet(ViewModifier.BUNDLE_FEATUREDATA2);
+            ConversionHelper.asSet(ViewModifier.BUNDLE_FEATUREDATA2, ViewModifier.BUNDLE_COORDINATETOOL);
 
     // List of bundles that the user is able to publish
     // mapfull not included since it's assumed to be part of publisher template handled anyways

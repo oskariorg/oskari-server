@@ -12,12 +12,15 @@ import org.opengis.referencing.operation.MathTransform;
 /**
  * Helper for transformations
  */
-public class ProjectionHelper {
+public class ProjectionHelper implements PointTransformer {
 
     private static Logger log = LogFactory.getLogger(ProjectionHelper.class);
 
     public static Point transformPoint(final double lon, final double lat, final String sourceSRS, final String targetSRS) {
         return transformPoint(new Point(lon, lat), sourceSRS, targetSRS);
+    }
+    public Point reproject(final Point point, final String sourceSRS, final String targetSRS) {
+        return transformPoint(point, sourceSRS, targetSRS);
     }
     public static Point transformPoint(final Point point, final String sourceSRS, final String targetSRS) {
         try {
@@ -87,5 +90,33 @@ public class ProjectionHelper {
         return crs.getCoordinateSystem().getAxis(0).getDirection().absolute() == AxisDirection.NORTH ||
                 crs.getCoordinateSystem().getAxis(0).getDirection().absolute() == AxisDirection.UP ||
                 crs.getCoordinateSystem().getAxis(0).getDirection().absolute() == AxisDirection.DISPLAY_UP;
+    }
+
+    /**
+     * Return epsg short
+     * urn:ogc:def:crs:EPSG::32635  --> EPSG:32635
+     * @param crs
+     * @return  epsg in short syntax
+     */
+    public static String shortSyntaxEpsg(String crs) {
+        if (crs == null) {
+            return null;
+        }
+        try {
+            CoordinateReferenceSystem sourceCRS = CRS.decode(crs);
+            crs = CRS.lookupIdentifier(sourceCRS, true);
+            return crs;
+        } catch (Exception e) {
+            log.debug("EPSG geotools decoding failed", e);
+        }
+        // try own parsing
+        String[] epsg = crs.toUpperCase().split("EPSG");
+        if (epsg.length > 1) {
+            String[] code = epsg[1].split(":");
+            if (code.length > 2) {
+                return "EPSG:" + code[2];
+            }
+        }
+        return crs;
     }
 }

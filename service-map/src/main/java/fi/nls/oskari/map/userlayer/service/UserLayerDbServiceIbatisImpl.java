@@ -108,6 +108,21 @@ public class UserLayerDbServiceIbatisImpl extends
         }
     }
 
+    public void deleteUserLayer(final long id) throws ServiceException {
+
+        final SqlMapSession session = openSession();
+        try {
+            session.startTransaction();
+            session.delete(getNameSpace() + ".delete-userLayer", id);
+            session.commitTransaction();
+        } catch (Exception e) {
+            throw new ServiceException("Error deleting userLayer data with id:" + id, e);
+        } finally {
+            endSession(session);
+        }
+    }
+
+
 
 
     /**

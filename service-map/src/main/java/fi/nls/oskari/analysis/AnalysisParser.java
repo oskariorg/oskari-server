@@ -73,6 +73,7 @@ public class AnalysisParser {
 
     private static final String ANALYSIS_WFST_PREFIX = "feature:";
 
+    private static final List<String> SPATIALJOIN_AGGREGATE_FIELDS = new ArrayList<String>(Arrays.asList(new String[]{"count","min","max","sum","avg","stddev"}));
     public static final String BUFFER = "buffer";
     public static final String INTERSECT = "intersect";
     public static final String SPATIAL_JOIN = "spatial_join";
@@ -83,8 +84,10 @@ public class AnalysisParser {
     public static final String LAYER_UNION = "layer_union";
     public static final String ZONESECTOR = "areas_and_sectors";
     private static final String FUNC_NODATACOUNT = "NoDataCnt";
+    private static final String FUNC_COUNT = "Count";
     private static final String DELTA_FIELD_NAME = "Muutos_t2-t1";
     private static final String JSONKEY_OVERRIDE_SLD = "override_sld";
+    private static final String NUMERIC_FIELD_TYPE = "numeric";
 
     private static final String JSON_KEY_METHOD = "method";
     private static final String JSON_KEY_METHODPARAMS = "methodParams";
@@ -102,6 +105,7 @@ public class AnalysisParser {
     private static final String JSON_KEY_AREACOUNT = "areaCount";
     private static final String JSON_KEY_SECTORCOUNT = "sectorCount";
     private static final String JSON_KEY_NO_DATA = "no_data";
+    private static final String JSON_KEY_LOCALE = "locale";
 
     final String analysisBaseLayerId = PropertyUtil.get(ANALYSIS_BASELAYER_ID);
     final String myplacesBaseLayerId = PropertyUtil.get(MYPLACES_BASELAYER_ID);
@@ -572,7 +576,7 @@ public class AnalysisParser {
 
             // New field types for difference data (string is default
 
-            analysisLayer.getFieldtypeMap().put(DELTA_FIELD_NAME, "numeric");
+            analysisLayer.getFieldtypeMap().put(DELTA_FIELD_NAME, NUMERIC_FIELD_TYPE);
 
             // Set override style
             analysisLayer.setOverride_sld(json.optString(JSONKEY_OVERRIDE_SLD));
@@ -590,6 +594,8 @@ public class AnalysisParser {
 
             // aggregate fields
             String aggre_field = null;
+            // Is "Count" function in input parameters
+            Boolean isCountFunc = false;
             analysisLayer.setNodataCount(false);
             try {
 
@@ -619,13 +625,20 @@ public class AnalysisParser {
                                 // Don't put NóDataCount to WPS aggregate, it is not in WPS
                                 analysisLayer.setNodataCount(true);
                             }
-                            else aggre_funcs.add(aggre_func_in.getString(i));
+                            else {
+                                aggre_funcs.add(aggre_func_in.getString(i));
+                            }
+                            if(aggre_func_in.getString(i).equals(FUNC_COUNT)){
+                                isCountFunc = true;
+                            }
                         }
                     } catch (JSONException e) {
                         throw new ServiceException(
                                 "Aggregate functions missing.");
                     }
                     analysisLayer.setAggreFunctions(aggre_funcs);
+
+
                 }
 
             } catch (JSONException e) {
@@ -633,14 +646,22 @@ public class AnalysisParser {
             }
 
             // Set params for WPS execute
-            if (aggre_field == null)
+            if (aggre_field == null) {
                 throw new ServiceException(
                         "Aggregate field parameter missing.");
+            }
+
             AggregateMethodParams method = this.parseAggregateParams(lc, json, geojson,
-                    baseUrl, aggre_field, analysisLayer.getAggreFunctions());
+                        baseUrl, aggre_field, analysisLayer.getAggreFunctions());
+
 
             method.setWps_reference_type(analysisLayer.getInputType());
             analysisLayer.setAnalysisMethodParams(method);
+
+            // Filter out text type fields, if there is no count-function computation requested
+            if(!isCountFunc){
+                this.removeTextTypeFields(analysisLayer);
+            }
             // WFS filter
 
             analysisLayer.getAnalysisMethodParams().setFilter(
@@ -1665,6 +1686,9 @@ public class AnalysisParser {
             json.put(JSON_KEY_METHOD, "union");
 
             AnalysisLayer al2 = this.parseAnalysisLayer(json, filter1, filter2, baseUrl, null);
+            // Set preused field definition
+            al2.setFields(analysisLayer.getFields());
+            // Aggregate results for to append to union result
             al2.setResult(analysisLayer.getResult());
             if(outputFormat != null){
                 ( (UnionMethodParams) al2.getAnalysisMethodParams()).setMimeTypeFormat(outputFormat);
@@ -1880,35 +1904,88 @@ public class AnalysisParser {
        return method;
     }
     /**
-     * Fix fieldnames names and types for analysis storage
-     * WPS method might generate new fields for the features in WPS resultset
+     * Manage new fieldnames names and types generated by wps for analysis storage
+     * - WPS method might generate new fields for the features in WPS resultset
      * @param analysisLayer
      */
-    public void fixTypeNames(AnalysisLayer analysisLayer) {
+    public void fixTypeNames(AnalysisLayer analysisLayer, JSONObject analysejs) {
 
         try {
 
             AnalysisMethodParams params = analysisLayer.getAnalysisMethodParams();
-            if (params.getMethod().equals(AnalysisParser.SPATIAL_JOIN_STATISTICS)){
-                Map<String,String> fieldTypes =  analysisLayer.getFieldtypeMap();
-                fieldTypes.put("count","numeric");
-                fieldTypes.put("min","numeric");
-                fieldTypes.put("max","numeric");
-                fieldTypes.put("sum","numeric");
-                fieldTypes.put("avg","numeric");
-                fieldTypes.put("stddev","numeric");
+            if (params.getMethod().equals(AnalysisParser.SPATIAL_JOIN_STATISTICS)) {
+                Map<String, String> localemap = new HashMap<String, String>();
+                SpatialJoinStatisticsMethodParams spparams = (SpatialJoinStatisticsMethodParams) params;
+                if (analysisLayer.getAnalysisMethodParams() instanceof SpatialJoinStatisticsMethodParams) {
+
+                }
+                try {
+                    JSONArray locales = analysejs.getJSONObject(JSON_KEY_METHODPARAMS)
+                            .optJSONArray(JSON_KEY_LOCALE);
+
+                    if (locales != null) {
+                        for (int i = 0; i < locales.length(); i++) {
+                            JSONObject locale = locales.getJSONObject(i);
+                            String id = locale.getString("id");
+                            String label = locale.getString("label");
+
+                            if (SPATIALJOIN_AGGREGATE_FIELDS != null) {
+                                for (int k = 0; k < SPATIALJOIN_AGGREGATE_FIELDS.size(); k++) {
+                                    if (id.toLowerCase().indexOf(SPATIALJOIN_AGGREGATE_FIELDS.get(k).toLowerCase()) > -1) {
+                                        //Localized new sp aggregate field name
+                                        localemap.put(SPATIALJOIN_AGGREGATE_FIELDS.get(k), label);
+                                    }
+                                }
+                            }
+                        }
+                        spparams.setLocalemap(localemap);
+                    }
+                } catch (Exception e) {
+                    log.warn("Locales for spatialjoin aggregate failed ", e);
+
+                }
+                Map<String, String> fieldTypes = analysisLayer.getFieldtypeMap();
+                for (int k = 0; k < SPATIALJOIN_AGGREGATE_FIELDS.size(); k++) {
+                    fieldTypes.put(SPATIALJOIN_AGGREGATE_FIELDS.get(k), NUMERIC_FIELD_TYPE);
+                }
                 analysisLayer.setFieldsMap(fieldTypes);
-            }
-            else if (params.getMethod().equals(AnalysisParser.DIFFERENCE)){
+            } else if (params.getMethod().equals(AnalysisParser.DIFFERENCE)) {
                 // For time being 1st numeric value is used for rendering
-                Map<String,String> fieldTypes =  new HashMap<String,String>();
-                fieldTypes.put(AnalysisParser.DELTA_FIELD_NAME,"numeric");
+                Map<String, String> fieldTypes = new HashMap<String, String>();
+                fieldTypes.put(AnalysisParser.DELTA_FIELD_NAME, NUMERIC_FIELD_TYPE);
                 analysisLayer.setFieldtypeMap(fieldTypes);
             }
 
 
         } catch (Exception e) {
             log.warn("WPS geometry property name fix failed ", e);
+
+        }
+
+    }
+    /**
+     * Removes text type fields out of input parameters
+     * @param analysisLayer
+     */
+    public void removeTextTypeFields(AnalysisLayer analysisLayer) {
+
+        try {
+            List<String> fields = analysisLayer.getFields();
+            Map<String,String> fieldTypes = analysisLayer.getFieldtypeMap();
+            List<String> newfields = new ArrayList<String>();
+            if (fields != null  && fieldTypes  != null ) {
+                for (int i = 0; i < fields.size(); i++) {
+                    if (fieldTypes.containsKey(fields.get(i)) && fieldTypes.get(fields.get(i)).equals(NUMERIC_FIELD_TYPE)) {
+                            newfields.add(fields.get(i));
+                    }
+
+                }
+                analysisLayer.setFields(newfields);
+            }
+
+
+        } catch (Exception e) {
+            log.warn("Remove text type input fields  failed ", e);
 
         }
 

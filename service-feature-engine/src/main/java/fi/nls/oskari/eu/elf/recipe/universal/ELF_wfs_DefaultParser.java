@@ -71,9 +71,9 @@ public class ELF_wfs_DefaultParser extends GML32 {
                 // Handle unexpected end of document
                 int nextTag = XMLStreamConstants.END_DOCUMENT;
                 try {
-                    nextTag = xsr.nextTag();
+                    nextTag = xsr.next();
                 } catch (Exception e) {
-                    log.debug("*** Unhandled end of document - go on", e);
+                    log.debug("*** Unknown next event", e);
                 }
 
                 switch (nextTag) {

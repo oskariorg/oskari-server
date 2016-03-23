@@ -10,6 +10,7 @@ import fi.nls.test.util.ResourceHelper;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.impl.builder.StAXOMBuilder;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.opengis.filter.Filter;
 
@@ -36,10 +37,10 @@ public class WFSFilterTest {
     // FIXME: move to files as in other test and use ResourceHelper to load them - Use XmlDiff to compare...
     String result = "<ogc:Filter xmlns:ogc=\"http://www.opengis.net/ogc\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:gml=\"http://www.opengis.net/gml\"><ogc:BBOX><ogc:PropertyName>the_geom</ogc:PropertyName><gml:Envelope srsDimension=\"2\" srsName=\"EPSG:3067\"><gml:lowerCorner>509058.0 6858054.0</gml:lowerCorner><gml:upperCorner>513578.0 6860174.0</gml:upperCorner></gml:Envelope></ogc:BBOX></ogc:Filter>";
 	String resultBounds = "<ogc:Filter xmlns:ogc=\"http://www.opengis.net/ogc\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:gml=\"http://www.opengis.net/gml\"><ogc:BBOX><ogc:PropertyName>the_geom</ogc:PropertyName><gml:Envelope srsDimension=\"2\" srsName=\"EPSG:3067\"><gml:lowerCorner>385800.0 6690267.0</gml:lowerCorner><gml:upperCorner>397380.0 6697397.0</gml:upperCorner></gml:Envelope></ogc:BBOX></ogc:Filter>";
-	String resultMapClick = "<ogc:Filter xmlns:ogc=\"http://www.opengis.net/ogc\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:gml=\"http://www.opengis.net/gml\"><ogc:Intersects><ogc:PropertyName>the_geom</ogc:PropertyName><gml:Polygon srsDimension=\"2\"><gml:exterior><gml:LinearRing srsDimension=\"2\"><gml:posList>393905.00000648 6692163.0 393902.708209175 6692170.053426837 393896.70820593496 6692174.412684359 393889.29179406504 6692174.412684359 393883.291790825 6692170.053426837 393880.99999352 6692163.0 393883.291790825 6692155.946573163 393889.29179406504 6692151.587315641 393896.70820593496 6692151.587315641 393902.708209175 6692155.946573163 393905.00000648 6692163.0</gml:posList></gml:LinearRing></gml:exterior></gml:Polygon></ogc:Intersects></ogc:Filter>";
+	String resultMapClick = "<ogc:Filter xmlns:ogc=\"http://www.opengis.net/ogc\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:gml=\"http://www.opengis.net/gml\"><ogc:Intersects>[ the_geom intersects POLYGON ((393905.00000648 6692163, 393902.708209175 6692170.053426837, 393896.70820593496 6692174.412684359, 393889.29179406504 6692174.412684359, 393883.291790825 6692170.053426837, 393880.99999352 6692163, 393883.291790825 6692155.946573163, 393889.29179406504 6692151.587315641, 393896.70820593496 6692151.587315641, 393902.708209175 6692155.946573163, 393905.00000648 6692163)) ]<ogc:PropertyName>the_geom</ogc:PropertyName><gml:Polygon srsDimension=\"2\"><gml:exterior><gml:LinearRing srsDimension=\"2\"><gml:posList>393905.00000648 6692163.0 393902.708209175 6692170.053426837 393896.70820593496 6692174.412684359 393889.29179406504 6692174.412684359 393883.291790825 6692170.053426837 393880.99999352 6692163.0 393883.291790825 6692155.946573163 393889.29179406504 6692151.587315641 393896.70820593496 6692151.587315641 393902.708209175 6692155.946573163 393905.00000648 6692163.0</gml:posList></gml:LinearRing></gml:exterior></gml:Polygon></ogc:Intersects></ogc:Filter>";
 	String resultHighlightFeatures = "<ogc:Filter xmlns:ogc=\"http://www.opengis.net/ogc\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:gml=\"http://www.opengis.net/gml\"><ogc:FeatureId fid=\"toimipaikat.6398\"/></ogc:Filter>";
-	String resultGeoJson = "<ogc:Filter xmlns:ogc=\"http://www.opengis.net/ogc\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:gml=\"http://www.opengis.net/gml\"><ogc:Intersects><ogc:PropertyName>the_geom</ogc:PropertyName><gml:Polygon srsDimension=\"2\"><gml:exterior><gml:LinearRing srsDimension=\"2\"><gml:posList>394081.0 6691734.0 394361.0 6692574.0 393521.0 6692854.0 393241.0 6692014.0 394081.0 6691734.0</gml:posList></gml:LinearRing></gml:exterior></gml:Polygon></ogc:Intersects></ogc:Filter>";
-    String resultGeoJsonComplex = "<ogc:Filter xmlns:ogc=\"http://www.opengis.net/ogc\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:gml=\"http://www.opengis.net/gml\"><ogc:Or><ogc:Intersects><ogc:PropertyName>the_geom</ogc:PropertyName><gml:Polygon srsDimension=\"2\"><gml:exterior><gml:LinearRing srsDimension=\"2\"><gml:posList>426125.95809412 6695752.6337378 426535.95809412 6696262.6337378 426025.95809412 6696672.6337378 425615.95809412 6696162.6337378 426125.95809412 6695752.6337378</gml:posList></gml:LinearRing></gml:exterior></gml:Polygon></ogc:Intersects><ogc:Intersects><ogc:PropertyName>the_geom</ogc:PropertyName><gml:Polygon srsDimension=\"2\"><gml:exterior><gml:LinearRing srsDimension=\"2\"><gml:posList>426843.70809412 6696053.8837378 427215.70809412 6696609.8837378 426659.70809412 6696981.8837378 426287.70809412 6696425.8837378 426843.70809412 6696053.8837378</gml:posList></gml:LinearRing></gml:exterior></gml:Polygon></ogc:Intersects><ogc:Intersects><ogc:PropertyName>the_geom</ogc:PropertyName><gml:Polygon srsDimension=\"2\"><gml:exterior><gml:LinearRing srsDimension=\"2\"><gml:posList>426595.70809412 6695941.8837378 426195.70809412 6696245.8837378 425891.70809412 6695845.8837378 426291.70809412 6695541.8837378 426595.70809412 6695941.8837378</gml:posList></gml:LinearRing></gml:exterior></gml:Polygon></ogc:Intersects></ogc:Or></ogc:Filter>";
+	String resultGeoJson ="<ogc:Filter xmlns:ogc=\"http://www.opengis.net/ogc\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:gml=\"http://www.opengis.net/gml\"><ogc:Intersects>[ the_geom intersects POLYGON ((394081 6691734, 394361 6692574, 393521 6692854, 393241 6692014, 394081 6691734)) ]<ogc:PropertyName>the_geom</ogc:PropertyName><gml:Polygon srsDimension=\"2\"><gml:exterior><gml:LinearRing srsDimension=\"2\"><gml:posList>394081.0 6691734.0 394361.0 6692574.0 393521.0 6692854.0 393241.0 6692014.0 394081.0 6691734.0</gml:posList></gml:LinearRing></gml:exterior></gml:Polygon></ogc:Intersects></ogc:Filter>";
+    String resultGeoJsonComplex = "<ogc:Filter xmlns:ogc=\"http://www.opengis.net/ogc\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:gml=\"http://www.opengis.net/gml\"><ogc:Or><ogc:Intersects>[ the_geom intersects POLYGON ((426125.95809412 6695752.6337378, 426535.95809412 6696262.6337378, 426025.95809412 6696672.6337378, 425615.95809412 6696162.6337378, 426125.95809412 6695752.6337378)) ]<ogc:PropertyName>the_geom</ogc:PropertyName><gml:Polygon srsDimension=\"2\"><gml:exterior><gml:LinearRing srsDimension=\"2\"><gml:posList>426125.95809412 6695752.6337378 426535.95809412 6696262.6337378 426025.95809412 6696672.6337378 425615.95809412 6696162.6337378 426125.95809412 6695752.6337378</gml:posList></gml:LinearRing></gml:exterior></gml:Polygon></ogc:Intersects><ogc:Intersects>[ the_geom intersects POLYGON ((426843.70809412 6696053.8837378, 427215.70809412 6696609.8837378, 426659.70809412 6696981.8837378, 426287.70809412 6696425.8837378, 426843.70809412 6696053.8837378)) ]<ogc:PropertyName>the_geom</ogc:PropertyName><gml:Polygon srsDimension=\"2\"><gml:exterior><gml:LinearRing srsDimension=\"2\"><gml:posList>426843.70809412 6696053.8837378 427215.70809412 6696609.8837378 426659.70809412 6696981.8837378 426287.70809412 6696425.8837378 426843.70809412 6696053.8837378</gml:posList></gml:LinearRing></gml:exterior></gml:Polygon></ogc:Intersects><ogc:Intersects>[ the_geom intersects POLYGON ((426595.70809412 6695941.8837378, 426195.70809412 6696245.8837378, 425891.70809412 6695845.8837378, 426291.70809412 6695541.8837378, 426595.70809412 6695941.8837378)) ]<ogc:PropertyName>the_geom</ogc:PropertyName><gml:Polygon srsDimension=\"2\"><gml:exterior><gml:LinearRing srsDimension=\"2\"><gml:posList>426595.70809412 6695941.8837378 426195.70809412 6696245.8837378 425891.70809412 6695845.8837378 426291.70809412 6695541.8837378 426595.70809412 6695941.8837378</gml:posList></gml:LinearRing></gml:exterior></gml:Polygon></ogc:Intersects></ogc:Or></ogc:Filter>";
 
     @Before
     public void setUp() {
@@ -161,7 +162,32 @@ public class WFSFilterTest {
         GeoJSONFilter geoJson = GeoJSONFilter.setParamsJSON(input);
         WFSFilter wfsFilter = new WFSFilter();
         wfsFilter.setDefaultBuffer(59d);
-// NOTE!!! This fails with geotools 11.2 and Java 8! With Java 7 it works ok.
+		// NOTE!!! This fails with geotools 11.2/13.1 and Java 8!
+		// With Java 7 it works ok (JSONObject seems to keep the order "correct" for Geotools with Java 7).
+		// See breakGeotoolsGeoJSon() below
+        Filter f = wfsFilter.initGeoJSONFilter(geoJson, "the_geom");
+        assertNotNull(f);
+        System.out.println("F on " + f);
+	}
+
+	//@Test(expected = ClassCastException.class) - works in gt 14.2
+	@Test
+	public void breakGeotoolsGeoJSon() throws IOException {
+		String inputInExpectedOrder = "{\n" +
+				"  \"type\": \"Point\",\n" +
+				"  \"coordinates\": [386260, 6676432]\n" +
+				"}";
+		String inputThatBreaksGeometryJSONparsing = "{\n" +
+				"  \"coordinates\": [386260, 6676432],\n" +
+				"  \"type\": \"Point\"\n" +
+				"}";
+		org.geotools.geojson.geom.GeometryJSON geometryJSON = new org.geotools.geojson.geom.GeometryJSON();
+		Object worksOk = geometryJSON.readPoint(inputInExpectedOrder);
+		System.out.println("F on " + worksOk);
+		// works correctly: F on POINT (386260 6676432)
+
+		Object thisFails = geometryJSON.readPoint(inputThatBreaksGeometryJSONparsing);
+		// NOTE!!! This fails with geotools 11.2 and 13.1
         /*
 java.lang.ClassCastException: java.lang.String cannot be cast to java.lang.Number
 at org.geotools.geojson.GeoJSONUtil.createCoordinate(GeoJSONUtil.java:218)
@@ -169,8 +195,6 @@ at org.geotools.geojson.geom.GeometryHandlerBase.coordinate(GeometryHandlerBase.
 at org.geotools.geojson.geom.PointHandler.endObject(PointHandler.java:50)
 at org.json.simple.parser.JSONParser.parse(Unknown Source)
          */
-        Filter f = wfsFilter.initGeoJSONFilter(geoJson, "the_geom");
-        assertNotNull(f);
-        System.out.println("F on " + f);
+		System.out.println("Failed on " + thisFails);
 	}
 }

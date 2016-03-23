@@ -9,9 +9,7 @@
     "page": "published",
     "development_prefix": "/applications/sample"
   },
-  "selectedLayers": [
-    "wmslayer-openstreetmap-demo-fi.json"
-  ],
+  "selectedLayers": [],
   "bundles": [{
       "id": "mapfull",
       "startup": {

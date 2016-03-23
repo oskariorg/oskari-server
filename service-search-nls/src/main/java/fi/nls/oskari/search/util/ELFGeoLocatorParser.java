@@ -53,12 +53,15 @@ public class ELFGeoLocatorParser {
     private Map<String, Double> elfScalesForType = null;
     private Map<String, Integer> elfLocationPriority = null;
 
+
+    private static final String PROPERTY_FORCEXY = "org.geotools.referencing.forceXY";
     private String serviceSrs = "EPSG:4258";
 
     public ELFGeoLocatorParser() {
         this(null);
     }
     public ELFGeoLocatorParser(final String serviceSrs) {
+
         // use provided SRS or default to EPSG:4258
         if(serviceSrs != null) {
             log.debug("Using", serviceSrs, "as native SRS");
@@ -171,8 +174,19 @@ public class ELFGeoLocatorParser {
                 if (feature.getDefaultGeometry() instanceof com.vividsolutions.jts.geom.Point) {
                     com.vividsolutions.jts.geom.Point point = (com.vividsolutions.jts.geom.Point) feature.getDefaultGeometry();
                     log.debug("Original coordinates - x:", point.getX(), "y:", point.getY());
-                    // since ProjectionHelper.isFirstAxisNorth(CRS.decode(serviceSrs)) == true -> y first
-                    Point p2 = ProjectionHelper.transformPoint(point.getY(), point.getX(), serviceSrs, epsg); //"EPSG:3067"
+
+                    Point p2 = null;
+                    boolean forceXY = System.getProperty(PROPERTY_FORCEXY) != null && "true".equals(System.getProperty(PROPERTY_FORCEXY));
+                    if (forceXY) {
+                        p2 = ProjectionHelper.transformPoint(point.getX(), point.getY(), serviceSrs, epsg); //"EPSG:3067"
+                        //forcexy == true and so isFirstAxisNorth false -> projectionhelper returns "wrong" order ->
+                        //need to swap lon and lat
+                        p2.switchLonLat();
+                    } else {
+                        // since ProjectionHelper.isFirstAxisNorth(CRS.decode(serviceSrs)) == true -> y first
+                        p2 = ProjectionHelper.transformPoint(point.getY(), point.getX(), serviceSrs, epsg); //"EPSG:3067"
+                    }
+
                     log.debug("Transformed coordinates - x:", p2.getLon(), "y:", p2.getLat());
                     if(p2 != null) {
                         lon = "" + p2.getLon();

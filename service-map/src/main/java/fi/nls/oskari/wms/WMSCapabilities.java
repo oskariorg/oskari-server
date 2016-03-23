@@ -23,6 +23,7 @@ public class WMSCapabilities implements WebMapService {
     private String[] formats = new String[0];
     private List<WMSStyle> styles = new ArrayList<WMSStyle>();
     private List<String> time = new ArrayList<>();
+    private String[] CRSs = new String[0];
 
     public void setQueryable(boolean val) {
         this.queryable = val;
@@ -78,6 +79,13 @@ public class WMSCapabilities implements WebMapService {
     }
 
     @Override
+    /**
+     * Defined here only to meet interface definition. Never supposed to be called
+     */
+    public String getLegendForStyle(String key) {
+        return null;
+    }
+    @Override
     public String getCapabilitiesUrl() {
         return capabilitiesURL;
     }
@@ -104,6 +112,11 @@ public class WMSCapabilities implements WebMapService {
     @Override
     public List<String> getTime() {
         return time;
+    }
+
+    @Override
+    public String[] getCRSs() {
+        return CRSs;
     }
 
 }

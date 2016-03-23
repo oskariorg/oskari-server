@@ -27,11 +27,6 @@ public class WebMapServiceV1_3_0_Impl extends AbstractWebMapService {
 	private boolean isQueryable = false;
 	
 	/**
-	 * Available styles key: name, value: onlineResource
-	 */
-	private Map<String, String> legends = new HashMap<String, String>();
-	
-	/**
 	 * Available formats
 	 */
 	private String[] formats = new String[0];
@@ -39,6 +34,8 @@ public class WebMapServiceV1_3_0_Impl extends AbstractWebMapService {
     private String[] keywords = new String[0];
 
 	private List<String> time = new ArrayList<>();
+
+    private String[] CRSs = new String[0];
 
 	/** url for request */
 	private String getCapabilitiesUrl;
@@ -82,7 +79,9 @@ public class WebMapServiceV1_3_0_Impl extends AbstractWebMapService {
 			gatherStylesAndLegends(rootLayer, rootStyles);
 			styles.putAll(rootStyles);
 
-			getFormats(wmtms);			
+			getFormats(wmtms);
+
+            getCRSs(wmtms);
 			
 			/* continue to childs */
 			Layer[] layers = rootLayer.getLayerArray();
@@ -95,7 +94,6 @@ public class WebMapServiceV1_3_0_Impl extends AbstractWebMapService {
 		}
 		
 	}
-
     /**
      * Parses keywords for layer the same way that queryable is done.
      * Not sure of the logic but at least they fail similarly if they fail.
@@ -142,10 +140,9 @@ public class WebMapServiceV1_3_0_Impl extends AbstractWebMapService {
 			}
 		//}
 	}
-	
 	/**
 	 * Gathers styles from given layer to given map
-	 * 
+	 *
 	 * @param layer
 	 * @param foundStyles
 	 */
@@ -156,17 +153,17 @@ public class WebMapServiceV1_3_0_Impl extends AbstractWebMapService {
 				String styleName = style.getName();
 				String styleTitle = style.getTitle();
 				foundStyles.put(styleName, styleTitle);
-				
+
 				LegendURL[] lurl = style.getLegendURLArray();
 				if (lurl != null && lurl.length > 0) {
 					/* Online resource is in xlink namespace */
 					String href = lurl[0].getOnlineResource().newCursor().getAttributeText(new QName("http://www.w3.org/1999/xlink", "href"));
-					legends.put(styleName, href);
+					legends.put(styleName+LEGEND_HASHMAP_KEY_SEPARATOR+styleTitle, href);
 				}
 			}
 		}
 	}
-	
+
 	/**
 	 * Gathers get feature info formats from feature info
 	 * 
@@ -179,8 +176,18 @@ public class WebMapServiceV1_3_0_Impl extends AbstractWebMapService {
 		formats = wmtms.getWMSCapabilities().getCapability().getRequest().getGetFeatureInfo().getFormatArray();
 		
 	}
-	
-	
+
+    /**
+     * Get supported crss  of the service from the parent layer
+     *
+     * @param wmtms
+     */
+    private void getCRSs(WMSCapabilitiesDocument wmtms) {
+
+        CRSs = wmtms.getWMSCapabilities().getCapability().getLayer().getCRSArray();
+
+    }
+
 	/**
 	 * Parses Styles, legends and queryable value from given layer. In case of non valid layer, it tries to do recursion on
 	 * sublayers that this layer might contain
@@ -282,4 +289,8 @@ public class WebMapServiceV1_3_0_Impl extends AbstractWebMapService {
 	public List<String> getTime() {
 		return time;
 	}
+
+    public String[] getCRSs() {
+        return CRSs;
+    }
 }

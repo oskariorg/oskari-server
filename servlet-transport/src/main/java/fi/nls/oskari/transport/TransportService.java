@@ -330,9 +330,22 @@ public class TransportService extends AbstractService {
 
         // layers
         Map<String, Layer> layers = store.getLayers();
+        int hiddenLayers = 0;
         for (Layer layer : layers.values()) {
+            if(!layer.isVisible()) {
+                hiddenLayers++;
+                continue;
+            }
             layer.setTiles(store.getGrid().getBounds()); // init bounds to tiles (render all)
         	initMapLayerJob(-1, store, layer.getId(), false);
+        }
+        if(hiddenLayers == layers.values().size()) {
+            // notify successful init if no layer jobs are started
+            // frontend expexts a started message for requestId -1 to detect successful init
+            ResultProcessor proc = createResultProcessor(-1);
+            Map<String, String> data = new HashMap<>();
+            data.put("message", "started");
+            proc.addResults(client.getId(), ResultProcessor.CHANNEL_STATUS, data);
         }
     }
 
@@ -501,16 +514,14 @@ public class TransportService extends AbstractService {
     	if(store.containsLayer(layerId)) {
             Layer tmpLayer = store.getLayers().get(layerId);
 
-            if(!tmpLayer.getStyleName().equals(layerStyle) || layerStyle.startsWith(WFSImage.PREFIX_CUSTOM_STYLE)) {
-                tmpLayer.setStyleName(layerStyle);
-                this.save(store);
-                if(tmpLayer.isVisible()) {
-                    // init bounds to tiles (render all)
-                    tmpLayer.setTiles(store.getGrid().getBounds());
-                    // only update normal tiles
-                    Job job = createOWSMapLayerJob(createResultProcessor(parseRequestId(params)), JobType.NORMAL, store, layerId, false, false, true, false);
-                    jobs.add(job);
-                }
+            tmpLayer.setStyleName(layerStyle);
+            this.save(store);
+            if(tmpLayer.isVisible()) {
+                // init bounds to tiles (render all)
+                tmpLayer.setTiles(store.getGrid().getBounds());
+                // only update normal tiles
+                Job job = createOWSMapLayerJob(createResultProcessor(parseRequestId(params)), JobType.NORMAL, store, layerId, false, false, true, false);
+                jobs.add(job);
             }
     	}
     }
@@ -594,6 +605,7 @@ public class TransportService extends AbstractService {
         double longitude;
         double latitude;
         boolean keepPrevious = false;
+        boolean geomRequest;
 
         if (params.get(PARAM_LONGITUDE) instanceof Double) {
             longitude = (Double) params.get(PARAM_LONGITUDE);
@@ -610,6 +622,12 @@ public class TransportService extends AbstractService {
             keepPrevious = (Boolean) params.get(PARAM_KEEP_PREVIOUS);
         }
 
+        if (params.get(PARAM_GEOM_REQUEST) instanceof Object)
+        {
+        	geomRequest = (Boolean) params.get(PARAM_GEOM_REQUEST);
+        	store.setGeomRequest(geomRequest);
+    	}
+        
         // stores click, but doesn't save
         store.setMapClick(new Coordinate(longitude, latitude));
         store.setKeepPrevious(keepPrevious);

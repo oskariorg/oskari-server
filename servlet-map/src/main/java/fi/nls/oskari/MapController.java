@@ -1,6 +1,5 @@
 package fi.nls.oskari;
 
-import fi.nls.oskari.control.ActionDeniedException;
 import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.control.view.GetAppSetupHandler;
 import fi.nls.oskari.control.view.modifier.param.ParamControl;
@@ -199,6 +198,7 @@ public class MapController {
 
 
         JSONHelper.putValue(controlParams, PARAM_SECURE, request.getParameter(PARAM_SECURE));
+        JSONHelper.putValue(controlParams, GetAppSetupHandler.PARAM_NO_SAVED_STATE, request.getParameter(GetAppSetupHandler.PARAM_NO_SAVED_STATE));
         model.addAttribute(KEY_CONTROL_PARAMS, controlParams.toString());
 
         model.addAttribute(KEY_PRELOADED, !isDevelopmentMode);

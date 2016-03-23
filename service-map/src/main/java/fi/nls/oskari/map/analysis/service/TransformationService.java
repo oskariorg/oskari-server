@@ -55,6 +55,8 @@ public class TransformationService {
 
         String geomcol = "";
         Boolean members_case = false;
+        int ncount = 0;
+        int tcount = 0;
 
         // iterate through wpsDoc's gml:featureMember elements or gml:featureMembers
         // NodeList featureMembers =
@@ -96,8 +98,10 @@ public class TransformationService {
             Node geometry = null;
             List<String> textFeatures = new ArrayList<String>();
             List<Double> numericFeatures = new ArrayList<Double>();
-            int ncount = 1;
-            int tcount = 1;
+            if ( ncount == 0) {
+                ncount = 1;
+                tcount = 1;
+            }
             for (int j = 0; j < features.getLength(); j++) {
                 Node feature = features.item(j);
 
@@ -140,7 +144,7 @@ public class TransformationService {
                 }
 
             }
-            buildWfsInsertElement(sb, geometry, geomcol, textFeatures, numericFeatures, uuid, analysis_id );
+            buildWfsInsertElement(sb, geometry, geomcol, textFeatures, numericFeatures, uuid, analysis_id);
         }
         sb.append(WFSTTEMPLATEEND);
         return sb.toString();

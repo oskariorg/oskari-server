@@ -106,7 +106,11 @@ public abstract class CapabilitiesCacheService extends OskariComponent {
         conn.setReadTimeout(TIMEOUT_MS);
         final String response = IOHelper.readString(conn, encoding);
         final String charset = getEncodingFromXml(response);
-        if(norecursion || charset == null || encoding.equalsIgnoreCase(charset)) {
+
+        //if encoding differs from that of the xml, we always have to re-read from service.
+        if (charset != null && !encoding.equalsIgnoreCase(charset))  {
+            return loadCapabilitiesFromService(layer, charset, true);
+        } else if(norecursion || charset == null || encoding.equalsIgnoreCase(charset)) {
             return response;
         }
         return loadCapabilitiesFromService(layer, charset, true);
@@ -137,7 +141,7 @@ public abstract class CapabilitiesCacheService extends OskariComponent {
     }
 
     // TODO: maybe use some lib instead?
-    private static String getEncodingFromXml(final String response) {
+    public static String getEncodingFromXml(final String response) {
         if(response == null) {
             return null;
         }

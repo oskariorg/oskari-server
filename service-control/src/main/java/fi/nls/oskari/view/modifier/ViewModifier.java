@@ -30,6 +30,7 @@ public abstract class ViewModifier {
     public static final String BUNDLE_ANALYSE = "analyse";
     public static final String BUNDLE_DIVMANAZER = "divmanazer";
     public static final String BUNDLE_MYPLACESIMPORT = "myplacesimport";
+    public static final String BUNDLE_COORDINATETOOL = "coordinatetool";
 
     public static final String KEY_EAST = "east";
     public static final String KEY_NORTH = "north";

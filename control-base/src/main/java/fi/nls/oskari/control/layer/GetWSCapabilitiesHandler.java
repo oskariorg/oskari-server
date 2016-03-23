@@ -28,6 +28,7 @@ public class GetWSCapabilitiesHandler extends ActionHandler {
     private static final String PARM_VERSION = "version";
     private static final String PARM_USER = "user";
     private static final String PARM_PW = "pw";
+    private static final String PARM_CRS = "crs";
 
     private final CapabilitiesCacheService capabilitiesService = OskariComponentManager.getComponentOfType(CapabilitiesCacheService.class);
     private String[] permittedRoles = new String[0];
@@ -48,6 +49,7 @@ public class GetWSCapabilitiesHandler extends ActionHandler {
         final String version = params.getHttpParam(PARM_VERSION, "");
         final String user = params.getHttpParam(PARM_USER, "");
         final String pw = params.getHttpParam(PARM_PW, "");
+        final String currentCrs = params.getHttpParam(PARM_CRS, "EPSG:3067");
 
         log.debug("Trying to get capabilities for type:", layerType, "with url:", url);
         try {
@@ -62,7 +64,7 @@ public class GetWSCapabilitiesHandler extends ActionHandler {
 
                     // setup capabilities URL
                     final OskariLayerCapabilities caps  = capabilitiesService.getCapabilities(url, OskariLayer.TYPE_WMTS, user, pw);
-                    JSONObject resultJSON = parser.parseCapabilitiesToJSON(caps.getData(), url);
+                    JSONObject resultJSON = parser.parseCapabilitiesToJSON(caps.getData(), url, currentCrs);
                     JSONHelper.putValue(resultJSON, "xml", caps.getData());
                     ResponseHelper.writeResponse(params, resultJSON);
                 }

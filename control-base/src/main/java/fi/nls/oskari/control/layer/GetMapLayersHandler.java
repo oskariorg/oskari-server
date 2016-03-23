@@ -28,7 +28,7 @@ public class GetMapLayersHandler extends ActionHandler {
         final boolean isSecure = params.getHttpParam(PARAM_SECURE, params.getRequest().isSecure());
 
         log.debug("Getting layers");
-        final JSONObject layers = OskariLayerWorker.getListOfAllMapLayers(params.getUser(), lang, isSecure);
+        final JSONObject layers = OskariLayerWorker.getListOfAllMapLayers(params.getUser(), lang, params.getHttpParam(PARAM_SRS), isSecure);
         JSONArray list = layers.optJSONArray(OskariLayerWorker.KEY_LAYERS);
         // transform WKT for layers now that we know SRS
         for(int i = 0; i < list.length(); ++i) {

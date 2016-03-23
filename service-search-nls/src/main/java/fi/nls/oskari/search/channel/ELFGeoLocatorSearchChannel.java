@@ -29,10 +29,10 @@ import java.util.Map;
 public class ELFGeoLocatorSearchChannel extends SearchChannel {
 
     private Logger log = LogFactory.getLogger(this.getClass());
-    private String serviceURL = null;
+    public String serviceURL = null;
 
     public static final String ID = "ELFGEOLOCATOR_CHANNEL";
-    private static final String PROPERTY_SERVICE_URL = "search.channel.ELFGEOLOCATOR_CHANNEL.service.url";
+    public static final String PROPERTY_SERVICE_URL = "search.channel.ELFGEOLOCATOR_CHANNEL.service.url";
     private static final String PROPERTY_SERVICE_SRS = "search.channel.ELFGEOLOCATOR_CHANNEL.service.srs";
     private static final String PROPERTY_SERVICE_REVERSEGEOCODE_TEMPLATE = "search.channel.ELFGEOLOCATOR_CHANNEL.service.reversegeocode.template";
     private static final String PROPERTY_SERVICE_GETFEATUREAU_TEMPLATE = "search.channel.ELFGEOLOCATOR_CHANNEL.service.getfeatureau.template";
@@ -63,20 +63,23 @@ public class ELFGeoLocatorSearchChannel extends SearchChannel {
 
     private static final String PARAM_NORMAL = "normal";
     private static final String PARAM_REGION = "region";
-    private static final String PARAM_COUNTRY = "country";
+    public static final String PARAM_COUNTRY = "country";
     private static final String PARAM_FILTER = "filter";
     private static final String PARAM_FUZZY = "fuzzy";
     private static final String PARAM_EXONYM = "exonym";
     private static final String PARAM_LON = "lon";
     private static final String PARAM_LAT = "lat";
+    private static final String PARAM_GEO_NAMES = "geographical_names";
+    private static final String PARAM_ADDRESSES = "addresses";
     private static final String METHOD_REVERSE = "reverse";
+
     private static Map<String, Double> elfScalesForType = new HashMap<String, Double>();
     private static Map<String, Integer> elfLocationPriority = new HashMap<String, Integer>();
     private static JSONObject elfCountryMap = null;
     private final String geolocatorCountries = "geolocator-countries.json";
 
 
-    private ELFGeoLocatorParser elfParser = null;
+    public ELFGeoLocatorParser elfParser = null;
 
     @Override
     public void init() {
@@ -84,13 +87,17 @@ public class ELFGeoLocatorSearchChannel extends SearchChannel {
         serviceURL = PropertyUtil.getOptional(PROPERTY_SERVICE_URL);
 
         log.debug("ServiceURL set to " + serviceURL);
-
-        InputStream inp = this.getClass().getResourceAsStream(geolocatorCountries);
-        if(inp != null) {
-            InputStreamReader reader = new InputStreamReader(inp);
-            JSONTokener tokenizer = new JSONTokener(reader);
-            this.elfCountryMap = JSONHelper.createJSONObject4Tokener(tokenizer);
+        try {
+            InputStream inp = this.getClass().getResourceAsStream(geolocatorCountries);
+            if (inp != null) {
+                InputStreamReader reader = new InputStreamReader(inp, "UTF-8");
+                JSONTokener tokenizer = new JSONTokener(reader);
+                this.elfCountryMap = JSONHelper.createJSONObject4Tokener(tokenizer);
+            }
+        } catch (Exception e) {
+            log.info("Country mapping setup failed for country based search", e);
         }
+
 
         InputStream inp2 = this.getClass().getResourceAsStream(LOCATIONTYPE_ATTRIBUTES);
         if(inp2 == null){
@@ -142,6 +149,47 @@ public class ELFGeoLocatorSearchChannel extends SearchChannel {
         elfParser = new ELFGeoLocatorParser(PropertyUtil.getOptional(PROPERTY_SERVICE_SRS));
     }
 
+
+    public Capabilities getCapabilities() {
+        return Capabilities.BOTH;
+    }
+
+    public ChannelSearchResult reverseGeocode(SearchCriteria searchCriteria) {
+
+        StringBuffer buf = new StringBuffer(serviceURL);
+        // reverse geocoding
+        // Transform lon,lat
+        String[] lonlat = elfParser.transformLonLat(""+searchCriteria.getLon(), ""+searchCriteria.getLat(), searchCriteria.getSRS());
+        if (lonlat == null) {
+            log.warn("Invalid lon/lat coordinates", searchCriteria.getLon(), searchCriteria.getLat());
+            return null;
+        }
+        String request = REQUEST_REVERSEGEOCODE_TEMPLATE.replace(KEY_LATITUDE_HOLDER, lonlat[1] );
+        Locale locale = new Locale(searchCriteria.getLocale());
+        String lang3 = locale.getISO3Language();
+        request = request.replace(KEY_LONGITUDE_HOLDER, lonlat[0] );
+        request = request.replace(KEY_LANG_HOLDER, lang3);
+        buf.append(request);
+        String data = "";
+        try {
+            data = IOHelper.readString(getConnection(buf.toString()));
+            // Clean xml version for geotools parser for faster parse
+            data = data.replace(RESPONSE_CLEAN, "");
+        } catch(Exception e) {
+            log.warn("Unable to fetch data "+buf.toString());
+            log.error(e);
+            return new ChannelSearchResult();
+        }
+
+        boolean exonym = true;
+        // New definitions - no mode setups any more in UI - exonym is always true
+        ChannelSearchResult result = elfParser.parse(data, searchCriteria.getSRS(), locale, exonym);
+
+        // Add used search method
+        result.setSearchMethod(findSearchMethod(searchCriteria));
+        return result;
+    }
+
     /**
      * Returns the search raw results.
      *
@@ -149,32 +197,18 @@ public class ELFGeoLocatorSearchChannel extends SearchChannel {
      * @return Result data in JSON format.
      * @throws Exception
      */
-    private String getData(SearchCriteria searchCriteria) throws Exception {
+    public String getData(SearchCriteria searchCriteria) throws Exception {
 
         if (serviceURL == null) {
             log.warn("ServiceURL not configured. Add property with key", PROPERTY_SERVICE_URL);
             return null;
         }
-
         // Language
         Locale locale = new Locale(searchCriteria.getLocale());
         String lang3 = locale.getISO3Language();
 
         StringBuffer buf = new StringBuffer(serviceURL);
-        if (hasParam(searchCriteria, PARAM_LON) && hasParam(searchCriteria, PARAM_LAT)) {
-            // reverse geocoding
-            // Transform lon,lat
-            String[] lonlat = elfParser.transformLonLat(searchCriteria.getParam(PARAM_LON).toString(), searchCriteria.getParam(PARAM_LAT).toString(), searchCriteria.getSRS());
-            if (lonlat == null) {
-                log.warn("Invalid lon/lat coordinates ", searchCriteria.getParam(PARAM_LON).toString(), " ", searchCriteria.getParam(PARAM_LAT).toString() );
-                return null;
-            }
-            String request = REQUEST_REVERSEGEOCODE_TEMPLATE.replace(KEY_LATITUDE_HOLDER, lonlat[1] );
-            request = request.replace(KEY_LONGITUDE_HOLDER, lonlat[0] );
-            request = request.replace(KEY_LANG_HOLDER, lang3);
-            buf.append(request);
-
-        } else if (hasParam(searchCriteria, PARAM_FILTER) && searchCriteria.getParam(PARAM_FILTER).toString().equals("true")) {
+        if (hasParam(searchCriteria, PARAM_FILTER) && searchCriteria.getParam(PARAM_FILTER).toString().equals("true")) {
             // Exact search limited to AU region - case sensitive - no fuzzy support
             String request = REQUEST_GETFEATUREAU_TEMPLATE.replace(KEY_PLACE_HOLDER, URLEncoder.encode(searchCriteria.getSearchString(), "UTF-8"));
             request = request.replace(KEY_AU_HOLDER, URLEncoder.encode(searchCriteria.getParam(PARAM_REGION).toString(), "UTF-8"));
@@ -199,6 +233,7 @@ public class ELFGeoLocatorSearchChannel extends SearchChannel {
             buf.append(filter);
         }
 
+
         return IOHelper.readString(getConnection(buf.toString()));
     }
 
@@ -208,7 +243,7 @@ public class ELFGeoLocatorSearchChannel extends SearchChannel {
      * @param param
      * @return
      */
-    private boolean hasParam(SearchCriteria sc, final String param) {
+    public boolean hasParam(SearchCriteria sc, final String param) {
         final Object obj = sc.getParam(param);
         return obj != null && !obj.toString().isEmpty();
     }
@@ -228,6 +263,7 @@ public class ELFGeoLocatorSearchChannel extends SearchChannel {
      */
     public ChannelSearchResult doSearch(SearchCriteria searchCriteria) {
         try {
+
             String data = getData(searchCriteria);
             Locale locale = new Locale(searchCriteria.getLocale());
 
