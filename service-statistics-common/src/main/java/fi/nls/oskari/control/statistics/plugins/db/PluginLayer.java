@@ -6,7 +6,7 @@ package fi.nls.oskari.control.statistics.plugins.db;
  */
 public class PluginLayer {
     /**
-     * For example: "fi.nls.oskari.control.statistics.plugins.sotka.SotkaStatisticalDatasourcePlugin"
+     * For example: "SotkaNET"
      */
     private String pluginId;
 
