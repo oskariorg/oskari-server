@@ -71,7 +71,7 @@ public class SotkaStatisticalDatasourcePlugin extends OskariComponent implements
         final SqlSession session = factory.openSession();
         try {
             final List<PluginLayer> layerRows = session.selectList("getAllForPlugin",
-                    "fi.nls.oskari.control.statistics.plugins.sotka.SotkaStatisticalDatasourcePlugin");
+                    "SotkaNET");
             layerMappings = new HashMap<>();
             for (PluginLayer row : layerRows) {
                 layerMappings.put(row.getPluginLayerId().toLowerCase(), row.getOskariLayerId());
