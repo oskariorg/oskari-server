@@ -56,7 +56,8 @@ public class GetPermissionsLayerHandlers extends ActionHandler {
     }
 
     private String getName(String permissionId, String lang) {
-        final Object obj = PropertyUtil.getLocalizableProperty(permissionId, permissionId);
+        final String property = "permission." + permissionId + ".name";
+        final Object obj = PropertyUtil.getLocalizableProperty(property, permissionId);
         if(obj instanceof String) {
             return (String) obj;
         }
