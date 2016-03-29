@@ -5,7 +5,6 @@ import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.ActionHandler;
 import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.control.ActionParamsException;
-import fi.nls.oskari.control.view.GetAppSetupHandler;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.domain.map.stats.StatsVisualization;
 import fi.nls.oskari.log.LogFactory;
@@ -31,24 +30,22 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.io.StringWriter;
 import java.net.HttpURLConnection;
-import java.net.URLEncoder;
 import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
 
 @OskariActionRoute("GetStatsTile")
 public class GetStatsTileHandler extends ActionHandler {
 
     private static final Logger log = LogFactory.getLogger(GetStatsTileHandler.class);
-
-    private final VisualizationService service = new VisualizationService();
     private static final OskariLayerService mapLayerService = new OskariLayerServiceIbatisImpl();
-
     final private static String PARAM_LAYER_ID = "LAYERID";
     final private static String PARAM_VISUALIZATION_ID = "VIS_ID";
     final private static String PARAM_VISUALIZATION_NAME = "VIS_NAME"; // name=ows:Kunnat2013
     final private static String PARAM_VISUALIZATION_FILTER_PROPERTY = "VIS_ATTR"; // attr=Kuntakoodi
     final private static String PARAM_VISUALIZATION_CLASSES = "VIS_CLASSES"; // classes=020,091|186,086,982|111,139,740
     final private static String PARAM_VISUALIZATION_VIS = "VIS_COLORS"; // vis=choro:ccffcc|99cc99|669966
-
+    private final VisualizationService service = new VisualizationService();
     private String geoserverUser = null;
     private String geoserverPass = null;
     private String sldServerUrl = null;
@@ -58,7 +55,7 @@ public class GetStatsTileHandler extends ActionHandler {
         super.init();
         geoserverUser = PropertyUtil.get("statistics.user");
         geoserverPass = PropertyUtil.get("statistics.password");
-        sldServerUrl = PropertyUtil.getOptional("statistics.sld.server");
+        sldServerUrl = PropertyUtil.get("statistics.sld.server", PropertyUtil.get("oskari.domain"));
     }
 
     public void handleAction(final ActionParameters params)
@@ -70,14 +67,25 @@ public class GetStatsTileHandler extends ActionHandler {
         try {
             // we should post complete GetMap XML with the custom SLD to geoserver so it doesn't need to fetch it again
             // Check: http://geo-solutions.blogspot.fi/2012/04/dynamic-wms-styling-with-geoserver-sld.html
-            con.setRequestMethod("GET");
 
-            con.setDoOutput(false);
-            con.setDoInput(true);
             HttpURLConnection.setFollowRedirects(false);
             con.setUseCaches(false);
-            con.connect();
-            //IOHelper.writeToConnection(con, SLD_HANDLER.getSLD(params));
+            con.setDoInput(true);
+
+            StatsVisualization vis = getVisualization(params);
+            if (vis == null) {
+                log.info("Visualization couldn't be generated - parameters/db data missing", params);
+                con.setRequestMethod("GET");
+                con.setDoOutput(false);
+                con.connect();
+            } else {
+                con.setRequestMethod("POST");
+                con.setDoOutput(true);
+                Map<String, String> sldparams = new HashMap<>();
+                sldparams.put("SLD_BODY", getSLD(params));
+                IOHelper.writeHeader(con, IOHelper.HEADER_CONTENTTYPE, IOHelper.CONTENTTYPE_FORM_URLENCODED);
+                IOHelper.writeToConnection(con, IOHelper.getParams(sldparams));
+            }
 
             // read the image tile
             final byte[] presponse = IOHelper.readBytes(con.getInputStream());
@@ -102,61 +110,24 @@ public class GetStatsTileHandler extends ActionHandler {
 
         // copy parameters
         final HttpServletRequest httpRequest = params.getRequest();
-        final StringBuilder ajaxUrl = new StringBuilder(sldServerUrl);
-
-        ajaxUrl.append(PropertyUtil.get("statistics.sld.server.path",
-                PropertyUtil.get(params.getLocale(), GetAppSetupHandler.PROPERTY_AJAXURL)));
-
-        ajaxUrl.append("&action_route=GetStatsLayerSLD");
-
         final int layerId = params.getRequiredParamInt(PARAM_LAYER_ID);
-        StatsVisualization vis = getVisualization(params);
-        if (vis == null) {
-            log.info("Visualization couldn't be generated - parameters/db data missing", params);
-        } else {
-            // using prefetched values so we don't need to get them from db again on SLD action
-            ajaxUrl.append("&");
-            ajaxUrl.append(GetStatsLayerSLDHandler.PARAM_VISUALIZATION_NAME);
-            ajaxUrl.append("=");
-            ajaxUrl.append(vis.getLayername());
 
-            ajaxUrl.append("&");
-            ajaxUrl.append(GetStatsLayerSLDHandler.PARAM_VISUALIZATION_FILTER_PROPERTY);
-            ajaxUrl.append("=");
-            ajaxUrl.append(vis.getFilterproperty());
-
-            ajaxUrl.append("&");
-            ajaxUrl.append(GetStatsLayerSLDHandler.PARAM_VISUALIZATION_CLASSES);
-            ajaxUrl.append("=");
-            ajaxUrl.append(vis.getClasses());
-
-            ajaxUrl.append("&");
-            ajaxUrl.append(GetStatsLayerSLDHandler.PARAM_VISUALIZATION_VIS);
-            ajaxUrl.append("=");
-
-            ajaxUrl.append(vis.getVisualization());
-            ajaxUrl.append(":");
-            ajaxUrl.append(vis.getColors());
-        }
-
-        final StringBuffer queryString = new StringBuffer();
+        final Map<String, String> wmsParams = new HashMap<>();
         for (Object key : httpRequest.getParameterMap().keySet()) {
             String keyStr = (String) key;
-            if(keyStr.equals(GetStatsLayerSLDHandler.PARAM_VISUALIZATION_NAME) ||
+            if (keyStr.equals(GetStatsLayerSLDHandler.PARAM_VISUALIZATION_NAME) ||
                     keyStr.equals(GetStatsLayerSLDHandler.PARAM_VISUALIZATION_FILTER_PROPERTY) ||
                     keyStr.equals(GetStatsLayerSLDHandler.PARAM_VISUALIZATION_CLASSES) ||
                     keyStr.equals(GetStatsLayerSLDHandler.PARAM_VISUALIZATION_VIS)) {
                 // ignore SLD-parameters
                 continue;
             }
-            queryString.append("&");
-            queryString.append(keyStr);
-            queryString.append("=");
-            queryString.append(params.getHttpParam(keyStr));
+            wmsParams.put(keyStr, params.getHttpParam(keyStr));
         }
+        final OskariLayer layer = mapLayerService.find(layerId);
         try {
-            final OskariLayer layer = mapLayerService.find(layerId);
-            if (layer != null && layer.getType().equals("statslayer")) {
+            if (layer != null && OskariLayer.TYPE_STATS.equals(layer.getType())) {
+                final String url = IOHelper.constructUrl(layer.getUrl(), wmsParams);
                 // Note: The tile URL is the WMS from the oskari_maplayer table, and the statistical features are fetched
                 // from the WFS URL given in the attributes JSON, for example:
                 //   {statistics:{featuresUrl:"http://localhost:8080/geoserver/oskari/wfs","regionIdTag":"kuntakoodi","nameIdTag":"kuntanimi"}}
@@ -164,12 +135,10 @@ public class GetStatsTileHandler extends ActionHandler {
                 //   {statistics:{featuresUrl:"http://localhost:8080/geoserver/oskari/wfs","regionIdTag":"erva_numero","nameIdTag":"erva"}}
 
                 // This could be for example: "http://localhost:8080/geoserver/wms"
-                final String geoserverUrl = layer.getUrl();
-                final String url = geoserverUrl + "?" + queryString + "&SLD=" + URLEncoder.encode(ajaxUrl.toString(), "UTF-8");
                 log.debug("Getting stats tile from url:", url);
-                return IOHelper.getConnection(url, geoserverUser, geoserverPass);
+                return IOHelper.getConnection(url, layer.getUsername(), layer.getPassword());
             } else {
-                throw new Exception("Could not find statslayer URL for: " + vis.toString());
+                throw new Exception("Could not find statslayer for layer: " + layerId);
             }
         } catch (Exception e) {
             throw new ActionException(
@@ -180,14 +149,6 @@ public class GetStatsTileHandler extends ActionHandler {
     private StatsVisualization getVisualization(final ActionParameters params) {
         final int visId = ConversionHelper.getInt(
                 params.getHttpParam(PARAM_VISUALIZATION_ID), -1);
-
-        log.debug("visid: " + visId);
-
-        log.debug("PARAM_VISUALIZATION_CLASSES: " + params.getHttpParam(PARAM_VISUALIZATION_CLASSES));
-        log.debug("PARAM_VISUALIZATION_NAME: " + params.getHttpParam(PARAM_VISUALIZATION_NAME));
-        log.debug("PARAM_VISUALIZATION_FILTER_PROPERTY: " + params.getHttpParam(PARAM_VISUALIZATION_FILTER_PROPERTY));
-        log.debug("PARAM_VISUALIZATION_VIS: " + params.getHttpParam(PARAM_VISUALIZATION_VIS, ""));
-
         return service.getVisualization(
                 visId,
                 params.getHttpParam(PARAM_VISUALIZATION_CLASSES),
@@ -400,17 +361,11 @@ public class GetStatsTileHandler extends ActionHandler {
     }
 
     private void printParameters(ActionParameters params) {
-        Enumeration e = params.getRequest().getParameterNames();
-
+        final Enumeration e = params.getRequest().getParameterNames();
         log.debug("GetStatsTile parameters:");
         while (e.hasMoreElements()) {
             String key = (String) e.nextElement();
-            log.debug("Key: " + key);
-            String[] values = params.getRequest().getParameterValues(key);
-
-            for (String value : values) {
-                log.debug("  value: " + value);
-            }
+            log.debug("Key: " + key, "values:", params.getRequest().getParameterValues(key));
         }
     }
 

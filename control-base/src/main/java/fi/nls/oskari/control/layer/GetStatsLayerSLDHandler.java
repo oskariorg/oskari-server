@@ -16,6 +16,10 @@ import org.apache.axiom.om.OMElement;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Enumeration;
 
+/**
+ * @deprecated GetStatsTile now supports SLD_BODY posting which makes this obsolete
+ */
+@Deprecated
 @OskariActionRoute("GetStatsLayerSLD")
 public class GetStatsLayerSLDHandler extends ActionHandler {
 
