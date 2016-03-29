@@ -61,6 +61,14 @@ public class SotkaRegionParser {
      * @return if in map returns the id, otherwise -1
      */
     public int getId(String regionCategory, String code) {
+        if(regionCategory == null) {
+            for(String region : idsByCategoryAndCode.keySet()) {
+                final int id = getId(region, code);
+                if(id != -1) {
+                    return id;
+                }
+            }
+        }
         if (idsByCategoryAndCode.containsKey(regionCategory)) {
             Map<String, Integer> idsByCode = idsByCategoryAndCode.get(regionCategory);
             if(idsByCode.containsKey(code)) {
