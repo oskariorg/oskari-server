@@ -5,6 +5,7 @@ import java.util.List;
 import fi.nls.oskari.annotation.Oskari;
 import fi.nls.oskari.domain.User;
 import fi.nls.oskari.service.OskariComponent;
+import org.json.JSONObject;
 
 @Oskari("MockPlugin")
 public class MockPlugin extends OskariComponent implements StatisticalDatasourcePlugin {
@@ -17,6 +18,8 @@ public class MockPlugin extends OskariComponent implements StatisticalDatasource
     @Override
     public void init() {
     }
+
+    public void setConfig(JSONObject config) {}
 
     @Override
     public boolean canCache() {

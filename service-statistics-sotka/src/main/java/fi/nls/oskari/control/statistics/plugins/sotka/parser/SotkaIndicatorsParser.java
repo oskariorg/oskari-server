@@ -4,15 +4,24 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import fi.nls.oskari.control.statistics.plugins.sotka.SotkaConfig;
 import org.json.JSONArray;
 import org.json.JSONException;
 
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import org.json.JSONObject;
 
 public class SotkaIndicatorsParser {
     private final static Logger LOG = LogFactory.getLogger(SotkaIndicatorsParser.class);
+    private SotkaConfig config;
 
+    public void setConfig(SotkaConfig obj) {
+        if(obj == null) {
+            return;
+        }
+        config = obj;
+    }
     public List<SotkaIndicator> parse(String response, Map<String, Long> sotkaLayersToOskariLayers) {
         List<SotkaIndicator> indicatorList = new ArrayList<>();
         try {
@@ -21,7 +30,7 @@ public class SotkaIndicatorsParser {
             // However, this is unlikely before real-time data, because this data is cached.
             JSONArray responseJSON = new JSONArray(response);
             for (int i = 0; i < responseJSON.length(); i++) {
-                SotkaIndicator sotkaIndicator = new SotkaIndicator(sotkaLayersToOskariLayers);
+                SotkaIndicator sotkaIndicator = new SotkaIndicator(sotkaLayersToOskariLayers, config);
                 if (sotkaIndicator.parse(responseJSON.getJSONObject(i))) {
                     indicatorList.add(sotkaIndicator);
                 }

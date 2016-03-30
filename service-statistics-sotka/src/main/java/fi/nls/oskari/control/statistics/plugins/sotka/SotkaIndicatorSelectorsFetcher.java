@@ -17,20 +17,23 @@ import fi.nls.oskari.log.Logger;
 public class SotkaIndicatorSelectorsFetcher {
     private final static Logger LOG = LogFactory.getLogger(SotkaIndicatorSelectorsFetcher.class);
     private SotkaSpecificIndicatorParser specificIndicatorParser;
+    private SotkaConfig config;
 
-    public void init() {
-        this.specificIndicatorParser = new SotkaSpecificIndicatorParser();
+    public void init(SotkaConfig config) {
+        this.config = config;
+        this.specificIndicatorParser = new SotkaSpecificIndicatorParser(config);
     }
 
     /**
      * This returns the indicator selectors for one indicator.
-     * @param selectors
-     * @param indicator
+     * @param indicatorId
+     * @param layerMappings
      * @return
      */
     public SotkaIndicator get(String indicatorId, Map<String, Long> layerMappings) {
         try {
             SotkaRequest specificIndicatorRequest = SotkaRequest.getInstance(IndicatorMetadata.NAME);
+            specificIndicatorRequest.setBaseURL(config.getUrl());
             specificIndicatorRequest.setIndicator(indicatorId);
             String specificIndicatorJsonResponse = specificIndicatorRequest.getData();
             return specificIndicatorParser.parse(specificIndicatorJsonResponse, layerMappings);

@@ -2,6 +2,7 @@ package fi.nls.oskari.control.statistics.plugins.sotka.parser;
 
 import java.util.Map;
 
+import fi.nls.oskari.control.statistics.plugins.sotka.SotkaConfig;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -10,6 +11,11 @@ import fi.nls.oskari.log.Logger;
 
 public class SotkaSpecificIndicatorParser {
     private final static Logger LOG = LogFactory.getLogger(SotkaSpecificIndicatorParser.class);
+    private SotkaConfig config;
+
+    public SotkaSpecificIndicatorParser(SotkaConfig obj) {
+        config = obj;
+    }
 
     public SotkaIndicator parse(String response, Map<String, Long> sotkaLayersToOskariLayers) {
         try {
@@ -17,7 +23,7 @@ public class SotkaSpecificIndicatorParser {
             // Keeping it simple. If performance becomes an issue, this can be reimplemented in a streaming fashion.
             // However, this is unlikely before real-time data, because this data is cached.
             JSONObject responseJSON = new JSONObject(response);
-            SotkaIndicator sotkaIndicator = new SotkaIndicator(sotkaLayersToOskariLayers);
+            SotkaIndicator sotkaIndicator = new SotkaIndicator(sotkaLayersToOskariLayers, config);
             if (sotkaIndicator.parse(responseJSON)) {
                 return sotkaIndicator;
             }

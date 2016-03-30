@@ -1,5 +1,6 @@
 package fi.nls.oskari.control.statistics.plugins.kapa;
 
+import fi.nls.oskari.control.statistics.plugins.db.StatisticalDatasource;
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -124,8 +125,11 @@ public class KapaPluginIT {
     public void testKapaPlugin()
             throws ClassNotFoundException, InstantiationException, IllegalAccessException {
         manager.reset();
-        manager.registerPlugin("fi.nls.oskari.control.statistics.plugins.kapa.KapaStatisticalDatasourcePlugin", null,
-                new KapaStatisticalDatasourcePlugin());
+        StatisticalDatasource source = new StatisticalDatasource();
+        source.setId(1);
+        KapaStatisticalDatasourcePlugin plugin = new KapaStatisticalDatasourcePlugin();
+        source.setPlugin(plugin.getName());
+        manager.registerDatasource(source, plugin);
         assertEquals(1, manager.getPlugins().size());
         StatisticalDatasourcePlugin kapaPlugin = null;
         Iterator<StatisticalDatasourcePlugin> pluginsIterator = manager.getPlugins().values().iterator();

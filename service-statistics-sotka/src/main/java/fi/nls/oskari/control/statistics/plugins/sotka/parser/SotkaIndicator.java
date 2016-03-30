@@ -7,6 +7,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import fi.nls.oskari.control.statistics.plugins.sotka.SotkaConfig;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -41,21 +42,16 @@ public class SotkaIndicator implements StatisticalIndicator {
     private boolean metadataFetched = false;
 
     private static final SotkaIndicatorSelectorsFetcher metadataFetcher = new SotkaIndicatorSelectorsFetcher();
-    static {
-        metadataFetcher.init();
-    }
 
     /**
      * The fetcher object is shared between all SotkaIndicators.
      */
     private static final SotkaIndicatorValuesFetcher fetcher = new SotkaIndicatorValuesFetcher();
-    static {
-        fetcher.init();
-        metadataFetcher.init();
-    }
 
-    public SotkaIndicator(Map<String, Long> sotkaLayersToOskariLayers) {
+    public SotkaIndicator(Map<String, Long> sotkaLayersToOskariLayers, SotkaConfig config) {
         this.sotkaLayersToOskariLayers = sotkaLayersToOskariLayers;
+        fetcher.init(config);
+        metadataFetcher.init(config);
     }
 
     /**

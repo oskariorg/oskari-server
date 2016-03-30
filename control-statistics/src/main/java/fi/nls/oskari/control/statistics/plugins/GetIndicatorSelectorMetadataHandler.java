@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+import fi.nls.oskari.control.ActionParamsException;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -45,7 +46,7 @@ public class GetIndicatorSelectorMetadataHandler extends ActionHandler {
     
     @Override
     public void handleAction(ActionParameters ap) throws ActionException {
-        final String pluginId = ap.getRequiredParam(PARAM_PLUGIN_ID);
+        final long pluginId = ap.getRequiredParamInt(PARAM_PLUGIN_ID);
         final String indicatorId = ap.getRequiredParam(PARAM_INDICATOR_ID);
         JSONObject response = getIndicatorMetadataJSON(ap.getUser(), pluginId, indicatorId);
         ResponseHelper.writeResponse(ap, response);
@@ -56,7 +57,7 @@ public class GetIndicatorSelectorMetadataHandler extends ActionHandler {
      * @return
      * @throws ActionException
      */
-    JSONObject getIndicatorMetadataJSON(User user, String pluginId, String indicatorId) throws ActionException {
+    JSONObject getIndicatorMetadataJSON(User user, long pluginId, String indicatorId) throws ActionException {
         StatisticalDatasourcePlugin plugin = pluginManager.getPlugin(pluginId);
         String cacheKey = CACHE_PREFIX + plugin.getClass().getCanonicalName() + indicatorId;
         if (plugin.canCache()) {

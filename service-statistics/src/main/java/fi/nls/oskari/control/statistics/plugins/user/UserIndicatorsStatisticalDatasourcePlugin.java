@@ -13,6 +13,7 @@ import fi.nls.oskari.domain.map.indicator.UserIndicator;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.service.OskariComponent;
+import org.json.JSONObject;
 
 @Oskari("UserStats")
 public class UserIndicatorsStatisticalDatasourcePlugin extends OskariComponent implements StatisticalDatasourcePlugin {
@@ -39,6 +40,11 @@ public class UserIndicatorsStatisticalDatasourcePlugin extends OskariComponent i
             indicators.add(new UserStatisticalIndicator(userIndicator));
         }
         return indicators;
+    }
+
+
+    public void setConfig(JSONObject obj) {
+        // no-op
     }
 
     @Override

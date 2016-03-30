@@ -41,7 +41,7 @@ public class GetIndicatorDataHandler extends ActionHandler {
 
     @Override
     public void handleAction(ActionParameters ap) throws ActionException {
-        final String pluginId = ap.getRequiredParam(PARAM_PLUGIN_ID);
+        final long pluginId = ap.getRequiredParamInt(PARAM_PLUGIN_ID);
         final String indicatorId = ap.getRequiredParam(PARAM_INDICATOR_ID);
         final long layerId = new Long(ap.getRequiredParam(PARAM_LAYER_ID));
         final String selectors = ap.getRequiredParam(PARAM_SELECTORS);
@@ -49,7 +49,7 @@ public class GetIndicatorDataHandler extends ActionHandler {
         ResponseHelper.writeResponse(ap, response);
     }
 
-    public JSONObject getIndicatorDataJSON(User user, String pluginId, String indicatorId,
+    public JSONObject getIndicatorDataJSON(User user, long pluginId, String indicatorId,
             Long layerId, String selectorsStr)
             throws ActionException {
         final String cacheKey = CACHE_KEY_PREFIX + pluginId + ":" + indicatorId + ":" + layerId + ":" + selectorsStr;

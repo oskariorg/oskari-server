@@ -27,6 +27,7 @@ import fi.nls.oskari.domain.User;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.service.OskariComponent;
+import org.json.JSONObject;
 
 @Oskari("KAPA")
 public class KapaStatisticalDatasourcePlugin extends OskariComponent implements StatisticalDatasourcePlugin {
@@ -37,6 +38,7 @@ public class KapaStatisticalDatasourcePlugin extends OskariComponent implements 
      * Maps the KaPa layer identifiers to Oskari layers.
      */
     private Map<String, Long> layerMappings;
+    private JSONObject config = new JSONObject();
     
     public KapaStatisticalDatasourcePlugin() {
         indicatorsParser = new KapaIndicatorsParser();
@@ -49,6 +51,13 @@ public class KapaStatisticalDatasourcePlugin extends OskariComponent implements 
         String jsonResponse = request.getIndicators();
         List<KapaIndicator> indicators = indicatorsParser.parse(jsonResponse, layerMappings);
         return indicators;
+    }
+
+    public void setConfig(JSONObject obj) {
+        if(obj == null) {
+            return;
+        }
+        config = obj;
     }
 
     @Override

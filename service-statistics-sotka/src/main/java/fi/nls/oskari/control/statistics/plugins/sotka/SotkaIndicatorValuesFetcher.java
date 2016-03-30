@@ -25,8 +25,10 @@ import fi.nls.oskari.control.statistics.plugins.sotka.requests.SotkaRequest;
 public class SotkaIndicatorValuesFetcher {
     private SotkaIndicatorDataParser parser;
     private SotkaRegionParser regionParser;
+    private SotkaConfig config;
 
-    public void init() {
+    public void init(SotkaConfig config) {
+        this.config = config;
         this.parser = new SotkaIndicatorDataParser();
         // We need to filter by region category and index by codes. Codes are unique within
         this.regionParser = new SotkaRegionParser();
@@ -42,6 +44,7 @@ public class SotkaIndicatorValuesFetcher {
      */
     public Map<Integer, IndicatorValue> getAll(StatisticalIndicatorSelectors selectors, String indicator) {
         SotkaRequest request = SotkaRequest.getInstance(IndicatorData.NAME);
+        request.setBaseURL(config.getUrl());
         // If there is no defined values for gender or year, we will use "total" and an empty list.
         String gender = "total";
         List<String> years = new ArrayList<>();

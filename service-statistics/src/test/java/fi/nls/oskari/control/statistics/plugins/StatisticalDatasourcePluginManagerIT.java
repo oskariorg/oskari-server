@@ -1,5 +1,6 @@
 package fi.nls.oskari.control.statistics.plugins;
 
+import fi.nls.oskari.control.statistics.plugins.db.StatisticalDatasource;
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -61,7 +62,11 @@ public class StatisticalDatasourcePluginManagerIT {
     public void testRegisteringPluginsAndRetrievingThem()
             throws ClassNotFoundException, InstantiationException, IllegalAccessException {
         manager.reset();
-        manager.registerPlugin("fi.nls.oskari.control.statistics.plugins.MockPlugin", null, new MockPlugin());
+        StatisticalDatasource source = new StatisticalDatasource();
+        source.setId(1);
+        MockPlugin plugin = new MockPlugin();
+        source.setPlugin(plugin.getName());
+        manager.registerDatasource(source, plugin);
         assertEquals(1, manager.getPlugins().size());
         assertThat(manager.getPlugins().values().iterator().next(),
                 instanceOf(MockPlugin.class));
@@ -71,8 +76,10 @@ public class StatisticalDatasourcePluginManagerIT {
     public void testSotkaPlugin()
             throws ClassNotFoundException, InstantiationException, IllegalAccessException {
         manager.reset();
-        manager.registerPlugin("fi.nls.oskari.control.statistics.plugins.sotka.SotkaStatisticalDatasourcePlugin", null,
-                new MockPlugin());
+        StatisticalDatasource source = new StatisticalDatasource();
+        source.setId(1);
+        source.setPlugin("SotkaNET");
+        manager.registerDatasource(source, new MockPlugin());
         assertEquals(1, manager.getPlugins().size());
         StatisticalDatasourcePlugin sotkaPlugin = null;
         Iterator<StatisticalDatasourcePlugin> pluginsIterator = manager.getPlugins().values().iterator();

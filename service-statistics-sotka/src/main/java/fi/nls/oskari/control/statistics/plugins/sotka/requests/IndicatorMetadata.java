@@ -8,7 +8,6 @@ import fi.nls.oskari.cache.JedisManager;
  */
 public class IndicatorMetadata extends SotkaRequest {
     public final static String NAME = "indicator_metadata";
-    private final static String CACHE_KEY_PREFIX = "oskari_sotka_indicator_metadata:";
 
     public boolean isValid () {
         return getIndicator() != null && getIndicator().isEmpty();
@@ -25,7 +24,7 @@ public class IndicatorMetadata extends SotkaRequest {
 
     @Override
     public String getData() {
-        final String cacheKey = CACHE_KEY_PREFIX + getIndicator();
+        final String cacheKey = "oskari_sotka_indicator_metadata:" + getBaseURL() + ":" + getIndicator();
         final String cachedData = JedisManager.get(cacheKey);
         if(cachedData != null && !cachedData.isEmpty()) {
             return cachedData;

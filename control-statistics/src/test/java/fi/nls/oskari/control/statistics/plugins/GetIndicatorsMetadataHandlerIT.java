@@ -66,9 +66,7 @@ public class GetIndicatorsMetadataHandlerIT {
 
         GetIndicatorSelectorMetadataHandler metadataHandler = new GetIndicatorSelectorMetadataHandler();
         metadataHandler.init();
-        JSONObject demographicsResult = metadataHandler.getIndicatorMetadataJSON(null,
-                "fi.nls.oskari.control.statistics.plugins."
-                        + "sotka.SotkaStatisticalDatasourcePlugin", "169");
+        JSONObject demographicsResult = metadataHandler.getIndicatorMetadataJSON(null, 1, "169");
         
         assertEquals(2, demographicsResult.getJSONArray("selectors").length());
         assertEquals("sex", demographicsResult.getJSONArray("selectors").getJSONObject(0).getString("id"));

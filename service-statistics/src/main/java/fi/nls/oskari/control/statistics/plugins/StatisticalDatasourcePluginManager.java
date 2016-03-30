@@ -1,11 +1,15 @@
 package fi.nls.oskari.control.statistics.plugins;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.sql.DataSource;
-
+import fi.nls.oskari.control.statistics.plugins.db.StatisticalDatasource;
+import fi.nls.oskari.control.statistics.plugins.db.StatisticalDatasourceMapper;
+import fi.nls.oskari.db.DatasourceHelper;
+import fi.nls.oskari.domain.map.JSONLocalized;
+import fi.nls.oskari.domain.map.JSONLocalizedName;
+import fi.nls.oskari.log.LogFactory;
+import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.service.OskariComponent;
+import fi.nls.oskari.service.OskariComponentManager;
+import fi.nls.oskari.util.JSONHelper;
 import org.apache.ibatis.mapping.Environment;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.SqlSession;
@@ -14,13 +18,10 @@ import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.apache.ibatis.transaction.TransactionFactory;
 import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
 
-import fi.nls.oskari.control.statistics.plugins.db.StatisticalDatasource;
-import fi.nls.oskari.control.statistics.plugins.db.StatisticalDatasourceMapper;
-import fi.nls.oskari.db.DatasourceHelper;
-import fi.nls.oskari.log.LogFactory;
-import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.service.OskariComponent;
-import fi.nls.oskari.service.OskariComponentManager;
+import javax.sql.DataSource;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * This manager keeps a list of registered data source plugins.
@@ -32,52 +33,44 @@ public class StatisticalDatasourcePluginManager {
      * We are using a static plugin store, because we don't have a IoC container (e.g. Spring) here yet.
      * This is in any case a singleton, this is making it explicit.
      */
-    private static final Map<String, StatisticalDatasourcePlugin> plugins = new HashMap<>();
+    private static final Map<Long, StatisticalDatasourcePlugin> plugins = new HashMap<>();
     /**
      * Localizations with "name" keys for plugin data sources to show to users in the frontend.
      */
-    private static final Map<String, String> pluginLocales = new HashMap<>();
+    private static final Map<Long, JSONLocalizedName> dataSourceLocales = new HashMap<>();
 
-    private List<StatisticalDatasource> pluginInfos;
-    
+    private List<StatisticalDatasource> statisticalDatasources;
+
     /**
      * Use this method to register plugins as data sources.
-     * @param id The id in the plugin annotation.
-     * @param locale The JSON locale with "name" key for the localized text to show in the UI to resolve to the data source name for the plugin.
-     * @throws ClassNotFoundException If the class is not found in the classpath.
-     * @throws IllegalAccessException If the class no-parameter constructor is not accessible.
-     * @throws InstantiationException If there was an exception in instantiating the plugin.
+     *
+     * @param source information about the datasource
+     * @param plugin The JSON locale with "name" key for the localized text to show in the UI to resolve to the data source name for the plugin.
      */
-    public void registerPlugin(String id, String locale, StatisticalDatasourcePlugin plugin) throws
-    ClassNotFoundException, InstantiationException, IllegalAccessException {
-        if (plugins.containsKey(id)) {
-            return;
-        }
-        LOG.info("Registering a Statistical Datasource: " + id);
+    public void registerDatasource(StatisticalDatasource source, StatisticalDatasourcePlugin plugin) {
+        LOG.info("Registering a Statistical Datasource: ", source.getId(), "with plugin", source.getPlugin());
+        plugin.setConfig(source.getConfigJSON());
         plugin.init();
-        plugins.put(id, plugin);
-        if (locale == null || locale.equals("")) {
-            // If the localization key was not defined, we will use the class name.
-            pluginLocales.put(id, id);
-        } else {
-            pluginLocales.put(id, locale);
-        }
+        plugins.put(source.getId(), plugin);
+        final JSONLocalizedName loc = new JSONLocalizedName();
+        loc.setLocale(JSONHelper.createJSONObject(source.getLocale()));
+        dataSourceLocales.put(source.getId(), loc);
     }
-    
+
     /**
-     * 
      * @return The collection of registered plugins.
      */
-    public Map<String, StatisticalDatasourcePlugin> getPlugins() {
+    public Map<Long, StatisticalDatasourcePlugin> getPlugins() {
         return plugins;
     }
+
     /**
-     * 
      * @return One plugin.
      */
-    public StatisticalDatasourcePlugin getPlugin(String id) {
+    public StatisticalDatasourcePlugin getPlugin(long id) {
         return plugins.get(id);
     }
+
     /**
      * Used for tests.
      */
@@ -89,35 +82,28 @@ public class StatisticalDatasourcePluginManager {
         // Fetching the plugins from the database.
         final DatasourceHelper helper = DatasourceHelper.getInstance();
         final DataSource dataSource = helper.getDataSource(helper.getOskariDataSourceName());
-        SqlSessionFactory factory = initializeIBatis(dataSource);
-        final SqlSession session = factory.openSession();
-        try {
-            pluginInfos = session.selectList("getAll");
+        final SqlSessionFactory factory = initializeIBatis(dataSource);
+
+        try (final SqlSession session = factory.openSession()) {
+            statisticalDatasources = session.getMapper(StatisticalDatasourceMapper.class).getAll();
             session.close();
             Map<String, OskariComponent> allPlugins = OskariComponentManager.getComponentsOfType(StatisticalDatasourcePlugin.class);
 
-            for (StatisticalDatasource pluginInfo: pluginInfos) {
-                LOG.info("Adding plugin from database: " + String.valueOf(pluginInfo));
+            for (StatisticalDatasource source : statisticalDatasources) {
+                LOG.info("Adding plugin from database: ", source);
                 try {
-                    OskariComponent plugin = allPlugins.get(pluginInfo.getComponentId());
+                    OskariComponent plugin = allPlugins.get(source.getPlugin());
                     if (plugin == null) {
-                        throw new ClassNotFoundException("Annotation @Oskari(\"" + pluginInfo.getComponentId() + "\") not found!");
+                        throw new ClassNotFoundException("Annotation @Oskari(\"" + source.getPlugin() + "\") not found!");
                     }
-                    this.registerPlugin(pluginInfo.getComponentId(), pluginInfo.getLocale(),
-                            (StatisticalDatasourcePlugin) plugin);
+                    this.registerDatasource(source, (StatisticalDatasourcePlugin) plugin);
                 } catch (ClassNotFoundException e) {
-                    LOG.error("Could not find the plugin class: " + pluginInfo.getComponentId() + ". Skipping...");
-                } catch (InstantiationException e) {
-                    LOG.error("Could not instantiate the plugin class: " + pluginInfo.getComponentId() + ". Skipping...");
-                } catch (IllegalAccessException e) {
-                    LOG.error("Could not access the plugin class constructor: " + pluginInfo.getComponentId() + ". Skipping...");
+                    LOG.error("Could not find the plugin class: " + source.getPlugin() + ". Skipping...");
                 }
             }
-        } finally {
-            session.close();
         }
     }
-    
+
     private SqlSessionFactory initializeIBatis(final DataSource dataSource) {
         final TransactionFactory transactionFactory = new JdbcTransactionFactory();
         final Environment environment = new Environment("development", transactionFactory, dataSource);
@@ -130,7 +116,7 @@ public class StatisticalDatasourcePluginManager {
         return new SqlSessionFactoryBuilder().build(configuration);
     }
 
-    public String getPluginLocale(String id) {
-        return pluginLocales.get(id);
+    public JSONLocalized getPluginLocale(long id) {
+        return dataSourceLocales.get(id);
     }
 }

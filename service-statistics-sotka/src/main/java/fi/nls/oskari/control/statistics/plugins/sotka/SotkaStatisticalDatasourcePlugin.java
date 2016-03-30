@@ -6,6 +6,7 @@ import java.util.HashMap;
 
 import javax.sql.DataSource;
 
+import fi.nls.oskari.util.JSONHelper;
 import org.apache.ibatis.mapping.Environment;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.SqlSession;
@@ -28,12 +29,16 @@ import fi.nls.oskari.domain.User;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.service.OskariComponent;
+import org.json.JSONObject;
 
 @Oskari("SotkaNET")
 public class SotkaStatisticalDatasourcePlugin extends OskariComponent implements StatisticalDatasourcePlugin {
     private final static Logger LOG = LogFactory.getLogger(SotkaStatisticalDatasourcePlugin.class);
     
     private SotkaIndicatorsParser indicatorsParser = null;
+    private SotkaConfig config = new SotkaConfig();
+
+    private static final String KEY_URL = "url";
 
     /**
      * Maps the SotkaNET layer identifiers to Oskari layers.
@@ -50,6 +55,7 @@ public class SotkaStatisticalDatasourcePlugin extends OskariComponent implements
             // Note that some mandatory information about the layers is not given here,
             // for example the year range, but must be requested separately for each indicator.
             SotkaRequest request = SotkaRequest.getInstance(Indicators.NAME);
+            request.setBaseURL(getBaseURL());
             String jsonResponse = request.getData();
 
             // We will later need to add the year range information to the preliminary information using separate requests.
@@ -62,8 +68,24 @@ public class SotkaStatisticalDatasourcePlugin extends OskariComponent implements
         }
     }
 
+    public void setConfig(JSONObject obj) {
+        if(obj == null) {
+            return;
+        }
+        config.setUrl(obj.optString(KEY_URL));
+    }
+
+    String getBaseURL() {
+        return config.getUrl();
+    }
+
     @Override
     public void init() {
+        if(config.getUrl() == null) {
+            // populate default base url
+            config.setUrl("http://www.sotkanet.fi/rest");
+        }
+        indicatorsParser.setConfig(config);
         // Fetching the layer mapping from the database.
         final DatasourceHelper helper = DatasourceHelper.getInstance();
         final DataSource dataSource = helper.getDataSource(helper.getOskariDataSourceName());

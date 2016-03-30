@@ -8,7 +8,6 @@ import fi.nls.oskari.cache.JedisManager;
  */
 public class Indicators extends SotkaRequest {
 
-    private final static String CACHE_KEY = "oskari_sotka_indicators_list";
     public final static String NAME = "indicators";
 
     @Override
@@ -23,12 +22,13 @@ public class Indicators extends SotkaRequest {
 
     @Override
     public String getData() {
-        final String cachedData = JedisManager.get(CACHE_KEY);
+        final String cacheKey = "oskari_sotka_indicators_list:" + getBaseURL();
+        final String cachedData = JedisManager.get(cacheKey);
         if(cachedData != null && !cachedData.isEmpty()) {
             return cachedData;
         }
         final String data = super.getData();
-        JedisManager.setex(CACHE_KEY, JedisManager.EXPIRY_TIME_DAY, data);
+        JedisManager.setex(cacheKey, JedisManager.EXPIRY_TIME_DAY, data);
         return data;
     }
 }

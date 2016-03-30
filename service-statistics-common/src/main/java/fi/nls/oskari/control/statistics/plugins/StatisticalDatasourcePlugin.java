@@ -3,6 +3,7 @@ package fi.nls.oskari.control.statistics.plugins;
 import java.util.List;
 
 import fi.nls.oskari.domain.User;
+import org.json.JSONObject;
 
 /**
  * Each statistical datasource plugin encapsulates access to a single external API
@@ -42,6 +43,11 @@ public interface StatisticalDatasourcePlugin {
      * Hook for setting up components that the handler needs to handle requests
      */
     public void init();
+
+    /**
+     * Hook for setting up configuration based on datasource
+     */
+    public void setConfig(JSONObject config);
 
     /**
      * Generally true, if the data does not change all the time, for example based on the user doing the query.

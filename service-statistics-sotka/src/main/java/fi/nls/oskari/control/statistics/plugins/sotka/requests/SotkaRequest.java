@@ -38,7 +38,7 @@ public class SotkaRequest {
     private String[] years = new String[0];
     private String gender;
 
-    private static String sotkaBaseURL;
+    private String sotkaBaseURL;
 
     private static Map<String, Class> requests = new HashMap<String, Class>();
     static {
@@ -63,6 +63,13 @@ public class SotkaRequest {
         if(this.getClass().equals(SotkaRequest.class)) {
             throw new RuntimeException("Cannot be instantiated");
         }
+    }
+
+    public void setBaseURL(String url) {
+        sotkaBaseURL = url;
+    }
+    public String getBaseURL() {
+        return sotkaBaseURL;
     }
 
     public String getName() {

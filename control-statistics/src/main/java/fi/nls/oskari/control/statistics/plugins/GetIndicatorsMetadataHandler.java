@@ -1,11 +1,10 @@
 package fi.nls.oskari.control.statistics.plugins;
 
-import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
+import fi.nls.oskari.domain.map.JSONLocalized;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -60,32 +59,33 @@ public class GetIndicatorsMetadataHandler extends ActionHandler {
      */
     JSONObject getIndicatorsMetadataJSON(User user, boolean refreshCache) throws ActionException {
         JSONObject response = new JSONObject();
-        Map<String, StatisticalDatasourcePlugin> plugins = pluginManager.getPlugins();
-        for (String id : plugins.keySet()) {
+        Map<Long, StatisticalDatasourcePlugin> plugins = pluginManager.getPlugins();
+        for (Long id : plugins.keySet()) {
             StatisticalDatasourcePlugin plugin = plugins.get(id);
             String cacheKey = CACHE_PREFIX + id;
             if (plugin.canCache() && !refreshCache) {
                 final String cachedData = JedisManager.get(cacheKey);
                 if (cachedData != null && !cachedData.isEmpty()) {
                     try {
-                        response.put(id, new JSONObject(cachedData));
+                        response.put(Long.toString(id), new JSONObject(cachedData));
                         continue;
                     } catch (JSONException e) {
                         // Failed serializing. Skipping the cache.
                     }
                 }
             }
-            String locale = pluginManager.getPluginLocale(id);
+            JSONLocalized locale = pluginManager.getPluginLocale(id);
             JSONObject pluginMetadata = new JSONObject();
             try {
-                pluginMetadata.put("locale", new JSONObject(locale));
+                // TODO: maybe just list the current language?
+                pluginMetadata.put("locale", locale.getLocale());
                 JSONObject pluginIndicators = new JSONObject();
                 for (StatisticalIndicator indicator : plugin.getIndicators(user)) {
                     JSONObject pluginIndicatorJSON = toJSON(indicator);
                     pluginIndicators.put(indicator.getId(), pluginIndicatorJSON);
                 }
                 pluginMetadata.put("indicators", pluginIndicators);
-                response.put(id, pluginMetadata);
+                response.put(Long.toString(id), pluginMetadata);
                 // Note that there is an another layer of caches in the plugins doing the web queries.
                 // Two layers are necessary, because deserialization and conversion to the internal data model
                 // is pretty heavy operation.
