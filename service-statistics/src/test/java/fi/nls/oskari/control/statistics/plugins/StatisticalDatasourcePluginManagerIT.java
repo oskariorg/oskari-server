@@ -64,9 +64,9 @@ public class StatisticalDatasourcePluginManagerIT {
         manager.reset();
         StatisticalDatasource source = new StatisticalDatasource();
         source.setId(1);
-        MockPlugin plugin = new MockPlugin();
-        source.setPlugin(plugin.getName());
-        manager.registerDatasource(source, plugin);
+        MockPluginFactory factory = new MockPluginFactory();
+        source.setPlugin(factory.getName());
+        manager.registerDatasource(source, factory);
         assertEquals(1, manager.getPlugins().size());
         assertThat(manager.getPlugins().values().iterator().next(),
                 instanceOf(MockPlugin.class));
@@ -79,7 +79,7 @@ public class StatisticalDatasourcePluginManagerIT {
         StatisticalDatasource source = new StatisticalDatasource();
         source.setId(1);
         source.setPlugin("SotkaNET");
-        manager.registerDatasource(source, new MockPlugin());
+        manager.registerDatasource(source, new MockPluginFactory());
         assertEquals(1, manager.getPlugins().size());
         StatisticalDatasourcePlugin sotkaPlugin = null;
         Iterator<StatisticalDatasourcePlugin> pluginsIterator = manager.getPlugins().values().iterator();

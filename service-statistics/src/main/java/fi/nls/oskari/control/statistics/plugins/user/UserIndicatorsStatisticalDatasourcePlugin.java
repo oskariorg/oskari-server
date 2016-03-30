@@ -8,6 +8,7 @@ import fi.mml.map.mapwindow.service.db.UserIndicatorServiceImpl;
 import fi.nls.oskari.annotation.Oskari;
 import fi.nls.oskari.control.statistics.plugins.StatisticalDatasourcePlugin;
 import fi.nls.oskari.control.statistics.plugins.StatisticalIndicator;
+import fi.nls.oskari.control.statistics.plugins.db.StatisticalDatasource;
 import fi.nls.oskari.domain.User;
 import fi.nls.oskari.domain.map.indicator.UserIndicator;
 import fi.nls.oskari.log.LogFactory;
@@ -15,8 +16,7 @@ import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.service.OskariComponent;
 import org.json.JSONObject;
 
-@Oskari("UserStats")
-public class UserIndicatorsStatisticalDatasourcePlugin extends OskariComponent implements StatisticalDatasourcePlugin {
+public class UserIndicatorsStatisticalDatasourcePlugin implements StatisticalDatasourcePlugin {
     private final static Logger LOG = LogFactory.getLogger(UserIndicatorsStatisticalDatasourcePlugin.class);
     private static UserIndicatorService userIndicatorService = new UserIndicatorServiceImpl();
 
@@ -42,13 +42,8 @@ public class UserIndicatorsStatisticalDatasourcePlugin extends OskariComponent i
         return indicators;
     }
 
-
-    public void setConfig(JSONObject obj) {
-        // no-op
-    }
-
     @Override
-    public void init() {
+    public void init(StatisticalDatasource source) {
     }
 
     @Override

@@ -45,12 +45,12 @@ public class StatisticalDatasourcePluginManager {
      * Use this method to register plugins as data sources.
      *
      * @param source information about the datasource
-     * @param plugin The JSON locale with "name" key for the localized text to show in the UI to resolve to the data source name for the plugin.
+     * @param factory factory to create plugins for the source
      */
-    public void registerDatasource(StatisticalDatasource source, StatisticalDatasourcePlugin plugin) {
+    public void registerDatasource(StatisticalDatasource source, StatisticalDatasourceFactory factory) {
         LOG.info("Registering a Statistical Datasource: ", source.getId(), "with plugin", source.getPlugin());
-        plugin.setConfig(source.getConfigJSON());
-        plugin.init();
+        factory.setupSourceLayers(source);
+        StatisticalDatasourcePlugin plugin = factory.create(source);
         plugins.put(source.getId(), plugin);
         final JSONLocalizedName loc = new JSONLocalizedName();
         loc.setLocale(JSONHelper.createJSONObject(source.getLocale()));
@@ -87,7 +87,7 @@ public class StatisticalDatasourcePluginManager {
         try (final SqlSession session = factory.openSession()) {
             statisticalDatasources = session.getMapper(StatisticalDatasourceMapper.class).getAll();
             session.close();
-            Map<String, OskariComponent> allPlugins = OskariComponentManager.getComponentsOfType(StatisticalDatasourcePlugin.class);
+            Map<String, OskariComponent> allPlugins = OskariComponentManager.getComponentsOfType(StatisticalDatasourceFactory.class);
 
             for (StatisticalDatasource source : statisticalDatasources) {
                 LOG.info("Adding plugin from database: ", source);
@@ -96,7 +96,7 @@ public class StatisticalDatasourcePluginManager {
                     if (plugin == null) {
                         throw new ClassNotFoundException("Annotation @Oskari(\"" + source.getPlugin() + "\") not found!");
                     }
-                    this.registerDatasource(source, (StatisticalDatasourcePlugin) plugin);
+                    this.registerDatasource(source, (StatisticalDatasourceFactory) plugin);
                 } catch (ClassNotFoundException e) {
                     LOG.error("Could not find the plugin class: " + source.getPlugin() + ". Skipping...");
                 }

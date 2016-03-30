@@ -8,6 +8,10 @@ public class SotkaConfig {
     private String url;
 
     public String getUrl() {
+        if(url == null) {
+            // default
+            return "http://www.sotkanet.fi/rest";
+        }
         return url;
     }
 

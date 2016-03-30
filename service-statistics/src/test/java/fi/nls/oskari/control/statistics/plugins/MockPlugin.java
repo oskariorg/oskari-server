@@ -3,12 +3,12 @@ package fi.nls.oskari.control.statistics.plugins;
 import java.util.List;
 
 import fi.nls.oskari.annotation.Oskari;
+import fi.nls.oskari.control.statistics.plugins.db.StatisticalDatasource;
 import fi.nls.oskari.domain.User;
 import fi.nls.oskari.service.OskariComponent;
 import org.json.JSONObject;
 
-@Oskari("MockPlugin")
-public class MockPlugin extends OskariComponent implements StatisticalDatasourcePlugin {
+public class MockPlugin implements StatisticalDatasourcePlugin {
 
     @Override
     public List<StatisticalIndicator> getIndicators(User user) {
@@ -16,10 +16,8 @@ public class MockPlugin extends OskariComponent implements StatisticalDatasource
     }
 
     @Override
-    public void init() {
+    public void init(StatisticalDatasource source) {
     }
-
-    public void setConfig(JSONObject config) {}
 
     @Override
     public boolean canCache() {

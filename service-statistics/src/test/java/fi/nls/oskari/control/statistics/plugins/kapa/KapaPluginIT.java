@@ -127,9 +127,9 @@ public class KapaPluginIT {
         manager.reset();
         StatisticalDatasource source = new StatisticalDatasource();
         source.setId(1);
-        KapaStatisticalDatasourcePlugin plugin = new KapaStatisticalDatasourcePlugin();
-        source.setPlugin(plugin.getName());
-        manager.registerDatasource(source, plugin);
+        KapaStatisticalDatasourceFactory factory = new KapaStatisticalDatasourceFactory();
+        source.setPlugin(factory.getName());
+        manager.registerDatasource(source, factory);
         assertEquals(1, manager.getPlugins().size());
         StatisticalDatasourcePlugin kapaPlugin = null;
         Iterator<StatisticalDatasourcePlugin> pluginsIterator = manager.getPlugins().values().iterator();
