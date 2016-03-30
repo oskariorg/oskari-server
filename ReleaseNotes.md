@@ -15,7 +15,6 @@ Added indexes for oskari_resource and oskari_permission tables.
 New url parameter **&what3words** for positioning the map in startup
 e.g. http://www.paikkatietoikkuna.fi/web/en/map-window?ver=1.17&zoomLevel=6&what3words=examine.flying.daytime&mapLayers=base_35+100+default&showMarker=true
 
-
 ### control-base
 
 #### MapfullHandler 
@@ -68,11 +67,21 @@ When coordinatetool bundle is part of the setup. And it has configuration to do 
 
 Coordinatetool is now allowed bundle for publisher.
     
+#### GetPermissionsLayerHandlers
+
+Additional permissions can now be configured with oskari-ext.properties:
+ 
+    permission.types = EDIT_LAYER_CONTENT
+    permission.EDIT_LAYER_CONTENT.name.fi=Muokkaa tasoa
+    permission.EDIT_LAYER_CONTENT.name.en=Edit layer
+
+These permissions will then be shown by the admin-layerrights bundle in Oskari frontend.
+
 ### transport && control-base
 
-**WFS-T**  functionality is added to oskari-server package
-
-Look at oskari.org / Adding functionalities / 
+**WFS-T**  functionality is added to oskari-server package.
+User roles can be granted a EDIT_LAYER_CONTENT permission that will enable them to edit features on a WFS-service.
+This requires the content-editor bundle in Oskari frontend to provide the user-interface.
 
 ## 1.35.1
 
