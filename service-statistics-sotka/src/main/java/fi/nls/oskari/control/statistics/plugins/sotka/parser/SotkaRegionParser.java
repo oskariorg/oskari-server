@@ -9,6 +9,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.kevinsawicki.http.HttpRequest;
 
 import fi.nls.oskari.control.statistics.plugins.APIException;
+import fi.nls.oskari.control.statistics.plugins.sotka.SotkaConfig;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 
@@ -19,14 +20,13 @@ import java.util.Map;
  * Parser (JSON) for getting Sotka region ids and codes
  */
 public class SotkaRegionParser {
-    // FIXME: Use the property sotka.baseurl
-	private static final String URL = "http://www.sotkanet.fi/rest/1.1/regions";
 	private static final String ID_FIELD = "id";
 	private static final String CODE_FIELD = "code";
 	public static final String CATEGORY_FIELD = "category";
 	private ObjectMapper mapper;
+    private String url;
 
-    private final static Logger log = LogFactory.getLogger(SotkaRegionParser.class);
+    private final static Logger LOG = LogFactory.getLogger(SotkaRegionParser.class);
 
     private Map<Integer, String> categoriesById;
 	private Map<String, Map<String, Integer>> idsByCategoryAndCode;
@@ -36,12 +36,13 @@ public class SotkaRegionParser {
 	/**
 	 * Inits parser and maps.
 	 */
-	public SotkaRegionParser() {
+	public SotkaRegionParser(SotkaConfig config) {
 		mapper = new ObjectMapper();
 		idsByCategoryAndCode = new HashMap<>();
 		codesById = new HashMap<>();
         regionsObjectsById = new HashMap<>();
         categoriesById = new HashMap<>();
+        url = config.getUrl() + "/1.1/regions";
 	}
 
 	/**
@@ -75,7 +76,7 @@ public class SotkaRegionParser {
                 return idsByCode.get(code);
             }
         } else {
-            log.error("Unknown region category: " + regionCategory + ", known ones: " +
+            LOG.error("Unknown region category: " + regionCategory + ", known ones: " +
                 idsByCategoryAndCode.keySet().toString());
         }
         return -1;
@@ -106,7 +107,7 @@ public class SotkaRegionParser {
      */
     public void getData() {
         try {
-            String json = HttpRequest.get(URL).body();
+            String json = HttpRequest.get(url).body();
             JsonFactory factory = new JsonFactory();
             JsonParser parser = factory.createParser(json);
 

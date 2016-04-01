@@ -14,7 +14,7 @@ import org.json.JSONObject;
 
 public class SotkaIndicatorsParser {
     private final static Logger LOG = LogFactory.getLogger(SotkaIndicatorsParser.class);
-    private SotkaConfig config;
+    private SotkaConfig config = new SotkaConfig();
 
     public void setConfig(SotkaConfig obj) {
         if(obj == null) {

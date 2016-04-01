@@ -4,6 +4,7 @@ import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.ActionHandler;
 import fi.nls.oskari.control.ActionParameters;
+import fi.nls.oskari.control.statistics.plugins.sotka.SotkaConfig;
 import fi.nls.oskari.control.statistics.plugins.sotka.parser.SotkaRegionParser;
 import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.JSONHelper;
@@ -39,7 +40,7 @@ public class GetSotkaRegionHandler extends ActionHandler {
     	final String code = params.getRequest().getParameter(PARAM_CODE);
         final JSONObject root = new JSONObject();
         
-        sotkaRegionParser = new SotkaRegionParser();
+        sotkaRegionParser = new SotkaRegionParser(new SotkaConfig());
         
     	if(id != -1) {
     		String resultCode = sotkaRegionParser.getCode(id);

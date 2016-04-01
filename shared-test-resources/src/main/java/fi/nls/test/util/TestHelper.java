@@ -1,4 +1,4 @@
-package fi.nls.oskari.utils;
+package fi.nls.test.util;
 
 import fi.nls.oskari.cache.JedisManager;
 

@@ -1,5 +1,6 @@
 package fi.nls.oskari.control.statistics.plugins.sotka.parser;
 
+import fi.nls.test.util.TestHelper;
 import org.junit.runner.RunWith;
 import org.powermock.modules.junit4.PowerMockRunner;
 
@@ -19,7 +20,6 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-@RunWith(PowerMockRunner.class)
 public class SotkaIndicatorsParserTest {
     private static String testResponse = ResourceHelper.readStringResource("SotkaIndicators.json",
             SotkaIndicatorsParserTest.class);
@@ -36,6 +36,7 @@ public class SotkaIndicatorsParserTest {
 
     @Test
     public void testParseIndicators() throws Exception {
+        org.junit.Assume.assumeTrue(TestHelper.canDoHttp());
         SotkaIndicatorsParser parser = new SotkaIndicatorsParser();
         Map<String, Long> layerMap = new HashMap<>();
         layerMap.put("kunta", 9l);

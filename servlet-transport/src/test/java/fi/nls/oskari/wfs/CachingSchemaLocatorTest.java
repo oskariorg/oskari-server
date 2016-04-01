@@ -1,7 +1,7 @@
 package fi.nls.oskari.wfs;
 
 import fi.nls.oskari.cache.JedisManager;
-import fi.nls.oskari.utils.TestHelper;
+import fi.nls.test.util.TestHelper;
 import org.eclipse.xsd.XSDSchema;
 import org.junit.BeforeClass;
 import org.junit.Test;
