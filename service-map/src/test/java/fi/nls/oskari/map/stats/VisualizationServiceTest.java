@@ -29,7 +29,7 @@ public class VisualizationServiceTest {
         }
     }
 
-    private VisualizationService service = new VisualizationServiceIbatisImpl();
+    private VisualizationService service = new VisualizationService();
 
     @Test
     public void testGetVisualization() throws Exception {

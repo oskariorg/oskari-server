@@ -1,7 +1,7 @@
 package fi.nls.oskari.pojo;
 
 import fi.nls.oskari.util.JSONHelper;
-import fi.nls.oskari.utils.TestHelper;
+import fi.nls.test.util.TestHelper;
 import org.junit.Test;
 
 import java.io.IOException;

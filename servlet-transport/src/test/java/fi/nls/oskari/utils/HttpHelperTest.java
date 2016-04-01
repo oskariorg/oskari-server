@@ -1,6 +1,7 @@
 package fi.nls.oskari.utils;
 
 import fi.nls.oskari.wfs.util.HttpHelper;
+import fi.nls.test.util.TestHelper;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
