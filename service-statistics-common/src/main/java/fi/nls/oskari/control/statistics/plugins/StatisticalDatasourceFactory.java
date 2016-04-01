@@ -26,11 +26,13 @@ public abstract class StatisticalDatasourceFactory extends OskariComponent {
         // Fetching the layer mapping from the database.
         final DatasourceHelper helper = DatasourceHelper.getInstance();
         final DataSource dataSource = helper.getDataSource(helper.getOskariDataSourceName());
-        SqlSessionFactory factory = initializeIBatis(dataSource);
-
-        try(final SqlSession session = factory.openSession()) {
+        final SqlSessionFactory factory = initializeIBatis(dataSource);
+        final SqlSession session = factory.openSession();
+        try {
             final List<DatasourceLayer> layerRows = session.getMapper(DatasourceLayerMapper.class).getLayersForDatasource(source.getId());
             source.setLayers(layerRows);
+        } finally {
+            session.close();
         }
     }
 

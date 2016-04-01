@@ -59,7 +59,7 @@ public class GetIndicatorSelectorMetadataHandler extends ActionHandler {
      */
     JSONObject getIndicatorMetadataJSON(User user, long pluginId, String indicatorId) throws ActionException {
         StatisticalDatasourcePlugin plugin = pluginManager.getPlugin(pluginId);
-        String cacheKey = CACHE_PREFIX + plugin.getClass().getCanonicalName() + indicatorId;
+        String cacheKey = CACHE_PREFIX + pluginId + ":" + indicatorId;
         if (plugin.canCache()) {
             final String cachedData = JedisManager.get(cacheKey);
             if (cachedData != null && !cachedData.isEmpty()) {

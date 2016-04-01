@@ -79,28 +79,34 @@ public class StatisticalDatasourcePluginManager {
     }
 
     public void init() {
+        statisticalDatasources = loadStatisticalDatasources();
+        Map<String, OskariComponent> allPlugins = OskariComponentManager.getComponentsOfType(StatisticalDatasourceFactory.class);
+
+        for (StatisticalDatasource source : statisticalDatasources) {
+            LOG.info("Adding plugin from database: ", source);
+            try {
+                OskariComponent plugin = allPlugins.get(source.getPlugin());
+                if (plugin == null) {
+                    throw new ClassNotFoundException("Annotation @Oskari(\"" + source.getPlugin() + "\") not found!");
+                }
+                this.registerDatasource(source, (StatisticalDatasourceFactory) plugin);
+            } catch (ClassNotFoundException e) {
+                LOG.error("Could not find the plugin class: " + source.getPlugin() + ". Skipping...");
+            }
+        }
+    }
+
+    private List<StatisticalDatasource> loadStatisticalDatasources() {
         // Fetching the plugins from the database.
         final DatasourceHelper helper = DatasourceHelper.getInstance();
         final DataSource dataSource = helper.getDataSource(helper.getOskariDataSourceName());
         final SqlSessionFactory factory = initializeIBatis(dataSource);
-
-        try (final SqlSession session = factory.openSession()) {
-            statisticalDatasources = session.getMapper(StatisticalDatasourceMapper.class).getAll();
+        final SqlSession session = factory.openSession();
+        try {
+            return session.getMapper(StatisticalDatasourceMapper.class).getAll();
+        }
+        finally {
             session.close();
-            Map<String, OskariComponent> allPlugins = OskariComponentManager.getComponentsOfType(StatisticalDatasourceFactory.class);
-
-            for (StatisticalDatasource source : statisticalDatasources) {
-                LOG.info("Adding plugin from database: ", source);
-                try {
-                    OskariComponent plugin = allPlugins.get(source.getPlugin());
-                    if (plugin == null) {
-                        throw new ClassNotFoundException("Annotation @Oskari(\"" + source.getPlugin() + "\") not found!");
-                    }
-                    this.registerDatasource(source, (StatisticalDatasourceFactory) plugin);
-                } catch (ClassNotFoundException e) {
-                    LOG.error("Could not find the plugin class: " + source.getPlugin() + ". Skipping...");
-                }
-            }
         }
     }
 
