@@ -26,9 +26,6 @@ public class SotkaRequest {
 
     private static final List<String> ACCEPTED_VERSIONS = new ArrayList<String>();
     private static final List<String> ACCEPTED_GENDERS = new ArrayList<String>();
-    //private static final List<String> INDICATOR_ACTIONS = new ArrayList<String>();
-
-    private static final String SOTKA_ENCODING = "ISO-8859-1";
 
     private static final String DATA_SEPARATOR = ";";
     private static final String ROW_SEPARATOR = "\r\n";
@@ -78,7 +75,7 @@ public class SotkaRequest {
 
     private static void registerAction(final Class req) {
         try {
-            requests.put(getInstance(req).getName(), req); // .getClass()
+            requests.put(getInstance(req).getName(), req);
         }
         catch (Exception ex) {
             log.error(ex, "Error adding action! " + req);
@@ -167,7 +164,7 @@ public class SotkaRequest {
             final String url = getUrl();
             con = IOHelper.getConnection(url);
 
-            final String data = IOHelper.readString(con.getInputStream(), SOTKA_ENCODING);
+            final String data = IOHelper.readString(con.getInputStream());
             if (isCSV()) {
                 return getJsonFromCSV(data);
             }
