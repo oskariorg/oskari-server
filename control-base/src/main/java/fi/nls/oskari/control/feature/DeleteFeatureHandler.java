@@ -30,7 +30,6 @@ import fi.nls.oskari.map.data.domain.OskariLayerResource;
 import fi.nls.oskari.map.layer.OskariLayerService;
 import fi.nls.oskari.map.layer.OskariLayerServiceIbatisImpl;
 import fi.nls.oskari.permission.domain.Resource;
-import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.util.ResponseHelper;
 import fi.nls.oskari.wfs.WFSLayerConfigurationService;
 import fi.nls.oskari.wfs.WFSLayerConfigurationServiceIbatisImpl;
@@ -40,7 +39,6 @@ public class DeleteFeatureHandler extends ActionHandler {
 	private OskariLayerService layerService;
 	private PermissionsService permissionsService;
 	private WFSLayerConfigurationService layerConfigurationService;
-	private String geometryProperty;
 	
 	public final static String KEY = "WFSImage_";
 	
@@ -59,7 +57,6 @@ public class DeleteFeatureHandler extends ActionHandler {
 			String url = lc.getURL();
 			final String user = lc.getUsername();
 			final String pass = lc.getPassword();
-			geometryProperty = lc.getGMLGeometryProperty();
 			final Resource resource = permissionsService.findResource(new OskariLayerResource(lay));
             final boolean hasPermssion = resource.hasPermission(params.getUser(), Permissions.PERMISSION_TYPE_EDIT_LAYER_CONTENT);
             if(hasPermssion) {
