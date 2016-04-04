@@ -110,8 +110,7 @@ public class OskariLayerWorker {
 			String[] dynamicPermissionTypesArray = dynamicPermissionTypes
 					.split(",");
 			for (int i = 0; i < dynamicPermissionTypesArray.length; i++) {
-				String permissionTypeId = PropertyUtil.get("permission."
-						+ dynamicPermissionTypesArray[i] + ".id");
+				String permissionTypeId = dynamicPermissionTypesArray[i];
 				final List<String> permissions = permissionsService
 						.getResourcesWithGrantedPermissions(
 								Permissions.RESOURCE_TYPE_MAP_LAYER, user,

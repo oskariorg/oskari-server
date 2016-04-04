@@ -78,10 +78,9 @@ cp webapp-transport\target\transport.war ..\jetty-8.1.16-oskari\webapps\transpor
 
 To configure new permission type add to oskari-ext.properties
 ```
-permission.types = editLayerContent
-permission.editLayerContent.id=EDIT_LAYER_CONTENT
-permission.editLayerContent.name.fi=Muokkaa
-permission.editLayerContent.name.en=Edit layer
+permission.types = EDIT_LAYER_CONTENT
+permission.EDIT_LAYER_CONTENT.name.fi=Muokkaa tasoa
+permission.EDIT_LAYER_CONTENT.name.en=Edit layer
 ```
 
 To add new content-editor bundle to Oskari configuration run [SQL file](https://github.com/sitooy/tampere-oskari-server/blob/master/content-resources/src/main/resources/sql/views/01-bundles/tampere/001-content-editor.sql) to add bundle configuration to database. 
