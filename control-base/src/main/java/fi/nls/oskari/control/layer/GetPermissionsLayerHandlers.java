@@ -51,23 +51,7 @@ public class GetPermissionsLayerHandlers extends ActionHandler {
         super.init();
 
         // add any additional permissions
-        PERMISSIONS.addAll(ConversionHelper.asSet(
-                PropertyUtil.getCommaSeparatedList("permission.types")));
-    }
-
-    private String getName(String permissionId, String lang) {
-        final String property = "permission." + permissionId + ".name";
-        final Object obj = PropertyUtil.getLocalizableProperty(property, permissionId);
-        if(obj instanceof String) {
-            return (String) obj;
-        }
-        else if(obj instanceof Map) {
-            String tmp = (String)((Map) obj).get(lang);
-            if(tmp != null) {
-                return tmp;
-            }
-        }
-        return permissionId;
+        PERMISSIONS.addAll(permissionsService.getAdditionalPermissions());
     }
 
 
@@ -87,7 +71,7 @@ public class GetPermissionsLayerHandlers extends ActionHandler {
     	{
             JSONObject perm = new JSONObject();
             JSONHelper.putValue(perm, KEY_ID, id);
-            JSONHelper.putValue(perm, KEY_NAME, getName(id, params.getLocale().getLanguage()));
+            JSONHelper.putValue(perm, KEY_NAME, permissionsService.getPermissionName(id, params.getLocale().getLanguage()));
             permissionNames.put(perm);
             // list resources having the permission
     		List<String> val = permissionsService.getResourcesWithGrantedPermissions(Permissions.RESOURCE_TYPE_MAP_LAYER, externalId, externalType, id);

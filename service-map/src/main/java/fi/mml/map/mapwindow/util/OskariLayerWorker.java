@@ -102,26 +102,18 @@ public class OskariLayerWorker {
         start = System.currentTimeMillis();
         final Set<String> editAccessList = permissionsService.getEditPermissions();
         log.debug("Edit permissions loaded in", System.currentTimeMillis() - start, "ms");
-        
-        String dynamicPermissionTypes = PropertyUtil.get("permission.types").replaceAll("\\s+","");
-    	log.debug("Loading dynamic permissions " + dynamicPermissionTypes);
+
+        final Set<String> additionalPermissions = permissionsService.getAdditionalPermissions();
+    	log.debug("Loading dynamic permissions ", additionalPermissions);
         final Map<String, List<String>> dynamicPermissions = new HashMap<String, List<String>>();
-		if (dynamicPermissionTypes.equals("--permission.types--") == false) {
-			String[] dynamicPermissionTypesArray = dynamicPermissionTypes
-					.split(",");
-			for (int i = 0; i < dynamicPermissionTypesArray.length; i++) {
-				String permissionTypeId = PropertyUtil.get("permission."
-						+ dynamicPermissionTypesArray[i] + ".id");
-				final List<String> permissions = permissionsService
-						.getResourcesWithGrantedPermissions(
-								Permissions.RESOURCE_TYPE_MAP_LAYER, user,
-								permissionTypeId);
-				dynamicPermissions.put(dynamicPermissionTypesArray[i],
-						permissions);
-				log.debug("Got " + permissions.size() + " permissions of type "
-						+ permissionTypeId);
-			}
-		}
+        for (String permissionId : additionalPermissions) {
+            final List<String> permissions = permissionsService
+                    .getResourcesWithGrantedPermissions(
+                            Permissions.RESOURCE_TYPE_MAP_LAYER, user,
+                            permissionId);
+            dynamicPermissions.put(permissionId,permissions);
+            log.debug("Got " + permissions.size() + " permissions of type " + permissionId);
+        }
 
         final JSONArray layersList = new JSONArray();
         start = System.currentTimeMillis();
