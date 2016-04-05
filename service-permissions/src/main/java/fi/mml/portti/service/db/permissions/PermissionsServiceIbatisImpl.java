@@ -26,10 +26,26 @@ public class PermissionsServiceIbatisImpl extends BaseIbatisService<Permissions>
         DYNAMIC_PERMISSIONS = ConversionHelper.asSet(PropertyUtil.getCommaSeparatedList("permission.types"));
     }
 
+    /**
+     * Configure additional permissions with oskari-ext.properties:
+     *
+     *   permission.types = EDIT_LAYER_CONTENT
+     *   permission.EDIT_LAYER_CONTENT.name.fi=Muokkaa tasoa
+     *   permission.EDIT_LAYER_CONTENT.name.en=Edit layer
+     * @return
+     */
     public Set<String> getAdditionalPermissions() {
         return DYNAMIC_PERMISSIONS;
     }
 
+    /**
+     * Names can be configured as instructed in getAdditionalPermissions() or with
+     *   permission.EDIT_LAYER_CONTENT.name = Name for all languages
+     *   
+     * @param permissionId
+     * @param lang
+     * @return
+     */
     public String getPermissionName(String permissionId, String lang) {
         final String property = "permission." + permissionId + ".name";
         final Object obj = PropertyUtil.getLocalizableProperty(property, permissionId);
