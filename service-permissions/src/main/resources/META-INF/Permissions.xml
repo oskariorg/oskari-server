@@ -185,7 +185,7 @@
         from
         oskari_resource r, oskari_permission p
         where r.id=p.oskari_resource_id
-        and p.permission = 'EDIT_LAYER'
+        and p.permission = 'EDIT_LAYER_CONTENT'
         and p.external_type = 'ROLE'
     </select>
 
@@ -437,7 +437,7 @@
         oskari_permission op,
         oskari_maplayer map
         WHERE
-        op.permission = 'EDIT_LAYER' AND
+        op.permission = 'EDIT_LAYER_CONTENT' AND
         ore.id = op.oskari_resource_id AND
         ore.resource_type = 'maplayer' AND
         ore.resource_mapping = map.type || '+' || map.url || '+' || map.name AND
