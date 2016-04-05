@@ -891,12 +891,9 @@
             <url>http://download.osgeo.org/webdav/geotools/</url>
         </repository>
         <repository>
-            <id>boundless</id>
-            <name>Boundless Maven Repository</name>
-            <url>http://repo.boundlessgeo.com/main</url>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
+            <id>geosolutions</id>
+            <name>Geo-solutions Maven Repository</name>
+            <url>http://maven.geo-solutions.it</url>
         </repository>
     </repositories>
 
