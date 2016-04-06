@@ -24,7 +24,7 @@ public class SotkaRegionParser {
 	private static final String ID_FIELD = "id";
 	private static final String CODE_FIELD = "code";
 	public static final String CATEGORY_FIELD = "category";
-    private final static String CACHE_KEY = "oskari_sotka_get_regions";
+    private final static String CACHE_KEY_PREFIX = "oskari_sotka_get_regions_";
     
 	private ObjectMapper mapper;
     private String url;
@@ -109,10 +109,10 @@ public class SotkaRegionParser {
      * Makes HTTP get request and parses the responses JSON into HashMaps.
      */
     public void getData() {
-        String json = JedisManager.get(CACHE_KEY);
+        String json = JedisManager.get(CACHE_KEY_PREFIX + url);
         if (json == null) {
             json = HttpRequest.get(url).body();
-            JedisManager.setex(CACHE_KEY, JedisManager.EXPIRY_TIME_DAY, json);
+            JedisManager.setex(CACHE_KEY_PREFIX + url, JedisManager.EXPIRY_TIME_DAY, json);
         }
         try {
             JsonFactory factory = new JsonFactory();
