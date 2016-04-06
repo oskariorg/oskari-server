@@ -1,5 +1,6 @@
 package fi.nls.oskari.control.statistics.plugins.sotka;
 
+import fi.nls.oskari.cache.JedisManager;
 import fi.nls.oskari.control.statistics.plugins.APIException;
 import fi.nls.oskari.control.statistics.plugins.StatisticalDatasourcePlugin;
 import fi.nls.oskari.control.statistics.plugins.StatisticalIndicator;
@@ -23,6 +24,8 @@ public class SotkaStatisticalDatasourcePlugin implements StatisticalDatasourcePl
     private SotkaIndicatorsParser indicatorsParser = null;
     private SotkaConfig config = new SotkaConfig();
 
+    private final static String CACHE_KEY = "oskari_sotka_get_indicators";
+
     /**
      * Maps the SotkaNET layer identifiers to Oskari layers.
      */
@@ -35,6 +38,12 @@ public class SotkaStatisticalDatasourcePlugin implements StatisticalDatasourcePl
     @Override
     public List<? extends StatisticalIndicator> getIndicators(User user) {
         try {
+            final String cachedData = JedisManager.get(CACHE_KEY);
+
+            if (cachedData != null) {
+                return indicatorsParser.parse(cachedData, layerMappings);
+            }
+            
             // First getting general information of all the indicator layers.
             // Note that some mandatory information about the layers is not given here,
             // for example the year range, but must be requested separately for each indicator.
@@ -42,6 +51,7 @@ public class SotkaStatisticalDatasourcePlugin implements StatisticalDatasourcePl
             request.setBaseURL(getBaseURL());
             String jsonResponse = request.getData();
 
+            JedisManager.setex(CACHE_KEY, JedisManager.EXPIRY_TIME_DAY, jsonResponse);
             // We will later need to add the year range information to the preliminary information using separate requests.
             return indicatorsParser.parse(jsonResponse, layerMappings);
         } catch (APIException e) {
