@@ -2,6 +2,11 @@
 
 ## 1.36
 
+### Generic
+
+Geotools version has been updated to 14.2.
+See MigrationGuide.md for details.
+
 ### service-map
 
 A bugfix to legend image parsing when there were multiple styles with the same name.
