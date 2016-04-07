@@ -356,7 +356,7 @@ UNRESTRICTED_USAGE_ROLE = PropertyUtil.get("view.published.usage.unrestrictedRol
         }
         // cookie view data
         try {
-            String value = URLDecoder.decode(cookie.getValue());
+            String value = URLDecoder.decode(cookie.getValue(),"UTF-8");
             if (!value.isEmpty()) {
                 log.debug("Using cookie state:", value);
                 return new JSONObject(value);
