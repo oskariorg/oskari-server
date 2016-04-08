@@ -8,6 +8,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.kevinsawicki.http.HttpRequest;
 
+import fi.nls.oskari.cache.JedisManager;
 import fi.nls.oskari.control.statistics.plugins.APIException;
 import fi.nls.oskari.control.statistics.plugins.sotka.SotkaConfig;
 import fi.nls.oskari.log.LogFactory;
@@ -23,6 +24,8 @@ public class SotkaRegionParser {
 	private static final String ID_FIELD = "id";
 	private static final String CODE_FIELD = "code";
 	public static final String CATEGORY_FIELD = "category";
+    private final static String CACHE_KEY_PREFIX = "oskari_sotka_get_regions_";
+    
 	private ObjectMapper mapper;
     private String url;
 
@@ -106,8 +109,12 @@ public class SotkaRegionParser {
      * Makes HTTP get request and parses the responses JSON into HashMaps.
      */
     public void getData() {
+        String json = JedisManager.get(CACHE_KEY_PREFIX + url);
+        if (json == null) {
+            json = HttpRequest.get(url).body();
+            JedisManager.setex(CACHE_KEY_PREFIX + url, JedisManager.EXPIRY_TIME_DAY, json);
+        }
         try {
-            String json = HttpRequest.get(url).body();
             JsonFactory factory = new JsonFactory();
             JsonParser parser = factory.createParser(json);
 

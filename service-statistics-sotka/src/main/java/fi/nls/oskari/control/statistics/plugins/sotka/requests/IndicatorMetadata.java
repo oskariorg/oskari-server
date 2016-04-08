@@ -10,7 +10,7 @@ public class IndicatorMetadata extends SotkaRequest {
     public final static String NAME = "indicator_metadata";
 
     public boolean isValid () {
-        return getIndicator() != null && getIndicator().isEmpty();
+        return getIndicator() != null && !getIndicator().isEmpty();
     }
     @Override
     public String getName() {
@@ -19,7 +19,11 @@ public class IndicatorMetadata extends SotkaRequest {
 
     @Override
     public String getRequestSpecificParams() {
-        return "/indicators/" + getIndicator();
+        if (isValid()) {
+            return "/indicators/" + getIndicator();
+        } else {
+            return "/indicators";
+        }
     }
 
     @Override

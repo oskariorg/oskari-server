@@ -29,12 +29,14 @@ public class SotkaIndicatorsParser {
             // Keeping it simple. If performance becomes an issue, this can be reimplemented in a streaming fashion.
             // However, this is unlikely before real-time data, because this data is cached.
             JSONArray responseJSON = new JSONArray(response);
+            LOG.info("Parsing indicator response of length: " + responseJSON.length());
             for (int i = 0; i < responseJSON.length(); i++) {
                 SotkaIndicator sotkaIndicator = new SotkaIndicator(sotkaLayersToOskariLayers, config);
                 if (sotkaIndicator.parse(responseJSON.getJSONObject(i))) {
                     indicatorList.add(sotkaIndicator);
                 }
             }
+            LOG.info("Parsed indicator response.");
         } catch (JSONException e) {
             LOG.error("Error in mapping Sotka Indicators response to Oskari model: " + e.getMessage(), e);
         }
