@@ -1,0 +1,935 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wfs:FeatureCollection xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:elf-gn="http://www.locationframework.eu/schemas/GeographicalNames/1.0" xmlns:gn="http://inspire.ec.europa.eu/schemas/gn/4.0" xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3" xmlns:gmd="http://www.isotc211.org/2005/gmd" xmlns:gco="http://www.isotc211.org/2005/gco" xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:gss="http://www.isotc211.org/2005/gss" xmlns:gts="http://www.isotc211.org/2005/gts" xmlns:gsr="http://www.isotc211.org/2005/gsr" xmlns:gmlexr="http://www.opengis.net/gml/3.3/exr" xmlns:wfs="http://www.opengis.net/wfs/2.0" xmlns:ows="http://www.opengis.net/ows/1.1" xmlns:fes="http://www.opengis.net/fes/2.0" xsi:schemaLocation="http://www.locationframework.eu/schemas/GeographicalNames/1.0 http://www.locationframework.eu/schemas/GeographicalNames/1.0/GeographicalNames.xsd http://www.opengis.net/gml/3.2 http://schemas.opengis.net/gml/3.2.1/gml.xsd http://www.opengis.net/wfs/2.0 http://schemas.opengis.net/wfs/2.0/wfs.xsd" timeStamp="2016-04-06T10:53:14" numberMatched="137630" numberReturned="20">
+    <wfs:member>
+        <elf-gn:NamedPlace gml:id="dk.gn.1233766a-104c-6b98-e053-d480220a5a3f">
+            <gn:beginLifespanVersion>2015-03-26T16:48:13.000</gn:beginLifespanVersion>
+            <gn:geometry>
+                <gml:MultiGeometry srsName="urn:ogc:def:crs:EPSG::3035" gml:id="dk.gn.1233766a-104c-6b98-e053-d480220a5a3f.geom">
+                    <gml:geometryMember>
+                        <gml:Polygon gml:id="LOCAL_ID_0">
+                            <gml:exterior>
+                                <gml:LinearRing>
+                                    <gml:posList srsDimension="2" count="21">3631158.154010484 4300268.666574034 3631153.5565011953 4300283.97724335 3631151.889751982 4300294.995349314 3631151.957576786 4300300.762643084 3631156.4600288677 4300306.163298733 3631162.7476737895 4300309.076898254 3631184.775426354 4300313.238185928 3631221.5830709795 4300320.074921861 3631227.118290153 4300318.252514204 3631231.0241892543 4300315.695874451 3631234.3538475037 4300306.563743617 3631235.1132559446 4300304.492393106 3631235.3452842743 4300302.944032656 3631237.155678162 4300290.966938966 3631237.099988723 4300285.049653898 3631234.8295051544 4300280.191683973 3631229.889642706 4300275.315312024 3631173.8765785275 4300264.828435313 3631166.14490793 4300264.316705015 3631161.5230701864 4300265.191208228 3631158.154010484 4300268.666574034</gml:posList>
+                                </gml:LinearRing>
+                            </gml:exterior>
+                        </gml:Polygon>
+                    </gml:geometryMember>
+                </gml:MultiGeometry>
+            </gn:geometry>
+            <gn:inspireId>
+                <base:Identifier>
+                    <base:localId>1233766a-104c-6b98-e053-d480220a5a3f</base:localId>
+                    <base:namespace>http://data.gov.dk/inspire-gn</base:namespace>
+                </base:Identifier>
+            </gn:inspireId>
+            <gn:localType>
+                <gmd:LocalisedCharacterString locale="da-DK">køretekniskAnlæg</gmd:LocalisedCharacterString>
+            </gn:localType>
+            <gn:name>
+                <elf-gn:GeographicalName>
+                    <gn:language>dan</gn:language>
+                    <gn:nativeness xlink:href="http://inspire.ec.europa.eu/codelist/NativenessValue/endonym"/>
+                    <gn:nameStatus xlink:href="http://inspire.ec.europa.eu/codelist/NameStatusValue/official"/>
+                    <gn:sourceOfName>Danske Stednavne</gn:sourceOfName>
+                    <gn:pronunciation nilReason="Unpopulated" xsi:nil="true"/>
+                    <gn:spelling>
+                        <gn:SpellingOfName>
+                            <gn:text>Gesager Manøvregård</gn:text>
+                            <gn:script>Latn</gn:script>
+                        </gn:SpellingOfName>
+                    </gn:spelling>
+                    <elf-gn:referenceName>true</elf-gn:referenceName>
+                </elf-gn:GeographicalName>
+            </gn:name>
+            <gn:type xlink:href="http://inspire.ec.europa.eu/codelist/NamedPlaceTypeValue/other"/>
+            <elf-gn:EGNType xlink:href="http://www.locationframework.eu/codelist/EuroGeoNamesLocationTypeValue/10"/>
+        </elf-gn:NamedPlace>
+    </wfs:member>
+    <wfs:member>
+        <elf-gn:NamedPlace gml:id="dk.gn.1233766a-104d-6b98-e053-d480220a5a3f">
+            <gn:beginLifespanVersion>2015-03-26T16:48:13.000</gn:beginLifespanVersion>
+            <gn:geometry>
+                <gml:MultiGeometry srsName="urn:ogc:def:crs:EPSG::3035" gml:id="dk.gn.1233766a-104d-6b98-e053-d480220a5a3f.geom">
+                    <gml:geometryMember>
+                        <gml:Polygon gml:id="LOCAL_ID_1">
+                            <gml:exterior>
+                                <gml:LinearRing>
+                                    <gml:posList srsDimension="2" count="30">3608723.687376236 4303449.485676923 3608644.463818142 4303568.09083818 3608596.2849013475 4303568.279451378 3608595.71719024 4303519.691186206 3608500.0190618057 4303516.574301599 3608392.039099465 4303513.651338987 3608399.919950757 4303534.606063524 3608524.622118596 4303535.176641436 3608524.8197700894 4303564.820048308 3608524.959103739 4303586.624533707 3608525.3908189395 4303653.179361232 3608465.6826004665 4303654.083212631 3608463.789048195 4303656.448470316 3608463.491505856 4303691.370202695 3608463.6288390663 4303714.015520225 3608480.7601518054 4303759.448273037 3608518.8203821145 4303759.925110492 3608518.5228050393 4303723.963760537 3608682.502303732 4303723.096763029 3608683.4845324894 4303656.962642588 3608724.9671850377 4303656.547689637 3608738.3777214875 4303633.976908763 3608770.73927085 4303585.261185495 3608845.6836468577 4303473.641789661 3608919.7899492024 4303364.693073927 3608904.8935348825 4303356.100374528 3608850.701405975 4303353.03932691 3608789.239205924 4303350.724699464 3608759.7113946197 4303394.956503213 3608723.687376236 4303449.485676923</gml:posList>
+                                </gml:LinearRing>
+                            </gml:exterior>
+                        </gml:Polygon>
+                    </gml:geometryMember>
+                </gml:MultiGeometry>
+            </gn:geometry>
+            <gn:inspireId>
+                <base:Identifier>
+                    <base:localId>1233766a-104d-6b98-e053-d480220a5a3f</base:localId>
+                    <base:namespace>http://data.gov.dk/inspire-gn</base:namespace>
+                </base:Identifier>
+            </gn:inspireId>
+            <gn:localType>
+                <gmd:LocalisedCharacterString locale="da-DK">køretekniskAnlæg</gmd:LocalisedCharacterString>
+            </gn:localType>
+            <gn:name>
+                <elf-gn:GeographicalName>
+                    <gn:language>dan</gn:language>
+                    <gn:nativeness xlink:href="http://inspire.ec.europa.eu/codelist/NativenessValue/endonym"/>
+                    <gn:nameStatus xlink:href="http://inspire.ec.europa.eu/codelist/NameStatusValue/official"/>
+                    <gn:sourceOfName>Danske Stednavne</gn:sourceOfName>
+                    <gn:pronunciation nilReason="Unpopulated" xsi:nil="true"/>
+                    <gn:spelling>
+                        <gn:SpellingOfName>
+                            <gn:text>Fredericia</gn:text>
+                            <gn:script>Latn</gn:script>
+                        </gn:SpellingOfName>
+                    </gn:spelling>
+                    <elf-gn:referenceName>true</elf-gn:referenceName>
+                </elf-gn:GeographicalName>
+            </gn:name>
+            <gn:type xlink:href="http://inspire.ec.europa.eu/codelist/NamedPlaceTypeValue/other"/>
+            <elf-gn:EGNType xlink:href="http://www.locationframework.eu/codelist/EuroGeoNamesLocationTypeValue/10"/>
+        </elf-gn:NamedPlace>
+    </wfs:member>
+    <wfs:member>
+        <elf-gn:NamedPlace gml:id="dk.gn.1233766a-104e-6b98-e053-d480220a5a3f">
+            <gn:beginLifespanVersion>2015-03-26T16:48:13.000</gn:beginLifespanVersion>
+            <gn:geometry>
+                <gml:MultiGeometry srsName="urn:ogc:def:crs:EPSG::3035" gml:id="dk.gn.1233766a-104e-6b98-e053-d480220a5a3f.geom">
+                    <gml:geometryMember>
+                        <gml:Polygon gml:id="LOCAL_ID_2">
+                            <gml:exterior>
+                                <gml:LinearRing>
+                                    <gml:posList srsDimension="2" count="37">3597841.610245859 4284762.675401767 3597924.7405686206 4284805.757064055 3597954.9351204024 4284817.430399627 3597968.640125131 4284822.721618901 3597998.9168939786 4284834.946693915 3598001.719868908 4284829.761485106 3598007.402896827 4284816.759496993 3598019.403513518 4284787.591375044 3598035.6646971134 4284750.566157715 3598063.728387878 4284689.204884186 3598090.205961037 4284626.859937148 3598072.5908221807 4284624.4257464465 3598058.3477975326 4284617.57525886 3598011.4935075273 4284603.08100259 3597982.3210276756 4284594.805733902 3597963.3709153105 4284588.468509109 3597943.1433158414 4284584.085014003 3597930.197516356 4284580.976868431 3597912.0742857405 4284572.7295232825 3597889.7493399056 4284565.322992416 3597868.815451905 4284559.257701857 3597849.190217599 4284556.124087912 3597837.7964629517 4284552.157251928 3597815.9598588822 4284544.157101512 3597787.593119504 4284534.051505088 3597778.0073509207 4284532.352807709 3597764.2249041526 4284533.266794397 3597754.683841586 4284535.492718605 3597711.8829475404 4284550.55641154 3597712.437612905 4284580.744966257 3597713.621990764 4284618.049738907 3597729.709279145 4284732.475712952 3597742.2213451224 4284737.2693704795 3597770.8296894883 4284747.969033418 3597782.2638521236 4284751.9064207105 3597789.0038050334 4284753.314161968 3597841.610245859 4284762.675401767</gml:posList>
+                                </gml:LinearRing>
+                            </gml:exterior>
+                        </gml:Polygon>
+                    </gml:geometryMember>
+                </gml:MultiGeometry>
+            </gn:geometry>
+            <gn:inspireId>
+                <base:Identifier>
+                    <base:localId>1233766a-104e-6b98-e053-d480220a5a3f</base:localId>
+                    <base:namespace>http://data.gov.dk/inspire-gn</base:namespace>
+                </base:Identifier>
+            </gn:inspireId>
+            <gn:localType>
+                <gmd:LocalisedCharacterString locale="da-DK">køretekniskAnlæg</gmd:LocalisedCharacterString>
+            </gn:localType>
+            <gn:name>
+                <elf-gn:GeographicalName>
+                    <gn:language>dan</gn:language>
+                    <gn:nativeness xlink:href="http://inspire.ec.europa.eu/codelist/NativenessValue/endonym"/>
+                    <gn:nameStatus xlink:href="http://inspire.ec.europa.eu/codelist/NameStatusValue/official"/>
+                    <gn:sourceOfName>Danske Stednavne</gn:sourceOfName>
+                    <gn:pronunciation nilReason="Unpopulated" xsi:nil="true"/>
+                    <gn:spelling>
+                        <gn:SpellingOfName>
+                            <gn:text>Kolding</gn:text>
+                            <gn:script>Latn</gn:script>
+                        </gn:SpellingOfName>
+                    </gn:spelling>
+                    <elf-gn:referenceName>true</elf-gn:referenceName>
+                </elf-gn:GeographicalName>
+            </gn:name>
+            <gn:type xlink:href="http://inspire.ec.europa.eu/codelist/NamedPlaceTypeValue/other"/>
+            <elf-gn:EGNType xlink:href="http://www.locationframework.eu/codelist/EuroGeoNamesLocationTypeValue/10"/>
+        </elf-gn:NamedPlace>
+    </wfs:member>
+    <wfs:member>
+        <elf-gn:NamedPlace gml:id="dk.gn.1233766a-104f-6b98-e053-d480220a5a3f">
+            <gn:beginLifespanVersion>2015-03-26T16:48:13.000</gn:beginLifespanVersion>
+            <gn:geometry>
+                <gml:MultiGeometry srsName="urn:ogc:def:crs:EPSG::3035" gml:id="dk.gn.1233766a-104f-6b98-e053-d480220a5a3f.geom">
+                    <gml:geometryMember>
+                        <gml:Polygon gml:id="LOCAL_ID_3">
+                            <gml:exterior>
+                                <gml:LinearRing>
+                                    <gml:posList srsDimension="2" count="64">3674475.0118360464 4299949.61503063 3674421.43277811 4299952.615010992 3674407.7550993315 4299941.503923343 3674407.221356991 4299941.075692665 3674391.8070934475 4299922.059868168 3674360.44533282 4299860.4717337275 3674310.528817134 4299883.519121743 3674251.70371591 4299961.905484339 3674243.8070515986 4299975.808444298 3674241.3590079886 4299983.412385178 3674239.387908075 4299996.119447741 3674239.1911349683 4300008.49172224 3674240.6875815815 4300020.608134125 3674244.4973390917 4300034.550180813 3674242.4278953937 4300039.4462796785 3674233.9326351793 4300059.558178335 3674285.006097806 4300123.463768913 3674305.384969937 4300150.461034877 3674323.840269739 4300167.248050925 3674319.659994714 4300175.73805906 3674310.0769329444 4300184.520404563 3674308.4434831296 4300231.6644176785 3674341.884204428 4300277.182945912 3674494.617804539 4300234.997014114 3674486.013387682 4300099.737418111 3674479.293319821 4300090.068556874 3674481.323321609 4300086.533549956 3674482.9969061394 4300083.45395284 3674483.4385785204 4300082.629322772 3674534.524074199 4300142.189844619 3674582.2322227755 4300196.7254699655 3674642.333280673 4300163.382621086 3674704.3867226155 4300129.136854378 3674718.5260197585 4300105.842548223 3674748.1120006484 4300132.872862963 3674766.635396146 4300149.090199242 3674775.3184532127 4300156.414552481 3674780.416919218 4300157.129054501 3674785.836434515 4300155.665528518 3674790.420811262 4300152.477832891 3674793.4873440107 4300148.467210985 3674824.8630583645 4300085.232950069 3674860.188787018 4300014.927064082 3674898.08660652 4299936.728644847 3674888.585581461 4299919.480335025 3674891.6960153477 4299912.396582476 3674928.1283099432 4299840.204328198 3674865.9595394717 4299808.357611803 3674933.0444270764 4299680.840248534 3674805.971282254 4299618.278768178 3674780.440293243 4299625.108468936 3674779.9408409093 4299623.679508451 3674777.127174188 4299615.588980059 3674775.868833602 4299611.996414028 3674774.802821022 4299608.937277892 3674773.8715953603 4299606.240531477 3674773.04545656 4299603.885720897 3674697.1192877814 4299679.872352535 3674656.066070322 4299752.918914185 3674633.0107880356 4299765.6015136745 3674627.0353485234 4299768.889250845 3674504.151335974 4299836.467470036 3674501.6337404856 4299901.420531687 3674475.0118360464 4299949.61503063</gml:posList>
+                                </gml:LinearRing>
+                            </gml:exterior>
+                        </gml:Polygon>
+                    </gml:geometryMember>
+                </gml:MultiGeometry>
+            </gn:geometry>
+            <gn:inspireId>
+                <base:Identifier>
+                    <base:localId>1233766a-104f-6b98-e053-d480220a5a3f</base:localId>
+                    <base:namespace>http://data.gov.dk/inspire-gn</base:namespace>
+                </base:Identifier>
+            </gn:inspireId>
+            <gn:localType>
+                <gmd:LocalisedCharacterString locale="da-DK">køretekniskAnlæg</gmd:LocalisedCharacterString>
+            </gn:localType>
+            <gn:name>
+                <elf-gn:GeographicalName>
+                    <gn:language>dan</gn:language>
+                    <gn:nativeness xlink:href="http://inspire.ec.europa.eu/codelist/NativenessValue/endonym"/>
+                    <gn:nameStatus xlink:href="http://inspire.ec.europa.eu/codelist/NameStatusValue/official"/>
+                    <gn:sourceOfName>Danske Stednavne</gn:sourceOfName>
+                    <gn:pronunciation nilReason="Unpopulated" xsi:nil="true"/>
+                    <gn:spelling>
+                        <gn:SpellingOfName>
+                            <gn:text>Jyllandsringen</gn:text>
+                            <gn:script>Latn</gn:script>
+                        </gn:SpellingOfName>
+                    </gn:spelling>
+                    <elf-gn:referenceName>true</elf-gn:referenceName>
+                </elf-gn:GeographicalName>
+            </gn:name>
+            <gn:type xlink:href="http://inspire.ec.europa.eu/codelist/NamedPlaceTypeValue/other"/>
+            <elf-gn:EGNType xlink:href="http://www.locationframework.eu/codelist/EuroGeoNamesLocationTypeValue/10"/>
+        </elf-gn:NamedPlace>
+    </wfs:member>
+    <wfs:member>
+        <elf-gn:NamedPlace gml:id="dk.gn.1233766a-1050-6b98-e053-d480220a5a3f">
+            <gn:beginLifespanVersion>2015-03-26T16:48:13.000</gn:beginLifespanVersion>
+            <gn:geometry>
+                <gml:MultiGeometry srsName="urn:ogc:def:crs:EPSG::3035" gml:id="dk.gn.1233766a-1050-6b98-e053-d480220a5a3f.geom">
+                    <gml:geometryMember>
+                        <gml:Polygon gml:id="LOCAL_ID_4">
+                            <gml:exterior>
+                                <gml:LinearRing>
+                                    <gml:posList srsDimension="2" count="23">3639487.190026788 4308796.527588179 3639598.0733722304 4308795.6950340625 3639604.5775530655 4308787.649848055 3639609.92864272 4308786.115277844 3639639.4700156506 4308786.3714010455 3639721.7668601656 4308785.626887894 3639721.5969045754 4308682.329564383 3639732.150712888 4308679.148157662 3639727.728935537 4308553.68487739 3639727.000909417 4308485.14814957 3639724.836648871 4308432.418298704 3639727.0540866144 4308352.291124854 3639726.854442172 4308276.173565298 3639725.164700287 4308214.040081388 3639653.9123858144 4308212.241088289 3639633.401021465 4308294.957456502 3639610.1823664634 4308358.663644594 3639590.221672169 4308413.39680263 3639543.442684924 4308534.637336603 3639533.7932156273 4308576.594892725 3639519.3178104935 4308641.358233006 3639502.893506273 4308721.420475573 3639487.190026788 4308796.527588179</gml:posList>
+                                </gml:LinearRing>
+                            </gml:exterior>
+                        </gml:Polygon>
+                    </gml:geometryMember>
+                </gml:MultiGeometry>
+            </gn:geometry>
+            <gn:inspireId>
+                <base:Identifier>
+                    <base:localId>1233766a-1050-6b98-e053-d480220a5a3f</base:localId>
+                    <base:namespace>http://data.gov.dk/inspire-gn</base:namespace>
+                </base:Identifier>
+            </gn:inspireId>
+            <gn:localType>
+                <gmd:LocalisedCharacterString locale="da-DK">køretekniskAnlæg</gmd:LocalisedCharacterString>
+            </gn:localType>
+            <gn:name>
+                <elf-gn:GeographicalName>
+                    <gn:language>dan</gn:language>
+                    <gn:nativeness xlink:href="http://inspire.ec.europa.eu/codelist/NativenessValue/endonym"/>
+                    <gn:nameStatus xlink:href="http://inspire.ec.europa.eu/codelist/NameStatusValue/official"/>
+                    <gn:sourceOfName>Danske Stednavne</gn:sourceOfName>
+                    <gn:pronunciation nilReason="Unpopulated" xsi:nil="true"/>
+                    <gn:spelling>
+                        <gn:SpellingOfName>
+                            <gn:text>Horsens</gn:text>
+                            <gn:script>Latn</gn:script>
+                        </gn:SpellingOfName>
+                    </gn:spelling>
+                    <elf-gn:referenceName>true</elf-gn:referenceName>
+                </elf-gn:GeographicalName>
+            </gn:name>
+            <gn:type xlink:href="http://inspire.ec.europa.eu/codelist/NamedPlaceTypeValue/other"/>
+            <elf-gn:EGNType xlink:href="http://www.locationframework.eu/codelist/EuroGeoNamesLocationTypeValue/10"/>
+        </elf-gn:NamedPlace>
+    </wfs:member>
+    <wfs:member>
+        <elf-gn:NamedPlace gml:id="dk.gn.1233766a-1051-6b98-e053-d480220a5a3f">
+            <gn:beginLifespanVersion>2015-03-26T16:48:13.000</gn:beginLifespanVersion>
+            <gn:geometry>
+                <gml:MultiGeometry srsName="urn:ogc:def:crs:EPSG::3035" gml:id="dk.gn.1233766a-1051-6b98-e053-d480220a5a3f.geom">
+                    <gml:geometryMember>
+                        <gml:Polygon gml:id="LOCAL_ID_5">
+                            <gml:exterior>
+                                <gml:LinearRing>
+                                    <gml:posList srsDimension="2" count="24">3670775.8795093005 4263603.474155805 3670662.6683153487 4263618.230391581 3670655.1763602113 4263619.204256551 3670645.702300462 4263620.359949661 3670592.7941144197 4263626.7898800755 3670592.461562291 4263622.680111558 3670539.7698467122 4263628.642575692 3670541.8786213365 4263646.60465447 3670550.308767681 4263714.508098535 3670560.9151513977 4263801.265682311 3670496.2965486343 4263809.339835624 3670481.5922059896 4263828.502523433 3670496.6600944363 4263945.8712810315 3670591.654622662 4263934.7485980075 3670640.9419607483 4263928.436988583 3670652.953471519 4263911.668637863 3670667.7797195558 4263890.935780118 3670763.228685152 4263878.768332914 3670827.8990356983 4263870.564791086 3670816.923114805 4263787.366172592 3670809.7139742505 4263737.28187103 3670801.3209280684 4263672.452647303 3670793.058579083 4263601.838252185 3670775.8795093005 4263603.474155805</gml:posList>
+                                </gml:LinearRing>
+                            </gml:exterior>
+                        </gml:Polygon>
+                    </gml:geometryMember>
+                </gml:MultiGeometry>
+            </gn:geometry>
+            <gn:inspireId>
+                <base:Identifier>
+                    <base:localId>1233766a-1051-6b98-e053-d480220a5a3f</base:localId>
+                    <base:namespace>http://data.gov.dk/inspire-gn</base:namespace>
+                </base:Identifier>
+            </gn:inspireId>
+            <gn:localType>
+                <gmd:LocalisedCharacterString locale="da-DK">køretekniskAnlæg</gmd:LocalisedCharacterString>
+            </gn:localType>
+            <gn:name>
+                <elf-gn:GeographicalName>
+                    <gn:language>dan</gn:language>
+                    <gn:nativeness xlink:href="http://inspire.ec.europa.eu/codelist/NativenessValue/endonym"/>
+                    <gn:nameStatus xlink:href="http://inspire.ec.europa.eu/codelist/NameStatusValue/official"/>
+                    <gn:sourceOfName>Danske Stednavne</gn:sourceOfName>
+                    <gn:pronunciation nilReason="Unpopulated" xsi:nil="true"/>
+                    <gn:spelling>
+                        <gn:SpellingOfName>
+                            <gn:text>Herning</gn:text>
+                            <gn:script>Latn</gn:script>
+                        </gn:SpellingOfName>
+                    </gn:spelling>
+                    <elf-gn:referenceName>true</elf-gn:referenceName>
+                </elf-gn:GeographicalName>
+            </gn:name>
+            <gn:type xlink:href="http://inspire.ec.europa.eu/codelist/NamedPlaceTypeValue/other"/>
+            <elf-gn:EGNType xlink:href="http://www.locationframework.eu/codelist/EuroGeoNamesLocationTypeValue/10"/>
+        </elf-gn:NamedPlace>
+    </wfs:member>
+    <wfs:member>
+        <elf-gn:NamedPlace gml:id="dk.gn.1233766a-1052-6b98-e053-d480220a5a3f">
+            <gn:beginLifespanVersion>2015-03-26T16:48:13.000</gn:beginLifespanVersion>
+            <gn:geometry>
+                <gml:MultiGeometry srsName="urn:ogc:def:crs:EPSG::3035" gml:id="dk.gn.1233766a-1052-6b98-e053-d480220a5a3f.geom">
+                    <gml:geometryMember>
+                        <gml:Polygon gml:id="LOCAL_ID_6">
+                            <gml:exterior>
+                                <gml:LinearRing>
+                                    <gml:posList srsDimension="2" count="27">3706193.2770158947 4282051.915335451 3706228.5375131206 4282055.979466988 3706295.6264574677 4282063.627582039 3706335.9846243486 4282070.55908591 3706339.156314996 4282071.776466908 3706373.2264757194 4282090.022314854 3706380.900760377 4282080.350162396 3706392.6047310093 4282062.124762173 3706405.4031176567 4282036.495293181 3706429.2118280246 4281978.781957872 3706452.1433417303 4281911.7034880575 3706360.759839778 4281842.0723684495 3706305.550949307 4281800.921091735 3706248.5082483217 4281757.9609703 3706204.923813712 4281725.398861157 3706179.1110131955 4281709.254990862 3706142.9012283245 4281692.44024125 3706107.391085709 4281681.994063591 3706071.850760904 4281677.214993788 3706035.0868543144 4281677.665231404 3705985.66550312 4281687.425256241 3705970.1207253276 4281863.395046053 3705985.1711861906 4281928.719056486 3706063.279472025 4281937.56768937 3706163.1539305546 4281948.282842051 3706151.342112431 4282046.202718276 3706193.2770158947 4282051.915335451</gml:posList>
+                                </gml:LinearRing>
+                            </gml:exterior>
+                        </gml:Polygon>
+                    </gml:geometryMember>
+                </gml:MultiGeometry>
+            </gn:geometry>
+            <gn:inspireId>
+                <base:Identifier>
+                    <base:localId>1233766a-1052-6b98-e053-d480220a5a3f</base:localId>
+                    <base:namespace>http://data.gov.dk/inspire-gn</base:namespace>
+                </base:Identifier>
+            </gn:inspireId>
+            <gn:localType>
+                <gmd:LocalisedCharacterString locale="da-DK">køretekniskAnlæg</gmd:LocalisedCharacterString>
+            </gn:localType>
+            <gn:name>
+                <elf-gn:GeographicalName>
+                    <gn:language>dan</gn:language>
+                    <gn:nativeness xlink:href="http://inspire.ec.europa.eu/codelist/NativenessValue/endonym"/>
+                    <gn:nameStatus xlink:href="http://inspire.ec.europa.eu/codelist/NameStatusValue/official"/>
+                    <gn:sourceOfName>Danske Stednavne</gn:sourceOfName>
+                    <gn:pronunciation nilReason="Unpopulated" xsi:nil="true"/>
+                    <gn:spelling>
+                        <gn:SpellingOfName>
+                            <gn:text>Viborg</gn:text>
+                            <gn:script>Latn</gn:script>
+                        </gn:SpellingOfName>
+                    </gn:spelling>
+                    <elf-gn:referenceName>true</elf-gn:referenceName>
+                </elf-gn:GeographicalName>
+            </gn:name>
+            <gn:type xlink:href="http://inspire.ec.europa.eu/codelist/NamedPlaceTypeValue/other"/>
+            <elf-gn:EGNType xlink:href="http://www.locationframework.eu/codelist/EuroGeoNamesLocationTypeValue/10"/>
+        </elf-gn:NamedPlace>
+    </wfs:member>
+    <wfs:member>
+        <elf-gn:NamedPlace gml:id="dk.gn.1233766a-1053-6b98-e053-d480220a5a3f">
+            <gn:beginLifespanVersion>2015-03-26T16:48:13.000</gn:beginLifespanVersion>
+            <gn:geometry>
+                <gml:MultiGeometry srsName="urn:ogc:def:crs:EPSG::3035" gml:id="dk.gn.1233766a-1053-6b98-e053-d480220a5a3f.geom">
+                    <gml:geometryMember>
+                        <gml:Polygon gml:id="LOCAL_ID_7">
+                            <gml:exterior>
+                                <gml:LinearRing>
+                                    <gml:posList srsDimension="2" count="30">3754749.4644001625 4309796.87301517 3754743.1156381695 4309849.498237824 3754744.5459514163 4309856.329211078 3754747.808837163 4309861.534516761 3754802.215506097 4309908.107215586 3754859.871354383 4309951.853159318 3754908.62382481 4309991.322889542 3754964.196206344 4310036.069954142 3754990.8082021773 4310013.554926626 3754976.531775056 4309973.787766058 3754967.5544594554 4309944.243054667 3754965.5173621164 4309937.212927583 3754964.3092979067 4309923.314731843 3754966.2340080505 4309907.038725537 3754960.7813036824 4309901.901564843 3754963.5190085527 4309887.460135416 3754949.2038466 4309873.841115245 3754921.368090421 4309851.091314612 3754893.7040672554 4309829.5958809955 3754865.201107242 4309806.676104497 3754853.9704104955 4309796.777601698 3754842.7986165653 4309790.405176742 3754831.4220278054 4309785.752308894 3754817.871386755 4309782.149275914 3754810.999817524 4309781.8185315635 3754800.221536381 4309785.546794707 3754783.151776868 4309794.440909124 3754775.7403890267 4309801.022515593 3754771.826474018 4309801.436024001 3754749.4644001625 4309796.87301517</gml:posList>
+                                </gml:LinearRing>
+                            </gml:exterior>
+                        </gml:Polygon>
+                    </gml:geometryMember>
+                </gml:MultiGeometry>
+            </gn:geometry>
+            <gn:inspireId>
+                <base:Identifier>
+                    <base:localId>1233766a-1053-6b98-e053-d480220a5a3f</base:localId>
+                    <base:namespace>http://data.gov.dk/inspire-gn</base:namespace>
+                </base:Identifier>
+            </gn:inspireId>
+            <gn:localType>
+                <gmd:LocalisedCharacterString locale="da-DK">køretekniskAnlæg</gmd:LocalisedCharacterString>
+            </gn:localType>
+            <gn:name>
+                <elf-gn:GeographicalName>
+                    <gn:language>dan</gn:language>
+                    <gn:nativeness xlink:href="http://inspire.ec.europa.eu/codelist/NativenessValue/endonym"/>
+                    <gn:nameStatus xlink:href="http://inspire.ec.europa.eu/codelist/NameStatusValue/official"/>
+                    <gn:sourceOfName>Danske Stednavne</gn:sourceOfName>
+                    <gn:pronunciation nilReason="Unpopulated" xsi:nil="true"/>
+                    <gn:spelling>
+                        <gn:SpellingOfName>
+                            <gn:text>Støvring</gn:text>
+                            <gn:script>Latn</gn:script>
+                        </gn:SpellingOfName>
+                    </gn:spelling>
+                    <elf-gn:referenceName>true</elf-gn:referenceName>
+                </elf-gn:GeographicalName>
+            </gn:name>
+            <gn:type xlink:href="http://inspire.ec.europa.eu/codelist/NamedPlaceTypeValue/other"/>
+            <elf-gn:EGNType xlink:href="http://www.locationframework.eu/codelist/EuroGeoNamesLocationTypeValue/10"/>
+        </elf-gn:NamedPlace>
+    </wfs:member>
+    <wfs:member>
+        <elf-gn:NamedPlace gml:id="dk.gn.1233766a-1054-6b98-e053-d480220a5a3f">
+            <gn:beginLifespanVersion>2015-03-26T16:48:13.000</gn:beginLifespanVersion>
+            <gn:geometry>
+                <gml:MultiGeometry srsName="urn:ogc:def:crs:EPSG::3035" gml:id="dk.gn.1233766a-1054-6b98-e053-d480220a5a3f.geom">
+                    <gml:geometryMember>
+                        <gml:Polygon gml:id="LOCAL_ID_8">
+                            <gml:exterior>
+                                <gml:LinearRing>
+                                    <gml:posList srsDimension="2" count="39">3724434.0418382054 4310579.343386292 3724449.4361648136 4310584.123901718 3724434.4799823775 4310643.808305773 3724420.4697363297 4310721.04056193 3724502.8184037623 4310734.607205828 3724497.090587681 4310771.294270745 3724495.394153421 4310787.702128112 3724497.9524355624 4310798.814610486 3724503.00320236 4310811.064917364 3724511.95556553 4310825.1645267485 3724526.7366875405 4310840.560717522 3724562.03136315 4310848.184676154 3724584.407055212 4310792.473673215 3724615.8981155343 4310725.0491774855 3724647.14795695 4310656.329374879 3724669.974571456 4310608.145237685 3724718.292938181 4310622.04727976 3724718.946592571 4310615.547855705 3724720.209862011 4310602.137801485 3724722.322474026 4310583.212522229 3724723.4742637468 4310565.064332596 3724684.4349044748 4310559.258414728 3724689.707178965 4310510.508107986 3724694.9578421144 4310468.096195313 3724691.1812532805 4310467.280133708 3724688.1189983813 4310466.834973724 3724689.6559676966 4310439.319510778 3724693.969723752 4310412.635584563 3724675.9848925327 4310414.8870488275 3724659.4452606887 4310418.811836987 3724643.878395974 4310425.28427781 3724631.638567516 4310433.247166035 3724627.957595873 4310453.491441121 3724531.7526551955 4310532.800892946 3724523.7823766666 4310539.283852755 3724499.39225939 4310530.326732883 3724461.287747115 4310557.3695610035 3724450.370822986 4310565.091354827 3724434.0418382054 4310579.343386292</gml:posList>
+                                </gml:LinearRing>
+                            </gml:exterior>
+                        </gml:Polygon>
+                    </gml:geometryMember>
+                </gml:MultiGeometry>
+            </gn:geometry>
+            <gn:inspireId>
+                <base:Identifier>
+                    <base:localId>1233766a-1054-6b98-e053-d480220a5a3f</base:localId>
+                    <base:namespace>http://data.gov.dk/inspire-gn</base:namespace>
+                </base:Identifier>
+            </gn:inspireId>
+            <gn:localType>
+                <gmd:LocalisedCharacterString locale="da-DK">køretekniskAnlæg</gmd:LocalisedCharacterString>
+            </gn:localType>
+            <gn:name>
+                <elf-gn:GeographicalName>
+                    <gn:language>dan</gn:language>
+                    <gn:nativeness xlink:href="http://inspire.ec.europa.eu/codelist/NativenessValue/endonym"/>
+                    <gn:nameStatus xlink:href="http://inspire.ec.europa.eu/codelist/NameStatusValue/official"/>
+                    <gn:sourceOfName>Danske Stednavne</gn:sourceOfName>
+                    <gn:pronunciation nilReason="Unpopulated" xsi:nil="true"/>
+                    <gn:spelling>
+                        <gn:SpellingOfName>
+                            <gn:text>Hobro</gn:text>
+                            <gn:script>Latn</gn:script>
+                        </gn:SpellingOfName>
+                    </gn:spelling>
+                    <elf-gn:referenceName>true</elf-gn:referenceName>
+                </elf-gn:GeographicalName>
+            </gn:name>
+            <gn:type xlink:href="http://inspire.ec.europa.eu/codelist/NamedPlaceTypeValue/other"/>
+            <elf-gn:EGNType xlink:href="http://www.locationframework.eu/codelist/EuroGeoNamesLocationTypeValue/10"/>
+        </elf-gn:NamedPlace>
+    </wfs:member>
+    <wfs:member>
+        <elf-gn:NamedPlace gml:id="dk.gn.1233766a-107e-6b98-e053-d480220a5a3f">
+            <gn:beginLifespanVersion>2015-03-26T16:48:14.000</gn:beginLifespanVersion>
+            <gn:geometry>
+                <gml:MultiGeometry srsName="urn:ogc:def:crs:EPSG::3035" gml:id="dk.gn.1233766a-107e-6b98-e053-d480220a5a3f.geom">
+                    <gml:geometryMember>
+                        <gml:Polygon gml:id="LOCAL_ID_9">
+                            <gml:exterior>
+                                <gml:LinearRing>
+                                    <gml:posList srsDimension="2" count="49">3761790.45176345 4320873.774365215 3761789.682767123 4320877.15815471 3761736.571797914 4321080.5239050025 3761693.2922927476 4321047.270676927 3761628.2521655164 4320999.847750582 3761566.4178827247 4320956.688139495 3761487.664552222 4320899.059292115 3761397.18467393 4320832.745870088 3761373.581059129 4320816.796560047 3761289.6820461093 4320755.637217286 3761287.3320960477 4320759.14804799 3761283.361876287 4320767.532421429 3761281.06878841 4320776.732561529 3761227.6172946384 4320850.790419239 3761183.5464679003 4320912.797623084 3761174.8901425404 4320908.774908928 3761173.1244122395 4320911.973824562 3761170.1159950295 4320915.404893871 3761177.4244998815 4320920.699771727 3761156.624362725 4320948.897268497 3761119.1359158913 4321002.26793979 3761072.7880417886 4321065.523613834 3761102.6827348457 4321087.313708224 3761111.5162385292 4321094.944391063 3761115.5276020225 4321100.17089907 3761117.002898816 4321105.911044272 3761116.4772247393 4321113.164148218 3761119.0704697096 4321114.894689873 3761123.237752406 4321116.287772908 3761284.948612834 4321237.245396983 3761288.750176242 4321239.043732762 3761297.1912815394 4321244.114869237 3761677.3600213546 4321281.416515293 3761679.076627283 4321281.581895341 3761681.722162498 4321283.15297182 3761686.5992206493 4321281.111335134 3761692.317190133 4321268.025545457 3761693.9644871787 4321264.7247431185 3761924.3998000254 4321228.00389304 3761928.3075203896 4321220.4798842585 3761933.486640789 4321197.070793061 3761946.2943922305 4321105.020986651 3761956.984615502 4321027.251466353 3761960.0582138393 4321000.877112053 3761957.9154510046 4320998.412061997 3761954.081383954 4320998.155545416 3761797.603432231 4320874.750522564 3761794.537882019 4320874.565366369 3761790.45176345 4320873.774365215</gml:posList>
+                                </gml:LinearRing>
+                            </gml:exterior>
+                        </gml:Polygon>
+                    </gml:geometryMember>
+                </gml:MultiGeometry>
+            </gn:geometry>
+            <gn:inspireId>
+                <base:Identifier>
+                    <base:localId>1233766a-107e-6b98-e053-d480220a5a3f</base:localId>
+                    <base:namespace>http://data.gov.dk/inspire-gn</base:namespace>
+                </base:Identifier>
+            </gn:inspireId>
+            <gn:localType>
+                <gmd:LocalisedCharacterString locale="da-DK">vindmøllepark</gmd:LocalisedCharacterString>
+            </gn:localType>
+            <gn:name>
+                <elf-gn:GeographicalName>
+                    <gn:language>dan</gn:language>
+                    <gn:nativeness xlink:href="http://inspire.ec.europa.eu/codelist/NativenessValue/endonym"/>
+                    <gn:nameStatus xlink:href="http://inspire.ec.europa.eu/codelist/NameStatusValue/official"/>
+                    <gn:sourceOfName>Danske Stednavne</gn:sourceOfName>
+                    <gn:pronunciation nilReason="Unpopulated" xsi:nil="true"/>
+                    <gn:spelling>
+                        <gn:SpellingOfName>
+                            <gn:text>Oppelstrup</gn:text>
+                            <gn:script>Latn</gn:script>
+                        </gn:SpellingOfName>
+                    </gn:spelling>
+                    <elf-gn:referenceName>true</elf-gn:referenceName>
+                </elf-gn:GeographicalName>
+            </gn:name>
+            <gn:type xlink:href="http://inspire.ec.europa.eu/codelist/NamedPlaceTypeValue/other"/>
+            <elf-gn:EGNType xlink:href="http://www.locationframework.eu/codelist/EuroGeoNamesLocationTypeValue/10"/>
+        </elf-gn:NamedPlace>
+    </wfs:member>
+    <wfs:member>
+        <elf-gn:NamedPlace gml:id="dk.gn.1233766a-107f-6b98-e053-d480220a5a3f">
+            <gn:beginLifespanVersion>2015-03-26T16:48:14.000</gn:beginLifespanVersion>
+            <gn:geometry>
+                <gml:MultiGeometry srsName="urn:ogc:def:crs:EPSG::3035" gml:id="dk.gn.1233766a-107f-6b98-e053-d480220a5a3f.geom">
+                    <gml:geometryMember>
+                        <gml:Polygon gml:id="LOCAL_ID_10">
+                            <gml:exterior>
+                                <gml:LinearRing>
+                                    <gml:posList srsDimension="2" count="14">3559581.7889179406 4254528.415942094 3560330.644069302 4254638.386412683 3560156.5563480896 4254456.722999245 3560105.5227942187 4254117.248131471 3560056.1553208604 4253782.341210164 3560005.9519992806 4253435.511651491 3559723.4368143626 4253471.142560641 3559150.4192802035 4253541.390463515 3558801.634996614 4253740.532540856 3558847.164241577 4254048.589448237 3559076.8934796504 4254980.837879582 3559349.904358829 4254952.00935176 3559301.287053894 4254563.063884673 3559581.7889179406 4254528.415942094</gml:posList>
+                                </gml:LinearRing>
+                            </gml:exterior>
+                        </gml:Polygon>
+                    </gml:geometryMember>
+                </gml:MultiGeometry>
+            </gn:geometry>
+            <gn:inspireId>
+                <base:Identifier>
+                    <base:localId>1233766a-107f-6b98-e053-d480220a5a3f</base:localId>
+                    <base:namespace>http://data.gov.dk/inspire-gn</base:namespace>
+                </base:Identifier>
+            </gn:inspireId>
+            <gn:localType>
+                <gmd:LocalisedCharacterString locale="da-DK">vindmøllepark</gmd:LocalisedCharacterString>
+            </gn:localType>
+            <gn:name>
+                <elf-gn:GeographicalName>
+                    <gn:language>dan</gn:language>
+                    <gn:nativeness xlink:href="http://inspire.ec.europa.eu/codelist/NativenessValue/endonym"/>
+                    <gn:nameStatus xlink:href="http://inspire.ec.europa.eu/codelist/NameStatusValue/official"/>
+                    <gn:sourceOfName>Danske Stednavne</gn:sourceOfName>
+                    <gn:pronunciation nilReason="Unpopulated" xsi:nil="true"/>
+                    <gn:spelling>
+                        <gn:SpellingOfName>
+                            <gn:text>Arrild</gn:text>
+                            <gn:script>Latn</gn:script>
+                        </gn:SpellingOfName>
+                    </gn:spelling>
+                    <elf-gn:referenceName>true</elf-gn:referenceName>
+                </elf-gn:GeographicalName>
+            </gn:name>
+            <gn:type xlink:href="http://inspire.ec.europa.eu/codelist/NamedPlaceTypeValue/other"/>
+            <elf-gn:EGNType xlink:href="http://www.locationframework.eu/codelist/EuroGeoNamesLocationTypeValue/10"/>
+        </elf-gn:NamedPlace>
+    </wfs:member>
+    <wfs:member>
+        <elf-gn:NamedPlace gml:id="dk.gn.1233766a-1080-6b98-e053-d480220a5a3f">
+            <gn:beginLifespanVersion>2015-03-26T16:48:14.000</gn:beginLifespanVersion>
+            <gn:geometry>
+                <gml:MultiGeometry srsName="urn:ogc:def:crs:EPSG::3035" gml:id="dk.gn.1233766a-1080-6b98-e053-d480220a5a3f.geom">
+                    <gml:geometryMember>
+                        <gml:Polygon gml:id="LOCAL_ID_11">
+                            <gml:exterior>
+                                <gml:LinearRing>
+                                    <gml:posList srsDimension="2" count="12">3625812.621432244 4357753.629696476 3625211.672296138 4357758.903234354 3624911.697155861 4357761.547504685 3624610.7369206613 4357763.176624893 3624310.7613021373 4357765.821206223 3624010.7854454676 4357768.46594239 3623709.819769261 4357771.096444108 3623409.833440215 4357773.741345181 3623108.8572903494 4357776.372012906 3623104.127117609 4357847.843163232 3625803.154739567 4357848.695781179 3625812.621432244 4357753.629696476</gml:posList>
+                                </gml:LinearRing>
+                            </gml:exterior>
+                        </gml:Polygon>
+                    </gml:geometryMember>
+                </gml:MultiGeometry>
+            </gn:geometry>
+            <gn:inspireId>
+                <base:Identifier>
+                    <base:localId>1233766a-1080-6b98-e053-d480220a5a3f</base:localId>
+                    <base:namespace>http://data.gov.dk/inspire-gn</base:namespace>
+                </base:Identifier>
+            </gn:inspireId>
+            <gn:localType>
+                <gmd:LocalisedCharacterString locale="da-DK">vindmøllepark</gmd:LocalisedCharacterString>
+            </gn:localType>
+            <gn:name>
+                <elf-gn:GeographicalName>
+                    <gn:language>dan</gn:language>
+                    <gn:nativeness xlink:href="http://inspire.ec.europa.eu/codelist/NativenessValue/endonym"/>
+                    <gn:nameStatus xlink:href="http://inspire.ec.europa.eu/codelist/NameStatusValue/official"/>
+                    <gn:sourceOfName>Danske Stednavne</gn:sourceOfName>
+                    <gn:pronunciation nilReason="Unpopulated" xsi:nil="true"/>
+                    <gn:spelling>
+                        <gn:SpellingOfName>
+                            <gn:text>Samsø</gn:text>
+                            <gn:script>Latn</gn:script>
+                        </gn:SpellingOfName>
+                    </gn:spelling>
+                    <elf-gn:referenceName>true</elf-gn:referenceName>
+                </elf-gn:GeographicalName>
+            </gn:name>
+            <gn:type xlink:href="http://inspire.ec.europa.eu/codelist/NamedPlaceTypeValue/other"/>
+            <elf-gn:EGNType xlink:href="http://www.locationframework.eu/codelist/EuroGeoNamesLocationTypeValue/10"/>
+        </elf-gn:NamedPlace>
+    </wfs:member>
+    <wfs:member>
+        <elf-gn:NamedPlace gml:id="dk.gn.1233766a-1081-6b98-e053-d480220a5a3f">
+            <gn:beginLifespanVersion>2015-03-26T16:48:14.000</gn:beginLifespanVersion>
+            <gn:geometry>
+                <gml:MultiGeometry srsName="urn:ogc:def:crs:EPSG::3035" gml:id="dk.gn.1233766a-1081-6b98-e053-d480220a5a3f.geom">
+                    <gml:geometryMember>
+                        <gml:Polygon gml:id="LOCAL_ID_12">
+                            <gml:exterior>
+                                <gml:LinearRing>
+                                    <gml:posList srsDimension="2" count="153">3730236.80752297 4211747.125284232 3730227.5303166336 4211747.944441974 3730219.092118022 4211754.753599123 3730185.955234609 4211762.9633636605 3730142.267819728 4211775.248559491 3730084.09992226 4211790.982447312 3730079.713154246 4211792.361913434 3729929.2962652403 4211833.117460902 3729837.24832198 4211857.310861653 3729696.5117167337 4211895.5106212385 3729661.291966817 4211903.991113877 3729605.541638922 4211918.33749797 3729472.3232946303 4211954.942016693 3729393.3801745917 4211976.137740259 3729288.0032498254 4212004.356942819 3729144.840074575 4212043.092850907 3729096.830082396 4212056.427942484 3729093.3234828394 4212059.2518636165 3729092.8180498704 4212061.898230498 3729094.830691957 4212069.066486259 3729096.509716201 4212075.028376474 3729102.793249766 4212084.971103796 3729112.292530584 4212089.191880134 3729121.047434354 4212090.047548191 3729127.9978087116 4212088.324085509 3729134.054362328 4212085.426332351 3729140.5272011366 4212084.276849008 3729144.498801906 4212081.810021138 3729148.595970384 4212078.1834207075 3729149.575704101 4212075.203350719 3729150.6895169597 4212071.173777441 3729152.707932169 4212067.517571716 3729156.246358322 4212063.071923745 3729157.002563744 4212059.618037885 3729155.0316910828 4212053.802192039 3729156.57650001 4212051.170627184 3729162.153899697 4212048.966991251 3729240.7713222606 4212026.725246018 3729358.901313347 4211994.922614771 3729369.674409381 4211998.821076959 3729372.2112672105 4211998.977367824 3729376.5696356045 4212000.45133677 3729380.4460224994 4212002.829666521 3729382.9230230944 4212006.690085866 3729383.78881264 4212009.946777943 3729387.6449843403 4212013.82683937 3729396.150725633 4212015.369888396 3729405.36992725 4212015.891711906 3729414.085527558 4212012.240762657 3729421.946949067 4212005.2131245695 3729427.406243041 4211996.188636822 3729430.2978179315 4211989.300501537 3729429.719072202 4211983.284181327 3729432.373889823 4211976.16236456 3729456.8551626075 4211968.640438408 3729571.2795847086 4211937.355781312 3729639.3216075785 4211919.539552814 3729646.9138892093 4211927.30798405 3729652.7968435446 4211927.652118009 3729655.6338541824 4211930.015647034 3729659.8898951886 4211937.606389956 3729662.933454198 4211941.70519113 3729667.634848944 4211942.943723676 3729672.4389224537 4211945.465442827 3729675.4167697323 4211947.019886975 3729679.5927295145 4211945.707514991 3729693.6792907305 4211938.1076401565 3729699.0981453536 4211932.086610851 3729702.805288863 4211924.7594792405 3729707.7623757133 4211918.141078512 3729711.9638253395 4211915.677520018 3729723.3485919544 4211911.263503201 3729725.11233986 4211909.446143393 3729722.2014437974 4211897.718966099 3729835.123671033 4211866.633187862 3729912.46106984 4211848.128223315 3729919.5434123487 4211861.106419621 3729922.547175382 4211862.220640699 3729927.3934004004 4211860.867745986 3729935.0165138803 4211861.146542117 3729941.762493228 4211862.724611903 3729947.4114040686 4211867.831828748 3729952.7740146033 4211868.959617521 3729961.705192455 4211867.114158938 3729971.9636811297 4211860.971794349 3729979.4324798165 4211854.148836523 3729982.0692251204 4211848.3685573945 3729981.1436684052 4211842.867989417 3729982.9443310923 4211833.851462861 3729981.5874386327 4211829.205911236 3730083.8827816434 4211800.432081125 3730181.238995551 4211774.7121073445 3730185.9362717755 4211774.027993529 3730191.646019776 4211776.842991681 3730205.4384903717 4211785.150343947 3730215.773209885 4211798.595438047 3730224.858199415 4211800.917778813 3730237.4645402445 4211797.832920447 3730248.9665123094 4211793.620836651 3730256.323073979 4211786.966504359 3730256.369120046 4211773.88954651 3730255.826187685 4211756.298132079 3730341.1416731575 4211731.738458857 3730470.27994183 4211698.940953094 3730475.580015728 4211708.429118553 3730482.443954376 4211707.926063931 3730495.920511926 4211724.109543748 3730509.829135756 4211724.527925724 3730524.839438822 4211718.10275417 3730531.0487033594 4211711.281874572 3730532.106528147 4211697.298074747 3730531.1366073545 4211681.723291444 3730748.3833487066 4211622.553346149 3730750.691254694 4211630.0662995055 3730758.37277916 4211628.974078231 3730763.6421276266 4211644.459901135 3730775.8577325228 4211649.610584437 3730792.4312605327 4211647.353260967 3730804.8852479993 4211640.731461363 3730808.5042179865 4211631.03986454 3730809.2445619754 4211618.363301169 3730806.591188648 4211606.809985198 3730898.9062659075 4211582.049554148 3730981.9217890897 4211560.511199062 3731024.0166897066 4211549.93563145 3731025.4822802274 4211557.64687824 3731033.8789143944 4211556.89528635 3731039.244565076 4211564.481834458 3731044.5162030756 4211571.626449665 3731050.7981296023 4211573.518347788 3731068.433581561 4211571.8268892225 3731086.213434957 4211563.118016559 3731081.687888417 4211545.8403406795 3731081.539719972 4211537.537030979 3731077.5344812223 4211530.620735262 3731098.525641899 4211506.857222781 3731130.3110675467 4211472.0423189355 3731135.4963904615 4211467.029303257 3731135.118619845 4211462.417708626 3731134.4649470057 4211461.96780485 3731131.1675438667 4211459.647777879 3731129.6426215 4211458.574642062 3731126.0348110716 4211458.523261162 3731119.6257266537 4211466.082306896 3731093.140166197 4211496.28636671 3731071.019205254 4211521.555842149 3731058.8481671773 4211527.951367146 3731018.9178087134 4211539.609182483 3730895.005522878 4211574.0532918675 3730868.2348535387 4211581.61273913 3730747.308689746 4211613.27555364 3730241.672071571 4211748.866815875 3730236.80752297 4211747.125284232</gml:posList>
+                                </gml:LinearRing>
+                            </gml:exterior>
+                        </gml:Polygon>
+                    </gml:geometryMember>
+                </gml:MultiGeometry>
+            </gn:geometry>
+            <gn:inspireId>
+                <base:Identifier>
+                    <base:localId>1233766a-1081-6b98-e053-d480220a5a3f</base:localId>
+                    <base:namespace>http://data.gov.dk/inspire-gn</base:namespace>
+                </base:Identifier>
+            </gn:inspireId>
+            <gn:localType>
+                <gmd:LocalisedCharacterString locale="da-DK">vindmøllepark</gmd:LocalisedCharacterString>
+            </gn:localType>
+            <gn:name>
+                <elf-gn:GeographicalName>
+                    <gn:language>dan</gn:language>
+                    <gn:nativeness xlink:href="http://inspire.ec.europa.eu/codelist/NativenessValue/endonym"/>
+                    <gn:nameStatus xlink:href="http://inspire.ec.europa.eu/codelist/NameStatusValue/official"/>
+                    <gn:sourceOfName>Danske Stednavne</gn:sourceOfName>
+                    <gn:pronunciation nilReason="Unpopulated" xsi:nil="true"/>
+                    <gn:spelling>
+                        <gn:SpellingOfName>
+                            <gn:text>Rønland</gn:text>
+                            <gn:script>Latn</gn:script>
+                        </gn:SpellingOfName>
+                    </gn:spelling>
+                    <elf-gn:referenceName>true</elf-gn:referenceName>
+                </elf-gn:GeographicalName>
+            </gn:name>
+            <gn:type xlink:href="http://inspire.ec.europa.eu/codelist/NamedPlaceTypeValue/other"/>
+            <elf-gn:EGNType xlink:href="http://www.locationframework.eu/codelist/EuroGeoNamesLocationTypeValue/10"/>
+        </elf-gn:NamedPlace>
+    </wfs:member>
+    <wfs:member>
+        <elf-gn:NamedPlace gml:id="dk.gn.1233766a-1082-6b98-e053-d480220a5a3f">
+            <gn:beginLifespanVersion>2015-03-26T16:48:14.000</gn:beginLifespanVersion>
+            <gn:geometry>
+                <gml:MultiGeometry srsName="urn:ogc:def:crs:EPSG::3035" gml:id="dk.gn.1233766a-1082-6b98-e053-d480220a5a3f.geom">
+                    <gml:geometryMember>
+                        <gml:Polygon gml:id="LOCAL_ID_13">
+                            <gml:exterior>
+                                <gml:LinearRing>
+                                    <gml:posList srsDimension="2" count="52">3729408.326377081 4339149.889365719 3729402.5252328077 4339153.549300508 3728935.205299071 4339392.063330466 3728978.061484587 4339916.27685803 3729021.4622550267 4340442.000023497 3729030.9727807166 4340447.747138559 3729044.912864551 4340655.941358007 3729053.1050479175 4340782.872046797 3729059.1340220673 4340864.700391964 3729065.7469385033 4340955.719637224 3729064.7194805 4340964.386222479 3729071.417662608 4340955.482439594 3729296.7341228537 4340891.348922801 3729361.547625501 4340853.738385485 3729530.8294970226 4340725.387037713 3729997.24969195 4340484.949951444 3730023.88556912 4340476.88951239 3730465.0791236414 4340245.133843372 3730973.6085776454 4340528.911500414 3730931.585100755 4340004.857199213 3730887.6199404504 4339481.464960374 3730882.206185473 4339469.699700247 3730876.25636367 4339406.847468039 3730862.9806566318 4339251.763066124 3730854.0582806384 4339149.173476328 3730838.0999241387 4338965.851486833 3730846.078615653 4338957.53715216 3730828.4790053745 4338866.556082622 3730817.2705608243 4338855.296594304 3730793.3814249234 4338838.403662825 3730785.694022178 4338839.162041635 3730778.3835638496 4338837.402535617 3730739.0140345166 4338823.086255736 3730735.677807549 4338821.585336975 3730674.308529301 4338799.846649636 3730602.8078468526 4338775.8264334155 3730532.504556912 4338751.263046651 3730525.834629179 4338750.123771898 3730510.412580998 4338750.09776041 3730504.796109219 4338750.045392581 3730496.2159072245 4338748.988238566 3730480.048692421 4338743.233559124 3730427.149488432 4338724.593229553 3730426.294374526 4338724.29029015 3730374.582043939 4338701.752089919 3730367.664795835 4338700.438959576 3730362.919840282 4338701.611019926 3730357.424381366 4338702.842163523 3730350.6938370112 4338690.216468792 3730339.374859975 4338670.85443254 3729867.7507136906 4338918.058157188 3729408.326377081 4339149.889365719</gml:posList>
+                                </gml:LinearRing>
+                            </gml:exterior>
+                        </gml:Polygon>
+                    </gml:geometryMember>
+                </gml:MultiGeometry>
+            </gn:geometry>
+            <gn:inspireId>
+                <base:Identifier>
+                    <base:localId>1233766a-1082-6b98-e053-d480220a5a3f</base:localId>
+                    <base:namespace>http://data.gov.dk/inspire-gn</base:namespace>
+                </base:Identifier>
+            </gn:inspireId>
+            <gn:localType>
+                <gmd:LocalisedCharacterString locale="da-DK">vindmøllepark</gmd:LocalisedCharacterString>
+            </gn:localType>
+            <gn:name>
+                <elf-gn:GeographicalName>
+                    <gn:language>dan</gn:language>
+                    <gn:nativeness xlink:href="http://inspire.ec.europa.eu/codelist/NativenessValue/endonym"/>
+                    <gn:nameStatus xlink:href="http://inspire.ec.europa.eu/codelist/NameStatusValue/official"/>
+                    <gn:sourceOfName>Danske Stednavne</gn:sourceOfName>
+                    <gn:pronunciation nilReason="Unpopulated" xsi:nil="true"/>
+                    <gn:spelling>
+                        <gn:SpellingOfName>
+                            <gn:text>Bjerre</gn:text>
+                            <gn:script>Latn</gn:script>
+                        </gn:SpellingOfName>
+                    </gn:spelling>
+                    <elf-gn:referenceName>true</elf-gn:referenceName>
+                </elf-gn:GeographicalName>
+            </gn:name>
+            <gn:type xlink:href="http://inspire.ec.europa.eu/codelist/NamedPlaceTypeValue/other"/>
+            <elf-gn:EGNType xlink:href="http://www.locationframework.eu/codelist/EuroGeoNamesLocationTypeValue/10"/>
+        </elf-gn:NamedPlace>
+    </wfs:member>
+    <wfs:member>
+        <elf-gn:NamedPlace gml:id="dk.gn.1233766a-1033-6b98-e053-d480220a5a3f">
+            <gn:beginLifespanVersion>2015-09-22T12:27:40.000</gn:beginLifespanVersion>
+            <gn:geometry>
+                <gml:MultiGeometry srsName="urn:ogc:def:crs:EPSG::3035" gml:id="dk.gn.1233766a-1033-6b98-e053-d480220a5a3f.geom">
+                    <gml:geometryMember>
+                        <gml:Polygon gml:id="LOCAL_ID_14">
+                            <gml:exterior>
+                                <gml:LinearRing>
+                                    <gml:posList srsDimension="2" count="11">3651340.630134133 4342996.928990506 3651267.7865804285 4343397.307500432 3651467.7221995313 4343398.214368458 3651667.6577036846 4343399.1213043695 3651867.5684440974 4343401.029043834 3652067.5037178504 4343401.936116085 3652140.3330905354 4343002.55765647 3651940.4123507896 4343000.649909972 3651740.4768454684 4342999.743114055 3651540.555874483 4342997.835504855 3651340.630134133 4342996.928990506</gml:posList>
+                                </gml:LinearRing>
+                            </gml:exterior>
+                        </gml:Polygon>
+                    </gml:geometryMember>
+                </gml:MultiGeometry>
+            </gn:geometry>
+            <gn:inspireId>
+                <base:Identifier>
+                    <base:localId>1233766a-1033-6b98-e053-d480220a5a3f</base:localId>
+                    <base:namespace>http://data.gov.dk/inspire-gn</base:namespace>
+                </base:Identifier>
+            </gn:inspireId>
+            <gn:localType>
+                <gmd:LocalisedCharacterString locale="da-DK">vindmøllepark</gmd:LocalisedCharacterString>
+            </gn:localType>
+            <gn:name>
+                <elf-gn:GeographicalName>
+                    <gn:language>dan</gn:language>
+                    <gn:nativeness xlink:href="http://inspire.ec.europa.eu/codelist/NativenessValue/endonym"/>
+                    <gn:nameStatus xlink:href="http://inspire.ec.europa.eu/codelist/NameStatusValue/other"/>
+                    <gn:sourceOfName>Danske Stednavne</gn:sourceOfName>
+                    <gn:pronunciation nilReason="Unpopulated" xsi:nil="true"/>
+                    <gn:spelling>
+                        <gn:SpellingOfName>
+                            <gn:text>Tunø Knob Vindmøllepark</gn:text>
+                            <gn:script>Latn</gn:script>
+                        </gn:SpellingOfName>
+                    </gn:spelling>
+                    <elf-gn:referenceName>false</elf-gn:referenceName>
+                </elf-gn:GeographicalName>
+            </gn:name>
+            <gn:name>
+                <elf-gn:GeographicalName>
+                    <gn:language>dan</gn:language>
+                    <gn:nativeness xlink:href="http://inspire.ec.europa.eu/codelist/NativenessValue/endonym"/>
+                    <gn:nameStatus xlink:href="http://inspire.ec.europa.eu/codelist/NameStatusValue/official"/>
+                    <gn:sourceOfName>Danske Stednavne</gn:sourceOfName>
+                    <gn:pronunciation nilReason="Unpopulated" xsi:nil="true"/>
+                    <gn:spelling>
+                        <gn:SpellingOfName>
+                            <gn:text>Tunø Knob Vindmøllepark</gn:text>
+                            <gn:script>Latn</gn:script>
+                        </gn:SpellingOfName>
+                    </gn:spelling>
+                    <elf-gn:referenceName>true</elf-gn:referenceName>
+                </elf-gn:GeographicalName>
+            </gn:name>
+            <gn:type xlink:href="http://inspire.ec.europa.eu/codelist/NamedPlaceTypeValue/other"/>
+            <elf-gn:EGNType xlink:href="http://www.locationframework.eu/codelist/EuroGeoNamesLocationTypeValue/10"/>
+        </elf-gn:NamedPlace>
+    </wfs:member>
+    <wfs:member>
+        <elf-gn:NamedPlace gml:id="dk.gn.207b83cc-abf1-764f-e053-d480220a1976">
+            <gn:beginLifespanVersion>2015-09-24T11:04:12.000</gn:beginLifespanVersion>
+            <gn:geometry>
+                <gml:MultiGeometry srsName="urn:ogc:def:crs:EPSG::3035" gml:id="dk.gn.207b83cc-abf1-764f-e053-d480220a1976.geom">
+                    <gml:geometryMember>
+                        <gml:Polygon gml:id="LOCAL_ID_15">
+                            <gml:exterior>
+                                <gml:LinearRing>
+                                    <gml:posList srsDimension="2" count="46">3775756.9488256606 4253194.498397981 3775602.994002015 4253191.745130938 3775601.5029391292 4253275.794098698 3775446.5358866514 4253271.386141704 3775445.506324273 4253285.982389491 3775156.0794084705 4253282.5747590335 3775156.9984004498 4253184.3054975085 3775003.511220125 4253183.111517652 3775002.8322274685 4253265.8708950635 3774848.293434697 4253263.252820401 3774848.1108113434 4253276.717779823 3774557.981198476 4253273.703246312 3774558.757875072 4253176.821910133 3774403.499886339 4253174.300553122 3774402.9491870515 4253257.171572374 3774251.2715295143 4253253.029173553 3774250.151609566 4253268.90765297 3773957.617144247 4253265.156025571 3773959.777788178 4253168.536953659 3773803.948975059 4253165.346244518 3773803.14560235 4253248.413847165 3773648.748339203 4253247.928056955 3773648.86525819 4253260.399129309 3773358.7151039373 4253256.181252582 3773358.380043172 4253159.366021484 3773204.555376992 4253156.48489089 3773204.1035432713 4253238.715979296 3773051.0306446594 4253237.838876771 3773050.286749126 4253251.108757294 3772759.338469016 4253246.749474801 3772758.3685121937 4253151.736202154 3772599.826108329 4253143.088263296 3772600.1767363884 4253232.131598047 3772452.2861954668 4253228.1761087505 3772451.589051322 4253242.398110536 3771401.981586753 4253228.435866622 3771405.2469191886 4253236.541449622 3776348.578353544 4253310.126858734 3776355.8867387176 4253310.319405126 3776356.7615736765 4253201.57669115 3776201.087309547 4253199.806263679 3776200.4704247853 4253282.344351946 3776048.443843508 4253280.679749374 3776048.480201855 4253297.110059973 3775756.1278326456 4253294.1085821 3775756.9488256606 4253194.498397981</gml:posList>
+                                </gml:LinearRing>
+                            </gml:exterior>
+                        </gml:Polygon>
+                    </gml:geometryMember>
+                </gml:MultiGeometry>
+            </gn:geometry>
+            <gn:inspireId>
+                <base:Identifier>
+                    <base:localId>207b83cc-abf1-764f-e053-d480220a1976</base:localId>
+                    <base:namespace>http://data.gov.dk/inspire-gn</base:namespace>
+                </base:Identifier>
+            </gn:inspireId>
+            <gn:localType>
+                <gmd:LocalisedCharacterString locale="da-DK">vindmøllepark</gmd:LocalisedCharacterString>
+            </gn:localType>
+            <gn:name>
+                <elf-gn:GeographicalName>
+                    <gn:language>dan</gn:language>
+                    <gn:nativeness xlink:href="http://inspire.ec.europa.eu/codelist/NativenessValue/endonym"/>
+                    <gn:nameStatus xlink:href="http://inspire.ec.europa.eu/codelist/NameStatusValue/official"/>
+                    <gn:sourceOfName>Danske Stednavne</gn:sourceOfName>
+                    <gn:pronunciation nilReason="Unpopulated" xsi:nil="true"/>
+                    <gn:spelling>
+                        <gn:SpellingOfName>
+                            <gn:text>Testcenter Østerild</gn:text>
+                            <gn:script>Latn</gn:script>
+                        </gn:SpellingOfName>
+                    </gn:spelling>
+                    <elf-gn:referenceName>true</elf-gn:referenceName>
+                </elf-gn:GeographicalName>
+            </gn:name>
+            <gn:type xlink:href="http://inspire.ec.europa.eu/codelist/NamedPlaceTypeValue/other"/>
+            <elf-gn:EGNType xlink:href="http://www.locationframework.eu/codelist/EuroGeoNamesLocationTypeValue/10"/>
+        </elf-gn:NamedPlace>
+    </wfs:member>
+    <wfs:member>
+        <elf-gn:NamedPlace gml:id="dk.gn.1233766a-1083-6b98-e053-d480220a5a3f">
+            <gn:beginLifespanVersion>2015-03-26T16:48:14.000</gn:beginLifespanVersion>
+            <gn:geometry>
+                <gml:MultiGeometry srsName="urn:ogc:def:crs:EPSG::3035" gml:id="dk.gn.1233766a-1083-6b98-e053-d480220a5a3f.geom">
+                    <gml:geometryMember>
+                        <gml:Polygon gml:id="LOCAL_ID_16">
+                            <gml:exterior>
+                                <gml:LinearRing>
+                                    <gml:posList srsDimension="2" count="9">3567497.529762065 4242419.210908395 3567448.378182859 4242720.584889752 3567398.839991865 4243049.989410707 3567347.423955269 4243370.459099457 3567632.1701628934 4243608.00875962 3567723.6154282144 4242995.133849345 3567771.876680659 4242685.829686518 3567615.4575169636 4242497.642053577 3567497.529762065 4242419.210908395</gml:posList>
+                                </gml:LinearRing>
+                            </gml:exterior>
+                        </gml:Polygon>
+                    </gml:geometryMember>
+                </gml:MultiGeometry>
+            </gn:geometry>
+            <gn:inspireId>
+                <base:Identifier>
+                    <base:localId>1233766a-1083-6b98-e053-d480220a5a3f</base:localId>
+                    <base:namespace>http://data.gov.dk/inspire-gn</base:namespace>
+                </base:Identifier>
+            </gn:inspireId>
+            <gn:localType>
+                <gmd:LocalisedCharacterString locale="da-DK">vindmøllepark</gmd:LocalisedCharacterString>
+            </gn:localType>
+            <gn:name>
+                <elf-gn:GeographicalName>
+                    <gn:language>dan</gn:language>
+                    <gn:nativeness xlink:href="http://inspire.ec.europa.eu/codelist/NativenessValue/endonym"/>
+                    <gn:nameStatus xlink:href="http://inspire.ec.europa.eu/codelist/NameStatusValue/official"/>
+                    <gn:sourceOfName>Danske Stednavne</gn:sourceOfName>
+                    <gn:pronunciation nilReason="Unpopulated" xsi:nil="true"/>
+                    <gn:spelling>
+                        <gn:SpellingOfName>
+                            <gn:text>Normsted</gn:text>
+                            <gn:script>Latn</gn:script>
+                        </gn:SpellingOfName>
+                    </gn:spelling>
+                    <elf-gn:referenceName>true</elf-gn:referenceName>
+                </elf-gn:GeographicalName>
+            </gn:name>
+            <gn:type xlink:href="http://inspire.ec.europa.eu/codelist/NamedPlaceTypeValue/other"/>
+            <elf-gn:EGNType xlink:href="http://www.locationframework.eu/codelist/EuroGeoNamesLocationTypeValue/10"/>
+        </elf-gn:NamedPlace>
+    </wfs:member>
+    <wfs:member>
+        <elf-gn:NamedPlace gml:id="dk.gn.1233766a-1084-6b98-e053-d480220a5a3f">
+            <gn:beginLifespanVersion>2015-03-26T16:48:14.000</gn:beginLifespanVersion>
+            <gn:geometry>
+                <gml:MultiGeometry srsName="urn:ogc:def:crs:EPSG::3035" gml:id="dk.gn.1233766a-1084-6b98-e053-d480220a5a3f.geom">
+                    <gml:geometryMember>
+                        <gml:Polygon gml:id="LOCAL_ID_17">
+                            <gml:exterior>
+                                <gml:LinearRing>
+                                    <gml:posList srsDimension="2" count="9">3566897.4660610007 4239658.36002785 3567122.117623779 4239611.993944126 3567333.7377532795 4239567.845642158 3567546.3466278017 4239524.512081904 3567554.2934083124 4239237.359107883 3567342.6858659456 4239280.606878195 3567129.0647141044 4239324.827081269 3566904.413245304 4239371.193303972 3566897.4660610007 4239658.36002785</gml:posList>
+                                </gml:LinearRing>
+                            </gml:exterior>
+                        </gml:Polygon>
+                    </gml:geometryMember>
+                </gml:MultiGeometry>
+            </gn:geometry>
+            <gn:inspireId>
+                <base:Identifier>
+                    <base:localId>1233766a-1084-6b98-e053-d480220a5a3f</base:localId>
+                    <base:namespace>http://data.gov.dk/inspire-gn</base:namespace>
+                </base:Identifier>
+            </gn:inspireId>
+            <gn:localType>
+                <gmd:LocalisedCharacterString locale="da-DK">vindmøllepark</gmd:LocalisedCharacterString>
+            </gn:localType>
+            <gn:name>
+                <elf-gn:GeographicalName>
+                    <gn:language>dan</gn:language>
+                    <gn:nativeness xlink:href="http://inspire.ec.europa.eu/codelist/NativenessValue/endonym"/>
+                    <gn:nameStatus xlink:href="http://inspire.ec.europa.eu/codelist/NameStatusValue/official"/>
+                    <gn:sourceOfName>Danske Stednavne</gn:sourceOfName>
+                    <gn:pronunciation nilReason="Unpopulated" xsi:nil="true"/>
+                    <gn:spelling>
+                        <gn:SpellingOfName>
+                            <gn:text>Brøns</gn:text>
+                            <gn:script>Latn</gn:script>
+                        </gn:SpellingOfName>
+                    </gn:spelling>
+                    <elf-gn:referenceName>true</elf-gn:referenceName>
+                </elf-gn:GeographicalName>
+            </gn:name>
+            <gn:type xlink:href="http://inspire.ec.europa.eu/codelist/NamedPlaceTypeValue/other"/>
+            <elf-gn:EGNType xlink:href="http://www.locationframework.eu/codelist/EuroGeoNamesLocationTypeValue/10"/>
+        </elf-gn:NamedPlace>
+    </wfs:member>
+    <wfs:member>
+        <elf-gn:NamedPlace gml:id="dk.gn.1233766a-1085-6b98-e053-d480220a5a3f">
+            <gn:beginLifespanVersion>2015-03-26T16:48:14.000</gn:beginLifespanVersion>
+            <gn:geometry>
+                <gml:MultiGeometry srsName="urn:ogc:def:crs:EPSG::3035" gml:id="dk.gn.1233766a-1085-6b98-e053-d480220a5a3f.geom">
+                    <gml:geometryMember>
+                        <gml:Polygon gml:id="LOCAL_ID_18">
+                            <gml:exterior>
+                                <gml:LinearRing>
+                                    <gml:posList srsDimension="2" count="5">3647316.698267563 4425749.864960665 3647269.7735332283 4425780.25633436 3647332.793540228 4425866.306305125 3647377.64366368 4425833.6725111585 3647316.698267563 4425749.864960665</gml:posList>
+                                </gml:LinearRing>
+                            </gml:exterior>
+                        </gml:Polygon>
+                    </gml:geometryMember>
+                </gml:MultiGeometry>
+            </gn:geometry>
+            <gn:inspireId>
+                <base:Identifier>
+                    <base:localId>1233766a-1085-6b98-e053-d480220a5a3f</base:localId>
+                    <base:namespace>http://data.gov.dk/inspire-gn</base:namespace>
+                </base:Identifier>
+            </gn:inspireId>
+            <gn:localType>
+                <gmd:LocalisedCharacterString locale="da-DK">køretekniskAnlæg</gmd:LocalisedCharacterString>
+            </gn:localType>
+            <gn:name>
+                <elf-gn:GeographicalName>
+                    <gn:language>dan</gn:language>
+                    <gn:nativeness xlink:href="http://inspire.ec.europa.eu/codelist/NativenessValue/endonym"/>
+                    <gn:nameStatus xlink:href="http://inspire.ec.europa.eu/codelist/NameStatusValue/official"/>
+                    <gn:sourceOfName>Danske Stednavne</gn:sourceOfName>
+                    <gn:pronunciation nilReason="Unpopulated" xsi:nil="true"/>
+                    <gn:spelling>
+                        <gn:SpellingOfName>
+                            <gn:text>Nykøbing Sj. Køreanlæg</gn:text>
+                            <gn:script>Latn</gn:script>
+                        </gn:SpellingOfName>
+                    </gn:spelling>
+                    <elf-gn:referenceName>true</elf-gn:referenceName>
+                </elf-gn:GeographicalName>
+            </gn:name>
+            <gn:type xlink:href="http://inspire.ec.europa.eu/codelist/NamedPlaceTypeValue/other"/>
+            <elf-gn:EGNType xlink:href="http://www.locationframework.eu/codelist/EuroGeoNamesLocationTypeValue/10"/>
+        </elf-gn:NamedPlace>
+    </wfs:member>
+    <wfs:member>
+        <elf-gn:NamedPlace gml:id="dk.gn.1233766a-1086-6b98-e053-d480220a5a3f">
+            <gn:beginLifespanVersion>2015-03-26T16:48:14.000</gn:beginLifespanVersion>
+            <gn:geometry>
+                <gml:MultiGeometry srsName="urn:ogc:def:crs:EPSG::3035" gml:id="dk.gn.1233766a-1086-6b98-e053-d480220a5a3f.geom">
+                    <gml:geometryMember>
+                        <gml:Polygon gml:id="LOCAL_ID_19">
+                            <gml:exterior>
+                                <gml:LinearRing>
+                                    <gml:posList srsDimension="2" count="31">3497382.2037415057 4428940.285525482 3496901.096751917 4428951.632966718 3496419.9936725153 4428962.690849703 3495938.0014401823 4428974.346645145 3495456.8975697868 4428985.405527104 3494975.7904846575 4428996.654945192 3494493.6817111406 4429008.000448371 3494012.572058742 4429019.370888749 3493530.4670986906 4429030.407334351 3493400.743913261 4429888.88013537 3493271.015743755 4430747.44892528 3493141.295960198 4431605.213524631 3493011.566751359 4432463.374131543 3492881.830940466 4433321.740689561 3492752.0962595018 4434179.793091949 3492622.353796184 4435038.131418727 3493104.467391027 4435025.8898644885 3493585.573371621 4435014.144455502 3494066.6920843488 4435002.189664 3494548.7887178524 4434990.3395513 3495029.896656734 4434978.385629166 3495512.0022081723 4434966.55668022 3495993.1193631855 4434954.603916074 3496474.099303771 4434942.439599903 3496603.8363467404 4434085.185593315 3496733.574335523 4433227.627417825 3496863.3073132634 4432370.165160423 3496993.036762681 4431512.69882316 3497122.762678678 4430655.228425164 3497252.484907601 4429797.763987503 3497382.2037415057 4428940.285525482</gml:posList>
+                                </gml:LinearRing>
+                            </gml:exterior>
+                        </gml:Polygon>
+                    </gml:geometryMember>
+                </gml:MultiGeometry>
+            </gn:geometry>
+            <gn:inspireId>
+                <base:Identifier>
+                    <base:localId>1233766a-1086-6b98-e053-d480220a5a3f</base:localId>
+                    <base:namespace>http://data.gov.dk/inspire-gn</base:namespace>
+                </base:Identifier>
+            </gn:inspireId>
+            <gn:localType>
+                <gmd:LocalisedCharacterString locale="da-DK">vindmøllepark</gmd:LocalisedCharacterString>
+            </gn:localType>
+            <gn:name>
+                <elf-gn:GeographicalName>
+                    <gn:language>dan</gn:language>
+                    <gn:nativeness xlink:href="http://inspire.ec.europa.eu/codelist/NativenessValue/endonym"/>
+                    <gn:nameStatus xlink:href="http://inspire.ec.europa.eu/codelist/NameStatusValue/official"/>
+                    <gn:sourceOfName>Danske Stednavne</gn:sourceOfName>
+                    <gn:pronunciation nilReason="Unpopulated" xsi:nil="true"/>
+                    <gn:spelling>
+                        <gn:SpellingOfName>
+                            <gn:text>Nysted Havmøllepark</gn:text>
+                            <gn:script>Latn</gn:script>
+                        </gn:SpellingOfName>
+                    </gn:spelling>
+                    <elf-gn:referenceName>true</elf-gn:referenceName>
+                </elf-gn:GeographicalName>
+            </gn:name>
+            <gn:name>
+                <elf-gn:GeographicalName>
+                    <gn:language>dan</gn:language>
+                    <gn:nativeness xlink:href="http://inspire.ec.europa.eu/codelist/NativenessValue/endonym"/>
+                    <gn:nameStatus xlink:href="http://inspire.ec.europa.eu/codelist/NameStatusValue/other"/>
+                    <gn:sourceOfName>Danske Stednavne</gn:sourceOfName>
+                    <gn:pronunciation nilReason="Unpopulated" xsi:nil="true"/>
+                    <gn:spelling>
+                        <gn:SpellingOfName>
+                            <gn:text>Nysted Havmøllepark</gn:text>
+                            <gn:script>Latn</gn:script>
+                        </gn:SpellingOfName>
+                    </gn:spelling>
+                    <elf-gn:referenceName>false</elf-gn:referenceName>
+                </elf-gn:GeographicalName>
+            </gn:name>
+            <gn:type xlink:href="http://inspire.ec.europa.eu/codelist/NamedPlaceTypeValue/other"/>
+            <elf-gn:EGNType xlink:href="http://www.locationframework.eu/codelist/EuroGeoNamesLocationTypeValue/10"/>
+        </elf-gn:NamedPlace>
+    </wfs:member>
+</wfs:FeatureCollection>

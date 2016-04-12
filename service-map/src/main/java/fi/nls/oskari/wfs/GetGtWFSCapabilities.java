@@ -979,6 +979,12 @@ public class GetGtWFSCapabilities {
             if (localname != null) {
                 if (localname.equals(name)) {
                     return subnodes.item(k).getTextContent();
+                } else if (localname.indexOf(':') > -1) {
+                    //FIXME: getLocalName() above always seems to return null -> doing a manual poor man's namespace check for now...
+                    localname = localname.substring(localname.indexOf(':') + 1);
+                    if (localname.equals(name)) {
+                        return subnodes.item(k).getTextContent();
+                    }
                 }
             }
             val = scanChildNode(subnodes.item(k).getChildNodes(), name, val);

@@ -101,7 +101,7 @@ public class DeleteFeatureHandler extends ActionHandler {
 		
 		for(String key : keys)
 		{
-			JedisManager.del(key);
+			JedisManager.delAll(key);
 		}
 	}
 }

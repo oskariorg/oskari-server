@@ -1,4 +1,4 @@
-package fi.nls.oskari.control.view;
+    package fi.nls.oskari.control.view;
 
 import fi.mml.map.mapwindow.util.OskariLayerWorker;
 import fi.mml.portti.service.db.permissions.PermissionsService;

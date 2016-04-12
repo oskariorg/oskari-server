@@ -1,5 +1,13 @@
 # Migration guide
 
+## 1.36.0
+
+### Geotools 14.2 upgrade (was 13.1)
+
+There are some improvements in geojson parsing and new methods for parsing WMS/WFS capabilities.
+Basic oskari-server source is not modified because of this upgrade, only some unit tests.
+
+
 ## 1.35.0
 
 Update IntersectionFeatureCollection2-2.7.1.jar in your webapps/geoserver/WEB-INF/lib directory.

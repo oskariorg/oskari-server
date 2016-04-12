@@ -2,6 +2,11 @@
 
 ## 1.36
 
+### Generic
+
+Geotools version has been updated to 14.2.
+See MigrationGuide.md for details.
+
 ### service-map
 
 A bugfix to legend image parsing when there were multiple styles with the same name.
@@ -25,6 +30,12 @@ WfsLayerPlugin config can now be configured with oskari-ext.properties if defaul
     oskari.transport.url=/mytransport
 
 These will write the host and contextPath to the plugins config if they are not configured in database view.
+
+Populate missing projection definitions for mapfull config projectionDefs. It uses the projection defs in: 
+    control-base\src\main\resources\fi\nls\oskari\control\view\modifier\bundle\epsg_proj4_formats.json
+
+Populate svgMarkers for mapfull config, it uses for populate SVG markers JSONArray in: 
+    control-base\src\main\resources\fi\nls\oskari\control\view\modifier\bundle\svg-markers.json
 
 #### GetWFSDescribeFeatureHandler
 

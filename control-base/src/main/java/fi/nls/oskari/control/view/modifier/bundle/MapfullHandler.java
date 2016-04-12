@@ -23,28 +23,23 @@ import fi.nls.oskari.map.userlayer.service.UserLayerDbServiceIbatisImpl;
 import fi.nls.oskari.myplaces.MyPlacesService;
 import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.util.ConversionHelper;
-import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.JSONHelper;
-import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.view.modifier.ModifierException;
 import fi.nls.oskari.view.modifier.ModifierParams;
-import org.geotools.xml.xsi.XSISimpleTypes;
+import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.lang.reflect.Array;
 import java.util.*;
 
 @OskariViewModifier("mapfull")
 public class MapfullHandler extends BundleHandler {
 
-    private static final Logger log = LogFactory.getLogger(MapfullHandler.class);
+    private static final Logger LOGGER = LogFactory.getLogger(MapfullHandler.class);
     private static PermissionsService permissionsService = new PermissionsServiceIbatisImpl();
 
     // FIXME: default srs is hardcoded into frontend if srs is not defined in mapOptions!!
@@ -60,6 +55,7 @@ public class MapfullHandler extends BundleHandler {
     private static final String KEY_MAP_OPTIONS = "mapOptions";
     private static final String KEY_PROJ_DEFS = "projectionDefs";
     private static final String KEY_SRS = "srsName";
+    private static final String KEY_SVG_MARKERS = "svgMarkers";
 
     private static final String KEY_PLUGINS = "plugins";
     public static final String KEY_CONFIG = "config";
@@ -73,6 +69,7 @@ public class MapfullHandler extends BundleHandler {
     private static final String PLUGIN_GEOLOCATION = "Oskari.mapframework.bundle.mapmodule.plugin.GeoLocationPlugin";
     public static final String PLUGIN_SEARCH = "Oskari.mapframework.bundle.mapmodule.plugin.SearchPlugin";
     public static final String EPSG_PROJ4_FORMATS = "epsg_proj4_formats.json";
+    public static final String SVG_MARKERS_JSON = "svg-markers.json";
 
     private static MyPlacesService myPlaceService = null;
     private static final AnalysisDbService analysisService = new AnalysisDbServiceIbatisImpl();
@@ -83,11 +80,13 @@ public class MapfullHandler extends BundleHandler {
     private static final WfsLayerPluginHandler WFSLAYER_PLUGIN_HANDLER = new WfsLayerPluginHandler();
 
     private static JSONObject epsgMap = null;
+    private static JSONArray svgMarkers = null;
 
 
     public void init() {
         myPlaceService = OskariComponentManager.getComponentOfType(MyPlacesService.class);
         epsgInit();
+        svgInit();
     }
 
     public boolean modifyBundle(final ModifierParams params) throws ModifierException {
@@ -103,9 +102,9 @@ public class MapfullHandler extends BundleHandler {
             // fix ajaxurl to current community if possible
             // (required to show correct help articles)
             mapfullConfig.put("globalMapAjaxUrl", params.getBaseAjaxUrl());
-            log.debug("Replaced ajax url: ", ajaxUrl, "->", params.getBaseAjaxUrl());
+            LOGGER.debug("Replaced ajax url: ", ajaxUrl, "->", params.getBaseAjaxUrl());
         } catch (Exception e) {
-            log.error(e, "Replacing ajax url failed: ", ajaxUrl, "- Parsed:",
+            LOGGER.error(e, "Replacing ajax url failed: ", ajaxUrl, "- Parsed:",
                     params.getBaseAjaxUrl());
         }
 
@@ -138,11 +137,12 @@ public class MapfullHandler extends BundleHandler {
             OskariLayerWorker.transformWKTGeom(fullConfigLayers.optJSONObject(i), mapSRS);
         }
         setProjDefsForMapConfig(mapfullConfig, mapSRS);
+        setSvgMarkersForMapConfig(mapfullConfig);
         // overwrite layers
         try {
             mapfullConfig.put(KEY_LAYERS, fullConfigLayers);
         } catch (Exception e) {
-            log.error(e, "Unable to overwrite layers");
+            LOGGER.error(e, "Unable to overwrite layers");
         }
 
         // dummyfix: because migration tool added layer selection to all migrated maps
@@ -152,7 +152,7 @@ public class MapfullHandler extends BundleHandler {
         }
 
         if (params.isLocationModified()) {
-            log.info("locationModifiedByParams -> disabling GeoLocationPlugin");
+            LOGGER.info("locationModifiedByParams -> disabling GeoLocationPlugin");
             removePlugin(PLUGIN_GEOLOCATION, mapfullConfig);
         }
 
@@ -220,6 +220,18 @@ public class MapfullHandler extends BundleHandler {
         }
     }
 
+    public void setSvgMarkersForMapConfig(final JSONObject mapfullConfig) {
+        if (mapfullConfig == null) {
+            return;
+        }
+
+        JSONArray markers = JSONHelper.getJSONArray(mapfullConfig, KEY_SVG_MARKERS);
+        if(markers == null || markers.length() == 0) {
+            JSONHelper.putValue(mapfullConfig, KEY_SVG_MARKERS, svgMarkers);
+        }
+
+    }
+
     public String getMapSRSProjDef(final String mapSRS) {
 
         try {
@@ -228,10 +240,10 @@ public class MapfullHandler extends BundleHandler {
                 return JSONHelper.getStringFromJSON(this.epsgMap, mapSRS.toUpperCase(), null);
             }
             else {
-                log.debug("ProjectionDefs not found in epsg_proj4_formats.json", mapSRS);
+                LOGGER.debug("ProjectionDefs not found in epsg_proj4_formats.json", mapSRS);
             }
         } catch (Exception e) {
-            log.debug("ProjectionDefs read failed in epsg_proj4_formats.json", mapSRS, " - exception: ", e);
+            LOGGER.debug("ProjectionDefs read failed in epsg_proj4_formats.json", mapSRS, " - exception: ", e);
         }
         return null;
     }
@@ -281,14 +293,14 @@ public class MapfullHandler extends BundleHandler {
                     if (categoryId != -1) {
                         publishedMyPlaces.add(categoryId);
                     } else {
-                        log.warn("Found my places layer in selected. Error parsing id with category id: ", layerId);
+                        LOGGER.warn("Found my places layer in selected. Error parsing id with category id: ", layerId);
                     }
                 } else if (layerId.startsWith(PREFIX_ANALYSIS)) {
                     final long categoryId = AnalysisHelper.getAnalysisIdFromLayerId(layerId);
                     if (categoryId != -1) {
                         publishedAnalysis.add(categoryId);
                     } else {
-                        log.warn("Found analysis layer in selected. Error parsing id with category id: ", layerId);
+                        LOGGER.warn("Found analysis layer in selected. Error parsing id with category id: ", layerId);
                     }
                 } else if (layerId.startsWith(PREFIX_USERLAYERS)) {
                     final long userLayerId = ConversionHelper
@@ -296,14 +308,14 @@ public class MapfullHandler extends BundleHandler {
                     if (userLayerId != -1) {
                         publishedUserLayers.add(userLayerId);
                     } else {
-                        log.warn("Found user layer in selected. Error parsing id with prefixed id: ", layerId);
+                        LOGGER.warn("Found user layer in selected. Error parsing id with prefixed id: ", layerId);
                     }
                 } else {
                     // these should all be pointing at a layer in oskari_maplayer
                     layerIdList.add(layerId);
                 }
             } catch (JSONException je) {
-                log.error(je, "Problem handling layer id:", layerId, "skipping it!.");
+                LOGGER.error(je, "Problem handling layer id:", layerId, "skipping it!.");
             }
         }
 
@@ -311,7 +323,7 @@ public class MapfullHandler extends BundleHandler {
                 layerIdList, user, lang, crs, ViewTypes.PUBLISHED.equals(viewType), modifyURLs);
 
         if (struct.isNull(KEY_LAYERS)) {
-            log.warn("getSelectedLayersStructure did not return layers when expanding:",
+            LOGGER.warn("getSelectedLayersStructure did not return layers when expanding:",
                     layerIdList);
         }
 
@@ -335,7 +347,7 @@ public class MapfullHandler extends BundleHandler {
         final boolean analyseBundlePresent = bundleIds.contains(BUNDLE_ANALYSE);
         final List<String> permissionsList = permissionsService.getResourcesWithGrantedPermissions(
                 AnalysisLayer.TYPE, user, Permissions.PERMISSION_TYPE_VIEW_PUBLISHED);
-        log.debug("Analysis layer permissions for published view", permissionsList);
+        LOGGER.debug("Analysis layer permissions for published view", permissionsList);
 
         for (Long id : publishedAnalysis) {
             final Analysis analysis = analysisService.getAnalysisById(id);
@@ -349,7 +361,7 @@ public class MapfullHandler extends BundleHandler {
             final String permissionKey = "analysis+" + id;
             boolean containsKey = permissionsList.contains(permissionKey);
             if (!containsKey) {
-                log.info("Found analysis layer in selected that is no longer published. ViewID:",
+                LOGGER.info("Found analysis layer in selected that is no longer published. ViewID:",
                         viewID, "Analysis id:", id);
                 continue;
             }
@@ -381,7 +393,7 @@ public class MapfullHandler extends BundleHandler {
 
         for (MyPlaceCategory mpLayer : myPlacesLayers) {
             if (!mpLayer.isPublished() && !mpLayer.isOwnedBy(uuid)) {
-                log.info("Found my places layer in selected that is no longer published. ViewID:",
+                LOGGER.info("Found my places layer in selected that is no longer published. ViewID:",
                         viewID, "Myplaces layerId:", mpLayer.getId());
                 // no longer published -> skip if isn't current users layer
                 continue;
@@ -411,7 +423,7 @@ public class MapfullHandler extends BundleHandler {
             final UserLayer userLayer = userLayerService.getUserLayerById(id);
 
             if (userLayer == null) {
-                log.warn("Unable to find published user layer with id", id);
+                LOGGER.warn("Unable to find published user layer with id", id);
                 continue;
             }
 
@@ -422,7 +434,7 @@ public class MapfullHandler extends BundleHandler {
             }
 
             if (!userLayer.isPublished() && !userLayer.isOwnedBy(user.getUuid())) {
-                log.info("Found user layer in selected that is no longer published. ViewID:",
+                LOGGER.info("Found user layer in selected that is no longer published. ViewID:",
                         viewID, "User layer id:", userLayer.getId());
                 // no longer published -> skip if isn't current users layer
                 continue;
@@ -445,10 +457,10 @@ public class MapfullHandler extends BundleHandler {
                 list.put(layers);
                 return list;
             } else {
-                log.error("getSelectedLayersStructure returned garbage layers.");
+                LOGGER.error("getSelectedLayersStructure returned garbage layers.");
             }
         } catch (JSONException jsonex) {
-            log.error("Could not set prefetch layers.");
+            LOGGER.error("Could not set prefetch layers.");
         }
         return new JSONArray();
     }
@@ -476,7 +488,7 @@ public class MapfullHandler extends BundleHandler {
                     mfConfigLayers.put(stateLayer);
                 }
             } catch (JSONException je) {
-                log.error(je, "Problem comparing layers - StateLayerId:",
+                LOGGER.error(je, "Problem comparing layers - StateLayerId:",
                         stateLayerId, "vs confLayerId:", confLayerId);
             }
         }
@@ -495,7 +507,7 @@ public class MapfullHandler extends BundleHandler {
                 continue;
             }
             if (pluginClassName.equals(plugin.optString(KEY_ID))) {
-                log.debug(pluginClassName, "plugin found at index:", i);
+                LOGGER.debug(pluginClassName, "plugin found at index:", i);
                 return plugin;
             }
         }
@@ -515,7 +527,7 @@ public class MapfullHandler extends BundleHandler {
                 continue;
             }
             if (pluginClassName.equals(plugin.optString(KEY_ID))) {
-                log.debug(pluginClassName, "plugin found at index:", i, "- removing it");
+                LOGGER.debug(pluginClassName, "plugin found at index:", i, "- removing it");
                 plugins.remove(i);
                 break;
             }
@@ -523,7 +535,7 @@ public class MapfullHandler extends BundleHandler {
     }
 
     private void killLayerSelectionPlugin(final JSONObject mapfullConfig) {
-        log.debug("[killLayerSelectionPlugin] removing layer selection plugin");
+        LOGGER.debug("[killLayerSelectionPlugin] removing layer selection plugin");
         try {
             final JSONArray plugins = mapfullConfig.getJSONArray(KEY_PLUGINS);
             for (int i = 0; i < plugins.length(); i++) {
@@ -532,28 +544,28 @@ public class MapfullHandler extends BundleHandler {
                     continue;
                 }
                 String id = plugin.getString(KEY_ID);
-                log.debug("[killLayerSelectionPlugin] got plugin " + id);
+                LOGGER.debug("[killLayerSelectionPlugin] got plugin " + id);
                 if (!id.equals(PLUGIN_LAYERSELECTION)) {
                     continue;
                 }
                 JSONObject config = plugin.getJSONObject(KEY_CONFIG);
-                log.debug("[killLayerSelectionPlugin] got config");
+                LOGGER.debug("[killLayerSelectionPlugin] got config");
                 if (!config.has(KEY_BASELAYERS)) {
                     continue;
                 }
                 JSONArray bl = config.getJSONArray(KEY_BASELAYERS);
                 if (bl.length() < 2) {
-                    log.debug("[killLayerSelectionPlugin] "
+                    LOGGER.debug("[killLayerSelectionPlugin] "
                             + "layercount < 2, removing plugin");
                     plugins.remove(i--);
-                    log.info("[killLayerSelectionPlugin] " + "Removed "
+                    LOGGER.info("[killLayerSelectionPlugin] " + "Removed "
                             + PLUGIN_LAYERSELECTION
                             + "as layercount < 2 and oldId > 0");
 
                 }
             }
         } catch (JSONException jsonex) {
-            log.error("Problem trying to figure out whether "
+            LOGGER.error("Problem trying to figure out whether "
                     + PLUGIN_LAYERSELECTION + " should be removed.", jsonex);
         }
     }
@@ -568,7 +580,18 @@ public class MapfullHandler extends BundleHandler {
                 this.epsgMap = JSONHelper.createJSONObject4Tokener(tokenizer);
             }
         } catch (Exception e) {
-            log.info("No setup for epsg proj4 formats found", e);
+            LOGGER.info("No setup for epsg proj4 formats found", e);
+        }
+    }
+
+    void svgInit(){
+        try {
+            InputStream inp = MapfullHandler.class.getResourceAsStream(SVG_MARKERS_JSON);
+            if (inp != null) {
+                this.svgMarkers = JSONHelper.createJSONArray(IOUtils.toString(inp, "UTF-8") );
+            }
+        } catch (Exception e) {
+            LOGGER.info("No setup for svg markers found", e);
         }
     }
 }
