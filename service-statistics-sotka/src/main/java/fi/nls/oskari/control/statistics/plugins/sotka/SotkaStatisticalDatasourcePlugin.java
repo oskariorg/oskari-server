@@ -24,7 +24,7 @@ public class SotkaStatisticalDatasourcePlugin implements StatisticalDatasourcePl
     private SotkaIndicatorsParser indicatorsParser = null;
     private SotkaConfig config = new SotkaConfig();
 
-    private final static String CACHE_KEY = "oskari_sotka_get_indicators";
+    private final static String CACHE_KEY = "oskari_sotka_get_indicators:";
 
     /**
      * Maps the SotkaNET layer identifiers to Oskari layers.
@@ -38,7 +38,7 @@ public class SotkaStatisticalDatasourcePlugin implements StatisticalDatasourcePl
     @Override
     public List<? extends StatisticalIndicator> getIndicators(User user) {
         try {
-            final String cachedData = JedisManager.get(CACHE_KEY);
+            final String cachedData = JedisManager.get(CACHE_KEY + getBaseURL());
 
             if (cachedData != null) {
                 return indicatorsParser.parse(cachedData, layerMappings);
