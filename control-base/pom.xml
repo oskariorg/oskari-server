@@ -29,6 +29,14 @@
         </dependency>
         <dependency>
             <groupId>fi.nls.oskari.service</groupId>
+            <artifactId>oskari-feedback</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>fi.nls.oskari.service</groupId>
+            <artifactId>oskari-feedback-open311</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>fi.nls.oskari.service</groupId>
             <artifactId>service-csw</artifactId>
         </dependency>
         <dependency>
