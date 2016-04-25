@@ -176,11 +176,35 @@ public class ServiceParams {
     }
 
     public String getLon() {
-        return JSONHelper.getStringFromJSON(this.PostServiceRequest, API_PARAM_KEY_LONG, null);
+        Object lon = JSONHelper.get(this.PostServiceRequest, API_PARAM_KEY_LONG);
+        if(lon instanceof String){
+            return lon.toString();
+        } else if (lon instanceof Double){
+            return Double.toString((Double) lon);
+        }
+        else if (lon instanceof Long){
+            return Long.toString((Long) lon);
+        }
+        else if (lon instanceof Integer){
+            return Integer.toString((Integer) lon);
+        }
+        return null;
     }
 
     public String getLat() {
-        return JSONHelper.getStringFromJSON(this.PostServiceRequest, API_PARAM_KEY_LAT, null);
+        Object lat = JSONHelper.get(this.PostServiceRequest, API_PARAM_KEY_LAT);
+        if(lat instanceof String){
+            return lat.toString();
+        } else if (lat instanceof Double){
+            return Double.toString((Double) lat);
+        }
+        else if (lat instanceof Long){
+            return Long.toString((Long) lat);
+        }
+        else if (lat instanceof Integer){
+            return Integer.toString((Integer) lat);
+        }
+        return null;
     }
 
     public void setLon(String lon) {

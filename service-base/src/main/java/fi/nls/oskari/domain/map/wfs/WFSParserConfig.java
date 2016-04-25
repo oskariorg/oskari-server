@@ -13,6 +13,7 @@ public class WFSParserConfig {
     private String response_template;
     private String parse_config;
     private String sld_style;
+    private String title;
 
     public String getId() {
         return id;
@@ -70,12 +71,21 @@ public class WFSParserConfig {
         this.sld_style = sld_style;
     }
 
-   public String toJSONString() {
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String toJSONString() {
        StringBuilder sb = new StringBuilder();
        sb.append("{\"id\": \"" + this.id + "\"");
        sb.append(",\"request_template\": \"" + this.request_template + "\"");
        sb.append(",\"response_template\": \"" + this.response_template +  "\"");
        sb.append(",\"type\": \""+ this.type +"\"");
+       sb.append(",\"title\": \""+ this.title +"\"");
        if(this.sld_style != null) sb.append(",\"sdl_style\": \"" + this.sld_style +  "\"");
        if(this.parse_config != null)sb.append(",\"parse_config\" : " + this.parse_config);
        sb.append("}");

@@ -114,6 +114,7 @@
         <result property="response_template" column="response_template"/>
         <result property="parse_config" column="parse_config"/>
         <result property="sld_style" column="sld_style"/>
+        <result property="title" column="title"/>
 
     </resultMap>
 
