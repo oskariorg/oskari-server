@@ -11,9 +11,24 @@ See MigrationGuide.md for details.
 
 A bugfix to legend image parsing when there were multiple styles with the same name.
 
+Multiple parser configs are now allowed for same feature type (layer name)  (wfs 2).
+Parser configs are defined in oskari_wfs_parser_config table.
+
+ResolveDepth attribute setup is added for wfs layers in admin layer selector.
+
+### service-feedback [new]
+
+New service for ``Feedback``  action route
+
+### service-feedback-open311 [new]
+
+New Open311 feedback implementation for feedback service 
+
 ### Database
 
 Added indexes for oskari_resource and oskari_permission tables.
+
+New ``title`` column inserted into oskari_wfs_parser_config table.
 
 ### service-search-opendata
 
@@ -21,6 +36,15 @@ New url parameter **&what3words** for positioning the map in startup
 e.g. http://www.paikkatietoikkuna.fi/web/en/map-window?ver=1.17&zoomLevel=6&what3words=examine.flying.daytime&mapLayers=base_35+100+default&showMarker=true
 
 ### control-base
+
+#### FeedbackHandler [new]
+
+New handler for feedback requests. Look at oskari.org documentation for more details.
+
+    &action_route=Feedback&method=postFeedback&baseUrl=https://asiointi.hel.fi/palautews/rest/v1
+    &action_route=Feedback&method=serviceList&baseUrl=https://asiointi.hel.fi/palautews/rest/v1
+    &action_route=Feedback&method=serviceDefinition&baseUrl=https://asiointi.hel.fi/palautews/rest/v1&serviceId=172
+    &action_route=Feedback&method=postFeedback&baseUrl=https://asiointi.hel.fi/palautews/rest/v1
 
 #### MapfullHandler 
 
