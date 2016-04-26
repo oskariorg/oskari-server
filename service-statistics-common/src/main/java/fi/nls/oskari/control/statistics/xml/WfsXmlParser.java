@@ -1,12 +1,18 @@
 package fi.nls.oskari.control.statistics.xml;
 
-import java.io.StringReader;
+import fi.nls.oskari.log.LogFactory;
+import fi.nls.oskari.log.Logger;
+import org.geotools.GML;
+import org.geotools.data.simple.SimpleFeatureCollection;
+import org.geotools.data.simple.SimpleFeatureIterator;
+import org.opengis.feature.Property;
+import org.opengis.feature.simple.SimpleFeature;
+
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
 
 /**
  * We just need the name and id from here.
@@ -26,27 +32,36 @@ import javax.xml.stream.XMLStreamReader;
  *   </wfs:member> ...
  */
 public class WfsXmlParser {
-    public static List<RegionCodeNamePair> parse(String xml, String codeTag, String nameTag) throws XMLStreamException {
-        XMLInputFactory f = XMLInputFactory.newInstance();
-        XMLStreamReader r = f.createXMLStreamReader( new StringReader(xml) );
+
+    private static final Logger LOG = LogFactory.getLogger(WfsXmlParser.class);
+
+    public static List<RegionCodeNamePair> parse(InputStream inputStream, String idProperty, String nameProperty) throws IOException {
+
         List<RegionCodeNamePair> nameCodes = new ArrayList<>();
-        String code = "";
-        String name = "";
-        while(r.hasNext()) {
-            if (r.isStartElement()) {
-                if (r.getLocalName().endsWith(codeTag)) {
-                    code = r.getElementText();
-                } else if (r.getLocalName().endsWith(nameTag)) {
-                    name = r.getElementText();
+        GML gml = new GML(GML.Version.GML3);
+        try {
+            SimpleFeatureCollection fc = gml.decodeFeatureCollection(inputStream);
+            SimpleFeatureIterator it = fc.features();
+
+            while (it.hasNext()) {
+                final SimpleFeature feature = it.next();
+                Property id = feature.getProperty(idProperty);
+                Property name = feature.getProperty(nameProperty);
+                if(id == null || name == null) {
+                    LOG.debug("Couldn't find id (", idProperty, ") and/or name(", nameProperty,
+                            ") property for region. Properties are:", feature.getProperties());
+                    continue;
                 }
-            } else if (r.isEndElement()) {
-                if (r.getLocalName().endsWith("member")) {
-                    nameCodes.add(new RegionCodeNamePair(code, name));
-                    code = "";
-                    name = "";
-                }
+                nameCodes.add(new RegionCodeNamePair(
+                        (String)id.getValue(),
+                        (String)name.getValue()));
             }
-            r.next();
+        } catch (Exception ex) {
+            throw new IOException(ex);
+        }
+        if(nameCodes.isEmpty()) {
+            throw new IOException("Empty result, check configuration for region id-property=" +
+                    idProperty + " and name-property =" + nameProperty);
         }
         return nameCodes;
     }

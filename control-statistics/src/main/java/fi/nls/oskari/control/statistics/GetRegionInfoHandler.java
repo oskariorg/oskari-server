@@ -15,6 +15,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.net.HttpURLConnection;
 import java.util.List;
 
 import javax.xml.stream.XMLStreamException;
@@ -44,7 +45,7 @@ public class GetRegionInfoHandler extends ActionHandler {
     /**
      * 
      * @param layerId For example: 9
-     * @param regionId: For example: "005", or null
+     * @param regionCode: For example: "005", or null
      * @return For example: [{"name": "Alajärvi"}]
      * @throws ActionException
      */
@@ -83,14 +84,14 @@ public class GetRegionInfoHandler extends ActionHandler {
             }
         }
         
-        // For example: http://localhost:8080/geoserver/wfs?service=wfs&version=2.0.0&request=GetFeature&typeNames=oskari:kunnat2013&propertyName=kuntakoodi,kuntanimi
-        String url = featuresUrl + "?service=wfs&version=2.0.0&request=GetFeature&typeNames=" + name +
+        // For example: http://localhost:8080/geoserver/wfs?service=wfs&version=1.1.0&request=GetFeature&typeNames=oskari:kunnat2013&propertyName=kuntakoodi,kuntanimi
+        String url = featuresUrl + "?service=wfs&version=1.1.0&request=GetFeature&typeNames=" + name +
                 "&propertyName=" + idTag + "," + nameTag;
         final JSONObject response = new JSONObject();
 
         try {
-            String xmlGeoserverResponseWithAllRegions = IOHelper.getURL(url);
-            List<RegionCodeNamePair> result = WfsXmlParser.parse(xmlGeoserverResponseWithAllRegions, idTag, nameTag);
+            final HttpURLConnection connection = IOHelper.getConnection(url);
+            List<RegionCodeNamePair> result = WfsXmlParser.parse(connection.getInputStream(), idTag, nameTag);
             for (RegionCodeNamePair codeName : result) {
                 if (regionCode == null || codeName.getCode().equals(regionCode)) {
                     JSONObject regionJSON = new JSONObject();
@@ -100,8 +101,6 @@ public class GetRegionInfoHandler extends ActionHandler {
             }
         } catch (IOException e) {
             throw new ActionException("Something went wrong fetching the region info from the geoserver.", e);
-        } catch (XMLStreamException e) {
-            throw new ActionException("Something went wrong parsing the region info from the geoserver.", e);
         } catch (JSONException e) {
             throw new ActionException("Something went wrong serializing the region info response.", e);
         }

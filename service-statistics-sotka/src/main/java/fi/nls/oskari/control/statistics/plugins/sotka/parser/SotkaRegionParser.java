@@ -110,6 +110,7 @@ public class SotkaRegionParser {
      */
     public void getData() {
         String json = JedisManager.get(CACHE_KEY_PREFIX + url);
+
         if (json == null) {
             json = HttpRequest.get(url).body();
             JedisManager.setex(CACHE_KEY_PREFIX + url, JedisManager.EXPIRY_TIME_DAY, json);
@@ -134,7 +135,7 @@ public class SotkaRegionParser {
                     codesById.put((Integer) region.get(ID_FIELD), (String) region.get(CODE_FIELD));
                 }
             }
-        } catch (Throwable e) {
+        } catch (Exception e) {
             // Converting to RuntimeException, because plugins are expected to throw undeclared exceptions.
             throw new APIException("Something went wrong getting regions from SotkaNET.", e);
         }
