@@ -31,7 +31,9 @@ public class SotkaIndicatorValuesFetcher {
         this.config = config;
         this.parser = new SotkaIndicatorDataParser();
         // We need to filter by region category and index by codes. Codes are unique within
-        this.regionParser = new SotkaRegionParser(config);
+        if(this.regionParser == null) {
+            this.regionParser = new SotkaRegionParser(config);
+        }
         regionParser.getData();
     }
 
