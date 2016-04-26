@@ -2,6 +2,7 @@ package fi.nls.oskari.wfs;
 
 import fi.mml.map.mapwindow.util.OskariLayerWorker;
 import fi.nls.oskari.domain.map.OskariLayer;
+import fi.nls.oskari.domain.map.wfs.WFS2FeatureType;
 import fi.nls.oskari.domain.map.wfs.WFSLayerConfiguration;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
@@ -12,6 +13,7 @@ import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.wfs.util.WFSParserConfigs;
+import org.apache.commons.collections.map.MultiKeyMap;
 import org.geotools.data.DataStore;
 import org.geotools.data.DataStoreFinder;
 import org.geotools.data.FeatureSource;
@@ -185,7 +187,7 @@ public class GetGtWFSCapabilities {
                 featypes = doc.getDocumentElement().getElementsByTagNameNS(null, "FeatureType");
             }
             //Loop featypes
-            Map<String, _FeatureType> featuretypes = new HashMap<String, _FeatureType>();
+            Map<String, ArrayList<WFS2FeatureType>> featuretypes = new HashMap<String, ArrayList<WFS2FeatureType>>();
             for (int i = 0; i < featypes.getLength(); i++) {
                 String nameval = null;
                 String titleval = null;
@@ -203,18 +205,30 @@ public class GetGtWFSCapabilities {
                     if (titleval == null) {
                         titleval = nameval;
                     }
-                    _FeatureType tmpft = new _FeatureType();
-                    tmpft.setName(nameval);
-                    tmpft.setTitle(titleval);
-                    tmpft.setDefaultSrs(srsval);
-                    if(otherSrsval.length > 0){
-                        tmpft.setOtherSrs(otherSrsval);
+                    // Loop configs
+                    JSONArray feaconffa = parseConfigs.getFeatureTypeConfig(nameval);
+                    int count = 1;
+                    if (feaconffa != null) {
+                        count = feaconffa.length();
                     }
-                    // Try to parse describe feature type response of wfs 2.0.0 service at least namespaceUri
-                    parseWfs2xDescribeFeatureType(tmpft, IOHelper.getURL(getDescribeFeatureTypeUrl(rurl, version, nameval), user, pw));
-                    // Append parser type to title
-                    parserConfigType2Title(tmpft, parseConfigs);
-                    featuretypes.put(nameval, tmpft);
+                    ArrayList<WFS2FeatureType> lft = new ArrayList<WFS2FeatureType>();
+                    for (int k = 0; k < count; k++) {
+                        JSONObject feaconf = JSONHelper.getJSONObject(feaconffa, k);
+
+                        WFS2FeatureType tmpft = new WFS2FeatureType();
+                        tmpft.setName(nameval);
+                        tmpft.setTitle(titleval);
+                        tmpft.setDefaultSrs(srsval);
+                        if (otherSrsval.length > 0) {
+                            tmpft.setOtherSrs(otherSrsval);
+                        }
+                        // Try to parse describe feature type response of wfs 2.0.0 service at least namespaceUri
+                        parseWfs2xDescribeFeatureType(tmpft, IOHelper.getURL(getDescribeFeatureTypeUrl(rurl, version, nameval), user, pw));
+                        // Append parser type to title
+                        parserConfigType2Title(feaconf, tmpft, parseConfigs);
+                        lft.add(tmpft);
+                        featuretypes.put(nameval, lft);
+                    }
                 }
 
             }
@@ -247,7 +261,7 @@ public class GetGtWFSCapabilities {
             WFSDataStore data = (WFSDataStore) capa.get("WFSDataStore");
             return parseWfs1xLayer(data, version, rurl, user, pw);
         } else if (capa.containsKey("FeatureTypeList")) {
-            Map<String, _FeatureType> data = (Map<String, _FeatureType>) capa.get("FeatureTypeList");
+            Map<String, ArrayList<WFS2FeatureType>> data = (Map<String, ArrayList<WFS2FeatureType>>) capa.get("FeatureTypeList");
             return parseWfs2xLayer(data, version, rurl, user, pw);
         }
         return null;
@@ -271,7 +285,7 @@ public class GetGtWFSCapabilities {
             WFSDataStore data = (WFSDataStore) capa.get("WFSDataStore");
             return parseWfs1xProjections(data, version, name);
         } else if (capa.containsKey("FeatureTypeList")) {
-            Map<String, _FeatureType> data = (Map<String, _FeatureType>) capa.get("FeatureTypeList");
+            Map<String,  ArrayList<WFS2FeatureType>> data = (Map<String,  ArrayList<WFS2FeatureType>>) capa.get("FeatureTypeList");
             return parseWfs2xProjections(data, version, name);
         }
         return null;
@@ -284,7 +298,7 @@ public class GetGtWFSCapabilities {
      * @param typeNames capabilites typenames
      * @throws fi.nls.oskari.service.ServiceException
      */
-    public static JSONObject parseWfs2xLayer(Map<String, _FeatureType> typeNames, String version, String rurl,
+    public static JSONObject parseWfs2xLayer(Map<String,  ArrayList<WFS2FeatureType>> typeNames, String version, String rurl,
                                              String user, String pw)
             throws ServiceException {
         if (typeNames == null) {
@@ -305,22 +319,30 @@ public class GetGtWFSCapabilities {
             wfsLayers.put(KEY_LAYERS, layers);
             wfsLayers.put(KEY_LAYERS_WITH_ERRORS, layersWithErrors);
 
-            // Loop feature types
-            for (Map.Entry<String, _FeatureType> entry : typeNames.entrySet()) {
-                String typeName = entry.getKey();
-                _FeatureType fea2x = entry.getValue();
-                try {
-                    JSONObject temp = layerToOskariLayerJson(fea2x, version, typeName, rurl, user, pw);
-                    if (temp != null) {
-                        layers.put(temp);
-                    }
-                } catch (ServiceException se) {
-                    JSONObject errorLayer = new JSONObject();
-                    JSONHelper.putValue(errorLayer, "title", fea2x.getTitle());
-                    JSONHelper.putValue(errorLayer, "layerName", typeName);
-                    JSONHelper.putValue(errorLayer, "errorMessage", se.getMessage());
-                    layersWithErrors.put(errorLayer);
+            // Loop feature types - Array is used because of duplicate key valyes
+            Iterator it = typeNames.keySet().iterator();
+            ArrayList<WFS2FeatureType> feaList = null;
 
+            while (it.hasNext()) {
+                String key = it.next().toString();
+                feaList = typeNames.get(key);
+                if (feaList != null) {
+                    for (WFS2FeatureType fea2x: feaList) {
+                            String typeName = fea2x.getName();
+                            try {
+                                JSONObject temp = layerToOskariLayerJson(fea2x, version, typeName, rurl, user, pw);
+                                if (temp != null) {
+                                    layers.put(temp);
+                                }
+                            } catch (ServiceException se) {
+                                JSONObject errorLayer = new JSONObject();
+                                JSONHelper.putValue(errorLayer, "title", fea2x.getTitle());
+                                JSONHelper.putValue(errorLayer, "layerName", typeName);
+                                JSONHelper.putValue(errorLayer, "errorMessage", se.getMessage());
+                                layersWithErrors.put(errorLayer);
+
+                            }
+                        }
                 }
             }
 
@@ -416,16 +438,18 @@ public class GetGtWFSCapabilities {
      * @param typeNames  wfs featuretype list
      * @throws fi.nls.oskari.service.ServiceException
      */
-    public static Set<String> parseWfs2xProjections(Map<String, _FeatureType> typeNames, String version, String typeName) {
+    public static Set<String> parseWfs2xProjections(Map<String,  ArrayList<WFS2FeatureType>> typeNames, String version, String typeName) {
 
         if (typeNames == null || typeName == null) {
             return null;
         }
         Set<String> crss = new HashSet<String>();
         try {
-
-            _FeatureType  featureType = typeNames.get(typeName);
-             crss.add(ProjectionHelper.shortSyntaxEpsg(featureType.defaultSrs));
+            // Array is used because of duplicate key values  - data config could be not equal to same featuretype
+            // Use 1st one in this context
+            ArrayList<WFS2FeatureType> arrFeas = typeNames.get(typeName);
+            WFS2FeatureType  featureType = arrFeas.get(0);
+             crss.add(ProjectionHelper.shortSyntaxEpsg(featureType.getDefaultSrs()));
             if(featureType.getOtherSrs() != null && featureType.getOtherSrs().length > 0 )
             for (String s: featureType.getOtherSrs()) {
                 crss.add(ProjectionHelper.shortSyntaxEpsg(s));
@@ -472,8 +496,8 @@ public class GetGtWFSCapabilities {
         String title = "";
 
         WFSDataStore data1x = null;
-        _FeatureType fea2x = null;
-        _FeatureType fea1x = null;
+        WFS2FeatureType fea2x = null;
+        WFS2FeatureType fea1x = null;
 
         try {
             if (capa instanceof WFSDataStore) {
@@ -499,8 +523,8 @@ public class GetGtWFSCapabilities {
                     }
 
                 }
-            } else if (capa instanceof _FeatureType) {
-                fea2x = (_FeatureType) capa;
+            } else if (capa instanceof WFS2FeatureType) {
+                fea2x = (WFS2FeatureType) capa;
                 title = fea2x.getTitle();
             }
 
@@ -652,7 +676,7 @@ public class GetGtWFSCapabilities {
      * @return WFSLayerConfiguration  wfs feature type properties for wfs service and oskari rendering
      * @throws fi.nls.oskari.service.ServiceException
      */
-    public static WFSLayerConfiguration layerToWfs20LayerConfiguration(_FeatureType featype, String rurl, String user,
+    public static WFSLayerConfiguration layerToWfs20LayerConfiguration(WFS2FeatureType featype, String rurl, String user,
                                                                        String pw)
             throws ServiceException {
 
@@ -704,7 +728,7 @@ public class GetGtWFSCapabilities {
      * @return WFSLayerConfiguration  wfs feature type properties for wfs service and oskari rendering
      * @throws fi.nls.oskari.service.ServiceException
      */
-    public static WFSLayerConfiguration layerToWfs1xLayerConfiguration(_FeatureType featype, String rurl, String user,
+    public static WFSLayerConfiguration layerToWfs1xLayerConfiguration(WFS2FeatureType featype, String rurl, String user,
                                                                        String pw)
             throws ServiceException {
 
@@ -838,7 +862,7 @@ public class GetGtWFSCapabilities {
      * @param ft
      * @param data
      */
-    public static void parseWfs2xDescribeFeatureType(_FeatureType ft, final String data) {
+    public static void parseWfs2xDescribeFeatureType(WFS2FeatureType ft, final String data) {
 
         try {
             // GetCapabilities request
@@ -866,9 +890,9 @@ public class GetGtWFSCapabilities {
      *
      * @param data describefeaturetype response
      */
-    private static _FeatureType parseWfs1xDescribeFeatureType(final String data, String name, WFSDataStore store) {
+    private static WFS2FeatureType parseWfs1xDescribeFeatureType(final String data, String name, WFSDataStore store) {
 
-        _FeatureType ft = new _FeatureType();
+        WFS2FeatureType ft = new WFS2FeatureType();
         ft.setName(name);
         //ft.setDefaultSrs(srsval);  we use front side default srs
 
@@ -935,26 +959,28 @@ public class GetGtWFSCapabilities {
      * @param ft            featuretype items
      * @param parserConfigs parser configurations in oskari_wfs_parse_config table
      */
-    public static void parserConfigType2Title(_FeatureType ft, WFSParserConfigs parserConfigs) {
+    public static void parserConfigType2Title(JSONObject feaconf, WFS2FeatureType ft, WFSParserConfigs parserConfigs) {
 
-        JSONArray feaconf = parserConfigs.getFeatureTypeConfig(ft.getName());
         String type = "Unknown";
+        String title = "Unknown";
         if (feaconf == null) {
             // Get default parser config
-            feaconf = parserConfigs.getDefaultFeatureTypeConfig(ft.getNsUri(), ft.getName());
+            JSONArray feaconffa = parserConfigs.getDefaultFeatureTypeConfig(ft.getNsUri(), ft.getName());
+            feaconf = JSONHelper.getJSONObject(feaconffa, 0);
         }
 
         if (feaconf != null) {
-            type = JSONHelper.getStringFromJSON(JSONHelper.getJSONObject(feaconf, 0), "type", "Default Path");
+            type = JSONHelper.getStringFromJSON(feaconf, "type", "Default Path");
+            title = JSONHelper.getStringFromJSON(feaconf, "title", "Parser");
             ft.setTemplateType(type);
-            ft.setResponseTemplate(JSONHelper.getStringFromJSON(JSONHelper.getJSONObject(feaconf, 0), "response_template", null));
-            ft.setRequestTemplate(JSONHelper.getStringFromJSON(JSONHelper.getJSONObject(feaconf, 0), "request_template", null));
-            JSONObject pconf = JSONHelper.getJSONObject(JSONHelper.getJSONObject(feaconf, 0), "parse_config");
+            ft.setResponseTemplate(JSONHelper.getStringFromJSON(feaconf, "response_template", null));
+            ft.setRequestTemplate(JSONHelper.getStringFromJSON(feaconf, "request_template", null));
+            JSONObject pconf = JSONHelper.getJSONObject(feaconf, "parse_config");
             if (pconf != null) {
                 ft.setParseConfig(pconf.toString());
             }
         }
-        ft.setTitle(ft.getTitle() + " (" + type + " parser)");
+        ft.setTitle(ft.getTitle() + " (" + type + " " + title + " )");
 
     }
 
@@ -1034,107 +1060,5 @@ public class GetGtWFSCapabilities {
         return uri;
     }
 
-    public static class _FeatureType {
-        private String name;
-        private String title;
-        private String defaultSrs;
-        private String[] OtherSrs;
-        private String nsUri;
-        private String templateDescription;
-        private String templateType;
-        private String requestTemplate;
-        private String responseTemplate;
-        private String parseConfig;
-        private String geomPropertyName;
-
-        public String getName() {
-            return name;
-        }
-
-        public void setName(String name) {
-            this.name = name;
-        }
-
-        public String getTitle() {
-            return title;
-        }
-
-        public void setTitle(String title) {
-            this.title = title;
-        }
-
-        public String getDefaultSrs() {
-            return defaultSrs;
-        }
-
-        public void setDefaultSrs(String defaultSrs) {
-            this.defaultSrs = defaultSrs;
-        }
-
-        public String[] getOtherSrs() {
-            return OtherSrs;
-        }
-
-        public void setOtherSrs(String[] otherSrs) {
-            this.OtherSrs = otherSrs;
-        }
-
-        public String getNsUri() {
-            return nsUri;
-        }
-
-        public void setNsUri(String nsUri) {
-            this.nsUri = nsUri;
-        }
-
-
-        public String getTemplateDescription() {
-            return templateDescription;
-        }
-
-        public void setTemplateDescription(String templateDescription) {
-            this.templateDescription = templateDescription;
-        }
-
-        public String getTemplateType() {
-            return templateType;
-        }
-
-        public void setTemplateType(String templateType) {
-            this.templateType = templateType;
-        }
-
-        public String getRequestTemplate() {
-            return requestTemplate;
-        }
-
-        public void setRequestTemplate(String requestTemplate) {
-            this.requestTemplate = requestTemplate;
-        }
-
-        public String getResponseTemplate() {
-            return responseTemplate;
-        }
-
-        public void setResponseTemplate(String responseTemplate) {
-            this.responseTemplate = responseTemplate;
-        }
-
-        public String getParseConfig() {
-            return parseConfig;
-        }
-
-        public void setParseConfig(String parseConfig) {
-            this.parseConfig = parseConfig;
-        }
-
-        public String getGeomPropertyName() {
-            return geomPropertyName;
-        }
-
-        public void setGeomPropertyName(String geomPropertyName) {
-            this.geomPropertyName = geomPropertyName;
-        }
-    }
-
+   
 }

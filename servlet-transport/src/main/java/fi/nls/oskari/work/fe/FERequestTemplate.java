@@ -89,6 +89,8 @@ public class FERequestTemplate {
     private String geomProp;
     private String geomNs;
     private String maxcount;
+    private Boolean resolveDepth = false;
+
 
     public FERequestTemplate(FEQueryArgsBuilder argsBuilder) {
         this.templateResource = null;
@@ -244,6 +246,15 @@ public class FERequestTemplate {
                         .setTextContent(maxcount);
             }
         }
+        if (!resolveDepth) {
+            XPathExpression expr = xpath
+                    .compile("//*[@resolveDepth='*']");
+
+            Node nd = (Node) expr.evaluate(doc, XPathConstants.NODE);
+            if (nd != null) {
+                nd.getAttributes().removeNamedItem("resolveDepth");
+            }
+        }
 
         if (featureNs != null) {
             XPathExpression expr = xpath
@@ -332,7 +343,8 @@ public class FERequestTemplate {
     }
 
     public void setRequestFeatures(String srsName, String featureNs, String featurePrefix,
-                                   String featureName, String wFSver, String geomProp, String geomNs, String maxCount) {
+                                   String featureName, String wFSver, String geomProp, String geomNs, String maxCount,
+                                   Boolean resolveDepth) {
         this.srsName = srsName;
         this.featureNs = featureNs;
         this.featurePrefix = featurePrefix;
@@ -341,6 +353,7 @@ public class FERequestTemplate {
         this.geomProp = geomProp;
         this.geomNs = geomNs;
         this.maxcount = maxCount;
+        this.resolveDepth = resolveDepth;
 
     }
     private double GetSearchTolerance(final SessionStore session){

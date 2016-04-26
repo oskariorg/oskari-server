@@ -239,7 +239,16 @@
                 <artifactId>service-datamodel</artifactId>
                 <version>${fi.nls.oskari.service.version}</version>
             </dependency>
-
+            <dependency>
+                <groupId>fi.nls.oskari.service</groupId>
+                <artifactId>oskari-feedback</artifactId>
+                <version>${fi.nls.oskari.service.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>fi.nls.oskari.service</groupId>
+                <artifactId>oskari-feedback-open311</artifactId>
+                <version>${fi.nls.oskari.service.version}</version>
+            </dependency>
 
             <dependency>
                 <groupId>fi.nls.oskari.service</groupId>
@@ -983,6 +992,10 @@
         <module>servlet-printout</module>
         <!-- setup -->
         <module>webapp-setup</module>
+
+        <module>service-feedback</module>
+        <module>service-feedback-open311</module>
+
     </modules>
 
 </project>

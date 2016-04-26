@@ -186,6 +186,23 @@
             <groupId>org.geotools</groupId>
             <artifactId>gt-geojson</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>org.geotools</groupId>
+            <artifactId>gt-svg</artifactId>
+            <version>14.2</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>xalan</groupId>
+                    <artifactId>xalan</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.xmlgraphics</groupId>
+                    <artifactId>fop</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
         <dependency>
             <groupId>fi.nls.oskari.service</groupId>
             <artifactId>oskari-base</artifactId>
