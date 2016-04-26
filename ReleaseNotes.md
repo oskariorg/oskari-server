@@ -37,7 +37,7 @@ e.g. http://www.paikkatietoikkuna.fi/web/en/map-window?ver=1.17&zoomLevel=6&what
 
 ### control-base
 
-#### FeedbackHandler [new]
+#### FeedbackHandler [new, This is POC for time being and will be develop future on]
 
 New handler for feedback requests. Look at oskari.org documentation for more details.
 
