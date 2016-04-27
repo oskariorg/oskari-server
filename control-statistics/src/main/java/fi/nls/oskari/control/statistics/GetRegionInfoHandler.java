@@ -5,20 +5,18 @@ import fi.nls.oskari.cache.JedisManager;
 import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.ActionHandler;
 import fi.nls.oskari.control.ActionParameters;
-import fi.nls.oskari.control.statistics.db.LayerMetadata;
+import fi.nls.oskari.control.ActionParamsException;
+import fi.nls.oskari.control.statistics.db.RegionSet;
 import fi.nls.oskari.control.statistics.xml.RegionCodeNamePair;
-import fi.nls.oskari.control.statistics.xml.WfsXmlParser;
-import fi.nls.oskari.util.IOHelper;
+import fi.nls.oskari.service.OskariComponentManager;
+import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.ResponseHelper;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.net.HttpURLConnection;
 import java.util.List;
-
-import javax.xml.stream.XMLStreamException;
 
 /**
  * Returns the region information.
@@ -32,8 +30,7 @@ import javax.xml.stream.XMLStreamException;
 public class GetRegionInfoHandler extends ActionHandler {
     private final static String CACHE_KEY_PREFIX = "oskari_get_layer_info_handler:";
 
-    // TODO: With DI, this could be injected. Here, we just make an another instance.
-    private GetLayerInfoHandler layerInfoHandler = new GetLayerInfoHandler();
+    private RegionSetService service;
     
     public void handleAction(ActionParameters ap) throws ActionException {
         final String layerId = ap.getRequiredParam("layer_id");
@@ -50,30 +47,15 @@ public class GetRegionInfoHandler extends ActionHandler {
      * @throws ActionException
      */
     public JSONObject getRegionInfoJSON(long layerId, String regionCode) throws ActionException {
-        final LayerMetadata layerMetadata = layerInfoHandler.getLayerMetadata().get(layerId);
+        final RegionSet regionset = service.getRegionSet(layerId);
         
-        if (layerMetadata == null) {
-            return new JSONObject();
+        if (regionset == null) {
+            throw new ActionParamsException("Regionset not found");
         }
-        try {
-            final JSONObject attributes = new JSONObject(layerMetadata.getAttributes());
-            final JSONObject statistics = attributes.getJSONObject("statistics");
-
-            final String nameTag = statistics.getString("nameIdTag");
-            final String idTag = statistics.getString("regionIdTag");
-            final String name = layerMetadata.getOskariLayerName();
-            final String urlBase = layerMetadata.getUrl();
-            final String featuresUrl = statistics.getString("featuresUrl");
-            final JSONObject response = requestRegionInfoJSON(regionCode, layerId, name, nameTag, idTag, urlBase, featuresUrl);
-            return response;
-        } catch (JSONException e) {
-            e.printStackTrace();
-            throw new ActionException("Something went wrong creating RegionInfoJSON.", e);
-        }
+        return requestRegionInfoJSON(regionCode, layerId, regionset);
     }
 
-    public JSONObject requestRegionInfoJSON(String regionCode, long id, String name, String nameTag, String idTag,
-            String urlBase, String featuresUrl) throws ActionException {
+    public JSONObject requestRegionInfoJSON(String regionCode, long id, RegionSet regionset) throws ActionException {
         final String cacheKey = CACHE_KEY_PREFIX + id + ":" + regionCode;
         final String cachedData = JedisManager.get(cacheKey);
         if (cachedData != null && !cachedData.isEmpty()) {
@@ -83,24 +65,19 @@ public class GetRegionInfoHandler extends ActionHandler {
                 // Failed serializing. Skipping the cache.
             }
         }
-        
-        // For example: http://localhost:8080/geoserver/wfs?service=wfs&version=1.1.0&request=GetFeature&typeNames=oskari:kunnat2013&propertyName=kuntakoodi,kuntanimi
-        String url = featuresUrl + "?service=wfs&version=1.1.0&request=GetFeature&typeNames=" + name +
-                "&propertyName=" + idTag + "," + nameTag;
         final JSONObject response = new JSONObject();
 
         try {
-            final HttpURLConnection connection = IOHelper.getConnection(url);
-            List<RegionCodeNamePair> result = WfsXmlParser.parse(connection.getInputStream(), idTag, nameTag);
+            List<RegionCodeNamePair> result = service.getRegions(regionset);
             for (RegionCodeNamePair codeName : result) {
-                if (regionCode == null || codeName.getCode().equals(regionCode)) {
-                    JSONObject regionJSON = new JSONObject();
-                    regionJSON.put("name", codeName.getName());
-                    response.put(codeName.getCode(), regionJSON);
+                if (regionCode != null && !codeName.getCode().equals(regionCode)) {
+                    continue;
                 }
+                JSONObject regionJSON = JSONHelper.createJSONObject("name", codeName.getName());
+                response.put(codeName.getCode(), regionJSON);
             }
         } catch (IOException e) {
-            throw new ActionException("Something went wrong fetching the region info from the geoserver.", e);
+            throw new ActionException("Something went wrong fetching the region info from geoserver.", e);
         } catch (JSONException e) {
             throw new ActionException("Something went wrong serializing the region info response.", e);
         }
@@ -109,8 +86,14 @@ public class GetRegionInfoHandler extends ActionHandler {
         return response;
     }
 
+    public void setRegionsetService(final RegionSetService service) {
+        this.service = service;
+    }
+
     @Override
     public void init() {
-        this.layerInfoHandler.init();
+        if(service == null) {
+            setRegionsetService(OskariComponentManager.getComponentOfType(RegionSetService.class));
+        }
     }
 }

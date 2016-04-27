@@ -57,7 +57,6 @@ public class SotkaStatisticalDatasourcePlugin implements StatisticalDatasourcePl
         } catch (APIException e) {
             throw e;
         } catch (Throwable e) {
-            e.printStackTrace();
             throw new APIException("Something went wrong calling SotkaNET Indicators interface.", e);
         }
     }
