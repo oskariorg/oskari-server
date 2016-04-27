@@ -25,7 +25,7 @@ import javax.sql.DataSource;
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(DatasourceHelper.class)
 @PowerMockIgnore( {"javax.management.*"}) 
-public class GetLayerInfoHandlerIT {
+public class GetRegionSetsHandlerIT {
     public static class DatasourceHelperMock extends DatasourceHelper {
         public DatasourceHelperMock() {
             super();
@@ -54,7 +54,7 @@ public class GetLayerInfoHandlerIT {
     }
     @Test(timeout=120000)
     public void testGettingLayerInfo() throws ActionException, JSONException {
-        GetLayerInfoHandler handler = new GetLayerInfoHandler();
+        GetRegionSetsHandler handler = new GetRegionSetsHandler();
         handler.init();
         JSONObject result = handler.getLayerInfoJSON();
         assertTrue("Too small response.",

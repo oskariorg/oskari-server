@@ -14,7 +14,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * Returns the layer information. This specifies the name and id attributes in the geoserver layer.
@@ -28,9 +27,9 @@ import java.util.Map;
  *   }
  * }
  */
-@OskariActionRoute("GetLayerInfo")
-public class GetLayerInfoHandler extends ActionHandler {
-    private static final Logger LOG = LogFactory.getLogger(GetLayerInfoHandler.class);
+@OskariActionRoute("GetRegionSets")
+public class GetRegionSetsHandler extends ActionHandler {
+    private static final Logger LOG = LogFactory.getLogger(GetRegionSetsHandler.class);
     private RegionSetService service;
 
     public void handleAction(ActionParameters ap) throws ActionException {
