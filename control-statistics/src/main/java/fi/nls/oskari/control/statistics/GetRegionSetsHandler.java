@@ -42,6 +42,8 @@ public class GetRegionSetsHandler extends ActionHandler {
         List<RegionSet> regionsets = service.getRegionSets();
         for (RegionSet set : regionsets) {
             try {
+                // TODO: maybe reformat the response here. Use an array with id tag, maybe name for the region set
+                // frontend uses id to get layer and show the layers name as region set name
                 response.put(String.valueOf(set.getId()), set.asJSON());
             } catch (JSONException e) {
                 e.printStackTrace();

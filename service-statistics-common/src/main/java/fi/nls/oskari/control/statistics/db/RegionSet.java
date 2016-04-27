@@ -36,23 +36,16 @@ public class RegionSet {
 
         JSONObject tags = new JSONObject();
         try {
-            tags.put("nameIdTag", getNameProperty());
+            // only regionset id and regionIdTag is used in frontend, and regionIdTag should propably come from datasource...
+            //tags.put("nameIdTag", getNameProperty());
             tags.put("regionIdTag", getIdProperty());
-            tags.put("url", getUrl());
-            tags.put("featuresUrl", getFeaturesUrl());
+            //tags.put("url", getUrl());
+            //tags.put("featuresUrl", getFeaturesUrl());
         } catch (JSONException e) {
             throw new RuntimeException("Something went wrong serializing the region set", e);
         }
         return tags;
     }
-    /*
-            JSONObject statistics = attributes.getJSONObject("statistics");
-            tags.put("nameIdTag", statistics.getString("nameIdTag"));
-            tags.put("regionIdTag", statistics.getString("regionIdTag"));
-            tags.put("url", metadata.getUrl());
-            tags.put("featuresUrl", statistics.getString("featuresUrl"));
-            response.put(String.valueOf(id), tags);
-     */
     public String getNameProperty() {
         return getStatsJSON().optString("nameIdTag");
     }
