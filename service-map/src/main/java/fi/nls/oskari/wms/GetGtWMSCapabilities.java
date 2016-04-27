@@ -54,6 +54,7 @@ public class GetGtWMSCapabilities {
         }
         final Map hints = new HashMap();
         hints.put(DocumentHandler.DEFAULT_NAMESPACE_HINT_KEY, WMSSchema.getInstance());
+        hints.put(DocumentFactory.VALIDATION_HINT, false);
         try(InputStream stream = new ByteArrayInputStream(xml.getBytes(encoding))) {
             final Object object = DocumentFactory.getInstance(stream, hints, Level.WARNING);
             if(object instanceof WMSCapabilities) {
@@ -72,14 +73,14 @@ public class GetGtWMSCapabilities {
      * @return
      * @throws ServiceException
      */
-    public static JSONObject getWMSCapabilities(final String rurl, final String user, final String pwd)
+    public static JSONObject getWMSCapabilities(final String rurl, final String user, final String pwd, final String version)
             throws ServiceException {
         try {
             /*check url validity*/
             new URL(rurl);
             CapabilitiesCacheService service = new CapabilitiesCacheServiceMybatisImpl();
             OskariLayerCapabilities capabilities = null;
-            capabilities = service.getCapabilities(rurl, "wmslayer", user, pwd);
+            capabilities = service.getCapabilities(rurl, "wmslayer", user, pwd, version);
 
             String capabilitiesXML = capabilities.getData();
             String encoding = CapabilitiesCacheService.getEncodingFromXml(capabilitiesXML);
@@ -205,6 +206,8 @@ public class GetGtWMSCapabilities {
         oskariLayer.setMaxScale(capabilitiesLayer.getScaleDenominatorMin());
         oskariLayer.setMinScale(capabilitiesLayer.getScaleDenominatorMax());
         oskariLayer.setName(capabilitiesLayer.getName());
+        oskariLayer.setVersion(caps.getVersion());
+
         // setup UI names for all supported languages
         final String[] languages = PropertyUtil.getSupportedLanguages();
         for (String lang : languages) {
@@ -219,7 +222,7 @@ OnlineResource xlink:type="simple" xlink:href="http://www.paikkatietohakemisto.f
         oskariLayer.setMetadataId(getMetaDataUrl(caps.getService()));
         final List<MetadataURL> meta = capabilitiesLayer.getMetadataURL();
         if (meta != null) {
-            if (meta.size() > 0) {
+            if (meta.size() > 0 && meta.get(0).getUrl() != null) {
                 oskariLayer.setMetadataId(meta.get(0).getUrl().toString());
             }
         }

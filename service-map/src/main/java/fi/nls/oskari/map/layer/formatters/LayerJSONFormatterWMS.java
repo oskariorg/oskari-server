@@ -135,7 +135,10 @@ public class LayerJSONFormatterWMS extends LayerJSONFormatter {
 
         JSONHelper.putValue(layerJson, KEY_FORMATS, capabilities.optJSONObject(KEY_FORMATS));
         JSONHelper.putValue(layerJson, KEY_ISQUERYABLE, capabilities.optBoolean(KEY_ISQUERYABLE));
-        JSONHelper.putValue(layerJson, KEY_VERSION, capabilities.optString("version"));
+        // Do not override version, if already available
+        if(!layerJson.has(KEY_VERSION)) {
+            JSONHelper.putValue(layerJson, KEY_VERSION, JSONHelper.getStringFromJSON(capabilities, KEY_VERSION, null));
+        }
         // copy time from capabilities to attributes
         // timedata is merged into attributes  (times:{start:,end:,interval:}  or times: []
         // only reason for this is that admin can see the values offered by service
