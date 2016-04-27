@@ -16,6 +16,12 @@ Parser configs are defined in oskari_wfs_parser_config table.
 
 ResolveDepth attribute setup is added for wfs layers in admin layer selector.
 
+#### WMS layers
+WMS service capabilities parsing is improved and prepared to support service versions.
+It is now possible to add WMS layers both 1.1.1 and 1.3.0 versions under same wms service in admin layer selector.
+  
+Capabilities cache was layertype and service url based, It is now now layertype, service url and version based.
+
 ### service-feedback [new]
 
 New service for ``Feedback``  action route
