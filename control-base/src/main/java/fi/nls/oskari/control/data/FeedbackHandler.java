@@ -79,7 +79,12 @@ public class FeedbackHandler extends ActionHandler {
 
         Boolean paramsOk = false;
         ServiceParams serviceParams = new ServiceParams();
-        serviceParams.setBaseUrl(params.getRequiredParam(API_PARAM_BASEURL));
+        // base url value will be fetch from the embedded view in the future
+        serviceParams.setBaseUrl(PropertyUtil.get("feedback.open311.url", null));
+        if(serviceParams.getBaseUrl() == null){
+            log.error("Open311  feedback service url is not available");
+            throw new ActionParamsException("Open311  feedback service url is not available");
+        }
         serviceParams.setMethod(method);
         serviceParams.setLocale(params.getLocale().getLanguage());
 
