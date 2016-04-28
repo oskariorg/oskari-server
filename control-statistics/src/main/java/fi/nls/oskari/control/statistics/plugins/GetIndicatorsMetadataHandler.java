@@ -1,8 +1,6 @@
 package fi.nls.oskari.control.statistics.plugins;
 
 import java.util.Map;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
 
 import fi.nls.oskari.domain.map.JSONLocalized;
 import org.json.JSONException;
@@ -35,11 +33,6 @@ public class GetIndicatorsMetadataHandler extends ActionHandler {
      * In the future it might make sense to inject the pluginManager references to different controllers using DI.
      */
     private static final StatisticalDatasourcePluginManager pluginManager = new StatisticalDatasourcePluginManager();
-    
-    /**
-     * For scheduling the cache refresh for the indicator lists.
-     */
-    private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
     @Override
     public void init() {
