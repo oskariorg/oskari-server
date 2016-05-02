@@ -47,10 +47,17 @@ e.g. http://www.paikkatietoikkuna.fi/web/en/map-window?ver=1.17&zoomLevel=6&what
 
 New handler for feedback requests. Look at oskari.org documentation for more details.
 
-    &action_route=Feedback&method=postFeedback&baseUrl=https://asiointi.hel.fi/palautews/rest/v1
-    &action_route=Feedback&method=serviceList&baseUrl=https://asiointi.hel.fi/palautews/rest/v1
-    &action_route=Feedback&method=serviceDefinition&baseUrl=https://asiointi.hel.fi/palautews/rest/v1&serviceId=172
-    &action_route=Feedback&method=postFeedback&baseUrl=https://asiointi.hel.fi/palautews/rest/v1
+    &action_route=Feedback&method=postFeedback
+    &action_route=Feedback&method=serviceList
+    &action_route=Feedback&method=serviceDefinition&serviceId=172
+    &action_route=Feedback&method=postFeedback
+    
+2 new properties must be defined in oskari-ext.properties
+ 
+    #Api key for posting feedback (Open311 api_key parameter value, only required for posting user's  feeback data)
+    #test api base url http://dev.hel.fi/open311-test/v1/
+    feedback.open311.key=f1301b1ded935eabc5faa6a2ce975f6
+    feedback.open311.url=http://dev.hel.fi/open311-test/v1/
 
 #### MapfullHandler 
 
