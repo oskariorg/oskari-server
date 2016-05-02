@@ -88,9 +88,6 @@
             />
     <%--language files --%>
     <script type="text/javascript"
-            src="/Oskari${path}/oskari_lang_all.js">
-    </script>
-    <script type="text/javascript"
             src="/Oskari${path}/oskari_lang_${language}.js">
     </script>
 </c:if>
