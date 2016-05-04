@@ -154,7 +154,7 @@ public class FEMapLayerJob extends OWSMapLayerJob {
         final String username = layer.getUsername();
         final String password = layer.getPassword();
 
-        final String srsName = layer.getSRSName();
+        final String srsName = session.getLocation().getSrs();
         final String featureNs = layer.getFeatureNamespaceURI();
         final String featurePrefix = layer.getFeatureNamespace();
         final String featureName = layer.getFeatureElement();
@@ -218,7 +218,7 @@ public class FEMapLayerJob extends OWSMapLayerJob {
             log.debug("[fe] SESSION CRS AXIS 0 " + dir0);
 
             final MathTransform transform = this.session.getLocation()
-                    .getTransformForClient(this.layer.getCrs(), true);
+                    .getTransformForClient(crs, true);
 
             /* FeatureEngine InputProcessor */
             final XMLInputProcessor inputProcessor = new StaxGMLInputProcessor();

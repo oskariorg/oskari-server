@@ -293,7 +293,7 @@ public class FERequestTemplate {
             ReferencedEnvelope env = new ReferencedEnvelope(new Envelope(c),
                     crs);
             env.expandBy(GetSearchTolerance(session));
-            bbox = env.toBounds(layer.getCrs());
+            bbox = env.toBounds(crs);
 
         } else if (type == JobType.HIGHLIGHT) {
 
@@ -302,18 +302,18 @@ public class FERequestTemplate {
             ReferencedEnvelope env = new ReferencedEnvelope(new Envelope(c),
                     crs);
             env.expandBy(GetSearchTolerance(session));
-            bbox = env.toBounds(layer.getCrs());
+            bbox = env.toBounds(crs);
 
         } else if (bounds != null) {
 
             ReferencedEnvelope env = new ReferencedEnvelope(
                     new Envelope(bounds.get(0), bounds.get(2), bounds.get(1),
                             bounds.get(3)), crs);
-            bbox = env.toBounds(layer.getCrs());
+            bbox = env.toBounds(crs);
 
         } else {
             ReferencedEnvelope env = session.getLocation().getEnvelope();
-            bbox = env.toBounds(layer.getCrs());
+            bbox = env.toBounds(crs);
         }
 
         ByteArrayOutputStream outs = new ByteArrayOutputStream();
