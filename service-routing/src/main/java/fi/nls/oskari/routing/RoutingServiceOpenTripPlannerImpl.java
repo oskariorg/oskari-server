@@ -33,6 +33,7 @@ public class RoutingServiceOpenTripPlannerImpl implements RoutingService {
     public static final String PARAM_DATE = "date";
     public static final String PARAM_TIME = "time";
     public static final String PARAM_ARRIVE_BY = "arriveBy";
+    public static final String PARAM_SHOW_INTERMEDIATE_STOPS = "showIntermediateStops";
 
     private static final String PROPERTY_USER = "routing.user";
     private static final String PROPERTY_PASSWORD = "routing.password";
@@ -62,6 +63,7 @@ public class RoutingServiceOpenTripPlannerImpl implements RoutingService {
         requestParams.put(PARAM_MODE, params.getMode());
         requestParams.put(PARAM_MAX_WALK_DISTANCE, Long.toString(params.getMaxWalkDistance()));
         requestParams.put(PARAM_WHEELCHAIR, params.getIsWheelChair().toString());
+        requestParams.put(PARAM_SHOW_INTERMEDIATE_STOPS, params.getIsShowIntermediateStops().toString());
         requestParams.put(PARAM_LOCALE, params.getLang());
 
         final String requestUrl = IOHelper.constructUrl(PropertyUtil.get("routing.url"), requestParams);

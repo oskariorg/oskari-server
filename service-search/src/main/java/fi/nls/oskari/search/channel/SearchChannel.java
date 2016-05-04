@@ -96,6 +96,7 @@ public abstract class SearchChannel extends OskariComponent implements Searchabl
         if(type == null) {
             return;
         }
+        item.setChannelId(getName());
         item.setZoomScale(getZoomScale(type));
         // TODO: setup normalized ranking/channel here
         // maybe add SearchChannel.getMaxRank/getMinRank and normalize through channels

@@ -10,6 +10,8 @@ import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.permission.domain.Permission;
 import fi.nls.oskari.permission.domain.Resource;
 import fi.nls.oskari.service.db.BaseIbatisService;
+import fi.nls.oskari.util.ConversionHelper;
+import fi.nls.oskari.util.PropertyUtil;
 
 import java.util.*;
 
@@ -17,8 +19,49 @@ public class PermissionsServiceIbatisImpl extends BaseIbatisService<Permissions>
 	
 	/** Our logger */
 	private static Logger log = LogFactory.getLogger(PermissionsServiceIbatisImpl.class);
-	
-	@Override
+    private Set<String> DYNAMIC_PERMISSIONS;
+
+    public PermissionsServiceIbatisImpl() {
+        // add any additional permissions
+        DYNAMIC_PERMISSIONS = ConversionHelper.asSet(PropertyUtil.getCommaSeparatedList("permission.types"));
+    }
+
+    /**
+     * Configure additional permissions with oskari-ext.properties:
+     *
+     *   permission.types = EDIT_LAYER_CONTENT
+     *   permission.EDIT_LAYER_CONTENT.name.fi=Muokkaa tasoa
+     *   permission.EDIT_LAYER_CONTENT.name.en=Edit layer
+     * @return
+     */
+    public Set<String> getAdditionalPermissions() {
+        return DYNAMIC_PERMISSIONS;
+    }
+
+    /**
+     * Names can be configured as instructed in getAdditionalPermissions() or with
+     *   permission.EDIT_LAYER_CONTENT.name = Name for all languages
+     *   
+     * @param permissionId
+     * @param lang
+     * @return
+     */
+    public String getPermissionName(String permissionId, String lang) {
+        final String property = "permission." + permissionId + ".name";
+        final Object obj = PropertyUtil.getLocalizableProperty(property, permissionId);
+        if(obj instanceof String) {
+            return (String) obj;
+        }
+        else if(obj instanceof Map) {
+            String tmp = (String)((Map) obj).get(lang);
+            if(tmp != null) {
+                return tmp;
+            }
+        }
+        return permissionId;
+    }
+
+    @Override
 	protected String getNameSpace() {
 		return "Permissions";
 	}

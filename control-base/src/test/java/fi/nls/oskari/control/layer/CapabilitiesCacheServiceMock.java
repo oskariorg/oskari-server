@@ -15,11 +15,12 @@ public class CapabilitiesCacheServiceMock extends CapabilitiesCacheService {
         this.response = response;
     }
     @Override
-    public OskariLayerCapabilities find(String url, String layertype) {
+    public OskariLayerCapabilities find(String url, String layertype, String version) {
         OskariLayerCapabilities caps = new OskariLayerCapabilities();
         caps.setUrl(url);
         caps.setLayertype(layertype);
         caps.setData(response);
+        caps.setVersion(version);
         return caps;
     }
 

@@ -10,6 +10,7 @@ import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.layer.formatters.LayerJSONFormatter;
 import fi.nls.oskari.map.layer.formatters.LayerJSONFormatterWMS;
 import fi.nls.oskari.util.*;
+import org.eclipse.emf.common.util.Enumerator;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -125,14 +126,19 @@ public class GetLayerTileHandler extends ActionHandler {
             final String urlTemplate = JSONHelper.getStringFromJSON(layer.getOptions(), "urlTemplate", null);
             if(urlTemplate != null) {
                 LOG.debug("REST WMTS layer proxy");
-
+                HashMap<String, String> capsParams = new HashMap<>();
+                Enumeration<String> paramNames = httpRequest.getParameterNames();
+                while (paramNames.hasMoreElements()) {
+                    String paramName = paramNames.nextElement();
+                    capsParams.put(paramName.toUpperCase(), params.getHttpParam(paramName));
+                }
                 return urlTemplate
                         .replaceFirst("\\{layer\\}", layer.getName())
-                        .replaceFirst("\\{style\\}", params.getHttpParam(KEY_STYLE, KEY_STYLE))
-                        .replaceFirst("\\{TileMatrixSet\\}", params.getHttpParam(KEY_TILEMATRIXSET, KEY_TILEMATRIXSET))
-                        .replaceFirst("\\{TileMatrix\\}", params.getHttpParam(KEY_TILEMATRIX, KEY_TILEMATRIX))
-                        .replaceFirst("\\{TileRow\\}", params.getHttpParam(KEY_TILEROW, KEY_TILEROW))
-                        .replaceFirst("\\{TileCol\\}", params.getHttpParam(KEY_TILECOL, KEY_TILECOL));
+                        .replaceFirst("\\{style\\}", capsParams.get(KEY_STYLE) != null ? capsParams.get(KEY_STYLE) : KEY_STYLE)
+                        .replaceFirst("\\{TileMatrixSet\\}", capsParams.get(KEY_TILEMATRIXSET) != null ? capsParams.get(KEY_TILEMATRIXSET) : KEY_TILEMATRIXSET)
+                        .replaceFirst("\\{TileMatrix\\}", capsParams.get(KEY_TILEMATRIX) != null ? capsParams.get(KEY_TILEMATRIX) : KEY_TILEMATRIX)
+                        .replaceFirst("\\{TileRow\\}", capsParams.get(KEY_TILEROW) != null ? capsParams.get(KEY_TILEROW) : KEY_TILEROW)
+                        .replaceFirst("\\{TileCol\\}", capsParams.get(KEY_TILECOL) != null ? capsParams.get(KEY_TILECOL) : KEY_TILECOL);
             }
         }
         Enumeration<String> paramNames = httpRequest.getParameterNames();

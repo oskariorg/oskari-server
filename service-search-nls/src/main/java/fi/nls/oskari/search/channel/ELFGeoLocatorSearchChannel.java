@@ -149,6 +149,47 @@ public class ELFGeoLocatorSearchChannel extends SearchChannel {
         elfParser = new ELFGeoLocatorParser(PropertyUtil.getOptional(PROPERTY_SERVICE_SRS));
     }
 
+
+    public Capabilities getCapabilities() {
+        return Capabilities.BOTH;
+    }
+
+    public ChannelSearchResult reverseGeocode(SearchCriteria searchCriteria) {
+
+        StringBuffer buf = new StringBuffer(serviceURL);
+        // reverse geocoding
+        // Transform lon,lat
+        String[] lonlat = elfParser.transformLonLat(""+searchCriteria.getLon(), ""+searchCriteria.getLat(), searchCriteria.getSRS());
+        if (lonlat == null) {
+            log.warn("Invalid lon/lat coordinates", searchCriteria.getLon(), searchCriteria.getLat());
+            return null;
+        }
+        String request = REQUEST_REVERSEGEOCODE_TEMPLATE.replace(KEY_LATITUDE_HOLDER, lonlat[1] );
+        Locale locale = new Locale(searchCriteria.getLocale());
+        String lang3 = locale.getISO3Language();
+        request = request.replace(KEY_LONGITUDE_HOLDER, lonlat[0] );
+        request = request.replace(KEY_LANG_HOLDER, lang3);
+        buf.append(request);
+        String data = "";
+        try {
+            data = IOHelper.readString(getConnection(buf.toString()));
+            // Clean xml version for geotools parser for faster parse
+            data = data.replace(RESPONSE_CLEAN, "");
+        } catch(Exception e) {
+            log.warn("Unable to fetch data "+buf.toString());
+            log.error(e);
+            return new ChannelSearchResult();
+        }
+
+        boolean exonym = true;
+        // New definitions - no mode setups any more in UI - exonym is always true
+        ChannelSearchResult result = elfParser.parse(data, searchCriteria.getSRS(), locale, exonym);
+
+        // Add used search method
+        result.setSearchMethod(findSearchMethod(searchCriteria));
+        return result;
+    }
+
     /**
      * Returns the search raw results.
      *
@@ -167,20 +208,7 @@ public class ELFGeoLocatorSearchChannel extends SearchChannel {
         String lang3 = locale.getISO3Language();
 
         StringBuffer buf = new StringBuffer(serviceURL);
-        if (hasParam(searchCriteria, PARAM_LON) && hasParam(searchCriteria, PARAM_LAT)) {
-            // reverse geocoding
-            // Transform lon,lat
-            String[] lonlat = elfParser.transformLonLat(searchCriteria.getParam(PARAM_LON).toString(), searchCriteria.getParam(PARAM_LAT).toString(), searchCriteria.getSRS());
-            if (lonlat == null) {
-                log.warn("Invalid lon/lat coordinates ", searchCriteria.getParam(PARAM_LON).toString(), " ", searchCriteria.getParam(PARAM_LAT).toString() );
-                return null;
-            }
-            String request = REQUEST_REVERSEGEOCODE_TEMPLATE.replace(KEY_LATITUDE_HOLDER, lonlat[1] );
-            request = request.replace(KEY_LONGITUDE_HOLDER, lonlat[0] );
-            request = request.replace(KEY_LANG_HOLDER, lang3);
-            buf.append(request);
-
-        } else if (hasParam(searchCriteria, PARAM_FILTER) && searchCriteria.getParam(PARAM_FILTER).toString().equals("true")) {
+        if (hasParam(searchCriteria, PARAM_FILTER) && searchCriteria.getParam(PARAM_FILTER).toString().equals("true")) {
             // Exact search limited to AU region - case sensitive - no fuzzy support
             String request = REQUEST_GETFEATUREAU_TEMPLATE.replace(KEY_PLACE_HOLDER, URLEncoder.encode(searchCriteria.getSearchString(), "UTF-8"));
             request = request.replace(KEY_AU_HOLDER, URLEncoder.encode(searchCriteria.getParam(PARAM_REGION).toString(), "UTF-8"));

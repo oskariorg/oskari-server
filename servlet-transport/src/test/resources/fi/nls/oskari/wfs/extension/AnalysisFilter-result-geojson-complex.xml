@@ -1,7 +1,11 @@
-<ogc:Filter xmlns:ogc="http://www.opengis.net/ogc" xmlns:gml="http://www.opengis.net/gml">
+<?xml version="1.0" encoding="UTF-8"?>
+<ogc:Filter
+        xmlns:xs="http://www.w3.org/2001/XMLSchema"
+        xmlns:gml="http://www.opengis.net/gml"
+        xmlns:ogc="http://www.opengis.net/ogc">
     <ogc:And>
         <ogc:Or>
-            <ogc:Intersects>
+            <ogc:Intersects>[ geometry intersects POLYGON ((426125.95809412 6695752.6337378, 426535.95809412 6696262.6337378, 426025.95809412 6696672.6337378, 425615.95809412 6696162.6337378, 426125.95809412 6695752.6337378)) ]
                 <ogc:PropertyName>geometry</ogc:PropertyName>
                 <gml:Polygon srsDimension="2">
                     <gml:exterior>
@@ -11,7 +15,7 @@
                     </gml:exterior>
                 </gml:Polygon>
             </ogc:Intersects>
-            <ogc:Intersects>
+            <ogc:Intersects>[ geometry intersects POLYGON ((426843.70809412 6696053.8837378, 427215.70809412 6696609.8837378, 426659.70809412 6696981.8837378, 426287.70809412 6696425.8837378, 426843.70809412 6696053.8837378)) ]
                 <ogc:PropertyName>geometry</ogc:PropertyName>
                 <gml:Polygon srsDimension="2">
                     <gml:exterior>
@@ -21,7 +25,7 @@
                     </gml:exterior>
                 </gml:Polygon>
             </ogc:Intersects>
-            <ogc:Intersects>
+            <ogc:Intersects>[ geometry intersects POLYGON ((426595.70809412 6695941.8837378, 426195.70809412 6696245.8837378, 425891.70809412 6695845.8837378, 426291.70809412 6695541.8837378, 426595.70809412 6695941.8837378)) ]
                 <ogc:PropertyName>geometry</ogc:PropertyName>
                 <gml:Polygon srsDimension="2">
                     <gml:exterior>

@@ -4,7 +4,7 @@ import fi.nls.oskari.cache.JedisManager;
 import fi.nls.oskari.pojo.SessionStore;
 import fi.nls.oskari.transport.TransportService;
 import fi.nls.oskari.util.PropertyUtil;
-import fi.nls.oskari.utils.TestHelper;
+import fi.nls.test.util.TestHelper;
 import fi.nls.oskari.wfs.extension.AnalysisFilter;
 import fi.nls.oskari.wfs.pojo.WFSLayerStore;
 import fi.nls.oskari.wfs.util.HttpHelper;

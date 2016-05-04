@@ -69,11 +69,15 @@ public class MapController {
             paramHandlers.addAll(ParamControl.getHandlerKeys());
             log.debug("Checking for params", paramHandlers);
         }
-        writeCustomHeaders(params.getResponse());
-        boolean development = PropertyUtil.getOptional("development", false);
-        model.addAttribute("preloaded", !development);
+        // for debugging - Note! changes the setting for the whole instance!!! Use with care
+        if(params.getUser().isAdmin() && params.getHttpParam("reallyseriouslyyes", false)) {
+            isDevelopmentMode = params.getHttpParam("dev", isDevelopmentMode);
+        }
 
-        if (development) {
+        writeCustomHeaders(params.getResponse());
+        model.addAttribute("preloaded", !isDevelopmentMode);
+
+        if (isDevelopmentMode) {
             model.addAttribute("oskariApplication", PropertyUtil.get("oskari.development.prefix"));
         } else {
             model.addAttribute("oskariApplication", PropertyUtil.get("oskari.client.version") +

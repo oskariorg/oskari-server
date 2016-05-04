@@ -136,4 +136,86 @@ public class TestJacksonParser {
         }
 
     }
+    @Test
+    public void test_ELF_gn_NamedPlace_DK_GMLtoJSON()
+            throws InstantiationException, IllegalAccessException, IOException,
+            XMLStreamException {
+
+        BasicFeatureEngine engine = new BasicFeatureEngine();
+
+        XMLInputProcessor inputProcessor = new StaxGMLInputProcessor();
+
+        OutputStreamProcessor outputProcessor = new JsonOutputProcessor();
+
+        InputStream inp = getClass().getResourceAsStream(
+                "/fi/nls/oskari/eu/elf/geographicalnames/ign_dk_ELF-GN-wfs.xml");
+
+        String testConf ="{\n" +
+                "  \"paths\": [{\n" +
+                "    \"path\": \"/elf-gn:NamedPlace/@gml:id\",\n" +
+                "    \"label\": \"id\",\n" +
+                "    \"type\": \"String\"\n" +
+                "  }, {\n" +
+                "    \"path\": \"/elf-gn:NamedPlace/gn:inspireId/base:Identifier/base:localId\",\n" +
+                "    \"label\": \"InspireLocalId\",\n" +
+                "    \"type\": \"String\"\n" +
+                "  }, {\n" +
+                "    \"path\": \"/elf-gn:NamedPlace/gn:inspireId/base:Identifier/base:versionId\",\n" +
+                "    \"label\": \"InspireVersionId\",\n" +
+                "    \"type\": \"String\"\n" +
+                "  }, {\n" +
+                "    \"path\": \"/elf-gn:NamedPlace/gn:geometry/gml:MultiGeometry/gml:geometryMember\",\n" +
+                "    \"label\": \"geom\",\n" +
+                "    \"type\": \"Geometry\"\n" +
+                "  }, {\n" +
+                "    \"path\": \"/elf-gn:NamedPlace/gn:localType/gmd:LocalisedCharacterString\",\n" +
+                "    \"label\": \"type\",\n" +
+                "    \"type\": \"String\"\n" +
+                "  }, {\n" +
+                "    \"path\": \"/elf-gn:NamedPlace/gn:name/elf-gn:GeographicalName/gn:spelling/gn:SpellingOfName/gn:text\",\n" +
+                "    \"label\": \"name\",\n" +
+                "    \"type\": \"String\"\n" +
+                "  }],\n" +
+                "  \"root\": {\n" +
+                "    \"rootNS\": \"http://www.locationframework.eu/schemas/GeographicalNames/0.2\",\n" +
+                "    \"name\": \"NamedPlace\"\n" +
+                "  },\n" +
+                "  \"scan\": {\n" +
+                "    \"scanNS\": \"http://www.opengis.net/wfs/2.0\",\n" +
+                "    \"name\": \"member\"\n" +
+                "  }\n" +
+                "}";
+
+
+        JSONObject conf = JSONHelper.createJSONObject(testConf);
+
+
+        try {
+            inputProcessor.setInput(inp);
+
+
+            OutputStream fouts = System.out;
+            try {
+                outputProcessor.setOutput(fouts);
+
+                ParserRecipe recipe = new ELF_wfs_Parser();
+                ELF_path_parse_worker worker = new ELF_path_parse_worker(conf);
+                recipe.setParseWorker(worker);
+
+                engine.setRecipe(recipe);
+
+                engine.setInputProcessor(inputProcessor);
+                engine.setOutputProcessor(outputProcessor);
+
+                engine.process();
+
+            } finally {
+                // fouts.close();
+            }
+
+        } finally {
+            inp.close();
+        }
+
+    }
 }

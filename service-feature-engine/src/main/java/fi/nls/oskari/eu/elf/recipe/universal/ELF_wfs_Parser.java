@@ -107,9 +107,9 @@ public class ELF_wfs_Parser extends GML32 {
                 // Handle unexpected end of document
                 int nextTag = XMLStreamConstants.END_DOCUMENT;
                 try {
-                    nextTag = xsr.nextTag();
+                    nextTag = xsr.next();
                 } catch (Exception e) {
-                    log.debug("*** Unhandled end of document - go on",e);
+                    log.debug("*** Unknown next event", e);
                 }
 
                 switch (nextTag) {
@@ -154,6 +154,8 @@ public class ELF_wfs_Parser extends GML32 {
                                     // Scan attributes
                                     // Attributes are in start element
                                     for (int i = 0; i < xsr.getAttributeCount(); i++) {
+                                        String test = xsr.getAttributePrefix(i);
+                                        String t2 = xsr.getAttributeLocalName(i);
                                         String label = attrmap.get(parseWorker.getPathString(pathTag) + "/" + xsr.getAttributePrefix(i) + ":" + xsr.getAttributeLocalName(i));
                                         if (label != null) {
 

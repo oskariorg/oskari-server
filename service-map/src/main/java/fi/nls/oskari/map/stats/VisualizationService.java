@@ -21,8 +21,9 @@ import javax.xml.transform.stream.StreamResult;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.util.List;
+import java.util.ArrayList;
 
-public abstract class VisualizationService extends BaseIbatisService<StatsVisualization> {
+public class VisualizationService extends BaseIbatisService<StatsVisualization> {
     
     private static final Logger log = LogFactory.getLogger(VisualizationService.class);
 
@@ -37,8 +38,16 @@ public abstract class VisualizationService extends BaseIbatisService<StatsVisual
 
     final private static OMFactory OM_FACTORY = OMAbstractFactory.getOMFactory();
 
+    @Override
+    protected String getNameSpace() {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
-    public abstract List<StatsVisualization> findForLayerId(final int layerId);
+    public List<StatsVisualization> findForLayerId(final int layerId) {
+        // FIXME/TODO: Parse this information from oskari_maplayer attributes field.
+        return new ArrayList<>();
+    };
 
     public StatsVisualization getVisualization(
             final int visId,
@@ -182,5 +191,4 @@ public abstract class VisualizationService extends BaseIbatisService<StatsVisual
             IOHelper.close(inputStream);
         }
     }
-
 }

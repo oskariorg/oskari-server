@@ -27,11 +27,6 @@ public class WebMapServiceV1_3_0_Impl extends AbstractWebMapService {
 	private boolean isQueryable = false;
 	
 	/**
-	 * Available styles key: name, value: onlineResource
-	 */
-	private Map<String, String> legends = new HashMap<String, String>();
-	
-	/**
 	 * Available formats
 	 */
 	private String[] formats = new String[0];
@@ -99,7 +94,6 @@ public class WebMapServiceV1_3_0_Impl extends AbstractWebMapService {
 		}
 		
 	}
-
     /**
      * Parses keywords for layer the same way that queryable is done.
      * Not sure of the logic but at least they fail similarly if they fail.
@@ -146,10 +140,9 @@ public class WebMapServiceV1_3_0_Impl extends AbstractWebMapService {
 			}
 		//}
 	}
-	
 	/**
 	 * Gathers styles from given layer to given map
-	 * 
+	 *
 	 * @param layer
 	 * @param foundStyles
 	 */
@@ -160,17 +153,17 @@ public class WebMapServiceV1_3_0_Impl extends AbstractWebMapService {
 				String styleName = style.getName();
 				String styleTitle = style.getTitle();
 				foundStyles.put(styleName, styleTitle);
-				
+
 				LegendURL[] lurl = style.getLegendURLArray();
 				if (lurl != null && lurl.length > 0) {
 					/* Online resource is in xlink namespace */
 					String href = lurl[0].getOnlineResource().newCursor().getAttributeText(new QName("http://www.w3.org/1999/xlink", "href"));
-					legends.put(styleName, href);
+					legends.put(styleName+LEGEND_HASHMAP_KEY_SEPARATOR+styleTitle, href);
 				}
 			}
 		}
 	}
-	
+
 	/**
 	 * Gathers get feature info formats from feature info
 	 * 

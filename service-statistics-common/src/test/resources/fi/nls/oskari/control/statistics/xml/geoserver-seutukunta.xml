@@ -1,0 +1,288 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wfs:FeatureCollection xmlns:wfs="http://www.opengis.net/wfs" xmlns:gml="http://www.opengis.net/gml"
+                       xmlns:oskari="http://www.oskari.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                       numberOfFeatures="70" timeStamp="2016-04-26T15:20:40.953Z"
+                       xsi:schemaLocation="http://www.oskari.org http://dev.paikkatietoikkuna.fi:80/geoserver/wfs?service=WFS&amp;version=1.1.0&amp;request=DescribeFeatureType&amp;typeName=oskari%3Aseutukunta http://www.opengis.net/wfs http://dev.paikkatietoikkuna.fi:80/geoserver/schemas/wfs/1.1.0/wfs.xsd">
+    <gml:featureMembers>
+        <oskari:seutukunta gml:id="seutukunta.fid--3fe3abf5_1543d893c5a_51ed">
+            <oskari:seutukuntanro>082</oskari:seutukuntanro>
+            <oskari:seutukunta>Kotka-Haminan</oskari:seutukunta>
+        </oskari:seutukunta>
+        <oskari:seutukunta gml:id="seutukunta.fid--3fe3abf5_1543d893c5a_51ee">
+            <oskari:seutukuntanro>124</oskari:seutukuntanro>
+            <oskari:seutukunta>Keski-Karjalan</oskari:seutukunta>
+        </oskari:seutukunta>
+        <oskari:seutukunta gml:id="seutukunta.fid--3fe3abf5_1543d893c5a_51ef">
+            <oskari:seutukuntanro>101</oskari:seutukuntanro>
+            <oskari:seutukunta>Mikkelin</oskari:seutukunta>
+        </oskari:seutukunta>
+        <oskari:seutukunta gml:id="seutukunta.fid--3fe3abf5_1543d893c5a_51f0">
+            <oskari:seutukuntanro>181</oskari:seutukuntanro>
+            <oskari:seutukunta>Kehys-Kainuun</oskari:seutukunta>
+        </oskari:seutukunta>
+        <oskari:seutukunta gml:id="seutukunta.fid--3fe3abf5_1543d893c5a_51f1">
+            <oskari:seutukuntanro>211</oskari:seutukuntanro>
+            <oskari:seutukunta>Mariehamns stad</oskari:seutukunta>
+        </oskari:seutukunta>
+        <oskari:seutukunta gml:id="seutukunta.fid--3fe3abf5_1543d893c5a_51f2">
+            <oskari:seutukuntanro>024</oskari:seutukuntanro>
+            <oskari:seutukunta>Vakka-Suomen</oskari:seutukunta>
+        </oskari:seutukunta>
+        <oskari:seutukunta gml:id="seutukunta.fid--3fe3abf5_1543d893c5a_51f3">
+            <oskari:seutukuntanro>043</oskari:seutukuntanro>
+            <oskari:seutukunta>Porin</oskari:seutukunta>
+        </oskari:seutukunta>
+        <oskari:seutukunta gml:id="seutukunta.fid--3fe3abf5_1543d893c5a_51f4">
+            <oskari:seutukuntanro>193</oskari:seutukuntanro>
+            <oskari:seutukunta>Torniolaakson</oskari:seutukunta>
+        </oskari:seutukunta>
+        <oskari:seutukunta gml:id="seutukunta.fid--3fe3abf5_1543d893c5a_51f5">
+            <oskari:seutukuntanro>213</oskari:seutukuntanro>
+            <oskari:seutukunta>Ålands skärgård</oskari:seutukunta>
+        </oskari:seutukunta>
+        <oskari:seutukunta gml:id="seutukunta.fid--3fe3abf5_1543d893c5a_51f6">
+            <oskari:seutukuntanro>091</oskari:seutukuntanro>
+            <oskari:seutukunta>Lappeenrannan</oskari:seutukunta>
+        </oskari:seutukunta>
+        <oskari:seutukunta gml:id="seutukunta.fid--3fe3abf5_1543d893c5a_51f7">
+            <oskari:seutukuntanro>133</oskari:seutukuntanro>
+            <oskari:seutukunta>Keuruun</oskari:seutukunta>
+        </oskari:seutukunta>
+        <oskari:seutukunta gml:id="seutukunta.fid--3fe3abf5_1543d893c5a_51f8">
+            <oskari:seutukuntanro>093</oskari:seutukuntanro>
+            <oskari:seutukunta>Imatran</oskari:seutukunta>
+        </oskari:seutukunta>
+        <oskari:seutukunta gml:id="seutukunta.fid--3fe3abf5_1543d893c5a_51f9">
+            <oskari:seutukuntanro>135</oskari:seutukuntanro>
+            <oskari:seutukunta>Äänekosken</oskari:seutukunta>
+        </oskari:seutukunta>
+        <oskari:seutukunta gml:id="seutukunta.fid--3fe3abf5_1543d893c5a_51fa">
+            <oskari:seutukuntanro>153</oskari:seutukuntanro>
+            <oskari:seutukunta>Sydösterbottens kustregion</oskari:seutukunta>
+        </oskari:seutukunta>
+        <oskari:seutukunta gml:id="seutukunta.fid--3fe3abf5_1543d893c5a_51fb">
+            <oskari:seutukuntanro>112</oskari:seutukuntanro>
+            <oskari:seutukunta>Kuopion</oskari:seutukunta>
+        </oskari:seutukunta>
+        <oskari:seutukunta gml:id="seutukunta.fid--3fe3abf5_1543d893c5a_51fc">
+            <oskari:seutukuntanro>174</oskari:seutukuntanro>
+            <oskari:seutukunta>Raahen</oskari:seutukunta>
+        </oskari:seutukunta>
+        <oskari:seutukunta gml:id="seutukunta.fid--3fe3abf5_1543d893c5a_51fd">
+            <oskari:seutukuntanro>044</oskari:seutukuntanro>
+            <oskari:seutukunta>Pohjois-Satakunnan</oskari:seutukunta>
+        </oskari:seutukunta>
+        <oskari:seutukunta gml:id="seutukunta.fid--3fe3abf5_1543d893c5a_51fe">
+            <oskari:seutukuntanro>194</oskari:seutukuntanro>
+            <oskari:seutukunta>Itä-Lapin</oskari:seutukunta>
+        </oskari:seutukunta>
+        <oskari:seutukunta gml:id="seutukunta.fid--3fe3abf5_1543d893c5a_51ff">
+            <oskari:seutukuntanro>191</oskari:seutukuntanro>
+            <oskari:seutukunta>Rovaniemen</oskari:seutukunta>
+        </oskari:seutukunta>
+        <oskari:seutukunta gml:id="seutukunta.fid--3fe3abf5_1543d893c5a_5200">
+            <oskari:seutukuntanro>196</oskari:seutukuntanro>
+            <oskari:seutukunta>Tunturi-Lapin</oskari:seutukunta>
+        </oskari:seutukunta>
+        <oskari:seutukunta gml:id="seutukunta.fid--3fe3abf5_1543d893c5a_5201">
+            <oskari:seutukuntanro>105</oskari:seutukuntanro>
+            <oskari:seutukunta>Pieksämäen</oskari:seutukunta>
+        </oskari:seutukunta>
+        <oskari:seutukunta gml:id="seutukunta.fid--3fe3abf5_1543d893c5a_5202">
+            <oskari:seutukuntanro>212</oskari:seutukuntanro>
+            <oskari:seutukunta>Ålands landsbygd</oskari:seutukunta>
+        </oskari:seutukunta>
+        <oskari:seutukunta gml:id="seutukunta.fid--3fe3abf5_1543d893c5a_5203">
+            <oskari:seutukuntanro>113</oskari:seutukuntanro>
+            <oskari:seutukunta>Koillis-Savon</oskari:seutukunta>
+        </oskari:seutukunta>
+        <oskari:seutukunta gml:id="seutukunta.fid--3fe3abf5_1543d893c5a_5204">
+            <oskari:seutukuntanro>053</oskari:seutukuntanro>
+            <oskari:seutukunta>Forssan</oskari:seutukunta>
+        </oskari:seutukunta>
+        <oskari:seutukunta gml:id="seutukunta.fid--3fe3abf5_1543d893c5a_5205">
+            <oskari:seutukuntanro>141</oskari:seutukuntanro>
+            <oskari:seutukunta>Suupohjan</oskari:seutukunta>
+        </oskari:seutukunta>
+        <oskari:seutukunta gml:id="seutukunta.fid--3fe3abf5_1543d893c5a_5206">
+            <oskari:seutukuntanro>161</oskari:seutukuntanro>
+            <oskari:seutukunta>Kaustisen</oskari:seutukunta>
+        </oskari:seutukunta>
+        <oskari:seutukunta gml:id="seutukunta.fid--3fe3abf5_1543d893c5a_5207">
+            <oskari:seutukuntanro>125</oskari:seutukuntanro>
+            <oskari:seutukunta>Pielisen-Karjalan</oskari:seutukunta>
+        </oskari:seutukunta>
+        <oskari:seutukunta gml:id="seutukunta.fid--3fe3abf5_1543d893c5a_5208">
+            <oskari:seutukuntanro>071</oskari:seutukuntanro>
+            <oskari:seutukunta>Lahden</oskari:seutukunta>
+        </oskari:seutukunta>
+        <oskari:seutukunta gml:id="seutukunta.fid--3fe3abf5_1543d893c5a_5209">
+            <oskari:seutukuntanro>197</oskari:seutukuntanro>
+            <oskari:seutukunta>Pohjois-Lapin</oskari:seutukunta>
+        </oskari:seutukunta>
+        <oskari:seutukunta gml:id="seutukunta.fid--3fe3abf5_1543d893c5a_520a">
+            <oskari:seutukuntanro>063</oskari:seutukuntanro>
+            <oskari:seutukunta>Etelä-Pirkanmaan</oskari:seutukunta>
+        </oskari:seutukunta>
+        <oskari:seutukunta gml:id="seutukunta.fid--3fe3abf5_1543d893c5a_520b">
+            <oskari:seutukuntanro>041</oskari:seutukuntanro>
+            <oskari:seutukunta>Rauman</oskari:seutukunta>
+        </oskari:seutukunta>
+        <oskari:seutukunta gml:id="seutukunta.fid--3fe3abf5_1543d893c5a_520c">
+            <oskari:seutukuntanro>144</oskari:seutukuntanro>
+            <oskari:seutukunta>Kuusiokuntien</oskari:seutukunta>
+        </oskari:seutukunta>
+        <oskari:seutukunta gml:id="seutukunta.fid--3fe3abf5_1543d893c5a_520d">
+            <oskari:seutukuntanro>064</oskari:seutukuntanro>
+            <oskari:seutukunta>Tampereen</oskari:seutukunta>
+        </oskari:seutukunta>
+        <oskari:seutukunta gml:id="seutukunta.fid--3fe3abf5_1543d893c5a_520e">
+            <oskari:seutukuntanro>134</oskari:seutukuntanro>
+            <oskari:seutukunta>Jämsän</oskari:seutukunta>
+        </oskari:seutukunta>
+        <oskari:seutukunta gml:id="seutukunta.fid--3fe3abf5_1543d893c5a_520f">
+            <oskari:seutukuntanro>115</oskari:seutukuntanro>
+            <oskari:seutukunta>Sisä-Savon</oskari:seutukunta>
+        </oskari:seutukunta>
+        <oskari:seutukunta gml:id="seutukunta.fid--3fe3abf5_1543d893c5a_5210">
+            <oskari:seutukuntanro>052</oskari:seutukuntanro>
+            <oskari:seutukunta>Riihimäen</oskari:seutukunta>
+        </oskari:seutukunta>
+        <oskari:seutukunta gml:id="seutukunta.fid--3fe3abf5_1543d893c5a_5211">
+            <oskari:seutukuntanro>192</oskari:seutukuntanro>
+            <oskari:seutukunta>Kemi-Tornion</oskari:seutukunta>
+        </oskari:seutukunta>
+        <oskari:seutukunta gml:id="seutukunta.fid--3fe3abf5_1543d893c5a_5212">
+            <oskari:seutukuntanro>154</oskari:seutukuntanro>
+            <oskari:seutukunta>Jakobstadsregionen</oskari:seutukunta>
+        </oskari:seutukunta>
+        <oskari:seutukunta gml:id="seutukunta.fid--3fe3abf5_1543d893c5a_5213">
+            <oskari:seutukuntanro>016</oskari:seutukuntanro>
+            <oskari:seutukunta>Loviisan</oskari:seutukunta>
+        </oskari:seutukunta>
+        <oskari:seutukunta gml:id="seutukunta.fid--3fe3abf5_1543d893c5a_5214">
+            <oskari:seutukuntanro>146</oskari:seutukuntanro>
+            <oskari:seutukunta>Järviseudun</oskari:seutukunta>
+        </oskari:seutukunta>
+        <oskari:seutukunta gml:id="seutukunta.fid--3fe3abf5_1543d893c5a_5215">
+            <oskari:seutukuntanro>011</oskari:seutukuntanro>
+            <oskari:seutukunta>Helsingin</oskari:seutukunta>
+        </oskari:seutukunta>
+        <oskari:seutukunta gml:id="seutukunta.fid--3fe3abf5_1543d893c5a_5216">
+            <oskari:seutukuntanro>015</oskari:seutukuntanro>
+            <oskari:seutukunta>Porvoon</oskari:seutukunta>
+        </oskari:seutukunta>
+        <oskari:seutukunta gml:id="seutukunta.fid--3fe3abf5_1543d893c5a_5217">
+            <oskari:seutukuntanro>069</oskari:seutukuntanro>
+            <oskari:seutukunta>Ylä-Pirkanmaan</oskari:seutukunta>
+        </oskari:seutukunta>
+        <oskari:seutukunta gml:id="seutukunta.fid--3fe3abf5_1543d893c5a_5218">
+            <oskari:seutukuntanro>178</oskari:seutukuntanro>
+            <oskari:seutukunta>Koillismaan</oskari:seutukunta>
+        </oskari:seutukunta>
+        <oskari:seutukunta gml:id="seutukunta.fid--3fe3abf5_1543d893c5a_5219">
+            <oskari:seutukuntanro>177</oskari:seutukuntanro>
+            <oskari:seutukunta>Ylivieskan</oskari:seutukunta>
+        </oskari:seutukunta>
+        <oskari:seutukunta gml:id="seutukunta.fid--3fe3abf5_1543d893c5a_521a">
+            <oskari:seutukuntanro>103</oskari:seutukuntanro>
+            <oskari:seutukunta>Savonlinnan</oskari:seutukunta>
+        </oskari:seutukunta>
+        <oskari:seutukunta gml:id="seutukunta.fid--3fe3abf5_1543d893c5a_521b">
+            <oskari:seutukuntanro>138</oskari:seutukuntanro>
+            <oskari:seutukunta>Saarijärven-Viitasaaren</oskari:seutukunta>
+        </oskari:seutukunta>
+        <oskari:seutukunta gml:id="seutukunta.fid--3fe3abf5_1543d893c5a_521c">
+            <oskari:seutukuntanro>122</oskari:seutukuntanro>
+            <oskari:seutukunta>Joensuun</oskari:seutukunta>
+        </oskari:seutukunta>
+        <oskari:seutukunta gml:id="seutukunta.fid--3fe3abf5_1543d893c5a_521d">
+            <oskari:seutukuntanro>025</oskari:seutukuntanro>
+            <oskari:seutukunta>Loimaan</oskari:seutukunta>
+        </oskari:seutukunta>
+        <oskari:seutukunta gml:id="seutukunta.fid--3fe3abf5_1543d893c5a_521e">
+            <oskari:seutukuntanro>162</oskari:seutukuntanro>
+            <oskari:seutukunta>Kokkolan</oskari:seutukunta>
+        </oskari:seutukunta>
+        <oskari:seutukunta gml:id="seutukunta.fid--3fe3abf5_1543d893c5a_521f">
+            <oskari:seutukuntanro>114</oskari:seutukuntanro>
+            <oskari:seutukunta>Varkauden</oskari:seutukunta>
+        </oskari:seutukunta>
+        <oskari:seutukunta gml:id="seutukunta.fid--3fe3abf5_1543d893c5a_5220">
+            <oskari:seutukuntanro>182</oskari:seutukuntanro>
+            <oskari:seutukunta>Kajaanin</oskari:seutukunta>
+        </oskari:seutukunta>
+        <oskari:seutukunta gml:id="seutukunta.fid--3fe3abf5_1543d893c5a_5221">
+            <oskari:seutukuntanro>023</oskari:seutukuntanro>
+            <oskari:seutukunta>Turun</oskari:seutukunta>
+        </oskari:seutukunta>
+        <oskari:seutukunta gml:id="seutukunta.fid--3fe3abf5_1543d893c5a_5222">
+            <oskari:seutukuntanro>014</oskari:seutukuntanro>
+            <oskari:seutukunta>Raaseporin</oskari:seutukunta>
+        </oskari:seutukunta>
+        <oskari:seutukunta gml:id="seutukunta.fid--3fe3abf5_1543d893c5a_5223">
+            <oskari:seutukuntanro>175</oskari:seutukuntanro>
+            <oskari:seutukunta>Haapaveden-Siikalatvan</oskari:seutukunta>
+        </oskari:seutukunta>
+        <oskari:seutukunta gml:id="seutukunta.fid--3fe3abf5_1543d893c5a_5224">
+            <oskari:seutukuntanro>061</oskari:seutukuntanro>
+            <oskari:seutukunta>Luoteis-Pirkanmaan</oskari:seutukunta>
+        </oskari:seutukunta>
+        <oskari:seutukunta gml:id="seutukunta.fid--3fe3abf5_1543d893c5a_5225">
+            <oskari:seutukuntanro>173</oskari:seutukuntanro>
+            <oskari:seutukunta>Oulunkaaren</oskari:seutukunta>
+        </oskari:seutukunta>
+        <oskari:seutukunta gml:id="seutukunta.fid--3fe3abf5_1543d893c5a_5226">
+            <oskari:seutukuntanro>131</oskari:seutukuntanro>
+            <oskari:seutukunta>Jyväskylän</oskari:seutukunta>
+        </oskari:seutukunta>
+        <oskari:seutukunta gml:id="seutukunta.fid--3fe3abf5_1543d893c5a_5227">
+            <oskari:seutukuntanro>081</oskari:seutukuntanro>
+            <oskari:seutukunta>Kouvolan</oskari:seutukunta>
+        </oskari:seutukunta>
+        <oskari:seutukunta gml:id="seutukunta.fid--3fe3abf5_1543d893c5a_5228">
+            <oskari:seutukuntanro>142</oskari:seutukuntanro>
+            <oskari:seutukunta>Seinäjoen</oskari:seutukunta>
+        </oskari:seutukunta>
+        <oskari:seutukunta gml:id="seutukunta.fid--3fe3abf5_1543d893c5a_5229">
+            <oskari:seutukuntanro>132</oskari:seutukuntanro>
+            <oskari:seutukunta>Joutsan</oskari:seutukunta>
+        </oskari:seutukunta>
+        <oskari:seutukunta gml:id="seutukunta.fid--3fe3abf5_1543d893c5a_522a">
+            <oskari:seutukuntanro>151</oskari:seutukuntanro>
+            <oskari:seutukunta>Kyrönmaa</oskari:seutukunta>
+        </oskari:seutukunta>
+        <oskari:seutukunta gml:id="seutukunta.fid--3fe3abf5_1543d893c5a_522b">
+            <oskari:seutukuntanro>111</oskari:seutukuntanro>
+            <oskari:seutukunta>Ylä-Savon</oskari:seutukunta>
+        </oskari:seutukunta>
+        <oskari:seutukunta gml:id="seutukunta.fid--3fe3abf5_1543d893c5a_522c">
+            <oskari:seutukuntanro>021</oskari:seutukuntanro>
+            <oskari:seutukunta>Åboland-Turunmaan</oskari:seutukunta>
+        </oskari:seutukunta>
+        <oskari:seutukunta gml:id="seutukunta.fid--3fe3abf5_1543d893c5a_522d">
+            <oskari:seutukuntanro>171</oskari:seutukuntanro>
+            <oskari:seutukunta>Oulun</oskari:seutukunta>
+        </oskari:seutukunta>
+        <oskari:seutukunta gml:id="seutukunta.fid--3fe3abf5_1543d893c5a_522e">
+            <oskari:seutukuntanro>176</oskari:seutukuntanro>
+            <oskari:seutukunta>Nivala-Haapajärven</oskari:seutukunta>
+        </oskari:seutukunta>
+        <oskari:seutukunta gml:id="seutukunta.fid--3fe3abf5_1543d893c5a_522f">
+            <oskari:seutukuntanro>022</oskari:seutukuntanro>
+            <oskari:seutukunta>Salon</oskari:seutukunta>
+        </oskari:seutukunta>
+        <oskari:seutukunta gml:id="seutukunta.fid--3fe3abf5_1543d893c5a_5230">
+            <oskari:seutukuntanro>068</oskari:seutukuntanro>
+            <oskari:seutukunta>Lounais-Pirkanmaan</oskari:seutukunta>
+        </oskari:seutukunta>
+        <oskari:seutukunta gml:id="seutukunta.fid--3fe3abf5_1543d893c5a_5231">
+            <oskari:seutukuntanro>051</oskari:seutukuntanro>
+            <oskari:seutukunta>Hämeenlinnan</oskari:seutukunta>
+        </oskari:seutukunta>
+        <oskari:seutukunta gml:id="seutukunta.fid--3fe3abf5_1543d893c5a_5232">
+            <oskari:seutukuntanro>152</oskari:seutukuntanro>
+            <oskari:seutukunta>Vaasan</oskari:seutukunta>
+        </oskari:seutukunta>
+    </gml:featureMembers>
+</wfs:FeatureCollection>

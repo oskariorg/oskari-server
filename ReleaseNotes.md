@@ -2,7 +2,57 @@
 
 ## 1.36
 
+### Generic
+
+Geotools version has been updated to 14.2.
+See MigrationGuide.md for details.
+
+### service-map
+
+A bugfix to legend image parsing when there were multiple styles with the same name.
+
+Multiple parser configs are now allowed for same feature type (layer name)  (wfs 2).
+Parser configs are defined in oskari_wfs_parser_config table.
+
+ResolveDepth attribute setup is added for wfs layers in admin layer selector.
+
+#### WMS layers
+WMS service capabilities parsing is improved and prepared to support service versions.
+It is now possible to add WMS layers both 1.1.1 and 1.3.0 versions under same wms service in admin layer selector.
+  
+Capabilities cache was layertype and service url based, It is now now layertype, service url and version based.
+
+### service-feedback [new]
+
+New service for ``Feedback``  action route
+
+### service-feedback-open311 [new]
+
+New Open311 feedback implementation for feedback service 
+
+### Database
+
+Added indexes for oskari_resource and oskari_permission tables.
+
+New ``title`` column inserted into oskari_wfs_parser_config table.
+
+### service-search-opendata
+
+New url parameter **&what3words** for positioning the map in startup
+e.g. http://www.paikkatietoikkuna.fi/web/en/map-window?ver=1.17&zoomLevel=6&what3words=examine.flying.daytime&mapLayers=base_35+100+default&showMarker=true
+
 ### control-base
+
+#### FeedbackHandler [new, This is POC for time being and will be develop future on]
+
+New handler for feedback requests. Look at oskari.org documentation for more details.
+
+    &action_route=Feedback&method=postFeedback&baseUrl=https://asiointi.hel.fi/palautews/rest/v1
+    &action_route=Feedback&method=serviceList&baseUrl=https://asiointi.hel.fi/palautews/rest/v1
+    &action_route=Feedback&method=serviceDefinition&baseUrl=https://asiointi.hel.fi/palautews/rest/v1&serviceId=172
+    &action_route=Feedback&method=postFeedback&baseUrl=https://asiointi.hel.fi/palautews/rest/v1
+
+#### MapfullHandler 
 
 WfsLayerPlugin config can now be configured with oskari-ext.properties if defaults are not working for your environment:
  
@@ -11,18 +61,83 @@ WfsLayerPlugin config can now be configured with oskari-ext.properties if defaul
 
 These will write the host and contextPath to the plugins config if they are not configured in database view.
 
-_GetWFSDescribeFeatureHandler_ returns now exact xsd types for feature properties
+Populate missing projection definitions for mapfull config projectionDefs. It uses the projection defs in: 
+    control-base\src\main\resources\fi\nls\oskari\control\view\modifier\bundle\epsg_proj4_formats.json
+
+Populate svgMarkers for mapfull config, it uses for populate SVG markers JSONArray in: 
+    control-base\src\main\resources\fi\nls\oskari\control\view\modifier\bundle\svg-markers.json
+
+#### GetWFSDescribeFeatureHandler
+
+Now returns now exact xsd types for feature properties
 
 Earlier version responsed generalized types (text or numeric).
 New extra request parameter  `&simple=true` is available for the earlier response behaviour
 
+#### ActionConstants
+
+Changed PARAM_SRS value from "epsg" to "srs". This affects GetMapLayers which now assumes the projection is sent in srs-parameter. 
+The parameter in most action routes for transmitting projection information is "srs" so this is a consistency improvement.
+
+#### CoordinatesHandler
+
+New action route. Transforms point-coordinates from projection to another. 
+Transformation class can be configured with property `projection.library.class` (defaults to `fi.nls.oskari.map.geometry.ProjectionHelper`).
+Takes `lan`, `lot`, `srs` and `targetSRS` parameters and returns a JSONObject with transformed result:
+
+      {
+          lan: 123,
+          lot : 456,
+          srs : "EPSG:789"
+      }
+      
+#### GetReverseGeocodingResultHandler
+
+New action parameter **channels_ids** for selecting a spesific reverse search channel(s) instead all available channels
+e.g. &action_route=GetReverseGeocodingResult&lang=fi&epsg=EPSG:3067&lon=368978.93&lat=6670688.861&channel_ids=WHAT3WORDS_CHANNEL
+
+#### CoordinateToolHandler
+
+When coordinatetool bundle is part of the setup. And it has configuration to do client-side transforms the handler populates
+ missing projection definitions for mapfull config projectionDefs. It uses the same mechanic as mapfullhandler and the 
+ same projection defs in:
+ 
+    control-base\src\main\resources\fi\nls\oskari\control\view\modifier\bundle\epsg_proj4_formats.json
+
+#### AppSetupHandler
+
+Coordinatetool is now allowed bundle for publisher.
+    
+#### GetPermissionsLayerHandlers
+
+Additional permissions can now be configured with oskari-ext.properties:
+ 
+    permission.types = EDIT_LAYER_CONTENT
+    permission.EDIT_LAYER_CONTENT.name.fi=Muokkaa tasoa
+    permission.EDIT_LAYER_CONTENT.name.en=Edit layer
+
+These permissions will then be shown by the admin-layerrights bundle in Oskari frontend.
+
 ### transport && control-base
 
-**WFS-T**  functionality is added to oskari-server package
+**WFS-T**  functionality is added to oskari-server package.
+User roles can be granted a EDIT_LAYER_CONTENT permission that will enable them to edit features on a WFS-service.
+This requires the content-editor bundle in Oskari frontend to provide the user-interface.
 
-Look at ..\oskari-server\install.md
+## 1.35.1
 
+### generic
 
+Apache commons-collections library upgraded 3.2.1 -> 3.2.2 for security reasons. 
+
+### service-search-nls
+
+Enabled reverse geocoding for ELFGeoLocatorSearchChannel.
+
+### control-base
+
+Openlayers3 sends WTMS-request parameters in camelCase while Openlayers2 always sends params in CAPS. 
+GetLayerTileHandler has been modified to accept wmts-parameters in any letter case.
 
 ## 1.35
 
@@ -37,12 +152,20 @@ Fixes an issue where user-generated my places with name containing non-ascii cha
 
 ### control-base
 
-MapfullHandler now gets the projection definition for map SRS and adds it to the mapfull config if it is not allready there. This is done to avoid openlayers trying to search the projection definition.
-The url where the projection definion is picked from can be configured to oskari-ext.properties:
+MapfullHandler now fills in missing projection configurations for mapfull bundle/proj4js when a view is loaded:
 
-    projectionDefs.url = http://spatialreference.org/ref/epsg/
+    {
+        "projectionDefs": {
+            "EPSG:4326": "+title=WGS 84 +proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs"
+        }
+    }
 
-The code is based on that url, so if using any other url you should see if the code is still valid.
+These can still be configured to the database as part of mapfull-bundles config and database are used when configured.
+The automation uses configurations from:
+
+    control-base\src\main\resources\fi\nls\oskari\control\view\modifier\bundle\epsg_proj4_formats.json
+
+Missing configurations can be added to the file or to the view in database.
 
 ### service-search
 

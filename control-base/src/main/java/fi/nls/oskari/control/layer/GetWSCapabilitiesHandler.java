@@ -55,7 +55,7 @@ public class GetWSCapabilitiesHandler extends ActionHandler {
         try {
             if(OskariLayer.TYPE_WMS.equals(layerType)) {
                 // New method for parsing WMSCetGapabilites to Oskari layers structure
-                final JSONObject capabilities = GetGtWMSCapabilities.getWMSCapabilities(url, user, pw);
+                final JSONObject capabilities = GetGtWMSCapabilities.getWMSCapabilities(url, user, pw, version);
                 ResponseHelper.writeResponse(params, capabilities);
             }
             else {
@@ -63,7 +63,7 @@ public class GetWSCapabilitiesHandler extends ActionHandler {
                     WMTSCapabilitiesParser parser = new WMTSCapabilitiesParser();
 
                     // setup capabilities URL
-                    final OskariLayerCapabilities caps  = capabilitiesService.getCapabilities(url, OskariLayer.TYPE_WMTS, user, pw);
+                    final OskariLayerCapabilities caps  = capabilitiesService.getCapabilities(url, OskariLayer.TYPE_WMTS, user, pw, version);
                     JSONObject resultJSON = parser.parseCapabilitiesToJSON(caps.getData(), url, currentCrs);
                     JSONHelper.putValue(resultJSON, "xml", caps.getData());
                     ResponseHelper.writeResponse(params, resultJSON);

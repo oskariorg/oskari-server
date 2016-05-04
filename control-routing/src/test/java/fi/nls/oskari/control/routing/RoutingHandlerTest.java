@@ -8,6 +8,7 @@ import org.junit.Test;
 
 import java.util.HashMap;
 import java.util.Map;
+import static fi.nls.oskari.control.ActionConstants.*;
 
 @Ignore
 public class RoutingHandlerTest extends JSONActionRouteTest {
@@ -32,7 +33,7 @@ public class RoutingHandlerTest extends JSONActionRouteTest {
         parameters.put("fromlat", "6679422");
         parameters.put("tolat", "6671022");
         parameters.put("tolon", "385010");
-        parameters.put("srs", "EPSG:3067");
+        parameters.put(PARAM_SRS, "EPSG:3067");
         final ActionParameters params = createActionParams(parameters, getLoggedInUser());
         routingHandler.handleAction(params);
         System.out.println(getResponseString());

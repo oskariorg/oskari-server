@@ -6,7 +6,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>fi.nls.oskari</groupId>
     <artifactId>oskari-parent</artifactId>
-    <version>1.35.0</version>
+    <version>1.36.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>Oskari parent POM</name>
@@ -64,7 +64,7 @@
         <java3d.version>1.3.1</java3d.version>
 
         <commons-lang.version>2.6</commons-lang.version>
-        <commons-collections.version>3.2.1</commons-collections.version>
+        <commons-collections.version>3.2.2</commons-collections.version>
         <commons-httpclient.version>3.1</commons-httpclient.version>
         <commons-codec.version>1.7</commons-codec.version>
         <commons-fileupload.version>1.2</commons-fileupload.version>
@@ -97,7 +97,7 @@
 
         <xerces.version>2.10.0</xerces.version>
         <xmlbeans.version>2.5.0</xmlbeans.version>
-        <geotools.version>13.1</geotools.version>
+        <geotools.version>14.2</geotools.version>
         <!-- gt-xsd-kml.version>9.3</gt-xsd-kml.version -->
         <flexjson.version>2.0</flexjson.version>
         <deegree.version>2</deegree.version>
@@ -209,6 +209,27 @@
 
             <dependency>
                 <groupId>fi.nls.oskari.service</groupId>
+                <artifactId>oskari-statistics</artifactId>
+                <version>${fi.nls.oskari.service.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>fi.nls.oskari.service</groupId>
+                <artifactId>oskari-statistics-common</artifactId>
+                <version>${fi.nls.oskari.service.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>fi.nls.oskari.service</groupId>
+                <artifactId>oskari-statistics-sotka</artifactId>
+                <version>${fi.nls.oskari.service.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>fi.nls.oskari.service</groupId>
+                <artifactId>oskari-statistics-kapa</artifactId>
+                <version>${fi.nls.oskari.service.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>fi.nls.oskari.service</groupId>
                 <artifactId>service-csw</artifactId>
                 <version>${fi.nls.oskari.service.version}</version>
             </dependency>
@@ -218,7 +239,16 @@
                 <artifactId>service-datamodel</artifactId>
                 <version>${fi.nls.oskari.service.version}</version>
             </dependency>
-
+            <dependency>
+                <groupId>fi.nls.oskari.service</groupId>
+                <artifactId>oskari-feedback</artifactId>
+                <version>${fi.nls.oskari.service.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>fi.nls.oskari.service</groupId>
+                <artifactId>oskari-feedback-open311</artifactId>
+                <version>${fi.nls.oskari.service.version}</version>
+            </dependency>
 
             <dependency>
                 <groupId>fi.nls.oskari.service</groupId>
@@ -841,6 +871,11 @@
             <url>file://${project.basedir}/../external-libs/</url>
         </repository>
         <repository>
+            <id>oskari_org</id>
+            <name>Oskari.org repository</name>
+            <url>http://oskari.org/nexus/content/repositories/releases/</url>
+        </repository>
+        <repository>
             <id>central</id>
             <name>Central Repository</name>
             <url>http://repo.maven.apache.org/maven2</url>
@@ -865,12 +900,9 @@
             <url>http://download.osgeo.org/webdav/geotools/</url>
         </repository>
         <repository>
-            <id>boundless</id>
-            <name>Boundless Maven Repository</name>
-            <url>http://repo.boundlessgeo.com/main</url>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
+            <id>geosolutions</id>
+            <name>Geo-solutions Maven Repository</name>
+            <url>http://maven.geo-solutions.it</url>
         </repository>
     </repositories>
 
@@ -925,6 +957,11 @@
         <module>service-csw</module>
         <module>service-logging</module>
         <module>service-routing</module>
+        <module>service-statistics-common</module>
+        <module>service-statistics</module>
+        <module>service-statistics-sotka</module>
+        <module>service-statistics-kapa</module>
+        
         <module>service-webapp</module>
 
         <module>control-base</module>
@@ -955,6 +992,10 @@
         <module>servlet-printout</module>
         <!-- setup -->
         <module>webapp-setup</module>
+
+        <module>service-feedback</module>
+        <module>service-feedback-open311</module>
+
     </modules>
 
 </project>

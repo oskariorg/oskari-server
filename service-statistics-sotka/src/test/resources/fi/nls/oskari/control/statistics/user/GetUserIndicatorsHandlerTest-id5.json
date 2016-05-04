@@ -1,0 +1,27 @@
+{
+  "id": 5,
+  "title": {
+    "fi": "Otsikko",
+    "sv": "Otsikkosv",
+    "en": "Title"
+  },
+  "description": {
+    "fi": "Kuvaus",
+    "sv": "Beskrivning",
+    "en": "Description"
+  },
+  "organization": {
+    "title": {
+      "fi": "Indicator source"
+    }
+  },
+  "public": true,
+  "year": 2013,
+  "data": [
+    {
+      "region": 49,
+      "primary value": 42
+    }
+  ],
+  "category": "KUNTA"
+}

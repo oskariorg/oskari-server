@@ -1,24 +1,26 @@
 package fi.nls.oskari.wms;
 
+import fi.mml.map.mapwindow.service.wms.WebMapService;
+import fi.mml.map.mapwindow.service.wms.WebMapServiceFactory;
 import fi.mml.map.mapwindow.util.OskariLayerWorker;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.layer.formatters.LayerJSONFormatterWMS;
 import fi.nls.oskari.service.ServiceException;
-import fi.nls.oskari.util.IOHelper;
+import fi.nls.oskari.service.capabilities.CapabilitiesCacheService;
+import fi.nls.oskari.service.capabilities.CapabilitiesCacheServiceMybatisImpl;
+import fi.nls.oskari.service.capabilities.OskariLayerCapabilities;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
 import org.geotools.data.ows.*;
 import org.geotools.data.ows.WMSCapabilities;
-import org.geotools.data.wms.WebMapServer;
 import org.geotools.data.wms.xml.MetadataURL;
 import org.geotools.data.wms.xml.WMSSchema;
 import org.geotools.xml.DocumentFactory;
 import org.geotools.xml.handlers.DocumentHandler;
 import org.json.JSONArray;
 import org.json.JSONObject;
-
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.net.URL;
@@ -43,14 +45,17 @@ public class GetGtWMSCapabilities {
     }
 
     // based on https://github.com/geotools/geotools/blob/master/modules/extension/wms/src/test/java/org/geotools/data/wms/test/WMS1_0_0_OnlineTest.java#L253-L276
-    public static WMSCapabilities createCapabilities(String xml) {
+    public static WMSCapabilities createCapabilities(String xml, String encoding) {
         if(xml == null || xml.isEmpty()) {
             return null;
         }
+        if (encoding == null) {
+            encoding = StandardCharsets.UTF_8.toString();
+        }
         final Map hints = new HashMap();
         hints.put(DocumentHandler.DEFAULT_NAMESPACE_HINT_KEY, WMSSchema.getInstance());
-        try(InputStream stream = new ByteArrayInputStream(xml.getBytes(StandardCharsets.UTF_8))) {
-
+        hints.put(DocumentFactory.VALIDATION_HINT, false);
+        try(InputStream stream = new ByteArrayInputStream(xml.getBytes(encoding))) {
             final Object object = DocumentFactory.getInstance(stream, hints, Level.WARNING);
             if(object instanceof WMSCapabilities) {
                 return (WMSCapabilities) object;
@@ -68,22 +73,20 @@ public class GetGtWMSCapabilities {
      * @return
      * @throws ServiceException
      */
-    public static JSONObject getWMSCapabilities(final String rurl, final String user, final String pwd)
+    public static JSONObject getWMSCapabilities(final String rurl, final String user, final String pwd, final String version)
             throws ServiceException {
         try {
+            /*check url validity*/
+            new URL(rurl);
+            CapabilitiesCacheService service = new CapabilitiesCacheServiceMybatisImpl();
+            OskariLayerCapabilities capabilities = null;
+            capabilities = service.getCapabilities(rurl, "wmslayer", user, pwd, version);
 
-            URL url = new URL(getUrl(rurl));
-            HTTPClient client = new SimpleHttpClient();
-            if (user != null && user.length() > 0 && pwd != null && pwd.length() > 0) {
-                client.setUser(user);
-                client.setPassword(pwd);
-            }
-            client.setConnectTimeout(IOHelper.getReadTimeoutMs());
-            client.setTryGzip(false);
-            WebMapServer wms = new WebMapServer(url, client);
-            WMSCapabilities caps = wms.getCapabilities();
+            String capabilitiesXML = capabilities.getData();
+            String encoding = CapabilitiesCacheService.getEncodingFromXml(capabilitiesXML);
+            WMSCapabilities caps = createCapabilities(capabilitiesXML, encoding);
             // caps to json
-            return parseLayer(caps.getLayer(), rurl, caps);
+            return parseLayer(caps.getLayer(), rurl, caps, capabilitiesXML);
         } catch (Exception ex) {
             throw new ServiceException("Couldn't read/get wms capabilities response from url.", ex);
         }
@@ -133,9 +136,10 @@ public class GetGtWMSCapabilities {
      * @param layer geotools layer
      * @param rurl  WMS service url
      * @param caps  WMS capabilities
+     * @param capabilitiesXML The original capabilites XML
      * @throws ServiceException
      */
-    public static JSONObject parseLayer(Layer layer, String rurl, WMSCapabilities caps)
+    public static JSONObject parseLayer(Layer layer, String rurl, WMSCapabilities caps, String capabilitiesXML)
             throws ServiceException {
         if (layer == null) {
             return null;
@@ -157,14 +161,14 @@ public class GetGtWMSCapabilities {
                 if (layer.getName() != null && !layer.getName().isEmpty()) {
                     // add self to layers if we have a wmsName so
                     // the group node layers are selectable as well on frontend
-                    final JSONObject self = layerToOskariLayerJson(layer, rurl, caps);
+                    final JSONObject self = layerToOskariLayerJson(layer, rurl, caps, capabilitiesXML);
                     JSONHelper.putValue(groupNode, "self", self);
                 }
                 // Loop children
                 for (Iterator ii = layer.getLayerChildren().iterator(); ii.hasNext(); ) {
                     Layer sublayer = (Layer) ii.next();
                     if (sublayer != null) {
-                        final JSONObject child = parseLayer(sublayer, rurl, caps);
+                        final JSONObject child = parseLayer(sublayer, rurl, caps, capabilitiesXML);
                         final String type = child.optString("type");
                         if (GROUP_LAYER_TYPE.equals(type)) {
                             groups.put(child);
@@ -176,7 +180,7 @@ public class GetGtWMSCapabilities {
                 return groupNode;
             } else {
                 // Parse layer to JSON
-                return layerToOskariLayerJson(layer, rurl, caps);
+                return layerToOskariLayerJson(layer, rurl, caps, capabilitiesXML);
             }
         } catch (Exception ex) {
             throw new ServiceException("Couldn't parse wms capabilities layer", ex);
@@ -192,7 +196,7 @@ public class GetGtWMSCapabilities {
      * @return
      * @throws ServiceException
      */
-    public static JSONObject layerToOskariLayerJson(Layer capabilitiesLayer, String rurl, WMSCapabilities caps)
+    public static JSONObject layerToOskariLayerJson(Layer capabilitiesLayer, String rurl, WMSCapabilities caps, String capabilitiesXML)
             throws ServiceException {
 
         final OskariLayer oskariLayer = new OskariLayer();
@@ -202,6 +206,8 @@ public class GetGtWMSCapabilities {
         oskariLayer.setMaxScale(capabilitiesLayer.getScaleDenominatorMin());
         oskariLayer.setMinScale(capabilitiesLayer.getScaleDenominatorMax());
         oskariLayer.setName(capabilitiesLayer.getName());
+        oskariLayer.setVersion(caps.getVersion());
+
         // setup UI names for all supported languages
         final String[] languages = PropertyUtil.getSupportedLanguages();
         for (String lang : languages) {
@@ -216,14 +222,30 @@ OnlineResource xlink:type="simple" xlink:href="http://www.paikkatietohakemisto.f
         oskariLayer.setMetadataId(getMetaDataUrl(caps.getService()));
         final List<MetadataURL> meta = capabilitiesLayer.getMetadataURL();
         if (meta != null) {
-            if (meta.size() > 0) {
+            if (meta.size() > 0 && meta.get(0).getUrl() != null) {
                 oskariLayer.setMetadataId(meta.get(0).getUrl().toString());
             }
         }
 
         try {
             // setup capabilities json for layer, styles etc
-            oskariLayer.setCapabilities(getLayerCapabilitiesAsJson(capabilitiesLayer, caps));
+            JSONObject oskariLayerCapabilities = getLayerCapabilitiesAsJson(capabilitiesLayer, caps);
+            //using an implementation of our own instead...
+            WebMapService wmsImpl = WebMapServiceFactory.createFromXML(oskariLayer.getName(), capabilitiesXML);
+            Map<String, String> supportedStyles = wmsImpl.getSupportedStyles();
+            Iterator it = supportedStyles.entrySet().iterator();
+            JSONArray styles = new JSONArray();
+            while (it.hasNext()) {
+                Map.Entry<String, String> entry = (Map.Entry)it.next();
+                String name = entry.getKey();
+                String title = entry.getValue();
+                String styleLegend = wmsImpl.getLegendForStyle(name);
+                JSONObject styleJSON = FORMATTER.createStylesJSON(name, title, styleLegend);
+                styles.put(styleJSON);
+            }
+            oskariLayerCapabilities.put("styles", styles);
+            oskariLayer.setCapabilities(oskariLayerCapabilities);
+
             JSONObject json = FORMATTER.getJSON(oskariLayer, PropertyUtil.getDefaultLanguage(), false);
 
             // add/modify admin specific fields
@@ -263,6 +285,7 @@ OnlineResource xlink:type="simple" xlink:href="http://www.paikkatietohakemisto.f
             return caps;
         }
         final JSONArray styles = getStylesFromCapabilities(layer);
+
         JSONHelper.putValue(caps, "styles", styles);
         JSONHelper.putValue(caps, "isQueryable", layer.isQueryable());
         JSONHelper.putValue(caps, "formats", FORMATTER.getFormatsJSON(getInfoFormats(capabilities)));
@@ -274,6 +297,7 @@ OnlineResource xlink:type="simple" xlink:href="http://www.paikkatietohakemisto.f
         if(layer.getStyles() == null) {
             return styles;
         }
+
         for(StyleImpl style : layer.getStyles()) {
             String styleLegend = "";
             if(style.getLegendURLs() != null && !style.getLegendURLs().isEmpty()) {

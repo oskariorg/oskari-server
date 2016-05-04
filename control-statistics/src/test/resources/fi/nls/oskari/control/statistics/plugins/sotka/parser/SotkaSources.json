@@ -1,0 +1,2246 @@
+{
+ "organizations" : {
+   
+  "o2" : {
+    "id" : 2,
+    "title":   {
+    "fi": "Terveyden ja hyvinvoinnin laitos (THL)",
+    "en": "Institute for Health and Welfare (THL)",
+    "sv": "Institutet för hälsa och välfärd (THL)"
+  }
+
+  }
+,
+  "o3" : {
+    "id" : 3,
+    "title":   {
+    "fi": "Tilastokeskus",
+    "en": "Statistics Finland",
+    "sv": "Statistikcentralen"
+  }
+
+  }
+,
+  "o4" : {
+    "id" : 4,
+    "title":   {
+    "fi": "Eläketurvakeskus (ETK)",
+    "en": "Finnish Centre for Pensions (ETK)",
+    "sv": "Pensionsskyddscentralen (ETK)"
+  }
+
+  }
+,
+  "o5" : {
+    "id" : 5,
+    "title":   {
+    "fi": "Kansaneläkelaitos (Kela)",
+    "en": "Social Insurance Institution of Finland (Kela)",
+    "sv": "Folkpensionsanstalten (FPA)"
+  }
+
+  }
+,
+  "o30" : {
+    "id" : 30,
+    "title":   {
+    "fi": "Terveyden ja hyvinvoinnin laitos (THL) ",
+    "en": "Institute for Health and Welfare (THL) ",
+    "sv": "Institutet för hälsa och välfärd (THL) "
+  }
+
+  }
+,
+  "o32" : {
+    "id" : 32,
+    "title":   {
+    "fi": "Työ- ja elinkeinoministeriö (TEM)",
+    "en": "Ministry of Employment and the Economy (TEM)",
+    "sv": "Arbets- och näringsministeriet (TEM)"
+  }
+
+  }
+,
+  "o33" : {
+    "id" : 33,
+    "title":   {
+    "fi": "Sosiaali- ja terveysalan lupa- ja valvontavirasto (Valvira)",
+    "en": "National Supervisory Authority for Welfare and Health (Valvira)",
+    "sv": "Tillstånds- och tillsynsverket för social- och hälsovården (Valvira)"
+  }
+
+  }
+,
+  "o34" : {
+    "id" : 34,
+    "title":   {
+    "fi": "Väestörekisterikeskus",
+    "en": "Population Register Centre",
+    "sv": "Befolkningsregistercentralen"
+  }
+
+  }
+,
+  "o35" : {
+    "id" : 35,
+    "title":   {
+    "fi": "Eläketurvakeskus (ETK) ja Kela",
+    "en": "Finnish Centre for Pensions and Social Insurance Institution of Finland",
+    "sv": "Pensionsskyddscentralen och Folkpensionsanstalten"
+  }
+
+  }
+,
+  "o36" : {
+    "id" : 36,
+    "title":   {
+    "fi": "Työterveyslaitos (TTL)",
+    "en": "Finnish Institute of Occupational Health (TTL)",
+    "sv": "Institutet för arbetshygien (TTL)"
+  }
+
+  }
+,
+  "o37" : {
+    "id" : 37,
+    "title":   {
+    "fi": "Asumisen rahoitus- ja kehittämiskeskus (ARA)",
+    "en": "Housing Finance and Development Centre of Finland (ARA)",
+    "sv": "Finansierings- och utvecklingscentralen för boendet (ARA)"
+  }
+
+  }
+,
+  "o38" : {
+    "id" : 38,
+    "title":   {
+    "fi": "Maanmittauslaitos",
+    "en": "National Land Survey of Finland",
+    "sv": "Lantmäteriverket"
+  }
+
+  }
+,
+  "o65" : {
+    "id" : 65,
+    "title":   {
+    "fi": "Islanti: Islannin Terveyshallitus  ja Tilastokeskus",
+    "en": "Iceland: Directorate of Health and Statistics Iceland",
+    "sv": "Island: Directorate of Health och Statistikcentralen"
+  }
+
+  }
+,
+  "o66" : {
+    "id" : 66,
+    "title":   {
+    "fi": "Norja: Kansanterveyslaitos",
+    "en": "Norway: National Public Health Institute",
+    "sv": "Norge: Folkehelsa"
+  }
+
+  }
+,
+  "o138" : {
+    "id" : 138,
+    "title":   {
+    "fi": "Pohjoismainen lääkintätilastokomitea (NOMESKO)",
+    "en": "Nordic Medico-Statistical Committee (NOMESKO)",
+    "sv": "Nordisk medicinalstatistisk kommitté (NOMESKO)"
+  }
+
+  }
+,
+  "o198" : {
+    "id" : 198,
+    "title":   {
+    "fi": "Suomen Lääkäriliitto",
+    "en": "Finnish Medical Association",
+    "sv": "Finlands Läkarförbund"
+  }
+
+  }
+,
+  "o69" : {
+    "id" : 69,
+    "title":   {
+    "fi": "Tanska: Valtion seerumilaitos ja Tilastokeskus",
+    "en": "Denmark: Statens Serum Institut and Statistics Denmark",
+    "sv": "Danmark: Statens Serum Institut och Danmarks Statistik"
+  }
+
+  }
+,
+  "o78" : {
+    "id" : 78,
+    "title":   {
+    "fi": "Euroopan komission terveys- ja kuluttaja-asioiden pääosasto DG Sanco",
+    "en": "",
+    "sv": ""
+  }
+
+  }
+,
+  "o64" : {
+    "id" : 64,
+    "title":   {
+    "fi": "Tanska: Terveyshallitus",
+    "en": "Denmark: National Board of Health",
+    "sv": "Danmark: Sundhedsstyrelsen"
+  }
+
+  }
+,
+  "o67" : {
+    "id" : 67,
+    "title":   {
+    "fi": "Ruotsi: Sosiaalihallitus",
+    "en": "Sweden: National Board of Health and Welfare",
+    "sv": "Sverige: Socialstyrelsen"
+  }
+
+  }
+,
+  "o68" : {
+    "id" : 68,
+    "title":   {
+    "fi": "Suomi: Terveyden ja hyvinvoinnin laitos (THL)",
+    "en": "Finland: National Institute for Health and Welfare (THL)",
+    "sv": "Finland: Institutet för hälsa och välfärd (THL)"
+  }
+
+  }
+,
+  "o119" : {
+    "id" : 119,
+    "title":   {
+    "fi": "Sisäasiainministeriö",
+    "en": "Ministry of the Interior",
+    "sv": "Inrikesministeriet"
+  }
+
+  }
+,
+  "o39" : {
+    "id" : 39,
+    "title":   {
+    "fi": "Valtiovarainministeriö",
+    "en": "Ministry of Finance",
+    "sv": "Finansministeriet"
+  }
+
+  }
+,
+  "o158" : {
+    "id" : 158,
+    "title":   {
+    "fi": "Suomen Hammaslääkäriliitto",
+    "en": "The Finnish Dental Association",
+    "sv": "Finlands Tandläkarförbund"
+  }
+
+  }
+,
+  "o238" : {
+    "id" : 238,
+    "title":   {
+    "fi": "Syöpätautien tilastollinen ja epidemiologinen tutkimuslaitos",
+    "en": "Institute for Statistical and Epidemiological Cancer Research",
+    "sv": "Institutionen för statistisk och epidemiologisk cancerforskning"
+  }
+
+  }
+,
+  "o58" : {
+    "id" : 58,
+    "title":   {
+    "fi": "Euroopan yhteisöjen tilastotoimisto (Eurostat)",
+    "en": "Statistical Office of the European Communities (Eurostat)",
+    "sv": "Europeiska gemenskapens statistikbyrå (Eurostat)"
+  }
+
+  }
+,
+  "o59" : {
+    "id" : 59,
+    "title":   {
+    "fi": "Maailman terveysjärjestö WHO",
+    "en": "World Health Organization (WHO)",
+    "sv": "Världshälsoorganisationen (WHO)"
+  }
+
+  }
+,
+  "o62" : {
+    "id" : 62,
+    "title":   {
+    "fi": "Ei käytössä: Pohjoismaisten syntymärekisterien yhteistyöelin (NOMBIR)",
+    "en": "The Association for Nordic Medical Birth Registers (NOMBIR)",
+    "sv": "Det nordiska samarbetsorganet för nordiska födelseregister (NOMBIR)"
+  }
+
+  }
+,
+  "o63" : {
+    "id" : 63,
+    "title":   {
+    "fi": "Pohjoismainen sosiaalitilastokomitea (NOSOSKO)",
+    "en": "Nordic Committee on Social Security Statistics (NOSOSKO)",
+    "sv": "Nordiska socialstatistikkommittén (NOSOSKO)"
+  }
+
+  }
+,
+  "o60" : {
+    "id" : 60,
+    "title":   {
+    "fi": "Taloudellisen yhteistyön ja kehityksen järjestö OECD",
+    "en": "Organisation for Economic Co-operation and Development OECD",
+    "sv": "Organisationen för ekonomiskt samarbete och utveckling OECD"
+  }
+
+  }
+,
+  "o218" : {
+    "id" : 218,
+    "title":   {
+    "fi": "Islanti: Lääkintöhallitus ja Tilastokeskus",
+    "en": "Iceland: Directorate of Health and Statistics Iceland",
+    "sv": "Island: Directorate of Health och Statistikcentralen:"
+  }
+
+  }
+,
+  "o70" : {
+    "id" : 70,
+    "title":   {
+    "fi": "Nordic Centre for Welfare and Social Issues",
+    "en": "Nordic Centre for Social and Wlfare Issues",
+    "sv": "Nordic Centre for Social and Welfare Issues"
+  }
+
+  }
+ },
+ "sources" : {
+   
+   "s1": {
+      "organization" : "o3",
+      "title" :   {
+    "fi": "Väestötilasto",
+    "en": "Population Statistics",
+    "sv": "Befolkningsstatistik"
+  }
+,
+      "description" :   {
+    "fi": "Tilastokeskus tekee väestötilaston Väestörekisterikeskuksen väestötietojärjestelmien tiedoista.",
+    "en": "Statistics Finland compiles Population Statistics based on the Population Information System of the Population Register Centre.",
+    "sv": "Statistikcentralen gör upp en befolkningsstatistik på basis av de uppgifter som finns i Befolkningsregistercentralens dataregister."
+  }
+
+    }
+,
+   "s2": {
+      "organization" : "o2",
+      "title" :   {
+    "fi": "Terveydenhuollon hoitoilmoitusrekisteri (HILMO)",
+    "en": "Care Registers for Health Care HILMO",
+    "sv": "Vårdanmälningsregistret för hälsovården"
+  }
+,
+      "description" :   {
+    "fi": "Tietosisältö: Terveydenhuollon laitoshoito sekä päiväkirurgia. Kerättäviä tietoja ovat mm. asiakkaan tunnistetiedot, ikä, sukupuoli, kotikunta, hoitoon liittyvä hoitoaika, diagnoosi- ja toimenpidetiedot sekä tiedot hoitoon lähettävästä tahosta sekä jatkohoitopaikasta. <br />Tiedot kerätään asiakas/potilaskohtaisesti hoitojakson päättyessä sekä vuoden lopussa laitoksissa sisällä olevista potilaista. Tiedot ilmoittaa palvelun tuottaja. Hoitoilmoituksista kootaan valtakunnallinen terveydenhuollon hoitoilmoitusrekisteri. Terveydenhuollon rekisteri valmistuu toukokuun lopussa. <br><br><br />Terveydenhuollosta hoitoilmoitustietoja on kerätty vuodesta 1994 ja päiväkirurgian tietoja vuodesta 1995 lähtien. Hoitoilmoitusrekisterin tiedoilla voidaan kuvata laitoshoidon käyttöä eri potilas- ja asiakasryhmissä, laitoshoidon palvelurakennetta, potilasvirtoja ja -varantoja sekä hoidosta aiheutuvia kustannuksia. <br><br><br />Terveyden ja hyvinvoinnin laitoksessa (THL) tuotetaan hoitoilmoitusrekisterin pohjalta tilastojulkaisuja. THL:n kautta saadaan myös luvat tietojen käyttöön tutkimustarkoituksiin. Hoitoilmoitusrekisterin tietoja on maksutta saatavissa verkosta <A href=\"http://www.thl.fi/fi_FI/web/fi/tilastot/aiheittain/erikoissairaanhoidon_palvelut\" TARGET=\"_blank\">erikoissairaanhoidon</A> ja <A href=\"http://www.thl.fi/fi_FI/web/fi/tilastot/aiheittain/perusterveydenhuollon_palvelut\" TARGET=\"_blank\">perusterveydenhuollon</A> palvelujen tilastoista sekä <A href=\"http://www.thl.fi/fi_FI/web/fi/tutkimus/tyokalut/tietokantaraportit\" TARGET=\"_blank\">tietokantaraporteista.</A>",
+    "en": "Data content:  Institutional care, housing services and regular home-care services provided in social and health care, and outpatient surgery. The data include client identification data, age, gender, municipality of residence, length of stay, diagnostic and procedural data and data on the sending unit and place for further treatment. The data are collected at the level of individual clients/patients at the end of care periods, or at the end of each year concerning clients registered in institutions. The data are reported by service providers. Data reported in the care notifications are entered into the Care Registers for Social Welfare and Health Care. The Care Register for Health Care is completed at the end of May.<br><br> <br />Care data have been collected since 1994 on health care and since 1995 on social welfare and outpatient surgery. The data are intended to help describe the use of institutional care in different groups of patients and clients, the service structure of institutional care, patient flows and numbers, and the cost of care. <br><br><br /><br />Institute for Health and Welfare (THL) produces statistical publications based on the Care Registers. Authorisation for the use of the register data for research purposes is obtained through THL.<br />Care Register data are available free of charge (in finnish) at http://www.stakes.fi/FI/tilastot/nettihilmo/.",
+    "sv": "Datainnehåll: Slutenvård inom hälso- och sjukvården och dagkirurgi. Uppgifter som samlas in är bland annat klientens identifikationsuppgifter, ålder, kön, hemkommun, vårdtid, diagnos och åtgärder, remitterande instans och plats för fortsatt vård. Uppgifter samlas in om varje klient/patient när vårdperioden avslutas samt vid årets slut om de patienter som är inskrivna. Uppgifterna lämnas in av serviceproducenten. Vårdanmälningarna sammanställs i ett nationellt vårdanmälningsregister för hälso- och sjukvården. Hälso- och sjukvårdens register färdigställs i slutet av maj. <br /><br><br><br />Vårdanmälningsuppgifter om hälso- och sjukvården har samlats in sedan år 1994 och om dagkirurgin sedan 1995. Uppgifterna i vårdanmälningsregistret beskriver användningen av slutenvård i olika patient- och klientgrupper, slutenvårdens servicestruktur, patientströmmar, patientantal och kostnaderna för vården. <br><br><br />Institutet för hälsa och välfärd (THL) utarbetar statistiska publikationer utgående från vårdanmälningsregistret. THL beviljar också tillstånd för användning av uppgifterna för forskningsändamål. Uppgifter från vårdanmälningsregistret fås avgiftsfritt på summanivå på adressen:<br />http://www.stakes.fi/SV/tilastot/vardanmalningsdatabaser/index.htm"
+  }
+
+    }
+,
+   "s3": {
+      "organization" : "o2",
+      "title" :   {
+    "fi": "Toimeentulotukirekisteri",
+    "en": "Register of Social Assistance",
+    "sv": "Utkomstskyddregistret"
+  }
+,
+      "description" :   {
+    "fi": "<br>Tietosisältö: Toimeentulotukirekisteri sisältää tietoja varsinaista ja ehkäisevää toimeentulotukea saaneista kotitalouksista sekä kuntouttavan työtoiminnan kustannuksia toimeentulotukena saaneista henkilöistä (vuodesta 2001 alkaen). <br><br><br /><br />Tilastossa esitettävät vuositiedot ovat: tuensaajien ikärakenne, kotitaloustyyppi, sosioekonominen asema, tuen kesto, tuen euromäärä sekä tuen saajien määrä kalenterivuoden kunakin kuukautena. Vain marraskuuta koskevia tietoja ovat: tuensaajien tulolähteet ja marraskuun toiminta. Lisäksi saadaan tietoja kuntouttavaan työtoimintaan osallistuneista. Sosioekonomiselle asemalle, marraskuun tulolähteille ja toiminnalle sekä kuntouttavaan työtoimintaan osallistuneille henkilöille on omat luokituksensa.<br><br><br /><br />Tietojen keruumenetelmä ja tietolähde: Tiedot rekisteriä ja tilastoa varten saadaan kuntien sosiaalitoimelta. <br><br /><br><br />Valmistumis- tai julkistamisaika: Rekisteri  ja vuositilasto valmistuvat loppuvuodesta. <br><br><br /><br />Tuotetarjonta: Toimeentulotukirekisteriin perustuva tilastotiedote julkaistaan vuosittain. Terveyden ja hyvinvoinnin laitos (THL) ylläpitää toimeentulotuen tietokantaa, josta tehdään erillisajoja tilaajan haluamalla tavalla.",
+    "en": "Data content:  The Register of Social Assistance contains information on households receiving primary social assistance and preventive social assistance, and on recipients of rehabilitative work benefits paid as social assistance (since 2001). <br /><br />The statistics provide the following data annually: age structure among recipients, type of household, socio-economic status, duration of recipiency, amount of assistance and the number of recipients each moth during the calendar year.  Data concerning November only: sources of income and activities among recipients. In addition, information is gathered on those who have participated in the rehabilitative work programme. Specific classifications exist for socio-economic status, sources of income and activities in November and rehabilitative work participants. <br /><br />Method of data collection and data source: Municipal social care departments submit data for the register and statistics. The data are submitted electronically or on statistical forms.  Updating frequency: Each year. Completion and release: The register and the annual statistics are completed in November. Times series: The Register of Social Assistance and the annual statistics have been maintained since 1985, but the statistics also contain time series data on the number of clients from 1996 onwards.  Services: Tables and investigations on request.  <br /><br />Products: A Statistical Summary is published each year on the basis of the Register of Social Assistance. National Institute for Health and Welfare maintains a social assistance database, from which data can be retrieved as desired.",
+    "sv": ""
+  }
+
+    }
+,
+   "s8": {
+      "organization" : "o5",
+      "title" :   {
+    "fi": "Sairausvakuutustilastot",
+    "en": "Health Insurance Statistics",
+    "sv": "Sjukförsäkringsstatistik"
+  }
+,
+      "description" :   {
+    "fi": "",
+    "en": "",
+    "sv": ""
+  }
+
+    }
+,
+   "s50": {
+      "organization" : "o3",
+      "title" :   {
+    "fi": "Asuntokunnat ja asuinolot",
+    "en": "Household-dwelling units and housing conditions",
+    "sv": "Bostadshushåll och boendeförhållanden"
+  }
+,
+      "description" :   {
+    "fi": "",
+    "en": "",
+    "sv": ""
+  }
+
+    }
+,
+   "s252": {
+      "organization" : "o66",
+      "title" :   {
+    "fi": "Raskaudenkeskeytystilastot",
+    "en": "Statistics on Induced Abortions",
+    "sv": "Abortistatistik"
+  }
+,
+      "description" :   {
+    "fi": "",
+    "en": "",
+    "sv": ""
+  }
+
+    }
+,
+   "s254": {
+      "organization" : "o68",
+      "title" :   {
+    "fi": "Raskaudenkeskeytystilastot",
+    "en": "Statistics on Induced Abortions",
+    "sv": "Abortstatistik"
+  }
+,
+      "description" :   {
+    "fi": "",
+    "en": "",
+    "sv": ""
+  }
+
+    }
+,
+   "s67": {
+      "organization" : "o2",
+      "title" :   {
+    "fi": "Syntyneiden lasten rekisteri",
+    "en": "Medical Birth Register",
+    "sv": "Registret över födelser"
+  }
+,
+      "description" :   {
+    "fi": "Rekisteriin kerätään tietoja Suomessa synnyttäneistä äideistä ja syntyneistä lapsista. Tiedot kerätään sairaaloilta ja niitä täydennetään Tilastokeskuksen kuolemansyytilaston ja Väestörekisterikeskuksen tiedoilla. Rekisterissä on tietoja vuodesta 1987 alkaen.",
+    "en": "The register contains data on mothers who have given birth and children born in Finland. The data are gathered from hospitals and complemented by data obtained from the Cause of Death Register of Statistics Finland and by data from the Population Register Centre. The register contains data from 1987 onwards.",
+    "sv": "I detta register insamlas data över mödrar som fött barn i Finland och över de födda barnen. Uppgifterna fås av sjukhusen och kompletteras med Statistikcentralens dösorsaksregister och uppgifter från Befolkningsregistercentralen. Data för registret har samlats från och med år 1987."
+  }
+
+    }
+,
+   "s70": {
+      "organization" : "o2",
+      "title" :   {
+    "fi": "Lastensuojelurekisteri",
+    "en": "Register of Child Welfare",
+    "sv": "Barnskyddregistret"
+  }
+,
+      "description" :   {
+    "fi": "Rekisteriin kerätään tietoja kodin ulkopuolelle sijoitetuista lapsista ja nuorista. Rekisteriä on pidetty nykymuodossaan vuodesta 1991 lähtien.",
+    "en": "The register contains information on children and young people placed outside the home. In its present form, the register has existed since 1991.",
+    "sv": "För registret insamlas uppgifter om barn och unga som har placerats utom hemmet. Registret har upprätthållits i sin nuvarande form sedan år 1991."
+  }
+
+    }
+,
+   "s88": {
+      "organization" : "o2",
+      "title" :   {
+    "fi": "Raskaudenkeskeyttämis- ja steriloimisrekisteri",
+    "en": "Register of Induced Abortions and Sterilisations",
+    "sv": "Abort- och steriliseringsregistret"
+  }
+,
+      "description" :   {
+    "fi": "",
+    "en": "",
+    "sv": ""
+  }
+
+    }
+,
+   "s110": {
+      "organization" : "o2",
+      "title" :   {
+    "fi": "Sairaaloiden ja terveyskeskusten avotoimintatilasto",
+    "en": "Register:Sairaaloiden ja terveyskeskusten avotoimintatilasto",
+    "sv": "Register:Sairaaloiden ja terveyskeskusten avotoimintatilasto"
+  }
+,
+      "description" :   {
+    "fi": "",
+    "en": "",
+    "sv": ""
+  }
+
+    }
+,
+   "s49": {
+      "organization" : "o3",
+      "title" :   {
+    "fi": "Työssäkäyntitilasto",
+    "en": "Employment Statistics",
+    "sv": "Sysselsättningsstatistik"
+  }
+,
+      "description" :   {
+    "fi": "",
+    "en": "",
+    "sv": ""
+  }
+
+    }
+,
+   "s69": {
+      "organization" : "o3",
+      "title" :   {
+    "fi": "Rikos- ja pakkokeinotilastot",
+    "en": "Statistics on prosecutions, sentences and punishments",
+    "sv": "Statistik över brott och tvångsmedel"
+  }
+,
+      "description" :   {
+    "fi": "",
+    "en": "",
+    "sv": ""
+  }
+
+    }
+,
+   "s131": {
+      "organization" : "o4",
+      "title" :   {
+    "fi": "Eläketilastot",
+    "en": "Pension statistics",
+    "sv": "Pensionsstatistik"
+  }
+,
+      "description" :   {
+    "fi": "",
+    "en": "",
+    "sv": ""
+  }
+
+    }
+,
+   "s47": {
+      "organization" : "o2",
+      "title" :   {
+    "fi": "Kouluterveyskysely",
+    "en": "School Health Promotion Study",
+    "sv": "Enkäten Hälsa i skolan"
+  }
+,
+      "description" :   {
+    "fi": "",
+    "en": "",
+    "sv": ""
+  }
+
+    }
+,
+   "s395": {
+      "organization" : "o32",
+      "title" :   {
+    "fi": "Suomen vastaanottamat pakolaiset",
+    "en": "Refugees received to Finland",
+    "sv": "Flyktingar mottagna till Finland"
+  }
+,
+      "description" :   {
+    "fi": "",
+    "en": "",
+    "sv": ""
+  }
+
+    }
+,
+   "s189": {
+      "organization" : "o2",
+      "title" :   {
+    "fi": "Tartuntatautirekisteri",
+    "en": "National Infectious Diseases Register",
+    "sv": "Det riksomfattande registret över smittsamma sjukdomar"
+  }
+,
+      "description" :   {
+    "fi": "",
+    "en": "",
+    "sv": ""
+  }
+
+    }
+,
+   "s188": {
+      "organization" : "o2",
+      "title" :   {
+    "fi": "Suomalaisen aikuisväestön terveyskäyttäytyminen ja terveys (AVTK) -tutkimus",
+    "en": "Health Behaviour and Health among the Finnish Adult Population (AVTK)",
+    "sv": "Undersökningen Den finländska vuxenbefolkningens hälsobeteende och hälsa (AVTK)"
+  }
+,
+      "description" :   {
+    "fi": "",
+    "en": "",
+    "sv": ""
+  }
+
+    }
+,
+   "s191": {
+      "organization" : "o2",
+      "title" :   {
+    "fi": "Perusterveydenhuollon toimintatilasto",
+    "en": "Primary Health Care Activity Statistics",
+    "sv": "Statistik över primärvårdsverksamhet"
+  }
+,
+      "description" :   {
+    "fi": "Perusterveydenhuollon toimintatilastoon kerätään avohoidon tiedot ns. Notitia-tiedonkeruun avulla.",
+    "en": "",
+    "sv": "Uppgifterna för statistiken över verksamheten inom primärvården samlas in med hjälp av den så kallade Notitia-metoden."
+  }
+
+    }
+,
+   "s193": {
+      "organization" : "o5",
+      "title" :   {
+    "fi": "Tilasto sairauspäivärahasta",
+    "en": "Statistics on sickness allowances",
+    "sv": "Statistik över sjukdagpenning"
+  }
+,
+      "description" :   {
+    "fi": "",
+    "en": "",
+    "sv": ""
+  }
+
+    }
+,
+   "s396": {
+      "organization" : "o5",
+      "title" :   {
+    "fi": "Tilasto elatustuesta",
+    "en": "Statistics on child maintenance allowances",
+    "sv": "Statistik över underhållsstödet"
+  }
+,
+      "description" :   {
+    "fi": "Kela on 1.4.2009 alkaen tuottanut tilastot elatustuesta ja elatusavun perinnästä. Ajalla 1.1.2006-31.3.2009 tiedot keräsi Terveyden ja hyvinvoinnin laitos ja sitä ennen (vuodesta 1990) Tilastokeskus osana kuntien ja kuntayhtymien talous- ja toimintatilastoa.",
+    "en": "The Social Insurance Institution (Kela) has been compiling statistics on child maintenance allowance and the recovery of child maintenance payments as of 1 April 2009. Previously, the statistics were compiled by THL from 1 January 2006-31 March 2009, and before that (from 1990 onward) by Statistics Finland as part of the statistics on the economy and operations of municipalities and municipal boards",
+    "sv": "Statistiken om underhållsstöd och indrivning av underhållsbidrag produceras av FPA sedan 1.4.2009. Under perioden 1.1.2006-31.3.2009 ansvarade Institutet för hälsa och välfärd för insamlingen av uppgifter och före det (sedan år 1990) samlade Statistikcentralen in uppgifterna som en del av statistiken över kommunernas och samkommunernas ekonomi och verksamhet."
+  }
+
+    }
+,
+   "s196": {
+      "organization" : "o5",
+      "title" :   {
+    "fi": "Tilastoryhmä",
+    "en": "Statistical Branch",
+    "sv": "Statistikgruppen"
+  }
+,
+      "description" :   {
+    "fi": "",
+    "en": "",
+    "sv": ""
+  }
+
+    }
+,
+   "s197": {
+      "organization" : "o32",
+      "title" :   {
+    "fi": "Työnvälitystilasto",
+    "en": "Employment Service Statistics",
+    "sv": "Arbetsförmedlingsstatistik"
+  }
+,
+      "description" :   {
+    "fi": "",
+    "en": "",
+    "sv": ""
+  }
+
+    }
+,
+   "s198": {
+      "organization" : "o2",
+      "title" :   {
+    "fi": "Päihdetietokanta",
+    "en": "Database on Alcohol and Drugs",
+    "sv": "Rusmedelsdatabasen"
+  }
+,
+      "description" :   {
+    "fi": "Päihdetietokantaan kerätään eri viranomaisilta tietoja alkoholijuomien ja huumeiden kulutuksesta ja käytöstä, alkoholitaloudesta, päihteiden aiheuttamista terveydellisistä, sosiaalisista ja yhteiskunnallisista haitoista sekä päihdehuollosta.",
+    "en": "This database contains data gathered from different authorities on the consumption and use of alcoholic beverages and drugs, alcohol economy, the adverse health effects and social effects of substance abuse, and services for substance abusers.",
+    "sv": "I databasen insamlas uppgifter av olika myndigheter om konsumtionen av alkoholdrycker och droger, alkoholekonomin, de hälsomässiga och sociala skadeverkningarna av rusmedel samt vården av missbrukare."
+  }
+
+    }
+,
+   "s199": {
+      "organization" : "o33",
+      "title" :   {
+    "fi": "Alkoholijuomien toimitusmyyntirekisteri",
+    "en": "Register of  Deliveries of Alcoholic Beverages",
+    "sv": "Alkoholnäringsregistret och Rusmedelsdatabasen"
+  }
+,
+      "description" :   {
+    "fi": "",
+    "en": "",
+    "sv": ""
+  }
+
+    }
+,
+   "s416": {
+      "organization" : "o3",
+      "title" :   {
+    "fi": "Luokitukset",
+    "en": "Classification Services",
+    "sv": "Klassificeringstjänst"
+  }
+,
+      "description" :   {
+    "fi": "",
+    "en": "",
+    "sv": ""
+  }
+
+    }
+,
+   "s418": {
+      "organization" : "o138",
+      "title" :   {
+    "fi": "Health Statistics in the Nordic Countries -vuosikirja",
+    "en": "Health Statistics in the Nordic Countries",
+    "sv": "Årsboken Health Statistics in the Nordic Countries"
+  }
+,
+      "description" :   {
+    "fi": "",
+    "en": "",
+    "sv": ""
+  }
+
+    }
+,
+   "s202": {
+      "organization" : "o3",
+      "title" :   {
+    "fi": "Tutkintorekisteri",
+    "en": "Register of Completed Education and Degrees",
+    "sv": "Examensregister"
+  }
+,
+      "description" :   {
+    "fi": "",
+    "en": "",
+    "sv": ""
+  }
+
+    }
+,
+   "s203": {
+      "organization" : "o2",
+      "title" :   {
+    "fi": "Sosiaali- ja terveydenhuollon hoitoilmoitusrekisterit",
+    "en": "Care Registers for Social Welfare and Health Care",
+    "sv": "Vårdanmälningsregistret inom social- och hälsovården"
+  }
+,
+      "description" :   {
+    "fi": "(V. 1993 asti terveydenhuollon poistoilmoitusrekisteri) Hoitoilmoitusrekistereihin kerätään asiakaskohtaista tietoa sosiaali- ja terveydenhuollon laitoshoidon, asumispalveluiden sekä säännöllisen kotihoidon asiakkaista. Sairaaloiden ja terveyskeskusten vuodeosastoilla (sisältää myös päiväkirurgian), vanhainkodeissa, kehitysvammalaitoksissa, päihdehuollon laitoksissa sekä ikääntyneiden ja vammaisten ympärivuorokautisissa asumispalveluissa kerätään hoidon päättymistiedot kaikista päättyneistä hoitojaksoista sekä tehdään asiakaslaskenta vuoden lopussa hoidossa olleista asiakkaista. Muissa asumispalveluissa päihdehuoltoa lukuun ottamatta tehdään asiakaslaskenta vuoden lopussa. ",
+    "en": "(Until 1993 Hospital Discharge Register and client censuses in psychiatry and long-term care) The Care Registers contain client-specific data on institutional care under the social and health care schemes, on housing services and on clients in regular home-care services. In hospital and health centre wards (including outpatient surgery), residential homes, institutions for people with intellectual disabilities, institutions for substance abusers and 24-hour housing services for older people and disabled people, data is gathered on all periods of care that have ended, and clients censuses are conducted concerning all clients that have received care at the end of the year. With the exception of services for substance abusers, censuses in the housing services are conducted at the end of the year.",
+    "sv": "(Sedan år 1993 vårdanmälningsregistret inom hälso- och sjukvården) För vårdanmälningsregistren samlas klientspecifika uppgifter om social-, hälso- och sjukvårdens klienter inom institutionsvård, boendeservice och regelbunden hemvård. På sjukhusens och hälsovårdscentralernas vårdavdelningar (inkl. dagkirurgin), på ålderdomshem, på institutioner för utvecklingsstörda, institutioner för missbrukare samt inom serviceboende för äldre och handikappade med heldygnsomsorg samlas utskrivningsuppgifter om samtliga avslutade vårdperioder. Dessutom görs en klientinventering av de klienter som fick vård vid årets slut. Inom de övriga formerna av boendeservice, med undantag av missbrukarvården, görs en klientinventering vid årets slut."
+  }
+
+    }
+,
+   "s555": {
+      "organization" : "o3",
+      "title" :   {
+    "fi": "Vaalit",
+    "en": "Elections",
+    "sv": "Val"
+  }
+,
+      "description" :   {
+    "fi": "",
+    "en": "",
+    "sv": ""
+  }
+
+    }
+,
+   "s195": {
+      "organization" : "o4",
+      "title" :   {
+    "fi": "Kela / ETK yhteistilasto",
+    "en": "SSI and ETK joint statistics",
+    "sv": "FPAs och PSCs gemensamma statistik"
+  }
+,
+      "description" :   {
+    "fi": "",
+    "en": "",
+    "sv": ""
+  }
+
+    }
+,
+   "s205": {
+      "organization" : "o36",
+      "title" :   {
+    "fi": "Työ ja terveys -haastattelututkimus",
+    "en": "Work and Health interview survey",
+    "sv": "Intervjuundersökningen Työ ja terveys (Arbete och hälsa)"
+  }
+,
+      "description" :   {
+    "fi": "",
+    "en": "",
+    "sv": ""
+  }
+
+    }
+,
+   "s206": {
+      "organization" : "o5",
+      "title" :   {
+    "fi": "Sairausvakuutuksen lääkekorvausrekisteri",
+    "en": "National Health Insurance Register of Reimbursements for Medicine Expenses",
+    "sv": "Registret över läkemedelsersättningar från sjukförsäkringen"
+  }
+,
+      "description" :   {
+    "fi": "",
+    "en": "",
+    "sv": ""
+  }
+
+    }
+,
+   "s207": {
+      "organization" : "o5",
+      "title" :   {
+    "fi": "Sairausvakuutuksen lääkärinpalkkiorekisteri",
+    "en": "National Health Insurance Register of Reimbursements for Doctor's Fees",
+    "sv": "Registret över läkararvodesersättningar från sjukförsäkringen"
+  }
+,
+      "description" :   {
+    "fi": "",
+    "en": "",
+    "sv": ""
+  }
+
+    }
+,
+   "s226": {
+      "organization" : "o2",
+      "title" :   {
+    "fi": "Lapsen elatus- ja huoltotilasto",
+    "en": "Child Maintenance and Custody",
+    "sv": "Underhåll och vårdnad av barn"
+  }
+,
+      "description" :   {
+    "fi": "Tietoja kerättiin1990-2008 elatustuesta, elatusavusta, sopimuksista lapsen huollosta, asumisesta ja tapaamisoikeudesta sekä isyyden selvittämisistä ja vahvistamisista. Vuoden 2009 huhtikuusta elatustuen maksatus ja tilastointi on siirtynyt Kansaneläkelaitokselle. Terveyden ja hyvinvoinnin laitos kerää ja tilastoi vuodesta 2009 alkaen tiedot kunnilta vain lapsen huollosta.",
+    "en": "Data are collected on child maintenance allowance, maintenance payments, agreements on child custody, residence and right of access, and the number of cases in the determination and establishment of paternity. The data have been collected since 1990.",
+    "sv": "Uppgifter samlas in om underhållsstöd, underhållsbidrag, avtal om vårdnaden av barn, avtal om boende och umgängesrätt samt utredande och fastställande av faderskap. Uppgifterna har samlats in från och med 1990."
+  }
+
+    }
+,
+   "s227": {
+      "organization" : "o2",
+      "title" :   {
+    "fi": "Eläkeikäisen väestön terveyskäyttäytyminen (EVTK) -tutkimus",
+    "en": "Health Behaviour and Health among the Finnish Elderly -survey (EVTK)",
+    "sv": "Den pensionerade befolkningens hälsobeteende och hälsa (EVTK)"
+  }
+,
+      "description" :   {
+    "fi": "",
+    "en": "",
+    "sv": ""
+  }
+
+    }
+,
+   "s247": {
+      "organization" : "o2",
+      "title" :   {
+    "fi": "Erikoissairaanhoidon toimintatilasto",
+    "en": "Statistics on activities in specialised health care",
+    "sv": "Statistik över specialsjukvårdsverksamhet"
+  }
+,
+      "description" :   {
+    "fi": "",
+    "en": "",
+    "sv": ""
+  }
+
+    }
+,
+   "s248": {
+      "organization" : "o5",
+      "title" :   {
+    "fi": "Erityiskorvattaviin lääkkeisiin oikeutettujen rekisteri",
+    "en": "Register of Insured Persons Entitled to Special Reimbursement of Medicine Expenses",
+    "sv": "Registret över personer med rätt till specialersättningsgilla läkemedel"
+  }
+,
+      "description" :   {
+    "fi": "",
+    "en": "",
+    "sv": ""
+  }
+
+    }
+,
+   "s336": {
+      "organization" : "o58",
+      "title" :   {
+    "fi": "Unit F5: Education, health and social protection",
+    "en": "Unit F5: Education, health and social protection",
+    "sv": "Unit F5: Education, health and social protection"
+  }
+,
+      "description" :   {
+    "fi": "",
+    "en": "",
+    "sv": ""
+  }
+
+    }
+,
+   "s288": {
+      "organization" : "o3",
+      "title" :   {
+    "fi": "Kunnallinen henkilörekisteri",
+    "en": "Register of Municipal Employees",
+    "sv": "Det kommunala personregistret"
+  }
+,
+      "description" :   {
+    "fi": "",
+    "en": "",
+    "sv": ""
+  }
+
+    }
+,
+   "s308": {
+      "organization" : "o37",
+      "title" :   {
+    "fi": "Kuntien asuntomarkkinaselvitykset",
+    "en": "Municipal housing market surveys",
+    "sv": "Kommunernas utredningar om bostadsmarknaden"
+  }
+,
+      "description" :   {
+    "fi": "",
+    "en": "",
+    "sv": ""
+  }
+
+    }
+,
+   "s417": {
+      "organization" : "o3",
+      "title" :   {
+    "fi": "Peruskoulutustilasto",
+    "en": "The statistics on comprehensive schools",
+    "sv": "Grundskolestatistiken"
+  }
+,
+      "description" :   {
+    "fi": "",
+    "en": "",
+    "sv": ""
+  }
+
+    }
+,
+   "s435": {
+      "organization" : "o2",
+      "title" :   {
+    "fi": "Tarvevakioidut menot ja tarvekertoimet",
+    "en": "Register:Tarvevakioidut menot ja tarvekertoimet",
+    "sv": "Register:Tarvevakioidut menot ja tarvekertoimet"
+  }
+,
+      "description" :   {
+    "fi": "",
+    "en": "",
+    "sv": ""
+  }
+
+    }
+,
+   "s340": {
+      "organization" : "o60",
+      "title" :   {
+    "fi": "OECD Health Data",
+    "en": "OECD Health Data",
+    "sv": "OECD Health Data"
+  }
+,
+      "description" :   {
+    "fi": "",
+    "en": "",
+    "sv": ""
+  }
+
+    }
+,
+   "s455": {
+      "organization" : "o5",
+      "title" :   {
+    "fi": "Tilasto sairaanhoitokorvauksista",
+    "en": "Statistics on reimbursements for medical expenses",
+    "sv": "Statistik över sjukvårdsersättningar"
+  }
+,
+      "description" :   {
+    "fi": "",
+    "en": "",
+    "sv": ""
+  }
+
+    }
+,
+   "s460": {
+      "organization" : "o5",
+      "title" :   {
+    "fi": "Tilasto Kelan vammaisetuuksista",
+    "en": "Statistics on disability benefits provided by Kela",
+    "sv": "Statistik över handikappförmåner från FPA"
+  }
+,
+      "description" :   {
+    "fi": "",
+    "en": "",
+    "sv": ""
+  }
+
+    }
+,
+   "s459": {
+      "organization" : "o5",
+      "title" :   {
+    "fi": "Tilasto Kelan kuntoutuksesta",
+    "en": "Statistics on rehabilitation services and benefits provided by Kela",
+    "sv": "Statistik över FPA-rehabilitering"
+  }
+,
+      "description" :   {
+    "fi": "",
+    "en": "",
+    "sv": ""
+  }
+
+    }
+,
+   "s476": {
+      "organization" : "o5",
+      "title" :   {
+    "fi": "Tilasto opintotuesta",
+    "en": "Statistics on financial aid for students",
+    "sv": "Statistik över studiestöd"
+  }
+,
+      "description" :   {
+    "fi": "",
+    "en": "",
+    "sv": ""
+  }
+
+    }
+,
+   "s477": {
+      "organization" : "o5",
+      "title" :   {
+    "fi": "Tilasto yleisestä asumistuesta",
+    "en": "Statistics on general housing allowances",
+    "sv": "Statistik över det allmänna bostadsbidraget"
+  }
+,
+      "description" :   {
+    "fi": "",
+    "en": "",
+    "sv": ""
+  }
+
+    }
+,
+   "s478": {
+      "organization" : "o5",
+      "title" :   {
+    "fi": "Tilasto sotilasavustuksesta",
+    "en": "Statistics on conscript's allowances",
+    "sv": "Statistik över militärunderstöd"
+  }
+,
+      "description" :   {
+    "fi": "",
+    "en": "",
+    "sv": ""
+  }
+
+    }
+,
+   "s479": {
+      "organization" : "o5",
+      "title" :   {
+    "fi": "Muut Kelan tilastot",
+    "en": "Other statistics from Kela",
+    "sv": "Övriga statistik från FPA"
+  }
+,
+      "description" :   {
+    "fi": "",
+    "en": "",
+    "sv": ""
+  }
+
+    }
+,
+   "s481": {
+      "organization" : "o198",
+      "title" :   {
+    "fi": "Terveyskeskusten lääkäritilanne -kysely terveyskeskusten johtaville lääkäreille.",
+    "en": "A questionnaire sent to leading physicians at municipal health centres.",
+    "sv": "Förfrågan om läkarsituationen vid hälsovårdscentralerna till hälsovårdscentralernas chefsläkare."
+  }
+,
+      "description" :   {
+    "fi": "Indikaattori perustuu Suomen Lääkäriliiton vuosittain yhteistyössä sosiaali- ja terveysministeriön, Kunnallisen työmarkkinalaitoksen ja THL:n kanssa tekemään työvoimaselvitykseen perusterveydenhuollon lääkäritilanteesta. Selvityksessä kysytään terveyskeskusten johtavilta lääkäreiltä lääkäritehtävien täyttötilannetta lokakuun ensimmäisen viikon keskiviikkona.",
+    "en": "The indicator draws on data from annual employment surveys focusing on physicians in primary health care services. The surveys are carried out by the Finnish Medical Association in cooperation with the Ministry of Social Affairs and Health, the Commission for Local Authority Employers and THL. The survey asks leading physicians at municipal health centres to supply information on the number of vacant physicians¿ posts on the Wednesday of the first week in October",
+    "sv": "Indikatorn bygger på arbetskraftsutredningar om läkarsituationen inom primärvården som Finlands Läkarförbund årligen genomför i samarbete med social- och hälsovårdsministeriet, Kommunala arbetsmarknadsverket och THL. För utredningen begärs uppgifter av hälsovårdscentralernas chefsläkare om läkaruppgifternas tillsättningsgrad på onsdagen den första veckan i oktober."
+  }
+
+    }
+,
+   "s535": {
+      "organization" : "o2",
+      "title" :   {
+    "fi": "Lastensuojelun avohuollon asiakkaat",
+    "en": "Clients in community-based child welfare interventions",
+    "sv": "Klienter inom barnskyddets öppenvård"
+  }
+,
+      "description" :   {
+    "fi": "Lastensuojelun rekisteritietojen keruun yhteydessä on kunnilta pyydetty vuodesta 1991 lähtien erillisellä lomakkeella myös lukumäärätietoja avohuollollisten tukitoimien piirissä olleista lapsista ja nuorista. Kunnittaiset tiedot ovat sähköisessä muodossa ja SOTKAnetin käytössä vuodesta 1998 lähtien.",
+    "en": "Starting in 1991, the collection of register data on child welfare from the municipalities has included a request to complete a separate form concerning the numbers of children and adolescents in support interventions in community care. The municipality-specific data are in electronic form and available to SOTKAnet as of 1998.",
+    "sv": "I samband med insamlingen av registerdata om barnskyddet har vi sedan 1991 begärt att kommunerna på en separat blankett också lämnar in uppgifter om antalet barn och unga som omfattas av stödåtgärder inom öppenvården. De kommunspecifika uppgifterna finns i elektronisk form och på SOTKAnet från och med år 1998."
+  }
+
+    }
+,
+   "s595": {
+      "organization" : "o2",
+      "title" :   {
+    "fi": "Erikoissairaanhoidon hoitoonpääsy",
+    "en": "Access to services in specialised health care",
+    "sv": "Tillgången till vård inom den specialiserade sjukvården"
+  }
+,
+      "description" :   {
+    "fi": "Tilasto sisältää erikoisalakohtaista tietoa lähetteen käsittelyajoista, hoidon tarpeen arvioinnin odotusajoista sekä kiireettömään hoitoon pääsyn odotusajoista sairaanhoitopiireissä ja perusterveydenhuollon erikoissairaanhoidon yksiköissä. Lisäksi tilasto sisältää tietoja yleisimpien jonoryhmien odotusajoista. Tiedot kerätään kolme kertaa vuodessa ja ne julkaistaan sähköisinä tietokantaraportteina. Tiedot on kerätty sairaanhoitopiireistä joulukuun lopusta 2007 lähtien ja perusterveydenhuollon erikoissairaanhoidon yksiköistä joulukuun lopusta 2008 lähtien. Hoidon tarpeen arviointia ja yleisimpiä jonoryhmätietoja on kerätty vuodesta 2013 lähtien. Samalla tiedonkeruusisältöä on muutettu siten, että se vastaa terveydenhuoltolain erikoissairaanhoidon kiireettömään hoitoon pääsyn säädöksiä.",
+    "en": "",
+    "sv": ""
+  }
+
+    }
+,
+   "s87": {
+      "organization" : "o3",
+      "title" :   {
+    "fi": "Tulonjaon kokonaistilasto",
+    "en": "Total statistics on income distribution",
+    "sv": "Totalstatistik över inkomstfördelning"
+  }
+,
+      "description" :   {
+    "fi": "",
+    "en": "",
+    "sv": ""
+  }
+
+    }
+,
+   "s640": {
+      "organization" : "o2",
+      "title" :   {
+    "fi": "Steriloimisrekisteri",
+    "en": "Register of Sterilisations",
+    "sv": "Steriliseringsregistret"
+  }
+,
+      "description" :   {
+    "fi": "",
+    "en": "",
+    "sv": ""
+  }
+
+    }
+,
+   "s641": {
+      "organization" : "o2",
+      "title" :   {
+    "fi": "Raskaudenkeskeyttämisrekisteri",
+    "en": "Register of Induced Abortions",
+    "sv": "Abortregistret"
+  }
+,
+      "description" :   {
+    "fi": "Rekisteriin kerätään tietoja Suomessa lain mukaisin perustein suoritetuista raskaudenkeskeytyksistä.",
+    "en": "The register includes data on induced abortions performed in Finland in accordance with indications defined under legislation. ",
+    "sv": "Registret innehåller uppgifter om aborter som utförts i Finland på lagstadgade grunder. "
+  }
+
+    }
+,
+   "s6": {
+      "organization" : "o3",
+      "title" :   {
+    "fi": "Kuolleet",
+    "en": "Deaths",
+    "sv": "Avlidna"
+  }
+,
+      "description" :   {
+    "fi": "Kuolleiden tilastoissa ovat kuolinpäivänään vakinaisesti Suomessa asuneet henkilöt. Kuolleita tilastoidaan mm. iän,sukupuolen, siviilisäädyn, äidinkielen ja kansalaisuuden mukaan. Kuolleiden tilastosta ei ole tietoja henkilöiden kuolinsyistä, joista on saatavilla tilastotietoa terveystilastojen Kuolemansyytilastoista.",
+    "en": "The statistics on deaths cover persons permanently domiciled in Finland on the day of death. Statistical data on deaths are produced by a number of variables including age, gender, marital status, native language and nationality. The statistics on deaths contain no data on causes of death, on which data are vailable from the statistics on causes of death produced within health statistics.",
+    "sv": "Statistiken över avlidna omfattar personer som på sin dödsdag varit fast bosatta i Finland. Avlidna statistikförs bl.a. efter ålder, kön, civilstånd, modersmål och nationalitet. Statistiken omfattar inte uppgifter om dödsorsaker, utan dessa fås ur statistiken över dödsorsaker som ingår i hälsovårdsstatistiken."
+  }
+
+    }
+,
+   "s7": {
+      "organization" : "o2",
+      "title" :   {
+    "fi": "Alkoholijuomien kulutus -tilasto",
+    "en": "The statistics on alcoholic beverage comsumption",
+    "sv": "Statistiken över alkoholkonsumtion"
+  }
+,
+      "description" :   {
+    "fi": "Tilasto sisältää tietoja alkoholin tilastoidusta ja tilastoimattomasta kulutuksesta koko maan tasolla. Alkoholijuomien myyntitieto saadaan Valviran ylläpitämästä alkoholielinkeinorekisteristä. Tiedot alkoholijuomien myynnistä kerätään kuntatasolla ja valtakunnallisesti summatasolla. Tilastoimattoman kulutuksen tiedot perustuvat TNS Gallupin toteuttamaan alkoholijuomien matkustajatuonnin viikottaiseen seurantaan.",
+    "en": "The statistics present information about documented and undocumented alcohol consumption in Finland. The alcohol sales data are derived from the alcohol trade register maintained by Valvira. Data on the sales of alcoholic beverages are collected at the municipal level and for the whole country at aggregate level. The data on undocumented consumption are based on TNS-Gallup's weekly surveys of passenger imports of alcoholic beverages.",
+    "sv": "Statistiken innehåller uppgifter om den registrerade och oregistrerade konsumtionen på nationell nivå. Försäljningsuppgifterna för alkoholdrycker fås från alkoholnäringsregistret som förs av Valvira. Uppgifterna om försäljningen av alkoholdrycker samlas in på kommunnivå och på riksplanet på summavivå. Uppgifterna om den oregistrerade konsumtionen bygger på den uppföljning av resenärinförsel som TNS-Gallup gör varje vecka."
+  }
+
+    }
+,
+   "s330": {
+      "organization" : "o58",
+      "title" :   {
+    "fi": "ECHI (European Community Health Indicators) -indikaattorit",
+    "en": "ECHI (European Community Health Indicators)",
+    "sv": "ECHI-indikatorerna (European Community Health Indicators)"
+  }
+,
+      "description" :   {
+    "fi": "ECHI-indikaattorit laadittiin Euroopan Yhteisön kansanterveysalan toimintaohjelman (2003-2008) puitteissa. Ohjelmassa asetettiin tavoitteeksi  terveystilanteen jatkuvan seurantajärjestelmän perustaminen ja ylläpitäminen. Järjestelmän avulla hankitaan vertailukelpoista tietoa kansalaisten terveydentilasta ja terveyskäyttäytymisestä, sairauksista sekä terveydenhuoltojärjestelmistä. Järjestelmä perustuu euroopanlaajuisiin indikaattoreihin, joiden osalta määritelmistä, tiedonkeruusta ja käytöstä on sovittu yhteisesti.",
+    "en": "The ECHI (European Community Health Indicators) project was carried out in the framework of the Health Monitoring Programme and the Community Public Health Programme 2003-2008. The objective of the programme was to establish and maintain a sustainable health monitoring system.  The system produces comparable information on health and health-related behaviour of the population, on diseases and health systems. This will be based on European-wide common agreed indicators with regard to their definition, data collection and use.",
+    "sv": "ECHI-indikatorerna utarbetades inom ramen för programmet för gemenskapsåtgärder på folkhälsoområdet (2003-2008). Programmet hade som mål att upprätta och upprätthålla ett långsiktigt hälsoövervakningssystem. Genom systemet fås jämförbara uppgifter om befolkningens hälsa, hälsorelaterade vanor och sjukdomar samt om hälso- och sjukvårdssystem. Systemet bygger på indikatorer på EU-nivå med enhetliga definitioner, insamlingsmetoder och användningsområden."
+  }
+
+    }
+,
+   "s331": {
+      "organization" : "o59",
+      "title" :   {
+    "fi": "European health for all -tietokanta (HFA-DB)",
+    "en": "European Health for All Database (HFA-DB)",
+    "sv": "Databasen European health for all (HFA-DB)"
+  }
+,
+      "description" :   {
+    "fi": "",
+    "en": "The European \"health for all\" database (HFA-DB) provides easy and rapid access to a wide range of basic health statistics for the 52 Member States of the WHO European Region. It was developed by the WHO Regional Office for Europe (WHO/Europe) in the mid-1980s to support the monitoring of health trends in the Region. The database is a helpful tool for international comparison and for assessing the health situation and trends in any European country in an international context. <br /><br />The data are submitted by the WHO European Member States to the WHO/Europe or collected from other international organizations or other sources. New data are continuously collected, and updated versions of the database are made public twice a year, in January and June.",
+    "sv": ""
+  }
+
+    }
+,
+   "s332": {
+      "organization" : "o58",
+      "title" :   {
+    "fi": "Työmarkkinatilasto (Unit F-2, Labour Market statistics)",
+    "en": "Unit F-2, Labour Market statistics",
+    "sv": "Register:Työmarkkinatilasto (Unit F-2, Labour Market statistics)"
+  }
+,
+      "description" :   {
+    "fi": "",
+    "en": "",
+    "sv": ""
+  }
+
+    }
+,
+   "s333": {
+      "organization" : "o58",
+      "title" :   {
+    "fi": "Unit C2 : National accounts - Production",
+    "en": "Unit C2 : National accounts - Production",
+    "sv": "Register:Unit C2 : National accounts - Production"
+  }
+,
+      "description" :   {
+    "fi": "",
+    "en": "",
+    "sv": ""
+  }
+
+    }
+,
+   "s334": {
+      "organization" : "o58",
+      "title" :   {
+    "fi": "Unit F1: Population",
+    "en": "Unit F1: Population",
+    "sv": "Unit F1: Population"
+  }
+,
+      "description" :   {
+    "fi": "Eurostat suorittaa vuosittain neljä demografisen tiedon keruuta, kolme kansallisella tasolla ja yhden alueellisella tasolla.",
+    "en": "Eurostat carries out yearly four annual data collections in the field of demography, three at national level and one at regional level. ",
+    "sv": "Eurostat utför årligen fyra insamlingar av demografisk data, tre på nationell nivå och en på regional nivå."
+  }
+
+    }
+,
+   "s335": {
+      "organization" : "o58",
+      "title" :   {
+    "fi": "Unit F3: Living conditions and social protection statistics",
+    "en": "Unit F3: Living conditions and social protection statistics",
+    "sv": "Unit F3: Living conditions and social protection statistics"
+  }
+,
+      "description" :   {
+    "fi": "",
+    "en": "",
+    "sv": ""
+  }
+
+    }
+,
+   "s350": {
+      "organization" : "o63",
+      "title" :   {
+    "fi": "Social Protection in the Nordic Countries -vuosikirja",
+    "en": "Nordic Committee on Social Security Statistics (NOSOSKO): Social Protection in the Nordic Countries",
+    "sv": "Nordiska socialstatistikkommittén (Nososko): Årsboken Social Protection in the Nordic Countries"
+  }
+,
+      "description" :   {
+    "fi": "",
+    "en": "",
+    "sv": ""
+  }
+
+    }
+,
+   "s371": {
+      "organization" : "o2",
+      "title" :   {
+    "fi": "Alkoholijuomien kulutus. SVT.",
+    "en": "Alcoholic Beverage Consumtion. OSF.",
+    "sv": "Alkoholkonsumtion. FOS."
+  }
+,
+      "description" :   {
+    "fi": "",
+    "en": "",
+    "sv": ""
+  }
+
+    }
+,
+   "s250": {
+      "organization" : "o69",
+      "title" :   {
+    "fi": "Raskaudenkeskeytystilastot",
+    "en": "Statistics on Induced Abortions",
+    "sv": "Abortstatistik"
+  }
+,
+      "description" :   {
+    "fi": "",
+    "en": "",
+    "sv": ""
+  }
+
+    }
+,
+   "s372": {
+      "organization" : "o3",
+      "title" :   {
+    "fi": "Kuntien taloustilasto",
+    "en": "Statistics on Municipal Finances",
+    "sv": "Statistik över kommunernas ekonomi"
+  }
+,
+      "description" :   {
+    "fi": "Tilastokeskus kerää vuosittain kunnilta tietoja niiden toiminnasta ja taloudesta. Tilasto koskee kunnan kustantamia palveluja eli palveluita, jotka kunta on asukkailleen joko itse tuottanut tai ostanut muilta kunnilta, kuntayhtymiltä, valtiolta tai yksityisiltä palveluntuottajilta. Sosiaali- ja terveydenhuollon toimintatilastoa on tässä yhteydessä kerätty vuodesta 1994 lähtien Stakesin toimeksiannosta ja vuoden 2009 alusta Terveyden ja hyvinvoinnin laitoksen (Stakesin ja KTL:n fuusio) toimeksiannosta.Tilastoa edelsi vuoteen 1993 asti sosiaali- ja terveydenhuollon kertomustietojärjestelmä (KETI), jota ylläpiti sosiaali- ja terveysministeriö.",
+    "en": "Statistics Finland gathers information on municipal finances and activities on a yearly basis. The statistics contain information on municipally-funded services, that is, services that the municipality provides itself to its inhabitants or purchases from other municipalities, municipal federations, the state or private providers. In this context, Statistics on Social Welfare and Health Care Activities have been compiled since 1994 by order of STAKES. A predecessor to these statistics was a report system for social welfare and health care, maintained by the Ministry of Social Affairs and Health until 1993.",
+    "sv": "Statistikcentralen insamlar årligen uppgifter från kommunerna om deras verksamhet och ekonomi. Statistiken gäller tjänster som kommunen finansierar, dvs. tjänster som kommunen antingen själv har producerat för sina invånare eller köpt av andra kommuner, samkommuner, staten eller privata serviceproducenter. Dylik statistik över social- och hälsovårdens verksamhet har insamlats sedan år 1994, på uppdrag av Stakes. Den här statistiken föregicks fram till år 1993 av social- och hälsovårdens berättelsesystem KETI, som upprätthölls av social- och hälsovårdsministeriet."
+  }
+
+    }
+,
+   "s251": {
+      "organization" : "o65",
+      "title" :   {
+    "fi": "Raskaudenkeskeytystilastot",
+    "en": "Statistics on Induced Abortions",
+    "sv": "Abortstatistik"
+  }
+,
+      "description" :   {
+    "fi": "",
+    "en": "",
+    "sv": ""
+  }
+
+    }
+,
+   "s253": {
+      "organization" : "o67",
+      "title" :   {
+    "fi": "Raskaudenkeskeytystilastot",
+    "en": "Statistics on Induced Abortions",
+    "sv": "Abortstatistik"
+  }
+,
+      "description" :   {
+    "fi": "",
+    "en": "",
+    "sv": ""
+  }
+
+    }
+,
+   "s415": {
+      "organization" : "o2",
+      "title" :   {
+    "fi": "Rikos- ja riita-asiat -tilasto",
+    "en": "Statistics on mediation in criminal and civil cases",
+    "sv": "Medling i brott- och tvistemål -statistik"
+  }
+,
+      "description" :   {
+    "fi": "Rikos- ja riita-asioiden tilastoon kerätään tietoa sovitteluun tulleista rikos- ja riita-asioista. Valtakunnallinen tilastointi on aloitettu sovittelua koskevan lain voimaantulopäivästä 1.6.2006 alkaen.",
+    "en": "The statistics on mediation in criminal and civil cases gather data on all criminal and civil cases submitted for mediation. The national statistics on mediation in criminal and civil cases begin from 1 June 2006, when the Act on Conciliation in Criminal and Certain Civil Cases entered into force.",
+    "sv": "I statistiken över brott- och tvistemål sammanställs information om de brotts- och tvistemål som överlämnats till medling. Den nationella statistikföringen inleddes samma dag som lagen om medling trädde i kraft 1.6.2006."
+  }
+
+    }
+,
+   "s461": {
+      "organization" : "o5",
+      "title" :   {
+    "fi": "Tilasto eläkkeensaajan asumistuesta",
+    "en": "Statistics on pensioners' housing allowances",
+    "sv": "Statistik över bostadsbidrag för pensionstagare"
+  }
+,
+      "description" :   {
+    "fi": "",
+    "en": "",
+    "sv": ""
+  }
+
+    }
+,
+   "s475": {
+      "organization" : "o5",
+      "title" :   {
+    "fi": "Tilasto Kelan eläkkeistä",
+    "en": "Statistics on pensions provided by Kela",
+    "sv": "Statistik över FPA-pensioner"
+  }
+,
+      "description" :   {
+    "fi": "",
+    "en": "",
+    "sv": ""
+  }
+
+    }
+,
+   "s480": {
+      "organization" : "o38",
+      "title" :   {
+    "fi": "Maastotietokanta",
+    "en": "Topographic Database",
+    "sv": "Terrängdatabas"
+  }
+,
+      "description" :   {
+    "fi": "",
+    "en": "",
+    "sv": ""
+  }
+
+    }
+,
+   "s482": {
+      "organization" : "o2",
+      "title" :   {
+    "fi": "Perfect-hanke (hoitoketjun toimivuus, vaikuttavuus ja kustannukset)",
+    "en": "PERFECT data (PERFormance, Effectiveness and Cost of Treatment episodes)",
+    "sv": "PERFECT-projekt (PERFormance, Effectiveness and Cost of Treatment episodes)"
+  }
+,
+      "description" :   {
+    "fi": "Tutkimusaineiston muodostamisessa käytettävät rekisterit ovat: <br><br />THL: Sosiaali- ja terveydenhuollon hoitoilmoitusrekisteri, Sairaaloiden hoitotoiminnan tuottavuus <br><br />Kelan etuusrekisteri: erityiskorvausoikeudet, lääkekorvaukset, yksityiset tutkimukset ja hoito, yksityislääkärissäkäynnit<br><br />Tilastokeskus: kuolinsyyrekisteri",
+    "en": "De register som används för att bilda forskningsunderlaget är: <br><br />THL: Vårdanmälningsregistret inom social- och hälsovården, Sjukhusvårdens produktivitet <br><br />FPA's Förmånsregistret: specialersättnings rätter, läkemedelsersättningar, privata undersökningar och behandling, privatläkarbesök <br><br />Statistikcentralen: dödsorsaksregistret",
+    "sv": "The research data are based on the following registers:<br><br /><br />THL: Hospital discharge registers, Finnish Care Register (incl. data in supplements on cerebral infarction patients), data from the Hospital Benchmarking project <br><br />Social Insurance Institution: entitlements to special refunds on medicine (free-of-charge), medicine reimbursements, private examinations and treatments,  visits to private practitioners<br><br />Statistics Finland: Causes of Death Register"
+  }
+
+    }
+,
+   "s495": {
+      "organization" : "o3",
+      "title" :   {
+    "fi": "Tieliikenneonnettomuustilasto",
+    "en": "Statistics on road traffic accidents",
+    "sv": "Statistik över vägtrafikolyckor"
+  }
+,
+      "description" :   {
+    "fi": "",
+    "en": "",
+    "sv": ""
+  }
+
+    }
+,
+   "s496": {
+      "organization" : "o3",
+      "title" :   {
+    "fi": "Työtapaturmat-tilasto",
+    "en": "Occupational accident statistics",
+    "sv": "Statistik över olycksfall i arbetet"
+  }
+,
+      "description" :   {
+    "fi": "",
+    "en": "",
+    "sv": ""
+  }
+
+    }
+,
+   "s575": {
+      "organization" : "o2",
+      "title" :   {
+    "fi": "Suomalaisten hyvinvointi ja palvelut -tutkimus (HYPA) ja Alueellinen terveys- ja hyvinvointitutkimus (ATH)",
+    "en": "Welfare and Services in Finland survey (HYPA) and Regional Health and Well-being Study (ATH).",
+    "sv": "Undersökningen Finländarnas välfärd och tjänster (HYPA) och Regional hälso- och välfärdsforskning (ATH)"
+  }
+,
+      "description" :   {
+    "fi": "Testiaineisto, joka on muodostettu yhdistämällä HYPA -aineisto vuodelta 2009 ja ATH -aineiston koko maan otos vuodelta 2010 (ks. Rajoitukset).",
+    "en": "The test material is a combination of the 2009 HYPA material and the 2010 national ATH material (see Restrictions).",
+    "sv": "Testmaterial som har bildats genom att kombinera HYPA-materialet från år 2009 och samplet för hela landet år 2010 i ATH-materialet (se Begränsningar)."
+  }
+
+    }
+,
+   "s635": {
+      "organization" : "o2",
+      "title" :   {
+    "fi": "Sydän- ja verisuonitautirekisteri",
+    "en": "National Cardiovascular Disease Register",
+    "sv": "Registret över hjärt- och kärlsjukdomar"
+  }
+,
+      "description" :   {
+    "fi": "",
+    "en": "",
+    "sv": ""
+  }
+
+    }
+,
+   "s637": {
+      "organization" : "o2",
+      "title" :   {
+    "fi": "Suomen syöpärekisteri",
+    "en": "Finnish Cancer Registry",
+    "sv": "Finlands cancerregister"
+  }
+,
+      "description" :   {
+    "fi": "",
+    "en": "",
+    "sv": ""
+  }
+
+    }
+,
+   "s676": {
+      "organization" : "o2",
+      "title" :   {
+    "fi": "Perusterveydenhuoltotilasto",
+    "en": "Primary health care",
+    "sv": "Primär vård"
+  }
+,
+      "description" :   {
+    "fi": "Perusterveydenhuollon tilasto perustuu vuosittain terveydenhuollon toimintayksiköistä henkilötunnuksella kerättäviin hoitoilmoituksiin. Valtakunnallinen sosiaali- ja terveydenhuollon hoitoilmoitusjärjestelmä on laajentunut kattamaan perusterveydenhuollon avohoidon vuonna 2011. Perusterveydenhuollon avohoidon hoitoilmoitukset sisältävät tietoja palvelutapahtuman tuottajista, asiakkaiden yhteydenotoista, hoidon tarpeen arvioinnista, ajanvarataustiedoista sekä palvelutapahtuman sisällöstä, kuten käyntisyistä ja toiminnoista sekä jatkohoidosta. Lisäksi perusterveydenhuollon tilastoon tulee tietoja terveyskeskusten laitoshoidosta. Perusterveydenhuollon laitoshoidon hoitoilmoitukset sisältävät tiedot palvelun tuottajasta, potilaan kotikunnasta, hoitoon tulon tiedot, hoitoon liittyvät tiedot toimenpiteineen sekä hoidon päättymiseen liittyviä tietoja.<br><br><br />THL keräsi terveyskeskuksilta vuoteen 2010 asti vuosittain tiedot niiden tuottamista avohoidon palveluista Notitia tiedonkeruulla. Terveyskeskukset ilmoittivat tiedot jäsenkunnittain. Lääkärikäynnit ja muun ammattihenkilökunnan käynnit kysyttiin toiminnoittain, minkä lisäksi kysyttiin lääkärikäynnit ja lääkärillä käyneet potilaat ikäryhmittäin. Suun terveydenhuollon käynneistä kerättiin ikäryhmittäiset käyntitiedot hammaslääkäri-, hammashuoltaja- ja -hoitajakäynneistä, sekä ikäryhmittäiset tiedot suun terveydenhuollon potilaista. THL on kerännyt tiedot vuodesta 2002 lähtien. Suomen Kuntaliitto keräsi vastaavia tietoja vuosilta 1994-2001. Ahvenanmaan tiedot ovat saatavissa vuodesta 2011 lähtien.",
+    "en": "The statistics on primary health care are based on care notifications submitted by health care units. In 2011, the national Care Registers for Social Welfare and Health Care were extended to cover also outpatient visits in primary health care. Care notifications concerning outpatient visits in primary health care contain data on service providers, clients' contacts with service providers, assessments of the need for treatment, appointments as well as content of the service event, such as reasons for visit and functions, further treatment, and reasons for health care visits. In addition, the statistics on primary health care contain data on inpatient care in health centres. Care notifications concerning inpatient care in primary health care contain data on service provider and patient's municipality of residence as well as on admission, treatment, and discharge.	<br /><BR><BR>Until 2010, THL collected annual data on outpatient care in health centres by using the Notitia data collection. The data reported by health centres was broken down by participating municipality. Physician visits and other practitioner visits were broken down by activity, and physician visits and patients seen by physicians by age group. As for oral health care visits, data were gathered on dentist visits and dental hygienist/assistant visits by age group, and on oral health care patients by age group. THL has collected the data since 2002. Between 1994 and 2001, similar data were collected by the Association of Finnish Local and Regional Authorities. Data from Åland are available from 2011 onwards.",
+    "sv": "Statistiken över primärvården bygger på de vårdanmälningar som årligen samlas in från verksamhetsenheterna inom hälso- och sjukvården utifrån personbeteckningen.  Det landsomfattande vårdanmälningssystemet för socialvården och hälso- och sjukvården utvidgades till att omfatta den öppna primärvården år 2011. Vårdanmälningarna inom den öppna primärvården innehåller uppgifter om producenterna av servicehändelsen, klienternas kontakttaganden, bedömningen av vårdbehovet, tidsbeställningsinformationen och innehållet i servicehändelsen, såsom orsakerna till besöket, åtgärderna och eftervården. Dessutom innehåller statistiken om primärvården uppgifter om institutionsvården vid hälsovårdscentralerna. Vårdanmälningarna inom den slutna primärvården innehåller uppgifter om serviceproducenten, patientens hemkommun, information om intagningen för vård, uppgifter om vården och information om utskrivningen.	<br /><BR><BR>Fram till år 2010 samlade THL årligen in uppgifter av hälsovårdscentralerna om de öppenvårdstjänster som dessa producerat. Uppgifterna samlades in med hjälp av Notitia-metoden.  Hälsovårdscentralerna lämnade in uppgifterna enligt medlemskommun. Läkarbesök och besök hos annan personal efterfrågades indelade efter verksamhetstyp. Dessutom efterfrågade man uppgifter efter åldersgrupp om antal läkarbesök och patienter som besökt läkare. När det gäller uppgifter om munhälsovårdsbesök, samlade man in uppgifter indelade efter åldersgrupp om besök hos tandläkare, tandhygienist och tandskötare. Dessutom samlade man in uppgifter efter åldersgrupp om patienterna inom munhälsovården. THL har samlat in dessa uppgifter sedan år 2002. Finlands Kommunförbund samlade in motsvarande uppgifter 1994 - 2001. Ålands uppgifter finns att tillgå från och med 2011.<br />"
+  }
+
+    }
+,
+   "s4": {
+      "organization" : "o2",
+      "title" :   {
+    "fi": "Sairastavuusindeksit",
+    "en": "Morbidity indices",
+    "sv": "Sjuklighetsindexen"
+  }
+,
+      "description" :   {
+    "fi": "",
+    "en": "",
+    "sv": ""
+  }
+
+    }
+,
+   "s696": {
+      "organization" : "o5",
+      "title" :   {
+    "fi": "Yksityisistä sairaanhoitopalveluista perityt keskimääräiset maksut",
+    "en": "Average fees charged for private-sector medical services",
+    "sv": "De genomsnittliga avgifterna för privata sjukvårdstjänster"
+  }
+,
+      "description" :   {
+    "fi": "",
+    "en": "",
+    "sv": ""
+  }
+
+    }
+,
+   "s100": {
+      "organization" : "o2",
+      "title" :   {
+    "fi": "Hedelmöityshoitotilasto",
+    "en": "The statistics on assisted fertility treatments",
+    "sv": "Statistiken över assisterad befruktning"
+  }
+,
+      "description" :   {
+    "fi": "",
+    "en": "",
+    "sv": ""
+  }
+
+    }
+,
+   "s394": {
+      "organization" : "o2",
+      "title" :   {
+    "fi": "Toimeentulotuen menotilasto",
+    "en": "Financial statistics on social assistance (formerly the Preliminary statistics on social assistance)",
+    "sv": "Ekonomisk statistik över utkomststödet (tidigare Preliminär statik över utkomststödet)"
+  }
+,
+      "description" :   {
+    "fi": "",
+    "en": "",
+    "sv": ""
+  }
+
+    }
+,
+   "s5": {
+      "organization" : "o5",
+      "title" :   {
+    "fi": "Tilasto työterveyshuollosta",
+    "en": "Statistics on occupational health care",
+    "sv": "Statistik över företagshälsovård"
+  }
+,
+      "description" :   {
+    "fi": "Työterveyshuoltotilasto julkaistaan kerran vuodessa ja noin kahden vuoden viiveellä. Vuositilasto sisältää pääosin kyseisen kalenterivuoden tietoja.",
+    "en": "The statistics on occupational health care are published once a year, the time lag being about two years. Annual statistics contain mainly data for the calendar year in question.",
+    "sv": "Statistiken över företagshälsovård publiceras en gång per år och efter cirka två års dröjsmål. Årsstatistiken innehåller främst uppgifter från kalenderåret i fråga.<br />"
+  }
+
+    }
+,
+   "s436": {
+      "organization" : "o158",
+      "title" :   {
+    "fi": "Hammaslääkärityövoimaselvitys",
+    "en": "Dentists, employment survey",
+    "sv": "Utredning om tandläkararbetskraften"
+  }
+,
+      "description" :   {
+    "fi": "Indikaattori perustuu Suomen Hammaslääkäriliiton yhteistyössä sosiaali- ja terveysministeriön, Kunnallisen työmarkkinalaitoksen ja THL:n kanssa vuosittain toteuttamiin hammaslääkärityövoimaselvityksiin, joissa kysytään terveyskeskusten johtavilta hammaslääkäreiltä vakanssien täyttötilannetta lokakuun ensimmäisen viikon keskiviikkona",
+    "en": "The indicator draws on data from annual employment surveys focusing on physicians in primary health care services. The surveys are carried out by the Finnish Medical Association in cooperation with the Ministry of Social Affairs and Health, the Commission for Local Authority Employers and THL. The survey asks leading physicians at municipal health centres to supply information on the number of vacant physicians¿ posts on the Wednesday of the first week in October",
+    "sv": "Indikatorn bygger på utredningar om tandläkararbetskraften som Finlands Tandläkarförbund årligen genomför i samarbete med social- och hälsovårdsministeriet, Kommunala arbetsmarknadsverket och THL. För utredningarna begärs uppgifter av hälsovårdscentralernas ledande tandläkare om tillsättningsgraden på onsdagen den första veckan i oktober."
+  }
+
+    }
+,
+   "s457": {
+      "organization" : "o5",
+      "title" :   {
+    "fi": "Tilasto lääkkeiden korvausoikeuksista",
+    "en": "Statistics on reimbursement entitlements in respect of medicines",
+    "sv": "Statistik över rätt till läkemedelsersättningar"
+  }
+,
+      "description" :   {
+    "fi": "",
+    "en": "",
+    "sv": ""
+  }
+
+    }
+,
+   "s176": {
+      "organization" : "o2",
+      "title" :   {
+    "fi": "Sosiaalihuollon hoitoilmoitusrekisteri",
+    "en": "Care Registers for Social Welfare",
+    "sv": "Vårdanmälningsregistret för socialvården"
+  }
+,
+      "description" :   {
+    "fi": "Sosiaalihuollon hoitoilmoitusrekisteriin kerätään asiakaskohtaista tietoa sosiaalihuollon laitoshoidon, asumispalveluiden sekä säännöllisen kotihoidon asiakkaista. Vanhainkodeissa, kehitysvammalaitoksissa, päihdehuollon laitoksissa sekä ikääntyneiden ja vammaisten ympärivuorokautisissa asumispalveluissa kerätään hoidon päättymistiedot kaikista päättyneistä hoitojaksoista sekä tehdään asiakaslaskenta vuoden lopussa hoidossa olleista asiakkaista. Muissa asumispalveluissa päihdehuoltoa lukuun ottamatta tehdään asiakaslaskenta vuoden lopussa.",
+    "en": "The Care Register for Social Welfare contains client-specific data on institutional care, housing services and regular home-care services provided in the social care sector. Discharge data, that is, data on all finished periods of care, are gathered by residential homes for older people, institutions for people with intellectual disabilities, institutions operated as part of care and services for substance abusers, and 24-hour housing services for older people and disabled people. The units also conduct client censuses concerning all clients receiving care at the end of the year. With the exception of care and services for substance abusers, all housing service units conduct a client census at the end of each year.",
+    "sv": "För vårdanmälningsregistren samlas klientspecifika uppgifter om social-, hälso- och sjukvårdens klienter inom institutionsvård, boendeservice och regelbunden hemvård. På sjukhusens och hälsovårdscentralernas vårdavdelningar (inkl. dagkirurgin), på ålderdomshem, på institutioner för utvecklingsstörda, institutioner för missbrukare samt inom serviceboende för äldre och handikappade med heldygnsomsorg samlas utskrivningsuppgifter om samtliga avslutade vårdperioder. Dessutom görs en klientinventering av de klienter som fick vård vid årets slut. Inom de övriga formerna av boendeservice, med undantag av missbrukarvården, görs en klientinventering vid årets slut."
+  }
+
+    }
+,
+   "s615": {
+      "organization" : "o2",
+      "title" :   {
+    "fi": "Terveyden edistämisaktiivisuus (TEAviisari)",
+    "en": "Health promotion capacity building (TEAviisari)",
+    "sv": "Hälsofrämjande aktivitet, TEAviisari"
+  }
+,
+      "description" :   {
+    "fi": "",
+    "en": "",
+    "sv": ""
+  }
+
+    }
+,
+   "s677": {
+      "organization" : "o2",
+      "title" :   {
+    "fi": "Erikoissairaanhoitotilasto",
+    "en": "Specialised healthcare",
+    "sv": "Specialiserad sjukvård"
+  }
+,
+      "description" :   {
+    "fi": "Erikoissairaanhoidon tilasto perustuu vuosittain terveydenhuollon toimintayksiköistä henkilötunnuksella kerättäviin hoitoilmoituksiin. Ne sisältävät tiedot palvelun tuottajasta, potilaan kotikunnasta, hoitoon tulon tiedot, hoitoon liittyvät tiedot toimenpiteineen sekä hoidon päättymiseen liittyviä tietoja. Psykiatrian erikoisalojen potilaista ilmoitetaan näiden tietojen lisäksi psykiatrian erikoisalojen lisätiedot, jotka käsittelevät lääkehoitoa, pakkotoimia ja psyykkisen tilan arviointia. Samoin vaativista sydänpotilaista kerätään lisätietoja. Lisäksi vuoden viimeisenä päivänä sairaalassa vuodeosastoilla olevista potilaista tehdään potilaslaskenta. <br><br><br />Terveyden ja hyvinvoinnin laitos kerää vuosittain terveydenhuollon palveluntuottajilta hoitoilmoitukset (HILMO) päättyneistä hoitojaksoista ja avohoitokäynneistä. Erikoissairaanhoidon tilastoon on kerätty tietoja kaikista kuntien, kuntayhtymien ja valtion sairaaloista sekä suurimmista yksityissairaaloista. Lisäksi vuoden viimeisenä päivänä sairaalassa olevista potilaista tehdään potilaslaskenta. Nykyisen kaltainen tiedonkeruu laitoshoidosta alkoi terveydenhuollossa vuonna 1994. Erikoissairaanhoidon avohoidosta tietoja on kerätty vuodesta 1998 alkaen, mutta vertailukelpoisia tiedot ovat vuodesta 2006 lähtien. Jo ennen tätä, vuodesta 1967 lähtien, kerättiin ns. poistoilmoitusrekisteriin tietoja sairaaloiden ja terveyskeskusten vuodeosastoilta poistuneista potilaista.",
+    "en": "The statistics on specialised health care are based on care notifications submitted by health care units and retrieved on the basis of the unique personal identity number. Care notifications contain data on service provider and patient's municipality of residence as well as information on admission, treatment, procedures and discharge. For psychiatric patients, the data also include additional data on psychiatric specialties, including data on drug therapies, coercive measures and psychiatric evaluations. Additional data are also collected for patients with advanced cardiac condition. Also, a count is taken of patients in hospital wards on the last day of the year. <br /><BR><BR><br />The National Institute for Health and Welfare collects care notifications (HILMO data) from health service providers concerning concluded periods of care and outpatient visits. The statistics on specialised health care include data on all municipalities, joint municipal authorities, state hospitals and largest private hospitals. Also, a count is taken of patients in inpatient care on the last day of the year. In its current form, the data collection on inpatient health care started in 1994. Data on specialised outpatient care have been collected since 1998, but the figures are comparable only from 2006 onwards. Even before that, since 1967, data on patients discharged from hospital and health-centre wards were collected for a hospital discharge register.<br />",
+    "sv": "Statistiken över den specialiserade sjukvården bygger på de vårdanmälningar som årligen samlas in från verksamhetsenheterna inom hälso- och sjukvården utifrån personbeteckningen. Vårdanmälningarna innehåller uppgifter om serviceproducenten, patientens hemkommun, information om intagningen för vård, uppgifter om vården och åtgärderna samt information om utskrivningen. Beträffande patienterna inom de psykiatriska specialiteterna lämnas utöver dessa uppgifter även tilläggsuppgifter gällande de psykiatriska specialiteterna. Dessa uppgifter gäller läkemedelsbehandling, tvångsåtgärder och patientens psykiska tillstånd. Likaså samlar man in tilläggsuppgifter om krävande hjärtpatienter. Dessutom genomförs en inventering av alla patienter som finns på vårdavdelningarna på sjukhuset på årets sista dag. <br /><br><br><br />Institutet för hälsa och välfärd samlar varje år in vårdanmälningar (HILMO) av hälso-och sjukvårdsproducenterna. Vårdanmälningarna innehåller uppgifter om avslutade vårdperioder och öppenvårdsbesök. Till statistiken över den specialiserade sjukvården har man samlat in data från alla kommuners och samkommuners sjukhus, de statliga sjukhusen och de största privata sjukhusen. Dessutom genomförs en inventering av alla patienter som finns på sjukhuset på årets sista dag. En datainsamling gällande institutionsvården som motsvarar den nuvarande påbörjades inom hälso- och sjukvården år 1994. Uppgifter om öppenvården inom den specialiserade sjukvården har samlats in sedan år 1998, men uppgifterna är jämförbara från och med år 2006. Redan dessförinnan, med början år 1967, insamlades för det s.k. utskrivningsregistret uppgifter om patienter som skrivits ut från sjukhusens och hälsovårdscentralens vårdavdelningar."
+  }
+
+    }
+,
+   "s48": {
+      "organization" : "o39",
+      "title" :   {
+    "fi": "Valtion tilinpäätöskertomus (osat 1 ja 2)",
+    "en": "Ministry of Finance: Financial Statement and Budget Report (part 1 and 2)",
+    "sv": "Statens bokslutsberättelse (del 1 och 2)"
+  }
+,
+      "description" :   {
+    "fi": "",
+    "en": "",
+    "sv": ""
+  }
+
+    }
+,
+   "s9": {
+      "organization" : "o3",
+      "title" :   {
+    "fi": "Väestön koulutusrakenne",
+    "en": "Educational structure of population",
+    "sv": "Befolkningens utbildningsstruktur"
+  }
+,
+      "description" :   {
+    "fi": "",
+    "en": "",
+    "sv": ""
+  }
+
+    }
+,
+   "s51": {
+      "organization" : "o2",
+      "title" :   {
+    "fi": "Arvonlisäveron ALV laskenta ",
+    "en": "",
+    "sv": ""
+  }
+,
+      "description" :   {
+    "fi": "",
+    "en": "",
+    "sv": ""
+  }
+
+    }
+,
+   "s52": {
+      "organization" : "o5",
+      "title" :   {
+    "fi": "Terveyspuntarin sairastavuusindeksi",
+    "en": "",
+    "sv": ""
+  }
+,
+      "description" :   {
+    "fi": "",
+    "en": "",
+    "sv": ""
+  }
+
+    }
+,
+   "s11": {
+      "organization" : "o2",
+      "title" :   {
+    "fi": "Lastensuojelun käsittelyajat",
+    "en": "Processing times in child welfare",
+    "sv": "Behandlingstiderna inom barnskyddet"
+  }
+,
+      "description" :   {
+    "fi": "<p>THL pyytää kunnilta tai kuntayhtymiltä tietoja siitä, kuinka lastensuojelulaissa säännellyt asioiden käsittelymääräajat ovat toteutuneet. Tiedot kerätään kaksi kertaa vuodessa ajanjaksoilta 1.4. - 30.9 ja 1.10. - 31.3.</p><p><br />Laki edellyttää että kuntakohtaiset tiedot tulee luovuttaa THL:lle, joka luovuttaa ne edelleen Sosiaali- ja terveysalan lupa- ja valvontavirastolle (Valvira) sen valtakunnallista sosiaalihuollon ohjaus- ja valvontatehtävää varten. THL julkaisee kunnittaiset tiedot myös omilla verkkosivuillaan.</p><br />",
+    "en": "<p>THL requests municipalities and joint municipal authorities to supply information necessary for the monitoring that the prescribed times laid down in the Child Welfare Act are observed. Data are collected twice a year, covering the periods 1.4.-30.9. and 1.10.-31.1.<br /></p><br /><p>The Act further stipulates that municipality-specific data are first submitted to THL, which then forwards the information to the National Supervisory Authority for Welfare and Health (Valvira) for its national guidance and supervision duties. THL will publish the municipality-specific data on its website.<br /></p>",
+    "sv": "<p>THL begär uppgifter av kommunerna och samkommunerna om hur de tidsfrister för behandlingen av ärenden som föreskrivs i barnskyddslagen har iakttagits. Insamlingen av uppgifterna genomförs två gånger per år och gäller perioderna 1.4. - 30.9. och 1.10. - 31.3.<br /></p><p><br />Lagen förutsätter att de kommunspecifika uppgifterna lämnas in till THL, som överlämnar uppgifterna vidare till Tillstånds- och tillsynsverket för social- och hälsovården (Valvira) för dess riksomfattande styrnings- och tillsynsuppgift. THL publicerar de kommunspecifika uppgifterna också på sin webbplats.</p>"
+  }
+
+    }
+,
+   "s12": {
+      "organization" : "o2",
+      "title" :   {
+    "fi": "Terveydenhuollon menot ja rahoitus",
+    "en": "Health expenditure and financing",
+    "sv": "Hälso- och sjukvårdsutgifter samt deras finansiering"
+  }
+,
+      "description" :   {
+    "fi": "<p>THL kerää vuosittain OECD:n terveystilinpitojärjestelmän (SHA, System of Health Accounts) mukaisiin käsitteisiin ja luokituksiin pohjautuvat tiedot julkisen ja yksityisen terveydenhuollon menoista ja rahoituksesta. Terveydenhuollon menot ja rahoitustilastoa varten tiedot kerätään tilastoista, rekistereistä, toimintakertomuksista, tilinpäätöksistä ja muista vastaavista lähteistä. Tiedot päivitetään maaliskuussa.</p>",
+    "en": "Each year, the National Institute for Health and Welfare compiles data on public and private health care expenditure and financing according to the concepts and classifications of the System of Health Accounts (SHA), a statistical framework maintained by the OECD. The data for the 'Health Expenditure and Financing' report are compiled from statistics, annual reports, financial statements and similar sources. The data are updated in March each year.",
+    "sv": "THL samlar årligen in uppgifter om den offentliga och privata hälso- och sjukvårdens utgifter och finansiering. Uppgifterna bygger på begrepp och klassificeringar i OECD:s system för hälsoräkenskaper (SHA, System of Health Accounts). Uppgifterna för statistiken om hälso- och sjukvårdens utgifter och finansiering samlas från olika statistikdokument, verksamhetsberättelser, bokslut och andra motsvarande källor. Uppgifterna uppdateras i mars månad."
+  }
+
+    }
+,
+   "s337": {
+      "organization" : "o70",
+      "title" :   {
+    "fi": "Nordic Studies on Alcohol and Drugs: Nordic alcohol statistics",
+    "en": "Nordic Studies on Alcohol and Drugs: Nordic alcohol statistics",
+    "sv": "Nordic Studies on Alcohol and Drugs: Nordic alcohol statistics"
+  }
+,
+      "description" :   {
+    "fi": "",
+    "en": "",
+    "sv": ""
+  }
+
+    }
+,
+   "s351": {
+      "organization" : "o5",
+      "title" :   {
+    "fi": "Tilasto lastenhoidon tuista",
+    "en": "Statistics on child care subsidies",
+    "sv": "Statistik över barnavårdsstödet"
+  }
+,
+      "description" :   {
+    "fi": "",
+    "en": "",
+    "sv": ""
+  }
+
+    }
+,
+   "s53": {
+      "organization" : "o2",
+      "title" :   {
+    "fi": "Tiedonkeruu kunnan johdolle väestön hyvinvoinnin ja terveyden edistämisestä",
+    "en": "Data on the promotion of population health and welfare, collected from municipal management",
+    "sv": "Datainsamlingen för kommunledningen om arbetet med att främja befolkningens hälsa och välfärd"
+  }
+,
+      "description" :   {
+    "fi": "",
+    "en": "",
+    "sv": ""
+  }
+
+    }
+,
+   "s370": {
+      "organization" : "o2",
+      "title" :   {
+    "fi": "Pohjoismainen alkoholitilasto",
+    "en": "Nordic Alcohol Statistics",
+    "sv": "Nordisk alkoholstatistik"
+  }
+,
+      "description" :   {
+    "fi": "Esitetyt tiedot on kerätty ja päivitetty kunkin maan virallisten tilastojen perusteella. Kukin maa vastaa tilaston kokoamisesta vuorollaan. Norja vastaa tilaston kokoamisesta vuosina 2010-2012.",
+    "en": "The data have been gathered and updated based on the official statistics of each country. The responsibility for the compilation of these statistics rotates between the Nordic countries, with the task years (2010-2012) given to Norway.",
+    "sv": "Uppgifterna som redovisas har samlats in och uppdaterats på grundval av respektive lands officiella statistik. Varje land ansvarar i tur och ordning för sammanställandet av statistiken. I år (20010-2012) ansvarar Norge för sammanställandet."
+  }
+
+    }
+,
+   "s515": {
+      "organization" : "o2",
+      "title" :   {
+    "fi": "Kotihoidon laskenta 30.11.",
+    "en": "Count of Regular Home-Care Clients on 30 November",
+    "sv": "Klientinventering inom hemvården 30.11."
+  }
+,
+      "description" :   {
+    "fi": "Tietolähteenä on THL:n kotihoidon asiakaslaskenta aineisto.  Kotihoidon laskenta tehdään asiakkaista:<br /><br>- joilla on 30.11. voimassa oleva palvelu- ja hoitosuunnitelma (sosiaalihuollon tai sosiaali- ja terveydenhuollon yhteinen tai terveydenhuollon kotisairaanhoidon hoitosuunnitelma).<br /><br>- jotka muuten (ilman palvelu- ja hoitosuunnitelmaa) saavat säännöllisesti kotipalvelua, kotisairaanhoitoa tai päiväsairaalapalveluja ja heillä on toteutunut vähintään yksi käynti jokaisella marraskuun viikolla.<br /><br>- jotka käyvät marraskuussa vähintään kerran viikossa vanhusten hoidollisessa päivähoidossa. Mukaan ei oteta päiväkeskustoimintaa eikä päiväkeskusten antamaa viriketoimintaa (kuten askartelu) saavia.<br /><br>- jotka saavat omaishoidon tukea, vaikka eivät saisikaan palveluja kotiin.<br /><br>Kotihoidon asiakaslaskenta on tehty joka toinen vuosi (parittomina vuosina 1995, 1997, 1999, 2001, 2003, 2005) vuoteen 2005 saakka. Vuodesta 2007 lähtien asiakaslaskenta tehdään vuosittain. Lukuihin sisältyvät sekä kuntien, kuntayhtymien että yksityisten palveluntuottajien asiakkaat.",
+    "en": "",
+    "sv": ""
+  }
+
+    }
+,
+   "s597": {
+      "organization" : "o64",
+      "title" :   {
+    "fi": "Syntymärekisteri",
+    "en": "Medical birth register",
+    "sv": "Födelseregister"
+  }
+,
+      "description" :   {
+    "fi": "",
+    "en": "",
+    "sv": ""
+  }
+
+    }
+,
+   "s598": {
+      "organization" : "o66",
+      "title" :   {
+    "fi": "Syntymärekisteri",
+    "en": "Medical birth register",
+    "sv": "Födelseregister"
+  }
+,
+      "description" :   {
+    "fi": "",
+    "en": "",
+    "sv": ""
+  }
+
+    }
+,
+   "s599": {
+      "organization" : "o67",
+      "title" :   {
+    "fi": "Syntymärekisteri",
+    "en": "Medical birth register",
+    "sv": "Födelseregister"
+  }
+,
+      "description" :   {
+    "fi": "",
+    "en": "",
+    "sv": ""
+  }
+
+    }
+,
+   "s600": {
+      "organization" : "o218",
+      "title" :   {
+    "fi": "Syntymärekisteri",
+    "en": "Medical birth register",
+    "sv": "Födelseregister"
+  }
+,
+      "description" :   {
+    "fi": "",
+    "en": "",
+    "sv": ""
+  }
+
+    }
+,
+   "s601": {
+      "organization" : "o68",
+      "title" :   {
+    "fi": "Syntymärekisteri",
+    "en": "Medical birth register",
+    "sv": "Födelseregister"
+  }
+,
+      "description" :   {
+    "fi": "",
+    "en": "",
+    "sv": ""
+  }
+
+    }
+,
+   "s602": {
+      "organization" : "o2",
+      "title" :   {
+    "fi": "Sairaaloiden toiminta ja tuottavuus -tietokanta (Bench marking)",
+    "en": "Hospital productivity",
+    "sv": "Sjukhusens produktivitet"
+  }
+,
+      "description" :   {
+    "fi": "Tilasto kuvaa sairaaloiden tuotoksen ja kokonaispanoksen volyymimuutoksia sekä niistä laskettuja kokonaistuottavuuden muutoksia. Tuotoksena käytetään kahdenlaista mittaria: episodi ja DRG -hoitojakso. Sairaaloiden välisessä vertailussa tiedot sisältävät julkisen sektorin tuottamat somaattisen erikoissairaanhoidon palvelut.  Alueellisessa vertailussa mukana on myös yksityisen sektorin tuottama laitospalvelu ja päiväkirurgia. Tiedot julkaistaan alue-, tuottaja- ja erikoisalatasolla.",
+    "en": "The statistics describe changes in the volume of hospital outputs and total inputs as well as changes in the total productivity of hospitals calculated on the basis of the output and input data. Two kinds of indicators are used for the outputs: episode and DRG period of care. In hospital benchmarking, the data include somatic specialised health services provided by the public sector. The regional comparison also includes data on inpatient services and day surgery provided by the private sector. Data are published at the level of regions, providers and specialities.",
+    "sv": "Statistiken beskriver volymförändringar i sjukhusens resultat och totala insatser och presenterar förändringar i den totala produktiviteten som beräknats utifrån dem. Som resultat används två indikatorer: episod och DRG-vårdperiod. I en jämförelse av sjukhusen innefattar uppgifterna de tjänster inom specialiserad somatisk sjukvård som produceras inom den offentliga sektorn. I områdesspecifika jämförelser innefattar uppgifterna även slutenvården och dagkirurgin som produceras inom den privata sektorn. Uppgifterna publiceras på områdes-, producent- och specialitetsnivå."
+  }
+
+    }
+,
+   "s14": {
+      "organization" : "o2",
+      "title" :   {
+    "fi": "Terveyden ja hyvinvoinnin edistäminen peruskouluissa -tiedonkeruu",
+    "en": "Health and welfare promotion in comprehensive schools. Data collection",
+    "sv": "Datainsamling om främjande av hälsa och välbefinnande i den grundläggande utbildningen"
+  }
+,
+      "description" :   {
+    "fi": "",
+    "en": "",
+    "sv": ""
+  }
+
+    }
+,
+   "s15": {
+      "organization" : "o2",
+      "title" :   {
+    "fi": "Liikunta kunnan toiminnassa -tiedonkeruu",
+    "en": "Physical activity in the municipality. Data collection",
+    "sv": "Datainsamling om idrott och motion i kommunernas verksamhet"
+  }
+,
+      "description" :   {
+    "fi": "",
+    "en": "",
+    "sv": ""
+  }
+
+    }
+,
+   "s13": {
+      "organization" : "o2",
+      "title" :   {
+    "fi": "Terveydenedistämisaktiivisuus (TEA) perusterveydenhuollossa -tiedonkeruu",
+    "en": "Health promotion capacity building in primary health care. Data collection",
+    "sv": "Datainsamling om hälsofrämjande verksamhet (TEA) inom primärvården"
+  }
+,
+      "description" :   {
+    "fi": "",
+    "en": "",
+    "sv": ""
+  }
+
+    }
+,
+   "s655": {
+      "organization" : "o2",
+      "title" :   {
+    "fi": "Tupakkatilasto",
+    "en": "Tobacco statistics",
+    "sv": "Tobaksstatistik"
+  }
+,
+      "description" :   {
+    "fi": "Tupakkatilasto sisältää tietoja tupakan verollisesta ja verottomasta kulutuksesta, väestön tupakoinnista ja altistumisesta tupakansavulle.<br /><br><br><br />Tiedot verolliseen kulutukseen toimitetuista tupakkatuotteista perustuvat Tullihallituksen kuukausittaiseen tulli- ja valmisteverotilastoon. Verottomien savukkeiden kulutustiedot perustuvat TNS Gallupin haastattelututkimuksen \"Alkoholijuomien ja tupakkatuotteiden matkustajatuontiseuranta 2011\" yhteydessä kerättäviin tietoihin ulkomaanmatkoilta tuotujen savukkeiden määristä. <br />Tiedot väestön tupakoinnista ja tupakansavulle altistumisesta perustuvat Terveyden ja hyvinvoinnin laitoksen tutkimuksiin \"Suomalaisen aikuisväestön terveyskäyttäytyminen ja terveys\" (AVTK) ja \"Eläkeikäisen väestön terveyskäyttäytyminen ja terveys\", (EVTK).",
+    "en": "",
+    "sv": "Tobaksstatistiken innehåller information om den skattebelagda och skattefria konsumtionen av tobak, rökningen bland befolkningen och exponeringen för tobaksrök. <br /><br><br><br />Informationen om de tobaksprodukter som har levererats för skattebelagd konsumtion bygger på Tullstyrelsens månatliga statistik över tull och punktskatt. Konsumtionsuppgifterna om skattefria cigaretter bygger på den i samband med TNS Gallups intervjuundersökning 'Resenärsimport av alkoholdrycker och tobaksprodukter 2011' insamlade informationen om antalet cigaretter som har importerats vid utlandsresor. Uppgifterna om befolkningens rökvanor och exponeringen för tobaksrök bygger på Institutet för hälsa och välfärds undersökningar 'Den finländska vuxenbefolkningens hälsobeteende och hälsa' (AVTK) och 'Den pensionerade befolkningens hälsobeteende och hälsa' (EVTK)."
+  }
+
+    }
+,
+   "s656": {
+      "organization" : "o2",
+      "title" :   {
+    "fi": "Suomalaisten rahapelaaminen",
+    "en": "Finnish gambling",
+    "sv": "Finländarnas penningspel"
+  }
+,
+      "description" :   {
+    "fi": "",
+    "en": "",
+    "sv": ""
+  }
+
+    }
+,
+   "s454": {
+      "organization" : "o5",
+      "title" :   {
+    "fi": "Tilasto Kelan työttömyysturvasta",
+    "en": "Statistics on unemployment-related benefits provided by Kela",
+    "sv": "Statistik över arbetslöshetsförmåner från FPA"
+  }
+,
+      "description" :   {
+    "fi": "",
+    "en": "",
+    "sv": ""
+  }
+
+    }
+,
+   "s68": {
+      "organization" : "o3",
+      "title" :   {
+    "fi": "Kuolleisuus",
+    "en": "Mortality",
+    "sv": "Dödlighet"
+  }
+,
+      "description" :   {
+    "fi": "Tilastokeskus tekee tilastoa kuolemansyistä ja kuolleisuuden kehityksestä. Kuolemansyytilasto perustuu kuolintodistuksen tietoihin, joita täydennetään väestörekisterikeskuksen väestötietojärjestelmän tiedoilla.<br />Kuolemansyytilastossa ovat mukana kalenterivuoden aikana Suomessa tai ulkomailla kuolleet, joilla kuolinhetkellä oli kotipaikka Suomessa.",
+    "en": "",
+    "sv": ""
+  }
+
+    }
+,
+   "s10": {
+      "organization" : "o2",
+      "title" :   {
+    "fi": "Toimeentulotukihakemusten käsittelyajat",
+    "en": "Processing times for social assistance applications",
+    "sv": "Behandlingstider för ansökningar om utkomststöd"
+  }
+,
+      "description" :   {
+    "fi": "Toimeentulotuen käsittelyaikatiedot saadaan tilastosta, joka sisältää kunnista kerättyjä tietoja toimeentulotukilakiin liittyvien lakisääteisten kuntavelvoitteiden toteutumisesta. Velvoitteet koskevat toimeentulotukihakemusten ja niihin liittyvien lakisääteisten käsittelyaikojen sekä henkilökohtaiseen keskusteluun pääsyn määräaikojen toteutumista. Seuranta-ajanjaksoina ovat huhtikuu ja lokakuu. Tiedot julkaistaan kesäkuussa ja joulukuussa. ",
+    "en": "Data on the processing times for social assistance applications are derived from municipal statistics on compliance with statutory requirements imposed on local authorities under the Act on Social Assistance. These requirements have to do with the statutory maximum processing times for social assistance applications and for gaining access to a personal consultation. The statistics are monitored for April and October each year, and the data are published in June and December, respectively.",
+    "sv": "Uppgifterna om behandlingstider för ansökningar om utkomststöd kan hämtas från statistiken som innefattar uppgifter om de lagstadgade kommunförpliktelserna i anslutning till lagen om utkomststöd som samlats in från kommunerna. Förpliktelserna gäller iakttagandet av tidsfristerna för ansökningarna om utkomststöd och de lagstadgade handläggningstiderna för dessa samt hur möjligheterna för ett personligt samtal förverkligas. Uppföljningsperioderna är april och oktober. Uppgifterna publiceras i juni och december."
+  }
+
+    }
+,
+   "s204": {
+      "organization" : "o3",
+      "title" :   {
+    "fi": "Kunnan / kuntayhtymän sosiaalipalvelujen toimintatilasto",
+    "en": "Statistics on the activities of social services of municipalities/joint municipal boards",
+    "sv": "Statistik över kommunernas/samkommunernas verksamhet inom sociala tjänster"
+  }
+,
+      "description" :   {
+    "fi": "Tilastokeskus kerää vuosittain kunnilta tietoja niiden toiminnasta ja taloudesta. Tilasto koskee kunnan kustantamia palveluja eli palveluita, jotka kunta on asukkailleen joko itse tuottanut tai ostanut muilta kunnilta, kuntayhtymiltä, valtiolta tai yksityisiltä palveluntuottajilta. Sosiaali- ja terveydenhuollon toimintatilastoa on tässä yhteydessä kerätty vuodesta 1994 lähtien Stakesin toimeksiannosta ja vuoden 2009 alusta Terveyden ja hyvinvoinnin laitoksen (Stakesin ja KTL:n fuusio) toimeksiannosta. Tilastoa edelsi vuoteen 1993 asti sosiaali- ja terveydenhuollon kertomustietojärjestelmä (KETI), jota ylläpiti sosiaali- ja terveysministeriö.",
+    "en": "Statistics Finland gathers information on municipal finances and activities on a yearly basis. The statistics contain information on municipally-funded services, that is, services that the municipality provides itself to its inhabitants or purchases from other municipalities, municipal federations, the state or private providers. In this context, Statistics on Social Welfare and Health Care Activities have been compiled since 1994 by order of STAKES and, as of the beginning of 2009, by order of the National Institute for Health and Welfare (the result of a merger between STAKES and KTL). A predecessor to these statistics was a report system for social welfare and health care, maintained by the Ministry of Social Affairs and Health until 1993.",
+    "sv": "Varje år samlar Statistikcentralen in uppgifter från kommunerna om deras verksamhet och ekonomi. Statistiken gäller tjänster som kommunen finansierar, dvs. tjänster som kommunen antingen producerar i egen regi eller köper av andra kommuner, samkommuner, staten eller privata serviceproducenter för sina invånare. I samband med detta sammanställs statistik över verksamheten inom social-, hälso- och sjukvården på uppdrag av Stakes sedan 1994 och på uppdrag av Institutet för hälsa och välfärd (efter sammanslagningen av Stakes och KTL) sedan början av år 2009. Statistiken föregicks fram till 1993 av social- och hälsovårdens verksamhetsberättelsesystem (KETI), som upprätthölls av social- och hälsovårdsministeriet."
+  }
+
+    }
+,
+   "s190": {
+      "organization" : "o2",
+      "title" :   {
+    "fi": "Sosiaali- ja terveydenhuollon tilastotietokanta Sotkanet.fi",
+    "en": "Municipal Database for Social and Health Statistics in Finland (Sotkanet.fi)",
+    "sv": "Statistika databasen för social- och hälsovården (Sotkanet.fi)"
+  }
+,
+      "description" :   {
+    "fi": "Sosiaali- ja terveydenhuollon tilastotietokantaan eli Sotkanetiin kootaan eri tahojen tuottamaa sosiaali- ja terveydenhuollon tilastotietoa sekä tunnuslukuja. Kuntakohtaiset tiedot kuvaavat muun muassa kunnan taloutta, väestöä, perheitä ja asumista sekä sosiaali- ja terveydenhuollon työvoimaa, kustannuksia ja palvelujen käyttöä.",
+    "en": "The Municipal Database for Social and Health Statistics (Sotkanet.fi) contains statistical data and indicators collected from different sources. Municipality-specific data concerns various themes, including municipal finances, population, families, housing, social and health care personnel, expenditure and use of services.",
+    "sv": "I den statistiska databasen för social- och hälsovården, dvs. Sotkanet.fi lagras social- och hälsovårdsdata och olika nyckeltal som producerats på olika håll. De kommunvisa uppgifterna innehåller data om bl.a. kommunens ekonomi, befolkning, familjer och boende samt personalen inom social- och hälsovården, utgifter och utnyttjandet av olika tjänster."
+  }
+
+    }
+,
+   "s576": {
+      "organization" : "o2",
+      "title" :   {
+    "fi": "Alueellinen terveys- ja hyvinvointitutkimus (ATH)",
+    "en": "Regional Health and Well-being Study (ATH)",
+    "sv": "Den regionala hälso- och välfärdsundersökningen (ATH)"
+  }
+,
+      "description" :   {
+    "fi": "Alueellinen terveys- ja hyvinvointitutkimus (ATH) on Terveyden ja hyvinvoinnin laitoksen (THL) vuonna 2010 käynnistämä laaja terveys- ja hyvinvointitutkimus, joka toteutetaan 1 - 4 vuoden välein alueiden ja kansallisten tarpeiden mukaan.",
+    "en": "The Regional Health and Well-being Study (ATH) is an extensive survey initiated by the National Institute for Health and Welfare (THL) in 2010 to be conducted regularly at an interval of 1 to 4 years according to regional and national needs.",
+    "sv": "Den regionala hälso- och välfärdsundersökningen (ATH) är en omfattande hälso- och välfärdsundersökning som inleddes av Institutet för hälsa och välfärd (THL) och som genomförs med 14 års intervall enligt de regionala och nationella behoven."
+  }
+
+    }
+ }
+}

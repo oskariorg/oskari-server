@@ -123,6 +123,20 @@ public class RouteParser {
     private static final String PARAM_LEGS_STEPS = "steps";
     private static final String PARAM_LEGS_STEPS_LON = "lon";
     private static final String PARAM_LEGS_STEPS_LAT = "lat";
+    private static final String PARAM_LEG_STOPS = "intermediateStops";
+
+    private static final String PARAM_LEG_STOP_NAME = "name";
+    private static final String PARAM_LEG_STOP_STOPID = "stopId";
+    private static final String PARAM_LEG_STOP_STOPCODE = "stopCode";
+    private static final String PARAM_LEG_STOP_LON = "lon";
+    private static final String PARAM_LEG_STOP_LAT = "lat";
+    private static final String PARAM_LEG_STOP_ARRIVAL = "arrival";
+    private static final String PARAM_LEG_STOP_DEPARTURE = "departure";
+    private static final String PARAM_LEG_STOP_ZONEID = "zoneId";
+    private static final String PARAM_LEG_STOP_STOPINDEX = "stopIndex";
+    private static final String PARAM_LEG_STOP_STOPSEQUENCE = "stopSequence";
+    private static final String PARAM_LEG_STOP_VERTEXTYPE = "vertexType";
+
 
     private static final Boolean FORCE_XY = ConversionHelper.getBoolean(PropertyUtil.get("routing.forceXY", "false"),false);
 
@@ -413,6 +427,42 @@ public class RouteParser {
 
                 legJSON.put(PARAM_LEGS_STEPS, stepsJSON);
 
+                // Intermediate stops
+                List<IntermediateStop> stops = leg.getIntermediateStops();
+                JSONArray stopsJSON = new JSONArray();
+                for (IntermediateStop intermediateStop : stops) {
+                    JSONObject stopJSON = new JSONObject();
+                    // convert coordinates
+                    if (intermediateStop.getLat() != null && intermediateStop.getLon() != null) {
+                        Point stopPoint;
+                        if (!FORCE_XY) {
+                            stopPoint = ProjectionHelper.transformPoint(intermediateStop.getLat(), intermediateStop.getLon(), sourceSRS, targetSRS);
+                            stopJSON.put(PARAM_LEG_STOP_LON, stopPoint.getLon());
+                            stopJSON.put(PARAM_LEG_STOP_LAT, stopPoint.getLat());
+
+                        } else {
+                            stopPoint = ProjectionHelper.transformPoint(intermediateStop.getLon(), intermediateStop.getLat(), sourceSRS, targetSRS);
+                            stopJSON.put(PARAM_LEG_STOP_LON, stopPoint.getLat());
+                            stopJSON.put(PARAM_LEG_STOP_LAT, stopPoint.getLon());
+                        }
+
+                    }
+
+                    stopJSON.put(PARAM_LEG_STOP_NAME, intermediateStop.getName());
+                    stopJSON.put(PARAM_LEG_STOP_STOPID, intermediateStop.getStopId());
+                    stopJSON.put(PARAM_LEG_STOP_STOPCODE, intermediateStop.getStopCode());
+                    stopJSON.put(PARAM_LEG_STOP_ARRIVAL, intermediateStop.getArrival());
+                    stopJSON.put(PARAM_LEG_STOP_DEPARTURE, intermediateStop.getDeparture());
+                    stopJSON.put(PARAM_LEG_STOP_ZONEID, intermediateStop.getZoneId());
+                    stopJSON.put(PARAM_LEG_STOP_STOPINDEX, intermediateStop.getStopIndex());
+                    stopJSON.put(PARAM_LEG_STOP_STOPSEQUENCE, intermediateStop.getStopSequence());
+                    stopJSON.put(PARAM_LEG_STOP_VERTEXTYPE, intermediateStop.getVertexType());
+
+                    stopsJSON.put(stopJSON);
+                }
+
+                legJSON.put(PARAM_LEG_STOPS, stopsJSON);
+
                 legsJSON.put(legJSON);
             }
         } catch (JSONException ex){
@@ -519,6 +569,8 @@ public class RouteParser {
 
         return feature;
     }
+
+
 
     /**
      * Decode Google encoded polyline to points

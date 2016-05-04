@@ -93,7 +93,7 @@ public class What3WordsSearchChannel extends SearchChannel {
 
             searchResultList.addItem(item);
         } catch (Exception e) {
-            LOG.error(e, "Failed to search locations from register of OpenStreetMap");
+            LOG.error(e, "Failed to search locations from register of What3Words");
         }
         return searchResultList;
     }
@@ -143,7 +143,7 @@ public class What3WordsSearchChannel extends SearchChannel {
         final boolean reverseCoordinates = "true".equalsIgnoreCase(System.getProperty("org.geotools.referencing.forceXY"));
 
         final SearchResultItem item = new SearchResultItem();
-        item.setType("3 words");
+        item.setType("what3words");
         final JSONArray words = JSONHelper.getJSONArray(dataItem, "words");
         String title = words.join(".").replaceAll("\"", "");
         item.setTitle(title);

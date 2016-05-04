@@ -1,0 +1,2362 @@
+[
+  {
+        "fi" : "toimenpiteelliset hoitojaksot",
+        "sv" : "vårdperioder med åtgärder",
+        "en" : "periods of care with procedures"
+  }
+,
+  {
+        "fi" : "turvakodit",
+        "sv" : "skyddshem",
+        "en" : "shelters for battered family members"
+  }
+,
+  {
+        "fi" : "työlliset",
+        "sv" : "sysselsatta",
+        "en" : "employed people"
+  }
+,
+  {
+        "fi" : "ulkomaalaiset",
+        "sv" : "utlänningar",
+        "en" : "foreign nationals"
+  }
+,
+  {
+        "fi" : "valtionosuudet",
+        "sv" : "statsandelar",
+        "en" : "central government grants to municipalities"
+  }
+,
+  {
+        "fi" : "vammaisetuudet",
+        "sv" : "handikappförmåner",
+        "en" : "disability benefits"
+  }
+,
+  {
+        "fi" : "vammaisten laitospalvelut",
+        "sv" : "institutionsvård för funktionshindrade",
+        "en" : "institutional services for disabled people"
+  }
+,
+  {
+        "fi" : "vammaisten työllistämistoiminta",
+        "sv" : "sysselsättning av funktionshindrade",
+        "en" : "sheltered work for disabled people"
+  }
+,
+  {
+        "fi" : "vanhainkodit",
+        "sv" : "ålderdomshem",
+        "en" : "residential homes for older people"
+  }
+,
+  {
+        "fi" : "verotulot",
+        "sv" : "skatteinkomster",
+        "en" : "tax revenue"
+  }
+,
+  {
+        "fi" : "vuosikate",
+        "sv" : "årsbidrag",
+        "en" : "annual contribution margin"
+  }
+,
+  {
+        "fi" : "väestönmuutokset",
+        "sv" : "befolkningsförändringar",
+        "en" : "population changes"
+  }
+,
+  {
+        "fi" : "väestöntiheys",
+        "sv" : "folktäthet",
+        "en" : "population density"
+  }
+,
+  {
+        "fi" : "väestö 1-vuotisikäryhmittäin",
+        "sv" : "befolkningen per 1-års åldersgrupper",
+        "en" : "population by one-year age group"
+  }
+,
+  {
+        "fi" : "väestö 5-vuotisikäryhmittäin",
+        "sv" : "befolkningen per 5-års åldersgrupper",
+        "en" : "population by five-year age group"
+  }
+,
+  {
+        "fi" : "väestö 10-vuotisikäryhmittäin",
+        "sv" : "befolkningen per 10-års åldersgrupper",
+        "en" : "population by ten-year age group"
+  }
+,
+  {
+        "fi" : "erikoissairaanhoidon avohoito",
+        "sv" : "oppenvård inom den specialiserade sjukvården",
+        "en" : "outpatient specialised health care"
+  }
+,
+  {
+        "fi" : "nettokustannukset",
+        "sv" : "nettokostnader",
+        "en" : "net expenditure"
+  }
+,
+  {
+        "fi" : "palvelu- ja tukiasunnot",
+        "sv" : "service- och stödbostäder",
+        "en" : "sheltered and supported housing"
+  }
+,
+  {
+        "fi" : "perhehoito",
+        "sv" : "familjevård",
+        "en" : "family care"
+  }
+,
+  {
+        "fi" : "perusterveydenhuollon vuodeosastohoito",
+        "sv" : "slutenvård inom primärvården",
+        "en" : "inpatient primary health care"
+  }
+,
+  {
+        "fi" : "lastenhoidon tuet",
+        "sv" : "barnavårdsstöd",
+        "en" : "child day care subsidies"
+  }
+,
+  {
+        "fi" : "pinta-ala",
+        "sv" : "areal",
+        "en" : "surface area"
+  }
+,
+  {
+        "fi" : "psykiatrian laitoshoito",
+        "sv" : "psykiatrisk institutionsvård",
+        "en" : "psychiatric inpatient care"
+  }
+,
+  {
+        "fi" : "psykiatriset kuntoutuskodit",
+        "sv" : "psykiatriska rehabiliteringshem",
+        "en" : "psychiatric rehabilitation homes"
+  }
+,
+  {
+        "fi" : "psykoosi",
+        "sv" : "psykos",
+        "en" : "psychosis"
+  }
+,
+  {
+        "fi" : "päihdehuollon asumispalveluyksiköt",
+        "sv" : "missbrukarvårdens boendeserviceenheter",
+        "en" : "housing service units for substance abusers"
+  }
+,
+  {
+        "fi" : "päihdehuollon avohoito",
+        "sv" : "öppenvård inom missbrukarvården",
+        "en" : "community-based care for substance abusers"
+  }
+,
+  {
+        "fi" : "päihdehuollon ensisuojat",
+        "sv" : "missbrukarvårdens skyddshärbärgen",
+        "en" : "overnight shelters for substance abusers"
+  }
+,
+  {
+        "fi" : "päihdehuollon kuntoutuslaitokset",
+        "sv" : "missbrukarvårdens rehabiliteringsinrättningar",
+        "en" : "rehabilitation centres for substance abusers"
+  }
+,
+  {
+        "fi" : "päihdehuollon laitokset",
+        "sv" : "institution för missbrukarvård",
+        "en" : "institutions for substance abusers"
+  }
+,
+  {
+        "fi" : "päihdehuollon laitoshoito",
+        "sv" : "institutionsvård inom missbrukarvården",
+        "en" : "institutional care for substance abusers"
+  }
+,
+  {
+        "fi" : "päihdehuollon nuorisoasemat",
+        "sv" : "missbrukarvårdens ungdomsstationer",
+        "en" : "youth clinics for substance abusers"
+  }
+,
+  {
+        "fi" : "päiväkirurgia",
+        "sv" : "dagkirurgi",
+        "en" : "day surgery"
+  }
+,
+  {
+        "fi" : "ruotsinkielinen väestö",
+        "sv" : "svenskspråkig befolkning",
+        "en" : "swedish-speaking population"
+  }
+,
+  {
+        "fi" : "sairaanhoitokorvaukset",
+        "sv" : "sjukvårdsersättningar",
+        "en" : "reimbursement of medical expenses"
+  }
+,
+  {
+        "fi" : "somaattinen erikoissairaanhoito",
+        "sv" : "specialiserad somatisk vård",
+        "en" : "specialised somatic health care"
+  }
+,
+  {
+        "fi" : "sosiaalihuollon henkilöstö",
+        "sv" : "personal inom socialvården",
+        "en" : "social care personnel"
+  }
+,
+  {
+        "fi" : "sosiaali- ja terveydenhuollon henkilöstö",
+        "sv" : "personal inom socialvården och hälso- och sjukvården",
+        "en" : "social and health care personnel"
+  }
+,
+  {
+        "fi" : "sosiaalimenot",
+        "sv" : "sociala utgifter",
+        "en" : "social expenditure"
+  }
+,
+  {
+        "fi" : "sosiaalitulot",
+        "sv" : "sociala inkomster",
+        "en" : "social revenue"
+  }
+,
+  {
+        "fi" : "tehostettu palveluasuminen",
+        "sv" : "serviceboende med heldygnsomsorg",
+        "en" : "sheltered housing with 24-hour assistance"
+  }
+,
+  {
+        "fi" : "terveydenhuollon henkilöstö",
+        "sv" : "personal inom hälso- och sjukvården",
+        "en" : "health care personnel"
+  }
+,
+  {
+        "fi" : "väestöosuus ikäryhmittäin",
+        "sv" : "befolkningsandel efter åldersgrupp",
+        "en" : "population share by age group"
+  }
+,
+  {
+        "fi" : "lainakanta",
+        "sv" : "lånebestånd",
+        "en" : "loans"
+  }
+,
+  {
+        "fi" : "A-klinikat",
+        "sv" : "A-kliniker",
+        "en" : "A-clinics",
+        "uri" : "http://www.yso.fi/onto/yso/p10224"
+  }
+,
+  {
+        "fi" : "asumistuki",
+        "sv" : "bostadsbidrag",
+        "en" : "housing allowance",
+        "uri" : "http://www.yso.fi/onto/yso/p13997"
+  }
+,
+  {
+        "fi" : "avohoidon lääkärikäynnit",
+        "sv" : "läkarbesök inom öppenvården",
+        "en" : "outpatient physician visits"
+  }
+,
+  {
+        "fi" : "avohoidon muut kuin lääkärikäynnit",
+        "sv" : "andra än läkarbesök inom öppenvården",
+        "en" : "outpatient visits other than physician visits"
+  }
+,
+  {
+        "fi" : "avohoidon potilaat",
+        "sv" : "öppenvårdspatienter",
+        "en" : "outpatients"
+  }
+,
+  {
+        "fi" : "depressiolääkkeet",
+        "sv" : "antidepressiva",
+        "en" : "antidepressants",
+        "uri" : "http://www.yso.fi/onto/mesh/D000928"
+  }
+,
+  {
+        "fi" : "elinkeinorakenne",
+        "sv" : "näringsstruktur",
+        "en" : "industrial structure",
+        "uri" : "http://www.yso.fi/onto/yso/p7300"
+  }
+,
+  {
+        "fi" : "ensikodit",
+        "sv" : "mödrahem",
+        "en" : "mother-and-baby homes",
+        "uri" : "http://www.yso.fi/onto/yso/p16647"
+  }
+,
+  {
+        "fi" : "esiopetus",
+        "sv" : "förskoleundervisning",
+        "en" : "pre-primary education",
+        "uri" : "http://www.yso.fi/onto/yso/p20272"
+  }
+,
+  {
+        "fi" : "hammashuollon käynnit",
+        "sv" : "tandläkarbesök",
+        "en" : "dentist visits"
+  }
+,
+  {
+        "fi" : "investoinnit",
+        "sv" : "investeringar",
+        "en" : "investments",
+        "uri" : "http://www.yso.fi/onto/yso/p4320"
+  }
+,
+  {
+        "fi" : "ikääntyneiden laitoshoito",
+        "sv" : "institutionsvård för äldre",
+        "en" : "institutional care for older people"
+  }
+,
+  {
+        "fi" : "katkaisuhoitoasemat",
+        "sv" : "akutvårdsstationer",
+        "en" : "detoxification centres",
+        "uri" : "http://www.yso.fi/onto/ysa/Y95976"
+  }
+,
+  {
+        "fi" : "kehitysvammaisten asumispalvelut",
+        "sv" : "boendeservice för personer med utvecklingsstörning",
+        "en" : "housing services for people with intellectual disabilities"
+  }
+,
+  {
+        "fi" : "kuntaryhmitys",
+        "sv" : "kommungruppering",
+        "en" : "grouping into municipalities",
+        "uri" : "http://www.yso.fi/onto/yso/p10509"
+  }
+,
+  {
+        "fi" : "käyttökustannukset",
+        "sv" : "driftkostnader",
+        "en" : "operating expenditure"
+  }
+,
+  {
+        "fi" : "käyttötuotot",
+        "sv" : "driftintäkter",
+        "en" : "operating revenue"
+  }
+,
+  {
+        "fi" : "lähetteet",
+        "sv" : "remisser",
+        "en" : "referrals",
+        "uri" : "http://www.yso.fi/onto/yso/p10313"
+  }
+,
+  {
+        "fi" : "kouluolot",
+        "sv" : "skolarbete",
+        "en" : "school physical environment"
+  }
+,
+  {
+        "fi" : "kouluterveys",
+        "sv" : "hälsa i skolan",
+        "en" : "school health",
+        "uri" : "http://www.yso.fi/onto/tero/T01038"
+  }
+,
+  {
+        "fi" : "vanhemmuus",
+        "sv" : "föräldraskap",
+        "en" : "parenthood"
+  }
+,
+  {
+        "fi" : "sosiaaliset suhteet",
+        "sv" : "sociala kontakter",
+        "en" : "social relations"
+  }
+,
+  {
+        "fi" : "elämänhallinta",
+        "sv" : "förmåga att klara olika livssituationer",
+        "en" : "life management",
+        "uri" : "http://www.yso.fi/onto/yso/p4357"
+  }
+,
+  {
+        "fi" : "oireet",
+        "sv" : "symtom",
+        "en" : "symptoms"
+  }
+,
+  {
+        "fi" : "huumeet",
+        "sv" : "narkotika",
+        "en" : "drugs",
+        "uri" : "http://www.yso.fi/onto/yso/p10618"
+  }
+,
+  {
+        "fi" : "terveyskäyttäytyminen",
+        "sv" : "hälsobeteende",
+        "en" : "health behaviour"
+  }
+,
+  {
+        "fi" : "terveystottumukset",
+        "sv" : "hälsovanor",
+        "en" : "health habits"
+  }
+,
+  {
+        "fi" : "erikoissairaanhoito",
+        "sv" : "specialiserad sjukvård",
+        "en" : "specialised health care",
+        "uri" : "http://www.yso.fi/onto/yso/p2806"
+  }
+,
+  {
+        "fi" : "väestöennuste",
+        "sv" : "befolkningsprognos",
+        "en" : "population projection"
+  }
+,
+  {
+        "fi" : "huoltosuhde",
+        "sv" : "demografisk försörjningskvot",
+        "en" : "demographic dependency ratio",
+        "uri" : "http://www.yso.fi/onto/yso/p9061"
+  }
+,
+  {
+        "fi" : "koulutus",
+        "sv" : "utbildning",
+        "en" : "education and training",
+        "uri" : "http://www.yso.fi/onto/yso/p84"
+  }
+,
+  {
+        "fi" : "elatussuhde",
+        "sv" : "ekonomisk försörjningskvot",
+        "en" : "economic dependency ratio"
+  }
+,
+  {
+        "fi" : "äidinkieli",
+        "sv" : "modersmål",
+        "en" : "native language"
+  }
+,
+  {
+        "fi" : "kuolleisuus",
+        "sv" : "dödlighet",
+        "en" : "mortality",
+        "uri" : "http://www.yso.fi/onto/yso/p5003"
+  }
+,
+  {
+        "fi" : "avioerot",
+        "sv" : "skilsmässor",
+        "en" : "divorces",
+        "uri" : "http://www.yso.fi/onto/ysa/Y94835"
+  }
+,
+  {
+        "fi" : "kehitysvammapalvelut",
+        "sv" : "service för personer med utvecklingsstörning",
+        "en" : "services for people with intellectual disabilities",
+        "uri" : "http://www.yso.fi/onto/ysa/Y96048"
+  }
+,
+  {
+        "fi" : "vammaispalvelut",
+        "sv" : "handikappservice",
+        "en" : "services for disabled people"
+  }
+,
+  {
+        "fi" : "lasten päivähoito",
+        "sv" : "barndagvård",
+        "en" : "child day care",
+        "uri" : "http://www.yso.fi/onto/koko/p58117"
+  }
+,
+  {
+        "fi" : "asumispalvelut",
+        "sv" : "boendeservice",
+        "en" : "housing services",
+        "uri" : "http://www.yso.fi/onto/yso/p6472"
+  }
+,
+  {
+        "fi" : "hoitoaika",
+        "sv" : "vårdtid",
+        "en" : "length of stay"
+  }
+,
+  {
+        "fi" : "kustannukset",
+        "sv" : "kostnader",
+        "en" : "costs",
+        "uri" : "http://www.yso.fi/onto/yso/p7517"
+  }
+,
+  {
+        "fi" : "tulot",
+        "sv" : "inkomster",
+        "en" : "income"
+  }
+,
+  {
+        "fi" : "menot",
+        "sv" : "utgifter",
+        "en" : "expenditure",
+        "uri" : "http://www.yso.fi/onto/yso/p3888"
+  }
+,
+  {
+        "fi" : "sosiaali- ja terveystoimi",
+        "sv" : "social- och hälsoförvaltning",
+        "en" : "municipal health and social sector"
+  }
+,
+  {
+        "fi" : "työkyky",
+        "sv" : "arbetsförmåga",
+        "en" : "work ability"
+  }
+,
+  {
+        "fi" : "työolot",
+        "sv" : "arbetsförhållanden",
+        "en" : "workplace conditions"
+  }
+,
+  {
+        "fi" : "työterveys",
+        "sv" : "arbetshygien",
+        "en" : "occupational health"
+  }
+,
+  {
+        "fi" : "sosiaalitoimi",
+        "sv" : "socialförvaltning",
+        "en" : "municipal social sector"
+  }
+,
+  {
+        "fi" : "elatustuki",
+        "sv" : "underhållsstöd",
+        "en" : "child maintenance allowance",
+        "uri" : "http://www.yso.fi/onto/yso/p15745"
+  }
+,
+  {
+        "fi" : "avopalvelut",
+        "sv" : "öppenvårdstjänster",
+        "en" : "non-institutional services",
+        "uri" : "http://www.yso.fi/onto/yso/p7086"
+  }
+,
+  {
+        "fi" : "palveluasuminen",
+        "sv" : "boendeservice",
+        "en" : "sheltered housing"
+  }
+,
+  {
+        "fi" : "avohuolto",
+        "sv" : "öppenvård",
+        "en" : "community-based care",
+        "uri" : "http://www.yso.fi/onto/yso/p7726"
+  }
+,
+  {
+        "fi" : "hammashuolto",
+        "sv" : "tandvård",
+        "en" : "dental care",
+        "uri" : "http://www.yso.fi/onto/yso/p18280"
+  }
+,
+  {
+        "fi" : "pitkäaikaissairaus",
+        "sv" : "långvarig sjukdom",
+        "en" : "chronic disease"
+  }
+,
+  {
+        "fi" : "sairausvakuutus",
+        "sv" : "sjukförsäkring",
+        "en" : "health insurance"
+  }
+,
+  {
+        "fi" : "lääkekorvaus",
+        "sv" : "läkemedelsersättning",
+        "en" : "medicine reimbursement",
+        "uri" : "http://www.yso.fi/onto/mesh/D007356"
+  }
+,
+  {
+        "fi" : "yksityiset palvelut",
+        "sv" : "privata tjänster",
+        "en" : "private services"
+  }
+,
+  {
+        "fi" : "toimintakyky",
+        "sv" : "funktionsförmåga",
+        "en" : "functioning"
+  }
+,
+  {
+        "fi" : "työllisen ajan odote",
+        "sv" : "förväntad tid i arbete",
+        "en" : "work life expectancy"
+  }
+,
+  {
+        "fi" : "diabetes",
+        "sv" : "diabetes",
+        "en" : "diabetes",
+        "uri" : "http://www.yso.fi/onto/yso/p8304"
+  }
+,
+  {
+        "fi" : "sterilointi",
+        "sv" : "sterilisering",
+        "en" : "sterilisation"
+  }
+,
+  {
+        "fi" : "astma",
+        "sv" : "astma",
+        "en" : "asthma",
+        "uri" : "http://www.yso.fi/onto/yso/p19468"
+  }
+,
+  {
+        "fi" : "epilepsia",
+        "sv" : "epilepsi",
+        "en" : "epilepsy",
+        "uri" : "http://www.yso.fi/onto/yso/p9413"
+  }
+,
+  {
+        "fi" : "kotihoito",
+        "sv" : "hemvård",
+        "en" : "home care",
+        "uri" : "http://www.yso.fi/onto/yso/p5513"
+  }
+,
+  {
+        "fi" : "omaishoidon tuki",
+        "sv" : "stöd för närståendevård",
+        "en" : "support for informal care"
+  }
+,
+  {
+        "fi" : "kuljetuspalvelut",
+        "sv" : "färdtjänst",
+        "en" : "transport services",
+        "uri" : "http://www.yso.fi/onto/yso/p1992"
+  }
+,
+  {
+        "fi" : "henkilökohtainen avustaja",
+        "sv" : "personlig hjälpare",
+        "en" : "personal assistant"
+  }
+,
+  {
+        "fi" : "tulkkipalvelut",
+        "sv" : "tolktjänst",
+        "en" : "interpreter services"
+  }
+,
+  {
+        "fi" : "kasvatus- ja perheneuvonta",
+        "sv" : "uppfostrings- och familjerådgivning",
+        "en" : "child guidance and family counselling",
+        "uri" : "http://www.yso.fi/onto/tero/TNR647"
+  }
+,
+  {
+        "fi" : "lasten kokopäivähoito",
+        "sv" : "heldagsvård",
+        "en" : "full-time day care"
+  }
+,
+  {
+        "fi" : "lasten osapäivähoito",
+        "sv" : "halvdagsvård",
+        "en" : "part-time day care"
+  }
+,
+  {
+        "fi" : "päiväkotihoito",
+        "sv" : "daghemsvård",
+        "en" : "child day-care centres"
+  }
+,
+  {
+        "fi" : "perhepäivähoito",
+        "sv" : "familjedagvård",
+        "en" : "family day care"
+  }
+,
+  {
+        "fi" : "osavuorokautinen hoito",
+        "sv" : "dag- eller nattvård",
+        "en" : "care during night or day"
+  }
+,
+  {
+        "fi" : "henkilöstö",
+        "sv" : "personal",
+        "en" : "personnel"
+  }
+,
+  {
+        "fi" : "perhetyyppi",
+        "sv" : "familjetyp",
+        "en" : "family type"
+  }
+,
+  {
+        "fi" : "kotitaloustyyppi",
+        "sv" : "hushållstyp",
+        "en" : "household type"
+  }
+,
+  {
+        "fi" : "päihdeavainindikaattorit",
+        "sv" : "nyckelindikatorer för alkohol och andra droger",
+        "en" : "key indicators on alcohol and drugs"
+  }
+,
+  {
+        "fi" : "pakkotoimet",
+        "sv" : "tvångsåtgärder",
+        "en" : "compulsory treatment"
+  }
+,
+  {
+        "fi" : "asunnottomuus",
+        "sv" : "hemlöshet",
+        "en" : "homelessness",
+        "uri" : "http://www.yso.fi/onto/yso/p10735"
+  }
+,
+  {
+        "fi" : "itsemurhat",
+        "sv" : "självmord",
+        "en" : "suicides",
+        "uri" : "http://www.yso.fi/onto/yso/p15369"
+  }
+,
+  {
+        "fi" : "pienituloisuus",
+        "sv" : "låga inkomster",
+        "en" : "low incomes"
+  }
+,
+  {
+        "fi" : "väestörakenne",
+        "sv" : "befolkningsstruktur",
+        "en" : "demographic structure"
+  }
+,
+  {
+        "fi" : "maksuhäiriöt",
+        "sv" : "betalningssvårigheter",
+        "en" : "payment defaults"
+  }
+,
+  {
+        "fi" : "asuminen",
+        "sv" : "boende",
+        "en" : "housing",
+        "uri" : "http://www.yso.fi/onto/yso/p1797"
+  }
+,
+  {
+        "fi" : "asuntokunnat",
+        "sv" : "bostadshushåll",
+        "en" : "household-dwelling units",
+        "uri" : "http://www.yso.fi/onto/yso/p8561"
+  }
+,
+  {
+        "fi" : "avohoito",
+        "sv" : "öppenvård",
+        "en" : "outpatient care",
+        "uri" : "http://www.yso.fi/onto/yso/p7727"
+  }
+,
+  {
+        "fi" : "elintavat",
+        "sv" : "levnadsvanor",
+        "en" : "living habits",
+        "uri" : "http://www.yso.fi/onto/yso/p5530"
+  }
+,
+  {
+        "fi" : "eläkkeet",
+        "sv" : "pensioner",
+        "en" : "pensions",
+        "uri" : "http://www.yso.fi/onto/yso/p1263"
+  }
+,
+  {
+        "fi" : "erityiskorvausoikeus",
+        "sv" : "rätt till specialersättning",
+        "en" : "entitlement to special refunds"
+  }
+,
+  {
+        "fi" : "hedelmällisyys",
+        "sv" : "fertilitet",
+        "en" : "fertility",
+        "uri" : "http://www.yso.fi/onto/yso/p19514"
+  }
+,
+  {
+        "fi" : "ikääntyvien palvelut",
+        "sv" : "service inom äldreomsorgen",
+        "en" : "care and services for older people"
+  }
+,
+  {
+        "fi" : "kansaneläke",
+        "sv" : "folkpension",
+        "en" : "national pension",
+        "uri" : "http://www.yso.fi/onto/koko/p35091"
+  }
+,
+  {
+        "fi" : "kodinhoitoapu",
+        "sv" : "hemvårdshjälp",
+        "en" : "home help",
+        "uri" : "http://www.yso.fi/onto/yso/p11496"
+  }
+,
+  {
+        "fi" : "koettu terveys",
+        "sv" : "upplevd hälsa",
+        "en" : "perceived health",
+        "uri" : "http://www.yso.fi/onto/yso/p21377"
+  }
+,
+  {
+        "fi" : "kotipalvelut",
+        "sv" : "hemservice",
+        "en" : "home-help services",
+        "uri" : "http://www.yso.fi/onto/yso/p17096"
+  }
+,
+  {
+        "fi" : "kotisairaanhoito",
+        "sv" : "hemsjukvård",
+        "en" : "home nursing",
+        "uri" : "http://www.yso.fi/onto/yso/p11868"
+  }
+,
+  {
+        "fi" : "kouluterveydenhuolto",
+        "sv" : "skolhälsovård",
+        "en" : "school health care",
+        "uri" : "http://www.yso.fi/onto/yso/p11770"
+  }
+,
+  {
+        "fi" : "kuntoutus",
+        "sv" : "rehabilitering",
+        "en" : "rehabilitation",
+        "uri" : "http://www.yso.fi/onto/yso/p3320"
+  }
+,
+  {
+        "fi" : "laitoshoito",
+        "sv" : "institutionsvård",
+        "en" : "institutional care",
+        "uri" : "http://www.yso.fi/onto/yso/p1308"
+  }
+,
+  {
+        "fi" : "lastensuojelu",
+        "sv" : "barnskydd",
+        "en" : "child welfare",
+        "uri" : "http://www.yso.fi/onto/yso/p2289"
+  }
+,
+  {
+        "fi" : "lihavuus",
+        "sv" : "fetma",
+        "en" : "obesity",
+        "uri" : "http://www.yso.fi/onto/yso/p823"
+  }
+,
+  {
+        "fi" : "liikunta",
+        "sv" : "motion",
+        "en" : "physical activity",
+        "uri" : "http://www.yso.fi/onto/yso/p916"
+  }
+,
+  {
+        "fi" : "lääkärikäynnit",
+        "sv" : "läkarbesök",
+        "en" : "physician visits",
+        "uri" : "http://www.yso.fi/onto/tero/TNR2077"
+  }
+,
+  {
+        "fi" : "muuttoliike",
+        "sv" : "flyttningsrörelse",
+        "en" : "migration",
+        "uri" : "http://www.yso.fi/onto/yso/p6119"
+  }
+,
+  {
+        "fi" : "nuorisotyöttömyys",
+        "sv" : "arbetslösa ungdomar",
+        "en" : "unemployed young people"
+  }
+,
+  {
+        "fi" : "perheet",
+        "sv" : "familjer",
+        "en" : "families"
+  }
+,
+  {
+        "fi" : "perusterveydenhuolto",
+        "sv" : "primärvård",
+        "en" : "primary health care"
+  }
+,
+  {
+        "fi" : "psykiatria",
+        "sv" : "psykiatri",
+        "en" : "psychiatry"
+  }
+,
+  {
+        "fi" : "päihdehuolto",
+        "sv" : "missbrukarvård",
+        "en" : "specialised services for substance abusers"
+  }
+,
+  {
+        "fi" : "päihteet",
+        "sv" : "alkohol och andra droger",
+        "en" : "alcohol and drugs"
+  }
+,
+  {
+        "fi" : "raskaudenkeskeytys",
+        "sv" : "abort",
+        "en" : "induced abortion"
+  }
+,
+  {
+        "fi" : "rikokset",
+        "sv" : "brott",
+        "en" : "crimes"
+  }
+,
+  {
+        "fi" : "ruokatottumukset",
+        "sv" : "matvanor",
+        "en" : "eating habits"
+  }
+,
+  {
+        "fi" : "sairaalahoito",
+        "sv" : "sjukhusvård",
+        "en" : "hospital care"
+  }
+,
+  {
+        "fi" : "sairastavuus",
+        "sv" : "sjukfrekvens",
+        "en" : "morbidity"
+  }
+,
+  {
+        "fi" : "sairastavuusindeksi",
+        "sv" : "sjukfrekvensindex",
+        "en" : "morbidity index"
+  }
+,
+  {
+        "fi" : "sairauspäivärahat",
+        "sv" : "sjukdagpenning",
+        "en" : "sickness allowance"
+  }
+,
+  {
+        "fi" : "sijoitetut lapset ja nuoret",
+        "sv" : "placerade barn och ungdomar",
+        "en" : "placed children and young people"
+  }
+,
+  {
+        "fi" : "sukupuolitaudit",
+        "sv" : "könssjukdomar",
+        "en" : "sexually transmitted diseases"
+  }
+,
+  {
+        "fi" : "sydän- ja verisuonitaudit",
+        "sv" : "hjärt- och kärlsjukdomar",
+        "en" : "cardiovascular diseases"
+  }
+,
+  {
+        "fi" : "syntyvyys",
+        "sv" : "nativitet",
+        "en" : "birth rate"
+  }
+,
+  {
+        "fi" : "tapaturmat",
+        "sv" : "olycksfall",
+        "en" : "accidental injuries"
+  }
+,
+  {
+        "fi" : "toimeentulo",
+        "sv" : "utkomst",
+        "en" : "subsistence"
+  }
+,
+  {
+        "fi" : "toimeentulotuki",
+        "sv" : "utkomststöd",
+        "en" : "social assistance"
+  }
+,
+  {
+        "fi" : "toimeentuloturva",
+        "sv" : "utkomstskydd",
+        "en" : "cash benefits"
+  }
+,
+  {
+        "fi" : "tuki- ja liikuntaelinten sairaudet",
+        "sv" : "sjukdomar i muskuloskeletala systemet",
+        "en" : "musculoskeletal diseases"
+  }
+,
+  {
+        "fi" : "tupakointi",
+        "sv" : "rökning",
+        "en" : "smoking"
+  }
+,
+  {
+        "fi" : "työkyvyttömyyseläkkeet",
+        "sv" : "invalidpension",
+        "en" : "disability pensions"
+  }
+,
+  {
+        "fi" : "työttömyys",
+        "sv" : "arbetslöshet",
+        "en" : "unemployment"
+  }
+,
+  {
+        "fi" : "työttömät",
+        "sv" : "arbetslösa",
+        "en" : "unemployed people"
+  }
+,
+  {
+        "fi" : "vammat",
+        "sv" : "skador",
+        "en" : "injuries"
+  }
+,
+  {
+        "fi" : "yksinasuvat",
+        "sv" : "ensamboende",
+        "en" : "people living alone"
+  }
+,
+  {
+        "fi" : "yksinhuoltajaperheet",
+        "sv" : "ensamförsörjarfamiljer",
+        "en" : "single parent families"
+  }
+,
+  {
+        "fi" : "avohoidon käynnit",
+        "sv" : "öppenvårdsbesök",
+        "en" : "outpatient visits"
+  }
+,
+  {
+        "fi" : "palveluseteli",
+        "sv" : "servicesedel",
+        "en" : "service voucher"
+  }
+,
+  {
+        "fi" : "laboratoriotoiminta",
+        "sv" : "laboratorieverksamhet",
+        "en" : "laboratory services",
+        "uri" : "http://www.yso.fi/onto/ysa/Y96690"
+  }
+,
+  {
+        "fi" : "kuvantaminen",
+        "sv" : "bilddiagnostik",
+        "en" : "imaging",
+        "uri" : "http://www.yso.fi/onto/yso/p10182"
+  }
+,
+  {
+        "fi" : "työtyytyväisyys",
+        "sv" : "trivsel i arbetet",
+        "en" : "work satisfaction"
+  }
+,
+  {
+        "fi" : "stressi",
+        "sv" : "stress",
+        "en" : "stress"
+  }
+,
+  {
+        "fi" : "eläkkeelle siirtyminen",
+        "sv" : "gå i pension",
+        "en" : "retirement",
+        "uri" : "http://www.yso.fi/onto/yso/p4810"
+  }
+,
+  {
+        "fi" : "työterveyshuolto",
+        "sv" : "företagshälsovård",
+        "en" : "occupational health care"
+  }
+,
+  {
+        "fi" : "uni",
+        "sv" : "sömn",
+        "en" : "sleep"
+  }
+,
+  {
+        "fi" : "pakolaiset",
+        "sv" : "flyktingar",
+        "en" : "refugees"
+  }
+,
+  {
+        "fi" : "kokonaiseläke",
+        "sv" : "totalpension",
+        "en" : "overall pension"
+  }
+,
+  {
+        "fi" : "suun terveydenhuollon käynnit",
+        "sv" : "munhälsovårdsbesök",
+        "en" : "oral health care visits"
+  }
+,
+  {
+        "fi" : "suun terveydenhuolto",
+        "sv" : "munhälsovård",
+        "en" : "oral health care"
+  }
+,
+  {
+        "fi" : "neuvola",
+        "sv" : "rådgivningsbyrå",
+        "en" : "child health clinic"
+  }
+,
+  {
+        "fi" : "fysioterapia",
+        "sv" : "fysioterapi",
+        "en" : "physiotherapy",
+        "uri" : "http://www.yso.fi/onto/yso/p10515"
+  }
+,
+  {
+        "fi" : "perheneuvonta",
+        "sv" : "familjerådgivning",
+        "en" : "family counselling"
+  }
+,
+  {
+        "fi" : "alkoholi",
+        "sv" : "alkohol",
+        "en" : "alcohol",
+        "uri" : "http://www.yso.fi/onto/yso/p9143"
+  }
+,
+  {
+        "fi" : "abortti",
+        "sv" : "aborter",
+        "en" : "abortion",
+        "uri" : "http://www.yso.fi/onto/yso/p8751"
+  }
+,
+  {
+        "fi" : "psykoterapia",
+        "sv" : "psykoterapi",
+        "en" : "psychotherapy"
+  }
+,
+  {
+        "fi" : "väestö",
+        "sv" : "befolkning",
+        "en" : "population"
+  }
+,
+  {
+        "fi" : "tupakka",
+        "sv" : "tobak",
+        "en" : "tobacco"
+  }
+,
+  {
+        "fi" : "klamydiat",
+        "sv" : "klamydiainfektioner",
+        "en" : "chlamydia infection",
+        "uri" : "http://www.yso.fi/onto/yso/p13169"
+  }
+,
+  {
+        "fi" : "velkajärjestely",
+        "sv" : "skuldsanering",
+        "en" : "debt adjustment"
+  }
+,
+  {
+        "fi" : "velat",
+        "sv" : "skulder",
+        "en" : "liabilities"
+  }
+,
+  {
+        "fi" : "lähisuhdeväkivalta",
+        "sv" : "våld i närrelationen",
+        "en" : "domestic violence",
+        "uri" : "http://www.yso.fi/onto/tero/p5389"
+  }
+,
+  {
+        "fi" : "riita-asiat",
+        "sv" : "tvistemål",
+        "en" : "civil cases"
+  }
+,
+  {
+        "fi" : "rikossovittelu",
+        "sv" : "medling vid brott",
+        "en" : "conciliation in criminal cases"
+  }
+,
+  {
+        "fi" : "lääkärit",
+        "sv" : "läkare",
+        "en" : "physicians",
+        "uri" : "http://www.yso.fi/onto/yso/p6182"
+  }
+,
+  {
+        "fi" : "ylipaino",
+        "sv" : "övervikt",
+        "en" : "overweight"
+  }
+,
+  {
+        "fi" : "kotihoidon tuki",
+        "sv" : "hemvårdsstöd",
+        "en" : "child home care allowance",
+        "uri" : "http://www.yso.fi/onto/mesh/D000385"
+  }
+,
+  {
+        "fi" : "kuntoutusraha",
+        "sv" : "rehabiliteringspenning",
+        "en" : "rehabilitation grant",
+        "uri" : "http://www.yso.fi/onto/yso/p16117"
+  }
+,
+  {
+        "fi" : "ympäristö",
+        "sv" : "miljö",
+        "en" : "environment"
+  }
+,
+  {
+        "fi" : "koettu hyvinvointi",
+        "sv" : "upplevd välfärd",
+        "en" : "perceived well-being"
+  }
+,
+  {
+        "fi" : "elinolot",
+        "sv" : "levnadsförhållanden",
+        "en" : "living conditions",
+        "uri" : "http://www.yso.fi/onto/yso/p10761"
+  }
+,
+  {
+        "fi" : "terveydentila",
+        "sv" : "hälsotillstånd",
+        "en" : "health status"
+  }
+,
+  {
+        "fi" : "rahapelaaminen",
+        "sv" : "spel om pengar",
+        "en" : "gambling"
+  }
+,
+  {
+        "fi" : "kuppa",
+        "sv" : "gonorré",
+        "en" : "gonorrhea",
+        "uri" : "http://www.yso.fi/onto/yso/p16855"
+  }
+,
+  {
+        "fi" : "ikääntyneet",
+        "sv" : "äldre",
+        "en" : "elderly",
+        "uri" : "http://www.yso.fi/onto/yso/p2433"
+  }
+,
+  {
+        "fi" : "toimintasuunnitelma",
+        "sv" : "verksamhetsplan",
+        "en" : "annual plan"
+  }
+,
+  {
+        "fi" : "sitoutuminen",
+        "sv" : "bindning",
+        "en" : "commitment"
+  }
+,
+  {
+        "fi" : "väestön terveys",
+        "sv" : "befolkningens hälsa",
+        "en" : "public health"
+  }
+,
+  {
+        "fi" : "väestön terveys ja hyvinvointi",
+        "sv" : "befolkningens hälsa och välfärd",
+        "en" : "public health and welfare"
+  }
+,
+  {
+        "fi" : "perusopetus",
+        "sv" : "basundervisning",
+        "en" : "comprehensive education"
+  }
+,
+  {
+        "fi" : "alkoholijuomavero",
+        "sv" : "skatt på alkoholdrycker",
+        "en" : "tax on alcoholic beverages"
+  }
+,
+  {
+        "fi" : "terveysliikunta",
+        "sv" : "hälsomotion",
+        "en" : "health-promoting physical activity"
+  }
+,
+  {
+        "fi" : "tupakansavu",
+        "sv" : "tobaksrök",
+        "en" : "tobacco smoke"
+  }
+,
+  {
+        "fi" : "syöpä",
+        "sv" : "cancer",
+        "en" : "cancer"
+  }
+,
+  {
+        "fi" : "koulutusasteet",
+        "sv" : "utbildningsstadier",
+        "en" : "stages of education"
+  }
+,
+  {
+        "fi" : "maksut",
+        "sv" : "avgifter",
+        "en" : "fees"
+  }
+,
+  {
+        "fi" : "kirurgia",
+        "sv" : "kirurgi",
+        "en" : "surgery"
+  }
+,
+  {
+        "fi" : "koeputkihedelmöitys",
+        "sv" : "provrörsbefruktning",
+        "en" : "in vitro fertilisation"
+  }
+,
+  {
+        "fi" : "inseminaatio",
+        "sv" : "insemination",
+        "en" : "artifical insemination"
+  }
+,
+  {
+        "fi" : "omaishoito",
+        "sv" : "närståendevård",
+        "en" : "informal care"
+  }
+,
+  {
+        "fi" : "ennakkoarviointi",
+        "sv" : "bedömning av konsekvenser",
+        "en" : "impact assessment"
+  }
+,
+  {
+        "fi" : "toimeentulotukihakemus",
+        "sv" : "ansökning om utkomststödet",
+        "en" : "application for social assistance"
+  }
+,
+  {
+        "fi" : "päivittäiset toiminnot",
+        "sv" : "dagliga sysslor",
+        "en" : "activities of daily living"
+  }
+,
+  {
+        "fi" : "muisti",
+        "sv" : "minnet",
+        "en" : "memory"
+  }
+,
+  {
+        "fi" : "fyysinen toimintakyky",
+        "sv" : "fysisk funktionsförmåga",
+        "en" : "physical capacity"
+  }
+,
+  {
+        "fi" : "ravitsemus",
+        "sv" : "näring",
+        "en" : "nutrition"
+  }
+,
+  {
+        "fi" : "liikuntakyky",
+        "sv" : "rörelseförmåga",
+        "en" : "mobility"
+  }
+,
+  {
+        "fi" : "riskitekijät",
+        "sv" : "riskfaktorer",
+        "en" : "risk factors "
+  }
+,
+  {
+        "fi" : "fyysinen aktiivisuus",
+        "sv" : "fysisk aktivitet",
+        "en" : "physical activity"
+  }
+,
+  {
+        "fi" : "jonotilanne",
+        "sv" : "",
+        "en" : ""
+  }
+,
+  {
+        "fi" : "tuomioistuimet",
+        "sv" : "domstolar",
+        "en" : "courts, judicial system"
+  }
+,
+  {
+        "fi" : "taloudelliset tukitoimet",
+        "sv" : "ekonomiska stödåtgärder",
+        "en" : "financial support"
+  }
+,
+  {
+        "fi" : "apuvälineet",
+        "sv" : "hjälpmedel",
+        "en" : "assistive devices",
+        "uri" : "http://www.yso.fi/onto/yso/p9044"
+  }
+,
+  {
+        "fi" : "haastattelututkimus",
+        "sv" : "intervjustudie",
+        "en" : "interview survey",
+        "uri" : "http://www.yso.fi/onto/yso/p10632"
+  }
+,
+  {
+        "fi" : "lapsen elatus ja huolto",
+        "sv" : "Underhåll och vårdnad av barn",
+        "en" : "Child maintenance and custody"
+  }
+,
+  {
+        "fi" : "käräjäoikeudet",
+        "sv" : "tingsrätter",
+        "en" : "district courts",
+        "uri" : "http://www.yso.fi/onto/yso/p13662"
+  }
+,
+  {
+        "fi" : "rikosasiat",
+        "sv" : "brottmål",
+        "en" : "criminal matters"
+  }
+,
+  {
+        "fi" : "lapsen huolto",
+        "sv" : "vårdnad av barn",
+        "en" : "child custody",
+        "uri" : "http://www.yso.fi/onto/yso/p98"
+  }
+,
+  {
+        "fi" : "yhteispäivystys",
+        "sv" : "gemensam jour",
+        "en" : "coordinated accident and emergency services"
+  }
+,
+  {
+        "fi" : "köyhyys",
+        "sv" : "fattigdom",
+        "en" : "poverty"
+  }
+,
+  {
+        "fi" : "huono-osaisuus",
+        "sv" : "deprivation",
+        "en" : "deprivation",
+        "uri" : "http://www.yso.fi/onto/yso/p6220"
+  }
+,
+  {
+        "fi" : "koulukiusaaminen",
+        "sv" : "mobbning : skola",
+        "en" : "school bullying",
+        "uri" : "http://www.yso.fi/onto/yso/p70"
+  }
+,
+  {
+        "fi" : "syrjäytyminen",
+        "sv" : "utslagning",
+        "en" : "marginalisation"
+  }
+,
+  {
+        "fi" : "elinajanodote",
+        "sv" : "förväntad livslängd",
+        "en" : "life expectancy",
+        "uri" : "http://www.yso.fi/onto/yso/p1228"
+  }
+,
+  {
+        "fi" : "työvoima",
+        "sv" : "arbetskraft",
+        "en" : "labour"
+  }
+,
+  {
+        "fi" : "nivelreuma",
+        "sv" : "ledgångsreumatism",
+        "en" : "rheumatoid arthritis"
+  }
+,
+  {
+        "fi" : "peruskoulu",
+        "sv" : "grundskolan",
+        "en" : "comprehensive school"
+  }
+,
+  {
+        "fi" : "lukio",
+        "sv" : "gymnasiet",
+        "en" : "upper secondary school",
+        "uri" : "http://www.yso.fi/onto/yso/p7401"
+  }
+,
+  {
+        "fi" : "ammatillinen oppilaitos",
+        "sv" : "yrkesläroanstalt",
+        "en" : "vocational school"
+  }
+,
+  {
+        "fi" : "tulkkaus",
+        "sv" : "tolkning",
+        "en" : "interpretation"
+  }
+,
+  {
+        "fi" : "alkoholinkulutus",
+        "sv" : "alkoholkonsumtion",
+        "en" : "alcohol consumption",
+        "uri" : "http://www.yso.fi/onto/yso/p8393"
+  }
+,
+  {
+        "fi" : "opintotuki",
+        "sv" : "studiestöd",
+        "en" : "financial aid for students"
+  }
+,
+  {
+        "fi" : "yksityisen hoidon tuki",
+        "sv" : "privatvårdsstöd",
+        "en" : "private day care allowances"
+  }
+,
+  {
+        "fi" : "dementia",
+        "sv" : "demens",
+        "en" : "dementia",
+        "uri" : "http://www.yso.fi/onto/yso/p1711"
+  }
+,
+  {
+        "fi" : "syntymärekisteri",
+        "sv" : "födelseregister",
+        "en" : "medical birth register"
+  }
+,
+  {
+        "fi" : "synnytys",
+        "sv" : "förlossning",
+        "en" : "delivery"
+  }
+,
+  {
+        "fi" : "tuloerot",
+        "sv" : "inkomstskillnader",
+        "en" : "income disparities"
+  }
+,
+  {
+        "fi" : "seksuaalinen väkivalta",
+        "sv" : "sexuella övergrepp",
+        "en" : "sexual violence"
+  }
+,
+  {
+        "fi" : "seksuaaliterveys",
+        "sv" : "sexual health",
+        "en" : "sexualhälsa"
+  }
+,
+  {
+        "fi" : "ehkäisymenetelmät",
+        "sv" : "preventivmedel",
+        "en" : "contraceptives",
+        "uri" : "http://www.yso.fi/onto/yso/p8518"
+  }
+,
+  {
+        "fi" : "pitkäaikaishoito",
+        "sv" : "långtidsvård",
+        "en" : "long-term care"
+  }
+,
+  {
+        "fi" : "pelit",
+        "sv" : "spel",
+        "en" : "games"
+  }
+,
+  {
+        "fi" : "tupakan kulutus",
+        "sv" : "tobaksanvändning",
+        "en" : "tobacco consumption"
+  }
+,
+  {
+        "fi" : "lapsiperheet",
+        "sv" : "barnfamiljer",
+        "en" : "families with children",
+        "uri" : "http://www.yso.fi/onto/yso/p13050"
+  }
+,
+  {
+        "fi" : "leikkitoiminta",
+        "sv" : "lekverksamhet",
+        "en" : "supervised play groups",
+        "uri" : "http://www.yso.fi/onto/yso/p5514"
+  }
+,
+  {
+        "fi" : "lisääntymisterveys",
+        "sv" : "reproduktiv hälsa",
+        "en" : "reproductive health",
+        "uri" : "http://www.yso.fi/onto/yso/p4283"
+  }
+,
+  {
+        "fi" : "lääkkeet",
+        "sv" : "läkemedel",
+        "en" : "medicines",
+        "uri" : "http://www.yso.fi/onto/yso/p1077"
+  }
+,
+  {
+        "fi" : "masennus",
+        "sv" : "depression",
+        "en" : "depression",
+        "uri" : "http://www.yso.fi/onto/yso/p7995"
+  }
+,
+  {
+        "fi" : "eriarvoisuus",
+        "sv" : "ojämlikhet",
+        "en" : "inequality",
+        "uri" : "http://www.yso.fi/onto/yso/p3478"
+  }
+,
+  {
+        "fi" : "mielenterveys",
+        "sv" : "psykisk hälsa",
+        "en" : "mental health",
+        "uri" : "http://www.yso.fi/onto/yso/p1949"
+  }
+,
+  {
+        "fi" : "hoitoonpääsy",
+        "sv" : "tillgång till vård",
+        "en" : "access to care"
+  }
+,
+  {
+        "fi" : "hoitojonot",
+        "sv" : "vårdköer",
+        "en" : "hospital queues"
+  }
+,
+  {
+        "fi" : "lastenpsykiatria",
+        "sv" : "barnpsykiatri",
+        "en" : "child psychiatry"
+  }
+,
+  {
+        "fi" : "nuorisopsykiatria",
+        "sv" : "ungdomspsykiatri",
+        "en" : "adolescent psychiatry"
+  }
+,
+  {
+        "fi" : "korvaukset",
+        "sv" : "ersättningar",
+        "en" : "compensation"
+  }
+,
+  {
+        "fi" : "sukupuoliyhdyntä",
+        "sv" : "samlag",
+        "en" : "coitus"
+  }
+,
+  {
+        "fi" : "kotihoidon laskenta",
+        "sv" : "klientinventering inom hemvården",
+        "en" : "count of regular home-care clients"
+  }
+,
+  {
+        "fi" : "hyvinvointikertomus",
+        "sv" : "välfärdsberättelse",
+        "en" : "health report"
+  }
+,
+  {
+        "fi" : "kotitaloudet",
+        "sv" : "hushåll",
+        "en" : "household"
+  }
+,
+  {
+        "fi" : "luottamus",
+        "sv" : "förtroende",
+        "en" : "trust"
+  }
+,
+  {
+        "fi" : "elatusapu",
+        "sv" : "underhållsbidrag",
+        "en" : "maintenance payment",
+        "uri" : "http://www.yso.fi/onto/yso/p14639"
+  }
+,
+  {
+        "fi" : "elatusturva",
+        "sv" : "underhållsstöd",
+        "en" : "security of child maintenance",
+        "uri" : "http://www.yso.fi/onto/yso/p100"
+  }
+,
+  {
+        "fi" : "sovittelu",
+        "sv" : "förlikning",
+        "en" : "arbitration"
+  }
+,
+  {
+        "fi" : "sosiaalityö",
+        "sv" : "socialt arbete",
+        "en" : "social work"
+  }
+,
+  {
+        "fi" : "varhaiskasvatus",
+        "sv" : "småbarnsfostran",
+        "en" : "early childhood education"
+  }
+,
+  {
+        "fi" : "rikollisuus",
+        "sv" : "brottslighet",
+        "en" : "crime"
+  }
+,
+  {
+        "fi" : "kunnallistalous",
+        "sv" : "kommunal ekonomi",
+        "en" : "municipal economy",
+        "uri" : "http://www.yso.fi/onto/yso/p7521"
+  }
+,
+  {
+        "fi" : "hammaslääkärit",
+        "sv" : "tandläkare",
+        "en" : "dentists",
+        "uri" : "http://www.yso.fi/onto/yso/p11472"
+  }
+,
+  {
+        "fi" : "väkivalta",
+        "sv" : "våld",
+        "en" : "violence"
+  }
+,
+  {
+        "fi" : "kiusaaminen",
+        "sv" : "mobbning",
+        "en" : "bullying",
+        "uri" : "http://www.yso.fi/onto/yso/p71"
+  }
+,
+  {
+        "fi" : "painoindeksi",
+        "sv" : "kroppsmasseindex",
+        "en" : "body mass index"
+  }
+,
+  {
+        "fi" : "rikkomukset",
+        "sv" : "förseelser",
+        "en" : "misdemeanours"
+  }
+,
+  {
+        "fi" : "sydäninfarkti",
+        "sv" : "hjärtinfarkt",
+        "en" : "heart attack"
+  }
+,
+  {
+        "fi" : "kieli",
+        "sv" : "språk",
+        "en" : "language",
+        "uri" : "http://www.yso.fi/onto/yso/p5041"
+  }
+,
+  {
+        "fi" : "työkyvyttömyys",
+        "sv" : "arbetsoförmåga",
+        "en" : "work disability"
+  }
+,
+  {
+        "fi" : "muistihäiriöt",
+        "sv" : "minnesrubbningar",
+        "en" : "memory disorder"
+  }
+,
+  {
+        "fi" : "Alzheimerin tauti",
+        "sv" : "Alzheimers sjukdom",
+        "en" : "Alzheimer disease",
+        "uri" : "http://www.yso.fi/onto/yso/p8412"
+  }
+,
+  {
+        "fi" : "hyvinvointi",
+        "sv" : "välfärd",
+        "en" : "welfare",
+        "uri" : "http://www.yso.fi/onto/yso/p22036"
+  }
+,
+  {
+        "fi" : "elämänlaatu",
+        "sv" : "livskvalitet",
+        "en" : "quality of life",
+        "uri" : "http://www.yso.fi/onto/yso/p10759"
+  }
+,
+  {
+        "fi" : "sosiaalinen pääoma",
+        "sv" : "socialt kapital",
+        "en" : "social capital"
+  }
+,
+  {
+        "fi" : "pitkäaikaistyöttömyys",
+        "sv" : "långtidsarbetslöshet",
+        "en" : "long-term unemployment"
+  }
+,
+  {
+        "fi" : "rakennetyöttömyys",
+        "sv" : "strukturell arbetslöshet",
+        "en" : "structural unemployment"
+  }
+,
+  {
+        "fi" : "keisarileikkaus",
+        "sv" : "kejsarsnitt",
+        "en" : "caesarean section"
+  }
+,
+  {
+        "fi" : "aivoinfarkti",
+        "sv" : "cerebral infarkt",
+        "en" : "cerebral infarction",
+        "uri" : "http://www.yso.fi/onto/yso/p1713"
+  }
+,
+  {
+        "fi" : "hoidon vaikuttavuus",
+        "sv" : "vårdens effektivitet",
+        "en" : "health outcomes",
+        "uri" : "http://www.yso.fi/onto/tero/T00514"
+  }
+,
+  {
+        "fi" : "lonkkamurtuma",
+        "sv" : "höftfrakturer",
+        "en" : "hip fractures",
+        "uri" : "http://www.yso.fi/onto/tero/D006620"
+  }
+,
+  {
+        "fi" : "riskivakiointi",
+        "sv" : "riskstandardisering",
+        "en" : "risk adjustment"
+  }
+,
+  {
+        "fi" : "lonkan tekonivelleikkaus",
+        "sv" : "höftledsprotesoperation",
+        "en" : "hip-replacement surgery",
+        "uri" : "http://www.yso.fi/onto/mesh/D019644"
+  }
+,
+  {
+        "fi" : "muistisairaudet",
+        "sv" : "minnesjukdomar",
+        "en" : "memory disorders"
+  }
+,
+  {
+        "fi" : "syntymä",
+        "sv" : "födsel",
+        "en" : "birth"
+  }
+,
+  {
+        "fi" : "tuottavuus",
+        "sv" : "produktivitet",
+        "en" : "productivity"
+  }
+,
+  {
+        "fi" : "episodit",
+        "sv" : "episoder",
+        "en" : "episodes",
+        "uri" : "http://www.yso.fi/onto/tero/TNR1633"
+  }
+,
+  {
+        "fi" : "osallisuus",
+        "sv" : "delaktighet",
+        "en" : "participation"
+  }
+,
+  {
+        "fi" : "vaikuttaminen",
+        "sv" : "påverkan",
+        "en" : "influencing"
+  }
+,
+  {
+        "fi" : "tippuri",
+        "sv" : "syfilis",
+        "en" : "syphilis"
+  }
+,
+  {
+        "fi" : "tartuntataudit",
+        "sv" : "smittsamma sjukdomar",
+        "en" : "infectious diseases"
+  }
+,
+  {
+        "fi" : "hepatiitit",
+        "sv" : "hepatit",
+        "en" : "hepatitis",
+        "uri" : "http://www.yso.fi/onto/ysa/Y174408"
+  }
+,
+  {
+        "fi" : "maksatulehdus",
+        "sv" : "leverinflammation",
+        "en" : "hepatitis",
+        "uri" : "http://www.yso.fi/onto/yso/p24245"
+  }
+,
+  {
+        "fi" : "hiv",
+        "sv" : "hiv",
+        "en" : "hiv",
+        "uri" : "http://www.yso.fi/onto/yso/p12006"
+  }
+,
+  {
+        "fi" : "tahdosta riippumaton hoito",
+        "sv" : "vård oberoende av patientens vilja",
+        "en" : "involuntary care"
+  }
+,
+  {
+        "fi" : "terveyden edistäminen",
+        "sv" : "främjande av hälsa",
+        "en" : "health promotion"
+  }
+,
+  {
+        "fi" : "terveydenedistämisaktiivisuus",
+        "sv" : "verksamhet inom främjande av hälsa",
+        "en" : "health promotion capacity building"
+  }
+,
+  {
+        "fi" : "terveysseuranta",
+        "sv" : "hälsouppföljning",
+        "en" : "health monitoring"
+  }
+,
+  {
+        "fi" : "kunta",
+        "sv" : "kommun",
+        "en" : "municipality",
+        "uri" : "http://www.yso.fi/onto/yso/p10509"
+  }
+,
+  {
+        "fi" : "johtaminen",
+        "sv" : "lederskap",
+        "en" : "leading",
+        "uri" : "http://www.yso.fi/onto/yso/p554"
+  }
+,
+  {
+        "fi" : "terveyserot",
+        "sv" : "hälsoskillnader",
+        "en" : "health inequalities"
+  }
+,
+  {
+        "fi" : "artroosi",
+        "sv" : "artros",
+        "en" : "arthrosis",
+        "uri" : "http://www.yso.fi/onto/ysa/Y105787"
+  }
+,
+  {
+        "fi" : "rahapelit",
+        "sv" : "penningspel",
+        "en" : "gambling games"
+  }
+,
+  {
+        "fi" : "ongelmapelaaminen",
+        "sv" : "problemspelande",
+        "en" : "problem gambling"
+  }
+,
+  {
+        "fi" : "pelihaitat",
+        "sv" : "spelrelaterande problem",
+        "en" : "gambling-related harms"
+  }
+,
+  {
+        "fi" : "vuosiprevalenssi",
+        "sv" : "årsprevalens",
+        "en" : "past-year prevalence"
+  }
+,
+  {
+        "fi" : "pelaaminen",
+        "sv" : "spel",
+        "en" : "gaming"
+  }
+,
+  {
+        "fi" : "peliriippuvuus",
+        "sv" : "spelberoende",
+        "en" : "patohological gambling"
+  }
+,
+  {
+        "fi" : "rahapelaamisen tiheys",
+        "sv" : "penningspelsfekvens",
+        "en" : "gambling frequency"
+  }
+,
+  {
+        "fi" : "altistuminen",
+        "sv" : "exponering",
+        "en" : "exposure"
+  }
+,
+  {
+        "fi" : "sepelvaltimotauti",
+        "sv" : "koronarsjukdom",
+        "en" : "coronary artery disease"
+  }
+,
+  {
+        "fi" : "verenpainetauti",
+        "sv" : "blodtryckssjukdom",
+        "en" : "hypertension"
+  }
+,
+  {
+        "fi" : "huostaanotto",
+        "sv" : "omhändertagande",
+        "en" : "taking into care"
+  }
+,
+  {
+        "fi" : "lastentaudit",
+        "sv" : "barnsjukdomar",
+        "en" : "childhood diseases"
+  }
+,
+  {
+        "fi" : "työmarkkinatuki",
+        "sv" : "arbetsmarknadsstöd",
+        "en" : "labour market subsidy"
+  }
+,
+  {
+        "fi" : "sotilasavustus",
+        "sv" : "militärunderstöd",
+        "en" : "conscript's allowances"
+  }
+,
+  {
+        "fi" : "hedelmöityshoidot",
+        "sv" : "befruktningsbehandlingar",
+        "en" : "infertility treatments"
+  }
+,
+  {
+        "fi" : "silmätaudit",
+        "sv" : "ögonsjukdomar",
+        "en" : "eye diseases"
+  }
+,
+  {
+        "fi" : "korva-, nenä- ja kurkkutaudit",
+        "sv" : "öron-, näs- och halssjukdomar",
+        "en" : "ENT"
+  }
+,
+  {
+        "fi" : "mammografia",
+        "sv" : "mammografi",
+        "en" : "mammography"
+  }
+,
+  {
+        "fi" : "seulonta",
+        "sv" : "screening",
+        "en" : "screening"
+  }
+,
+  {
+        "fi" : "säännöllinen kotihoito",
+        "sv" : "regelbunden hemvård",
+        "en" : "regular home-care"
+  }
+,
+  {
+        "fi" : "valtion alkoholitulot",
+        "sv" : "statens alkoholinkomster",
+        "en" : "state alcohol revenue"
+  }
+,
+  {
+        "fi" : "kiireellinen sijoitus",
+        "sv" : "brådskande placering",
+        "en" : "emergency placement"
+  }
+,
+  {
+        "fi" : "lastensuojeluilmoitus",
+        "sv" : "barnskyddsanmälan",
+        "en" : "child welfare notification"
+  }
+,
+  {
+        "fi" : "sähköinen hyvinvointikertomus",
+        "sv" : "elektroniska välfärdsberättelse",
+        "en" : "electronic health report"
+  }
+,
+  {
+        "fi" : "sosiaalinen toimintakyky",
+        "sv" : "social funktionsförmåga",
+        "en" : "social functioning"
+  }
+,
+  {
+        "fi" : "IADL",
+        "sv" : "IADL",
+        "en" : "IADL",
+        "uri" : ""
+  }
+,
+  {
+        "fi" : "ADL",
+        "sv" : "ADL",
+        "en" : "ADL",
+        "uri" : ""
+  }
+,
+  {
+        "fi" : "apu",
+        "sv" : "hjälp",
+        "en" : "assistance",
+        "uri" : ""
+  }
+,
+  {
+        "fi" : "liikakäyttö",
+        "sv" : "överdrivet bruk",
+        "en" : "overuse",
+        "uri" : ""
+  }
+,
+  {
+        "fi" : "BMI",
+        "sv" : "BMI",
+        "en" : "BMI",
+        "uri" : ""
+  }
+,
+  {
+        "fi" : "kognitiivinen toimintakyky",
+        "sv" : "kognitiv funktionsförmåga",
+        "en" : "cognitive ability to function",
+        "uri" : ""
+  }
+,
+  {
+        "fi" : "käsittelyaika",
+        "sv" : "behandlingstid",
+        "en" : "processing time",
+        "uri" : ""
+  }
+,
+  {
+        "fi" : "arkitoimet",
+        "sv" : "vardagssysslor",
+        "en" : "everyday activities",
+        "uri" : ""
+  }
+,
+  {
+        "fi" : "vammaispalvelulaki",
+        "sv" : "lagen om service och stöd på grund av handikapp",
+        "en" : "the act on services and assistance for the disabled",
+        "uri" : ""
+  }
+,
+  {
+        "fi" : "AUDIT-C",
+        "sv" : "AUDIT-C",
+        "en" : "the alcohol use disorders identification test (AUDIT-C)",
+        "uri" : ""
+  }
+]

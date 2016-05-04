@@ -73,7 +73,7 @@ public class OskariComponentManager {
     /**
      * Returns a subset of the registered OskariComponents matching the given class.
      * @param clazz A OskariComponent subclass we are interested in
-     * @return unMODifyable map of components mathing the given type
+     * @return unmodifiable map of components matching the given type
      */
     public static <MOD extends OskariComponent> Map<String, MOD> getComponentsOfType(final Class clazz) {
         if(components.isEmpty()) {
