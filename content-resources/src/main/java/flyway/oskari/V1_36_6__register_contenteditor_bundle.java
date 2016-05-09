@@ -7,7 +7,7 @@ import org.flywaydb.core.api.migration.jdbc.JdbcMigration;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-public class V1_36_0__register_contenteditor_bundle implements JdbcMigration {
+public class V1_36_6__register_contenteditor_bundle implements JdbcMigration {
 
     private static final String NAMESPACE = "tampere";
     private static final String BUNDLE_ID = "content-editor";
