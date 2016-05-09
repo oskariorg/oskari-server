@@ -829,7 +829,7 @@ public class TransportService extends AbstractService {
         if(type.equals(JobType.NORMAL) && layer.getAttributes().has(JobHelper.PARAM_MANUAL_REFRESH) && !refresh) {
             //Notify started, because of nop  and front status
             ((OWSMapLayerJob) job).notifyStart();
-            ((OWSMapLayerJob) job).notifyCompleted(true);
+            ((OWSMapLayerJob) job).notifyCompleted(true, true);
             return null;
         }
         return job;

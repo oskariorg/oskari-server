@@ -131,6 +131,16 @@ These permissions will then be shown by the admin-layerrights bundle in Oskari f
 User roles can be granted a EDIT_LAYER_CONTENT permission that will enable them to edit features on a WFS-service.
 This requires the content-editor bundle in Oskari frontend to provide the user-interface.
 
+**WFS 2.0.0**
+
+WFS layer's current coordinate reference system (crs) is now Transport session's crs (was layer config crs).
+This reduces coordinate transformations and process better result.
+
+**WFS / manual refresh**
+
+One new property ''success_nop'' added to notify-job-completed response.
+There is no need to the client to act for this layer, when success_nop is true (e.g. refresh feature data)
+
 ## 1.35.1
 
 ### generic

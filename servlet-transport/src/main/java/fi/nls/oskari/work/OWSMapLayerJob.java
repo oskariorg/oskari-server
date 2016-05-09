@@ -806,10 +806,11 @@ public abstract class OWSMapLayerJob extends AbstractJob<String> {
         this.service.addResults(session.getClient(), ResultProcessor.CHANNEL_STATUS, createCommonResponse("started"));
     }
 
-    public void notifyCompleted(final boolean success) {
-        log.info("Completed - layer:", layerId, "type:", type, "success:", success);
+    public void notifyCompleted(final boolean success, final boolean success_nop) {
+        log.info("Completed - layer:", layerId, "type:", type, "success:", success, " Success no operation:", success_nop);
         Map<String, Object> output = createCommonResponse("completed");
         output.put("success", success);
+        output.put("success_nop", success_nop);
         output.put("type", type.toString());
         this.service.addResults(session.getClient(), ResultProcessor.CHANNEL_STATUS, output);
     }
