@@ -3,8 +3,6 @@ package fi.nls.oskari.control.feature;
 import java.io.IOException;
 import java.util.Set;
 
-import javax.xml.parsers.ParserConfigurationException;
-
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.auth.AuthScope;
@@ -21,7 +19,6 @@ import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.xml.sax.SAXException;
 
 import fi.mml.portti.domain.permissions.Permissions;
 import fi.mml.portti.service.db.permissions.PermissionsService;
@@ -40,7 +37,6 @@ import fi.nls.oskari.map.data.domain.OskariLayerResource;
 import fi.nls.oskari.map.layer.OskariLayerService;
 import fi.nls.oskari.map.layer.OskariLayerServiceIbatisImpl;
 import fi.nls.oskari.permission.domain.Resource;
-import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.util.ResponseHelper;
 import fi.nls.oskari.wfs.WFSLayerConfigurationService;
 import fi.nls.oskari.wfs.WFSLayerConfigurationServiceIbatisImpl;
@@ -127,115 +123,82 @@ public class SaveFeatureHandler extends ActionHandler {
 	
 	private void FillGeometries(StringBuilder requestData, JSONObject geometries) throws JSONException
 	{
-		try {
-			String geometryType = geometries.getString("type");
-			if (geometryType.equals("multipoint"))
-			{
-				FillMultiPointGeometries(requestData, geometries);
-			}
-			else if (geometryType.equals("multilinestring"))
-			{
-				FillLineStringGeometries(requestData, geometries);
-			}
-			else if (geometryType.equals("multipolygon"))
-			{
-				FillPolygonGeometries(requestData, geometries);
-			}
-		}
-		catch (JSONException ex)
-		{
-			throw ex;
+		String geometryType = geometries.getString("type");
+		if (geometryType.equals("multipoint")) {
+			FillMultiPointGeometries(requestData, geometries);
+		} else if (geometryType.equals("multilinestring")) {
+			FillLineStringGeometries(requestData, geometries);
+		} else if (geometryType.equals("multipolygon")) {
+			FillPolygonGeometries(requestData, geometries);
 		}
 	}
 	
 	private void FillMultiPointGeometries (StringBuilder requestData, JSONObject geometries) throws JSONException
 	{
-		try {
-			String tmp = "";	
-			JSONArray data = geometries.getJSONArray("data");
-			requestData.append("<wfs:Property><wfs:Name>" + geometryProperty + "</wfs:Name><wfs:Value><gml:MultiPoint xmlns:gml='http://www.opengis.net/gml' srsName='http://www.opengis.net/gml/srs/epsg.xml#3067'>");
-			for (int i = 0; i < data.length(); i++)
-			{
-				requestData.append("<gml:pointMember><gml:Point><gml:coordinates decimal=\".\" cs=\",\" ts=\" \">" + data.getJSONObject(i).getString("x") + "," + data.getJSONObject(i).getString("y") + "</gml:coordinates></gml:Point></gml:pointMember>");
-			}
-			requestData.append("</gml:MultiPoint></wfs:Value></wfs:Property>");
+		JSONArray data = geometries.getJSONArray("data");
+		requestData.append("<wfs:Property><wfs:Name>" + geometryProperty
+				+ "</wfs:Name><wfs:Value><gml:MultiPoint xmlns:gml='http://www.opengis.net/gml' srsName='http://www.opengis.net/gml/srs/epsg.xml#3067'>");
+		for (int i = 0; i < data.length(); i++) {
+			requestData.append("<gml:pointMember><gml:Point><gml:coordinates decimal=\".\" cs=\",\" ts=\" \">"
+					+ data.getJSONObject(i).getString("x") + "," + data.getJSONObject(i).getString("y")
+					+ "</gml:coordinates></gml:Point></gml:pointMember>");
 		}
-		catch (JSONException ex)
-		{
-			throw ex;
-		}
+		requestData.append("</gml:MultiPoint></wfs:Value></wfs:Property>");
 	}
 	
 	private void FillLineStringGeometries (StringBuilder requestData, JSONObject geometries) throws JSONException
 	{
-		try {
-			String tmp = "";	
-			JSONArray data = geometries.getJSONArray("data");
-			requestData.append("<wfs:Property><wfs:Name>" + geometryProperty + "</wfs:Name><wfs:Value><gml:MultiLineString xmlns:gml='http://www.opengis.net/gml' srsName='http://www.opengis.net/gml/srs/epsg.xml#3067'>");
-			for (int i = 0; i < data.length(); i++)
-			{
-				requestData.append("<gml:lineStringMember><gml:LineString><gml:coordinates decimal=\".\" cs=\",\" ts=\" \">");
-				JSONArray arr = data.getJSONArray(i);
-				for (int j = 0; j < arr.length(); j++)
-				{
-					requestData.append(arr.getJSONObject(j).getString("x") + "," + arr.getJSONObject(j).getString("y"));
-					if (j < (arr.length()-1))
-					{
-						requestData.append(" ");
-					}
+		JSONArray data = geometries.getJSONArray("data");
+		requestData.append("<wfs:Property><wfs:Name>" + geometryProperty
+				+ "</wfs:Name><wfs:Value><gml:MultiLineString xmlns:gml='http://www.opengis.net/gml' srsName='http://www.opengis.net/gml/srs/epsg.xml#3067'>");
+		for (int i = 0; i < data.length(); i++) {
+			requestData
+					.append("<gml:lineStringMember><gml:LineString><gml:coordinates decimal=\".\" cs=\",\" ts=\" \">");
+			JSONArray arr = data.getJSONArray(i);
+			for (int j = 0; j < arr.length(); j++) {
+				requestData.append(arr.getJSONObject(j).getString("x") + "," + arr.getJSONObject(j).getString("y"));
+				if (j < (arr.length() - 1)) {
+					requestData.append(" ");
 				}
-				requestData.append("</gml:coordinates></gml:LineString></gml:lineStringMember>");
 			}
-			requestData.append("</gml:MultiLineString></wfs:Value></wfs:Property>");
+			requestData.append("</gml:coordinates></gml:LineString></gml:lineStringMember>");
 		}
-		catch (JSONException ex)
-		{
-			throw ex;
-		}
+		requestData.append("</gml:MultiLineString></wfs:Value></wfs:Property>");
 	}
 	
 	private void FillPolygonGeometries (StringBuilder requestData, JSONObject geometries) throws JSONException
 	{
-		try {
-			String tmp = "";	
-			JSONArray data = geometries.getJSONArray("data");
-			requestData.append("<wfs:Property><wfs:Name>" + geometryProperty + "</wfs:Name><wfs:Value><gml:MultiPolygon xmlns:gml='http://www.opengis.net/gml' srsName='http://www.opengis.net/gml/srs/epsg.xml#3067'>");
-			for (int i = 0; i < data.length(); i++)
-			{
-				requestData.append("<gml:polygonMember><gml:Polygon>");
-				JSONArray arr = data.getJSONArray(i);
-				for (int j = 0; j < arr.length(); j++)
-				{
-					if (j > 0) {
-						requestData.append("<gml:interior><gml:LinearRing><gml:posList>");
-					} else {
-						requestData.append("<gml:exterior><gml:LinearRing><gml:posList>");
-					}
-					
-					JSONArray arr2 = arr.getJSONArray(j);
-					for (int k = 0; k < arr2.length(); k++)
-					{
-						requestData.append(arr2.getJSONObject(k).getString("x") + " " + arr2.getJSONObject(k).getString("y"));
-						if (k < (arr2.length()-1))
-						{
-							requestData.append(" ");
-						}
-					}
-					
-					if (j > 0) {
-						requestData.append("</gml:posList></gml:LinearRing></gml:interior>");
-					} else {
-						requestData.append("</gml:posList></gml:LinearRing></gml:exterior>");
+		JSONArray data = geometries.getJSONArray("data");
+		requestData.append("<wfs:Property><wfs:Name>" + geometryProperty
+				+ "</wfs:Name><wfs:Value><gml:MultiPolygon xmlns:gml='http://www.opengis.net/gml' srsName='http://www.opengis.net/gml/srs/epsg.xml#3067'>");
+		for (int i = 0; i < data.length(); i++) {
+			requestData.append("<gml:polygonMember><gml:Polygon>");
+			JSONArray arr = data.getJSONArray(i);
+			for (int j = 0; j < arr.length(); j++) {
+				if (j > 0) {
+					requestData.append("<gml:interior><gml:LinearRing><gml:posList>");
+				} else {
+					requestData.append("<gml:exterior><gml:LinearRing><gml:posList>");
+				}
+
+				JSONArray arr2 = arr.getJSONArray(j);
+				for (int k = 0; k < arr2.length(); k++) {
+					requestData
+							.append(arr2.getJSONObject(k).getString("x") + " " + arr2.getJSONObject(k).getString("y"));
+					if (k < (arr2.length() - 1)) {
+						requestData.append(" ");
 					}
 				}
-				requestData.append("</gml:Polygon></gml:polygonMember>");
+
+				if (j > 0) {
+					requestData.append("</gml:posList></gml:LinearRing></gml:interior>");
+				} else {
+					requestData.append("</gml:posList></gml:LinearRing></gml:exterior>");
+				}
 			}
-			requestData.append("</gml:MultiPolygon></wfs:Value></wfs:Property>");
+			requestData.append("</gml:Polygon></gml:polygonMember>");
 		}
-		catch (JSONException ex)
-		{
-			throw ex;
-		}
+		requestData.append("</gml:MultiPolygon></wfs:Value></wfs:Property>");
 	}
 
 	private void ClearLayerTiles(int layerId)

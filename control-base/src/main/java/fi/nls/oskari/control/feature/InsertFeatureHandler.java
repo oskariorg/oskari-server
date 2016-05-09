@@ -29,8 +29,6 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-import com.ibatis.common.logging.Log;
-
 import fi.mml.portti.domain.permissions.Permissions;
 import fi.mml.portti.service.db.permissions.PermissionsService;
 import fi.mml.portti.service.db.permissions.PermissionsServiceIbatisImpl;
@@ -48,7 +46,6 @@ import fi.nls.oskari.map.data.domain.OskariLayerResource;
 import fi.nls.oskari.map.layer.OskariLayerService;
 import fi.nls.oskari.map.layer.OskariLayerServiceIbatisImpl;
 import fi.nls.oskari.permission.domain.Resource;
-import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.util.ResponseHelper;
 import fi.nls.oskari.wfs.WFSLayerConfigurationService;
 import fi.nls.oskari.wfs.WFSLayerConfigurationServiceIbatisImpl;
@@ -126,7 +123,6 @@ public class InsertFeatureHandler extends ActionHandler {
 					
 					ByteArrayInputStream input =  new ByteArrayInputStream(responseString.toString().getBytes("UTF-8"));
 					Document doc = builder.parse(input);
-					Element root = doc.getDocumentElement();
 					
 					NodeList res = doc.getElementsByTagName("ogc:FeatureId");
 					Element res3 = (Element)res.item(0);
@@ -164,118 +160,85 @@ public class InsertFeatureHandler extends ActionHandler {
 	
 	private void FillGeometries (StringBuilder requestData, JSONObject geometries) throws JSONException
 	{
-		try {
-			String geometryType = geometries.getString("type");
-			if (geometryType.equals("multipoint"))
-			{
-				FillMultiPointGeometries(requestData, geometries);
-			}
-			else if (geometryType.equals("multilinestring"))
-			{
-				FillLineStringGeometries(requestData, geometries);
-			}
-			else if (geometryType.equals("multipolygon"))
-			{
-				FillPolygonGeometries(requestData, geometries);
-			}
-		}
-		catch (Exception ex)
-		{
-			throw ex;
+		String geometryType = geometries.getString("type");
+		if (geometryType.equals("multipoint")) {
+			FillMultiPointGeometries(requestData, geometries);
+		} else if (geometryType.equals("multilinestring")) {
+			FillLineStringGeometries(requestData, geometries);
+		} else if (geometryType.equals("multipolygon")) {
+			FillPolygonGeometries(requestData, geometries);
 		}
 	}
 	
 	private void FillMultiPointGeometries (StringBuilder requestData, JSONObject geometries) throws JSONException
 	{
-		try {
-			String tmp = "";	
-			JSONArray data = geometries.getJSONArray("data");
-			requestData.append("<" + geometryProperty + "><gml:MultiPoint xmlns:gml='http://www.opengis.net/gml' srsName='http://www.opengis.net/gml/srs/epsg.xml#3067'>");
-			
-			for (int i = 0; i < data.length(); i++)
-			{
-				requestData.append("<gml:pointMember><gml:Point><gml:coordinates decimal=\".\" cs=\",\" ts=\" \">" + data.getJSONObject(i).getString("x") + "," + data.getJSONObject(i).getString("y") + "</gml:coordinates></gml:Point></gml:pointMember>");
-			}
-			requestData.append("</gml:MultiPoint></" + geometryProperty + ">");
+		JSONArray data = geometries.getJSONArray("data");
+		requestData.append("<" + geometryProperty
+				+ "><gml:MultiPoint xmlns:gml='http://www.opengis.net/gml' srsName='http://www.opengis.net/gml/srs/epsg.xml#3067'>");
+
+		for (int i = 0; i < data.length(); i++) {
+			requestData.append("<gml:pointMember><gml:Point><gml:coordinates decimal=\".\" cs=\",\" ts=\" \">"
+					+ data.getJSONObject(i).getString("x") + "," + data.getJSONObject(i).getString("y")
+					+ "</gml:coordinates></gml:Point></gml:pointMember>");
 		}
-		catch (JSONException ex)
-		{
-			throw ex;
-		}
+		requestData.append("</gml:MultiPoint></" + geometryProperty + ">");
 	}
 	
 	private void FillLineStringGeometries (StringBuilder requestData, JSONObject geometries) throws JSONException
 	{
-		try {
-			String tmp = "";	
-			JSONArray data = geometries.getJSONArray("data");
-			requestData.append("<" + geometryProperty + "><gml:MultiLineString xmlns:gml='http://www.opengis.net/gml' srsName='http://www.opengis.net/gml/srs/epsg.xml#3067'>");
-			
-			for (int i = 0; i < data.length(); i++)
-			{
-				requestData.append("<gml:lineStringMember><gml:LineString><gml:coordinates decimal=\".\" cs=\",\" ts=\" \">");
-				JSONArray arr = data.getJSONArray(i);
-				for (int j = 0; j < arr.length(); j++)
-				{
-					requestData.append(arr.getJSONObject(j).getString("x") + "," + arr.getJSONObject(j).getString("y"));
-					if (j < (arr.length()-1))
-					{
-						requestData.append(" ");
-					}
+		JSONArray data = geometries.getJSONArray("data");
+		requestData.append("<" + geometryProperty
+				+ "><gml:MultiLineString xmlns:gml='http://www.opengis.net/gml' srsName='http://www.opengis.net/gml/srs/epsg.xml#3067'>");
+
+		for (int i = 0; i < data.length(); i++) {
+			requestData
+					.append("<gml:lineStringMember><gml:LineString><gml:coordinates decimal=\".\" cs=\",\" ts=\" \">");
+			JSONArray arr = data.getJSONArray(i);
+			for (int j = 0; j < arr.length(); j++) {
+				requestData.append(arr.getJSONObject(j).getString("x") + "," + arr.getJSONObject(j).getString("y"));
+				if (j < (arr.length() - 1)) {
+					requestData.append(" ");
 				}
-				requestData.append("</gml:coordinates></gml:LineString></gml:lineStringMember>");
 			}
-			requestData.append("</gml:MultiLineString></" + geometryProperty + ">");
+			requestData.append("</gml:coordinates></gml:LineString></gml:lineStringMember>");
 		}
-		catch (JSONException ex)
-		{
-			throw ex;
-		}
+		requestData.append("</gml:MultiLineString></" + geometryProperty + ">");
 	}
 	
 	private void FillPolygonGeometries (StringBuilder requestData, JSONObject geometries) throws JSONException
 	{
-		try {
-			String tmp = "";
-			JSONArray data = geometries.getJSONArray("data");
-			requestData.append("<" + geometryProperty + "><gml:MultiPolygon xmlns:gml='http://www.opengis.net/gml' srsName='http://www.opengis.net/gml/srs/epsg.xml#3067'>");
-			
-			for (int i = 0; i < data.length(); i++)
-			{
-				requestData.append("<gml:polygonMember><gml:Polygon>");
-				JSONArray arr = data.getJSONArray(i);
-				for (int j = 0; j < arr.length(); j++)
-				{
-					if (j > 0) {
-						requestData.append("<gml:interior><gml:LinearRing><gml:posList>");
-					} else {
-						requestData.append("<gml:exterior><gml:LinearRing><gml:posList>");
-					}
-					
-					JSONArray arr2 = arr.getJSONArray(j);
-					for (int k = 0; k < arr2.length(); k++)
-					{
-						requestData.append(arr2.getJSONObject(k).getString("x") + " " + arr2.getJSONObject(k).getString("y"));
-						if (k < (arr2.length()-1))
-						{
-							requestData.append(" ");
-						}
-					}
-					
-					if (j > 0) {
-						requestData.append("</gml:posList></gml:LinearRing></gml:interior>");
-					} else {
-						requestData.append("</gml:posList></gml:LinearRing></gml:exterior>");
+		JSONArray data = geometries.getJSONArray("data");
+		requestData.append("<" + geometryProperty
+				+ "><gml:MultiPolygon xmlns:gml='http://www.opengis.net/gml' srsName='http://www.opengis.net/gml/srs/epsg.xml#3067'>");
+
+		for (int i = 0; i < data.length(); i++) {
+			requestData.append("<gml:polygonMember><gml:Polygon>");
+			JSONArray arr = data.getJSONArray(i);
+			for (int j = 0; j < arr.length(); j++) {
+				if (j > 0) {
+					requestData.append("<gml:interior><gml:LinearRing><gml:posList>");
+				} else {
+					requestData.append("<gml:exterior><gml:LinearRing><gml:posList>");
+				}
+
+				JSONArray arr2 = arr.getJSONArray(j);
+				for (int k = 0; k < arr2.length(); k++) {
+					requestData
+							.append(arr2.getJSONObject(k).getString("x") + " " + arr2.getJSONObject(k).getString("y"));
+					if (k < (arr2.length() - 1)) {
+						requestData.append(" ");
 					}
 				}
-				requestData.append("</gml:Polygon></gml:polygonMember>");
+
+				if (j > 0) {
+					requestData.append("</gml:posList></gml:LinearRing></gml:interior>");
+				} else {
+					requestData.append("</gml:posList></gml:LinearRing></gml:exterior>");
+				}
 			}
-			requestData.append("</gml:MultiPolygon></" + geometryProperty + ">");
+			requestData.append("</gml:Polygon></gml:polygonMember>");
 		}
-		catch (JSONException ex)
-		{
-			throw ex;
-		}
+		requestData.append("</gml:MultiPolygon></" + geometryProperty + ">");
 	}
 	
 	private void ClearLayerTiles(int layerId)
