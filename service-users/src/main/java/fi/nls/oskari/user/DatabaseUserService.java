@@ -7,6 +7,7 @@ import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.service.UserService;
 import org.apache.commons.codec.digest.DigestUtils;
+import org.springframework.security.crypto.bcrypt.BCrypt;
 
 import java.util.*;
 
@@ -15,6 +16,7 @@ public class DatabaseUserService extends UserService {
     private IbatisUserService userService = new IbatisUserService();
 
     private static final String ERR_USER_MISSING = "User was null";
+    private static final int BCRYPT_PASSWORD_LENGTH = 60;
 
     private static final Logger log = LogFactory.getLogger(DatabaseUserService.class);
 
@@ -28,13 +30,33 @@ public class DatabaseUserService extends UserService {
     @Override
     public User login(final String user, final String pass) throws ServiceException {
         try {
-            final String hashedPass = "MD5:" + DigestUtils.md5Hex(pass);
-            final String username = userService.login(user, hashedPass);
-            log.debug("Tried to login user with:", user, "/", pass, "-> ", hashedPass, "- Got username:", username);
-            if(username == null) {
+            final String expectedHashedPassword = userService.getPassword(user);
+            if (expectedHashedPassword == null) {
                 return null;
             }
-            return getUser(username);
+            
+            final String username;
+            if (expectedHashedPassword.startsWith("MD5:")) {
+                final String hashedPass = "MD5:" + DigestUtils.md5Hex(pass);
+                username = userService.login(user, hashedPass);
+                log.debug("Tried to login user with:", user, "/", pass, "-> ", hashedPass, "- Got username:", username);
+                if (username == null) {
+                    return null;
+                }
+            }
+            else if (expectedHashedPassword.length() == BCRYPT_PASSWORD_LENGTH) {
+                log.debug("Tried to login user:", user, "/", pass, " with BCrypt password");
+                if (!BCrypt.checkpw(pass, expectedHashedPassword)) {
+                    return null;
+                }
+                username = user;
+            }
+            else {
+                log.error("Unknown password hash format for user ", user);
+                return null;
+            }
+            
+           	return getUser(username);
         }
         catch (Exception ex) {
             throw new ServiceException("Unable to handle login", ex);
@@ -206,13 +228,13 @@ public class DatabaseUserService extends UserService {
 
     @Override
     public void setUserPassword(String username, String password) throws ServiceException {
-        String hashed = "MD5:" + DigestUtils.md5Hex(password);
+        String hashed = BCrypt.hashpw(password, BCrypt.gensalt());
         userService.setPassword(username, hashed);
     }
 
     @Override
     public void updateUserPassword(String username, String password) throws ServiceException {
-        String hashed = "MD5:" + DigestUtils.md5Hex(password);
+        String hashed = BCrypt.hashpw(password, BCrypt.gensalt());
         userService.updatePassword(username, hashed);
     }
 
