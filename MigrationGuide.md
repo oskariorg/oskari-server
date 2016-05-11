@@ -7,6 +7,10 @@
 There are some improvements in geojson parsing and new methods for parsing WMS/WFS capabilities.
 Basic oskari-server source is not modified because of this upgrade, only some unit tests.
 
+### toolbar in embedded maps
+
+The configuration has changed for any published maps with toolbar. Automatic migration is done as part of the core 
+migration.
 
 ## 1.35.0
 
