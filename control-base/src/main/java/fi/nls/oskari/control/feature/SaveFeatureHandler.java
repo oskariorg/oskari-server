@@ -3,6 +3,7 @@ package fi.nls.oskari.control.feature;
 import java.io.IOException;
 import java.util.Set;
 
+import fi.nls.oskari.util.JSONHelper;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.auth.AuthScope;
@@ -60,6 +61,7 @@ public class SaveFeatureHandler extends ActionHandler {
 
 		try {
 			JSONObject jsonObject = new JSONObject(featureData);
+			String srsName = JSONHelper.getStringFromJSON(jsonObject, "srsName", "http://www.opengis.net/gml/srs/epsg.xml#3067");
 			OskariLayer lay = layerService.find(jsonObject.getString("layerId"));
 			WFSLayerConfiguration lc = layerConfigurationService.findConfiguration(lay.getId());
 			String url = lc.getURL();
@@ -77,7 +79,7 @@ public class SaveFeatureHandler extends ActionHandler {
 				}
 				
 				if (jsonObject.has("geometries")) {
-					FillGeometries(requestData, jsonObject.getJSONObject("geometries"));
+					FillGeometries(requestData, jsonObject.getJSONObject("geometries"), srsName);
 				};
 				requestData.append("<ogc:Filter><ogc:FeatureId fid='" + jsonObject.getString("featureId") + "'/></ogc:Filter></wfs:Update></wfs:Transaction>");
 				
@@ -121,23 +123,23 @@ public class SaveFeatureHandler extends ActionHandler {
 		}
 	}
 	
-	private void FillGeometries(StringBuilder requestData, JSONObject geometries) throws JSONException
+	private void FillGeometries(StringBuilder requestData, JSONObject geometries, String srsName) throws JSONException
 	{
 		String geometryType = geometries.getString("type");
 		if (geometryType.equals("multipoint")) {
-			FillMultiPointGeometries(requestData, geometries);
+			FillMultiPointGeometries(requestData, geometries, srsName);
 		} else if (geometryType.equals("multilinestring")) {
-			FillLineStringGeometries(requestData, geometries);
+			FillLineStringGeometries(requestData, geometries, srsName);
 		} else if (geometryType.equals("multipolygon")) {
-			FillPolygonGeometries(requestData, geometries);
+			FillPolygonGeometries(requestData, geometries, srsName);
 		}
 	}
 	
-	private void FillMultiPointGeometries (StringBuilder requestData, JSONObject geometries) throws JSONException
+	private void FillMultiPointGeometries (StringBuilder requestData, JSONObject geometries, String srsName) throws JSONException
 	{
 		JSONArray data = geometries.getJSONArray("data");
 		requestData.append("<wfs:Property><wfs:Name>" + geometryProperty
-				+ "</wfs:Name><wfs:Value><gml:MultiPoint xmlns:gml='http://www.opengis.net/gml' srsName='http://www.opengis.net/gml/srs/epsg.xml#3067'>");
+				+ "</wfs:Name><wfs:Value><gml:MultiPoint xmlns:gml='http://www.opengis.net/gml' srsName='" + srsName + "'>");
 		for (int i = 0; i < data.length(); i++) {
 			requestData.append("<gml:pointMember><gml:Point><gml:coordinates decimal=\".\" cs=\",\" ts=\" \">"
 					+ data.getJSONObject(i).getString("x") + "," + data.getJSONObject(i).getString("y")
@@ -146,11 +148,11 @@ public class SaveFeatureHandler extends ActionHandler {
 		requestData.append("</gml:MultiPoint></wfs:Value></wfs:Property>");
 	}
 	
-	private void FillLineStringGeometries (StringBuilder requestData, JSONObject geometries) throws JSONException
+	private void FillLineStringGeometries (StringBuilder requestData, JSONObject geometries, String srsName) throws JSONException
 	{
 		JSONArray data = geometries.getJSONArray("data");
 		requestData.append("<wfs:Property><wfs:Name>" + geometryProperty
-				+ "</wfs:Name><wfs:Value><gml:MultiLineString xmlns:gml='http://www.opengis.net/gml' srsName='http://www.opengis.net/gml/srs/epsg.xml#3067'>");
+				+ "</wfs:Name><wfs:Value><gml:MultiLineString xmlns:gml='http://www.opengis.net/gml' srsName='" + srsName + "'>");
 		for (int i = 0; i < data.length(); i++) {
 			requestData
 					.append("<gml:lineStringMember><gml:LineString><gml:coordinates decimal=\".\" cs=\",\" ts=\" \">");
@@ -166,11 +168,11 @@ public class SaveFeatureHandler extends ActionHandler {
 		requestData.append("</gml:MultiLineString></wfs:Value></wfs:Property>");
 	}
 	
-	private void FillPolygonGeometries (StringBuilder requestData, JSONObject geometries) throws JSONException
+	private void FillPolygonGeometries (StringBuilder requestData, JSONObject geometries, String srsName) throws JSONException
 	{
 		JSONArray data = geometries.getJSONArray("data");
 		requestData.append("<wfs:Property><wfs:Name>" + geometryProperty
-				+ "</wfs:Name><wfs:Value><gml:MultiPolygon xmlns:gml='http://www.opengis.net/gml' srsName='http://www.opengis.net/gml/srs/epsg.xml#3067'>");
+				+ "</wfs:Name><wfs:Value><gml:MultiPolygon xmlns:gml='http://www.opengis.net/gml' srsName='" + srsName + "'>");
 		for (int i = 0; i < data.length(); i++) {
 			requestData.append("<gml:polygonMember><gml:Polygon>");
 			JSONArray arr = data.getJSONArray(i);
