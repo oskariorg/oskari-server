@@ -2,6 +2,39 @@
 
 ## 1.36.0
 
+### Application changes to JSP-files
+
+If you have a custom JSP in your Oskari installation you will need to modify it a bit:
+
+The default sample servlet now links the following css:
+
+    <link
+            rel="stylesheet"
+            type="text/css"
+            href="/Oskari/resources/css/forms.css"/>
+    <link
+            rel="stylesheet"
+            type="text/css"
+            href="/Oskari/resources/css/portal.css"/>
+    <link
+            rel="stylesheet"
+            type="text/css"
+            href="/Oskari${path}/icons.css"/>
+    <link
+            rel="stylesheet"
+            type="text/css"
+            href="/Oskari${path}/css/overwritten.css"/>
+
+Forms.css and portal.css should be same in all applications so they are linked from under resources/css and can be removed from the 
+Oskari/applications/..../app/css folder. overwritten.css is the place to make any application specific tuning of the css.
+
+Icons.css is generated in minifier build and it has been moved from app/css/icons.css to app/icons.css. The corresponding png-sprite
+  has been moved from app/icons/icons.png to app/icons.png. The app/icons folder is no longer needed since the default iconset 
+  is located in Oskari/resources/icons. If you want to override an icon image in an application, you can place a file with 
+  the same name in app/icons directory to override any icon in Oskari/resources/icons.
+
+You should also remove any links to oskari_lang_all.js in JSP as it's no longer generated and is part of all the language files. 
+
 ### Geotools 14.2 upgrade (was 13.1)
 
 There are some improvements in geojson parsing and new methods for parsing WMS/WFS capabilities.
