@@ -45,6 +45,7 @@ public class GetAppSetupHandler extends ActionHandler {
     public static final String VIEW_DATA = "viewData";
     public static final String STATE = "state";
 
+    private static final String KEY_ENV = "env";
     private static final String KEY_STARTUP = "startupSequence";
     private static final String KEY_CONFIGURATION = "configuration";
 
@@ -290,12 +291,12 @@ UNRESTRICTED_USAGE_ROLE = PropertyUtil.get("view.published.usage.unrestrictedRol
         // write response
         try {
             JSONObject appSetup = new JSONObject();
+            appSetup.put(KEY_ENV, EnvHelper.getEnvironmentJSON(params));
             appSetup.put(KEY_STARTUP, startupSequence);
             appSetup.put(KEY_CONFIGURATION, configuration);
             ResponseHelper.writeResponse(params, appSetup);
         } catch (JSONException jsonex) {
-            throw new ActionException("Malformed startup sequence/config!",
-                    jsonex);
+            throw new ActionException("Malformed startup sequence/config!", jsonex);
         }
     }
 
