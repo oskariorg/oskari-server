@@ -14,11 +14,9 @@ import java.text.DecimalFormatSymbols;
 import java.util.Locale;
 
 /**
- * Created with IntelliJ IDEA.
- * User: TMIKKOLAINEN
- * Date: 27.9.2013
- * Time: 11:17
+ * @deprecated GetAppSetup provides this information
  */
+@Deprecated
 @OskariActionRoute("GetSupportedLocales")
 public class GetSupportedLocalesHandler extends ActionHandler {
     private static final String KEY_DECIMAL_SEPARATORS = "decimalSeparators";
