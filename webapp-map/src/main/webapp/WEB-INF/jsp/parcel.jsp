@@ -12,7 +12,7 @@
     <link
             rel="stylesheet"
             type="text/css"
-            href="/Oskari${path}/css/icons.css"/>
+            href="/Oskari${path}/icons.css"/>
     <link
             rel="stylesheet"
             type="text/css"
@@ -151,17 +151,10 @@
 
 <script type="text/javascript">
     var ajaxUrl = '${ajaxUrl}&';
-    var viewId = '${viewId}';
-    var language = '${language}';
-    var preloaded = ${preloaded};
     var controlParams = ${controlParams};
 </script>
 <script type="text/javascript"
         src="/Oskari/bundles/bundle.js">
-</script>
-
-<!-- Q -->
-<script type="text/javascript" src="${urlPrefix}/Oskari/libraries/q/q.min.js">
 </script>
 
 <c:if test="${preloaded}">
@@ -176,9 +169,6 @@
             href="/Oskari${path}/oskari.min.css"
             />
     <%--language files --%>
-    <script type="text/javascript"
-            src="/Oskari${path}/oskari_lang_all.js">
-    </script>
     <script type="text/javascript"
             src="/Oskari${path}/oskari_lang_${language}.js">
     </script>

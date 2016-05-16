@@ -154,7 +154,6 @@
 
 <script type="text/javascript">
     var ajaxUrl = '${ajaxUrl}';
-    var language = '${language}';
     var controlParams = ${controlParams};
 </script>
 
