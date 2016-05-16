@@ -154,9 +154,7 @@
 
 <script type="text/javascript">
     var ajaxUrl = '${ajaxUrl}';
-    var viewId = '${viewId}';
     var language = '${language}';
-    var preloaded = ${preloaded};
     var controlParams = ${controlParams};
 </script>
 
