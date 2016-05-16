@@ -1,10 +1,6 @@
 {
   "env": {
-    "decimalSeparators": {
-      "en_EN": ".",
-      "fi_FI": ",",
-      "sv_SE": ","
-    },
+    "decimalSeparator": ".",
     "lang": "en",
     "locales": [
       "fi_FI",
