@@ -1,2 +1,0 @@
-drop table oskari_statistical_datasource_plugins;
-drop table oskari_statistical_plugin_layers;
