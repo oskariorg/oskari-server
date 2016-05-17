@@ -5,7 +5,12 @@
 ### Generic
 
 Geotools version has been updated to 14.2.
+Custom JSP-files need to be updated.
 See MigrationGuide.md for details.
+
+### GetAppSetup
+
+AppSetup now includes generic information about the environment like languages and available locales.
 
 ### service-map
 

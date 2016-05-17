@@ -59,7 +59,7 @@
             #login input[type="text"], #login input[type="password"] {
                 width: 90%;
                 margin-bottom: 5px;
-                background-image: url("/Oskari${path}/images/forms/input_shadow.png");
+                background-image: url("/Oskari/resources/images/forms/input_shadow.png");
                 background-repeat: no-repeat;
                 padding-left: 5px;
                 padding-right: 5px;
@@ -154,7 +154,6 @@
 
 <script type="text/javascript">
     var ajaxUrl = '${ajaxUrl}';
-    var language = '${language}';
     var controlParams = ${controlParams};
 </script>
 

@@ -54,10 +54,11 @@ These can be replaced with the following:
 
     <script type="text/javascript">
         var ajaxUrl = '${ajaxUrl}';
-        var language = '${language}';
         var controlParams = ${controlParams};
     </script>
 ------------------------
+Note that you need to remove any references to these globals (language, viewId, preloaded) in index.js as well (in the frontend)
+
 See https://github.com/nls-oskari/oskari/blob/master/ReleaseNotes.md#Default-iconsets-for-applications for more details on 
  frontend changes.
 

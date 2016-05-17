@@ -48,14 +48,14 @@ public class GetStatsTileHandler extends ActionHandler {
     private final VisualizationService service = new VisualizationService();
     private String geoserverUser = null;
     private String geoserverPass = null;
-    private String sldServerUrl = null;
+    private String geoserverUrl = null;
 
     @Override
     public void init() {
         super.init();
-        geoserverUser = PropertyUtil.get("statistics.user");
-        geoserverPass = PropertyUtil.get("statistics.password");
-        sldServerUrl = PropertyUtil.get("statistics.sld.server", PropertyUtil.get("oskari.domain"));
+        geoserverUser = PropertyUtil.getOptional("statistics.user");
+        geoserverPass = PropertyUtil.getOptional("statistics.password");
+        geoserverUrl = PropertyUtil.getOptional("statistics.geoserver.wms.url");
     }
 
     public void handleAction(final ActionParameters params)
@@ -127,6 +127,14 @@ public class GetStatsTileHandler extends ActionHandler {
         final OskariLayer layer = mapLayerService.find(layerId);
         try {
             if (layer != null && OskariLayer.TYPE_STATS.equals(layer.getType())) {
+                if(geoserverUrl != null) {
+                    // Force url and credentials from properties
+                    // this is a workaround for paikkatietoikkuna.fi, sorry about that
+                    // TODO: remove this override
+                    layer.setUrl(geoserverUrl);
+                    layer.setUsername(geoserverUser);
+                    layer.setPassword(geoserverPass);
+                }
                 final String url = IOHelper.constructUrl(layer.getUrl(), wmsParams);
                 // Note: The tile URL is the WMS from the oskari_maplayer table, and the statistical features are fetched
                 // from the WFS URL given in the attributes JSON, for example:
