@@ -121,7 +121,7 @@
 <!-- ############# /css ################# -->
 <nav id="maptools">
     <div id="logoarea">
-        <img src="/Oskari/resources/parcel/images/logo.png" alt="Maanmittauslaitos" width="153" height="76">
+        <img src="/Oskari/applications/parcel/resources/images/logo.png" alt="Maanmittauslaitos" width="153" height="76">
     </div>
     <div id="loginbar">
     </div>
