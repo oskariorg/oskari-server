@@ -1,0 +1,7020 @@
+[
+{
+"id": 833,
+"code": "1",
+"category": "ALUEHALLINTOVIRASTO",
+"title": {
+"fi": "Etelä-Suomen AVIn alue",
+"en": "Area for Southern Finland AVI",
+"sv": "Området för Södra Finlands RFV"
+}
+,
+"memberOf": []
+,
+"uri": "http://www.yso.fi/onto/kunnat/ahv1"
+} ,
+{
+"id": 834,
+"code": "2",
+"category": "ALUEHALLINTOVIRASTO",
+"title": {
+"fi": "Lounais-Suomen AVIn alue",
+"en": "Area for Southwestern Finland AVI",
+"sv": "Området för Sydvästra Finlands RFV"
+}
+,
+"memberOf": []
+,
+"uri": "http://www.yso.fi/onto/kunnat/ahv2"
+} ,
+{
+"id": 835,
+"code": "3",
+"category": "ALUEHALLINTOVIRASTO",
+"title": {
+"fi": "Itä-Suomen AVIn alue",
+"en": "Area for Eastern Finland AVI",
+"sv": "Området för Östra Finlands RFV"
+}
+,
+"memberOf": []
+,
+"uri": "http://www.yso.fi/onto/kunnat/ahv3"
+} ,
+{
+"id": 836,
+"code": "4",
+"category": "ALUEHALLINTOVIRASTO",
+"title": {
+"fi": "Länsi- ja Sisä-Suomen AVIn alue",
+"en": "Area for Western and Inland Finland AVI",
+"sv": "Området för Västra och Inre Finlands RFV "
+}
+,
+"memberOf": []
+,
+"uri": "http://www.yso.fi/onto/kunnat/ahv4"
+} ,
+{
+"id": 837,
+"code": "5",
+"category": "ALUEHALLINTOVIRASTO",
+"title": {
+"fi": "Pohjois-Suomen AVIn alue",
+"en": "Area for Northern Finland AVI",
+"sv": "Området för Norra Finlands RFV"
+}
+,
+"memberOf": []
+,
+"uri": "http://www.yso.fi/onto/kunnat/ahv5"
+} ,
+{
+"id": 838,
+"code": "6",
+"category": "ALUEHALLINTOVIRASTO",
+"title": {
+"fi": "Lapin AVIn alue",
+"en": "Area for Lapland AVI",
+"sv": "Området för Lapplands RFV"
+}
+,
+"memberOf": []
+,
+"uri": "http://www.yso.fi/onto/kunnat/ahv6"
+} ,
+{
+"id": 839,
+"code": "7",
+"category": "ALUEHALLINTOVIRASTO",
+"title": {
+"fi": "Ahvenanmaan valtionviraston alue",
+"en": "Area for the State Department of Åland",
+"sv": "Området för statens ämbetsverk på Åland"
+}
+,
+"memberOf": []
+,
+"uri": "http://www.yso.fi/onto/kunnat/ahv7"
+} ,
+{
+"id": 921,
+"code": "01",
+"category": "ELY-KESKUS",
+"title": {
+"fi": "Uudenmaan ELY-keskus",
+"en": "Uusimaa ELY Centre",
+"sv": "Nylands ELY-central"
+}
+,
+"memberOf": []
+} ,
+{
+"id": 922,
+"code": "02",
+"category": "ELY-KESKUS",
+"title": {
+"fi": "Varsinais-Suomen ELY-keskus",
+"en": "Southwest Finland ELY Centre",
+"sv": "Egentliga Finlands ELY-central"
+}
+,
+"memberOf": []
+} ,
+{
+"id": 923,
+"code": "03",
+"category": "ELY-KESKUS",
+"title": {
+"fi": "Satakunnan ELY-keskus",
+"en": "Satakunta ELY Centre",
+"sv": "Satakunta ELY-central"
+}
+,
+"memberOf": []
+} ,
+{
+"id": 924,
+"code": "04",
+"category": "ELY-KESKUS",
+"title": {
+"fi": "Hämeen ELY-keskus",
+"en": "Häme ELY Centre",
+"sv": "Tavastlands ELY-central"
+}
+,
+"memberOf": []
+} ,
+{
+"id": 925,
+"code": "05",
+"category": "ELY-KESKUS",
+"title": {
+"fi": "Pirkanmaan ELY-keskus",
+"en": "Pirkanmaa ELY Centre",
+"sv": "Birkalands ELY-central"
+}
+,
+"memberOf": []
+} ,
+{
+"id": 926,
+"code": "06",
+"category": "ELY-KESKUS",
+"title": {
+"fi": "Kaakkois-Suomen ELY-keskus",
+"en": "Southeast Finland ELY Centre",
+"sv": "Sydöstra Finlands ELY-central"
+}
+,
+"memberOf": []
+} ,
+{
+"id": 927,
+"code": "07",
+"category": "ELY-KESKUS",
+"title": {
+"fi": "Etelä-Savon ELY-keskus",
+"en": "South Savo ELY Centre",
+"sv": "Södra Savolax ELY-central"
+}
+,
+"memberOf": []
+} ,
+{
+"id": 928,
+"code": "08",
+"category": "ELY-KESKUS",
+"title": {
+"fi": "Pohjois-Savon ELY-keskus",
+"en": "North Savo ELY Centre",
+"sv": "Norra Savolax ELY-central"
+}
+,
+"memberOf": []
+} ,
+{
+"id": 929,
+"code": "09",
+"category": "ELY-KESKUS",
+"title": {
+"fi": "Pohjois-Karjalan ELY-keskus",
+"en": "North Karelia ELY Centre",
+"sv": "Norra Karelens ELY-central"
+}
+,
+"memberOf": []
+} ,
+{
+"id": 930,
+"code": "10",
+"category": "ELY-KESKUS",
+"title": {
+"fi": "Keski-Suomen ELY-keskus",
+"en": "Central Finland ELY Centre",
+"sv": "Mellersta Finlands ELY-central"
+}
+,
+"memberOf": []
+} ,
+{
+"id": 931,
+"code": "11",
+"category": "ELY-KESKUS",
+"title": {
+"fi": "Etelä-Pohjanmaan ELY-keskus",
+"en": "South Ostrobothnia ELY Centre",
+"sv": "Södra Österbottens ELY-central"
+}
+,
+"memberOf": []
+} ,
+{
+"id": 932,
+"code": "12",
+"category": "ELY-KESKUS",
+"title": {
+"fi": "Pohjanmaan ELY-keskus",
+"en": "Ostrobothnia ELY Centre",
+"sv": "Österbottens ELY-central"
+}
+,
+"memberOf": []
+} ,
+{
+"id": 933,
+"code": "13",
+"category": "ELY-KESKUS",
+"title": {
+"fi": "Pohjois-Pohjanmaan ELY-keskus",
+"en": "North Ostrobothnia ELY Centre",
+"sv": "Norra Österbottens ELY-central"
+}
+,
+"memberOf": []
+} ,
+{
+"id": 934,
+"code": "14",
+"category": "ELY-KESKUS",
+"title": {
+"fi": "Kainuun ELY-keskus",
+"en": "Kainuu ELY Centre",
+"sv": "Kajanalands ELY-central"
+}
+,
+"memberOf": []
+} ,
+{
+"id": 935,
+"code": "15",
+"category": "ELY-KESKUS",
+"title": {
+"fi": "Lapin ELY-keskus",
+"en": "Lapland ELY Centre",
+"sv": "Lapplands ELY-central"
+}
+,
+"memberOf": []
+} ,
+{
+"id": 936,
+"code": "16",
+"category": "ELY-KESKUS",
+"title": {
+"fi": "Ahvenanmaa",
+"en": "Åland",
+"sv": "Åland"
+}
+,
+"memberOf": []
+} ,
+{
+"id": 901,
+"code": "1",
+"category": "ERVA",
+"title": {
+"fi": "Helsingin Yliopistosairaalan erityisvastuualue",
+"en": "Helsinki University hospital special responsibility area ",
+"sv": "Specialupptagningsområdet för Helsingfors universitetssjukhus"
+}
+,
+"memberOf": []
+} ,
+{
+"id": 902,
+"code": "2",
+"category": "ERVA",
+"title": {
+"fi": "Turun Yliopistosairaalan erityisvastuualue",
+"en": "Turku University hospital special responsibility area",
+"sv": "Specialupptagningsområdet för Åbo universitetssjukhus"
+}
+,
+"memberOf": []
+} ,
+{
+"id": 903,
+"code": "3",
+"category": "ERVA",
+"title": {
+"fi": "Tampereen Yliopistosairaalan erityisvastuualue",
+"en": "Tampere University hospital special responsibility area",
+"sv": "Specialupptagningsområdet för Tammerfors univesitetssjukhus"
+}
+,
+"memberOf": []
+} ,
+{
+"id": 904,
+"code": "4",
+"category": "ERVA",
+"title": {
+"fi": "Kuopion Yliopistosairaalan erityisvastuualue",
+"en": "Kuopio University hospital special responsibility area",
+"sv": "Specialupptagningsområdet för Kuopio universitetssjukhus"
+}
+,
+"memberOf": []
+} ,
+{
+"id": 905,
+"code": "5",
+"category": "ERVA",
+"title": {
+"fi": "Oulun Yliopistosairaalan erityisvastuualue",
+"en": "Oulu University hospital special responsibility area",
+"sv": "Specialupptagningsområdet för Uleåborg universitetssjukhus"
+}
+,
+"memberOf": []
+} ,
+{
+"id": 1033,
+"code": "33",
+"category": "EURALUEET",
+"title": {
+"fi": "Pohjoismaat",
+"en": "Nordic countries",
+"sv": "Norden"
+}
+,
+"memberOf": []
+} ,
+{
+"id": 1007,
+"code": "040",
+"category": "EUROOPPA",
+"title": {
+"fi": "Itävalta",
+"en": "Austria",
+"sv": "Österrike"
+}
+,
+"memberOf": [1030, 1031, 1032]
+} ,
+{
+"id": 1002,
+"code": "056",
+"category": "EUROOPPA",
+"title": {
+"fi": "Belgia",
+"en": "Belgium",
+"sv": "Belgien"
+}
+,
+"memberOf": [1030, 1031, 1032]
+} ,
+{
+"id": 1003,
+"code": "100",
+"category": "EUROOPPA",
+"title": {
+"fi": "Bulgaria",
+"en": "Bulgaria",
+"sv": "Bulgarien"
+}
+,
+"memberOf": [1032]
+} ,
+{
+"id": 1009,
+"code": "196",
+"category": "EUROOPPA",
+"title": {
+"fi": "Kypros",
+"en": "Cyprus",
+"sv": "Cypern"
+}
+,
+"memberOf": [1031, 1032]
+} ,
+{
+"id": 1024,
+"code": "203",
+"category": "EUROOPPA",
+"title": {
+"fi": "Tsekki",
+"en": "Czech Republic",
+"sv": "Tjeckien"
+}
+,
+"memberOf": [1031, 1032]
+} ,
+{
+"id": 1023,
+"code": "208",
+"category": "EUROOPPA",
+"title": {
+"fi": "Tanska",
+"en": "Denmark",
+"sv": "Danmark"
+}
+,
+"memberOf": [1030, 1031, 1032, 1033]
+} ,
+{
+"id": 1026,
+"code": "233",
+"category": "EUROOPPA",
+"title": {
+"fi": "Viro",
+"en": "Estonia",
+"sv": "Estland"
+}
+,
+"memberOf": [1031, 1032]
+} ,
+{
+"id": 1022,
+"code": "246",
+"category": "EUROOPPA",
+"title": {
+"fi": "Suomi",
+"en": "Finland",
+"sv": "Finland"
+}
+,
+"memberOf": [1030, 1031, 1032, 1033]
+} ,
+{
+"id": 1016,
+"code": "250",
+"category": "EUROOPPA",
+"title": {
+"fi": "Ranska",
+"en": "France",
+"sv": "Frankrike"
+}
+,
+"memberOf": [1030, 1031, 1032]
+} ,
+{
+"id": 1019,
+"code": "276",
+"category": "EUROOPPA",
+"title": {
+"fi": "Saksa",
+"en": "Germany",
+"sv": "Tyskland"
+}
+,
+"memberOf": [1030, 1031, 1032]
+} ,
+{
+"id": 1030,
+"code": "30",
+"category": "EUROOPPA",
+"title": {
+"fi": "EU-15",
+"en": "EU-15",
+"sv": "EU-15-länderna"
+}
+,
+"memberOf": []
+} ,
+{
+"id": 1008,
+"code": "300",
+"category": "EUROOPPA",
+"title": {
+"fi": "Kreikka",
+"en": "Greece",
+"sv": "Grekland"
+}
+,
+"memberOf": [1030, 1031, 1032]
+} ,
+{
+"id": 1031,
+"code": "31",
+"category": "EUROOPPA",
+"title": {
+"fi": "EU-25",
+"en": "EU-25",
+"sv": "EU-25-länderna"
+}
+,
+"memberOf": []
+} ,
+{
+"id": 1032,
+"code": "32",
+"category": "EUROOPPA",
+"title": {
+"fi": "EU-27",
+"en": "EU-27",
+"sv": "EU-27-länderna"
+}
+,
+"memberOf": []
+} ,
+{
+"id": 1025,
+"code": "348",
+"category": "EUROOPPA",
+"title": {
+"fi": "Unkari",
+"en": "Hungary",
+"sv": "Ungern"
+}
+,
+"memberOf": [1031, 1032]
+} ,
+{
+"id": 1028,
+"code": "352",
+"category": "EUROOPPA",
+"title": {
+"fi": "Islanti",
+"en": "Iceland",
+"sv": "Island"
+}
+,
+"memberOf": [1033]
+} ,
+{
+"id": 1005,
+"code": "372",
+"category": "EUROOPPA",
+"title": {
+"fi": "Irlanti",
+"en": "Ireland",
+"sv": "Irland"
+}
+,
+"memberOf": [1030, 1031, 1032]
+} ,
+{
+"id": 1006,
+"code": "380",
+"category": "EUROOPPA",
+"title": {
+"fi": "Italia",
+"en": "Italy",
+"sv": "Italien"
+}
+,
+"memberOf": [1030, 1031, 1032]
+} ,
+{
+"id": 1010,
+"code": "428",
+"category": "EUROOPPA",
+"title": {
+"fi": "Latvia",
+"en": "Latvia",
+"sv": "Lettland"
+}
+,
+"memberOf": [1031, 1032]
+} ,
+{
+"id": 1034,
+"code": "438",
+"category": "EUROOPPA",
+"title": {
+"fi": "Liechtenstein",
+"en": "Liechtenstein",
+"sv": "Liechtenstein"
+}
+,
+"memberOf": []
+} ,
+{
+"id": 1011,
+"code": "440",
+"category": "EUROOPPA",
+"title": {
+"fi": "Liettua",
+"en": "Lithuania",
+"sv": "Litauen"
+}
+,
+"memberOf": [1031, 1032]
+} ,
+{
+"id": 1012,
+"code": "442",
+"category": "EUROOPPA",
+"title": {
+"fi": "Luxemburg",
+"en": "Luxembourg",
+"sv": "Luxemburg"
+}
+,
+"memberOf": [1030, 1031, 1032]
+} ,
+{
+"id": 1013,
+"code": "470",
+"category": "EUROOPPA",
+"title": {
+"fi": "Malta",
+"en": "Malta",
+"sv": "Malta"
+}
+,
+"memberOf": [1031, 1032]
+} ,
+{
+"id": 1060,
+"code": "5",
+"category": "EUROOPPA",
+"title": {
+"fi": "EU-28",
+"en": "EU-28",
+"sv": "EU-28-länderna"
+}
+,
+"memberOf": []
+} ,
+{
+"id": 1001,
+"code": "528",
+"category": "EUROOPPA",
+"title": {
+"fi": "Alankomaat",
+"en": "Netherlands",
+"sv": "Nederländerna"
+}
+,
+"memberOf": [1030, 1031, 1032]
+} ,
+{
+"id": 1029,
+"code": "578",
+"category": "EUROOPPA",
+"title": {
+"fi": "Norja",
+"en": "Norway",
+"sv": "Norge"
+}
+,
+"memberOf": [1033]
+} ,
+{
+"id": 1015,
+"code": "616",
+"category": "EUROOPPA",
+"title": {
+"fi": "Puola",
+"en": "Poland",
+"sv": "Polen"
+}
+,
+"memberOf": [1031, 1032]
+} ,
+{
+"id": 1014,
+"code": "620",
+"category": "EUROOPPA",
+"title": {
+"fi": "Portugali",
+"en": "Portugal",
+"sv": "Portugal"
+}
+,
+"memberOf": [1030, 1031, 1032]
+} ,
+{
+"id": 1017,
+"code": "642",
+"category": "EUROOPPA",
+"title": {
+"fi": "Romania",
+"en": "Romania",
+"sv": "Rumänien"
+}
+,
+"memberOf": [1032]
+} ,
+{
+"id": 1020,
+"code": "703",
+"category": "EUROOPPA",
+"title": {
+"fi": "Slovakia",
+"en": "Slovakia",
+"sv": "Slovakien"
+}
+,
+"memberOf": [1031, 1032]
+} ,
+{
+"id": 1021,
+"code": "705",
+"category": "EUROOPPA",
+"title": {
+"fi": "Slovenia",
+"en": "Slovenia",
+"sv": "Slovenien"
+}
+,
+"memberOf": [1031, 1032]
+} ,
+{
+"id": 1004,
+"code": "724",
+"category": "EUROOPPA",
+"title": {
+"fi": "Espanja",
+"en": "Spain",
+"sv": "Spanien"
+}
+,
+"memberOf": [1030, 1031, 1032]
+} ,
+{
+"id": 1018,
+"code": "752",
+"category": "EUROOPPA",
+"title": {
+"fi": "Ruotsi",
+"en": "Sweden",
+"sv": "Sverige"
+}
+,
+"memberOf": [1030, 1031, 1032, 1033]
+} ,
+{
+"id": 1035,
+"code": "756",
+"category": "EUROOPPA",
+"title": {
+"fi": "Sveitsi",
+"en": "Switzerland",
+"sv": "Schweiz"
+}
+,
+"memberOf": []
+} ,
+{
+"id": 1036,
+"code": "813",
+"category": "EUROOPPA",
+"title": {
+"fi": "Grönlanti",
+"en": "Greenland",
+"sv": "Grönland"
+}
+,
+"memberOf": []
+} ,
+{
+"id": 1027,
+"code": "826",
+"category": "EUROOPPA",
+"title": {
+"fi": "Yhdistynyt Kuningaskunta",
+"en": "United Kingdom",
+"sv": "Storbritannien"
+}
+,
+"memberOf": [1030, 1031, 1032]
+} ,
+{
+"id": 1061,
+"code": "827",
+"category": "EUROOPPA",
+"title": {
+"fi": "Kroatia",
+"en": "Croatia",
+"sv": "Kroatien"
+}
+,
+"memberOf": []
+} ,
+{
+"id": 2,
+"code": "005",
+"category": "KUNTA",
+"title": {
+"fi": "Alajärvi",
+"en": "Alajärvi",
+"sv": "Alajärvi"
+}
+,
+"memberOf": [842, 658, 500, 572, 613, 727, 931, 836, 903]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k005"
+} ,
+{
+"id": 4,
+"code": "009",
+"category": "KUNTA",
+"title": {
+"fi": "Alavieska",
+"en": "Alavieska",
+"sv": "Alavieska"
+}
+,
+"memberOf": [843, 658, 933, 503, 585, 616, 727, 837, 905]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k009"
+} ,
+{
+"id": 5,
+"code": "010",
+"category": "KUNTA",
+"title": {
+"fi": "Alavus",
+"en": "Alavus",
+"sv": "Alavus"
+}
+,
+"memberOf": [842, 658, 931, 500, 570, 613, 727, 836, 903]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k010"
+} ,
+{
+"id": 9,
+"code": "016",
+"category": "KUNTA",
+"title": {
+"fi": "Asikkala",
+"en": "Asikkala",
+"sv": "Asikkala"
+}
+,
+"memberOf": [841, 658, 924, 833, 493, 536, 605, 727, 903]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k016"
+} ,
+{
+"id": 11,
+"code": "018",
+"category": "KUNTA",
+"title": {
+"fi": "Askola",
+"en": "Askola",
+"sv": "Askola"
+}
+,
+"memberOf": [658, 833, 840, 921, 488, 514, 629, 727, 901]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k018"
+} ,
+{
+"id": 12,
+"code": "019",
+"category": "KUNTA",
+"title": {
+"fi": "Aura",
+"en": "Aura",
+"sv": "Aura"
+}
+,
+"memberOf": [658, 922, 834, 841, 489, 520, 601, 727, 902]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k019"
+} ,
+{
+"id": 732,
+"code": "020",
+"category": "KUNTA",
+"title": {
+"fi": "Akaa",
+"en": "Akaa",
+"sv": "Akaa"
+}
+,
+"memberOf": [842, 492, 530, 604, 727, 903, 836, 658, 925]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k020"
+} ,
+{
+"id": 13,
+"code": "035",
+"category": "KUNTA",
+"title": {
+"fi": "Brändö",
+"en": "Brändö",
+"sv": "Brändö"
+}
+,
+"memberOf": [658, 936, 844, 506, 620, 699, 728, 839, 902]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k035"
+} ,
+{
+"id": 15,
+"code": "043",
+"category": "KUNTA",
+"title": {
+"fi": "Eckerö",
+"en": "Eckerö",
+"sv": "Eckerö"
+}
+,
+"memberOf": [658, 844, 506, 597, 620, 728, 936, 839, 902]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k043"
+} ,
+{
+"id": 18,
+"code": "046",
+"category": "KUNTA",
+"title": {
+"fi": "Enonkoski",
+"en": "Enonkoski",
+"sv": "Enonkoski"
+}
+,
+"memberOf": [658, 927, 843, 835, 496, 547, 608, 727, 904]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k046"
+} ,
+{
+"id": 19,
+"code": "047",
+"category": "KUNTA",
+"title": {
+"fi": "Enontekiö",
+"en": "Enontekiö",
+"sv": "Enontekis"
+}
+,
+"memberOf": [843, 658, 935, 505, 594, 619, 727, 838, 905]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k047"
+} ,
+{
+"id": 20,
+"code": "049",
+"category": "KUNTA",
+"title": {
+"fi": "Espoo",
+"en": "Espoo",
+"sv": "Esbo"
+}
+,
+"memberOf": [658, 921, 833, 840, 488, 510, 629, 727, 901]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k049"
+} ,
+{
+"id": 21,
+"code": "050",
+"category": "KUNTA",
+"title": {
+"fi": "Eura",
+"en": "Eura",
+"sv": "Eura"
+}
+,
+"memberOf": [842, 658, 834, 923, 490, 521, 602, 727, 902]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k050"
+} ,
+{
+"id": 22,
+"code": "051",
+"category": "KUNTA",
+"title": {
+"fi": "Eurajoki",
+"en": "Eurajoki",
+"sv": "Euraåminne"
+}
+,
+"memberOf": [842, 658, 834, 490, 521, 602, 727, 923, 902]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k051"
+} ,
+{
+"id": 23,
+"code": "052",
+"category": "KUNTA",
+"title": {
+"fi": "Evijärvi",
+"en": "Evijärvi",
+"sv": "Evijärvi"
+}
+,
+"memberOf": [842, 658, 931, 500, 572, 613, 727, 836, 903]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k052"
+} ,
+{
+"id": 24,
+"code": "060",
+"category": "KUNTA",
+"title": {
+"fi": "Finström",
+"en": "Finström",
+"sv": "Finström"
+}
+,
+"memberOf": [658, 936, 844, 506, 597, 620, 728, 839, 902]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k060"
+} ,
+{
+"id": 25,
+"code": "061",
+"category": "KUNTA",
+"title": {
+"fi": "Forssa",
+"en": "Forssa",
+"sv": "Forssa"
+}
+,
+"memberOf": [658, 924, 841, 833, 491, 527, 603, 727, 903]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k061"
+} ,
+{
+"id": 26,
+"code": "062",
+"category": "KUNTA",
+"title": {
+"fi": "Föglö",
+"en": "Föglö",
+"sv": "Föglö"
+}
+,
+"memberOf": [658, 844, 936, 506, 620, 699, 728, 839, 902]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k062"
+} ,
+{
+"id": 27,
+"code": "065",
+"category": "KUNTA",
+"title": {
+"fi": "Geta",
+"en": "Geta",
+"sv": "Geta"
+}
+,
+"memberOf": [658, 936, 844, 506, 597, 620, 728, 839, 902]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k065"
+} ,
+{
+"id": 28,
+"code": "069",
+"category": "KUNTA",
+"title": {
+"fi": "Haapajärvi",
+"en": "Haapajärvi",
+"sv": "Haapajärvi"
+}
+,
+"memberOf": [843, 658, 933, 837, 503, 584, 616, 727, 905]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k069"
+} ,
+{
+"id": 29,
+"code": "071",
+"category": "KUNTA",
+"title": {
+"fi": "Haapavesi",
+"en": "Haapavesi",
+"sv": "Haapavesi"
+}
+,
+"memberOf": [658, 843, 933, 837, 503, 583, 616, 727, 905]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k071"
+} ,
+{
+"id": 30,
+"code": "072",
+"category": "KUNTA",
+"title": {
+"fi": "Hailuoto",
+"en": "Hailuoto",
+"sv": "Karlö"
+}
+,
+"memberOf": [658, 933, 843, 837, 503, 579, 616, 727, 905]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k072"
+} ,
+{
+"id": 32,
+"code": "074",
+"category": "KUNTA",
+"title": {
+"fi": "Halsua",
+"en": "Halsua",
+"sv": "Halsua"
+}
+,
+"memberOf": [658, 843, 932, 836, 502, 577, 615, 727, 905]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k074"
+} ,
+{
+"id": 33,
+"code": "075",
+"category": "KUNTA",
+"title": {
+"fi": "Hamina",
+"en": "Hamina",
+"sv": "Fredrikshamn"
+}
+,
+"memberOf": [658, 833, 841, 926, 494, 540, 606, 727, 901]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k075"
+} ,
+{
+"id": 34,
+"code": "076",
+"category": "KUNTA",
+"title": {
+"fi": "Hammarland",
+"en": "Hammarland",
+"sv": "Hammarland"
+}
+,
+"memberOf": [658, 936, 844, 506, 597, 620, 728, 839, 902]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k076"
+} ,
+{
+"id": 35,
+"code": "077",
+"category": "KUNTA",
+"title": {
+"fi": "Hankasalmi",
+"en": "Hankasalmi",
+"sv": "Hankasalmi"
+}
+,
+"memberOf": [842, 658, 930, 836, 499, 560, 612, 727, 904]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k077"
+} ,
+{
+"id": 36,
+"code": "078",
+"category": "KUNTA",
+"title": {
+"fi": "Hanko",
+"en": "Hanko",
+"sv": "Hangö"
+}
+,
+"memberOf": [658, 921, 833, 840, 488, 799, 629, 727, 901]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k078"
+} ,
+{
+"id": 37,
+"code": "079",
+"category": "KUNTA",
+"title": {
+"fi": "Harjavalta",
+"en": "Harjavalta",
+"sv": "Harjavalta"
+}
+,
+"memberOf": [842, 658, 923, 834, 490, 523, 602, 727, 902]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k079"
+} ,
+{
+"id": 38,
+"code": "081",
+"category": "KUNTA",
+"title": {
+"fi": "Hartola",
+"en": "Hartola",
+"sv": "Hartola"
+}
+,
+"memberOf": [658, 924, 833, 841, 493, 536, 605, 727, 903]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k081"
+} ,
+{
+"id": 39,
+"code": "082",
+"category": "KUNTA",
+"title": {
+"fi": "Hattula",
+"en": "Hattula",
+"sv": "Hattula"
+}
+,
+"memberOf": [658, 924, 841, 833, 491, 525, 603, 727, 903]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k082"
+} ,
+{
+"id": 43,
+"code": "086",
+"category": "KUNTA",
+"title": {
+"fi": "Hausjärvi",
+"en": "Hausjärvi",
+"sv": "Hausjärvi"
+}
+,
+"memberOf": [658, 924, 841, 833, 491, 526, 603, 727, 903]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k086"
+} ,
+{
+"id": 45,
+"code": "090",
+"category": "KUNTA",
+"title": {
+"fi": "Heinävesi",
+"en": "Heinävesi",
+"sv": "Heinävesi"
+}
+,
+"memberOf": [658, 843, 835, 927, 496, 547, 610, 727, 904]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k090"
+} ,
+{
+"id": 46,
+"code": "091",
+"category": "KUNTA",
+"title": {
+"fi": "Helsinki",
+"en": "Helsinki",
+"sv": "Helsingfors"
+}
+,
+"memberOf": [658, 833, 840, 921, 488, 510, 629, 727, 901]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k091"
+} ,
+{
+"id": 413,
+"code": "092",
+"category": "KUNTA",
+"title": {
+"fi": "Vantaa",
+"en": "Vantaa",
+"sv": "Vanda"
+}
+,
+"memberOf": [901, 488, 510, 629, 727, 833, 840, 658, 921]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k092"
+} ,
+{
+"id": 48,
+"code": "097",
+"category": "KUNTA",
+"title": {
+"fi": "Hirvensalmi",
+"en": "Hirvensalmi",
+"sv": "Hirvensalmi"
+}
+,
+"memberOf": [496, 545, 609, 727, 658, 927, 843, 835, 904]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k097"
+} ,
+{
+"id": 49,
+"code": "098",
+"category": "KUNTA",
+"title": {
+"fi": "Hollola",
+"en": "Hollola",
+"sv": "Hollola"
+}
+,
+"memberOf": [493, 536, 605, 727, 658, 924, 833, 841, 903]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k098"
+} ,
+{
+"id": 50,
+"code": "099",
+"category": "KUNTA",
+"title": {
+"fi": "Honkajoki",
+"en": "Honkajoki",
+"sv": "Honkajoki"
+}
+,
+"memberOf": [842, 490, 524, 602, 727, 658, 834, 923, 902]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k099"
+} ,
+{
+"id": 52,
+"code": "102",
+"category": "KUNTA",
+"title": {
+"fi": "Huittinen",
+"en": "Huittinen",
+"sv": "Huittinen"
+}
+,
+"memberOf": [842, 490, 523, 602, 727, 658, 923, 834, 902]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k102"
+} ,
+{
+"id": 53,
+"code": "103",
+"category": "KUNTA",
+"title": {
+"fi": "Humppila",
+"en": "Humppila",
+"sv": "Humppila"
+}
+,
+"memberOf": [491, 527, 603, 727, 658, 924, 841, 833, 903]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k103"
+} ,
+{
+"id": 54,
+"code": "105",
+"category": "KUNTA",
+"title": {
+"fi": "Hyrynsalmi",
+"en": "Hyrynsalmi",
+"sv": "Hyrynsalmi"
+}
+,
+"memberOf": [504, 587, 617, 727, 658, 843, 934, 837, 905]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k105"
+} ,
+{
+"id": 55,
+"code": "106",
+"category": "KUNTA",
+"title": {
+"fi": "Hyvinkää",
+"en": "Hyvinkää",
+"sv": "Hyvinge"
+}
+,
+"memberOf": [488, 510, 629, 727, 658, 833, 840, 921, 901]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k106"
+} ,
+{
+"id": 57,
+"code": "108",
+"category": "KUNTA",
+"title": {
+"fi": "Hämeenkyrö",
+"en": "Hämeenkyrö",
+"sv": "Tavastkyrö"
+}
+,
+"memberOf": [842, 836, 492, 531, 604, 727, 658, 925, 903]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k108"
+} ,
+{
+"id": 58,
+"code": "109",
+"category": "KUNTA",
+"title": {
+"fi": "Hämeenlinna",
+"en": "Hämeenlinna",
+"sv": "Tavastehus"
+}
+,
+"memberOf": [491, 525, 603, 727, 658, 841, 833, 903, 924]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k109"
+} ,
+{
+"id": 44,
+"code": "111",
+"category": "KUNTA",
+"title": {
+"fi": "Heinola",
+"en": "Heinola",
+"sv": "Heinola"
+}
+,
+"memberOf": [658, 924, 833, 841, 493, 536, 605, 727, 903]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k111"
+} ,
+{
+"id": 59,
+"code": "139",
+"category": "KUNTA",
+"title": {
+"fi": "Ii",
+"en": "Ii",
+"sv": "Ii"
+}
+,
+"memberOf": [503, 581, 616, 727, 658, 933, 843, 905, 837]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k139"
+} ,
+{
+"id": 60,
+"code": "140",
+"category": "KUNTA",
+"title": {
+"fi": "Iisalmi",
+"en": "Iisalmi",
+"sv": "Idensalmi"
+}
+,
+"memberOf": [497, 550, 611, 727, 658, 904, 843, 928, 835]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k140"
+} ,
+{
+"id": 61,
+"code": "142",
+"category": "KUNTA",
+"title": {
+"fi": "Iitti",
+"en": "Iitti",
+"sv": "Iitti"
+}
+,
+"memberOf": [494, 539, 605, 727, 658, 926, 833, 841, 903]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k142"
+} ,
+{
+"id": 62,
+"code": "143",
+"category": "KUNTA",
+"title": {
+"fi": "Ikaalinen",
+"en": "Ikaalinen",
+"sv": "Ikalis"
+}
+,
+"memberOf": [842, 492, 528, 604, 727, 658, 836, 903, 925]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k143"
+} ,
+{
+"id": 63,
+"code": "145",
+"category": "KUNTA",
+"title": {
+"fi": "Ilmajoki",
+"en": "Ilmajoki",
+"sv": "Ilmajoki"
+}
+,
+"memberOf": [842, 500, 568, 613, 727, 658, 903, 931, 836]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k145"
+} ,
+{
+"id": 64,
+"code": "146",
+"category": "KUNTA",
+"title": {
+"fi": "Ilomantsi",
+"en": "Ilomantsi",
+"sv": "Ilomants"
+}
+,
+"memberOf": [498, 556, 610, 727, 658, 904, 843, 929, 835]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k146"
+} ,
+{
+"id": 66,
+"code": "148",
+"category": "KUNTA",
+"title": {
+"fi": "Inari",
+"en": "Inari",
+"sv": "Enare"
+}
+,
+"memberOf": [658, 843, 505, 595, 619, 727, 905, 935, 838]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k148"
+} ,
+{
+"id": 68,
+"code": "149",
+"category": "KUNTA",
+"title": {
+"fi": "Inkoo",
+"en": "Inkoo",
+"sv": "Ingå"
+}
+,
+"memberOf": [658, 921, 833, 488, 799, 629, 727, 840, 901]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k149"
+} ,
+{
+"id": 69,
+"code": "151",
+"category": "KUNTA",
+"title": {
+"fi": "Isojoki",
+"en": "Isojoki",
+"sv": "Storå"
+}
+,
+"memberOf": [842, 658, 500, 567, 613, 727, 903, 931, 836]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k151"
+} ,
+{
+"id": 70,
+"code": "152",
+"category": "KUNTA",
+"title": {
+"fi": "Isokyrö",
+"en": "Isokyrö",
+"sv": "Isokyrö"
+}
+,
+"memberOf": [842, 658, 932, 501, 573, 613, 727, 903, 836]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k152"
+} ,
+{
+"id": 65,
+"code": "153",
+"category": "KUNTA",
+"title": {
+"fi": "Imatra",
+"en": "Imatra",
+"sv": "Imatra"
+}
+,
+"memberOf": [495, 658, 926, 833, 543, 607, 727, 841, 901]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k153"
+} ,
+{
+"id": 72,
+"code": "164",
+"category": "KUNTA",
+"title": {
+"fi": "Jalasjärvi",
+"en": "Jalasjärvi",
+"sv": "Jalasjärvi"
+}
+,
+"memberOf": [842, 658, 931, 500, 568, 613, 727, 903, 836]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k164"
+} ,
+{
+"id": 73,
+"code": "165",
+"category": "KUNTA",
+"title": {
+"fi": "Janakkala",
+"en": "Janakkala",
+"sv": "Janakkala"
+}
+,
+"memberOf": [658, 924, 841, 833, 491, 525, 603, 727, 903]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k165"
+} ,
+{
+"id": 74,
+"code": "167",
+"category": "KUNTA",
+"title": {
+"fi": "Joensuu",
+"en": "Joensuu",
+"sv": "Joensuu"
+}
+,
+"memberOf": [658, 929, 498, 556, 610, 727, 904, 843, 835]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k167"
+} ,
+{
+"id": 75,
+"code": "169",
+"category": "KUNTA",
+"title": {
+"fi": "Jokioinen",
+"en": "Jokioinen",
+"sv": "Jockis"
+}
+,
+"memberOf": [658, 924, 841, 833, 491, 527, 603, 727, 903]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k169"
+} ,
+{
+"id": 76,
+"code": "170",
+"category": "KUNTA",
+"title": {
+"fi": "Jomala",
+"en": "Jomala",
+"sv": "Jomala"
+}
+,
+"memberOf": [658, 936, 844, 506, 597, 620, 728, 902, 839]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k170"
+} ,
+{
+"id": 77,
+"code": "171",
+"category": "KUNTA",
+"title": {
+"fi": "Joroinen",
+"en": "Joroinen",
+"sv": "Jorois"
+}
+,
+"memberOf": [658, 927, 496, 549, 609, 727, 904, 843, 835]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k171"
+} ,
+{
+"id": 78,
+"code": "172",
+"category": "KUNTA",
+"title": {
+"fi": "Joutsa",
+"en": "Joutsa",
+"sv": "Joutsa"
+}
+,
+"memberOf": [842, 658, 499, 561, 612, 727, 904, 836, 930]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k172"
+} ,
+{
+"id": 80,
+"code": "174",
+"category": "KUNTA",
+"title": {
+"fi": "Juankoski",
+"en": "Juankoski",
+"sv": "Juankoski"
+}
+,
+"memberOf": [658, 928, 497, 552, 611, 727, 904, 843, 835]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k174"
+} ,
+{
+"id": 82,
+"code": "176",
+"category": "KUNTA",
+"title": {
+"fi": "Juuka",
+"en": "Juuka",
+"sv": "Juuka"
+}
+,
+"memberOf": [658, 929, 498, 556, 610, 727, 904, 843, 835]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k176"
+} ,
+{
+"id": 83,
+"code": "177",
+"category": "KUNTA",
+"title": {
+"fi": "Juupajoki",
+"en": "Juupajoki",
+"sv": "Juupajoki"
+}
+,
+"memberOf": [842, 658, 492, 604, 698, 727, 836, 903, 925]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k177"
+} ,
+{
+"id": 84,
+"code": "178",
+"category": "KUNTA",
+"title": {
+"fi": "Juva",
+"en": "Juva",
+"sv": "Juva"
+}
+,
+"memberOf": [658, 927, 496, 549, 609, 727, 904, 843, 835]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k178"
+} ,
+{
+"id": 85,
+"code": "179",
+"category": "KUNTA",
+"title": {
+"fi": "Jyväskylä",
+"en": "Jyväskylä",
+"sv": "Jyväskylä"
+}
+,
+"memberOf": [842, 658, 499, 560, 612, 727, 904, 836, 930]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k179"
+} ,
+{
+"id": 87,
+"code": "181",
+"category": "KUNTA",
+"title": {
+"fi": "Jämijärvi",
+"en": "Jämijärvi",
+"sv": "Jämijärvi"
+}
+,
+"memberOf": [842, 658, 923, 834, 490, 524, 602, 727, 902]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k181"
+} ,
+{
+"id": 88,
+"code": "182",
+"category": "KUNTA",
+"title": {
+"fi": "Jämsä",
+"en": "Jämsä",
+"sv": "Jämsä"
+}
+,
+"memberOf": [842, 658, 499, 563, 604, 727, 903, 930, 836]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k182"
+} ,
+{
+"id": 91,
+"code": "186",
+"category": "KUNTA",
+"title": {
+"fi": "Järvenpää",
+"en": "Järvenpää",
+"sv": "Träskända"
+}
+,
+"memberOf": [658, 921, 833, 488, 510, 629, 727, 840, 901]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k186"
+} ,
+{
+"id": 92,
+"code": "202",
+"category": "KUNTA",
+"title": {
+"fi": "Kaarina",
+"en": "Kaarina",
+"sv": "St Karins"
+}
+,
+"memberOf": [658, 834, 489, 518, 601, 727, 841, 902, 922]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k202"
+} ,
+{
+"id": 93,
+"code": "204",
+"category": "KUNTA",
+"title": {
+"fi": "Kaavi",
+"en": "Kaavi",
+"sv": "Kaavi"
+}
+,
+"memberOf": [658, 497, 552, 611, 727, 904, 843, 928, 835]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k204"
+} ,
+{
+"id": 94,
+"code": "205",
+"category": "KUNTA",
+"title": {
+"fi": "Kajaani",
+"en": "Kajaani",
+"sv": "Kajana"
+}
+,
+"memberOf": [658, 843, 504, 588, 617, 727, 905, 934, 837]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k205"
+} ,
+{
+"id": 95,
+"code": "208",
+"category": "KUNTA",
+"title": {
+"fi": "Kalajoki",
+"en": "Kalajoki",
+"sv": "Kalajoki"
+}
+,
+"memberOf": [658, 843, 503, 585, 616, 727, 905, 933, 837]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k208"
+} ,
+{
+"id": 97,
+"code": "211",
+"category": "KUNTA",
+"title": {
+"fi": "Kangasala",
+"en": "Kangasala",
+"sv": "Kangasala"
+}
+,
+"memberOf": [842, 658, 836, 903, 492, 531, 604, 727, 925]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k211"
+} ,
+{
+"id": 99,
+"code": "213",
+"category": "KUNTA",
+"title": {
+"fi": "Kangasniemi",
+"en": "Kangasniemi",
+"sv": "Kangasniemi"
+}
+,
+"memberOf": [658, 927, 904, 843, 835, 496, 545, 609, 727]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k213"
+} ,
+{
+"id": 100,
+"code": "214",
+"category": "KUNTA",
+"title": {
+"fi": "Kankaanpää",
+"en": "Kankaanpää",
+"sv": "Kankaanpää"
+}
+,
+"memberOf": [842, 658, 923, 834, 902, 490, 524, 602, 727]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k214"
+} ,
+{
+"id": 101,
+"code": "216",
+"category": "KUNTA",
+"title": {
+"fi": "Kannonkoski",
+"en": "Kannonkoski",
+"sv": "Kannonkoski"
+}
+,
+"memberOf": [842, 658, 904, 499, 612, 721, 727, 836, 930]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k216"
+} ,
+{
+"id": 102,
+"code": "217",
+"category": "KUNTA",
+"title": {
+"fi": "Kannus",
+"en": "Kannus",
+"sv": "Kannus"
+}
+,
+"memberOf": [658, 843, 905, 502, 578, 615, 727, 836, 932]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k217"
+} ,
+{
+"id": 103,
+"code": "218",
+"category": "KUNTA",
+"title": {
+"fi": "Karijoki",
+"en": "Karijoki",
+"sv": "Bötom"
+}
+,
+"memberOf": [842, 658, 903, 500, 567, 613, 727, 931, 836]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k218"
+} ,
+{
+"id": 107,
+"code": "224",
+"category": "KUNTA",
+"title": {
+"fi": "Karkkila",
+"en": "Karkkila",
+"sv": "Högfors"
+}
+,
+"memberOf": [658, 921, 833, 840, 901, 488, 510, 629, 727]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k224"
+} ,
+{
+"id": 108,
+"code": "226",
+"category": "KUNTA",
+"title": {
+"fi": "Karstula",
+"en": "Karstula",
+"sv": "Karstula"
+}
+,
+"memberOf": [842, 658, 930, 904, 836, 499, 612, 721, 727]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k226"
+} ,
+{
+"id": 110,
+"code": "230",
+"category": "KUNTA",
+"title": {
+"fi": "Karvia",
+"en": "Karvia",
+"sv": "Karvia"
+}
+,
+"memberOf": [842, 658, 834, 902, 490, 524, 602, 727, 923]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k230"
+} ,
+{
+"id": 111,
+"code": "231",
+"category": "KUNTA",
+"title": {
+"fi": "Kaskinen",
+"en": "Kaskinen",
+"sv": "Kaskö"
+}
+,
+"memberOf": [842, 658, 932, 902, 501, 575, 614, 727, 836]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k231"
+} ,
+{
+"id": 112,
+"code": "232",
+"category": "KUNTA",
+"title": {
+"fi": "Kauhajoki",
+"en": "Kauhajoki",
+"sv": "Kauhajoki"
+}
+,
+"memberOf": [842, 658, 931, 903, 500, 567, 613, 727, 836]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k232"
+} ,
+{
+"id": 113,
+"code": "233",
+"category": "KUNTA",
+"title": {
+"fi": "Kauhava",
+"en": "Kauhava",
+"sv": "Kauhava"
+}
+,
+"memberOf": [842, 658, 903, 931, 500, 568, 613, 727, 836]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k233"
+} ,
+{
+"id": 114,
+"code": "235",
+"category": "KUNTA",
+"title": {
+"fi": "Kauniainen",
+"en": "Kauniainen",
+"sv": "Grankulla"
+}
+,
+"memberOf": [658, 921, 833, 840, 901, 488, 510, 629, 727]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k235"
+} ,
+{
+"id": 115,
+"code": "236",
+"category": "KUNTA",
+"title": {
+"fi": "Kaustinen",
+"en": "Kaustinen",
+"sv": "Kaustby"
+}
+,
+"memberOf": [658, 843, 905, 932, 502, 577, 615, 727, 836]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k236"
+} ,
+{
+"id": 116,
+"code": "239",
+"category": "KUNTA",
+"title": {
+"fi": "Keitele",
+"en": "Keitele",
+"sv": "Keitele"
+}
+,
+"memberOf": [658, 904, 843, 928, 497, 550, 611, 727, 835]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k239"
+} ,
+{
+"id": 117,
+"code": "240",
+"category": "KUNTA",
+"title": {
+"fi": "Kemi",
+"en": "Kemi",
+"sv": "Kemi"
+}
+,
+"memberOf": [658, 843, 935, 905, 505, 590, 618, 727, 838]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k240"
+} ,
+{
+"id": 119,
+"code": "241",
+"category": "KUNTA",
+"title": {
+"fi": "Keminmaa",
+"en": "Keminmaa",
+"sv": "Keminmaa"
+}
+,
+"memberOf": [658, 843, 935, 905, 505, 590, 618, 727, 838]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k241"
+} ,
+{
+"id": 121,
+"code": "244",
+"category": "KUNTA",
+"title": {
+"fi": "Kempele",
+"en": "Kempele",
+"sv": "Kempele"
+}
+,
+"memberOf": [658, 843, 933, 905, 503, 579, 616, 727, 837]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k244"
+} ,
+{
+"id": 122,
+"code": "245",
+"category": "KUNTA",
+"title": {
+"fi": "Kerava",
+"en": "Kerava",
+"sv": "Kervo"
+}
+,
+"memberOf": [658, 921, 833, 840, 901, 488, 510, 629, 727]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k245"
+} ,
+{
+"id": 126,
+"code": "249",
+"category": "KUNTA",
+"title": {
+"fi": "Keuruu",
+"en": "Keuruu",
+"sv": "Keuruu"
+}
+,
+"memberOf": [842, 658, 930, 499, 562, 612, 727, 904, 836]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k249"
+} ,
+{
+"id": 127,
+"code": "250",
+"category": "KUNTA",
+"title": {
+"fi": "Kihniö",
+"en": "Kihniö",
+"sv": "Kihniö"
+}
+,
+"memberOf": [842, 658, 925, 492, 528, 604, 727, 836, 903]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k250"
+} ,
+{
+"id": 132,
+"code": "256",
+"category": "KUNTA",
+"title": {
+"fi": "Kinnula",
+"en": "Kinnula",
+"sv": "Kinnula"
+}
+,
+"memberOf": [842, 658, 499, 612, 721, 727, 904, 930, 836]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k256"
+} ,
+{
+"id": 133,
+"code": "257",
+"category": "KUNTA",
+"title": {
+"fi": "Kirkkonummi",
+"en": "Kirkkonummi",
+"sv": "Kyrkslätt"
+}
+,
+"memberOf": [658, 921, 488, 510, 629, 727, 833, 840, 901]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k257"
+} ,
+{
+"id": 135,
+"code": "260",
+"category": "KUNTA",
+"title": {
+"fi": "Kitee",
+"en": "Kitee",
+"sv": "Kitee"
+}
+,
+"memberOf": [658, 929, 498, 558, 610, 727, 904, 843, 835]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k260"
+} ,
+{
+"id": 136,
+"code": "261",
+"category": "KUNTA",
+"title": {
+"fi": "Kittilä",
+"en": "Kittilä",
+"sv": "Kittilä"
+}
+,
+"memberOf": [658, 843, 935, 505, 594, 619, 727, 905, 838]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k261"
+} ,
+{
+"id": 138,
+"code": "263",
+"category": "KUNTA",
+"title": {
+"fi": "Kiuruvesi",
+"en": "Kiuruvesi",
+"sv": "Kiuruvesi"
+}
+,
+"memberOf": [658, 497, 550, 611, 727, 904, 843, 928, 835]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k263"
+} ,
+{
+"id": 139,
+"code": "265",
+"category": "KUNTA",
+"title": {
+"fi": "Kivijärvi",
+"en": "Kivijärvi",
+"sv": "Kivijärvi"
+}
+,
+"memberOf": [842, 658, 930, 499, 612, 721, 727, 904, 836]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k265"
+} ,
+{
+"id": 141,
+"code": "271",
+"category": "KUNTA",
+"title": {
+"fi": "Kokemäki",
+"en": "Kokemäki",
+"sv": "Kumo"
+}
+,
+"memberOf": [842, 658, 923, 490, 523, 602, 727, 834, 902]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k271"
+} ,
+{
+"id": 142,
+"code": "272",
+"category": "KUNTA",
+"title": {
+"fi": "Kokkola",
+"en": "Kokkola",
+"sv": "Karleby"
+}
+,
+"memberOf": [658, 843, 932, 502, 578, 615, 727, 905, 836]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k272"
+} ,
+{
+"id": 143,
+"code": "273",
+"category": "KUNTA",
+"title": {
+"fi": "Kolari",
+"en": "Kolari",
+"sv": "Kolari"
+}
+,
+"memberOf": [658, 843, 505, 594, 619, 727, 905, 935, 838]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k273"
+} ,
+{
+"id": 144,
+"code": "275",
+"category": "KUNTA",
+"title": {
+"fi": "Konnevesi",
+"en": "Konnevesi",
+"sv": "Konnevesi"
+}
+,
+"memberOf": [842, 658, 930, 499, 564, 612, 727, 904, 836]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k275"
+} ,
+{
+"id": 145,
+"code": "276",
+"category": "KUNTA",
+"title": {
+"fi": "Kontiolahti",
+"en": "Kontiolahti",
+"sv": "Kontiolahti"
+}
+,
+"memberOf": [658, 929, 498, 556, 610, 727, 904, 843, 835]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k276"
+} ,
+{
+"id": 148,
+"code": "280",
+"category": "KUNTA",
+"title": {
+"fi": "Korsnäs",
+"en": "Korsnäs",
+"sv": "Korsnäs"
+}
+,
+"memberOf": [842, 658, 932, 501, 574, 614, 727, 902, 836]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k280"
+} ,
+{
+"id": 56,
+"code": "283",
+"category": "KUNTA",
+"title": {
+"fi": "Hämeenkoski",
+"en": "Hämeenkoski",
+"sv": "Hämeenkoski"
+}
+,
+"memberOf": [493, 536, 605, 727, 658, 924, 833, 841, 903]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k283"
+} ,
+{
+"id": 150,
+"code": "284",
+"category": "KUNTA",
+"title": {
+"fi": "Koski",
+"en": "Koski",
+"sv": "Koski Tl"
+}
+,
+"memberOf": [658, 922, 489, 520, 601, 727, 834, 841, 902]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k284"
+} ,
+{
+"id": 151,
+"code": "285",
+"category": "KUNTA",
+"title": {
+"fi": "Kotka",
+"en": "Kotka",
+"sv": "Kotka"
+}
+,
+"memberOf": [658, 926, 494, 540, 606, 727, 833, 841, 901]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k285"
+} ,
+{
+"id": 152,
+"code": "286",
+"category": "KUNTA",
+"title": {
+"fi": "Kouvola",
+"en": "Kouvola",
+"sv": "Kouvola"
+}
+,
+"memberOf": [658, 926, 494, 539, 606, 727, 833, 841, 901]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k286"
+} ,
+{
+"id": 153,
+"code": "287",
+"category": "KUNTA",
+"title": {
+"fi": "Kristiinankaupunki",
+"en": "Kristiinankaupunki",
+"sv": "Kristinestad"
+}
+,
+"memberOf": [842, 658, 501, 575, 614, 727, 902, 932, 836]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k287"
+} ,
+{
+"id": 154,
+"code": "288",
+"category": "KUNTA",
+"title": {
+"fi": "Kruunupyy",
+"en": "Kruunupyy",
+"sv": "Kronoby"
+}
+,
+"memberOf": [842, 658, 501, 576, 615, 727, 905, 932, 836]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k288"
+} ,
+{
+"id": 156,
+"code": "290",
+"category": "KUNTA",
+"title": {
+"fi": "Kuhmo",
+"en": "Kuhmo",
+"sv": "Kuhmo"
+}
+,
+"memberOf": [658, 934, 843, 504, 587, 617, 727, 905, 837]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k290"
+} ,
+{
+"id": 157,
+"code": "291",
+"category": "KUNTA",
+"title": {
+"fi": "Kuhmoinen",
+"en": "Kuhmoinen",
+"sv": "Kuhmoinen"
+}
+,
+"memberOf": [842, 658, 930, 499, 563, 604, 727, 903, 836]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k291"
+} ,
+{
+"id": 160,
+"code": "295",
+"category": "KUNTA",
+"title": {
+"fi": "Kumlinge",
+"en": "Kumlinge",
+"sv": "Kumlinge"
+}
+,
+"memberOf": [658, 936, 844, 506, 620, 699, 728, 902, 839]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k295"
+} ,
+{
+"id": 161,
+"code": "297",
+"category": "KUNTA",
+"title": {
+"fi": "Kuopio",
+"en": "Kuopio",
+"sv": "Kuopio"
+}
+,
+"memberOf": [658, 497, 551, 611, 727, 904, 843, 928, 835]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k297"
+} ,
+{
+"id": 163,
+"code": "300",
+"category": "KUNTA",
+"title": {
+"fi": "Kuortane",
+"en": "Kuortane",
+"sv": "Kuortane"
+}
+,
+"memberOf": [842, 658, 931, 500, 570, 613, 727, 903, 836]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k300"
+} ,
+{
+"id": 164,
+"code": "301",
+"category": "KUNTA",
+"title": {
+"fi": "Kurikka",
+"en": "Kurikka",
+"sv": "Kurikka"
+}
+,
+"memberOf": [842, 500, 568, 613, 727, 903, 658, 931, 836]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k301"
+} ,
+{
+"id": 166,
+"code": "304",
+"category": "KUNTA",
+"title": {
+"fi": "Kustavi",
+"en": "Kustavi",
+"sv": "Gustavs"
+}
+,
+"memberOf": [922, 489, 519, 601, 727, 834, 841, 902, 658]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k304"
+} ,
+{
+"id": 167,
+"code": "305",
+"category": "KUNTA",
+"title": {
+"fi": "Kuusamo",
+"en": "Kuusamo",
+"sv": "Kuusamo"
+}
+,
+"memberOf": [843, 933, 503, 586, 616, 727, 905, 658, 837]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k305"
+} ,
+{
+"id": 263,
+"code": "309",
+"category": "KUNTA",
+"title": {
+"fi": "Outokumpu",
+"en": "Outokumpu",
+"sv": "Outokumpu"
+}
+,
+"memberOf": [929, 498, 556, 610, 727, 904, 658, 843, 835]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k309"
+} ,
+{
+"id": 171,
+"code": "312",
+"category": "KUNTA",
+"title": {
+"fi": "Kyyjärvi",
+"en": "Kyyjärvi",
+"sv": "Kyyjärvi"
+}
+,
+"memberOf": [842, 930, 499, 612, 721, 727, 904, 658, 836]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k312"
+} ,
+{
+"id": 173,
+"code": "316",
+"category": "KUNTA",
+"title": {
+"fi": "Kärkölä",
+"en": "Kärkölä",
+"sv": "Kärkölä"
+}
+,
+"memberOf": [924, 833, 493, 536, 605, 727, 841, 903, 658]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k316"
+} ,
+{
+"id": 174,
+"code": "317",
+"category": "KUNTA",
+"title": {
+"fi": "Kärsämäki",
+"en": "Kärsämäki",
+"sv": "Kärsämäki"
+}
+,
+"memberOf": [843, 503, 584, 616, 727, 905, 658, 933, 837]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k317"
+} ,
+{
+"id": 175,
+"code": "318",
+"category": "KUNTA",
+"title": {
+"fi": "Kökar",
+"en": "Kökar",
+"sv": "Kökar"
+}
+,
+"memberOf": [936, 844, 506, 620, 699, 728, 902, 658, 839]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k318"
+} ,
+{
+"id": 176,
+"code": "319",
+"category": "KUNTA",
+"title": {
+"fi": "Köyliö",
+"en": "Köyliö",
+"sv": "Kjulö"
+}
+,
+"memberOf": [842, 923, 490, 521, 602, 727, 834, 902, 658]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k319"
+} ,
+{
+"id": 118,
+"code": "320",
+"category": "KUNTA",
+"title": {
+"fi": "Kemijärvi",
+"en": "Kemijärvi",
+"sv": "Kemijärvi"
+}
+,
+"memberOf": [658, 843, 935, 905, 505, 592, 619, 727, 838]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k320"
+} ,
+{
+"id": 793,
+"code": "322",
+"category": "KUNTA",
+"title": {
+"fi": "Kemiönsaari",
+"en": "Kimitoön",
+"sv": "Kimitoön"
+}
+,
+"memberOf": [841, 601, 658, 516, 489, 902, 922, 834, 727]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k322"
+} ,
+{
+"id": 177,
+"code": "398",
+"category": "KUNTA",
+"title": {
+"fi": "Lahti",
+"en": "Lahti",
+"sv": "Lahtis"
+}
+,
+"memberOf": [924, 833, 493, 536, 605, 727, 841, 903, 658]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k398"
+} ,
+{
+"id": 178,
+"code": "399",
+"category": "KUNTA",
+"title": {
+"fi": "Laihia",
+"en": "Laihia",
+"sv": "Laihela"
+}
+,
+"memberOf": [842, 932, 501, 573, 614, 727, 902, 658, 836]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k399"
+} ,
+{
+"id": 179,
+"code": "400",
+"category": "KUNTA",
+"title": {
+"fi": "Laitila",
+"en": "Laitila",
+"sv": "Laitila"
+}
+,
+"memberOf": [489, 519, 601, 727, 834, 841, 902, 658, 922]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k400"
+} ,
+{
+"id": 182,
+"code": "402",
+"category": "KUNTA",
+"title": {
+"fi": "Lapinlahti",
+"en": "Lapinlahti",
+"sv": "Lapinlahti"
+}
+,
+"memberOf": [497, 550, 611, 727, 904, 658, 843, 928, 835]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k402"
+} ,
+{
+"id": 183,
+"code": "403",
+"category": "KUNTA",
+"title": {
+"fi": "Lappajärvi",
+"en": "Lappajärvi",
+"sv": "Lappajärvi"
+}
+,
+"memberOf": [842, 931, 500, 572, 613, 727, 903, 658, 836]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k403"
+} ,
+{
+"id": 184,
+"code": "405",
+"category": "KUNTA",
+"title": {
+"fi": "Lappeenranta",
+"en": "Lappeenranta",
+"sv": "Villmanstrand"
+}
+,
+"memberOf": [926, 833, 495, 541, 607, 727, 841, 901, 658]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k405"
+} ,
+{
+"id": 181,
+"code": "407",
+"category": "KUNTA",
+"title": {
+"fi": "Lapinjärvi",
+"en": "Lapinjärvi",
+"sv": "Lappträsk"
+}
+,
+"memberOf": [488, 515, 629, 727, 833, 840, 901, 658, 921]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k407"
+} ,
+{
+"id": 186,
+"code": "408",
+"category": "KUNTA",
+"title": {
+"fi": "Lapua",
+"en": "Lapua",
+"sv": "Lappo"
+}
+,
+"memberOf": [500, 568, 613, 727, 842, 931, 903, 658, 836]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k408"
+} ,
+{
+"id": 187,
+"code": "410",
+"category": "KUNTA",
+"title": {
+"fi": "Laukaa",
+"en": "Laukaa",
+"sv": "Laukaa"
+}
+,
+"memberOf": [499, 560, 612, 727, 842, 930, 904, 658, 836]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k410"
+} ,
+{
+"id": 188,
+"code": "413",
+"category": "KUNTA",
+"title": {
+"fi": "Lavia",
+"en": "Lavia",
+"sv": "Lavia"
+}
+,
+"memberOf": [842, 490, 524, 602, 727, 923, 902, 658, 834]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k413"
+} ,
+{
+"id": 191,
+"code": "416",
+"category": "KUNTA",
+"title": {
+"fi": "Lemi",
+"en": "Lemi",
+"sv": "Lemi"
+}
+,
+"memberOf": [495, 541, 607, 727, 926, 833, 841, 901, 658]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k416"
+} ,
+{
+"id": 192,
+"code": "417",
+"category": "KUNTA",
+"title": {
+"fi": "Lemland",
+"en": "Lemland",
+"sv": "Lemland"
+}
+,
+"memberOf": [506, 597, 620, 728, 936, 844, 902, 658, 839]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k417"
+} ,
+{
+"id": 193,
+"code": "418",
+"category": "KUNTA",
+"title": {
+"fi": "Lempäälä",
+"en": "Lempäälä",
+"sv": "Lempäälä"
+}
+,
+"memberOf": [842, 492, 531, 604, 727, 925, 836, 903, 658]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k418"
+} ,
+{
+"id": 195,
+"code": "420",
+"category": "KUNTA",
+"title": {
+"fi": "Leppävirta",
+"en": "Leppävirta",
+"sv": "Leppävirta"
+}
+,
+"memberOf": [497, 553, 611, 727, 904, 658, 843, 928, 835]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k420"
+} ,
+{
+"id": 196,
+"code": "421",
+"category": "KUNTA",
+"title": {
+"fi": "Lestijärvi",
+"en": "Lestijärvi",
+"sv": "Lestijärvi"
+}
+,
+"memberOf": [502, 843, 932, 577, 615, 727, 905, 658, 836]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k421"
+} ,
+{
+"id": 197,
+"code": "422",
+"category": "KUNTA",
+"title": {
+"fi": "Lieksa",
+"en": "Lieksa",
+"sv": "Lieksa"
+}
+,
+"memberOf": [929, 498, 559, 610, 727, 904, 658, 843, 835]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k422"
+} ,
+{
+"id": 198,
+"code": "423",
+"category": "KUNTA",
+"title": {
+"fi": "Lieto",
+"en": "Lieto",
+"sv": "Lundo"
+}
+,
+"memberOf": [922, 489, 518, 601, 727, 834, 841, 902, 658]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k423"
+} ,
+{
+"id": 200,
+"code": "425",
+"category": "KUNTA",
+"title": {
+"fi": "Liminka",
+"en": "Liminka",
+"sv": "Limingo"
+}
+,
+"memberOf": [843, 933, 503, 579, 616, 727, 905, 658, 837]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k425"
+} ,
+{
+"id": 201,
+"code": "426",
+"category": "KUNTA",
+"title": {
+"fi": "Liperi",
+"en": "Liperi",
+"sv": "Liperi"
+}
+,
+"memberOf": [929, 498, 556, 610, 727, 904, 658, 843, 835]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k426"
+} ,
+{
+"id": 204,
+"code": "430",
+"category": "KUNTA",
+"title": {
+"fi": "Loimaa",
+"en": "Loimaa",
+"sv": "Loimaa"
+}
+,
+"memberOf": [922, 489, 520, 601, 727, 834, 841, 902, 658]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k430"
+} ,
+{
+"id": 206,
+"code": "433",
+"category": "KUNTA",
+"title": {
+"fi": "Loppi",
+"en": "Loppi",
+"sv": "Loppi"
+}
+,
+"memberOf": [841, 491, 526, 603, 727, 833, 903, 658, 924]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k433"
+} ,
+{
+"id": 207,
+"code": "434",
+"category": "KUNTA",
+"title": {
+"fi": "Loviisa",
+"en": "Loviisa",
+"sv": "Lovisa"
+}
+,
+"memberOf": [488, 515, 629, 727, 833, 840, 901, 658, 921]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k434"
+} ,
+{
+"id": 208,
+"code": "435",
+"category": "KUNTA",
+"title": {
+"fi": "Luhanka",
+"en": "Luhanka",
+"sv": "Luhanka"
+}
+,
+"memberOf": [842, 930, 499, 561, 612, 727, 904, 658, 836]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k435"
+} ,
+{
+"id": 209,
+"code": "436",
+"category": "KUNTA",
+"title": {
+"fi": "Lumijoki",
+"en": "Lumijoki",
+"sv": "Lumijoki"
+}
+,
+"memberOf": [843, 933, 503, 579, 616, 727, 905, 658, 837]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k436"
+} ,
+{
+"id": 210,
+"code": "438",
+"category": "KUNTA",
+"title": {
+"fi": "Lumparland",
+"en": "Lumparland",
+"sv": "Lumparland"
+}
+,
+"memberOf": [936, 506, 597, 620, 728, 844, 902, 658, 839]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k438"
+} ,
+{
+"id": 212,
+"code": "440",
+"category": "KUNTA",
+"title": {
+"fi": "Luoto",
+"en": "Luoto",
+"sv": "Larsmo"
+}
+,
+"memberOf": [842, 932, 501, 576, 614, 727, 902, 658, 836]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k440"
+} ,
+{
+"id": 213,
+"code": "441",
+"category": "KUNTA",
+"title": {
+"fi": "Luumäki",
+"en": "Luumäki",
+"sv": "Luumäki"
+}
+,
+"memberOf": [495, 541, 607, 727, 833, 841, 901, 658, 926]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k441"
+} ,
+{
+"id": 214,
+"code": "442",
+"category": "KUNTA",
+"title": {
+"fi": "Luvia",
+"en": "Luvia",
+"sv": "Luvia"
+}
+,
+"memberOf": [842, 490, 523, 602, 727, 834, 902, 658, 923]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k442"
+} ,
+{
+"id": 202,
+"code": "444",
+"category": "KUNTA",
+"title": {
+"fi": "Lohja",
+"en": "Lohja",
+"sv": "Lojo"
+}
+,
+"memberOf": [921, 488, 510, 629, 727, 833, 840, 901, 658]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k444"
+} ,
+{
+"id": 794,
+"code": "445",
+"category": "KUNTA",
+"title": {
+"fi": "Parainen",
+"en": "Pargas",
+"sv": "Pargas"
+}
+,
+"memberOf": [841, 902, 922, 834, 601, 658, 489, 516, 727]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k445"
+} ,
+{
+"id": 216,
+"code": "475",
+"category": "KUNTA",
+"title": {
+"fi": "Maalahti",
+"en": "Maalahti",
+"sv": "Malax"
+}
+,
+"memberOf": [842, 932, 501, 574, 614, 727, 902, 658, 836]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k475"
+} ,
+{
+"id": 217,
+"code": "476",
+"category": "KUNTA",
+"title": {
+"fi": "Maaninka",
+"en": "Maaninka",
+"sv": "Maaninka"
+}
+,
+"memberOf": [928, 497, 551, 611, 727, 904, 658, 843, 835]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k476"
+} ,
+{
+"id": 219,
+"code": "478",
+"category": "KUNTA",
+"title": {
+"fi": "Maarianhamina",
+"en": "Mariehamn",
+"sv": "Mariehamn"
+}
+,
+"memberOf": [936, 506, 596, 620, 728, 844, 902, 658, 839]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k478"
+} ,
+{
+"id": 220,
+"code": "480",
+"category": "KUNTA",
+"title": {
+"fi": "Marttila",
+"en": "Marttila",
+"sv": "Marttila"
+}
+,
+"memberOf": [489, 520, 601, 727, 834, 841, 902, 658, 922]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k480"
+} ,
+{
+"id": 221,
+"code": "481",
+"category": "KUNTA",
+"title": {
+"fi": "Masku",
+"en": "Masku",
+"sv": "Masku"
+}
+,
+"memberOf": [922, 489, 518, 601, 727, 834, 841, 902, 658]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k481"
+} ,
+{
+"id": 223,
+"code": "483",
+"category": "KUNTA",
+"title": {
+"fi": "Merijärvi",
+"en": "Merijärvi",
+"sv": "Merijärvi"
+}
+,
+"memberOf": [843, 503, 585, 616, 727, 905, 658, 933, 837]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k483"
+} ,
+{
+"id": 224,
+"code": "484",
+"category": "KUNTA",
+"title": {
+"fi": "Merikarvia",
+"en": "Merikarvia",
+"sv": "Sastmola"
+}
+,
+"memberOf": [842, 923, 490, 523, 602, 727, 834, 902, 658]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k484"
+} ,
+{
+"id": 226,
+"code": "489",
+"category": "KUNTA",
+"title": {
+"fi": "Miehikkälä",
+"en": "Miehikkälä",
+"sv": "Miehikkälä"
+}
+,
+"memberOf": [494, 540, 606, 727, 833, 841, 901, 658, 926]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k489"
+} ,
+{
+"id": 228,
+"code": "491",
+"category": "KUNTA",
+"title": {
+"fi": "Mikkeli",
+"en": "Mikkeli",
+"sv": "St Michel"
+}
+,
+"memberOf": [927, 496, 545, 609, 727, 904, 658, 843, 835]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k491"
+} ,
+{
+"id": 231,
+"code": "494",
+"category": "KUNTA",
+"title": {
+"fi": "Muhos",
+"en": "Muhos",
+"sv": "Muhos"
+}
+,
+"memberOf": [843, 503, 579, 616, 727, 905, 658, 933, 837]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k494"
+} ,
+{
+"id": 232,
+"code": "495",
+"category": "KUNTA",
+"title": {
+"fi": "Multia",
+"en": "Multia",
+"sv": "Multia"
+}
+,
+"memberOf": [842, 930, 499, 562, 612, 727, 904, 658, 836]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k495"
+} ,
+{
+"id": 233,
+"code": "498",
+"category": "KUNTA",
+"title": {
+"fi": "Muonio",
+"en": "Muonio",
+"sv": "Muonio"
+}
+,
+"memberOf": [843, 935, 505, 594, 619, 727, 905, 658, 838]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k498"
+} ,
+{
+"id": 234,
+"code": "499",
+"category": "KUNTA",
+"title": {
+"fi": "Mustasaari",
+"en": "Mustasaari",
+"sv": "Korsholm"
+}
+,
+"memberOf": [842, 932, 501, 574, 614, 727, 902, 658, 836]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k499"
+} ,
+{
+"id": 235,
+"code": "500",
+"category": "KUNTA",
+"title": {
+"fi": "Muurame",
+"en": "Muurame",
+"sv": "Muurame"
+}
+,
+"memberOf": [842, 930, 499, 560, 612, 727, 904, 658, 836]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k500"
+} ,
+{
+"id": 237,
+"code": "503",
+"category": "KUNTA",
+"title": {
+"fi": "Mynämäki",
+"en": "Mynämäki",
+"sv": "Mynämäki"
+}
+,
+"memberOf": [922, 489, 518, 601, 727, 834, 841, 902, 658]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k503"
+} ,
+{
+"id": 238,
+"code": "504",
+"category": "KUNTA",
+"title": {
+"fi": "Myrskylä",
+"en": "Myrskylä",
+"sv": "Mörskom"
+}
+,
+"memberOf": [921, 488, 514, 605, 727, 833, 840, 903, 658]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k504"
+} ,
+{
+"id": 239,
+"code": "505",
+"category": "KUNTA",
+"title": {
+"fi": "Mäntsälä",
+"en": "Mäntsälä",
+"sv": "Mäntsälä"
+}
+,
+"memberOf": [921, 488, 510, 629, 727, 833, 840, 901, 658]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k505"
+} ,
+{
+"id": 241,
+"code": "507",
+"category": "KUNTA",
+"title": {
+"fi": "Mäntyharju",
+"en": "Mäntyharju",
+"sv": "Mäntyharju"
+}
+,
+"memberOf": [496, 545, 609, 727, 904, 658, 843, 835, 927]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k507"
+} ,
+{
+"id": 795,
+"code": "508",
+"category": "KUNTA",
+"title": {
+"fi": "Mänttä-Vilppula",
+"en": "Mänttä-Vilppula",
+"sv": "Mänttä-Vilppula"
+}
+,
+"memberOf": [842, 903, 925, 836, 492, 604, 658, 727, 698]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k508"
+} ,
+{
+"id": 242,
+"code": "529",
+"category": "KUNTA",
+"title": {
+"fi": "Naantali",
+"en": "Naantali",
+"sv": "Nådendal"
+}
+,
+"memberOf": [841, 922, 489, 518, 601, 727, 834, 902, 658]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k529"
+} ,
+{
+"id": 243,
+"code": "531",
+"category": "KUNTA",
+"title": {
+"fi": "Nakkila",
+"en": "Nakkila",
+"sv": "Nakkila"
+}
+,
+"memberOf": [842, 490, 523, 602, 727, 834, 902, 658, 923]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k531"
+} ,
+{
+"id": 244,
+"code": "532",
+"category": "KUNTA",
+"title": {
+"fi": "Nastola",
+"en": "Nastola",
+"sv": "Nastola"
+}
+,
+"memberOf": [493, 536, 605, 727, 833, 841, 903, 658, 924]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k532"
+} ,
+{
+"id": 247,
+"code": "535",
+"category": "KUNTA",
+"title": {
+"fi": "Nivala",
+"en": "Nivala",
+"sv": "Nivala"
+}
+,
+"memberOf": [843, 933, 503, 584, 616, 727, 905, 658, 837]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k535"
+} ,
+{
+"id": 248,
+"code": "536",
+"category": "KUNTA",
+"title": {
+"fi": "Nokia",
+"en": "Nokia",
+"sv": "Nokia"
+}
+,
+"memberOf": [842, 925, 492, 531, 604, 727, 836, 903, 658]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k536"
+} ,
+{
+"id": 250,
+"code": "538",
+"category": "KUNTA",
+"title": {
+"fi": "Nousiainen",
+"en": "Nousiainen",
+"sv": "Nousis"
+}
+,
+"memberOf": [841, 834, 489, 518, 601, 727, 902, 658, 922]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k538"
+} ,
+{
+"id": 252,
+"code": "541",
+"category": "KUNTA",
+"title": {
+"fi": "Nurmes",
+"en": "Nurmes",
+"sv": "Nurmes"
+}
+,
+"memberOf": [498, 559, 610, 727, 904, 658, 843, 929, 835]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k541"
+} ,
+{
+"id": 253,
+"code": "543",
+"category": "KUNTA",
+"title": {
+"fi": "Nurmijärvi",
+"en": "Nurmijärvi",
+"sv": "Nurmijärvi"
+}
+,
+"memberOf": [921, 833, 488, 510, 629, 727, 840, 901, 658]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k543"
+} ,
+{
+"id": 255,
+"code": "545",
+"category": "KUNTA",
+"title": {
+"fi": "Närpiö",
+"en": "Närpiö",
+"sv": "Närpes"
+}
+,
+"memberOf": [842, 932, 501, 575, 614, 727, 902, 658, 836]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k545"
+} ,
+{
+"id": 257,
+"code": "560",
+"category": "KUNTA",
+"title": {
+"fi": "Orimattila",
+"en": "Orimattila",
+"sv": "Orimattila"
+}
+,
+"memberOf": [924, 833, 493, 536, 605, 727, 841, 903, 658]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k560"
+} ,
+{
+"id": 258,
+"code": "561",
+"category": "KUNTA",
+"title": {
+"fi": "Oripää",
+"en": "Oripää",
+"sv": "Oripää"
+}
+,
+"memberOf": [841, 834, 489, 520, 601, 727, 902, 658, 922]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k561"
+} ,
+{
+"id": 259,
+"code": "562",
+"category": "KUNTA",
+"title": {
+"fi": "Orivesi",
+"en": "Orivesi",
+"sv": "Orivesi"
+}
+,
+"memberOf": [842, 925, 836, 492, 604, 531, 727, 903, 658]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k562"
+} ,
+{
+"id": 260,
+"code": "563",
+"category": "KUNTA",
+"title": {
+"fi": "Oulainen",
+"en": "Oulainen",
+"sv": "Oulainen"
+}
+,
+"memberOf": [843, 933, 503, 585, 616, 727, 905, 658, 837]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k563"
+} ,
+{
+"id": 261,
+"code": "564",
+"category": "KUNTA",
+"title": {
+"fi": "Oulu",
+"en": "Oulu",
+"sv": "Uleåborg"
+}
+,
+"memberOf": [843, 933, 503, 579, 616, 727, 905, 658, 837]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k564"
+} ,
+{
+"id": 264,
+"code": "576",
+"category": "KUNTA",
+"title": {
+"fi": "Padasjoki",
+"en": "Padasjoki",
+"sv": "Padasjoki"
+}
+,
+"memberOf": [833, 493, 536, 605, 727, 841, 903, 658, 924]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k576"
+} ,
+{
+"id": 265,
+"code": "577",
+"category": "KUNTA",
+"title": {
+"fi": "Paimio",
+"en": "Paimio",
+"sv": "Pemar"
+}
+,
+"memberOf": [841, 834, 489, 518, 601, 727, 902, 658, 922]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k577"
+} ,
+{
+"id": 266,
+"code": "578",
+"category": "KUNTA",
+"title": {
+"fi": "Paltamo",
+"en": "Paltamo",
+"sv": "Paltamo"
+}
+,
+"memberOf": [843, 934, 504, 588, 617, 727, 905, 658, 837]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k578"
+} ,
+{
+"id": 268,
+"code": "580",
+"category": "KUNTA",
+"title": {
+"fi": "Parikkala",
+"en": "Parikkala",
+"sv": "Parikkala"
+}
+,
+"memberOf": [926, 833, 495, 543, 607, 727, 841, 901, 658]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k580"
+} ,
+{
+"id": 269,
+"code": "581",
+"category": "KUNTA",
+"title": {
+"fi": "Parkano",
+"en": "Parkano",
+"sv": "Parkano"
+}
+,
+"memberOf": [842, 925, 836, 492, 528, 604, 727, 903, 658]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k581"
+} ,
+{
+"id": 272,
+"code": "583",
+"category": "KUNTA",
+"title": {
+"fi": "Pelkosenniemi",
+"en": "Pelkosenniemi",
+"sv": "Pelkosenniemi"
+}
+,
+"memberOf": [843, 935, 505, 592, 619, 727, 905, 658, 838]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k583"
+} ,
+{
+"id": 274,
+"code": "584",
+"category": "KUNTA",
+"title": {
+"fi": "Perho",
+"en": "Perho",
+"sv": "Perho"
+}
+,
+"memberOf": [843, 502, 577, 615, 727, 905, 658, 932, 836]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k584"
+} ,
+{
+"id": 278,
+"code": "588",
+"category": "KUNTA",
+"title": {
+"fi": "Pertunmaa",
+"en": "Pertunmaa",
+"sv": "Pertunmaa"
+}
+,
+"memberOf": [496, 545, 609, 727, 904, 658, 843, 835, 927]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k588"
+} ,
+{
+"id": 280,
+"code": "592",
+"category": "KUNTA",
+"title": {
+"fi": "Petäjävesi",
+"en": "Petäjävesi",
+"sv": "Petäjävesi"
+}
+,
+"memberOf": [842, 930, 499, 560, 612, 727, 904, 658, 836]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k592"
+} ,
+{
+"id": 282,
+"code": "593",
+"category": "KUNTA",
+"title": {
+"fi": "Pieksämäki",
+"en": "Pieksämäki",
+"sv": "Pieksämäki"
+}
+,
+"memberOf": [927, 496, 549, 609, 727, 904, 658, 843, 835]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k593"
+} ,
+{
+"id": 283,
+"code": "595",
+"category": "KUNTA",
+"title": {
+"fi": "Pielavesi",
+"en": "Pielavesi",
+"sv": "Pielavesi"
+}
+,
+"memberOf": [497, 550, 611, 727, 904, 658, 843, 928, 835]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k595"
+} ,
+{
+"id": 284,
+"code": "598",
+"category": "KUNTA",
+"title": {
+"fi": "Pietarsaari",
+"en": "Pietarsaari",
+"sv": "Jakobstad"
+}
+,
+"memberOf": [842, 932, 501, 576, 614, 727, 902, 658, 836]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k598"
+} ,
+{
+"id": 271,
+"code": "599",
+"category": "KUNTA",
+"title": {
+"fi": "Pedersören kunta",
+"en": "Pedersöre",
+"sv": "Pedersöre"
+}
+,
+"memberOf": [842, 932, 501, 576, 614, 727, 902, 658, 836]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k599"
+} ,
+{
+"id": 285,
+"code": "601",
+"category": "KUNTA",
+"title": {
+"fi": "Pihtipudas",
+"en": "Pihtipudas",
+"sv": "Pihtipudas"
+}
+,
+"memberOf": [721, 727, 842, 499, 612, 904, 658, 836, 930]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k601"
+} ,
+{
+"id": 288,
+"code": "604",
+"category": "KUNTA",
+"title": {
+"fi": "Pirkkala",
+"en": "Pirkkala",
+"sv": "Birkala"
+}
+,
+"memberOf": [492, 531, 604, 727, 842, 925, 836, 903, 658]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k604"
+} ,
+{
+"id": 290,
+"code": "607",
+"category": "KUNTA",
+"title": {
+"fi": "Polvijärvi",
+"en": "Polvijärvi",
+"sv": "Polvijärvi"
+}
+,
+"memberOf": [498, 556, 610, 727, 904, 658, 843, 929, 835]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k607"
+} ,
+{
+"id": 291,
+"code": "608",
+"category": "KUNTA",
+"title": {
+"fi": "Pomarkku",
+"en": "Pomarkku",
+"sv": "Påmark"
+}
+,
+"memberOf": [490, 523, 602, 727, 842, 923, 902, 658, 834]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k608"
+} ,
+{
+"id": 292,
+"code": "609",
+"category": "KUNTA",
+"title": {
+"fi": "Pori",
+"en": "Pori",
+"sv": "Björneborg"
+}
+,
+"memberOf": [490, 523, 602, 727, 842, 923, 902, 658, 834]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k609"
+} ,
+{
+"id": 293,
+"code": "611",
+"category": "KUNTA",
+"title": {
+"fi": "Pornainen",
+"en": "Pornainen",
+"sv": "Borgnäs"
+}
+,
+"memberOf": [488, 510, 629, 727, 921, 833, 840, 901, 658]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k611"
+} ,
+{
+"id": 295,
+"code": "614",
+"category": "KUNTA",
+"title": {
+"fi": "Posio",
+"en": "Posio",
+"sv": "Posio"
+}
+,
+"memberOf": [505, 592, 619, 727, 843, 935, 905, 658, 838]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k614"
+} ,
+{
+"id": 296,
+"code": "615",
+"category": "KUNTA",
+"title": {
+"fi": "Pudasjärvi",
+"en": "Pudasjärvi",
+"sv": "Pudasjärvi"
+}
+,
+"memberOf": [503, 581, 616, 727, 843, 933, 905, 658, 837]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k615"
+} ,
+{
+"id": 297,
+"code": "616",
+"category": "KUNTA",
+"title": {
+"fi": "Pukkila",
+"en": "Pukkila",
+"sv": "Pukkila"
+}
+,
+"memberOf": [488, 514, 605, 727, 833, 840, 903, 658, 921]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k616"
+} ,
+{
+"id": 300,
+"code": "619",
+"category": "KUNTA",
+"title": {
+"fi": "Punkalaidun",
+"en": "Punkalaidun",
+"sv": "Punkalaidun"
+}
+,
+"memberOf": [492, 535, 601, 727, 842, 925, 836, 902, 658]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k619"
+} ,
+{
+"id": 301,
+"code": "620",
+"category": "KUNTA",
+"title": {
+"fi": "Puolanka",
+"en": "Puolanka",
+"sv": "Puolanka"
+}
+,
+"memberOf": [504, 587, 617, 727, 843, 934, 905, 658, 837]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k620"
+} ,
+{
+"id": 302,
+"code": "623",
+"category": "KUNTA",
+"title": {
+"fi": "Puumala",
+"en": "Puumala",
+"sv": "Puumala"
+}
+,
+"memberOf": [496, 545, 609, 727, 904, 658, 843, 835, 927]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k623"
+} ,
+{
+"id": 303,
+"code": "624",
+"category": "KUNTA",
+"title": {
+"fi": "Pyhtää",
+"en": "Pyhtää",
+"sv": "Pyttis"
+}
+,
+"memberOf": [494, 540, 606, 727, 926, 833, 841, 901, 658]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k624"
+} ,
+{
+"id": 304,
+"code": "625",
+"category": "KUNTA",
+"title": {
+"fi": "Pyhäjoki",
+"en": "Pyhäjoki",
+"sv": "Pyhäjoki"
+}
+,
+"memberOf": [503, 582, 616, 727, 843, 933, 905, 658, 837]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k625"
+} ,
+{
+"id": 305,
+"code": "626",
+"category": "KUNTA",
+"title": {
+"fi": "Pyhäjärvi",
+"en": "Pyhäjärvi",
+"sv": "Pyhäjärvi"
+}
+,
+"memberOf": [503, 584, 616, 727, 843, 933, 905, 658, 837]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k626"
+} ,
+{
+"id": 306,
+"code": "630",
+"category": "KUNTA",
+"title": {
+"fi": "Pyhäntä",
+"en": "Pyhäntä",
+"sv": "Pyhäntä"
+}
+,
+"memberOf": [843, 503, 583, 616, 727, 905, 658, 933, 837]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k630"
+} ,
+{
+"id": 307,
+"code": "631",
+"category": "KUNTA",
+"title": {
+"fi": "Pyhäranta",
+"en": "Pyhäranta",
+"sv": "Pyhäranta"
+}
+,
+"memberOf": [841, 489, 519, 601, 727, 922, 834, 902, 658]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k631"
+} ,
+{
+"id": 310,
+"code": "635",
+"category": "KUNTA",
+"title": {
+"fi": "Pälkäne",
+"en": "Pälkäne",
+"sv": "Pälkäne"
+}
+,
+"memberOf": [842, 925, 492, 531, 604, 727, 836, 903, 658]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k635"
+} ,
+{
+"id": 311,
+"code": "636",
+"category": "KUNTA",
+"title": {
+"fi": "Pöytyä",
+"en": "Pöytyä",
+"sv": "Pöytyä"
+}
+,
+"memberOf": [841, 489, 520, 601, 727, 922, 834, 902, 658]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k636"
+} ,
+{
+"id": 294,
+"code": "638",
+"category": "KUNTA",
+"title": {
+"fi": "Porvoo",
+"en": "Porvoo",
+"sv": "Borgå"
+}
+,
+"memberOf": [488, 514, 629, 727, 921, 833, 840, 901, 658]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k638"
+} ,
+{
+"id": 312,
+"code": "678",
+"category": "KUNTA",
+"title": {
+"fi": "Raahe",
+"en": "Raahe",
+"sv": "Brahestad"
+}
+,
+"memberOf": [843, 503, 582, 616, 727, 933, 905, 658, 837]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k678"
+} ,
+{
+"id": 313,
+"code": "680",
+"category": "KUNTA",
+"title": {
+"fi": "Raisio",
+"en": "Raisio",
+"sv": "Reso"
+}
+,
+"memberOf": [841, 922, 489, 518, 601, 727, 834, 902, 658]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k680"
+} ,
+{
+"id": 314,
+"code": "681",
+"category": "KUNTA",
+"title": {
+"fi": "Rantasalmi",
+"en": "Rantasalmi",
+"sv": "Rantasalmi"
+}
+,
+"memberOf": [927, 496, 547, 608, 727, 904, 658, 843, 835]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k681"
+} ,
+{
+"id": 316,
+"code": "683",
+"category": "KUNTA",
+"title": {
+"fi": "Ranua",
+"en": "Ranua",
+"sv": "Ranua"
+}
+,
+"memberOf": [843, 505, 589, 619, 727, 905, 658, 935, 838]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k683"
+} ,
+{
+"id": 317,
+"code": "684",
+"category": "KUNTA",
+"title": {
+"fi": "Rauma",
+"en": "Rauma",
+"sv": "Raumo"
+}
+,
+"memberOf": [842, 923, 490, 521, 602, 727, 902, 658, 834]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k684"
+} ,
+{
+"id": 318,
+"code": "686",
+"category": "KUNTA",
+"title": {
+"fi": "Rautalampi",
+"en": "Rautalampi",
+"sv": "Rautalampi"
+}
+,
+"memberOf": [928, 497, 554, 611, 727, 904, 658, 843, 835]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k686"
+} ,
+{
+"id": 319,
+"code": "687",
+"category": "KUNTA",
+"title": {
+"fi": "Rautavaara",
+"en": "Rautavaara",
+"sv": "Rautavaara"
+}
+,
+"memberOf": [497, 552, 611, 727, 928, 904, 658, 843, 835]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k687"
+} ,
+{
+"id": 320,
+"code": "689",
+"category": "KUNTA",
+"title": {
+"fi": "Rautjärvi",
+"en": "Rautjärvi",
+"sv": "Rautjärvi"
+}
+,
+"memberOf": [495, 543, 607, 727, 833, 841, 901, 658, 926]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k689"
+} ,
+{
+"id": 321,
+"code": "691",
+"category": "KUNTA",
+"title": {
+"fi": "Reisjärvi",
+"en": "Reisjärvi",
+"sv": "Reisjärvi"
+}
+,
+"memberOf": [843, 933, 503, 584, 615, 727, 905, 658, 837]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k691"
+} ,
+{
+"id": 323,
+"code": "694",
+"category": "KUNTA",
+"title": {
+"fi": "Riihimäki",
+"en": "Riihimäki",
+"sv": "Riihimäki"
+}
+,
+"memberOf": [491, 526, 603, 727, 841, 833, 903, 658, 924]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k694"
+} ,
+{
+"id": 325,
+"code": "697",
+"category": "KUNTA",
+"title": {
+"fi": "Ristijärvi",
+"en": "Ristijärvi",
+"sv": "Ristijärvi"
+}
+,
+"memberOf": [843, 504, 588, 617, 727, 934, 905, 658, 837]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k697"
+} ,
+{
+"id": 327,
+"code": "698",
+"category": "KUNTA",
+"title": {
+"fi": "Rovaniemi",
+"en": "Rovaniemi",
+"sv": "Rovaniemi"
+}
+,
+"memberOf": [843, 935, 505, 589, 619, 727, 905, 658, 838]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k698"
+} ,
+{
+"id": 328,
+"code": "700",
+"category": "KUNTA",
+"title": {
+"fi": "Ruokolahti",
+"en": "Ruokolahti",
+"sv": "Ruokolahti"
+}
+,
+"memberOf": [495, 543, 607, 727, 926, 833, 841, 901, 658]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k700"
+} ,
+{
+"id": 330,
+"code": "702",
+"category": "KUNTA",
+"title": {
+"fi": "Ruovesi",
+"en": "Ruovesi",
+"sv": "Ruovesi"
+}
+,
+"memberOf": [842, 925, 492, 604, 698, 727, 836, 903, 658]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k702"
+} ,
+{
+"id": 331,
+"code": "704",
+"category": "KUNTA",
+"title": {
+"fi": "Rusko",
+"en": "Rusko",
+"sv": "Rusko"
+}
+,
+"memberOf": [841, 922, 489, 518, 601, 727, 834, 902, 658]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k704"
+} ,
+{
+"id": 334,
+"code": "707",
+"category": "KUNTA",
+"title": {
+"fi": "Rääkkylä",
+"en": "Rääkkylä",
+"sv": "Rääkkylä"
+}
+,
+"memberOf": [843, 498, 558, 610, 727, 904, 658, 929, 835]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k707"
+} ,
+{
+"id": 796,
+"code": "710",
+"category": "KUNTA",
+"title": {
+"fi": "Raasepori",
+"en": "Raseborg",
+"sv": "Raseborg"
+}
+,
+"memberOf": [658, 901, 921, 833, 840, 799, 629, 488, 727]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k710"
+} ,
+{
+"id": 336,
+"code": "729",
+"category": "KUNTA",
+"title": {
+"fi": "Saarijärvi",
+"en": "Saarijärvi",
+"sv": "Saarijärvi"
+}
+,
+"memberOf": [842, 499, 612, 721, 727, 930, 904, 658, 836]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k729"
+} ,
+{
+"id": 338,
+"code": "732",
+"category": "KUNTA",
+"title": {
+"fi": "Salla",
+"en": "Salla",
+"sv": "Salla"
+}
+,
+"memberOf": [843, 935, 505, 592, 619, 727, 905, 658, 838]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k732"
+} ,
+{
+"id": 339,
+"code": "734",
+"category": "KUNTA",
+"title": {
+"fi": "Salo",
+"en": "Salo",
+"sv": "Salo"
+}
+,
+"memberOf": [841, 489, 517, 601, 727, 834, 902, 658, 922]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k734"
+} ,
+{
+"id": 340,
+"code": "736",
+"category": "KUNTA",
+"title": {
+"fi": "Saltvik",
+"en": "Saltvik",
+"sv": "Saltvik"
+}
+,
+"memberOf": [936, 506, 597, 620, 728, 844, 902, 658, 839]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k736"
+} ,
+{
+"id": 342,
+"code": "738",
+"category": "KUNTA",
+"title": {
+"fi": "Sauvo",
+"en": "Sauvo",
+"sv": "Sagu"
+}
+,
+"memberOf": [841, 922, 489, 518, 601, 727, 834, 902, 658]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k738"
+} ,
+{
+"id": 343,
+"code": "739",
+"category": "KUNTA",
+"title": {
+"fi": "Savitaipale",
+"en": "Savitaipale",
+"sv": "Savitaipale"
+}
+,
+"memberOf": [926, 495, 541, 607, 727, 833, 841, 901, 658]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k739"
+} ,
+{
+"id": 344,
+"code": "740",
+"category": "KUNTA",
+"title": {
+"fi": "Savonlinna",
+"en": "Savonlinna",
+"sv": "Nyslott"
+}
+,
+"memberOf": [843, 927, 496, 547, 608, 727, 904, 658, 835]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k740"
+} ,
+{
+"id": 346,
+"code": "742",
+"category": "KUNTA",
+"title": {
+"fi": "Savukoski",
+"en": "Savukoski",
+"sv": "Savukoski"
+}
+,
+"memberOf": [843, 935, 505, 592, 619, 727, 905, 658, 838]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k742"
+} ,
+{
+"id": 347,
+"code": "743",
+"category": "KUNTA",
+"title": {
+"fi": "Seinäjoki",
+"en": "Seinäjoki",
+"sv": "Seinäjoki"
+}
+,
+"memberOf": [842, 931, 500, 568, 613, 727, 903, 658, 836]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k743"
+} ,
+{
+"id": 348,
+"code": "746",
+"category": "KUNTA",
+"title": {
+"fi": "Sievi",
+"en": "Sievi",
+"sv": "Sievi"
+}
+,
+"memberOf": [843, 933, 503, 585, 616, 727, 905, 658, 837]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k746"
+} ,
+{
+"id": 349,
+"code": "747",
+"category": "KUNTA",
+"title": {
+"fi": "Siikainen",
+"en": "Siikainen",
+"sv": "Siikainen"
+}
+,
+"memberOf": [842, 923, 490, 524, 602, 727, 834, 902, 658]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k747"
+} ,
+{
+"id": 350,
+"code": "748",
+"category": "KUNTA",
+"title": {
+"fi": "Siikajoki",
+"en": "Siikajoki",
+"sv": "Siikajoki"
+}
+,
+"memberOf": [843, 503, 582, 616, 727, 905, 658, 933, 837]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k748"
+} ,
+{
+"id": 351,
+"code": "749",
+"category": "KUNTA",
+"title": {
+"fi": "Siilinjärvi",
+"en": "Siilinjärvi",
+"sv": "Siilinjärvi"
+}
+,
+"memberOf": [843, 497, 551, 611, 727, 904, 658, 928, 835]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k749"
+} ,
+{
+"id": 352,
+"code": "751",
+"category": "KUNTA",
+"title": {
+"fi": "Simo",
+"en": "Simo",
+"sv": "Simo"
+}
+,
+"memberOf": [843, 935, 505, 590, 618, 727, 905, 658, 838]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k751"
+} ,
+{
+"id": 353,
+"code": "753",
+"category": "KUNTA",
+"title": {
+"fi": "Sipoo",
+"en": "Sipoo",
+"sv": "Sibbo"
+}
+,
+"memberOf": [921, 488, 510, 629, 727, 833, 840, 901, 658]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k753"
+} ,
+{
+"id": 354,
+"code": "755",
+"category": "KUNTA",
+"title": {
+"fi": "Siuntio",
+"en": "Siuntio",
+"sv": "Sjundeå"
+}
+,
+"memberOf": [921, 488, 510, 629, 727, 833, 840, 901, 658]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k755"
+} ,
+{
+"id": 355,
+"code": "758",
+"category": "KUNTA",
+"title": {
+"fi": "Sodankylä",
+"en": "Sodankylä",
+"sv": "Sodankylä"
+}
+,
+"memberOf": [843, 505, 595, 619, 727, 905, 658, 935, 838]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k758"
+} ,
+{
+"id": 356,
+"code": "759",
+"category": "KUNTA",
+"title": {
+"fi": "Soini",
+"en": "Soini",
+"sv": "Soini"
+}
+,
+"memberOf": [842, 931, 500, 572, 613, 727, 903, 658, 836]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k759"
+} ,
+{
+"id": 357,
+"code": "761",
+"category": "KUNTA",
+"title": {
+"fi": "Somero",
+"en": "Somero",
+"sv": "Somero"
+}
+,
+"memberOf": [841, 922, 489, 517, 601, 727, 834, 902, 658]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k761"
+} ,
+{
+"id": 358,
+"code": "762",
+"category": "KUNTA",
+"title": {
+"fi": "Sonkajärvi",
+"en": "Sonkajärvi",
+"sv": "Sonkajärvi"
+}
+,
+"memberOf": [843, 928, 497, 550, 611, 727, 904, 658, 835]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k762"
+} ,
+{
+"id": 359,
+"code": "765",
+"category": "KUNTA",
+"title": {
+"fi": "Sotkamo",
+"en": "Sotkamo",
+"sv": "Sotkamo"
+}
+,
+"memberOf": [843, 504, 588, 617, 727, 905, 658, 934, 837]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k765"
+} ,
+{
+"id": 360,
+"code": "766",
+"category": "KUNTA",
+"title": {
+"fi": "Sottunga",
+"en": "Sottunga",
+"sv": "Sottunga"
+}
+,
+"memberOf": [936, 506, 620, 699, 728, 844, 902, 658, 839]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k766"
+} ,
+{
+"id": 361,
+"code": "768",
+"category": "KUNTA",
+"title": {
+"fi": "Sulkava",
+"en": "Sulkava",
+"sv": "Sulkava"
+}
+,
+"memberOf": [843, 927, 496, 547, 608, 727, 904, 658, 835]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k768"
+} ,
+{
+"id": 363,
+"code": "771",
+"category": "KUNTA",
+"title": {
+"fi": "Sund",
+"en": "Sund",
+"sv": "Sund"
+}
+,
+"memberOf": [506, 597, 620, 728, 844, 902, 658, 936, 839]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k771"
+} ,
+{
+"id": 368,
+"code": "777",
+"category": "KUNTA",
+"title": {
+"fi": "Suomussalmi",
+"en": "Suomussalmi",
+"sv": "Suomussalmi"
+}
+,
+"memberOf": [843, 934, 504, 587, 617, 727, 905, 658, 837]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k777"
+} ,
+{
+"id": 369,
+"code": "778",
+"category": "KUNTA",
+"title": {
+"fi": "Suonenjoki",
+"en": "Suonenjoki",
+"sv": "Suonenjoki"
+}
+,
+"memberOf": [843, 928, 497, 554, 611, 727, 904, 658, 835]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k778"
+} ,
+{
+"id": 370,
+"code": "781",
+"category": "KUNTA",
+"title": {
+"fi": "Sysmä",
+"en": "Sysmä",
+"sv": "Sysmä"
+}
+,
+"memberOf": [493, 536, 605, 727, 924, 833, 841, 903, 658]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k781"
+} ,
+{
+"id": 371,
+"code": "783",
+"category": "KUNTA",
+"title": {
+"fi": "Säkylä",
+"en": "Säkylä",
+"sv": "Säkylä"
+}
+,
+"memberOf": [842, 490, 521, 602, 727, 923, 834, 902, 658]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k783"
+} ,
+{
+"id": 405,
+"code": "785",
+"category": "KUNTA",
+"title": {
+"fi": "Vaala",
+"en": "Vaala",
+"sv": "Vaala"
+}
+,
+"memberOf": [905, 504, 588, 616, 727, 843, 658, 934, 837]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k785"
+} ,
+{
+"id": 797,
+"code": "790",
+"category": "KUNTA",
+"title": {
+"fi": "Sastamala",
+"en": "Sastamala",
+"sv": "Sastamala"
+}
+,
+"memberOf": [842, 903, 925, 836, 658, 492, 535, 604, 727]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k790"
+} ,
+{
+"id": 798,
+"code": "791",
+"category": "KUNTA",
+"title": {
+"fi": "Siikalatva",
+"en": "Siikalatva",
+"sv": "Siikalatva"
+}
+,
+"memberOf": [905, 843, 933, 503, 616, 658, 727, 583, 837]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k791"
+} ,
+{
+"id": 373,
+"code": "831",
+"category": "KUNTA",
+"title": {
+"fi": "Taipalsaari",
+"en": "Taipalsaari",
+"sv": "Taipalsaari"
+}
+,
+"memberOf": [495, 541, 607, 727, 926, 833, 841, 901, 658]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k831"
+} ,
+{
+"id": 374,
+"code": "832",
+"category": "KUNTA",
+"title": {
+"fi": "Taivalkoski",
+"en": "Taivalkoski",
+"sv": "Taivalkoski"
+}
+,
+"memberOf": [503, 586, 616, 727, 843, 933, 905, 658, 837]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k832"
+} ,
+{
+"id": 375,
+"code": "833",
+"category": "KUNTA",
+"title": {
+"fi": "Taivassalo",
+"en": "Taivassalo",
+"sv": "Tövsala"
+}
+,
+"memberOf": [841, 489, 519, 601, 727, 922, 834, 902, 658]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k833"
+} ,
+{
+"id": 376,
+"code": "834",
+"category": "KUNTA",
+"title": {
+"fi": "Tammela",
+"en": "Tammela",
+"sv": "Tammela"
+}
+,
+"memberOf": [491, 527, 603, 727, 841, 833, 903, 658, 924]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k834"
+} ,
+{
+"id": 378,
+"code": "837",
+"category": "KUNTA",
+"title": {
+"fi": "Tampere",
+"en": "Tampere",
+"sv": "Tammerfors"
+}
+,
+"memberOf": [842, 492, 531, 604, 727, 925, 836, 903, 658]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k837"
+} ,
+{
+"id": 379,
+"code": "838",
+"category": "KUNTA",
+"title": {
+"fi": "Tarvasjoki",
+"en": "Tarvasjoki",
+"sv": "Tarvasjoki"
+}
+,
+"memberOf": [841, 489, 520, 601, 727, 922, 834, 902, 658]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k838"
+} ,
+{
+"id": 381,
+"code": "844",
+"category": "KUNTA",
+"title": {
+"fi": "Tervo",
+"en": "Tervo",
+"sv": "Tervo"
+}
+,
+"memberOf": [843, 497, 554, 611, 727, 928, 904, 658, 835]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k844"
+} ,
+{
+"id": 382,
+"code": "845",
+"category": "KUNTA",
+"title": {
+"fi": "Tervola",
+"en": "Tervola",
+"sv": "Tervola"
+}
+,
+"memberOf": [505, 590, 618, 727, 843, 935, 905, 658, 838]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k845"
+} ,
+{
+"id": 383,
+"code": "846",
+"category": "KUNTA",
+"title": {
+"fi": "Teuva",
+"en": "Teuva",
+"sv": "Östermark"
+}
+,
+"memberOf": [842, 500, 567, 613, 727, 931, 903, 658, 836]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k846"
+} ,
+{
+"id": 384,
+"code": "848",
+"category": "KUNTA",
+"title": {
+"fi": "Tohmajärvi",
+"en": "Tohmajärvi",
+"sv": "Tohmajärvi"
+}
+,
+"memberOf": [843, 498, 558, 610, 727, 929, 904, 658, 835]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k848"
+} ,
+{
+"id": 385,
+"code": "849",
+"category": "KUNTA",
+"title": {
+"fi": "Toholampi",
+"en": "Toholampi",
+"sv": "Toholampi"
+}
+,
+"memberOf": [502, 577, 615, 727, 843, 932, 905, 658, 836]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k849"
+} ,
+{
+"id": 387,
+"code": "850",
+"category": "KUNTA",
+"title": {
+"fi": "Toivakka",
+"en": "Toivakka",
+"sv": "Toivakka"
+}
+,
+"memberOf": [842, 499, 560, 612, 727, 930, 904, 658, 836]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k850"
+} ,
+{
+"id": 388,
+"code": "851",
+"category": "KUNTA",
+"title": {
+"fi": "Tornio",
+"en": "Tornio",
+"sv": "Torneå"
+}
+,
+"memberOf": [905, 505, 590, 618, 727, 843, 935, 658, 838]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k851"
+} ,
+{
+"id": 389,
+"code": "853",
+"category": "KUNTA",
+"title": {
+"fi": "Turku",
+"en": "Turku",
+"sv": "Åbo"
+}
+,
+"memberOf": [841, 902, 489, 518, 601, 727, 922, 834, 658]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k853"
+} ,
+{
+"id": 273,
+"code": "854",
+"category": "KUNTA",
+"title": {
+"fi": "Pello",
+"en": "Pello",
+"sv": "Pello"
+}
+,
+"memberOf": [843, 505, 591, 619, 727, 905, 658, 935, 838]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k854"
+} ,
+{
+"id": 392,
+"code": "857",
+"category": "KUNTA",
+"title": {
+"fi": "Tuusniemi",
+"en": "Tuusniemi",
+"sv": "Tuusniemi"
+}
+,
+"memberOf": [843, 904, 497, 552, 611, 727, 928, 658, 835]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k857"
+} ,
+{
+"id": 393,
+"code": "858",
+"category": "KUNTA",
+"title": {
+"fi": "Tuusula",
+"en": "Tuusula",
+"sv": "Tusby"
+}
+,
+"memberOf": [901, 488, 510, 629, 727, 921, 833, 840, 658]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k858"
+} ,
+{
+"id": 394,
+"code": "859",
+"category": "KUNTA",
+"title": {
+"fi": "Tyrnävä",
+"en": "Tyrnävä",
+"sv": "Tyrnävä"
+}
+,
+"memberOf": [905, 503, 579, 616, 727, 843, 658, 933, 837]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k859"
+} ,
+{
+"id": 397,
+"code": "886",
+"category": "KUNTA",
+"title": {
+"fi": "Ulvila",
+"en": "Ulvila",
+"sv": "Ulvsby"
+}
+,
+"memberOf": [842, 902, 490, 523, 602, 727, 923, 658, 834]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k886"
+} ,
+{
+"id": 398,
+"code": "887",
+"category": "KUNTA",
+"title": {
+"fi": "Urjala",
+"en": "Urjala",
+"sv": "Urjala"
+}
+,
+"memberOf": [842, 903, 492, 530, 604, 727, 925, 836, 658]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k887"
+} ,
+{
+"id": 399,
+"code": "889",
+"category": "KUNTA",
+"title": {
+"fi": "Utajärvi",
+"en": "Utajärvi",
+"sv": "Utajärvi"
+}
+,
+"memberOf": [905, 503, 581, 616, 727, 843, 933, 658, 837]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k889"
+} ,
+{
+"id": 400,
+"code": "890",
+"category": "KUNTA",
+"title": {
+"fi": "Utsjoki",
+"en": "Utsjoki",
+"sv": "Utsjoki"
+}
+,
+"memberOf": [905, 505, 595, 619, 727, 843, 935, 658, 838]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k890"
+} ,
+{
+"id": 402,
+"code": "892",
+"category": "KUNTA",
+"title": {
+"fi": "Uurainen",
+"en": "Uurainen",
+"sv": "Uurainen"
+}
+,
+"memberOf": [842, 904, 499, 560, 612, 727, 930, 658, 836]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k892"
+} ,
+{
+"id": 403,
+"code": "893",
+"category": "KUNTA",
+"title": {
+"fi": "Uusikaarlepyy",
+"en": "Uusikaarlepyy",
+"sv": "Nykarleby"
+}
+,
+"memberOf": [842, 902, 501, 576, 614, 727, 658, 836, 932]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k893"
+} ,
+{
+"id": 404,
+"code": "895",
+"category": "KUNTA",
+"title": {
+"fi": "Uusikaupunki",
+"en": "Uusikaupunki",
+"sv": "Nystad"
+}
+,
+"memberOf": [841, 902, 489, 519, 601, 727, 922, 834, 658]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k895"
+} ,
+{
+"id": 406,
+"code": "905",
+"category": "KUNTA",
+"title": {
+"fi": "Vaasa",
+"en": "Vaasa",
+"sv": "Vasa"
+}
+,
+"memberOf": [842, 902, 501, 574, 614, 727, 932, 658, 836]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k905"
+} ,
+{
+"id": 408,
+"code": "908",
+"category": "KUNTA",
+"title": {
+"fi": "Valkeakoski",
+"en": "Valkeakoski",
+"sv": "Valkeakoski"
+}
+,
+"memberOf": [842, 903, 492, 530, 604, 727, 925, 836, 658]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k908"
+} ,
+{
+"id": 410,
+"code": "911",
+"category": "KUNTA",
+"title": {
+"fi": "Valtimo",
+"en": "Valtimo",
+"sv": "Valtimo"
+}
+,
+"memberOf": [843, 904, 498, 559, 610, 727, 929, 658, 835]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k911"
+} ,
+{
+"id": 414,
+"code": "915",
+"category": "KUNTA",
+"title": {
+"fi": "Varkaus",
+"en": "Varkaus",
+"sv": "Varkaus"
+}
+,
+"memberOf": [843, 904, 497, 553, 611, 727, 658, 928, 835]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k915"
+} ,
+{
+"id": 417,
+"code": "918",
+"category": "KUNTA",
+"title": {
+"fi": "Vehmaa",
+"en": "Vehmaa",
+"sv": "Vehmaa"
+}
+,
+"memberOf": [841, 902, 489, 519, 601, 727, 922, 834, 658]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k918"
+} ,
+{
+"id": 420,
+"code": "921",
+"category": "KUNTA",
+"title": {
+"fi": "Vesanto",
+"en": "Vesanto",
+"sv": "Vesanto"
+}
+,
+"memberOf": [843, 904, 497, 554, 611, 727, 928, 658, 835]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k921"
+} ,
+{
+"id": 421,
+"code": "922",
+"category": "KUNTA",
+"title": {
+"fi": "Vesilahti",
+"en": "Vesilahti",
+"sv": "Vesilahti"
+}
+,
+"memberOf": [842, 903, 492, 531, 604, 727, 925, 836, 658]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k922"
+} ,
+{
+"id": 422,
+"code": "924",
+"category": "KUNTA",
+"title": {
+"fi": "Veteli",
+"en": "Veteli",
+"sv": "Vetil"
+}
+,
+"memberOf": [905, 843, 502, 577, 615, 727, 658, 836, 932]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k924"
+} ,
+{
+"id": 423,
+"code": "925",
+"category": "KUNTA",
+"title": {
+"fi": "Vieremä",
+"en": "Vieremä",
+"sv": "Vieremä"
+}
+,
+"memberOf": [843, 904, 497, 550, 611, 727, 928, 658, 835]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k925"
+} ,
+{
+"id": 425,
+"code": "927",
+"category": "KUNTA",
+"title": {
+"fi": "Vihti",
+"en": "Vihti",
+"sv": "Vichtis"
+}
+,
+"memberOf": [901, 488, 510, 629, 727, 921, 833, 840, 658]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k927"
+} ,
+{
+"id": 427,
+"code": "931",
+"category": "KUNTA",
+"title": {
+"fi": "Viitasaari",
+"en": "Viitasaari",
+"sv": "Viitasaari"
+}
+,
+"memberOf": [842, 904, 499, 612, 721, 727, 930, 658, 836]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k931"
+} ,
+{
+"id": 430,
+"code": "934",
+"category": "KUNTA",
+"title": {
+"fi": "Vimpeli",
+"en": "Vimpeli",
+"sv": "Vimpeli"
+}
+,
+"memberOf": [903, 500, 572, 613, 727, 931, 842, 658, 836]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k934"
+} ,
+{
+"id": 431,
+"code": "935",
+"category": "KUNTA",
+"title": {
+"fi": "Virolahti",
+"en": "Virolahti",
+"sv": "Virolahti"
+}
+,
+"memberOf": [901, 494, 540, 606, 727, 833, 841, 658, 926]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k935"
+} ,
+{
+"id": 432,
+"code": "936",
+"category": "KUNTA",
+"title": {
+"fi": "Virrat",
+"en": "Virrat",
+"sv": "Virdois"
+}
+,
+"memberOf": [842, 903, 492, 604, 698, 727, 925, 836, 658]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k936"
+} ,
+{
+"id": 435,
+"code": "941",
+"category": "KUNTA",
+"title": {
+"fi": "Vårdö",
+"en": "Vårdö",
+"sv": "Vårdö"
+}
+,
+"memberOf": [902, 936, 506, 620, 699, 728, 844, 658, 839]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k941"
+} ,
+{
+"id": 854,
+"code": "946",
+"category": "KUNTA",
+"title": {
+"fi": "Vöyri",
+"en": "Vöyri",
+"sv": "Vörå"
+}
+,
+"memberOf": [902, 842, 932, 836, 658, 727, 614, 574, 501]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k946"
+} ,
+{
+"id": 444,
+"code": "976",
+"category": "KUNTA",
+"title": {
+"fi": "Ylitornio",
+"en": "Ylitornio",
+"sv": "Övertorneå"
+}
+,
+"memberOf": [505, 591, 618, 727, 905, 843, 935, 658, 838]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k976"
+} ,
+{
+"id": 445,
+"code": "977",
+"category": "KUNTA",
+"title": {
+"fi": "Ylivieska",
+"en": "Ylivieska",
+"sv": "Ylivieska"
+}
+,
+"memberOf": [503, 585, 616, 727, 905, 843, 933, 658, 837]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k977"
+} ,
+{
+"id": 448,
+"code": "980",
+"category": "KUNTA",
+"title": {
+"fi": "Ylöjärvi",
+"en": "Ylöjärvi",
+"sv": "Ylöjärvi"
+}
+,
+"memberOf": [842, 492, 531, 604, 727, 903, 925, 836, 658]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k980"
+} ,
+{
+"id": 449,
+"code": "981",
+"category": "KUNTA",
+"title": {
+"fi": "Ypäjä",
+"en": "Ypäjä",
+"sv": "Ypäjä"
+}
+,
+"memberOf": [491, 527, 603, 727, 903, 841, 833, 658, 924]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k981"
+} ,
+{
+"id": 451,
+"code": "989",
+"category": "KUNTA",
+"title": {
+"fi": "Ähtäri",
+"en": "Ähtäri",
+"sv": "Etseri"
+}
+,
+"memberOf": [500, 570, 613, 727, 903, 842, 931, 658, 836]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k989"
+} ,
+{
+"id": 452,
+"code": "992",
+"category": "KUNTA",
+"title": {
+"fi": "Äänekoski",
+"en": "Äänekoski",
+"sv": "Äänekoski"
+}
+,
+"memberOf": [499, 564, 612, 727, 904, 930, 842, 658, 836]
+,
+"uri": "http://www.yso.fi/onto/kunnat/k992"
+} ,
+{
+"id": 658,
+"code": "358",
+"category": "MAA",
+"title": {
+"fi": "Koko maa",
+"en": "Whole country",
+"sv": "Hela landet"
+}
+,
+"memberOf": []
+,
+"uri": "http://www.yso.fi/onto/kunnat/suomi"
+} ,
+{
+"id": 488,
+"code": "01",
+"category": "MAAKUNTA",
+"title": {
+"fi": "Uusimaa",
+"en": "Region of Uusimaa",
+"sv": "Nyland"
+}
+,
+"memberOf": []
+,
+"uri": "http://www.yso.fi/onto/kunnat/mk01"
+} ,
+{
+"id": 489,
+"code": "02",
+"category": "MAAKUNTA",
+"title": {
+"fi": "Varsinais-Suomi",
+"en": "Region of Varsinais-Suomi",
+"sv": "Egentliga Finland"
+}
+,
+"memberOf": []
+,
+"uri": "http://www.yso.fi/onto/kunnat/mk02"
+} ,
+{
+"id": 490,
+"code": "04",
+"category": "MAAKUNTA",
+"title": {
+"fi": "Satakunta",
+"en": "Region of Satakunta",
+"sv": "Satakunta"
+}
+,
+"memberOf": []
+,
+"uri": "http://www.yso.fi/onto/kunnat/mk04"
+} ,
+{
+"id": 491,
+"code": "05",
+"category": "MAAKUNTA",
+"title": {
+"fi": "Kanta-Häme",
+"en": "Region of Kanta-Häme",
+"sv": "Egentliga Tavastland"
+}
+,
+"memberOf": []
+,
+"uri": "http://www.yso.fi/onto/kunnat/mk05"
+} ,
+{
+"id": 492,
+"code": "06",
+"category": "MAAKUNTA",
+"title": {
+"fi": "Pirkanmaa",
+"en": "Region of Pirkanmaa",
+"sv": "Birkaland"
+}
+,
+"memberOf": []
+,
+"uri": "http://www.yso.fi/onto/kunnat/mk06"
+} ,
+{
+"id": 493,
+"code": "07",
+"category": "MAAKUNTA",
+"title": {
+"fi": "Päijät-Häme",
+"en": "Region of Päijät-Häme",
+"sv": "Päijänne-Tavastland"
+}
+,
+"memberOf": []
+,
+"uri": "http://www.yso.fi/onto/kunnat/mk07"
+} ,
+{
+"id": 494,
+"code": "08",
+"category": "MAAKUNTA",
+"title": {
+"fi": "Kymenlaakso",
+"en": "Region of Kymenlaakso",
+"sv": "Kymmenedalen"
+}
+,
+"memberOf": []
+,
+"uri": "http://www.yso.fi/onto/kunnat/mk08"
+} ,
+{
+"id": 495,
+"code": "09",
+"category": "MAAKUNTA",
+"title": {
+"fi": "Etelä-Karjala",
+"en": "Region of South Karelia",
+"sv": "Södra Karelen"
+}
+,
+"memberOf": []
+,
+"uri": "http://www.yso.fi/onto/kunnat/mk09"
+} ,
+{
+"id": 496,
+"code": "10",
+"category": "MAAKUNTA",
+"title": {
+"fi": "Etelä-Savo",
+"en": "Region of Etelä-Savo",
+"sv": "Södra Savolax"
+}
+,
+"memberOf": []
+,
+"uri": "http://www.yso.fi/onto/kunnat/mk10"
+} ,
+{
+"id": 497,
+"code": "11",
+"category": "MAAKUNTA",
+"title": {
+"fi": "Pohjois-Savo",
+"en": "Region of Pohjois-Savo",
+"sv": "Norra Savolax"
+}
+,
+"memberOf": []
+,
+"uri": "http://www.yso.fi/onto/kunnat/mk11"
+} ,
+{
+"id": 498,
+"code": "12",
+"category": "MAAKUNTA",
+"title": {
+"fi": "Pohjois-Karjala",
+"en": "Region of North Karelia",
+"sv": "Norra Karelen"
+}
+,
+"memberOf": []
+,
+"uri": "http://www.yso.fi/onto/kunnat/mk12"
+} ,
+{
+"id": 499,
+"code": "13",
+"category": "MAAKUNTA",
+"title": {
+"fi": "Keski-Suomi",
+"en": "Region of Central Finland",
+"sv": "Mellersta Finland"
+}
+,
+"memberOf": []
+,
+"uri": "http://www.yso.fi/onto/kunnat/mk13"
+} ,
+{
+"id": 500,
+"code": "14",
+"category": "MAAKUNTA",
+"title": {
+"fi": "Etelä-Pohjanmaa",
+"en": "Region of South Ostrobothnia",
+"sv": "Södra Österbotten"
+}
+,
+"memberOf": []
+,
+"uri": "http://www.yso.fi/onto/kunnat/mk14"
+} ,
+{
+"id": 501,
+"code": "15",
+"category": "MAAKUNTA",
+"title": {
+"fi": "Pohjanmaa",
+"en": "Region of Ostrobothnia",
+"sv": "Österbotten"
+}
+,
+"memberOf": []
+,
+"uri": "http://www.yso.fi/onto/kunnat/mk15"
+} ,
+{
+"id": 502,
+"code": "16",
+"category": "MAAKUNTA",
+"title": {
+"fi": "Keski-Pohjanmaa",
+"en": "Region of Central Ostrobothnia",
+"sv": "Mellersta Österbotten"
+}
+,
+"memberOf": []
+,
+"uri": "http://www.yso.fi/onto/kunnat/mk16"
+} ,
+{
+"id": 503,
+"code": "17",
+"category": "MAAKUNTA",
+"title": {
+"fi": "Pohjois-Pohjanmaa",
+"en": "Region of North Ostrobothnia",
+"sv": "Norra Österbotten"
+}
+,
+"memberOf": []
+,
+"uri": "http://www.yso.fi/onto/kunnat/mk17"
+} ,
+{
+"id": 504,
+"code": "18",
+"category": "MAAKUNTA",
+"title": {
+"fi": "Kainuu",
+"en": "Region of Kainuu",
+"sv": "Kajanaland"
+}
+,
+"memberOf": []
+,
+"uri": "http://www.yso.fi/onto/kunnat/mk18"
+} ,
+{
+"id": 505,
+"code": "19",
+"category": "MAAKUNTA",
+"title": {
+"fi": "Lappi",
+"en": "Region of Lapland",
+"sv": "Lappland"
+}
+,
+"memberOf": []
+,
+"uri": "http://www.yso.fi/onto/kunnat/mk19"
+} ,
+{
+"id": 506,
+"code": "21",
+"category": "MAAKUNTA",
+"title": {
+"fi": "Ahvenanmaa",
+"en": "Region of Åland",
+"sv": "Åland"
+}
+,
+"memberOf": []
+,
+"uri": "http://www.yso.fi/onto/kunnat/mk21"
+} ,
+{
+"id": 727,
+"code": "1",
+"category": "NUTS1",
+"title": {
+"fi": "Manner-Suomi",
+"en": "Mainland Finland",
+"sv": "Fastlandsfinland"
+}
+,
+"memberOf": []
+} ,
+{
+"id": 728,
+"code": "2",
+"category": "NUTS1",
+"title": {
+"fi": "Ahvenanmaa",
+"en": "Åland",
+"sv": "Åland"
+}
+,
+"memberOf": []
+} ,
+{
+"id": 1046,
+"code": "208",
+"category": "POHJOISMAAT",
+"title": {
+"fi": "Tanska",
+"en": "Denmark",
+"sv": "Danmark"
+}
+,
+"memberOf": []
+} ,
+{
+"id": 1045,
+"code": "246",
+"category": "POHJOISMAAT",
+"title": {
+"fi": "Suomi",
+"en": "Finland",
+"sv": "Finland"
+}
+,
+"memberOf": []
+} ,
+{
+"id": 1047,
+"code": "33",
+"category": "POHJOISMAAT",
+"title": {
+"fi": "Pohjoismaat",
+"en": "Nordic countries",
+"sv": "Norden"
+}
+,
+"memberOf": []
+} ,
+{
+"id": 1042,
+"code": "352",
+"category": "POHJOISMAAT",
+"title": {
+"fi": "Islanti",
+"en": "Iceland",
+"sv": "Island"
+}
+,
+"memberOf": []
+} ,
+{
+"id": 1043,
+"code": "578",
+"category": "POHJOISMAAT",
+"title": {
+"fi": "Norja",
+"en": "Norway",
+"sv": "Norge"
+}
+,
+"memberOf": []
+} ,
+{
+"id": 1044,
+"code": "752",
+"category": "POHJOISMAAT",
+"title": {
+"fi": "Ruotsi",
+"en": "Sweden",
+"sv": "Sverige"
+}
+,
+"memberOf": []
+} ,
+{
+"id": 1041,
+"code": "813",
+"category": "POHJOISMAAT",
+"title": {
+"fi": "Grönlanti",
+"en": "Greenland",
+"sv": "Grönland"
+}
+,
+"memberOf": [1033]
+} ,
+{
+"id": 601,
+"code": "03",
+"category": "SAIRAANHOITOPIIRI",
+"title": {
+"fi": "Varsinais-Suomen sairaanhoitopiiri",
+"en": "Varsinais-Suomi hospital district",
+"sv": "Egentliga Finlands sjukvårdsdistrikt"
+}
+,
+"memberOf": []
+,
+"uri": "http://www.yso.fi/onto/kunnat/shp03"
+} ,
+{
+"id": 602,
+"code": "04",
+"category": "SAIRAANHOITOPIIRI",
+"title": {
+"fi": "Satakunnan sairaanhoitopiiri",
+"en": "Satakunta hospital district",
+"sv": "Satakunta sjukvårdsdistrikt"
+}
+,
+"memberOf": []
+,
+"uri": "http://www.yso.fi/onto/kunnat/shp04"
+} ,
+{
+"id": 603,
+"code": "05",
+"category": "SAIRAANHOITOPIIRI",
+"title": {
+"fi": "Kanta-Hämeen sairaanhoitopiiri",
+"en": "Kanta-Häme hospital district",
+"sv": "Centrala Tavastlands sjukvårdsdistrikt"
+}
+,
+"memberOf": []
+,
+"uri": "http://www.yso.fi/onto/kunnat/shp05"
+} ,
+{
+"id": 604,
+"code": "06",
+"category": "SAIRAANHOITOPIIRI",
+"title": {
+"fi": "Pirkanmaan sairaanhoitopiiri",
+"en": "Pirkanmaa hospital district",
+"sv": "Birkalands sjukvårdsdistrikt"
+}
+,
+"memberOf": []
+,
+"uri": "http://www.yso.fi/onto/kunnat/shp06"
+} ,
+{
+"id": 605,
+"code": "07",
+"category": "SAIRAANHOITOPIIRI",
+"title": {
+"fi": "Päijät-Hämeen sairaanhoitopiiri",
+"en": "Päijät-Häme hospital district",
+"sv": "Päijät-Häme sjukvårdsdistrikt"
+}
+,
+"memberOf": []
+,
+"uri": "http://www.yso.fi/onto/kunnat/shp07"
+} ,
+{
+"id": 606,
+"code": "08",
+"category": "SAIRAANHOITOPIIRI",
+"title": {
+"fi": "Kymenlaakson sairaanhoitopiiri",
+"en": "Kymenlaakso hospital district",
+"sv": "Kymmenedalens sjukvårdsdistrikt"
+}
+,
+"memberOf": []
+,
+"uri": "http://www.yso.fi/onto/kunnat/shp08"
+} ,
+{
+"id": 607,
+"code": "09",
+"category": "SAIRAANHOITOPIIRI",
+"title": {
+"fi": "Etelä-Karjalan sairaanhoitopiiri",
+"en": "South Karelia hospital district",
+"sv": "Södra Karelens sjukvårdsdistrikt"
+}
+,
+"memberOf": []
+,
+"uri": "http://www.yso.fi/onto/kunnat/shp09"
+} ,
+{
+"id": 609,
+"code": "10",
+"category": "SAIRAANHOITOPIIRI",
+"title": {
+"fi": "Etelä-Savon sairaanhoitopiiri",
+"en": "Etelä-Savo hospital district",
+"sv": "Södra Savolax sjukvårdsdistrikt"
+}
+,
+"memberOf": []
+,
+"uri": "http://www.yso.fi/onto/kunnat/shp10"
+} ,
+{
+"id": 608,
+"code": "11",
+"category": "SAIRAANHOITOPIIRI",
+"title": {
+"fi": "Itä-Savon sairaanhoitopiiri",
+"en": "Itä-Savo hospital district",
+"sv": "Östra Savolax sjukvårdsdistrikt"
+}
+,
+"memberOf": []
+,
+"uri": "http://www.yso.fi/onto/kunnat/shp11"
+} ,
+{
+"id": 610,
+"code": "12",
+"category": "SAIRAANHOITOPIIRI",
+"title": {
+"fi": "Pohjois-Karjalan sairaanhoitopiiri",
+"en": "North Karelia hospital district",
+"sv": "Norra Karelens sjukvårdsdistrikt"
+}
+,
+"memberOf": []
+,
+"uri": "http://www.yso.fi/onto/kunnat/shp12"
+} ,
+{
+"id": 611,
+"code": "13",
+"category": "SAIRAANHOITOPIIRI",
+"title": {
+"fi": "Pohjois-Savon sairaanhoitopiiri",
+"en": "Pohjois-Savo hospital district",
+"sv": "Norra Savolax sjukvårdsdistrikt"
+}
+,
+"memberOf": []
+,
+"uri": "http://www.yso.fi/onto/kunnat/shp13"
+} ,
+{
+"id": 612,
+"code": "14",
+"category": "SAIRAANHOITOPIIRI",
+"title": {
+"fi": "Keski-Suomen sairaanhoitopiiri",
+"en": "Central Finland hospital district",
+"sv": "Mellersta Finlands sjukvårdsdistrikt"
+}
+,
+"memberOf": []
+,
+"uri": "http://www.yso.fi/onto/kunnat/shp14"
+} ,
+{
+"id": 613,
+"code": "15",
+"category": "SAIRAANHOITOPIIRI",
+"title": {
+"fi": "Etelä-Pohjanmaan sairaanhoitopiiri",
+"en": "South Ostrobothnia hospital district",
+"sv": "Syd-Österbottens sjukvårdsdistrikt"
+}
+,
+"memberOf": []
+,
+"uri": "http://www.yso.fi/onto/kunnat/shp15"
+} ,
+{
+"id": 614,
+"code": "16",
+"category": "SAIRAANHOITOPIIRI",
+"title": {
+"fi": "Vaasan sairaanhoitopiiri",
+"en": "Vaasa hospital district",
+"sv": "Vasa sjukvårdsdistrikt"
+}
+,
+"memberOf": []
+,
+"uri": "http://www.yso.fi/onto/kunnat/shp16"
+} ,
+{
+"id": 615,
+"code": "17",
+"category": "SAIRAANHOITOPIIRI",
+"title": {
+"fi": "Keski-Pohjanmaan sairaanhoitopiiri",
+"en": "Central Ostrobothnia hospital district",
+"sv": "Mellersta Österbottens sjukvårdsdistrikt"
+}
+,
+"memberOf": []
+,
+"uri": "http://www.yso.fi/onto/kunnat/shp17"
+} ,
+{
+"id": 616,
+"code": "18",
+"category": "SAIRAANHOITOPIIRI",
+"title": {
+"fi": "Pohjois-Pohjanmaan sairaanhoitopiiri",
+"en": "North Ostrobothnia hospital district",
+"sv": "Norra Österbottens sjukvårdsdistrikt"
+}
+,
+"memberOf": []
+,
+"uri": "http://www.yso.fi/onto/kunnat/shp18"
+} ,
+{
+"id": 617,
+"code": "19",
+"category": "SAIRAANHOITOPIIRI",
+"title": {
+"fi": "Kainuun sairaanhoitopiiri",
+"en": "Kainuu hospital district",
+"sv": "Kajanalands sjukvårdsdistrikt"
+}
+,
+"memberOf": []
+,
+"uri": "http://www.yso.fi/onto/kunnat/shp19"
+} ,
+{
+"id": 618,
+"code": "20",
+"category": "SAIRAANHOITOPIIRI",
+"title": {
+"fi": "Länsi-Pohjan sairaanhoitopiiri",
+"en": "Länsi-Pohja hospital district",
+"sv": "Länsi-Pohja sjukvårdsdistrikt"
+}
+,
+"memberOf": []
+,
+"uri": "http://www.yso.fi/onto/kunnat/shp20"
+} ,
+{
+"id": 619,
+"code": "21",
+"category": "SAIRAANHOITOPIIRI",
+"title": {
+"fi": "Lapin sairaanhoitopiiri",
+"en": "Lapland hospital district",
+"sv": "Lapplands sjukvårdsdistrikt"
+}
+,
+"memberOf": []
+,
+"uri": "http://www.yso.fi/onto/kunnat/shp21"
+} ,
+{
+"id": 620,
+"code": "22",
+"category": "SAIRAANHOITOPIIRI",
+"title": {
+"fi": "Ahvenanmaan sairaanhoitopiiri",
+"en": "Åland hospital district",
+"sv": "Ålands sjukvårdsdistrikt"
+}
+,
+"memberOf": []
+,
+"uri": "http://www.yso.fi/onto/kunnat/shp22"
+} ,
+{
+"id": 629,
+"code": "25",
+"category": "SAIRAANHOITOPIIRI",
+"title": {
+"fi": "Helsingin ja Uudenmaan sairaanhoitopiiri",
+"en": "Helsinki and Uusimaa hospital district",
+"sv": "Helsingfors och Nylands sjukvårdsdistrikt"
+}
+,
+"memberOf": []
+,
+"uri": "http://www.yso.fi/onto/kunnat/shp25"
+} ,
+{
+"id": 510,
+"code": "011",
+"category": "SEUTUKUNTA",
+"title": {
+"fi": "Helsingin seutukunta",
+"en": "Sub-region of Helsinki",
+"sv": "Helsingfors ekonomiska region"
+}
+,
+"memberOf": []
+,
+"uri": "http://www.yso.fi/onto/kunnat/sk011"
+} ,
+{
+"id": 799,
+"code": "014",
+"category": "SEUTUKUNTA",
+"title": {
+"fi": "Raaseporin seutukunta",
+"en": "Sub-region of Raseborg",
+"sv": "Raseborg ekonomiska region"
+}
+,
+"memberOf": []
+,
+"uri": "http://www.yso.fi/onto/kunnat/sk014"
+} ,
+{
+"id": 514,
+"code": "015",
+"category": "SEUTUKUNTA",
+"title": {
+"fi": "Porvoon seutukunta",
+"en": "Sub-region of Porvoo",
+"sv": "Borgå ekonomiska region"
+}
+,
+"memberOf": []
+,
+"uri": "http://www.yso.fi/onto/kunnat/sk015"
+} ,
+{
+"id": 515,
+"code": "016",
+"category": "SEUTUKUNTA",
+"title": {
+"fi": "Loviisan seutukunta",
+"en": "Sub-region of Loviisa",
+"sv": "Lovisa ekonomiska region"
+}
+,
+"memberOf": []
+,
+"uri": "http://www.yso.fi/onto/kunnat/sk016"
+} ,
+{
+"id": 516,
+"code": "021",
+"category": "SEUTUKUNTA",
+"title": {
+"fi": "Åboland-Turunmaan seutukunta",
+"en": "Sub-region of Åboland-Turunmaa",
+"sv": "Åboland-Turunmaa ekonomiska region"
+}
+,
+"memberOf": []
+,
+"uri": "http://www.yso.fi/onto/kunnat/sk021"
+} ,
+{
+"id": 517,
+"code": "022",
+"category": "SEUTUKUNTA",
+"title": {
+"fi": "Salon seutukunta",
+"en": "Sub-region of Salo",
+"sv": "Salo ekonomiska region"
+}
+,
+"memberOf": []
+,
+"uri": "http://www.yso.fi/onto/kunnat/sk022"
+} ,
+{
+"id": 518,
+"code": "023",
+"category": "SEUTUKUNTA",
+"title": {
+"fi": "Turun seutukunta",
+"en": "Sub-region of Turku",
+"sv": "Åbo ekonomiska region"
+}
+,
+"memberOf": []
+,
+"uri": "http://www.yso.fi/onto/kunnat/sk023"
+} ,
+{
+"id": 519,
+"code": "024",
+"category": "SEUTUKUNTA",
+"title": {
+"fi": "Vakka-Suomen seutukunta",
+"en": "Sub-region of Vakka-Suomi",
+"sv": "Nystadsregionen ekonomiska region"
+}
+,
+"memberOf": []
+,
+"uri": "http://www.yso.fi/onto/kunnat/sk024"
+} ,
+{
+"id": 520,
+"code": "025",
+"category": "SEUTUKUNTA",
+"title": {
+"fi": "Loimaan seutukunta",
+"en": "Sub-region of Loimaa",
+"sv": "Loimaa ekonomiska region"
+}
+,
+"memberOf": []
+,
+"uri": "http://www.yso.fi/onto/kunnat/sk025"
+} ,
+{
+"id": 521,
+"code": "041",
+"category": "SEUTUKUNTA",
+"title": {
+"fi": "Rauman seutukunta",
+"en": "Sub-region of Rauma",
+"sv": "Raumo eknomiska region"
+}
+,
+"memberOf": []
+,
+"uri": "http://www.yso.fi/onto/kunnat/sk041"
+} ,
+{
+"id": 523,
+"code": "043",
+"category": "SEUTUKUNTA",
+"title": {
+"fi": "Porin seutukunta",
+"en": "Sub-region of Pori",
+"sv": "Björneborg ekonomiska region"
+}
+,
+"memberOf": []
+,
+"uri": "http://www.yso.fi/onto/kunnat/sk043"
+} ,
+{
+"id": 524,
+"code": "044",
+"category": "SEUTUKUNTA",
+"title": {
+"fi": "Pohjois-Satakunnan seutukunta",
+"en": "Sub-region of Pohjois-Satakunta",
+"sv": "Norra Satakunta ekonomiska region"
+}
+,
+"memberOf": []
+,
+"uri": "http://www.yso.fi/onto/kunnat/sk044"
+} ,
+{
+"id": 525,
+"code": "051",
+"category": "SEUTUKUNTA",
+"title": {
+"fi": "Hämeenlinnan seutukunta",
+"en": "Sub-region of Hämeenlinna",
+"sv": "Tavastehus ekonomiska region"
+}
+,
+"memberOf": []
+,
+"uri": "http://www.yso.fi/onto/kunnat/sk051"
+} ,
+{
+"id": 526,
+"code": "052",
+"category": "SEUTUKUNTA",
+"title": {
+"fi": "Riihimäen seutukunta",
+"en": "Sub-region of Riihimäki",
+"sv": "Riihimäki ekonomiska region"
+}
+,
+"memberOf": []
+,
+"uri": "http://www.yso.fi/onto/kunnat/sk052"
+} ,
+{
+"id": 527,
+"code": "053",
+"category": "SEUTUKUNTA",
+"title": {
+"fi": "Forssan seutukunta",
+"en": "Sub-region of Forssa",
+"sv": "Forssa ekonomiska region"
+}
+,
+"memberOf": []
+,
+"uri": "http://www.yso.fi/onto/kunnat/sk053"
+} ,
+{
+"id": 528,
+"code": "061",
+"category": "SEUTUKUNTA",
+"title": {
+"fi": "Luoteis-Pirkanmaan seutukunta",
+"en": "Sub-region of Luoteis-Pirkanmaa",
+"sv": "Nordvästra Birkaland ekonomiska region"
+}
+,
+"memberOf": []
+,
+"uri": "http://www.yso.fi/onto/kunnat/sk061"
+} ,
+{
+"id": 530,
+"code": "063",
+"category": "SEUTUKUNTA",
+"title": {
+"fi": "Etelä-Pirkanmaan seutukunta",
+"en": "Sub-region of Etelä Pirkanmaa",
+"sv": "Södra Birkaland ekonomiska region"
+}
+,
+"memberOf": []
+,
+"uri": "http://www.yso.fi/onto/kunnat/sk063"
+} ,
+{
+"id": 531,
+"code": "064",
+"category": "SEUTUKUNTA",
+"title": {
+"fi": "Tampereen seutukunta",
+"en": "Sub-region of Tampere",
+"sv": "Tammerfors ekonomiska region"
+}
+,
+"memberOf": []
+,
+"uri": "http://www.yso.fi/onto/kunnat/sk064"
+} ,
+{
+"id": 535,
+"code": "068",
+"category": "SEUTUKUNTA",
+"title": {
+"fi": "Lounais-Pirkanmaan seutukunta",
+"en": "Sub-region of Lounais-Pirkanmaa",
+"sv": "Sydvästra Birkaland ekonomiska region"
+}
+,
+"memberOf": []
+,
+"uri": "http://www.yso.fi/onto/kunnat/sk068"
+} ,
+{
+"id": 698,
+"code": "069",
+"category": "SEUTUKUNTA",
+"title": {
+"fi": "Ylä-Pirkanmaan seutukunta",
+"en": "Sub-region of Ylä-Pirkanmaa",
+"sv": "Övre Birkaland ekonomiska region"
+}
+,
+"memberOf": []
+,
+"uri": "http://www.yso.fi/onto/kunnat/sk069"
+} ,
+{
+"id": 536,
+"code": "071",
+"category": "SEUTUKUNTA",
+"title": {
+"fi": "Lahden seutukunta",
+"en": "Sub-region of Lahti",
+"sv": "Lahtis ekonomiska region"
+}
+,
+"memberOf": []
+,
+"uri": "http://www.yso.fi/onto/kunnat/sk071"
+} ,
+{
+"id": 539,
+"code": "081",
+"category": "SEUTUKUNTA",
+"title": {
+"fi": "Kouvolan seutukunta",
+"en": "Sub-region of Kouvola",
+"sv": "Kouvola ekonomiska region"
+}
+,
+"memberOf": []
+,
+"uri": "http://www.yso.fi/onto/kunnat/sk081"
+} ,
+{
+"id": 540,
+"code": "082",
+"category": "SEUTUKUNTA",
+"title": {
+"fi": "Kotka-Haminan seutukunta",
+"en": "Sub-region of Kotka-Hamina",
+"sv": "Kotka-Fredrikshamn ekonomiska region"
+}
+,
+"memberOf": []
+,
+"uri": "http://www.yso.fi/onto/kunnat/sk082"
+} ,
+{
+"id": 541,
+"code": "091",
+"category": "SEUTUKUNTA",
+"title": {
+"fi": "Lappeenrannan seutukunta",
+"en": "Sub-region of Lappeenranta",
+"sv": "Villmanstrand ekonomiska region"
+}
+,
+"memberOf": []
+,
+"uri": "http://www.yso.fi/onto/kunnat/sk091"
+} ,
+{
+"id": 543,
+"code": "093",
+"category": "SEUTUKUNTA",
+"title": {
+"fi": "Imatran seutukunta",
+"en": "Sub-region of Imatra",
+"sv": "Imatra ekonomiska region"
+}
+,
+"memberOf": []
+,
+"uri": "http://www.yso.fi/onto/kunnat/sk093"
+} ,
+{
+"id": 545,
+"code": "101",
+"category": "SEUTUKUNTA",
+"title": {
+"fi": "Mikkelin seutukunta",
+"en": "Sub-region of Mikkeli",
+"sv": "S:t Michel ekonomiska region"
+}
+,
+"memberOf": []
+,
+"uri": "http://www.yso.fi/onto/kunnat/sk101"
+} ,
+{
+"id": 547,
+"code": "103",
+"category": "SEUTUKUNTA",
+"title": {
+"fi": "Savonlinnan seutukunta",
+"en": "Sub-region of Savonlinna",
+"sv": "Nyslott ekonomiska region"
+}
+,
+"memberOf": []
+,
+"uri": "http://www.yso.fi/onto/kunnat/sk103"
+} ,
+{
+"id": 549,
+"code": "105",
+"category": "SEUTUKUNTA",
+"title": {
+"fi": "Pieksämäen seutukunta",
+"en": "Sub-region of Pieksämäki",
+"sv": "Pieksämäki ekonomiska region"
+}
+,
+"memberOf": []
+,
+"uri": "http://www.yso.fi/onto/kunnat/sk105"
+} ,
+{
+"id": 550,
+"code": "111",
+"category": "SEUTUKUNTA",
+"title": {
+"fi": "Ylä-Savon seutukunta",
+"en": "Sub-region of Ylä-Savo",
+"sv": "Norra Savolax ekonomiska region"
+}
+,
+"memberOf": []
+,
+"uri": "http://www.yso.fi/onto/kunnat/sk111"
+} ,
+{
+"id": 551,
+"code": "112",
+"category": "SEUTUKUNTA",
+"title": {
+"fi": "Kuopion seutukunta",
+"en": "Sub-region of Kuopio",
+"sv": "Kuopio ekonomiska region"
+}
+,
+"memberOf": []
+,
+"uri": "http://www.yso.fi/onto/kunnat/sk112"
+} ,
+{
+"id": 552,
+"code": "113",
+"category": "SEUTUKUNTA",
+"title": {
+"fi": "Koillis-Savon seutukunta",
+"en": "Sub-region of Koillis-Savo",
+"sv": "Nordöstra Savolax ekonomiska region"
+}
+,
+"memberOf": []
+,
+"uri": "http://www.yso.fi/onto/kunnat/sk113"
+} ,
+{
+"id": 553,
+"code": "114",
+"category": "SEUTUKUNTA",
+"title": {
+"fi": "Varkauden seutukunta",
+"en": "Sub-region of Varkaus",
+"sv": "Varkaus ekonomiska region"
+}
+,
+"memberOf": []
+,
+"uri": "http://www.yso.fi/onto/kunnat/sk114"
+} ,
+{
+"id": 554,
+"code": "115",
+"category": "SEUTUKUNTA",
+"title": {
+"fi": "Sisä-Savon seutukunta",
+"en": "Sub-region of Sisä-Savo",
+"sv": "Inre Savolax ekonomiska region"
+}
+,
+"memberOf": []
+,
+"uri": "http://www.yso.fi/onto/kunnat/sk115"
+} ,
+{
+"id": 556,
+"code": "122",
+"category": "SEUTUKUNTA",
+"title": {
+"fi": "Joensuun seutukunta",
+"en": "Sub-region of Joensuu",
+"sv": "Joensuu ekonomiska region"
+}
+,
+"memberOf": []
+,
+"uri": "http://www.yso.fi/onto/kunnat/sk122"
+} ,
+{
+"id": 558,
+"code": "124",
+"category": "SEUTUKUNTA",
+"title": {
+"fi": "Keski-Karjalan seutukunta",
+"en": "Sub-region of Keski-Karjala",
+"sv": "Mellersta Karelens ekonomiska region"
+}
+,
+"memberOf": []
+,
+"uri": "http://www.yso.fi/onto/kunnat/sk124"
+} ,
+{
+"id": 559,
+"code": "125",
+"category": "SEUTUKUNTA",
+"title": {
+"fi": "Pielisen Karjalan seutukunta",
+"en": "Sub-region of Pielisen Karjala",
+"sv": "Pielisen Karjala ekonomiska region"
+}
+,
+"memberOf": []
+,
+"uri": "http://www.yso.fi/onto/kunnat/sk125"
+} ,
+{
+"id": 560,
+"code": "131",
+"category": "SEUTUKUNTA",
+"title": {
+"fi": "Jyväskylän seutukunta",
+"en": "Sub-region of Jyväskylä",
+"sv": "Jyväskylä ekonomiska region"
+}
+,
+"memberOf": []
+,
+"uri": "http://www.yso.fi/onto/kunnat/sk131"
+} ,
+{
+"id": 561,
+"code": "132",
+"category": "SEUTUKUNTA",
+"title": {
+"fi": "Joutsan seutukunta",
+"en": "Sub-region of Joutsa",
+"sv": "Joutsa ekonomiska region"
+}
+,
+"memberOf": []
+,
+"uri": "http://www.yso.fi/onto/kunnat/sk132"
+} ,
+{
+"id": 562,
+"code": "133",
+"category": "SEUTUKUNTA",
+"title": {
+"fi": "Keuruun seutukunta",
+"en": "Sub-region of Keuruu",
+"sv": "Keuruu ekonomiska region"
+}
+,
+"memberOf": []
+,
+"uri": "http://www.yso.fi/onto/kunnat/sk133"
+} ,
+{
+"id": 563,
+"code": "134",
+"category": "SEUTUKUNTA",
+"title": {
+"fi": "Jämsän seutukunta",
+"en": "Sub-region of Jämsä",
+"sv": "Jämsä ekonomiska region"
+}
+,
+"memberOf": []
+,
+"uri": "http://www.yso.fi/onto/kunnat/sk134"
+} ,
+{
+"id": 564,
+"code": "135",
+"category": "SEUTUKUNTA",
+"title": {
+"fi": "Äänekosken seutukunta",
+"en": "Sub-region of Äänekoski",
+"sv": "Äänekoski ekonomiska region"
+}
+,
+"memberOf": []
+,
+"uri": "http://www.yso.fi/onto/kunnat/sk135"
+} ,
+{
+"id": 721,
+"code": "138",
+"category": "SEUTUKUNTA",
+"title": {
+"fi": "Saarijärvi-Viitasaaren seutukunta",
+"en": "Sub-region of Saarijärvi-Viitasaari",
+"sv": "Saarijärvi-Viitasaari ekonomiska region"
+}
+,
+"memberOf": []
+,
+"uri": "http://www.yso.fi/onto/kunnat/sk138"
+} ,
+{
+"id": 567,
+"code": "141",
+"category": "SEUTUKUNTA",
+"title": {
+"fi": "Suupohjan seutukunta",
+"en": "Sub-region of Suupohja",
+"sv": "Suupohja ekonomiska region"
+}
+,
+"memberOf": []
+,
+"uri": "http://www.yso.fi/onto/kunnat/sk141"
+} ,
+{
+"id": 568,
+"code": "142",
+"category": "SEUTUKUNTA",
+"title": {
+"fi": "Seinäjoen seutukunta",
+"en": "Sub-region of Seinäjoki",
+"sv": "Seinäjoki ekonomiska region"
+}
+,
+"memberOf": []
+,
+"uri": "http://www.yso.fi/onto/kunnat/sk142"
+} ,
+{
+"id": 570,
+"code": "144",
+"category": "SEUTUKUNTA",
+"title": {
+"fi": "Kuusiokuntien seutukunta",
+"en": "Sub-region of Kuusiokunnat",
+"sv": "Kuusiokunnat ekonomiska region"
+}
+,
+"memberOf": []
+,
+"uri": "http://www.yso.fi/onto/kunnat/sk144"
+} ,
+{
+"id": 572,
+"code": "146",
+"category": "SEUTUKUNTA",
+"title": {
+"fi": "Järviseudun seutukunta",
+"en": "Sub-region of Järviseutu",
+"sv": "Järviseutu ekonomiska region"
+}
+,
+"memberOf": []
+,
+"uri": "http://www.yso.fi/onto/kunnat/sk146"
+} ,
+{
+"id": 573,
+"code": "151",
+"category": "SEUTUKUNTA",
+"title": {
+"fi": "Kyrönmaan seutukunta",
+"en": "Sub-region of Kyrönmaa",
+"sv": "Kyrönmaa ekonomiska region"
+}
+,
+"memberOf": []
+,
+"uri": "http://www.yso.fi/onto/kunnat/sk151"
+} ,
+{
+"id": 574,
+"code": "152",
+"category": "SEUTUKUNTA",
+"title": {
+"fi": "Vaasan seutukunta",
+"en": "Sub-region of Vaasa",
+"sv": "Vasa ekonomiska region"
+}
+,
+"memberOf": []
+,
+"uri": "http://www.yso.fi/onto/kunnat/sk152"
+} ,
+{
+"id": 575,
+"code": "153",
+"category": "SEUTUKUNTA",
+"title": {
+"fi": "Suupohjan rannikkoseutu",
+"en": "Sub-region of Sydösterbotten",
+"sv": "Sydösterbotten ekonomiska region"
+}
+,
+"memberOf": []
+,
+"uri": "http://www.yso.fi/onto/kunnat/sk153"
+} ,
+{
+"id": 576,
+"code": "154",
+"category": "SEUTUKUNTA",
+"title": {
+"fi": "Jakobstadsregionen",
+"en": "Sub-region of Jakobstadsregionen",
+"sv": "Jakobstadsregion ekonomiska region"
+}
+,
+"memberOf": []
+,
+"uri": "http://www.yso.fi/onto/kunnat/sk154"
+} ,
+{
+"id": 577,
+"code": "161",
+"category": "SEUTUKUNTA",
+"title": {
+"fi": "Kaustisen seutukunta",
+"en": "Sub-region of Kaustinen",
+"sv": "Kaustby ekonomiska region"
+}
+,
+"memberOf": []
+,
+"uri": "http://www.yso.fi/onto/kunnat/sk161"
+} ,
+{
+"id": 578,
+"code": "162",
+"category": "SEUTUKUNTA",
+"title": {
+"fi": "Kokkolan seutukunta",
+"en": "Sub-region of Kokkola",
+"sv": "Karleby ekonomiska region"
+}
+,
+"memberOf": []
+,
+"uri": "http://www.yso.fi/onto/kunnat/sk162"
+} ,
+{
+"id": 579,
+"code": "171",
+"category": "SEUTUKUNTA",
+"title": {
+"fi": "Oulun seutukunta",
+"en": "Sub-region of Oulu",
+"sv": "Uleåborg ekonomiska region"
+}
+,
+"memberOf": []
+,
+"uri": "http://www.yso.fi/onto/kunnat/sk171"
+} ,
+{
+"id": 581,
+"code": "173",
+"category": "SEUTUKUNTA",
+"title": {
+"fi": "Oulunkaaren seutukunta",
+"en": "Sub-region of Oulunkaari",
+"sv": "Oulunkaari ekonomiska region"
+}
+,
+"memberOf": []
+,
+"uri": "http://www.yso.fi/onto/kunnat/sk173"
+} ,
+{
+"id": 582,
+"code": "174",
+"category": "SEUTUKUNTA",
+"title": {
+"fi": "Raahen seutukunta",
+"en": "Sub-region of Raahe",
+"sv": "Brahestad ekonomiska region"
+}
+,
+"memberOf": []
+,
+"uri": "http://www.yso.fi/onto/kunnat/sk174"
+} ,
+{
+"id": 583,
+"code": "175",
+"category": "SEUTUKUNTA",
+"title": {
+"fi": "Haapavesi-Siikalatvan seutukunta",
+"en": "Sub-region of Haapavesi-Siikalatva",
+"sv": "Haapavesi-Siikalatva ekonomiska region"
+}
+,
+"memberOf": []
+,
+"uri": "http://www.yso.fi/onto/kunnat/sk175"
+} ,
+{
+"id": 584,
+"code": "176",
+"category": "SEUTUKUNTA",
+"title": {
+"fi": "Nivala-Haapajärven seutukunta",
+"en": "Sub-region of Nivala-Haapajärvi",
+"sv": "Nivala-Haapajärvi ekonomiska region"
+}
+,
+"memberOf": []
+,
+"uri": "http://www.yso.fi/onto/kunnat/sk176"
+} ,
+{
+"id": 585,
+"code": "177",
+"category": "SEUTUKUNTA",
+"title": {
+"fi": "Ylivieskan seutukunta",
+"en": "Sub-region of Ylivieska",
+"sv": "Ylivieska ekonomiska region"
+}
+,
+"memberOf": []
+,
+"uri": "http://www.yso.fi/onto/kunnat/sk177"
+} ,
+{
+"id": 586,
+"code": "178",
+"category": "SEUTUKUNTA",
+"title": {
+"fi": "Koillismaan seutukunta",
+"en": "Sub-region of Koillismaa",
+"sv": "Koillismaa ekonomiska region"
+}
+,
+"memberOf": []
+,
+"uri": "http://www.yso.fi/onto/kunnat/sk178"
+} ,
+{
+"id": 587,
+"code": "181",
+"category": "SEUTUKUNTA",
+"title": {
+"fi": "Kehys-Kainuun seutukunta",
+"en": "Sub-region of Kehys-Kainuu",
+"sv": "Kehys-Kainuu ekonomiska region"
+}
+,
+"memberOf": []
+,
+"uri": "http://www.yso.fi/onto/kunnat/sk181"
+} ,
+{
+"id": 588,
+"code": "182",
+"category": "SEUTUKUNTA",
+"title": {
+"fi": "Kajaanin seutukunta",
+"en": "Sub-region of Kajaani",
+"sv": "Kajana ekonomiska region"
+}
+,
+"memberOf": []
+,
+"uri": "http://www.yso.fi/onto/kunnat/sk182"
+} ,
+{
+"id": 589,
+"code": "191",
+"category": "SEUTUKUNTA",
+"title": {
+"fi": "Rovaniemen seutukunta",
+"en": "Sub-region of Rovaniemi",
+"sv": "Rovaniemi ekonomiska region"
+}
+,
+"memberOf": []
+,
+"uri": "http://www.yso.fi/onto/kunnat/sk191"
+} ,
+{
+"id": 590,
+"code": "192",
+"category": "SEUTUKUNTA",
+"title": {
+"fi": "Kemi-Tornion seutukunta",
+"en": "Sub-region of Kemi-Tornio",
+"sv": "Kemi-Torneå ekonomiska region"
+}
+,
+"memberOf": []
+,
+"uri": "http://www.yso.fi/onto/kunnat/sk192"
+} ,
+{
+"id": 591,
+"code": "193",
+"category": "SEUTUKUNTA",
+"title": {
+"fi": "Torniolaakson seutukunta",
+"en": "Sub-region of Torniolaakso",
+"sv": "Tornedalen ekonomiska region"
+}
+,
+"memberOf": []
+,
+"uri": "http://www.yso.fi/onto/kunnat/sk193"
+} ,
+{
+"id": 592,
+"code": "194",
+"category": "SEUTUKUNTA",
+"title": {
+"fi": "Itä-Lapin seutukunta",
+"en": "Sub-region of Itä-Lappi",
+"sv": "Östra Lappland ekonomiska region"
+}
+,
+"memberOf": []
+,
+"uri": "http://www.yso.fi/onto/kunnat/sk194"
+} ,
+{
+"id": 594,
+"code": "196",
+"category": "SEUTUKUNTA",
+"title": {
+"fi": "Tunturi-Lapin seutukunta",
+"en": "Sub-region of Tunturi-Lappi",
+"sv": "Tunturi-Lappi ekonomiska region"
+}
+,
+"memberOf": []
+,
+"uri": "http://www.yso.fi/onto/kunnat/sk196"
+} ,
+{
+"id": 595,
+"code": "197",
+"category": "SEUTUKUNTA",
+"title": {
+"fi": "Pohjois-Lapin seutukunta",
+"en": "Sub-region of Pohjois-Lappi",
+"sv": "Pohjois-Lappi ekonomiska region"
+}
+,
+"memberOf": []
+,
+"uri": "http://www.yso.fi/onto/kunnat/sk197"
+} ,
+{
+"id": 596,
+"code": "211",
+"category": "SEUTUKUNTA",
+"title": {
+"fi": "Mariehamns stad",
+"en": "Sub-region of Mariehamns stad",
+"sv": "Mariehamns stad ekonomiska region"
+}
+,
+"memberOf": []
+,
+"uri": "http://www.yso.fi/onto/kunnat/sk211"
+} ,
+{
+"id": 597,
+"code": "212",
+"category": "SEUTUKUNTA",
+"title": {
+"fi": "Ålands landsbygd",
+"en": "Sub-region of Ålands landsbygd",
+"sv": "Ålands landsbygd ekonomiska region"
+}
+,
+"memberOf": []
+,
+"uri": "http://www.yso.fi/onto/kunnat/sk212"
+} ,
+{
+"id": 699,
+"code": "213",
+"category": "SEUTUKUNTA",
+"title": {
+"fi": "Ålands skärgård",
+"en": "Sub-region of Ålands skärgård",
+"sv": "Ålands skärgård ekonomiska region"
+}
+,
+"memberOf": []
+,
+"uri": "http://www.yso.fi/onto/kunnat/sk213"
+} ,
+{
+"id": 840,
+"code": "1",
+"category": "SUURALUE",
+"title": {
+"fi": "Helsingin-Uudenmaan suuralue",
+"en": "Major region of Helsinki-Uusimaa",
+"sv": "Helsingfors-Nylands storområde"
+}
+,
+"memberOf": []
+,
+"uri": "http://www.yso.fi/onto/kunnat/sa1"
+} ,
+{
+"id": 841,
+"code": "2",
+"category": "SUURALUE",
+"title": {
+"fi": "Etelä-Suomen suuralue",
+"en": "Major region of Southern Finland",
+"sv": "Södra Finlands storområde"
+}
+,
+"memberOf": []
+,
+"uri": "http://www.yso.fi/onto/kunnat/sa2"
+} ,
+{
+"id": 842,
+"code": "3",
+"category": "SUURALUE",
+"title": {
+"fi": "Länsi-Suomen suuralue",
+"en": "Major region of Western Finland",
+"sv": "Västra Finlands storområde"
+}
+,
+"memberOf": []
+,
+"uri": "http://www.yso.fi/onto/kunnat/sa3"
+} ,
+{
+"id": 843,
+"code": "4",
+"category": "SUURALUE",
+"title": {
+"fi": "Pohjois- ja Itä-Suomen suuralue",
+"en": "Major region of Northern and Eastern Finland",
+"sv": "Norra och Östra Finlands storområde"
+}
+,
+"memberOf": []
+,
+"uri": "http://www.yso.fi/onto/kunnat/sa4"
+} ,
+{
+"id": 844,
+"code": "5",
+"category": "SUURALUE",
+"title": {
+"fi": "Ahvenanmaa",
+"en": "Åland",
+"sv": "Åland"
+}
+,
+"memberOf": []
+,
+"uri": "http://www.yso.fi/onto/kunnat/sa5"
+}
+]

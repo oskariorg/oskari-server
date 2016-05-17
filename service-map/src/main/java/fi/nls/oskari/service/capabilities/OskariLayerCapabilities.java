@@ -8,6 +8,7 @@ import java.util.Date;
 public class OskariLayerCapabilities {
     private long id;
     private String layertype;
+    private String version;
     private String url;
     private String data;
     private Date created;
@@ -27,6 +28,14 @@ public class OskariLayerCapabilities {
 
     public void setLayertype(String layertype) {
         this.layertype = layertype;
+    }
+
+    public String getVersion() {
+        return version;
+    }
+
+    public void setVersion(String version) {
+        this.version = version;
     }
 
     public String getUrl() {

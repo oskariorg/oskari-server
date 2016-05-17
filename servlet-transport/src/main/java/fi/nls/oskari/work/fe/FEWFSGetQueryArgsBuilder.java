@@ -42,7 +42,7 @@ public class FEWFSGetQueryArgsBuilder implements FEQueryArgsBuilder {
         builder.setParameter("VERSION", "2.0.0");
         builder.setParameter("TYPENAMES", typenames);
 
-        builder.setParameter("srsName", layer.getSRSName());
+        builder.setParameter("srsName", session.getLocation().getSrs());
 
         /*
          * http://services.cuzk.cz/wfs/inspire-au-wfs.asp?service=WFS&request=

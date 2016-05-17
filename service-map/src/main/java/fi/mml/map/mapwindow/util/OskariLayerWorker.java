@@ -13,6 +13,8 @@ import fi.nls.oskari.map.layer.OskariLayerService;
 import fi.nls.oskari.map.layer.OskariLayerServiceIbatisImpl;
 import fi.nls.oskari.map.layer.formatters.LayerJSONFormatter;
 import fi.nls.oskari.util.JSONHelper;
+import fi.nls.oskari.util.PropertyUtil;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -101,6 +103,18 @@ public class OskariLayerWorker {
         final Set<String> editAccessList = permissionsService.getEditPermissions();
         log.debug("Edit permissions loaded in", System.currentTimeMillis() - start, "ms");
 
+        final Set<String> additionalPermissions = permissionsService.getAdditionalPermissions();
+    	log.debug("Loading dynamic permissions ", additionalPermissions);
+        final Map<String, List<String>> dynamicPermissions = new HashMap<String, List<String>>();
+        for (String permissionId : additionalPermissions) {
+            final List<String> permissions = permissionsService
+                    .getResourcesWithGrantedPermissions(
+                            Permissions.RESOURCE_TYPE_MAP_LAYER, user,
+                            permissionId);
+            dynamicPermissions.put(permissionId,permissions);
+            log.debug("Got " + permissions.size() + " permissions of type " + permissionId);
+        }
+
         final JSONArray layersList = new JSONArray();
         start = System.currentTimeMillis();
         for (OskariLayer layer : layers) {
@@ -115,7 +129,7 @@ public class OskariLayerWorker {
                 //log.debug("Generated JSON");
                 if (layerJson != null) {
                     //log.debug("Generating permissions JSON");
-                    JSONObject permissions = getPermissions(user, permissionKey, permissionsList, downloadPermissionsList, editAccessList);
+                    JSONObject permissions = getPermissions(user, permissionKey, permissionsList, downloadPermissionsList, editAccessList, dynamicPermissions);
                     JSONHelper.putValue(layerJson, "permissions", permissions);
                     if(permissions.optBoolean("edit")) {
                         // has edit rights, alter JSON/add info for admin bundle
@@ -210,7 +224,7 @@ public class OskariLayerWorker {
         // value will be removed if transform failed, that's ok since client can't handle it if it's in unknown projection
         JSONHelper.putValue(layerJSON, "geom", transformed);
     }
-
+    
     /**
      * Create permission information for JSON
      *
@@ -222,6 +236,22 @@ public class OskariLayerWorker {
      */
     public static JSONObject getPermissions(final User user, final String layerPermissionKey,
                                              final Set<String> permissionsList, final Set<String> downloadPermissionsList, final Set<String> editAccessList) {
+    
+    	return getPermissions(user, layerPermissionKey, permissionsList, downloadPermissionsList, editAccessList, null);
+    } 
+
+    /**
+     * Create permission information for JSON
+     *
+     * @param user               Current user
+     * @param layerPermissionKey Layer permission key
+     * @param permissionsList    List of user publish permissions
+     * @param downloadPermissionsList    List of user download permissions
+     * @param editAccessList     List of user edit permissions
+     * @param dynamicPermissions 
+     */
+    public static JSONObject getPermissions(final User user, final String layerPermissionKey,
+                                             final Set<String> permissionsList, final Set<String> downloadPermissionsList, final Set<String> editAccessList, Map<String, List<String>> dynamicPermissions) {
 
         final JSONObject permission = new JSONObject();
         if (user.isAdmin()) {
@@ -244,6 +274,17 @@ public class OskariLayerWorker {
                 }
             }
         }
+		if (dynamicPermissions != null) {
+			for (String permissionType : dynamicPermissions.keySet()) {
+				List<String> permissionList = dynamicPermissions
+						.get(permissionType);
+				if (permissionList != null
+						&& permissionList.contains(layerPermissionKey)) {
+					JSONHelper.putValue(permission, permissionType, true);
+				}
+			}
+		}
+        
         return permission;
     }
 

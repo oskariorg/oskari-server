@@ -1,5 +1,6 @@
 package fi.nls.oskari.wfs;
 
+import fi.nls.oskari.domain.map.wfs.WFS2FeatureType;
 import fi.nls.oskari.domain.map.wfs.WFSLayerConfiguration;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
@@ -217,17 +218,24 @@ public class WFSServiceTester {
 
             try {
                 // Feature types
-                Map<String,Object> typeNames = (HashMap<String,Object>) capa.get("FeatureTypeList");
+                Map<String,ArrayList<WFS2FeatureType>> typeNames = (HashMap<String,ArrayList<WFS2FeatureType>>) capa.get("FeatureTypeList");
 
                 int count = 0;
 
-                // Loop feature types
-                for(Map.Entry<String, Object> entry : typeNames.entrySet()) {
-                    String typeName = entry.getKey();
-                    GetGtWFSCapabilities._FeatureType featype = ( GetGtWFSCapabilities._FeatureType) entry.getValue();
-                    count++;
-                    WFSLayerConfiguration lc = GetGtWFSCapabilities.layerToWfs20LayerConfiguration(featype, serviceUrl, user, pw);
-                    TestWfsDescribeFeatureType(lc, version, count);
+                Iterator it = typeNames.keySet().iterator();
+                ArrayList<WFS2FeatureType> feaList = null;
+
+                while (it.hasNext()) {
+                    String key = it.next().toString();
+                    feaList = typeNames.get(key);
+                    if (feaList != null) {
+                        for (WFS2FeatureType featype: feaList) {
+                            String typeName = featype.getName();
+                            count++;
+                            WFSLayerConfiguration lc = GetGtWFSCapabilities.layerToWfs20LayerConfiguration(featype, serviceUrl, user, pw);
+                            TestWfsDescribeFeatureType(lc, version, count);
+                        }
+                    }
                 }
 
             } catch (Exception ex) {

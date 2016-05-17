@@ -5,7 +5,6 @@ import fi.nls.oskari.domain.map.stats.StatsVisualization;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.stats.VisualizationService;
-import fi.nls.oskari.map.stats.VisualizationServiceIbatisImpl;
 import fi.nls.oskari.util.JSONHelper;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -22,7 +21,7 @@ import java.util.List;
 public class LayerJSONFormatterStats extends LayerJSONFormatter {
 
     private static Logger log = LogFactory.getLogger(LayerJSONFormatterStats.class);
-    private final VisualizationService service = new VisualizationServiceIbatisImpl();
+    private final VisualizationService service = new VisualizationService();
 
     public JSONObject getJSON(OskariLayer layer,
                                      final String lang,

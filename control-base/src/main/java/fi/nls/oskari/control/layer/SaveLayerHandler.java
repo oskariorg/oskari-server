@@ -533,6 +533,13 @@ public class SaveLayerHandler extends ActionHandler {
             JSONHelper.putValue(attributes, "manualRefresh", true);
             ml.setAttributes(attributes);
         }
+        // Put resolveDepth mode to attributes if true (solves xlink:href links in GetFeature)
+        attributes = ml.getAttributes();
+        attributes.remove("resolveDepth");
+        if(ConversionHelper.getOnOffBoolean(params.getHttpParam("resolveDepth", "off"), false)){
+            JSONHelper.putValue(attributes, "resolveDepth", true);
+            ml.setAttributes(attributes);
+        }
         // Get supported projections
         Map<String, Object> capa = GetGtWFSCapabilities.getGtDataStoreCapabilities(ml.getUrl(), ml.getVersion(), ml.getUsername(), ml.getPassword());
         ml.setSupportedCRSs(GetGtWFSCapabilities.parseProjections(capa, ml.getVersion(), ml.getName()));

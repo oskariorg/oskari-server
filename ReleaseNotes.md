@@ -1,5 +1,151 @@
 # Release Notes
 
+## 1.36
+
+### Generic
+
+Geotools version has been updated to 14.2.
+Custom JSP-files need to be updated.
+See MigrationGuide.md for details.
+
+### GetAppSetup
+
+AppSetup now includes generic information about the environment like languages and available locales.
+
+### service-map
+
+A bugfix to legend image parsing when there were multiple styles with the same name.
+
+Multiple parser configs are now allowed for same feature type (layer name)  (wfs 2).
+Parser configs are defined in oskari_wfs_parser_config table.
+
+ResolveDepth attribute setup is added for wfs layers in admin layer selector.
+
+#### WMS layers
+WMS service capabilities parsing is improved and prepared to support service versions.
+It is now possible to add WMS layers both 1.1.1 and 1.3.0 versions under same wms service in admin layer selector.
+  
+Capabilities cache was layertype and service url based, It is now now layertype, service url and version based.
+
+### service-feedback [new]
+
+New service for ``Feedback``  action route
+
+### service-feedback-open311 [new]
+
+New Open311 feedback implementation for feedback service 
+
+### Database
+
+Added indexes for oskari_resource and oskari_permission tables.
+
+New ``title`` column inserted into oskari_wfs_parser_config table.
+
+### service-search-opendata
+
+New url parameter **&what3words** for positioning the map in startup
+e.g. http://www.paikkatietoikkuna.fi/web/en/map-window?ver=1.17&zoomLevel=6&what3words=examine.flying.daytime&mapLayers=base_35+100+default&showMarker=true
+
+### control-base
+
+#### FeedbackHandler [new, This is POC for time being and will be develop future on]
+
+New handler for feedback requests. Look at oskari.org documentation for more details.
+
+    &action_route=Feedback&method=postFeedback
+    &action_route=Feedback&method=serviceList
+    &action_route=Feedback&method=serviceDefinition&serviceId=172
+    &action_route=Feedback&method=postFeedback
+    
+2 new properties must be defined in oskari-ext.properties
+ 
+    #Api key for posting feedback (Open311 api_key parameter value, only required for posting user's  feeback data)
+    #test api base url http://dev.hel.fi/open311-test/v1/
+    feedback.open311.key=f1301b1ded935eabc5faa6a2ce975f6
+    feedback.open311.url=http://dev.hel.fi/open311-test/v1/
+
+#### MapfullHandler 
+
+WfsLayerPlugin config can now be configured with oskari-ext.properties if defaults are not working for your environment:
+ 
+    oskari.transport.domain=http://localhost:9090
+    oskari.transport.url=/mytransport
+
+These will write the host and contextPath to the plugins config if they are not configured in database view.
+
+Populate missing projection definitions for mapfull config projectionDefs. It uses the projection defs in: 
+    control-base\src\main\resources\fi\nls\oskari\control\view\modifier\bundle\epsg_proj4_formats.json
+
+Populate svgMarkers for mapfull config, it uses for populate SVG markers JSONArray in: 
+    control-base\src\main\resources\fi\nls\oskari\control\view\modifier\bundle\svg-markers.json
+
+#### GetWFSDescribeFeatureHandler
+
+Now returns now exact xsd types for feature properties
+
+Earlier version responsed generalized types (text or numeric).
+New extra request parameter  `&simple=true` is available for the earlier response behaviour
+
+#### ActionConstants
+
+Changed PARAM_SRS value from "epsg" to "srs". This affects GetMapLayers which now assumes the projection is sent in srs-parameter. 
+The parameter in most action routes for transmitting projection information is "srs" so this is a consistency improvement.
+
+#### CoordinatesHandler
+
+New action route. Transforms point-coordinates from projection to another. 
+Transformation class can be configured with property `projection.library.class` (defaults to `fi.nls.oskari.map.geometry.ProjectionHelper`).
+Takes `lan`, `lot`, `srs` and `targetSRS` parameters and returns a JSONObject with transformed result:
+
+      {
+          lan: 123,
+          lot : 456,
+          srs : "EPSG:789"
+      }
+      
+#### GetReverseGeocodingResultHandler
+
+New action parameter **channels_ids** for selecting a spesific reverse search channel(s) instead all available channels
+e.g. &action_route=GetReverseGeocodingResult&lang=fi&epsg=EPSG:3067&lon=368978.93&lat=6670688.861&channel_ids=WHAT3WORDS_CHANNEL
+
+#### CoordinateToolHandler
+
+When coordinatetool bundle is part of the setup. And it has configuration to do client-side transforms the handler populates
+ missing projection definitions for mapfull config projectionDefs. It uses the same mechanic as mapfullhandler and the 
+ same projection defs in:
+ 
+    control-base\src\main\resources\fi\nls\oskari\control\view\modifier\bundle\epsg_proj4_formats.json
+
+#### AppSetupHandler
+
+Coordinatetool is now allowed bundle for publisher.
+    
+#### GetPermissionsLayerHandlers
+
+Additional permissions can now be configured with oskari-ext.properties:
+ 
+    permission.types = EDIT_LAYER_CONTENT
+    permission.EDIT_LAYER_CONTENT.name.fi=Muokkaa tasoa
+    permission.EDIT_LAYER_CONTENT.name.en=Edit layer
+
+These permissions will then be shown by the admin-layerrights bundle in Oskari frontend.
+
+### transport && control-base
+
+**WFS-T**  functionality is added to oskari-server package.
+User roles can be granted a EDIT_LAYER_CONTENT permission that will enable them to edit features on a WFS-service.
+This requires the content-editor bundle in Oskari frontend to provide the user-interface.
+
+**WFS 2.0.0**
+
+WFS layer's current coordinate reference system (crs) is now Transport session's crs (was layer config crs).
+This reduces coordinate transformations and process better result.
+
+**WFS / manual refresh**
+
+One new property ''success_nop'' added to notify-job-completed response.
+There is no need to the client to act for this layer, when success_nop is true (e.g. refresh feature data)
+
 ## 1.35.1
 
 ### generic
@@ -68,6 +214,13 @@ Added IOHelper convenience method for just adding one param to an URL:
 
     public static String addUrlParam(final String url, String key, String value)
     String url = IOHelper.addUrlParam("https://google.com", "q", "test");
+    
+### service-map
+
+Data import is improved
+
+1. Long files names do not break the import any more.
+2. There is no empty my data layer any more, if feature geometry import fails.
 
 ### service-search-opendata
 

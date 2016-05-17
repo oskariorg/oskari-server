@@ -12,12 +12,15 @@ import org.opengis.referencing.operation.MathTransform;
 /**
  * Helper for transformations
  */
-public class ProjectionHelper {
+public class ProjectionHelper implements PointTransformer {
 
     private static Logger log = LogFactory.getLogger(ProjectionHelper.class);
 
     public static Point transformPoint(final double lon, final double lat, final String sourceSRS, final String targetSRS) {
         return transformPoint(new Point(lon, lat), sourceSRS, targetSRS);
+    }
+    public Point reproject(final Point point, final String sourceSRS, final String targetSRS) {
+        return transformPoint(point, sourceSRS, targetSRS);
     }
     public static Point transformPoint(final Point point, final String sourceSRS, final String targetSRS) {
         try {

@@ -89,6 +89,8 @@ public class FERequestTemplate {
     private String geomProp;
     private String geomNs;
     private String maxcount;
+    private Boolean resolveDepth = false;
+
 
     public FERequestTemplate(FEQueryArgsBuilder argsBuilder) {
         this.templateResource = null;
@@ -244,6 +246,15 @@ public class FERequestTemplate {
                         .setTextContent(maxcount);
             }
         }
+        if (!resolveDepth) {
+            XPathExpression expr = xpath
+                    .compile("//*[@resolveDepth='*']");
+
+            Node nd = (Node) expr.evaluate(doc, XPathConstants.NODE);
+            if (nd != null) {
+                nd.getAttributes().removeNamedItem("resolveDepth");
+            }
+        }
 
         if (featureNs != null) {
             XPathExpression expr = xpath
@@ -282,7 +293,7 @@ public class FERequestTemplate {
             ReferencedEnvelope env = new ReferencedEnvelope(new Envelope(c),
                     crs);
             env.expandBy(GetSearchTolerance(session));
-            bbox = env.toBounds(layer.getCrs());
+            bbox = env.toBounds(crs);
 
         } else if (type == JobType.HIGHLIGHT) {
 
@@ -291,18 +302,18 @@ public class FERequestTemplate {
             ReferencedEnvelope env = new ReferencedEnvelope(new Envelope(c),
                     crs);
             env.expandBy(GetSearchTolerance(session));
-            bbox = env.toBounds(layer.getCrs());
+            bbox = env.toBounds(crs);
 
         } else if (bounds != null) {
 
             ReferencedEnvelope env = new ReferencedEnvelope(
                     new Envelope(bounds.get(0), bounds.get(2), bounds.get(1),
                             bounds.get(3)), crs);
-            bbox = env.toBounds(layer.getCrs());
+            bbox = env.toBounds(crs);
 
         } else {
             ReferencedEnvelope env = session.getLocation().getEnvelope();
-            bbox = env.toBounds(layer.getCrs());
+            bbox = env.toBounds(crs);
         }
 
         ByteArrayOutputStream outs = new ByteArrayOutputStream();
@@ -332,7 +343,8 @@ public class FERequestTemplate {
     }
 
     public void setRequestFeatures(String srsName, String featureNs, String featurePrefix,
-                                   String featureName, String wFSver, String geomProp, String geomNs, String maxCount) {
+                                   String featureName, String wFSver, String geomProp, String geomNs, String maxCount,
+                                   Boolean resolveDepth) {
         this.srsName = srsName;
         this.featureNs = featureNs;
         this.featurePrefix = featurePrefix;
@@ -341,6 +353,7 @@ public class FERequestTemplate {
         this.geomProp = geomProp;
         this.geomNs = geomNs;
         this.maxcount = maxCount;
+        this.resolveDepth = resolveDepth;
 
     }
     private double GetSearchTolerance(final SessionStore session){

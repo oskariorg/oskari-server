@@ -40,61 +40,26 @@ public class SaveLayerPermissionHandler extends ActionHandler {
 
                 final JSONObject layerPermission = resources.getJSONObject(i);
 
-                boolean isViewSelected = layerPermission.getBoolean("isViewSelected");
-                log.debug(layerPermission.getString("name") + " " + isViewSelected);
-
-                log.debug(layerPermission.getString("name"));
-                log.debug("resource : ", layerPermission.getString("resourceName"), " namespace ",
-                        layerPermission.getString("namespace"), " roleId ", layerPermission.getString("roleId"),
-                        " isSelected", layerPermission.getBoolean("isSelected"), " isViewSelected",
-                        layerPermission.getBoolean("isViewSelected"), " isDownloadSelected ",
-                        layerPermission.getBoolean("isDownloadSelected"), "isViewPublishedSelected ",
-                        layerPermission.getString("isViewPublishedSelected"));
-
                 permissions.setExternalId(layerPermission.getString("roleId"));
                 permissions.getUniqueResourceName().setNamespace(layerPermission.getString("namespace"));
                 permissions.getUniqueResourceName().setName(layerPermission.getString("resourceName"));
-
-                if (layerPermission.getBoolean("isViewSelected")) {
-                    addPermissions(permissions, Permissions.PERMISSION_TYPE_VIEW_LAYER);
-                } else {
-                    log.warn("Changing permissions (DELETE) by user '" + whoMakesThisModification + "': " + permissions);
-                    deletePermissions(permissions, Permissions.PERMISSION_TYPE_VIEW_LAYER);
-                }
-
-                if (layerPermission.getBoolean("isSelected")) {
-                    addPermissions(permissions, Permissions.PERMISSION_TYPE_PUBLISH);
-                } else {
-                    log.warn("Changing permissions (DELETE) by user '" + whoMakesThisModification + "': " + permissions);
-                    deletePermissions(permissions, Permissions.PERMISSION_TYPE_PUBLISH);
-                }
-
-                if (layerPermission.getBoolean("isDownloadSelected")) {
-                    addPermissions(permissions, Permissions.PERMISSION_TYPE_DOWNLOAD);
-                } else {
-                    log.warn("Changing permissions (DELETE) by user '" + whoMakesThisModification + "': " + permissions);
-                    deletePermissions(permissions, Permissions.PERMISSION_TYPE_DOWNLOAD);
-                }
-
-                if (layerPermission.getBoolean("isViewPublishedSelected")) {
-                    addPermissions(permissions, Permissions.PERMISSION_TYPE_VIEW_PUBLISHED);
-                } else {
-                    log.warn("Changing permissions (DELETE) by user '" + whoMakesThisModification + "': " + permissions);
-                    deletePermissions(permissions, Permissions.PERMISSION_TYPE_VIEW_PUBLISHED);
-                }
-
-
-                //permissionsService.insertPermissions(permissions.getUniqueResourceName(),
-                //permissions.getExternalId(), permissions.getExternalIdType(), Permissions.PERMISSION_TYPE_VIEW_LAYER);
-
-           /* else {
-                log.warn("Changing permissions (DELETE) by user '" + whoMakesThisModification + "': " + permissions);
-                //permissionsService.deletePermissions(permissions.getUniqueResourceName(), permissions.getExternalId(),
-                // permissions.getExternalIdType(), Permissions.PERMISSION_TYPE_VIEW_LAYER);
-            }*/
-
+                
+                JSONArray perm = layerPermission.getJSONArray("permissions");
+                
+                for (int j = 0; j < perm.length(); j++)
+            	{
+                	JSONObject obj = perm.getJSONObject(j);
+                	if (obj.getBoolean("value"))
+                	{
+                		addPermissions(permissions, obj.getString("key"));
+                	}
+                	else
+                	{
+                		log.warn("Changing permissions (DELETE) by user '" + whoMakesThisModification + "': " + permissions);
+                		deletePermissions(permissions, obj.getString("key"));
+                	}
+            	}
             }
-
         } catch (JSONException e) {
             e.printStackTrace();
         }

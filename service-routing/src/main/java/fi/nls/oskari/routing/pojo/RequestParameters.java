@@ -17,6 +17,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
     "mode",
     "date",
     "wheelchair",
+    "showIntermediateStops",
     "arriveBy",
     "fromPlace",
     "toPlace",
@@ -32,6 +33,8 @@ public class RequestParameters {
     private String date;
     @JsonProperty("wheelchair")
     private String wheelchair;
+    @JsonProperty("showIntermediateStops")
+    private String showIntermediateStops;
     @JsonProperty("arriveBy")
     private String arriveBy;
     @JsonProperty("fromPlace")
@@ -107,6 +110,25 @@ public class RequestParameters {
         this.wheelchair = wheelchair;
     }
 
+    /**
+     *
+     * @return
+     * The showIntermediateStops
+     */
+    @JsonProperty("showIntermediateStops")
+    public String getShowIntermediateStops() {
+        return showIntermediateStops;
+    }
+
+    /**
+     *
+     * @param showIntermediateStops
+     * The showIntermediateStops
+     */
+    @JsonProperty("showIntermediateStops")
+    public void setShowIntermediateStops(String showIntermediateStops) {
+        this.showIntermediateStops = showIntermediateStops;
+    }
     /**
      * 
      * @return

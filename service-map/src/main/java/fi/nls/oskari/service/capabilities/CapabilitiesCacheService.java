@@ -30,7 +30,7 @@ public abstract class CapabilitiesCacheService extends OskariComponent {
     private static final int TIMEOUT_SECONDS = PropertyUtil.getOptional(PROP_TIMEOUT, 30);
     private static final int TIMEOUT_MS = TIMEOUT_SECONDS * 1000;
 
-    public abstract OskariLayerCapabilities find(final String url, final String layertype);
+    public abstract OskariLayerCapabilities find(final String url, final String layertype, final String version);
     public abstract OskariLayerCapabilities save(final OskariLayerCapabilities capabilities);
 
     /**
@@ -38,19 +38,20 @@ public abstract class CapabilitiesCacheService extends OskariComponent {
      * @return null if not saved to db
      */
     public OskariLayerCapabilities find(final OskariLayer layer) {
-        return find(layer.getSimplifiedUrl(true), layer.getType());
+        return find(layer.getSimplifiedUrl(true), layer.getType(), layer.getVersion());
     }
 
-    public OskariLayerCapabilities getCapabilities(String url, String serviceType) throws ServiceException {
-        return getCapabilities(url, serviceType, null, null);
+    public OskariLayerCapabilities getCapabilities(String url, String serviceType, String serviceVersion) throws ServiceException {
+        return getCapabilities(url, serviceType, null, null, serviceVersion);
     }
 
-    public OskariLayerCapabilities getCapabilities(String url, String serviceType, final String user, final String passwd) throws ServiceException {
+    public OskariLayerCapabilities getCapabilities(String url, String serviceType, final String user, final String passwd, final String version) throws ServiceException {
         OskariLayer layer = new OskariLayer();
         layer.setUrl(url);
         layer.setType(serviceType);
         layer.setUsername(user);
         layer.setPassword(passwd);
+        layer.setVersion(version);
         return getCapabilities(layer, false);
     }
 
@@ -106,7 +107,11 @@ public abstract class CapabilitiesCacheService extends OskariComponent {
         conn.setReadTimeout(TIMEOUT_MS);
         final String response = IOHelper.readString(conn, encoding);
         final String charset = getEncodingFromXml(response);
-        if(norecursion || charset == null || encoding.equalsIgnoreCase(charset)) {
+
+        //if encoding differs from that of the xml, we always have to re-read from service.
+        if (charset != null && !encoding.equalsIgnoreCase(charset))  {
+            return loadCapabilitiesFromService(layer, charset, true);
+        } else if(norecursion || charset == null || encoding.equalsIgnoreCase(charset)) {
             return response;
         }
         return loadCapabilitiesFromService(layer, charset, true);
@@ -116,6 +121,7 @@ public abstract class CapabilitiesCacheService extends OskariComponent {
         OskariLayerCapabilities cap = new OskariLayerCapabilities();
         cap.setUrl(layer.getSimplifiedUrl(true));
         cap.setLayertype(layer.getType());
+        cap.setVersion(layer.getVersion());
         return cap;
     }
 
@@ -132,12 +138,15 @@ public abstract class CapabilitiesCacheService extends OskariComponent {
         if(!url.toLowerCase().contains("request=")) {
             params.put("request", "GetCapabilities");
         }
+        if(!url.toLowerCase().contains("version=") && layer.getVersion() != null) {
+            params.put("version", layer.getVersion());
+        }
 
         return IOHelper.constructUrl(url, params);
     }
 
     // TODO: maybe use some lib instead?
-    private static String getEncodingFromXml(final String response) {
+    public static String getEncodingFromXml(final String response) {
         if(response == null) {
             return null;
         }

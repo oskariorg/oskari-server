@@ -1,5 +1,80 @@
 # Migration guide
 
+## 1.36.0
+
+### Application changes to JSP-files
+
+If you have a custom JSP in your Oskari installation you will need to modify it a bit:
+
+Custom JSPs may have links to Oskari css and have global variables set for Oskari:
+
+    <link
+            rel="stylesheet"
+            type="text/css"
+            href="/Oskari${path}/css/icons.css"/>
+    <link
+            rel="stylesheet"
+            type="text/css"
+            href="/Oskari${path}/css/forms.css"/>
+    <link
+            rel="stylesheet"
+            type="text/css"
+            href="/Oskari${path}/css/portal.css"/>
+    <link
+            rel="stylesheet"
+            type="text/css"
+            href="/Oskari${path}/css/overwritten.css"/>
+
+    <script type="text/javascript">
+        var ajaxUrl = '${ajaxUrl}';
+        var viewId = '${viewId}';
+        var language = '${language}';
+        var preloaded = ${preloaded};
+        var controlParams = ${controlParams};
+    </script>
+
+These can be replaced with the following:
+
+    <link
+            rel="stylesheet"
+            type="text/css"
+            href="/Oskari/resources/css/forms.css"/>
+    <link
+            rel="stylesheet"
+            type="text/css"
+            href="/Oskari/resources/css/portal.css"/>
+    <link
+            rel="stylesheet"
+            type="text/css"
+            href="/Oskari${path}/icons.css"/>
+    <link
+            rel="stylesheet"
+            type="text/css"
+            href="/Oskari${path}/css/overwritten.css"/>
+
+    <script type="text/javascript">
+        var ajaxUrl = '${ajaxUrl}';
+        var controlParams = ${controlParams};
+    </script>
+------------------------
+Note that you need to remove any references to these globals (language, viewId, preloaded) in index.js as well (in the frontend)
+
+See https://github.com/nls-oskari/oskari/blob/master/ReleaseNotes.md#Default-iconsets-for-applications for more details on 
+ frontend changes.
+
+You should also remove any links to oskari_lang_all.js in JSPs as it's no longer generated and its content is included 
+ in all of the language files. 
+
+### Geotools 14.2 upgrade (was 13.1)
+
+There are some improvements in geojson parsing and new methods for parsing WMS/WFS capabilities.
+Basic oskari-server source is not modified because of this upgrade, only some unit tests.
+
+### toolbar in embedded maps
+
+The configuration has changed for any published maps with toolbar. Automatic migration is done as part of the core 
+migration.
+
 ## 1.35.0
 
 Update IntersectionFeatureCollection2-2.7.1.jar in your webapps/geoserver/WEB-INF/lib directory.

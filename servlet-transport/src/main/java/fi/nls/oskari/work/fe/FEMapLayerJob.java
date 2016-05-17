@@ -11,6 +11,7 @@ import fi.nls.oskari.fe.output.OutputProcessor;
 import fi.nls.oskari.fi.rysp.generic.WFS11_path_parse_worker;
 import fi.nls.oskari.pojo.SessionStore;
 import fi.nls.oskari.util.IOHelper;
+import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.wfs.WFSFilter;
 import fi.nls.oskari.wfs.WFSImage;
 import fi.nls.oskari.wfs.pojo.WFSLayerStore;
@@ -153,7 +154,7 @@ public class FEMapLayerJob extends OWSMapLayerJob {
         final String username = layer.getUsername();
         final String password = layer.getPassword();
 
-        final String srsName = layer.getSRSName();
+        final String srsName = session.getLocation().getSrs();
         final String featureNs = layer.getFeatureNamespaceURI();
         final String featurePrefix = layer.getFeatureNamespace();
         final String featureName = layer.getFeatureElement();
@@ -161,6 +162,7 @@ public class FEMapLayerJob extends OWSMapLayerJob {
         final String geomProp = layer.getGMLGeometryProperty();
         final String geomNs = layer.getGeometryNamespaceURI();
         final String maxCount = Integer.toString(layer.getMaxFeatures());
+        final Boolean resolveDepth = JSONHelper.getBooleanFromJSON(layer.getAttributes(), "resolveDepth", false);
 
         JSONObject parseConfig = layer.getParseConfig();
 
@@ -171,7 +173,7 @@ public class FEMapLayerJob extends OWSMapLayerJob {
         }
 
         backendRequestTemplate.setRequestFeatures(srsName, featureNs, featurePrefix,
-                featureName, WFSver, geomProp, geomNs, maxCount);
+                featureName, WFSver, geomProp, geomNs, maxCount, resolveDepth);
 
         FeatureEngine featureEngine = null;
         try {
@@ -216,7 +218,7 @@ public class FEMapLayerJob extends OWSMapLayerJob {
             log.debug("[fe] SESSION CRS AXIS 0 " + dir0);
 
             final MathTransform transform = this.session.getLocation()
-                    .getTransformForClient(this.layer.getCrs(), true);
+                    .getTransformForClient(crs, true);
 
             /* FeatureEngine InputProcessor */
             final XMLInputProcessor inputProcessor = new StaxGMLInputProcessor();

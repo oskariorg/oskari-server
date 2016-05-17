@@ -68,7 +68,7 @@ public class HystrixMapLayerJob extends HystrixJob {
     }
 
     public void notifyCompleted(boolean success) {
-        job.notifyCompleted(success);
+        job.notifyCompleted(success, false);
     }
 
     // TODO: check if this actually works!

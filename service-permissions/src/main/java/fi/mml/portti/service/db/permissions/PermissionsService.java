@@ -11,7 +11,20 @@ import java.util.Map;
 import java.util.Set;
 
 public interface PermissionsService extends BaseService<Permissions> {
-	
+
+	/**
+	 * Returns a set of permission keys that are configured as additional permissions
+	 * @return
+     */
+	Set<String> getAdditionalPermissions();
+
+	/**
+	 * Returns an UI name for the permission
+	 * @param permissionId
+	 * @param lang
+     * @return
+     */
+	String getPermissionName(String permissionId, String lang);
 	/**
 	 * Insert permissions.
 	 * @param uniqueResourceName

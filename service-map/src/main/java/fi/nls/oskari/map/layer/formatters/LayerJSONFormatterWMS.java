@@ -1,6 +1,7 @@
 package fi.nls.oskari.map.layer.formatters;
 
 import fi.mml.map.mapwindow.service.wms.WebMapService;
+import fi.mml.map.mapwindow.service.wms.WebMapServiceV1_3_0_Impl;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
@@ -134,7 +135,10 @@ public class LayerJSONFormatterWMS extends LayerJSONFormatter {
 
         JSONHelper.putValue(layerJson, KEY_FORMATS, capabilities.optJSONObject(KEY_FORMATS));
         JSONHelper.putValue(layerJson, KEY_ISQUERYABLE, capabilities.optBoolean(KEY_ISQUERYABLE));
-        JSONHelper.putValue(layerJson, KEY_VERSION, capabilities.optString("version"));
+        // Do not override version, if already available
+        if(!layerJson.has(KEY_VERSION)) {
+            JSONHelper.putValue(layerJson, KEY_VERSION, JSONHelper.getStringFromJSON(capabilities, KEY_VERSION, null));
+        }
         // copy time from capabilities to attributes
         // timedata is merged into attributes  (times:{start:,end:,interval:}  or times: []
         // only reason for this is that admin can see the values offered by service
@@ -166,9 +170,9 @@ public class LayerJSONFormatterWMS extends LayerJSONFormatter {
     public static List<JSONObject> createStylesArray(final WebMapService capabilities) {
         final List<JSONObject> styles = new ArrayList<>();
         final Map<String, String> stylesMap = capabilities.getSupportedStyles();
-        final Map<String, String> legends = capabilities.getSupportedLegends();
         for (String styleName : stylesMap.keySet()) {
-            styles.add(createStylesJSON(styleName, stylesMap.get(styleName), legends.get(styleName)));
+            String legend = capabilities.getLegendForStyle(styleName);
+            styles.add(createStylesJSON(styleName, stylesMap.get(styleName), legend));
         }
         return styles;
     }
