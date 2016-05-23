@@ -55,6 +55,10 @@ public class AppSetupHandler extends RestActionHandler {
             ViewModifier.BUNDLE_INFOBOX, ViewModifier.BUNDLE_TOOLBAR,
             ViewModifier.BUNDLE_PUBLISHEDGRID, ViewModifier.BUNDLE_FEATUREDATA2, ViewModifier.BUNDLE_COORDINATETOOL);
 
+    // Bundles that we don't want to remove even if publisher doesn't provide config
+    private static final Set<String> ALWAYSON_BUNDLES = ConversionHelper.asSet(
+            ViewModifier.BUNDLE_INFOBOX, ViewModifier.BUNDLE_TOOLBAR);
+
     // Bundles that require divmanazer to be loaded for them to work
     private static final Set<String> BUNDLE_REQUIRES_DIVMANAZER =
             ConversionHelper.asSet(ViewModifier.BUNDLE_FEATUREDATA2, ViewModifier.BUNDLE_COORDINATETOOL);
@@ -204,7 +208,7 @@ public class AppSetupHandler extends RestActionHandler {
         // setup all the bundles that don't need extra processing
         for(String bundleid : SIMPLE_BUNDLES) {
             if(viewdata.has(bundleid)) {
-                setupBundle(view, viewdata, bundleid);
+                setupBundle(view, viewdata, bundleid, ALWAYSON_BUNDLES.contains(bundleid));
 
                 //toolbar -> add style info from metadata
                 if (bundleid.equals(ViewModifier.BUNDLE_TOOLBAR)) {
@@ -222,7 +226,7 @@ public class AppSetupHandler extends RestActionHandler {
             }
         }
 
-        final Bundle myplaces = setupBundle(view, viewdata, ViewModifier.BUNDLE_PUBLISHEDMYPLACES2);
+        final Bundle myplaces = setupBundle(view, viewdata, ViewModifier.BUNDLE_PUBLISHEDMYPLACES2, false);
         handleMyplacesDrawLayer(myplaces, user);
 
         final View newView = saveView(view);
@@ -401,7 +405,7 @@ public class AppSetupHandler extends RestActionHandler {
         return view;
     }
 
-    private Bundle setupBundle(final View view, final JSONObject inputViewData, final String bundleid) {
+    private Bundle setupBundle(final View view, final JSONObject inputViewData, final String bundleid, final boolean alwaysKeep) {
 
         // Note! Assumes value is a JSON object
         final JSONObject bundleData = inputViewData.optJSONObject(bundleid);
@@ -412,7 +416,7 @@ public class AppSetupHandler extends RestActionHandler {
                 PublishBundleHelper.mergeBundleConfiguration(bundle, bundleData.optJSONObject(KEY_CONF), bundleData.optJSONObject(KEY_STATE));
             }
             return bundle;
-        } else {
+        } else if(!alwaysKeep) {
             // Remove bundle since it's not needed
             LOG.warn("Config not found for", bundleid, "- removing bundle.");
             view.removeBundle(bundleid);
