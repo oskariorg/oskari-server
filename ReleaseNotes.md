@@ -1,5 +1,21 @@
 # Release Notes
 
+## 1.36.1
+
+### Migration for published maps
+
+Adds toolbar bundle with no default buttons to all views with type PUBLISHED that don't have it already.
+ Configures MarkerPlugin to NOT add it's button to toolbar as it's not supported and should be part of 
+ publish template.
+Toolbar is required for mobile mode functionality in maps and any old published maps don't have it if the user hasn't 
+selected the history/measurement tools for the map.
+
+### HTML for published maps
+
+Added viewport metadata-tag for published maps.
+
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+
 ## 1.36
 
 ### Generic
