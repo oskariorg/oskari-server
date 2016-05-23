@@ -1,5 +1,7 @@
 package flyway.oskari;
 
+import fi.nls.oskari.log.LogFactory;
+import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.util.JSONHelper;
 import org.flywaydb.core.api.migration.jdbc.JdbcMigration;
 import org.json.JSONArray;
@@ -25,9 +27,11 @@ and bundle_id = (select id from portti_bundle where name = 'toolbar'))
  */
 public class V1_36_8__add_toolbar_to_published_view_where_missing implements JdbcMigration {
 
+    private static final Logger LOG  = LogFactory.getLogger(V1_36_8__add_toolbar_to_published_view_where_missing.class);
+
     private static final String TOOLBAR_TEMPLATE = "{\n" +
             "        \"bundlename\" : \"toolbar\",\n" +
-            "        \"metadata : {\n" +
+            "        \"metadata\" : {\n" +
             "            \"Import-Bundle\" : {\n" +
             "                \"toolbar\": {\n" +
             "                    \"bundlePath\": \"%s\"\n" +
@@ -61,11 +65,15 @@ public class V1_36_8__add_toolbar_to_published_view_where_missing implements Jdb
                 insertBundle(toolbar, connection);
 
             } catch (Exception ex) {
+                LOG.error("Error updating view with id", id, ": ", ex.getMessage());
                 viewsNotUpdated.add(id);
             }
         }
         if(viewsToUpdate.size() > 0 && viewsNotUpdated.size() == viewsToUpdate.size()) {
             throw new Exception("Views to update, but didn't update any. Tried " + viewsToUpdate.size());
+        }
+        if(viewsNotUpdated.size() > 0) {
+            LOG.warn("Error updating toolbar to", viewsNotUpdated.size(), "views:", viewsNotUpdated);
         }
     }
 
@@ -87,7 +95,7 @@ public class V1_36_8__add_toolbar_to_published_view_where_missing implements Jdb
         if(mapmodulePlugin == null) {
             throw new Exception("Didn't detect either ol3 or ol2 mapmodule - cancel update");
         }
-        String path = mapmodule.optString("bundlePath");
+        String path = mapmodulePlugin.optString("bundlePath");
         // propably ol2 version
         if(!path.contains("packages/framework/bundle")) {
             throw new Exception("Didn't detect either ol3 or ol2 mapmodule - cancel update");
