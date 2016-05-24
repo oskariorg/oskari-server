@@ -30,6 +30,7 @@ public class MetadataCatalogueResultParser {
     private AXIOMXPath XPATH_IDENTIFICATION_BBOX = null;
     private AXIOMXPath XPATH_IDENTIFICATION_UUID = null;
     private AXIOMXPath XPATH_IDENTIFICATION_DATE = null;
+    private AXIOMXPath XPATH_IDENTIFICATION_MAINTENANCE_AND_UPDATE_FREQUENCY_CODELIST = null;
     private AXIOMXPath XPATH_IDENTIFICATION_CODELIST = null;
     private AXIOMXPath XPATH_CODELISTVALUE = null;
     private AXIOMXPath XPATH_DISTINFO = null;
@@ -47,7 +48,8 @@ public class MetadataCatalogueResultParser {
     public static final String KEY_IDENTIFICATION = "identification";
     public static final String KEY_IDENTIFICATION_DATE = "date";
     public static final String KEY_IDENTIFICATION_CODELIST = "code";
-
+    public static final String KEY_MAINTENANCE_AND_UPDATE_FREQUENCY_CODELIST = "updateFrequency";
+    public static final String KEY_NATUREOFTHETARGET = "natureofthetarget";
     // we need to map languages from 3-letter codes to 2-letter codes so initialize a global codeMapping property
     private final static Map<String, String> ISO3letterOskariLangMapping = new HashMap<String, String>();
 
@@ -82,6 +84,7 @@ setResourceNameSpace(serverURL)
         XPATH_IDENTIFICATION_CODELIST = XmlHelper.buildXPath("./gmd:citation/gmd:CI_Citation/gmd:date/gmd:CI_Date/gmd:dateType/gmd:CI_DateTypeCode", NAMESPACE_CTX);
         XPATH_IDENTIFICATION_DATE = XmlHelper.buildXPath("./gmd:citation/gmd:CI_Citation/gmd:date/gmd:CI_Date/gmd:date/gco:Date", NAMESPACE_CTX);
 
+        XPATH_IDENTIFICATION_MAINTENANCE_AND_UPDATE_FREQUENCY_CODELIST = XmlHelper.buildXPath("./gmd:resourceMaintenance/gmd:MD_MaintenanceInformation/gmd:maintenanceAndUpdateFrequency/gmd:MD_MaintenanceFrequencyCode", NAMESPACE_CTX);
 
         // extend can be gmd or srv namespaced
         XPATH_IDENTIFICATION_BBOX = XmlHelper.buildXPath("./*[local-name()='extent']/gmd:EX_Extent/gmd:geographicElement/gmd:EX_GeographicBoundingBox", NAMESPACE_CTX);
@@ -137,10 +140,11 @@ setResourceNameSpace(serverURL)
 
         final OMElement codeNode = (OMElement) XPATH_IDENTIFICATION_CODELIST.selectSingleNode(idNode);
         final OMElement dateNode = (OMElement) XPATH_IDENTIFICATION_DATE.selectSingleNode(idNode);
-
+        final OMElement maintenanceAndUpdateFrequencyNode = (OMElement) XPATH_IDENTIFICATION_MAINTENANCE_AND_UPDATE_FREQUENCY_CODELIST.selectSingleNode(idNode);
         JSONObject identification = new JSONObject();
         identification.put(KEY_IDENTIFICATION_CODELIST, getAttributeValue(codeNode, QName.valueOf("codeListValue")));
-        identification.put(KEY_IDENTIFICATION_DATE, getLocalizedContent(dateNode,pathToLocalizedValue));
+        identification.put(KEY_IDENTIFICATION_DATE, getLocalizedContent(dateNode, pathToLocalizedValue));
+        identification.put(KEY_MAINTENANCE_AND_UPDATE_FREQUENCY_CODELIST, getAttributeValue(maintenanceAndUpdateFrequencyNode, QName.valueOf("codeListValue")));
         item.addValue(KEY_IDENTIFICATION, identification);
 
 
@@ -148,6 +152,7 @@ setResourceNameSpace(serverURL)
         final OMElement codeListValue = (OMElement) XPATH_CODELISTVALUE.selectSingleNode(elem);
         log.debug("====: " + codeListValue.getAttributeValue(QNAME_CODELISTVALUE));
         item.setNatureOfTarget(codeListValue.getAttributeValue(QNAME_CODELISTVALUE));
+        item.addValue(KEY_NATUREOFTHETARGET, item.getNatureOfTarget());
 
         for(OMElement operatesOnNode  : operatesOnNodes){
             if(operatesOnNode != null){
