@@ -9,8 +9,11 @@ import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.service.db.BaseIbatisService;
+import fi.nls.oskari.util.ConversionHelper;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -47,11 +50,47 @@ public class WFSLayerConfigurationServiceIbatisImpl extends BaseIbatisService<WF
         return  queryForObject(getNameSpace() + ".insertTemplateModel", map);
     }
 
+
+    public synchronized int insertSLDStyle(final Map<String, Integer> map) throws ServiceException {
+        return  queryForObject(getNameSpace() + ".insertSLDStyle", map);
+    }
+
     public void update(final WFSLayerConfiguration layer) {
         try {
             getSqlMapClient().update(getNameSpace() + ".update", layer);
         } catch (Exception e) {
             throw new RuntimeException("Failed to update", e);
+        }
+    }
+
+    public synchronized List<Integer> insertSLDStyles(final int id, final List<Integer> lnks) {
+        SqlMapClient client = null;
+        List<Integer> ids = new ArrayList<Integer>();
+        try {
+            client = getSqlMapClient();
+            client.startTransaction();
+            // Remove old links for the wfs layer
+            // remove wfs layer
+            client.delete(getNameSpace() + ".removeLayerSLDStyles", id);
+            for (Integer lnk : lnks) {
+                Map<String, Integer> styleLink = new HashMap<String, Integer>();
+                styleLink.put("id", id);
+                styleLink.put("sld_style_id", lnk);
+                Object rowId = client.insert(getNameSpace() + ".insertLayerSLDStyles", styleLink);
+                ids.add(0);
+            }
+
+
+            client.commitTransaction();
+            return ids;
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to insert SLD styles", e);
+        } finally {
+            if (client != null) {
+                try {
+                    client.endTransaction();
+                } catch (SQLException ignored) { }
+            }
         }
     }
 
@@ -75,6 +114,7 @@ public class WFSLayerConfigurationServiceIbatisImpl extends BaseIbatisService<WF
             }
         }
     }
+
 
     public void delete(final int id)  {
         long maplayer_id = Long.valueOf(id);

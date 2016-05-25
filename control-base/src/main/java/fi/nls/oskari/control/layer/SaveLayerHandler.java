@@ -133,7 +133,23 @@ public class SaveLayerHandler extends ActionHandler {
                 ml.setUpdated(new Date(System.currentTimeMillis()));
                 mapLayerService.update(ml);
                 //TODO: WFS spesific property update
-                if(OskariLayer.TYPE_WFS.equals(ml.getType())) {
+                if (OskariLayer.TYPE_WFS.equals(ml.getType())) {
+                    final WFSLayerConfiguration wfsl = wfsLayerService.findConfiguration(ml.getId());
+                    wfsl.setAttributes(ml.getAttributes());
+                    handleRequestToWfsLayer(params, wfsl);
+
+                    // TODO: WFS field management implementation
+                    // TODO: WFS2 spesific edits
+                    /* if(wfsl.getJobType() != null && wfsl.getJobType().equals(OSKARI_FEATURE_ENGINE)){
+                        handleFESpesificToWfsLayer(params, wfsl);
+                    }  */
+                    //wfsLayerService.update(wfsl);
+
+
+                    // Styles setup
+                    handleWfsLayerStyles(params, wfsl);
+
+
                     // Remove old redis data of WFSLayer_xx, new wfs conf data is inserted automatically
                     JedisManager.delAll(WFSLayerConfiguration.KEY + Integer.toString(ml.getId()));
                     JedisManager.delAll(WFSLayerConfiguration.IMAGE_KEY + Integer.toString(ml.getId()));
@@ -182,6 +198,10 @@ public class SaveLayerHandler extends ActionHandler {
                     }
                     int idwfsl = wfsLayerService.insert(wfsl);
                     wfsl.setId(idwfsl);
+
+                    // Styles setup
+                    handleWfsLayerStyles(params, wfsl);
+
 
                 }
 
@@ -354,7 +374,7 @@ public class SaveLayerHandler extends ActionHandler {
         wfsl.setGMLGeometryProperty(params.getHttpParam("GMLGeometryProperty"));
         wfsl.setGMLVersion(params.getHttpParam("GMLVersion"));
         wfsl.setSRSName(params.getHttpParam("srs_name"));
-        wfsl.setWFSVersion(params.getHttpParam("WFSVersion"));
+        wfsl.setWFSVersion(params.getHttpParam("WFSVersion", params.getHttpParam("version")));
         wfsl.setFeatureElement(params.getHttpParam("featureElement"));
         wfsl.setFeatureNamespace(params.getHttpParam("featureNamespace"));
         wfsl.setFeatureNamespaceURI(params.getHttpParam("featureNamespaceURI"));
@@ -365,7 +385,6 @@ public class SaveLayerHandler extends ActionHandler {
         wfsl.setGetFeatureInfo(ConversionHelper.getBoolean(params.getHttpParam("getFeatureInfo"), wfsl.isGetFeatureInfo()));
         wfsl.setGetHighlightImage(ConversionHelper.getBoolean(params.getHttpParam("getHighlightImage"), wfsl.isGetHighlightImage()));
         wfsl.setGetMapTiles(ConversionHelper.getBoolean(params.getHttpParam("getMapTiles"), wfsl.isGetMapTiles()));
-
         wfsl.setLayerName(params.getHttpParam("layerName"));
         wfsl.setMaxFeatures(ConversionHelper.getInt(params.getHttpParam("maxFeatures"), wfsl.getMaxFeatures()));
         wfsl.setOutputFormat(params.getHttpParam("outputFormat"));
@@ -404,6 +423,38 @@ public class SaveLayerHandler extends ActionHandler {
                 //TODO: fe save config support for wfs 1.1.0
                 wfsl.setJobType(OSKARI_FEATURE_ENGINE);
                 wfsl.setTileBuffer("{ \"default\" : 1, \"oskari_custom\" : 1}");;
+            }
+
+        }
+
+    }
+
+    /**
+     *  Inserts/updates sld style links to single wfs layer
+     * @param params
+     * @param wfsl
+     * @throws ActionException
+     * @throws ServiceException
+     */
+    private void handleWfsLayerStyles(final ActionParameters params, WFSLayerConfiguration wfsl) throws ActionException, ServiceException {
+
+
+        if (wfsl != null && params.getHttpParam("styleSelection") != null) {
+            JSONObject selectedStyles = JSONHelper.createJSONObject(params.getHttpParam("styleSelection"));
+            JSONArray styles = JSONHelper.getJSONArray(selectedStyles, "selectedStyles");
+            List<Integer> sldIds = new ArrayList<Integer>();
+            for (int i = 0; i < styles.length(); i++) {
+                JSONObject stylelnk = JSONHelper.getJSONObject(styles, i);
+                int lnk = ConversionHelper.getInt(JSONHelper.getStringFromJSON(stylelnk, "id", "0"), 0);
+                if (lnk != 0) {
+                    sldIds.add(lnk);
+                }
+
+            }
+            //TODO: define a case to remove all styles  and update single style
+            if (sldIds.size() > 0) {
+                // Removes old links and insert new ones
+                List<Integer> ids = wfsLayerService.insertSLDStyles(wfsl.getId(), sldIds);
             }
 
         }

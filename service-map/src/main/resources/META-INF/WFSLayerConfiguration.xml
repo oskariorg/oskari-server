@@ -11,6 +11,7 @@
     <typeAlias alias="WFSParserConfig" type="fi.nls.oskari.domain.map.wfs.WFSParserConfig" />
     
     <resultMap class="WFSLayerConfiguration" id="WFSLayerConfiguration">
+        <result property="id" column="id"/>
         <result property="layerId" column="maplayer_id"/>
         <result property="URL" column="url"/>
         <result property="username" column="username"/>
@@ -56,7 +57,7 @@
         <result property="parseConfig" column="parse_config"/>
 		<result property="responseTemplate" column="response_template"/>
         <result property="attributes" column="attributes" jdbcType="VARCHAR" javaType="org.json.JSONObject"/>
-		
+
 		<result property="selectionSLDStyle" column="selection_sld_style"/>
     </resultMap>
 
@@ -86,7 +87,7 @@
 
        <parameter property="WMSLayerId"/>
        <parameter property="wps_params"/>
-        <parameter property="templateModelId"/>
+       <parameter property="templateModelId"/>
        <parameter property="jobType"/>
        <parameter property="requestImpulse"/>
 
@@ -131,6 +132,7 @@
     <select id="findLayer" parameterClass="int" resultMap="WFSLayerConfiguration"
             cacheModel="wfs-layer-cache">
     	SELECT
+    	    l.id,
 			l.maplayer_id,
 			map.locale,
 			map.url,
@@ -257,8 +259,21 @@
         returning id
     </statement>
 
+    <statement id="insertLayerSLDStyles" parameterClass="java.util.Map" resultClass="java.lang.Integer" >
+        insert into portti_wfs_layers_styles (
+        wfs_layer_id,
+        wfs_layer_style_id)
+        values (#id#, #sld_style_id#)
+        returning id
+    </statement>
 
-    <!-- TODO: verify these works as OskariLayer refactoring effort is ongoing
+
+    <delete id="removeLayerSLDStyles" parameterClass="int">
+        delete from portti_wfs_layers_styles where wfs_layer_id  = #id#;
+    </delete>
+
+
+    <!-- TODO: verify these works as OskariLayer refactoring effort is ongoing - portti_wfs_layer_style management is in SldStylesHandler
     <statement id="insertSLDStyle" parameterClass="java.util.Map" resultClass="java.lang.Integer" >
         insert into portti_wfs_layer_style (
         name,

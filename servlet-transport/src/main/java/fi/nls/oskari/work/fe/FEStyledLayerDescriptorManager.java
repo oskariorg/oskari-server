@@ -7,7 +7,10 @@ import org.geotools.styling.*;
 import org.geotools.xml.Configuration;
 import org.geotools.xml.Parser;
 
+import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -126,8 +129,11 @@ public class FEStyledLayerDescriptorManager {
     }
 
     public static Style createSLDStyle(InputStream xml) {
-        Configuration config = new SLDConfiguration();
+        if(xml == null){
+            return null;
+        }
 
+        Configuration config = new SLDConfiguration();
         Parser parser = new Parser(config);
         StyledLayerDescriptor sld = null;
         try {
@@ -141,20 +147,45 @@ public class FEStyledLayerDescriptorManager {
     }
 
     /**
-     * 
+     * Sld style could be path to sdl resource file or sld string content
+     * @param sldName
      * @param sldPath
      * @return
      */
-    public static Style getSLD(String sldPath) {
+    public static Style getSLD(String sldName, String sldPath) {
+        //Path key
         Style sld = templateSLD.get(sldPath);
 
         if (sld != null) {
             log.debug("[fe] using cached SLD for " + sldPath);
             return sld;
         }
-        log.debug("[fe] creating SLD from " + sldPath);
+        // Try name key
+        if (sldName != null) {
+            sld = templateSLD.get(sldName);
+        }
 
-        sld = createSLDStyle(sldPath);
+        if (sld != null) {
+            log.debug("[fe] using cached SLD for " + sldName);
+            return sld;
+        }
+        if (sldPath.substring(0, 30).indexOf("<") > -1) {
+            log.debug("[fe] creating SLD style for " + sldName);
+            InputStream stream = null;
+            try {
+                stream = new ByteArrayInputStream(sldPath.getBytes("UTF-8"));
+            } catch (UnsupportedEncodingException e) {
+                log.error(e, "Encoding error in sld style streaming");
+            }
+
+            sld = createSLDStyle(stream);
+
+        } else {
+            log.debug("[fe] creating SLD from " + sldPath);
+
+            sld = createSLDStyle(sldPath);
+        }
+
         if (sld != null) {
             log.debug("[fe] created and cached SLD for " + sldPath);
             templateSLD.put(sldPath, sld);
