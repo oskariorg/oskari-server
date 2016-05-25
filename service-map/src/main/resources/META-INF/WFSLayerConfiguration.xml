@@ -119,18 +119,11 @@
 
     </resultMap>
 
-
-    <cacheModel type="LRU" id="wfs-layer-cache" readOnly="true" serialize="false">
-        <flushInterval minutes="15"/>
-        <property name="CacheSize" value="100"/>
-    </cacheModel>
-
     <select id="maxId" resultClass="int">
         select max(id) from portti_wfs_layer
     </select>
 
-    <select id="findLayer" parameterClass="int" resultMap="WFSLayerConfiguration"
-            cacheModel="wfs-layer-cache">
+    <select id="findLayer" parameterClass="int" resultMap="WFSLayerConfiguration">
     	SELECT
     	    l.id,
 			l.maplayer_id,
