@@ -79,10 +79,13 @@ public class GetGtWMSCapabilities {
             /*check url validity*/
             new URL(rurl);
             CapabilitiesCacheService service = new CapabilitiesCacheServiceMybatisImpl();
-            OskariLayerCapabilities capabilities = null;
-            capabilities = service.getCapabilities(rurl, "wmslayer", user, pwd, version);
-
+            OskariLayerCapabilities capabilities = service.getCapabilities(rurl, OskariLayer.TYPE_WMS, user, pwd, version);
             String capabilitiesXML = capabilities.getData();
+            if(capabilitiesXML == null || capabilitiesXML.trim().isEmpty()) {
+                // retry from service - might get empty xml from db
+                capabilities = service.getCapabilities(rurl, "wmslayer", user, pwd, version, true);
+                capabilitiesXML = capabilities.getData();
+            }
             String encoding = CapabilitiesCacheService.getEncodingFromXml(capabilitiesXML);
             WMSCapabilities caps = createCapabilities(capabilitiesXML, encoding);
             // caps to json
@@ -311,40 +314,6 @@ OnlineResource xlink:type="simple" xlink:href="http://www.paikkatietohakemisto.f
             styles.put(styleJSON);
         }
         return styles;
-    }
-
-    /**
-     * Finalise WMS service url for GetCapabilities request
-     *
-     * @param urlin
-     * @return
-     */
-    private static String getUrl(String urlin) {
-
-        if (urlin.isEmpty()) {
-            return "";
-        }
-        String url = urlin;
-        // check params
-        if (url.indexOf("?") == -1) {
-            url = url + "?";
-            if (url.toLowerCase().indexOf("service=") == -1) {
-                url = url + "service=WMS";
-            }
-            if (url.toLowerCase().indexOf("getcapabilities") == -1) {
-                url = url + "&request=GetCapabilities";
-            }
-        } else {
-            if (url.toLowerCase().indexOf("service=") == -1) {
-                url = url + "&service=WMS";
-            }
-            if (url.toLowerCase().indexOf("getcapabilities") == -1) {
-                url = url + "&request=GetCapabilities";
-            }
-
-        }
-
-        return url;
     }
 
     /**
