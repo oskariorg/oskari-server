@@ -6,6 +6,10 @@
 
 SLD Style setup and management is added for wfs layers (versions 1.1.0 and 2.0.0) in admin layer selector.
 
+### control-base / GetWSCapabilities action route
+
+Cached capabilities might be faulty in the database. The GetWSCapabilities action route now tries to fetch capabilities
+from the service in such case.
 
 ## 1.36.1
 
