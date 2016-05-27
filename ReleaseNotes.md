@@ -1,5 +1,12 @@
 # Release Notes
 
+## 1.37
+
+### service-map
+
+SLD Style setup and management is added for wfs layers (versions 1.1.0 and 2.0.0) in admin layer selector.
+
+
 ## 1.36.1
 
 ### Migration for published maps

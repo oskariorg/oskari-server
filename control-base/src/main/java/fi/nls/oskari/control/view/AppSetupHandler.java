@@ -49,6 +49,8 @@ public class AppSetupHandler extends RestActionHandler {
     public static final String KEY_LAYERS = "layers";
     public static final String KEY_SELLAYERS = "selectedLayers";
 
+    public static final String KEY_CROSSHAIR = "crosshair";
+
     private static final boolean VIEW_ACCESS_UUID = PropertyUtil.getOptional(PROPERTY_VIEW_UUID, true);
     // Simple bundles don't require extra processing
     private static final Set<String> SIMPLE_BUNDLES = ConversionHelper.asSet(
@@ -349,9 +351,28 @@ public class AppSetupHandler extends RestActionHandler {
             mapOptions = new JSONObject();
             JSONHelper.putValue(finalConfig, KEY_MAPOPTIONS, mapOptions);
         }
+
+        JSONHelper.putValue(mapOptions, KEY_CROSSHAIR, crosshairEnabled(input));
+
         JSONHelper.putValue(mapOptions, KEY_STYLE, view.getMetadata().optJSONObject(KEY_STYLE));
     }
 
+    private boolean crosshairEnabled(JSONObject input) {
+        if (input == null) {
+            return false;
+        }
+        JSONObject conf = input.optJSONObject(KEY_CONF);
+        if (conf == null) {
+            return false;
+        }
+
+        JSONObject confMapOptions = conf.optJSONObject(KEY_MAPOPTIONS);
+        if (confMapOptions == null) {
+            return false;
+        }
+
+        return confMapOptions.optBoolean(KEY_CROSSHAIR);
+    }
     private void handleMyplacesDrawLayer(final Bundle myplaces, final User user) throws ActionException {
 
         if(myplaces == null) {
