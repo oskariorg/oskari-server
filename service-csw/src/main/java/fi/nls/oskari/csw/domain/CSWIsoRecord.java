@@ -790,8 +790,8 @@ public class CSWIsoRecord {
                 JSONObject ret = new JSONObject();
                 // TODO fix format
                 final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
-                JSONHelper.putValue(ret, "date", sdf.format(date));
-                JSONHelper.putValue(ret, "dateType", dateType);
+                JSONHelper.putValue(ret, "date", date != null ? sdf.format(date) : "");
+                JSONHelper.putValue(ret, "dateType", dateType != null ? dateType : "");
                 return ret;
             }
         }
