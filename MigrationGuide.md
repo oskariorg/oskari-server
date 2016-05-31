@@ -1,5 +1,14 @@
 # Migration guide
 
+## 1.37.0
+
+### servlet-map/webapp-map - Openlayers polyfill
+
+The latest Openlayers 3 doesn't work with IE9 since it lacks for example requestAnimationFrame()
+ function: https://github.com/openlayers/ol3/issues/4865. A polyfill has been added to published.jsp for browsers <= IE 9.
+
+You might want to do the same for any custom JSP for published maps if you need to support IE 9.
+
 ## 1.36.0
 
 ### Application changes to JSP-files
