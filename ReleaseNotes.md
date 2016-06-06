@@ -2,6 +2,11 @@
 
 ## 1.36.2
 
+### Database migration
+
+Restrict oskari_maplayer and oskari_capabilities_cache tables version column to not null and default to empty string.
+Cleanup any cached capabilities with null version (there might be many, this is the main reason for the hotfix).
+
 ### control-example/GetArticlesByTag action route
 
 Now tries to locate "articles"/content by reducing tags if the exact match doesn't get a hit.
