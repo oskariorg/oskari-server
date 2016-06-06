@@ -2,6 +2,22 @@
 
 ## 1.37
 
+### control-example/GetArticlesByTag action route
+
+Now tries to locate "articles"/content by reducing tags if the exact match doesn't get a hit.
+
+For example with default settings a call to /action?action_route=GetArticlesByTag&tags=termsofuse%2C+mappublication%2C+en
+tries to locate page under articlesByTag folder with filenames in the following order:
+
+- termsofuse__mappublication__en.html
+- termsofuse__mappublication__en.json
+- termsofuse__mappublication.html
+- termsofuse__mappublication.json
+- termsofuse.html
+- termsofuse.json
+
+The first one matching is returned and if none of these are found a message telling to add a file under articlesByTag is displayed.  
+
 ### service-map
 
 SLD Style setup and management is added for wfs layers (versions 1.1.0 and 2.0.0) in admin layer selector.
