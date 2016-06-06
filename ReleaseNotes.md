@@ -7,6 +7,10 @@
 Cached capabilities might be faulty in the database. The GetWSCapabilities action route now tries to fetch capabilities
 from the service in such case.
 
+### service-csw
+ 
+Added errorhandling for missing dates on CSW response.
+
 ## 1.36.1
 
 ### Migration for published maps
