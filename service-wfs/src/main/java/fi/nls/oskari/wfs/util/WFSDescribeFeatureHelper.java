@@ -32,9 +32,11 @@ public class WFSDescribeFeatureHelper {
     private static final String KEY_LAYER_ID = "layer_id";
     private static final String KEY_PROPERTYTYPES = "propertyTypes";
     public static final String ANALYSIS_PREFIX = "analysis_";
-    private static final String KEY_SEQUENCE = "xsd:sequence";
-    private static final String KEY_COMPLEXTYPE = "xsd:complexType";
-    private static final String KEY_ELEMENT = "xsd:element";
+
+    private static final String[] XSD_XMLNS = {"xsd:","xs:",""};
+    private static final String KEY_SEQUENCE = "sequence";
+    private static final String KEY_COMPLEXTYPE = "complexType";
+    private static final String KEY_ELEMENT = "element";
     private static final String KEY_NAME = "name";
     private static final String KEY_TYPE = "type";
 
@@ -268,8 +270,19 @@ public class WFSDescribeFeatureHelper {
             // Find recursively name type sequence xsd:complexType or xsd:sequence
             // This is parent json for KEY_NAMEs (feature property name)
             // 'parent' json is not in fixed position (branch) in response json
-            JSONObject js_raw = digXsdElement(js);
-            JSONArray props_js = js_raw.getJSONArray(KEY_ELEMENT);
+            JSONObject js_raw = null;
+            int index = 0;
+            for (index = 0; index < XSD_XMLNS.length; index++) {
+                js_raw = digXsdElement(XSD_XMLNS[index], js);
+                if (js_raw != null) {
+                    break;
+                }
+            }
+
+            if (js_raw == null) {
+                return js_out;
+            }
+            JSONArray props_js = js_raw.getJSONArray(XSD_XMLNS[index]+KEY_ELEMENT);
             // loop Array
             for (int i = 0; i < props_js.length(); i++) {
                 if (props_js.get(i) instanceof JSONObject) {
@@ -322,8 +335,19 @@ public class WFSDescribeFeatureHelper {
                 return null;
             // Find recursively name type sequence xsd:complexType or xsd:sequence
             // This is parent json for KEY_NAMEs (feature property name)
-            JSONObject js_raw = digXsdElement(js);
-            JSONArray props_js = js_raw.getJSONArray(KEY_ELEMENT);
+            JSONObject js_raw = null;
+            int index = 0;
+            for (index = 0; index < XSD_XMLNS.length; index++) {
+                js_raw = digXsdElement(XSD_XMLNS[index], js);
+                if (js_raw != null) {
+                    break;
+                }
+            }
+
+            if (js_raw == null) {
+                return js_out;
+            }
+            JSONArray props_js = js_raw.getJSONArray(XSD_XMLNS[index]+KEY_ELEMENT);
             // loop Array
             for (int i = 0; i < props_js.length(); i++) {
                 if (props_js.get(i) instanceof JSONObject) {
@@ -364,19 +388,24 @@ public class WFSDescribeFeatureHelper {
     /**
      * Find 'name' 'type' sequence under xsd:complexType or xsd:sequence recursively
      * Target could be under JSONArray or JSONObject set
+     * @param xmlns String
      * @param js JSON
      * @return
      */
-    private static JSONObject digXsdElement(JSONObject js) {
-        JSONObject js_raw = findChildJson(KEY_SEQUENCE, js);
+    private static JSONObject digXsdElement(String xmlns, JSONObject js) {
+
+        if (xmlns == null) {
+            xmlns = "";
+        }
+        JSONObject js_raw = findChildJson(xmlns+KEY_SEQUENCE, js);
         try {
             if (js_raw == null) {
-                JSONArray js_rawa = findChildJsonArray(KEY_COMPLEXTYPE, js);
+                JSONArray js_rawa = findChildJsonArray(xmlns+KEY_COMPLEXTYPE, js);
                 if (js_rawa != null) {
                     for (int i = 0; i < js_rawa.length(); i++) {
                         if (js_rawa.get(i) instanceof JSONObject) {
                             JSONObject js_sub = js_rawa.getJSONObject(i);
-                            js_raw = findChildJson(KEY_SEQUENCE, js_sub);
+                            js_raw = findChildJson(xmlns+KEY_SEQUENCE, js_sub);
                         }
                     }
 
