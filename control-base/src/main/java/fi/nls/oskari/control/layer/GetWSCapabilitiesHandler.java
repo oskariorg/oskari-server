@@ -63,8 +63,14 @@ public class GetWSCapabilitiesHandler extends ActionHandler {
                     WMTSCapabilitiesParser parser = new WMTSCapabilitiesParser();
 
                     // setup capabilities URL
-                    final OskariLayerCapabilities caps  = capabilitiesService.getCapabilities(url, OskariLayer.TYPE_WMTS, user, pw, version);
-                    JSONObject resultJSON = parser.parseCapabilitiesToJSON(caps.getData(), url, currentCrs);
+                    OskariLayerCapabilities caps  = capabilitiesService.getCapabilities(url, OskariLayer.TYPE_WMTS, user, pw, version);
+                    String capabilitiesXML = caps.getData();
+                    if(capabilitiesXML == null || capabilitiesXML.trim().isEmpty()) {
+                        // retry from service - might get empty xml from db
+                        caps = capabilitiesService.getCapabilities(url, OskariLayer.TYPE_WMTS, user, pw, version, true);
+                        capabilitiesXML = caps.getData();
+                    }
+                    JSONObject resultJSON = parser.parseCapabilitiesToJSON(capabilitiesXML, url, currentCrs);
                     JSONHelper.putValue(resultJSON, "xml", caps.getData());
                     ResponseHelper.writeResponse(params, resultJSON);
                 }

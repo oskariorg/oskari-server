@@ -46,13 +46,16 @@ public abstract class CapabilitiesCacheService extends OskariComponent {
     }
 
     public OskariLayerCapabilities getCapabilities(String url, String serviceType, final String user, final String passwd, final String version) throws ServiceException {
+        return getCapabilities(url, serviceType, user, passwd,  version, false);
+    }
+    public OskariLayerCapabilities getCapabilities(String url, String serviceType, final String user, final String passwd, final String version, final boolean loadFromService) throws ServiceException {
         OskariLayer layer = new OskariLayer();
         layer.setUrl(url);
         layer.setType(serviceType);
         layer.setUsername(user);
         layer.setPassword(passwd);
         layer.setVersion(version);
-        return getCapabilities(layer, false);
+        return getCapabilities(layer, loadFromService);
     }
 
     public OskariLayerCapabilities getCapabilities(final OskariLayer layer) throws ServiceException {

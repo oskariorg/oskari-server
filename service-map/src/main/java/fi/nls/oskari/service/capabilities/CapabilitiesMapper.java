@@ -12,7 +12,9 @@ public interface CapabilitiesMapper {
 
     @Select("SELECT id, layertype, url, data, created, updated, version" +
             " FROM oskari_capabilities_cache" +
-            " WHERE url = #{url} AND layertype = #{type} AND version = #{version}")
+            " WHERE url = #{url} AND layertype = #{type} AND" +
+            " (version = #{version} OR version is null)" +
+            " ORDER BY version ASC LIMIT 1")
     OskariLayerCapabilities find(@Param("url") final String url, @Param("type")final String type, @Param("version") final String version);
 
     @Insert("INSERT INTO oskari_capabilities_cache(layertype, url, data, version) VALUES (lower(#{layertype}), lower(#{url}), #{data}, #{version})")
