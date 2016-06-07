@@ -1,6 +1,7 @@
 package fi.nls.oskari.control.statistics.plugins.db;
 
 import fi.nls.oskari.util.JSONHelper;
+import fi.nls.oskari.util.PropertyUtil;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -49,6 +50,31 @@ public class StatisticalDatasource {
 
     public String getLocale() {
         return locale;
+    }
+
+    private JSONObject localeJSON = null;
+
+    public String getName(String lang) {
+        if(localeJSON == null) {
+            localeJSON =  JSONHelper.createJSONObject(locale);
+        }
+        if(localeJSON == null) {
+            // nothing to use as name
+            return null;
+        }
+        if(lang == null) {
+            lang = PropertyUtil.getDefaultLanguage();
+        }
+        JSONObject langJson = localeJSON.optJSONObject(lang);
+        if(langJson == null) {
+            // try with default language
+            langJson = localeJSON.optJSONObject(PropertyUtil.getDefaultLanguage());
+        }
+        if(langJson == null) {
+            // nothing to use as name
+            return null;
+        }
+        return langJson.optString("name");
     }
 
     public void setLocale(String locale) {

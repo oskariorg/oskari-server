@@ -29,17 +29,61 @@ import java.util.Map;
 public class StatisticalDatasourcePluginManager {
     private static final Logger LOG = LogFactory.getLogger(StatisticalDatasourcePluginManager.class);
 
+    private static StatisticalDatasourcePluginManager instance = null;
     /**
      * We are using a static plugin store, because we don't have a IoC container (e.g. Spring) here yet.
      * This is in any case a singleton, this is making it explicit.
      */
     private static final Map<Long, StatisticalDatasourcePlugin> plugins = new HashMap<>();
-    /**
-     * Localizations with "name" keys for plugin data sources to show to users in the frontend.
-     */
+
+    // The collection of registered plugins.
+    public Map<Long, StatisticalDatasourcePlugin> getPlugins() {
+        return plugins;
+    }
+
+    public StatisticalDatasourcePlugin getPlugin(long id) {
+        return plugins.get(id);
+    }
+
+    // Localizations with "name" keys for plugin data sources to show to users in the frontend.
     private static final Map<Long, JSONLocalizedName> dataSourceLocales = new HashMap<>();
 
     private List<StatisticalDatasource> statisticalDatasources;
+
+    public static StatisticalDatasourcePluginManager getInstance() {
+        if(instance == null) {
+            instance = new StatisticalDatasourcePluginManager();
+            instance.init();
+        }
+        return instance;
+    }
+
+    private StatisticalDatasourcePluginManager() {}
+
+    /**
+     * Used for tests.
+     */
+    public void reset() {
+        plugins.clear();
+    }
+
+    public void init() {
+        statisticalDatasources = getDatasources();
+        Map<String, OskariComponent> allPlugins = OskariComponentManager.getComponentsOfType(StatisticalDatasourceFactory.class);
+
+        for (StatisticalDatasource source : statisticalDatasources) {
+            LOG.info("Adding plugin from database: ", source);
+            try {
+                OskariComponent plugin = allPlugins.get(source.getPlugin());
+                if (plugin == null) {
+                    throw new ClassNotFoundException("Annotation @Oskari(\"" + source.getPlugin() + "\") not found!");
+                }
+                this.registerDatasource(source, (StatisticalDatasourceFactory) plugin);
+            } catch (ClassNotFoundException e) {
+                LOG.error("Could not find the plugin class: " + source.getPlugin() + ". Skipping...");
+            }
+        }
+    }
 
     /**
      * Use this method to register plugins as data sources.
@@ -57,46 +101,7 @@ public class StatisticalDatasourcePluginManager {
         dataSourceLocales.put(source.getId(), loc);
     }
 
-    /**
-     * @return The collection of registered plugins.
-     */
-    public Map<Long, StatisticalDatasourcePlugin> getPlugins() {
-        return plugins;
-    }
-
-    /**
-     * @return One plugin.
-     */
-    public StatisticalDatasourcePlugin getPlugin(long id) {
-        return plugins.get(id);
-    }
-
-    /**
-     * Used for tests.
-     */
-    public void reset() {
-        plugins.clear();
-    }
-
-    public void init() {
-        statisticalDatasources = loadStatisticalDatasources();
-        Map<String, OskariComponent> allPlugins = OskariComponentManager.getComponentsOfType(StatisticalDatasourceFactory.class);
-
-        for (StatisticalDatasource source : statisticalDatasources) {
-            LOG.info("Adding plugin from database: ", source);
-            try {
-                OskariComponent plugin = allPlugins.get(source.getPlugin());
-                if (plugin == null) {
-                    throw new ClassNotFoundException("Annotation @Oskari(\"" + source.getPlugin() + "\") not found!");
-                }
-                this.registerDatasource(source, (StatisticalDatasourceFactory) plugin);
-            } catch (ClassNotFoundException e) {
-                LOG.error("Could not find the plugin class: " + source.getPlugin() + ". Skipping...");
-            }
-        }
-    }
-
-    private List<StatisticalDatasource> loadStatisticalDatasources() {
+    public List<StatisticalDatasource> getDatasources() {
         // Fetching the plugins from the database.
         final DatasourceHelper helper = DatasourceHelper.getInstance();
         final DataSource dataSource = helper.getDataSource(helper.getOskariDataSourceName());

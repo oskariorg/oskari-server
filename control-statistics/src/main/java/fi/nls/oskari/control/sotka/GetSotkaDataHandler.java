@@ -72,8 +72,8 @@ public class GetSotkaDataHandler extends ActionHandler {
 
         // Sotkanet action must be in params
     	printParameters(params.getRequest());
-    	
-    	
+
+
         final SotkaRequest req = SotkaRequest.getInstance(params.getRequiredParam(PARM_ACTION));
         req.setGender(params.getHttpParam(PARM_GENDERS, ""));
         req.setVersion(params.getHttpParam(PARM_VERSION, "1.1"));
