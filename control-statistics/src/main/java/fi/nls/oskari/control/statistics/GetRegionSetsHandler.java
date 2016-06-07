@@ -26,6 +26,7 @@ import java.util.List;
  *     "url": " http://localhost:8080/geoserver"
  *   }
  * }
+ * @deprecated - these should be detected in frontend by layers of type statslayer
  */
 @OskariActionRoute("GetRegionSets")
 public class GetRegionSetsHandler extends ActionHandler {

@@ -9,6 +9,7 @@ import fi.nls.oskari.view.modifier.ModifierException;
 import fi.nls.oskari.view.modifier.ModifierParams;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import static fi.nls.oskari.control.ActionConstants.*;
 
 import java.util.List;
 
@@ -35,9 +36,6 @@ import java.util.List;
 public class StatsgridHandler extends BundleHandler {
 
     private static final String KEY_DATASOURCES = "sources";
-    private static final String KEY_ID = "id";
-    private static final String KEY_NAME = "name";
-    private static final String KEY_TYPE = "type";
 
     private static final StatisticalDatasourcePluginManager pluginManager = StatisticalDatasourcePluginManager.getInstance();
 
