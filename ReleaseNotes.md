@@ -6,6 +6,18 @@
 
 SLD Style setup and management is added for wfs layers (versions 1.1.0 and 2.0.0) in admin layer selector.
 
+### control-example/GetArticlesByTag action route
+
+Previously removed retried files by removing _ in names other than the last tag
+
+- termsofuse__mappublication__en.html
+- termsofuse_mappublication.html
+
+Fixed to work as intended
+
+- termsofuse__mappublication__en.html
+- termsofuse__mappublication.html
+
 ## 1.36.2
 
 ### Database migration

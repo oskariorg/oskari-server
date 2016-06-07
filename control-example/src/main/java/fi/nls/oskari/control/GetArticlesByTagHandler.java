@@ -76,7 +76,7 @@ public class GetArticlesByTagHandler extends ActionHandler {
             return getMissingContentNote(originalTags);
         }
         // remove the last tag
-        final String newTags = StringUtils.join(Arrays.copyOf(tags, tags.length-1));
+        final String newTags = StringUtils.join(Arrays.copyOf(tags, tags.length-1), ",");
         JSONObject articleContent = getContent(newTags);
         while (articleContent == null) {
             articleContent = tryContentWithLessTags(originalTags, newTags);
