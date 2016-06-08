@@ -30,6 +30,7 @@ public class JobHelper {
     private static String SERVICE_URL_QUERYSTRING = null;
     private static String SESSION_COOKIE_NAME = PropertyUtil.get("oskari.cookie.session", "JSESSIONID") + "=";
     public static final String PARAM_MANUAL_REFRESH = "manualRefresh";
+    public static final String PARAM_CASCADING = "cascading";
 
     // COOKIE
     public static final String ROUTE_COOKIE_NAME = PropertyUtil.get("oskari.cookie.route", "ROUTEID") + "=";

@@ -222,7 +222,7 @@ public class GetGtWFSCapabilities {
                         if (otherSrsval.length > 0) {
                             tmpft.setOtherSrs(otherSrsval);
                         }
-                        // Try to parse describe feature type response of wfs 2.0.0 service at least namespaceUri
+                        // Try to parse describe feature type response of wfs 2.0.0 service at least namespaceUri and geometry property
                         parseWfs2xDescribeFeatureType(tmpft, IOHelper.getURL(getDescribeFeatureTypeUrl(rurl, version, nameval), user, pw));
                         // Append parser type to title
                         parserConfigType2Title(feaconf, tmpft, parseConfigs);
@@ -703,6 +703,9 @@ public class GetGtWFSCapabilities {
             if (featype.getNsUri() != null) {
                 lc.setFeatureNamespaceURI(featype.getNsUri());
             }
+            if (featype.getGeomPropertyName() != null) {
+                lc.setGMLGeometryProperty(featype.getGeomPropertyName());
+            }
 
             lc.setFeatureElement(name);
             // WFS 2.0 parser items
@@ -877,6 +880,41 @@ public class GetGtWFSCapabilities {
 
             if (nsuri != null) {
                 ft.setNsUri(nsuri);
+            }
+            // Try to find Geometry property name
+            // Get Elements
+            NodeList elements = doc.getDocumentElement().getElementsByTagName("xs:element");
+            if (elements.getLength() == 0) {
+                elements = doc.getDocumentElement().getElementsByTagName("xsd:element");
+            }
+            if (elements.getLength() == 0) {
+                elements = doc.getDocumentElement().getElementsByTagName("element");
+            }
+            if (elements.getLength() == 0) {
+                elements = doc.getDocumentElement().getElementsByTagNameNS(null, "element");
+            }
+            // Loop elements for to get geometry property name - some services response has flat featuretype data or
+            // some services returns a set of .xsd files
+            Boolean found = false;
+            for (int i = 0; i < elements.getLength(); i++) {
+
+                Node node = elements.item(i);
+                if (node instanceof Element) {
+                    Element elem = (Element) elements.item(i);
+                    String type = elem.getAttribute("type");
+                    String name = elem.getAttribute("name");
+                    if (ft.getName().split(":")[ft.getName().split(":").length-1].equals(name)) {
+                        found = true;
+                    }
+                    //is geom property
+                    if (GEOMTYPES.contains(type) && found == true) {
+                        ft.setGeomPropertyName(elem.getAttribute("name"));
+                        break;
+
+
+                    }
+                }
+
             }
 
         } catch (Exception ex) {
