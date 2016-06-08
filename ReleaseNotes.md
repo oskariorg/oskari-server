@@ -6,6 +6,16 @@
 
 SLD Style setup and management is added for wfs layers (versions 1.1.0 and 2.0.0) in admin layer selector.
 
+### transport && control-base
+
+**WFS 2.0.0  / Feature engine**
+
+Feature highlighting is now supported for wfs 2.0.0 layers.
+
+{"cascading":true} setup is optionally available in oskari_maplayer attributes-column for wfs 2.0.0 layers.
+ 
+ (In this case bbox filter is used in MapClick / GetFeature request. Use this septup, if service doesn't support intersect filter.)
+
 ### control-example/GetArticlesByTag action route
 
 Previously removed retried files by removing _ in names other than the last tag
