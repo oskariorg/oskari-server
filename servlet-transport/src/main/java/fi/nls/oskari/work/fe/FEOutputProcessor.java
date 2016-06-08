@@ -42,13 +42,15 @@ public class FEOutputProcessor implements OutputProcessor {
     final Map<Resource, Integer> selectedPropertiesIndex;
 
     final MathTransform transform;
+    final String geomProp;
 
     public FEOutputProcessor(final ArrayList<List<Object>> list,
             final Map<Resource, SimpleFeatureCollection> responseCollections,
             CoordinateReferenceSystem crs, FERequestResponse requestResponse,
             ArrayList<String> selectedProperties,
             Map<Resource, Integer> selectedPropertiesIndex,
-            MathTransform transform) {
+            MathTransform transform,
+            String geomProp) {
         this.list = list;
         this.responseCollections = responseCollections;
         this.crs = crs;
@@ -56,6 +58,7 @@ public class FEOutputProcessor implements OutputProcessor {
         this.selectedProperties = selectedProperties;
         this.selectedPropertiesIndex = selectedPropertiesIndex;
         this.transform = transform;
+        this.geomProp = geomProp;
     }
 
     public void begin() throws IOException {
@@ -99,7 +102,7 @@ public class FEOutputProcessor implements OutputProcessor {
 
             ftb.setCRS(crs); // set crs first
             // then add geometry
-            ftb.add("geometry", Geometry.class, crs);
+            ftb.add(this.geomProp, Geometry.class, crs);
 
             // Add other properties
             if (selectedProperties != null && selectedProperties.size() > 0) {
@@ -225,7 +228,7 @@ public class FEOutputProcessor implements OutputProcessor {
 
             }
 
-            SimpleFeature f = sfb.buildFeature(iri.toString());
+            SimpleFeature f = sfb.buildFeature(iri.getUuid());
 
             sfc.add(f);
 
@@ -246,7 +249,7 @@ public class FEOutputProcessor implements OutputProcessor {
             for (String field : selectedProperties) {
                 props.add(null);
             }
-            props.set(0, iri.toString());
+            props.set(0, iri.getUuid());  //Use local part for id
             for (Pair<Resource, ?> pair : simpleProperties) {
                 Integer keyIndex = selectedPropertiesIndex.get(pair.getKey());
                 if (keyIndex == null) {
