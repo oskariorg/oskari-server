@@ -26,6 +26,7 @@ public interface ActionConstants {
     String KEY_NAME = "name";
     String KEY_URL = "url";
     String KEY_ID = PARAM_ID;
+    String KEY_TYPE = "type";
     String KEY_UUID = PARAM_UUID;
     String KEY_USER = "user";
     String KEY_LANG = "lang";

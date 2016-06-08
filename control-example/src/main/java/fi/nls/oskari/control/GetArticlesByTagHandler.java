@@ -7,11 +7,13 @@ import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.util.ResponseHelper;
+import org.apache.commons.lang.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.File;
 import java.io.InputStream;
+import java.util.Arrays;
 
 /**
  * Example route handling CMS integration.
@@ -49,12 +51,10 @@ public class GetArticlesByTagHandler extends ActionHandler {
 
         log.debug("Getting articles for language:", lang, "with tags:", commaSeparatedTags);
         JSONObject articleContent = getContent(commaSeparatedTags);
-        // create dummy content since content files are not provided for these tags
         if(articleContent == null) {
-            articleContent = JSONHelper.createJSONObject("static", "[no cms, dummy content]");
-            JSONHelper.putValue(articleContent, KEY_TITLE, "[title]");
-            JSONHelper.putValue(articleContent, KEY_BODY, "[body from GetArticlesByTag action route with tags: '" + commaSeparatedTags + "']");
+            articleContent = tryContentWithLessTags(commaSeparatedTags, commaSeparatedTags);
         }
+
         final JSONArray articles = new JSONArray();
 
         JSONObject articleJson = new JSONObject();
@@ -67,6 +67,31 @@ public class GetArticlesByTagHandler extends ActionHandler {
         ResponseHelper.writeResponse(params, response);
     }
 
+    public JSONObject tryContentWithLessTags(String originalTags, String commaSeparatedTags) {
+        if(commaSeparatedTags == null) {
+            return getMissingContentNote(originalTags);
+        }
+        String[] tags = commaSeparatedTags.split(",");
+        if(tags.length == 1) {
+            return getMissingContentNote(originalTags);
+        }
+        // remove the last tag
+        final String newTags = StringUtils.join(Arrays.copyOf(tags, tags.length-1), ",");
+        JSONObject articleContent = getContent(newTags);
+        while (articleContent == null) {
+            articleContent = tryContentWithLessTags(originalTags, newTags);
+        }
+        return articleContent;
+    }
+
+    // create dummy content since content files are not provided for these tags
+    private JSONObject getMissingContentNote(String tags) {
+        JSONObject articleContent = JSONHelper.createJSONObject("static", "[no cms, dummy content]");
+        JSONHelper.putValue(articleContent, KEY_TITLE, "[title]");
+        JSONHelper.putValue(articleContent, KEY_BODY, "[body from GetArticlesByTag action route with tags: '" + tags + "']");
+        return articleContent;
+    }
+
     protected JSONObject getContent(final String commaSeparatedTags) {
 
         final String fileName = commaSeparatedTags
@@ -77,14 +102,15 @@ public class GetArticlesByTagHandler extends ActionHandler {
                 .replace('\\', '_');
         final String htmlContent = readInputFile(fileName + ".html");
         if(htmlContent != null) {
-            log.debug("Found HTML-file");
+            log.debug("Found HTML-file with tags", commaSeparatedTags);
             return JSONHelper.createJSONObject("body", htmlContent);
         }
         final String jsonContent = readInputFile(fileName + ".json");
         if(jsonContent != null) {
-            log.debug("Found JSON-file");
+            log.debug("Found JSON-file with tags", commaSeparatedTags);
             return JSONHelper.createJSONObject(jsonContent);
         }
+        log.debug("Didn't find content for tags:", commaSeparatedTags);
         return null;
     }
 

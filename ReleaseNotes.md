@@ -6,10 +6,49 @@
 
 SLD Style setup and management is added for wfs layers (versions 1.1.0 and 2.0.0) in admin layer selector.
 
+### control-example/GetArticlesByTag action route
+
+Previously removed retried files by removing _ in names other than the last tag
+
+- termsofuse__mappublication__en.html
+- termsofuse_mappublication.html
+
+Fixed to work as intended
+
+- termsofuse__mappublication__en.html
+- termsofuse__mappublication.html
+
+## 1.36.2
+
+### Database migration
+
+Restrict oskari_maplayer and oskari_capabilities_cache tables version column to not null and default to empty string.
+Cleanup any cached capabilities with null version (there might be many, this is the main reason for the hotfix).
+
+### control-example/GetArticlesByTag action route
+
+Now tries to locate "articles"/content by reducing tags if the exact match doesn't get a hit.
+
+For example with default settings a call to /action?action_route=GetArticlesByTag&tags=termsofuse%2C+mappublication%2C+en
+tries to locate page under articlesByTag folder with filenames in the following order:
+
+- termsofuse__mappublication__en.html
+- termsofuse__mappublication__en.json
+- termsofuse__mappublication.html
+- termsofuse__mappublication.json
+- termsofuse.html
+- termsofuse.json
+
+The first one matching is returned and if none of these are found a message telling to add a file under articlesByTag is displayed.  
+
 ### control-base / GetWSCapabilities action route
 
 Cached capabilities might be faulty in the database. The GetWSCapabilities action route now tries to fetch capabilities
 from the service in such case.
+
+### service-csw
+ 
+Added errorhandling for missing dates on CSW response.
 
 ## 1.36.1
 

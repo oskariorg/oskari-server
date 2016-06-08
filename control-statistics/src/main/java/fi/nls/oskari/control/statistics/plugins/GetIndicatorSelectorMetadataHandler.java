@@ -37,13 +37,8 @@ public class GetIndicatorSelectorMetadataHandler extends ActionHandler {
      * For now, this uses pretty much static global store for the plugins.
      * In the future it might make sense to inject the pluginManager references to different controllers using DI.
      */
-    private static final StatisticalDatasourcePluginManager pluginManager = new StatisticalDatasourcePluginManager();
+    private static final StatisticalDatasourcePluginManager pluginManager = StatisticalDatasourcePluginManager.getInstance();
 
-    @Override
-    public void init() {
-        pluginManager.init();
-    }
-    
     @Override
     public void handleAction(ActionParameters ap) throws ActionException {
         final long pluginId = ap.getRequiredParamInt(PARAM_PLUGIN_ID);
