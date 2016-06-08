@@ -521,12 +521,6 @@ public class FEMapLayerJob extends OWSMapLayerJob {
     }
 
     @Override
-    public boolean runHighlightJob() {
-        // FE can't handle highlights
-        return true;
-    }
-
-    @Override
     public boolean runPropertyFilterJob() {
         return runUnknownJob();
     }
