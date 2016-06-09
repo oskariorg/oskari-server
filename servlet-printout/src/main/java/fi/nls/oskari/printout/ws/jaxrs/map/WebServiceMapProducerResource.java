@@ -93,63 +93,6 @@ public class WebServiceMapProducerResource extends MapProducerResource {
     }
 
     /**
-     * gets DOCX map using parameters from JSON spec
-     * 
-     */
-    public StreamingDOCXImpl getGeoJsonMapDOCX(InputStream inp,
-            final Map<String, String> xClientInfo) throws IOException,
-            ParseException, GeoWebCacheException, XMLStreamException,
-            FactoryConfigurationError, RequestFilterException,
-            TransformException, InterruptedException,
-            NoSuchAuthorityCodeException, FactoryException,
-            com.vividsolutions.jts.io.ParseException,
-            org.json.simple.parser.ParseException, URISyntaxException {
-
-        MapProducer producer = fork(xClientInfo);
-
-        TileLayer tileLayer = config.getTileLayer(producer.getTemplateLayer());
-        GridSubset gridSubset = tileLayer.getGridSubset(gridSubsetName);
-
-        MaplinkGeoJsonParser parser = new MaplinkGeoJsonParser();
-        boolean isDebug = ConfigValue.GEOJSON_DEBUG.getConfigProperty(props,
-                "false").equals("true");
-
-        parser.setDebug(isDebug);
-
-        Map<String, ?> root = parser.parse(inp);
-
-        MapLayerJSONParser mapLayerJsonParser = new MapLayerJSONParser(props);
-
-        MapLink mapLink = mapLayerJsonParser.parseMapLinkJSON(root, getGf(),
-                gridSubset.getResolutions());
-
-        Map<String, String> values = mapLink.getValues();
-
-        Options opts = getPageOptions(values);
-        opts.setContent(mapLink.getPrintoutContent());
-
-        if (values.get("PAGESIZE") != null) {
-            Page page = Page.valueOf(values.get("PAGESIZE"));
-            int width = page.getMapWidthTargetInPoints(opts);
-            int height = page.getMapHeightTargetInPoints(opts);
-            values.put("WIDTH", Integer.toString(width, 10));
-            values.put("HEIGHT", Integer.toString(height, 10));
-            mapLink.setWidth(width);
-            mapLink.setHeight(height);
-        } else {
-            mapLink.setWidth(Integer.valueOf(values.get("WIDTH"), 10));
-            mapLink.setHeight(Integer.valueOf(values.get("HEIGHT"), 10));
-        }
-
-        mapLayerJsonParser.getMapLinkParser().validate(mapLink);
-
-        StreamingDOCXImpl result = new StreamingDOCXImpl(producer, mapLink);
-
-        result.underflow();
-        return result;
-    }
-
-    /**
      * gets PDF map using parameters from JSON spec
      * 
      */
@@ -279,61 +222,6 @@ public class WebServiceMapProducerResource extends MapProducerResource {
         StreamingPNGImpl result = new StreamingPNGImpl(producer, mapLink);
         result.underflow();
 
-        return result;
-    }
-
-    /**
-     * gets PPTX map using parameters from JSON spec
-     * 
-     */
-    public StreamingPPTXImpl getGeoJsonMapPPTX(InputStream inp,
-            final Map<String, String> xClientInfo) throws IOException,
-            ParseException, GeoWebCacheException, XMLStreamException,
-            FactoryConfigurationError, RequestFilterException,
-            TransformException, InterruptedException,
-            NoSuchAuthorityCodeException, FactoryException,
-            com.vividsolutions.jts.io.ParseException,
-            org.json.simple.parser.ParseException, URISyntaxException {
-        MapProducer producer = fork(xClientInfo);
-        TileLayer tileLayer = config.getTileLayer(producer.getTemplateLayer());
-        GridSubset gridSubset = tileLayer.getGridSubset(gridSubsetName);
-        MaplinkGeoJsonParser parser = new MaplinkGeoJsonParser();
-        boolean isDebug = ConfigValue.GEOJSON_DEBUG.getConfigProperty(props,
-                "false").equals("true");
-
-        parser.setDebug(isDebug);
-
-        Map<String, ?> root = parser.parse(inp);
-
-        MapLayerJSONParser mapLayerJsonParser = new MapLayerJSONParser(props);
-
-        MapLink mapLink = mapLayerJsonParser.parseMapLinkJSON(root, getGf(),
-                gridSubset.getResolutions());
-
-        Map<String, String> values = mapLink.getValues();
-        Options opts = getPageOptions(values);
-        opts.setContent(mapLink.getPrintoutContent());
-
-        if (values.get("PAGESIZE") != null) {
-            Page page = Page.valueOf(values.get("PAGESIZE"));
-
-            int width = page.getMapWidthTargetInPoints(opts);
-            int height = page.getMapHeightTargetInPoints(opts);
-
-            values.put("WIDTH", Integer.toString(width, 10));
-            values.put("HEIGHT", Integer.toString(height, 10));
-            mapLink.setWidth(width);
-            mapLink.setHeight(height);
-        } else {
-            mapLink.setWidth(Integer.valueOf(values.get("WIDTH"), 10));
-            mapLink.setHeight(Integer.valueOf(values.get("HEIGHT"), 10));
-        }
-
-        mapLayerJsonParser.getMapLinkParser().validate(mapLink);
-
-        StreamingPPTXImpl result = new StreamingPPTXImpl(producer, mapLink);
-
-        result.underflow();
         return result;
     }
 
@@ -644,52 +532,6 @@ public class WebServiceMapProducerResource extends MapProducerResource {
     }
 
     /**
-     * gets snapshot PPTX using values from JAX-RS GET request
-     * 
-     */
-    public StreamingOutput getMapPPTX(Map<String, String> values,
-            final Map<String, String> xClientInfo)
-            throws NoSuchAuthorityCodeException, IOException,
-            GeoWebCacheException, FactoryException,
-            com.vividsolutions.jts.io.ParseException, ParseException,
-            XMLStreamException, FactoryConfigurationError,
-            RequestFilterException, TransformException, URISyntaxException {
-
-        MapProducer producer = fork(xClientInfo);
-        TileLayer tileLayer = config.getTileLayer(producer.getTemplateLayer());
-        GridSubset gridSubset = tileLayer.getGridSubset(gridSubsetName);
-        Page page = Page.valueOf(values.get("PAGESIZE"));
-        String scaleResolverId = ConfigValue.SCALE_RESOLVER.getConfigProperty(
-                props, "m_ol212");
-        MapLinkParser mapLinkParser = new MapLinkParser(
-                MetricScaleResolutionUtils.getScaleResolver(scaleResolverId),
-                producer.getZoomOffset());
-
-        MapLink mapLink = mapLinkParser.parseValueMapLink(values, layerJson,
-                gf, gridSubset.getResolutions());
-
-        Options opts = getPageOptions(values);
-        opts.setContent(mapLink.getPrintoutContent());
-
-        int width = page.getMapWidthTargetInPoints(opts);
-        int height = page.getMapHeightTargetInPoints(opts);
-
-        values.put("WIDTH", Integer.toString(width, 10));
-        values.put("HEIGHT", Integer.toString(height, 10));
-        mapLink.getValues().putAll(values);
-        mapLink.setWidth(width);
-        mapLink.setHeight(height);
-
-        mapLinkParser.validate(mapLink);
-
-        StreamingPPTXImpl result = new StreamingPPTXImpl(producer, mapLink);
-
-        result.underflow();
-        return result;
-
-    }
-
-    /**
      * maps request parameters to PDF parameters
      * 
      * @param values
@@ -723,5 +565,4 @@ public class WebServiceMapProducerResource extends MapProducerResource {
 
         return pageOptions;
     }
-
 }
