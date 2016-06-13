@@ -13,7 +13,7 @@
 
 	<properties>
 		<titan.version>0.4.2</titan.version>
-		<groovy.version>2.2.2</groovy.version>
+		<groovy.version>2.4.6</groovy.version>
 	</properties>
 
 	<build>

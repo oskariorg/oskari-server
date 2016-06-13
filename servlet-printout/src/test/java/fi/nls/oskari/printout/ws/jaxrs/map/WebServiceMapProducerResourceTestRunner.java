@@ -73,15 +73,15 @@ public class WebServiceMapProducerResourceTestRunner {
                     throw new IOException("Invalid args for PDF test");
                 }
                 break;
-            case PPTX:
-                switch (input) {
-                case GEOJSON:
-                    result = resource.getGeoJsonMapPPTX(inp, xClientInfo);
-                    break;
-                default:
-                    throw new IOException("Invalid args for PPTX test");
-                }
-                break;
+//            case PPTX:
+//                switch (input) {
+//                case GEOJSON:
+//                    result = resource.getGeoJsonMapPPTX(inp, xClientInfo);
+//                    break;
+//                default:
+//                    throw new IOException("Invalid args for PPTX test");
+//                }
+//                break;
             default:
                 throw new IOException("Invalid args for test");
             }

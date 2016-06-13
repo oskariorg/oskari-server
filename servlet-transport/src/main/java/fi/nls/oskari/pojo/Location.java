@@ -263,6 +263,25 @@ public class Location {
         return this.envelope;
     }
 
+    /**
+     * Creates envelope of the location with crs ignored
+     *
+     * @return envelope
+     */
+    @JsonIgnore
+    public ReferencedEnvelope getEnvelopeForMapNoCrs() {
+
+
+            return new ReferencedEnvelope(
+                    this.getLeft(), // x1
+                    this.getRight(), // x2
+                    this.getBottom(), // y1
+                    this.getTop(), // y2
+                    null
+            );
+
+    }
+
 	/**
 	 * Transforms envelope to target CRS
 	 *

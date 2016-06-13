@@ -294,39 +294,7 @@ public class MapResource {
 
         return result;
     };
-
-    /**
-     * 
-     * Input: Input is a JSON document describing contents of the map document
-     * to be generated * Output: This outputs PNG image with anchored down map
-     * image layers combined with opacities to resulting PNG image embedded
-     * within PPTX slideshow.
-     * 
-     */
-    @GET
-    @Path("service/thumbnail/maplink.pptx")
-    @Produces("application/vnd.openxmlformats-officedocument.presentationml.presentation")
-    public StreamingOutput getSnapshotPPTX(@Context UriInfo ui)
-            throws IOException {
-        StreamingOutput result = null;
-        try {
-            final MultivaluedMap<String, String> queryParams = ui
-                    .getQueryParameters();
-            final Map<String, String> values = getParameterMap(queryParams);
-
-            final WebServiceMapProducerResource getmap = SharedMapProducerResource
-                    .acquire();
-
-            result = getmap.getMapPPTX(values,
-                    getXClientInfo(getmap.getProps()));
-        } catch (Exception e) {
-            throw new IOException(e);
-        }
-
-        return result;
-
-    }
-
+    
     protected Map<String, String> getXClientInfo(final Properties props) {
 
         final Map<String, String> xClientInfo = new HashMap<String, String>();

@@ -226,7 +226,7 @@ public class FEMapLayerJob extends OWSMapLayerJob {
 
             final OutputProcessor outputProcessor = new FEOutputProcessor(
                     resultsList, responseCollections, crs, requestResponse,
-                    selectedProperties, selectedPropertiesIndex, transform);
+                    selectedProperties, selectedPropertiesIndex, transform, geomProp);
 
             /* Backend HTTP URI info */
             FEUrl backendUrlInfo = getBackendURL(urlTemplate);
@@ -518,12 +518,6 @@ public class FEMapLayerJob extends OWSMapLayerJob {
                 .getResponse().get(
                         ((FERequestResponse) requestResponse).getFeatureIri());
         return responseFeatures;
-    }
-
-    @Override
-    public boolean runHighlightJob() {
-        // FE can't handle highlights
-        return true;
     }
 
     @Override
