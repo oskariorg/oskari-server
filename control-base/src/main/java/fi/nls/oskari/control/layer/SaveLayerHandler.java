@@ -280,7 +280,7 @@ public class SaveLayerHandler extends ActionHandler {
         InspireTheme theme = inspireThemeService.find(params.getHttpParam("inspireTheme", -1));
         ml.addInspireTheme(theme);
 
-        ml.setVersion(params.getHttpParam("version"));
+        ml.setVersion(params.getHttpParam("version", ""));
 
         ml.setBaseMap(ConversionHelper.getBoolean(params.getHttpParam("isBase"), false));
 
