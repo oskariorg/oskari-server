@@ -55,7 +55,7 @@ public class MapfullHandler extends BundleHandler {
     private static final String KEY_MAP_OPTIONS = "mapOptions";
     private static final String KEY_PROJ_DEFS = "projectionDefs";
     private static final String KEY_SRS = "srsName";
-    private static final String KEY_SVG_MARKERS = "svgMarkers";
+
 
     private static final String KEY_PLUGINS = "plugins";
     public static final String KEY_CONFIG = "config";
@@ -69,7 +69,7 @@ public class MapfullHandler extends BundleHandler {
     private static final String PLUGIN_GEOLOCATION = "Oskari.mapframework.bundle.mapmodule.plugin.GeoLocationPlugin";
     public static final String PLUGIN_SEARCH = "Oskari.mapframework.bundle.mapmodule.plugin.SearchPlugin";
     public static final String EPSG_PROJ4_FORMATS = "epsg_proj4_formats.json";
-    public static final String SVG_MARKERS_JSON = "svg-markers.json";
+
 
     private static MyPlacesService myPlaceService = null;
     private static final AnalysisDbService analysisService = new AnalysisDbServiceIbatisImpl();
@@ -137,7 +137,6 @@ public class MapfullHandler extends BundleHandler {
             OskariLayerWorker.transformWKTGeom(fullConfigLayers.optJSONObject(i), mapSRS);
         }
         setProjDefsForMapConfig(mapfullConfig, mapSRS);
-        setSvgMarkersForMapConfig(mapfullConfig);
         // overwrite layers
         try {
             mapfullConfig.put(KEY_LAYERS, fullConfigLayers);
@@ -218,18 +217,6 @@ public class MapfullHandler extends BundleHandler {
             }
             JSONHelper.putValue(defs, mapSRS, mapSRSProjDef);
         }
-    }
-
-    public void setSvgMarkersForMapConfig(final JSONObject mapfullConfig) {
-        if (mapfullConfig == null) {
-            return;
-        }
-
-        JSONArray markers = JSONHelper.getJSONArray(mapfullConfig, KEY_SVG_MARKERS);
-        if(markers == null || markers.length() == 0) {
-            JSONHelper.putValue(mapfullConfig, KEY_SVG_MARKERS, svgMarkers);
-        }
-
     }
 
     public String getMapSRSProjDef(final String mapSRS) {
@@ -585,13 +572,6 @@ public class MapfullHandler extends BundleHandler {
     }
 
     void svgInit(){
-        try {
-            InputStream inp = MapfullHandler.class.getResourceAsStream(SVG_MARKERS_JSON);
-            if (inp != null) {
-                this.svgMarkers = JSONHelper.createJSONArray(IOUtils.toString(inp, "UTF-8") );
-            }
-        } catch (Exception e) {
-            LOGGER.info("No setup for svg markers found", e);
-        }
+
     }
 }

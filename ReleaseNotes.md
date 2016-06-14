@@ -2,6 +2,10 @@
 
 ## 1.37
 
+### GetAppSetup
+
+AppSetup now includes markers for the env properties.
+
 ### service-map
 
 SLD Style setup and management is added for wfs layers (versions 1.1.0 and 2.0.0) in admin layer selector.
