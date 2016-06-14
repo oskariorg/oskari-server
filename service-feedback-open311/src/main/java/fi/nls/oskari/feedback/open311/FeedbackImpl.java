@@ -13,6 +13,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
+import java.net.HttpURLConnection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -30,6 +32,7 @@ public class FeedbackImpl implements FeedbackService {
     static final String KEY_GETFEEDBACK = "getFeedback";
     static final String PARAM_API_KEY = "api_key=";
     static final String PARAM_POST_CONTENTTYPE = "application/x-www-form-urlencoded; charset=utf-8";
+    private static final String HEADER_CONTENT_TYPE = "Content-Type";
 
     private static final String PARAM_GEOJSON_FEATURES = "features";
     private static final String PARAM_GEOJSON_TYPE = "type";
@@ -88,7 +91,7 @@ public class FeedbackImpl implements FeedbackService {
             final Map<String, String> headers = new HashMap<String, String>();
             headers.put("Accecpt", "application/json");
 
-            resultString = IOHelper.getURL(requestUrl, headers, "UTF-8");
+            resultString = getURLResponse(requestUrl, headers);
             resultArr = JSONHelper.createJSONArray(resultString);
             JSONHelper.putValue(result, KEY_SERVICELIST, resultArr);
         } catch (Exception e) {
@@ -114,7 +117,7 @@ public class FeedbackImpl implements FeedbackService {
         try {
             final Map<String, String> headers = new HashMap<String, String>();
             headers.put("Accecpt", "application/json");
-            resultString = IOHelper.getURL(requestUrl, headers, "UTF-8");
+            resultString = getURLResponse(requestUrl, headers);
             result = JSONHelper.createJSONObject(KEY_SERVICEDEFINITION, JSONHelper.createJSONObject(resultString));
         } catch (Exception e) {
             log.debug("Open311 service definition request failed", e);
@@ -142,8 +145,18 @@ public class FeedbackImpl implements FeedbackService {
         String requestData = parsePostFeedbackPostData(params);
 
         try {
-            resultString = IOHelper.httpRequestAction(requestUrl, requestData,
-                    null, null, null, null, PARAM_POST_CONTENTTYPE);
+            final HttpURLConnection con = IOHelper.getConnection(requestUrl);
+            //IOHelper.trustAllCerts(con);
+            //IOHelper.trustAllHosts(con);
+            con.setRequestMethod("POST");
+            con.setDoOutput(true);
+            con.setDoInput(true);
+            HttpURLConnection.setFollowRedirects(false);
+            con.setUseCaches(false);
+            con.setRequestProperty(HEADER_CONTENT_TYPE, PARAM_POST_CONTENTTYPE);
+            IOHelper.writeToConnection(con, requestData);
+            resultString = IOHelper.readString(con);
+
             JSONArray resultArr = JSONHelper.createJSONArray(resultString);
             JSONHelper.putValue(result, KEY_POSTFEEDBACK, resultArr);
         } catch (Exception e) {
@@ -169,7 +182,7 @@ public class FeedbackImpl implements FeedbackService {
             final Map<String, String> headers = new HashMap<String, String>();
             headers.put("Accecpt", "application/json");
 
-            resultString = IOHelper.getURL(requestUrl, headers, "UTF-8");
+            resultString = getURLResponse(requestUrl, headers);
 
             JSONArray resultArr = JSONHelper.createJSONArray(resultString);
             JSONObject geojsFeatures = parseFeatureCollection(resultArr, params);
@@ -354,5 +367,17 @@ public class FeedbackImpl implements FeedbackService {
         }
 
         return coordinates;
+    }
+    private String getURLResponse(String url, Map<String, String> headers) {
+        try {
+        final HttpURLConnection con = IOHelper.getConnection(url);
+        //IOHelper.trustAllCerts(con);
+        //IOHelper.trustAllHosts(con);
+        IOHelper.writeHeaders(con, headers);
+        return IOHelper.readString(con.getInputStream(), "UTF-8");
+    } catch (IOException e) {
+        log.error("can't get Open311 feedback response: " + e.getMessage());
+    }
+        return null;
     }
 }
