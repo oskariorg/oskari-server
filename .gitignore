@@ -18,3 +18,4 @@ transport.log
 /standalone-jetty/dist/*.jar
 /bin/
 /service-spatineo-monitor/nbproject/
+/control-base/nbproject/
