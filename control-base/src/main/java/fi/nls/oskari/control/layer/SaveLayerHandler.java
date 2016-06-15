@@ -592,7 +592,7 @@ public class SaveLayerHandler extends ActionHandler {
             ml.setAttributes(attributes);
         }
         // Get supported projections
-        Map<String, Object> capa = GetGtWFSCapabilities.getGtDataStoreCapabilities(ml.getUrl(), ml.getVersion(), ml.getUsername(), ml.getPassword());
+        Map<String, Object> capa = GetGtWFSCapabilities.getGtDataStoreCapabilities(ml.getUrl(), ml.getVersion(), ml.getUsername(), ml.getPassword(), ml.getSrs_name());
         ml.setSupportedCRSs(GetGtWFSCapabilities.parseProjections(capa, ml.getVersion(), ml.getName()));
 
     }

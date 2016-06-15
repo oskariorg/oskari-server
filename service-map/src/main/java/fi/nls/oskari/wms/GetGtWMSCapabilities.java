@@ -36,6 +36,7 @@ public class GetGtWMSCapabilities {
     private static final Logger log = LogFactory.getLogger(GetGtWMSCapabilities.class);
     private final static String KEY_GROUPS = "groups";
     private final static String KEY_LAYERS = "layers";
+    private static final String KEY_LAYERS_WITH_REMARKS = "layersWithRemarks";
 
     private final static String GROUP_LAYER_TYPE = "grouplayer";
     private final static LayerJSONFormatterWMS FORMATTER = new LayerJSONFormatterWMS();
@@ -73,7 +74,8 @@ public class GetGtWMSCapabilities {
      * @return
      * @throws ServiceException
      */
-    public static JSONObject getWMSCapabilities(final String rurl, final String user, final String pwd, final String version)
+    public static JSONObject getWMSCapabilities(final String rurl, final String user, final String pwd,
+                                                final String version, final String currentCrs)
             throws ServiceException {
         try {
             /*check url validity*/
@@ -89,7 +91,7 @@ public class GetGtWMSCapabilities {
             String encoding = CapabilitiesCacheService.getEncodingFromXml(capabilitiesXML);
             WMSCapabilities caps = createCapabilities(capabilitiesXML, encoding);
             // caps to json
-            return parseLayer(caps.getLayer(), rurl, caps, capabilitiesXML);
+            return parseLayer(caps.getLayer(), rurl, caps, capabilitiesXML, currentCrs);
         } catch (Exception ex) {
             throw new ServiceException("Couldn't read/get wms capabilities response from url.", ex);
         }
@@ -142,7 +144,7 @@ public class GetGtWMSCapabilities {
      * @param capabilitiesXML The original capabilites XML
      * @throws ServiceException
      */
-    public static JSONObject parseLayer(Layer layer, String rurl, WMSCapabilities caps, String capabilitiesXML)
+    public static JSONObject parseLayer(Layer layer, String rurl, WMSCapabilities caps, String capabilitiesXML, String currentCrs)
             throws ServiceException {
         if (layer == null) {
             return null;
@@ -164,26 +166,30 @@ public class GetGtWMSCapabilities {
                 if (layer.getName() != null && !layer.getName().isEmpty()) {
                     // add self to layers if we have a wmsName so
                     // the group node layers are selectable as well on frontend
-                    final JSONObject self = layerToOskariLayerJson(layer, rurl, caps, capabilitiesXML);
+                    final JSONObject self = layerToOskariLayerJson(layer, rurl, caps, capabilitiesXML, currentCrs);
                     JSONHelper.putValue(groupNode, "self", self);
                 }
                 // Loop children
                 for (Iterator ii = layer.getLayerChildren().iterator(); ii.hasNext(); ) {
                     Layer sublayer = (Layer) ii.next();
                     if (sublayer != null) {
-                        final JSONObject child = parseLayer(sublayer, rurl, caps, capabilitiesXML);
+                        final JSONObject child = parseLayer(sublayer, rurl, caps, capabilitiesXML, currentCrs);
                         final String type = child.optString("type");
                         if (GROUP_LAYER_TYPE.equals(type)) {
                             groups.put(child);
                         } else if (OskariLayer.TYPE_WMS.equals(type)) {
                             layers.put(child);
+                            // Simple remark check
+                            if(child.has("title")  && JSONHelper.getStringFromJSON(child,"title","").indexOf("*") > -1){
+                                groupNode.put(KEY_LAYERS_WITH_REMARKS, "true");
+                            }
                         }
                     }
                 }
                 return groupNode;
             } else {
                 // Parse layer to JSON
-                return layerToOskariLayerJson(layer, rurl, caps, capabilitiesXML);
+                return layerToOskariLayerJson(layer, rurl, caps, capabilitiesXML, currentCrs);
             }
         } catch (Exception ex) {
             throw new ServiceException("Couldn't parse wms capabilities layer", ex);
@@ -199,7 +205,8 @@ public class GetGtWMSCapabilities {
      * @return
      * @throws ServiceException
      */
-    public static JSONObject layerToOskariLayerJson(Layer capabilitiesLayer, String rurl, WMSCapabilities caps, String capabilitiesXML)
+    public static JSONObject layerToOskariLayerJson(Layer capabilitiesLayer, String rurl, WMSCapabilities caps, String capabilitiesXML,
+                                                    String currentCrs)
             throws ServiceException {
 
         final OskariLayer oskariLayer = new OskariLayer();
@@ -253,8 +260,14 @@ OnlineResource xlink:type="simple" xlink:href="http://www.paikkatietohakemisto.f
 
             // add/modify admin specific fields
             OskariLayerWorker.modifyCommonFieldsForEditing(json, oskariLayer);
+
+            // Add *, if current map epsg is not supported in the service capabilities for this layer
+            String remark = LayerJSONFormatterWMS.getCRSs(wmsImpl).contains(currentCrs) ? "" : " *";
+
             // for admin ui only
-            JSONHelper.putValue(json, "title", capabilitiesLayer.getTitle());
+            JSONHelper.putValue(json, "title", capabilitiesLayer.getTitle() + remark);
+
+
             // NOTE! Important to remove id since this is at template
             json.remove("id");
             // ---------------
