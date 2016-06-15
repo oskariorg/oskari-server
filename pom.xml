@@ -96,7 +96,7 @@
         <quartz-scheduler.version>2.2.1</quartz-scheduler.version>
 
         <xerces.version>2.10.0</xerces.version>
-        <xmlbeans.version>2.5.0</xmlbeans.version>
+        <xmlbeans.version>2.6.0</xmlbeans.version>
         <geotools.version>14.2</geotools.version>
         <!-- gt-xsd-kml.version>9.3</gt-xsd-kml.version -->
         <flexjson.version>2.0</flexjson.version>
@@ -364,6 +364,11 @@
             <dependency>
                 <groupId>org.springframework.security</groupId>
                 <artifactId>spring-security-config</artifactId>
+                <version>${spring-security.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.security</groupId>
+                <artifactId>spring-security-crypto</artifactId>
                 <version>${spring-security.version}</version>
             </dependency>
 

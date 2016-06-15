@@ -2,6 +2,15 @@
 
 ## 1.37
 
+### service-users
+
+When using the DatabaseUserService for user management the user password is now encrypted with bcrypt instead of MD5.
+Both are supported for logging in, but new passwords are saved using bcrypt.
+
+### GetAppSetup
+
+AppSetup now includes markers for the env properties.
+
 ### service-map
 
 SLD Style setup and management is added for wfs layers (versions 1.1.0 and 2.0.0) in admin layer selector.
