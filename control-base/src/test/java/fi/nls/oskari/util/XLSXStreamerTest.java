@@ -3,20 +3,14 @@ package fi.nls.oskari.util;
 import java.io.FileOutputStream;
 import java.util.HashMap;
 import java.util.Map;
-import org.apache.poi.hssf.usermodel.HSSFCell;
-import org.apache.poi.hssf.usermodel.HSSFRow;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
-/**
- *
- * @author MSAARELA
- */
 public class XLSXStreamerTest {
 
     public XLSXStreamerTest() {
@@ -39,6 +33,7 @@ public class XLSXStreamerTest {
     }
 
     @Test
+    @Ignore
     public void testStreamToFile() throws Exception {
         XLSXStreamer streamer = new XLSXStreamer();
         

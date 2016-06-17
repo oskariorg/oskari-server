@@ -35,7 +35,7 @@ public class SpatineoMonitoringResponseDto {
 
     public class Configuration {
 
-        public Integer group;
+        public Integer groupId;
     }
 
     public String version;
@@ -84,6 +84,7 @@ public class SpatineoMonitoringResponseDto {
         public Integer serviceId;
         public String serviceType;
         public String serviceUrl;
+        public String title;
         public List<Meter> meters = new ArrayList<Meter>();
     }
 

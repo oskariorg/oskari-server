@@ -1,66 +1,1966 @@
 {
-    "version": "1.0",
-    "status": "OK",
-    "configuration": {
-        "group": 4
+  "version": "1.0",
+  "status": "OK",
+  "configuration": {
+    "groupId": null
+  },
+  "result": [
+    {
+      "service": {
+        "id": "56bef59ff3d3bc7e587ccb9b",
+        "serviceId": 36177,
+        "serviceType": "WFS",
+        "serviceUrl": "https://security.locationframework.eu/wss/service/FI-HY/httpauth?",
+        "title": "FI-HY",
+        "meters": [
+          {
+            "id": "56faf2b8f3d3bc7e588a2a89",
+            "layerName": "http%3A%2F%2Finspire.ec.europa.eu%2Fschemas%2Fhy-p%2F4.0:Watercourse",
+            "crs": "urn:ogc:def:crs:EPSG::3035",
+            "imageHeight": 0,
+            "imageWidth": 0,
+            "format": "application/gml+xml; version=3.2",
+            "operation": "GetFeature",
+            "monitorLink": "https://monitor.spatineo.com/#/monitoring/metrics?service=56bef59ff3d3bc7e587ccb9b&meter=56faf2b8f3d3bc7e588a2a89",
+            "indicator": {
+              "status": "NO_INDICATOR"
+            }
+          }
+        ]
+      }
     },
-    "result": [{
-            "service": {
-                "id": "50ea942c3b3ebfcbd0e1edff",
-                "serviceId": 6470,
-                "serviceType": "WMS",
-                "serviceUrl": "http://maps3.sgu.se:80/geoserver/berg/ows",
-                "meters": [{
-                        "id": "51aee5b7dd0068709c84bf77",
-                        "layerName": "Jarvet",
-                        "crs": "EPSG:3067",
-                        "imageHeight": 256,
-                        "imageWidth": 256,
-                        "format": "image/png",
-                        "operation": "GetMap",
-                        "monitorLink":
-                                "https://monitor.spatineo.com/#/monitoring/metrics?service=50ea942c3b3ebfcbd0e1edff&meter=51aee5b7dd0068709c84bf77",
-                        "indicator": {
-                            "status": "ALERT",
-                            "lastChange": "20160418 12:12:00Z"
-                        }
-                    }, {
-                        "id": "50fda1633b3ebfcbd0f6a35d",
-                        "layerName": "Network.HydroNode",
-                        "crs": "EPSG:3067",
-                        "imageHeight": 256,
-                        "imageWidth": 256,
-                        "format": "image/png",
-                        "operation": "GetMap",
-                        "monitorLink":
-                                "https://monitor.spatineo.com/#/monitoring/metrics?service=50ea942c3b3ebfcbd0e1edff&meter=50fda1633b3ebfcbd0f6a35d",
-                        "indicator": {
-                            "status": "ALERT",
-                            "lastChange": "20160418 12:13:08Z"
-                        }
-                    }]
+    {
+      "service": {
+        "id": "56bef834f3d3bc7e587ccba0",
+        "serviceId": 36178,
+        "serviceType": "WFS",
+        "serviceUrl": "https://security.locationframework.eu/wss/service/BE-AU/httpauth?",
+        "title": "BE-AU",
+        "meters": [
+          {
+            "id": "57132046f3d3bc7e58903fc4",
+            "layerName": "urn%3Ax-inspire%3Aspecification%3Agmlas%3AAdministrativeUnits%3A3.0:AdministrativeBoundary",
+            "crs": "urn:ogc:def:crs:EPSG::4326",
+            "imageHeight": 0,
+            "imageWidth": 0,
+            "format": "application/gml+xml; version=3.2",
+            "operation": "GetFeature",
+            "monitorLink": "https://monitor.spatineo.com/#/monitoring/metrics?service=56bef834f3d3bc7e587ccba0&meter=57132046f3d3bc7e58903fc4",
+            "indicator": {
+              "status": "NO_INDICATOR"
             }
-        }, {
-            "service": {
-                "id": "52e74edbf239c6430a19fc63",
-                "serviceId": 16161,
-                "serviceType": "WMS",
-                "serviceUrl": "http://geoportalvg.de/wms/lkvg_gebaeude",
-                "meters": [{
-                        "id": "52f9c1bcf239c6430a1d4ec9",
-                        "layerName": "regismv_gebaeude",
-                        "crs": "EPSG:25833",
-                        "imageHeight": 256,
-                        "imageWidth": 256,
-                        "format": "image/png",
-                        "operation": "GetMap",
-                        "monitorLink":
-                                "https://monitor.spatineo.com/#/monitoring/metrics?service=52e74edbf239c6430a19fc63&meter=52f9c1bcf239c6430a1d4ec9",
-                        "indicator": {
-                            "status": "ALERT",
-                            "lastChange": "20160418 12:12:00Z"
-                        }
-                    }]
+          }
+        ]
+      }
+    },
+    {
+      "service": {
+        "id": "56bef836f3d3bc7e587ccba2",
+        "serviceId": 36179,
+        "serviceType": "WFS",
+        "serviceUrl": "https://security.locationframework.eu/wss/service/BE-BU/httpauth?",
+        "title": "BE-BU",
+        "meters": [
+          {
+            "id": "5713204df3d3bc7e58903fc5",
+            "layerName": "http%3A%2F%2Finspire.ec.europa.eu%2Fschemas%2Fbu-core2d%2F3.0:Building",
+            "crs": "urn:ogc:def:crs:EPSG::4326",
+            "imageHeight": 0,
+            "imageWidth": 0,
+            "format": "application/gml+xml; version=3.2",
+            "operation": "GetFeature",
+            "monitorLink": "https://monitor.spatineo.com/#/monitoring/metrics?service=56bef836f3d3bc7e587ccba2&meter=5713204df3d3bc7e58903fc5",
+            "indicator": {
+              "status": "NO_INDICATOR"
             }
-        }]
+          }
+        ]
+      }
+    },
+    {
+      "service": {
+        "id": "56bef841f3d3bc7e587ccba5",
+        "serviceId": 36180,
+        "serviceType": "WFS",
+        "serviceUrl": "https://security.locationframework.eu/wss/service/BE-GN/httpauth?",
+        "title": "BE-GN",
+        "meters": [
+          {
+            "id": "5713205af3d3bc7e58903fc6",
+            "layerName": "urn%3Ax-inspire%3Aspecification%3Agmlas%3AGeographicalNames%3A3.0:NamedPlace",
+            "crs": "urn:ogc:def:crs:EPSG::4326",
+            "imageHeight": 0,
+            "imageWidth": 0,
+            "format": "application/gml+xml; version=3.2",
+            "operation": "GetFeature",
+            "monitorLink": "https://monitor.spatineo.com/#/monitoring/metrics?service=56bef841f3d3bc7e587ccba5&meter=5713205af3d3bc7e58903fc6",
+            "indicator": {
+              "status": "NO_INDICATOR"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "service": {
+        "id": "56bef85ef3d3bc7e587ccbab",
+        "serviceId": 36181,
+        "serviceType": "WFS",
+        "serviceUrl": "https://security.locationframework.eu/wss/service/BE-HY/httpauth?",
+        "title": "BE-HY",
+        "meters": [
+          {
+            "id": "57132068f3d3bc7e58903fc7",
+            "layerName": "urn%3Ax-inspire%3Aspecification%3Agmlas%3AGeology%3A0.0:SpringOrSeep",
+            "crs": "urn:ogc:def:crs:EPSG::4326",
+            "imageHeight": 0,
+            "imageWidth": 0,
+            "format": "application/gml+xml; version=3.2",
+            "operation": "GetFeature",
+            "monitorLink": "https://monitor.spatineo.com/#/monitoring/metrics?service=56bef85ef3d3bc7e587ccbab&meter=57132068f3d3bc7e58903fc7",
+            "indicator": {
+              "status": "NO_INDICATOR"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "service": {
+        "id": "56bef861f3d3bc7e587ccbad",
+        "serviceId": 36182,
+        "serviceType": "WFS",
+        "serviceUrl": "https://security.locationframework.eu/wss/service/BE-TN/httpauth?",
+        "title": "BE-TN",
+        "meters": [
+          {
+            "id": "5713207bf3d3bc7e58903fc8",
+            "layerName": "urn%3Ax-inspire%3Aspecification%3Agmlas%3AAirTransportNetwork%3A3.0:AerodromeArea",
+            "crs": "urn:ogc:def:crs:EPSG::4326",
+            "imageHeight": 0,
+            "imageWidth": 0,
+            "format": "application/gml+xml; version=3.2",
+            "operation": "GetFeature",
+            "monitorLink": "https://monitor.spatineo.com/#/monitoring/metrics?service=56bef861f3d3bc7e587ccbad&meter=5713207bf3d3bc7e58903fc8",
+            "indicator": {
+              "status": "NO_INDICATOR"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "service": {
+        "id": "56bef861f3d3bc7e587ccbaf",
+        "serviceId": 36183,
+        "serviceType": "WFS",
+        "serviceUrl": "https://security.locationframework.eu/wss/service/CZ-AD/httpauth?",
+        "title": "CZ-AD",
+        "meters": [
+          {
+            "id": "56fad31ef3d3bc7e588a2a4f",
+            "layerName": "urn%3Ax-inspire%3Aspecification%3Agmlas%3AAddresses%3A3.0:Address",
+            "crs": "urn:ogc:def:crs:EPSG::3035",
+            "imageHeight": 0,
+            "imageWidth": 0,
+            "format": "application/gml+xml; version=3.2",
+            "operation": "GetFeature",
+            "monitorLink": "https://monitor.spatineo.com/#/monitoring/metrics?service=56bef861f3d3bc7e587ccbaf&meter=56fad31ef3d3bc7e588a2a4f",
+            "indicator": {
+              "status": "NO_INDICATOR"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "service": {
+        "id": "56bef861f3d3bc7e587ccbb1",
+        "serviceId": 36184,
+        "serviceType": "WFS",
+        "serviceUrl": "https://security.locationframework.eu/wss/service/CZ-AU/httpauth?",
+        "title": "CZ-AU",
+        "meters": [
+          {
+            "id": "56fad3d7f3d3bc7e588a2a50",
+            "layerName": "urn%3Ax-inspire%3Aspecification%3Agmlas%3AAdministrativeUnits%3A3.0:AdministrativeBoundary",
+            "crs": "urn:ogc:def:crs:EPSG::3035",
+            "imageHeight": 0,
+            "imageWidth": 0,
+            "format": "application/gml+xml; version=3.2",
+            "operation": "GetFeature",
+            "monitorLink": "https://monitor.spatineo.com/#/monitoring/metrics?service=56bef861f3d3bc7e587ccbb1&meter=56fad3d7f3d3bc7e588a2a50",
+            "indicator": {
+              "status": "NO_INDICATOR"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "service": {
+        "id": "56bef867f3d3bc7e587ccbb4",
+        "serviceId": 36185,
+        "serviceType": "WFS",
+        "serviceUrl": "https://security.locationframework.eu/wss/service/CZ-BU/httpauth?",
+        "title": "CZ-BU",
+        "meters": [
+          {
+            "id": "56fad46bf3d3bc7e588a2a53",
+            "layerName": "http%3A%2F%2Fservices.cuzk.cz%2Fxsd%2Finspire%2Fbu-ext2d%2F3.0%2FBuildingsExtended2D.xsd:Building",
+            "crs": "urn:ogc:def:crs:EPSG::3035",
+            "imageHeight": 0,
+            "imageWidth": 0,
+            "format": "application/gml+xml; version=3.2",
+            "operation": "GetFeature",
+            "monitorLink": "https://monitor.spatineo.com/#/monitoring/metrics?service=56bef867f3d3bc7e587ccbb4&meter=56fad46bf3d3bc7e588a2a53",
+            "indicator": {
+              "status": "NO_INDICATOR"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "service": {
+        "id": "56bef876f3d3bc7e587ccbb9",
+        "serviceId": 36186,
+        "serviceType": "WFS",
+        "serviceUrl": "https://security.locationframework.eu/wss/service/CZ-CP/httpauth?",
+        "title": "CZ-CP",
+        "meters": [
+          {
+            "id": "56fad558f3d3bc7e588a2a55",
+            "layerName": "urn%3Ax-inspire%3Aspecification%3Agmlas%3ACadastralParcels%3A3.0:CadastralBoundary",
+            "crs": "urn:ogc:def:crs:EPSG::3035",
+            "imageHeight": 0,
+            "imageWidth": 0,
+            "format": "application/gml+xml; version=3.2",
+            "operation": "GetFeature",
+            "monitorLink": "https://monitor.spatineo.com/#/monitoring/metrics?service=56bef876f3d3bc7e587ccbb9&meter=56fad558f3d3bc7e588a2a55",
+            "indicator": {
+              "status": "NO_INDICATOR"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "service": {
+        "id": "56bef876f3d3bc7e587ccbbb",
+        "serviceId": 36187,
+        "serviceType": "WFS",
+        "serviceUrl": "https://security.locationframework.eu/wss/service/CZ-GN/httpauth",
+        "title": "CZ-GN",
+        "meters": [
+          {
+            "id": "56fad5dcf3d3bc7e588a2a56",
+            "layerName": "urn%3Ax-inspire%3Aspecification%3Agmlas%3AGeographicalNames%3A3.0:NamedPlace",
+            "crs": "EPSG:3035",
+            "imageHeight": 0,
+            "imageWidth": 0,
+            "format": "application/gml+xml; version=3.2",
+            "operation": "GetFeature",
+            "monitorLink": "https://monitor.spatineo.com/#/monitoring/metrics?service=56bef876f3d3bc7e587ccbbb&meter=56fad5dcf3d3bc7e588a2a56",
+            "indicator": {
+              "status": "NO_INDICATOR"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "service": {
+        "id": "56bef87ef3d3bc7e587ccbbd",
+        "serviceId": 36188,
+        "serviceType": "WFS",
+        "serviceUrl": "https://security.locationframework.eu/wss/service/CZ-HY/httpauth",
+        "title": "CZ-HY",
+        "meters": [
+          {
+            "id": "56fad6f7f3d3bc7e588a2a5c",
+            "layerName": "urn%3Ax-inspire%3Aspecification%3Agmlas%3AHydroPhysicalWaters%3A3.0:Watercourse",
+            "crs": "EPSG:3035",
+            "imageHeight": 0,
+            "imageWidth": 0,
+            "format": "application/gml+xml; version=3.2",
+            "operation": "GetFeature",
+            "monitorLink": "https://monitor.spatineo.com/#/monitoring/metrics?service=56bef87ef3d3bc7e587ccbbd&meter=56fad6f7f3d3bc7e588a2a5c",
+            "indicator": {
+              "status": "NO_INDICATOR"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "service": {
+        "id": "56bef887f3d3bc7e587ccbc0",
+        "serviceId": 36189,
+        "serviceType": "WFS",
+        "serviceUrl": "https://security.locationframework.eu/wss/service/CZ-TN_AIR/httpauth",
+        "title": "CZ-TN_AIR",
+        "meters": [
+          {
+            "id": "56fae05df3d3bc7e588a2a5e",
+            "layerName": "urn%3Ax-inspire%3Aspecification%3Agmlas%3AAirTransportNetwork%3A3.0:TaxiwayArea",
+            "crs": "EPSG:3035",
+            "imageHeight": 0,
+            "imageWidth": 0,
+            "format": "application/gml+xml; version=3.2",
+            "operation": "GetFeature",
+            "monitorLink": "https://monitor.spatineo.com/#/monitoring/metrics?service=56bef887f3d3bc7e587ccbc0&meter=56fae05df3d3bc7e588a2a5e",
+            "indicator": {
+              "status": "NO_INDICATOR"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "service": {
+        "id": "56bef893f3d3bc7e587ccbc4",
+        "serviceId": 36190,
+        "serviceType": "WFS",
+        "serviceUrl": "https://security.locationframework.eu/wss/service/CZ-TN_CABLE/httpauth",
+        "title": "CZ-TN_CABLE",
+        "meters": [
+          {
+            "id": "56fae11ff3d3bc7e588a2a5f",
+            "layerName": "urn%3Ax-inspire%3Aspecification%3Agmlas%3ACableTransportNetwork%3A3.0:CablewayLink",
+            "crs": "EPSG:3035",
+            "imageHeight": 0,
+            "imageWidth": 0,
+            "format": "application/gml+xml; version=3.2",
+            "operation": "GetFeature",
+            "monitorLink": "https://monitor.spatineo.com/#/monitoring/metrics?service=56bef893f3d3bc7e587ccbc4&meter=56fae11ff3d3bc7e588a2a5f",
+            "indicator": {
+              "status": "NO_INDICATOR"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "service": {
+        "id": "56bef8a3f3d3bc7e587ccbc7",
+        "serviceId": 36191,
+        "serviceType": "WFS",
+        "serviceUrl": "https://security.locationframework.eu/wss/service/CZ-TN_ROAD/httpauth",
+        "title": "CZ-TN_ROAD",
+        "meters": [
+          {
+            "id": "56fae851f3d3bc7e588a2a66",
+            "layerName": "urn%3Ax-inspire%3Aspecification%3Agmlas%3ARoadTransportNetwork%3A3.0:Road",
+            "crs": "EPSG:3035",
+            "imageHeight": 0,
+            "imageWidth": 0,
+            "format": "application/gml+xml; version=3.2",
+            "operation": "GetFeature",
+            "monitorLink": "https://monitor.spatineo.com/#/monitoring/metrics?service=56bef8a3f3d3bc7e587ccbc7&meter=56fae851f3d3bc7e588a2a66",
+            "indicator": {
+              "status": "NO_INDICATOR"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "service": {
+        "id": "56bef8abf3d3bc7e587ccbc9",
+        "serviceId": 36192,
+        "serviceType": "WFS",
+        "serviceUrl": "https://security.locationframework.eu/wss/service/CZ-TN_WATER/httpauth",
+        "title": "CZ-TN_WATER",
+        "meters": [
+          {
+            "id": "56fae8f3f3d3bc7e588a2a67",
+            "layerName": "urn%3Ax-inspire%3Aspecification%3Agmlas%3AWaterTransportNetwork%3A3.0:PortArea",
+            "crs": "EPSG:3035",
+            "imageHeight": 0,
+            "imageWidth": 0,
+            "format": "application/gml+xml; version=3.2",
+            "operation": "GetFeature",
+            "monitorLink": "https://monitor.spatineo.com/#/monitoring/metrics?service=56bef8abf3d3bc7e587ccbc9&meter=56fae8f3f3d3bc7e588a2a67",
+            "indicator": {
+              "status": "NO_INDICATOR"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "service": {
+        "id": "56bef8bff3d3bc7e587ccbcf",
+        "serviceId": 36194,
+        "serviceType": "WFS",
+        "serviceUrl": "https://security.locationframework.eu/wss/service/DK-AU/httpauth?",
+        "title": "DK-AU",
+        "meters": [
+          {
+            "id": "56fae990f3d3bc7e588a2a69",
+            "layerName": "http%3A%2F%2Fwww.locationframework.eu%2Fschemas%2FAdministrativeUnits%2F1.0:AdministrativeUnitArea",
+            "crs": "EPSG:3035",
+            "imageHeight": 0,
+            "imageWidth": 0,
+            "format": "application/gml+xml; version=3.2",
+            "operation": "GetFeature",
+            "monitorLink": "https://monitor.spatineo.com/#/monitoring/metrics?service=56bef8bff3d3bc7e587ccbcf&meter=56fae990f3d3bc7e588a2a69",
+            "indicator": {
+              "status": "NO_INDICATOR"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "service": {
+        "id": "56bef8cbf3d3bc7e587ccbd7",
+        "serviceId": 36195,
+        "serviceType": "WFS",
+        "serviceUrl": "https://security.locationframework.eu/wss/service/DK-CP/httpauth?",
+        "title": "DK-CP",
+        "meters": [
+          {
+            "id": "56bef8caf3d3bc7e587ccbd3",
+            "layerName": "urn%3Ax-inspire%3Aspecification%3Agmlas%3ACadastralParcels%3A3.0:CadastralParcel",
+            "crs": "urn:ogc:def:crs:EPSG::25832",
+            "imageHeight": 0,
+            "imageWidth": 0,
+            "format": "application/gml+xml; version=3.2",
+            "operation": "GetFeature",
+            "monitorLink": "https://monitor.spatineo.com/#/monitoring/metrics?service=56bef8cbf3d3bc7e587ccbd7&meter=56bef8caf3d3bc7e587ccbd3",
+            "indicator": {
+              "status": "NO_INDICATOR"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "service": {
+        "id": "56bef8caf3d3bc7e587ccbd4",
+        "serviceId": 36196,
+        "serviceType": "WFS",
+        "serviceUrl": "https://security.locationframework.eu/wss/service/DK-GN/httpauth?",
+        "title": "DK-GN",
+        "meters": [
+          {
+            "id": "56faea89f3d3bc7e588a2a6b",
+            "layerName": "http%3A%2F%2Fwww.locationframework.eu%2Fschemas%2FGeographicalNames%2F1.0:NamedPlace",
+            "crs": "EPSG:3035",
+            "imageHeight": 0,
+            "imageWidth": 0,
+            "format": "application/gml+xml; version=3.2",
+            "operation": "GetFeature",
+            "monitorLink": "https://monitor.spatineo.com/#/monitoring/metrics?service=56bef8caf3d3bc7e587ccbd4&meter=56faea89f3d3bc7e588a2a6b",
+            "indicator": {
+              "status": "NO_INDICATOR"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "service": {
+        "id": "56bef8d0f3d3bc7e587ccbd9",
+        "serviceId": 36197,
+        "serviceType": "WFS",
+        "serviceUrl": "https://security.locationframework.eu/wss/service/DK-HY/httpauth?",
+        "title": "DK-HY",
+        "meters": [
+          {
+            "id": "56faeb04f3d3bc7e588a2a6c",
+            "layerName": "http%3A%2F%2Finspire.ec.europa.eu%2Fschemas%2Fhy-p%2F4.0:Watercourse",
+            "crs": "EPSG:3035",
+            "imageHeight": 0,
+            "imageWidth": 0,
+            "format": "application/gml+xml; version=3.2",
+            "operation": "GetFeature",
+            "monitorLink": "https://monitor.spatineo.com/#/monitoring/metrics?service=56bef8d0f3d3bc7e587ccbd9&meter=56faeb04f3d3bc7e588a2a6c",
+            "indicator": {
+              "status": "NO_INDICATOR"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "service": {
+        "id": "56bef8d6f3d3bc7e587ccbdc",
+        "serviceId": 36198,
+        "serviceType": "WFS",
+        "serviceUrl": "https://security.locationframework.eu/wss/service/DK-TN_RAIL/httpauth?",
+        "title": "DK-TN_RAIL",
+        "meters": [
+          {
+            "id": "56faed50f3d3bc7e588a2a7a",
+            "layerName": "http%3A%2F%2Fwww.locationframework.eu%2Fschemas%2FRailwayTransportNetwork%2F1.0:RailwayLink",
+            "crs": "EPSG:3035",
+            "imageHeight": 0,
+            "imageWidth": 0,
+            "format": "application/gml+xml; version=3.2",
+            "operation": "GetFeature",
+            "monitorLink": "https://monitor.spatineo.com/#/monitoring/metrics?service=56bef8d6f3d3bc7e587ccbdc&meter=56faed50f3d3bc7e588a2a7a",
+            "indicator": {
+              "status": "NO_INDICATOR"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "service": {
+        "id": "56bef8e0f3d3bc7e587ccbe0",
+        "serviceId": 36199,
+        "serviceType": "WFS",
+        "serviceUrl": "https://security.locationframework.eu/wss/service/DK-TN_ROAD/httpauth?",
+        "title": "DK-TN_ROAD",
+        "meters": [
+          {
+            "id": "56faede2f3d3bc7e588a2a7d",
+            "layerName": "http%3A%2F%2Fwww.locationframework.eu%2Fschemas%2FRoadTransportNetwork%2F1.0:RoadLink",
+            "crs": "EPSG:3035",
+            "imageHeight": 0,
+            "imageWidth": 0,
+            "format": "application/gml+xml; version=3.2",
+            "operation": "GetFeature",
+            "monitorLink": "https://monitor.spatineo.com/#/monitoring/metrics?service=56bef8e0f3d3bc7e587ccbe0&meter=56faede2f3d3bc7e588a2a7d",
+            "indicator": {
+              "status": "NO_INDICATOR"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "service": {
+        "id": "56bef8e3f3d3bc7e587ccbe2",
+        "serviceId": 36200,
+        "serviceType": "WFS",
+        "serviceUrl": "https://security.locationframework.eu/wss/service/ES-AD/httpauth?",
+        "title": "ES-AD",
+        "meters": [
+          {
+            "id": "5719bc6af3d3bc7e5891dbd7",
+            "layerName": "urn%3Ax-inspire%3Aspecification%3Agmlas%3AAddress%3A3.0:Address",
+            "crs": "urn:ogc:def:crs:EPSG::25830",
+            "imageHeight": 0,
+            "imageWidth": 0,
+            "format": "application/gml+xml; version=3.2",
+            "operation": "GetFeature",
+            "monitorLink": "https://monitor.spatineo.com/#/monitoring/metrics?service=56bef8e3f3d3bc7e587ccbe2&meter=5719bc6af3d3bc7e5891dbd7",
+            "indicator": {
+              "status": "NO_INDICATOR"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "service": {
+        "id": "56bef8f0f3d3bc7e587ccbe5",
+        "serviceId": 36201,
+        "serviceType": "WFS",
+        "serviceUrl": "https://security.locationframework.eu/wss/service/ES-AU/httpauth?",
+        "title": "ES-AU",
+        "meters": [
+          {
+            "id": "56faee8bf3d3bc7e588a2a7f",
+            "layerName": "http%3A%2F%2Finspire.ec.europa.eu%2Fschemas%2Fau%2F4.0:AdministrativeUnit",
+            "crs": "EPSG:3035",
+            "imageHeight": 0,
+            "imageWidth": 0,
+            "format": "application/gml+xml; version=3.2",
+            "operation": "GetFeature",
+            "monitorLink": "https://monitor.spatineo.com/#/monitoring/metrics?service=56bef8f0f3d3bc7e587ccbe5&meter=56faee8bf3d3bc7e588a2a7f",
+            "indicator": {
+              "status": "NO_INDICATOR"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "service": {
+        "id": "56bef906f3d3bc7e587ccbe8",
+        "serviceId": 36202,
+        "serviceType": "WFS",
+        "serviceUrl": "https://security.locationframework.eu/wss/service/ES-GN/httpauth?",
+        "title": "ES-GN",
+        "meters": [
+          {
+            "id": "56faefabf3d3bc7e588a2a81",
+            "layerName": "http%3A%2F%2Finspire.ec.europa.eu%2Fschemas%2Fgn%2F4.0:NamedPlace",
+            "crs": "EPSG:3035",
+            "imageHeight": 0,
+            "imageWidth": 0,
+            "format": "application/gml+xml; version=3.2",
+            "operation": "GetFeature",
+            "monitorLink": "https://monitor.spatineo.com/#/monitoring/metrics?service=56bef906f3d3bc7e587ccbe8&meter=56faefabf3d3bc7e588a2a81",
+            "indicator": {
+              "status": "NO_INDICATOR"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "service": {
+        "id": "56bef914f3d3bc7e587ccbec",
+        "serviceId": 36203,
+        "serviceType": "WFS",
+        "serviceUrl": "https://security.locationframework.eu/wss/service/ES-TN/httpauth?",
+        "title": "ES-TN",
+        "meters": [
+          {
+            "id": "56faf01bf3d3bc7e588a2a82",
+            "layerName": "http%3A%2F%2Finspire.ec.europa.eu%2Fschemas%2Ftn-ro%2F4.0:RoadLink",
+            "crs": "EPSG:3035",
+            "imageHeight": 0,
+            "imageWidth": 0,
+            "format": "application/gml+xml; version=3.2",
+            "operation": "GetFeature",
+            "monitorLink": "https://monitor.spatineo.com/#/monitoring/metrics?service=56bef914f3d3bc7e587ccbec&meter=56faf01bf3d3bc7e588a2a82",
+            "indicator": {
+              "status": "NO_INDICATOR"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "service": {
+        "id": "56bef914f3d3bc7e587ccbee",
+        "serviceId": 36204,
+        "serviceType": "WFS",
+        "serviceUrl": "https://security.locationframework.eu/wss/service/FI-AD/httpauth?",
+        "title": "FI-AD",
+        "meters": [
+          {
+            "id": "56bef920f3d3bc7e587ccbf1",
+            "layerName": "http%3A%2F%2Finspire.ec.europa.eu%2Fschemas%2Fad%2F4.0:Address",
+            "crs": "urn:ogc:def:crs:EPSG::3035",
+            "imageHeight": 0,
+            "imageWidth": 0,
+            "format": "application/gml+xml; version=3.2",
+            "operation": "GetFeature",
+            "monitorLink": "https://monitor.spatineo.com/#/monitoring/metrics?service=56bef914f3d3bc7e587ccbee&meter=56bef920f3d3bc7e587ccbf1",
+            "indicator": {
+              "status": "NO_INDICATOR"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "service": {
+        "id": "56bef920f3d3bc7e587ccbf2",
+        "serviceId": 36205,
+        "serviceType": "WFS",
+        "serviceUrl": "https://security.locationframework.eu/wss/service/FI-AU/httpauth?",
+        "title": "FI-AU",
+        "meters": [
+          {
+            "id": "56bef91ff3d3bc7e587ccbf0",
+            "layerName": "http%3A%2F%2Finspire.ec.europa.eu%2Fschemas%2Fau%2F4.0:AdministrativeBoundary",
+            "crs": "urn:ogc:def:crs:EPSG::3035",
+            "imageHeight": 0,
+            "imageWidth": 0,
+            "format": "application/gml+xml; version=3.2",
+            "operation": "GetFeature",
+            "monitorLink": "https://monitor.spatineo.com/#/monitoring/metrics?service=56bef920f3d3bc7e587ccbf2&meter=56bef91ff3d3bc7e587ccbf0",
+            "indicator": {
+              "status": "NO_INDICATOR"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "service": {
+        "id": "56bef921f3d3bc7e587ccbf5",
+        "serviceId": 36206,
+        "serviceType": "WFS",
+        "serviceUrl": "https://security.locationframework.eu/wss/service/FI-BU/httpauth?",
+        "title": "FI-BU",
+        "meters": [
+          {
+            "id": "56bef921f3d3bc7e587ccbf4",
+            "layerName": "http%3A%2F%2Finspire.ec.europa.eu%2Fschemas%2Fbu-core2d%2F4.0:Building",
+            "crs": "urn:ogc:def:crs:EPSG::3035",
+            "imageHeight": 0,
+            "imageWidth": 0,
+            "format": "application/gml+xml; version=3.2",
+            "operation": "GetFeature",
+            "monitorLink": "https://monitor.spatineo.com/#/monitoring/metrics?service=56bef921f3d3bc7e587ccbf5&meter=56bef921f3d3bc7e587ccbf4",
+            "indicator": {
+              "status": "NO_INDICATOR"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "service": {
+        "id": "56bef927f3d3bc7e587ccbf8",
+        "serviceId": 36207,
+        "serviceType": "WFS",
+        "serviceUrl": "https://security.locationframework.eu/wss/service/FI-CP/httpauth?",
+        "title": "FI-CP",
+        "meters": [
+          {
+            "id": "56bef927f3d3bc7e587ccbf7",
+            "layerName": "http%3A%2F%2Finspire.ec.europa.eu%2Fschemas%2Fcp%2F4.0:BasicPropertyUnit",
+            "crs": "urn:ogc:def:crs:EPSG::3035",
+            "imageHeight": 0,
+            "imageWidth": 0,
+            "format": "application/gml+xml; version=3.2",
+            "operation": "GetFeature",
+            "monitorLink": "https://monitor.spatineo.com/#/monitoring/metrics?service=56bef927f3d3bc7e587ccbf8&meter=56bef927f3d3bc7e587ccbf7",
+            "indicator": {
+              "status": "NO_INDICATOR"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "service": {
+        "id": "56bef92ff3d3bc7e587ccbfa",
+        "serviceId": 36208,
+        "serviceType": "WFS",
+        "serviceUrl": "https://security.locationframework.eu/wss/service/FI-GN/httpauth?",
+        "title": "FI-GN",
+        "meters": [
+          {
+            "id": "56bef935f3d3bc7e587ccbfc",
+            "layerName": "http%3A%2F%2Fwww.locationframework.eu%2Fschemas%2FGeographicalNames%2F1.0:NamedPlace",
+            "crs": "urn:ogc:def:crs:EPSG::3035",
+            "imageHeight": 0,
+            "imageWidth": 0,
+            "format": "application/gml+xml; version=3.2",
+            "operation": "GetFeature",
+            "monitorLink": "https://monitor.spatineo.com/#/monitoring/metrics?service=56bef92ff3d3bc7e587ccbfa&meter=56bef935f3d3bc7e587ccbfc",
+            "indicator": {
+              "status": "NO_INDICATOR"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "service": {
+        "id": "56bef93df3d3bc7e587ccbff",
+        "serviceId": 36209,
+        "serviceType": "WFS",
+        "serviceUrl": "https://security.locationframework.eu/wss/service/FI-LC/httpauth?",
+        "title": "FI-LC",
+        "meters": [
+          {
+            "id": "56bef93df3d3bc7e587ccbfe",
+            "layerName": "http%3A%2F%2Finspire.ec.europa.eu%2Fschemas%2Flcv%2F4.0:LandCoverDataset",
+            "crs": "urn:ogc:def:crs:EPSG::3035",
+            "imageHeight": 0,
+            "imageWidth": 0,
+            "format": "application/gml+xml; version=3.2",
+            "operation": "GetFeature",
+            "monitorLink": "https://monitor.spatineo.com/#/monitoring/metrics?service=56bef93df3d3bc7e587ccbff&meter=56bef93df3d3bc7e587ccbfe",
+            "indicator": {
+              "status": "NO_INDICATOR"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "service": {
+        "id": "56bef957f3d3bc7e587ccc04",
+        "serviceId": 36210,
+        "serviceType": "WFS",
+        "serviceUrl": "https://security.locationframework.eu/wss/service/FI-PS/httpauth?",
+        "title": "FI-PS",
+        "meters": [
+          {
+            "id": "56bef958f3d3bc7e587ccc06",
+            "layerName": "http%3A%2F%2Finspire.ec.europa.eu%2Fschemas%2Fps%2F4.0:ProtectedSite",
+            "crs": "urn:ogc:def:crs:EPSG::3035",
+            "imageHeight": 0,
+            "imageWidth": 0,
+            "format": "application/gml+xml; version=3.2",
+            "operation": "GetFeature",
+            "monitorLink": "https://monitor.spatineo.com/#/monitoring/metrics?service=56bef957f3d3bc7e587ccc04&meter=56bef958f3d3bc7e587ccc06",
+            "indicator": {
+              "status": "NO_INDICATOR"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "service": {
+        "id": "56bef972f3d3bc7e587ccc0e",
+        "serviceId": 36213,
+        "serviceType": "WFS",
+        "serviceUrl": "https://security.locationframework.eu/wss/service/FR-AD/httpauth?/",
+        "title": "FR-AD",
+        "meters": [
+          {
+            "id": "56fb8638f3d3bc7e588a7be6",
+            "layerName": "http%3A%2F%2Finspire.ec.europa.eu%2Fschemas%2Fad%2F4.0:Address",
+            "crs": "EPSG:4258",
+            "imageHeight": 0,
+            "imageWidth": 0,
+            "format": "application/gml+xml; version=3.2",
+            "operation": "GetFeature",
+            "monitorLink": "https://monitor.spatineo.com/#/monitoring/metrics?service=56bef972f3d3bc7e587ccc0e&meter=56fb8638f3d3bc7e588a7be6",
+            "indicator": {
+              "status": "NO_INDICATOR"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "service": {
+        "id": "56bef978f3d3bc7e587ccc10",
+        "serviceId": 36214,
+        "serviceType": "WFS",
+        "serviceUrl": "https://security.locationframework.eu/wss/service/NL-AD/httpauth",
+        "title": "NL-AD",
+        "meters": [
+          {
+            "id": "56bef97df3d3bc7e587ccc12",
+            "layerName": "urn%3Ax-inspire%3Aspecification%3Agmlas%3AAddresses%3A3.0:Address",
+            "crs": "urn:ogc:def:crs:EPSG::4258",
+            "imageHeight": 0,
+            "imageWidth": 0,
+            "format": "application/gml+xml; version=3.2",
+            "operation": "GetFeature",
+            "monitorLink": "https://monitor.spatineo.com/#/monitoring/metrics?service=56bef978f3d3bc7e587ccc10&meter=56bef97df3d3bc7e587ccc12",
+            "indicator": {
+              "status": "NO_INDICATOR"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "service": {
+        "id": "56bef97df3d3bc7e587ccc13",
+        "serviceId": 36215,
+        "serviceType": "WFS",
+        "serviceUrl": "https://security.locationframework.eu/wss/service/NO-AD/httpauth?",
+        "title": "NO-AD",
+        "meters": [
+          {
+            "id": "56fb9521f3d3bc7e588a7bfb",
+            "layerName": "http%3A%2F%2Finspire.ec.europa.eu%2Fschemas%2Fad%2F4.0:Address",
+            "crs": "urn:ogc:def:crs:EPSG::3035",
+            "imageHeight": 0,
+            "imageWidth": 0,
+            "format": "application/gml+xml; version=3.2",
+            "operation": "GetFeature",
+            "monitorLink": "https://monitor.spatineo.com/#/monitoring/metrics?service=56bef97df3d3bc7e587ccc13&meter=56fb9521f3d3bc7e588a7bfb",
+            "indicator": {
+              "status": "NO_INDICATOR"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "service": {
+        "id": "56bef97ef3d3bc7e587ccc16",
+        "serviceId": 36216,
+        "serviceType": "WFS",
+        "serviceUrl": "https://security.locationframework.eu/wss/service/NO-AU/httpauth?",
+        "title": "NO-AU",
+        "meters": [
+          {
+            "id": "56fb9593f3d3bc7e588a7c00",
+            "layerName": "http%3A%2F%2Finspire.ec.europa.eu%2Fschemas%2Fau%2F4.0:AdministrativeUnit",
+            "crs": "urn:ogc:def:crs:EPSG::3035",
+            "imageHeight": 0,
+            "imageWidth": 0,
+            "format": "application/gml+xml; version=3.2",
+            "operation": "GetFeature",
+            "monitorLink": "https://monitor.spatineo.com/#/monitoring/metrics?service=56bef97ef3d3bc7e587ccc16&meter=56fb9593f3d3bc7e588a7c00",
+            "indicator": {
+              "status": "NO_INDICATOR"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "service": {
+        "id": "56bef996f3d3bc7e587ccc1d",
+        "serviceId": 36217,
+        "serviceType": "WFS",
+        "serviceUrl": "https://security.locationframework.eu/wss/service/NO-GN/httpauth?",
+        "title": "NO-GN",
+        "meters": [
+          {
+            "id": "56fb9799f3d3bc7e588a7c0f",
+            "layerName": "http%3A%2F%2Fwww.locationframework.eu%2Fschemas%2FGeographicalNames%2F1.0:NamedPlace",
+            "crs": "urn:ogc:def:crs:EPSG::3035",
+            "imageHeight": 0,
+            "imageWidth": 0,
+            "format": "application/gml+xml; version=3.2",
+            "operation": "GetFeature",
+            "monitorLink": "https://monitor.spatineo.com/#/monitoring/metrics?service=56bef996f3d3bc7e587ccc1d&meter=56fb9799f3d3bc7e588a7c0f",
+            "indicator": {
+              "status": "NO_INDICATOR"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "service": {
+        "id": "56bef99bf3d3bc7e587ccc21",
+        "serviceId": 36218,
+        "serviceType": "WFS",
+        "serviceUrl": "https://security.locationframework.eu/wss/service/NO-HY/httpauth?",
+        "title": "NO-HY",
+        "meters": [
+          {
+            "id": "56fb9825f3d3bc7e588a7c13",
+            "layerName": "urn%3Ax-inspire%3Aspecification%3Agmlas%3AHydroPhysicalWaters%3A3.0:Watercourse",
+            "crs": "urn:ogc:def:crs:EPSG::3035",
+            "imageHeight": 0,
+            "imageWidth": 0,
+            "format": "application/gml+xml; version=3.2",
+            "operation": "GetFeature",
+            "monitorLink": "https://monitor.spatineo.com/#/monitoring/metrics?service=56bef99bf3d3bc7e587ccc21&meter=56fb9825f3d3bc7e588a7c13",
+            "indicator": {
+              "status": "NO_INDICATOR"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "service": {
+        "id": "56bef9b4f3d3bc7e587ccc28",
+        "serviceId": 36219,
+        "serviceType": "WFS",
+        "serviceUrl": "https://security.locationframework.eu/wss/service/SE-HY/httpauth?",
+        "title": "SE-HY",
+        "meters": [
+          {
+            "id": "56fbbb6ef3d3bc7e588a7c63",
+            "layerName": "http%3A%2F%2Finspire.ec.europa.eu%2Fschemas%2Fhy-p%2F4.0:DamOrWeir",
+            "crs": "urn:ogc:def:crs:EPSG::3035",
+            "imageHeight": 0,
+            "imageWidth": 0,
+            "format": "application/gml+xml; version=3.2",
+            "operation": "GetFeature",
+            "monitorLink": "https://monitor.spatineo.com/#/monitoring/metrics?service=56bef9b4f3d3bc7e587ccc28&meter=56fbbb6ef3d3bc7e588a7c63",
+            "indicator": {
+              "status": "NO_INDICATOR"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "service": {
+        "id": "56fae198f3d3bc7e588a2a60",
+        "serviceId": 39089,
+        "serviceType": "WFS",
+        "serviceUrl": "https://security.locationframework.eu/wss/service/CZ-TN_RAIL/httpauth",
+        "title": "CZ-TN_RAIL",
+        "meters": [
+          {
+            "id": "56fae19bf3d3bc7e588a2a62",
+            "layerName": "urn%3Ax-inspire%3Aspecification%3Agmlas%3ARailwayTransportNetwork%3A3.0:RailwayYardArea",
+            "crs": "EPSG:3045",
+            "imageHeight": 0,
+            "imageWidth": 0,
+            "format": "application/gml+xml; version=3.2",
+            "operation": "GetFeature",
+            "monitorLink": "https://monitor.spatineo.com/#/monitoring/metrics?service=56fae198f3d3bc7e588a2a60&meter=56fae19bf3d3bc7e588a2a62",
+            "indicator": {
+              "status": "NO_INDICATOR"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "service": {
+        "id": "56faeb50f3d3bc7e588a2a6e",
+        "serviceId": 39090,
+        "serviceType": "WFS",
+        "serviceUrl": "https://security.locationframework.eu/wss/service/DK-HY_NW/httpauth?",
+        "title": "DK-HY_NW",
+        "meters": [
+          {
+            "id": "56faebacf3d3bc7e588a2a73",
+            "layerName": "http%3A%2F%2Finspire.ec.europa.eu%2Fschemas%2Fhy-n%2F4.0:WatercourseLink",
+            "crs": "EPSG:3035",
+            "imageHeight": 0,
+            "imageWidth": 0,
+            "format": "application/gml+xml; version=3.2",
+            "operation": "GetFeature",
+            "monitorLink": "https://monitor.spatineo.com/#/monitoring/metrics?service=56faeb50f3d3bc7e588a2a6e&meter=56faebacf3d3bc7e588a2a73",
+            "indicator": {
+              "status": "NO_INDICATOR"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "service": {
+        "id": "56faec08f3d3bc7e588a2a75",
+        "serviceId": 39091,
+        "serviceType": "WFS",
+        "serviceUrl": "https://security.locationframework.eu/wss/service/DK-LC/httpauth?",
+        "title": "DK-LC",
+        "meters": [
+          {
+            "id": "56faec4af3d3bc7e588a2a78",
+            "layerName": "http%3A%2F%2Finspire.ec.europa.eu%2Fschemas%2Flcv%2F4.0:LandCoverDataset",
+            "crs": "EPSG:3035",
+            "imageHeight": 0,
+            "imageWidth": 0,
+            "format": "application/gml+xml; version=3.2",
+            "operation": "GetFeature",
+            "monitorLink": "https://monitor.spatineo.com/#/monitoring/metrics?service=56faec08f3d3bc7e588a2a75&meter=56faec4af3d3bc7e588a2a78",
+            "indicator": {
+              "status": "NO_INDICATOR"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "service": {
+        "id": "56faf1c7f3d3bc7e588a2a86",
+        "serviceId": 39092,
+        "serviceType": "WFS",
+        "serviceUrl": "https://security.locationframework.eu/wss/service/FI-EL_VEC/httpauth?",
+        "title": "FI-EL_VEC",
+        "meters": [
+          {
+            "id": "56faf1c7f3d3bc7e588a2a88",
+            "layerName": "http%3A%2F%2Finspire.ec.europa.eu%2Fschemas%2Fel-vec%2F4.0:BreakLine",
+            "crs": "urn:ogc:def:crs:EPSG::3035",
+            "imageHeight": 0,
+            "imageWidth": 0,
+            "format": "application/gml+xml; version=3.2",
+            "operation": "GetFeature",
+            "monitorLink": "https://monitor.spatineo.com/#/monitoring/metrics?service=56faf1c7f3d3bc7e588a2a86&meter=56faf1c7f3d3bc7e588a2a88",
+            "indicator": {
+              "status": "NO_INDICATOR"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "service": {
+        "id": "56fb7e0df3d3bc7e588a7bd4",
+        "serviceId": 39097,
+        "serviceType": "WFS",
+        "serviceUrl": "https://security.locationframework.eu/wss/service/FI-HY_NW/httpauth",
+        "title": "FI-HY_NW",
+        "meters": [
+          {
+            "id": "56fb7e61f3d3bc7e588a7bd7",
+            "layerName": "http%3A%2F%2Finspire.ec.europa.eu%2Fschemas%2Fhy-n%2F4.0:WatercourseLink",
+            "crs": "http://www.opengis.net/gml/srs/epsg.xml#3035",
+            "imageHeight": 0,
+            "imageWidth": 0,
+            "format": "application/gml+xml; version=3.2",
+            "operation": "GetFeature",
+            "monitorLink": "https://monitor.spatineo.com/#/monitoring/metrics?service=56fb7e0df3d3bc7e588a7bd4&meter=56fb7e61f3d3bc7e588a7bd7",
+            "indicator": {
+              "status": "NO_INDICATOR"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "service": {
+        "id": "56fb8018f3d3bc7e588a7bdd",
+        "serviceId": 39098,
+        "serviceType": "WFS",
+        "serviceUrl": "https://security.locationframework.eu/wss/service/FI-TN_AIR/httpauth?",
+        "title": "FI-TN_AIR",
+        "meters": [
+          {
+            "id": "56fb8023f3d3bc7e588a7bdf",
+            "layerName": "http%3A%2F%2Finspire.ec.europa.eu%2Fschemas%2Ftn-a%2F4.0:ApronArea",
+            "crs": "urn:ogc:def:crs:EPSG::3035",
+            "imageHeight": 0,
+            "imageWidth": 0,
+            "format": "application/gml+xml; version=3.2",
+            "operation": "GetFeature",
+            "monitorLink": "https://monitor.spatineo.com/#/monitoring/metrics?service=56fb8018f3d3bc7e588a7bdd&meter=56fb8023f3d3bc7e588a7bdf",
+            "indicator": {
+              "status": "NO_INDICATOR"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "service": {
+        "id": "56fb8856f3d3bc7e588a7be7",
+        "serviceId": 39099,
+        "serviceType": "WFS",
+        "serviceUrl": "https://security.locationframework.eu/wss/service/FR-ALL/httpauth?/",
+        "title": "FR-ALL",
+        "meters": [
+          {
+            "id": "56fb885cf3d3bc7e588a7be9",
+            "layerName": "http%3A%2F%2Finspire.ec.europa.eu%2Fschemas%2Fad%2F4.0:Address",
+            "crs": "EPSG:4258",
+            "imageHeight": 0,
+            "imageWidth": 0,
+            "format": "application/gml+xml; version=3.2",
+            "operation": "GetFeature",
+            "monitorLink": "https://monitor.spatineo.com/#/monitoring/metrics?service=56fb8856f3d3bc7e588a7be7&meter=56fb885cf3d3bc7e588a7be9",
+            "indicator": {
+              "status": "NO_INDICATOR"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "service": {
+        "id": "56fb8b15f3d3bc7e588a7bf0",
+        "serviceId": 39100,
+        "serviceType": "WFS",
+        "serviceUrl": "https://security.locationframework.eu/wss/service/NL-BU/httpauth",
+        "title": "NL-BU",
+        "meters": [
+          {
+            "id": "56fb8b61f3d3bc7e588a7bf2",
+            "layerName": "http%3A%2F%2Finspire.jrc.ec.europa.eu%2Fschemas%2Fbu-ext2d%2F2.0:Building",
+            "crs": "urn:ogc:def:crs:EPSG::4258",
+            "imageHeight": 0,
+            "imageWidth": 0,
+            "format": "application/gml+xml; version=3.2",
+            "operation": "GetFeature",
+            "monitorLink": "https://monitor.spatineo.com/#/monitoring/metrics?service=56fb8b15f3d3bc7e588a7bf0&meter=56fb8b61f3d3bc7e588a7bf2",
+            "indicator": {
+              "status": "NO_INDICATOR"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "service": {
+        "id": "56fb9475f3d3bc7e588a7bf8",
+        "serviceId": 39101,
+        "serviceType": "WFS",
+        "serviceUrl": "https://security.locationframework.eu/wss/service/NL-CP/httpauth",
+        "title": "NL-CP",
+        "meters": [
+          {
+            "id": "56fb9475f3d3bc7e588a7bf7",
+            "layerName": "urn%3Ax-inspire%3Aspecification%3Agmlas%3ACadastralParcels%3A3.0:CadastralBoundary",
+            "crs": "urn:ogc:def:crs:EPSG::4258",
+            "imageHeight": 0,
+            "imageWidth": 0,
+            "format": "application/gml+xml; version=3.2",
+            "operation": "GetFeature",
+            "monitorLink": "https://monitor.spatineo.com/#/monitoring/metrics?service=56fb9475f3d3bc7e588a7bf8&meter=56fb9475f3d3bc7e588a7bf7",
+            "indicator": {
+              "status": "NO_INDICATOR"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "service": {
+        "id": "56fb95d9f3d3bc7e588a7c03",
+        "serviceId": 39102,
+        "serviceType": "WFS",
+        "serviceUrl": "https://security.locationframework.eu/wss/service/NO-CP/httpauth?",
+        "title": "NO-CP",
+        "meters": [
+          {
+            "id": "56fb961df3d3bc7e588a7c06",
+            "layerName": "http%3A%2F%2Finspire.ec.europa.eu%2Fschemas%2Fcp%2F4.0:CadastralParcel",
+            "crs": "urn:ogc:def:crs:EPSG::3035",
+            "imageHeight": 0,
+            "imageWidth": 0,
+            "format": "application/gml+xml; version=3.2",
+            "operation": "GetFeature",
+            "monitorLink": "https://monitor.spatineo.com/#/monitoring/metrics?service=56fb95d9f3d3bc7e588a7c03&meter=56fb961df3d3bc7e588a7c06",
+            "indicator": {
+              "status": "NO_INDICATOR"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "service": {
+        "id": "56fb96c3f3d3bc7e588a7c09",
+        "serviceId": 39103,
+        "serviceType": "WFS",
+        "serviceUrl": "https://security.locationframework.eu/wss/service/NO-EL_VEC/httpauth?",
+        "title": "NO-EL_VEC",
+        "meters": [
+          {
+            "id": "56fb9705f3d3bc7e588a7c0c",
+            "layerName": "http%3A%2F%2Finspire.ec.europa.eu%2Fschemas%2Fel-vec%2F4.0:ContourLine",
+            "crs": "urn:ogc:def:crs:EPSG::3035",
+            "imageHeight": 0,
+            "imageWidth": 0,
+            "format": "application/gml+xml; version=3.2",
+            "operation": "GetFeature",
+            "monitorLink": "https://monitor.spatineo.com/#/monitoring/metrics?service=56fb96c3f3d3bc7e588a7c09&meter=56fb9705f3d3bc7e588a7c0c",
+            "indicator": {
+              "status": "NO_INDICATOR"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "service": {
+        "id": "56fb9981f3d3bc7e588a7c18",
+        "serviceId": 39104,
+        "serviceType": "WFS",
+        "serviceUrl": "https://security.locationframework.eu/wss/service/NO-LC/httpauth?",
+        "title": "NO-LC",
+        "meters": [
+          {
+            "id": "56fb99bef3d3bc7e588a7c1b",
+            "layerName": "http%3A%2F%2Finspire.ec.europa.eu%2Fschemas%2Flcv%2F4.0:LandCoverUnit",
+            "crs": "urn:ogc:def:crs:EPSG::3035",
+            "imageHeight": 0,
+            "imageWidth": 0,
+            "format": "application/gml+xml; version=3.2",
+            "operation": "GetFeature",
+            "monitorLink": "https://monitor.spatineo.com/#/monitoring/metrics?service=56fb9981f3d3bc7e588a7c18&meter=56fb99bef3d3bc7e588a7c1b",
+            "indicator": {
+              "status": "NO_INDICATOR"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "service": {
+        "id": "56fba22ff3d3bc7e588a7c25",
+        "serviceId": 39105,
+        "serviceType": "WFS",
+        "serviceUrl": "https://security.locationframework.eu/wss/service/PL-AD/httpauth?",
+        "title": "PL-AD",
+        "meters": [
+          {
+            "id": "56fba278f3d3bc7e588a7c27",
+            "layerName": "urn%3Ax-inspire%3Aspecification%3Agmlas%3AAddresses%3A3.0:Address",
+            "crs": "urn:ogc:def:crs:EPSG::3035",
+            "imageHeight": 0,
+            "imageWidth": 0,
+            "format": "application/gml+xml; version=3.2",
+            "operation": "GetFeature",
+            "monitorLink": "https://monitor.spatineo.com/#/monitoring/metrics?service=56fba22ff3d3bc7e588a7c25&meter=56fba278f3d3bc7e588a7c27",
+            "indicator": {
+              "status": "NO_INDICATOR"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "service": {
+        "id": "56fba2b6f3d3bc7e588a7c29",
+        "serviceId": 39106,
+        "serviceType": "WFS",
+        "serviceUrl": "https://security.locationframework.eu/wss/service/PL-AU/httpauth?",
+        "title": "PL-AU",
+        "meters": [
+          {
+            "id": "56fba2f8f3d3bc7e588a7c2d",
+            "layerName": "urn%3Ax-inspire%3Aspecification%3Agmlas%3AAdministrativeUnits%3A3.0:AdministrativeUnit",
+            "crs": "urn:ogc:def:crs:EPSG::3035",
+            "imageHeight": 0,
+            "imageWidth": 0,
+            "format": "application/gml+xml; version=3.2",
+            "operation": "GetFeature",
+            "monitorLink": "https://monitor.spatineo.com/#/monitoring/metrics?service=56fba2b6f3d3bc7e588a7c29&meter=56fba2f8f3d3bc7e588a7c2d",
+            "indicator": {
+              "status": "NO_INDICATOR"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "service": {
+        "id": "56fbabc2f3d3bc7e588a7c38",
+        "serviceId": 39107,
+        "serviceType": "WFS",
+        "serviceUrl": "https://security.locationframework.eu/wss/service/PL-CP/httpauth?",
+        "title": "PL-CP",
+        "meters": [
+          {
+            "id": "56fbac00f3d3bc7e588a7c3a",
+            "layerName": "urn%3Ax-inspire%3Aspecification%3Agmlas%3ACadastralParcels%3A3.0:CadastralParcel",
+            "crs": "urn:ogc:def:crs:EPSG::3035",
+            "imageHeight": 0,
+            "imageWidth": 0,
+            "format": "application/gml+xml; version=3.2",
+            "operation": "GetFeature",
+            "monitorLink": "https://monitor.spatineo.com/#/monitoring/metrics?service=56fbabc2f3d3bc7e588a7c38&meter=56fbac00f3d3bc7e588a7c3a",
+            "indicator": {
+              "status": "NO_INDICATOR"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "service": {
+        "id": "56fbaf03f3d3bc7e588a7c3f",
+        "serviceId": 39108,
+        "serviceType": "WFS",
+        "serviceUrl": "https://security.locationframework.eu/wss/service/PL-GN/httpauth?",
+        "title": "PL-GN",
+        "meters": [
+          {
+            "id": "56fbaf40f3d3bc7e588a7c42",
+            "layerName": "urn%3Ax-inspire%3Aspecification%3Agmlas%3AGeographicalNames%3A3.0:NamedPlace",
+            "crs": "urn:ogc:def:crs:EPSG::3035",
+            "imageHeight": 0,
+            "imageWidth": 0,
+            "format": "application/gml+xml; version=3.2",
+            "operation": "GetFeature",
+            "monitorLink": "https://monitor.spatineo.com/#/monitoring/metrics?service=56fbaf03f3d3bc7e588a7c3f&meter=56fbaf40f3d3bc7e588a7c42",
+            "indicator": {
+              "status": "NO_INDICATOR"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "service": {
+        "id": "56fbb129f3d3bc7e588a7c47",
+        "serviceId": 39109,
+        "serviceType": "WFS",
+        "serviceUrl": "https://security.locationframework.eu/wss/service/PL-LC/httpauth?",
+        "title": "PL-LC",
+        "meters": [
+          {
+            "id": "56fbb15af3d3bc7e588a7c49",
+            "layerName": "http%3A%2F%2Finspire.ec.europa.eu%2Fschemas%2Flcv%2F3.0:LandCoverUnit",
+            "crs": "urn:ogc:def:crs:EPSG::3035",
+            "imageHeight": 0,
+            "imageWidth": 0,
+            "format": "application/gml+xml; version=3.2",
+            "operation": "GetFeature",
+            "monitorLink": "https://monitor.spatineo.com/#/monitoring/metrics?service=56fbb129f3d3bc7e588a7c47&meter=56fbb15af3d3bc7e588a7c49",
+            "indicator": {
+              "status": "NO_INDICATOR"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "service": {
+        "id": "56fbb318f3d3bc7e588a7c4e",
+        "serviceId": 39110,
+        "serviceType": "WFS",
+        "serviceUrl": "https://security.locationframework.eu/wss/service/PL-TN/httpauth?",
+        "title": "PL-TN",
+        "meters": [
+          {
+            "id": "56fbb39af3d3bc7e588a7c51",
+            "layerName": "urn%3Ax-inspire%3Aspecification%3Agmlas%3ARailwayTransportNetwork%3A3.0:RailwayLine",
+            "crs": "urn:ogc:def:crs:EPSG::3035",
+            "imageHeight": 0,
+            "imageWidth": 0,
+            "format": "application/gml+xml; version=3.2",
+            "operation": "GetFeature",
+            "monitorLink": "https://monitor.spatineo.com/#/monitoring/metrics?service=56fbb318f3d3bc7e588a7c4e&meter=56fbb39af3d3bc7e588a7c51",
+            "indicator": {
+              "status": "NO_INDICATOR"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "service": {
+        "id": "56fbb619f3d3bc7e588a7c56",
+        "serviceId": 39111,
+        "serviceType": "WFS",
+        "serviceUrl": "https://security.locationframework.eu/wss/service/SE-AU/httpauth?",
+        "title": "SE-AU",
+        "meters": [
+          {
+            "id": "56fbb658f3d3bc7e588a7c58",
+            "layerName": "http%3A%2F%2Finspire.ec.europa.eu%2Fschemas%2Fau%2F4.0:AdministrativeBoundary",
+            "crs": "urn:ogc:def:crs:EPSG::3035",
+            "imageHeight": 0,
+            "imageWidth": 0,
+            "format": "application/gml+xml; version=3.2",
+            "operation": "GetFeature",
+            "monitorLink": "https://monitor.spatineo.com/#/monitoring/metrics?service=56fbb619f3d3bc7e588a7c56&meter=56fbb658f3d3bc7e588a7c58",
+            "indicator": {
+              "status": "NO_INDICATOR"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "service": {
+        "id": "56fbb951f3d3bc7e588a7c5c",
+        "serviceId": 39112,
+        "serviceType": "WFS",
+        "serviceUrl": "https://security.locationframework.eu/wss/service/SE-GN/httpauth?",
+        "title": "SE-GN",
+        "meters": [
+          {
+            "id": "56fbb99bf3d3bc7e588a7c5f",
+            "layerName": "http%3A%2F%2Finspire.ec.europa.eu%2Fschemas%2Fgn%2F4.0:NamedPlace",
+            "crs": "urn:ogc:def:crs:EPSG::3035",
+            "imageHeight": 0,
+            "imageWidth": 0,
+            "format": "application/gml+xml; version=3.2",
+            "operation": "GetFeature",
+            "monitorLink": "https://monitor.spatineo.com/#/monitoring/metrics?service=56fbb951f3d3bc7e588a7c5c&meter=56fbb99bf3d3bc7e588a7c5f",
+            "indicator": {
+              "status": "NO_INDICATOR"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "service": {
+        "id": "56fbbd2cf3d3bc7e588a7c67",
+        "serviceId": 39113,
+        "serviceType": "WFS",
+        "serviceUrl": "https://security.locationframework.eu/wss/service/SE-LC/httpauth?",
+        "title": "SE-LC",
+        "meters": [
+          {
+            "id": "56fbbd6ef3d3bc7e588a7c6a",
+            "layerName": "http%3A%2F%2Finspire.ec.europa.eu%2Fschemas%2Flcv%2F4.0:LandCoverDataset",
+            "crs": "urn:ogc:def:crs:EPSG::3035",
+            "imageHeight": 0,
+            "imageWidth": 0,
+            "format": "application/gml+xml; version=3.2",
+            "operation": "GetFeature",
+            "monitorLink": "https://monitor.spatineo.com/#/monitoring/metrics?service=56fbbd2cf3d3bc7e588a7c67&meter=56fbbd6ef3d3bc7e588a7c6a",
+            "indicator": {
+              "status": "NO_INDICATOR"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "service": {
+        "id": "56fbfd2ff3d3bc7e588a7c87",
+        "serviceId": 39114,
+        "serviceType": "WFS",
+        "serviceUrl": "https://security.locationframework.eu/wss/service/NO-SR/httpauth?",
+        "title": "NO-SR",
+        "meters": [
+          {
+            "id": "56fbfd75f3d3bc7e588a7c8a",
+            "layerName": "http%3A%2F%2Finspire.ec.europa.eu%2Fschemas%2Fsr%2F4.0:InterTidalArea",
+            "crs": "urn:ogc:def:crs:EPSG::3035",
+            "imageHeight": 0,
+            "imageWidth": 0,
+            "format": "application/gml+xml; version=3.2",
+            "operation": "GetFeature",
+            "monitorLink": "https://monitor.spatineo.com/#/monitoring/metrics?service=56fbfd2ff3d3bc7e588a7c87&meter=56fbfd75f3d3bc7e588a7c8a",
+            "indicator": {
+              "status": "NO_INDICATOR"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "service": {
+        "id": "57060df1f3d3bc7e588d0b2c",
+        "serviceId": 39387,
+        "serviceType": "WFS",
+        "serviceUrl": "https://security.locationframework.eu/wss/service/FR-AU/httpauth?/",
+        "title": "FR-AU",
+        "meters": [
+          {
+            "id": "57060df0f3d3bc7e588d0b2b",
+            "layerName": "http%3A%2F%2Finspire.ec.europa.eu%2Fschemas%2Fau%2F4.0:AdministrativeBoundary",
+            "crs": "EPSG:4258",
+            "imageHeight": 0,
+            "imageWidth": 0,
+            "format": "application/gml+xml; version=3.2",
+            "operation": "GetFeature",
+            "monitorLink": "https://monitor.spatineo.com/#/monitoring/metrics?service=57060df1f3d3bc7e588d0b2c&meter=57060df0f3d3bc7e588d0b2b",
+            "indicator": {
+              "status": "NO_INDICATOR"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "service": {
+        "id": "57060f9ff3d3bc7e588d0b35",
+        "serviceId": 39388,
+        "serviceType": "WFS",
+        "serviceUrl": "https://security.locationframework.eu/wss/service/FR-BU/httpauth?/",
+        "title": "FR-BU",
+        "meters": [
+          {
+            "id": "57060f9cf3d3bc7e588d0b34",
+            "layerName": "http%3A%2F%2Finspire.ec.europa.eu%2Fschemas%2Fbu-core2d%2F4.0:Building",
+            "crs": "EPSG:4258",
+            "imageHeight": 0,
+            "imageWidth": 0,
+            "format": "application/gml+xml; version=3.2",
+            "operation": "GetFeature",
+            "monitorLink": "https://monitor.spatineo.com/#/monitoring/metrics?service=57060f9ff3d3bc7e588d0b35&meter=57060f9cf3d3bc7e588d0b34",
+            "indicator": {
+              "status": "NO_INDICATOR"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "service": {
+        "id": "570613f5f3d3bc7e588d0b3d",
+        "serviceId": 39389,
+        "serviceType": "WFS",
+        "serviceUrl": "https://security.locationframework.eu/wss/service/FR-GN/httpauth?/",
+        "title": "FR-GN",
+        "meters": [
+          {
+            "id": "57061443f3d3bc7e588d0b41",
+            "layerName": "http%3A%2F%2Finspire.ec.europa.eu%2Fschemas%2Fgn%2F4.0:NamedPlace",
+            "crs": "EPSG:3035",
+            "imageHeight": 0,
+            "imageWidth": 0,
+            "format": "application/gml+xml; version=3.2",
+            "operation": "GetFeature",
+            "monitorLink": "https://monitor.spatineo.com/#/monitoring/metrics?service=570613f5f3d3bc7e588d0b3d&meter=57061443f3d3bc7e588d0b41",
+            "indicator": {
+              "status": "NO_INDICATOR"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "service": {
+        "id": "5706169ef3d3bc7e588d0b50",
+        "serviceId": 39391,
+        "serviceType": "WFS",
+        "serviceUrl": "https://security.locationframework.eu/wss/service/FR-HY/httpauth?/",
+        "title": "FR-HY",
+        "meters": [
+          {
+            "id": "570616eaf3d3bc7e588d0b54",
+            "layerName": "http%3A%2F%2Finspire.ec.europa.eu%2Fschemas%2Fhy-n%2F4.0:HydroNode",
+            "crs": "EPSG:3035",
+            "imageHeight": 0,
+            "imageWidth": 0,
+            "format": "application/gml+xml; version=3.2",
+            "operation": "GetFeature",
+            "monitorLink": "https://monitor.spatineo.com/#/monitoring/metrics?service=5706169ef3d3bc7e588d0b50&meter=570616eaf3d3bc7e588d0b54",
+            "indicator": {
+              "status": "NO_INDICATOR"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "service": {
+        "id": "570618f9f3d3bc7e588d0b5b",
+        "serviceId": 39392,
+        "serviceType": "WFS",
+        "serviceUrl": "https://security.locationframework.eu/wss/service/FR-TN/httpauth?/",
+        "title": "FR-TN",
+        "meters": [
+          {
+            "id": "57061948f3d3bc7e588d0b5f",
+            "layerName": "http%3A%2F%2Finspire.ec.europa.eu%2Fschemas%2Fnet%2F4.0:Network",
+            "crs": "EPSG:3035",
+            "imageHeight": 0,
+            "imageWidth": 0,
+            "format": "application/gml+xml; version=3.2",
+            "operation": "GetFeature",
+            "monitorLink": "https://monitor.spatineo.com/#/monitoring/metrics?service=570618f9f3d3bc7e588d0b5b&meter=57061948f3d3bc7e588d0b5f",
+            "indicator": {
+              "status": "NO_INDICATOR"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "service": {
+        "id": "5719acdef3d3bc7e5891db9c",
+        "serviceId": 39899,
+        "serviceType": "WFS",
+        "serviceUrl": "https://security.locationframework.eu/wss/service/EG-PS/httpauth?",
+        "title": "EG-PS",
+        "meters": [
+          {
+            "id": "5719ace6f3d3bc7e5891db9e",
+            "layerName": "http%3A%2F%2Finspire.ec.europa.eu%2Fschemas%2Fps%2F4.0:ProtectedSite",
+            "crs": "urn:ogc:def:crs:EPSG::4258",
+            "imageHeight": 0,
+            "imageWidth": 0,
+            "format": "application/gml+xml; version=3.2",
+            "operation": "GetFeature",
+            "monitorLink": "https://monitor.spatineo.com/#/monitoring/metrics?service=5719acdef3d3bc7e5891db9c&meter=5719ace6f3d3bc7e5891db9e",
+            "indicator": {
+              "status": "NO_INDICATOR"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "service": {
+        "id": "5719aeedf3d3bc7e5891dba4",
+        "serviceId": 39900,
+        "serviceType": "WFS",
+        "serviceUrl": "https://security.locationframework.eu/wss/service/EG-TN_AIR/httpauth?",
+        "title": "EG-TN_AIR",
+        "meters": [
+          {
+            "id": "5719af6bf3d3bc7e5891dba6",
+            "layerName": "http%3A%2F%2Fwww.locationframework.eu%2Fschemas%2FAirTransportNetwork%2F1.0:RunwayLine",
+            "crs": "urn:ogc:def:crs:EPSG::4258",
+            "imageHeight": 0,
+            "imageWidth": 0,
+            "format": "application/gml+xml; version=3.2",
+            "operation": "GetFeature",
+            "monitorLink": "https://monitor.spatineo.com/#/monitoring/metrics?service=5719aeedf3d3bc7e5891dba4&meter=5719af6bf3d3bc7e5891dba6",
+            "indicator": {
+              "status": "NO_INDICATOR"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "service": {
+        "id": "572c0f5af3d3bc7e58968c4d",
+        "serviceId": 40348,
+        "serviceType": "WMS",
+        "serviceUrl": "https://security.locationframework.eu/wss/service/Base-BE/httpauth?SERVICE=WMS&",
+        "title": "Base-BE",
+        "meters": [
+          {
+            "id": "572c0f5bf3d3bc7e58968c4f",
+            "layerName": "belgium",
+            "crs": "EPSG:3812",
+            "imageHeight": 256,
+            "imageWidth": 256,
+            "format": "image/png",
+            "operation": "GetMap",
+            "monitorLink": "https://monitor.spatineo.com/#/monitoring/metrics?service=572c0f5af3d3bc7e58968c4d&meter=572c0f5bf3d3bc7e58968c4f",
+            "indicator": {
+              "status": "NO_INDICATOR"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "service": {
+        "id": "572c1631f3d3bc7e58968c5c",
+        "serviceId": 40350,
+        "serviceType": "WMS",
+        "serviceUrl": "https://security.locationframework.eu/wss/service/Base-CZ/httpauth",
+        "title": "Base-CZ",
+        "meters": [
+          {
+            "id": "572c16abf3d3bc7e58968c60",
+            "layerName": "GN_LANDFORM",
+            "crs": "EPSG:3035",
+            "imageHeight": 256,
+            "imageWidth": 256,
+            "format": "image/png",
+            "operation": "GetMap",
+            "monitorLink": "https://monitor.spatineo.com/#/monitoring/metrics?service=572c1631f3d3bc7e58968c5c&meter=572c16abf3d3bc7e58968c60",
+            "indicator": {
+              "status": "NO_INDICATOR"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "service": {
+        "id": "572c1834f3d3bc7e58968c6a",
+        "serviceId": 40351,
+        "serviceType": "WMS",
+        "serviceUrl": "https://security.locationframework.eu/wss/service/Base-ES/httpauth?SERVICE=WMS&",
+        "title": "Base-ES",
+        "meters": [
+          {
+            "id": "572c187bf3d3bc7e58968c6e",
+            "layerName": "GN.GeographicalNames.NamedPlace",
+            "crs": "EPSG:3035",
+            "imageHeight": 256,
+            "imageWidth": 256,
+            "format": "image/png",
+            "operation": "GetMap",
+            "monitorLink": "https://monitor.spatineo.com/#/monitoring/metrics?service=572c1834f3d3bc7e58968c6a&meter=572c187bf3d3bc7e58968c6e",
+            "indicator": {
+              "status": "NO_INDICATOR"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "service": {
+        "id": "572c1a86f3d3bc7e58968c74",
+        "serviceId": 40352,
+        "serviceType": "WMS",
+        "serviceUrl": "https://security.locationframework.eu/wss/service/Base-NL/httpauth",
+        "title": "Base-NL",
+        "meters": [
+          {
+            "id": "572c1a8bf3d3bc7e58968c76",
+            "layerName": "top10nlv2",
+            "crs": "EPSG:28992",
+            "imageHeight": 256,
+            "imageWidth": 256,
+            "format": "image/png",
+            "operation": "GetMap",
+            "monitorLink": "https://monitor.spatineo.com/#/monitoring/metrics?service=572c1a86f3d3bc7e58968c74&meter=572c1a8bf3d3bc7e58968c76",
+            "indicator": {
+              "status": "NO_INDICATOR"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "service": {
+        "id": "572c1f1ff3d3bc7e58968c7c",
+        "serviceId": 40353,
+        "serviceType": "WMS",
+        "serviceUrl": "https://security.locationframework.eu/wss/service/Base-PL/httpauth?",
+        "title": "Base-PL",
+        "meters": [
+          {
+            "id": "572c1f77f3d3bc7e58968c7e",
+            "layerName": "59",
+            "crs": "EPSG:3035",
+            "imageHeight": 256,
+            "imageWidth": 256,
+            "format": "image/png",
+            "operation": "GetMap",
+            "monitorLink": "https://monitor.spatineo.com/#/monitoring/metrics?service=572c1f1ff3d3bc7e58968c7c&meter=572c1f77f3d3bc7e58968c7e",
+            "indicator": {
+              "status": "NO_INDICATOR"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "service": {
+        "id": "572c2271f3d3bc7e58968c83",
+        "serviceId": 40354,
+        "serviceType": "WMS",
+        "serviceUrl": "https://security.locationframework.eu/wss/service/FI-WMS/httpauth",
+        "title": "FI-WMS",
+        "meters": [
+          {
+            "id": "572c22cff3d3bc7e58968c8a",
+            "layerName": "AU.AdministrativeUnits",
+            "crs": "EPSG:3035",
+            "imageHeight": 256,
+            "imageWidth": 256,
+            "format": "image/png",
+            "operation": "GetMap",
+            "monitorLink": "https://monitor.spatineo.com/#/monitoring/metrics?service=572c2271f3d3bc7e58968c83&meter=572c22cff3d3bc7e58968c8a",
+            "indicator": {
+              "status": "NO_INDICATOR"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "service": {
+        "id": "572c25b4f3d3bc7e58968c8f",
+        "serviceId": 40356,
+        "serviceType": "WMS",
+        "serviceUrl": "https://security.locationframework.eu/wss/service/CIM-CZ/httpauth?",
+        "title": "CIM-CZ",
+        "meters": [
+          {
+            "id": "572c260ef3d3bc7e58968c92",
+            "layerName": "CP.CadastralParcel",
+            "crs": "EPSG:3035",
+            "imageHeight": 256,
+            "imageWidth": 256,
+            "format": "image/png",
+            "operation": "GetMap",
+            "monitorLink": "https://monitor.spatineo.com/#/monitoring/metrics?service=572c25b4f3d3bc7e58968c8f&meter=572c260ef3d3bc7e58968c92",
+            "indicator": {
+              "status": "NO_INDICATOR"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "service": {
+        "id": "572c28e4f3d3bc7e58968c97",
+        "serviceId": 40357,
+        "serviceType": "WMS",
+        "serviceUrl": "https://security.locationframework.eu/wss/service/CIM-FI/httpauth",
+        "title": "CIM-FI",
+        "meters": [
+          {
+            "id": "575fc95af3d3bc7e58a402bb",
+            "layerName": "elf-wms:cadastral_map",
+            "crs": "EPSG:3035",
+            "imageHeight": 256,
+            "imageWidth": 256,
+            "format": "image/png",
+            "operation": "GetMap",
+            "monitorLink": "https://monitor.spatineo.com/#/monitoring/metrics?service=572c28e4f3d3bc7e58968c97&meter=575fc95af3d3bc7e58a402bb",
+            "indicator": {
+              "status": "NO_INDICATOR"
+            }
+          },
+          {
+            "id": "575fc988f3d3bc7e58a402bd",
+            "layerName": "elf-wms:cadastral_map",
+            "crs": "EPSG:3857",
+            "imageHeight": 256,
+            "imageWidth": 256,
+            "format": "image/png",
+            "operation": "GetMap",
+            "monitorLink": "https://monitor.spatineo.com/#/monitoring/metrics?service=572c28e4f3d3bc7e58968c97&meter=575fc988f3d3bc7e58a402bd",
+            "indicator": {
+              "status": "NO_INDICATOR"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "service": {
+        "id": "572c2bd0f3d3bc7e58968ca4",
+        "serviceId": 40359,
+        "serviceType": "WMS",
+        "serviceUrl": "https://security.locationframework.eu/wss/service/CIM-NL/httpauth",
+        "title": "CIM-NL",
+        "meters": [
+          {
+            "id": "572c2c18f3d3bc7e58968ca6",
+            "layerName": "CadastralBoundary",
+            "crs": "EPSG:3035",
+            "imageHeight": 256,
+            "imageWidth": 256,
+            "format": "image/png",
+            "operation": "GetMap",
+            "monitorLink": "https://monitor.spatineo.com/#/monitoring/metrics?service=572c2bd0f3d3bc7e58968ca4&meter=572c2c18f3d3bc7e58968ca6",
+            "indicator": {
+              "status": "NO_INDICATOR"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "service": {
+        "id": "572c2e32f3d3bc7e58968caa",
+        "serviceId": 40360,
+        "serviceType": "WMS",
+        "serviceUrl": "https://security.locationframework.eu/wss/service/CIM-PL/httpauth?",
+        "title": "CIM-PL",
+        "meters": [
+          {
+            "id": "572c2e9ef3d3bc7e58968d30",
+            "layerName": "CP.CadastralParcel",
+            "crs": "EPSG:3035",
+            "imageHeight": 256,
+            "imageWidth": 256,
+            "format": "image/png",
+            "operation": "GetMap",
+            "monitorLink": "https://monitor.spatineo.com/#/monitoring/metrics?service=572c2e32f3d3bc7e58968caa&meter=572c2e9ef3d3bc7e58968d30",
+            "indicator": {
+              "status": "NO_INDICATOR"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "service": {
+        "id": "572c303df3d3bc7e58968d35",
+        "serviceId": 40361,
+        "serviceType": "WMS",
+        "serviceUrl": "https://security.locationframework.eu/wss/service/EuroDEM/httpauth?",
+        "title": "EuroDEM",
+        "meters": [
+          {
+            "id": "572c30a7f3d3bc7e58968d38",
+            "layerName": "schummerung",
+            "crs": "EPSG:3035",
+            "imageHeight": 256,
+            "imageWidth": 256,
+            "format": "image/png",
+            "operation": "GetMap",
+            "monitorLink": "https://monitor.spatineo.com/#/monitoring/metrics?service=572c303df3d3bc7e58968d35&meter=572c30a7f3d3bc7e58968d38",
+            "indicator": {
+              "status": "NO_INDICATOR"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "service": {
+        "id": "5746de59f3d3bc7e589d6498",
+        "serviceId": 40888,
+        "serviceType": "WFS",
+        "serviceUrl": "https://security.locationframework.eu/wss/service/LV-CP/httpauth?",
+        "title": "LV-CP",
+        "meters": [
+          {
+            "id": "57504408f3d3bc7e589fd119",
+            "layerName": "http%3A%2F%2Finspire.ec.europa.eu%2Fschemas%2Fcp%2F4.0:CadastralParcel",
+            "crs": "http://www.opengis.net/def/crs/EPSG/0/3059",
+            "imageHeight": 0,
+            "imageWidth": 0,
+            "format": "application/gml+xml; version=3.2",
+            "operation": "GetFeature",
+            "monitorLink": "https://monitor.spatineo.com/#/monitoring/metrics?service=5746de59f3d3bc7e589d6498&meter=57504408f3d3bc7e589fd119",
+            "indicator": {
+              "status": "NO_INDICATOR"
+            }
+          }
+        ]
+      }
+    }
+  ]
 }
