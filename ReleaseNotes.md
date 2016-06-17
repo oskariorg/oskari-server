@@ -37,6 +37,10 @@ Fixed to work as intended
 - termsofuse__mappublication__en.html
 - termsofuse__mappublication.html
 
+### DB changes
+
+Added source column to portti_backendstatus table in preparation for multiple service status sources.
+
 ## 1.36.2
 
 ### Database migration
