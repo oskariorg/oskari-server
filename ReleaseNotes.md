@@ -2,6 +2,12 @@
 
 ## 1.37
 
+### publish template
+
+The publish template for new Oskari installations with the default setup is now Openlayers 3 based.
+We are planning to update existing installs in the next release or so with the kind of "recommended, but optional"
+ migration that we are doing for publisher in this release. See MigrationGuide.md for details. 
+
 ### service-users
 
 When using the DatabaseUserService for user management the user password is now encrypted with bcrypt instead of MD5.
