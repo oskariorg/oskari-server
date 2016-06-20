@@ -20,6 +20,5 @@
         "Guest" : ["VIEW_LAYER", "VIEW_PUBLISHED"],
         "User" : ["VIEW_LAYER", "VIEW_PUBLISHED", "PUBLISH"]
     },
-	"version": "1.1.1",
-	"maxscale": 5039716
+	"version": "1.1.1"
 }
