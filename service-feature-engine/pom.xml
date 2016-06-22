@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>fi.nls.oskari</groupId>
 		<artifactId>oskari-parent</artifactId>
-        <version>1.36.2</version>
+        <version>1.37.0</version>
 	</parent>
 	<groupId>fi.nls.oskari.service</groupId>
 	<artifactId>oskari-feature-engine</artifactId>
@@ -13,7 +13,7 @@
 
 	<properties>
 		<titan.version>0.4.2</titan.version>
-		<groovy.version>2.2.2</groovy.version>
+		<groovy.version>2.4.6</groovy.version>
 	</properties>
 
 	<build>

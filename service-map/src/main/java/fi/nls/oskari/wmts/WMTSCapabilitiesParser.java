@@ -19,6 +19,7 @@ import java.util.Set;
  * Initial parsing for WMTS capabilities in a way that admin-layerselector can interpret it.
  */
 public class WMTSCapabilitiesParser {
+    private static final String KEY_LAYERS_WITH_REMARKS = "layersWithRemarks";
 
     public WMTSCapabilities parseCapabilities(final String xml)
             throws Exception {
@@ -60,6 +61,7 @@ public class WMTSCapabilitiesParser {
             final String matrixsetid = getMatrixSetId(caps, links, currentCrs);
             if(matrixsetid == null ){
                 JSONHelper.putValue(layerJson, "title", layer.getTitle() + "  *");
+                result.put(KEY_LAYERS_WITH_REMARKS,"true");
             }
             else {
                 JSONHelper.putValue(layerJson, "tileMatrixSetId", matrixsetid);

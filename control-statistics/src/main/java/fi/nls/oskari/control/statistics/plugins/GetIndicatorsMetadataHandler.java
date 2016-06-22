@@ -23,6 +23,7 @@ import fi.nls.oskari.util.ResponseHelper;
  * eg.
  * OSKARI_URL?action_route=GetIndicatorsMetadata
  * Response is in JSON, and contains the indicator metadata for each plugin separately.
+ * @deprecated - use GetIndicatorsList instead
  */
 @OskariActionRoute("GetIndicatorsMetadata")
 public class GetIndicatorsMetadataHandler extends ActionHandler {
@@ -32,13 +33,8 @@ public class GetIndicatorsMetadataHandler extends ActionHandler {
      * For now, this uses pretty much static global store for the plugins.
      * In the future it might make sense to inject the pluginManager references to different controllers using DI.
      */
-    private static final StatisticalDatasourcePluginManager pluginManager = new StatisticalDatasourcePluginManager();
+    private static final StatisticalDatasourcePluginManager pluginManager = StatisticalDatasourcePluginManager.getInstance();
 
-    @Override
-    public void init() {
-        pluginManager.init();
-    }
-    
     @Override
     public void handleAction(ActionParameters ap) throws ActionException {
         JSONObject response = getIndicatorsMetadataJSON(ap.getUser(), false);

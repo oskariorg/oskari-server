@@ -4,7 +4,7 @@
     <parent>
         <groupId>fi.nls.oskari</groupId>
         <artifactId>oskari-parent</artifactId>
-        <version>1.36.2</version>
+        <version>1.37.0</version>
     </parent>
 
     <groupId>fi.nls.oskari</groupId>
@@ -15,7 +15,6 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<geotools.version>14.2</geotools.version>
-		<poi.version>3.9</poi.version>
 		<gwc.version>1.4.0</gwc.version>
 		<pdfbox.version>1.8.2</pdfbox.version>
 		<skipTests>true</skipTests>
@@ -279,23 +278,7 @@
 			<artifactId>vecmath</artifactId>
 			<version>1.3.1</version>
 		</dependency>
-
-		<dependency>
-			<groupId>org.apache.poi</groupId>
-			<artifactId>poi</artifactId>
-			<version>${poi.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.poi</groupId>
-			<artifactId>poi-ooxml</artifactId>
-			<version>${poi.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.poi</groupId>
-			<artifactId>poi-scratchpad</artifactId>
-			<version>${poi.version}</version>
-		</dependency>
-
+                
 		<!-- THIS is gwc-1.3rc1 with fixes declared in diff file /gwc-1.3rc1-patch.txt -->
 		<!-- dependency> <groupId>fi.nls.geowebcache</groupId> <artifactId>patch</artifactId>
 			<version>1.3.rc-patched</version> <scope>system</scope> <systemPath>${project.basedir}/WebContent/WEB-INF/lib/gwc-core-1.3-SNAPSHOT.jar</systemPath>

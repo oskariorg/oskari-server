@@ -13,6 +13,7 @@ public class ProjectionHelperTest {
     private String EPSG_4258 = "EPSG:4258";
     private String EPSG_3067 = "EPSG:3067";
     private String EPSG_4326 = "EPSG:4326";
+    private String EPSG_3575 = "EPSG:3575";
 
     @Test
     public void testTransformPoint() throws Exception {
@@ -44,12 +45,20 @@ public class ProjectionHelperTest {
 
     @Test
     public void testTransformPointEPSG_4326ToEPSG_3067() throws Exception {
-        double lat = 61.4980214;
-        double lon = 23.7603118;
+        //double lat = 33.02221;
+        //double lon = -179.99;
 
-        Point p3 = ProjectionHelper.transformPoint(lat, lon, EPSG_4326, EPSG_3067);
-        assertEquals("lon", 327578.7810839222, p3.getLon(), 0.0);
-        assertEquals("lat", 6822546.781459001, p3.getLat(), 0.0);
+        double lat = 33.02221;
+        double lon = -90.0;
+
+        Point p3 = ProjectionHelper.transformPoint(lat, lon, EPSG_4326, EPSG_3575);
+
+
+        double lat2 = 33.02221;
+        double lon2 = 90;
+
+        Point p4 = ProjectionHelper.transformPoint(lat2, lon2, EPSG_4326, EPSG_3575);
+
     }
 
     @Test

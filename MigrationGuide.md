@@ -1,5 +1,27 @@
 # Migration guide
 
+## 1.37.0
+
+### Forced view migrations - IMPORTANT!
+
+Map publishing functionality has been implemented with a bundle called publisher. All current work toward improving 
+the publishing feature has been done on a bundle publisher2. Since the old one is no longer maintained we are forcing an
+update to any view having the publisher bundle to start using the publisher2 bundle. This shouldn't cause any problems 
+if you are using the standard publisher bundle with no modifications. If you absolutely want to keep the current publisher bundle 
+and will deal with the changes yourself you can add a property to oskari-ext.properties to skip this update:
+
+    flyway.1_37_1.skip=true
+
+You might also have ran this kind of update on your environment previously (through sample-module migrations for example).
+In such case this migration does nothing.
+
+### servlet-map/webapp-map - Openlayers polyfill
+
+The latest Openlayers 3 doesn't work with IE9 since it lacks for example requestAnimationFrame()
+ function: https://github.com/openlayers/ol3/issues/4865. A polyfill has been added to published.jsp for browsers <= IE 9.
+
+You might want to do the same for any custom JSP for published maps if you need to support IE 9.
+
 ## 1.36.0
 
 ### Application changes to JSP-files

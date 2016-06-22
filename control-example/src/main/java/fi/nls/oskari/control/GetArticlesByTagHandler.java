@@ -76,7 +76,7 @@ public class GetArticlesByTagHandler extends ActionHandler {
             return getMissingContentNote(originalTags);
         }
         // remove the last tag
-        final String newTags = StringUtils.join(Arrays.copyOf(tags, tags.length-1));
+        final String newTags = StringUtils.join(Arrays.copyOf(tags, tags.length-1), ",");
         JSONObject articleContent = getContent(newTags);
         while (articleContent == null) {
             articleContent = tryContentWithLessTags(originalTags, newTags);
@@ -102,14 +102,15 @@ public class GetArticlesByTagHandler extends ActionHandler {
                 .replace('\\', '_');
         final String htmlContent = readInputFile(fileName + ".html");
         if(htmlContent != null) {
-            log.debug("Found HTML-file");
+            log.debug("Found HTML-file with tags", commaSeparatedTags);
             return JSONHelper.createJSONObject("body", htmlContent);
         }
         final String jsonContent = readInputFile(fileName + ".json");
         if(jsonContent != null) {
-            log.debug("Found JSON-file");
+            log.debug("Found JSON-file with tags", commaSeparatedTags);
             return JSONHelper.createJSONObject(jsonContent);
         }
+        log.debug("Didn't find content for tags:", commaSeparatedTags);
         return null;
     }
 

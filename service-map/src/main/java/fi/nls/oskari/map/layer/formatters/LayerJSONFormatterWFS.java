@@ -33,7 +33,13 @@ public class LayerJSONFormatterWFS extends LayerJSONFormatter {
         final JSONObject layerJson = getBaseJSON(layer, lang, isSecure);
         final WFSLayerConfiguration wfsConf = wfsService.findConfiguration(layer.getId());
         JSONHelper.putValue(layerJson, "styles", getStyles(wfsConf));
-        JSONHelper.putValue(layerJson, "style", "default");
+        // Use maplayer setup
+        if(layer.getStyle() == null || layer.getStyle().isEmpty() ){
+            JSONHelper.putValue(layerJson, "style", "default");
+        }
+        else {
+            JSONHelper.putValue(layerJson, "style", layer.getStyle());
+        }
         JSONHelper.putValue(layerJson, "isQueryable", true);
         JSONHelper.putValue(layerJson, "wps_params", getWpsParams(wfsConf) );
 

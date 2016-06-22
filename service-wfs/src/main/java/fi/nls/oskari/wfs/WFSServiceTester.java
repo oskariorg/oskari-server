@@ -106,7 +106,8 @@ public class WFSServiceTester {
      * @param pw
      * @param epsg  spatial referenece system code - default epsg is used, if null
      */
-    public static void TestWfs(String serviceUrl, String version, String user, String pw, String epsg) {
+    public static void TestWfs(String serviceUrl, String version, String user, String pw,
+                               String epsg) {
 
         info("WFS version test  (GetCapabilities http request) <<<< HTTP GETCAPABILITIES -------");
 
@@ -115,7 +116,7 @@ public class WFSServiceTester {
 
         info("WFS version test  (GetCapabilities GeoTools ) <<<< GEOTOOLS GETCAPABILITIES AND DESCRIBEFEATURE ----------");
 
-        Map<String, Object> capa = TestWfsVersionGT(serviceUrl, version, user, pw);
+        Map<String, Object> capa = TestWfsVersionGT(serviceUrl, version, user, pw, epsg);
         info("----------------------------------------------------------------------------- >>>>");
 
         if (capa.get("status").toString().equals("OK"))
@@ -166,10 +167,12 @@ public class WFSServiceTester {
      * @param serviceUrl  Wfs service url
      * @return capabilites  if Map<"status"><"OK">, then there is Map<"WFSDataStore"><WFSDataStore>
      */
-    public static Map<String, Object> TestWfsVersionGT(String serviceUrl, String version, String user, String pw) {
+    public static Map<String, Object> TestWfsVersionGT(String serviceUrl, String version, String user,
+                                                       String pw, String currentCrs) {
 
 
-        Map<String, Object> capabilities = GetGtWFSCapabilities.getGtDataStoreCapabilities(serviceUrl, version, user, pw);
+        Map<String, Object> capabilities = GetGtWFSCapabilities.getGtDataStoreCapabilities(serviceUrl, version, user,
+                                                                                           pw, currentCrs);
         try {
 
             if ( capabilities == null) {

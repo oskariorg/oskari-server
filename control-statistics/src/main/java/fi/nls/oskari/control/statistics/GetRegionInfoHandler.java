@@ -25,6 +25,7 @@ import java.util.List;
  * "005": {
  *   "name": "Ikaalinen"
  * }
+ * @deprecated - use GetRegionsHandler instead
  */
 @OskariActionRoute("GetRegionInfo")
 public class GetRegionInfoHandler extends ActionHandler {

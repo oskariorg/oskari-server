@@ -31,7 +31,7 @@ import static org.hamcrest.CoreMatchers.*;
 @PowerMockIgnore( {"javax.management.*"}) 
 public class StatisticalDatasourcePluginManagerIT {
 
-    final private StatisticalDatasourcePluginManager manager = new StatisticalDatasourcePluginManager();
+    final private StatisticalDatasourcePluginManager manager = StatisticalDatasourcePluginManager.getInstance();
 
     public static class DatasourceHelperMock extends DatasourceHelper {
         public DatasourceHelperMock() {

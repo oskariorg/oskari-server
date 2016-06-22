@@ -49,7 +49,7 @@ import static org.mockito.Mockito.*;
 @PowerMockIgnore( {"javax.management.*"}) 
 public class KapaPluginIT {
 
-    final private StatisticalDatasourcePluginManager manager = new StatisticalDatasourcePluginManager();
+    final private StatisticalDatasourcePluginManager manager = StatisticalDatasourcePluginManager.getInstance();
     private static String testIndicatorsResponse = ResourceHelper.readStringResource("KapaIndicators.json",
             KapaPluginIT.class);
     private static String testIndicatorDataResponse = ResourceHelper.readStringResource("KapaIndicatorData.json",

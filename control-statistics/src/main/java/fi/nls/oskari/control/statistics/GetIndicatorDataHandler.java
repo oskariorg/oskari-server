@@ -1,19 +1,19 @@
-package fi.nls.oskari.control.statistics.plugins;
-
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Map.Entry;
-
-import org.json.JSONException;
-import org.json.JSONObject;
+package fi.nls.oskari.control.statistics;
 
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.cache.JedisManager;
 import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.ActionHandler;
 import fi.nls.oskari.control.ActionParameters;
+import fi.nls.oskari.control.statistics.plugins.*;
 import fi.nls.oskari.domain.User;
 import fi.nls.oskari.util.ResponseHelper;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Map.Entry;
 
 /**
  * This interface gives the data for one indicator to the frontend for showing it on the map and on the table.
@@ -28,16 +28,16 @@ import fi.nls.oskari.util.ResponseHelper;
 @OskariActionRoute("GetIndicatorData")
 public class GetIndicatorDataHandler extends ActionHandler {
     private final static String CACHE_KEY_PREFIX = "oskari_get_indicator_data_handler:";
-    private final static String PARAM_PLUGIN_ID = "plugin_id";
-    private final static String PARAM_INDICATOR_ID = "indicator_id";
-    private final static String PARAM_LAYER_ID = "layer_id";
+    private final static String PARAM_PLUGIN_ID = "datasource"; // previously plugin_id
+    private final static String PARAM_INDICATOR_ID = "indicator"; // previously indicator_id
+    private final static String PARAM_LAYER_ID = "regionset"; // previously layer_id
     private final static String PARAM_SELECTORS = "selectors";
 
     /**
      * For now, this uses pretty much static global store for the plugins.
      * In the future it might make sense to inject the pluginManager references to different controllers using DI.
      */
-    private static final StatisticalDatasourcePluginManager pluginManager = new StatisticalDatasourcePluginManager();
+    private static final StatisticalDatasourcePluginManager pluginManager = StatisticalDatasourcePluginManager.getInstance();
 
     @Override
     public void handleAction(ActionParameters ap) throws ActionException {

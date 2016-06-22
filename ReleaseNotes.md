@@ -1,5 +1,52 @@
 # Release Notes
 
+## 1.37
+
+### publish template
+
+The publish template for new Oskari installations with the default setup is now Openlayers 3 based.
+We are planning to update existing installs in the next release or so with the kind of "recommended, but optional"
+ migration that we are doing for publisher in this release. See MigrationGuide.md for details. 
+
+### service-users
+
+When using the DatabaseUserService for user management the user password is now encrypted with bcrypt instead of MD5.
+Both are supported for logging in, but new passwords are saved using bcrypt.
+
+### GetAppSetup
+
+AppSetup now includes markers for the env properties.
+
+### service-map
+
+SLD Style setup and management is added for wfs layers (versions 1.1.0 and 2.0.0) in admin layer selector.
+
+### transport && control-base
+
+**WFS 2.0.0  / Feature engine**
+
+Feature highlighting is now supported for wfs 2.0.0 layers.
+
+{"cascading":true} setup is optionally available in oskari_maplayer attributes-column for wfs 2.0.0 layers.
+ 
+ (In this case bbox filter is used in MapClick / GetFeature request. Use this septup, if service doesn't support intersect filter.)
+
+### control-example/GetArticlesByTag action route
+
+Previously removed retried files by removing _ in names other than the last tag
+
+- termsofuse__mappublication__en.html
+- termsofuse_mappublication.html
+
+Fixed to work as intended
+
+- termsofuse__mappublication__en.html
+- termsofuse__mappublication.html
+
+### DB changes
+
+Added source column to portti_backendstatus table in preparation for multiple service status sources.
+
 ## 1.36.2
 
 ### Database migration
