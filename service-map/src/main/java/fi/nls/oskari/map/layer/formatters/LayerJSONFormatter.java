@@ -266,8 +266,8 @@ public class LayerJSONFormatter {
         layer.setGeometry(json.optString("geometry", layer.getGeometry()));
         layer.setRealtime(json.optBoolean("realtime", layer.getRealtime()));
         layer.setRefreshRate(json.optInt("refresh_rate", layer.getRefreshRate()));
-        layer.setSrs_name(json.optString("srs_name", layer.getGeometry()));
-        layer.setVersion(json.optString("version", layer.getGeometry()));
+        layer.setSrs_name(json.optString("srs_name", layer.getSrs_name()));
+        layer.setVersion(json.optString("version", layer.getVersion()));
         // omit permissions, these are handled by LayerHelper
 
         // handle params, check for null to avoid overwriting empty JS Object Literal

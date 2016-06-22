@@ -2,6 +2,12 @@
 
 ## 1.37
 
+### publish template
+
+The publish template for new Oskari installations with the default setup is now Openlayers 3 based.
+We are planning to update existing installs in the next release or so with the kind of "recommended, but optional"
+ migration that we are doing for publisher in this release. See MigrationGuide.md for details. 
+
 ### service-users
 
 When using the DatabaseUserService for user management the user password is now encrypted with bcrypt instead of MD5.
@@ -36,6 +42,10 @@ Fixed to work as intended
 
 - termsofuse__mappublication__en.html
 - termsofuse__mappublication.html
+
+### DB changes
+
+Added source column to portti_backendstatus table in preparation for multiple service status sources.
 
 ## 1.36.2
 
