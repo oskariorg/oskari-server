@@ -42,7 +42,7 @@ public class LayerJSONFormatterWFS extends LayerJSONFormatter {
         }
         JSONHelper.putValue(layerJson, "isQueryable", true);
         JSONHelper.putValue(layerJson, "wps_params", getWpsParams(wfsConf) );
-        if(wfsConf.getWMSLayerId() != null){
+        if(wfsConf != null){
             JSONHelper.putValue(layerJson, "WMSLayerId", wfsConf.getWMSLayerId() );
         }
 
