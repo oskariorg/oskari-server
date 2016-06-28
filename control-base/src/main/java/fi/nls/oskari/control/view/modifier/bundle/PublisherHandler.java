@@ -48,7 +48,7 @@ public class PublisherHandler extends BundleHandler {
             return false;
         }
         JSONHelper.putValue(config, KEY_DRAW_ROLE_IDS, DRAW_ENABLED_ROLES);
-        JSONHelper.putValue(config, KEY_TERMS_OF_USE_URL, PropertyUtil.get(PROPERTY_TERMS_OF_USE_URL));
+        JSONHelper.putValue(config, KEY_TERMS_OF_USE_URL, PropertyUtil.get(PROPERTY_TERMS_OF_USE_URL, null));
         return false;
     }
 
