@@ -37,6 +37,7 @@ public class PublishHandler extends ActionHandler {
     private static final Logger LOG = LogFactory.getLogger(PublishHandler.class);
 
     public static final String PROPERTY_DRAW_TOOLS_ENABLED = "actionhandler.Publish.drawToolsRoles";
+
     static final String PROPERTY_VIEW_UUID = "oskari.publish.only.with.uuid";
 
     public static final String KEY_PUBDATA = "pubdata";
@@ -67,7 +68,7 @@ public class PublishHandler extends ActionHandler {
     private PublishPermissionHelper permissionHelper = new PublishPermissionHelper();
 
     private String[] drawToolsEnabledRoles = new String[0];
-    
+
 
     public void setMyPlacesService(final MyPlacesService service) {
         permissionHelper.setMyPlacesService(service);
@@ -127,7 +128,7 @@ public class PublishHandler extends ActionHandler {
     public void handleAction(ActionParameters params) throws ActionException {
 
     	final User user = params.getUser();
-        
+
         // Parse stuff sent by JS
         final JSONObject publisherData = getPublisherInput(params.getRequiredParam(KEY_PUBDATA));
         final View currentView = getBaseView(publisherData, user);

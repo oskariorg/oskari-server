@@ -21,6 +21,8 @@ public class PublisherHandler extends BundleHandler {
 
     private static JSONArray DRAW_ENABLED_ROLES = new JSONArray();
     private static final String KEY_DRAW_ROLE_IDS = "drawRoleIds";
+    private static final String KEY_TERMS_OF_USE_URL = "termsOfUseUrl";
+    public static final String PROPERTY_TERMS_OF_USE_URL = "actionhandler.Publish.termsOfUseUrl";
 
     public void init() {
         String[] roleNames = PropertyUtil.getCommaSeparatedList(PublishHandler.PROPERTY_DRAW_TOOLS_ENABLED);
@@ -46,6 +48,7 @@ public class PublisherHandler extends BundleHandler {
             return false;
         }
         JSONHelper.putValue(config, KEY_DRAW_ROLE_IDS, DRAW_ENABLED_ROLES);
+        JSONHelper.putValue(config, KEY_TERMS_OF_USE_URL, PropertyUtil.get(PROPERTY_TERMS_OF_USE_URL));
         return false;
     }
 

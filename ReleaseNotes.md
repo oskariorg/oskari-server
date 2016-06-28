@@ -1,5 +1,12 @@
 # Release Notes
 
+## 1.38
+
+### publisher
+
+Terms of use url can be now tell from actionhandler.Publish.termsOfUseUrl -property.
+
+
 ## 1.37
 
 ### publish template
