@@ -235,6 +235,23 @@ UNRESTRICTED_USAGE_ROLE = PropertyUtil.get("view.published.usage.unrestrictedRol
         modifierParams.setModifyURLs(isSecure(params));
         modifierParams.setAjaxRouteParamName(ActionControl.PARAM_ROUTE);
 
+        // Add admin-layerselector/layer-rights bundle, if admin role and default view
+        // TODO: check if we can assume ViewTypes.DEFAULT || ViewTypes.USER for this.
+        //add bundles according to role/rights
+        if (ViewTypes.DEFAULT.equals(view.getType()) ||
+                ViewTypes.USER.equals(view.getType())) {
+            log.debug("Adding bundles for user", params.getUser());
+
+            for(Role r : params.getUser().getRoles()) {
+                List<Bundle> bundles = bundlesForRole.get(r.getName());
+                if(bundles != null) {
+                    for(Bundle b : bundles) {
+                        addBundle(modifierParams, b.getName(), b);
+                    }
+                }
+            }
+        }
+
         int locationModified = 0;
         for (String paramKey : paramHandlers) {
             final String value = params.getHttpParam(paramKey);
@@ -270,23 +287,6 @@ UNRESTRICTED_USAGE_ROLE = PropertyUtil.get("view.published.usage.unrestrictedRol
                     bundleHandlers.get(bundleid).modifyBundle(modifierParams);
                 } catch (ModifierException e) {
                     log.error(e, "Unable to modify bundle:", bundle);
-                }
-            }
-        }
-
-        // Add admin-layerselector/layer-rights bundle, if admin role and default view
-        // TODO: check if we can assume ViewTypes.DEFAULT || ViewTypes.USER for this.
-        //add bundles according to role/rights
-        if (ViewTypes.DEFAULT.equals(view.getType()) ||
-            ViewTypes.USER.equals(view.getType())) {
-            log.debug("Adding bundles for user", params.getUser());
-
-            for(Role r : params.getUser().getRoles()) {
-                List<Bundle> bundles = bundlesForRole.get(r.getName());
-                if(bundles != null) {
-                    for(Bundle b : bundles) {
-                        addBundle(modifierParams, b.getName(), b);
-                    }
                 }
             }
         }
