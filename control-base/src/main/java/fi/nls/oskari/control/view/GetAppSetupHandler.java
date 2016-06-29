@@ -140,11 +140,14 @@ public class GetAppSetupHandler extends ActionHandler {
         final String referer = RequestHelper.getDomainFromReferer(params
                 .getHttpHeader(IOHelper.HEADER_REFERER));
 
+
         // ignore saved state when loading:
         //   - views that are not system default views
         //   - when explicitly told with parameter
+        //   - when the cookie's srs is different from the view's
         boolean ignoreSavedState = !viewService.isSystemDefaultView(viewId)
-                || params.getHttpParam(PARAM_NO_SAVED_STATE, false);
+                || params.getHttpParam(PARAM_NO_SAVED_STATE, false)
+                || !srsNamesMatch(params, view);
         // restore state from cookie if not
         if (!ignoreSavedState) {
             log.debug("Modifying map view if saved state is available");
@@ -300,7 +303,20 @@ UNRESTRICTED_USAGE_ROLE = PropertyUtil.get("view.published.usage.unrestrictedRol
         }
     }
 
-
+    /**
+     * Check whether cookie srs matches the view's native srs
+     * @return
+     */
+    private boolean srsNamesMatch(ActionParameters params, View view) {
+        try {
+            JSONObject cookieState = getStateFromCookie(params.getCookie(COOKIE_SAVED_STATE));
+            String srs = JSONHelper.getStringFromJSON(cookieState, "srs", null);
+            return getConfiguration(view).getJSONObject("mapfull").getJSONObject("conf").getJSONObject("mapOptions").get("srsName").equals(srs);
+        } catch(Exception e) {
+            log.error("Srs parsing failed. ", e);
+            return true;
+        }
+    }
     private boolean updateUsageData(final View view)  {
         try {
             viewService.updateViewUsage(view);
@@ -413,6 +429,7 @@ UNRESTRICTED_USAGE_ROLE = PropertyUtil.get("view.published.usage.unrestrictedRol
             final String cookiestate = viewdata.getString(ViewModifier.BUNDLE_MAPFULL);
             final JSONObject jscookiestate = new JSONObject(cookiestate);
             final String cookiestatedata = jscookiestate.getString(STATE);
+
             // Check for empty layers array/is valid
             if (cookiestatedata.indexOf("[]") !=  -1) {
                 view.getBundleByName(ViewModifier.BUNDLE_MAPFULL).setState(
