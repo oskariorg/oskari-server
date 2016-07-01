@@ -870,7 +870,7 @@ public class CSWISORecordParser {
 
             // GeoTools
             CSWIsoRecord.Envelope envStr = new CSWIsoRecord.Envelope();
-            Envelope env = new Envelope(y1, y2, x1, x2);
+            Envelope env = new Envelope(x1, x2, y1, y2);
             if (transform != null) {
                 env = JTS.transform(env, transform);
             }
