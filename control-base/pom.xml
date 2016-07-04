@@ -43,6 +43,10 @@
             <groupId>fi.nls.oskari.service</groupId>
             <artifactId>oskari-wfs</artifactId>
         </dependency>
+        <dependency>
+            <groupId>fi.nls.oskari.service</groupId>
+            <artifactId>oskari-rating</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>fi.nls.oskari</groupId>

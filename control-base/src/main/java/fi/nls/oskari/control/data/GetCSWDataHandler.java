@@ -10,12 +10,15 @@ import fi.nls.oskari.csw.service.CSWService;
 import fi.nls.oskari.domain.geo.Point;
 import fi.nls.oskari.map.geometry.ProjectionHelper;
 import fi.nls.oskari.map.geometry.WKTHelper;
+import fi.nls.oskari.rating.RatingService;
+import fi.nls.oskari.rating.RatingServiceMybatisImpl;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.util.ResponseHelper;
 import org.geotools.referencing.CRS;
 import org.json.JSONArray;
 import org.json.JSONObject;
+
 
 /**
  * Created by TMIKKOLAINEN on 1.9.2014.
@@ -26,6 +29,7 @@ public class GetCSWDataHandler extends ActionHandler {
     private static final String UUID_PARAM = "uuid";
     // TODO get baseUrl from properties
     private String baseUrl = PropertyUtil.getOptional("service.metadata.url");
+    private String metadataRatingType = PropertyUtil.getOptional("service.metadata.rating");
     private String licenseUrlPrefix = PropertyUtil.getOptional("search.channel.METADATA_CATALOGUE_CHANNEL.licenseUrlPrefix");
     public static final String KEY_LICENSE = "license";
     public static final String KEY_ONLINERESOURCES = "onlineResources";
@@ -38,6 +42,12 @@ public class GetCSWDataHandler extends ActionHandler {
     public static final String KEY_WESTBOUNDLONGITUDE = "westBoundLongitude";
     public static final String KEY_EASTBOUNDLONGITUDE = "eastBoundLongitude";
     public static final String KEY_NORTHBOUNDLATITUDE = "northBoundLatitude";
+
+    /*ratings*/
+    public static final String KEY_RATING = "score";
+    public static final String KEY_AMOUNT = "amount";
+
+    private final RatingService ratingService = new RatingServiceMybatisImpl();
 
     @Override
     public void handleAction(ActionParameters params) throws ActionException {
@@ -71,6 +81,11 @@ public class GetCSWDataHandler extends ActionHandler {
         if (licenseUrlPrefix != null) {
             addLicenseUrl(result);
         }
+
+        if (metadataRatingType != null && uuid != null) {
+            addRatings(result, uuid);
+        }
+
         ResponseHelper.writeResponse(params, result);
     }
 
@@ -99,6 +114,14 @@ public class GetCSWDataHandler extends ActionHandler {
         }
     }
 
+    private void addRatings(JSONObject result, String uuid) {
+
+        String[] rating = ratingService.getAverageRatingFor(metadataRatingType, uuid);
+        if(rating != null && !rating[1].equals("0")) {
+            JSONHelper.putValue(result, KEY_RATING, rating[0]);
+            JSONHelper.putValue(result, KEY_AMOUNT, rating[1]);
+        }
+    }
     private String getWKT(JSONObject item, final String targetSRS) {
         String sourceSRS = WKTHelper.PROJ_EPSG_4326;
         // check if we have values
