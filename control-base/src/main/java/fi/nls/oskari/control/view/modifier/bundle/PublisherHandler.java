@@ -1,7 +1,7 @@
 package fi.nls.oskari.control.view.modifier.bundle;
 
 import fi.nls.oskari.annotation.OskariViewModifier;
-import fi.nls.oskari.control.view.PublishHandler;
+import fi.nls.oskari.control.view.AppSetupHandler;
 import fi.nls.oskari.domain.Role;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
@@ -25,7 +25,7 @@ public class PublisherHandler extends BundleHandler {
     public static final String PROPERTY_TERMS_OF_USE_URL = "actionhandler.Publish.termsOfUseUrl";
 
     public void init() {
-        String[] roleNames = PropertyUtil.getCommaSeparatedList(PublishHandler.PROPERTY_DRAW_TOOLS_ENABLED);
+        String[] roleNames = PropertyUtil.getCommaSeparatedList(AppSetupHandler.PROPERTY_DRAW_TOOLS_ENABLED);
         try {
             final Role[] roles = UserService.getInstance().getRoles();
             for(Role role : roles) {

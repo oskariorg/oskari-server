@@ -10,6 +10,11 @@ Terms of use url can be now tell from actionhandler.Publish.termsOfUseUrl -prope
 
 Statsgrid is now allowed in published map. It will replace publishedgrid in the future, but currently both are allowed.
 
+### Publish action route
+
+The Publish action route has been deprecated for a while and is now removed. AppSetup is the current implementation for 
+map publisher server side functionality.
+
 ## 1.37
 
 ### publish template
