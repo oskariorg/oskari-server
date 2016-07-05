@@ -22,7 +22,7 @@ public class PublisherHandler extends BundleHandler {
     private static JSONArray DRAW_ENABLED_ROLES = new JSONArray();
     private static final String KEY_DRAW_ROLE_IDS = "drawRoleIds";
     private static final String KEY_TERMS_OF_USE_URL = "termsOfUseUrl";
-    public static final String PROPERTY_TERMS_OF_USE_URL = "actionhandler.Publish.termsOfUseUrl";
+    public static final String PROPERTY_TERMS_OF_USE_URL = "oskari.map.terms.url";
 
     public void init() {
         String[] roleNames = PropertyUtil.getCommaSeparatedList(AppSetupHandler.PROPERTY_DRAW_TOOLS_ENABLED);

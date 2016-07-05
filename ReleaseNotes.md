@@ -4,7 +4,7 @@
 
 ### publisher bundle handler
 
-Terms of use url can be now tell from actionhandler.Publish.termsOfUseUrl -property.
+Now uses oskari.map.terms.url -property for injecting terms url to publisher bundle like with LogoPlugin.
 
 ### AppSetup action route (map publisher)
 
