@@ -17,13 +17,11 @@ public abstract class ViewModifier {
     public static final String KEY_STATE = "state";
     
     public static final String BUNDLE_MAPFULL = "mapfull";
-    public static final String BUNDLE_STATSGRID = "statsgrid";
     public static final String BUNDLE_MYPLACES2 = "myplaces2";
     public static final String BUNDLE_INFOBOX = "infobox";
     public static final String BUNDLE_POSTPROCESSOR = "postprocessor";
     public static final String BUNDLE_ADMINLAYERSELECTOR = "admin-layerselector";
     public static final String BUNDLE_ADMINLAYERRIGHTS = "admin-layerrights";
-    public static final String BUNDLE_PUBLISHEDGRID = "publishedgrid";
     public static final String BUNDLE_TOOLBAR = "toolbar";
     public static final String BUNDLE_PUBLISHEDMYPLACES2 = "publishedmyplaces2";
     public static final String BUNDLE_FEATUREDATA2 = "featuredata2";
@@ -31,6 +29,8 @@ public abstract class ViewModifier {
     public static final String BUNDLE_DIVMANAZER = "divmanazer";
     public static final String BUNDLE_MYPLACESIMPORT = "myplacesimport";
     public static final String BUNDLE_COORDINATETOOL = "coordinatetool";
+    public static final String BUNDLE_PUBLISHEDGRID = "publishedgrid";
+    public static final String BUNDLE_STATSGRID = "statsgrid";
 
     public static final String KEY_EAST = "east";
     public static final String KEY_NORTH = "north";

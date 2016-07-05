@@ -1,5 +1,10 @@
 # Migration guide
 
+## 1.38.0
+
+The default config for statsgrid-bundle has changed and is now part of the code. The default config in portti_bundle is 
+updated to empty config. 
+
 ## 1.37.0
 
 ### Forced view migrations - IMPORTANT!
