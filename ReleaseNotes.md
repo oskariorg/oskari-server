@@ -2,10 +2,13 @@
 
 ## 1.38
 
-### publisher
+### publisher bundle handler
 
 Terms of use url can be now tell from actionhandler.Publish.termsOfUseUrl -property.
 
+### AppSetup action route (map publisher)
+
+Statsgrid is now allowed in published map. It will replace publishedgrid in the future, but currently both are allowed.
 
 ## 1.37
 

@@ -55,7 +55,7 @@ public class AppSetupHandler extends RestActionHandler {
     // Simple bundles don't require extra processing
     private static final Set<String> SIMPLE_BUNDLES = ConversionHelper.asSet(
             ViewModifier.BUNDLE_INFOBOX, ViewModifier.BUNDLE_TOOLBAR,
-            ViewModifier.BUNDLE_PUBLISHEDGRID, ViewModifier.BUNDLE_FEATUREDATA2, ViewModifier.BUNDLE_COORDINATETOOL);
+            ViewModifier.BUNDLE_PUBLISHEDGRID, ViewModifier.BUNDLE_FEATUREDATA2, ViewModifier.BUNDLE_COORDINATETOOL, ViewModifier.BUNDLE_STATSGRID);
 
     // Bundles that we don't want to remove even if publisher doesn't provide config
     private static final Set<String> ALWAYSON_BUNDLES = ConversionHelper.asSet(
@@ -63,7 +63,7 @@ public class AppSetupHandler extends RestActionHandler {
 
     // Bundles that require divmanazer to be loaded for them to work
     private static final Set<String> BUNDLE_REQUIRES_DIVMANAZER =
-            ConversionHelper.asSet(ViewModifier.BUNDLE_FEATUREDATA2, ViewModifier.BUNDLE_COORDINATETOOL);
+            ConversionHelper.asSet(ViewModifier.BUNDLE_FEATUREDATA2, ViewModifier.BUNDLE_COORDINATETOOL, ViewModifier.BUNDLE_STATSGRID);
 
     // List of bundles that the user is able to publish
     // mapfull not included since it's assumed to be part of publisher template handled anyways
