@@ -72,6 +72,5 @@ public class LogoPluginHandler {
             Map<String, String> values = (Map<String, String>) termsObj;
             JSONHelper.putValue(config, KEY_TERMS_URL, new JSONObject(values));
         }
-
     }
 }

@@ -14,6 +14,8 @@ import fi.nls.oskari.view.modifier.ModifierParams;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.util.Map;
+
 @OskariViewModifier("publisher")
 public class PublisherHandler extends BundleHandler {
 
@@ -48,8 +50,20 @@ public class PublisherHandler extends BundleHandler {
             return false;
         }
         JSONHelper.putValue(config, KEY_DRAW_ROLE_IDS, DRAW_ENABLED_ROLES);
-        JSONHelper.putValue(config, KEY_TERMS_OF_USE_URL, PropertyUtil.get(PROPERTY_TERMS_OF_USE_URL, null));
+        setupTerms(config);
         return false;
+    }
+    private void setupTerms(final JSONObject config) {
+        if(config.has(KEY_TERMS_OF_USE_URL)) {
+            return;
+        }
+        final Object termsObj = PropertyUtil.getLocalizableProperty(PROPERTY_TERMS_OF_USE_URL);
+        if(termsObj instanceof String) {
+            JSONHelper.putValue(config, KEY_TERMS_OF_USE_URL, termsObj);
+        } else if(termsObj instanceof Map) {
+            Map<String, String> values = (Map<String, String>) termsObj;
+            JSONHelper.putValue(config, KEY_TERMS_OF_USE_URL, new JSONObject(values));
+        }
     }
 
 }
