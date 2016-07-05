@@ -2,6 +2,13 @@
 
 ## 1.38
 
+### csw record parsing
+
+-added coverage geometry
+-added crs-info
+-optional metadata rating added (service.metadata.rating - property)
+-optional license info added(search.channel.METADATA_CATALOGUE_CHANNEL.licenseUrlPrefix - property)
+
 ### publisher bundle handler
 
 Now uses oskari.map.terms.url -property for injecting terms url to publisher bundle like with LogoPlugin.
