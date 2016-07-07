@@ -22,6 +22,10 @@ Statsgrid is now allowed in published map. It will replace publishedgrid in the 
 The Publish action route has been deprecated for a while and is now removed. AppSetup is the current implementation for 
 map publisher server side functionality.
 
+### servlet-transport
+
+Now recognizes special style named "none". Tile images are not rendered when style is "none"
+
 ## 1.37
 
 ### publish template
