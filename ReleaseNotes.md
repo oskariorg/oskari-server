@@ -24,7 +24,7 @@ map publisher server side functionality.
 
 ### servlet-transport
 
-Now recognizes special style named "none". Tile images are not rendered when style is "none"
+Now recognizes special style named "oskari_none": tile images are not rendered when style is selected.
 
 ## 1.37
 

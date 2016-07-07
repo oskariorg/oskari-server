@@ -24,7 +24,7 @@ public class Layer {
 	 * @return
      */
 	public boolean hasVisibleStyle() {
-		return !"none".equals(styleName);
+		return !"oskari_none".equals(styleName);
 	}
 	/**
 	 * Constructs object with full information
