@@ -516,7 +516,7 @@ public class TransportService extends AbstractService {
 
             tmpLayer.setStyleName(layerStyle);
             this.save(store);
-            if(tmpLayer.isVisible()) {
+            if(tmpLayer.isVisible() && tmpLayer.hasVisibleStyle()) {
                 // init bounds to tiles (render all)
                 tmpLayer.setTiles(store.getGrid().getBounds());
                 // only update normal tiles
