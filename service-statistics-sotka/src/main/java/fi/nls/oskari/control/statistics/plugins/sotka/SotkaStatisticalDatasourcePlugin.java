@@ -56,7 +56,7 @@ public class SotkaStatisticalDatasourcePlugin implements StatisticalDatasourcePl
             return indicatorsParser.parse(jsonResponse, layerMappings);
         } catch (APIException e) {
             throw e;
-        } catch (Throwable e) {
+        } catch (Exception e) {
             throw new APIException("Something went wrong calling SotkaNET Indicators interface.", e);
         }
     }
