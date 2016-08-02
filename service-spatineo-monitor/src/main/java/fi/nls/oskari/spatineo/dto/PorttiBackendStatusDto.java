@@ -11,10 +11,37 @@ import java.util.Calendar;
 public class PorttiBackendStatusDto {
 
     /**
-     * These enumerations can be used for the source field
+     * Source field enum
      */
     public enum SourceEnum {
         SPATINEO_SERVAL, SPATINEO_MONITORING
+    }
+    
+    /**
+     * Status field enum
+     */
+    public enum StatusEnum {
+        OK, DOWN, MAINTENANCE, UNKNOWN, UNSTABLE;
+        
+        public static StatusEnum getEnumByNewAPI(String val) {
+            switch (val) {
+                case "NO_INDICATOR":
+                    return UNKNOWN;
+                case "NO_ALERTS":
+                    return UNKNOWN; // ????
+                case "NEW":
+                    return OK;
+                case "OK":
+                    return OK;
+                case "WARNING":
+                    return UNSTABLE;
+                case "ALERT":
+                    return DOWN;
+                case "INSUFFICIENT_DATA":
+                    return UNKNOWN;
+            }
+            return null;
+        }
     }
     
     public static interface Mapper {

@@ -19,3 +19,6 @@ transport.log
 /bin/
 /service-spatineo-monitor/nbproject/
 /control-base/nbproject
+*/nbactions.xml
+*/nb-configuration.xml
+
