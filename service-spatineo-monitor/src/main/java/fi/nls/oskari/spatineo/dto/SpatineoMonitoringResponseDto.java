@@ -27,20 +27,32 @@ public class SpatineoMonitoringResponseDto {
     public Meter getMeterByLayerName(String name) {
         for (Result r : result) {
             Service s = r.service;
-                for (Meter m : s.meters) {
-                    if (m.layerName.equals(name)) {
-                        return m;
-                    }
+            for (Meter m : s.meters) {
+                if (m.layerName.equals(name)) {
+                    return m;
                 }
             }
+        }
         
         // not found
         return null;
     }
     
+    public String getLayerNames() {
+        StringBuffer sb = new StringBuffer();
+        for (Result r : result) {
+            Service s = r.service;
+            for (Meter m : s.meters) {
+                sb.append(m.layerName);
+                sb.append("\n");
+            }
+        }
+        return sb.toString();
+    }
+    
     public class Configuration {
 
-        public Integer groupId;
+        public Long groupId;
     }
 
     public String version;

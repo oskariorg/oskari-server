@@ -28,7 +28,7 @@ public class PorttiBackendStatusDto {
                 case "NO_INDICATOR":
                     return UNKNOWN;
                 case "NO_ALERTS":
-                    return UNKNOWN; // ????
+                    return UNKNOWN;
                 case "NEW":
                     return OK;
                 case "OK":

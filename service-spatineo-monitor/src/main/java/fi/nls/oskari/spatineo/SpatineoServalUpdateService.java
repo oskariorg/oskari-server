@@ -72,7 +72,7 @@ public class SpatineoServalUpdateService {
             for (final List<OskariMapLayerDto> layers : ll) {
                 //LOG.debug("checking status for layers", layers);
                 spatineoStatus(layers);
-                Thread.sleep(10000);
+                Thread.sleep(5000);
             }
             if (key != null) {
                 monitoringStatus(oskariDao.findWmsMapLayerData());
@@ -107,9 +107,11 @@ public class SpatineoServalUpdateService {
     // the new implementation
     private static void monitoringStatus(final List<OskariMapLayerDto> layers) {
         final SpatineoMonitoringResponseDto dto = monitoringDao.checkServiceStatus();
-        LOG.debug("Spatineo monitoring response was", dto);
+        LOG.debug("Spatineo monitoring response was", dto);        
         
         if (dto != null) {            
+            LOG.debug(dto.getLayerNames());
+            
             if (dto.isError()) {
                 LOG.warn("Spatineo Monitoring API returned error. Response handling skipped.");
                 return;
@@ -119,6 +121,7 @@ public class SpatineoServalUpdateService {
                 String name = l.name;
                 String url = l.url;
                 SpatineoMonitoringResponseDto.Meter meter = dto.getMeterByLayerName(name);            
+                LOG.debug("Matching <" + name + "> with <" + meter + ">");
                 if (meter != null) {
                     String status = PorttiBackendStatusDto.StatusEnum.getEnumByNewAPI(meter.indicator.status).toString();
                     serviceStatusDao.insertStatus(new PorttiBackendStatusDto(l.id, status, meter.indicator.status, meter.monitorLink, PorttiBackendStatusDto.SourceEnum.SPATINEO_MONITORING.toString()));
