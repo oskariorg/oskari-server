@@ -1,5 +1,6 @@
 package fi.nls.oskari.map.geometry;
 
+import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.io.WKTReader;
@@ -16,42 +17,55 @@ import org.opengis.referencing.operation.MathTransform;
  * Simple helper methods to deal with WKT and projection transforms
  */
 public class WKTHelper {
-    private static final Logger log = LogFactory.getLogger(WKTHelper.class);
-
     public final static String PROJ_EPSG_4326 = "EPSG:4326";
     public final static String PROJ_EPSG_3067 = "EPSG:3067";
+    private static final Logger log = LogFactory.getLogger(WKTHelper.class);
+    public final static CoordinateReferenceSystem CRS_EPSG_4326 = getCRS(PROJ_EPSG_4326);
+
     /**
-     *
-     * @param geometry original geometry
+     * @param geometry  original geometry
      * @param sourceSRS "EPSG:4326"
      * @param targetSRS "EPSG:3067"
      * @return projected geometry
      */
-    public static Geometry transform(final Geometry geometry, final String sourceSRS, final String targetSRS){
-        if(geometry == null || sourceSRS == null || targetSRS == null) {
+    public static Geometry transform(final Geometry geometry, final String sourceSRS, final String targetSRS) {
+        if (geometry == null || sourceSRS == null || targetSRS == null) {
             return null;
         }
         try {
             CoordinateReferenceSystem sourceCRS = getCRS(sourceSRS);
             CoordinateReferenceSystem targetCRS = getCRS(targetSRS);
-            MathTransform transform = CRS.findMathTransform(sourceCRS, targetCRS);
-            return JTS.transform(geometry, transform);
-        }
-        catch (Exception ex) {
+            return transform(geometry, sourceCRS, targetCRS);
+        } catch (Exception ex) {
             log.error(ex, "Couldn't transform geometry to new projection");
         }
         return null;
     }
+
+    public static Geometry transform(final Geometry geometry, final CoordinateReferenceSystem sourceCRS,
+                                     final CoordinateReferenceSystem targetCRS) {
+
+        if (geometry == null || sourceCRS == null || targetCRS == null) {
+            return null;
+        }
+        try {
+            MathTransform transform = CRS.findMathTransform(sourceCRS, targetCRS);
+            return JTS.transform(geometry, transform);
+        } catch (Exception ex) {
+            log.error(ex, "Couldn't transform geometry to new projection");
+        }
+        return null;
+    }
+
     /**
-     *
-     * @param wkt original geometry
+     * @param wkt       original geometry
      * @param sourceSRS "EPSG:4326"
      * @param targetSRS "EPSG:3067"
      * @return projected geometry as wkt
      */
-    public static String transform(final String wkt, final String sourceSRS, final String targetSRS){
+    public static String transform(final String wkt, final String sourceSRS, final String targetSRS) {
         final Geometry geom = parseWKT(wkt);
-        if(geom == null) {
+        if (geom == null) {
             return null;
         }
         final Geometry transformed = transform(geom, sourceSRS, targetSRS);
@@ -59,12 +73,44 @@ public class WKTHelper {
     }
 
     /**
+     * @param wkt       original geometry in EPSG:4326
+     * @param targetSRS "EPSG:3067"
+     * @return projected geometry as wkt
+     */
+    public static String transformLayerCoverage(final String wkt, final String targetSRS) {
+        Geometry geom = parseWKT(wkt);
+        if (geom == null) {
+            return null;
+        }
+
+        Coordinate[] src = geom.getCoordinates();
+        CoordinateReferenceSystem targetCrs = getCRS(targetSRS);
+        // coordinate switch + array reverse is needed at least in EPSG:3067
+        // might not work correctly for others...
+        boolean switchCoordinates = !ProjectionHelper.isFirstAxisNorth(targetCrs);
+        if (switchCoordinates) {
+            int len = src.length;
+            Coordinate[] reversed = new Coordinate[len];
+            for (Coordinate c : src) {
+                double x = c.x;
+                c.x = c.y;
+                c.y = x;
+                reversed[--len] = c;
+            }
+            geom = geom.getFactory().createPolygon(reversed);
+        }
+        final Geometry transformed = transform(geom, CRS_EPSG_4326, targetCrs);
+        return getWKT(transformed);
+    }
+
+    /**
      * Returns given geometry as a WKT String
+     *
      * @param geometry
      * @return
      */
-    public static String getWKT(Geometry geometry){
-        if(geometry == null) {
+    public static String getWKT(Geometry geometry) {
+        if (geometry == null) {
             return null;
         }
         final WKTWriter wrt = new WKTWriter();
@@ -73,10 +119,11 @@ public class WKTHelper {
 
     /**
      * Parses given WKT String to a Geometry object
+     *
      * @param wkt
      * @return geometry
      */
-    public static Geometry parseWKT(final String wkt){
+    public static Geometry parseWKT(final String wkt) {
         final GeometryFactory geometryFactory = new GeometryFactory();
         WKTReader parser = new WKTReader(geometryFactory);
         try {
@@ -98,19 +145,21 @@ public class WKTHelper {
 
     /**
      * Creates bbox for defined coordinates.
+     *
      * @param westBoundLongitude
      * @param southBoundLatitude
      * @param eastBoundLongitude
      * @param northBoundLatitude
      * @return WKT String bbox
      */
-    public static String getBBOX(final double westBoundLongitude, final double southBoundLatitude, final double eastBoundLongitude, final double northBoundLatitude){
+    public static String getBBOX(final double westBoundLongitude, final double southBoundLatitude,
+                                 final double eastBoundLongitude, final double northBoundLatitude) {
         String bbox = "POLYGON ((" + Double.toString(westBoundLongitude) + " " + Double.toString(southBoundLatitude) + ", " +
                 Double.toString(westBoundLongitude) + " " + Double.toString(northBoundLatitude) + ", " +
                 Double.toString(eastBoundLongitude) + " " + Double.toString(northBoundLatitude) + ", " +
                 Double.toString(eastBoundLongitude) + " " + Double.toString(southBoundLatitude) + ", " +
                 Double.toString(westBoundLongitude) + " " + Double.toString(southBoundLatitude) +
-        "))";
+                "))";
 
         log.debug("BBOX: " + bbox);
         return bbox;
