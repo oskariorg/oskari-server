@@ -1,6 +1,10 @@
 package fi.nls.oskari.map.geometry;
 
+import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.CoordinateSequenceFilter;
 import com.vividsolutions.jts.geom.Geometry;
+import fi.nls.oskari.domain.geo.Point;
+import org.geotools.referencing.CRS;
 import org.junit.Test;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
@@ -46,6 +50,17 @@ public class WKTHelperTest {
         assertTrue("Point y correct " + transformed.getCoordinate().y, transformed.getCoordinate().y == 6672130.961068579);
         assertTrue("Point x correct " + transformed.getCoordinate().x, transformed.getCoordinate().x == 385615.3743527662);
     }
+
+    @Test
+    public void testCoverageTransform() throws Exception {
+        String wkt = "POLYGON ((19.08317359 59.45414258, 19.08317359 70.09229553, 31.58672881 70.09229553, 31.58672881 59.45414258, 19.08317359 59.45414258))";
+        String transformed = WKTHelper.transformLayerCoverage(wkt, WKTHelper.PROJ_EPSG_3067);
+
+        assertTrue("Got result: " + transformed, transformed != null);
+        String expected = "POLYGON ((51857.07752019336 6617351.758085947, 759905.4330615391 6599589.560233721, 674163.706166442 7782724.690696563, 199877.68034737493 7795699.644448195, 51857.07752019336 6617351.758085947))";
+        assertEquals("Point y correct ", expected, transformed);
+    }
+
 
     @Test
     public void testGetWKT() throws Exception {
