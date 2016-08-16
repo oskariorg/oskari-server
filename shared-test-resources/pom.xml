@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>fi.nls.oskari</groupId>
 		<artifactId>oskari-parent</artifactId>
-        <version>1.37.0</version>
+        <version>1.38.0</version>
 	</parent>
 
     <artifactId>shared-test-resources</artifactId>

@@ -1,5 +1,31 @@
 # Release Notes
 
+## 1.38
+
+### csw record parsing
+
+-added coverage geometry
+-added crs-info
+-optional metadata rating added (service.metadata.rating - property)
+-optional license info added(search.channel.METADATA_CATALOGUE_CHANNEL.licenseUrlPrefix - property)
+
+### publisher bundle handler
+
+Now uses oskari.map.terms.url -property for injecting terms url to publisher bundle like with LogoPlugin.
+
+### AppSetup action route (map publisher)
+
+Statsgrid is now allowed in published map. It will replace publishedgrid in the future, but currently both are allowed.
+
+### Publish action route
+
+The Publish action route has been deprecated for a while and is now removed. AppSetup is the current implementation for 
+map publisher server side functionality.
+
+### servlet-transport
+
+Now recognizes special style named "oskari_none": tile images are not rendered when style is selected.
+
 ## 1.37
 
 ### publish template

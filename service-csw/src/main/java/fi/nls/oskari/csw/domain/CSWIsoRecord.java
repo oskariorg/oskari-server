@@ -29,6 +29,7 @@ public class CSWIsoRecord {
     private List<OnlineResource> onlineResources = new ArrayList<OnlineResource>();
     private List<DataQuality> dataQualities = new ArrayList<DataQuality>();
     private URL metadataURL;
+    private List<String> referenceSystems = new ArrayList<String>();
 
     public String getFileIdentifier() {
         return fileIdentifier;
@@ -140,6 +141,7 @@ public class CSWIsoRecord {
         JSONHelper.putValue(ret, "metadataLanguage", metadataLanguage);
         JSONHelper.putValue(ret, "metadataCharacterSet", metadataCharacterSet);
         JSONHelper.putValue(ret, "scopeCodes", scopeCodes);
+        JSONHelper.putValue(ret, "referenceSystems", referenceSystems);
         JSONArray arr = new JSONArray();
         for (ResponsibleParty responsibleParty : metadataResponsibleParties) {
             arr.put(responsibleParty.toJSON());
@@ -173,6 +175,10 @@ public class CSWIsoRecord {
         }
         JSONHelper.putValue(ret, "dataQualities", arr);
         return ret;
+    }
+
+    public List<String> getReferenceSystems() {
+        return referenceSystems;
     }
 
     public static class DataQuality {

@@ -220,7 +220,7 @@ public class OskariLayerWorker {
             return;
         }
         // WTK is saved as EPSG:4326 in database
-        final String transformed = WKTHelper.transform(wktWGS84, WKTHelper.PROJ_EPSG_4326, mapSRS);
+        final String transformed = WKTHelper.transformLayerCoverage(wktWGS84, mapSRS);
         // value will be removed if transform failed, that's ok since client can't handle it if it's in unknown projection
         JSONHelper.putValue(layerJSON, "geom", transformed);
     }

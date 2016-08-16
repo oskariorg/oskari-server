@@ -115,6 +115,7 @@ public class CSWISORecordParser {
     private XPathExpression XPATH_METADATA_CHARSET = null;
     private XPathExpression XPATH_METADATA_RESPONSIBLE_PARTIES = null;
     private XPathExpression XPATH_METADATA_DATE = null;
+    private XPathExpression XPATH_METADATA_REFERENCESYSTEM = null;
 
     public CSWISORecordParser() throws XPathExpressionException {
         xpath.setNamespaceContext(new CSWISORecordNamespaceContext());
@@ -324,6 +325,11 @@ public class CSWISORecordParser {
         // From root
         XPATH_METADATA_DATE = xpath.compile(
                 "./gmd:dateStamp/gco:DateTime");
+        // From root
+        XPATH_METADATA_REFERENCESYSTEM = xpath.compile(
+                "./gmd:referenceSystemInfo/gmd:MD_ReferenceSystem/gmd:referenceSystemIdentifier/gmd:RS_Identifier/gmd:code/gco:CharacterString");
+
+
     }
 
     public CSWIsoRecord parse(final Node elem, final Locale locale, MathTransform transform) throws XPathExpressionException, ParseException, TransformException {
@@ -393,6 +399,12 @@ public class CSWISORecordParser {
         if (node != null) {
             value = getLocalizedContent(node, pathToLocalizedValue);
             record.setMetadataDateStamp(dateTimeFormat().parse(value));
+        }
+
+        nodeList = (NodeList) XPATH_METADATA_REFERENCESYSTEM.evaluate(elem, XPathConstants.NODESET);
+        List<String> referenceSystemList = record.getReferenceSystems();
+        for (i = 0; i < nodeList.getLength(); i++) {
+            referenceSystemList.add(getText(nodeList.item(i)));
         }
 
         return record;
@@ -870,7 +882,7 @@ public class CSWISORecordParser {
 
             // GeoTools
             CSWIsoRecord.Envelope envStr = new CSWIsoRecord.Envelope();
-            Envelope env = new Envelope(y1, y2, x1, x2);
+            Envelope env = new Envelope(x1, x2, y1, y2);
             if (transform != null) {
                 env = JTS.transform(env, transform);
             }

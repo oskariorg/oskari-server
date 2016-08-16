@@ -37,7 +37,7 @@ public class SotkaIndicatorSelectorsFetcher {
             specificIndicatorRequest.setIndicator(indicatorId);
             String specificIndicatorJsonResponse = specificIndicatorRequest.getData();
             return specificIndicatorParser.parse(specificIndicatorJsonResponse, layerMappings);
-        } catch (Throwable e) {
+        } catch (Exception e) {
             // The SotkaNET sometimes responds with HTTP 500, for example. For these cases, we should just
             // remove the indicators in question.
             LOG.error("There was an error fetching SotkaNET indicator metadata for indicator: "

@@ -499,7 +499,7 @@ public abstract class OWSMapLayerJob extends AbstractJob<String> {
     protected void setResourceSending() {
         // layer configuration is the default
         this.sendFeatures = layer.isGetFeatureInfo();
-        this.sendImage = layer.isGetMapTiles();
+        this.sendImage = layer.isGetMapTiles() && sessionLayer.hasVisibleStyle();
         this.sendHighlight = layer.isGetHighlightImage();
 
         // if request defines false and layer configuration allows

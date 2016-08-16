@@ -19,6 +19,14 @@ public class Layer {
     private List<List<Double>> tiles = null;
 
 	/**
+	 * Style named "none" has special meaning:
+	 * Tiles should not be rendered when style is none.
+	 * @return
+     */
+	public boolean hasVisibleStyle() {
+		return !"oskari_none".equals(styleName);
+	}
+	/**
 	 * Constructs object with full information
 	 * 
 	 * @param id

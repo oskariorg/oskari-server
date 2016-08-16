@@ -19,7 +19,12 @@ public class SpatineoMonitoringResponseDto {
         return error;
     }
 
-    public Meter getMeterByName(String name) {
+    /**
+     * Find a Meter from the list of Services that has the matching layerName
+     * @param name Name of the layer
+     * @return Meter
+     */
+    public Meter getMeterByLayerName(String name) {
         for (Result r : result) {
             Service s = r.service;
             for (Meter m : s.meters) {
@@ -32,10 +37,22 @@ public class SpatineoMonitoringResponseDto {
         // not found
         return null;
     }
-
+    
+    public String getLayerNames() {
+        StringBuffer sb = new StringBuffer();
+        for (Result r : result) {
+            Service s = r.service;
+            for (Meter m : s.meters) {
+                sb.append(m.layerName);
+                sb.append("\n");
+            }
+        }
+        return sb.toString();
+    }
+    
     public class Configuration {
 
-        public Integer group;
+        public Long groupId;
     }
 
     public String version;
@@ -58,8 +75,26 @@ public class SpatineoMonitoringResponseDto {
 
     public String statusMessage;
     public Configuration configuration;
-    public List<Result> result = new ArrayList<Result>();
+    public List<Result> result;
 
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    public static class Result {
+
+        public Service service;
+    }
+
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    public static class Service {
+
+        public String id;
+        public Integer serviceId;
+        public String serviceType;
+        public String serviceUrl;
+        public String title;
+        public List<Meter> meters = new ArrayList<Meter>();
+    }
+
+    @JsonIgnoreProperties(ignoreUnknown = true)
     public static class Meter {
 
         public String id;
@@ -72,25 +107,13 @@ public class SpatineoMonitoringResponseDto {
         public String monitorLink;
         public Indicator indicator;
     }
-
-    public static class Result {
-
-        public Service service;
-    }
-
-    public static class Service {
-
-        public String id;
-        public Integer serviceId;
-        public String serviceType;
-        public String serviceUrl;
-        public List<Meter> meters = new ArrayList<Meter>();
-    }
-
+    
+    @JsonIgnoreProperties(ignoreUnknown = true)
     public static class Indicator {
 
         public String status;
         public String lastChange;
+        public String name;
     }
     
     @Override

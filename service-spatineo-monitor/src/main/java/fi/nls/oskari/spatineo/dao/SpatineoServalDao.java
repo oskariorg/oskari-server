@@ -59,12 +59,15 @@ public class SpatineoServalDao {
             if (200 == status) {
                 return new ObjectMapper().readValue(post.getResponseBodyAsString(), SpatineoResponseDto.class);
             } else {
+                log.warn("Spatineo status request returned with status code " + status);
                 return null;
             }
         } catch (final HttpException e) {
             // ignore
+            log.error(e.getMessage());
         } catch (final IOException e) {
             // ignore
+            log.error(e.getMessage());
         } finally {
             post.releaseConnection();
         }

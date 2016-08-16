@@ -79,7 +79,7 @@ public class DeserializeTest {
             for (int i = 0; i < layers.size(); i++) {
                 final OskariMapLayerDto l = layers.get(i);
                 final SpatineoResponseDto.Result s = spatineoResponse.result.get(i);
-                serviceStatusDao.insertStatus(new PorttiBackendStatusDto(l.id, s.status, s.statusMessage, s.infoUrl));
+                serviceStatusDao.insertStatus(new PorttiBackendStatusDto(l.id, s.status, s.statusMessage, s.infoUrl, ""));
                 System.err.printf("inserting: <%s> <%s> <%s> <%s>%n", l.id, s.status, s.statusMessage, s.infoUrl);
             }
         }

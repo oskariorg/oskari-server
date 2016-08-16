@@ -9,6 +9,10 @@ on the Internet, and makes it available through a custom HTTP web service.
 This particular Oskari Service fetches the availability information from Spatineo Serval, and saves it
 to the Oskari database.
 
+The new monitoring API requires your portal-ext.properties to contain:
+
+    spatineo.monitoring.key=<Your private access key here!>
+
 Spatineo Serval API documentation:
 
 * https://docs.google.com/a/spatineo.com/file/d/0B7yQv2YAAzWcQmR3cWlhN1BGWUU/edit?usp=drive_web
