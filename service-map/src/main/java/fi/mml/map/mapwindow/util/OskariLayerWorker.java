@@ -216,13 +216,17 @@ public class OskariLayerWorker {
     public static void transformWKTGeom(final JSONObject layerJSON, final String mapSRS) {
 
         final String wktWGS84 = layerJSON.optString("geom");
-        if(wktWGS84 == null) {
+        if(wktWGS84 == null || wktWGS84.isEmpty()) {
             return;
         }
-        // WTK is saved as EPSG:4326 in database
-        final String transformed = WKTHelper.transformLayerCoverage(wktWGS84, mapSRS);
-        // value will be removed if transform failed, that's ok since client can't handle it if it's in unknown projection
-        JSONHelper.putValue(layerJSON, "geom", transformed);
+        try {
+            // WTK is saved as EPSG:4326 in database
+            final String transformed = WKTHelper.transformLayerCoverage(wktWGS84, mapSRS);
+            // value will be removed if transform failed, that's ok since client can't handle it if it's in unknown projection
+            JSONHelper.putValue(layerJSON, "geom", transformed);
+        } catch (Exception ex) {
+            log.debug("Error transforming coverage to", mapSRS, "from", wktWGS84);
+        }
     }
     
     /**
