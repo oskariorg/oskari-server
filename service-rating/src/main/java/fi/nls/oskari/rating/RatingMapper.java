@@ -10,6 +10,7 @@ import java.util.Map;
  */
 public interface RatingMapper {
     Rating find(@Param("id") long id);
+    String findLatestAdminRating(@Param("category") String category, @Param("categoryItem") String categoryItem, @Param("adminRole") String adminRole);
     List<Rating> findAllFor(@Param("category") String category, @Param("categoryItem") String categoryItem);
     void insertRating(Rating rating);
     void updateRating(Rating rating);

@@ -10,5 +10,6 @@ public abstract class RatingService extends OskariComponent {
     public abstract Rating saveRating(Rating rating);
     public abstract List<Rating> getAllRatingsFor(String category, String categoryItem);
     public abstract String[] getAverageRatingFor(String category, String categoryItem);
+    public abstract String findLatestAdminRating(String category, String categoryItem, String adminRole);
     public abstract boolean validateRequiredStrings(Rating rating);
 }

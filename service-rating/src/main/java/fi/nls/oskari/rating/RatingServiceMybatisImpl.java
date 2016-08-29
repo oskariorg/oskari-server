@@ -134,4 +134,18 @@ public class RatingServiceMybatisImpl extends RatingService {
         String[] average = {Integer.toString(result / amount), Integer.toString(amount)};
         return average;
     }
+
+    public String findLatestAdminRating(String category, String categoryItem, String adminRole) {
+        final SqlSession session = factory.openSession();
+        try {
+            final RatingMapper mapper = session.getMapper(RatingMapper.class);
+            return mapper.findLatestAdminRating(category, categoryItem, adminRole);
+        } catch (Exception e) {
+            LOG.error(e, "Failed to load ratings");
+        } finally {
+            session.close();
+        }
+        return null;
+    }
+
 }
