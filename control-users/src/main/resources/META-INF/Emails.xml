@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE sqlMap
+        PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+        "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="Emails">
+
+    <typeAlias alias="Email" type="fi.nls.oskari.control.users.model.Email" />
+
+    <resultMap id="EmailResult" class="Email">
+        <result property="id" column="id" />        
+        <result property="email" column="email" />
+        <result property="uuid" column="uuid" />
+        <result property="screenname" column="user_name" />    
+        <result property="expiryTimestamp" column="expiry_timestamp"/>
+    </resultMap>
+
+    <statement id="addEmail" resultClass="Long" parameterClass="Email">
+        INSERT INTO oskari_email_expiry (            
+            user_name,
+            email,
+            uuid,
+            expiry_timestamp
+        )
+        VALUES (           
+            #screenname#,
+            #email#,
+            #uuid#,
+            #expiryTimestamp#
+        )
+        RETURNING id
+    </statement>
+    
+    <select id="findByToken" parameterClass="String" resultMap="EmailResult">
+        SELECT id, user_name, email, uuid, expiry_timestamp 
+        FROM oskari_email_expiry 
+        WHERE uuid = #uuid#
+    </select>
+    
+    <select id="findUsernameForEmail" parameterClass="String" resultClass="String">
+        SELECT user_name 
+        FROM oskari_users 
+        WHERE email = #email#
+    </select>
+    
+    <select id="findUsernameForLogin" parameterClass="String" resultClass="String">
+        SELECT login 
+        FROM oskari_jaas_users 
+        WHERE login = #user_name#
+    </select>
+    
+    <delete id="deleteEmailToken" parameterClass="java.util.HashMap">
+        DELETE 
+        FROM oskari_email_expiry 
+        WHERE uuid = #uuid#
+    </delete>
+    
+    <select id="findEmailForUsername" parameterClass="String" resultClass="String">
+        SELECT email 
+        FROM oskari_users 
+        WHERE user_name = #user_name#
+    </select>  
+     
+    <select id="findUserRoleId" parameterClass="String" resultClass="Integer">
+        SELECT id 
+        FROM oskari_roles 
+        WHERE name = #name#
+    </select>   
+
+</sqlMap>
