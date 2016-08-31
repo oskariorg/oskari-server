@@ -5,6 +5,14 @@
 The default config for statsgrid-bundle has changed and is now part of the code. The default config in portti_bundle is 
 updated to empty config. 
 
+The storing of layer coverage geometries has changed in a way that might cause problems. 
+If layer disappear from the browser UI a ~second after it has been added to the map you should
+ wipe the oskari_maplayer_metadata table in the database:
+ 
+         DELETE FROM oskari_maplayer_metadata; 
+
+This is only relevant if you have the scheduled coverage job enabled.
+
 ## 1.37.0
 
 ### Forced view migrations - IMPORTANT!
