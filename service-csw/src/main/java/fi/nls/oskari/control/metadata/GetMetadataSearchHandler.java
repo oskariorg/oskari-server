@@ -9,9 +9,9 @@ import fi.nls.oskari.control.ActionParamsException;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.search.channel.MetadataCatalogueChannelSearchService;
+import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.ResponseHelper;
-import fi.nls.oskari.util.ServiceFactory;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import static fi.nls.oskari.control.ActionConstants.*;
@@ -36,7 +36,7 @@ import static fi.nls.oskari.control.ActionConstants.*;
 public class GetMetadataSearchHandler extends ActionHandler {
 
     private static final Logger log = LogFactory.getLogger(GetMetadataSearchHandler.class);
-    private static final SearchService service = ServiceFactory.getSearchService();
+    private static final SearchService service = OskariComponentManager.getComponentOfType(SearchService.class);
 
     private static final String PARAM_USER_INPUT = "search";
 

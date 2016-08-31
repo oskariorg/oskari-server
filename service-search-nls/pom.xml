@@ -17,6 +17,11 @@
 			<groupId>fi.nls.oskari.service</groupId>
 			<artifactId>oskari-base</artifactId>
 		</dependency>
+
+		<dependency>
+			<groupId>fi.nls.oskari.service</groupId>
+			<artifactId>service-csw</artifactId>
+		</dependency>
 		<dependency>
 			<groupId>fi.nls.oskari.service</groupId>
 			<artifactId>oskari-permissions</artifactId>
@@ -47,11 +52,6 @@
 			<groupId>fi.mml</groupId>
 			<artifactId>nameregister</artifactId>
 		</dependency>
-
-        <dependency>
-            <groupId>org.deegree</groupId>
-            <artifactId>deegree</artifactId>
-        </dependency>
 
         <dependency>
             <groupId>fi.nls.oskari</groupId>

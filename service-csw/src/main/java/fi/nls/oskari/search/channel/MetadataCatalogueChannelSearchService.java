@@ -12,10 +12,10 @@ import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.geometry.ProjectionHelper;
 import fi.nls.oskari.map.geometry.WKTHelper;
-import fi.nls.oskari.map.layer.OskariLayerServiceIbatisImpl;
+import fi.nls.oskari.map.layer.OskariLayerService;
+import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.PropertyUtil;
-import fi.nls.oskari.util.ServiceFactory;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.impl.builder.StAXOMBuilder;
 import org.geotools.referencing.CRS;
@@ -60,8 +60,8 @@ public class MetadataCatalogueChannelSearchService extends SearchChannel {
 
     private MetadataCatalogueResultParser RESULT_PARSER = null;
     private final MetadataCatalogueQueryHelper QUERY_HELPER = new MetadataCatalogueQueryHelper();
-    
-    private OskariLayerServiceIbatisImpl mapLayerService = (OskariLayerServiceIbatisImpl)ServiceFactory.getMapLayerService();
+
+    private OskariLayerService mapLayerService = OskariComponentManager.getComponentOfType(OskariLayerService.class);
 
     private static final String PROPERTY_IMAGE_PREFIX = "search.channel.METADATA_CATALOGUE_CHANNEL.image.url.";
     private static final String PROPERTY_FETCHURL_PREFIX = "search.channel.METADATA_CATALOGUE_CHANNEL.fetchpage.url.";
@@ -190,14 +190,9 @@ public class MetadataCatalogueChannelSearchService extends SearchChannel {
                 setupResultItemURLs(item, locale);
 
                 final List<OskariLayer> oskariLayers =  getOskariLayerWithUuid(item);
-
-                if(oskariLayers != null && !oskariLayers.isEmpty()){
-                	log.debug("Got oskariLayers");
-                	
-                	for(OskariLayer oskariLayer : oskariLayers){
-                		log.debug("METAID: " + oskariLayer.getMetadataId());
-                		item.addUuId(oskariLayer.getMetadataId());
-                	}
+                for(OskariLayer oskariLayer : oskariLayers){
+                    log.debug("METAID: " + oskariLayer.getMetadataId());
+                    item.addUuId(oskariLayer.getMetadataId());
                 }
 
                 item.addValue("geom", getWKT(item, WKTHelper.PROJ_EPSG_4326, srs));
@@ -244,11 +239,14 @@ public class MetadataCatalogueChannelSearchService extends SearchChannel {
     private List<OskariLayer> getOskariLayerWithUuid(SearchResultItem item){
     	
     	log.debug("in getOskariLayerWithUuid");
-    	if(item.getUuId() == null || item.getUuId().isEmpty()){
-    		return null;
-    	}else{
-        	return mapLayerService.findByuuid(item.getUuId().get(0));
+    	if(mapLayerService == null ||item.getUuId() == null || item.getUuId().isEmpty()){
+    		return Collections.emptyList();
     	}
+        final List<OskariLayer> list = mapLayerService.findByMetadataId(item.getUuId().get(0));
+        if(list == null) {
+            return Collections.emptyList();
+        }
+        return list;
     }
     
     

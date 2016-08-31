@@ -1,5 +1,6 @@
 package fi.mml.portti.service.search;
 
+import fi.nls.oskari.annotation.Oskari;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.search.channel.SearchChannel;
@@ -14,7 +15,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-public class SearchServiceImpl implements SearchService {
+@Oskari
+public class SearchServiceImpl extends SearchService {
 
     /** logger */
     private static final Logger LOG = LogFactory.getLogger(SearchServiceImpl.class);

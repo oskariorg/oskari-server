@@ -1,5 +1,11 @@
 # Release Notes
 
+## 1.39
+
+### Metadata search channel
+
+Code moved from service-search-nls to service-cws for metadata search functionality since it's not NLS spesific.
+
 ## 1.38
 
 ### csw record parsing

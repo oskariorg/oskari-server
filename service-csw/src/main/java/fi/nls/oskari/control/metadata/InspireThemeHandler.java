@@ -3,9 +3,9 @@ package fi.nls.oskari.control.metadata;
 import fi.mml.map.mapwindow.service.db.InspireThemeService;
 import fi.mml.portti.service.search.SearchCriteria;
 import fi.nls.oskari.domain.map.InspireTheme;
+import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.JSONHelper;
-import fi.nls.oskari.util.ServiceFactory;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -20,7 +20,7 @@ import java.util.List;
  */
 public class InspireThemeHandler extends MetadataFieldHandler {
 
-    private static InspireThemeService inspireThemeService = ServiceFactory.getInspireThemeService();
+    private static InspireThemeService inspireThemeService = OskariComponentManager.getComponentOfType(InspireThemeService.class);
 
     public void handleParam(final String param, final SearchCriteria criteria) {
         final int themeId = ConversionHelper.getInt(param, -1);

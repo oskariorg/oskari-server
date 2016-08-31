@@ -6,6 +6,7 @@ import com.ibatis.sqlmap.client.SqlMapClientBuilder;
 import fi.mml.map.mapwindow.service.db.InspireThemeService;
 import fi.mml.map.mapwindow.service.db.InspireThemeServiceIbatisImpl;
 import fi.mml.map.mapwindow.util.OskariLayerWorker;
+import fi.nls.oskari.annotation.Oskari;
 import fi.nls.oskari.domain.map.InspireTheme;
 import fi.nls.oskari.domain.map.LayerGroup;
 import fi.nls.oskari.domain.map.OskariLayer;
@@ -26,7 +27,8 @@ import java.util.*;
  * Time: 13:43
  * To change this template use File | Settings | File Templates.
  */
-public class OskariLayerServiceIbatisImpl implements OskariLayerService {
+@Oskari("OskariLayerService")
+public class OskariLayerServiceIbatisImpl extends OskariLayerService {
 
     private static final Logger LOG = LogFactory.getLogger(OskariLayerServiceIbatisImpl.class);
     private static boolean crsSupported = PropertyUtil.getOptional("oskari.crs.switch.supported", false);
@@ -299,19 +301,17 @@ public class OskariLayerServiceIbatisImpl implements OskariLayerService {
         return null;
     }
 
-    public List<OskariLayer> findByuuid(String uuid) {
+    public List<OskariLayer> findByMetadataId(String uuid) {
         try {
             client = getSqlMapClient();
-            final List<OskariLayer> layers =  mapDataList(queryForList(getNameSpace() + ".findByUuId", uuid));
-            if(layers != null && !layers.isEmpty()) {
-                // should we check for multiples? only should have one since sublayers are mapped in mapDataList()
-                return layers;
-            }
+            final List<Map<String,Object>> list = queryForList(getNameSpace() + ".findByUuId", uuid);
+            final List<OskariLayer> layers = mapDataList(list);
+            return layers;
         } catch (Exception e) {
             LOG.warn(e, "Exception when getting layer with uuid:", uuid);
         }
         LOG.warn("Couldn't find layer with id:", uuid);
-        return null;
+        return Collections.emptyList();
     }
 
     private List<OskariLayer> findByParentId(int parentId) {

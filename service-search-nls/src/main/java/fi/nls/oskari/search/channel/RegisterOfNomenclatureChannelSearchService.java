@@ -10,6 +10,7 @@ import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.search.util.QueryParser;
 import fi.nls.oskari.search.util.SearchUtil;
+import fi.nls.oskari.search.util.VillageSearchUtil;
 import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.PropertyUtil;
@@ -18,7 +19,6 @@ import org.jsoup.Jsoup;
 import org.jsoup.safety.Whitelist;
 
 import java.net.URLEncoder;
-import java.util.Map;
 
 @Oskari(RegisterOfNomenclatureChannelSearchService.ID)
 public class RegisterOfNomenclatureChannelSearchService extends SearchChannel {
@@ -53,7 +53,6 @@ public class RegisterOfNomenclatureChannelSearchService extends SearchChannel {
         }
     	
     	boolean villageFound = false;
-    	boolean searchVillages = true;
     	String villageName = null;
     	
         ChannelSearchResult searchResultList = new ChannelSearchResult();
@@ -68,12 +67,10 @@ public class RegisterOfNomenclatureChannelSearchService extends SearchChannel {
 	        if(queryParser.getVillageName() != null && queryParser.getStreetName() != null && !queryParser.getStreetName().equals("")){
         		villageName = queryParser.getVillageName();
     	        searchString = queryParser.getStreetName();
-    	        villageFound = hasVillage(villageName);
-	        }else{
-	        	searchVillages = false;
+    	        villageFound = VillageSearchUtil.isVillage(villageName);
 	        }
         
-	    }catch(Exception e){
+	    } catch(Exception e){
 	    	log.warn("Address parser failed");
 	    }
         
@@ -140,14 +137,14 @@ public class RegisterOfNomenclatureChannelSearchService extends SearchChannel {
                 item.setType(getType(searchCriteria.getLocale(), paikkatyyppiKoodi));
                 item.setLocationName(SearchUtil.getLocationType(paikkatyyppiKoodi+"_"+ currentLocaleCode));
                 log.debug("kuntaKoodi _ currentLocaleCode " + kuntaKoodi+"_"+ currentLocaleCode);
-                item.setVillage(SearchUtil.getVillageName(kuntaKoodi+"_"+ currentLocaleCode));
+                item.setVillage(VillageSearchUtil.getVillageName(kuntaKoodi+"_"+ currentLocaleCode));
                 log.debug("item.getVillage: " + item.getVillage());
                 item.setLon(lonLat[0]);
                 item.setLat(lonLat[1]);
                 item.setMapURL(SearchUtil.getMapURL(searchCriteria.getLocale()));
-                if(villageFound && searchVillages){
+                if(villageFound){
                 	//log.debug("verrataan: " + villageName + "-" + SearchUtil.getVillageName(kuntaKoodi+"_"+ currentLocaleCode));
-                	if(villageName.equals(SearchUtil.getVillageName(kuntaKoodi+"_"+ currentLocaleCode))){
+                	if(villageName.equals(VillageSearchUtil.getVillageName(kuntaKoodi+"_"+ currentLocaleCode))){
                         searchResultList.addItem(item);
                 	}
                 }else{
@@ -179,28 +176,17 @@ public class RegisterOfNomenclatureChannelSearchService extends SearchChannel {
         return Jsoup.clean(type, Whitelist.none());
     }
 
-    
-    private boolean hasVillage(String village){
-    	 
-    	log.debug("hasVillage: " + village);
-    	Map<String, String> villagesMap = SearchUtil.getVillages();
-    	
-    	return villagesMap.containsKey(village);
-
-    }
-    
     /**
      * Returns the searchcriterial String. 
      *
      * @param filter
-     * @return
+     * @return url with url-encoded filter
      * @throws Exception
      */
     private String getWFSUrl(String filter) throws Exception {
 
 
-        String filterXml =
-                "<Filter>" +
+        String filterXml = "<Filter>" +
                         "   <PropertyIsLike wildCard='*' matchCase='false' singleChar='?' escapeChar='!'>" +
                         "       <PropertyName>pnr:nimi/pnr:PaikanNimi/pnr:kirjoitusasu</PropertyName>" +
                         "       <Literal>" + filter + "</Literal>" +
@@ -215,7 +201,6 @@ public class RegisterOfNomenclatureChannelSearchService extends SearchChannel {
                 "&NAMESPACE=xmlns%28pnr=http://xml.nls.fi/Nimisto/Nimistorekisteri/2009/02%29" +
                 "&filter=" + filterXml + "&SortBy=pnr:mittakaavarelevanssiKoodi+D";
 
-        // log.debug("Our search url is: '" + wfsUrl + "'");
         return wfsUrl;
     }
 }
