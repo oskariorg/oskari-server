@@ -2,6 +2,8 @@ package fi.nls.oskari.control.users;
 
 import java.util.Date;
 
+import fi.nls.oskari.control.ActionDeniedException;
+import fi.nls.oskari.util.PropertyUtil;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -11,6 +13,7 @@ import fi.nls.oskari.control.users.model.Email;
 import fi.nls.oskari.control.users.service.IbatisEmailService;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import org.springframework.web.servlet.mvc.multiaction.NoSuchRequestHandlingMethodException;
 
 /**
  * Handles user's password reseting
@@ -22,11 +25,7 @@ public class UserController {
     
     private static final String ERR_TOKEN_INVALID = "Token is invalid.";
     private static final String ERR_TOKEN_NOT_FOUND = "Token is unavailable.";
-    
-    public UserController() {
-    	
-    }
-    
+
     /**
      * "passwordReset" jsp view should ALWAYS be used by user to reset password
      * @param model
@@ -35,6 +34,9 @@ public class UserController {
      */
     @RequestMapping("/resetPassword/{uuid}")
     public String resetPassword(Model model, @PathVariable String uuid) {
+        if(!PropertyUtil.getOptional("allow.registration", false)) {
+            return "error/404";
+        }
     	 final String jspView = "passwordReset";
          IbatisEmailService emailService = new IbatisEmailService();
          Email email = emailService.findByToken(uuid);

@@ -1,16 +1,11 @@
 package fi.nls.oskari.control.users;
 
-import java.sql.Timestamp;
-import java.util.Calendar;
-
+import fi.nls.oskari.control.*;
+import fi.nls.oskari.util.PropertyUtil;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import fi.nls.oskari.annotation.OskariActionRoute;
-import fi.nls.oskari.control.ActionException;
-import fi.nls.oskari.control.ActionHandler;
-import fi.nls.oskari.control.ActionParameters;
-import fi.nls.oskari.control.ActionParamsException;
 import fi.nls.oskari.control.users.model.Email;
 import fi.nls.oskari.control.users.service.IbatisEmailService;
 import fi.nls.oskari.control.users.service.MailSenderService;
@@ -22,6 +17,9 @@ import fi.nls.oskari.user.DatabaseUserService;
 import fi.nls.oskari.user.IbatisUserService;
 import fi.nls.oskari.util.ResponseHelper;
 
+/**
+ * Note! This might change a bit to make it more RESTish instead of params to tell the operation
+ */
 @OskariActionRoute("UserRegistration")
 public class UserRegistrationHandler extends ActionHandler {
 
@@ -43,9 +41,14 @@ public class UserRegistrationHandler extends ActionHandler {
     private final IbatisUserService ibatisUserService = new IbatisUserService();
     
 	@Override
-	public void handleAction(ActionParameters params) throws ActionException {		
-		if (getRequestParameterCount(params.getRequest().getQueryString()) != 1)
+	public void handleAction(ActionParameters params) throws ActionException {
+		if(!PropertyUtil.getOptional("allow.registration", false)) {
+			throw new ActionDeniedException("Registration disabled");
+		}
+		// TODO: this check seems a bit weird, maybe do some other validation instead?
+		if (getRequestParameterCount(params.getRequest().getQueryString()) != 1) {
 			throw new ActionException("Request URL must contain ONLY ONE parameter.");
+		}
 					
 		String requestEdit = params.getRequest().getParameter(PARAM_EDIT);	
 		User user = new User();
@@ -66,39 +69,24 @@ public class UserRegistrationHandler extends ActionHandler {
 	    	Email emailToken = new Email();
 	    	emailToken.setEmail(user.getEmail());
 	    	emailToken.setUuid(user.getUuid());
-	    	emailToken.setExpiryTimestamp(createExpiryTime());
+	    	emailToken.setExpiryTimestamp(RegistrationUtil.createExpiryTime());
 	    	emailService.addEmail(emailToken);
 	    	
-	    	mailSenderService.sendEmailForRegistrationActivation(user, params.getRequest());
+	    	mailSenderService.sendEmailForRegistrationActivation(user, RegistrationUtil.getServerAddress(params));
 				    	
 		} else if (requestEdit != null && !requestEdit.isEmpty()) {
-			User retUser = null;
 			try {
-			    User sessionUser = params.getUser();
-			    if (sessionUser.isGuest()) {
-			        throw new ActionException("Guest user cannot be edited");
-			    }
-				long userId = sessionUser.getId();
-				retUser = userService.getUser(userId);				
-				if (retUser == null) {
-					throw new ActionException("User doesn't exists.");
-				}
+				params.requireLoggedInUser();
+				// we could propably just use params.getUser() instead of loading from db
+				User retUser = userService.getUser(params.getUser().getId());
+				ResponseHelper.writeResponse(params, user2Json(retUser));
 			} catch (ServiceException se) {			
 				throw new ActionException(se.getMessage(), se);
-			}			
-			JSONObject response = null;
-	        try {
-	            response = user2Json(retUser);
-	        } catch (JSONException je) {
-	            throw new ActionException(je.getMessage(), je);
-	        }
-	        ResponseHelper.writeResponse(params, response);
+			}
 			
 		} else if (params.getHttpParam(PARAM_UPDATE) != null) {
-		    User sessionUser = params.getUser();
-            if (sessionUser.isGuest()) {
-                throw new ActionException("Guest user cannot be edited");
-            }
+			params.requireLoggedInUser();
+			User sessionUser = params.getUser();
 			getUserParams(user, params);
 			user.setId(sessionUser.getId());
 			try {
@@ -115,9 +103,7 @@ public class UserRegistrationHandler extends ActionHandler {
 			
 		} else if (params.getHttpParam(PARAM_DELETE) != null) {
 			User sessionUser = params.getUser();
-            if (sessionUser.isGuest()) {
-                throw new ActionException("Guest user cannot be deleted.");
-            }				
+			params.requireLoggedInUser();
 			try {
 				User retUser = ibatisUserService.find(sessionUser.getId());
 				if (retUser == null)
@@ -155,28 +141,23 @@ public class UserRegistrationHandler extends ActionHandler {
         if (params.getRequest().getParameter(PARAM_USERNAME) != null)
         	 user.setScreenname(params.getRequest().getParameter(PARAM_USERNAME));
     }
-	
-	 /**
-     * Create timestamp for 2 days as expirytime.
-     * @return
-     */
-    public Timestamp createExpiryTime(){
-    	Calendar calender = Calendar.getInstance();
-        Timestamp currentTime = new java.sql.Timestamp(calender.getTime().getTime());
-        calender.setTime(currentTime);
-        calender.add(Calendar.DAY_OF_MONTH, 2);
-        Timestamp expiryTime = new java.sql.Timestamp(calender.getTime().getTime());
-        return expiryTime;
-    }
+
     
-    private JSONObject user2Json(User user) throws JSONException {
-        JSONObject uo = new JSONObject();
-        uo.put("id", user.getId());
-        uo.put("firstName", user.getFirstname());
-        uo.put("lastName", user.getLastname());
-        uo.put("userName", user.getScreenname());
-        uo.put("email", user.getEmail());        
-        return uo;
+    private JSONObject user2Json(User user) throws ActionException {
+		if (user == null) {
+			throw new ActionParamsException("User doesn't exists.");
+		}
+		try {
+			JSONObject uo = new JSONObject();
+			uo.put("id", user.getId());
+			uo.put("firstName", user.getFirstname());
+			uo.put("lastName", user.getLastname());
+			uo.put("userName", user.getScreenname());
+			uo.put("email", user.getEmail());
+			return uo;
+		} catch (JSONException je) {
+			throw new ActionException(je.getMessage(), je);
+		}
     }
     
     public final int getRequestParameterCount(String query) {   
