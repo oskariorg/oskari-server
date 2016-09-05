@@ -1,6 +1,12 @@
 {
-  "type": 	"3 words",
-  "words": 	["carting", "pint", "invent"],
-  "position": 	[60.198375,24.935465],
-  "language": 	"en"
+  "words": "carting.pint.invent",
+  "geometry": {
+    "lng": 24.935465,
+    "lat": 60.198375
+  },
+  "language": "en",
+  "status": {
+    "status": 200,
+    "reason": "OK"
+  }
 }
