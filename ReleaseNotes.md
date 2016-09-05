@@ -1,5 +1,11 @@
 # Release Notes
 
+## 1.38.1
+
+### service-search-opendata
+
+Updated What3Words searchchannel to API version 2.
+
 ## 1.38
 
 ### csw record parsing
