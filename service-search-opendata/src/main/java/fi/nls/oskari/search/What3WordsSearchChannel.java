@@ -18,7 +18,14 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
+/**
+ * Support for what3words API v2
+ */
 @Oskari(What3WordsSearchChannel.ID)
 public class What3WordsSearchChannel extends SearchChannel {
 
@@ -30,28 +37,55 @@ public class What3WordsSearchChannel extends SearchChannel {
     private static final String PROPERTY_SERVICE_URL = "search.channel.WHAT3WORDS_CHANNEL.service.url";
     private static final String PROPERTY_REVERSE_URL = "search.channel.WHAT3WORDS_CHANNEL.reverse.url";
     private static final String PROPERTY_SERVICE_APIKEY = "search.channel.WHAT3WORDS_CHANNEL.service.apikey";
+    private static final String PROPERTY_FORCED_LANG = "search.channel.WHAT3WORDS_CHANNEL.lang";
 
     private String serviceURL = null;
     private String reverseServiceURL = null;
     private boolean forceCoordinateSwitch = false;
+    private String forcedLanguage = null;
+    private Set<String> availableLangs = null;
 
     @Override
     public void init() {
         super.init();
         try {
             serviceURL = IOHelper.addUrlParam(
-                    PropertyUtil.get(PROPERTY_SERVICE_URL, "https://api.what3words.com/w3w"),
+                    PropertyUtil.get(PROPERTY_SERVICE_URL, "https://api.what3words.com/v2/forward?display=minimal"),
                         "key", PropertyUtil.getNecessary(PROPERTY_SERVICE_APIKEY));
             reverseServiceURL = IOHelper.addUrlParam(
-                    PropertyUtil.get(PROPERTY_REVERSE_URL, "https://api.what3words.com/position"),
+                    PropertyUtil.get(PROPERTY_REVERSE_URL, "https://api.what3words.com/v2/reverse?display=minimal"),
                     "key", PropertyUtil.getNecessary(PROPERTY_SERVICE_APIKEY));
         } catch (RuntimeException ex) {
             // thrown if apikey is not defined - add user-friendly log message
             LOG.warn("Apikey missing for What3Words.com search - Skipping it. Define", PROPERTY_SERVICE_APIKEY, "to use the channel.");
             throw ex;
         }
+        availableLangs = getAvailableLanguages();
         forceCoordinateSwitch = PropertyUtil.getOptional("search.channel.forceXY", forceCoordinateSwitch);
+        forcedLanguage = PropertyUtil.getOptional(PROPERTY_FORCED_LANG);
         LOG.debug("ServiceURL set to " + serviceURL);
+    }
+
+    private Set<String> getAvailableLanguages() {
+        String langUrl = IOHelper.addUrlParam(
+                PropertyUtil.get(PROPERTY_SERVICE_URL, "https://api.what3words.com/v2/languages?format=json"),
+                "key", PropertyUtil.getNecessary(PROPERTY_SERVICE_APIKEY));
+        final Set<String> value = new HashSet<>();
+        try {
+            JSONObject response = JSONHelper.createJSONObject(IOHelper.getURL(langUrl));
+            JSONArray languages = JSONHelper.getJSONArray(response, "languages");
+            for(int i = 0; i < languages.length(); ++i) {
+                JSONObject lang = languages.optJSONObject(i);
+                if(lang == null) {
+                    continue;
+                }
+                value.add(lang.optString("code"));
+            }
+        } catch (Exception e) {
+            LOG.warn(e, "Error getting supported languages from what3words");
+            value.add("en");
+        }
+        return value;
     }
 
     public boolean isValidSearchTerm(SearchCriteria criteria) {
@@ -85,8 +119,17 @@ public class What3WordsSearchChannel extends SearchChannel {
         }
 
         try {
-            // https://api.what3words.com/w3w?key=YOURAPIKEY&string=index.home.raft
-            final String url = IOHelper.addUrlParam(serviceURL, "string", searchCriteria.getSearchString());
+            // v1: https://api.what3words.com/w3w?key=YOURAPIKEY&string=index.home.raft
+            // v2: https://api.what3words.com/v2/forward?key=YOURAPIKEY&addr=index.home.raft
+            final Map<String, String> params = new HashMap<>();
+            params.put("addr", searchCriteria.getSearchString());
+            // setup language
+            if(forcedLanguage != null) {
+                params.put("lang", forcedLanguage);
+            } else if(availableLangs.contains(searchCriteria.getLocale())){
+                params.put("lang", searchCriteria.getLocale());
+            }
+            final String url = IOHelper.constructUrl(serviceURL, params);
             String data = IOHelper.getURL(url);
             LOG.debug("Result: " + data);
             SearchResultItem item = parseResult(JSONHelper.createJSONObject(data), srs);
@@ -121,15 +164,26 @@ public class What3WordsSearchChannel extends SearchChannel {
         try {
             LOG.debug("Transforming coordinates");
             final Point point = getServiceCoordinates(sc.getLon(), sc.getLat(), sc.getSRS());
-            //https://api.what3words.com/position?key=YOURAPIKEY&lang=en&position=51.521251,-0.203586
-            final String url = IOHelper.addUrlParam(reverseServiceURL, "position", point.getLat() + "," + point.getLon());
+            // v1: https://api.what3words.com/position?key=YOURAPIKEY&lang=en&position=51.521251,-0.203586
+            // v2: https://api.what3words.com/v2/reverse?key=YOURAPIKEY&lang=en&coords=51.521251,-0.203586
+
+            final Map<String, String> params = new HashMap<>();
+            params.put("coords", point.getLat() + "," + point.getLon());
+            // setup language
+            if(forcedLanguage != null) {
+                params.put("lang", forcedLanguage);
+            } else if(availableLangs.contains(sc.getLocale())){
+                params.put("lang", sc.getLocale());
+            }
+            final String url = IOHelper.constructUrl(reverseServiceURL, params);
+
             String data = IOHelper.getURL(url);
             LOG.debug("Result: " + data);
             SearchResultItem item = parseResult(JSONHelper.createJSONObject(data), sc.getSRS());
 
             searchResultList.addItem(item);
         } catch (Exception e) {
-            LOG.error(e, "Failed to search locations from register of OpenStreetMap");
+            LOG.error(e, "Failed to search locations from register of What3Words");
         }
         return searchResultList;
     }
@@ -144,13 +198,12 @@ public class What3WordsSearchChannel extends SearchChannel {
 
         final SearchResultItem item = new SearchResultItem();
         item.setType("what3words");
-        final JSONArray words = JSONHelper.getJSONArray(dataItem, "words");
-        String title = words.join(".").replaceAll("\"", "");
+        String title = dataItem.optString("words");
         item.setTitle(title);
         item.setDescription(title);
-        final JSONArray position = JSONHelper.getJSONArray(dataItem, "position");
-        final String lat = "" + position.getDouble(0);
-        final String lon = "" + position.getDouble(1);
+        final JSONObject position = JSONHelper.getJSONObject(dataItem, "geometry");
+        final String lat = "" + position.optDouble("lat");
+        final String lon = "" + position.optDouble("lng");
         //item.setLocationTypeCode();
         if(reverseCoordinates) {
             item.setLon(lon);

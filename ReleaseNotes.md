@@ -6,6 +6,12 @@
 
 Code moved from service-search-nls to service-cws for metadata search functionality since it's not NLS spesific.
 
+## 1.38.1
+
+### service-search-opendata
+
+Updated What3Words searchchannel to API version 2.
+
 ## 1.38
 
 ### csw record parsing
