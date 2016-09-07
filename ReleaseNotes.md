@@ -1,5 +1,18 @@
 # Release Notes
 
+## 1.38.2
+
+### service-search
+
+Added optional lang-key to search result items.
+Added configurable rank based on result item type for search channels common functionalities:
+
+    # default rank for all items from channel
+    search.channel.OPENSTREETMAP_CHANNEL.rank=100
+    # type-based rank for place and amenity types
+    search.channel.OPENSTREETMAP_CHANNEL.rank.place=120
+    search.channel.OPENSTREETMAP_CHANNEL.rank.amenity=130
+
 ## 1.38.1
 
 ### service-search-opendata
