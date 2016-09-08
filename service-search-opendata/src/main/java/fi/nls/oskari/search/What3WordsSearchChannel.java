@@ -124,15 +124,14 @@ public class What3WordsSearchChannel extends SearchChannel {
             final Map<String, String> params = new HashMap<>();
             params.put("addr", searchCriteria.getSearchString());
             // setup language
-            if(forcedLanguage != null) {
-                params.put("lang", forcedLanguage);
-            } else if(availableLangs.contains(searchCriteria.getLocale())){
-                params.put("lang", searchCriteria.getLocale());
-            }
+            final String lang = getLang(searchCriteria.getLocale());
+            params.put("lang", lang);
             final String url = IOHelper.constructUrl(serviceURL, params);
             String data = IOHelper.getURL(url);
             LOG.debug("Result: " + data);
             SearchResultItem item = parseResult(JSONHelper.createJSONObject(data), srs);
+            // set language of result based on what was asked
+            item.setLang(lang);
 
             searchResultList.addItem(item);
         } catch (Exception e) {
@@ -170,22 +169,32 @@ public class What3WordsSearchChannel extends SearchChannel {
             final Map<String, String> params = new HashMap<>();
             params.put("coords", point.getLat() + "," + point.getLon());
             // setup language
-            if(forcedLanguage != null) {
-                params.put("lang", forcedLanguage);
-            } else if(availableLangs.contains(sc.getLocale())){
-                params.put("lang", sc.getLocale());
-            }
+            final String lang = getLang(sc.getLocale());
+            params.put("lang", lang);
             final String url = IOHelper.constructUrl(reverseServiceURL, params);
 
             String data = IOHelper.getURL(url);
             LOG.debug("Result: " + data);
             SearchResultItem item = parseResult(JSONHelper.createJSONObject(data), sc.getSRS());
+            // set language of result based on what was asked
+            item.setLang(lang);
 
             searchResultList.addItem(item);
         } catch (Exception e) {
             LOG.error(e, "Failed to search locations from register of What3Words");
         }
         return searchResultList;
+    }
+
+    private String getLang(String requested) {
+
+        // setup language
+        if(forcedLanguage != null) {
+           return forcedLanguage;
+        } else if(availableLangs.contains(requested)){
+            return requested;
+        }
+        return "en";
     }
 
     public SearchResultItem parseResult(JSONObject dataItem, String targetSrs) throws Exception {
@@ -213,8 +222,6 @@ public class What3WordsSearchChannel extends SearchChannel {
             item.setLon(lat);
         }
 
-        item.setRank(0);
-
         // convert to map projection
         final Point point = ProjectionHelper.transformPoint(
                 ConversionHelper.getDouble(item.getLon(), -1),
@@ -233,6 +240,15 @@ public class What3WordsSearchChannel extends SearchChannel {
         item.setLon(point.getLon());
         item.setLat(point.getLat());
         return item;
+    }
+
+    public int getRank(String type) {
+        int rank = super.getRank(type);
+        if(rank != -1) {
+            return rank;
+        }
+        // default if not configured
+        return 100;
     }
 
 }
