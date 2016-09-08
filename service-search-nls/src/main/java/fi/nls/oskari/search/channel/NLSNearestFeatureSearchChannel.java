@@ -32,9 +32,6 @@ public class NLSNearestFeatureSearchChannel extends SearchChannel {
     public static final String RESPONSE_CLEAN = "<?xml version='1.0' encoding='UTF-8'?>";
     public static final String REQUEST_REVERSEGEOCODE_TEMPLATE = "?TYPENAME=oso:Osoitepiste&COORDS=_COORDS_&SRSNAME=_EPSG_&MAXFEATURES=_MAXFEATURES_&BUFFER=_BUFFER_";
     private static final String PARAM_BUFFER = "buffer";
-    private static final String PARAM_MAXFEATURES = "maxfeatures";
-    private static final String PARAM_LON = "lon";
-    private static final String PARAM_LAT = "lat";
 
     private NLSNearestFeatureParser nearestFeatureParser = new NLSNearestFeatureParser();
 

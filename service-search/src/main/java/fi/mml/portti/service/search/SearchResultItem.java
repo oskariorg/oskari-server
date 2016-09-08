@@ -19,6 +19,7 @@ public class SearchResultItem implements Comparable<SearchResultItem>, Serializa
     public static final String KEY_NAME = "name";
     public static final String KEY_UUID = "uuid";
     public static final String KEY_TYPE = "type";
+	public static final String KEY_LANG = "lang";
     public static final String KEY_RANK = "rank";
     public static final String KEY_LON = "lon";
     public static final String KEY_LAT = "lat";
@@ -47,6 +48,7 @@ public class SearchResultItem implements Comparable<SearchResultItem>, Serializa
 	private String village;
 	private String locationTypeCode;
     private String type;
+	private String lang;
 	private String locationName;
 	private String lon;
 	private String lat;
@@ -63,7 +65,7 @@ public class SearchResultItem implements Comparable<SearchResultItem>, Serializa
 	private boolean downloadAllowed = false;
     private Map<String, Object> properties = new HashMap<String, Object>();
 	
-	private int rank;
+	private int rank = -1;
 
     /**
      * Add custom result field value for result
@@ -159,7 +161,15 @@ public class SearchResultItem implements Comparable<SearchResultItem>, Serializa
 		return this.rank - sri.getRank();
 	}
 
-    public String getType() {
+	public String getLang() {
+		return lang;
+	}
+
+	public void setLang(String lang) {
+		this.lang = lang;
+	}
+
+	public String getType() {
         return type;
     }
 
@@ -421,6 +431,7 @@ public class SearchResultItem implements Comparable<SearchResultItem>, Serializa
         JSONHelper.putValue(node, KEY_LON, getLon());
         JSONHelper.putValue(node, KEY_LAT, getLat());
 
+		JSONHelper.putValue(node, KEY_LANG, getLang());
         JSONHelper.putValue(node, KEY_RANK, getRank());
         JSONHelper.putValue(node, KEY_TYPE, getType());
 		JSONHelper.putValue(node, KEY_CHANNELID, getChannelId());

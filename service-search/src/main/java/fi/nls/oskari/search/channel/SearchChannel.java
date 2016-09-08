@@ -22,6 +22,8 @@ public abstract class SearchChannel extends OskariComponent implements Searchabl
     private static Logger log = LogFactory.getLogger(SearchChannel.class);
     private Map<String, Double> mapScalesForType = new HashMap<String, Double>();
     private double defaultScale = -1;
+    private Map<String, Double> ranksForType = new HashMap<>();
+    private int defaultRank = -1;
     // store encountered types here to only log about possible configs for new types
     private Set<String> types = new HashSet<String>();
 
@@ -48,18 +50,25 @@ public abstract class SearchChannel extends OskariComponent implements Searchabl
      */
     public Map<String, Object> getDebugData() {
         Map<String, Double> configurables = new HashMap<String, Double>();
+        Map<String, Double> ranks = new HashMap<String, Double>();
         for(String type : types) {
             Double configured = mapScalesForType.get(type);
+            Double rank = ranksForType.get(type);
             // include all encountered types
             // add -1 as value for those without config
             if(configured == null) {
                 configured = -1d;
             }
+            if(rank == null) {
+                rank = -1d;
+            }
             configurables.put(type, configured);
+            ranks.put(type, rank);
         }
         Map<String, Object> data = new HashMap<String, Object>();
         data.put("defaultScale", defaultScale);
         data.put("scaleOptions", configurables);
+        data.put("rankOptions", ranks);
 
         return data;
     }
@@ -70,16 +79,22 @@ public abstract class SearchChannel extends OskariComponent implements Searchabl
 
     public void init() {
         defaultScale = PropertyUtil.getOptional("search.channel." + getName() + ".scale", -1);
-        final String propertyPrefix = "search.channel." + getName() + ".scale.";
+        initTypeMap("scale", mapScalesForType);
+        initTypeMap("rank", ranksForType);
+    }
+
+    private void initTypeMap(final String prop, final Map<String, Double> map) {
+
+        final String propertyPrefix = "search.channel." + getName() + "." + prop + ".";
         final List<String> headerPropNames = PropertyUtil.getPropertyNamesStartingWith(propertyPrefix);
         for (String propName : headerPropNames) {
             final String key = propName.substring(propertyPrefix.length());
-            final double scale = PropertyUtil.getOptional(propName, -1d);
-            if(scale != -1) {
-                mapScalesForType.put(key, scale);
+            final double value = PropertyUtil.getOptional(propName, -1d);
+            if(value != -1) {
+                map.put(key, value);
             }
             else {
-                log.warn("Property with name", propName, "should be positive integer! Zoom scale for", key, "will not work correctly.");
+                log.warn("Property with name", propName, "should be positive integer! Config for", key, "will not work correctly.");
             }
         }
     }
@@ -92,22 +107,32 @@ public abstract class SearchChannel extends OskariComponent implements Searchabl
         if(item == null) {
             return;
         }
+        item.setChannelId(getName());
         final String type = item.getType();
         if(type == null) {
             return;
         }
-        item.setChannelId(getName());
+        if(!types.contains(type)) {
+            types.add(type);
+            log.debug("Configurable zoom/rank for channel", getName(), "type:", type);
+        }
         item.setZoomScale(getZoomScale(type));
+        if(item.getRank() == -1) {
+            item.setRank(getRank(type));
+        }
         // TODO: setup normalized ranking/channel here
         // maybe add SearchChannel.getMaxRank/getMinRank and normalize through channels
     }
 
-    public double getZoomScale(final String type) {
-        if(!types.contains(type)) {
-            types.add(type);
-            log.debug("Configurable scale for channel", getName(), "type:", type);
-        }
 
+    public int getRank(final String type) {
+        Double value = ranksForType.get(type);
+        if(value == null) {
+            return defaultRank;
+        }
+        return (int) Math.round(value);
+    }
+    public double getZoomScale(final String type) {
         Double value = mapScalesForType.get(type);
         if(value == null) {
             return defaultScale;
