@@ -4,7 +4,7 @@
 
 ### service-search
 
-Added optional lang-key to search result items.
+Added optional language variable to search result items.
 Added configurable rank based on result item type for search channels common functionalities:
 
     # default rank for all items from channel
