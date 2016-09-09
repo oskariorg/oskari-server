@@ -324,7 +324,10 @@ public class ELFGeoLocatorSearchChannel extends SearchChannel {
      */
     @Override
     public void calculateCommonFields(final SearchResultItem item) {
-
+        double scale = item.getZoomScale();
+        super.calculateCommonFields(item);
+        if(scale != -1) {
+            item.setZoomScale(scale);
+        }
     }
-
 }

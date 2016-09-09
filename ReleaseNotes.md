@@ -6,6 +6,11 @@
 
 Code moved from service-search-nls to service-cws for metadata search functionality since it's not NLS spesific.
 
+### service-search-nls
+
+Fixed ELFGeoLocatorSearchChannel common fields override to just handle scale in spesific way. 
+Other common fields are now properly inherited from base functionality. 
+
 ## 1.38.2
 
 ### service-search
