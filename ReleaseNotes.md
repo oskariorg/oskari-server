@@ -11,6 +11,11 @@ Code moved from service-search-nls to service-cws for metadata search functional
 Fixed ELFGeoLocatorSearchChannel common fields override to just handle scale in spesific way. 
 Other common fields are now properly inherited from base functionality. 
 
+### servlet-transport
+
+Browser version information is no longer supported since frontend doesn't send it anymore. This results in some IE 6-8 
+specific code being removed.
+
 ## 1.38.2
 
 ### service-search
