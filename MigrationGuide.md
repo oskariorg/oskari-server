@@ -1,5 +1,38 @@
 # Migration guide
 
+## 1.39.0
+
+This update includes a forced migration of publish template to Openlayers 3 based map. The possible Openlayers 2 based 
+publish template will be copied to a new ID and the log will show a message like "Previous publish template was
+ saved as a backup with view id: 1234." The update is skipped if Openlayers 3 based template is already defined
+  for publishing, but you can also skip the update entirely by adding a skip property to oskari-ext.properties:
+
+    flyway.1_39_1.skip = true
+
+*Note!* All new development is happening for Openlayers 3 based published maps and some features may be broken if
+ migration is skipped. You should update the template manually if automation isn't working for you.  
+
+The bundles in the template are changed based this template: 
+https://github.com/nls-oskari/oskari-server/blob/master/content-resources/src/main/resources/json/views/ol3-publisher-template-view.json
+
+If you would like to use different page(JSP-file), application or path for the template you can override these by
+ adding configuration to oskari-ext.properties: 
+
+    flyway.1_39_1.application = servlet_published_ol3
+    flyway.1_39_1.path = /applications/sample
+    flyway.1_39_1.page = published
+
+You can also specify a custom template to be used by providing a similar file in classpath with
+ /json/views/my-template.json by using the property:
+
+    flyway.1_39_1.file = my-template.json
+
+The update keeps any state and configuration values for the template as they are, but updates the bundles to use and the 
+startup-fragment (filepath/location of the bundle).
+
+*Note!* You will need to update the minifierAppSetup.json to reflect the new template. This can be used with the default setup:
+https://github.com/nls-oskari/oskari/blob/master/applications/sample/servlet_published_ol3/minifierAppSetup.json
+
 ## 1.38.0
 
 The default config for statsgrid-bundle has changed and is now part of the code. The default config in portti_bundle is 
