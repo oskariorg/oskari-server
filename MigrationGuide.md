@@ -12,7 +12,7 @@ publish template will be copied to a new ID and the log will show a message like
 *Note!* All new development is happening for Openlayers 3 based published maps and some features may be broken if
  migration is skipped. You should update the template manually if automation isn't working for you.  
 
-The bundles in the template are changed based this template: 
+The bundles in the template are changed based on this template: 
 https://github.com/nls-oskari/oskari-server/blob/master/content-resources/src/main/resources/json/views/ol3-publisher-template-view.json
 
 If you would like to use different page(JSP-file), application or path for the template you can override these by
@@ -23,7 +23,7 @@ If you would like to use different page(JSP-file), application or path for the t
     flyway.1_39_1.page = published
 
 You can also specify a custom template to be used by providing a similar file in classpath with
- /json/views/my-template.json by using the property:
+ /json/views/my-template.json and using the property:
 
     flyway.1_39_1.file = my-template.json
 
