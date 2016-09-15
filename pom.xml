@@ -966,6 +966,7 @@
         <module>service-statistics</module>
         <module>service-statistics-sotka</module>
         <module>service-statistics-kapa</module>
+        <module>service-statistics-eurostat</module>
         
         <module>service-webapp</module>
 
