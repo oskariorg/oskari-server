@@ -16,7 +16,7 @@ public class EurostatStatisticalDatasourcePlugin implements StatisticalDatasourc
     private final static Logger LOG = LogFactory.getLogger(EurostatStatisticalDatasourcePlugin.class);
 
     /**
-     * Maps the SotkaNET layer identifiers to Oskari layers.
+     * Maps the Eurostat layer identifiers to Oskari layers.
      */
     private Map<String, Long> layerMappings;
 
