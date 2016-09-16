@@ -6,11 +6,12 @@ import fi.nls.oskari.control.statistics.plugins.db.DatasourceLayer;
 import fi.nls.oskari.control.statistics.plugins.db.StatisticalDatasource;
 import fi.nls.oskari.control.statistics.plugins.pxweb.parser.PxwebIndicator;
 import fi.nls.oskari.control.statistics.plugins.pxweb.parser.PxwebIndicatorsParser;
-import fi.nls.oskari.control.statistics.plugins.pxweb.requests.PxwebRequest;
 import fi.nls.oskari.domain.User;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.util.IOHelper;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,10 +28,15 @@ public class PxwebStatisticalDatasourcePlugin implements StatisticalDatasourcePl
 
     @Override
     public List<? extends StatisticalIndicator> getIndicators(User user) {
-        PxwebRequest request = new PxwebRequest();
-        String jsonResponse = request.getIndicators();
-        List<PxwebIndicator> indicators = indicatorsParser.parse(jsonResponse, layerMappings);
-        return indicators;
+        //PxwebRequest request = new PxwebRequest();
+        //String jsonResponse = request.getIndicators();
+        try {
+            String jsonResponse = IOHelper.getURL("http://pxweb.hel.ninja/PXWeb/api/v1/en/hri/hri/");
+            List<PxwebIndicator> indicators = indicatorsParser.parse(jsonResponse, layerMappings);
+            return indicators;
+        } catch (Exception e) {
+            return Collections.emptyList();
+        }
     }
 
     @Override
@@ -46,6 +52,6 @@ public class PxwebStatisticalDatasourcePlugin implements StatisticalDatasourcePl
 
     @Override
     public boolean canCache() {
-        return true;
+        return false;
     }
 }

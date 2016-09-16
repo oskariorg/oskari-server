@@ -7,6 +7,7 @@ import fi.nls.oskari.control.statistics.plugins.db.StatisticalDatasource;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 
+//  INSERT INTO oskari_statistical_datasource(locale, plugin) VALUES ('{"en":{"name":"PxWEB"}}', 'PxWEB')
 
 @Oskari("PxWEB")
 public class PxwebStatisticalDatasourceFactory extends StatisticalDatasourceFactory {

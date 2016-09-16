@@ -4,10 +4,30 @@ import fi.nls.oskari.control.statistics.plugins.StatisticalIndicator;
 import fi.nls.oskari.control.statistics.plugins.StatisticalIndicatorLayer;
 import fi.nls.oskari.control.statistics.plugins.StatisticalIndicatorSelectors;
 
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class PxwebIndicator implements StatisticalIndicator {
+
+    private String id;
+    private String name;
+    private StatisticalIndicatorSelectors selectors;
+    private List<StatisticalIndicatorLayer> layers = new ArrayList<>();
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setSelectors(StatisticalIndicatorSelectors selectors) {
+        this.selectors = selectors;
+    }
+    public void addLayer(StatisticalIndicatorLayer layer) {
+        layers.add(layer);
+    }
+
     @Override
     public String getPluginId() {
         return null;
@@ -15,36 +35,38 @@ public class PxwebIndicator implements StatisticalIndicator {
 
     @Override
     public String getId() {
-        return null;
+        return id;
     }
 
     @Override
     public Boolean isPublic() {
-        return null;
+        return false;
     }
 
     @Override
     public List<StatisticalIndicatorLayer> getLayers() {
-        return null;
+        return layers;
     }
 
     @Override
     public StatisticalIndicatorSelectors getSelectors() {
-        return null;
+        return selectors;
     }
 
     @Override
     public Map<String, String> getLocalizedName() {
-        return null;
+        Map<String, String> map = new HashMap<>();
+        map.put("en", name);
+        return map;
     }
 
     @Override
     public Map<String, String> getLocalizedSource() {
-        return null;
+        return Collections.emptyMap();
     }
 
     @Override
     public Map<String, String> getLocalizedDescription() {
-        return null;
+        return Collections.emptyMap();
     }
 }
