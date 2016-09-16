@@ -6,7 +6,8 @@
 <html>
 <head>
     <title>Oskari - ${viewName}</title>
-
+    <script type="text/javascript" src="/Oskari/libraries/webcomponentsjs/webcomponents-lite.min.js">
+    </script>
     <script type="text/javascript" src="//code.jquery.com/jquery-1.7.2.min.js">
     </script>
 	
