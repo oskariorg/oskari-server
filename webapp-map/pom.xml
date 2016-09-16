@@ -25,6 +25,12 @@
             <groupId>fi.nls.oskari</groupId>
             <artifactId>servlet-saml-config</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>fi.nls.oskari.service</groupId>
+            <artifactId>service-statistics-pxweb</artifactId>
+            <version>1.39.0-SNAPSHOT</version>
+        </dependency>
         <dependency>
             <groupId>fi.nls.oskari.service</groupId>
             <artifactId>oskari-control-base</artifactId>
