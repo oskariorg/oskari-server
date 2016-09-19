@@ -21,18 +21,13 @@ public class PxwebStatisticalDatasourcePlugin implements StatisticalDatasourcePl
     private PxwebIndicatorsParser indicatorsParser;
 
     private Map<String, Long> layerMappings;
+    private PxwebConfig config;
 
-    public PxwebStatisticalDatasourcePlugin() {
-        indicatorsParser = new PxwebIndicatorsParser();
-    }
 
     @Override
     public List<? extends StatisticalIndicator> getIndicators(User user) {
-        //PxwebRequest request = new PxwebRequest();
-        //String jsonResponse = request.getIndicators();
         try {
-            String jsonResponse = IOHelper.getURL("http://pxweb.hel.ninja/PXWeb/api/v1/en/hri/hri/");
-            List<PxwebIndicator> indicators = indicatorsParser.parse(jsonResponse, layerMappings);
+            List<PxwebIndicator> indicators = indicatorsParser.parse(layerMappings);
             return indicators;
         } catch (Exception e) {
             return Collections.emptyList();
@@ -43,6 +38,8 @@ public class PxwebStatisticalDatasourcePlugin implements StatisticalDatasourcePl
     public void init(StatisticalDatasource source) {
         final List<DatasourceLayer> layerRows = source.getLayers();
         layerMappings = new HashMap<>();
+        config = new PxwebConfig(source.getConfigJSON());
+        indicatorsParser = new PxwebIndicatorsParser(config);
 
         for (DatasourceLayer row : layerRows) {
             layerMappings.put(row.getSourceProperty().toLowerCase(), row.getMaplayerId());

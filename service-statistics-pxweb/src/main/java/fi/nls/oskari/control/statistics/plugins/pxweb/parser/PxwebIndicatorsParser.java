@@ -1,7 +1,10 @@
 package fi.nls.oskari.control.statistics.plugins.pxweb.parser;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import fi.nls.oskari.control.statistics.plugins.StatisticalIndicatorSelector;
 import fi.nls.oskari.control.statistics.plugins.StatisticalIndicatorSelectors;
+import fi.nls.oskari.control.statistics.plugins.pxweb.PxwebConfig;
+import fi.nls.oskari.control.statistics.plugins.pxweb.json.PxwebItem;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.util.IOHelper;
@@ -16,31 +19,57 @@ import java.util.List;
 import java.util.Map;
 
 public class PxwebIndicatorsParser {
+    private final static Logger LOG = LogFactory.getLogger(PxwebIndicatorsParser.class);
 
-    private final static Logger log = LogFactory.getLogger(PxwebIndicatorsParser.class);
+    private PxwebConfig config;
+    private ObjectMapper mapper = new ObjectMapper();
 
-    public List<PxwebIndicator> parse(String jsonResponse, Map<String, Long> layerMappings) {
+    public PxwebIndicatorsParser(PxwebConfig config) {
+        this.config = config;
+    }
+
+    public List<PxwebIndicator> parse(Map<String, Long> layerMappings) {
+        return parse(null, null, layerMappings);
+    }
+
+    public List<PxwebIndicator> parse(PxwebItem parent, String path, Map<String, Long> layerMappings) {
         List<PxwebIndicator> indicators = new ArrayList<>();
         try {
-            JSONArray responseArray = new JSONArray(jsonResponse);
-
-            for (int i = 0; i < responseArray.length(); i++) {
-                // Example row:
-                // {"id":"a01hki_astuot_hper_rahoitus_talotyyppi.px","type":"t","text":"Helsingin asuntotuotanto talotyypin, hallintaperusteen, rahoitusmuodon ja huoneistotyypin mukaan","updated":"2016-02-01T13:47:50"}
-                JSONObject valueRow = responseArray.getJSONObject(i);
+            String jsonResponse = IOHelper.getURL(getUrl(path));
+            List<PxwebItem> list =
+                    mapper.readValue(jsonResponse, mapper.getTypeFactory().constructCollectionType(List.class, PxwebItem.class));
+            for(PxwebItem item : list) {
+                if("l".equalsIgnoreCase(item.type)) {
+                    // recurse to pxweb "folder"
+                    indicators.addAll(parse(item, path + "/" + item.id, layerMappings));
+                    continue;
+                }
+                if(!"t".equalsIgnoreCase(item.type)) {
+                    // only recognize l and t types
+                    continue;
+                }
                 PxwebIndicator ind = new PxwebIndicator();
-                ind.setId(valueRow.optString("id"));
-                ind.setName(valueRow.optString("text"));
-                setupMetadata(ind);
+                ind.setId(item.id);
+                ind.setName(item.text);
+                setupMetadata(ind, path);
                 for(long id : layerMappings.values()) {
                     ind.addLayer(new PxwebStatisticalIndicatorLayer(id, ind.getId()));
                 }
                 indicators.add(ind);
             }
-        } catch (JSONException e) {
 
+        } catch (IOException e) {
+            LOG.error(e, "Error getting indicators from Pxweb datasource:", config.getUrl());
         }
         return indicators;
+    }
+
+    private String getUrl(String path) {
+        if(path == null) {
+            // Example: "http://pxweb.hel.ninja/PXWeb/api/v1/en/hri/hri/"
+            return config.getUrl();
+        }
+        return config.getUrl() + "/" + path + "/";
     }
 /*
 {
@@ -83,41 +112,53 @@ public class PxwebIndicatorsParser {
 	}]
 }
  */
-    private void setupMetadata(PxwebIndicator indicator) {
+    private void setupMetadata(PxwebIndicator indicator, String path) {
+        final StatisticalIndicatorSelectors selectors = new StatisticalIndicatorSelectors();
+        indicator.setSelectors(selectors);
 
-        String url = "http://pxweb.hel.ninja/PXWeb/api/v1/en/hri/hri/" + indicator.getId();
+        final JSONObject json = getMetadata(indicator, path);
+        if(json == null) {
+            // TODO: throw an error maybe? same with unexpected response
+            return;
+        }
+
         try {
-            StatisticalIndicatorSelectors selectors = new StatisticalIndicatorSelectors();
-            indicator.setSelectors(selectors);
-
-            String metadata = IOHelper.getURL(url);
-            JSONObject json = JSONHelper.createJSONObject(metadata);
             JSONArray variables = json.optJSONArray("variables");
-            if(variables == null) {
-                // TODO: log an error maybe?
+            if (variables == null) {
+                // TODO: throw an error maybe? same with connection error
                 return;
             }
             for (int i = 0; i < variables.length(); i++) {
-                JSONObject var = variables.getJSONObject(i);
-
-                List<String> selectorValues = new ArrayList<>();
-                JSONArray values = var.optJSONArray("values");
-                for (int j = 0; j < values.length(); j++) {
-                    selectorValues.add(values.optString(j));
+                JSONObject var = variables.optJSONObject(i);
+                final String id = var.optString("code");
+                if (config.getIgnoredVariables().contains(id)) {
+                    continue;
                 }
+                StatisticalIndicatorSelector selector = new StatisticalIndicatorSelector(id);
+                selector.setName(var.optString("text"));
 
-                StatisticalIndicatorSelector selector =
-                        new StatisticalIndicatorSelector(var.optString("code"), selectorValues);
-                //var.optString("code");
-                //var.optString("text");
-
+                JSONArray values = var.optJSONArray("values");
+                JSONArray valueTexts = var.optJSONArray("valueTexts");
+                for (int j = 0; j < values.length(); j++) {
+                    selector.addAllowedValue(values.optString(j), valueTexts.optString(j));
+                }
                 selectors.addSelector(selector);
             }
-
-        } catch (IOException ex) {
-
-        } catch (JSONException ex) {
-
+        } catch (Exception ex) {
+            LOG.error(ex, "Error parsing indicator metadata from Pxweb datasource:", json);
         }
     }
+
+    private JSONObject getMetadata(PxwebIndicator indicator, String path) {
+        String url = getUrl(path) + indicator.getId();
+        try {
+            String metadata = IOHelper.getURL(url);
+            return JSONHelper.createJSONObject(metadata);
+        } catch (IOException ex) {
+            LOG.error(ex, "Error getting indicator metadata from Pxweb datasource:", url);
+        }
+        return null;
+
+    }
+
 }
