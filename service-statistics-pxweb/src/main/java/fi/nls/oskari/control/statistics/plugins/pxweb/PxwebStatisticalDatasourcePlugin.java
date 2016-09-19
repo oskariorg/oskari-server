@@ -52,6 +52,6 @@ public class PxwebStatisticalDatasourcePlugin implements StatisticalDatasourcePl
 
     @Override
     public boolean canCache() {
-        return false;
+        return true;
     }
 }
