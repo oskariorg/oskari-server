@@ -33,6 +33,7 @@ import java.net.HttpURLConnection;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 @OskariActionRoute("GetStatsTile")
 public class GetStatsTileHandler extends ActionHandler {
@@ -49,6 +50,15 @@ public class GetStatsTileHandler extends ActionHandler {
     private String geoserverUser = null;
     private String geoserverPass = null;
     private String geoserverUrl = null;
+
+    private final static Set<String> FILTERED_PARAMS = ConversionHelper.asSet(GetStatsLayerSLDHandler.PARAM_VISUALIZATION_NAME,
+            GetStatsLayerSLDHandler.PARAM_VISUALIZATION_FILTER_PROPERTY,
+            GetStatsLayerSLDHandler.PARAM_VISUALIZATION_CLASSES,
+            GetStatsLayerSLDHandler.PARAM_VISUALIZATION_VIS,
+            // LAYERS is ignored because we will be posting SLD_BODY:
+            // http://osgeo-org.1560.x6.nabble.com/SLD-BODY-ignored-on-SLD-Transformation-td5047629.html
+            // "Pay attention, if you are using both layers and SLD_BODY you enter in "library mode", and you might get surprising results."
+            "LAYERS");
 
     @Override
     public void init() {
@@ -115,10 +125,7 @@ public class GetStatsTileHandler extends ActionHandler {
         final Map<String, String> wmsParams = new HashMap<>();
         for (Object key : httpRequest.getParameterMap().keySet()) {
             String keyStr = (String) key;
-            if (keyStr.equals(GetStatsLayerSLDHandler.PARAM_VISUALIZATION_NAME) ||
-                    keyStr.equals(GetStatsLayerSLDHandler.PARAM_VISUALIZATION_FILTER_PROPERTY) ||
-                    keyStr.equals(GetStatsLayerSLDHandler.PARAM_VISUALIZATION_CLASSES) ||
-                    keyStr.equals(GetStatsLayerSLDHandler.PARAM_VISUALIZATION_VIS)) {
+            if (FILTERED_PARAMS.contains(keyStr)) {
                 // ignore SLD-parameters
                 continue;
             }
