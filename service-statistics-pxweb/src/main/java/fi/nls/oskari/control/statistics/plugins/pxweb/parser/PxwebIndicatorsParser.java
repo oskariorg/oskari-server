@@ -10,7 +10,6 @@ import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.JSONHelper;
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -35,13 +34,14 @@ public class PxwebIndicatorsParser {
     public List<PxwebIndicator> parse(PxwebItem parent, String path, Map<String, Long> layerMappings) {
         List<PxwebIndicator> indicators = new ArrayList<>();
         try {
-            String jsonResponse = IOHelper.getURL(getUrl(path));
+            final String url = getUrl(path);
+            String jsonResponse = IOHelper.getURL(url);
             List<PxwebItem> list =
                     mapper.readValue(jsonResponse, mapper.getTypeFactory().constructCollectionType(List.class, PxwebItem.class));
             for(PxwebItem item : list) {
                 if("l".equalsIgnoreCase(item.type)) {
                     // recurse to pxweb "folder"
-                    indicators.addAll(parse(item, path + "/" + item.id, layerMappings));
+                    indicators.addAll(parse(item, getPath(path, item.id), layerMappings));
                     continue;
                 }
                 if(!"t".equalsIgnoreCase(item.type)) {
@@ -53,7 +53,7 @@ public class PxwebIndicatorsParser {
                 ind.setName(item.text);
                 setupMetadata(ind, path);
                 for(long id : layerMappings.values()) {
-                    ind.addLayer(new PxwebStatisticalIndicatorLayer(id, ind.getId()));
+                    ind.addLayer(new PxwebStatisticalIndicatorLayer(id, ind.getId(), url, config.getRegionKey()));
                 }
                 indicators.add(ind);
             }
@@ -69,7 +69,16 @@ public class PxwebIndicatorsParser {
             // Example: "http://pxweb.hel.ninja/PXWeb/api/v1/en/hri/hri/"
             return config.getUrl();
         }
-        return config.getUrl() + "/" + path + "/";
+        String url = config.getUrl() + "/" + path + "/";
+        return url; //url.replaceAll("//", "/");
+    }
+
+    private String getPath(String path, String nextPart) {
+        if(path == null) {
+            return nextPart;
+        }
+        String url = path + "/" + nextPart;
+        return url.replaceAll("//", "/");
     }
 /*
 {
@@ -115,7 +124,7 @@ public class PxwebIndicatorsParser {
     private void setupMetadata(PxwebIndicator indicator, String path) {
         final StatisticalIndicatorSelectors selectors = new StatisticalIndicatorSelectors();
         indicator.setSelectors(selectors);
-
+        // TODO: caching!!
         final JSONObject json = getMetadata(indicator, path);
         if(json == null) {
             // TODO: throw an error maybe? same with unexpected response

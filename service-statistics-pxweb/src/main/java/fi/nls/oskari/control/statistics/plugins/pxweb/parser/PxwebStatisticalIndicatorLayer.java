@@ -5,23 +5,24 @@ import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.JSONHelper;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.omg.IOP.IORHelper;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
-import java.text.NumberFormat;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 
 public class PxwebStatisticalIndicatorLayer implements StatisticalIndicatorLayer {
 
     private long id;
     private String indicatorId;
+    private String baseUrl;
+    private String regionKey;
 
-    public PxwebStatisticalIndicatorLayer(long id, String indicatorId) {
+    public PxwebStatisticalIndicatorLayer(long id, String indicatorId, String baseUrl, String regionKey) {
         this.id = id;
         this.indicatorId = indicatorId;
+        this.baseUrl = baseUrl;
+        this.regionKey = regionKey;
     }
 
     @Override
@@ -98,11 +99,11 @@ public class PxwebStatisticalIndicatorLayer implements StatisticalIndicatorLayer
     @Override
     public Map<String, IndicatorValue> getIndicatorValues(StatisticalIndicatorSelectors selectors) {
         Map<String, IndicatorValue> values = new HashMap<>();
-        String url = "http://pxweb.hel.ninja/PXWeb/api/v1/en/hri/hri/" + indicatorId;
+        String url = baseUrl + "/" + indicatorId;
         JSONArray query = new JSONArray();
         JSONObject payload = JSONHelper.createJSONObject("query", query);
-        for(StatisticalIndicatorSelector selector : selectors.getSelectors()) {
-            if("Alue".equalsIgnoreCase(selector.getId())) {
+        for (StatisticalIndicatorSelector selector : selectors.getSelectors()) {
+            if (regionKey.equalsIgnoreCase(selector.getId())) {
                 // skip Alue
                 continue;
             }
@@ -126,20 +127,20 @@ public class PxwebStatisticalIndicatorLayer implements StatisticalIndicatorLayer
             final String data = IOHelper.readString(con);
             JSONObject json = JSONHelper.createJSONObject(data);
             //dataset.dimension.Alue.category.index -> key==region id & value == index pointer to dataset.value
-            JSONObject stats = json.optJSONObject("dataset").optJSONObject("dimension").optJSONObject("Alue").optJSONObject("category").optJSONObject("index");
-            JSONArray responseValues  = json.optJSONObject("dataset").optJSONArray("value");
+            JSONObject stats = json.optJSONObject("dataset").optJSONObject("dimension").optJSONObject(regionKey).optJSONObject("category").optJSONObject("index");
+            JSONArray responseValues = json.optJSONObject("dataset").optJSONArray("value");
             JSONArray names = stats.names();
-            for(int i =0; i < names.length(); ++i ) {
+            for (int i = 0; i < names.length(); ++i) {
                 String region = names.optString(i);
                 Double val = responseValues.optDouble(stats.optInt(region));
-                if(val.isNaN()) {
+                if (val.isNaN()) {
                     continue;
                 }
                 IndicatorValue indicatorValue = new IndicatorValueFloat(val);
                 values.put(region, indicatorValue);
             }
         } catch (IOException e) {
-            throw new APIException("Couldn't get data from service/parsing failed",e);
+            throw new APIException("Couldn't get data from service/parsing failed", e);
         }
 
         return values;

@@ -12,10 +12,12 @@ import java.util.Set;
 public class PxwebConfig {
 
     private String url;
+    private String regionKey;
     private Set<String> ignoredVariables = new HashSet<>();
 
     PxwebConfig(JSONObject json) {
         url = json.optString("url");
+        regionKey = json.optString("regionKey");
         JSONArray ignored = json.optJSONArray("ignoredVariables");
         if(ignored != null) {
             for (int i = 0; i < ignored.length(); i++) {
@@ -26,6 +28,10 @@ public class PxwebConfig {
 
     public String getUrl() {
         return url;
+    }
+
+    public String getRegionKey() {
+        return regionKey;
     }
 
     public Set<String> getIgnoredVariables() {
