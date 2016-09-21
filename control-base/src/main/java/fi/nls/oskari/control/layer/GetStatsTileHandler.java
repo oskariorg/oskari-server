@@ -15,6 +15,7 @@ import fi.nls.oskari.map.stats.VisualizationService;
 import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.PropertyUtil;
+import fi.nls.oskari.util.ResponseHelper;
 import org.apache.axiom.om.OMElement;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
@@ -54,11 +55,7 @@ public class GetStatsTileHandler extends ActionHandler {
     private final static Set<String> FILTERED_PARAMS = ConversionHelper.asSet(GetStatsLayerSLDHandler.PARAM_VISUALIZATION_NAME,
             GetStatsLayerSLDHandler.PARAM_VISUALIZATION_FILTER_PROPERTY,
             GetStatsLayerSLDHandler.PARAM_VISUALIZATION_CLASSES,
-            GetStatsLayerSLDHandler.PARAM_VISUALIZATION_VIS,
-            // LAYERS is ignored because we will be posting SLD_BODY:
-            // http://osgeo-org.1560.x6.nabble.com/SLD-BODY-ignored-on-SLD-Transformation-td5047629.html
-            // "Pay attention, if you are using both layers and SLD_BODY you enter in "library mode", and you might get surprising results."
-            "LAYERS");
+            GetStatsLayerSLDHandler.PARAM_VISUALIZATION_VIS);
 
     @Override
     public void init() {
@@ -73,16 +70,14 @@ public class GetStatsTileHandler extends ActionHandler {
         if (log.isDebugEnabled()) {
             printParameters(params);
         }
-        final HttpURLConnection con = getConnection(params);
+        StatsVisualization vis = getVisualization(params);
+        final HttpURLConnection con = getConnection(params, vis != null);
         try {
-            // we should post complete GetMap XML with the custom SLD to geoserver so it doesn't need to fetch it again
-            // Check: http://geo-solutions.blogspot.fi/2012/04/dynamic-wms-styling-with-geoserver-sld.html
 
             HttpURLConnection.setFollowRedirects(false);
             con.setUseCaches(false);
             con.setDoInput(true);
 
-            StatsVisualization vis = getVisualization(params);
             if (vis == null) {
                 log.info("Visualization couldn't be generated - parameters/db data missing", params);
                 con.setRequestMethod("GET");
@@ -101,10 +96,15 @@ public class GetStatsTileHandler extends ActionHandler {
             final byte[] presponse = IOHelper.readBytes(con.getInputStream());
 
             final HttpServletResponse response = params.getResponse();
-            response.setContentType(con.getContentType());
-            response.getOutputStream().write(presponse, 0, presponse.length);
-            response.getOutputStream().flush();
-            response.getOutputStream().close();
+            String type = con.getContentType();
+            if(type.startsWith("image/")) {
+                response.setContentType(con.getContentType());
+                response.getOutputStream().write(presponse, 0, presponse.length);
+                response.getOutputStream().flush();
+                response.getOutputStream().close();
+            }
+            ResponseHelper.writeError(params, new String(presponse));
+
         } catch (Exception e) {
             throw new ActionException("Couldn't proxy request to geoserver",
                     e);
@@ -115,7 +115,7 @@ public class GetStatsTileHandler extends ActionHandler {
         }
     }
 
-    private HttpURLConnection getConnection(final ActionParameters params)
+    private HttpURLConnection getConnection(final ActionParameters params, boolean sendingSLD)
             throws ActionException {
 
         // copy parameters
@@ -125,7 +125,14 @@ public class GetStatsTileHandler extends ActionHandler {
         final Map<String, String> wmsParams = new HashMap<>();
         for (Object key : httpRequest.getParameterMap().keySet()) {
             String keyStr = (String) key;
-            if (FILTERED_PARAMS.contains(keyStr)) {
+            if (FILTERED_PARAMS.contains(keyStr)
+                    // anything starting with VIS_ is our custom param -> dont pass them
+                    || keyStr.startsWith("VIS_")
+                    // if we are sending SLD -> ignore LAYERS
+                    || (sendingSLD && "LAYERS".equalsIgnoreCase(keyStr))) {
+                // LAYERS is ignored if we will be posting SLD_BODY:
+                // http://osgeo-org.1560.x6.nabble.com/SLD-BODY-ignored-on-SLD-Transformation-td5047629.html
+                // "Pay attention, if you are using both layers and SLD_BODY you enter in "library mode", and you might get surprising results."
                 // ignore SLD-parameters
                 continue;
             }
