@@ -73,7 +73,7 @@ public class GetIndicatorListHandler extends ActionHandler {
         }
 
         JSONObject response = new JSONObject();
-        plugin.getIndicators(user);
+        //plugin.getIndicators(user);
         final JSONArray indicators = new JSONArray();
         JSONHelper.putValue(response, KEY_INDICATORS, indicators);
         for (StatisticalIndicator indicator : plugin.getIndicators(user)) {

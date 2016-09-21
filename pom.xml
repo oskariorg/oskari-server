@@ -962,12 +962,6 @@
         <module>service-csw</module>
         <module>service-logging</module>
         <module>service-routing</module>
-        <module>service-statistics-common</module>
-        <module>service-statistics</module>
-        <module>service-statistics-sotka</module>
-        <module>service-statistics-kapa</module>
-        <module>service-statistics-eurostat</module>
-        
         <module>service-webapp</module>
 
         <module>control-base</module>
@@ -975,9 +969,17 @@
         <module>control-myplaces</module>
         <module>control-rating</module>
         <module>control-admin</module>
-        <module>control-statistics</module>
         <module>content-resources</module>
         <module>control-routing</module>
+
+        <!-- statistics -->
+        <module>service-statistics-common</module>
+        <module>service-statistics</module>
+        <module>service-statistics-sotka</module>
+        <module>service-statistics-kapa</module>
+        <module>service-statistics-eurostat</module>
+        <module>service-statistics-pxweb</module>
+        <module>control-statistics</module>
 
         <!-- oskari map -->
         <module>servlet-map</module>
