@@ -97,13 +97,14 @@ public class GetStatsTileHandler extends ActionHandler {
 
             final HttpServletResponse response = params.getResponse();
             String type = con.getContentType();
-            if(type.startsWith("image/")) {
-                response.setContentType(con.getContentType());
-                response.getOutputStream().write(presponse, 0, presponse.length);
-                response.getOutputStream().flush();
-                response.getOutputStream().close();
+            if(!type.startsWith("image/")) {
+                ResponseHelper.writeError(params, new String(presponse));
+                return;
             }
-            ResponseHelper.writeError(params, new String(presponse));
+            response.setContentType(con.getContentType());
+            response.getOutputStream().write(presponse, 0, presponse.length);
+            response.getOutputStream().flush();
+            response.getOutputStream().close();
 
         } catch (Exception e) {
             throw new ActionException("Couldn't proxy request to geoserver",
