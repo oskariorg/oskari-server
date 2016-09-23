@@ -74,6 +74,7 @@ public class GetIndicatorDataHandler extends ActionHandler {
                 if (indicator.getId().equals(indicatorId)) {
                     // This is fast, because there are only 10 or so layers at most.
                     for (StatisticalIndicatorLayer layer : indicator.getLayers()) {
+                        // TODO: handle the case where no layers match -> return an error
                         if (layer.getOskariLayerId() == layerId) {
                             // Note: Layer version is handled already in the indicator metadata.
                             // We found the correct indicator and the layer.
