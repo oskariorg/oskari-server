@@ -3,6 +3,7 @@ package fi.nls.oskari.control.statistics.plugins.pxweb.parser;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fi.nls.oskari.control.statistics.plugins.StatisticalIndicatorSelector;
 import fi.nls.oskari.control.statistics.plugins.StatisticalIndicatorSelectors;
+import fi.nls.oskari.control.statistics.plugins.db.DatasourceLayer;
 import fi.nls.oskari.control.statistics.plugins.pxweb.PxwebConfig;
 import fi.nls.oskari.control.statistics.plugins.pxweb.json.PxwebItem;
 import fi.nls.oskari.log.LogFactory;
@@ -27,11 +28,11 @@ public class PxwebIndicatorsParser {
         this.config = config;
     }
 
-    public List<PxwebIndicator> parse(Map<String, Long> layerMappings) {
-        return parse(null, null, layerMappings);
+    public List<PxwebIndicator> parse(List<DatasourceLayer> layers) {
+        return parse(null, null, layers);
     }
 
-    public List<PxwebIndicator> parse(PxwebItem parent, String path, Map<String, Long> layerMappings) {
+    public List<PxwebIndicator> parse(PxwebItem parent, String path, List<DatasourceLayer> layers) {
         List<PxwebIndicator> indicators = new ArrayList<>();
         try {
             final String url = getUrl(path);
@@ -41,7 +42,7 @@ public class PxwebIndicatorsParser {
             for(PxwebItem item : list) {
                 if("l".equalsIgnoreCase(item.type)) {
                     // recurse to pxweb "folder"
-                    indicators.addAll(parse(item, getPath(path, item.id), layerMappings));
+                    indicators.addAll(parse(item, getPath(path, item.id), layers));
                     continue;
                 }
                 if(!"t".equalsIgnoreCase(item.type)) {
@@ -52,8 +53,8 @@ public class PxwebIndicatorsParser {
                 ind.setId(item.id);
                 ind.setName(item.text);
                 setupMetadata(ind, path);
-                for(long id : layerMappings.values()) {
-                    ind.addLayer(new PxwebStatisticalIndicatorLayer(id, ind.getId(), url, config.getRegionKey()));
+                for(DatasourceLayer layer : layers) {
+                    ind.addLayer(new PxwebStatisticalIndicatorLayer(layer.getMaplayerId(), ind.getId(), url, config.getRegionKey()));
                 }
                 indicators.add(ind);
             }

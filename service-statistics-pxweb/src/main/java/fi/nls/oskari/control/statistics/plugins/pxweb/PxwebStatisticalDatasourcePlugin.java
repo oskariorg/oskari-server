@@ -20,14 +20,14 @@ public class PxwebStatisticalDatasourcePlugin implements StatisticalDatasourcePl
     private final static Logger LOG = LogFactory.getLogger(PxwebStatisticalDatasourcePlugin.class);
     private PxwebIndicatorsParser indicatorsParser;
 
-    private Map<String, Long> layerMappings;
+    private List<DatasourceLayer> layers;
     private PxwebConfig config;
 
 
     @Override
     public List<? extends StatisticalIndicator> getIndicators(User user) {
         try {
-            List<PxwebIndicator> indicators = indicatorsParser.parse(layerMappings);
+            List<PxwebIndicator> indicators = indicatorsParser.parse(layers);
             return indicators;
         } catch (Exception e) {
             return Collections.emptyList();
@@ -36,15 +36,11 @@ public class PxwebStatisticalDatasourcePlugin implements StatisticalDatasourcePl
 
     @Override
     public void init(StatisticalDatasource source) {
-        final List<DatasourceLayer> layerRows = source.getLayers();
-        layerMappings = new HashMap<>();
+        layers = source.getLayers();
         config = new PxwebConfig(source.getConfigJSON());
         indicatorsParser = new PxwebIndicatorsParser(config);
 
-        for (DatasourceLayer row : layerRows) {
-            layerMappings.put(row.getSourceProperty().toLowerCase(), row.getMaplayerId());
-        }
-        LOG.debug("pxweb layer mappings: ", layerMappings);
+        LOG.debug("pxweb layer mappings: ", layers);
     }
 
     @Override
