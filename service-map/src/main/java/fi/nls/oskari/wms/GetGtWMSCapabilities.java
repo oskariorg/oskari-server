@@ -91,7 +91,7 @@ public class GetGtWMSCapabilities {
             String encoding = CapabilitiesCacheService.getEncodingFromXml(capabilitiesXML);
             WMSCapabilities caps = createCapabilities(capabilitiesXML, encoding);
             // caps to json
-            return parseLayer(caps.getLayer(), rurl, caps, capabilitiesXML, currentCrs);
+            return parseLayer(caps.getLayer(), rurl, caps, capabilitiesXML, currentCrs, false);
         } catch (Exception ex) {
             throw new ServiceException("Couldn't read/get wms capabilities response from url.", ex);
         }
@@ -142,14 +142,16 @@ public class GetGtWMSCapabilities {
      * @param rurl  WMS service url
      * @param caps  WMS capabilities
      * @param capabilitiesXML The original capabilites XML
+     *
      * @throws ServiceException
      */
-    public static JSONObject parseLayer(Layer layer, String rurl, WMSCapabilities caps, String capabilitiesXML, String currentCrs)
+    public static JSONObject parseLayer(Layer layer, String rurl, WMSCapabilities caps, String capabilitiesXML, String currentCrs, boolean recursiveCall)
             throws ServiceException {
         if (layer == null) {
             return null;
         }
         try {
+
             if (layer.getLayerChildren().size() > 0) {
                 // Add group of layers
                 final JSONObject groupNode = new JSONObject();
@@ -173,7 +175,7 @@ public class GetGtWMSCapabilities {
                 for (Iterator ii = layer.getLayerChildren().iterator(); ii.hasNext(); ) {
                     Layer sublayer = (Layer) ii.next();
                     if (sublayer != null) {
-                        final JSONObject child = parseLayer(sublayer, rurl, caps, capabilitiesXML, currentCrs);
+                        final JSONObject child = parseLayer(sublayer, rurl, caps, capabilitiesXML, currentCrs, true);
                         final String type = child.optString("type");
                         if (GROUP_LAYER_TYPE.equals(type)) {
                             groups.put(child);
@@ -189,7 +191,17 @@ public class GetGtWMSCapabilities {
                 return groupNode;
             } else {
                 // Parse layer to JSON
-                return layerToOskariLayerJson(layer, rurl, caps, capabilitiesXML, currentCrs);
+                //handle a single layer or a sublayer (=recursive call)
+                if (recursiveCall) {
+                    return layerToOskariLayerJson(layer, rurl, caps, capabilitiesXML, currentCrs);
+                } else {
+                    //handle the case where there actually is just one layer
+                    final JSONObject node = new JSONObject();
+                    JSONArray layers = new JSONArray();
+                    node.put(KEY_LAYERS, layers);
+                    layers.put(layerToOskariLayerJson(layer, rurl, caps, capabilitiesXML, currentCrs));
+                    return node;
+                }
             }
         } catch (Exception ex) {
             throw new ServiceException("Couldn't parse wms capabilities layer", ex);
