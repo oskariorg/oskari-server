@@ -31,6 +31,9 @@ public class StatisticalIndicatorSelector {
         this.id = id;
     }
 
+    public void addAllowedValue(String value) {
+        addAllowedValue(value, null);
+    }
     public void addAllowedValue(String value, String label) {
         allowedValues.add(new KeyValue(value, label));
     }
@@ -56,7 +59,8 @@ public class StatisticalIndicatorSelector {
         return id;
     }
     public void setValue(String value) {
-        if (allowedValues.contains(value)) {
+
+        if (allowedValues.contains(new KeyValue(value))) {
             this.value = value;
         } else {
             throw new APIException("Statistical indicator selector value: " + value

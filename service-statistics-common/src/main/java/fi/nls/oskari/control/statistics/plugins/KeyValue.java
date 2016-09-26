@@ -10,6 +10,9 @@ public class KeyValue {
     public String key;
     public String value;
 
+    public KeyValue(String key) {
+        this(key, null);
+    }
     public KeyValue(String key, String value) {
         this.key = key;
         this.value = value;
@@ -23,7 +26,30 @@ public class KeyValue {
         return value;
     }
 
-    public Object toJSON() {
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof KeyValue)) {
+            return false;
+        }
+
+        KeyValue keyValue = (KeyValue) o;
+
+        if (!getKey().equals(keyValue.getKey())) {
+            return false;
+        }
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return getKey().hashCode();
+    }
+
+    public Object getValueForJson() {
         if(getValue() == null) {
             return getKey();
         }

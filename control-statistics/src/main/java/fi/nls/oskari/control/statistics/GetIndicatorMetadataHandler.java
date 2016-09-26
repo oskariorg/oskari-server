@@ -117,7 +117,7 @@ public class GetIndicatorMetadataHandler extends ActionHandler {
     private JSONArray toJSON(Collection<KeyValue> stringCollection) {
         JSONArray stringArray = new JSONArray();
         for (KeyValue value : stringCollection) {
-            stringArray.put(value.toJSON());
+            stringArray.put(value.getValueForJson());
         }
         return stringArray;
     }
