@@ -6,6 +6,37 @@
 
 Code moved from service-search-nls to service-cws for metadata search functionality since it's not NLS spesific.
 
+### service-search-nls
+
+Fixed ELFGeoLocatorSearchChannel common fields override to just handle scale in spesific way. 
+Other common fields are now properly inherited from base functionality. 
+
+### servlet-transport
+
+Browser version information is no longer supported since frontend doesn't send it anymore. This results in some IE 6-8 
+specific code being removed.
+
+## 1.38.2
+
+### service-search
+
+Added optional language variable to search result items.
+Added configurable rank based on result item type for search channels common functionalities:
+
+    # default rank for all items from channel
+    search.channel.OPENSTREETMAP_CHANNEL.rank=100
+    # type-based rank for place and amenity types
+    search.channel.OPENSTREETMAP_CHANNEL.rank.place=120
+    search.channel.OPENSTREETMAP_CHANNEL.rank.amenity=130
+
+Updated What3Words searchchannel now returns the language information for results.
+
+## 1.38.1
+
+### service-search-opendata
+
+Updated What3Words searchchannel to API version 2.
+
 ## 1.38
 
 ### csw record parsing

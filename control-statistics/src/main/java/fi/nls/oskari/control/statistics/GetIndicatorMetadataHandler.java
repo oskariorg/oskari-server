@@ -106,6 +106,7 @@ public class GetIndicatorMetadataHandler extends ActionHandler {
         for (StatisticalIndicatorSelector selector : selectors.getSelectors()) {
             JSONObject selectorJSON = new JSONObject();
             selectorJSON.put("id", selector.getId());
+            selectorJSON.put("name", selector.getName());
             selectorJSON.put("allowedValues", toJSON(selector.getAllowedValues()));
             // Note: Values are not given here, they are null anyhow in this phase.
             selectorsJSON.put(selectorJSON);
@@ -113,10 +114,10 @@ public class GetIndicatorMetadataHandler extends ActionHandler {
         return selectorsJSON;
     }
 
-    private JSONArray toJSON(Collection<String> stringCollection) {
+    private JSONArray toJSON(Collection<KeyValue> stringCollection) {
         JSONArray stringArray = new JSONArray();
-        for (String value : stringCollection) {
-            stringArray.put(value);
+        for (KeyValue value : stringCollection) {
+            stringArray.put(value.toJSON());
         }
         return stringArray;
     }

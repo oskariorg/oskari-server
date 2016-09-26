@@ -67,22 +67,35 @@ public class GetLayerTileHandler extends ActionHandler {
             final com.codahale.metrics.Timer timer = metrics.timer(METRICS_PREFIX + "." + layerId);
             actionTimer = timer.time();
         }
-        // Create connection
-        final String url = getURL(params, layer);
-        if(url == null || url.isEmpty()) {
-            ResponseHelper.writeError(params, "Not found", HttpServletResponse.SC_NOT_FOUND);
-            return;
+
+        String url  = null;
+        String postParams = null;
+        String httpMethod = params.getRequest().getMethod();
+        HttpURLConnection con = null;
+        boolean doOutPut = false;
+        if (httpMethod.equals("POST")) {
+            doOutPut = true;
+            url = layer.getUrl();
+            postParams = IOHelper.getParams(getUrlParams(params.getRequest()));
+        } else {
+            url = getURL(params, layer);
         }
-        final HttpURLConnection con = getConnection(url, layer);
+
+        con = getConnection(url, layer);
+
         try {
-            con.setRequestMethod("GET");
-            con.setDoOutput(false);
+            con.setRequestMethod(httpMethod);
+            con.setDoOutput(doOutPut);
             con.setConnectTimeout(TIMEOUT_CONNECTION);
             con.setReadTimeout(TIMEOUT_READ);
             con.setDoInput(true);
             con.setFollowRedirects(true);
             con.setUseCaches(false);
             con.connect();
+
+            if (httpMethod.equals("POST")) {
+                IOHelper.writeToConnection(con, postParams);
+            }
 
             final int responseCode = con.getResponseCode();
             final String contentType = con.getContentType();
@@ -114,6 +127,7 @@ public class GetLayerTileHandler extends ActionHandler {
                 con.disconnect();
             }
         }
+
     }
 
     private String getURL(final ActionParameters params, final OskariLayer layer) {
@@ -141,16 +155,22 @@ public class GetLayerTileHandler extends ActionHandler {
                         .replaceFirst("\\{TileCol\\}", capsParams.get(KEY_TILECOL) != null ? capsParams.get(KEY_TILECOL) : KEY_TILECOL);
             }
         }
+
+        Map<String, String> urlParams = getUrlParams(httpRequest);
+        return IOHelper.constructUrl(layer.getUrl(),urlParams);
+    }
+
+    private Map<String, String> getUrlParams(HttpServletRequest httpRequest) {
         Enumeration<String> paramNames = httpRequest.getParameterNames();
         Map<String, String> urlParams = new HashMap<>();
         // Refine parameters
         while (paramNames.hasMoreElements()){
             String paramName = paramNames.nextElement();
             if (!RESERVED_PARAMETERS.contains(paramName)) {
-                urlParams.put(paramName, params.getHttpParam(paramName));
+                urlParams.put(paramName, httpRequest.getParameter(paramName));
             }
         }
-        return IOHelper.constructUrl(layer.getUrl(),urlParams);
+        return urlParams;
     }
 
     /**

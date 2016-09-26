@@ -7,6 +7,7 @@ import fi.nls.oskari.control.ActionHandler;
 import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.csw.domain.CSWIsoRecord;
 import fi.nls.oskari.csw.service.CSWService;
+import fi.nls.oskari.domain.Role;
 import fi.nls.oskari.domain.geo.Point;
 import fi.nls.oskari.map.geometry.ProjectionHelper;
 import fi.nls.oskari.map.geometry.WKTHelper;
@@ -46,6 +47,7 @@ public class GetCSWDataHandler extends ActionHandler {
     /*ratings*/
     public static final String KEY_RATING = "score";
     public static final String KEY_AMOUNT = "amount";
+    public static final String KEY_ADMIN_RATING = "latestAdminRating";
 
     private final RatingService ratingService = new RatingServiceMybatisImpl();
 
@@ -121,6 +123,10 @@ public class GetCSWDataHandler extends ActionHandler {
             JSONHelper.putValue(result, KEY_RATING, rating[0]);
             JSONHelper.putValue(result, KEY_AMOUNT, rating[1]);
         }
+
+        String adminRole = Role.getAdminRole().getName();
+        String adminRating = ratingService.findLatestAdminRating(metadataRatingType, uuid, adminRole);
+        JSONHelper.putValue(result, KEY_ADMIN_RATING, adminRating);
     }
     private String getWKT(JSONObject item, final String targetSRS) {
         String sourceSRS = WKTHelper.PROJ_EPSG_4326;

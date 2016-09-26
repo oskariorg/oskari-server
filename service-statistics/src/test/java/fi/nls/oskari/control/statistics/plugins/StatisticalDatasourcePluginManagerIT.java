@@ -99,7 +99,7 @@ public class StatisticalDatasourcePluginManagerIT {
         List<StatisticalIndicatorSelector> allSelectors = selectors.getSelectors();
         for (StatisticalIndicatorSelector selector : allSelectors) {
             // Selecting the first allowed value for each selector to define a proper selector.
-            selector.setValue(selector.getAllowedValues().iterator().next());
+            selector.setValue(selector.getAllowedValues().iterator().next().getKey());
         }
         Map<String, IndicatorValue> indicatorValues = indicators.get(0).getLayers().get(0).getIndicatorValues(selectors);
         assertNotNull("Indicator values response was null.", indicatorValues);
