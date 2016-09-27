@@ -6,14 +6,14 @@ import org.json.JSONObject;
 /**
  * Created by SMAKINEN on 19.9.2016.
  */
-public class KeyValue {
+public class IdNamePair {
     public String key;
     public String value;
 
-    public KeyValue(String key) {
+    public IdNamePair(String key) {
         this(key, null);
     }
-    public KeyValue(String key, String value) {
+    public IdNamePair(String key, String value) {
         this.key = key;
         this.value = value;
     }
@@ -31,13 +31,13 @@ public class KeyValue {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof KeyValue)) {
+        if (!(o instanceof IdNamePair)) {
             return false;
         }
 
-        KeyValue keyValue = (KeyValue) o;
+        IdNamePair idNamePair = (IdNamePair) o;
 
-        if (!getKey().equals(keyValue.getKey())) {
+        if (!getKey().equals(idNamePair.getKey())) {
             return false;
         }
 

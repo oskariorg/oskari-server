@@ -9,18 +9,18 @@ import static org.junit.Assert.*;
 /**
  * Created by SMAKINEN on 26.9.2016.
  */
-public class KeyValueTest {
+public class IdNamePairTest {
 
     @Test
     public void testSimpleToJSON()
             throws Exception {
-        KeyValue val =  new KeyValue("id");
+        IdNamePair val =  new IdNamePair("id");
         assertEquals("Should only return value", "id", val.getValueForJson());
     }
     @Test
     public void testToJSON()
             throws Exception {
-        KeyValue val =  new KeyValue("id", "value");
+        IdNamePair val =  new IdNamePair("id", "value");
         JSONObject expected = JSONHelper.createJSONObject("{\"id\":\"id\",\"name\":\"value\"}");
         assertTrue("Should only return value", JSONHelper.isEqual(expected, (JSONObject) val.getValueForJson()));
 
