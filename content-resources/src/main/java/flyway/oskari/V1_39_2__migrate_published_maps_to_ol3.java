@@ -23,6 +23,13 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
+/**
+ * Migrates all views of type "PUBLISHED" and having a bundle with "openlayers" referenced in the startup JSON.
+ * This targets all the Openlayers 2 based published maps. The views are then programmatically
+ * "republished" with the current publish template which should be Openlayers 3 based, but the
+ * doesn't really care about it. You could use it to migrate published maps to any new publish template with
+ * some modification to the selection of views to migrate.
+ */
 public class V1_39_2__migrate_published_maps_to_ol3 implements JdbcMigration {
 
     private static final Logger LOG = LogFactory.getLogger(V1_39_2__migrate_published_maps_to_ol3.class);
@@ -47,8 +54,6 @@ public class V1_39_2__migrate_published_maps_to_ol3 implements JdbcMigration {
             // load views like AppSetupHandler.get()
             final View oldView = service.getViewWithConfByUuId(uuid);
             final JSONObject json = getPayload(oldView);
-            // TODO: should we write the jsons to a file or something? just to be sure
-
             // republish -> like feed through AppSetupHandler.post() but with less user checks
             final View view = getBaseView(oldView);
             setupMapState(view, json.optJSONObject("mapfull"));
@@ -268,7 +273,33 @@ public class V1_39_2__migrate_published_maps_to_ol3 implements JdbcMigration {
 
         JSONHelper.putValue(mapOptions, KEY_CROSSHAIR, mapOptions.optBoolean(KEY_CROSSHAIR));
 
-        JSONHelper.putValue(mapOptions, KEY_STYLE, view.getMetadata().optJSONObject(KEY_STYLE));
+        // ensure consistency in mapOptions/metadata style block
+        final JSONObject style = ensureStyleConsistency(
+                view.getMetadata().optJSONObject(KEY_STYLE), mapOptions.optJSONObject(KEY_STYLE));
+        JSONHelper.putValue(mapOptions, KEY_STYLE, style);
+        view.getMetadata().put(KEY_STYLE, style);
+    }
+
+    private static final String KEY_FONT = "font";
+    private static final String KEY_TOOLSTYLE = "toolStyle";
+    /**
+     * Some views seem to only have style saved to mapOptions and NOT metadata. Options is used for rendering, metadata
+     * is used for publisher. Metadata should be consistent, but for reason or another isn't in the database. Merge
+     * the values with metadata as master and mapOptions to fill in missing parts.
+     * @param metadata
+     * @param options
+     * @return
+     */
+    private JSONObject ensureStyleConsistency(JSONObject metadata, JSONObject options) {
+        if(options != null) {
+            if(!metadata.has(KEY_FONT) && options.has(KEY_FONT)) {
+                JSONHelper.putValue(metadata, KEY_FONT, options.optString(KEY_FONT));
+            }
+            if(!metadata.has(KEY_TOOLSTYLE) && options.has(KEY_TOOLSTYLE)) {
+                JSONHelper.putValue(metadata, KEY_TOOLSTYLE, options.optString(KEY_TOOLSTYLE));
+            }
+        }
+        return metadata;
     }
 
     private static final Set<String> CLASS_WHITELIST =  ConversionHelper.asSet("center", "top", "right", "bottom", "left");
