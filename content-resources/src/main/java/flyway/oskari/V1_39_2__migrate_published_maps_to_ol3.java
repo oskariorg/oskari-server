@@ -274,8 +274,9 @@ public class V1_39_2__migrate_published_maps_to_ol3 implements JdbcMigration {
         JSONHelper.putValue(mapOptions, KEY_CROSSHAIR, mapOptions.optBoolean(KEY_CROSSHAIR));
 
         // ensure consistency in mapOptions/metadata style block
+        // NOTE! Need to use mapOptions from input conf to get the original one
         final JSONObject style = ensureStyleConsistency(
-                view.getMetadata().optJSONObject(KEY_STYLE), mapOptions.optJSONObject(KEY_STYLE));
+                view.getMetadata().optJSONObject(KEY_STYLE), mapfullConf.optJSONObject(KEY_MAPOPTIONS));
         JSONHelper.putValue(mapOptions, KEY_STYLE, style);
         view.getMetadata().put(KEY_STYLE, style);
     }
@@ -291,13 +292,18 @@ public class V1_39_2__migrate_published_maps_to_ol3 implements JdbcMigration {
      * @return
      */
     private JSONObject ensureStyleConsistency(JSONObject metadata, JSONObject options) {
-        if(options != null) {
-            if(!metadata.has(KEY_FONT) && options.has(KEY_FONT)) {
-                JSONHelper.putValue(metadata, KEY_FONT, options.optString(KEY_FONT));
-            }
-            if(!metadata.has(KEY_TOOLSTYLE) && options.has(KEY_TOOLSTYLE)) {
-                JSONHelper.putValue(metadata, KEY_TOOLSTYLE, options.optString(KEY_TOOLSTYLE));
-            }
+        if(options == null) {
+            return metadata;
+        }
+        JSONObject style = options.optJSONObject(KEY_STYLE);
+        if(style == null) {
+            return metadata;
+        }
+        if(!metadata.has(KEY_FONT) && style.has(KEY_FONT)) {
+            JSONHelper.putValue(metadata, KEY_FONT, style.optString(KEY_FONT));
+        }
+        if(!metadata.has(KEY_TOOLSTYLE) && style.has(KEY_TOOLSTYLE)) {
+            JSONHelper.putValue(metadata, KEY_TOOLSTYLE, style.optString(KEY_TOOLSTYLE));
         }
         return metadata;
     }
