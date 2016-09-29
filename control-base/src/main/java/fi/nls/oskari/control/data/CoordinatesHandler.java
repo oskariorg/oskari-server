@@ -13,7 +13,11 @@ import fi.nls.oskari.map.geometry.ProjectionHelper;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.util.ResponseHelper;
+import org.geotools.referencing.CRS;
 import org.json.JSONObject;
+import org.opengis.referencing.FactoryException;
+import org.opengis.referencing.NoSuchAuthorityCodeException;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
 import static fi.nls.oskari.control.ActionConstants.*;
 
@@ -67,6 +71,15 @@ public class CoordinatesHandler extends ActionHandler {
         try {
             PointTransformer transformer = getTransformer();
             Point value = transformer.reproject(point, srs, target);
+
+            //lon-lat-swap hack to reverse the wrongdoings of ProjectionHelper _without_ breaking all the functionality
+            //relying on the wrongdoings of the ProjectionHelper...sigh...
+            if (ProjectionHelper.isFirstAxisNorth(CRS.decode(srs)) == ProjectionHelper.isFirstAxisNorth(CRS.decode(target))) {
+                double lon = value.getLon();
+                double lat = value.getLat();
+                value.setLon(lat);
+                value.setLat(lon);
+            }
             LOG.debug("Reprojected - lon", value.getLon(), "lat", value.getLat(), "in", target);
             JSONObject response = new JSONObject();
             JSONHelper.putValue(response, PARAM_LON, value.getLon());
@@ -75,6 +88,10 @@ public class CoordinatesHandler extends ActionHandler {
             ResponseHelper.writeResponse(params, response);
 
         } catch (RuntimeException ex) {
+            throw new ActionParamsException(ex.getMessage());
+        } catch (NoSuchAuthorityCodeException ex) {
+            throw new ActionParamsException(ex.getMessage());
+        } catch (FactoryException ex) {
             throw new ActionParamsException(ex.getMessage());
         }
     }
