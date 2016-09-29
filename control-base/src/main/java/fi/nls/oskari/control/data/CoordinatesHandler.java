@@ -39,6 +39,7 @@ public class CoordinatesHandler extends ActionHandler {
     private static final String PROP_LIBRARY_CLASS = "projection.library.class";
 
     static final String TARGET_SRS = "targetSRS";
+    private static final String PROPERTY_FORCEXY = "org.geotools.referencing.forceXY";
 
     private PointTransformer service = null;
 
@@ -74,7 +75,8 @@ public class CoordinatesHandler extends ActionHandler {
 
             //lon-lat-swap hack to reverse the wrongdoings of ProjectionHelper _without_ breaking all the functionality
             //relying on the wrongdoings of the ProjectionHelper...sigh...
-            if (ProjectionHelper.isFirstAxisNorth(CRS.decode(srs)) == ProjectionHelper.isFirstAxisNorth(CRS.decode(target))) {
+            boolean forceXY = System.getProperty(PROPERTY_FORCEXY) != null && "true".equals(System.getProperty(PROPERTY_FORCEXY));
+            if (forceXY && (ProjectionHelper.isFirstAxisNorth(CRS.decode(srs)) == ProjectionHelper.isFirstAxisNorth(CRS.decode(target)))) {
                 double lon = value.getLon();
                 double lat = value.getLat();
                 value.setLon(lat);
