@@ -66,8 +66,8 @@ public class CoordinatesHandlerTest extends JSONActionRouteTest {
         Map<String, String> params = getValidParams();
         handler.handleAction(createActionParams(params));
 
-        assertEquals(PARAM_LON, 327578.7810839222, getResponseJSON().getDouble(PARAM_LON), 0.0);
-        assertEquals(PARAM_LAT, 6822546.781459001, getResponseJSON().getDouble(PARAM_LAT), 0.0);
+        assertEquals(PARAM_LAT, 327578.7810839222, getResponseJSON().getDouble(PARAM_LAT), 0.0);
+        assertEquals(PARAM_LON, 6822546.781459001, getResponseJSON().getDouble(PARAM_LON), 0.0);
 
     }
     @Test
@@ -80,8 +80,8 @@ public class CoordinatesHandlerTest extends JSONActionRouteTest {
         params.put(handler.TARGET_SRS, "EPSG:4326");
         handler.handleAction(createActionParams(params));
 
-        assertEquals(PARAM_LON, 61.4980214, getResponseJSON().getDouble(PARAM_LON), 0.00001);
-        assertEquals(PARAM_LAT, 23.7603118, getResponseJSON().getDouble(PARAM_LAT), 0.00001);
+        assertEquals(PARAM_LAT, 61.4980214, getResponseJSON().getDouble(PARAM_LAT), 0.00001);
+        assertEquals(PARAM_LON, 23.7603118, getResponseJSON().getDouble(PARAM_LON), 0.00001);
 
     }
 }

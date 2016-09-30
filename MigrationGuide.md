@@ -33,6 +33,24 @@ startup-fragment (filepath/location of the bundle).
 *Note!* You will need to update the minifierAppSetup.json to reflect the new template. This can be used with the default setup:
 https://github.com/nls-oskari/oskari/blob/master/applications/sample/servlet_published_ol3/minifierAppSetup.json
 
+Another update is used to migrate all published maps using Openlayers 2 based published maps to use the new publish template.
+This will programmatically "republish" all the maps having OL2 with the current publish template. This means that if you 
+skipped 1.39.1 update for the template AND haven't done anything for updating the template manually this will use an unmigrated
+publish template. This is something to consider. You can skip the migration by adding a property to oskari-ext.properties:
+ 
+    flyway.1_39_2.skip = true
+
+*Note!* If you skip this update you might need to have a separate template for new published maps using OL3 and older 
+published maps using OL2. The migration will take a while depending how many published maps there are in the system.
+ It can also fail, usually if there is broken/invalid JSON in config or state columns for bundles. You should fix the
+ JSON manually in the database and restart Jetty to run the migration again for the rest of the published maps.
+
+*Tip!* If you are trying to make a custom template you can:
+  1) Skip this migration
+  2) Try using the custom template with the publishing functionality
+  3) When you are ready to use the template: delete the row from database table oskari_status for 1.39.2 migration
+  4) Restart Jetty to run the migration using the custom template
+
 ## 1.38.0
 
 The default config for statsgrid-bundle has changed and is now part of the code. The default config in portti_bundle is 
