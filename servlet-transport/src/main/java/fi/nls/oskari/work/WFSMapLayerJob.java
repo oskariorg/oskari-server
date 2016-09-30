@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.Point;
 import fi.nls.oskari.pojo.SessionStore;
+import fi.nls.oskari.service.TransportServiceException;
+import fi.nls.oskari.transport.TransportJobException;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.wfs.WFSCommunicator;
 import fi.nls.oskari.wfs.WFSFilter;
@@ -60,6 +62,7 @@ public class WFSMapLayerJob extends OWSMapLayerJob {
 
     /**
      * Makes request
+     * Throws TransportJobException, if payload fails or post request response fails
      *
      * @param type
      * @param layer
@@ -76,8 +79,16 @@ public class WFSMapLayerJob extends OWSMapLayerJob {
             String payload = WFSCommunicator.createRequestPayload(type, layer,
                     session, bounds, transformService);
             log.debug("...WFS / Request data "+ layer.getURL() + "\n" + payload + "\n");
-            response = HttpHelper.postRequestReader(layer.getURL(), "",
-                    payload, layer.getUsername(), layer.getPassword());
+            try {
+                response = HttpHelper.postRequestReader(layer.getURL(), "",
+                        payload, layer.getUsername(), layer.getPassword(), true);
+            }
+            catch (TransportServiceException e){
+                throw new TransportJobException(e.getMessage(),
+                        e.getCause(),
+                        TransportJobException.ERROR_GETFEATURE_POSTREQUEST_FAILED,
+                        TransportJobException.ERROR_LEVEL);
+            }
         } else {
             log.debug(
                     "Failed to make a request because of undefined layer type "+
@@ -139,8 +150,11 @@ public class WFSMapLayerJob extends OWSMapLayerJob {
         try {
             // request failed
             if(response == null) {
-                log.warn("Request failed for layer", layer.getLayerId());
-                throw new RuntimeException(ResultProcessor.ERROR_WFS_REQUEST_FAILED);
+                log.warn("Request failed for layer: ",layer.getLayerName(), "id: ", layer.getLayerId());
+                throw new TransportJobException("Request failed for layer: " + layer.getLayerName() + "id: " + layer.getLayerId(),
+                        TransportJobException.ERROR_WFS_REQUEST_FAILED,
+                        TransportJobException.ERROR_LEVEL);
+
             }
 
             // parse response, throws an exception on failure
@@ -227,6 +241,7 @@ public class WFSMapLayerJob extends OWSMapLayerJob {
         }
         else {
             log.warn("Tried to determine properties by there's no features!");
+            //this.sendCommonErrorResponse();
         }
         return Collections.EMPTY_LIST;
     }

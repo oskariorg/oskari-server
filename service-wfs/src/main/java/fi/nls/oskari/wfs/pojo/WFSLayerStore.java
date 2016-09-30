@@ -419,6 +419,17 @@ public class WFSLayerStore extends WFSLayerConfiguration {
      */
     @JsonIgnore
     public static String getCache(String layerId) {
-        return JedisManager.get(KEY + layerId);
+        return JedisManager.get(KEY + layerId, false);
+    }
+    /**
+     * Gets saved layer from redis
+     *
+     * @param layerId
+     * @param throwException  throws new runtime exception, if any exception found
+     * @return string
+     */
+    @JsonIgnore
+    public static String getCache(String layerId, boolean throwException) {
+        return JedisManager.get(KEY + layerId, throwException);
     }
 }

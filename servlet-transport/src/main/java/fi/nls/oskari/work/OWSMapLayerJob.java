@@ -3,6 +3,8 @@ package fi.nls.oskari.work;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.pojo.*;
+import fi.nls.oskari.service.TransportServiceException;
+import fi.nls.oskari.transport.TransportJobException;
 import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.wfs.WFSImage;
 import fi.nls.oskari.wfs.pojo.WFSLayerStore;
@@ -779,7 +781,7 @@ public abstract class OWSMapLayerJob extends AbstractJob<String> {
 
 
     public void notifyError() {
-        notifyError(null);
+        notifyError("Something went wrong");
     }
 
     public void notifyError(String error) {
@@ -791,6 +793,28 @@ public abstract class OWSMapLayerJob extends AbstractJob<String> {
         output.put("type", type.toString());
         this.service.addResults(session.getClient(), ResultProcessor.CHANNEL_ERROR, output);
     }
+    public void notifyError(Exception e) {
+        if (e == null) {
+            notifyError("Something went wrong");
+            return;
+        }
+        Map<String, Object> output = createCommonResponse(e.getMessage());
+        output.put("once", false);
+        output.put("message", e.getMessage());
+        output.put("type", type.toString());
+        if(e instanceof TransportJobException){
+            output.put("key", ((TransportJobException) e).getMessageKey());
+            output.put("level", ((TransportJobException) e).getLevel());
+        } else {
+            output.put("key", TransportJobException.ERROR_COMMON_JOB_FAILURE);
+            output.put("level", TransportJobException.ERROR_LEVEL);
+        }
+        if (e.getCause() != null) {
+            output.put("cause",e.getCause().getMessage());
+        }
+        this.service.addResults(session.getClient(), ResultProcessor.CHANNEL_ERROR, output);
+    }
+
 
     public void notifyStart() {
         log.info("On start - layer:", layerId, "type:", type);

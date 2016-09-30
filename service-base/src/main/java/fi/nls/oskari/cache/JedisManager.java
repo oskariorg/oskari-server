@@ -2,12 +2,15 @@ package fi.nls.oskari.cache;
 
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.service.TransportServiceException;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
 import redis.clients.jedis.exceptions.JedisConnectionException;
 
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -70,12 +73,25 @@ public class JedisManager {
      * @return Jedis instance
      */
     public Jedis getJedis() {
+        return getJedis(false);
+    }
+
+    /**
+     * Gets Jedis connection from the pool
+     * @param throwException  throws new runtime exception, if any exception found
+     * @return Jedis instance
+     */
+    public Jedis getJedis(boolean throwException) {
         try {
             return pool.getResource();
         } catch (Exception e) {
             log.error("Getting Jedis connection from the pool failed:", e.getMessage());
             if(e.getCause() != null) {
                 log.debug(e, "Cause:", e.getCause().getMessage());
+            }
+            if(throwException){
+                throw new TransportServiceException("Getting Jedis connection from the pool failed: " + e.getMessage(),
+                        e.getCause(), TransportServiceException.ERROR_REDIS_CONNECTION_FAILURE);
             }
             return null;
         }
@@ -97,23 +113,41 @@ public class JedisManager {
      * @return string
      */
 	public static String get(String key) {
-		Jedis jedis = instance.getJedis();
+	  return get(key, false);
+	}
+    /**
+     * Thread-safe String GET for Redis
+     *
+     * @param key
+     * @param throwException  throws new runtime exception, if any exception found
+     * @return string
+     */
+    public static String get(String key, boolean throwException) {
+        Jedis jedis = instance.getJedis(throwException);
         if(jedis == null) return null;
 
-		try {
-			return jedis.get(key);
-		} catch(JedisConnectionException e) {
+        try {
+            return jedis.get(key);
+        } catch(JedisConnectionException e) {
             log.error("Failed to get", key, "returning broken connection...");
             pool.returnBrokenResource(jedis);
             log.error("Broken connection closed");
-			return null;
+            if(throwException){
+                throw new TransportServiceException("Failed to get " + key + " returning broken connection...: " + e.getMessage(),
+                       e.getCause(), TransportServiceException.ERROR_REDIS_BROKEN_CONNECTION);
+            }
+            return null;
         } catch (Exception e) {
             log.error("Getting", key, "from Redis failed:", e.getMessage());
+            if(throwException){
+                throw new TransportServiceException("Getting" + key + "from Redis failed: "+e.getMessage(),
+                       e.getCause(), TransportServiceException.ERROR_REDIS_GET_FAILURE);
+            }
             return null;
-		} finally {
-			instance.returnJedis(jedis);
-		}
-	}
+        } finally {
+            instance.returnJedis(jedis);
+        }
+    }
 
     /**
      * Thread-safe byte[] GET for Redis
