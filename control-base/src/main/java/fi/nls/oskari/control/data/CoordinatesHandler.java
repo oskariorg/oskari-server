@@ -76,12 +76,25 @@ public class CoordinatesHandler extends ActionHandler {
             //lon-lat-swap hack to reverse the wrongdoings of ProjectionHelper _without_ breaking all the functionality
             //relying on the wrongdoings of the ProjectionHelper...sigh...
             boolean forceXY = System.getProperty(PROPERTY_FORCEXY) != null && "true".equals(System.getProperty(PROPERTY_FORCEXY));
-            if (forceXY && (ProjectionHelper.isFirstAxisNorth(CRS.decode(srs)) == ProjectionHelper.isFirstAxisNorth(CRS.decode(target)))) {
+            //forcexy -> both always have the same axis order -> projectionhelper swaps -> swap back!
+            if (forceXY) {
                 double lon = value.getLon();
                 double lat = value.getLat();
                 value.setLon(lat);
                 value.setLat(lon);
+            } else {
+                //not forced. if different axisorder, projectionhelper returns wrong -> swap back
+                if (ProjectionHelper.isFirstAxisNorth(CRS.decode(srs)) != ProjectionHelper.isFirstAxisNorth(CRS.decode(target))) {
+                    double lon = value.getLon();
+                    double lat = value.getLat();
+                    value.setLon(lat);
+                    value.setLat(lon);
+                }
             }
+
+
+
+
             LOG.debug("Reprojected - lon", value.getLon(), "lat", value.getLat(), "in", target);
             JSONObject response = new JSONObject();
             JSONHelper.putValue(response, PARAM_LON, value.getLon());
