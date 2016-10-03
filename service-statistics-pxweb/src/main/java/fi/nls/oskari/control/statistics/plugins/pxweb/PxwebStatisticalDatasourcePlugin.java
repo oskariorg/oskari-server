@@ -9,12 +9,9 @@ import fi.nls.oskari.control.statistics.plugins.pxweb.parser.PxwebIndicatorsPars
 import fi.nls.oskari.domain.User;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.util.IOHelper;
 
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class PxwebStatisticalDatasourcePlugin implements StatisticalDatasourcePlugin {
     private final static Logger LOG = LogFactory.getLogger(PxwebStatisticalDatasourcePlugin.class);

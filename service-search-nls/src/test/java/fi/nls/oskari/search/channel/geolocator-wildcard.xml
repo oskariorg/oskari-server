@@ -1,0 +1,378 @@
+<?xml version='1.0' encoding='UTF-8'?><gml:FeatureCollection xmlns:gml="http://www.opengis.net/gml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:iso19112="http://www.isotc211.org/19112" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:gmdsf1="http://www.isotc211.org/2005/gmdsf1" xsi:schemaLocation="http://www.isotc211.org/19112 http://ec2-54-247-101-37.eu-west-1.compute.amazonaws.com/schemas/iso19112/OGC-Gazetteer.xsd">  
+    <gml:boundedBy>    
+        <gml:Envelope srsName="EPSG:4258">      
+            <gml:lowerCorner>22.363321 60.511313</gml:lowerCorner>      
+            <gml:upperCorner>26.320106 65.331140</gml:upperCorner>    
+        </gml:Envelope>  
+    </gml:boundedBy>  
+    <gml:featureMember>    
+        <iso19112:SI_LocationInstance gml:id="SI_LocationInstance.973851">      
+            <iso19112:geographicIdentifier>FI.NLS.GNR.10011153</iso19112:geographicIdentifier>      
+            <iso19112:alternativeGeographicIdentifiers>        
+                <iso19112:alternativeGeographicIdentifier>          
+                    <iso19112:name xml:lang="fin">Helvetinrökki</iso19112:name>          
+                    <iso19112:nameID>Helvetinrökki;FI.40011153</iso19112:nameID>          
+                    <iso19112:type>official</iso19112:type>          
+                    <iso19112:primary>false</iso19112:primary>        
+                </iso19112:alternativeGeographicIdentifier>      
+            </iso19112:alternativeGeographicIdentifiers>      
+            <iso19112:position>                
+                <gml:Point gml:id="SI_LocationInstance.973851_ISO19112_POSITION" srsName="EPSG:4258">          
+                    <gml:pos>25.344031 61.847131</gml:pos>        
+                </gml:Point>      
+            </iso19112:position>      
+            <iso19112:geographicExtent>                
+                <gml:Polygon gml:id="SI_LocationInstance.973851_ISO19112_GEOGRAPHICEXTENT" srsName="EPSG:4258">          
+                    <gml:exterior>            
+                        <gml:LinearRing srsName="EPSG:4258">              
+                            <gml:posList>25.344031 61.847131 25.344031 61.847131 25.344031 61.847131 25.344031 61.847131 25.344031 61.847131</gml:posList>            
+                        </gml:LinearRing>          
+                    </gml:exterior>        
+                </gml:Polygon>      
+            </iso19112:geographicExtent>      
+            <iso19112:dateModified>2008-12-06</iso19112:dateModified>      
+            <iso19112:administrator>        
+                <gmdsf1:CI_ResponsibleParty>          
+                    <gmdsf1:organizationName>National Land Survey of Finland</gmdsf1:organizationName>        
+                </gmdsf1:CI_ResponsibleParty>      
+            </iso19112:administrator>      
+            <iso19112:spatialObject>FI.NLS.GNR.10011153</iso19112:spatialObject>      
+            <iso19112:parent xlink:title="Jämsä (fin)" xlink:href="http://54.247.101.37/elf/GeolocatorService?SERVICE=WFS&amp;REQUEST=GetFeature&amp;typename=SI_LocationInstance&amp;VERSION=1.1.0&amp;LANGUAGE=eng&amp;OUTPUTFORMAT=text/xml;%20subtype=gml/3.1.1&amp;FILTER=%3Cogc%3AFilter%20xmlns%3Aogc%3D%22http%3A%2F%2Fwww.opengis.net%2Fogc%22%3E%3Cogc%3APropertyIsEqualTo%3E%3Cogc%3APropertyName%20xmlns%3Aiso19112%3D%22http%3A%2F%2Fwww.isotc211.org%2F19112%22%3Eiso19112%3AgeographicIdentifier%3C%2Fogc%3APropertyName%3E%3Cogc%3ALiteral%3EFI.NLS.AU10.au670376%3C%2Fogc%3ALiteral%3E%3C%2Fogc%3APropertyIsEqualTo%3E%3C%2Fogc%3AFilter%3E" />
+            <iso19112:parent  xlink:title="Jämsä (swe)" xlink:href="http://54.247.101.37/elf/GeolocatorService?SERVICE=WFS&amp;REQUEST=GetFeature&amp;typename=SI_LocationInstance&amp;VERSION=1.1.0&amp;LANGUAGE=eng&amp;OUTPUTFORMAT=text/xml;%20subtype=gml/3.1.1&amp;FILTER=%3Cogc%3AFilter%20xmlns%3Aogc%3D%22http%3A%2F%2Fwww.opengis.net%2Fogc%22%3E%3Cogc%3APropertyIsEqualTo%3E%3Cogc%3APropertyName%20xmlns%3Aiso19112%3D%22http%3A%2F%2Fwww.isotc211.org%2F19112%22%3Eiso19112%3AgeographicIdentifier%3C%2Fogc%3APropertyName%3E%3Cogc%3ALiteral%3EFI.NLS.AU10.au670376%3C%2Fogc%3ALiteral%3E%3C%2Fogc%3APropertyIsEqualTo%3E%3C%2Fogc%3AFilter%3E"></iso19112:parent>      
+            <iso19112:locationType xlink:title="Elevation" xlink:role="SI_LocationType.495" xlink:arcrole="21" xlink:href="http://54.247.101.37/elf/GeolocatorService?SERVICE=WFS&amp;REQUEST=GetFeature&amp;typename=SI_LocationType&amp;VERSION=1.1.0&amp;OUTPUTFORMAT=text/xml;%20subtype=gml/3.1.1&amp;FILTER=%3CFilter%20xmlns%3D%22http%3A%2F%2Fwww.opengis.net%2Fogc%22%20xmlns%3Aiso19112%3D%22http%3A%2F%2Fwww.isotc211.org%2F19112%22%3E%3CPropertyIsEqualTo%3E%3CPropertyName%3Eiso19112%3Aidentification%3C%2FPropertyName%3E%3CLiteral%3E21%3C%2FLiteral%3E%3C%2FPropertyIsEqualTo%3E%3C%2FFilter%3E&amp;LANGUAGE=eng"></iso19112:locationType>    
+        </iso19112:SI_LocationInstance>  
+    </gml:featureMember>  
+    <gml:featureMember>    
+        <iso19112:SI_LocationInstance gml:id="SI_LocationInstance.990887">      
+            <iso19112:geographicIdentifier>FI.NLS.GNR.10052441</iso19112:geographicIdentifier>      
+            <iso19112:alternativeGeographicIdentifiers>        
+                <iso19112:alternativeGeographicIdentifier>          
+                    <iso19112:name xml:lang="fin">Hellämäki</iso19112:name>          
+                    <iso19112:nameID>Hellämäki;FI.40052441</iso19112:nameID>          
+                    <iso19112:type>official</iso19112:type>          
+                    <iso19112:primary>false</iso19112:primary>        
+                </iso19112:alternativeGeographicIdentifier>      
+            </iso19112:alternativeGeographicIdentifiers>      
+            <iso19112:position>                
+                <gml:Point gml:id="SI_LocationInstance.990887_ISO19112_POSITION" srsName="EPSG:4258">          
+                    <gml:pos>22.363321 61.538518</gml:pos>        
+                </gml:Point>      
+            </iso19112:position>      
+            <iso19112:geographicExtent>                
+                <gml:Polygon gml:id="SI_LocationInstance.990887_ISO19112_GEOGRAPHICEXTENT" srsName="EPSG:4258">          
+                    <gml:exterior>            
+                        <gml:LinearRing srsName="EPSG:4258">              
+                            <gml:posList>22.363321 61.538518 22.363321 61.538518 22.363321 61.538518 22.363321 61.538518 22.363321 61.538518</gml:posList>            
+                        </gml:LinearRing>          
+                    </gml:exterior>        
+                </gml:Polygon>      
+            </iso19112:geographicExtent>      
+            <iso19112:dateModified>2008-12-06</iso19112:dateModified>      
+            <iso19112:administrator>        
+                <gmdsf1:CI_ResponsibleParty>          
+                    <gmdsf1:organizationName>National Land Survey of Finland</gmdsf1:organizationName>        
+                </gmdsf1:CI_ResponsibleParty>      
+            </iso19112:administrator>      
+            <iso19112:spatialObject>FI.NLS.GNR.10052441</iso19112:spatialObject>      
+            <iso19112:parent xlink:title="Lavia (fin)" xlink:href="http://54.247.101.37/elf/GeolocatorService?SERVICE=WFS&amp;REQUEST=GetFeature&amp;typename=SI_LocationInstance&amp;VERSION=1.1.0&amp;LANGUAGE=eng&amp;OUTPUTFORMAT=text/xml;%20subtype=gml/3.1.1&amp;FILTER=%3Cogc%3AFilter%20xmlns%3Aogc%3D%22http%3A%2F%2Fwww.opengis.net%2Fogc%22%3E%3Cogc%3APropertyIsEqualTo%3E%3Cogc%3APropertyName%20xmlns%3Aiso19112%3D%22http%3A%2F%2Fwww.isotc211.org%2F19112%22%3Eiso19112%3AgeographicIdentifier%3C%2Fogc%3APropertyName%3E%3Cogc%3ALiteral%3EFI.NLS.AU10.au463774%3C%2Fogc%3ALiteral%3E%3C%2Fogc%3APropertyIsEqualTo%3E%3C%2Fogc%3AFilter%3E" />
+            <iso19112:parent  xlink:title="Lavia (swe)" xlink:href="http://54.247.101.37/elf/GeolocatorService?SERVICE=WFS&amp;REQUEST=GetFeature&amp;typename=SI_LocationInstance&amp;VERSION=1.1.0&amp;LANGUAGE=eng&amp;OUTPUTFORMAT=text/xml;%20subtype=gml/3.1.1&amp;FILTER=%3Cogc%3AFilter%20xmlns%3Aogc%3D%22http%3A%2F%2Fwww.opengis.net%2Fogc%22%3E%3Cogc%3APropertyIsEqualTo%3E%3Cogc%3APropertyName%20xmlns%3Aiso19112%3D%22http%3A%2F%2Fwww.isotc211.org%2F19112%22%3Eiso19112%3AgeographicIdentifier%3C%2Fogc%3APropertyName%3E%3Cogc%3ALiteral%3EFI.NLS.AU10.au463774%3C%2Fogc%3ALiteral%3E%3C%2Fogc%3APropertyIsEqualTo%3E%3C%2Fogc%3AFilter%3E"></iso19112:parent>      
+            <iso19112:locationType xlink:title="Elevation" xlink:role="SI_LocationType.495" xlink:arcrole="21" xlink:href="http://54.247.101.37/elf/GeolocatorService?SERVICE=WFS&amp;REQUEST=GetFeature&amp;typename=SI_LocationType&amp;VERSION=1.1.0&amp;OUTPUTFORMAT=text/xml;%20subtype=gml/3.1.1&amp;FILTER=%3CFilter%20xmlns%3D%22http%3A%2F%2Fwww.opengis.net%2Fogc%22%20xmlns%3Aiso19112%3D%22http%3A%2F%2Fwww.isotc211.org%2F19112%22%3E%3CPropertyIsEqualTo%3E%3CPropertyName%3Eiso19112%3Aidentification%3C%2FPropertyName%3E%3CLiteral%3E21%3C%2FLiteral%3E%3C%2FPropertyIsEqualTo%3E%3C%2FFilter%3E&amp;LANGUAGE=eng"></iso19112:locationType>    
+        </iso19112:SI_LocationInstance>  
+    </gml:featureMember>  
+    <gml:featureMember>    
+        <iso19112:SI_LocationInstance gml:id="SI_LocationInstance.1031822">      
+            <iso19112:geographicIdentifier>FI.NLS.GNR.10059890</iso19112:geographicIdentifier>      
+            <iso19112:alternativeGeographicIdentifiers>        
+                <iso19112:alternativeGeographicIdentifier>          
+                    <iso19112:name xml:lang="fin">Helavalkiamäki</iso19112:name>          
+                    <iso19112:nameID>Helavalkiamäki;FI.40059890</iso19112:nameID>          
+                    <iso19112:type>official</iso19112:type>          
+                    <iso19112:primary>false</iso19112:primary>        
+                </iso19112:alternativeGeographicIdentifier>      
+            </iso19112:alternativeGeographicIdentifiers>      
+            <iso19112:position>                
+                <gml:Point gml:id="SI_LocationInstance.1031822_ISO19112_POSITION" srsName="EPSG:4258">          
+                    <gml:pos>24.084718 60.511313</gml:pos>        
+                </gml:Point>      
+            </iso19112:position>      
+            <iso19112:geographicExtent>                
+                <gml:Polygon gml:id="SI_LocationInstance.1031822_ISO19112_GEOGRAPHICEXTENT" srsName="EPSG:4258">          
+                    <gml:exterior>            
+                        <gml:LinearRing srsName="EPSG:4258">              
+                            <gml:posList>24.084718 60.511313 24.084718 60.511313 24.084718 60.511313 24.084718 60.511313 24.084718 60.511313</gml:posList>            
+                        </gml:LinearRing>          
+                    </gml:exterior>        
+                </gml:Polygon>      
+            </iso19112:geographicExtent>      
+            <iso19112:dateModified>2008-12-06</iso19112:dateModified>      
+            <iso19112:administrator>        
+                <gmdsf1:CI_ResponsibleParty>          
+                    <gmdsf1:organizationName>National Land Survey of Finland</gmdsf1:organizationName>        
+                </gmdsf1:CI_ResponsibleParty>      
+            </iso19112:administrator>      
+            <iso19112:spatialObject>FI.NLS.GNR.10059890</iso19112:spatialObject>      
+            <iso19112:parent xlink:title="Lohja (fin)" xlink:href="http://54.247.101.37/elf/GeolocatorService?SERVICE=WFS&amp;REQUEST=GetFeature&amp;typename=SI_LocationInstance&amp;VERSION=1.1.0&amp;LANGUAGE=eng&amp;OUTPUTFORMAT=text/xml;%20subtype=gml/3.1.1&amp;FILTER=%3Cogc%3AFilter%20xmlns%3Aogc%3D%22http%3A%2F%2Fwww.opengis.net%2Fogc%22%3E%3Cogc%3APropertyIsEqualTo%3E%3Cogc%3APropertyName%20xmlns%3Aiso19112%3D%22http%3A%2F%2Fwww.isotc211.org%2F19112%22%3Eiso19112%3AgeographicIdentifier%3C%2Fogc%3APropertyName%3E%3Cogc%3ALiteral%3EFI.NLS.AU10.au322405%3C%2Fogc%3ALiteral%3E%3C%2Fogc%3APropertyIsEqualTo%3E%3C%2Fogc%3AFilter%3E" />
+            <iso19112:parent  xlink:title="Lojo (swe)" xlink:href="http://54.247.101.37/elf/GeolocatorService?SERVICE=WFS&amp;REQUEST=GetFeature&amp;typename=SI_LocationInstance&amp;VERSION=1.1.0&amp;LANGUAGE=eng&amp;OUTPUTFORMAT=text/xml;%20subtype=gml/3.1.1&amp;FILTER=%3Cogc%3AFilter%20xmlns%3Aogc%3D%22http%3A%2F%2Fwww.opengis.net%2Fogc%22%3E%3Cogc%3APropertyIsEqualTo%3E%3Cogc%3APropertyName%20xmlns%3Aiso19112%3D%22http%3A%2F%2Fwww.isotc211.org%2F19112%22%3Eiso19112%3AgeographicIdentifier%3C%2Fogc%3APropertyName%3E%3Cogc%3ALiteral%3EFI.NLS.AU10.au322405%3C%2Fogc%3ALiteral%3E%3C%2Fogc%3APropertyIsEqualTo%3E%3C%2Fogc%3AFilter%3E"></iso19112:parent>      
+            <iso19112:locationType xlink:title="Elevation" xlink:role="SI_LocationType.495" xlink:arcrole="21" xlink:href="http://54.247.101.37/elf/GeolocatorService?SERVICE=WFS&amp;REQUEST=GetFeature&amp;typename=SI_LocationType&amp;VERSION=1.1.0&amp;OUTPUTFORMAT=text/xml;%20subtype=gml/3.1.1&amp;FILTER=%3CFilter%20xmlns%3D%22http%3A%2F%2Fwww.opengis.net%2Fogc%22%20xmlns%3Aiso19112%3D%22http%3A%2F%2Fwww.isotc211.org%2F19112%22%3E%3CPropertyIsEqualTo%3E%3CPropertyName%3Eiso19112%3Aidentification%3C%2FPropertyName%3E%3CLiteral%3E21%3C%2FLiteral%3E%3C%2FPropertyIsEqualTo%3E%3C%2FFilter%3E&amp;LANGUAGE=eng"></iso19112:locationType>    
+        </iso19112:SI_LocationInstance>  
+    </gml:featureMember>  
+    <gml:featureMember>    
+        <iso19112:SI_LocationInstance gml:id="SI_LocationInstance.1040950">      
+            <iso19112:geographicIdentifier>FI.NLS.GNR.10103757</iso19112:geographicIdentifier>      
+            <iso19112:alternativeGeographicIdentifiers>        
+                <iso19112:alternativeGeographicIdentifier>          
+                    <iso19112:name xml:lang="fin">Helkanmäki</iso19112:name>          
+                    <iso19112:nameID>Helkanmäki;FI.40103757</iso19112:nameID>          
+                    <iso19112:type>official</iso19112:type>          
+                    <iso19112:primary>false</iso19112:primary>        
+                </iso19112:alternativeGeographicIdentifier>      
+            </iso19112:alternativeGeographicIdentifiers>      
+            <iso19112:position>                
+                <gml:Point gml:id="SI_LocationInstance.1040950_ISO19112_POSITION" srsName="EPSG:4258">          
+                    <gml:pos>23.611055 63.220837</gml:pos>        
+                </gml:Point>      
+            </iso19112:position>      
+            <iso19112:geographicExtent>                
+                <gml:Polygon gml:id="SI_LocationInstance.1040950_ISO19112_GEOGRAPHICEXTENT" srsName="EPSG:4258">          
+                    <gml:exterior>            
+                        <gml:LinearRing srsName="EPSG:4258">              
+                            <gml:posList>23.611055 63.220837 23.611055 63.220837 23.611055 63.220837 23.611055 63.220837 23.611055 63.220837</gml:posList>            
+                        </gml:LinearRing>          
+                    </gml:exterior>        
+                </gml:Polygon>      
+            </iso19112:geographicExtent>      
+            <iso19112:dateModified>2008-12-06</iso19112:dateModified>      
+            <iso19112:administrator>        
+                <gmdsf1:CI_ResponsibleParty>          
+                    <gmdsf1:organizationName>National Land Survey of Finland</gmdsf1:organizationName>        
+                </gmdsf1:CI_ResponsibleParty>      
+            </iso19112:administrator>      
+            <iso19112:spatialObject>FI.NLS.GNR.10103757</iso19112:spatialObject>      
+            <iso19112:parent xlink:title="Lappajärvi (fin)" xlink:href="http://54.247.101.37/elf/GeolocatorService?SERVICE=WFS&amp;REQUEST=GetFeature&amp;typename=SI_LocationInstance&amp;VERSION=1.1.0&amp;LANGUAGE=eng&amp;OUTPUTFORMAT=text/xml;%20subtype=gml/3.1.1&amp;FILTER=%3Cogc%3AFilter%20xmlns%3Aogc%3D%22http%3A%2F%2Fwww.opengis.net%2Fogc%22%3E%3Cogc%3APropertyIsEqualTo%3E%3Cogc%3APropertyName%20xmlns%3Aiso19112%3D%22http%3A%2F%2Fwww.isotc211.org%2F19112%22%3Eiso19112%3AgeographicIdentifier%3C%2Fogc%3APropertyName%3E%3Cogc%3ALiteral%3EFI.NLS.AU10.au770423%3C%2Fogc%3ALiteral%3E%3C%2Fogc%3APropertyIsEqualTo%3E%3C%2Fogc%3AFilter%3E" />
+            <iso19112:parent  xlink:title="Lappajärvi (swe)" xlink:href="http://54.247.101.37/elf/GeolocatorService?SERVICE=WFS&amp;REQUEST=GetFeature&amp;typename=SI_LocationInstance&amp;VERSION=1.1.0&amp;LANGUAGE=eng&amp;OUTPUTFORMAT=text/xml;%20subtype=gml/3.1.1&amp;FILTER=%3Cogc%3AFilter%20xmlns%3Aogc%3D%22http%3A%2F%2Fwww.opengis.net%2Fogc%22%3E%3Cogc%3APropertyIsEqualTo%3E%3Cogc%3APropertyName%20xmlns%3Aiso19112%3D%22http%3A%2F%2Fwww.isotc211.org%2F19112%22%3Eiso19112%3AgeographicIdentifier%3C%2Fogc%3APropertyName%3E%3Cogc%3ALiteral%3EFI.NLS.AU10.au770423%3C%2Fogc%3ALiteral%3E%3C%2Fogc%3APropertyIsEqualTo%3E%3C%2Fogc%3AFilter%3E"></iso19112:parent>      
+            <iso19112:locationType xlink:title="POPULATED PLACES" xlink:role="SI_LocationType.105" xlink:arcrole="5" xlink:href="http://54.247.101.37/elf/GeolocatorService?SERVICE=WFS&amp;REQUEST=GetFeature&amp;typename=SI_LocationType&amp;VERSION=1.1.0&amp;OUTPUTFORMAT=text/xml;%20subtype=gml/3.1.1&amp;FILTER=%3CFilter%20xmlns%3D%22http%3A%2F%2Fwww.opengis.net%2Fogc%22%20xmlns%3Aiso19112%3D%22http%3A%2F%2Fwww.isotc211.org%2F19112%22%3E%3CPropertyIsEqualTo%3E%3CPropertyName%3Eiso19112%3Aidentification%3C%2FPropertyName%3E%3CLiteral%3E5%3C%2FLiteral%3E%3C%2FPropertyIsEqualTo%3E%3C%2FFilter%3E&amp;LANGUAGE=eng"></iso19112:locationType>    
+        </iso19112:SI_LocationInstance>  
+    </gml:featureMember>  
+    <gml:featureMember>    
+        <iso19112:SI_LocationInstance gml:id="SI_LocationInstance.1050827">      
+            <iso19112:geographicIdentifier>FI.NLS.GNR.10087371</iso19112:geographicIdentifier>      
+            <iso19112:alternativeGeographicIdentifiers>        
+                <iso19112:alternativeGeographicIdentifier>          
+                    <iso19112:name xml:lang="fin">Helamäki</iso19112:name>          
+                    <iso19112:nameID>Helamäki;FI.40087371</iso19112:nameID>          
+                    <iso19112:type>official</iso19112:type>          
+                    <iso19112:primary>false</iso19112:primary>        
+                </iso19112:alternativeGeographicIdentifier>      
+            </iso19112:alternativeGeographicIdentifiers>      
+            <iso19112:position>                
+                <gml:Point gml:id="SI_LocationInstance.1050827_ISO19112_POSITION" srsName="EPSG:4258">          
+                    <gml:pos>24.888418 61.596372</gml:pos>        
+                </gml:Point>      
+            </iso19112:position>      
+            <iso19112:geographicExtent>                
+                <gml:Polygon gml:id="SI_LocationInstance.1050827_ISO19112_GEOGRAPHICEXTENT" srsName="EPSG:4258">          
+                    <gml:exterior>            
+                        <gml:LinearRing srsName="EPSG:4258">              
+                            <gml:posList>24.888418 61.596372 24.888418 61.596372 24.888418 61.596372 24.888418 61.596372 24.888418 61.596372</gml:posList>            
+                        </gml:LinearRing>          
+                    </gml:exterior>        
+                </gml:Polygon>      
+            </iso19112:geographicExtent>      
+            <iso19112:dateModified>2008-12-06</iso19112:dateModified>      
+            <iso19112:administrator>        
+                <gmdsf1:CI_ResponsibleParty>          
+                    <gmdsf1:organizationName>National Land Survey of Finland</gmdsf1:organizationName>        
+                </gmdsf1:CI_ResponsibleParty>      
+            </iso19112:administrator>      
+            <iso19112:spatialObject>FI.NLS.GNR.10087371</iso19112:spatialObject>      
+            <iso19112:parent xlink:title="Orivesi (fin)" xlink:href="http://54.247.101.37/elf/GeolocatorService?SERVICE=WFS&amp;REQUEST=GetFeature&amp;typename=SI_LocationInstance&amp;VERSION=1.1.0&amp;LANGUAGE=eng&amp;OUTPUTFORMAT=text/xml;%20subtype=gml/3.1.1&amp;FILTER=%3Cogc%3AFilter%20xmlns%3Aogc%3D%22http%3A%2F%2Fwww.opengis.net%2Fogc%22%3E%3Cogc%3APropertyIsEqualTo%3E%3Cogc%3APropertyName%20xmlns%3Aiso19112%3D%22http%3A%2F%2Fwww.isotc211.org%2F19112%22%3Eiso19112%3AgeographicIdentifier%3C%2Fogc%3APropertyName%3E%3Cogc%3ALiteral%3EFI.NLS.AU10.au847506%3C%2Fogc%3ALiteral%3E%3C%2Fogc%3APropertyIsEqualTo%3E%3C%2Fogc%3AFilter%3E" />
+            <iso19112:parent  xlink:title="Orivesi (swe)" xlink:href="http://54.247.101.37/elf/GeolocatorService?SERVICE=WFS&amp;REQUEST=GetFeature&amp;typename=SI_LocationInstance&amp;VERSION=1.1.0&amp;LANGUAGE=eng&amp;OUTPUTFORMAT=text/xml;%20subtype=gml/3.1.1&amp;FILTER=%3Cogc%3AFilter%20xmlns%3Aogc%3D%22http%3A%2F%2Fwww.opengis.net%2Fogc%22%3E%3Cogc%3APropertyIsEqualTo%3E%3Cogc%3APropertyName%20xmlns%3Aiso19112%3D%22http%3A%2F%2Fwww.isotc211.org%2F19112%22%3Eiso19112%3AgeographicIdentifier%3C%2Fogc%3APropertyName%3E%3Cogc%3ALiteral%3EFI.NLS.AU10.au847506%3C%2Fogc%3ALiteral%3E%3C%2Fogc%3APropertyIsEqualTo%3E%3C%2Fogc%3AFilter%3E"></iso19112:parent>      
+            <iso19112:locationType xlink:title="Houses" xlink:role="SI_LocationType.179" xlink:arcrole="8" xlink:href="http://54.247.101.37/elf/GeolocatorService?SERVICE=WFS&amp;REQUEST=GetFeature&amp;typename=SI_LocationType&amp;VERSION=1.1.0&amp;OUTPUTFORMAT=text/xml;%20subtype=gml/3.1.1&amp;FILTER=%3CFilter%20xmlns%3D%22http%3A%2F%2Fwww.opengis.net%2Fogc%22%20xmlns%3Aiso19112%3D%22http%3A%2F%2Fwww.isotc211.org%2F19112%22%3E%3CPropertyIsEqualTo%3E%3CPropertyName%3Eiso19112%3Aidentification%3C%2FPropertyName%3E%3CLiteral%3E8%3C%2FLiteral%3E%3C%2FPropertyIsEqualTo%3E%3C%2FFilter%3E&amp;LANGUAGE=eng"></iso19112:locationType>    
+        </iso19112:SI_LocationInstance>  
+    </gml:featureMember>  
+    <gml:featureMember>    
+        <iso19112:SI_LocationInstance gml:id="SI_LocationInstance.1060973">      
+            <iso19112:geographicIdentifier>FI.NLS.GNR.10086483</iso19112:geographicIdentifier>      
+            <iso19112:alternativeGeographicIdentifiers>        
+                <iso19112:alternativeGeographicIdentifier>          
+                    <iso19112:name xml:lang="fin">Helminkaski</iso19112:name>          
+                    <iso19112:nameID>Helminkaski;FI.40086483</iso19112:nameID>          
+                    <iso19112:type>official</iso19112:type>          
+                    <iso19112:primary>false</iso19112:primary>        
+                </iso19112:alternativeGeographicIdentifier>      
+            </iso19112:alternativeGeographicIdentifiers>      
+            <iso19112:position>                
+                <gml:Point gml:id="SI_LocationInstance.1060973_ISO19112_POSITION" srsName="EPSG:4258">          
+                    <gml:pos>23.901133 64.023323</gml:pos>        
+                </gml:Point>      
+            </iso19112:position>      
+            <iso19112:geographicExtent>                
+                <gml:Polygon gml:id="SI_LocationInstance.1060973_ISO19112_GEOGRAPHICEXTENT" srsName="EPSG:4258">          
+                    <gml:exterior>            
+                        <gml:LinearRing srsName="EPSG:4258">              
+                            <gml:posList>23.901133 64.023323 23.901133 64.023323 23.901133 64.023323 23.901133 64.023323 23.901133 64.023323</gml:posList>            
+                        </gml:LinearRing>          
+                    </gml:exterior>        
+                </gml:Polygon>      
+            </iso19112:geographicExtent>      
+            <iso19112:dateModified>2008-12-06</iso19112:dateModified>      
+            <iso19112:administrator>        
+                <gmdsf1:CI_ResponsibleParty>          
+                    <gmdsf1:organizationName>National Land Survey of Finland</gmdsf1:organizationName>        
+                </gmdsf1:CI_ResponsibleParty>      
+            </iso19112:administrator>      
+            <iso19112:spatialObject>FI.NLS.GNR.10086483</iso19112:spatialObject>      
+            <iso19112:parent xlink:title="Kannus (fin)" xlink:href="http://54.247.101.37/elf/GeolocatorService?SERVICE=WFS&amp;REQUEST=GetFeature&amp;typename=SI_LocationInstance&amp;VERSION=1.1.0&amp;LANGUAGE=eng&amp;OUTPUTFORMAT=text/xml;%20subtype=gml/3.1.1&amp;FILTER=%3Cogc%3AFilter%20xmlns%3Aogc%3D%22http%3A%2F%2Fwww.opengis.net%2Fogc%22%3E%3Cogc%3APropertyIsEqualTo%3E%3Cogc%3APropertyName%20xmlns%3Aiso19112%3D%22http%3A%2F%2Fwww.isotc211.org%2F19112%22%3Eiso19112%3AgeographicIdentifier%3C%2Fogc%3APropertyName%3E%3Cogc%3ALiteral%3EFI.NLS.AU10.au576590%3C%2Fogc%3ALiteral%3E%3C%2Fogc%3APropertyIsEqualTo%3E%3C%2Fogc%3AFilter%3E" />
+            <iso19112:parent  xlink:title="Kannus (swe)" xlink:href="http://54.247.101.37/elf/GeolocatorService?SERVICE=WFS&amp;REQUEST=GetFeature&amp;typename=SI_LocationInstance&amp;VERSION=1.1.0&amp;LANGUAGE=eng&amp;OUTPUTFORMAT=text/xml;%20subtype=gml/3.1.1&amp;FILTER=%3Cogc%3AFilter%20xmlns%3Aogc%3D%22http%3A%2F%2Fwww.opengis.net%2Fogc%22%3E%3Cogc%3APropertyIsEqualTo%3E%3Cogc%3APropertyName%20xmlns%3Aiso19112%3D%22http%3A%2F%2Fwww.isotc211.org%2F19112%22%3Eiso19112%3AgeographicIdentifier%3C%2Fogc%3APropertyName%3E%3Cogc%3ALiteral%3EFI.NLS.AU10.au576590%3C%2Fogc%3ALiteral%3E%3C%2Fogc%3APropertyIsEqualTo%3E%3C%2Fogc%3AFilter%3E"></iso19112:parent>      
+            <iso19112:locationType xlink:title="Natural terrain areas or regions" xlink:role="SI_LocationType.519" xlink:arcrole="22" xlink:href="http://54.247.101.37/elf/GeolocatorService?SERVICE=WFS&amp;REQUEST=GetFeature&amp;typename=SI_LocationType&amp;VERSION=1.1.0&amp;OUTPUTFORMAT=text/xml;%20subtype=gml/3.1.1&amp;FILTER=%3CFilter%20xmlns%3D%22http%3A%2F%2Fwww.opengis.net%2Fogc%22%20xmlns%3Aiso19112%3D%22http%3A%2F%2Fwww.isotc211.org%2F19112%22%3E%3CPropertyIsEqualTo%3E%3CPropertyName%3Eiso19112%3Aidentification%3C%2FPropertyName%3E%3CLiteral%3E22%3C%2FLiteral%3E%3C%2FPropertyIsEqualTo%3E%3C%2FFilter%3E&amp;LANGUAGE=eng"></iso19112:locationType>    
+        </iso19112:SI_LocationInstance>  
+    </gml:featureMember>  
+    <gml:featureMember>    
+        <iso19112:SI_LocationInstance gml:id="SI_LocationInstance.1062734">      
+            <iso19112:geographicIdentifier>FI.NLS.GNR.10129261</iso19112:geographicIdentifier>      
+            <iso19112:alternativeGeographicIdentifiers>        
+                <iso19112:alternativeGeographicIdentifier>          
+                    <iso19112:name xml:lang="fin">Heleenmäki</iso19112:name>          
+                    <iso19112:nameID>Heleenmäki;FI.40129261</iso19112:nameID>          
+                    <iso19112:type>official</iso19112:type>          
+                    <iso19112:primary>false</iso19112:primary>        
+                </iso19112:alternativeGeographicIdentifier>      
+            </iso19112:alternativeGeographicIdentifiers>      
+            <iso19112:position>                
+                <gml:Point gml:id="SI_LocationInstance.1062734_ISO19112_POSITION" srsName="EPSG:4258">          
+                    <gml:pos>26.320106 60.970760</gml:pos>        
+                </gml:Point>      
+            </iso19112:position>      
+            <iso19112:geographicExtent>                
+                <gml:Polygon gml:id="SI_LocationInstance.1062734_ISO19112_GEOGRAPHICEXTENT" srsName="EPSG:4258">          
+                    <gml:exterior>            
+                        <gml:LinearRing srsName="EPSG:4258">              
+                            <gml:posList>26.320106 60.970760 26.320106 60.970760 26.320106 60.970760 26.320106 60.970760 26.320106 60.970760</gml:posList>            
+                        </gml:LinearRing>          
+                    </gml:exterior>        
+                </gml:Polygon>      
+            </iso19112:geographicExtent>      
+            <iso19112:dateModified>2008-12-06</iso19112:dateModified>      
+            <iso19112:administrator>        
+                <gmdsf1:CI_ResponsibleParty>          
+                    <gmdsf1:organizationName>National Land Survey of Finland</gmdsf1:organizationName>        
+                </gmdsf1:CI_ResponsibleParty>      
+            </iso19112:administrator>      
+            <iso19112:spatialObject>FI.NLS.GNR.10129261</iso19112:spatialObject>      
+            <iso19112:parent xlink:title="Iitti (fin)" xlink:href="http://54.247.101.37/elf/GeolocatorService?SERVICE=WFS&amp;REQUEST=GetFeature&amp;typename=SI_LocationInstance&amp;VERSION=1.1.0&amp;LANGUAGE=eng&amp;OUTPUTFORMAT=text/xml;%20subtype=gml/3.1.1&amp;FILTER=%3Cogc%3AFilter%20xmlns%3Aogc%3D%22http%3A%2F%2Fwww.opengis.net%2Fogc%22%3E%3Cogc%3APropertyIsEqualTo%3E%3Cogc%3APropertyName%20xmlns%3Aiso19112%3D%22http%3A%2F%2Fwww.isotc211.org%2F19112%22%3Eiso19112%3AgeographicIdentifier%3C%2Fogc%3APropertyName%3E%3Cogc%3ALiteral%3EFI.NLS.AU10.au299103%3C%2Fogc%3ALiteral%3E%3C%2Fogc%3APropertyIsEqualTo%3E%3C%2Fogc%3AFilter%3E" />
+            <iso19112:parent  xlink:title="Iitti (swe)" xlink:href="http://54.247.101.37/elf/GeolocatorService?SERVICE=WFS&amp;REQUEST=GetFeature&amp;typename=SI_LocationInstance&amp;VERSION=1.1.0&amp;LANGUAGE=eng&amp;OUTPUTFORMAT=text/xml;%20subtype=gml/3.1.1&amp;FILTER=%3Cogc%3AFilter%20xmlns%3Aogc%3D%22http%3A%2F%2Fwww.opengis.net%2Fogc%22%3E%3Cogc%3APropertyIsEqualTo%3E%3Cogc%3APropertyName%20xmlns%3Aiso19112%3D%22http%3A%2F%2Fwww.isotc211.org%2F19112%22%3Eiso19112%3AgeographicIdentifier%3C%2Fogc%3APropertyName%3E%3Cogc%3ALiteral%3EFI.NLS.AU10.au299103%3C%2Fogc%3ALiteral%3E%3C%2Fogc%3APropertyIsEqualTo%3E%3C%2Fogc%3AFilter%3E"></iso19112:parent>      
+            <iso19112:locationType xlink:title="Elevation" xlink:role="SI_LocationType.495" xlink:arcrole="21" xlink:href="http://54.247.101.37/elf/GeolocatorService?SERVICE=WFS&amp;REQUEST=GetFeature&amp;typename=SI_LocationType&amp;VERSION=1.1.0&amp;OUTPUTFORMAT=text/xml;%20subtype=gml/3.1.1&amp;FILTER=%3CFilter%20xmlns%3D%22http%3A%2F%2Fwww.opengis.net%2Fogc%22%20xmlns%3Aiso19112%3D%22http%3A%2F%2Fwww.isotc211.org%2F19112%22%3E%3CPropertyIsEqualTo%3E%3CPropertyName%3Eiso19112%3Aidentification%3C%2FPropertyName%3E%3CLiteral%3E21%3C%2FLiteral%3E%3C%2FPropertyIsEqualTo%3E%3C%2FFilter%3E&amp;LANGUAGE=eng"></iso19112:locationType>    
+        </iso19112:SI_LocationInstance>  
+    </gml:featureMember>  
+    <gml:featureMember>    
+        <iso19112:SI_LocationInstance gml:id="SI_LocationInstance.1076630">      
+            <iso19112:geographicIdentifier>FI.NLS.GNR.10113214</iso19112:geographicIdentifier>      
+            <iso19112:alternativeGeographicIdentifiers>        
+                <iso19112:alternativeGeographicIdentifier>          
+                    <iso19112:name xml:lang="fin">Helijoki</iso19112:name>          
+                    <iso19112:nameID>Helijoki;FI.40113214</iso19112:nameID>          
+                    <iso19112:type>official</iso19112:type>          
+                    <iso19112:primary>false</iso19112:primary>        
+                </iso19112:alternativeGeographicIdentifier>      
+            </iso19112:alternativeGeographicIdentifiers>      
+            <iso19112:position>                
+                <gml:Point gml:id="SI_LocationInstance.1076630_ISO19112_POSITION" srsName="EPSG:4258">          
+                    <gml:pos>24.808315 60.810308</gml:pos>        
+                </gml:Point>      
+            </iso19112:position>      
+            <iso19112:geographicExtent>                
+                <gml:Polygon gml:id="SI_LocationInstance.1076630_ISO19112_GEOGRAPHICEXTENT" srsName="EPSG:4258">          
+                    <gml:exterior>            
+                        <gml:LinearRing srsName="EPSG:4258">              
+                            <gml:posList>24.808315 60.810308 24.808315 60.810308 24.808315 60.810308 24.808315 60.810308 24.808315 60.810308</gml:posList>            
+                        </gml:LinearRing>          
+                    </gml:exterior>        
+                </gml:Polygon>      
+            </iso19112:geographicExtent>      
+            <iso19112:dateModified>2008-12-06</iso19112:dateModified>      
+            <iso19112:administrator>        
+                <gmdsf1:CI_ResponsibleParty>          
+                    <gmdsf1:organizationName>National Land Survey of Finland</gmdsf1:organizationName>        
+                </gmdsf1:CI_ResponsibleParty>      
+            </iso19112:administrator>      
+            <iso19112:spatialObject>FI.NLS.GNR.10113214</iso19112:spatialObject>      
+            <iso19112:parent xlink:title="Hausjärvi (fin)" xlink:href="http://54.247.101.37/elf/GeolocatorService?SERVICE=WFS&amp;REQUEST=GetFeature&amp;typename=SI_LocationInstance&amp;VERSION=1.1.0&amp;LANGUAGE=eng&amp;OUTPUTFORMAT=text/xml;%20subtype=gml/3.1.1&amp;FILTER=%3Cogc%3AFilter%20xmlns%3Aogc%3D%22http%3A%2F%2Fwww.opengis.net%2Fogc%22%3E%3Cogc%3APropertyIsEqualTo%3E%3Cogc%3APropertyName%20xmlns%3Aiso19112%3D%22http%3A%2F%2Fwww.isotc211.org%2F19112%22%3Eiso19112%3AgeographicIdentifier%3C%2Fogc%3APropertyName%3E%3Cogc%3ALiteral%3EFI.NLS.AU10.au262046%3C%2Fogc%3ALiteral%3E%3C%2Fogc%3APropertyIsEqualTo%3E%3C%2Fogc%3AFilter%3E" />
+            <iso19112:parent  xlink:title="Hausjärvi (swe)" xlink:href="http://54.247.101.37/elf/GeolocatorService?SERVICE=WFS&amp;REQUEST=GetFeature&amp;typename=SI_LocationInstance&amp;VERSION=1.1.0&amp;LANGUAGE=eng&amp;OUTPUTFORMAT=text/xml;%20subtype=gml/3.1.1&amp;FILTER=%3Cogc%3AFilter%20xmlns%3Aogc%3D%22http%3A%2F%2Fwww.opengis.net%2Fogc%22%3E%3Cogc%3APropertyIsEqualTo%3E%3Cogc%3APropertyName%20xmlns%3Aiso19112%3D%22http%3A%2F%2Fwww.isotc211.org%2F19112%22%3Eiso19112%3AgeographicIdentifier%3C%2Fogc%3APropertyName%3E%3Cogc%3ALiteral%3EFI.NLS.AU10.au262046%3C%2Fogc%3ALiteral%3E%3C%2Fogc%3APropertyIsEqualTo%3E%3C%2Fogc%3AFilter%3E"></iso19112:parent>      
+            <iso19112:locationType xlink:title="Flowing water features" xlink:role="SI_LocationType.637" xlink:arcrole="27" xlink:href="http://54.247.101.37/elf/GeolocatorService?SERVICE=WFS&amp;REQUEST=GetFeature&amp;typename=SI_LocationType&amp;VERSION=1.1.0&amp;OUTPUTFORMAT=text/xml;%20subtype=gml/3.1.1&amp;FILTER=%3CFilter%20xmlns%3D%22http%3A%2F%2Fwww.opengis.net%2Fogc%22%20xmlns%3Aiso19112%3D%22http%3A%2F%2Fwww.isotc211.org%2F19112%22%3E%3CPropertyIsEqualTo%3E%3CPropertyName%3Eiso19112%3Aidentification%3C%2FPropertyName%3E%3CLiteral%3E27%3C%2FLiteral%3E%3C%2FPropertyIsEqualTo%3E%3C%2FFilter%3E&amp;LANGUAGE=eng"></iso19112:locationType>    
+        </iso19112:SI_LocationInstance>  
+    </gml:featureMember>  
+    <gml:featureMember>    
+        <iso19112:SI_LocationInstance gml:id="SI_LocationInstance.1077212">      
+            <iso19112:geographicIdentifier>FI.NLS.GNR.10106645</iso19112:geographicIdentifier>      
+            <iso19112:alternativeGeographicIdentifiers>        
+                <iso19112:alternativeGeographicIdentifier>          
+                    <iso19112:name xml:lang="fin">Helaamäki</iso19112:name>          
+                    <iso19112:nameID>Helaamäki;FI.40106645</iso19112:nameID>          
+                    <iso19112:type>official</iso19112:type>          
+                    <iso19112:primary>false</iso19112:primary>        
+                </iso19112:alternativeGeographicIdentifier>      
+            </iso19112:alternativeGeographicIdentifiers>      
+            <iso19112:position>                
+                <gml:Point gml:id="SI_LocationInstance.1077212_ISO19112_POSITION" srsName="EPSG:4258">          
+                    <gml:pos>24.205780 61.404140</gml:pos>        
+                </gml:Point>      
+            </iso19112:position>      
+            <iso19112:geographicExtent>                
+                <gml:Polygon gml:id="SI_LocationInstance.1077212_ISO19112_GEOGRAPHICEXTENT" srsName="EPSG:4258">          
+                    <gml:exterior>            
+                        <gml:LinearRing srsName="EPSG:4258">              
+                            <gml:posList>24.205780 61.404140 24.205780 61.404140 24.205780 61.404140 24.205780 61.404140 24.205780 61.404140</gml:posList>            
+                        </gml:LinearRing>          
+                    </gml:exterior>        
+                </gml:Polygon>      
+            </iso19112:geographicExtent>      
+            <iso19112:dateModified>2008-12-06</iso19112:dateModified>      
+            <iso19112:administrator>        
+                <gmdsf1:CI_ResponsibleParty>          
+                    <gmdsf1:organizationName>National Land Survey of Finland</gmdsf1:organizationName>        
+                </gmdsf1:CI_ResponsibleParty>      
+            </iso19112:administrator>      
+            <iso19112:spatialObject>FI.NLS.GNR.10106645</iso19112:spatialObject>      
+            <iso19112:parent xlink:title="Kangasala (fin)" xlink:href="http://54.247.101.37/elf/GeolocatorService?SERVICE=WFS&amp;REQUEST=GetFeature&amp;typename=SI_LocationInstance&amp;VERSION=1.1.0&amp;LANGUAGE=eng&amp;OUTPUTFORMAT=text/xml;%20subtype=gml/3.1.1&amp;FILTER=%3Cogc%3AFilter%20xmlns%3Aogc%3D%22http%3A%2F%2Fwww.opengis.net%2Fogc%22%3E%3Cogc%3APropertyIsEqualTo%3E%3Cogc%3APropertyName%20xmlns%3Aiso19112%3D%22http%3A%2F%2Fwww.isotc211.org%2F19112%22%3Eiso19112%3AgeographicIdentifier%3C%2Fogc%3APropertyName%3E%3Cogc%3ALiteral%3EFI.NLS.AU10.au724195%3C%2Fogc%3ALiteral%3E%3C%2Fogc%3APropertyIsEqualTo%3E%3C%2Fogc%3AFilter%3E" />
+            <iso19112:parent  xlink:title="Kangasala (swe)" xlink:href="http://54.247.101.37/elf/GeolocatorService?SERVICE=WFS&amp;REQUEST=GetFeature&amp;typename=SI_LocationInstance&amp;VERSION=1.1.0&amp;LANGUAGE=eng&amp;OUTPUTFORMAT=text/xml;%20subtype=gml/3.1.1&amp;FILTER=%3Cogc%3AFilter%20xmlns%3Aogc%3D%22http%3A%2F%2Fwww.opengis.net%2Fogc%22%3E%3Cogc%3APropertyIsEqualTo%3E%3Cogc%3APropertyName%20xmlns%3Aiso19112%3D%22http%3A%2F%2Fwww.isotc211.org%2F19112%22%3Eiso19112%3AgeographicIdentifier%3C%2Fogc%3APropertyName%3E%3Cogc%3ALiteral%3EFI.NLS.AU10.au724195%3C%2Fogc%3ALiteral%3E%3C%2Fogc%3APropertyIsEqualTo%3E%3C%2Fogc%3AFilter%3E"></iso19112:parent>      
+            <iso19112:locationType xlink:title="Elevation" xlink:role="SI_LocationType.495" xlink:arcrole="21" xlink:href="http://54.247.101.37/elf/GeolocatorService?SERVICE=WFS&amp;REQUEST=GetFeature&amp;typename=SI_LocationType&amp;VERSION=1.1.0&amp;OUTPUTFORMAT=text/xml;%20subtype=gml/3.1.1&amp;FILTER=%3CFilter%20xmlns%3D%22http%3A%2F%2Fwww.opengis.net%2Fogc%22%20xmlns%3Aiso19112%3D%22http%3A%2F%2Fwww.isotc211.org%2F19112%22%3E%3CPropertyIsEqualTo%3E%3CPropertyName%3Eiso19112%3Aidentification%3C%2FPropertyName%3E%3CLiteral%3E21%3C%2FLiteral%3E%3C%2FPropertyIsEqualTo%3E%3C%2FFilter%3E&amp;LANGUAGE=eng"></iso19112:locationType>    
+        </iso19112:SI_LocationInstance>  
+    </gml:featureMember>  
+    <gml:featureMember>    
+        <iso19112:SI_LocationInstance gml:id="SI_LocationInstance.1083420">      
+            <iso19112:geographicIdentifier>FI.NLS.GNR.10123915</iso19112:geographicIdentifier>      
+            <iso19112:alternativeGeographicIdentifiers>        
+                <iso19112:alternativeGeographicIdentifier>          
+                    <iso19112:name xml:lang="fin">Helsinginkoski</iso19112:name>          
+                    <iso19112:nameID>Helsinginkoski;FI.40123915</iso19112:nameID>          
+                    <iso19112:type>official</iso19112:type>          
+                    <iso19112:primary>false</iso19112:primary>        
+                </iso19112:alternativeGeographicIdentifier>      
+            </iso19112:alternativeGeographicIdentifiers>      
+            <iso19112:position>                
+                <gml:Point gml:id="SI_LocationInstance.1083420_ISO19112_POSITION" srsName="EPSG:4258">          
+                    <gml:pos>25.374205 65.331140</gml:pos>        
+                </gml:Point>      
+            </iso19112:position>      
+            <iso19112:geographicExtent>                
+                <gml:Polygon gml:id="SI_LocationInstance.1083420_ISO19112_GEOGRAPHICEXTENT" srsName="EPSG:4258">          
+                    <gml:exterior>            
+                        <gml:LinearRing srsName="EPSG:4258">              
+                            <gml:posList>25.374205 65.331140 25.374205 65.331140 25.374205 65.331140 25.374205 65.331140 25.374205 65.331140</gml:posList>            
+                        </gml:LinearRing>          
+                    </gml:exterior>        
+                </gml:Polygon>      
+            </iso19112:geographicExtent>      
+            <iso19112:dateModified>2008-12-06</iso19112:dateModified>      
+            <iso19112:administrator>        
+                <gmdsf1:CI_ResponsibleParty>          
+                    <gmdsf1:organizationName>National Land Survey of Finland</gmdsf1:organizationName>        
+                </gmdsf1:CI_ResponsibleParty>      
+            </iso19112:administrator>      
+            <iso19112:spatialObject>FI.NLS.GNR.10123915</iso19112:spatialObject>      
+            <iso19112:parent xlink:title="Ii (fin)" xlink:href="http://54.247.101.37/elf/GeolocatorService?SERVICE=WFS&amp;REQUEST=GetFeature&amp;typename=SI_LocationInstance&amp;VERSION=1.1.0&amp;LANGUAGE=eng&amp;OUTPUTFORMAT=text/xml;%20subtype=gml/3.1.1&amp;FILTER=%3Cogc%3AFilter%20xmlns%3Aogc%3D%22http%3A%2F%2Fwww.opengis.net%2Fogc%22%3E%3Cogc%3APropertyIsEqualTo%3E%3Cogc%3APropertyName%20xmlns%3Aiso19112%3D%22http%3A%2F%2Fwww.isotc211.org%2F19112%22%3Eiso19112%3AgeographicIdentifier%3C%2Fogc%3APropertyName%3E%3Cogc%3ALiteral%3EFI.NLS.AU10.au1040011%3C%2Fogc%3ALiteral%3E%3C%2Fogc%3APropertyIsEqualTo%3E%3C%2Fogc%3AFilter%3E" />
+            <iso19112:parent  xlink:title="Ii (swe)" xlink:href="http://54.247.101.37/elf/GeolocatorService?SERVICE=WFS&amp;REQUEST=GetFeature&amp;typename=SI_LocationInstance&amp;VERSION=1.1.0&amp;LANGUAGE=eng&amp;OUTPUTFORMAT=text/xml;%20subtype=gml/3.1.1&amp;FILTER=%3Cogc%3AFilter%20xmlns%3Aogc%3D%22http%3A%2F%2Fwww.opengis.net%2Fogc%22%3E%3Cogc%3APropertyIsEqualTo%3E%3Cogc%3APropertyName%20xmlns%3Aiso19112%3D%22http%3A%2F%2Fwww.isotc211.org%2F19112%22%3Eiso19112%3AgeographicIdentifier%3C%2Fogc%3APropertyName%3E%3Cogc%3ALiteral%3EFI.NLS.AU10.au1040011%3C%2Fogc%3ALiteral%3E%3C%2Fogc%3APropertyIsEqualTo%3E%3C%2Fogc%3AFilter%3E"></iso19112:parent>      
+            <iso19112:locationType xlink:title="Flowing water features" xlink:role="SI_LocationType.637" xlink:arcrole="27" xlink:href="http://54.247.101.37/elf/GeolocatorService?SERVICE=WFS&amp;REQUEST=GetFeature&amp;typename=SI_LocationType&amp;VERSION=1.1.0&amp;OUTPUTFORMAT=text/xml;%20subtype=gml/3.1.1&amp;FILTER=%3CFilter%20xmlns%3D%22http%3A%2F%2Fwww.opengis.net%2Fogc%22%20xmlns%3Aiso19112%3D%22http%3A%2F%2Fwww.isotc211.org%2F19112%22%3E%3CPropertyIsEqualTo%3E%3CPropertyName%3Eiso19112%3Aidentification%3C%2FPropertyName%3E%3CLiteral%3E27%3C%2FLiteral%3E%3C%2FPropertyIsEqualTo%3E%3C%2FFilter%3E&amp;LANGUAGE=eng"></iso19112:locationType>    
+        </iso19112:SI_LocationInstance>  
+    </gml:featureMember>
+</gml:FeatureCollection>
