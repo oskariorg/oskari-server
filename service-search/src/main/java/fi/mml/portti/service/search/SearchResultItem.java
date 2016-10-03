@@ -19,6 +19,7 @@ public class SearchResultItem implements Comparable<SearchResultItem>, Serializa
     public static final String KEY_NAME = "name";
     public static final String KEY_UUID = "uuid";
     public static final String KEY_TYPE = "type";
+	public static final String KEY_LANG = "lang";
     public static final String KEY_RANK = "rank";
     public static final String KEY_LON = "lon";
     public static final String KEY_LAT = "lat";
@@ -47,6 +48,7 @@ public class SearchResultItem implements Comparable<SearchResultItem>, Serializa
 	private String village;
 	private String locationTypeCode;
     private String type;
+	private String lang;
 	private String locationName;
 	private String lon;
 	private String lat;
@@ -63,7 +65,7 @@ public class SearchResultItem implements Comparable<SearchResultItem>, Serializa
 	private boolean downloadAllowed = false;
     private Map<String, Object> properties = new HashMap<String, Object>();
 	
-	private int rank;
+	private int rank = -1;
 
     /**
      * Add custom result field value for result
@@ -124,42 +126,55 @@ public class SearchResultItem implements Comparable<SearchResultItem>, Serializa
     } */
 	
 	public int compareTo(SearchResultItem sri) {
-        // TODO: rank should be normalized and village -> type(?)
-        // streetname ranking should be done internally in the search channel impl which knows about the title content
-		if (this.rank == sri.getRank()) {
-			if (this.title.equals(sri.getTitle())) {
-				/* Same title, order is determined by village */
-				return this.village.compareTo(sri.getVillage());
-			} else {
-				
-				String[] streetName1 = this.getTitle().split("\\s");
-				String[] streetName2 = sri.getTitle().split("\\s");
-				
-				/* without street number */
-				if (streetName1.length != streetName2.length) {
-					return streetName1.length - streetName2.length;
-				}
-				
-				/* Same street names  */
-				if (streetName1[0].equals(streetName2[0])) {
-					//if (streetName1[1] == null || streetName2[1] != null)
-					if (streetName1[1].length() == streetName2[1].length()) {
-						return streetName1[1].compareTo(streetName2[1]);
-					} else {
-						return streetName1[1].length() - streetName2[1].length();
-					}
-				} 
-				else {
-					/* But those titles not are of same length */
-					return title.compareTo(sri.getTitle());
-				}
-			}
+		if (this.rank != sri.getRank()) {
+			// TODO: rank should be normalized throughout different channels, currently it's not
+			return this.rank - sri.getRank();
 		}
-		
-		return this.rank - sri.getRank();
+		// TODO: should make a function to compare if the other one has value and return 1/-1
+		if(this.title == null || sri.getTitle() == null) {
+			return 0;
+		}
+
+		if (this.title.equals(sri.getTitle())) {
+			// Same title, order is determined by village
+			// TODO: using "village" is a bit strange, maybe use type instead?
+			if(this.village == null || sri.getVillage() == null) {
+				return 0;
+			}
+			return this.village.compareTo(sri.getVillage());
+		}
+
+		// TODO: streetname ranking should be done internally in the search channel impl which knows about the title content
+		String[] streetName1 = this.getTitle().split("\\s");
+		String[] streetName2 = sri.getTitle().split("\\s");
+
+		// without street number
+		if (streetName1.length != streetName2.length) {
+			return streetName1.length - streetName2.length;
+		}
+
+		// Same street names
+		if (streetName1[0].equals(streetName2[0])) {
+			if (streetName1[1] == null || streetName2[1] != null) {
+				return 0;
+			}
+			if (streetName1[1].length() == streetName2[1].length()) {
+				return streetName1[1].compareTo(streetName2[1]);
+			}
+			return streetName1[1].length() - streetName2[1].length();
+		}
+		return title.compareTo(sri.getTitle());
 	}
 
-    public String getType() {
+	public String getLang() {
+		return lang;
+	}
+
+	public void setLang(String lang) {
+		this.lang = lang;
+	}
+
+	public String getType() {
         return type;
     }
 
@@ -421,6 +436,7 @@ public class SearchResultItem implements Comparable<SearchResultItem>, Serializa
         JSONHelper.putValue(node, KEY_LON, getLon());
         JSONHelper.putValue(node, KEY_LAT, getLat());
 
+		JSONHelper.putValue(node, KEY_LANG, getLang());
         JSONHelper.putValue(node, KEY_RANK, getRank());
         JSONHelper.putValue(node, KEY_TYPE, getType());
 		JSONHelper.putValue(node, KEY_CHANNELID, getChannelId());

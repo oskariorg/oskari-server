@@ -1,5 +1,56 @@
 # Migration guide
 
+## 1.39.0
+
+This update includes a forced migration of publish template to Openlayers 3 based map. The possible Openlayers 2 based 
+publish template will be copied to a new ID and the log will show a message like "Previous publish template was
+ saved as a backup with view id: 1234." The update is skipped if Openlayers 3 based template is already defined
+  for publishing, but you can also skip the update entirely by adding a skip property to oskari-ext.properties:
+
+    flyway.1_39_1.skip = true
+
+*Note!* All new development is happening for Openlayers 3 based published maps and some features may be broken if
+ migration is skipped. You should update the template manually if automation isn't working for you.  
+
+The bundles in the template are changed based on this template: 
+https://github.com/nls-oskari/oskari-server/blob/master/content-resources/src/main/resources/json/views/ol3-publisher-template-view.json
+
+If you would like to use different page(JSP-file), application or path for the template you can override these by
+ adding configuration to oskari-ext.properties: 
+
+    flyway.1_39_1.application = servlet_published_ol3
+    flyway.1_39_1.path = /applications/sample
+    flyway.1_39_1.page = published
+
+You can also specify a custom template to be used by providing a similar file in classpath with
+ /json/views/my-template.json and using the property:
+
+    flyway.1_39_1.file = my-template.json
+
+The update keeps any state and configuration values for the template as they are, but updates the bundles to use and the 
+startup-fragment (filepath/location of the bundle).
+
+*Note!* You will need to update the minifierAppSetup.json to reflect the new template. This can be used with the default setup:
+https://github.com/nls-oskari/oskari/blob/master/applications/sample/servlet_published_ol3/minifierAppSetup.json
+
+Another update is used to migrate all published maps using Openlayers 2 based published maps to use the new publish template.
+This will programmatically "republish" all the maps having OL2 with the current publish template. This means that if you 
+skipped 1.39.1 update for the template AND haven't done anything for updating the template manually this will use an unmigrated
+publish template. This is something to consider. You can skip the migration by adding a property to oskari-ext.properties:
+ 
+    flyway.1_39_2.skip = true
+
+*Note!* If you skip this update you might need to have a separate template for new published maps using OL3 and older 
+published maps using OL2. The migration will take a while depending how many published maps there are in the system.
+ It can also fail, usually if there is broken/invalid JSON in config or state columns for bundles. You should fix the
+ JSON manually in the database and restart Jetty to run the migration again for the rest of the published maps.
+
+*Tip!* If you are trying to make a custom template you can:
+  1) Skip this migration
+  2) Try using the custom template with the publishing functionality
+  3) When you are ready to use the template: delete the row from database table oskari_status for 1.39.2 migration
+  4) Restart Jetty to run the migration using the custom template
+
 ## 1.38.0
 
 The default config for statsgrid-bundle has changed and is now part of the code. The default config in portti_bundle is 

@@ -1,0 +1,49 @@
+package fi.nls.oskari.statistics.eurostat;
+
+import fi.nls.oskari.control.statistics.plugins.StatisticalDatasourcePlugin;
+import fi.nls.oskari.control.statistics.plugins.StatisticalIndicator;
+import fi.nls.oskari.control.statistics.plugins.db.DatasourceLayer;
+import fi.nls.oskari.control.statistics.plugins.db.StatisticalDatasource;
+import fi.nls.oskari.domain.User;
+import fi.nls.oskari.log.LogFactory;
+import fi.nls.oskari.log.Logger;
+
+import java.io.IOException;
+import java.util.Collections;
+import java.util.List;
+
+public class EurostatStatisticalDatasourcePlugin implements StatisticalDatasourcePlugin {
+    private final static Logger LOG = LogFactory.getLogger(EurostatStatisticalDatasourcePlugin.class);
+    private EurostatIndicatorsParser indicatorsParser;
+
+    private List<DatasourceLayer> layers;
+    private EurostatConfig config;
+
+
+    @Override
+    public List<? extends StatisticalIndicator> getIndicators(User user) {
+        try {
+            List<EurostatIndicator> indicators = indicatorsParser.parse(layers);
+            return indicators;
+        } catch (Exception e) {
+            return Collections.emptyList();
+        }
+    }
+
+    @Override
+    public void init(StatisticalDatasource source) {
+        try {
+            layers = source.getLayers();
+            config = new EurostatConfig(source.getConfigJSON());
+            indicatorsParser = new EurostatIndicatorsParser(config);
+
+            LOG.debug("Eurostat layer mappings: ", layers);
+        } catch (IOException e) {
+            LOG.error(e, "Error getting indicators from Eurostat datasource:", config.getUrl());
+        }
+    }
+    public boolean canCache() {
+        return false;
+    }
+}
+
