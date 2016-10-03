@@ -26,6 +26,12 @@
             <artifactId>oskari-control-base</artifactId>
         </dependency>
 
+        <!-- TODO: Migrate control-users from ibatis -> mybatis to get rid of reference to Email.xml in SqlMapConfig-->
+        <dependency>
+            <groupId>fi.nls.oskari.service</groupId>
+            <artifactId>oskari-control-users</artifactId>
+        </dependency>
+
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-webmvc</artifactId>
