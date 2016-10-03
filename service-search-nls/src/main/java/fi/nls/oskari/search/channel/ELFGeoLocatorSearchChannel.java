@@ -237,18 +237,15 @@ public class ELFGeoLocatorSearchChannel extends SearchChannel {
             return null;
         }
         
-        // if searchCriteria contains *
+        // wildcard search
         String searchString = searchCriteria.getSearchString();
         if (searchString != null && searchString.contains("*")) {
             log.debug("Wildcard search: ", searchString);
-//            serviceURL = "http://services.locationframework.eu/elf/GeolocatorService";  // TODO: magic number
-            serviceURL = "http://54.247.101.37/elf/GeolocatorService";  // TODO: magic number
             
             String postData = likeQueryXMLtemplate;
             postData = postData.replace(LIKE_LITERAL_HOLDER, searchString);
             
             StringBuffer buf = new StringBuffer(serviceURL);
-//            buf.append(postData);
             
             HttpURLConnection conn = getConnection(buf.toString());
             IOHelper.writeToConnection(conn, postData);            
