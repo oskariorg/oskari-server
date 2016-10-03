@@ -40,7 +40,7 @@ public class PasswordResetHandler extends RestActionHandler {
     private static final String ROLE_USER = "User";
     private ObjectMapper mapper = new ObjectMapper();
 
-    private final UserRegistrationService registerTokenService = OskariComponentManager.getComponentOfType(UserRegistrationService.class);
+    private UserRegistrationService registerTokenService = null;
     private final MailSenderService mailSenderService = new MailSenderService();
     private final IbatisUserService ibatisUserService = new IbatisUserService();
     private UserService userService;
@@ -52,6 +52,7 @@ public class PasswordResetHandler extends RestActionHandler {
         } catch (ServiceException se) {
             log.error(se, "Unable to initialize User service!");
         }
+        registerTokenService = OskariComponentManager.getComponentOfType(UserRegistrationService.class);
     }
 
     @Override

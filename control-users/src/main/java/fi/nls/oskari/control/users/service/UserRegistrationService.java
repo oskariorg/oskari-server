@@ -1,5 +1,6 @@
 package fi.nls.oskari.control.users.service;
 
+import fi.nls.oskari.annotation.Oskari;
 import fi.nls.oskari.control.users.model.Email;
 import fi.nls.oskari.db.DatasourceHelper;
 import fi.nls.oskari.log.LogFactory;
@@ -15,6 +16,7 @@ import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
 
 import javax.sql.DataSource;
 
+@Oskari
 public class UserRegistrationService extends OskariComponent {
 
     private static final Logger LOG = LogFactory.getLogger(UserRegistrationService.class);

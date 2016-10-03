@@ -33,7 +33,7 @@ public class UserRegistrationHandler extends ActionHandler {
     private static final String PARAM_EMAIL = "email";
     
     private UserService userService;
-	private final UserRegistrationService registerTokenService = OskariComponentManager.getComponentOfType(UserRegistrationService.class);
+	private UserRegistrationService registerTokenService = null;
     private final MailSenderService mailSenderService = new MailSenderService();
     private final IbatisUserService ibatisUserService = new IbatisUserService();
 
@@ -43,6 +43,7 @@ public class UserRegistrationHandler extends ActionHandler {
 		} catch (ServiceException ex) {
 			throw new RuntimeException("Unable to get user service reference", ex);
 		}
+		registerTokenService = OskariComponentManager.getComponentOfType(UserRegistrationService.class);
 	}
     
 	@Override
