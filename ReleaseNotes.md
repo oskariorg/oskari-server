@@ -2,6 +2,11 @@
 
 ## 1.39
 
+### Major migration
+ 
+ A gigantic migration is being done for publish template and published maps on the system. 
+ Please see [Migration Guide](MigrationGuide.md) for details.
+
 ### Metadata search channel
 
 Code moved from service-search-nls to service-cws for metadata search functionality since it's not NLS spesific.

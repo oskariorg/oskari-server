@@ -8,36 +8,42 @@ import fi.nls.oskari.domain.User;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 
-import java.util.HashMap;
+import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 public class EurostatStatisticalDatasourcePlugin implements StatisticalDatasourcePlugin {
     private final static Logger LOG = LogFactory.getLogger(EurostatStatisticalDatasourcePlugin.class);
+    private EurostatIndicatorsParser indicatorsParser;
 
-    /**
-     * Maps the Eurostat layer identifiers to Oskari layers.
-     */
-    private Map<String, Long> layerMappings;
+    private List<DatasourceLayer> layers;
+    private EurostatConfig config;
+
 
     @Override
     public List<? extends StatisticalIndicator> getIndicators(User user) {
-        throw new RuntimeException("not implemented");
+        try {
+            List<EurostatIndicator> indicators = indicatorsParser.parse(layers);
+            return indicators;
+        } catch (Exception e) {
+            return Collections.emptyList();
+        }
     }
 
     @Override
     public void init(StatisticalDatasource source) {
-        final List<DatasourceLayer> layerRows = source.getLayers();
-        layerMappings = new HashMap<>();
+        try {
+            layers = source.getLayers();
+            config = new EurostatConfig(source.getConfigJSON());
+            indicatorsParser = new EurostatIndicatorsParser(config);
 
-        for (DatasourceLayer row : layerRows) {
-            layerMappings.put(row.getSourceProperty().toLowerCase(), row.getMaplayerId());
+            LOG.debug("Eurostat layer mappings: ", layers);
+        } catch (IOException e) {
+            LOG.error(e, "Error getting indicators from Eurostat datasource:", config.getUrl());
         }
-        LOG.debug("Eurostat layer mappings: ", layerMappings);
     }
-
-    @Override
     public boolean canCache() {
-        return true;
+        return false;
     }
 }
+

@@ -7,6 +7,7 @@ import org.json.XMLTokener;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
@@ -21,7 +22,7 @@ public class VillageSearchUtil {
     private static Map<String, String> villageCache = new HashMap<>();
 
     public static URL getVillagesUrl()
-            throws Exception {
+            throws MalformedURLException {
         return new URL(PropertyUtil.get(VILLAGES_URL_PROPERTY));
     }
 
@@ -60,18 +61,15 @@ public class VillageSearchUtil {
 
     private static void updateVillageCache() {
 
-        try {
-            final URL villagesUrl = getVillagesUrl();
-            InputStreamReader isr = new InputStreamReader(villagesUrl.openStream(), "UTF-8");
+        try (InputStreamReader isr = new InputStreamReader(getVillagesUrl().openStream(), "UTF-8");
+             BufferedReader reader = new BufferedReader(isr)) {
 
-            BufferedReader reader = new BufferedReader(isr);
             StringBuilder readXML = new StringBuilder();
 
             String inputLine;
             while ((inputLine = reader.readLine()) != null) {
                 readXML.append(inputLine);
             }
-            isr.close();
 
             XMLTokener xmlTokener = new XMLTokener(readXML.toString().replace(':', '_'));
             while (xmlTokener.more()) {
@@ -112,16 +110,4 @@ public class VillageSearchUtil {
         }
         return villageCache;
     }
-
-    public static void printVillages() {
-        Map<String, String> villagesMap = getVillages();
-        Set<String> keys = villagesMap.keySet();
-
-        for (String key : keys) {
-            log.debug("key: " + key + " -- Value: " + villagesMap.get(key));
-        }
-
-
-    }
-
 }
