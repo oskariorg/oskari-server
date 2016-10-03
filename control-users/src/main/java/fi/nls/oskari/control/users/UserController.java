@@ -26,6 +26,10 @@ public class UserController {
     private static final String ERR_TOKEN_INVALID = "Token is invalid.";
     private static final String ERR_TOKEN_NOT_FOUND = "Token is unavailable.";
 
+    @RequestMapping("/register")
+    public String register() {
+        return "register";
+    }
     /**
      * "passwordReset" jsp view should ALWAYS be used by user to reset password
      * @param model
