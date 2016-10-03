@@ -13,11 +13,14 @@ import fi.nls.oskari.map.geometry.ProjectionHelper;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.util.ResponseHelper;
+import org.geotools.geometry.DirectPosition2D;
 import org.geotools.referencing.CRS;
 import org.json.JSONObject;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.NoSuchAuthorityCodeException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.opengis.referencing.operation.MathTransform;
+import org.opengis.referencing.operation.TransformException;
 
 import static fi.nls.oskari.control.ActionConstants.*;
 
@@ -70,30 +73,35 @@ public class CoordinatesHandler extends ActionHandler {
 
         LOG.debug("Params - lon", point.getLon(), "lat", point.getLat(), "in", srs);
         try {
-            PointTransformer transformer = getTransformer();
-            Point value = transformer.reproject(point, srs, target);
+            boolean lenient = false;
+            CoordinateReferenceSystem sourceCrs = CRS.decode(srs);
+            CoordinateReferenceSystem targetCrs = CRS.decode(target);
 
-            //lon-lat-swap hack to reverse the wrongdoings of ProjectionHelper _without_ breaking all the functionality
-            //relying on the wrongdoings of the ProjectionHelper...sigh...
-            boolean forceXY = System.getProperty(PROPERTY_FORCEXY) != null && "true".equals(System.getProperty(PROPERTY_FORCEXY));
-            //forcexy -> both always have the same axis order -> projectionhelper swaps -> swap back!
-            if (forceXY) {
-                double lon = value.getLon();
-                double lat = value.getLat();
-                value.setLon(lat);
-                value.setLat(lon);
-            } else {
-                //not forced. if different axisorder, projectionhelper returns wrong -> swap back
-                if (ProjectionHelper.isFirstAxisNorth(CRS.decode(srs)) != ProjectionHelper.isFirstAxisNorth(CRS.decode(target))) {
-                    double lon = value.getLon();
-                    double lat = value.getLat();
-                    value.setLon(lat);
-                    value.setLat(lon);
-                }
+            //seems, that at least 4326 -> 3067 doesn't work if we provide lon / lat in correct order. swap. *sigh*
+            if ("EPSG:4326".equals(srs)) {
+                double lon = point.getLon();
+                double lat = point.getLat();
+                point.setLat(lon);
+                point.setLon(lat);
             }
 
+            MathTransform mathTransform = CRS.findMathTransform(sourceCrs, targetCrs, lenient);
+            DirectPosition2D srcDirectPosition2D = new DirectPosition2D(sourceCrs, point.getLon(), point.getLat());
+            DirectPosition2D destDirectPosition2D = new DirectPosition2D(targetCrs);
+            mathTransform.transform(srcDirectPosition2D, destDirectPosition2D);
+            Point value = null;
 
-
+            //We probably wanna swap lonlat order if the source's axis order differs from target's.
+            //Unless when transforming from 4326. *sigh*
+            if (!"EPSG:4326".equals(srs)) {
+                if (ProjectionHelper.isFirstAxisNorth(sourceCrs) != ProjectionHelper.isFirstAxisNorth(targetCrs)) {
+                    value = new Point(destDirectPosition2D.y, destDirectPosition2D.x);
+                } else {
+                    value = new Point(destDirectPosition2D.x, destDirectPosition2D.y);
+                }
+            } else {
+                value = new Point(destDirectPosition2D.x, destDirectPosition2D.y);
+            }
 
             LOG.debug("Reprojected - lon", value.getLon(), "lat", value.getLat(), "in", target);
             JSONObject response = new JSONObject();
@@ -101,14 +109,18 @@ public class CoordinatesHandler extends ActionHandler {
             JSONHelper.putValue(response, PARAM_LAT, value.getLat());
             JSONHelper.putValue(response, PARAM_SRS, target);
             ResponseHelper.writeResponse(params, response);
-
         } catch (RuntimeException ex) {
             throw new ActionParamsException(ex.getMessage());
-        } catch (NoSuchAuthorityCodeException ex) {
+        }
+
+        catch (NoSuchAuthorityCodeException ex) {
             throw new ActionParamsException(ex.getMessage());
         } catch (FactoryException ex) {
             throw new ActionParamsException(ex.getMessage());
+        } catch (TransformException e) {
+            e.printStackTrace();
         }
+
     }
 
     private PointTransformer getTransformer() {
