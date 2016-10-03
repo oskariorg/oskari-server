@@ -23,8 +23,9 @@ public class CoordinatesHandlerTest extends JSONActionRouteTest {
 
     private Map<String, String> getValidParams() {
         Map<String, String> params = new HashMap<>();
-        params.put(PARAM_LON, "61.4980214");
-        params.put(PARAM_LAT, "23.7603118");
+        //ain't it funny how the test will fail if we send these in wrong order, but when called from the actual code these need to be in reverse order or geotools will fail. funny.
+        params.put(PARAM_LON, "23.7603118");
+        params.put(PARAM_LAT, "61.4980214");
         params.put(PARAM_SRS, "EPSG:4326");
         params.put(handler.TARGET_SRS, "EPSG:3067");
         return params;
@@ -66,8 +67,8 @@ public class CoordinatesHandlerTest extends JSONActionRouteTest {
         Map<String, String> params = getValidParams();
         handler.handleAction(createActionParams(params));
 
-        assertEquals(PARAM_LAT, 327578.7810839222, getResponseJSON().getDouble(PARAM_LAT), 0.0);
-        assertEquals(PARAM_LON, 6822546.781459001, getResponseJSON().getDouble(PARAM_LON), 0.0);
+        assertEquals(PARAM_LAT, 6822546.781459001, getResponseJSON().getDouble(PARAM_LAT), 0.0);
+        assertEquals(PARAM_LON, 327578.7810839222, getResponseJSON().getDouble(PARAM_LON), 0.0);
 
     }
     @Test
