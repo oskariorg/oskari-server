@@ -15,11 +15,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.*;
 import fi.nls.oskari.control.users.model.Email;
-import fi.nls.oskari.control.users.service.IbatisEmailService;
+import fi.nls.oskari.control.users.service.UserRegistrationService;
 import fi.nls.oskari.control.users.service.MailSenderService;
 import fi.nls.oskari.domain.User;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.service.UserService;
 import fi.nls.oskari.user.IbatisRoleService;
@@ -39,7 +40,7 @@ public class PasswordResetHandler extends RestActionHandler {
     private static final String ROLE_USER = "User";
     private ObjectMapper mapper = new ObjectMapper();
 
-    private final IbatisEmailService emailService = new IbatisEmailService();
+    private final UserRegistrationService registerTokenService = OskariComponentManager.getComponentOfType(UserRegistrationService.class);
     private final MailSenderService mailSenderService = new MailSenderService();
     private final IbatisUserService ibatisUserService = new IbatisUserService();
     private UserService userService;
@@ -80,9 +81,9 @@ public class PasswordResetHandler extends RestActionHandler {
         emailToken.setEmail(email);
         emailToken.setUuid(uuid);
         emailToken.setExpiryTimestamp(RegistrationUtil.createExpiryTime());
-        emailService.addEmail(emailToken);
+        registerTokenService.addEmail(emailToken);
 
-        String username = emailService.findUsernameForEmail(email);
+        String username = registerTokenService.findUsernameForEmail(email);
         User user = ibatisUserService.findByUserName(username);
         mailSenderService.sendEmailForResetPassword(user, uuid, serverAddress);
     }
@@ -103,13 +104,13 @@ public class PasswordResetHandler extends RestActionHandler {
         if (token.getPassword() == null || token.getUuid() == null) {
             throw new ActionParamsException("JSON object MUST contain only 2 attributes: 'uuid' and 'password'");
         }
-        Email tempEmail = emailService.findByToken(token.getUuid());
+        Email tempEmail = registerTokenService.findByToken(token.getUuid());
         if (tempEmail == null) {
             throw new ActionParamsException("UUID not found.");
         }
         if (new Date().after(tempEmail.getExpiryTimestamp())) {
             // TODO: use redis to save token with expiry so we don't need to care about expiration
-            emailService.deleteEmailToken(token.getUuid());
+            registerTokenService.deleteEmailToken(token.getUuid());
             throw new ActionDeniedException("UUID expired.");
         }
         token.setEmail(tempEmail.getEmail());
@@ -118,7 +119,7 @@ public class PasswordResetHandler extends RestActionHandler {
 
     public void updatePassword(Email token) throws ActionException {
 
-        String username = emailService.findUsernameForEmail(token.getEmail());
+        String username = registerTokenService.findUsernameForEmail(token.getEmail());
 
         if (username == null) {
             throw new ActionParamsException("Username doesn't exist.");
@@ -135,12 +136,12 @@ public class PasswordResetHandler extends RestActionHandler {
                 // Create link between User and Role (oskari_role_oskari_user); For logged user's default view.
                 // TODO: the role should have been added in some previous step - remove it from here
                 User user = userService.getUser(username);
-                int roleId = emailService.findUserRoleId(ROLE_USER);
+                int roleId = registerTokenService.findUserRoleId(ROLE_USER);
                 IbatisRoleService roleService = new IbatisRoleService();
                 roleService.linkRoleToNewUser(roleId, user.getId());
             }
             // After password updated/created, delete the entry related to token from database
-            emailService.deleteEmailToken(token.getUuid());
+            registerTokenService.deleteEmailToken(token.getUuid());
         } catch (ServiceException se) {
             throw new ActionException(se.getMessage(), se);
         }
@@ -155,13 +156,13 @@ public class PasswordResetHandler extends RestActionHandler {
      */
     private final boolean isUsernameExistsForLogin(final String emailAddress) throws ActionException {
         // Retrieves username , if exists in oskari_users table.
-        String username = emailService.findUsernameForEmail(emailAddress);
+        String username = registerTokenService.findUsernameForEmail(emailAddress);
         if (username == null) {
             return false;
         }
 
         // Retrieves username for login, if exists in oskari_jaas_users table.
-        String loginUsername = emailService.findUsernameForLogin(username);
+        String loginUsername = registerTokenService.findUsernameForLogin(username);
         return (loginUsername != null);
     }
 

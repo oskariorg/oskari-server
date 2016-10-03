@@ -1,19 +1,18 @@
 package fi.nls.oskari.control.users;
 
 import fi.nls.oskari.control.*;
+import fi.nls.oskari.service.OskariComponentManager;
+import fi.nls.oskari.service.UserService;
 import fi.nls.oskari.util.PropertyUtil;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.users.model.Email;
-import fi.nls.oskari.control.users.service.IbatisEmailService;
+import fi.nls.oskari.control.users.service.UserRegistrationService;
 import fi.nls.oskari.control.users.service.MailSenderService;
 import fi.nls.oskari.domain.User;
-import fi.nls.oskari.log.LogFactory;
-import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.service.ServiceException;
-import fi.nls.oskari.user.DatabaseUserService;
 import fi.nls.oskari.user.IbatisUserService;
 import fi.nls.oskari.util.ResponseHelper;
 
@@ -23,8 +22,6 @@ import fi.nls.oskari.util.ResponseHelper;
 @OskariActionRoute("UserRegistration")
 public class UserRegistrationHandler extends ActionHandler {
 
-	private static final Logger log = LogFactory.getLogger(UserRegistrationHandler.class);
-	
 	private static final String PARAM_REGISTER = "register";
 	private static final String PARAM_EDIT = "edit";
 	private static final String PARAM_UPDATE = "update";
@@ -35,10 +32,18 @@ public class UserRegistrationHandler extends ActionHandler {
     private static final String PARAM_USERNAME = "username";
     private static final String PARAM_EMAIL = "email";
     
-    private final DatabaseUserService userService = new DatabaseUserService();
-    private final IbatisEmailService emailService = new IbatisEmailService();
+    private UserService userService;
+	private final UserRegistrationService registerTokenService = OskariComponentManager.getComponentOfType(UserRegistrationService.class);
     private final MailSenderService mailSenderService = new MailSenderService();
     private final IbatisUserService ibatisUserService = new IbatisUserService();
+
+	public void init() {
+		try {
+			userService = UserService.getInstance();
+		} catch (ServiceException ex) {
+			throw new RuntimeException("Unable to get user service reference", ex);
+		}
+	}
     
 	@Override
 	public void handleAction(ActionParameters params) throws ActionException {
@@ -68,9 +73,10 @@ public class UserRegistrationHandler extends ActionHandler {
 			
 	    	Email emailToken = new Email();
 	    	emailToken.setEmail(user.getEmail());
+			emailToken.setScreenname(user.getScreenname());
 	    	emailToken.setUuid(user.getUuid());
 	    	emailToken.setExpiryTimestamp(RegistrationUtil.createExpiryTime());
-	    	emailService.addEmail(emailToken);
+	    	registerTokenService.addEmail(emailToken);
 	    	
 	    	mailSenderService.sendEmailForRegistrationActivation(user, RegistrationUtil.getServerAddress(params));
 				    	
@@ -120,14 +126,14 @@ public class UserRegistrationHandler extends ActionHandler {
 	}
 	
 	private final boolean isEmailAlreadyExist(final String emailAddress) {
-		if (emailService.findUsernameForEmail(emailAddress) != null)
+		if (registerTokenService.findUsernameForEmail(emailAddress) != null)
 			return true;
 		else 
 			return false;
 	}
 	
 	private final boolean isUsernameAlreadyExist(final String username) {
-		if (emailService.findEmailForUsername(username) != null)
+		if (registerTokenService.findEmailForUsername(username) != null)
 			return true;
 		else 
 			return false;
