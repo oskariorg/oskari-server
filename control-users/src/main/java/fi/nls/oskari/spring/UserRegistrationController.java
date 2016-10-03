@@ -1,8 +1,7 @@
-package fi.nls.oskari.control.users;
+package fi.nls.oskari.spring;
 
 import java.util.Date;
 
-import fi.nls.oskari.control.ActionDeniedException;
 import fi.nls.oskari.util.PropertyUtil;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -10,25 +9,46 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import fi.nls.oskari.control.users.model.Email;
-import fi.nls.oskari.control.users.service.IbatisEmailService;
+import fi.nls.oskari.control.users.service.UserRegistrationService;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
-import org.springframework.web.servlet.mvc.multiaction.NoSuchRequestHandlingMethodException;
 
 /**
  * Handles user's password reseting
  */
 @Controller
-public class UserController {
+public class UserRegistrationController {
 
-    private final static Logger log = LogFactory.getLogger(UserController.class);
+    private final static Logger log = LogFactory.getLogger(UserRegistrationController.class);
     
     private static final String ERR_TOKEN_INVALID = "Token is invalid.";
     private static final String ERR_TOKEN_NOT_FOUND = "Token is unavailable.";
 
-    @RequestMapping("/register")
+    private boolean isRegistrationAllowed() {
+        return PropertyUtil.getOptional("allow.registration", false);
+    }
+
+    @RequestMapping("/user/register")
     public String register() {
+        if(!isRegistrationAllowed()) {
+            return "error/404";
+        }
         return "register";
+    }
+
+    @RequestMapping("/user/forgot")
+    public String forgotPassword() {
+        if(!isRegistrationAllowed()) {
+            return "error/404";
+        }
+        return "forgotPasswordEmail";
+    }
+    @RequestMapping("/user/reset")
+    public String resetPassword() {
+        if(!isRegistrationAllowed()) {
+            return "error/404";
+        }
+        return "passwordReset";
     }
     /**
      * "passwordReset" jsp view should ALWAYS be used by user to reset password
@@ -38,11 +58,11 @@ public class UserController {
      */
     @RequestMapping("/resetPassword/{uuid}")
     public String resetPassword(Model model, @PathVariable String uuid) {
-        if(!PropertyUtil.getOptional("allow.registration", false)) {
+        if(!isRegistrationAllowed()) {
             return "error/404";
         }
     	 final String jspView = "passwordReset";
-         IbatisEmailService emailService = new IbatisEmailService();
+         UserRegistrationService emailService = new UserRegistrationService();
          Email email = emailService.findByToken(uuid);
          if (email == null) {
         	 log.debug("Email token not found, going to error/404");
@@ -51,7 +71,7 @@ public class UserController {
         	 return jspView;
          }
          // Check if email token has valid date or not.
-         if (email.getExpiryTimestamp().after(new Date())) {
+         if (new Date().before(email.getExpiryTimestamp())) {
              model.addAttribute("uuid", email.getUuid());
          }
          else{
