@@ -216,7 +216,8 @@ public class OskariLayerWorker {
     public static void transformWKTGeom(final JSONObject layerJSON, final String mapSRS) {
 
         final String wktWGS84 = layerJSON.optString("geom");
-        if(wktWGS84 == null || wktWGS84.isEmpty()) {
+        if(wktWGS84 == null || wktWGS84.isEmpty() || mapSRS == null || mapSRS.isEmpty()) {
+            layerJSON.remove("geom");
             return;
         }
         try {
