@@ -76,7 +76,12 @@ public class ELFGeoLocatorSearchChannel extends SearchChannel {
     private static Map<String, Double> elfScalesForType = new HashMap<String, Double>();
     private static Map<String, Integer> elfLocationPriority = new HashMap<String, Integer>();
     private static JSONObject elfCountryMap = null;
+    private static JSONObject elfLocationTypes = null;
+    private static JSONObject elfNameLanguages = null;
+    private JSONObject jsobj;
     private final String geolocatorCountries = "geolocator-countries.json";
+    private final String locationType = "ELFGEOLOCATOR_CHANNEL.json";
+    private final String nameLanguages = "namelanguage.json";
 
 
     public ELFGeoLocatorParser elfParser = null;
@@ -98,8 +103,7 @@ public class ELFGeoLocatorSearchChannel extends SearchChannel {
             log.info("Country mapping setup failed for country based search", e);
         }
 
-
-        InputStream inp2 = this.getClass().getResourceAsStream(LOCATIONTYPE_ATTRIBUTES);
+      InputStream inp2 = this.getClass().getResourceAsStream(locationType);
         if(inp2 == null){
             // Try to get user defined setup file
             try {
@@ -109,19 +113,18 @@ public class ELFGeoLocatorSearchChannel extends SearchChannel {
                 log.info("No setup found for location type based scaling in geolocator seach", e);
             }
         }
-        if(inp2 != null && this.elfScalesForType.size() == 0) {
-            InputStreamReader reader = new InputStreamReader(inp2);
-            JSONTokener tokenizer = new JSONTokener(reader);
-            JSONObject elfLocationTypes = JSONHelper.createJSONObject4Tokener(tokenizer);
+         if(inp2 != null && this.elfScalesForType.size() == 0) {
+             InputStreamReader reader = new InputStreamReader(inp2);
+             JSONTokener tokenizer = new JSONTokener(reader);
+            this.elfLocationTypes = JSONHelper.createJSONObject4Tokener(tokenizer);
             if(elfLocationTypes != null) {
                 JSONArray types = JSONHelper.getJSONArray(elfLocationTypes, JSONKEY_LOCATIONTYPES);
                 try {
                     // Set Map scale values
-
                     if (types != null) {
                         for (int i = 0; i < types.length(); i++) {
 
-                            JSONObject jsobj = types.getJSONObject(i);
+                            this.jsobj = types.getJSONObject(i);
                             String type_range = JSONHelper.getStringFromJSON(jsobj, "gml_id", null);
                             Double scale = jsobj.optDouble("scale");
                             int priority = jsobj.optInt("priority");
@@ -136,19 +139,26 @@ public class ELFGeoLocatorSearchChannel extends SearchChannel {
                                 }
                             }
 
-
                         }
                     }
                 } catch (Exception e) {
                     log.debug("Initializing Elf geolocator search configs failed", e);
                 }
             }
+          }
+        try {
+        InputStream inp3 = this.getClass().getResourceAsStream(nameLanguages);
+        if(inp3 != null) {
+            InputStreamReader reader = new InputStreamReader(inp3);
+            JSONTokener tokenizer = new JSONTokener(reader);
+            this.elfNameLanguages = JSONHelper.createJSONObject4Tokener(tokenizer);
         }
-
+      }catch (Exception e){
+        log.info("Failed fetching namelanguages", e);
+      }
 
         elfParser = new ELFGeoLocatorParser(PropertyUtil.getOptional(PROPERTY_SERVICE_SRS));
     }
-
 
     public Capabilities getCapabilities() {
         return Capabilities.BOTH;
@@ -246,6 +256,14 @@ public class ELFGeoLocatorSearchChannel extends SearchChannel {
     public boolean hasParam(SearchCriteria sc, final String param) {
         final Object obj = sc.getParam(param);
         return obj != null && !obj.toString().isEmpty();
+    }
+
+    public JSONObject getElfLocationTypes() {
+        return this.elfLocationTypes;
+    }
+
+    public JSONObject getElfNameLanguages(){
+      return this.elfNameLanguages;
     }
 
     /**
