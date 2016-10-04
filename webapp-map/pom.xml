@@ -32,6 +32,11 @@
 
         <dependency>
             <groupId>fi.nls.oskari.service</groupId>
+            <artifactId>oskari-control-users</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>fi.nls.oskari.service</groupId>
             <artifactId>oskari-control-example</artifactId>
         </dependency>
 

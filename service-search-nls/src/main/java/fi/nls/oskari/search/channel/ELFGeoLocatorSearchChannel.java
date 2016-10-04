@@ -15,8 +15,10 @@ import org.json.JSONObject;
 import org.json.JSONTokener;
 
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
 import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Locale;
@@ -38,6 +40,7 @@ public class ELFGeoLocatorSearchChannel extends SearchChannel {
     private static final String PROPERTY_SERVICE_GETFEATUREAU_TEMPLATE = "search.channel.ELFGEOLOCATOR_CHANNEL.service.getfeatureau.template";
     private static final String PROPERTY_SERVICE_FUZZY_TEMPLATE = "search.channel.ELFGEOLOCATOR_CHANNEL.service.fuzzy.template";
     private static final String PROPERTY_SERVICE_GETFEATURE_TEMPLATE = "search.channel.ELFGEOLOCATOR_CHANNEL.service.getfeature.template";
+    private static final String PROPERTY_SERVICE_LIKE_TEMPLATE = "search.channel.ELFGEOLOCATOR_CHANNEL.service.like.template";
     private static final String PROPERTY_SERVICE_GEOLOCATOR_LOCATIONTYPES = "search.channel.ELFGEOLOCATOR_CHANNEL.service.locationtype.json";
 
     public static final String KEY_LANG_HOLDER = "_LANG_";
@@ -53,10 +56,12 @@ public class ELFGeoLocatorSearchChannel extends SearchChannel {
     public static final String DEFAULT_GETFEATURE_TEMPLATE = "?SERVICE=WFS&VERSION=2.0.0&REQUEST=GetFeature&TYPENAMES=SI_LocationInstance&language=_LANG_&FILTER=";
     public static final String GETFEATURE_FILTER_TEMPLATE = "%3Cfes:Filter%20xmlns:fes=%22http://www.opengis.net/fes/2.0%22%20xmlns:xsi=%22http://www.w3.org/2001/XMLSchema-instance%22%20xmlns:iso19112=%22http://www.isotc211.org/19112%22%20xsi:schemaLocation=%22http://www.opengis.net/fes/2.0%20http://schemas.opengis.net/filter/2.0/filterAll.xsd%22%3E%3Cfes:PropertyIsEqualTo%20matchCase=%22false%22%3E%3Cfes:ValueReference%3Eiso19112:alternativeGeographicIdentifiers/iso19112:alternativeGeographicIdentifier/iso19112:name%3C/fes:ValueReference%3E%3Cfes:Literal%3E_PLACE_HOLDER_%3C/fes:Literal%3E%3C/fes:PropertyIsEqualTo%3E%3C/fes:Filter%3E";
     public static final String ADMIN_FILTER_TEMPLATE = "%3Cfes:Filter%20xmlns:fes=%22http://www.opengis.net/fes/2.0%22%20xmlns:xsi=%22http://www.w3.org/2001/XMLSchema-instance%22%20xmlns:iso19112=%22http://www.isotc211.org/19112%22%20xmlns:gmdsf1=%22http://www.isotc211.org/2005/gmdsf1%22%20xsi:schemaLocation=%22http://www.opengis.net/fes/2.0%20http://schemas.opengis.net/filter/2.0/filterAll.xsd%22%3E%3Cfes:And%3E%3Cfes:PropertyIsEqualTo%20matchCase=%22false%22%3E%3Cfes:ValueReference%3Eiso19112:alternativeGeographicIdentifiers/iso19112:alternativeGeographicIdentifier/iso19112:name%3C/fes:ValueReference%3E%3Cfes:Literal%3E_PLACE_HOLDER_%3C/fes:Literal%3E%3C/fes:PropertyIsEqualTo%3E%3Cfes:PropertyIsEqualTo%3E%3Cfes:ValueReference%3Eiso19112:administrator/gmdsf1:CI_ResponsibleParty/gmdsf1:organizationName%3C/fes:ValueReference%3E%3Cfes:Literal%3E_ADMIN_HOLDER_%3C/fes:Literal%3E%3C/fes:PropertyIsEqualTo%3E%3C/fes:And%3E%3C/fes:Filter%3E";
+    public static final String DEFAULT_LIKE_TEMPLATE = "?SERVICE=WFS&REQUEST=GetFeature&VERSION=1.1.0&TYPENAME=SI_LocationInstance&MAXFEATURES=100&FILTER=%3Cogc:Filter%20xmlns:ogc=%27http://www.opengis.net/ogc%27%20xmlns:iso19112=%27http://www.isotc211.org/19112%27%3E%3Cogc:PropertyIsLike%20wildCard=%27*%27%20singleChar=%27%23%27%20escapeChar=%27!%27%3E%3Cogc:PropertyName%3Eiso19112:alternativeGeographicIdentifiers/iso19112:alternativeGeographicIdentifier/iso19112:name%3C/ogc:PropertyName%3E%3Cogc:Literal%3EHel*ki%3C/ogc:Literal%3E%3C/ogc:PropertyIsLike%3E%3C/ogc:Filter%3E";
     public static final String REQUEST_REVERSEGEOCODE_TEMPLATE = PropertyUtil.get(PROPERTY_SERVICE_REVERSEGEOCODE_TEMPLATE, DEFAULT_REVERSEGEOCODE_TEMPLATE);
     public static final String REQUEST_GETFEATUREAU_TEMPLATE = PropertyUtil.get(PROPERTY_SERVICE_GETFEATUREAU_TEMPLATE, DEFAULT_GETFEATUREAU_TEMPLATE);
     public static final String REQUEST_FUZZY_TEMPLATE = PropertyUtil.get(PROPERTY_SERVICE_FUZZY_TEMPLATE, DEFAULT_FUZZY_TEMPLATE);
     public static final String REQUEST_GETFEATURE_TEMPLATE = PropertyUtil.get(PROPERTY_SERVICE_GETFEATURE_TEMPLATE, DEFAULT_GETFEATURE_TEMPLATE);
+    public static final String REQUEST_LIKE_TEMPLATE = PropertyUtil.get(PROPERTY_SERVICE_LIKE_TEMPLATE, DEFAULT_LIKE_TEMPLATE);
     public static final String LOCATIONTYPE_ATTRIBUTES = PropertyUtil.get(PROPERTY_SERVICE_GEOLOCATOR_LOCATIONTYPES, ID+".json");
     public static final String JSONKEY_LOCATIONTYPES = "SI_LocationTypes";
     public static final String LOCATIONTYPE_ID_PREFIX = "SI_LocationType.";
@@ -73,6 +78,8 @@ public class ELFGeoLocatorSearchChannel extends SearchChannel {
     private static final String PARAM_ADDRESSES = "addresses";
     private static final String METHOD_REVERSE = "reverse";
 
+    private static final String LIKE_LITERAL_HOLDER = "_like-literal_";
+
     private static Map<String, Double> elfScalesForType = new HashMap<String, Double>();
     private static Map<String, Integer> elfLocationPriority = new HashMap<String, Integer>();
     private static JSONObject elfCountryMap = null;
@@ -85,6 +92,28 @@ public class ELFGeoLocatorSearchChannel extends SearchChannel {
 
 
     public ELFGeoLocatorParser elfParser = null;
+
+    /* --- For unit testing: ----------------------------------------------- */
+
+
+    private HttpURLConnection conn;
+    private String likeQueryXMLtemplate = null;
+
+    public ELFGeoLocatorSearchChannel() {
+    }
+
+    public ELFGeoLocatorSearchChannel(HttpURLConnection conn) {
+        this.conn = conn;
+    }
+
+    @Override
+    public HttpURLConnection getConnection(final String url) {
+        if (conn != null) return conn;
+
+        return super.getConnection(url);
+    }
+
+    /* --------------------------------------------------------------------- */
 
     @Override
     public void init() {
@@ -158,6 +187,12 @@ public class ELFGeoLocatorSearchChannel extends SearchChannel {
       }
 
         elfParser = new ELFGeoLocatorParser(PropertyUtil.getOptional(PROPERTY_SERVICE_SRS));
+
+        try {
+            likeQueryXMLtemplate = IOHelper.readString(getClass().getResourceAsStream("geolocator-wildcard.xml"));
+        } catch (Exception e) {
+            log.debug("Reading geolocator like search XML template failed", e);
+        }
     }
 
     public Capabilities getCapabilities() {
@@ -208,11 +243,29 @@ public class ELFGeoLocatorSearchChannel extends SearchChannel {
      * @throws Exception
      */
     public String getData(SearchCriteria searchCriteria) throws Exception {
-
         if (serviceURL == null) {
             log.warn("ServiceURL not configured. Add property with key", PROPERTY_SERVICE_URL);
             return null;
         }
+
+        // wildcard search
+        String searchString = searchCriteria.getSearchString();
+        if (searchString != null && searchString.contains("*")) {
+            log.debug("Wildcard search: ", searchString);
+
+            String postData = likeQueryXMLtemplate;
+            postData = postData.replace(LIKE_LITERAL_HOLDER, searchString);
+
+            StringBuffer buf = new StringBuffer(serviceURL);
+
+            HttpURLConnection conn = getConnection(buf.toString());
+            IOHelper.writeToConnection(conn, postData);
+            String response = IOHelper.readString(conn);
+
+            log.debug("Server response: " + response);
+            return response;
+        }
+
         // Language
         Locale locale = new Locale(searchCriteria.getLocale());
         String lang3 = locale.getISO3Language();
@@ -243,7 +296,6 @@ public class ELFGeoLocatorSearchChannel extends SearchChannel {
             buf.append(filter);
         }
 
-
         return IOHelper.readString(getConnection(buf.toString()));
     }
 
@@ -273,6 +325,7 @@ public class ELFGeoLocatorSearchChannel extends SearchChannel {
     public JSONObject getElfCountryMap() {
         return this.elfCountryMap;
     }
+
     /**
      * Returns the channel search results.
      *
@@ -308,6 +361,7 @@ public class ELFGeoLocatorSearchChannel extends SearchChannel {
             return new ChannelSearchResult();
         }
     }
+
     private String findSearchMethod(SearchCriteria sc) {
         String method = "unknown";
         if (hasParam(sc, PARAM_LON) && hasParam(sc, PARAM_LAT)) {
@@ -324,7 +378,6 @@ public class ELFGeoLocatorSearchChannel extends SearchChannel {
             method = PARAM_NORMAL;
         }
         return method;
-
     }
 
     public Map<String, Double> getElfScalesForType() {
