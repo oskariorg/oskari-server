@@ -77,26 +77,31 @@ public class ELFGeoLocatorSearchChannel extends SearchChannel {
     private static final String PARAM_GEO_NAMES = "geographical_names";
     private static final String PARAM_ADDRESSES = "addresses";
     private static final String METHOD_REVERSE = "reverse";
-    
+
     private static final String LIKE_LITERAL_HOLDER = "_like-literal_";
 
     private static Map<String, Double> elfScalesForType = new HashMap<String, Double>();
     private static Map<String, Integer> elfLocationPriority = new HashMap<String, Integer>();
     private static JSONObject elfCountryMap = null;
+    private static JSONObject elfLocationTypes = null;
+    private static JSONObject elfNameLanguages = null;
+    private JSONObject jsobj;
     private final String geolocatorCountries = "geolocator-countries.json";
+    private final String locationType = "ELFGEOLOCATOR_CHANNEL.json";
+    private final String nameLanguages = "namelanguage.json";
 
 
     public ELFGeoLocatorParser elfParser = null;
 
     /* --- For unit testing: ----------------------------------------------- */
-    
-    
+
+
     private HttpURLConnection conn;
     private String likeQueryXMLtemplate = null;
-            
+
     public ELFGeoLocatorSearchChannel() {
     }
-    
+
     public ELFGeoLocatorSearchChannel(HttpURLConnection conn) {
         this.conn = conn;
     }
@@ -104,12 +109,12 @@ public class ELFGeoLocatorSearchChannel extends SearchChannel {
     @Override
     public HttpURLConnection getConnection(final String url) {
         if (conn != null) return conn;
-        
+
         return super.getConnection(url);
     }
-    
+
     /* --------------------------------------------------------------------- */
-    
+
     @Override
     public void init() {
         super.init();
@@ -127,8 +132,7 @@ public class ELFGeoLocatorSearchChannel extends SearchChannel {
             log.info("Country mapping setup failed for country based search", e);
         }
 
-
-        InputStream inp2 = this.getClass().getResourceAsStream(LOCATIONTYPE_ATTRIBUTES);
+      InputStream inp2 = this.getClass().getResourceAsStream(locationType);
         if(inp2 == null){
             // Try to get user defined setup file
             try {
@@ -138,19 +142,18 @@ public class ELFGeoLocatorSearchChannel extends SearchChannel {
                 log.info("No setup found for location type based scaling in geolocator seach", e);
             }
         }
-        if(inp2 != null && this.elfScalesForType.size() == 0) {
-            InputStreamReader reader = new InputStreamReader(inp2);
-            JSONTokener tokenizer = new JSONTokener(reader);
-            JSONObject elfLocationTypes = JSONHelper.createJSONObject4Tokener(tokenizer);
+         if(inp2 != null && this.elfScalesForType.size() == 0) {
+             InputStreamReader reader = new InputStreamReader(inp2);
+             JSONTokener tokenizer = new JSONTokener(reader);
+            this.elfLocationTypes = JSONHelper.createJSONObject4Tokener(tokenizer);
             if(elfLocationTypes != null) {
                 JSONArray types = JSONHelper.getJSONArray(elfLocationTypes, JSONKEY_LOCATIONTYPES);
                 try {
                     // Set Map scale values
-
                     if (types != null) {
                         for (int i = 0; i < types.length(); i++) {
 
-                            JSONObject jsobj = types.getJSONObject(i);
+                            this.jsobj = types.getJSONObject(i);
                             String type_range = JSONHelper.getStringFromJSON(jsobj, "gml_id", null);
                             Double scale = jsobj.optDouble("scale");
                             int priority = jsobj.optInt("priority");
@@ -165,24 +168,32 @@ public class ELFGeoLocatorSearchChannel extends SearchChannel {
                                 }
                             }
 
-
                         }
                     }
                 } catch (Exception e) {
                     log.debug("Initializing Elf geolocator search configs failed", e);
                 }
             }
+          }
+        try {
+        InputStream inp3 = this.getClass().getResourceAsStream(nameLanguages);
+        if(inp3 != null) {
+            InputStreamReader reader = new InputStreamReader(inp3);
+            JSONTokener tokenizer = new JSONTokener(reader);
+            this.elfNameLanguages = JSONHelper.createJSONObject4Tokener(tokenizer);
         }
+      }catch (Exception e){
+        log.info("Failed fetching namelanguages", e);
+      }
 
         elfParser = new ELFGeoLocatorParser(PropertyUtil.getOptional(PROPERTY_SERVICE_SRS));
-        
+
         try {
             likeQueryXMLtemplate = IOHelper.readString(getClass().getResourceAsStream("geolocator-wildcard.xml"));
         } catch (Exception e) {
             log.debug("Reading geolocator like search XML template failed", e);
         }
     }
-
 
     public Capabilities getCapabilities() {
         return Capabilities.BOTH;
@@ -236,25 +247,25 @@ public class ELFGeoLocatorSearchChannel extends SearchChannel {
             log.warn("ServiceURL not configured. Add property with key", PROPERTY_SERVICE_URL);
             return null;
         }
-        
+
         // wildcard search
         String searchString = searchCriteria.getSearchString();
         if (searchString != null && searchString.contains("*")) {
             log.debug("Wildcard search: ", searchString);
-            
+
             String postData = likeQueryXMLtemplate;
             postData = postData.replace(LIKE_LITERAL_HOLDER, searchString);
-            
+
             StringBuffer buf = new StringBuffer(serviceURL);
-            
+
             HttpURLConnection conn = getConnection(buf.toString());
-            IOHelper.writeToConnection(conn, postData);            
+            IOHelper.writeToConnection(conn, postData);
             String response = IOHelper.readString(conn);
-            
+
             log.debug("Server response: " + response);
             return response;
         }
-        
+
         // Language
         Locale locale = new Locale(searchCriteria.getLocale());
         String lang3 = locale.getISO3Language();
@@ -299,6 +310,14 @@ public class ELFGeoLocatorSearchChannel extends SearchChannel {
         return obj != null && !obj.toString().isEmpty();
     }
 
+    public JSONObject getElfLocationTypes() {
+        return this.elfLocationTypes;
+    }
+
+    public JSONObject getElfNameLanguages(){
+      return this.elfNameLanguages;
+    }
+
     /**
      * Returns Elf country map
      * @return
@@ -306,7 +325,7 @@ public class ELFGeoLocatorSearchChannel extends SearchChannel {
     public JSONObject getElfCountryMap() {
         return this.elfCountryMap;
     }
-    
+
     /**
      * Returns the channel search results.
      *
@@ -342,7 +361,7 @@ public class ELFGeoLocatorSearchChannel extends SearchChannel {
             return new ChannelSearchResult();
         }
     }
-    
+
     private String findSearchMethod(SearchCriteria sc) {
         String method = "unknown";
         if (hasParam(sc, PARAM_LON) && hasParam(sc, PARAM_LAT)) {
