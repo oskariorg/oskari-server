@@ -2,6 +2,10 @@ package fi.nls.oskari.spring;
 
 import java.util.Date;
 
+import fi.nls.oskari.control.ActionParameters;
+import fi.nls.oskari.domain.User;
+import fi.nls.oskari.service.OskariComponentManager;
+import fi.nls.oskari.spring.extension.OskariParam;
 import fi.nls.oskari.util.PropertyUtil;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,6 +21,7 @@ import fi.nls.oskari.log.Logger;
  * Handles user's password reseting
  */
 @Controller
+@RequestMapping("/user")
 public class UserRegistrationController {
 
     private final static Logger log = LogFactory.getLogger(UserRegistrationController.class);
@@ -28,58 +33,64 @@ public class UserRegistrationController {
         return PropertyUtil.getOptional("allow.registration", false);
     }
 
-    @RequestMapping("/user/register")
-    public String register() {
+    @RequestMapping
+    public String index(Model model, @OskariParam ActionParameters params) {
         if(!isRegistrationAllowed()) {
             return "error/404";
+        }
+        User user = params.getUser();
+        boolean isGuest = user.isGuest();
+        model.addAttribute("editExisting", !isGuest);
+        if(!isGuest) {
+            model.addAttribute("firstname", user.getFirstname());
+            model.addAttribute("lastname", user.getLastname());
+            model.addAttribute("email", user.getEmail());
         }
         return "register";
     }
 
-    @RequestMapping("/user/forgot")
-    public String forgotPassword() {
+
+    @RequestMapping("/reset")
+    public String forgotPassword(Model model, @OskariParam ActionParameters params) {
         if(!isRegistrationAllowed()) {
             return "error/404";
+        }
+        User user = params.getUser();
+        if(!user.isGuest()) {
+            model.addAttribute("email", user.getEmail());
         }
         return "forgotPasswordEmail";
-    }
-    @RequestMapping("/user/reset")
-    public String resetPassword() {
-        if(!isRegistrationAllowed()) {
-            return "error/404";
-        }
-        return "passwordReset";
     }
     /**
      * "passwordReset" jsp view should ALWAYS be used by user to reset password
      * @param model
      * @param uuid is email token number for reseting password.
-     * @return jsp view , which includes 2 attributes: uuid (token number) and error (error message).      
+     * @return jsp view , which includes 2 attributes: uuid (token number) and error (error message).
      */
-    @RequestMapping("/resetPassword/{uuid}")
+    @RequestMapping("/reset/{uuid}")
     public String resetPassword(Model model, @PathVariable String uuid) {
         if(!isRegistrationAllowed()) {
             return "error/404";
         }
-    	 final String jspView = "passwordReset";
-         UserRegistrationService emailService = new UserRegistrationService();
-         Email email = emailService.findByToken(uuid);
-         if (email == null) {
-        	 log.debug("Email token not found, going to error/404");
-        	 model.addAttribute("uuid", null);
-        	 model.addAttribute("error", ERR_TOKEN_NOT_FOUND);
-        	 return jspView;
-         }
-         // Check if email token has valid date or not.
-         if (new Date().before(email.getExpiryTimestamp())) {
-             model.addAttribute("uuid", email.getUuid());
-         }
-         else{
-        	 model.addAttribute("uuid", null);
-        	 model.addAttribute("error", ERR_TOKEN_INVALID);
-         }
-        
-         return jspView;
+        final String jspView = "passwordReset";
+        UserRegistrationService emailService = OskariComponentManager.getComponentOfType(UserRegistrationService.class);
+        Email email = emailService.findByToken(uuid);
+        if (email == null) {
+            log.debug("Email token not found, going to error/404");
+            model.addAttribute("uuid", null);
+            model.addAttribute("error", ERR_TOKEN_NOT_FOUND);
+            return jspView;
+        }
+        // Check if email token has valid date or not.
+        if (new Date().before(email.getExpiryTimestamp())) {
+            model.addAttribute("uuid", email.getUuid());
+        }
+        else{
+            model.addAttribute("uuid", null);
+            model.addAttribute("error", ERR_TOKEN_INVALID);
+        }
+
+        return jspView;
     }
    
 }
