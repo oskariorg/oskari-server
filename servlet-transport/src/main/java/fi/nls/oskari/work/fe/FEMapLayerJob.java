@@ -125,8 +125,12 @@ public class FEMapLayerJob extends OWSMapLayerJob {
 
         this.geomValuesList = new ArrayList<List<Object>>();
 
-        for (List<Object> feature : featureValuesList) {
-            this.sendWFSFeature(feature);
+        // WFSMaplayerJob only sends if type is normal, but there is additional processing for the feature anyways
+        // For now we just want highlight to NOT send a feature.
+        if(this.type != JobType.HIGHLIGHT) {
+            for (List<Object> feature : featureValuesList) {
+                    this.sendWFSFeature(feature);
+            }
         }
 
         //send geometries as well, if requested
