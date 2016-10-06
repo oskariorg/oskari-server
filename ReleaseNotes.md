@@ -7,6 +7,19 @@
  A gigantic migration is being done for publish template and published maps on the system. 
  Please see [Migration Guide](MigrationGuide.md) for details.
 
+### User registration
+
+Added initial support for user registration. The functionality can be enabled by adding properties:
+
+    allow.registration=true
+    oskari.email.sender=<sender email>
+    oskari.email.host=smtp.domain.com
+
+When building as an oskari-server-extension you need to also add the dependency: 
+
+    <groupId>fi.nls.oskari.service</groupId>
+    <artifactId>oskari-control-users</artifactId>
+
 ### Metadata search channel
 
 Code moved from service-search-nls to service-cws for metadata search functionality since it's not NLS spesific.
