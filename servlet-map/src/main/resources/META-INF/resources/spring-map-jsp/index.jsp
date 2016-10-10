@@ -129,6 +129,9 @@
                         <input type="submit" id="submit" value="<spring:message code="login" text="Log in" />">
                     </form>
                 </c:if>
+                <c:if test="${!empty _registration_uri}">
+                    <a href="${pageContext.request.contextPath}${_registration_uri}"><spring:message code="user.registration" text="Register" /></a>
+                </c:if>
             </c:otherwise>
         </c:choose>
     </div>
