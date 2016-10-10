@@ -1,6 +1,6 @@
 package fi.nls.oskari.service;
 
-public class TransportServiceException extends RuntimeException {
+public class ServiceRuntimeException extends RuntimeException {
 
 	private static final long serialVersionUID = 1L;
     private String messageKey = "unknown";
@@ -26,29 +26,29 @@ public class TransportServiceException extends RuntimeException {
     public static String ERROR_SET_FILTER_FAILED = "set_filter_failed";
     public static String ERROR_SET_PROPERTY_FILTER_FAILED = "set_property_filter_failed";
 
-	public TransportServiceException(final String message, final Throwable e) {
+	public ServiceRuntimeException(final String message, final Throwable e) {
         super(message, e);
     }
 
-    public TransportServiceException(final String message, final Throwable e, final String key, final String level) {
+    public ServiceRuntimeException(final String message, final Throwable e, final String key, final String level) {
         super(message, e);
         this.messageKey = key;
         this.level = level;
     }
-    public TransportServiceException(final String message, final Throwable e, final String key) {
+    public ServiceRuntimeException(final String message, final Throwable e, final String key) {
         super(message, e);
         this.messageKey = key;
     }
-    public TransportServiceException(final String message) {
+    public ServiceRuntimeException(final String message) {
         super(message);
     }
 
-    public TransportServiceException(final String message, final String key) {
+    public ServiceRuntimeException(final String message, final String key) {
         super(message);
         this.messageKey = key;
     }
 
-    public TransportServiceException(final String message, final String key, final String level) {
+    public ServiceRuntimeException(final String message, final String key, final String level) {
         super(message);
         this.messageKey = key;
         this.level = level;
