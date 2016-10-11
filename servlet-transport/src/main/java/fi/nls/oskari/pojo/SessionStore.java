@@ -706,8 +706,8 @@ public class SessionStore {
      * @return layer as JSON String
      */
     @JsonIgnore
-    public static String getCache(String client, boolean throwException) {
-        return JedisManager.get(KEY + client, throwException);
+    public static String getCacheNecessary(String client) {
+        return JedisManager.getNecessary(KEY + client);
     }
 	
 

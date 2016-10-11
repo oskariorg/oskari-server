@@ -4,10 +4,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.Point;
 import fi.nls.oskari.pojo.SessionStore;
-import fi.nls.oskari.service.TransportServiceException;
+import fi.nls.oskari.service.ServiceRuntimeException;
 import fi.nls.oskari.transport.TransportJobException;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.wfs.WFSCommunicator;
+import fi.nls.oskari.wfs.WFSExceptionHelper;
 import fi.nls.oskari.wfs.WFSFilter;
 import fi.nls.oskari.wfs.WFSParser;
 import fi.nls.oskari.wfs.pojo.WFSLayerStore;
@@ -83,11 +84,10 @@ public class WFSMapLayerJob extends OWSMapLayerJob {
                 response = HttpHelper.postRequestReader(layer.getURL(), "",
                         payload, layer.getUsername(), layer.getPassword(), true);
             }
-            catch (TransportServiceException e){
+            catch (ServiceRuntimeException e){
                 throw new TransportJobException(e.getMessage(),
                         e.getCause(),
-                        TransportJobException.ERROR_GETFEATURE_POSTREQUEST_FAILED,
-                        TransportJobException.ERROR_LEVEL);
+                        WFSExceptionHelper.ERROR_GETFEATURE_POSTREQUEST_FAILED);
             }
         } else {
             log.debug(
@@ -152,8 +152,7 @@ public class WFSMapLayerJob extends OWSMapLayerJob {
             if(response == null) {
                 log.warn("Request failed for layer: ",layer.getLayerName(), "id: ", layer.getLayerId());
                 throw new TransportJobException("Request failed for layer: " + layer.getLayerName() + "id: " + layer.getLayerId(),
-                        TransportJobException.ERROR_WFS_REQUEST_FAILED,
-                        TransportJobException.ERROR_LEVEL);
+                        WFSExceptionHelper.ERROR_GETFEATURE_POSTREQUEST_FAILED);
 
             }
 
@@ -241,7 +240,6 @@ public class WFSMapLayerJob extends OWSMapLayerJob {
         }
         else {
             log.warn("Tried to determine properties by there's no features!");
-            //this.sendCommonErrorResponse();
         }
         return Collections.EMPTY_LIST;
     }
@@ -253,6 +251,11 @@ public class WFSMapLayerJob extends OWSMapLayerJob {
 
         // create filter of screen area
         Filter screenBBOXFilter = WFSFilter.initBBOXFilter(this.session.getLocation(), this.layer);
+        if(screenBBOXFilter == null) {
+            throw new TransportJobException("Failed to create BBOX filter (location or layer is unset)",
+                    WFSExceptionHelper.ERROR_FEATURE_PARSING);
+
+        }
 
         // send feature info
         FeatureIterator<SimpleFeature> featuresIter =  this.features.features();
@@ -261,6 +264,8 @@ public class WFSMapLayerJob extends OWSMapLayerJob {
         this.geomValuesList = new ArrayList<List<Object>>();
 
         final List<String> selectedProperties = getPropertiesToInclude();
+
+        boolean geometryParingFailures = false;
 
         while(goNext(featuresIter.hasNext())) {
             SimpleFeature feature = featuresIter.next();
@@ -295,7 +300,9 @@ public class WFSMapLayerJob extends OWSMapLayerJob {
                 if( geometry != null ) {
                 gvalues.add(geometry.toText()); //feature.getAttribute(this.layer.getGMLGeometryProperty()));
                 } else {
+                    log.debug("Feature geometry parsing failed", fid);
                     gvalues.add(null);
+                    geometryParingFailures = true;
                 }
                 this.geomValuesList.add(gvalues);
             }
@@ -329,6 +336,13 @@ public class WFSMapLayerJob extends OWSMapLayerJob {
             } else {
                 this.featureValuesList.add(values);
             }
+        }
+
+        if(geometryParingFailures){
+            Map<String, Object> output = this.createCommonWarningResponse(
+                    "Geometry parsing of some features failed (unknown geometry property or transformation error",
+                    WFSExceptionHelper.WARNING_GEOMETRY_PARSING_FAILED);
+            this.sendCommonErrorResponse(output, true);
         }
 	}
 

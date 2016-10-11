@@ -7,10 +7,12 @@ package fi.nls.oskari.eu.elf.recipe.universal;
  * */
 
 import com.vividsolutions.jts.geom.Geometry;
+import fi.nls.oskari.fe.generic.FeExceptionChecker;
 import fi.nls.oskari.fe.input.format.gml.recipe.JacksonParserRecipe.GML32;
 import fi.nls.oskari.fe.iri.Resource;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.service.ServiceRuntimeException;
 import fi.nls.oskari.util.JSONHelper;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -119,6 +121,13 @@ public class ELF_wfs_Parser extends GML32 {
                         additionalFea = new JSONObject();
                         Geometry ggeom = null;
                         QName qn = xsr.getName();
+
+                        // Check, if exception element in response
+                        // if yes, TransportJobException is thrown
+                        if (FeExceptionChecker.check(qn)){
+                            FeExceptionChecker.breakAndThrow(xsr);
+                        }
+
                         // There are local href elements  inside this element - put flag on
                         if (qn != null && qn.getLocalPart().equals(ELEM_ADDITIONALOBJECTS)) isAdditional = true;
 
@@ -302,9 +311,13 @@ public class ELF_wfs_Parser extends GML32 {
             if (additionalFeas.size() > 0) {
                 this.output.merge(additionalFeas, hrefRes);
             }
-        } catch (Exception e) {
+        }catch (ServiceRuntimeException e) {
             log.debug("*** path parsing failed - ", e);
-
+            throw new ServiceRuntimeException(e.getMessage(),e.getMessageKey());
+        }
+        catch (Exception e) {
+            log.debug("*** path parsing failed - ", e);
+            throw new ServiceRuntimeException(e.getMessage());
         }
 
 

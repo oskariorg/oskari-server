@@ -50,7 +50,10 @@
 			<groupId>fi.nls.oskari.service</groupId>
 			<artifactId>service-datamodel</artifactId>
 		</dependency>
-
+        <dependency>
+            <groupId>fi.nls.oskari.service</groupId>
+            <artifactId>oskari-wfs</artifactId>
+        </dependency>
 		<dependency>
 			<groupId>org.geotools</groupId>
 			<artifactId>gt-main</artifactId>

@@ -3,9 +3,10 @@ package fi.nls.oskari.work;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.pojo.*;
-import fi.nls.oskari.service.TransportServiceException;
+import fi.nls.oskari.service.ServiceRuntimeException;
 import fi.nls.oskari.transport.TransportJobException;
 import fi.nls.oskari.util.PropertyUtil;
+import fi.nls.oskari.wfs.WFSExceptionHelper;
 import fi.nls.oskari.wfs.WFSImage;
 import fi.nls.oskari.wfs.pojo.WFSLayerStore;
 import fi.nls.oskari.worker.AbstractJob;
@@ -39,6 +40,13 @@ public abstract class OWSMapLayerJob extends AbstractJob<String> {
     public static final String OUTPUT_LAYER_ID = "layerId";
     public static final String OUTPUT_ONCE = "once";
     public static final String OUTPUT_MESSAGE = "message";
+    public static final String OUTPUT_KEY = "key";
+    public static final String OUTPUT_LEVEL = "level";
+    public static final String OUTPUT_CAUSE = "cause";
+    public static final String OUTPUT_ZOOMSCALE = "zoomscale";
+    public static final String OUTPUT_MINSCALE = "minscale";
+    public static final String OUTPUT_MAXSCALE = "maxscale";
+    public static final String OUTPUT_JOBTYPE = "type";
     public static final String OUTPUT_FEATURES = "features";
     public static final String OUTPUT_GEOMETRIES = "geometries";
     public static final String OUTPUT_FEATURE = "feature";
@@ -289,14 +297,22 @@ public abstract class OWSMapLayerJob extends AbstractJob<String> {
                 if(bufferedImage == null) {
                     if(this.image == null) {
                         this.image = createResponseImage();
+                        // Style check
+                        if(this.image.getStyle() == null) {
+                            Map<String, Object> output = this.createCommonWarningResponse(
+                                    "SDL style parsing failed for the layer (custon or default)",
+                                    WFSExceptionHelper.WARNING_SLDSTYLE_PARSING_FAILED);
+                            this.sendCommonErrorResponse(output, true);
+                        }
                     }
                     bufferedImage = this.image.draw(this.session.getTileSize(),
                             this.session.getLocation(),
                             bounds,
                             this.features);
                     if(bufferedImage == null) {
-                        this.imageParsingFailed();
-                        throw new RuntimeException("Image parsing failed!");
+                        // Break tile loop, if one tile fails
+                        throw new TransportJobException("Tile image parsing failed for features",
+                                WFSExceptionHelper.ERROR_WFS_IMAGE_PARSING_FAILED);
                     }
 
                     // setup cachekey
@@ -351,12 +367,19 @@ public abstract class OWSMapLayerJob extends AbstractJob<String> {
                     this.session.getLayers().get(this.layerId).getStyleName(),
                     JobType.HIGHLIGHT.toString());
         }
+        // Style check
+        if(this.image.getStyle() == null) {
+            Map<String, Object> output = this.createCommonWarningResponse(
+                    "Highlight SDL style parsing failed (custon or default)",
+                    WFSExceptionHelper.WARNING_SLDSTYLE_PARSING_FAILED);
+            this.sendCommonErrorResponse(output, true);
+        }
         BufferedImage bufferedImage = this.image.draw(this.session.getMapSize(),
                 location,
                 this.features);
         if(bufferedImage == null) {
-            this.imageParsingFailed();
-            throw new RuntimeException("Image parsing failed!");
+            throw new TransportJobException("Image parsing failed for feature highlight",
+                    WFSExceptionHelper.ERROR_WFS_IMAGE_PARSING_FAILED);
         }
 
         Double[] bbox = location.getBboxArray();
@@ -767,6 +790,25 @@ public abstract class OWSMapLayerJob extends AbstractJob<String> {
         }
         this.service.addResults(session.getClient(), ResultProcessor.CHANNEL_ERROR, output);
     }
+    public void sendCommonErrorResponse(final Map<String, Object> output, final boolean once) {
+        if(once) {
+            output.put(OUTPUT_ONCE, once);
+        }
+        this.service.addResults(session.getClient(), ResultProcessor.CHANNEL_ERROR, output);
+    }
+    public Map<String, Object> createCommonResponse(final String message, final String key) {
+        Map<String, Object> output = createCommonResponse();
+        output.put(OUTPUT_MESSAGE, message);
+        output.put(OUTPUT_KEY, key);
+        return output;
+    }
+    public Map<String, Object> createCommonWarningResponse(final String message, final String key) {
+        Map<String, Object> output = createCommonResponse();
+        output.put(OUTPUT_MESSAGE, message);
+        output.put(OUTPUT_KEY, key);
+        output.put(OUTPUT_LEVEL, "warning");
+        return output;
+    }
     public Map<String, Object> createCommonResponse(final String message) {
         Map<String, Object> output = createCommonResponse();
         output.put(OUTPUT_MESSAGE, message);
@@ -776,6 +818,7 @@ public abstract class OWSMapLayerJob extends AbstractJob<String> {
     public Map<String, Object> createCommonResponse() {
         Map<String, Object> output = new HashMap<String, Object>();
         output.put(OUTPUT_LAYER_ID, this.layerId);
+        output.put(OUTPUT_JOBTYPE, this.type.toString());
         return output;
     }
 
@@ -789,8 +832,7 @@ public abstract class OWSMapLayerJob extends AbstractJob<String> {
             error = "Something went wrong";
         }
         log.error("On Error - layer:", layerId, "type:", type, "msg:", error);
-        Map<String, Object> output = createCommonResponse(error);
-        output.put("type", type.toString());
+        Map<String, Object> output = createCommonResponse(error, WFSExceptionHelper.ERROR_COMMON_JOB_FAILURE);
         this.service.addResults(session.getClient(), ResultProcessor.CHANNEL_ERROR, output);
     }
     public void notifyError(Exception e) {
@@ -799,18 +841,20 @@ public abstract class OWSMapLayerJob extends AbstractJob<String> {
             return;
         }
         Map<String, Object> output = createCommonResponse(e.getMessage());
-        output.put("once", false);
-        output.put("message", e.getMessage());
-        output.put("type", type.toString());
+        output.put(OUTPUT_ONCE, false);
+
         if(e instanceof TransportJobException){
-            output.put("key", ((TransportJobException) e).getMessageKey());
-            output.put("level", ((TransportJobException) e).getLevel());
+            output.put(OUTPUT_KEY, ((TransportJobException) e).getMessageKey());
+            output.put(OUTPUT_LEVEL, ((TransportJobException) e).getLevel());
+        } else  if(e instanceof ServiceRuntimeException){
+            output.put(OUTPUT_KEY, ((ServiceRuntimeException) e).getMessageKey());
+            output.put(OUTPUT_LEVEL, ((ServiceRuntimeException) e).getLevel());
         } else {
-            output.put("key", TransportJobException.ERROR_COMMON_JOB_FAILURE);
-            output.put("level", TransportJobException.ERROR_LEVEL);
+            output.put(OUTPUT_KEY, WFSExceptionHelper.ERROR_COMMON_JOB_FAILURE);
+            output.put(OUTPUT_LEVEL, WFSExceptionHelper.ERROR_LEVEL);
         }
         if (e.getCause() != null) {
-            output.put("cause",e.getCause().getMessage());
+            output.put(OUTPUT_CAUSE,e.getCause().getMessage());
         }
         this.service.addResults(session.getClient(), ResultProcessor.CHANNEL_ERROR, output);
     }
@@ -826,7 +870,6 @@ public abstract class OWSMapLayerJob extends AbstractJob<String> {
         Map<String, Object> output = createCommonResponse("completed");
         output.put("success", success);
         output.put("success_nop", success_nop);
-        output.put("type", type.toString());
         this.service.addResults(session.getClient(), ResultProcessor.CHANNEL_STATUS, output);
     }
 

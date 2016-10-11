@@ -4,8 +4,9 @@ import com.github.kevinsawicki.http.HttpRequest;
 import com.github.kevinsawicki.http.HttpRequest.HttpRequestException;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.service.TransportServiceException;
+import fi.nls.oskari.service.ServiceRuntimeException;
 import fi.nls.oskari.util.PropertyUtil;
+import fi.nls.oskari.wfs.WFSExceptionHelper;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
@@ -241,7 +242,8 @@ public class HttpHelper {
     private static void handleHTTPError(String type, String url, int code, boolean throwException) {
         log.warn("HTTP "+ type + " request error (" + code + ") when requesting: " + url);
         if(throwException){
-            throw new TransportServiceException("HTTP "+ type + " request error (" + code + ") when requesting: " + url);
+            throw new ServiceRuntimeException("HTTP "+ type + " request error (" + Integer.toString(code) + ") when requesting: " + url,
+                    WFSExceptionHelper.ERROR_COMMON_PROCESS_REQUEST_FAILURE);
         }
     }
 
@@ -255,8 +257,8 @@ public class HttpHelper {
     private static void handleHTTPRequestFail(String url, Exception e, boolean throwException) {
         log.warn(e, "HTTP request failed when requesting: " + url);
         if(throwException){
-            throw new TransportServiceException("HTTP request failed when requesting: " + url,
-                    e.getCause(), TransportServiceException.ERROR_COMMON_PROCESS_REQUEST_FAILURE);
+            throw new ServiceRuntimeException("HTTP request failed when requesting: " + url,
+                    e, WFSExceptionHelper.ERROR_COMMON_PROCESS_REQUEST_FAILURE);
         }
     }
 }

@@ -5,8 +5,9 @@ import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.pojo.Units;
 import fi.nls.oskari.pojo.WFSLayerPermissionsStore;
-import fi.nls.oskari.service.TransportServiceException;
+import fi.nls.oskari.service.ServiceRuntimeException;
 import fi.nls.oskari.util.PropertyUtil;
+import fi.nls.oskari.wfs.WFSExceptionHelper;
 import fi.nls.oskari.wfs.pojo.WFSLayerStore;
 import fi.nls.oskari.wfs.util.HttpHelper;
 
@@ -117,7 +118,7 @@ public class JobHelper {
 
     /**
      * Gets layer configuration (uses cache)
-     * throws TransportServiceException, if Redis methods fails
+     * throws ServiceRuntimeException, if Redis methods fails (not 1st get cache)
      *
      * @param layerId
      * @param sessionId
@@ -125,7 +126,7 @@ public class JobHelper {
      * @return layer
      */
     public static WFSLayerStore getLayerConfiguration(String layerId, String sessionId, String route) {
-        String json = WFSLayerStore.getCache(layerId, true);
+        String json = WFSLayerStore.getCache(layerId);
         boolean fromCache = json != null;
         if(!fromCache) {
             final String apiUrl = getAPIUrl() + LAYER_CONFIGURATION_API + layerId;
@@ -133,7 +134,7 @@ public class JobHelper {
             // NOTE: result is not handled as request triggers Redis write
             HttpHelper.getRequest(apiUrl, getCookiesValue(sessionId, route));
             // that we read here
-            json = WFSLayerStore.getCache(layerId, true);
+            json = WFSLayerStore.getCacheNecessary(layerId);
             if(json == null) {
                 log.error("Couldn't find JSON for WFSLayerStore with id:", layerId, " - API url:", apiUrl);
                 return null;
@@ -143,8 +144,8 @@ public class JobHelper {
             return WFSLayerStore.setJSON(json);
         } catch (Exception e) {
             log.error(e, "JSON parsing failed for WFSLayerStore \n" + json);
-            throw new TransportServiceException("JSON parsing failed for WFSLayerStore - json: " + json,
-                    e.getCause(), TransportServiceException.ERROR_WFSLAYERSTORE_PARSING_FAILED);
+            throw new ServiceRuntimeException("JSON parsing failed for WFSLayerStore - json: " + json,
+                    e.getCause(), WFSExceptionHelper.ERROR_WFSLAYERSTORE_PARSING_FAILED);
         }
 
     }

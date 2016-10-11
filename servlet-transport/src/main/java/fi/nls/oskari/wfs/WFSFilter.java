@@ -8,7 +8,7 @@ import fi.nls.oskari.pojo.GeoJSONFilter;
 import fi.nls.oskari.pojo.Location;
 import fi.nls.oskari.pojo.PropertyFilter;
 import fi.nls.oskari.pojo.SessionStore;
-import fi.nls.oskari.service.TransportServiceException;
+import fi.nls.oskari.service.ServiceRuntimeException;
 import fi.nls.oskari.wfs.pojo.WFSLayerStore;
 import fi.nls.oskari.work.JobType;
 import org.geotools.factory.CommonFactoryFinder;
@@ -117,7 +117,7 @@ public class WFSFilter {
                      final List<Double> bounds, final MathTransform transform, boolean createFilter) {
         if(type == null || layer == null || session == null) {
             LOG.error("Parameters not set (type, layer, session)", type, layer, session);
-            throw new TransportServiceException("Parameters not set (type, layer, session) - layer: "+layer.getLayerId());
+            throw new ServiceRuntimeException("Parameters not set (type, layer, session) - layer: "+layer.getLayerId());
         }
         this.layer = layer;
         this.transform = transform;
@@ -171,7 +171,7 @@ public class WFSFilter {
             filter = initEnlargedBBOXFilter(location, layer);
         } else {
             LOG.error("Failed to create a filter (invalid type)");
-            throw new TransportServiceException("Failed to create a filter (invalid type) - layer: "+layer.getLayerId());
+            throw new ServiceRuntimeException("Failed to create a filter (invalid type) - layer: "+layer.getLayerId());
         }
         return filter;
     }
@@ -196,7 +196,7 @@ public class WFSFilter {
             this.xml = encoder.encodeAsString(filter, org.geotools.filter.v1_1.OGC.Filter);
         } catch (IOException e) {
             LOG.error(e, "Encoding filter to String (xml) failed");
-            throw new TransportServiceException("Encoding filter to String (xml) failed - layer: "+layer.getLayerId(), e.getCause());
+            throw new ServiceRuntimeException("Encoding filter to String (xml) failed - layer: "+layer.getLayerId(), e.getCause());
         }
 
         // remove namespacing
@@ -240,7 +240,7 @@ public class WFSFilter {
     public Filter initFeatureIdFilter(List<String> featureIds) {
         if(featureIds == null || featureIds.size() == 0) {
             LOG.error("Failed to create feature filter (missing feature ids)");
-            throw new TransportServiceException("Failed to create feature filter (missing feature ids)");
+            throw new ServiceRuntimeException("Failed to create feature filter (missing feature ids)");
         }
 
         Set<FeatureId> fids = new HashSet<FeatureId>();
@@ -263,7 +263,7 @@ public class WFSFilter {
     public Filter initCoordinateFilter(Coordinate coordinate) {
         if (coordinate == null || this.defaultBuffer == 0.0d) {
             LOG.error("Failed to create coordinate filter (coordinate or default buffer is unset)");
-            throw new TransportServiceException("Failed to create coordinate filter (coordinate or default buffer is unset)");
+            throw new ServiceRuntimeException("Failed to create coordinate filter (coordinate or default buffer is unset)");
         }
 
         gsf.setSize(getSizeFactor()*this.defaultBuffer);
@@ -279,7 +279,7 @@ public class WFSFilter {
                 polygon = (Polygon) JTS.transform(polygon, this.transform);
             } catch (Exception e) {
                 LOG.error(e, "Transforming failed");
-                throw new TransportServiceException("Transforming failed for coordinate filter", e.getCause());
+                throw new ServiceRuntimeException("Transforming failed for coordinate filter", e.getCause());
             }
         }
 
@@ -346,7 +346,7 @@ public class WFSFilter {
                                 this.transform);
                     } catch (Exception e) {
                         LOG.error(e, "Transforming failed");
-                        throw new TransportServiceException("Transforming failed for geojson filter", e.getCause());
+                        throw new ServiceRuntimeException("Transforming failed for geojson filter", e.getCause());
                     }
                 }
 
@@ -356,10 +356,10 @@ public class WFSFilter {
             }
         } catch (JSONException e) {
             LOG.error(e, "Reading geojson data failed");
-            throw new TransportServiceException("Reading geojson data failed for geojson filter", e.getCause());
+            throw new ServiceRuntimeException("Reading geojson data failed for geojson filter", e.getCause());
         } catch (Exception e) {
             LOG.error(e, "Generating geometries from geojson failed");
-            throw new TransportServiceException("Generating geometries from geojson failed for geojson filter", e.getCause());
+            throw new ServiceRuntimeException("Generating geometries from geojson failed for geojson filter", e.getCause());
         }
 
         if(geometryFilters.size() > 1) {
@@ -392,7 +392,7 @@ public class WFSFilter {
         }
         if(propertyFilter == null ) {
             LOG.error("Failed to create property filter (invalid JSON for property filter)");
-            throw new TransportServiceException("Failed to create property filter (invalid JSON for property filter)");
+            throw new ServiceRuntimeException("Failed to create property filter (invalid JSON for property filter)");
         }
         // Bbox filter is always on
         Filter filter = initBBOXFilter(location, layer);
@@ -433,7 +433,7 @@ public class WFSFilter {
         ReferencedEnvelope envelope = location.getEnvelope();
         envelope = location.getTransformEnvelope(envelope, layer.getSRSName(), true);
         if(envelope == null){
-            throw new TransportServiceException(
+            throw new ServiceRuntimeException(
                     "Failed to create BBOX filter - layer: " + layer.getLayerId() + " Crs: " + layer.getSRSName() );
         }
         Filter filter = ff.bbox(ff.property(layer.getGMLGeometryProperty()),
@@ -458,7 +458,7 @@ public class WFSFilter {
         ReferencedEnvelope enlargedEnvelope = location.getEnlargedEnvelope();
         enlargedEnvelope = location.getTransformEnvelope(enlargedEnvelope, layer.getSRSName(), true);
         if(enlargedEnvelope == null){
-            throw new TransportServiceException(
+            throw new ServiceRuntimeException(
                     "Failed to create enlarged BBOX filter - layer: " + layer.getLayerId() + " Crs: " + layer.getSRSName() );
         }
         Filter filter = ff.bbox(ff.property(layer.getGMLGeometryProperty()),

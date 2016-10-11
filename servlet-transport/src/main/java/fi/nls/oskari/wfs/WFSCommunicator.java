@@ -3,13 +3,12 @@ package fi.nls.oskari.wfs;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.pojo.SessionStore;
-import fi.nls.oskari.service.TransportServiceException;
+import fi.nls.oskari.service.ServiceRuntimeException;
 import fi.nls.oskari.transport.TransportJobException;
 import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.wfs.pojo.WFSLayerStore;
 import fi.nls.oskari.wfs.util.XMLHelper;
 import fi.nls.oskari.work.JobType;
-import fi.nls.oskari.work.ResultProcessor;
 import org.apache.axiom.om.*;
 import org.apache.axiom.om.impl.builder.StAXOMBuilder;
 import org.geotools.feature.FeatureCollection;
@@ -72,15 +71,15 @@ public class WFSCommunicator {
                     if (layer.getGeometryNamespaceURI() == null) {
                         log.error("No geometry namespace URI defined:" + layer.getLayerName());
                         throw new TransportJobException("No geometry namespace URI defined:" + layer.getLayerName(),
-                                TransportJobException.ERROR_NO_GEOMETRY_NAMESPACE, TransportJobException.ERROR_LEVEL);
+                                WFSExceptionHelper.ERROR_INVALID_GEOMETRY_PROPERTY);
                     }
                     OMAttribute geomNs = factory.createOMAttribute("xmlns:" + split[0], null, layer.getGeometryNamespaceURI());
                     root.addAttribute(geomNs);
                 }
             } else {
                 log.error("No geometry property name defined");
-                throw new TransportJobException("No geometry namespace URI defined:" + layer.getLayerName(),
-                        TransportJobException.ERROR_NO_GEOMETRY_NAMESPACE, TransportJobException.ERROR_LEVEL);
+                throw new TransportJobException("No geometry property name defined:" + layer.getLayerName(),
+                        WFSExceptionHelper.ERROR_INVALID_GEOMETRY_PROPERTY);
             }
 
         if (layer.getOutputFormat() != null) {
@@ -142,11 +141,10 @@ public class WFSCommunicator {
                 WFSFilter wfsFilter = constructFilter(layer.getLayerId());
                 filterStr = wfsFilter.create(type, layer, session, bounds, transform);
             }
-            catch (TransportServiceException e){
-                throw new TransportJobException(e.getMessage(),
+            catch (ServiceRuntimeException e){
+                throw new ServiceRuntimeException(e.getMessage(),
                         e.getCause(),
-                        TransportJobException.ERROR_CREATE_FILTER_FAILED,
-                        TransportJobException.ERROR_LEVEL);
+                        WFSExceptionHelper.ERROR_GETFEATURE_PAYLOAD_FAILED);
             }
             log.debug(" ++++++++++++++++++++++++++++++ filter xml: ", filterStr);
             if(filterStr != null) {
@@ -155,13 +153,18 @@ public class WFSCommunicator {
                 query.addChild(filter);
             }
 		}
-		catch (Exception e){
+		catch (ServiceRuntimeException e){
 		    log.error(e, "Failed to create payload - root: ", root);
+            throw new TransportJobException(e.getMessage(),
+                    e.getCause(),
+                    e.getMessageKey());
+		}
+        catch (Exception e){
+            log.error(e, "Failed to create payload - root: ", root);
             throw new TransportJobException("Failed to create GetFeature payload - layer: " + layer.getLayerName() + " request: " + root.toString(),
                     e.getCause(),
-                    TransportJobException.ERROR_GETFEATURE_PAYLOAD_FAILED,
-                    TransportJobException.ERROR_LEVEL);
-		}
+                    WFSExceptionHelper.ERROR_GETFEATURE_PAYLOAD_FAILED);
+        }
 
 		return root.toString();
 	}
@@ -196,9 +199,8 @@ public class WFSCommunicator {
             }
             if(!(obj instanceof Number)) {
                 // obj can be 0 if no hits
-                throw new TransportJobException("Failed to parse GetFeature response - layer: " + layer.getLayerName() + " Id: " + layer.getLayerName(),
-                        TransportJobException.ERROR_FEATURE_PARSING,
-                        TransportJobException.ERROR_LEVEL);
+                throw new TransportJobException("Failed to parse GetFeature response - layer: " + layer.getLayerName(),
+                        WFSExceptionHelper.ERROR_FEATURE_PARSING);
             }
 		} catch (Exception e) {
             final String parseErr = parseErrors(obj);
@@ -207,8 +209,7 @@ public class WFSCommunicator {
             }
             throw new TransportJobException(parseErr,
                     e.getCause(),
-                    TransportJobException.ERROR_FEATURE_PARSING,
-                    TransportJobException.ERROR_LEVEL);
+                    WFSExceptionHelper.ERROR_FEATURE_PARSING);
 		}
         return null;
 	}
@@ -273,7 +274,7 @@ public class WFSCommunicator {
                 return (WFSFilter) filterClass.newInstance();
             } catch (Exception e) {
                 log.error(e, "Error constructing a filter for layer:", layerId, filterClassName);
-                throw new TransportServiceException("Error constructing a filter for layer: " + layerId +
+                throw new ServiceRuntimeException("Error constructing a filter for layer: " + layerId +
                         " filterClassName: " + filterClassName, e.getCause() );
             }
         }
