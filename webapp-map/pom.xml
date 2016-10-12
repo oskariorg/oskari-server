@@ -29,6 +29,11 @@
             <groupId>fi.nls.oskari.service</groupId>
             <artifactId>oskari-control-base</artifactId>
         </dependency>
+        <dependency>
+            <groupId>fi.nls.oskari.service</groupId>
+            <artifactId>oskari-statistics-eurostat</artifactId>
+            <version>1.39.0-SNAPSHOT</version>
+        </dependency>
 
 
         <dependency>
