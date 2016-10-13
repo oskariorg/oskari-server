@@ -30,6 +30,7 @@ import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.AuthCache;
 import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpResponseException;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpUriRequest;
@@ -386,10 +387,10 @@ public class FEMapLayerJob extends OWSMapLayerJob {
 
                 log.debug("[fe] execute response " + succee + " for " + url);
 
-            } catch (ClientProtocolException e) {
+            } catch (HttpResponseException e) {
                 log.error("Error parsing response:", log.getCauseMessages(e));
                 log.debug(e);
-                throw new ServiceRuntimeException(e.getMessage(),
+                throw new ServiceRuntimeException("Status code: " + Integer.toString(e.getStatusCode()) + " " + e.getMessage(),
                         e.getCause(),
                         WFSExceptionHelper.ERROR_GETFEATURE_POSTREQUEST_FAILED);
             } catch (IOException e) {
@@ -412,12 +413,12 @@ public class FEMapLayerJob extends OWSMapLayerJob {
                 log.debug("[fe] http shutdown for " + url);
             }
 
-        }  catch (ServiceRuntimeException e) {
+        } catch (ServiceRuntimeException e) {
             log.error(e);
             throw new TransportJobException(e.getMessage(),
                     e.getCause(),
                     e.getMessageKey());
-        }  catch (Exception e) {
+        } catch (Exception e) {
             log.error(e);
             throw new TransportJobException(e.getMessage(),
                     e.getCause(),
@@ -616,7 +617,7 @@ public class FEMapLayerJob extends OWSMapLayerJob {
             if (response == null) {
                 log.debug("Request failed for layer" + layer.getLayerId());
                 log.debug(PROCESS_ENDED + getKey());
-                throw new TransportJobException("Request failed for layer: " + layer.getLayerName() + "id: " + layer.getLayerId(),
+                throw new ServiceRuntimeException("Request failed for layer: " + layer.getLayerName() + "id: " + layer.getLayerId(),
                         WFSExceptionHelper.ERROR_GETFEATURE_POSTREQUEST_FAILED);
             }
 
@@ -627,7 +628,7 @@ public class FEMapLayerJob extends OWSMapLayerJob {
             if (this.features == null) {
                 log.debug("Parsing failed for layer " + this.layerId);
                 log.debug(PROCESS_ENDED + getKey());
-                throw new TransportJobException("Request failed for layer: " + layer.getLayerName(),
+                throw new ServiceRuntimeException("Request failed for layer: " + layer.getLayerName(),
                         WFSExceptionHelper.ERROR_FEATURE_PARSING);
             }
 
@@ -664,8 +665,16 @@ public class FEMapLayerJob extends OWSMapLayerJob {
             }
 
             log.debug("Features count" + this.features.size());
+        } catch (ServiceRuntimeException e) {
+            log.error(e);
+            throw new TransportJobException(e.getMessage(),
+                    e.getCause(),
+                    e.getMessageKey());
         } catch (Exception ee) {
             log.debug("exception: " + ee);
+            throw new TransportJobException(ee.getMessage(),
+                    ee.getCause(),
+                    WFSExceptionHelper.ERROR_FEATURE_PARSING);
         }
 
         return true;

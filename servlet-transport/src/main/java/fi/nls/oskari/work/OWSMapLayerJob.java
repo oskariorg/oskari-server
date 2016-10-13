@@ -835,6 +835,7 @@ public abstract class OWSMapLayerJob extends AbstractJob<String> {
         Map<String, Object> output = createCommonResponse(error, WFSExceptionHelper.ERROR_COMMON_JOB_FAILURE);
         this.service.addResults(session.getClient(), ResultProcessor.CHANNEL_ERROR, output);
     }
+
     public void notifyError(Exception e) {
         if (e == null) {
             notifyError("Something went wrong");
@@ -843,10 +844,10 @@ public abstract class OWSMapLayerJob extends AbstractJob<String> {
         Map<String, Object> output = createCommonResponse(e.getMessage());
         output.put(OUTPUT_ONCE, false);
 
-        if(e instanceof TransportJobException){
+        if (e instanceof TransportJobException) {
             output.put(OUTPUT_KEY, ((TransportJobException) e).getMessageKey());
             output.put(OUTPUT_LEVEL, ((TransportJobException) e).getLevel());
-        } else  if(e instanceof ServiceRuntimeException){
+        } else if (e instanceof ServiceRuntimeException) {
             output.put(OUTPUT_KEY, ((ServiceRuntimeException) e).getMessageKey());
             output.put(OUTPUT_LEVEL, ((ServiceRuntimeException) e).getLevel());
         } else {
@@ -854,7 +855,7 @@ public abstract class OWSMapLayerJob extends AbstractJob<String> {
             output.put(OUTPUT_LEVEL, WFSExceptionHelper.ERROR_LEVEL);
         }
         if (e.getCause() != null) {
-            output.put(OUTPUT_CAUSE,e.getCause().getMessage());
+            output.put(OUTPUT_CAUSE, e.getCause().getMessage());
         }
         this.service.addResults(session.getClient(), ResultProcessor.CHANNEL_ERROR, output);
     }

@@ -262,7 +262,9 @@ public class TransportService extends AbstractService {
         if(params == null) {
             log.warn("Request failed because parameters were not set");
             output.put("once", false);
-            output.put("message", "parameters_not_set");
+            output.put("message", "Request failed because parameters were not set");
+            output.put("key", WFSExceptionHelper.ERROR_PARAMETERS_NOT_SET);
+            output.put("level", WFSExceptionHelper.ERROR_LEVEL);
             client.deliver(local, ResultProcessor.CHANNEL_ERROR, output, null);
             return;
         }
@@ -297,12 +299,11 @@ public class TransportService extends AbstractService {
             } else if (channel.equals(CHANNEL_SET_MAP_LAYER_VISIBILITY)) {
                 setMapLayerVisibility(store, params);
             }
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             output.put("once", false);
             output.put("message", e.getMessage());
             output.put("channel", channel);
-            if(e instanceof ServiceRuntimeException){
+            if (e instanceof ServiceRuntimeException) {
                 output.put("key", ((ServiceRuntimeException) e).getMessageKey());
                 output.put("level", ((ServiceRuntimeException) e).getLevel());
             } else {
@@ -310,7 +311,7 @@ public class TransportService extends AbstractService {
                 output.put("level", WFSExceptionHelper.ERROR_LEVEL);
             }
             if (e.getCause() != null) {
-                output.put("cause",e.getCause().getMessage());
+                output.put("cause", e.getCause().getMessage());
             }
             client.deliver(local, ResultProcessor.CHANNEL_ERROR, output, null);
         }
@@ -477,7 +478,7 @@ public class TransportService extends AbstractService {
                 !params.containsKey(PARAM_TILES)) {
             log.warn("Failed to set location - lacking parameters e.g. zoom, bbox, grid, tiles");
             throw new ServiceRuntimeException("Failed to set location - lacking parameters e.g. zoom, bbox, grid, tiles",
-                    WFSExceptionHelper.ERROR_SET_LOCATION_FAILED, WFSExceptionHelper.WARNING_LEVEL);
+                    WFSExceptionHelper.ERROR_SET_PROCESS_REQUEST_FAILED, WFSExceptionHelper.WARNING_LEVEL);
     	}
 
         List<Double> bbox = MessageParseHelper.parseBbox(params.get(PARAM_LOCATION_BBOX));
@@ -518,7 +519,7 @@ public class TransportService extends AbstractService {
                 || !mapSize.containsKey(PARAM_HEIGHT)) {
             log.warn("Failed to set map size - lacking params e.g. width, height");
             throw new ServiceRuntimeException("Failed to set map size - lacking params e.g. width, height",
-                    WFSExceptionHelper.ERROR_SET_MAP_SIZE_FAILED, WFSExceptionHelper.WARNING_LEVEL);
+                    WFSExceptionHelper.ERROR_SET_PROCESS_REQUEST_FAILED, WFSExceptionHelper.WARNING_LEVEL);
         }
 
         Tile newMapSize = new Tile();
@@ -539,7 +540,7 @@ public class TransportService extends AbstractService {
     	if(!params.containsKey(PARAM_LAYER_ID) || !params.containsKey(PARAM_LAYER_STYLE)) {
             log.warn("Failed to set map layer style - lacking params e.g. styleName");
             throw new ServiceRuntimeException("Failed to set map layer style - lacking params e.g. styleName",
-                    WFSExceptionHelper.ERROR_SET_LAYER_STYLE_FAILED, WFSExceptionHelper.WARNING_LEVEL);
+                    WFSExceptionHelper.ERROR_SET_PROCESS_REQUEST_FAILED, WFSExceptionHelper.WARNING_LEVEL);
     	}
 
     	String layerId = params.get(PARAM_LAYER_ID).toString();
@@ -586,7 +587,7 @@ public class TransportService extends AbstractService {
                 !style.containsKey(WFSCustomStyleStore.PARAM_DOT_SIZE)) {
             log.warn("Failed to set map layer custom style - lacking style params");
             throw new ServiceRuntimeException("Failed to set map layer custom style - lacking style params",
-                    WFSExceptionHelper.ERROR_SET_LAYER_CUSTOMSTYLE_FAILED, WFSExceptionHelper.WARNING_LEVEL);
+                    WFSExceptionHelper.ERROR_SET_PROCESS_REQUEST_FAILED, WFSExceptionHelper.WARNING_LEVEL);
         }
 
         String layerId = style.get(PARAM_LAYER_ID).toString();
@@ -629,14 +630,14 @@ public class TransportService extends AbstractService {
         GeoJSONFilter filter = GeoJSONFilter.setParamsJSON(json);
         if (filter == null){
             throw new ServiceRuntimeException("Failed to set a map click - Reading JSON data failed",
-                    WFSExceptionHelper.ERROR_SET_MAP_CLICK_FAILED, WFSExceptionHelper.WARNING_LEVEL);
+                    WFSExceptionHelper.ERROR_SET_PROCESS_REQUEST_FAILED, WFSExceptionHelper.WARNING_LEVEL);
         }
 
         if (filter.getFeatures() == null &&
                 (!params.containsKey(PARAM_LONGITUDE) || !params.containsKey(PARAM_LATITUDE))){
             log.warn("Failed to set a map click", params);
             throw new ServiceRuntimeException("Failed to set a map click - invalid params",
-                    WFSExceptionHelper.ERROR_SET_MAP_CLICK_FAILED, WFSExceptionHelper.WARNING_LEVEL);
+                    WFSExceptionHelper.ERROR_SET_PROCESS_REQUEST_FAILED, WFSExceptionHelper.WARNING_LEVEL);
         }
 
         // stores geojson, but doesn't save
@@ -698,7 +699,7 @@ public class TransportService extends AbstractService {
         GeoJSONFilter filter = GeoJSONFilter.setParamsJSON(json);
         if (filter == null){
             throw new ServiceRuntimeException("Failed to set GeoJson filter - Reading JSON data failed",
-                    WFSExceptionHelper.ERROR_SET_FILTER_FAILED, WFSExceptionHelper.WARNING_LEVEL);
+                    WFSExceptionHelper.ERROR_SET_PROCESS_REQUEST_FAILED, WFSExceptionHelper.WARNING_LEVEL);
         }
         // stores geojson, but doesn't save
         store.setFilter(filter);
@@ -729,7 +730,7 @@ public class TransportService extends AbstractService {
         PropertyFilter propertyFilter = PropertyFilter.setParamsJSON(json);
         if (propertyFilter == null){
             throw new ServiceRuntimeException("Failed to set property filter - Reading JSON data failed",
-                    WFSExceptionHelper.ERROR_SET_PROPERTY_FILTER_FAILED, WFSExceptionHelper.WARNING_LEVEL);
+                    WFSExceptionHelper.ERROR_SET_PROCESS_REQUEST_FAILED, WFSExceptionHelper.WARNING_LEVEL);
         }
 
         // stores property filters, but doesn't save
@@ -762,7 +763,7 @@ public class TransportService extends AbstractService {
             log.warn("Layer visibility-parameter is not defined" );
 
             throw new ServiceRuntimeException("Layer visibility-parameter is not defined",
-                    WFSExceptionHelper.ERROR_SET_MAP_VISIBILITY_FAILED, WFSExceptionHelper.WARNING_LEVEL);
+                    WFSExceptionHelper.ERROR_SET_PROCESS_REQUEST_FAILED, WFSExceptionHelper.WARNING_LEVEL);
 
         }
 

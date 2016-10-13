@@ -199,15 +199,21 @@ public class WFSCommunicator {
             }
             if(!(obj instanceof Number)) {
                 // obj can be 0 if no hits
-                throw new TransportJobException("Failed to parse GetFeature response - layer: " + layer.getLayerName(),
+                final String parseErr = parseErrors(obj);
+                String message = "Failed to parse GetFeature response - " + parseErr;
+                if(parseErr == null) {
+                    message = "Failed to parse GetFeature response - service url: " + layer.getURL();
+                }
+                throw new ServiceRuntimeException(message,
                         WFSExceptionHelper.ERROR_FEATURE_PARSING);
             }
-		} catch (Exception e) {
-            final String parseErr = parseErrors(obj);
-            if(parseErr == null) {
+		}catch (ServiceRuntimeException e) {
+            throw new TransportJobException(e.getMessage(),
+                    e.getCause(),
+                    e.getMessageKey());
+        }catch (Exception e) {
                 log.error(e, "Features couldn't be parsed: - response: ", response, " obj: ", obj);
-            }
-            throw new TransportJobException(parseErr,
+            throw new TransportJobException("Failed to parse GetFeature response - service url: " + layer.getURL(),
                     e.getCause(),
                     WFSExceptionHelper.ERROR_FEATURE_PARSING);
 		}
@@ -228,6 +234,13 @@ public class WFSCommunicator {
         }
         // can't handle these cases
         final Map<Object, Object> error = (Map<Object, Object>) param;
+
+        if(error != null && error.containsKey("body")){
+            // html is not allowed in xml response - body is not an element of gml
+            return "Response is html - must be xml";
+        }
+
+
 		if(error == null
                 || !error.containsKey("Exception")
                 || !error.containsKey("version")

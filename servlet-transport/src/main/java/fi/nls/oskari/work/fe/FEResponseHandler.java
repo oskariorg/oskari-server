@@ -5,6 +5,8 @@ import fi.nls.oskari.fe.input.InputProcessor;
 import fi.nls.oskari.fe.output.OutputProcessor;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.service.ServiceRuntimeException;
+import fi.nls.oskari.wfs.WFSExceptionHelper;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.StatusLine;
@@ -57,6 +59,12 @@ public class FEResponseHandler implements ResponseHandler<Boolean> {
         }
 
         ContentType contentType = ContentType.getOrDefault(entity);
+
+        if (contentType.getMimeType().toUpperCase().indexOf("HTML") > -1) {
+            throw new ServiceRuntimeException("Response type is  " + contentType.getMimeType() + ",  must be xml",
+                    WFSExceptionHelper.ERROR_GETFEATURE_POSTREQUEST_FAILED);
+        }
+
         Charset charset = contentType.getCharset();
         log.debug("[fe] response contentType " + contentType + ", charset: "
                 + charset);

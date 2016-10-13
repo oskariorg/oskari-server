@@ -240,23 +240,23 @@ public class HttpHelper {
      * @param throwException
      */
     private static void handleHTTPError(String type, String url, int code, boolean throwException) {
-        log.warn("HTTP "+ type + " request error (" + code + ") when requesting: " + url);
-        if(throwException){
-            throw new ServiceRuntimeException("HTTP "+ type + " request error (" + Integer.toString(code) + ") when requesting: " + url,
+        log.warn("HTTP " + type + " request error (" + code + ") when requesting: " + url);
+        if (throwException) {
+            throw new ServiceRuntimeException("HTTP " + type + " request error (" + Integer.toString(code) + ") when requesting: " + url,
                     WFSExceptionHelper.ERROR_COMMON_PROCESS_REQUEST_FAILURE);
         }
     }
 
     /**
      * Handles Exceptions logging for HTTP request methods
-     * 
+     *
      * @param url
      * @param e
      * @param throwException
      */
     private static void handleHTTPRequestFail(String url, Exception e, boolean throwException) {
         log.warn(e, "HTTP request failed when requesting: " + url);
-        if(throwException){
+        if (throwException) {
             throw new ServiceRuntimeException("HTTP request failed when requesting: " + url,
                     e, WFSExceptionHelper.ERROR_COMMON_PROCESS_REQUEST_FAILURE);
         }
