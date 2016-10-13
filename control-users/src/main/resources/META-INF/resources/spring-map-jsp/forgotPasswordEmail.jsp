@@ -10,6 +10,9 @@
 	<link rel="shortcut icon" href="${pageContext.request.contextPath}/favicon.ico" type="image/x-icon" />
     <script type="text/javascript" src="${pageContext.request.contextPath}/Oskari/libraries/jquery/jquery-1.7.1.min.js">
     </script>
+	<!--script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script -->
+	<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+
     <!-- ############# css ################# -->   
     <style type="text/css">
         @media screen {
@@ -108,7 +111,6 @@
 			}
 
 			#emailAddress {
-				padding-top: 25px;
 				padding-left: 25px;
 			}
 
@@ -131,18 +133,19 @@
 
 <div id="content">
 	<div id="emailAddress">
-	    <h2><spring:message code="user.registration.passwordReset.title"/></h2>
+	    <h1><spring:message code="user.registration.passwordReset.title"/></h1>
 		<span class="content-column">
 			<span class="content-column"><label class="column-field-label"><spring:message code="user.email"/></label></span>
 			<span class="content-column"><input class="column-field-input" size="25" id="email" name="email" type="email" autofocus required>
 			<label id="error"></label>
 			</span>
+		</span>
+		<br/>
+		<span>				
+			<span><input class="btn btn-primary" size="16" id="submit" type="button" value='<spring:message code="btn.send"/>'></span>
 		</span>			
 		<span>				
-			<span><input class="column-field-button" size="16" id="submit" type="button" value='<spring:message code="btn.send"/>'></span>
-		</span>			
-		<span>				
-			<span><input class="column-field-button" size="16" id="cancel" type="button" value='<spring:message code="btn.cancel"/>'></span>
+			<span><input class="btn btn-default" size="16" id="cancel" type="button" value='<spring:message code="btn.cancel"/>'></span>
 		</span>			
 	</div>
 </div>

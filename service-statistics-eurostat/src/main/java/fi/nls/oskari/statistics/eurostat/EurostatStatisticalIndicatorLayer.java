@@ -98,35 +98,22 @@ public class EurostatStatisticalIndicatorLayer implements StatisticalIndicatorLa
      */
     @Override
     public Map<String, IndicatorValue> getIndicatorValues(StatisticalIndicatorSelectors selectors) {
-        Map<String, IndicatorValue> values = new HashMap<>();
-        String url = baseUrl + "/" + indicatorId;
-        JSONArray query = new JSONArray();
-        JSONObject payload = JSONHelper.createJSONObject("query", query);
+        Map<String, String> params = new HashMap<>();
         for (StatisticalIndicatorSelector selector : selectors.getSelectors()) {
             if (regionKey.equalsIgnoreCase(selector.getId())) {
                 // skip Alue
                 continue;
             }
-            JSONObject param = new JSONObject();
-            JSONHelper.putValue(param, "code", selector.getId());
-            JSONObject selection = new JSONObject();
-            JSONHelper.putValue(selection, "filter", "item");
-            JSONArray paramValues = new JSONArray();
-            paramValues.put(selector.getValue());
-            JSONHelper.putValue(selection, "values", paramValues);
-
-            JSONHelper.putValue(param, "selection", selection);
-            query.put(param);
+            params.put(selector.getId(), selector.getValue());
         }
-        JSONHelper.putValue(payload, "response", JSONHelper.createJSONObject("format", "json-stat"));
+        String url = IOHelper.constructUrl(baseUrl +"wdds/rest/data/v2.1/json/en/" + indicatorId, params);
 
+
+        Map<String, IndicatorValue> values = new HashMap<>();
         try {
-            final HttpURLConnection con = IOHelper.getConnection(url);
-            IOHelper.writeHeader(con, IOHelper.HEADER_CONTENTTYPE, IOHelper.CONTENT_TYPE_JSON + ";  charset=utf-8");
-            IOHelper.writeToConnection(con, payload.toString().getBytes("UTF-8"));
-            final String data = IOHelper.readString(con);
+            final String data = IOHelper.getURL(url);
+            // TODO: parsing
             JSONObject json = JSONHelper.createJSONObject(data);
-            //dataset.dimension.Alue.category.index -> key==region id & value == index pointer to dataset.value
             JSONObject stats = json.optJSONObject("dataset").optJSONObject("dimension").optJSONObject(regionKey).optJSONObject("category").optJSONObject("index");
             JSONArray responseValues = json.optJSONObject("dataset").optJSONArray("value");
             JSONArray names = stats.names();

@@ -10,7 +10,10 @@
 	<link rel="shortcut icon" href="${pageContext.request.contextPath}/favicon.ico" type="image/x-icon" />
     <script type="text/javascript" src="${pageContext.request.contextPath}/Oskari/libraries/jquery/jquery-1.7.1.min.js">
     </script>
-    <!-- ############# css ################# -->   
+	<!--script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script -->
+	<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+
+    <!-- ############# css ################# -->
     <style type="text/css">
         @media screen {
 			body {
@@ -131,7 +134,7 @@
 	<div id="passwordReset">
 		<c:choose>
 			<c:when test="${!empty uuid}">
-				<h2><spring:message code="user.registration.passwordReset.title"/></h2>
+				<h1><spring:message code="user.registration.passwordReset.title"/></h1>
 				<form:form>
 					<span class="content-column">
 						<span class="content-column"><label class="column-field-label"><spring:message code="user.password"/></label></span>
@@ -141,9 +144,10 @@
 						<span class="content-column"><label class="column-field-label"><spring:message code="user.password.confirm"/></label></span>
 						<span class="content-column"><input class="column-field-input" size="16" id="confirmPassword" name="confirmPassword" type="password" required>
 						<label id="unmatchedPassword" class="error"></label></span>
-					</span>			
+					</span>
+					<br />
 					<span>				
-						<span><input class="column-field-button" size="16" id="reset" type="button" value="<spring:message code="btn.password.reset"/>"></span>
+						<span><input class="btn btn-primary" size="16" id="reset" type="button" value="<spring:message code="btn.password.reset"/>"></span>
 					</span>					
 				</form:form>
 			</c:when>
