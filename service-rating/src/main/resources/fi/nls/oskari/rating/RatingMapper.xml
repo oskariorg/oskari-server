@@ -31,6 +31,14 @@
         where id = #{id}
     </select>
 
+    <select id="findLatestAdminRating" resultType="String">
+        SELECT rating
+        from
+            ratings
+        where category = #{category} and categoryItem = #{categoryItem} and userrole = #{adminRole}
+        order by created DESC
+        LIMIT 1
+    </select>
     <insert id="insertRating"
             parameterType="Rating"
             useGeneratedKeys="true"

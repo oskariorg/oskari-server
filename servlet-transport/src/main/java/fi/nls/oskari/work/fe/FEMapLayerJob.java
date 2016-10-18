@@ -1,5 +1,6 @@
 package fi.nls.oskari.work.fe;
 
+import com.vividsolutions.jts.geom.Geometry;
 import fi.nls.oskari.domain.map.wfs.WFSSLDStyle;
 import fi.nls.oskari.eu.elf.recipe.universal.ELF_path_parse_worker;
 import fi.nls.oskari.fe.engine.FEEngineManager;
@@ -14,6 +15,7 @@ import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.wfs.WFSFilter;
 import fi.nls.oskari.wfs.WFSImage;
+import fi.nls.oskari.wfs.WFSParser;
 import fi.nls.oskari.wfs.pojo.WFSLayerStore;
 import fi.nls.oskari.work.JobType;
 import fi.nls.oskari.work.OWSMapLayerJob;
@@ -41,6 +43,7 @@ import org.apache.http.params.HttpParams;
 import org.apache.http.protocol.BasicHttpContext;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.feature.FeatureCollection;
+import org.geotools.feature.FeatureIterator;
 import org.geotools.referencing.CRS;
 import org.geotools.styling.Style;
 import org.json.JSONObject;
@@ -120,10 +123,35 @@ public class FEMapLayerJob extends OWSMapLayerJob {
     protected void featuresHandler() {
         log.debug("features handler");
 
-        for (List<Object> feature : featureValuesList) {
-            this.sendWFSFeature(feature);
+        this.geomValuesList = new ArrayList<List<Object>>();
+
+        // WFSMaplayerJob only sends if type is normal, but there is additional processing for the feature anyways
+        // For now we just want highlight to NOT send a feature.
+        if(this.type != JobType.HIGHLIGHT) {
+            for (List<Object> feature : featureValuesList) {
+                    this.sendWFSFeature(feature);
+            }
         }
 
+        //send geometries as well, if requested
+        if (this.session.isGeomRequest())
+        {
+            // send feature info
+            FeatureIterator<SimpleFeature> featuresIter =  this.features.features();
+            SimpleFeature feature = featuresIter.next();
+            String fid = feature.getIdentifier().getID();
+            // get feature geometry (transform if needed) and get geometry center
+            Geometry geometry = WFSParser.getFeatureGeometry(feature, this.layer.getGMLGeometryProperty(), this.transformClient);
+            log.debug("Requested geometry", fid);
+            List<Object> gvalues = new ArrayList<Object>();
+            gvalues.add(fid);
+            if( geometry != null ) {
+                gvalues.add(geometry.toText()); //feature.getAttribute(this.layer.getGMLGeometryProperty()));
+            } else {
+                gvalues.add(null);
+            }
+            this.geomValuesList.add(gvalues);
+        }
     }
 
     protected void propertiesHandler() {

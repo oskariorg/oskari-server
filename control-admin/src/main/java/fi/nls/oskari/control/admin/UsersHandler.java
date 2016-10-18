@@ -175,6 +175,7 @@ public class UsersHandler extends RestActionHandler {
     }
 
     private JSONObject user2Json(User user) throws JSONException {
+        // TODO: User.toJSON() should be used
         JSONObject uo = new JSONObject();
         uo.put("id", user.getId());
         uo.put("firstName", user.getFirstname());

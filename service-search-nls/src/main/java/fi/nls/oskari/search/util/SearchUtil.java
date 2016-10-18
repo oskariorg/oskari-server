@@ -24,7 +24,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
-import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Locale;
@@ -45,18 +44,17 @@ public class SearchUtil {
 	public static final String NAME_REGISTER_URL_PROPERTY = "search.nameregister.url";
 	public static final String NAME_REGISTER_USER_PROPERTY = "search.nameregister.user";
 	public static final String NAME_REGISTER_PASSWORD_PROPERTY = "search.nameregister.password";
-	
-	public static final String VILLAGES_URL_PROPERTY = "search.villages.url";
+
 	public static final String LOCATION_TYPE_URL_PROPERTY = "search.locationtype.url";
 
 	private static final Map<String, String> localeMap = new HashMap<String, String>();
 	
 	// KEY: locationTypeCode, VALUE: ranking
 	private static final Map<String, Integer> rankMap = new HashMap<String, Integer>();
-	
-	private static Map<String,String> villageCache = new HashMap<String, String>();
+
 	private static Map<String,String> locationTypeCache = new HashMap<String, String>();
 	private static final Map<String, String> nameSpaceUri = new HashMap<String, String>();
+	private static long locationTypeLastUpdate = 0;
 	
 	static {
 		
@@ -113,8 +111,6 @@ public class SearchUtil {
 	}
 	
 	private final static long reloadInterval = 1000*60*60*24;
-	static long villageLastUpdate = 0;
-	private static long locationTypeLastUpdate = 0;
 	
 	
 	/**
@@ -126,59 +122,20 @@ public class SearchUtil {
 	public static String getLocaleCode(String locale) {
 		return localeMap.get(locale);
 	}
-	
-	public static boolean isVillage(String village) {
-		final long currentTime = System.currentTimeMillis(); 
-		if (villageLastUpdate == 0 || currentTime <  villageLastUpdate + reloadInterval) {
-			updateVillageCache();
-			villageLastUpdate = currentTime;
-		}
-		return villageCache.containsValue(village);
-	}
-	
-	public static Map getVillages() {
-		final long currentTime = System.currentTimeMillis(); 
-		if (villageLastUpdate == 0 || currentTime <  villageLastUpdate + reloadInterval) {
-			updateVillageCache();
-			villageLastUpdate = currentTime;
-		}
-		return villageCache;
-	}
+
 
 	@Deprecated
 	public static String getNameRegisterUrl() throws Exception {
 		return PropertyUtil.get(NAME_REGISTER_URL_PROPERTY);
 	}
-	
-	public static URL getVillagesUrl() throws Exception {
-		final URL villagesUrl = new URL(PropertyUtil.get(VILLAGES_URL_PROPERTY));
-		return villagesUrl;
-	}
-	
+
+
 	public static URL getLocationTypeUrl() throws Exception {
         if(PropertyUtil.getOptional(LOCATION_TYPE_URL_PROPERTY) == null) return null;
-		final URL villagesUrl = new URL(PropertyUtil.get(LOCATION_TYPE_URL_PROPERTY));
-		return villagesUrl;
+		final URL url = new URL(PropertyUtil.get(LOCATION_TYPE_URL_PROPERTY));
+		return url;
 	}
-	
-	/**
-	 * Returns the village name  by village code. 
-	 * @param villageCode Village code
-	 * @return Village name
-	 */
-	
-	public static String getVillageName(String villageCode) {
-		final long currentTime = System.currentTimeMillis(); 
-		
-		if (villageLastUpdate == 0 || currentTime >  villageLastUpdate + reloadInterval) {
-			updateVillageCache();
-			villageLastUpdate = currentTime;
-		}
-		if (!villageCache.containsKey(villageCode)) {
-			return villageCode;
-		}
-		return villageCache.get(villageCode);
-	}
+
 	
 	
 	private static String getData(String villageName) throws Exception {
@@ -259,56 +216,6 @@ public class SearchUtil {
 	}
 	
 
-	/**
-	 * Updating village cache 
-	 */
-	
-	private static void updateVillageCache() {
-		
-		try {
-			final URL villagesUrl = getVillagesUrl();
-            InputStreamReader isr = new InputStreamReader(villagesUrl.openStream(), "UTF-8");
-            
-            BufferedReader reader = new BufferedReader(isr);
-            StringBuilder readXML = new StringBuilder();
-            
-            String inputLine;
-            while ((inputLine = reader.readLine()) != null) {
-            	readXML.append(inputLine);
-            }
-            isr.close();
-            
-            XMLTokener xmlTokener = new XMLTokener(readXML.toString().replace(':', '_'));
-            while (xmlTokener.more()) {
-            	
-            	String nextContent = xmlTokener.nextContent().toString();
-            	
-            	if (!"<".equals(nextContent) && nextContent.startsWith("xsd_enumeration value")) {
-            		
-            		String[] code =  nextContent.split("\"");
-            		
-            		 while (xmlTokener.more()) {
-            			 
-            			 String content = xmlTokener.nextContent().toString();
-            			 
-            			 if (!"<".equals(content) && content.startsWith("xsd_documentation xml_lang")) {
-            				 String[] languageAndName = content.split("\"");
-            				 
-            				 villageCache.put(code[1]+"_"+languageAndName[1], languageAndName[2].substring(1));
-            				 villageCache.put(languageAndName[2].substring(1),code[1]);
-            				 
-            			 }else if ("/xsd_annotation>".equals(content)) {
-            				 break;
-            			 }
-            		 }
-            	}
-            }      
-          
-		} catch (Exception e) {
-			throw new RuntimeException("Failed to update village cache", e);
-		}
-	}
-
     private static Document getDocument(InputStream inputStream)
             throws ParserConfigurationException, SAXException, IOException {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -316,53 +223,6 @@ public class SearchUtil {
         DocumentBuilder builder = factory.newDocumentBuilder();
         return builder.parse(new InputSource(inputStream));
     }
-	
-	/**
-	 * Updating village cache 
-	 * * @param villages xml url
-	 */
-	
-	static void updateVillageCache(String villages) {
-        InputStream is = null;
-        try {
-
-	    	URL villagesUrl = new URL(villages);
-	        URLConnection villagesCon = villagesUrl.openConnection();
-	    	is = villagesCon.getInputStream();
-			Document doc = getDocument(is);
-			NodeList nl = doc.getElementsByTagName("xsd:enumeration");
-			
-			for (int i = 0; i < nl.getLength(); i++) {
-				String code = nl.item(i).getAttributes().item(0).getNodeValue();
-				
-				
-				NodeList languageVersions = nl.item(i).getChildNodes().item(1).getChildNodes();
-				
-				for (int j = 0; j < languageVersions.getLength(); j++) {
-					
-					
-					if ("xsd:documentation".equals(languageVersions.item(j).getNodeName())) {
-						String language = languageVersions.item(j).getAttributes().item(0).getNodeValue();
-						String name = languageVersions.item(j).getTextContent();
-						
-						villageCache.put(code+"_"+language, name);
-	   				 	villageCache.put(name,code);
-					}
-					
-				}
-				
-			}
-			villageLastUpdate = System.currentTimeMillis();
-		} catch (Exception e) {
-			throw new RuntimeException("Failed to update village cache", e);
-		}
-        finally {
-            IOHelper.close(is);
-        }
-	}
-	
-	
-	
 
 	/**
 	 * Returns the location type by location type code. 

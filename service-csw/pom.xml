@@ -7,7 +7,7 @@
     <parent>
         <groupId>fi.nls.oskari</groupId>
         <artifactId>oskari-parent</artifactId>
-        <version>1.38.2</version>
+        <version>1.39.0</version>
     </parent>
 
     <groupId>fi.nls.oskari.service</groupId>
@@ -24,14 +24,14 @@
             <groupId>org.mybatis</groupId>
             <artifactId>mybatis</artifactId>
         </dependency>
-        <!-- dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-        </dependency -->
-        <!-- dependency>
-            <groupId>commons-httpclient</groupId>
-            <artifactId>commons-httpclient</artifactId>
-        </dependency -->
+		<dependency>
+			<groupId>fi.nls.oskari.service</groupId>
+			<artifactId>oskari-control</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.deegree</groupId>
+			<artifactId>deegree</artifactId>
+		</dependency>
 
         <dependency>
             <groupId>junit</groupId>

@@ -1,12 +1,12 @@
 package fi.mml.map.mapwindow.service.db;
 
 import com.ibatis.sqlmap.client.SqlMapClient;
+import fi.nls.oskari.annotation.Oskari;
 import fi.nls.oskari.cache.Cache;
 import fi.nls.oskari.cache.CacheManager;
 import fi.nls.oskari.domain.map.InspireTheme;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.service.db.BaseIbatisService;
 
 import java.sql.SQLException;
 import java.util.*;
@@ -16,7 +16,8 @@ import java.util.*;
  * 
  *
  */
-public class InspireThemeServiceIbatisImpl extends BaseIbatisService<InspireTheme> implements InspireThemeService {
+@Oskari("InspireTheme")
+public class InspireThemeServiceIbatisImpl extends InspireThemeService {
 
     private Logger log = LogFactory.getLogger(InspireThemeServiceIbatisImpl.class);
 

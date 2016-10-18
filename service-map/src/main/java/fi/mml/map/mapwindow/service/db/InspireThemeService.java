@@ -1,7 +1,9 @@
 package fi.mml.map.mapwindow.service.db;
 
 import fi.nls.oskari.domain.map.InspireTheme;
+import fi.nls.oskari.service.OskariComponent;
 import fi.nls.oskari.service.db.BaseService;
+import fi.nls.oskari.service.db.OskariComponentIbatisService;
 
 import java.util.Collection;
 import java.util.List;
@@ -11,9 +13,9 @@ import java.util.List;
  * 
  *
  */
-public interface InspireThemeService extends BaseService<InspireTheme> {
-    public List<InspireTheme> findByMaplayerId(final int layerId);
-    public void updateLayerThemes(final long maplayerId, final Collection<InspireTheme> themes);
-    public List<Integer> findMaplayersByTheme(int id);
-    public InspireTheme findByName(final String name);
+public abstract class InspireThemeService extends OskariComponentIbatisService<InspireTheme> {
+    public abstract List<InspireTheme> findByMaplayerId(final int layerId);
+    public abstract void updateLayerThemes(final long maplayerId, final Collection<InspireTheme> themes);
+    public abstract List<Integer> findMaplayersByTheme(int id);
+    public abstract InspireTheme findByName(final String name);
 }

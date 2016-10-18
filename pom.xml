@@ -6,7 +6,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>fi.nls.oskari</groupId>
     <artifactId>oskari-parent</artifactId>
-    <version>1.38.2</version>
+    <version>1.39.0</version>
     <packaging>pom</packaging>
 
     <name>Oskari parent POM</name>
@@ -176,6 +176,12 @@
                 <artifactId>oskari-control-admin</artifactId>
                 <version>${fi.nls.oskari.service.version}</version>
             </dependency>
+			
+			<dependency>
+                <groupId>fi.nls.oskari.service</groupId>
+                <artifactId>oskari-control-users</artifactId>
+                <version>${fi.nls.oskari.service.version}</version>
+            </dependency>
 
             <dependency>
                 <groupId>fi.nls.oskari.service</groupId>
@@ -226,6 +232,16 @@
             <dependency>
                 <groupId>fi.nls.oskari.service</groupId>
                 <artifactId>oskari-statistics-kapa</artifactId>
+                <version>${fi.nls.oskari.service.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>fi.nls.oskari.service</groupId>
+                <artifactId>service-statistics-pxweb</artifactId>
+                <version>${fi.nls.oskari.service.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>fi.nls.oskari.service</groupId>
+                <artifactId>oskari-statistics-eurostat</artifactId>
                 <version>${fi.nls.oskari.service.version}</version>
             </dependency>
             <dependency>
@@ -962,11 +978,6 @@
         <module>service-csw</module>
         <module>service-logging</module>
         <module>service-routing</module>
-        <module>service-statistics-common</module>
-        <module>service-statistics</module>
-        <module>service-statistics-sotka</module>
-        <module>service-statistics-kapa</module>
-        
         <module>service-webapp</module>
 
         <module>control-base</module>
@@ -974,17 +985,23 @@
         <module>control-myplaces</module>
         <module>control-rating</module>
         <module>control-admin</module>
-        <module>control-statistics</module>
         <module>content-resources</module>
         <module>control-routing</module>
+		<module>control-users</module>
+
+        <!-- statistics -->
+        <module>service-statistics-common</module>
+        <module>service-statistics</module>
+        <module>service-statistics-sotka</module>
+        <module>service-statistics-kapa</module>
+        <module>service-statistics-eurostat</module>
+        <module>service-statistics-pxweb</module>
+        <module>control-statistics</module>
 
         <!-- oskari map -->
         <module>servlet-map</module>
         <module>servlet-saml-config</module>
         <module>webapp-map</module>
-        <!-- Standalone Jetty doesn't work with the new spring-based servlet-map so
-        removing it for now and possibly refactoring it later to use spring-boot -->
-        <!-- module>standalone-jetty</module -->
 
         <!-- transport  -->
         <module>service-datamodel</module>

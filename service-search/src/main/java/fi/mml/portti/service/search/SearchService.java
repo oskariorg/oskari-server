@@ -1,6 +1,7 @@
 package fi.mml.portti.service.search;
 
 import fi.nls.oskari.search.channel.SearchableChannel;
+import fi.nls.oskari.service.OskariComponent;
 
 import java.util.Map;
 
@@ -8,7 +9,7 @@ import java.util.Map;
 /**
  * Interface to service that searches all the channels.
  */
-public interface SearchService {
+public abstract class SearchService extends OskariComponent {
 
 	/**
 	 * Makes a search with given criteria
@@ -16,7 +17,7 @@ public interface SearchService {
 	 * @param searchCriteria
 	 * @return Query
 	 */
-	public Query doSearch(SearchCriteria searchCriteria);
-	public void addChannel(String channelId, SearchableChannel searchableChannel);
-    public Map<String, SearchableChannel> getAvailableChannels();
+	public abstract Query doSearch(SearchCriteria searchCriteria);
+	public abstract void addChannel(String channelId, SearchableChannel searchableChannel);
+    public abstract Map<String, SearchableChannel> getAvailableChannels();
 }

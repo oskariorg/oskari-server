@@ -666,11 +666,9 @@ public abstract class OWSMapLayerJob extends AbstractJob<String> {
 
         Location location = this.session.getLocation();
 
-        Tile tileSize = null;
+        Tile tileSize = this.session.getMapSize();
         if(isTiled) {
             tileSize = this.session.getTileSize();
-        } else {
-            tileSize = this.session.getMapSize();
         }
 
         output.put(OUTPUT_IMAGE_SRS, location.getSrs());
@@ -685,14 +683,7 @@ public abstract class OWSMapLayerJob extends AbstractJob<String> {
 
         byte[] byteImage = WFSImage.imageToBytes(bufferedImage);
         String base64Image = WFSImage.bytesToBase64(byteImage);
-        int base64Size = (base64Image.length()*2)/1024;
-
-        // IE6 & IE7 doesn't support base64, max size in base64 for IE8 is 32KB
-        if(!(this.session.getBrowser().equals(BROWSER_MSIE) && this.session.getBrowserVersion() < 8 ||
-                this.session.getBrowser().equals(BROWSER_MSIE) && this.session.getBrowserVersion() == 8 &&
-                        base64Size >= 32)) {
-            output.put(OUTPUT_IMAGE_DATA, base64Image);
-        }
+        output.put(OUTPUT_IMAGE_DATA, base64Image);
 
         this.service.addResults(this.session.getClient(), ResultProcessor.CHANNEL_IMAGE, output);
     }

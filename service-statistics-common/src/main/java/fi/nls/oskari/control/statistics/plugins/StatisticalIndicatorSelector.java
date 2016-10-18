@@ -1,5 +1,6 @@
 package fi.nls.oskari.control.statistics.plugins;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 /**
@@ -13,16 +14,38 @@ import java.util.Collection;
 public class StatisticalIndicatorSelector {
     private String id;
     private String value = null;
-    private Collection<String> allowedValues = null;
+    private Collection<IdNamePair> allowedValues = new ArrayList<>();
+    private String name = null;
     /**
      * Use this in selections to be sent to the frontend.
      * @param id
-     * @param value
+     * @param allowedValues
      */
     public StatisticalIndicatorSelector(String id, Collection<String> allowedValues) {
         this.id = id;
-        this.allowedValues = allowedValues;
+        for(String key : allowedValues) {
+            addAllowedValue(key, null);
+        }
     }
+    public StatisticalIndicatorSelector(String id) {
+        this.id = id;
+    }
+
+    public void addAllowedValue(String value) {
+        addAllowedValue(value, null);
+    }
+    public void addAllowedValue(String value, String label) {
+        allowedValues.add(new IdNamePair(value, label));
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
     /**
      * Use this in selections received from the frontend.
      * @param id
@@ -36,7 +59,8 @@ public class StatisticalIndicatorSelector {
         return id;
     }
     public void setValue(String value) {
-        if (allowedValues.contains(value)) {
+
+        if (allowedValues.contains(new IdNamePair(value))) {
             this.value = value;
         } else {
             throw new APIException("Statistical indicator selector value: " + value
@@ -46,7 +70,7 @@ public class StatisticalIndicatorSelector {
     public String getValue() {
         return value;
     }
-    public Collection<String> getAllowedValues() {
+    public Collection<IdNamePair> getAllowedValues() {
         return allowedValues;
     }
     @Override

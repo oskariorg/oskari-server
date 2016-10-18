@@ -6,7 +6,6 @@
 <html>
 <head>
     <title>Oskari - ${viewName}</title>
-
     <script type="text/javascript" src="//code.jquery.com/jquery-1.7.2.min.js">
     </script>
 	
@@ -129,6 +128,9 @@
                         <input size="16" id="password" name="${_login_field_pass}" type="password" placeholder="<spring:message code="password" text="Password" />" required>
                         <input type="submit" id="submit" value="<spring:message code="login" text="Log in" />">
                     </form>
+                </c:if>
+                <c:if test="${!empty _registration_uri}">
+                    <a href="${pageContext.request.contextPath}${_registration_uri}"><spring:message code="user.registration" text="Register" /></a>
                 </c:if>
             </c:otherwise>
         </c:choose>

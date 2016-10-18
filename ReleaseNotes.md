@@ -1,5 +1,39 @@
 # Release Notes
 
+## 1.39
+
+### Major migration
+ 
+ A gigantic migration is being done for publish template and published maps on the system. 
+ Please see [Migration Guide](MigrationGuide.md) for details.
+
+### User registration
+
+Added initial support for user registration. The functionality can be enabled by adding properties:
+
+    allow.registration=true
+    oskari.email.sender=<sender email>
+    oskari.email.host=smtp.domain.com
+
+When building as an oskari-server-extension you need to also add the dependency: 
+
+    <groupId>fi.nls.oskari.service</groupId>
+    <artifactId>oskari-control-users</artifactId>
+
+### Metadata search channel
+
+Code moved from service-search-nls to service-cws for metadata search functionality since it's not NLS spesific.
+
+### service-search-nls
+
+Fixed ELFGeoLocatorSearchChannel common fields override to just handle scale in spesific way. 
+Other common fields are now properly inherited from base functionality. 
+
+### servlet-transport
+
+Browser version information is no longer supported since frontend doesn't send it anymore. This results in some IE 6-8 
+specific code being removed.
+
 ## 1.38.2
 
 ### service-search
