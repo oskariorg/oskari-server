@@ -6,7 +6,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>fi.nls.oskari</groupId>
     <artifactId>oskari-parent</artifactId>
-    <version>1.39.0-SNAPSHOT</version>
+    <version>1.40.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>Oskari parent POM</name>
@@ -1002,9 +1002,6 @@
         <module>servlet-map</module>
         <module>servlet-saml-config</module>
         <module>webapp-map</module>
-        <!-- Standalone Jetty doesn't work with the new spring-based servlet-map so
-        removing it for now and possibly refactoring it later to use spring-boot -->
-        <!-- module>standalone-jetty</module -->
 
         <!-- transport  -->
         <module>service-datamodel</module>

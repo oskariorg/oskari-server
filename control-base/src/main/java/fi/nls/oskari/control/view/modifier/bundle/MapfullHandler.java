@@ -80,7 +80,6 @@ public class MapfullHandler extends BundleHandler {
     private static final WfsLayerPluginHandler WFSLAYER_PLUGIN_HANDLER = new WfsLayerPluginHandler();
 
     private static JSONObject epsgMap = null;
-    private static JSONArray svgMarkers = null;
 
 
     public void init() {

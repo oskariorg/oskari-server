@@ -7,7 +7,6 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.net.HttpURLConnection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -18,11 +17,11 @@ public class EurostatStatisticalIndicatorLayer implements StatisticalIndicatorLa
     private String baseUrl;
     private String regionKey;
 
-    public EurostatStatisticalIndicatorLayer(long id, String indicatorId, String baseUrl, String regionKey) {
+    public EurostatStatisticalIndicatorLayer(long id, String indicatorId, String baseUrl) {
         this.id = id;
         this.indicatorId = indicatorId;
         this.baseUrl = baseUrl;
-        this.regionKey = regionKey;
+        this.regionKey = "geo";
     }
 
     @Override
@@ -108,18 +107,17 @@ public class EurostatStatisticalIndicatorLayer implements StatisticalIndicatorLa
         }
         String url = IOHelper.constructUrl(baseUrl +"wdds/rest/data/v2.1/json/en/" + indicatorId, params);
 
-
         Map<String, IndicatorValue> values = new HashMap<>();
         try {
             final String data = IOHelper.getURL(url);
             // TODO: parsing
             JSONObject json = JSONHelper.createJSONObject(data);
-            JSONObject stats = json.optJSONObject("dataset").optJSONObject("dimension").optJSONObject(regionKey).optJSONObject("category").optJSONObject("index");
-            JSONArray responseValues = json.optJSONObject("dataset").optJSONArray("value");
+            JSONObject stats = json.optJSONObject("dimension").optJSONObject(regionKey).optJSONObject("category").optJSONObject("index"); // pass region Key  to geo
+            JSONObject responseValues = json.optJSONObject("value");
             JSONArray names = stats.names();
             for (int i = 0; i < names.length(); ++i) {
                 String region = names.optString(i);
-                Double val = responseValues.optDouble(stats.optInt(region));
+                Double val = responseValues.optDouble(""+stats.optInt(region)); // stats.optInt return index for the region
                 if (val.isNaN()) {
                     continue;
                 }

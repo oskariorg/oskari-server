@@ -85,6 +85,8 @@ public class FeedbackHandler extends ActionHandler {
             log.error("Open311  feedback service url is not available");
             throw new ActionParamsException("Open311  feedback service url is not available");
         }
+        serviceParams.setBaseUrlExtensions(PropertyUtil.get("feedback.open311.extensions", ""));
+        serviceParams.setPostContentType(PropertyUtil.get("feedback.open311.postContentType", ServiceParams.DEFAULT_POST_CONTENTTYPE));
         serviceParams.setMethod(method);
         serviceParams.setLocale(params.getLocale().getLanguage());
 
@@ -109,7 +111,7 @@ public class FeedbackHandler extends ActionHandler {
                 // Transform coordinates
                 if (!service.transformFeedbackLocation(serviceParams)) {
                     // json corrupted/parsing failed
-                    throw new ActionParamsException("Invalid lat, long values in Feedback (Open311) post parameters" );
+                    throw new ActionParamsException("Invalid lat, long values or geometry in Feedback (Open311) post parameters" );
                 }
                 paramsOk = true;
                 break;
@@ -120,6 +122,11 @@ public class FeedbackHandler extends ActionHandler {
                 if (serviceParams.getGetServiceRequests() == null) {
                     // json corrupted/parsing failed
                     throw new ActionParamsException("Invalid parameters for to get Feedbacks (Open311)" );
+                }
+                // Transform coordinates in felter params, if any  (bbox, long, lat)
+                if (!service.transformGetFeedbackLocation(serviceParams)) {
+                    // json corrupted/parsing failed
+                    throw new ActionParamsException("Invalid lat, long or bbox in get Feedback (Open311) parameters" );
                 }
                 paramsOk = true;
                 break;

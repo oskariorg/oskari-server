@@ -51,38 +51,51 @@ public class EurostatIndicatorsParser {
             OMElement eleMeta = builder.getDocumentElement();
 
             AXIOMXPath xpath_Codelist = XmlHelper.buildXPath("/mes:Structure/mes:Structures/str:Codelists/str:Codelist", NAMESPACE_CTX);
-            AXIOMXPath xpath_codelistName = XmlHelper.buildXPath("com:Name", this.NAMESPACE_CTX);
             AXIOMXPath xpath_codeID = XmlHelper.buildXPath("str:Code", this.NAMESPACE_CTX);
             AXIOMXPath xpath_codeName = XmlHelper.buildXPath("com:Name", this.NAMESPACE_CTX);
 
-            List<OMElement> indicators = xpath_Codelist.selectNodes(eleMeta);
+            AXIOMXPath dimensionPath = XmlHelper.buildXPath("/mes:Structure/mes:Structures/str:DataStructures/str:DataStructure/str:DataStructureComponents/str:DimensionList/str:Dimension", NAMESPACE_CTX);
 
 
+
+            List<OMElement> codelists = xpath_Codelist.selectNodes(eleMeta);// here we have all the codelist indicators
+            List<OMElement> dimension = dimensionPath.selectNodes(eleMeta);
             final StatisticalIndicatorSelectors selectors = new StatisticalIndicatorSelectors();
             indicator.setSelectors(selectors);
-            for (OMElement indicator1 : indicators) {
-                String id = indicator1.getAttributeValue(QName.valueOf("id"));
-                List<OMElement> IDnames = xpath_codelistName.selectNodes(indicator1);
-                StatisticalIndicatorSelector selector = new StatisticalIndicatorSelector(id);
 
-                for (OMElement name : IDnames) {
+            for (OMElement dimension1 : dimension){
 
-                    String IDName = name.getText();
-                    selector.setName(IDName);
-                }
-                List<OMElement> codeID = xpath_codeID.selectNodes(indicator1);
-                for (OMElement codeID1 : codeID) {
-                    String nameID = codeID1.getAttributeValue(QName.valueOf("id"));
-                    List<OMElement> codeName = xpath_codeName.selectNodes(codeID1);
-                    for (OMElement selectValue : codeName) {
-                        String selectValues = selectValue.getText();
-                        selector.addAllowedValue(nameID, selectValues);
+                String idDimension = dimension1.getAttributeValue(QName.valueOf("id"));// idDimension is { FREQ, UNIT, GEO}
+                StatisticalIndicatorSelector selector = new StatisticalIndicatorSelector(idDimension);
+                selector.setName(idDimension);
+                OMElement localRepresentationOme = XmlHelper.getChild(dimension1, "LocalRepresentation");
+                OMElement enumerationOme = XmlHelper.getChild(localRepresentationOme, "Enumeration");
+                OMElement refOme = XmlHelper.getChild(enumerationOme, "Ref");
+                String refId= refOme.getAttributeValue(QName.valueOf("id")); // { refId is CL_FREQ, CL_UNIT}
 
+                for (OMElement codelistElem : codelists) {
+                    String id = codelistElem.getAttributeValue(QName.valueOf("id"));// Codelist ID = CL_FREQ
+
+                    if (!id.equals(refId)) {
+                        continue;
                     }
 
+                    List<OMElement> codeID = xpath_codeID.selectNodes(codelistElem);
+                    for (OMElement codeID1 : codeID) {
+                        String nameID = codeID1.getAttributeValue(QName.valueOf("id"));
+                        List<OMElement> codeName = xpath_codeName.selectNodes(codeID1);  // Code ID = "D" or "W"
+                        for (OMElement selectValue : codeName) {
+                            String selectValues = selectValue.getText();                 // selectedValues = codeName "Daily, weekly "
+                            selector.addAllowedValue(nameID, selectValues);
+
+                        }
+
+                    }
+                    selectors.addSelector(selector);
                 }
-                selectors.addSelector(selector);
+
             }
+            populateTimeDimension(selectors);
         } catch (java.lang.Exception e) {
             e.printStackTrace();
         } finally {
@@ -95,9 +108,22 @@ public class EurostatIndicatorsParser {
         }
     }
 
+    private void populateTimeDimension(StatisticalIndicatorSelectors selectors) {
+
+        StatisticalIndicatorSelector selector = new StatisticalIndicatorSelector("time");
+        selector.setName("time");
+        // fixme: hardcoded
+        selector.addAllowedValue("2014");
+        selector.addAllowedValue("2015");
+        selector.addAllowedValue("2013");
+        selector.addAllowedValue("2012");
+        selectors.addSelector(selector);
+    }
+
     public String getURL(final String pUrl) throws IOException {
         return config.getUrl() + pUrl;
     }
+
 
 
     public List<EurostatIndicator> parse(List<DatasourceLayer> layers) {
@@ -125,12 +151,12 @@ public class EurostatIndicatorsParser {
                 }
                 EurostatIndicator item = new EurostatIndicator();
                 String id = indicator.getAttributeValue(QName.valueOf("id"));
-                item.setId(id);
+                item.setId(id); // itemId = nama_gdp_c
                 list.add(item);
 
 
                 List<OMElement> names = xpath_names.selectNodes(indicator);
-                for (OMElement name : names) {                                     // com:Name
+                for (OMElement name : names) {                                     // com:Name item (language)="en", item(indicatorName)= "sold production..."
                     String language = XmlHelper.getAttributeValue(name, "lang");
 
                     String indicatorName = name.getText();
@@ -141,6 +167,9 @@ public class EurostatIndicatorsParser {
                 OMElement ref = XmlHelper.getChild(struct, "Ref");
                 String DSDid = ref.getAttributeValue(QName.valueOf("id"));
                 setMetadata(item, DSDid);
+                for(DatasourceLayer layer : layers) {
+                    item.addLayer(new EurostatStatisticalIndicatorLayer(layer.getMaplayerId(), item.getId(), config.getUrl()));
+                }
             }
 
         } catch (java.lang.Exception e) {

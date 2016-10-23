@@ -44,7 +44,6 @@ public class ELFGeoLocatorSearchChannel extends SearchChannel {
     public static final String DEFAULT_GETFEATURE_TEMPLATE = "?SERVICE=WFS&VERSION=2.0.0&REQUEST=GetFeature&TYPENAMES=SI_LocationInstance&language=_LANG_&FILTER=";
     public static final String GETFEATURE_FILTER_TEMPLATE = "%3Cfes:Filter%20xmlns:fes=%22http://www.opengis.net/fes/2.0%22%20xmlns:xsi=%22http://www.w3.org/2001/XMLSchema-instance%22%20xmlns:iso19112=%22http://www.isotc211.org/19112%22%20xsi:schemaLocation=%22http://www.opengis.net/fes/2.0%20http://schemas.opengis.net/filter/2.0/filterAll.xsd%22%3E%3Cfes:PropertyIsEqualTo%20matchCase=%22false%22%3E%3Cfes:ValueReference%3Eiso19112:alternativeGeographicIdentifiers/iso19112:alternativeGeographicIdentifier/iso19112:name%3C/fes:ValueReference%3E%3Cfes:Literal%3E_PLACE_HOLDER_%3C/fes:Literal%3E%3C/fes:PropertyIsEqualTo%3E%3C/fes:Filter%3E";
     public static final String ADMIN_FILTER_TEMPLATE = "%3Cfes:Filter%20xmlns:fes=%22http://www.opengis.net/fes/2.0%22%20xmlns:xsi=%22http://www.w3.org/2001/XMLSchema-instance%22%20xmlns:iso19112=%22http://www.isotc211.org/19112%22%20xmlns:gmdsf1=%22http://www.isotc211.org/2005/gmdsf1%22%20xsi:schemaLocation=%22http://www.opengis.net/fes/2.0%20http://schemas.opengis.net/filter/2.0/filterAll.xsd%22%3E%3Cfes:And%3E%3Cfes:PropertyIsEqualTo%20matchCase=%22false%22%3E%3Cfes:ValueReference%3Eiso19112:alternativeGeographicIdentifiers/iso19112:alternativeGeographicIdentifier/iso19112:name%3C/fes:ValueReference%3E%3Cfes:Literal%3E_PLACE_HOLDER_%3C/fes:Literal%3E%3C/fes:PropertyIsEqualTo%3E%3Cfes:PropertyIsEqualTo%3E%3Cfes:ValueReference%3Eiso19112:administrator/gmdsf1:CI_ResponsibleParty/gmdsf1:organizationName%3C/fes:ValueReference%3E%3Cfes:Literal%3E_ADMIN_HOLDER_%3C/fes:Literal%3E%3C/fes:PropertyIsEqualTo%3E%3C/fes:And%3E%3C/fes:Filter%3E";
-    public static final String DEFAULT_LIKE_TEMPLATE = "?SERVICE=WFS&REQUEST=GetFeature&VERSION=1.1.0&TYPENAME=SI_LocationInstance&MAXFEATURES=100&FILTER=%3Cogc:Filter%20xmlns:ogc=%27http://www.opengis.net/ogc%27%20xmlns:iso19112=%27http://www.isotc211.org/19112%27%3E%3Cogc:PropertyIsLike%20wildCard=%27*%27%20singleChar=%27%23%27%20escapeChar=%27!%27%3E%3Cogc:PropertyName%3Eiso19112:alternativeGeographicIdentifiers/iso19112:alternativeGeographicIdentifier/iso19112:name%3C/ogc:PropertyName%3E%3Cogc:Literal%3EHel*ki%3C/ogc:Literal%3E%3C/ogc:PropertyIsLike%3E%3C/ogc:Filter%3E";
     public static final String JSONKEY_LOCATIONTYPES = "SI_LocationTypes";
     public static final String LOCATIONTYPE_ID_PREFIX = "SI_LocationType.";
     public static final String PARAM_COUNTRY = "country";
@@ -57,17 +56,20 @@ public class ELFGeoLocatorSearchChannel extends SearchChannel {
     public static final String REQUEST_FUZZY_TEMPLATE = PropertyUtil.get(PROPERTY_SERVICE_FUZZY_TEMPLATE, DEFAULT_FUZZY_TEMPLATE);
     private static final String PROPERTY_SERVICE_GETFEATURE_TEMPLATE = "search.channel.ELFGEOLOCATOR_CHANNEL.service.getfeature.template";
     public static final String REQUEST_GETFEATURE_TEMPLATE = PropertyUtil.get(PROPERTY_SERVICE_GETFEATURE_TEMPLATE, DEFAULT_GETFEATURE_TEMPLATE);
-    private static final String PROPERTY_SERVICE_LIKE_TEMPLATE = "search.channel.ELFGEOLOCATOR_CHANNEL.service.like.template";
-    public static final String REQUEST_LIKE_TEMPLATE = PropertyUtil.get(PROPERTY_SERVICE_LIKE_TEMPLATE, DEFAULT_LIKE_TEMPLATE);
     private static final String PROPERTY_SERVICE_GEOLOCATOR_LOCATIONTYPES = "search.channel.ELFGEOLOCATOR_CHANNEL.service.locationtype.json";
     public static final String LOCATIONTYPE_ATTRIBUTES = PropertyUtil.get(PROPERTY_SERVICE_GEOLOCATOR_LOCATIONTYPES, ID + ".json");
-    private static final String PARAM_NORMAL = "normal";
-    private static final String PARAM_REGION = "region";
-    private static final String PARAM_FILTER = "filter";
-    private static final String PARAM_FUZZY = "fuzzy";
-    private static final String PARAM_LON = "lon";
-    private static final String PARAM_LAT = "lat";
-    private static final String METHOD_REVERSE = "reverse";
+
+    // Parameters
+    public static final String PARAM_NORMAL = "normal";
+    public static final String PARAM_REGION = "region";
+    public static final String PARAM_FILTER = "filter";
+    public static final String PARAM_FUZZY = "fuzzy";
+    public static final String PARAM_LON = "lon";
+    public static final String PARAM_LAT = "lat";
+    public static final String PARAM_NEAREST = "nearest";
+    public static final String PARAM_LOCATION_TYPE = "locationtype";
+    public static final String PARAM_NAME_LANG = "namelanguage";
+    
     private static final String LIKE_LITERAL_HOLDER = "_like-literal_";
     private static Map<String, Double> elfScalesForType = new HashMap<String, Double>();
     private static Map<String, Integer> elfLocationPriority = new HashMap<String, Integer>();
@@ -246,7 +248,7 @@ public class ELFGeoLocatorSearchChannel extends SearchChannel {
 
         // wildcard search
         String searchString = searchCriteria.getSearchString();
-        if (searchString != null && searchString.contains("*")) {
+        if (searchString != null && (searchString.contains("*") || searchString.contains("#"))) {
             log.debug("Wildcard search: ", searchString);
 
             String postData = likeQueryXMLtemplate;
@@ -268,16 +270,42 @@ public class ELFGeoLocatorSearchChannel extends SearchChannel {
 
         StringBuffer buf = new StringBuffer(serviceURL);
         if (hasParam(searchCriteria, PARAM_FILTER) && searchCriteria.getParam(PARAM_FILTER).toString().equals("true")) {
+            log.debug("Exact search (AU)");
+            
             // Exact search limited to AU region - case sensitive - no fuzzy support
             String request = REQUEST_GETFEATUREAU_TEMPLATE.replace(KEY_PLACE_HOLDER, URLEncoder.encode(searchCriteria.getSearchString(), "UTF-8"));
             request = request.replace(KEY_AU_HOLDER, URLEncoder.encode(searchCriteria.getParam(PARAM_REGION).toString(), "UTF-8"));
             request = request.replace(KEY_LANG_HOLDER, lang3);
             buf.append(request);
         } else if (hasParam(searchCriteria, PARAM_FUZZY) && searchCriteria.getParam(PARAM_FUZZY).toString().equals("true")) {
+            log.debug("Fuzzy search");
+            
             // Fuzzy search
             buf.append(REQUEST_FUZZY_TEMPLATE.replace(KEY_LANG_HOLDER, lang3));
             buf.append(URLEncoder.encode(searchCriteria.getSearchString(), "UTF-8"));
+
+            // Location type
+            final String locationType = "locationtype";
+            if (hasParam(searchCriteria, locationType)) {
+                buf.append("&LOCATIONTYPE" + "=" + searchCriteria.getParam(locationType));
+            }
+            
+            // Name language
+            final String nameLanguage = "namelanguage";
+            if (hasParam(searchCriteria, nameLanguage)) {
+                buf.append("&NAMELANGUAGE" + "=" + searchCriteria.getParam(nameLanguage));
+            }
+            
+            // Nearest
+            final String nearest = "nearest";
+            if (hasParam(searchCriteria, nearest)) {
+                buf.append("&NEAREST" + "=" + searchCriteria.getParam(nearest));
+                buf.append("&LON" + "=" + searchCriteria.getParam("lon"));
+                buf.append("&LAT" + "=" + searchCriteria.getParam("lat"));
+            }
         } else {
+            log.debug("Exact search");
+            
             // Exact search - case sensitive
             String filter = GETFEATURE_FILTER_TEMPLATE;
             if (hasParam(searchCriteria, PARAM_COUNTRY)) {
@@ -332,18 +360,25 @@ public class ELFGeoLocatorSearchChannel extends SearchChannel {
      */
     public ChannelSearchResult doSearch(SearchCriteria searchCriteria) {
         try {
-
+            String fuzzy = (String) searchCriteria.getParam(PARAM_FUZZY);
+            boolean fuzzyDone = false;
+            if (fuzzy != null && fuzzy.equals("true")) {
+                searchCriteria.addParam(PARAM_NORMAL, "false");
+                searchCriteria.addParam(PARAM_FUZZY, "true");
+                fuzzyDone = true;
+            }
+            
             String data = getData(searchCriteria);
             Locale locale = new Locale(searchCriteria.getLocale());
-
+            
             // Clean xml version for geotools parser for faster parse
             data = data.replace(RESPONSE_CLEAN, "");
             boolean exonym = true;
             // New definitions - no mode setups any more in UI - exonym is always true
             ChannelSearchResult result = elfParser.parse(data, searchCriteria.getSRS(), locale, exonym);
 
-            // Execute fuzzy search, if no result in exact search
-            if (result.getSearchResultItems().size() == 0 && findSearchMethod(searchCriteria).equals(PARAM_NORMAL)) {
+            // Execute fuzzy search, if no result in exact search (and fuzzy search has not been done already)
+            if (result.getSearchResultItems().size() == 0 && findSearchMethod(searchCriteria).equals(PARAM_NORMAL) && !fuzzyDone) {
                 // Try fuzzy search, if empty
                 searchCriteria.addParam(PARAM_NORMAL, "false");
                 searchCriteria.addParam(PARAM_FUZZY, "true");
@@ -361,10 +396,7 @@ public class ELFGeoLocatorSearchChannel extends SearchChannel {
 
     private String findSearchMethod(SearchCriteria sc) {
         String method = "unknown";
-        if (hasParam(sc, PARAM_LON) && hasParam(sc, PARAM_LAT)) {
-            // reverse geocoding
-            method = METHOD_REVERSE;
-        } else if (hasParam(sc, PARAM_FILTER) && sc.getParam(PARAM_FILTER).toString().equals("true")) {
+        if (hasParam(sc, PARAM_FILTER) && sc.getParam(PARAM_FILTER).toString().equals("true")) {
             // Exact search limited to AU region - case sensitive - no fuzzy support
             method = PARAM_FILTER;
         } else if (hasParam(sc, PARAM_FUZZY) && sc.getParam(PARAM_FUZZY).toString().equals("true")) {

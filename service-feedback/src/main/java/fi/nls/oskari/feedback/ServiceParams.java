@@ -19,8 +19,14 @@ public class ServiceParams {
     public static final String REST_SERVICE_FORMAT = ".json?";
     public static final String REST_SERVICE_REQUEST = "requests";
     public static final String REST_SERVICE_DEFINITION = "services/";
+    public static final String REST_SERVICE_EXTENSIONS = "extensions=";
+    static final String PARAM_API_KEY = "api_key=";
+    public static final String DEFAULT_POST_CONTENTTYPE = "application/x-www-form-urlencoded; charset=utf-8";
     public static final String API_PARAM_KEY_LAT = "lat";
     public static final String API_PARAM_KEY_LONG = "long";
+    public static final String API_PARAM_KEY_BBOX = "bbox";
+    public static final String API_PARAM_KEY_EXTENDED_ATTRIBUTES = "extended_attributes";
+    public static final String API_PARAM_KEY_GEOMETRY = "geometry";
 
     static final String PARAM_METHOD = "method";
 
@@ -29,10 +35,12 @@ public class ServiceParams {
     private String baseUrl = null;
     private String apiKey = null;
     private String serviceId = null;
+    private String baseUrlExtensions = "";
+    private String postContentType = null;
     private String locale = PropertyUtil.getDefaultLanguage();
     private String sourceEpsg = "EPSG:3067";  // default
-    private JSONObject PostServiceRequest;
-    private JSONObject GetServiceRequests;
+    private JSONObject PostServiceRequest = null;
+    private JSONObject GetServiceRequests = null;
 
     public String getMethod() {
         return method;
@@ -52,6 +60,22 @@ public class ServiceParams {
         if (!baseUrl.substring(baseUrl.length() - 1).equals("/")) {
             this.baseUrl = baseUrl + "/";
         }
+    }
+
+    public String getBaseUrlExtensions() {
+        return baseUrlExtensions;
+    }
+
+    public void setBaseUrlExtensions(String baseUrlExtensions) {
+        this.baseUrlExtensions = REST_SERVICE_EXTENSIONS + baseUrlExtensions;
+    }
+
+    public String getPostContentType() {
+        return postContentType;
+    }
+
+    public void setPostContentType(String postContentType) {
+        this.postContentType = postContentType;
     }
 
     public JSONObject getGetServiceRequests() {
@@ -106,9 +130,11 @@ public class ServiceParams {
                         the updated_after time and the updated_before time.
                         This is useful for downloading a changeset that includes changes to older requests or
                         to just query very recent changes. 	No
+    bbox                Optional  Location based search if bbox is given &bbox=24.87,60.20,24.90,60.22 No
      */
     public void setGetServiceRequests(JSONObject getServiceRequests) {
         GetServiceRequests = getServiceRequests;
+        PostServiceRequest = null;
     }
 
 
@@ -134,9 +160,11 @@ public class ServiceParams {
         phone 	 	No
         media_url 	A URL to media associated with the request, e.g. an image 	No
         media 	Array of file uploads 	No
+        geometry    geojson geometry   No
          */
     public void setPostServiceRequest(JSONObject postServiceRequest) {
         PostServiceRequest = postServiceRequest;
+        GetServiceRequests = null;
     }
 
     public String getServiceId() {
@@ -148,7 +176,10 @@ public class ServiceParams {
     }
 
     public String getApiKey() {
-        return apiKey;
+        if(apiKey.equals("none")){
+            return "";
+        }
+        return PARAM_API_KEY + apiKey;
     }
 
     public void setApiKey(String apiKey) {
@@ -176,7 +207,13 @@ public class ServiceParams {
     }
 
     public String getLon() {
-        Object lon = JSONHelper.get(this.PostServiceRequest, API_PARAM_KEY_LONG);
+        Object lon = null;
+        if(this.PostServiceRequest != null) {
+            lon = JSONHelper.get(this.PostServiceRequest, API_PARAM_KEY_LONG);
+        }
+        else if(this.GetServiceRequests != null) {
+            lon = JSONHelper.get(this.GetServiceRequests, API_PARAM_KEY_LONG);
+        }
         if(lon instanceof String){
             return lon.toString();
         } else if (lon instanceof Double){
@@ -191,8 +228,34 @@ public class ServiceParams {
         return null;
     }
 
+    public String getBbox() {
+        return JSONHelper.getStringFromJSON(this.GetServiceRequests, API_PARAM_KEY_BBOX, null);
+    }
+    public void setBbox(String bbox) {
+        JSONHelper.putValue(this.GetServiceRequests, API_PARAM_KEY_BBOX, bbox);
+    }
+
+    public JSONObject getGeometry() {
+        Object geom = JSONHelper.get(this.PostServiceRequest, API_PARAM_KEY_GEOMETRY);
+        if(geom instanceof String){
+            return JSONHelper.createJSONObject(geom.toString());
+        } else if(geom instanceof JSONObject){
+            return (JSONObject) geom ;
+        }
+        return null;
+    }
+    public void setGeometry(String gjgeom) {
+        JSONHelper.putValue(this.PostServiceRequest, API_PARAM_KEY_GEOMETRY, gjgeom);
+    }
+
     public String getLat() {
-        Object lat = JSONHelper.get(this.PostServiceRequest, API_PARAM_KEY_LAT);
+        Object lat = null;
+        if(this.PostServiceRequest != null) {
+            lat = JSONHelper.get(this.PostServiceRequest, API_PARAM_KEY_LAT);
+        }
+        else if(this.GetServiceRequests != null) {
+            lat = JSONHelper.get(this.GetServiceRequests, API_PARAM_KEY_LAT);
+        }
         if(lat instanceof String){
             return lat.toString();
         } else if (lat instanceof Double){
@@ -208,11 +271,21 @@ public class ServiceParams {
     }
 
     public void setLon(String lon) {
-        JSONHelper.putValue(this.PostServiceRequest, API_PARAM_KEY_LONG, lon);
+        if(this.PostServiceRequest != null) {
+            JSONHelper.putValue(this.PostServiceRequest, API_PARAM_KEY_LONG, lon);
+        }
+        else if(this.GetServiceRequests != null) {
+            JSONHelper.putValue(this.GetServiceRequests, API_PARAM_KEY_LONG, lon);
+        }
     }
 
     public void setLat(String lat) {
-        JSONHelper.putValue(this.PostServiceRequest, API_PARAM_KEY_LAT, lat);
+        if(this.PostServiceRequest != null) {
+            JSONHelper.putValue(this.PostServiceRequest, API_PARAM_KEY_LAT, lat);
+        }
+        else if(this.GetServiceRequests != null) {
+            JSONHelper.putValue(this.GetServiceRequests,  API_PARAM_KEY_LAT, lat);
+        }
     }
 
     public JSONObject toJSON() {

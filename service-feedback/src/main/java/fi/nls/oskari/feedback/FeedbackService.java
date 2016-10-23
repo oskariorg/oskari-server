@@ -12,4 +12,5 @@ public interface FeedbackService {
 
     JSONObject getServiceResult(ServiceParams params);
     Boolean transformFeedbackLocation(ServiceParams serviceParams);
+    Boolean transformGetFeedbackLocation(ServiceParams serviceParams);
 }
