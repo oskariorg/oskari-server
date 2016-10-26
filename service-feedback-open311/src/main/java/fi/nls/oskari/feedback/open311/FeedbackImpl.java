@@ -155,7 +155,8 @@ public class FeedbackImpl implements FeedbackService {
             resultString = IOHelper.readString(con);
 
             JSONArray resultArr = JSONHelper.createJSONArray(resultString);
-            JSONHelper.putValue(result, KEY_POSTFEEDBACK, resultArr);
+            JSONObject geojsFeatures = parseFeatureCollection(resultArr, params);
+            JSONHelper.putValue(result, KEY_POSTFEEDBACK, geojsFeatures);
         } catch (Exception e) {
             log.debug("Open311 feedback post request failed", e);
         }
@@ -210,7 +211,9 @@ public class FeedbackImpl implements FeedbackService {
                 final Iterator<String> paramNames = params.getGetServiceRequests().keys();
                 while (paramNames.hasNext()) {
                     String key = (String) paramNames.next();
-                    urlBuilder.append("&" + key + "=" + JSONHelper.getStringFromJSON(params.getGetServiceRequests(), key, ""));
+                    if (JSONHelper.getStringFromJSON(params.getGetServiceRequests(), key, null) != null) {
+                        urlBuilder.append("&" + key + "=" + JSONHelper.getStringFromJSON(params.getGetServiceRequests(), key, ""));
+                    }
                 }
             }
         } catch (Exception e) {
@@ -236,7 +239,10 @@ public class FeedbackImpl implements FeedbackService {
                 final Iterator<String> paramNames = params.getPostServiceRequest().keys();
                 while (paramNames.hasNext()) {
                     String key = (String) paramNames.next();
-                    urlBuilder.append("&" + key + "=" + JSONHelper.getStringFromJSON(params.getPostServiceRequest(), key, ""));
+                    if (JSONHelper.getStringFromJSON(params.getPostServiceRequest(), key, null) != null){
+                        urlBuilder.append("&" + key + "=" + JSONHelper.getStringFromJSON(params.getPostServiceRequest(), key, ""));
+                    }
+
                 }
             }
         } catch (Exception e) {

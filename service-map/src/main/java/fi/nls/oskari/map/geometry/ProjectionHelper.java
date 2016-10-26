@@ -1,5 +1,6 @@
 package fi.nls.oskari.map.geometry;
 
+import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
 import fi.nls.oskari.domain.geo.Point;
 import fi.nls.oskari.log.LogFactory;
@@ -158,11 +159,17 @@ public class ProjectionHelper implements PointTransformer {
             CoordinateReferenceSystem sourceCRS = CRS.decode(sourceSRS, sourceLon1st);
             CoordinateReferenceSystem targetCRS = CRS.decode(targetSRS, targetLon1st);
             MathTransform transform = CRS.findMathTransform(sourceCRS, targetCRS, true);
+            // Bug in geotools --> it put geojson srid value as z-value into coordinates
+            // Workaround remove srid in geojson
+            if(geometry.has("srid")){
+                geometry.remove("srid");
+            }
             // Transform coordinates
             GeometryJSON jsonReader = new GeometryJSON();
             String str = geometry.toString();
             InputStream gjstream = new ByteArrayInputStream(str.getBytes());
             Geometry sourceGeometry = jsonReader.read(gjstream);
+
 
             Geometry targetGeometry = JTS.transform(sourceGeometry, transform);
             ByteArrayOutputStream output = new ByteArrayOutputStream();

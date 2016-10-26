@@ -20,7 +20,7 @@ public class ServiceParams {
     public static final String REST_SERVICE_REQUEST = "requests";
     public static final String REST_SERVICE_DEFINITION = "services/";
     public static final String REST_SERVICE_EXTENSIONS = "extensions=";
-    static final String PARAM_API_KEY = "api_key=";
+    public static final String PARAM_API_KEY = "api_key=";
     public static final String DEFAULT_POST_CONTENTTYPE = "application/x-www-form-urlencoded; charset=utf-8";
     public static final String API_PARAM_KEY_LAT = "lat";
     public static final String API_PARAM_KEY_LONG = "long";
@@ -176,7 +176,7 @@ public class ServiceParams {
     }
 
     public String getApiKey() {
-        if(apiKey.equals("none")){
+        if (apiKey == null) {
             return "";
         }
         return PARAM_API_KEY + apiKey;
@@ -208,21 +208,18 @@ public class ServiceParams {
 
     public String getLon() {
         Object lon = null;
-        if(this.PostServiceRequest != null) {
+        if (this.PostServiceRequest != null) {
             lon = JSONHelper.get(this.PostServiceRequest, API_PARAM_KEY_LONG);
-        }
-        else if(this.GetServiceRequests != null) {
+        } else if (this.GetServiceRequests != null) {
             lon = JSONHelper.get(this.GetServiceRequests, API_PARAM_KEY_LONG);
         }
-        if(lon instanceof String){
+        if (lon instanceof String) {
             return lon.toString();
-        } else if (lon instanceof Double){
+        } else if (lon instanceof Double) {
             return Double.toString((Double) lon);
-        }
-        else if (lon instanceof Long){
+        } else if (lon instanceof Long) {
             return Long.toString((Long) lon);
-        }
-        else if (lon instanceof Integer){
+        } else if (lon instanceof Integer) {
             return Integer.toString((Integer) lon);
         }
         return null;
@@ -231,60 +228,57 @@ public class ServiceParams {
     public String getBbox() {
         return JSONHelper.getStringFromJSON(this.GetServiceRequests, API_PARAM_KEY_BBOX, null);
     }
+
     public void setBbox(String bbox) {
         JSONHelper.putValue(this.GetServiceRequests, API_PARAM_KEY_BBOX, bbox);
     }
 
     public JSONObject getGeometry() {
         Object geom = JSONHelper.get(this.PostServiceRequest, API_PARAM_KEY_GEOMETRY);
-        if(geom instanceof String){
+        if (geom instanceof String) {
             return JSONHelper.createJSONObject(geom.toString());
-        } else if(geom instanceof JSONObject){
-            return (JSONObject) geom ;
+        } else if (geom instanceof JSONObject) {
+            return (JSONObject) geom;
         }
         return null;
     }
+
     public void setGeometry(String gjgeom) {
         JSONHelper.putValue(this.PostServiceRequest, API_PARAM_KEY_GEOMETRY, gjgeom);
     }
 
     public String getLat() {
         Object lat = null;
-        if(this.PostServiceRequest != null) {
+        if (this.PostServiceRequest != null) {
             lat = JSONHelper.get(this.PostServiceRequest, API_PARAM_KEY_LAT);
-        }
-        else if(this.GetServiceRequests != null) {
+        } else if (this.GetServiceRequests != null) {
             lat = JSONHelper.get(this.GetServiceRequests, API_PARAM_KEY_LAT);
         }
-        if(lat instanceof String){
+        if (lat instanceof String) {
             return lat.toString();
-        } else if (lat instanceof Double){
+        } else if (lat instanceof Double) {
             return Double.toString((Double) lat);
-        }
-        else if (lat instanceof Long){
+        } else if (lat instanceof Long) {
             return Long.toString((Long) lat);
-        }
-        else if (lat instanceof Integer){
+        } else if (lat instanceof Integer) {
             return Integer.toString((Integer) lat);
         }
         return null;
     }
 
     public void setLon(String lon) {
-        if(this.PostServiceRequest != null) {
+        if (this.PostServiceRequest != null) {
             JSONHelper.putValue(this.PostServiceRequest, API_PARAM_KEY_LONG, lon);
-        }
-        else if(this.GetServiceRequests != null) {
+        } else if (this.GetServiceRequests != null) {
             JSONHelper.putValue(this.GetServiceRequests, API_PARAM_KEY_LONG, lon);
         }
     }
 
     public void setLat(String lat) {
-        if(this.PostServiceRequest != null) {
+        if (this.PostServiceRequest != null) {
             JSONHelper.putValue(this.PostServiceRequest, API_PARAM_KEY_LAT, lat);
-        }
-        else if(this.GetServiceRequests != null) {
-            JSONHelper.putValue(this.GetServiceRequests,  API_PARAM_KEY_LAT, lat);
+        } else if (this.GetServiceRequests != null) {
+            JSONHelper.putValue(this.GetServiceRequests, API_PARAM_KEY_LAT, lat);
         }
     }
 
