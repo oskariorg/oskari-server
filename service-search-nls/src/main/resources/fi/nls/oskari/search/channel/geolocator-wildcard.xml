@@ -8,7 +8,7 @@
     outputFormat="text/xml; subtype=gml/3.1.1"
     service="WFS"
     version="2.0.0"
-    count="10">
+    count="500">
     <wfs:Query typeNames="SI_LocationInstance">
         <fes:Filter  xmlns:fes="http://www.opengis.net/fes/2.0" xmlns:iso19112="http://www.isotc211.org/19112" xmlns:gml="http://www.opengis.net/gml/3.2">
             <fes:And>    
