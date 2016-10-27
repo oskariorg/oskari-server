@@ -34,67 +34,6 @@ public class EurostatStatisticalIndicatorLayer implements StatisticalIndicatorLa
         return null;
     }
 
-    /*
-    "query": [
-   {
-     "code": "Alue",
-     "selection": {
-       "filter": "item",
-       "values": [
-         "0910000000",
-         "0911000000",
-         "0911101000"
-       ]
-     }
-   },
-   {
-     "code": "Käyttötarkoitus",
-     "selection": {
-       "filter": "item",
-       "values": [
-         "all",
-         "01",
-         "02"
-       ]
-     }
-   },
-   {
-     "code": "Toimenpide",
-     "selection": {
-       "filter": "item",
-       "values": [
-         "all",
-         "1"
-       ]
-     }
-   },
-   {
-     "code": "Yksikkö",
-     "selection": {
-       "filter": "item",
-       "values": [
-         "1",
-         "2"
-       ]
-     }
-   },
-   {
-     "code": "Vuosi",
-     "selection": {
-       "filter": "item",
-       "values": [
-         "0",
-         "1",
-         "2"
-       ]
-     }
-   }
- ],
- "response": {
-   "format": "csv"
- }
-}
-     */
     @Override
     public Map<String, IndicatorValue> getIndicatorValues(StatisticalIndicatorSelectors selectors) {
         Map<String, String> params = new HashMap<>();
@@ -105,7 +44,7 @@ public class EurostatStatisticalIndicatorLayer implements StatisticalIndicatorLa
             }
             params.put(selector.getId(), selector.getValue());
         }
-        String url = IOHelper.constructUrl(baseUrl +"wdds/rest/data/v2.1/json/en/" + indicatorId, params);
+        String url = IOHelper.constructUrl(baseUrl +"/wdds/rest/data/v2.1/json/en/" + indicatorId, params);
 
         Map<String, IndicatorValue> values = new HashMap<>();
         try {
