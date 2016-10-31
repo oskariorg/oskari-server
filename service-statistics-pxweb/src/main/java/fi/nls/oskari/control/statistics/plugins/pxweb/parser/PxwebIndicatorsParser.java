@@ -70,7 +70,7 @@ public class PxwebIndicatorsParser {
             return config.getUrl();
         }
         String url = config.getUrl() + "/" + path + "/";
-        return url; //url.replaceAll("//", "/");
+        return IOHelper.fixPath(url);
     }
 
     private String getPath(String path, String nextPart) {
