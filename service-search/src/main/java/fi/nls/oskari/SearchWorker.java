@@ -117,6 +117,7 @@ public class SearchWorker {
         List<SearchResultItem> items = new ArrayList<SearchResultItem>();
         JSONArray methodArray = new JSONArray();
         for(String channelId : sc.getChannels()) {
+            //log.debug("channelId = " + channelId);
             items.addAll(query.findResult(channelId).getSearchResultItems());
             methodArray.put(JSONHelper.createJSONObject(channelId,query.findResult(channelId).getSearchMethod()));
         }

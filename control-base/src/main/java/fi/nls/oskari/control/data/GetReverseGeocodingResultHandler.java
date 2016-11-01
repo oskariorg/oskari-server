@@ -59,8 +59,14 @@ public class GetReverseGeocodingResultHandler extends ActionHandler {
         final String lon = params.getRequiredParam(PARAM_LON);
         final String lat = params.getRequiredParam(PARAM_LAT);
         final String epsg = params.getRequiredParam(PARAM_EPSG_KEY);
+        final String scale = params.getHttpParam("scale");
 
         final SearchCriteria sc = new SearchCriteria();
+        
+        if (scale != null) {
+            sc.addParam("scale", scale);
+        }
+        
         sc.setReverseGeocode(ConversionHelper.getDouble(lat, -1), ConversionHelper.getDouble(lon, -1));
         // eg. EPSG:3067
         sc.setSRS(epsg);
