@@ -18,10 +18,6 @@
 			<groupId>fi.nls.oskari.service</groupId>
 			<artifactId>oskari-base</artifactId>
 		</dependency>
-        <dependency>
-            <groupId>org.deegree</groupId>
-            <artifactId>deegree</artifactId>
-        </dependency>
 	</dependencies>
 	<build>
 		<pluginManagement>
