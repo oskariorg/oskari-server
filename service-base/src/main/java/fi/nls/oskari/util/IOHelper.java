@@ -759,6 +759,15 @@ public class IOHelper {
         return urlBuilder.append(queryString).toString();
     }
 
+    public static String fixPath(String url) {
+        String[] parts = url.split("://");
+        if(parts.length < 2) {
+            return url;
+        }
+
+        return parts[0] + "://" + parts[1].replaceAll("//", "/");
+    }
+
     /**
      * Convenience method for just adding one param to an URL.
      * Using constructUrl(String, Map<String, String>) is more efficent with multiple params.

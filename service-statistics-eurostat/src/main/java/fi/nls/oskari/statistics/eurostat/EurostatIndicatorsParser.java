@@ -17,6 +17,7 @@ import javax.xml.namespace.QName;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
@@ -64,8 +65,10 @@ public class EurostatIndicatorsParser {
             indicator.setSelectors(selectors);
 
             for (OMElement dimension1 : dimension){
-
                 String idDimension = dimension1.getAttributeValue(QName.valueOf("id"));// idDimension is { FREQ, UNIT, GEO}
+                if (idDimension.equals("GEO")){
+                    continue;
+                }
                 StatisticalIndicatorSelector selector = new StatisticalIndicatorSelector(idDimension);
                 selector.setName(idDimension);
                 OMElement localRepresentationOme = XmlHelper.getChild(dimension1, "LocalRepresentation");
@@ -132,13 +135,23 @@ public class EurostatIndicatorsParser {
         List<EurostatIndicator> list = new ArrayList<>();
 
         XMLStreamReader reader = null;
-        try (InputStreamReader inputReader = new InputStreamReader(IOHelper.getConnection(config.getUrl() + "/SDMX/diss-web/rest/dataflow/ESTAT/all/latest").getInputStream())) {
 
+        InputStream is = null;
+        try {
+            //is = IOHelper.getConnection(config.getUrl() + "/SDMX/diss-web/rest/dataflow/ESTAT/all/latest").getInputStream();
+            is = IOHelper.getConnection("http://ec.europa.eu/eurostat/SDMX/diss-web/rest/dataflow/ESTAT/all/latest").getInputStream();
+            is = IOHelper.debugResponse(is);
+        } catch (IOException e) {
+            // do this later
+        }
 
+        try (InputStreamReader inputReader = new InputStreamReader(is)) {
             reader = XMLInputFactory.newInstance().createXMLStreamReader(inputReader);
+            System.out.println(config.getUrl());
+
             StAXOMBuilder builder = new StAXOMBuilder(reader);
             OMElement ele = builder.getDocumentElement();
-
+            //System.out.println(ele.getText());
             AXIOMXPath xpath_indicator = XmlHelper.buildXPath("/mes:Structure/mes:Structures/str:Dataflows/str:Dataflow", NAMESPACE_CTX);
             AXIOMXPath xpath_names = XmlHelper.buildXPath("com:Name", NAMESPACE_CTX);
 
@@ -146,15 +159,11 @@ public class EurostatIndicatorsParser {
             int count = 0;
             for (OMElement indicator : indicatorsElement) { // str:Dataflow
                 count++;
-                if (count > 5) {
-                    break;
-                }
+                if (count > 550 && count<600) {
                 EurostatIndicator item = new EurostatIndicator();
                 String id = indicator.getAttributeValue(QName.valueOf("id"));
-                item.setId(id); // itemId = nama_gdp_c
+                item.setId(id);// itemId = nama_gdp_c
                 list.add(item);
-
-
                 List<OMElement> names = xpath_names.selectNodes(indicator);
                 for (OMElement name : names) {                                     // com:Name item (language)="en", item(indicatorName)= "sold production..."
                     String language = XmlHelper.getAttributeValue(name, "lang");
@@ -166,10 +175,12 @@ public class EurostatIndicatorsParser {
                 OMElement struct = XmlHelper.getChild(indicator, "Structure");
                 OMElement ref = XmlHelper.getChild(struct, "Ref");
                 String DSDid = ref.getAttributeValue(QName.valueOf("id"));
-                setMetadata(item, DSDid);
-                for(DatasourceLayer layer : layers) {
+                    setMetadata(item, DSDid);
+
+                for (DatasourceLayer layer : layers) {
                     item.addLayer(new EurostatStatisticalIndicatorLayer(layer.getMaplayerId(), item.getId(), config.getUrl()));
                 }
+            }
             }
 
         } catch (java.lang.Exception e) {
