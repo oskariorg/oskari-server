@@ -34,7 +34,7 @@ public class EurostatStatisticalDatasourcePlugin implements StatisticalDatasourc
     public void init(StatisticalDatasource source) {
         try {
             layers = source.getLayers();
-            config = new EurostatConfig(source.getConfigJSON());
+            config = new EurostatConfig(source.getConfigJSON(), source.getId());
             indicatorsParser = new EurostatIndicatorsParser(config);
 
             LOG.debug("Eurostat layer mappings: ", layers);
@@ -43,7 +43,7 @@ public class EurostatStatisticalDatasourcePlugin implements StatisticalDatasourc
         }
     }
     public boolean canCache() {
-        return false;
+        return true;
     }
 }
 

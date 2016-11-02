@@ -79,16 +79,9 @@ public class TM35LehtijakoSearchChannel extends SearchChannel {
         item.setType("tm35lehtijako");
         item.setTitle(lehti.lehtinumero());
         item.setDescription(lehti.lehtinumero());
-        item.setLang("en");
-        
         item.setLat(x);
         item.setLon(y);
-        
-//        item.addValue("lehti", lehti.lehtinumero());
         result.addItem(item);
-        
-        
-              
         return result;
     }    
     
