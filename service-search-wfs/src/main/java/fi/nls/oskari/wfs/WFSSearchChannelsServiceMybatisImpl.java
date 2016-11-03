@@ -31,7 +31,8 @@ public class WFSSearchChannelsServiceMybatisImpl extends WFSSearchChannelsServic
             factory = initializeMyBatis(dataSource);
         }
         else {
-            throw new RuntimeException("Error initializing wfs search channels");
+            LOG.error("Error initializing wfs search channels. Couldn't get datasource.");
+            factory = null;
         }
     }
 
@@ -42,6 +43,8 @@ public class WFSSearchChannelsServiceMybatisImpl extends WFSSearchChannelsServic
         final Configuration configuration = new Configuration(environment);
         configuration.setLazyLoadingEnabled(true);
         configuration.getTypeAliasRegistry().registerAlias(WFSSearchChannelsConfiguration.class);
+        // typehandlers aren't found from classpath even when annotated.
+        // also important to register them before adding mappers
         configuration.getTypeHandlerRegistry().register(JSONObjectMybatisTypeHandler.class);
         configuration.getTypeHandlerRegistry().register(JSONArrayMybatisTypeHandler.class);
 
