@@ -50,6 +50,8 @@ public class TM35LehtijakoSearchChannel extends SearchChannel {
 
         ChannelSearchResult result = new ChannelSearchResult();
         SearchResultItem item = new SearchResultItem();
+        item.setTitle(l.lehtinumero());
+        item.setType("tm35lehtijako");
         item.setLat(keskipiste[1]);
         item.setLon(keskipiste[0]);
         result.addItem(item);
