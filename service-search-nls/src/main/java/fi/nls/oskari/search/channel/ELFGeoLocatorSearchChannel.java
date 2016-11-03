@@ -256,6 +256,8 @@ public class ELFGeoLocatorSearchChannel extends SearchChannel {
 
             StringBuffer buf = new StringBuffer(serviceURL);
 
+            log.debug("Server request: " + buf.toString());
+            
             HttpURLConnection conn = getConnection(buf.toString());
             IOHelper.writeToConnection(conn, postData);
             String response = IOHelper.readString(conn);
@@ -299,9 +301,12 @@ public class ELFGeoLocatorSearchChannel extends SearchChannel {
             // Nearest
             final String nearest = "nearest";
             if (hasParam(searchCriteria, nearest)) {
-                buf.append("&NEAREST" + "=" + searchCriteria.getParam(nearest));
-                buf.append("&LON" + "=" + searchCriteria.getParam("lon"));
-                buf.append("&LAT" + "=" + searchCriteria.getParam("lat"));
+                buf.append("&NEAREST=" + searchCriteria.getParam(nearest));
+                buf.append("&LON=" + searchCriteria.getParam("lon"));
+                buf.append("&LAT=" + searchCriteria.getParam("lat"));
+                
+                // API supports EPSG:4258, EPSG:3034, EPSG:3035 ja EPSG:3857 coordinates
+                buf.append("&SRSNAME=" + searchCriteria.getSRS());
             }
         } else {
             log.debug("Exact search");
@@ -319,7 +324,8 @@ public class ELFGeoLocatorSearchChannel extends SearchChannel {
             buf.append(request);
             buf.append(filter);
         }
-
+        
+        log.debug("Server request: " + buf.toString());
         return IOHelper.readString(getConnection(buf.toString()));
     }
 

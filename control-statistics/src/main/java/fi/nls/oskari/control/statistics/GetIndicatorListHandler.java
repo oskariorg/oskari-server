@@ -22,9 +22,9 @@ import java.util.Map;
 /**
  * This interface gives the relevant information for all the indicators to the frontend.
  * This information can be subsequently used to query the indicator selector metadata.
- * 
+ *
  * - action_route=GetIndicatorsMetadata
- * 
+ *
  * eg.
  * OSKARI_URL?action_route=GetIndicatorsMetadata
  * Response is in JSON, and contains the indicator metadata for each plugin separately.
@@ -47,7 +47,7 @@ public class GetIndicatorListHandler extends ActionHandler {
         JSONObject response = getIndicatorsListJSON(srcId, ap.getUser());
         ResponseHelper.writeResponse(ap, response);
     }
-    
+
     /**
      * Requests new data skipping the cache. Used for cache refresh before expiration.
      * @return
@@ -77,7 +77,9 @@ public class GetIndicatorListHandler extends ActionHandler {
         final JSONArray indicators = new JSONArray();
         JSONHelper.putValue(response, KEY_INDICATORS, indicators);
         for (StatisticalIndicator indicator : plugin.getIndicators(user)) {
-            indicators.put(toJSON(indicator));
+            if(indicator.getLayers() != null && indicator.getLayers().size()>0) {
+                indicators.put(toJSON(indicator));
+            }
         }
         // Note that there is an another layer of caches in the plugins doing the web queries.
         // Two layers are necessary, because deserialization and conversion to the internal data model
@@ -87,7 +89,7 @@ public class GetIndicatorListHandler extends ActionHandler {
         }
         return response;
     }
-    
+
     private JSONObject toJSON(StatisticalIndicator indicator) {
         final JSONObject json = new JSONObject();
         JSONHelper.putValue(json, KEY_ID, indicator.getId());

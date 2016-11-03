@@ -34,7 +34,8 @@ public class PxwebStatisticalDatasourcePlugin implements StatisticalDatasourcePl
     @Override
     public void init(StatisticalDatasource source) {
         layers = source.getLayers();
-        config = new PxwebConfig(source.getConfigJSON());
+
+        config = new PxwebConfig(source.getConfigJSON(), source.getId());
         indicatorsParser = new PxwebIndicatorsParser(config);
 
         LOG.debug("pxweb layer mappings: ", layers);
