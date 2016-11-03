@@ -280,6 +280,12 @@
 
             <dependency>
                 <groupId>fi.nls.oskari.service</groupId>
+                <artifactId>oskari-search-wfs</artifactId>
+                <version>${fi.nls.oskari.service.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>fi.nls.oskari.service</groupId>
                 <artifactId>oskari-mybatis</artifactId>
                 <version>${fi.nls.oskari.service.version}</version>
             </dependency>
@@ -978,6 +984,7 @@
 
         <module>service-search</module>
         <module>service-search-nls</module>
+        <module>service-search-wfs</module>
         <module>service-search-opendata</module>
         <module>service-spatineo-monitor</module>
         <module>service-control</module>
