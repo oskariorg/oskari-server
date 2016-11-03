@@ -7,6 +7,10 @@
 Added "oskari.transport.port" property handling so transport configuration can be configured (as oskari.transport.domain and oskari.transport.url)
 in oskari-ext.properties if default values are not used.
 
+### IOHelper
+
+Added a new convenience method setupBasicAuth(connection, user, pass) which sets up basic auth for the given connection.
+
 ## 1.39
 
 ### Major migration
