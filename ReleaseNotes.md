@@ -11,6 +11,11 @@ in oskari-ext.properties if default values are not used.
 
 Added a new convenience method setupBasicAuth(connection, user, pass) which sets up basic auth for the given connection.
 
+### MyBatis
+
+Updated MyBatis version from 3.2.7 to 3.4.1.
+New module service-mybatis for common helpers/typehandlers to be used with MyBatis.
+
 ## 1.39
 
 ### Major migration
