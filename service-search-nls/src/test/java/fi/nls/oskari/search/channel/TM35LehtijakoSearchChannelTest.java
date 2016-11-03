@@ -9,6 +9,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.Ignore;
 
 public class TM35LehtijakoSearchChannelTest {
     
@@ -32,6 +33,7 @@ public class TM35LehtijakoSearchChannelTest {
     }
 
     @Test
+    @Ignore
     public void testDoSearch() {
         System.out.println("doSearch");
         
@@ -47,6 +49,7 @@ public class TM35LehtijakoSearchChannelTest {
     }
 
     @Test
+    @Ignore
     public void testReverseGeocode() throws Exception {
         System.out.println("reverseGeocode");
         
