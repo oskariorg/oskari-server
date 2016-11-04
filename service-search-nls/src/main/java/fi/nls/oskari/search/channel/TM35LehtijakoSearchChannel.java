@@ -71,7 +71,7 @@ public class TM35LehtijakoSearchChannel extends SearchChannel {
         double y = searchCriteria.getLon();
         String epsg = searchCriteria.getSRS();
         
-        Point p = ProjectionHelper.transformPoint(x, y, epsg, "EPSG:3067");
+        Point p = ProjectionHelper.transformPoint(y, x, epsg, "EPSG:3067");
                 
         int scale = Integer.parseInt((String) searchCriteria.getParam("scale")); // pitää olla jokin näistä: 100000,50000,25000,20000,10000,5000
 //        double[] pt = new double[]{x, y}; // E, N (EPSG:3067)
