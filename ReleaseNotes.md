@@ -7,6 +7,20 @@
 Added "oskari.transport.port" property handling so transport configuration can be configured (as oskari.transport.domain and oskari.transport.url)
 in oskari-ext.properties if default values are not used.
 
+### IOHelper
+
+Added a new convenience method setupBasicAuth(connection, user, pass) which sets up basic auth for the given connection.
+
+### MyBatis
+
+Updated MyBatis version from 3.2.7 to 3.4.1.
+New module service-mybatis for common helpers/typehandlers to be used with MyBatis.
+
+### WFS search services
+
+Added a new module service-search-wfs based on https://github.com/dimenteq/tampere-oskari-server-extension/tree/436550ba3dd7c4f4645ec243487f81d7e1285e08.
+Changed the code to use MyBatis instead of Ibatis for more programmatic setup of database usage.
+
 ## 1.39
 
 ### Major migration

@@ -50,8 +50,10 @@ public class TM35LehtijakoSearchChannel extends SearchChannel {
 
         ChannelSearchResult result = new ChannelSearchResult();
         SearchResultItem item = new SearchResultItem();
-        item.setLat(keskipiste[0]);
-        item.setLon(keskipiste[1]);
+        item.setTitle(l.lehtinumero());
+        item.setType("tm35lehtijako");
+        item.setLat(keskipiste[1]);
+        item.setLon(keskipiste[0]);
         result.addItem(item);
          
        return result;
@@ -66,7 +68,7 @@ public class TM35LehtijakoSearchChannel extends SearchChannel {
      */
     public ChannelSearchResult reverseGeocode(SearchCriteria searchCriteria) throws IllegalSearchCriteriaException {
         log.debug("lehtijako");
-        
+
         double x = searchCriteria.getLat();
         double y = searchCriteria.getLon();
         String epsg = searchCriteria.getSRS();
