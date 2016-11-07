@@ -3,7 +3,9 @@ package fi.mml.portti.service.search;
 import fi.nls.oskari.annotation.Oskari;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.search.channel.ChannelProvider;
 import fi.nls.oskari.search.channel.SearchChannel;
+import fi.nls.oskari.search.channel.SearchChannelChangeListener;
 import fi.nls.oskari.search.channel.SearchableChannel;
 import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.util.PropertyUtil;
@@ -16,7 +18,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 @Oskari
-public class SearchServiceImpl extends SearchService {
+public class SearchServiceImpl extends SearchService implements SearchChannelChangeListener {
 
     /** logger */
     private static final Logger LOG = LogFactory.getLogger(SearchServiceImpl.class);
@@ -31,6 +33,7 @@ public class SearchServiceImpl extends SearchService {
         final TreeMap<String, SearchableChannel> newChannels = new TreeMap<String, SearchableChannel>();
         LOG.debug("Initializing search channels");
         final Map<String, SearchChannel> annotatedChannels = OskariComponentManager.getComponentsOfType(SearchChannel.class);
+
         // get comma separated active channel IDs
         String[] activeChannelIDs = PropertyUtil.getCommaSeparatedList("search.channels");
 
@@ -55,7 +58,27 @@ public class SearchServiceImpl extends SearchService {
             }
             newChannels.put(channel.getId(), channel);
         }
+
+        // providers (like WFS search channels)
+        Map<String, ChannelProvider> providerList = OskariComponentManager.getComponentsOfType(ChannelProvider.class);
+        for(ChannelProvider provider : providerList.values()) {
+            for(SearchChannel channel :provider.getChannels()) {
+                newChannels.put(channel.getId(), channel);
+            }
+            // subscribe to channel changes
+            provider.addListener(this);
+        }
         availableChannels = Collections.synchronizedSortedMap(newChannels);
+    }
+
+    @Override
+    public void onAdd(SearchChannel channel) {
+        availableChannels.put(channel.getId(), channel);
+    }
+
+    @Override
+    public void onRemove(SearchChannel channel) {
+        availableChannels.remove(channel.getId());
     }
 
     /**
@@ -208,8 +231,7 @@ public class SearchServiceImpl extends SearchService {
         if (availableChannels == null) {
             initChannels();
         }
-        // TODO: return immutable map
-        return availableChannels;
+        return Collections.unmodifiableMap(availableChannels);
     }
 
     private void printsc(SearchCriteria searchCriteria) {
@@ -238,7 +260,7 @@ public class SearchServiceImpl extends SearchService {
             java.util.Collection<String> set = searchCriteria.getParams().keySet();
 
             for (java.util.Iterator<String> iterator = set.iterator(); iterator.hasNext(); ) {
-                LOG.debug("parm key: " + (String) iterator.next());
+                LOG.debug("parm key: " + iterator.next());
 
             }
         } catch (Exception e) {
@@ -254,7 +276,7 @@ public class SearchServiceImpl extends SearchService {
         try {
             java.util.Collection<String> set = availableChannels.keySet();
             for (java.util.Iterator<String> iterator = set.iterator(); iterator.hasNext(); ) {
-                LOG.debug("channel key: " + (String) iterator.next());
+                LOG.debug("channel key: " + iterator.next());
 
             }
         } catch (Exception e) {
