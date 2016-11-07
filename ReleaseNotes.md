@@ -40,6 +40,11 @@ Added three new interface methods for SearchableChannel and default implementati
      */
     JSONObject getUILabels();
 
+Added a new hook for search service to enable SearchChannel factories: ChannelProvider. On startup the search service 
+will find any @Oskari annotated classes extending ChannelProvider and add any search channels they returns with getChannels() method.
+ Any changes to factory-provided channels are propagated to the available channels in SearchService on runtime using an 
+ included SearchChannelChangeListener interface implementation. 
+
 ### WFS search services
 
 Added a new module service-search-wfs based on https://github.com/dimenteq/tampere-oskari-server-extension/tree/436550ba3dd7c4f4645ec243487f81d7e1285e08.
