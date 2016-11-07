@@ -16,6 +16,30 @@ Added a new convenience method setupBasicAuth(connection, user, pass) which sets
 Updated MyBatis version from 3.2.7 to 3.4.1.
 New module service-mybatis for common helpers/typehandlers to be used with MyBatis.
 
+### search-service
+
+Added three new interface methods for SearchableChannel and default implementations for them on the SearchChannel base class:
+
+    // should the channel be used for searching when none has been selected (defaults true) 
+    boolean isDefaultChannel();
+    
+    // does the user have permission to use this channel (defaults true)
+    boolean hasPermission(User user);
+
+    /**
+     * JSON presentation of channel localization like
+     * {
+     *     "en" : {
+     *         "name" : "Channel name",
+     *         "desc" : "This channel is used for..."
+     *     }
+     * }
+     * 
+     * Defaults to name as channel ID for the default language
+     * @return  
+     */
+    JSONObject getUILabels();
+
 ### WFS search services
 
 Added a new module service-search-wfs based on https://github.com/dimenteq/tampere-oskari-server-extension/tree/436550ba3dd7c4f4645ec243487f81d7e1285e08.

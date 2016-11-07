@@ -4,6 +4,8 @@ import fi.mml.portti.service.search.ChannelSearchResult;
 import fi.mml.portti.service.search.IllegalSearchCriteriaException;
 import fi.mml.portti.service.search.SearchCriteria;
 import fi.mml.portti.service.search.SearchResultItem;
+import fi.nls.oskari.domain.User;
+import org.json.JSONObject;
 
 /**
  * Interface to search service of a single channel.
@@ -45,6 +47,32 @@ public interface SearchableChannel {
      * @return
      */
     String getId();
+
+    /**
+     * Should this channel be included when searching without specifying channels
+     * @return
+     */
+    boolean isDefaultChannel();
+
+    /**
+     * Is the user allowed to use this channel.
+     * @return
+     */
+    boolean hasPermission(User user);
+
+    /**
+     * JSON presentation of channel localization like
+     * {
+     *     "en" : {
+     *         "name" : "Channel name",
+     *         "desc" : "This channel is used for..."
+     *     }
+     * }
+     *
+     * Defaults to name as channel ID for the default language
+     * @return
+     */
+    JSONObject getUILabels();
 
     /**
      * Called when channel is initialized
