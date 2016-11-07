@@ -9,6 +9,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.Ignore;
 
 public class TM35LehtijakoSearchChannelTest {
     
@@ -37,13 +38,14 @@ public class TM35LehtijakoSearchChannelTest {
         
         SearchCriteria searchCriteria = new SearchCriteria();
         searchCriteria.setSearchString("U52");
+        searchCriteria.setSRS("EPSG:3067");
         
         TM35LehtijakoSearchChannel instance = new TM35LehtijakoSearchChannel();
         ChannelSearchResult result = instance.doSearch(searchCriteria);
         SearchResultItem item = result.getSearchResultItems().get(0);
         
-        assertEquals(548000.0d, Double.parseDouble(item.getLat()), 0.0d);
-        assertEquals(7506000.0d, Double.parseDouble(item.getLon()), 0.0d);
+        assertEquals(548000.0d, Double.parseDouble(item.getLon()), 0.0d);
+        assertEquals(7506000.0d, Double.parseDouble(item.getLat()), 0.0d);
     }
 
     @Test
@@ -51,7 +53,9 @@ public class TM35LehtijakoSearchChannelTest {
         System.out.println("reverseGeocode");
         
         SearchCriteria searchCriteria = new SearchCriteria();
-        searchCriteria.setReverseGeocode(548000.0d, 7506000.0d);
+        searchCriteria.setSRS("EPSG:3067");
+        //searchCriteria.setReverseGeocode(548000.0d, 7506000.0d);
+        searchCriteria.setReverseGeocode(7506000.0d, 548000.0d);
         searchCriteria.addParam("scale", "100000");
         
         TM35LehtijakoSearchChannel instance = new TM35LehtijakoSearchChannel();

@@ -6,8 +6,10 @@ import fi.mml.portti.service.search.SearchCriteria;
 import fi.mml.portti.service.search.SearchResultItem;
 import fi.nls.aluejako.karttalehtijako.utm_karttalehti;
 import fi.nls.oskari.annotation.Oskari;
+import fi.nls.oskari.domain.geo.Point;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.map.geometry.ProjectionHelper;
 
 @Oskari("TM35LEHTIJAKO_CHANNEL")
 public class TM35LehtijakoSearchChannel extends SearchChannel {
@@ -19,6 +21,10 @@ public class TM35LehtijakoSearchChannel extends SearchChannel {
         
     }
 
+    public Capabilities getCapabilities() {
+        return Capabilities.BOTH;
+    }
+    
     /**
      * Find centroid for a grid square
      * 
@@ -44,8 +50,10 @@ public class TM35LehtijakoSearchChannel extends SearchChannel {
 
         ChannelSearchResult result = new ChannelSearchResult();
         SearchResultItem item = new SearchResultItem();
-        item.setLat(keskipiste[0]);
-        item.setLon(keskipiste[1]);
+        item.setTitle(l.lehtinumero());
+        item.setType("tm35lehtijako");
+        item.setLat(keskipiste[1]);
+        item.setLon(keskipiste[0]);
         result.addItem(item);
          
        return result;
@@ -60,12 +68,16 @@ public class TM35LehtijakoSearchChannel extends SearchChannel {
      */
     public ChannelSearchResult reverseGeocode(SearchCriteria searchCriteria) throws IllegalSearchCriteriaException {
         log.debug("lehtijako");
-        
+
         double x = searchCriteria.getLat();
         double y = searchCriteria.getLon();
+        String epsg = searchCriteria.getSRS();
         
+        Point p = ProjectionHelper.transformPoint(x, y, epsg, "EPSG:3067");
+                
         int scale = Integer.parseInt((String) searchCriteria.getParam("scale")); // pitää olla jokin näistä: 100000,50000,25000,20000,10000,5000
-        double[] pt = new double[]{x, y}; // E, N (EPSG:3067)
+//        double[] pt = new double[]{x, y}; // E, N (EPSG:3067)
+        double[] pt = new double[]{p.getLat(), p.getLon()}; // E, N (EPSG:3067)
 
         utm_karttalehti lehti = new utm_karttalehti();
         lehti = lehti.pisteessa(pt, scale);
@@ -75,9 +87,9 @@ public class TM35LehtijakoSearchChannel extends SearchChannel {
         item.setType("tm35lehtijako");
         item.setTitle(lehti.lehtinumero());
         item.setDescription(lehti.lehtinumero());
-//        item.addValue("lehti", lehti.lehtinumero());
+        item.setLat(x);
+        item.setLon(y);
         result.addItem(item);
-              
         return result;
     }    
     

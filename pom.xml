@@ -102,7 +102,7 @@
         <flexjson.version>2.0</flexjson.version>
         <deegree.version>2</deegree.version>
 
-        <mybatis.version>3.2.7</mybatis.version>
+        <mybatis.version>3.4.1</mybatis.version>
         <com.google.guava.version>18.0</com.google.guava.version>
         <!-- Test deps versions -->
         <powermock.version>1.5</powermock.version>
@@ -275,6 +275,18 @@
             <dependency>
                 <groupId>fi.nls.oskari.service</groupId>
                 <artifactId>oskari-search-nls</artifactId>
+                <version>${fi.nls.oskari.service.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>fi.nls.oskari.service</groupId>
+                <artifactId>oskari-search-wfs</artifactId>
+                <version>${fi.nls.oskari.service.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>fi.nls.oskari.service</groupId>
+                <artifactId>oskari-mybatis</artifactId>
                 <version>${fi.nls.oskari.service.version}</version>
             </dependency>
 
@@ -962,6 +974,7 @@
         <module>geoserver-ext/geoserver-rest-client</module>
 
         <module>service-base</module>
+        <module>service-mybatis</module>
         <module>service-users</module>
         <module>service-permissions</module>
         <module>service-map</module>
@@ -971,6 +984,7 @@
 
         <module>service-search</module>
         <module>service-search-nls</module>
+        <module>service-search-wfs</module>
         <module>service-search-opendata</module>
         <module>service-spatineo-monitor</module>
         <module>service-control</module>

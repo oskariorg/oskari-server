@@ -9,14 +9,18 @@
 	</parent>
 
 	<groupId>fi.nls.oskari.service</groupId>
-	<artifactId>oskari-search</artifactId>
+	<artifactId>oskari-mybatis</artifactId>
 	<packaging>jar</packaging>
-	<name>Search Service</name>
+	<name>Mybatis utils and typemappers</name>
 
 	<dependencies>
 		<dependency>
 			<groupId>fi.nls.oskari.service</groupId>
 			<artifactId>oskari-base</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.mybatis</groupId>
+			<artifactId>mybatis</artifactId>
 		</dependency>
 	</dependencies>
 	<build>

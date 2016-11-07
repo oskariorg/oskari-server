@@ -62,6 +62,18 @@ public class OskariLayerWorker {
      * @param layerIdList List of selected layer IDs
      * @param user        User
      * @param lang        Language
+     * @return JSONObject containing the selected layers
+     */
+    public static JSONObject getListOfMapLayersById(final List<String> layerIdList, final User user,
+                                                    final String lang) {
+        return getListOfMapLayersById(layerIdList, user, lang, null, false, false);
+    }
+    /**
+     * Gets all the selected map layers
+     *
+     * @param layerIdList List of selected layer IDs
+     * @param user        User
+     * @param lang        Language
      * @param isPublished Determines the permission type used for the layers (view/published view)
      * @param isSecure    true to modify urls for easier proxy forwarding/false to keep as is
      * @return JSONObject containing the selected layers
