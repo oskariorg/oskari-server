@@ -132,6 +132,11 @@ public class SearchServiceImpl extends SearchService implements SearchChannelCha
         if (availableChannels == null) {
             initChannels();
         }
+        if(searchCriteria.getChannels().isEmpty()) {
+            for(SearchableChannel channel : getAvailableChannels().values()) {
+                searchCriteria.addChannel(channel.getId());
+            }
+        }
 
         if(searchCriteria.isReverseGeocode()) {
             LOG.debug("Reverse geocode for (lat:", searchCriteria.getLat(), ", lon:", searchCriteria.getLon(), ")");

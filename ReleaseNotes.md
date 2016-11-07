@@ -43,7 +43,9 @@ Added three new interface methods for SearchableChannel and default implementati
 Added a new hook for search service to enable SearchChannel factories: ChannelProvider. On startup the search service 
 will find any @Oskari annotated classes extending ChannelProvider and add any search channels they returns with getChannels() method.
  Any changes to factory-provided channels are propagated to the available channels in SearchService on runtime using an 
- included SearchChannelChangeListener interface implementation. 
+ included SearchChannelChangeListener interface implementation.
+  
+Search service now adds all default search channels as targets for searches when none is specified.
 
 ### WFS search services
 
