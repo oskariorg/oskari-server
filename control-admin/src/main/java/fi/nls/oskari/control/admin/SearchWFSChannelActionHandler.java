@@ -93,6 +93,7 @@ public class SearchWFSChannelActionHandler extends RestActionHandler {
 
         try {
             WFSSearchChannelsConfiguration conf = parseConfig(params);
+            conf.setId(ConversionHelper.getInt(params.getRequiredParam(PARAM_ID), -1));
 
             JSONObject response = new JSONObject();
             channelService.update(conf);
@@ -126,7 +127,6 @@ public class SearchWFSChannelActionHandler extends RestActionHandler {
             throws Exception {
 
         WFSSearchChannelsConfiguration conf = new WFSSearchChannelsConfiguration();
-        conf.setId(ConversionHelper.getInt(params.getRequiredParam(PARAM_ID), -1));
         conf.setWFSLayerId(ConversionHelper.getInt(params.getRequiredParam(PARAM_WFS_ID), -1));
         conf.setTopic(new JSONObject(ConversionHelper.getString(params.getRequiredParam(PARAM_TOPIC), "")));
         conf.setDesc(new JSONObject(ConversionHelper.getString(params.getRequiredParam(PARAM_DESC), "")));
