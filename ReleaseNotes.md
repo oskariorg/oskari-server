@@ -56,6 +56,10 @@ will find any @Oskari annotated classes extending ChannelProvider and add any se
 
 Search service now adds all default search channels as targets for searches when none is specified.
 
+### search-service-nls
+
+Added TM35LehtijakoSearchChannel class to allow both reverse geocoding and normal searches for map sheets in Finland. Also added support for "scale" parameter in GetReverseGeocodingResultHandler for reverse geocoding search channels.
+
 ### WFS search services
 
 Added a new module service-search-wfs based on https://github.com/dimenteq/tampere-oskari-server-extension/tree/436550ba3dd7c4f4645ec243487f81d7e1285e08.
