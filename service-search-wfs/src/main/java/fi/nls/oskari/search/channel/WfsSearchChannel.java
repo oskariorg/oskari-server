@@ -162,6 +162,11 @@ public class WFSSearchChannel extends SearchChannel {
                 IOHelper.setupBasicAuth(connection, config.getUsername(), config.getPassword());
             }
             String WFSData = IOHelper.readString(connection);
+            if(connection.getResponseCode() != HttpURLConnection.HTTP_OK) {
+                log.warn("Error response from WFS channel id:", config.getId(), "url:", config.getUrl());
+                log.debug("Response:", WFSData);
+                return null;
+            }
             //log.debug("[WFSSEARCH] WFSData: " + WFSData);
             JSONObject wfsJSON = new JSONObject(WFSData);
             wfsJSON.put(PARAM_WFS_SEARCH_CHANNEL_TYPE,config.getTopic().getString(searchCriteria.getLocale()));
