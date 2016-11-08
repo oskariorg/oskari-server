@@ -61,6 +61,13 @@ Search service now adds all default search channels as targets for searches when
 Added a new module service-search-wfs based on https://github.com/dimenteq/tampere-oskari-server-extension/tree/436550ba3dd7c4f4645ec243487f81d7e1285e08.
 Changed the code to use MyBatis instead of Ibatis for more programmatic setup of database usage.
 
+### service-statistics/control-statistics
+
+New server-side functionality for statistical datasources integration. The code has been redesigned to read statistical data
+from multiple datasources with a plugin architecture to interpret statistics APIs to common internal format usable by the 
+ new frontend implementation. Documentation for using and extending the functionality will be added to oskari.org in
+ the near future.
+ 
 ## 1.39
 
 ### Major migration
