@@ -69,15 +69,15 @@ public class TM35LehtijakoSearchChannel extends SearchChannel {
     public ChannelSearchResult reverseGeocode(SearchCriteria searchCriteria) throws IllegalSearchCriteriaException {
         log.debug("lehtijako");
 
-        double x = searchCriteria.getLat();
-        double y = searchCriteria.getLon();
+        double y = searchCriteria.getLat();
+        double x = searchCriteria.getLon();
         String epsg = searchCriteria.getSRS();
         
         Point p = ProjectionHelper.transformPoint(x, y, epsg, "EPSG:3067");
-                
+
         int scale = Integer.parseInt((String) searchCriteria.getParam("scale")); // pitää olla jokin näistä: 100000,50000,25000,20000,10000,5000
-//        double[] pt = new double[]{x, y}; // E, N (EPSG:3067)
-        double[] pt = new double[]{p.getLat(), p.getLon()}; // E, N (EPSG:3067)
+
+        double[] pt = new double[]{p.getLon(), p.getLat()}; // E, N (EPSG:3067) lon,lat
 
         utm_karttalehti lehti = new utm_karttalehti();
         lehti = lehti.pisteessa(pt, scale);
@@ -87,8 +87,8 @@ public class TM35LehtijakoSearchChannel extends SearchChannel {
         item.setType("tm35lehtijako");
         item.setTitle(lehti.lehtinumero());
         item.setDescription(lehti.lehtinumero());
-        item.setLat(x);
-        item.setLon(y);
+        item.setLat(y);
+        item.setLon(x);
         result.addItem(item);
         return result;
     }    
