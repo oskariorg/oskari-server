@@ -18,6 +18,7 @@ public class GetSearchResultHandler extends ActionHandler {
 
     private static final String PARAM_SEARCH_KEY = "searchKey";
     private static final String PARAM_EPSG_KEY = "epsg";
+    private static final String PARAM_CHANNELIDS_KEY = "channels";
 
     private String[] channels = new String[0];
 
@@ -38,20 +39,29 @@ public class GetSearchResultHandler extends ActionHandler {
         if (!SearchWorker.STR_TRUE.equals(error)) {
             // write error message key
             ResponseHelper.writeResponse(params, error);
-        } else {
-            final Locale locale = params.getLocale();
-
-            final SearchCriteria sc = new SearchCriteria();
-            sc.setSearchString(search);
-            sc.setSRS(epsg);  // eg. EPSG:3067
-
-            sc.setLocale(locale.getLanguage());
-
-            for(String channelId : channels) {
-                sc.addChannel(channelId);
-            }
-            final JSONObject result = SearchWorker.doSearch(sc);
-            ResponseHelper.writeResponse(params, result);
+            return;
         }
+        final Locale locale = params.getLocale();
+
+        final SearchCriteria sc = new SearchCriteria(params.getUser());
+
+        // default to configuration
+        String[] channelIds = channels;
+        final String channelParam = params.getHttpParam(PARAM_CHANNELIDS_KEY, "").trim();
+
+        // if channels defined in request, use channels from request
+        if(!channelParam.isEmpty()) {
+            channelIds = channelParam.split("\\s*,\\s*");
+        }
+        // service will add defaults if channels not defined
+        for (String id :  channelIds) {
+            sc.addChannel(id);
+        }
+        sc.setSearchString(search);
+        sc.setSRS(epsg);  // eg. EPSG:3067
+        sc.setLocale(locale.getLanguage());
+
+        final JSONObject result = SearchWorker.doSearch(sc);
+        ResponseHelper.writeResponse(params, result);
     }
 }

@@ -25,6 +25,11 @@
             <artifactId>oskari-map</artifactId>
         </dependency>
         <dependency>
+            <groupId>fi.nls.oskari.service</groupId>
+            <artifactId>oskari-search-wfs</artifactId>
+        </dependency>
+
+        <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>
             <scope>provided</scope>

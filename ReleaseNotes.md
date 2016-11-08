@@ -7,25 +7,82 @@
 Added "oskari.transport.port" property handling so transport configuration can be configured (as oskari.transport.domain and oskari.transport.url)
 in oskari-ext.properties if default values are not used.
 
-### IOHelper
+Removed default search channel settings from oskari.properties (previously had OpenStreetMap as default).
+Now all available search channels that return true from SearchableChannel.isDefault() are used.
+ The properties below can be used for keeping the previous behavior:
 
-Added a new convenience method setupBasicAuth(connection, user, pass) which sets up basic auth for the given connection.
+    # comma-separated list of id for search channel that will be used (defaulted to) if none are explicitly configured
+    search.channels.default=OPENSTREETMAP_CHANNEL
+    # comma-separated list of search channel ids used by GetSearchResult
+    actionhandler.GetSearchResult.channels=OPENSTREETMAP_CHANNEL
+
+### Utils
+
+IOHelper: Added a new convenience method setupBasicAuth(connection, user, pass) which sets up basic auth for the given connection.
+JSONHelper: Added a new convenience method createJSONArray(json, bln) to easily create empty arrays from null/problematic JSON param.
 
 ### MyBatis
 
 Updated MyBatis version from 3.2.7 to 3.4.1.
 New module service-mybatis for common helpers/typehandlers to be used with MyBatis.
 
+### control-base
+
+GetSearchResult action route now supports channels-parameter for client-specified search channels.
+The value is a comma-separated list of channel ids.
+
+### search-service
+
+Added three new interface methods for SearchableChannel and default implementations for them on the SearchChannel base class:
+
+    // should the channel be used for searching when none has been selected (defaults true)
+    boolean isDefaultChannel();
+
+    // does the user have permission to use this channel (defaults true)
+    boolean hasPermission(User user);
+
+    /**
+     * JSON presentation of channel localization like
+     * {
+     *     "en" : {
+     *         "name" : "Channel name",
+     *         "desc" : "This channel is used for..."
+     *     }
+     * }
+     *
+     * Defaults to name as channel ID for the default language
+     * @return
+     */
+    JSONObject getUILabels();
+
+Added a new hook for search service to enable SearchChannel factories: ChannelProvider. On startup the search service
+will find any @Oskari annotated classes extending ChannelProvider and add any search channels they returns with getChannels() method.
+ Any changes to factory-provided channels are propagated to the available channels in SearchService on runtime using an
+ included SearchChannelChangeListener interface implementation.
+
+Search service now adds all default search channels as targets for searches when none is specified.
+
+### search-service-nls
+
+Added TM35LehtijakoSearchChannel class to allow both reverse geocoding and normal searches for map sheets in Finland. Also added support for "scale" parameter in GetReverseGeocodingResultHandler for reverse geocoding search channels.
+
 ### WFS search services
 
 Added a new module service-search-wfs based on https://github.com/dimenteq/tampere-oskari-server-extension/tree/436550ba3dd7c4f4645ec243487f81d7e1285e08.
 Changed the code to use MyBatis instead of Ibatis for more programmatic setup of database usage.
 
+### service-statistics/control-statistics
+
+New server-side functionality for statistical datasources integration. The code has been redesigned to read statistical data
+from multiple datasources with a plugin architecture to interpret statistics APIs to common internal format usable by the 
+ new frontend implementation. Documentation for using and extending the functionality will be added to oskari.org in
+ the near future.
+ 
 ## 1.39
 
 ### Major migration
- 
- A gigantic migration is being done for publish template and published maps on the system. 
+
+ A gigantic migration is being done for publish template and published maps on the system.
  Please see [Migration Guide](MigrationGuide.md) for details.
 
 ### User registration
@@ -36,7 +93,7 @@ Added initial support for user registration. The functionality can be enabled by
     oskari.email.sender=<sender email>
     oskari.email.host=smtp.domain.com
 
-When building as an oskari-server-extension you need to also add the dependency: 
+When building as an oskari-server-extension you need to also add the dependency:
 
     <groupId>fi.nls.oskari.service</groupId>
     <artifactId>oskari-control-users</artifactId>
@@ -47,12 +104,12 @@ Code moved from service-search-nls to service-cws for metadata search functional
 
 ### service-search-nls
 
-Fixed ELFGeoLocatorSearchChannel common fields override to just handle scale in spesific way. 
-Other common fields are now properly inherited from base functionality. 
+Fixed ELFGeoLocatorSearchChannel common fields override to just handle scale in spesific way.
+Other common fields are now properly inherited from base functionality.
 
 ### servlet-transport
 
-Browser version information is no longer supported since frontend doesn't send it anymore. This results in some IE 6-8 
+Browser version information is no longer supported since frontend doesn't send it anymore. This results in some IE 6-8
 specific code being removed.
 
 ## 1.38.2
@@ -95,7 +152,7 @@ Statsgrid is now allowed in published map. It will replace publishedgrid in the 
 
 ### Publish action route
 
-The Publish action route has been deprecated for a while and is now removed. AppSetup is the current implementation for 
+The Publish action route has been deprecated for a while and is now removed. AppSetup is the current implementation for
 map publisher server side functionality.
 
 ### servlet-transport
@@ -108,7 +165,7 @@ Now recognizes special style named "oskari_none": tile images are not rendered w
 
 The publish template for new Oskari installations with the default setup is now Openlayers 3 based.
 We are planning to update existing installs in the next release or so with the kind of "recommended, but optional"
- migration that we are doing for publisher in this release. See MigrationGuide.md for details. 
+ migration that we are doing for publisher in this release. See MigrationGuide.md for details.
 
 ### service-users
 
@@ -130,7 +187,7 @@ SLD Style setup and management is added for wfs layers (versions 1.1.0 and 2.0.0
 Feature highlighting is now supported for wfs 2.0.0 layers.
 
 {"cascading":true} setup is optionally available in oskari_maplayer attributes-column for wfs 2.0.0 layers.
- 
+
  (In this case bbox filter is used in MapClick / GetFeature request. Use this septup, if service doesn't support intersect filter.)
 
 ### control-example/GetArticlesByTag action route
@@ -170,7 +227,7 @@ tries to locate page under articlesByTag folder with filenames in the following 
 - termsofuse.html
 - termsofuse.json
 
-The first one matching is returned and if none of these are found a message telling to add a file under articlesByTag is displayed.  
+The first one matching is returned and if none of these are found a message telling to add a file under articlesByTag is displayed.
 
 ### control-base / GetWSCapabilities action route
 
@@ -178,7 +235,7 @@ Cached capabilities might be faulty in the database. The GetWSCapabilities actio
 from the service in such case.
 
 ### service-csw
- 
+
 Added errorhandling for missing dates on CSW response.
 
 ## 1.36.1
@@ -186,9 +243,9 @@ Added errorhandling for missing dates on CSW response.
 ### Migration for published maps
 
 Adds toolbar bundle with no default buttons to all views with type PUBLISHED that don't have it already.
- Configures MarkerPlugin to NOT add it's button to toolbar as it's not supported and should be part of 
+ Configures MarkerPlugin to NOT add it's button to toolbar as it's not supported and should be part of
  publish template.
-Toolbar is required for mobile mode functionality in maps and any old published maps don't have it if the user hasn't 
+Toolbar is required for mobile mode functionality in maps and any old published maps don't have it if the user hasn't
 selected the history/measurement tools for the map.
 
 ### HTML for published maps
@@ -221,7 +278,7 @@ ResolveDepth attribute setup is added for wfs layers in admin layer selector.
 #### WMS layers
 WMS service capabilities parsing is improved and prepared to support service versions.
 It is now possible to add WMS layers both 1.1.1 and 1.3.0 versions under same wms service in admin layer selector.
-  
+
 Capabilities cache was layertype and service url based, It is now now layertype, service url and version based.
 
 ### service-feedback [new]
@@ -230,7 +287,7 @@ New service for ``Feedback``  action route
 
 ### service-feedback-open311 [new]
 
-New Open311 feedback implementation for feedback service 
+New Open311 feedback implementation for feedback service
 
 ### Database
 
@@ -253,27 +310,27 @@ New handler for feedback requests. Look at oskari.org documentation for more det
     &action_route=Feedback&method=serviceList
     &action_route=Feedback&method=serviceDefinition&serviceId=172
     &action_route=Feedback&method=postFeedback
-    
+
 2 new properties must be defined in oskari-ext.properties
- 
+
     #Api key for posting feedback (Open311 api_key parameter value, only required for posting user's  feeback data)
     #test api base url http://dev.hel.fi/open311-test/v1/
     feedback.open311.key=f1301b1ded935eabc5faa6a2ce975f6
     feedback.open311.url=http://dev.hel.fi/open311-test/v1/
 
-#### MapfullHandler 
+#### MapfullHandler
 
 WfsLayerPlugin config can now be configured with oskari-ext.properties if defaults are not working for your environment:
- 
+
     oskari.transport.domain=http://localhost:9090
     oskari.transport.url=/mytransport
 
 These will write the host and contextPath to the plugins config if they are not configured in database view.
 
-Populate missing projection definitions for mapfull config projectionDefs. It uses the projection defs in: 
+Populate missing projection definitions for mapfull config projectionDefs. It uses the projection defs in:
     control-base\src\main\resources\fi\nls\oskari\control\view\modifier\bundle\epsg_proj4_formats.json
 
-Populate svgMarkers for mapfull config, it uses for populate SVG markers JSONArray in: 
+Populate svgMarkers for mapfull config, it uses for populate SVG markers JSONArray in:
     control-base\src\main\resources\fi\nls\oskari\control\view\modifier\bundle\svg-markers.json
 
 #### GetWFSDescribeFeatureHandler
@@ -285,12 +342,12 @@ New extra request parameter  `&simple=true` is available for the earlier respons
 
 #### ActionConstants
 
-Changed PARAM_SRS value from "epsg" to "srs". This affects GetMapLayers which now assumes the projection is sent in srs-parameter. 
+Changed PARAM_SRS value from "epsg" to "srs". This affects GetMapLayers which now assumes the projection is sent in srs-parameter.
 The parameter in most action routes for transmitting projection information is "srs" so this is a consistency improvement.
 
 #### CoordinatesHandler
 
-New action route. Transforms point-coordinates from projection to another. 
+New action route. Transforms point-coordinates from projection to another.
 Transformation class can be configured with property `projection.library.class` (defaults to `fi.nls.oskari.map.geometry.ProjectionHelper`).
 Takes `lan`, `lot`, `srs` and `targetSRS` parameters and returns a JSONObject with transformed result:
 
@@ -299,7 +356,7 @@ Takes `lan`, `lot`, `srs` and `targetSRS` parameters and returns a JSONObject wi
           lot : 456,
           srs : "EPSG:789"
       }
-      
+
 #### GetReverseGeocodingResultHandler
 
 New action parameter **channels_ids** for selecting a spesific reverse search channel(s) instead all available channels
@@ -308,19 +365,19 @@ e.g. &action_route=GetReverseGeocodingResult&lang=fi&epsg=EPSG:3067&lon=368978.9
 #### CoordinateToolHandler
 
 When coordinatetool bundle is part of the setup. And it has configuration to do client-side transforms the handler populates
- missing projection definitions for mapfull config projectionDefs. It uses the same mechanic as mapfullhandler and the 
+ missing projection definitions for mapfull config projectionDefs. It uses the same mechanic as mapfullhandler and the
  same projection defs in:
- 
+
     control-base\src\main\resources\fi\nls\oskari\control\view\modifier\bundle\epsg_proj4_formats.json
 
 #### AppSetupHandler
 
 Coordinatetool is now allowed bundle for publisher.
-    
+
 #### GetPermissionsLayerHandlers
 
 Additional permissions can now be configured with oskari-ext.properties:
- 
+
     permission.types = EDIT_LAYER_CONTENT
     permission.EDIT_LAYER_CONTENT.name.fi=Muokkaa tasoa
     permission.EDIT_LAYER_CONTENT.name.en=Edit layer
@@ -347,7 +404,7 @@ There is no need to the client to act for this layer, when success_nop is true (
 
 ### generic
 
-Apache commons-collections library upgraded 3.2.1 -> 3.2.2 for security reasons. 
+Apache commons-collections library upgraded 3.2.1 -> 3.2.2 for security reasons.
 
 ### service-search-nls
 
@@ -355,7 +412,7 @@ Enabled reverse geocoding for ELFGeoLocatorSearchChannel.
 
 ### control-base
 
-Openlayers3 sends WTMS-request parameters in camelCase while Openlayers2 always sends params in CAPS. 
+Openlayers3 sends WTMS-request parameters in camelCase while Openlayers2 always sends params in CAPS.
 GetLayerTileHandler has been modified to accept wmts-parameters in any letter case.
 
 ## 1.35
@@ -411,7 +468,7 @@ Added IOHelper convenience method for just adding one param to an URL:
 
     public static String addUrlParam(final String url, String key, String value)
     String url = IOHelper.addUrlParam("https://google.com", "q", "test");
-    
+
 ### service-map
 
 Data import is improved

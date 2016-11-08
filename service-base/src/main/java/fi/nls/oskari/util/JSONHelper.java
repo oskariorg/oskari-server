@@ -261,6 +261,24 @@ public class JSONHelper {
         return false;
     }
 
+    /**
+     * Returns an empty array if JSONArray couldn't be created if second parameter is true. For false
+     * returns null if JSONArray couldn't be created.
+     * @param content
+     * @param emptyIfNull
+     * @return
+     */
+    public static JSONArray createJSONArray(final String content, boolean emptyIfNull) {
+        JSONArray array = null;
+        try {
+            array = new JSONArray(content);
+        } catch (Exception ignore) {}
+        if(emptyIfNull) {
+            return getEmptyIfNull(array);
+        }
+        return null;
+    }
+
 	public static JSONArray createJSONArray(final String content) {
         try {
             return new JSONArray(content);

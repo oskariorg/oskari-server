@@ -8,6 +8,8 @@ import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.mybatis.JSONArrayMybatisTypeHandler;
 import fi.nls.oskari.mybatis.JSONObjectMybatisTypeHandler;
+import fi.nls.oskari.search.channel.WFSChannelProvider;
+import fi.nls.oskari.service.OskariComponentManager;
 import org.apache.ibatis.mapping.Environment;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.SqlSession;
@@ -27,6 +29,7 @@ public class WFSSearchChannelsServiceMybatisImpl extends WFSSearchChannelsServic
     public WFSSearchChannelsServiceMybatisImpl() {
         final DatasourceHelper helper = DatasourceHelper.getInstance();
         final DataSource dataSource = helper.getDataSource(helper.getOskariDataSourceName());
+
         if(dataSource != null) {
             factory = initializeMyBatis(dataSource);
         }
@@ -71,8 +74,10 @@ public class WFSSearchChannelsServiceMybatisImpl extends WFSSearchChannelsServic
     public void delete(final long channelId) {
         try (final SqlSession session = factory.openSession()) {
             WFSChannelConfigMapper mapper = session.getMapper(WFSChannelConfigMapper.class);
+            WFSSearchChannelsConfiguration config = findChannelById(channelId);
             mapper.delete(channelId);
             session.commit();
+            OskariComponentManager.getComponentOfType(WFSChannelProvider.class).channelRemoved(config);
         }
     }
     
@@ -81,6 +86,7 @@ public class WFSSearchChannelsServiceMybatisImpl extends WFSSearchChannelsServic
             WFSChannelConfigMapper mapper = session.getMapper(WFSChannelConfigMapper.class);
             mapper.insert(channel);
             session.commit();
+            OskariComponentManager.getComponentOfType(WFSChannelProvider.class).channelAdded(findChannelById(channel.getId()));
             return channel.getId();
         }
     }
@@ -90,6 +96,7 @@ public class WFSSearchChannelsServiceMybatisImpl extends WFSSearchChannelsServic
             WFSChannelConfigMapper mapper = session.getMapper(WFSChannelConfigMapper.class);
             mapper.update(channel);
             session.commit();
+            OskariComponentManager.getComponentOfType(WFSChannelProvider.class).channelUpdated(findChannelById(channel.getId()));
         }
     };
 }

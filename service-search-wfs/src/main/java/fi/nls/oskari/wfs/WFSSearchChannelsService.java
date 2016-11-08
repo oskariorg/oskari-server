@@ -2,6 +2,7 @@ package fi.nls.oskari.wfs;
 
 import java.util.List;
 
+import fi.nls.oskari.search.channel.ChannelProvider;
 import fi.nls.oskari.service.OskariComponent;
 
 public abstract class WFSSearchChannelsService extends OskariComponent {
