@@ -41,7 +41,6 @@ public class What3WordsSearchChannel extends SearchChannel {
 
     private String serviceURL = null;
     private String reverseServiceURL = null;
-    private boolean forceCoordinateSwitch = false;
     private String forcedLanguage = null;
     private Set<String> availableLangs = null;
 
@@ -61,7 +60,6 @@ public class What3WordsSearchChannel extends SearchChannel {
             throw ex;
         }
         availableLangs = getAvailableLanguages();
-        forceCoordinateSwitch = PropertyUtil.getOptional("search.channel.forceXY", forceCoordinateSwitch);
         forcedLanguage = PropertyUtil.getOptional(PROPERTY_FORCED_LANG);
         LOG.debug("ServiceURL set to " + serviceURL);
     }
@@ -145,16 +143,8 @@ public class What3WordsSearchChannel extends SearchChannel {
         final CoordinateReferenceSystem targetCrs = CRS.decode(SERVICE_SRS);
 
         Point point = new Point(lon, lat);
-        final boolean reverseCoordinates = "true".equalsIgnoreCase(System.getProperty("org.geotools.referencing.forceXY"));
-        if(reverseCoordinates) {
-            point.switchLonLat();
-        }
         final Point transformed = ProjectionHelper.transformPoint(point, sourceCrs, targetCrs);
 
-        // switch order again after making the transform if necessary
-        if(!forceCoordinateSwitch && (reverseCoordinates  || ProjectionHelper.isFirstAxisNorth(targetCrs))) {
-            transformed.switchLonLat();
-        }
         return transformed;
     }
 
@@ -202,8 +192,6 @@ public class What3WordsSearchChannel extends SearchChannel {
         final CoordinateReferenceSystem targetCrs = CRS.decode(targetSrs);
         // geoserver seems to setup the forced XY direction so check if it's in effect
         // http://docs.geotools.org/stable/userguide/library/referencing/order.html
-        // TODO: this should be checked in ProjectionHelper
-        final boolean reverseCoordinates = "true".equalsIgnoreCase(System.getProperty("org.geotools.referencing.forceXY"));
 
         final SearchResultItem item = new SearchResultItem();
         item.setType("what3words");
@@ -213,19 +201,11 @@ public class What3WordsSearchChannel extends SearchChannel {
         final JSONObject position = JSONHelper.getJSONObject(dataItem, "geometry");
         final String lat = "" + position.optDouble("lat");
         final String lon = "" + position.optDouble("lng");
-        //item.setLocationTypeCode();
-        if(reverseCoordinates) {
-            item.setLon(lon);
-            item.setLat(lat);
-        } else {
-            item.setLat(lon);
-            item.setLon(lat);
-        }
 
         // convert to map projection
         final Point point = ProjectionHelper.transformPoint(
-                ConversionHelper.getDouble(item.getLon(), -1),
-                ConversionHelper.getDouble(item.getLat(), -1),
+                ConversionHelper.getDouble(lon, -1),
+                ConversionHelper.getDouble(lat, -1),
                 sourceCrs,
                 targetCrs);
         if(point == null) {
@@ -233,10 +213,7 @@ public class What3WordsSearchChannel extends SearchChannel {
             item.setLat("");
             return null;
         }
-        // switch order again after making the transform if necessary
-        if(!forceCoordinateSwitch && (reverseCoordinates  || ProjectionHelper.isFirstAxisNorth(targetCrs))) {
-            point.switchLonLat();
-        }
+
         item.setLon(point.getLon());
         item.setLat(point.getLat());
         return item;

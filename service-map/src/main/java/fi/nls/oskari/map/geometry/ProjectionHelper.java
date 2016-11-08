@@ -37,8 +37,9 @@ public class ProjectionHelper implements PointTransformer {
     }
     public static Point transformPoint(final Point point, final String sourceSRS, final String targetSRS) {
         try {
-            CoordinateReferenceSystem sourceCrs = CRS.decode(sourceSRS);
-            CoordinateReferenceSystem targetCrs = CRS.decode(targetSRS);
+            // use always lon coordinate 1st order
+            CoordinateReferenceSystem sourceCrs = CRS.decode(sourceSRS, true);
+            CoordinateReferenceSystem targetCrs = CRS.decode(targetSRS, true);
             return transformPoint(point, sourceCrs, targetCrs);
 
         } catch (Exception e) {
@@ -60,7 +61,8 @@ public class ProjectionHelper implements PointTransformer {
     }
     public static Point transformPoint(final double lon, final double lat, final CoordinateReferenceSystem sourceCrs, final String targetSRS) {
         try {
-            CoordinateReferenceSystem targetCrs = CRS.decode(targetSRS);
+            // use always lon coordinate 1st order
+            CoordinateReferenceSystem targetCrs = CRS.decode(targetSRS, true);
             return transformPoint(new Point(lon, lat), sourceCrs, targetCrs);
 
         } catch (Exception e) {
@@ -78,6 +80,13 @@ public class ProjectionHelper implements PointTransformer {
         return null;
     }
 
+    /**
+     * Transforms point coordinates to target projection
+      * @param point is in source projection ( x/lon must be always to the east and y/lat is to the north)
+     * @param sourceCrs
+     * @param targetCrs
+     * @return Point in target projection ( x/lon is always to the east and y/lat is to the north)
+     */
     public static Point transformPoint(final Point point, final CoordinateReferenceSystem sourceCrs, final CoordinateReferenceSystem targetCrs) {
         try {
 
@@ -86,15 +95,20 @@ public class ProjectionHelper implements PointTransformer {
             // by setting the lenient parameter to true when searching with findMathTransform.
             boolean lenient = false;
             MathTransform mathTransform = CRS.findMathTransform(sourceCrs, targetCrs, lenient);
-
             DirectPosition2D srcDirectPosition2D = new DirectPosition2D(sourceCrs, point.getLon(), point.getLat());
+            // Just in case that sourceCrs axis order is not forced as lon 1st
+            if (isFirstAxisNorth(sourceCrs)) {
+                // reverse xy lon 1st
+                srcDirectPosition2D = new DirectPosition2D(sourceCrs, point.getLat(), point.getLon());
+            }
             DirectPosition2D destDirectPosition2D = new DirectPosition2D(targetCrs);
             mathTransform.transform(srcDirectPosition2D, destDirectPosition2D);
-            // Switch direction, if 1st coord is to the north on the other but not on the other
-            if (isFirstAxisNorth(sourceCrs) != isFirstAxisNorth(targetCrs)) {
-                return new Point(destDirectPosition2D.x, destDirectPosition2D.y);
+            // Just in case that targetCrs axis order is not forced as lon 1st
+            if (isFirstAxisNorth(targetCrs)) {
+                // reverse xy lon 1st
+                return new Point(destDirectPosition2D.y, destDirectPosition2D.x);
             }
-            return new Point(destDirectPosition2D.y, destDirectPosition2D.x);
+            return new Point(destDirectPosition2D.x, destDirectPosition2D.y);
         } catch (Exception e) {
             log.error(e, "Transform failed! Params: sourceSRS", sourceCrs, "targetSRS", targetCrs, "Point", point);
         }
