@@ -8,7 +8,9 @@ import java.util.List;
  * Created by SMAKINEN on 1.11.2016.
  */
 public interface WFSChannelConfigMapper {
-    @Select("SELECT * FROM oskari_wfs_search_channels where id=#{id}")
+    @Select("SELECT c.wfs_layer_id, c.topic, c.description, c.params_for_search, c.is_default, c.is_address, " +
+            "l.name as layerName, l.url, l.srs_name as srs, l.version, l.username, l.password " +
+            " FROM oskari_wfs_search_channels c JOIN oskari_maplayer l ON c.wfs_layer_id=l.id where c.id=#{id}")
     @Results({
             @Result(property = "WFSLayerId", column = "wfs_layer_id"),
             @Result(property = "topic", column = "topic"),
@@ -19,7 +21,9 @@ public interface WFSChannelConfigMapper {
     })
     WFSSearchChannelsConfiguration findChannelById(final long id);
 
-    @Select("SELECT * FROM oskari_wfs_search_channels ORDER BY id ASC")
+    @Select("SELECT c.wfs_layer_id, c.topic, c.description, c.params_for_search, c.is_default, c.is_address, " +
+            "l.name as layerName, l.url, l.srs_name as srs, l.version, l.username, l.password " +
+            " FROM oskari_wfs_search_channels c JOIN oskari_maplayer l ON c.wfs_layer_id=l.id ORDER BY c.id ASC")
     @Results({
             @Result(property = "WFSLayerId", column = "wfs_layer_id"),
             @Result(property = "topic", column = "topic"),

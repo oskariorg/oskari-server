@@ -3,8 +3,6 @@ package fi.nls.oskari.wfs;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import fi.nls.oskari.log.LogFactory;
-import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.util.JSONHelper;
 
 public class WFSSearchChannelsConfiguration {
@@ -29,7 +27,6 @@ public class WFSSearchChannelsConfiguration {
 	private String url;
 	private String srs;
 	private String version;
-	private JSONObject realName;
 	private String username;
 	private String password;
 	
@@ -46,11 +43,8 @@ public class WFSSearchChannelsConfiguration {
 		return root;
 	}
 	
-	public Boolean isAutenticated(){
-		if(username!=null && !username.isEmpty() && password!=null && !password.isEmpty()) {
-			return true;
-		}
-		return false;
+	public Boolean requiresAuth(){
+		return username!=null && !username.isEmpty() && password!=null && !password.isEmpty();
 	}
 
 
@@ -151,16 +145,6 @@ public class WFSSearchChannelsConfiguration {
 
 	public void setVersion(String version) {
 		this.version = version;
-	}
-
-
-	public JSONObject getRealName() {
-		return realName;
-	}
-
-
-	public void setRealName(JSONObject realName) {
-		this.realName = realName;
 	}
 
 
