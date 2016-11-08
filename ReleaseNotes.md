@@ -7,6 +7,15 @@
 Added "oskari.transport.port" property handling so transport configuration can be configured (as oskari.transport.domain and oskari.transport.url)
 in oskari-ext.properties if default values are not used.
 
+Removed default search channel settings from oskari.properties (previously had OpenStreetMap as default).
+Now all available search channels that return true from SearchableChannel.isDefault() are used.
+ The properties below can be used for keeping the previous behavior:
+
+    # comma-separated list of id for search channel that will be used (defaulted to) if none are explicitly configured
+    search.channels.default=OPENSTREETMAP_CHANNEL
+    # comma-separated list of search channel ids used by GetSearchResult
+    actionhandler.GetSearchResult.channels=OPENSTREETMAP_CHANNEL
+
 ### IOHelper
 
 Added a new convenience method setupBasicAuth(connection, user, pass) which sets up basic auth for the given connection.
