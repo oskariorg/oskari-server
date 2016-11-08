@@ -81,7 +81,7 @@ public class WFSSearchChannel extends SearchChannel {
     private JSONObject getData(SearchCriteria searchCriteria) throws Exception {
         String searchStr = searchCriteria.getSearchString();
         log.debug("[WFSSEARCH] Search string: " + searchStr);
-        String maxFeatures = PropertyUtil.get("search.channel.WFSSEARCH_CHANNEL.maxFeatures");
+        String maxFeatures = PropertyUtil.get("search.channel.WFSSEARCH_CHANNEL.maxFeatures", "100");
 
         JSONArray paramsJSONArray = new JSONArray();
 
@@ -154,7 +154,7 @@ public class WFSSearchChannel extends SearchChannel {
         }
 
         filter.append("</Filter>");
-        urlParams.put("Filter", URLEncoder.encode(filter.toString().trim(), "UTF-8"));
+        urlParams.put("Filter", filter.toString().trim());
 
         if(params.length()>0) {
             HttpURLConnection connection = getConnection(IOHelper.constructUrl(config.getUrl(), urlParams));
