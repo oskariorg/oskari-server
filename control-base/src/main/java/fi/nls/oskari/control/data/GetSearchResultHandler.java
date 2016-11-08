@@ -41,7 +41,7 @@ public class GetSearchResultHandler extends ActionHandler {
         } else {
             final Locale locale = params.getLocale();
 
-            final SearchCriteria sc = new SearchCriteria();
+            final SearchCriteria sc = new SearchCriteria(params.getUser());
             sc.setSearchString(search);
             sc.setSRS(epsg);  // eg. EPSG:3067
 

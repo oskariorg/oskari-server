@@ -1,6 +1,7 @@
 package fi.mml.portti.service.search;
 
 import fi.nls.oskari.annotation.Oskari;
+import fi.nls.oskari.domain.User;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.search.channel.ChannelProvider;
@@ -160,6 +161,12 @@ public class SearchServiceImpl extends SearchService implements SearchChannelCha
             }
             long timeStart = System.currentTimeMillis();
             SearchableChannel channel = availableChannels.get(channelId);
+            User user = searchCriteria.getUser();
+            if(!channel.hasPermission(user)) {
+                // Skipping
+                LOG.debug("Skipping ", channel.getId(), "- User doesn't have permission to access");
+                continue;
+            }
             if(!channel.isValidSearchTerm(searchCriteria)) {
                 // Skipping
                 LOG.debug("Skipping ", channel.getId(), "- criteria not valid");
