@@ -8,6 +8,7 @@ import fi.nls.oskari.control.ActionParamsException;
 import fi.nls.oskari.control.RestActionHandler;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.search.channel.SimpleAddressWFSSearchHandler;
 import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.JSONHelper;
@@ -26,8 +27,7 @@ public class SearchWFSChannelActionHandler extends RestActionHandler {
     private static final Logger log = LogFactory.getLogger(SearchWFSChannelActionHandler.class);
     private static final String PARAM_ID = "id";
     private static final String PARAM_WFS_ID = "wfsLayerId";
-    private static final String PARAM_TOPIC = "topic";
-    private static final String PARAM_DESC = "desc";
+    private static final String PARAM_LOCALE = "locale";
     private static final String PARAM_PARAMS_FOR_SEARCH = "paramsForSearch";
     private static final String PARAM_IS_DEFAULT = "isDefault";
     private static final String PARAM_IS_ADDRESS = "isAddress";
@@ -128,11 +128,16 @@ public class SearchWFSChannelActionHandler extends RestActionHandler {
 
         WFSSearchChannelsConfiguration conf = new WFSSearchChannelsConfiguration();
         conf.setWFSLayerId(ConversionHelper.getInt(params.getRequiredParam(PARAM_WFS_ID), -1));
-        conf.setTopic(new JSONObject(ConversionHelper.getString(params.getRequiredParam(PARAM_TOPIC), "")));
-        conf.setDesc(new JSONObject(ConversionHelper.getString(params.getRequiredParam(PARAM_DESC), "")));
-        conf.setParamsForSearch(new JSONArray(ConversionHelper.getString(params.getRequiredParam(PARAM_PARAMS_FOR_SEARCH), "")));
         conf.setIsDefault(ConversionHelper.getBoolean(params.getRequiredParam(PARAM_IS_DEFAULT), false));
-        conf.setIsAddress(ConversionHelper.getBoolean(params.getRequiredParam(PARAM_IS_ADDRESS), false));
+        conf.setParamsForSearch(new JSONArray(params.getRequiredParam(PARAM_PARAMS_FOR_SEARCH)));
+        conf.setLocale(new JSONObject(params.getRequiredParam(PARAM_LOCALE)));
+
+        // TODO: setup is_address param to have handler from frontend input instead of this boolean
+        JSONObject config = new JSONObject();
+        if(params.getHttpParam(PARAM_IS_ADDRESS, false)) {
+            JSONHelper.putValue(config, "handler", "SimpleAddress");
+        }
+        conf.setConfig(config);
         return conf;
     }
 }

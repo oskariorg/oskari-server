@@ -15,7 +15,6 @@ import fi.nls.oskari.map.data.domain.OskariLayerResource;
 import fi.nls.oskari.map.geometry.WKTHelper;
 import fi.nls.oskari.permission.domain.Resource;
 import fi.nls.oskari.service.OskariComponentManager;
-import fi.nls.oskari.util.JSONHelper;
 import org.geotools.geojson.geom.GeometryJSON;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -66,15 +65,7 @@ public class WFSSearchChannel extends SearchChannel {
     }
 
     public JSONObject getUILabels() {
-        JSONObject response = new JSONObject();
-        Iterator<String> keys = config.getTopic().keys();
-        while(keys.hasNext()) {
-            String key = keys.next();
-            JSONObject locale = JSONHelper.createJSONObject("name", config.getTopic().optString(key));
-            JSONHelper.putValue(locale, "desc", config.getDesc().optString(key));
-            JSONHelper.putValue(response, key, locale);
-        }
-        return response;
+        return config.getLocale();
     }
 
     public boolean hasPermission(User user) {
@@ -94,12 +85,9 @@ public class WFSSearchChannel extends SearchChannel {
     }
 
     public WFSChannelHandler getHandler() {
-
-        // TODO: boolean isAddress should be changed to String getHandler()
-        // -> get handler from map or default if none defined
         Map<String, WFSChannelHandler> handlers = OskariComponentManager.getComponentsOfType(WFSChannelHandler.class);
-        if(handlers.containsKey( "TODO:config from handler!!" /*config.getHandler() */)) {
-            return handlers.get(WFSChannelHandler.ID);
+        if(handlers.containsKey(config.getHandler())) {
+            return handlers.get(config.getHandler());
         }
         return handlers.get(WFSChannelHandler.ID);
     }
@@ -194,7 +182,7 @@ public class WFSSearchChannel extends SearchChannel {
                 SearchResultItem item = new SearchResultItem();
                 JSONObject featureJSON = featuresArr.getJSONObject(i);
 
-                item.setType(config.getTopic().getString(searchCriteria.getLocale()));
+                item.setType(config.getName(searchCriteria.getLocale()));
 
                 setupDefaults(item);
                 item.setTitle(getTitle(featureJSON));

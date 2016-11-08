@@ -1,5 +1,7 @@
 package fi.nls.oskari.wfs;
 
+import fi.nls.oskari.search.channel.WFSChannelHandler;
+import fi.nls.oskari.util.PropertyUtil;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -9,20 +11,18 @@ public class WFSSearchChannelsConfiguration {
 
 	protected final static String PARAM_ID = "id";
     protected final static String PARAM_WFS_LAYER_ID = "wfsId";
-    protected final static String PARAM_TOPIC = "topic";
-    protected final static String PARAM_DESC = "desc";
+    protected final static String PARAM_LOCALE = "locale";
+    protected final static String PARAM_CONFIG = "config";
     protected final static String PARAM_PARAMS_FOR_SEARCH = "params_for_search";
     protected final static String PARAM_IS_DEFAULT = "is_default";
-    protected final static String PARAM_IS_ADDRESS = "is_address";
 	
 	
 	private int id = -1;
 	private int WFSLayerId;
-	private JSONObject topic;
-	private JSONObject desc;
+	private JSONObject locale;
+	private JSONObject config;
 	private JSONArray paramsForSearch;
 	private Boolean isDefault;
-	private Boolean isAddress;
 	private String layerName;
 	private String url;
 	private String srs;
@@ -35,11 +35,10 @@ public class WFSSearchChannelsConfiguration {
 		final JSONObject root = new JSONObject();
 		JSONHelper.putValue(root, PARAM_ID, this.getId());
 		JSONHelper.putValue(root, PARAM_WFS_LAYER_ID, this.getWFSLayerId());
-		JSONHelper.putValue(root, PARAM_TOPIC, this.getTopic());
-		JSONHelper.putValue(root, PARAM_DESC, this.getDesc());
+		JSONHelper.putValue(root, PARAM_LOCALE, this.getLocale());
+		JSONHelper.putValue(root, PARAM_CONFIG, this.getConfig());
 		JSONHelper.putValue(root, PARAM_PARAMS_FOR_SEARCH, this.getParamsForSearch());
 		JSONHelper.putValue(root, PARAM_IS_DEFAULT, this.getIsDefault());
-		JSONHelper.putValue(root, PARAM_IS_ADDRESS, this.getIsAddress());
 		return root;
 	}
 	
@@ -47,6 +46,24 @@ public class WFSSearchChannelsConfiguration {
 		return username!=null && !username.isEmpty() && password!=null && !password.isEmpty();
 	}
 
+	public String getName(String language) {
+		JSONObject langJSON = locale.optJSONObject(language);
+		if(langJSON == null) {
+			langJSON = locale.optJSONObject(PropertyUtil.getDefaultLanguage());
+		}
+		if(langJSON == null) {
+			return null;
+		}
+		return langJSON.optString("name");
+	}
+
+	public String getHandler() {
+		String handler = config.optString("handler");
+		if(handler != null) {
+			return handler;
+		}
+		return WFSChannelHandler.ID;
+	}
 
 	public int getId() {
 		return id;
@@ -68,23 +85,23 @@ public class WFSSearchChannelsConfiguration {
 	}
 
 
-	public JSONObject getTopic() {
-		return topic;
+	public JSONObject getLocale() {
+		return locale;
 	}
 
 
-	public void setTopic(JSONObject topic) {
-		this.topic = topic;
+	public void setLocale(JSONObject locale) {
+		this.locale = locale;
 	}
 
 
-	public JSONObject getDesc() {
-		return desc;
+	public JSONObject getConfig() {
+		return config;
 	}
 
 
-	public void setDesc(JSONObject desc) {
-		this.desc = desc;
+	public void setConfig(JSONObject config) {
+		this.config = config;
 	}
 
 
@@ -166,13 +183,4 @@ public class WFSSearchChannelsConfiguration {
 	public void setPassword(String password) {
 		this.password = password;
 	}
-
-	public Boolean getIsAddress() {
-		return isAddress;
-	}
-
-	public void setIsAddress(Boolean isAddress) {
-		this.isAddress = isAddress;
-	}
-
 }
