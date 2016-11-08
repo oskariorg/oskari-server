@@ -291,4 +291,33 @@ public class WFSSearchChannel extends SearchChannel {
 		}
     	return buf.toString();
     }
+
+    /**
+     * Only checks if config.ids match
+     * @param o
+     * @return
+     */
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof WFSSearchChannel)) {
+            return false;
+        }
+
+        WFSSearchChannel that = (WFSSearchChannel) o;
+
+        if(config == null) {
+            return false;
+        }
+
+        return config.getId() == that.config.getId();
+
+    }
+
+    @Override
+    public int hashCode() {
+        return config != null ? config.getId() : 0;
+    }
 }
