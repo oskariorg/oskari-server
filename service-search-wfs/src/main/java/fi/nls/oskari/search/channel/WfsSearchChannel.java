@@ -1,16 +1,23 @@
 package fi.nls.oskari.search.channel;
 
 import java.net.HttpURLConnection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 
+import fi.mml.portti.domain.permissions.Permissions;
+import fi.mml.portti.service.db.permissions.PermissionsService;
+import fi.mml.portti.service.db.permissions.PermissionsServiceIbatisImpl;
+import fi.nls.oskari.cache.Cache;
+import fi.nls.oskari.cache.CacheManager;
+import fi.nls.oskari.domain.SelectItem;
 import fi.nls.oskari.domain.User;
+import fi.nls.oskari.domain.map.OskariLayer;
+import fi.nls.oskari.map.data.domain.OskariLayerResource;
 import fi.nls.oskari.map.geometry.WKTHelper;
+import fi.nls.oskari.permission.domain.Resource;
+import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.util.JSONHelper;
 import org.geotools.geojson.geom.GeometryJSON;
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import fi.nls.oskari.wfs.WFSSearchChannelsConfiguration;
@@ -35,9 +42,6 @@ public class WFSSearchChannel extends SearchChannel {
     public static final String ID_PREFIX = "WFSSEARCH_CHANNEL_";
     
     public static final String PARAM_GEOMETRY = "GEOMETRY";
-    public static final String PARAM_WFS_SEARCH_CHANNEL_TYPE = "WFS_SEARCH_CHANNEL_TYPE";
-    public static final String PARAM_WFS_SEARCH_CHANNEL_TITLE = "WFS_SEARCH_CHANNEL_TITLE";
-    public static final String PARAM_WFS_SEARCH_CHANNEL_ISADDRESS = "WFS_SEARCH_CHANNEL_ISADDRESS";
     public static final String GT_GEOM_POINT = "POINT";
     public static final String GT_GEOM_LINESTRING = "LINESTRING";
     public static final String GT_GEOM_POLYGON = "POLYGON";
@@ -46,10 +50,20 @@ public class WFSSearchChannel extends SearchChannel {
     public static final String GT_GEOM_MULTIPOLYGON = "MULTIPOLYGON";
 
 	private WFSSearchChannelsConfiguration config;
+    private static PermissionsService permissionsService;
 
 	public WFSSearchChannel(WFSSearchChannelsConfiguration config) {
-		this.config = config;
+        this.config = config;
 	}
+
+    PermissionsService getPermissionService() {
+        // TODO: use OskariComponentManager when PermissionService supports it
+        //return OskariComponentManager.getComponentOfType(PermissionsService.class);
+        if(permissionsService == null) {
+            permissionsService = new PermissionsServiceIbatisImpl();
+        }
+        return permissionsService;
+    }
 
     public JSONObject getUILabels() {
         JSONObject response = new JSONObject();
@@ -64,14 +78,45 @@ public class WFSSearchChannel extends SearchChannel {
     }
 
     public boolean hasPermission(User user) {
-        // TODO: check if user roles have VIEW_LAYER permission to wfslayer
-        return true;
+        // check if user roles have VIEW_LAYER permission to wfslayer
+        Cache<Resource> cache = CacheManager.getCache(this.getClass().getName());
+        final String cacheKey = config.getUrl() + config.getLayerName();
+        Resource resource = cache.get(cacheKey);
+        if(resource == null) {
+            OskariLayerResource res = new OskariLayerResource(OskariLayer.TYPE_WFS, config.getUrl(), config.getLayerName());
+            resource = getPermissionService().findResource(res);
+            if(resource == null) {
+                return false;
+            }
+            cache.put(cacheKey, resource);
+        }
+        return resource.hasPermission(user, Permissions.PERMISSION_TYPE_VIEW_LAYER);
+    }
+
+    public WFSChannelHandler getHandler() {
+
+        // TODO: boolean isAddress should be changed to String getHandler()
+        // -> get handler from map or default if none defined
+        Map<String, WFSChannelHandler> handlers = OskariComponentManager.getComponentsOfType(WFSChannelHandler.class);
+        if(handlers.containsKey( "TODO:config from handler!!" /*config.getHandler() */)) {
+            return handlers.get(WFSChannelHandler.ID);
+        }
+        return handlers.get(WFSChannelHandler.ID);
+    }
+
+
+    private void setupDefaults(SearchResultItem item) {
+        // FIXME: should come from config!!
+        item.setVillage("Tampere");
+        item.setDescription("");
+        item.setLocationTypeCode("");
     }
 
     public String getId() {
         return ID_PREFIX + config.getId();
     }
 
+    @Override
     public boolean isDefaultChannel() {
         return config.getIsDefault();
     }
@@ -93,8 +138,6 @@ public class WFSSearchChannel extends SearchChannel {
         log.debug("[WFSSEARCH] Search string: " + searchStr);
         String maxFeatures = PropertyUtil.get("search.channel.WFSSEARCH_CHANNEL.maxFeatures", "100");
 
-        JSONArray paramsJSONArray = new JSONArray();
-
         Map<String, String> urlParams = new HashMap<>();
         urlParams.put("service", "WFS");
         urlParams.put("request", "GetFeature");
@@ -110,60 +153,7 @@ public class WFSSearchChannel extends SearchChannel {
                 urlParams.put("count", maxFeatures);
             }
         }
-        StringBuffer filter = new StringBuffer("<Filter>");
-        String isKiinteitoTunnus = searchStr.replace("-","");
-
-        if(config.getIsAddress() && !isKiinteitoTunnus.matches("[0-9]+")){
-            filter.append("<And>");
-            String streetName = searchStr;
-            String streetNumber = "";
-            // find last word and if it is number then it must be street number?
-            String lastWord = searchStr.substring(searchStr.lastIndexOf(" ") + 1);
-
-            if (isStreetNumber(lastWord)) {
-                // override streetName without, street number
-                streetName = searchStr.substring(0, searchStr.lastIndexOf(" "));
-                log.debug("[tre] found streetnumber " + streetNumber);
-                streetNumber = lastWord;
-            }
-
-            filter.append("<PropertyIsLike wildCard='*' singleChar='>' escape='!' matchCase='false'>" +
-                "<PropertyName>"+params.getString(0)+"</PropertyName><Literal>"+ streetName +
-                "*</Literal></PropertyIsLike>"
-            );
-
-            filter.append("<PropertyIsLike wildCard='*' singleChar='>' escape='!' matchCase='false'>" +
-                "<PropertyName>"+params.getString(1)+"</PropertyName><Literal>"+ streetNumber +
-                "*</Literal></PropertyIsLike>"
-            );
-
-            paramsJSONArray.put(params.getString(0));
-            paramsJSONArray.put(params.getString(1));
-
-            filter.append("</And>");
-        } else {
-
-            if(params.length()>1){
-                filter.append("<Or>");
-            }
-
-            for(int j=0;j<params.length();j++){
-                String param = params.getString(j);
-                filter.append("<PropertyIsLike wildCard='*' singleChar='.' escape='!' matchCase='false'>" +
-                        "<PropertyName>"+param+"</PropertyName><Literal>*"+ searchStr +
-                        "*</Literal></PropertyIsLike>"
-                        );
-                paramsJSONArray.put(param);
-            }
-
-            if(params.length()>1){
-                filter.append("</Or>");
-            }
-
-        }
-
-        filter.append("</Filter>");
-        urlParams.put("Filter", filter.toString().trim());
+        urlParams.put("Filter", getHandler().createFilter(searchCriteria, config));
 
         HttpURLConnection connection = getConnection(IOHelper.constructUrl(config.getUrl(), urlParams));
         if(config.requiresAuth()) {
@@ -175,23 +165,7 @@ public class WFSSearchChannel extends SearchChannel {
             log.debug("Response:", WFSData);
             return null;
         }
-        //log.debug("[WFSSEARCH] WFSData: " + WFSData);
-        JSONObject wfsJSON = new JSONObject(WFSData);
-        wfsJSON.put(PARAM_WFS_SEARCH_CHANNEL_TYPE, config.getTopic().getString(searchCriteria.getLocale()));
-        wfsJSON.put(PARAM_WFS_SEARCH_CHANNEL_TITLE, paramsJSONArray);
-        wfsJSON.put(PARAM_WFS_SEARCH_CHANNEL_ISADDRESS, config.getIsAddress());
-        return wfsJSON;
-    }
-    
-    /**
-     * Returns the true if test contains numbers and/or a/b.
-     *
-     * @param test Search criteria.
-     * @return true if string can be set to street number field in wfs query.
-     */
-    private boolean isStreetNumber(String test) {
-        log.debug("[tre] street number candidate: " + test);
-        return test.matches("[0-9-a-b]+");
+        return new JSONObject(WFSData);
     }
 
     /**
@@ -218,13 +192,15 @@ public class WFSSearchChannel extends SearchChannel {
 
             for (int i = 0; i < featuresArr.length(); i++) {
                 SearchResultItem item = new SearchResultItem();
-                JSONObject loopJSONObject = featuresArr.getJSONObject(i);
+                JSONObject featureJSON = featuresArr.getJSONObject(i);
 
-                item.setType(resp.getString(PARAM_WFS_SEARCH_CHANNEL_TYPE));
-                item.setTitle(getTitle(resp, loopJSONObject, resp.getBoolean(PARAM_WFS_SEARCH_CHANNEL_ISADDRESS)));
+                item.setType(config.getTopic().getString(searchCriteria.getLocale()));
 
-                if(loopJSONObject.has("geometry")) {
-                    JSONObject featuresObj_geometry = loopJSONObject.getJSONObject("geometry");
+                setupDefaults(item);
+                item.setTitle(getTitle(featureJSON));
+
+                if(featureJSON.has("geometry")) {
+                    JSONObject featuresObj_geometry = featureJSON.getJSONObject("geometry");
 
                     String geomType = featuresObj_geometry.getString("type").toUpperCase();
                     GeometryJSON geom = new GeometryJSON(3);
@@ -260,11 +236,6 @@ public class WFSSearchChannel extends SearchChannel {
                         item.setLon(Double.toString(pointGeom.getCentroid().getCoordinate().x));
                     }
                 }
-
-                item.setVillage("Tampere");
-                item.setDescription("");
-                item.setLocationTypeCode("");
-
                 searchResultList.addItem(item);
             }
         
@@ -275,31 +246,25 @@ public class WFSSearchChannel extends SearchChannel {
     }
     
     /**
-     * Get title
-     * @param resp
-     * @param loopJSONObject
+     * Get title from feature
+     * @param featureJSON
      * @return title
      */
-    private String getTitle(JSONObject resp, JSONObject loopJSONObject, Boolean isAddress){
-    	StringBuffer buf = new StringBuffer();
-    	JSONArray params;
-		try {
-			params = resp.getJSONArray(PARAM_WFS_SEARCH_CHANNEL_TITLE);
-			JSONObject properties = loopJSONObject.getJSONObject("properties");
-	    	
-			for(int i=0;i<params.length();i++) {
-	    		String param = params.getString(i);
-	    		buf.append(properties.getString(param));
-	    		if(i<params.length()-1 && !isAddress) {
-	    			buf.append(", ");
-	    		}else{
-	    			buf.append(" ");
-	    		}
-	    	}
-		} catch (JSONException e) {
-			log.error(e, "[WFSSEARCH] Failed to get Title");
-		}
-    	return buf.toString();
+    private String getTitle(JSONObject featureJSON) {
+    	JSONArray requestedProps = config.getParamsForSearch();
+        List<SelectItem> values = new ArrayList<>();
+
+        JSONObject properties = featureJSON.optJSONObject("properties");
+        if(properties == null) {
+            return null;
+        }
+
+        for(int i=0;i<requestedProps.length();i++) {
+            String param = requestedProps.optString(i);
+            SelectItem item = new SelectItem(param, properties.optString(param));
+            values.add(item);
+        }
+    	return getHandler().getTitle(values);
     }
 
     /**
