@@ -7,10 +7,8 @@ import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.ActionHandler;
 import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.control.ActionParamsException;
-import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.util.ResponseHelper;
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.Locale;
@@ -46,13 +44,16 @@ public class GetSearchResultHandler extends ActionHandler {
         final Locale locale = params.getLocale();
 
         final SearchCriteria sc = new SearchCriteria(params.getUser());
-        String[] channelIds = params.getHttpParam(PARAM_CHANNELIDS_KEY, "").split("\\s*,\\s*");
 
-        // if channels defined in request, use them
-        if(channelIds.length == 0) {
-            // otherwise use configurations, service will add defaults if left empty
-            channelIds = channels;
+        // default to configuration
+        String[] channelIds = channels;
+        final String channelParam = params.getHttpParam(PARAM_CHANNELIDS_KEY, "").trim();
+
+        // if channels defined in request, use channels from request
+        if(!channelParam.isEmpty()) {
+            channelIds = channelParam.split("\\s*,\\s*");
         }
+        // service will add defaults if channels not defined
         for (String id :  channelIds) {
             sc.addChannel(id);
         }
