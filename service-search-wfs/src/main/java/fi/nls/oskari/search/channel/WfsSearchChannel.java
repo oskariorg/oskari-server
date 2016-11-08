@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import fi.nls.oskari.domain.User;
 import fi.nls.oskari.map.geometry.WKTHelper;
 import fi.nls.oskari.util.JSONHelper;
 import org.geotools.geojson.geom.GeometryJSON;
@@ -60,6 +61,11 @@ public class WFSSearchChannel extends SearchChannel {
             JSONHelper.putValue(response, key, locale);
         }
         return response;
+    }
+
+    public boolean hasPermission(User user) {
+        // TODO: check if user roles have VIEW_LAYER permission to wfslayer
+        return true;
     }
 
     public String getId() {
@@ -171,9 +177,9 @@ public class WFSSearchChannel extends SearchChannel {
         }
         //log.debug("[WFSSEARCH] WFSData: " + WFSData);
         JSONObject wfsJSON = new JSONObject(WFSData);
-        wfsJSON.put(PARAM_WFS_SEARCH_CHANNEL_TYPE,config.getTopic().getString(searchCriteria.getLocale()));
-        wfsJSON.put(PARAM_WFS_SEARCH_CHANNEL_TITLE,paramsJSONArray);
-        wfsJSON.put(PARAM_WFS_SEARCH_CHANNEL_ISADDRESS,config.getIsAddress());
+        wfsJSON.put(PARAM_WFS_SEARCH_CHANNEL_TYPE, config.getTopic().getString(searchCriteria.getLocale()));
+        wfsJSON.put(PARAM_WFS_SEARCH_CHANNEL_TITLE, paramsJSONArray);
+        wfsJSON.put(PARAM_WFS_SEARCH_CHANNEL_ISADDRESS, config.getIsAddress());
         return wfsJSON;
     }
     
