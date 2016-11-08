@@ -16,9 +16,10 @@ Now all available search channels that return true from SearchableChannel.isDefa
     # comma-separated list of search channel ids used by GetSearchResult
     actionhandler.GetSearchResult.channels=OPENSTREETMAP_CHANNEL
 
-### IOHelper
+### Utils
 
-Added a new convenience method setupBasicAuth(connection, user, pass) which sets up basic auth for the given connection.
+IOHelper: Added a new convenience method setupBasicAuth(connection, user, pass) which sets up basic auth for the given connection.
+JSONHelper: Added a new convenience method createJSONArray(json, bln) to easily create empty arrays from null/problematic JSON param.
 
 ### MyBatis
 
