@@ -1,7 +1,6 @@
 package fi.nls.oskari.search.channel;
 
 import java.net.HttpURLConnection;
-import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -79,6 +78,11 @@ public class WFSSearchChannel extends SearchChannel {
      * @throws Exception
      */
     private JSONObject getData(SearchCriteria searchCriteria) throws Exception {
+        JSONArray params = config.getParamsForSearch();
+        if(params.length() == 0) {
+            // nothing to search for
+            return null;
+        }
         String searchStr = searchCriteria.getSearchString();
         log.debug("[WFSSEARCH] Search string: " + searchStr);
         String maxFeatures = PropertyUtil.get("search.channel.WFSSEARCH_CHANNEL.maxFeatures", "100");
@@ -101,7 +105,6 @@ public class WFSSearchChannel extends SearchChannel {
             }
         }
         StringBuffer filter = new StringBuffer("<Filter>");
-        JSONArray params = config.getParamsForSearch();
         String isKiinteitoTunnus = searchStr.replace("-","");
 
         if(config.getIsAddress() && !isKiinteitoTunnus.matches("[0-9]+")){
@@ -156,26 +159,22 @@ public class WFSSearchChannel extends SearchChannel {
         filter.append("</Filter>");
         urlParams.put("Filter", filter.toString().trim());
 
-        if(params.length()>0) {
-            HttpURLConnection connection = getConnection(IOHelper.constructUrl(config.getUrl(), urlParams));
-            if(config.requiresAuth()) {
-                IOHelper.setupBasicAuth(connection, config.getUsername(), config.getPassword());
-            }
-            String WFSData = IOHelper.readString(connection);
-            if(connection.getResponseCode() != HttpURLConnection.HTTP_OK) {
-                log.warn("Error response from WFS channel id:", config.getId(), "url:", config.getUrl());
-                log.debug("Response:", WFSData);
-                return null;
-            }
-            //log.debug("[WFSSEARCH] WFSData: " + WFSData);
-            JSONObject wfsJSON = new JSONObject(WFSData);
-            wfsJSON.put(PARAM_WFS_SEARCH_CHANNEL_TYPE,config.getTopic().getString(searchCriteria.getLocale()));
-            wfsJSON.put(PARAM_WFS_SEARCH_CHANNEL_TITLE,paramsJSONArray);
-            wfsJSON.put(PARAM_WFS_SEARCH_CHANNEL_ISADDRESS,config.getIsAddress());
-            return wfsJSON;
+        HttpURLConnection connection = getConnection(IOHelper.constructUrl(config.getUrl(), urlParams));
+        if(config.requiresAuth()) {
+            IOHelper.setupBasicAuth(connection, config.getUsername(), config.getPassword());
         }
-
-        return null;
+        String WFSData = IOHelper.readString(connection);
+        if(connection.getResponseCode() != HttpURLConnection.HTTP_OK) {
+            log.warn("Error response from WFS channel id:", config.getId(), "url:", config.getUrl());
+            log.debug("Response:", WFSData);
+            return null;
+        }
+        //log.debug("[WFSSEARCH] WFSData: " + WFSData);
+        JSONObject wfsJSON = new JSONObject(WFSData);
+        wfsJSON.put(PARAM_WFS_SEARCH_CHANNEL_TYPE,config.getTopic().getString(searchCriteria.getLocale()));
+        wfsJSON.put(PARAM_WFS_SEARCH_CHANNEL_TITLE,paramsJSONArray);
+        wfsJSON.put(PARAM_WFS_SEARCH_CHANNEL_ISADDRESS,config.getIsAddress());
+        return wfsJSON;
     }
     
     /**
