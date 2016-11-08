@@ -128,15 +128,21 @@ public class SearchServiceImpl extends SearchService implements SearchChannelCha
         return null;
     }
 
+    private void addDefaults(SearchCriteria sc) {
+        for(SearchableChannel channel : getAvailableChannels().values()) {
+            if(channel.isDefaultChannel()) {
+                sc.addChannel(channel.getId());
+            }
+        }
+    }
+
     public Query doSearch(final SearchCriteria searchCriteria) {
 
         if (availableChannels == null) {
             initChannels();
         }
         if(searchCriteria.getChannels().isEmpty()) {
-            for(SearchableChannel channel : getAvailableChannels().values()) {
-                searchCriteria.addChannel(channel.getId());
-            }
+            addDefaults(searchCriteria);
         }
 
         if(searchCriteria.isReverseGeocode()) {
