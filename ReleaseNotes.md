@@ -26,6 +26,11 @@ JSONHelper: Added a new convenience method createJSONArray(json, bln) to easily 
 Updated MyBatis version from 3.2.7 to 3.4.1.
 New module service-mybatis for common helpers/typehandlers to be used with MyBatis.
 
+### control-base
+
+GetSearchResult action route now supports channels-parameter for client-specified search channels.
+The value is a comma-separated list of channel ids.
+
 ### search-service
 
 Added three new interface methods for SearchableChannel and default implementations for them on the SearchChannel base class:
