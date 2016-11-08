@@ -2,10 +2,6 @@
 
 ## 1.40
 
-### Stats
-
-Improvement for statsgrid.
-
 ### Configuration improvements
 
 Added "oskari.transport.port" property handling so transport configuration can be configured (as oskari.transport.domain and oskari.transport.url)
