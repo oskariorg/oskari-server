@@ -169,6 +169,9 @@ public class JSONHelper {
     }
     
     public static final String getStringFromJSON(final JSONObject data, final String key, final String defaultValue) {
+        if(data == null) {
+            return defaultValue;
+        }
         try {
             final String value = (String) data.get(key);
             if (value != null) {
