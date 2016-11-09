@@ -43,8 +43,17 @@ public class SearchWFSChannelActionHandler extends RestActionHandler {
     }
 
     @Override
+    public void preProcess(ActionParameters params)
+            throws ActionException {
+        super.preProcess(params);
+        // Only admin user
+        params.requireAdminUser();
+    }
+
+    @Override
     public void handleGet(ActionParameters params)
             throws ActionException {
+
         JSONObject response = new JSONObject();
         JSONArray channelsJSONArray = new JSONArray();
         try {
@@ -77,9 +86,6 @@ public class SearchWFSChannelActionHandler extends RestActionHandler {
     @Override
     public void handleDelete(ActionParameters params)
             throws ActionException {
-        // Only admin user
-        params.requireAdminUser();
-
         int channelId = ConversionHelper.getInt(params.getRequiredParam(PARAM_ID), -1);
 
         try {
@@ -96,9 +102,6 @@ public class SearchWFSChannelActionHandler extends RestActionHandler {
     @Override
     public void handlePost(ActionParameters params)
             throws ActionException {
-
-        // Only admin user
-        params.requireAdminUser();
 
         try {
             WFSSearchChannelsConfiguration conf = parseConfig(params);
@@ -117,8 +120,6 @@ public class SearchWFSChannelActionHandler extends RestActionHandler {
     @Override
     public void handlePut(ActionParameters params)
             throws ActionException {
-        // Only admin user
-        params.requireAdminUser();
 
         try {
             WFSSearchChannelsConfiguration conf = parseConfig(params);
