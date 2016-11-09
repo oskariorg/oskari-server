@@ -70,6 +70,9 @@ Added TM35LehtijakoSearchChannel class to allow both reverse geocoding and norma
 
 Added a new module service-search-wfs based on https://github.com/dimenteq/tampere-oskari-server-extension/tree/436550ba3dd7c4f4645ec243487f81d7e1285e08.
 Changed the code to use MyBatis instead of Ibatis for more programmatic setup of database usage.
+This enables WFS-services registered as maplayers to be used as sources for search channels. The frontend bundle to enable
+ configuration is found at Oskari/bundles/tampere/admin-wfs-search-channel. Documentation for using and extending the 
+ functionality will be added to oskari.org in the near future.
 
 ### service-statistics/control-statistics
 

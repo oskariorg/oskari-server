@@ -15,6 +15,7 @@ import fi.nls.oskari.map.data.domain.OskariLayerResource;
 import fi.nls.oskari.map.geometry.WKTHelper;
 import fi.nls.oskari.permission.domain.Resource;
 import fi.nls.oskari.service.OskariComponentManager;
+import fi.nls.oskari.util.JSONHelper;
 import org.geotools.geojson.geom.GeometryJSON;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -94,10 +95,10 @@ public class WFSSearchChannel extends SearchChannel {
 
 
     private void setupDefaults(SearchResultItem item) {
-        // FIXME: should come from config!!
-        item.setVillage("Tampere");
-        item.setDescription("");
-        item.setLocationTypeCode("");
+        JSONObject defaults = config.getConfig().optJSONObject("defaults");
+        item.setVillage(JSONHelper.getStringFromJSON(defaults, "village", ""));
+        item.setDescription(JSONHelper.getStringFromJSON(defaults, "desc", ""));
+        item.setLocationTypeCode(JSONHelper.getStringFromJSON(defaults, "locationType", ""));
     }
 
     public String getId() {
@@ -124,7 +125,10 @@ public class WFSSearchChannel extends SearchChannel {
         }
         String searchStr = searchCriteria.getSearchString();
         log.debug("[WFSSEARCH] Search string: " + searchStr);
-        String maxFeatures = PropertyUtil.get("search.channel.WFSSEARCH_CHANNEL.maxFeatures", "100");
+        int maxFeatures = config.getConfig().optInt("maxFeatures", -1);
+        if(maxFeatures == -1) {
+            maxFeatures = PropertyUtil.getOptional("search.channel.WFSSEARCH_CHANNEL.maxFeatures", -1);
+        }
 
         Map<String, String> urlParams = new HashMap<>();
         urlParams.put("service", "WFS");
@@ -134,11 +138,11 @@ public class WFSSearchChannel extends SearchChannel {
         urlParams.put("typeName", config.getLayerName());
         urlParams.put("srsName", config.getSrs());
 
-        if(maxFeatures != null && !maxFeatures.isEmpty()){
+        if(maxFeatures != -1){
             if(config.getVersion().equals("1.1.0")){
-                urlParams.put("maxFeatures", maxFeatures);
+                urlParams.put("maxFeatures", Integer.toString(maxFeatures));
             } else{
-                urlParams.put("count", maxFeatures);
+                urlParams.put("count", Integer.toString(maxFeatures));
             }
         }
         urlParams.put("Filter", getHandler().createFilter(searchCriteria, config));

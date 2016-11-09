@@ -8,7 +8,7 @@ import fi.nls.oskari.control.ActionParamsException;
 import fi.nls.oskari.control.RestActionHandler;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.search.channel.SimpleAddressWFSSearchHandler;
+import fi.nls.oskari.search.channel.WFSChannelHandler;
 import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.JSONHelper;
@@ -20,6 +20,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @OskariActionRoute("SearchWFSChannel")
 public class SearchWFSChannelActionHandler extends RestActionHandler {
@@ -30,7 +31,7 @@ public class SearchWFSChannelActionHandler extends RestActionHandler {
     private static final String PARAM_LOCALE = "locale";
     private static final String PARAM_PARAMS_FOR_SEARCH = "paramsForSearch";
     private static final String PARAM_IS_DEFAULT = "isDefault";
-    private static final String PARAM_IS_ADDRESS = "isAddress";
+    private static final String PARAM_CONFIG = "config";
 
     private WFSSearchChannelsService channelService;
 
@@ -41,8 +42,17 @@ public class SearchWFSChannelActionHandler extends RestActionHandler {
     }
 
     @Override
+    public void preProcess(ActionParameters params)
+            throws ActionException {
+        super.preProcess(params);
+        // Only admin user
+        params.requireAdminUser();
+    }
+
+    @Override
     public void handleGet(ActionParameters params)
             throws ActionException {
+
         JSONObject response = new JSONObject();
         JSONArray channelsJSONArray = new JSONArray();
         try {
@@ -62,15 +72,19 @@ public class SearchWFSChannelActionHandler extends RestActionHandler {
             throw new ActionParamsException("Couldn't get WFS search channels");
         }
         JSONHelper.putValue(response, "channels", channelsJSONArray);
+        JSONArray handlers = new JSONArray();
+        Map<String, WFSChannelHandler> handlerMap =
+                OskariComponentManager.getComponentsOfType(WFSChannelHandler.class);
+        for(String id: handlerMap.keySet()) {
+            handlers.put(id);
+        }
+        JSONHelper.putValue(response, "handlers", handlers);
         ResponseHelper.writeResponse(params, response);
     }
 
     @Override
     public void handleDelete(ActionParameters params)
             throws ActionException {
-        // Only admin user
-        params.requireAdminUser();
-
         int channelId = ConversionHelper.getInt(params.getRequiredParam(PARAM_ID), -1);
 
         try {
@@ -87,9 +101,6 @@ public class SearchWFSChannelActionHandler extends RestActionHandler {
     @Override
     public void handlePost(ActionParameters params)
             throws ActionException {
-
-        // Only admin user
-        params.requireAdminUser();
 
         try {
             WFSSearchChannelsConfiguration conf = parseConfig(params);
@@ -108,8 +119,6 @@ public class SearchWFSChannelActionHandler extends RestActionHandler {
     @Override
     public void handlePut(ActionParameters params)
             throws ActionException {
-        // Only admin user
-        params.requireAdminUser();
 
         try {
             WFSSearchChannelsConfiguration conf = parseConfig(params);
@@ -131,13 +140,7 @@ public class SearchWFSChannelActionHandler extends RestActionHandler {
         conf.setIsDefault(ConversionHelper.getBoolean(params.getRequiredParam(PARAM_IS_DEFAULT), false));
         conf.setParamsForSearch(new JSONArray(params.getRequiredParam(PARAM_PARAMS_FOR_SEARCH)));
         conf.setLocale(new JSONObject(params.getRequiredParam(PARAM_LOCALE)));
-
-        // TODO: setup is_address param to have handler from frontend input instead of this boolean
-        JSONObject config = new JSONObject();
-        if(params.getHttpParam(PARAM_IS_ADDRESS, false)) {
-            JSONHelper.putValue(config, "handler", "SimpleAddress");
-        }
-        conf.setConfig(config);
+        conf.setConfig(new JSONObject(params.getRequiredParam(PARAM_CONFIG)));
         return conf;
     }
 }

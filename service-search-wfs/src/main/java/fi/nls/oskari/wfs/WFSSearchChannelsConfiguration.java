@@ -86,6 +86,9 @@ public class WFSSearchChannelsConfiguration {
 
 
 	public JSONObject getLocale() {
+		if(locale == null) {
+			locale = new JSONObject();
+		}
 		return locale;
 	}
 
@@ -96,6 +99,9 @@ public class WFSSearchChannelsConfiguration {
 
 
 	public JSONObject getConfig() {
+		if(config == null) {
+			config = new JSONObject();
+		}
 		return config;
 	}
 
@@ -106,6 +112,9 @@ public class WFSSearchChannelsConfiguration {
 
 
 	public JSONArray getParamsForSearch() {
+		if(paramsForSearch == null) {
+			paramsForSearch = new JSONArray();
+		}
 		return paramsForSearch;
 	}
 
