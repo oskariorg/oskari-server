@@ -9,6 +9,7 @@ import fi.nls.oskari.control.RestActionHandler;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.search.channel.SimpleAddressWFSSearchHandler;
+import fi.nls.oskari.search.channel.WFSChannelHandler;
 import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.JSONHelper;
@@ -20,6 +21,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @OskariActionRoute("SearchWFSChannel")
 public class SearchWFSChannelActionHandler extends RestActionHandler {
@@ -62,6 +64,13 @@ public class SearchWFSChannelActionHandler extends RestActionHandler {
             throw new ActionParamsException("Couldn't get WFS search channels");
         }
         JSONHelper.putValue(response, "channels", channelsJSONArray);
+        JSONArray handlers = new JSONArray();
+        Map<String, WFSChannelHandler> handlerMap =
+                OskariComponentManager.getComponentsOfType(WFSChannelHandler.class);
+        for(String id: handlerMap.keySet()) {
+            handlers.put(id);
+        }
+        JSONHelper.putValue(response, "handlers", handlers);
         ResponseHelper.writeResponse(params, response);
     }
 
