@@ -9,8 +9,6 @@ import redis.clients.jedis.JedisPoolConfig;
 import redis.clients.jedis.exceptions.JedisConnectionException;
 
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Set;
 
 /**
@@ -75,6 +73,10 @@ public class JedisManager {
      * @return Jedis instance or ServiceRuntimeExceptionin
      */
     public Jedis getJedis() {
+        return getJedis(true);
+    }
+
+    public Jedis getJedis(boolean throwException) {
         try {
             return pool.getResource();
         } catch (Exception e) {
@@ -82,11 +84,12 @@ public class JedisManager {
             if (e.getCause() != null) {
                 log.debug(e, "Cause:", e.getCause().getMessage());
             }
-
-            throw new ServiceRuntimeException("Getting Jedis connection from the pool failed: " + e.getMessage(),
-                    e.getCause(), ERROR_REDIS_COMMUNICATION_FAILURE);
-
+            if(throwException) {
+                throw new ServiceRuntimeException("Getting Jedis connection from the pool failed: " + e.getMessage(),
+                        e.getCause(), ERROR_REDIS_COMMUNICATION_FAILURE);
+            }
         }
+        return null;
     }
 
     /**
@@ -125,7 +128,7 @@ public class JedisManager {
      * @return string
      */
     public static String get(String key, boolean throwException) {
-        Jedis jedis = instance.getJedis();
+        Jedis jedis = instance.getJedis(throwException);
         if (jedis == null) return null;
 
         try {
