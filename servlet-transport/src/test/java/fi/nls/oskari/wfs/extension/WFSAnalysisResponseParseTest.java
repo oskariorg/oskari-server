@@ -19,6 +19,7 @@ import fi.nls.oskari.wfs.WFSParser;
 import fi.nls.oskari.wfs.pojo.WFSLayerStore;
 import fi.nls.oskari.work.JobType;
 import fi.nls.test.util.ResourceHelper;
+import fi.nls.test.util.TestHelper;
 import org.custommonkey.xmlunit.XMLUnit;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureIterator;
@@ -60,7 +61,7 @@ public class WFSAnalysisResponseParseTest {
         XMLUnit.setIgnoreDiffBetweenTextAndCDATA(true);
         XMLUnit.setIgnoreAttributeOrder(true);
 
-       // assumeTrue(TestHelper.redisAvailable());
+        assumeTrue(TestHelper.redisAvailable());
 		JedisManager.connect(10, "localhost", 6379);
 
         Properties properties = new Properties();
