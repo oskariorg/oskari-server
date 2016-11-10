@@ -41,7 +41,7 @@ public class SotkaIndicatorSelectorsFetcher {
             // The SotkaNET sometimes responds with HTTP 500, for example. For these cases, we should just
             // remove the indicators in question.
             LOG.error("There was an error fetching SotkaNET indicator metadata for indicator: "
-                    + indicatorId + ", removing from Oskari.");
+                    + indicatorId + ", removing from Oskari:", e.getMessage());
             return null;
         }
     }
