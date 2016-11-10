@@ -5,6 +5,7 @@ import fi.nls.oskari.annotation.Oskari;
 import fi.nls.oskari.domain.SelectItem;
 import fi.nls.oskari.service.OskariComponent;
 import fi.nls.oskari.wfs.WFSSearchChannelsConfiguration;
+import org.apache.commons.lang.StringEscapeUtils;
 import org.json.JSONArray;
 
 import java.util.List;
@@ -30,10 +31,9 @@ public class WFSChannelHandler extends OskariComponent {
 
         for(int j=0;j<params.length();j++){
             String param = params.optString(j);
-            // FIXME: escape param and searchStr
             filter.append("<PropertyIsLike wildCard='*' singleChar='.' escape='!' matchCase='false'>" +
-                    "<PropertyName>" + param + "</PropertyName><Literal>*" + searchStr +
-                    "*</Literal></PropertyIsLike>"
+                    "<PropertyName>" + StringEscapeUtils.escapeXml(param) + "</PropertyName><Literal>*" +
+                    StringEscapeUtils.escapeXml(searchStr) + "*</Literal></PropertyIsLike>"
             );
         }
 
