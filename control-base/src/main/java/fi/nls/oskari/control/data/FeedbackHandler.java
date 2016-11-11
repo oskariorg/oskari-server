@@ -19,8 +19,6 @@ import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.util.ResponseHelper;
 import org.json.JSONObject;
 
-import java.util.Iterator;
-
 import static fi.nls.oskari.control.ActionConstants.*;
 
 
@@ -33,8 +31,7 @@ public class FeedbackHandler extends ActionHandler {
 
     static final String API_PARAM_METHOD = "method";
     static final String API_PARAM_SERVICEID = "serviceId";
-    static final String API_PARAM_POSTSERVICEREQUEST = "postServiceRequest";
-    static final String API_PARAM_GETSERVICEREQUEST = "getServiceRequests";
+    static final String API_PARAM_PAYLOAD = "payload";
     static final String KEY_BUNDLENAME = "feedbackService";
     static final String KEY_EXTENSIONS = "extensions";
     static final String KEY_KEY = "key";
@@ -114,7 +111,7 @@ public class FeedbackHandler extends ActionHandler {
                 break;
             case ServiceParams.API_METHOD_POST_FEEDBACK:
                 serviceParams.setSourceEpsg(params.getRequiredParam(PARAM_SRS));
-                final String postServiceRequest = params.getRequiredParam(API_PARAM_POSTSERVICEREQUEST);
+                final String postServiceRequest = params.getRequiredParam(API_PARAM_PAYLOAD);
                 serviceParams.setPostServiceRequest(JSONHelper.createJSONObject(postServiceRequest));
                 // Default is, that key is needed for posting data, but it is not always so
                 serviceParams.setApiKey(JSONHelper.getStringFromJSON(fbMetadata, KEY_KEY, null));
@@ -127,7 +124,7 @@ public class FeedbackHandler extends ActionHandler {
                 break;
             case ServiceParams.API_METHOD_GET_FEEDBACK:
                 serviceParams.setSourceEpsg(params.getRequiredParam(PARAM_SRS));
-                final String getServiceRequests = params.getRequiredParam(API_PARAM_GETSERVICEREQUEST);
+                final String getServiceRequests = params.getRequiredParam(API_PARAM_PAYLOAD);
                 serviceParams.setGetServiceRequests(JSONHelper.createJSONObject(getServiceRequests));
                 if (serviceParams.getGetServiceRequests() == null) {
                     // json corrupted/parsing failed
