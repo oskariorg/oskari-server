@@ -4,8 +4,7 @@ import static fi.nls.oskari.control.ActionConstants.*;
 
 import fi.nls.oskari.control.ActionParamsException;
 import fi.nls.test.control.JSONActionRouteTest;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -69,7 +68,6 @@ public class CoordinatesHandlerTest extends JSONActionRouteTest {
 
         assertEquals(PARAM_LAT, 6822546.781459001, getResponseJSON().getDouble(PARAM_LAT), 0.0);
         assertEquals(PARAM_LON, 327578.7810839222, getResponseJSON().getDouble(PARAM_LON), 0.0);
-
     }
     @Test
     public void testHandleAction3067to4326()

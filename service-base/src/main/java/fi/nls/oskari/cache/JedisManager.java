@@ -73,7 +73,7 @@ public class JedisManager {
      * @return Jedis instance or ServiceRuntimeExceptionin
      */
     public Jedis getJedis() {
-        return getJedis(true);
+        return getJedis(false);
     }
 
     public Jedis getJedis(boolean throwException) {

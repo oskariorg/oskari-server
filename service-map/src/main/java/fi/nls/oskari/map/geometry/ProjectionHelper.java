@@ -1,12 +1,10 @@
 package fi.nls.oskari.map.geometry;
 
-import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
 import fi.nls.oskari.domain.geo.Point;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.util.JSONHelper;
-import org.geotools.factory.GeoTools;
 import org.geotools.geojson.geom.GeometryJSON;
 import org.geotools.geometry.DirectPosition2D;
 import org.geotools.geometry.jts.JTS;
@@ -16,11 +14,9 @@ import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.cs.AxisDirection;
 import org.opengis.referencing.operation.MathTransform;
 
-import javax.naming.InitialContext;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
-import java.io.OutputStream;
 
 /**
  * Helper for transformations
