@@ -8,8 +8,8 @@ import fi.nls.oskari.control.ActionParamsException;
 import fi.nls.oskari.domain.geo.Point;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.map.geometry.DefaultPointTransformer;
 import fi.nls.oskari.map.geometry.PointTransformer;
-import fi.nls.oskari.map.geometry.ProjectionHelper;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.util.ResponseHelper;
@@ -81,7 +81,7 @@ public class CoordinatesHandler extends ActionHandler {
 
     private PointTransformer getTransformer() {
         if(service == null) {
-            service = new ProjectionHelper();
+            service = new DefaultPointTransformer();
         }
         return service;
     }

@@ -61,7 +61,6 @@ public class CoordinatesHandlerTest extends JSONActionRouteTest {
     }
 
     @Test
-    @Ignore
     public void testHandleAction4326to3067()
             throws Exception {
         Map<String, String> params = getValidParams();
@@ -71,7 +70,6 @@ public class CoordinatesHandlerTest extends JSONActionRouteTest {
         assertEquals(PARAM_LON, 327578.7810839222, getResponseJSON().getDouble(PARAM_LON), 0.0);
     }
     @Test
-    @Ignore
     public void testHandleAction3067to4326()
             throws Exception {
         Map<String, String> params = new HashMap<>();
