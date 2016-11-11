@@ -59,6 +59,7 @@ public class CoordinatesHandler extends ActionHandler {
         } catch (Exception e) {
             LOG.error(e, "Error initalizing projection library for classname:", PROP_LIBRARY_CLASS,
                     " - Make sure it's available in the classpath.");
+            service = getTransformer();
         }
     }
 
@@ -77,28 +78,14 @@ public class CoordinatesHandler extends ActionHandler {
             CoordinateReferenceSystem sourceCrs = CRS.decode(srs);
             CoordinateReferenceSystem targetCrs = CRS.decode(target);
 
-            //seems, that at least 4326 -> 3067 doesn't work if we provide lon / lat in correct order. swap. *sigh*
-            if ("EPSG:4326".equals(srs)) {
-                double lon = point.getLon();
-                double lat = point.getLat();
-                point.setLat(lon);
-                point.setLon(lat);
-            }
-
             MathTransform mathTransform = CRS.findMathTransform(sourceCrs, targetCrs, lenient);
             DirectPosition2D srcDirectPosition2D = new DirectPosition2D(sourceCrs, point.getLon(), point.getLat());
             DirectPosition2D destDirectPosition2D = new DirectPosition2D(targetCrs);
             mathTransform.transform(srcDirectPosition2D, destDirectPosition2D);
-            Point value = null;
+            Point value;
 
-            //We probably wanna swap lonlat order if the source's axis order differs from target's.
-            //Unless when transforming from 4326. *sigh*
-            if (!"EPSG:4326".equals(srs)) {
-                if (ProjectionHelper.isFirstAxisNorth(sourceCrs) != ProjectionHelper.isFirstAxisNorth(targetCrs)) {
-                    value = new Point(destDirectPosition2D.y, destDirectPosition2D.x);
-                } else {
-                    value = new Point(destDirectPosition2D.x, destDirectPosition2D.y);
-                }
+            if (ProjectionHelper.isFirstAxisNorth(sourceCrs) != ProjectionHelper.isFirstAxisNorth(targetCrs)) {
+                value = new Point(destDirectPosition2D.y, destDirectPosition2D.x);
             } else {
                 value = new Point(destDirectPosition2D.x, destDirectPosition2D.y);
             }
