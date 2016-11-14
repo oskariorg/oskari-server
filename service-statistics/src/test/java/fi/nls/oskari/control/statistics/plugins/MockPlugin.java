@@ -8,15 +8,11 @@ import fi.nls.oskari.domain.User;
 import fi.nls.oskari.service.OskariComponent;
 import org.json.JSONObject;
 
-public class MockPlugin implements StatisticalDatasourcePlugin {
+public class MockPlugin extends AbstractStatisticalDatasourcePlugin {
 
     @Override
     public List<StatisticalIndicator> getIndicators(User user) {
         return null;
-    }
-
-    @Override
-    public void init(StatisticalDatasource source) {
     }
 
     @Override

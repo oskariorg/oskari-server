@@ -1,22 +1,18 @@
 package fi.nls.oskari.control.statistics.plugins.user;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import fi.mml.map.mapwindow.service.db.UserIndicatorService;
 import fi.mml.map.mapwindow.service.db.UserIndicatorServiceImpl;
-import fi.nls.oskari.annotation.Oskari;
-import fi.nls.oskari.control.statistics.plugins.StatisticalDatasourcePlugin;
+import fi.nls.oskari.control.statistics.plugins.AbstractStatisticalDatasourcePlugin;
 import fi.nls.oskari.control.statistics.plugins.StatisticalIndicator;
-import fi.nls.oskari.control.statistics.plugins.db.StatisticalDatasource;
 import fi.nls.oskari.domain.User;
 import fi.nls.oskari.domain.map.indicator.UserIndicator;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.service.OskariComponent;
-import org.json.JSONObject;
 
-public class UserIndicatorsStatisticalDatasourcePlugin implements StatisticalDatasourcePlugin {
+import java.util.ArrayList;
+import java.util.List;
+
+public class UserIndicatorsStatisticalDatasourcePlugin extends AbstractStatisticalDatasourcePlugin {
     private final static Logger LOG = LogFactory.getLogger(UserIndicatorsStatisticalDatasourcePlugin.class);
     private static UserIndicatorService userIndicatorService = new UserIndicatorServiceImpl();
 
@@ -40,10 +36,6 @@ public class UserIndicatorsStatisticalDatasourcePlugin implements StatisticalDat
             indicators.add(new UserStatisticalIndicator(userIndicator));
         }
         return indicators;
-    }
-
-    @Override
-    public void init(StatisticalDatasource source) {
     }
 
     @Override

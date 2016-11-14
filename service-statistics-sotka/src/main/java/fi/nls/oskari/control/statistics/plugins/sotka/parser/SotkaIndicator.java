@@ -7,16 +7,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import fi.nls.oskari.control.statistics.plugins.*;
 import fi.nls.oskari.control.statistics.plugins.sotka.SotkaConfig;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import fi.nls.oskari.control.statistics.plugins.IndicatorValueType;
-import fi.nls.oskari.control.statistics.plugins.StatisticalIndicator;
-import fi.nls.oskari.control.statistics.plugins.StatisticalIndicatorLayer;
-import fi.nls.oskari.control.statistics.plugins.StatisticalIndicatorSelector;
-import fi.nls.oskari.control.statistics.plugins.StatisticalIndicatorSelectors;
 import fi.nls.oskari.control.statistics.plugins.sotka.SotkaIndicatorSelectorsFetcher;
 import fi.nls.oskari.control.statistics.plugins.sotka.SotkaIndicatorValuesFetcher;
 import fi.nls.oskari.control.statistics.plugins.sotka.SotkaStatisticalDatasourcePlugin;
@@ -26,7 +22,7 @@ import fi.nls.oskari.log.Logger;
 /**
  * This class maps the SotkaNET indicator information to Oskari data model.
  */
-public class SotkaIndicator implements StatisticalIndicator {
+public class SotkaIndicator extends AbstractStatisticalIndicator {
     private final static Logger LOG = LogFactory.getLogger(SotkaIndicator.class);
     private String id;
     private Map<String, String> localizedName;

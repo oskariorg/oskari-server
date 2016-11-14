@@ -65,19 +65,15 @@ public class GetIndicatorMetadataHandler extends ActionHandler {
             }
         }
         try {
-            for (StatisticalIndicator indicator : plugin.getIndicators(user)) {
-                if (indicator.getId().equals(indicatorId)) {
-                    JSONObject indicatorMetadata = toJSON(indicator);
-                    // Note that there is an another layer of caches in the plugins doing the web queries.
-                    // Two layers are necessary, because deserialization and conversion to the internal data model
-                    // is pretty heavy operation.
-                    if (plugin.canCache()) {
-                        JedisManager.setex(cacheKey, JedisManager.EXPIRY_TIME_DAY, indicatorMetadata.toString());
-                    }
-                    return indicatorMetadata;
-                }
+            StatisticalIndicator indicator = plugin.getIndicator(user, indicatorId);
+            JSONObject indicatorMetadata = toJSON(indicator);
+            // Note that there is an another layer of caches in the plugins doing the web queries.
+            // Two layers are necessary, because deserialization and conversion to the internal data model
+            // is pretty heavy operation.
+            if (plugin.canCache() && indicatorMetadata != null) {
+                JedisManager.setex(cacheKey, JedisManager.EXPIRY_TIME_DAY, indicatorMetadata.toString());
             }
-            return null;
+            return indicatorMetadata;
         } catch (JSONException e) {
             throw new ActionException("Something went wrong in getting indicator metadata.", e);
         }

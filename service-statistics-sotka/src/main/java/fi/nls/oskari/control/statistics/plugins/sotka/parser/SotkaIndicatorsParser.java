@@ -10,11 +10,10 @@ import org.json.JSONException;
 
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
-import org.json.JSONObject;
 
 public class SotkaIndicatorsParser {
     private final static Logger LOG = LogFactory.getLogger(SotkaIndicatorsParser.class);
-    private SotkaConfig config = new SotkaConfig();
+    private SotkaConfig config;
 
     public void setConfig(SotkaConfig obj) {
         if(obj == null) {

@@ -76,7 +76,7 @@ public class GetIndicatorListHandler extends ActionHandler {
         //plugin.getIndicators(user);
         final JSONArray indicators = new JSONArray();
         JSONHelper.putValue(response, KEY_INDICATORS, indicators);
-        for (StatisticalIndicator indicator : plugin.getIndicators(user)) {
+        for (StatisticalIndicator indicator : plugin.getIndicators(user, true)) {
             if(indicator.getLayers() != null && indicator.getLayers().size()>0) {
                 indicators.put(toJSON(indicator));
             }
