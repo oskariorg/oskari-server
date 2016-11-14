@@ -92,7 +92,6 @@ public class GetCSWDataHandler extends ActionHandler {
         } catch (Exception e) {
             throw new ActionException("Failed to query service: " + e.getMessage());
         }
-        
         JSONObject result;
         if (record != null) {
             prefixImageFilenames(record, uuid, lang);
@@ -125,7 +124,6 @@ public class GetCSWDataHandler extends ActionHandler {
             List<CSWIsoRecord.BrowseGraphic> gs = i.getBrowseGraphics();
             for (CSWIsoRecord.BrowseGraphic g : gs) {
                 String fname = g.getFileName();
-                
                 final boolean replaceImageURL = fname != null
                         && !fname.isEmpty()
                         && !fname.startsWith("http://");
