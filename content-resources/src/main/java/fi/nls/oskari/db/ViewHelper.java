@@ -16,7 +16,10 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -138,6 +141,62 @@ public class ViewHelper {
         }
         for(Integer id : idSet) {
             layers.put(JSONHelper.createJSONObject("id", id));
+        }
+    }
+
+    public static  ArrayList<Long> getUserAndDefaultViewIds(Connection connection) throws Exception {
+        ArrayList<Long> ids = new ArrayList<>();
+
+        try ( final PreparedStatement statement =
+                      connection.prepareStatement("SELECT id FROM portti_view " +
+                              "WHERE type='DEFAULT' OR type='USER'")) {
+            ResultSet rs = statement.executeQuery();
+            while(rs.next()) {
+                ids.add(rs.getLong("id"));
+            }
+        }
+        return ids;
+    }
+
+    public static boolean viewContainsBundle(Connection connection, String bundle, Long viewId)
+            throws Exception {
+        final PreparedStatement statement =
+                connection.prepareStatement("SELECT * FROM portti_view_bundle_seq " +
+                        "WHERE bundle_id = (SELECT id FROM portti_bundle WHERE name=?) " +
+                        "AND view_id=?");
+        statement.setString(1,bundle);
+        statement.setLong(2, viewId);
+        try {
+            ResultSet rs = statement.executeQuery();
+            return rs.next();
+        } finally {
+            statement.close();
+        }
+    }
+
+    public static void addBundleWithDefaults(Connection connection, Long viewId, String bundleid) throws SQLException {
+        final PreparedStatement statement =
+                connection.prepareStatement("INSERT INTO portti_view_bundle_seq" +
+                        "(view_id, bundle_id, seqno, config, state, startup, bundleinstance) " +
+                        "VALUES (" +
+                        "?, " +
+                        "(SELECT id FROM portti_bundle WHERE name=?), " +
+                        "(SELECT max(seqno)+1 FROM portti_view_bundle_seq WHERE view_id=?), " +
+                        "(SELECT startup FROM portti_bundle WHERE name=?), " +
+                        "(SELECT startup FROM portti_bundle WHERE name=?),  " +
+                        "(SELECT startup FROM portti_bundle WHERE name=?), " +
+                        "?)");
+        try {
+            statement.setLong(1, viewId);
+            statement.setString(2, bundleid);
+            statement.setLong(3, viewId);
+            statement.setString(4, bundleid);
+            statement.setString(5, bundleid);
+            statement.setString(6, bundleid);
+            statement.setString(7, bundleid);
+            statement.execute();
+        } finally {
+            statement.close();
         }
     }
 }
