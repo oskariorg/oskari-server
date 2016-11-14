@@ -1,5 +1,13 @@
 # Migration guide
 
+## 1.40.0
+
+The sample application has been updated to include the new statistics UI. If you are using the sample-application flyway
+module (have "sample" included in oskari-ext.properties "db.additional.modules" property) and would like to NOT have 
+this bundle included, you can add a property: 
+
+    flyway.sample.1_0_8.skip=true
+
 ## 1.39.0
 
 This update includes a forced migration of publish template to Openlayers 3 based map. The possible Openlayers 2 based 
