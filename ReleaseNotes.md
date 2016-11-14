@@ -16,6 +16,12 @@ Now all available search channels that return true from SearchableChannel.isDefa
     # comma-separated list of search channel ids used by GetSearchResult
     actionhandler.GetSearchResult.channels=OPENSTREETMAP_CHANNEL
 
+Note! if actionhandler.GetSearchResult.channels is used any additional default channels are not included in the search (like wfs-channels).
+To get wfs-channels working you need to blacklist individual channels you don't want to include instead of whitelisting:
+
+    # blacklist single channel with id "CHANNEL_ID" 
+    search.channel.CHANNEL_ID.isDefault=false
+
 ### Utils
 
 IOHelper: Added a new convenience method setupBasicAuth(connection, user, pass) which sets up basic auth for the given connection.
