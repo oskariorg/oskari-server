@@ -55,21 +55,29 @@ public class SotkaIndicator extends AbstractStatisticalIndicator {
      * @return true for valid parsing, false for validation errors.
      */
     public boolean parse(JSONObject jsonObject) {
+        return parse(jsonObject, true);
+    }
+    public boolean parse(JSONObject jsonObject, boolean includeMetadata) {
         try {
             this.id = String.valueOf(jsonObject.getInt("id"));
-            // Note: Organization id is ignored here. At the moment it doesn't make sense to add to Oskari data model.
-            // If in the future it is added, the id must be combined with the plugin id to make a global id of the source.
-            // Mappings between the same source, different plugin are nontrivial.
-            this.localizedSource = toLocalizationMap(jsonObject.getJSONObject("organization").getJSONObject("title"));
             this.localizedName = toLocalizationMap(jsonObject.getJSONObject("title"));
             // SotkaNET gives indicators with integer and float values. In the future this might change.
             if (jsonObject.getJSONObject("classifications").has("region")) {
                 this.layers = toIndicatorLayers(jsonObject.getJSONObject("classifications").getJSONObject("region")
                     .getJSONArray("values"), IndicatorValueType.FLOAT, this.id, sotkaLayersToOskariLayers);
+                this.valid = !this.layers.isEmpty();
             } else {
                 LOG.error("Region missing from indicator: " + this.id + ": " + String.valueOf(this.localizedName));
                 this.valid = false;
             }
+            if(!includeMetadata) {
+                this.metadataFetched = true;
+                return this.valid;
+            }
+            // Note: Organization id is ignored here. At the moment it doesn't make sense to add to Oskari data model.
+            // If in the future it is added, the id must be combined with the plugin id to make a global id of the source.
+            // Mappings between the same source, different plugin are nontrivial.
+            this.localizedSource = toLocalizationMap(jsonObject.getJSONObject("organization").getJSONObject("title"));
             // Note that the following will just skip the "region" part already projected into layers.
             this.selectors = toSotkaIndicatorSelectors(jsonObject.getJSONObject("classifications"));
             // TODO: Add information about the "interpretation", "limits", "legislation", and source "description" also here.

@@ -34,14 +34,19 @@ public class SotkaStatisticalDatasourcePlugin extends AbstractStatisticalDatasou
 
     @Override
     public List<? extends StatisticalIndicator> getIndicators(User user) {
+        return getIndicators(user, false);
+    }
+    @Override
+    public List<? extends StatisticalIndicator> getIndicators(User user, boolean noMetadata) {
+        boolean includeMetadata = !noMetadata;
         try {
             final String cacheKey = "stats:" + config.getId() + ":indicatorlist";
             final String cachedData = JedisManager.get(cacheKey + config.getUrl());
 
             if (cachedData != null) {
-                return indicatorsParser.parse(cachedData, layerMappings);
+                return indicatorsParser.parse(cachedData, layerMappings, includeMetadata);
             }
-            
+
             // First getting general information of all the indicator layers.
             // Note that some mandatory information about the layers is not given here,
             // for example the year range, but must be requested separately for each indicator.
@@ -51,7 +56,7 @@ public class SotkaStatisticalDatasourcePlugin extends AbstractStatisticalDatasou
 
             JedisManager.setex(cacheKey, JedisManager.EXPIRY_TIME_DAY, jsonResponse);
             // We will later need to add the year range information to the preliminary information using separate requests.
-            return indicatorsParser.parse(jsonResponse, layerMappings);
+            return indicatorsParser.parse(jsonResponse, layerMappings, includeMetadata);
         } catch (APIException e) {
             throw e;
         } catch (Exception e) {
