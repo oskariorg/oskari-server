@@ -2,11 +2,25 @@
 
 ## 1.40.0
 
-The sample application has been updated to include the new statistics UI. If you are using the sample-application flyway
-module (have "sample" included in oskari-ext.properties "db.additional.modules" property) and would like to NOT have 
+The sample application can be updated to include the new statistics UI. If you are using the sample-application flyway
+module (have "sample" included in oskari-ext.properties "db.additional.modules" property) and would like to have 
 this bundle included, you can add a property: 
 
-    flyway.sample.1_0_8.skip=true
+    flyway.sample.1_0_8.skip=false 
+
+This functionality is opt-in with the configuration since it needs additional manual configuration for datasources and 
+maplayers to use as regionsets. The frontend minifierAppSetup.jsons for sample/servlet app include references to the
+ frontend code so to optimize the filesize clients need to download you might want to remove them if not using the 
+ statistics functionality. 
+
+The sample application will also add more zoom-levels for the configuration. All views except published maps with
+ EPSG:4326 will be have the resolutions (zoom-levels) set to: 
+ 
+    [0.3515625,0.17578125,0.087890625,0.0439453125,0.02197265625,0.010986328125,0.0054931640625,0.00274658203125,0.001373291015625,0.0006866455078125,0.00034332275390625,0.000171661376953125,0.0000858306884765625,0.00004291534423828125,0.000021457672119140625,0.000010728836059570312,0.000005364418029785156,0.000002682209014892578]
+
+You can opt-out of the resolutions change by adding a property in oskari-ext.properties:
+
+    flyway.sample.1_0_9.skip=true
 
 ## 1.39.0
 
