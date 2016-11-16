@@ -1,5 +1,9 @@
 # Release Notes
 
+## 1.41
+
+OpenTripPlanner defaults changed: max walk distance has been updated from 1000 to 1000000.
+
 ## 1.40
 
 ### Configuration improvements
