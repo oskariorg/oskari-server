@@ -15,6 +15,8 @@ import org.opengis.referencing.operation.TransformException;
 
 import javax.xml.stream.FactoryConfigurationError;
 import javax.xml.stream.XMLStreamException;
+
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -35,6 +37,12 @@ public class WebServiceMapProducerResourceTest {
 
     {
         runner.setClientInfo(clientInfo);
+    }
+
+    @Before
+    public void setupTestOutputDirectory() {
+        File testOutputDir = new File("test-output");
+        testOutputDir.mkdir();
     }
 
     @Before
