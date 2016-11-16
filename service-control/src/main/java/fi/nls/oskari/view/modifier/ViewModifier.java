@@ -31,6 +31,8 @@ public abstract class ViewModifier {
     public static final String BUNDLE_COORDINATETOOL = "coordinatetool";
     public static final String BUNDLE_PUBLISHEDGRID = "publishedgrid";
     public static final String BUNDLE_STATSGRID = "statsgrid";
+    public static final String BUNDLE_FEEDBACKSERVICE = "feedbackService";
+    public static final String BUNDLE_RPC = "rpc";
 
     public static final String KEY_EAST = "east";
     public static final String KEY_NORTH = "north";

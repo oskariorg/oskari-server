@@ -99,12 +99,12 @@ public class PxwebStatisticalIndicatorLayer implements StatisticalIndicatorLayer
     @Override
     public Map<String, IndicatorValue> getIndicatorValues(StatisticalIndicatorSelectors selectors) {
         Map<String, IndicatorValue> values = new HashMap<>();
-        String url = baseUrl + "/" + indicatorId;
+        String url = IOHelper.fixPath(baseUrl + "/" + indicatorId);
         JSONArray query = new JSONArray();
         JSONObject payload = JSONHelper.createJSONObject("query", query);
         for (StatisticalIndicatorSelector selector : selectors.getSelectors()) {
             if (regionKey.equalsIgnoreCase(selector.getId())) {
-                // skip Alue
+                // skip the region property
                 continue;
             }
             JSONObject param = new JSONObject();

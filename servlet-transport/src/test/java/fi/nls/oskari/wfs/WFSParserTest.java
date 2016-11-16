@@ -8,6 +8,7 @@ import fi.nls.oskari.wfs.util.HttpHelper;
 import fi.nls.oskari.work.JobType;
 import org.geotools.feature.FeatureCollection;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
@@ -52,6 +53,7 @@ public class WFSParserTest {
     }
 
 	@Test
+	@Ignore("Ignored because service is down and build can't complete with http-request in performed against live site")
 	public void testParser() {
 
         // check that we have http connectivity (correct proxy settings etc)
@@ -64,6 +66,7 @@ public class WFSParserTest {
 		String payload = WFSCommunicator.createRequestPayload(type, layer, session, bounds, null);
 
 		// request (maplayer_id 216)
+		// FIXME: instead of making actual http request, record an expected response and parse it.
         BufferedReader response = HttpHelper.postRequestReader(this.layer.getURL(), "", payload, this.layer.getUsername(), this.layer.getPassword());
 		assertTrue("Should get valid response", response != null);
 

@@ -1,5 +1,8 @@
 package fi.mml.portti.service.search;
 
+import fi.nls.oskari.domain.User;
+import fi.nls.oskari.service.ServiceException;
+import fi.nls.oskari.service.UserService;
 import fi.nls.oskari.util.PropertyUtil;
 
 import java.io.Serializable;
@@ -12,6 +15,7 @@ public class SearchCriteria implements Serializable {
     private static final long serialVersionUID = -3217931790577562692L;
     private final Map<String, Object> parameters = new HashMap<String, Object>();
     private String locale = PropertyUtil.getDefaultLanguage();
+    private User user;
     /**
      * our search string
      */
@@ -33,7 +37,21 @@ public class SearchCriteria implements Serializable {
     private List<String> channels;
 
     public SearchCriteria() {
+        this(null);
+    }
+
+    public SearchCriteria(User user) {
         channels = new ArrayList<>();
+        this.user = user;
+        if(user == null) {
+            try {
+                this.user = UserService.getInstance().getGuestUser();
+            } catch (ServiceException ignored) {}
+        }
+    }
+
+    public User getUser() {
+        return user;
     }
 
     public void addParam(final String key, final Object value) {
@@ -64,6 +82,8 @@ public class SearchCriteria implements Serializable {
     public double getLat() {
         return lat;
     }
+
+
 
     /**
      * Returns true if search should be done using given channel

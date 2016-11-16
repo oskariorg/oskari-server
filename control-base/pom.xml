@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>fi.nls.oskari</groupId>
 		<artifactId>oskari-parent</artifactId>
-        <version>1.39.0</version>
+        <version>1.40.0</version>
 	</parent>
 
     <groupId>fi.nls.oskari.service</groupId>
@@ -19,6 +19,11 @@
             <groupId>fi.nls.oskari.service</groupId>
             <artifactId>oskari-control</artifactId>
         </dependency>
+        <dependency>
+            <groupId>fi.nls.oskari.service</groupId>
+            <artifactId>oskari-search-wfs</artifactId>
+        </dependency>
+
         <dependency>
             <groupId>fi.nls.oskari.service</groupId>
             <artifactId>oskari-myplaces</artifactId>

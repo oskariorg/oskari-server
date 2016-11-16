@@ -1,6 +1,7 @@
 package fi.nls.oskari.control.statistics.plugins.pxweb.parser;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import fi.nls.oskari.cache.JedisManager;
 import fi.nls.oskari.control.statistics.plugins.StatisticalIndicatorSelector;
 import fi.nls.oskari.control.statistics.plugins.StatisticalIndicatorSelectors;
 import fi.nls.oskari.control.statistics.plugins.db.DatasourceLayer;
@@ -70,7 +71,7 @@ public class PxwebIndicatorsParser {
             return config.getUrl();
         }
         String url = config.getUrl() + "/" + path + "/";
-        return url; //url.replaceAll("//", "/");
+        return IOHelper.fixPath(url);
     }
 
     private String getPath(String path, String nextPart) {
@@ -159,9 +160,14 @@ public class PxwebIndicatorsParser {
     }
 
     private JSONObject getMetadata(PxwebIndicator indicator, String path) {
-        String url = getUrl(path) + indicator.getId();
+        final String url = getUrl(path) + indicator.getId();
+        final String cacheKey = "stats:" + config.getId() + ":metadata:" + url;
         try {
-            String metadata = IOHelper.getURL(url);
+            String metadata = JedisManager.get(cacheKey);
+            if(metadata == null) {
+                metadata = IOHelper.getURL(url);
+                JedisManager.setex(cacheKey, JedisManager.EXPIRY_TIME_DAY, metadata);
+            }
             return JSONHelper.createJSONObject(metadata);
         } catch (IOException ex) {
             LOG.error(ex, "Error getting indicator metadata from Pxweb datasource:", url);

@@ -2,6 +2,7 @@ package fi.nls.oskari.control.statistics.plugins.sotka;
 
 import java.util.Map;
 
+import fi.nls.oskari.cache.JedisManager;
 import fi.nls.oskari.control.statistics.plugins.sotka.parser.SotkaIndicator;
 import fi.nls.oskari.control.statistics.plugins.sotka.parser.SotkaSpecificIndicatorParser;
 import fi.nls.oskari.control.statistics.plugins.sotka.requests.IndicatorMetadata;
@@ -31,17 +32,22 @@ public class SotkaIndicatorSelectorsFetcher {
      * @return
      */
     public SotkaIndicator get(String indicatorId, Map<String, Long> layerMappings) {
+        final String cacheKey = "stats:" + config.getId() + ":metadata:" + indicatorId;
         try {
-            SotkaRequest specificIndicatorRequest = SotkaRequest.getInstance(IndicatorMetadata.NAME);
-            specificIndicatorRequest.setBaseURL(config.getUrl());
-            specificIndicatorRequest.setIndicator(indicatorId);
-            String specificIndicatorJsonResponse = specificIndicatorRequest.getData();
-            return specificIndicatorParser.parse(specificIndicatorJsonResponse, layerMappings);
+            String metadata = JedisManager.get(cacheKey);
+            if(metadata == null) {
+                SotkaRequest specificIndicatorRequest = SotkaRequest.getInstance(IndicatorMetadata.NAME);
+                specificIndicatorRequest.setBaseURL(config.getUrl());
+                specificIndicatorRequest.setIndicator(indicatorId);
+                metadata  = specificIndicatorRequest.getData();
+                JedisManager.setex(cacheKey, JedisManager.EXPIRY_TIME_DAY, metadata);
+            }
+            return specificIndicatorParser.parse(metadata, layerMappings);
         } catch (Exception e) {
             // The SotkaNET sometimes responds with HTTP 500, for example. For these cases, we should just
             // remove the indicators in question.
             LOG.error("There was an error fetching SotkaNET indicator metadata for indicator: "
-                    + indicatorId + ", removing from Oskari.");
+                    + indicatorId + ", removing from Oskari:", e.getMessage());
             return null;
         }
     }

@@ -1,6 +1,7 @@
 package fi.nls.test.util;
 
 import fi.nls.oskari.cache.JedisManager;
+import fi.nls.oskari.service.ServiceRuntimeException;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -51,13 +52,15 @@ public class TestHelper {
         if(redisStatus.equals(STATUS.NONE)) {
             final String testKey = "testing";
             final String testValue = "availability";
-
-            final String msg = JedisManager.setex(testKey, 10, testValue);
-            if(msg == null) {
+            try {
+                final String msg = JedisManager.setex(testKey, 10, testValue);
+                if(msg == null) {
+                    redisStatus = STATUS.DISABLED;
+                }
+                redisStatus = STATUS.getEnabled(testValue.equals(JedisManager.get(testKey)));
+            } catch (ServiceRuntimeException ex) {
                 redisStatus = STATUS.DISABLED;
             }
-
-            redisStatus = STATUS.getEnabled(testValue.equals(JedisManager.get(testKey)));
         }
         return redisStatus.equals(STATUS.ENABLED);
     }

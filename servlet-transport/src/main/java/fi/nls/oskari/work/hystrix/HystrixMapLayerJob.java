@@ -73,7 +73,8 @@ public class HystrixMapLayerJob extends HystrixJob {
 
     // TODO: check if this actually works!
     public String getFallback() {
-        job.notifyError();
+        job.notifyError(this.executionResult.getException());
         return "success";
+
     }
 }

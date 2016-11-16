@@ -4,8 +4,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.Point;
 import fi.nls.oskari.pojo.SessionStore;
+import fi.nls.oskari.service.ServiceRuntimeException;
+import fi.nls.oskari.transport.TransportJobException;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.wfs.WFSCommunicator;
+import fi.nls.oskari.wfs.WFSExceptionHelper;
 import fi.nls.oskari.wfs.WFSFilter;
 import fi.nls.oskari.wfs.WFSParser;
 import fi.nls.oskari.wfs.pojo.WFSLayerStore;
@@ -60,6 +63,7 @@ public class WFSMapLayerJob extends OWSMapLayerJob {
 
     /**
      * Makes request
+     * Throws TransportJobException, if payload fails or post request response fails
      *
      * @param type
      * @param layer
@@ -76,8 +80,15 @@ public class WFSMapLayerJob extends OWSMapLayerJob {
             String payload = WFSCommunicator.createRequestPayload(type, layer,
                     session, bounds, transformService);
             log.debug("...WFS / Request data "+ layer.getURL() + "\n" + payload + "\n");
-            response = HttpHelper.postRequestReader(layer.getURL(), "",
-                    payload, layer.getUsername(), layer.getPassword());
+            try {
+                response = HttpHelper.postRequestReader(layer.getURL(), "",
+                        payload, layer.getUsername(), layer.getPassword(), true);
+            }
+            catch (ServiceRuntimeException e){
+                throw new TransportJobException(e.getMessage(),
+                        e.getCause(),
+                        WFSExceptionHelper.ERROR_GETFEATURE_POSTREQUEST_FAILED);
+            }
         } else {
             log.debug(
                     "Failed to make a request because of undefined layer type "+
@@ -139,8 +150,10 @@ public class WFSMapLayerJob extends OWSMapLayerJob {
         try {
             // request failed
             if(response == null) {
-                log.warn("Request failed for layer", layer.getLayerId());
-                throw new RuntimeException(ResultProcessor.ERROR_WFS_REQUEST_FAILED);
+                log.warn("Request failed for layer: ",layer.getLayerName(), "id: ", layer.getLayerId());
+                throw new TransportJobException("Request failed for layer: " + layer.getLayerName() + "id: " + layer.getLayerId(),
+                        WFSExceptionHelper.ERROR_GETFEATURE_POSTREQUEST_FAILED);
+
             }
 
             // parse response, throws an exception on failure
@@ -238,6 +251,11 @@ public class WFSMapLayerJob extends OWSMapLayerJob {
 
         // create filter of screen area
         Filter screenBBOXFilter = WFSFilter.initBBOXFilter(this.session.getLocation(), this.layer);
+        if(screenBBOXFilter == null) {
+            throw new TransportJobException("Failed to create BBOX filter (location or layer is unset)",
+                    WFSExceptionHelper.ERROR_FEATURE_PARSING);
+
+        }
 
         // send feature info
         FeatureIterator<SimpleFeature> featuresIter =  this.features.features();
@@ -246,6 +264,8 @@ public class WFSMapLayerJob extends OWSMapLayerJob {
         this.geomValuesList = new ArrayList<List<Object>>();
 
         final List<String> selectedProperties = getPropertiesToInclude();
+
+        boolean geometryParingFailures = false;
 
         while(goNext(featuresIter.hasNext())) {
             SimpleFeature feature = featuresIter.next();
@@ -280,7 +300,9 @@ public class WFSMapLayerJob extends OWSMapLayerJob {
                 if( geometry != null ) {
                 gvalues.add(geometry.toText()); //feature.getAttribute(this.layer.getGMLGeometryProperty()));
                 } else {
+                    log.debug("Feature geometry parsing failed", fid);
                     gvalues.add(null);
+                    geometryParingFailures = true;
                 }
                 this.geomValuesList.add(gvalues);
             }
@@ -314,6 +336,13 @@ public class WFSMapLayerJob extends OWSMapLayerJob {
             } else {
                 this.featureValuesList.add(values);
             }
+        }
+
+        if(geometryParingFailures){
+            Map<String, Object> output = this.createCommonWarningResponse(
+                    "Geometry parsing of some features failed (unknown geometry property or transformation error",
+                    WFSExceptionHelper.WARNING_GEOMETRY_PARSING_FAILED);
+            this.sendCommonErrorResponse(output, true);
         }
 	}
 

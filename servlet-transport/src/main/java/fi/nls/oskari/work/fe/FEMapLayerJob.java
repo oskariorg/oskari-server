@@ -10,9 +10,13 @@ import fi.nls.oskari.fe.input.format.gml.StaxGMLInputProcessor;
 import fi.nls.oskari.fe.iri.Resource;
 import fi.nls.oskari.fe.output.OutputProcessor;
 import fi.nls.oskari.fi.rysp.generic.WFS11_path_parse_worker;
+import fi.nls.oskari.pojo.GeoJSONFilter;
 import fi.nls.oskari.pojo.SessionStore;
+import fi.nls.oskari.service.ServiceRuntimeException;
+import fi.nls.oskari.transport.TransportJobException;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.JSONHelper;
+import fi.nls.oskari.wfs.WFSExceptionHelper;
 import fi.nls.oskari.wfs.WFSFilter;
 import fi.nls.oskari.wfs.WFSImage;
 import fi.nls.oskari.wfs.WFSParser;
@@ -26,6 +30,7 @@ import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.AuthCache;
 import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpResponseException;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpUriRequest;
@@ -133,24 +138,37 @@ public class FEMapLayerJob extends OWSMapLayerJob {
             }
         }
 
+        boolean geometryParingFailures = false;
+
         //send geometries as well, if requested
-        if (this.session.isGeomRequest())
-        {
-            // send feature info
-            FeatureIterator<SimpleFeature> featuresIter =  this.features.features();
-            SimpleFeature feature = featuresIter.next();
-            String fid = feature.getIdentifier().getID();
-            // get feature geometry (transform if needed) and get geometry center
-            Geometry geometry = WFSParser.getFeatureGeometry(feature, this.layer.getGMLGeometryProperty(), this.transformClient);
-            log.debug("Requested geometry", fid);
-            List<Object> gvalues = new ArrayList<Object>();
-            gvalues.add(fid);
-            if( geometry != null ) {
-                gvalues.add(geometry.toText()); //feature.getAttribute(this.layer.getGMLGeometryProperty()));
-            } else {
-                gvalues.add(null);
+        if (this.session.isGeomRequest() && this.features != null) {
+            // send feature geometry
+            FeatureIterator<SimpleFeature> featuresIter = this.features.features();
+            while (goNext(featuresIter.hasNext())) {
+                SimpleFeature feature = featuresIter.next();
+                String fid = feature.getIdentifier().getID();
+                log.debug("Processing geom property of feature:", fid);
+
+                // get feature geometry (transform if needed) and get geometry center
+                Geometry geometry = WFSParser.getFeatureGeometry(feature, this.layer.getGMLGeometryProperty(), this.transformClient);
+                log.debug("Requested geometry", fid);
+                List<Object> gvalues = new ArrayList<Object>();
+                gvalues.add(fid);
+                if (geometry != null) {
+                    gvalues.add(geometry.toText());
+                } else {
+                    log.debug("Feature geometry parsing failed", fid);
+                    gvalues.add(null);
+                    geometryParingFailures = true;
+                }
+                this.geomValuesList.add(gvalues);
             }
-            this.geomValuesList.add(gvalues);
+            if(geometryParingFailures){
+                Map<String, Object> output = this.createCommonWarningResponse(
+                        "Geometry parsing of some features failed (unknown geometry property or transformation error",
+                        WFSExceptionHelper.WARNING_GEOMETRY_PARSING_FAILED);
+                this.sendCommonErrorResponse(output, true);
+            }
         }
     }
 
@@ -198,7 +216,8 @@ public class FEMapLayerJob extends OWSMapLayerJob {
         final FERequestTemplate backendRequestTemplate = getRequestTemplate(requestTemplatePath);
         if (backendRequestTemplate == null) {
             log.error("NO Request Template available");
-            return requestResponse;
+            throw new TransportJobException("NO Request Template available [fe]",
+                    WFSExceptionHelper.ERROR_GETFEATURE_PAYLOAD_FAILED);
         }
 
         backendRequestTemplate.setRequestFeatures(srsName, featureNs, featurePrefix,
@@ -207,17 +226,16 @@ public class FEMapLayerJob extends OWSMapLayerJob {
         FeatureEngine featureEngine = null;
         try {
             featureEngine = getFeatureEngine(recipePath);
-        } catch (InstantiationException e3) {
-            log.error(e3);
-        } catch (IllegalAccessException e3) {
-            log.error(e3);
-        } catch (ClassNotFoundException e) {
-            log.error(e);
+        } catch (Exception e) {
+            throw new TransportJobException(e.getMessage(),
+                    e.getCause(),
+                    WFSExceptionHelper.ERROR_GETFEATURE_ENGINE_FAILED);
         }
 
         if (featureEngine == null) {
-            log.error("NO FeatureEngine available");
-            return requestResponse;
+            log.error("NO FeatureEngine available - maybe invalid wfs layer configuration");
+            throw new TransportJobException("NO FeatureEngine available - maybe invalid wfs layer configuration",
+                    WFSExceptionHelper.ERROR_GETFEATURE_ENGINE_FAILED);
         }
 
         // Is parsing based on parse config
@@ -369,12 +387,24 @@ public class FEMapLayerJob extends OWSMapLayerJob {
 
                 log.debug("[fe] execute response " + succee + " for " + url);
 
-            } catch (ClientProtocolException e) {
+            } catch (HttpResponseException e) {
                 log.error("Error parsing response:", log.getCauseMessages(e));
                 log.debug(e);
+                throw new ServiceRuntimeException("Status code: " + Integer.toString(e.getStatusCode()) + " " + e.getMessage(),
+                        e.getCause(),
+                        WFSExceptionHelper.ERROR_GETFEATURE_POSTREQUEST_FAILED);
             } catch (IOException e) {
                 log.error("Error fetching response:", log.getCauseMessages(e));
                 log.debug(e);
+                throw new ServiceRuntimeException(e.getMessage(),
+                        e.getCause(),
+                        WFSExceptionHelper.ERROR_GETFEATURE_POSTREQUEST_FAILED);
+            } catch (Exception e) {
+                log.error("Error fetching response:", log.getCauseMessages(e));
+                log.debug(e);
+                throw new ServiceRuntimeException(e.getMessage(),
+                        e.getCause(),
+                        WFSExceptionHelper.ERROR_GETFEATURE_POSTREQUEST_FAILED);
             } finally {
                 // When HttpClient instance is no longer needed,
                 // shut down the connection manager to ensure
@@ -383,24 +413,16 @@ public class FEMapLayerJob extends OWSMapLayerJob {
                 log.debug("[fe] http shutdown for " + url);
             }
 
-        } catch (NoSuchAuthorityCodeException e) {
+        } catch (ServiceRuntimeException e) {
             log.error(e);
-        } catch (FactoryException e) {
+            throw new TransportJobException(e.getMessage(),
+                    e.getCause(),
+                    e.getMessageKey());
+        } catch (Exception e) {
             log.error(e);
-        } catch (XPathExpressionException e) {
-            log.error(e);
-        } catch (TransformException e) {
-            log.error(e);
-        } catch (IOException e) {
-            log.error(e);
-        } catch (ParserConfigurationException e) {
-            log.error(e);
-        } catch (SAXException e) {
-            log.error(e);
-        } catch (TransformerException e) {
-            log.error(e);
-        } catch (URISyntaxException e) {
-            log.error(e);
+            throw new TransportJobException(e.getMessage(),
+                    e.getCause(),
+                    WFSExceptionHelper.ERROR_FEATURE_PARSING);
         } finally {
             log.debug("[fe] end of process");
         }
@@ -594,12 +616,9 @@ public class FEMapLayerJob extends OWSMapLayerJob {
             // request failed
             if (response == null) {
                 log.debug("Request failed for layer" + layer.getLayerId());
-                output.put(OUTPUT_ONCE, true);
-                output.put(OUTPUT_MESSAGE, "wfs_request_failed");
-                this.service.addResults(session.getClient(),
-                        ResultProcessor.CHANNEL_ERROR, output);
                 log.debug(PROCESS_ENDED + getKey());
-                return false;
+                throw new ServiceRuntimeException("Request failed for layer: " + layer.getLayerName() + "id: " + layer.getLayerId(),
+                        WFSExceptionHelper.ERROR_GETFEATURE_POSTREQUEST_FAILED);
             }
 
             // parse response
@@ -608,12 +627,9 @@ public class FEMapLayerJob extends OWSMapLayerJob {
             // parsing failed
             if (this.features == null) {
                 log.debug("Parsing failed for layer " + this.layerId);
-                output.put(OUTPUT_ONCE, true);
-                output.put(OUTPUT_MESSAGE, ResultProcessor.ERROR_FEATURE_PARSING);
-                this.service.addResults(session.getClient(),
-                        ResultProcessor.CHANNEL_ERROR, output);
                 log.debug(PROCESS_ENDED + getKey());
-                return false;
+                throw new ServiceRuntimeException("Request failed for layer: " + layer.getLayerName(),
+                        WFSExceptionHelper.ERROR_FEATURE_PARSING);
             }
 
             // 0 features found - send size
@@ -649,8 +665,16 @@ public class FEMapLayerJob extends OWSMapLayerJob {
             }
 
             log.debug("Features count" + this.features.size());
+        } catch (ServiceRuntimeException e) {
+            log.error(e);
+            throw new TransportJobException(e.getMessage(),
+                    e.getCause(),
+                    e.getMessageKey());
         } catch (Exception ee) {
             log.debug("exception: " + ee);
+            throw new TransportJobException(ee.getMessage(),
+                    ee.getCause(),
+                    WFSExceptionHelper.ERROR_FEATURE_PARSING);
         }
 
         return true;

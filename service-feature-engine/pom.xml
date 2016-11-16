@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>fi.nls.oskari</groupId>
 		<artifactId>oskari-parent</artifactId>
-        <version>1.39.0</version>
+        <version>1.40.0</version>
 	</parent>
 	<groupId>fi.nls.oskari.service</groupId>
 	<artifactId>oskari-feature-engine</artifactId>
@@ -42,6 +42,11 @@
 		</dependency>
 
 		<dependency>
+			<groupId>xml-apis</groupId>
+			<artifactId>xml-apis</artifactId>
+			<version>1.4.01</version>
+		</dependency>
+		<dependency>
 			<groupId>fi.nls.oskari.service</groupId>
 			<artifactId>oskari-base</artifactId>
 		</dependency>
@@ -50,7 +55,10 @@
 			<groupId>fi.nls.oskari.service</groupId>
 			<artifactId>service-datamodel</artifactId>
 		</dependency>
-
+        <dependency>
+            <groupId>fi.nls.oskari.service</groupId>
+            <artifactId>oskari-wfs</artifactId>
+        </dependency>
 		<dependency>
 			<groupId>org.geotools</groupId>
 			<artifactId>gt-main</artifactId>

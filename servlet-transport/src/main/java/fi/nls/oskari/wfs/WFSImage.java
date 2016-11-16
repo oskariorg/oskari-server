@@ -579,4 +579,8 @@ public class WFSImage {
         }
         return null;
     }
+
+    public Style getStyle() {
+        return style;
+    }
 }

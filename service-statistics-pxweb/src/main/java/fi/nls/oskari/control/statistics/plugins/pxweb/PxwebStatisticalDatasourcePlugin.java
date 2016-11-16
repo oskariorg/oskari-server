@@ -1,6 +1,6 @@
 package fi.nls.oskari.control.statistics.plugins.pxweb;
 
-import fi.nls.oskari.control.statistics.plugins.StatisticalDatasourcePlugin;
+import fi.nls.oskari.control.statistics.plugins.AbstractStatisticalDatasourcePlugin;
 import fi.nls.oskari.control.statistics.plugins.StatisticalIndicator;
 import fi.nls.oskari.control.statistics.plugins.db.DatasourceLayer;
 import fi.nls.oskari.control.statistics.plugins.db.StatisticalDatasource;
@@ -13,7 +13,7 @@ import fi.nls.oskari.log.Logger;
 import java.util.Collections;
 import java.util.List;
 
-public class PxwebStatisticalDatasourcePlugin implements StatisticalDatasourcePlugin {
+public class PxwebStatisticalDatasourcePlugin extends AbstractStatisticalDatasourcePlugin {
     private final static Logger LOG = LogFactory.getLogger(PxwebStatisticalDatasourcePlugin.class);
     private PxwebIndicatorsParser indicatorsParser;
 
@@ -34,14 +34,10 @@ public class PxwebStatisticalDatasourcePlugin implements StatisticalDatasourcePl
     @Override
     public void init(StatisticalDatasource source) {
         layers = source.getLayers();
-        config = new PxwebConfig(source.getConfigJSON());
+
+        config = new PxwebConfig(source.getConfigJSON(), source.getId());
         indicatorsParser = new PxwebIndicatorsParser(config);
 
         LOG.debug("pxweb layer mappings: ", layers);
-    }
-
-    @Override
-    public boolean canCache() {
-        return true;
     }
 }

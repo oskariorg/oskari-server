@@ -42,4 +42,10 @@ public class IOHelperTest {
         params.put("t3", "&&&");
         assertEquals("Problematic params should return expected encoded URL", baseUrl + "test=testing&t2=3&t3=%26%26%26", IOHelper.constructUrl(baseUrl, params));
     }
+
+    @Test
+    public void testFixPath() {
+        assertEquals("Duplicate slashes should be removed", "http://testing/if/path/OK", IOHelper.fixPath("http://testing//if/path//OK"));
+        assertEquals("Triple slashes should be duplicate slashes", "https://testing//if/path/OK", IOHelper.fixPath("https://testing///if/path//OK"));
+    }
 }

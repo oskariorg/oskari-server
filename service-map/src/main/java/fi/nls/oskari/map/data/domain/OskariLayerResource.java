@@ -13,9 +13,13 @@ public class OskariLayerResource extends Resource {
     private String name = "";
 
     public OskariLayerResource(OskariLayer layer) {
+        this(layer.getType(), layer.getUrl(), layer.getName());
+    }
+
+    public OskariLayerResource(String type, String url, String name) {
         setType(Permissions.RESOURCE_TYPE_MAP_LAYER);
-        namespace = layer.getType() + "+" + layer.getUrl();
-        name = layer.getName();
+        namespace = type + "+" + url;
+        this.name = name;
         setMapping(namespace, name);
     }
 

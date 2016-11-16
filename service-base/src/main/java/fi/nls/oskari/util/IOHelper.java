@@ -263,11 +263,21 @@ public class IOHelper {
                                                   final String userName, final String password)
             throws IOException {
         final HttpURLConnection con = getConnection(pUrl);
+        setupBasicAuth(con, userName,password);
+        return con;
+    }
+
+    /**
+     * Sets the authorization header for connection.
+     * @param con
+     * @param userName
+     * @param password
+     */
+    public static void setupBasicAuth(final HttpURLConnection con,final String userName, final String password) {
         if (userName != null && !userName.isEmpty()) {
             final String encoded = encode64(userName + ':' + password);
             con.setRequestProperty(HEADER_AUTHORIZATION, "Basic " + encoded.replaceAll("\r", "").replaceAll("\n", ""));
         }
-        return con;
     }
 
     /**
@@ -757,6 +767,15 @@ public class IOHelper {
             return urlBuilder.substring(0, urlBuilder.length()-1);
         }
         return urlBuilder.append(queryString).toString();
+    }
+
+    public static String fixPath(String url) {
+        String[] parts = url.split("://");
+        if(parts.length < 2) {
+            return url;
+        }
+
+        return parts[0] + "://" + parts[1].replaceAll("//", "/");
     }
 
     /**

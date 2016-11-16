@@ -1,13 +1,22 @@
 package fi.nls.oskari.map.geometry;
 
+import com.vividsolutions.jts.geom.Geometry;
 import fi.nls.oskari.domain.geo.Point;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.util.JSONHelper;
+import org.geotools.geojson.geom.GeometryJSON;
 import org.geotools.geometry.DirectPosition2D;
+import org.geotools.geometry.jts.JTS;
 import org.geotools.referencing.CRS;
+import org.json.JSONObject;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.cs.AxisDirection;
 import org.opengis.referencing.operation.MathTransform;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
 
 /**
  * Helper for transformations
@@ -64,11 +73,13 @@ public class ProjectionHelper implements PointTransformer {
         }
         return null;
     }
+
     public static Point transformPoint(final Point point, final CoordinateReferenceSystem sourceCrs, final CoordinateReferenceSystem targetCrs) {
         try {
 
-            if(sourceCrs.getName().equals(targetCrs.getName())) return point;
-
+            if (sourceCrs.getName().equals(targetCrs.getName())) return point;
+            // When using a CoordinateReferenceSystem that has been parsed from WKT you will often need to “relax” the accuracy
+            // by setting the lenient parameter to true when searching with findMathTransform.
             boolean lenient = false;
             MathTransform mathTransform = CRS.findMathTransform(sourceCrs, targetCrs, lenient);
 
@@ -81,7 +92,7 @@ public class ProjectionHelper implements PointTransformer {
             }
             return new Point(destDirectPosition2D.y, destDirectPosition2D.x);
         } catch (Exception e) {
-            log.error(e, "Transform failed! Params: sourceSRS", sourceCrs, "targetSRS", targetCrs, "Point", point );
+            log.error(e, "Transform failed! Params: sourceSRS", sourceCrs, "targetSRS", targetCrs, "Point", point);
         }
         return null;
     }
@@ -119,4 +130,53 @@ public class ProjectionHelper implements PointTransformer {
         }
         return crs;
     }
+
+
+    /**
+     * Transforms geojson geometry coordinates
+     * Axis order in geojson should be always longitude 1st (sourceLon1st=true, targetLon1st=true)
+     * If the axis order is according to OGC standards in geojson, use sourceLon1st=false
+     * If it is requested, that the axis order is according to OGC standards in the result geojson, use targetLon1st=false
+     *
+     * @param geometry geojson geometry to be transformed
+     * @param sourceSRS
+     * @param targetSRS
+     * @param sourceLon1st  true, if eastern coordinate (longitude) is 1st  in geojson (should be always so)
+     *                      false, if the axis order is according to OGC standards for sourceSRS in geojson
+     *                      (northern coordinate (latitude) could be 1st)
+     * @param targetLon1st  true, if eastern coordinate (longitude) is 1st  in the result geojson (should be always so)
+     *                      false, if the axis order is according to OGC standards for targetSRS in result geojson
+     *                      (northern coordinate (latitude) could be 1st)
+     *
+     * @return  transformed geojson
+     */
+    public static JSONObject transformGeometry(JSONObject geometry, final String sourceSRS, final String targetSRS, boolean sourceLon1st, boolean targetLon1st) {
+        try {
+            CoordinateReferenceSystem sourceCRS = CRS.decode(sourceSRS, sourceLon1st);
+            CoordinateReferenceSystem targetCRS = CRS.decode(targetSRS, targetLon1st);
+            MathTransform transform = CRS.findMathTransform(sourceCRS, targetCRS, true);
+            // Bug in geotools --> it put geojson srid value as z-value into coordinates
+            // Workaround remove srid in geojson
+            if(geometry.has("srid")){
+                geometry.remove("srid");
+            }
+            // Transform coordinates
+            GeometryJSON jsonReader = new GeometryJSON();
+            String str = geometry.toString();
+            InputStream gjstream = new ByteArrayInputStream(str.getBytes());
+            Geometry sourceGeometry = jsonReader.read(gjstream);
+
+
+            Geometry targetGeometry = JTS.transform(sourceGeometry, transform);
+            ByteArrayOutputStream output = new ByteArrayOutputStream();
+            jsonReader.write(targetGeometry, output);
+
+            return JSONHelper.createJSONObject(new String(output.toByteArray(), "UTF-8"));
+
+        } catch (Exception e) {
+            log.error(e, "Transform geojson geometry failed! Params:: sourceSRS: ", sourceSRS, "targetSRS: ", targetSRS, "geometry: ", geometry.toString());
+        }
+        return null;
+    }
+
 }

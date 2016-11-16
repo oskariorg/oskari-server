@@ -206,6 +206,19 @@ public class View implements Serializable {
     }
 
     /**
+     * Reset bundle's segment number to be highest values (last bundle in loading)
+      * @param bundleName  bundle, which segment number must be highest
+     */
+    public void pushBundleLast(String bundleName) {
+        final int lastIndex = this.bundles.get(bundles.size() -1).getSeqNo();
+        for (Bundle bundle : this.bundles) {
+            if (bundle.getName().equals(bundleName)) {
+                bundle.setSeqNo(lastIndex + 1);
+            }
+        }
+    }
+
+    /**
      * Skips id, oldId and uuid but clones the rest of the info. Bundles retain ids.
      * @return cloned object with bundles
      */

@@ -698,6 +698,17 @@ public class SessionStore {
 	public static String getCache(String client) {
 		return JedisManager.get(KEY + client);
 	}
+
+    /**
+     * Gets saved session from redis
+     *
+     * @param client
+     * @return layer as JSON String
+     */
+    @JsonIgnore
+    public static String getCacheNecessary(String client) {
+        return JedisManager.getNecessary(KEY + client);
+    }
 	
 
 	/**

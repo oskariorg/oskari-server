@@ -4,7 +4,9 @@ import com.github.kevinsawicki.http.HttpRequest;
 import com.github.kevinsawicki.http.HttpRequest.HttpRequestException;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.service.ServiceRuntimeException;
 import fi.nls.oskari.util.PropertyUtil;
+import fi.nls.oskari.wfs.WFSExceptionHelper;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
@@ -44,12 +46,12 @@ public class HttpHelper {
             if(request.ok() || request.code() == 304)
 				response = request.body();
 			else {
-				handleHTTPError("GET", url, request.code());
+				handleHTTPError("GET", url, request.code(), false);
 			}
 		} catch (HttpRequestException e) {
-			handleHTTPRequestFail(url, e);
+			handleHTTPRequestFail(url, e, false);
 		} catch (Exception e) {
-			handleHTTPRequestFail(url, e);
+			handleHTTPRequestFail(url, e, false);
 		}
 		return response;
     }
@@ -74,12 +76,12 @@ public class HttpHelper {
             if(request.ok() || request.code() == 304)
                 if(key != null) headerValue = request.header(key);
             else {
-                handleHTTPError("GET", url, request.code());
+                handleHTTPError("GET", url, request.code(), false);
             }
         } catch (HttpRequestException e) {
-            handleHTTPRequestFail(url, e);
+            handleHTTPRequestFail(url, e, false);
         } catch (Exception e) {
-            handleHTTPRequestFail(url, e);
+            handleHTTPRequestFail(url, e, false);
         }
         return headerValue;
     }
@@ -152,15 +154,28 @@ public class HttpHelper {
 			if(request.ok() || request.code() == 304)
 				return request;
 			else {
-				handleHTTPError("GET", url, request.code());
+				handleHTTPError("GET", url, request.code(), false);
 			}
 			
 		} catch (HttpRequestException e) {
-			handleHTTPRequestFail(url, e);
+			handleHTTPRequestFail(url, e, false);
 		} catch (Exception e) {
-			handleHTTPRequestFail(url, e);
+			handleHTTPRequestFail(url, e, false);
 		}
 		return null;
+    }
+    /**
+     * HTTP POST method with optional basic authentication and contentType definition
+     *
+     * @param url
+     * @param contentType
+     * @param username
+     * @param password
+     * @return response body
+     */
+    public static BufferedReader postRequestReader(String url, String contentType, String data, String username,
+                                                   String password) {
+        return postRequestReader(url, contentType, data, username, password, false);
     }
     
     /**
@@ -170,9 +185,11 @@ public class HttpHelper {
      * @param contentType
      * @param username
      * @param password
+     * @param throwException
      * @return response body
      */
-    public static BufferedReader postRequestReader(String url, String contentType, String data, String username, String password) {
+    public static BufferedReader postRequestReader(String url, String contentType, String data, String username,
+                                                   String password, boolean throwException) {
 		HttpRequest request;
 		BufferedReader response = null;
 		try {
@@ -203,13 +220,13 @@ public class HttpHelper {
                 log.debug("request charset:", request.charset());
 				response = request.bufferedReader();
             } else {
-				handleHTTPError("POST", url, request.code());
+				handleHTTPError("POST", url, request.code(), throwException);
 			}
 			
 		} catch (HttpRequestException e) {
-			handleHTTPRequestFail(url, e);
+			handleHTTPRequestFail(url, e, throwException);
 		} catch (Exception e) {
-			handleHTTPRequestFail(url, e);
+			handleHTTPRequestFail(url, e, throwException);
 		}
 		return response;
     }
@@ -220,18 +237,28 @@ public class HttpHelper {
      * @param type
      * @param url
      * @param code
+     * @param throwException
      */
-    private static void handleHTTPError(String type, String url, int code) {
-        log.warn("HTTP "+ type + " request error (" + code + ") when requesting: " + url);
+    private static void handleHTTPError(String type, String url, int code, boolean throwException) {
+        log.warn("HTTP " + type + " request error (" + code + ") when requesting: " + url);
+        if (throwException) {
+            throw new ServiceRuntimeException("HTTP " + type + " request error (" + Integer.toString(code) + ") when requesting: " + url,
+                    WFSExceptionHelper.ERROR_COMMON_PROCESS_REQUEST_FAILURE);
+        }
     }
 
     /**
      * Handles Exceptions logging for HTTP request methods
-     * 
+     *
      * @param url
      * @param e
+     * @param throwException
      */
-    private static void handleHTTPRequestFail(String url, Exception e) {
+    private static void handleHTTPRequestFail(String url, Exception e, boolean throwException) {
         log.warn(e, "HTTP request failed when requesting: " + url);
+        if (throwException) {
+            throw new ServiceRuntimeException("HTTP request failed when requesting: " + url,
+                    e, WFSExceptionHelper.ERROR_COMMON_PROCESS_REQUEST_FAILURE);
+        }
     }
 }

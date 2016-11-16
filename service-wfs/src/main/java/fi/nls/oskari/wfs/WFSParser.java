@@ -397,6 +397,7 @@ public class WFSParser {
             }
             return geometry;
         }
+        log.error("feature has no geometry - id: ", feature.getID());
         return null;
     }
 

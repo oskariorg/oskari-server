@@ -1,6 +1,5 @@
 package fi.nls.oskari.control.data;
 
-import com.vividsolutions.jts.geom.Geometry;
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.ActionHandler;
@@ -9,6 +8,8 @@ import fi.nls.oskari.csw.domain.CSWIsoRecord;
 import fi.nls.oskari.csw.service.CSWService;
 import fi.nls.oskari.domain.Role;
 import fi.nls.oskari.domain.geo.Point;
+import fi.nls.oskari.log.LogFactory;
+import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.geometry.ProjectionHelper;
 import fi.nls.oskari.map.geometry.WKTHelper;
 import fi.nls.oskari.rating.RatingService;
@@ -16,6 +17,9 @@ import fi.nls.oskari.rating.RatingServiceMybatisImpl;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.util.ResponseHelper;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import org.geotools.referencing.CRS;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -26,12 +30,14 @@ import org.json.JSONObject;
  */
 @OskariActionRoute("GetCSWData")
 public class GetCSWDataHandler extends ActionHandler {
+    private final Logger log = LogFactory.getLogger(this.getClass());
+    
     private static final String LANG_PARAM = "lang";
     private static final String UUID_PARAM = "uuid";
-    // TODO get baseUrl from properties
-    private String baseUrl = PropertyUtil.getOptional("service.metadata.url");
-    private String metadataRatingType = PropertyUtil.getOptional("service.metadata.rating");
-    private String licenseUrlPrefix = PropertyUtil.getOptional("search.channel.METADATA_CATALOGUE_CHANNEL.licenseUrlPrefix");
+    private final String baseUrl = PropertyUtil.getOptional("service.metadata.url");
+    private final String imgUrl = PropertyUtil.getOptional("service.metadata.imgurl");
+    private final String metadataRatingType = PropertyUtil.getOptional("service.metadata.rating");
+    private final String licenseUrlPrefix = PropertyUtil.getOptional("search.channel.METADATA_CATALOGUE_CHANNEL.licenseUrlPrefix");
     public static final String KEY_LICENSE = "license";
     public static final String KEY_ONLINERESOURCES = "onlineResources";
     public static final String KEY_URL = "url";
@@ -44,13 +50,28 @@ public class GetCSWDataHandler extends ActionHandler {
     public static final String KEY_EASTBOUNDLONGITUDE = "eastBoundLongitude";
     public static final String KEY_NORTHBOUNDLATITUDE = "northBoundLatitude";
 
-    /*ratings*/
+    /* ratings */
     public static final String KEY_RATING = "score";
     public static final String KEY_AMOUNT = "amount";
     public static final String KEY_ADMIN_RATING = "latestAdminRating";
 
     private final RatingService ratingService = new RatingServiceMybatisImpl();
 
+    /* images */
+    private static final String PROPERTY_IMAGE_PREFIX = "search.channel.METADATA_CATALOGUE_CHANNEL.image.url.";
+    private final Map<String, String> imageURLs = new HashMap<String, String>();
+    
+    @Override
+    public void init() {
+        super.init();
+        final List<String> imageKeys = PropertyUtil.getPropertyNamesStartingWith(PROPERTY_IMAGE_PREFIX);
+        final int imgPrefixLen = PROPERTY_IMAGE_PREFIX.length();
+        for(String key : imageKeys) {
+            final String langCode = key.substring(imgPrefixLen);
+            imageURLs.put(langCode, PropertyUtil.get(key));
+        }
+    }
+    
     @Override
     public void handleAction(ActionParameters params) throws ActionException {
         if (baseUrl == null) {
@@ -73,6 +94,7 @@ public class GetCSWDataHandler extends ActionHandler {
         }
         JSONObject result;
         if (record != null) {
+            prefixImageFilenames(record, uuid, lang);
             result = record.toJSON();
         } else {
             result = new JSONObject();
@@ -89,6 +111,28 @@ public class GetCSWDataHandler extends ActionHandler {
         }
 
         ResponseHelper.writeResponse(params, result);
+    }
+    
+    private void prefixImageFilenames(CSWIsoRecord record, final String uuid, final String locale) {
+        String url = imageURLs.get(locale);        
+        if (url == null) {
+            url = PropertyUtil.get(PROPERTY_IMAGE_PREFIX + "en");
+        }
+        String prefix = url + "&uuid=" + uuid + "&fname=";
+        List<CSWIsoRecord.Identification> is = record.getIdentifications();
+        for (CSWIsoRecord.Identification i : is) {
+            List<CSWIsoRecord.BrowseGraphic> gs = i.getBrowseGraphics();
+            for (CSWIsoRecord.BrowseGraphic g : gs) {
+                String fname = g.getFileName();
+                final boolean replaceImageURL = fname != null
+                        && !fname.isEmpty()
+                        && !fname.startsWith("http://");
+
+                if (replaceImageURL) {
+                    g.setFileName(prefix + fname);
+                }
+            }
+        }
     }
 
     private void addLicenseUrl(JSONObject result) {

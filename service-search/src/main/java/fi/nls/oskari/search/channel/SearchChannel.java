@@ -4,11 +4,14 @@ import fi.mml.portti.service.search.ChannelSearchResult;
 import fi.mml.portti.service.search.IllegalSearchCriteriaException;
 import fi.mml.portti.service.search.SearchCriteria;
 import fi.mml.portti.service.search.SearchResultItem;
+import fi.nls.oskari.domain.User;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.service.OskariComponent;
 import fi.nls.oskari.util.IOHelper;
+import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
+import org.json.JSONObject;
 
 import java.net.HttpURLConnection;
 import java.util.*;
@@ -39,9 +42,28 @@ public abstract class SearchChannel extends OskariComponent implements Searchabl
         throw new IllegalSearchCriteriaException("Not implemented");
     }
 
+    public JSONObject getUILabels() {
+        JSONObject name = JSONHelper.createJSONObject("name", getId());
+        return JSONHelper.createJSONObject(PropertyUtil.getDefaultLanguage(), name);
+    }
+
     public boolean isValidSearchTerm(SearchCriteria criteria) {
         return true;
     }
+
+    /**
+     * Defaults to true. Can be explicitly set with properties:
+     *  search.channel.CHANNEL_ID.isDefault=false
+     * @return
+     */
+    public boolean isDefaultChannel() { return PropertyUtil.getOptional("search.channel." + getName() + ".isDefault", true); }
+
+    /**
+     * Always returns true with basic implementation
+     * @param user
+     * @return
+     */
+    public boolean hasPermission(User user) { return true; }
 
     /**
      * Returns debug data for search channels that can then be shown in UI.

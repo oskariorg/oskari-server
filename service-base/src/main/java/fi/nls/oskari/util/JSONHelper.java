@@ -169,6 +169,9 @@ public class JSONHelper {
     }
     
     public static final String getStringFromJSON(final JSONObject data, final String key, final String defaultValue) {
+        if(data == null) {
+            return defaultValue;
+        }
         try {
             final String value = (String) data.get(key);
             if (value != null) {
@@ -259,6 +262,24 @@ public class JSONHelper {
             log.warn("Can't put", key, "value", value, "to json");
         }
         return false;
+    }
+
+    /**
+     * Returns an empty array if JSONArray couldn't be created if second parameter is true. For false
+     * returns null if JSONArray couldn't be created.
+     * @param content
+     * @param emptyIfNull
+     * @return
+     */
+    public static JSONArray createJSONArray(final String content, boolean emptyIfNull) {
+        JSONArray array = null;
+        try {
+            array = new JSONArray(content);
+        } catch (Exception ignore) {}
+        if(emptyIfNull) {
+            return getEmptyIfNull(array);
+        }
+        return null;
     }
 
 	public static JSONArray createJSONArray(final String content) {

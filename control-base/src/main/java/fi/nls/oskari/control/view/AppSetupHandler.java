@@ -55,7 +55,8 @@ public class AppSetupHandler extends RestActionHandler {
     // Simple bundles don't require extra processing
     private static final Set<String> SIMPLE_BUNDLES = ConversionHelper.asSet(
             ViewModifier.BUNDLE_INFOBOX, ViewModifier.BUNDLE_TOOLBAR,
-            ViewModifier.BUNDLE_PUBLISHEDGRID, ViewModifier.BUNDLE_FEATUREDATA2, ViewModifier.BUNDLE_COORDINATETOOL, ViewModifier.BUNDLE_STATSGRID);
+            ViewModifier.BUNDLE_PUBLISHEDGRID, ViewModifier.BUNDLE_FEATUREDATA2,
+            ViewModifier.BUNDLE_COORDINATETOOL, ViewModifier.BUNDLE_STATSGRID, ViewModifier.BUNDLE_FEEDBACKSERVICE);
 
     // Bundles that we don't want to remove even if publisher doesn't provide config
     private static final Set<String> ALWAYSON_BUNDLES = ConversionHelper.asSet(
@@ -218,6 +219,9 @@ public class AppSetupHandler extends RestActionHandler {
                 }
             }
         }
+
+        // reorder bundles - rpc bundle must have highest segment number
+        view.pushBundleLast(ViewModifier.BUNDLE_RPC);
 
         // Setup publishedmyplaces2 bundle if user has configured it/has permission to do so
         if(!user.hasAnyRoleIn(drawToolsEnabledRoles)) {

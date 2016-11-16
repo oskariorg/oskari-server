@@ -5,7 +5,9 @@ import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.pojo.Units;
 import fi.nls.oskari.pojo.WFSLayerPermissionsStore;
+import fi.nls.oskari.service.ServiceRuntimeException;
 import fi.nls.oskari.util.PropertyUtil;
+import fi.nls.oskari.wfs.WFSExceptionHelper;
 import fi.nls.oskari.wfs.pojo.WFSLayerStore;
 import fi.nls.oskari.wfs.util.HttpHelper;
 
@@ -116,6 +118,7 @@ public class JobHelper {
 
     /**
      * Gets layer configuration (uses cache)
+     * throws ServiceRuntimeException, if Redis methods fails (not 1st get cache)
      *
      * @param layerId
      * @param sessionId
@@ -131,7 +134,7 @@ public class JobHelper {
             // NOTE: result is not handled as request triggers Redis write
             HttpHelper.getRequest(apiUrl, getCookiesValue(sessionId, route));
             // that we read here
-            json = WFSLayerStore.getCache(layerId);
+            json = WFSLayerStore.getCacheNecessary(layerId);
             if(json == null) {
                 log.error("Couldn't find JSON for WFSLayerStore with id:", layerId, " - API url:", apiUrl);
                 return null;
@@ -141,9 +144,10 @@ public class JobHelper {
             return WFSLayerStore.setJSON(json);
         } catch (Exception e) {
             log.error(e, "JSON parsing failed for WFSLayerStore \n" + json);
+            throw new ServiceRuntimeException("JSON parsing failed for WFSLayerStore - json: " + json,
+                    e.getCause(), WFSExceptionHelper.ERROR_WFSLAYERSTORE_PARSING_FAILED);
         }
 
-        return null;
     }
 
     public static boolean isRequestScalesInRange(List<Double> mapScales, int zoomLevel, WFSLayerConfiguration layer, final String targetSRS) {
