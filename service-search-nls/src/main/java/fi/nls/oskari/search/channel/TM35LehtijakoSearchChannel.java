@@ -39,16 +39,16 @@ public class TM35LehtijakoSearchChannel extends SearchChannel {
         
         utm_karttalehti l = new utm_karttalehti(lehti);
         l = l.lehti_numerolla(lehti);
-        
+
         double[] sijainti = l.sijainti();   // suorakaide pisteet
-                
-//        for (double d : sijainti) {
-//            log.debug("d = " + d);
-//        }
+
+        ChannelSearchResult result = new ChannelSearchResult();
+        if(sijainti == null) {
+            return result;
+        }
 
         double[] keskipiste = laskeKeskipiste(sijainti);
 
-        ChannelSearchResult result = new ChannelSearchResult();
         SearchResultItem item = new SearchResultItem();
         item.setTitle(l.lehtinumero());
         item.setType("tm35lehtijako");

@@ -40,7 +40,7 @@ public class GetSotkaRegionHandler extends ActionHandler {
     	final String code = params.getRequest().getParameter(PARAM_CODE);
         final JSONObject root = new JSONObject();
         
-        sotkaRegionParser = new SotkaRegionParser(new SotkaConfig());
+        sotkaRegionParser = new SotkaRegionParser(new SotkaConfig(new JSONObject(), 1));
         
     	if(id != -1) {
     		String resultCode = sotkaRegionParser.getCode(id);

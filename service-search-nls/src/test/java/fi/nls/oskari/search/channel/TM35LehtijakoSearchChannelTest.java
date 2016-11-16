@@ -47,6 +47,19 @@ public class TM35LehtijakoSearchChannelTest {
         assertEquals(548000.0d, Double.parseDouble(item.getLon()), 0.0d);
         assertEquals(7506000.0d, Double.parseDouble(item.getLat()), 0.0d);
     }
+    @Test
+    public void testDoSearchInvalidKeyword() {
+        System.out.println("doSearch");
+
+        SearchCriteria searchCriteria = new SearchCriteria();
+        searchCriteria.setSearchString("This is not a karttalehti");
+        searchCriteria.setSRS("EPSG:3067");
+
+        TM35LehtijakoSearchChannel instance = new TM35LehtijakoSearchChannel();
+        ChannelSearchResult result = instance.doSearch(searchCriteria);
+        assertTrue("Should not find anything", result.getSearchResultItems().isEmpty());
+
+    }
 
     @Test
     public void testReverseGeocode() throws Exception {

@@ -12,19 +12,20 @@ import java.util.Map;
  *   These could be for example: "Gender": "Male", "Female", "Other", "All", or "Year": "2010", "2011", ....
  */
 public interface StatisticalIndicator {
-    public String getPluginId();
-    public String getId();
+    String getPluginId();
+    String getId();
     /**
      * User created indicators can be private so that they are only shown to the user who created them.
      */
-    public Boolean isPublic();
-    public List<StatisticalIndicatorLayer> getLayers();
-    public StatisticalIndicatorSelectors getSelectors();
+    Boolean isPublic();
+    List<StatisticalIndicatorLayer> getLayers();
+    StatisticalIndicatorLayer getLayer(long id);
+    StatisticalIndicatorSelectors getSelectors();
     /*
      * Please note that while it would be convenient to just pass untyped JSON here,
      * it would make developing future plugins more error prone.
      */
-    public Map<String, String> getLocalizedName();
-    public Map<String, String> getLocalizedSource();
-    public Map<String, String> getLocalizedDescription();
+    Map<String, String> getLocalizedName();
+    Map<String, String> getLocalizedSource();
+    Map<String, String> getLocalizedDescription();
 }

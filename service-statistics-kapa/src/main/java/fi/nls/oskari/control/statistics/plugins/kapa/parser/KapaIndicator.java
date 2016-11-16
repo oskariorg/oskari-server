@@ -7,15 +7,11 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import fi.nls.oskari.control.statistics.plugins.*;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import fi.nls.oskari.control.statistics.plugins.IndicatorValueType;
-import fi.nls.oskari.control.statistics.plugins.StatisticalIndicator;
-import fi.nls.oskari.control.statistics.plugins.StatisticalIndicatorLayer;
-import fi.nls.oskari.control.statistics.plugins.StatisticalIndicatorSelector;
-import fi.nls.oskari.control.statistics.plugins.StatisticalIndicatorSelectors;
 import fi.nls.oskari.control.statistics.plugins.kapa.KapaIndicatorValuesFetcher;
 import fi.nls.oskari.control.statistics.plugins.kapa.KapaStatisticalDatasourcePlugin;
 import fi.nls.oskari.log.LogFactory;
@@ -24,7 +20,7 @@ import fi.nls.oskari.log.Logger;
 /**
  * This class maps the KaPa indicator information to Oskari data model.
  */
-public class KapaIndicator implements StatisticalIndicator {
+public class KapaIndicator extends AbstractStatisticalIndicator {
     private final static Logger LOG = LogFactory.getLogger(KapaIndicator.class);
     private String id;
     private Map<String, String> localizedName;
