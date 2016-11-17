@@ -5,6 +5,7 @@ import fi.nls.oskari.cache.JedisManager;
 import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.ActionHandler;
 import fi.nls.oskari.control.ActionParameters;
+import fi.nls.oskari.control.ActionParamsException;
 import fi.nls.oskari.control.statistics.plugins.*;
 import fi.nls.oskari.domain.User;
 import fi.nls.oskari.util.ResponseHelper;
@@ -64,43 +65,44 @@ public class GetIndicatorDataHandler extends ActionHandler {
                 }
             }
         }
-        JSONObject response = new JSONObject();
+        JSONObject response;
         try {
 
             // TODO: Might be faster to store the indicator id to indicator map in a proper map.
             //       Who should do this, though? We don't want to put this functionality into the plugins.
             //       It should be in a common wrapper for the plugins.
-            for (StatisticalIndicator indicator : plugin.getIndicators(user)) {
-                if (indicator.getId().equals(indicatorId)) {
-                    // This is fast, because there are only 10 or so layers at most.
-                    for (StatisticalIndicatorLayer layer : indicator.getLayers()) {
-                        // TODO: handle the case where no layers match -> return an error
-                        if (layer.getOskariLayerId() == layerId) {
-                            // Note: Layer version is handled already in the indicator metadata.
-                            // We found the correct indicator and the layer.
-                            JSONObject selectorJSON = new JSONObject(selectorsStr);
-                            StatisticalIndicatorSelectors selectors = new StatisticalIndicatorSelectors();
-                            @SuppressWarnings("unchecked")
-                            Iterator<String> keys = selectorJSON.keys();
-                            while (keys.hasNext()) {
-                                String key = keys.next();
-                                String value = selectorJSON.getString(key);
-                                StatisticalIndicatorSelector selector = new StatisticalIndicatorSelector(key, value);
-                                selectors.addSelector(selector);
-                            }
-                            Map<String, IndicatorValue> values = layer.getIndicatorValues(selectors);
-                            response = toJSON(values);
-                        }
-                    }
-                }
+            StatisticalIndicator indicator = plugin.getIndicator(user, indicatorId);
+            if(indicator == null) {
+                throw new ActionParamsException("No such indicator");
             }
-        } catch (JSONException e) {
+            StatisticalIndicatorLayer layer = indicator.getLayer(layerId);
+            if(layer == null) {
+                throw new ActionParamsException("No such regionset");
+            }
+            // Note: Layer version is handled already in the indicator metadata.
+            // We found the correct indicator and the layer.
+            JSONObject selectorJSON = new JSONObject(selectorsStr);
+            StatisticalIndicatorSelectors selectors = new StatisticalIndicatorSelectors();
+            @SuppressWarnings("unchecked")
+            Iterator<String> keys = selectorJSON.keys();
+            while (keys.hasNext()) {
+                String key = keys.next();
+                String value = selectorJSON.getString(key);
+                StatisticalIndicatorSelector selector = new StatisticalIndicatorSelector(key, value);
+                selectors.addSelector(selector);
+            }
+            Map<String, IndicatorValue> values = layer.getIndicatorValues(selectors);
+            response = toJSON(values);
+        } catch (Exception e) {
+            if(e instanceof ActionException) {
+                throw (ActionException)e;
+            }
             throw new ActionException("Something went wrong in serializing indicator data.", e);
         }
         // Note that there is an another layer of caches in the plugins doing the web queries.
         // Two layers are necessary, because deserialization and conversion to the internal data model
         // is a pretty heavy operation.
-        if (plugin.canCache()) {
+        if (plugin.canCache() && response != null) {
             JedisManager.setex(cacheKey, JedisManager.EXPIRY_TIME_DAY, response.toString());
         }
         return response;

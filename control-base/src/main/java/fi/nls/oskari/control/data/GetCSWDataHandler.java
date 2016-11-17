@@ -92,11 +92,10 @@ public class GetCSWDataHandler extends ActionHandler {
         } catch (Exception e) {
             throw new ActionException("Failed to query service: " + e.getMessage());
         }
-        
-        prefixImageFilenames(record, uuid, lang);
-        
+
         JSONObject result;
         if (record != null) {
+            prefixImageFilenames(record, uuid, lang);
             result = record.toJSON();
         } else {
             result = new JSONObject();
@@ -126,7 +125,13 @@ public class GetCSWDataHandler extends ActionHandler {
             List<CSWIsoRecord.BrowseGraphic> gs = i.getBrowseGraphics();
             for (CSWIsoRecord.BrowseGraphic g : gs) {
                 String fname = g.getFileName();
-                g.setFileName(prefix + fname);
+                final boolean replaceImageURL = fname != null
+                        && !fname.isEmpty()
+                        && !fname.startsWith("http://");
+
+                if (replaceImageURL) {
+                    g.setFileName(prefix + fname);
+                }
             }
         }
     }

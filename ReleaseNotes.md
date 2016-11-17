@@ -1,5 +1,9 @@
 # Release Notes
 
+## 1.41
+
+OpenTripPlanner defaults changed: max walk distance has been updated from 1000 to 1000000.
+
 ## 1.40
 
 ### Configuration improvements
@@ -16,10 +20,32 @@ Now all available search channels that return true from SearchableChannel.isDefa
     # comma-separated list of search channel ids used by GetSearchResult
     actionhandler.GetSearchResult.channels=OPENSTREETMAP_CHANNEL
 
+Note! if actionhandler.GetSearchResult.channels is used any additional default channels are not included in the search (like wfs-channels).
+To get wfs-channels working you need to blacklist individual channels you don't want to include instead of whitelisting:
+
+    # blacklist single channel with id "CHANNEL_ID" 
+    search.channel.CHANNEL_ID.isDefault=false
+
 ### Utils
 
 IOHelper: Added a new convenience method setupBasicAuth(connection, user, pass) which sets up basic auth for the given connection.
 JSONHelper: Added a new convenience method createJSONArray(json, bln) to easily create empty arrays from null/problematic JSON param.
+content-resources/ViewHelper: Added convenience methods for easily adding a bundle to default views. 
+Flyway migrations can use them like this to add a bundle to default and user type views if the view doesn't have the bundle already:
+
+        public class Vxx_yy__add_bundle_to_views implements JdbcMigration {
+            private static final String BUNDLE_ID = "[replace with bundle id]";
+        
+            public void migrate(Connection connection) throws Exception {
+                final ArrayList<Long> views = ViewHelper.getUserAndDefaultViewIds(connection);
+                for(Long viewId : views){
+                    if (ViewHelper.viewContainsBundle(connection, BUNDLE_ID, viewId)) {
+                        continue;
+                    }
+                    ViewHelper.addBundleWithDefaults(connection, viewId, BUNDLE_ID);
+                }
+            }
+        }
 
 ### MyBatis
 

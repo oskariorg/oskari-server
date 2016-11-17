@@ -5,23 +5,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import fi.nls.oskari.control.statistics.plugins.*;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import fi.nls.oskari.control.statistics.plugins.IndicatorValue;
-import fi.nls.oskari.control.statistics.plugins.IndicatorValueFloat;
-import fi.nls.oskari.control.statistics.plugins.IndicatorValueType;
-import fi.nls.oskari.control.statistics.plugins.StatisticalIndicator;
-import fi.nls.oskari.control.statistics.plugins.StatisticalIndicatorLayer;
-import fi.nls.oskari.control.statistics.plugins.StatisticalIndicatorSelectors;
 import fi.nls.oskari.domain.map.indicator.UserIndicator;
 
 /**
  * This maps the old user indicators to the statistical data source plugin model.
  * 
  */
-public class UserStatisticalIndicator implements StatisticalIndicator {
+public class UserStatisticalIndicator extends AbstractStatisticalIndicator {
     /*
      * An example message from old Oskari:
      * {"id":859,"category":"NUTS1","organization":{"fi":"a"},"title":{"fi":"Testi"},

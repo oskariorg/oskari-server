@@ -1,10 +1,5 @@
 package flyway.sample;
 
-import fi.nls.oskari.domain.map.OskariLayer;
-import fi.nls.oskari.log.LogFactory;
-import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.map.view.ViewService;
-import fi.nls.oskari.map.view.ViewServiceIbatisImpl;
 import org.flywaydb.core.api.migration.jdbc.JdbcMigration;
 
 import java.sql.Connection;

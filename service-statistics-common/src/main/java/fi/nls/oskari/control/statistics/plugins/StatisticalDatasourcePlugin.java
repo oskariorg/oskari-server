@@ -38,15 +38,17 @@ public interface StatisticalDatasourcePlugin {
      * @param user 
      * @return
      */
-    public List<? extends StatisticalIndicator> getIndicators(User user);
+    List<? extends StatisticalIndicator> getIndicators(User user);
+    List<? extends StatisticalIndicator> getIndicators(User user, boolean noMetadata);
+    StatisticalIndicator getIndicator(User user, String indicatorId);
 
     /**
      * Hook for setting up components that the handler needs to handle requests
      */
-    public void init(StatisticalDatasource source);
+    void init(StatisticalDatasource source);
 
     /**
      * Generally true, if the data does not change all the time, for example based on the user doing the query.
      */
-    public boolean canCache();
+    boolean canCache();
 }
