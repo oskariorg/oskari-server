@@ -49,29 +49,29 @@ public class FlywayHelper {
 
     public static boolean viewContainsBundle(Connection connection, String bundle, Long viewId)
             throws Exception {
-        final PreparedStatement statement =
-                connection.prepareStatement("SELECT * FROM portti_view_bundle_seq " +
-                        "WHERE bundle_id = (SELECT id FROM portti_bundle WHERE name=?) " +
-                        "AND view_id=?");
-        statement.setString(1, bundle);
-        statement.setLong(2, viewId);
-        try {
+        final String sql ="SELECT * FROM portti_view_bundle_seq " +
+                "WHERE bundle_id = (SELECT id FROM portti_bundle WHERE name=?) " +
+                "AND view_id=?";
+
+        try (final PreparedStatement statement =
+                     connection.prepareStatement(sql)) {
+            statement.setString(1, bundle);
+            statement.setLong(2, viewId);
             ResultSet rs = statement.executeQuery();
             return rs.next();
-        } finally {
-            statement.close();
         }
     }
 
     public static Bundle getBundleFromView(Connection connection, String bundle, Long viewId)
             throws Exception {
-        final PreparedStatement statement =
-                connection.prepareStatement("SELECT * FROM portti_view_bundle_seq " +
-                        "WHERE bundle_id = (SELECT id FROM portti_bundle WHERE name=?) " +
-                        "AND view_id=?");
-        statement.setString(1, bundle);
-        statement.setLong(2, viewId);
-        try {
+        final String sql ="SELECT * FROM portti_view_bundle_seq " +
+                "WHERE bundle_id = (SELECT id FROM portti_bundle WHERE name=?) " +
+                "AND view_id=?";
+
+        try (final PreparedStatement statement =
+                     connection.prepareStatement(sql)){
+            statement.setString(1, bundle);
+            statement.setLong(2, viewId);
             ResultSet rs = statement.executeQuery();
             if (rs.next()) {
                 Bundle b = new Bundle();
@@ -85,52 +85,49 @@ public class FlywayHelper {
                 b.setBundleinstance(rs.getString("bundleinstance"));
                 return b;
             }
-        } finally {
-            statement.close();
         }
         return null;
     }
 
     public static Bundle updateBundleInView(Connection connection, Bundle bundle, Long viewId)
             throws Exception {
-        final PreparedStatement statement =
-                connection.prepareStatement("UPDATE portti_view_bundle_seq SET " +
-                        "startup=?, " +
-                        "config=?, " +
-                        "state=?, " +
-                        "seqno=?, " +
-                        "bundleinstance=? " +
-                        " WHERE bundle_id=? " +
-                        " AND view_id=?");
-        statement.setString(1, bundle.getStartup());
-        statement.setString(2, bundle.getConfig());
-        statement.setString(3, bundle.getState());
-        statement.setInt(4, bundle.getSeqNo());
-        statement.setString(5, bundle.getBundleinstance());
-        statement.setLong(6, bundle.getBundleId());
-        statement.setLong(7, viewId);
-        try {
+        final String sql = "UPDATE portti_view_bundle_seq SET " +
+                "startup=?, " +
+                "config=?, " +
+                "state=?, " +
+                "seqno=?, " +
+                "bundleinstance=? " +
+                " WHERE bundle_id=? " +
+                " AND view_id=?";
+
+        try (final PreparedStatement statement =
+                     connection.prepareStatement(sql)) {
+            statement.setString(1, bundle.getStartup());
+            statement.setString(2, bundle.getConfig());
+            statement.setString(3, bundle.getState());
+            statement.setInt(4, bundle.getSeqNo());
+            statement.setString(5, bundle.getBundleinstance());
+            statement.setLong(6, bundle.getBundleId());
+            statement.setLong(7, viewId);
             statement.execute();
-        } finally {
-            statement.close();
         }
         return null;
     }
 
     public static void addBundleWithDefaults(Connection connection, Long viewId, String bundleid)
             throws SQLException {
-        final PreparedStatement statement =
-                connection.prepareStatement("INSERT INTO portti_view_bundle_seq" +
-                        "(view_id, bundle_id, seqno, config, state, startup, bundleinstance) " +
-                        "VALUES (" +
-                        "?, " +
-                        "(SELECT id FROM portti_bundle WHERE name=?), " +
-                        "(SELECT max(seqno)+1 FROM portti_view_bundle_seq WHERE view_id=?), " +
-                        "(SELECT startup FROM portti_bundle WHERE name=?), " +
-                        "(SELECT startup FROM portti_bundle WHERE name=?),  " +
-                        "(SELECT startup FROM portti_bundle WHERE name=?), " +
-                        "?)");
-        try {
+        final String sql ="INSERT INTO portti_view_bundle_seq" +
+                "(view_id, bundle_id, seqno, config, state, startup, bundleinstance) " +
+                "VALUES (" +
+                "?, " +
+                "(SELECT id FROM portti_bundle WHERE name=?), " +
+                "(SELECT max(seqno)+1 FROM portti_view_bundle_seq WHERE view_id=?), " +
+                "(SELECT startup FROM portti_bundle WHERE name=?), " +
+                "(SELECT startup FROM portti_bundle WHERE name=?),  " +
+                "(SELECT startup FROM portti_bundle WHERE name=?), " +
+                "?)";
+        try(final PreparedStatement statement =
+                    connection.prepareStatement(sql)) {
             statement.setLong(1, viewId);
             statement.setString(2, bundleid);
             statement.setLong(3, viewId);
@@ -139,8 +136,6 @@ public class FlywayHelper {
             statement.setString(6, bundleid);
             statement.setString(7, bundleid);
             statement.execute();
-        } finally {
-            statement.close();
         }
     }
 }
