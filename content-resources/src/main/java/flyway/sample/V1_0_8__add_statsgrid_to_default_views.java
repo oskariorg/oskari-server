@@ -5,7 +5,7 @@ import fi.nls.oskari.util.PropertyUtil;
 import org.flywaydb.core.api.migration.jdbc.JdbcMigration;
 
 import java.sql.Connection;
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Adds statsgrid bundle to default and user views.
@@ -17,7 +17,7 @@ public class V1_0_8__add_statsgrid_to_default_views implements JdbcMigration {
         if(PropertyUtil.getOptional("flyway.sample.1_0_8.skip", true)) {
             return;
         }
-        final ArrayList<Long> views = FlywayHelper.getUserAndDefaultViewIds(connection);
+        final List<Long> views = FlywayHelper.getUserAndDefaultViewIds(connection);
         for(Long viewId : views){
             if (FlywayHelper.viewContainsBundle(connection, BUNDLE_ID, viewId)) {
                 continue;

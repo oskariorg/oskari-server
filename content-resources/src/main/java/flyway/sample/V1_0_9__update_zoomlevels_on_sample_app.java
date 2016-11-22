@@ -9,7 +9,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.sql.Connection;
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Updates Adds statsgrid bundle to default and user views.
@@ -21,7 +21,7 @@ public class V1_0_9__update_zoomlevels_on_sample_app implements JdbcMigration {
         if(PropertyUtil.getOptional("flyway.sample.1_0_9.skip", false)) {
             return;
         }
-        final ArrayList<Long> views = FlywayHelper.getViewIdsForTypes(connection, ViewTypes.DEFAULT, ViewTypes.USER, ViewTypes.PUBLISH_TEMPLATE);
+        final List<Long> views = FlywayHelper.getViewIdsForTypes(connection, ViewTypes.DEFAULT, ViewTypes.USER, ViewTypes.PUBLISH_TEMPLATE);
         for(Long viewId : views){
             Bundle mapfull = FlywayHelper.getBundleFromView(connection, "mapfull", viewId);
             if (mapfull == null) {
