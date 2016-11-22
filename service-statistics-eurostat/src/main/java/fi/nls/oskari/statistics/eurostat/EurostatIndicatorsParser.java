@@ -144,7 +144,7 @@ public class EurostatIndicatorsParser {
             is = IOHelper.getConnection(config.getUrl() + "/SDMX/diss-web/rest/dataflow/ESTAT/all/latest").getInputStream();
             is = IOHelper.debugResponse(is);
         } catch (IOException e) {
-            throw new ServiceRuntimeException("Couldn't get indicator list from " + config.getUrl());
+            throw new ServiceRuntimeException("Couldn't get indicator list from " + config.getUrl(), e);
         }
 
         try (InputStreamReader inputReader = new InputStreamReader(is)) {

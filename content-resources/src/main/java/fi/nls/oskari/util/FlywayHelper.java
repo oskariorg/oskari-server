@@ -8,6 +8,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Helpers for flyway scripts. Be very careful when making changes as previous versions of Oskari are using this
@@ -15,8 +16,8 @@ import java.util.ArrayList;
  */
 public class FlywayHelper {
 
-    public static ArrayList<Long> getViewIdsForTypes(Connection connection, String... types)
-            throws Exception {
+    public static List<Long> getViewIdsForTypes(Connection connection, String... types)
+            throws SQLException {
         ArrayList<Long> ids = new ArrayList<>();
         StringBuilder sql = new StringBuilder("SELECT id FROM portti_view");
         if (types != null && types.length > 0) {
@@ -34,21 +35,22 @@ public class FlywayHelper {
                     statement.setString(i + 1, types[i]);
                 }
             }
-            ResultSet rs = statement.executeQuery();
-            while (rs.next()) {
-                ids.add(rs.getLong("id"));
+            try (ResultSet rs = statement.executeQuery()) {
+                while (rs.next()) {
+                    ids.add(rs.getLong("id"));
+                }
             }
         }
         return ids;
     }
 
-    public static ArrayList<Long> getUserAndDefaultViewIds(Connection connection)
-            throws Exception {
+    public static List<Long> getUserAndDefaultViewIds(Connection connection)
+            throws SQLException {
         return getViewIdsForTypes(connection, ViewTypes.DEFAULT, ViewTypes.USER);
     }
 
     public static boolean viewContainsBundle(Connection connection, String bundle, Long viewId)
-            throws Exception {
+            throws SQLException {
         final String sql ="SELECT * FROM portti_view_bundle_seq " +
                 "WHERE bundle_id = (SELECT id FROM portti_bundle WHERE name=?) " +
                 "AND view_id=?";
@@ -57,13 +59,14 @@ public class FlywayHelper {
                      connection.prepareStatement(sql)) {
             statement.setString(1, bundle);
             statement.setLong(2, viewId);
-            ResultSet rs = statement.executeQuery();
-            return rs.next();
+            try (ResultSet rs = statement.executeQuery()) {
+                return rs.next();
+            }
         }
     }
 
     public static Bundle getBundleFromView(Connection connection, String bundle, Long viewId)
-            throws Exception {
+            throws SQLException {
         final String sql ="SELECT * FROM portti_view_bundle_seq " +
                 "WHERE bundle_id = (SELECT id FROM portti_bundle WHERE name=?) " +
                 "AND view_id=?";
@@ -72,25 +75,26 @@ public class FlywayHelper {
                      connection.prepareStatement(sql)){
             statement.setString(1, bundle);
             statement.setLong(2, viewId);
-            ResultSet rs = statement.executeQuery();
-            if (rs.next()) {
-                Bundle b = new Bundle();
-                b.setViewId(viewId);
-                b.setName(bundle);
-                b.setBundleId(rs.getLong("bundle_id"));
-                b.setStartup(rs.getString("startup"));
-                b.setConfig(rs.getString("config"));
-                b.setState(rs.getString("state"));
-                b.setSeqNo(rs.getInt("seqno"));
-                b.setBundleinstance(rs.getString("bundleinstance"));
-                return b;
+            try (ResultSet rs = statement.executeQuery()) {
+                if (rs.next()) {
+                    Bundle b = new Bundle();
+                    b.setViewId(viewId);
+                    b.setName(bundle);
+                    b.setBundleId(rs.getLong("bundle_id"));
+                    b.setStartup(rs.getString("startup"));
+                    b.setConfig(rs.getString("config"));
+                    b.setState(rs.getString("state"));
+                    b.setSeqNo(rs.getInt("seqno"));
+                    b.setBundleinstance(rs.getString("bundleinstance"));
+                    return b;
+                }
             }
         }
         return null;
     }
 
     public static Bundle updateBundleInView(Connection connection, Bundle bundle, Long viewId)
-            throws Exception {
+            throws SQLException {
         final String sql = "UPDATE portti_view_bundle_seq SET " +
                 "startup=?, " +
                 "config=?, " +
@@ -122,8 +126,8 @@ public class FlywayHelper {
                 "?, " +
                 "(SELECT id FROM portti_bundle WHERE name=?), " +
                 "(SELECT max(seqno)+1 FROM portti_view_bundle_seq WHERE view_id=?), " +
-                "(SELECT startup FROM portti_bundle WHERE name=?), " +
-                "(SELECT startup FROM portti_bundle WHERE name=?),  " +
+                "(SELECT config FROM portti_bundle WHERE name=?), " +
+                "(SELECT state FROM portti_bundle WHERE name=?),  " +
                 "(SELECT startup FROM portti_bundle WHERE name=?), " +
                 "?)";
         try(final PreparedStatement statement =
