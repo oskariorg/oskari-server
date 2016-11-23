@@ -6,6 +6,7 @@ import fi.nls.oskari.control.statistics.plugins.StatisticalIndicatorSelectors;
 import fi.nls.oskari.control.statistics.plugins.db.DatasourceLayer;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.service.ServiceRuntimeException;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.XmlHelper;
 import org.apache.axiom.om.OMElement;
@@ -139,11 +140,11 @@ public class EurostatIndicatorsParser {
 
         InputStream is = null;
         try {
-            //is = IOHelper.getConnection(config.getUrl() + "/SDMX/diss-web/rest/dataflow/ESTAT/all/latest").getInputStream();
-            is = IOHelper.getConnection("http://ec.europa.eu/eurostat/SDMX/diss-web/rest/dataflow/ESTAT/all/latest").getInputStream();
+            // "http://ec.europa.eu/eurostat
+            is = IOHelper.getConnection(config.getUrl() + "/SDMX/diss-web/rest/dataflow/ESTAT/all/latest").getInputStream();
             is = IOHelper.debugResponse(is);
         } catch (IOException e) {
-            // do this later
+            throw new ServiceRuntimeException("Couldn't get indicator list from " + config.getUrl(), e);
         }
 
         try (InputStreamReader inputReader = new InputStreamReader(is)) {
