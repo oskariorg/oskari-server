@@ -10,6 +10,7 @@ import fi.nls.oskari.fe.input.format.gml.StaxGMLInputProcessor;
 import fi.nls.oskari.fe.iri.Resource;
 import fi.nls.oskari.fe.output.OutputProcessor;
 import fi.nls.oskari.fi.rysp.generic.WFS11_path_parse_worker;
+import fi.nls.oskari.map.geometry.ProjectionHelper;
 import fi.nls.oskari.pojo.GeoJSONFilter;
 import fi.nls.oskari.pojo.SessionStore;
 import fi.nls.oskari.service.ServiceRuntimeException;
@@ -190,7 +191,7 @@ public class FEMapLayerJob extends OWSMapLayerJob {
 
         final FERequestResponse requestResponse = new FERequestResponse();
 
-        Filter filter = WFSFilter.initBBOXFilter(session.getLocation(), layer);
+        Filter filter = WFSFilter.initBBOXFilter(session.getLocation(), layer, false);
         requestResponse.setFilter(filter);
         requestResponse.setResponse(responseCollections);
         requestResponse.setLocation(session.getLocation());
@@ -257,12 +258,9 @@ public class FEMapLayerJob extends OWSMapLayerJob {
 
         try {
             /* CRS */
+            //Axis order is x=lon y=lat for each projection in a OL Map
             final CoordinateReferenceSystem crs = CRS.decode(session
-                    .getLocation().getSrs());
-
-            AxisDirection dir0 = crs.getCoordinateSystem().getAxis(0)
-                    .getDirection();
-            log.debug("[fe] SESSION CRS AXIS 0 " + dir0);
+                    .getLocation().getSrs(), true);
 
             final MathTransform transform = this.session.getLocation()
                     .getTransformForClient(crs, true);
@@ -630,6 +628,11 @@ public class FEMapLayerJob extends OWSMapLayerJob {
                 log.debug(PROCESS_ENDED + getKey());
                 throw new ServiceRuntimeException("Request failed for layer: " + layer.getLayerName(),
                         WFSExceptionHelper.ERROR_FEATURE_PARSING);
+            }
+
+            // Swap XY in feature geometry, if reverseXY setup in layer attributes
+            if(layer.isReverseXY(session.getLocation().getSrs())){
+                ProjectionHelper.swapGeometryXY(this.features);
             }
 
             // 0 features found - send size

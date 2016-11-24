@@ -222,13 +222,9 @@ public class MetadataCatalogueChannelSearchService extends SearchChannel {
         try {
             Point p1 = null;
             Point p2 = null;
-            if (ProjectionHelper.isFirstAxisNorth(CRS.decode(sourceSRS))) {
-                p1 = ProjectionHelper.transformPoint(item.getSouthBoundLatitude(), item.getWestBoundLongitude(), sourceSRS, targetSRS);
-                p2 = ProjectionHelper.transformPoint(item.getNorthBoundLatitude(), item.getEastBoundLongitude(), sourceSRS, targetSRS);
-            } else {
-                p1 = ProjectionHelper.transformPoint(item.getWestBoundLongitude(), item.getSouthBoundLatitude(), sourceSRS, targetSRS);
-                p2 = ProjectionHelper.transformPoint(item.getEastBoundLongitude(), item.getNorthBoundLatitude(), sourceSRS, targetSRS);
-            }
+            p1 = ProjectionHelper.transformPoint(item.getWestBoundLongitude(), item.getSouthBoundLatitude(), sourceSRS, targetSRS);
+            p2 = ProjectionHelper.transformPoint(item.getEastBoundLongitude(), item.getNorthBoundLatitude(), sourceSRS, targetSRS);
+
             return WKTHelper.getBBOX(p1.getLon(), p1.getLat(), p2.getLon(), p2.getLat());
         } catch(Exception e){
             log.error(e, "Cannot get BBOX");

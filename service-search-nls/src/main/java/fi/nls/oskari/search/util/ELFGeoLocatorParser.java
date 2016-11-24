@@ -176,19 +176,10 @@ public class ELFGeoLocatorParser {
                     log.debug("Original coordinates - x:", point.getX(), "y:", point.getY());
 
                     Point p2 = null;
-                    boolean forceXY = System.getProperty(PROPERTY_FORCEXY) != null && "true".equals(System.getProperty(PROPERTY_FORCEXY));
-                    if (forceXY) {
-                        p2 = ProjectionHelper.transformPoint(point.getX(), point.getY(), serviceSrs, epsg); //"EPSG:3067"
-                        //forcexy == true and so isFirstAxisNorth false -> projectionhelper returns "wrong" order ->
-                        //need to swap lon and lat
-                        p2.switchLonLat();
-                    } else {
-                        // since ProjectionHelper.isFirstAxisNorth(CRS.decode(serviceSrs)) == true -> y first
-                        p2 = ProjectionHelper.transformPoint(point.getY(), point.getX(), serviceSrs, epsg); //"EPSG:3067"
-                    }
+                    p2 = ProjectionHelper.transformPoint(point.getX(), point.getY(), serviceSrs, epsg);
 
                     log.debug("Transformed coordinates - x:", p2.getLon(), "y:", p2.getLat());
-                    if(p2 != null) {
+                    if (p2 != null) {
                         lon = "" + p2.getLon();
                         lat = "" + p2.getLat();
                     }
@@ -477,36 +468,10 @@ public class ELFGeoLocatorParser {
 
         try {
 
-            CoordinateReferenceSystem sourceCrs = CRS.decode(epsg);
-            CoordinateReferenceSystem targetCrs = CRS.decode(serviceSrs);
+            Point p1 = ProjectionHelper.transformPoint(lon, lat, epsg, serviceSrs);
+            lonlat[0] = p1.getLonToString();
+            lonlat[1] = p1.getLatToString();
 
-
-            MathTransform mathTransform = CRS.findMathTransform(sourceCrs, targetCrs, true);
-
-            DirectPosition2D srcDirectPosition2D = null;
-
-            DirectPosition2D destDirectPosition2D = new DirectPosition2D();
-
-            // Switch direction, if 1st coord is to the north
-            if ( sourceCrs.getCoordinateSystem().getAxis(0).getDirection().absolute() == AxisDirection.NORTH ||
-                    sourceCrs.getCoordinateSystem().getAxis(0).getDirection().absolute() == AxisDirection.UP ||
-                    sourceCrs.getCoordinateSystem().getAxis(0).getDirection().absolute() == AxisDirection.DISPLAY_UP) {
-                srcDirectPosition2D = new DirectPosition2D(sourceCrs, Double.valueOf(lat), Double.valueOf(lon));
-            } else {
-                srcDirectPosition2D = new DirectPosition2D(sourceCrs, Double.valueOf(lon), Double.valueOf(lat));
-            }
-
-            mathTransform.transform(srcDirectPosition2D, destDirectPosition2D);
-
-            lonlat[0] = String.valueOf(destDirectPosition2D.x);
-            lonlat[1] = String.valueOf(destDirectPosition2D.y);
-            // Switch direction, if 1st coord is to the north
-            if (targetCrs.getCoordinateSystem().getAxis(0).getDirection().absolute() == AxisDirection.NORTH ||
-                    targetCrs.getCoordinateSystem().getAxis(0).getDirection().absolute() == AxisDirection.UP ||
-                    targetCrs.getCoordinateSystem().getAxis(0).getDirection().absolute() == AxisDirection.DISPLAY_UP) {
-                lonlat[0] = String.valueOf(destDirectPosition2D.y);
-                lonlat[1] = String.valueOf(destDirectPosition2D.x);
-            }
             return lonlat;
 
         } catch (Exception e) {

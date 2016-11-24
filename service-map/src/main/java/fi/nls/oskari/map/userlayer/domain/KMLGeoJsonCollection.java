@@ -31,10 +31,11 @@ public class KMLGeoJsonCollection extends GeoJsonCollection implements GeoJsonWo
     /**
      *  Parse Google kml import data to geojson features
      * @param file            kml import file
+     * @param source_epsg source CRS (not in use in this format)
      * @param target_epsg     target CRS
-     * @return
+     * @return null --> ok   error message --> import failed
      */
-    public boolean parseGeoJSON(File file, String target_epsg) {
+    public String parseGeoJSON(File file, String source_epsg, String target_epsg) {
 
 
         try {
@@ -81,12 +82,12 @@ public class KMLGeoJsonCollection extends GeoJsonCollection implements GeoJsonWo
             setFeatureType(featype);
             setTypeName("KML_");
 
-            return true;
+            return null;
 
         } catch (Exception e) {
             log.error("Couldn't create geoJSON from the kml file ", file.getName(),
                     e);
-            return false;
+            return "Couldn't create geoJSON from the kml file " + file.getName();
         }
     }
 }

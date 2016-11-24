@@ -14,6 +14,8 @@ import fi.nls.oskari.map.geometry.ProjectionHelper;
 @Oskari("TM35LEHTIJAKO_CHANNEL")
 public class TM35LehtijakoSearchChannel extends SearchChannel {
 
+    private static final int DEFAULT_TM35_SCALE = 5000;
+    private static final String PARAM_TM35_SCALE = "scale";
     private Logger log = LogFactory.getLogger(this.getClass());
 
     @Override
@@ -75,7 +77,10 @@ public class TM35LehtijakoSearchChannel extends SearchChannel {
         
         Point p = ProjectionHelper.transformPoint(x, y, epsg, "EPSG:3067");
 
-        int scale = Integer.parseInt((String) searchCriteria.getParam("scale")); // pitää olla jokin näistä: 100000,50000,25000,20000,10000,5000
+        int scale = DEFAULT_TM35_SCALE;
+        if(searchCriteria.getParam(PARAM_TM35_SCALE) != null){
+          scale =  Integer.parseInt((String) searchCriteria.getParam("scale")); // pitää olla jokin näistä: 100000,50000,25000,20000,10000,5000
+        }
 
         double[] pt = new double[]{p.getLon(), p.getLat()}; // E, N (EPSG:3067) lon,lat
 

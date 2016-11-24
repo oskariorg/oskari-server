@@ -36,11 +36,15 @@ public class GPXGeoJsonCollection extends GeoJsonCollection implements GeoJsonWo
      * Parse MapInfo file set to geojson features
      * Coordinate transformation is executed, if shape .prj file is within
      * @param file .gpx import file
+     * @param source_epsg source CRS (not in use in this format)
      * @param target_epsg target CRS
-     * @return
+     * @return null --> ok   error message --> import failed
      */
-    public boolean parseGeoJSON(File file, String target_epsg) {
+    public String parseGeoJSON(File file, String source_epsg, String target_epsg) {
         OGRDataStoreFactory factory = new BridjOGRDataStoreFactory();
+        if(!factory.isAvailable()){
+            return "GDAL library is not found for GPX import -- http://www.gdal.org/";
+        }
         Map<String, String> connectionParams = new HashMap<String, String>();
         connectionParams.put("DriverName", "GPX");
         connectionParams.put("DatasourceName", file.getAbsolutePath());
@@ -96,11 +100,11 @@ public class GPXGeoJsonCollection extends GeoJsonCollection implements GeoJsonWo
             }
         } catch (Exception e) {
              log.error("Couldn't create geoJSON from the GPX file ", file.getName(), e);
-             return false;
+             return "Couldn't create geoJSON from the GPX file " + file.getName();
         }
         finally {
             store.dispose();
         }
-        return true;
+        return null;
     }
 }

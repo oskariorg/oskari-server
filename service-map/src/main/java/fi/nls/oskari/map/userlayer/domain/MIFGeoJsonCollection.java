@@ -38,10 +38,11 @@ public class MIFGeoJsonCollection extends GeoJsonCollection implements GeoJsonWo
      * Parse MapInfo file set to geojson features
      * Coordinate transformation is executed, if shape .prj file is within
      * @param file .mif import file
+     * @param source_epsg source CRS, if it is not found in source data
      * @param target_epsg target CRS
-     * @return
+     * @return null --> ok   error message --> import failed
      */
-    public boolean parseGeoJSON(File file, String target_epsg) {
+    public String parseGeoJSON(File file, String source_epsg, String target_epsg) {
         OGRDataStoreFactory factory = new BridjOGRDataStoreFactory();
 
         Map<String, String> connectionParams = new HashMap<String, String>();
@@ -75,9 +76,15 @@ public class MIFGeoJsonCollection extends GeoJsonCollection implements GeoJsonWo
             if (sourceCrs == null) {
                  sourceCrs = schema.getCoordinateReferenceSystem();
             }
-            // Use target epsg (frontend Crs) as default
+
+            if (sourceCrs == null && source_epsg== null ) {
+                // Unknown CRS in source data - better to stop - result could be chaos
+                return "Uknown projection data in the source import file " + file.getName();
+            }
+
+            // Source epsg not found in source data, use epsg given by the user
             if (sourceCrs == null) {
-                sourceCrs = CRS.decode(target_epsg, true);
+                sourceCrs = CRS.decode(source_epsg, true);
             }
 
             // Oskari crs
@@ -105,10 +112,10 @@ public class MIFGeoJsonCollection extends GeoJsonCollection implements GeoJsonWo
             setGeoJson(JSONHelper.createJSONObject("features",features));
             setFeatureType((FeatureType)schema);
             setTypeName(typeName);
-            return true;
+            return null;
         } catch (Exception e) {
             log.error("Couldn't create geoJSON from the MapInfo file ", file.getName(), e);
-            return false;
+            return "Couldn't create geoJSON from the MapInfo file " + file.getName();
         }
         finally {
             store.dispose();
