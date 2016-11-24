@@ -86,7 +86,7 @@ public class MetadataFieldHandler {
             return;
         }
         final MetadataField field = getMetadataField();
-        final String spaceCharReplace = PropertyUtil.get("search.channel.METADATA_CATALOGUE_CHANNEL.field."+ field.getName() +".space.char");
+        final String spaceCharReplace = PropertyUtil.get("search.channel.METADATA_CATALOGUE_CHANNEL.field."+ field.getName() +".space.char", null);
 
         if(field.isMulti()) {
             String[] values = param.split("\\s*,\\s*");
