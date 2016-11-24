@@ -1,41 +1,41 @@
-# Wfs errors and warnings
+# WFS errors and warnings
 
- This is a list of errors and warnings, which might be send to Oskari frontend in Transport WFS service.
+ This is a list of errors and warnings, which might be send to Oskari front-end in Transport WFS service.
 
 ## Output in CHANNEL_ERROR
 
-              "once"           "true"/"false"  If "true", the message is shown only once for the layer
-              "message"        Detail message (e.g. Exception.getMessage
-              "type"           Job type ("normal", "MapClick", "Highlight", ...) (Omitted, if "channel" in)
-              "channel"        Channel to set before job (Omitted, if "type" in)
-              "key"            message key for translations in frontend (e.g. "getfeature_payload_failed";
-              "level"          "error" tai "warning"  (default "error")
-              "layerId"        Layer id
-              "reqId"          Request id
-              optional:
-              "cause"          exception.getCause() message
-              "zoomscale"      requested zoom scale for the layer, when "key" is "layer_scale_out_of_range"
-              "minscale"       min scale for the layer in transport cache, when "key" is "layer_scale_out_of_range"
-              "maxscale"       max scale for the layer in transport cache, when "key" is "layer_scale_out_of_range"
+      "once"           "true"/"false"  If "true", the message is shown only once for the layer
+      "message"        Detail message (e.g. Exception.getMessage
+      "type"           Job type ("normal", "MapClick", "Highlight", ...) (Omitted, if "channel" in)
+      "channel"        Channel to set before job (Omitted, if "type" in)
+      "key"            message key for translations in frontend (e.g. "getfeature_payload_failed";
+      "level"          "error" tai "warning"  (default "error")
+      "layerId"        Layer id
+      "reqId"          Request id
+      optional:
+      "cause"          exception.getCause() message
+      "zoomscale"      requested zoom scale for the layer, when "key" is "layer_scale_out_of_range"
+      "minscale"       min scale for the layer in transport cache, when "key" is "layer_scale_out_of_range"
+      "maxscale"       max scale for the layer in transport cache, when "key" is "layer_scale_out_of_range"
 
-##  output in CHANNEL_FEATURE
+##  Output in CHANNEL_FEATURE
 
 The feature data is send normally in this channel, but there are two special cases
 
-             "features":"empty"   No features found in selected map area
-             "feature":"max"      Not all features are returned in selected map area
+     "features":"empty"   No features found in selected map area
+     "feature":"max"      Not all features are returned in selected map area
                                   due to wfs max feature count limits
 
-##  output in CHANNEL_STATUS
+##  Output in CHANNEL_STATUS
 
 This channel reports the status of transport job
 
-              "message"        status message (e.g. "started", "completed"
-              "type"           Job type ("normal", "MapClick", "Highlight", ...)
-              "layerId"        Layer id
-              "reqId"          Request id
-              "success"
-              "success_nop"
+    "message"        status message (e.g. "started", "completed"
+    "type"           Job type ("normal", "MapClick", "Highlight", ...)
+    "layerId"        Layer id
+    "reqId"          Request id
+    "success"
+    "success_nop"
 
 ## Error and warning cases ("key" values) in CHANNEL_ERROR (default error level is "error")
 
@@ -53,11 +53,11 @@ This channel reports the status of transport job
 
 #### "WFSLayerStore_parsing_failed"
 
-    Transport service could not parse wfs layer data (e.g. unknown json key (property name))
+    Transport service could not parse WFS layer data (e.g. unknown json key (property name))
 
 #### "sessionstore_parsing_failed"
 
-    Transport service could not parse session data (e.g. Unrecognized values  in map size or tile size)
+    Transport service could not parse session data (e.g. unrecognized values  in map size or tile size)
 
 #### "layer_scale_out_of_range"
 
@@ -70,18 +70,33 @@ This channel reports the status of transport job
 
 #### "layer_add_failed"
 
-     Transport service failed to add a map layer to the session - invalid params e.g. styleName
-     "level":"warning"
+     Transport service failed to add a map layer to the session - invalid params.
 
+     Missing some of these parameters:
+     - styleName
+     - layerId
+
+     "level":"warning"
 
 #### "layer_remove_failed"
 
-     Transport service failed to remove a map layer from the session - no layerId
+     Transport service failed to remove a map layer from the session.
+
+     Missing parameters:
+     - layerId
+
      "level":"warning"
 
 #### "no_features_defined"
 
-      Transport service could not init highlight job - layer feature ids are not defined for highlight
+      Transport service could not init highlight job - layer feature ids are not defined for highlight.
+
+      Missing some of these parameters:
+      - layerId
+      - featureIds
+      - keepPrevious
+      - geomRequest
+
       "level":"warning"
 
 #### "parameters_not_set"
@@ -90,23 +105,84 @@ This channel reports the status of transport job
 
 #### "set_process_request_failed"
 
-      Transport service failed to set location data for the job - lacking parameters e.g. zoom, bbox, grid, tiles"
-      or
-      Transport service failed to set map size - lacking params e.g. width, height"
-      or
-      Transport service failed to set layer style - lacking params e.g. styleName"
-      or
-      Transport service failed to set custom layer style - lacking params e.g. fill_color, stroke_color, .."
-      or
-      Transport service failed to set map click - lacking params or GeoJson filter init failed"
-      or
-      Transport service failed to set layer visibility - layer visibility parameter is not defined"
-      or
-      Transport service failed to set GeoJson filter - Reading JSON data failed"
-      or
-      Transport service failed to set property filter - Reading JSON data failed"
+##### Transport service failed to set location data for the job
+
+      Missing some of these parameters:
+      - layerId
+      - srs
+      - bbox
+      - zoom
+      - tiles
+      - grid
 
       "level":"warning"
+
+##### Transport service failed to set map size
+
+    Missing some of these parameters:
+      - width
+      - height
+
+      "level":"warning"
+
+##### Transport service failed to set layer style
+
+    Missing some of these parameters:
+      - layerId
+      - styleName
+
+      "level":"warning"
+
+##### Transport service failed to set custom layer style
+
+    Missing some of these parameters:
+      - layerId
+      - fill_color
+      - fill_pattern
+      - border_color
+      - border_linejoin
+      - border_dasharray
+      - border_width
+      - stroke_linecap
+      - stroke_color
+      - stroke_linejoin
+      - stroke_dasharray
+      - stroke_width
+      - dot_color
+      - dot_shape
+      - dot_size
+
+      "level":"warning"
+
+##### Transport service failed to set map click
+
+    Missing some of these parameters:
+    - longitude
+    - latitude
+
+    or GeoJson filter init failed
+
+    "level":"warning"
+
+##### Transport service failed to set layer visibility
+
+    Missing some of these parameters:
+    - layerId
+    - visible
+
+    "level":"warning"
+
+##### Transport service failed to set GeoJson filter
+
+    Reading filter JSON data failed. Not set filter.
+
+    "level":"warning"
+
+##### Transport service failed to set property filter
+
+    Reading property filter JSON data failed. Not set filter.
+
+    "level":"warning"
 
 #### "wfs_configuring_layer_failed"
 
@@ -118,21 +194,23 @@ This channel reports the status of transport job
 
 ####  "wfs_image_parsing_failed"
 
-      Image parsing failed for feature highlight  or for image tiles
+      Image parsing failed for feature highlight or for image tiles
 
 #### "geometry_parsing_failed"
 
       Geometry parsing of some features failed in the feature collection (unknown geometry property or transformation error)
+
       "level":"warning"
 
 #### "sldstyle_parsing_failed"
 
       SDL style parsing failed for the layer (custon or default)
+
       "level":"warning"
 
 #### "invalid_geometry_property"
 
-      No geometry property name defined  or no geometry namespace URI defined.
+      No geometry property name defined or no geometry namespace URI defined.
 
 #### "getfeature_payload_failed"
 
