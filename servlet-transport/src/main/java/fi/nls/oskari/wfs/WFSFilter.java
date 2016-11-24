@@ -4,6 +4,7 @@ import com.vividsolutions.jts.geom.*;
 import com.vividsolutions.jts.util.GeometricShapeFactory;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.map.geometry.ProjectionHelper;
 import fi.nls.oskari.pojo.GeoJSONFilter;
 import fi.nls.oskari.pojo.Location;
 import fi.nls.oskari.pojo.PropertyFilter;
@@ -43,6 +44,8 @@ public class WFSFilter {
     public static final String GT_GEOM_POLYGON = "POLYGON";
     public static final int CIRCLE_POINTS_COUNT = 10;
     public static final double CONVERSION_FACTOR = 2.54/1200; // 12th of an inch
+    public static final double M_TO_DEGREE = 8.96861E-06d;
+    public static final String DEGREE_UNIT = "°";
 
     private static final Logger LOG = LogFactory.getLogger(WFSFilter.class);
 
@@ -52,6 +55,7 @@ public class WFSFilter {
 
     private WFSLayerStore layer;
     private MathTransform transform;
+    private String unit;
     private double defaultBuffer;
 
     private String xml;
@@ -121,10 +125,13 @@ public class WFSFilter {
         }
         this.layer = layer;
         this.transform = transform;
+        this.unit = session.getLocation().getCrsForMap().getCoordinateSystem().getAxis(0).getUnit().toString();
 
         if(createFilter) {
             Filter filter = getFilter(type, session, bounds);
-            return createXML(filter);
+            String longSrsName = layer.isLongSrsName(session.getLocation().getSrs()) ?
+                    ProjectionHelper.longSyntaxEpsg(session.getLocation().getSrs()) : null;
+            return createXML(filter, longSrsName);
         }
         return null;
     }
@@ -143,18 +150,18 @@ public class WFSFilter {
             GeoJSONFilter geoJSONFilter = session.getFilter();
             if(geoJSONFilter != null && geoJSONFilter.getGeoJSON() != null) {
                 LOG.info("Using geojson filter for map click", geoJSONFilter.getGeoJSON());
-                filter = initGeoJSONFilter(geoJSONFilter, layer.getGMLGeometryProperty());
+                filter = initGeoJSONFilter(geoJSONFilter,  session.getLocation().getSrs(), layer);
             } else {
                 LOG.info("Using coordinate filter for map click", session.getMapClick());
                 Coordinate coordinate = session.getMapClick();
-                filter = initCoordinateFilter(coordinate);
+                filter = initCoordinateFilter(coordinate, session.getLocation().getSrs(), layer);
             }
         } else if(type == JobType.GEOJSON) {
             LOG.debug("Filter: GeoJSON");
             // scale based default buffer doesn't work so well with non-metric units -> prefer geojson filter
             setDefaultBuffer(session.getMapScales().get((int) session.getLocation().getZoom()));
             GeoJSONFilter geoJSONFilter = session.getFilter();
-            filter = initGeoJSONFilter(geoJSONFilter, layer.getGMLGeometryProperty());
+            filter = initGeoJSONFilter(geoJSONFilter, session.getLocation().getSrs(), layer);
         }else if(type == JobType.PROPERTY_FILTER) {
             LOG.debug("Filter: Property filter");
             filter = initPropertyFilter(session, bounds, layer);
@@ -180,10 +187,11 @@ public class WFSFilter {
      * Inits XML String
      *
      * @param filter
+     * @param srsName  if !null, use long srsName syntax
      *
      * @return xml
      */
-    public String createXML(Filter filter) {
+    public String createXML(Filter filter, String srsName) {
         if(filter == null) {
             LOG.error("Failed to create XML for the filter (null)");
             return null;
@@ -199,9 +207,13 @@ public class WFSFilter {
             throw new ServiceRuntimeException("Encoding filter to String (xml) failed - layer: "+layer.getLayerId(), e.getCause());
         }
 
-        // remove namespacing
+        // Encoding is not valid - remove namespacing or set long SrsName  - this is not a nice solution
         if (this.xml.contains("urn:x-ogc:def:crs:")) {
-            this.xml = this.xml.replace("urn:x-ogc:def:crs:", "");
+            if(srsName != null){
+                this.xml = this.xml.replace("urn:x-ogc:def:crs:EPSG:", "urn:ogc:def:crs:EPSG::");
+            } else {
+                this.xml = this.xml.replace("urn:x-ogc:def:crs:", "");
+            }
         }
 
         // replace # => : if Arc 9.3 server (using GML2 separator)
@@ -228,6 +240,9 @@ public class WFSFilter {
     public void setDefaultBuffer(double mapScale) {
         LOG.debug("Default buffer size", mapScale * CONVERSION_FACTOR);
         this.defaultBuffer = mapScale * CONVERSION_FACTOR;
+        if(this.unit != null && this.unit.equals(DEGREE_UNIT)){
+            this.defaultBuffer =  this.defaultBuffer * M_TO_DEGREE;
+        }
     }
 
     /**
@@ -260,7 +275,7 @@ public class WFSFilter {
      *
      * @return filter
      */
-    public Filter initCoordinateFilter(Coordinate coordinate) {
+    public Filter initCoordinateFilter(Coordinate coordinate, String srs, WFSLayerStore layer) {
         if (coordinate == null || this.defaultBuffer == 0.0d) {
             LOG.error("Failed to create coordinate filter (coordinate or default buffer is unset)");
             throw new ServiceRuntimeException("Failed to create coordinate filter (coordinate or default buffer is unset)");
@@ -282,7 +297,8 @@ public class WFSFilter {
                 throw new ServiceRuntimeException("Transforming failed for coordinate filter", e.getCause());
             }
         }
-
+        // is reverseXY or long srs name
+        polygon = swapXY(polygon, srs, layer);
         Filter filter = ff.intersects(ff.property(layer
                 .getGMLGeometryProperty()), ff.literal(polygon));
 
@@ -297,11 +313,12 @@ public class WFSFilter {
      *
      * @return filter
      */
-    public Filter initGeoJSONFilter(GeoJSONFilter geoJSONFilter, String targetGeometryProperty) {
+    public Filter initGeoJSONFilter(GeoJSONFilter geoJSONFilter, String srs, WFSLayerStore layer) {
         if(geoJSONFilter == null || geoJSONFilter.getFeatures() == null || this.defaultBuffer == 0.0d) {
             LOG.error("Failed to create geoJSON filter (invalid JSON or default buffer unset)");
             return null;
         }
+        String targetGeometryProperty = layer.getGMLGeometryProperty();
         Filter filter = null;
         List<Filter> geometryFilters = new ArrayList<Filter>();
         Filter tmpFilter = null;
@@ -349,7 +366,8 @@ public class WFSFilter {
                         throw new ServiceRuntimeException("Transforming failed for geojson filter", e.getCause());
                     }
                 }
-
+                // is reverseXY or long srs name
+                polygon = swapXY(polygon, srs, layer);
                 tmpFilter = ff.intersects(ff.property(targetGeometryProperty), ff.literal(polygon));
 
                 geometryFilters.add(tmpFilter);
@@ -395,7 +413,7 @@ public class WFSFilter {
             throw new ServiceRuntimeException("Failed to create property filter (invalid JSON for property filter)");
         }
         // Bbox filter is always on
-        Filter filter = initBBOXFilter(location, layer);
+        Filter filter = initBBOXFilter(location, layer, true);
         if(filter == null ) {
             LOG.error("Failed to create bbox filter for property filter");
             return null;
@@ -421,23 +439,29 @@ public class WFSFilter {
      * Initializes bounding box filter (normal)
      *
      * @param location
-     *
+     * @param forRequest true; filter will be used for wfs service request / false: for features
      * @return filter
      */
-    public static Filter initBBOXFilter(Location location, WFSLayerStore layer) {
+    public static Filter initBBOXFilter(Location location, WFSLayerStore layer, boolean forRequest) {
         if(location == null || layer == null) {
             LOG.error("Failed to create BBOX filter (location or layer is unset)");
             return null;
         }
-
+        // Use layer.getSRSName() for srsName, if transform must be supported
+        String srsName = location.getSrs();
         ReferencedEnvelope envelope = location.getEnvelope();
-        envelope = location.getTransformEnvelope(envelope, layer.getSRSName(), true);
+        envelope = location.getTransformEnvelope(envelope, srsName, true);
+        // is reverseXY or use long srs name
+        if(forRequest){
+            envelope = swapXY(envelope, srsName, layer);
+        }
+        srsName = layer.isLongSrsName(srsName) ? ProjectionHelper.longSyntaxEpsg(srsName) : srsName;
         if(envelope == null){
             throw new ServiceRuntimeException(
-                    "Failed to create BBOX filter - layer: " + layer.getLayerId() + " Crs: " + layer.getSRSName() );
+                    "Failed to create BBOX filter - layer: " + layer.getLayerId() + " Crs: " + srsName );
         }
         Filter filter = ff.bbox(ff.property(layer.getGMLGeometryProperty()),
-                envelope);
+                envelope.getMinX(), envelope.getMinY(), envelope.getMaxX(), envelope.getMaxY(), srsName);
 
         return filter;
     }
@@ -454,16 +478,52 @@ public class WFSFilter {
             LOG.error("Failed to create BBOX filter (location or layer is unset)");
             return null;
         }
-
+        // Use layer.getSRSName() for srsName, if transform must be supported
+        String srsName = location.getSrs();
         ReferencedEnvelope enlargedEnvelope = location.getEnlargedEnvelope();
-        enlargedEnvelope = location.getTransformEnvelope(enlargedEnvelope, layer.getSRSName(), true);
+        enlargedEnvelope = location.getTransformEnvelope(enlargedEnvelope, srsName, true);
+        // is reverseXY or long srs name
+        enlargedEnvelope = swapXY(enlargedEnvelope, srsName, layer);
         if(enlargedEnvelope == null){
             throw new ServiceRuntimeException(
-                    "Failed to create enlarged BBOX filter - layer: " + layer.getLayerId() + " Crs: " + layer.getSRSName() );
+                    "Failed to create enlarged BBOX filter - layer: " + layer.getLayerId() + " Crs: " + srsName );
         }
+        srsName = layer.isLongSrsName(srsName) ? ProjectionHelper.longSyntaxEpsg(srsName) : srsName;
         Filter filter = ff.bbox(ff.property(layer.getGMLGeometryProperty()),
-                enlargedEnvelope);
+                enlargedEnvelope.getMinX(), enlargedEnvelope.getMinY(), enlargedEnvelope.getMaxX(),enlargedEnvelope.getMaxY(), srsName);
 
         return filter;
+    }
+
+    /**
+     * Swap xy order, if reverseXY setup in layer attributes
+     * Set srsName in long syntax, if longSrsName setup in layer attributes
+      * @param enlargedEnvelope
+     * @param srsName
+     * @param layer
+     * @return
+     */
+    public static  ReferencedEnvelope swapXY(ReferencedEnvelope enlargedEnvelope, String srsName, WFSLayerStore layer) {
+        enlargedEnvelope = layer.isReverseXY(srsName) ?
+                new ReferencedEnvelope(enlargedEnvelope.getMinY(), enlargedEnvelope.getMaxY(),enlargedEnvelope.getMinX(), enlargedEnvelope.getMaxX(),
+                        enlargedEnvelope.getCoordinateReferenceSystem()) : enlargedEnvelope;
+        enlargedEnvelope = layer.isLongSrsName(srsName) ?
+                new ReferencedEnvelope(enlargedEnvelope.getMinX(), enlargedEnvelope.getMaxX(),enlargedEnvelope.getMinY(),
+                        enlargedEnvelope.getMaxY(), ProjectionHelper.longSyntaxCrs(srsName)) : enlargedEnvelope;
+        return enlargedEnvelope;
+    }
+
+    /**
+     *  Swap polygon xy order, if reverseXY setup in layer attributes
+     * @param polygon
+     * @param srsName
+     * @param layer
+     * @return
+     */
+    public static Polygon swapXY(Polygon polygon, String srsName, WFSLayerStore layer) {
+        if(layer.isReverseXY(srsName)){
+            ProjectionHelper.flipFeatureYX(polygon);
+        }
+        return polygon;
     }
 }

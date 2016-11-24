@@ -3,7 +3,9 @@ package fi.nls.oskari.work.fe;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Envelope;
 import com.vividsolutions.jts.geom.Polygon;
+import fi.nls.oskari.map.geometry.ProjectionHelper;
 import fi.nls.oskari.pojo.SessionStore;
+import fi.nls.oskari.pojo.Units;
 import fi.nls.oskari.wfs.pojo.WFSLayerStore;
 import fi.nls.oskari.work.JobHelper;
 import fi.nls.oskari.work.JobType;
@@ -43,6 +45,8 @@ import java.util.Map;
 public class FERequestTemplate {
 
     public static final double CONVERSION_FACTOR = 2.54/1200; // 12th of an inch  ??
+    public static final double M_TO_DEGREE = 8.96861E-06d;
+    public static final String DEGREE_UNIT = "°";
     // GetFeature Rid filter template
     public static final String GETFEATURE_RID_TEMPLATE = "/fi/nls/oskari/fe/input/request/wfs/generic/generic_wfs_rid_template.xml";
     // GetFeature Intersect filter template
@@ -120,7 +124,7 @@ public class FERequestTemplate {
     }
 
     protected void buildBBOXRequest_XPath(StringBuffer params, InputStream inp,
-                                          OutputStream outs, BoundingBox bbox)
+                                          OutputStream outs, BoundingBox bbox, boolean longSrsName)
             throws ParserConfigurationException, SAXException, IOException,
             XPathExpressionException, TransformerException {
         String lowerCorner = Double.toString(bbox.getLowerCorner()
@@ -167,7 +171,9 @@ public class FERequestTemplate {
             if( srsName.indexOf("3857") != -1) {
                 _srsName = "EPSG:900913"; // GeoTools vs Deegree vs PostGIS interop - Google messed this up
             }
-
+            if(longSrsName){
+                _srsName = ProjectionHelper.longSyntaxEpsg(_srsName);
+            }
             NodeList nds = (NodeList) expr
                     .evaluate(doc, XPathConstants.NODESET);
 
@@ -285,7 +291,7 @@ public class FERequestTemplate {
 
     }
     protected void buildIntersectRequest_XPath(StringBuffer params, InputStream inp,
-                                          OutputStream outs, Polygon polygon, String serviceGeomProp)
+                                          OutputStream outs, Polygon polygon, String serviceGeomProp, boolean longSrsName)
             throws ParserConfigurationException, SAXException, IOException,
             XPathExpressionException, TransformerException {
         String coordinates = polygon.toText().replace("POLYGON","").replace("((","").replace("))","").replace(",","");
@@ -316,7 +322,9 @@ public class FERequestTemplate {
             if( srsName.indexOf("3857") != -1) {
                 _srsName = "EPSG:900913"; // GeoTools vs Deegree vs PostGIS interop - Google messed this up
             }
-
+            if(longSrsName){
+                _srsName = ProjectionHelper.longSyntaxEpsg(_srsName);
+            }
             NodeList nds = (NodeList) expr
                     .evaluate(doc, XPathConstants.NODESET);
 
@@ -411,7 +419,7 @@ public class FERequestTemplate {
 
 
     protected void buildRIDRequest_XPath(StringBuffer params, InputStream inp,
-                                          OutputStream outs, List<String> rids)
+                                          OutputStream outs, List<String> rids, boolean longSrsName)
             throws ParserConfigurationException, SAXException, IOException,
             XPathExpressionException, TransformerException {
 
@@ -437,7 +445,9 @@ public class FERequestTemplate {
             if( srsName.indexOf("3857") != -1) {
                 _srsName = "EPSG:900913"; // GeoTools vs Deegree vs PostGIS interop - Google messed this up
             }
-
+            if(longSrsName){
+                _srsName = ProjectionHelper.longSyntaxEpsg(_srsName);
+            }
             NodeList nds = (NodeList) expr
                     .evaluate(doc, XPathConstants.NODESET);
 
@@ -539,7 +549,7 @@ public class FERequestTemplate {
 
             ReferencedEnvelope env = new ReferencedEnvelope(new Envelope(c),
                     crs);
-            env.expandBy(GetSearchTolerance(session));
+            env.expandBy(GetSearchTolerance(session, crs.getCoordinateSystem().getAxis(0).getUnit().toString()));
             bbox = env.toBounds(crs);
             if (wfsVer.equals("2.0.0") && !isCascading(layer)){
                 //  intersect filter not supported in elf  cascading
@@ -554,7 +564,6 @@ public class FERequestTemplate {
             template = GETFEATURE_RID_TEMPLATE;
 
         } else if (bounds != null) {
-
             ReferencedEnvelope env = new ReferencedEnvelope(
                     new Envelope(bounds.get(0), bounds.get(2), bounds.get(1),
                             bounds.get(3)), crs);
@@ -571,11 +580,17 @@ public class FERequestTemplate {
             InputStream inp = getClass().getResourceAsStream(template);
         try {
             if (polygon != null) {
-                buildIntersectRequest_XPath(params, inp, outs, polygon, serviceGeomProp);
+                if(layer.isReverseXY(session.getLocation().getSrs())){
+                    ProjectionHelper.flipFeatureYX(polygon);
+                }
+                buildIntersectRequest_XPath(params, inp, outs, polygon, serviceGeomProp, layer.isLongSrsName(this.srsName));
             } else if (featureIds != null) {
-                buildRIDRequest_XPath(params, inp, outs, featureIds);
+                buildRIDRequest_XPath(params, inp, outs, featureIds, layer.isLongSrsName(this.srsName));
             } else if (bbox != null) {
-                buildBBOXRequest_XPath(params, inp, outs, bbox);
+                if(layer.isReverseXY(session.getLocation().getSrs())){
+                    bbox = new ReferencedEnvelope(bbox.getMinY(), bbox.getMaxY(), bbox.getMinX(), bbox.getMaxX(),crs).toBounds(crs);
+                }
+                buildBBOXRequest_XPath(params, inp, outs, bbox, layer.isLongSrsName(this.srsName) );
             }
 
 
@@ -615,8 +630,13 @@ public class FERequestTemplate {
         this.resolveDepth = resolveDepth;
 
     }
-    private double GetSearchTolerance(final SessionStore session){
-        return session.getMapScales().get((int) session.getLocation().getZoom())*CONVERSION_FACTOR;
+    private double GetSearchTolerance(final SessionStore session, final String unit){
+        // scale unit is always m
+        double tol = session.getMapScales().get((int) session.getLocation().getZoom())*CONVERSION_FACTOR;
+        if(unit.equals(DEGREE_UNIT)){
+            tol = tol * M_TO_DEGREE;
+        }
+        return tol;
     }
 
     /**

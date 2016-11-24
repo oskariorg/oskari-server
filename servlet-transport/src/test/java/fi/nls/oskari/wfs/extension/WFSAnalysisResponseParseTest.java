@@ -101,7 +101,7 @@ public class WFSAnalysisResponseParseTest {
 		assertTrue("Should get features", features.size() > 0);
 
         // create filter of screen area
-        Filter screenBBOXFilter = WFSFilter.initBBOXFilter(this.session.getLocation(), this.layer);
+        Filter screenBBOXFilter = WFSFilter.initBBOXFilter(this.session.getLocation(), this.layer, false);
 
         // send feature info
         FeatureIterator<SimpleFeature> featuresIter =  features.features();

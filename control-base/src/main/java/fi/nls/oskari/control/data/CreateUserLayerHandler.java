@@ -49,8 +49,11 @@ public class CreateUserLayerHandler extends ActionHandler {
     private static final String IMPORT_MIF = ".MIF";
     private static final String IMPORT_KML = ".KML";
     private static final String PARAM_EPSG_KEY = "epsg";
+    private static final String PARAM_SOURCE_EPSG_KEY = "sourceEpsg";
     private static final String USERLAYER_MAX_FILE_SIZE_MB = "userlayer.max.filesize.mb";
+    private static final String USERLAYER_DEFAULT_SOURCE_EPSG = "userlayer.default.source.epsg";
     final long userlayerMaxFileSizeMb = PropertyUtil.getOptional(USERLAYER_MAX_FILE_SIZE_MB, 10);
+    final String defaultSourceEpsg = PropertyUtil.get(USERLAYER_DEFAULT_SOURCE_EPSG, null);
     private static final int MAX_FILES_IN_ZIP = 100;
     private static final int MAX_BASE_FILENAME_LENGHT = 24;
 
@@ -61,6 +64,7 @@ public class CreateUserLayerHandler extends ActionHandler {
         params.requireLoggedInUser();
 
         final String target_epsg = params.getHttpParam(PARAM_EPSG_KEY, "EPSG:3067");
+        final String source_epsg = params.getHttpParam(PARAM_SOURCE_EPSG_KEY, defaultSourceEpsg);
 
         try {
 
@@ -89,8 +93,9 @@ public class CreateUserLayerHandler extends ActionHandler {
                 geojsonWorker = new MIFGeoJsonCollection();
             }
             // Parse import data to geojson
-            if (!geojsonWorker.parseGeoJSON(file, target_epsg)) {
-                throw new ActionException("Couldn't parse geoJSON out of import file");
+            String status = geojsonWorker.parseGeoJSON(file, source_epsg, target_epsg);
+            if (status != null) {
+                throw new ActionException(status);
             }
 
 
@@ -114,8 +119,12 @@ public class CreateUserLayerHandler extends ActionHandler {
             JSONHelper.putValue(userLayer, "permissions", permissions);
             response.getWriter().print(userLayer);
 
-        } catch (Exception e) {
-            throw new ActionException("Couldn't get the import file set",
+        }catch (ActionException e) {
+            throw new ActionException("Import failed - " + e.getMessage(),
+                    e);
+        }
+        catch (Exception e) {
+            throw new ActionException("Couldn't get the import file set - " + e.getMessage(),
                     e);
         }
 

@@ -44,7 +44,7 @@ public class WKTHelperTest {
 
     @Test
     public void testTransform() throws Exception {
-        Geometry point = WKTHelper.parseWKT("POINT (60.170014 24.938466)");
+        Geometry point = WKTHelper.parseWKT("POINT (24.938466 60.170014)");
         Geometry transformed = WKTHelper.transform(point, WKTHelper.PROJ_EPSG_4326, WKTHelper.PROJ_EPSG_3067);
         assertTrue("Got point from " + transformed, transformed != null);
         assertTrue("Point y correct " + transformed.getCoordinate().y, transformed.getCoordinate().y == 6672130.961068579);
@@ -57,8 +57,9 @@ public class WKTHelperTest {
         String transformed = WKTHelper.transformLayerCoverage(wkt, WKTHelper.PROJ_EPSG_3067);
 
         assertTrue("Got result: " + transformed, transformed != null);
-        String expected = "POLYGON ((51857.07752019336 6617351.758085947, 759905.4330615391 6599589.560233721, 674163.706166442 7782724.690696563, 199877.68034737493 7795699.644448195, 51857.07752019336 6617351.758085947))";
-        assertEquals("Point y correct ", expected, transformed);
+        String expected = "POLYGON ((51857.07752019336 6617351.758085947, 199877.68034737493 7795699.644448195, 674163.706166442 7782724.690696563, 759905.4330615391 6599589.560233721, 51857.07752019336 6617351.758085947))";
+        //was earlier in reversed order ??  "POLYGON ((51857.07752019336 6617351.758085947, 759905.4330615391 6599589.560233721, 674163.706166442 7782724.690696563, 199877.68034737493 7795699.644448195, 51857.07752019336 6617351.758085947))";
+        assertEquals("Polygon epsg:3067  correct ", expected, transformed);
     }
 
 

@@ -51,7 +51,7 @@ public class FERequestTemplateTest {
 
         ByteArrayOutputStream outs = new ByteArrayOutputStream();
 
-        template.buildBBOXRequest_XPath(null, inp, outs, bbox);
+        template.buildBBOXRequest_XPath(null, inp, outs, bbox, false);
         outs.flush();
 
         String result = new String(outs.toByteArray());
@@ -93,7 +93,7 @@ public class FERequestTemplateTest {
 
         ByteArrayOutputStream outs = new ByteArrayOutputStream();
 
-        template.buildBBOXRequest_XPath(null, inp, outs, bbox);
+        template.buildBBOXRequest_XPath(null, inp, outs, bbox, false);
         outs.flush();
 
         String result = new String(outs.toByteArray());
@@ -135,7 +135,7 @@ public class FERequestTemplateTest {
         InputStream inp = getClass().getResourceAsStream(templatePath);
         ByteArrayOutputStream outs = new ByteArrayOutputStream();
 
-        template.buildBBOXRequest_XPath(null, inp, outs, bbox);
+        template.buildBBOXRequest_XPath(null, inp, outs, bbox, false);
         outs.flush();
 
         String result = new String(outs.toByteArray());

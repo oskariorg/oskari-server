@@ -38,7 +38,6 @@ public class MetadataCatalogueQueryHelper {
     private static final String GMD_NAMESPACE = "gmd";
     public final static String TARGET_SRS = "EPSG:4326";
     public final static String SPATIAL_OPERATOR = "INTERSECTS";
-    public final static Boolean FORCE_TARGET_CRS_4326_XY = true;
 
     private static final Logger log = LogFactory.getLogger(MetadataCatalogueQueryHelper.class);
     private final static char WILDCARD_CHARACTER = '*';
@@ -294,11 +293,7 @@ public class MetadataCatalogueQueryHelper {
             //Transform to target crs
             Point minb = ProjectionHelper.transformPoint(env.getMinX(), env.getMinY(), env.getCoordinateReferenceSystem(), TARGET_SRS);
             Point maxb = ProjectionHelper.transformPoint(env.getMaxX(), env.getMaxY(), env.getCoordinateReferenceSystem(), TARGET_SRS);
-            if(FORCE_TARGET_CRS_4326_XY){
-                minb.switchLonLat();
-                maxb.switchLonLat();
 
-            }
             sb.append(minb.getLonToString()+" ");
             sb.append(minb.getLatToString());
             sb.append(",");

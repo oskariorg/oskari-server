@@ -173,10 +173,11 @@ public class GetCSWDataHandler extends ActionHandler {
         String adminRating = ratingService.findLatestAdminRating(metadataRatingType, uuid, adminRole);
         JSONHelper.putValue(result, KEY_ADMIN_RATING, adminRating);
     }
+
     private String getWKT(JSONObject item, final String targetSRS) {
         String sourceSRS = WKTHelper.PROJ_EPSG_4326;
         // check if we have values
-        if((JSONHelper.get(item, KEY_SOUTHBOUNDLATITUDE) == null) ||
+        if ((JSONHelper.get(item, KEY_SOUTHBOUNDLATITUDE) == null) ||
                 (JSONHelper.get(item, KEY_WESTBOUNDLONGITUDE) == null) ||
                 (JSONHelper.get(item, KEY_EASTBOUNDLONGITUDE) == null) ||
                 (JSONHelper.get(item, KEY_NORTHBOUNDLATITUDE) == null)) {
@@ -184,17 +185,14 @@ public class GetCSWDataHandler extends ActionHandler {
         }
         // transform points to map projection and create a WKT bbox
         try {
-            Point p1 = null;
-            Point p2 = null;
-            if (ProjectionHelper.isFirstAxisNorth(CRS.decode(sourceSRS))) {
-                p1 = ProjectionHelper.transformPoint(JSONHelper.get(item, KEY_SOUTHBOUNDLATITUDE).toString(), JSONHelper.get(item, KEY_WESTBOUNDLONGITUDE).toString(), sourceSRS, targetSRS);
-                p2 = ProjectionHelper.transformPoint(JSONHelper.get(item, KEY_NORTHBOUNDLATITUDE).toString(), JSONHelper.get(item, KEY_EASTBOUNDLONGITUDE).toString(), sourceSRS, targetSRS);
-            } else {
-                p1 = ProjectionHelper.transformPoint(JSONHelper.get(item, KEY_WESTBOUNDLONGITUDE).toString(), JSONHelper.get(item, KEY_SOUTHBOUNDLATITUDE).toString(), sourceSRS, targetSRS);
-                p2 = ProjectionHelper.transformPoint(JSONHelper.get(item, KEY_EASTBOUNDLONGITUDE).toString(), JSONHelper.get(item, KEY_NORTHBOUNDLATITUDE).toString(), sourceSRS, targetSRS);
+
+            Point p1 = ProjectionHelper.transformPoint(JSONHelper.get(item, KEY_WESTBOUNDLONGITUDE).toString(), JSONHelper.get(item, KEY_SOUTHBOUNDLATITUDE).toString(), sourceSRS, targetSRS);
+            Point p2 = ProjectionHelper.transformPoint(JSONHelper.get(item, KEY_EASTBOUNDLONGITUDE).toString(), JSONHelper.get(item, KEY_NORTHBOUNDLATITUDE).toString(), sourceSRS, targetSRS);
+            if (p1 != null && p2 != null) {
+                return WKTHelper.getBBOX(p1.getLon(), p1.getLat(), p2.getLon(), p2.getLat());
             }
             return WKTHelper.getBBOX(p1.getLon(), p1.getLat(), p2.getLon(), p2.getLat());
-        } catch(Exception e){
+        } catch (Exception e) {
         }
         return null;
     }

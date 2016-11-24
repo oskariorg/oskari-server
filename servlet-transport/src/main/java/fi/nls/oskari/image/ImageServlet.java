@@ -188,7 +188,7 @@ public class ImageServlet extends HttpServlet {
     private CoordinateReferenceSystem getCrs(String srs) {
         CoordinateReferenceSystem crs = null;
         try {
-            crs = CRS.decode(srs);
+            crs = CRS.decode(srs, true);
         } catch (FactoryException e) {
             log.error(e, "CRS decoding failed");
         }

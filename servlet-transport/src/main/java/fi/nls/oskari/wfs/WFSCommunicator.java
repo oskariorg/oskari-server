@@ -1,7 +1,9 @@
 package fi.nls.oskari.wfs;
 
+import com.vividsolutions.jts.geom.Geometry;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.map.geometry.ProjectionHelper;
 import fi.nls.oskari.pojo.SessionStore;
 import fi.nls.oskari.service.ServiceRuntimeException;
 import fi.nls.oskari.transport.TransportJobException;
@@ -12,6 +14,7 @@ import fi.nls.oskari.work.JobType;
 import org.apache.axiom.om.*;
 import org.apache.axiom.om.impl.builder.StAXOMBuilder;
 import org.geotools.feature.FeatureCollection;
+import org.geotools.feature.FeatureIterator;
 import org.geotools.xml.Parser;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
@@ -95,10 +98,14 @@ public class WFSCommunicator {
 
 		// query
 		//try {
+            // Use layer.getSRSName() for _srsName, if transform must be supported
+            String _srsName = session.getLocation().getSrs();
+            _srsName = layer.isLongSrsName(_srsName) ?
+                    ProjectionHelper.longSyntaxEpsg(_srsName) : _srsName;
             OMElement query = factory.createOMElement("Query", wfs);
             OMAttribute typeName = factory.createOMAttribute("typeName", null,
                     layer.getFeatureNamespace() + ":" + layer.getFeatureElement());
-            OMAttribute srsName = factory.createOMAttribute("srsName", null, layer.getSRSName());
+            OMAttribute srsName = factory.createOMAttribute("srsName", null, _srsName);
             query.addAttribute(typeName);
             query.addAttribute(srsName);
             root.addChild(query);
@@ -195,7 +202,8 @@ public class WFSCommunicator {
 		try {
 			obj = parser.parse(response);
             if(obj instanceof FeatureCollection) {
-                return (FeatureCollection<SimpleFeatureType, SimpleFeature>) obj;
+                FeatureCollection<SimpleFeatureType, SimpleFeature> featureCollection = (FeatureCollection<SimpleFeatureType, SimpleFeature>) obj;
+                return featureCollection;
             }
             if(!(obj instanceof Number)) {
                 // obj can be 0 if no hits

@@ -5,6 +5,7 @@ import com.vividsolutions.jts.geom.Geometry;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.userlayer.service.GeoJsonWorker;
+import fi.nls.oskari.service.ServiceRuntimeException;
 import fi.nls.oskari.util.JSONHelper;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.shapefile.ShapefileDataStore;
@@ -33,16 +34,17 @@ public class SHPGeoJsonCollection extends GeoJsonCollection implements GeoJsonWo
      * Parse ESRI shape file set to geojson features
      * Coordinate transformation is executed, if shape .prj file is within
      * @param file   .shp import file
+     * @param source_epsg   source CRS (is used, if crs in not available in source data)
      * @param target_epsg   target CRS
-     * @return
+     * @return null --> ok   error message --> import failed
      */
-    public boolean parseGeoJSON(File file, String target_epsg) {
+    public String parseGeoJSON(File file, String source_epsg, String target_epsg) {
         ShapefileDataStore dataStore = null;
         try {
 
             dataStore = new ShapefileDataStore(file.toURI().toURL());
             String typeName = dataStore.getTypeNames()[0];
-
+            MathTransform transform = null;
             FeatureSource source = dataStore.getFeatureSource(typeName);
             FeatureCollection collection = source.getFeatures();
 
@@ -50,21 +52,29 @@ public class SHPGeoJsonCollection extends GeoJsonCollection implements GeoJsonWo
 
             //Coordinate transformation support
             CoordinateReferenceSystem sourceCrs = source.getBounds().getCoordinateReferenceSystem();
-            if(sourceCrs == null) sourceCrs = schema.getCoordinateReferenceSystem();
+            if (sourceCrs == null) sourceCrs = schema.getCoordinateReferenceSystem();
+            //TODO check axis orientation
 
-            // TODO get map crs from request (current OL map crs)
-            CoordinateReferenceSystem target = CRS.decode(target_epsg);
-            // Source and target are identical ?
-            // TODO: better check algorithm - name is not 100% proof
-            if(sourceCrs != null && target.getName().equals(sourceCrs.getName())) sourceCrs = null;
+            //Geojson axis orientation is always  lon,lat (decode(....true)
+            CoordinateReferenceSystem target = CRS.decode(target_epsg, true);
 
-            MathTransform transform = null;
+            if (sourceCrs == null && source_epsg== null ) {
+                // Unknown CRS in source data - better to stop - result could be chaos
+                return "Uknown projection data in the source import file " + file.getName();
+            }
+
+            // Source epsg not found in source data, use epsg given by the user
+            if (sourceCrs == null) {
+                sourceCrs = CRS.decode(source_epsg, true);
+            }
+
+            // Source and target are identical no transform ?  --> no transform
+            if (sourceCrs != null && !target.getName().equals(sourceCrs.getName())){
+                transform = CRS.findMathTransform(sourceCrs, target, true);
+            }
+
             JSONArray feas = new JSONArray();
-
-            if (sourceCrs != null) transform = CRS.findMathTransform(sourceCrs, target, true);
-
             FeatureIterator iterator = collection.features();
-
             while (iterator.hasNext()) {
 
                 SimpleFeature feature = (SimpleFeature) iterator.next();
@@ -84,12 +94,12 @@ public class SHPGeoJsonCollection extends GeoJsonCollection implements GeoJsonWo
             setGeoJson(JSONHelper.createJSONObject("features", feas));
             setFeatureType(schema);
             setTypeName(typeName);
-            return true;
+            return null;
 
-        } catch (Exception e) {
+        }catch (Exception e) {
             log.error("Couldn't create geoJSON from the shp file ", file.getName(),
                     e);
-            return false;
+            return "Couldn't create geoJSON from the shp file " + file.getName();
         }
         finally {
             dataStore.dispose();

@@ -3,6 +3,7 @@ package fi.nls.oskari.work;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.Point;
+import fi.nls.oskari.map.geometry.ProjectionHelper;
 import fi.nls.oskari.pojo.SessionStore;
 import fi.nls.oskari.service.ServiceRuntimeException;
 import fi.nls.oskari.transport.TransportJobException;
@@ -175,6 +176,10 @@ public class WFSMapLayerJob extends OWSMapLayerJob {
                 this.service.addResults(session.getClient(), ResultProcessor.CHANNEL_FEATURE, output);
                 return false;
             }
+            // Swap XY in feature geometry, if reverseXY setup in layer attributes
+            if(layer.isReverseXY(session.getLocation().getSrs())){
+                ProjectionHelper.swapGeometryXY(this.features);
+            }
 
             if(this.features.size() == layer.getMaxFeatures()) {
                 log.debug("Max feature result", this.layerId);
@@ -250,7 +255,7 @@ public class WFSMapLayerJob extends OWSMapLayerJob {
         log.debug("features handler - layer:", this.layer.getLayerId());
 
         // create filter of screen area
-        Filter screenBBOXFilter = WFSFilter.initBBOXFilter(this.session.getLocation(), this.layer);
+        Filter screenBBOXFilter = WFSFilter.initBBOXFilter(this.session.getLocation(), this.layer, false);
         if(screenBBOXFilter == null) {
             throw new TransportJobException("Failed to create BBOX filter (location or layer is unset)",
                     WFSExceptionHelper.ERROR_FEATURE_PARSING);

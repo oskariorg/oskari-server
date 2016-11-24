@@ -137,9 +137,6 @@ public class RouteParser {
     private static final String PARAM_LEG_STOP_STOPSEQUENCE = "stopSequence";
     private static final String PARAM_LEG_STOP_VERTEXTYPE = "vertexType";
 
-
-    private static final Boolean FORCE_XY = ConversionHelper.getBoolean(PropertyUtil.get("routing.forceXY", "false"),false);
-
     /**
      * Generate route plan
      * @param route
@@ -186,19 +183,14 @@ public class RouteParser {
         try {
             fromJSON.put(PARAM_FROM_NAME, from.getName());
             Point newFrom;
-            if(!FORCE_XY) {
-                newFrom=ProjectionHelper.transformPoint(from.getLat(), from.getLon(), sourceSRS, targetSRS);
-                fromJSON.put(PARAM_FROM_LON, newFrom.getLon());
-                fromJSON.put(PARAM_FROM_LAT, newFrom.getLat());
-            } else {
-                newFrom=ProjectionHelper.transformPoint(from.getLon(), from.getLat(), sourceSRS, targetSRS);
-                fromJSON.put(PARAM_FROM_LAT, newFrom.getLon());
-                fromJSON.put(PARAM_FROM_LON, newFrom.getLat());
-            }
+
+            newFrom = ProjectionHelper.transformPoint(from.getLon(), from.getLat(), sourceSRS, targetSRS);
+            fromJSON.put(PARAM_FROM_LON, newFrom.getLon());
+            fromJSON.put(PARAM_FROM_LAT, newFrom.getLat());
 
             fromJSON.put(PARAM_FROM_ORIG, from.getOrig());
             fromJSON.put(PARAM_FROM_VERTEX_TYPE, from.getVertexType());
-        } catch (JSONException ex){
+        } catch (JSONException ex) {
             LOG.error("Cannot get route from JSON", ex);
         }
         return fromJSON;
@@ -219,19 +211,14 @@ public class RouteParser {
         try {
             toJSON.put(PARAM_TO_NAME, to.getName());
             Point newTo;
-            if(!FORCE_XY){
-                newTo = ProjectionHelper.transformPoint(to.getLat(), to.getLon(), sourceSRS, targetSRS);
-                toJSON.put(PARAM_TO_LON, newTo.getLon());
-                toJSON.put(PARAM_TO_LAT, newTo.getLat());
-            } else {
-                newTo = ProjectionHelper.transformPoint(to.getLon(), to.getLat(), sourceSRS, targetSRS);
-                toJSON.put(PARAM_TO_LAT, newTo.getLon());
-                toJSON.put(PARAM_TO_LON, newTo.getLat());
-            }
+
+            newTo = ProjectionHelper.transformPoint(to.getLon(), to.getLat(), sourceSRS, targetSRS);
+            toJSON.put(PARAM_TO_LON, newTo.getLon());
+            toJSON.put(PARAM_TO_LAT, newTo.getLat());
 
             toJSON.put(PARAM_TO_ORIG, to.getOrig());
             toJSON.put(PARAM_TO_VERTEX_TYPE, to.getVertexType());
-        } catch (JSONException ex){
+        } catch (JSONException ex) {
             LOG.error("Cannot get route to JSON", ex);
         }
         return toJSON;
@@ -343,15 +330,10 @@ public class RouteParser {
                 fromJSON.put(PARAM_LEGS_FROM_ARRIVAL, from.getArrival());
                 fromJSON.put(PARAM_LEGS_FROM_DEPARTURE, from.getDeparture());
                 Point newFrom;
-                if(!FORCE_XY){
-                    newFrom = ProjectionHelper.transformPoint(from.getLat(), from.getLon(), sourceSRS, targetSRS);
-                    fromJSON.put(PARAM_LEGS_FROM_LAT, newFrom.getLat());
-                    fromJSON.put(PARAM_LEGS_FROM_LON, newFrom.getLon());
-                } else {
-                    newFrom = ProjectionHelper.transformPoint(from.getLon(), from.getLat(), sourceSRS, targetSRS);
-                    fromJSON.put(PARAM_LEGS_FROM_LON, newFrom.getLat());
-                    fromJSON.put(PARAM_LEGS_FROM_LAT, newFrom.getLon());
-                }
+
+                newFrom = ProjectionHelper.transformPoint(from.getLon(), from.getLat(), sourceSRS, targetSRS);
+                fromJSON.put(PARAM_LEGS_FROM_LON, newFrom.getLon());
+                fromJSON.put(PARAM_LEGS_FROM_LAT, newFrom.getLat());
 
                 fromJSON.put(PARAM_LEGS_FROM_NAME, from.getName());
                 fromJSON.put(PARAM_LEGS_FROM_STOP_CODE, from.getStopCode());
@@ -366,15 +348,10 @@ public class RouteParser {
                 JSONObject toJSON = new JSONObject();
                 toJSON.put(PARAM_LEGS_TO_ARRIVAL, to.getArrival());
                 Point newTo;
-                if(!FORCE_XY) {
-                    newTo = ProjectionHelper.transformPoint(to.getLat(), to.getLon(), sourceSRS, targetSRS);
-                    toJSON.put(PARAM_LEGS_TO_LAT, newTo.getLat());
-                    toJSON.put(PARAM_LEGS_TO_LON, newTo.getLon());
-                } else {
-                    newTo = ProjectionHelper.transformPoint(to.getLon(), to.getLat(), sourceSRS, targetSRS);
-                    toJSON.put(PARAM_LEGS_TO_LON, newTo.getLat());
-                    toJSON.put(PARAM_LEGS_TO_LAT, newTo.getLon());
-                }
+
+                newTo = ProjectionHelper.transformPoint(to.getLon(), to.getLat(), sourceSRS, targetSRS);
+                toJSON.put(PARAM_LEGS_TO_LON, newTo.getLon());
+                toJSON.put(PARAM_LEGS_TO_LAT, newTo.getLat());
 
                 toJSON.put(PARAM_LEGS_TO_NAME, to.getName());
                 toJSON.put(PARAM_LEGS_TO_ORIG, to.getOrig());
@@ -410,15 +387,10 @@ public class RouteParser {
                         String stepLat = stepJSON.getString(PARAM_LEGS_STEPS_LAT);
 
                         Point stepPoint;
-                        if(!FORCE_XY) {
-                            stepPoint = ProjectionHelper.transformPoint(stepLat, stepLon, sourceSRS, targetSRS);
+
+                            stepPoint = ProjectionHelper.transformPoint(stepLon, stepLat, sourceSRS, targetSRS);
                             stepJSON.put(PARAM_LEGS_STEPS_LON, stepPoint.getLon());
                             stepJSON.put(PARAM_LEGS_STEPS_LAT, stepPoint.getLat());
-                        } else {
-                            stepPoint = ProjectionHelper.transformPoint(stepLon, stepLat, sourceSRS, targetSRS);
-                            stepJSON.put(PARAM_LEGS_STEPS_LAT, stepPoint.getLon());
-                            stepJSON.put(PARAM_LEGS_STEPS_LON, stepPoint.getLat());
-                        }
 
                     }
 
@@ -435,17 +407,9 @@ public class RouteParser {
                     // convert coordinates
                     if (intermediateStop.getLat() != null && intermediateStop.getLon() != null) {
                         Point stopPoint;
-                        if (!FORCE_XY) {
-                            stopPoint = ProjectionHelper.transformPoint(intermediateStop.getLat(), intermediateStop.getLon(), sourceSRS, targetSRS);
-                            stopJSON.put(PARAM_LEG_STOP_LON, stopPoint.getLon());
-                            stopJSON.put(PARAM_LEG_STOP_LAT, stopPoint.getLat());
-
-                        } else {
-                            stopPoint = ProjectionHelper.transformPoint(intermediateStop.getLon(), intermediateStop.getLat(), sourceSRS, targetSRS);
-                            stopJSON.put(PARAM_LEG_STOP_LON, stopPoint.getLat());
-                            stopJSON.put(PARAM_LEG_STOP_LAT, stopPoint.getLon());
-                        }
-
+                        stopPoint = ProjectionHelper.transformPoint(intermediateStop.getLon(), intermediateStop.getLat(), sourceSRS, targetSRS);
+                        stopJSON.put(PARAM_LEG_STOP_LON, stopPoint.getLon());
+                        stopJSON.put(PARAM_LEG_STOP_LAT, stopPoint.getLat());
                     }
 
                     stopJSON.put(PARAM_LEG_STOP_NAME, intermediateStop.getName());
@@ -492,23 +456,19 @@ public class RouteParser {
             requestParameters.put(PARAM_TIME, rp.getTime());
             requestParameters.put(PARAM_LOCALE, rp.getLocale());
 
+            // Routing service uses lat,lon order in point string and in service url params
             final String[] fromPoints = rp.getFromPlace().split(",");
             final String[] toPoints = rp.getToPlace().split(",");
 
             Point newFrom;
             Point newTo;
-            if(!FORCE_XY){
-                newFrom = ProjectionHelper.transformPoint(fromPoints[0], fromPoints[1], sourceSRS, targetSRS);
-                newTo = ProjectionHelper.transformPoint(toPoints[0], toPoints[1], sourceSRS, targetSRS);
-                requestParameters.put(PARAM_FROM_PLACE, getPointJSON(newFrom.getLon(), newFrom.getLat()));
-                requestParameters.put(PARAM_TO_PLACE, getPointJSON(newTo.getLon(), newTo.getLat()));
-            } else {
-                newFrom = ProjectionHelper.transformPoint(fromPoints[1], fromPoints[0], sourceSRS, targetSRS);
-                newTo = ProjectionHelper.transformPoint(toPoints[1], toPoints[0], sourceSRS, targetSRS);
-                requestParameters.put(PARAM_FROM_PLACE, getPointJSON(newFrom.getLat(), newFrom.getLon()));
-                requestParameters.put(PARAM_TO_PLACE, getPointJSON(newTo.getLat(), newTo.getLon()));
-            }
-        } catch(JSONException ex){
+            // Must be lon,lat order
+            newFrom = ProjectionHelper.transformPoint(fromPoints[1], fromPoints[0], sourceSRS, targetSRS);
+            newTo = ProjectionHelper.transformPoint(toPoints[1], toPoints[0], sourceSRS, targetSRS);
+            requestParameters.put(PARAM_FROM_PLACE, getPointJSON(newFrom.getLon(), newFrom.getLat()));
+            requestParameters.put(PARAM_TO_PLACE, getPointJSON(newTo.getLon(), newTo.getLat()));
+
+        } catch (JSONException ex) {
             LOG.error("Cannot generate routing request parameters", ex);
         }
 
@@ -598,13 +558,8 @@ public class RouteParser {
 
                 Point coordsInAppSRS;
                 JSONArray coordinate;
-                if(!FORCE_XY) {
-                    coordsInAppSRS = ProjectionHelper.transformPoint(lat, lon, currentSRS, targetSRS);
-                    coordinate = new JSONArray("[" + coordsInAppSRS.getLonToString() + "," + coordsInAppSRS.getLatToString() + "]");
-                } else {
-                    coordsInAppSRS = ProjectionHelper.transformPoint(lon, lat, currentSRS, targetSRS);
-                    coordinate = new JSONArray("[" + coordsInAppSRS.getLatToString() + "," + coordsInAppSRS.getLonToString() + "]");
-                }
+                coordsInAppSRS = ProjectionHelper.transformPoint(lon, lat, currentSRS, targetSRS);
+                coordinate = new JSONArray("[" + coordsInAppSRS.getLonToString() + "," + coordsInAppSRS.getLatToString() + "]");
 
                 coordinates.put(coordinate);
             }

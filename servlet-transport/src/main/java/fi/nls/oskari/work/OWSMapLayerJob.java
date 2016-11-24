@@ -194,7 +194,9 @@ public abstract class OWSMapLayerJob extends AbstractJob<String> {
         setResourceSending();
 
         // if different SRS, create transforms for geometries
-        if(!this.session.getLocation().getSrs().equals(this.layer.getSRSName())) {
+        // Use layer.getSRSName() for srsName, if transform must be supported
+        String srsName = session.getLocation().getSrs();
+        if(!this.session.getLocation().getSrs().equals(srsName)) {
             this.transformService = this.session.getLocation().getTransformForService(this.layer.getCrs(), true);
             this.transformClient = this.session.getLocation().getTransformForClient(this.layer.getCrs(), true);
         }
@@ -873,5 +875,6 @@ public abstract class OWSMapLayerJob extends AbstractJob<String> {
         output.put("success_nop", success_nop);
         this.service.addResults(session.getClient(), ResultProcessor.CHANNEL_STATUS, output);
     }
+
 
 }

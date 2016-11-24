@@ -219,7 +219,7 @@ public class Location {
 		if(this.envelope == null) {
 			if(this.crs == null) {
 				try {
-					this.crs = CRS.decode(this.getSrs());
+					this.crs = CRS.decode(this.getSrs(), true);
 				} catch (FactoryException e) {
 					log.error(e, "CRS decoding failed");
 				}
@@ -306,7 +306,7 @@ public class Location {
 		ReferencedEnvelope envelope = null;
 
 		try {
-			targetCRS = CRS.decode(target);
+			targetCRS = CRS.decode(target, true);
 			envelope = env.transform(targetCRS, lenient);
 		} catch (TransformException e) {
 			log.error(e, "Transforming failed");
@@ -344,7 +344,7 @@ public class Location {
     public MathTransform getTransformForClient(String source, boolean lenient) {
         CoordinateReferenceSystem sourceCRS = null;
         try {
-            sourceCRS = CRS.decode(source);
+            sourceCRS = CRS.decode(source, true);
         } catch (Exception e) {
             log.error(e, "Creating transform CRSs failed");
         }
@@ -383,7 +383,7 @@ public class Location {
     public MathTransform getTransformForService(String target, boolean lenient) {
         CoordinateReferenceSystem targetCRS = null;
         try {
-            targetCRS = CRS.decode(target);
+            targetCRS = CRS.decode(target, true);
         } catch (Exception e) {
             log.error(e, "Creating transform CRSs failed");
         }
