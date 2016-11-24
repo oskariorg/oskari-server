@@ -146,7 +146,7 @@ public class GetGeoPointDataService {
     }
 
   
-    private String transformResponse(final String xslt, final String response) {
+    protected String transformResponse(final String xslt, final String response) {
 
         if (xslt == null || "".equals(xslt)) {
             // if not found, return as is
