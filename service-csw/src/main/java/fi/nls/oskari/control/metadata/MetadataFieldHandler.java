@@ -86,12 +86,18 @@ public class MetadataFieldHandler {
             return;
         }
         final MetadataField field = getMetadataField();
+        final String spaceCharReplace = PropertyUtil.get("search.channel.METADATA_CATALOGUE_CHANNEL.field."+ field.getName() +".space.char");
+
         if(field.isMulti()) {
             String[] values = param.split("\\s*,\\s*");
             criteria.addParam(getPropertyName(), values);
         }
-        else {
+        else if(spaceCharReplace == null) {
             criteria.addParam(getPropertyName(), param);
+        }
+        else {
+            String replacedParam = param.replace(" ", spaceCharReplace);
+            criteria.addParam(getPropertyName(), replacedParam);
         }
     }
 

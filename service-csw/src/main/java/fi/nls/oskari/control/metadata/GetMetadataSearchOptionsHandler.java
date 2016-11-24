@@ -38,13 +38,8 @@ public class GetMetadataSearchOptionsHandler extends ActionHandler {
             final JSONObject node = JSONHelper.createJSONObject("field", field.getName());
             JSONHelper.putValue(node, "multi", field.isMulti());
             JSONHelper.putValue(node, "shownIf", field.getShownIf());
-            String spaceCharReplace = PropertyUtil.get("search.channel.METADATA_CATALOGUE_CHANNEL.field."+ field.getName() +".space.char");
-            if(spaceCharReplace == null) {
-                JSONHelper.putValue(node, "values", field.getHandler().getOptions(language));
-            }
-            else {
-                JSONHelper.putValue(node, "values", field.getHandler().getOptions(language, spaceCharReplace));
-            }
+
+            JSONHelper.putValue(node, "values", field.getHandler().getOptions(language));
             fields.put(node);
         }
 
