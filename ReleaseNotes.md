@@ -2,7 +2,16 @@
 
 ## 1.41
 
+### OpenTripPlanner
+
 OpenTripPlanner defaults changed: max walk distance has been updated from 1000 to 1000000.
+
+### GetMetadataSearchOptions
+
+Modifying handler so at field values now can define space replaced char.
+If space is wanted to replace some character then following properties can be defined in properties file:
+search.channel.METADATA_CATALOGUE_CHANNEL.field.<name>.space.char = ?
+
 
 ## 1.40
 

@@ -66,6 +66,20 @@ public class MetadataFieldHandler {
         return values;
     }
 
+    public JSONArray getOptions(final String language, final String spaceChar) {
+        JSONArray values = new JSONArray();
+        Set<SelectItem> items = getProperties();
+        for(SelectItem item : items) {
+            String val = item.getValue();
+            val = val.replace(" ", spaceChar);
+            final JSONObject value = JSONHelper.createJSONObject("val", val);
+            JSONHelper.putValue(value, "locale", item.getName(true));
+            values.put(value);
+        }
+
+        return values;
+    }
+
     public void handleParam(final String param, final SearchCriteria criteria) {
         if(param == null || param.isEmpty()) {
             // empty param -> skip
