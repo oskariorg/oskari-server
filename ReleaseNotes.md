@@ -12,7 +12,7 @@ Modifying handler so at field values now can define space replaced char.
 If space is wanted to replace some character then following properties can be defined in properties file:
 search.channel.METADATA_CATALOGUE_CHANNEL.field.<name>.space.char = ?
 
-This is done because of GeoNetwork cannot GetRecord for special cases. For example: space are not allowed when searching OrganisationName for LocalisedCharacterString. 
+This is done because of GeoNetwork cannot query GetRecord for special cases. For example: space are not allowed when searching OrganisationName for LocalisedCharacterString. 
 
 
 ## 1.40

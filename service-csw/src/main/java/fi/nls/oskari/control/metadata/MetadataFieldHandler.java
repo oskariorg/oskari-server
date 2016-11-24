@@ -86,6 +86,8 @@ public class MetadataFieldHandler {
             return;
         }
         final MetadataField field = getMetadataField();
+
+        // This is done because of GeoNetwork cannot query GetRecord for special cases. For example: space are not allowed when searching OrganisationName for LocalisedCharacterString.
         final String spaceCharReplace = PropertyUtil.get("search.channel.METADATA_CATALOGUE_CHANNEL.field."+ field.getName() +".space.char", null);
 
         if(field.isMulti()) {
