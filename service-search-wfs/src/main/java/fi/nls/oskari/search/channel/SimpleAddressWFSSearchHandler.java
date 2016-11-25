@@ -28,9 +28,8 @@ public class SimpleAddressWFSSearchHandler extends WFSChannelHandler {
             log.warn("Tried to use address handler, but it needs 2 parameters. Using default handler instead.");
             return super.createFilter(sc, config);
         }
-        StringBuffer filter = new StringBuffer("<Filter>");
+        StringBuffer filter = new StringBuffer("<Filter><And>");
 
-        filter.append("<And>");
         String streetName = searchStr;
         String streetNumber = "";
         // find last word and if it is number then it must be street number?
@@ -52,7 +51,7 @@ public class SimpleAddressWFSSearchHandler extends WFSChannelHandler {
                 StringEscapeUtils.escapeXml(streetNumber) + "*</Literal></PropertyIsLike>"
         );
 
-        filter.append("</And>");
+        filter.append("</And></Filter>");
         return filter.toString().trim();
     }
 
