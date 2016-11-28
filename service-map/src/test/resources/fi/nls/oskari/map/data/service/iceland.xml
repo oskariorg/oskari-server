@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="iceland.xsl"?>
+<wfs:FeatureCollection xmlns="http://www.opengis.net/wfs" xmlns:LMI_vektor="http://www.lmi.is/lmi_vektor" xmlns:gml="http://www.opengis.net/gml" xmlns:wfs="http://www.opengis.net/wfs" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.lmi.is/lmi_vektor http://gis.lmi.is/geoserver/wfs?service=WFS&amp;version=1.0.0&amp;request=DescribeFeatureType&amp;typeName=LMI_vektor%3Adonsku_teikningar http://www.opengis.net/wfs http://gis.lmi.is/geoserver/schemas/wfs/1.0.0/WFS-basic.xsd">
+    <gml:boundedBy>
+        <gml:Box srsName="http://www.opengis.net/gml/srs/epsg.xml#3057">
+            <gml:coordinates cs="," decimal="." ts=" " xmlns:gml="http://www.opengis.net/gml">these are not relevant</gml:coordinates>
+        </gml:Box>
+    </gml:boundedBy>
+    <gml:featureMember>
+        <LMI_vektor:donsku_teikningar fid="donsku_teikningar.this-is-not-relevant">
+            <gml:boundedBy>
+                <gml:Box srsName="http://www.opengis.net/gml/srs/epsg.xml#3057">
+                    <gml:coordinates cs="," decimal="." ts=" " xmlns:gml="http://www.opengis.net/gml">these are not relevant</gml:coordinates>
+                </gml:Box>
+            </gml:boundedBy>
+            <LMI_vektor:geom>
+                <gml:Point srsName="http://www.opengis.net/gml/srs/epsg.xml#3057">
+                    <gml:coordinates cs="," decimal="." ts=" " xmlns:gml="http://www.opengis.net/gml">these are not relevant</gml:coordinates>
+                </gml:Point>
+            </LMI_vektor:geom>
+            <LMI_vektor:objectid>this-is-not-relevant</LMI_vektor:objectid>
+            <LMI_vektor:safnnumer>this-is-not-relevant</LMI_vektor:safnnumer>
+            <LMI_vektor:linkur>http://this-is-not-relevant</LMI_vektor:linkur>
+            <LMI_vektor:stadur>this-is-not-relevant</LMI_vektor:stadur>
+            <LMI_vektor:path>/</LMI_vektor:path>
+            <LMI_vektor:link>http://this-is-not-relevant</LMI_vektor:link>
+            <LMI_vektor:tegund>this-is-not-relevant</LMI_vektor:tegund>
+            <LMI_vektor:thumnail>&amp;h=210&amp;w=210&amp;q=70&amp;a=tl</LMI_vektor:thumnail>
+        </LMI_vektor:donsku_teikningar>
+    </gml:featureMember>
+</wfs:FeatureCollection>

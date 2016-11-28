@@ -66,18 +66,40 @@ public class MetadataFieldHandler {
         return values;
     }
 
+    public JSONArray getOptions(final String language, final String spaceChar) {
+        JSONArray values = new JSONArray();
+        Set<SelectItem> items = getProperties();
+        for(SelectItem item : items) {
+            String val = item.getValue();
+            val = val.replace(" ", spaceChar);
+            final JSONObject value = JSONHelper.createJSONObject("val", val);
+            JSONHelper.putValue(value, "locale", item.getName(true));
+            values.put(value);
+        }
+
+        return values;
+    }
+
     public void handleParam(final String param, final SearchCriteria criteria) {
         if(param == null || param.isEmpty()) {
             // empty param -> skip
             return;
         }
         final MetadataField field = getMetadataField();
+
+        // This is done because of GeoNetwork cannot query GetRecord for special cases. For example: space are not allowed when searching OrganisationName for LocalisedCharacterString.
+        final String spaceCharReplace = PropertyUtil.get("search.channel.METADATA_CATALOGUE_CHANNEL.field."+ field.getName() +".space.char", null);
+
         if(field.isMulti()) {
             String[] values = param.split("\\s*,\\s*");
             criteria.addParam(getPropertyName(), values);
         }
-        else {
+        else if(spaceCharReplace == null) {
             criteria.addParam(getPropertyName(), param);
+        }
+        else {
+            String replacedParam = param.replace(" ", spaceCharReplace);
+            criteria.addParam(getPropertyName(), replacedParam);
         }
     }
 
