@@ -12,6 +12,7 @@ import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.data.simple.SimpleFeatureIterator;
 import org.geotools.data.simple.SimpleFeatureSource;
 import org.geotools.geojson.feature.FeatureJSON;
+import org.geotools.geojson.geom.GeometryJSON;
 import org.geotools.geometry.jts.JTS;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
@@ -29,8 +30,9 @@ import java.util.Map;
 
 public class MIFGeoJsonCollection extends GeoJsonCollection implements GeoJsonWorker {
 
-    final FeatureJSON io = new FeatureJSON();
-    static final String DEFAULT_EPSG = "EPSG:3067";
+    static final int GJSON_DECIMALS = 10;
+    GeometryJSON gjson = new GeometryJSON(GJSON_DECIMALS);
+    final FeatureJSON io = new FeatureJSON(gjson);
     private static final Logger log = LogFactory
             .getLogger(MIFGeoJsonCollection.class);
 

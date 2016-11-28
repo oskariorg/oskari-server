@@ -7,6 +7,7 @@ import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.userlayer.service.GeoJsonWorker;
 import fi.nls.oskari.util.JSONHelper;
 import org.geotools.geojson.feature.FeatureJSON;
+import org.geotools.geojson.geom.GeometryJSON;
 import org.geotools.geometry.jts.JTS;
 import org.geotools.kml.v22.KMLConfiguration;
 import org.geotools.referencing.CRS;
@@ -23,8 +24,9 @@ import java.io.FileInputStream;
 
 public class KMLGeoJsonCollection extends GeoJsonCollection implements GeoJsonWorker {
 
-
-    final FeatureJSON io = new FeatureJSON();
+    static final int GJSON_DECIMALS = 10;
+    GeometryJSON gjson = new GeometryJSON(GJSON_DECIMALS);
+    final FeatureJSON io = new FeatureJSON(gjson);
     private static final Logger log = LogFactory
             .getLogger(KMLGeoJsonCollection.class);
 

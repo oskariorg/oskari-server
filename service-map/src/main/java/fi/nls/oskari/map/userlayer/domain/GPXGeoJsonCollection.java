@@ -12,6 +12,7 @@ import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.data.simple.SimpleFeatureIterator;
 import org.geotools.data.simple.SimpleFeatureSource;
 import org.geotools.geojson.feature.FeatureJSON;
+import org.geotools.geojson.geom.GeometryJSON;
 import org.geotools.geometry.jts.JTS;
 import org.geotools.referencing.CRS;
 import org.json.JSONArray;
@@ -27,8 +28,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class GPXGeoJsonCollection extends GeoJsonCollection implements GeoJsonWorker {
-
-    final FeatureJSON io = new FeatureJSON();
+    static final int GJSON_DECIMALS = 10;
+    GeometryJSON gjson = new GeometryJSON(GJSON_DECIMALS);
+    final FeatureJSON io = new FeatureJSON(gjson);
     private static final Logger log = LogFactory
             .getLogger(GPXGeoJsonCollection.class);
 
