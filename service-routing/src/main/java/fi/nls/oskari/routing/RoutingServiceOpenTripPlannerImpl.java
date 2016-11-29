@@ -68,6 +68,8 @@ public class RoutingServiceOpenTripPlannerImpl implements RoutingService {
 
         final String requestUrl = IOHelper.constructUrl(PropertyUtil.get("routing.url"), requestParams);
         RouteResponse result = new RouteResponse();
+        // for debugging
+        result.setRequestUrl(requestUrl);
 
         try {
             LOGGER.debug(requestUrl);
