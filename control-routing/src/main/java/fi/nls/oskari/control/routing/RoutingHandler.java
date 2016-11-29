@@ -77,7 +77,7 @@ public class RoutingHandler extends ActionHandler {
             JSONHelper.putValue(response, "otpUrl", result.getRequestUrl());
         }
 
-        ResponseHelper.writeResponse(params, result.toJSON());
+        ResponseHelper.writeResponse(params, response);
 
     }
 }
