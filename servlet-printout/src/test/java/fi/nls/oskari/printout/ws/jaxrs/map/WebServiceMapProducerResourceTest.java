@@ -156,22 +156,6 @@ public class WebServiceMapProducerResourceTest {
     }
 
     @Test
-    public void testGeojsPrintTestJsonAsPPTX()
-            throws NoSuchAuthorityCodeException, IOException,
-            GeoWebCacheException, FactoryException, ParseException,
-            XMLStreamException, FactoryConfigurationError,
-            RequestFilterException, TransformException,
-            com.vividsolutions.jts.io.ParseException, InterruptedException,
-            org.json.simple.parser.ParseException, URISyntaxException,
-            Exception {
-        runner.setResource(WebServiceMapProducerResourceTest.acquire());
-        runner.run("geojsPrintTest-pptx",
-                WebServiceMapProducerResourceTestFileType.GEOJSON,
-                WebServiceMapProducerResourceTestFileType.PPTX);
-
-    }
-
-    @Test
     public void testGeojsPrintTestJsonAsPNG()
             throws NoSuchAuthorityCodeException, IOException,
             GeoWebCacheException, FactoryException, ParseException,
