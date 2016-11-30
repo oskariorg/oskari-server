@@ -6,6 +6,9 @@
 
 OpenTripPlanner defaults changed: max walk distance has been updated from 1000 to 1000000.
 
+Routing action route now provides the otpURL key in response for users having the admin role. The value is the url
+that is used to call OpenTripPlanner so make the feature easier to debug.
+
 ### MetaDataFieldHandler
 
 Modifying handler so at field values now can define space replaced char.
