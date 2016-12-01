@@ -30,7 +30,7 @@ public class RahuAddressChannelSearchService extends BaseWfsAddressChannelSearch
     }
 
 	@Override
-	protected String getQueryUrl(String filter) {
+	protected String getQueryUrl(String filter, int maxResults) {
         if(queryURL == null) {
             return null;
         }

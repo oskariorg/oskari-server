@@ -57,7 +57,7 @@ public class OpenStreetMapSearchChannel extends SearchChannel {
         // buf.append("&countrycodes=fi");
         buf.append("&accept-language=");
         buf.append(searchCriteria.getLocale());
-        int maxResults = searchCriteria.getMaxResults();
+        int maxResults = getMaxResults(searchCriteria.getMaxResults());
         if (maxResults > 0) {
             buf.append("&limit="+Integer.toString(maxResults));
         }

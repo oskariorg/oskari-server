@@ -10,8 +10,10 @@ import fi.nls.oskari.routing.RouteResponse;
 import fi.nls.oskari.routing.RoutingService;
 import fi.nls.oskari.routing.RoutingServiceOpenTripPlannerImpl;
 import fi.nls.oskari.util.ConversionHelper;
+import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.util.ResponseHelper;
+import org.json.JSONObject;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -70,8 +72,12 @@ public class RoutingHandler extends ActionHandler {
         routeparams.setMode(params.getHttpParam(PARAM_MODE, PropertyUtil.get("routing.default.mode")));
 
         RouteResponse result = service.getRoute(routeparams);
+        JSONObject response = result.toJSON();
+        if(params.getUser().isAdmin()) {
+            JSONHelper.putValue(response, "otpUrl", result.getRequestUrl());
+        }
 
-        ResponseHelper.writeResponse(params, result.toJSON());
+        ResponseHelper.writeResponse(params, response);
 
     }
 }

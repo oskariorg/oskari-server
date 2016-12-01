@@ -75,11 +75,11 @@ public class NLSNearestFeatureSearchChannel extends SearchChannel {
         return IOHelper.readString(getConnection(buf.toString()));
     }
 
-    public String getMaxResults(int max) {
+    public int getMaxResults(int max) {
         if(max <= 0) {
-            return "1";
+            return 1;
         }
-        return "" + max;
+        return super.getMaxResults(max);
     }
 
     public String getBuffer(Object param) {

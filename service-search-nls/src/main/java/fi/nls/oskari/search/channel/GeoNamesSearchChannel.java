@@ -67,7 +67,7 @@ public class GeoNamesSearchChannel extends SearchChannel {
         buf.append("&country=RU");
         buf.append("&country=SE");
         buf.append("&country=US");
-        int maxResults = searchCriteria.getMaxResults();
+        int maxResults = getMaxResults(searchCriteria.getMaxResults());
         if (maxResults > 0) {
             buf.append("&maxRows="+Integer.toString(maxResults));
         }

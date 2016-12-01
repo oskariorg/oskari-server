@@ -1,6 +1,7 @@
 package fi.nls.oskari.search.channel;
 
 import fi.mml.portti.service.search.ChannelSearchResult;
+import fi.mml.portti.service.search.SearchService;
 import fi.nls.oskari.annotation.Oskari;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
@@ -25,11 +26,11 @@ public class MaastoAddressChannelSearchService extends BaseWfsAddressChannelSear
     }
 
 	@Override
-	protected String getQueryUrl(String filter) {
+	protected String getQueryUrl(String filter, int maxResults) {
         if(queryURL == null) {
             return null;
         }
-		return queryURL +  filter + "&maxFeatures=" +  (SearchUtil.maxCount+1);  // added 1 to maxCount because need to know if there are more then maxCount
+		return queryURL +  filter + "&maxFeatures=" +  (maxResults+1);  // added 1 to maxCount because need to know if there are more then maxCount
 	}
 	
 	@Override
