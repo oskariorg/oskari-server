@@ -30,7 +30,7 @@ public abstract class SearchChannel extends OskariComponent implements Searchabl
     private int defaultRank = -1;
     // store encountered types here to only log about possible configs for new types
     private Set<String> types = new HashSet<String>();
-    private static int maxCount = 100;
+    private int maxCount = 100;
 
     public String getId() {
         return getName();
