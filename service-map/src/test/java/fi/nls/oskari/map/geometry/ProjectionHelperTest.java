@@ -76,20 +76,34 @@ public class ProjectionHelperTest {
 
     @Test
     public void testTransformPointEPSG_4326ToEPSG_3067() throws Exception {
-        //double lat = 33.02221;
-        //double lon = -179.99;
 
         double lat = 33.02221;
         double lon = -90.0;
 
-        Point p3 = ProjectionHelper.transformPoint(lat, lon, EPSG_4326, EPSG_3067);
+        Point p3 = ProjectionHelper.transformPoint(lon, lat, EPSG_4326, EPSG_3067);
+
+       // input lon,lat out of 3067 bounds
+       //  West Bound Longitude: 19.1
+       //  South Bound Latitude: 58.8
+       //  East Bound Longitude: 31.6
+       //  North Bound Latitude: 70.1
+
+        assertEquals("Point 4326->3067", p3, null); // lon,lat out of 3067 bounds West Bound Longitude: 19.1
+    }
+
+    @Test
+    public void testTransformPointEPSG_3067ToEPSG_4326() throws Exception {
 
 
-        double lat2 = 33.02221;
-        double lon2 = 90;
+        double lat = 7596848.323;
+        double lon = 500001.1369;
 
-        Point p4 = ProjectionHelper.transformPoint(lat2, lon2, EPSG_4326, EPSG_3067);
+        Point p3 = ProjectionHelper.transformPoint( lon, lat, EPSG_3067,EPSG_4326);
 
+
+        Point p4 = ProjectionHelper.transformPoint( p3.getLon(), p3.getLat(), EPSG_4326, EPSG_3067);
+        assertEquals("lon 3067-45326-3067", lon, p4.getLon(), 0.01); // unit m, tolerance 1 cm
+        assertEquals("lat 3067-4326-3067", lat, p4.getLat(), 0.01);
     }
 
     @Test
