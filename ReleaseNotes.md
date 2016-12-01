@@ -17,6 +17,21 @@ search.channel.METADATA_CATALOGUE_CHANNEL.field.<name>.space.char = ?
 
 This is done because of GeoNetwork cannot query GetRecord for special cases. For example: space are not allowed when searching OrganisationName for LocalisedCharacterString. 
 
+### search-service
+
+Removed SearchUtil.maxCount and SearchWorker.maxCount. The same value is now returned by
+ SearchService.getMaxResultsCount() and can be configured with oskari-ext.properties:
+ 
+    search.max.results=100
+
+Classes extending SearchChannel have a new function getMaxResults() which looks for a property: 
+
+    search.channel.[CHANNEL_ID].maxFeatures=100
+
+and defaults to 'search.max.results' property. This can be used to configure channel-specific limits. They also have
+ a new function getMaxResults(int max) that you can use to pass the requested count from search criteria. This will 
+ return the requested count if it's smaller than the set limit for the channel. Each SearchChannel should resolve 
+ maximum results to return by calling getMaxResults(searchCriteria.getMaxResults()).
 
 ## 1.40
 
