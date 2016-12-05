@@ -75,7 +75,7 @@ public class FEResponseHandler implements ResponseHandler<Boolean> {
                 + charset);
         InputStream is = entity.getContent();
         if(debugResponse) {
-            is = IOHelper.debugResponse(entity.getContent());
+            is = IOHelper.debugResponse(is);
         }
         BufferedInputStream inp = new BufferedInputStream(is);
 

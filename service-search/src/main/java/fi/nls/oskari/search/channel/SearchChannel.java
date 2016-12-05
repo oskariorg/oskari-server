@@ -8,6 +8,7 @@ import fi.nls.oskari.domain.User;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.service.OskariComponent;
+import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
@@ -29,6 +30,31 @@ public abstract class SearchChannel extends OskariComponent implements Searchabl
     private int defaultRank = -1;
     // store encountered types here to only log about possible configs for new types
     private Set<String> types = new HashSet<String>();
+    private int maxCount = 100;
+
+    public String getId() {
+        return getName();
+    }
+
+    public void init() {
+        defaultScale = PropertyUtil.getOptional("search.channel." + getName() + ".scale", -1);
+        initTypeMap("scale", mapScalesForType);
+        initTypeMap("rank", ranksForType);
+        maxCount = PropertyUtil.getOptional("search.channel." + getName() + ".maxFeatures",
+                PropertyUtil.getOptional("search.max.results", maxCount));
+    }
+    public int getMaxResults() {
+        return maxCount;
+    }
+
+    public int getMaxResults(int requested) {
+        int maximum = getMaxResults();
+        if(requested != -1 && requested < maximum) {
+            return requested;
+        }
+        return maximum;
+    }
+
 
     public Capabilities getCapabilities() {
         return Capabilities.TEXT;
@@ -93,16 +119,6 @@ public abstract class SearchChannel extends OskariComponent implements Searchabl
         data.put("rankOptions", ranks);
 
         return data;
-    }
-    
-    public String getId() {
-        return getName();
-    }
-
-    public void init() {
-        defaultScale = PropertyUtil.getOptional("search.channel." + getName() + ".scale", -1);
-        initTypeMap("scale", mapScalesForType);
-        initTypeMap("rank", ranksForType);
     }
 
     private void initTypeMap(final String prop, final Map<String, Double> map) {
