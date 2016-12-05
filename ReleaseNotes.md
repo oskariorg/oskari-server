@@ -33,6 +33,12 @@ and defaults to 'search.max.results' property. This can be used to configure cha
  return the requested count if it's smaller than the set limit for the channel. Each SearchChannel should resolve 
  maximum results to return by calling getMaxResults(searchCriteria.getMaxResults()).
 
+### servlet-transport
+
+WFS 2.0.0 service responses (feature-engine parsing) can now be logged for debugging with transport-ext.properties: 
+
+    transport.response.debug=true
+
 ## 1.40
 
 ### Configuration improvements
