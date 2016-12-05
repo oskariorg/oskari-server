@@ -8,10 +8,14 @@
 <head>
     <title><spring:message code="user.registration.title"/></title>
 	<link rel="shortcut icon" href="${pageContext.request.contextPath}/favicon.ico" type="image/x-icon" />
-    <script type="text/javascript" src="${pageContext.request.contextPath}/Oskari/libraries/jquery/jquery-1.7.1.min.js">
-    </script>
-	<!--script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script -->
-	<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+    <%-- <script type="text/javascript" src="${pageContext.request.contextPath}/Oskari/libraries/jquery/jquery-1.7.1.min.js">
+    </script> --%>
+    <script
+  src="https://code.jquery.com/jquery-1.12.4.min.js"
+  integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ="
+  crossorigin="anonymous"></script>
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
 
     <!-- ############# css ################# -->
     <style type="text/css">
@@ -39,25 +43,9 @@
 				padding-left: 25px;
 			}
 
-			.content-column {
-				display: block;
-			}
-
 			.column-field-label {
 				font-size: 20px;
 				line-height: 2;
-			}
-
-			.column-field-input {
-				border-radius: 5px;
-				font-size: 14px;
-				height: 30px;
-				padding-left: 10px;
-				padding-right: 10px;
-			}
-
-			.column-field-input:focus {
-				background-color: #ECF9EC;
 			}
 
 			.column-field-button {
@@ -113,43 +101,57 @@
 			#frontpage, #frontpage:visited {
 				color: #3399FF;
 			}
+      #requestPassword{
+        width:400px;
+      }
 
 			.error {
 				color: red;
 			}
+      .colorgraph {
+        height: 5px;
+        border-top: 0;
+        background: #191970;
+        border-radius: 5px;
+        background-image: -webkit-linear-gradient(left, #62c2e4, #62c2e4 12.5%, #62c2e4 12.5%, #669ae1 25%, #1E90FF 25%, #1E90FF 37.5%,#191970 37.5%, #191970 50%, #191970 50%, #191970 62.5%, #1E90FF 62.5%, #1E90FF 75%, #669ae1 75%, #669ae1 87.5%, #62c2e4 87.5%, #62c2e4);
+        background-image: -moz-linear-gradient(left, #62c2e4, #62c2e4 12.5%, #62c2e4 12.5%, #669ae1 25%, #1E90FF 25%, #1E90FF 37.5%, #191970 37.5%,#191970 50%,#191970 50%, #191970 62.5%, #1E90FF 62.5%, #1E90FF 75%, #669ae1 75%, #669ae1 87.5%, #62c2e4 87.5%, #62c2e4);
+        background-image: -o-linear-gradient(left, #62c2e4, #62c2e4 12.5%,#62c2e4 12.5%, #669ae1 25%, #1E90FF 25%, #1E90FF 37.5%, #191970 37.5%, #191970 50%,#191970 50%, #191970 62.5%, #1E90FF 62.5%, #1E90FF 75%, #669ae1 75%, #669ae1 87.5%, #62c2e4 87.5%, #62c2e4);
+        background-image: linear-gradient(to right, #62c2e4, #62c2e4 12.5%, #62c2e4 12.5%, #669ae1 25%,#1E90FF 25%, #1E90FF 37.5%, #191970 37.5%, #191970 50%, #191970 50%,#191970 62.5%, #1E90FF 62.5%, #1E90FF 75%, #669ae1 75%, #669ae1 87.5%, #62c2e4 87.5%, #62c2e4);
+      }
 		}
-			
+
     </style>
     <!-- ############# /css ################# -->
 </head>
 <body>
 
-<nav id="maptools">    
-    <div id="etusivu"> 	
+<nav id="maptools">
+    <div id="etusivu">
     	<a href="#" id="frontpage"><spring:message code="oskari.backToFrontpage"/></a>
-    </div>   
+    </div>
 </nav>
 
-<div id="content">
-	<div id="passwordReset">
+<div id="container">
 		<c:choose>
 			<c:when test="${!empty uuid}">
-				<h1><spring:message code="user.registration.passwordReset.title"/></h1>
-				<form:form>
-					<span class="content-column">
-						<span class="content-column"><label class="column-field-label"><spring:message code="user.password"/></label></span>
-						<span class="content-column"><input class="column-field-input" size="16" id="password" name="password" type="password" autofocus required></span>
-					</span>
-					<span class="content-column">
-						<span class="content-column"><label class="column-field-label"><spring:message code="user.password.confirm"/></label></span>
-						<span class="content-column"><input class="column-field-input" size="16" id="confirmPassword" name="confirmPassword" type="password" required>
-						<label id="unmatchedPassword" class="error"></label></span>
-					</span>
+        <div class="row">
+          <div class="col-xs-12 col-sm-8 col-md-6 col-sm-offset-2 col-md-offset-4">
+        <form role="form" id="requestPassword">
+          <h1><spring:message code="user.registration.passwordReset.title"/></h1>
+          <hr class="colorgraph">
+            <div class="form-group">
+						  <input class="form-control input-lg" size="16" id="password" name="password" type="password" placeholder="Password" autofocus required>
+            </div>
+            <div class="form-group">
+						  <input class="form-control input-lg" size="16" id="confirmPassword" name="confirmPassword" type="password"placeholder="Confirm password" required>
+            </div>
+						<label id="unmatchedPassword" class="error"></label>
 					<br />
-					<span>				
+          <hr class="colorgraph">
+					<span>
 						<span><input class="btn btn-primary" size="16" id="reset" type="button" value="<spring:message code="btn.password.reset"/>"></span>
-					</span>					
-				</form:form>
+					</span>
+				</form>
 			</c:when>
 			<c:otherwise>
 				<span class="error"><h2>${error}</h2></span>
@@ -157,44 +159,67 @@
 		</c:choose>
 	</div>
 </div>
+</div>
+
+<!-- forgot pass modal -->
+<div class="modal fade" id="passwordResetModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Password reset</h4>
+      </div>
+      <div class="modal-body password-reset"></div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 
 <script type="text/javascript">
 $(document).ready(function () {
-	$('#frontpage, #cancel').click(function () {		
-		var host = window.location.protocol + "//" + window.location.host; 
+	$('#frontpage, #cancel').click(function () {
+		var host = window.location.protocol + "//" + window.location.host;
 		window.location.replace(host);
 	});
-	
-	$('#reset').click(function () {		
+
+	$('#reset').click(function () {
 		var password = jQuery('#password').val();
 		var confirmPassword = jQuery('#confirmPassword').val();
-		
+
 		if (password != confirmPassword) {
 			jQuery('#unmatchedPassword').text('<spring:message code="user.registration.error.passwordDoesNotMatch"/>');
 			return;
 		}
-		
+
 		var uuid = '${uuid}';
-		var host = window.location.protocol + "//" + window.location.host; 
+		var host = window.location.protocol + "//" + window.location.host;
 		jQuery.ajax({
 			url: host + "/action?action_route=UserPasswordReset&setPassword=1",
 			type: 'POST',
 			contentType: "application/json; charset=UTF-8",
 			data: JSON.stringify({
 					password: password,
-					uuid: uuid					
+					uuid: uuid
 				}),
 			success: function(data) {
 				// FIXME: show confirmation about mail being sent
-				alert('<spring:message code="oskari.password.changed"/>')
+				showModal('<spring:message code="oskari.password.changed"/>')
 			},
 			error: function(jqXHR, textStatus, errorThrown) {
 				//TODO: error handling
-				alert(jqXHR.responseText);
+				showModal(jqXHR.responseText);
 			}
-		});				
+		});
 	});
-	
+  function showModal(msg) {
+    $('.password-reset').html(msg);
+    $('#passwordResetModal').modal('show');
+    setTimeout(function() {$('#passwordResetModal').modal('hide');}, 2000);
+  }
+
 });
 
 </script>
