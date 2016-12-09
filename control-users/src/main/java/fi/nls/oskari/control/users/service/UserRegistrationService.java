@@ -26,11 +26,11 @@ public class UserRegistrationService extends OskariComponent {
     public UserRegistrationService() {
 
         final DatasourceHelper helper = DatasourceHelper.getInstance();
-        final DataSource dataSource = helper.getDataSource(helper.getOskariDataSourceName("myplaces"));
+        final DataSource dataSource = helper.getDataSource();
         if (dataSource != null) {
             factory = initializeMyBatis(dataSource);
         } else {
-            LOG.error("Couldn't get datasource for myplaces");
+            LOG.error("Couldn't get datasource for user registration");
         }
     }
 
