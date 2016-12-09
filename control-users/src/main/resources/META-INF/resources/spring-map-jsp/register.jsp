@@ -392,7 +392,7 @@
         }
 
         if (!isEmailValid(email)) {
-            errorMsg('#errorEmail', '<spring:message code="user.registration.error.invalidEmailError"/>');
+            errorMsg('#errorEmail', '<spring:message code="user.registration.error.invalidEmail"/>');
             flag = false;
         }
         return flag;
