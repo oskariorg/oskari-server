@@ -108,13 +108,4 @@ public class UserRegistrationService extends OskariComponent {
         throw new RuntimeException("Couldn't find email token for " + username);
     }
 
-    public Integer findUserRoleId(String name) {
-        try (SqlSession session = factory.openSession()) {
-            final EmailMapper mapper = session.getMapper(EmailMapper.class);
-            return mapper.findUserRoleId(name);
-        } catch (Exception e) {
-            LOG.warn(e, "Exception when trying to delete by email:", name);
-        }
-        throw new RuntimeException("Couldn't delete email token for " + name);
-    }
 }
