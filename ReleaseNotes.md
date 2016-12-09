@@ -2,6 +2,16 @@
 
 ## 1.41
 
+### User registration
+
+The default pages have been visually improved and the default role for registered user is no longer hardcoded as "User".
+ The default role can be configured with oskari-ext.properties (defaults to "User"):
+ 
+    oskari.user.role.loggedIn=User
+
+Any parameters from registration form prefixed with "user_" like "user_phone" will be saved to attributes JSON in
+ database table oskari_users. This allows more customization for fields to use on registration. 
+
 ### OpenTripPlanner
 
 OpenTripPlanner defaults changed: max walk distance has been updated from 1000 to 1000000.
