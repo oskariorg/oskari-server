@@ -24,7 +24,7 @@ import org.apache.commons.httpclient.HttpClient;
  */
 public class SpatineoServalUpdateService {
 
-    private static final Logger LOG = LogFactory.getLogger(SpatineoServalUpdateService.class);
+    private static final Logger log = LogFactory.getLogger(SpatineoServalUpdateService.class);
 
 // for debugging:
 //    public static final String SERVAL_URL = "http://localhost:9179";
@@ -35,7 +35,8 @@ public class SpatineoServalUpdateService {
     private static WmsServiceStatusDao serviceStatusDao;
     private static SpatineoServalDao spatineoDao;
     private static SpatineoMonitoringDao monitoringDao;
-    
+    private static SpatineoMonitoringResponseDto responseDto;
+            
     /** Spatineo Serval maximum request batch size. */
     private static int CHUNK_SIZE = 25;
     private static boolean initialized;
@@ -44,7 +45,7 @@ public class SpatineoServalUpdateService {
      * Executed every 5 minutes or so by the Quartz scheduler, inside the servlet-map JVM.
      */
     public static void scheduledServiceCall() throws Exception {
-        LOG.info("Starting the Spatineo Serval update service call...");
+        log.info("Starting the Spatineo Serval update service call...");
 
         // Spatineo Access Key
         PropertyUtil.loadProperties("/portal-ext.properties");
@@ -68,26 +69,25 @@ public class SpatineoServalUpdateService {
             monitoringDao = new SpatineoMonitoringDao(MONITORING_URL, new HttpClient(), true);
             serviceStatusDao.truncateStatusTable();
             List<List<OskariMapLayerDto>> ll = Lists.partition(oskariDao.findWmsMapLayerData(), CHUNK_SIZE);
-            LOG.debug("Number of chunks: " + ll.size());
+            log.debug("Number of chunks: " + ll.size());
             for (final List<OskariMapLayerDto> layers : ll) {
-                //LOG.debug("checking status for layers", layers);
                 spatineoStatus(layers);
                 Thread.sleep(5000);
             }
             if (key != null) {
-                monitoringStatus(oskariDao.findWmsMapLayerData());
+                monitoringStatus(oskariDao.findWmsMapLayerData(), oskariDao.findWfsMapLayerData());
             }
         } finally {
             // clean up the created datasource
             dataSource.close();
         }
-        LOG.info("Done with the Spatineo Serval update service call");
+        log.info("Done with the Spatineo Serval update service call");
     }
     
     // the old implementation
     private static void spatineoStatus(final List<OskariMapLayerDto> layers) {
         final SpatineoResponseDto spatineoResponse = spatineoDao.checkServiceStatus(layers);
-        LOG.debug("Spatineo response was", spatineoResponse);
+        log.debug("Spatineo response was", spatineoResponse);
         
         if (spatineoResponse != null) {            
             for (int i = 0; i < layers.size(); i++) {
@@ -96,42 +96,52 @@ public class SpatineoServalUpdateService {
                 if (null != layer && null != result) {
                     serviceStatusDao.insertStatus(new PorttiBackendStatusDto(layer.id, result.status, result.statusMessage, result.infoUrl, PorttiBackendStatusDto.SourceEnum.SPATINEO_SERVAL.toString()));
                 } else {
-                    LOG.error("PROBLEM with the Spatineo request for the layers:", layers);
+                    log.error("PROBLEM with the Spatineo request for the layers:", layers);
                 }
             }
         } else {
-            LOG.warn("Spatineo serval response was null.");
+            log.warn("Spatineo serval response was null.");
         }
     }
     
     // the new implementation
-    private static void monitoringStatus(final List<OskariMapLayerDto> layers) {
-        final SpatineoMonitoringResponseDto dto = monitoringDao.checkServiceStatus();
-        LOG.debug("Spatineo monitoring response was", dto);        
+    private static void monitoringStatus(final List<OskariMapLayerDto> wmsLayers, final List<OskariMapLayerDto> wfsLayers) {
+        responseDto = monitoringDao.checkServiceStatus();
+        log.debug("Spatineo monitoring response was", responseDto);        
         
-        if (dto != null) {            
-            LOG.debug(dto.getLayerNames());
+        if (responseDto != null) {            
+            //log.debug(responseDto.getLayerNames());
             
-            if (dto.isError()) {
-                LOG.warn("Spatineo Monitoring API returned error. Response handling skipped.");
+            if (responseDto.isError()) {
+                log.warn("Spatineo Monitoring API returned error. Response handling skipped.");
                 return;
             }
-            
-            for (OskariMapLayerDto l : layers) {
-                String name = l.name;
-                String url = l.url;
-                SpatineoMonitoringResponseDto.Meter meter = dto.getMeterByLayerName(name);            
-                LOG.debug("Matching <" + name + "> with <" + meter + ">");
-                if (meter != null) {
-                    String status = PorttiBackendStatusDto.StatusEnum.getEnumByNewAPI(meter.indicator.status).toString();
-                    serviceStatusDao.insertStatus(new PorttiBackendStatusDto(l.id, status, meter.indicator.status, meter.monitorLink, PorttiBackendStatusDto.SourceEnum.SPATINEO_MONITORING.toString()));
-                }
-            }
+
+            updateDb(wmsLayers, false);
+            updateDb(wfsLayers, true);            
         } else {
-            LOG.warn("Spatineo Monitoring API status request failed");
+            log.warn("Spatineo Monitoring API status request failed");
         }
     }
 
+    private static void updateDb(final List<OskariMapLayerDto> layers, boolean wfs) {
+        for (OskariMapLayerDto l : layers) {
+            String name = l.name;
+            String url = l.url;
+            SpatineoMonitoringResponseDto.Meter meter = null;
+            if (wfs) {
+                meter = responseDto.getMeterByLayerName(name, url);
+            } else {
+                meter = responseDto.getMeterByServiceName(name, url);            
+            }
+            log.debug("Matching <" + name + "> with <" + meter + ">");
+            if (meter != null) {
+                String status = PorttiBackendStatusDto.StatusEnum.getEnumByNewAPI(meter.indicator.status).toString();
+                serviceStatusDao.insertStatus(new PorttiBackendStatusDto(l.id, status, meter.indicator.status, meter.monitorLink, PorttiBackendStatusDto.SourceEnum.SPATINEO_MONITORING.toString()));
+            }
+        }
+    }
+    
     private static BasicDataSource createDatasource(ConnectionInfo info) {
 
         final BasicDataSource dataSource = new BasicDataSource();
