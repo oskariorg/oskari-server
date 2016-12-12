@@ -1,6 +1,7 @@
 package fi.nls.oskari.statistics.eurostat;
 
 import fi.nls.oskari.cache.JedisManager;
+import fi.nls.oskari.control.statistics.plugins.IdNamePair;
 import fi.nls.oskari.control.statistics.plugins.StatisticalIndicatorSelector;
 import fi.nls.oskari.control.statistics.plugins.StatisticalIndicatorSelectors;
 import fi.nls.oskari.control.statistics.plugins.db.DatasourceLayer;
@@ -8,11 +9,13 @@ import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.service.ServiceRuntimeException;
 import fi.nls.oskari.util.IOHelper;
+import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.XmlHelper;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.impl.builder.StAXOMBuilder;
 import org.apache.axiom.om.xpath.AXIOMXPath;
 import org.jaxen.SimpleNamespaceContext;
+import org.json.JSONObject;
 
 import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
@@ -23,15 +26,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 
 public class EurostatIndicatorsParser {
     private final static Logger LOG = LogFactory.getLogger(EurostatIndicatorsParser.class);
     SimpleNamespaceContext NAMESPACE_CTX = new SimpleNamespaceContext();
     private EurostatConfig config;
-
+    private EurostatStatisticalIndicatorLayer layer;
 
     public EurostatIndicatorsParser(EurostatConfig config) throws java.io.IOException {
         this.config = config;
@@ -92,14 +94,16 @@ public class EurostatIndicatorsParser {
                         List<OMElement> codeName = xpath_codeName.selectNodes(codeID1);  // Code ID = "D" or "W"
                         for (OMElement selectValue : codeName) {
                             String selectValues = selectValue.getText();                 // selectedValues = codeName "Daily, weekly "
-                            selector.addAllowedValue(nameID, selectValues);
+                            selector.addAllowedValue(nameID, selectValues); // nameID = "D"
                         }
                     }
                     selectors.addSelector(selector);
+
                 }
 
             }
-            populateTimeDimension(selectors);
+            String indicatorString= indicator.getId();
+            populateTimeDimension(indicator);
         } catch (java.lang.Exception e) {
             e.printStackTrace();
         } finally {
@@ -113,18 +117,6 @@ public class EurostatIndicatorsParser {
 
         }
         return hasGEO;
-    }
-
-    private void populateTimeDimension(StatisticalIndicatorSelectors selectors) {
-
-        StatisticalIndicatorSelector selector = new StatisticalIndicatorSelector("time");
-        selector.setName("time");
-        // fixme: hardcoded
-        selector.addAllowedValue("2014");
-        selector.addAllowedValue("2015");
-        selector.addAllowedValue("2013");
-        selector.addAllowedValue("2012");
-        selectors.addSelector(selector);
     }
 
     public String getURL(final String pUrl) throws IOException {
@@ -150,10 +142,8 @@ public class EurostatIndicatorsParser {
         try (InputStreamReader inputReader = new InputStreamReader(is)) {
             reader = XMLInputFactory.newInstance().createXMLStreamReader(inputReader);
             System.out.println(config.getUrl());
-
             StAXOMBuilder builder = new StAXOMBuilder(reader);
             OMElement ele = builder.getDocumentElement();
-            //System.out.println(ele.getText());
             AXIOMXPath xpath_indicator = XmlHelper.buildXPath("/mes:Structure/mes:Structures/str:Dataflows/str:Dataflow", NAMESPACE_CTX);
             AXIOMXPath xpath_names = XmlHelper.buildXPath("com:Name", NAMESPACE_CTX);
 
@@ -162,17 +152,19 @@ public class EurostatIndicatorsParser {
             for (OMElement indicator : indicatorsElement) {
                 // str:Dataflow
                 count++;
+
                 if (count < 550 || count>600) {
                     // at this range there should be indicators with NUTS areas as regions
                     continue;
                 }
-                if (list.size() > 10) {
+                if (list.size() > 40) {
                     // have 10 indicators with geo:
                     // break so we don't need to wait all day for the rest to load
                     break;
                 }
                 EurostatIndicator item = new EurostatIndicator();
                 String id = indicator.getAttributeValue(QName.valueOf("id"));
+                System.out.println(id);
                 item.setId(id);// itemId = nama_gdp_c
 
 
@@ -187,12 +179,12 @@ public class EurostatIndicatorsParser {
                 OMElement struct = XmlHelper.getChild(indicator, "Structure");
                 OMElement ref = XmlHelper.getChild(struct, "Ref");
                 String DSDid = ref.getAttributeValue(QName.valueOf("id"));
+                for (DatasourceLayer layer : layers) {
+                    item.addLayer(new EurostatStatisticalIndicatorLayer(layer.getMaplayerId(), item.getId(), config.getUrl()));
+                }
                 boolean indicatorHasRegion = setMetadata(item, DSDid);
                 if (indicatorHasRegion) {
                     list.add(item);
-                }
-                for (DatasourceLayer layer : layers) {
-                    item.addLayer(new EurostatStatisticalIndicatorLayer(layer.getMaplayerId(), item.getId(), config.getUrl()));
                 }
             }
 
@@ -223,6 +215,73 @@ public class EurostatIndicatorsParser {
             LOG.error(ex, "Error getting indicator metadata from Pxweb datasource:", url);
         }
         return null;
+    }
+    /*
+    http://ec.europa.eu/eurostat/wdds/rest/data/v2.1/json/en/t2020_10?sex=F&precision=1&unit=PC_POP&indic_em=EMP_LFS&age=Y20-64
+     */
 
+
+    private void populateTimeDimension(EurostatIndicator indicator) {
+
+        StatisticalIndicatorSelector selector = new StatisticalIndicatorSelector("Time");
+        StatisticalIndicatorSelectors selectors = indicator.getSelectors();
+        String indicatorID = indicator.getId();
+        EurostatStatisticalIndicatorLayer layer = (EurostatStatisticalIndicatorLayer) indicator.getLayers().get(0);
+
+        for (StatisticalIndicatorSelector selectedSelector: selectors.getSelectors()) {
+            Collection<IdNamePair> allowValue = selectedSelector.getAllowedValues();
+            if(!allowValue.isEmpty()) {
+                selectedSelector.setValue(allowValue.iterator().next().getKey());
+            }
+        }
+
+        String finalUrl =  layer.constructUrl(selectors);
+        final JSONObject json = getTimeJasonObject(finalUrl);
+
+        if(json == null) {
+            // TODO: throw an error maybe? same with unexpected response
+            return;
+        }
+        try {
+            // t2020_10-> dimension->time->category->index
+            ArrayList <Integer> listOfTime = new ArrayList<>();
+            JSONObject variables = json.optJSONObject("dimension").optJSONObject("time").optJSONObject("category").optJSONObject("index");
+            Iterator<String> keys = variables.keys();
+            if (variables == null) {
+                // TODO: throw an error maybe? same with connection error
+                return;
+            }
+            while(keys.hasNext()) {
+                String year = keys.next();
+                listOfTime.add(Integer.valueOf(year));
+                //selector.addAllowedValue(year);
+            }
+            Collections.sort(listOfTime);
+            //int value = variables.optInt(year);
+            for (int i=0; i< listOfTime.size();i++){
+                selector.addAllowedValue(listOfTime.get(i).toString());
+            }
+
+        } catch (Exception ex) {
+            LOG.error(ex, "Error parsing indicator metadata from Pxweb datasource:", json);
+        }
+
+        selectors.addSelector(selector);
+    }
+
+    private JSONObject getTimeJasonObject( String path) {
+
+        final String cacheKey = "stats:" + config.getId() + ":metadata_time:" + path;
+        try {
+            String metadata = JedisManager.get(cacheKey);
+            if(metadata == null) {
+                metadata = IOHelper.getURL(path);
+                JedisManager.setex(cacheKey, JedisManager.EXPIRY_TIME_DAY, metadata);
+            }
+            return JSONHelper.createJSONObject(metadata);
+        } catch (IOException ex) {
+            LOG.error(ex, "Error getting indicator metadata from Pxweb datasource:", path);
+        }
+        return null;
     }
 }
