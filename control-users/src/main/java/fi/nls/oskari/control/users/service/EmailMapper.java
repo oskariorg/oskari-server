@@ -29,7 +29,4 @@ public interface EmailMapper {
 
     @Select("SELECT email FROM oskari_users WHERE user_name = #{user_name}")
     String findEmailForUsername(String username);
-
-    @Select("SELECT id FROM oskari_roles WHERE name = #{name}")
-    Integer findUserRoleId(String name);
 }

@@ -15,6 +15,8 @@ import org.opengis.referencing.operation.TransformException;
 
 import javax.xml.stream.FactoryConfigurationError;
 import javax.xml.stream.XMLStreamException;
+
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -35,6 +37,12 @@ public class WebServiceMapProducerResourceTest {
 
     {
         runner.setClientInfo(clientInfo);
+    }
+
+    @Before
+    public void setupTestOutputDirectory() {
+        File testOutputDir = new File("test-output");
+        testOutputDir.mkdir();
     }
 
     @Before
@@ -144,22 +152,6 @@ public class WebServiceMapProducerResourceTest {
         runner.run("geojsPrintTest",
                 WebServiceMapProducerResourceTestFileType.GEOJSON,
                 WebServiceMapProducerResourceTestFileType.PDF);
-
-    }
-
-    @Test
-    public void testGeojsPrintTestJsonAsPPTX()
-            throws NoSuchAuthorityCodeException, IOException,
-            GeoWebCacheException, FactoryException, ParseException,
-            XMLStreamException, FactoryConfigurationError,
-            RequestFilterException, TransformException,
-            com.vividsolutions.jts.io.ParseException, InterruptedException,
-            org.json.simple.parser.ParseException, URISyntaxException,
-            Exception {
-        runner.setResource(WebServiceMapProducerResourceTest.acquire());
-        runner.run("geojsPrintTest-pptx",
-                WebServiceMapProducerResourceTestFileType.GEOJSON,
-                WebServiceMapProducerResourceTestFileType.PPTX);
 
     }
 

@@ -1,10 +1,11 @@
 package fi.nls.oskari.control.users;
 
 import fi.nls.oskari.control.*;
+import fi.nls.oskari.domain.Role;
 import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.service.UserService;
+import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import fi.nls.oskari.annotation.OskariActionRoute;
@@ -13,8 +14,10 @@ import fi.nls.oskari.control.users.service.UserRegistrationService;
 import fi.nls.oskari.control.users.service.MailSenderService;
 import fi.nls.oskari.domain.User;
 import fi.nls.oskari.service.ServiceException;
-import fi.nls.oskari.user.IbatisUserService;
 import fi.nls.oskari.util.ResponseHelper;
+
+import java.util.Iterator;
+import java.util.Map;
 
 /**
  * Note! This might change a bit to make it more RESTish instead of params to tell the operation
@@ -31,15 +34,18 @@ public class UserRegistrationHandler extends ActionHandler {
     private static final String PARAM_LASTNAME = "lastname";
     private static final String PARAM_USERNAME = "username";
     private static final String PARAM_EMAIL = "email";
+	private static final String ATTR_PARAM_PREFIX = "user_";
     
     private UserService userService;
 	private UserRegistrationService registerTokenService = null;
     private final MailSenderService mailSenderService = new MailSenderService();
-    private final IbatisUserService ibatisUserService = new IbatisUserService();
+	private Role defaultRole = null;
 
 	public void init() {
 		try {
 			userService = UserService.getInstance();
+			// configured with "oskari.user.role.loggedIn" property
+			defaultRole = Role.getDefaultUserRole();
 		} catch (ServiceException ex) {
 			throw new RuntimeException("Unable to get user service reference", ex);
 		}
@@ -67,6 +73,7 @@ public class UserRegistrationHandler extends ActionHandler {
 				throw new ActionException("Username already exists.");
 			}
 			try {
+				user.addRole(defaultRole);
 				userService.createUser(user);
 			} catch (ServiceException se) {			
 				throw new ActionException(se.getMessage(), se);
@@ -97,7 +104,7 @@ public class UserRegistrationHandler extends ActionHandler {
 			getUserParams(user, params);
 			user.setId(sessionUser.getId());
 			try {
-				User retUser = ibatisUserService.find(user.getId());
+				User retUser = userService.getUser(user.getId());
 				if (retUser == null)
 					throw new ActionException("User doesn't exist.");
 				if (!retUser.getEmail().equals(user.getEmail()) && isEmailAlreadyExist(user.getEmail()))
@@ -112,7 +119,7 @@ public class UserRegistrationHandler extends ActionHandler {
 			User sessionUser = params.getUser();
 			params.requireLoggedInUser();
 			try {
-				User retUser = ibatisUserService.find(sessionUser.getId());
+				User retUser = userService.getUser(sessionUser.getId());
 				if (retUser == null)
 					throw new ActionException("User doesn't exist.");					
 				userService.deleteUser(sessionUser.getId());				
@@ -145,8 +152,20 @@ public class UserRegistrationHandler extends ActionHandler {
         user.setLastname(params.getRequiredParam(PARAM_LASTNAME));       
         user.setEmail(params.getRequiredParam(PARAM_EMAIL));
         //check is done because while updating user info, username is not changed.
-        if (params.getRequest().getParameter(PARAM_USERNAME) != null)
-        	 user.setScreenname(params.getRequest().getParameter(PARAM_USERNAME));
+        if (params.getRequest().getParameter(PARAM_USERNAME) != null) {
+			user.setScreenname(params.getRequest().getParameter(PARAM_USERNAME));
+		}
+		// loop parameters and add the rest starting with user_
+		for(Map.Entry<String, String[]> param : params.getRequest().getParameterMap().entrySet()) {
+			if(!param.getKey().startsWith(ATTR_PARAM_PREFIX)) {
+				continue;
+			}
+			final String key = param.getKey().substring(ATTR_PARAM_PREFIX.length());
+			if(key.isEmpty()) {
+				continue;
+			}
+			user.setAttribute(key, params.getHttpParam(key));
+		}
     }
 
     
@@ -154,17 +173,17 @@ public class UserRegistrationHandler extends ActionHandler {
 		if (user == null) {
 			throw new ActionParamsException("User doesn't exists.");
 		}
-		try {
-			JSONObject uo = new JSONObject();
-			uo.put("id", user.getId());
-			uo.put("firstName", user.getFirstname());
-			uo.put("lastName", user.getLastname());
-			uo.put("userName", user.getScreenname());
-			uo.put("email", user.getEmail());
-			return uo;
-		} catch (JSONException je) {
-			throw new ActionException(je.getMessage(), je);
+		JSONObject json = user.toJSON();
+		// include attributes prefixed with user_
+		JSONObject attrs = user.getAttributesJSON();
+		Iterator<String> it = attrs.keys();
+		while(it.hasNext()) {
+			final String key = it.next();
+			JSONHelper.putValue(json, ATTR_PARAM_PREFIX + key, attrs.opt(key));
 		}
+		// roles can be skipped here.
+		json.remove("roles");
+		return json;
     }
     
     public final int getRequestParameterCount(String query) {   

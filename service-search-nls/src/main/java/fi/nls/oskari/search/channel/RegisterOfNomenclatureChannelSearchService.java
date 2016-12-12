@@ -5,6 +5,7 @@ import fi.mml.nameregister.FeaturePropertyType;
 import fi.mml.portti.service.search.ChannelSearchResult;
 import fi.mml.portti.service.search.SearchCriteria;
 import fi.mml.portti.service.search.SearchResultItem;
+import fi.mml.portti.service.search.SearchService;
 import fi.nls.oskari.annotation.Oskari;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
@@ -76,7 +77,7 @@ public class RegisterOfNomenclatureChannelSearchService extends SearchChannel {
         
 
         try {
-        	final String url = getWFSUrl(searchString);
+        	final String url = getWFSUrl(searchString, getMaxResults(searchCriteria.getMaxResults()));
             final String data = IOHelper.readString(getConnection(url));
             
             final String currentLocaleCode =  getLocaleCode(searchCriteria.getLocale());
@@ -183,7 +184,7 @@ public class RegisterOfNomenclatureChannelSearchService extends SearchChannel {
      * @return url with url-encoded filter
      * @throws Exception
      */
-    private String getWFSUrl(String filter) throws Exception {
+    private String getWFSUrl(String filter, int maxResults) throws Exception {
 
 
         String filterXml = "<Filter>" +
@@ -196,7 +197,7 @@ public class RegisterOfNomenclatureChannelSearchService extends SearchChannel {
 
         String wfsUrl = serviceURL +
                 "?SERVICE=WFS&VERSION=1.1.0" +
-                "&maxFeatures=" +  (SearchUtil.maxCount+1) +  // added 1 to maxCount because need to know if there are more then maxCount
+                "&maxFeatures=" +  (maxResults + 1) +  // added 1 to maxCount because need to know if there are more then maxCount
                 "&REQUEST=GetFeature&TYPENAME=pnr:Paikka" +
                 "&NAMESPACE=xmlns%28pnr=http://xml.nls.fi/Nimisto/Nimistorekisteri/2009/02%29" +
                 "&filter=" + filterXml + "&SortBy=pnr:mittakaavarelevanssiKoodi+D";
