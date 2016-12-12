@@ -2,9 +2,22 @@
 
 ## 1.41
 
+### User registration
+
+The default pages have been visually improved and the default role for registered user is no longer hardcoded as "User".
+ The default role can be configured with oskari-ext.properties (defaults to "User"):
+ 
+    oskari.user.role.loggedIn=User
+
+Any parameters from registration form prefixed with "user_" like "user_phone" will be saved to attributes JSON in
+ database table oskari_users. This allows more customization for fields to use on registration. 
+
 ### OpenTripPlanner
 
 OpenTripPlanner defaults changed: max walk distance has been updated from 1000 to 1000000.
+
+Routing action route now provides the otpURL key in response for users having the admin role. The value is the url
+that is used to call OpenTripPlanner so make the feature easier to debug.
 
 ### MetaDataFieldHandler
 
@@ -14,6 +27,27 @@ search.channel.METADATA_CATALOGUE_CHANNEL.field.<name>.space.char = ?
 
 This is done because of GeoNetwork cannot query GetRecord for special cases. For example: space are not allowed when searching OrganisationName for LocalisedCharacterString. 
 
+### search-service
+
+Removed SearchUtil.maxCount and SearchWorker.maxCount. The same value is now returned by
+ SearchService.getMaxResultsCount() and can be configured with oskari-ext.properties:
+ 
+    search.max.results=100
+
+Classes extending SearchChannel have a new function getMaxResults() which looks for a property: 
+
+    search.channel.[CHANNEL_ID].maxFeatures=100
+
+and defaults to 'search.max.results' property. This can be used to configure channel-specific limits. They also have
+ a new function getMaxResults(int max) that you can use to pass the requested count from search criteria. This will 
+ return the requested count if it's smaller than the set limit for the channel. Each SearchChannel should resolve 
+ maximum results to return by calling getMaxResults(searchCriteria.getMaxResults()).
+
+### servlet-transport
+
+WFS 2.0.0 service responses (feature-engine parsing) can now be logged for debugging with transport-ext.properties: 
+
+    transport.response.debug=true
 
 ## 1.40
 

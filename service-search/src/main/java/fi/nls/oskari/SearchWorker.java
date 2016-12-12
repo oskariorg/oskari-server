@@ -40,16 +40,15 @@ public class SearchWorker {
     private final static Logger log = LogFactory.getLogger(SearchWorker.class);
 
     private static String[] defaultChannels = new String[0];
-    private static int maxCount = 100;
 
     public static void init() {
         defaultChannels = PropertyUtil.getCommaSeparatedList("search.channels.default");
-        maxCount = ConversionHelper.getInt(PropertyUtil.getOptional("search.max.results"), maxCount);
     }
 
     public static void addChannel(String channelId, SearchableChannel searchableChannel) {
         searchService.addChannel(channelId, searchableChannel);
     }
+
     /**
      * Checks if search was legal
      * 
@@ -126,10 +125,11 @@ public class SearchWorker {
         JSONObject rootJson = new JSONObject();
         JSONArray itemArray = new JSONArray();
 
+        int maxResults = searchService.getMaxResultsCount();
         int itemCount = 0;
         for (SearchResultItem sri : items) {
-            if (itemCount >= maxCount) {
-                if (items.size() > maxCount) {
+            if (itemCount >= maxResults) {
+                if (items.size() > maxResults) {
                     try {
                         rootJson.put(KEY_HAS_MORE, true);
                     } catch (JSONException jsonex) {

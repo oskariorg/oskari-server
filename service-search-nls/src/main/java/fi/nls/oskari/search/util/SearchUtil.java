@@ -33,7 +33,6 @@ import java.util.Properties;
 public class SearchUtil {
 	
 	private static final Logger log = LogFactory.getLogger(SearchUtil.class);
-	public static final int maxCount = 100;
 	
 	private static final int RANK_540 = 10;
 	private static final int RANK_550 = 20;

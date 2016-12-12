@@ -39,13 +39,16 @@ public class OskariDao {
     }
 
     public List<OskariMapLayerDto> findWmsMapLayerData() {
-        final SqlSession session = factory.openSession();
-        try {
+        try (SqlSession session = factory.openSession()) {
             final OskariMapLayerDto.Mapper mapper = session.getMapper(OskariMapLayerDto.Mapper.class);
             return mapper.selectWmsLayers();
-        } finally {
-            session.close();
         }
     }
 
+    public List<OskariMapLayerDto> findWfsMapLayerData() {
+        try (SqlSession session = factory.openSession()) {
+            final OskariMapLayerDto.Mapper mapper = session.getMapper(OskariMapLayerDto.Mapper.class);
+            return mapper.selectWfsLayers();
+        }
+    }
 }
