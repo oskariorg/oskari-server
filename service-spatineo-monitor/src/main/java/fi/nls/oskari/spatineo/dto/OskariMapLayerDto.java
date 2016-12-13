@@ -19,9 +19,6 @@ public class OskariMapLayerDto {
         List<OskariMapLayerDto> selectWfsLayers();
     }
 
-    public OskariMapLayerDto() {
-    }
-
     public OskariMapLayerDto(final Long id, final Calendar updated, final String name, final String url) {
         this.id = id;
         this.updated = updated;

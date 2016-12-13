@@ -44,14 +44,14 @@ public class PorttiBackendStatusDto {
         }
     }
     
-    public static interface Mapper {
+    public interface Mapper {
         @Insert("INSERT INTO portti_backendstatus " +
                 " (ts, maplayer_id, status, statusmessage, infourl, source) " +
                 " VALUES (NOW(), #{mapLayerId}, #{status}, #{statusMessage}, #{infoUrl}, #{source})")
-        public void saveStatus(final PorttiBackendStatusDto status);
+        void saveStatus(final PorttiBackendStatusDto status);
 
         @Update("TRUNCATE portti_backendstatus")
-        public void truncateStatusTable();
+        void truncateStatusTable();
     }
 
     public PorttiBackendStatusDto() {

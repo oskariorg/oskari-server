@@ -24,7 +24,7 @@ import org.apache.commons.httpclient.HttpClient;
  */
 public class SpatineoServalUpdateService {
 
-    private static final Logger LOG = LogFactory.getLogger(SpatineoServalUpdateService.class);
+    private static Logger LOG;
 
 // for debugging:
 //    public static final String SERVAL_URL = "http://localhost:9179";
@@ -39,22 +39,26 @@ public class SpatineoServalUpdateService {
             
     /** Spatineo Serval maximum request batch size. */
     private static int CHUNK_SIZE = 25;
-    private static boolean initialized;
+    private static boolean initialized = false;
 
     /**
      * Executed every 5 minutes or so by the Quartz scheduler, inside the servlet-map JVM.
      */
     public static void scheduledServiceCall() throws Exception {
-        LOG.info("Starting the Spatineo Serval update service call...");
 
-        // Spatineo Access Key
+        // Read in properties as this is triggered by scheduler with different classloader
+        PropertyUtil.loadProperties("/oskari.properties");
         PropertyUtil.loadProperties("/portal-ext.properties");
-        String key = PropertyUtil.getNecessary("spatineo.monitoring.key", "Spatineo Monitoring API requires a private access key. Calls to API disabled.");
-        if (key != null && !initialized) {
-            MONITORING_URL += "?privateAccessKey=" + key;            
-        } else if (!initialized) {
-            // for development use, check also environment variables
-            MONITORING_URL += "?privateAccessKey=" + System.getProperty("spatineo.monitoring.key");
+        PropertyUtil.loadProperties("/oskari-ext.properties");
+
+        String key = System.getProperty("spatineo.monitoring.key");
+        if(key == null) {
+            key = PropertyUtil.getNecessary("spatineo.monitoring.key", "Spatineo Monitoring API requires a private access key. Calls to API disabled.");
+        }
+        if (!initialized) {
+            LOG = LogFactory.getLogger(SpatineoServalUpdateService.class);
+            LOG.info("Starting the Spatineo Serval update service call...");
+            MONITORING_URL += "?privateAccessKey=" + key;
         }
         initialized = true;
         
@@ -130,7 +134,7 @@ public class SpatineoServalUpdateService {
         for (OskariMapLayerDto l : layers) {
             String name = l.name;
             String url = l.url;
-            SpatineoMonitoringResponseDto.Meter meter = null;
+            SpatineoMonitoringResponseDto.Meter meter;
             if (wfs) {
                 meter = responseDto.getMeterByLayerName(name, url);
             } else {
