@@ -68,13 +68,15 @@ public class SpatineoServalUpdateService {
             spatineoDao = new SpatineoServalDao(SERVAL_URL);
             monitoringDao = new SpatineoMonitoringDao(MONITORING_URL, new HttpClient(), true);
             serviceStatusDao.truncateStatusTable();
-            List<List<OskariMapLayerDto>> ll = Lists.partition(oskariDao.findWmsMapLayerData(), CHUNK_SIZE);
-            LOG.debug("Number of chunks: " + ll.size());
-            for (final List<OskariMapLayerDto> layers : ll) {
-                spatineoStatus(layers);
-                Thread.sleep(5000);
-            }
-            if (key != null) {
+
+            if (key == null) {
+                List<List<OskariMapLayerDto>> ll = Lists.partition(oskariDao.findWmsMapLayerData(), CHUNK_SIZE);
+                LOG.debug("Number of chunks: " + ll.size());
+                for (final List<OskariMapLayerDto> layers : ll) {
+                    spatineoStatus(layers);
+                    Thread.sleep(5000);
+                }
+            } else {
                 monitoringStatus(oskariDao.findWmsMapLayerData(), oskariDao.findWfsMapLayerData());
             }
         } finally {
