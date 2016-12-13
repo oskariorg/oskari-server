@@ -18,12 +18,14 @@ public class OskariMapLayerDto {
         @Select("SELECT m.id, w.feature_element as name, m.url, m.updated FROM oskari_maplayer m JOIN portti_wfs_layer w ON w.maplayer_id = m.id;")
         List<OskariMapLayerDto> selectWfsLayers();
     }
+    // without this, will throw No constructor found in fi.nls.oskari.spatineo.dto.OskariMapLayerDto matching [java.lang.Integer, java.lang.String, java.lang.String, java.sql.Timestamp]
+    public OskariMapLayerDto() {}
 
-    public OskariMapLayerDto(final Long id, final Calendar updated, final String name, final String url) {
+    public OskariMapLayerDto(final Long id, final String name, final String url, final Calendar updated) {
         this.id = id;
-        this.updated = updated;
         this.name = name;
         this.url = url;
+        this.updated = updated;
     }
 
     public Long id;

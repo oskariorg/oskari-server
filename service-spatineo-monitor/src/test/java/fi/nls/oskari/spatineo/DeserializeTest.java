@@ -51,9 +51,9 @@ public class DeserializeTest {
     @Test @Ignore("Performs external HTTP requests.")
     public void requestTest() throws Exception {
         final SpatineoServalDao dao = new SpatineoServalDao("https://monitor.spatineo.com/api/public/availability-1.0");
-        final OskariMapLayerDto gtk = new OskariMapLayerDto(1L, Calendar.getInstance(), "0", "http://geomaps2.gtk.fi/ArcGIS/services/GTKWMS/MapServer/WMSServer"),
-                tripla = new OskariMapLayerDto(2L, Calendar.getInstance(), "linkkimakkarat", "http://lada.infotripla.fi/geoserver/tilannekuva/wms"),
-                metla = new OskariMapLayerDto(3L, Calendar.getInstance(), "Metla:muulptukki_0610", "http://kartta.metla.fi/geoserver/ows?");
+        final OskariMapLayerDto gtk = new OskariMapLayerDto(1L, "0", "http://geomaps2.gtk.fi/ArcGIS/services/GTKWMS/MapServer/WMSServer", Calendar.getInstance()),
+                tripla = new OskariMapLayerDto(2L, "linkkimakkarat", "http://lada.infotripla.fi/geoserver/tilannekuva/wms", Calendar.getInstance()),
+                metla = new OskariMapLayerDto(3L, "Metla:muulptukki_0610", "http://kartta.metla.fi/geoserver/ows?", Calendar.getInstance());
         System.err.println(dao.checkServiceStatus(ImmutableList.of(gtk, tripla, metla)));
         System.err.println(dao.checkServiceStatus(ImmutableList.of(tripla, metla)));
         System.err.println(dao.checkServiceStatus(ImmutableList.of(gtk, tripla)));
