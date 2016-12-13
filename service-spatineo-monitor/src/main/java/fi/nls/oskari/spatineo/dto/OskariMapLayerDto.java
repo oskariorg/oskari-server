@@ -11,11 +11,11 @@ import java.util.List;
  */
 public class OskariMapLayerDto {
 
-    public static interface Mapper {
+    public interface Mapper {
         @Select("SELECT id, name, url, updated FROM oskari_maplayer WHERE type = 'wmslayer' ORDER BY id")
         List<OskariMapLayerDto> selectWmsLayers();
         
-        @Select("SELECT m.id, (w.feature_namespace_uri || ':' || w.feature_element) as name, m.url, m.updated FROM oskari_maplayer m JOIN portti_wfs_layer w ON w.maplayer_id = m.id;")
+        @Select("SELECT m.id, w.feature_element as name, m.url, m.updated FROM oskari_maplayer m JOIN portti_wfs_layer w ON w.maplayer_id = m.id;")
         List<OskariMapLayerDto> selectWfsLayers();
     }
 
