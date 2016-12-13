@@ -18,7 +18,7 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class SpatineoMonitoringResponseDto {
 
-    private final Logger log = LogFactory.getLogger(this.getClass());
+    private static final Logger LOG = LogFactory.getLogger(SpatineoMonitoringResponseDto.class);
     private boolean error;
 
     public boolean isError() {
@@ -57,7 +57,7 @@ public class SpatineoMonitoringResponseDto {
     public Meter getMeterByServiceName(String name, String url) {
         for (Result r : result) {
             Service s = r.service;
-            if (!s.serviceUrl.equalsIgnoreCase(url)) {
+            if (s == null || s.serviceUrl == null || !s.serviceUrl.equalsIgnoreCase(url)) {
                 continue;
             }
             for (Meter m : s.meters) {
@@ -150,7 +150,7 @@ public class SpatineoMonitoringResponseDto {
             try {
                 this.layerName = URLDecoder.decode(parts[0], "UTF-8");                   
             } catch (UnsupportedEncodingException e) {
-//                log.error("Failed to url decode layerName=" + parts[0]);
+                LOG.error("Failed to url decode layerName=" + parts[0]);
             }
 
             // not all layernames have the target part

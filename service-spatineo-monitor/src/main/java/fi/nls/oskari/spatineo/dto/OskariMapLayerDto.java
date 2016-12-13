@@ -13,10 +13,10 @@ public class OskariMapLayerDto {
 
     public static interface Mapper {
         @Select("SELECT id, name, url, updated FROM oskari_maplayer WHERE type = 'wmslayer' ORDER BY id")
-        public List<OskariMapLayerDto> selectWmsLayers();
+        List<OskariMapLayerDto> selectWmsLayers();
         
         @Select("SELECT m.id, (w.feature_namespace_uri || ':' || w.feature_element) as name, m.url, m.updated FROM oskari_maplayer m JOIN portti_wfs_layer w ON w.maplayer_id = m.id;")
-        public List<OskariMapLayerDto> selectWfsLayers();
+        List<OskariMapLayerDto> selectWfsLayers();
     }
 
     public OskariMapLayerDto() {
