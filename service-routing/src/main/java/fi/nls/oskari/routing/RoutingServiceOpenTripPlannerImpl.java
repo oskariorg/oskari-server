@@ -51,10 +51,11 @@ public class RoutingServiceOpenTripPlannerImpl implements RoutingService {
         final Point newFrom = ProjectionHelper.transformPoint(params.getFrom().getX(), params.getFrom().getY(), sourceSRS, targetSRS);
         final Point newTo = ProjectionHelper.transformPoint(params.getTo().getX(), params.getTo().getY(), sourceSRS, targetSRS);
 
-        final String from =  newFrom.getLonToString() + "," + newFrom.getLatToString();
+        // Routing service uses lat,lon order in point string and in service url params
+        final String from =  newFrom.getLatToString() + "," + newFrom.getLonToString();
         requestParams.put(PARAM_FROM_PLACE, from);
 
-        final String to = newTo.getLonToString() + "," + newTo.getLatToString();
+        final String to = newTo.getLatToString() + "," + newTo.getLonToString();
         requestParams.put(PARAM_TO_PLACE, to);
 
         setupDateAndTime(params, requestParams);

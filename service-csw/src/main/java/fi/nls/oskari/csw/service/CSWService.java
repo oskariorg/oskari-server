@@ -70,7 +70,9 @@ public class CSWService {
         this.baseURL = baseURL;
 
         if (fromCRS != null && toCRS != null) {
-            targetCRS = CRS.decode(toCRS);
+            //output is always  lon,lat axis order
+            targetCRS = CRS.decode(toCRS,true);
+            //TOD0 find out source axis orientation
             sourceCRS = CRS.decode(fromCRS);
             transform = CRS.findMathTransform(sourceCRS, targetCRS);
         }

@@ -23,10 +23,6 @@ public class OpenStreetMapSearchChannelTest {
     public void testCoordinateTransforms() throws Exception {
 
         OpenStreetMapSearchChannel channel = new OpenStreetMapSearchChannel();
-        // when using forceXY + 4326 you MUST define property:
-        // search.channel.OPENSTREETMAP_CHANNEL.forceXY=true
-        //System.setProperty("org.geotools.referencing.forceXY", "true");
-        //PropertyUtil.addProperty("search.channel.OPENSTREETMAP_CHANNEL.forceXY", "true");
         System.setProperty("http.proxyHost", "wwwp.nls.fi");
         System.setProperty("http.proxyPort", "800");
         channel.init();

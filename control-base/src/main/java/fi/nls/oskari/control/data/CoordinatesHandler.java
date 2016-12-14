@@ -66,7 +66,7 @@ public class CoordinatesHandler extends ActionHandler {
         LOG.debug("Params - lon", point.getLon(), "lat", point.getLat(), "in", srs);
         try {
             PointTransformer transformer = getTransformer();
-            Point value = transformer.reproject(point, srs, target);
+            Point value = srs.equals(target) ? point : transformer.reproject(point, srs, target);
             LOG.debug("Reprojected - lon", value.getLon(), "lat", value.getLat(), "in", target);
             JSONObject response = new JSONObject();
             JSONHelper.putValue(response, PARAM_LON, value.getLon());

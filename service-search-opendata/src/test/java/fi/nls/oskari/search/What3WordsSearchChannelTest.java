@@ -41,8 +41,6 @@ public class What3WordsSearchChannelTest {
     @Test
     public void testTransform() throws Exception {
         What3WordsSearchChannel channel = new What3WordsSearchChannel();
-        //System.setProperty("org.geotools.referencing.forceXY", "true");
-        //System.setProperty("search.channel.forceXY", "true");
         Point p = channel.getServiceCoordinates(385547.65760422836, 6675293.715526561, "EPSG:3067");
         assertEquals(60.19837505386789, p.getLat(), 0.1);
         assertEquals(24.93546499999964, p.getLon(), 0.1);

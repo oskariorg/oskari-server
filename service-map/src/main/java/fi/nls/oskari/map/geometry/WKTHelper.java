@@ -49,7 +49,7 @@ public class WKTHelper {
             return null;
         }
         try {
-            MathTransform transform = CRS.findMathTransform(sourceCRS, targetCRS);
+            MathTransform transform = CRS.findMathTransform(sourceCRS, targetCRS, true);
             return JTS.transform(geometry, transform);
         } catch (Exception ex) {
             log.error(ex, "Couldn't transform geometry to new projection");
@@ -68,7 +68,9 @@ public class WKTHelper {
         if (geom == null) {
             return null;
         }
+        // input axis orientation is / must be x=lon y=lat
         final Geometry transformed = transform(geom, sourceSRS, targetSRS);
+        // output axis orientation is x=lon y=lat for every projections
         return getWKT(transformed);
     }
 
@@ -82,24 +84,10 @@ public class WKTHelper {
         if (geom == null) {
             return null;
         }
-
-        Coordinate[] src = geom.getCoordinates();
+        // input axis orientation is / must be x=lon y=lat
         CoordinateReferenceSystem targetCrs = getCRS(targetSRS);
-        // coordinate switch + array reverse is needed at least in EPSG:3067
-        // might not work correctly for others...
-        boolean switchCoordinates = !ProjectionHelper.isFirstAxisNorth(targetCrs);
-        if (switchCoordinates) {
-            int len = src.length;
-            Coordinate[] reversed = new Coordinate[len];
-            for (Coordinate c : src) {
-                double x = c.x;
-                c.x = c.y;
-                c.y = x;
-                reversed[--len] = c;
-            }
-            geom = geom.getFactory().createPolygon(reversed);
-        }
         final Geometry transformed = transform(geom, CRS_EPSG_4326, targetCrs);
+        // output is x=lon y=lat always in every projection
         return getWKT(transformed);
     }
 
@@ -136,7 +124,7 @@ public class WKTHelper {
 
     public static CoordinateReferenceSystem getCRS(final String srs) {
         try {
-            return CRS.decode(srs);
+            return CRS.decode(srs,true);  // true --> lon always 1st
         } catch (Exception e) {
             log.error(e, "CRS decoding failed");
         }

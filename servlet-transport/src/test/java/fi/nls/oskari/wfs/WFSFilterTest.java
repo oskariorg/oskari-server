@@ -165,7 +165,9 @@ public class WFSFilterTest {
 		// NOTE!!! This fails with geotools 11.2/13.1 and Java 8!
 		// With Java 7 it works ok (JSONObject seems to keep the order "correct" for Geotools with Java 7).
 		// See breakGeotoolsGeoJSon() below
-        Filter f = wfsFilter.initGeoJSONFilter(geoJson, "the_geom");
+        WFSLayerStore layer = new WFSLayerStore();
+        layer.setGMLGeometryProperty("the_geom");
+        Filter f = wfsFilter.initGeoJSONFilter(geoJson, "EPSG:3067", layer);
         assertNotNull(f);
         System.out.println("F on " + f);
 	}
