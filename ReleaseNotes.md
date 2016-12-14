@@ -49,6 +49,38 @@ WFS 2.0.0 service responses (feature-engine parsing) can now be logged for debug
 
     transport.response.debug=true
 
+### coordinate transform improvements
+
+Coordinate transforms changed in Oskari to work the same way even when the Geotools flag for enforced coordinate order
+ is used (system property org.geotools.referencing.forceXY=true). This is always true when for example Geoserver is
+  running on the same appserver as Oskari).
+
+Thanks @kessu: 
+
+- Geometry transform improvements and AxisOrder management for all projections as lon,lat in geometries. 
+- New property configuration in oskari-ext.properties for file import to set default source Crs. Default is used when
+ source crs is not found in import file (SHP and MIF):
+
+    userlayer.default.source.epsg=EPSG:3067
+
+- Improvements in DescribeFeatureType parser / wfs 2.0
+- Improvements in map click buffer tolerance calculation when map crs is geographical (degree units)
+- Optional configuration available for wfs layers (oskari_maplayer attributes column):
+
+        {
+            "reverseXY": {
+                "EPSG:4326":true
+            },
+            "longSrsName":{
+                "EPSG:4326":true
+            }
+        }
+
+These are helpful if the WFS-service uses different coordinate order than what is assumed or expects the long version of 
+ SRS name:
+    - "reverseXY": lat,lon order in wfs service
+    - "longSrsName": long srsName syntax in GetFeature
+
 ## 1.40
 
 ### Configuration improvements
