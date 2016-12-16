@@ -269,7 +269,7 @@ public class AppSetupHandler extends RestActionHandler {
         final String name = JSONHelper.getStringFromJSON(view.getMetadata(), KEY_NAME, "Published map " + System.currentTimeMillis());
         final String language = JSONHelper.getStringFromJSON(view.getMetadata(), KEY_LANGUAGE, PropertyUtil.getDefaultLanguage());
 
-        view.setPubDomain(domain);
+        view.setPubDomain(domain.trim());
         view.setName(name);
         view.setType(ViewTypes.PUBLISHED);
         view.setCreator(user.getId());
