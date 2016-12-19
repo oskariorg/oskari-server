@@ -98,6 +98,14 @@ public class MetadataCatalogueChannelSearchService extends SearchChannel {
         }
     }
 
+    /**
+     * Defaults to false as opposed to true in SearchChannel as this most likely isn't a channel to use for usual searching.
+     * @return
+     */
+    public boolean isDefaultChannel() {
+        return PropertyUtil.getOptional("search.channel." + getName() + ".isDefault", false);
+    }
+
     public static String getServerURL() {
         return serverURL;
     }
