@@ -50,11 +50,29 @@ public class SearchWorker {
         }
         return STR_TRUE;
     }
-    
+
+    /**
+     * Returns the parameter value if it's not -1 or more than the maximum result count.
+     * @param requested
+     * @return maximum value of results or requested, which ever is smaller.
+     */
+    public static int getMaxResults(int requested) {
+        int maximum = searchService.getMaxResultsCount();
+        if(requested != -1 && requested < maximum) {
+            return requested;
+        }
+        return maximum;
+    }
+    /**
+     * Makes a search based on criteria. Picks the configured/requested amount of results and
+     * serializes the result to JSON.
+     * @param sc
+     * @return
+     */
     public static JSONObject doSearch(final SearchCriteria sc) {
         
         Query query = searchService.doSearch(sc);
-        int maxResults = searchService.getMaxResultsCount();
+        int maxResults = getMaxResults(sc.getMaxResults());
         List<SearchResultItem> items = query.getSortedResults(maxResults + 1);
 
         JSONObject result = new JSONObject();
