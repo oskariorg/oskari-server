@@ -72,7 +72,7 @@ public class SotkaStatisticalDatasourcePlugin extends AbstractStatisticalDatasou
         layerMappings = new HashMap<>();
 
         for (DatasourceLayer row : layerRows) {
-            layerMappings.put(row.getSourceProperty().toLowerCase(), row.getMaplayerId());
+            layerMappings.put(row.getConfig("regionType").toLowerCase(), row.getMaplayerId());
         }
         LOG.debug("SotkaNET layer mappings: ", layerMappings);
     }
