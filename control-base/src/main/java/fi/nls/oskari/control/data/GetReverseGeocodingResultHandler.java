@@ -29,7 +29,8 @@ public class GetReverseGeocodingResultHandler extends ActionHandler {
     private static final String PROPERTY_CHANNELS = "actionhandler.GetReverseGeocodingResult.channels";
     private static final String PROPERTY_MAXFEATURES = "actionhandler.GetReverseGeocodingResult.maxfeatures";
     private static final String PROPERTY_BUFFER = "actionhandler.GetReverseGeocodingResult.buffer";
-    // Reverese seacrh is executed only to requested channels, if channel_ids parameter is in
+    // Reverse search is executed only to requested channels, if channel_ids parameter is used
+    // TODO: refactor to channels to be consistent with GetSearchResultHandler
     private static final String PARAM_OPTIONAL_CHANNEL_IDS_KEY = "channel_ids";
 
     private int maxFeatures = 1;
