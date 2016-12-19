@@ -1,5 +1,8 @@
 package fi.mml.portti.service.search;
 
+import fi.nls.oskari.log.LogFactory;
+import fi.nls.oskari.log.Logger;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -8,7 +11,9 @@ import java.util.List;
  * Search result list of single channel.
  */
 public class ChannelSearchResult  implements Serializable {
-	
+
+
+	private final static Logger log = LogFactory.getLogger(ChannelSearchResult.class);
 	private static final long serialVersionUID = -6212441908137008495L;
 	private String channelId;
 	private boolean available;
@@ -58,6 +63,18 @@ public class ChannelSearchResult  implements Serializable {
 	
 	public List<SearchResultItem> getSearchResultItems() {
 		return searchResultItems;
+	}
+	public List<SearchResultItem> getItemsWithTitleAndLocation() {
+		List<SearchResultItem> items = new ArrayList<>();
+		for (SearchResultItem sri : searchResultItems) {
+			if(!sri.hasNameAndLocation()) {
+				// didn't get name/location -> skip to next result
+				log.warn("Didn't get name or location from search result item:", sri);
+				continue;
+			}
+			items.add(sri);
+		}
+		return items;
 	}
 	public void setSearchResultItems(List<SearchResultItem> searchResultItems) {
 		this.searchResultItems = searchResultItems;
