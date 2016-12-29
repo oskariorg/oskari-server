@@ -4,6 +4,7 @@ import fi.nls.oskari.control.statistics.plugins.db.DatasourceLayer;
 import fi.nls.oskari.control.statistics.plugins.db.DatasourceLayerMapper;
 import fi.nls.oskari.control.statistics.plugins.db.StatisticalDatasource;
 import fi.nls.oskari.db.DatasourceHelper;
+import fi.nls.oskari.mybatis.JSONObjectMybatisTypeHandler;
 import fi.nls.oskari.service.OskariComponent;
 import org.apache.ibatis.mapping.Environment;
 import org.apache.ibatis.session.Configuration;
@@ -43,6 +44,9 @@ public abstract class StatisticalDatasourceFactory extends OskariComponent {
         final Configuration configuration = new Configuration(environment);
         configuration.getTypeAliasRegistry().registerAlias(DatasourceLayer.class);
         configuration.setLazyLoadingEnabled(true);
+        // typehandlers aren't found from classpath even when annotated.
+        // also important to register them before adding mappers
+        configuration.getTypeHandlerRegistry().register(JSONObjectMybatisTypeHandler.class);
         configuration.addMapper(DatasourceLayerMapper.class);
 
         return new SqlSessionFactoryBuilder().build(configuration);

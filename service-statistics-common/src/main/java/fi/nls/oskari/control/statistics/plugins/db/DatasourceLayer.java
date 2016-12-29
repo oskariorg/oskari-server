@@ -1,8 +1,11 @@
 package fi.nls.oskari.control.statistics.plugins.db;
 
+import org.json.JSONObject;
+
 /**
- * This is the value object for the SotkaNET plugin layer mapping rows in the database.
- * MyBatis Type for the SQL table oskari_statistical_sotka_layers
+ * This is the value object for the statistical datasource layer
+ * for example SotkaNET plugin layer mapping rows in the database.
+ * MyBatis Type for the SQL table oskari_statistical_layers
  */
 public class DatasourceLayer {
 
@@ -16,17 +19,14 @@ public class DatasourceLayer {
     private long maplayerId;
 
     /**
-     *  For example one of: "Kunta","Maakunta","Erva","Aluehallintovirasto","Sairaanhoitopiiri","Seutukunta",
-     *  "Nuts1","ELY-KESKUS"
+     *  For example one of:
+     *  {"regionType" : "Kunta"}
+     *  or "Maakunta","Erva","Aluehallintovirasto","Sairaanhoitopiiri","Seutukunta",
+     *  "Nuts1","ELY-KESKUS" for SotkaNet data
      *  Note: These are case independent and the above list is possibly not exhaustive.
      *  These are the layer names used by the plugin.
      */
-    private String sourceProperty;
-
-    /**
-     *  Property on the maplayer that's matches values on sourceProperty
-     */
-    private String layerProperty;
+    private JSONObject config;
 
     public long getDatasourceId() {
         return datasourceId;
@@ -44,19 +44,17 @@ public class DatasourceLayer {
         this.maplayerId = maplayerId;
     }
 
-    public String getSourceProperty() {
-        return sourceProperty;
+    public String getConfig(String key) {
+        if(config == null) {
+            return null;
+        }
+        return config.optString(key);
+    }
+    public JSONObject getConfig() {
+        return config;
     }
 
-    public void setSourceProperty(String sourceProperty) {
-        this.sourceProperty = sourceProperty;
-    }
-
-    public String getLayerProperty() {
-        return layerProperty;
-    }
-
-    public void setLayerProperty(String layerProperty) {
-        this.layerProperty = layerProperty;
+    public void setConfig(JSONObject config) {
+        this.config = config;
     }
 }

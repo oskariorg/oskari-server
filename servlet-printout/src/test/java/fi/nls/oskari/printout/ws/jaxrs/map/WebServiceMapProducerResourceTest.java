@@ -15,6 +15,7 @@ import org.opengis.referencing.operation.TransformException;
 
 import javax.xml.stream.FactoryConfigurationError;
 import javax.xml.stream.XMLStreamException;
+import fi.nls.test.util.TestHelper;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -28,6 +29,8 @@ import java.text.ParseException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
+import static org.junit.Assume.assumeTrue;
+import org.junit.Ignore;
 
 /* 2nd generation tests - still valid */
 public class WebServiceMapProducerResourceTest {
@@ -61,6 +64,7 @@ public class WebServiceMapProducerResourceTest {
 
     @Test
     public void testMapLinkAsPNG() throws FactoryConfigurationError, Exception {
+        assumeTrue(TestHelper.redisAvailable());
 
         Map<String, String> values = new HashMap<String, String>();
         values.put("VER", "1.17");
@@ -103,6 +107,7 @@ public class WebServiceMapProducerResourceTest {
     /* %C3%A5%C3%A4%C3%B6%C3%A5%C3%A4%C3%B6ABC/// */
     @Test
     public void testMapLinkAsPDF() throws FactoryConfigurationError, Exception {
+        assumeTrue(TestHelper.redisAvailable());
 
         Map<String, String> values = new HashMap<String, String>();
         values.put("VER", "1.17");
@@ -273,6 +278,7 @@ public class WebServiceMapProducerResourceTest {
     }
 
     @Test
+    @Ignore
     public void testWmtsPrintJsonAsPNG() throws NoSuchAuthorityCodeException,
             IOException, GeoWebCacheException, FactoryException,
             ParseException, XMLStreamException, FactoryConfigurationError,
@@ -298,6 +304,7 @@ public class WebServiceMapProducerResourceTest {
     }
 
     @Test
+    @Ignore
     public void testWmtsPrintZoom3JsonAsPNG()
             throws NoSuchAuthorityCodeException, IOException,
             GeoWebCacheException, FactoryException, ParseException,
@@ -324,6 +331,7 @@ public class WebServiceMapProducerResourceTest {
     }
 
     @Test
+    @Ignore
     public void testWmtsPrintZoom7JsonAsPNG()
             throws NoSuchAuthorityCodeException, IOException,
             GeoWebCacheException, FactoryException, ParseException,
@@ -350,6 +358,7 @@ public class WebServiceMapProducerResourceTest {
     }
 
     @Test
+    @Ignore
     public void testWmtsPrintZoom7png8opacityJsonAsPNG()
             throws NoSuchAuthorityCodeException, IOException,
             GeoWebCacheException, FactoryException, ParseException,
@@ -376,6 +385,7 @@ public class WebServiceMapProducerResourceTest {
     }
 
     @Test
+    @Ignore
     public void testWmtsPrintZoom7jpegopacityJsonAsPNG()
             throws NoSuchAuthorityCodeException, IOException,
             GeoWebCacheException, FactoryException, ParseException,
@@ -402,6 +412,7 @@ public class WebServiceMapProducerResourceTest {
     }
 
     @Test
+    @Ignore
     public void testWmtsPrintZoom7png8opacityJsonAsPDF()
             throws NoSuchAuthorityCodeException, IOException,
             GeoWebCacheException, FactoryException, ParseException,
@@ -428,6 +439,7 @@ public class WebServiceMapProducerResourceTest {
     }
 
     @Test
+    @Ignore
     public void testWmtsPrintZoom7png8opacityJsonAndTemplateAsPDF()
             throws NoSuchAuthorityCodeException, IOException,
             GeoWebCacheException, FactoryException, ParseException,
@@ -454,6 +466,7 @@ public class WebServiceMapProducerResourceTest {
     }
 
     @Test
+    @Ignore
     public void testWmtsLayerPrintZoom7png8opacityAndTemplateWithTableContentAsPDF()
             throws NoSuchAuthorityCodeException, IOException,
             GeoWebCacheException, FactoryException, ParseException,
@@ -487,6 +500,7 @@ public class WebServiceMapProducerResourceTest {
             RequestFilterException, TransformException,
             com.vividsolutions.jts.io.ParseException, InterruptedException,
             URISyntaxException, org.json.simple.parser.ParseException {
+        assumeTrue(TestHelper.redisAvailable());
 
         Properties props = getFixedTestProperties("jhs.properties",
                 "layers.json");
@@ -506,6 +520,7 @@ public class WebServiceMapProducerResourceTest {
     }
 
     @Test
+    @Ignore
     public void testWmtsLayerPrintZoom7png8opacityAndTemplateWithPagedTableContentAsPDF()
             throws NoSuchAuthorityCodeException, IOException,
             GeoWebCacheException, FactoryException, ParseException,

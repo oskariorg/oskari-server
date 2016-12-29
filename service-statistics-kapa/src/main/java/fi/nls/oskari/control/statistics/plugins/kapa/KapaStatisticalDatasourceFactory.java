@@ -9,8 +9,6 @@ import fi.nls.oskari.log.Logger;
 
 @Oskari("KAPA")
 public class KapaStatisticalDatasourceFactory extends StatisticalDatasourceFactory {
-    private final static Logger LOG = LogFactory.getLogger(KapaStatisticalDatasourceFactory.class);
-
     public StatisticalDatasourcePlugin create(StatisticalDatasource source) {
         KapaStatisticalDatasourcePlugin plugin = new KapaStatisticalDatasourcePlugin();
         plugin.init(source);
