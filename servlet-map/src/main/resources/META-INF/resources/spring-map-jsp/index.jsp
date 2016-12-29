@@ -135,6 +135,10 @@
             </c:otherwise>
         </c:choose>
     </div>
+    <div id="oskari-system-messages">
+      <a href="#"><div class="messageIcon"></div></a>
+      <div class="messagetext"></div>
+    </div>
 </nav>
 <div id="contentMap" class="oskariui container-fluid">
     <div id="menutoolbar" class="container-fluid"></div>
