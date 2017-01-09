@@ -1,5 +1,14 @@
 # Migration guide
 
+## 1.41.0
+
+In preparation for Oskari 2.0 some of the code has been moved to more appropriate places. As a result some of the
+ previously mandatory imports on mapfull bundle have been removed. Update any custom minifierAppSetup.json files 
+ by removing references to these packages: https://github.com/nls-oskari/oskari/commit/2861ebf4b51849aff7d8619a270ad7fe934fe8d3
+
+There is a Oskari core Flyway-migration that removes the references from database: 
+https://github.com/nls-oskari/oskari-server/blob/develop/content-resources/src/main/java/flyway/oskari/V1_41_6__remove_empty_packages.java
+
 ## 1.40.0
 
 The sample application can be updated to include the new statistics UI. If you are using the sample-application flyway
