@@ -266,6 +266,9 @@ public class MetadataCatalogueChannelSearchService extends SearchChannel {
                     !item.getContentURL().startsWith("http://") ;
 
             if (replaceImageURL) {
+                // This only works for GN2 for paikkatietohakemisto.fi
+                // GN2-style: http://geonetwork.nls.fi/geonetwork/srv/fi/resources.get.uuid?access=public&uuid=7ac131b9-a307-4aa1-b27a-009e91f6bd45&fname=Pohjak_Ylihrm_s.png
+                // GN3-style: http://www.paikkatietohakemisto.fi/geonetwork/srv/api/records/7ac131b9-a307-4aa1-b27a-009e91f6bd45/attachments/Pohjak_Ylihrm_s.png
                 item.setContentURL(imageURLs.get(locale) + "uuid=" + uuid + "&fname=" + item.getContentURL());
             }
         }

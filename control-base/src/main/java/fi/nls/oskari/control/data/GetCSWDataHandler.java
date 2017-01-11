@@ -115,6 +115,9 @@ public class GetCSWDataHandler extends ActionHandler {
     }
     
     private void prefixImageFilenames(CSWIsoRecord record, final String uuid, final String locale) {
+        // This only works for GN2 for paikkatietohakemisto.fi
+        // GN2-style: http://geonetwork.nls.fi/geonetwork/srv/fi/resources.get.uuid?access=public&uuid=7ac131b9-a307-4aa1-b27a-009e91f6bd45&fname=Pohjak_Ylihrm_s.png
+        // GN3-style: http://www.paikkatietohakemisto.fi/geonetwork/srv/api/records/7ac131b9-a307-4aa1-b27a-009e91f6bd45/attachments/Pohjak_Ylihrm_s.png
         String url = imageURLs.get(locale);        
         if (url == null) {
             url = PropertyUtil.get(PROPERTY_IMAGE_PREFIX + "en");
