@@ -33,6 +33,7 @@ public class PxwebStatisticalDatasourcePlugin extends AbstractStatisticalDatasou
 
     @Override
     public void init(StatisticalDatasource source) {
+        super.init(source);
         layers = source.getLayers();
 
         config = new PxwebConfig(source.getConfigJSON(), source.getId());

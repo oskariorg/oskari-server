@@ -66,6 +66,7 @@ public class SotkaStatisticalDatasourcePlugin extends AbstractStatisticalDatasou
 
     @Override
     public void init(StatisticalDatasource source) {
+        super.init(source);
         config = new SotkaConfig(source.getConfigJSON(), source.getId());
         indicatorsParser.setConfig(config);
         final List<DatasourceLayer> layerRows = source.getLayers();

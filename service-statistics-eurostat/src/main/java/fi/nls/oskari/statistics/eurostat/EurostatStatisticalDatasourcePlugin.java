@@ -32,6 +32,7 @@ public class EurostatStatisticalDatasourcePlugin extends AbstractStatisticalData
 
     @Override
     public void init(StatisticalDatasource source) {
+        super.init(source);
         try {
             layers = source.getLayers();
             config = new EurostatConfig(source.getConfigJSON(), source.getId());

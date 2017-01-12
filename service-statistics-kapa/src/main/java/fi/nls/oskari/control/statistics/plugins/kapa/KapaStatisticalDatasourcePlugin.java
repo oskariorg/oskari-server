@@ -39,6 +39,7 @@ public class KapaStatisticalDatasourcePlugin  extends AbstractStatisticalDatasou
 
     @Override
     public void init(StatisticalDatasource source) {
+        super.init(source);
         // Fetching the layer mapping from the database.
 
         final List<DatasourceLayer> layerRows = source.getLayers();
