@@ -46,8 +46,6 @@ public class GetSotkaDataHandler extends ActionHandler {
     private static final Logger log = LogFactory.getLogger(GetSotkaDataHandler.class);
 
     private static final String PARM_ACTION = "action";
-    
-    private static final String SOTKA_DATASOURCE = "sotka_datasource";
 
     private static final String PARM_VERSION = "version";
     private static final String PARM_INDICATOR = "indicator";
