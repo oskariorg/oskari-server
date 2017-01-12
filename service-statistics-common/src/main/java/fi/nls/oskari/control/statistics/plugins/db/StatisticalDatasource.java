@@ -79,6 +79,7 @@ public class StatisticalDatasource {
 
     public void setLocale(String locale) {
         this.locale = locale;
+        localeJSON = null;
     }
 
     public JSONObject getConfigJSON() {
