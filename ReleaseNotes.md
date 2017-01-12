@@ -91,6 +91,10 @@ the value of source_property as value in  { "regionType" : [value] } for layers 
 Removed action routes that were not used by old or new statsgrid implementation: GetSotkaRegion,
  GetIndicatorSelectorMetadata, GetIndicatorsMetadata
 
+### service-base
+
+Added list operations for JedisManager: pushToList() and popList()
+
 ## 1.40
 
 ### Configuration improvements
