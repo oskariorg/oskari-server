@@ -32,6 +32,9 @@ import org.json.JSONObject;
  * Before that, we can pretty much cache all the values using Jedis.
  */
 public interface StatisticalDatasourcePlugin {
+    IndicatorSet getIndicatorSet(User user);
+    StatisticalIndicator getIndicator(User user, String indicatorId);
+
     /**
      * Returns a list of statistical data indicators, each with several granularity layers.
      * TODO: Implement a hierarchical tree for the indicators.
@@ -40,12 +43,12 @@ public interface StatisticalDatasourcePlugin {
      */
     List<? extends StatisticalIndicator> getIndicators(User user);
     List<? extends StatisticalIndicator> getIndicators(User user, boolean noMetadata);
-    StatisticalIndicator getIndicator(User user, String indicatorId);
 
     /**
      * Hook for setting up components that the handler needs to handle requests
      */
     void init(StatisticalDatasource source);
+    StatisticalDatasource getSource();
 
     /**
      * Generally true, if the data does not change all the time, for example based on the user doing the query.
