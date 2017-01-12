@@ -55,7 +55,7 @@ public class V1_41_6__remove_empty_packages implements JdbcMigration {
             LOG.warn("Couldn't get startup.metadata JSON for view:", bundle.viewId);
             return false;
         }
-        JSONObject imports = startup.optJSONObject("Import-Bundle");
+        JSONObject imports = metadata.optJSONObject("Import-Bundle");
         if(imports == null) {
             LOG.warn("Couldn't get startup.metadata.Import-Bundle JSON for view:", bundle.viewId);
             return false;
