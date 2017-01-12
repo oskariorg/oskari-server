@@ -89,7 +89,7 @@ public class V1_41_6__remove_empty_packages implements JdbcMigration {
     public static Bundle updateBundleInView(Connection connection, Bundle bundle)
             throws SQLException {
         final String sql = "UPDATE portti_view_bundle_seq SET " +
-                "startup=?, " +
+                "startup=? " +
                 " WHERE bundle_id=? " +
                 " AND view_id=?";
 
