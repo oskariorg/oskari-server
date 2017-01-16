@@ -6,6 +6,6 @@ import fi.nls.oskari.util.PropertyUtil;
 public class PxwebIndicator extends StatisticalIndicator {
 
     public void setName(String name) {
-        addLocalizedName(PropertyUtil.getDefaultLanguage(), name);
+        addName(PropertyUtil.getDefaultLanguage(), name);
     }
 }

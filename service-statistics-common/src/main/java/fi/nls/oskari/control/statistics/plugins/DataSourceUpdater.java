@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by SMAKINEN on 13.1.2017.
+ * Used to preload and -process statistical indicator data from a datasource
  */
 public class DataSourceUpdater extends Thread {
 
@@ -56,7 +56,7 @@ public class DataSourceUpdater extends Thread {
      * @return
      */
     private String getIndicatorListWorkKey() {
-        return plugin.CACHE_PREFIX + "work:" + plugin.getSource().getId() + plugin.CACHE_POSTFIX_LIST;
+        return plugin.CACHE_PREFIX + "worklist:" + plugin.getSource().getId();
     }
 
     List<StatisticalIndicator> getWorkQueue() {
@@ -89,9 +89,12 @@ public class DataSourceUpdater extends Thread {
         // merge
         existingIndicators.addAll(processIndicators);
 
+        final ObjectMapper listMapper = new ObjectMapper();
+        // skip f.ex. description and source when writing list
+        listMapper.addMixIn(StatisticalIndicator.class, JacksonIndicatorListMixin.class);
         // write new indicator list
         try {
-            String result = MAPPER.writeValueAsString(existingIndicators);
+            String result = listMapper.writeValueAsString(existingIndicators);
             JedisManager.setex(plugin.getIndicatorListKey(), JedisManager.EXPIRY_TIME_DAY * 7, result);
         } catch (JsonProcessingException ex) {
             LOG.error(ex, "Error updating indicator list");

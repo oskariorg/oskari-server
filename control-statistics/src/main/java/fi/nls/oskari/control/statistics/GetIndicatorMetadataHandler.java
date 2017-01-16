@@ -82,9 +82,9 @@ public class GetIndicatorMetadataHandler extends ActionHandler {
     
     public JSONObject toJSON(StatisticalIndicator indicator) throws JSONException {
         JSONObject pluginIndicatorJSON = new JSONObject();
-        Map<String, String> name = indicator.getLocalizedName();
-        Map<String, String> description = indicator.getLocalizedDescription();
-        Map<String, String> source = indicator.getLocalizedSource();
+        Map<String, String> name = indicator.getName();
+        Map<String, String> description = indicator.getDescription();
+        Map<String, String> source = indicator.getSource();
         List<StatisticalIndicatorLayer> layers = indicator.getLayers();
         StatisticalIndicatorDataModel selectors = indicator.getDataModel();
 

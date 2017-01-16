@@ -59,10 +59,10 @@ public class SotkaIndicatorsParserTest {
         assertEquals(IndicatorValueType.FLOAT, parsedObject.get(40).getLayers().get(2).getIndicatorValueType());
         assertEquals(11, parsedObject.get(40).getLayers().get(2).getOskariLayerId());
         assertEquals("{fi=Syöpäindeksi, ikävakioitu, sv=Cancerindex, åldersstandardiserat, en=Cancer index, age-standardised}",
-                parsedObject.get(40).getLocalizedName().toString());
+                parsedObject.get(40).getName().toString());
         assertEquals("{fi=Terveyden ja hyvinvoinnin laitos (THL), sv=Institutet för hälsa och välfärd (THL), " +
                 "en=Institute for Health and Welfare (THL)}",
-                parsedObject.get(40).getLocalizedSource().toString());
+                parsedObject.get(40).getSource().toString());
         // Note that the selectors are empty here, because this indicator has no allowed values for "sex".
         assertEquals("{[{ id: year, value: null, allowedValues: [2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011]}]}", parsedObject.get(40).getDataModel().toString());
     }

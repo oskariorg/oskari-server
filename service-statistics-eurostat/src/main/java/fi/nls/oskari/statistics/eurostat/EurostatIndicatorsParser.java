@@ -175,7 +175,7 @@ public class EurostatIndicatorsParser {
 
                     String indicatorName = name.getText();
 
-                    item.addLocalizedName(language, indicatorName);
+                    item.addName(language, indicatorName);
                 }
                 OMElement struct = XmlHelper.getChild(indicator, "Structure");
                 OMElement ref = XmlHelper.getChild(struct, "Ref");

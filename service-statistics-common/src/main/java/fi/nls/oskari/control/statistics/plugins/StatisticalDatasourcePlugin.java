@@ -40,9 +40,9 @@ import java.util.List;
  * Before that, we can pretty much cache all the values using Jedis.
  */
 public abstract class StatisticalDatasourcePlugin {
-    String CACHE_PREFIX = "oskari:stats:";
-    String CACHE_POSTFIX_LIST = ":indicators";
-    String CACHE_POSTFIX_PROGRESS = ":progress";
+    static final String CACHE_PREFIX = "oskari:stats:";
+    private static final String CACHE_POSTFIX_LIST = ":indicators";
+    private static final String CACHE_POSTFIX_PROGRESS = ":progress";
     private StatisticalDatasource source = null;
 
     private static final Logger LOG = LogFactory.getLogger(StatisticalDatasourcePlugin.class);

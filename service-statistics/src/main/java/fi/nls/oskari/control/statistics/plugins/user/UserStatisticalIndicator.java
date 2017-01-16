@@ -85,7 +85,7 @@ public class UserStatisticalIndicator extends StatisticalIndicator {
     }
 
     @Override
-    public Map<String, String> getLocalizedName() {
+    public Map<String, String> getName() {
         // The value is an already serialized JSON for legacy and backward compatibility reasons.
         try {
             JSONObject localizedValue = new JSONObject(this.name);
@@ -97,7 +97,7 @@ public class UserStatisticalIndicator extends StatisticalIndicator {
     }
 
     @Override
-    public Map<String, String> getLocalizedSource() {
+    public Map<String, String> getSource() {
         // The value is an already serialized JSON for legacy and backward compatibility reasons.
         try {
             JSONObject localizedValue = new JSONObject(this.source);
@@ -121,7 +121,7 @@ public class UserStatisticalIndicator extends StatisticalIndicator {
     }
 
     @Override
-    public Map<String, String> getLocalizedDescription() {
+    public Map<String, String> getDescription() {
         // The value is an already serialized JSON for legacy and backward compatibility reasons.
         try {
             JSONObject localizedValue = new JSONObject(this.description);

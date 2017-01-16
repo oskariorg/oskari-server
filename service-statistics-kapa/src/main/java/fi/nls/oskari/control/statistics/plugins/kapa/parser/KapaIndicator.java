@@ -104,15 +104,15 @@ public class KapaIndicator extends StatisticalIndicator {
         return this.id;
     }
     @Override
-    public Map<String, String> getLocalizedName() {
+    public Map<String, String> getName() {
         return this.localizedName;
     }
     @Override
-    public Map<String, String> getLocalizedSource() {
+    public Map<String, String> getSource() {
         return this.localizedSource;
     }
     @Override
-    public Map<String, String> getLocalizedDescription() {
+    public Map<String, String> getDescription() {
         return this.localizedDescription;
     }
     
@@ -160,7 +160,7 @@ public class KapaIndicator extends StatisticalIndicator {
     public void merge(KapaIndicator infoToAdd) {
         this.selectors.merge(infoToAdd.getDataModel());
         if (this.localizedDescription == null || this.localizedDescription.size() == 0) {
-            this.localizedDescription = infoToAdd.getLocalizedDescription();
+            this.localizedDescription = infoToAdd.getDescription();
         }
     }
 
