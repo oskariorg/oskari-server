@@ -48,9 +48,8 @@ public class WfsXmlParser {
                 Property id = feature.getProperty(idProperty);
                 Property name = feature.getProperty(nameProperty);
                 if(id == null || name == null) {
-                    LOG.debug("Couldn't find id (", idProperty, ") and/or name(", nameProperty,
-                            ") property for region. Properties are:", feature.getProperties());
-                    continue;
+                    throw new Exception("Couldn't find id (" +  idProperty +  ") and/or name(" +  nameProperty +
+                            ") property for region. Properties are:" +  LOG.getAsString(feature.getProperties()));
                 }
                 nameCodes.add(new RegionCodeNamePair(
                         (String)id.getValue(),

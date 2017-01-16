@@ -20,6 +20,6 @@ public class DataSourceUpdaterTest {
             throws Exception {
 
         StatisticalIndicator indicator = MAPPER.readValue(getClass().getResourceAsStream("indicator.json"), StatisticalIndicator.class);
-        assertEquals("Indicator id parsed correctly", 3056, indicator.getId());
+        assertEquals("Indicator id parsed correctly", "3056", indicator.getId());
     }
 }
