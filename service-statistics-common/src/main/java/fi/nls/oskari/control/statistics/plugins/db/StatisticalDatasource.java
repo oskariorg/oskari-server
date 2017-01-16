@@ -18,6 +18,8 @@ public class StatisticalDatasource {
     private String config;
     private String plugin;
     private List<DatasourceLayer> layers = new ArrayList<>();
+    private long updateInterval = 1000 * 60 * 60 * 24;
+    private long cachePeriod = updateInterval * 7;
 
     public List<DatasourceLayer> getLayers() {
         return layers;
@@ -25,6 +27,14 @@ public class StatisticalDatasource {
 
     public void setLayers(List<DatasourceLayer> layers) {
         this.layers = layers;
+    }
+
+    public long getUpdateInterval() {
+        return updateInterval;
+    }
+
+    public long getCachePeriod() {
+        return cachePeriod;
     }
 
     /**

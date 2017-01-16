@@ -2,6 +2,7 @@ package fi.nls.oskari.statistics.eurostat;
 
 import fi.nls.oskari.cache.JedisManager;
 import fi.nls.oskari.control.statistics.plugins.IdNamePair;
+import fi.nls.oskari.control.statistics.plugins.StatisticalIndicator;
 import fi.nls.oskari.control.statistics.plugins.StatisticalIndicatorSelector;
 import fi.nls.oskari.control.statistics.plugins.StatisticalIndicatorSelectors;
 import fi.nls.oskari.control.statistics.plugins.db.DatasourceLayer;
@@ -123,10 +124,10 @@ public class EurostatIndicatorsParser {
         return config.getUrl() + pUrl;
     }
 
-    public List<EurostatIndicator> parse(List<DatasourceLayer> layers) {
+    public List<StatisticalIndicator> parse(List<DatasourceLayer> layers) {
 
 
-        List<EurostatIndicator> list = new ArrayList<>();
+        List<StatisticalIndicator> list = new ArrayList<>();
 
         XMLStreamReader reader = null;
 

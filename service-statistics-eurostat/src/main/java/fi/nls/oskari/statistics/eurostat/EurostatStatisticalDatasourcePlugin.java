@@ -21,9 +21,9 @@ public class EurostatStatisticalDatasourcePlugin extends AbstractStatisticalData
 
 
     @Override
-    public List<? extends StatisticalIndicator> getIndicators(User user) {
+    public List<StatisticalIndicator> getIndicators(User user) {
         try {
-            List<EurostatIndicator> indicators = indicatorsParser.parse(layers);
+            List<StatisticalIndicator> indicators = indicatorsParser.parse(layers);
             return indicators;
         } catch (Exception e) {
             return Collections.emptyList();

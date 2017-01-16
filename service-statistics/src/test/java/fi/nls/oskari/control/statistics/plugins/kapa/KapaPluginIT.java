@@ -138,7 +138,7 @@ public class KapaPluginIT {
         
         // Getting indicators.
         IndicatorSet indicatorSet = kapaPlugin.getIndicatorSet(null);
-        List<? extends StatisticalIndicator> indicators = indicatorSet.getIndicators();
+        List<StatisticalIndicator> indicators = indicatorSet.getIndicators();
         assertTrue("Indicators result was too small.", indicators.size() > 1);
         
         StatisticalIndicatorSelectors selectors = indicators.get(0).getSelectors();

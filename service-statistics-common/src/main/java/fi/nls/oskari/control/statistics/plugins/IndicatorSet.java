@@ -10,7 +10,7 @@ public class IndicatorSet {
 
     private boolean isComplete = false;
 
-    List<? extends StatisticalIndicator> indicators;
+    List<StatisticalIndicator> indicators;
 
     public boolean isComplete() {
         return isComplete;
@@ -20,7 +20,7 @@ public class IndicatorSet {
         isComplete = complete;
     }
 
-    public List<? extends StatisticalIndicator> getIndicators() {
+    public List<StatisticalIndicator> getIndicators() {
         if(indicators == null) {
             return Collections.emptyList();
         }
@@ -28,7 +28,7 @@ public class IndicatorSet {
     }
 
     void setIndicators(
-            List<? extends StatisticalIndicator> indicators) {
+            List<StatisticalIndicator> indicators) {
         this.indicators = indicators;
     }
 }

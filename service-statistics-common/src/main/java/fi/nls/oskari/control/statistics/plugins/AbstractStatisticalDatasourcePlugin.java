@@ -1,9 +1,14 @@
 package fi.nls.oskari.control.statistics.plugins;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import fi.nls.oskari.cache.JedisManager;
 import fi.nls.oskari.control.statistics.plugins.db.StatisticalDatasource;
 import fi.nls.oskari.domain.User;
+import fi.nls.oskari.log.LogFactory;
+import fi.nls.oskari.log.Logger;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,23 +18,25 @@ import java.util.List;
 public abstract class AbstractStatisticalDatasourcePlugin implements StatisticalDatasourcePlugin {
     private StatisticalDatasource source = null;
 
+    private static final Logger LOG = LogFactory.getLogger(AbstractStatisticalDatasourcePlugin.class);
+    private static final ObjectMapper MAPPER = new ObjectMapper();
+
     /**
      * Returns currently available dataset for this datasource. Should use preprocessed and cached data with scheduled update
      * triggered with the update() method.
      */
     public IndicatorSet getIndicatorSet(User user) {
         DataStatus status = getStatus();
-        IndicatorSet set = new IndicatorSet();
-        set.setComplete(!status.isUpdating());
-/*
-        // TODO: cache usage
-        String indicatorJSON = JedisManager.get(getIndicatorListKey());
-        if(indicatorJSON == null) {
-            // trigger update?
-            return set;
+        boolean updateRequired = status.shouldUpdate(getSource().getUpdateInterval());
+        if(updateRequired) {
+            // trigger update if not updated before
+            update();
         }
-        */
-        set.setIndicators(getIndicators(user));
+        IndicatorSet set = new IndicatorSet();
+        set.setComplete(!updateRequired && !status.isUpdating());
+        final List<StatisticalIndicator> indicators = getProcessedIndicators();
+        // TODO: filter by user
+        set.setIndicators(indicators);
         return set;
     }
 
@@ -37,31 +44,42 @@ public abstract class AbstractStatisticalDatasourcePlugin implements Statistical
      * Trigger update on the data. Should refresh cached data for getIndicatorSet and track progress.
      */
     public void update() {
-        // TODO: this should be abstract and replace the getIndicators(User user) method.
+        // TODO: not always new
+        new DataSourceUpdater(this).start();
+    }
+
+
+    protected List<StatisticalIndicator> getProcessedIndicators() {
+        final List<StatisticalIndicator> existingIndicators = new ArrayList<>();
+        final String cacheKey = getIndicatorListKey();
+        try {
+            String existingJSON = JedisManager.get(cacheKey);
+            if(existingJSON != null) {
+                List<StatisticalIndicator> list = MAPPER.readValue(existingJSON, new TypeReference<List<StatisticalIndicator>>(){});
+                existingIndicators.addAll(list);
+            }
+        } catch (IOException ex) {
+            // Don't print out the content as it might be pretty long
+            LOG.error(ex, "Couldn't read indicator data from existing list queue. Check redis with key", cacheKey);
+        }
+        return existingIndicators;
     }
 
     /**
      * Returns a Redis key that should hold client ready indicators as JSON
      * @return
      */
-    String getIndicatorListKey() {
-        return "oskari:stats:" + getSource().getId() + ":indicators";
+    protected String getIndicatorListKey() {
+        return CACHE_PREFIX + getSource().getId() + CACHE_POSTFIX_LIST;
     }
 
-    /**
-     * Returns a Redis key that should hold currently processed indicators of this datasource as list.
-     * @return
-     */
-    String getIndicatorListWorkKey() {
-        return "oskari:stats:work:" + getSource().getId() + ":indicators";
-    }
     /**
      * Returns a Redis key that should status information as JSON for this datasource:
      * { complete : [true|false], updateStart : [timestamp], lastUpdate : [timestamp] }
      * @return
      */
-    String getStatusKey() {
-        return "oskari:stats:" + getSource().getId() + ":progress";
+    protected String getStatusKey() {
+        return CACHE_PREFIX + getSource().getId() + CACHE_POSTFIX_PROGRESS;
     }
 
     public DataStatus getStatus() {
@@ -74,8 +92,8 @@ public abstract class AbstractStatisticalDatasourcePlugin implements Statistical
      * @param user 
      * @return
      */
-    public abstract List<? extends StatisticalIndicator> getIndicators(User user);
-    public List<? extends StatisticalIndicator> getIndicators(User user, boolean noMetadata) {
+    public abstract List<StatisticalIndicator> getIndicators(User user);
+    public List<StatisticalIndicator> getIndicators(User user, boolean noMetadata) {
         return getIndicators(user);
     }
 

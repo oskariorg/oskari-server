@@ -33,11 +33,11 @@ public class SotkaStatisticalDatasourcePlugin extends AbstractStatisticalDatasou
     }
 
     @Override
-    public List<? extends StatisticalIndicator> getIndicators(User user) {
+    public List<StatisticalIndicator> getIndicators(User user) {
         return getIndicators(user, false);
     }
     @Override
-    public List<? extends StatisticalIndicator> getIndicators(User user, boolean noMetadata) {
+    public List<StatisticalIndicator> getIndicators(User user, boolean noMetadata) {
         boolean includeMetadata = !noMetadata;
         try {
             final String cacheKey = "stats:" + config.getId() + ":indicatorlist";

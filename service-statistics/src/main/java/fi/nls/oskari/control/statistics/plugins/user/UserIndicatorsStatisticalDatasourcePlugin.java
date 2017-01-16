@@ -20,7 +20,7 @@ public class UserIndicatorsStatisticalDatasourcePlugin extends AbstractStatistic
     }
 
     @Override
-    public List<? extends StatisticalIndicator> getIndicators(User user) {
+    public List<StatisticalIndicator> getIndicators(User user) {
         // Getting the general information of all the indicator layers.
         if (user == null) {
             return new ArrayList<>();
@@ -30,8 +30,8 @@ public class UserIndicatorsStatisticalDatasourcePlugin extends AbstractStatistic
         return toUserStatisticalIndicators(userIndicators);
     }
 
-    private List<? extends StatisticalIndicator> toUserStatisticalIndicators(List<UserIndicator> userIndicators) {
-        List<UserStatisticalIndicator> indicators = new ArrayList<>();
+    private List<StatisticalIndicator> toUserStatisticalIndicators(List<UserIndicator> userIndicators) {
+        List<StatisticalIndicator> indicators = new ArrayList<>();
         for (UserIndicator userIndicator : userIndicators) {
             indicators.add(new UserStatisticalIndicator(userIndicator));
         }

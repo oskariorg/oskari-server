@@ -10,23 +10,15 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-public class EurostatStatisticalIndicatorLayer implements StatisticalIndicatorLayer {
+public class EurostatStatisticalIndicatorLayer extends StatisticalIndicatorLayer {
 
-    private long id;
-    private String indicatorId;
     private String baseUrl;
     private String regionKey;
 
     public EurostatStatisticalIndicatorLayer(long id, String indicatorId, String baseUrl) {
-        this.id = id;
-        this.indicatorId = indicatorId;
+        super(id, indicatorId);
         this.baseUrl = baseUrl;
         this.regionKey = "geo";
-    }
-
-    @Override
-    public long getOskariLayerId() {
-        return id;
     }
 
     @Override
@@ -38,25 +30,16 @@ public class EurostatStatisticalIndicatorLayer implements StatisticalIndicatorLa
         Map<String, String> params = new HashMap<>();
         for (StatisticalIndicatorSelector selector : selectors.getSelectors()) {
             if (regionKey.equalsIgnoreCase(selector.getId())) {
-                // skip Alue
+                // skip region key
                 continue;
             }
             params.put(selector.getId(), selector.getValue());
         }
-        String url = IOHelper.constructUrl(baseUrl +"/wdds/rest/data/v2.1/json/en/" + indicatorId, params);
+        String url = IOHelper.constructUrl(baseUrl +"/wdds/rest/data/v2.1/json/en/" + getIndicatorId(), params);
         return url;
     }
     @Override
     public Map<String, IndicatorValue> getIndicatorValues(StatisticalIndicatorSelectors selectors) {
-        /*Map<String, String> params = new HashMap<>();
-        for (StatisticalIndicatorSelector selector : selectors.getSelectors()) {
-            if (regionKey.equalsIgnoreCase(selector.getId())) {
-                // skip Alue
-                continue;
-            }
-            params.put(selector.getId(), selector.getValue());
-        }
-        String url = IOHelper.constructUrl(baseUrl +"/wdds/rest/data/v2.1/json/en/" + indicatorId, params);*/
         String url = constructUrl(selectors);
         Map<String, IndicatorValue> values = new HashMap<>();
         try {

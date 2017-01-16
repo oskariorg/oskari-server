@@ -4,7 +4,6 @@ import fi.nls.oskari.control.statistics.plugins.AbstractStatisticalDatasourcePlu
 import fi.nls.oskari.control.statistics.plugins.StatisticalIndicator;
 import fi.nls.oskari.control.statistics.plugins.db.DatasourceLayer;
 import fi.nls.oskari.control.statistics.plugins.db.StatisticalDatasource;
-import fi.nls.oskari.control.statistics.plugins.pxweb.parser.PxwebIndicator;
 import fi.nls.oskari.control.statistics.plugins.pxweb.parser.PxwebIndicatorsParser;
 import fi.nls.oskari.domain.User;
 import fi.nls.oskari.log.LogFactory;
@@ -22,9 +21,9 @@ public class PxwebStatisticalDatasourcePlugin extends AbstractStatisticalDatasou
 
 
     @Override
-    public List<? extends StatisticalIndicator> getIndicators(User user) {
+    public List<StatisticalIndicator> getIndicators(User user) {
         try {
-            List<PxwebIndicator> indicators = indicatorsParser.parse(layers);
+            List<StatisticalIndicator> indicators = indicatorsParser.parse(layers);
             return indicators;
         } catch (Exception e) {
             return Collections.emptyList();
