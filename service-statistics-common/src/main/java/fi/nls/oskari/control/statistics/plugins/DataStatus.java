@@ -6,12 +6,16 @@ import org.json.JSONObject;
 import java.util.Date;
 
 /**
- * Created by SMAKINEN on 10.1.2017.
+ * Holds datasource remote sync status for statistical datasources
  */
 public class DataStatus {
 
-    private Date lastUpdate;
-    private Date updateStarted;
+    private static final String KEY_COMPLETE = "complete";
+    private static final String KEY_LAST = "lastUpdate";
+    private static final String KEY_START = "updateStart";
+
+    private long lastUpdate = -1;
+    private long updateStarted = -1;
     private boolean isUpdating = false;
 
     public DataStatus(String status) {
@@ -22,9 +26,16 @@ public class DataStatus {
         if(status == null) {
             return;
         }
-        isUpdating = !status.optBoolean("complete");
-        lastUpdate = getDate(status.optLong("lastUpdate", -1));
-        updateStarted = getDate(status.optLong("updateStart", -1));
+        isUpdating = !status.optBoolean(KEY_COMPLETE);
+        lastUpdate = status.optLong(KEY_LAST, -1);
+        updateStarted = status.optLong(KEY_START, -1);
+    }
+
+    public JSONObject toJSON() {
+        JSONObject val = JSONHelper.createJSONObject(KEY_COMPLETE, !isUpdating());
+        JSONHelper.putValue(val, KEY_LAST, lastUpdate);
+        JSONHelper.putValue(val, KEY_START, updateStarted);
+        return val;
     }
 
     private Date getDate(long ts) {
@@ -33,19 +44,43 @@ public class DataStatus {
         }
         return new Date(ts);
     }
-    public Date getLastUpdate() {
-        return lastUpdate;
+
+    public boolean shouldUpdate(long refreshPeriodms) {
+        if(isUpdating()) {
+            return false;
+        }
+        if(lastUpdate == -1) {
+            return true;
+        }
+        return System.currentTimeMillis() > lastUpdate + refreshPeriodms;
     }
 
-    public void setLastUpdate(Date lastUpdate) {
+    public Date getLastUpdate() {
+        return getDate(lastUpdate);
+    }
+
+    public void setLastUpdate() {
+        setLastUpdate(new Date());
+    }
+    public void setLastUpdate(Date date) {
+        setLastUpdate(date.getTime());
+    }
+
+    public void setLastUpdate(long lastUpdate) {
         this.lastUpdate = lastUpdate;
     }
 
     public Date getUpdateStarted() {
-        return updateStarted;
+        return getDate(updateStarted);
     }
 
-    public void setUpdateStarted(Date updateStarted) {
+    public void setUpdateStarted() {
+        setUpdateStarted(new Date());
+    }
+    public void setUpdateStarted(Date date) {
+        setUpdateStarted(date.getTime());
+    }
+    public void setUpdateStarted(long updateStarted) {
         this.updateStarted = updateStarted;
     }
 
