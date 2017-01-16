@@ -2,7 +2,7 @@ package fi.nls.oskari.control.statistics.plugins.user;
 
 import fi.mml.map.mapwindow.service.db.UserIndicatorService;
 import fi.mml.map.mapwindow.service.db.UserIndicatorServiceImpl;
-import fi.nls.oskari.control.statistics.plugins.AbstractStatisticalDatasourcePlugin;
+import fi.nls.oskari.control.statistics.plugins.StatisticalDatasourcePlugin;
 import fi.nls.oskari.control.statistics.data.StatisticalIndicator;
 import fi.nls.oskari.domain.User;
 import fi.nls.oskari.domain.map.indicator.UserIndicator;
@@ -12,7 +12,7 @@ import fi.nls.oskari.log.Logger;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UserIndicatorsStatisticalDatasourcePlugin extends AbstractStatisticalDatasourcePlugin {
+public class UserIndicatorsStatisticalDatasourcePlugin extends StatisticalDatasourcePlugin {
     private final static Logger LOG = LogFactory.getLogger(UserIndicatorsStatisticalDatasourcePlugin.class);
     private static UserIndicatorService userIndicatorService = new UserIndicatorServiceImpl();
 

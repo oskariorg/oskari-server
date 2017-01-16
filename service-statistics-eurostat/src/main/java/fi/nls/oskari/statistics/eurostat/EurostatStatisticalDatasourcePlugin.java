@@ -1,6 +1,6 @@
 package fi.nls.oskari.statistics.eurostat;
 
-import fi.nls.oskari.control.statistics.plugins.AbstractStatisticalDatasourcePlugin;
+import fi.nls.oskari.control.statistics.plugins.StatisticalDatasourcePlugin;
 import fi.nls.oskari.control.statistics.data.StatisticalIndicator;
 import fi.nls.oskari.control.statistics.plugins.db.DatasourceLayer;
 import fi.nls.oskari.control.statistics.plugins.db.StatisticalDatasource;
@@ -12,7 +12,7 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 
-public class EurostatStatisticalDatasourcePlugin extends AbstractStatisticalDatasourcePlugin {
+public class EurostatStatisticalDatasourcePlugin extends StatisticalDatasourcePlugin {
     private final static Logger LOG = LogFactory.getLogger(EurostatStatisticalDatasourcePlugin.class);
     private EurostatIndicatorsParser indicatorsParser;
 

@@ -16,12 +16,12 @@ import java.util.List;
  */
 public class DataSourceUpdater extends Thread {
 
-    private static final Logger LOG = LogFactory.getLogger(AbstractStatisticalDatasourcePlugin.class);
+    private static final Logger LOG = LogFactory.getLogger(StatisticalDatasourcePlugin.class);
 
-    private AbstractStatisticalDatasourcePlugin plugin;
+    private StatisticalDatasourcePlugin plugin;
     private static final ObjectMapper MAPPER = new ObjectMapper();
 
-    public DataSourceUpdater(AbstractStatisticalDatasourcePlugin plugin) {
+    public DataSourceUpdater(StatisticalDatasourcePlugin plugin) {
         this.plugin = plugin;
     }
 

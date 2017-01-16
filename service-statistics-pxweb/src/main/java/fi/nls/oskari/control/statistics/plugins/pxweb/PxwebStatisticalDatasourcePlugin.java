@@ -1,6 +1,6 @@
 package fi.nls.oskari.control.statistics.plugins.pxweb;
 
-import fi.nls.oskari.control.statistics.plugins.AbstractStatisticalDatasourcePlugin;
+import fi.nls.oskari.control.statistics.plugins.StatisticalDatasourcePlugin;
 import fi.nls.oskari.control.statistics.data.StatisticalIndicator;
 import fi.nls.oskari.control.statistics.plugins.db.DatasourceLayer;
 import fi.nls.oskari.control.statistics.plugins.db.StatisticalDatasource;
@@ -12,7 +12,7 @@ import fi.nls.oskari.log.Logger;
 import java.util.Collections;
 import java.util.List;
 
-public class PxwebStatisticalDatasourcePlugin extends AbstractStatisticalDatasourcePlugin {
+public class PxwebStatisticalDatasourcePlugin extends StatisticalDatasourcePlugin {
     private final static Logger LOG = LogFactory.getLogger(PxwebStatisticalDatasourcePlugin.class);
     private PxwebIndicatorsParser indicatorsParser;
 

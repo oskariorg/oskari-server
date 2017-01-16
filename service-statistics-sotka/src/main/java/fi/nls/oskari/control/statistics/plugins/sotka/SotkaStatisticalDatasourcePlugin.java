@@ -2,7 +2,7 @@ package fi.nls.oskari.control.statistics.plugins.sotka;
 
 import fi.nls.oskari.cache.JedisManager;
 import fi.nls.oskari.control.statistics.plugins.APIException;
-import fi.nls.oskari.control.statistics.plugins.AbstractStatisticalDatasourcePlugin;
+import fi.nls.oskari.control.statistics.plugins.StatisticalDatasourcePlugin;
 import fi.nls.oskari.control.statistics.data.StatisticalIndicator;
 import fi.nls.oskari.control.statistics.plugins.db.DatasourceLayer;
 import fi.nls.oskari.control.statistics.plugins.db.StatisticalDatasource;
@@ -17,7 +17,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class SotkaStatisticalDatasourcePlugin extends AbstractStatisticalDatasourcePlugin {
+public class SotkaStatisticalDatasourcePlugin extends StatisticalDatasourcePlugin {
     private final static Logger LOG = LogFactory.getLogger(SotkaStatisticalDatasourcePlugin.class);
 
     private SotkaIndicatorsParser indicatorsParser = null;
