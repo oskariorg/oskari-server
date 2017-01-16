@@ -141,7 +141,7 @@ public class KapaPluginIT {
         List<StatisticalIndicator> indicators = indicatorSet.getIndicators();
         assertTrue("Indicators result was too small.", indicators.size() > 1);
         
-        StatisticalIndicatorSelectors selectors = indicators.get(0).getSelectors();
+        StatisticalIndicatorDataModel selectors = indicators.get(0).getDataModel();
         List<StatisticalIndicatorSelector> allSelectors = selectors.getSelectors();
         for (StatisticalIndicatorSelector selector : allSelectors) {
             // Selecting the first allowed value for each selector to define a proper selector.

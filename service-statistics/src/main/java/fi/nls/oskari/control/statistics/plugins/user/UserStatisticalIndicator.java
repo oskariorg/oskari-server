@@ -57,7 +57,7 @@ public class UserStatisticalIndicator extends StatisticalIndicator {
         StatisticalIndicatorLayer layer = new StatisticalIndicatorLayer(layerId, id) {
 
             @Override
-            public Map<String, IndicatorValue> getIndicatorValues(StatisticalIndicatorSelectors selectors) {
+            public Map<String, IndicatorValue> getIndicatorValues(StatisticalIndicatorDataModel selectors) {
                 // Data is a serialized JSON for legacy and backwards compatibility reasons:
                 // "data":[{"region":"727","primary value":"15"},{"region":"728","primary value":"20"}]
                 Map<String, IndicatorValue> valueMap = new HashMap<>();
@@ -80,8 +80,8 @@ public class UserStatisticalIndicator extends StatisticalIndicator {
     }
 
     @Override
-    public StatisticalIndicatorSelectors getSelectors() {
-        return new StatisticalIndicatorSelectors();
+    public StatisticalIndicatorDataModel getDataModel() {
+        return new StatisticalIndicatorDataModel();
     }
 
     @Override

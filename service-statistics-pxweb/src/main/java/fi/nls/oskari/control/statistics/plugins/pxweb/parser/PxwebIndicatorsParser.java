@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import fi.nls.oskari.cache.JedisManager;
 import fi.nls.oskari.control.statistics.plugins.StatisticalIndicator;
 import fi.nls.oskari.control.statistics.plugins.StatisticalIndicatorSelector;
-import fi.nls.oskari.control.statistics.plugins.StatisticalIndicatorSelectors;
+import fi.nls.oskari.control.statistics.plugins.StatisticalIndicatorDataModel;
 import fi.nls.oskari.control.statistics.plugins.db.DatasourceLayer;
 import fi.nls.oskari.control.statistics.plugins.pxweb.PxwebConfig;
 import fi.nls.oskari.control.statistics.plugins.pxweb.json.PxwebItem;
@@ -124,8 +124,8 @@ public class PxwebIndicatorsParser {
 }
  */
     private void setupMetadata(PxwebIndicator indicator, String path) {
-        final StatisticalIndicatorSelectors selectors = new StatisticalIndicatorSelectors();
-        indicator.setSelectors(selectors);
+        final StatisticalIndicatorDataModel selectors = new StatisticalIndicatorDataModel();
+        indicator.setDataModel(selectors);
         // TODO: caching!!
         final JSONObject json = getMetadata(indicator, path);
         if(json == null) {

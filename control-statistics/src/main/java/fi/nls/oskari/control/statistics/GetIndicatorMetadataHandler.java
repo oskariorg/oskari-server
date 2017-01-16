@@ -85,7 +85,7 @@ public class GetIndicatorMetadataHandler extends ActionHandler {
         Map<String, String> description = indicator.getLocalizedDescription();
         Map<String, String> source = indicator.getLocalizedSource();
         List<StatisticalIndicatorLayer> layers = indicator.getLayers();
-        StatisticalIndicatorSelectors selectors = indicator.getSelectors();
+        StatisticalIndicatorDataModel selectors = indicator.getDataModel();
 
         pluginIndicatorJSON.put("id", indicator.getId());
         pluginIndicatorJSON.put("name", name);
@@ -97,7 +97,7 @@ public class GetIndicatorMetadataHandler extends ActionHandler {
         return pluginIndicatorJSON;
     }
 
-    public JSONArray toJSON(StatisticalIndicatorSelectors selectors) throws JSONException {
+    public JSONArray toJSON(StatisticalIndicatorDataModel selectors) throws JSONException {
         JSONArray selectorsJSON = new JSONArray();
         for (StatisticalIndicatorSelector selector : selectors.getSelectors()) {
             JSONObject selectorJSON = new JSONObject();

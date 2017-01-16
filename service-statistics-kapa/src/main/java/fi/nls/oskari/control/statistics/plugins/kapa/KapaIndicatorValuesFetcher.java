@@ -6,7 +6,7 @@ import org.json.JSONException;
 
 import fi.nls.oskari.control.statistics.plugins.APIException;
 import fi.nls.oskari.control.statistics.plugins.IndicatorValue;
-import fi.nls.oskari.control.statistics.plugins.StatisticalIndicatorSelectors;
+import fi.nls.oskari.control.statistics.plugins.StatisticalIndicatorDataModel;
 import fi.nls.oskari.control.statistics.plugins.kapa.parser.KapaIndicatorDataParser;
 import fi.nls.oskari.control.statistics.plugins.kapa.requests.KapaRequest;
 
@@ -28,7 +28,7 @@ public class KapaIndicatorValuesFetcher {
      * @param indicator
      * @return
      */
-    public Map<String, IndicatorValue> get(StatisticalIndicatorSelectors selectors, String indicator) {
+    public Map<String, IndicatorValue> get(StatisticalIndicatorDataModel selectors, String indicator) {
         KapaRequest request = new KapaRequest();
         String jsonResponse = request.getIndicatorData(indicator, selectors);
         Map<String, IndicatorValue> result;

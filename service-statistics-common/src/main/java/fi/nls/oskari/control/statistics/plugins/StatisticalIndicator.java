@@ -22,7 +22,7 @@ public class StatisticalIndicator {
     private Map<String, String> localisedName = new HashMap<>();
     private Map<String, String> localisedSource = new HashMap<>();
     private Map<String, String> localisedDescription = new HashMap<>();
-    private StatisticalIndicatorSelectors selectors;
+    private StatisticalIndicatorDataModel dataModel;
 
     public void setId(String id) {
         this.id = id;
@@ -81,11 +81,11 @@ public class StatisticalIndicator {
         localisedName.put(lang, name);
     }
 
-    public void setSelectors(StatisticalIndicatorSelectors selectors) {
-        this.selectors = selectors;
+    public void setDataModel(StatisticalIndicatorDataModel dataModel) {
+        this.dataModel = dataModel;
     }
-    public StatisticalIndicatorSelectors getSelectors() {
-        return selectors;
+    public StatisticalIndicatorDataModel getDataModel() {
+        return dataModel;
     }
 
     public Map<String, String> getLocalizedSource() {

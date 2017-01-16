@@ -82,7 +82,7 @@ public class GetIndicatorDataHandler extends ActionHandler {
             // Note: Layer version is handled already in the indicator metadata.
             // We found the correct indicator and the layer.
             JSONObject selectorJSON = new JSONObject(selectorsStr);
-            StatisticalIndicatorSelectors selectors = new StatisticalIndicatorSelectors();
+            StatisticalIndicatorDataModel selectors = new StatisticalIndicatorDataModel();
             @SuppressWarnings("unchecked")
             Iterator<String> keys = selectorJSON.keys();
             while (keys.hasNext()) {

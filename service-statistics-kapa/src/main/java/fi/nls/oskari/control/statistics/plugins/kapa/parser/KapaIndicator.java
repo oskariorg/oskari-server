@@ -27,7 +27,7 @@ public class KapaIndicator extends StatisticalIndicator {
     private Map<String, String> localizedSource;
     private Map<String, String> localizedDescription;
     private List<StatisticalIndicatorLayer> layers;
-    private StatisticalIndicatorSelectors selectors;
+    private StatisticalIndicatorDataModel selectors;
     private boolean valid = true;
     /**
      * The fetcher object is shared between all KapaIndicators.
@@ -76,9 +76,9 @@ public class KapaIndicator extends StatisticalIndicator {
         return this.valid;
     }
 
-    private StatisticalIndicatorSelectors toKapaIndicatorSelectors(JSONObject jsonObject) throws JSONException {
+    private StatisticalIndicatorDataModel toKapaIndicatorSelectors(JSONObject jsonObject) throws JSONException {
         // Note that the key "region" must be skipped, because it was already serialized as layers.
-        StatisticalIndicatorSelectors selectors = new StatisticalIndicatorSelectors();
+        StatisticalIndicatorDataModel selectors = new StatisticalIndicatorDataModel();
         @SuppressWarnings("unchecked")
         Iterator<String> names = jsonObject.keys();
         while (names.hasNext()) {
@@ -121,7 +121,7 @@ public class KapaIndicator extends StatisticalIndicator {
         return layers;
     }
     @Override
-    public StatisticalIndicatorSelectors getSelectors() {
+    public StatisticalIndicatorDataModel getDataModel() {
         return selectors;
     }
     private static Map<String, String> toLocalizationMap(JSONObject json) throws JSONException {
@@ -158,7 +158,7 @@ public class KapaIndicator extends StatisticalIndicator {
      * @param infoToAdd
      */
     public void merge(KapaIndicator infoToAdd) {
-        this.selectors.merge(infoToAdd.getSelectors());
+        this.selectors.merge(infoToAdd.getDataModel());
         if (this.localizedDescription == null || this.localizedDescription.size() == 0) {
             this.localizedDescription = infoToAdd.getLocalizedDescription();
         }

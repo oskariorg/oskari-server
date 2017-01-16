@@ -3,8 +3,8 @@ package fi.nls.oskari.statistics.eurostat;
 import fi.nls.oskari.cache.JedisManager;
 import fi.nls.oskari.control.statistics.plugins.IdNamePair;
 import fi.nls.oskari.control.statistics.plugins.StatisticalIndicator;
+import fi.nls.oskari.control.statistics.plugins.StatisticalIndicatorDataModel;
 import fi.nls.oskari.control.statistics.plugins.StatisticalIndicatorSelector;
-import fi.nls.oskari.control.statistics.plugins.StatisticalIndicatorSelectors;
 import fi.nls.oskari.control.statistics.plugins.db.DatasourceLayer;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
@@ -64,8 +64,8 @@ public class EurostatIndicatorsParser {
             AXIOMXPath dimensionPath = XmlHelper.buildXPath("/mes:Structure/mes:Structures/str:DataStructures/str:DataStructure/str:DataStructureComponents/str:DimensionList/str:Dimension", NAMESPACE_CTX);
             List<OMElement> codelists = xpath_Codelist.selectNodes(eleMeta);// here we have all the codelist indicators
             List<OMElement> dimension = dimensionPath.selectNodes(eleMeta);
-            final StatisticalIndicatorSelectors selectors = new StatisticalIndicatorSelectors();
-            indicator.setSelectors(selectors);
+            final StatisticalIndicatorDataModel selectors = new StatisticalIndicatorDataModel();
+            indicator.setDataModel(selectors);
 
             for (OMElement dimension1 : dimension) {
                 String idDimension = dimension1.getAttributeValue(QName.valueOf("id"));// idDimension is { FREQ, UNIT, GEO}
@@ -225,7 +225,7 @@ public class EurostatIndicatorsParser {
     private void populateTimeDimension(EurostatIndicator indicator) {
 
         StatisticalIndicatorSelector selector = new StatisticalIndicatorSelector("Time");
-        StatisticalIndicatorSelectors selectors = indicator.getSelectors();
+        StatisticalIndicatorDataModel selectors = indicator.getDataModel();
         String indicatorID = indicator.getId();
         EurostatStatisticalIndicatorLayer layer = (EurostatStatisticalIndicatorLayer) indicator.getLayers().get(0);
 

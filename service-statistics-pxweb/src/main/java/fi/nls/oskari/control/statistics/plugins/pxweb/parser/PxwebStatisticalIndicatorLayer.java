@@ -89,7 +89,7 @@ public class PxwebStatisticalIndicatorLayer extends StatisticalIndicatorLayer {
 }
      */
     @Override
-    public Map<String, IndicatorValue> getIndicatorValues(StatisticalIndicatorSelectors selectors) {
+    public Map<String, IndicatorValue> getIndicatorValues(StatisticalIndicatorDataModel selectors) {
         Map<String, IndicatorValue> values = new HashMap<>();
         String url = IOHelper.fixPath(baseUrl + "/" + getIndicatorId());
         JSONArray query = new JSONArray();

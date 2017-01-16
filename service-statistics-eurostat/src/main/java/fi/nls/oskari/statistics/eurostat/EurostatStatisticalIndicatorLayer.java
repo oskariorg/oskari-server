@@ -26,7 +26,7 @@ public class EurostatStatisticalIndicatorLayer extends StatisticalIndicatorLayer
         return null;
     }
 
-    public String constructUrl (StatisticalIndicatorSelectors selectors){
+    public String constructUrl (StatisticalIndicatorDataModel selectors){
         Map<String, String> params = new HashMap<>();
         for (StatisticalIndicatorSelector selector : selectors.getSelectors()) {
             if (regionKey.equalsIgnoreCase(selector.getId())) {
@@ -39,7 +39,7 @@ public class EurostatStatisticalIndicatorLayer extends StatisticalIndicatorLayer
         return url;
     }
     @Override
-    public Map<String, IndicatorValue> getIndicatorValues(StatisticalIndicatorSelectors selectors) {
+    public Map<String, IndicatorValue> getIndicatorValues(StatisticalIndicatorDataModel selectors) {
         String url = constructUrl(selectors);
         Map<String, IndicatorValue> values = new HashMap<>();
         try {

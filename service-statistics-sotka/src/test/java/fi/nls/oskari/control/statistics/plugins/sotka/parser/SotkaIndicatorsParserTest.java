@@ -64,6 +64,6 @@ public class SotkaIndicatorsParserTest {
                 "en=Institute for Health and Welfare (THL)}",
                 parsedObject.get(40).getLocalizedSource().toString());
         // Note that the selectors are empty here, because this indicator has no allowed values for "sex".
-        assertEquals("{[{ id: year, value: null, allowedValues: [2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011]}]}", parsedObject.get(40).getSelectors().toString());
+        assertEquals("{[{ id: year, value: null, allowedValues: [2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011]}]}", parsedObject.get(40).getDataModel().toString());
     }
 }

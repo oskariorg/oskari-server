@@ -5,7 +5,7 @@ import java.util.Map;
 import fi.nls.oskari.control.statistics.plugins.IndicatorValue;
 import fi.nls.oskari.control.statistics.plugins.IndicatorValueType;
 import fi.nls.oskari.control.statistics.plugins.StatisticalIndicatorLayer;
-import fi.nls.oskari.control.statistics.plugins.StatisticalIndicatorSelectors;
+import fi.nls.oskari.control.statistics.plugins.StatisticalIndicatorDataModel;
 import fi.nls.oskari.control.statistics.plugins.kapa.KapaIndicatorValuesFetcher;
 
 public class KapaStatisticalIndicatorLayer extends StatisticalIndicatorLayer {
@@ -27,7 +27,7 @@ public class KapaStatisticalIndicatorLayer extends StatisticalIndicatorLayer {
     }
 
     @Override
-    public Map<String, IndicatorValue> getIndicatorValues(StatisticalIndicatorSelectors selectors) {
+    public Map<String, IndicatorValue> getIndicatorValues(StatisticalIndicatorDataModel selectors) {
         return indicatorValuesFetcher.get(selectors, getIndicatorId());
     }
 

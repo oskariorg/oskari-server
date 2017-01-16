@@ -29,7 +29,7 @@ public class SotkaIndicator extends StatisticalIndicator {
     private Map<String, String> localizedSource;
     private Map<String, String> localizedDescription;
     private List<StatisticalIndicatorLayer> layers;
-    private StatisticalIndicatorSelectors selectors;
+    private StatisticalIndicatorDataModel selectors;
     private Map<String, Long> sotkaLayersToOskariLayers;
     private boolean valid = true;
     /**
@@ -151,9 +151,9 @@ public class SotkaIndicator extends StatisticalIndicator {
         ...
       */
     }
-    private StatisticalIndicatorSelectors toSotkaIndicatorSelectors(JSONObject jsonObject) throws JSONException {
+    private StatisticalIndicatorDataModel toSotkaIndicatorSelectors(JSONObject jsonObject) throws JSONException {
         // Note that the key "region" must be skipped, because it was already serialized as layers.
-        StatisticalIndicatorSelectors selectors = new StatisticalIndicatorSelectors();
+        StatisticalIndicatorDataModel selectors = new StatisticalIndicatorDataModel();
         @SuppressWarnings("unchecked")
         Iterator<String> names = jsonObject.keys();
         while (names.hasNext()) {
@@ -206,7 +206,7 @@ public class SotkaIndicator extends StatisticalIndicator {
         return layers;
     }
     @Override
-    public StatisticalIndicatorSelectors getSelectors() {
+    public StatisticalIndicatorDataModel getDataModel() {
         if (!metadataFetched) {
             this.merge(metadataFetcher.get(id, sotkaLayersToOskariLayers));
             metadataFetched = true;
@@ -251,7 +251,7 @@ public class SotkaIndicator extends StatisticalIndicator {
         if (infoToAdd == null) {
             return;
         }
-        this.selectors.merge(infoToAdd.getSelectors());
+        this.selectors.merge(infoToAdd.getDataModel());
         if (this.localizedDescription == null || this.localizedDescription.size() == 0) {
             this.localizedDescription = infoToAdd.getLocalizedDescription();
         }

@@ -8,7 +8,7 @@ import java.util.List;
  * For example: "Gender": "male", "Year": 2008.
  * The selector values are null if not defined yet.
  */
-public class StatisticalIndicatorSelectors {
+public class StatisticalIndicatorDataModel {
     /**
      * The selectors have a defined order.
      */
@@ -27,7 +27,7 @@ public class StatisticalIndicatorSelectors {
     public String toString() {
         return "{" + String.valueOf(selectors) + "}";
     }
-    public void merge(StatisticalIndicatorSelectors selectors2) {
+    public void merge(StatisticalIndicatorDataModel selectors2) {
         // A naive array lookup is fastest for small arrays.
         for (StatisticalIndicatorSelector selector : selectors2.getSelectors()) {
             StatisticalIndicatorSelector foundSelector = null;
