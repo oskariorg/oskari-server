@@ -16,7 +16,7 @@ import fi.nls.oskari.domain.map.indicator.UserIndicator;
  * This maps the old user indicators to the statistical data source plugin model.
  * 
  */
-public class UserStatisticalIndicator extends AbstractStatisticalIndicator {
+public class UserStatisticalIndicator extends StatisticalIndicator {
     /*
      * An example message from old Oskari:
      * {"id":859,"category":"NUTS1","organization":{"fi":"a"},"title":{"fi":"Testi"},
@@ -47,11 +47,6 @@ public class UserStatisticalIndicator extends AbstractStatisticalIndicator {
     }
 
     @Override
-    public String getPluginId() {
-        return UserIndicatorsStatisticalDatasourcePlugin.class.getCanonicalName();
-    }
-
-    @Override
     public String getId() {
         return this.id;
     }
@@ -59,17 +54,7 @@ public class UserStatisticalIndicator extends AbstractStatisticalIndicator {
     @Override
     public List<StatisticalIndicatorLayer> getLayers() {
         List<StatisticalIndicatorLayer> layers = new ArrayList<>();
-        StatisticalIndicatorLayer layer = new StatisticalIndicatorLayer() {
-
-            @Override
-            public long getOskariLayerId() {
-                return layerId;
-            }
-
-            @Override
-            public IndicatorValueType getIndicatorValueType() {
-                return IndicatorValueType.FLOAT;
-            }
+        StatisticalIndicatorLayer layer = new StatisticalIndicatorLayer(layerId, id) {
 
             @Override
             public Map<String, IndicatorValue> getIndicatorValues(StatisticalIndicatorSelectors selectors) {

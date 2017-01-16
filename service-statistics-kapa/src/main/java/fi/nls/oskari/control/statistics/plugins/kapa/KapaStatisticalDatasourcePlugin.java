@@ -4,7 +4,6 @@ import fi.nls.oskari.control.statistics.plugins.AbstractStatisticalDatasourcePlu
 import fi.nls.oskari.control.statistics.plugins.StatisticalIndicator;
 import fi.nls.oskari.control.statistics.plugins.db.DatasourceLayer;
 import fi.nls.oskari.control.statistics.plugins.db.StatisticalDatasource;
-import fi.nls.oskari.control.statistics.plugins.kapa.parser.KapaIndicator;
 import fi.nls.oskari.control.statistics.plugins.kapa.parser.KapaIndicatorsParser;
 import fi.nls.oskari.control.statistics.plugins.kapa.requests.KapaRequest;
 import fi.nls.oskari.domain.User;
@@ -29,16 +28,17 @@ public class KapaStatisticalDatasourcePlugin  extends AbstractStatisticalDatasou
     }
 
     @Override
-    public List<? extends StatisticalIndicator> getIndicators(User user) {
+    public List<StatisticalIndicator> getIndicators(User user) {
         // Getting the general information of all the indicator layers.
         KapaRequest request = new KapaRequest();
         String jsonResponse = request.getIndicators();
-        List<KapaIndicator> indicators = indicatorsParser.parse(jsonResponse, layerMappings);
+        List<StatisticalIndicator> indicators = indicatorsParser.parse(jsonResponse, layerMappings);
         return indicators;
     }
 
     @Override
     public void init(StatisticalDatasource source) {
+        super.init(source);
         // Fetching the layer mapping from the database.
 
         final List<DatasourceLayer> layerRows = source.getLayers();

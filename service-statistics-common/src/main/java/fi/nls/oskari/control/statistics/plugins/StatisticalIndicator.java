@@ -1,7 +1,9 @@
 package fi.nls.oskari.control.statistics.plugins;
 
-import java.util.List;
-import java.util.Map;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import fi.nls.oskari.util.PropertyUtil;
+
+import java.util.*;
 
 /**
  * Each indicator has:
@@ -11,21 +13,85 @@ import java.util.Map;
  * - A set of selectors with a localized name and type and a list of allowed values, and their localizations.
  *   These could be for example: "Gender": "Male", "Female", "Other", "All", or "Year": "2010", "2011", ....
  */
-public interface StatisticalIndicator {
-    String getPluginId();
-    String getId();
+public class StatisticalIndicator {
+    private String id;
+    @JsonProperty("public")
+    private boolean isPublic = true;
+
+    private List<StatisticalIndicatorLayer> layers = new ArrayList<>();
+    private Map<String, String> localisedName = new HashMap<>();
+    private Map<String, String> localisedSource = new HashMap<>();
+    private Map<String, String> localisedDescription = new HashMap<>();
+    private StatisticalIndicatorSelectors selectors;
+
+    public void setId(String id) {
+        this.id = id;
+    }
+    public String getId() {
+        return id;
+    }
+
     /**
      * User created indicators can be private so that they are only shown to the user who created them.
      */
-    Boolean isPublic();
-    List<StatisticalIndicatorLayer> getLayers();
-    StatisticalIndicatorLayer getLayer(long id);
-    StatisticalIndicatorSelectors getSelectors();
+    public Boolean isPublic() {
+        return isPublic;
+    }
+    public void addLayer(StatisticalIndicatorLayer layer) {
+        layers.add(layer);
+    }
+    public List<StatisticalIndicatorLayer> getLayers() {
+        return layers;
+    }
+    public StatisticalIndicatorLayer getLayer(long id) {
+        for (StatisticalIndicatorLayer layer : getLayers()) {
+            if (layer.getOskariLayerId() == id) {
+                return layer;
+            }
+        }
+        return null;
+    }
+    public String getName(String lang) {
+        return getLocalizedValue(getLocalizedName(), lang);
+    }
+
+    private String getLocalizedValue(Map<String, String> map, String lang) {
+        if(map == null) {
+            // nothing to use
+            return null;
+        }
+        if(lang == null) {
+            lang = PropertyUtil.getDefaultLanguage();
+        }
+        String value = map.get(lang);
+        if(value == null) {
+            // try with default language
+            return map.get(PropertyUtil.getDefaultLanguage());
+        }
+        return value;
+    }
     /*
      * Please note that while it would be convenient to just pass untyped JSON here,
      * it would make developing future plugins more error prone.
      */
-    Map<String, String> getLocalizedName();
-    Map<String, String> getLocalizedSource();
-    Map<String, String> getLocalizedDescription();
+    public Map<String, String> getLocalizedName() {
+        return localisedName;
+    }
+    public void addLocalizedName (String lang, String name){
+        localisedName.put(lang, name);
+    }
+
+    public void setSelectors(StatisticalIndicatorSelectors selectors) {
+        this.selectors = selectors;
+    }
+    public StatisticalIndicatorSelectors getSelectors() {
+        return selectors;
+    }
+
+    public Map<String, String> getLocalizedSource() {
+        return localisedSource;
+    }
+    public Map<String, String> getLocalizedDescription() {
+        return localisedDescription;
+    }
 }

@@ -11,23 +11,15 @@ import java.net.HttpURLConnection;
 import java.util.HashMap;
 import java.util.Map;
 
-public class PxwebStatisticalIndicatorLayer implements StatisticalIndicatorLayer {
+public class PxwebStatisticalIndicatorLayer extends StatisticalIndicatorLayer {
 
-    private long id;
-    private String indicatorId;
     private String baseUrl;
     private String regionKey;
 
     public PxwebStatisticalIndicatorLayer(long id, String indicatorId, String baseUrl, String regionKey) {
-        this.id = id;
-        this.indicatorId = indicatorId;
+        super(id, indicatorId);
         this.baseUrl = baseUrl;
         this.regionKey = regionKey;
-    }
-
-    @Override
-    public long getOskariLayerId() {
-        return id;
     }
 
     @Override
@@ -99,7 +91,7 @@ public class PxwebStatisticalIndicatorLayer implements StatisticalIndicatorLayer
     @Override
     public Map<String, IndicatorValue> getIndicatorValues(StatisticalIndicatorSelectors selectors) {
         Map<String, IndicatorValue> values = new HashMap<>();
-        String url = IOHelper.fixPath(baseUrl + "/" + indicatorId);
+        String url = IOHelper.fixPath(baseUrl + "/" + getIndicatorId());
         JSONArray query = new JSONArray();
         JSONObject payload = JSONHelper.createJSONObject("query", query);
         for (StatisticalIndicatorSelector selector : selectors.getSelectors()) {

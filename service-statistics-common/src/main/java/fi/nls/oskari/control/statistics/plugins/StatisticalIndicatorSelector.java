@@ -1,5 +1,7 @@
 package fi.nls.oskari.control.statistics.plugins;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -16,19 +18,30 @@ public class StatisticalIndicatorSelector {
     private String value = null;
     private Collection<IdNamePair> allowedValues = new ArrayList<>();
     private String name = null;
+
+    public StatisticalIndicatorSelector(String id) {
+        this.id = id;
+    }
     /**
      * Use this in selections to be sent to the frontend.
+     *
      * @param id
      * @param allowedValues
      */
     public StatisticalIndicatorSelector(String id, Collection<String> allowedValues) {
-        this.id = id;
+        this(id);
         for(String key : allowedValues) {
             addAllowedValue(key, null);
         }
     }
-    public StatisticalIndicatorSelector(String id) {
-        this.id = id;
+    /**
+     * Use this in selections received from the frontend.
+     * @param id
+     * @param value
+     */
+    public StatisticalIndicatorSelector(@JsonProperty("id") String id, @JsonProperty("value") String value) {
+        this(id);
+        this.value = value;
     }
 
     public void addAllowedValue(String value) {
@@ -46,15 +59,6 @@ public class StatisticalIndicatorSelector {
         this.name = name;
     }
 
-    /**
-     * Use this in selections received from the frontend.
-     * @param id
-     * @param value
-     */
-    public StatisticalIndicatorSelector(String id, String value) {
-        this.id = id;
-        this.value = value;
-    }
     public String getId() {
         return id;
     }

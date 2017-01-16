@@ -2,6 +2,7 @@ package fi.nls.oskari.control.statistics.plugins.pxweb.parser;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fi.nls.oskari.cache.JedisManager;
+import fi.nls.oskari.control.statistics.plugins.StatisticalIndicator;
 import fi.nls.oskari.control.statistics.plugins.StatisticalIndicatorSelector;
 import fi.nls.oskari.control.statistics.plugins.StatisticalIndicatorSelectors;
 import fi.nls.oskari.control.statistics.plugins.db.DatasourceLayer;
@@ -28,12 +29,12 @@ public class PxwebIndicatorsParser {
         this.config = config;
     }
 
-    public List<PxwebIndicator> parse(List<DatasourceLayer> layers) {
+    public List<StatisticalIndicator> parse(List<DatasourceLayer> layers) {
         return parse(null, null, layers);
     }
 
-    public List<PxwebIndicator> parse(PxwebItem parent, String path, List<DatasourceLayer> layers) {
-        List<PxwebIndicator> indicators = new ArrayList<>();
+    public List<StatisticalIndicator> parse(PxwebItem parent, String path, List<DatasourceLayer> layers) {
+        List<StatisticalIndicator> indicators = new ArrayList<>();
         try {
             final String url = getUrl(path);
             String jsonResponse = IOHelper.getURL(url);

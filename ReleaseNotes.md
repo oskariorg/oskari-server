@@ -81,12 +81,19 @@ These are helpful if the WFS-service uses different coordinate order than what i
     - "reverseXY": lat,lon order in wfs service
     - "longSrsName": long srsName syntax in GetFeature
 
-### service-statistics
+### control/service-statistics
 
 Refactored layer-mapping for statistics layers. Removed source_property and layer_property and added config as JSON with 
 the value of source_property as value in  { "regionType" : [value] } for layers that are mapped to SotkaNET and KAPA
  datasource plugins. Other datasources have an empty config as they didn't use the columns. Config can be used as
  datasource specific layer configuration that the corresponding plugin can use to provide customized handling for layer. 
+
+Removed action routes that were not used by old or new statsgrid implementation: GetSotkaRegion,
+ GetIndicatorSelectorMetadata, GetIndicatorsMetadata
+
+### service-base
+
+Added list operations for JedisManager: pushToList() and popList()
 
 ## 1.40
 

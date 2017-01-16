@@ -1,5 +1,7 @@
 package fi.nls.oskari.control.statistics.plugins;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import fi.nls.oskari.util.JSONHelper;
 import org.json.JSONObject;
 
@@ -13,7 +15,8 @@ public class IdNamePair {
     public IdNamePair(String key) {
         this(key, null);
     }
-    public IdNamePair(String key, String value) {
+    public IdNamePair(@JsonProperty("key") String key,
+                      @JsonProperty("value") String value) {
         this.key = key;
         this.value = value;
     }
@@ -49,6 +52,7 @@ public class IdNamePair {
         return getKey().hashCode();
     }
 
+    @JsonIgnore
     public Object getValueForJson() {
         if(getValue() == null) {
             return getKey();

@@ -8,20 +8,17 @@ import fi.nls.oskari.control.statistics.plugins.StatisticalIndicatorLayer;
 import fi.nls.oskari.control.statistics.plugins.StatisticalIndicatorSelectors;
 import fi.nls.oskari.control.statistics.plugins.kapa.KapaIndicatorValuesFetcher;
 
-public class KapaStatisticalIndicatorLayer implements StatisticalIndicatorLayer {
-    private String indicatorId;
+public class KapaStatisticalIndicatorLayer extends StatisticalIndicatorLayer {
     private IndicatorValueType valueType;
     private KapaIndicatorValuesFetcher indicatorValuesFetcher;
-    private long layerId;
     
     public KapaStatisticalIndicatorLayer(long layerId,
+                                         String indicatorId,
             IndicatorValueType valueType,
-            KapaIndicatorValuesFetcher indicatorValuesFetcher,
-            String indicatorId) {
-        this.layerId = layerId;
+            KapaIndicatorValuesFetcher indicatorValuesFetcher) {
+        super(layerId, indicatorId);
         this.valueType = valueType;
         this.indicatorValuesFetcher = indicatorValuesFetcher;
-        this.indicatorId = indicatorId;
     }
     
     @Override
@@ -31,11 +28,7 @@ public class KapaStatisticalIndicatorLayer implements StatisticalIndicatorLayer 
 
     @Override
     public Map<String, IndicatorValue> getIndicatorValues(StatisticalIndicatorSelectors selectors) {
-        return indicatorValuesFetcher.get(selectors, this.indicatorId);
+        return indicatorValuesFetcher.get(selectors, getIndicatorId());
     }
 
-    @Override
-    public long getOskariLayerId() {
-        return layerId;
-    }
 }

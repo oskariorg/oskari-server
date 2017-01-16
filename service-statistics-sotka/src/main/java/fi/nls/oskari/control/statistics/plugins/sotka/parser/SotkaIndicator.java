@@ -22,7 +22,7 @@ import fi.nls.oskari.log.Logger;
 /**
  * This class maps the SotkaNET indicator information to Oskari data model.
  */
-public class SotkaIndicator extends AbstractStatisticalIndicator {
+public class SotkaIndicator extends StatisticalIndicator {
     private final static Logger LOG = LogFactory.getLogger(SotkaIndicator.class);
     private String id;
     private Map<String, String> localizedName;
@@ -230,20 +230,10 @@ public class SotkaIndicator extends AbstractStatisticalIndicator {
             String sotkaLayerName = json.getString(i);
             Long oskariLayerId = sotkaLayersToOskariLayers.get(sotkaLayerName.toLowerCase());
             if (oskariLayerId != null) {
-                layers.add(new SotkaStatisticalIndicatorLayer(sotkaLayerName, oskariLayerId, type, fetcher, indicatorId));
+                layers.add(new SotkaStatisticalIndicatorLayer(oskariLayerId, indicatorId, sotkaLayerName, type, fetcher));
             }
         }
         return layers;
-    }
-    @Override
-    public String getPluginId() {
-        return SotkaStatisticalDatasourcePlugin.class.getCanonicalName();
-    }
-
-    @Override
-    public Boolean isPublic() {
-        // All Sotka indicators are public.
-        return true;
     }
 
     @Override

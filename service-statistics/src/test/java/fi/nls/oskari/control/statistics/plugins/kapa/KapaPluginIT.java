@@ -1,5 +1,6 @@
 package fi.nls.oskari.control.statistics.plugins.kapa;
 
+import fi.nls.oskari.control.statistics.plugins.*;
 import fi.nls.oskari.control.statistics.plugins.db.StatisticalDatasource;
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.junit.AfterClass;
@@ -13,12 +14,6 @@ import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import fi.nls.oskari.control.statistics.plugins.IndicatorValue;
-import fi.nls.oskari.control.statistics.plugins.StatisticalDatasourcePlugin;
-import fi.nls.oskari.control.statistics.plugins.StatisticalDatasourcePluginManager;
-import fi.nls.oskari.control.statistics.plugins.StatisticalIndicator;
-import fi.nls.oskari.control.statistics.plugins.StatisticalIndicatorSelector;
-import fi.nls.oskari.control.statistics.plugins.StatisticalIndicatorSelectors;
 import fi.nls.oskari.db.DatasourceHelper;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.PropertyUtil;
@@ -142,7 +137,8 @@ public class KapaPluginIT {
         assertNotNull("KaPa plugin was not found.", kapaPlugin);
         
         // Getting indicators.
-        List<? extends StatisticalIndicator> indicators = kapaPlugin.getIndicators(null);
+        IndicatorSet indicatorSet = kapaPlugin.getIndicatorSet(null);
+        List<StatisticalIndicator> indicators = indicatorSet.getIndicators();
         assertTrue("Indicators result was too small.", indicators.size() > 1);
         
         StatisticalIndicatorSelectors selectors = indicators.get(0).getSelectors();

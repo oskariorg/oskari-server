@@ -20,7 +20,7 @@ import fi.nls.oskari.log.Logger;
 /**
  * This class maps the KaPa indicator information to Oskari data model.
  */
-public class KapaIndicator extends AbstractStatisticalIndicator {
+public class KapaIndicator extends StatisticalIndicator {
     private final static Logger LOG = LogFactory.getLogger(KapaIndicator.class);
     private String id;
     private Map<String, String> localizedName;
@@ -141,15 +141,10 @@ public class KapaIndicator extends AbstractStatisticalIndicator {
             String kapaLayerId = json.getString(i).toLowerCase();
             if (layerMappings.containsKey(kapaLayerId)) {
                 long layerId = layerMappings.get(kapaLayerId);
-                layers.add(new KapaStatisticalIndicatorLayer(layerId, type, fetcher,
-                        indicatorId));
+                layers.add(new KapaStatisticalIndicatorLayer(layerId, indicatorId, type, fetcher));
             }
         }
         return layers;
-    }
-    @Override
-    public String getPluginId() {
-        return KapaStatisticalDatasourcePlugin.class.getCanonicalName();
     }
     @Override
     public String toString() {

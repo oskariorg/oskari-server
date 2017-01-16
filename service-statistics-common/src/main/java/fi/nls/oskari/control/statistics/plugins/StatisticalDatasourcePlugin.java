@@ -4,7 +4,6 @@ import java.util.List;
 
 import fi.nls.oskari.control.statistics.plugins.db.StatisticalDatasource;
 import fi.nls.oskari.domain.User;
-import org.json.JSONObject;
 
 /**
  * Each statistical datasource plugin encapsulates access to a single external API
@@ -32,20 +31,25 @@ import org.json.JSONObject;
  * Before that, we can pretty much cache all the values using Jedis.
  */
 public interface StatisticalDatasourcePlugin {
+    String CACHE_PREFIX = "oskari:stats:";
+    String CACHE_POSTFIX_LIST = ":indicators";
+    String CACHE_POSTFIX_PROGRESS = ":progress";
+    IndicatorSet getIndicatorSet(User user);
+    StatisticalIndicator getIndicator(User user, String indicatorId);
+
     /**
      * Returns a list of statistical data indicators, each with several granularity layers.
-     * TODO: Implement a hierarchical tree for the indicators.
      * @param user 
      * @return
      */
-    List<? extends StatisticalIndicator> getIndicators(User user);
-    List<? extends StatisticalIndicator> getIndicators(User user, boolean noMetadata);
-    StatisticalIndicator getIndicator(User user, String indicatorId);
+    List<StatisticalIndicator> getIndicators(User user);
+    List<StatisticalIndicator> getIndicators(User user, boolean noMetadata);
 
     /**
      * Hook for setting up components that the handler needs to handle requests
      */
     void init(StatisticalDatasource source);
+    StatisticalDatasource getSource();
 
     /**
      * Generally true, if the data does not change all the time, for example based on the user doing the query.
