@@ -88,8 +88,8 @@ public class GetIndicatorDataHandler extends ActionHandler {
             while (keys.hasNext()) {
                 String key = keys.next();
                 String value = selectorJSON.getString(key);
-                StatisticalIndicatorSelector selector = new StatisticalIndicatorSelector(key, value);
-                selectors.addSelector(selector);
+                StatisticalIndicatorDataDimension selector = new StatisticalIndicatorDataDimension(key, value);
+                selectors.addDimension(selector);
             }
             Map<String, IndicatorValue> values = layer.getIndicatorValues(selectors);
             response = toJSON(values);

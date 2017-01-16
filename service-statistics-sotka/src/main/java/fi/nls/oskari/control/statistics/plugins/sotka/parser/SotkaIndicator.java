@@ -99,8 +99,8 @@ public class SotkaIndicator extends StatisticalIndicator {
                     for (int year = start; year <= end; year++) {
                         allowedYears.add(String.valueOf(year));
                     }
-                    StatisticalIndicatorSelector yearSelector = new StatisticalIndicatorSelector("year", allowedYears);
-                    this.selectors.addSelector(yearSelector);
+                    StatisticalIndicatorDataDimension yearSelector = new StatisticalIndicatorDataDimension("year", allowedYears);
+                    this.selectors.addDimension(yearSelector);
                 }
                 this.metadataFetched = true;
             }
@@ -169,8 +169,8 @@ public class SotkaIndicator extends StatisticalIndicator {
                 }
                 if (allowedValues.size() > 0) {
                     // Sotka has many indicators with empty allowed values for "sex" for example.
-                    StatisticalIndicatorSelector selector = new StatisticalIndicatorSelector(key, allowedValues);
-                    selectors.addSelector(selector);
+                    StatisticalIndicatorDataDimension selector = new StatisticalIndicatorDataDimension(key, allowedValues);
+                    selectors.addDimension(selector);
                 }
             }
         }

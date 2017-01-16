@@ -16,7 +16,7 @@ public class DataSourceUpdaterTest {
 
     private static final ObjectMapper MAPPER = new ObjectMapper();
     @Test
-    public void testAddToWorkQueue()
+    public void testReadWorkQueue()
             throws Exception {
 
         StatisticalIndicator indicator = MAPPER.readValue(getClass().getResourceAsStream("indicator.json"), StatisticalIndicator.class);

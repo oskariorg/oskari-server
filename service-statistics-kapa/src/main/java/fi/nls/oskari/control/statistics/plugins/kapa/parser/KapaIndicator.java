@@ -92,8 +92,8 @@ public class KapaIndicator extends StatisticalIndicator {
                     allowedValues.add(jsonSelector.getString(i));
                 }
                 if (allowedValues.size() > 0) {
-                    StatisticalIndicatorSelector selector = new StatisticalIndicatorSelector(key, allowedValues);
-                    selectors.addSelector(selector);
+                    StatisticalIndicatorDataDimension selector = new StatisticalIndicatorDataDimension(key, allowedValues);
+                    selectors.addDimension(selector);
                 }
             }
         }

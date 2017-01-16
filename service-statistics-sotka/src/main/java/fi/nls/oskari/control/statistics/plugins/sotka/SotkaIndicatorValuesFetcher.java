@@ -10,7 +10,7 @@ import org.json.JSONException;
 
 import fi.nls.oskari.control.statistics.plugins.APIException;
 import fi.nls.oskari.control.statistics.plugins.IndicatorValue;
-import fi.nls.oskari.control.statistics.plugins.StatisticalIndicatorSelector;
+import fi.nls.oskari.control.statistics.plugins.StatisticalIndicatorDataDimension;
 import fi.nls.oskari.control.statistics.plugins.StatisticalIndicatorDataModel;
 import fi.nls.oskari.control.statistics.plugins.sotka.parser.SotkaIndicatorDataParser;
 import fi.nls.oskari.control.statistics.plugins.sotka.parser.SotkaRegionParser;
@@ -50,7 +50,7 @@ public class SotkaIndicatorValuesFetcher {
         // If there is no defined values for gender or year, we will use "total" and an empty list.
         String gender = "total";
         List<String> years = new ArrayList<>();
-        for (StatisticalIndicatorSelector selector : selectors.getSelectors()) {
+        for (StatisticalIndicatorDataDimension selector : selectors.getDimensions()) {
             switch(selector.getId()) {
             case "sex":
                 gender = selector.getValue();

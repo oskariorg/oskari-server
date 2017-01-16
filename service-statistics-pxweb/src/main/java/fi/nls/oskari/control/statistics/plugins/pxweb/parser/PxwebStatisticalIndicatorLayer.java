@@ -94,7 +94,7 @@ public class PxwebStatisticalIndicatorLayer extends StatisticalIndicatorLayer {
         String url = IOHelper.fixPath(baseUrl + "/" + getIndicatorId());
         JSONArray query = new JSONArray();
         JSONObject payload = JSONHelper.createJSONObject("query", query);
-        for (StatisticalIndicatorSelector selector : selectors.getSelectors()) {
+        for (StatisticalIndicatorDataDimension selector : selectors.getDimensions()) {
             if (regionKey.equalsIgnoreCase(selector.getId())) {
                 // skip the region property
                 continue;

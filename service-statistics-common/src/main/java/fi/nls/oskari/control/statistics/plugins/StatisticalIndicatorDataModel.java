@@ -10,36 +10,36 @@ import java.util.List;
  */
 public class StatisticalIndicatorDataModel {
     /**
-     * The selectors have a defined order.
+     * The dimensions have a defined order.
      */
-    private List<StatisticalIndicatorSelector> selectors =
-            new ArrayList<StatisticalIndicatorSelector>();
+    private List<StatisticalIndicatorDataDimension> dimensions =
+            new ArrayList<StatisticalIndicatorDataDimension>();
     /**
-     * @return A mutable list of selectors.
+     * @return A mutable list of dimensions.
      */
-    public List<StatisticalIndicatorSelector> getSelectors() {
-        return this.selectors;
+    public List<StatisticalIndicatorDataDimension> getDimensions() {
+        return this.dimensions;
     }
-    public void addSelector(StatisticalIndicatorSelector selector) {
-        this.selectors.add(selector);
+    public void addDimension(StatisticalIndicatorDataDimension selector) {
+        this.dimensions.add(selector);
     }
     @Override
     public String toString() {
-        return "{" + String.valueOf(selectors) + "}";
+        return "{" + String.valueOf(dimensions) + "}";
     }
-    public void merge(StatisticalIndicatorDataModel selectors2) {
+    public void merge(StatisticalIndicatorDataModel model) {
         // A naive array lookup is fastest for small arrays.
-        for (StatisticalIndicatorSelector selector : selectors2.getSelectors()) {
-            StatisticalIndicatorSelector foundSelector = null;
-            for (StatisticalIndicatorSelector originalSelector : this.selectors) {
+        for (StatisticalIndicatorDataDimension selector : model.getDimensions()) {
+            StatisticalIndicatorDataDimension foundSelector = null;
+            for (StatisticalIndicatorDataDimension originalSelector : this.dimensions) {
                 if (originalSelector.getId().equals(selector.getId())) {
                     // Found match. We can assume these are identical here.
                     foundSelector = originalSelector;
                 }
             }
             if (foundSelector == null) {
-                // The selector is a new one which does not exist in selectors. Adding.
-                this.selectors.add(selector);
+                // The selector is a new one which does not exist in dimensions. Adding.
+                this.dimensions.add(selector);
             }
         }
     }

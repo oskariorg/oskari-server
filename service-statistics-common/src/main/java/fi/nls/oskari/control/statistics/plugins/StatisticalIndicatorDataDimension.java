@@ -13,13 +13,13 @@ import java.util.Collection;
  * So far unimplemented partial hierarchies should be serialized as a tree.
  * The selector value is null until selected by the user.
  */
-public class StatisticalIndicatorSelector {
+public class StatisticalIndicatorDataDimension {
     private String id;
     private String value = null;
     private Collection<IdNamePair> allowedValues = new ArrayList<>();
     private String name = null;
 
-    public StatisticalIndicatorSelector(String id) {
+    public StatisticalIndicatorDataDimension(String id) {
         this.id = id;
     }
     /**
@@ -28,7 +28,7 @@ public class StatisticalIndicatorSelector {
      * @param id
      * @param allowedValues
      */
-    public StatisticalIndicatorSelector(String id, Collection<String> allowedValues) {
+    public StatisticalIndicatorDataDimension(String id, Collection<String> allowedValues) {
         this(id);
         for(String key : allowedValues) {
             addAllowedValue(key, null);
@@ -39,7 +39,7 @@ public class StatisticalIndicatorSelector {
      * @param id
      * @param value
      */
-    public StatisticalIndicatorSelector(@JsonProperty("id") String id, @JsonProperty("value") String value) {
+    public StatisticalIndicatorDataDimension(@JsonProperty("id") String id, @JsonProperty("value") String value) {
         this(id);
         this.value = value;
     }

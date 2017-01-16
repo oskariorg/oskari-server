@@ -97,8 +97,8 @@ public class StatisticalDatasourcePluginManagerIT {
         assertTrue("Indicators result was too small.", indicators.size() > 10);
         
         StatisticalIndicatorDataModel selectors = indicators.get(0).getDataModel();
-        List<StatisticalIndicatorSelector> allSelectors = selectors.getSelectors();
-        for (StatisticalIndicatorSelector selector : allSelectors) {
+        List<StatisticalIndicatorDataDimension> allSelectors = selectors.getDimensions();
+        for (StatisticalIndicatorDataDimension selector : allSelectors) {
             // Selecting the first allowed value for each selector to define a proper selector.
             selector.setValue(selector.getAllowedValues().iterator().next().getKey());
         }

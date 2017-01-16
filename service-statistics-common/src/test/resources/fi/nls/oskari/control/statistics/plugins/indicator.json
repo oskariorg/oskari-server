@@ -7,8 +7,8 @@
     "indicatorValueType": "FLOAT",
     "oskariLayerId": 7
   }],
-  "selectors": {
-    "selectors": [{
+  "dataModel": {
+    "dimensions": [{
       "id": "sex",
       "value": null,
       "allowedValues": [{

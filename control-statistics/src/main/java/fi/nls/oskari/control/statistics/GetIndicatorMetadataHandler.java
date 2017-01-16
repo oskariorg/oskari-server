@@ -99,7 +99,7 @@ public class GetIndicatorMetadataHandler extends ActionHandler {
 
     public JSONArray toJSON(StatisticalIndicatorDataModel selectors) throws JSONException {
         JSONArray selectorsJSON = new JSONArray();
-        for (StatisticalIndicatorSelector selector : selectors.getSelectors()) {
+        for (StatisticalIndicatorDataDimension selector : selectors.getDimensions()) {
             JSONObject selectorJSON = new JSONObject();
             selectorJSON.put("id", selector.getId());
             selectorJSON.put("name", selector.getName());

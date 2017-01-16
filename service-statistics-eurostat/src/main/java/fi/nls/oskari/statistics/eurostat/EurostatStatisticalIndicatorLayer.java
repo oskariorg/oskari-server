@@ -28,7 +28,7 @@ public class EurostatStatisticalIndicatorLayer extends StatisticalIndicatorLayer
 
     public String constructUrl (StatisticalIndicatorDataModel selectors){
         Map<String, String> params = new HashMap<>();
-        for (StatisticalIndicatorSelector selector : selectors.getSelectors()) {
+        for (StatisticalIndicatorDataDimension selector : selectors.getDimensions()) {
             if (regionKey.equalsIgnoreCase(selector.getId())) {
                 // skip region key
                 continue;

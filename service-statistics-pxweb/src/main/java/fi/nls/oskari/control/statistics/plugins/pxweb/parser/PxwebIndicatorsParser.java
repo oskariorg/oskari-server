@@ -3,7 +3,7 @@ package fi.nls.oskari.control.statistics.plugins.pxweb.parser;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fi.nls.oskari.cache.JedisManager;
 import fi.nls.oskari.control.statistics.plugins.StatisticalIndicator;
-import fi.nls.oskari.control.statistics.plugins.StatisticalIndicatorSelector;
+import fi.nls.oskari.control.statistics.plugins.StatisticalIndicatorDataDimension;
 import fi.nls.oskari.control.statistics.plugins.StatisticalIndicatorDataModel;
 import fi.nls.oskari.control.statistics.plugins.db.DatasourceLayer;
 import fi.nls.oskari.control.statistics.plugins.pxweb.PxwebConfig;
@@ -145,7 +145,7 @@ public class PxwebIndicatorsParser {
                 if (config.getIgnoredVariables().contains(id)) {
                     continue;
                 }
-                StatisticalIndicatorSelector selector = new StatisticalIndicatorSelector(id);
+                StatisticalIndicatorDataDimension selector = new StatisticalIndicatorDataDimension(id);
                 selector.setName(var.optString("text"));
 
                 JSONArray values = var.optJSONArray("values");
@@ -153,7 +153,7 @@ public class PxwebIndicatorsParser {
                 for (int j = 0; j < values.length(); j++) {
                     selector.addAllowedValue(values.optString(j), valueTexts.optString(j));
                 }
-                selectors.addSelector(selector);
+                selectors.addDimension(selector);
             }
         } catch (Exception ex) {
             LOG.error(ex, "Error parsing indicator metadata from Pxweb datasource:", json);
