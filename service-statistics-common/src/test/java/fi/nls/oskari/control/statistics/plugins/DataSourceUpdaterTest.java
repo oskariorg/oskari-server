@@ -1,11 +1,8 @@
 package fi.nls.oskari.control.statistics.plugins;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import fi.nls.oskari.control.statistics.data.StatisticalIndicator;
 import org.junit.Test;
-
-import java.io.IOException;
-import java.util.List;
-import java.util.Map;
 
 import static org.junit.Assert.*;
 

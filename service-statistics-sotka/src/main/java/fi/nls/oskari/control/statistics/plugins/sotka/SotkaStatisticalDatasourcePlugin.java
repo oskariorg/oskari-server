@@ -3,7 +3,7 @@ package fi.nls.oskari.control.statistics.plugins.sotka;
 import fi.nls.oskari.cache.JedisManager;
 import fi.nls.oskari.control.statistics.plugins.APIException;
 import fi.nls.oskari.control.statistics.plugins.AbstractStatisticalDatasourcePlugin;
-import fi.nls.oskari.control.statistics.plugins.StatisticalIndicator;
+import fi.nls.oskari.control.statistics.data.StatisticalIndicator;
 import fi.nls.oskari.control.statistics.plugins.db.DatasourceLayer;
 import fi.nls.oskari.control.statistics.plugins.db.StatisticalDatasource;
 import fi.nls.oskari.control.statistics.plugins.sotka.parser.SotkaIndicatorsParser;

@@ -7,7 +7,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import fi.nls.oskari.control.statistics.plugins.*;
+import fi.nls.oskari.control.statistics.data.*;
 import fi.nls.oskari.control.statistics.plugins.sotka.SotkaConfig;
 import org.json.JSONArray;
 import org.json.JSONException;

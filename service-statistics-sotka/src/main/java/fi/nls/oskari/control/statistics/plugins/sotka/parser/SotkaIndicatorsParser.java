@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import fi.nls.oskari.control.statistics.plugins.StatisticalIndicator;
+import fi.nls.oskari.control.statistics.data.StatisticalIndicator;
 import fi.nls.oskari.control.statistics.plugins.sotka.SotkaConfig;
 import org.json.JSONArray;
 import org.json.JSONException;

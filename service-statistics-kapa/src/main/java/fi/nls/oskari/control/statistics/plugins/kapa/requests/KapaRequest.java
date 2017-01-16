@@ -1,8 +1,8 @@
 package fi.nls.oskari.control.statistics.plugins.kapa.requests;
 
 import fi.nls.oskari.control.statistics.plugins.APIException;
-import fi.nls.oskari.control.statistics.plugins.StatisticalIndicatorDataModel;
-import fi.nls.oskari.control.statistics.plugins.StatisticalIndicatorDataDimension;
+import fi.nls.oskari.control.statistics.data.StatisticalIndicatorDataModel;
+import fi.nls.oskari.control.statistics.data.StatisticalIndicatorDataDimension;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.util.IOHelper;

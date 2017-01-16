@@ -1,5 +1,6 @@
 package fi.nls.oskari.control.statistics.plugins;
 
+import fi.nls.oskari.control.statistics.data.*;
 import fi.nls.oskari.control.statistics.plugins.db.StatisticalDatasource;
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.junit.AfterClass;

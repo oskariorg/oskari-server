@@ -1,4 +1,4 @@
-package fi.nls.oskari.control.statistics.plugins;
+package fi.nls.oskari.control.statistics.data;
 
 import org.json.JSONException;
 import org.json.JSONObject;

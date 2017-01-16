@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import fi.nls.oskari.control.statistics.plugins.*;
+import fi.nls.oskari.control.statistics.data.*;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;

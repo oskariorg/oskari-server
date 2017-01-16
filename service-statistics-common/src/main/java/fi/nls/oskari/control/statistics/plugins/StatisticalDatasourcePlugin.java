@@ -2,6 +2,8 @@ package fi.nls.oskari.control.statistics.plugins;
 
 import java.util.List;
 
+import fi.nls.oskari.control.statistics.data.IndicatorSet;
+import fi.nls.oskari.control.statistics.data.StatisticalIndicator;
 import fi.nls.oskari.control.statistics.plugins.db.StatisticalDatasource;
 import fi.nls.oskari.domain.User;
 

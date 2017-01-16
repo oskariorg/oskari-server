@@ -2,10 +2,10 @@ package fi.nls.oskari.control.statistics.plugins.sotka.parser;
 
 import java.util.Map;
 
-import fi.nls.oskari.control.statistics.plugins.IndicatorValue;
-import fi.nls.oskari.control.statistics.plugins.IndicatorValueType;
-import fi.nls.oskari.control.statistics.plugins.StatisticalIndicatorLayer;
-import fi.nls.oskari.control.statistics.plugins.StatisticalIndicatorDataModel;
+import fi.nls.oskari.control.statistics.data.IndicatorValue;
+import fi.nls.oskari.control.statistics.data.IndicatorValueType;
+import fi.nls.oskari.control.statistics.data.StatisticalIndicatorLayer;
+import fi.nls.oskari.control.statistics.data.StatisticalIndicatorDataModel;
 import fi.nls.oskari.control.statistics.plugins.sotka.SotkaIndicatorValuesFetcher;
 
 public class SotkaStatisticalIndicatorLayer extends StatisticalIndicatorLayer {

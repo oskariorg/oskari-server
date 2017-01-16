@@ -1,9 +1,9 @@
 package fi.nls.oskari.control.statistics.plugins.sotka.parser;
 
-import fi.nls.oskari.control.statistics.plugins.StatisticalIndicator;
+import fi.nls.oskari.control.statistics.data.StatisticalIndicator;
 import fi.nls.test.util.TestHelper;
 
-import fi.nls.oskari.control.statistics.plugins.IndicatorValueType;
+import fi.nls.oskari.control.statistics.data.IndicatorValueType;
 import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.test.util.ResourceHelper;
 

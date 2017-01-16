@@ -1,7 +1,7 @@
 package fi.nls.oskari.statistics.eurostat;
 
 import fi.nls.oskari.control.statistics.plugins.AbstractStatisticalDatasourcePlugin;
-import fi.nls.oskari.control.statistics.plugins.StatisticalIndicator;
+import fi.nls.oskari.control.statistics.data.StatisticalIndicator;
 import fi.nls.oskari.control.statistics.plugins.db.DatasourceLayer;
 import fi.nls.oskari.control.statistics.plugins.db.StatisticalDatasource;
 import fi.nls.oskari.domain.User;

@@ -1,4 +1,4 @@
-package fi.nls.oskari.control.statistics.plugins;
+package fi.nls.oskari.control.statistics.data;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import fi.nls.oskari.util.PropertyUtil;

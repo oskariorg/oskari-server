@@ -3,7 +3,7 @@ package fi.nls.oskari.control.statistics.plugins.user;
 import fi.mml.map.mapwindow.service.db.UserIndicatorService;
 import fi.mml.map.mapwindow.service.db.UserIndicatorServiceImpl;
 import fi.nls.oskari.control.statistics.plugins.AbstractStatisticalDatasourcePlugin;
-import fi.nls.oskari.control.statistics.plugins.StatisticalIndicator;
+import fi.nls.oskari.control.statistics.data.StatisticalIndicator;
 import fi.nls.oskari.domain.User;
 import fi.nls.oskari.domain.map.indicator.UserIndicator;
 import fi.nls.oskari.log.LogFactory;

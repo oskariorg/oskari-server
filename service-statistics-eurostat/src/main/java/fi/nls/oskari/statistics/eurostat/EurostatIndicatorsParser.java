@@ -1,10 +1,10 @@
 package fi.nls.oskari.statistics.eurostat;
 
 import fi.nls.oskari.cache.JedisManager;
-import fi.nls.oskari.control.statistics.plugins.IdNamePair;
-import fi.nls.oskari.control.statistics.plugins.StatisticalIndicator;
-import fi.nls.oskari.control.statistics.plugins.StatisticalIndicatorDataModel;
-import fi.nls.oskari.control.statistics.plugins.StatisticalIndicatorDataDimension;
+import fi.nls.oskari.control.statistics.data.IdNamePair;
+import fi.nls.oskari.control.statistics.data.StatisticalIndicator;
+import fi.nls.oskari.control.statistics.data.StatisticalIndicatorDataModel;
+import fi.nls.oskari.control.statistics.data.StatisticalIndicatorDataDimension;
 import fi.nls.oskari.control.statistics.plugins.db.DatasourceLayer;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;

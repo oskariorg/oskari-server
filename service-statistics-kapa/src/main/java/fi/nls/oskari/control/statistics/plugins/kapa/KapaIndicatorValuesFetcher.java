@@ -5,8 +5,8 @@ import java.util.Map;
 import org.json.JSONException;
 
 import fi.nls.oskari.control.statistics.plugins.APIException;
-import fi.nls.oskari.control.statistics.plugins.IndicatorValue;
-import fi.nls.oskari.control.statistics.plugins.StatisticalIndicatorDataModel;
+import fi.nls.oskari.control.statistics.data.IndicatorValue;
+import fi.nls.oskari.control.statistics.data.StatisticalIndicatorDataModel;
 import fi.nls.oskari.control.statistics.plugins.kapa.parser.KapaIndicatorDataParser;
 import fi.nls.oskari.control.statistics.plugins.kapa.requests.KapaRequest;
 

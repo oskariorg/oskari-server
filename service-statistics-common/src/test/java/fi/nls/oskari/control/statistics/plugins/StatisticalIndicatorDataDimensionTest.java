@@ -1,5 +1,6 @@
 package fi.nls.oskari.control.statistics.plugins;
 
+import fi.nls.oskari.control.statistics.data.StatisticalIndicatorDataDimension;
 import org.junit.Test;
 
 import static org.junit.Assert.*;

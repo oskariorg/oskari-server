@@ -1,5 +1,6 @@
 package fi.nls.oskari.control.statistics.plugins;
 
+import fi.nls.oskari.control.statistics.data.IdNamePair;
 import fi.nls.oskari.util.JSONHelper;
 import org.json.JSONObject;
 import org.junit.Test;

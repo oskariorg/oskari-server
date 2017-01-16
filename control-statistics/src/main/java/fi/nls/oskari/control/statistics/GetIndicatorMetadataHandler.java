@@ -5,6 +5,7 @@ import fi.nls.oskari.cache.JedisManager;
 import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.ActionHandler;
 import fi.nls.oskari.control.ActionParameters;
+import fi.nls.oskari.control.statistics.data.*;
 import fi.nls.oskari.control.statistics.plugins.*;
 import fi.nls.oskari.domain.User;
 import fi.nls.oskari.util.ResponseHelper;

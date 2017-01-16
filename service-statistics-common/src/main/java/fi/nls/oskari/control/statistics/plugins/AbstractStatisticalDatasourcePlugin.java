@@ -3,6 +3,8 @@ package fi.nls.oskari.control.statistics.plugins;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fi.nls.oskari.cache.JedisManager;
+import fi.nls.oskari.control.statistics.data.IndicatorSet;
+import fi.nls.oskari.control.statistics.data.StatisticalIndicator;
 import fi.nls.oskari.control.statistics.plugins.db.StatisticalDatasource;
 import fi.nls.oskari.domain.User;
 import fi.nls.oskari.log.LogFactory;

@@ -1,5 +1,6 @@
 package fi.nls.oskari.statistics.eurostat;
 
+import fi.nls.oskari.control.statistics.data.*;
 import fi.nls.oskari.control.statistics.plugins.*;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.JSONHelper;

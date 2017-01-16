@@ -9,9 +9,9 @@ import java.util.Map.Entry;
 import org.json.JSONException;
 
 import fi.nls.oskari.control.statistics.plugins.APIException;
-import fi.nls.oskari.control.statistics.plugins.IndicatorValue;
-import fi.nls.oskari.control.statistics.plugins.StatisticalIndicatorDataDimension;
-import fi.nls.oskari.control.statistics.plugins.StatisticalIndicatorDataModel;
+import fi.nls.oskari.control.statistics.data.IndicatorValue;
+import fi.nls.oskari.control.statistics.data.StatisticalIndicatorDataDimension;
+import fi.nls.oskari.control.statistics.data.StatisticalIndicatorDataModel;
 import fi.nls.oskari.control.statistics.plugins.sotka.parser.SotkaIndicatorDataParser;
 import fi.nls.oskari.control.statistics.plugins.sotka.parser.SotkaRegionParser;
 import fi.nls.oskari.control.statistics.plugins.sotka.requests.IndicatorData;
