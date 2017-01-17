@@ -89,6 +89,12 @@
                 color: #FFF;
                 padding: 5px;
             }
+            #oskari-system-messages {
+              bottom: 1em;
+              position: fixed;
+              display: table;
+              padding-left: 0.3em;
+            }
 
         }
     </style>
