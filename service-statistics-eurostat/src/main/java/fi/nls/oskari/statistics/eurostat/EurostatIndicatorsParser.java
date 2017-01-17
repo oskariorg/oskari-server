@@ -1,10 +1,10 @@
 package fi.nls.oskari.statistics.eurostat;
 
 import fi.nls.oskari.cache.JedisManager;
-import fi.nls.oskari.control.statistics.plugins.IdNamePair;
-import fi.nls.oskari.control.statistics.plugins.StatisticalIndicator;
-import fi.nls.oskari.control.statistics.plugins.StatisticalIndicatorSelector;
-import fi.nls.oskari.control.statistics.plugins.StatisticalIndicatorSelectors;
+import fi.nls.oskari.control.statistics.data.IdNamePair;
+import fi.nls.oskari.control.statistics.data.StatisticalIndicator;
+import fi.nls.oskari.control.statistics.data.StatisticalIndicatorDataModel;
+import fi.nls.oskari.control.statistics.data.StatisticalIndicatorDataDimension;
 import fi.nls.oskari.control.statistics.plugins.db.DatasourceLayer;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
@@ -64,8 +64,8 @@ public class EurostatIndicatorsParser {
             AXIOMXPath dimensionPath = XmlHelper.buildXPath("/mes:Structure/mes:Structures/str:DataStructures/str:DataStructure/str:DataStructureComponents/str:DimensionList/str:Dimension", NAMESPACE_CTX);
             List<OMElement> codelists = xpath_Codelist.selectNodes(eleMeta);// here we have all the codelist indicators
             List<OMElement> dimension = dimensionPath.selectNodes(eleMeta);
-            final StatisticalIndicatorSelectors selectors = new StatisticalIndicatorSelectors();
-            indicator.setSelectors(selectors);
+            final StatisticalIndicatorDataModel selectors = new StatisticalIndicatorDataModel();
+            indicator.setDataModel(selectors);
 
             for (OMElement dimension1 : dimension) {
                 String idDimension = dimension1.getAttributeValue(QName.valueOf("id"));// idDimension is { FREQ, UNIT, GEO}
@@ -75,7 +75,7 @@ public class EurostatIndicatorsParser {
                     // but we don't pass it as a parameter for the frontend -> skip to next one
                     continue;
                 }
-                StatisticalIndicatorSelector selector = new StatisticalIndicatorSelector(idDimension);
+                StatisticalIndicatorDataDimension selector = new StatisticalIndicatorDataDimension(idDimension);
                 selector.setName(idDimension);
                 OMElement localRepresentationOme = XmlHelper.getChild(dimension1, "LocalRepresentation");
                 OMElement enumerationOme = XmlHelper.getChild(localRepresentationOme, "Enumeration");
@@ -98,7 +98,7 @@ public class EurostatIndicatorsParser {
                             selector.addAllowedValue(nameID, selectValues); // nameID = "D"
                         }
                     }
-                    selectors.addSelector(selector);
+                    selectors.addDimension(selector);
 
                 }
 
@@ -175,7 +175,7 @@ public class EurostatIndicatorsParser {
 
                     String indicatorName = name.getText();
 
-                    item.addLocalizedName(language, indicatorName);
+                    item.addName(language, indicatorName);
                 }
                 OMElement struct = XmlHelper.getChild(indicator, "Structure");
                 OMElement ref = XmlHelper.getChild(struct, "Ref");
@@ -224,12 +224,12 @@ public class EurostatIndicatorsParser {
 
     private void populateTimeDimension(EurostatIndicator indicator) {
 
-        StatisticalIndicatorSelector selector = new StatisticalIndicatorSelector("Time");
-        StatisticalIndicatorSelectors selectors = indicator.getSelectors();
+        StatisticalIndicatorDataDimension selector = new StatisticalIndicatorDataDimension("Time");
+        StatisticalIndicatorDataModel selectors = indicator.getDataModel();
         String indicatorID = indicator.getId();
         EurostatStatisticalIndicatorLayer layer = (EurostatStatisticalIndicatorLayer) indicator.getLayers().get(0);
 
-        for (StatisticalIndicatorSelector selectedSelector: selectors.getSelectors()) {
+        for (StatisticalIndicatorDataDimension selectedSelector: selectors.getDimensions()) {
             Collection<IdNamePair> allowValue = selectedSelector.getAllowedValues();
             if(!allowValue.isEmpty()) {
                 selectedSelector.setValue(allowValue.iterator().next().getKey());
@@ -267,7 +267,7 @@ public class EurostatIndicatorsParser {
             LOG.error(ex, "Error parsing indicator metadata from Pxweb datasource:", json);
         }
 
-        selectors.addSelector(selector);
+        selectors.addDimension(selector);
     }
 
     private JSONObject getTimeJasonObject( String path) {

@@ -2,9 +2,9 @@ package fi.nls.oskari.control.statistics.plugins.pxweb.parser;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fi.nls.oskari.cache.JedisManager;
-import fi.nls.oskari.control.statistics.plugins.StatisticalIndicator;
-import fi.nls.oskari.control.statistics.plugins.StatisticalIndicatorSelector;
-import fi.nls.oskari.control.statistics.plugins.StatisticalIndicatorSelectors;
+import fi.nls.oskari.control.statistics.data.StatisticalIndicator;
+import fi.nls.oskari.control.statistics.data.StatisticalIndicatorDataDimension;
+import fi.nls.oskari.control.statistics.data.StatisticalIndicatorDataModel;
 import fi.nls.oskari.control.statistics.plugins.db.DatasourceLayer;
 import fi.nls.oskari.control.statistics.plugins.pxweb.PxwebConfig;
 import fi.nls.oskari.control.statistics.plugins.pxweb.json.PxwebItem;
@@ -124,8 +124,8 @@ public class PxwebIndicatorsParser {
 }
  */
     private void setupMetadata(PxwebIndicator indicator, String path) {
-        final StatisticalIndicatorSelectors selectors = new StatisticalIndicatorSelectors();
-        indicator.setSelectors(selectors);
+        final StatisticalIndicatorDataModel selectors = new StatisticalIndicatorDataModel();
+        indicator.setDataModel(selectors);
         // TODO: caching!!
         final JSONObject json = getMetadata(indicator, path);
         if(json == null) {
@@ -145,7 +145,7 @@ public class PxwebIndicatorsParser {
                 if (config.getIgnoredVariables().contains(id)) {
                     continue;
                 }
-                StatisticalIndicatorSelector selector = new StatisticalIndicatorSelector(id);
+                StatisticalIndicatorDataDimension selector = new StatisticalIndicatorDataDimension(id);
                 selector.setName(var.optString("text"));
 
                 JSONArray values = var.optJSONArray("values");
@@ -153,7 +153,7 @@ public class PxwebIndicatorsParser {
                 for (int j = 0; j < values.length(); j++) {
                     selector.addAllowedValue(values.optString(j), valueTexts.optString(j));
                 }
-                selectors.addSelector(selector);
+                selectors.addDimension(selector);
             }
         } catch (Exception ex) {
             LOG.error(ex, "Error parsing indicator metadata from Pxweb datasource:", json);

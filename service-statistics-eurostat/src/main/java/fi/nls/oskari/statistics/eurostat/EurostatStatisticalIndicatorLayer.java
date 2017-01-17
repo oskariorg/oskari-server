@@ -1,5 +1,6 @@
 package fi.nls.oskari.statistics.eurostat;
 
+import fi.nls.oskari.control.statistics.data.*;
 import fi.nls.oskari.control.statistics.plugins.*;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.JSONHelper;
@@ -26,9 +27,9 @@ public class EurostatStatisticalIndicatorLayer extends StatisticalIndicatorLayer
         return null;
     }
 
-    public String constructUrl (StatisticalIndicatorSelectors selectors){
+    public String constructUrl (StatisticalIndicatorDataModel selectors){
         Map<String, String> params = new HashMap<>();
-        for (StatisticalIndicatorSelector selector : selectors.getSelectors()) {
+        for (StatisticalIndicatorDataDimension selector : selectors.getDimensions()) {
             if (regionKey.equalsIgnoreCase(selector.getId())) {
                 // skip region key
                 continue;
@@ -39,7 +40,7 @@ public class EurostatStatisticalIndicatorLayer extends StatisticalIndicatorLayer
         return url;
     }
     @Override
-    public Map<String, IndicatorValue> getIndicatorValues(StatisticalIndicatorSelectors selectors) {
+    public Map<String, IndicatorValue> getIndicatorValues(StatisticalIndicatorDataModel selectors) {
         String url = constructUrl(selectors);
         Map<String, IndicatorValue> values = new HashMap<>();
         try {

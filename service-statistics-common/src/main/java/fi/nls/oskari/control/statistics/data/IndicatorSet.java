@@ -1,4 +1,6 @@
-package fi.nls.oskari.control.statistics.plugins;
+package fi.nls.oskari.control.statistics.data;
+
+import fi.nls.oskari.control.statistics.data.StatisticalIndicator;
 
 import java.util.Collections;
 import java.util.List;
@@ -16,7 +18,7 @@ public class IndicatorSet {
         return isComplete;
     }
 
-    void setComplete(boolean complete) {
+    public void setComplete(boolean complete) {
         isComplete = complete;
     }
 
@@ -27,7 +29,7 @@ public class IndicatorSet {
         return indicators;
     }
 
-    void setIndicators(
+    public void setIndicators(
             List<StatisticalIndicator> indicators) {
         this.indicators = indicators;
     }

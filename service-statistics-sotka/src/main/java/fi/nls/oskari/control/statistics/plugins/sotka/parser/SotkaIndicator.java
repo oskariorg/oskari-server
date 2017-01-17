@@ -7,7 +7,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import fi.nls.oskari.control.statistics.plugins.*;
+import fi.nls.oskari.control.statistics.data.*;
 import fi.nls.oskari.control.statistics.plugins.sotka.SotkaConfig;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -29,7 +29,7 @@ public class SotkaIndicator extends StatisticalIndicator {
     private Map<String, String> localizedSource;
     private Map<String, String> localizedDescription;
     private List<StatisticalIndicatorLayer> layers;
-    private StatisticalIndicatorSelectors selectors;
+    private StatisticalIndicatorDataModel selectors;
     private Map<String, Long> sotkaLayersToOskariLayers;
     private boolean valid = true;
     /**
@@ -99,8 +99,8 @@ public class SotkaIndicator extends StatisticalIndicator {
                     for (int year = start; year <= end; year++) {
                         allowedYears.add(String.valueOf(year));
                     }
-                    StatisticalIndicatorSelector yearSelector = new StatisticalIndicatorSelector("year", allowedYears);
-                    this.selectors.addSelector(yearSelector);
+                    StatisticalIndicatorDataDimension yearSelector = new StatisticalIndicatorDataDimension("year", allowedYears);
+                    this.selectors.addDimension(yearSelector);
                 }
                 this.metadataFetched = true;
             }
@@ -151,9 +151,9 @@ public class SotkaIndicator extends StatisticalIndicator {
         ...
       */
     }
-    private StatisticalIndicatorSelectors toSotkaIndicatorSelectors(JSONObject jsonObject) throws JSONException {
+    private StatisticalIndicatorDataModel toSotkaIndicatorSelectors(JSONObject jsonObject) throws JSONException {
         // Note that the key "region" must be skipped, because it was already serialized as layers.
-        StatisticalIndicatorSelectors selectors = new StatisticalIndicatorSelectors();
+        StatisticalIndicatorDataModel selectors = new StatisticalIndicatorDataModel();
         @SuppressWarnings("unchecked")
         Iterator<String> names = jsonObject.keys();
         while (names.hasNext()) {
@@ -169,8 +169,8 @@ public class SotkaIndicator extends StatisticalIndicator {
                 }
                 if (allowedValues.size() > 0) {
                     // Sotka has many indicators with empty allowed values for "sex" for example.
-                    StatisticalIndicatorSelector selector = new StatisticalIndicatorSelector(key, allowedValues);
-                    selectors.addSelector(selector);
+                    StatisticalIndicatorDataDimension selector = new StatisticalIndicatorDataDimension(key, allowedValues);
+                    selectors.addDimension(selector);
                 }
             }
         }
@@ -181,15 +181,15 @@ public class SotkaIndicator extends StatisticalIndicator {
         return this.id;
     }
     @Override
-    public Map<String, String> getLocalizedName() {
+    public Map<String, String> getName() {
         return this.localizedName;
     }
     @Override
-    public Map<String, String> getLocalizedSource() {
+    public Map<String, String> getSource() {
         return this.localizedSource;
     }
     @Override
-    public Map<String, String> getLocalizedDescription() {
+    public Map<String, String> getDescription() {
         if (!metadataFetched) {
             this.merge(metadataFetcher.get(id, sotkaLayersToOskariLayers));
             metadataFetched = true;
@@ -206,7 +206,7 @@ public class SotkaIndicator extends StatisticalIndicator {
         return layers;
     }
     @Override
-    public StatisticalIndicatorSelectors getSelectors() {
+    public StatisticalIndicatorDataModel getDataModel() {
         if (!metadataFetched) {
             this.merge(metadataFetcher.get(id, sotkaLayersToOskariLayers));
             metadataFetched = true;
@@ -251,9 +251,9 @@ public class SotkaIndicator extends StatisticalIndicator {
         if (infoToAdd == null) {
             return;
         }
-        this.selectors.merge(infoToAdd.getSelectors());
+        this.selectors.merge(infoToAdd.getDataModel());
         if (this.localizedDescription == null || this.localizedDescription.size() == 0) {
-            this.localizedDescription = infoToAdd.getLocalizedDescription();
+            this.localizedDescription = infoToAdd.getDescription();
         }
     }
 }

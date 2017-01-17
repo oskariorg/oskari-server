@@ -9,9 +9,9 @@ import java.util.Map.Entry;
 import org.json.JSONException;
 
 import fi.nls.oskari.control.statistics.plugins.APIException;
-import fi.nls.oskari.control.statistics.plugins.IndicatorValue;
-import fi.nls.oskari.control.statistics.plugins.StatisticalIndicatorSelector;
-import fi.nls.oskari.control.statistics.plugins.StatisticalIndicatorSelectors;
+import fi.nls.oskari.control.statistics.data.IndicatorValue;
+import fi.nls.oskari.control.statistics.data.StatisticalIndicatorDataDimension;
+import fi.nls.oskari.control.statistics.data.StatisticalIndicatorDataModel;
 import fi.nls.oskari.control.statistics.plugins.sotka.parser.SotkaIndicatorDataParser;
 import fi.nls.oskari.control.statistics.plugins.sotka.parser.SotkaRegionParser;
 import fi.nls.oskari.control.statistics.plugins.sotka.requests.IndicatorData;
@@ -44,13 +44,13 @@ public class SotkaIndicatorValuesFetcher {
      * @param indicator
      * @return
      */
-    public Map<Integer, IndicatorValue> getAll(StatisticalIndicatorSelectors selectors, String indicator) {
+    public Map<Integer, IndicatorValue> getAll(StatisticalIndicatorDataModel selectors, String indicator) {
         SotkaRequest request = SotkaRequest.getInstance(IndicatorData.NAME);
         request.setBaseURL(config.getUrl());
         // If there is no defined values for gender or year, we will use "total" and an empty list.
         String gender = "total";
         List<String> years = new ArrayList<>();
-        for (StatisticalIndicatorSelector selector : selectors.getSelectors()) {
+        for (StatisticalIndicatorDataDimension selector : selectors.getDimensions()) {
             switch(selector.getId()) {
             case "sex":
                 gender = selector.getValue();
@@ -85,8 +85,8 @@ public class SotkaIndicatorValuesFetcher {
      * @param regionCategoryId The oskari layer we are interested in. For example: "KUNTA"
      * @return
      */
-    public Map<String, IndicatorValue> get(StatisticalIndicatorSelectors selectors, String indicator,
-            String regionCategoryId) {
+    public Map<String, IndicatorValue> get(StatisticalIndicatorDataModel selectors, String indicator,
+                                           String regionCategoryId) {
         Map<Integer, IndicatorValue> allValues = getAll(selectors, indicator);
         Map<String, IndicatorValue> filteredValues = new HashMap<>();
         for (Entry<Integer, IndicatorValue> entry: allValues.entrySet()) {

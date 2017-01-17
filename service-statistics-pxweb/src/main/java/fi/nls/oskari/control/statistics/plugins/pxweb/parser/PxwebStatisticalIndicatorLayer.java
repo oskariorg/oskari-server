@@ -1,5 +1,6 @@
 package fi.nls.oskari.control.statistics.plugins.pxweb.parser;
 
+import fi.nls.oskari.control.statistics.data.*;
 import fi.nls.oskari.control.statistics.plugins.*;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.JSONHelper;
@@ -89,12 +90,12 @@ public class PxwebStatisticalIndicatorLayer extends StatisticalIndicatorLayer {
 }
      */
     @Override
-    public Map<String, IndicatorValue> getIndicatorValues(StatisticalIndicatorSelectors selectors) {
+    public Map<String, IndicatorValue> getIndicatorValues(StatisticalIndicatorDataModel selectors) {
         Map<String, IndicatorValue> values = new HashMap<>();
         String url = IOHelper.fixPath(baseUrl + "/" + getIndicatorId());
         JSONArray query = new JSONArray();
         JSONObject payload = JSONHelper.createJSONObject("query", query);
-        for (StatisticalIndicatorSelector selector : selectors.getSelectors()) {
+        for (StatisticalIndicatorDataDimension selector : selectors.getDimensions()) {
             if (regionKey.equalsIgnoreCase(selector.getId())) {
                 // skip the region property
                 continue;

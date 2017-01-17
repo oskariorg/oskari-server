@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import fi.nls.oskari.control.statistics.plugins.*;
+import fi.nls.oskari.control.statistics.data.*;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -57,7 +57,7 @@ public class UserStatisticalIndicator extends StatisticalIndicator {
         StatisticalIndicatorLayer layer = new StatisticalIndicatorLayer(layerId, id) {
 
             @Override
-            public Map<String, IndicatorValue> getIndicatorValues(StatisticalIndicatorSelectors selectors) {
+            public Map<String, IndicatorValue> getIndicatorValues(StatisticalIndicatorDataModel selectors) {
                 // Data is a serialized JSON for legacy and backwards compatibility reasons:
                 // "data":[{"region":"727","primary value":"15"},{"region":"728","primary value":"20"}]
                 Map<String, IndicatorValue> valueMap = new HashMap<>();
@@ -80,12 +80,12 @@ public class UserStatisticalIndicator extends StatisticalIndicator {
     }
 
     @Override
-    public StatisticalIndicatorSelectors getSelectors() {
-        return new StatisticalIndicatorSelectors();
+    public StatisticalIndicatorDataModel getDataModel() {
+        return new StatisticalIndicatorDataModel();
     }
 
     @Override
-    public Map<String, String> getLocalizedName() {
+    public Map<String, String> getName() {
         // The value is an already serialized JSON for legacy and backward compatibility reasons.
         try {
             JSONObject localizedValue = new JSONObject(this.name);
@@ -97,7 +97,7 @@ public class UserStatisticalIndicator extends StatisticalIndicator {
     }
 
     @Override
-    public Map<String, String> getLocalizedSource() {
+    public Map<String, String> getSource() {
         // The value is an already serialized JSON for legacy and backward compatibility reasons.
         try {
             JSONObject localizedValue = new JSONObject(this.source);
@@ -121,7 +121,7 @@ public class UserStatisticalIndicator extends StatisticalIndicator {
     }
 
     @Override
-    public Map<String, String> getLocalizedDescription() {
+    public Map<String, String> getDescription() {
         // The value is an already serialized JSON for legacy and backward compatibility reasons.
         try {
             JSONObject localizedValue = new JSONObject(this.description);

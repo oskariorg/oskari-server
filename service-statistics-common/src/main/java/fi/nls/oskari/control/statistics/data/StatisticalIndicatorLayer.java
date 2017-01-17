@@ -1,4 +1,4 @@
-package fi.nls.oskari.control.statistics.plugins;
+package fi.nls.oskari.control.statistics.data;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -48,5 +48,5 @@ public class StatisticalIndicatorLayer {
      * @param selectors A set of selected values for selectors used to filter the results.
      * @return Filtered results so that each region id has one IndicatorValue.
      */
-    public Map<String, IndicatorValue> getIndicatorValues(StatisticalIndicatorSelectors selectors) {return null;}
+    public Map<String, IndicatorValue> getIndicatorValues(StatisticalIndicatorDataModel selectors) {return null;}
 }

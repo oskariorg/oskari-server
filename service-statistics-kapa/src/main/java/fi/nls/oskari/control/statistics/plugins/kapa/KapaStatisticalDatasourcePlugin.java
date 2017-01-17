@@ -1,7 +1,7 @@
 package fi.nls.oskari.control.statistics.plugins.kapa;
 
-import fi.nls.oskari.control.statistics.plugins.AbstractStatisticalDatasourcePlugin;
-import fi.nls.oskari.control.statistics.plugins.StatisticalIndicator;
+import fi.nls.oskari.control.statistics.plugins.StatisticalDatasourcePlugin;
+import fi.nls.oskari.control.statistics.data.StatisticalIndicator;
 import fi.nls.oskari.control.statistics.plugins.db.DatasourceLayer;
 import fi.nls.oskari.control.statistics.plugins.db.StatisticalDatasource;
 import fi.nls.oskari.control.statistics.plugins.kapa.parser.KapaIndicatorsParser;
@@ -14,7 +14,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class KapaStatisticalDatasourcePlugin  extends AbstractStatisticalDatasourcePlugin {
+public class KapaStatisticalDatasourcePlugin  extends StatisticalDatasourcePlugin {
     private final static Logger LOG = LogFactory.getLogger(KapaStatisticalDatasourcePlugin.class);
     private KapaIndicatorsParser indicatorsParser;
 

@@ -1,6 +1,5 @@
 package fi.nls.oskari.control.statistics.db;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import fi.nls.oskari.util.JSONHelper;
 import org.json.JSONException;
 import org.json.JSONObject;

@@ -7,7 +7,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import fi.nls.oskari.control.statistics.plugins.*;
+import fi.nls.oskari.control.statistics.data.*;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -27,7 +27,7 @@ public class KapaIndicator extends StatisticalIndicator {
     private Map<String, String> localizedSource;
     private Map<String, String> localizedDescription;
     private List<StatisticalIndicatorLayer> layers;
-    private StatisticalIndicatorSelectors selectors;
+    private StatisticalIndicatorDataModel selectors;
     private boolean valid = true;
     /**
      * The fetcher object is shared between all KapaIndicators.
@@ -76,9 +76,9 @@ public class KapaIndicator extends StatisticalIndicator {
         return this.valid;
     }
 
-    private StatisticalIndicatorSelectors toKapaIndicatorSelectors(JSONObject jsonObject) throws JSONException {
+    private StatisticalIndicatorDataModel toKapaIndicatorSelectors(JSONObject jsonObject) throws JSONException {
         // Note that the key "region" must be skipped, because it was already serialized as layers.
-        StatisticalIndicatorSelectors selectors = new StatisticalIndicatorSelectors();
+        StatisticalIndicatorDataModel selectors = new StatisticalIndicatorDataModel();
         @SuppressWarnings("unchecked")
         Iterator<String> names = jsonObject.keys();
         while (names.hasNext()) {
@@ -92,8 +92,8 @@ public class KapaIndicator extends StatisticalIndicator {
                     allowedValues.add(jsonSelector.getString(i));
                 }
                 if (allowedValues.size() > 0) {
-                    StatisticalIndicatorSelector selector = new StatisticalIndicatorSelector(key, allowedValues);
-                    selectors.addSelector(selector);
+                    StatisticalIndicatorDataDimension selector = new StatisticalIndicatorDataDimension(key, allowedValues);
+                    selectors.addDimension(selector);
                 }
             }
         }
@@ -104,15 +104,15 @@ public class KapaIndicator extends StatisticalIndicator {
         return this.id;
     }
     @Override
-    public Map<String, String> getLocalizedName() {
+    public Map<String, String> getName() {
         return this.localizedName;
     }
     @Override
-    public Map<String, String> getLocalizedSource() {
+    public Map<String, String> getSource() {
         return this.localizedSource;
     }
     @Override
-    public Map<String, String> getLocalizedDescription() {
+    public Map<String, String> getDescription() {
         return this.localizedDescription;
     }
     
@@ -121,7 +121,7 @@ public class KapaIndicator extends StatisticalIndicator {
         return layers;
     }
     @Override
-    public StatisticalIndicatorSelectors getSelectors() {
+    public StatisticalIndicatorDataModel getDataModel() {
         return selectors;
     }
     private static Map<String, String> toLocalizationMap(JSONObject json) throws JSONException {
@@ -158,9 +158,9 @@ public class KapaIndicator extends StatisticalIndicator {
      * @param infoToAdd
      */
     public void merge(KapaIndicator infoToAdd) {
-        this.selectors.merge(infoToAdd.getSelectors());
+        this.selectors.merge(infoToAdd.getDataModel());
         if (this.localizedDescription == null || this.localizedDescription.size() == 0) {
-            this.localizedDescription = infoToAdd.getLocalizedDescription();
+            this.localizedDescription = infoToAdd.getDescription();
         }
     }
 

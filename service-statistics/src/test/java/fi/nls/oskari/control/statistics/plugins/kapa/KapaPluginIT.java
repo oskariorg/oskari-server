@@ -1,5 +1,6 @@
 package fi.nls.oskari.control.statistics.plugins.kapa;
 
+import fi.nls.oskari.control.statistics.data.*;
 import fi.nls.oskari.control.statistics.plugins.*;
 import fi.nls.oskari.control.statistics.plugins.db.StatisticalDatasource;
 import org.apache.commons.dbcp2.BasicDataSource;
@@ -141,9 +142,9 @@ public class KapaPluginIT {
         List<StatisticalIndicator> indicators = indicatorSet.getIndicators();
         assertTrue("Indicators result was too small.", indicators.size() > 1);
         
-        StatisticalIndicatorSelectors selectors = indicators.get(0).getSelectors();
-        List<StatisticalIndicatorSelector> allSelectors = selectors.getSelectors();
-        for (StatisticalIndicatorSelector selector : allSelectors) {
+        StatisticalIndicatorDataModel selectors = indicators.get(0).getDataModel();
+        List<StatisticalIndicatorDataDimension> allSelectors = selectors.getDimensions();
+        for (StatisticalIndicatorDataDimension selector : allSelectors) {
             // Selecting the first allowed value for each selector to define a proper selector.
             selector.setValue(selector.getAllowedValues().iterator().next().getKey());
         }

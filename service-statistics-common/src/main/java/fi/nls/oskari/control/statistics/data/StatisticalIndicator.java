@@ -1,4 +1,4 @@
-package fi.nls.oskari.control.statistics.plugins;
+package fi.nls.oskari.control.statistics.data;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import fi.nls.oskari.util.PropertyUtil;
@@ -19,10 +19,10 @@ public class StatisticalIndicator {
     private boolean isPublic = true;
 
     private List<StatisticalIndicatorLayer> layers = new ArrayList<>();
-    private Map<String, String> localisedName = new HashMap<>();
-    private Map<String, String> localisedSource = new HashMap<>();
-    private Map<String, String> localisedDescription = new HashMap<>();
-    private StatisticalIndicatorSelectors selectors;
+    private Map<String, String> name = new HashMap<>();
+    private Map<String, String> source = new HashMap<>();
+    private Map<String, String> desc = new HashMap<>();
+    private StatisticalIndicatorDataModel dataModel;
 
     public void setId(String id) {
         this.id = id;
@@ -52,7 +52,13 @@ public class StatisticalIndicator {
         return null;
     }
     public String getName(String lang) {
-        return getLocalizedValue(getLocalizedName(), lang);
+        return getLocalizedValue(getName(), lang);
+    }
+    public String getSource(String lang) {
+        return getLocalizedValue(getSource(), lang);
+    }
+    public String getDescription(String lang) {
+        return getLocalizedValue(getDescription(), lang);
     }
 
     private String getLocalizedValue(Map<String, String> map, String lang) {
@@ -74,24 +80,25 @@ public class StatisticalIndicator {
      * Please note that while it would be convenient to just pass untyped JSON here,
      * it would make developing future plugins more error prone.
      */
-    public Map<String, String> getLocalizedName() {
-        return localisedName;
+    public Map<String, String> getName() {
+        return name;
     }
-    public void addLocalizedName (String lang, String name){
-        localisedName.put(lang, name);
-    }
-
-    public void setSelectors(StatisticalIndicatorSelectors selectors) {
-        this.selectors = selectors;
-    }
-    public StatisticalIndicatorSelectors getSelectors() {
-        return selectors;
+    public void addName(String lang, String name){
+        this.name.put(lang, name);
     }
 
-    public Map<String, String> getLocalizedSource() {
-        return localisedSource;
+    public void setDataModel(StatisticalIndicatorDataModel dataModel) {
+        this.dataModel = dataModel;
     }
-    public Map<String, String> getLocalizedDescription() {
-        return localisedDescription;
+    public StatisticalIndicatorDataModel getDataModel() {
+        return dataModel;
+    }
+
+    public Map<String, String> getSource() {
+        return source;
+    }
+    @JsonProperty("desc")
+    public Map<String, String> getDescription() {
+        return desc;
     }
 }
