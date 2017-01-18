@@ -14,7 +14,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class KapaStatisticalDatasourcePlugin  extends StatisticalDatasourcePlugin {
+public class KapaStatisticalDatasourcePlugin extends StatisticalDatasourcePlugin {
     private final static Logger LOG = LogFactory.getLogger(KapaStatisticalDatasourcePlugin.class);
     private KapaIndicatorsParser indicatorsParser;
 
@@ -28,12 +28,13 @@ public class KapaStatisticalDatasourcePlugin  extends StatisticalDatasourcePlugi
     }
 
     @Override
-    public List<StatisticalIndicator> getIndicators(User user) {
-        // Getting the general information of all the indicator layers.
+    public void update() {
         KapaRequest request = new KapaRequest();
         String jsonResponse = request.getIndicators();
         List<StatisticalIndicator> indicators = indicatorsParser.parse(jsonResponse, layerMappings);
-        return indicators;
+        for(StatisticalIndicator ind: indicators) {
+            onIndicatorProcessed(ind);
+        }
     }
 
     @Override

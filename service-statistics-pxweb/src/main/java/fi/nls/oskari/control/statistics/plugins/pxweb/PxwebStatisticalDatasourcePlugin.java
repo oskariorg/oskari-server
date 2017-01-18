@@ -13,31 +13,22 @@ import java.util.Collections;
 import java.util.List;
 
 public class PxwebStatisticalDatasourcePlugin extends StatisticalDatasourcePlugin {
-    private final static Logger LOG = LogFactory.getLogger(PxwebStatisticalDatasourcePlugin.class);
     private PxwebIndicatorsParser indicatorsParser;
 
-    private List<DatasourceLayer> layers;
     private PxwebConfig config;
 
-
     @Override
-    public List<StatisticalIndicator> getIndicators(User user) {
-        try {
-            List<StatisticalIndicator> indicators = indicatorsParser.parse(layers);
-            return indicators;
-        } catch (Exception e) {
-            return Collections.emptyList();
+    public void update() {
+        List<StatisticalIndicator> indicators = indicatorsParser.parse(getSource().getLayers());
+        for(StatisticalIndicator ind: indicators) {
+            onIndicatorProcessed(ind);
         }
     }
 
     @Override
     public void init(StatisticalDatasource source) {
         super.init(source);
-        layers = source.getLayers();
-
         config = new PxwebConfig(source.getConfigJSON(), source.getId());
         indicatorsParser = new PxwebIndicatorsParser(config);
-
-        LOG.debug("pxweb layer mappings: ", layers);
     }
 }

@@ -1,5 +1,6 @@
 package fi.nls.oskari.control.statistics.plugins;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fi.nls.oskari.cache.JedisManager;
@@ -38,15 +39,57 @@ import java.util.List;
  * If in the future the plugin needs to show real-time information, a notification mechanism can be implemented
  * where the plugin notifies Oskari with the plugin name to tell it to fetch the new set of data.
  * Before that, we can pretty much cache all the values using Jedis.
+ *
+ * On adapter implementations implement update(). Update() should call onIndicatorProcessed() after each indicator.
+ * Optionally you can override getIndicatorSet() and getIndicator() if results can be returned fast enough.
+ *
+ * You should also consider overriding hasPermission() as the default implementation always returns true.
  */
 public abstract class StatisticalDatasourcePlugin {
     static final String CACHE_PREFIX = "oskari:stats:";
     private static final String CACHE_POSTFIX_LIST = ":indicators";
-    private static final String CACHE_POSTFIX_PROGRESS = ":progress";
+    private static final String CACHE_POSTFIX_METADATA = ":metadata:";
+
     private StatisticalDatasource source = null;
+    private DataSourceUpdater updater = null;
 
     private static final Logger LOG = LogFactory.getLogger(StatisticalDatasourcePlugin.class);
     private static final ObjectMapper MAPPER = new ObjectMapper();
+
+    /**
+     * This is called when datasource should start processing the indicators. Processed indicators
+     */
+    public abstract void update();
+
+    /**
+     * Returns true by default. You should override this in a plugin if restrictions are required.
+     * @param indicator
+     * @param user
+     * @return
+     */
+    public boolean hasPermission(StatisticalIndicator indicator, User user) {
+        return true;
+    }
+    /**
+     * Trigger update on the data. Should refresh cached data for getIndicatorSet and track progress.
+     */
+    private void startUpdater() {
+        if(updater == null) {
+            updater = new DataSourceUpdater(this);
+        }
+        // check if already running?
+        updater.start();
+    }
+
+    /**
+     * Hook for setting up components that the handler needs to handle requests
+     */
+    public void init(StatisticalDatasource source) {
+        this.source = source;
+    }
+    public StatisticalDatasource getSource() {
+        return source;
+    }
 
     /**
      * Returns currently available dataset for this datasource. Should use preprocessed and cached data with scheduled update
@@ -57,22 +100,56 @@ public abstract class StatisticalDatasourcePlugin {
         boolean updateRequired = status.shouldUpdate(getSource().getUpdateInterval());
         if(updateRequired) {
             // trigger update if not updated before
-            update();
+            startUpdater();
         }
         IndicatorSet set = new IndicatorSet();
         set.setComplete(!updateRequired && !status.isUpdating());
         final List<StatisticalIndicator> indicators = getProcessedIndicators();
-        // TODO: filter by user
-        set.setIndicators(indicators);
+        // filter by user
+        final List<StatisticalIndicator> result = new ArrayList<>();
+        for(StatisticalIndicator ind : indicators) {
+            if(hasPermission(ind, user)) {
+                result.add(ind);
+            }
+        }
+        set.setIndicators(result);
         return set;
     }
 
-    /**
-     * Trigger update on the data. Should refresh cached data for getIndicatorSet and track progress.
-     */
-    public void update() {
-        // TODO: not always new
-        new DataSourceUpdater(this).start();
+    public StatisticalIndicator getIndicator(User user, String indicatorId) {
+        try {
+            String json = JedisManager.get(getIndicatorMetadataKey(indicatorId));
+            StatisticalIndicator indicator = MAPPER.readValue(json, StatisticalIndicator.class);
+            if(hasPermission(indicator, user)) {
+                return indicator;
+            }
+            LOG.error("User doesn't have permissions to indicator ", indicatorId);
+        } catch (IOException ex) {
+            LOG.error(ex, "Couldn't read indicator data for is:", indicatorId);
+        }
+        return null;
+    }
+
+
+
+    public void onIndicatorProcessed(StatisticalIndicator indicator) {
+        // add work queue to be written for indicator listing
+        if(updater != null) {
+            updater.addToWorkQueue(indicator);
+        } else {
+            // should we save it to listing directly?
+        }
+        // this is used for metadata requests
+        saveIndicator(indicator);
+    }
+
+    private void saveIndicator(StatisticalIndicator indicator) {
+        try {
+            String json = MAPPER.writeValueAsString(indicator);
+            JedisManager.setex(getIndicatorMetadataKey(indicator.getId()), JedisManager.EXPIRY_TIME_DAY * 7, json);
+        } catch (JsonProcessingException ex) {
+            LOG.error(ex, "Error updating indicator metadata");
+        }
     }
 
 
@@ -99,6 +176,13 @@ public abstract class StatisticalDatasourcePlugin {
     protected String getIndicatorListKey() {
         return CACHE_PREFIX + getSource().getId() + CACHE_POSTFIX_LIST;
     }
+    /**
+     * Returns a Redis key that should hold client ready indicators as JSON
+     * @return
+     */
+    protected String getIndicatorMetadataKey(String id) {
+        return CACHE_PREFIX + getSource().getId() + CACHE_POSTFIX_METADATA + id;
+    }
 
     /**
      * Returns a Redis key that should status information as JSON for this datasource:
@@ -106,42 +190,12 @@ public abstract class StatisticalDatasourcePlugin {
      * @return
      */
     protected String getStatusKey() {
-        return CACHE_PREFIX + getSource().getId() + CACHE_POSTFIX_PROGRESS;
+        return CACHE_PREFIX + getSource().getId() + ":status";
     }
 
     public DataStatus getStatus() {
         String status = JedisManager.get(getStatusKey());
         return new DataStatus(status);
-    }
-
-    /**
-     * Returns a list of statistical data indicators, each with several granularity layers.
-     * @param user 
-     * @return
-     */
-    public abstract List<StatisticalIndicator> getIndicators(User user);
-    public List<StatisticalIndicator> getIndicators(User user, boolean noMetadata) {
-        return getIndicators(user);
-    }
-
-    public StatisticalIndicator getIndicator(User user, String indicatorId) {
-        for (StatisticalIndicator indicator : getIndicators(user)) {
-            if (indicator.getId().equals(indicatorId)) {
-                return indicator;
-            }
-        }
-        return null;
-    }
-
-    public StatisticalDatasource getSource() {
-        return source;
-    }
-
-    /**
-     * Hook for setting up components that the handler needs to handle requests
-     */
-    public void init(StatisticalDatasource source) {
-        this.source = source;
     }
 
     /**

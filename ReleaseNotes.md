@@ -95,6 +95,12 @@ Renamed classes to make it easier to separate between the two and corresponding 
 StatisticalIndicatorSelectors -> StatisticalIndicatorDataModel
 StatisticalIndicatorSelector -> StatisticalIndicatorDataDimension
 
+Refactored the indicator listing functionality for datasource adapters. There's a new method update() that should begin 
+processing the datasource for indicators and call onIndicatorProcessed() method for any indicators that are suitable for
+using in Oskari. This will be called from a background thread. For very user specific content and fast datasource you can 
+also override getIndicatorSet() method to return the user indicators directly. This way the update will not be called
+ as it's triggered by the default implementation of getIndicatorSet(). 
+
 ### service-base
 
 Added list operations for JedisManager: pushToList() and popList()

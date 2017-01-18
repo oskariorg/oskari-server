@@ -2,6 +2,7 @@ package fi.nls.oskari.control.statistics.plugins.user;
 
 import fi.mml.map.mapwindow.service.db.UserIndicatorService;
 import fi.mml.map.mapwindow.service.db.UserIndicatorServiceImpl;
+import fi.nls.oskari.control.statistics.data.IndicatorSet;
 import fi.nls.oskari.control.statistics.plugins.StatisticalDatasourcePlugin;
 import fi.nls.oskari.control.statistics.data.StatisticalIndicator;
 import fi.nls.oskari.domain.User;
@@ -20,7 +21,18 @@ public class UserIndicatorsStatisticalDatasourcePlugin extends StatisticalDataso
     }
 
     @Override
-    public List<StatisticalIndicator> getIndicators(User user) {
+    public IndicatorSet getIndicatorSet(User user) {
+        IndicatorSet set = new IndicatorSet();
+        set.setComplete(true);
+        set.setIndicators(getIndicators(user));
+        return set;
+    }
+
+    public void update() {
+        // NO-OP - getIndicatorSet responds immediately
+    }
+
+    private List<StatisticalIndicator> getIndicators(User user) {
         // Getting the general information of all the indicator layers.
         if (user == null) {
             return new ArrayList<>();

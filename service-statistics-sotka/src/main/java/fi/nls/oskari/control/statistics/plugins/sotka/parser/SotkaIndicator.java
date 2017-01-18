@@ -55,9 +55,7 @@ public class SotkaIndicator extends StatisticalIndicator {
      * @return true for valid parsing, false for validation errors.
      */
     public boolean parse(JSONObject jsonObject) {
-        return parse(jsonObject, true);
-    }
-    public boolean parse(JSONObject jsonObject, boolean includeMetadata) {
+
         try {
             this.id = String.valueOf(jsonObject.getInt("id"));
             this.localizedName = toLocalizationMap(jsonObject.getJSONObject("title"));
@@ -69,10 +67,6 @@ public class SotkaIndicator extends StatisticalIndicator {
             } else {
                 LOG.error("Region missing from indicator: " + this.id + ": " + String.valueOf(this.localizedName));
                 this.valid = false;
-            }
-            if(!includeMetadata) {
-                this.metadataFetched = true;
-                return this.valid;
             }
             // Note: Organization id is ignored here. At the moment it doesn't make sense to add to Oskari data model.
             // If in the future it is added, the id must be combined with the plugin id to make a global id of the source.

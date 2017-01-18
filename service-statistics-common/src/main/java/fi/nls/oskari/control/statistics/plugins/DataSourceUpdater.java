@@ -27,10 +27,7 @@ public class DataSourceUpdater extends Thread {
 
     public void run() {
         updateStarted();
-        List<StatisticalIndicator> list = plugin.getIndicators(null);
-        for(StatisticalIndicator indicator : list) {
-            addToWorkQueue(indicator);
-        }
+        plugin.update();
         updateCompleted();
     }
 
@@ -50,6 +47,7 @@ public class DataSourceUpdater extends Thread {
         } catch (JsonProcessingException ex) {
             LOG.error(ex, "Error updating indicator list");
         }
+        // if time between sync > threshold -> syncWorkToIndicators()
     }
     /**
      * Returns a Redis key that should hold currently processed indicators of this datasource as list.

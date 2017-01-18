@@ -16,17 +16,13 @@ public class EurostatStatisticalDatasourcePlugin extends StatisticalDatasourcePl
     private final static Logger LOG = LogFactory.getLogger(EurostatStatisticalDatasourcePlugin.class);
     private EurostatIndicatorsParser indicatorsParser;
 
-    private List<DatasourceLayer> layers;
     private EurostatConfig config;
 
-
     @Override
-    public List<StatisticalIndicator> getIndicators(User user) {
-        try {
-            List<StatisticalIndicator> indicators = indicatorsParser.parse(layers);
-            return indicators;
-        } catch (Exception e) {
-            return Collections.emptyList();
+    public void update() {
+        List<StatisticalIndicator> indicators = indicatorsParser.parse(getSource().getLayers());
+        for(StatisticalIndicator ind: indicators) {
+            onIndicatorProcessed(ind);
         }
     }
 
@@ -34,11 +30,8 @@ public class EurostatStatisticalDatasourcePlugin extends StatisticalDatasourcePl
     public void init(StatisticalDatasource source) {
         super.init(source);
         try {
-            layers = source.getLayers();
             config = new EurostatConfig(source.getConfigJSON(), source.getId());
             indicatorsParser = new EurostatIndicatorsParser(config);
-
-            LOG.debug("Eurostat layer mappings: ", layers);
         } catch (IOException e) {
             LOG.error(e, "Error getting indicators from Eurostat datasource:", config.getUrl());
         }

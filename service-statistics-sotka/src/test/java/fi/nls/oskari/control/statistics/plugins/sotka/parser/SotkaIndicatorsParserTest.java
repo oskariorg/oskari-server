@@ -41,7 +41,7 @@ public class SotkaIndicatorsParserTest {
         layerMap.put("kunta", 9l);
         layerMap.put("maakunta", 10l);
         layerMap.put("maa", 11l);
-        List<StatisticalIndicator> parsedObject = parser.parse(testResponse, layerMap, true);
+        List<StatisticalIndicator> parsedObject = parser.parse(testResponse, layerMap);
         assertTrue("The parsed object did not match the expected first objects.",
                 parsedObject.toString().startsWith(
                 "[{pluginId: fi.nls.oskari.control.statistics.plugins.sotka.SotkaStatisticalDatasourcePlugin, id: 4, "

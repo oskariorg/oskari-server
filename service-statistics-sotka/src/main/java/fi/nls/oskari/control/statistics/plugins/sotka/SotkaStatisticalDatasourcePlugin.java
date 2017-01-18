@@ -9,7 +9,6 @@ import fi.nls.oskari.control.statistics.plugins.db.StatisticalDatasource;
 import fi.nls.oskari.control.statistics.plugins.sotka.parser.SotkaIndicatorsParser;
 import fi.nls.oskari.control.statistics.plugins.sotka.requests.Indicators;
 import fi.nls.oskari.control.statistics.plugins.sotka.requests.SotkaRequest;
-import fi.nls.oskari.domain.User;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 
@@ -33,30 +32,30 @@ public class SotkaStatisticalDatasourcePlugin extends StatisticalDatasourcePlugi
     }
 
     @Override
-    public List<StatisticalIndicator> getIndicators(User user) {
-        return getIndicators(user, false);
+    public void update() {
+        List<StatisticalIndicator> indicators = getIndicators();
+        for(StatisticalIndicator ind: indicators) {
+            onIndicatorProcessed(ind);
+        }
     }
-    @Override
-    public List<StatisticalIndicator> getIndicators(User user, boolean noMetadata) {
-        boolean includeMetadata = !noMetadata;
+
+    private List<StatisticalIndicator> getIndicators() {
         try {
             final String cacheKey = "stats:" + config.getId() + ":indicatorlist";
-            final String cachedData = JedisManager.get(cacheKey + config.getUrl());
+            String data = JedisManager.get(cacheKey + config.getUrl());
 
-            if (cachedData != null) {
-                return indicatorsParser.parse(cachedData, layerMappings, includeMetadata);
+            if (data == null) {
+                // First getting general information of all the indicator layers.
+                // Note that some mandatory information about the layers is not given here,
+                // for example the year range, but must be requested separately for each indicator.
+                SotkaRequest request = SotkaRequest.getInstance(Indicators.NAME);
+                request.setBaseURL(config.getUrl());
+                data = request.getData();
+                JedisManager.setex(cacheKey, JedisManager.EXPIRY_TIME_DAY, data);
             }
 
-            // First getting general information of all the indicator layers.
-            // Note that some mandatory information about the layers is not given here,
-            // for example the year range, but must be requested separately for each indicator.
-            SotkaRequest request = SotkaRequest.getInstance(Indicators.NAME);
-            request.setBaseURL(config.getUrl());
-            String jsonResponse = request.getData();
-
-            JedisManager.setex(cacheKey, JedisManager.EXPIRY_TIME_DAY, jsonResponse);
             // We will later need to add the year range information to the preliminary information using separate requests.
-            return indicatorsParser.parse(jsonResponse, layerMappings, includeMetadata);
+            return indicatorsParser.parse(data, layerMappings);
         } catch (APIException e) {
             throw e;
         } catch (Exception e) {
@@ -72,8 +71,8 @@ public class SotkaStatisticalDatasourcePlugin extends StatisticalDatasourcePlugi
         final List<DatasourceLayer> layerRows = source.getLayers();
         layerMappings = new HashMap<>();
 
-        for (DatasourceLayer row : layerRows) {
-            layerMappings.put(row.getConfig("regionType").toLowerCase(), row.getMaplayerId());
+        for (DatasourceLayer layer : layerRows) {
+            layerMappings.put(layer.getConfig("regionType").toLowerCase(), layer.getMaplayerId());
         }
         LOG.debug("SotkaNET layer mappings: ", layerMappings);
     }

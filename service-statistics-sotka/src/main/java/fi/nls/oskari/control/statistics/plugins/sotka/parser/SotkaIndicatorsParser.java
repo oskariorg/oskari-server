@@ -22,7 +22,7 @@ public class SotkaIndicatorsParser {
         }
         config = obj;
     }
-    public List<StatisticalIndicator> parse(String response, Map<String, Long> sotkaLayersToOskariLayers, boolean includeMetadata) {
+    public List<StatisticalIndicator> parse(String response, Map<String, Long> sotkaLayersToOskariLayers) {
         List<StatisticalIndicator> indicatorList = new ArrayList<>();
         try {
             // We will simply map the response JSON into Oskari data model without fancy streaming and such.
@@ -32,7 +32,7 @@ public class SotkaIndicatorsParser {
             LOG.info("Parsing indicator response of length: " + responseJSON.length());
             for (int i = 0; i < responseJSON.length(); i++) {
                 SotkaIndicator sotkaIndicator = new SotkaIndicator(sotkaLayersToOskariLayers, config);
-                if (sotkaIndicator.parse(responseJSON.getJSONObject(i), includeMetadata)) {
+                if (sotkaIndicator.parse(responseJSON.getJSONObject(i))) {
                     indicatorList.add(sotkaIndicator);
                 }
             }
