@@ -103,7 +103,8 @@ also override getIndicatorSet() method to return the user indicators directly. T
 
 ### service-base
 
-Added list operations for JedisManager: pushToList() and popList()
+Added list operations for JedisManager: pushToList() and popList().
+Added convenience method for checking if a key holds value (returns length of the value. Assumes string value): getValueStringLength().
 
 ## 1.40
 

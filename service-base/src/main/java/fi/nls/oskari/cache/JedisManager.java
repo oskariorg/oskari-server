@@ -390,6 +390,31 @@ public class JedisManager {
     }
 
     /**
+     * Returns length of string for a key (0 if key doesn't exist).
+     * -1 means system level error.
+     * @param key
+     * @return
+     */
+    public static long getValueStringLength(String key) {
+        Jedis jedis = instance.getJedis();
+        if(jedis == null) {
+            return -1;
+        }
+
+        try {
+            return jedis.strlen(key);
+        } catch(JedisConnectionException e) {
+            log.error("Failed to strlen", key + "* returning broken connection...");
+            pool.returnBrokenResource(jedis);
+            log.error("Broken connection closed");
+        } catch (Exception e) {
+            log.error("Getting key length", key + " failed miserably");
+        } finally {
+            instance.returnJedis(jedis);
+        }
+        return -1;
+    }
+    /**
      * Returns the number of elements inside the list after the push operation.
      * -1 means system level error.
      * @param key
