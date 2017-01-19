@@ -80,6 +80,9 @@ public class StatisticalIndicator {
      * Please note that while it would be convenient to just pass untyped JSON here,
      * it would make developing future plugins more error prone.
      */
+    public void setName(Map<String, String> localized) {
+        name = localized;
+    }
     public Map<String, String> getName() {
         return name;
     }
@@ -94,11 +97,17 @@ public class StatisticalIndicator {
         return dataModel;
     }
 
+    public void setSource(Map<String, String> localized) {
+        source = localized;
+    }
     public Map<String, String> getSource() {
         return source;
     }
     @JsonProperty("desc")
     public Map<String, String> getDescription() {
         return desc;
+    }
+    public void setDescription(Map<String, String> localized) {
+        desc = localized;
     }
 }

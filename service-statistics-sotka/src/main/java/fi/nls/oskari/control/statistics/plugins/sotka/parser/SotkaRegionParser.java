@@ -1,6 +1,5 @@
 package fi.nls.oskari.control.statistics.plugins.sotka.parser;
 
-
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
@@ -108,6 +107,18 @@ public class SotkaRegionParser {
 
     /**
      * Makes HTTP get request and parses the responses JSON into HashMaps.
+     * {
+         "id": 833,
+         "code": "1",
+         "category": "ALUEHALLINTOVIRASTO",
+         "title": {
+         "fi": "Etelä-Suomen AVIn alue",
+         "en": "Area for Southern Finland AVI",
+         "sv": "Området för Södra Finlands RFV"
+         },
+         "memberOf": [],
+         "uri": "http://www.yso.fi/onto/kunnat/ahv1"
+         }
      */
     public void getData() {
         final String cacheKey = "stats:" + config.getId() + ":regions:" + url;

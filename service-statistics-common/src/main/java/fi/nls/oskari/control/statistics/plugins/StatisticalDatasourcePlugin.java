@@ -4,8 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fi.nls.oskari.cache.JedisManager;
-import fi.nls.oskari.control.statistics.data.IndicatorSet;
-import fi.nls.oskari.control.statistics.data.StatisticalIndicator;
+import fi.nls.oskari.control.statistics.data.*;
 import fi.nls.oskari.control.statistics.plugins.db.StatisticalDatasource;
 import fi.nls.oskari.domain.User;
 import fi.nls.oskari.log.LogFactory;
@@ -14,6 +13,7 @@ import fi.nls.oskari.log.Logger;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Each statistical datasource plugin encapsulates access to a single external API
@@ -61,6 +61,17 @@ public abstract class StatisticalDatasourcePlugin {
      */
     public abstract void update();
 
+    /**
+     * Method to fetch indicator data.
+     * @param indicator
+     * @param params
+     * @param regionset
+     * @return
+     */
+    public Map<String, IndicatorValue> getIndicatorValues(StatisticalIndicator indicator, StatisticalIndicatorDataModel params, StatisticalIndicatorLayer regionset) {
+        // This function should be ovv
+        return regionset.getIndicatorValues(params);
+    }
     /**
      * Returns true by default. You should override this in a plugin if restrictions are required.
      * @param indicator
@@ -130,8 +141,6 @@ public abstract class StatisticalDatasourcePlugin {
         return null;
     }
 
-
-
     public void onIndicatorProcessed(StatisticalIndicator indicator) {
         // add work queue to be written for indicator listing
         if(updater != null) {
@@ -152,6 +161,9 @@ public abstract class StatisticalDatasourcePlugin {
         }
     }
 
+    public boolean isCacheEmpty() {
+        return JedisManager.getValueStringLength(getIndicatorListKey()) < 1;
+    }
 
     protected List<StatisticalIndicator> getProcessedIndicators() {
         final List<StatisticalIndicator> existingIndicators = new ArrayList<>();

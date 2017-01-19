@@ -20,6 +20,11 @@ public class DataSourceUpdater extends Thread {
 
     private StatisticalDatasourcePlugin plugin;
     private static final ObjectMapper MAPPER = new ObjectMapper();
+    private boolean wasCacheEmptyOnStart = false;
+    private long lastSync = -1;
+    private long indicatorsProcessedSinceLastSync = 0;
+    // 30 seconds between syncs
+    private long syncThreshold = 20 * 1000;
 
     public DataSourceUpdater(StatisticalDatasourcePlugin plugin) {
         this.plugin = plugin;
@@ -34,6 +39,9 @@ public class DataSourceUpdater extends Thread {
     protected void updateStarted() {
         // remove any previous work
         JedisManager.del(getIndicatorListWorkKey());
+        wasCacheEmptyOnStart = plugin.isCacheEmpty();
+        lastSync = System.currentTimeMillis();
+        indicatorsProcessedSinceLastSync = 0;
         // setup status
         DataStatus status = plugin.getStatus();
         status.setUpdating(true);
@@ -41,13 +49,19 @@ public class DataSourceUpdater extends Thread {
         JedisManager.setex(plugin.getStatusKey(), JedisManager.EXPIRY_TIME_DAY * 7, status.toJSON().toString());
     }
     protected void addToWorkQueue(StatisticalIndicator indicator) {
+        // maybe add a metric how many indicators are processed/timeunit at some point
         try {
             String json = MAPPER.writeValueAsString(indicator);
             JedisManager.pushToList(getIndicatorListWorkKey(), json);
+            indicatorsProcessedSinceLastSync++;
         } catch (JsonProcessingException ex) {
             LOG.error(ex, "Error updating indicator list");
         }
-        // if time between sync > threshold -> syncWorkToIndicators()
+        // we are populating empty cache AND if time between sync > threshold -> syncWorkToIndicators()
+        // wasCacheEmptyOnStart is important as it switches between full rewrite AND gradual update
+        if(wasCacheEmptyOnStart && (indicatorsProcessedSinceLastSync > 30 || System.currentTimeMillis() - lastSync > syncThreshold)) {
+            syncWorkToIndicators();
+        }
     }
     /**
      * Returns a Redis key that should hold currently processed indicators of this datasource as list.
@@ -75,14 +89,16 @@ public class DataSourceUpdater extends Thread {
         return processIndicators;
     }
 
+    /**
+     * Should be called only after the whole listing has been processed IF cache already has indicator data (rewrites the previous list).
+     * Should be called multiple times if cache was EMPTY when the update started (gradually adds to the existing listing).
+     */
     protected void syncWorkToIndicators() {
+        lastSync = System.currentTimeMillis();
+        indicatorsProcessedSinceLastSync = 0;
         final List<StatisticalIndicator> processIndicators = getWorkQueue();
         // read existing list and merge processed ones to it
-        final List<StatisticalIndicator> existingIndicators = plugin.getProcessedIndicators();
-
-        // TODO: Gather results under a temporary key if this is NOT the first run (process indicators have previous data)
-        // This was we can update an existing listing with up to date data and not remove indicators that are still under
-        // processing
+        final List<StatisticalIndicator> existingIndicators = getProcessedIndicators();
 
         // merge
         existingIndicators.addAll(processIndicators);
@@ -98,6 +114,15 @@ public class DataSourceUpdater extends Thread {
             LOG.error(ex, "Error updating indicator list");
         }
     }
+    private List<StatisticalIndicator> getProcessedIndicators() {
+        if(wasCacheEmptyOnStart) {
+            // continue to add to the existing ones
+            return plugin.getProcessedIndicators();
+        }
+        // write to new list if we are updating a cached list
+        return new ArrayList<>();
+    }
+
     protected void updateCompleted() {
         // sync the remaining work list to actual indicators listing
         syncWorkToIndicators();

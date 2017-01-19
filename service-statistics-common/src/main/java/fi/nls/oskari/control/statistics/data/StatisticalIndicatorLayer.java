@@ -49,4 +49,8 @@ public class StatisticalIndicatorLayer {
      * @return Filtered results so that each region id has one IndicatorValue.
      */
     public Map<String, IndicatorValue> getIndicatorValues(StatisticalIndicatorDataModel selectors) {return null;}
+
+    public String toString() {
+        return "{id: " + getOskariLayerId() + ", valueType: " + getIndicatorValueType() + "}";
+    }
 }

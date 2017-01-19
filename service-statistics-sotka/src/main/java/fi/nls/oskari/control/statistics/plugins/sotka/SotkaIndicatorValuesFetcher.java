@@ -68,10 +68,7 @@ public class SotkaIndicatorValuesFetcher {
             String[] yearsArray = years.toArray(new String[years.size()]);
             request.setYears(yearsArray);
             request.setIndicator(indicator);
-            String jsonResponse = request.getData();
-            Map<Integer, IndicatorValue> result = parser.parse(jsonResponse);
-            // FIXME: Cache this result, key by plugin, selectors and indicator id.
-            return result;
+            return parser.parse(request.getData());
             
         } catch (JSONException e) {
             e.printStackTrace();
