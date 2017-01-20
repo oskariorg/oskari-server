@@ -2,6 +2,7 @@ package fi.nls.oskari.control.statistics.plugins;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fi.nls.oskari.control.statistics.data.StatisticalIndicator;
+import fi.nls.oskari.control.statistics.data.StatisticalIndicatorLayer;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.JSONHelper;
 import org.json.JSONObject;
@@ -38,5 +39,20 @@ public class DataSourceUpdaterTest {
 
         String full = MAPPER.writeValueAsString(indicator);
         assertTrue("List serialization should match", JSONHelper.isEqual(JSONHelper.createJSONObject(full), JSONHelper.createJSONObject(fullIndicator)));
+    }
+
+    @Test
+    public void layerJSONTest()
+            throws Exception {
+        StatisticalIndicatorLayer layer = new StatisticalIndicatorLayer(1, "indicatorId");
+        final String key = "testing";
+        final String value = "param value";
+        layer.addParam(key, value);
+        String json = MAPPER.writeValueAsString(layer);
+        final String expected = "{\"oskariLayerId\":1,\"indicatorId\":\"indicatorId\",\"params\":{\"testing\":\"param\"},\"indicatorValueType\":\"FLOAT\"}";
+        assertTrue("Layer serialization should match", JSONHelper.isEqual(JSONHelper.createJSONObject(expected), JSONHelper.createJSONObject(json)));
+
+        StatisticalIndicatorLayer layer_fromJson = MAPPER.readValue(json, StatisticalIndicatorLayer.class);
+        assertEquals("Param should have been deserialized correctly", value, layer_fromJson.getParam(key));
     }
 }

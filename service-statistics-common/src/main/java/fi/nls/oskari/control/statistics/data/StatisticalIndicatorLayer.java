@@ -36,6 +36,14 @@ public class StatisticalIndicatorLayer {
     }
 
     /**
+     * Note! Having the getter triggers proper json serialization
+     * @return
+     */
+    public Map<String, String> getParams() {
+        return params;
+    }
+
+    /**
      *  The layer id in Oskari, for example: 9. This maps to the name in the oskari_maplayers table.
      */
     public long getOskariLayerId() {
