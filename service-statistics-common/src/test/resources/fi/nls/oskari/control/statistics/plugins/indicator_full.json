@@ -3,11 +3,13 @@
   "layers": [{
     "indicatorValueType": "FLOAT",
     "oskariLayerId": 6,
-    "indicatorId":null
+    "indicatorId":null,
+    "params" : {}
   }, {
     "indicatorValueType": "FLOAT",
     "oskariLayerId": 7,
-    "indicatorId":null
+    "indicatorId":null,
+    "params" : {}
   }],
   "dataModel": {
     "dimensions": [{

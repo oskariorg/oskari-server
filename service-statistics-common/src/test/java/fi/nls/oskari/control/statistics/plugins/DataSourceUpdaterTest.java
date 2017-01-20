@@ -38,7 +38,7 @@ public class DataSourceUpdaterTest {
         assertTrue("List serialization should match", JSONHelper.isEqual(JSONHelper.createJSONObject(result), JSONHelper.createJSONObject(expectedListItem)));
 
         String full = MAPPER.writeValueAsString(indicator);
-        assertTrue("List serialization should match", JSONHelper.isEqual(JSONHelper.createJSONObject(full), JSONHelper.createJSONObject(fullIndicator)));
+        assertTrue("Metadata serialization should match", JSONHelper.isEqual(JSONHelper.createJSONObject(full), JSONHelper.createJSONObject(fullIndicator)));
     }
 
     @Test
@@ -49,7 +49,7 @@ public class DataSourceUpdaterTest {
         final String value = "param value";
         layer.addParam(key, value);
         String json = MAPPER.writeValueAsString(layer);
-        final String expected = "{\"oskariLayerId\":1,\"indicatorId\":\"indicatorId\",\"params\":{\"testing\":\"param\"},\"indicatorValueType\":\"FLOAT\"}";
+        final String expected = "{\"oskariLayerId\":1,\"indicatorId\":\"indicatorId\",\"params\":{\"testing\":\"param value\"},\"indicatorValueType\":\"FLOAT\"}";
         assertTrue("Layer serialization should match", JSONHelper.isEqual(JSONHelper.createJSONObject(expected), JSONHelper.createJSONObject(json)));
 
         StatisticalIndicatorLayer layer_fromJson = MAPPER.readValue(json, StatisticalIndicatorLayer.class);
