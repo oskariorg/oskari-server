@@ -1,10 +1,8 @@
 package fi.nls.oskari.statistics.eurostat;
 
 import fi.nls.oskari.cache.JedisManager;
-import fi.nls.oskari.control.statistics.data.IdNamePair;
-import fi.nls.oskari.control.statistics.data.StatisticalIndicator;
-import fi.nls.oskari.control.statistics.data.StatisticalIndicatorDataModel;
-import fi.nls.oskari.control.statistics.data.StatisticalIndicatorDataDimension;
+import fi.nls.oskari.control.statistics.data.*;
+import fi.nls.oskari.control.statistics.plugins.StatisticalDatasourcePlugin;
 import fi.nls.oskari.control.statistics.plugins.db.DatasourceLayer;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
@@ -34,10 +32,11 @@ public class EurostatIndicatorsParser {
     private final static Logger LOG = LogFactory.getLogger(EurostatIndicatorsParser.class);
     SimpleNamespaceContext NAMESPACE_CTX = new SimpleNamespaceContext();
     private EurostatConfig config;
-    private EurostatStatisticalIndicatorLayer layer;
+    private StatisticalDatasourcePlugin plugin;
 
-    public EurostatIndicatorsParser(EurostatConfig config) throws java.io.IOException {
+    public EurostatIndicatorsParser(StatisticalDatasourcePlugin plugin, EurostatConfig config) throws java.io.IOException {
         this.config = config;
+        this.plugin = plugin;
         NAMESPACE_CTX.addNamespace(XMLConstants.DEFAULT_NS_PREFIX, "http://www.sdmx.org/resources/sdmxml/schemas/v2_1");
         NAMESPACE_CTX.addNamespace("xml", "http://www.w3.org/XML/1998/namespace");
         NAMESPACE_CTX.addNamespace("mes", "http://www.sdmx.org/resources/sdmxml/schemas/v2_1/message");
@@ -46,7 +45,7 @@ public class EurostatIndicatorsParser {
 
     }
 
-    public boolean setMetadata(EurostatIndicator indicator, String dataStructureID) throws Exception {
+    public boolean setMetadata(StatisticalIndicator indicator, String dataStructureID) throws Exception {
 // here should return boolean
         XMLStreamReader reader = null;
         boolean hasGEO = false;
@@ -103,7 +102,6 @@ public class EurostatIndicatorsParser {
                 }
 
             }
-            String indicatorString= indicator.getId();
             populateTimeDimension(indicator);
         } catch (java.lang.Exception e) {
             e.printStackTrace();
@@ -124,10 +122,7 @@ public class EurostatIndicatorsParser {
         return config.getUrl() + pUrl;
     }
 
-    public List<StatisticalIndicator> parse(List<DatasourceLayer> layers) {
-
-
-        List<StatisticalIndicator> list = new ArrayList<>();
+    public void parse(List<DatasourceLayer> layers) {
 
         XMLStreamReader reader = null;
 
@@ -149,21 +144,9 @@ public class EurostatIndicatorsParser {
             AXIOMXPath xpath_names = XmlHelper.buildXPath("com:Name", NAMESPACE_CTX);
 
             List<OMElement> indicatorsElement = xpath_indicator.selectNodes(ele);
-            int count= 0;
             for (OMElement indicator : indicatorsElement) {
                 // str:Dataflow
-                count++;
-
-                if (count < 550 || count>600) {
-                    // at this range there should be indicators with NUTS areas as regions
-                    continue;
-                }
-                if (list.size() > 40) {
-                    // have 10 indicators with geo:
-                    // break so we don't need to wait all day for the rest to load
-                    break;
-                }
-                EurostatIndicator item = new EurostatIndicator();
+                StatisticalIndicator item = new StatisticalIndicator();
                 String id = indicator.getAttributeValue(QName.valueOf("id"));
                 System.out.println(id);
                 item.setId(id);// itemId = nama_gdp_c
@@ -181,15 +164,15 @@ public class EurostatIndicatorsParser {
                 OMElement ref = XmlHelper.getChild(struct, "Ref");
                 String DSDid = ref.getAttributeValue(QName.valueOf("id"));
                 for (DatasourceLayer layer : layers) {
-                    item.addLayer(new EurostatStatisticalIndicatorLayer(layer.getMaplayerId(), item.getId(), config.getUrl()));
+                    item.addLayer(new StatisticalIndicatorLayer(layer.getMaplayerId(), item.getId()));
                 }
                 boolean indicatorHasRegion = setMetadata(item, DSDid);
                 if (indicatorHasRegion) {
-                    list.add(item);
+                    plugin.onIndicatorProcessed(item);
                 }
             }
 
-        } catch (java.lang.Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         } finally {
             if (reader != null) {
@@ -199,7 +182,6 @@ public class EurostatIndicatorsParser {
                 }
             }
         }
-        return list;
     }
 
     private InputStream getMetadata(String pUrl, String dataStructureID) {
@@ -222,12 +204,11 @@ public class EurostatIndicatorsParser {
      */
 
 
-    private void populateTimeDimension(EurostatIndicator indicator) {
+    private void populateTimeDimension(StatisticalIndicator indicator) {
 
         StatisticalIndicatorDataDimension selector = new StatisticalIndicatorDataDimension("Time");
         StatisticalIndicatorDataModel selectors = indicator.getDataModel();
         String indicatorID = indicator.getId();
-        EurostatStatisticalIndicatorLayer layer = (EurostatStatisticalIndicatorLayer) indicator.getLayers().get(0);
 
         for (StatisticalIndicatorDataDimension selectedSelector: selectors.getDimensions()) {
             Collection<IdNamePair> allowValue = selectedSelector.getAllowedValues();
@@ -236,7 +217,7 @@ public class EurostatIndicatorsParser {
             }
         }
 
-        String finalUrl =  layer.constructUrl(selectors);
+        String finalUrl = config.getURLforData(selectors, indicatorID);
         final JSONObject json = getTimeJasonObject(finalUrl);
 
         if(json == null) {

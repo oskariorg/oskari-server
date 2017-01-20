@@ -68,10 +68,7 @@ public abstract class StatisticalDatasourcePlugin {
      * @param regionset
      * @return
      */
-    public Map<String, IndicatorValue> getIndicatorValues(StatisticalIndicator indicator, StatisticalIndicatorDataModel params, StatisticalIndicatorLayer regionset) {
-        // This function should be ovv
-        return regionset.getIndicatorValues(params);
-    }
+    public abstract Map<String, IndicatorValue> getIndicatorValues(StatisticalIndicator indicator, StatisticalIndicatorDataModel params, StatisticalIndicatorLayer regionset);
     /**
      * Returns true by default. You should override this in a plugin if restrictions are required.
      * @param indicator

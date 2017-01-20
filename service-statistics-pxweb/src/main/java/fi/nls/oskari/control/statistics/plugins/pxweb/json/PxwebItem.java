@@ -3,7 +3,6 @@ package fi.nls.oskari.control.statistics.plugins.pxweb.json;
 /**
  * Created by JacksonGenerator on 19.9.2016.
  */
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 

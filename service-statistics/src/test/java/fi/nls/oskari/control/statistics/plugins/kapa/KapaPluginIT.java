@@ -75,7 +75,7 @@ public class KapaPluginIT {
             @Override
             public HttpURLConnection answer(InvocationOnMock invocation) throws Throwable {
                 url = invocation.getArguments()[0].toString();
-                return (HttpURLConnection) new HttpURLConnection(null) {
+                return new HttpURLConnection(null) {
                     @SuppressWarnings("deprecation")
                     @Override
                     public InputStream getInputStream() {
@@ -148,7 +148,7 @@ public class KapaPluginIT {
             // Selecting the first allowed value for each selector to define a proper selector.
             selector.setValue(selector.getAllowedValues().iterator().next().getKey());
         }
-        Map<String, IndicatorValue> indicatorValues = indicators.get(0).getLayers().get(0).getIndicatorValues(selectors);
+        Map<String, IndicatorValue> indicatorValues = kapaPlugin.getIndicatorValues(indicators.get(0), selectors, indicators.get(0).getLayers().get(0));
         assertNotNull("Indicator values response was null.", indicatorValues);
         assertTrue("IndicatorValues result was too small: " + String.valueOf(indicatorValues), indicatorValues.size() > 2);
     }

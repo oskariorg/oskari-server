@@ -37,6 +37,9 @@ public class StatisticalIndicator {
     public Boolean isPublic() {
         return isPublic;
     }
+    public void setPublic(boolean isPublic) {
+        this.isPublic = isPublic;
+    }
     public void addLayer(StatisticalIndicatorLayer layer) {
         layers.add(layer);
     }
@@ -86,6 +89,7 @@ public class StatisticalIndicator {
     public Map<String, String> getName() {
         return name;
     }
+
     public void addName(String lang, String name){
         this.name.put(lang, name);
     }
@@ -94,9 +98,15 @@ public class StatisticalIndicator {
         this.dataModel = dataModel;
     }
     public StatisticalIndicatorDataModel getDataModel() {
+        if(dataModel == null) {
+            dataModel = new StatisticalIndicatorDataModel();
+        }
         return dataModel;
     }
 
+    public void addSource(String lang, String name){
+        this.source.put(lang, name);
+    }
     public void setSource(Map<String, String> localized) {
         source = localized;
     }
@@ -106,6 +116,9 @@ public class StatisticalIndicator {
     @JsonProperty("desc")
     public Map<String, String> getDescription() {
         return desc;
+    }
+    public void addDescription(String lang, String name){
+        this.desc.put(lang, name);
     }
     public void setDescription(Map<String, String> localized) {
         desc = localized;

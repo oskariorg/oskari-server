@@ -1,12 +1,14 @@
 package fi.nls.oskari.control.statistics.plugins.kapa;
 
+import fi.nls.oskari.control.statistics.data.IndicatorValue;
+import fi.nls.oskari.control.statistics.data.StatisticalIndicatorDataModel;
+import fi.nls.oskari.control.statistics.data.StatisticalIndicatorLayer;
 import fi.nls.oskari.control.statistics.plugins.StatisticalDatasourcePlugin;
 import fi.nls.oskari.control.statistics.data.StatisticalIndicator;
 import fi.nls.oskari.control.statistics.plugins.db.DatasourceLayer;
 import fi.nls.oskari.control.statistics.plugins.db.StatisticalDatasource;
 import fi.nls.oskari.control.statistics.plugins.kapa.parser.KapaIndicatorsParser;
 import fi.nls.oskari.control.statistics.plugins.kapa.requests.KapaRequest;
-import fi.nls.oskari.domain.User;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 
@@ -18,6 +20,7 @@ public class KapaStatisticalDatasourcePlugin extends StatisticalDatasourcePlugin
     private final static Logger LOG = LogFactory.getLogger(KapaStatisticalDatasourcePlugin.class);
     private KapaIndicatorsParser indicatorsParser;
 
+    private KapaIndicatorValuesFetcher indicatorValuesFetcher = new KapaIndicatorValuesFetcher();
     /**
      * Maps the KaPa layer identifiers to Oskari layers.
      */
@@ -38,6 +41,10 @@ public class KapaStatisticalDatasourcePlugin extends StatisticalDatasourcePlugin
     }
 
     @Override
+    public Map<String, IndicatorValue> getIndicatorValues(StatisticalIndicator indicator, StatisticalIndicatorDataModel params, StatisticalIndicatorLayer regionset) {
+        return indicatorValuesFetcher.get(params, indicator.getId());
+    }
+    @Override
     public void init(StatisticalDatasource source) {
         super.init(source);
         // Fetching the layer mapping from the database.
@@ -45,9 +52,10 @@ public class KapaStatisticalDatasourcePlugin extends StatisticalDatasourcePlugin
         final List<DatasourceLayer> layerRows = source.getLayers();
         layerMappings = new HashMap<>();
 
-        for (DatasourceLayer row : layerRows) {
-            layerMappings.put(row.getConfig("regionType").toLowerCase(), row.getMaplayerId());
+        for (DatasourceLayer layer : layerRows) {
+            layerMappings.put(layer.getConfig("regionType").toLowerCase(), layer.getMaplayerId());
         }
+        indicatorValuesFetcher.init();
         LOG.debug("KaPa layer mappings: ", layerMappings);
     }
 }

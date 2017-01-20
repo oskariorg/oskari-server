@@ -103,7 +103,7 @@ public class StatisticalDatasourcePluginManagerIT {
             // Selecting the first allowed value for each selector to define a proper selector.
             selector.setValue(selector.getAllowedValues().iterator().next().getKey());
         }
-        Map<String, IndicatorValue> indicatorValues = indicators.get(0).getLayers().get(0).getIndicatorValues(selectors);
+        Map<String, IndicatorValue> indicatorValues = sotkaPlugin.getIndicatorValues(indicators.get(0), selectors, indicators.get(0).getLayers().get(0));
         assertNotNull("Indicator values response was null.", indicatorValues);
         assertTrue("IndicatorValues result was too small: " + String.valueOf(indicatorValues), indicatorValues.size() > 2);
     }

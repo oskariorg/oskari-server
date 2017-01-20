@@ -3,6 +3,7 @@ package fi.nls.oskari.control.statistics.data;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -16,6 +17,7 @@ import java.util.Map;
 public class StatisticalIndicatorLayer {
     private long id;
     private String indicatorId;
+    private HashMap<String, String> params = new HashMap<>();
     private IndicatorValueType indicatorValueType =  IndicatorValueType.FLOAT;
 
     @JsonCreator
@@ -23,6 +25,14 @@ public class StatisticalIndicatorLayer {
                                      @JsonProperty("indicatorId") String indicatorId) {
         this.id = id;
         this.indicatorId = indicatorId;
+    }
+
+    public void addParam(String key, String value) {
+        params.put(key, value);
+    }
+
+    public String getParam(String key) {
+        return params.get(key);
     }
 
     /**
@@ -43,12 +53,9 @@ public class StatisticalIndicatorLayer {
     public IndicatorValueType getIndicatorValueType() {
         return indicatorValueType;
     }
-
-    /**
-     * @param selectors A set of selected values for selectors used to filter the results.
-     * @return Filtered results so that each region id has one IndicatorValue.
-     */
-    public Map<String, IndicatorValue> getIndicatorValues(StatisticalIndicatorDataModel selectors) {return null;}
+    public void setIndicatorValueType(IndicatorValueType type) {
+        indicatorValueType = type;
+    }
 
     public String toString() {
         return "{id: " + getOskariLayerId() + ", valueType: " + getIndicatorValueType() + "}";
