@@ -1,6 +1,7 @@
 package fi.nls.oskari.worker;
 
 import fi.nls.oskari.service.OskariComponent;
+import fi.nls.oskari.util.PropertyUtil;
 
 import java.util.Map;
 
@@ -17,4 +18,9 @@ import java.util.Map;
 public abstract class ScheduledJob extends OskariComponent {
 
     public abstract void execute(Map<String, Object> params);
+
+    public String getCronLine() {
+        final String key = String.format("oskari.scheduler.job.%s", getName());
+        return PropertyUtil.getOptional(key + ".cronLine");
+    }
 }

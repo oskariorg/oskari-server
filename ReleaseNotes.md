@@ -100,6 +100,14 @@ processing the datasource for indicators and call onIndicatorProcessed() method 
 using in Oskari. This will be called from a background thread. For very user specific content and fast datasource you can 
 also override getIndicatorSet() method to return the user indicators directly. This way the update will not be called
  as it's triggered by the default implementation of getIndicatorSet(). 
+ 
+Added a scheduled task to update statistical datasources data to cache. It runs by default at 4 AM each night, but can be configured in oskari-ext.properties:
+
+    oskari.scheduler.job.StatisticsDatasources.cronLine=0 0 4 * * ?
+    
+To disable running it you can set the value to empty
+
+    oskari.scheduler.job.StatisticsDatasources.cronLine=
 
 ### service-base
 

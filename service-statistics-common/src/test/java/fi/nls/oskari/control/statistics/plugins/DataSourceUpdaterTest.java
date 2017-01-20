@@ -5,7 +5,6 @@ import fi.nls.oskari.control.statistics.data.StatisticalIndicator;
 import fi.nls.oskari.control.statistics.data.StatisticalIndicatorLayer;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.JSONHelper;
-import org.json.JSONObject;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
