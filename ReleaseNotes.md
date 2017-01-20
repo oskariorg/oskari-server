@@ -108,6 +108,24 @@ Added a scheduled task to update statistical datasources data to cache. It runs 
 To disable running it you can set the value to empty
 
     oskari.scheduler.job.StatisticsDatasources.cronLine=
+    
+Statistical datasource configuration in the database can now include hints for sorting indicator dimension values: 
+
+    {
+      "hints" : {
+        "dimensions" : [ {
+          "id" : "year",
+          "sort" : "DESC"
+        }, {
+          "id" : "gender",
+          "default" : "total"
+        }]
+      }
+    }
+
+Where id value will match the id of a datadimension item in indicator datamodel. Other keys affect the order of 
+allowed values for that dimension. Sort (if present) will be done first with either DESC or ASC value. If default is present
+ the matching allowed value will be moved as the first value in allowed values.
 
 ### service-base
 

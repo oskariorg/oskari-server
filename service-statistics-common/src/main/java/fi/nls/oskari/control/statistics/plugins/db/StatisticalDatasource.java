@@ -20,6 +20,7 @@ public class StatisticalDatasource {
     private List<DatasourceLayer> layers = new ArrayList<>();
     private long updateInterval = 1000 * 60 * 60 * 24;
     private long cachePeriod = updateInterval * 7;
+    private JSONObject hints;
 
     public List<DatasourceLayer> getLayers() {
         return layers;
@@ -91,7 +92,24 @@ public class StatisticalDatasource {
         this.locale = locale;
         localeJSON = null;
     }
+    private JSONObject resolveHints() {
+        JSONObject config = getConfigJSON();
+        if(config == null) {
+            return new JSONObject();
+        }
+        JSONObject hints = config.optJSONObject("hints");
+        if(hints == null) {
+            return new JSONObject();
+        }
+        return hints;
+    }
 
+    public JSONObject getHints() {
+        if(hints == null) {
+            hints = resolveHints();
+        }
+        return hints;
+    }
     public JSONObject getConfigJSON() {
         return JSONHelper.createJSONObject(config);
     }

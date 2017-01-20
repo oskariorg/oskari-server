@@ -3,8 +3,7 @@ package fi.nls.oskari.control.statistics.data;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import fi.nls.oskari.control.statistics.plugins.APIException;
 
-import java.util.ArrayList;
-import java.util.Collection;
+import java.util.*;
 
 /**
  * This class describes the potential options the user has to limit the indicator query.
@@ -17,7 +16,7 @@ import java.util.Collection;
 public class StatisticalIndicatorDataDimension {
     private String id;
     private String value = null;
-    private Collection<IdNamePair> allowedValues = new ArrayList<>();
+    private List<IdNamePair> allowedValues = new ArrayList<>();
     private String name = null;
 
     public StatisticalIndicatorDataDimension(String id) {
@@ -75,11 +74,35 @@ public class StatisticalIndicatorDataDimension {
     public String getValue() {
         return value;
     }
-    public Collection<IdNamePair> getAllowedValues() {
+    public List<IdNamePair> getAllowedValues() {
         return allowedValues;
     }
     @Override
     public String toString() {
         return "{ id: " + id + ", value: " + value + ", allowedValues: " + String.valueOf(allowedValues) + "}";
+    }
+
+    public void useDefaultValue(String value) {
+        // sort allowed values to have default as first
+        IdNamePair found = null;
+        for(IdNamePair pair : allowedValues) {
+            if(pair.getKey().equalsIgnoreCase(value)) {
+                found = pair;
+                break;
+            }
+        }
+        if(found != null) {
+            allowedValues.remove(found);
+            allowedValues.add(0, found);
+        }
+    }
+
+    public void sort(boolean descending) {
+        // sort allowed values
+        Comparator<IdNamePair> comparator = null;
+        if(descending) {
+            comparator = Collections.reverseOrder();
+        }
+        Collections.sort(allowedValues, comparator);
     }
 }

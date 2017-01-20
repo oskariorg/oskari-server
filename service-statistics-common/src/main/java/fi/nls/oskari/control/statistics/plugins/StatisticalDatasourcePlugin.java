@@ -9,6 +9,9 @@ import fi.nls.oskari.control.statistics.plugins.db.StatisticalDatasource;
 import fi.nls.oskari.domain.User;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.util.JSONHelper;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -85,8 +88,10 @@ public abstract class StatisticalDatasourcePlugin {
         if(updater == null) {
             updater = new DataSourceUpdater(this);
         }
-        // check if already running?
-        updater.start();
+        // TODO: cancel previous if running?
+        Thread thread = new Thread(updater);
+        thread.setPriority(Thread.MIN_PRIORITY);
+        thread.start();
     }
 
     /**
@@ -138,7 +143,42 @@ public abstract class StatisticalDatasourcePlugin {
         return null;
     }
 
+    /**
+     * Datasource config can have hints like this to for example sort out allowed values:
+     * {
+     *     "hints" : {
+     *         "dimensions" : [ {
+     *             "id" : "year",
+     *             "sort" : "DESC",
+     *             "default" : "2017"
+     *         }]
+     *     }
+     * }
+     * @param indicator
+     */
+    public void handleHints(StatisticalIndicator indicator) {
+        JSONObject hints = getSource().getHints();
+        JSONArray dimHints = JSONHelper.getEmptyIfNull(hints.optJSONArray("dimensions"));
+
+        for(int i = 0; i < dimHints.length(); ++i) {
+            JSONObject dimHelp = dimHints.optJSONObject(i);
+            String id = dimHelp.optString("id");
+            StatisticalIndicatorDataDimension dim = indicator.getDataModel().getDimension(id);
+            if(dim == null) {
+                continue;
+            }
+            dim.sort("DESC".equalsIgnoreCase(dimHelp.optString("sort")));
+            dim.useDefaultValue(dimHelp.optString("default"));
+        }
+    }
+
     public void onIndicatorProcessed(StatisticalIndicator indicator) {
+        // sort dimensions etc
+        try {
+            handleHints(indicator);
+        } catch (Exception ex) {
+            LOG.info("Problem handling hints for indicator");
+        }
         // add work queue to be written for indicator listing
         if(updater != null) {
             updater.addToWorkQueue(indicator);

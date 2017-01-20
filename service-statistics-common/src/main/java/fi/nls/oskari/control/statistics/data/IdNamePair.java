@@ -8,7 +8,7 @@ import org.json.JSONObject;
 /**
  * Created by SMAKINEN on 19.9.2016.
  */
-public class IdNamePair {
+public class IdNamePair implements Comparable<IdNamePair> {
     public String key;
     public String value;
 
@@ -27,6 +27,18 @@ public class IdNamePair {
 
     public String getValue() {
         return value;
+    }
+
+    @Override
+    public int compareTo(IdNamePair o) {
+        String toCompare = o.getValue();
+        if(toCompare == null) {
+            toCompare = o.getKey();
+        }
+        if(getValue() != null) {
+            return getValue().compareTo(toCompare);
+        }
+        return getKey().compareTo(toCompare);
     }
 
     @Override

@@ -2,7 +2,9 @@ package fi.nls.oskari.control.statistics.plugins;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fi.nls.oskari.control.statistics.data.StatisticalIndicator;
+import fi.nls.oskari.control.statistics.data.StatisticalIndicatorDataDimension;
 import fi.nls.oskari.control.statistics.data.StatisticalIndicatorLayer;
+import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.JSONHelper;
 import org.junit.Test;
@@ -53,5 +55,29 @@ public class DataSourceUpdaterTest {
 
         StatisticalIndicatorLayer layer_fromJson = MAPPER.readValue(json, StatisticalIndicatorLayer.class);
         assertEquals("Param should have been deserialized correctly", value, layer_fromJson.getParam(key));
+    }
+
+    @Test
+    public void testDimensionHintsWithSerialization()
+            throws Exception {
+
+        final String fullIndicator = IOHelper.readString(getClass().getResourceAsStream("indicator_full.json"));
+        StatisticalIndicator indicator = MAPPER.readValue(fullIndicator, StatisticalIndicator.class);
+
+        StatisticalIndicatorDataDimension gender = indicator.getDataModel().getDimension("sex");
+        assertEquals("Initial value should be male", "male", gender.getAllowedValues().get(0).getKey());
+        gender.useDefaultValue("total");
+        assertEquals("Default value should be total", "total", gender.getAllowedValues().get(0).getKey());
+
+        StatisticalIndicatorDataDimension year = indicator.getDataModel().getDimension("year");
+        assertEquals("Initial value should be 1996", "1996", year.getAllowedValues().get(0).getKey());
+        year.sort(true);
+        assertEquals("Sorted value should be 2015", "2015", year.getAllowedValues().get(0).getKey());
+
+        String json = MAPPER.writeValueAsString(indicator);
+        StatisticalIndicator deserialized = MAPPER.readValue(json, StatisticalIndicator.class);
+
+        assertEquals("Deserialized value should be total", "total", gender.getAllowedValues().get(0).getKey());
+        assertEquals("Deserialized value should be 2015", "2015", year.getAllowedValues().get(0).getKey());
     }
 }

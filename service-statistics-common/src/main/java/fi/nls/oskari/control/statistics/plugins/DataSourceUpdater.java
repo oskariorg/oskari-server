@@ -14,7 +14,7 @@ import java.util.List;
 /**
  * Used to preload and -process statistical indicator data from a datasource
  */
-public class DataSourceUpdater extends Thread {
+public class DataSourceUpdater implements Runnable {
 
     private static final Logger LOG = LogFactory.getLogger(StatisticalDatasourcePlugin.class);
 
