@@ -134,6 +134,12 @@ public abstract class StatisticalDatasourcePlugin {
             String json = JedisManager.get(getIndicatorMetadataKey(indicatorId));
             StatisticalIndicator indicator = MAPPER.readValue(json, StatisticalIndicator.class);
             if(hasPermission(indicator, user)) {
+                // sort dimensions etc
+                try {
+                    handleHints(indicator);
+                } catch (Exception ex) {
+                    LOG.info("Problem handling hints for indicator");
+                }
                 return indicator;
             }
             LOG.error("User doesn't have permissions to indicator ", indicatorId);
@@ -175,12 +181,6 @@ public abstract class StatisticalDatasourcePlugin {
     }
 
     public void onIndicatorProcessed(StatisticalIndicator indicator) {
-        // sort dimensions etc
-        try {
-            handleHints(indicator);
-        } catch (Exception ex) {
-            LOG.info("Problem handling hints for indicator");
-        }
         // add work queue to be written for indicator listing
         if(updater != null) {
             updater.addToWorkQueue(indicator);
