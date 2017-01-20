@@ -167,7 +167,9 @@ public abstract class StatisticalDatasourcePlugin {
             if(dim == null) {
                 continue;
             }
-            dim.sort("DESC".equalsIgnoreCase(dimHelp.optString("sort")));
+            if(dimHelp.has("sort")) {
+                dim.sort("DESC".equalsIgnoreCase(dimHelp.optString("sort")));
+            }
             dim.useDefaultValue(dimHelp.optString("default"));
         }
     }
