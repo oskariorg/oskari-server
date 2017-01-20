@@ -112,7 +112,22 @@ public class KapaIndicator extends StatisticalIndicator {
      * @param infoToAdd
      */
     public void merge(KapaIndicator infoToAdd) {
-        this.getDataModel().merge(infoToAdd.getDataModel());
+        List<StatisticalIndicatorDataDimension> dimensions = getDataModel().getDimensions();
+
+        // A naive array lookup is fastest for small arrays.
+        for (StatisticalIndicatorDataDimension selector : infoToAdd.getDataModel().getDimensions()) {
+            StatisticalIndicatorDataDimension foundSelector = null;
+            for (StatisticalIndicatorDataDimension originalSelector : dimensions) {
+                if (originalSelector.getId().equals(selector.getId())) {
+                    // Found match. We can assume these are identical here.
+                    foundSelector = originalSelector;
+                }
+            }
+            if (foundSelector == null) {
+                // The selector is a new one which does not exist in dimensions. Adding.
+                dimensions.add(selector);
+            }
+        }
         if (getDescription() == null || getDescription().isEmpty()) {
             setDescription(infoToAdd.getDescription());
         }

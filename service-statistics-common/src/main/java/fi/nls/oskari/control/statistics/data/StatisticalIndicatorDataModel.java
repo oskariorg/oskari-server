@@ -1,5 +1,7 @@
 package fi.nls.oskari.control.statistics.data;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,20 +29,14 @@ public class StatisticalIndicatorDataModel {
     public String toString() {
         return "{" + String.valueOf(dimensions) + "}";
     }
-    public void merge(StatisticalIndicatorDataModel model) {
-        // A naive array lookup is fastest for small arrays.
-        for (StatisticalIndicatorDataDimension selector : model.getDimensions()) {
-            StatisticalIndicatorDataDimension foundSelector = null;
-            for (StatisticalIndicatorDataDimension originalSelector : this.dimensions) {
-                if (originalSelector.getId().equals(selector.getId())) {
-                    // Found match. We can assume these are identical here.
-                    foundSelector = originalSelector;
-                }
-            }
-            if (foundSelector == null) {
-                // The selector is a new one which does not exist in dimensions. Adding.
-                this.dimensions.add(selector);
+
+    @JsonIgnore
+    public StatisticalIndicatorDataDimension getDimension(String id) {
+        for(StatisticalIndicatorDataDimension dim : getDimensions()) {
+            if(dim.getId().equalsIgnoreCase(id)) {
+                return dim;
             }
         }
+        return null;
     }
 }
