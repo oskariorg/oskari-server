@@ -32,7 +32,12 @@ public class DataSourceUpdater implements Runnable {
 
     public void run() {
         updateStarted();
-        plugin.update();
+        try {
+            plugin.update();
+        } catch (Exception ex) {
+            LOG.error(ex, "Error updating datasource indicators! Datasource id: ", plugin.getSource().getId());
+        }
+        // TODO: Should we modify status on problematic update? Should atleast update that it's not running anymore.
         updateCompleted();
     }
 
