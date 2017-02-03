@@ -2,6 +2,10 @@
 
 ## 1.41
 
+### Layer urls with secure domains
+
+Layers that already use secure url or have no protocol/domain as part of the url are no longer prefixed when used in https-enabled Oskari-instance.  
+
 ### User registration
 
 The default pages have been visually improved and the default role for registered user is no longer hardcoded as "User".

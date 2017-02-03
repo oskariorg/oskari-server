@@ -298,6 +298,15 @@ public class OskariLayer extends JSONLocalizedNameAndTitle implements Comparable
     }
 
     public String getUrl(final boolean isSecure) {
+        if(url == null) {
+            return "";
+        }
+        if(url.startsWith("https://") || url.startsWith("/")) {
+            // don't use prefix for urls that:
+            // - already use secure protocol
+            // - are like /action?, /wms or //domain.com/path
+            return url;
+        }
         if(isSecure) {
             return secureBaseUrl + getSimplifiedUrl();
         }
