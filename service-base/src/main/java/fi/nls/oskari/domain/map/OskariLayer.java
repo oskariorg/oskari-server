@@ -301,7 +301,7 @@ public class OskariLayer extends JSONLocalizedNameAndTitle implements Comparable
         if(url == null) {
             return "";
         }
-        if(url.startsWith("https://") || url.startsWith("/")) {
+        if(url.toLowerCase().startsWith("https://") || url.startsWith("/")) {
             // don't use prefix for urls that:
             // - already use secure protocol
             // - are like /action?, /wms or //domain.com/path
