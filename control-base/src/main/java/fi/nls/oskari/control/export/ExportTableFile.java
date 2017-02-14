@@ -113,7 +113,13 @@ public class ExportTableFile extends ActionHandler {
         Map<String, Object> additionalFields = new HashMap<String, Object>();
         if (dataSource != null) {
             String[] datas = dataSource.split(":");
-            if(datas.length > 1) additionalFields.put(datas[0], datas[1]);
+            if(datas.length > 1) {
+                additionalFields.put(datas[0], datas[1]);
+            }
+        }
+        final String layerName = params.getHttpParam("layerName");
+        if (layerName != null) {
+            additionalFields.put(" ", layerName);
         }
         if (metadata != null) {
             String[] metas = metadata.split(":");
@@ -121,7 +127,6 @@ public class ExportTableFile extends ActionHandler {
                 additionalFields.put(metas[0], getMetadataUrl(metas[1]));
             }
         }
-
         try {
             fileStreamer.writeToStream(headers, data, additionalFields, out);
         } catch (IOException ioe) {
