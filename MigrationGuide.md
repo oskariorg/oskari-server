@@ -2,6 +2,14 @@
 
 ## 1.41.0
 
+### Code refactoring
+
+fi.nls.oskari.control.view.modifier.param.ParamHandler has been moved from control-base to 
+fi.nls.oskari.view.modifier.ParamHandler in service-control Maven module. 
+Please update any references to point to the new package.  
+
+### Database migration
+
 In preparation for Oskari 2.0 some of the code has been moved to more appropriate places. As a result some of the
  previously mandatory imports on mapfull bundle have been removed. Update any custom minifierAppSetup.json files 
  by removing references to these packages: https://github.com/nls-oskari/oskari/commit/2861ebf4b51849aff7d8619a270ad7fe934fe8d3

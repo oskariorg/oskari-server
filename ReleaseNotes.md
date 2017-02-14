@@ -7,6 +7,12 @@
 URL-parameter "metadata" with a value of metadata uuid can now be used to open the metadata info flyout on startup. 
 Requires metadataflyout bundle to be present in the appsetup and CSW-service configured in Oskari. 
 
+### Code refactoring
+
+fi.nls.oskari.control.view.modifier.param,ParamHandler has been moved from control-base to 
+fi.nls.oskari.view.modifier.ParamHandler in service-control Maven module. 
+Please update any references to point to the new package.  
+
 ### Layer urls with secure domains
 
 Layers that already use secure url or have no protocol/domain as part of the url are no longer prefixed when used in https-enabled Oskari-instance.  
