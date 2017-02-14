@@ -2,6 +2,11 @@
 
 ## 1.41
 
+### CSW Metadata improvements
+
+URL-parameter "metadata" with a value of metadata uuid can now be used to open the metadata info flyout on startup. 
+Requires metadataflyout bundle to be present in the appsetup and CSW-service configured in Oskari. 
+
 ### Layer urls with secure domains
 
 Layers that already use secure url or have no protocol/domain as part of the url are no longer prefixed when used in https-enabled Oskari-instance.  
