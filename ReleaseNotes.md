@@ -146,6 +146,8 @@ Added convenience method for checking if a key holds value (returns length of th
 Removed GetInspireThemes action route as it has been deprecated for a while and it's not used by anything in the front-end code.
 InspireThemes with GET request works as a replacement, but offers also admin functions with other request types.
 
+Removed GetSupportedLocales action route as the information is part of the GetAppSetup response.
+
 ## 1.40
 
 ### Configuration improvements
