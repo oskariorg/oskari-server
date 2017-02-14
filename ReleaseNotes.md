@@ -136,6 +136,11 @@ allowed values for that dimension. Sort (if present) will be done first with eit
 Added list operations for JedisManager: pushToList() and popList().
 Added convenience method for checking if a key holds value (returns length of the value. Assumes string value): getValueStringLength().
 
+### Removed deprecated code
+
+Removed GetInspireThemes action route as it has been deprecated for a while and it's not used by anything in the front-end code.
+InspireThemes with GET request works as a replacement, but offers also admin functions with other request types.
+
 ## 1.40
 
 ### Configuration improvements
