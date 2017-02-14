@@ -119,7 +119,7 @@ public class ExportTableFile extends ActionHandler {
         }
         final String layerName = params.getHttpParam("layerName");
         if (layerName != null) {
-            additionalFields.put(" ", layerName);
+            additionalFields.put(layerName, " ");
         }
         if (metadata != null) {
             String[] metas = metadata.split(":");
