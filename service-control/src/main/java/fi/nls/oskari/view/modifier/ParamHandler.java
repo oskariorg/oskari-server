@@ -1,8 +1,4 @@
-package fi.nls.oskari.control.view.modifier.param;
-
-import fi.nls.oskari.view.modifier.ModifierException;
-import fi.nls.oskari.view.modifier.ModifierParams;
-import fi.nls.oskari.view.modifier.ViewModifier;
+package fi.nls.oskari.view.modifier;
 
 public abstract class ParamHandler extends ViewModifier implements Comparable<ParamHandler> {
 
