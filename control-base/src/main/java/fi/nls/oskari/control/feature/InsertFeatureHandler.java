@@ -60,13 +60,18 @@ public class InsertFeatureHandler extends ActionHandler {
 	private static Logger log = LogFactory.getLogger(DBHandler.class);
 	
 	public final static String KEY = "WFSImage_";
-	
-	@Override
-	public void handleAction(ActionParameters params) throws ActionException {
 
+	@Override
+	public void init() {
+		super.init();
 		layerService = new OskariLayerServiceIbatisImpl();
 		permissionsService = new PermissionsServiceIbatisImpl();
 		layerConfigurationService = new WFSLayerConfigurationServiceIbatisImpl();
+	}
+
+	@Override
+	public void handleAction(ActionParameters params) throws ActionException {
+
 		String featureData = params.getHttpParam("featureData");
 
 
