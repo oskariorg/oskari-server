@@ -154,6 +154,24 @@ InspireThemes with GET request works as a replacement, but offers also admin fun
 
 Removed GetSupportedLocales action route as the information is part of the GetAppSetup response.
 
+### Updated libraries
+
+The managed dependency of java3d.vecmath version 1.3.1 has been updated to new version 1.5.2.
+ The groupid for the library has changed between versions and is now javax.vecmath.
+ You should update any dependencies using it from:
+
+    <dependency>
+        <groupId>javax.vecmath</groupId>
+        <artifactId>vecmath</artifactId>
+    </dependency>
+
+To the new one:
+
+	<dependency>
+        <groupId>java3d</groupId>
+        <artifactId>vecmath</artifactId>
+    </dependency>
+
 ## 1.40
 
 ### Configuration improvements
