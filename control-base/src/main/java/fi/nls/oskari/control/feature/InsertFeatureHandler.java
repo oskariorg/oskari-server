@@ -8,6 +8,9 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import fi.nls.oskari.control.*;
+import fi.nls.oskari.domain.User;
+import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.JSONHelper;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -35,10 +38,6 @@ import fi.mml.portti.service.db.permissions.PermissionsService;
 import fi.mml.portti.service.db.permissions.PermissionsServiceIbatisImpl;
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.cache.JedisManager;
-import fi.nls.oskari.control.ActionException;
-import fi.nls.oskari.control.ActionHandler;
-import fi.nls.oskari.control.ActionParameters;
-import fi.nls.oskari.db.DBHandler;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.domain.map.wfs.WFSLayerConfiguration;
 import fi.nls.oskari.log.LogFactory;
@@ -53,13 +52,11 @@ import fi.nls.oskari.wfs.WFSLayerConfigurationServiceIbatisImpl;
 
 @OskariActionRoute("InsertFeature")
 public class InsertFeatureHandler extends ActionHandler {
+    private final static Logger LOG = LogFactory.getLogger(InsertFeatureHandler.class);
+
 	private OskariLayerService layerService;
 	private PermissionsService permissionsService;
 	private WFSLayerConfigurationService layerConfigurationService;
-	private String geometryProperty;
-	private static Logger log = LogFactory.getLogger(DBHandler.class);
-	
-	public final static String KEY = "WFSImage_";
 
 	@Override
 	public void init() {
@@ -71,113 +68,152 @@ public class InsertFeatureHandler extends ActionHandler {
 
 	@Override
 	public void handleAction(ActionParameters params) throws ActionException {
-
-		String featureData = params.getHttpParam("featureData");
-
-
-		try {
-			JSONObject jsonObject = new JSONObject(featureData);
-			String srsName = JSONHelper.getStringFromJSON(jsonObject, "srsName", "http://www.opengis.net/gml/srs/epsg.xml#3067");
-			OskariLayer lay = layerService.find(jsonObject.getString("layerId"));
-			WFSLayerConfiguration lc = layerConfigurationService.findConfiguration(lay.getId());
-			String url = lc.getURL();
-			final String user = lc.getUsername();
-			final String pass = lc.getPassword();
-			geometryProperty = lc.getGMLGeometryProperty();
-			final Resource resource = permissionsService.findResource(new OskariLayerResource(lay));
-            final boolean hasPermssion = resource.hasPermission(params.getUser(), Permissions.PERMISSION_TYPE_EDIT_LAYER_CONTENT);
-            if(hasPermssion) {
-            	ClearLayerTiles(lay.getId());
-				StringBuilder requestData = new StringBuilder("<wfs:Transaction service='WFS' version='1.1.0' xmlns:ogc='http://www.opengis.net/ogc' xmlns:wfs='http://www.opengis.net/wfs'><wfs:Insert><"+ lay.getName() +" xmlns:" + lc.getFeatureNamespace() + "='" + lc.getFeatureNamespaceURI() + "'>");
-				JSONArray jsonArray = jsonObject.getJSONArray("featureFields");
-				for (int i = 0; i < jsonArray.length(); i++) {
-					String key = jsonArray.getJSONObject(i).getString("key");
-					String value = jsonArray.getJSONObject(i).getString("value");
-					if (value.isEmpty() == false)
-					{
-					 	requestData.append("<" + key + ">" + value + "</" + key + ">");
-					}
-				}
-				
-				if (jsonObject.has("geometries")) {
-					FillGeometries(requestData, jsonObject.getJSONObject("geometries"), srsName);
-				}
-				requestData.append("</" + lay.getName() + "></wfs:Insert></wfs:Transaction>");
-				
-				HttpClientBuilder httpClientBuilder = HttpClientBuilder.create();
-				Credentials credentials = new UsernamePasswordCredentials(user, pass);
-				CredentialsProvider credsProvider = new BasicCredentialsProvider();
-				credsProvider.setCredentials( AuthScope.ANY, credentials);
-				
-				httpClientBuilder.setDefaultCredentialsProvider(credsProvider);
-				HttpClient httpClient = httpClientBuilder.build();
-				HttpPost request = new HttpPost(url);			
-		        request.addHeader("content-type", "application/xml");
-		        request.setEntity(new StringEntity(requestData.toString(), "UTF-8"));
-		        HttpResponse response = httpClient.execute(request);
-		        HttpEntity entity = response.getEntity();
-		        String responseString = EntityUtils.toString(entity, "UTF-8");
-				
-				if (responseString.indexOf("Exception") > -1)
-				{
-					ResponseHelper.writeResponse(params, "Exception");
-				}
-				else if (responseString.indexOf("<wfs:totalInserted>1</wfs:totalInserted>") > -1)
-				{
-					DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-					DocumentBuilder builder = factory.newDocumentBuilder();
-					
-					
-					ByteArrayInputStream input =  new ByteArrayInputStream(responseString.toString().getBytes("UTF-8"));
-					Document doc = builder.parse(input);
-					
-					NodeList res = doc.getElementsByTagName("ogc:FeatureId");
-					Element res3 = (Element)res.item(0);
-					String fid = res3.getAttribute("fid");
-					
-					ResponseHelper.writeResponse(params, new JSONObject("{ 'fid': " + fid + " }"));
-				}
-            }
-		}
-		catch (JSONException ex) {
-			log.error(ex, "JSON processing error");
-			throw new ActionException("JSON processing error", ex);
-		}
-		catch (ClientProtocolException ex)
-		{
-			log.error(ex, "Geoserver connection error");
-			throw new ActionException("Geoserver connection error", ex);
-		}
-		catch (ParserConfigurationException ex)
-		{
-			log.error(ex, "Parser configuration error");
-			throw new ActionException("Parser configuration error", ex);
-		}
-		catch (IOException ex)
-		{
-			log.error(ex, "IO error");
-			throw new ActionException("IO error", ex);
-		}
-		catch (SAXException ex)
-		{
-			log.error(ex, "SAX processing error");
-			throw new ActionException("SAX processing error", ex);
-		}
+        final JSONObject jsonPayload = getJSONPayload(params);
+        // throws denied exception if user doesn't have permission to edit the layer
+        final OskariLayer layer = getLayerForEditing(jsonPayload.optString("layerId"), params.getUser());
+        clearLayerTileCache(layer.getId());
+        final String wfstMessage = createWFSTMessage(jsonPayload, layer);
+        LOG.debug("Inserting feature to service at", layer.getUrl(), "with payload", wfstMessage);
+        final String responseString = postWFSTMessage(layer, wfstMessage);
+        final String updatedFeatureId = parseFeatureIdFromResponse(responseString);
+        ResponseHelper.writeResponse(params, JSONHelper.createJSONObject("fid", updatedFeatureId));
 	}
-	
-	private void FillGeometries (StringBuilder requestData, JSONObject geometries, String srsName) throws JSONException
+
+    private JSONObject getJSONPayload(ActionParameters params) throws ActionException {
+
+        String featureData = params.getHttpParam("featureData");
+        JSONObject jsonObject = JSONHelper.createJSONObject(featureData);
+        if(jsonObject == null) {
+            throw new ActionParamsException("Couldn't parse featureData JSON from request");
+        }
+        return jsonObject;
+    }
+
+    private String getProjection(JSONObject payload) {
+        return JSONHelper.getStringFromJSON(payload, "srsName", "http://www.opengis.net/gml/srs/epsg.xml#3067");
+    }
+
+    private OskariLayer getLayerForEditing(String layerId, User user) throws ActionException {
+        OskariLayer layer = layerService.find(layerId);
+        final Resource resource = permissionsService.findResource(new OskariLayerResource(layer));
+        final boolean hasPermission = resource.hasPermission(user, Permissions.PERMISSION_TYPE_EDIT_LAYER_CONTENT);
+        if(!hasPermission) {
+            throw new ActionDeniedException("Can't insert feature");
+        }
+        return layer;
+    }
+
+    private String postWFSTMessage(OskariLayer layer, String payload) throws ActionException {
+        HttpClient httpClient = getHttpClientForLayer(layer);
+        HttpPost request = new HttpPost(layer.getUrl());
+        request.addHeader(IOHelper.HEADER_CONTENTTYPE, IOHelper.CONTENT_TYPE_XML);
+        request.setEntity(new StringEntity(payload, "UTF-8"));
+        try {
+
+            HttpResponse response = httpClient.execute(request);
+            HttpEntity entity = response.getEntity();
+            String responseString = EntityUtils.toString(entity, "UTF-8");
+            if(responseString == null) {
+                throw new ActionParamsException("Didn't get any response from service");
+            }
+            return responseString;
+        } catch (IOException ex) {
+            throw new ActionParamsException("Error posting the WFS-T message to service");
+        }
+    }
+    private HttpClient getHttpClientForLayer(OskariLayer layer) {
+        HttpClientBuilder httpClientBuilder = HttpClientBuilder.create();
+        Credentials credentials = new UsernamePasswordCredentials(layer.getUsername(), layer.getPassword());
+        CredentialsProvider credsProvider = new BasicCredentialsProvider();
+        credsProvider.setCredentials( AuthScope.ANY, credentials);
+
+        httpClientBuilder.setDefaultCredentialsProvider(credsProvider);
+        return httpClientBuilder.build();
+    }
+
+    private String createWFSTMessage(JSONObject jsonPayload, OskariLayer layer) throws ActionException {
+        final String srsName = getProjection(jsonPayload);
+        final WFSLayerConfiguration lc = layerConfigurationService.findConfiguration(layer.getId());
+        final StringBuilder requestData = new StringBuilder("<wfs:Transaction service='WFS' version='1.1.0' xmlns:ogc='http://www.opengis.net/ogc' xmlns:wfs='http://www.opengis.net/wfs'><wfs:Insert><"+ layer.getName() +" xmlns:" + lc.getFeatureNamespace() + "='" + lc.getFeatureNamespaceURI() + "'>");
+        try {
+            final JSONArray jsonArray = jsonPayload.getJSONArray("featureFields");
+            for (int i = 0; i < jsonArray.length(); i++) {
+                String key = jsonArray.getJSONObject(i).getString("key");
+                String value = jsonArray.getJSONObject(i).getString("value");
+                if (value.isEmpty() == false)
+                {
+                    requestData.append("<" + key + ">" + value + "</" + key + ">");
+                }
+            }
+
+            if (jsonPayload.has("geometries")) {
+                FillGeometries(lc.getGMLGeometryProperty(), requestData, jsonPayload.getJSONObject("geometries"), srsName);
+            }
+        } catch (JSONException ex) {
+            throw new ActionParamsException("Couldn't create WFS-T message from params", jsonPayload.toString(), ex);
+        }
+        requestData.append("</" + layer.getName() + "></wfs:Insert></wfs:Transaction>");
+        return requestData.toString();
+    }
+
+    private String parseFeatureIdFromResponse(String response) throws ActionException {
+
+        if (response == null || response.indexOf("Exception") > -1) {
+            LOG.error("Exception from WFS-T insert operation", response);
+            throw new ActionParamsException("WFS-T operation failed");
+        }
+
+        if (response.indexOf("<wfs:totalInserted>1</wfs:totalInserted>") > -1)
+        {
+            try {
+                DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+                DocumentBuilder builder = factory.newDocumentBuilder();
+
+
+                ByteArrayInputStream input =  new ByteArrayInputStream(response.getBytes("UTF-8"));
+                Document doc = builder.parse(input);
+
+                NodeList res = doc.getElementsByTagName("ogc:FeatureId");
+                Element res3 = (Element)res.item(0);
+                return res3.getAttribute("fid");
+            }
+            catch (ClientProtocolException ex)
+            {
+                LOG.error(ex, "Geoserver connection error");
+                throw new ActionException("Geoserver connection error", ex);
+            }
+            catch (ParserConfigurationException ex)
+            {
+                LOG.error(ex, "Parser configuration error");
+                throw new ActionException("Parser configuration error", ex);
+            }
+            catch (IOException ex)
+            {
+                LOG.error(ex, "IO error");
+                throw new ActionException("IO error", ex);
+            }
+            catch (SAXException ex)
+            {
+                LOG.error(ex, "SAX processing error");
+                throw new ActionException("SAX processing error", ex);
+            }
+        }
+        throw new ActionParamsException("Didn't get the expected response from service", response);
+    }
+
+    private void FillGeometries (String geometryProperty, StringBuilder requestData, JSONObject geometries, String srsName) throws JSONException
 	{
 		String geometryType = geometries.getString("type");
 		if (geometryType.equals("multipoint")) {
-			FillMultiPointGeometries(requestData, geometries, srsName);
+			FillMultiPointGeometries(geometryProperty, requestData, geometries, srsName);
 		} else if (geometryType.equals("multilinestring")) {
-			FillLineStringGeometries(requestData, geometries, srsName);
+			FillLineStringGeometries(geometryProperty, requestData, geometries, srsName);
 		} else if (geometryType.equals("multipolygon")) {
-			FillPolygonGeometries(requestData, geometries, srsName);
+			FillPolygonGeometries(geometryProperty, requestData, geometries, srsName);
 		}
 	}
 	
-	private void FillMultiPointGeometries (StringBuilder requestData, JSONObject geometries, String srsName) throws JSONException
+	private void FillMultiPointGeometries (String geometryProperty, StringBuilder requestData, JSONObject geometries, String srsName) throws JSONException
 	{
 		JSONArray data = geometries.getJSONArray("data");
 		requestData.append("<" + geometryProperty
@@ -191,7 +227,7 @@ public class InsertFeatureHandler extends ActionHandler {
 		requestData.append("</gml:MultiPoint></" + geometryProperty + ">");
 	}
 	
-	private void FillLineStringGeometries (StringBuilder requestData, JSONObject geometries, String srsName) throws JSONException
+	private void FillLineStringGeometries (String geometryProperty, StringBuilder requestData, JSONObject geometries, String srsName) throws JSONException
 	{
 		JSONArray data = geometries.getJSONArray("data");
 		requestData.append("<" + geometryProperty
@@ -212,7 +248,7 @@ public class InsertFeatureHandler extends ActionHandler {
 		requestData.append("</gml:MultiLineString></" + geometryProperty + ">");
 	}
 	
-	private void FillPolygonGeometries (StringBuilder requestData, JSONObject geometries, String srsName) throws JSONException
+	private void FillPolygonGeometries (String geometryProperty, StringBuilder requestData, JSONObject geometries, String srsName) throws JSONException
 	{
 		JSONArray data = geometries.getJSONArray("data");
 		requestData.append("<" + geometryProperty
@@ -248,14 +284,10 @@ public class InsertFeatureHandler extends ActionHandler {
 		requestData.append("</gml:MultiPolygon></" + geometryProperty + ">");
 	}
 	
-	private void ClearLayerTiles(int layerId)
+	private void clearLayerTileCache(int layerId)
 	{
-		Set<String> keys = JedisManager.keys(KEY + Integer.toString(layerId));
-		
-		for(String key : keys)
-		{
-			JedisManager.del(key);
-		}
+		Set<String> keys = JedisManager.keys("WFSImage_" + Integer.toString(layerId));
+        JedisManager.del(keys.toArray(new String[0]));
 	}
 }
 
