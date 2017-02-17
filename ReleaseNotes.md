@@ -13,7 +13,7 @@ Include some randomlyNamed field to this property like "alwaysOnFilter"
 
     search.channel.METADATA_CATALOGUE_CHANNEL.fields=...,alwaysOnFilter
 
-You can do a like filter by just using adding a default value for the filter:
+You can do a like filter by just naming the filter property and providing it a default value for the:
 
     search.channel.METADATA_CATALOGUE_CHANNEL.field.alwaysOnFilter.filter=somePropName
     search.channel.METADATA_CATALOGUE_CHANNEL.field.alwaysOnFilter.value=someValue
@@ -25,7 +25,7 @@ This will result in the query having a like filter:
 		<ogc:Literal><![CDATA[someValue]]></ogc:Literal>
 	</ogc:PropertyIsLike>
 
-If you want to do an exact match you can include:
+If you want to do an exact match you can include filterOp=COMP_EQUAL as another property:
 
     search.channel.METADATA_CATALOGUE_CHANNEL.field.alwaysOnFilter.filterOp=COMP_EQUAL
 
