@@ -62,8 +62,7 @@ public class AdditionalIdFilter extends WFSFilter {
             Filter idFilter = initIdFilter(layer, session);
             filter = ff.and(filter, idFilter);
 
-        } else if (type == JobType.NORMAL) {
-            // Analysis id
+        } else if (type == JobType.NORMAL || type == JobType.EXPORT) {
             Filter idFilter = initIdFilter(layer, session);
             filter = ff.and(filter, idFilter);
 

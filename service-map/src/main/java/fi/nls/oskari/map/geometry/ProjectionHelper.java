@@ -7,6 +7,9 @@ import fi.nls.oskari.domain.geo.Point;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.util.JSONHelper;
+import org.geotools.data.DataUtilities;
+import org.geotools.data.Query;
+import org.geotools.data.simple.SimpleFeatureSource;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureIterator;
 import org.geotools.geojson.geom.GeometryJSON;
@@ -280,4 +283,36 @@ public class ProjectionHelper implements PointTransformer {
             featuresIter.close();
         }
     }
+
+    /**
+     *  Transforms all geometries in Featurecollection
+     *  REMARK crs (sourceCRS) must be defined in feature default geometrydescriptor
+     *  (fc.getSchema().getGeometryDescriptor().getCoordinateReferenceSystem() must be not null
+     * @param featureCollection
+     * @param sourceCrs
+     * @param targetCrs
+     * @return
+     */
+    public static FeatureCollection<SimpleFeatureType, SimpleFeature> transformFeatureCollection(FeatureCollection<SimpleFeatureType,
+            SimpleFeature> featureCollection, String sourceCrs, String targetCrs) {
+
+        if(sourceCrs.toUpperCase().equals(targetCrs.toUpperCase())){
+            return featureCollection;
+        }
+
+        try {
+            CoordinateReferenceSystem crsSource = CRS.decode(sourceCrs, true);
+            CoordinateReferenceSystem crsTarget = CRS.decode(targetCrs, true);
+            Query query = new Query();
+            query.setCoordinateSystem(crsSource);
+            query.setCoordinateSystemReproject(crsTarget);
+            SimpleFeatureSource source = DataUtilities.source(featureCollection);
+            return source.getFeatures(query);
+        }
+        catch (Exception e) {
+            log.error(e, "Transform featureCollection geometries failed! Params:: sourceSRS: ", sourceCrs, "targetSRS: ", targetCrs);
+        }
+        return featureCollection;
+    }
+
 }

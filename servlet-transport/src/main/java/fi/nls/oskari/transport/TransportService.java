@@ -73,6 +73,7 @@ public class TransportService extends AbstractService {
 	public static final String PARAM_MAP_SCALES = "mapScales";
 	public static final String PARAM_LAYERS = "layers";
 	public static final String PARAM_LAYER_ID = "layerId";
+    public static final String PARAM_FORMAT = "format";
     public static final String PARAM_REQUEST_ID = "reqId";
 	public static final String PARAM_LAYER_STYLE = "styleName";
 	public static final String PARAM_LONGITUDE = "longitude";
@@ -91,6 +92,7 @@ public class TransportService extends AbstractService {
     public static final String CHANNEL_SET_MAP_LAYER_CUSTOM_STYLE = "/service/wfs/setMapLayerCustomStyle";
 	public static final String CHANNEL_SET_MAP_CLICK = "/service/wfs/setMapClick";
 	public static final String CHANNEL_SET_FILTER = "/service/wfs/setFilter";
+    public static final String CHANNEL_SET_EXPORT = "/service/wfs/setExport";
     public static final String CHANNEL_SET_PROPERTY_FILTER = "/service/wfs/setPropertyFilter";
 	public static final String CHANNEL_SET_MAP_LAYER_VISIBILITY = "/service/wfs/setMapLayerVisibility";
 	public static final String CHANNEL_HIGHLIGHT_FEATURES = "/service/wfs/highlightFeatures";
@@ -159,6 +161,7 @@ public class TransportService extends AbstractService {
         addService(CHANNEL_SET_MAP_LAYER_CUSTOM_STYLE, "processRequest");
         addService(CHANNEL_SET_MAP_CLICK, "processRequest");
         addService(CHANNEL_SET_FILTER, "processRequest");
+        addService(CHANNEL_SET_EXPORT, "processRequest");
         addService(CHANNEL_SET_PROPERTY_FILTER, "processRequest");
         addService(CHANNEL_SET_MAP_LAYER_VISIBILITY, "processRequest");
         addService(CHANNEL_HIGHLIGHT_FEATURES, "processRequest");
@@ -171,7 +174,7 @@ public class TransportService extends AbstractService {
     /**
      * Removes Sessions and releases Jedis
      *
-     * @see java.lang.Object#finalize()
+     * @see Object#finalize()
      */
     @Override
     protected void finalize() throws Throwable {
@@ -294,6 +297,8 @@ public class TransportService extends AbstractService {
                 setMapClick(store, json, params);
             } else if (channel.equals(CHANNEL_SET_FILTER)) {
                 setFilter(store, json, params);
+            } else if (channel.equals(CHANNEL_SET_EXPORT)) {
+                setExport(store, json, params);
             } else if (channel.equals(CHANNEL_SET_PROPERTY_FILTER)) {
                 setPropertyFilter(store, json, params);
             } else if (channel.equals(CHANNEL_SET_MAP_LAYER_VISIBILITY)) {
@@ -716,6 +721,32 @@ public class TransportService extends AbstractService {
                     jobs.add(job);
                 }
             }
+        }
+    }
+    /**
+     * Writes features to file in requested export format
+     * - will be request just once.
+     *
+     * .
+     *
+     * @param store
+     * @param json
+     */
+    private void setExport(SessionStore store, String json, Map<String, Object> params) {
+
+        String format = params.get(PARAM_FORMAT).toString();
+        // stores format, but doesn't save
+        store.setExportFormat(format);
+        String layerId = params.get(PARAM_LAYER_ID).toString();
+
+        if (store.containsLayer(layerId)) {
+            // TODO: Check export/load permission
+            Job job = createOWSMapLayerJob(createResultProcessor(parseRequestId(params)),
+                    JobType.EXPORT, store, layerId, false, true, false, false);
+            if (job != null) {
+                jobs.add(job);
+            }
+
         }
     }
     /**

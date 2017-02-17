@@ -12,6 +12,7 @@ public interface ResultProcessor {
     public static final String CHANNEL_FEATURE = "/wfs/feature";
     public static final String CHANNEL_MAP_CLICK = "/wfs/mapClick";
     public static final String CHANNEL_FILTER = "/wfs/filter";
+    public static final String CHANNEL_EXPORT = "/wfs/export";
     public static final String CHANNEL_RESET = "/wfs/reset";
     public static final String CHANNEL_FEATURE_GEOMETRIES = "/wfs/featureGeometries";
     public static final String CHANNEL_STATUS = "/status";

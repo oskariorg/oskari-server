@@ -7,6 +7,7 @@ import fi.nls.oskari.service.ServiceRuntimeException;
 import fi.nls.oskari.transport.TransportJobException;
 import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.wfs.WFSExceptionHelper;
+import fi.nls.oskari.wfs.WFSExport;
 import fi.nls.oskari.wfs.WFSImage;
 import fi.nls.oskari.wfs.pojo.WFSLayerStore;
 import fi.nls.oskari.worker.AbstractJob;
@@ -64,6 +65,7 @@ public abstract class OWSMapLayerJob extends AbstractJob<String> {
     public static final String OUTPUT_IMAGE_URL = "url";
     public static final String OUTPUT_IMAGE_DATA = "data";
     public static final String OUTPUT_BOUNDARY_TILE = "boundaryTile";
+    public static final String OUTPUT_FILE_ID = "fileId";
 
     public static final String BROWSER_MSIE = "msie";
 
@@ -232,6 +234,9 @@ public abstract class OWSMapLayerJob extends AbstractJob<String> {
         }
         else if (this.type == JobType.PROPERTY_FILTER) {
             return runPropertyFilterJob();
+        }
+        else if (this.type == JobType.EXPORT) {
+            return runExportJob();
         }
         return runUnknownJob();
     }
@@ -437,6 +442,21 @@ public abstract class OWSMapLayerJob extends AbstractJob<String> {
         }
         return true;
     }
+    public boolean runExportJob() {
+        if (!this.requestHandler(null)) {
+            return false;
+        }
+        // Export feature data
+        WFSExport export = exportFeatures(this.session.getExportFormat());
+        String filename = export.export(this.features);
+        if (filename == null) {
+            return false;
+        }
+        this.sendWFSExportFileId(filename,
+                ResultProcessor.CHANNEL_EXPORT);
+
+        return true;
+    }
 
     public boolean runPropertyFilterJob() {
         // should be same functionality
@@ -580,6 +600,8 @@ public abstract class OWSMapLayerJob extends AbstractJob<String> {
                 return true;
             }
         } else if(this.type == JobType.NORMAL) {
+            return true;
+        } else if(this.type == JobType.EXPORT) {
             return true;
         }
         return false;
@@ -734,6 +756,23 @@ public abstract class OWSMapLayerJob extends AbstractJob<String> {
         log.debug("Sending", geometries.size(), "geometries");
         this.service.addResults(this.session.getClient(), channel, output);
     }
+
+    /**
+     * TODO: Generate fileId and store filename into redis
+     * Sends Export file id
+     *
+     * @param fileId  export file name
+     * @param channel
+     */
+    protected void sendWFSExportFileId(String fileId, String channel) {
+
+        Map<String, Object> output = new HashMap<String, Object>();
+        output.put(OUTPUT_LAYER_ID, this.layerId);
+        output.put(OUTPUT_FILE_ID, fileId);
+
+        log.debug("Sending export file name");
+        this.service.addResults(this.session.getClient(), channel, output);
+    }
     public abstract RequestResponse request(JobType type, WFSLayerStore layer,
                                             SessionStore session, List<Double> bounds,
                                             MathTransform transformService);
@@ -777,6 +816,10 @@ public abstract class OWSMapLayerJob extends AbstractJob<String> {
     protected WFSImage createResponseImage() {
         return new WFSImage(this.layer, this.session.getClient(), this.session
                 .getLayers().get(this.layerId).getStyleName(), null);
+    }
+
+    protected WFSExport exportFeatures(String format) {
+        return new WFSExport(format, this.layer.getSRSName());
     }
 
     protected WFSImage createHighlightImage() {

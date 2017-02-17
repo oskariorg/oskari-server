@@ -165,7 +165,7 @@ public class WFSFilter {
         }else if(type == JobType.PROPERTY_FILTER) {
             LOG.debug("Filter: Property filter");
             filter = initPropertyFilter(session, bounds, layer);
-        } else if(type == JobType.NORMAL) {
+        } else if(type == JobType.NORMAL || type == JobType.EXPORT) {
             LOG.debug("Filter: normal");
             Location location;
             if(bounds != null) {

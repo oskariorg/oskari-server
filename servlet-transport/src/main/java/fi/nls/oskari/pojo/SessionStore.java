@@ -53,6 +53,7 @@ public class SessionStore {
     private PropertyFilter propertyFilter; // passed parameter - not saved
 	private boolean keepPrevious = false; // passed parameter - not saved
     private boolean geomRequest = false; // passed parameter - geom property returned or not - not saved
+    private String exportFormat = "GEOJSON"; // passed parameter - Export file format in Expoer job - not saved
 
 	/**
 	 * Constructor with defined session key
@@ -419,6 +420,23 @@ public class SessionStore {
      */
     public void setGeomRequest(boolean geomRequest) {
         this.geomRequest = geomRequest;
+    }
+
+    /**
+     * Export file data format
+     * @return
+     */
+    @JsonIgnore
+    public String getExportFormat() {
+        return exportFormat;
+    }
+
+    /**
+     * Set export file data format in GDAL known names
+     * @param exportFormat  e.g. "GPX"
+     */
+    public void setExportFormat(String exportFormat) {
+        this.exportFormat = exportFormat;
     }
 
     /**
