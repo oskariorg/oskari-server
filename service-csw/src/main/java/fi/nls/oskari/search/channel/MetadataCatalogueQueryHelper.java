@@ -174,7 +174,10 @@ public class MetadataCatalogueQueryHelper {
             return null;
         }
 
-        final Object param = searchCriteria.getParam(field.getProperty());
+        Object param = searchCriteria.getParam(field.getProperty());
+        if(param == null) {
+            param = field.getDefaultValue();
+        }
         if(param == null) {
             return null;
         }
