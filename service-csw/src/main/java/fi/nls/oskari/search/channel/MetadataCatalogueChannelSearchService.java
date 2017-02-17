@@ -129,6 +129,7 @@ public class MetadataCatalogueChannelSearchService extends SearchChannel {
             field.setFilterOp(PropertyUtil.getOptional(propPrefix + name + ".filterOp"));
             field.setMustMatch(PropertyUtil.getOptional(propPrefix + name + ".mustMatch", false));
             field.setDependencies(PropertyUtil.getMap(propPrefix + name + ".dependencies"));
+            field.setDefaultValue(PropertyUtil.getOptional(propPrefix + name + ".value"));
             fields.add(field);
         }
         return fields;

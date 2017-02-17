@@ -7,6 +7,35 @@
 URL-parameter "metadata" with a value of metadata uuid can now be used to open the metadata info flyout on startup. 
 Requires metadataflyout bundle to be present in the appsetup and CSW-service configured in Oskari. 
 
+Added a way to add an "always on" filter to CSW-searches. This can be done by adding properties to oskari-ext.properties:
+ 
+Include some randomlyNamed field to this property like "alwaysOnFilter"
+
+    search.channel.METADATA_CATALOGUE_CHANNEL.fields=...,alwaysOnFilter
+
+You can do a like filter by just using adding a default value for the filter:
+
+    search.channel.METADATA_CATALOGUE_CHANNEL.field.alwaysOnFilter.filter=somePropName
+    search.channel.METADATA_CATALOGUE_CHANNEL.field.alwaysOnFilter.value=someValue
+
+This will result in the query having a like filter:
+
+	<ogc:PropertyIsLike escapeChar="/" matchCase="true" singleChar="?" wildCard="*">
+		<ogc:PropertyName>somePropName</ogc:PropertyName>
+		<ogc:Literal><![CDATA[someValue]]></ogc:Literal>
+	</ogc:PropertyIsLike>
+
+If you want to do an exact match you can include:
+
+    search.channel.METADATA_CATALOGUE_CHANNEL.field.alwaysOnFilter.filterOp=COMP_EQUAL
+
+This will result in the query having an exact filter:
+
+	<ogc:PropertyIsEqualTo matchCase="false">
+		<ogc:PropertyName>somePropName</ogc:PropertyName>
+		<ogc:Literal><![CDATA[someValue]]></ogc:Literal>
+	</ogc:PropertyIsEqualTo>
+
 ### Code refactoring
 
 fi.nls.oskari.control.view.modifier.param,ParamHandler has been moved from control-base to 
