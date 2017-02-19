@@ -140,8 +140,8 @@ public class WFSExport {
             AttributeDescriptor ad = schema.getDescriptor(i);
             ad = truncateFieldName(ad, format);
             ad = truncateObjectProperty(ad, schema);
-            // mixed geometries in the source layer --> GPX supports only LINE, MULTILINE and POINT
-            if (ad == schema.getGeometryDescriptor() && Geometry.class.equals(ad.getType().getBinding()) && format.toUpperCase().equals("GPX")) {
+            // mixed geometries in the source layer or unsupported geom types ? --> GPX supports only LINE, MULTILINE and POINT
+            if (ad == schema.getGeometryDescriptor() && format.toUpperCase().equals("GPX")) {
                 SimpleFeature first = DataUtilities.first(fc);
                 if (first.getDefaultGeometry() instanceof MultiLineString) {
                     tb.add(ad.getLocalName(), MultiLineString.class, crs);
@@ -308,7 +308,8 @@ public class WFSExport {
         if (Object.class.equals(ad.getType().getBinding()) ||
                 Envelope.class.equals(ad.getType().getBinding()) ||
                 ReferencedEnvelope.class.equals(ad.getType().getBinding()) ||
-                (Geometry.class.equals(ad.getType().getBinding()) && ad != schema.getGeometryDescriptor())) {
+                HashMap.class.equals(ad.getType().getBinding()) ||
+                        (Geometry.class.equals(ad.getType().getBinding()) && ad != schema.getGeometryDescriptor())) {
             AttributeType at = new AttributeTypeImpl(new NameImpl("String"), String.class, false,
                     false, Collections.EMPTY_LIST, null, null);
             AttributeDescriptorImpl newDescriptor = new AttributeDescriptorImpl(
