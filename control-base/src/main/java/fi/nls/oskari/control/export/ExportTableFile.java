@@ -14,7 +14,6 @@ import org.json.JSONObject;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -108,6 +107,7 @@ public class ExportTableFile extends ActionHandler {
         }
         // write additionalData (JSON array) after the actual data
         JSONArray additionalData = JSONHelper.createJSONArray(params.getHttpParam("additionalData", "[]"));
+        // Using LinkedHashMap to control the order of items
         Map<String, Object> additionalFields = new LinkedHashMap<String, Object>();
 
         for (int i = 0; i < additionalData.length(); i++) {
