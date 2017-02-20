@@ -114,13 +114,13 @@ public class ExportTableFile extends ActionHandler {
             if(item == null) {
                 continue;
             }
-            final String name = item.optString("name");
+            final String type = item.optString("type");
             String value = item.optString("value");
-            if("metadata".equalsIgnoreCase(name)) {
+            if("metadata".equalsIgnoreCase(type)) {
                 // metadata only holds uuid, add the rest of the url to the value
                 value = getMetadataUrl(value);
             }
-            additionalFields.put(name, value);
+            additionalFields.put(item.optString("name"), value);
         }
 
         try {
