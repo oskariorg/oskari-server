@@ -58,48 +58,56 @@ public class SaveMultipleFeaturesHandler extends ActionHandler {
 		String featureData = params.getHttpParam("featureData");
 		try {
 			JSONArray jsonArr = new JSONArray(featureData);
+			//Let's keep track wheter or not all the feature updates were successful.
+			boolean allUpdatesSuccess = true;
+			//Let's loop the featuredata from the client and build wfs:updates.
 			for (int i = 0; i < jsonArr.length(); i++) {
 				JSONObject jsonObject = jsonArr.getJSONObject(i);
-				String srsName = JSONHelper.getStringFromJSON(jsonObject, "srsName", "http://www.opengis.net/gml/srs/epsg.xml#3067");
-				OskariLayer lay = layerService.find(jsonObject.getString("layerId"));
-				WFSLayerConfiguration lc = layerConfigurationService.findConfiguration(lay.getId());
-				String url = lc.getURL();
-				final String user = lc.getUsername();
-				final String pass = lc.getPassword();
-				geometryProperty = lc.getGMLGeometryProperty();
-				final Resource resource = permissionsService.findResource(new OskariLayerResource(lay));
-	            final boolean hasPermssion = resource.hasPermission(params.getUser(), Permissions.PERMISSION_TYPE_EDIT_LAYER_CONTENT);
-	            if(hasPermssion) {
-	            	ClearLayerTiles(lay.getId());
-					StringBuilder requestData = new StringBuilder("<wfs:Transaction service='WFS' version='1.1.0' xmlns:ogc='http://www.opengis.net/ogc' xmlns:wfs='http://www.opengis.net/wfs'><wfs:Update typeName='"+ lay.getName() +"'>");
-					JSONArray jsonArray = jsonObject.getJSONArray("featureFields");
-					for (int j = 0; j < jsonArray.length(); j++) {
-						requestData.append("<wfs:Property><wfs:Name>" + jsonArray.getJSONObject(j).getString("key") + "</wfs:Name><wfs:Value>" + jsonArray.getJSONObject(j).getString("value") + "</wfs:Value></wfs:Property>");
-					}
-					if (jsonObject.has("geometries")) {
-						FillGeometries(requestData, jsonObject.getJSONObject("geometries"), srsName);
-					};
-					requestData.append("<ogc:Filter><ogc:FeatureId fid='" + jsonObject.getString("featureId") + "'/></ogc:Filter></wfs:Update></wfs:Transaction>");
-					HttpClientBuilder httpClientBuilder = HttpClientBuilder.create();
-					Credentials credentials = new UsernamePasswordCredentials(user, pass);
-					CredentialsProvider credsProvider = new BasicCredentialsProvider();
-					credsProvider.setCredentials( AuthScope.ANY, credentials);
-					
-					httpClientBuilder.setDefaultCredentialsProvider(credsProvider);
-					HttpClient httpClient = httpClientBuilder.build();
-					HttpPost request = new HttpPost(url);			
-			        request.addHeader("content-type", "application/xml");
-			        request.setEntity(new StringEntity(requestData.toString(), "UTF-8"));
-			        HttpResponse response = httpClient.execute(request);
-			        HttpEntity entity = response.getEntity();
-			        String responseString = EntityUtils.toString(entity, "UTF-8");
-			        System.out.println(responseString);
-					if (responseString.indexOf("Exception") > -1) {
-						ResponseHelper.writeResponse(params, "Exception");
-					} else if (responseString.indexOf("<wfs:totalUpdated>1</wfs:totalUpdated>") > -1) {
-						ResponseHelper.writeResponse(params, "");
-					}
+				//Don't update features with no featureId for the filter.
+				if(jsonObject.getString("featureId") != null) {
+					String srsName = JSONHelper.getStringFromJSON(jsonObject, "srsName", "http://www.opengis.net/gml/srs/epsg.xml#3067");
+					OskariLayer lay = layerService.find(jsonObject.getString("layerId"));
+					WFSLayerConfiguration lc = layerConfigurationService.findConfiguration(lay.getId());
+					String url = lc.getURL();
+					final String user = lc.getUsername();
+					final String pass = lc.getPassword();
+					geometryProperty = lc.getGMLGeometryProperty();
+					final Resource resource = permissionsService.findResource(new OskariLayerResource(lay));
+		            final boolean hasPermssion = resource.hasPermission(params.getUser(), Permissions.PERMISSION_TYPE_EDIT_LAYER_CONTENT);
+		            if(hasPermssion) {
+		            	ClearLayerTiles(lay.getId());
+						StringBuilder requestData = new StringBuilder("<wfs:Transaction service='WFS' version='1.1.0' xmlns:ogc='http://www.opengis.net/ogc' xmlns:wfs='http://www.opengis.net/wfs'><wfs:Update typeName='"+ lay.getName() +"'>");
+						JSONArray jsonArray = jsonObject.getJSONArray("featureFields");
+						for (int j = 0; j < jsonArray.length(); j++) {
+							requestData.append("<wfs:Property><wfs:Name>" + jsonArray.getJSONObject(j).getString("key") + "</wfs:Name><wfs:Value>" + jsonArray.getJSONObject(j).getString("value") + "</wfs:Value></wfs:Property>");
+						}
+						if (jsonObject.has("geometries")) {
+							FillGeometries(requestData, jsonObject.getJSONObject("geometries"), srsName);
+						};
+						requestData.append("<ogc:Filter><ogc:FeatureId fid='" + jsonObject.getString("featureId") + "'/></ogc:Filter></wfs:Update></wfs:Transaction>");
+						HttpClientBuilder httpClientBuilder = HttpClientBuilder.create();
+						Credentials credentials = new UsernamePasswordCredentials(user, pass);
+						CredentialsProvider credsProvider = new BasicCredentialsProvider();
+						credsProvider.setCredentials( AuthScope.ANY, credentials);
+						
+						httpClientBuilder.setDefaultCredentialsProvider(credsProvider);
+						HttpClient httpClient = httpClientBuilder.build();
+						HttpPost request = new HttpPost(url);			
+				        request.addHeader("content-type", "application/xml");
+				        request.setEntity(new StringEntity(requestData.toString(), "UTF-8"));
+				        HttpResponse response = httpClient.execute(request);
+				        HttpEntity entity = response.getEntity();
+				        String responseString = EntityUtils.toString(entity, "UTF-8");
+						if (responseString.indexOf("Exception") > -1) {
+							allUpdatesSuccess = false;
+						}
+		            }
 	            }
+			}
+			if (allUpdatesSuccess) {
+				ResponseHelper.writeResponse(params, "");
+			} else {
+				ResponseHelper.writeResponse(params, "Exception");
 			}
 		} catch (Exception ex) {
 			log.error(ex, "Exception handling SaveMultipleFeatures");
