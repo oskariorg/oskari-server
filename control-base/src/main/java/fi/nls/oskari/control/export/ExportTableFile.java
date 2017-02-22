@@ -6,10 +6,7 @@ import fi.nls.oskari.control.ActionHandler;
 import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.util.CSVStreamer;
-import fi.nls.oskari.util.PropertyUtil;
-import fi.nls.oskari.util.TabularFileStreamer;
-import fi.nls.oskari.util.XLSXStreamer;
+import fi.nls.oskari.util.*;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -17,8 +14,8 @@ import org.json.JSONObject;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -44,12 +41,10 @@ public class ExportTableFile extends ActionHandler {
             throw new ActionException(ioe.getMessage(), ioe);
         }
         TabularFileStreamer fileStreamer;
-        String fileExtension = "";
+        String fileExtension;
         String format = params.getRequiredParam("format");
         String delimiter;
-        String dataSource = params.getHttpParam("dataSource", null);
-        String metadata = params.getHttpParam("metadata", null);
-        String fileName = params.getHttpParam("layerName", "export").replaceAll("[^a-zA-Z0-9.-]", "_");
+        String fileName = params.getHttpParam("filename", "export").replaceAll("[^a-zA-Z0-9.-]", "_");
         String[] headers;
         Object[][] data;
 
@@ -110,23 +105,25 @@ public class ExportTableFile extends ActionHandler {
         } catch (JSONException je) {
             throw new ActionException(je.getMessage(), je);
         }
-        Map<String, Object> additionalFields = new HashMap<String, Object>();
-        if (dataSource != null) {
-            String[] datas = dataSource.split(":");
-            if(datas.length > 1) {
-                additionalFields.put(datas[0], datas[1]);
+        // write additionalData (JSON array) after the actual data
+        JSONArray additionalData = JSONHelper.createJSONArray(params.getHttpParam("additionalData", "[]"));
+        // Using LinkedHashMap to control the order of items
+        Map<String, Object> additionalFields = new LinkedHashMap<String, Object>();
+
+        for (int i = 0; i < additionalData.length(); i++) {
+            JSONObject item = additionalData.optJSONObject(i);
+            if(item == null) {
+                continue;
             }
-        }
-        final String layerName = params.getHttpParam("layerName");
-        if (layerName != null) {
-            additionalFields.put(layerName, " ");
-        }
-        if (metadata != null) {
-            String[] metas = metadata.split(":");
-            if (metas.length > 1) {
-                additionalFields.put(metas[0], getMetadataUrl(metas[1]));
+            final String type = item.optString("type");
+            String value = item.optString("value");
+            if("metadata".equalsIgnoreCase(type)) {
+                // metadata only holds uuid, add the rest of the url to the value
+                value = getMetadataUrl(value);
             }
+            additionalFields.put(item.optString("name"), value);
         }
+
         try {
             fileStreamer.writeToStream(headers, data, additionalFields, out);
         } catch (IOException ioe) {
