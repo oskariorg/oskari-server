@@ -1,5 +1,7 @@
 package fi.nls.oskari.control.statistics.plugins.kapa;
 
+import fi.nls.oskari.control.statistics.data.*;
+import fi.nls.oskari.control.statistics.plugins.*;
 import fi.nls.oskari.control.statistics.plugins.db.StatisticalDatasource;
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.junit.AfterClass;
@@ -13,12 +15,6 @@ import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import fi.nls.oskari.control.statistics.plugins.IndicatorValue;
-import fi.nls.oskari.control.statistics.plugins.StatisticalDatasourcePlugin;
-import fi.nls.oskari.control.statistics.plugins.StatisticalDatasourcePluginManager;
-import fi.nls.oskari.control.statistics.plugins.StatisticalIndicator;
-import fi.nls.oskari.control.statistics.plugins.StatisticalIndicatorSelector;
-import fi.nls.oskari.control.statistics.plugins.StatisticalIndicatorSelectors;
 import fi.nls.oskari.db.DatasourceHelper;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.PropertyUtil;
@@ -79,7 +75,7 @@ public class KapaPluginIT {
             @Override
             public HttpURLConnection answer(InvocationOnMock invocation) throws Throwable {
                 url = invocation.getArguments()[0].toString();
-                return (HttpURLConnection) new HttpURLConnection(null) {
+                return new HttpURLConnection(null) {
                     @SuppressWarnings("deprecation")
                     @Override
                     public InputStream getInputStream() {
@@ -142,16 +138,17 @@ public class KapaPluginIT {
         assertNotNull("KaPa plugin was not found.", kapaPlugin);
         
         // Getting indicators.
-        List<? extends StatisticalIndicator> indicators = kapaPlugin.getIndicators(null);
+        IndicatorSet indicatorSet = kapaPlugin.getIndicatorSet(null);
+        List<StatisticalIndicator> indicators = indicatorSet.getIndicators();
         assertTrue("Indicators result was too small.", indicators.size() > 1);
         
-        StatisticalIndicatorSelectors selectors = indicators.get(0).getSelectors();
-        List<StatisticalIndicatorSelector> allSelectors = selectors.getSelectors();
-        for (StatisticalIndicatorSelector selector : allSelectors) {
+        StatisticalIndicatorDataModel selectors = indicators.get(0).getDataModel();
+        List<StatisticalIndicatorDataDimension> allSelectors = selectors.getDimensions();
+        for (StatisticalIndicatorDataDimension selector : allSelectors) {
             // Selecting the first allowed value for each selector to define a proper selector.
             selector.setValue(selector.getAllowedValues().iterator().next().getKey());
         }
-        Map<String, IndicatorValue> indicatorValues = indicators.get(0).getLayers().get(0).getIndicatorValues(selectors);
+        Map<String, IndicatorValue> indicatorValues = kapaPlugin.getIndicatorValues(indicators.get(0), selectors, indicators.get(0).getLayers().get(0));
         assertNotNull("Indicator values response was null.", indicatorValues);
         assertTrue("IndicatorValues result was too small: " + String.valueOf(indicatorValues), indicatorValues.size() > 2);
     }

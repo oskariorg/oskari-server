@@ -34,7 +34,7 @@ public class WebServiceMapProducerResourceTestRunner {
     void run(final String testname,
             WebServiceMapProducerResourceTestFileType input,
             WebServiceMapProducerResourceTestFileType output)
-            throws NoSuchAuthorityCodeException, IOException,
+            throws IOException,
             GeoWebCacheException, FactoryException,
             com.vividsolutions.jts.io.ParseException, ParseException,
             XMLStreamException, FactoryConfigurationError,
@@ -73,15 +73,6 @@ public class WebServiceMapProducerResourceTestRunner {
                     throw new IOException("Invalid args for PDF test");
                 }
                 break;
-//            case PPTX:
-//                switch (input) {
-//                case GEOJSON:
-//                    result = resource.getGeoJsonMapPPTX(inp, xClientInfo);
-//                    break;
-//                default:
-//                    throw new IOException("Invalid args for PPTX test");
-//                }
-//                break;
             default:
                 throw new IOException("Invalid args for test");
             }

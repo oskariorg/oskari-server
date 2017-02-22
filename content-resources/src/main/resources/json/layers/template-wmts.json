@@ -18,7 +18,6 @@
             "subtitle": "(WMTS)"
         }
     },
-    "base_map": true,
     "role_permissions": {
         "Guest": ["VIEW_LAYER", "VIEW_PUBLISHED"],
         "User": ["VIEW_LAYER", "PUBLISH", "VIEW_PUBLISHED"],

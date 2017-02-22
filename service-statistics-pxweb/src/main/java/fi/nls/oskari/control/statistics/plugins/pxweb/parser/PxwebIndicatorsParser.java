@@ -2,8 +2,10 @@ package fi.nls.oskari.control.statistics.plugins.pxweb.parser;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fi.nls.oskari.cache.JedisManager;
-import fi.nls.oskari.control.statistics.plugins.StatisticalIndicatorSelector;
-import fi.nls.oskari.control.statistics.plugins.StatisticalIndicatorSelectors;
+import fi.nls.oskari.control.statistics.data.StatisticalIndicator;
+import fi.nls.oskari.control.statistics.data.StatisticalIndicatorDataDimension;
+import fi.nls.oskari.control.statistics.data.StatisticalIndicatorDataModel;
+import fi.nls.oskari.control.statistics.data.StatisticalIndicatorLayer;
 import fi.nls.oskari.control.statistics.plugins.db.DatasourceLayer;
 import fi.nls.oskari.control.statistics.plugins.pxweb.PxwebConfig;
 import fi.nls.oskari.control.statistics.plugins.pxweb.json.PxwebItem;
@@ -11,6 +13,7 @@ import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.JSONHelper;
+import fi.nls.oskari.util.PropertyUtil;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -28,12 +31,12 @@ public class PxwebIndicatorsParser {
         this.config = config;
     }
 
-    public List<PxwebIndicator> parse(List<DatasourceLayer> layers) {
+    public List<StatisticalIndicator> parse(List<DatasourceLayer> layers) {
         return parse(null, null, layers);
     }
 
-    public List<PxwebIndicator> parse(PxwebItem parent, String path, List<DatasourceLayer> layers) {
-        List<PxwebIndicator> indicators = new ArrayList<>();
+    public List<StatisticalIndicator> parse(PxwebItem parent, String path, List<DatasourceLayer> layers) {
+        List<StatisticalIndicator> indicators = new ArrayList<>();
         try {
             final String url = getUrl(path);
             String jsonResponse = IOHelper.getURL(url);
@@ -49,12 +52,14 @@ public class PxwebIndicatorsParser {
                     // only recognize l and t types
                     continue;
                 }
-                PxwebIndicator ind = new PxwebIndicator();
+                StatisticalIndicator ind = new StatisticalIndicator();
                 ind.setId(item.id);
-                ind.setName(item.text);
+                ind.addName(PropertyUtil.getDefaultLanguage(), item.text);
                 setupMetadata(ind, path);
                 for(DatasourceLayer layer : layers) {
-                    ind.addLayer(new PxwebStatisticalIndicatorLayer(layer.getMaplayerId(), ind.getId(), url, config.getRegionKey()));
+                    StatisticalIndicatorLayer l = new StatisticalIndicatorLayer(layer.getMaplayerId(), ind.getId());
+                    l.addParam("baseUrl", url);
+                    ind.addLayer(l);
                 }
                 indicators.add(ind);
             }
@@ -122,10 +127,9 @@ public class PxwebIndicatorsParser {
 	}]
 }
  */
-    private void setupMetadata(PxwebIndicator indicator, String path) {
-        final StatisticalIndicatorSelectors selectors = new StatisticalIndicatorSelectors();
-        indicator.setSelectors(selectors);
-        // TODO: caching!!
+    private void setupMetadata(StatisticalIndicator indicator, String path) {
+        final StatisticalIndicatorDataModel selectors = new StatisticalIndicatorDataModel();
+        indicator.setDataModel(selectors);
         final JSONObject json = getMetadata(indicator, path);
         if(json == null) {
             // TODO: throw an error maybe? same with unexpected response
@@ -144,7 +148,7 @@ public class PxwebIndicatorsParser {
                 if (config.getIgnoredVariables().contains(id)) {
                     continue;
                 }
-                StatisticalIndicatorSelector selector = new StatisticalIndicatorSelector(id);
+                StatisticalIndicatorDataDimension selector = new StatisticalIndicatorDataDimension(id);
                 selector.setName(var.optString("text"));
 
                 JSONArray values = var.optJSONArray("values");
@@ -152,23 +156,17 @@ public class PxwebIndicatorsParser {
                 for (int j = 0; j < values.length(); j++) {
                     selector.addAllowedValue(values.optString(j), valueTexts.optString(j));
                 }
-                selectors.addSelector(selector);
+                selectors.addDimension(selector);
             }
         } catch (Exception ex) {
             LOG.error(ex, "Error parsing indicator metadata from Pxweb datasource:", json);
         }
     }
 
-    private JSONObject getMetadata(PxwebIndicator indicator, String path) {
+    private JSONObject getMetadata(StatisticalIndicator indicator, String path) {
         final String url = getUrl(path) + indicator.getId();
-        final String cacheKey = "stats:" + config.getId() + ":metadata:" + url;
         try {
-            String metadata = JedisManager.get(cacheKey);
-            if(metadata == null) {
-                metadata = IOHelper.getURL(url);
-                JedisManager.setex(cacheKey, JedisManager.EXPIRY_TIME_DAY, metadata);
-            }
-            return JSONHelper.createJSONObject(metadata);
+            return JSONHelper.createJSONObject(IOHelper.getURL(url));
         } catch (IOException ex) {
             LOG.error(ex, "Error getting indicator metadata from Pxweb datasource:", url);
         }

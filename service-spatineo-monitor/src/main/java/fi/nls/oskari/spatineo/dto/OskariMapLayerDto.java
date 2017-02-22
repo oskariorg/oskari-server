@@ -11,27 +11,26 @@ import java.util.List;
  */
 public class OskariMapLayerDto {
 
-    public static interface Mapper {
+    public interface Mapper {
         @Select("SELECT id, name, url, updated FROM oskari_maplayer WHERE type = 'wmslayer' ORDER BY id")
-        public List<OskariMapLayerDto> selectWmsLayers();
+        List<OskariMapLayerDto> selectWmsLayers();
+        
+        @Select("SELECT m.id, w.feature_element as name, m.url, m.updated FROM oskari_maplayer m JOIN portti_wfs_layer w ON w.maplayer_id = m.id;")
+        List<OskariMapLayerDto> selectWfsLayers();
     }
+    // without this, will throw No constructor found in fi.nls.oskari.spatineo.dto.OskariMapLayerDto matching [java.lang.Integer, java.lang.String, java.lang.String, java.sql.Timestamp]
+    public OskariMapLayerDto() {}
 
-    public OskariMapLayerDto() {
-    }
-
-    public OskariMapLayerDto(final Long id, final Calendar updated, final String name, final String url) {
+    public OskariMapLayerDto(final Long id, final String name, final String url, final Calendar updated) {
         this.id = id;
-        this.updated = updated;
         this.name = name;
         this.url = url;
+        this.updated = updated;
     }
 
     public Long id;
-
     public Calendar updated;
-
     public String name;
-
     public String url;
 
     @Override
@@ -43,5 +42,4 @@ public class OskariMapLayerDto {
                 .add("url", url)
                 .toString();
     }
-
 }

@@ -54,13 +54,12 @@ public class SchedulerService {
 
         final Map<String, ScheduledJob> annotatedJobs = OskariComponentManager.getComponentsOfType(ScheduledJob.class);
         log.info("Annotated scheduler jobs:", annotatedJobs.size());
-        for (final String jobCode : annotatedJobs.keySet()) {
-            final String key = String.format("oskari.scheduler.job.%s", jobCode);
-            final String cronLine = PropertyUtil.getOptional(key + ".cronLine");
-            if (null == cronLine) {
-                log.warn("Available scheduled job", jobCode, "needs the cronLine configuration parameter");
+        for (final Map.Entry<String, ScheduledJob> entry : annotatedJobs.entrySet()) {
+            final String cronLine = entry.getValue().getCronLine();
+            if (null == cronLine || cronLine.isEmpty()) {
+                log.warn("Available scheduled job", entry.getKey(), "needs the cronLine configuration parameter");
             } else {
-                this.scheduleJob(annotatedJobs.get(jobCode), cronLine);
+                this.scheduleJob(entry.getValue(), cronLine);
             }
         }
 

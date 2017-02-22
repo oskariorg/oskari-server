@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>fi.nls.oskari</groupId>
 		<artifactId>oskari-parent</artifactId>
-        <version>1.40.0</version>
+        <version>1.41.0</version>
 	</parent>
 
     <groupId>fi.nls.oskari.service</groupId>
@@ -15,10 +15,10 @@
     <name>Common Interfaces and Common Classes for the Statistics Service</name>
 
     <dependencies>
-        <dependency>
-            <groupId>org.mybatis</groupId>
-            <artifactId>mybatis</artifactId>
-        </dependency>
+		<dependency>
+			<groupId>fi.nls.oskari.service</groupId>
+			<artifactId>oskari-mybatis</artifactId>
+		</dependency>
         <dependency>
             <groupId>fi.nls.oskari.service</groupId>
             <artifactId>oskari-map</artifactId>

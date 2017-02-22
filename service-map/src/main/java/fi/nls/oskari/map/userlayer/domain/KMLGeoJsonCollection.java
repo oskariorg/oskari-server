@@ -7,6 +7,7 @@ import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.userlayer.service.GeoJsonWorker;
 import fi.nls.oskari.util.JSONHelper;
 import org.geotools.geojson.feature.FeatureJSON;
+import org.geotools.geojson.geom.GeometryJSON;
 import org.geotools.geometry.jts.JTS;
 import org.geotools.kml.v22.KMLConfiguration;
 import org.geotools.referencing.CRS;
@@ -23,18 +24,20 @@ import java.io.FileInputStream;
 
 public class KMLGeoJsonCollection extends GeoJsonCollection implements GeoJsonWorker {
 
-
-    final FeatureJSON io = new FeatureJSON();
+    static final int GJSON_DECIMALS = 10;
+    GeometryJSON gjson = new GeometryJSON(GJSON_DECIMALS);
+    final FeatureJSON io = new FeatureJSON(gjson);
     private static final Logger log = LogFactory
             .getLogger(KMLGeoJsonCollection.class);
 
     /**
      *  Parse Google kml import data to geojson features
      * @param file            kml import file
+     * @param source_epsg source CRS (not in use in this format)
      * @param target_epsg     target CRS
-     * @return
+     * @return null --> ok   error message --> import failed
      */
-    public boolean parseGeoJSON(File file, String target_epsg) {
+    public String parseGeoJSON(File file, String source_epsg, String target_epsg) {
 
 
         try {
@@ -81,12 +84,12 @@ public class KMLGeoJsonCollection extends GeoJsonCollection implements GeoJsonWo
             setFeatureType(featype);
             setTypeName("KML_");
 
-            return true;
+            return null;
 
         } catch (Exception e) {
             log.error("Couldn't create geoJSON from the kml file ", file.getName(),
                     e);
-            return false;
+            return "Couldn't create geoJSON from the kml file " + file.getName();
         }
     }
 }

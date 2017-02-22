@@ -6,6 +6,7 @@ import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.ActionHandler;
 import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.control.ActionParamsException;
+import fi.nls.oskari.control.statistics.data.*;
 import fi.nls.oskari.control.statistics.plugins.*;
 import fi.nls.oskari.domain.User;
 import fi.nls.oskari.util.ResponseHelper;
@@ -71,27 +72,31 @@ public class GetIndicatorDataHandler extends ActionHandler {
             // TODO: Might be faster to store the indicator id to indicator map in a proper map.
             //       Who should do this, though? We don't want to put this functionality into the plugins.
             //       It should be in a common wrapper for the plugins.
+
             StatisticalIndicator indicator = plugin.getIndicator(user, indicatorId);
             if(indicator == null) {
                 throw new ActionParamsException("No such indicator");
             }
+
             StatisticalIndicatorLayer layer = indicator.getLayer(layerId);
             if(layer == null) {
                 throw new ActionParamsException("No such regionset");
             }
+
             // Note: Layer version is handled already in the indicator metadata.
             // We found the correct indicator and the layer.
             JSONObject selectorJSON = new JSONObject(selectorsStr);
-            StatisticalIndicatorSelectors selectors = new StatisticalIndicatorSelectors();
+
+            StatisticalIndicatorDataModel selectors = new StatisticalIndicatorDataModel();
             @SuppressWarnings("unchecked")
             Iterator<String> keys = selectorJSON.keys();
             while (keys.hasNext()) {
                 String key = keys.next();
                 String value = selectorJSON.getString(key);
-                StatisticalIndicatorSelector selector = new StatisticalIndicatorSelector(key, value);
-                selectors.addSelector(selector);
+                StatisticalIndicatorDataDimension selector = new StatisticalIndicatorDataDimension(key, value);
+                selectors.addDimension(selector);
             }
-            Map<String, IndicatorValue> values = layer.getIndicatorValues(selectors);
+            Map<String, IndicatorValue> values = plugin.getIndicatorValues(indicator, selectors, layer);
             response = toJSON(values);
         } catch (Exception e) {
             if(e instanceof ActionException) {

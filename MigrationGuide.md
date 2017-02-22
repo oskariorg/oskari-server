@@ -1,5 +1,43 @@
 # Migration guide
 
+## 1.41.0
+
+### Code refactoring
+
+fi.nls.oskari.control.view.modifier.param.ParamHandler has been moved from control-base to 
+fi.nls.oskari.view.modifier.ParamHandler in service-control Maven module. 
+Please update any references to point to the new package.  
+
+### Database migration
+
+In preparation for Oskari 2.0 some of the code has been moved to more appropriate places. As a result some of the
+ previously mandatory imports on mapfull bundle have been removed. Update any custom minifierAppSetup.json files 
+ by removing references to these packages: https://github.com/nls-oskari/oskari/commit/2861ebf4b51849aff7d8619a270ad7fe934fe8d3
+
+There is a Oskari core Flyway-migration that removes the references from database: 
+https://github.com/nls-oskari/oskari-server/blob/develop/content-resources/src/main/java/flyway/oskari/V1_41_6__remove_empty_packages.java
+
+### FlywayHelper method changes
+
+There has been some changes to the FlywayHelper class. If you have used it in your applications Flyway-migrations you
+ might need to change some of the existing Java-based migration classes. This might be the reason your previous
+  Java-based migration classes don't compile after updating to new Oskari version. Java-based migrations are not 
+  tracked the same way as SQL-based ones so you can modify the existing migrations to accommodate this change.
+Here are the changes to the FlywayHelper signature:
+
+    FROM ArrayList<Long> getViewIdsForTypes(Connection connection, String... types) throws Exception
+    TO   List<Long> getViewIdsForTypes(Connection connection, String... types) throws SQLException
+    
+    FROM ArrayList<Long> getUserAndDefaultViewIds(Connection connection) throws Exception
+    TO   List<Long> getUserAndDefaultViewIds(Connection connection) throws SQLException
+    
+    FROM Bundle getBundleFromView(Connection connection, String bundle, Long viewId) throws Exception
+    TO   Bundle getBundleFromView(Connection connection, String bundle, Long viewId) throws SQLException
+    
+    FROM Bundle updateBundleInView(Connection connection, Bundle bundle, Long viewId) throws Exception
+    TO   Bundle updateBundleInView(Connection connection, Bundle bundle, Long viewId) throws SQLException
+
+
 ## 1.40.0
 
 The sample application can be updated to include the new statistics UI. If you are using the sample-application flyway

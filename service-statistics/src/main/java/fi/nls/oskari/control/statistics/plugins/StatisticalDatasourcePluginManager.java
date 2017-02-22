@@ -45,9 +45,6 @@ public class StatisticalDatasourcePluginManager {
         return plugins.get(id);
     }
 
-    // Localizations with "name" keys for plugin data sources to show to users in the frontend.
-    private static final Map<Long, JSONLocalizedName> dataSourceLocales = new HashMap<>();
-
     private List<StatisticalDatasource> statisticalDatasources;
 
     public static StatisticalDatasourcePluginManager getInstance() {
@@ -69,16 +66,16 @@ public class StatisticalDatasourcePluginManager {
 
     public void init() {
         statisticalDatasources = getDatasources();
-        Map<String, OskariComponent> allPlugins = OskariComponentManager.getComponentsOfType(StatisticalDatasourceFactory.class);
+        Map<String, StatisticalDatasourceFactory> allPlugins = OskariComponentManager.getComponentsOfType(StatisticalDatasourceFactory.class);
 
         for (StatisticalDatasource source : statisticalDatasources) {
             LOG.info("Adding plugin from database: ", source);
             try {
-                OskariComponent plugin = allPlugins.get(source.getPlugin());
+                StatisticalDatasourceFactory plugin = allPlugins.get(source.getPlugin());
                 if (plugin == null) {
                     throw new ClassNotFoundException("Annotation @Oskari(\"" + source.getPlugin() + "\") not found!");
                 }
-                this.registerDatasource(source, (StatisticalDatasourceFactory) plugin);
+                this.registerDatasource(source, plugin);
             } catch (ClassNotFoundException e) {
                 LOG.error("Could not find the plugin class: " + source.getPlugin() + ". Skipping...");
             }
@@ -96,9 +93,6 @@ public class StatisticalDatasourcePluginManager {
         factory.setupSourceLayers(source);
         StatisticalDatasourcePlugin plugin = factory.create(source);
         plugins.put(source.getId(), plugin);
-        final JSONLocalizedName loc = new JSONLocalizedName();
-        loc.setLocale(JSONHelper.createJSONObject(source.getLocale()));
-        dataSourceLocales.put(source.getId(), loc);
     }
 
     public List<StatisticalDatasource> getDatasources() {
@@ -125,9 +119,5 @@ public class StatisticalDatasourcePluginManager {
         configuration.addMapper(StatisticalDatasourceMapper.class);
 
         return new SqlSessionFactoryBuilder().build(configuration);
-    }
-
-    public JSONLocalized getPluginLocale(long id) {
-        return dataSourceLocales.get(id);
     }
 }

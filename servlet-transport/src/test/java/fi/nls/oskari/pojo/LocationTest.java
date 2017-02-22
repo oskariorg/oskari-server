@@ -37,11 +37,13 @@ public class LocationTest {
 	
 	public void testTransformEnvelope() {
 		// transformed envelope
-		/* changed test to match axis order in http://www.epsg-registry.org/ 4326 spec 1 North 2 East 
-		 * after removing forceXY assumption from Location */
+		/* Deprecated concept: changed test to match axis order in http://www.epsg-registry.org/ 4326 spec 1 North 2 East
+		 * after removing forceXY assumption from Location
+		 *
+		 * New concept: projections are managed in forced lon, lat order */
 		ReferencedEnvelope transformed = location.getTransformEnvelope("EPSG:4326", true);
-        assertEquals("MinX is within acceptable range ", 64.71499289327947, transformed.getMinX(), 0.00001);
-        assertEquals("MinY is within acceptable range ", 25.3399808304302, transformed.getMinY(), 0.00001);
+        assertEquals("MinX is within acceptable range ", 64.71499289327947, transformed.getMinY(), 0.00001);
+        assertEquals("MinY is within acceptable range ", 25.3399808304302, transformed.getMinX(), 0.00001);
     }
 	
     @Test

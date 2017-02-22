@@ -5,6 +5,7 @@ import fi.nls.oskari.cache.JedisManager;
 import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.ActionHandler;
 import fi.nls.oskari.control.ActionParameters;
+import fi.nls.oskari.control.statistics.data.*;
 import fi.nls.oskari.control.statistics.plugins.*;
 import fi.nls.oskari.domain.User;
 import fi.nls.oskari.util.ResponseHelper;
@@ -81,11 +82,11 @@ public class GetIndicatorMetadataHandler extends ActionHandler {
     
     public JSONObject toJSON(StatisticalIndicator indicator) throws JSONException {
         JSONObject pluginIndicatorJSON = new JSONObject();
-        Map<String, String> name = indicator.getLocalizedName();
-        Map<String, String> description = indicator.getLocalizedDescription();
-        Map<String, String> source = indicator.getLocalizedSource();
+        Map<String, String> name = indicator.getName();
+        Map<String, String> description = indicator.getDescription();
+        Map<String, String> source = indicator.getSource();
         List<StatisticalIndicatorLayer> layers = indicator.getLayers();
-        StatisticalIndicatorSelectors selectors = indicator.getSelectors();
+        StatisticalIndicatorDataModel selectors = indicator.getDataModel();
 
         pluginIndicatorJSON.put("id", indicator.getId());
         pluginIndicatorJSON.put("name", name);
@@ -97,9 +98,9 @@ public class GetIndicatorMetadataHandler extends ActionHandler {
         return pluginIndicatorJSON;
     }
 
-    public JSONArray toJSON(StatisticalIndicatorSelectors selectors) throws JSONException {
+    public JSONArray toJSON(StatisticalIndicatorDataModel selectors) throws JSONException {
         JSONArray selectorsJSON = new JSONArray();
-        for (StatisticalIndicatorSelector selector : selectors.getSelectors()) {
+        for (StatisticalIndicatorDataDimension selector : selectors.getDimensions()) {
             JSONObject selectorJSON = new JSONObject();
             selectorJSON.put("id", selector.getId());
             selectorJSON.put("name", selector.getName());

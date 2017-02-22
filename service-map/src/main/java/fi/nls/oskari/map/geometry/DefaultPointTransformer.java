@@ -14,13 +14,7 @@ public class DefaultPointTransformer implements PointTransformer {
         try {
             CoordinateReferenceSystem sourceCrs = CRS.decode(src);
             CoordinateReferenceSystem targetCrs = CRS.decode(target);
-            if (ProjectionHelper.isFirstAxisNorth(sourceCrs)) {
-                point.switchLonLat();
-            }
             Point result = service.transformPoint(point, sourceCrs, targetCrs);
-            if (ProjectionHelper.isFirstAxisNorth(targetCrs)) {
-                result.switchLonLat();
-            }
             return result;
         } catch (Exception ex) {
             throw new RuntimeException(ex.getMessage());

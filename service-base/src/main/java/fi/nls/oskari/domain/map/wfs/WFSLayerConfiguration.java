@@ -817,4 +817,19 @@ public class WFSLayerConfiguration {
 	public static String getCache(String layerId) {
 		return JedisManager.get(KEY + layerId);
 	}
+
+
+    public  boolean isReverseXY(String epsg) {
+        if(this.attributes != null && this.attributes.has("reverseXY")){
+            return JSONHelper.getJSONObject(this.attributes, "reverseXY").has(epsg.toUpperCase());
+        }
+        return false;
+    }
+
+    public boolean isLongSrsName(String epsg) {
+        if(this.attributes != null && this.attributes.has("longSrsName")){
+            return JSONHelper.getJSONObject(this.attributes, "longSrsName").has(epsg.toUpperCase());
+        }
+        return false;
+    }
 }

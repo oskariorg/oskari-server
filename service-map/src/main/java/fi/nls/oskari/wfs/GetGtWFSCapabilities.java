@@ -924,7 +924,7 @@ public class GetGtWFSCapabilities {
             }
             // Loop elements for to get geometry property name - some services response has flat featuretype data or
             // some services returns a set of .xsd files
-            Boolean found = false;
+            String geomName = "geometry";
             for (int i = 0; i < elements.getLength(); i++) {
 
                 Node node = elements.item(i);
@@ -933,14 +933,12 @@ public class GetGtWFSCapabilities {
                     String type = elem.getAttribute("type");
                     String name = elem.getAttribute("name");
                     if (ft.getName().split(":")[ft.getName().split(":").length-1].equals(name)) {
-                        found = true;
+                        ft.setGeomPropertyName(geomName);
+                        break;
                     }
                     //is geom property
-                    if (GEOMTYPES.contains(type) && found == true) {
-                        ft.setGeomPropertyName(elem.getAttribute("name"));
-                        break;
-
-
+                    if (GEOMTYPES.contains(type)) {
+                        geomName = elem.getAttribute("name");
                     }
                 }
 

@@ -75,7 +75,7 @@ public class AdditionalIdFilter extends WFSFilter {
             LOG.error("Failed to create a filter (invalid type)");
         }
 
-        return createXML(filter);
+        return createXML(filter, null);
     }
 
     /**

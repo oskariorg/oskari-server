@@ -21,6 +21,7 @@ public class RouteResponse {
     private JSONObject plan;
     private boolean success;
     private String errorMessage;
+    private String requestUrl;
 
     public JSONObject toJSON() {
         JSONObject json = new JSONObject();
@@ -67,6 +68,14 @@ public class RouteResponse {
 
     public String getErrorMessage() {
         return errorMessage;
+    }
+
+    public String getRequestUrl() {
+        return requestUrl;
+    }
+
+    public void setRequestUrl(String requestUrl) {
+        this.requestUrl = requestUrl;
     }
 
     public void setErrorMessage(String errorMessage) {

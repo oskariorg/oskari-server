@@ -1,5 +1,206 @@
 # Release Notes
 
+## 1.41
+
+### CSW Metadata improvements
+
+URL-parameter "metadata" with a value of metadata uuid can now be used to open the metadata info flyout on startup. 
+Requires metadataflyout bundle to be present in the appsetup and CSW-service configured in Oskari. 
+
+Added a way to add an "always on" filter to CSW-searches. This can be done by adding properties to oskari-ext.properties:
+ 
+Include some randomly named field to this property like "alwaysOnFilter":
+
+    search.channel.METADATA_CATALOGUE_CHANNEL.fields=...,alwaysOnFilter
+
+You can do a like filter by just naming the filter property and providing it a default value for the:
+
+    search.channel.METADATA_CATALOGUE_CHANNEL.field.alwaysOnFilter.filter=somePropName
+    search.channel.METADATA_CATALOGUE_CHANNEL.field.alwaysOnFilter.value=someValue
+
+This will result in the query having a like filter:
+
+	<ogc:PropertyIsLike escapeChar="/" matchCase="true" singleChar="?" wildCard="*">
+		<ogc:PropertyName>somePropName</ogc:PropertyName>
+		<ogc:Literal><![CDATA[someValue]]></ogc:Literal>
+	</ogc:PropertyIsLike>
+
+If you want to do an exact match you can include filterOp=COMP_EQUAL as another property:
+
+    search.channel.METADATA_CATALOGUE_CHANNEL.field.alwaysOnFilter.filterOp=COMP_EQUAL
+
+This will result in the query having an exact filter:
+
+	<ogc:PropertyIsEqualTo matchCase="false">
+		<ogc:PropertyName>somePropName</ogc:PropertyName>
+		<ogc:Literal><![CDATA[someValue]]></ogc:Literal>
+	</ogc:PropertyIsEqualTo>
+
+### Code refactoring
+
+fi.nls.oskari.control.view.modifier.param,ParamHandler has been moved from control-base to 
+fi.nls.oskari.view.modifier.ParamHandler in service-control Maven module. 
+Please update any references to point to the new package.  
+
+### Layer urls with secure domains
+
+Layers that already use secure url or have no protocol/domain as part of the url are no longer prefixed when used in https-enabled Oskari-instance.  
+
+### User registration
+
+The default pages have been visually improved and the default role for registered user is no longer hardcoded as "User".
+ The default role can be configured with oskari-ext.properties (defaults to "User"):
+ 
+    oskari.user.role.loggedIn=User
+
+Any parameters from registration form prefixed with "user_" like "user_phone" will be saved to attributes JSON in
+ database table oskari_users. This allows more customization for fields to use on registration. 
+
+### OpenTripPlanner
+
+OpenTripPlanner defaults changed: max walk distance has been updated from 1000 to 1000000.
+
+Routing action route now provides the otpURL key in response for users having the admin role. The value is the url
+that is used to call OpenTripPlanner so make the feature easier to debug.
+
+### MetaDataFieldHandler
+
+Modifying handler so at field values now can define space replaced char.
+If space is wanted to replace some character then following properties can be defined in properties file:
+search.channel.METADATA_CATALOGUE_CHANNEL.field.<name>.space.char = ?
+
+This is done because of GeoNetwork cannot query GetRecord for special cases. For example: space are not allowed when searching OrganisationName for LocalisedCharacterString. 
+
+### search-service
+
+Removed SearchUtil.maxCount and SearchWorker.maxCount. The same value is now returned by
+ SearchService.getMaxResultsCount() and can be configured with oskari-ext.properties:
+ 
+    search.max.results=100
+
+Classes extending SearchChannel have a new function getMaxResults() which looks for a property: 
+
+    search.channel.[CHANNEL_ID].maxFeatures=100
+
+and defaults to 'search.max.results' property. This can be used to configure channel-specific limits. They also have
+ a new function getMaxResults(int max) that you can use to pass the requested count from search criteria. This will 
+ return the requested count if it's smaller than the set limit for the channel. Each SearchChannel should resolve 
+ maximum results to return by calling getMaxResults(searchCriteria.getMaxResults()).
+
+### servlet-transport
+
+WFS 2.0.0 service responses (feature-engine parsing) can now be logged for debugging with transport-ext.properties: 
+
+    transport.response.debug=true
+
+### coordinate transform improvements
+
+Coordinate transforms changed in Oskari to work the same way even when the Geotools flag for enforced coordinate order
+ is used (system property org.geotools.referencing.forceXY=true). This is always true when for example Geoserver is
+  running on the same appserver as Oskari).
+
+Thanks @kessu: 
+
+- Geometry transform improvements and AxisOrder management for all projections as lon,lat in geometries. 
+- New property configuration in oskari-ext.properties for file import to set default source Crs. Default is used when
+ source crs is not found in import file (SHP and MIF):
+
+    userlayer.default.source.epsg=EPSG:3067
+
+- Improvements in DescribeFeatureType parser / wfs 2.0
+- Improvements in map click buffer tolerance calculation when map crs is geographical (degree units)
+- Optional configuration available for wfs layers (oskari_maplayer attributes column):
+
+        {
+            "reverseXY": {
+                "EPSG:4326":true
+            },
+            "longSrsName":{
+                "EPSG:4326":true
+            }
+        }
+
+These are helpful if the WFS-service uses different coordinate order than what is assumed or expects the long version of 
+ SRS name:
+    - "reverseXY": lat,lon order in wfs service
+    - "longSrsName": long srsName syntax in GetFeature
+
+### control/service-statistics
+
+Refactored layer-mapping for statistics layers. Removed source_property and layer_property and added config as JSON with 
+the value of source_property as value in  { "regionType" : [value] } for layers that are mapped to SotkaNET and KAPA
+ datasource plugins. Other datasources have an empty config as they didn't use the columns. Config can be used as
+ datasource specific layer configuration that the corresponding plugin can use to provide customized handling for layer. 
+
+Removed action routes that were not used by old or new statsgrid implementation: GetSotkaRegion,
+ GetIndicatorSelectorMetadata, GetIndicatorsMetadata
+
+Renamed classes to make it easier to separate between the two and corresponding functions:
+StatisticalIndicatorSelectors -> StatisticalIndicatorDataModel
+StatisticalIndicatorSelector -> StatisticalIndicatorDataDimension
+
+Refactored the indicator listing functionality for datasource adapters. There's a new method update() that should begin 
+processing the datasource for indicators and call onIndicatorProcessed() method for any indicators that are suitable for
+using in Oskari. This will be called from a background thread. For very user specific content and fast datasource you can 
+also override getIndicatorSet() method to return the user indicators directly. This way the update will not be called
+ as it's triggered by the default implementation of getIndicatorSet(). 
+ 
+Added a scheduled task to update statistical datasources data to cache. It runs by default at 4 AM each night, but can be configured in oskari-ext.properties:
+
+    oskari.scheduler.job.StatisticsDatasources.cronLine=0 0 4 * * ?
+    
+To disable running it you can set the value to empty
+
+    oskari.scheduler.job.StatisticsDatasources.cronLine=
+    
+Statistical datasource configuration in the database can now include hints for sorting indicator dimension values: 
+
+    {
+      "hints" : {
+        "dimensions" : [ {
+          "id" : "year",
+          "sort" : "DESC"
+        }, {
+          "id" : "gender",
+          "default" : "total"
+        }]
+      }
+    }
+
+Where id value will match the id of a datadimension item in indicator datamodel. Other keys affect the order of 
+allowed values for that dimension. Sort (if present) will be done first with either DESC or ASC value. If default is present
+ the matching allowed value will be moved as the first value in allowed values.
+
+### service-base
+
+Added list operations for JedisManager: pushToList() and popList().
+Added convenience method for checking if a key holds value (returns length of the value. Assumes string value): getValueStringLength().
+
+### Removed deprecated code
+
+Removed GetInspireThemes action route as it has been deprecated for a while and it's not used by anything in the front-end code.
+InspireThemes with GET request works as a replacement, but offers also admin functions with other request types.
+
+Removed GetSupportedLocales action route as the information is part of the GetAppSetup response.
+
+### Updated libraries
+
+The managed dependency of java3d.vecmath version 1.3.1 has been updated to new version 1.5.2.
+ The groupid for the library has changed between versions and is now javax.vecmath.
+ You should update any dependencies using it from:
+
+    <dependency>
+        <groupId>javax.vecmath</groupId>
+        <artifactId>vecmath</artifactId>
+    </dependency>
+
+To the new one:
+
+	<dependency>
+        <groupId>java3d</groupId>
+        <artifactId>vecmath</artifactId>
+    </dependency>
+
 ## 1.40
 
 ### Configuration improvements

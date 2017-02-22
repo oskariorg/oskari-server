@@ -6,6 +6,8 @@ import fi.nls.oskari.fe.output.OutputProcessor;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.service.ServiceRuntimeException;
+import fi.nls.oskari.util.IOHelper;
+import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.wfs.WFSExceptionHelper;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -18,6 +20,7 @@ import org.apache.http.entity.ContentType;
 import javax.xml.stream.XMLStreamException;
 import java.io.BufferedInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.Charset;
 
 public class FEResponseHandler implements ResponseHandler<Boolean> {
@@ -27,6 +30,8 @@ public class FEResponseHandler implements ResponseHandler<Boolean> {
     final InputProcessor inputProcessor;
     final OutputProcessor outputProcessor;
     final FeatureEngine engine;
+
+    private boolean debugResponse = PropertyUtil.getOptional("transport.response.debug", false);
 
     public FEResponseHandler(FeatureEngine engine,
             InputProcessor inputProcessor, OutputProcessor outputProcessor) {
@@ -68,8 +73,11 @@ public class FEResponseHandler implements ResponseHandler<Boolean> {
         Charset charset = contentType.getCharset();
         log.debug("[fe] response contentType " + contentType + ", charset: "
                 + charset);
-
-        BufferedInputStream inp = new BufferedInputStream(entity.getContent());
+        InputStream is = entity.getContent();
+        if(debugResponse) {
+            is = IOHelper.debugResponse(is);
+        }
+        BufferedInputStream inp = new BufferedInputStream(is);
 
         try {
 

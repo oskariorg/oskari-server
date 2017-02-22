@@ -1,23 +1,27 @@
 package fi.nls.oskari.control.statistics.plugins;
 
-import java.util.List;
-
-import fi.nls.oskari.annotation.Oskari;
-import fi.nls.oskari.control.statistics.plugins.db.StatisticalDatasource;
+import fi.nls.oskari.control.statistics.data.*;
 import fi.nls.oskari.domain.User;
-import fi.nls.oskari.service.OskariComponent;
-import org.json.JSONObject;
 
-public class MockPlugin extends AbstractStatisticalDatasourcePlugin {
+import java.util.Map;
+
+public class MockPlugin extends StatisticalDatasourcePlugin {
 
     @Override
-    public List<StatisticalIndicator> getIndicators(User user) {
-        return null;
+    public IndicatorSet getIndicatorSet(User user) {
+        return new IndicatorSet();
+    }
+
+    @Override
+    public void update() {
     }
 
     @Override
     public boolean canCache() {
         return false;
+    }
+    public Map<String, IndicatorValue> getIndicatorValues(StatisticalIndicator indicator, StatisticalIndicatorDataModel params, StatisticalIndicatorLayer regionset) {
+        return null;
     }
 
 }

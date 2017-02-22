@@ -354,6 +354,11 @@ public class MapLayerJSONParser {
                     Object slolayerid = subLayerObj.get("id");
                     String sllayerid = slolayerid.toString();
                     String slwmsname = (String) subLayerObj.get("layerName");
+                    
+                    if (slwmsname == null) {
+                        System.out.println("found null value = " + sllayerid);
+                    }
+                    
                     String slwmsversion = (String) subLayerObj.get("version");
                     Number slminScale = (Number) subLayerObj.get("minScale");
                     Number slmaxScale = (Number) subLayerObj.get("maxScale");

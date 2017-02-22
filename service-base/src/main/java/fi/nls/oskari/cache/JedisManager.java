@@ -390,6 +390,104 @@ public class JedisManager {
     }
 
     /**
+     * Returns length of string for a key (0 if key doesn't exist).
+     * -1 means system level error.
+     * @param key
+     * @return
+     */
+    public static long getValueStringLength(String key) {
+        Jedis jedis = instance.getJedis();
+        if(jedis == null) {
+            return -1;
+        }
+
+        try {
+            return jedis.strlen(key);
+        } catch(JedisConnectionException e) {
+            log.error("Failed to strlen", key + "* returning broken connection...");
+            pool.returnBrokenResource(jedis);
+            log.error("Broken connection closed");
+        } catch (Exception e) {
+            log.error("Getting key length", key + " failed miserably");
+        } finally {
+            instance.returnJedis(jedis);
+        }
+        return -1;
+    }
+    /**
+     * Returns the number of elements inside the list after the push operation.
+     * -1 means system level error.
+     * @param key
+     * @param values
+     * @return
+     */
+    public static long pushToList(String key, String ...values) {
+        Jedis jedis = instance.getJedis();
+        if(jedis == null) {
+            return -1;
+        }
+
+        try {
+            return jedis.rpush(key, values);
+        } catch(JedisConnectionException e) {
+            log.error("Failed to rpush", key + "* returning broken connection...");
+            pool.returnBrokenResource(jedis);
+            log.error("Broken connection closed");
+        } catch (Exception e) {
+            log.error("Adding to list", key + " failed miserably");
+        } finally {
+            instance.returnJedis(jedis);
+        }
+        return -1;
+    }
+
+    /**
+     * Removes and returns the last element from the list.
+     * @param key
+     * @return
+     */
+    public static String popList(String key) {
+        return popList(key, false);
+    }
+
+    /**
+     * Removes and returns an item from list.
+     * With head is true uses the first element, with false the last element.
+     * @param key the list key
+     * @param head
+     * @return
+     */
+    public static String popList(String key, boolean head) {
+        Jedis jedis = instance.getJedis();
+        if(jedis == null) {
+            return null;
+        }
+
+        try {
+            String value;
+            if(head) {
+                value =  jedis.lpop(key);
+            } else {
+                value = jedis.rpop(key);
+            }
+            if("nil".equalsIgnoreCase(value)) {
+                // If the key does not exist or the list is already empty the special value 'nil' is returned.
+                return null;
+            }
+            return value;
+        } catch(JedisConnectionException e) {
+            log.error("Failed to lpop", key + "* returning broken connection...");
+            pool.returnBrokenResource(jedis);
+            log.error("Broken connection closed");
+        } catch (Exception e) {
+            log.error("Popping from list", key + " failed miserably");
+        } finally {
+            instance.returnJedis(jedis);
+        }
+        return null;
+    }
+
+    /**
      * Thread-safe PUBLISH
      *
      * @param channel

@@ -18,7 +18,6 @@ public class WFSChannelProvider extends ChannelProvider {
         WFSSearchChannelsService channelService = OskariComponentManager.getComponentOfType(WFSSearchChannelsService.class);
         Set<SearchChannel> list = new HashSet<>();
         for(WFSSearchChannelsConfiguration config : channelService.findChannels()) {
-            // TODO: load layer details for config!!
             WFSSearchChannel channel = new WFSSearchChannel(config);
             channel.init();
             list.add(channel);
