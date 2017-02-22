@@ -9,7 +9,7 @@ Requires metadataflyout bundle to be present in the appsetup and CSW-service con
 
 Added a way to add an "always on" filter to CSW-searches. This can be done by adding properties to oskari-ext.properties:
  
-Include some randomlyNamed field to this property like "alwaysOnFilter"
+Include some randomly named field to this property like "alwaysOnFilter":
 
     search.channel.METADATA_CATALOGUE_CHANNEL.fields=...,alwaysOnFilter
 
