@@ -4,12 +4,12 @@ import com.vividsolutions.jts.geom.*;
 import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.Polygon;
 
-import fi.nls.oskari.cache.JedisManager;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.geometry.ProjectionHelper;
 
 import fi.nls.oskari.service.ServiceRuntimeException;
+import fi.nls.oskari.transport.TransportJobException;
 import org.geotools.data.*;
 import org.geotools.data.ogr.OGRDataStore;
 import org.geotools.data.ogr.OGRDataStoreFactory;
@@ -31,6 +31,7 @@ import org.opengis.feature.type.AttributeType;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
 import java.io.*;
+import java.nio.file.Files;
 import java.util.*;
 import java.util.List;
 
@@ -78,8 +79,9 @@ public class WFSExport {
         try {
             OGRDataStoreFactory factory = new BridjOGRDataStoreFactory();
             if (!factory.isAvailable()) {
-                log.info("GDAL library is not found for data export -> install gdal -- http://www.gdal.org/");
-                return fileName;
+                throw new ServiceRuntimeException("GDAL library is not found for data export -> install gdal -- http://www.gdal.org/",
+                        WFSExceptionHelper.WARNING_GDAL_NOT_INSTALLED,
+                        WFSExceptionHelper.WARNING_LEVEL);
             }
             // OGR export doesn't work for features, which have object type properties -> trick:simplify to string type
             CoordinateReferenceSystem crs = CRS.decode(this.crsName, true);
@@ -98,7 +100,7 @@ public class WFSExport {
             connectionParams.put("DriverName", this.format);
             connectionParams.put("DatasourceName", expFile.getAbsolutePath());
 
-            fileName = expFile.getName();
+            fileName = expFile.getAbsolutePath();  //expFile.getName();
             log.debug("WFS features export - file name: ", expFile.getAbsolutePath());
 
             OGRDataStore dataStore = (OGRDataStore) factory.createNewDataStore(connectionParams);
@@ -110,10 +112,12 @@ public class WFSExport {
             dataStore.createSchema((SimpleFeatureCollection) fc, true, extra);
 
             dataStore.dispose();
-
+        } catch (ServiceRuntimeException e) {
+            log.info("GDAL library is not found for data export -> install gdal -- http://www.gdal.org/");
+            throw new TransportJobException(e.getMessage(), e.getMessageKey(), e.getLevel());
         } catch (Exception e) {
             log.error("Feature export failed: ", e.getMessage());
-            throw new ServiceRuntimeException("WFS feature export failed for format "+this.format+ " - "+e.getMessage(), e.getCause());
+            throw new TransportJobException("WFS feature export failed for format " + this.format + " - " + e.getMessage(), e);
         }
 
         return fileName;
@@ -200,18 +204,24 @@ public class WFSExport {
      *
      * @param format
      * @param typename
-     * @param path
+     * @param path     export file folder
      * @return
      * @throws java.io.IOException
      */
     private static File getExportFile(String format, String typename, String path) throws IOException {
 
         String suffix = "." + format.toLowerCase();
+        File expPath = new File("./" + path);
         // Is the result a fileset e.g. Mapinfo, Shape
         if (format.toUpperCase().equals(GDAL_CODE_ESRI_SHAPE) || format.toUpperCase().equals(GDAL_CODE_MAPINFO)) {
             suffix = "";
         }
-        File tmpFile = File.createTempFile(typename, suffix, new File("./" + path));
+        // Path exists ?
+        if (!expPath.exists()) {
+            expPath = null;
+            log.info("Export file is stored to default temporary folder");
+        }
+        File tmpFile = File.createTempFile(typename, suffix, expPath);
         tmpFile.delete();
 
         return tmpFile;
@@ -309,7 +319,7 @@ public class WFSExport {
                 Envelope.class.equals(ad.getType().getBinding()) ||
                 ReferencedEnvelope.class.equals(ad.getType().getBinding()) ||
                 HashMap.class.equals(ad.getType().getBinding()) ||
-                        (Geometry.class.equals(ad.getType().getBinding()) && ad != schema.getGeometryDescriptor())) {
+                (Geometry.class.equals(ad.getType().getBinding()) && ad != schema.getGeometryDescriptor())) {
             AttributeType at = new AttributeTypeImpl(new NameImpl("String"), String.class, false,
                     false, Collections.EMPTY_LIST, null, null);
             AttributeDescriptorImpl newDescriptor = new AttributeDescriptorImpl(

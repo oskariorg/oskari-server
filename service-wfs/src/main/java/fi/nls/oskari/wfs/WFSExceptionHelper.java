@@ -23,6 +23,7 @@ public interface WFSExceptionHelper {
 
     public static String WARNING_GEOMETRY_PARSING_FAILED = "geometry_parsing_failed";
     public static String WARNING_SLDSTYLE_PARSING_FAILED = "sldstyle_parsing_failed";
+    public static String WARNING_GDAL_NOT_INSTALLED = "gdal_library_not_installed";
 
     public static String ERROR_INVALID_GEOMETRY_PROPERTY = "invalid_geometry_property";
     public static String ERROR_GETFEATURE_PAYLOAD_FAILED = "getfeature_payload_failed";
