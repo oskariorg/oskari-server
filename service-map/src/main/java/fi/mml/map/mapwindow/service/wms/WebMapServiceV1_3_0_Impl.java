@@ -147,22 +147,26 @@ public class WebMapServiceV1_3_0_Impl extends AbstractWebMapService {
 	 * @param foundStyles
 	 */
 	private void gatherStylesAndLegends(Layer layer, Map<String, String> foundStyles) {
-		if (layer.getStyleArray() != null) {
-			Style[] stylesArray = layer.getStyleArray();
-			for(Style style: stylesArray) {
-				String styleName = style.getName();
-				String styleTitle = style.getTitle();
-				if(styleTitle == null || styleTitle.isEmpty()) {
-					styleTitle = styleName;
-				}
-				foundStyles.put(styleName, styleTitle);
+		if (layer.getStyleArray() == null) {
+			return;
+		}
+		Style[] stylesArray = layer.getStyleArray();
+		for(Style style: stylesArray) {
+			String styleName = style.getName();
+			String styleTitle = style.getTitle();
+			if(styleTitle == null || styleTitle.isEmpty()) {
+				styleTitle = styleName;
+			}
+			foundStyles.put(styleName, styleTitle);
 
-				LegendURL[] lurl = style.getLegendURLArray();
-				if (lurl != null && lurl.length > 0) {
-					/* Online resource is in xlink namespace */
-					String href = lurl[0].getOnlineResource().newCursor().getAttributeText(new QName("http://www.w3.org/1999/xlink", "href"));
-					legends.put(styleName+LEGEND_HASHMAP_KEY_SEPARATOR+styleTitle, href);
-				}
+			LegendURL[] lurl = style.getLegendURLArray();
+			if (lurl == null || lurl.length == 0 || lurl[0].getOnlineResource() == null) {
+				continue;
+			}
+			/* Online resource is in xlink namespace */
+			String href = lurl[0].getOnlineResource().newCursor().getAttributeText(new QName("http://www.w3.org/1999/xlink", "href"));
+			if (href != null) {
+				legends.put(styleName + LEGEND_HASHMAP_KEY_SEPARATOR + styleTitle, href);
 			}
 		}
 	}
