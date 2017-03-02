@@ -138,6 +138,9 @@ public class WebMapServiceV1_1_1_Impl extends AbstractWebMapService {
 				if (style.getName().newCursor() != null && style.getTitle().newCursor()!= null) {
 					String styleName = style.getName().newCursor().getTextValue();
 					String styleTitle = style.getTitle().newCursor().getTextValue();
+					if(styleTitle == null || styleTitle.isEmpty()) {
+						styleTitle = styleName;
+					}
 					foundStyles.put(styleName, styleTitle);
 					
 					LegendURL[] lurl = style.getLegendURLArray();

@@ -152,6 +152,9 @@ public class WebMapServiceV1_3_0_Impl extends AbstractWebMapService {
 			for(Style style: stylesArray) {
 				String styleName = style.getName();
 				String styleTitle = style.getTitle();
+				if(styleTitle == null || styleTitle.isEmpty()) {
+					styleTitle = styleName;
+				}
 				foundStyles.put(styleName, styleTitle);
 
 				LegendURL[] lurl = style.getLegendURLArray();
