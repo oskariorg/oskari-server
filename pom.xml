@@ -11,7 +11,7 @@
 
     <name>Oskari parent POM</name>
     <description>Contains common properties and managed dependencies for the Oskari modules.</description>
-    <url>https://github.com/nls-oskari/oskari-server</url>
+    <url>https://github.com/oskariorg/oskari-server</url>
 
     <organization>
         <name>National Land Survey of Finland</name>
@@ -34,12 +34,12 @@
     </licenses>
 
     <issueManagement>
-        <url>https://github.com/nls-oskari/oskari-server/issues</url>
+        <url>https://github.com/oskariorg/oskari-server/issues</url>
         <system>GitHub Issues</system>
     </issueManagement>
 
     <scm>
-        <url>https://github.com/nls-oskari/oskari-server</url>
+        <url>https://github.com/oskariorg/oskari-server</url>
     </scm>
 
     <properties>
