@@ -1,5 +1,6 @@
 package fi.nls.oskari.eu.inspire.cadastralparcels;
 
+import fi.nls.oskari.WFSTestHelper;
 import fi.nls.oskari.eu.inspire.recipe.cadastralparcels.INSPIRE_CP_CadastralBoundary_Parser;
 import fi.nls.oskari.eu.inspire.recipe.cadastralparcels.INSPIRE_CP_CadastralParcel_Parser;
 import fi.nls.oskari.fe.engine.BasicFeatureEngine;
@@ -43,7 +44,7 @@ public class TestJacksonParser {
         try {
             inputProcessor.setInput(inp);
 
-            OutputStream fouts = System.out;
+            OutputStream fouts = WFSTestHelper.getTestOutputStream();
             try {
                 outputProcessor.setOutput(fouts);
 
@@ -94,7 +95,7 @@ public class TestJacksonParser {
         try {
             inputProcessor.setInput(inp);
 
-            OutputStream fouts = System.out;
+            OutputStream fouts = WFSTestHelper.getTestOutputStream();
             try {
                 outputProcessor.setOutput(fouts);
 

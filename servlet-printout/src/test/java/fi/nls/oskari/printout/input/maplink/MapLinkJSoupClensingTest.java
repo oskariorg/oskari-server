@@ -53,8 +53,7 @@ public class MapLinkJSoupClensingTest {
 			boolean matchResult = ((String) obj[0]).matches(regx);
 			boolean result = matchResult == expected;
 
-			System.out.println("[" + result + "] " + obj[0] + " " + expected
-					+ " === " + matchResult);
+			//System.out.println("[" + result + "] " + obj[0] + " " + expected + " === " + matchResult);
 
 			assertTrue(result);
 		}

@@ -1,5 +1,6 @@
 package fi.nls.oskari.fi.rysp.generic;
 
+import fi.nls.oskari.WFSTestHelper;
 import fi.nls.oskari.eu.elf.recipe.addresses.ELF_MasterLoD0_Address_nls_fi_wfs_Parser;
 import fi.nls.oskari.eu.elf.recipe.universal.ELF_path_parse_worker;
 import fi.nls.oskari.eu.elf.recipe.universal.ELF_wfs_Parser;
@@ -86,7 +87,7 @@ public class TestJacksonParser {
             inputProcessor.setInput(inp);
 
 
-            OutputStream fouts = System.out;
+            OutputStream fouts = WFSTestHelper.getTestOutputStream();
             try {
                 outputProcessor.setOutput(fouts);
 
@@ -176,7 +177,7 @@ public class TestJacksonParser {
             inputProcessor.setInput(inp);
 
 
-            OutputStream fouts = System.out;
+            OutputStream fouts = WFSTestHelper.getTestOutputStream();
             try {
                 outputProcessor.setOutput(fouts);
 

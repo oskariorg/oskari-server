@@ -1,5 +1,6 @@
 package fi.nls.oskari.eu.inspire.roadtransportnetwork;
 
+import fi.nls.oskari.WFSTestHelper;
 import fi.nls.oskari.eu.inspire.recipe.roadtransportnetwork.INSPIRE_TN_RoadLink;
 import fi.nls.oskari.fe.TestHelper;
 import fi.nls.oskari.fe.engine.BasicFeatureEngine;
@@ -11,6 +12,7 @@ import fi.nls.oskari.fe.output.format.json.JsonOutputProcessor;
 import fi.nls.oskari.fe.output.format.json.LegacyJsonOutputProcessor;
 import fi.nls.oskari.fe.output.format.jsonld.JsonLdOutputProcessor;
 import fi.nls.oskari.fe.output.format.png.geotools.MapContentOutputProcessor;
+import fi.nls.oskari.log.LogFactory;
 import org.apache.log4j.Logger;
 import org.geotools.styling.Style;
 import org.junit.Test;
@@ -31,7 +33,6 @@ public class TestJacksonParser extends TestHelper {
     @Test
     public void test_IgnEs_TN_WFS_GMLtoPNG() throws InstantiationException,
             IllegalAccessException, IOException, XMLStreamException {
-
         BasicFeatureEngine engine = new BasicFeatureEngine();
 
         XMLInputProcessor inputProcessor = new StaxGMLInputProcessor();
@@ -99,7 +100,7 @@ public class TestJacksonParser extends TestHelper {
         try {
             inputProcessor.setInput(inp);
 
-            OutputStream fouts = System.out;
+            OutputStream fouts = WFSTestHelper.getTestOutputStream();
             try {
                 outputProcessor.setOutput(fouts);
 
@@ -147,7 +148,7 @@ public class TestJacksonParser extends TestHelper {
         try {
             inputProcessor.setInput(inp);
 
-            OutputStream fouts = System.out;
+            OutputStream fouts = WFSTestHelper.getTestOutputStream();
             try {
                 outputProcessor.setOutput(fouts);
 
@@ -196,7 +197,7 @@ public class TestJacksonParser extends TestHelper {
         try {
             inputProcessor.setInput(inp);
 
-            OutputStream fouts = System.out;
+            OutputStream fouts = WFSTestHelper.getTestOutputStream();
             try {
                 outputProcessor.setOutput(fouts);
 

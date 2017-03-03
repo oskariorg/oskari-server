@@ -1,5 +1,6 @@
 package fi.nls.oskari.eu.inspire.administrativeunits;
 
+import fi.nls.oskari.WFSTestHelper;
 import fi.nls.oskari.eu.inspire.recipe.administrativeunits.INSPIRE_AU_AdministrativeBoundary_Parser;
 import fi.nls.oskari.eu.inspire.recipe.administrativeunits.INSPIRE_AU_AdministrativeUnit_Parser;
 import fi.nls.oskari.fe.TestHelper;
@@ -21,7 +22,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 public class TestJacksonParser extends TestHelper {
-    final static Logger logger = LogFactory.getLogger(TestJacksonParser.class);
+    //final static Logger logger = LogFactory.getLogger(TestJacksonParser.class);
 
     /**
      * 
@@ -47,7 +48,7 @@ public class TestJacksonParser extends TestHelper {
 
         try {
             inputProcessor.setInput(inp);
-            OutputStream fouts = System.out;
+            OutputStream fouts = WFSTestHelper.getTestOutputStream();
             try {
                 outputProcessor.setOutput(fouts);
 
@@ -98,7 +99,7 @@ public class TestJacksonParser extends TestHelper {
 
 
 
-            OutputStream fouts = System.out;
+            OutputStream fouts = WFSTestHelper.getTestOutputStream();
             try {
                 outputProcessor.setOutput(fouts);
 
@@ -149,7 +150,7 @@ public class TestJacksonParser extends TestHelper {
             inputProcessor.setInput(inp);
 
 
-            OutputStream fouts = System.out;
+            OutputStream fouts = WFSTestHelper.getTestOutputStream();
             try {
                 outputProcessor.setOutput(fouts);
 

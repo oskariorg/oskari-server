@@ -1,5 +1,6 @@
 package fi.nls.oskari.fi.rysp.kantakartta;
 
+import fi.nls.oskari.WFSTestHelper;
 import fi.nls.oskari.fe.TestHelper;
 import fi.nls.oskari.fe.engine.BasicFeatureEngine;
 import fi.nls.oskari.fe.input.XMLInputProcessor;
@@ -38,7 +39,7 @@ public class TestJacksonParser extends TestHelper {
         try {
             inputProcessor.setInput(inp);
 
-            OutputStream fouts = System.out;
+            OutputStream fouts = WFSTestHelper.getTestOutputStream();
             try {
                 outputProcessor.setOutput(fouts);
 

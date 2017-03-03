@@ -1,5 +1,6 @@
 package fi.nls.oskari.eu.inspire.geographicalnames;
 
+import fi.nls.oskari.WFSTestHelper;
 import fi.nls.oskari.eu.inspire.recipe.geographicalnames.INSPIRE_GN_NamedPlace;
 import fi.nls.oskari.fe.engine.BasicFeatureEngine;
 import fi.nls.oskari.fe.input.XMLInputProcessor;
@@ -41,7 +42,7 @@ public class TestJacksonParser {
         try {
             inputProcessor.setInput(inp);
 
-            OutputStream fouts = System.out;
+            OutputStream fouts = WFSTestHelper.getTestOutputStream();
             try {
                 outputProcessor.setOutput(fouts);
 

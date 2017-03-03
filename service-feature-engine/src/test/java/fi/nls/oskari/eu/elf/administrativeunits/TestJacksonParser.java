@@ -1,5 +1,6 @@
 package fi.nls.oskari.eu.elf.administrativeunits;
 
+import fi.nls.oskari.WFSTestHelper;
 import fi.nls.oskari.eu.elf.recipe.administrativeunits.ELF_MasterLoD0_AdministrativeBoundary_nls_fi_wfs_Parser;
 import fi.nls.oskari.eu.elf.recipe.administrativeunits.ELF_MasterLoD0_AdministrativeUnit_nls_fi_wfs_Parser;
 import fi.nls.oskari.fe.engine.BasicFeatureEngine;
@@ -44,7 +45,7 @@ public class TestJacksonParser {
         try {
             inputProcessor.setInput(inp);
 
-            OutputStream fouts = System.out;
+            OutputStream fouts = WFSTestHelper.getTestOutputStream();
             try {
                 outputProcessor.setOutput(fouts);
 
@@ -87,7 +88,7 @@ public class TestJacksonParser {
         try {
             inputProcessor.setInput(inp);
 
-            OutputStream fouts = System.out;
+            OutputStream fouts = WFSTestHelper.getTestOutputStream();
             try {
                 outputProcessor.setOutput(fouts);
 
