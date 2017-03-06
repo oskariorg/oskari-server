@@ -1,5 +1,12 @@
 # Release Notes
 
+## 1.42
+
+### SystemLogger
+
+The simple System.out/err logger can now be configured with environment variable "oskari.syslog.level" with a value of
+ debug, info, warn or error. Defaults to debug as before.
+ 
 ## 1.41
 
 ### CSW Metadata improvements
