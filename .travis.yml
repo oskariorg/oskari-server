@@ -3,8 +3,5 @@ jdk:
   - oraclejdk8
   - oraclejdk7
   - openjdk7
-env:
-  global:
-    - "oskari.syslog.level=warn"
 notifications:
   slack: oskari:N5vZf0lzsIGpQ8nAPRfHgQ91

@@ -841,6 +841,12 @@
             <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>2.10</version>
+                <configuration>
+                    <!--systemPropertyVariables>
+                        <oskari.syslog.level></oskari.syslog.level>
+                    </systemPropertyVariables -->
+                    <argLine>-Doskari.syslog.level=warn</argLine>
+                </configuration>
             </plugin>
             <plugin>
                 <artifactId>maven-jar-plugin</artifactId>
