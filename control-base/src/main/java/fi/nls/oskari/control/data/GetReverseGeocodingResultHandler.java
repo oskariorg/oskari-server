@@ -34,7 +34,7 @@ public class GetReverseGeocodingResultHandler extends ActionHandler {
     // TODO: refactor to channels to be consistent with GetSearchResultHandler
     private static final String PARAM_OPTIONAL_CHANNEL_IDS_KEY = "channel_ids";
 
-    private int maxFeatures = 1;
+    private int maxFeatures = -1;
     private int buffer = 1000;
 
     private String[] channels = new String[0];
@@ -73,8 +73,6 @@ public class GetReverseGeocodingResultHandler extends ActionHandler {
         // eg. EPSG:3067
         sc.setSRS(epsg);
 
-        // max result feature count
-        sc.setMaxResults(params.getHttpParam(PARAM_MAXFEATURES, maxFeatures));
         // Search distance around the point (unit m)
         sc.addParam(PARAM_BUFFER, params.getHttpParam(PARAM_BUFFER, buffer));
         sc.setLocale(params.getLocale().getLanguage());
@@ -84,13 +82,21 @@ public class GetReverseGeocodingResultHandler extends ActionHandler {
         for (String channelId : requestedChannels) {
             sc.addChannel(channelId);
         }
+        // determine max result feature count - in this order parameter value, property, number of channels to query
+        sc.setMaxResults(getMaxResults(params.getHttpParam(PARAM_MAXFEATURES, maxFeatures), requestedChannels.size()));
         if (sc.getChannels().size() == 0) {
             throw new ActionParamsException("No reverse geocoding channels available or configured or invalid channel ID");
         }
 
-        // TODO: enforce max features if there are multiple channels!
         final JSONObject result = SearchWorker.doSearch(sc);
         ResponseHelper.writeResponse(params, result);
+    }
+
+    private int getMaxResults(int requested, int defaultValue) {
+        if(requested != -1) {
+            return requested;
+        }
+        return defaultValue;
     }
 
     private List<String> getChannels(final String requested) {
