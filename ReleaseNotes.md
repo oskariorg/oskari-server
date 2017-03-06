@@ -6,7 +6,12 @@
 
 The simple System.out/err logger can now be configured with environment variable "oskari.syslog.level" with a value of
  debug, info, warn or error. Defaults to debug as before.
- 
+
+### control-base
+
+Removed fi.nls.oskari.util.PrintOutHelper as it's not used anywhere. 
+Use JSONHelper.isEqual(JSONArray jsonArray1, JSONArray jsonArray2) for comparing arrays instead.
+
 ## 1.41
 
 ### CSW Metadata improvements
