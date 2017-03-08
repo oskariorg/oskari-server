@@ -2,12 +2,12 @@ package fi.nls.oskari.printout.ws.jaxrs.resource;
 
 import fi.nls.oskari.printout.config.ConfigValue;
 import fi.nls.oskari.printout.ws.jaxrs.format.StreamingJSONImpl;
-import fi.nls.oskari.printout.ws.jaxrs.format.StreamingPDFImpl;
 import fi.nls.oskari.printout.ws.jaxrs.map.SharedMapProducerResource;
 import fi.nls.oskari.printout.ws.jaxrs.map.WebServiceMapProducerResource;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.geowebcache.GeoWebCacheException;
 import org.opengis.referencing.FactoryException;
-import org.opengis.referencing.NoSuchAuthorityCodeException;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
@@ -36,6 +36,7 @@ import java.util.Properties;
  */
 @Path("/imaging")
 public class MapResource {
+    private static Log log = LogFactory.getLog(MapResource.class);
     public static final String[] MAPLINKARGS = new String[] { "zoomLevel",
             "coord", "mapLayers", "width", "height", "scaledWidth",
             "scaledHeight", "bbox", "pageSize", "pageTitle", "pageLogo",
@@ -79,7 +80,6 @@ public class MapResource {
     @Produces("application/json")
     public StreamingJSONImpl getSnapshotExtentJson(@Context UriInfo ui)
             throws IOException {
-        StreamingJSONImpl result = null;
         try {
             final MultivaluedMap<String, String> queryParams = ui
                     .getQueryParameters();
@@ -88,13 +88,11 @@ public class MapResource {
             final WebServiceMapProducerResource getmap = SharedMapProducerResource
                     .acquire();
 
-            result = getmap.getMapExtentJSON(values,
+            return getmap.getMapExtentJSON(values,
                     getXClientInfo(getmap.getProps()));
         } catch (Exception e) {
             throw new IOException(e);
         }
-        return result;
-
     }
 
     /**
@@ -110,7 +108,6 @@ public class MapResource {
     public StreamingOutput getSnapshotPDF(@Context UriInfo ui)
             throws IOException {
 
-        StreamingPDFImpl result = null;
         try {
             MultivaluedMap<String, String> queryParams = ui
                     .getQueryParameters();
@@ -119,16 +116,11 @@ public class MapResource {
             final WebServiceMapProducerResource getmap = SharedMapProducerResource
                     .acquire();
 
-            result = getmap
+            return getmap
                     .getMapPDF(values, getXClientInfo(getmap.getProps()));
         } catch (Exception e) {
             throw new IOException(e);
-        } finally {
-
         }
-
-        return result;
-
     }
 
     /**
@@ -146,20 +138,20 @@ public class MapResource {
     public StreamingOutput getSnapshotPDFByActionRouteGeoJson(InputStream inp)
             throws IOException {
 
-        StreamingOutput result = null;
         try {
             final WebServiceMapProducerResource getmap = SharedMapProducerResource
                     .acquire();
-            result = getmap.getGeoJsonMapPDF(inp,
+            if(getmap == null) {
+                log.error("Couldn't get producer resource");
+            }
+            return getmap.getGeoJsonMapPDF(inp,
                     getXClientInfo(getmap.getProps()));
         } catch (Exception e) {
+            log.error("Error producing pdf", e);
             throw new IOException(e);
         } finally {
             inp.close();
         }
-
-        return result;
-
     }
 
     /**
@@ -284,7 +276,6 @@ public class MapResource {
         try {
             final WebServiceMapProducerResource getmap = SharedMapProducerResource
                     .acquire();
-
             result = getmap.getMapPNG(inp, getXClientInfo(getmap.getProps()));
         } catch (Exception e) {
             throw new IOException(e);
@@ -293,11 +284,11 @@ public class MapResource {
         }
 
         return result;
-    };
+    }
     
     protected Map<String, String> getXClientInfo(final Properties props) {
 
-        final Map<String, String> xClientInfo = new HashMap<String, String>();
+        final Map<String, String> xClientInfo = new HashMap<>();
 
         final String userAgent = ConfigValue.MAPPRODUCER_USERAGENT
                 .getConfigProperty(props,
@@ -327,7 +318,7 @@ public class MapResource {
     @GET
     @Path("service/layers/reload")
     @Produces("application/json")
-    public String reloadLayers() throws NoSuchAuthorityCodeException,
+    public String reloadLayers() throws
             IOException, GeoWebCacheException, FactoryException,
             com.vividsolutions.jts.io.ParseException {
 
