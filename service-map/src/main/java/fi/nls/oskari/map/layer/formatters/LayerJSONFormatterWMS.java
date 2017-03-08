@@ -91,42 +91,33 @@ public class LayerJSONFormatterWMS extends LayerJSONFormatter {
             return;
         }
 
-        final boolean useProxy = useProxy(layer);
         try {
             final JSONArray styles;
-            if (useProxy) {
-                // construct a modified styles list
-                final JSONArray styleList = capabilities.optJSONArray(KEY_STYLES);
-                styles = new JSONArray();
-                // replace legendimage urls
-                if(styleList != null) {
-                    for(int i = 0; i < styleList.length(); ++i) {
-                        JSONObject style = styleList.optJSONObject(i);
-                        if (style != null && style.has(KEY_LEGEND)) {
-                            // copy the values to a new object to not affect the original
-                            style = new JSONObject(style, STYLE_KEYS);
-                            // update url from actual to proxied version
-                            JSONHelper.putValue(style, KEY_LEGEND, buildLegendUrl(layer, style.optString("name")));
-                        }
-                        styles.put(style);
-                    }
-                }
+            // construct a modified styles list
+            final JSONArray styleList = capabilities.optJSONArray(KEY_STYLES);
+            styles = new JSONArray();
+            // replace legendimage urls
+            if(styleList != null) {
+            	for(int i = 0; i < styleList.length(); ++i) {
+            		JSONObject style = styleList.optJSONObject(i);
+            		if (style != null && style.has(KEY_LEGEND)) {
+            			// copy the values to a new object to not affect the original
+            			style = new JSONObject(style, STYLE_KEYS);
+            			// update url from actual to proxied version
+            			JSONHelper.putValue(style, KEY_LEGEND, buildLegendUrl(layer, style.optString("name")));
+            		}
+            		styles.put(style);
+            	}
             }
-            else {
-                styles = capabilities.optJSONArray(KEY_STYLES);
-            }
+
             JSONHelper.putValue(layerJson, KEY_STYLES, styles);
 
             final String globalLegend = layer.getLegendImage();
             // if we have a global legend url, setup the JSON
             if(globalLegend != null && !globalLegend.isEmpty()) {
-                if (useProxy) {
-                    JSONHelper.putValue(layerJson, KEY_LEGENDIMAGE, buildLegendUrl(layer, null));
-                    // copy the original value so we can show them for admins
-                    addInfoForAdmin(layerJson, KEY_LEGENDIMAGE, globalLegend);
-                } else {
-                    JSONHelper.putValue(layerJson, KEY_LEGENDIMAGE, globalLegend);
-                }
+            	JSONHelper.putValue(layerJson, KEY_LEGENDIMAGE, buildLegendUrl(layer, null));
+            	// copy the original value so we can show them for admins
+            	addInfoForAdmin(layerJson, KEY_LEGENDIMAGE, globalLegend);
             }
 
         } catch (Exception e) {
