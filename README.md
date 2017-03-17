@@ -1,5 +1,4 @@
 # Oskari-server
-======
 
 [Oskari](http://www.oskari.org/) Map Application Framework aims to 
 provide a framework and a collection of functionality-enhancing bundles 
