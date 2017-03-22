@@ -29,7 +29,7 @@ public class SearchOptionsHandler extends ActionHandler {
         Map<String, SearchableChannel> channels =  searchService.getAvailableChannels();
         JSONArray channelsJSONArray = new JSONArray();
         for(SearchableChannel channel : channels.values()) {
-            if(!channel.hasPermission(params.getUser())) {
+            if(!channel.hasPermission(params.getUser()) || !channel.getCapabilities().canTextSearch()) {
                 continue;
             }
             JSONObject json = new JSONObject();
