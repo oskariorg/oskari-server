@@ -17,7 +17,7 @@ public class V1_42_0__register_maprotator_bundle implements JdbcMigration {
         // BundleHelper checks if these bundles are already registered
         Bundle bundle = new Bundle();
         bundle.setName(NAME);
-        bundle.setStartup(BundleHelper.getDefaultBundleStartup("mapping", NAME, "OL3 map rotation"));
+        bundle.setStartup(BundleHelper.getBundleStartup("/Oskari/packages/mapping/ol3/", NAME, "OL3 map rotation"));
         BundleHelper.registerBundle(bundle, connection);
     }
 }
