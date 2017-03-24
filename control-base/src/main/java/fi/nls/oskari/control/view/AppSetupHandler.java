@@ -184,6 +184,18 @@ public class AppSetupHandler extends RestActionHandler {
     }
     public void handlePost(ActionParameters params) throws ActionException {
 
+        final View publishedMap = buildPublishedView(params);
+        try {
+            JSONObject newViewJson = new JSONObject(publishedMap.toString());
+            ResponseHelper.writeResponse(params, newViewJson);
+        } catch (JSONException je) {
+            LOG.error(je, "Could not create JSON response.");
+            ResponseHelper.writeResponse(params, false);
+        }
+    }
+
+    protected View buildPublishedView(ActionParameters params) throws ActionException {
+
         final User user = params.getUser();
 
         final String viewUuid = params.getHttpParam(PARAM_UUID);
@@ -244,15 +256,7 @@ public class AppSetupHandler extends RestActionHandler {
         final Bundle myplaces = setupBundle(view, viewdata, ViewModifier.BUNDLE_PUBLISHEDMYPLACES2, false);
         handleMyplacesDrawLayer(myplaces, user);
 
-        final View newView = saveView(view);
-
-        try {
-            JSONObject newViewJson = new JSONObject(newView.toString());
-            ResponseHelper.writeResponse(params, newViewJson);
-        } catch (JSONException je) {
-            LOG.error(je, "Could not create JSON response.");
-            ResponseHelper.writeResponse(params, false);
-        }
+        return saveView(view);
     }
 
     private void setupToolbarStyleInfo(final View view) throws ActionParamsException {
