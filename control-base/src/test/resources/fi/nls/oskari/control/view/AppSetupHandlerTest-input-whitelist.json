@@ -1,0 +1,42 @@
+{
+    "metadata": {
+        "domain": "test",
+        "name": "test",
+        "language": "fi",
+        "preview": "desktop",
+        "toolLayout": "userlayout",
+        "style": {
+            "font": "georgia",
+            "toolStyle": "3d-light"
+        }
+    },
+    "configuration": {
+        "mapfull": {
+            "state": {
+                "north": 6874042,
+                "east": 517620,
+                "zoom": 1,
+                "srs": "EPSG:3067",
+                "selectedLayers": [
+                    {
+                        "id": "base_35",
+                        "opacity": 100
+                    }
+                ]
+            },
+            "conf": {
+                "plugins": [
+                    {
+                        "id": "Oskari.mapframework.bundle.mapmodule.plugin.Portti2Zoombar"
+                    },
+                    {
+                        "id": "Oskari.mapframework.mapmodule.ControlsPlugin"
+                    },
+                    {
+                        "id": "Oskari.mapframework.mapmodule.GetInfoPlugin"
+                    }]
+            }
+        },
+        "whitelistTestBundle" : {}
+    }
+}

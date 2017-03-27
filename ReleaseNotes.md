@@ -12,6 +12,17 @@ The simple System.out/err logger can now be configured with environment variable
 Removed fi.nls.oskari.util.PrintOutHelper as it's not used anywhere. 
 Use JSONHelper.isEqual(JSONArray jsonArray1, JSONArray jsonArray2) for comparing arrays instead.
 
+### AppSetup action route (publisher)
+
+Additional bundles can be whitelisted for publishing using a new property in oskari-ext.properties:
+
+    actionhandler.AppSetup.bundles.simple=maprotator
+
+Defaults to maprotator as a new bundle that can be published. The value of the property is a comma-separated list of 
+bundle ids. If the payload from the browser has a configuration to a bundle that is whitelisted the bundle is added 
+to the published map view using the default startup from portti_bundle database table. The configuration and state for 
+the bundle are merged with the values from the browser before saving to the database.
+
 ## 1.41
 
 ### CSW Metadata improvements
