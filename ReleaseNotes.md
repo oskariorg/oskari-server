@@ -12,6 +12,13 @@ The simple System.out/err logger can now be configured with environment variable
 Removed fi.nls.oskari.util.PrintOutHelper as it's not used anywhere. 
 Use JSONHelper.isEqual(JSONArray jsonArray1, JSONArray jsonArray2) for comparing arrays instead.
 
+### Search configuration
+
+SearchOptions action route can now be configured to ignore some of the channels available in the system. This is done
+by configuring a comma-separated list of channel ids in oskari-ext.properties: 
+
+    actionhandler.SearchOptions.blacklist=METADATA_CATALOGUE_CHANNEL
+
 ## 1.41
 
 ### CSW Metadata improvements
