@@ -30,6 +30,11 @@ bundle ids. If the payload from the browser has a configuration to a bundle that
 to the published map view using the default startup from portti_bundle database table. The configuration and state for 
 the bundle are merged with the values from the browser before saving to the database.
 
+### WFS-layer removal fix
+
+The link between a custom SLD-style and a WFS-layer is now removed by database constraint when a layer is removed.
+This fixes an issue where the link prevented a WFS-layer with custom style being removed properly.
+
 ## 1.41
 
 ### CSW Metadata improvements
