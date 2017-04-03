@@ -7,7 +7,7 @@ import fi.nls.oskari.control.ActionHandler;
 import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.control.ActionParamsException;
 import fi.nls.oskari.control.statistics.db.RegionSet;
-import fi.nls.oskari.control.statistics.xml.RegionCodeNamePair;
+import fi.nls.oskari.control.statistics.xml.Region;
 import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.ResponseHelper;
@@ -84,8 +84,8 @@ public class GetRegionsHandler extends ActionHandler {
         JSONHelper.putValue(response, KEY_REGIONS, regions);
 
         try {
-            final List<RegionCodeNamePair> result = service.getRegions(regionset);
-            for (RegionCodeNamePair codeName : result) {
+            final List<Region> result = service.getRegions(regionset);
+            for (Region codeName : result) {
                 JSONObject item = new JSONObject();
                 JSONHelper.putValue(item, KEY_ID, codeName.getCode());
                 JSONHelper.putValue(item, KEY_NAME, codeName.getName());

@@ -1,7 +1,7 @@
 package fi.nls.oskari.control.statistics;
 
 import fi.nls.oskari.control.statistics.db.RegionSet;
-import fi.nls.oskari.control.statistics.xml.RegionCodeNamePair;
+import fi.nls.oskari.control.statistics.xml.Region;
 import fi.nls.oskari.control.statistics.xml.WfsXmlParser;
 import fi.nls.oskari.service.OskariComponent;
 import fi.nls.oskari.util.IOHelper;
@@ -19,7 +19,7 @@ public abstract class RegionSetService extends OskariComponent {
     public abstract List<RegionSet> getRegionSets();
     public abstract RegionSet getRegionSet(long id);
 
-    public List<RegionCodeNamePair> getRegions(RegionSet regionset) throws IOException {
+    public List<Region> getRegions(RegionSet regionset) throws IOException {
         final String propId = regionset.getIdProperty();
         final String propName = regionset.getNameProperty();
 

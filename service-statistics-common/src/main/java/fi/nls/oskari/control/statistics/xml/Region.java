@@ -3,14 +3,16 @@ package fi.nls.oskari.control.statistics.xml;
 /**
  * Pairs of region codes and their respective names read from the geoserver layer region attributes.
  */
-public class RegionCodeNamePair {
+public class Region {
     private String code;
     private String name;
 
-    public RegionCodeNamePair(String code, String name) {
+    public Region(String code, String name) {
         this.code = code;
         this.name = name;
     }
+
+
     public String getCode() {
         return code;
     }
