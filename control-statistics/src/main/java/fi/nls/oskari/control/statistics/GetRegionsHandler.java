@@ -14,7 +14,6 @@ import fi.nls.oskari.util.ResponseHelper;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import static fi.nls.oskari.control.ActionConstants.*;
 
 import java.io.IOException;
 import java.util.List;
@@ -85,11 +84,8 @@ public class GetRegionsHandler extends ActionHandler {
 
         try {
             final List<Region> result = service.getRegions(regionset);
-            for (Region codeName : result) {
-                JSONObject item = new JSONObject();
-                JSONHelper.putValue(item, KEY_ID, codeName.getCode());
-                JSONHelper.putValue(item, KEY_NAME, codeName.getName());
-                regions.put(item);
+            for (Region region : result) {
+                regions.put(region.toJSON());
             }
         } catch (IOException e) {
             throw new ActionException("Something went wrong fetching the region info from geoserver.", e);

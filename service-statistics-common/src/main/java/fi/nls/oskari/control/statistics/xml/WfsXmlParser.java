@@ -2,12 +2,16 @@ package fi.nls.oskari.control.statistics.xml;
 
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.util.JSONHelper;
 import org.geotools.GML;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.data.simple.SimpleFeatureIterator;
+import org.geotools.geojson.feature.FeatureJSON;
+import org.json.JSONObject;
 import org.opengis.feature.Property;
 import org.opengis.feature.simple.SimpleFeature;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -51,10 +55,11 @@ public class WfsXmlParser {
                     throw new Exception("Couldn't find id (" + idProperty + ") and/or name(" + nameProperty +
                             ") property for region. Properties are:" + LOG.getAsString(feature.getProperties()));
                 }
-
-                nameCodes.add(new Region(
+                Region region = new Region(
                         (String) id.getValue(),
-                        (String) name.getValue()));
+                        (String) name.getValue());
+                region.setGeojson(getGeoJSON(feature, idProperty, nameProperty));
+                nameCodes.add(region);
             }
         } catch (Exception ex) {
             throw new IOException(ex);
@@ -64,5 +69,30 @@ public class WfsXmlParser {
                     idProperty + " and name-property =" + nameProperty);
         }
         return nameCodes;
+    }
+
+    private static JSONObject getGeoJSON(SimpleFeature feature, String idProp, String nameProp) throws IOException {
+        FeatureJSON fj = new FeatureJSON();
+        ByteArrayOutputStream os = new ByteArrayOutputStream();
+        fj.writeFeature(feature, os);
+        String json = os.toString();
+        JSONObject jsonObj = JSONHelper.createJSONObject(json);
+        JSONObject props = getProps(jsonObj);
+        if(props != null) {
+            String id = props.optString(idProp);
+            String name = props.optString(nameProp);
+            JSONObject newProps = new JSONObject();
+            JSONHelper.putValue(newProps, Region.KEY_CODE, id);
+            JSONHelper.putValue(newProps, Region.KEY_NAME, name);
+            JSONHelper.putValue(jsonObj, "properties", newProps);
+        }
+        return jsonObj;
+    }
+
+    private static JSONObject getProps(JSONObject geojson) {
+        if(geojson == null) {
+            return null;
+        }
+        return geojson.optJSONObject("properties");
     }
 }
