@@ -196,6 +196,9 @@ public class ProjectionHelper implements PointTransformer {
      * If the axis order is according to OGC standards in geojson, use sourceLon1st=false
      * If it is requested, that the axis order is according to OGC standards in the result geojson, use targetLon1st=false
      *
+     * NOTE! The geometry is expected to be ONLY the GeoJSON "geometry" content. Not FeatureCollection or the single whole
+     * feature.
+     *
      * @param geometry geojson geometry to be transformed
      * @param sourceSRS
      * @param targetSRS
