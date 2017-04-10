@@ -57,7 +57,7 @@ public class GetRegionInfoHandlerIT {
         GetRegionsHandler handler = new GetRegionsHandler();
         handler.init();
         // Note: This test expects "oskari:kunnat2013" to be a layer id 9.
-        JSONObject result = handler.getRegionInfoJSON(9);
+        JSONObject result = handler.getRegionInfoJSON(9, "EPSG:3067");
         assertEquals("Alajärvi", result.getJSONObject("005").getString("name").toString());
     }
     @Test(timeout=120000)
@@ -65,7 +65,7 @@ public class GetRegionInfoHandlerIT {
         GetRegionsHandler handler = new GetRegionsHandler();
         handler.init();
         // Note: This test expects "oskari:erva-alueet" to be a layer id 11.
-        JSONObject result = handler.getRegionInfoJSON(11);
+        JSONObject result = handler.getRegionInfoJSON(11, "EPSG:3067");
         assertEquals("Helsingin Yliopistosairaalan erityisvastuualue", result.getJSONObject("1").getString("name").toString());
     }
 }

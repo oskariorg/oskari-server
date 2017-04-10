@@ -1,7 +1,10 @@
 package fi.nls.oskari.control.statistics.xml;
 
+import fi.nls.oskari.domain.geo.Point;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.service.ServiceException;
+import fi.nls.oskari.service.ServiceRuntimeException;
 import fi.nls.oskari.util.JSONHelper;
 import org.geotools.GML;
 import org.geotools.data.simple.SimpleFeatureCollection;
@@ -10,6 +13,7 @@ import org.geotools.geojson.feature.FeatureJSON;
 import org.json.JSONObject;
 import org.opengis.feature.Property;
 import org.opengis.feature.simple.SimpleFeature;
+import com.vividsolutions.jts.geom.Geometry;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -39,36 +43,46 @@ public class WfsXmlParser {
 
     private static final Logger LOG = LogFactory.getLogger(WfsXmlParser.class);
 
-    public static List<Region> parse(InputStream inputStream, String idProperty, String nameProperty) throws IOException {
+    public static List<Region> parse(InputStream inputStream, String idProperty, String nameProperty) throws ServiceException {
 
         List<Region> nameCodes = new ArrayList<>();
-        GML gml = new GML(GML.Version.GML3);
-        try {
-            SimpleFeatureCollection fc = gml.decodeFeatureCollection(inputStream);
-            SimpleFeatureIterator it = fc.features();
+        SimpleFeatureCollection fc = getFeatureCollection(inputStream);
+        SimpleFeatureIterator it = fc.features();
 
-            while (it.hasNext()) {
-                final SimpleFeature feature = it.next();
-                Property id = feature.getProperty(idProperty);
-                Property name = feature.getProperty(nameProperty);
-                if (id == null || name == null) {
-                    throw new Exception("Couldn't find id (" + idProperty + ") and/or name(" + nameProperty +
-                            ") property for region. Properties are:" + LOG.getAsString(feature.getProperties()));
-                }
-                Region region = new Region(
-                        (String) id.getValue(),
-                        (String) name.getValue());
-                region.setGeojson(getGeoJSON(feature, idProperty, nameProperty));
-                nameCodes.add(region);
+        while (it.hasNext()) {
+            final SimpleFeature feature = it.next();
+            Property id = feature.getProperty(idProperty);
+            Property name = feature.getProperty(nameProperty);
+            if (id == null || name == null) {
+                throw new ServiceException("Couldn't find id (" + idProperty + ") and/or name(" + nameProperty +
+                        ") property for region. Properties are:" + LOG.getAsString(feature.getProperties()));
             }
-        } catch (Exception ex) {
-            throw new IOException(ex);
+            Region region = new Region(
+                    (String) id.getValue(),
+                    (String) name.getValue());
+            try {
+                region.setPointOnSurface(getPointOnSurface(feature));
+                region.setGeojson(getGeoJSON(feature, idProperty, nameProperty));
+            } catch (Exception ex) {
+                throw new ServiceRuntimeException("Error parsing region to GeoJson:" + region.toString(), ex);
+            }
+            nameCodes.add(region);
         }
+
         if (nameCodes.isEmpty()) {
-            throw new IOException("Empty result, check configuration for region id-property=" +
+            throw new ServiceException("Empty result, check configuration for region id-property=" +
                     idProperty + " and name-property =" + nameProperty);
         }
         return nameCodes;
+    }
+
+    private static SimpleFeatureCollection getFeatureCollection(InputStream inputStream) {
+        try {
+            GML gml = new GML(GML.Version.GML3);
+            return gml.decodeFeatureCollection(inputStream);
+        } catch (Exception ex) {
+            throw new ServiceRuntimeException("Couldn't parse response to feature collection");
+        }
     }
 
     private static JSONObject getGeoJSON(SimpleFeature feature, String idProp, String nameProp) throws IOException {
@@ -94,5 +108,14 @@ public class WfsXmlParser {
             return null;
         }
         return geojson.optJSONObject("properties");
+    }
+
+    private static Point getPointOnSurface(SimpleFeature feature) {
+
+        Geometry geometry = (Geometry)feature.getDefaultGeometry();
+        // " An interior point is guaranteed to lie in the interior of the Geometry, if it possible to
+        // calculate such a point exactly. Otherwise, the point may lie on the boundary of the geometry."
+        com.vividsolutions.jts.geom.Point pos = geometry.getInteriorPoint();
+        return new Point(pos.getX(), pos.getY());
     }
 }

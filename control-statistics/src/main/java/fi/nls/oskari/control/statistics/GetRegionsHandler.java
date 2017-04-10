@@ -2,13 +2,13 @@ package fi.nls.oskari.control.statistics;
 
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.cache.JedisManager;
-import fi.nls.oskari.control.ActionException;
-import fi.nls.oskari.control.ActionHandler;
-import fi.nls.oskari.control.ActionParameters;
-import fi.nls.oskari.control.ActionParamsException;
+import fi.nls.oskari.control.*;
 import fi.nls.oskari.control.statistics.db.RegionSet;
 import fi.nls.oskari.control.statistics.xml.Region;
+import fi.nls.oskari.map.geometry.ProjectionHelper;
 import fi.nls.oskari.service.OskariComponentManager;
+import fi.nls.oskari.service.ServiceException;
+import fi.nls.oskari.service.ServiceRuntimeException;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.ResponseHelper;
 import org.json.JSONArray;
@@ -24,12 +24,17 @@ import java.util.List;
  * {
      "regions" : [{
          "id" : 091,
-         "name" : "Lappeenranta"
+         "name" : "Lappeenranta",
+         "point" : {
+            "lon" : <x>,
+            "lat" : <y>
+         },
+         "geojson" : { ... }
      }, ...]
  */
 @OskariActionRoute("GetRegions")
 public class GetRegionsHandler extends ActionHandler {
-    private final static String CACHE_KEY_PREFIX = "oskari_get_layer_regions_handler:";
+    private final static String CACHE_KEY_PREFIX = "oskari:stats:regionset:";
 
     private static final String KEY_REGIONS = "regions";
 
@@ -49,7 +54,8 @@ public class GetRegionsHandler extends ActionHandler {
 
     public void handleAction(ActionParameters ap) throws ActionException {
         final int layerId = ap.getRequiredParamInt("regionset");
-        JSONObject response = getRegionInfoJSON(layerId);
+        final String srs = ap.getRequiredParam(ActionConstants.PARAM_SRS);
+        JSONObject response = getRegionInfoJSON(layerId, srs);
         ResponseHelper.writeResponse(ap, response);
     }
 
@@ -59,17 +65,17 @@ public class GetRegionsHandler extends ActionHandler {
      * @return For example: [{"name": "Alajärvi"}]
      * @throws ActionException
      */
-    public JSONObject getRegionInfoJSON(long layerId) throws ActionException {
+    public JSONObject getRegionInfoJSON(long layerId, final String srs) throws ActionException {
         final RegionSet regionset = service.getRegionSet(layerId);
         
         if (regionset == null) {
             throw new ActionParamsException("Regionset not found");
         }
-        return requestRegionInfoJSON(layerId, regionset);
+        return requestRegionInfoJSON(layerId, regionset, srs);
     }
 
-    public JSONObject requestRegionInfoJSON(long id, RegionSet regionset) throws ActionException {
-        final String cacheKey = CACHE_KEY_PREFIX + id;
+    public JSONObject requestRegionInfoJSON(long id, RegionSet regionset, final String srs) throws ActionException {
+        final String cacheKey = CACHE_KEY_PREFIX + id + ":" + srs;
         final String cachedData = JedisManager.get(cacheKey);
         if (cachedData != null && !cachedData.isEmpty()) {
             try {
@@ -85,13 +91,24 @@ public class GetRegionsHandler extends ActionHandler {
         try {
             final List<Region> result = service.getRegions(regionset);
             for (Region region : result) {
+                region.setGeojson(getTransformedGeoJSON(region.getGeojson(), regionset.getSrs(), srs));
                 regions.put(region.toJSON());
             }
         } catch (IOException e) {
-            throw new ActionException("Something went wrong fetching the region info from geoserver.", e);
+            throw new ActionException("Couldn't connect to regionset provider.", e);
+        } catch (ServiceException e) {
+            throw new ActionException("Regionset provider misconfiguration.", e);
+        } catch (ServiceRuntimeException e) {
+            throw new ActionException("Regionset provider returned unexpected response.", e);
         }
 
         JedisManager.setex(cacheKey, JedisManager.EXPIRY_TIME_DAY, response.toString());
         return response;
+    }
+
+    private JSONObject getTransformedGeoJSON(JSONObject geojson, String sourceSrs, final String targetSrs) {
+        JSONObject transformed = ProjectionHelper.transformGeometry(geojson.optJSONObject("geometry"), sourceSrs, targetSrs, true, true);
+        JSONHelper.putValue(geojson, "geometry", transformed);
+        return geojson;
     }
 }

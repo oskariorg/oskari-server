@@ -1,5 +1,6 @@
 package fi.nls.oskari.control.statistics.xml;
 
+import fi.nls.oskari.domain.geo.Point;
 import fi.nls.oskari.util.JSONHelper;
 import org.json.JSONObject;
 
@@ -10,9 +11,14 @@ public class Region {
     public static final String KEY_CODE = "id";
     public static final String KEY_NAME = "name";
     public static final String KEY_JSON = "geojson";
+    public static final String KEY_POINT = "point";
+    public static final String KEY_LAT = "lat";
+    public static final String KEY_LON = "lon";
+
     private String code;
     private String name;
     private JSONObject geojson;
+    private Point pointOnSurface;
 
     public Region(String code, String name) {
         this.code = code;
@@ -44,11 +50,22 @@ public class Region {
         return "[" + code + ", " + name + "]";
     }
 
+    public Point getPointOnSurface() {
+        return pointOnSurface;
+    }
+
+    public void setPointOnSurface(Point pointOnSurface) {
+        this.pointOnSurface = pointOnSurface;
+    }
+
     public JSONObject toJSON() {
         JSONObject item = new JSONObject();
         JSONHelper.putValue(item, KEY_CODE, getCode());
         JSONHelper.putValue(item, KEY_NAME, getName());
         JSONHelper.putValue(item, KEY_JSON, getGeojson());
+        JSONObject point = JSONHelper.createJSONObject(KEY_LAT, getPointOnSurface().getLat());
+        JSONHelper.putValue(point, KEY_LON, getPointOnSurface().getLon());
+        JSONHelper.putValue(item, KEY_POINT, point);
         return item;
     }
 }

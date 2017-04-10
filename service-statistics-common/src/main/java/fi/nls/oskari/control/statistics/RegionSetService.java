@@ -4,6 +4,7 @@ import fi.nls.oskari.control.statistics.db.RegionSet;
 import fi.nls.oskari.control.statistics.xml.Region;
 import fi.nls.oskari.control.statistics.xml.WfsXmlParser;
 import fi.nls.oskari.service.OskariComponent;
+import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.util.IOHelper;
 
 import java.io.IOException;
@@ -14,12 +15,11 @@ import java.util.List;
  * Created by SMAKINEN on 27.4.2016.
  */
 public abstract class RegionSetService extends OskariComponent {
-    private final static String CACHE_KEY_PREFIX = "oskari_get_layer_info_handler:";
 
     public abstract List<RegionSet> getRegionSets();
     public abstract RegionSet getRegionSet(long id);
 
-    public List<Region> getRegions(RegionSet regionset) throws IOException {
+    public List<Region> getRegions(RegionSet regionset) throws IOException, ServiceException {
         final String propId = regionset.getIdProperty();
         final String propName = regionset.getNameProperty();
 
