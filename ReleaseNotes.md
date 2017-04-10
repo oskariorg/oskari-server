@@ -35,6 +35,11 @@ the bundle are merged with the values from the browser before saving to the data
 The link between a custom SLD-style and a WFS-layer is now removed by database constraint when a layer is removed.
 This fixes an issue where the link prevented a WFS-layer with custom style being removed properly.
 
+### Thematic maps regions
+
+The GetRegions action route now returns the geometry as GeoJSON and reference point for the region in addition to id and name. 
+The action route now requires srs-parameter to be sent and any statslayer rows in the database should include the srs_name value.
+
 ## 1.41
 
 ### CSW Metadata improvements
