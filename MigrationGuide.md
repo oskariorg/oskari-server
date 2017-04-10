@@ -2,6 +2,11 @@
 
 ## 1.42.0
 
+### Thematic maps regionsets
+
+Any statslayer rows in the database table oskari_maplayer should include a value in the srs_name column (like 'EPSG:4326').
+This is required for creating GeoJSON for the regions and doing transforms on the geometry.
+
 ### New bundle "maprotator" for sample application
 
 The new bundle allows published maps to be rotated. The bundle is added to sample application views automatically.

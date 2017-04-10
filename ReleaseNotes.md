@@ -37,8 +37,8 @@ This fixes an issue where the link prevented a WFS-layer with custom style being
 
 ### Thematic maps regions
 
-The regions action route now returns the geometry as GeoJSON in addition to id and name. It's assumed that the 
-geometry is in the same projection as the frontend map. 
+The GetRegions action route now returns the geometry as GeoJSON and reference point for the region in addition to id and name. 
+The action route now requires srs-parameter to be sent and any statslayer rows in the database should include the srs_name value.
 
 ## 1.41
 
