@@ -3,6 +3,7 @@ package fi.nls.oskari.control.view.modifier.param;
 import fi.mml.portti.service.search.*;
 import fi.nls.oskari.SearchWorker;
 import fi.nls.oskari.annotation.OskariViewModifier;
+import fi.nls.oskari.view.modifier.ParamHandler;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.search.channel.KTJkiiSearchChannel;

@@ -31,7 +31,7 @@ public class SearchCriteria implements Serializable {
 
     private Date fromDate;
     private Date toDate;
-    private int maxResults;
+    private int maxResults = -1;
 
     // queried channels
     private List<String> channels;

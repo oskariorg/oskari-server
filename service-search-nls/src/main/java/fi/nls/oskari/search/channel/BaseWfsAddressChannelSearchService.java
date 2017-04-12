@@ -45,7 +45,7 @@ public abstract class BaseWfsAddressChannelSearchService extends SearchChannel {
                         
             WFSOsoitenimiFilterMaker wfsoFM = new WFSOsoitenimiFilterMaker(queryParser);
             String filterXml = URLEncoder.encode(wfsoFM.getFilter(), "UTF-8"); 
-            final String queryUrl = this.getQueryUrl(filterXml);
+            final String queryUrl = this.getQueryUrl(filterXml, getMaxResults(searchCriteria.getMaxResults()));
             if(queryUrl == null) {
                 return null;
             }
@@ -193,7 +193,7 @@ public abstract class BaseWfsAddressChannelSearchService extends SearchChannel {
     /**
      * Methods must return url where to send the query
      */
-    protected abstract String getQueryUrl(String filter);
+    protected abstract String getQueryUrl(String filter, int maxResults);
         
     protected abstract String getType();
         

@@ -9,9 +9,13 @@
 <head>
     <title><spring:message code="user.registration.title"/></title>
     <link rel="shortcut icon" href="${pageContext.request.contextPath}/favicon.ico" type="image/x-icon"/>
-    <script type="text/javascript" src="${pageContext.request.contextPath}/Oskari/libraries/jquery/jquery-1.7.1.min.js">
-    </script>
-    <!--script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script -->
+    <%-- <script type="text/javascript" src="${pageContext.request.contextPath}/Oskari/libraries/jquery/jquery-1.7.1.min.js">
+    </script> --%>
+    <script
+  src="https://code.jquery.com/jquery-1.12.4.min.js"
+  integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ="
+  crossorigin="anonymous"></script>
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
 
     <!-- ############# css ################# -->
@@ -24,7 +28,8 @@
 
             #content {
                 height: 100%;
-                margin-left: 153px;
+                /*margin-left: 153px;*/
+                margin: auto;
             }
 
             #maptools {
@@ -53,8 +58,8 @@
                 border-radius: 5px;
                 font-size: 14px;
                 height: 30px;
-                padding-left: 10px;
-                padding-right: 10px;
+                /*padding-left: 10px;*/
+                /*padding-right: 10px;*/
             }
 
             .column-field-input:focus {
@@ -75,9 +80,22 @@
                 font-size: 20px;
                 display: block;
             }
+            #requestPassword{
+              width:400px;
+            }
 
             .error {
                 color: red;
+            }
+            .colorgraph {
+              height: 5px;
+              border-top: 0;
+              background: #191970;
+              border-radius: 5px;
+              background-image: -webkit-linear-gradient(left, #62c2e4, #62c2e4 12.5%, #62c2e4 12.5%, #669ae1 25%, #1E90FF 25%, #1E90FF 37.5%,#191970 37.5%, #191970 50%, #191970 50%, #191970 62.5%, #1E90FF 62.5%, #1E90FF 75%, #669ae1 75%, #669ae1 87.5%, #62c2e4 87.5%, #62c2e4);
+              background-image: -moz-linear-gradient(left, #62c2e4, #62c2e4 12.5%, #62c2e4 12.5%, #669ae1 25%, #1E90FF 25%, #1E90FF 37.5%, #191970 37.5%,#191970 50%,#191970 50%, #191970 62.5%, #1E90FF 62.5%, #1E90FF 75%, #669ae1 75%, #669ae1 87.5%, #62c2e4 87.5%, #62c2e4);
+              background-image: -o-linear-gradient(left, #62c2e4, #62c2e4 12.5%,#62c2e4 12.5%, #669ae1 25%, #1E90FF 25%, #1E90FF 37.5%, #191970 37.5%, #191970 50%,#191970 50%, #191970 62.5%, #1E90FF 62.5%, #1E90FF 75%, #669ae1 75%, #669ae1 87.5%, #62c2e4 87.5%, #62c2e4);
+              background-image: linear-gradient(to right, #62c2e4, #62c2e4 12.5%, #62c2e4 12.5%, #669ae1 25%,#1E90FF 25%, #1E90FF 37.5%, #191970 37.5%, #191970 50%, #191970 50%,#191970 62.5%, #1E90FF 62.5%, #1E90FF 75%, #669ae1 75%, #669ae1 87.5%, #62c2e4 87.5%, #62c2e4);
             }
         }
     </style>
@@ -94,75 +112,105 @@
     </div>
 </nav>
 
-<div id="content">
-    <div id="register">
-        <div id="errorGeneral" class="alert alert-danger hidden" role="alert"></div>
-        <c:choose>
-            <c:when test="${editExisting}">
-                <h1><spring:message code="user.registration.edit.title"/></h1>
-				<span class="content-column">
-					<label class="column-field-label"><spring:message code="user.firstname"/></label> <br>
-					<input class="column-field-input" size="20" id="firstname" name="firstname" type="text" required>
-					<span id="errorFirstname" class="alert alert-danger hidden" role="alert"></span>
-				</span>
-				<span class="content-column">
-					<label class="column-field-label"><spring:message code="user.lastname"/></label> <br>
-					<input class="column-field-input" size="20" id="lastname" name="lastname" type="text" required>
-					<span id="errorLastname" class="alert alert-danger hidden" role="alert"></span>
-				</span>
-				<span class="content-column">
-					<label class="column-field-label"><spring:message code="user.email"/></label> <br>
-					<input class="column-field-input" size="20" id="email" name="email" type="email" required>
-					<span id="errorEmail" class="alert alert-danger hidden" role="alert"></span>
-				</span>
-                <br/>
-				<span>				
-					<button class="btn btn-primary" id="saveBtn"><spring:message code="btn.save"/></button>
-				</span>			
-				<span>				
-					<button class="btn btn-default" id="cancelBtn"><spring:message code="btn.cancel"/></button>
-				</span>
+<div class="container">
+  <%-- Signed in --%>
+  <c:choose>
+      <c:when test="${editExisting}">
+      <div class="row">
+          <div class="col-xs-12 col-sm-8 col-md-6 col-sm-offset-2 col-md-offset-4">
+          <form role="form">
+            <h1><spring:message code="user.registration.edit.title"/></h1>
+            <hr class="colorgraph">
+            <span id="errorMsgExisting" class="alert alert-danger hidden col-xs-12" role="alert"></span>
+            <div class="row">
+              <span class="content-column">
+                				<div class="col-xs-12 col-sm-6 col-md-6">
+                    					<div class="form-group">
+                                 <input type="text" name="first_name" id="firstname" class="form-control input-lg" placeholder="First Name" tabindex="1">
+                    					</div>
+                    				</div>
+                          </span>
+                          <span class="content-column">
+                    				<div class="col-xs-12 col-sm-6 col-md-6">
+                    					<div class="form-group">
+                    						<input type="text" name="last_name" id="lastname" class="form-control input-lg" placeholder="Last Name" tabindex="2">
+                    					</div>
+                    				</div>
+                          </span>
+                        </div>
+              <span class="content-column">
+                <div class="form-group">
+                  <input type="email" name="email" id="email" class="form-control input-lg" placeholder="Email Address" tabindex="4">
+                </div>
+              </span>
+                      <br/>
+              <span>
+                <button class="btn btn-primary" id="saveBtn"><spring:message code="btn.save"/></button>
+              </span>
+              <span>
+                <button class="btn btn-default" id="cancelBtn"><spring:message code="btn.cancel"/></button>
+              </span>
+              <hr class="colorgraph">
+                      <br><br><br>
+                      <span class="content-column"> <a href="#" id="changePassword"><spring:message
+                              code="btn.newPassword"/></a> </span>
+                      (<spring:message code="user.help.passwordReset"/>)
+            </form>
+          </div>
+        </div>
+      </c:when>
+      <%-- Not signed in --%>
+     <c:otherwise>
+          <div class="col-xs-12 col-sm-8 col-md-6 col-sm-offset-2 col-md-offset-4">
+      		<form role="form">
+      			<h2>Register</h2>
+            <hr class="colorgraph">
+            <span id="errorMsg" class="alert alert-danger hidden col-xs-12" role="alert"></span>
+      			<div class="row">
+      				<div class="col-xs-12 col-sm-6 col-md-6">
+      					<div class="form-group">
+                   <input type="text" name="first_name" id="firstname" class="form-control input-lg" placeholder="First Name" tabindex="1">
+      					</div>
+      				</div>
+      				<div class="col-xs-12 col-sm-6 col-md-6">
+      					<div class="form-group">
+      						<input type="text" name="last_name" id="lastname" class="form-control input-lg" placeholder="Last Name" tabindex="2">
+      					</div>
+      				</div>
+      			</div>
+      			<div class="form-group">
+      				<input type="text" name="display_name" id="username" class="form-control input-lg" placeholder="Username" tabindex="3">
+      			</div>
+      			<div class="form-group">
+      				<input type="email" name="email" id="email" class="form-control input-lg" placeholder="Email Address" tabindex="4">
+      			</div>
+        </c:otherwise>
+      </c:choose>
 
-                <br><br><br>
-                <span class="content-column"> <a href="#" id="changePassword"><spring:message
-                        code="btn.newPassword"/></a> </span>
-                (<spring:message code="user.help.passwordReset"/>)
-            </c:when>
-            <c:otherwise>
-                <h1><spring:message code="user.registration.new.title"/></h1>
-				<span class="content-column">
-					<label class="column-field-label"><spring:message code="user.firstname"/></label> <br>
-					<input class="column-field-input" size="20" id="firstname" name="firstname" type="text" required>
-					<span id="errorFirstname" class="alert alert-danger hidden" role="alert"></span>
-				</span>
-				<span class="content-column">
-					<label class="column-field-label"><spring:message code="user.lastname"/></label> <br>
-					<input class="column-field-input" size="20" id="lastname" name="lastname" type="text" required>
-					<span id="errorLastname" class="alert alert-danger hidden" role="alert"></span>
-				</span>
-				<span class="content-column">
-					<label class="column-field-label"><spring:message code="user.username"/></label> <br>
-					<input class="column-field-input" size="20" id="username" name="username" type="text" required>
-					<span id="errorUsername" class="alert alert-danger hidden" role="alert"></span>
-				</span>
-				<span class="content-column">
-					<label class="column-field-label"><spring:message code="user.email"/></label> <br>
-					<input class="column-field-input" size="20" id="email" name="email" type="email" required>
-					<span id="errorEmail" class="alert alert-danger hidden" role="alert"></span>
-				</span>
-                <br/>
-				<span>				
-					<button id="registerBtn" class="btn btn-primary"><spring:message code="btn.register"/></button>
-				</span>			
-				<span>				
-					<button id="cancelBtn" class="btn btn-default"><spring:message code="btn.cancel"/></button>
-				</span>
+			<hr class="colorgraph">
+			<div class="row">
+				<div class="col-xs-12 col-md-6"><input type="button" value="Register" class="btn btn-primary btn-block btn-lg" id="registerBtn" tabindex="7"></div>
+        <br><br>
+        <a class="col-xs-12" href="#" id="forgotPassword"><spring:message code="btn.forgotPassword"/></a>
+			</div>
+		</form>
+	</div>
+</div>
 
-                <br><br>
-                <a href="#" id="forgotPassword"><spring:message code="btn.forgotPassword"/></a>
-            </c:otherwise>
-        </c:choose>
+<!-- RegistrationModal -->
+<div class="modal fade" id="generalModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="generalModalLabel">Registration</h4>
+      </div>
+      <div class="modal-body registration-success"></div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
     </div>
+  </div>
 </div>
 
 <div id="deleteDialog" class="modal fade">
@@ -192,12 +240,12 @@
                 $("#lastname").val(data.lastName);
                 $("#email").val(data.email);
                 $("body").show();
-                // FIXME: get rid of alert
-                alert('<spring:message code="user.registration.edit.success"/>')
+
+                showModal('<spring:message code="user.registration.edit.success"/>');
             },
             error: function (jqXHR, textStatus, errorThrown) {
                 //TODO: error handling
-                alert(jqXHR.responseText);
+                showModal(jqXHR.responseText);
             }
         });
         </c:if>
@@ -218,7 +266,7 @@
                 type: 'POST',
                 success: function (data) {
                     // FIXME: show confirmation about mail being sent
-                    alert('<spring:message code="user.registration.email.sent"/>')
+                    showModal('<spring:message code="user.registration.email.sent"/>');
                 },
                 error: function (jqXHR, textStatus, errorThrown) {
                     //TODO: error handling
@@ -242,14 +290,14 @@
                     data: data,
                     success: function (data) {
                         // FIXME: show confirmation about mail being sent
-                        alert('<spring:message code="user.registration.success"/>')
+                        showModal('<spring:message code="user.registration.success"/>', true);
                     },
                     error: function (jqXHR, textStatus, errorThrown) {
                         var errorResponse = jqXHR.responseText;
                         if (errorResponse.toLowerCase().indexOf("email") >= 0) {
-                            errorMsg("#errorEmail", '<spring:message code="user.registration.error.emailExists"/>');
+                            errorMsg("#email", '<spring:message code="user.registration.error.emailExists"/>');
                         } else if (errorResponse.toLowerCase().indexOf("username") >= 0) {
-                            errorMsg("#errorUsername", '<spring:message code="user.registration.error.usernameExists"/>');
+                            errorMsg("#username", '<spring:message code="user.registration.error.usernameExists"/>');
                         } else {
                             //TODO: error handling
                             errorMsg("#errorGeneral", jqXHR.responseText);
@@ -274,7 +322,7 @@
                     data: data,
                     success: function (data) {
                         // FIXME: show confirmation about mail being sent
-                        alert('<spring:message code="user.registration.edit..success"/>');
+                        showModal('<spring:message code="user.registration.edit..success"/>', true);
                     },
                     error: function (jqXHR, textStatus, errorThrown) {
                         //TODO: error handling
@@ -344,14 +392,26 @@
         }
 
         if (!isEmailValid(email)) {
-            errorMsg('#errorEmail', '<spring:message code="user.registration.error.invalidEmailError"/>');
+            errorMsg('#errorEmail', '<spring:message code="user.registration.error.invalidEmail"/>');
             flag = false;
         }
         return flag;
     }
+    function showModal(msg, success) {
+      $('.registration-success').removeClass("hidden");
+      $('.registration-success').html(msg).addClass("alert-success");
+      $('#generalModal').modal('show');
+      if(success){
+        $('.container').find('.alert-danger').removeClass('alert-danger');
+      }
+      setTimeout(function() {$('#generalModal').modal('hide');}, 2000);
+    }
 
     function errorMsg(selector, str) {
-        $(selector).text(str).removeClass("hidden");
+        $('.container').find('.alert-danger').removeClass('alert-danger');
+        $('#errorMsg').removeClass("hidden");
+        $('#errorMsg').html('<strong>'+str+'</strong>').addClass("alert-danger");
+        $(selector).addClass("alert-danger");
     }
 
     function clearErrorMessage() {

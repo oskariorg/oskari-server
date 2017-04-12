@@ -1,5 +1,6 @@
 package fi.nls.oskari.control.statistics.plugins;
 
+import fi.nls.oskari.control.statistics.data.*;
 import fi.nls.oskari.control.statistics.plugins.db.StatisticalDatasource;
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.junit.AfterClass;
@@ -92,16 +93,17 @@ public class StatisticalDatasourcePluginManagerIT {
         assertNotNull("SotkaNET plugin was not found.", sotkaPlugin);
         
         // Getting indicators.
-        List<? extends StatisticalIndicator> indicators = sotkaPlugin.getIndicators(null);
+        IndicatorSet indicatorSet = sotkaPlugin.getIndicatorSet(null);
+        List<StatisticalIndicator> indicators = indicatorSet.getIndicators();
         assertTrue("Indicators result was too small.", indicators.size() > 10);
         
-        StatisticalIndicatorSelectors selectors = indicators.get(0).getSelectors();
-        List<StatisticalIndicatorSelector> allSelectors = selectors.getSelectors();
-        for (StatisticalIndicatorSelector selector : allSelectors) {
+        StatisticalIndicatorDataModel selectors = indicators.get(0).getDataModel();
+        List<StatisticalIndicatorDataDimension> allSelectors = selectors.getDimensions();
+        for (StatisticalIndicatorDataDimension selector : allSelectors) {
             // Selecting the first allowed value for each selector to define a proper selector.
             selector.setValue(selector.getAllowedValues().iterator().next().getKey());
         }
-        Map<String, IndicatorValue> indicatorValues = indicators.get(0).getLayers().get(0).getIndicatorValues(selectors);
+        Map<String, IndicatorValue> indicatorValues = sotkaPlugin.getIndicatorValues(indicators.get(0), selectors, indicators.get(0).getLayers().get(0));
         assertNotNull("Indicator values response was null.", indicatorValues);
         assertTrue("IndicatorValues result was too small: " + String.valueOf(indicatorValues), indicatorValues.size() > 2);
     }

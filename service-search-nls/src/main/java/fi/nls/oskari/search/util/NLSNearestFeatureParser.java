@@ -270,7 +270,7 @@ public class NLSNearestFeatureParser {
 
         Point p2 = ProjectionHelper.transformPoint(lon, lat, epsg, SERVICE_SRS);
 
-        if (p2 != null) return p2.getLonToString() + "," + p2.getLatToString() + "," + epsg;
+        if (p2 != null) return p2.getLonToString() + "," + p2.getLatToString() + "," + SERVICE_SRS;
 
         return null;
     }

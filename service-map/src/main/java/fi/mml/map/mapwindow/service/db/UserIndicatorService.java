@@ -15,5 +15,5 @@ import java.util.List;
 
 public interface UserIndicatorService extends BaseService<UserIndicator> {
 
-    public List<UserIndicator> findAllOfUser(long userID);
+    List<UserIndicator> findAllOfUser(long userID);
 }

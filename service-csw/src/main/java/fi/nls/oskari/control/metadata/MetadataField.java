@@ -32,6 +32,7 @@ public class MetadataField {
     private Map<String,String> dependencies = Collections.emptyMap();
     private MetadataFieldHandler handler = null;
     private JSONArray shownIf = null;
+    private String defaultValue = null;
 
     public static final String RESULT_KEY_ORGANIZATION = "organization";
 
@@ -148,5 +149,13 @@ public class MetadataField {
 
     public Map<String, String> getDependencies() {
         return Collections.unmodifiableMap(dependencies);
+    }
+
+    public String getDefaultValue() {
+        return defaultValue;
+    }
+
+    public void setDefaultValue(String defaultValue) {
+        this.defaultValue = defaultValue;
     }
 }

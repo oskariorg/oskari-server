@@ -166,7 +166,8 @@ public class WFSLayerStore extends WFSLayerConfiguration {
     public CoordinateReferenceSystem getCrs() {
         if (this.crs == null) {
             try {
-                this.crs = CRS.decode(this.getSRSName());
+                //TODO set Crs according to axis orientation
+                this.crs = CRS.decode(this.getSRSName(),true);
             } catch (FactoryException e) {
                 log.error(e, "CRS decoding failed");
             }

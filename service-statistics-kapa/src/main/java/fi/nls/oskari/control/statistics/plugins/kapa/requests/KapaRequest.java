@@ -1,8 +1,8 @@
 package fi.nls.oskari.control.statistics.plugins.kapa.requests;
 
 import fi.nls.oskari.control.statistics.plugins.APIException;
-import fi.nls.oskari.control.statistics.plugins.StatisticalIndicatorSelector;
-import fi.nls.oskari.control.statistics.plugins.StatisticalIndicatorSelectors;
+import fi.nls.oskari.control.statistics.data.StatisticalIndicatorDataModel;
+import fi.nls.oskari.control.statistics.data.StatisticalIndicatorDataDimension;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.util.IOHelper;
@@ -64,10 +64,10 @@ public class KapaRequest {
     public String getIndicators() {
         return getData("indicators", null);
     }
-    public String getIndicatorData(String indicator, StatisticalIndicatorSelectors selectors) {
+    public String getIndicatorData(String indicator, StatisticalIndicatorDataModel selectors) {
         
         Map<String, String> parameters = new HashMap<>();
-        for (StatisticalIndicatorSelector selector : selectors.getSelectors()) {
+        for (StatisticalIndicatorDataDimension selector : selectors.getDimensions()) {
             parameters.put(selector.getId(), selector.getValue());
         }
         try {

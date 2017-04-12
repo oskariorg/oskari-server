@@ -9,7 +9,7 @@ public interface GeoJsonWorker {
     public JSONObject getGeoJson();
     public String getTypeName();
     public FeatureType getFeatureType();
-    public boolean parseGeoJSON(File file, String target_epsg);
+    public String parseGeoJSON(File file, String source_epsg, String target_epsg);
 
        
 }

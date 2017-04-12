@@ -23,7 +23,6 @@ import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.service.UserService;
-import fi.nls.oskari.user.IbatisRoleService;
 import fi.nls.oskari.user.IbatisUserService;
 import fi.nls.oskari.util.PropertyUtil;
 
@@ -37,7 +36,6 @@ public class PasswordResetHandler extends RestActionHandler {
     private static final String PARAM_SET_PASSWORD = "setPassword";
     private static final String PARAM_PASSWORD = "password";
 
-    private static final String ROLE_USER = "User";
     private ObjectMapper mapper = new ObjectMapper();
 
     private UserRegistrationService registerTokenService = null;
@@ -85,8 +83,12 @@ public class PasswordResetHandler extends RestActionHandler {
         registerTokenService.addEmail(emailToken);
 
         String username = registerTokenService.findUsernameForEmail(email);
-        User user = ibatisUserService.findByUserName(username);
-        mailSenderService.sendEmailForResetPassword(user, uuid, serverAddress);
+        try {
+            User user = userService.getUser(username);
+            mailSenderService.sendEmailForResetPassword(user, uuid, serverAddress);
+        } catch (ServiceException ex) {
+            throw new ActionException("Couldn't find user", ex);
+        }
     }
 
     public Email parseContentForEmailUpdate(ActionParameters params) throws ActionException {
@@ -133,13 +135,6 @@ public class PasswordResetHandler extends RestActionHandler {
                 // Create entry in oskari_jaas_user table
                 // TODO: check that we want to allow this
                 userService.setUserPassword(username, token.getPassword());
-
-                // Create link between User and Role (oskari_role_oskari_user); For logged user's default view.
-                // TODO: the role should have been added in some previous step - remove it from here
-                User user = userService.getUser(username);
-                int roleId = registerTokenService.findUserRoleId(ROLE_USER);
-                IbatisRoleService roleService = new IbatisRoleService();
-                roleService.linkRoleToNewUser(roleId, user.getId());
             }
             // After password updated/created, delete the entry related to token from database
             registerTokenService.deleteEmailToken(token.getUuid());

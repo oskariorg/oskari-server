@@ -1,15 +1,21 @@
 package fi.nls.oskari.map.geometry;
 
 import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.CoordinateSequenceFilter;
+import com.vividsolutions.jts.geom.CoordinateSequence;
 import fi.nls.oskari.domain.geo.Point;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.util.JSONHelper;
+import org.geotools.feature.FeatureCollection;
+import org.geotools.feature.FeatureIterator;
 import org.geotools.geojson.geom.GeometryJSON;
 import org.geotools.geometry.DirectPosition2D;
 import org.geotools.geometry.jts.JTS;
 import org.geotools.referencing.CRS;
 import org.json.JSONObject;
+import org.opengis.feature.simple.SimpleFeature;
+import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.cs.AxisDirection;
 import org.opengis.referencing.operation.MathTransform;
@@ -24,6 +30,7 @@ import java.io.InputStream;
 public class ProjectionHelper implements PointTransformer {
 
     private static Logger log = LogFactory.getLogger(ProjectionHelper.class);
+    private static String LONG_SRS_NAME_BASE = "urn:ogc:def:crs:EPSG::";
 
     public static Point transformPoint(final double lon, final double lat, final String sourceSRS, final String targetSRS) {
         return transformPoint(new Point(lon, lat), sourceSRS, targetSRS);
@@ -33,8 +40,9 @@ public class ProjectionHelper implements PointTransformer {
     }
     public static Point transformPoint(final Point point, final String sourceSRS, final String targetSRS) {
         try {
-            CoordinateReferenceSystem sourceCrs = CRS.decode(sourceSRS);
-            CoordinateReferenceSystem targetCrs = CRS.decode(targetSRS);
+            // use always lon coordinate 1st order
+            CoordinateReferenceSystem sourceCrs = CRS.decode(sourceSRS, true);
+            CoordinateReferenceSystem targetCrs = CRS.decode(targetSRS, true);
             return transformPoint(point, sourceCrs, targetCrs);
 
         } catch (Exception e) {
@@ -56,7 +64,8 @@ public class ProjectionHelper implements PointTransformer {
     }
     public static Point transformPoint(final double lon, final double lat, final CoordinateReferenceSystem sourceCrs, final String targetSRS) {
         try {
-            CoordinateReferenceSystem targetCrs = CRS.decode(targetSRS);
+            // use always lon coordinate 1st order
+            CoordinateReferenceSystem targetCrs = CRS.decode(targetSRS, true);
             return transformPoint(new Point(lon, lat), sourceCrs, targetCrs);
 
         } catch (Exception e) {
@@ -74,6 +83,13 @@ public class ProjectionHelper implements PointTransformer {
         return null;
     }
 
+    /**
+     * Transforms point coordinates to target projection
+      * @param point is in source projection ( x/lon must be always to the east and y/lat is to the north)
+     * @param sourceCrs
+     * @param targetCrs
+     * @return Point in target projection ( x/lon is always to the east and y/lat is to the north)
+     */
     public static Point transformPoint(final Point point, final CoordinateReferenceSystem sourceCrs, final CoordinateReferenceSystem targetCrs) {
         try {
 
@@ -82,15 +98,20 @@ public class ProjectionHelper implements PointTransformer {
             // by setting the lenient parameter to true when searching with findMathTransform.
             boolean lenient = false;
             MathTransform mathTransform = CRS.findMathTransform(sourceCrs, targetCrs, lenient);
-
             DirectPosition2D srcDirectPosition2D = new DirectPosition2D(sourceCrs, point.getLon(), point.getLat());
+            // Just in case that sourceCrs axis order is not forced as lon 1st
+            if (isFirstAxisNorth(sourceCrs)) {
+                // reverse xy lon 1st
+                srcDirectPosition2D = new DirectPosition2D(sourceCrs, point.getLat(), point.getLon());
+            }
             DirectPosition2D destDirectPosition2D = new DirectPosition2D(targetCrs);
             mathTransform.transform(srcDirectPosition2D, destDirectPosition2D);
-            // Switch direction, if 1st coord is to the north on the other but not on the other
-            if (isFirstAxisNorth(sourceCrs) != isFirstAxisNorth(targetCrs)) {
-                return new Point(destDirectPosition2D.x, destDirectPosition2D.y);
+            // Just in case that targetCrs axis order is not forced as lon 1st
+            if (isFirstAxisNorth(targetCrs)) {
+                // reverse xy lon 1st
+                return new Point(destDirectPosition2D.y, destDirectPosition2D.x);
             }
-            return new Point(destDirectPosition2D.y, destDirectPosition2D.x);
+            return new Point(destDirectPosition2D.x, destDirectPosition2D.y);
         } catch (Exception e) {
             log.error(e, "Transform failed! Params: sourceSRS", sourceCrs, "targetSRS", targetCrs, "Point", point);
         }
@@ -130,6 +151,43 @@ public class ProjectionHelper implements PointTransformer {
         }
         return crs;
     }
+    /**
+     * Return epsg long
+     * e.g. EPSG:3035  --> urn:ogc:def:crs:EPSG::3035
+     * @param crs short syntax e.g. EPSG:3035
+     * @return  epsg in long syntax
+     */
+    public static String longSyntaxEpsg(String crs) {
+        if (crs == null) {
+            return null;
+        }
+        try {
+            String[] epsg = crs.toUpperCase().split(":");
+            String code = epsg[epsg.length-1];
+            return LONG_SRS_NAME_BASE + code;
+        } catch (Exception e) {
+            log.debug("EPSG geotools srsName decoding failed", e);
+        }
+        return crs;
+    }
+
+    /**
+     * Return Crs with long epsg syntax
+
+     * @param crs short syntax e.g. EPSG:32635
+     * @return  crs in long syntax
+     */
+    public static CoordinateReferenceSystem longSyntaxCrs(String crs) {
+        if (crs == null) {
+            return null;
+        }
+        try {
+            return CRS.decode(longSyntaxEpsg(crs), true);
+        } catch (Exception e) {
+            log.debug("EPSG geotools crs decoding failed - long crs name", e);
+        }
+        return null;
+    }
 
 
     /**
@@ -137,6 +195,9 @@ public class ProjectionHelper implements PointTransformer {
      * Axis order in geojson should be always longitude 1st (sourceLon1st=true, targetLon1st=true)
      * If the axis order is according to OGC standards in geojson, use sourceLon1st=false
      * If it is requested, that the axis order is according to OGC standards in the result geojson, use targetLon1st=false
+     *
+     * NOTE! The geometry is expected to be ONLY the GeoJSON "geometry" content. Not FeatureCollection or the single whole
+     * feature.
      *
      * @param geometry geojson geometry to be transformed
      * @param sourceSRS
@@ -178,5 +239,48 @@ public class ProjectionHelper implements PointTransformer {
         }
         return null;
     }
+    /**
+     * Does the flipping of geometry object incase the axis is YX
+     * We used CoordinateArraySequence to get coordinate Array
+     * As per its documentation "In this implementation, Coordinates returned
+     * by #toArray and #getCoordinate are live -- modifications to them are
+     * actually changing the CoordinateSequence's underlying data."
+     * @param fnG
+     */
+    public static void flipFeatureYX(Geometry fnG) {
+        fnG.apply(new CoordinateSequenceFilter() {
 
+            public boolean isGeometryChanged() {
+                return true;
+            }
+
+            public boolean isDone() {
+                return false;
+            }
+
+            public void filter(CoordinateSequence seq, int i) {
+                double x = seq.getX(i);
+                double y = seq.getY(i);
+                seq.setOrdinate(i, 0, y);
+                seq.setOrdinate(i, 1, x);
+            }
+        });
+    }
+    /**
+     * Swap xy order in feature geometry of all features in featurecollection
+     * @param featureCollection
+     */
+    public static void swapGeometryXY(FeatureCollection<SimpleFeatureType, SimpleFeature> featureCollection) {
+        FeatureIterator<SimpleFeature> featuresIter =  featureCollection.features();
+        try {
+            while (featuresIter.hasNext()) {
+                SimpleFeature feature = featuresIter.next();
+                Geometry geom = (Geometry) feature.getDefaultGeometry();
+                ProjectionHelper.flipFeatureYX(geom);
+            }
+        }
+        finally {
+            featuresIter.close();
+        }
+    }
 }

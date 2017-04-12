@@ -110,6 +110,20 @@ public class WFSSearchChannel extends SearchChannel {
         return config.getIsDefault();
     }
 
+    private int maxCount = super.getMaxResults();
+
+    public void init() {
+        super.init();
+        maxCount = config.getConfig().optInt("maxFeatures", -1);
+        if(maxCount == -1) {
+            maxCount = PropertyUtil.getOptional("search.channel.WFSSEARCH_CHANNEL.maxFeatures",
+                    PropertyUtil.getOptional("search.max.results", maxCount));
+        }
+    }
+    public int getMaxResults() {
+        return maxCount;
+    }
+
     /**
      * Returns the search raw results.
      *
@@ -125,10 +139,7 @@ public class WFSSearchChannel extends SearchChannel {
         }
         String searchStr = searchCriteria.getSearchString();
         log.debug("[WFSSEARCH] Search string: " + searchStr);
-        int maxFeatures = config.getConfig().optInt("maxFeatures", -1);
-        if(maxFeatures == -1) {
-            maxFeatures = PropertyUtil.getOptional("search.channel.WFSSEARCH_CHANNEL.maxFeatures", -1);
-        }
+        int maxFeatures = getMaxResults(searchCriteria.getMaxResults());
 
         Map<String, String> urlParams = new HashMap<>();
         urlParams.put("service", "WFS");

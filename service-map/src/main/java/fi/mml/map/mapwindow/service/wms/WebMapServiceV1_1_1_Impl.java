@@ -131,28 +131,30 @@ public class WebMapServiceV1_1_1_Impl extends AbstractWebMapService {
 	 * @param foundStyles
 	 */
 	private void gatherStylesAndLegends(Layer layer, Map<String, String> foundStyles) {
-		if (layer.getStyleArray() != null) {
-			Style[] stylesArray = layer.getStyleArray();
-			for(Style style: stylesArray) {
-				
-				if (style.getName().newCursor() != null && style.getTitle().newCursor()!= null) {
-					String styleName = style.getName().newCursor().getTextValue();
-					String styleTitle = style.getTitle().newCursor().getTextValue();
-					foundStyles.put(styleName, styleTitle);
-					
-					LegendURL[] lurl = style.getLegendURLArray();
-					if (lurl != null) {
-						if (lurl.length > 0) {
-							if (lurl[0].getOnlineResource() != null) {
-								/* OnlineResource is in xlink namespace */
-								String href = lurl[0].getOnlineResource().newCursor().getAttributeText(new QName("http://www.w3.org/1999/xlink", "href"));
-								if (href != null) {
-									legends.put(styleName, href);
-								}
-							}
-						}
-					}
-				}
+		if (layer.getStyleArray() == null) {
+			return;
+		}
+		Style[] stylesArray = layer.getStyleArray();
+		for(Style style: stylesArray) {
+
+			if (style.getName().newCursor() == null || style.getTitle().newCursor() == null) {
+				continue;
+			}
+			String styleName = style.getName().newCursor().getTextValue();
+			String styleTitle = style.getTitle().newCursor().getTextValue();
+			if(styleTitle == null || styleTitle.isEmpty()) {
+				styleTitle = styleName;
+			}
+			foundStyles.put(styleName, styleTitle);
+
+			LegendURL[] lurl = style.getLegendURLArray();
+			if (lurl == null || lurl.length == 0 || lurl[0].getOnlineResource() == null) {
+				continue;
+			}
+			/* OnlineResource is in xlink namespace */
+			String href = lurl[0].getOnlineResource().newCursor().getAttributeText(new QName("http://www.w3.org/1999/xlink", "href"));
+			if (href != null) {
+				legends.put(styleName, href);
 			}
 		}
 	}

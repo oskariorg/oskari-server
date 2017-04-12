@@ -1,5 +1,6 @@
 package fi.nls.oskari.eu.elf.roadtransportnetwork;
 
+import fi.nls.oskari.WFSTestHelper;
 import fi.nls.oskari.eu.elf.recipe.roadtransportnetwork.ELF_MasterLoD1_RoadLink_Parser;
 import fi.nls.oskari.fe.TestHelper;
 import fi.nls.oskari.fe.engine.BasicFeatureEngine;
@@ -45,7 +46,7 @@ public class TestJacksonParser extends TestHelper {
         try {
             inputProcessor.setInput(inp);
 
-            OutputStream fouts = System.out;
+            OutputStream fouts = WFSTestHelper.getTestOutputStream();
             try {
                 outputProcessor.setOutput(fouts);
 
@@ -86,7 +87,7 @@ public class TestJacksonParser extends TestHelper {
         try {
             inputProcessor.setInput(inp);
 
-            OutputStream fouts = System.out;
+            OutputStream fouts = WFSTestHelper.getTestOutputStream();
             try {
                 outputProcessor.setOutput(fouts);
 

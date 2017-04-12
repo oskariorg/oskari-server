@@ -108,13 +108,13 @@ public class MapLayerJSONTest {
 	public void splitterMyPlacesURL() {
 
 		String source = "http://nipsutu01.nls.fi:8080/geoserver/wms?buffer=128&tiled=yes&tilesorigin=0,0&CQL_FILTER=(uuid='e88fa3a1-5881-46d5-9929-20024f27a6d7'+OR+publisher_name+IS+NOT+NULL)+AND+category_id=437";
-		System.out.println("SRC: " + source);
+		//System.out.println("SRC: " + source);
 		String fixed = fixWmsUrl(source);
-		System.out.println("FIX: " + fixed);
+		//System.out.println("FIX: " + fixed);
 
 		String result = fixed.split("\\?")[1];
 
-		System.out.println("RST: " + result);
+		//System.out.println("RST: " + result);
 
 		assertTrue(result
 				.equals("buffer=128&tiled=yes&tilesorigin=0,0&CQL_FILTER=(uuid='e88fa3a1-5881-46d5-9929-20024f27a6d7'+OR+publisher_name+IS+NOT+NULL)+AND+category_id=437"));
@@ -124,9 +124,9 @@ public class MapLayerJSONTest {
 	public void splitterBgMapsURL() {
 
 		String source = "http://a.karttatiili.fi/dataset/taustakarttasarja/service/wms,http://b.karttatiili.fi/dataset/taustakarttasarja/service/wms,http://c.karttatiili.fi/dataset/taustakarttasarja/service/wms,http://d.karttatiili.fi/dataset/taustakarttasarja/service/wms";
-		System.out.println(source);
+		//System.out.println(source);
 		String fixed = fixWmsUrl(source);
-		System.out.println(fixed);
+		//System.out.println(fixed);
 
 		assertTrue(fixed
 				.equals("http://a.karttatiili.fi/dataset/taustakarttasarja/service/wms"));

@@ -4,8 +4,10 @@ import fi.mml.portti.service.search.ChannelSearchResult;
 import fi.mml.portti.service.search.SearchCriteria;
 import fi.mml.portti.service.search.SearchResultItem;
 import fi.nls.oskari.annotation.Oskari;
+import fi.nls.oskari.domain.geo.Point;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.map.geometry.ProjectionHelper;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
@@ -65,7 +67,7 @@ public class GeoNamesSearchChannel extends SearchChannel {
         buf.append("&country=RU");
         buf.append("&country=SE");
         buf.append("&country=US");
-        int maxResults = searchCriteria.getMaxResults();
+        int maxResults = getMaxResults(searchCriteria.getMaxResults());
         if (maxResults > 0) {
             buf.append("&maxRows="+Integer.toString(maxResults));
         }
@@ -116,31 +118,12 @@ public class GeoNamesSearchChannel extends SearchChannel {
                 item.setLon(JSONHelper.getStringFromJSON(dataItem, "lng", ""));
                 item.setLat(JSONHelper.getStringFromJSON(dataItem, "lat", ""));
                 searchResultList.addItem(item);
-                try {
-                    CoordinateReferenceSystem sourceCrs = CRS.decode("EPSG:4326");
-                    CoordinateReferenceSystem targetCrs = CRS.decode(srs);
-                    boolean lenient = false;
-                    MathTransform mathTransform = CRS.findMathTransform(sourceCrs, targetCrs, lenient);
-                    double srcLon = Double.parseDouble(dataItem.getString("lng"));
-                    double srcLat = Double.parseDouble(dataItem.getString("lat"));
-                    DirectPosition2D srcDirectPosition2D = new DirectPosition2D(sourceCrs, srcLat, srcLon);
-                    DirectPosition2D destDirectPosition2D = new DirectPosition2D();
-                    mathTransform.transform(srcDirectPosition2D, destDirectPosition2D);
-                    String lon = String.valueOf(destDirectPosition2D.x);
-                    String lat = String.valueOf(destDirectPosition2D.y);
-                    item.setLon(lon);
-                    item.setLat(lat);
-                } catch(NoSuchAuthorityCodeException e) {
-                    log.error(e, "geotools pox");
-                    return null;
-                } catch(FactoryException e) {
-                    log.error(e, "geotools pox factory");
-                    return null;
-                } catch(JSONException e) {
-                    item.setLon("");
-                    item.setLat("");
-                    item.setContentURL("");
+                Point p1 = ProjectionHelper.transformPoint(item.getLon(), item.getLat(), "EPSG:4326", srs);
+                if (p1 != null) {
+                    item.setLon(p1.getLon());
+                    item.setLat(p1.getLat());
                 }
+
                 log.debug("ITEM: " + item.toString());
             }
         } catch (Exception e) {

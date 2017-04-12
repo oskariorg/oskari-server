@@ -98,6 +98,14 @@ public class MetadataCatalogueChannelSearchService extends SearchChannel {
         }
     }
 
+    /**
+     * Defaults to false as opposed to true in SearchChannel as this most likely isn't a channel to use for usual searching.
+     * @return
+     */
+    public boolean isDefaultChannel() {
+        return PropertyUtil.getOptional("search.channel." + getName() + ".isDefault", false);
+    }
+
     public static String getServerURL() {
         return serverURL;
     }
@@ -121,6 +129,7 @@ public class MetadataCatalogueChannelSearchService extends SearchChannel {
             field.setFilterOp(PropertyUtil.getOptional(propPrefix + name + ".filterOp"));
             field.setMustMatch(PropertyUtil.getOptional(propPrefix + name + ".mustMatch", false));
             field.setDependencies(PropertyUtil.getMap(propPrefix + name + ".dependencies"));
+            field.setDefaultValue(PropertyUtil.getOptional(propPrefix + name + ".value"));
             fields.add(field);
         }
         return fields;
@@ -222,13 +231,9 @@ public class MetadataCatalogueChannelSearchService extends SearchChannel {
         try {
             Point p1 = null;
             Point p2 = null;
-            if (ProjectionHelper.isFirstAxisNorth(CRS.decode(sourceSRS))) {
-                p1 = ProjectionHelper.transformPoint(item.getSouthBoundLatitude(), item.getWestBoundLongitude(), sourceSRS, targetSRS);
-                p2 = ProjectionHelper.transformPoint(item.getNorthBoundLatitude(), item.getEastBoundLongitude(), sourceSRS, targetSRS);
-            } else {
-                p1 = ProjectionHelper.transformPoint(item.getWestBoundLongitude(), item.getSouthBoundLatitude(), sourceSRS, targetSRS);
-                p2 = ProjectionHelper.transformPoint(item.getEastBoundLongitude(), item.getNorthBoundLatitude(), sourceSRS, targetSRS);
-            }
+            p1 = ProjectionHelper.transformPoint(item.getWestBoundLongitude(), item.getSouthBoundLatitude(), sourceSRS, targetSRS);
+            p2 = ProjectionHelper.transformPoint(item.getEastBoundLongitude(), item.getNorthBoundLatitude(), sourceSRS, targetSRS);
+
             return WKTHelper.getBBOX(p1.getLon(), p1.getLat(), p2.getLon(), p2.getLat());
         } catch(Exception e){
             log.error(e, "Cannot get BBOX");
@@ -262,6 +267,9 @@ public class MetadataCatalogueChannelSearchService extends SearchChannel {
                     !item.getContentURL().startsWith("http://") ;
 
             if (replaceImageURL) {
+                // This only works for GN2 for paikkatietohakemisto.fi
+                // GN2-style: http://geonetwork.nls.fi/geonetwork/srv/fi/resources.get.uuid?access=public&uuid=7ac131b9-a307-4aa1-b27a-009e91f6bd45&fname=Pohjak_Ylihrm_s.png
+                // GN3-style: http://www.paikkatietohakemisto.fi/geonetwork/srv/api/records/7ac131b9-a307-4aa1-b27a-009e91f6bd45/attachments/Pohjak_Ylihrm_s.png
                 item.setContentURL(imageURLs.get(locale) + "uuid=" + uuid + "&fname=" + item.getContentURL());
             }
         }

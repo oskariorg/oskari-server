@@ -1,0 +1,112 @@
+{
+  "id": "3056",
+  "layers": [{
+    "indicatorValueType": "FLOAT",
+    "oskariLayerId": 6,
+    "indicatorId":null,
+    "params" : {}
+  }, {
+    "indicatorValueType": "FLOAT",
+    "oskariLayerId": 7,
+    "indicatorId":null,
+    "params" : {}
+  }],
+  "dataModel": {
+    "dimensions": [{
+      "id": "sex",
+      "value": null,
+      "allowedValues": [{
+        "key": "male",
+        "value": null
+      }, {
+        "key": "female",
+        "value": null
+      }, {
+        "key": "total",
+        "value": null
+      }],
+      "name": null
+    }, {
+      "id": "year",
+      "value": null,
+      "allowedValues": [{
+        "key": "1996",
+        "value": null
+      }, {
+        "key": "1997",
+        "value": null
+      }, {
+        "key": "1998",
+        "value": null
+      }, {
+        "key": "1999",
+        "value": null
+      }, {
+        "key": "2000",
+        "value": null
+      }, {
+        "key": "2001",
+        "value": null
+      }, {
+        "key": "2002",
+        "value": null
+      }, {
+        "key": "2003",
+        "value": null
+      }, {
+        "key": "2004",
+        "value": null
+      }, {
+        "key": "2005",
+        "value": null
+      }, {
+        "key": "2006",
+        "value": null
+      }, {
+        "key": "2007",
+        "value": null
+      }, {
+        "key": "2008",
+        "value": null
+      }, {
+        "key": "2009",
+        "value": null
+      }, {
+        "key": "2010",
+        "value": null
+      }, {
+        "key": "2011",
+        "value": null
+      }, {
+        "key": "2012",
+        "value": null
+      }, {
+        "key": "2013",
+        "value": null
+      }, {
+        "key": "2014",
+        "value": null
+      }, {
+        "key": "2015",
+        "value": null
+      }],
+      "name": null
+    }]
+  },
+  "name": {
+    "fi": "Päivystyksenä erikoissairaanhoitoon tulleet, % kaikista päättyneistä erikoissairaanhoidon hoitojaksoista",
+    "sv": "Patienter som kommit till specialiserad sjukvärd som jourfall, % av alla avslutade värdperioder med specialiserad sjukvärd",
+    "en": "Patients admitted to specialised health care as an emergency case, as % of all completed periods of care in specialised health care"
+  },
+  "source": {
+    "fi": "Terveyden ja hyvinvoinnin laitos (THL)",
+    "sv": "Institutet för hälsa och välfärd (THL)",
+    "en": "Institute for Health and Welfare (THL)"
+  },
+  "desc": {
+    "fi": "Indikaattori ilmaisee päivystyksenä erikoissairaanhoitoon tulleiden potilaiden vuoden aikana päättyneiden erikoissairaanhoidon hoitojaksojen osuuden prosentteina kaikista päättyneistä erikoissairaanhoidon hoitojaksoista. Erikoissairaanhoidon hoitojaksoiksi tilastoidaan hoitojaksot sairaanhoitopiirien sairaaloissa ja erikoislääkärijohtoisten terveyskeskusten erikoisaloilla. ",
+    "sv": "Indikatorn visar den procentuella andelen värdperioder som avslutats under äret inom specialiserad sjukvärd för patienter som kommit som jourfall inom den specialiserade sjukvärden av alla värdperioder som avslutats inom den specialiserade sjukvärden. Som värdperioder inom specialiserad sjukvärd statistikförs värdperioderna vid sjukvärdsdistriktens sjukhus och inom specialiteter vid specialistledda hälsovärdscentraler. ",
+    "en": "<p>The indicator gives the percentage of completed periods of care during the year for patients admitted to specialised health care as an emergency case of all completed periods of care in specialised health care. Periods of care in specialised health care include periods of care at hospital district hospitals and in specialities in specialist-led health centres.</p><br /> "
+  },
+  "public": true
+}

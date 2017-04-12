@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import fi.nls.oskari.control.statistics.data.StatisticalIndicator;
 import org.json.JSONArray;
 import org.json.JSONException;
 
@@ -13,8 +14,8 @@ import fi.nls.oskari.log.Logger;
 public class KapaIndicatorsParser {
     private final static Logger LOG = LogFactory.getLogger(KapaIndicatorsParser.class);
 
-    public List<KapaIndicator> parse(String response, Map<String, Long> layerMappings) {
-        List<KapaIndicator> indicatorList = new ArrayList<>();
+    public List<StatisticalIndicator> parse(String response, Map<String, Long> layerMappings) {
+        List<StatisticalIndicator> indicatorList = new ArrayList<>();
         try {
             // We will simply map the response JSON into Oskari data model without fancy streaming and such.
             // Keeping it simple. If performance becomes an issue, this can be reimplemented in a streaming fashion.

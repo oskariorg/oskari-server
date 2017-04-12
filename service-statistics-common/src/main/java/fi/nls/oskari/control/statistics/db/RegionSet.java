@@ -1,6 +1,5 @@
 package fi.nls.oskari.control.statistics.db;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import fi.nls.oskari.util.JSONHelper;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -24,6 +23,8 @@ public class RegionSet {
      * The base url to the data source, for example: .
      */
     private String url;
+
+    private String srs;
 
     private String attributes;
     
@@ -112,5 +113,13 @@ public class RegionSet {
     
     public void setType(String type) {
         this.type = type;
+    }
+
+    public String getSrs() {
+        return srs;
+    }
+
+    public void setSrs(String srs) {
+        this.srs = srs;
     }
 }

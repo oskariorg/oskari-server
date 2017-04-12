@@ -654,7 +654,7 @@ public class MapProducer {
                 continue;
             }
 
-            if (!url.startsWith(transportUrl) && !url.matches(urlWhiteList)) {
+            if ((transportUrl == null || !url.startsWith(transportUrl)) && !url.matches(urlWhiteList)) {
                 log.warn("WHITELIST MISMATCH " + url);
                 continue;
             }

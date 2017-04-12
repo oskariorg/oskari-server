@@ -40,16 +40,16 @@ public class RouteParams {
         return from;
     }
 
-    public void setFrom(Double lat, Double lon) {
-        this.from = createPoint(lat,lon);
+    public void setFrom(Double lon, Double lat) {
+        this.from = createPoint(lon,lat);
     }
 
     public Point getTo() {
         return to;
     }
 
-    public void setTo(Double lat, Double lon) {
-        this.to = createPoint(lat,lon);
+    public void setTo(Double lon, Double lat) {
+        this.to = createPoint(lon,lat);
     }
 
     public Date getDate() {

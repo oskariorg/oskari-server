@@ -14,12 +14,9 @@ import fi.nls.oskari.map.geometry.ProjectionHelper;
 @Oskari("TM35LEHTIJAKO_CHANNEL")
 public class TM35LehtijakoSearchChannel extends SearchChannel {
 
+    private static final int DEFAULT_TM35_SCALE = 5000;
+    private static final String PARAM_TM35_SCALE = "scale";
     private Logger log = LogFactory.getLogger(this.getClass());
-
-    @Override
-    public void init() {
-        
-    }
 
     public Capabilities getCapabilities() {
         return Capabilities.BOTH;
@@ -69,15 +66,16 @@ public class TM35LehtijakoSearchChannel extends SearchChannel {
     public ChannelSearchResult reverseGeocode(SearchCriteria searchCriteria) throws IllegalSearchCriteriaException {
         log.debug("lehtijako");
 
-        double x = searchCriteria.getLat();
-        double y = searchCriteria.getLon();
+        double y = searchCriteria.getLat();
+        double x = searchCriteria.getLon();
         String epsg = searchCriteria.getSRS();
         
         Point p = ProjectionHelper.transformPoint(x, y, epsg, "EPSG:3067");
-                
-        int scale = Integer.parseInt((String) searchCriteria.getParam("scale")); // pitää olla jokin näistä: 100000,50000,25000,20000,10000,5000
-//        double[] pt = new double[]{x, y}; // E, N (EPSG:3067)
-        double[] pt = new double[]{p.getLat(), p.getLon()}; // E, N (EPSG:3067)
+
+        // pitää olla jokin näistä: 100000,50000,25000,20000,10000,5000
+        int scale = getScale((String) searchCriteria.getParam(PARAM_TM35_SCALE));
+
+        double[] pt = new double[]{p.getLon(), p.getLat()}; // E, N (EPSG:3067) lon,lat
 
         utm_karttalehti lehti = new utm_karttalehti();
         lehti = lehti.pisteessa(pt, scale);
@@ -87,11 +85,20 @@ public class TM35LehtijakoSearchChannel extends SearchChannel {
         item.setType("tm35lehtijako");
         item.setTitle(lehti.lehtinumero());
         item.setDescription(lehti.lehtinumero());
-        item.setLat(x);
-        item.setLon(y);
+        item.setLat(y);
+        item.setLon(x);
         result.addItem(item);
         return result;
-    }    
+    }
+
+    private int getScale(String requested) {
+        try {
+            return Integer.parseInt(requested); // pitää olla jokin näistä: 100000,50000,25000,20000,10000,5000
+        } catch (Exception e) {
+            log.ignore(e);
+        }
+        return DEFAULT_TM35_SCALE;
+    }
     
     private double[] laskeKeskipiste(double[] pisteet) {
         double x = ((pisteet[4] - pisteet[0]) / 2) + pisteet[0];

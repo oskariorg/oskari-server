@@ -69,17 +69,17 @@ public class NLSNearestFeatureSearchChannel extends SearchChannel {
         // Max features in response
         request = request.replace(KEY_MAXFEATURES_HOLDER, "" + getMaxResults(sc.getMaxResults()));
         // Srs name
-        request = request.replace(KEY_SRSNAME_HOLDER, sc.getSRS());
+        request = request.replace(KEY_SRSNAME_HOLDER, nearestFeatureParser.SERVICE_SRS);
         buf.append(request);
 
         return IOHelper.readString(getConnection(buf.toString()));
     }
 
-    public String getMaxResults(int max) {
+    public int getMaxResults(int max) {
         if(max <= 0) {
-            return "1";
+            return 1;
         }
-        return "" + max;
+        return super.getMaxResults(max);
     }
 
     public String getBuffer(Object param) {

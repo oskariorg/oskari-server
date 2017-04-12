@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>fi.nls.oskari</groupId>
 		<artifactId>oskari-parent</artifactId>
-        <version>1.40.0</version>
+        <version>1.42.0-SNAPSHOT</version>
 	</parent>
 	<groupId>fi.nls.oskari.service</groupId>
 	<artifactId>oskari-search-nls</artifactId>
@@ -48,7 +48,7 @@
 		</dependency>
 
 		<dependency>
-			<groupId>java3d</groupId>
+			<groupId>javax.vecmath</groupId>
 			<artifactId>vecmath</artifactId>
 		</dependency>
 

@@ -2,7 +2,12 @@ package fi.nls.oskari.spatineo.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonSetter;
 import com.google.common.base.MoreObjects;
+import fi.nls.oskari.log.LogFactory;
+import fi.nls.oskari.log.Logger;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,20 +18,48 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class SpatineoMonitoringResponseDto {
 
+    private static final Logger LOG = LogFactory.getLogger(SpatineoMonitoringResponseDto.class);
     private boolean error;
 
     public boolean isError() {
         return error;
     }
-
+    
     /**
-     * Find a Meter from the list of Services that has the matching layerName
+     * Find a Meter from Services/Meters that has the matching layerName
+     * 
      * @param name Name of the layer
      * @return Meter
      */
-    public Meter getMeterByLayerName(String name) {
+    public Meter getMeterByLayerName(String name, String url) {
+        for (Result r : result) {            
+            Service s = r.service;
+            if (!s.serviceUrl.equalsIgnoreCase(url)) {
+                continue;
+            }
+            for (Meter m : s.meters) {
+                if (m.layerTarget.equals(name)) {
+                    return m;
+                }
+            }
+        }
+        
+        // not found
+        return null;
+    }
+
+    /**
+     * Find a Meter from the list of Services that has the matching serviceUrl
+     * 
+     * @param name Name of the layer
+     * @return Meter
+     */
+    public Meter getMeterByServiceName(String name, String url) {
         for (Result r : result) {
             Service s = r.service;
+            if (s == null || s.serviceUrl == null || !s.serviceUrl.equalsIgnoreCase(url)) {
+                continue;
+            }
             for (Meter m : s.meters) {
                 if (m.layerName.equals(name)) {
                     return m;
@@ -38,6 +71,7 @@ public class SpatineoMonitoringResponseDto {
         return null;
     }
     
+    // for debugging
     public String getLayerNames() {
         StringBuffer sb = new StringBuffer();
         for (Result r : result) {
@@ -98,7 +132,10 @@ public class SpatineoMonitoringResponseDto {
     public static class Meter {
 
         public String id;
-        public String layerName;
+        
+        public String layerName;        // the part before ":"
+        public String layerTarget;      // the part after ":"
+        
         public String crs;
         public Integer imageHeight;
         public Integer imageWidth;
@@ -106,6 +143,21 @@ public class SpatineoMonitoringResponseDto {
         public String operation;
         public String monitorLink;
         public Indicator indicator;
+        
+        @JsonSetter("layerName")
+        public void setLayerName(String layerName) {
+            String[] parts = layerName.split(":");
+            try {
+                this.layerName = URLDecoder.decode(parts[0], "UTF-8");                   
+            } catch (UnsupportedEncodingException e) {
+                LOG.error("Failed to url decode layerName=" + parts[0]);
+            }
+
+            // not all layernames have the target part
+            if (parts.length > 1) {
+                layerTarget = parts[1];
+            }
+        }
     }
     
     @JsonIgnoreProperties(ignoreUnknown = true)
