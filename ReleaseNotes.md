@@ -40,6 +40,13 @@ This fixes an issue where the link prevented a WFS-layer with custom style being
 The GetRegions action route now returns the geometry as GeoJSON and reference point for the region in addition to id and name. 
 The action route now requires srs-parameter to be sent and any statslayer rows in the database should include the srs_name value.
 
+### UserLayerProcessor for property_json
+The UserLayerProcessor parses features' property_json JSONObject to new actual properties. Now GFI popup and Feature Data table show user data correctly.
+
+selected_feature_params and feature_params_locales are set empty from portti_wfs_layer table to get all non-geometry feature properties.
+
+Properties: uuid, user_layer_id, feature_id, created, updated and attention_text comes from user_layer_data table and are excluded from feature properties.
+
 ## 1.41
 
 ### CSW Metadata improvements
