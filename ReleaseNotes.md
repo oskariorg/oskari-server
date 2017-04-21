@@ -23,9 +23,9 @@ by configuring a comma-separated list of channel ids in oskari-ext.properties:
 
 Additional bundles can be whitelisted for publishing using a new property in oskari-ext.properties:
 
-    actionhandler.AppSetup.bundles.simple=maprotator
+    actionhandler.AppSetup.bundles.simple=maprotator,maplegend
 
-Defaults to maprotator as a new bundle that can be published. The value of the property is a comma-separated list of 
+Defaults to maprotator and maplegend as new bundles that can be published. The value of the property is a comma-separated list of 
 bundle ids. If the payload from the browser has a configuration to a bundle that is whitelisted the bundle is added 
 to the published map view using the default startup from portti_bundle database table. The configuration and state for 
 the bundle are merged with the values from the browser before saving to the database.
