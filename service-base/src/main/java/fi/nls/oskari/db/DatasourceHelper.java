@@ -105,7 +105,7 @@ public class DatasourceHelper {
                     ". Using it instead of properties configuration db." + poolToken + "url");
         } else {
             LOGGER.info(" - creating a DataSource with defaults based on configured properties");
-            final DataSource dataSource = createDataSource(null);
+            final DataSource dataSource = createDataSource(prefix);
             addDataSource(ctx, poolName, dataSource);
             LOGGER.info(String.format(MSG_CHECKING_POOL, poolName));
             success = (getDataSource(ctx, poolName) != null);
