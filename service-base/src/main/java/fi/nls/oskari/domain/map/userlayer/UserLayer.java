@@ -11,6 +11,7 @@ public class UserLayer extends UserDataLayer {
     private String layer_source;
     private String fields;
     private long style_id;
+    private int features_count;
 
     public long getId() {
         return id;
@@ -58,5 +59,13 @@ public class UserLayer extends UserDataLayer {
 
     public void setStyle_id(long style_id) {
         this.style_id = style_id;
+    }
+
+    public int getFeaturesCount (){
+        return features_count;
+    }
+
+    public void setFeaturesCount (int count){
+        this.features_count = count;
     }
 }

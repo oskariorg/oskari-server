@@ -115,6 +115,7 @@ public class CreateUserLayerHandler extends ActionHandler {
             response.setCharacterEncoding("UTF-8");
 
             JSONObject userLayer = userlayerService.parseUserLayer2JSON(ulayer);
+            JSONHelper.putValue(userLayer, "featuresCount", ulayer.getFeaturesCount());
             JSONObject permissions = OskariLayerWorker.getAllowedPermissions();
             JSONHelper.putValue(userLayer, "permissions", permissions);
             response.getWriter().print(userLayer);

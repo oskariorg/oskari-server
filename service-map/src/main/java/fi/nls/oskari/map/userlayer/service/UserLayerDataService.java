@@ -108,6 +108,7 @@ public class UserLayerDataService {
                 return null;
 
             }
+            userLayer.setFeaturesCount(count);
 
         } catch (Exception e) {
             userLayerService.deleteUserLayer(userLayer.getId());
