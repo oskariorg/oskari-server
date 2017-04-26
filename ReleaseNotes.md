@@ -69,7 +69,7 @@ If you would want to store myplaces to different database you can add the proper
     db.myplaces.jndi.name=jdbc/myplacesPool
 
 If the user/pass is the same, you can leave them out and it will default to db.username/db.password property values.
-Note! Some Ibatis-mappings still have a hardcoded value as JNDI-name so you might need to override files under
+Note! Ibatis-mappings for analysis and userlayers still have hardcoded values as JNDI-name so you might need to override files under
 "servlet-map/src/main/resources/META-INF": SqlMapConfig_Analysis.xml and SqlMapConfig_UserLayer.xml.
 
 ## 1.41
