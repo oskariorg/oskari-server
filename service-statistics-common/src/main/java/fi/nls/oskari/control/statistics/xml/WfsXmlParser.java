@@ -81,7 +81,7 @@ public class WfsXmlParser {
             GML gml = new GML(GML.Version.GML3);
             return gml.decodeFeatureCollection(inputStream);
         } catch (Exception ex) {
-            throw new ServiceRuntimeException("Couldn't parse response to feature collection");
+            throw new ServiceRuntimeException("Couldn't parse response to feature collection", ex);
         }
     }
 

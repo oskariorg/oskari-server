@@ -74,8 +74,8 @@ public class UserLayerProcessor implements LayerProcessor {
                 }
 
                 // add new attribute values (from property_json)
-                for (String attributeName : jsonMap.keySet()) {
-                    builder.set(attributeName, jsonMap.get(attributeName));
+                for (Map.Entry<String, Object> attribute : jsonMap.entrySet()) {
+                    builder.set(attribute.getKey(), attribute.getValue());
                 }
                 // buildFeature calls reset() internally so we are good to go for next round
                 result.add(builder.buildFeature(simpleFeature.getID()));
@@ -110,8 +110,8 @@ public class UserLayerProcessor implements LayerProcessor {
         }
         typeBuilder.setName(type.getName());
         // add new parsed attributes from property_json to new type builder
-        for (String attributeName : jsonMap.keySet()) {
-            typeBuilder.add(attributeName, jsonMap.get(attributeName).getClass());
+        for (Map.Entry<String, Object> attribute : jsonMap.entrySet()) {
+            typeBuilder.add(attribute.getKey(), attribute.getValue().getClass());
         }
 
         SimpleFeatureType parsedFeatureType = typeBuilder.buildFeatureType();
