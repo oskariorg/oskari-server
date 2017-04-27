@@ -17,6 +17,8 @@ Use JSONHelper.isEqual(JSONArray jsonArray1, JSONArray jsonArray2) for comparing
 SearchResultItem.setVillage() and getVillage() have been deprecated and replaced with setRegion() and getRegion().
  JSON-presentation of result items now include a region key in addition to the village key with the same value.
  The village key will be removed in the future.
+ 
+WFSSearchChannels defaults config is migrated automatically renaming "village" to "region". 
 
 SearchOptions action route can now be configured to ignore some of the channels available in the system. This is done
 by configuring a comma-separated list of channel ids in oskari-ext.properties: 

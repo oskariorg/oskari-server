@@ -97,7 +97,7 @@ public class WFSSearchChannel extends SearchChannel {
      * From database oskari_wfs_search_channels-table config-column:
      * {
      *     "defaults" : {
-     *         "village" : "",
+     *         "region" : "",
      *         "desc" : "",
      *         "locationType" : ""
      *     }
@@ -106,8 +106,7 @@ public class WFSSearchChannel extends SearchChannel {
      */
     private void setupDefaults(SearchResultItem item) {
         JSONObject defaults = config.getConfig().optJSONObject("defaults");
-        // TODO: update WFS channel config: village -> region (with Flyway)
-        item.setRegion(JSONHelper.getStringFromJSON(defaults, "village", ""));
+        item.setRegion(JSONHelper.getStringFromJSON(defaults, "region", ""));
         item.setDescription(JSONHelper.getStringFromJSON(defaults, "desc", ""));
         item.setLocationTypeCode(JSONHelper.getStringFromJSON(defaults, "locationType", ""));
     }
