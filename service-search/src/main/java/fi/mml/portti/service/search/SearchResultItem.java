@@ -25,7 +25,10 @@ public class SearchResultItem implements Comparable<SearchResultItem>, Serializa
     public static final String KEY_LAT = "lat";
     public static final String KEY_ZOOMLEVEL = "zoomLevel";
     public static final String KEY_ZOOMSCALE = "zoomScale";
+	@Deprecated
     public static final String KEY_VILLAGE = "village";
+	// region is the new "village"
+	public static final String KEY_REGION = "region";
 	public static final String KEY_CHANNELID = "channelId";
 
     public static final String KEY_BBOX = "bbox";
@@ -45,7 +48,7 @@ public class SearchResultItem implements Comparable<SearchResultItem>, Serializa
 	private String contentURL;
 	private String actionURL;
 	private String gmdURL;
-	private String village;
+	private String region;
 	private String locationTypeCode;
     private String type;
 	private String lang;
@@ -136,12 +139,12 @@ public class SearchResultItem implements Comparable<SearchResultItem>, Serializa
 		}
 
 		if (this.title.equals(sri.getTitle())) {
-			// Same title, order is determined by village
-			// TODO: using "village" is a bit strange, maybe use type instead?
-			if(this.village == null || sri.getVillage() == null) {
+			// Same title, order is determined by region
+			// TODO: using "region" is a bit strange, maybe use type instead?
+			if(this.region == null || sri.getRegion() == null) {
 				return 0;
 			}
-			return this.village.compareTo(sri.getVillage());
+			return this.region.compareTo(sri.getRegion());
 		}
 
 		// TODO: streetname ranking should be done internally in the search channel impl which knows about the title content
@@ -276,11 +279,28 @@ public class SearchResultItem implements Comparable<SearchResultItem>, Serializa
 	public void setGmdURL(String gmdURL) {
 		this.gmdURL = gmdURL;
 	}
-	public String getVillage() {
-		return village;
+	public String getRegion() {
+		return region;
 	}
+	public void setRegion(String region) {
+		this.region = region;
+	}
+
+	/**
+	 * Deprecated, use getRegion() instead.
+	 * @return
+     */
+	@Deprecated
+	public String getVillage() {
+		return getRegion();
+	}
+	/**
+	 * Deprecated, use setRegion() instead.
+	 * @return
+	 */
+	@Deprecated
 	public void setVillage(String village) {
-		this.village = village;
+		setRegion(village);
 	}
 	public String getLocationTypeCode() {
 		return locationTypeCode;
@@ -441,10 +461,11 @@ public class SearchResultItem implements Comparable<SearchResultItem>, Serializa
         JSONHelper.putValue(node, KEY_TYPE, getType());
 		JSONHelper.putValue(node, KEY_CHANNELID, getChannelId());
 
-        // Village (?)
-        // TODO: Shouldn't this be 'municipality' or sth?
-        String village = ConversionHelper.getString(getVillage(), "");
-        JSONHelper.putValue(node, KEY_VILLAGE, Jsoup.clean(village, Whitelist.none()));
+        String region = ConversionHelper.getString(getRegion(), "");
+		JSONHelper.putValue(node, KEY_REGION, Jsoup.clean(region, Whitelist.none()));
+		// TODO: Village has been deprecated on 1.42. Remove any time after 1.44.
+		// Note! This affects the frontend event/RPC API.
+		JSONHelper.putValue(node, KEY_VILLAGE, Jsoup.clean(region, Whitelist.none()));
 
         // do the bbox if we have any of the bbox values (Should have all if has any one of these)
         if(getWestBoundLongitude() != null) {
