@@ -11,6 +11,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 /**
+ * Renames defaults.village key to defaults.region if the search channel defaults config exists.
  *
  * Defaults config for search results in database oskari_wfs_search_channels-table config-column:
  * {
@@ -20,8 +21,6 @@ import java.util.ArrayList;
  *         "locationType" : ""
  *     }
  * }
- *
- * Renames defaults.village key to defaults.region if it the config exists.
  */
 public class V1_42_2__update_wfs_search_channels_defaults_config implements JdbcMigration {
 
