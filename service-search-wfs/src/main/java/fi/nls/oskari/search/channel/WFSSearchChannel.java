@@ -96,7 +96,8 @@ public class WFSSearchChannel extends SearchChannel {
 
     private void setupDefaults(SearchResultItem item) {
         JSONObject defaults = config.getConfig().optJSONObject("defaults");
-        item.setVillage(JSONHelper.getStringFromJSON(defaults, "village", ""));
+        // TODO: update WFS channel config: village -> region (with Flyway)
+        item.setRegion(JSONHelper.getStringFromJSON(defaults, "village", ""));
         item.setDescription(JSONHelper.getStringFromJSON(defaults, "desc", ""));
         item.setLocationTypeCode(JSONHelper.getStringFromJSON(defaults, "locationType", ""));
     }
