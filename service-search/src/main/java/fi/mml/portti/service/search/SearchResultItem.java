@@ -103,31 +103,6 @@ public class SearchResultItem implements Comparable<SearchResultItem>, Serializa
 		+ ", title=" + title + ", actionURL=" + actionURL + ", gmdURL=" + gmdURL;
 	}
 
-/*
-    public String toStringAll(){
-        return "title" + title +
-                "resourceNameSpace" + resourceNameSpace +
-                "resourceId" + resourceId +
-                "natureOfTarget" + natureOfTarget +
-                "" + description +
-                ""contentURL +
-        "actionURL" + actionURL +
-        "" + gmdURL +
-        "" + village +
-        "" + locationTypeCode +
-        "" + type +
-        "" + locationName +
-        "" + lon +
-        "" + lat +
-        "" + westBoundLongitude +
-        "" + southBoundLatitude +
-        "" + eastBoundLongitude +
-        "" + northBoundLatitude +
-        "" + mapURL +
-        "" + zoomLevel +
-        "" + trunkateDescription;
-    } */
-	
 	public int compareTo(SearchResultItem sri) {
 		if (this.rank != sri.getRank()) {
 			// TODO: rank should be normalized throughout different channels, currently it's not
@@ -140,7 +115,7 @@ public class SearchResultItem implements Comparable<SearchResultItem>, Serializa
 
 		if (this.title.equals(sri.getTitle())) {
 			// Same title, order is determined by region
-			// TODO: using "region" is a bit strange, maybe use type instead?
+			// Should we use type instead of region here?
 			if(this.region == null || sri.getRegion() == null) {
 				return 0;
 			}
