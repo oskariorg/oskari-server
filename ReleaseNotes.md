@@ -41,11 +41,36 @@ The GetRegions action route now returns the geometry as GeoJSON and reference po
 The action route now requires srs-parameter to be sent and any statslayer rows in the database should include the srs_name value.
 
 ### UserLayerProcessor for property_json
+
 The UserLayerProcessor parses features' property_json JSONObject to new actual properties. Now GFI popup and Feature Data table show user data correctly.
 
 selected_feature_params and feature_params_locales are set empty from portti_wfs_layer table to get all non-geometry feature properties.
 
 Properties: uuid, user_layer_id, feature_id, created, updated and attention_text comes from user_layer_data table and are excluded from feature properties.
+
+### Datasource handling
+
+The datasource configuration didn't work properly before when datasource creation was done by Oskari: 
+all the database modules used the default datasource. For most use cases this is acceptable, but the problem emerges
+ when using different database connections for "core" oskari, myplaces, analysis and userlayers.
+
+You can now specify additional connections per flyway module. These are the defaults:
+
+    db.url=jdbc:postgresql://localhost:5432/oskaridb
+    db.username=oskari
+    db.password=oskari
+    db.additional.modules=myplaces,analysis,userlayer,myapp
+    
+If you would want to store myplaces to different database you can add the properties:
+
+    db.myplaces.url=jdbc:postgresql://localhost:5432/db_for_usercontent
+    db.myplaces.username=oskari
+    db.myplaces.password=oskari
+    db.myplaces.jndi.name=jdbc/myplacesPool
+
+If the user/pass is the same, you can leave them out and it will default to db.username/db.password property values.
+Note! Ibatis-mappings for analysis and userlayers still have hardcoded values as JNDI-name so you might need to override files under
+"servlet-map/src/main/resources/META-INF": SqlMapConfig_Analysis.xml and SqlMapConfig_UserLayer.xml.
 
 ## 1.41
 
