@@ -12,7 +12,11 @@ The simple System.out/err logger can now be configured with environment variable
 Removed fi.nls.oskari.util.PrintOutHelper as it's not used anywhere. 
 Use JSONHelper.isEqual(JSONArray jsonArray1, JSONArray jsonArray2) for comparing arrays instead.
 
-### Search configuration
+### Search
+
+SearchResultItem.setVillage() and getVillage() have been deprecated and replaced with setRegion() and getRegion().
+ JSON-presentation of result items now include a region key in addition to the village key with the same value.
+ The village key will be removed in the future.
 
 SearchOptions action route can now be configured to ignore some of the channels available in the system. This is done
 by configuring a comma-separated list of channel ids in oskari-ext.properties: 
