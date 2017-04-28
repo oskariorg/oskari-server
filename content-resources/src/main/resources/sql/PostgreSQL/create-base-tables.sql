@@ -152,7 +152,8 @@ CREATE TABLE oskari_permission
   oskari_resource_id bigint NOT NULL,
   external_type character varying(100),
   permission character varying(100),
-  external_id character varying(1000)
+  external_id character varying(1000),
+  CONSTRAINT oskari_permission_pkey PRIMARY KEY (id)
 );
 
 CREATE TABLE portti_backendstatus
