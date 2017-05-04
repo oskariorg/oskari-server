@@ -36,6 +36,15 @@ bundle ids. If the payload from the browser has a configuration to a bundle that
 to the published map view using the default startup from portti_bundle database table. The configuration and state for 
 the bundle are merged with the values from the browser before saving to the database.
 
+### Myplaces as WMS-layers (in embedded maps)
+
+OpenLayers 3 defaults to WMS version 1.3.0 which might cause problems with coordinate order on some instances. The my 
+ places layers used in embedded maps are shown as WMS-layers to the frontend, but have some custom behavior on the 
+ server.
+ 
+Map clicks/GetFeatureInfo requests for myplaces layers should now properly work in embedded maps also in
+ projections other than EPSG:3067.
+
 ### WFS-layer removal fix
 
 The link between a custom SLD-style and a WFS-layer is now removed by database constraint when a layer is removed.
