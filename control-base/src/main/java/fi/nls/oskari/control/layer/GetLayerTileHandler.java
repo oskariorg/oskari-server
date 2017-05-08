@@ -98,7 +98,7 @@ public class GetLayerTileHandler extends ActionHandler {
             }
 
             final int responseCode = con.getResponseCode();
-            final String contentType = con.getContentType();
+            final String contentType = con.getContentType().toLowerCase();
             if(responseCode != HttpURLConnection.HTTP_OK || !contentType.startsWith("image/")) {
                 LOG.warn("URL", url, "returned HTTP response code", responseCode,
                         "with message", con.getResponseMessage(), "and content-type:", contentType);
