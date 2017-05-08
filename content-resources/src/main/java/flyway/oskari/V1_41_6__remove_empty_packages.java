@@ -121,7 +121,7 @@ public class V1_41_6__remove_empty_packages implements JdbcMigration {
     public static Bundle updateBundleTemplate(Connection connection, Bundle bundle)
             throws SQLException {
         final String sql = "UPDATE portti_bundle SET " +
-                "startup=?, " +
+                "startup=? " +
                 " WHERE id=?";
 
         try (final PreparedStatement statement =
