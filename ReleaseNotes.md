@@ -2,6 +2,12 @@
 
 ## 1.42
 
+### Default published JSP-file
+
+The map element now includes the class "published" as some features detect "embedded mode" using it. It was already 
+present in the published JSP in webapp-map but missing from the default. This fixes an issue where some frontend
+ features were started in "geoportal mode" on published maps with oskari-server-extensions (namely statsgrid2016 and maplegend).
+
 ### SystemLogger
 
 The simple System.out/err logger can now be configured with environment variable "oskari.syslog.level" with a value of
@@ -50,10 +56,13 @@ Map clicks/GetFeatureInfo requests for my places layers should now properly work
 The link between a custom SLD-style and a WFS-layer is now removed by database constraint when a layer is removed.
 This fixes an issue where the link prevented a WFS-layer with custom style being removed properly.
 
-### Thematic maps regions
+### Thematic maps
 
 The GetRegions action route now returns the geometry as GeoJSON and reference point for the region in addition to id and name. 
 The action route now requires srs-parameter to be sent and any statslayer rows in the database should include the srs_name value.
+
+Datasources configuration can now have an info-object including a url key for more information about the datasource.
+The frontend will provide a link with the datasource name in attribution information when provided. 
 
 ### UserLayerProcessor for property_json
 
