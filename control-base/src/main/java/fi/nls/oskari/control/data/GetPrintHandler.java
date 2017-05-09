@@ -289,6 +289,7 @@ public class GetPrintHandler extends ActionHandler {
                         throw new ActionParamsException("Bad tiles! "
                                 + "Missing 'bbox' or not array or not size 4");
                     }
+
                     JsonNode urlNode = tileNode.get("url");
                     if (urlNode == null || !urlNode.isTextual()) {
                         throw new ActionParamsException("Bad tiles! "
@@ -299,6 +300,7 @@ public class GetPrintHandler extends ActionHandler {
                         bbox[k] = bboxNode.get(k).asDouble();
                     }
                     String url = urlNode.asText();
+
                     tiles[j] = new Tile(bbox, url);
                 }
 
@@ -357,6 +359,7 @@ public class GetPrintHandler extends ActionHandler {
             IOHelper.copy(in, out);
         }
     }
+
 
     public static class LayerProperties {
 
