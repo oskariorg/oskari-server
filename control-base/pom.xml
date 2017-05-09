@@ -52,7 +52,11 @@
             <groupId>fi.nls.oskari.service</groupId>
             <artifactId>oskari-rating</artifactId>
         </dependency>
-
+        <dependency>
+        	<groupId>org.oskari</groupId>
+			<artifactId>service-print</artifactId>
+        </dependency>
+        
         <dependency>
             <groupId>fi.nls.oskari</groupId>
             <artifactId>shared-test-resources</artifactId>
