@@ -58,7 +58,6 @@ public class CSWISORecordParserTest {
 
     @Test
     public void TestDateParsing() {
-
         Node metaDataNode = getMetadataNode();
         MathTransform transform = getMathTransform();
         Locale locale = new Locale("FI");
