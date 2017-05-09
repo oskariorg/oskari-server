@@ -775,6 +775,13 @@ public class CSWIsoRecord {
         public static class DateWithType {
             private Date date;
             private String dateType;
+            private String xmlDate;
+
+            public String getXmlDate() { return xmlDate; }
+
+            public void setXmlDate(String xmlDate) {
+                this.xmlDate = xmlDate;
+            }
 
             public Date getDate() {
                 return date;
@@ -794,10 +801,14 @@ public class CSWIsoRecord {
 
             public JSONObject toJSON() {
                 JSONObject ret = new JSONObject();
-                // TODO fix format
-                final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
-                JSONHelper.putValue(ret, "date", date != null ? sdf.format(date) : "");
+                String formattedDate = null;
+                if (xmlDate == null || xmlDate.isEmpty()) {
+                    final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
+                    formattedDate = sdf.format(date);
+                }
+                JSONHelper.putValue(ret, "date", formattedDate != null ? formattedDate : "");
                 JSONHelper.putValue(ret, "dateType", dateType != null ? dateType : "");
+                JSONHelper.putValue(ret, "xmlDate", xmlDate != null ? xmlDate : "");
                 return ret;
             }
         }

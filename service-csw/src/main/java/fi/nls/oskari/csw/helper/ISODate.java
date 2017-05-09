@@ -462,6 +462,7 @@ public class ISODate {
     private void parseDate(String isoDate) {
         try {
             String[] parts = isoDate.split("-|/");
+
             if (parts.length != 3) {
                 throw new IllegalArgumentException(
                         "Invalid ISO date : " + isoDate);

@@ -398,9 +398,7 @@ public class CSWISORecordParser {
         node = (Node) XPATH_METADATA_DATE.evaluate(elem, XPathConstants.NODE);
         if (node != null) {
             value = getLocalizedContent(node, pathToLocalizedValue);
-            ISODate isoDate = new ISODate();
-            isoDate.setDateAndTime(value);
-            record.setMetadataDateStamp(dateFormat().parse(isoDate.getDateAsString()));
+            record.setMetadataDateStamp(dateTimeFormat().parse(value));
         }
 
         nodeList = (NodeList) XPATH_METADATA_REFERENCESYSTEM.evaluate(elem, XPathConstants.NODESET);
@@ -601,9 +599,13 @@ public class CSWISORecordParser {
         }
         node = (Node) XPATH_DI_SI_CITATION_DATE_VALUE.evaluate(cNode, XPathConstants.NODE);
         if (node != null) {
-            ISODate isoDate = new ISODate();
-            isoDate.setDateAndTime(getText(node));
-            dateWithType.setDate(dateFormat().parse(isoDate.getDateAsString()));
+            try {
+                dateWithType.setDate(dateFormat().parse(getText(node)));
+            }
+            catch (Exception e) {
+                dateWithType.setXmlDate(getText(node));
+            }
+
         }
         citation.setDate(dateWithType);
         nodeList = (NodeList) XPATH_DI_SI_CITATION_RESOURCE_IDENTIFIERS.evaluate(cNode, XPathConstants.NODESET);
