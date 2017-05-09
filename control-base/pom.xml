@@ -53,8 +53,8 @@
             <artifactId>oskari-rating</artifactId>
         </dependency>
         <dependency>
-        	<groupId>org.oskari</groupId>
-			<artifactId>service-print</artifactId>
+            <groupId>org.oskari</groupId>
+            <artifactId>service-print</artifactId>
         </dependency>
         
         <dependency>
