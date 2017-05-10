@@ -803,12 +803,16 @@ public class CSWIsoRecord {
                 JSONObject ret = new JSONObject();
                 String formattedDate = null;
                 if (xmlDate == null || xmlDate.isEmpty()) {
-                    final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
-                    formattedDate = sdf.format(date);
+                    try {
+                        final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
+                        formattedDate = sdf.format(date);
+                    }
+                    catch (Exception e){
+                        //do nothing
+                    }
                 }
-                JSONHelper.putValue(ret, "date", formattedDate != null ? formattedDate : "");
+                JSONHelper.putValue(ret, "date", formattedDate != null ? formattedDate : xmlDate);
                 JSONHelper.putValue(ret, "dateType", dateType != null ? dateType : "");
-                JSONHelper.putValue(ret, "xmlDate", xmlDate != null ? xmlDate : "");
                 return ret;
             }
         }
