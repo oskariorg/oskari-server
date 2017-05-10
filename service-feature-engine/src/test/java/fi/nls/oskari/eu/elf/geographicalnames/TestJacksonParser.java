@@ -1,5 +1,6 @@
 package fi.nls.oskari.eu.elf.geographicalnames;
 
+import fi.nls.oskari.WFSTestHelper;
 import fi.nls.oskari.eu.elf.recipe.geographicalnames.ELF_MasterLoD1_NamedPlace_Parser;
 import fi.nls.oskari.eu.elf.recipe.universal.ELF_path_parse_worker;
 import fi.nls.oskari.eu.elf.recipe.universal.ELF_wfs_Parser;
@@ -48,7 +49,7 @@ public class TestJacksonParser {
         try {
             inputProcessor.setInput(inp);
 
-            OutputStream fouts = System.out;
+            OutputStream fouts = WFSTestHelper.getTestOutputStream();
             try {
                 outputProcessor.setOutput(fouts);
 
@@ -96,7 +97,7 @@ public class TestJacksonParser {
         try {
             inputProcessor.setInput(inp);
 
-            OutputStream fouts = System.out;
+            OutputStream fouts = WFSTestHelper.getTestOutputStream();
             try {
                 outputProcessor.setOutput(fouts);
 
@@ -174,7 +175,7 @@ public class TestJacksonParser {
             inputProcessor.setInput(inp);
 
 
-            OutputStream fouts = System.out;
+            OutputStream fouts = WFSTestHelper.getTestOutputStream();
             try {
                 outputProcessor.setOutput(fouts);
 

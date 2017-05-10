@@ -24,6 +24,8 @@ public class RegionSet {
      */
     private String url;
 
+    private String srs;
+
     private String attributes;
     
     private String type;
@@ -111,5 +113,13 @@ public class RegionSet {
     
     public void setType(String type) {
         this.type = type;
+    }
+
+    public String getSrs() {
+        return srs;
+    }
+
+    public void setSrs(String srs) {
+        this.srs = srs;
     }
 }

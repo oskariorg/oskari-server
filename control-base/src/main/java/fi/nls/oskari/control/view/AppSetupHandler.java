@@ -30,6 +30,8 @@ import static fi.nls.oskari.control.ActionConstants.*;
 
 /**
  * This replaces the fi.nls.oskari.control.view.PublishHandler. Usable with publisher2 bundle
+ *
+ * actionhandler.AppSetup.bundles.simple=[bundleid],[another bundleid]
  */
 @OskariActionRoute("AppSetup")
 public class AppSetupHandler extends RestActionHandler {
@@ -70,10 +72,6 @@ public class AppSetupHandler extends RestActionHandler {
     // mapfull not included since it's assumed to be part of publisher template handled anyways
     private static final Set<String> BUNDLE_WHITELIST = ConversionHelper.asSet(
             ViewModifier.BUNDLE_PUBLISHEDMYPLACES2,ViewModifier.BUNDLE_DIVMANAZER);
-    static {
-        // add all "simple" bundles to the whitelist
-        BUNDLE_WHITELIST.addAll(SIMPLE_BUNDLES);
-    }
 
     private static long PUBLISHED_VIEW_TEMPLATE_ID = -1;
 
@@ -133,6 +131,17 @@ public class AppSetupHandler extends RestActionHandler {
         // setup roles authorized to enable drawing tools on published map
         drawToolsEnabledRoles = PropertyUtil.getCommaSeparatedList(PROPERTY_DRAW_TOOLS_ENABLED);
 
+        final String[] configBundles = PropertyUtil.getCommaSeparatedList("actionhandler.AppSetup.bundles.simple");
+        if(configBundles.length > 0) {
+            LOG.info("Whitelisting more bundles due to configuration configured ", configBundles);
+        }
+        for(String bundleId : configBundles) {
+            SIMPLE_BUNDLES.add(bundleId);
+        }
+
+        // add all "simple" bundles to the whitelist
+        BUNDLE_WHITELIST.addAll(SIMPLE_BUNDLES);
+
         // preload regularly used bundles to cache
         for(String bundleid : BUNDLE_WHITELIST) {
             bundleService.forceBundleTemplateCached(bundleid);
@@ -174,6 +183,18 @@ public class AppSetupHandler extends RestActionHandler {
         handlePost(params);
     }
     public void handlePost(ActionParameters params) throws ActionException {
+
+        final View publishedMap = buildPublishedView(params);
+        try {
+            JSONObject newViewJson = new JSONObject(publishedMap.toString());
+            ResponseHelper.writeResponse(params, newViewJson);
+        } catch (JSONException je) {
+            LOG.error(je, "Could not create JSON response.");
+            ResponseHelper.writeResponse(params, false);
+        }
+    }
+
+    protected View buildPublishedView(ActionParameters params) throws ActionException {
 
         final User user = params.getUser();
 
@@ -235,15 +256,7 @@ public class AppSetupHandler extends RestActionHandler {
         final Bundle myplaces = setupBundle(view, viewdata, ViewModifier.BUNDLE_PUBLISHEDMYPLACES2, false);
         handleMyplacesDrawLayer(myplaces, user);
 
-        final View newView = saveView(view);
-
-        try {
-            JSONObject newViewJson = new JSONObject(newView.toString());
-            ResponseHelper.writeResponse(params, newViewJson);
-        } catch (JSONException je) {
-            LOG.error(je, "Could not create JSON response.");
-            ResponseHelper.writeResponse(params, false);
-        }
+        return saveView(view);
     }
 
     private void setupToolbarStyleInfo(final View view) throws ActionParamsException {

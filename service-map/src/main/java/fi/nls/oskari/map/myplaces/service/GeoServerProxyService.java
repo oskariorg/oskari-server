@@ -33,7 +33,7 @@ public class GeoServerProxyService {
 
     private final static String WFS_FEATURECOLLECTION = "wfs:FeatureCollection";
 
-    private static final String MY_PLACE_FEATURE_FILTER_XML = "GetFeatureInfoMyPlaces.xml";
+    protected static final String MY_PLACE_FEATURE_FILTER_XML = "GetFeatureInfoMyPlaces.xml";
     private static final String MY_PLACE_FEATURE_FILTER_XSL = "GetFeatureInfoMyPlaces.xsl";
     private static final String POST_REQUEST = "POST";
 
@@ -79,7 +79,7 @@ public class GeoServerProxyService {
         }
     }
 
-    public JSONObject getFeatureInfo(final double lat, final double lon, final int zoom, final String id, final String uuid) {
+    public JSONObject getFeatureInfo(final double lat, final double lon, final int zoom, final String id, final String uuid, final String srs) {
 
         HttpURLConnection connection = null;
         InputStream respInStream = null;
@@ -91,7 +91,7 @@ public class GeoServerProxyService {
             connection.setRequestProperty("Content-type", "application/xml");
 
             OutputStream outs = connection.getOutputStream();
-            buildQueryToStream(MY_PLACE_FEATURE_FILTER_XML, lon + " " + lat, zoom, categoryId, uuid, outs);
+            buildQueryToStream(MY_PLACE_FEATURE_FILTER_XML, lon + " " + lat, zoom, categoryId, uuid, outs, srs);
             outs.flush();
             outs.close();
 
@@ -141,25 +141,21 @@ public class GeoServerProxyService {
         return null;
     }
 
-    private String buildQueryToStream(String resourceName,
-                                      String lon_lat, int zoomLevel, String categoryId, String uuid, OutputStream outs)
+    protected String buildQueryToStream(String resourceName,
+                                      String lon_lat, int zoomLevel, String categoryId, String uuid, OutputStream outs, final String srs)
             throws ParserConfigurationException, SAXException, IOException,
             XPathExpressionException, TransformerException {
 
-
-        MyPlacesNamespaceContext nscontext = new MyPlacesNamespaceContext();
         /**
          * 1) Read Query Template
          */
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         factory.setNamespaceAware(true);
-        DocumentBuilder builder;
-        Document doc = null;
-        builder = factory.newDocumentBuilder();
+        DocumentBuilder builder = factory.newDocumentBuilder();
 
         InputStream inp = this.getClass().getResourceAsStream(resourceName);
 
-        doc = builder.parse(inp);
+        Document doc = builder.parse(inp);
         inp.close();
 
         // Create a XPathFactory
@@ -167,34 +163,20 @@ public class GeoServerProxyService {
 
         // Create a XPath object
         XPath xpath = xFactory.newXPath();
-        xpath.setNamespaceContext(nscontext);
-        XPath xpath2 = xFactory.newXPath();
-        xpath2.setNamespaceContext(nscontext);
-        XPath xpath3 = xFactory.newXPath();
-        xpath3.setNamespaceContext(nscontext);
-        XPath xpath4 = xFactory.newXPath();
-        xpath4.setNamespaceContext(nscontext);
+        xpath.setNamespaceContext(new MyPlacesNamespaceContext());
 
-        // Compile the XPath expression
-        XPathExpression expr = xpath
-                .compile("//gml:pos[.='{LON_LAT}']");
-        Node nd = (Node) expr.evaluate(doc, XPathConstants.NODE);
-        nd.setTextContent(lon_lat);
+        // replace template placeholders with values
+        setupTemplateValue(doc, xpath, "//gml:pos[.='{LON_LAT}']", lon_lat);
+        setupTemplateValue(doc, xpath, "//ogc:Literal[.='{CATEGORY_ID}']", categoryId);
+        setupTemplateValue(doc, xpath, "//ogc:Literal[.='{UUID}']", uuid);
 
-        XPathExpression expr2 = xpath2
-                .compile("//ogc:Literal[.='{CATEGORY_ID}']");
-        Node nd2 = (Node) expr2.evaluate(doc, XPathConstants.NODE);
-        nd2.setTextContent(categoryId);
+        final String distanceForZoom = String.valueOf(DISTANCE_FACTOR * Math.pow(2, (MAX_ZOOM_LEVEL - zoomLevel)));
+        setupTemplateValue(doc, xpath, "//ogc:Distance[.='{DISTANCE}']", distanceForZoom);
 
-        XPathExpression expr3 = xpath3
-                .compile("//ogc:Literal[.='{UUID}']");
-        Node nd3 = (Node) expr3.evaluate(doc, XPathConstants.NODE);
-        nd3.setTextContent(uuid);
+        setupSrsAttribute(doc, xpath, "//wfs:Query", srs);
+        setupSrsAttribute(doc, xpath, "//gml:Point", srs);
 
-        XPathExpression expr4 = xpath4
-                .compile("//ogc:Distance[.='{DISTANCE}']");
-        Node nd4 = (Node) expr4.evaluate(doc, XPathConstants.NODE);
-        nd4.setTextContent(String.valueOf(DISTANCE_FACTOR * Math.pow(2, (MAX_ZOOM_LEVEL - zoomLevel))));
+        // gml:Point srsName="{SRSNAME}"
 
 
         // Use a Transformer for output
@@ -204,7 +186,18 @@ public class GeoServerProxyService {
         DOMSource source = new DOMSource(doc);
         StreamResult result = new StreamResult(outs);
         transformer.transform(source, result);
-
         return outs.toString();
+    }
+
+    private void setupTemplateValue(Document doc, XPath xpath, String selector, String value) throws XPathExpressionException {
+        XPathExpression expr = xpath.compile(selector);
+        Node nd = (Node) expr.evaluate(doc, XPathConstants.NODE);
+        nd.setTextContent(value);
+    }
+    private void setupSrsAttribute(Document doc, XPath xpath, String selector, String srs) throws XPathExpressionException {
+        XPathExpression expr = xpath.compile(selector);
+        Node nd = (Node) expr.evaluate(doc, XPathConstants.NODE);
+        Node querySRS = nd.getAttributes().getNamedItem("srsName");
+        querySRS.setNodeValue(srs);
     }
 }

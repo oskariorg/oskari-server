@@ -1,5 +1,6 @@
 package fi.nls.oskari.eu.inspire.addresses;
 
+import fi.nls.oskari.WFSTestHelper;
 import fi.nls.oskari.eu.inspire.recipe.addresses.INSPIRE_AD_Address_Parser;
 import fi.nls.oskari.fe.engine.BasicFeatureEngine;
 import fi.nls.oskari.fe.input.XMLInputProcessor;
@@ -42,7 +43,7 @@ public class TestJacksonParser {
         try {
             inputProcessor.setInput(inp);
 
-            OutputStream fouts = System.out;
+            OutputStream fouts = WFSTestHelper.getTestOutputStream();
             try {
                 outputProcessor.setOutput(fouts);
 
@@ -91,7 +92,7 @@ public class TestJacksonParser {
         try {
             inputProcessor.setInput(inp);
 
-            OutputStream fouts = System.out;
+            OutputStream fouts = WFSTestHelper.getTestOutputStream();
             try {
                 outputProcessor.setOutput(fouts);
 

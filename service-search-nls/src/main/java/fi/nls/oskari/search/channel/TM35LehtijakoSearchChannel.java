@@ -18,11 +18,6 @@ public class TM35LehtijakoSearchChannel extends SearchChannel {
     private static final String PARAM_TM35_SCALE = "scale";
     private Logger log = LogFactory.getLogger(this.getClass());
 
-    @Override
-    public void init() {
-        
-    }
-
     public Capabilities getCapabilities() {
         return Capabilities.BOTH;
     }
@@ -77,10 +72,8 @@ public class TM35LehtijakoSearchChannel extends SearchChannel {
         
         Point p = ProjectionHelper.transformPoint(x, y, epsg, "EPSG:3067");
 
-        int scale = DEFAULT_TM35_SCALE;
-        if(searchCriteria.getParam(PARAM_TM35_SCALE) != null){
-          scale =  Integer.parseInt((String) searchCriteria.getParam("scale")); // pitää olla jokin näistä: 100000,50000,25000,20000,10000,5000
-        }
+        // pitää olla jokin näistä: 100000,50000,25000,20000,10000,5000
+        int scale = getScale((String) searchCriteria.getParam(PARAM_TM35_SCALE));
 
         double[] pt = new double[]{p.getLon(), p.getLat()}; // E, N (EPSG:3067) lon,lat
 
@@ -96,7 +89,16 @@ public class TM35LehtijakoSearchChannel extends SearchChannel {
         item.setLon(x);
         result.addItem(item);
         return result;
-    }    
+    }
+
+    private int getScale(String requested) {
+        try {
+            return Integer.parseInt(requested); // pitää olla jokin näistä: 100000,50000,25000,20000,10000,5000
+        } catch (Exception e) {
+            log.ignore(e);
+        }
+        return DEFAULT_TM35_SCALE;
+    }
     
     private double[] laskeKeskipiste(double[] pisteet) {
         double x = ((pisteet[4] - pisteet[0]) / 2) + pisteet[0];

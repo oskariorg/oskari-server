@@ -23,6 +23,7 @@ public class GetReverseGeocodingResultHandler extends ActionHandler {
     private static final String PARAM_LON = "lon";
     private static final String PARAM_LAT = "lat";
     private static final String PARAM_BUFFER = "buffer";
+    private static final String PARAM_SCALE = "scale";
     private static final String PARAM_MAXFEATURES = "maxfeatures";
     private static final String PARAM_EPSG_KEY = "epsg";
 
@@ -33,7 +34,7 @@ public class GetReverseGeocodingResultHandler extends ActionHandler {
     // TODO: refactor to channels to be consistent with GetSearchResultHandler
     private static final String PARAM_OPTIONAL_CHANNEL_IDS_KEY = "channel_ids";
 
-    private int maxFeatures = 1;
+    private int maxFeatures = -1;
     private int buffer = 1000;
 
     private String[] channels = new String[0];
@@ -60,43 +61,49 @@ public class GetReverseGeocodingResultHandler extends ActionHandler {
         final String lon = params.getRequiredParam(PARAM_LON);
         final String lat = params.getRequiredParam(PARAM_LAT);
         final String epsg = params.getRequiredParam(PARAM_EPSG_KEY);
-        final String scale = params.getHttpParam("scale");
+        final String scale = params.getHttpParam(PARAM_SCALE);
 
         final SearchCriteria sc = new SearchCriteria();
         
         if (scale != null) {
-            sc.addParam("scale", scale);
+            sc.addParam(PARAM_SCALE, scale);
         }
         
         sc.setReverseGeocode(ConversionHelper.getDouble(lat, -1), ConversionHelper.getDouble(lon, -1));
         // eg. EPSG:3067
         sc.setSRS(epsg);
 
-        // Requested channels. Option to use only e.g. one channel for to request the result
-        List<String> requestedChannels = new ArrayList<String>();
-        final String channelIds = params.getHttpParam(PARAM_OPTIONAL_CHANNEL_IDS_KEY);
-        if (channelIds != null) {
-            requestedChannels = Arrays.asList(channelIds.split(","));
-        }
-
-        // max result feature count
-        sc.setMaxResults(params.getHttpParam(PARAM_MAXFEATURES, maxFeatures));
         // Search distance around the point (unit m)
         sc.addParam(PARAM_BUFFER, params.getHttpParam(PARAM_BUFFER, buffer));
         sc.setLocale(params.getLocale().getLanguage());
 
-        for (String channelId : channels) {
-            if (requestedChannels.size() == 0 || requestedChannels.contains(channelId)) {
-                sc.addChannel(channelId);
-            }
+        // Requested channels. Option to use only e.g. one channel for to request the result
+        List<String> requestedChannels = getChannels(params.getHttpParam(PARAM_OPTIONAL_CHANNEL_IDS_KEY));
+        for (String channelId : requestedChannels) {
+            sc.addChannel(channelId);
         }
+        // determine max result feature count - in this order parameter value, property, number of channels to query
+        sc.setMaxResults(getMaxResults(params.getHttpParam(PARAM_MAXFEATURES, maxFeatures), requestedChannels.size()));
         if (sc.getChannels().size() == 0) {
             throw new ActionParamsException("No reverse geocoding channels available or configured or invalid channel ID");
         }
 
-        // TODO: enforce max features if there are multiple channels!
         final JSONObject result = SearchWorker.doSearch(sc);
         ResponseHelper.writeResponse(params, result);
+    }
+
+    private int getMaxResults(int requested, int defaultValue) {
+        if(requested != -1) {
+            return requested;
+        }
+        return defaultValue;
+    }
+
+    private List<String> getChannels(final String requested) {
+        if (requested != null) {
+            return Arrays.asList(requested.split(","));
+        }
+        return Arrays.asList(channels);
     }
 
 }

@@ -82,7 +82,7 @@ public class WebServiceMapProducerResourceTest {
 
         Properties props = getFixedTestProperties("jhs.properties",
                 "layers.json");
-        props.store(System.out, "");
+        //props.store(System.out, "");
 
         WebServiceMapProducerResource resource = new WebServiceMapProducerResource(
                 props);
@@ -127,7 +127,7 @@ public class WebServiceMapProducerResourceTest {
 
         Properties props = getFixedTestProperties("jhs.properties",
                 "layers.json");
-        props.store(System.out, "");
+        //props.store(System.out, "");
 
         WebServiceMapProducerResource resource = new WebServiceMapProducerResource(
                 props);
@@ -288,7 +288,7 @@ public class WebServiceMapProducerResourceTest {
 
         Properties props = getFixedTestProperties("jhs.properties",
                 "layers.json");
-        props.store(System.out, "");
+        //props.store(System.out, "");
 
         WebServiceMapProducerResource resource = new WebServiceMapProducerResource(
                 props);
@@ -315,7 +315,7 @@ public class WebServiceMapProducerResourceTest {
 
         Properties props = getFixedTestProperties("jhs.properties",
                 "layers.json");
-        props.store(System.out, "");
+        //props.store(System.out, "");
 
         WebServiceMapProducerResource resource = new WebServiceMapProducerResource(
                 props);
@@ -342,7 +342,7 @@ public class WebServiceMapProducerResourceTest {
 
         Properties props = getFixedTestProperties("jhs.properties",
                 "layers.json");
-        props.store(System.out, "");
+        //props.store(System.out, "");
 
         WebServiceMapProducerResource resource = new WebServiceMapProducerResource(
                 props);
@@ -369,7 +369,7 @@ public class WebServiceMapProducerResourceTest {
 
         Properties props = getFixedTestProperties("jhs.properties",
                 "layers.json");
-        props.store(System.out, "");
+        //props.store(System.out, "");
 
         WebServiceMapProducerResource resource = new WebServiceMapProducerResource(
                 props);
@@ -396,7 +396,7 @@ public class WebServiceMapProducerResourceTest {
 
         Properties props = getFixedTestProperties("jhs.properties",
                 "layers.json");
-        props.store(System.out, "");
+        //props.store(System.out, "");
 
         WebServiceMapProducerResource resource = new WebServiceMapProducerResource(
                 props);
@@ -423,7 +423,7 @@ public class WebServiceMapProducerResourceTest {
 
         Properties props = getFixedTestProperties("jhs.properties",
                 "layers.json");
-        props.store(System.out, "");
+        //props.store(System.out, "");
 
         WebServiceMapProducerResource resource = new WebServiceMapProducerResource(
                 props);
@@ -450,7 +450,7 @@ public class WebServiceMapProducerResourceTest {
 
         Properties props = getFixedTestProperties("jhs.properties",
                 "layers.json");
-        props.store(System.out, "");
+        //props.store(System.out, "");
 
         WebServiceMapProducerResource resource = new WebServiceMapProducerResource(
                 props);
@@ -477,7 +477,7 @@ public class WebServiceMapProducerResourceTest {
 
         Properties props = getFixedTestProperties("jhs.properties",
                 "layers.json");
-        props.store(System.out, "");
+        //props.store(System.out, "");
 
         WebServiceMapProducerResource resource = new WebServiceMapProducerResource(
                 props);
@@ -504,7 +504,7 @@ public class WebServiceMapProducerResourceTest {
 
         Properties props = getFixedTestProperties("jhs.properties",
                 "layers.json");
-        props.store(System.out, "");
+        //props.store(System.out, "");
 
         WebServiceMapProducerResource resource = new WebServiceMapProducerResource(
                 props);
@@ -531,7 +531,7 @@ public class WebServiceMapProducerResourceTest {
 
         Properties props = getFixedTestProperties("jhs.properties",
                 "layers.json");
-        props.store(System.out, "");
+        //props.store(System.out, "");
 
         WebServiceMapProducerResource resource = new WebServiceMapProducerResource(
                 props);
@@ -561,7 +561,7 @@ public class WebServiceMapProducerResourceTest {
 
             Properties props = getFixedTestProperties("default.properties",
                     "layers.json");
-            props.store(System.out, "");
+            //props.store(System.out, "");
 
             shared = new WebServiceMapProducerResource(props);
 

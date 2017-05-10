@@ -1,0 +1,11 @@
+language: java
+jdk:
+  - oraclejdk8
+  - oraclejdk7
+  - openjdk7
+notifications:
+  slack: oskari:N5vZf0lzsIGpQ8nAPRfHgQ91
+
+cache:
+  directories:
+    - $HOME/.m2

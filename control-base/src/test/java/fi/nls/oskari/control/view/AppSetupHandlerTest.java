@@ -4,6 +4,7 @@ import fi.mml.portti.service.db.permissions.PermissionsService;
 import fi.mml.portti.service.db.permissions.PermissionsServiceIbatisImpl;
 import fi.nls.oskari.control.ActionConstants;
 import fi.nls.oskari.control.ActionParameters;
+import fi.nls.oskari.domain.map.view.Bundle;
 import fi.nls.oskari.domain.map.view.View;
 import fi.nls.oskari.domain.map.view.ViewTypes;
 import fi.nls.oskari.map.view.BundleService;
@@ -27,6 +28,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.anyLong;
 import static org.mockito.Mockito.doReturn;
@@ -34,11 +36,13 @@ import static org.mockito.Mockito.mock;
 
 public class AppSetupHandlerTest extends JSONActionRouteTest {
 	
-    final private AppSetupHandler handler = new AppSetupHandler();
+    private AppSetupHandler handler = null;
     private ViewService viewService = null;
     private MyPlacesService myPlaceService = null;
     private PermissionsService permissionsService = null;
     private BundleService bundleService = null;
+
+    public static final String BUNDLE_WHITELISTED = "whitelistTestBundle";
 
     @BeforeClass
     public static void addProperties() throws Exception {
@@ -51,10 +55,11 @@ public class AppSetupHandlerTest extends JSONActionRouteTest {
     public void setUp() throws Exception {
         // view.template.publish=3
     	// mock services for testing
+        handler = new AppSetupHandler();
     	mockViewService();
         myPlaceService = mock(MyPlacesServiceMybatisImpl.class);
         permissionsService = mock(PermissionsServiceIbatisImpl.class);
-        bundleService = mock(BundleServiceIbatisImpl.class);
+        mockBundleService();
 
         // set mocked services
         handler.setViewService(viewService);
@@ -77,6 +82,13 @@ public class AppSetupHandlerTest extends JSONActionRouteTest {
         dummyView.setType(ViewTypes.USER);
         dummyView.setCreator(getLoggedInUser().getId());
         doReturn(dummyView).when(viewService).getViewWithConf(anyLong());
+    }
+    private void mockBundleService() {
+        bundleService = mock(BundleServiceIbatisImpl.class);
+        // add all bundles needed in test
+        Bundle bundle = new Bundle();
+        bundle.setName(BUNDLE_WHITELISTED);
+        doReturn(bundle).when(bundleService).getBundleTemplateByName(BUNDLE_WHITELISTED);
     }
     
     @Test
@@ -106,6 +118,36 @@ public class AppSetupHandlerTest extends JSONActionRouteTest {
         expectedResult.remove("url");
 
         assertTrue("Response should match expected", JSONHelper.isEqual(expectedResult, actualResponse));
+    }
+
+    @Test
+    public void testWhiteListConfigMismatch() throws Exception {
+
+        PropertyUtil.addProperty("actionhandler.AppSetup.bundles.simple", "", true);
+        handler.init();
+        // setup params
+        Map<String, String> parameters = new HashMap<String, String>();
+        parameters.put(AppSetupHandler.KEY_PUBDATA, ResourceHelper.readStringResource("AppSetupHandlerTest-input-whitelist.json", this));
+
+        final ActionParameters params = createActionParams(parameters, getLoggedInUser());
+        View view = handler.buildPublishedView(params);
+
+        assertNull("View shouldn't have bundle that has not been whitelisted", view.getBundleByName(BUNDLE_WHITELISTED));
+    }
+
+    @Test
+    public void testWhiteListConfigMatch() throws Exception {
+
+        PropertyUtil.addProperty("actionhandler.AppSetup.bundles.simple", BUNDLE_WHITELISTED, true);
+        handler.init();
+        // setup params
+        Map<String, String> parameters = new HashMap<String, String>();
+        parameters.put(AppSetupHandler.KEY_PUBDATA, ResourceHelper.readStringResource("AppSetupHandlerTest-input-whitelist.json", this));
+
+        final ActionParameters params = createActionParams(parameters, getLoggedInUser());
+        View view = handler.buildPublishedView(params);
+
+        assertNotNull("View should have bundle that has been whitelisted", view.getBundleByName(BUNDLE_WHITELISTED));
     }
 	
 }

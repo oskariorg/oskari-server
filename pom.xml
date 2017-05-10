@@ -6,12 +6,12 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>fi.nls.oskari</groupId>
     <artifactId>oskari-parent</artifactId>
-    <version>1.41.0</version>
+    <version>1.42.0</version>
     <packaging>pom</packaging>
 
     <name>Oskari parent POM</name>
     <description>Contains common properties and managed dependencies for the Oskari modules.</description>
-    <url>https://github.com/nls-oskari/oskari-server</url>
+    <url>https://github.com/oskariorg/oskari-server</url>
 
     <organization>
         <name>National Land Survey of Finland</name>
@@ -34,12 +34,12 @@
     </licenses>
 
     <issueManagement>
-        <url>https://github.com/nls-oskari/oskari-server/issues</url>
+        <url>https://github.com/oskariorg/oskari-server/issues</url>
         <system>GitHub Issues</system>
     </issueManagement>
 
     <scm>
-        <url>https://github.com/nls-oskari/oskari-server</url>
+        <url>https://github.com/oskariorg/oskari-server</url>
     </scm>
 
     <properties>
@@ -841,6 +841,12 @@
             <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>2.10</version>
+                <configuration>
+                    <!--systemPropertyVariables>
+                        <oskari.syslog.level></oskari.syslog.level>
+                    </systemPropertyVariables -->
+                    <argLine>-Doskari.syslog.level=warn</argLine>
+                </configuration>
             </plugin>
             <plugin>
                 <artifactId>maven-jar-plugin</artifactId>
@@ -907,6 +913,11 @@
             <id>oskari_org</id>
             <name>Oskari.org repository</name>
             <url>http://oskari.org/nexus/content/repositories/releases/</url>
+        </repository>
+        <repository>
+            <id>oskari_org_snapshot</id>
+            <name>Oskari.org snapshot repository</name>
+            <url>http://oskari.org/nexus/content/repositories/snapshots/</url>
         </repository>
         <repository>
             <id>central</id>

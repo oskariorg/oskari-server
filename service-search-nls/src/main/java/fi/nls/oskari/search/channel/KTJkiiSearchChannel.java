@@ -90,7 +90,7 @@ public class KTJkiiSearchChannel extends SearchChannel {
                 item.setType(SearchUtil.getLocationType("Kiinteistötunnus_" +
                         SearchUtil.getLocaleCode(searchCriteria.getLocale())));
                 item.setMapURL(SearchUtil.getMapURL(searchCriteria.getLocale()));
-                item.setVillage("");
+                item.setRegion("");
                 // resource id == feature id
                 item.setResourceId(rupsr.getGmlID());
                 item.setResourceNameSpace(serviceURL);

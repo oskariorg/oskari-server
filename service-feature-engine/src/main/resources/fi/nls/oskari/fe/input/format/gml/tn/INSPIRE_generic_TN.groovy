@@ -267,7 +267,7 @@ public class INSPIRE_generic_TN_Parser extends AbstractGroovyGMLParserRecipe.GML
             PARSER.RoadLink(input_Feat);
             fcount++;
 
-            System.out.println(input_Feat);
+            //System.out.println(input_Feat);
         }
 
 

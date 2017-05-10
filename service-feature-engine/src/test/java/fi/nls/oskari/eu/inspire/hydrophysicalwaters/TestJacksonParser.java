@@ -1,5 +1,6 @@
 package fi.nls.oskari.eu.inspire.hydrophysicalwaters;
 
+import fi.nls.oskari.WFSTestHelper;
 import fi.nls.oskari.eu.elf.recipe.universal.ELF_path_parse_worker;
 import fi.nls.oskari.eu.elf.recipe.universal.ELF_wfs_DefaultParser;
 import fi.nls.oskari.eu.inspire.recipe.hydrophysicalwaters.INSPIRE_HYp_LandWaterBoundary_Parser;
@@ -61,7 +62,7 @@ public class TestJacksonParser extends TestHelper {
         try {
             inputProcessor.setInput(inp);
 
-            OutputStream fouts = System.out;
+            OutputStream fouts = WFSTestHelper.getTestOutputStream();
             try {
                 outputProcessor.setOutput(fouts);
 
@@ -104,7 +105,7 @@ public class TestJacksonParser extends TestHelper {
         try {
             inputProcessor.setInput(inp);
 
-            OutputStream fouts = System.out;
+            OutputStream fouts = WFSTestHelper.getTestOutputStream();
             try {
                 outputProcessor.setOutput(fouts);
 
@@ -147,7 +148,7 @@ public class TestJacksonParser extends TestHelper {
         try {
             inputProcessor.setInput(inp);
 
-            OutputStream fouts = System.out;
+            OutputStream fouts = WFSTestHelper.getTestOutputStream();
             try {
                 outputProcessor.setOutput(fouts);
 
@@ -187,7 +188,7 @@ public class TestJacksonParser extends TestHelper {
         try {
             inputProcessor.setInput(inp);
 
-            OutputStream fouts = System.out;
+            OutputStream fouts = WFSTestHelper.getTestOutputStream();
             try {
                 outputProcessor.setOutput(fouts);
 
@@ -228,7 +229,7 @@ public class TestJacksonParser extends TestHelper {
         try {
             inputProcessor.setInput(inp);
 
-            OutputStream fouts = System.out;
+            OutputStream fouts = WFSTestHelper.getTestOutputStream();
             try {
                 outputProcessor.setOutput(fouts);
 
@@ -269,7 +270,7 @@ public class TestJacksonParser extends TestHelper {
         try {
             inputProcessor.setInput(inp);
 
-            OutputStream fouts = System.out;
+            OutputStream fouts = WFSTestHelper.getTestOutputStream();
             try {
                 outputProcessor.setOutput(fouts);
 
@@ -319,7 +320,7 @@ public class TestJacksonParser extends TestHelper {
             inputProcessor.setInput(inp);
 
 
-            OutputStream fouts = System.out;
+            OutputStream fouts = WFSTestHelper.getTestOutputStream();
             try {
                 outputProcessor.setOutput(fouts);
 

@@ -201,6 +201,9 @@ public abstract class MapProducerResource {
     }
 
     public Properties getProps() {
+        if(props == null) {
+            props = new Properties();
+        }
         return props;
     }
 

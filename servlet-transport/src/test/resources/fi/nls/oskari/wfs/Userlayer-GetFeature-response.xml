@@ -1,0 +1,3186 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wfs:FeatureCollection xmlns:wfs="http://www.opengis.net/wfs" xmlns:gml="http://www.opengis.net/gml"
+                       xmlns:oskari="http://www.oskari.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                       numberOfFeatures="177" timeStamp="2017-04-21T10:54:48.674Z"
+                       xsi:schemaLocation="http://www.oskari.org http://dev.paikkatietoikkuna.fi:80/geoserver/oskari/wfs?service=WFS&amp;version=1.1.0&amp;request=DescribeFeatureType&amp;typeName=oskari%3Avuser_layer_data http://www.opengis.net/wfs http://dev.paikkatietoikkuna.fi:80/geoserver/schemas/wfs/1.1.0/wfs.xsd">
+    <gml:featureMembers>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126092">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.17</oskari:feature_id>
+            <oskari:property_json>{"nimi":"Marian Helmi","asp_max":16,"ID":53,"pist_os":"Snellmaninkatu 17,
+                Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.279Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>386449.1607 6672370.9059</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126094">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.19</oskari:feature_id>
+            <oskari:property_json>{"nimi":"Palace Kämp Ravintolat","asp_max":33,"ID":56,"pist_os":"Pohjoisesplanadi 31,
+                Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.282Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>386104.3019 6671875.1036</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126096">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.21</oskari:feature_id>
+            <oskari:property_json>{"nimi":"Strindberg","asp_max":44,"ID":58,"pist_os":"Pohjoisesplanadi 33,
+                Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.286Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>386035.0917 6671871.0059</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126097">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.22</oskari:feature_id>
+            <oskari:property_json>{"nimi":"Yume Restaurant","asp_max":35,"ID":59,"pist_os":"Kluuvikatu 1,
+                Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.288Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>386106.8008 6671894.0959</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126104">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.29</oskari:feature_id>
+            <oskari:property_json>{"nimi":"Kellarikrouvi","asp_max":36,"ID":69,"pist_os":"Fabianinkatu 17,
+                Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.296Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>386229.4529 6671609.2111</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126105">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.30</oskari:feature_id>
+            <oskari:property_json>{"nimi":"Kulmakioski 48","asp_max":5,"ID":70,"pist_os":"Eerikinkatu 48,
+                Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.297Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>384932.775 6671489.2529</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126106">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.31</oskari:feature_id>
+            <oskari:property_json>{"nimi":"Dragon and Phoenix","asp_max":12,"ID":71,"pist_os":"Eteläinen Makasiinikatu
+                1, Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.299Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>386354.2026 6671635.2013</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126108">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.33</oskari:feature_id>
+            <oskari:property_json>{"nimi":"Sasso","asp_max":42,"ID":74,"pist_os":"Pohjoisesplanadi 19,
+                Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.302Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>386322.2142 6671876.1042</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126109">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.34</oskari:feature_id>
+            <oskari:property_json>{"nimi":"Doong Bei Hu -China Tiger","asp_max":15,"ID":75,"pist_os":"Korkeavuorenkatu
+                36, Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.303Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>386016.5377 6671760.6492</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126120">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.45</oskari:feature_id>
+            <oskari:property_json>{"nimi":"Public Corner","asp_max":75,"ID":92,"pist_os":"Mikonkatu 15,
+                Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.319Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>385996.1435 6672256.4496</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126121">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.46</oskari:feature_id>
+            <oskari:property_json>{"nimi":"Baarikärpänen","asp_max":160,"ID":93,"pist_os":"Mikonkatu 15,
+                Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.321Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>385995.1438 6672268.9446</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126122">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.47</oskari:feature_id>
+            <oskari:property_json>{"nimi":"On The Rocks","asp_max":99,"ID":94,"pist_os":"Mikonkatu 15,
+                Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.322Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>385999.5423 6672225.9619</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126133">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.58</oskari:feature_id>
+            <oskari:property_json>{"nimi":"Sininen Baari","asp_max":12,"ID":110,"pist_os":"Arkadiankatu 21,
+                Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.340Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>384926.5734 6672299.427</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126134">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.59</oskari:feature_id>
+            <oskari:property_json>{"nimi":"Kawa Cafe","asp_max":8,"ID":111,"pist_os":"Fredrikinkatu 56,
+                Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.341Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>385050.5241 6672195.9692</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126136">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.61</oskari:feature_id>
+            <oskari:property_json>{"nimi":"Pub Ikkuna","asp_max":36,"ID":113,"pist_os":"Narinkka 3,
+                Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.345Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>385357.6009 6672126.9985</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126137">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.62</oskari:feature_id>
+            <oskari:property_json>{"nimi":"Fransmanni","asp_max":12,"ID":114,"pist_os":"Albertinkatu 34,
+                Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.346Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>385288.6319 6671476.2599</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126138">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.63</oskari:feature_id>
+            <oskari:property_json>{"nimi":"Memphis","asp_max":60,"ID":115,"pist_os":"Annanaukio 2,
+                Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.348Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>385390.0882 6672063.0244</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126139">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.64</oskari:feature_id>
+            <oskari:property_json>{"nimi":"Kantipur","asp_max":10,"ID":116,"pist_os":"Lönnrotinkatu 25,
+                Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.349Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>385304.1254 6671535.7361</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126140">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.65</oskari:feature_id>
+            <oskari:property_json>{"nimi":"Boothill","asp_max":16,"ID":117,"pist_os":"Lönnrotinkatu 25,
+                Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.351Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>385316.6203 6671544.2327</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126141">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.66</oskari:feature_id>
+            <oskari:property_json>{"nimi":"Cafe Salt &amp; Pepper","asp_max":12,"ID":119,"pist_os":"Fredrikinkatu 30,
+                Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.353Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>385443.0692 6671596.2124</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126142">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.67</oskari:feature_id>
+            <oskari:property_json>{"nimi":"Barbarossa","asp_max":10,"ID":120,"pist_os":"Yrjönkatu 31,
+                Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.354Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>385517.5373 6671984.0568</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126145">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.70</oskari:feature_id>
+            <oskari:property_json>{"nimi":"Bar Llamas","asp_max":32,"ID":124,"pist_os":"Iso Roobertinkatu 16,
+                Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.359Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>385807.4237 6671399.7933</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126146">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.71</oskari:feature_id>
+            <oskari:property_json>{"nimi":"Pizzeria Dennis","asp_max":4,"ID":125,"pist_os":"Kansakoulukatu 1,
+                Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.360Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>385368.9724 6671925.8295</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126147">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.72</oskari:feature_id>
+            <oskari:property_json>{"nimi":"Sushibar+wine","asp_max":22,"ID":126,"pist_os":"Malminkatu 12,
+                Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.362Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>385281.633 6671828.1183</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126149">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.74</oskari:feature_id>
+            <oskari:property_json>{"nimi":"Vltava","asp_max":126,"ID":128,"pist_os":"Eero Erkon katu 4,
+                Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.365Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>385678.9709 6672277.4396</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126150">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.75</oskari:feature_id>
+            <oskari:property_json>{"nimi":"Ooster Olut- ja Viinihuone","asp_max":52,"ID":129,"pist_os":"Postikuja 1,
+                Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.367Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>385724.4526 6672279.439</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126153">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.78</oskari:feature_id>
+            <oskari:property_json>{"nimi":"Sikarihuone","asp_max":10,"ID":132,"pist_os":"Lönnrotinkatu 19,
+                Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.371Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>385393.5891 6671595.7124</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126154">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.79</oskari:feature_id>
+            <oskari:property_json>{"nimi":"Pivnice Hostina","asp_max":30,"ID":133,"pist_os":"Annankatu 27,
+                Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.372Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>385469.5572 6671868.1032</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126158">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.83</oskari:feature_id>
+            <oskari:property_json>{"nimi":"Cafe Esplanad","asp_max":48,"ID":139,"pist_os":"Pohjoisesplanadi 35,
+                Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.379Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>385940.3678 6671871.1044</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126159">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.84</oskari:feature_id>
+            <oskari:property_json>{"nimi":"Ben &amp; Jerry's","asp_max":6,"ID":140,"pist_os":"Pohjoisesplanadi 35,
+                Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.380Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>385967.275 6671873.9943</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126160">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.85</oskari:feature_id>
+            <oskari:property_json>{"nimi":"Pohjoisespan/Mikonkadun
+                kioski","asp_max":24,"ID":141,"pist_os":"Teatteriesplanadi, Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.382Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>386019.2462 6671845.531</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126161">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.86</oskari:feature_id>
+            <oskari:property_json>{"nimi":"Aino","asp_max":24,"ID":142,"pist_os":"Pohjoisesplanadi 21,
+                Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.383Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>386252.2424 6671878.1031</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126162">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.87</oskari:feature_id>
+            <oskari:property_json>{"nimi":"Stockmann Terrace","asp_max":90,"ID":143,"pist_os":"Keskuskatu 1,
+                Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.385Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>385850.2038 6671923.083</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126163">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.88</oskari:feature_id>
+            <oskari:property_json>{"nimi":"Aschan Cafe Jugend","asp_max":36,"ID":144,"pist_os":"Pohjoisesplanadi 19,
+                Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.386Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>386275.7329 6671878.603</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126164">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.89</oskari:feature_id>
+            <oskari:property_json>{"nimi":"Salutorget","asp_max":48,"ID":145,"pist_os":"","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.388Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>386355.1979 6671878.3975</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126165">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.90</oskari:feature_id>
+            <oskari:property_json>{"nimi":"Kiila","asp_max":40,"ID":146,"pist_os":"Kalevankatu 1,
+                Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.391Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>385695.4661 6671912.0866</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126166">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.91</oskari:feature_id>
+            <oskari:property_json>{"nimi":"Kauppatorin Grillikioski","asp_max":12,"ID":147,"pist_os":"Kauppatori,
+                Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.393Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>386481.6824 6671821.41</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126167">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.92</oskari:feature_id>
+            <oskari:property_json>{"nimi":"Kanniston Leipomo","asp_max":4,"ID":148,"pist_os":"Simonkatu 1,
+                Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.394Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>385535.5295 6672112.0054</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126168">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.93</oskari:feature_id>
+            <oskari:property_json>{"nimi":"Mount Everest","asp_max":8,"ID":149,"pist_os":"Lapinlahdenkatu 17,
+                Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.395Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>385003.9448 6671808.6248</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126169">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.94</oskari:feature_id>
+            <oskari:property_json>{"nimi":"Chaplin","asp_max":24,"ID":150,"pist_os":"Mannerheimintie 6,
+                Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.396Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>385816.2181 6671794.6345</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126170">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.95</oskari:feature_id>
+            <oskari:property_json>{"nimi":"Eerikin Kulma","asp_max":6,"ID":151,"pist_os":"Eerikinkatu 28,
+                Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.397Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>385215.1605 6671673.6801</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126171">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.96</oskari:feature_id>
+            <oskari:property_json>{"nimi":"Kioski Puistokulma","asp_max":6,"ID":152,"pist_os":"Albertinkatu 44,
+                Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.398Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>385189.1709 6671675.1794</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126172">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.97</oskari:feature_id>
+            <oskari:property_json>{"nimi":"Esplanadinpuisto
+                Virvoitusjuomakioski","asp_max":24,"ID":153,"pist_os":"Eteläesplanadi 18, Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.399Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>386016.5375 6671810.1293</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126174">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.99</oskari:feature_id>
+            <oskari:property_json>{"nimi":"Lyypekinlaiturin kioski","asp_max":24,"ID":156,"pist_os":"","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.403Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>386396.1851 6671742.1585</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126177">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.102</oskari:feature_id>
+            <oskari:property_json>{"nimi":"Amanda Bar &amp; Bistro","asp_max":22,"ID":159,"pist_os":"Eteläesplanadi 2,
+                Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.406Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>386355.4013 6671797.1362</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126178">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.103</oskari:feature_id>
+            <oskari:property_json>{"nimi":"Kasarmitorin kioski","asp_max":14,"ID":160,"pist_os":"","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.408Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>386202.7636 6671612.2098</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126179">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.104</oskari:feature_id>
+            <oskari:property_json>{"nimi":"Zucchini","asp_max":10,"ID":161,"pist_os":"Fabianinkatu 8,
+                Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.410Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>386214.4586 6671662.6895</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126180">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.105</oskari:feature_id>
+            <oskari:property_json>{"nimi":"Kaffecentralen","asp_max":4,"ID":162,"pist_os":"Ratakatu 1,
+                Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.411Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>386025.5359 6671406.2917</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126181">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.106</oskari:feature_id>
+            <oskari:property_json>{"nimi":"Himalaya","asp_max":15,"ID":163,"pist_os":"Merimiehenkatu 5,
+                Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.412Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>385989.8502 6671413.2887</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126182">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.107</oskari:feature_id>
+            <oskari:property_json>{"nimi":"Bulevardin Kahvisalonki","asp_max":30,"ID":164,"pist_os":"Bulevardi 1,
+                Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.414Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>385848.4055 6671733.1594</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126183">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.108</oskari:feature_id>
+            <oskari:property_json>{"nimi":"Cafe Picnic Kasarmikatu","asp_max":26,"ID":165,"pist_os":"Kasarmikatu 42,
+                Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.415Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>386111.5 6671666.1876</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126184">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.109</oskari:feature_id>
+            <oskari:property_json>{"nimi":"Toscanini","asp_max":25,"ID":166,"pist_os":"Bulevardi 1,
+                Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.416Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>385844.9071 6671704.171</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126185">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.110</oskari:feature_id>
+            <oskari:property_json>{"nimi":"Ahjo Bar and Club","asp_max":20,"ID":168,"pist_os":"Bulevardi 2,
+                Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.418Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>385833.9115 6671697.1738</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126186">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.111</oskari:feature_id>
+            <oskari:property_json>{"nimi":"Boulevard Social","asp_max":36,"ID":169,"pist_os":"Bulevardi 6,
+                Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.419Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>385813.9196 6671684.6787</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126187">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.112</oskari:feature_id>
+            <oskari:property_json>{"nimi":"Gaijin","asp_max":24,"ID":170,"pist_os":"Bulevardi 6,
+                Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.421Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>385799.4255 6671672.1837</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126188">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.113</oskari:feature_id>
+            <oskari:property_json>{"nimi":"Kitchen &amp; Co.","asp_max":6,"ID":172,"pist_os":"Yrjönkatu 18,
+                Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.422Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>385790.4293 6671646.1941</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126189">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.114</oskari:feature_id>
+            <oskari:property_json>{"nimi":"Cafe Ekberg","asp_max":20,"ID":174,"pist_os":"Bulevardi 9,
+                Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.424Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>385582.5134 6671552.2308</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126190">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.115</oskari:feature_id>
+            <oskari:property_json>{"nimi":"Cafe Picnic Fredrikinkatu 28","asp_max":6,"ID":175,"pist_os":"Fredrikinkatu
+                28, Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.425Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>385493.5493 6671522.2424</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126191">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.116</oskari:feature_id>
+            <oskari:property_json>{"nimi":"Pizzeria Dennis","asp_max":22,"ID":176,"pist_os":"Bulevardi 32,
+                Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.426Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>385368.1004 6671395.043</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126192">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.117</oskari:feature_id>
+            <oskari:property_json>{"nimi":"Cafe Briossi","asp_max":10,"ID":177,"pist_os":"Kalevankatu 9,
+                Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.428Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>385574.5151 6671837.8659</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126193">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.118</oskari:feature_id>
+            <oskari:property_json>{"nimi":"Torni","asp_max":22,"ID":178,"pist_os":"Kalevankatu 5,
+                Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.429Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>385629.4929 6671871.8525</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126194">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.119</oskari:feature_id>
+            <oskari:property_json>{"nimi":"KarlJohan","asp_max":20,"ID":179,"pist_os":"Yrjönkatu 21,
+                Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.430Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>385635.4903 6671908.088</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126195">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.120</oskari:feature_id>
+            <oskari:property_json>{"nimi":"Sis. Deli+Cafe","asp_max":16,"ID":180,"pist_os":"Kalevankatu 4,
+                Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.432Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>385674.4747 6671885.0974</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126196">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.121</oskari:feature_id>
+            <oskari:property_json>{"nimi":"Vegemesta","asp_max":6,"ID":182,"pist_os":"Pieni Roobertinkatu 3,
+                Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.433Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>386099.8057 6671465.7682</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126197">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.122</oskari:feature_id>
+            <oskari:property_json>{"nimi":"Lasipalatsin Laituri","asp_max":440,"ID":184,"pist_os":"Simonkatu 1,
+                Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.434Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>385514.5377 6672157.9868</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126198">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.123</oskari:feature_id>
+            <oskari:property_json>{"nimi":"Ristorante Gastone","asp_max":21,"ID":185,"pist_os":"Korkeavuorenkatu 34,
+                Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.435Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>386018.1373 6671728.662</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126199">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.124</oskari:feature_id>
+            <oskari:property_json>{"nimi":"Mbar","asp_max":331,"ID":186,"pist_os":"Mauno Koiviston aukio,
+                Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.437Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>385480.5512 6672183.9762</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126200">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.125</oskari:feature_id>
+            <oskari:property_json>{"nimi":"Teatteri","asp_max":214,"ID":187,"pist_os":"Teatteriesplanadi,
+                Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.438Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>385931.5716 6671829.1212</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126201">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.126</oskari:feature_id>
+            <oskari:property_json>{"nimi":"Bravuria","asp_max":42,"ID":188,"pist_os":"Salomonkatu 1,
+                Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.439Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>385431.5708 6672205.9671</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126202">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.127</oskari:feature_id>
+            <oskari:property_json>{"nimi":"Tang Dynasty","asp_max":20,"ID":189,"pist_os":"Salomonkatu 3,
+                Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.440Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>385402.5826 6672184.9754</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126203">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.128</oskari:feature_id>
+            <oskari:property_json>{"nimi":"Teerenpeli","asp_max":0,"ID":192,"pist_os":"Narinkka 3,
+                Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.442Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>385351.6032 6672165.483</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126204">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.129</oskari:feature_id>
+            <oskari:property_json>{"nimi":"Aussie Bar","asp_max":32,"ID":194,"pist_os":"Salomonkatu 6,
+                Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.443Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>385321.6154 6672128.9975</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126205">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.130</oskari:feature_id>
+            <oskari:property_json>{"nimi":"Kioski Tmi Matti Jäntti","asp_max":16,"ID":195,"pist_os":"","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.444Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>386202.2628 6671817.6272</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126206">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.131</oskari:feature_id>
+            <oskari:property_json>{"nimi":"Dersim","asp_max":0,"ID":196,"pist_os":"Antinkatu 2,
+                Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.445Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>385295.1259 6672151.4884</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126207">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.132</oskari:feature_id>
+            <oskari:property_json>{"nimi":"Sevilla","asp_max":0,"ID":197,"pist_os":"Antinkatu 2,
+                Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.447Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>385280.6317 6672171.98</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126208">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.133</oskari:feature_id>
+            <oskari:property_json>{"nimi":"Elmo Sports&amp;Grill","asp_max":30,"ID":198,"pist_os":"Salomonkatu 17,
+                Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.448Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>385116.6985 6671999.0488</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126209">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.134</oskari:feature_id>
+            <oskari:property_json>{"nimi":"Ristorante Il Siciliano","asp_max":12,"ID":199,"pist_os":"Fabianinkatu 18,
+                Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.449Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>386199.2631 6671990.5576</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126210">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.135</oskari:feature_id>
+            <oskari:property_json>{"nimi":"Kampin Pippuri","asp_max":8,"ID":201,"pist_os":"Runeberginkatu 4,
+                Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.451Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>385062.2204 6671986.5535</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126211">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.136</oskari:feature_id>
+            <oskari:property_json>{"nimi":"Tandoor","asp_max":50,"ID":204,"pist_os":"Salomonkatu 19,
+                Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.452Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>385046.7268 6671958.0649</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126212">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.137</oskari:feature_id>
+            <oskari:property_json>{"nimi":"Fazer Cafe","asp_max":52,"ID":205,"pist_os":"Kluuvikatu 1,
+                Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.453Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>386117.9341 6671924.3538</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126213">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.138</oskari:feature_id>
+            <oskari:property_json>{"nimi":"GLO Bar","asp_max":40,"ID":206,"pist_os":"Kluuvikatu 3,
+                Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.454Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>386103.3019 6671956.071</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126214">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.139</oskari:feature_id>
+            <oskari:property_json>{"nimi":"Cafe Picnic Fredrikinkatu 61","asp_max":10,"ID":207,"pist_os":"Fredrikinkatu
+                61, Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.455Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>385255.643 6671909.5855</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126215">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.140</oskari:feature_id>
+            <oskari:property_json>{"nimi":"Raffaello Cafe","asp_max":42,"ID":210,"pist_os":"Aleksanterinkatu 15,
+                Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.457Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>385958.36 6671985.0586</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126216">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.141</oskari:feature_id>
+            <oskari:property_json>{"nimi":"Krog Madame","asp_max":24,"ID":211,"pist_os":"Lapinlahdenkatu 3,
+                Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.458Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>385189.6704 6671751.1488</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126217">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.142</oskari:feature_id>
+            <oskari:property_json>{"nimi":"Kahvila Robert's Coffee Stockmann
+                Netcup","asp_max":40,"ID":212,"pist_os":"Keskuskatu 5, Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.459Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>385783.4304 6671975.5616</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126218">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.143</oskari:feature_id>
+            <oskari:property_json>{"nimi":"Kolmen Sepän Terassi Vanha
+                Kellari","asp_max":142,"ID":213,"pist_os":"Kolmensepänaukio, Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.461Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>385764.438 6671984.058</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126219">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.144</oskari:feature_id>
+            <oskari:property_json>{"nimi":"Virgin Oil","asp_max":18,"ID":214,"pist_os":"Mannerheimintie 3,
+                Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.462Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>385708.4603 6672032.0385</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126220">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.145</oskari:feature_id>
+            <oskari:property_json>{"nimi":"Iguana","asp_max":30,"ID":215,"pist_os":"Mannerheimintie 12,
+                Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.464Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>385738.4489 6671900.3416</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126221">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.146</oskari:feature_id>
+            <oskari:property_json>{"nimi":"Baker's","asp_max":106,"ID":217,"pist_os":"Mannerheimintie 12,
+                Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.465Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>385734.4504 6671912.0868</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126222">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.147</oskari:feature_id>
+            <oskari:property_json>{"nimi":"Kosmos","asp_max":26,"ID":218,"pist_os":"Kalevankatu 3,
+                Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.466Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>385682.4714 6671903.0902</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126223">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.148</oskari:feature_id>
+            <oskari:property_json>{"nimi":"Villi Wäinö","asp_max":51,"ID":219,"pist_os":"Kalevankatu 4,
+                Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.467Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>385681.9717 6671889.0958</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126224">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.149</oskari:feature_id>
+            <oskari:property_json>{"nimi":"U. Kaleva","asp_max":25,"ID":220,"pist_os":"Kalevankatu 3,
+                Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.469Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>385673.9748 6671901.091</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126225">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.150</oskari:feature_id>
+            <oskari:property_json>{"nimi":"Base Bar","asp_max":20,"ID":221,"pist_os":"Kalevankatu 3,
+                Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.470Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>385666.9777 6671896.5927</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126226">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.151</oskari:feature_id>
+            <oskari:property_json>{"nimi":"Leijuva Lahna","asp_max":15,"ID":223,"pist_os":"Eerikinkatu 14,
+                Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.471Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>385377.5946 6671785.386</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126227">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.152</oskari:feature_id>
+            <oskari:property_json>{"nimi":"Fransmanni","asp_max":40,"ID":227,"pist_os":"Kluuvikatu 8,
+                Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.472Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>386101.3022 6672058.03</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126228">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.153</oskari:feature_id>
+            <oskari:property_json>{"nimi":"McDonald's Kluuvi","asp_max":24,"ID":228,"pist_os":"Kluuvikatu 7,
+                Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.474Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>386112.7975 6672060.529</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126229">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.154</oskari:feature_id>
+            <oskari:property_json>{"nimi":"Robert's Coffee Kluuvi","asp_max":24,"ID":229,"pist_os":"Kluuvikatu 7,
+                Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.475Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>386112.2977 6672076.0228</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126230">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.155</oskari:feature_id>
+            <oskari:property_json>{"nimi":"Memphis","asp_max":60,"ID":230,"pist_os":"Kluuvikatu 8,
+                Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.476Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>386096.8039 6672083.5197</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126231">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.156</oskari:feature_id>
+            <oskari:property_json>{"nimi":"Wrong Noodle Bar","asp_max":18,"ID":231,"pist_os":"Yliopistonkatu 5,
+                Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.478Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>386078.3112 6672100.7627</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126232">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.157</oskari:feature_id>
+            <oskari:property_json>{"nimi":"Belge","asp_max":24,"ID":232,"pist_os":"Kluuvikatu 5,
+                Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.479Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>386113.4974 6672038.5379</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126233">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.158</oskari:feature_id>
+            <oskari:property_json>{"nimi":"Amarillo Mikonkatu","asp_max":32,"ID":233,"pist_os":"Mikonkatu 9,
+                Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.480Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>386005.8403 6672109.009</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126234">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.159</oskari:feature_id>
+            <oskari:property_json>{"nimi":"Chilli Fast Food","asp_max":40,"ID":234,"pist_os":"Mikonkatu 8,
+                Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.482Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>385992.3459 6672067.5256</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126235">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.160</oskari:feature_id>
+            <oskari:property_json>{"nimi":"Mezepoint","asp_max":40,"ID":235,"pist_os":"Mikonkatu 6,
+                Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.483Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>385993.3456 6672049.0331</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126236">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.161</oskari:feature_id>
+            <oskari:property_json>{"nimi":"Michelle &amp; König","asp_max":132,"ID":238,"pist_os":"Mikonkatu 3,
+                Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.485Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>386003.3421 6671944.5751</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126237">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.162</oskari:feature_id>
+            <oskari:property_json>{"nimi":"KC Suklaamyymälä","asp_max":6,"ID":239,"pist_os":"Mikonkatu 2,
+                Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.488Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>386011.8389 6671916.0866</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126238">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.163</oskari:feature_id>
+            <oskari:property_json>{"nimi":"La Famiglia","asp_max":114,"ID":242,"pist_os":"Keskuskatu 3,
+                Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.489Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>385864.2721 6671944.5694</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126240">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.165</oskari:feature_id>
+            <oskari:property_json>{"nimi":"Indian Express Namaskaar","asp_max":88,"ID":246,"pist_os":"Töölönlahdenkatu
+                4, Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.492Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>385722.6531 6672334.9167</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126241">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.166</oskari:feature_id>
+            <oskari:property_json>{"nimi":"Pueblo Bar y Taqueria","asp_max":10,"ID":248,"pist_os":"Eerikinkatu 25,
+                Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.493Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>385112.2021 6671626.1987</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126242">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.167</oskari:feature_id>
+            <oskari:property_json>{"nimi":"Casa Largo","asp_max":107,"ID":249,"pist_os":"","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.495Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>385660.279 6672172.4817</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126243">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.168</oskari:feature_id>
+            <oskari:property_json>{"nimi":"Mount Everest","asp_max":60,"ID":250,"pist_os":"","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.496Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>385909.5779 6672338.916</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126244">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.169</oskari:feature_id>
+            <oskari:property_json>{"nimi":"Maya Bar &amp; Grill","asp_max":40,"ID":251,"pist_os":"Itäinen Teatterikuja
+                2, Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.497Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>385935.3675 6672339.9158</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126246">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.171</oskari:feature_id>
+            <oskari:property_json>{"nimi":"Kaisla","asp_max":28,"ID":254,"pist_os":"Vuorikatu 14,
+                Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.500Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>386114.2957 6672313.9271</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126247">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.172</oskari:feature_id>
+            <oskari:property_json>{"nimi":"Iguana","asp_max":24,"ID":256,"pist_os":"Kaisaniemenkatu 3,
+                Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.501Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>386071.1135 6672228.9611</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126248">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.173</oskari:feature_id>
+            <oskari:property_json>{"nimi":"Robert's Coffee","asp_max":24,"ID":257,"pist_os":"Kaisaniemenkatu 3,
+                Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.502Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>386087.107 6672238.9571</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126249">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.174</oskari:feature_id>
+            <oskari:property_json>{"nimi":"Vapiano","asp_max":130,"ID":260,"pist_os":"Mikonkatu 15,
+                Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.504Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>386001.3736 6672211.2179</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126250">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.175</oskari:feature_id>
+            <oskari:property_json>{"nimi":"Grand Casino","asp_max":138,"ID":261,"pist_os":"Mikonkatu 17,
+                Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.505Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>385988.3464 6672301.9313</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126251">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.176</oskari:feature_id>
+            <oskari:property_json>{"nimi":"Molly Malone's","asp_max":20,"ID":264,"pist_os":"Kaisaniemenkatu 1,
+                Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.506Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>386043.3247 6672212.9674</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126272">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.197</oskari:feature_id>
+            <oskari:property_json>{"nimi":"Bar Isoroba 10","asp_max":20,"ID":290,"pist_os":"Iso Roobertinkatu 12,
+                Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.533Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>385844.4087 6671422.7842</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126273">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.198</oskari:feature_id>
+            <oskari:property_json>{"nimi":"Cafe Kippo","asp_max":8,"ID":291,"pist_os":"Iso Roobertinkatu 7,
+                Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.534Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>385829.9145 6671426.0328</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126274">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.199</oskari:feature_id>
+            <oskari:property_json>{"nimi":"Hugo's Room","asp_max":30,"ID":292,"pist_os":"Iso Roobertinkatu 3,
+                Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.536Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>385855.4041 6671442.0265</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126275">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.200</oskari:feature_id>
+            <oskari:property_json>{"nimi":"Black Door","asp_max":48,"ID":293,"pist_os":"Iso Roobertinkatu 1,
+                Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.537Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>385883.8926 6671461.5188</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126276">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.201</oskari:feature_id>
+            <oskari:property_json>{"nimi":"Bar Tapasta","asp_max":10,"ID":295,"pist_os":"Uudenmaankatu 13,
+                Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.538Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>385756.4435 6671538.4872</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126277">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.202</oskari:feature_id>
+            <oskari:property_json>{"nimi":"Cafe Aquamarine","asp_max":3,"ID":296,"pist_os":"Uudenmaankatu 21,
+                Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.540Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>385641.9899 6671462.0174</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126278">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.203</oskari:feature_id>
+            <oskari:property_json>{"nimi":"Kappeli","asp_max":418,"ID":297,"pist_os":"Espan lava,
+                Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.541Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>386255.2414 6671838.1192</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126287">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.212</oskari:feature_id>
+            <oskari:property_json>{"nimi":"Colorado","asp_max":48,"ID":307,"pist_os":"Simonkatu 7,
+                Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.551Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>385463.5587 6672045.032</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126288">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.213</oskari:feature_id>
+            <oskari:property_json>{"nimi":"Kitch Eat &amp; Drink","asp_max":26,"ID":308,"pist_os":"Yrjönkatu 30,
+                Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.552Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>385562.5197 6671891.0944</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126295">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.220</oskari:feature_id>
+            <oskari:property_json>{"nimi":"Cafe Picnic Yrjönkatu","asp_max":10,"ID":318,"pist_os":"Yrjönkatu 4,
+                Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.558Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>385925.376 6671436.779</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126331">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.256</oskari:feature_id>
+            <oskari:property_json>{"nimi":"Farang","asp_max":20,"ID":362,"pist_os":"Ainonkatu 3,
+                Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.590Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>385236.1487 6672353.4068</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126332">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.257</oskari:feature_id>
+            <oskari:property_json>{"nimi":"Bar Bäkkäri","asp_max":24,"ID":363,"pist_os":"Pohjoinen Rautatiekatu 21,
+                Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.591Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>385064.7186 6672163.9822</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126333">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.258</oskari:feature_id>
+            <oskari:property_json>{"nimi":"Helkan Baari","asp_max":25,"ID":364,"pist_os":"Runeberginkatu 13,
+                Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.592Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>384978.2535 6672126.9966</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126381">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.306</oskari:feature_id>
+            <oskari:property_json>{"nimi":"Cafe Thalia","asp_max":22,"ID":422,"pist_os":"Mannerheimintie 4,
+                Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.635Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>385844.4067 6671825.1224</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126401">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.326</oskari:feature_id>
+            <oskari:property_json>{"nimi":"Picnic Yliopistonkatu","asp_max":12,"ID":449,"pist_os":"Yliopistonkatu 5,
+                Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.653Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>386114.0968 6672101.5125</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126406">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.331</oskari:feature_id>
+            <oskari:property_json>{"nimi":"Atelje Finne","asp_max":12,"ID":457,"pist_os":"Arkadiankatu 14,
+                Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.658Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>385067.9667 6672271.1891</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126407">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.332</oskari:feature_id>
+            <oskari:property_json>{"nimi":"Shaker","asp_max":20,"ID":458,"pist_os":"Fredrikinkatu 65,
+                Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.659Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>385128.6931 6672106.0058</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126408">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.333</oskari:feature_id>
+            <oskari:property_json>{"nimi":"William K.","asp_max":30,"ID":459,"pist_os":"Fredrikinkatu 65,
+                Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.659Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>385140.6884 6672088.0131</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126409">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.334</oskari:feature_id>
+            <oskari:property_json>{"nimi":"Cafe Cavalier","asp_max":6,"ID":460,"pist_os":"Malminrinne 2,
+                Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.660Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>385173.6765 6671811.3745</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126410">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.335</oskari:feature_id>
+            <oskari:property_json>{"nimi":"Ilves","asp_max":12,"ID":462,"pist_os":"Urho Kekkosen katu 6,
+                Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.661Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>385291.6283 6671969.0617</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126411">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.336</oskari:feature_id>
+            <oskari:property_json>{"nimi":"Henry's Pub","asp_max":122,"ID":463,"pist_os":"Narinkka 4,
+                Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.662Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>385461.5593 6672102.0091</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126412">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.337</oskari:feature_id>
+            <oskari:property_json>{"nimi":"Putte's Bar &amp; Pizza","asp_max":20,"ID":464,"pist_os":"Kalevankatu 6,
+                Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.663Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>385626.4941 6671857.8581</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126413">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.338</oskari:feature_id>
+            <oskari:property_json>{"nimi":"Bar Loose","asp_max":26,"ID":465,"pist_os":"Annankatu 21,
+                Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.664Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>385535.0314 6671768.3936</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126465">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.390</oskari:feature_id>
+            <oskari:property_json>{"nimi":"Piano","asp_max":16,"ID":531,"pist_os":"Rauhankatu 15,
+                Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.709Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>386487.6456 6672285.4404</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126466">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.391</oskari:feature_id>
+            <oskari:property_json>{"nimi":"Fratello Torrefazione","asp_max":16,"ID":532,"pist_os":"Yliopistonkatu 6,
+                Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.710Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>386147.2835 6672088.5179</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126467">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.392</oskari:feature_id>
+            <oskari:property_json>{"nimi":"PikkuSavotta","asp_max":10,"ID":533,"pist_os":"Sofiankatu 3,
+                Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.711Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>386370.1945 6671958.0715</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126468">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.393</oskari:feature_id>
+            <oskari:property_json>{"nimi":"Nuevo","asp_max":42,"ID":534,"pist_os":"Sofiankatu 3,
+                Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.712Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>386369.195 6671935.0808</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126471">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.396</oskari:feature_id>
+            <oskari:property_json>{"nimi":"Shot Bar","asp_max":10,"ID":541,"pist_os":"Yliopistonkatu 8,
+                Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.714Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>386064.3169 6672088.0177</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126472">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.397</oskari:feature_id>
+            <oskari:property_json>{"nimi":"Pataässä","asp_max":24,"ID":542,"pist_os":"Snellmaninkatu 13,
+                Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.715Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>386452.1598 6672305.932</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126481">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.406</oskari:feature_id>
+            <oskari:property_json>{"nimi":"Cafe Engel","asp_max":20,"ID":564,"pist_os":"","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.723Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>386347.2036 6671998.0553</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126483">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.408</oskari:feature_id>
+            <oskari:property_json>{"nimi":"One Tiny Champagne Bar","asp_max":48,"ID":599,"pist_os":"","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.725Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>385824.8603 6671870.7149</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126484">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.409</oskari:feature_id>
+            <oskari:property_json>{"nimi":"Cafe Java","asp_max":60,"ID":639,"pist_os":"Simonkatu 1,
+                Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.726Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>385565.5173 6672133.9967</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126485">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.410</oskari:feature_id>
+            <oskari:property_json>{"nimi":"Itamae","asp_max":30,"ID":644,"pist_os":"Simonkatu 1,
+                Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.727Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>385518.5363 6672100.0102</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126486">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.411</oskari:feature_id>
+            <oskari:property_json>{"nimi":"La Creperie Cafe","asp_max":4,"ID":648,"pist_os":"Kolmensepänaukio,
+                Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.728Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>385749.2441 6671997.0527</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126487">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.412</oskari:feature_id>
+            <oskari:property_json>{"nimi":"Merelle","asp_max":32,"ID":661,"pist_os":"Eerikinkatu 2,
+                Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.728Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>385541.5282 6671889.0951</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126488">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.413</oskari:feature_id>
+            <oskari:property_json>{"nimi":"Bar All In","asp_max":56,"ID":664,"pist_os":"Mikonkatu 19,
+                Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.729Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>385998.8151 6672323.2308</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126489">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.414</oskari:feature_id>
+            <oskari:property_json>{"nimi":"Cargo","asp_max":46,"ID":672,"pist_os":"Mikonkatu 9,
+                Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.730Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>386005.3402 6672166.4859</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126490">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.415</oskari:feature_id>
+            <oskari:property_json>{"nimi":"Elvis Burger","asp_max":0,"ID":674,"pist_os":"Salomonkatu 3,
+                Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.731Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>385379.5919 6672169.9813</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126491">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.416</oskari:feature_id>
+            <oskari:property_json>{"nimi":"Väentupa","asp_max":80,"ID":675,"pist_os":"Olavinkatu 1,
+                Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.732Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>385359.5999 6672181.9764</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126494">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.419</oskari:feature_id>
+            <oskari:property_json>{"nimi":"Sushi bar","asp_max":30,"ID":701,"pist_os":"Kaisaniemen metroasema,
+                Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.735Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>386118.2939 6672343.9151</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126495">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.420</oskari:feature_id>
+            <oskari:property_json>{"nimi":"Big Mama's Sushi","asp_max":23,"ID":703,"pist_os":"Iso Roobertinkatu 11,
+                Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.736Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>385807.9234 6671412.788</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126496">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.421</oskari:feature_id>
+            <oskari:property_json>{"nimi":"R-Kioski Iso Roba","asp_max":7,"ID":704,"pist_os":"Iso Roobertinkatu 11,
+                Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.736Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>385794.9287 6671403.2918</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126498">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.423</oskari:feature_id>
+            <oskari:property_json>{"nimi":"Motellet 10","asp_max":20,"ID":706,"pist_os":"Annankatu 10,
+                Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.738Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>385708.9628 6671482.2596</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126500">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.425</oskari:feature_id>
+            <oskari:property_json>{"nimi":"Juntara","asp_max":8,"ID":714,"pist_os":"Fredrikinkatu 47,
+                Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.740Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>385373.5965 6671729.1586</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126501">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.426</oskari:feature_id>
+            <oskari:property_json>{"nimi":"Kakkugalleria","asp_max":4,"ID":716,"pist_os":"Fredrikinkatu 41,
+                Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.741Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>385469.5586 6671587.2162</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126506">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.431</oskari:feature_id>
+            <oskari:property_json>{"nimi":"Bar 9","asp_max":10,"ID":740,"pist_os":"Uudenmaankatu 11,
+                Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.745Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>385780.9335 6671555.7304</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126507">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.432</oskari:feature_id>
+            <oskari:property_json>{"nimi":"Fransmanni Katuterassi","asp_max":12,"ID":742,"pist_os":"Lönnrotinkatu 26,
+                Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.746Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>385288.132 6671507.2474</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126508">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.433</oskari:feature_id>
+            <oskari:property_json>{"nimi":"Halikarnas","asp_max":6,"ID":746,"pist_os":"Ruoholahdenkatu 18,
+                Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.747Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>384907.7845 6671597.2094</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126512">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.437</oskari:feature_id>
+            <oskari:property_json>{"nimi":"Lippakioski","asp_max":0,"ID":751,"pist_os":"Albertinkatu 46,
+                Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.750Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>385174.6765 6671734.6554</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126513">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.438</oskari:feature_id>
+            <oskari:property_json>{"nimi":"Zio Pepe","asp_max":8,"ID":752,"pist_os":"Lapinlahdenkatu 27,
+                Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.751Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>384859.8025 6671851.6068</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126540">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.465</oskari:feature_id>
+            <oskari:property_json>{"nimi":"Astoria","asp_max":12,"ID":805,"pist_os":"Iso Roobertinkatu 12,
+                Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.775Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>385826.416 6671408.2899</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126541">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.466</oskari:feature_id>
+            <oskari:property_json>{"nimi":"Cholo","asp_max":4,"ID":810,"pist_os":"Lönnrotinkatu 9,
+                Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.776Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>385534.5319 6671696.1727</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126542">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.467</oskari:feature_id>
+            <oskari:property_json>{"nimi":"Milli Miglia","asp_max":10,"ID":811,"pist_os":"Kalevankatu 36,
+                Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.777Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>385214.6612 6671580.2177</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126543">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.468</oskari:feature_id>
+            <oskari:property_json>{"nimi":"Patrona","asp_max":8,"ID":812,"pist_os":"Annankatu 20,
+                Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.778Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>385542.5286 6671724.1615</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126544">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.469</oskari:feature_id>
+            <oskari:property_json>{"nimi":"VinVin","asp_max":20,"ID":813,"pist_os":"Kalevankatu 6,
+                Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.779Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>385638.4893 6671862.1065</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126076">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.1</oskari:feature_id>
+            <oskari:property_json>{"nimi":"Food Spot","asp_max":15,"ID":4,"pist_os":"Mikonkatu 8,
+                Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.237Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>385992.8457 6672082.5196</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126078">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.3</oskari:feature_id>
+            <oskari:property_json>{"nimi":"Iguana","asp_max":22,"ID":13,"pist_os":"Keskuskatu 5,
+                Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.259Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>385849.2037 6672040.5357</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126079">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.4</oskari:feature_id>
+            <oskari:property_json>{"nimi":"Stones","asp_max":18,"ID":14,"pist_os":"Keskuskatu 5,
+                Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.261Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>385862.8023 6672023.7616</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126080">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.5</oskari:feature_id>
+            <oskari:property_json>{"nimi":"Sir Eino","asp_max":20,"ID":30,"pist_os":"Eteläesplanadi 18,
+                Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.262Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>386044.4504 6671793.8949</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+        <oskari:vuser_layer_data gml:id="vuser_layer_data.126081">
+            <oskari:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</oskari:uuid>
+            <oskari:user_layer_id>265</oskari:user_layer_id>
+            <oskari:feature_id>Export4541340283046446493.6</oskari:feature_id>
+            <oskari:property_json>{"nimi":"Erottaja Bar","asp_max":24,"ID":31,"pist_os":"Ludviginkatu 7,
+                Helsinki","GMRotation":0}
+            </oskari:property_json>
+            <oskari:created>2014-09-24T08:49:31.264Z</oskari:created>
+            <oskari:geometry>
+                <gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                    <gml:pointMember>
+                        <gml:Point srsDimension="2">
+                            <gml:pos>385916.8784 6671655.1911</gml:pos>
+                        </gml:Point>
+                    </gml:pointMember>
+                </gml:MultiPoint>
+            </oskari:geometry>
+        </oskari:vuser_layer_data>
+    </gml:featureMembers>
+</wfs:FeatureCollection>

@@ -109,6 +109,9 @@ public class ELFGeoLocatorSearchChannel extends SearchChannel {
     public void init() {
         super.init();
         serviceURL = PropertyUtil.getOptional(PROPERTY_SERVICE_URL);
+        if(serviceURL == null) {
+            throw new RuntimeException("ELFGeolocator didn't initialize - provide url with property: " + PROPERTY_SERVICE_URL);
+        }
 
         log.debug("ServiceURL set to " + serviceURL);
         try (InputStream inp = this.getClass().getResourceAsStream(geolocatorCountries);

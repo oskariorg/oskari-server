@@ -120,7 +120,7 @@ public abstract class BaseWfsAddressChannelSearchService extends SearchChannel {
                                     + language + ", Kielikoodi=" + languageCode 
                                     + ", Kunta=" + village);
                 item.setMapURL(getMapUrl(searchCriteria));
-                item.setVillage(village);
+                item.setRegion(village);
                 searchResultList.addItem(item);
                                 
             }
