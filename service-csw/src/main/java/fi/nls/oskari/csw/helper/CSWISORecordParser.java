@@ -599,7 +599,13 @@ public class CSWISORecordParser {
         }
         node = (Node) XPATH_DI_SI_CITATION_DATE_VALUE.evaluate(cNode, XPathConstants.NODE);
         if (node != null) {
-            dateWithType.setDate(dateFormat().parse(getText(node)));
+            try {
+                dateWithType.setDate(dateFormat().parse(getText(node)));
+            }
+            catch (Exception e) {
+                dateWithType.setXmlDate(getText(node));
+            }
+
         }
         citation.setDate(dateWithType);
         nodeList = (NodeList) XPATH_DI_SI_CITATION_RESOURCE_IDENTIFIERS.evaluate(cNode, XPathConstants.NODESET);
