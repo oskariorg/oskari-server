@@ -96,6 +96,11 @@ If the user/pass is the same, you can leave them out and it will default to db.u
 Note! Ibatis-mappings for analysis and userlayers still have hardcoded values as JNDI-name so you might need to override files under
 "servlet-map/src/main/resources/META-INF": SqlMapConfig_Analysis.xml and SqlMapConfig_UserLayer.xml.
 
+### service-csw
+ 
+Date parsing has been improved. Any non-parseable dates are now used as is from the XML. This fixes an issue where CSW data
+with dates having for example only year or year and month failed parsing and the user was presented with an empty result.
+
 ## 1.41
 
 ### CSW Metadata improvements
