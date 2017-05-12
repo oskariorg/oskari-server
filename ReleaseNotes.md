@@ -1,5 +1,11 @@
 # Release Notes
 
+## 1.43
+
+### service-csw
+
+Fixed an issue where data quality fields were not parsed correctly from CSW response.
+
 ## 1.42
 
 ### Default published JSP-file
