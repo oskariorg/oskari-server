@@ -6,6 +6,16 @@
 
 Fixed an issue where data quality fields were not parsed correctly from CSW response.
 
+### Layer urls handling for https-services
+
+Layer urls are modified for the frontend if the Oskari instance is running in a secure URL (https://). Most services only provide 
+ http urls and won't work properly if the map is loaded using https. For any layer where url doesn't start
+  with https:// or / the url is modified to use a proxied url with GetLayerTile action route.
+  Previously the protocol was replaced with https:// and to preserve this functionality you can add a property
+   for oskari-ext.properties:
+
+    maplayer.wmsurl.secure=https://
+
 ## 1.42
 
 ### Default published JSP-file
