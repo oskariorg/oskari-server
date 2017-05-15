@@ -1,5 +1,16 @@
 # Migration guide
 
+## 1.42.3
+
+
+### Layer urls handling for https-services
+
+Layers with http:// urls are now proxied using the GetLayerTile action route by default.
+Previously the protocol was replaced with https:// and to preserve this functionality you can add a property
+ for oskari-ext.properties:
+
+    maplayer.wmsurl.secure=https://
+
 ## 1.42.0
 
 ### Thematic maps regionsets
