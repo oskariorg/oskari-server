@@ -1,6 +1,8 @@
 package fi.nls.oskari.domain.map.wms;
 
 import fi.nls.oskari.domain.map.OskariLayer;
+import fi.nls.oskari.util.PropertyUtil;
+import org.junit.After;
 import org.junit.Test;
 
 import java.util.HashMap;
@@ -12,6 +14,11 @@ import static org.junit.Assert.assertEquals;
  * @author SMAKINEN
  */
 public class OskariLayerTest {
+
+    @After
+    public void teardown() {
+        PropertyUtil.clearProperties();
+    }
 
     @Test
     public void testSimplifiedWmsURL() {
@@ -49,5 +56,32 @@ public class OskariLayerTest {
             layer.setUrl(wmsurl);
             assertEquals("Simplified wms url should be '" + tests.get(wmsurl) + "' if wms url is '" + wmsurl + "'", tests.get(wmsurl), layer.getSimplifiedUrl());
         }
+    }
+
+    @Test
+    public void testGetURL() throws Exception {
+        PropertyUtil.addProperty("maplayer.wmsurl.secure", "https://", true);
+        OskariLayer layer = new OskariLayer();
+        final String url = "http://oskari.org";
+
+        layer.setUrl(url);
+        assertEquals("Url should be '" + url + "' if url is '" + url + "'", url, layer.getUrl());
+        assertEquals("Secure url should be 'https://oskari.org' if url is '" + url + "'", "https://oskari.org", layer.getUrl(true));
+
+        PropertyUtil.addProperty("maplayer.wmsurl.secure", "/tiles/", true);
+        layer = new OskariLayer();
+        layer.setUrl(url);
+        assertEquals("Url should be '" + url + "' if url is '" + url + "'", url, layer.getUrl());
+        assertEquals("Secure url should be '/tiles/oskari.org' if url is '" + url + "'", "/tiles/oskari.org", layer.getUrl(true));
+
+        PropertyUtil.addProperty("maplayer.wmsurl.secure", "", true);
+        PropertyUtil.addProperty("oskari.ajax.url.prefix", "/action?", true);
+        layer = new OskariLayer();
+        layer.setUrl(url);
+        layer.setId(37);
+        final String proxyUrl = "/action?id=37&action_route=GetLayerTile";
+        assertEquals("Url should be '" + url + "' if url is '" + url + "'", url, layer.getUrl());
+        assertEquals("Secure url should be '" + proxyUrl + "' if url is '" + url + "'", proxyUrl, layer.getUrl(true));
+
     }
 }

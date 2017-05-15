@@ -2,6 +2,7 @@ package fi.nls.oskari.domain.map;
 
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.PropertyUtil;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -11,6 +12,7 @@ import java.util.*;
 public class OskariLayer extends JSONLocalizedNameAndTitle implements Comparable<OskariLayer> {
 
     private static Logger log = LogFactory.getLogger(OskariLayer.class);
+    public static final String PROPERTY_AJAXURL = "oskari.ajax.url.prefix";
 
     private static final String TYPE_COLLECTION = "collection";
     public static final String TYPE_WMS = "wmslayer";
@@ -33,7 +35,7 @@ public class OskariLayer extends JSONLocalizedNameAndTitle implements Comparable
     private String url;
 
     // simplied url is just for caching so we don't need to create it but once
-    private final static String secureBaseUrl = PropertyUtil.get("maplayer.wmsurl.secure");
+    private String secureBaseUrl = PropertyUtil.get("maplayer.wmsurl.secure", "");
     private String simplifiedUrl;
 
     // defaults
@@ -308,7 +310,14 @@ public class OskariLayer extends JSONLocalizedNameAndTitle implements Comparable
             return url;
         }
         if(isSecure) {
-            return secureBaseUrl + getSimplifiedUrl();
+            if(!secureBaseUrl.isEmpty()) {
+                return secureBaseUrl + getSimplifiedUrl();
+            }
+            // proxy layer url
+            Map<String, String> urlParams = new HashMap<String, String>();
+            urlParams.put("action_route", "GetLayerTile");
+            urlParams.put("id", Integer.toString(getId()));
+            return IOHelper.constructUrl(PropertyUtil.get(PROPERTY_AJAXURL), urlParams);
         }
         return url;
     }
