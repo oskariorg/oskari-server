@@ -79,7 +79,7 @@ public class OskariLayerTest {
         layer = new OskariLayer();
         layer.setUrl(url);
         layer.setId(37);
-        final String proxyUrl = "/action?id=37&action_route=GetLayerTile";
+        final String proxyUrl = "/action?action_route=GetLayerTile&id=37";
         assertEquals("Url should be '" + url + "' if url is '" + url + "'", url, layer.getUrl());
         assertEquals("Secure url should be '" + proxyUrl + "' if url is '" + url + "'", proxyUrl, layer.getUrl(true));
 

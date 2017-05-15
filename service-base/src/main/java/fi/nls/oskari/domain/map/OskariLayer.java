@@ -4,7 +4,6 @@ import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.PropertyUtil;
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.*;
@@ -314,7 +313,7 @@ public class OskariLayer extends JSONLocalizedNameAndTitle implements Comparable
                 return secureBaseUrl + getSimplifiedUrl();
             }
             // proxy layer url
-            Map<String, String> urlParams = new HashMap<String, String>();
+            Map<String, String> urlParams = new LinkedHashMap<String, String>();
             urlParams.put("action_route", "GetLayerTile");
             urlParams.put("id", Integer.toString(getId()));
             return IOHelper.constructUrl(PropertyUtil.get(PROPERTY_AJAXURL), urlParams);
