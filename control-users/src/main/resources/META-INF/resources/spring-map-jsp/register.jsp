@@ -184,17 +184,16 @@
       			<div class="form-group">
       				<input type="email" name="email" id="email" class="form-control input-lg" placeholder="Email Address" tabindex="4">
       			</div>
+                <hr class="colorgraph">
+                <div class="row">
+                    <div class="col-xs-12 col-md-6"><input type="button" value="Register" class="btn btn-primary btn-block btn-lg" id="registerBtn" tabindex="7"></div>
+            <br><br>
+            <a class="col-xs-12" href="#" id="forgotPassword"><spring:message code="btn.forgotPassword"/></a>
+                </div>
+            </form>
+        </div>
         </c:otherwise>
       </c:choose>
-
-			<hr class="colorgraph">
-			<div class="row">
-				<div class="col-xs-12 col-md-6"><input type="button" value="Register" class="btn btn-primary btn-block btn-lg" id="registerBtn" tabindex="7"></div>
-        <br><br>
-        <a class="col-xs-12" href="#" id="forgotPassword"><spring:message code="btn.forgotPassword"/></a>
-			</div>
-		</form>
-	</div>
 </div>
 
 <!-- RegistrationModal -->
@@ -298,6 +297,10 @@
                             errorMsg("#email", '<spring:message code="user.registration.error.emailExists"/>');
                         } else if (errorResponse.toLowerCase().indexOf("username") >= 0) {
                             errorMsg("#username", '<spring:message code="user.registration.error.usernameExists"/>');
+                        } else if (errorResponse.toLowerCase().indexOf("address") >= 0) {
+                            errorMsg("#email", '<spring:message code="user.registration.error.sendingFailed"/>');
+                        } else if (errorResponse.toLowerCase().indexOf("properties") >= 0) {
+                            errorMsg("#username", '<spring:message code="user.registration.error.emailConfigurationError"/>');
                         } else {
                             //TODO: error handling
                             errorMsg("#errorGeneral", jqXHR.responseText);

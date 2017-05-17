@@ -1,20 +1,19 @@
 package fi.nls.oskari.control.users;
 
+import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.*;
+import fi.nls.oskari.control.users.model.Email;
+import fi.nls.oskari.control.users.service.MailSenderService;
+import fi.nls.oskari.control.users.service.UserRegistrationService;
 import fi.nls.oskari.domain.Role;
+import fi.nls.oskari.domain.User;
 import fi.nls.oskari.service.OskariComponentManager;
+import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.service.UserService;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
-import org.json.JSONObject;
-
-import fi.nls.oskari.annotation.OskariActionRoute;
-import fi.nls.oskari.control.users.model.Email;
-import fi.nls.oskari.control.users.service.UserRegistrationService;
-import fi.nls.oskari.control.users.service.MailSenderService;
-import fi.nls.oskari.domain.User;
-import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.util.ResponseHelper;
+import org.json.JSONObject;
 
 import java.util.Iterator;
 import java.util.Map;
@@ -67,6 +66,11 @@ public class UserRegistrationHandler extends ActionHandler {
 		if (params.getHttpParam(PARAM_REGISTER) != null) {
 			getUserParams(user, params);
 			if (isEmailAlreadyExist(user.getEmail())) {
+				try {
+					mailSenderService.sendEmailAlreadyExists(user, RegistrationUtil.getServerAddress(params));
+				} catch (ServiceException se) {
+					//Do nothing
+				}
 				throw new ActionException("Email already exists.");
 			}
 			if (isUsernameAlreadyExist(user.getScreenname())) {
@@ -85,8 +89,12 @@ public class UserRegistrationHandler extends ActionHandler {
 	    	emailToken.setUuid(user.getUuid());
 	    	emailToken.setExpiryTimestamp(RegistrationUtil.createExpiryTime());
 	    	registerTokenService.addEmail(emailToken);
-	    	
-	    	mailSenderService.sendEmailForRegistrationActivation(user, RegistrationUtil.getServerAddress(params));
+
+			try {
+				mailSenderService.sendEmailForRegistrationActivation(user, RegistrationUtil.getServerAddress(params));
+			} catch (ServiceException se) {
+				throw new ActionException(se.getMessage(), se);
+			}
 				    	
 		} else if (requestEdit != null && !requestEdit.isEmpty()) {
 			try {
