@@ -62,7 +62,8 @@ public class SHPGeoJsonCollection extends GeoJsonCollection implements GeoJsonWo
 
             if (sourceCrs == null && source_epsg== null ) {
                 // Unknown CRS in source data - better to stop - result could be chaos
-                return "Uknown projection data in the source import file " + file.getName();
+                log.error("Uknown projection data in the source import file", file.getName());
+                return "unknown_projection";
             }
 
             // Source epsg not found in source data, use epsg given by the user
@@ -99,9 +100,8 @@ public class SHPGeoJsonCollection extends GeoJsonCollection implements GeoJsonWo
             return null;
 
         }catch (Exception e) {
-            log.error("Couldn't create geoJSON from the shp file ", file.getName(),
-                    e);
-            return "Couldn't create geoJSON from the shp file " + file.getName();
+            log.error("Couldn't create geoJSON from the shapefile.", file.getName(), e);
+            return "shp";
         }
         finally {
             dataStore.dispose();
