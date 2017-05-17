@@ -74,7 +74,6 @@ public class GetPrintHandler extends ActionHandler {
                 ServiceFactory.getMapLayerService(),
                 ServiceFactory.getPermissionsService());
         ProxyService.init();
-        HttpURLConnection.setFollowRedirects(false);
     }
 
     public void handleAction(ActionParameters params) throws ActionException {
