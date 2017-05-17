@@ -1,22 +1,13 @@
 package fi.nls.oskari.control.users;
 
-import java.io.IOException;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
-
-import javax.servlet.http.HttpServletRequest;
-
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.*;
 import fi.nls.oskari.control.users.model.Email;
-import fi.nls.oskari.control.users.service.UserRegistrationService;
 import fi.nls.oskari.control.users.service.MailSenderService;
+import fi.nls.oskari.control.users.service.UserRegistrationService;
 import fi.nls.oskari.domain.User;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
@@ -25,6 +16,13 @@ import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.service.UserService;
 import fi.nls.oskari.user.IbatisUserService;
 import fi.nls.oskari.util.PropertyUtil;
+
+import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 @OskariActionRoute("UserPasswordReset")
 public class PasswordResetHandler extends RestActionHandler {
@@ -60,7 +58,7 @@ public class PasswordResetHandler extends RestActionHandler {
         }
         final String requestEmail = params.getHttpParam(PARAM_EMAIL, "");
         if (!requestEmail.isEmpty()) {
-            handlePasswordReset(requestEmail, RegistrationUtil.getServerAddress(params));
+            handlePasswordReset(requestEmail, RegistrationUtil.getServerAddress(params), params.getLocale().getLanguage());
 
         } else if (params.getHttpParam(PARAM_SET_PASSWORD) != null) {
             final Email token = parseContentForEmailUpdate(params);
@@ -70,7 +68,7 @@ public class PasswordResetHandler extends RestActionHandler {
         }
     }
 
-    public void handlePasswordReset(final String email, final String serverAddress) throws ActionException {
+    public void handlePasswordReset(final String email, final String serverAddress, String language) throws ActionException {
 
         if (!isUsernameExistsForLogin(email)) {
             throw new ActionDeniedException("Username for login doesn't exist for email address: " + email);
@@ -85,7 +83,7 @@ public class PasswordResetHandler extends RestActionHandler {
         String username = registerTokenService.findUsernameForEmail(email);
         try {
             User user = userService.getUser(username);
-            mailSenderService.sendEmailForResetPassword(user, uuid, serverAddress);
+            mailSenderService.sendEmailForResetPassword(user, uuid, serverAddress, language);
         } catch (ServiceException ex) {
             throw new ActionException("Couldn't find user", ex);
         }

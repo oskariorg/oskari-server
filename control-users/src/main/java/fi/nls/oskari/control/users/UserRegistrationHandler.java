@@ -65,9 +65,10 @@ public class UserRegistrationHandler extends ActionHandler {
 		User user = new User();
 		if (params.getHttpParam(PARAM_REGISTER) != null) {
 			getUserParams(user, params);
+            String language = params.getLocale().getLanguage();
 			if (isEmailAlreadyExist(user.getEmail())) {
 				try {
-					mailSenderService.sendEmailAlreadyExists(user, RegistrationUtil.getServerAddress(params));
+					mailSenderService.sendEmailAlreadyExists(user, RegistrationUtil.getServerAddress(params), language);
 				} catch (ServiceException se) {
 					//Do nothing
 				}
@@ -91,7 +92,7 @@ public class UserRegistrationHandler extends ActionHandler {
 	    	registerTokenService.addEmail(emailToken);
 
 			try {
-				mailSenderService.sendEmailForRegistrationActivation(user, RegistrationUtil.getServerAddress(params));
+				mailSenderService.sendEmailForRegistrationActivation(user, RegistrationUtil.getServerAddress(params), language);
 			} catch (ServiceException se) {
 				throw new ActionException(se.getMessage(), se);
 			}

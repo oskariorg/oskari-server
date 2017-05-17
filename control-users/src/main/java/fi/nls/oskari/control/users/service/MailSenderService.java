@@ -45,7 +45,7 @@ public class MailSenderService {
      * @param uuid          Token number to be sent with email.
      * @param serverAddress Address to include in message
      */
-    public final void sendEmail(EmailMessage emailMessage, final String uuid, final String serverAddress) throws ServiceException {
+    public final void sendEmail(EmailMessage emailMessage, final String uuid, final String serverAddress, String language) throws ServiceException {
         String from;
         Properties properties;
 
@@ -64,9 +64,7 @@ public class MailSenderService {
             mimeMessage.setFrom(new InternetAddress(from));
             mimeMessage.addRecipient(Message.RecipientType.TO, new InternetAddress(emailMessage.getTo()));
             mimeMessage.setSubject(emailMessage.getSubject());
-            mimeMessage.setContent(emailMessage.getContent() +
-                getMessages().getMessage("oskari.email.link.to.reset", new String[]{serverAddress, uuid}, Locale.ENGLISH),
-                "text/html; charset=UTF-8");
+            mimeMessage.setContent(emailMessage.getContent(), "text/html; charset=UTF-8");
             Transport.send(mimeMessage);
         } catch (MessagingException ex) {
             log.debug("Email can't be sent to email address: " + emailMessage.getTo());
@@ -74,34 +72,36 @@ public class MailSenderService {
         }
     }
 
-    public final void sendEmailForRegistrationActivation(User user, String serverAddress) throws ServiceException {
-        String content = readFile(PropertyUtil.get("oskari.email.registration.en"));
-        String subject = PropertyUtil.get("oskari.email.registration.title.en");
+    public final void sendEmailForRegistrationActivation(User user, String serverAddress, String language) throws ServiceException {
+        String content = readFile(PropertyUtil.get("oskari.email.registration." + language));
+        String subject = PropertyUtil.get("oskari.email.registration.title." + language);
         EmailMessage emailMessage = new EmailMessage();
         emailMessage.setTo(user.getEmail());
         emailMessage.setSubject(subject);
-        emailMessage.setContent(content);
-        sendEmail(emailMessage, user.getUuid(), serverAddress);
+        emailMessage.setContent(content +
+                getMessages().getMessage("oskari.email.link.to.reset", new String[]{serverAddress, user.getUuid()}, new Locale(language)));
+        sendEmail(emailMessage, user.getUuid(), serverAddress, language);
     }
 
-    public final void sendEmailForResetPassword(User user, String uuid, String serverAddress) throws ServiceException {
-        String content = readFile(PropertyUtil.get("oskari.email.passwordrecovery.en"));
-        String subject = PropertyUtil.get("oskari.email.passwordrecovery.title.en");
+    public final void sendEmailForResetPassword(User user, String uuid, String serverAddress, String language) throws ServiceException {
+        String content = readFile(PropertyUtil.get("oskari.email.passwordrecovery." + language));
+        String subject = PropertyUtil.get("oskari.email.passwordrecovery.title." + language);
         EmailMessage emailMessage = new EmailMessage();
         emailMessage.setTo(user.getEmail());
         emailMessage.setSubject(subject);
-        emailMessage.setContent(content);
-        sendEmail(emailMessage, uuid, serverAddress);
+        emailMessage.setContent(content +
+                getMessages().getMessage("oskari.email.link.to.reset", new String[]{serverAddress, uuid}, new Locale(language)));
+        sendEmail(emailMessage, uuid, serverAddress, language);
     }
 
-    public final void sendEmailAlreadyExists(User user, String serverAddress) throws ServiceException {
-        String content = readFile(PropertyUtil.get("skari.email.exists.en"));
-        String subject = PropertyUtil.get("skari.email.exists.title.en");
+    public final void sendEmailAlreadyExists(User user, String serverAddress, String language) throws ServiceException {
+        String content = readFile(PropertyUtil.get("oskari.email.exists." + language));
+        String subject = PropertyUtil.get("oskari.email.exists.title." + language);
         EmailMessage emailMessage = new EmailMessage();
         emailMessage.setTo(user.getEmail());
         emailMessage.setSubject(subject);
         emailMessage.setContent(content);
-        sendEmail(emailMessage, user.getUuid(), serverAddress);
+        sendEmail(emailMessage, user.getUuid(), serverAddress, language);
     }
     private String readFile(String file) throws ServiceException {
         InputStream in = null;
