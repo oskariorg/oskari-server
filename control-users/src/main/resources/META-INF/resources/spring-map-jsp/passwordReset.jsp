@@ -140,10 +140,10 @@
           <h1><spring:message code="user.registration.passwordReset.title"/></h1>
           <hr class="colorgraph">
             <div class="form-group">
-						  <input class="form-control input-lg" size="16" id="password" name="password" type="password" placeholder="Password" autofocus required>
+						  <input class="form-control input-lg" size="16" id="password" name="password" type="password" autofocus required>
             </div>
             <div class="form-group">
-						  <input class="form-control input-lg" size="16" id="confirmPassword" name="confirmPassword" type="password"placeholder="Confirm password" required>
+						  <input class="form-control input-lg" size="16" id="confirmPassword" name="confirmPassword" type="password" required>
             </div>
 						<label id="unmatchedPassword" class="error"></label>
 					<br />

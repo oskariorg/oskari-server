@@ -1,6 +1,7 @@
 package fi.nls.oskari.control.users;
 
 import fi.nls.oskari.control.ActionParameters;
+import fi.nls.oskari.util.PropertyUtil;
 
 import javax.servlet.http.HttpServletRequest;
 import java.sql.Timestamp;
@@ -25,7 +26,8 @@ public class RegistrationUtil {
         Calendar calender = Calendar.getInstance();
         Timestamp currentTime = new java.sql.Timestamp(calender.getTime().getTime());
         calender.setTime(currentTime);
-        calender.add(Calendar.DAY_OF_MONTH, 2);
+        Integer expiryTimeProperty = Integer.getInteger(PropertyUtil.get("oskari.email.link.expirytime"));
+        calender.add(Calendar.DAY_OF_MONTH, expiryTimeProperty);
         Timestamp expiryTime = new java.sql.Timestamp(calender.getTime().getTime());
         return expiryTime;
     }
