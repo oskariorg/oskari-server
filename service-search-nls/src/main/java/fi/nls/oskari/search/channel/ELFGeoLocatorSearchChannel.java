@@ -215,7 +215,7 @@ public class ELFGeoLocatorSearchChannel extends SearchChannel {
         request = request.replace(KEY_LONGITUDE_HOLDER, lonlat[0]);
         request = request.replace(KEY_LANG_HOLDER, lang3);
         buf.append(request);
-        String data = "";
+        String data;
         try {
             data = IOHelper.readString(getConnection(buf.toString()));
             // Clean xml version for geotools parser for faster parse
@@ -235,6 +235,15 @@ public class ELFGeoLocatorSearchChannel extends SearchChannel {
         return result;
     }
 
+    protected boolean hasWildcard(String query) {
+        return query != null && (query.contains("*") || query.contains("#"));
+    }
+
+    protected String getWildcardQuery(SearchCriteria searchCriteria) {
+        String postData = likeQueryXMLtemplate;
+        return postData.replace(LIKE_LITERAL_HOLDER, searchCriteria.getSearchString());
+    }
+
     /**
      * Returns the search raw results.
      *
@@ -251,11 +260,10 @@ public class ELFGeoLocatorSearchChannel extends SearchChannel {
 
         // wildcard search
         String searchString = searchCriteria.getSearchString();
-        if (searchString != null && (searchString.contains("*") || searchString.contains("#"))) {
+        if (hasWildcard(searchString)) {
             log.debug("Wildcard search: ", searchString);
 
-            String postData = likeQueryXMLtemplate;
-            postData = postData.replace(LIKE_LITERAL_HOLDER, searchString);
+            String postData = getWildcardQuery(searchCriteria);
 
             StringBuffer buf = new StringBuffer(serviceURL);
 
