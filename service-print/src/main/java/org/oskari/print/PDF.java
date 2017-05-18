@@ -272,6 +272,7 @@ public class PDF {
                     stream.saveGraphicsState();
                     PDExtendedGraphicsState gs = new PDExtendedGraphicsState();
                     gs.setNonStrokingAlphaConstant(0.01f * opacity);
+                    stream.drawImage(imgObject, x, y, w, h);
                     stream.setGraphicsStateParameters(gs);
                     stream.restoreGraphicsState();
                 } else {
