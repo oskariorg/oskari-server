@@ -360,6 +360,12 @@
                 <artifactId>servlet-map</artifactId>
                 <version>${fi.nls.oskari.version}</version>
             </dependency>
+            
+	        <dependency>
+	            <groupId>fi.nls.oskari</groupId>
+	            <artifactId>download-basket</artifactId>
+                <version>${fi.nls.oskari.service.version}</version>
+	        </dependency>
 
             <dependency>
                 <groupId>fi.mml</groupId>
@@ -1043,6 +1049,7 @@
         <module>service-feedback</module>
         <module>service-feedback-open311</module>
 
+        <module>download-basket</module>
     </modules>
 
 </project>
