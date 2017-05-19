@@ -2,6 +2,10 @@
 
 ## 1.43
 
+### Thematic maps
+
+Fixed an issue where GetRegions action route returns the geometry reference point incorrect projection.
+
 ### service-csw
 
 Fixed an issue where data quality fields were not parsed correctly from CSW response.
