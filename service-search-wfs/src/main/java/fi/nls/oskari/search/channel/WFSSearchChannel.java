@@ -93,10 +93,20 @@ public class WFSSearchChannel extends SearchChannel {
         return handlers.get(WFSChannelHandler.ID);
     }
 
-
+    /**
+     * From database oskari_wfs_search_channels-table config-column:
+     * {
+     *     "defaults" : {
+     *         "region" : "",
+     *         "desc" : "",
+     *         "locationType" : ""
+     *     }
+     * }
+     * @param item
+     */
     private void setupDefaults(SearchResultItem item) {
         JSONObject defaults = config.getConfig().optJSONObject("defaults");
-        item.setVillage(JSONHelper.getStringFromJSON(defaults, "village", ""));
+        item.setRegion(JSONHelper.getStringFromJSON(defaults, "region", ""));
         item.setDescription(JSONHelper.getStringFromJSON(defaults, "desc", ""));
         item.setLocationTypeCode(JSONHelper.getStringFromJSON(defaults, "locationType", ""));
     }

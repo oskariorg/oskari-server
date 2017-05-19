@@ -24,7 +24,10 @@ import java.util.List;
      }, {
          "id" : 2,
          "name" : "SotkaNET",
-         "type" : "system"
+         "type" : "system",
+         "info" : {
+            "url" : "http://moreinfoaboutthis.here
+        }
      }, {
          "id" : 3,
          "name" : "KHR",
@@ -36,6 +39,7 @@ import java.util.List;
 public class StatsgridHandler extends BundleHandler {
 
     private static final String KEY_DATASOURCES = "sources";
+    private static final String KEY_INFO = "info";
 
     private static final StatisticalDatasourcePluginManager pluginManager = StatisticalDatasourcePluginManager.getInstance();
 
@@ -54,6 +58,8 @@ public class StatsgridHandler extends BundleHandler {
             JSONHelper.putValue(item, KEY_ID, src.getId());
             JSONHelper.putValue(item, KEY_NAME, src.getName(params.getLocale().getLanguage()));
             JSONHelper.putValue(item, KEY_TYPE, getType(src.getPlugin()));
+            JSONHelper.putValue(item, KEY_INFO, src.getConfigJSON().optJSONObject(KEY_INFO));
+
             sourcesList.put(item);
         }
         return false;

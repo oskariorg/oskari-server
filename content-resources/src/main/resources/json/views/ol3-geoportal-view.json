@@ -1,0 +1,118 @@
+{
+  "name": "Geoportal OL3",
+  "type": "USER",
+  "default": false,
+  "public": true,
+  "oskari": {
+    "application": "servlet",
+    "page": "index",
+    "development_prefix": "/applications/sample"
+  },
+  "bundles": [
+    {
+      "id": "mapfull",
+      "startup": {
+        "bundlename": "mapfull",
+        "metadata": {
+          "Import-Bundle": {
+            "mapwmts": {
+              "bundlePath": "/Oskari/packages/mapping/ol3/"
+            },
+            "mapwfs2": {
+              "bundlePath": "/Oskari/packages/mapping/ol3/"
+            },
+            "mapanalysis": {
+              "bundlePath": "/Oskari/packages/mapping/ol3/"
+            },
+            "mapuserlayers": {
+              "bundlePath": "/Oskari/packages/mapping/ol3/"
+            },
+            "maparcgis": {
+              "bundlePath": "/Oskari/packages/mapping/ol3/"
+            },
+            "mapstats": {
+              "bundlePath": "/Oskari/packages/mapping/ol3/"
+            },
+            "mapmodule": {
+              "bundlePath": "/Oskari/packages/mapping/ol3/"
+            },
+            "mapfull": {
+              "bundlePath": "/Oskari/packages/framework/bundle/"
+            },
+            "ui-components": {
+              "bundlePath": "/Oskari/packages/framework/bundle/"
+            },
+            "oskariui": {
+              "bundlePath": "/Oskari/packages/framework/bundle/"
+            }
+          }
+        }
+      }
+    },
+    { "id" : "divmanazer" },
+    {
+      "id": "toolbar",
+      "startup": {
+        "bundlename": "toolbar",
+        "metadata": {
+          "Import-Bundle": {
+            "toolbar": {
+              "bundlePath": "/Oskari/packages/mapping/ol3/"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "infobox",
+      "startup": {
+        "bundlename": "infobox",
+        "metadata": {
+          "Import-Bundle": {
+            "infobox": {
+              "bundlePath": "/Oskari/packages/mapping/ol3/"
+            }
+          }
+        }
+      }
+    },
+    { "id" : "statehandler" },
+    {
+      "id": "drawtools",
+      "startup": {
+        "bundlename": "drawtools",
+        "metadata": {
+          "Import-Bundle": {
+            "drawtools": {
+              "bundlePath": "/Oskari/packages/mapping/ol3/"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "routingService"
+    },
+    { "id" : "search" },
+    { "id" : "metadatacatalogue" },
+    { "id" : "layerselector2" },
+    { "id" : "layerselection2" },
+    { "id" : "coordinatedisplay" },
+    { "id" : "metadataflyout" },
+    { "id" : "personaldata" },
+    { "id" : "publisher" },
+    { "id" : "maplegend" },
+    { "id" : "userguide" },
+    { "id" : "myplaces2" },
+    { "id" : "printout" },
+    { "id" : "analyse" },
+    { "id" : "myplacesimport" },
+    {
+      "id" : "featuredata2",
+      "config": {
+        "selectionTools": true
+      }
+    },
+    { "id" : "heatmap" }
+  ]
+}
