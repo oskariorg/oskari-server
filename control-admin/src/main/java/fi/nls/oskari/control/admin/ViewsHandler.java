@@ -24,8 +24,6 @@ import fi.nls.oskari.util.ResponseHelper;
 public class ViewsHandler extends RestActionHandler {
 
     private static final Logger LOG = LogFactory.getLogger(ViewsHandler.class);
-    // TODO: Use a singleton ObjectMapper
-    private static final ObjectMapper OM = new ObjectMapper();
 
     private ViewService viewService;
 
@@ -50,16 +48,19 @@ public class ViewsHandler extends RestActionHandler {
             throw new ActionException("View not found!");
         }
 
-        try {
-            byte[] json = OM.writeValueAsBytes(view);
-            writeJson(params.getResponse(), json);
-        } catch (JsonProcessingException e) {
-            LOG.warn(e);
-            ResponseHelper.writeError(params, "Failed to process View to JSON!");
-        }
+        byte[] json = viewToJson(view);
+        writeJson(params.getResponse(), json);
     }
 
-    private static void writeJson(HttpServletResponse response, byte[] body) {
+    protected static byte[] viewToJson(View view) {
+        return null;
+    }
+    
+    protected static View viewFromJson(byte[] json) {
+        return null;
+    }
+
+    protected static void writeJson(HttpServletResponse response, byte[] body) {
         response.setContentType("application/json;charset=UTF-8");
         response.setContentLength(body.length);
         try (OutputStream out = response.getOutputStream()) {

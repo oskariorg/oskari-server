@@ -6,6 +6,7 @@ import fi.nls.oskari.domain.User;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.test.util.JSONTestHelper;
 import fi.nls.test.util.MapBuilder;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.After;
@@ -16,6 +17,8 @@ import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
@@ -36,10 +39,12 @@ import static org.mockito.Mockito.*;
 public class JSONActionRouteTest {
 
     private StringWriter response = new StringWriter();
+    protected ByteArrayOutputStream baos;
 
     @Before
     public void jsonActionRouteSetUp() throws Exception {
         response = new StringWriter();
+        baos = new ByteArrayOutputStream();
     }
 
     @After
@@ -122,6 +127,10 @@ public class JSONActionRouteTest {
             doReturn(output).when(resp).getWriter();
         }
         catch (IOException ignored ) {}
+        
+        try {
+            doReturn(new MockServletOutputStream(baos)).when(resp).getOutputStream();
+        } catch (IOException ignore) {}
 
         params.setRequest(req);
         params.setResponse(resp);
