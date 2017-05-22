@@ -180,6 +180,8 @@
 
 <script type="text/javascript">
 $(document).ready(function () {
+	jQuery('#unmatchedPassword').hide();
+
 	$('#frontpage, #cancel').click(function () {
 		var host = window.location.protocol + "//" + window.location.host;
 		window.location.replace(host);
@@ -192,6 +194,9 @@ $(document).ready(function () {
 		if (password != confirmPassword) {
 			jQuery('#unmatchedPassword').show();
 			return;
+		}
+		else {
+	        jQuery('#unmatchedPassword').hide();
 		}
 
 		var uuid = '${uuid}';
