@@ -21,7 +21,7 @@ public interface EmailMapper {
     @Select("SELECT user_name FROM oskari_users WHERE email = #{email}")
     String findUsernameForEmail(String email);
 
-    @Select("SELECT login FROM oskari_jaas_users WHERE login = #user_name#")
+    @Select("SELECT login FROM oskari_jaas_users WHERE login = #{user_name}")
     String findUsernameForLogin(String username);
 
     @Delete("DELETE FROM oskari_users_pending WHERE uuid = #{uuid}")

@@ -145,7 +145,7 @@
             <div class="form-group">
 						  <input class="form-control input-lg" size="16" id="confirmPassword" name="confirmPassword" type="password" required>
             </div>
-						<label id="unmatchedPassword" class="error"></label>
+						<label id="unmatchedPassword" class="error">"<spring:message code="user.registration.error.passwordDoesNotMatch"/>"</label>
 					<br />
           <hr class="colorgraph">
 					<span>
@@ -190,7 +190,7 @@ $(document).ready(function () {
 		var confirmPassword = jQuery('#confirmPassword').val();
 
 		if (password != confirmPassword) {
-			jQuery('#unmatchedPassword').text('<spring:message code="user.registration.error.passwordDoesNotMatch"/>');
+			jQuery('#unmatchedPassword').show();
 			return;
 		}
 

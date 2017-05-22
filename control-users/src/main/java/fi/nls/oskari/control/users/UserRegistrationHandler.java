@@ -70,7 +70,7 @@ public class UserRegistrationHandler extends ActionHandler {
 				try {
 					mailSenderService.sendEmailAlreadyExists(user, RegistrationUtil.getServerAddress(params), language);
 				} catch (ServiceException se) {
-					//Do nothing
+					//Do nothing, email already exists and tried to send email about that failed.
 				}
 				throw new ActionException("Email already exists.");
 			}
@@ -88,7 +88,12 @@ public class UserRegistrationHandler extends ActionHandler {
 	    	emailToken.setEmail(user.getEmail());
 			emailToken.setScreenname(user.getScreenname());
 	    	emailToken.setUuid(user.getUuid());
-	    	emailToken.setExpiryTimestamp(RegistrationUtil.createExpiryTime());
+			try {
+				emailToken.setExpiryTimestamp(RegistrationUtil.createExpiryTime());
+			}
+			catch (Exception e) {
+				throw new ActionException("Unable to read the configuration properties.");
+			}
 	    	registerTokenService.addEmail(emailToken);
 
 			try {

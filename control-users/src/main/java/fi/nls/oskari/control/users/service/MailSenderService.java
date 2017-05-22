@@ -67,8 +67,8 @@ public class MailSenderService {
             mimeMessage.setContent(emailMessage.getContent(), "text/html; charset=UTF-8");
             Transport.send(mimeMessage);
         } catch (MessagingException ex) {
-            log.debug("Email can't be sent to email address: " + emailMessage.getTo());
-            throw new ServiceException("Email can't be sent to email address: " + emailMessage.getTo());
+            log.debug("Can't send to address: " + emailMessage.getTo());
+            throw new ServiceException("Can't send to address: " + emailMessage.getTo());
         }
     }
 
@@ -105,8 +105,9 @@ public class MailSenderService {
     }
     private String readFile(String file) throws ServiceException {
         InputStream in = null;
+        String contents = null;
         try {
-            in = PropertyUtil.class.getResourceAsStream(file);
+            in = PropertyUtil.class.getResourceAsStream("/"+file);
             BufferedInputStream bis = new BufferedInputStream(in);
             ByteArrayOutputStream buf = new ByteArrayOutputStream();
             int result = bis.read();
@@ -114,15 +115,13 @@ public class MailSenderService {
                 buf.write((byte) result);
                 result = bis.read();
             }
-            // StandardCharsets.UTF_8.name() > JDK 7
-            return buf.toString("UTF-8");
-
+            contents = buf.toString("UTF-8");
         } catch (Exception ignored) {
             log.debug("Unable to read the email template file for sending email.");
             throw new ServiceException("Unable to read the properties for sending email.");
         } finally {
             IOHelper.close(in);
-            return null;
+            return contents;
         }
     }
 }
