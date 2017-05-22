@@ -178,6 +178,10 @@ public class View implements Serializable {
         return this.bundles;
     }
 
+    public void setBundles(List<Bundle> bundles) {
+        this.bundles = bundles;
+    }
+
     public void addBundle(final Bundle bundle) {
         if(bundle.getSeqNo() == -1) {
             // fix sequence number if not set
