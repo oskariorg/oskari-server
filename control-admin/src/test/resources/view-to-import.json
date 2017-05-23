@@ -1,0 +1,15 @@
+{
+    "name" : "Default view",
+    "type" : "DEFAULT",
+    "default" : true,
+    "public" : true,
+    "onlyUuid" : false,
+    "oskari" : {
+        "application" : "servlet",
+        "page" : "index",
+        "development_prefix" : "/applications/sample"
+    },
+    "bundles" : [
+        { "id" : "foobar" }
+    ]
+}
