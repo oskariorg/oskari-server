@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import fi.nls.oskari.domain.Role;
 import fi.nls.oskari.domain.User;
@@ -147,7 +148,7 @@ public class ViewServiceMemory implements ViewService {
 
     @Override
     public View getViewWithConfByUuId(String uuId) {
-        if (uuId != null && uuId.isEmpty()) {
+        if (uuId != null && !uuId.isEmpty()) {
             for (View item : list) {
                 if (uuId.equals(item.getUuid())) {
                     return item;
@@ -169,7 +170,7 @@ public class ViewServiceMemory implements ViewService {
 
     @Override
     public View getViewWithConf(String viewName) {
-        if (viewName != null && viewName.isEmpty()) {
+        if (viewName != null && !viewName.isEmpty()) {
             for (View item : list) {
                 if (viewName.equals(item.getName())) {
                     return item;
@@ -192,6 +193,7 @@ public class ViewServiceMemory implements ViewService {
 
     @Override
     public long addView(View view) {
+        view.setUuid(UUID.randomUUID().toString());
         int seq = list.size();
         list.add(view);
         view.setId(seq);

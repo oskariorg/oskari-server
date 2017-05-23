@@ -132,7 +132,21 @@ public class JSONActionRouteTest {
         return params;
     }
 
-    public HttpServletRequest mockHttpServletRequest(final String method, final Map<String, String> parameters, final InputStream payload) {
+    public HttpServletRequest mockHttpServletRequest() {
+        return mockHttpServletRequest("GET");
+    }
+
+    public HttpServletRequest mockHttpServletRequest(String method) {
+        return mockHttpServletRequest(method, null);
+    }
+
+    public HttpServletRequest mockHttpServletRequest(String method, Map<String, String> parameters) {
+        return mockHttpServletRequest(method, parameters, null, -1, null);
+    }
+
+    public HttpServletRequest mockHttpServletRequest(String method,
+            Map<String, String> parameters, String contentType,
+            int contentLength, InputStream payload) {
         HttpServletRequest req = mock(HttpServletRequest.class);
 
         if (parameters != null) {
@@ -150,6 +164,15 @@ public class JSONActionRouteTest {
             doReturn(method).when(req).getMethod();
         }
 
+        if (contentType != null) {
+            doReturn(contentType).when(req).getContentType();
+        }
+
+        if (contentLength >= 0) {
+            doReturn(contentLength).when(req).getContentLength();
+            doReturn((long) contentLength).when(req).getContentLengthLong();
+        }
+
         if (payload != null) {
             try {
                 doReturn(new MockServletInputStream(payload)).when(req).getInputStream();
@@ -157,6 +180,10 @@ public class JSONActionRouteTest {
         }
 
         return req;
+    }
+
+    public HttpServletResponse mockHttpServletResponse() {
+        return mockHttpServletResponse(null);
     }
 
     public HttpServletResponse mockHttpServletResponse(ByteArrayOutputStream baos) {

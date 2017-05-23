@@ -1,17 +1,19 @@
 package fi.nls.oskari.control.admin;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.json.JSONException;
+import org.json.JSONObject;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -20,6 +22,7 @@ import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.domain.map.view.Bundle;
 import fi.nls.oskari.domain.map.view.View;
 import fi.nls.oskari.map.view.BundleService;
+import fi.nls.oskari.map.view.ViewException;
 import fi.nls.oskari.map.view.ViewService;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.test.control.JSONActionRouteTest;
@@ -28,80 +31,29 @@ public class ViewsHandlerTest extends JSONActionRouteTest {
 
     private static ViewsHandler views;
     private static Bundle foobar;
+    private static View bazqux;
 
     @BeforeClass
-    public static void init() {
+    public static void init() throws ViewException {
         BundleService bundleService = new BundleServiceMemory();
+        ViewService viewService = new ViewServiceMemory();
 
         foobar = new Bundle();
         foobar.setName("foobar");
         bundleService.addBundleTemplate(foobar);
+        assertEquals(1, bundleService.findAll().size());
+        assertEquals(0L, foobar.getBundleId());
 
-        ViewService viewService = new ViewServiceMemory();
+        bazqux = new View();
+        bazqux.setName("bazqux");
+        bazqux.setType("RANDOM");
+        viewService.addView(bazqux);
+        assertEquals(1, viewService.findAll().size());
+        assertEquals(0L, bazqux.getId());
+        assertNotNull(bazqux.getUuid());
+        assertEquals(36, bazqux.getUuid().length());
+
         views = new ViewsHandler(bundleService, viewService);
-    }
-
-    @Test
-    public void testGuestUsersShallNotPass() {
-        ActionParameters params = new ActionParameters();
-        params.setRequest(mockHttpServletRequest("GET", null, null));
-        params.setResponse(mockHttpServletResponse(null));
-        params.setUser(getGuestUser());
-
-        try {
-            views.handleAction(params);
-            fail("ActionDeniedException should have been thrown");
-        } catch (ActionException e) {
-            assertEquals("Admin only", e.getMessage());
-        }
-    }
-
-    @Test
-    public void testNonAdminUserShallNotPass() {
-        ActionParameters params = new ActionParameters();
-        params.setRequest(mockHttpServletRequest("GET", null, null));
-        params.setResponse(mockHttpServletResponse(null));
-        params.setUser(getNotAdminUser());
-
-        try {
-            views.handleAction(params);
-            fail("ActionDeniedException should have been thrown");
-        } catch (ActionException e) {
-            assertEquals("Admin only", e.getMessage());
-        }
-    }
-
-    @Test
-    public void whenUuidIsMissingThrowsActionException() {
-        ActionParameters params = new ActionParameters();
-        params.setRequest(mockHttpServletRequest("GET", null, null));
-        params.setResponse(mockHttpServletResponse(null));
-        params.setUser(getAdminUser());
-
-        try {
-            views.handleAction(params);
-            fail("ActionException should have been thrown");
-        } catch (ActionException e) {
-            assertEquals("Required parameter 'uuid' missing!", e.getMessage());
-        }
-    }
-
-    @Test
-    public void whenNoSuchViewExistsThrowsActionException() {
-        Map<String, String> queryParams = new HashMap<>();
-        queryParams.put("uuid", "my-own-fake-uuid");
-
-        ActionParameters params = new ActionParameters();
-        params.setRequest(mockHttpServletRequest("GET", queryParams, null));
-        params.setResponse(mockHttpServletResponse(null));
-        params.setUser(getAdminUser());
-
-        try {
-            views.handleAction(params);
-            fail("ActionException should have been thrown");
-        } catch (ActionException e) {
-            assertEquals("View not found!", e.getMessage());
-        }
     }
 
     @Test
@@ -129,18 +81,7 @@ public class ViewsHandlerTest extends JSONActionRouteTest {
 
     @Test
     public void whenExportedAndImportedDataRemainsTheSame() throws JSONException {
-        View view1 = new View();
-        view1.setId(1L);
-        view1.setName("My Default View");
-        view1.setType("DEFAULT");
-        view1.setIsDefault(true);
-        view1.setIsPublic(true);
-        view1.setOnlyForUuId(false);
-        view1.setApplication("foo");
-        view1.setPage("bar");
-        view1.setDevelopmentPath("baz");
-        view1.setBundles(Arrays.asList(new Bundle[] { foobar }));
-
+        View view1 = getDummyView();
         View view2 = views.viewFromJson(views.viewToJson(view1));
 
         assertEquals(view1.getName(), view2.getName());
@@ -152,6 +93,143 @@ public class ViewsHandlerTest extends JSONActionRouteTest {
         assertEquals(view1.getPage(), view2.getPage());
         assertEquals(view1.getDevelopmentPath(), view2.getDevelopmentPath());
         assertEquals(view1.getBundles(), view2.getBundles());
+    }
+
+    @Test
+    public void testGuestUsersShallNotPass() {
+        ActionParameters params = new ActionParameters();
+        params.setRequest(mockHttpServletRequest());
+        params.setResponse(mockHttpServletResponse());
+        params.setUser(getGuestUser());
+
+        try {
+            views.handleAction(params);
+            fail("ActionDeniedException should have been thrown");
+        } catch (ActionException e) {
+            assertEquals("Admin only", e.getMessage());
+        }
+    }
+
+    @Test
+    public void testNonAdminUserShallNotPass() {
+        ActionParameters params = new ActionParameters();
+        params.setRequest(mockHttpServletRequest());
+        params.setResponse(mockHttpServletResponse());
+        params.setUser(getNotAdminUser());
+
+        try {
+            views.handleAction(params);
+            fail("ActionDeniedException should have been thrown");
+        } catch (ActionException e) {
+            assertEquals("Admin only", e.getMessage());
+        }
+    }
+
+    @Test
+    public void whenUuidIsMissingThrowsActionException() {
+        ActionParameters params = new ActionParameters();
+        params.setRequest(mockHttpServletRequest());
+        params.setResponse(mockHttpServletResponse());
+        params.setUser(getAdminUser());
+
+        try {
+            views.handleAction(params);
+            fail("ActionException should have been thrown");
+        } catch (ActionException e) {
+            assertEquals("Required parameter 'uuid' missing!", e.getMessage());
+        }
+    }
+
+    @Test
+    public void whenNoSuchViewExistsThrowsActionException() {
+        Map<String, String> queryParams = new HashMap<>();
+        queryParams.put("uuid", "my-unknown-fake-uuid");
+
+        ActionParameters params = new ActionParameters();
+        params.setRequest(mockHttpServletRequest("GET", queryParams));
+        params.setResponse(mockHttpServletResponse());
+        params.setUser(getAdminUser());
+
+        try {
+            views.handleAction(params);
+            fail("ActionException should have been thrown");
+        } catch (ActionException e) {
+            assertEquals("View not found!", e.getMessage());
+        }
+    }
+
+    @Test
+    public void testGettingWorks() throws ActionException, IllegalArgumentException, JSONException {
+        Map<String, String> queryParams = new HashMap<>();
+        queryParams.put("uuid", bazqux.getUuid());
+
+        ByteArrayOutputStream respOut = new ByteArrayOutputStream();
+
+        ActionParameters params = new ActionParameters();
+        params.setRequest(mockHttpServletRequest("GET", queryParams));
+        params.setResponse(mockHttpServletResponse(respOut));
+        params.setUser(getAdminUser());
+
+        views.handleAction(params);
+
+        byte[] body = respOut.toByteArray();
+        assertNotNull(body);
+        assertTrue(body.length > 0);
+
+        View view = views.viewFromJson(body);
+        // id and uuid should not be copied over with export functionality
+        assertEquals(-1L, view.getId());
+        assertNull(view.getUuid());
+        assertEquals(bazqux.getName(), view.getName());
+        assertEquals(bazqux.getType(), view.getType());
+
+        respOut.toByteArray();
+    }
+
+    @Test
+    public void whenPOSTingValidJsonRespondsWithJsonContainingTheIdAndUuid() throws JSONException, ActionException {
+        View view = getDummyView();
+        byte[] rawInput = views.viewToJson(view);
+        InputStream payload = new ByteArrayInputStream(rawInput);
+
+        ByteArrayOutputStream respOut = new ByteArrayOutputStream();
+
+        ActionParameters params = new ActionParameters();
+        params.setRequest(mockHttpServletRequest("POST", null,
+                "application/json;charset=UTF-8", rawInput.length, payload));
+        params.setResponse(mockHttpServletResponse(respOut));
+        params.setUser(getAdminUser());
+
+        views.handleAction(params);
+
+        byte[] body = respOut.toByteArray();
+        assertNotNull(body);
+        assertTrue(body.length > 0);
+
+        String bodyStr = new String(body, StandardCharsets.UTF_8);
+        JSONObject json = new JSONObject(bodyStr);
+
+        assertTrue(json.has("id"));
+        assertTrue(json.has("uuid"));
+        // Expect 1 because 'bazqux' is #0
+        assertEquals(1L, json.getLong("id"));
+        String uuid = json.getString("uuid");
+        assertNotNull(uuid);
+        assertEquals(36, uuid.length());
+    }
+
+    private View getDummyView() {
+        View view = new View();
+        view.setName("My Default View");
+        view.setType("DEFAULT");
+        view.setIsDefault(true);
+        view.setIsPublic(true);
+        view.setOnlyForUuId(false);
+        view.setApplication("foo");
+        view.setPage("bar");
+        view.setDevelopmentPath("baz");
+        view.setBundles(Arrays.asList(new Bundle[] { foobar }));
+        return view;
     }
 
 }

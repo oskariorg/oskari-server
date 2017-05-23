@@ -74,7 +74,7 @@ public class ViewsHandler extends RestActionHandler {
 
         try {
             byte[] json = viewToJson(view);
-            writeJson(params.getResponse(), 200, json);
+            writeJson(params.getResponse(), HttpServletResponse.SC_OK, json);
         } catch (JSONException e) {
             LOG.warn(e);
             ResponseHelper.writeError(params, "Failed to write JSON!");
@@ -92,10 +92,10 @@ public class ViewsHandler extends RestActionHandler {
         try {
             View view = parseView(req);
             long id = viewService.addView(view);
-            byte[] b = createJSON(id, view.getUuid());
-            writeJson(params.getResponse(), HttpServletResponse.SC_CREATED, b);
+            byte[] json = createJSON(id, view.getUuid());
+            writeJson(params.getResponse(), HttpServletResponse.SC_CREATED, json);
         } catch (ViewException e) {
-            LOG.warn(e, "Failed to import view!");
+            LOG.warn(e, "Failed to add view!");
             ResponseHelper.writeError(params, "Failed to add view!");
         } catch (JSONException e) {
             LOG.warn(e, "Failed to form response!");
@@ -105,19 +105,16 @@ public class ViewsHandler extends RestActionHandler {
 
     protected byte[] viewToJson(View view) throws JSONException {
         final JSONObject viewJSON = new JSONObject();
-        viewJSON.put("creator", view.getCreator());
-        viewJSON.put("public", view.isPublic());
-        viewJSON.put("onlyUuid", view.isOnlyForUuId());
         viewJSON.put("name", view.getName());
         viewJSON.put("type", view.getType());
+        viewJSON.put("creator", view.getCreator());
         viewJSON.put("default", view.isDefault());
+        viewJSON.put("public", view.isPublic());
+        viewJSON.put("onlyUuid", view.isOnlyForUuId());
         viewJSON.put("application", view.getApplication());
         viewJSON.put("page", view.getPage());
         viewJSON.put("developmentPath", view.getDevelopmentPath());
-
-        final JSONArray bundles = createBundles(view.getBundles());
-        viewJSON.put("bundles", bundles);
-
+        viewJSON.put("bundles", createBundles(view.getBundles()));
         return viewJSON.toString().getBytes(StandardCharsets.UTF_8);
     }
 
@@ -166,12 +163,12 @@ public class ViewsHandler extends RestActionHandler {
         final JSONObject viewJSON = new JSONObject(jsonString);
 
         final View view = new View();
-        view.setCreator(viewJSON.optLong("creator", -1L));
-        view.setIsPublic(viewJSON.optBoolean("public", false));
-        view.setOnlyForUuId(viewJSON.optBoolean("onlyUuid", true));
         view.setName(viewJSON.getString("name"));
         view.setType(viewJSON.getString("type"));
+        view.setCreator(viewJSON.optLong("creator", -1L));
         view.setIsDefault(viewJSON.optBoolean("default"));
+        view.setIsPublic(viewJSON.optBoolean("public", false));
+        view.setOnlyForUuId(viewJSON.optBoolean("onlyUuid", true));
 
         if (viewJSON.has("oskari")) {
             // Support "old" format
