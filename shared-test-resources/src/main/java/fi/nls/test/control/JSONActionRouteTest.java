@@ -1,22 +1,13 @@
 package fi.nls.test.control;
 
-import fi.nls.oskari.control.ActionParameters;
-import fi.nls.oskari.domain.GuestUser;
-import fi.nls.oskari.domain.User;
-import fi.nls.oskari.util.JSONHelper;
-import fi.nls.test.util.JSONTestHelper;
-import fi.nls.test.util.MapBuilder;
-
-import org.json.JSONArray;
-import org.json.JSONObject;
-import org.junit.After;
-import org.junit.Before;
-import org.mockito.exceptions.base.MockitoAssertionError;
-
-import javax.servlet.ServletInputStream;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -28,9 +19,23 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Vector;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
-import static org.mockito.Mockito.*;
+import javax.servlet.ServletInputStream;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+import org.junit.After;
+import org.junit.Before;
+import org.mockito.exceptions.base.MockitoAssertionError;
+
+import fi.nls.oskari.control.ActionParameters;
+import fi.nls.oskari.domain.GuestUser;
+import fi.nls.oskari.domain.User;
+import fi.nls.oskari.util.JSONHelper;
+import fi.nls.test.util.JSONTestHelper;
+import fi.nls.test.util.MapBuilder;
 
 /**
  * @author SMAKINEN
@@ -39,12 +44,10 @@ import static org.mockito.Mockito.*;
 public class JSONActionRouteTest {
 
     private StringWriter response = new StringWriter();
-    protected ByteArrayOutputStream baos;
 
     @Before
     public void jsonActionRouteSetUp() throws Exception {
         response = new StringWriter();
-        baos = new ByteArrayOutputStream();
     }
 
     @After
@@ -128,10 +131,6 @@ public class JSONActionRouteTest {
         }
         catch (IOException ignored ) {}
         
-        try {
-            doReturn(new MockServletOutputStream(baos)).when(resp).getOutputStream();
-        } catch (IOException ignore) {}
-
         params.setRequest(req);
         params.setResponse(resp);
         params.setUser(user);
@@ -139,6 +138,44 @@ public class JSONActionRouteTest {
 
         return params;
     }
+    
+    public HttpServletRequest mockHttpServletRequest(final String method, final Map<String, String> parameters, final InputStream payload) {
+        HttpServletRequest req = mock(HttpServletRequest.class);
+        
+        if (parameters != null) {
+            doReturn(new Vector<String>(parameters.keySet()).elements()).when(req).getParameterNames();
+            for (String key : parameters.keySet()) {
+                when(req.getParameter(key)).thenReturn(parameters.get(key));
+            }
+        }
+        
+        HttpSession session = mock(HttpSession.class);
+        doReturn("testkey").when(session).getId();
+        doReturn(session).when(req).getSession();
+        
+        if (method != null) {
+            doReturn(method).when(req).getMethod();
+        }
+        
+        if (payload != null) {
+            try {
+                doReturn(new MockServletInputStream(payload)).when(req).getInputStream();
+            } catch (IOException ignore) {}
+        }
+        
+        return req;
+    }
+    
+    public HttpServletResponse mockHttpServletResponse(ByteArrayOutputStream baos) {
+        HttpServletResponse resp = mock(HttpServletResponse.class);
+        if (baos != null) {
+            try {
+                doReturn(new MockServletOutputStream(baos)).when(resp).getOutputStream();
+            } catch (IOException ignore) {}
+        }            
+        return resp;
+    }
+    
     public void verifyResponseNotWritten(final ActionParameters params) {
         try {
             verify(params.getResponse(), never()).getWriter();
@@ -213,9 +250,18 @@ public class JSONActionRouteTest {
         loggedInUser.addRole(1, "User");
         return loggedInUser;
     }
+
+    public User getNotAdminUser() {
+        User user = mock(User.class);
+        doReturn(false).when(user).isGuest();
+        doReturn(false).when(user).isAdmin();
+        return user;
+    }
+
     public User getAdminUser() {
         User adminUser = mock(User.class);
-        // mock as admin
+        // mock as logged in and admin
+        doReturn(false).when(adminUser).isGuest();
         doReturn(true).when(adminUser).isAdmin();
         return adminUser;
     }

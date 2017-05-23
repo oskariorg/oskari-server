@@ -57,7 +57,7 @@ public class ViewsHandler extends RestActionHandler {
     }
     
     @Override
-    public void preProcess(ActionParameters params) throws ActionException {
+    public void preProcess(ActionParameters params) throws ActionDeniedException {
         if (!params.getUser().isAdmin()) {
             throw new ActionDeniedException("Admin only");
         }
@@ -111,12 +111,9 @@ public class ViewsHandler extends RestActionHandler {
         viewJSON.put("name", view.getName());
         viewJSON.put("type", view.getType());
         viewJSON.put("default", view.isDefault());
-
-        final JSONObject oskari = new JSONObject();
-        oskari.put("page", view.getPage());
-        oskari.put("development_prefix", view.getDevelopmentPath());
-        oskari.put("application", view.getApplication());
-        viewJSON.put("oskari", oskari);
+        viewJSON.put("application", view.getApplication());
+        viewJSON.put("page", view.getPage());
+        viewJSON.put("developmentPath", view.getDevelopmentPath());
 
         final JSONArray bundles = createBundles(view.getBundles());
         viewJSON.put("bundles", bundles);
@@ -143,6 +140,7 @@ public class ViewsHandler extends RestActionHandler {
                 if (bundle.getStateJSON() != null) {
                     bundleJSON.put("state", bundle.getStateJSON());
                 }
+                bundlesJSON.put(bundleJSON);
             }
         }
 
@@ -175,10 +173,17 @@ public class ViewsHandler extends RestActionHandler {
         view.setType(viewJSON.getString("type"));
         view.setIsDefault(viewJSON.optBoolean("default"));
 
-        final JSONObject oskari = viewJSON.getJSONObject("oskari");
-        view.setPage(oskari.getString("page"));
-        view.setDevelopmentPath(oskari.getString("development_prefix"));
-        view.setApplication(oskari.getString("application"));
+        if (viewJSON.has("oskari")) {
+            // Support "old" format
+            final JSONObject oskari = viewJSON.getJSONObject("oskari");
+            view.setApplication(oskari.getString("application"));
+            view.setPage(oskari.getString("page"));
+            view.setDevelopmentPath(oskari.getString("development_prefix"));
+        } else {
+            view.setApplication(viewJSON.getString("application"));
+            view.setPage(viewJSON.getString("page"));
+            view.setDevelopmentPath(viewJSON.getString("developmentPath"));
+        }
 
         addBundles(view, viewJSON.getJSONArray("bundles"));
 
