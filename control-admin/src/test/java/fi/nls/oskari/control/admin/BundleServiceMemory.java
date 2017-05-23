@@ -12,9 +12,9 @@ import fi.nls.oskari.map.view.BundleService;
  * Stores the objects in an ArrayList
  */
 public class BundleServiceMemory implements BundleService {
-    
+
     private final List<Bundle> list = new ArrayList<>();
-    
+
     private int indexOf(int id) {
         for (int i = 0; i < list.size(); i++) {
             Bundle item = list.get(i);
@@ -24,7 +24,7 @@ public class BundleServiceMemory implements BundleService {
         }
         return -1;
     }
-    
+
     private int indexOf(String name) {
         if (name != null && !name.isEmpty()) {
             for (int i = 0; i < list.size(); i++) {
@@ -36,7 +36,7 @@ public class BundleServiceMemory implements BundleService {
         }
         return -1;
     }
-    
+
     @Override
     public Bundle find(int id) {
         for (Bundle item : list) {

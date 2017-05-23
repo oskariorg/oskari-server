@@ -37,25 +37,25 @@ public class ViewsHandler extends RestActionHandler {
 
     private BundleService bundleService;
     private ViewService viewService;
-    
+
     public ViewsHandler() {
         bundleService = new BundleServiceIbatisImpl();
         viewService = new ViewServiceIbatisImpl();
     }
-    
+
     public ViewsHandler(BundleService bundleService, ViewService viewService) {
         this.bundleService = bundleService;
         this.viewService = viewService;
     }
-    
+
     public void setBundleService(BundleService bundleService) {
         this.bundleService = bundleService;
     }
-    
+
     public void setViewService(ViewService viewService) {
         this.viewService = viewService;
     }
-    
+
     @Override
     public void preProcess(ActionParameters params) throws ActionDeniedException {
         if (!params.getUser().isAdmin()) {
@@ -88,7 +88,7 @@ public class ViewsHandler extends RestActionHandler {
         if (contentType == null || !contentType.startsWith("application/json")) {
             throw new ActionException("Expected JSON input!");
         }
-        
+
         try {
             View view = parseView(req);
             long id = viewService.addView(view);
@@ -160,7 +160,7 @@ public class ViewsHandler extends RestActionHandler {
         }
     }
 
-    protected View viewFromJson(byte[] json) 
+    protected View viewFromJson(byte[] json)
             throws JSONException, IllegalArgumentException {
         final String jsonString = new String(json, StandardCharsets.UTF_8);
         final JSONObject viewJSON = new JSONObject(jsonString);
@@ -190,7 +190,7 @@ public class ViewsHandler extends RestActionHandler {
         return view;
     }
 
-    private void addBundles(final View view, final JSONArray bundles) 
+    private void addBundles(final View view, final JSONArray bundles)
             throws JSONException, IllegalArgumentException {
         if (bundles == null) {
             return;

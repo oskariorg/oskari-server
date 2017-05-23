@@ -25,29 +25,29 @@ import fi.nls.oskari.util.IOHelper;
 import fi.nls.test.control.JSONActionRouteTest;
 
 public class ViewsHandlerTest extends JSONActionRouteTest {
-    
+
     private static ViewsHandler views;
     private static Bundle foobar;
-    
+
     @BeforeClass
     public static void init() {
         BundleService bundleService = new BundleServiceMemory();
-        
+
         foobar = new Bundle();
         foobar.setName("foobar");
         bundleService.addBundleTemplate(foobar);
-        
+
         ViewService viewService = new ViewServiceMemory();
         views = new ViewsHandler(bundleService, viewService);
     }
-    
+
     @Test
     public void testGuestUsersShallNotPass() {
         ActionParameters params = new ActionParameters();
         params.setRequest(mockHttpServletRequest("GET", null, null));
         params.setResponse(mockHttpServletResponse(null));
         params.setUser(getGuestUser());
-        
+
         try {
             views.handleAction(params);
             fail("ActionDeniedException should have been thrown");
@@ -62,7 +62,7 @@ public class ViewsHandlerTest extends JSONActionRouteTest {
         params.setRequest(mockHttpServletRequest("GET", null, null));
         params.setResponse(mockHttpServletResponse(null));
         params.setUser(getNotAdminUser());
-        
+
         try {
             views.handleAction(params);
             fail("ActionDeniedException should have been thrown");
@@ -70,14 +70,14 @@ public class ViewsHandlerTest extends JSONActionRouteTest {
             assertEquals("Admin only", e.getMessage());
         }
     }
-    
+
     @Test
     public void whenUuidIsMissingThrowsActionException() {
         ActionParameters params = new ActionParameters();
         params.setRequest(mockHttpServletRequest("GET", null, null));
         params.setResponse(mockHttpServletResponse(null));
         params.setUser(getAdminUser());
-        
+
         try {
             views.handleAction(params);
             fail("ActionException should have been thrown");
@@ -85,17 +85,17 @@ public class ViewsHandlerTest extends JSONActionRouteTest {
             assertEquals("Required parameter 'uuid' missing!", e.getMessage());
         }
     }
-    
+
     @Test
     public void whenNoSuchViewExistsThrowsActionException() {
         Map<String, String> queryParams = new HashMap<>();
         queryParams.put("uuid", "my-own-fake-uuid");
-        
+
         ActionParameters params = new ActionParameters();
         params.setRequest(mockHttpServletRequest("GET", queryParams, null));
         params.setResponse(mockHttpServletResponse(null));
         params.setUser(getAdminUser());
-        
+
         try {
             views.handleAction(params);
             fail("ActionException should have been thrown");
@@ -103,13 +103,13 @@ public class ViewsHandlerTest extends JSONActionRouteTest {
             assertEquals("View not found!", e.getMessage());
         }
     }
-    
+
     @Test
     public void testThatParsingWorks() throws IOException, IllegalArgumentException, JSONException {
         try (InputStream in = this.getClass().getClassLoader().getResourceAsStream("view-to-import.json")) {
             byte[] b = IOHelper.readBytes(in);
             in.close();
-            
+
             View view = views.viewFromJson(b);
             assertEquals("Default view", view.getName());
             assertEquals("DEFAULT", view.getType());
@@ -119,14 +119,14 @@ public class ViewsHandlerTest extends JSONActionRouteTest {
             assertEquals("servlet", view.getApplication());
             assertEquals("index", view.getPage());
             assertEquals("/applications/sample", view.getDevelopmentPath());
-            
+
             List<Bundle> bundles = view.getBundles();
             assertNotNull(bundles);
             assertEquals(1, bundles.size());
             assertEquals("foobar", bundles.get(0).getName());
         }
     }
-    
+
     @Test
     public void whenExportedAndImportedDataRemainsTheSame() throws JSONException {
         View view1 = new View();
@@ -140,9 +140,9 @@ public class ViewsHandlerTest extends JSONActionRouteTest {
         view1.setPage("bar");
         view1.setDevelopmentPath("baz");
         view1.setBundles(Arrays.asList(new Bundle[] { foobar }));
-        
+
         View view2 = views.viewFromJson(views.viewToJson(view1));
-        
+
         assertEquals(view1.getName(), view2.getName());
         assertEquals(view1.getType(), view2.getType());
         assertEquals(view1.isDefault(), view2.isDefault());
@@ -153,5 +153,5 @@ public class ViewsHandlerTest extends JSONActionRouteTest {
         assertEquals(view1.getDevelopmentPath(), view2.getDevelopmentPath());
         assertEquals(view1.getBundles(), view2.getBundles());
     }
-    
+
 }

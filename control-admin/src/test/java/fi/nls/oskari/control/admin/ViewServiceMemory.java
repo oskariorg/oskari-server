@@ -21,12 +21,12 @@ import fi.nls.oskari.map.view.ViewService;
  * Stores the objects in an ArrayList
  */
 public class ViewServiceMemory implements ViewService {
-    
+
     private static final Logger LOG = LogFactory.getLogger(ViewServiceMemory.class);
-    
+
     private final List<View> list = new ArrayList<>();
     private long defaultView = -1L;
-    
+
     private int indexOf(int id) {
         for (int i = 0; i < list.size(); i++) {
             View item = list.get(i);
@@ -36,7 +36,7 @@ public class ViewServiceMemory implements ViewService {
         }
         return -1;
     }
-    
+
     private int indexOf(String name) {
         if (name != null && !name.isEmpty()) {
             for (int i = 0; i < list.size(); i++) {
@@ -48,7 +48,7 @@ public class ViewServiceMemory implements ViewService {
         }
         return -1;
     }
-    
+
     @Override
     public View find(int id) {
         for (View item : list) {
@@ -106,7 +106,7 @@ public class ViewServiceMemory implements ViewService {
 
     @Override
     public boolean hasPermissionToAlterView(View view, User user) {
-     // uuids are much longer than 10 actually but check for atleast 10
+        // uuids are much longer than 10 actually but check for atleast 10
         if(user.getUuid() == null || user.getUuid().length() < 10) {
             LOG.debug("Users uuid is missing or invalid: ", user.getUuid());
             // user doesn't have an uuid, he shouldn't have any published maps
@@ -292,5 +292,5 @@ public class ViewServiceMemory implements ViewService {
             }
         }
     }
-    
+
 }
