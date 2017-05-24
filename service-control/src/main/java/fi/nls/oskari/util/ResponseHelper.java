@@ -53,6 +53,7 @@ public class ResponseHelper {
         final int len = b.length;
 
         final HttpServletResponse resp = params.getResponse();
+        resp.setStatus(sc);
         resp.setContentType(CONTENT_TYPE_JSON_UTF8);
         resp.setContentLength(len);
         try (OutputStream out = resp.getOutputStream()) {
