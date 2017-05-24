@@ -178,6 +178,7 @@ public class ViewsHandlerTest extends JSONActionRouteTest {
 
         View view = views.viewFromJson(body);
         // id and uuid should not be copied over with export functionality
+        // default id is -1
         assertEquals(-1L, view.getId());
         assertNull(view.getUuid());
         assertEquals(bazqux.getName(), view.getName());
@@ -211,8 +212,6 @@ public class ViewsHandlerTest extends JSONActionRouteTest {
 
         assertTrue(json.has("id"));
         assertTrue(json.has("uuid"));
-        // Expect 1 because 'bazqux' is #0
-        assertEquals(1L, json.getLong("id"));
         String uuid = json.getString("uuid");
         assertNotNull(uuid);
         assertEquals(36, uuid.length());
