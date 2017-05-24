@@ -104,6 +104,7 @@ public class ViewHelper {
         viewJSON.put("default", view.isDefault());
         viewJSON.put("public", view.isPublic());
         viewJSON.put("onlyUuid", view.isOnlyForUuId());
+        viewJSON.put("metadata", view.getMetadata());
         viewJSON.put("application", view.getApplication());
         viewJSON.put("page", view.getPage());
         viewJSON.put("developmentPath", view.getDevelopmentPath());
@@ -145,6 +146,7 @@ public class ViewHelper {
         view.setIsDefault(viewJSON.optBoolean("default"));
         view.setIsPublic(viewJSON.optBoolean("public", false));
         view.setOnlyForUuId(viewJSON.optBoolean("onlyUuid", true));
+        view.setMetadata(viewJSON.getJSONObject("metadata"));
 
         if (viewJSON.has("oskari")) {
             // Support "old" format
