@@ -1,6 +1,10 @@
 package fi.nls.oskari.control.admin;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -14,6 +18,7 @@ import java.util.Map;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -24,19 +29,22 @@ import fi.nls.oskari.domain.map.view.View;
 import fi.nls.oskari.map.view.BundleService;
 import fi.nls.oskari.map.view.ViewException;
 import fi.nls.oskari.map.view.ViewService;
+import fi.nls.oskari.map.view.util.ViewHelper;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.test.control.JSONActionRouteTest;
 
 public class ViewsHandlerTest extends JSONActionRouteTest {
 
+    private static BundleService bundleService;
+    private static ViewService viewService;
     private static ViewsHandler views;
     private static Bundle foobar;
     private static View bazqux;
 
     @BeforeClass
     public static void init() throws ViewException {
-        BundleService bundleService = new BundleServiceMemory();
-        ViewService viewService = new ViewServiceMemory();
+        bundleService = new BundleServiceMemory();
+        viewService = new ViewServiceMemory();
 
         foobar = new Bundle();
         foobar.setName("foobar");
@@ -56,13 +64,24 @@ public class ViewsHandlerTest extends JSONActionRouteTest {
         views = new ViewsHandler(bundleService, viewService);
     }
 
+    @AfterClass
+    public static void teardown() {
+        bundleService = null;
+        viewService = null;
+        views = null;
+        foobar = null;
+        bazqux = null;
+    }
+
     @Test
     public void testThatParsingWorks() throws IOException, IllegalArgumentException, JSONException {
         try (InputStream in = this.getClass().getClassLoader().getResourceAsStream("view-to-import.json")) {
             byte[] b = IOHelper.readBytes(in);
             in.close();
+            String jsonStr = new String(b, StandardCharsets.UTF_8);
+            JSONObject viewJSON = new JSONObject(jsonStr);
 
-            View view = views.viewFromJson(b);
+            View view = ViewHelper.viewFromJson(bundleService, viewJSON);
             assertEquals("Default view", view.getName());
             assertEquals("DEFAULT", view.getType());
             assertEquals(true, view.isDefault());
@@ -82,7 +101,8 @@ public class ViewsHandlerTest extends JSONActionRouteTest {
     @Test
     public void whenExportedAndImportedDataRemainsTheSame() throws JSONException {
         View view1 = getDummyView();
-        View view2 = views.viewFromJson(views.viewToJson(view1));
+        JSONObject viewJSON = ViewHelper.viewToJson(bundleService, view1);
+        View view2 = ViewHelper.viewFromJson(bundleService, viewJSON);
 
         assertEquals(view1.getName(), view2.getName());
         assertEquals(view1.getType(), view2.getType());
@@ -175,8 +195,9 @@ public class ViewsHandlerTest extends JSONActionRouteTest {
         byte[] body = respOut.toByteArray();
         assertNotNull(body);
         assertTrue(body.length > 0);
-
-        View view = views.viewFromJson(body);
+        String jsonStr = new String(body, StandardCharsets.UTF_8);
+        JSONObject viewJSON = new JSONObject(jsonStr);
+        View view = ViewHelper.viewFromJson(bundleService, viewJSON);
         // id and uuid should not be copied over with export functionality
         // default id is -1
         assertEquals(-1L, view.getId());
@@ -190,7 +211,8 @@ public class ViewsHandlerTest extends JSONActionRouteTest {
     @Test
     public void whenPOSTingValidJsonRespondsWithJsonContainingTheIdAndUuid() throws JSONException, ActionException {
         View view = getDummyView();
-        byte[] rawInput = views.viewToJson(view);
+        JSONObject viewJSON = ViewHelper.viewToJson(bundleService, view);
+        byte[] rawInput = viewJSON.toString().getBytes(StandardCharsets.UTF_8);
         InputStream payload = new ByteArrayInputStream(rawInput);
 
         ByteArrayOutputStream respOut = new ByteArrayOutputStream();
