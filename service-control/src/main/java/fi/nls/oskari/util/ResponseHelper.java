@@ -42,10 +42,11 @@ public class ResponseHelper {
     }
 
     /**
-     * Writes out the given response
+     * Writes out the given response as JSON
      *
-     * @param params   reference to params to get the writer
-     * @param response response to write
+     * @param params reference to ActionParams
+     * @param sc HTTP Status Code to send
+     * @param json JSONObject to send
      */
     public static final void writeResponse(ActionParameters params, int sc, JSONObject json) {
         final byte[] b = json.toString().getBytes(StandardCharsets.UTF_8);
