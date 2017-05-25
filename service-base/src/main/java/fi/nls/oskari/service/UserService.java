@@ -5,6 +5,7 @@ import fi.nls.oskari.domain.Role;
 import fi.nls.oskari.domain.User;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.service.db.BaseIbatisService;
 import fi.nls.oskari.util.PropertyUtil;
 
 import java.util.Collections;
@@ -16,10 +17,16 @@ import java.util.UUID;
  * Common interface for managing users.
  * TODO: this interface is still under development and new methods will propably be added when needed.
  */
-public abstract class UserService {
+public abstract class UserService  extends BaseIbatisService<UserService> {
 
     private static final Logger log = LogFactory.getLogger(UserService.class);
     private static UserService instance = null;
+
+    @Override
+    protected String getNameSpace() {
+        return "UserService";
+    }
+
     /**
      * Returns a concrete implementation of UserService. Class to be returned is defined with property "oskari.user.service".
      * @return

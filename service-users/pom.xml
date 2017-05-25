@@ -19,6 +19,10 @@
             <groupId>fi.nls.oskari.service</groupId>
             <artifactId>oskari-base</artifactId>
         </dependency>
+		<dependency>
+			<groupId>fi.nls.oskari.service</groupId>
+			<artifactId>oskari-map</artifactId>
+		</dependency>
         <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-crypto</artifactId>

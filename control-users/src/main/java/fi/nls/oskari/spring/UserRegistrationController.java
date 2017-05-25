@@ -1,9 +1,11 @@
 package fi.nls.oskari.spring;
 
-import java.util.Date;
-
 import fi.nls.oskari.control.ActionParameters;
+import fi.nls.oskari.control.users.model.Email;
+import fi.nls.oskari.control.users.service.UserRegistrationService;
 import fi.nls.oskari.domain.User;
+import fi.nls.oskari.log.LogFactory;
+import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.spring.extension.OskariParam;
 import fi.nls.oskari.util.PropertyUtil;
@@ -12,10 +14,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import fi.nls.oskari.control.users.model.Email;
-import fi.nls.oskari.control.users.service.UserRegistrationService;
-import fi.nls.oskari.log.LogFactory;
-import fi.nls.oskari.log.Logger;
+import java.util.Date;
 
 /**
  * Handles user's password reseting
@@ -45,6 +44,7 @@ public class UserRegistrationController {
             model.addAttribute("firstname", user.getFirstname());
             model.addAttribute("lastname", user.getLastname());
             model.addAttribute("email", user.getEmail());
+            model.addAttribute("id", user.getId());
         }
         return "register";
     }

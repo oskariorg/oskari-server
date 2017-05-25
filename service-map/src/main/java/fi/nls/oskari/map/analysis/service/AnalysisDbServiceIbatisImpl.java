@@ -92,6 +92,12 @@ public class AnalysisDbServiceIbatisImpl extends
         return queryForList(getNameSpace() + ".findAnalysisByUid", uid);
     }
 
+    public void deleteUserLayerByUid(final String uid) throws ServiceException {
+        final List<Analysis> userLayers = getAnalysisByUid(uid);
+        for (Analysis userLayer: userLayers) {
+            deleteAnalysis(userLayer);
+        }
+    }
     /**
      * Get Analysis data  by uuid and analysis id
      *
