@@ -136,7 +136,7 @@ public class UserRegistrationHandler extends ActionHandler {
 				User retUser = userService.getUser(sessionUser.getId());
 				if (retUser == null)
 					throw new ActionException("User doesn't exist.");					
-				userService.deleteAllUsersContent(sessionUser.getId());
+				userService.deleteUser(sessionUser.getId());
 			} catch (ServiceException se) {			
 				throw new ActionException(se.getMessage(), se);				
 			} 

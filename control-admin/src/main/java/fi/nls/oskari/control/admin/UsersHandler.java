@@ -140,7 +140,7 @@ public class UsersHandler extends RestActionHandler {
         long id = getId(params);
         if (id > -1) {
             try {
-                userService.deleteAllUsersContent(id);
+                userService.deleteUser(id);
             } catch (ServiceException se) {
                 throw new ActionException(se.getMessage(), se);
             }

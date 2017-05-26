@@ -1,6 +1,5 @@
 package fi.nls.oskari.user;
 
-import com.ibatis.sqlmap.client.SqlMapSession;
 import fi.nls.oskari.domain.Role;
 import fi.nls.oskari.domain.User;
 import fi.nls.oskari.log.LogFactory;
@@ -216,21 +215,23 @@ public class DatabaseUserService extends UserService {
     }    
     
     @Override
-    public void deleteAllUsersContent(long id) throws ServiceException {
+    public void deleteUser(long id) throws ServiceException {
         log.debug("deleteUser");
         User user = userService.find(id);
         if (user != null) {
+
+            Map<String, UserContentService> userContentServices;
+            String serviceClass = "";
             try {
-                final SqlMapSession session = openSession();
-                session.startTransaction();
-                Map<String, UserContentService> contentServices = OskariComponentManager.getComponentsOfType(UserContentService.class);
-                for(UserContentService service : contentServices.values()) {
-                    service.deleteUserContent(user);
+                userContentServices = OskariComponentManager.getComponentsOfType(UserContentService.class);
+                for (Map.Entry<String, UserContentService> userContentService : userContentServices.entrySet()) {
+                    userContentService.getValue().deleteUserContent(user);
+                    serviceClass = userContentService.getKey();
                 }
-                session.endTransaction();
             }
             catch (Exception e) {
-                throw new ServiceException("Deleting user data failed");
+                log.error("Deleting user data failed in service: {}", serviceClass);
+                throw new ServiceException("Deleting user data failed in service: " + serviceClass);
             }
         }
     }
