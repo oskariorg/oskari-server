@@ -58,7 +58,7 @@ public class ViewsHandlerTest extends JSONActionRouteTest {
     }
 
     @Test
-    public void whenUserIsNotAdminThrowsActionExceptiontest() {
+    public void whenUserIsNotAdminThrowsActionException() {
         ActionParameters params = new ActionParameters();
         params.setRequest(mockHttpServletRequest());
         params.setResponse(mockHttpServletResponse());

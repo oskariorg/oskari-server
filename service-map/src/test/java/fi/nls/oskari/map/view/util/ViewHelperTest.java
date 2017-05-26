@@ -22,9 +22,9 @@ import fi.nls.oskari.map.view.BundleServiceMemory;
 import fi.nls.oskari.util.IOHelper;
 
 public class ViewHelperTest {
-    
+
     private BundleService bundleService;
-    
+
     @Before
     public void init() {
         bundleService = new BundleServiceMemory();
@@ -48,7 +48,8 @@ public class ViewHelperTest {
 
         // The values should match the ones in view-to-import.json
         // We must register "foobar" Bundle to the BundleService beforehand
-        Bundle foobar = createBundle("foobar");
+        Bundle foobar = new Bundle();
+        foobar.setName("foobar");
         bundleService.addBundleTemplate(foobar);
 
         View view = ViewHelper.viewFromJson(bundleService, viewJSON);
@@ -68,11 +69,12 @@ public class ViewHelperTest {
     }
 
     @Test
-    public void whenExportedAndImportedDataRemainsTheSame() throws JSONException {
+    public void whenConvertedToJSONAndBackValuesRemainTheSame() throws JSONException {
         // Register random bundle
-        Bundle randomBundle = createBundle(UUID.randomUUID().toString());
+        Bundle randomBundle = new Bundle();
+        randomBundle.setName(UUID.randomUUID().toString());
         bundleService.addBundleTemplate(randomBundle);
-        
+
         View view1 = new View();
         view1.setName("My View");
         view1.setType("DEFAULT");
@@ -83,7 +85,7 @@ public class ViewHelperTest {
         view1.setPage("bar");
         view1.setDevelopmentPath("baz");
         view1.addBundle(randomBundle);
-        
+
         JSONObject viewJSON = ViewHelper.viewToJson(bundleService, view1);
         View view2 = ViewHelper.viewFromJson(bundleService, viewJSON);
 
@@ -95,7 +97,7 @@ public class ViewHelperTest {
         assertEquals(view1.getApplication(), view2.getApplication());
         assertEquals(view1.getPage(), view2.getPage());
         assertEquals(view1.getDevelopmentPath(), view2.getDevelopmentPath());
-        
+
         List<Bundle> bundles1 = view1.getBundles();
         List<Bundle> bundles2 = view2.getBundles();
         assertNotNull(bundles1);
@@ -106,12 +108,6 @@ public class ViewHelperTest {
             Bundle b2 = bundles2.get(i);
             assertEquals(b1.getName(), b2.getName());
         }
-    }
-    
-    private static Bundle createBundle(String name) {
-        Bundle bundle = new Bundle();
-        bundle.setName(name);
-        return bundle;
     }
 
 }
