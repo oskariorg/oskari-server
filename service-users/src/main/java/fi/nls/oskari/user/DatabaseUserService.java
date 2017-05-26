@@ -8,6 +8,7 @@ import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.analysis.service.AnalysisDbServiceIbatisImpl;
 import fi.nls.oskari.map.userlayer.service.UserLayerDbServiceIbatisImpl;
 import fi.nls.oskari.map.view.ViewServiceIbatisImpl;
+import fi.nls.oskari.myplaces.MyPlacesServiceMybatisImpl;
 import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.service.UserService;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -21,6 +22,7 @@ public class DatabaseUserService extends UserService {
     private ViewServiceIbatisImpl viewService = new ViewServiceIbatisImpl();
     private AnalysisDbServiceIbatisImpl analysisService = new AnalysisDbServiceIbatisImpl();
     private UserLayerDbServiceIbatisImpl userLayerService = new UserLayerDbServiceIbatisImpl();
+    private MyPlacesServiceMybatisImpl myPlacesService = new MyPlacesServiceMybatisImpl();
 
     private static final String ERR_USER_MISSING = "User was null";
     private static final int BCRYPT_PASSWORD_LENGTH = 60;
@@ -232,7 +234,8 @@ public class DatabaseUserService extends UserService {
                 userService.delete(id);
                 viewService.deleteViewByUserId(id);
                 userLayerService.deleteUserLayerByUid(user.getUuid());
-                analysisService.deleteUserLayerByUid(user.getUuid());
+                analysisService.deleteAnalysisByUid(user.getUuid());
+                myPlacesService.deleteByUid(user.getUuid());
                 session.endTransaction();
             }
             catch (Exception e) {
