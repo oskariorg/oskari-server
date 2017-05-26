@@ -106,7 +106,8 @@ public class ViewsHandler extends RestActionHandler {
         }
     }
 
-    private static JSONObject createResponse(long id, String uuid) throws JSONException {
+    private static JSONObject createResponse(long id, String uuid)
+            throws JSONException {
         JSONObject json = new JSONObject();
         json.put("id", id);
         json.put("uuid", uuid);

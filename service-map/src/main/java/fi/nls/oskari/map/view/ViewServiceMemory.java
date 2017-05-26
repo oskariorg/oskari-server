@@ -1,4 +1,4 @@
-package fi.nls.oskari.control.admin;
+package fi.nls.oskari.map.view;
 
 import java.util.ArrayList;
 import java.util.Collection;

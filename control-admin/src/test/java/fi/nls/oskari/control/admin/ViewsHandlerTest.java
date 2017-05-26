@@ -8,115 +8,42 @@ import static org.junit.Assert.fail;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Test;
 
 import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.ActionParameters;
-import fi.nls.oskari.domain.map.view.Bundle;
 import fi.nls.oskari.domain.map.view.View;
 import fi.nls.oskari.map.view.BundleService;
+import fi.nls.oskari.map.view.BundleServiceMemory;
 import fi.nls.oskari.map.view.ViewException;
 import fi.nls.oskari.map.view.ViewService;
+import fi.nls.oskari.map.view.ViewServiceMemory;
 import fi.nls.oskari.map.view.util.ViewHelper;
-import fi.nls.oskari.util.IOHelper;
 import fi.nls.test.control.JSONActionRouteTest;
 
 public class ViewsHandlerTest extends JSONActionRouteTest {
 
-    private static BundleService bundleService;
-    private static ViewService viewService;
-    private static ViewsHandler views;
-    private static Bundle foobar;
-    private static View bazqux;
+    private BundleService bundleService;
+    private ViewService viewService;
+    private ViewsHandler views;
 
-    @BeforeClass
-    public static void init() throws ViewException {
+    @Before
+    public void init() throws ViewException {
         bundleService = new BundleServiceMemory();
         viewService = new ViewServiceMemory();
-
-        foobar = new Bundle();
-        foobar.setName("foobar");
-        bundleService.addBundleTemplate(foobar);
-        assertEquals(1, bundleService.findAll().size());
-        assertEquals(0L, foobar.getBundleId());
-
-        bazqux = new View();
-        bazqux.setName("bazqux");
-        bazqux.setType("RANDOM");
-        viewService.addView(bazqux);
-        assertEquals(1, viewService.findAll().size());
-        assertEquals(0L, bazqux.getId());
-        assertNotNull(bazqux.getUuid());
-        assertEquals(36, bazqux.getUuid().length());
-
         views = new ViewsHandler(bundleService, viewService);
     }
 
-    @AfterClass
-    public static void teardown() {
-        bundleService = null;
-        viewService = null;
-        views = null;
-        foobar = null;
-        bazqux = null;
-    }
-
     @Test
-    public void testThatParsingWorks() throws IOException, IllegalArgumentException, JSONException {
-        try (InputStream in = this.getClass().getClassLoader().getResourceAsStream("view-to-import.json")) {
-            byte[] b = IOHelper.readBytes(in);
-            in.close();
-            String jsonStr = new String(b, StandardCharsets.UTF_8);
-            JSONObject viewJSON = new JSONObject(jsonStr);
-
-            View view = ViewHelper.viewFromJson(bundleService, viewJSON);
-            assertEquals("Default view", view.getName());
-            assertEquals("DEFAULT", view.getType());
-            assertEquals(true, view.isDefault());
-            assertEquals(true, view.isPublic());
-            assertEquals(false, view.isOnlyForUuId());
-            assertEquals("servlet", view.getApplication());
-            assertEquals("index", view.getPage());
-            assertEquals("/applications/sample", view.getDevelopmentPath());
-
-            List<Bundle> bundles = view.getBundles();
-            assertNotNull(bundles);
-            assertEquals(1, bundles.size());
-            assertEquals("foobar", bundles.get(0).getName());
-        }
-    }
-
-    @Test
-    public void whenExportedAndImportedDataRemainsTheSame() throws JSONException {
-        View view1 = getDummyView();
-        JSONObject viewJSON = ViewHelper.viewToJson(bundleService, view1);
-        View view2 = ViewHelper.viewFromJson(bundleService, viewJSON);
-
-        assertEquals(view1.getName(), view2.getName());
-        assertEquals(view1.getType(), view2.getType());
-        assertEquals(view1.isDefault(), view2.isDefault());
-        assertEquals(view1.isPublic(), view2.isPublic());
-        assertEquals(view1.isOnlyForUuId(), view2.isOnlyForUuId());
-        assertEquals(view1.getApplication(), view2.getApplication());
-        assertEquals(view1.getPage(), view2.getPage());
-        assertEquals(view1.getDevelopmentPath(), view2.getDevelopmentPath());
-        assertEquals(view1.getBundles(), view2.getBundles());
-    }
-
-    @Test
-    public void testGuestUsersShallNotPass() {
+    public void whenUserIsGuestThrowsException() {
         ActionParameters params = new ActionParameters();
         params.setRequest(mockHttpServletRequest());
         params.setResponse(mockHttpServletResponse());
@@ -131,7 +58,7 @@ public class ViewsHandlerTest extends JSONActionRouteTest {
     }
 
     @Test
-    public void testNonAdminUserShallNotPass() {
+    public void whenUserIsNotAdminThrowsActionExceptiontest() {
         ActionParameters params = new ActionParameters();
         params.setRequest(mockHttpServletRequest());
         params.setResponse(mockHttpServletResponse());
@@ -161,7 +88,7 @@ public class ViewsHandlerTest extends JSONActionRouteTest {
     }
 
     @Test
-    public void whenNoSuchViewExistsThrowsActionException() {
+    public void whenGETtingViewThatDoesNotExistThrowsActionException() {
         Map<String, String> queryParams = new HashMap<>();
         queryParams.put("uuid", "my-unknown-fake-uuid");
 
@@ -179,9 +106,17 @@ public class ViewsHandlerTest extends JSONActionRouteTest {
     }
 
     @Test
-    public void testGettingWorks() throws ActionException, IllegalArgumentException, JSONException {
+    public void whenGETtingViewThatDoesExistRespondsWithValidJSON()
+            throws ActionException, IllegalArgumentException, JSONException, ViewException {
+        // Add View to ViewService
+        View foo = new View();
+        foo.setName("bazqux");
+        foo.setType("RANDOM");
+        viewService.addView(foo);
+
+        // Query for the View
         Map<String, String> queryParams = new HashMap<>();
-        queryParams.put("uuid", bazqux.getUuid());
+        queryParams.put("uuid", foo.getUuid());
 
         ByteArrayOutputStream respOut = new ByteArrayOutputStream();
 
@@ -198,18 +133,22 @@ public class ViewsHandlerTest extends JSONActionRouteTest {
         String jsonStr = new String(body, StandardCharsets.UTF_8);
         JSONObject viewJSON = new JSONObject(jsonStr);
         View view = ViewHelper.viewFromJson(bundleService, viewJSON);
+
         // id and uuid should not be copied over with export functionality
-        // default id is -1
+        // default id is -1, default uuid is null
         assertEquals(-1L, view.getId());
         assertNull(view.getUuid());
-        assertEquals(bazqux.getName(), view.getName());
-        assertEquals(bazqux.getType(), view.getType());
+
+        // name and type should be same as what we added to the service
+        assertEquals(foo.getName(), view.getName());
+        assertEquals(foo.getType(), view.getType());
 
         respOut.toByteArray();
     }
 
     @Test
-    public void whenPOSTingValidJsonRespondsWithJsonContainingTheIdAndUuid() throws JSONException, ActionException {
+    public void whenPOSTingValidJSONRespondsWithJSONContainingTheIdAndUuid()
+            throws JSONException, ActionException {
         View view = getDummyView();
         JSONObject viewJSON = ViewHelper.viewToJson(bundleService, view);
         byte[] rawInput = viewJSON.toString().getBytes(StandardCharsets.UTF_8);
@@ -239,7 +178,7 @@ public class ViewsHandlerTest extends JSONActionRouteTest {
         assertEquals(36, uuid.length());
     }
 
-    private View getDummyView() {
+    private static View getDummyView() {
         View view = new View();
         view.setName("My Default View");
         view.setType("DEFAULT");
@@ -249,7 +188,6 @@ public class ViewsHandlerTest extends JSONActionRouteTest {
         view.setApplication("foo");
         view.setPage("bar");
         view.setDevelopmentPath("baz");
-        view.setBundles(Arrays.asList(new Bundle[] { foobar }));
         return view;
     }
 
