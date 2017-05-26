@@ -104,6 +104,7 @@ public class ViewServiceIbatisImpl extends BaseIbatisService<Object> implements
             return null;
         LOG.debug("uuid != null --> view-with-conf-by-uuid");
         View view = (View) queryForObject("View.view-with-conf-by-uuid", uuId);
+        setBundlesForView(view);
         return view;
     }
 
@@ -126,6 +127,15 @@ public class ViewServiceIbatisImpl extends BaseIbatisService<Object> implements
         System.err.println("[ViewService] Got " + views.size()
                 + " views for user " + userId);
         return views;
+    }
+
+    private void setBundlesForView(View view) {
+        if (view == null) {
+            return;
+        }
+        long id = view.getId();
+        List<Bundle> bundles = queryForList("View.bundle-by-view-id", id);
+        view.setBundles(bundles);
     }
 
     public long addView(View view) throws ViewException {
