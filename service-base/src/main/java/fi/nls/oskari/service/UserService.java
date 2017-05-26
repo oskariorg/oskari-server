@@ -251,7 +251,7 @@ public abstract class UserService  extends BaseIbatisService<UserService> {
      * @param id User id
      * @throws ServiceException
      */
-    public void deleteUser(long id) throws ServiceException {
+    public void deleteAllUsersContent(long id) throws ServiceException {
         throw new ServiceException("Not implemented");
     }
 

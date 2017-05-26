@@ -5,12 +5,10 @@ import fi.nls.oskari.domain.Role;
 import fi.nls.oskari.domain.User;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.map.analysis.service.AnalysisDbServiceIbatisImpl;
-import fi.nls.oskari.map.userlayer.service.UserLayerDbServiceIbatisImpl;
-import fi.nls.oskari.map.view.ViewServiceIbatisImpl;
-import fi.nls.oskari.myplaces.MyPlacesServiceMybatisImpl;
+import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.service.UserService;
+import fi.nls.oskari.service.db.UserContentService;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 
@@ -19,10 +17,6 @@ import java.util.*;
 public class DatabaseUserService extends UserService {
     private IbatisRoleService roleService = new IbatisRoleService();
     private IbatisUserService userService = new IbatisUserService();
-    private ViewServiceIbatisImpl viewService = new ViewServiceIbatisImpl();
-    private AnalysisDbServiceIbatisImpl analysisService = new AnalysisDbServiceIbatisImpl();
-    private UserLayerDbServiceIbatisImpl userLayerService = new UserLayerDbServiceIbatisImpl();
-    private MyPlacesServiceMybatisImpl myPlacesService = new MyPlacesServiceMybatisImpl();
 
     private static final String ERR_USER_MISSING = "User was null";
     private static final int BCRYPT_PASSWORD_LENGTH = 60;
@@ -222,20 +216,17 @@ public class DatabaseUserService extends UserService {
     }    
     
     @Override
-    public void deleteUser(long id) throws ServiceException {
+    public void deleteAllUsersContent(long id) throws ServiceException {
         log.debug("deleteUser");
         User user = userService.find(id);
         if (user != null) {
             try {
                 final SqlMapSession session = openSession();
                 session.startTransaction();
-                userService.deletePassword(user.getScreenname());
-                roleService.deleteUsersRoles(id);
-                userService.delete(id);
-                viewService.deleteViewByUserId(id);
-                userLayerService.deleteUserLayerByUid(user.getUuid());
-                analysisService.deleteAnalysisByUid(user.getUuid());
-                myPlacesService.deleteByUid(user.getUuid());
+                Map<String, UserContentService> contentServices = OskariComponentManager.getComponentsOfType(UserContentService.class);
+                for(UserContentService service : contentServices.values()) {
+                    service.deleteUserContent(user);
+                }
                 session.endTransaction();
             }
             catch (Exception e) {
