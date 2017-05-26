@@ -79,8 +79,8 @@ public class ViewsHandler extends RestActionHandler {
 
         try {
             View view = parseView(req);
-            long id = viewService.addView(view);
-            JSONObject json = createResponse(id, view.getUuid());
+            viewService.addView(view);
+            JSONObject json = createResponse(view);
             ResponseHelper.writeResponse(params, HttpServletResponse.SC_CREATED, json);
         } catch (ViewException e) {
             LOG.warn(e, "Failed to add view!");
@@ -106,11 +106,11 @@ public class ViewsHandler extends RestActionHandler {
         }
     }
 
-    private static JSONObject createResponse(long id, String uuid)
-            throws JSONException {
+    private static JSONObject createResponse(View view) throws JSONException {
         JSONObject json = new JSONObject();
-        json.put("id", id);
-        json.put("uuid", uuid);
+        json.put("id", view.getId());
+        json.put("uuid", view.getUuid());
+        json.put("url", view.getUrl());
         return json;
     }
 

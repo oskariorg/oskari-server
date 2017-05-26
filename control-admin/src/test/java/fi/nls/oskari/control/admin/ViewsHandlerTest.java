@@ -172,6 +172,7 @@ public class ViewsHandlerTest extends JSONActionRouteTest {
         JSONObject json = new JSONObject(bodyStr);
 
         assertTrue(json.has("id"));
+        assertTrue(json.getLong("id") > -1L);
         assertTrue(json.has("uuid"));
         String uuid = json.getString("uuid");
         assertNotNull(uuid);
