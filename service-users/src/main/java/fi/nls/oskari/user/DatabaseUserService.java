@@ -219,14 +219,17 @@ public class DatabaseUserService extends UserService {
         log.debug("deleteUser");
         User user = userService.find(id);
         if (user != null) {
+            userService.deletePassword(user.getScreenname());
+            roleService.deleteUsersRoles(id);
+            userService.delete(id);
 
             Map<String, UserContentService> userContentServices;
             String serviceClass = "";
             try {
                 userContentServices = OskariComponentManager.getComponentsOfType(UserContentService.class);
                 for (Map.Entry<String, UserContentService> userContentService : userContentServices.entrySet()) {
-                    userContentService.getValue().deleteUserContent(user);
                     serviceClass = userContentService.getKey();
+                    userContentService.getValue().deleteUserContent(user);
                 }
             }
             catch (Exception e) {
