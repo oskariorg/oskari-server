@@ -12,7 +12,7 @@ import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.userlayer.service.UserLayerDataService;
 import fi.nls.oskari.map.userlayer.service.UserLayerDbService;
-import fi.nls.oskari.map.userlayer.service.UserLayerDbServiceIbatisImpl;
+import fi.nls.oskari.map.userlayer.service.UserLayerDbServiceMybatisImpl;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.ResponseHelper;
 import org.json.JSONArray;
@@ -27,7 +27,7 @@ import java.util.List;
 public class GetUserLayersHandler extends ActionHandler {
 
     private static final Logger log = LogFactory.getLogger(GetUserLayersHandler.class);
-    private static final UserLayerDbService userLayerService = new UserLayerDbServiceIbatisImpl();
+    private static final UserLayerDbService userLayerService = new UserLayerDbServiceMybatisImpl();
     private final UserLayerDataService userLayerDataService = new UserLayerDataService();
 
     private static final String JSKEY_USERLAYERS = "userlayers";
@@ -42,7 +42,7 @@ public class GetUserLayersHandler extends ActionHandler {
 
         final User user = params.getUser();
         if (!user.isGuest()) {
-            final List<UserLayer> list = userLayerService.getUserLayerByUid(user.getUuid());
+            final List<UserLayer> list = userLayerService.getUserLayerByUuid(user.getUuid());
             final OskariLayer baseLayer = userLayerDataService.getBaseLayer();
             for (UserLayer ul : list) {
                 // Parse userlayer data to userlayer

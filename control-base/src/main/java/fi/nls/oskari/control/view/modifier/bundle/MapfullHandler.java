@@ -19,7 +19,7 @@ import fi.nls.oskari.map.analysis.service.AnalysisDbService;
 import fi.nls.oskari.map.analysis.service.AnalysisDbServiceIbatisImpl;
 import fi.nls.oskari.map.userlayer.service.UserLayerDataService;
 import fi.nls.oskari.map.userlayer.service.UserLayerDbService;
-import fi.nls.oskari.map.userlayer.service.UserLayerDbServiceIbatisImpl;
+import fi.nls.oskari.map.userlayer.service.UserLayerDbServiceMybatisImpl;
 import fi.nls.oskari.myplaces.MyPlacesService;
 import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.util.ConversionHelper;
@@ -73,7 +73,7 @@ public class MapfullHandler extends BundleHandler {
 
     private static MyPlacesService myPlaceService = null;
     private static final AnalysisDbService analysisService = new AnalysisDbServiceIbatisImpl();
-    private static final UserLayerDbService userLayerService = new UserLayerDbServiceIbatisImpl();
+    private static final UserLayerDbService userLayerService = new UserLayerDbServiceMybatisImpl();
     private static final UserLayerDataService userLayerDataService = new UserLayerDataService();
 
     private static final LogoPluginHandler LOGO_PLUGIN_HANDLER = new LogoPluginHandler();
