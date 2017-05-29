@@ -16,6 +16,7 @@ import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
@@ -130,6 +131,71 @@ public class JSONActionRouteTest {
 
         return params;
     }
+
+    public HttpServletRequest mockHttpServletRequest() {
+        return mockHttpServletRequest("GET");
+    }
+
+    public HttpServletRequest mockHttpServletRequest(String method) {
+        return mockHttpServletRequest(method, null);
+    }
+
+    public HttpServletRequest mockHttpServletRequest(String method, Map<String, String> parameters) {
+        return mockHttpServletRequest(method, parameters, null, -1, null);
+    }
+
+    public HttpServletRequest mockHttpServletRequest(String method,
+            Map<String, String> parameters, String contentType,
+            int contentLength, InputStream payload) {
+        HttpServletRequest req = mock(HttpServletRequest.class);
+
+        if (parameters != null) {
+            doReturn(new Vector<String>(parameters.keySet()).elements()).when(req).getParameterNames();
+            for (String key : parameters.keySet()) {
+                when(req.getParameter(key)).thenReturn(parameters.get(key));
+            }
+        }
+
+        HttpSession session = mock(HttpSession.class);
+        doReturn("testkey").when(session).getId();
+        doReturn(session).when(req).getSession();
+
+        if (method != null) {
+            doReturn(method).when(req).getMethod();
+        }
+
+        if (contentType != null) {
+            doReturn(contentType).when(req).getContentType();
+        }
+
+        if (contentLength >= 0) {
+            doReturn(contentLength).when(req).getContentLength();
+            doReturn((long) contentLength).when(req).getContentLengthLong();
+        }
+
+        if (payload != null) {
+            try {
+                doReturn(new MockServletInputStream(payload)).when(req).getInputStream();
+            } catch (IOException ignore) {}
+        }
+
+        return req;
+    }
+
+    public HttpServletResponse mockHttpServletResponse() {
+        return mockHttpServletResponse(null);
+    }
+
+    public HttpServletResponse mockHttpServletResponse(ByteArrayOutputStream baos) {
+        HttpServletResponse resp = mock(HttpServletResponse.class);
+        if (baos != null) {
+            try {
+                doReturn(new MockServletOutputStream(baos)).when(resp).getOutputStream();
+            } catch (IOException ignore) {}
+        }
+        return resp;
+    }
+
     public void verifyResponseNotWritten(final ActionParameters params) {
         try {
             verify(params.getResponse(), never()).getWriter();
@@ -204,9 +270,18 @@ public class JSONActionRouteTest {
         loggedInUser.addRole(1, "User");
         return loggedInUser;
     }
+
+    public User getNotAdminUser() {
+        User user = mock(User.class);
+        doReturn(false).when(user).isGuest();
+        doReturn(false).when(user).isAdmin();
+        return user;
+    }
+
     public User getAdminUser() {
         User adminUser = mock(User.class);
-        // mock as admin
+        // mock as logged in and admin
+        doReturn(false).when(adminUser).isGuest();
         doReturn(true).when(adminUser).isAdmin();
         return adminUser;
     }

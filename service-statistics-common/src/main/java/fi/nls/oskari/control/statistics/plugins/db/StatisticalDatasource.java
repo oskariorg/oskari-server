@@ -111,7 +111,11 @@ public class StatisticalDatasource {
         return hints;
     }
     public JSONObject getConfigJSON() {
-        return JSONHelper.createJSONObject(config);
+        JSONObject obj = JSONHelper.createJSONObject(config);
+        if(obj != null) {
+            return obj;
+        }
+        return new JSONObject();
     }
 
     public String getConfig() {

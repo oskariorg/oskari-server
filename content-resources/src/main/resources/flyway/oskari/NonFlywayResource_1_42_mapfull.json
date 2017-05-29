@@ -1,0 +1,37 @@
+{
+  "bundlename": "mapfull",
+  "metadata": {
+    "Import-Bundle": {
+      "oskariui": {
+        "bundlePath": "/Oskari/packages/framework/bundle/"
+      },
+      "mapwmts": {
+        "bundlePath": "/Oskari/packages/framework/bundle/"
+      },
+      "mapwfs2": {
+        "bundlePath": "/Oskari/packages/framework/bundle/"
+      },
+      "mapuserlayers": {
+        "bundlePath": "/Oskari/packages/framework/bundle/"
+      },
+      "mapstats": {
+        "bundlePath": "/Oskari/packages/framework/bundle/"
+      },
+      "mapmyplaces": {
+        "bundlePath": "/Oskari/packages/framework/bundle/"
+      },
+      "mapmodule-plugin": {
+        "bundlePath": "/Oskari/packages/framework/bundle/"
+      },
+      "ui-components": {
+        "bundlePath": "/Oskari/packages/framework/bundle/"
+      },
+      "mapanalysis": {
+        "bundlePath": "/Oskari/packages/framework/bundle/"
+      },
+      "mapfull": {
+        "bundlePath": "/Oskari/packages/framework/bundle/"
+      }
+    }
+  }
+}

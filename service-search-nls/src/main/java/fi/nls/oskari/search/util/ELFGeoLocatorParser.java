@@ -206,13 +206,13 @@ public class ELFGeoLocatorParser {
                     item.setType(loctypes.get(0));
                 }
 
-                item.setVillage("");
+                item.setRegion("");
                 item.setDescription("");
 
                 if (parents.size() > 0){
-                    item.setVillage(parents.get(0));
+                    item.setRegion(parents.get(0));
                 }else if (descs.size() > 0){
-                    item.setVillage(getAdminCountry(locale, descs.get(0)));
+                    item.setRegion(getAdminCountry(locale, descs.get(0)));
                 }
 
                 if (descs.size() > 0){

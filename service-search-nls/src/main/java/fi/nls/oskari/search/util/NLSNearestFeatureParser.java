@@ -130,13 +130,13 @@ public class NLSNearestFeatureParser {
                 item.setType("");
                 item.setLocationTypeCode("");
 
-                item.setVillage("");
+                item.setRegion("");
                 item.setDescription("");
-                if (fin_names.size() > 0) item.setVillage(fin_names.get(0));
+                if (fin_names.size() > 0) item.setRegion(fin_names.get(0));
                 String address = (nums.size() > 0) ? roads.get(0) + " " + nums.get(0) : roads.get(0);
 
                 if (lang3.equals(LANG_SWE)) {
-                    if (swe_names.size() > 0) item.setVillage(swe_names.get(0));
+                    if (swe_names.size() > 0) item.setRegion(swe_names.get(0));
                     // Double..Triple work, because gotools doesn't parse multiple equal name properties
                     String adress = getSweAddress(d, f.getID());
                     if(adress != null)  address = (nums.size() > 0) ? adress + " " + nums.get(0) : adress;

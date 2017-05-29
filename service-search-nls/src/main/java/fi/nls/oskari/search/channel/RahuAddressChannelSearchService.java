@@ -47,7 +47,7 @@ public class RahuAddressChannelSearchService extends BaseWfsAddressChannelSearch
 		List<SearchResultItem> results = csr.getSearchResultItems();
 		List<SearchResultItem> finalResults = new ArrayList<SearchResultItem>();
 		for(SearchResultItem item: results) {
-			String key = item.getTitle()+item.getVillage();
+			String key = item.getTitle()+item.getRegion();
 			if (!alreadyFoundItems.containsKey(key)) {
 				finalResults.add(item);
 				alreadyFoundItems.put(key, item.getTitle());
