@@ -99,7 +99,7 @@ public class CreateUserLayerHandler extends ActionHandler {
             }
 
 
-            // Store geojson via ibatis
+            // Store geojson via Mybatis
             UserLayer ulayer = userlayerService.storeUserData(geojsonWorker, user, loadItem.getFparams());
 
             // Store failed
@@ -116,17 +116,22 @@ public class CreateUserLayerHandler extends ActionHandler {
             response.setCharacterEncoding("UTF-8");
 
             JSONObject userLayer = userlayerService.parseUserLayer2JSON(ulayer);
-            JSONHelper.putValue(userLayer, "featuresCount", ulayer.getFeaturesCount());
+            JSONHelper.putValue(userLayer, "featuresCount", ulayer.getFeatures_count());
             JSONObject permissions = OskariLayerWorker.getAllowedPermissions();
             JSONHelper.putValue(userLayer, "permissions", permissions);
-
+            //add warning if features were skipped
+            if (ulayer.getFeatures_skipped() > 0) {
+                JSONObject featuresSkipped = new JSONObject();
+                JSONHelper.putValue(featuresSkipped, "featuresSkipped", ulayer.getFeatures_skipped());
+                JSONHelper.putValue(userLayer, "warning", featuresSkipped);
+            }
             response.getWriter().print(userLayer);
 
         }catch (ActionException e) {
-            throw new ActionException (e.getMessage());//("Import failed - " + e.getMessage(), e);
+            throw new ActionException (e.getMessage());
         }
         catch (Exception e) {
-            throw new ActionException (e.getMessage()); //("Couldn't get the import file set - " + e.getMessage(), e);
+            throw new ActionException (e.getMessage());
         }
 
     }
@@ -305,7 +310,7 @@ public class CreateUserLayerHandler extends ActionHandler {
             File renameLocation = new File(newName);
             boolean success = newFile.renameTo(renameLocation);
             if(!success) {
-                //TODO: if shapefile contains more than one layer -> warn user that only should contain only one
+                //TODO: if shapefile contains more than one layer -> warn user that zip should contain only one layer (shp + dbf + shx)
                 log.warn("Rename failed in temp directory", newFile.getName(), " ->  ",newName );
             } else {
                 // update path

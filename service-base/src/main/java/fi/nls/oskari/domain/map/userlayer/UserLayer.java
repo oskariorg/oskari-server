@@ -12,6 +12,7 @@ public class UserLayer extends UserDataLayer {
     private String fields;
     private long style_id;
     private int features_count;
+    private int features_skipped; //if geojson feature doesn't have geometry object or it's null, feature is skipped
 
     public long getId() {
         return id;
@@ -61,11 +62,18 @@ public class UserLayer extends UserDataLayer {
         this.style_id = style_id;
     }
 
-    public int getFeaturesCount (){
+    public int getFeatures_count (){
         return features_count;
     }
 
-    public void setFeaturesCount (int count){
+    public void setFeatures_count (int count){
         this.features_count = count;
+    }
+    public int getFeatures_skipped (){
+        return features_skipped;
+    }
+
+    public void setFeatures_skipped (int noGeometry){
+        this.features_skipped = noGeometry;
     }
 }
