@@ -192,9 +192,9 @@
     <select id="bundle-by-view-id"
             parameterClass="java.lang.Long"
             resultMap="bundle">
-      SELECT   view_id, bundle_id, seqno, state, config, startup, bundleinstance
-        FROM   portti_view_bundle_seq
-       WHERE   view_id = #view_id#
+      SELECT   s.view_id, s.bundle_id, s.seqno, s.state, s.config, s.startup, s.bundleinstance, b.name
+        FROM   portti_view_bundle_seq s, portti_bundle b
+       WHERE   view_id = #view_id# AND s.bundle_id = b.id
     </select>
 
     <statement id="add-bundle"
