@@ -180,7 +180,7 @@
             WHERE creator = #userId#
     </statement>
 
-
+    <!-- FIXME: bundle-by-view-id is identical - remove this one  -->
     <select id="states-with-conf-by-view-id"
             parameterClass="java.lang.Long"
             resultMap="bundle">
