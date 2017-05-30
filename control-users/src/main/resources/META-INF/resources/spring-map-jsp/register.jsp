@@ -239,8 +239,6 @@
                 $("#lastname").val(data.lastName);
                 $("#email").val(data.email);
                 $("body").show();
-
-                showModal('<spring:message code="user.registration.edit.success"/>');
             },
             error: function (jqXHR, textStatus, errorThrown) {
                 //TODO: error handling
