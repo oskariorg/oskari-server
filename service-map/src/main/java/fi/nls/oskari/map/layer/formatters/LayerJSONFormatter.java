@@ -194,6 +194,13 @@ public class LayerJSONFormatter {
         return ((layer.getUsername() != null) && (layer.getUsername().length() > 0)) || forceProxy;
     }
 
+    protected boolean isBeingProxiedViaOskariServer(String url) {
+        if(url == null || url.isEmpty()) {
+            return false;
+        }
+        return url.startsWith(PropertyUtil.get(PROPERTY_AJAXURL));
+    }
+
     public String getProxyUrl(final OskariLayer layer) {
         Map<String, String> urlParams = new HashMap<String, String>();
         urlParams.put("action_route", "GetLayerTile");
