@@ -22,6 +22,6 @@ public interface MyPlaceMapper {
     List<MyPlaceCategory> findByIds(@Param("list") List<Long> idList);
     List<MyPlaceCategory> freeFind(Map<String, Object> data);
     List<MyPlaceCategory> findAll();
-    @Delete("delete from categories where uuid #{uid}")
+    @Delete("delete from categories where uuid = #{uid}")
     void deleteByUid(String uid);
 }

@@ -26,8 +26,8 @@ public class RegistrationUtil {
         Calendar calender = Calendar.getInstance();
         Timestamp currentTime = new java.sql.Timestamp(calender.getTime().getTime());
         calender.setTime(currentTime);
-        Integer expiryTimeProperty = Integer.parseInt(PropertyUtil.get("oskari.email.link.expirytime"));
-        calender.add(Calendar.DAY_OF_MONTH, expiryTimeProperty);
+        int expireDays = PropertyUtil.getOptional("oskari.email.link.expirytime", 2);
+        calender.add(Calendar.DAY_OF_MONTH, expireDays);
         Timestamp expiryTime = new java.sql.Timestamp(calender.getTime().getTime());
         return expiryTime;
     }

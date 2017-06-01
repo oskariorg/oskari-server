@@ -292,13 +292,13 @@
                     error: function (jqXHR, textStatus, errorThrown) {
                         var errorResponse = jqXHR.responseText;
                         if (errorResponse.toLowerCase().indexOf("email") >= 0) {
-                            errorMsg("#email", '<spring:message code="user.registration.error.emailExists"/>');
+                            errorMsg("#email", '<spring:message javaScriptEscape="true" code="user.registration.error.emailExists"/>');
                         } else if (errorResponse.toLowerCase().indexOf("username") >= 0) {
-                            errorMsg("#username", '<spring:message code="user.registration.error.usernameExists"/>');
+                            errorMsg("#username", '<spring:message javaScriptEscape="true" code="user.registration.error.usernameExists"/>');
                         } else if (errorResponse.toLowerCase().indexOf("address") >= 0) {
-                            errorMsg("#email", '<spring:message code="user.registration.error.sendingFailed"/>');
+                            errorMsg("#email", '<spring:message javaScriptEscape="true" code="user.registration.error.sendingFailed"/>');
                         } else if (errorResponse.toLowerCase().indexOf("properties") >= 0) {
-                            errorMsg("#username", '<spring:message code="user.registration.error.emailConfigurationError"/>');
+                            errorMsg("#username", '<spring:message javaScriptEscape="true" code="user.registration.error.emailConfigurationError"/>');
                         } else {
                             //TODO: error handling
                             errorMsg("#errorGeneral", jqXHR.responseText);
@@ -323,7 +323,7 @@
                     data: data,
                     success: function (data) {
                         // FIXME: show confirmation about mail being sent
-                        showModal('<spring:message code="user.registration.edit..success"/>', true);
+                        showModal('<spring:message code="user.registration.edit.success"/>', true);
                     },
                     error: function (jqXHR, textStatus, errorThrown) {
                         //TODO: error handling

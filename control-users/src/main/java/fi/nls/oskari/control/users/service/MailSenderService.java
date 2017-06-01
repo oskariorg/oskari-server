@@ -16,8 +16,6 @@ import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
-import java.io.BufferedInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.util.Locale;
 import java.util.Properties;
@@ -108,14 +106,7 @@ public class MailSenderService {
         String contents = null;
         try {
             in = PropertyUtil.class.getResourceAsStream("/"+file);
-            BufferedInputStream bis = new BufferedInputStream(in);
-            ByteArrayOutputStream buf = new ByteArrayOutputStream();
-            int result = bis.read();
-            while(result != -1) {
-                buf.write((byte) result);
-                result = bis.read();
-            }
-            contents = buf.toString("UTF-8");
+            contents = IOHelper.readString(in);
         } catch (Exception ignored) {
             log.debug("Unable to read the email template file for sending email.");
             throw new ServiceException("Unable to read the properties for sending email.");
