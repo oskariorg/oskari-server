@@ -8,6 +8,7 @@ import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.spring.SpringContextHolder;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.PropertyUtil;
+import org.apache.commons.lang.text.StrSubstitutor;
 import org.springframework.context.MessageSource;
 
 import javax.mail.Message;
@@ -17,13 +18,19 @@ import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import java.io.InputStream;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Properties;
 
 public class MailSenderService {
 
     private static final Logger log = LogFactory.getLogger(MailSenderService.class);
     private MessageSource messages;
+    private static final String linkResetPassword = "link_to_set_password";
+    private static final String linkExpiryTime = "link_expiry_time";
+    private static final String registrationUserName = "user_name";
+    private static final int defaultLinkExpiryTime = 2;
 
     private MessageSource getMessages() {
         if(messages == null) {
@@ -71,34 +78,57 @@ public class MailSenderService {
     }
 
     public final void sendEmailForRegistrationActivation(User user, String serverAddress, String language) throws ServiceException {
-        String content = readFile(PropertyUtil.get("oskari.email.registration." + language));
-        String subject = PropertyUtil.get("oskari.email.registration.title." + language);
+        String emailContent = readFile(PropertyUtil.get("oskari.email.registration." + language));
+        Map emailValuesMap = new HashMap();
+        emailValuesMap.put(linkResetPassword,
+                getMessages().getMessage("oskari.email.link.to.reset", new String[]{serverAddress, user.getUuid()}, new Locale(language)));
+        emailValuesMap.put(linkExpiryTime, PropertyUtil.getOptional("oskari.email.link.expirytime", defaultLinkExpiryTime));
+        emailValuesMap.put(registrationUserName, user.getScreenname());
+        StrSubstitutor emailValuesSubstitutor = new StrSubstitutor(emailValuesMap);
+        String resolvedEmailContent = emailValuesSubstitutor.replace(emailContent);
+        String subject = PropertyUtil.get("oskari.email.registration.title." + language,
+                getMessages().getMessage("user.registration.title", new String[]{serverAddress, user.getUuid()}, new Locale(language)));
+
         EmailMessage emailMessage = new EmailMessage();
         emailMessage.setTo(user.getEmail());
         emailMessage.setSubject(subject);
-        emailMessage.setContent(content +
-                getMessages().getMessage("oskari.email.link.to.reset", new String[]{serverAddress, user.getUuid()}, new Locale(language)));
+        emailMessage.setContent(resolvedEmailContent);
         sendEmail(emailMessage, user.getUuid(), serverAddress, language);
     }
 
     public final void sendEmailForResetPassword(User user, String uuid, String serverAddress, String language) throws ServiceException {
-        String content = readFile(PropertyUtil.get("oskari.email.passwordrecovery." + language));
-        String subject = PropertyUtil.get("oskari.email.passwordrecovery.title." + language);
+        String emailContent = readFile(PropertyUtil.get("oskari.email.passwordrecovery." + language));
+        Map emailValuesMap = new HashMap();
+        emailValuesMap.put(linkResetPassword,
+                getMessages().getMessage("oskari.email.link.to.reset", new String[]{serverAddress, user.getUuid()}, new Locale(language)));
+        emailValuesMap.put(linkExpiryTime, PropertyUtil.getOptional("oskari.email.link.expirytime", defaultLinkExpiryTime));
+        StrSubstitutor emailValuesSubstitutor = new StrSubstitutor(emailValuesMap);
+        String resolvedEmailContent = emailValuesSubstitutor.replace(emailContent);
+        String subject = PropertyUtil.get("oskari.email.passwordrecovery.title." + language,
+                getMessages().getMessage("user.registration.passwordReset.title", new String[]{serverAddress, user.getUuid()}, new Locale(language)));
+
         EmailMessage emailMessage = new EmailMessage();
         emailMessage.setTo(user.getEmail());
         emailMessage.setSubject(subject);
-        emailMessage.setContent(content +
-                getMessages().getMessage("oskari.email.link.to.reset", new String[]{serverAddress, uuid}, new Locale(language)));
+        emailMessage.setContent(resolvedEmailContent);
         sendEmail(emailMessage, uuid, serverAddress, language);
     }
 
     public final void sendEmailAlreadyExists(User user, String serverAddress, String language) throws ServiceException {
-        String content = readFile(PropertyUtil.get("oskari.email.exists." + language));
-        String subject = PropertyUtil.get("oskari.email.exists.title." + language);
+        String emailContent = readFile(PropertyUtil.get("oskari.email.exists." + language));
+        Map emailValuesMap = new HashMap();
+        emailValuesMap.put(linkResetPassword,
+                getMessages().getMessage("oskari.email.link.to.reset", new String[]{serverAddress, user.getUuid()}, new Locale(language)));
+        emailValuesMap.put(linkExpiryTime, PropertyUtil.getOptional("oskari.email.link.expirytime", defaultLinkExpiryTime));
+        StrSubstitutor emailValuesSubstitutor = new StrSubstitutor(emailValuesMap);
+        String resolvedEmailContent = emailValuesSubstitutor.replace(emailContent);
+        String subject = PropertyUtil.get("oskari.email.exists.title." + language,
+                getMessages().getMessage("user.registration.email.exists.title", new String[]{serverAddress, user.getUuid()}, new Locale(language)));
+
         EmailMessage emailMessage = new EmailMessage();
         emailMessage.setTo(user.getEmail());
         emailMessage.setSubject(subject);
-        emailMessage.setContent(content);
+        emailMessage.setContent(resolvedEmailContent);
         sendEmail(emailMessage, user.getUuid(), serverAddress, language);
     }
     private String readFile(String file) throws ServiceException {
@@ -107,12 +137,11 @@ public class MailSenderService {
         try {
             in = PropertyUtil.class.getResourceAsStream("/"+file);
             contents = IOHelper.readString(in);
+            IOHelper.close(in);
+            return contents;
         } catch (Exception ignored) {
             log.debug("Unable to read the email template file for sending email.");
             throw new ServiceException("Unable to read the properties for sending email.");
-        } finally {
-            IOHelper.close(in);
-            return contents;
         }
     }
 }
