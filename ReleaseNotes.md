@@ -1,6 +1,32 @@
 # Release Notes
 
+## 1.43
+
+### Thematic maps
+
+Fixed an issue where GetRegions action route returns the geometry reference point incorrect projection.
+
+### service-csw
+
+Fixed an issue where data quality fields were not parsed correctly from CSW response.
+
+### Layer urls handling for https-services
+
+Layer urls are modified for the frontend if the Oskari instance is running in a secure URL (https://). Most services only provide 
+ http urls and won't work properly if the map is loaded using https. For any layer where url doesn't start
+  with https:// or / the url is modified to use a proxied url with GetLayerTile action route.
+  Previously the protocol was replaced with https:// and to preserve this functionality you can add a property
+   for oskari-ext.properties:
+
+    maplayer.wmsurl.secure=https://
+
 ## 1.42
+
+### Default published JSP-file
+
+The map element now includes the class "published" as some features detect "embedded mode" using it. It was already 
+present in the published JSP in webapp-map but missing from the default. This fixes an issue where some frontend
+ features were started in "geoportal mode" on published maps with oskari-server-extensions (namely statsgrid2016 and maplegend).
 
 ### SystemLogger
 
@@ -12,7 +38,13 @@ The simple System.out/err logger can now be configured with environment variable
 Removed fi.nls.oskari.util.PrintOutHelper as it's not used anywhere. 
 Use JSONHelper.isEqual(JSONArray jsonArray1, JSONArray jsonArray2) for comparing arrays instead.
 
-### Search configuration
+### Search
+
+SearchResultItem.setVillage() and getVillage() have been deprecated and replaced with setRegion() and getRegion().
+ JSON-presentation of result items now include a region key in addition to the village key with the same value.
+ The village key will be removed in the future.
+ 
+WFSSearchChannels defaults config is migrated automatically renaming "village" to "region". 
 
 SearchOptions action route can now be configured to ignore some of the channels available in the system. This is done
 by configuring a comma-separated list of channel ids in oskari-ext.properties: 
@@ -23,22 +55,71 @@ by configuring a comma-separated list of channel ids in oskari-ext.properties:
 
 Additional bundles can be whitelisted for publishing using a new property in oskari-ext.properties:
 
-    actionhandler.AppSetup.bundles.simple=maprotator
+    actionhandler.AppSetup.bundles.simple=maprotator,maplegend
 
-Defaults to maprotator as a new bundle that can be published. The value of the property is a comma-separated list of 
+Defaults to maprotator and maplegend as new bundles that can be published. The value of the property is a comma-separated list of 
 bundle ids. If the payload from the browser has a configuration to a bundle that is whitelisted the bundle is added 
 to the published map view using the default startup from portti_bundle database table. The configuration and state for 
 the bundle are merged with the values from the browser before saving to the database.
+
+### Myplaces as WMS-layers (in embedded maps)
+
+My places layers used in embedded maps are shown as WMS-layers to the frontend, but have some custom behavior on the server.
+OpenLayers 3 defaults to WMS version 1.3.0 which might cause problems with coordinate order on some instances.
+My places layers that are used in embedded maps now use WMS 1.1.0 as a workaround for this. 
+ 
+Map clicks/GetFeatureInfo requests for my places layers should now properly work in embedded maps in
+ projections other than EPSG:3067.
 
 ### WFS-layer removal fix
 
 The link between a custom SLD-style and a WFS-layer is now removed by database constraint when a layer is removed.
 This fixes an issue where the link prevented a WFS-layer with custom style being removed properly.
 
-### Thematic maps regions
+### Thematic maps
 
 The GetRegions action route now returns the geometry as GeoJSON and reference point for the region in addition to id and name. 
 The action route now requires srs-parameter to be sent and any statslayer rows in the database should include the srs_name value.
+
+Datasources configuration can now have an info-object including a url key for more information about the datasource.
+The frontend will provide a link with the datasource name in attribution information when provided. 
+
+### UserLayerProcessor for property_json
+
+The UserLayerProcessor parses features' property_json JSONObject to new actual properties. Now GFI popup and Feature Data table show user data correctly.
+
+selected_feature_params and feature_params_locales are set empty from portti_wfs_layer table to get all non-geometry feature properties.
+
+Properties: uuid, user_layer_id, feature_id, created, updated and attention_text comes from user_layer_data table and are excluded from feature properties.
+
+### Datasource handling
+
+The datasource configuration didn't work properly before when datasource creation was done by Oskari: 
+all the database modules used the default datasource. For most use cases this is acceptable, but the problem emerges
+ when using different database connections for "core" oskari, myplaces, analysis and userlayers.
+
+You can now specify additional connections per flyway module. These are the defaults:
+
+    db.url=jdbc:postgresql://localhost:5432/oskaridb
+    db.username=oskari
+    db.password=oskari
+    db.additional.modules=myplaces,analysis,userlayer,myapp
+    
+If you would want to store myplaces to different database you can add the properties:
+
+    db.myplaces.url=jdbc:postgresql://localhost:5432/db_for_usercontent
+    db.myplaces.username=oskari
+    db.myplaces.password=oskari
+    db.myplaces.jndi.name=jdbc/myplacesPool
+
+If the user/pass is the same, you can leave them out and it will default to db.username/db.password property values.
+Note! Ibatis-mappings for analysis and userlayers still have hardcoded values as JNDI-name so you might need to override files under
+"servlet-map/src/main/resources/META-INF": SqlMapConfig_Analysis.xml and SqlMapConfig_UserLayer.xml.
+
+### service-csw
+ 
+Date parsing has been improved. Any non-parseable dates are now used as is from the XML. This fixes an issue where CSW data
+with dates having for example only year or year and month failed parsing and the user was presented with an empty result.
 
 ## 1.41
 

@@ -61,12 +61,13 @@ public class GetGeoPointDataHandler extends ActionHandler {
         } catch (JSONException ee) {
             log.warn("Couldn't parse geojson from POST request", ee);
         }
+		final String srs = params.getHttpParam(PARAM_SRS, "EPSG:3067");
 
 		for (String id : layerIdsArr) {
 			if (id.indexOf('_') >= 0) {
 			    if (id.startsWith("myplaces_")) {
 			        // Myplaces wfs query modifier
-                    final JSONObject response = myplacesService.getFeatureInfo(lat, lon, zoom, id, user.getUuid());
+                    final JSONObject response = myplacesService.getFeatureInfo(lat, lon, zoom, id, user.getUuid(), srs);
                     if(response != null) {
                         data.put(response);
                     }
@@ -95,7 +96,7 @@ public class GetGeoPointDataHandler extends ActionHandler {
 			    gfiParams.setX(params.getHttpParam(PARAM_X));
 			    gfiParams.setY(params.getHttpParam(PARAM_Y));
 			    gfiParams.setZoom(zoom);
-                gfiParams.setSRSName(params.getHttpParam(PARAM_SRS, "EPSG:3067"));
+                gfiParams.setSRSName(srs);
 			    
 			    final JSONObject response = geoPointService.getWMSFeatureInfo(gfiParams);
                 if(response != null) {
@@ -110,7 +111,7 @@ public class GetGeoPointDataHandler extends ActionHandler {
 				gfiParams.setLayer(layer);
 				gfiParams.setLon(lon);
 
-				gfiParams.setSRSName(params.getHttpParam(PARAM_SRS, "3067"));
+				gfiParams.setSRSName(srs);
 
 				final JSONObject response = geoPointService.getRESTFeatureInfo(gfiParams);
 				if(response != null) {

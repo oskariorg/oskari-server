@@ -216,6 +216,7 @@ public class MapController {
         }
         model.addAttribute("application", view.getApplication());
         model.addAttribute("viewName", view.getName());
+        model.addAttribute("user", params.getUser());
         model.addAttribute("language", params.getLocale().getLanguage());
 
         model.addAttribute(KEY_AJAX_URL,

@@ -138,8 +138,8 @@ public class RegisterOfNomenclatureChannelSearchService extends SearchChannel {
                 item.setType(getType(searchCriteria.getLocale(), paikkatyyppiKoodi));
                 item.setLocationName(SearchUtil.getLocationType(paikkatyyppiKoodi+"_"+ currentLocaleCode));
                 log.debug("kuntaKoodi _ currentLocaleCode " + kuntaKoodi+"_"+ currentLocaleCode);
-                item.setVillage(VillageSearchUtil.getVillageName(kuntaKoodi+"_"+ currentLocaleCode));
-                log.debug("item.getVillage: " + item.getVillage());
+                item.setRegion(VillageSearchUtil.getVillageName(kuntaKoodi+"_"+ currentLocaleCode));
+                log.debug("item.getVillage: " + item.getRegion());
                 item.setLon(lonLat[0]);
                 item.setLat(lonLat[1]);
                 item.setMapURL(SearchUtil.getMapURL(searchCriteria.getLocale()));
