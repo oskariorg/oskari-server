@@ -52,14 +52,7 @@ public class SHPGeoJsonCollection extends GeoJsonCollection implements GeoJsonWo
         try {
             dataStore = new ShapefileDataStore(file.toURI().toURL());
 
-            //try to find cpg file for shapefile to get code page to right char encoding
-            //Shapefile standard uses ISO-8859-1 for .dpf file content so shapefile is parsed using ISO-8859-1 decoding without cpg file
-            //Also in the header of shapefile (.dbf), a reference to a code page is included. Unfortunately geotools can't handle it.
-            //https://sourceforge.net/p/geotools/mailman/message/35098312/
-            //https://osgeo-org.atlassian.net/browse/GEOT-3377
-            //https://osgeo-org.atlassian.net/browse/GEOT-2972
-            //Prior to ArcGIS 10.2.1, the code page used corresponded to the user's locale
-            //At ArcGIS 10.2.1, the default sets the code page to UTF-8 (UNICODE) in the shapefile (.DBF).
+            //try to find cpg file for identifying the character encoding to be used
             try{
                 String baseFilePath = file.getAbsolutePath().substring(0,file.getAbsolutePath().lastIndexOf('.'));
                 File cpgFile = new File (baseFilePath + ".cpg");
