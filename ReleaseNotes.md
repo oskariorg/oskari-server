@@ -20,6 +20,10 @@ Layer urls are modified for the frontend if the Oskari instance is running in a 
 
     maplayer.wmsurl.secure=https://
 
+### Userlayer's feature properties ordering
+
+In the user_layer table "fields" json is migrated from JSONObject to JSONArray to keep order of the feature properties. New imported userlayer's feature properties will be handled in same order than in the source file (e.g. Shapefile).
+
 ## 1.42
 
 ### Default published JSP-file
