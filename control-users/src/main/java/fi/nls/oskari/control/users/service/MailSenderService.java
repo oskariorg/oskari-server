@@ -32,6 +32,11 @@ public class MailSenderService {
     private static final String registrationUserName = "user_name";
     private static final int defaultLinkExpiryTime = 2;
 
+    private static final String emailRegistration = "email_registration_";
+    private static final String emailPasswordRecovery = "email_passwordrecovery_";
+    private static final String emailExists = "email_exists_";
+    private static final String fileExtension = ".html";
+
     private MessageSource getMessages() {
         if(messages == null) {
             // "manual autowire"
@@ -78,7 +83,10 @@ public class MailSenderService {
     }
 
     public final void sendEmailForRegistrationActivation(User user, String serverAddress, String language) throws ServiceException {
-        String emailContent = readFile(PropertyUtil.get("oskari.email.registration." + language));
+        String emailContent = readPropertiesFile(PropertyUtil.get("oskari.email.registration." + language));
+        if(emailContent.isEmpty()) {
+            emailContent = readResourceFile(emailRegistration + language + fileExtension);
+        }
         Map emailValuesMap = new HashMap();
         emailValuesMap.put(linkResetPassword,
                 getMessages().getMessage("oskari.email.link.to.reset", new String[]{serverAddress, user.getUuid()}, new Locale(language)));
@@ -87,7 +95,7 @@ public class MailSenderService {
         StrSubstitutor emailValuesSubstitutor = new StrSubstitutor(emailValuesMap);
         String resolvedEmailContent = emailValuesSubstitutor.replace(emailContent);
         String subject = PropertyUtil.get("oskari.email.registration.title." + language,
-                getMessages().getMessage("user.registration.title", new String[]{serverAddress, user.getUuid()}, new Locale(language)));
+                getMessages().getMessage("user.registration.title", new String[]{}, new Locale(language)));
 
         EmailMessage emailMessage = new EmailMessage();
         emailMessage.setTo(user.getEmail());
@@ -97,15 +105,18 @@ public class MailSenderService {
     }
 
     public final void sendEmailForResetPassword(User user, String uuid, String serverAddress, String language) throws ServiceException {
-        String emailContent = readFile(PropertyUtil.get("oskari.email.passwordrecovery." + language));
+        String emailContent = readPropertiesFile(PropertyUtil.get("oskari.email.passwordrecovery." + language));
+        if(emailContent.isEmpty()) {
+            emailContent = readResourceFile(emailPasswordRecovery + language + fileExtension);
+        }
         Map emailValuesMap = new HashMap();
         emailValuesMap.put(linkResetPassword,
-                getMessages().getMessage("oskari.email.link.to.reset", new String[]{serverAddress, user.getUuid()}, new Locale(language)));
+                getMessages().getMessage("oskari.email.link.to.reset", new String[]{serverAddress, uuid}, new Locale(language)));
         emailValuesMap.put(linkExpiryTime, PropertyUtil.getOptional("oskari.email.link.expirytime", defaultLinkExpiryTime));
         StrSubstitutor emailValuesSubstitutor = new StrSubstitutor(emailValuesMap);
         String resolvedEmailContent = emailValuesSubstitutor.replace(emailContent);
         String subject = PropertyUtil.get("oskari.email.passwordrecovery.title." + language,
-                getMessages().getMessage("user.registration.passwordReset.title", new String[]{serverAddress, user.getUuid()}, new Locale(language)));
+                getMessages().getMessage("user.registration.passwordReset.title", new String[]{}, new Locale(language)));
 
         EmailMessage emailMessage = new EmailMessage();
         emailMessage.setTo(user.getEmail());
@@ -115,7 +126,10 @@ public class MailSenderService {
     }
 
     public final void sendEmailAlreadyExists(User user, String serverAddress, String language) throws ServiceException {
-        String emailContent = readFile(PropertyUtil.get("oskari.email.exists." + language));
+        String emailContent = readPropertiesFile(PropertyUtil.get("oskari.email.exists." + language));
+        if(emailContent.isEmpty()) {
+            emailContent = readResourceFile(emailExists + language + fileExtension);
+        }
         Map emailValuesMap = new HashMap();
         emailValuesMap.put(linkResetPassword,
                 getMessages().getMessage("oskari.email.link.to.reset", new String[]{serverAddress, user.getUuid()}, new Locale(language)));
@@ -123,7 +137,7 @@ public class MailSenderService {
         StrSubstitutor emailValuesSubstitutor = new StrSubstitutor(emailValuesMap);
         String resolvedEmailContent = emailValuesSubstitutor.replace(emailContent);
         String subject = PropertyUtil.get("oskari.email.exists.title." + language,
-                getMessages().getMessage("user.registration.email.exists.title", new String[]{serverAddress, user.getUuid()}, new Locale(language)));
+                getMessages().getMessage("user.registration.email.exists.title", new String[]{}, new Locale(language)));
 
         EmailMessage emailMessage = new EmailMessage();
         emailMessage.setTo(user.getEmail());
@@ -131,12 +145,20 @@ public class MailSenderService {
         emailMessage.setContent(resolvedEmailContent);
         sendEmail(emailMessage, user.getUuid(), serverAddress, language);
     }
-    private String readFile(String file) throws ServiceException {
-        InputStream in = null;
-        String contents = null;
+
+    private String readResourceFile(String file) throws ServiceException {
+        InputStream in = getClass().getResourceAsStream("/"+file);
+        return readFile(in);
+    }
+
+    private String readPropertiesFile(String file) throws ServiceException {
+        InputStream in = PropertyUtil.class.getResourceAsStream("/"+file);
+        return readFile(in);
+    }
+
+    private String readFile(InputStream in) throws ServiceException {
         try {
-            in = PropertyUtil.class.getResourceAsStream("/"+file);
-            contents = IOHelper.readString(in);
+            String contents = IOHelper.readString(in);
             IOHelper.close(in);
             return contents;
         } catch (Exception ignored) {
