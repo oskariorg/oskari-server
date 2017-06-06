@@ -154,7 +154,7 @@ public class WebMapServiceV1_1_1_Impl extends AbstractWebMapService {
 			/* OnlineResource is in xlink namespace */
 			String href = lurl[0].getOnlineResource().newCursor().getAttributeText(new QName("http://www.w3.org/1999/xlink", "href"));
 			if (href != null) {
-				legends.put(styleName, href);
+				legends.put(styleName + LEGEND_HASHMAP_KEY_SEPARATOR + styleTitle, href);
 			}
 		}
 	}

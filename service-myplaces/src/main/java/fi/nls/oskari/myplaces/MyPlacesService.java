@@ -68,6 +68,16 @@ public abstract class MyPlacesService extends OskariComponent {
         layer.setName(MYPLACES_WMS_NAME);
         layer.setType(OskariLayer.TYPE_WMS);
         layer.setName(lang, mpLayer.getCategory_name());
+
+        /*
+Version 1.1.0 works better as it has fixed coordinate order, the OL3 default 1.3.0 causes problems with some setups like:
+ERROR org.geoserver.ows -
+java.lang.RuntimeException: Unable to encode filter [[ geometry bbox POLYGON ((4913648.8700826 4969613.8817587, 4913648.8700826 4970013.1540413, 4914182.3089174 4970013.1540413, 4914182.3089174 4969613.8817587, 4913648.8700826 4969613.88
+17587)) ] AND [[ category_id = 186 ] AND [ uuid = 8e1cd426-6d91-26-23 ]]]
+        at org.geoserver.wfs.GetFeature.encodeQueryAsKvp(GetFeature.java:892)
+        at org.geoserver.wfs.GetFeature.buildKvpFromRequest(GetFeature.java:814)
+         */
+        layer.setVersion("1.1.0");
         layer.setTitle(lang, mpLayer.getPublisher_name());
         layer.setOpacity(50);
         JSONObject options = JSONHelper.createJSONObject("singleTile", true);

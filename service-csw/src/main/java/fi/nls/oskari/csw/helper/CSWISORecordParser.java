@@ -599,7 +599,13 @@ public class CSWISORecordParser {
         }
         node = (Node) XPATH_DI_SI_CITATION_DATE_VALUE.evaluate(cNode, XPathConstants.NODE);
         if (node != null) {
-            dateWithType.setDate(dateFormat().parse(getText(node)));
+            try {
+                dateWithType.setDate(dateFormat().parse(getText(node)));
+            }
+            catch (Exception e) {
+                dateWithType.setXmlDate(getText(node));
+            }
+
         }
         citation.setDate(dateWithType);
         nodeList = (NodeList) XPATH_DI_SI_CITATION_RESOURCE_IDENTIFIERS.evaluate(cNode, XPathConstants.NODESET);
@@ -694,11 +700,11 @@ public class CSWISORecordParser {
             List<CSWIsoRecord.DataQuality.DataQualityObject> temporalValidityObject = dataQuality.getTemporalValidityList();
             this.processDataQualityNodeList(temporalValidityNodeList, temporalValidityObject, pathToLocalizedValue);
 
-            NodeList thematicClassificationCorrectnessNodeList = (NodeList) XPATH_DATA_QUALITY_TEMPORAL_VALIDITY.evaluate(parentNode, XPathConstants.NODESET);
+            NodeList thematicClassificationCorrectnessNodeList = (NodeList) XPATH_DATA_QUALITY_THEMATIC_CLASSIFICATION_CORRECTNESS.evaluate(parentNode, XPathConstants.NODESET);
             List<CSWIsoRecord.DataQuality.DataQualityObject> thematicClassificationCorrectnessObject = dataQuality.getThematicClassificationCorrectnessList();
             this.processDataQualityNodeList(thematicClassificationCorrectnessNodeList, thematicClassificationCorrectnessObject, pathToLocalizedValue);
 
-            NodeList topologicalConsistencyNodeList = (NodeList) XPATH_DATA_QUALITY_TEMPORAL_VALIDITY.evaluate(parentNode, XPathConstants.NODESET);
+            NodeList topologicalConsistencyNodeList = (NodeList) XPATH_DATA_QUALITY_TOPOLOGICAL_CONSISTENCY.evaluate(parentNode, XPathConstants.NODESET);
             List<CSWIsoRecord.DataQuality.DataQualityObject> topologicalConsistencyObject = dataQuality.getTopologicalConsistencyList();
             this.processDataQualityNodeList(topologicalConsistencyNodeList, topologicalConsistencyObject, pathToLocalizedValue);
             
