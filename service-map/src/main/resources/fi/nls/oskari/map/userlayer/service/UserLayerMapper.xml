@@ -169,7 +169,7 @@
     </select>
 
 	<!-- UserLayerData related-->
-	<insert id="insertUserLayerDataRow" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+	<insert id="insertUserLayerDataRow" useGeneratedKeys="true" keyProperty="user_layer_data.id" keyColumn="id">
         INSERT INTO user_layer_data
         (
             user_layer_id,
@@ -179,14 +179,14 @@
             geometry
         ) VALUES (
             #{user_layer_id},
-            #{uuid},
-            #{feature_id},
-            CAST(#{property_json} as json),
-            ST_GeomFromGeoJSON(#{geometry})
+            #{user_layer_data.uuid},
+            #{user_layer_data.feature_id},
+            CAST(#{user_layer_data.property_json} as json),
+            ST_GeomFromGeoJSON(#{user_layer_data.geometry})
         )
     </insert>
 
-	<insert id="insertUserLayerData" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+	<insert id="insertUserLayerData">
         INSERT INTO user_layer_data
         (
             user_layer_id,

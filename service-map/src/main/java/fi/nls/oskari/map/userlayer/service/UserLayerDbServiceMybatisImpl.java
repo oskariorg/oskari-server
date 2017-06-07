@@ -11,6 +11,7 @@ import fi.nls.oskari.service.ServiceException;
 
 import org.apache.ibatis.mapping.Environment;
 import org.apache.ibatis.session.Configuration;
+import org.apache.ibatis.session.ExecutorType;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
@@ -28,6 +29,7 @@ public class UserLayerDbServiceMybatisImpl implements UserLayerDbService{
     public UserLayerDbServiceMybatisImpl(){
         final DatasourceHelper helper = DatasourceHelper.getInstance();
         final DataSource dataSource = helper.getDataSource(helper.getOskariDataSourceName("userlayer"));
+
         if(dataSource != null) {
             factory = initializeMyBatis(dataSource);
         }
@@ -49,16 +51,23 @@ public class UserLayerDbServiceMybatisImpl implements UserLayerDbService{
     }
   
     public int insertUserLayer(final UserLayer userLayer, final UserLayerStyle userLayerStyle, final List <UserLayerData> userLayerDataList) throws ServiceException {
-        final SqlSession session = factory.openSession();
-
+        final SqlSession session = factory.openSession(ExecutorType.BATCH);
+        int count = 0;
         try {
             final UserLayerMapper mapper = session.getMapper(UserLayerMapper.class);
             mapper.insertUserLayerStyleRow(userLayerStyle);
+            session.flushStatements();
             log.debug("got style id", userLayerStyle.getId());
             userLayer.setStyle_id(userLayerStyle.getId());            
             mapper.insertUserLayerRow(userLayer);
-            log.debug("got layer id", userLayer.getId());
-            int count = mapper.insertUserLayerData(userLayerDataList, userLayer.getId());
+            session.flushStatements();
+            long userLayerId = userLayer.getId();
+            log.debug("got layer id", userLayerId);
+            for (UserLayerData userLayerData : userLayerDataList){
+                mapper.insertUserLayerDataRow(userLayerData, userLayerId);
+                count++;
+            }
+            session.flushStatements();
             if (count == 0) throw new ServiceException ("no_features");
             log.debug("stored:", count, "rows");
             session.commit();

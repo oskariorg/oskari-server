@@ -24,7 +24,7 @@ public interface UserLayerMapper {
 		public int updateUserLayerStyleCols (final UserLayerStyle userLayeStyle);
 
         //UserLayerData related
-        public void insertUserLayerDataRow(final UserLayerData userLayeData);
+        public void insertUserLayerDataRow(@Param ("user_layer_data") final UserLayerData userLayeData, @Param("user_layer_id") final long userLayerId);
         public int insertUserLayerData(@Param ("list") final List <UserLayerData> userLayerData, @Param("user_layer_id") final long userLayerId) throws ServiceException;
         public int updateUserLayerDataCols(final UserLayerData userLayerData);        
         public void deleteUserLayerDataByLayerId (final long userLayerId);
