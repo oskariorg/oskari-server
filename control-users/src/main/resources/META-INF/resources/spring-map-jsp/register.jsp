@@ -12,9 +12,9 @@
     <%-- <script type="text/javascript" src="${pageContext.request.contextPath}/Oskari/libraries/jquery/jquery-1.7.1.min.js">
     </script> --%>
     <script
-  src="https://code.jquery.com/jquery-1.12.4.min.js"
-  integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ="
-  crossorigin="anonymous"></script>
+            src="https://code.jquery.com/jquery-1.12.4.min.js"
+            integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ="
+            crossorigin="anonymous"></script>
     <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
 
@@ -26,12 +26,6 @@
                 padding: 0;
             }
 
-            #content {
-                height: 100%;
-                /*margin-left: 153px;*/
-                margin: auto;
-            }
-
             #maptools {
                 background-color: #333438;
                 height: 100%;
@@ -41,29 +35,8 @@
                 z-index: 2;
             }
 
-            #register {
-                padding-left: 25px;
-            }
-
             .content-column {
                 display: block;
-            }
-
-            .column-field-label {
-                font-size: 20px;
-                line-height: 2;
-            }
-
-            .column-field-input {
-                border-radius: 5px;
-                font-size: 14px;
-                height: 30px;
-                /*padding-left: 10px;*/
-                /*padding-right: 10px;*/
-            }
-
-            .column-field-input:focus {
-                background-color: #ECF9EC;
             }
 
             #etusivu {
@@ -80,22 +53,16 @@
                 font-size: 20px;
                 display: block;
             }
-            #requestPassword{
-              width:400px;
-            }
 
-            .error {
-                color: red;
-            }
             .colorgraph {
-              height: 5px;
-              border-top: 0;
-              background: #191970;
-              border-radius: 5px;
-              background-image: -webkit-linear-gradient(left, #62c2e4, #62c2e4 12.5%, #62c2e4 12.5%, #669ae1 25%, #1E90FF 25%, #1E90FF 37.5%,#191970 37.5%, #191970 50%, #191970 50%, #191970 62.5%, #1E90FF 62.5%, #1E90FF 75%, #669ae1 75%, #669ae1 87.5%, #62c2e4 87.5%, #62c2e4);
-              background-image: -moz-linear-gradient(left, #62c2e4, #62c2e4 12.5%, #62c2e4 12.5%, #669ae1 25%, #1E90FF 25%, #1E90FF 37.5%, #191970 37.5%,#191970 50%,#191970 50%, #191970 62.5%, #1E90FF 62.5%, #1E90FF 75%, #669ae1 75%, #669ae1 87.5%, #62c2e4 87.5%, #62c2e4);
-              background-image: -o-linear-gradient(left, #62c2e4, #62c2e4 12.5%,#62c2e4 12.5%, #669ae1 25%, #1E90FF 25%, #1E90FF 37.5%, #191970 37.5%, #191970 50%,#191970 50%, #191970 62.5%, #1E90FF 62.5%, #1E90FF 75%, #669ae1 75%, #669ae1 87.5%, #62c2e4 87.5%, #62c2e4);
-              background-image: linear-gradient(to right, #62c2e4, #62c2e4 12.5%, #62c2e4 12.5%, #669ae1 25%,#1E90FF 25%, #1E90FF 37.5%, #191970 37.5%, #191970 50%, #191970 50%,#191970 62.5%, #1E90FF 62.5%, #1E90FF 75%, #669ae1 75%, #669ae1 87.5%, #62c2e4 87.5%, #62c2e4);
+                height: 5px;
+                border-top: 0;
+                background: #191970;
+                border-radius: 5px;
+                background-image: -webkit-linear-gradient(left, #62c2e4, #62c2e4 12.5%, #62c2e4 12.5%, #669ae1 25%, #1E90FF 25%, #1E90FF 37.5%, #191970 37.5%, #191970 50%, #191970 50%, #191970 62.5%, #1E90FF 62.5%, #1E90FF 75%, #669ae1 75%, #669ae1 87.5%, #62c2e4 87.5%, #62c2e4);
+                background-image: -moz-linear-gradient(left, #62c2e4, #62c2e4 12.5%, #62c2e4 12.5%, #669ae1 25%, #1E90FF 25%, #1E90FF 37.5%, #191970 37.5%, #191970 50%, #191970 50%, #191970 62.5%, #1E90FF 62.5%, #1E90FF 75%, #669ae1 75%, #669ae1 87.5%, #62c2e4 87.5%, #62c2e4);
+                background-image: -o-linear-gradient(left, #62c2e4, #62c2e4 12.5%, #62c2e4 12.5%, #669ae1 25%, #1E90FF 25%, #1E90FF 37.5%, #191970 37.5%, #191970 50%, #191970 50%, #191970 62.5%, #1E90FF 62.5%, #1E90FF 75%, #669ae1 75%, #669ae1 87.5%, #62c2e4 87.5%, #62c2e4);
+                background-image: linear-gradient(to right, #62c2e4, #62c2e4 12.5%, #62c2e4 12.5%, #669ae1 25%, #1E90FF 25%, #1E90FF 37.5%, #191970 37.5%, #191970 50%, #191970 50%, #191970 62.5%, #1E90FF 62.5%, #1E90FF 75%, #669ae1 75%, #669ae1 87.5%, #62c2e4 87.5%, #62c2e4);
             }
         }
     </style>
@@ -113,103 +80,105 @@
 </nav>
 
 <div class="container">
-  <%-- Signed in --%>
-  <c:choose>
-      <c:when test="${editExisting}">
-      <div class="row">
-          <div class="col-xs-12 col-sm-8 col-md-6 col-sm-offset-2 col-md-offset-4">
-          <form role="form">
-            <h1><spring:message code="user.registration.edit.title"/></h1>
-            <hr class="colorgraph">
-            <span id="errorMsgExisting" class="alert alert-danger hidden col-xs-12" role="alert"></span>
-            <div class="row">
-              <span class="content-column">
-                				<div class="col-xs-12 col-sm-6 col-md-6">
-                    					<div class="form-group">
-                                 <input type="text" name="first_name" id="firstname" class="form-control input-lg" placeholder="First Name" tabindex="1">
-                    					</div>
-                    				</div>
-                          </span>
-                          <span class="content-column">
-                    				<div class="col-xs-12 col-sm-6 col-md-6">
-                    					<div class="form-group">
-                    						<input type="text" name="last_name" id="lastname" class="form-control input-lg" placeholder="Last Name" tabindex="2">
-                    					</div>
-                    				</div>
-                          </span>
+    <div class="row">
+        <div class="col-xs-12 col-sm-8 col-md-6 col-sm-offset-2 col-md-offset-4">
+            <form role="form">
+                <c:choose>
+                    <%-- Signed in --%>
+                    <c:when test="${!empty id}">
+                        <h1><spring:message code="user.registration.edit.title"/></h1>
+                    </c:when>
+                    <%-- Not signed in --%>
+                    <c:otherwise>
+                        <h1><spring:message code="user.registration"/></h1>
+
+                    </c:otherwise>
+                </c:choose>
+                <hr class="colorgraph"/>
+                <span id="errorMsg" class="alert alert-danger hidden col-xs-12" role="alert"></span>
+                <div class="row">
+                    <span class="content-column">
+                        <div class="col-xs-12 col-sm-6 col-md-6">
+                            <div class="form-group">
+                                <input type="text" name="first_name" id="firstname" class="form-control input-lg"
+                                       placeholder="First Name" tabindex="1" autofocus />
+                            </div>
                         </div>
+                    </span>
+                    <span class="content-column">
+                        <div class="col-xs-12 col-sm-6 col-md-6">
+                            <div class="form-group">
+                                <input type="text" name="last_name" id="lastname"
+                                       class="form-control input-lg" placeholder="Last Name" tabindex="2"/>
+                            </div>
+                        </div>
+                    </span>
+                </div>
+
+                <%-- Not signed in - show nickname field --%>
+                <c:if test="${empty id}">
+                    <span class="content-column">
+                        <div class="form-group">
+                            <input type="text" name="display_name" id="username" class="form-control input-lg"
+                                   placeholder="Username" tabindex="3"/>
+                        </div>
+                    </span>
+                </c:if>
+
               <span class="content-column">
                 <div class="form-group">
-                  <input type="email" name="email" id="email" class="form-control input-lg" placeholder="Email Address" tabindex="4">
+                    <input type="email" name="email" id="email" class="form-control input-lg"
+                           placeholder="Email Address" tabindex="4">
                 </div>
               </span>
-                      <br/>
-              <span>
-                <button class="btn btn-primary" id="saveBtn"><spring:message code="btn.save"/></button>
-              </span>
-              <span>
-                <button class="btn btn-default" id="cancelBtn"><spring:message code="btn.cancel"/></button>
-              </span>
-              <hr class="colorgraph">
-                      <br><br><br>
+                <br/>
+
+                <c:choose>
+                    <%-- Signed in --%>
+                    <c:when test="${!empty id}">
+                      <span>
+                        <button class="btn btn-primary" id="saveBtn"><spring:message code="btn.save"/></button>
+                      </span>
+                      <span>
+                        <button class="btn btn-default" id="cancelBtn"><spring:message code="btn.cancel"/></button>
+                      </span>
+                        <br><br><br>
                       <span class="content-column"> <a href="#" id="changePassword"><spring:message
                               code="btn.newPassword"/></a> </span>
-                      (<spring:message code="user.help.passwordReset"/>)
-            </form>
-          </div>
-        </div>
-      </c:when>
-      <%-- Not signed in --%>
-     <c:otherwise>
-          <div class="col-xs-12 col-sm-8 col-md-6 col-sm-offset-2 col-md-offset-4">
-      		<form role="form">
-      			<h2>Register</h2>
-            <hr class="colorgraph">
-            <span id="errorMsg" class="alert alert-danger hidden col-xs-12" role="alert"></span>
-      			<div class="row">
-      				<div class="col-xs-12 col-sm-6 col-md-6">
-      					<div class="form-group">
-                   <input type="text" name="first_name" id="firstname" class="form-control input-lg" placeholder="First Name" tabindex="1">
-      					</div>
-      				</div>
-      				<div class="col-xs-12 col-sm-6 col-md-6">
-      					<div class="form-group">
-      						<input type="text" name="last_name" id="lastname" class="form-control input-lg" placeholder="Last Name" tabindex="2">
-      					</div>
-      				</div>
-      			</div>
-      			<div class="form-group">
-      				<input type="text" name="display_name" id="username" class="form-control input-lg" placeholder="Username" tabindex="3">
-      			</div>
-      			<div class="form-group">
-      				<input type="email" name="email" id="email" class="form-control input-lg" placeholder="Email Address" tabindex="4">
-      			</div>
-                <hr class="colorgraph">
-                <div class="row">
-                    <div class="col-xs-12 col-md-6"><input type="button" value="Register" class="btn btn-primary btn-block btn-lg" id="registerBtn" tabindex="7"></div>
-            <br><br>
-            <a class="col-xs-12" href="#" id="forgotPassword"><spring:message code="btn.forgotPassword"/></a>
-                </div>
+                        (<spring:message code="user.help.passwordReset"/>)
+                    </c:when>
+                    <%-- Not signed in --%>
+                    <c:otherwise>
+                        <div class="row">
+                            <div class="col-xs-12 col-md-6"><input type="button" value="Register"
+                                                                   class="btn btn-primary btn-block btn-lg"
+                                                                   id="registerBtn" tabindex="7"></div>
+                            <br><br>
+                            <a class="col-xs-12" href="#" id="forgotPassword"><spring:message
+                                    code="btn.forgotPassword"/></a>
+                        </div>
+                    </c:otherwise>
+                </c:choose>
             </form>
         </div>
-        </c:otherwise>
-      </c:choose>
+    </div>
 </div>
 
 <!-- RegistrationModal -->
 <div class="modal fade" id="generalModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="generalModalLabel">Registration</h4>
-      </div>
-      <div class="modal-body registration-success"></div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-      </div>
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="generalModalLabel">Registration</h4>
+            </div>
+            <div class="modal-body registration-success"></div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
     </div>
-  </div>
 </div>
 
 <div id="deleteDialog" class="modal fade">
@@ -229,23 +198,6 @@
 
 <script type="text/javascript">
     $(document).ready(function () {
-        <c:if test="${editExisting}">
-        $("body").hide();
-        $.ajax({
-            url: "/action?action_route=UserRegistration&edit=yes",
-            type: 'POST',
-            success: function (data) {
-                $("#firstname").val(data.firstName);
-                $("#lastname").val(data.lastName);
-                $("#email").val(data.email);
-                $("body").show();
-            },
-            error: function (jqXHR, textStatus, errorThrown) {
-                //TODO: error handling
-                showModal(jqXHR.responseText);
-            }
-        });
-        </c:if>
         $('#frontpage, #cancelBtn').click(function () {
             var host = window.location.protocol + "//" + window.location.host;
             window.location.replace(host);
@@ -263,91 +215,83 @@
                 type: 'POST',
                 success: function (data) {
                     // FIXME: show confirmation about mail being sent
-                    showModal('<spring:message code="user.registration.email.sent"/>');
+                    showModal('<spring:message javaScriptEscape="true" code="user.registration.email.sent"/>');
                 },
                 error: function (jqXHR, textStatus, errorThrown) {
-                    //TODO: error handling
-                    errorMsg("#errorGeneral", "SERVER ERROR");
+                    errorMsg("#errorGeneral", '<spring:message javaScriptEscape="true" code="user.registration.error.generic"/>');
                 }
             });
         });
 
         $('#registerBtn').click(function () {
-            var data = {
-                firstname: jQuery('#firstname').val(),
-                lastname: jQuery('#lastname').val(),
-                username: jQuery('#username').val(),
-                email: jQuery('#email').val()
-            };
             var host = window.location.protocol + "//" + window.location.host;
-            if (validate()) {
-                jQuery.ajax({
-                    url: host + "/action?action_route=UserRegistration&register",
-                    type: 'POST',
-                    data: data,
-                    success: function (data) {
-                        // FIXME: show confirmation about mail being sent
-                        showModal('<spring:message code="user.registration.success"/>', true);
-                    },
-                    error: function (jqXHR, textStatus, errorThrown) {
-                        var errorResponse = jqXHR.responseText;
-                        if (errorResponse.toLowerCase().indexOf("email") >= 0) {
-                            errorMsg("#email", '<spring:message javaScriptEscape="true" code="user.registration.error.emailExists"/>');
-                        } else if (errorResponse.toLowerCase().indexOf("username") >= 0) {
-                            errorMsg("#username", '<spring:message javaScriptEscape="true" code="user.registration.error.usernameExists"/>');
-                        } else if (errorResponse.toLowerCase().indexOf("address") >= 0) {
-                            errorMsg("#email", '<spring:message javaScriptEscape="true" code="user.registration.error.sendingFailed"/>');
-                        } else if (errorResponse.toLowerCase().indexOf("properties") >= 0) {
-                            errorMsg("#username", '<spring:message javaScriptEscape="true" code="user.registration.error.emailConfigurationError"/>');
-                        } else {
-                            //TODO: error handling
-                            errorMsg("#errorGeneral", jqXHR.responseText);
-                        }
-                    }
-                });
+            if (!validate()) {
+                return false;
             }
+            jQuery.ajax({
+                url: host + "/action?action_route=UserRegistration",
+                type: 'POST',
+                data: {
+                    firstname: jQuery('#firstname').val(),
+                    lastname: jQuery('#lastname').val(),
+                    username: jQuery('#username').val(),
+                    email: jQuery('#email').val()
+                },
+                success: function () {
+                    showModal('<spring:message javaScriptEscape="true" code="user.registration.success"/>', true);
+                },
+                error: function (jqXHR) {
+                    var errorResponse = jqXHR.responseText;
+                    if (errorResponse.toLowerCase().indexOf("email") >= 0) {
+                        errorMsg("#email", '<spring:message javaScriptEscape="true" code="user.registration.error.emailExists"/>');
+                    } else if (errorResponse.toLowerCase().indexOf("username") >= 0) {
+                        errorMsg("#username", '<spring:message javaScriptEscape="true" code="user.registration.error.usernameExists"/>');
+                    } else if (errorResponse.toLowerCase().indexOf("address") >= 0) {
+                        errorMsg("#email", '<spring:message javaScriptEscape="true" code="user.registration.error.sendingFailed"/>');
+                    } else if (errorResponse.toLowerCase().indexOf("properties") >= 0) {
+                        errorMsg("#username", '<spring:message javaScriptEscape="true" code="user.registration.error.emailConfigurationError"/>');
+                    } else {
+                        errorMsg("#errorGeneral", '<spring:message javaScriptEscape="true" code="user.registration.error.generic"/>');
+                    }
+                }
+            });
         });
 
         $('#saveBtn').click(function () {
-            var data = {
-                id: "${id}",
-                firstname: jQuery('#firstname').val(),
-                lastname: jQuery('#lastname').val(),
-                email: jQuery('#email').val()
-            };
             var host = window.location.protocol + "//" + window.location.host;
-            if (validate()) {
-                jQuery.ajax({
-                    url: host + "/action?action_route=UserRegistration&update=yes",
-                    type: 'POST',
-                    data: data,
-                    success: function (data) {
-                        // FIXME: show confirmation about mail being sent
-                        showModal('<spring:message code="user.registration.edit.success"/>', true);
-                    },
-                    error: function (jqXHR, textStatus, errorThrown) {
-                        //TODO: error handling
-                        errorMsg("#errorGeneral", jqXHR.responseText);
-                    }
-                });
+            if (!validate()) {
+                return false;
             }
+            jQuery.ajax({
+                url: host + "/action?action_route=UserRegistration",
+                type: 'PUT',
+                data: {
+                    firstname: jQuery('#firstname').val(),
+                    lastname: jQuery('#lastname').val(),
+                    email: jQuery('#email').val()
+                },
+                success: function () {
+                    showModal('<spring:message javaScriptEscape="true" code="user.registration.edit.success"/>', true);
+                },
+                error: function () {
+                    errorMsg("#errorGeneral", '<spring:message javaScriptEscape="true" code="user.registration.error.generic"/>');
+                }
+            });
         });
 
         $('#deleteUser').click(function () {
-            var data = {id: '${id}'},
-                    host = window.location.protocol + "//" + window.location.host;
+            var host = window.location.protocol + "//" + window.location.host;
 
             $("#deleteDialog").on("show.bs.modal", function () {
                 $("#deleteOk").on("click", function (e) {
                     jQuery.ajax({
-                        url: host + "/action?action_route=UserRegistration&delete",
-                        type: 'POST',
-                        data: data,
-                        success: function (data) {
+                        url: host + "/action?action_route=UserRegistration",
+                        type: 'DELETE',
+                        success: function () {
                             window.location.href = '/logout';
                         },
-                        error: function (jqXHR, textStatus, errorThrown) {
-                            errorMsg("#errorGeneral", jqXHR.responseText);
+                        error: function () {
+                            errorMsg("#errorGeneral", '<spring:message javaScriptEscape="true" code="user.registration.error.generic"/>');
                         }
                     });
                     $("#deleteDialog").modal('hide');
@@ -378,40 +322,42 @@
         clearErrorMessage();
 
         if (!firstname.trim()) {
-            errorMsg('#errorFirstname', '<spring:message code="user.registration.error.fieldIsRequired"/>');
+            errorMsg('#errorFirstname', '<spring:message javaScriptEscape="true" code="user.registration.error.fieldIsRequired"/>');
             flag = false;
         }
 
         if (!lastname.trim()) {
-            errorMsg('#errorLastname', '<spring:message code="user.registration.error.fieldIsRequired"/>');
+            errorMsg('#errorLastname', '<spring:message javaScriptEscape="true" code="user.registration.error.fieldIsRequired"/>');
             flag = false;
         }
 
         if ($('#username').length && !username.trim()) {
-            errorMsg('#errorUsername', '<spring:message code="user.registration.error.fieldIsRequired"/>');
+            errorMsg('#errorUsername', '<spring:message javaScriptEscape="true" code="user.registration.error.fieldIsRequired"/>');
             flag = false;
         }
 
         if (!isEmailValid(email)) {
-            errorMsg('#errorEmail', '<spring:message code="user.registration.error.invalidEmail"/>');
+            errorMsg('#errorEmail', '<spring:message javaScriptEscape="true" code="user.registration.error.invalidEmail"/>');
             flag = false;
         }
         return flag;
     }
     function showModal(msg, success) {
-      $('.registration-success').removeClass("hidden");
-      $('.registration-success').html(msg).addClass("alert-success");
-      $('#generalModal').modal('show');
-      if(success){
-        $('.container').find('.alert-danger').removeClass('alert-danger');
-      }
-      setTimeout(function() {$('#generalModal').modal('hide');}, 2000);
+        $('.registration-success').removeClass("hidden");
+        $('.registration-success').html(msg).addClass("alert-success");
+        $('#generalModal').modal('show');
+        if (success) {
+            $('.container').find('.alert-danger').removeClass('alert-danger');
+        }
+        setTimeout(function () {
+            $('#generalModal').modal('hide');
+        }, 2000);
     }
 
     function errorMsg(selector, str) {
         $('.container').find('.alert-danger').removeClass('alert-danger');
         $('#errorMsg').removeClass("hidden");
-        $('#errorMsg').html('<strong>'+str+'</strong>').addClass("alert-danger");
+        $('#errorMsg').html('<strong>' + str + '</strong>').addClass("alert-danger");
         $(selector).addClass("alert-danger");
     }
 

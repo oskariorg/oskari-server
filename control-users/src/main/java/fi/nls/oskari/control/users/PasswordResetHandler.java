@@ -31,7 +31,6 @@ public class PasswordResetHandler extends RestActionHandler {
 
     private static final String PARAM_UUID = "uuid";
     private static final String PARAM_EMAIL = "email";
-    private static final String PARAM_SET_PASSWORD = "setPassword";
     private static final String PARAM_PASSWORD = "password";
 
     private ObjectMapper mapper = new ObjectMapper();
@@ -52,23 +51,16 @@ public class PasswordResetHandler extends RestActionHandler {
     }
 
     @Override
-    public void handlePost(ActionParameters params) throws ActionException {
-        if(!PropertyUtil.getOptional("allow.registration", false)) {
+    public void preProcess(ActionParameters params) throws ActionException {
+        if(!RegistrationUtil.isEnabled()) {
             throw new ActionDeniedException("Registration disabled");
-        }
-        final String requestEmail = params.getHttpParam(PARAM_EMAIL, "");
-        if (!requestEmail.isEmpty()) {
-            handlePasswordReset(requestEmail, RegistrationUtil.getServerAddress(params), params.getLocale().getLanguage());
-
-        } else if (params.getHttpParam(PARAM_SET_PASSWORD) != null) {
-            final Email token = parseContentForEmailUpdate(params);
-            updatePassword(token);
-        } else {
-            throw new ActionException("Request must contain either " + PARAM_EMAIL + " or " + PARAM_SET_PASSWORD + ".");
         }
     }
 
-    public void handlePasswordReset(final String email, final String serverAddress, String language) throws ActionException {
+    @Override
+    public void handlePost(ActionParameters params) throws ActionException {
+        // request link to set password
+        final String email = params.getRequiredParam(PARAM_EMAIL);
 
         if (!isUsernameExistsForLogin(email)) {
             throw new ActionDeniedException("Username for login doesn't exist for email address: " + email);
@@ -83,9 +75,34 @@ public class PasswordResetHandler extends RestActionHandler {
         String username = registerTokenService.findUsernameForEmail(email);
         try {
             User user = userService.getUser(username);
-            mailSenderService.sendEmailForResetPassword(user, uuid, serverAddress, language);
+            mailSenderService.sendEmailForResetPassword(user, uuid, RegistrationUtil.getServerAddress(params), params.getLocale().getLanguage());
         } catch (ServiceException ex) {
             throw new ActionException("Couldn't find user", ex);
+        }
+
+    }
+    @Override
+    public void handlePut(ActionParameters params) throws ActionException {
+        // set password
+        final Email token = parseContentForEmailUpdate(params);
+        String username = registerTokenService.findUsernameForEmail(token.getEmail());
+
+        if (username == null) {
+            throw new ActionParamsException("Username doesn't exist.");
+        }
+        String loginPassword = ibatisUserService.getPassword(username);
+        try {
+            if (loginPassword != null && !loginPassword.isEmpty()) {
+                userService.updateUserPassword(username, token.getPassword());
+            } else {
+                // Create entry in oskari_jaas_user table
+                // TODO: check that we want to allow this
+                userService.setUserPassword(username, token.getPassword());
+            }
+            // After password updated/created, delete the entry related to token from database
+            registerTokenService.deleteEmailToken(token.getUuid());
+        } catch (ServiceException se) {
+            throw new ActionException(se.getMessage(), se);
         }
     }
 
@@ -116,29 +133,6 @@ public class PasswordResetHandler extends RestActionHandler {
         }
         token.setEmail(tempEmail.getEmail());
         return token;
-    }
-
-    public void updatePassword(Email token) throws ActionException {
-
-        String username = registerTokenService.findUsernameForEmail(token.getEmail());
-
-        if (username == null) {
-            throw new ActionParamsException("Username doesn't exist.");
-        }
-        String loginPassword = ibatisUserService.getPassword(username);
-        try {
-            if (loginPassword != null && !loginPassword.isEmpty()) {
-                userService.updateUserPassword(username, token.getPassword());
-            } else {
-                // Create entry in oskari_jaas_user table
-                // TODO: check that we want to allow this
-                userService.setUserPassword(username, token.getPassword());
-            }
-            // After password updated/created, delete the entry related to token from database
-            registerTokenService.deleteEmailToken(token.getUuid());
-        } catch (ServiceException se) {
-            throw new ActionException(se.getMessage(), se);
-        }
     }
 
     /**

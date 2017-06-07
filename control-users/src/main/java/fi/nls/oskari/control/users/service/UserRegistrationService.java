@@ -71,7 +71,7 @@ public class UserRegistrationService extends OskariComponent {
     public String findUsernameForEmail(String email) {
         try (SqlSession session = factory.openSession()) {
             final EmailMapper mapper = session.getMapper(EmailMapper.class);
-            return mapper.findUsernameForEmail(email);
+            return mapper.findUsernameForEmail(email.toLowerCase());
         } catch (Exception e) {
             LOG.warn(e, "Exception when trying to find by email:", email);
         }

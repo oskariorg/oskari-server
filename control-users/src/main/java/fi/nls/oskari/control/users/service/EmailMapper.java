@@ -18,7 +18,7 @@ public interface EmailMapper {
             "FROM oskari_users_pending  WHERE uuid = #{uuid}")
     Email findByToken(String uuid);
 
-    @Select("SELECT user_name FROM oskari_users WHERE email = #{email}")
+    @Select("SELECT user_name FROM oskari_users WHERE LOWER(email) = #{email}")
     String findUsernameForEmail(String email);
 
     @Select("SELECT login FROM oskari_jaas_users WHERE login = #{user_name}")

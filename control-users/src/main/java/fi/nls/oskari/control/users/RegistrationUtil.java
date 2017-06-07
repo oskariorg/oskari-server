@@ -13,7 +13,10 @@ import java.util.Calendar;
 public class RegistrationUtil {
 
     public static final String getServerAddress(ActionParameters params) {
-        // TODO: why not use oskari.domain from oskari-ext.properties?
+        final String domain = PropertyUtil.get("oskari.domain", null);
+        if(domain != null) {
+            return domain;
+        }
         final HttpServletRequest request = params.getRequest();
         return request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort();
     }
@@ -30,5 +33,9 @@ public class RegistrationUtil {
         calender.add(Calendar.DAY_OF_MONTH, expireDays);
         Timestamp expiryTime = new java.sql.Timestamp(calender.getTime().getTime());
         return expiryTime;
+    }
+
+    public static boolean isEnabled() {
+        return PropertyUtil.getOptional("allow.registration", false);
     }
 }

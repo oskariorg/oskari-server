@@ -1,6 +1,7 @@
 package fi.nls.oskari.spring;
 
 import fi.nls.oskari.control.ActionParameters;
+import fi.nls.oskari.control.users.RegistrationUtil;
 import fi.nls.oskari.control.users.model.Email;
 import fi.nls.oskari.control.users.service.UserRegistrationService;
 import fi.nls.oskari.domain.User;
@@ -28,18 +29,13 @@ public class UserRegistrationController {
     private static final String ERR_TOKEN_INVALID = "Token is invalid.";
     private static final String ERR_TOKEN_NOT_FOUND = "Token is unavailable.";
 
-    private boolean isRegistrationAllowed() {
-        return PropertyUtil.getOptional("allow.registration", false);
-    }
-
     @RequestMapping
     public String index(Model model, @OskariParam ActionParameters params) {
-        if(!isRegistrationAllowed()) {
+        if(!RegistrationUtil.isEnabled()) {
             return "error/404";
         }
         User user = params.getUser();
         boolean isGuest = user.isGuest();
-        model.addAttribute("editExisting", !isGuest);
         if(!isGuest) {
             model.addAttribute("firstname", user.getFirstname());
             model.addAttribute("lastname", user.getLastname());
@@ -52,7 +48,7 @@ public class UserRegistrationController {
 
     @RequestMapping("/reset")
     public String forgotPassword(Model model, @OskariParam ActionParameters params) {
-        if(!isRegistrationAllowed()) {
+        if(!RegistrationUtil.isEnabled()) {
             return "error/404";
         }
         User user = params.getUser();
@@ -69,7 +65,7 @@ public class UserRegistrationController {
      */
     @RequestMapping("/reset/{uuid}")
     public String resetPassword(Model model, @PathVariable String uuid) {
-        if(!isRegistrationAllowed()) {
+        if(!RegistrationUtil.isEnabled()) {
             return "error/404";
         }
         final String jspView = "passwordReset";

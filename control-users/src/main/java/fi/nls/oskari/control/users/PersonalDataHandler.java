@@ -15,7 +15,7 @@ public class PersonalDataHandler extends BundleHandler {
 
     @Override
     public boolean modifyBundle(ModifierParams params) throws ModifierException {
-        if(!PropertyUtil.getOptional("allow.registration", false)) {
+        if(!RegistrationUtil.isEnabled()) {
             return false;
         }
         final JSONObject config = getBundleConfig(params.getConfig());

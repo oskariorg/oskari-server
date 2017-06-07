@@ -8,8 +8,6 @@
 <head>
     <title><spring:message code="user.registration.passwordReset.title"/></title>
 	<link rel="shortcut icon" href="${pageContext.request.contextPath}/favicon.ico" type="image/x-icon" />
-    <%-- <script type="text/javascript" src="${pageContext.request.contextPath}/Oskari/libraries/jquery/jquery-1.7.1.min.js">
-    </script> --%>
     <script
   src="https://code.jquery.com/jquery-1.12.4.min.js"
   integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ="
@@ -25,12 +23,6 @@
 				padding: 0;
 			}
 
-			#content {
-				height: 100%;
-				/*margin-left: 153px;*/
-        margin: auto;
-			}
-
 			#maptools {
 				background-color: #333438;
 				height: 100%;
@@ -38,56 +30,6 @@
 				top: 0;
 				width: 153px;
 				z-index: 2;
-			}
-
-			.column-field-label {
-				font-size: 20px;
-				line-height: 2;
-			}
-
-			.column-field-button {
-				-moz-box-shadow: inset 0px 1px 0px 0px #ffffff;
-				-webkit-box-shadow: inset 0px 1px 0px 0px #ffffff;
-				box-shadow: inset 0px 1px 0px 0px #ffffff;
-				background: -webkit-gradient(linear, left top, left bottom, color-stop(0.05, #ededed), color-stop(1, #dfdfdf));
-				background: -moz-linear-gradient(top, #ededed 5%, #dfdfdf 100%);
-				background: -webkit-linear-gradient(top, #ededed 5%, #dfdfdf 100%);
-				background: -o-linear-gradient(top, #ededed 5%, #dfdfdf 100%);
-				background: -ms-linear-gradient(top, #ededed 5%, #dfdfdf 100%);
-				background: linear-gradient(to bottom, #ededed 5%, #dfdfdf 100%);
-				filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ededed', endColorstr='#dfdfdf', GradientType=0);
-				background-color: #ededed;
-				-moz-border-radius: 6px;
-				-webkit-border-radius: 6px;
-				border-radius: 6px;
-				border: 1px solid #dcdcdc;
-				display: inline-block;
-				cursor: pointer;
-				color: #777777;
-				font-family: Arial;
-				font-size: 15px;
-				font-weight: bold;
-				padding: 6px 24px;
-				text-decoration: none;
-				text-shadow: 0px 1px 0px #ffffff;
-				position: relative;
-				top: 20px;
-			}
-
-			.column-field-button:hover {
-				background: -webkit-gradient(linear, left top, left bottom, color-stop(0.05, #dfdfdf), color-stop(1, #ededed));
-				background: -moz-linear-gradient(top, #dfdfdf 5%, #ededed 100%);
-				background: -webkit-linear-gradient(top, #dfdfdf 5%, #ededed 100%);
-				background: -o-linear-gradient(top, #dfdfdf 5%, #ededed 100%);
-				background: -ms-linear-gradient(top, #dfdfdf 5%, #ededed 100%);
-				background: linear-gradient(to bottom, #dfdfdf 5%, #ededed 100%);
-				filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#dfdfdf', endColorstr='#ededed', GradientType=0);
-				background-color: #dfdfdf;
-			}
-
-			.column-field-button:active {
-				position: relative;
-				top: 20px;
 			}
 
 			#etusivu {
@@ -179,22 +121,25 @@ $(document).ready(function () {
 	$('#submit').click(function () {
 		var email = jQuery('#email').val();
 		var host = window.location.protocol + "//" + window.location.host;
-		if (isEmailValid(email)) {
-			jQuery.ajax({
-				url: host + "/action?action_route=UserPasswordReset&email=" + email,
-				type: 'POST',
-				success: function(data) {
-					// FIXME: show confirmation about mail being sent
-					var url = window.location.protocol + "//" + window.location.host + "/user/emailSent";
-					window.location.replace(url);
-				},
-				error: function(jqXHR, textStatus, errorThrown) {
-					//TODO: error handling
-					showModal(jqXHR.responseText, true);
-				}
-			});
-		} else
+		if (!isEmailValid(email)) {
 			jQuery("#error").html('<spring:message code="user.registration.error.invalidEmail"/>');
+			return false;
+		}
+		jQuery.ajax({
+			url: host + "/action?action_route=UserPasswordReset",
+			type: 'POST',
+			data : {
+				email : email
+			},
+			success: function(data) {
+				// FIXME: show confirmation about mail being sent
+				var url = window.location.protocol + "//" + window.location.host + "/user/emailSent";
+				window.location.replace(url);
+			},
+			error: function(jqXHR, textStatus, errorThrown) {
+				showModal('<spring:message javaScriptEscape="true" code="user.registration.error.generic"/>', true);
+			}
+		});
 	});
 });
 
