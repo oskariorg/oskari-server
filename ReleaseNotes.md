@@ -20,6 +20,14 @@ Layer urls are modified for the frontend if the Oskari instance is running in a 
 
     maplayer.wmsurl.secure=https://
 
+### Userlayer import
+
+The database access library has been updated from Ibatis to Mybatis. UserLayerDbService has been changed to be suitable for new Mybatis implementation. Old iBATIS implementation isn't compatible with new UserLayerDbService. Now layer, style and data inserts are handled in one transaction.
+
+Added error codes (e.g. invalid_file) to response instead of textual messages to support localization in the frontend.
+
+Added feature count to layerJSON response. Also adds a warning object with skipped_features to layerJSON response if feature(s) were skipped (no geometry object or geometry is null) during import.
+
 ## 1.42
 
 ### Default published JSP-file
