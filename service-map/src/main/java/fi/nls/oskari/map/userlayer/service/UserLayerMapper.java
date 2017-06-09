@@ -5,7 +5,6 @@ import fi.nls.oskari.domain.map.userlayer.UserLayerData;
 import fi.nls.oskari.domain.map.userlayer.UserLayerStyle;
 import fi.nls.oskari.service.ServiceException;
 import org.apache.ibatis.annotations.Param;
-import java.util.Map;
 import java.util.List;
 
 public interface UserLayerMapper {
@@ -25,7 +24,6 @@ public interface UserLayerMapper {
 
         //UserLayerData related
         public void insertUserLayerDataRow(@Param ("user_layer_data") final UserLayerData userLayeData, @Param("user_layer_id") final long userLayerId);
-        public int insertUserLayerData(@Param ("list") final List <UserLayerData> userLayerData, @Param("user_layer_id") final long userLayerId) throws ServiceException;
         public int updateUserLayerDataCols(final UserLayerData userLayerData);        
         public void deleteUserLayerDataByLayerId (final long userLayerId);
         public void deleteUserLayerDataRow (final long id);

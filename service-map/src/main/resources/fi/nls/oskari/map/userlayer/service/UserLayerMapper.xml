@@ -186,26 +186,6 @@
         )
     </insert>
 
-	<insert id="insertUserLayerData">
-        INSERT INTO user_layer_data
-        (
-            user_layer_id,
-            uuid,
-            feature_id,
-            property_json,
-            geometry
-        ) VALUES
-        <foreach item="item" collection="list" separator=",">
-		(
-            #{user_layer_id}, 
-            #{item.uuid},
-            #{item.feature_id},
-            CAST(#{item.property_json} as json),
-            ST_GeomFromGeoJSON(#{item.geometry})
-        ) 
-		</foreach>
-    </insert>
-
     <update id="updateUserLayerDataCols">
         UPDATE user_layer_data
         SET property_json = #{property_json},
