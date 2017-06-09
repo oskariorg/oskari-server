@@ -8,6 +8,7 @@ import fi.nls.oskari.domain.map.userlayer.UserLayerStyle;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.service.ServiceException;
+import fi.nls.oskari.util.PropertyUtil;
 
 import org.apache.ibatis.mapping.Environment;
 import org.apache.ibatis.session.Configuration;
@@ -25,6 +26,9 @@ public class UserLayerDbServiceMybatisImpl implements UserLayerDbService{
 
     private static final Logger log = LogFactory.getLogger(UserLayerDbServiceMybatisImpl.class);
     private SqlSessionFactory factory = null;
+    private static final String USERLAYER_MYBATIS_BATCH_SIZE = "userlayer.mybatis.batch.size";
+    final int batchSize = PropertyUtil.getOptional(USERLAYER_MYBATIS_BATCH_SIZE, 1000);
+
 
     public UserLayerDbServiceMybatisImpl(){
         final DatasourceHelper helper = DatasourceHelper.getInstance();
@@ -63,9 +67,15 @@ public class UserLayerDbServiceMybatisImpl implements UserLayerDbService{
             session.flushStatements();
             long userLayerId = userLayer.getId();
             log.debug("got layer id", userLayerId);
+
             for (UserLayerData userLayerData : userLayerDataList){
                 mapper.insertUserLayerDataRow(userLayerData, userLayerId);
                 count++;
+                // Flushes batch statements and clears local session cache
+                if (count % batchSize == 0){
+                    session.flushStatements();
+                    session.clearCache();
+                }
             }
             session.flushStatements();
             if (count == 0) throw new ServiceException ("no_features");
@@ -258,5 +268,4 @@ public class UserLayerDbServiceMybatisImpl implements UserLayerDbService{
          }
          return 0;
      }
-     
 }
