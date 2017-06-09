@@ -46,7 +46,7 @@ public class UserRegistrationService extends OskariComponent {
         return new SqlSessionFactoryBuilder().build(configuration);
     }
 
-    public Long addEmail(Email email) {
+    public Long addToken(Email email) {
         try (SqlSession session = factory.openSession()) {
             final EmailMapper mapper = session.getMapper(EmailMapper.class);
             mapper.addEmail(email);
@@ -56,6 +56,27 @@ public class UserRegistrationService extends OskariComponent {
             LOG.warn(e, "Exception when trying to add email:", email);
         }
         return -1l;
+    }
+    public Long updateToken(Email email) {
+        try (SqlSession session = factory.openSession()) {
+            final EmailMapper mapper = session.getMapper(EmailMapper.class);
+            mapper.updateEmail(email);
+            session.commit();
+            return email.getId();
+        } catch (Exception e) {
+            LOG.warn(e, "Exception when trying to add email:", email);
+        }
+        return -1l;
+    }
+
+    public Email findTokenByEmail(String email) {
+        try (SqlSession session = factory.openSession()) {
+            final EmailMapper mapper = session.getMapper(EmailMapper.class);
+            return mapper.findTokenByEmail(email.toLowerCase());
+        } catch (Exception e) {
+            LOG.warn(e, "Exception when trying to find token by email:", email);
+        }
+        throw new RuntimeException("Couldn't get token for " + email);
     }
 
     public Email findByToken(String uuid) {
@@ -101,7 +122,7 @@ public class UserRegistrationService extends OskariComponent {
     public String findEmailForUsername(String username) {
         try (SqlSession session = factory.openSession()) {
             final EmailMapper mapper = session.getMapper(EmailMapper.class);
-            return mapper.findEmailForUsername(username);
+            return mapper.findEmailForUsername(username.toLowerCase());
         } catch (Exception e) {
             LOG.warn(e, "Exception when trying to find by username:", username);
         }

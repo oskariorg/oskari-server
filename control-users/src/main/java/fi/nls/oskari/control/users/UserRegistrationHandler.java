@@ -55,47 +55,49 @@ public class UserRegistrationHandler extends RestActionHandler {
 		}
 	}
 
-	@Override
+    @Override
+    public void handleGet(ActionParameters params) throws ActionException {
+        // check if username is reserved
+        if (isUsernameReserved(params.getRequiredParam("username"))) {
+            throw new ActionParamsException("Username already exists.");
+        }
+        ResponseHelper.writeResponse(params, "OK");
+    }
+
+    @Override
 	public void handlePost(ActionParameters params) throws ActionException {
 		if(!params.getUser().isGuest()) {
 			throw new ActionDeniedException("Registration expects guest user");
 		}
-		User user = new User();
-		getUserParams(user, params);
-		String language = params.getLocale().getLanguage();
-		if (isEmailAlreadyExist(user.getEmail())) {
-			try {
-				mailSenderService.sendEmailAlreadyExists(user, RegistrationUtil.getServerAddress(params), language);
-			} catch (ServiceException se) {
-				//Do nothing, email already exists and tried to send email about that failed.
-			}
-			LOG.warn("Tried to register with known email:", user.getEmail());
-			// don't bleed out the information
-			throw new ActionParamsException("Error registering.");
-		}
-		if (isUsernameAlreadyExist(user.getScreenname())) {
-			throw new ActionException("Username already exists.");
+        final String uuid = params.getRequiredParam("uuid");
+        // TODO: some rules for password strength
+        final String password = params.getRequiredParam("password");
+
+        // uuid:a5f1a383-47d5-458c-8373-efbc10cdac16
+        Email token = registerTokenService.findByToken(uuid);
+        if(token == null) {
+            // TODO: should we check expiration here?
+            // "Please restart the registration process"
+            throw new ActionParamsException("Unknown token");
+        }
+        if (isEmailRegistered(token.getEmail())) {
+            // "You can use forgot password feature to reset the password"
+            throw new ActionParamsException("User already exists.");
+        }
+        User user = new User();
+        getUserParams(user, params);
+        user.setEmail(token.getEmail());
+
+		if (isUsernameReserved(user.getScreenname())) {
+			throw new ActionParamsException("Username already exists.");
 		}
 		try {
 			user.addRole(defaultRole);
 			userService.createUser(user);
-		} catch (ServiceException se) {
-			throw new ActionException(se.getMessage(), se);
-		}
-		Email emailToken = new Email();
-		emailToken.setEmail(user.getEmail());
-		emailToken.setScreenname(user.getScreenname());
-		emailToken.setUuid(user.getUuid());
-		try {
-			emailToken.setExpiryTimestamp(RegistrationUtil.createExpiryTime());
-		}
-		catch (Exception e) {
-			throw new ActionException("Unable to read the configuration properties.");
-		}
-		registerTokenService.addEmail(emailToken);
-
-		try {
-			mailSenderService.sendEmailForRegistrationActivation(user, RegistrationUtil.getServerAddress(params), language);
+            // add password
+            userService.setUserPassword(user.getScreenname(), password);
+            // cleanup the token
+            registerTokenService.deleteEmailToken(uuid);
 		} catch (ServiceException se) {
 			throw new ActionException(se.getMessage(), se);
 		}
@@ -113,27 +115,20 @@ public class UserRegistrationHandler extends RestActionHandler {
 				throw new ActionParamsException("User doesn't exist.");
 			}
 			userService.deleteUser(sessionUser.getId());
+            // logout for current user
 			params.getRequest().getSession().invalidate();
 		} catch (ServiceException se) {
 			throw new ActionException(se.getMessage(), se);
 		}
 	}
+
 	@Override
 	public void handlePut(ActionParameters params) throws ActionException {
 		// edit
 		params.requireLoggedInUser();
 		User user = params.getUser();
 		getUserParams(user, params);
-		User sessionUser = params.getUser();
-		getUserParams(user, params);
-		user.setId(sessionUser.getId());
 		try {
-			User retUser = userService.getUser(user.getId());
-			if (retUser == null)
-				throw new ActionException("User doesn't exist.");
-			if (!retUser.getEmail().equals(user.getEmail()) && isEmailAlreadyExist(user.getEmail()))
-				throw new ActionException("Email already exists.");
-			user.setScreenname(retUser.getScreenname());
 			userService.modifyUser(user);
 		} catch (ServiceException se) {
 			throw new ActionException(se.getMessage(), se);
@@ -142,20 +137,19 @@ public class UserRegistrationHandler extends RestActionHandler {
 		ResponseHelper.writeResponse(params, user2Json(user));
 	}
 	
-	private final boolean isEmailAlreadyExist(final String emailAddress) {
+	private final boolean isEmailRegistered(final String emailAddress) {
 		return registerTokenService.findUsernameForEmail(emailAddress) != null;
 	}
 	
-	private final boolean isUsernameAlreadyExist(final String username) {
+	private final boolean isUsernameReserved(final String username) {
 		return registerTokenService.findEmailForUsername(username) != null;
 	}
 	
 	private void getUserParams(User user, ActionParameters params) throws ActionParamsException {
         user.setFirstname(params.getRequiredParam(PARAM_FIRSTNAME));
-        user.setLastname(params.getRequiredParam(PARAM_LASTNAME));       
-        user.setEmail(params.getRequiredParam(PARAM_EMAIL));
+        user.setLastname(params.getRequiredParam(PARAM_LASTNAME));
         //check is done because while updating user info, username is not changed.
-		if(user.isGuest()) {
+		if(user.getId() == -1) {
 			user.setScreenname(params.getRequiredParam(PARAM_USERNAME));
 		}
 		// loop parameters and add the rest starting with user_

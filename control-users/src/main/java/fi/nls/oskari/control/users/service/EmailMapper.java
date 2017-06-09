@@ -4,6 +4,7 @@ import fi.nls.oskari.control.users.model.Email;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 
 
 /**
@@ -14,14 +15,21 @@ public interface EmailMapper {
             " VALUES (#{screenname}, #{email}, #{uuid}, #{expiryTimestamp})")
     void addEmail(Email email);
 
+    @Update("UPDATE oskari_users_pending SET expiry_timestamp=#{expiryTimestamp}, uuid=#{uuid} where id=#{id}")
+    void updateEmail(Email email);
+
     @Select("SELECT id, user_name, email, uuid, expiry_timestamp as expiryTimestamp " +
             "FROM oskari_users_pending  WHERE uuid = #{uuid}")
     Email findByToken(String uuid);
 
+    @Select("SELECT id, user_name, email, uuid, expiry_timestamp as expiryTimestamp " +
+            "FROM oskari_users_pending  WHERE email = #{email}")
+    Email findTokenByEmail(String email);
+
     @Select("SELECT user_name FROM oskari_users WHERE LOWER(email) = #{email}")
     String findUsernameForEmail(String email);
 
-    @Select("SELECT login FROM oskari_jaas_users WHERE login = #{user_name}")
+    @Select("SELECT login FROM oskari_jaas_users WHERE LOWER(login) = #{user_name}")
     String findUsernameForLogin(String username);
 
     @Delete("DELETE FROM oskari_users_pending WHERE uuid = #{uuid}")

@@ -23,24 +23,6 @@
                 padding: 0;
             }
 
-            #maptools {
-                background-color: #333438;
-                height: 100%;
-                position: absolute;
-                top: 0;
-                width: 153px;
-                z-index: 2;
-            }
-
-            #etusivu {
-                padding-top: 20px;
-                text-align: center;
-            }
-
-            #frontpage, #frontpage:visited {
-                color: #3399FF;
-            }
-
             #requestPassword {
                 width: 400px;
             }
@@ -65,12 +47,6 @@
     <!-- ############# /css ################# -->
 </head>
 <body>
-
-<nav id="maptools">
-    <div id="etusivu">
-        <a href="#" id="frontpage"><spring:message code="oskari.backToFrontpage"/></a>
-    </div>
-</nav>
 
 <div id="container">
     <c:choose>

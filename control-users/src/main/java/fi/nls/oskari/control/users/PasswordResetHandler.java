@@ -15,7 +15,6 @@ import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.service.UserService;
 import fi.nls.oskari.user.IbatisUserService;
-import fi.nls.oskari.util.PropertyUtil;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
@@ -70,7 +69,7 @@ public class PasswordResetHandler extends RestActionHandler {
         emailToken.setEmail(email);
         emailToken.setUuid(uuid);
         emailToken.setExpiryTimestamp(RegistrationUtil.createExpiryTime());
-        registerTokenService.addEmail(emailToken);
+        registerTokenService.addToken(emailToken);
 
         String username = registerTokenService.findUsernameForEmail(email);
         try {

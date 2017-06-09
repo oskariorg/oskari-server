@@ -9,8 +9,6 @@
 <head>
     <title><spring:message code="user.registration.title"/></title>
     <link rel="shortcut icon" href="${pageContext.request.contextPath}/favicon.ico" type="image/x-icon"/>
-    <%-- <script type="text/javascript" src="${pageContext.request.contextPath}/Oskari/libraries/jquery/jquery-1.7.1.min.js">
-    </script> --%>
     <script
             src="https://code.jquery.com/jquery-1.12.4.min.js"
             integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ="
@@ -26,29 +24,15 @@
                 padding: 0;
             }
 
-            #maptools {
-                background-color: #333438;
-                height: 100%;
-                position: absolute;
-                top: 0;
-                width: 153px;
-                z-index: 2;
-            }
-
             .content-column {
                 display: block;
             }
 
-            #etusivu {
-                padding-top: 20px;
-                text-align: center;
-            }
-
-            #frontpage, #frontpage:visited, #deleteUser {
+            #deleteUser {
                 color: #3399FF;
             }
 
-            #forgotPassword {
+            a.reg-link {
                 padding-top: 25px;
                 font-size: 20px;
                 display: block;
@@ -70,30 +54,11 @@
 </head>
 <body>
 
-<nav id="maptools">
-    <div id="etusivu">
-        <a href="#" id="frontpage"><spring:message code="oskari.backToFrontpage"/></a><br><br>
-        <c:if test="${!empty id}">
-            <a href="#" id="deleteUser"><spring:message code="btn.user.delete"/></a>
-        </c:if>
-    </div>
-</nav>
-
 <div class="container">
     <div class="row">
         <div class="col-xs-12 col-sm-8 col-md-6 col-sm-offset-2 col-md-offset-4">
             <form role="form">
-                <c:choose>
-                    <%-- Signed in --%>
-                    <c:when test="${!empty id}">
-                        <h1><spring:message code="user.registration.edit.title"/></h1>
-                    </c:when>
-                    <%-- Not signed in --%>
-                    <c:otherwise>
-                        <h1><spring:message code="user.registration"/></h1>
-
-                    </c:otherwise>
-                </c:choose>
+                <h1><spring:message code="user.registration.edit.title"/></h1>
                 <hr class="colorgraph"/>
                 <span id="errorMsg" class="alert alert-danger hidden col-xs-12" role="alert"></span>
                 <div class="row">
@@ -101,7 +66,7 @@
                         <div class="col-xs-12 col-sm-6 col-md-6">
                             <div class="form-group">
                                 <input type="text" name="first_name" id="firstname" class="form-control input-lg"
-                                       placeholder="First Name" tabindex="1" autofocus />
+                                       placeholder="First Name" value="${firstname}" tabindex="1" autofocus />
                             </div>
                         </div>
                     </span>
@@ -109,56 +74,41 @@
                         <div class="col-xs-12 col-sm-6 col-md-6">
                             <div class="form-group">
                                 <input type="text" name="last_name" id="lastname"
-                                       class="form-control input-lg" placeholder="Last Name" tabindex="2"/>
+                                       class="form-control input-lg" value="${lastname}" placeholder="Last Name" tabindex="2"/>
                             </div>
                         </div>
                     </span>
                 </div>
 
-                <%-- Not signed in - show nickname field --%>
-                <c:if test="${empty id}">
-                    <span class="content-column">
+                <div class="row">
+                    <div class="col-xs-12 col-sm-6 col-md-6">
                         <div class="form-group">
-                            <input type="text" name="display_name" id="username" class="form-control input-lg"
-                                   placeholder="Username" tabindex="3"/>
+                            <spring:message code="user.email" htmlEscape="true"/>: ${email}<br/>
+                            <spring:message code="user.username" htmlEscape="true"/>: ${username}
                         </div>
-                    </span>
-                </c:if>
-
-              <span class="content-column">
-                <div class="form-group">
-                    <input type="email" name="email" id="email" class="form-control input-lg"
-                           placeholder="Email Address" tabindex="4">
+                      </div>
                 </div>
-              </span>
-                <br/>
 
-                <c:choose>
-                    <%-- Signed in --%>
-                    <c:when test="${!empty id}">
-                      <span>
-                        <button class="btn btn-primary" id="saveBtn"><spring:message code="btn.save"/></button>
-                      </span>
-                      <span>
-                        <button class="btn btn-default" id="cancelBtn"><spring:message code="btn.cancel"/></button>
-                      </span>
-                        <br><br><br>
-                      <span class="content-column"> <a href="#" id="changePassword"><spring:message
-                              code="btn.newPassword"/></a> </span>
-                        (<spring:message code="user.help.passwordReset"/>)
-                    </c:when>
-                    <%-- Not signed in --%>
-                    <c:otherwise>
-                        <div class="row">
-                            <div class="col-xs-12 col-md-6"><input type="button" value="Register"
-                                                                   class="btn btn-primary btn-block btn-lg"
-                                                                   id="registerBtn" tabindex="7"></div>
-                            <br><br>
-                            <a class="col-xs-12" href="#" id="forgotPassword"><spring:message
-                                    code="btn.forgotPassword"/></a>
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-6 col-md-6">
+                            <button class="btn btn-primary" id="saveBtn"><spring:message code="btn.save"/></button>
+                            <a href="/" class="btn btn-default"><spring:message code="btn.cancel"/></a>
                         </div>
-                    </c:otherwise>
-                </c:choose>
+                    </div>
+                    <hr class="colorgraph"/>
+                    <div class="row">
+                        <span class="content-column">
+                            <div class="col-xs-12 col-sm-6 col-md-6">
+                            <a href="#" id="changePassword"><spring:message code="btn.newPassword"/></a><br/>
+                                (<spring:message code="user.help.passwordReset"/>)
+                            </div>
+                        </span>
+                        <span class="content-column">
+                            <div class="col-xs-12 col-sm-6 col-md-6">
+                                <a href="#" id="deleteUser"><spring:message code="btn.user.delete"/></a>
+                            </div>
+                        </span>
+                    </div>
             </form>
         </div>
     </div>
@@ -198,23 +148,13 @@
 
 <script type="text/javascript">
     $(document).ready(function () {
-        $('#frontpage, #cancelBtn').click(function () {
-            var host = window.location.protocol + "//" + window.location.host;
-            window.location.replace(host);
-        });
-
-        $('#forgotPassword').click(function () {
-            var host = window.location.protocol + "//" + window.location.host + "/user/reset";
-            window.location.replace(host);
-        });
-
+        var saving = false;
+        //logged in
         $('#changePassword').click(function () {
-            var host = window.location.protocol + "//" + window.location.host;
             jQuery.ajax({
-                url: host + "/action?action_route=UserPasswordReset&email=${email}",
+                url: "/action?action_route=UserPasswordReset&email=${email}",
                 type: 'POST',
-                success: function (data) {
-                    // FIXME: show confirmation about mail being sent
+                success: function () {
                     showModal('<spring:message javaScriptEscape="true" code="user.registration.email.sent"/>');
                 },
                 error: function (jqXHR, textStatus, errorThrown) {
@@ -223,72 +163,40 @@
             });
         });
 
-        $('#registerBtn').click(function () {
-            var host = window.location.protocol + "//" + window.location.host;
-            if (!validate()) {
-                return false;
-            }
-            jQuery.ajax({
-                url: host + "/action?action_route=UserRegistration",
-                type: 'POST',
-                data: {
-                    firstname: jQuery('#firstname').val(),
-                    lastname: jQuery('#lastname').val(),
-                    username: jQuery('#username').val(),
-                    email: jQuery('#email').val()
-                },
-                success: function () {
-                    showModal('<spring:message javaScriptEscape="true" code="user.registration.success"/>', true);
-                },
-                error: function (jqXHR) {
-                    var errorResponse = jqXHR.responseText;
-                    if (errorResponse.toLowerCase().indexOf("email") >= 0) {
-                        errorMsg("#email", '<spring:message javaScriptEscape="true" code="user.registration.error.emailExists"/>');
-                    } else if (errorResponse.toLowerCase().indexOf("username") >= 0) {
-                        errorMsg("#username", '<spring:message javaScriptEscape="true" code="user.registration.error.usernameExists"/>');
-                    } else if (errorResponse.toLowerCase().indexOf("address") >= 0) {
-                        errorMsg("#email", '<spring:message javaScriptEscape="true" code="user.registration.error.sendingFailed"/>');
-                    } else if (errorResponse.toLowerCase().indexOf("properties") >= 0) {
-                        errorMsg("#username", '<spring:message javaScriptEscape="true" code="user.registration.error.emailConfigurationError"/>');
-                    } else {
-                        errorMsg("#errorGeneral", '<spring:message javaScriptEscape="true" code="user.registration.error.generic"/>');
-                    }
-                }
-            });
-        });
-
+        // logged in
         $('#saveBtn').click(function () {
-            var host = window.location.protocol + "//" + window.location.host;
-            if (!validate()) {
+            if (saving || !validate()) {
                 return false;
             }
+            saving = true;
             jQuery.ajax({
-                url: host + "/action?action_route=UserRegistration",
+                url: "/action?action_route=UserRegistration",
                 type: 'PUT',
                 data: {
                     firstname: jQuery('#firstname').val(),
-                    lastname: jQuery('#lastname').val(),
-                    email: jQuery('#email').val()
+                    lastname: jQuery('#lastname').val()
                 },
                 success: function () {
                     showModal('<spring:message javaScriptEscape="true" code="user.registration.edit.success"/>', true);
+                    saving = false;
                 },
                 error: function () {
+                    saving = false;
                     errorMsg("#errorGeneral", '<spring:message javaScriptEscape="true" code="user.registration.error.generic"/>');
                 }
             });
         });
 
+        // logged in
         $('#deleteUser').click(function () {
-            var host = window.location.protocol + "//" + window.location.host;
 
             $("#deleteDialog").on("show.bs.modal", function () {
                 $("#deleteOk").on("click", function (e) {
                     jQuery.ajax({
-                        url: host + "/action?action_route=UserRegistration",
+                        url: "/action?action_route=UserRegistration",
                         type: 'DELETE',
                         success: function () {
-                            window.location.href = '/logout';
+                            window.location.href = '/';
                         },
                         error: function () {
                             errorMsg("#errorGeneral", '<spring:message javaScriptEscape="true" code="user.registration.error.generic"/>');
@@ -307,17 +215,10 @@
 
     });
 
-    function isEmailValid(email) {
-        var pattern = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-        return pattern.test(email);  // returns a boolean
-    }
-
     //Validates the form values
     function validate() {
         var firstname = $('#firstname').val();
         var lastname = $('#lastname').val();
-        var username = $('#username').val();
-        var email = $('#email').val();
         var flag = true;
         clearErrorMessage();
 
@@ -331,15 +232,6 @@
             flag = false;
         }
 
-        if ($('#username').length && !username.trim()) {
-            errorMsg('#errorUsername', '<spring:message javaScriptEscape="true" code="user.registration.error.fieldIsRequired"/>');
-            flag = false;
-        }
-
-        if (!isEmailValid(email)) {
-            errorMsg('#errorEmail', '<spring:message javaScriptEscape="true" code="user.registration.error.invalidEmail"/>');
-            flag = false;
-        }
         return flag;
     }
     function showModal(msg, success) {
@@ -349,9 +241,6 @@
         if (success) {
             $('.container').find('.alert-danger').removeClass('alert-danger');
         }
-        setTimeout(function () {
-            $('#generalModal').modal('hide');
-        }, 2000);
     }
 
     function errorMsg(selector, str) {
@@ -361,8 +250,11 @@
         $(selector).addClass("alert-danger");
     }
 
-    function clearErrorMessage() {
+    function clearErrorMessage(selector) {
         $('.alert').text("").addClass("hidden");
+        if(selector) {
+            $(selector).removeClass("alert-danger");
+        }
     }
 </script>
 </body>
