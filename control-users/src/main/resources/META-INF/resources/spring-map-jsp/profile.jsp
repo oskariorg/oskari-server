@@ -196,7 +196,7 @@
                         url: "/action?action_route=UserRegistration",
                         type: 'DELETE',
                         success: function () {
-                            window.location.href = '/';
+                            window.location.href = '/logout';
                         },
                         error: function () {
                             errorMsg("#errorGeneral", '<spring:message javaScriptEscape="true" code="user.registration.error.generic"/>');
