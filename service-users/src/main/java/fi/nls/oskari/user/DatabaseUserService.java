@@ -219,10 +219,6 @@ public class DatabaseUserService extends UserService {
         log.debug("deleteUser");
         User user = userService.find(id);
         if (user != null) {
-            userService.deletePassword(user.getScreenname());
-            roleService.deleteUsersRoles(id);
-            userService.delete(id);
-
             Map<String, UserContentService> userContentServices;
             String serviceClass = "";
             try {
@@ -231,9 +227,12 @@ public class DatabaseUserService extends UserService {
                     serviceClass = userContentService.getKey();
                     userContentService.getValue().deleteUserContent(user);
                 }
+                userService.deletePassword(user.getScreenname());
+                roleService.deleteUsersRoles(id);
+                userService.delete(id);
             }
             catch (Exception e) {
-                log.error("Deleting user data failed in service: {}", serviceClass);
+                log.error("Deleting user data failed in service:", serviceClass);
                 throw new ServiceException("Deleting user data failed in service: " + serviceClass);
             }
         }
