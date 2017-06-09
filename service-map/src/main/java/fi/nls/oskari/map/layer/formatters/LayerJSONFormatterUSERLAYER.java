@@ -7,6 +7,8 @@ import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
 import org.json.JSONObject;
+import fi.nls.oskari.map.userlayer.service.UserLayerDbService;
+import fi.nls.oskari.map.userlayer.service.UserLayerDbServiceMybatisImpl;
 
 /**
  * User layer to oskari layer json
@@ -20,6 +22,7 @@ public class LayerJSONFormatterUSERLAYER extends LayerJSONFormatter {
     final String userlayerRenderingElement = PropertyUtil.get(USERLAYER_RENDERING_ELEMENT);
 
     private static Logger log = LogFactory.getLogger(LayerJSONFormatterUSERLAYER.class);
+    private static final UserLayerDbService userLayerService = new UserLayerDbServiceMybatisImpl();
 
     /**
      *
@@ -44,6 +47,7 @@ public class LayerJSONFormatterUSERLAYER extends LayerJSONFormatter {
         // user layer rendering url - override DB url if property is defined
         JSONHelper.putValue(layerJson, "url", getUserLayerTileUrl());
         JSONHelper.putValue(layerJson, "renderingElement", userlayerRenderingElement);
+        JSONHelper.putValue(layerJson, "geom", userLayerService.getUserLayerExtent(ulayer.getId()));
         return layerJson;
     }
 

@@ -17,6 +17,7 @@ public interface UserLayerDbService {
         public void deleteUserLayer(final UserLayer userlayer) throws ServiceException;
         public void deleteUserLayersByUuid(String uuid) throws ServiceException;
         public int updatePublisherName(final long id, final String uuid, final String name);
+        public String getUserLayerExtent (final long id);
         //UserLayerStyle related
         public int updateUserLayerStyleCols(final UserLayerStyle userLayerStyle);
         public UserLayerStyle getUserLayerStyleById(final long id);
