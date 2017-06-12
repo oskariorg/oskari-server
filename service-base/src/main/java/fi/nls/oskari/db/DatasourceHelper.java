@@ -23,6 +23,7 @@ public class DatasourceHelper {
     private static final String MSG_CHECKING_POOL = " - checking existance of database pool: %s";
     private static final String PREFIX_DB = "db.";
     private static final DatasourceHelper INSTANCE = new DatasourceHelper();
+    private static final String KEY_MODULE_LIST = "db.additional.modules";
 
     private List<BasicDataSource> localDataSources = new ArrayList<BasicDataSource>();
     private final static String JNDI_PREFIX = "java:comp/env/";
@@ -30,6 +31,19 @@ public class DatasourceHelper {
 
     protected DatasourceHelper() {
         // use getInstance()
+    }
+
+    public static String[] getAdditionalModules() {
+        return PropertyUtil.getCommaSeparatedList(KEY_MODULE_LIST);
+    }
+
+    public static boolean isModuleEnabled(String name) {
+        for(String key: getAdditionalModules()) {
+            if(key.equalsIgnoreCase(name)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public String getOskariDataSourceName() {

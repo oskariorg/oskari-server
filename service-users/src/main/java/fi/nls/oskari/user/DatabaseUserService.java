@@ -219,10 +219,9 @@ public class DatabaseUserService extends UserService {
         log.debug("deleteUser");
         User user = userService.find(id);
         if (user != null) {
-            Map<String, UserContentService> userContentServices;
+            Map<String, UserContentService> userContentServices = OskariComponentManager.getComponentsOfType(UserContentService.class);
             String serviceClass = "";
             try {
-                userContentServices = OskariComponentManager.getComponentsOfType(UserContentService.class);
                 for (Map.Entry<String, UserContentService> userContentService : userContentServices.entrySet()) {
                     serviceClass = userContentService.getKey();
                     userContentService.getValue().deleteUserContent(user);

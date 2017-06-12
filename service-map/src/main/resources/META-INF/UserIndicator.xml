@@ -143,7 +143,7 @@
     </delete>
 
 
-    <delete id="deleteByUserId" parameterClass="int">
+    <delete id="deleteByUserId" parameterClass="long">
         delete from oskari_user_indicator where user_id = #id#
     </delete>
 
