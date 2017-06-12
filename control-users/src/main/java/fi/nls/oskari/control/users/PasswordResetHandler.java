@@ -6,7 +6,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.*;
-import fi.nls.oskari.control.users.model.Email;
+import fi.nls.oskari.control.users.model.EmailToken;
 import fi.nls.oskari.control.users.model.PasswordRules;
 import fi.nls.oskari.control.users.service.MailSenderService;
 import fi.nls.oskari.control.users.service.UserRegistrationService;
@@ -17,6 +17,7 @@ import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.service.UserService;
 import fi.nls.oskari.user.IbatisUserService;
 import fi.nls.oskari.util.ResponseHelper;
+import org.json.JSONObject;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
@@ -38,11 +39,9 @@ public class PasswordResetHandler extends RestActionHandler {
     private final MailSenderService mailSenderService = new MailSenderService();
     private final IbatisUserService ibatisUserService = new IbatisUserService();
     private UserService userService;
-    private ObjectMapper objectMapper;
 
     @Override
     public void init() {
-        objectMapper = new ObjectMapper();
         try {
             userService = UserService.getInstance();
         } catch (ServiceException se) {
@@ -61,10 +60,9 @@ public class PasswordResetHandler extends RestActionHandler {
     @Override
     public void handleGet(ActionParameters params) throws ActionException {
         try {
-            ResponseHelper.writeResponse(params, objectMapper.writeValueAsString(new PasswordRules()));
+            ResponseHelper.writeResponse(params, mapper.writeValueAsString(PasswordRules.asMap()));
         } catch (JsonProcessingException e) {
-            log.error("Couldn't return rules:", e.getMessage());
-            ResponseHelper.writeError(params, "Couldn't serialize rules");
+            ResponseHelper.writeError(params, "Couldn't serialize requirements");
         }
     }
 
@@ -87,7 +85,7 @@ public class PasswordResetHandler extends RestActionHandler {
             throw new ActionDeniedException("Username for login doesn't exist for email address: " + email);
         }
         // add or update token
-        Email token = registerTokenService.setupToken(email);
+        EmailToken token = registerTokenService.setupToken(email);
         try {
             mailSenderService.sendEmailForResetPassword(email, token.getUuid(), RegistrationUtil.getServerAddress(params), params.getLocale().getLanguage());
         } catch (ServiceException ex) {
@@ -98,7 +96,7 @@ public class PasswordResetHandler extends RestActionHandler {
     @Override
     public void handlePut(ActionParameters params) throws ActionException {
         // set password
-        final Email token = parseContentForEmailUpdate(params);
+        final EmailToken token = parseContentForEmailUpdate(params);
         String username = registerTokenService.findUsernameForEmail(token.getEmail());
 
         if(!RegistrationUtil.isPasswordOk(token.getPassword())) {
@@ -117,15 +115,15 @@ public class PasswordResetHandler extends RestActionHandler {
                 userService.setUserPassword(username, token.getPassword());
             }
             // After password updated/created, delete the entry related to token from database
-            registerTokenService.deleteEmailToken(token.getUuid());
+            registerTokenService.removeTokenByUUID(token.getUuid());
         } catch (ServiceException se) {
             throw new ActionException(se.getMessage(), se);
         }
     }
 
-    public Email parseContentForEmailUpdate(ActionParameters params) throws ActionException {
+    public EmailToken parseContentForEmailUpdate(ActionParameters params) throws ActionException {
 
-        Email token = new Email();
+        EmailToken token = new EmailToken();
         Map<String, String> jsonObjectMap = readJsonFromStream(params.getRequest());
 
         // JSON object ONLY need to have 2 attributes: 'uuid' and 'password'
@@ -139,15 +137,15 @@ public class PasswordResetHandler extends RestActionHandler {
         if (token.getPassword() == null || token.getUuid() == null) {
             throw new ActionParamsException("JSON object MUST contain only 2 attributes: 'uuid' and 'password'");
         }
-        Email tempEmail = registerTokenService.findByToken(token.getUuid());
-        if (tempEmail == null) {
+        EmailToken tempEmailToken = registerTokenService.findByToken(token.getUuid());
+        if (tempEmailToken == null) {
             throw new ActionParamsException("UUID not found.");
         }
-        if (tempEmail.hasExpired()) {
-            registerTokenService.deleteEmailToken(token.getUuid());
+        if (tempEmailToken.hasExpired()) {
+            registerTokenService.removeTokenByUUID(token.getUuid());
             throw new ActionDeniedException("UUID expired.");
         }
-        token.setEmail(tempEmail.getEmail());
+        token.setEmail(tempEmailToken.getEmail());
         return token;
     }
 

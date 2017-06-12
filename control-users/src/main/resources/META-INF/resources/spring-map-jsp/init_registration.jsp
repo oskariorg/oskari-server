@@ -107,11 +107,11 @@
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
                         aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="generalModalLabel">Registration</h4>
+                <h4 class="modal-title" id="generalModalLabel"><spring:message code="user.registration"/></h4>
             </div>
             <div class="modal-body registration-success"></div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal"><spring:message code="btn.close" htmlEscape="true"/></button>
             </div>
         </div>
     </div>

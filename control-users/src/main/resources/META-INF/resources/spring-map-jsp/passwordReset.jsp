@@ -23,10 +23,6 @@
                 padding: 0;
             }
 
-            #requestPassword {
-                width: 400px;
-            }
-
             .error {
                 color: red;
             }
@@ -48,7 +44,7 @@
 </head>
 <body>
 
-<div id="container">
+<div class="container">
     <c:choose>
         <c:when test="${empty uuid}">
             <span class="error"><h2>${error}</h2></span>
@@ -59,12 +55,23 @@
                     <form role="form" id="requestPassword">
                         <h1><spring:message code="user.registration.passwordReset.title"/></h1>
                         <hr class="colorgraph">
+
+                        <div class="form-group">
+                            <spring:message code="user.registration.password.requirements"/>
+                            <ul>
+                            <c:forEach items="${requirements}" var="entry">
+                                <li><spring:message code="user.passwd.req.${entry.key}" />: <spring:message code="${entry.value}" /></li>
+                            </c:forEach>
+                            </ul>
+                        </div>
                         <div class="form-group">
                             <input class="form-control input-lg" size="16" id="password" name="password" type="password"
+                                   placeholder="<spring:message code="user.password" htmlEscape="true"/>"
                                    autofocus required>
                         </div>
                         <div class="form-group">
                             <input class="form-control input-lg" size="16" id="confirmPassword" name="confirmPassword"
+                                   placeholder="<spring:message code="user.password.confirm" htmlEscape="true"/>"
                                    type="password" required>
                         </div>
                         <label id="unmatchedPassword" class="error">"<spring:message
@@ -89,11 +96,11 @@
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
                         aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="myModalLabel">Password reset</h4>
+                <h4 class="modal-title" id="myModalLabel"><spring:message code="user.registration.passwordReset.title"/></h4>
             </div>
             <div class="modal-body password-reset"></div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal"><spring:message code="btn.close" htmlEscape="true"/></button>
             </div>
         </div>
     </div>
@@ -131,11 +138,16 @@
                     password: password,
                     uuid: uuid
                 }),
-                success: function (data) {
+                success: function () {
                     showModal('<spring:message javaScriptEscape="true" code="oskari.password.changed"/>')
                 },
-                error: function (jqXHR, textStatus, errorThrown) {
-                    showModal('<spring:message javaScriptEscape="true" code="user.registration.error.generic"/>');
+                error: function (jqXHR) {
+                    var errorResponse = jqXHR.responseText;
+                    if (errorResponse.toLowerCase().indexOf("too weak") >= 0) {
+                        showModal('<spring:message javaScriptEscape="true" code="user.registration.error.password.requirements"/>');
+                    } else {
+                        showModal('<spring:message javaScriptEscape="true" code="user.registration.error.generic"/>');
+                    }
                 }
             });
         });

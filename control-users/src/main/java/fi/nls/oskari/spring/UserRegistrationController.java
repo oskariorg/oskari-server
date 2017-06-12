@@ -2,7 +2,8 @@ package fi.nls.oskari.spring;
 
 import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.control.users.RegistrationUtil;
-import fi.nls.oskari.control.users.model.Email;
+import fi.nls.oskari.control.users.model.EmailToken;
+import fi.nls.oskari.control.users.model.PasswordRules;
 import fi.nls.oskari.control.users.service.MailSenderService;
 import fi.nls.oskari.control.users.service.UserRegistrationService;
 import fi.nls.oskari.domain.User;
@@ -87,12 +88,12 @@ public class UserRegistrationController {
             // don't bleed out the information, "successful" from user perspective, but send out a mail about already registered user
             return "init_registration";
         }
-        Email emailToken = service.setupToken(user.getEmail());
+        EmailToken emailTokenToken = service.setupToken(user.getEmail());
 
         try {
-            mailSenderService.sendEmailForRegistrationActivation(user.getEmail(), emailToken.getUuid(), RegistrationUtil.getServerAddress(params), language);
+            mailSenderService.sendEmailForRegistrationActivation(user.getEmail(), emailTokenToken.getUuid(), RegistrationUtil.getServerAddress(params), language);
         } catch (ServiceException se) {
-            LOG.error(se, "Error sending email", emailToken);
+            LOG.error(se, "Error sending email", emailTokenToken);
             model.addAttribute("error", "user.registration.error.generic");
         }
         model.addAttribute("msg", "user.registration.email.sent");
@@ -105,8 +106,8 @@ public class UserRegistrationController {
             return "error/404";
         }
         UserRegistrationService emailService = OskariComponentManager.getComponentOfType(UserRegistrationService.class);
-        Email email = emailService.findByToken(uuid);
-        if (email == null) {
+        EmailToken emailToken = emailService.findByToken(uuid);
+        if (emailToken == null) {
             // go back to registration start with an error message
             LOG.debug("Email token not found, going to registration start:", uuid);
             model.addAttribute("error", ERR_TOKEN_NOT_FOUND);
@@ -114,13 +115,14 @@ public class UserRegistrationController {
         }
         User user = params.getUser();
         if (!user.isGuest()) {
-            if(user.getEmail().equalsIgnoreCase(email.getEmail())) {
-                emailService.deleteEmailToken(uuid);
+            if(user.getEmail().equalsIgnoreCase(emailToken.getEmail())) {
+                emailService.removeTokenByUUID(uuid);
             }
             return index(model, params);
         }
         model.addAttribute("uuid", uuid);
-        model.addAttribute("email", email.getEmail());
+        model.addAttribute("requirements", PasswordRules.asMap());
+        model.addAttribute("email", emailToken.getEmail());
         return "new_user";
     }
 
@@ -149,22 +151,22 @@ public class UserRegistrationController {
         if (!RegistrationUtil.isEnabled()) {
             return "error/404";
         }
-        final String jspView = "passwordReset";
         UserRegistrationService emailService = OskariComponentManager.getComponentOfType(UserRegistrationService.class);
-        Email email = emailService.findByToken(uuid);
-        if (email == null) {
+        EmailToken emailToken = emailService.findByToken(uuid);
+        if (emailToken == null) {
             LOG.debug("Email token not found, going to error/404");
             model.addAttribute("error", ERR_TOKEN_NOT_FOUND);
-            return jspView;
+            return "forgotPasswordEmail";
         }
         // Check if email token has valid date or not.
-        if (!email.hasExpired()) {
-            model.addAttribute("uuid", email.getUuid());
+        if (!emailToken.hasExpired()) {
+            model.addAttribute("uuid", emailToken.getUuid());
+            model.addAttribute("requirements", PasswordRules.asMap());
         } else {
             model.addAttribute("error", ERR_TOKEN_INVALID);
         }
 
-        return jspView;
+        return "passwordReset";
     }
 
 }

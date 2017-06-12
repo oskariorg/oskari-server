@@ -85,11 +85,11 @@
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
                         aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="myModalLabel">Email adress</h4>
+                <h4 class="modal-title" id="myModalLabel"><spring:message code="user.email" htmlEscape="true"/></h4>
             </div>
             <div class="modal-body password-alert"></div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal"><spring:message code="btn.close" htmlEscape="true"/></button>
             </div>
         </div>
     </div>
@@ -135,6 +135,8 @@
     }
     function showModal(msg, error) {
         var notification = jQuery('.password-alert');
+        notification.removeClass('alert-danger');
+        notification.removeClass('alert-success');
         notification.html(msg);
         if(error) {
             notification.addClass('alert-danger');
@@ -144,6 +146,9 @@
         jQuery('#passwordModal').modal('show');
     }
 
+    <c:if test="${!empty error}">
+        showModal('<spring:message javaScriptEscape="true" code="user.registration.error.generic"/>', true);
+    </c:if>
 </script>
 </body>
 </html>

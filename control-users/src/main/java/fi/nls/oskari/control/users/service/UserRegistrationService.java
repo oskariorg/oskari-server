@@ -2,7 +2,7 @@ package fi.nls.oskari.control.users.service;
 
 import fi.nls.oskari.annotation.Oskari;
 import fi.nls.oskari.control.users.RegistrationUtil;
-import fi.nls.oskari.control.users.model.Email;
+import fi.nls.oskari.control.users.model.EmailToken;
 import fi.nls.oskari.db.DatasourceHelper;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
@@ -36,23 +36,23 @@ public class UserRegistrationService extends OskariComponent {
         }
     }
 
-    public Email setupToken(String email) {
-        Email emailToken = findTokenByEmail(email);
-        if(emailToken != null) {
+    public EmailToken setupToken(String email) {
+        EmailToken token = findTokenByEmail(email);
+        if(token != null) {
             // refresh token expiry if one exists
-            emailToken.setUuid( UUID.randomUUID().toString());
-            emailToken.setExpiryTimestamp(RegistrationUtil.createExpiryTime());
-            updateToken(emailToken);
+            token.setUuid( UUID.randomUUID().toString());
+            token.setExpiryTimestamp(RegistrationUtil.createExpiryTime());
+            updateToken(token);
         } else {
             // create a new token
-            emailToken = new Email();
-            emailToken.setEmail(email);
-            emailToken.setScreenname("");
-            emailToken.setUuid( UUID.randomUUID().toString());
-            emailToken.setExpiryTimestamp(RegistrationUtil.createExpiryTime());
-            addToken(emailToken);
+            token = new EmailToken();
+            token.setEmail(email);
+            token.setScreenname("");
+            token.setUuid( UUID.randomUUID().toString());
+            token.setExpiryTimestamp(RegistrationUtil.createExpiryTime());
+            addToken(token);
         }
-        return emailToken;
+        return token;
     }
 
 
@@ -61,37 +61,37 @@ public class UserRegistrationService extends OskariComponent {
         final Environment environment = new Environment("development", transactionFactory, dataSource);
 
         final Configuration configuration = new Configuration(environment);
-        configuration.getTypeAliasRegistry().registerAlias(Email.class);
+        configuration.getTypeAliasRegistry().registerAlias(EmailToken.class);
         configuration.setLazyLoadingEnabled(true);
         configuration.addMapper(EmailMapper.class);
 
         return new SqlSessionFactoryBuilder().build(configuration);
     }
 
-    public Long addToken(Email email) {
+    public Long addToken(EmailToken emailToken) {
         try (SqlSession session = factory.openSession()) {
             final EmailMapper mapper = session.getMapper(EmailMapper.class);
-            mapper.addEmail(email);
+            mapper.addEmail(emailToken);
             session.commit();
-            return email.getId();
+            return emailToken.getId();
         } catch (Exception e) {
-            LOG.warn(e, "Exception when trying to add email:", email);
+            LOG.warn(e, "Exception when trying to add email:", emailToken);
         }
         return -1l;
     }
-    public Long updateToken(Email email) {
+    public Long updateToken(EmailToken emailToken) {
         try (SqlSession session = factory.openSession()) {
             final EmailMapper mapper = session.getMapper(EmailMapper.class);
-            mapper.updateEmail(email);
+            mapper.updateEmail(emailToken);
             session.commit();
-            return email.getId();
+            return emailToken.getId();
         } catch (Exception e) {
-            LOG.warn(e, "Exception when trying to add email:", email);
+            LOG.warn(e, "Exception when trying to add email:", emailToken);
         }
         return -1l;
     }
 
-    public Email findTokenByEmail(String email) {
+    public EmailToken findTokenByEmail(String email) {
         try (SqlSession session = factory.openSession()) {
             final EmailMapper mapper = session.getMapper(EmailMapper.class);
             return mapper.findTokenByEmail(email.toLowerCase());
@@ -101,7 +101,7 @@ public class UserRegistrationService extends OskariComponent {
         throw new RuntimeException("Couldn't get token for " + email);
     }
 
-    public Email findByToken(String uuid) {
+    public EmailToken findByToken(String uuid) {
         try (SqlSession session = factory.openSession()) {
             final EmailMapper mapper = session.getMapper(EmailMapper.class);
             return mapper.findByToken(uuid);
@@ -131,7 +131,7 @@ public class UserRegistrationService extends OskariComponent {
         throw new RuntimeException("Couldn't get username for " + username);
     }
 
-    public void deleteEmailToken(String uuid) {
+    public void removeTokenByUUID(String uuid) {
         try (SqlSession session = factory.openSession()) {
             final EmailMapper mapper = session.getMapper(EmailMapper.class);
             mapper.deleteEmailToken(uuid);

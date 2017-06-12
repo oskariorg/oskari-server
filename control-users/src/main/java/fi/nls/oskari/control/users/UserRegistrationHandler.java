@@ -2,7 +2,7 @@ package fi.nls.oskari.control.users;
 
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.*;
-import fi.nls.oskari.control.users.model.Email;
+import fi.nls.oskari.control.users.model.EmailToken;
 import fi.nls.oskari.control.users.service.UserRegistrationService;
 import fi.nls.oskari.domain.Role;
 import fi.nls.oskari.domain.User;
@@ -73,7 +73,7 @@ public class UserRegistrationHandler extends RestActionHandler {
         }
 
         // uuid:a5f1a383-47d5-458c-8373-efbc10cdac16
-        Email token = registerTokenService.findByToken(uuid);
+        EmailToken token = registerTokenService.findByToken(uuid);
         if(token == null) {
             // "Please restart the registration process"
             throw new ActionParamsException("Unknown token");
@@ -100,7 +100,7 @@ public class UserRegistrationHandler extends RestActionHandler {
             // add password
             userService.setUserPassword(user.getScreenname(), password);
             // cleanup the token
-            registerTokenService.deleteEmailToken(uuid);
+            registerTokenService.removeTokenByUUID(uuid);
 		} catch (ServiceException se) {
 			throw new ActionException(se.getMessage(), se);
 		}

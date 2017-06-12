@@ -28,12 +28,6 @@
                 display: block;
             }
 
-            a.reg-link {
-                padding-top: 25px;
-                font-size: 20px;
-                display: block;
-            }
-
             .colorgraph {
                 height: 5px;
                 border-top: 0;
@@ -57,6 +51,16 @@
                 <h1><spring:message code="user.registration.new_user.title"/></h1>
                 <hr class="colorgraph"/>
                 <span id="errorMsg" class="alert alert-danger hidden col-xs-12" role="alert"></span>
+                <div class="row">
+                    <div class="form-group">
+                        <spring:message code="user.registration.password.requirements"/>
+                        <ul>
+                            <c:forEach items="${requirements}" var="entry">
+                                <li><spring:message code="user.passwd.req.${entry.key}" />: <spring:message code="${entry.value}" /></li>
+                            </c:forEach>
+                        </ul>
+                    </div>
+                </div>
                 <div class="row">
                     <span class="content-column">
                         <div class="col-xs-12 col-sm-6 col-md-6">
@@ -118,11 +122,11 @@
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
                         aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="generalModalLabel">Registration</h4>
+                <h4 class="modal-title" id="generalModalLabel"><spring:message code="user.registration"/></h4>
             </div>
             <div class="modal-body registration-success"></div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal"><spring:message code="btn.close" htmlEscape="true"/></button>
             </div>
         </div>
     </div>
@@ -182,6 +186,8 @@
                     var errorResponse = jqXHR.responseText;
                     if (errorResponse.toLowerCase().indexOf("username") >= 0) {
                         errorMsg("#username", '<spring:message javaScriptEscape="true" code="user.registration.error.usernameExists"/>');
+                    } else if (errorResponse.toLowerCase().indexOf("too weak") >= 0) {
+                        errorMsg("#password", '<spring:message javaScriptEscape="true" code="user.registration.error.password.requirements"/>');
                     } else {
                         errorMsg("#errorGeneral", '<spring:message javaScriptEscape="true" code="user.registration.error.generic"/>');
                     }
