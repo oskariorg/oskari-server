@@ -17,9 +17,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import java.util.Date;
-import java.util.UUID;
-
 /**
  * Handles user's password reseting
  */
@@ -60,11 +57,6 @@ public class UserRegistrationController {
         return  getService().findUsernameForEmail(emailAddress) != null;
     }
 
-    private boolean isValidEmail(String email) {
-        // TODO: validate email syntax
-        return email != null && !email.isEmpty();
-    }
-
     @RequestMapping(method = RequestMethod.POST)
     public String initRegistration(Model model, @OskariParam ActionParameters params) {
         if (!RegistrationUtil.isEnabled()) {
@@ -78,7 +70,7 @@ public class UserRegistrationController {
         User user = new User();
         user.setScreenname("");
         user.setEmail(params.getHttpParam("email"));
-        if(!isValidEmail(user.getEmail())) {
+        if(!RegistrationUtil.isValidEmail(user.getEmail())) {
             model.addAttribute("error", "user.registration.error.invalidEmail");
             return "init_registration";
         }
@@ -86,13 +78,13 @@ public class UserRegistrationController {
         UserRegistrationService service = getService();
         if (isEmailRegistered(user.getEmail())) {
             try {
-                mailSenderService.sendEmailAlreadyExists(user, RegistrationUtil.getServerAddress(params), language);
+                mailSenderService.sendEmailAlreadyExists(user.getEmail(), RegistrationUtil.getServerAddress(params), language);
                 model.addAttribute("msg", "user.registration.email.sent");
             } catch (ServiceException se) {
-                //Do nothing, email already exists and tried to send email about that failed.
+                //Do nothing, account already exists and tried to send email about that failed.
                 model.addAttribute("error", "user.registration.error.generic");
             }
-            // don't bleed out the information, "successful" from user perspective but send out a mail about already registered user
+            // don't bleed out the information, "successful" from user perspective, but send out a mail about already registered user
             return "init_registration";
         }
         Email emailToken = service.setupToken(user.getEmail());
@@ -162,15 +154,13 @@ public class UserRegistrationController {
         Email email = emailService.findByToken(uuid);
         if (email == null) {
             LOG.debug("Email token not found, going to error/404");
-            model.addAttribute("uuid", null);
             model.addAttribute("error", ERR_TOKEN_NOT_FOUND);
             return jspView;
         }
         // Check if email token has valid date or not.
-        if (new Date().before(email.getExpiryTimestamp())) {
+        if (!email.hasExpired()) {
             model.addAttribute("uuid", email.getUuid());
         } else {
-            model.addAttribute("uuid", null);
             model.addAttribute("error", ERR_TOKEN_INVALID);
         }
 

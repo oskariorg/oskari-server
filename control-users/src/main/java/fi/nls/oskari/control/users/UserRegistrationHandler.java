@@ -29,12 +29,10 @@ public class UserRegistrationHandler extends RestActionHandler {
     private static final String PARAM_FIRSTNAME = "firstname";
     private static final String PARAM_LASTNAME = "lastname";
     private static final String PARAM_USERNAME = "username";
-    private static final String PARAM_EMAIL = "email";
 	private static final String ATTR_PARAM_PREFIX = "user_";
     
     private UserService userService;
 	private UserRegistrationService registerTokenService = null;
-    private final MailSenderService mailSenderService = new MailSenderService();
 	private Role defaultRole = null;
 
 	public void init() {
@@ -76,9 +74,13 @@ public class UserRegistrationHandler extends RestActionHandler {
         // uuid:a5f1a383-47d5-458c-8373-efbc10cdac16
         Email token = registerTokenService.findByToken(uuid);
         if(token == null) {
-            // TODO: should we check expiration here?
             // "Please restart the registration process"
             throw new ActionParamsException("Unknown token");
+        }
+        // check expiration here
+        if(token.hasExpired()) {
+            // "Please restart the registration process"
+            throw new ActionParamsException("Token expired");
         }
         if (isEmailRegistered(token.getEmail())) {
             // "You can use forgot password feature to reset the password"

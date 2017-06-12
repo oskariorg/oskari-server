@@ -8,7 +8,6 @@ import fi.nls.oskari.control.*;
 import fi.nls.oskari.control.users.model.Email;
 import fi.nls.oskari.control.users.service.MailSenderService;
 import fi.nls.oskari.control.users.service.UserRegistrationService;
-import fi.nls.oskari.domain.User;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.service.OskariComponentManager;
@@ -18,10 +17,8 @@ import fi.nls.oskari.user.IbatisUserService;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
 @OskariActionRoute("UserPasswordReset")
 public class PasswordResetHandler extends RestActionHandler {
@@ -64,19 +61,22 @@ public class PasswordResetHandler extends RestActionHandler {
             // use user provided email
             email = params.getRequiredParam(PARAM_EMAIL);
         }
-        // TODO: validate email!!
-        if (!isUsernameExistsForLogin(email)) {
+        // validate email
+        if(!RegistrationUtil.isValidEmail(email)) {
+            throw new ActionParamsException("user.registration.error.invalidEmail");
+        }
+        String username = registerTokenService.findUsernameForEmail(email);
+        if (username == null) {
+            // no existing user with this email. Offer registration
             // TODO: Send an email "Did you try to reset password? There's no account for this email, but you can create one in here [link]"
             throw new ActionDeniedException("Username for login doesn't exist for email address: " + email);
         }
-
+        // add or update token
         Email token = registerTokenService.setupToken(email);
-        String username = registerTokenService.findUsernameForEmail(email);
         try {
-            User user = userService.getUser(username);
-            mailSenderService.sendEmailForResetPassword(user, token.getUuid(), RegistrationUtil.getServerAddress(params), params.getLocale().getLanguage());
+            mailSenderService.sendEmailForResetPassword(email, token.getUuid(), RegistrationUtil.getServerAddress(params), params.getLocale().getLanguage());
         } catch (ServiceException ex) {
-            throw new ActionException("Couldn't find user", ex);
+            throw new ActionException("Couldn't send email to user", ex);
         }
 
     }
@@ -125,8 +125,7 @@ public class PasswordResetHandler extends RestActionHandler {
         if (tempEmail == null) {
             throw new ActionParamsException("UUID not found.");
         }
-        if (new Date().after(tempEmail.getExpiryTimestamp())) {
-            // TODO: use redis to save token with expiry so we don't need to care about expiration
+        if (tempEmail.hasExpired()) {
             registerTokenService.deleteEmailToken(token.getUuid());
             throw new ActionDeniedException("UUID expired.");
         }

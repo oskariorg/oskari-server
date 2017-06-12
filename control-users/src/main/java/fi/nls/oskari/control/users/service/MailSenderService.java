@@ -45,8 +45,8 @@ public class MailSenderService {
         sendEmail(emailMessage);
     }
 
-    public final void sendEmailForResetPassword(User user, String token, String serverAddress, String language) throws ServiceException {
-        EmailMessage emailMessage = emailTo(user.getEmail());
+    public final void sendEmailForResetPassword(String email, String token, String serverAddress, String language) throws ServiceException {
+        EmailMessage emailMessage = emailTo(email);
 
         String subject = getMessage("user.registration.email.passwordrecovery.subject", language);
         emailMessage.setSubject(subject);
@@ -58,8 +58,8 @@ public class MailSenderService {
         sendEmail(emailMessage);
     }
 
-    public final void sendEmailAlreadyExists(User user, String serverAddress, String language) throws ServiceException {
-        EmailMessage emailMessage = emailTo(user.getEmail());
+    public final void sendEmailAlreadyExists(String email, String serverAddress, String language) throws ServiceException {
+        EmailMessage emailMessage = emailTo(email);
 
         String subject = getMessage("user.registration.email.already.registered.subject", language);
         emailMessage.setSubject(subject);

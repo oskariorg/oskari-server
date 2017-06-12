@@ -21,6 +21,10 @@ public class RegistrationUtil {
         return request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort();
     }
 
+    public static boolean isValidEmail(String email) {
+        // TODO: validate email syntax
+        return email != null && !email.isEmpty();
+    }
     /**
      * Create timestamp for 2 days as expirytime.
      * @return

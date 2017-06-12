@@ -1,6 +1,7 @@
 package fi.nls.oskari.control.users.model;
 
 import java.sql.Timestamp;
+import java.util.Date;
 
 import fi.nls.oskari.domain.User;
 
@@ -23,6 +24,10 @@ public class Email extends User {
 
 	public void setPassword(String password) {
 		this.password = password;
+	}
+
+	public boolean hasExpired() {
+		return expiryTimestamp == null || new Date().after(expiryTimestamp);
 	}
 	
 }
