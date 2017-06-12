@@ -1,11 +1,13 @@
 package fi.nls.oskari.control.users;
 
 import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.*;
 import fi.nls.oskari.control.users.model.Email;
+import fi.nls.oskari.control.users.model.PasswordRules;
 import fi.nls.oskari.control.users.service.MailSenderService;
 import fi.nls.oskari.control.users.service.UserRegistrationService;
 import fi.nls.oskari.log.LogFactory;
@@ -14,6 +16,7 @@ import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.service.UserService;
 import fi.nls.oskari.user.IbatisUserService;
+import fi.nls.oskari.util.ResponseHelper;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
@@ -35,9 +38,11 @@ public class PasswordResetHandler extends RestActionHandler {
     private final MailSenderService mailSenderService = new MailSenderService();
     private final IbatisUserService ibatisUserService = new IbatisUserService();
     private UserService userService;
+    private ObjectMapper objectMapper;
 
     @Override
     public void init() {
+        objectMapper = new ObjectMapper();
         try {
             userService = UserService.getInstance();
         } catch (ServiceException se) {
@@ -50,6 +55,16 @@ public class PasswordResetHandler extends RestActionHandler {
     public void preProcess(ActionParameters params) throws ActionException {
         if(!RegistrationUtil.isEnabled()) {
             throw new ActionDeniedException("Registration disabled");
+        }
+    }
+
+    @Override
+    public void handleGet(ActionParameters params) throws ActionException {
+        try {
+            ResponseHelper.writeResponse(params, objectMapper.writeValueAsString(new PasswordRules()));
+        } catch (JsonProcessingException e) {
+            log.error("Couldn't return rules:", e.getMessage());
+            ResponseHelper.writeError(params, "Couldn't serialize rules");
         }
     }
 
@@ -86,6 +101,9 @@ public class PasswordResetHandler extends RestActionHandler {
         final Email token = parseContentForEmailUpdate(params);
         String username = registerTokenService.findUsernameForEmail(token.getEmail());
 
+        if(!RegistrationUtil.isPasswordOk(token.getPassword())) {
+            throw new ActionParamsException("Password too weak");
+        }
         if (username == null) {
             throw new ActionParamsException("Username doesn't exist.");
         }

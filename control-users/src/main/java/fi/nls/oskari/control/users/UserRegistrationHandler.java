@@ -3,7 +3,6 @@ package fi.nls.oskari.control.users;
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.*;
 import fi.nls.oskari.control.users.model.Email;
-import fi.nls.oskari.control.users.service.MailSenderService;
 import fi.nls.oskari.control.users.service.UserRegistrationService;
 import fi.nls.oskari.domain.Role;
 import fi.nls.oskari.domain.User;
@@ -68,8 +67,10 @@ public class UserRegistrationHandler extends RestActionHandler {
 			throw new ActionDeniedException("Registration expects guest user");
 		}
         final String uuid = params.getRequiredParam("uuid");
-        // TODO: some rules for password strength
         final String password = params.getRequiredParam("password");
+        if(!RegistrationUtil.isPasswordOk(password)) {
+            throw new ActionParamsException("Password too weak");
+        }
 
         // uuid:a5f1a383-47d5-458c-8373-efbc10cdac16
         Email token = registerTokenService.findByToken(uuid);

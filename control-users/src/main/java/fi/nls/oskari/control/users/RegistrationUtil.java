@@ -1,11 +1,14 @@
 package fi.nls.oskari.control.users;
 
 import fi.nls.oskari.control.ActionParameters;
+import fi.nls.oskari.control.users.model.PasswordRules;
 import fi.nls.oskari.util.PropertyUtil;
 
 import javax.servlet.http.HttpServletRequest;
 import java.sql.Timestamp;
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by SMAKINEN on 1.9.2016.
@@ -24,6 +27,20 @@ public class RegistrationUtil {
     public static boolean isValidEmail(String email) {
         // TODO: validate email syntax
         return email != null && !email.isEmpty();
+    }
+
+    public static boolean isPasswordOk(String passwd) {
+        if(passwd == null) {
+            return false;
+        }
+        if(passwd.length() < PasswordRules.getMinLength()) {
+            return false;
+        }
+        if(PasswordRules.getRequireCase() &&
+                (passwd.toLowerCase().equals(passwd) || passwd.toUpperCase().equals(passwd))) {
+            return false;
+        }
+        return true;
     }
     /**
      * Create timestamp for 2 days as expirytime.
