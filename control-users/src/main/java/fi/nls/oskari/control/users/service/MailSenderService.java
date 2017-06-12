@@ -37,7 +37,10 @@ public class MailSenderService {
         String subject = getMessage("user.registration.email.registration.subject", language);
         emailMessage.setSubject(subject);
 
-        String content = constructMail(getTemplateFor("oskari.email.registration.tpl", language), getDefaultParams(serverAddress, token));
+        Map params = getDefaultParams(serverAddress, token);
+        // set return url
+        params.put(KEY_LINK_TO_SET_PASSWORD, serverAddress + "/user/" + token);
+        String content = constructMail(getTemplateFor("oskari.email.registration.tpl", language), params);
         emailMessage.setContent(content);
         sendEmail(emailMessage);
     }
@@ -48,7 +51,7 @@ public class MailSenderService {
         String subject = getMessage("user.registration.email.passwordrecovery.subject", language);
         emailMessage.setSubject(subject);
         Map params = getDefaultParams(serverAddress, token);
-        // override default user token with additional /reset/ for password only
+        // set return url
         params.put(KEY_LINK_TO_SET_PASSWORD, serverAddress + "/user/reset/" + token);
         String content = constructMail(getTemplateFor("oskari.email.passwordrecovery.tpl", language), params);
         emailMessage.setContent(content);
@@ -61,7 +64,10 @@ public class MailSenderService {
         String subject = getMessage("user.registration.email.already.registered.subject", language);
         emailMessage.setSubject(subject);
 
-        String content = constructMail(getTemplateFor("oskari.email.exists.tpl", language), getDefaultParams(serverAddress));
+        Map params = getDefaultParams(serverAddress);
+        // set return url
+        params.put(KEY_LINK_TO_SET_PASSWORD, serverAddress + "/user/reset");
+        String content = constructMail(getTemplateFor("oskari.email.exists.tpl", language), params);
         emailMessage.setContent(content);
         sendEmail(emailMessage);
     }

@@ -1,6 +1,7 @@
 package fi.nls.oskari.control.users.service;
 
 import fi.nls.oskari.annotation.Oskari;
+import fi.nls.oskari.control.users.RegistrationUtil;
 import fi.nls.oskari.control.users.model.Email;
 import fi.nls.oskari.db.DatasourceHelper;
 import fi.nls.oskari.log.LogFactory;
@@ -15,6 +16,7 @@ import org.apache.ibatis.transaction.TransactionFactory;
 import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
 
 import javax.sql.DataSource;
+import java.util.UUID;
 
 @Oskari
 public class UserRegistrationService extends OskariComponent {
@@ -33,6 +35,26 @@ public class UserRegistrationService extends OskariComponent {
             LOG.error("Couldn't get datasource for user registration");
         }
     }
+
+    public Email setupToken(String email) {
+        Email emailToken = findTokenByEmail(email);
+        if(emailToken != null) {
+            // refresh token expiry if one exists
+            emailToken.setUuid( UUID.randomUUID().toString());
+            emailToken.setExpiryTimestamp(RegistrationUtil.createExpiryTime());
+            updateToken(emailToken);
+        } else {
+            // create a new token
+            emailToken = new Email();
+            emailToken.setEmail(email);
+            emailToken.setScreenname("");
+            emailToken.setUuid( UUID.randomUUID().toString());
+            emailToken.setExpiryTimestamp(RegistrationUtil.createExpiryTime());
+            addToken(emailToken);
+        }
+        return emailToken;
+    }
+
 
     private SqlSessionFactory initializeMyBatis(final DataSource dataSource) {
         final TransactionFactory transactionFactory = new JdbcTransactionFactory();
@@ -119,10 +141,10 @@ public class UserRegistrationService extends OskariComponent {
         }
     }
 
-    public String findEmailForUsername(String username) {
+    public boolean isUsernameReserved(String username) {
         try (SqlSession session = factory.openSession()) {
             final EmailMapper mapper = session.getMapper(EmailMapper.class);
-            return mapper.findEmailForUsername(username.toLowerCase());
+            return mapper.isUsernameReserved(username.toLowerCase()) > -1;
         } catch (Exception e) {
             LOG.warn(e, "Exception when trying to find by username:", username);
         }

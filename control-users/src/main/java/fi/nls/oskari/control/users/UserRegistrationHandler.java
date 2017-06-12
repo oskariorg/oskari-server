@@ -58,7 +58,7 @@ public class UserRegistrationHandler extends RestActionHandler {
     @Override
     public void handleGet(ActionParameters params) throws ActionException {
         // check if username is reserved
-        if (isUsernameReserved(params.getRequiredParam("username"))) {
+        if (registerTokenService.isUsernameReserved(params.getRequiredParam("username"))) {
             throw new ActionParamsException("Username already exists.");
         }
         ResponseHelper.writeResponse(params, "OK");
@@ -88,7 +88,7 @@ public class UserRegistrationHandler extends RestActionHandler {
         getUserParams(user, params);
         user.setEmail(token.getEmail());
 
-		if (isUsernameReserved(user.getScreenname())) {
+		if (registerTokenService.isUsernameReserved(user.getScreenname())) {
 			throw new ActionParamsException("Username already exists.");
 		}
 		try {
@@ -140,11 +140,7 @@ public class UserRegistrationHandler extends RestActionHandler {
 	private final boolean isEmailRegistered(final String emailAddress) {
 		return registerTokenService.findUsernameForEmail(emailAddress) != null;
 	}
-	
-	private final boolean isUsernameReserved(final String username) {
-		return registerTokenService.findEmailForUsername(username) != null;
-	}
-	
+
 	private void getUserParams(User user, ActionParameters params) throws ActionParamsException {
         user.setFirstname(params.getRequiredParam(PARAM_FIRSTNAME));
         user.setLastname(params.getRequiredParam(PARAM_LASTNAME));

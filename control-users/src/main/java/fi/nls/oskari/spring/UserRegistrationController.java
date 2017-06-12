@@ -95,21 +95,7 @@ public class UserRegistrationController {
             // don't bleed out the information, "successful" from user perspective but send out a mail about already registered user
             return "init_registration";
         }
-        Email emailToken = service.findTokenByEmail(user.getEmail());
-        if(emailToken != null) {
-            // refresh token expiry if one exists
-            emailToken.setUuid( UUID.randomUUID().toString());
-            emailToken.setExpiryTimestamp(RegistrationUtil.createExpiryTime());
-            service.updateToken(emailToken);
-        } else {
-            // create a new token
-            emailToken = new Email();
-            emailToken.setEmail(user.getEmail());
-            emailToken.setScreenname("");
-            emailToken.setUuid( UUID.randomUUID().toString());
-            emailToken.setExpiryTimestamp(RegistrationUtil.createExpiryTime());
-            service.addToken(emailToken);
-        }
+        Email emailToken = service.setupToken(user.getEmail());
 
         try {
             mailSenderService.sendEmailForRegistrationActivation(user.getEmail(), emailToken.getUuid(), RegistrationUtil.getServerAddress(params), language);
@@ -130,7 +116,7 @@ public class UserRegistrationController {
         Email email = emailService.findByToken(uuid);
         if (email == null) {
             // go back to registration start with an error message
-            LOG.debug("Email token not found, going to registration start");
+            LOG.debug("Email token not found, going to registration start:", uuid);
             model.addAttribute("error", ERR_TOKEN_NOT_FOUND);
             return "init_registration";
         }

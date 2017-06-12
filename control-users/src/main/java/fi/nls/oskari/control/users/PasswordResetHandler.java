@@ -59,22 +59,22 @@ public class PasswordResetHandler extends RestActionHandler {
     @Override
     public void handlePost(ActionParameters params) throws ActionException {
         // request link to set password
-        final String email = params.getRequiredParam(PARAM_EMAIL);
-
+        String email = params.getUser().getEmail();
+        if(params.getUser().isGuest()) {
+            // use user provided email
+            email = params.getRequiredParam(PARAM_EMAIL);
+        }
+        // TODO: validate email!!
         if (!isUsernameExistsForLogin(email)) {
+            // TODO: Send an email "Did you try to reset password? There's no account for this email, but you can create one in here [link]"
             throw new ActionDeniedException("Username for login doesn't exist for email address: " + email);
         }
-        String uuid = UUID.randomUUID().toString();
-        Email emailToken = new Email();
-        emailToken.setEmail(email);
-        emailToken.setUuid(uuid);
-        emailToken.setExpiryTimestamp(RegistrationUtil.createExpiryTime());
-        registerTokenService.addToken(emailToken);
 
+        Email token = registerTokenService.setupToken(email);
         String username = registerTokenService.findUsernameForEmail(email);
         try {
             User user = userService.getUser(username);
-            mailSenderService.sendEmailForResetPassword(user, uuid, RegistrationUtil.getServerAddress(params), params.getLocale().getLanguage());
+            mailSenderService.sendEmailForResetPassword(user, token.getUuid(), RegistrationUtil.getServerAddress(params), params.getLocale().getLanguage());
         } catch (ServiceException ex) {
             throw new ActionException("Couldn't find user", ex);
         }

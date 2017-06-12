@@ -35,6 +35,6 @@ public interface EmailMapper {
     @Delete("DELETE FROM oskari_users_pending WHERE uuid = #{uuid}")
     void deleteEmailToken(String uuid);
 
-    @Select("SELECT email FROM oskari_users WHERE LOWER(user_name) = LOWER(#{user_name})")
-    String findEmailForUsername(String username);
+    @Select("SELECT id FROM oskari_users WHERE LOWER(user_name) = LOWER(#{user_name})")
+    long isUsernameReserved(String username);
 }

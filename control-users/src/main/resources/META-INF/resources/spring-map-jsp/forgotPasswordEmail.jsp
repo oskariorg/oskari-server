@@ -23,10 +23,6 @@
                 padding: 0;
             }
 
-            #passwordResetForm {
-                width: 400px;
-            }
-
             #error {
                 color: red;
                 font-size: 16px;
@@ -49,25 +45,29 @@
 </head>
 <body>
 
-<div id="container">
+<div class="container">
     <div class="row">
         <div class="col-xs-12 col-sm-8 col-md-6 col-sm-offset-2 col-md-offset-4">
-            <form role="form" id="passwordResetForm">
+            <form role="form" id="passwordResetForm" method="post" onSubmit="return resetPassword();">
                 <h1><spring:message code="user.registration.passwordReset.title"/></h1>
                 <hr class="colorgraph">
                 <div class="form-group">
-                    <input class="form-control input-lg" size="25" id="email" name="email" type="email"
-                           placeholder="<spring:message code="user.email" htmlEscape="true"/>" autofocus required>
+                    <c:choose>
+                        <c:when test="${empty email}">
+                            <input class="form-control input-lg" size="25" id="email" name="email" type="email"
+                                   placeholder="<spring:message code="user.email" htmlEscape="true"/>" autofocus required>
+                        </c:when>
+                        <c:otherwise>
+                            <spring:message code="user.email" htmlEscape="true"/>: ${email}
+                        </c:otherwise>
+                    </c:choose>
                 </div>
                 <label id="error"></label>
                 <br/>
                 <div class="row">
-                    <div class="col-xs-2">
-                        <input class="btn btn-primary" size="16" id="submit" type="button"
-                               value='<spring:message code="btn.send" htmlEscape="true"/>'>
-                    </div>
-                    <div class="col-xs-2">
-                        <a href="/" class="btn btn-default" size="16" id="cancel"><spring:message code="btn.cancel"/></a>
+                    <div class="col-xs-12 col-sm-6 col-md-6">
+                        <button class="btn btn-primary" type="submit"><spring:message code="btn.send"  htmlEscape="true"/></button>
+                        <a href="/" class="btn btn-default"><spring:message code="btn.cancel"/></a>
                     </div>
                 </div>
                 <hr class="colorgraph">
@@ -96,42 +96,52 @@
 </div>
 
 <script type="text/javascript">
-    $(document).ready(function () {
-        $('#submit').click(function () {
-            var email = jQuery('#email').val();
-            var host = window.location.protocol + "//" + window.location.host;
+    jQuery(document).ready(function () {
+        jQuery( "#email" ).keypress(function( event ) {
+            if (event.which == 13) {
+                resetPassword();
+            }
+        });
+    });
+
+    function resetPassword() {
+        var email='';
+        <c:if test="${empty email}">
+            email = jQuery('#email').val();
             if (!isEmailValid(email)) {
                 jQuery("#error").html('<spring:message code="user.registration.error.invalidEmail"/>');
                 return false;
             }
-            jQuery.ajax({
-                url: host + "/action?action_route=UserPasswordReset",
-                type: 'POST',
-                data: {
-                    email: email
-                },
-                success: function () {
-                    // FIXME: show confirmation about mail being sent
-                    var url = window.location.protocol + "//" + window.location.host + "/user/emailSent";
-                    window.location.replace(url);
-                },
-                error: function (jqXHR, textStatus, errorThrown) {
-                    showModal('<spring:message javaScriptEscape="true" code="user.registration.error.generic"/>', true);
-                }
-            });
+        </c:if>
+        jQuery.ajax({
+            url: "/action?action_route=UserPasswordReset",
+            type: 'POST',
+            data: {
+                email: email
+            },
+            success: function () {
+                showModal('<spring:message javaScriptEscape="true" code="user.registration.passwordrecovery.sent"/>');
+            },
+            error: function () {
+                showModal('<spring:message javaScriptEscape="true" code="user.registration.error.generic"/>', true);
+            }
         });
-    });
+        return false;
+    }
 
     function isEmailValid(email) {
         var pattern = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
         return pattern.test(email);  // returns a boolean
     }
     function showModal(msg, error) {
-        error === true ? $('.password-alert').html(msg).addClass('alert-danger') : $('.password-alert').html(msg).addClass('alert-success');
-        $('#passwordModal').modal('show');
-        setTimeout(function () {
-            $('#passwordModal').modal('hide');
-        }, 2000);
+        var notification = jQuery('.password-alert');
+        notification.html(msg);
+        if(error) {
+            notification.addClass('alert-danger');
+        } else {
+            notification.addClass('alert-success');
+        }
+        jQuery('#passwordModal').modal('show');
     }
 
 </script>
