@@ -144,11 +144,12 @@ public class UserRegistrationService extends OskariComponent {
     public boolean isUsernameReserved(String username) {
         try (SqlSession session = factory.openSession()) {
             final EmailMapper mapper = session.getMapper(EmailMapper.class);
-            return mapper.isUsernameReserved(username.toLowerCase()) > -1;
+            Long id = mapper.isUsernameReserved(username.toLowerCase());
+            return id != null && id > -1;
         } catch (Exception e) {
             LOG.warn(e, "Exception when trying to find by username:", username);
+            return true;
         }
-        throw new RuntimeException("Couldn't find email token for " + username);
     }
 
 }
