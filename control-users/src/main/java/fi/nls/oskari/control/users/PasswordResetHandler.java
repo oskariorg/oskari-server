@@ -17,7 +17,6 @@ import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.service.UserService;
 import fi.nls.oskari.user.IbatisUserService;
 import fi.nls.oskari.util.ResponseHelper;
-import org.json.JSONObject;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
@@ -27,7 +26,7 @@ import java.util.Map;
 @OskariActionRoute("UserPasswordReset")
 public class PasswordResetHandler extends RestActionHandler {
 
-    private static final Logger log = LogFactory.getLogger(PasswordResetHandler.class);
+    private static final Logger LOG = LogFactory.getLogger(PasswordResetHandler.class);
 
     private static final String PARAM_UUID = "uuid";
     private static final String PARAM_EMAIL = "email";
@@ -45,7 +44,7 @@ public class PasswordResetHandler extends RestActionHandler {
         try {
             userService = UserService.getInstance();
         } catch (ServiceException se) {
-            log.error(se, "Unable to initialize User service!");
+            LOG.error(se, "Unable to initialize User service!");
         }
         registerTokenService = OskariComponentManager.getComponentOfType(UserRegistrationService.class);
     }
@@ -80,6 +79,7 @@ public class PasswordResetHandler extends RestActionHandler {
         }
         String username = registerTokenService.findUsernameForEmail(email);
         if (username == null) {
+            LOG.info("User tried to reset password for unknown account:", email);
             // no existing user with this email. Offer registration
             // TODO: Send an email "Did you try to reset password? There's no account for this email, but you can create one in here [link]"
             throw new ActionDeniedException("Username for login doesn't exist for email address: " + email);
@@ -88,6 +88,7 @@ public class PasswordResetHandler extends RestActionHandler {
         EmailToken token = registerTokenService.setupToken(email);
         try {
             mailSenderService.sendEmailForResetPassword(email, token.getUuid(), RegistrationUtil.getServerAddress(params), params.getLocale().getLanguage());
+            LOG.info("Reset password email sent to:", email);
         } catch (ServiceException ex) {
             throw new ActionException("Couldn't send email to user", ex);
         }
@@ -103,15 +104,16 @@ public class PasswordResetHandler extends RestActionHandler {
             throw new ActionParamsException("Password too weak");
         }
         if (username == null) {
+            LOG.warn("User tried to set password for unknown account:", token.getEmail());
             throw new ActionParamsException("Username doesn't exist.");
         }
         String loginPassword = ibatisUserService.getPassword(username);
         try {
+            LOG.warn("Setting password for user:", token.getEmail());
             if (loginPassword != null && !loginPassword.isEmpty()) {
                 userService.updateUserPassword(username, token.getPassword());
             } else {
                 // Create entry in oskari_jaas_user table
-                // TODO: check that we want to allow this
                 userService.setUserPassword(username, token.getPassword());
             }
             // After password updated/created, delete the entry related to token from database
@@ -147,25 +149,6 @@ public class PasswordResetHandler extends RestActionHandler {
         }
         token.setEmail(tempEmailToken.getEmail());
         return token;
-    }
-
-    /**
-     * Checks if the username exists for login, for the email Address being sent.
-     * 
-     * @param emailAddress
-     * @return
-     * @throws ActionException
-     */
-    private final boolean isUsernameExistsForLogin(final String emailAddress) throws ActionException {
-        // Retrieves username , if exists in oskari_users table.
-        String username = registerTokenService.findUsernameForEmail(emailAddress);
-        if (username == null) {
-            return false;
-        }
-
-        // Retrieves username for login, if exists in oskari_jaas_users table.
-        String loginUsername = registerTokenService.findUsernameForLogin(username);
-        return (loginUsername != null);
     }
 
     /**

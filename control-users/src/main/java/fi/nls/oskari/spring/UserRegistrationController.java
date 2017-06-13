@@ -64,6 +64,7 @@ public class UserRegistrationController {
         }
 
         if(!params.getUser().isGuest()) {
+            LOG.warn("Logged in user (", params.getUser().getEmail(), ") tried posting on registration form:", params.getHttpParam("email"));
             model.addAttribute("error", ERR_EXPECTED_GUEST);
             return "init_registration";
         }
@@ -77,6 +78,7 @@ public class UserRegistrationController {
         String language = params.getLocale().getLanguage();
         UserRegistrationService service = getService();
         if (isEmailRegistered(user.getEmail())) {
+            LOG.info("User tried to register with email that already has account:", user.getEmail());
             try {
                 mailSenderService.sendEmailAlreadyExists(user.getEmail(), RegistrationUtil.getServerAddress(params), language);
                 model.addAttribute("msg", "user.registration.email.sent");
@@ -108,14 +110,24 @@ public class UserRegistrationController {
         EmailToken emailToken = emailService.findByToken(uuid);
         if (emailToken == null) {
             // go back to registration start with an error message
-            LOG.debug("Email token not found, going to registration start:", uuid);
+            LOG.debug("Email token not found, going to registration init:", uuid);
+            model.addAttribute("error", ERR_TOKEN_NOT_FOUND);
+            return "init_registration";
+        }
+        // Check if email token has valid date or not.
+        if (emailToken.hasExpired()) {
+            LOG.info("User accessed link after token expiration:", emailToken.getEmail());
+            emailService.removeTokenByUUID(emailToken.getUuid());
             model.addAttribute("error", ERR_TOKEN_NOT_FOUND);
             return "init_registration";
         }
         User user = params.getUser();
         if (!user.isGuest()) {
+            // not guest
             if(user.getEmail().equalsIgnoreCase(emailToken.getEmail())) {
                 emailService.removeTokenByUUID(uuid);
+            } else {
+                LOG.warn("User", user.getEmail(), " is trying to access another accounts token:", emailToken.getEmail(), " - ", emailToken.getUuid());
             }
             return index(model, params);
         }
@@ -153,12 +165,13 @@ public class UserRegistrationController {
         UserRegistrationService emailService = OskariComponentManager.getComponentOfType(UserRegistrationService.class);
         EmailToken emailToken = emailService.findByToken(uuid);
         if (emailToken == null) {
-            LOG.debug("Email token not found, going to error/404");
+            LOG.debug("Email token not found for reseting password:", uuid);
             model.addAttribute("error", ERR_TOKEN_NOT_FOUND);
             return "forgotPasswordEmail";
         }
         // Check if email token has valid date or not.
         if (emailToken.hasExpired()) {
+            LOG.debug("Email token expired for reseting password:", uuid, "-", emailToken.getEmail());
             emailService.removeTokenByUUID(emailToken.getUuid());
             model.addAttribute("error", ERR_TOKEN_NOT_FOUND);
             return "forgotPasswordEmail";
