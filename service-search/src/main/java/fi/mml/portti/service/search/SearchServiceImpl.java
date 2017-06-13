@@ -4,19 +4,16 @@ import fi.nls.oskari.annotation.Oskari;
 import fi.nls.oskari.domain.User;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.search.channel.ChannelProvider;
-import fi.nls.oskari.search.channel.SearchChannel;
-import fi.nls.oskari.search.channel.SearchChannelChangeListener;
-import fi.nls.oskari.search.channel.SearchableChannel;
+import fi.nls.oskari.search.channel.*;
 import fi.nls.oskari.service.OskariComponentManager;
+import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 
 @Oskari
 public class SearchServiceImpl extends SearchService implements SearchChannelChangeListener {
@@ -196,6 +193,61 @@ public class SearchServiceImpl extends SearchService implements SearchChannelCha
         LOG.debug("Search full query took", (fullQueryEndTime - fullQueryStartTime), "ms");
 
         return query;
+    }
+
+    @Override
+    public JSONObject doSearchAutocomplete(SearchCriteria searchCriteria) {
+        if (availableChannels == null) {
+            initChannels();
+        }
+
+        long fullQueryStartTime = System.currentTimeMillis();
+
+        //TODO init result list
+        for (String channelId : searchCriteria.getChannels()) {
+            if (!availableChannels.containsKey(channelId)) {
+                continue;
+            }
+
+            long timeStart = System.currentTimeMillis();
+
+            SearchableChannel channel = availableChannels.get(channelId);
+            if (!(channel instanceof SearchAutocomplete)) {
+                continue;
+            }
+
+            User user = searchCriteria.getUser();
+            if(!channel.hasPermission(user)) {
+                LOG.debug("Skipping ", channel.getId(), "- User doesn't have permission to access");
+                continue;
+            }
+
+            List<String> resultList = null;
+            try {
+                 resultList = ((SearchAutocomplete) channel).doSearchAutocomplete(searchCriteria.getSearchString());
+                //TODO toJSONObject()
+            } catch (Exception e) {
+                LOG.error(e, "Search query to", channel.getId(), "failed! Searchstring was '", searchCriteria.getSearchString(), "'");
+                resultList = new ArrayList<String>();
+            }
+
+            LOG.debug("Result", resultList);
+
+            long timeEnd = System.currentTimeMillis();
+            LOG.debug("Search query to", channel.getId(),
+                    "took", (timeEnd - timeStart), "ms");
+        }
+
+        long fullQueryEndTime = System.currentTimeMillis();
+        LOG.debug("Search full query took", (fullQueryEndTime - fullQueryStartTime), "ms");
+
+        //TODO remove test
+        JSONObject jsonObject = new JSONObject();
+        JSONArray jsonArray = new JSONArray();
+        jsonArray.put("Hello");
+        jsonArray.put("World!");
+        JSONHelper.put(jsonObject, "methods", jsonArray);
+        return jsonObject;
     }
 
     /**
