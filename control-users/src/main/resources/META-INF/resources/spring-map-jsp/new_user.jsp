@@ -108,8 +108,6 @@
                                placeholder="<spring:message code="user.password.confirm" htmlEscape="true"/>"
                                type="password" required>
                     </div>
-                    <label id="unmatchedPassword" class="error hidden"><spring:message
-                            code="user.registration.error.passwordDoesNotMatch"/></label>
                     <br/>
 
                 <div class="row">

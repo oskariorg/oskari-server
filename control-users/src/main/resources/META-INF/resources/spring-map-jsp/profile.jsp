@@ -51,7 +51,7 @@
 <div class="container">
     <div class="row">
         <div class="col-xs-12 col-sm-8 col-md-6 col-sm-offset-2 col-md-offset-4">
-            <form role="form">
+            <form role="form" onSubmit="return false;">
                 <h1><spring:message code="user.registration.edit.title"/></h1>
                 <hr class="colorgraph"/>
                 <span id="errorMsg" class="alert alert-danger hidden col-xs-12" role="alert"></span>
@@ -143,19 +143,6 @@
 <script type="text/javascript">
     $(document).ready(function () {
         var saving = false;
-        //logged in
-        $('#changePassword').click(function () {
-            jQuery.ajax({
-                url: "/action?action_route=UserPasswordReset&email=${email}",
-                type: 'POST',
-                success: function () {
-                    showModal('<spring:message javaScriptEscape="true" code="user.registration.passwordrecovery.sent"/>');
-                },
-                error: function (jqXHR, textStatus, errorThrown) {
-                    errorMsg("#errorGeneral", '<spring:message javaScriptEscape="true" code="user.registration.error.generic"/>');
-                }
-            });
-        });
 
         // logged in
         $('#saveBtn').click(function () {

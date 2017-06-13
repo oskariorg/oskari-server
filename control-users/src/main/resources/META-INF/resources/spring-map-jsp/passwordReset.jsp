@@ -55,6 +55,8 @@
                     <form role="form" id="requestPassword">
                         <h1><spring:message code="user.registration.passwordReset.title"/></h1>
                         <hr class="colorgraph">
+                        <span id="errorMsg" class="alert alert-danger hidden col-xs-12" role="error"><spring:message
+                                code="user.registration.error.passwordDoesNotMatch"/></span>
 
                         <div class="form-group">
                             <spring:message code="user.registration.password.requirements"/>
@@ -84,8 +86,6 @@
                                    placeholder="<spring:message code="user.password.confirm" htmlEscape="true"/>"
                                    type="password" required>
                         </div>
-                        <label id="unmatchedPassword" class="error">"<spring:message
-                                code="user.registration.error.passwordDoesNotMatch"/>"</label>
                         <br/>
                         <hr class="colorgraph">
 					<span>
@@ -118,30 +118,24 @@
 
 
 <script type="text/javascript">
-    $(document).ready(function () {
-        jQuery('#unmatchedPassword').hide();
+    jQuery(document).ready(function () {
 
-        $('#frontpage, #cancel').click(function () {
-            var host = window.location.protocol + "//" + window.location.host;
-            window.location.replace(host);
-        });
-
-        $('#reset').click(function () {
+        jQuery('#reset').click(function () {
             var password = jQuery('#password').val();
             var confirmPassword = jQuery('#confirmPassword').val();
 
             if (password != confirmPassword) {
-                jQuery('#unmatchedPassword').show();
+                jQuery('#errorMsg').removeClass("hidden");
+                jQuery('#errorMsg').show();
                 return;
             }
             else {
-                jQuery('#unmatchedPassword').hide();
+                jQuery('#errorMsg').hide();
             }
 
             var uuid = '${uuid}';
-            var host = window.location.protocol + "//" + window.location.host;
             jQuery.ajax({
-                url: host + "/action?action_route=UserPasswordReset",
+                url: "/action?action_route=UserPasswordReset",
                 type: 'PUT',
                 contentType: "application/json; charset=UTF-8",
                 data: JSON.stringify({
@@ -149,7 +143,10 @@
                     uuid: uuid
                 }),
                 success: function () {
-                    showModal('<spring:message javaScriptEscape="true" code="oskari.password.changed"/>')
+                    jQuery('#passwordResetModal').on('hidden.bs.modal', function () {
+                        window.location.href = '/';
+                    });
+                    showModal('<spring:message javaScriptEscape="true" code="oskari.password.changed"/>');
                 },
                 error: function (jqXHR) {
                     var errorResponse = jqXHR.responseText;
@@ -162,11 +159,8 @@
             });
         });
         function showModal(msg) {
-            $('.password-reset').html(msg);
-            $('#passwordResetModal').modal('show');
-            setTimeout(function () {
-                $('#passwordResetModal').modal('hide');
-            }, 2000);
+            jQuery('.password-reset').html(msg);
+            jQuery('#passwordResetModal').modal('show');
         }
     });
 

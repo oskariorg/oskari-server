@@ -147,7 +147,7 @@
     }
 
     <c:if test="${!empty error}">
-        showModal('<spring:message javaScriptEscape="true" code="user.registration.error.generic"/>', true);
+        showModal('<spring:message javaScriptEscape="true" code="${error}"/>', true);
     </c:if>
 </script>
 </body>
