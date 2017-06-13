@@ -1,7 +1,6 @@
 # Migration guide
 
-## 1.42.3
-
+## 1.42.1
 
 ### Layer urls handling for https-services
 
