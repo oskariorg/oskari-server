@@ -52,13 +52,25 @@
                 <hr class="colorgraph"/>
                 <span id="errorMsg" class="alert alert-danger hidden col-xs-12" role="alert"></span>
                 <div class="row">
-                    <div class="form-group">
-                        <spring:message code="user.registration.password.requirements"/>
-                        <ul>
-                            <c:forEach items="${requirements}" var="entry">
-                                <li><spring:message code="user.passwd.req.${entry.key}" />: <spring:message code="${entry.value}" /></li>
-                            </c:forEach>
-                        </ul>
+                    <div class="col-xs-12 col-sm-12 col-md-12">
+                        <div class="form-group">
+                            <spring:message code="user.registration.password.requirements"/>
+                            <ul>
+                                <c:forEach items="${requirements}" var="entry">
+                                    <c:choose>
+                                        <c:when test="${entry.value['class'].simpleName eq 'Boolean'}">
+                                            <%-- if boolean AND true -> show value --%>
+                                            <c:if test="${entry.value}">
+                                                <li><spring:message code="user.passwd.req.${entry.key}" /></li>
+                                            </c:if>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <li><spring:message code="user.passwd.req.${entry.key}" />: <spring:message code="${entry.value}" /></li>
+                                        </c:otherwise>
+                                    </c:choose>
+                                </c:forEach>
+                            </ul>
+                        </div>
                     </div>
                 </div>
                 <div class="row">
@@ -155,7 +167,7 @@
         });
 
         $('#username').on("focus", function () {
-            clearErrorMessage();
+            clearErrorMessage('#username');
         });
 
         // guest
