@@ -93,11 +93,11 @@ public class UserRegistrationController {
 
         try {
             mailSenderService.sendEmailForRegistrationActivation(user.getEmail(), emailTokenToken.getUuid(), RegistrationUtil.getServerAddress(params), language);
+            model.addAttribute("msg", "user.registration.email.sent");
         } catch (ServiceException se) {
             LOG.error(se, "Error sending email", emailTokenToken);
-            model.addAttribute("error", "user.registration.error.generic");
+            model.addAttribute("error", "user.registration.error.sendingFailed");
         }
-        model.addAttribute("msg", "user.registration.email.sent");
         return "init_registration";
     }
 

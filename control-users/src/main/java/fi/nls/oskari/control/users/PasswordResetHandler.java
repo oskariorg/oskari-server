@@ -15,12 +15,15 @@ import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.service.UserService;
+import fi.nls.oskari.spring.SpringContextHolder;
 import fi.nls.oskari.user.IbatisUserService;
 import fi.nls.oskari.util.ResponseHelper;
+import org.springframework.context.MessageSource;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 @OskariActionRoute("UserPasswordReset")
@@ -33,6 +36,7 @@ public class PasswordResetHandler extends RestActionHandler {
     private static final String PARAM_PASSWORD = "password";
 
     private ObjectMapper mapper = new ObjectMapper();
+    private MessageSource messages;
 
     private UserRegistrationService registerTokenService = null;
     private final MailSenderService mailSenderService = new MailSenderService();
@@ -47,6 +51,18 @@ public class PasswordResetHandler extends RestActionHandler {
             LOG.error(se, "Unable to initialize User service!");
         }
         registerTokenService = OskariComponentManager.getComponentOfType(UserRegistrationService.class);
+    }
+
+    private MessageSource getMessages() {
+        if(messages == null) {
+            // "manual autowire"
+            messages = SpringContextHolder.getBean(MessageSource.class);
+
+        }
+        return messages;
+    }
+    private String getMessage(String key, String language) {
+        return getMessages().getMessage(key, new String[]{}, new Locale(language));
     }
 
     @Override
@@ -75,7 +91,7 @@ public class PasswordResetHandler extends RestActionHandler {
         }
         // validate email
         if(!RegistrationUtil.isValidEmail(email)) {
-            throw new ActionParamsException("user.registration.error.invalidEmail");
+            throw new ActionParamsException(getMessage("user.registration.error.invalidEmail", params.getLocale().getLanguage()));
         }
         // add or update token
         EmailToken token = registerTokenService.setupToken(email);
@@ -93,7 +109,7 @@ public class PasswordResetHandler extends RestActionHandler {
                 LOG.info("Reset password email sent to:", email);
             }
         } catch (ServiceException ex) {
-            throw new ActionException("Couldn't send email to user", ex);
+            throw new ActionException(getMessage("user.registration.error.sendingFailed", params.getLocale().getLanguage()), ex);
         }
     }
 

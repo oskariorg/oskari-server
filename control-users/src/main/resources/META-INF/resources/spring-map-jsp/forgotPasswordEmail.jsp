@@ -122,8 +122,18 @@
             success: function () {
                 showModal('<spring:message javaScriptEscape="true" code="user.registration.passwordrecovery.sent"/>');
             },
-            error: function () {
-                showModal('<spring:message javaScriptEscape="true" code="user.registration.error.generic"/>', true);
+            error: function (jqXHR) {
+                var errorResponse = jqXHR.responseText;
+                try {
+                    var json = JSON.parse(errorResponse);
+                    if(json.error) {
+                        showModal(json.error, true);
+                    } else {
+                        throw "show generic error";
+                    }
+                } catch (e) {
+                    showModal('<spring:message javaScriptEscape="true" code="user.registration.error.generic"/>', true);
+                }
             }
         });
         return false;
