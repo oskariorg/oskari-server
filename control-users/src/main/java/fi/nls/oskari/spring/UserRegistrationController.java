@@ -27,7 +27,6 @@ public class UserRegistrationController {
 
     private final static Logger LOG = LogFactory.getLogger(UserRegistrationController.class);
 
-    private static final String ERR_TOKEN_INVALID = "Token is invalid.";
     private static final String ERR_TOKEN_NOT_FOUND = "user.registration.error.uuid";
     private static final String ERR_EXPECTED_GUEST = "user.registration.error.loggedIn";
     private final MailSenderService mailSenderService = new MailSenderService();
@@ -159,14 +158,15 @@ public class UserRegistrationController {
             return "forgotPasswordEmail";
         }
         // Check if email token has valid date or not.
-        if (!emailToken.hasExpired()) {
-            model.addAttribute("uuid", emailToken.getUuid());
-            model.addAttribute("requirements", PasswordRules.asMap());
-        } else {
-            model.addAttribute("error", ERR_TOKEN_INVALID);
+        if (emailToken.hasExpired()) {
+            emailService.removeTokenByUUID(emailToken.getUuid());
+            model.addAttribute("error", ERR_TOKEN_NOT_FOUND);
+            return "forgotPasswordEmail";
         }
-
+        model.addAttribute("uuid", emailToken.getUuid());
+        model.addAttribute("requirements", PasswordRules.asMap());
         return "passwordReset";
+
     }
 
 }
