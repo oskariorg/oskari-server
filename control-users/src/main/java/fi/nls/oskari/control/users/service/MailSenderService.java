@@ -27,8 +27,8 @@ public class MailSenderService {
 
     private static final Logger log = LogFactory.getLogger(MailSenderService.class);
     private MessageSource messages;
-    private static final String KEY_LINK_TO_SET_PASSWORD = "link_to_set_password";
-    private static final String KEY_LINK_EXPIRY_TIME = "link_expiry_time";
+    private static final String KEY_LINK_TO_SET_PASSWORD = "link_to_continue";
+    private static final String KEY_LINK_EXPIRY_TIME = "days_to_expire";
     private static final int DEFAULT_LINK_EXPIRY_TIME = 2;
 
     public final void sendEmailForRegistrationActivation(String email, String token, String serverAddress, String language) throws ServiceException {
@@ -44,6 +44,22 @@ public class MailSenderService {
         emailMessage.setContent(content);
         sendEmail(emailMessage);
     }
+
+    public final void sendEmailForPasswordResetWithoutAccount(String email, String token, String serverAddress, String language) throws ServiceException {
+        EmailMessage emailMessage = emailTo(email);
+
+        String subject = getMessage("user.registration.email.passwordrecovery.subject", language);
+        emailMessage.setSubject(subject);
+
+        Map params = getDefaultParams(serverAddress, token);
+        // set return url
+        params.put(KEY_LINK_TO_SET_PASSWORD, serverAddress + "/user/" + token);
+        String content = constructMail(getTemplateFor("oskari.email.passwordrecovery.noaccount.tpl", language), params);
+        emailMessage.setContent(content);
+        sendEmail(emailMessage);
+    }
+
+    //
 
     public final void sendEmailForResetPassword(String email, String token, String serverAddress, String language) throws ServiceException {
         EmailMessage emailMessage = emailTo(email);

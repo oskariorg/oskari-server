@@ -77,23 +77,26 @@ public class PasswordResetHandler extends RestActionHandler {
         if(!RegistrationUtil.isValidEmail(email)) {
             throw new ActionParamsException("user.registration.error.invalidEmail");
         }
-        String username = registerTokenService.findUsernameForEmail(email);
-        if (username == null) {
-            LOG.info("User tried to reset password for unknown account:", email);
-            // no existing user with this email. Offer registration
-            // TODO: Send an email "Did you try to reset password? There's no account for this email, but you can create one in here [link]"
-            throw new ActionDeniedException("Username for login doesn't exist for email address: " + email);
-        }
         // add or update token
         EmailToken token = registerTokenService.setupToken(email);
+        String username = registerTokenService.findUsernameForEmail(email);
         try {
-            mailSenderService.sendEmailForResetPassword(email, token.getUuid(), RegistrationUtil.getServerAddress(params), params.getLocale().getLanguage());
-            LOG.info("Reset password email sent to:", email);
+            if (username == null) {
+                // no existing user with this email. Offer registration
+                LOG.info("User tried to reset password for unknown account:", email);
+
+                // Send an email "Did you try to reset password? There's no account for this email, but you can create one in here [link]"
+                mailSenderService.sendEmailForPasswordResetWithoutAccount(email, token.getUuid(), RegistrationUtil.getServerAddress(params), params.getLocale().getLanguage());
+                LOG.info("Offer to register sent to:", email);
+            } else {
+                mailSenderService.sendEmailForResetPassword(email, token.getUuid(), RegistrationUtil.getServerAddress(params), params.getLocale().getLanguage());
+                LOG.info("Reset password email sent to:", email);
+            }
         } catch (ServiceException ex) {
             throw new ActionException("Couldn't send email to user", ex);
         }
-
     }
+
     @Override
     public void handlePut(ActionParameters params) throws ActionException {
         // set password
