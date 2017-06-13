@@ -447,9 +447,20 @@ public class ELFGeoLocatorSearchChannel extends SearchChannel implements SearchA
             //final String propertyPrefix = "search.channel." + getName() + ".service.";
             log.info("Creating autocomplete search url with url:", url);
             HttpURLConnection conn = IOHelper.getConnection(url);
+            String userpass = "asdiuser:3sto9AHT";
+            String basicAuth = "Basic " + javax.xml.bind.DatatypeConverter.printBase64Binary(userpass.getBytes());
+            conn.setRequestProperty ("Authorization", basicAuth);
             IOHelper.writeToConnection(conn, requestJson);
             String result = IOHelper.readString(conn);
-            return new ArrayList<String>();
+            JSONObject jsonObject = new JSONObject(result);
+
+            JSONArray jsonHitsArray = jsonObject.getJSONObject("hits").getJSONArray("hits");
+            List<String> resultList = new ArrayList<>();
+            for (int i = 0; i < jsonHitsArray.length(); ++i ) {
+                String resultName = jsonHitsArray.getJSONObject(i).getJSONObject("_source").getString("name");
+                resultList.add(resultName);
+            }
+            return resultList;
         }
         catch (Exception ex) {
             log.error("Couldn't open or read from connection for search channel!");

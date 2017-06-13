@@ -203,7 +203,7 @@ public class SearchServiceImpl extends SearchService implements SearchChannelCha
 
         long fullQueryStartTime = System.currentTimeMillis();
 
-        //TODO init result list
+        List<String> resultList = null;
         for (String channelId : searchCriteria.getChannels()) {
             if (!availableChannels.containsKey(channelId)) {
                 continue;
@@ -222,10 +222,9 @@ public class SearchServiceImpl extends SearchService implements SearchChannelCha
                 continue;
             }
 
-            List<String> resultList = null;
+
             try {
                  resultList = ((SearchAutocomplete) channel).doSearchAutocomplete(searchCriteria.getSearchString());
-                //TODO toJSONObject()
             } catch (Exception e) {
                 LOG.error(e, "Search query to", channel.getId(), "failed! Searchstring was '", searchCriteria.getSearchString(), "'");
                 resultList = new ArrayList<String>();
@@ -243,9 +242,7 @@ public class SearchServiceImpl extends SearchService implements SearchChannelCha
 
         //TODO remove test
         JSONObject jsonObject = new JSONObject();
-        JSONArray jsonArray = new JSONArray();
-        jsonArray.put("Hello");
-        jsonArray.put("World!");
+        JSONArray jsonArray = new JSONArray(resultList);
         JSONHelper.put(jsonObject, "methods", jsonArray);
         return jsonObject;
     }
