@@ -22,7 +22,9 @@ To customize password requirements configure oskari-ext.properties:
     user.passwd.length=8
     # Require lower and UPPER chars
     user.passwd.case=true
-
+    # Number of days that registration/passwd recover links are valid
+    oskari.email.link.expirytime=2
+    
 To customize email-templates configure oskari-ext.properties (add files in classpath for example under jetty/resources/templates):
 
     # defaults
