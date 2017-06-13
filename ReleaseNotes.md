@@ -6,6 +6,7 @@
 
 There was some missing validations and funky looking error handling/messaging on the user registration feature.
 It has been rewritten:
+
  - registration starts by just entering email address
  - invalid/expired tokens are now handled by showing a page where user can continue and not the "next step" with an error message.
  - tokens are now refreshed when the user requests another one so users can't get stuck with an expired token and no means of resetting it.
@@ -13,7 +14,36 @@ It has been rewritten:
  - passwords now have configurable strength check
  - new users are written to db after they have completed the registration (previously when the initial email was sent for confirmation)
  - emails and usernames are now checked in case-insensitive fashion
- - user content (analysis, myplaces, userlayers, saved views, embedded maps, indicators) is now removed from the database with the user.
+ - user content (myplaces, saved views, embedded maps, userlayers, analysis, indicators) is now removed from the database with the user.
+
+To customize password requirements configure oskari-ext.properties:
+
+    # min length for user password
+    user.passwd.length=8
+    # Require lower and UPPER chars
+    user.passwd.case=true
+
+To customize email-templates configure oskari-ext.properties (add files in classpath for example under jetty/resources/templates):
+
+    # defaults
+    # on registration init
+    oskari.email.registration.tpl=/templates/registration_email.html
+    # on registration init if there's already a user account with the email
+    oskari.email.exists.tpl=/templates/registration_email_exists.html
+    # on "forgot my password"
+    oskari.email.passwordrecovery.tpl=/templates/user_passwordreset_email.html
+    # on "forgot my password" when there's no user account associated with the email
+    oskari.email.passwordrecovery.noaccount.tpl=/templates/user_passwordreset_email_new_user.html
+    
+    # you can specify localized versions by adding the language code at the end of the property key 
+    oskari.email.registration.tpl.fi=/templates/registration_email_finnish_version.html
+
+
+The default templates are stored in control-users/src/main/resources/fi/nls/oskari/control/users/service
+The templates receive variables for:
+
+ - URL to continue the process (link_to_continue)
+ - number of days before the token expires (days_to_expire)
 
 ### Thematic maps
 

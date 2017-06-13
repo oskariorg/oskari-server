@@ -2,6 +2,10 @@
 
 ## 1.42.1
 
+### User registration feature
+
+The feature has been significantly changed. See ReleaseNotes for details.
+
 ### Layer urls handling for https-services
 
 Layers with http:// urls are now proxied using the GetLayerTile action route by default.
