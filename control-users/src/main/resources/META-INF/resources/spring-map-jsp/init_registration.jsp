@@ -68,7 +68,7 @@
                 </div>
                 <span class="content-column">
                     <div class="form-group">
-                        <input type="email" name="email" id="email" class="form-control input-lg" autofocus="autofocus"
+                        <input type="email" id="email" class="form-control input-lg" autofocus="autofocus"
                                placeholder="Email Address" tabindex="4">
                     </div>
                 </span>
@@ -156,7 +156,7 @@
 
     jQuery(document).ready(function() {
         jQuery( "#email" ).keypress(function( event ) {
-            if (event.which == 13) {
+            if (event.which == 13 || event.keyCode == 13) {
                 jQuery('#form').submit();
             }
         });

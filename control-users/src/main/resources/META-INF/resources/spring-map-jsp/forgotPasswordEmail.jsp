@@ -54,7 +54,7 @@
                 <div class="form-group">
                     <c:choose>
                         <c:when test="${empty email}">
-                            <input class="form-control input-lg" size="25" id="email" name="email" type="email"
+                            <input class="form-control input-lg" size="25" id="email" type="email"
                                    placeholder="<spring:message code="user.email" htmlEscape="true"/>" autofocus required>
                         </c:when>
                         <c:otherwise>
@@ -98,7 +98,7 @@
 <script type="text/javascript">
     jQuery(document).ready(function () {
         jQuery( "#email" ).keypress(function( event ) {
-            if (event.which == 13) {
+            if (event.which == 13 || event.keyCode == 13) {
                 jQuery('#passwordResetForm').submit();
             }
         });
