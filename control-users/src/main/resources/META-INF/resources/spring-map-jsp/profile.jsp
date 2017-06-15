@@ -143,7 +143,32 @@
 <script type="text/javascript">
     $(document).ready(function () {
         var saving = false;
-
+        //logged in
+        $('#changePassword').click(function () {
+            jQuery.ajax({
+                url: "/action?action_route=UserPasswordReset",
+                type: 'POST',
+                data: {
+                    email: '${email}'
+                },
+                success: function () {
+                    showModal('<spring:message javaScriptEscape="true" code="user.registration.passwordrecovery.sent"/>');
+                },
+                error: function (jqXHR) {
+                    var errorResponse = jqXHR.responseText;
+                    try {
+                        var json = JSON.parse(errorResponse);
+                        if(json.error) {
+                            errorMsg("#errorGeneral", json.error);
+                        } else {
+                            throw "show generic error";
+                        }
+                    } catch (e) {
+                        errorMsg("#errorGeneral", '<spring:message javaScriptEscape="true" code="user.registration.error.generic"/>');
+                    }
+                }
+            });
+        });
         // logged in
         $('#saveBtn').click(function () {
             if (saving || !validate()) {
