@@ -54,7 +54,7 @@
                 <div class="form-group">
                     <c:choose>
                         <c:when test="${empty email}">
-                            <input class="form-control input-lg" size="25" id="email" type="email"
+                            <input class="form-control input-lg" size="25" id="email" name="email" type="email"
                                    placeholder="<spring:message code="user.email" htmlEscape="true"/>" autofocus required>
                         </c:when>
                         <c:otherwise>

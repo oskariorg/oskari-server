@@ -68,7 +68,7 @@
                 </div>
                 <span class="content-column">
                     <div class="form-group">
-                        <input type="email" id="email" class="form-control input-lg" autofocus="autofocus"
+                        <input type="email" name="email" id="email" class="form-control input-lg" autofocus="autofocus"
                                placeholder="Email Address" tabindex="4">
                     </div>
                 </span>
