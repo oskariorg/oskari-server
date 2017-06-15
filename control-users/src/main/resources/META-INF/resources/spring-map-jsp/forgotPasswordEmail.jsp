@@ -99,12 +99,13 @@
     jQuery(document).ready(function () {
         jQuery( "#email" ).keypress(function( event ) {
             if (event.which == 13) {
-                resetPassword();
+                jQuery('#passwordResetForm').submit();
             }
         });
     });
-
+    var inProgress = false;
     function resetPassword() {
+        inProgress = true;
         var email='';
         <c:if test="${empty email}">
             email = jQuery('#email').val();
@@ -120,9 +121,11 @@
                 email: email
             },
             success: function () {
+                inProgress = false;
                 showModal('<spring:message javaScriptEscape="true" code="user.registration.passwordrecovery.sent"/>');
             },
             error: function (jqXHR) {
+                inProgress = false;
                 var errorResponse = jqXHR.responseText;
                 try {
                     var json = JSON.parse(errorResponse);
