@@ -154,13 +154,6 @@
         $('.alert').text("").addClass("hidden");
     }
 
-    jQuery(document).ready(function() {
-        jQuery( "#email" ).keypress(function( event ) {
-            if (event.which == 13 || event.keyCode == 13) {
-                jQuery('#form').submit();
-            }
-        });
-    });
     <c:if test="${!empty error}">
     errorMsg('<spring:message javaScriptEscape="true" code="${error}"/>');
     </c:if>

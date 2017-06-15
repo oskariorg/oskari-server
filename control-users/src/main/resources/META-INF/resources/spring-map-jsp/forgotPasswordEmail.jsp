@@ -96,13 +96,6 @@
 </div>
 
 <script type="text/javascript">
-    jQuery(document).ready(function () {
-        jQuery( "#email" ).keypress(function( event ) {
-            if (event.which == 13 || event.keyCode == 13) {
-                jQuery('#passwordResetForm').submit();
-            }
-        });
-    });
     var inProgress = false;
     function resetPassword() {
         inProgress = true;
