@@ -181,6 +181,42 @@ public class CSWIsoRecord {
         return referenceSystems;
     }
 
+
+    public static class DataQualityObject {
+        List<DataQualityNode> dataQualityNodes = new ArrayList<>();
+    }
+
+    public class DataQualityValue {
+        String label;
+        String value;
+    }
+
+    public class DataQualityNode {
+        String nodeName;
+        DataQualityValue nameOfMeasure;
+        DataQualityValue measureIdentificationCode;
+        DataQualityValue measureIdentificationAuthorization;
+        DataQualityValue measureDescription;
+        DataQualityValue evaluationMethodType;
+        Object evaluationProcecdure; // TODO parse
+        List<DataQualityValue> dateTime;
+        DataQualityConformanceResult conformanceResult;
+        DataQualityQuantitativeResult quantitativeResult;
+    }
+
+    public class DataQualityConformanceResult {
+        Object specification; //TODO parse
+        DataQualityValue explanation;
+        DataQualityValue pass;
+    }
+
+    public class DataQualityQuantitativeResult {
+        DataQualityValue valueType;
+        DataQualityValue valueUnit;
+        DataQualityValue errorStatistic;
+        List<DataQualityValue> value;
+    }
+
     public static class DataQuality {
 
         public static class DataQualityObject {

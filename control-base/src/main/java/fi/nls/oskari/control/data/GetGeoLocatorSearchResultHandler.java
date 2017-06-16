@@ -77,7 +77,7 @@ public class GetGeoLocatorSearchResultHandler extends ActionHandler {
             sc.setSearchString(term);
             sc.setSRS(epsg);  // eg. EPSG:3067
             sc.setLocale(locale.getLanguage());
-            
+
             sc.addParam(PARAM_REGION, params.getHttpParam(PARAM_REGION, ""));
             sc.addParam(PARAM_COUNTRY, params.getHttpParam(PARAM_COUNTRY, ""));
             sc.addParam(PARAM_FILTER, params.getHttpParam(PARAM_FILTER, "false"));
