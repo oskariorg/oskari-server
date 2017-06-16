@@ -121,6 +121,8 @@
             <%-- If logout url is present - so logout link --%>
             <c:when test="${!empty _logout_uri}">
                 <a href="${pageContext.request.contextPath}${_logout_uri}"><spring:message code="logout" text="Logout" /></a>
+                <%-- oskari-profile-link id is used by the personaldata bundle - do not modify --%>
+                <a href="${pageContext.request.contextPath}${_registration_uri}" id="oskari-profile-link"><spring:message code="account" text="Account" /></a>
             </c:when>
             <%-- Otherwise show appropriate logins --%>
             <c:otherwise>

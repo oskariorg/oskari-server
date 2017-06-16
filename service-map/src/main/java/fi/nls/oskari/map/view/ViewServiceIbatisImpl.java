@@ -187,8 +187,6 @@ public class ViewServiceIbatisImpl extends BaseIbatisService<Object> implements
         SqlMapSession session = openSession();
         try {
             session.startTransaction();
-            delete("View.delete-state-by-user", userId);
-            delete("View.delete-seq-by-user", userId);
             delete("View.delete-view-by-user", userId);
             session.commitTransaction();
         } catch (Exception e) {

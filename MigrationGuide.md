@@ -1,7 +1,10 @@
 # Migration guide
 
-## 1.42.3
+## 1.42.1
 
+### User registration feature
+
+The feature has been significantly changed. See ReleaseNotes for details.
 
 ### Layer urls handling for https-services
 

@@ -18,8 +18,11 @@ public class UserIndicatorServiceImpl extends BaseIbatisService<UserIndicator> i
         return "UserIndicator";
     }
 
-   public List<UserIndicator> findAllOfUser(long userID){
-      return queryForList(getNameSpace()+".findAllOfUser", userID);
-   }
-  //
+    public List<UserIndicator> findAllOfUser(long userID){
+        return queryForList(getNameSpace()+".findAllOfUser", userID);
+    }
+
+    public void deleteByUserId (long userID){
+        delete(getNameSpace()+".deleteByUserId", userID);
+    }
 }
