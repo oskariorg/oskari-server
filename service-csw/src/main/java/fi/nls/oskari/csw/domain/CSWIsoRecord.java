@@ -183,38 +183,198 @@ public class CSWIsoRecord {
 
 
     public static class DataQualityObject {
-        List<DataQualityNode> dataQualityNodes = new ArrayList<>();
+        private List<DataQualityNode> dataQualityNodes = new ArrayList<>();
+
+        public List<DataQualityNode> getDataQualityNodes() {
+            return dataQualityNodes;
+        }
+
+        public void setDataQualityNodes(List<DataQualityNode> dataQualityNodes) {
+            this.dataQualityNodes = dataQualityNodes;
+        }
     }
 
-    public class DataQualityValue {
-        String label;
-        String value;
+    public static class DataQualityValue {
+        private String label;
+        private String value;
+
+        public String getLabel() {
+            return label;
+        }
+
+        public void setLabel(String label) {
+            this.label = label;
+        }
+
+        public String getValue() {
+            return value;
+        }
+
+        public void setValue(String value) {
+            this.value = value;
+        }
     }
 
-    public class DataQualityNode {
-        String nodeName;
-        DataQualityValue nameOfMeasure;
-        DataQualityValue measureIdentificationCode;
-        DataQualityValue measureIdentificationAuthorization;
-        DataQualityValue measureDescription;
-        DataQualityValue evaluationMethodType;
-        Object evaluationProcecdure; // TODO parse
-        List<DataQualityValue> dateTime;
-        DataQualityConformanceResult conformanceResult;
-        DataQualityQuantitativeResult quantitativeResult;
+    public static class DataQualityNode {
+        private String nodeName;
+        private DataQualityValue nameOfMeasure;
+        private DataQualityValue measureIdentificationCode;
+        private DataQualityValue measureIdentificationAuthorization;
+        private DataQualityValue measureDescription;
+        private DataQualityValue evaluationMethodType;
+        private Object evaluationProcecdure; // TODO parse
+        private List<DataQualityValue> dateTime;
+        private DataQualityConformanceResult conformanceResult;
+        private DataQualityQuantitativeResult quantitativeResult;
+
+        public String getNodeName() {
+            return nodeName;
+        }
+
+        public void setNodeName(String nodeName) {
+            this.nodeName = nodeName;
+        }
+
+        public DataQualityValue getNameOfMeasure() {
+            return nameOfMeasure;
+        }
+
+        public void setNameOfMeasure(DataQualityValue nameOfMeasure) {
+            this.nameOfMeasure = nameOfMeasure;
+        }
+
+        public DataQualityValue getMeasureIdentificationCode() {
+            return measureIdentificationCode;
+        }
+
+        public void setMeasureIdentificationCode(DataQualityValue measureIdentificationCode) {
+            this.measureIdentificationCode = measureIdentificationCode;
+        }
+
+        public DataQualityValue getMeasureIdentificationAuthorization() {
+            return measureIdentificationAuthorization;
+        }
+
+        public void setMeasureIdentificationAuthorization(DataQualityValue measureIdentificationAuthorization) {
+            this.measureIdentificationAuthorization = measureIdentificationAuthorization;
+        }
+
+        public DataQualityValue getMeasureDescription() {
+            return measureDescription;
+        }
+
+        public void setMeasureDescription(DataQualityValue measureDescription) {
+            this.measureDescription = measureDescription;
+        }
+
+        public DataQualityValue getEvaluationMethodType() {
+            return evaluationMethodType;
+        }
+
+        public void setEvaluationMethodType(DataQualityValue evaluationMethodType) {
+            this.evaluationMethodType = evaluationMethodType;
+        }
+
+        public Object getEvaluationProcecdure() {
+            return evaluationProcecdure;
+        }
+
+        public void setEvaluationProcecdure(Object evaluationProcecdure) {
+            this.evaluationProcecdure = evaluationProcecdure;
+        }
+
+        public List<DataQualityValue> getDateTime() {
+            return dateTime;
+        }
+
+        public void setDateTime(List<DataQualityValue> dateTime) {
+            this.dateTime = dateTime;
+        }
+
+        public DataQualityConformanceResult getConformanceResult() {
+            return conformanceResult;
+        }
+
+        public void setConformanceResult(DataQualityConformanceResult conformanceResult) {
+            this.conformanceResult = conformanceResult;
+        }
+
+        public DataQualityQuantitativeResult getQuantitativeResult() {
+            return quantitativeResult;
+        }
+
+        public void setQuantitativeResult(DataQualityQuantitativeResult quantitativeResult) {
+            this.quantitativeResult = quantitativeResult;
+        }
     }
 
-    public class DataQualityConformanceResult {
-        Object specification; //TODO parse
-        DataQualityValue explanation;
-        DataQualityValue pass;
+    public static class DataQualityConformanceResult {
+        private Object specification; //TODO parse
+        private DataQualityValue explanation;
+        private DataQualityValue pass;
+
+        public Object getSpecification() {
+            return specification;
+        }
+
+        public void setSpecification(Object specification) {
+            this.specification = specification;
+        }
+
+        public DataQualityValue getExplanation() {
+            return explanation;
+        }
+
+        public void setExplanation(DataQualityValue explanation) {
+            this.explanation = explanation;
+        }
+
+        public DataQualityValue getPass() {
+            return pass;
+        }
+
+        public void setPass(DataQualityValue pass) {
+            this.pass = pass;
+        }
     }
 
-    public class DataQualityQuantitativeResult {
-        DataQualityValue valueType;
-        DataQualityValue valueUnit;
-        DataQualityValue errorStatistic;
-        List<DataQualityValue> value;
+    public static class DataQualityQuantitativeResult {
+        private DataQualityValue valueType;
+        private DataQualityValue valueUnit;
+        private DataQualityValue errorStatistic;
+        private List<DataQualityValue> value;
+
+        public DataQualityValue getValueType() {
+            return valueType;
+        }
+
+        public void setValueType(DataQualityValue valueType) {
+            this.valueType = valueType;
+        }
+
+        public DataQualityValue getValueUnit() {
+            return valueUnit;
+        }
+
+        public void setValueUnit(DataQualityValue valueUnit) {
+            this.valueUnit = valueUnit;
+        }
+
+        public DataQualityValue getErrorStatistic() {
+            return errorStatistic;
+        }
+
+        public void setErrorStatistic(DataQualityValue errorStatistic) {
+            this.errorStatistic = errorStatistic;
+        }
+
+        public List<DataQualityValue> getValue() {
+            return value;
+        }
+
+        public void setValue(List<DataQualityValue> value) {
+            this.value = value;
+        }
     }
 
     public static class DataQuality {
