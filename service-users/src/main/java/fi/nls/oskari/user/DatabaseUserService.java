@@ -75,10 +75,6 @@ public class DatabaseUserService extends UserService {
     public User getUser(String username) throws ServiceException {
         return userService.findByUserName(username);
     }
-    public User getUserByEmail(String email) throws ServiceException {
-        return userService.findByEmail(email);
-    }
-
 
     // TODO: make this part of the UserService interface
     public User getUserByEmail(String email) throws ServiceException {
