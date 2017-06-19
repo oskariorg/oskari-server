@@ -47,6 +47,8 @@ public abstract class MyPlacesService extends OskariComponent {
 
     public abstract Resource getResource(final String myplacesLayerId);
 
+    public abstract void deleteByUid(final String uid);
+
     public MyPlacesService() {
         // default 'myplaces.client.wmsurl' to ajax url for tiles if not configured
         if (MYPLACES_CLIENT_WMS_URL == null) {

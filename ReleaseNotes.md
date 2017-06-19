@@ -1,5 +1,76 @@
 # Release Notes
 
+## 1.42.1
+
+### User registration functionality rewrite
+
+There was some missing validations and funky looking error handling/messaging on the user registration feature.
+It has been rewritten:
+
+ - registration starts by just entering email address
+ - invalid/expired tokens are now handled by showing a page where user can continue and not the "next step" with an error message.
+ - tokens are now refreshed when the user requests another one so users can't get stuck with an expired token and no means of resetting it.
+ - mails now use HTML-templates that are customizable for the Oskari instance
+ - passwords now have configurable strength check
+ - new users are written to db after they have completed the registration (previously when the initial email was sent for confirmation)
+ - emails and usernames are now checked in case-insensitive fashion
+ - user content (myplaces, saved views, embedded maps, userlayers, analysis, indicators) is now removed from the database with the user.
+
+To customize password requirements configure oskari-ext.properties:
+
+    # min length for user password
+    user.passwd.length=8
+    # Require lower and UPPER chars
+    user.passwd.case=true
+    # Number of days that registration/passwd recover links are valid
+    oskari.email.link.expirytime=2
+    
+To customize email-templates configure oskari-ext.properties (add files in classpath for example under jetty/resources/templates):
+
+    # defaults
+    # on registration init
+    oskari.email.registration.tpl=/templates/registration_email.html
+    # on registration init if there's already a user account with the email
+    oskari.email.exists.tpl=/templates/registration_email_exists.html
+    # on "forgot my password"
+    oskari.email.passwordrecovery.tpl=/templates/user_passwordreset_email.html
+    # on "forgot my password" when there's no user account associated with the email
+    oskari.email.passwordrecovery.noaccount.tpl=/templates/user_passwordreset_email_new_user.html
+    
+    # you can specify localized versions by adding the language code at the end of the property key 
+    oskari.email.registration.tpl.fi=/templates/registration_email_finnish_version.html
+
+
+The default templates are stored in control-users/src/main/resources/fi/nls/oskari/control/users/service
+The templates receive variables for:
+
+ - URL to continue the process (link_to_continue)
+ - number of days before the token expires (days_to_expire)
+
+### Thematic maps
+
+Fixed an issue where GetRegions action route returns the geometry reference point incorrect projection.
+
+### service-csw
+
+Fixed an issue where data quality fields were not parsed correctly from CSW response.
+
+### Layer urls handling for https-services
+
+Layer urls are modified for the frontend if the Oskari instance is running in a secure URL (https://). Most services only provide 
+ http urls and won't work properly if the map is loaded using https. For any layer where url doesn't start
+  with https:// or / the url is modified to use a proxied url with GetLayerTile action route.
+  Previously the protocol was replaced with https:// and to preserve this functionality you can add a property
+   for oskari-ext.properties:
+
+    maplayer.wmsurl.secure=https://
+
+### Shapefile import
+
+Shapefile import now tries to find cpg file for identifying the character encoding to be used. This fixes an issue where scandic letters are shown wrong with imported Shapefiles.
+
+The original Shapefile standard defines to use ISO-8859-1 for dpf file encoding. So by default Shapefile is parsed using ISO-8859-1. Optional cpg file can be used to specify the code page for identifying the character set to be used. Also the header of dbf has a reference to a code page (encoding) but unfortunately GeoTools can't handle it reliably. So if you want to use different encoding, you should include cpg file which describes used encoding. e.g. to use UTF-8 encoding create a myshapename.cpg with a texteditor and insert 5 characters (and nothing more): UTF-8.
+
 ## 1.42
 
 ### Default published JSP-file
@@ -95,6 +166,11 @@ If you would want to store myplaces to different database you can add the proper
 If the user/pass is the same, you can leave them out and it will default to db.username/db.password property values.
 Note! Ibatis-mappings for analysis and userlayers still have hardcoded values as JNDI-name so you might need to override files under
 "servlet-map/src/main/resources/META-INF": SqlMapConfig_Analysis.xml and SqlMapConfig_UserLayer.xml.
+
+### service-csw
+ 
+Date parsing has been improved. Any non-parseable dates are now used as is from the XML. This fixes an issue where CSW data
+with dates having for example only year or year and month failed parsing and the user was presented with an empty result.
 
 ## 1.41
 

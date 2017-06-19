@@ -1,7 +1,6 @@
 package fi.nls.oskari.map.layer.formatters;
 
 import fi.mml.map.mapwindow.service.wms.WebMapService;
-import fi.mml.map.mapwindow.service.wms.WebMapServiceV1_3_0_Impl;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;

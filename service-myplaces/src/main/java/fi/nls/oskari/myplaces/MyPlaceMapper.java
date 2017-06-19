@@ -2,6 +2,7 @@ package fi.nls.oskari.myplaces;
 
 import fi.nls.oskari.domain.map.MyPlace;
 import fi.nls.oskari.domain.map.MyPlaceCategory;
+import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Update;
 
@@ -21,4 +22,6 @@ public interface MyPlaceMapper {
     List<MyPlaceCategory> findByIds(@Param("list") List<Long> idList);
     List<MyPlaceCategory> freeFind(Map<String, Object> data);
     List<MyPlaceCategory> findAll();
+    @Delete("delete from categories where uuid = #{uid}")
+    void deleteByUid(String uid);
 }

@@ -84,6 +84,13 @@ public class UserLayerDbServiceIbatisImpl extends
         return queryForList(getNameSpace() + ".findUserLayerByUid", uid);
     }
 
+    public void deleteUserLayerByUid(final String uid) throws ServiceException {
+        final List<UserLayer> userLayers = getUserLayerByUid(uid);
+        for (UserLayer userLayer: userLayers) {
+            deleteUserLayer(userLayer);
+        }
+    }
+
     public void deleteUserLayerById(final long id) throws ServiceException {
         final UserLayer userLayer = getUserLayerById(id);
         deleteUserLayer(userLayer);
