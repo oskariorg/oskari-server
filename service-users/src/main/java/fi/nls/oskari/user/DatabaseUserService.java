@@ -74,6 +74,11 @@ public class DatabaseUserService extends UserService {
         return userService.findByUserName(username);
     }
 
+    // TODO: make this part of the UserService interface
+    public User getUserByEmail(String email) throws ServiceException {
+        return userService.findByEmail(email);
+    }
+
     @Override
     public User getUser(long id) throws ServiceException {
         return userService.find(id);
