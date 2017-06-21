@@ -61,6 +61,9 @@ public class CSWISORecordDataQualityParser {
         dataQualities.put("QuantitativeAttributeAccuracy", "./gmd:report/gmd:DQ_QuantitativeAttributeAccuracy");
 
         try {
+
+            xpath.setNamespaceContext(new CSWISORecordNamespaceContext());
+
             //Data quality node information
             XPATH_NAME_OF_MEASURE = xpath.compile("./gmd:nameOfMeasure"); //many
             XPATH_MEASURE_IDENTIFICATION_CODE =  xpath.compile("./gmd:measureIdentification/gmd:code");
@@ -87,32 +90,35 @@ public class CSWISORecordDataQualityParser {
         }
     }
 
-    public void parseDataQualities(final NodeList dataQualityNodes, final Locale locale) {
-        Node parentNode;
+    public CSWIsoRecord.DataQualityObject parseDataQualities(final NodeList dataQualityNodes, final Locale locale) {
         if (locale != null) {
             try {
                 pathToLocalizedValue = xpath.compile(
-                        "../gmd:PT_FreeText/gmd:textGroup/gmd:LocalisedCharacterString[@locale='#" + locale.getLanguage() + "']");
+                        "../gmd:PT_FreeText/gmd:textGroup/gmd:LocalisedCharacterString[@locale='#"
+                                + locale.getLanguage().toUpperCase() + "']");
             }
             catch (Exception e) {
                 //TODO
             }
         }
-        for (Map.Entry<String, String> entry : dataQualities.entrySet()) {
+        CSWIsoRecord.DataQualityObject dataQualityObject = new CSWIsoRecord.DataQualityObject();
+        List<CSWIsoRecord.DataQualityNode> dataQualityObjectNodeList = dataQualityObject.getDataQualityNodes();
+        for (int i = 0; i < dataQualityNodes.getLength(); i++) {
+            Node parentNode = dataQualityNodes.item(i);
             try {
-                CSWIsoRecord.DataQualityObject dataQualityObject = new CSWIsoRecord.DataQualityObject();
-                List<CSWIsoRecord.DataQualityNode> dataQualityObjectNodeList = dataQualityObject.getDataQualityNodes();
-
-                for (int i = 0; i < dataQualityNodes.getLength(); i++) {
-                    parentNode = dataQualityNodes.item(i);
+                for (Map.Entry<String, String> entry : dataQualities.entrySet()) {
                     String key = entry.getKey();
                     String value = entry.getValue();
                     XPathExpression XPATH_DATA_QUALITY_NODE = xpath.compile(value);
-                    NodeList dataQualityNodeList = (NodeList) XPATH_DATA_QUALITY_NODE.evaluate(parentNode, XPathConstants.NODESET);
+                    Node dataQualityNode = (Node) XPATH_DATA_QUALITY_NODE.evaluate(parentNode, XPathConstants.NODE);
 
-                    CSWIsoRecord.DataQualityNode dataQualityObjectNode = GetDataQualityNodeInformation(parentNode, key);
-                    dataQualityObjectNode.setConformanceResult(GetConformanceResult(parentNode));
-                    dataQualityObjectNode.setQuantitativeResult(GetQuantitativeResult(parentNode));
+                    if(dataQualityNode == null) {
+                        continue;
+                    }
+
+                    CSWIsoRecord.DataQualityNode dataQualityObjectNode = GetDataQualityNodeInformation(dataQualityNode, key);
+                    dataQualityObjectNode.setConformanceResult(GetConformanceResult(dataQualityNode));
+                    dataQualityObjectNode.setQuantitativeResult(GetQuantitativeResult(dataQualityNode));
 
                     dataQualityObjectNodeList.add(dataQualityObjectNode);
                 }
@@ -120,6 +126,8 @@ public class CSWISORecordDataQualityParser {
                 //TODO
             }
         }
+        dataQualityObject.setDataQualityNodes(dataQualityObjectNodeList);
+        return dataQualityObject;
     }
 
     private CSWIsoRecord.DataQualityNode GetDataQualityNodeInformation(Node parentNode, String listName) {
