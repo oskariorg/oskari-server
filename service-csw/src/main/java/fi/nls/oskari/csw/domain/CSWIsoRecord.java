@@ -279,7 +279,7 @@ public class CSWIsoRecord {
             return evaluationProcecdure;
         }
 
-        public void setEvaluationProcecdure(Object evaluationProcecdure) {
+        public void setEvaluationProcedure(Object evaluationProcecdure) {
             this.evaluationProcecdure = evaluationProcecdure;
         }
 

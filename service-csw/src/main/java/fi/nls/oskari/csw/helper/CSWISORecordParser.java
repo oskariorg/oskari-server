@@ -353,7 +353,7 @@ public class CSWISORecordParser {
         nodeList = (NodeList) XPATH_DATA_QUALITY.evaluate(elem, XPathConstants.NODESET);
         if (nodeList.getLength() > 0) {
             CSWISORecordDataQualityParser dataQualityParser = new CSWISORecordDataQualityParser();
-            dataQualityParser.parseDataQualities(nodeList);
+            dataQualityParser.parseDataQualities(nodeList, locale);
             parseDataQualities(nodeList, record.getDataQualities(), pathToLocalizedValue);
         }
 
