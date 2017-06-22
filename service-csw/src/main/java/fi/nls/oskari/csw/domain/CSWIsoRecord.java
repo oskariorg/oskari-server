@@ -198,6 +198,13 @@ public class CSWIsoRecord {
         private String label;
         private String value;
 
+        public DataQualityValue() {}
+
+        public DataQualityValue(String label, String value){
+            setLabel(label);
+            setValue(value);
+        }
+
         public String getLabel() {
             return label;
         }
@@ -224,8 +231,8 @@ public class CSWIsoRecord {
         private DataQualityValue evaluationMethodType;
         private Object evaluationProcecdure; // TODO parse
         private List<DataQualityValue> dateTime;
-        private DataQualityConformanceResult conformanceResult;
-        private DataQualityQuantitativeResult quantitativeResult;
+        private List<DataQualityConformanceResult> conformanceResultList = new ArrayList<>();
+        private List<DataQualityQuantitativeResult> quantitativeResultList = new ArrayList<>();
 
         public String getNodeName() {
             return nodeName;
@@ -291,20 +298,12 @@ public class CSWIsoRecord {
             this.dateTime = dateTime;
         }
 
-        public DataQualityConformanceResult getConformanceResult() {
-            return conformanceResult;
+        public List<DataQualityConformanceResult> getConformanceResultList() {
+            return conformanceResultList;
         }
 
-        public void setConformanceResult(DataQualityConformanceResult conformanceResult) {
-            this.conformanceResult = conformanceResult;
-        }
-
-        public DataQualityQuantitativeResult getQuantitativeResult() {
-            return quantitativeResult;
-        }
-
-        public void setQuantitativeResult(DataQualityQuantitativeResult quantitativeResult) {
-            this.quantitativeResult = quantitativeResult;
+        public List<DataQualityQuantitativeResult> getQuantitativeResultList() {
+            return quantitativeResultList;
         }
     }
 

@@ -34,11 +34,13 @@ public class CSWISORecordDataQualityParser {
     private static XPathExpression XPATH_DATE_TIME = null; //many
 
     //Data quality node conformance result
+    private static XPathExpression XPATH_CONFORMANCE_RESULT = null;
     private static XPathExpression XPATH_CONFORMANCE_RESULT_SPECIFICATION = null; //TODO parse
     private static XPathExpression XPATH_CONFORMANCE_RESULT_EXPLANATION = null;
     private static XPathExpression XPATH_CONFORMANCE_RESULT_PASS = null;
 
     //Data quality node quantitative result
+    private static XPathExpression XPATH_QUANTITATIVE_RESULT = null;
     private static XPathExpression XPATH_QUANTITATIVE_RESULT_VALUE_TYPE = null;
     private static XPathExpression XPATH_QUANTITATIVE_RESULT_VALUE_UNIT = null;
     private static XPathExpression XPATH_QUANTITATIVE_RESULT_ERROR_STATISTIC = null;
@@ -75,15 +77,17 @@ public class CSWISORecordDataQualityParser {
             XPATH_DATE_TIME =  xpath.compile("./gmd:dateTime"); //many
 
             //Data quality node conformance result
-            XPATH_CONFORMANCE_RESULT_SPECIFICATION = xpath.compile("./gmd:result/gmd:DQ_ConformanceResult/gmd:specification");;
-            XPATH_CONFORMANCE_RESULT_EXPLANATION = xpath.compile("./gmd:result/gmd:DQ_ConformanceResult/gmd:explanation");;
-            XPATH_CONFORMANCE_RESULT_PASS = xpath.compile("./gmd:result/gmd:DQ_ConformanceResult/gmd:pass");
+            XPATH_CONFORMANCE_RESULT = xpath.compile("./gmd:result/gmd:DQ_ConformanceResult"); //many
+            XPATH_CONFORMANCE_RESULT_SPECIFICATION = xpath.compile("./gmd:specification");;
+            XPATH_CONFORMANCE_RESULT_EXPLANATION = xpath.compile("./gmd:explanation");;
+            XPATH_CONFORMANCE_RESULT_PASS = xpath.compile("./gmd:pass");
 
             //Data quality node quantitative result
-            XPATH_QUANTITATIVE_RESULT_VALUE_TYPE = xpath.compile("./gmd:result/gmd:DQ_QuantitativeResult/gmd:valueType");
-            XPATH_QUANTITATIVE_RESULT_VALUE_UNIT = xpath.compile("./gmd:result/gmd:DQ_QuantitativeResult/gmd:valueUnit");
-            XPATH_QUANTITATIVE_RESULT_ERROR_STATISTIC = xpath.compile("./gmd:result/gmd:DQ_QuantitativeResult/gmd:errorStatistic");
-            XPATH_QUANTITATIVE_RESULT_VALUE = xpath.compile("./gmd:result/gmd:DQ_QuantitativeResult/gmd:value");
+            XPATH_QUANTITATIVE_RESULT = xpath.compile("./gmd:result/gmd:DQ_QuantitativeResult"); //many
+            XPATH_QUANTITATIVE_RESULT_VALUE_TYPE = xpath.compile("./gmd:valueType");
+            XPATH_QUANTITATIVE_RESULT_VALUE_UNIT = xpath.compile("./gmd:valueUnit");
+            XPATH_QUANTITATIVE_RESULT_ERROR_STATISTIC = xpath.compile("./gmd:errorStatistic"); //many
+            XPATH_QUANTITATIVE_RESULT_VALUE = xpath.compile("./gmd:value");
         }
         catch (Exception e) {
             ///TODO
@@ -109,18 +113,27 @@ public class CSWISORecordDataQualityParser {
                 for (Map.Entry<String, String> entry : dataQualities.entrySet()) {
                     String key = entry.getKey();
                     String value = entry.getValue();
-                    XPathExpression XPATH_DATA_QUALITY_NODE = xpath.compile(value);
-                    Node dataQualityNode = (Node) XPATH_DATA_QUALITY_NODE.evaluate(parentNode, XPathConstants.NODE);
+                    XPathExpression XPATH_DATA_QUALITY_CHILD_NODES = xpath.compile(value);
+                    NodeList dataQualityChildNodes = (NodeList) XPATH_DATA_QUALITY_CHILD_NODES.evaluate(parentNode, XPathConstants.NODESET);
 
-                    if(dataQualityNode == null) {
+                    if(dataQualityChildNodes == null || dataQualityChildNodes.getLength() < 1) {
                         continue;
                     }
-
-                    CSWIsoRecord.DataQualityNode dataQualityObjectNode = GetDataQualityNodeInformation(dataQualityNode, key);
-                    dataQualityObjectNode.setConformanceResult(GetConformanceResult(dataQualityNode));
-                    dataQualityObjectNode.setQuantitativeResult(GetQuantitativeResult(dataQualityNode));
-
-                    dataQualityObjectNodeList.add(dataQualityObjectNode);
+                    CSWIsoRecord.DataQualityNode dataQualityObjectNode = null;
+                    for (int j = 0;j < dataQualityChildNodes.getLength(); ++j) {
+                        dataQualityObjectNode = GetDataQualityNodeInformation(dataQualityChildNodes.item(j), key);
+                        NodeList dataQualityConformanceResultNodes =
+                                (NodeList) XPATH_CONFORMANCE_RESULT.evaluate(dataQualityChildNodes.item(j), XPathConstants.NODESET);
+                        for (int k = 0;k < dataQualityConformanceResultNodes.getLength(); ++k) {
+                            dataQualityObjectNode.getConformanceResultList().add(GetConformanceResult(dataQualityConformanceResultNodes.item(k)));
+                        }
+                        NodeList dataQualityQuantitativeResultNodes =
+                                (NodeList) XPATH_QUANTITATIVE_RESULT.evaluate(dataQualityChildNodes.item(j), XPathConstants.NODESET);
+                        for (int l = 0;l < dataQualityQuantitativeResultNodes.getLength(); ++l) {
+                            dataQualityObjectNode.getQuantitativeResultList().add(GetQuantitativeResult(dataQualityQuantitativeResultNodes.item(l)));
+                        }
+                        dataQualityObjectNodeList.add(dataQualityObjectNode);
+                    }
                 }
             } catch (Exception e) {
                 //TODO
@@ -133,47 +146,36 @@ public class CSWISORecordDataQualityParser {
     private CSWIsoRecord.DataQualityNode GetDataQualityNodeInformation(Node parentNode, String listName) {
         try {
             CSWIsoRecord.DataQualityNode dataQualityObjectNode = new CSWIsoRecord.DataQualityNode();
+            dataQualityObjectNode.setNodeName(listName);
 
             Node nameOfMeasureNode = (Node) XPATH_NAME_OF_MEASURE.evaluate(parentNode, XPathConstants.NODE);
-            dataQualityObjectNode.setNodeName(listName);
-            CSWIsoRecord.DataQualityValue nameOfMeasureValue = new CSWIsoRecord.DataQualityValue();
-            nameOfMeasureValue.setLabel("Name of measure");
-            nameOfMeasureValue.setValue(getLocalizedContent(nameOfMeasureNode));
-            dataQualityObjectNode.setNameOfMeasure(nameOfMeasureValue);
+            dataQualityObjectNode.setNameOfMeasure(
+                    new CSWIsoRecord.DataQualityValue("Name of measure", localize(nameOfMeasureNode)));
 
             Node measureIdentificationCodeNode = (Node) XPATH_MEASURE_IDENTIFICATION_CODE.evaluate(parentNode, XPathConstants.NODE);
-            CSWIsoRecord.DataQualityValue measureIdentificationCodeValue = new CSWIsoRecord.DataQualityValue();
-            measureIdentificationCodeValue.setLabel("Measure identification code");
-            measureIdentificationCodeValue.setValue(getLocalizedContent(measureIdentificationCodeNode));
-            dataQualityObjectNode.setMeasureIdentificationCode(measureIdentificationCodeValue);
+            dataQualityObjectNode.setMeasureIdentificationCode(
+                    new CSWIsoRecord.DataQualityValue("Measure identification code", localize(measureIdentificationCodeNode)));
 
             Node measureIdentificationAuthorizationNode = (Node) XPATH_MEASURE_IDENTIFICATION_AUTHORIZATION.evaluate(parentNode, XPathConstants.NODE);
-            CSWIsoRecord.DataQualityValue measureIdentificationAuthorizationValue = new CSWIsoRecord.DataQualityValue();
-            measureIdentificationAuthorizationValue.setLabel("Measure identification authorization");
-            measureIdentificationAuthorizationValue.setValue(getLocalizedContent(measureIdentificationAuthorizationNode));
-            dataQualityObjectNode.setMeasureIdentificationAuthorization(measureIdentificationAuthorizationValue);
+            dataQualityObjectNode.setMeasureIdentificationAuthorization(
+                    new CSWIsoRecord.DataQualityValue("Measure identification authorization", localize(measureIdentificationAuthorizationNode)));
 
             Node measureDescriptionNode = (Node) XPATH_MEASURE_DESCRIPTION.evaluate(parentNode, XPathConstants.NODE);
-            CSWIsoRecord.DataQualityValue measureDescriptionValue = new CSWIsoRecord.DataQualityValue();
-            measureDescriptionValue.setLabel("Measure description");
-            measureDescriptionValue.setValue(getLocalizedContent(measureDescriptionNode));
-            dataQualityObjectNode.setMeasureDescription(measureDescriptionValue);
+            dataQualityObjectNode.setMeasureDescription(
+                    new CSWIsoRecord.DataQualityValue("Measure description", localize(measureDescriptionNode)));
 
             Node evaluationMethodTypeNode = (Node) XPATH_EVALUATION_METHOD_TYPE.evaluate(parentNode, XPathConstants.NODE);
-            CSWIsoRecord.DataQualityValue evaluationMethodTypeValue = new CSWIsoRecord.DataQualityValue();
-            evaluationMethodTypeValue.setLabel("Evaluation method type");
-            evaluationMethodTypeValue.setValue(getLocalizedContent(evaluationMethodTypeNode));
-            dataQualityObjectNode.setEvaluationMethodType(evaluationMethodTypeValue);
+            dataQualityObjectNode.setEvaluationMethodType(
+                    new CSWIsoRecord.DataQualityValue("Evaluation method type", localize(evaluationMethodTypeNode)));
 
             Node evaluationProcedureNode = (Node) XPATH_EVALUATION_PROCEDURE.evaluate(parentNode, XPathConstants.NODE);
             dataQualityObjectNode.setEvaluationProcedure(null); //TODO parse
 
             NodeList dateTimeNode = (NodeList) XPATH_DATE_TIME.evaluate(parentNode, XPathConstants.NODESET);
             List<CSWIsoRecord.DataQualityValue> dateTimeValueList = new ArrayList<>();
-            CSWIsoRecord.DataQualityValue dateTimeValue = new CSWIsoRecord.DataQualityValue();
-            dateTimeValue.setLabel("Time");
-            dateTimeValue.setValue(getLocalizedContent(null));
-            dateTimeValueList.add(dateTimeValue);
+            for (int i = 0;i < dateTimeNode.getLength(); ++i) {
+                dateTimeValueList.add(new CSWIsoRecord.DataQualityValue("Time", localize(dateTimeNode.item(i))));
+            }
             dataQualityObjectNode.setDateTime(dateTimeValueList);
 
             return dataQualityObjectNode;
@@ -186,22 +188,18 @@ public class CSWISORecordDataQualityParser {
 
     private CSWIsoRecord.DataQualityConformanceResult GetConformanceResult(Node parentNode) {
         try {
-            Node conformanceResultSpecificationNode = (Node) XPATH_CONFORMANCE_RESULT_SPECIFICATION.evaluate(parentNode, XPathConstants.NODE);
             CSWIsoRecord.DataQualityConformanceResult dataQualityObjectConformanceResult =
                     new CSWIsoRecord.DataQualityConformanceResult();
+
+            Node conformanceResultSpecificationNode = (Node) XPATH_CONFORMANCE_RESULT_SPECIFICATION.evaluate(parentNode, XPathConstants.NODE);
             dataQualityObjectConformanceResult.setSpecification(null); //TODO parse
 
             Node conformanceResultExplanationNode = (Node) XPATH_CONFORMANCE_RESULT_EXPLANATION.evaluate(parentNode, XPathConstants.NODE);
-            CSWIsoRecord.DataQualityValue explanationValue = new CSWIsoRecord.DataQualityValue();
-            explanationValue.setLabel("Explanation");
-            explanationValue.setValue(getLocalizedContent(conformanceResultExplanationNode));
-            dataQualityObjectConformanceResult.setExplanation(explanationValue);
+            dataQualityObjectConformanceResult.setExplanation(
+                    new CSWIsoRecord.DataQualityValue("Explanation", localize(conformanceResultExplanationNode)));
 
             Node conformanceResultPassNode = (Node) XPATH_CONFORMANCE_RESULT_PASS.evaluate(parentNode, XPathConstants.NODE);
-            CSWIsoRecord.DataQualityValue passValue = new CSWIsoRecord.DataQualityValue();
-            passValue.setLabel("Pass");
-            passValue.setValue(getLocalizedContent(conformanceResultPassNode));
-            dataQualityObjectConformanceResult.setPass(passValue);
+            dataQualityObjectConformanceResult.setPass(new CSWIsoRecord.DataQualityValue("Pass", localize(conformanceResultPassNode)));
 
             return dataQualityObjectConformanceResult;
         }
@@ -218,30 +216,23 @@ public class CSWISORecordDataQualityParser {
 
         try {
             Node quantitativeResultValueTypeNode = (Node) XPATH_QUANTITATIVE_RESULT_VALUE_TYPE.evaluate(parentNode, XPathConstants.NODE);
-            CSWIsoRecord.DataQualityValue valueTypeValue = new CSWIsoRecord.DataQualityValue();
-            valueTypeValue.setLabel("Value type");
-            valueTypeValue.setValue(getLocalizedContent(quantitativeResultValueTypeNode));
-            dataQualityObjectQuantitativeResult.setValueType(valueTypeValue);
+            dataQualityObjectQuantitativeResult.setValueType(
+                    new CSWIsoRecord.DataQualityValue("Value type", localize(quantitativeResultValueTypeNode)));
 
             Node quantitativeResultValueUnitNode = (Node) XPATH_QUANTITATIVE_RESULT_VALUE_UNIT.evaluate(parentNode, XPathConstants.NODE);
-            CSWIsoRecord.DataQualityValue valueUnitValue = new CSWIsoRecord.DataQualityValue();
-            valueUnitValue.setLabel("Value unit");
-            valueUnitValue.setValue(getLocalizedContent(quantitativeResultValueUnitNode));
-            dataQualityObjectQuantitativeResult.setValueUnit(valueUnitValue);
+            dataQualityObjectQuantitativeResult.setValueUnit(
+                    new CSWIsoRecord.DataQualityValue("Value unit", localize(quantitativeResultValueUnitNode)));
 
             NodeList quantitativeResultErrorStatisticNode = (NodeList) XPATH_QUANTITATIVE_RESULT_ERROR_STATISTIC.evaluate(parentNode, XPathConstants.NODESET);
             List<CSWIsoRecord.DataQualityValue> valueValueList = new ArrayList<>();
-            CSWIsoRecord.DataQualityValue valueValue = new CSWIsoRecord.DataQualityValue();
-            valueValue.setLabel("Value");
-            valueValue.setValue(getLocalizedContent(null));
-            valueValueList.add(valueValue);
+            for (int i = 0;i < quantitativeResultErrorStatisticNode.getLength(); ++i) {
+                valueValueList.add(new CSWIsoRecord.DataQualityValue("Value", localize(quantitativeResultErrorStatisticNode.item(i))));
+            }
             dataQualityObjectQuantitativeResult.setValue(valueValueList);
 
             Node quantitativeValueNode = (Node) XPATH_QUANTITATIVE_RESULT_VALUE.evaluate(parentNode, XPathConstants.NODE);
-            CSWIsoRecord.DataQualityValue errorStatisticValue = new CSWIsoRecord.DataQualityValue();
-            errorStatisticValue.setLabel("Error statistic");
-            errorStatisticValue.setValue(getLocalizedContent(quantitativeValueNode));
-            dataQualityObjectQuantitativeResult.setErrorStatistic(errorStatisticValue);
+            dataQualityObjectQuantitativeResult.setErrorStatistic(
+                    new CSWIsoRecord.DataQualityValue("Error statistic", localize(quantitativeValueNode)));
 
             return dataQualityObjectQuantitativeResult;
         }
@@ -252,7 +243,7 @@ public class CSWISORecordDataQualityParser {
     }
 
     //Move to common utility class
-    private String getLocalizedContent(final Node elem) {
+    private String localize(final Node elem) {
         String ret = getText(elem);
         String localized;
         if (elem != null && pathToLocalizedValue != null) {
