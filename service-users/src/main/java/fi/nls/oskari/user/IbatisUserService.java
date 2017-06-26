@@ -61,6 +61,9 @@ public class IbatisUserService extends BaseIbatisService<User> {
     }
 
     private void loadRoles(User user) {
+        if(user == null) {
+            return;
+        }
         List<Role> roleList = roleService.findByUserId(user.getId());
         for(Role role : roleList) {
             user.addRole(role.getId(), role.getName());
