@@ -32,7 +32,7 @@ public class CSWISORecordDataQualityParser {
 
     //Data quality node conformance result
     private static XPathExpression XPATH_CONFORMANCE_RESULT = null;
-    private static XPathExpression XPATH_CONFORMANCE_RESULT_SPECIFICATION = null; //TODO parse
+    private static XPathExpression XPATH_CONFORMANCE_RESULT_SPECIFICATION_TITLE = null;
     private static XPathExpression XPATH_CONFORMANCE_RESULT_EXPLANATION = null;
     private static XPathExpression XPATH_CONFORMANCE_RESULT_PASS = null;
 
@@ -74,7 +74,7 @@ public class CSWISORecordDataQualityParser {
 
             //Data quality node conformance result
             XPATH_CONFORMANCE_RESULT = xpath.compile("./gmd:result/gmd:DQ_ConformanceResult"); //many
-            XPATH_CONFORMANCE_RESULT_SPECIFICATION = xpath.compile("./gmd:specification");;
+            XPATH_CONFORMANCE_RESULT_SPECIFICATION_TITLE = xpath.compile("./gmd:specification/gmd:CI_Citation/gmd:title");
             XPATH_CONFORMANCE_RESULT_EXPLANATION = xpath.compile("./gmd:explanation");;
             XPATH_CONFORMANCE_RESULT_PASS = xpath.compile("./gmd:pass");
 
@@ -175,8 +175,9 @@ public class CSWISORecordDataQualityParser {
         CSWIsoRecord.DataQualityConformanceResult dataQualityObjectConformanceResult =
                 new CSWIsoRecord.DataQualityConformanceResult();
 
-        Node conformanceResultSpecificationNode = (Node) XPATH_CONFORMANCE_RESULT_SPECIFICATION.evaluate(parentNode, XPathConstants.NODE);
-        dataQualityObjectConformanceResult.setSpecification(null); //TODO parse
+        Node conformanceResultSpecificationNode = (Node) XPATH_CONFORMANCE_RESULT_SPECIFICATION_TITLE.evaluate(parentNode, XPathConstants.NODE);
+        dataQualityObjectConformanceResult.setSpecification(
+                new CSWIsoRecord.DataQualityValue("Title", localize(conformanceResultSpecificationNode))); //TODO parse
 
         Node conformanceResultExplanationNode = (Node) XPATH_CONFORMANCE_RESULT_EXPLANATION.evaluate(parentNode, XPathConstants.NODE);
         dataQualityObjectConformanceResult.setExplanation(

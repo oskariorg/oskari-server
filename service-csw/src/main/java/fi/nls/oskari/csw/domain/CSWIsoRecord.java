@@ -1,5 +1,6 @@
 package fi.nls.oskari.csw.domain;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vividsolutions.jts.geom.GeometryCollection;
 import fi.nls.oskari.util.JSONHelper;
 import org.json.JSONArray;
@@ -28,8 +29,17 @@ public class CSWIsoRecord {
     private List<DistributionFormat> distributionFormats = new ArrayList<DistributionFormat>();
     private List<OnlineResource> onlineResources = new ArrayList<OnlineResource>();
     private List<DataQuality> dataQualities = new ArrayList<DataQuality>();
+    private DataQualityObject dataQualityObject;
     private URL metadataURL;
     private List<String> referenceSystems = new ArrayList<String>();
+
+    public DataQualityObject getDataQualityObject() {
+        return dataQualityObject;
+    }
+
+    public void setDataQualityObject(DataQualityObject dataQualityObject) {
+        this.dataQualityObject = dataQualityObject;
+    }
 
     public String getFileIdentifier() {
         return fileIdentifier;
@@ -174,6 +184,17 @@ public class CSWIsoRecord {
             arr.put(dataQuality.toJSON());
         }
         JSONHelper.putValue(ret, "dataQualities", arr);
+
+        ObjectMapper mapper = new ObjectMapper();
+        String jsonInString = "";
+        try {
+            jsonInString = mapper.writeValueAsString(dataQualityObject);
+        }
+        catch (Exception e) {
+            //TODO?
+        }
+        JSONHelper.putValue(ret, "dataQualityObject", JSONHelper.createJSONObject(jsonInString));
+
         return ret;
     }
 

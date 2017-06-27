@@ -352,8 +352,10 @@ public class CSWISORecordParser {
 
         nodeList = (NodeList) XPATH_DATA_QUALITY.evaluate(elem, XPathConstants.NODESET);
         if (nodeList.getLength() > 0) {
+            //new implementation of data quality parser
             CSWISORecordDataQualityParser dataQualityParser = new CSWISORecordDataQualityParser();
-            CSWIsoRecord.DataQualityObject dataQualityObject = dataQualityParser.parseDataQualities(nodeList, locale);
+            record.setDataQualityObject(dataQualityParser.parseDataQualities(nodeList, locale));
+            //TODO remove old implementation
             parseDataQualities(nodeList, record.getDataQualities(), pathToLocalizedValue);
         }
 
