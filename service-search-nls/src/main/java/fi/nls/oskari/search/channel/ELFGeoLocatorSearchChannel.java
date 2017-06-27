@@ -19,15 +19,13 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URLEncoder;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Search channel for ELF Geolocator requests
  */
 @Oskari(ELFGeoLocatorSearchChannel.ID)
-public class ELFGeoLocatorSearchChannel extends SearchChannel {
+public class ELFGeoLocatorSearchChannel extends SearchChannel implements SearchAutocomplete {
 
     public static final String ID = "ELFGEOLOCATOR_CHANNEL";
     public static final String PROPERTY_SERVICE_URL = "search.channel.ELFGEOLOCATOR_CHANNEL.service.url";
@@ -438,6 +436,35 @@ public class ELFGeoLocatorSearchChannel extends SearchChannel {
         super.calculateCommonFields(item);
         if (scale != -1) {
             item.setZoomScale(scale);
+        }
+    }
+
+    public List<String> doSearchAutocomplete(String searchString) {
+        //TODO Get from properties
+        String url = "http://54.195.254.125/asdielastic/placenames/placename/_search";
+        String requestJson = 	"{ \"query\": { \"match\": { \"name\": { \"query\": \""+searchString+"\", \"analyzer\": \"standard\" } } } };";
+        try {
+            //final String propertyPrefix = "search.channel." + getName() + ".service.";
+            log.info("Creating autocomplete search url with url:", url);
+            HttpURLConnection conn = IOHelper.getConnection(url);
+            String userpass = "asdiuser:3sto9AHT";
+            String basicAuth = "Basic " + javax.xml.bind.DatatypeConverter.printBase64Binary(userpass.getBytes());
+            conn.setRequestProperty ("Authorization", basicAuth);
+            IOHelper.writeToConnection(conn, requestJson);
+            String result = IOHelper.readString(conn);
+            JSONObject jsonObject = new JSONObject(result);
+
+            JSONArray jsonHitsArray = jsonObject.getJSONObject("hits").getJSONArray("hits");
+            List<String> resultList = new ArrayList<>();
+            for (int i = 0; i < jsonHitsArray.length(); ++i ) {
+                String resultName = jsonHitsArray.getJSONObject(i).getJSONObject("_source").getString("name");
+                resultList.add(resultName);
+            }
+            return resultList;
+        }
+        catch (Exception ex) {
+            log.error("Couldn't open or read from connection for search channel!");
+            throw new RuntimeException("Couldn't open or read from connection!", ex);
         }
     }
 }
