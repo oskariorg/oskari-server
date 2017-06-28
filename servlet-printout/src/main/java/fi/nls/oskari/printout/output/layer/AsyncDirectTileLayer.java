@@ -197,7 +197,7 @@ public class AsyncDirectTileLayer extends DirectTileLayer {
                             if (isCacheable) {
                                 ByteArrayOutputStream bos = new ByteArrayOutputStream();
                                 ImageIO.write(imageBuf, "png", bos);
-                                JedisCache.getBlobCache().putToCache(
+                                JedisCache.CACHE.putToCache(
                                         urlStr.getBytes(), bos.toByteArray());
                             }
 
@@ -244,7 +244,7 @@ public class AsyncDirectTileLayer extends DirectTileLayer {
         byte[] blob = null;
 
         if (isCacheable) {
-            blob = JedisCache.getBlobCache().getFromCache(url.getBytes());
+            blob = JedisCache.CACHE.getFromCache(url.getBytes());
         }
 
         if (blob != null) {
