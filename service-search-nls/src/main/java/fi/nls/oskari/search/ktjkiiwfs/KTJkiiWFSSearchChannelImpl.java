@@ -335,6 +335,9 @@ public class KTJkiiWFSSearchChannelImpl implements KTJkiiWFSSearchChannel {
         GML gml = new GML(GML.Version.WFS1_1);
         try {
             SimpleFeatureCollection fc = gml.decodeFeatureCollection(inp);
+			if(fc == null) {
+				return results;
+			}
             // bbox of GetFeature response
             ReferencedEnvelope env = fc.getBounds();
             String bbox = Double.toString(env.getMinX()) + " " + Double.toString(env.getMinY()) + " " +
@@ -475,14 +478,14 @@ public class KTJkiiWFSSearchChannelImpl implements KTJkiiWFSSearchChannel {
 
 		String requestedRegisterUnitId = registerUnitId.getValue();
 
-		logger.info("searchByRegisterUnitId " + requestedRegisterUnitId);
+		logger.debug("searchByRegisterUnitId " + requestedRegisterUnitId);
 
 		RegisterUnitId registerUnitID = convertRequestStringToRegisterUnitID(requestedRegisterUnitId);
 		if (registerUnitID == null) {
 			return null;
 		}
 
-		logger.info("searchByRegisterUnitId -> " + registerUnitID);
+		logger.debug("searchByRegisterUnitId -> " + registerUnitID);
 
 		List<RegisterUnitParcelSearchResult> results = null;
 
@@ -493,13 +496,13 @@ public class KTJkiiWFSSearchChannelImpl implements KTJkiiWFSSearchChannel {
 		OutputStream outs = connection.getOutputStream();
 		try {
 			try {
-				logger.info("searchByRegisterUnitId -> " + registerUnitID
+				logger.debug("searchByRegisterUnitId -> " + registerUnitID
 						+ " sending Request");
 				buildParcelFeatureQueryToStream(registerUnitID, outs);
 			} finally {
 				outs.close();
 			}
-			logger.info("searchByRegisterUnitId -> " + registerUnitID
+			logger.debug("searchByRegisterUnitId -> " + registerUnitID
 					+ " reading response");
 			InputStream inp = connection.getInputStream();
 			try {
@@ -508,7 +511,7 @@ public class KTJkiiWFSSearchChannelImpl implements KTJkiiWFSSearchChannel {
 				inp.close();
 			}
 
-			logger.info("searchByRegisterUnitId -> " + registerUnitID
+			logger.debug("searchByRegisterUnitId -> " + registerUnitID
 					+ " finished");
 
 		} catch (XPathExpressionException e) {
@@ -544,14 +547,14 @@ public class KTJkiiWFSSearchChannelImpl implements KTJkiiWFSSearchChannel {
 
 		String requestedRegisterUnitId = registerUnitId.getValue();
 
-		logger.info("searchByRegisterUnitId " + requestedRegisterUnitId);
+		logger.debug("searchByRegisterUnitId " + requestedRegisterUnitId);
 
 		RegisterUnitId registerUnitID = convertRequestStringToRegisterUnitID(requestedRegisterUnitId);
 		if (registerUnitID == null) {
 			return null;
 		}
 
-		logger.info("searchByRegisterUnitId -> " + registerUnitID);
+		logger.debug("searchByRegisterUnitId -> " + registerUnitID);
 
 		List<RegisterUnitParcelSearchResult> results = null;
 
@@ -561,13 +564,13 @@ public class KTJkiiWFSSearchChannelImpl implements KTJkiiWFSSearchChannel {
 		OutputStream outs = connection.getOutputStream();
 		try {
 			try {
-				logger.info("searchByRegisterUnitId -> " + registerUnitID
+				logger.debug("searchByRegisterUnitId -> " + registerUnitID
 						+ " sending Request");
 				buildRegisterUnitFeatureQueryToStream(registerUnitID, outs);
 			} finally {
                 IOHelper.close(outs);
 			}
-			logger.info("searchByRegisterUnitId -> " + registerUnitID
+			logger.debug("searchByRegisterUnitId -> " + registerUnitID
 					+ " reading response");
 			InputStream inp = connection.getInputStream();
 			try {
@@ -576,7 +579,7 @@ public class KTJkiiWFSSearchChannelImpl implements KTJkiiWFSSearchChannel {
                 IOHelper.close(inp);
 			}
 
-			logger.info("searchByRegisterUnitId -> " + registerUnitID
+			logger.debug("searchByRegisterUnitId -> " + registerUnitID
 					+ " finished");
 
 		} catch (XPathExpressionException e) {
