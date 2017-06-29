@@ -57,10 +57,10 @@ public class KTJkiiSearchChannel extends SearchChannel {
             List<RegisterUnitParcelSearchResult> results = impl
                     .searchByRegisterUnitIdWithParcelFeature(registerUnitId);
 
-            if (results == null) {
-                log.debug("RegisterUnitParcelSearchResult was null for query: '", 
-                        searchCriteria.getSearchString(), "' and RegisterUnitId: ", 
-                        registerUnitId.getValue());
+            if (results == null || results.isEmpty()) {
+                log.info("No result for: '",
+                        searchCriteria.getSearchString(), "' and RegisterUnitId: '",
+                        registerUnitId.getValue(), "' ServiceURL:", serviceURL);
                 return searchResultList;
             }
 

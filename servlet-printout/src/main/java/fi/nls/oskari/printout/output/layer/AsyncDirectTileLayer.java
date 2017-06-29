@@ -225,7 +225,7 @@ public class AsyncDirectTileLayer extends DirectTileLayer {
             }
 
             public void failed(final Exception ex) {
-                log.warn("FAILED " + url.toExternalForm() + ex);
+                log.warn("FAILED " + url.toExternalForm(), ex);
                 latch.countDown();
             }
 
