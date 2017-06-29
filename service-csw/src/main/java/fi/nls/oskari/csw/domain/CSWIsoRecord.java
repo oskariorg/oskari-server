@@ -245,6 +245,7 @@ public class CSWIsoRecord {
 
     public static class DataQualityNode {
         private String nodeName;
+        private DataQualityValue linageStatement;
         private DataQualityValue nameOfMeasure;
         private DataQualityValue measureIdentificationCode;
         private DataQualityValue measureIdentificationAuthorization;
@@ -261,6 +262,14 @@ public class CSWIsoRecord {
 
         public void setNodeName(String nodeName) {
             this.nodeName = nodeName;
+        }
+
+        public DataQualityValue getLinageStatement() {
+            return linageStatement;
+        }
+
+        public void setLinageStatement(DataQualityValue linageStatement) {
+            this.linageStatement = linageStatement;
         }
 
         public DataQualityValue getNameOfMeasure() {

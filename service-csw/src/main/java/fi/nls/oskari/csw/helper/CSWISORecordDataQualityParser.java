@@ -18,6 +18,9 @@ public class CSWISORecordDataQualityParser {
     private static final Logger log = LogFactory.getLogger(CSWISORecordDataQualityParser.class);
     private static XPathExpression pathToLocalizedValue = null;
 
+    //Linage statement
+    private static XPathExpression XPATH_LINAGE_STATEMENT = null;
+
     //Data quality node information
     private final static XPath xpath = XPathFactory.newInstance().newXPath();
     private final static Map<String, String> dataQualities = new LinkedMap();
@@ -62,6 +65,9 @@ public class CSWISORecordDataQualityParser {
         try {
             xpath.setNamespaceContext(new CSWISORecordNamespaceContext());
 
+            //Linage statement
+            XPATH_LINAGE_STATEMENT = xpath.compile("./gmd:lineage/gmd:LI_Lineage/gmd:statement");
+
             //Data quality node information
             XPATH_NAME_OF_MEASURE = xpath.compile("./gmd:nameOfMeasure"); //many
             XPATH_MEASURE_IDENTIFICATION_CODE =  xpath.compile("./gmd:measureIdentification/gmd:code");
@@ -101,6 +107,7 @@ public class CSWISORecordDataQualityParser {
         List<CSWIsoRecord.DataQualityNode> dataQualityObjectNodeList = dataQualityObject.getDataQualityNodes();
         for (int i = 0; i < dataQualityNodes.getLength(); i++) {
             Node parentNode = dataQualityNodes.item(i);
+
             for (Map.Entry<String, String> entry : dataQualities.entrySet()) {
                 String key = entry.getKey();
                 String value = entry.getValue();
@@ -113,6 +120,10 @@ public class CSWISORecordDataQualityParser {
                 CSWIsoRecord.DataQualityNode dataQualityObjectNode = null;
                 for (int j = 0;j < dataQualityChildNodes.getLength(); ++j) {
                     dataQualityObjectNode = GetDataQualityNodeInformation(dataQualityChildNodes.item(j), key);
+
+                    Node linageStatementNode = (Node) XPATH_LINAGE_STATEMENT.evaluate(parentNode, XPathConstants.NODE);
+                    dataQualityObjectNode.setLinageStatement(
+                            new CSWIsoRecord.DataQualityValue("Linage statement", localize(linageStatementNode)));
 
                     NodeList dataQualityConformanceResultNodes =
                             (NodeList) XPATH_CONFORMANCE_RESULT.evaluate(dataQualityChildNodes.item(j), XPathConstants.NODESET);
