@@ -1,5 +1,18 @@
 # Release Notes
 
+## 1.43.0
+
+### servlet-printout
+
+Printout no longer assumes Redis is on localhost. Configurable in print-properties with: 
+
+    redis.hostname=localhost
+    redis.port=6379
+
+### KTJKIISearchChannel
+
+Removed spammy log messages when results were not found.
+
 ## 1.42.1
 
 ### User registration functionality rewrite
