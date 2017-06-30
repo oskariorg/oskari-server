@@ -301,6 +301,15 @@ public class SearchServiceImpl extends SearchService implements SearchChannelCha
         return Collections.unmodifiableMap(availableChannels);
     }
 
+    public boolean isAvailableAutcompleteChannels() {
+        for (Map.Entry<String, SearchableChannel> channel : getAvailableChannels().entrySet()) {
+            if ((channel.getValue() instanceof SearchAutocomplete)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     private void printsc(SearchCriteria searchCriteria) {
         LOG.debug("printing SearchCriteria");
 
