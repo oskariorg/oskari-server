@@ -1,5 +1,18 @@
 # Release Notes
 
+## 1.44.0
+
+### Terms of use for map publish functionality
+ 
+Separate terms of use for map publishing functionality can now be configured in oskari-ext.properties:
+ 
+    oskari.map.terms.url=https://my.site/terms    
+    oskari.map.publish.terms.url=https://my.site/terms-for-publishing
+    
+The code will look for publish terms first and default to the generic terms config if not found. 
+Both properties can be localized by adding .fi/.en etc language code at the end of the key.
+The value will be populated to publisher/publisher2 bundle configs.
+
 ## 1.43.0
 
 ### servlet-printout
