@@ -328,7 +328,10 @@ public class CreateAnalysisLayerHandler extends ActionHandler {
         if (baseurl == null) {
             try {
                 final URL url = new URL(params.getRequest().getRequestURL().toString());
-                baseurl = url.getProtocol() + "://" + url.getHost() + ":" + url.getPort();
+                baseurl = url.getProtocol() + "://" + url.getHost();
+                if(url.getPort() != -1) {
+                    baseurl = baseurl + ":" + url.getPort();
+                }
             } catch (Exception ignored) {
             }
         }
