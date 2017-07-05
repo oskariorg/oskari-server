@@ -18,6 +18,11 @@ The code will look for publish terms first and default to the generic terms conf
 Both properties can be localized by adding .fi/.en etc language code at the end of the key.
 The value will be populated to publisher/publisher2 bundle configs.
 
+### Userlayer's feature properties ordering
+
+In the user_layer table "fields" json is migrated from JSONObject to JSONArray to keep order of the feature properties. 
+New imported userlayer's feature properties will be handled in same order than in the source file (e.g. Shapefile).
+
 ## 1.43.0
 
 ### servlet-printout

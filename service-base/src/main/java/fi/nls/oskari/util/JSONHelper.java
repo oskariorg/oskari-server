@@ -194,6 +194,18 @@ public class JSONHelper {
         }
     }
 
+    public static final String getStringFromJSON(final JSONArray data, final String defaultValue) {
+        try {
+            final String value = data.toString();
+            if (value != null) {
+                return value;
+            }
+            return defaultValue;
+        } catch (Exception e) {
+            return defaultValue;
+        }
+    }
+
     public static final boolean accumulateValue(final JSONObject json, final String key, final Object value) {
         try {
             json.accumulate(key, value);
@@ -317,6 +329,7 @@ public class JSONHelper {
             throw new IllegalArgumentException("Couldn't create JSONArray of Json keys" );
         }
     }
+
     /**
      * Compares 2 JSONObjects for equality. Ignores property order and only matches on defined properties and property values.
      * @param jsonObject1
