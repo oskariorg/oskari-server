@@ -87,6 +87,7 @@ public class UserLayerDataService {
 
             log.debug("Adding user_layer row", userLayer);
             userLayerService.insertUserLayerRow(userLayer);
+
         } catch (Exception e) {
             if(userLayer.getId() > 0){
                 userLayerService.deleteUserLayer(userLayer.getId());
@@ -216,20 +217,21 @@ public class UserLayerDataService {
             return null;
         }
     }
-
+    // parse SimpleFeatureType schema to JSONArray to keep same order in fields as in the imported file
     public String parseFields(FeatureType schema) {
 
-        JSONObject jsfields = new JSONObject();
+        JSONArray jsfields = new JSONArray();
         try {
             String fields = DataUtilities.encodeType((SimpleFeatureType) schema);
             String[] tfields = fields.split("[:,]");
             for (int i = 0; i < tfields.length - 1; i = i + 2) {
-                jsfields.put(tfields[i], tfields[i + 1]);
+
+                jsfields.put(new JSONObject().put(tfields[i], tfields[i + 1]));
             }
 
         } catch (Exception ex) {
             log.error(ex, "Couldn't parse field schema");
         }
-        return JSONHelper.getStringFromJSON(jsfields, "{}");
+        return JSONHelper.getStringFromJSON(jsfields, "[]");
     }
 }
