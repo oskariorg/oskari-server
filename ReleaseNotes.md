@@ -2,6 +2,11 @@
 
 ## 1.44.0
 
+### State cookie handling
+
+Added error handling to state handling. 
+State cookie parsing no longer assumes that referenced bundles are part of the appsetup.
+
 ### Terms of use for map publish functionality
  
 Separate terms of use for map publishing functionality can now be configured in oskari-ext.properties:

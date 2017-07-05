@@ -1,11 +1,9 @@
 package fi.nls.oskari.search.channel;
 
 import fi.mml.portti.service.search.ChannelSearchResult;
-import fi.mml.portti.service.search.SearchService;
 import fi.nls.oskari.annotation.Oskari;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.search.util.SearchUtil;
 import fi.nls.oskari.util.PropertyUtil;
 
 @Oskari(MaastoAddressChannelSearchService.ID)
