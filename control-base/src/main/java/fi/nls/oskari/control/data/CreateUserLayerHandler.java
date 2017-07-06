@@ -1,14 +1,11 @@
 package fi.nls.oskari.control.data;
-/**
- * Store zipped file set to oskari_user_store database
- *
- */
 
 import fi.mml.map.mapwindow.util.OskariLayerWorker;
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.ActionHandler;
 import fi.nls.oskari.control.ActionParameters;
+import fi.nls.oskari.control.ActionParamsException;
 import fi.nls.oskari.domain.User;
 import fi.nls.oskari.domain.map.userlayer.UserLayer;
 import fi.nls.oskari.log.LogFactory;
@@ -31,18 +28,22 @@ import org.json.JSONObject;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.*;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.*;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-
+/**
+ * Store zipped file set to oskari_user_store database
+ */
 @OskariActionRoute("CreateUserLayer")
 public class CreateUserLayerHandler extends ActionHandler {
 
     private static final Logger log = LogFactory
             .getLogger(CreateUserLayerHandler.class);
-    private final UserLayerDataService userlayerService = new UserLayerDataService();
     private static final List<String> ACCEPTED_FORMATS = Arrays.asList("SHP", "KML", "GPX", "MIF");
     private static final String IMPORT_SHP = ".SHP";
     private static final String IMPORT_GPX = ".GPX";
@@ -52,10 +53,118 @@ public class CreateUserLayerHandler extends ActionHandler {
     private static final String PARAM_SOURCE_EPSG_KEY = "sourceEpsg";
     private static final String USERLAYER_MAX_FILE_SIZE_MB = "userlayer.max.filesize.mb";
     private static final String USERLAYER_DEFAULT_SOURCE_EPSG = "userlayer.default.source.epsg";
-    final long userlayerMaxFileSizeMb = PropertyUtil.getOptional(USERLAYER_MAX_FILE_SIZE_MB, 10);
-    final String defaultSourceEpsg = PropertyUtil.get(USERLAYER_DEFAULT_SOURCE_EPSG, null);
     private static final int MAX_FILES_IN_ZIP = 100;
     private static final int MAX_BASE_FILENAME_LENGHT = 24;
+    final long userlayerMaxFileSizeMb = PropertyUtil.getOptional(USERLAYER_MAX_FILE_SIZE_MB, 10);
+    final String defaultSourceEpsg = PropertyUtil.get(USERLAYER_DEFAULT_SOURCE_EPSG, null);
+    private final UserLayerDataService userlayerService = new UserLayerDataService();
+
+    /**
+     * @param zipFile
+     * @return
+     * @throws Exception
+     */
+
+    private static File unZip(FileItem zipFile) throws Exception {
+
+        FileHelper mainFile = null;
+
+        try (ZipInputStream zis = new ZipInputStream(zipFile.getInputStream())){
+            ZipEntry ze = zis.getNextEntry();
+            String filesBaseName = null;
+            int fileCount = 0;
+            while (ze != null) {
+                fileCount++;
+                if (fileCount > MAX_FILES_IN_ZIP) {
+                    // safeguard against infinite loop, userlayers shouldn't have this many files in any case
+                    break;
+                }
+
+                if (ze.isDirectory()) {
+                    zis.closeEntry();
+                    ze = zis.getNextEntry();
+                    continue;
+                }
+                FileHelper file = handleZipEntry(ze, zis, filesBaseName);
+                if (file == null) {
+                    zis.closeEntry();
+                    ze = zis.getNextEntry();
+                    continue;
+                }
+
+                // use the same base name for all files in zip
+                int i = file.getSavedTo().lastIndexOf(".");
+                filesBaseName = file.getSavedTo().substring(0, i);
+                //Cut too long basename
+
+                if (mainFile == null && file.isOfType(ACCEPTED_FORMATS)) {
+                    mainFile = file;
+                }
+                zis.closeEntry();
+                ze = zis.getNextEntry();
+            }
+        }
+
+        if (mainFile == null) {
+            return null;
+        }
+        return mainFile.getFile();
+    }
+
+    private static FileHelper handleZipEntry(ZipEntry ze, ZipInputStream zis, String tempFileBaseName) {
+
+        FileHelper file = new FileHelper(ze.getName());
+        if (!file.hasNameAndExtension()) {
+            return null;
+        }
+
+        File newFile = null;
+        FileOutputStream fos = null;
+        try {
+            String ftmp = file.getBaseName();
+            if (ftmp.length() > MAX_BASE_FILENAME_LENGHT) {
+                //Cut too long filename in the middle
+                ftmp = file.getBaseName().substring(0, 9) + "_" + file.getBaseName().substring(file.getBaseName().length() - 10);
+            } else if(ftmp.length() < 3) {
+                // File.createTempFile() "The prefix string must be at least three characters long"
+                ftmp = "00" + ftmp;
+            }
+
+            newFile = File.createTempFile(ftmp, "." + file.getExtension());
+            log.debug("file unzip : " + newFile.getAbsoluteFile());
+            fos = new FileOutputStream(newFile);
+
+            byte[] buffer = new byte[1024];
+            int len;
+            while ((len = zis.read(buffer)) > 0) {
+                fos.write(buffer, 0, len);
+            }
+        } catch (IOException ex) {
+            log.warn(ex, "Error unzipping file:", file);
+        } finally {
+            if (newFile != null) {
+                file.setSavedTo(newFile.getPath());
+                newFile.deleteOnExit();
+            }
+            IOHelper.close(fos);
+        }
+
+        if (tempFileBaseName != null) {
+            // rename tempfile if we have an existing basename (shapefiles need to have same basename)
+            final String newName = tempFileBaseName + "." + file.getExtension();
+            File renameLocation = new File(newName);
+            boolean success = newFile.renameTo(renameLocation);
+            if (!success) {
+                //TODO: if shapefile contains more than one layer -> warn user that zip should contain only one layer (shp + dbf + shx)
+                log.warn("Rename failed in temp directory", newFile.getName(), " ->  ", newName);
+            } else {
+                // update path
+                file.setSavedTo(renameLocation.getPath());
+                log.debug("File renamed ", newFile.getName(), " ->  ", newName);
+            }
+        }
+        return file;
+    }
 
     @Override
     public void handleAction(ActionParameters params) throws ActionException {
@@ -76,7 +185,7 @@ public class CreateUserLayerHandler extends ActionHandler {
 
             if (file == null) {
                 log.error("Couldn't find valid import file in zip file");
-                throw new ActionException ("invalid_file");
+                throw new ActionParamsException("invalid_file");
             }
 
             User user = params.getUser();
@@ -105,7 +214,7 @@ public class CreateUserLayerHandler extends ActionHandler {
             // Store failed
             if (ulayer == null) {
                 log.error("Couldn't store user data into database or no features in the input data");
-                throw new ActionException ("unable_to_store_data");
+                throw new ActionException("unable_to_store_data");
             }
 
             // workaround because of IE iframe submit json download functionality
@@ -126,12 +235,11 @@ public class CreateUserLayerHandler extends ActionHandler {
                 JSONHelper.putValue(userLayer, "warning", featuresSkipped);
             }
             response.getWriter().print(userLayer);
-
-        }catch (ActionException e) {
-            throw new ActionException (e.getMessage());
-        }
-        catch (Exception e) {
-            throw new ActionException (e.getMessage());
+        } catch (Exception e) {
+            if (e instanceof ActionException) {
+                throw (ActionException) e;
+            }
+            throw new ActionException(e.getMessage(), e);
         }
 
     }
@@ -144,9 +252,6 @@ public class CreateUserLayerHandler extends ActionHandler {
      */
     private RawUpLoadItem getZipFiles(ActionParameters params) throws ActionException {
 
-
-        InputStream is = null;
-        FileOutputStream fos = null;
         FileItem impFileItem = null;
         HttpServletRequest request = params.getRequest();
 
@@ -154,10 +259,10 @@ public class CreateUserLayerHandler extends ActionHandler {
             // Incoming strings are in UTF-8 but they're not read as such unless we force it...
             request.setCharacterEncoding("UTF-8");
         } catch (UnsupportedEncodingException e) {
-            log.warn("Couldnt setup UTF-8 encoding");
+            log.warn("Couldn't setup UTF-8 encoding");
         }
 
-        Map fparams = new HashMap<String, String>();
+        Map<String, String> fparams = new HashMap();
         RawUpLoadItem loadItem = new RawUpLoadItem();
 
         try {
@@ -210,115 +315,6 @@ public class CreateUserLayerHandler extends ActionHandler {
         loadItem.setFparams(fparams);
 
         return loadItem;
-    }
-
-    /**
-     * @param zipFile
-     * @return
-     * @throws Exception
-     */
-
-    private static File unZip(FileItem zipFile) throws Exception {
-
-        FileHelper mainFile = null;
-        ZipInputStream zis = null;
-
-        try {
-            zis = new ZipInputStream(zipFile.getInputStream());
-            ZipEntry ze = zis.getNextEntry();
-            String filesBaseName = null;
-            int fileCount = 0;
-            while (ze != null) {
-                fileCount++;
-                if(fileCount > MAX_FILES_IN_ZIP) {
-                    // safeguard against infinite loop, userlayers shouldn't have this many files in any case
-                    break;
-                }
-
-                if (ze.isDirectory()) {
-                    zis.closeEntry();
-                    ze = zis.getNextEntry();
-                    continue;
-                }
-                FileHelper file = handleZipEntry(ze, zis, filesBaseName);
-                if(file == null) {
-                    zis.closeEntry();
-                    ze = zis.getNextEntry();
-                    continue;
-                }
-
-                // use the same base name for all files in zip
-                int i = file.getSavedTo().lastIndexOf(".");
-                filesBaseName = file.getSavedTo().substring(0, i);
-                //Cut too long basename
-
-                if (mainFile == null && file.isOfType(ACCEPTED_FORMATS)) {
-                    mainFile = file;
-                }
-                zis.closeEntry();
-                ze = zis.getNextEntry();
-            }
-        } finally {
-            IOHelper.close(zis);
-        }
-
-        if(mainFile == null) {
-            return null;
-        }
-        return mainFile.getFile();
-    }
-
-    private static FileHelper handleZipEntry(ZipEntry ze, ZipInputStream zis, String tempFileBaseName) {
-
-        FileHelper file = new FileHelper(ze.getName());
-        if (!file.hasNameAndExtension()) {
-            return null;
-        }
-
-        // TODO: File.createTempFile() says "The prefix string must be at least three characters long" maybe check this?
-        File newFile = null;
-        FileOutputStream fos = null;
-        try {
-            String ftmp = file.getBaseName();
-            if(file.getBaseName().length() > MAX_BASE_FILENAME_LENGHT){
-                //Cut too long filename in the middle
-                ftmp = file.getBaseName().substring(0,9) + "_" + file.getBaseName().substring(file.getBaseName().length()-10);
-            }
-
-            newFile = File.createTempFile(ftmp, "." + file.getExtension());
-            log.debug("file unzip : " + newFile.getAbsoluteFile());
-            fos = new FileOutputStream(newFile);
-
-            byte[] buffer = new byte[1024];
-            int len;
-            while ((len = zis.read(buffer)) > 0) {
-                fos.write(buffer, 0, len);
-            }
-        } catch (IOException ex) {
-            log.warn(ex, "Error unzipping file:", file);
-        } finally {
-            if(newFile != null) {
-                file.setSavedTo(newFile.getPath());
-                newFile.deleteOnExit();
-            }
-            IOHelper.close(fos);
-        }
-
-        if(tempFileBaseName != null) {
-            // rename tempfile if we have an existing basename (shapefiles need to have same basename)
-            final String newName = tempFileBaseName + "." + file.getExtension();
-            File renameLocation = new File(newName);
-            boolean success = newFile.renameTo(renameLocation);
-            if(!success) {
-                //TODO: if shapefile contains more than one layer -> warn user that zip should contain only one layer (shp + dbf + shx)
-                log.warn("Rename failed in temp directory", newFile.getName(), " ->  ",newName );
-            } else {
-                // update path
-                file.setSavedTo(renameLocation.getPath());
-                log.debug("File renamed ",newFile.getName(), " ->  ",newName );
-            }
-        }
-        return file;
     }
 
     class RawUpLoadItem {
