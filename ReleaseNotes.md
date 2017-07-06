@@ -18,10 +18,20 @@ The code will look for publish terms first and default to the generic terms conf
 Both properties can be localized by adding .fi/.en etc language code at the end of the key.
 The value will be populated to publisher/publisher2 bundle configs.
 
-### Userlayer's feature properties ordering
+### Userlayer import
 
 In the user_layer table "fields" json is migrated from JSONObject to JSONArray to keep order of the feature properties. 
 New imported userlayer's feature properties will be handled in same order than in the source file (e.g. Shapefile).
+
+The database access library has been updated from Ibatis to Mybatis. 
+UserLayerDbService has been changed to be suitable for new Mybatis implementation. 
+Old iBATIS implementation isn't compatible with new UserLayerDbService. 
+Now layer, style and data inserts are handled in one transaction.
+
+Added error codes (e.g. invalid_file) to response instead of textual messages to support localization in the frontend.
+
+Added feature count to layerJSON response. Also adds a warning object with skipped_features to layerJSON response
+ if feature(s) were skipped (no geometry object or geometry is null) during import.
 
 ## 1.43.0
 
