@@ -65,7 +65,6 @@ public class CreateUserLayerHandler extends ActionHandler {
 
         final String target_epsg = params.getHttpParam(PARAM_EPSG_KEY, "EPSG:3067");
         final String source_epsg = params.getHttpParam(PARAM_SOURCE_EPSG_KEY, defaultSourceEpsg);
-
         try {
 
             // Only 1st file item is handled
@@ -76,7 +75,8 @@ public class CreateUserLayerHandler extends ActionHandler {
             File file = unZip(loadItem.getFileitem());
 
             if (file == null) {
-                throw new ActionException("Couldn't find valid import file in zip file");
+                log.error("Couldn't find valid import file in zip file");
+                throw new ActionException ("invalid_file");
             }
 
             User user = params.getUser();
@@ -99,12 +99,13 @@ public class CreateUserLayerHandler extends ActionHandler {
             }
 
 
-            // Store geojson via ibatis
+            // Store geojson via Mybatis
             UserLayer ulayer = userlayerService.storeUserData(geojsonWorker, user, loadItem.getFparams());
 
             // Store failed
             if (ulayer == null) {
-                throw new ActionException("Couldn't store user data into database  or no features in the input data");
+                log.error("Couldn't store user data into database or no features in the input data");
+                throw new ActionException ("unable_to_store_data");
             }
 
             // workaround because of IE iframe submit json download functionality
@@ -115,17 +116,22 @@ public class CreateUserLayerHandler extends ActionHandler {
             response.setCharacterEncoding("UTF-8");
 
             JSONObject userLayer = userlayerService.parseUserLayer2JSON(ulayer);
+            JSONHelper.putValue(userLayer, "featuresCount", ulayer.getFeatures_count());
             JSONObject permissions = OskariLayerWorker.getAllowedPermissions();
             JSONHelper.putValue(userLayer, "permissions", permissions);
+            //add warning if features were skipped
+            if (ulayer.getFeatures_skipped() > 0) {
+                JSONObject featuresSkipped = new JSONObject();
+                JSONHelper.putValue(featuresSkipped, "featuresSkipped", ulayer.getFeatures_skipped());
+                JSONHelper.putValue(userLayer, "warning", featuresSkipped);
+            }
             response.getWriter().print(userLayer);
 
         }catch (ActionException e) {
-            throw new ActionException("Import failed - " + e.getMessage(),
-                    e);
+            throw new ActionException (e.getMessage());
         }
         catch (Exception e) {
-            throw new ActionException("Couldn't get the import file set - " + e.getMessage(),
-                    e);
+            throw new ActionException (e.getMessage());
         }
 
     }
@@ -178,7 +184,7 @@ public class CreateUserLayerHandler extends ActionHandler {
                 try {
                     items = upload.parseRequest(request);
                 } catch (FileUploadException ex) {
-                    log.error("Could not parse request", ex);
+                    log.error("Could not parse request", ex); //file_over_size
                 }
                 try {
                     ListIterator li = items.listIterator();
@@ -304,6 +310,7 @@ public class CreateUserLayerHandler extends ActionHandler {
             File renameLocation = new File(newName);
             boolean success = newFile.renameTo(renameLocation);
             if(!success) {
+                //TODO: if shapefile contains more than one layer -> warn user that zip should contain only one layer (shp + dbf + shx)
                 log.warn("Rename failed in temp directory", newFile.getName(), " ->  ",newName );
             } else {
                 // update path

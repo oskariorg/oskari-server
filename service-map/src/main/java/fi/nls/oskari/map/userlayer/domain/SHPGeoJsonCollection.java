@@ -1,16 +1,14 @@
 package fi.nls.oskari.map.userlayer.domain;
 
-
 import com.vividsolutions.jts.geom.Geometry;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.userlayer.service.GeoJsonWorker;
-import fi.nls.oskari.service.ServiceRuntimeException;
 import fi.nls.oskari.util.JSONHelper;
-
 import org.apache.commons.io.IOUtils;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.shapefile.ShapefileDataStore;
+import org.geotools.data.shapefile.ShapefileDataStoreFactory;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureIterator;
 import org.geotools.geojson.feature.FeatureJSON;
@@ -26,49 +24,33 @@ import org.opengis.referencing.operation.MathTransform;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.Map;
 
 public class SHPGeoJsonCollection extends GeoJsonCollection implements GeoJsonWorker {
 
     static final int GJSON_DECIMALS = 10;
-    GeometryJSON gjson = new GeometryJSON(GJSON_DECIMALS);
-    final FeatureJSON io = new FeatureJSON(gjson);
     private static final Logger log = LogFactory
             .getLogger(SHPGeoJsonCollection.class);
-    private static final Map <String, Charset> AVAILABLE_CHARSETS = Charset.availableCharsets(); //Returns the default charset of this Java virtual machine
+    private static final Map<String, Charset> AVAILABLE_CHARSETS = Charset.availableCharsets(); //Returns the default charset of this Java virtual machine
+    GeometryJSON gjson = new GeometryJSON(GJSON_DECIMALS);
+    final FeatureJSON io = new FeatureJSON(gjson);
 
     /**
      * Parse ESRI shape file set to geojson features
      * Coordinate transformation is executed, if shape .prj file is within
-     * @param file   .shp import file
-     * @param source_epsg   source CRS (is used, if crs in not available in source data)
-     * @param target_epsg   target CRS
+     *
+     * @param file        .shp import file
+     * @param source_epsg source CRS (is used, if crs in not available in source data)
+     * @param target_epsg target CRS
      * @return null --> ok   error message --> import failed
      */
     public String parseGeoJSON(File file, String source_epsg, String target_epsg) {
         ShapefileDataStore dataStore = null;
         try {
             dataStore = new ShapefileDataStore(file.toURI().toURL());
-
-            //try to find cpg file for identifying the character encoding to be used
-            try{
-                String baseFilePath = file.getAbsolutePath().substring(0,file.getAbsolutePath().lastIndexOf('.'));
-                File cpgFile = new File (baseFilePath + ".cpg");
-                if (cpgFile != null){
-                    try(FileInputStream inputStream = new FileInputStream(cpgFile)){
-                        String content = IOUtils.toString(inputStream); //cpg file should have only charsets name
-                        if(AVAILABLE_CHARSETS.containsKey(content.trim())){
-                            Charset charset = AVAILABLE_CHARSETS.get(content.trim());
-                            dataStore.setCharset(charset);
-                            log.debug("Found charset from cpg file. Using charset:", charset.name());
-                        }
-                    }
-                }
-            }catch (FileNotFoundException e) {
-                log.debug("Couldn't find cpg file", e.getMessage(), "Using default ISO-8859-1 charset");
-            }
+            dataStore.setCharset(getCharset(file));
 
             String typeName = dataStore.getTypeNames()[0];
             MathTransform transform = null;
@@ -79,15 +61,18 @@ public class SHPGeoJsonCollection extends GeoJsonCollection implements GeoJsonWo
 
             //Coordinate transformation support
             CoordinateReferenceSystem sourceCrs = source.getBounds().getCoordinateReferenceSystem();
-            if (sourceCrs == null) sourceCrs = schema.getCoordinateReferenceSystem();
+            if (sourceCrs == null) {
+                sourceCrs = schema.getCoordinateReferenceSystem();
+            }
             //TODO check axis orientation
 
             //Geojson axis orientation is always  lon,lat (decode(....true)
             CoordinateReferenceSystem target = CRS.decode(target_epsg, true);
 
-            if (sourceCrs == null && source_epsg== null ) {
+            if (sourceCrs == null && source_epsg == null) {
                 // Unknown CRS in source data - better to stop - result could be chaos
-                return "Uknown projection data in the source import file " + file.getName();
+                log.error("Uknown projection data in the source import file", file.getName());
+                return "unknown_projection";
             }
 
             // Source epsg not found in source data, use epsg given by the user
@@ -96,7 +81,7 @@ public class SHPGeoJsonCollection extends GeoJsonCollection implements GeoJsonWo
             }
 
             // Source and target are identical no transform ?  --> no transform
-            if (sourceCrs != null && !target.getName().equals(sourceCrs.getName())){
+            if (sourceCrs != null && !target.getName().equals(sourceCrs.getName())) {
                 transform = CRS.findMathTransform(sourceCrs, target, true);
             }
 
@@ -123,13 +108,32 @@ public class SHPGeoJsonCollection extends GeoJsonCollection implements GeoJsonWo
             setTypeName(typeName);
             return null;
 
-        }catch (Exception e) {
-            log.error("Couldn't create geoJSON from the shp file ", file.getName(),
-                    e);
-            return "Couldn't create geoJSON from the shp file " + file.getName();
-        }
-        finally {
+        } catch (Exception e) {
+            log.error("Couldn't create geoJSON from the shapefile.", file.getName(), e);
+            return "shp";
+        } finally {
             dataStore.dispose();
         }
+    }
+
+    private Charset getCharset(File file) {
+        //try to find cpg file for identifying the character encoding to be used
+        try {
+            String baseFilePath = file.getAbsolutePath().substring(0, file.getAbsolutePath().lastIndexOf('.'));
+            File cpgFile = new File(baseFilePath + ".cpg");
+            if (cpgFile != null) {
+                try (FileInputStream inputStream = new FileInputStream(cpgFile)) {
+                    String content = IOUtils.toString(inputStream); //cpg file should have only charsets name
+                    if (AVAILABLE_CHARSETS.containsKey(content.trim())) {
+                        Charset charset = AVAILABLE_CHARSETS.get(content.trim());
+                        log.debug("Found charset from cpg file. Using charset:", charset.name());
+                        return charset;
+                    }
+                }
+            }
+        } catch (IOException e) {
+            log.debug("Couldn't find cpg file", e.getMessage(), "Using default ISO-8859-1 charset");
+        }
+        return (Charset) ShapefileDataStoreFactory.DBFCHARSET.getDefaultValue();
     }
 }

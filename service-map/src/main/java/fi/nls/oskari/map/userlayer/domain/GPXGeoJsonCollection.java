@@ -45,7 +45,8 @@ public class GPXGeoJsonCollection extends GeoJsonCollection implements GeoJsonWo
     public String parseGeoJSON(File file, String source_epsg, String target_epsg) {
         OGRDataStoreFactory factory = new BridjOGRDataStoreFactory();
         if(!factory.isAvailable()){
-            return "GDAL library is not found for GPX import -- http://www.gdal.org/";
+            log.error("GDAL library is not found for GPX import -- http://www.gdal.org/");
+            return "gpx";
         }
         Map<String, String> connectionParams = new HashMap<String, String>();
         connectionParams.put("DriverName", "GPX");
@@ -102,7 +103,7 @@ public class GPXGeoJsonCollection extends GeoJsonCollection implements GeoJsonWo
             }
         } catch (Exception e) {
              log.error("Couldn't create geoJSON from the GPX file ", file.getName(), e);
-             return "Couldn't create geoJSON from the GPX file " + file.getName();
+             return "gpx";
         }
         finally {
             store.dispose();
