@@ -240,7 +240,6 @@ public class SearchServiceImpl extends SearchService implements SearchChannelCha
         long fullQueryEndTime = System.currentTimeMillis();
         LOG.debug("Search full query took", (fullQueryEndTime - fullQueryStartTime), "ms");
 
-        //TODO remove test
         JSONObject jsonObject = new JSONObject();
         JSONArray jsonArray = new JSONArray(resultList);
         JSONHelper.put(jsonObject, "methods", jsonArray);
@@ -301,7 +300,7 @@ public class SearchServiceImpl extends SearchService implements SearchChannelCha
         return Collections.unmodifiableMap(availableChannels);
     }
 
-    public boolean isAvailableAutcompleteChannels() {
+    public boolean isAvailableAutocompleteChannels() {
         for (Map.Entry<String, SearchableChannel> channel : getAvailableChannels().entrySet()) {
             if ((channel.getValue() instanceof SearchAutocomplete)) {
                 return true;

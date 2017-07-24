@@ -19,7 +19,7 @@ public class SearchHandler extends BundleHandler {
     public void init() {
         super.init();
         SearchServiceImpl searchService = new SearchServiceImpl();
-        autocomplete = searchService.isAvailableAutcompleteChannels();
+        autocomplete = searchService.isAvailableAutocompleteChannels();
     }
 
     /**
