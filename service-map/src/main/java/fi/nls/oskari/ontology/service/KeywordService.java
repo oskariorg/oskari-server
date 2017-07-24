@@ -1,18 +1,18 @@
 package fi.nls.oskari.ontology.service;
 
 import fi.nls.oskari.ontology.domain.Keyword;
-import fi.nls.oskari.service.db.BaseService;
+import fi.nls.oskari.service.OskariComponent;
 
 import java.util.List;
 
-public interface KeywordService extends BaseService<Keyword> {
+public abstract class KeywordService extends OskariComponent {
 
-    public List<Keyword> findKeywordsMatching(final String name);
-    public List<Keyword> findKeywordsMatching(final String name, String lang);
-    public Keyword findExactKeyword(final String name, final String language);
-    public List<Keyword> findSynonyms(final Long id, final String language);
-    public List<Keyword> findParents(final Long id, final String language);
-    public List<Keyword> findSiblings(final Long id, final String language);
-    public long addKeyword(final Keyword keyword);
-    public void linkKeywordToLayer(final Long keywordId, final Long layerId);
+    public abstract List<Keyword> findKeywordsMatching(final String name);
+    public abstract List<Keyword> findKeywordsMatching(final String name, String lang);
+    public abstract Keyword findExactKeyword(final String name, final String language);
+    public abstract List<Keyword> findSynonyms(final Long id, final String language);
+    public abstract List<Keyword> findParents(final Long id, final String language);
+    public abstract List<Keyword> findSiblings(final Long id, final String language);
+    public abstract long addKeyword(final Keyword keyword);
+    public abstract void linkKeywordToLayer(final Long keywordId, final Long layerId);
 }
