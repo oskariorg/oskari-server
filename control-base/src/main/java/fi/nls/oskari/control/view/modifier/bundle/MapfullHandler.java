@@ -19,14 +19,12 @@ import fi.nls.oskari.map.analysis.service.AnalysisDbService;
 import fi.nls.oskari.map.analysis.service.AnalysisDbServiceIbatisImpl;
 import fi.nls.oskari.map.userlayer.service.UserLayerDataService;
 import fi.nls.oskari.map.userlayer.service.UserLayerDbService;
-import fi.nls.oskari.map.userlayer.service.UserLayerDbServiceIbatisImpl;
 import fi.nls.oskari.myplaces.MyPlacesService;
 import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.view.modifier.ModifierException;
 import fi.nls.oskari.view.modifier.ModifierParams;
-import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -73,7 +71,7 @@ public class MapfullHandler extends BundleHandler {
 
     private static MyPlacesService myPlaceService = null;
     private static final AnalysisDbService analysisService = new AnalysisDbServiceIbatisImpl();
-    private static final UserLayerDbService userLayerService = new UserLayerDbServiceIbatisImpl();
+    private static UserLayerDbService userLayerService;
     private static final UserLayerDataService userLayerDataService = new UserLayerDataService();
 
     private static final LogoPluginHandler LOGO_PLUGIN_HANDLER = new LogoPluginHandler();
@@ -84,6 +82,7 @@ public class MapfullHandler extends BundleHandler {
 
     public void init() {
         myPlaceService = OskariComponentManager.getComponentOfType(MyPlacesService.class);
+        userLayerService = OskariComponentManager.getComponentOfType(UserLayerDbService.class);
         epsgInit();
         svgInit();
     }

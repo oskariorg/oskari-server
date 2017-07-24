@@ -89,7 +89,7 @@ public class KMLGeoJsonCollection extends GeoJsonCollection implements GeoJsonWo
         } catch (Exception e) {
             log.error("Couldn't create geoJSON from the kml file ", file.getName(),
                     e);
-            return "Couldn't create geoJSON from the kml file " + file.getName();
+            return "kml";
         }
     }
 }

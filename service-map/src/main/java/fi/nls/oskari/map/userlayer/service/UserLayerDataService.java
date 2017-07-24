@@ -19,15 +19,15 @@ import org.json.JSONObject;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.FeatureType;
 
+import java.util.List;
+import java.util.ArrayList;
 import java.util.Map;
 
 
 public class UserLayerDataService {
 
     private Logger log = LogFactory.getLogger(UserLayerDataService.class);
-    private static final UserLayerDbService userLayerService = new UserLayerDbServiceIbatisImpl();
-    private static final UserLayerDataDbService userLayerDataService = new UserLayerDataDbServiceIbatisImpl();
-    private static final UserLayerStyleDbService styleService = new UserLayerStyleDbServiceIbatisImpl();
+    private static final UserLayerDbService userLayerService = new UserLayerDbServiceMybatisImpl();
     private OskariLayerService mapLayerService = new OskariLayerServiceIbatisImpl();
     private final static LayerJSONFormatterUSERLAYER FORMATTER = new LayerJSONFormatterUSERLAYER();
 
@@ -54,67 +54,43 @@ public class UserLayerDataService {
 
         final UserLayer userLayer = new UserLayer();
         final UserLayerStyle style = new UserLayerStyle();
+        List <UserLayerData> userLayerDataList = new ArrayList<UserLayerData>();
 
         log.info("user data store start: ", fparams);
 
         //TODO: Style insert
-
         try {
-            //TODO: all inserts should be in one transaction
-
-            // Insert style row
             style.setId(1);  // for default, even if style should be always valued
+            //set style from json
             if (fparams.containsKey(KEY_STYLE)) {
                 final JSONObject stylejs = JSONHelper
                         .createJSONObject(fparams.get(KEY_STYLE));
                 style.populateFromJSON(stylejs);
-                styleService.insertUserLayerStyleRow(style);
-                log.info("Add style: ", style.getId());
             }
-
-
-            // Insert user_layer row
-            // --------------------
+            //set userLayer
             userLayer.setLayer_name(gjsWorker.getTypeName());
             userLayer.setLayer_desc("");
             userLayer.setLayer_source("");
             userLayer.setFields(parseFields(gjsWorker.getFeatureType()));
             userLayer.setUuid(user.getUuid());
-            userLayer.setStyle_id(style.getId());
+
             if (fparams.containsKey(KEY_NAME)) userLayer.setLayer_name(fparams.get(KEY_NAME));
             if (fparams.containsKey(KEY_DESC)) userLayer.setLayer_desc(fparams.get(KEY_DESC));
             if (fparams.containsKey(KEY_SOURCE)) userLayer.setLayer_source(fparams.get(KEY_SOURCE));
 
-            log.debug("Adding user_layer row", userLayer);
-            userLayerService.insertUserLayerRow(userLayer);
-        } catch (Exception e) {
-            if(userLayer.getId() > 0){
-                userLayerService.deleteUserLayer(userLayer.getId());
+            //get userLayerData list
+            userLayerDataList = this.getUserLayerData(gjsWorker.getGeoJson(), user, userLayer);
+
+            if (userLayerDataList.isEmpty()){
+                throw new ServiceException ("no_features");
             }
+            //insert layer, style and data in one transaction
+            int count = userLayerService.insertUserLayer(userLayer, style, userLayerDataList);
+            log.info("stored:",count, "rows from", userLayer.getFeatures_count(), "features and skipped:",userLayer.getFeatures_skipped());
+        } catch (Exception e) {
             log.error(e, "Unable to store user layer  data");
-            return null;
+            throw new ServiceException ("unable_to_store_data");
         }
-
-        try {
-
-            // Insert user_layer data rows
-            // --------------------
-
-            int count = this.storeUserLayerData(gjsWorker.getGeoJson(), user, userLayer.getId());
-            log.info("stored ", count, " rows");
-
-            if (count == 0) {
-                userLayerService.deleteUserLayer(userLayer.getId());
-                return null;
-
-            }
-
-        } catch (Exception e) {
-            userLayerService.deleteUserLayer(userLayer.getId());
-            log.error(e, "Unable to store user layer data data");
-            return null;
-        }
-
         return userLayer;
     }
 
@@ -122,13 +98,15 @@ public class UserLayerDataService {
     /**
      * @param geoJson import data in geojson format
      * @param user    oskari user
-     * @param id      user layer id in user_layer table
+     * @param userLayer      user layer id in user_layer table
      * @return
      */
-    public int storeUserLayerData(JSONObject geoJson, User user, long id) {
+    public List <UserLayerData> getUserLayerData(JSONObject geoJson, User user, UserLayer userLayer) throws ServiceException{
 
 
         int count = 0;
+        int noGeometry = 0;
+        List <UserLayerData> userLayerDataList = new ArrayList<UserLayerData>();
         String uuid = user.getUuid();
 
         try {
@@ -136,10 +114,15 @@ public class UserLayerDataService {
 
             // Loop json features and fix to user_layer_data structure
             for (int i = 0; i < geofeas.length(); i++) {
-
                 JSONObject geofea = geofeas.optJSONObject(i);
-                if (geofea == null) continue;
-                if (!geofea.has("geometry")) continue;
+                if (geofea == null){
+                    continue;
+                }
+
+                if (!geofea.has("geometry") || geofea.optJSONObject("geometry")== null) {
+                    noGeometry++;
+                    continue;
+                }
 
                 // Fix fea properties  (user_layer_id, uuid, property_json, feature_id
                 final UserLayerData userLayerData = new UserLayerData();
@@ -147,20 +130,21 @@ public class UserLayerDataService {
                 userLayerData.setFeature_id(geofea.optString("id", ""));
                 userLayerData.setGeometry(geofea.optJSONObject("geometry").toString());
                 userLayerData.setProperty_json(geofea.optJSONObject("properties").toString());
-                userLayerData.setUser_layer_id(id);
 
-                userLayerDataService.insertUserLayerDataRow(userLayerData);
+                userLayerDataList.add(userLayerData);
 
                 count++;
-                if (count > USERLAYER_MAX_FEATURES_COUNT && USERLAYER_MAX_FEATURES_COUNT != -1) break;
-
+                if (count > USERLAYER_MAX_FEATURES_COUNT && USERLAYER_MAX_FEATURES_COUNT != -1) {
+                    break;
+                }
             }
         } catch (Exception e) {
-            log.error(e, "Unable to store user layer data");
-            return 0;
+            log.error(e, "Failed to parse geojson features to userlayer data list");
+            throw new ServiceException ("failed_to_parse_geojson");
         }
-
-        return count;
+        userLayer.setFeatures_count(count);
+        userLayer.setFeatures_skipped(noGeometry);
+        return userLayerDataList;
     }
 
     /**
@@ -216,20 +200,21 @@ public class UserLayerDataService {
             return null;
         }
     }
-
+    // parse SimpleFeatureType schema to JSONArray to keep same order in fields as in the imported file
     public String parseFields(FeatureType schema) {
 
-        JSONObject jsfields = new JSONObject();
+        JSONArray jsfields = new JSONArray();
         try {
             String fields = DataUtilities.encodeType((SimpleFeatureType) schema);
             String[] tfields = fields.split("[:,]");
             for (int i = 0; i < tfields.length - 1; i = i + 2) {
-                jsfields.put(tfields[i], tfields[i + 1]);
+
+                jsfields.put(new JSONObject().put(tfields[i], tfields[i + 1]));
             }
 
         } catch (Exception ex) {
             log.error(ex, "Couldn't parse field schema");
         }
-        return JSONHelper.getStringFromJSON(jsfields, "{}");
+        return JSONHelper.getStringFromJSON(jsfields, "[]");
     }
 }
