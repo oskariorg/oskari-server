@@ -79,8 +79,13 @@ public class UpdateLayerCapabilitiesHandler extends ActionHandler {
             return;
         }
 
-        if (OskariLayer.TYPE_WMS.equals(layer.getType()) || OskariLayer.TYPE_WMTS.equals(layer.getType())) {
-            layer.setCapabilities(getCapabilitiesJSON(layer));
+        switch (layer.getType()) {
+        case OskariLayer.TYPE_WMS:
+        case OskariLayer.TYPE_WMTS:
+            JSONObject capabilitiesJSON = getCapabilitiesJSON(layer);
+            if (capabilitiesJSON != null) {
+                layer.setCapabilities(capabilitiesJSON);
+            }
         }
     }
 
@@ -89,10 +94,13 @@ public class UpdateLayerCapabilitiesHandler extends ActionHandler {
         // flush cache, otherwise only db is updated but code retains the old cached version
         WebMapServiceFactory.flushCache(layer.getId());
 
-        if (OskariLayer.TYPE_WMS.equals(layer.getType())) {
+        switch (layer.getType()) {
+        case OskariLayer.TYPE_WMS:
             return getCapabilitiesJSON_WMS(layer, capabilities);
-        } else {
+        case OskariLayer.TYPE_WMTS:
             return getCapabilitiesJSON_WMTS(layer, capabilities);
+        default:
+            return null;
         }
     }
 
