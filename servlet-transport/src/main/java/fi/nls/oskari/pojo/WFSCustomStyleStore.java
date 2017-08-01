@@ -36,10 +36,25 @@ public class WFSCustomStyleStore {
     public static final String HIGHLIGHT_STROKE_COLOR = "#FAEBD7";
     public static final String HIGHLIGHT_DOT_COLOR = "#FAEBD7";
 
+    public static final String POLYGON_FILL_PARTIAL = "polygon_fill_partial";
+    public static final String POLYGON_STROKE_PARTIAL = "polygon_stroke_partial";
+
     public static final String GEOMETRY = "defaultGeometry";
     public static final String FILL_PATTERN_PARTIAL = "fill_pattern_partial";
     public static final String LINE_STYLE_PARTIAL = "line_style_partial";
     public static final String BORDER_STYLE_PARTIAL = "border_style_partial";
+
+    public static final String POLYGON_FILL_ELEMENT = "<Fill>\n" +
+            "    fill_pattern_partial\n" +
+            "    <CssParameter name=\"fill-opacity\">0.7</CssParameter>\n" +
+            "</Fill>";
+
+    public static final String POLYGON_STROKE_ELEMENT = "<Stroke>\n" +
+            "    <CssParameter name=\"stroke\">border_color</CssParameter>\n" +
+            "    <CssParameter name=\"stroke-width\">border_width</CssParameter>\n" +
+            "    <CssParameter name=\"stroke-linejoin\">border_linejoin</CssParameter>\n" +
+            "    border_style_partial\n" +
+            "</Stroke>";
 
     public static final String LINE_STYLE_PARTIAL_LINECAP = "<CssParameter name=\"stroke-linecap\">stroke_linecap</CssParameter>";
     public static final String LINE_STYLE_PARTIAL_DASHARRAY = "<CssParameter name=\"stroke-dasharray\">5 2</CssParameter>";
@@ -277,6 +292,14 @@ public class WFSCustomStyleStore {
             lineStylePartial = LINE_STYLE_PARTIAL_DASHARRAY;
         }
         template = template.replaceAll(LINE_STYLE_PARTIAL, lineStylePartial);
+
+        // Polygon Fill & Stroke elements
+        if(!("#-1").equals(fillColor) || isHighlight){
+            template = template.replaceAll(POLYGON_FILL_PARTIAL, POLYGON_FILL_ELEMENT);
+        }
+        if(!("#-1").equals(borderColor) || isHighlight){
+            template = template.replaceAll(POLYGON_STROKE_PARTIAL, POLYGON_STROKE_ELEMENT);
+        }
 
         // fill patterns
         String fillPatternPartial;
