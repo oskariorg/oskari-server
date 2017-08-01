@@ -86,6 +86,10 @@ public class UpdateLayerCapabilitiesHandler extends ActionHandler {
             if (capabilitiesJSON != null) {
                 layer.setCapabilities(capabilitiesJSON);
             }
+            break;
+        default:
+            LOG.info("Skipping layer with type: ", layer.getType());
+            break;
         }
     }
 
@@ -107,6 +111,7 @@ public class UpdateLayerCapabilitiesHandler extends ActionHandler {
     private JSONObject getCapabilitiesJSON_WMS(OskariLayer layer, OskariLayerCapabilities capabilities) throws ServiceException {
         WebMapService wms = WebMapServiceFactory.createFromXML(layer.getName(), capabilities.getData());
         if (wms == null) {
+            LOG.warn("Failed to parse WMS capabilities, layer: ", layer.getName());
             throw new ServiceException("Couldn't parse capabilities for service!");
         }
         return LayerJSONFormatterWMS.createCapabilitiesJSON(wms);
@@ -117,6 +122,7 @@ public class UpdateLayerCapabilitiesHandler extends ActionHandler {
             WMTSCapabilities caps = new WMTSCapabilitiesParser().parseCapabilities(capabilities.getData());
             return LayerJSONFormatterWMTS.createCapabilitiesJSON(caps, caps.getLayer(layer.getName()));
         } catch (Exception e) {
+            LOG.warn("Failed to parse WMTS capabilities, layer: ", layer.getName());
             throw new ServiceException(e.getMessage());
         }
     }
