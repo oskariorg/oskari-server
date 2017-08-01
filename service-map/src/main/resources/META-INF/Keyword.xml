@@ -1,39 +1,34 @@
 <?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<!DOCTYPE sqlMap
-        PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
-        "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<mapper namespace="fi.nls.oskari.ontology.domain.Keyword">
 
-<sqlMap namespace="Keyword">
-
-    <typeAlias
-            alias="Keyword"
-            type="fi.nls.oskari.ontology.domain.Keyword" />
-
-    <resultMap id="layerIdsMap" class="java.lang.Long">
+    <resultMap id="layerIdsMap" type="java.lang.Long">
         <result property="layerIds" column="layerid" javaType="java.util.List" />
     </resultMap>
 
-    <resultMap id="keyword" class="Keyword" groupBy="id">
-        <result property="id" column="id" />
+    <resultMap id="keyword" type="Keyword">
+        <id property="id" column="id" />
         <result property="value" column="keyword" />
         <result property="uri" column="uri" />
         <result property="lang" column="lang" />
         <result property="editable" column="editable" />
-        <result property="layerIds" resultMap="Keyword.layerIdsMap" javaType="java.util.List" />
+        <collection property="layerIds" resultMap="Keyword.layerIdsMap" javaType="java.util.List" />
     </resultMap>
 
 
-    <statement id="add-keyword"
-               resultClass="java.lang.Long"
-               parameterClass="Keyword">
-        INSERT INTO portti_keywords (keyword, uri, lang, editable )
-        VALUES ( #value#, #uri#, #lang#, #editable# )
-        RETURNING id
-    </statement>
+    <insert id="addKeyword"
+            parameterType="Keyword">
+        <!--TODO resultType="java.lang.Long"-->
+    INSERT INTO portti_keywords (keyword, uri, lang, editable )
+    VALUES ( #value#, #uri#, #lang#, #editable# )
+        <!--TODO RETURNING id-->
+    </insert>
 
-    <select id="find-synonyms-by-id-and-lang"
-            parameterClass="Keyword"
+    <select id="findSynonyms"
+            parameterType="Keyword"
             resultMap="keyword">
         SELECT
         k.id, k.keyword, k.uri, k.lang, k.editable, l.layerid AS layerid
@@ -55,8 +50,8 @@
         ORDER BY k.keyword
     </select>
 
-    <select id="find-parents-by-id-and-lang"
-            parameterClass="Keyword"
+    <select id="findParents"
+            parameterType="Keyword"
             resultMap="keyword">
         SELECT
         k.id, k.keyword, k.uri, k.lang, k.editable, l.layerid AS layerid
@@ -78,8 +73,8 @@
         ORDER BY k.keyword
     </select>
 
-    <select id="find-siblings-by-id-and-lang"
-            parameterClass="Keyword"
+    <select id="findSiblings"
+            parameterType="Keyword"
             resultMap="keyword">
         SELECT
         k.id, k.keyword, k.uri, k.lang, k.editable, l.layerid AS layerid
@@ -101,8 +96,8 @@
         ORDER BY k.keyword
     </select>
 
-    <select id="find-by-name"
-            parameterClass="java.lang.String"
+    <select id="findKeywordsMatching"
+            parameterType="java.lang.String"
             resultMap="keyword">
         <!-- http://blog.sarathonline.com/2009/09/ibatis-sql-with-dynamic-like-operator.html -->
         SELECT
@@ -117,8 +112,8 @@
         ORDER BY k.lang, k.keyword
     </select>
 
-    <select id="find-by-name-and-lang"
-            parameterClass="Keyword"
+    <select id="findKeywordsMatching"
+            parameterType="Keyword"
             resultMap="keyword">
         SELECT
         k.id, k.keyword, k.uri, k.lang, k.editable, l.layerid AS layerid
@@ -134,8 +129,8 @@
         ORDER BY k.keyword
     </select>
 
-    <select id="find-exact-by-name-and-lang"
-            parameterClass="Keyword"
+    <select id="findExactKeyword"
+            parameterType="Keyword"
             resultMap="keyword">
         SELECT
         k.id, k.keyword, k.uri, k.lang, k.editable, l.layerid AS layerid
@@ -150,8 +145,8 @@
         ORDER BY k.lang
     </select>
 
-    <select id="find-by-layerId"
-            parameterClass="java.lang.Long"
+    <select id="findKeywordForLayer"
+            parameterType="java.lang.Long"
             resultMap="keyword">
         SELECT
         k.id, k.keyword, k.uri, k.lang, k.editable, l.layerid AS layerid
@@ -165,18 +160,18 @@
 
     </select>
 
-    <select id="find-keyIds-linked-to-layer"
-            parameterClass="java.lang.Long"
-            resultClass="java.lang.Long">
+    <select id="findKeywordIdsLinkedToLayer"
+            parameterType="java.lang.Long"
+            resultType="java.lang.Long">
         SELECT keyid
         FROM portti_layer_keywords
         WHERE layerid = #layerid#
     </select>
 
 
-    <statement id="link-keyword-to-layer"
-               parameterClass="java.util.Map">
+    <insert id="linkKeywordToLayer"
+               parameterType="java.util.Map">
         INSERT INTO portti_layer_keywords (keyid, layerid)
         VALUES (#keyid#, #layerid#)
-    </statement>
-</sqlMap>
+    </insert>
+</mapper>

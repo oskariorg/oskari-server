@@ -7,14 +7,14 @@ import fi.nls.oskari.control.ontology.SearchKeywordsHandler;
 import fi.nls.oskari.domain.User;
 import fi.nls.oskari.ontology.domain.Keyword;
 import fi.nls.oskari.ontology.service.KeywordService;
-import fi.nls.oskari.ontology.service.KeywordServiceIbatisImpl;
+import fi.nls.oskari.ontology.service.KeywordServiceMybatisImpl;
 import fi.nls.oskari.util.DuplicateException;
 import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.test.control.JSONActionRouteTest;
 import fi.nls.test.util.ResourceHelper;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.AfterClass;
 import org.junit.Test;
 
 import java.util.*;
@@ -50,7 +50,7 @@ public class SearchKeywordsHandlerTest extends JSONActionRouteTest {
 
     @Before
     public void setUp() throws Exception {
-        keywordService = mock(KeywordServiceIbatisImpl.class);
+        keywordService = mock(KeywordServiceMybatisImpl.class);
         permissionsService = mock(PermissionsServiceIbatisImpl.class);
 
         handler.setService(keywordService);

@@ -1,13 +1,13 @@
 package fi.nls.oskari.ontology;
 
-import fi.nls.oskari.ontology.service.KeywordServiceIbatisImpl;
+import fi.nls.oskari.ontology.service.KeywordServiceMybatisImpl;
 import org.junit.Test;
 
 import static junit.framework.Assert.assertTrue;
 
-public class KeywordServiceIbatisImplTest {
+public class KeywordServiceMybatisImplTest {
 
-    private KeywordServiceIbatisImpl service = new KeywordServiceIbatisImpl();
+    private KeywordServiceMybatisImpl service = new KeywordServiceMybatisImpl();
 
     @Test
     public void testGetKeywordTemplateByName() {

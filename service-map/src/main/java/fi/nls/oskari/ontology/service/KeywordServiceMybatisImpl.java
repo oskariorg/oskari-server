@@ -2,8 +2,6 @@ package fi.nls.oskari.ontology.service;
 
 import fi.nls.oskari.annotation.Oskari;
 import fi.nls.oskari.db.DatasourceHelper;
-import fi.nls.oskari.domain.map.MyPlace;
-import fi.nls.oskari.domain.map.MyPlaceCategory;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.ontology.domain.Keyword;
@@ -45,8 +43,8 @@ public class KeywordServiceMybatisImpl extends KeywordService {
         final Environment environment = new Environment("development", transactionFactory, dataSource);
 
         final Configuration configuration = new Configuration(environment);
-        configuration.getTypeAliasRegistry().registerAlias(MyPlaceCategory.class);
-        configuration.getTypeAliasRegistry().registerAlias(MyPlace.class);
+        //configuration.getTypeAliasRegistry().registerAlias(MyPlaceCategory.class);
+        //configuration.getTypeAliasRegistry().registerAlias(MyPlace.class);
         configuration.setLazyLoadingEnabled(true);
         configuration.addMapper(KeywordMapper.class);
 
@@ -278,8 +276,10 @@ public class KeywordServiceMybatisImpl extends KeywordService {
         try {
             log.debug("Adding keyword: ", keyword);
             final KeywordMapper mapper = session.getMapper(KeywordMapper.class);
-            keywordId =  mapper.addKeyword(keyword);
-            keyword.setId(keywordId);
+            mapper.addKeyword(keyword);
+            //TODO get keyword id
+            //keywordId =  mapper.addKeyword(keyword);
+            //keyword.setId(keywordId);
         } catch (Exception e) {
             log.warn(e, "Exception when trying to add keyword: ", keyword);
         } finally {
