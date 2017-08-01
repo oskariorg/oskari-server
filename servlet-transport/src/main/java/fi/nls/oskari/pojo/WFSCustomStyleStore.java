@@ -119,7 +119,11 @@ public class WFSCustomStyleStore {
     }
 
     public void setFillColor(String fillColor) {
-        this.fillColor = addPrefixColor(fillColor);
+        if(fillColor != null) {
+            this.fillColor = addPrefixColor(fillColor);
+        } else {
+            this.fillColor = fillColor;
+        }
     }
 
     public int getFillPattern() {
@@ -135,7 +139,11 @@ public class WFSCustomStyleStore {
     }
 
     public void setBorderColor(String borderColor) {
-        this.borderColor = addPrefixColor(borderColor);
+        if(borderColor != null) {
+            this.borderColor = addPrefixColor(borderColor);
+        } else {
+            this.borderColor = borderColor;
+        }
     }
 
     public String getBorderLinejoin() {
@@ -294,10 +302,10 @@ public class WFSCustomStyleStore {
         template = template.replaceAll(LINE_STYLE_PARTIAL, lineStylePartial);
 
         // Polygon Fill & Stroke elements
-        if(!("#-1").equals(fillColor) || isHighlight){
+        if(fillColor != null || isHighlight){
             template = template.replaceAll(POLYGON_FILL_PARTIAL, POLYGON_FILL_ELEMENT);
         }
-        if(!("#-1").equals(borderColor) || isHighlight){
+        if(borderColor != null || isHighlight){
             template = template.replaceAll(POLYGON_STROKE_PARTIAL, POLYGON_STROKE_ELEMENT);
         }
 
