@@ -258,6 +258,9 @@ public class OskariLayerServiceIbatisImpl extends OskariLayerService {
         return null;
     }
 
+    public List<OskariLayer> find(final List<String> idList) {
+        return find(idList, null);
+    }
     
     public List<OskariLayer> find(final List<String> idList, String crs) {
         // TODO: break list into external and internalIds -> make 2 "where id/externalID in (...)" SQLs
