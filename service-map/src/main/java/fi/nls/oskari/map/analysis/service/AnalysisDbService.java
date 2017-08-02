@@ -2,12 +2,11 @@ package fi.nls.oskari.map.analysis.service;
 
 import fi.nls.oskari.domain.map.analysis.Analysis;
 import fi.nls.oskari.service.ServiceException;
-import fi.nls.oskari.service.db.BaseService;
 
 import java.util.HashMap;
 import java.util.List;
 
-public interface AnalysisDbService extends BaseService<Analysis> {    
+public interface AnalysisDbService {
 
         public long insertAnalysisRow(final Analysis analysis);
         public int updateAnalysisCols(final Analysis analysis);

@@ -1,18 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<!DOCTYPE sqlMap      
-    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"      
-    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<mapper namespace="fi.nls.oskari.map.analysis.service.Analysis">
 
-<sqlMap namespace="Analysis">
-
-    <!-- Use type aliases to avoid typing the full classname every time. -->
-    <typeAlias alias="Analysis"
-        type="fi.nls.oskari.domain.map.analysis.Analysis" />
-
-
-
-    <resultMap id="AnalysisResult" class="Analysis">
+    <resultMap id="AnalysisResult" type="Analysis">
         <result property="id" column="id" />
         <result property="uuid" column="uuid" />
         <result property="name" column="name" />
@@ -31,12 +24,11 @@
         <result property="col10" column="col10" />
         <result property="select_to_data" column="select_to_data" />
         <result property="override_sld" column="override_sld" />
-
     </resultMap>
 
 
 
-    <select id="findAnalysis" parameterClass="long" resultMap="AnalysisResult">
+    <select id="getAnalysisById" parameterType="long" resultMap="AnalysisResult">
         select
         id,
         uuid,
@@ -63,7 +55,7 @@
  
     </select>
 
-    <select id="findByIds" parameterClass="List" resultMap="AnalysisResult">
+    <select id="getAnalysisById" parameterType="List" resultMap="AnalysisResult">
         select
         id,
         uuid,
@@ -86,13 +78,13 @@
 
         from
         analysis
-        where id in
+        <!-- TODO where id in
         <iterate open="(" close=")" conjunction=",">
             #[]#
-        </iterate>
+        </iterate>-->
     </select>
     
-     <select id="findAnalysisByUid" parameterClass="string" resultMap="AnalysisResult">
+     <select id="getAnalysisByUid" parameterType="string" resultMap="AnalysisResult">
         select
         id,
         uuid,
@@ -119,27 +111,27 @@
  
     </select>
 
-    <select id="findAnalysisDataByIdUid" parameterClass="java.util.HashMap" resultClass="java.util.HashMap" remapResults = "true" >
+    <select id="getAnalysisDataByIdUid" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+    <!--TODO remapResults = "true">-->
         select
-        <dynamic>
+        $select_items$
+        <!-- TOOD <dynamic>
             $select_items$
-        </dynamic>
-
+        </dynamic>-->
         from
         analysis_data
         where analysis_id = #id# and uuid=#uuid#
 
     </select>
 
-    <statement id="deleteAnalysis" parameterClass="long">
+    <delete id="deleteAnalysisById" parameterType="long">
         delete from
         analysis where id=#analysisId#
-    </statement>
+    </delete>
 
 
 
-    <statement id="insertAnalysis" resultClass="java.lang.Long"
-        parameterClass="Analysis">
+    <insert id="insertAnalysisRow" parameterType="Analysis">
         INSERT INTO analysis (
         uuid,
         name,
@@ -177,10 +169,10 @@
         #override_sld#)
         RETURNING
         id
-    </statement>
+    </insert>
 
 
-    <update id="updateAnalysisCols" parameterClass="Analysis">
+    <update id="updateAnalysisCols" parameterType="Analysis">
         update
         analysis set
         col1 = #col1#,
@@ -197,39 +189,40 @@
 
         where id = #id#
     </update>
-    <update id="merge-analysis-data" parameterClass="Analysis">
+
+    <update id="merge-analysis-data" parameterType="Analysis">
     update
     analysis_data set
     analysis_id = #id#
     WHERE analysis_id = #old_id#
     </update>
 
-    <statement id="delete-analysis-data"
-               parameterClass="java.lang.Long">
+    <delete id="delete-analysis-data"
+            parameterType="java.lang.Long">
         DELETE FROM analysis_data WHERE analysis_id = #id#
-    </statement>
+    </delete>
 
-    <statement id="delete-analysis"
-               parameterClass="java.lang.Long">
+    <delete id="delete-analysis"
+            parameterType="java.lang.Long">
         DELETE FROM analysis WHERE id = #id#
-    </statement>
+    </delete>
 
-    <statement id="delete-analysis-style"
-               parameterClass="java.lang.Long">
+    <delete id="delete-analysis-style"
+            parameterType="java.lang.Long">
         <!-- Note! id is style_id from analysis table -->
         DELETE FROM analysis_style WHERE id = #id#
-    </statement>
-    <statement id=" delete-analysis-style-by-analysis-id"
-               parameterClass="java.lang.Long">
+    </delete>
+
+    <delete id=" delete-analysis-style-by-analysis-id"
+            parameterType="java.lang.Long">
         <!-- Note! id is style_id from analysis table -->
         DELETE FROM analysis_style WHERE id = #id#
-    </statement>
+    </delete>
 
     <update id="updatePublisherName"
-        parameterClass="Map">
+        parameterType="Map">
         update analysis set
             publisher_name = #publisher_name:VarChar#
         where uuid = #uuid# and id = #id#
     </update>
-
-</sqlMap>
+</mapper>

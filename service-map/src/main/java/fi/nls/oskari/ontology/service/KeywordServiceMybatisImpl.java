@@ -43,8 +43,6 @@ public class KeywordServiceMybatisImpl extends KeywordService {
         final Environment environment = new Environment("development", transactionFactory, dataSource);
 
         final Configuration configuration = new Configuration(environment);
-        //configuration.getTypeAliasRegistry().registerAlias(MyPlaceCategory.class);
-        //configuration.getTypeAliasRegistry().registerAlias(MyPlace.class);
         configuration.setLazyLoadingEnabled(true);
         configuration.addMapper(KeywordMapper.class);
 
@@ -57,13 +55,14 @@ public class KeywordServiceMybatisImpl extends KeywordService {
         }
 
         final SqlSession session = factory.openSession();
+        List<Keyword> keywordList = null;
         try {
             log.debug("Finding keywords matching: ", name);
 
             final KeywordMapper mapper = session.getMapper(KeywordMapper.class);
-            final List<Keyword> keywordList =  mapper.findKeywordsMatching(name.toLowerCase());
+            keywordList =  mapper.findKeywordsMatching(name.toLowerCase());
             if(keywordList == null) {
-                return Collections.emptyList();
+                keywordList = Collections.emptyList();
             }
             log.debug("Found keywords: ", keywordList);
             return keywordList;
@@ -82,6 +81,7 @@ public class KeywordServiceMybatisImpl extends KeywordService {
         }
 
         final SqlSession session = factory.openSession();
+        List<Keyword> keywordList = null;
         try {
             log.debug("Finding keywords matching: ", name);
             final Keyword param = new Keyword();
@@ -89,19 +89,17 @@ public class KeywordServiceMybatisImpl extends KeywordService {
             param.setLang(lang);
 
             final KeywordMapper mapper = session.getMapper(KeywordMapper.class);
-            final List<Keyword> keywordList =  mapper.findKeywordsMatching(param);
+            keywordList =  mapper.findKeywordsMatching(param);
             if(keywordList == null) {
-                return Collections.emptyList();
+                keywordList = Collections.emptyList();
             }
             log.debug("Found keywords: ", keywordList);
-            return keywordList;
-
         } catch (Exception e) {
             log.warn(e, "Exception when trying to load keyword with name: ", name);
         } finally {
             session.close();
         }
-        return Collections.emptyList();
+        return keywordList;
     }
 
     public Keyword findExactKeyword(final String name, final String language) {
@@ -145,6 +143,7 @@ public class KeywordServiceMybatisImpl extends KeywordService {
         }
 
         final SqlSession session = factory.openSession();
+        List<Keyword> synonymList = null;
         try {
             log.debug("Finding synonyms matching: ", id);
             final Keyword param = new Keyword();
@@ -152,9 +151,9 @@ public class KeywordServiceMybatisImpl extends KeywordService {
             param.setLang(language);
 
             final KeywordMapper mapper = session.getMapper(KeywordMapper.class);
-            final List<Keyword> synonymList =  mapper.findSynonyms(param);
+            synonymList =  mapper.findSynonyms(param);
             if(synonymList == null) {
-                return Collections.emptyList();
+                synonymList = Collections.emptyList();
             }
             log.debug("Found " + synonymList.size() + " synonyms");
             return synonymList;
@@ -164,7 +163,7 @@ public class KeywordServiceMybatisImpl extends KeywordService {
         } finally {
             session.close();
         }
-        return Collections.emptyList();
+        return synonymList;
     }
 
     public List<Keyword> findParents(final Long id, final String language) {
@@ -173,6 +172,7 @@ public class KeywordServiceMybatisImpl extends KeywordService {
         }
 
         final SqlSession session = factory.openSession();
+        List<Keyword> parentList = null;
         try {
             log.debug("Finding parents matching: ", id);
             final Keyword param = new Keyword();
@@ -180,19 +180,18 @@ public class KeywordServiceMybatisImpl extends KeywordService {
             param.setLang(language);
 
             final KeywordMapper mapper = session.getMapper(KeywordMapper.class);
-            final List<Keyword> parentList =  mapper.findParents(param);
+            parentList =  mapper.findParents(param);
             if(parentList == null) {
-                return Collections.emptyList();
+                parentList = Collections.emptyList();
             }
             log.debug("Found " + parentList.size() + " parents");
-            return parentList;
 
         } catch (Exception e) {
             log.warn(e, "Exception when trying to load synonyms with id: ", id);
         } finally {
             session.close();
         }
-        return Collections.emptyList();
+        return parentList;
     }
 
     public List<Keyword> findSiblings(final Long id, final String language) {
@@ -201,6 +200,7 @@ public class KeywordServiceMybatisImpl extends KeywordService {
         }
 
         final SqlSession session = factory.openSession();
+        List<Keyword> siblingList = null;
         try {
             log.debug("Finding siblings matching: ", id);
             final Keyword param = new Keyword();
@@ -208,59 +208,57 @@ public class KeywordServiceMybatisImpl extends KeywordService {
             param.setLang(language);
 
             final KeywordMapper mapper = session.getMapper(KeywordMapper.class);
-            final List<Keyword> siblingList =  mapper.findParents(param);
+            siblingList =  mapper.findParents(param);
             if(siblingList == null) {
-                return Collections.emptyList();
+                siblingList = Collections.emptyList();
             }
             log.debug("Found " + siblingList.size() + " siblings");
-            return siblingList;
 
         } catch (Exception e) {
             log.warn(e, "Exception when trying to load siblings with id: ", id);
         } finally {
             session.close();
         }
-        return Collections.emptyList();
+        return siblingList;
     }
 
     public List<Keyword> findKeywordsForLayer(final Long layerId) {
         final SqlSession session = factory.openSession();
+        List<Keyword> keywordList = null;
         try {
             log.debug("Finding keywords for layer: ", layerId);
             final KeywordMapper mapper = session.getMapper(KeywordMapper.class);
-            final List<Keyword> keywordList =  mapper.findKeywordForLayer(layerId);
+            keywordList =  mapper.findKeywordForLayer(layerId);
             if(keywordList == null) {
-                return Collections.emptyList();
+                keywordList = Collections.emptyList();
             }
             log.debug("Found keywords:", keywordList);
-            return keywordList;
 
         } catch (Exception e) {
             log.warn(e, "Exception when trying to load keywords for layer: ", layerId);
         } finally {
             session.close();
         }
-        return Collections.emptyList();
+        return keywordList;
     }
 
     public List<Long> findKeywordIdsLinkedLayer(final Long layerId) {
         final SqlSession session = factory.openSession();
+        List<Long> keywordIdList = null;
         try {
             log.debug("Finding keywords ids linked to layer: ", layerId);
             final KeywordMapper mapper = session.getMapper(KeywordMapper.class);
-            final List<Long> keywordIdList =  mapper.findKeywordIdsLinkedToLayer(layerId);
+            keywordIdList =  mapper.findKeywordIdsLinkedToLayer(layerId);
             if(keywordIdList == null) {
-                return Collections.emptyList();
+                keywordIdList = Collections.emptyList();
             }
             log.debug("Found keyword ids:", keywordIdList);
-            return keywordIdList;
-
         } catch (Exception e) {
             log.warn(e, "Exception when trying to load keyword ids for layer: ", layerId);
         } finally {
             session.close();
         }
-        return Collections.emptyList();
+        return keywordIdList;
     }
 
     public long addKeyword(final Keyword keyword) {
