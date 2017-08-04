@@ -1,23 +1,18 @@
 <?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<!DOCTYPE sqlMap
-        PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
-        "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<mapper namespace="fi.nls.oskari.ontology.domain.KeywordRelation">
 
-<sqlMap namespace="KeywordRelation">
-
-    <typeAlias
-            alias="Relation"
-            type="fi.nls.oskari.ontology.domain.Relation" />
-
-    <resultMap id="relation" class="Relation">
+    <resultMap id="relation" type="Relation">
         <result property="keyid1"   column="keyid1" />
         <result property="keyid2"   column="keyid2" />
         <result property="type"     column="type" javaType="fi.nls.oskari.ontology.domain.RelationType" />
     </resultMap>
 
-    <select id="find-exact-by-ids-and-type"
-            parameterClass="Relation"
+    <select id="getRelation"
+            parameterType="Relation"
             resultMap="relation">
         SELECT
             ka.keyid1,
@@ -31,8 +26,8 @@
             ka.type = #type#
     </select>
 
-    <select id="find-for-keyword"
-            parameterClass="java.lang.Long"
+    <select id="getRelationsForKeyword"
+            parameterType="java.lang.Long"
             resultMap="relation">
         SELECT
             ka.keyid1,
@@ -46,9 +41,9 @@
             type, keyid2
     </select>
 
-    <select id="find-by-type-for-keyword"
+    <select id="getRelationsByTypeForKeyword" resultMap="relation">
             parameterClass="Relation"
-            resultMap="relation">
+
         SELECT
             ka.keyid1,
             ka.keyid2,
@@ -62,10 +57,10 @@
             keyid2
     </select>
 
-    <delete id=".delete-all">
+    <delete id="deleteAllRelations">
         DELETE
         FROM
         portti_keyword_association
     </delete>
 
-</sqlMap>
+</mapper>

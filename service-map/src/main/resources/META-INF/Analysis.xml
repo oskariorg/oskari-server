@@ -190,30 +190,24 @@
         where id = #id#
     </update>
 
-    <update id="merge-analysis-data" parameterType="Analysis">
+    <update id="mergeAnalysisData" parameterType="Analysis">
     update
     analysis_data set
     analysis_id = #id#
     WHERE analysis_id = #old_id#
     </update>
 
-    <delete id="delete-analysis-data"
+    <delete id="deleteAnalysisDataById"
             parameterType="java.lang.Long">
         DELETE FROM analysis_data WHERE analysis_id = #id#
     </delete>
 
-    <delete id="delete-analysis"
+    <delete id="deleteAnalysisById"
             parameterType="java.lang.Long">
         DELETE FROM analysis WHERE id = #id#
     </delete>
 
-    <delete id="delete-analysis-style"
-            parameterType="java.lang.Long">
-        <!-- Note! id is style_id from analysis table -->
-        DELETE FROM analysis_style WHERE id = #id#
-    </delete>
-
-    <delete id=" delete-analysis-style-by-analysis-id"
+    <delete id="deleteAnalysisStyleById"
             parameterType="java.lang.Long">
         <!-- Note! id is style_id from analysis table -->
         DELETE FROM analysis_style WHERE id = #id#

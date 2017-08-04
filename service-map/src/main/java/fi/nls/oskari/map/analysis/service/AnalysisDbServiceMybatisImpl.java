@@ -220,56 +220,57 @@ public class AnalysisDbServiceMybatisImpl implements AnalysisDbService {
 
 
     public void deleteAnalysis(final Analysis analysis) throws ServiceException {
-        /*if(analysis == null) {
+        if(analysis == null) {
             throw new ServiceException("Tried to delete analysis with <null> param");
         }
-        final SqlMapSession session = openSession();
+        final SqlSession session = factory.openSession();
+        List<Analysis> analysisList = null;
         try {
-            session.startTransaction();
-            // remove resource & permissions
-            final Resource res = permissionsService.getResource(AnalysisLayer.TYPE, "analysis+" + analysis.getId());
-            permissionsService.deleteResource(res);
-
-            // remove analysis
-            session.delete(getNameSpace() + ".delete-analysis-data", analysis.getId());
-            session.delete(getNameSpace() + ".delete-analysis", analysis.getId());
-            // style is for now 1:1 to analysis so we can delete it here
-            session.delete(getNameSpace() + ".delete-analysis-style", analysis.getStyle_id());
-            session.commitTransaction();
+            log.debug("Deleting analysis: ", analysis);
+            //TODO session.startTransaction();
+            //final Resource res = permissionsService.getResource(AnalysisLayer.TYPE, "analysis+" + analysis.getId());
+            //permissionsService.deleteResource(res);
+            final AnalysisMapper mapper = session.getMapper(AnalysisMapper.class);
+            mapper.deleteAnalysisById(analysis.getId());
+            mapper.deleteAnalysisDataById(analysis.getId());
+            mapper.deleteAnalysisStyleById(analysis.getStyle_id());
+            //TODO session.commitTransaction
         } catch (Exception e) {
-            throw new ServiceException("Error deleting analysis data with id:" + analysis.getId(), e);
+            log.warn(e, "Exception when trying delete analysis by id: ", analysis);
         } finally {
-            endSession(session);
-        }*/
+            session.close();
+        }
     }
 
     public void mergeAnalysis(final Analysis analysis, final List<Long> ids) throws ServiceException {
-        /*if (ids == null) {
+        if(analysis == null) {
             throw new ServiceException("Tried to merge analysis with <null> param");
         }
-
+        final SqlSession session = factory.openSession();
+        List<Analysis> analysisList = null;
         if (ids.size() > 1) {
-            final SqlMapSession session = openSession();
             try {
-                session.startTransaction();
-                // replace data of old analysises to new analysis
+                log.debug("Merging analysis: ", analysis);
+                //TODO session.startTransaction();
+                //final Resource res = permissionsService.getResource(AnalysisLayer.TYPE, "analysis+" + analysis.getId());
+                //permissionsService.deleteResource(res);
+                final AnalysisMapper mapper = session.getMapper(AnalysisMapper.class);
                 for (long id : ids) {
                     analysis.setOld_id(id);
-                    session.update(getNameSpace() + ".merge-analysis-data", analysis);
+                    mapper.mergeAnalysisData(analysis);
                 }
                 for (long id : ids) {
-                    Analysis analysis_old = queryForObject(getNameSpace() + ".findAnalysis", id);
-                    session.delete(getNameSpace() + ".delete-analysis", id);
-                    // style is for now 1:1 to analysis so we can delete it here
-                    session.delete(getNameSpace() + ".delete-analysis-style", analysis_old.getStyle_id());
+                    Analysis analysis_old = mapper.getAnalysisById(id);
+                    mapper.deleteAnalysisById(id);
+                    mapper.deleteAnalysisStyleById(analysis_old.getStyle_id());
                 }
-                session.commitTransaction();
+                //TODO session.commitTransaction
             } catch (Exception e) {
-                throw new ServiceException("Error merging analysis data with id:" + ids.get(0), e);
+                log.warn(e, "Error merging analysis data with ids: ", ids);
             } finally {
-                endSession(session);
+                session.close();
             }
-        }*/
+        }
     }
 
     /**
@@ -280,17 +281,22 @@ public class AnalysisDbServiceMybatisImpl implements AnalysisDbService {
      * @param name
      */
     public int updatePublisherName(final long id, final String uuid, final String name) {
-/*
-        final Map<String, Object> data = new HashMap<String,Object>();
-        data.put("publisher_name", name);
-        data.put("uuid", uuid);
-        data.put("id", id);
+        final SqlSession session = factory.openSession();
+        final int publisherId = 0;
         try {
-            return getSqlMapClient().update(
-                    getNameSpace() + ".updatePublisherName", data);
-        } catch (SQLException e) {
-            log.error(e, "Failed to update publisher name", data);
-        }*/
-        return 0;
+            log.debug("Updating publisher name with id: ", id);
+
+            final AnalysisMapper mapper = session.getMapper(AnalysisMapper.class);
+            final Map<String, Object> params = new HashMap<>();
+            params.put("publisher_name", name);
+            params.put("uuid", uuid);
+            params.put("id", id);
+            mapper.updatePublisherName(params);
+        } catch (Exception e) {
+            log.warn(e, "Failed to update publisher name");
+        } finally {
+            session.close();
+        }
+        return publisherId;
     }
 }

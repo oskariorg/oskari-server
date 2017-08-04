@@ -30,8 +30,8 @@ public class AnalysisDataService {
     private static final Logger log = LogFactory
             .getLogger(AnalysisDataService.class);
 
-    private static final AnalysisStyleDbService styleService = new AnalysisStyleDbServiceIbatisImpl();
-    private static final AnalysisDbService analysisService = new AnalysisDbServiceIbatisImpl();
+    private static final AnalysisStyleDbService styleService = new AnalysisStyleDbServiceMybatisImpl();
+    private static final AnalysisDbService analysisService = new AnalysisDbServiceMybatisImpl();
     private static final TransformationService transformationService = new TransformationService();
 
     public Analysis storeAnalysisData(final String featureset,

@@ -27,7 +27,6 @@ public class KeywordServiceMybatisImpl extends KeywordService {
     private SqlSessionFactory factory = null;
 
     public KeywordServiceMybatisImpl() {
-
         final DatasourceHelper helper = DatasourceHelper.getInstance();
         final DataSource dataSource = helper.getDataSource(helper.getOskariDataSourceName("keyword"));
         if(dataSource != null) {
@@ -134,7 +133,7 @@ public class KeywordServiceMybatisImpl extends KeywordService {
         } finally {
             session.close();
         }
-        return null;
+        return keyword;
     }
 
     public List<Keyword> findSynonyms(final Long id, final String language) {
