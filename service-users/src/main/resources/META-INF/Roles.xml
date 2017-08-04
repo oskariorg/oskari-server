@@ -1,14 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<!DOCTYPE sqlMap
-        PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
-        "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<mapper namespace="fi.nls.oskari.domain.Role">
 
-<sqlMap namespace="Roles">
-
-    <typeAlias alias="Role" type="fi.nls.oskari.domain.Role" />
-
-    <resultMap id="RolesResult" class="Role">
+    <resultMap id="RolesResult" type="Role">
         <result property="id" column="id" />
         <result property="name" column="name" />
     </resultMap>
@@ -21,7 +18,7 @@
         select id, name from oskari_roles where is_guest is true;
     </select>
 
-    <select id="findByUserName" parameterClass="String" resultMap="RolesResult">
+    <select id="findByUserName" parameterType="String" resultMap="RolesResult">
         select
             r.id, r.name
         from
@@ -34,7 +31,7 @@
             and u.user_name = #id#
     </select>
 
-    <select id="findByUserId" parameterClass="long" resultMap="RolesResult">
+    <select id="findByUserId" parameterType="long" resultMap="RolesResult">
         select
             r.id, r.name
         from
@@ -45,7 +42,7 @@
             and m.user_id = #id#
     </select>
 
-    <statement id="linkRoleToUser" parameterClass="java.util.HashMap">
+    <insert id="linkRoleToUser" parameterType="java.util.HashMap">
         INSERT INTO oskari_role_oskari_user (
         role_id,
         user_id
@@ -54,38 +51,38 @@
         #role_id#,
         #user_id#
         )
-    </statement>
+    </insert>
 
-    <statement id="insert" parameterClass="fi.nls.oskari.domain.Role">
+    <insert id="insert" parameterType="fi.nls.oskari.domain.Role">
         INSERT INTO oskari_roles (
         name
         )
         VALUES (
         #name#
         )
-    </statement>
+    </insert>
     
-    <statement id="maxId" resultClass="int">
+    <select id="maxId" parameterType="int">
         select
             MAX(id)
         from
             oskari_roles
-    </statement>
+    </select>
     
-    <statement id="delete" parameterClass="int">
+    <delete id="delete" parameterType="int">
         DELETE FROM oskari_roles        
         WHERE id = #id#
-    </statement>
+    </delete>
     
-    <statement id="deleteUsersRoles" parameterClass="long">
+    <delete id="deleteUsersRoles" parameterType="long">
         DELETE FROM oskari_role_oskari_user        
         WHERE user_id = #id#
-    </statement>
+    </delete>
     
 
-    <select id="findExternalRolesOfType" parameterClass="String" resultClass="java.util.HashMap">
+    <select id="findExternalRolesOfType" parameterType="String" resultType="java.util.HashMap">
         select r.id as id, r.name as name, m.name as ext
         from oskari_roles r, oskari_role_external_mapping m
         where m.roleid = r.id AND m.external_type=#type#
     </select>
-</sqlMap>
+</mapper>

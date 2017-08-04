@@ -9,13 +9,13 @@ import fi.nls.oskari.service.db.UserContentService;
 @Oskari("analysis")
 public class UserContentAnalysisService extends UserContentService {
 
-    private AnalysisDbServiceIbatisImpl analysisService = null;
+    private AnalysisDbServiceMybatisImpl analysisService = null;
 
     @Override
     public void init() {
         super.init();
         if(DatasourceHelper.isModuleEnabled(getName())) {
-            analysisService = new AnalysisDbServiceIbatisImpl();
+            analysisService = new AnalysisDbServiceMybatisImpl();
         }
     }
 
