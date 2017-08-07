@@ -124,8 +124,7 @@ public class ViewServiceIbatisImpl extends BaseIbatisService<Object> implements
     public List<View> getViewsForUser(long userId) {
         List<View> views = queryForList("View.views-with-conf-by-user-id",
                 userId);
-        System.err.println("[ViewService] Got " + views.size()
-                + " views for user " + userId);
+        LOG.debug("Found", views.size(), "views for user", userId);
         return views;
     }
 
