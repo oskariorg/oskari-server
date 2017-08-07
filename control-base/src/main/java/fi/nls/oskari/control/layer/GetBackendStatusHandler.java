@@ -19,7 +19,6 @@ import java.util.List;
 @OskariActionRoute("GetBackendStatus")
 public class GetBackendStatusHandler extends ActionHandler {
 
-    
     private static final Logger log = LogFactory.getLogger(GetBackendStatusHandler.class);
     private final BackendStatusService backendStatusService = new BackendStatusServiceIbatisImpl();
     
