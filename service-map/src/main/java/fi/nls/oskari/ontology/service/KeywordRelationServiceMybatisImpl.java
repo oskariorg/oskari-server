@@ -79,12 +79,28 @@ public class KeywordRelationServiceMybatisImpl implements KeywordRelationService
 
         // check that the relation doesn't already exist so we don't have to handle and exception for it...
         if (getRelation(relation) == null) {
-            //TODO int maxId1 = insert(relation);
+            long maxId1 = insert(relation);
         }
 
         if (getRelation(inverseRelation) == null) {
-            //TODO int maxId2 = insert(inverseRelation);
+            long maxId2 = insert(inverseRelation);
         }
+    }
+
+    public long insert(Relation relation) {
+        final SqlSession session = factory.openSession();
+        try {
+            log.debug("Inserting keyword relation: ", relation);
+            final KeywordRelationMapper mapper = session.getMapper(KeywordRelationMapper.class);
+            mapper.insert(relation);
+            session.commit();
+        } catch (Exception e) {
+            log.warn(e, "Exception when trying to insert relation with name: ", relation);
+        } finally {
+            session.close();
+        }
+        log.debug("Found relation id: ", relation.getKeyid1());
+        return relation.getKeyid1();
     }
 
     public Relation getRelation(Relation relation) {
@@ -99,7 +115,7 @@ public class KeywordRelationServiceMybatisImpl implements KeywordRelationService
             final KeywordRelationMapper mapper = session.getMapper(KeywordRelationMapper.class);
             relationFound = mapper.getRelation(relation);
         } catch (Exception e) {
-            log.warn(e, "Exception when trying to load keyword with name: ", relation);
+            log.warn(e, "Exception when trying to load keyword assosiation with name: ", relation);
         } finally {
             session.close();
         }

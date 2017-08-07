@@ -69,7 +69,7 @@
             oskari_roles
     </select>
     
-    <delete id="delete" parameterType="int">
+    <delete id="delete" parameterType="long">
         DELETE FROM oskari_roles        
         WHERE id = #id#
     </delete>

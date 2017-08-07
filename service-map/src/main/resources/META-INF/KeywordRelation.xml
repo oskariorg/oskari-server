@@ -11,6 +11,19 @@
         <result property="type"     column="type" javaType="fi.nls.oskari.ontology.domain.RelationType" />
     </resultMap>
 
+    <insert id="getRelation"
+            parameterType="Relation">
+        INSERT INTO
+        portti_keyword_association (
+            keyid1,
+            keyid2,
+            type
+        )
+        VALUES  ( #keyid1#,
+        #keyid2#,
+        #type#)
+    </insert>
+
     <select id="getRelation"
             parameterType="Relation"
             resultMap="relation">

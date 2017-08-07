@@ -47,21 +47,67 @@ public class MybatisRoleService {
     }
 
     public List<Role> findAll(){
-        //TODO implement
-        return Collections.emptyList();
+        final SqlSession session = factory.openSession();
+        List<Role> roleList = null;
+        try {
+            log.debug("Getting all roles");
+            final RolesMapper mapper = session.getMapper(RolesMapper.class);
+            roleList =  mapper.findAll();
+            if(roleList == null) {
+                roleList = Collections.emptyList();
+            }
+            log.debug("Found roles: ", roleList);
+        } catch (Exception e) {
+            log.warn(e, "Exception when trying to load all roles");
+        } finally {
+            session.close();
+        }
+        return roleList;
     }
 
     public void deleteUsersRoles(long userId){
-        //TODO
+        final SqlSession session = factory.openSession();
+        try {
+            log.debug("Finding roles by user id: ", userId);
+            final RolesMapper mapper = session.getMapper(RolesMapper.class);
+            mapper.deleteUsersRoles(userId);
+            session.commit();
+        } catch (Exception e) {
+            log.warn(e, "Exception when trying to delete roles with user id: ", userId);
+        } finally {
+            session.close();
+        }
     }
 
     public void delete(long userId){
-        //TODO
+        final SqlSession session = factory.openSession();
+        try {
+            log.debug("Finding user by id: ", userId);
+            final RolesMapper mapper = session.getMapper(RolesMapper.class);
+            mapper.delete(userId);
+            session.commit();
+        } catch (Exception e) {
+            log.warn(e, "Exception when trying to delete user with id: ", userId);
+        } finally {
+            session.close();
+        }
     }
 
     public long insert(Role role){
-        //TODO
-        return 0;
+        final SqlSession session = factory.openSession();
+        List<Role> roleList = null;
+        try {
+            log.debug("Inserting role: ", role);
+            final RolesMapper mapper = session.getMapper(RolesMapper.class);
+            mapper.insert(role);
+            session.commit();
+            log.debug("Inserted role: ", role);
+        } catch (Exception e) {
+            log.warn(e, "Exception when trying to insert role: ", role);
+        } finally {
+            session.close();
+        }
+        return role.getId();
     }
 
     public List<Role> findByUserName(String username) {

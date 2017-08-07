@@ -2,9 +2,11 @@ package fi.nls.oskari.user;
 
 import fi.nls.oskari.domain.User;
 
+import java.util.List;
 import java.util.Map;
 
 public interface UsersMapper {
+    List<User> findAll();
     Long addUser(User user);
     void updateUser(User user);
     User find(long id);

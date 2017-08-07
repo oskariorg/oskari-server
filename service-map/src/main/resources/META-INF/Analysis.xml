@@ -167,8 +167,6 @@
         #col10#,
         #select_to_data#,
         #override_sld#)
-        RETURNING
-        id
     </insert>
 
 

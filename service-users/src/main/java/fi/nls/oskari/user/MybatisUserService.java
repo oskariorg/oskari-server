@@ -15,7 +15,6 @@ import org.apache.ibatis.transaction.TransactionFactory;
 import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
 
 import javax.sql.DataSource;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -49,8 +48,19 @@ public class MybatisUserService {
     }
 
     public List<User> findAll(){
-        //TODO implement
-        return Collections.emptyList();
+        final SqlSession session = factory.openSession();
+        List<User> userList = null;
+        try {
+            log.debug("Find all users");
+            final UsersMapper mapper = session.getMapper(UsersMapper.class);
+            userList = mapper.findAll();
+        } catch (Exception e) {
+            log.warn(e, "Exception when trying to find all users");
+        } finally {
+            session.close();
+        }
+        log.warn("Finished finding all users");
+        return userList;
     }
 
     public Long addUser(User user) {
