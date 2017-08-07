@@ -56,10 +56,8 @@ public class AnalysisStyleDbServiceMybatisImpl implements AnalysisStyleDbService
             log.debug("Insert analysisiStyle row:", analysisStyle);
             final AnalysisStyleMapper mapper = session.getMapper(AnalysisStyleMapper.class);
             mapper.insertAnalysisStyleRow(analysisStyle);
-            //TODO get keyword id
-            //analysisStylelId =  insertAnalysisStyleRow(analysis);
-            //analysis.setId(analysisStylelId);
-            //TODO log.debug("Got analyseStyle id:", analysisStylelId);
+            session.commit();
+            log.debug("Got analyseStyle id:", analysisStyle.getId());
         } catch (Exception e) {
             log.warn(e, "Exception when trying to add analysisStyle: ", analysisStyle);
         } finally {

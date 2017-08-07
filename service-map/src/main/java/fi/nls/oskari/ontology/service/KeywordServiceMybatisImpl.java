@@ -57,7 +57,6 @@ public class KeywordServiceMybatisImpl extends KeywordService {
         List<Keyword> keywordList = null;
         try {
             log.debug("Finding keywords matching: ", name);
-
             final KeywordMapper mapper = session.getMapper(KeywordMapper.class);
             keywordList =  mapper.findKeywordsMatching(name.toLowerCase());
             if(keywordList == null) {
@@ -269,21 +268,17 @@ public class KeywordServiceMybatisImpl extends KeywordService {
             return dbKey.getId();
         }
         final SqlSession session = factory.openSession();
-        long keywordId = 0;
         try {
             log.debug("Adding keyword: ", keyword);
             final KeywordMapper mapper = session.getMapper(KeywordMapper.class);
             mapper.addKeyword(keyword);
-            //TODO get keyword id
-            //keywordId =  mapper.addKeyword(keyword);
-            //keyword.setId(keywordId);
         } catch (Exception e) {
             log.warn(e, "Exception when trying to add keyword: ", keyword);
         } finally {
             session.close();
         }
-        log.warn("Got keyword id:", keywordId);
-        return keywordId;
+        log.warn("Got keyword id:", keyword.getId());
+        return keyword.getId();
     }
 
     public void linkKeywordToLayer(final Long keywordId, final Long layerId) {
@@ -304,6 +299,7 @@ public class KeywordServiceMybatisImpl extends KeywordService {
             params.put("keyid", keywordId);
             params.put("layerid", layerId);
             mapper.linkKeywordToLayer(params);
+            session.commit();
             log.warn("Linked keyword to layer");
         } catch (Exception e) {
             log.warn(e, "Exception when trying to link keyword to layer: ", layerId);

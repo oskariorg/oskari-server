@@ -61,21 +61,18 @@ public class AnalysisDbServiceMybatisImpl implements AnalysisDbService {
 
     public long insertAnalysisRow(final Analysis analysis) {
         final SqlSession session = factory.openSession();
-        long analysisId = 0;
         try {
             log.debug("Insert analyse row:", analysis);
             final AnalysisMapper mapper = session.getMapper(AnalysisMapper.class);
             mapper.insertAnalysisRow(analysis);
-            //TODO get keyword id
-            //analysisId =  insertAnalysisRow(analysis);
-            //analysis.setId(analysisId);
+            session.commit();
         } catch (Exception e) {
             log.warn(e, "Exception when trying to add analysis: ", analysis);
         } finally {
             session.close();
         }
-        log.debug("Got analyse id:", analysisId);
-        return analysisId;
+        log.debug("Got analyse id:", analysis.getId());
+        return analysis.getId();
     }
 
     /**
@@ -83,19 +80,19 @@ public class AnalysisDbServiceMybatisImpl implements AnalysisDbService {
      *
      * @param analysis
      */
-    public int updateAnalysisCols(final Analysis analysis) {
+    public long updateAnalysisCols(final Analysis analysis) {
         final SqlSession session = factory.openSession();
-        int analysisId = 0;
         try {
             log.debug("Updating analysis columns:", analysis);
             final AnalysisMapper mapper = session.getMapper(AnalysisMapper.class);
-            analysisId = mapper.updateAnalysisCols(analysis); //TODO return id
+            mapper.updateAnalysisCols(analysis);
+            session.commit();
         } catch (Exception e) {
             log.warn(e, "Exception when trying to update analysis columns mapping: ", analysis);
         } finally {
             session.close();
         }
-        return analysisId;
+        return analysis.getId();
     }
 
     /**
@@ -129,7 +126,6 @@ public class AnalysisDbServiceMybatisImpl implements AnalysisDbService {
         List<Analysis> analysisList = null;
         try {
             log.debug("Finding analysis matching: ", idList);
-
             final AnalysisMapper mapper = session.getMapper(AnalysisMapper.class);
             analysisList =  mapper.getAnalysisById(idList);
             if(analysisList == null) {
@@ -159,7 +155,6 @@ public class AnalysisDbServiceMybatisImpl implements AnalysisDbService {
         List<Analysis> analysisList = null;
         try {
             log.debug("Finding analysis matching uid: ", uid);
-
             final AnalysisMapper mapper = session.getMapper(AnalysisMapper.class);
             analysisList =  mapper.getAnalysisByUid(uid);
             if(analysisList == null) {
@@ -194,7 +189,6 @@ public class AnalysisDbServiceMybatisImpl implements AnalysisDbService {
         List<HashMap<String,Object>> analysisdataList = null;
         try {
             log.debug("Finding analysis data matching id and uid", id, uuid);
-
             final AnalysisMapper mapper = session.getMapper(AnalysisMapper.class);
             Map<String, Object> params = new HashMap<String, Object>();
             params.put("id", id);
@@ -227,15 +221,15 @@ public class AnalysisDbServiceMybatisImpl implements AnalysisDbService {
         List<Analysis> analysisList = null;
         try {
             log.debug("Deleting analysis: ", analysis);
-            //TODO session.startTransaction();
-            //final Resource res = permissionsService.getResource(AnalysisLayer.TYPE, "analysis+" + analysis.getId());
+            //TODO final Resource res = permissionsService.getResource(AnalysisLayer.TYPE, "analysis+" + analysis.getId());
             //permissionsService.deleteResource(res);
             final AnalysisMapper mapper = session.getMapper(AnalysisMapper.class);
             mapper.deleteAnalysisById(analysis.getId());
             mapper.deleteAnalysisDataById(analysis.getId());
             mapper.deleteAnalysisStyleById(analysis.getStyle_id());
-            //TODO session.commitTransaction
+            session.commit();
         } catch (Exception e) {
+            session.rollback();
             log.warn(e, "Exception when trying delete analysis by id: ", analysis);
         } finally {
             session.close();
@@ -251,8 +245,7 @@ public class AnalysisDbServiceMybatisImpl implements AnalysisDbService {
         if (ids.size() > 1) {
             try {
                 log.debug("Merging analysis: ", analysis);
-                //TODO session.startTransaction();
-                //final Resource res = permissionsService.getResource(AnalysisLayer.TYPE, "analysis+" + analysis.getId());
+                //TODO final Resource res = permissionsService.getResource(AnalysisLayer.TYPE, "analysis+" + analysis.getId());
                 //permissionsService.deleteResource(res);
                 final AnalysisMapper mapper = session.getMapper(AnalysisMapper.class);
                 for (long id : ids) {
@@ -264,7 +257,7 @@ public class AnalysisDbServiceMybatisImpl implements AnalysisDbService {
                     mapper.deleteAnalysisById(id);
                     mapper.deleteAnalysisStyleById(analysis_old.getStyle_id());
                 }
-                //TODO session.commitTransaction
+                session.commit();
             } catch (Exception e) {
                 log.warn(e, "Error merging analysis data with ids: ", ids);
             } finally {
@@ -280,23 +273,22 @@ public class AnalysisDbServiceMybatisImpl implements AnalysisDbService {
      * @param uuid
      * @param name
      */
-    public int updatePublisherName(final long id, final String uuid, final String name) {
+    public long updatePublisherName(final long id, final String uuid, final String name) {
         final SqlSession session = factory.openSession();
-        final int publisherId = 0;
         try {
             log.debug("Updating publisher name with id: ", id);
-
             final AnalysisMapper mapper = session.getMapper(AnalysisMapper.class);
             final Map<String, Object> params = new HashMap<>();
             params.put("publisher_name", name);
             params.put("uuid", uuid);
             params.put("id", id);
             mapper.updatePublisherName(params);
+            session.commit();
         } catch (Exception e) {
             log.warn(e, "Failed to update publisher name");
         } finally {
             session.close();
         }
-        return publisherId;
+        return id;
     }
 }

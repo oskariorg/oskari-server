@@ -8,8 +8,8 @@ import java.util.Map;
 
 public interface AnalysisMapper {
 
-    long insertAnalysisRow(final Analysis analysis);
-    int updateAnalysisCols(final Analysis analysis);
+    void insertAnalysisRow(final Analysis analysis);
+    void updateAnalysisCols(final Analysis analysis);
     Analysis getAnalysisById(long id);
     List<Analysis> getAnalysisById(List<Long> idList);
     List<Analysis> getAnalysisByUid(String uid);

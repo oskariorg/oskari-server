@@ -122,7 +122,7 @@ public class AnalysisDataService {
             analysis.setCols(fields);
 
             log.debug("Update analysis row", analysis);
-            int updrows = analysisService.updateAnalysisCols(analysis);
+            long updrows = analysisService.updateAnalysisCols(analysis);
             log.debug("Updated rows", updrows);
 
         } catch (Exception e) {

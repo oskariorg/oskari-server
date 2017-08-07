@@ -97,16 +97,16 @@ public class KeywordRelationServiceMybatisImpl implements KeywordRelationService
         try {
             log.debug("Finding keyword assiosiation: ", relation);
             final KeywordRelationMapper mapper = session.getMapper(KeywordRelationMapper.class);
-            relationFound =  mapper.getRelation(relation);
-            if(relationFound == null) {
-                return null;
-            }
-            log.debug("Found relation: ", relationFound);
+            relationFound = mapper.getRelation(relation);
         } catch (Exception e) {
             log.warn(e, "Exception when trying to load keyword with name: ", relation);
         } finally {
             session.close();
         }
+        if(relationFound == null) {
+            return null;
+        }
+        log.debug("Found relation: ", relationFound);
         return relationFound;
     }
 
@@ -117,15 +117,15 @@ public class KeywordRelationServiceMybatisImpl implements KeywordRelationService
             log.debug("Finding relations matching id: ", keyId);
             final KeywordRelationMapper mapper = session.getMapper(KeywordRelationMapper.class);
             relationList =  mapper.getRelationsForKeyword(keyId);
-            if(relationList == null) {
-                relationList = Collections.emptyList();
-            }
-            log.debug("Found relations: ", relationList);
         } catch (Exception e) {
             log.warn(e, "Exception when trying to load relation with id: ", keyId);
         } finally {
             session.close();
         }
+        if(relationList == null) {
+            relationList = Collections.emptyList();
+        }
+        log.debug("Found relations: ", relationList);
         return relationList;
     }
 
@@ -154,6 +154,7 @@ public class KeywordRelationServiceMybatisImpl implements KeywordRelationService
             log.debug("Deleting all relations");
             final KeywordRelationMapper mapper = session.getMapper(KeywordRelationMapper.class);
             mapper.deleteAllRelations();
+            session.commit();
         } catch (Exception e) {
             log.warn(e, "Exception when trying delete relations");
         } finally {

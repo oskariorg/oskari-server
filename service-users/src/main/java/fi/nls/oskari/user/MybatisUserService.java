@@ -55,21 +55,18 @@ public class MybatisUserService {
 
     public Long addUser(User user) {
         final SqlSession session = factory.openSession();
-        long userId = 0;
         try {
             log.debug("Adding user: ", user);
             final UsersMapper mapper = session.getMapper(UsersMapper.class);
             mapper.addUser(user);
-            //TODO get user id
-            //keywordId =  mapper.addKeyword(keyword);
-            //keyword.setId(keywordId);
+            session.commit();
         } catch (Exception e) {
             log.warn(e, "Exception when trying to add user: ", user);
         } finally {
             session.close();
         }
-        log.warn("Got user id:", userId);
-        return userId;
+        log.warn("Got user id:", user.getId());
+        return user.getId();
     }
 
     public void updateUser(User user) {
@@ -78,6 +75,7 @@ public class MybatisUserService {
             log.debug("Updating user: ", user);
             final UsersMapper mapper = session.getMapper(UsersMapper.class);
             mapper.updateUser(user);
+            session.commit();
         } catch (Exception e) {
             log.warn(e, "Exception when trying to update user: ", user);
         } finally {
@@ -113,7 +111,7 @@ public class MybatisUserService {
         final SqlSession session = factory.openSession();
         String login = null;
         try {
-            log.debug("Finding user by username and password: ", username);
+            log.debug("Login by username and password: ", username);
             final UsersMapper mapper = session.getMapper(UsersMapper.class);
             Map<String, String> params = new HashMap<String, String>(2);
             params.put("username", username);
@@ -195,6 +193,7 @@ public class MybatisUserService {
             log.debug("Deleting user by id: ", id);
             final UsersMapper mapper = session.getMapper(UsersMapper.class);
             mapper.delete(id);
+            session.commit();
         } catch (Exception e) {
             log.warn(e, "Exception when trying to delete user by id: ", id);
         } finally {
@@ -212,6 +211,7 @@ public class MybatisUserService {
             params.put("username", username);
             params.put("password", password);
             mapper.setPassword(params);
+            session.commit();
         } catch (Exception e) {
             log.warn(e, "Exception when trying to set password to username: ", username);
         } finally {
@@ -229,6 +229,7 @@ public class MybatisUserService {
             params.put("username", username);
             params.put("password", password);
             mapper.updatePassword(params);
+            session.commit();
         } catch (Exception e) {
             log.warn(e, "Exception when trying to update password to username: ", username);
         } finally {
@@ -243,6 +244,7 @@ public class MybatisUserService {
             log.debug("Deleting password for username: ", username);
             final UsersMapper mapper = session.getMapper(UsersMapper.class);
             mapper.deletePassword(username);
+            session.commit();
         } catch (Exception e) {
             log.warn(e, "Exception when trying to delete password for username: ", username);
         } finally {

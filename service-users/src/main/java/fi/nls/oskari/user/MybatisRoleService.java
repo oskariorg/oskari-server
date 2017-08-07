@@ -73,7 +73,6 @@ public class MybatisRoleService {
         List<Role> roleList = null;
         try {
             log.debug("Finding roles by username: ", username);
-
             final RolesMapper mapper = session.getMapper(RolesMapper.class);
             roleList =  mapper.findByUserName(username);
             if(roleList == null) {
@@ -92,7 +91,6 @@ public class MybatisRoleService {
         List<Role> roleList = null;
         try {
             log.debug("Finding roles by user id: ", userId);
-
             final RolesMapper mapper = session.getMapper(RolesMapper.class);
             roleList =  mapper.findByUserId(userId);
             if(roleList == null) {
@@ -112,7 +110,6 @@ public class MybatisRoleService {
         List<Role> roleList = null;
         try {
             log.debug("Finding guest role by user id: ");
-
             final RolesMapper mapper = session.getMapper(RolesMapper.class);
             roleList =  mapper.findGuestRoles();
             log.debug("Found roles: ", roleList);
@@ -141,6 +138,7 @@ public class MybatisRoleService {
             params.put("role_id", roleId);
             params.put("user_id", userId);
             mapper.linkRoleToNewUser(params);
+            session.commit();
             log.debug("Linked role to new user with id: ", userId);
         } catch (Exception e) {
             log.warn(e, "Exception when trying link role to new user with id: ", userId);
