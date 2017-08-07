@@ -56,6 +56,9 @@ public class ELFGeoLocatorSearchChannel extends SearchChannel implements SearchA
     public static final String REQUEST_GETFEATURE_TEMPLATE = PropertyUtil.get(PROPERTY_SERVICE_GETFEATURE_TEMPLATE, DEFAULT_GETFEATURE_TEMPLATE);
     private static final String PROPERTY_SERVICE_GEOLOCATOR_LOCATIONTYPES = "search.channel.ELFGEOLOCATOR_CHANNEL.service.locationtype.json";
     public static final String LOCATIONTYPE_ATTRIBUTES = PropertyUtil.get(PROPERTY_SERVICE_GEOLOCATOR_LOCATIONTYPES, ID + ".json");
+    public static final String PROPERTY_AUTOCOMPLETE_URL = PropertyUtil.get("search.channel.ELFGEOLOCATOR_CHANNEL.autocomplete.url");
+    public static final String PROPERTY_AUTOCOMPLETE_USERNAME = PropertyUtil.get("search.channel.ELFGEOLOCATOR_CHANNEL.autocomplete.userName");
+    public static final String PROPERTY_AUTOCOMPLETE_PASSWORD = PropertyUtil.get("search.channel.ELFGEOLOCATOR_CHANNEL.autocomplete.password");
 
     // Parameters
     public static final String PARAM_NORMAL = "normal";
@@ -441,15 +444,14 @@ public class ELFGeoLocatorSearchChannel extends SearchChannel implements SearchA
 
     public List<String> doSearchAutocomplete(String searchString) {
         //TODO Get from properties
-        String url = "http://54.195.254.125/asdielastic/placenames/placename/_search";
+        if(PROPERTY_AUTOCOMPLETE_URL == null || PROPERTY_AUTOCOMPLETE_URL.isEmpty()) {
+            return Collections.emptyList();
+        }
         String requestJson = 	"{ \"query\": { \"match\": { \"name\": { \"query\": \""+searchString+"\", \"analyzer\": \"standard\" } } } };";
         try {
-            //final String propertyPrefix = "search.channel." + getName() + ".service.";
-            log.info("Creating autocomplete search url with url:", url);
-            HttpURLConnection conn = IOHelper.getConnection(url);
-            String userpass = "asdiuser:3sto9AHT";
-            String basicAuth = "Basic " + javax.xml.bind.DatatypeConverter.printBase64Binary(userpass.getBytes());
-            conn.setRequestProperty ("Authorization", basicAuth);
+            log.info("Creating autocomplete search url with url:", PROPERTY_AUTOCOMPLETE_URL);
+            HttpURLConnection conn = IOHelper.getConnection(PROPERTY_AUTOCOMPLETE_URL,
+                    PROPERTY_AUTOCOMPLETE_USERNAME, PROPERTY_AUTOCOMPLETE_PASSWORD);
             IOHelper.writeToConnection(conn, requestJson);
             String result = IOHelper.readString(conn);
             JSONObject jsonObject = new JSONObject(result);
