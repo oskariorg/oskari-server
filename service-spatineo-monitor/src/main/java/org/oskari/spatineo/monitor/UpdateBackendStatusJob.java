@@ -66,7 +66,7 @@ public class UpdateBackendStatusJob {
         initd = true;
     }
 
-    private static SqlSessionFactory initMyBatis() {
+    public static SqlSessionFactory initMyBatis() {
         final DataSource ds = DatasourceHelper.getInstance().getDataSource();
         final TransactionFactory transactionFactory = new JdbcTransactionFactory();
         final Environment environment = new Environment("development", transactionFactory, ds);
