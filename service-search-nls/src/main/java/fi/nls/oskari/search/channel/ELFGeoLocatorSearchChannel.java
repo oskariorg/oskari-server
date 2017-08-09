@@ -19,15 +19,13 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URLEncoder;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Search channel for ELF Geolocator requests
  */
 @Oskari(ELFGeoLocatorSearchChannel.ID)
-public class ELFGeoLocatorSearchChannel extends SearchChannel {
+public class ELFGeoLocatorSearchChannel extends SearchChannel implements SearchAutocomplete {
 
     public static final String ID = "ELFGEOLOCATOR_CHANNEL";
     public static final String PROPERTY_SERVICE_URL = "search.channel.ELFGEOLOCATOR_CHANNEL.service.url";
@@ -58,6 +56,9 @@ public class ELFGeoLocatorSearchChannel extends SearchChannel {
     public static final String REQUEST_GETFEATURE_TEMPLATE = PropertyUtil.get(PROPERTY_SERVICE_GETFEATURE_TEMPLATE, DEFAULT_GETFEATURE_TEMPLATE);
     private static final String PROPERTY_SERVICE_GEOLOCATOR_LOCATIONTYPES = "search.channel.ELFGEOLOCATOR_CHANNEL.service.locationtype.json";
     public static final String LOCATIONTYPE_ATTRIBUTES = PropertyUtil.get(PROPERTY_SERVICE_GEOLOCATOR_LOCATIONTYPES, ID + ".json");
+    public static final String PROPERTY_AUTOCOMPLETE_URL = PropertyUtil.getOptional("search.channel.ELFGEOLOCATOR_CHANNEL.autocomplete.url");
+    public static final String PROPERTY_AUTOCOMPLETE_USERNAME = PropertyUtil.getOptional("search.channel.ELFGEOLOCATOR_CHANNEL.autocomplete.userName");
+    public static final String PROPERTY_AUTOCOMPLETE_PASSWORD = PropertyUtil.getOptional("search.channel.ELFGEOLOCATOR_CHANNEL.autocomplete.password");
 
     // Parameters
     public static final String PARAM_NORMAL = "normal";
@@ -438,6 +439,33 @@ public class ELFGeoLocatorSearchChannel extends SearchChannel {
         super.calculateCommonFields(item);
         if (scale != -1) {
             item.setZoomScale(scale);
+        }
+    }
+
+    public List<String> doSearchAutocomplete(String searchString) {
+        if(PROPERTY_AUTOCOMPLETE_URL == null || PROPERTY_AUTOCOMPLETE_URL.isEmpty()) {
+            return Collections.emptyList();
+        }
+        String requestJson = 	"{ \"query\": { \"match\": { \"name\": { \"query\": \""+searchString+"\", \"analyzer\": \"standard\" } } } };";
+        try {
+            log.info("Creating autocomplete search url with url:", PROPERTY_AUTOCOMPLETE_URL);
+            HttpURLConnection conn = IOHelper.getConnection(PROPERTY_AUTOCOMPLETE_URL,
+                    PROPERTY_AUTOCOMPLETE_USERNAME, PROPERTY_AUTOCOMPLETE_PASSWORD);
+            IOHelper.writeToConnection(conn, requestJson);
+            String result = IOHelper.readString(conn);
+            JSONObject jsonObject = new JSONObject(result);
+
+            JSONArray jsonHitsArray = jsonObject.getJSONObject("hits").getJSONArray("hits");
+            List<String> resultList = new ArrayList<>();
+            for (int i = 0; i < jsonHitsArray.length(); ++i ) {
+                String resultName = jsonHitsArray.getJSONObject(i).getJSONObject("_source").getString("name");
+                resultList.add(resultName);
+            }
+            return resultList;
+        }
+        catch (Exception ex) {
+            log.error("Couldn't open or read from connection for search channel!");
+            throw new RuntimeException("Couldn't open or read from connection!", ex);
         }
     }
 }
