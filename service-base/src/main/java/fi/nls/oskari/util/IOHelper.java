@@ -5,6 +5,7 @@ import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import org.apache.commons.codec.binary.Base64;
 import javax.net.ssl.*;
+
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -852,7 +853,7 @@ public class IOHelper {
 
         final StringBuilder sb = new StringBuilder();
         boolean first = true;
-        for(Map.Entry<String, String> entry : kvps.entrySet()) {
+        for (Map.Entry<String, String> entry : kvps.entrySet()) {
             final String key = entry.getKey();
             final String value = entry.getValue();
             if (key == null || key.isEmpty() || value == null || value.isEmpty()) {
