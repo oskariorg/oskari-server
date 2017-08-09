@@ -65,14 +65,10 @@ public class GetSearchResultHandler extends ActionHandler {
         sc.setSRS(epsg);  // eg. EPSG:3067
         sc.setLocale(locale.getLanguage());
 
-        String autocomplete = params.getHttpParam(PARAM_AUTOCOMPLETE, "");
-        JSONObject result = null;
-        if (autocomplete.isEmpty() || autocomplete.equals("false")) {
-            result = SearchWorker.doSearch(sc);
+        if (params.getHttpParam(PARAM_AUTOCOMPLETE, false)) {
+            ResponseHelper.writeResponse(params, searchService.doSearchAutocomplete(sc));
+        } else {
+            ResponseHelper.writeResponse(params, SearchWorker.doSearch(sc));
         }
-        else if (autocomplete.equals("true")){
-            result = searchService.doSearchAutocomplete(sc);
-        }
-        ResponseHelper.writeResponse(params, result);
     }
 }
