@@ -4,8 +4,8 @@ import com.github.kevinsawicki.http.HttpRequest;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import org.apache.commons.codec.binary.Base64;
-import javax.net.ssl.*;
 
+import javax.net.ssl.*;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
