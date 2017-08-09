@@ -130,7 +130,7 @@ public class UpdateBackendStatusJob {
         return i < 0 ? layerName : layerName.substring(0, i);
     }
 
-    private static BackendStatus getStatus(long mapLayerId, Meter meter) {
+    private static BackendStatus getStatus(int mapLayerId, Meter meter) {
         Indicator indicator = meter.getIndicator();
         String statusMessage = indicator.getStatus();
         Status status = Status.getEnumByNewAPI(statusMessage);

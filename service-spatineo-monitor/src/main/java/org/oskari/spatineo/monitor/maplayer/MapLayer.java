@@ -2,17 +2,17 @@ package org.oskari.spatineo.monitor.maplayer;
 
 public class MapLayer {
 
-    private final long id;
+    private final int id;
     private final String name;
     private final String url;
 
-    public MapLayer(long id, String name, String url) {
+    public MapLayer(Integer id, String name, String url) {
         this.id = id;
         this.name = name;
         this.url = url;
     }
 
-    public long getId() {
+    public int getId() {
         return id;
     }
 

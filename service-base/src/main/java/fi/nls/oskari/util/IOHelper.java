@@ -639,14 +639,23 @@ public class IOHelper {
 
             HttpRequest.keepAlive(false);
             if (username != null && !username.isEmpty()) {
-                request = HttpRequest.post(url).basic(username, password)
-                        .contentType(contentType).connectTimeout(30)
-                        .acceptGzipEncoding().uncompress(true).trustAllCerts()
-                        .trustAllHosts().send(data);
+                request = HttpRequest.post(url)
+                        .basic(username, password)
+                        .contentType(contentType)
+                        .connectTimeout(getConnectionTimeoutMs())
+                        .acceptGzipEncoding()
+                        .uncompress(true)
+                        .trustAllCerts()
+                        .trustAllHosts()
+                        .send(data);
             } else {
-                request = HttpRequest.post(url).contentType(contentType)
-                        .connectTimeout(30).acceptGzipEncoding().uncompress(
-                                true).trustAllCerts().trustAllHosts()
+                request = HttpRequest.post(url)
+                        .contentType(contentType)
+                        .connectTimeout(getConnectionTimeoutMs())
+                        .acceptGzipEncoding()
+                        .uncompress(true)
+                        .trustAllCerts()
+                        .trustAllHosts()
                         .send(data);
             }
             if (host != null && !host.isEmpty()) {
