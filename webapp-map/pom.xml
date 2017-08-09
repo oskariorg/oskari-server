@@ -70,10 +70,6 @@
         </dependency>
         <!-- /Statistics plugins -->
 
-        <dependency>
-            <groupId>fi.nls.oskari.service</groupId>
-            <artifactId>service-spatineo-monitor</artifactId>
-        </dependency>
 
         <dependency>
             <groupId>fi.nls.oskari</groupId>
