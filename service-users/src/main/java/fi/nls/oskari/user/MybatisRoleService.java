@@ -27,11 +27,11 @@ public class MybatisRoleService {
 
     public MybatisRoleService() {
         final DatasourceHelper helper = DatasourceHelper.getInstance();
-        final DataSource dataSource = helper.getDataSource(helper.getOskariDataSourceName("roles"));
+        final DataSource dataSource = helper.getDataSource();
         if (dataSource != null) {
             factory = initializeMyBatis(dataSource);
         } else {
-            log.error("Couldn't get datasource for  rolesservice");
+            log.error("Couldn't get datasource for roleservice");
         }
     }
 
@@ -180,10 +180,7 @@ public class MybatisRoleService {
         try {
             log.debug("Linking role to user id : ", userId);
             final RolesMapper mapper = session.getMapper(RolesMapper.class);
-            final Map<String, Long> params = new HashMap<String, Long>();
-            params.put("role_id", roleId);
-            params.put("user_id", userId);
-            mapper.linkRoleToNewUser(params);
+            mapper.linkRoleToNewUser(roleId, userId);
             session.commit();
             log.debug("Linked role to new user with id: ", userId);
         } catch (Exception e) {
