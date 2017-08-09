@@ -1,14 +1,10 @@
 package fi.nls.oskari.util;
 
 import com.github.kevinsawicki.http.HttpRequest;
-
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
-
 import org.apache.commons.codec.binary.Base64;
-
 import javax.net.ssl.*;
-
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -598,9 +594,9 @@ public class IOHelper {
         return null;
     }
 
-    public static HttpURLConnection postForm(String url, Map<String, String> params)
+    public static HttpURLConnection postForm(String url, Map<String, String> keyValuePairs)
             throws IOException {
-        String requestBody = formURLEncode(params);
+        String requestBody = formURLEncode(keyValuePairs);
         return post(url, CONTENTTYPE_FORM_URLENCODED,
                 requestBody.getBytes(StandardCharsets.UTF_8));
     }
@@ -787,7 +783,7 @@ public class IOHelper {
                 urlBuilder.append("&");
             }
         }
-        final String queryString = formURLEncode(params);
+        final String queryString = getParams(params);
         if(queryString.isEmpty()) {
             // drop last character ('?' or '&')
             return urlBuilder.substring(0, urlBuilder.length()-1);
@@ -818,14 +814,45 @@ public class IOHelper {
         return constructUrl(url, params);
     }
 
-    public static String formURLEncode(final Map<String, String> params) {
+    public static String getParams(Map<String, String> params) {
         if(params == null || params.isEmpty()) {
+            return "";
+        }
+
+        final StringBuilder urlBuilder = new StringBuilder();
+        for(Map.Entry<String,String> entry : params.entrySet()) {
+            final String value = entry.getValue();
+            if(entry.getValue() == null) {
+                continue;
+            }
+            urlBuilder.append(entry.getKey());
+            urlBuilder.append("=");
+            try {
+                urlBuilder.append(URLEncoder.encode(value, DEFAULT_CHARSET));
+            } catch (UnsupportedEncodingException e) {
+                log.error(e, "Couldn't encode value - using raw input", value);
+                urlBuilder.append(value);
+            }
+            urlBuilder.append("&");
+        }
+        // drop last character ('?' or '&')
+        return urlBuilder.substring(0, urlBuilder.length()-1);
+    }
+
+    /**
+     * Very similiar to IOHelper.getParams(Map<String, String> params)
+     * only difference is that this method encodes the keys as well as the values
+     * @param kvps map containing the key value pairs
+     * @return String
+     */
+    public static String formURLEncode(final Map<String, String> kvps) {
+        if(kvps == null || kvps.isEmpty()) {
             return "";
         }
 
         final StringBuilder sb = new StringBuilder();
         boolean first = true;
-        for(Map.Entry<String, String> entry : params.entrySet()) {
+        for(Map.Entry<String, String> entry : kvps.entrySet()) {
             final String key = entry.getKey();
             final String value = entry.getValue();
             if (key == null || key.isEmpty() || value == null || value.isEmpty()) {

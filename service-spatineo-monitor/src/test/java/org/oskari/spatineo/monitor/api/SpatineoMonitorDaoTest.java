@@ -42,7 +42,7 @@ public class SpatineoMonitorDaoTest {
 
     @Test
     public void testParseResponseEmpty() throws IOException {
-        try (InputStream in = getClass().getClassLoader().getResourceAsStream("responseEmpty.json")) {
+        try (InputStream in = getClass().getResourceAsStream("/responseEmpty.json")) {
             Response response = monitor.parse(in);
             assertEquals("1.0", response.getVersion());
             assertEquals("OK", response.getStatus());
@@ -54,7 +54,7 @@ public class SpatineoMonitorDaoTest {
 
     @Test
     public void testParseResponseError() throws IOException {
-        try (InputStream in = getClass().getClassLoader().getResourceAsStream("responseError.json")) {
+        try (InputStream in = getClass().getResourceAsStream("/responseError.json")) {
             Response response = monitor.parse(in);
             assertEquals("1.0", response.getVersion());
             assertEquals("ERROR", response.getStatus());
@@ -65,7 +65,7 @@ public class SpatineoMonitorDaoTest {
 
     @Test
     public void testParseResponseOk() throws IOException {
-        try (InputStream in = getClass().getClassLoader().getResourceAsStream("responseOk.json")) {
+        try (InputStream in = getClass().getResourceAsStream("/responseOk.json")) {
             Response response = monitor.parse(in);
             assertEquals("1.0", response.getVersion());
             assertEquals("OK", response.getStatus());
