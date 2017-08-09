@@ -32,58 +32,23 @@ import fi.nls.oskari.util.PropertyUtil;
 
 public class UpdateBackendStatusJob {
     
+    private static final Logger LOG = LogFactory.getLogger(UpdateBackendStatusJob.class);
+
     private static final String PROP_MONITORING_URL = "spatineo.monitoring.url";
     private static final String PROP_MONITORING_KEY = "spatineo.monitoring.key";
 
-    private static final Logger LOG;
-    
-    static {
-        PropertyUtil.loadProperties("/oskari.properties");
-        PropertyUtil.loadProperties("/portal-ext.properties");
-        PropertyUtil.loadProperties("/oskari-ext.properties");
-        LOG = LogFactory.getLogger(UpdateBackendStatusJob.class);
-    }
+    public static void scheduledServiceCall() {
+        LOG.info("Starting the Spatineo Monitor update service call...");
 
-    private static SpatineoMonitorDao spatineoMonitorDao;
-    private static MapLayerDao mapLayerDao;
-    private static BackendStatusDao serviceStatusDao;
-
-    private static boolean initd = false;
-
-    private static void init() {
-        String url = PropertyUtil.getNecessary(PROP_MONITORING_URL, 
+        final String endPoint = PropertyUtil.getNecessary(PROP_MONITORING_URL,
                 "Spatineo Monitoring API requires a end point address. Calls to API disabled.");
-        String key = PropertyUtil.getNecessary(PROP_MONITORING_KEY, 
+        final String key = PropertyUtil.getNecessary(PROP_MONITORING_KEY,
                 "Spatineo Monitoring API requires a private access key. Calls to API disabled.");
+        final SpatineoMonitorDao spatineoMonitorDao = new SpatineoMonitorDao(endPoint, key);
 
         final SqlSessionFactory factory = initMyBatis();
-
-        spatineoMonitorDao = new SpatineoMonitorDao(url, key);
-        mapLayerDao = new MapLayerDao(factory);
-        serviceStatusDao = new BackendStatusDao(factory);
-
-        LOG.info("Spatineo Monitor init completed!");
-        initd = true;
-    }
-
-    public static SqlSessionFactory initMyBatis() {
-        final DataSource ds = DatasourceHelper.getInstance().getDataSource();
-        final TransactionFactory transactionFactory = new JdbcTransactionFactory();
-        final Environment environment = new Environment("development", transactionFactory, ds);
-        final Configuration configuration = new Configuration(environment);
-        configuration.addMapper(MapLayerMapper.class);
-        configuration.addMapper(BackendStatusMapper.class);
-        return new SqlSessionFactoryBuilder().build(configuration);
-    }
-
-    public static void scheduledServiceCall() {
-        if (!initd) {
-            init();
-            if (!initd) {
-                LOG.info(UpdateBackendStatusJob.class.getName() + " init failed");
-                return;
-            }
-        }
+        final MapLayerDao mapLayerDao = new MapLayerDao(factory);
+        final BackendStatusDao serviceStatusDao = new BackendStatusDao(factory);
 
         final Response response = spatineoMonitorDao.query();
         if (response == null) {
@@ -112,9 +77,19 @@ public class UpdateBackendStatusJob {
         }
         serviceStatusDao.insertStatuses(statuses);
 
-        LOG.info("Done with the Spatineo Serval update service call");
+        LOG.info("Done with the Spatineo Monitor update service call");
     }
     
+    public static SqlSessionFactory initMyBatis() {
+        final DataSource ds = DatasourceHelper.getInstance().getDataSource();
+        final TransactionFactory transactionFactory = new JdbcTransactionFactory();
+        final Environment environment = new Environment("development", transactionFactory, ds);
+        final Configuration configuration = new Configuration(environment);
+        configuration.addMapper(MapLayerMapper.class);
+        configuration.addMapper(BackendStatusMapper.class);
+        return new SqlSessionFactoryBuilder().build(configuration);
+    }
+
     private static BackendStatus getStatus(MapLayer layer, List<Result> results, boolean isWFS) {
         Meter meter = findMeter(results, layer.getName(), layer.getUrl(), isWFS);
         if (meter == null) {

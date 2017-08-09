@@ -3,7 +3,7 @@ package org.oskari.spatineo.monitor.api.model;
 import java.util.List;
 
 public class Response {
-    
+
     public static final String STATUS_OK = "OK";
 
     private String version;
