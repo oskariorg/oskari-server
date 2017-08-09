@@ -11,6 +11,7 @@ import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
@@ -446,12 +447,11 @@ public class ELFGeoLocatorSearchChannel extends SearchChannel implements SearchA
         if(PROPERTY_AUTOCOMPLETE_URL == null || PROPERTY_AUTOCOMPLETE_URL.isEmpty()) {
             return Collections.emptyList();
         }
-        String requestJson = 	"{ \"query\": { \"match\": { \"name\": { \"query\": \""+searchString+"\", \"analyzer\": \"standard\" } } } };";
         try {
             log.info("Creating autocomplete search url with url:", PROPERTY_AUTOCOMPLETE_URL);
             HttpURLConnection conn = IOHelper.getConnection(PROPERTY_AUTOCOMPLETE_URL,
                     PROPERTY_AUTOCOMPLETE_USERNAME, PROPERTY_AUTOCOMPLETE_PASSWORD);
-            IOHelper.writeToConnection(conn, requestJson);
+            IOHelper.writeToConnection(conn, getElasticQuery(searchString));
             String result = IOHelper.readString(conn);
             JSONObject jsonObject = new JSONObject(result);
 
@@ -467,5 +467,15 @@ public class ELFGeoLocatorSearchChannel extends SearchChannel implements SearchA
             log.error("Couldn't open or read from connection for search channel!");
             throw new RuntimeException("Couldn't open or read from connection!", ex);
         }
+    }
+
+    protected String getElasticQuery(String query) {
+        // { "query": { "match": { "name": { "query": "[user input]", "analyzer": "standard" } } } };";
+        JSONObject elasticQueryTemplate = JSONHelper.createJSONObject("{ \"query\": { \"match\": { \"name\": { \"analyzer\": \"standard\" } } } };");
+        try {
+            // set the actual search query
+            elasticQueryTemplate.optJSONObject("query").optJSONObject("match").optJSONObject("name").put("query", query);
+        } catch(Exception ignored) {}
+        return elasticQueryTemplate.toString();
     }
 }
