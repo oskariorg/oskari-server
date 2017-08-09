@@ -33,6 +33,17 @@ Added error codes (e.g. invalid_file) to response instead of textual messages to
 Added feature count to layerJSON response. Also adds a warning object with skipped_features to layerJSON response
  if feature(s) were skipped (no geometry object or geometry is null) during import.
 
+### Improvements to CSW response parsing
+
+Improved data quality information parsing for metadata.
+
+### Initial search channel autocomplete functionality
+
+Added initial autocomplete support for search channels. Any search channel that can support autocompletion can
+ implement a new SearchAutocomplete interface to participate on the autocomplete results.
+
+See service-search-nls/src/main/java/fi/nls/oskari/search/channel/ELFGeoLocatorSearchChannel.java for an example.
+
 ## 1.43.0
 
 ### servlet-printout

@@ -4,6 +4,7 @@ import fi.nls.oskari.search.channel.SearchableChannel;
 import fi.nls.oskari.service.OskariComponent;
 import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.PropertyUtil;
+import org.json.JSONObject;
 
 import java.util.Map;
 
@@ -28,6 +29,7 @@ public abstract class SearchService extends OskariComponent {
 	 * @return Query
 	 */
 	public abstract Query doSearch(SearchCriteria searchCriteria);
+	public abstract JSONObject doSearchAutocomplete(SearchCriteria searchCriteria);
 	public abstract void addChannel(String channelId, SearchableChannel searchableChannel);
     public abstract Map<String, SearchableChannel> getAvailableChannels();
 
