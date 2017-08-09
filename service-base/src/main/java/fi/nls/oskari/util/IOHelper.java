@@ -1,15 +1,19 @@
 package fi.nls.oskari.util;
 
 import com.github.kevinsawicki.http.HttpRequest;
+
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+
 import org.apache.commons.codec.binary.Base64;
 
 import javax.net.ssl.*;
+
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
 import java.security.cert.X509Certificate;
 import java.util.Collections;
@@ -594,6 +598,27 @@ public class IOHelper {
         return null;
     }
 
+    public static HttpURLConnection postForm(String url, Map<String, String> params)
+            throws IOException {
+        String requestBody = formURLEncode(params);
+        return post(url, CONTENTTYPE_FORM_URLENCODED,
+                requestBody.getBytes(StandardCharsets.UTF_8));
+    }
+
+    public static HttpURLConnection post(String url, String contentType, byte[] body)
+            throws IOException {
+        HttpURLConnection conn = getConnection(url);
+        conn.setRequestMethod("POST");
+        conn.setDoOutput(true);
+        conn.setDoInput(true);
+        setContentType(conn, contentType);
+        conn.setRequestProperty("Content-Length", Integer.toString(body.length));
+        try (OutputStream out = conn.getOutputStream()) {
+            out.write(body);
+        }
+        return conn;
+    }
+
     public static String postRequest(String url) {
         return postRequest(url, "", "", "", null, null, null);
     }
@@ -762,7 +787,7 @@ public class IOHelper {
                 urlBuilder.append("&");
             }
         }
-        final String queryString = getParams(params);
+        final String queryString = formURLEncode(params);
         if(queryString.isEmpty()) {
             // drop last character ('?' or '&')
             return urlBuilder.substring(0, urlBuilder.length()-1);
@@ -793,28 +818,40 @@ public class IOHelper {
         return constructUrl(url, params);
     }
 
-    public static String getParams(Map<String, String> params) {
+    public static String formURLEncode(final Map<String, String> params) {
         if(params == null || params.isEmpty()) {
             return "";
         }
 
-        final StringBuilder urlBuilder = new StringBuilder();
-        for(Map.Entry<String,String> entry : params.entrySet()) {
+        final StringBuilder sb = new StringBuilder();
+        boolean first = true;
+        for(Map.Entry<String, String> entry : params.entrySet()) {
+            final String key = entry.getKey();
             final String value = entry.getValue();
-            if(entry.getValue() == null) {
+            if (key == null || key.isEmpty() || value == null || value.isEmpty()) {
                 continue;
             }
-            urlBuilder.append(entry.getKey());
-            urlBuilder.append("=");
             try {
-                urlBuilder.append(URLEncoder.encode(value, DEFAULT_CHARSET));
-            } catch (UnsupportedEncodingException e) {
-                log.error(e, "Couldn't encode value - using raw input", value);
-                urlBuilder.append(value);
+                final String keyEnc = URLEncoder.encode(key, DEFAULT_CHARSET);
+                final String valueEnc = URLEncoder.encode(value, DEFAULT_CHARSET);
+                if (!first) {
+                    sb.append('&');
+                }
+                sb.append(keyEnc).append('=').append(valueEnc);
+                first = false;
+            } catch (UnsupportedEncodingException ignore) {
+                // Ignore the exception, UTF-8 _IS_ supported
             }
-            urlBuilder.append("&");
         }
-        // drop last character ('?' or '&')
-        return urlBuilder.substring(0, urlBuilder.length()-1);
+        return sb.toString();
     }
+
+    public static InputStream getInputStream(HttpURLConnection conn) {
+        try {
+            return conn.getInputStream();
+        } catch (IOException e) {
+            return conn.getErrorStream();
+        }
+    }
+
 }
