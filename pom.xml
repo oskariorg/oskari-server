@@ -1043,6 +1043,7 @@
         <module>service-feedback</module>
         <module>service-feedback-open311</module>
 
+        <module>service-capabilities-update</module>
     </modules>
 
 </project>
