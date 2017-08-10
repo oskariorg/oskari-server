@@ -49,6 +49,10 @@ See service-search-nls/src/main/java/fi/nls/oskari/search/channel/ELFGeoLocatorS
 Polygon style now supports no fill and no stroke. The condition is expressed as allowed null color string values for
  "fill_color" and "border_color" in UserLayerStyle/AnalysisStyle/MyPlaceCategory/WFSLayerStore.
 
+### Initial version of print functionality rewrite
+
+New Maven modules service-print, servlet-print and webapp-print which will be replacing servlet-printout once it has
+ been proved production ready.
 
 ## 1.43.0
 
