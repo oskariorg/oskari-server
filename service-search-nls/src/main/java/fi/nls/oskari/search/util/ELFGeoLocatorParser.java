@@ -66,6 +66,22 @@ public class ELFGeoLocatorParser {
             this.serviceSrs = serviceSrs.toUpperCase();
         }
 
+        loadCountryMap();
+
+        final ELFGeoLocatorSearchChannel elfchannel = new ELFGeoLocatorSearchChannel();
+
+        elfScalesForType = elfchannel.getElfScalesForType();
+        if(elfScalesForType == null) {
+            log.debug("Scale relation to locationtypes is not set ");
+        }
+
+        elfLocationPriority = elfchannel.getElfLocationPriority();
+        if(elfLocationPriority == null) {
+            log.debug("priority relation to locationtypes is not set ");
+        }
+    }
+
+    public void loadCountryMap () {
         final ELFGeoLocatorSearchChannel elfchannel = new ELFGeoLocatorSearchChannel();
         try {
             countries = elfchannel.getElfCountryMap();
@@ -94,16 +110,6 @@ public class ELFGeoLocatorParser {
             }
         } catch (Exception e) {
             log.error("Error parsing countries with ELFGeolocator, got exception", e);
-        }
-
-        elfScalesForType = elfchannel.getElfScalesForType();
-        if(elfScalesForType == null) {
-            log.debug("Scale relation to locationtypes is not set ");
-        }
-
-        elfLocationPriority = elfchannel.getElfLocationPriority();
-        if(elfLocationPriority == null) {
-            log.debug("priority relation to locationtypes is not set ");
         }
     }
 
@@ -417,18 +423,25 @@ public class ELFGeoLocatorParser {
      * @param country_code ISO Country code 2 ch
      * @return
      */
-    public String[] getAdminName(String country_code) {
-        String[] value = {""};
+    public String getAdminName(String country_code) {
+        boolean countriesReloaded = false;
         try {
-            if (countryMap.containsKey(country_code)) {
-                value = countryMap.get(country_code).split(";");
+            while (true) {
+                if (countryMap.containsKey(country_code)) {
+                    return countryMap.get(country_code);
+                } else {
+                    if (countriesReloaded) {
+                        return "";
+                    }
+                    loadCountryMap();
+                    continue;
+                }
             }
         } catch (Exception e) {
             log.debug("Failed to get ELF country codes to " + country_code);
-
         }
-        return value;
-
+        
+        return getAdminName(country_code);
     }
 
     /**
@@ -438,19 +451,23 @@ public class ELFGeoLocatorParser {
      * @return
      */
     public String getAdminCountry(Locale locale, String admin_name) {
-        String country = "";
-        Iterator<?> keys = countryMap.keySet().iterator();
-        while (keys.hasNext()) {
-            String key = (String) keys.next();
-            String[] admins = countryMap.get(key).toString().split(";");
-            for (String admin : admins) {
+        boolean countriesReloaded = false;
+        while (true) {
+            for (Map.Entry<String, String> entry : countryMap.entrySet()) {
+                String admin = entry.getKey();
+                String countryCode = entry.getValue();
                 if (admin.equals(admin_name)) {
-                    Locale obj = new Locale("", key);
+                    Locale obj = new Locale("", countryCode);
                     return obj.getDisplayCountry(locale);
                 }
             }
+            if (countriesReloaded) {
+                return "";
+            }
+            loadCountryMap();
+            countriesReloaded = true;
+            continue;
         }
-        return country;
     }
 
     /**

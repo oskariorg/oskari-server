@@ -112,9 +112,10 @@ public class ELFGeoLocatorSearchChannel extends SearchChannel {
         if(serviceURL == null) {
             throw new RuntimeException("ELFGeolocator didn't initialize - provide url with property: " + PROPERTY_SERVICE_URL);
         }
-
         log.debug("ServiceURL set to " + serviceURL);
+
         readLocationTypes();
+
         try (InputStream inp3 = this.getClass().getResourceAsStream(nameLanguages)) {
             if (inp3 != null) {
                 InputStreamReader reader = new InputStreamReader(inp3);
@@ -313,7 +314,7 @@ public class ELFGeoLocatorSearchChannel extends SearchChannel {
                 filter = ADMIN_FILTER_TEMPLATE;
                 String country = searchCriteria.getParam(PARAM_COUNTRY).toString();
                 //TODO add or filter, if there are many variations of admin names
-                filter = filter.replace(KEY_ADMIN_HOLDER, URLEncoder.encode(elfParser.getAdminName(country)[0], "UTF-8"));
+                filter = filter.replace(KEY_ADMIN_HOLDER, URLEncoder.encode(elfParser.getAdminName(country), "UTF-8"));
             }
             filter = filter.replace(KEY_PLACE_HOLDER, URLEncoder.encode(searchCriteria.getSearchString(), "UTF-8"));
             String request = REQUEST_GETFEATURE_TEMPLATE.replace(KEY_LANG_HOLDER, lang3);
@@ -351,6 +352,7 @@ public class ELFGeoLocatorSearchChannel extends SearchChannel {
      * @return
      */
     public String getElfCountryMap() throws Exception{
+        serviceURL = PropertyUtil.getOptional(PROPERTY_SERVICE_URL);
         if (serviceURL == null) {
             log.warn("ServiceURL not configured. Add property with key", PROPERTY_SERVICE_URL);
             return null;
