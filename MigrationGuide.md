@@ -1,6 +1,6 @@
 # Migration guide
 
-## Next release version
+## 1.44.0
 
 ### Transparent fill & stroke on polygons
 

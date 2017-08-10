@@ -1,11 +1,5 @@
 # Release Notes
 
-## Next release version
-
-### Transparent fill & stroke on polygons
-
-Polygon style now supports no fill and no stroke. The condition is expressed as allowed null color string values for "fill_color" and "border_color" in UserLayerStyle/AnalysisStyle/MyPlaceCategory/WFSLayerStore.
-
 ## 1.44.0
 
 ### State cookie handling
@@ -49,6 +43,12 @@ Added initial autocomplete support for search channels. Any search channel that 
  implement a new SearchAutocomplete interface to participate on the autocomplete results.
 
 See service-search-nls/src/main/java/fi/nls/oskari/search/channel/ELFGeoLocatorSearchChannel.java for an example.
+
+### Transparent fill & stroke on polygons
+
+Polygon style now supports no fill and no stroke. The condition is expressed as allowed null color string values for
+ "fill_color" and "border_color" in UserLayerStyle/AnalysisStyle/MyPlaceCategory/WFSLayerStore.
+
 
 ## 1.43.0
 
