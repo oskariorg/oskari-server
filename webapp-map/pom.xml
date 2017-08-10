@@ -69,6 +69,10 @@
             <artifactId>service-statistics-pxweb</artifactId>
         </dependency>
         <!-- /Statistics plugins -->
+        <dependency>
+            <groupId>fi.nls.oskari</groupId>
+            <artifactId>download-basket</artifactId>
+        </dependency>
 
 
         <dependency>
