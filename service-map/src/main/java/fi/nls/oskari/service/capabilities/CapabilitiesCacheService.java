@@ -108,6 +108,14 @@ public abstract class CapabilitiesCacheService extends OskariComponent {
         }
         final HttpURLConnection conn = IOHelper.getConnection(url, layer.getUsername(), layer.getPassword());
         conn.setReadTimeout(TIMEOUT_MS);
+        if(conn.getResponseCode() != HttpURLConnection.HTTP_OK) {
+            throw new IOException("Couldn't load capabilities from " + url);
+        }
+        final String contentType = conn.getContentType();
+        if(contentType != null && contentType.toLowerCase().indexOf("xml") == -1) {
+            // not xml based on contentType
+            throw new IOException("Unexpected result contentType for capabilities query: " + contentType + " - url:" + url);
+        }
         final String response = IOHelper.readString(conn, encoding);
         final String charset = getEncodingFromXml(response);
 
