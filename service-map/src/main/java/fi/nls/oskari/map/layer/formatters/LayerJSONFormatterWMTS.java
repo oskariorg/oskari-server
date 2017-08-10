@@ -5,13 +5,12 @@ import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.geometry.ProjectionHelper;
 import fi.nls.oskari.util.JSONHelper;
+import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.wmts.domain.TileMatrixLimits;
 import fi.nls.oskari.wmts.domain.WMTSCapabilities;
 import fi.nls.oskari.wmts.domain.WMTSCapabilitiesLayer;
-import org.geotools.referencing.CRS;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
 import java.util.*;
 
@@ -25,7 +24,6 @@ import java.util.*;
 public class LayerJSONFormatterWMTS extends LayerJSONFormatter {
 
     public static final String KEY_TILEMATRIXIDS = "tileMatrixIds";
-    private static Logger log = LogFactory.getLogger(LayerJSONFormatterWMTS.class);
 
     public JSONObject getJSON(OskariLayer layer,
                               final String lang,
@@ -56,7 +54,7 @@ public class LayerJSONFormatterWMTS extends LayerJSONFormatter {
         final String urlTemplate = JSONHelper.getStringFromJSON(layer.getOptions(), "urlTemplate", null);
         final boolean needsProxy = useProxy(layer);
         if(urlTemplate != null) {
-            if(needsProxy) {
+            if(needsProxy || isBeingProxiedViaOskariServer(layerJson.optString("url"))) {
                 // remove requestEncoding so we always get KVP params when proxying
                 JSONObject options = layerJson.optJSONObject("options");
                 options.remove("requestEncoding");
@@ -72,13 +70,13 @@ public class LayerJSONFormatterWMTS extends LayerJSONFormatter {
         return layerJson;
     }
 
+
     /**
      *
      * @param wmts
      * @param layer
      * @return
      */
-
     public static JSONObject createCapabilitiesJSON(final WMTSCapabilities wmts,final WMTSCapabilitiesLayer layer) {
 
         JSONObject capabilities = new JSONObject();

@@ -1,7 +1,17 @@
 # Migration guide
 
-## 1.42.3
+## 1.44.0
 
+### Transparent fill & stroke on polygons
+
+DefaultStyle SLDs needs to be manually updated on Geoserver from
+https://github.com/oskariorg/oskari-server/tree/master/content-resources/src/main/resources/sld
+
+## 1.42.1
+
+### User registration feature
+
+The feature has been significantly changed. See ReleaseNotes for details.
 
 ### Layer urls handling for https-services
 

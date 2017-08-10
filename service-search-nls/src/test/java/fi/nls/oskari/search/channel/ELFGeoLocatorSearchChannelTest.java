@@ -2,6 +2,7 @@ package fi.nls.oskari.search.channel;
 
 import fi.mml.portti.service.search.SearchCriteria;
 import fi.nls.oskari.util.IOHelper;
+import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -12,6 +13,7 @@ import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.params.HttpClientParams;
 import org.custommonkey.xmlunit.Diff;
 import org.custommonkey.xmlunit.XMLUnit;
+import org.json.JSONObject;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -62,6 +64,14 @@ public class ELFGeoLocatorSearchChannelTest {
         String xml = channel.getWildcardQuery(searchCriteria);
         Diff xmlDiff = new Diff(wildcardQueryXML, xml);
         assertTrue("Should get expected query " + xmlDiff, xmlDiff.similar());
+    }
+
+    @Test
+    public void getElasticQuery() {
+        ELFGeoLocatorSearchChannel channel = new ELFGeoLocatorSearchChannel();
+        final JSONObject expected = JSONHelper.createJSONObject("{\"query\":{\"match\":{\"name\":{\"analyzer\":\"standard\",\"query\":\"\\\"}, {\\\"break\\\": []\"}}}}");
+        final JSONObject actual = JSONHelper.createJSONObject(channel.getElasticQuery("\"}, {\"break\": []"));
+        assertTrue("JSON should not break", JSONHelper.isEqual(expected, actual));
     }
 
 }
