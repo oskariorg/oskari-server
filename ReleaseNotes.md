@@ -33,6 +33,36 @@ Added error codes (e.g. invalid_file) to response instead of textual messages to
 Added feature count to layerJSON response. Also adds a warning object with skipped_features to layerJSON response
  if feature(s) were skipped (no geometry object or geometry is null) during import.
 
+### Improvements to CSW response parsing
+
+Improved data quality information parsing for metadata.
+
+### Initial search channel autocomplete functionality
+
+Added initial autocomplete support for search channels. Any search channel that can support autocompletion can
+ implement a new SearchAutocomplete interface to participate on the autocomplete results.
+
+See service-search-nls/src/main/java/fi/nls/oskari/search/channel/ELFGeoLocatorSearchChannel.java for an example.
+
+### Transparent fill & stroke on polygons
+
+Polygon style now supports no fill and no stroke. The condition is expressed as allowed null color string values for
+ "fill_color" and "border_color" in UserLayerStyle/AnalysisStyle/MyPlaceCategory/WFSLayerStore.
+
+### Initial version of print functionality rewrite
+
+New Maven modules service-print, servlet-print and webapp-print which will be replacing servlet-printout once it has
+ been proved production ready.
+
+### Additional layer configuration 
+
+WMS-layers GFI functionality can now be enabled/disabled overwriting layer capabilities by adding a configuration in database
+ oskari_maplayer.attributes:
+ 
+    {
+        "isQueryable" : false
+    }
+
 ## 1.43.0
 
 ### servlet-printout

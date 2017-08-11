@@ -646,6 +646,12 @@
                                 </ogc:Function>
                                 <ogc:Literal>0</ogc:Literal>
                             </ogc:PropertyIsEqualTo>
+                            <ogc:PropertyIsEqualTo>
+                                <ogc:Function name="isNull">
+                                    <ogc:PropertyName>border_color</ogc:PropertyName>
+                                </ogc:Function>
+                                <ogc:Literal>false</ogc:Literal>
+                            </ogc:PropertyIsEqualTo>
                         </ogc:And>
                     </ogc:Filter>
                     <PolygonSymbolizer>
@@ -705,6 +711,12 @@
                                 </ogc:Function>
                                 <ogc:Literal>0</ogc:Literal>
                             </ogc:PropertyIsNotEqualTo>
+                            <ogc:PropertyIsEqualTo>
+                                <ogc:Function name="isNull">
+                                    <ogc:PropertyName>border_color</ogc:PropertyName>
+                                </ogc:Function>
+                                <ogc:Literal>false</ogc:Literal>
+                            </ogc:PropertyIsEqualTo>
                         </ogc:And>
                     </ogc:Filter>
                     <PolygonSymbolizer>
@@ -765,6 +777,12 @@
                                 </ogc:Function>
                                 <ogc:Literal>0</ogc:Literal>
                             </ogc:PropertyIsEqualTo>
+                            <ogc:PropertyIsEqualTo>
+                                <ogc:Function name="isNull">
+                                    <ogc:PropertyName>border_color</ogc:PropertyName>
+                                </ogc:Function>
+                                <ogc:Literal>false</ogc:Literal>
+                            </ogc:PropertyIsEqualTo>
                         </ogc:And>
                     </ogc:Filter>
                     <PolygonSymbolizer>
@@ -813,6 +831,12 @@
                                 </ogc:Function>
                                 <ogc:Literal>0</ogc:Literal>
                             </ogc:PropertyIsNotEqualTo>
+                            <ogc:PropertyIsEqualTo>
+                                <ogc:Function name="isNull">
+                                    <ogc:PropertyName>border_color</ogc:PropertyName>
+                                </ogc:Function>
+                                <ogc:Literal>false</ogc:Literal>
+                            </ogc:PropertyIsEqualTo>
                         </ogc:And>
                     </ogc:Filter>
                     <PolygonSymbolizer>
@@ -862,6 +886,12 @@
                                 </ogc:Function>
                                 <ogc:Literal>0</ogc:Literal>
                             </ogc:PropertyIsEqualTo>
+                            <ogc:PropertyIsEqualTo>
+                                <ogc:Function name="isNull">
+                                    <ogc:PropertyName>border_color</ogc:PropertyName>
+                                </ogc:Function>
+                                <ogc:Literal>false</ogc:Literal>
+                            </ogc:PropertyIsEqualTo>
                         </ogc:And>
                     </ogc:Filter>
                     <PolygonSymbolizer>
@@ -910,6 +940,12 @@
                                 </ogc:Function>
                                 <ogc:Literal>0</ogc:Literal>
                             </ogc:PropertyIsNotEqualTo>
+                            <ogc:PropertyIsEqualTo>
+                                <ogc:Function name="isNull">
+                                    <ogc:PropertyName>border_color</ogc:PropertyName>
+                                </ogc:Function>
+                                <ogc:Literal>false</ogc:Literal>
+                            </ogc:PropertyIsEqualTo>
                         </ogc:And>
                     </ogc:Filter>
                     <PolygonSymbolizer>
@@ -959,6 +995,12 @@
                                 </ogc:Function>
                                 <ogc:Literal>0</ogc:Literal>
                             </ogc:PropertyIsEqualTo>
+                            <ogc:PropertyIsEqualTo>
+                                <ogc:Function name="isNull">
+                                    <ogc:PropertyName>border_color</ogc:PropertyName>
+                                </ogc:Function>
+                                <ogc:Literal>false</ogc:Literal>
+                            </ogc:PropertyIsEqualTo>
                         </ogc:And>
                     </ogc:Filter>
                     <PolygonSymbolizer>
@@ -1007,6 +1049,12 @@
                                 </ogc:Function>
                                 <ogc:Literal>0</ogc:Literal>
                             </ogc:PropertyIsNotEqualTo>
+                            <ogc:PropertyIsEqualTo>
+                                <ogc:Function name="isNull">
+                                    <ogc:PropertyName>border_color</ogc:PropertyName>
+                                </ogc:Function>
+                                <ogc:Literal>false</ogc:Literal>
+                            </ogc:PropertyIsEqualTo>
                         </ogc:And>
                     </ogc:Filter>
                     <PolygonSymbolizer>
@@ -1056,6 +1104,12 @@
                                 </ogc:Function>
                                 <ogc:Literal>0</ogc:Literal>
                             </ogc:PropertyIsEqualTo>
+                            <ogc:PropertyIsEqualTo>
+                                <ogc:Function name="isNull">
+                                    <ogc:PropertyName>border_color</ogc:PropertyName>
+                                </ogc:Function>
+                                <ogc:Literal>false</ogc:Literal>
+                            </ogc:PropertyIsEqualTo>
                         </ogc:And>
                     </ogc:Filter>
                     <PolygonSymbolizer>
@@ -1104,6 +1158,12 @@
                                 </ogc:Function>
                                 <ogc:Literal>0</ogc:Literal>
                             </ogc:PropertyIsNotEqualTo>
+                            <ogc:PropertyIsEqualTo>
+                                <ogc:Function name="isNull">
+                                    <ogc:PropertyName>border_color</ogc:PropertyName>
+                                </ogc:Function>
+                                <ogc:Literal>false</ogc:Literal>
+                            </ogc:PropertyIsEqualTo>
                         </ogc:And>
                     </ogc:Filter>
                     <PolygonSymbolizer>
@@ -1130,6 +1190,194 @@
                     </PolygonSymbolizer>
                 </Rule>
 
+                <Rule>
+                    <ogc:Filter>
+                        <ogc:And>
+                            <ogc:PropertyIsEqualTo>
+                                <ogc:Function name="in2">
+                                    <ogc:Function name="geometryType">
+                                        <ogc:PropertyName>geometry</ogc:PropertyName>
+                                    </ogc:Function>
+                                    <ogc:Literal>Polygon</ogc:Literal>
+                                    <ogc:Literal>MultiPolygon</ogc:Literal>
+                                </ogc:Function>
+                                <ogc:Literal>true</ogc:Literal>
+                            </ogc:PropertyIsEqualTo>
+                            <ogc:PropertyIsEqualTo>
+                                <ogc:PropertyName>fill_pattern</ogc:PropertyName>
+                                <ogc:Literal>-1</ogc:Literal>
+                            </ogc:PropertyIsEqualTo>
+                            <ogc:PropertyIsNull>
+                                <ogc:PropertyName>border_color</ogc:PropertyName>
+                            </ogc:PropertyIsNull>
+                        </ogc:And>
+                    </ogc:Filter>
+                    <PolygonSymbolizer>
+                        <Fill>
+                            <CssParameter name="fill"><ogc:PropertyName>fill_color</ogc:PropertyName></CssParameter>
+                        </Fill>
+                    </PolygonSymbolizer>
+                </Rule>
+
+                <Rule>
+                    <ogc:Filter>
+                        <ogc:And>
+                            <ogc:PropertyIsEqualTo>
+                                <ogc:Function name="in2">
+                                    <ogc:Function name="geometryType">
+                                        <ogc:PropertyName>geometry</ogc:PropertyName>
+                                    </ogc:Function>
+                                    <ogc:Literal>Polygon</ogc:Literal>
+                                    <ogc:Literal>MultiPolygon</ogc:Literal>
+                                </ogc:Function>
+                                <ogc:Literal>true</ogc:Literal>
+                            </ogc:PropertyIsEqualTo>
+                            <ogc:PropertyIsEqualTo>
+                                <ogc:PropertyName>fill_pattern</ogc:PropertyName>
+                                <ogc:Literal>0</ogc:Literal>
+                            </ogc:PropertyIsEqualTo>
+                            <ogc:PropertyIsNull>
+                                <ogc:PropertyName>border_color</ogc:PropertyName>
+                            </ogc:PropertyIsNull>
+                        </ogc:And>
+                    </ogc:Filter>
+                    <PolygonSymbolizer>
+                        <Fill>
+                            <GraphicFill>
+                                <Graphic>
+                                    <Mark>
+                                        <WellKnownName>shape://slash</WellKnownName>
+                                        <Stroke>
+                                            <CssParameter name="stroke"><ogc:PropertyName>fill_color</ogc:PropertyName></CssParameter>
+                                            <CssParameter name="stroke-width">1</CssParameter>
+                                        </Stroke>
+                                    </Mark>
+                                    <Size>4</Size>
+                                </Graphic>
+                            </GraphicFill>
+                        </Fill>
+                    </PolygonSymbolizer>
+                </Rule>
+
+                <Rule>
+                    <ogc:Filter>
+                        <ogc:And>
+                            <ogc:PropertyIsEqualTo>
+                                <ogc:Function name="in2">
+                                    <ogc:Function name="geometryType">
+                                        <ogc:PropertyName>geometry</ogc:PropertyName>
+                                    </ogc:Function>
+                                    <ogc:Literal>Polygon</ogc:Literal>
+                                    <ogc:Literal>MultiPolygon</ogc:Literal>
+                                </ogc:Function>
+                                <ogc:Literal>true</ogc:Literal>
+                            </ogc:PropertyIsEqualTo>
+                            <ogc:PropertyIsEqualTo>
+                                <ogc:PropertyName>fill_pattern</ogc:PropertyName>
+                                <ogc:Literal>1</ogc:Literal>
+                            </ogc:PropertyIsEqualTo>
+                            <ogc:PropertyIsNull>
+                                <ogc:PropertyName>border_color</ogc:PropertyName>
+                            </ogc:PropertyIsNull>
+                        </ogc:And>
+                    </ogc:Filter>
+                    <PolygonSymbolizer>
+                        <Fill>
+                            <GraphicFill>
+                                <Graphic>
+                                    <Mark>
+                                        <WellKnownName>shape://slash</WellKnownName>
+                                        <Stroke>
+                                            <CssParameter name="stroke"><ogc:PropertyName>fill_color</ogc:PropertyName></CssParameter>
+                                            <CssParameter name="stroke-width">2</CssParameter>
+                                        </Stroke>
+                                    </Mark>
+                                    <Size>6</Size>
+                                </Graphic>
+                            </GraphicFill>
+                        </Fill>
+                    </PolygonSymbolizer>
+                </Rule>
+
+                <Rule>
+                    <ogc:Filter>
+                        <ogc:And>
+                            <ogc:PropertyIsEqualTo>
+                                <ogc:Function name="in2">
+                                    <ogc:Function name="geometryType">
+                                        <ogc:PropertyName>geometry</ogc:PropertyName>
+                                    </ogc:Function>
+                                    <ogc:Literal>Polygon</ogc:Literal>
+                                    <ogc:Literal>MultiPolygon</ogc:Literal>
+                                </ogc:Function>
+                                <ogc:Literal>true</ogc:Literal>
+                            </ogc:PropertyIsEqualTo>
+                            <ogc:PropertyIsEqualTo>
+                                <ogc:PropertyName>fill_pattern</ogc:PropertyName>
+                                <ogc:Literal>2</ogc:Literal>
+                            </ogc:PropertyIsEqualTo>
+                            <ogc:PropertyIsNull>
+                                <ogc:PropertyName>border_color</ogc:PropertyName>
+                            </ogc:PropertyIsNull>
+                        </ogc:And>
+                    </ogc:Filter>
+                    <PolygonSymbolizer>
+                        <Fill>
+                            <GraphicFill>
+                                <Graphic>
+                                    <Mark>
+                                        <WellKnownName>shape://horline</WellKnownName>
+                                        <Stroke>
+                                            <CssParameter name="stroke"><ogc:PropertyName>fill_color</ogc:PropertyName></CssParameter>
+                                            <CssParameter name="stroke-width">0.4</CssParameter>
+                                        </Stroke>
+                                    </Mark>
+                                    <Size>4.5</Size>
+                                </Graphic>
+                            </GraphicFill>
+                        </Fill>
+                    </PolygonSymbolizer>
+                </Rule>
+
+                <Rule>
+                    <ogc:Filter>
+                        <ogc:And>
+                            <ogc:PropertyIsEqualTo>
+                                <ogc:Function name="in2">
+                                    <ogc:Function name="geometryType">
+                                        <ogc:PropertyName>geometry</ogc:PropertyName>
+                                    </ogc:Function>
+                                    <ogc:Literal>Polygon</ogc:Literal>
+                                    <ogc:Literal>MultiPolygon</ogc:Literal>
+                                </ogc:Function>
+                                <ogc:Literal>true</ogc:Literal>
+                            </ogc:PropertyIsEqualTo>
+                            <ogc:PropertyIsEqualTo>
+                                <ogc:PropertyName>fill_pattern</ogc:PropertyName>
+                                <ogc:Literal>3</ogc:Literal>
+                            </ogc:PropertyIsEqualTo>
+                            <ogc:PropertyIsNull>
+                                <ogc:PropertyName>border_color</ogc:PropertyName>
+                            </ogc:PropertyIsNull>
+                        </ogc:And>
+                    </ogc:Filter>
+                    <PolygonSymbolizer>
+                        <Fill>
+                            <GraphicFill>
+                                <Graphic>
+                                    <Mark>
+                                        <WellKnownName>shape://horline</WellKnownName>
+                                        <Stroke>
+                                            <CssParameter name="stroke"><ogc:PropertyName>fill_color</ogc:PropertyName></CssParameter>
+                                            <CssParameter name="stroke-width">2</CssParameter>
+                                        </Stroke>
+                                    </Mark>
+                                    <Size>5.5</Size>
+                                </Graphic>
+                            </GraphicFill>
+                        </Fill>
+                    </PolygonSymbolizer>
+                </Rule>
             </FeatureTypeStyle>
             <!--FeatureTypeStyle>
               <Transformation>

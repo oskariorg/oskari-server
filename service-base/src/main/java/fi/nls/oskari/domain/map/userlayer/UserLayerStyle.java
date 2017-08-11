@@ -25,20 +25,22 @@ public class UserLayerStyle {
     public void populateFromJSON(final JSONObject stylejs) throws JSONException {
         try {
             // {"area":{"fillColor":"FFDC00","lineColor":"CC9900","size":"2"},"line":{"color":"CC9900","size":"2"},"dot":{"color":"CC9900","size":"4"}}
-            setBorder_color(stylejs.getJSONObject("area").optString("lineColor"));
-            setBorder_width(stylejs.getJSONObject("area").optInt("size"));
+            JSONObject areaSubObject = stylejs.getJSONObject("area");
+
+            setBorder_color(areaSubObject.isNull("lineColor") ? null : areaSubObject.optString("lineColor")); // null is valid color value for "no stroke"
+            setBorder_width(areaSubObject.optInt("size"));
             setDot_color(stylejs.getJSONObject("dot").optString("color"));
             setDot_size(stylejs.getJSONObject("dot").optInt("size"));
-            setFill_color(stylejs.getJSONObject("area").optString("fillColor"));
+            setFill_color(areaSubObject.isNull("fillColor") ? null : areaSubObject.optString("fillColor")); // null is valid color value for "no fill"
             setStroke_color(stylejs.getJSONObject("line").optString("color"));
             setStroke_width(stylejs.getJSONObject("line").optInt("size"));
             setDot_shape(stylejs.getJSONObject("dot").optString("shape"));
             setStroke_linejoin(stylejs.getJSONObject("line").optString("corner"));
-            setFill_pattern(ConversionHelper.getInt(stylejs.getJSONObject("area").optString("fillStyle"), -1));
+            setFill_pattern(ConversionHelper.getInt(areaSubObject.optString("fillStyle"), -1));
             setStroke_linecap(stylejs.getJSONObject("line").optString("cap"));
             setStroke_dasharray(stylejs.getJSONObject("line").optString("style"));
-            setBorder_linejoin(stylejs.getJSONObject("area").optString("lineCorner"));
-            setBorder_dasharray(stylejs.getJSONObject("area").optString("lineStyle"));
+            setBorder_linejoin(areaSubObject.optString("lineCorner"));
+            setBorder_dasharray(areaSubObject.optString("lineStyle"));
         } catch (Exception ex) {
             throw new JSONException(ex);
         }
