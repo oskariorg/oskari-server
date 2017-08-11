@@ -56,7 +56,7 @@ New Maven modules service-print, servlet-print and webapp-print which will be re
 
 ### Additional layer configuration 
 
-WMS-layers GFI functionality can now be disabled even if capabilities allow it by adding a configuration in database
+WMS-layers GFI functionality can now be enabled/disabled overwriting layer capabilities by adding a configuration in database
  oskari_maplayer.attributes:
  
     {
