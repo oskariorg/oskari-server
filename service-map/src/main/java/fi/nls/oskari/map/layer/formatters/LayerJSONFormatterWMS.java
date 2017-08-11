@@ -124,7 +124,14 @@ public class LayerJSONFormatterWMS extends LayerJSONFormatter {
         }
 
         JSONHelper.putValue(layerJson, KEY_FORMATS, capabilities.optJSONObject(KEY_FORMATS));
-        JSONHelper.putValue(layerJson, KEY_ISQUERYABLE, capabilities.optBoolean(KEY_ISQUERYABLE));
+
+        final JSONObject attrs = layer.getAttributes();
+        boolean disableGFI = false;
+        if(attrs != null) {
+            // disable GFI for layer even if capabilities allow it
+            disableGFI = attrs.optBoolean(KEY_ISQUERYABLE);
+        }
+        JSONHelper.putValue(layerJson, KEY_ISQUERYABLE, !disableGFI && capabilities.optBoolean(KEY_ISQUERYABLE));
         // Do not override version, if already available
         if(!layerJson.has(KEY_VERSION)) {
             JSONHelper.putValue(layerJson, KEY_VERSION, JSONHelper.getStringFromJSON(capabilities, KEY_VERSION, null));

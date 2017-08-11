@@ -54,6 +54,15 @@ Polygon style now supports no fill and no stroke. The condition is expressed as 
 New Maven modules service-print, servlet-print and webapp-print which will be replacing servlet-printout once it has
  been proved production ready.
 
+### Additional layer configuration 
+
+WMS-layers GFI functionality can now be disabled even if capabilities allow it by adding a configuration in database
+ oskari_maplayer.attributes:
+ 
+    {
+        "isQueryable" : false
+    }
+
 ## 1.43.0
 
 ### servlet-printout
