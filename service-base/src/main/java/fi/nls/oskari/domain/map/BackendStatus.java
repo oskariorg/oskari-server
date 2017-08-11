@@ -10,20 +10,18 @@ public class BackendStatus {
     private final String status;
     private final String statusMessage;
     private final String infoUrl;
-    private final String statusJson;
 
-    public BackendStatus(int mapLayerId, String status, String statusMessage, String infoUrl, String statusJson) {
-        this(-1, null, mapLayerId, status, statusMessage, infoUrl, statusJson);
+    public BackendStatus(int mapLayerId, String status, String statusMessage, String infoUrl) {
+        this(-1, null, mapLayerId, status, statusMessage, infoUrl);
     }
 
-    public BackendStatus(int id, Date ts, int mapLayerId, String status, String statusMessage, String infoUrl, String statusJson) {
+    public BackendStatus(int id, Date ts, int mapLayerId, String status, String statusMessage, String infoUrl) {
         this.id = id;
         this.ts = ts;
         this.mapLayerId = mapLayerId;
         this.status = status;
         this.statusMessage = statusMessage;
         this.infoUrl = infoUrl;
-        this.statusJson = statusJson;
     }
 
     public int getId() {
@@ -48,10 +46,6 @@ public class BackendStatus {
 
     public String getInfoUrl() {
         return infoUrl;
-    }
-
-    public String getStatusJson() {
-        return statusJson;
     }
 
 }

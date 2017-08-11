@@ -22,7 +22,7 @@
         </dependency>
         <dependency>
             <groupId>fi.nls.oskari.service</groupId>
-            <artifactId>oskari-mybatis</artifactId>
+            <artifactId>oskari-map</artifactId>
         </dependency>
         <dependency>
             <groupId>junit</groupId>

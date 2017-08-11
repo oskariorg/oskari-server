@@ -20,8 +20,8 @@ public interface BackendStatusMapper {
 
     static final String truncate = "TRUNCATE portti_backendstatus";
     static final String insert = "INSERT INTO portti_backendstatus"
-            + " (maplayer_id, status, statusmessage, infourl, statusjson)"
-            + " VALUES (#{mapLayerId}, #{status}, #{statusMessage}, #{infoUrl}, #{statusJson})";
+            + " (maplayer_id, status, statusmessage, infourl)"
+            + " VALUES (#{mapLayerId}, #{status}, #{statusMessage}, #{infoUrl})";
 
     @Select(getAll)
     @Results(value = {
@@ -30,8 +30,7 @@ public interface BackendStatusMapper {
             @Result(property = "mapLayerId", column = "maplayer_id"),
             @Result(property = "status", column = "status"),
             @Result(property = "statusMessage", column = "statusmessage"),
-            @Result(property = "infoUrl", column = "infourl"),
-            @Result(property = "statusJson", column = "statusjson")
+            @Result(property = "infoUrl", column = "infourl")
     })
     List<BackendStatus> getAll();
 
@@ -42,8 +41,7 @@ public interface BackendStatusMapper {
             @Result(property = "mapLayerId", column = "maplayer_id"),
             @Result(property = "status", column = "status"),
             @Result(property = "statusMessage", column = "statusmessage"),
-            @Result(property = "infoUrl", column = "infourl"),
-            @Result(property = "statusJson", column = "statusjson")
+            @Result(property = "infoUrl", column = "infourl")
     })
     List<BackendStatus> getAllAlert();
 

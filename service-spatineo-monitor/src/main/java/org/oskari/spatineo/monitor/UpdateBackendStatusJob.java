@@ -3,15 +3,8 @@ package org.oskari.spatineo.monitor;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.sql.DataSource;
-
-import org.apache.ibatis.mapping.Environment;
-import org.apache.ibatis.session.Configuration;
-import org.apache.ibatis.session.SqlSessionFactory;
-import org.apache.ibatis.session.SqlSessionFactoryBuilder;
-import org.apache.ibatis.transaction.TransactionFactory;
-import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
-import org.oskari.service.backendstatus.BackendStatusMapper;
+import org.oskari.service.backendstatus.BackendStatusService;
+import org.oskari.service.backendstatus.BackendStatusServiceMyBatisImpl;
 import org.oskari.spatineo.monitor.api.SpatineoMonitorDao;
 import org.oskari.spatineo.monitor.api.Status;
 import org.oskari.spatineo.monitor.api.model.Indicator;
@@ -19,13 +12,10 @@ import org.oskari.spatineo.monitor.api.model.Meter;
 import org.oskari.spatineo.monitor.api.model.Response;
 import org.oskari.spatineo.monitor.api.model.Result;
 import org.oskari.spatineo.monitor.api.model.Service;
-import org.oskari.spatineo.monitor.backendstatus.BackendStatus;
-import org.oskari.spatineo.monitor.backendstatus.BackendStatusDao;
 import org.oskari.spatineo.monitor.maplayer.MapLayer;
 import org.oskari.spatineo.monitor.maplayer.MapLayerDao;
-import org.oskari.spatineo.monitor.maplayer.MapLayerMapper;
 
-import fi.nls.oskari.db.DatasourceHelper;
+import fi.nls.oskari.domain.map.BackendStatus;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.util.PropertyUtil;
@@ -46,9 +36,8 @@ public class UpdateBackendStatusJob {
                 "Spatineo Monitoring API requires a private access key. Calls to API disabled.");
         final SpatineoMonitorDao spatineoMonitorDao = new SpatineoMonitorDao(endPoint, key);
 
-        final SqlSessionFactory factory = initMyBatis();
-        final MapLayerDao mapLayerDao = new MapLayerDao(factory);
-        final BackendStatusDao serviceStatusDao = new BackendStatusDao(factory);
+        final MapLayerDao mapLayerDao = new MapLayerDao();
+        final BackendStatusService statusService = new BackendStatusServiceMyBatisImpl();
 
         final Response response = spatineoMonitorDao.query();
         if (response == null) {
@@ -75,20 +64,11 @@ public class UpdateBackendStatusJob {
                 statuses.add(status);
             }
         }
-        serviceStatusDao.insertStatuses(statuses);
+        statusService.insertAll(statuses);
 
         LOG.info("Done with the Spatineo Monitor update service call");
     }
     
-    public static SqlSessionFactory initMyBatis() {
-        final DataSource ds = DatasourceHelper.getInstance().getDataSource();
-        final TransactionFactory transactionFactory = new JdbcTransactionFactory();
-        final Environment environment = new Environment("development", transactionFactory, ds);
-        final Configuration configuration = new Configuration(environment);
-        configuration.addMapper(MapLayerMapper.class);
-        return new SqlSessionFactoryBuilder().build(configuration);
-    }
-
     private static BackendStatus getStatus(MapLayer layer, List<Result> results, boolean isWFS) {
         Meter meter = findMeter(results, layer.getName(), layer.getUrl(), isWFS);
         if (meter == null) {
