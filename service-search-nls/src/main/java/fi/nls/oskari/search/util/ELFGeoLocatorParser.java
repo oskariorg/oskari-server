@@ -46,7 +46,7 @@ public class ELFGeoLocatorParser {
     public static final String KEY_LOCATIONTYPE_ROLE = "locationType_role";
     public static final String KEY_PARENT_TITLE = "parent_title";
     public static final String KEY_ADMINISTRATOR = "administrator";
-    private Map<String, String> countryMap = null;
+    private static Map<String, String> countryMap = null;
     private String countries = null;
     private Map<String, Double> elfScalesForType = null;
     private Map<String, Integer> elfLocationPriority = null;
@@ -93,13 +93,11 @@ public class ELFGeoLocatorParser {
             log.debug("Could not get countries, got exception: ", e);
         }
         try {
-            DocumentBuilderFactory dbFactory
-                    = DocumentBuilderFactory.newInstance();
-            DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-            Document doc = dBuilder.parse(countries);
+            DocumentBuilder dBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+            Document doc = dBuilder.parse(new ByteArrayInputStream(countries.getBytes("UTF-8")));
 
-            Map<String, String> countryMap = new HashMap<>();
             NodeList nList = doc.getElementsByTagName("Country");
+            countryMap = new HashMap<>();
             for (int temp = 0; temp < nList.getLength(); temp++) {
                 Node nNode = nList.item(temp);
                 if (nNode.getNodeType() == Node.ELEMENT_NODE) {
@@ -454,8 +452,8 @@ public class ELFGeoLocatorParser {
         boolean countriesReloaded = false;
         while (true) {
             for (Map.Entry<String, String> entry : countryMap.entrySet()) {
-                String admin = entry.getKey();
-                String countryCode = entry.getValue();
+                String countryCode = entry.getKey();
+                String admin = entry.getValue();
                 if (admin.equals(admin_name)) {
                     Locale obj = new Locale("", countryCode);
                     return obj.getDisplayCountry(locale);
