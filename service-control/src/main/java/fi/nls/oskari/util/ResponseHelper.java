@@ -50,11 +50,22 @@ public class ResponseHelper {
      */
     public static final void writeResponse(ActionParameters params, int sc, JSONObject json) {
         final byte[] b = json.toString().getBytes(StandardCharsets.UTF_8);
-        final int len = b.length;
+        writeResponse(params, sc, CONTENT_TYPE_JSON_UTF8, b);
+    }
 
+    /**
+     * Writes out the given response
+     *
+     * @param params reference to ActionParams
+     * @param sc HTTP Status Code to send
+     * @param contentType of the response
+     * @param b byte array containing the response body
+     */
+    public static final void writeResponse(ActionParameters params, int sc, String contentType, byte[] b) {
+        final int len = b.length;
         final HttpServletResponse resp = params.getResponse();
         resp.setStatus(sc);
-        resp.setContentType(CONTENT_TYPE_JSON_UTF8);
+        resp.setContentType(contentType);
         resp.setContentLength(len);
         try (OutputStream out = resp.getOutputStream()) {
             out.write(b, 0, len);
