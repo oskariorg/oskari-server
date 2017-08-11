@@ -8,7 +8,7 @@ import org.flywaydb.core.api.migration.jdbc.JdbcMigration;
 import fi.nls.oskari.map.view.ViewService;
 import fi.nls.oskari.map.view.ViewServiceIbatisImpl;
 
-public class V1_00_1__add_download_basket_to_views implements JdbcMigration {
+public class V1_0_12__add_download_basket_to_views implements JdbcMigration {
 	
 	private static final ViewService VIEW_SERVICE = new ViewServiceIbatisImpl();
 	private static final  String DOWNLOAD_BASKET = "download-basket";

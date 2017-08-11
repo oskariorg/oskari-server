@@ -7,7 +7,7 @@ import org.flywaydb.core.api.migration.jdbc.JdbcMigration;
 import fi.nls.oskari.db.BundleHelper;
 import fi.nls.oskari.domain.map.view.Bundle;
 
-public class V1_00_0__register_download_basket_bundle implements JdbcMigration{
+public class V1_43_4__register_download_basket_bundle implements JdbcMigration{
 
 	private static final String NAMESPACE = "hsy";
 	private static final String DOWNLOAD_BASKET = "download-basket";
