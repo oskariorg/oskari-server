@@ -3,55 +3,55 @@ package fi.nls.oskari.domain.map;
 import java.util.Date;
 
 public class BackendStatus {
-    
-    private long id;
-    private Date ts;
-    private String maplayer_id;
-    private String status;
-    private String statusmessage;
-    private String infourl;
-    private String statusjson;
-    
-    public long getId() {
+
+    private final int id;
+    private final Date ts;
+    private final int mapLayerId;
+    private final String status;
+    private final String statusMessage;
+    private final String infoUrl;
+    private final String statusJson;
+
+    public BackendStatus(int mapLayerId, String status, String statusMessage, String infoUrl, String statusJson) {
+        this(-1, null, mapLayerId, status, statusMessage, infoUrl, statusJson);
+    }
+
+    public BackendStatus(int id, Date ts, int mapLayerId, String status, String statusMessage, String infoUrl, String statusJson) {
+        this.id = id;
+        this.ts = ts;
+        this.mapLayerId = mapLayerId;
+        this.status = status;
+        this.statusMessage = statusMessage;
+        this.infoUrl = infoUrl;
+        this.statusJson = statusJson;
+    }
+
+    public int getId() {
         return id;
     }
-    public void setId(long id) {
-        this.id = id;
-    }
+
     public Date getTs() {
         return ts;
     }
-    public void setTs(Date ts) {
-        this.ts = ts;
+
+    public int getMapLayerId() {
+        return mapLayerId;
     }
-    public String getMaplayer_id() {
-        return maplayer_id;
-    }
-    public void setMaplayer_id(String maplayer_id) {
-        this.maplayer_id = maplayer_id;
-    }
+
     public String getStatus() {
         return status;
     }
-    public void setStatus(String status) {
-        this.status = status;
+
+    public String getStatusMessage() {
+        return statusMessage;
     }
-    public String getStatusmessage() {
-        return statusmessage;
+
+    public String getInfoUrl() {
+        return infoUrl;
     }
-    public void setStatusmessage(String statusmessage) {
-        this.statusmessage = statusmessage;
+
+    public String getStatusJson() {
+        return statusJson;
     }
-    public String getInfourl() {
-        return infourl;
-    }
-    public void setInfourl(String infourl) {
-        this.infourl = infourl;
-    }
-    public String getStatusjson() {
-        return statusjson;
-    }
-    public void setStatusjson(String statusjson) {
-        this.statusjson = statusjson;
-    }
+
 }
