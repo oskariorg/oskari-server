@@ -11,7 +11,9 @@ import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.apache.ibatis.transaction.TransactionFactory;
 import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
+import org.oskari.service.backendstatus.BackendStatusMapper;
 import org.oskari.spatineo.monitor.api.SpatineoMonitorDao;
+import org.oskari.spatineo.monitor.api.Status;
 import org.oskari.spatineo.monitor.api.model.Indicator;
 import org.oskari.spatineo.monitor.api.model.Meter;
 import org.oskari.spatineo.monitor.api.model.Response;
@@ -19,8 +21,6 @@ import org.oskari.spatineo.monitor.api.model.Result;
 import org.oskari.spatineo.monitor.api.model.Service;
 import org.oskari.spatineo.monitor.backendstatus.BackendStatus;
 import org.oskari.spatineo.monitor.backendstatus.BackendStatusDao;
-import org.oskari.spatineo.monitor.backendstatus.BackendStatusMapper;
-import org.oskari.spatineo.monitor.backendstatus.Status;
 import org.oskari.spatineo.monitor.maplayer.MapLayer;
 import org.oskari.spatineo.monitor.maplayer.MapLayerDao;
 import org.oskari.spatineo.monitor.maplayer.MapLayerMapper;
@@ -86,7 +86,6 @@ public class UpdateBackendStatusJob {
         final Environment environment = new Environment("development", transactionFactory, ds);
         final Configuration configuration = new Configuration(environment);
         configuration.addMapper(MapLayerMapper.class);
-        configuration.addMapper(BackendStatusMapper.class);
         return new SqlSessionFactoryBuilder().build(configuration);
     }
 

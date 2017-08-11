@@ -21,8 +21,8 @@
             <artifactId>service-scheduler</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.mybatis</groupId>
-            <artifactId>mybatis</artifactId>
+            <groupId>fi.nls.oskari.service</groupId>
+            <artifactId>oskari-mybatis</artifactId>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
