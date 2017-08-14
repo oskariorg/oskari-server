@@ -1,35 +1,26 @@
 package fi.nls.oskari.domain.map;
 
+import java.sql.Timestamp;
 import java.util.Date;
 
 public class BackendStatus {
 
-    private final int id;
-    private final Date ts;
     private final int mapLayerId;
     private final String status;
     private final String statusMessage;
     private final String infoUrl;
+    private final Date timeStamp;
 
     public BackendStatus(int mapLayerId, String status, String statusMessage, String infoUrl) {
-        this(-1, null, mapLayerId, status, statusMessage, infoUrl);
+        this(mapLayerId, status, statusMessage, infoUrl, null);
     }
 
-    public BackendStatus(int id, Date ts, int mapLayerId, String status, String statusMessage, String infoUrl) {
-        this.id = id;
-        this.ts = ts;
+    public BackendStatus(int mapLayerId, String status, String statusMessage, String infoUrl, Timestamp timeStamp) {
         this.mapLayerId = mapLayerId;
         this.status = status;
         this.statusMessage = statusMessage;
         this.infoUrl = infoUrl;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public Date getTs() {
-        return ts;
+        this.timeStamp = timeStamp;
     }
 
     public int getMapLayerId() {
@@ -46,6 +37,10 @@ public class BackendStatus {
 
     public String getInfoUrl() {
         return infoUrl;
+    }
+
+    public Date getTimestamp() {
+        return timeStamp;
     }
 
 }
