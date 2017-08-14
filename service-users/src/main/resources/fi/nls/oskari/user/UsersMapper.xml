@@ -25,12 +25,12 @@
             attributes
         )
         VALUES (
-            #firstname#,
-            #lastname#,
-            #screenname#,
-            #email#,
-            #uuid#,
-            #attributes#
+            #{firstname},
+            #{lastname},
+            #{screenname},
+            #{email},
+            #{uuid},
+            #{attributes}
         )
         <!--TODO RETURNING id-->
     </insert>
@@ -38,12 +38,12 @@
     <update id="updateUser" parameterType="User">
         update
         oskari_users set
-        first_name = #firstname#,
-        last_name = #lastname#,
-        user_name = #screenname#,
-        email = #email#,
-        attributes = #attributes#
-        where id = #id#
+        first_name = #{firstname},
+        last_name = #{lastname},
+        user_name = #{screenname},
+        email = #{email},
+        attributes = #{attributes}
+        where id = #{id}
     </update>
 
     <select id="findAll" resultMap="UsersResult">
@@ -51,27 +51,27 @@
     </select>
 
     <select id="find" parameterType="Long" resultMap="UsersResult">
-        select id, first_name, last_name, user_name, email, uuid, attributes from oskari_users where id = #id#
+        select id, first_name, last_name, user_name, email, uuid, attributes from oskari_users where id = #{id}
     </select>
 
     <select id="findByUserName" parameterType="String" resultMap="UsersResult">
-        select id, user_name, first_name, last_name, email, uuid, attributes from oskari_users where user_name = #id#
+        select id, user_name, first_name, last_name, email, uuid, attributes from oskari_users where user_name = #{id}
     </select>
 
     <select id="findByEmail" parameterType="String" resultMap="UsersResult">
-        select id, user_name, first_name, last_name, email, uuid, attributes from oskari_users where LOWER(email) = #email#
+        select id, user_name, first_name, last_name, email, uuid, attributes from oskari_users where LOWER(email) = #{email}
     </select>
 
     <select id="login" parameterType="java.util.HashMap" resultType="String">
         select login
         from oskari_jaas_users
-        where login = #username# AND password=#password#
+        where login = #{username} AND password=#{password}
     </select>
 
     <select id="getPassword" parameterType="java.util.HashMap" resultType="String">
         select password
         from oskari_jaas_users
-        where login = #username#
+        where login = #{username}
     </select>
 
     <insert id="setPassword" parameterType="java.util.HashMap">
@@ -80,22 +80,22 @@
             login
         )
         VALUES (
-            #password#,
-            #username#
+            #{password},
+            #{username}
         )
     </insert>
 
     <update id="updatePassword" parameterType="java.util.HashMap">
         update oskari_jaas_users
-        set password = #password#
-        where login = #username#
+        set password = #{password}
+        where login = #{username}
     </update>
 
     <delete id="deletePassword" parameterType="java.util.HashMap">
-        delete from oskari_jaas_users where login = #username#
+        delete from oskari_jaas_users where login = #{username}
     </delete>
 
     <delete id="delete" parameterType="Long">
-        delete from oskari_users where id = #id#
+        delete from oskari_users where id = #{id}
     </delete>
 </mapper>

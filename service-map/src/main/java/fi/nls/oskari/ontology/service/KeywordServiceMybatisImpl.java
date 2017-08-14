@@ -42,6 +42,7 @@ public class KeywordServiceMybatisImpl extends KeywordService {
         final Environment environment = new Environment("development", transactionFactory, dataSource);
 
         final Configuration configuration = new Configuration(environment);
+        configuration.getTypeAliasRegistry().registerAlias(Keyword.class);
         configuration.setLazyLoadingEnabled(true);
         configuration.addMapper(KeywordMapper.class);
 
@@ -87,7 +88,7 @@ public class KeywordServiceMybatisImpl extends KeywordService {
             param.setLang(lang);
 
             final KeywordMapper mapper = session.getMapper(KeywordMapper.class);
-            keywordList =  mapper.findKeywordsMatching(param);
+            keywordList =  mapper.findMatchingKeyword(param);
             if(keywordList == null) {
                 keywordList = Collections.emptyList();
             }

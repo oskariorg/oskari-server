@@ -19,9 +19,9 @@
             keyid2,
             type
         )
-        VALUES  ( #keyid1#,
-        #keyid2#,
-        #type#)
+        VALUES  ( #{keyid1},
+        #{keyid2},
+        #{type})
     </insert>
 
     <select id="getRelation"
@@ -34,9 +34,9 @@
         FROM
             portti_keyword_association ka
         WHERE
-            ka.keyid1 = #keyid1# AND
-            ka.keyid2 = #keyid2# AND
-            ka.type = #type#
+            ka.keyid1 = #{keyid1} AND
+            ka.keyid2 = #{keyid2} AND
+            ka.type = #{type}
     </select>
 
     <select id="getRelationsForKeyword"
@@ -49,7 +49,7 @@
         FROM
             portti_keyword_association ka
         WHERE
-            ka.keyid1 = #keyid1#
+            ka.keyid1 = #{keyid1}
         ORDER BY
             type, keyid2
     </select>
@@ -64,8 +64,8 @@
         FROM
             portti_keyword_association ka
         WHERE
-            ka.keyid1 = #keyid1# AND
-            ka.type = #type#
+            ka.keyid1 = #{keyid1} AND
+            ka.type = #{type}
         ORDER BY
             keyid2
     </select>

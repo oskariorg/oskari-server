@@ -51,7 +51,7 @@
 
         from
         analysis
-        where id = #id# 
+        where id = #{id}
  
     </select>
 
@@ -78,10 +78,9 @@
 
         from
         analysis
-        <!-- TODO where id in
-        <iterate open="(" close=")" conjunction=",">
-            #[]#
-        </iterate>-->
+        <foreach item="id" collection="list" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
     </select>
     
      <select id="getAnalysisByUid" parameterType="string" resultMap="AnalysisResult">
@@ -107,26 +106,21 @@
 
         from
         analysis
-        where uuid = #uid# 
+        where uuid = #{uid}
  
     </select>
 
     <select id="getAnalysisDataByIdUid" parameterType="java.util.HashMap" resultType="java.util.HashMap">
-    <!--TODO remapResults = "true">-->
         select
         $select_items$
-        <!-- TOOD <dynamic>
-            $select_items$
-        </dynamic>-->
         from
         analysis_data
-        where analysis_id = #id# and uuid=#uuid#
-
+        where analysis_id = #{id} and uuid=#{uuid}
     </select>
 
     <delete id="deleteAnalysisById" parameterType="long">
         delete from
-        analysis where id=#analysisId#
+        analysis where id=#{analysisId}
     </delete>
 
 
@@ -150,71 +144,71 @@
         col10,
         select_to_data,
         override_sld)
-        VALUES ( #uuid#,
-        #name#,
-        #layer_id#,
-        #analyse_json#,
-        #style_id#,
-        #col1#,
-        #col2#,
-        #col3#,
-        #col4#,
-        #col5#,
-        #col6#,
-        #col7#,
-        #col8#,
-        #col9#,
-        #col10#,
-        #select_to_data#,
-        #override_sld#)
+        VALUES ( #{uuid},
+        #{name},
+        #{layer_id},
+        #{analyse_json},
+        #{style_id},
+        #{col1},
+        #{col2},
+        #{col3},
+        #{col4},
+        #{col5},
+        #{col6},
+        #{col7},
+        #{col8},
+        #{col9},
+        #{col10},
+        #{select_to_data},
+        #{override_sld})
     </insert>
 
 
     <update id="updateAnalysisCols" parameterType="Analysis">
         update
         analysis set
-        col1 = #col1#,
-        col2 = #col2#,
-        col3 = #col3#,
-        col4 = #col4#,
-        col5 = #col5#,
-        col6 = #col6#,
-        col7 = #col7#,
-        col8 = #col8#,
-        col9 = #col9#,
-        col10 = #col10#,
-        select_to_data = #select_to_data#
+        col1 = #{col1},
+        col2 = #{col2},
+        col3 = #{col3},
+        col4 = #{col4},
+        col5 = #{col5},
+        col6 = #{col6},
+        col7 = #{col7},
+        col8 = #{col8},
+        col9 = #{col9},
+        col10 = #{col10},
+        select_to_data = #{select_to_data}
 
-        where id = #id#
+        where id = #{id}
     </update>
 
     <update id="mergeAnalysisData" parameterType="Analysis">
     update
     analysis_data set
-    analysis_id = #id#
-    WHERE analysis_id = #old_id#
+    analysis_id = #{id}
+    WHERE analysis_id = #{old_id}
     </update>
 
     <delete id="deleteAnalysisDataById"
             parameterType="java.lang.Long">
-        DELETE FROM analysis_data WHERE analysis_id = #id#
+        DELETE FROM analysis_data WHERE analysis_id = #{id}
     </delete>
 
     <delete id="deleteAnalysisById"
             parameterType="java.lang.Long">
-        DELETE FROM analysis WHERE id = #id#
+        DELETE FROM analysis WHERE id = #{id}
     </delete>
 
     <delete id="deleteAnalysisStyleById"
             parameterType="java.lang.Long">
         <!-- Note! id is style_id from analysis table -->
-        DELETE FROM analysis_style WHERE id = #id#
+        DELETE FROM analysis_style WHERE id = #{id}
     </delete>
 
     <update id="updatePublisherName"
         parameterType="Map">
         update analysis set
             publisher_name = #publisher_name:VarChar#
-        where uuid = #uuid# and id = #id#
+        where uuid = #{uuid} and id = #{id}
     </update>
 </mapper>
