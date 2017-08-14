@@ -169,6 +169,27 @@ public class IOHelper {
     }
 
     /**
+     * Copies data from InputStream to OutputStream
+     * Does not close either of the streams
+     * Does nothing if either InputStream or OutputStream is null
+     * 
+     * @param in
+     * @param out
+     * @throws IOException
+     */
+    public static void copy(InputStream in, OutputStream out) throws IOException {
+        if (in == null || out == null) {
+            return;
+        }
+
+        final byte[] buffer = new byte[4096];
+        int read = 0;
+        while ((read = in.read(buffer, 0, 4096)) != -1) {
+            out.write(buffer, 0, read);
+        }
+    }
+
+    /**
      * Returns a connection based on properties:
      * - [propertiesPrefix]url=[url to call for this service] (required)
      * - [propertiesPrefix]user=[username for basic auth] (optional)
@@ -318,18 +339,8 @@ public class IOHelper {
             con.setDoInput(true);
             con.connect();
         }
-        BufferedOutputStream proxyToWebBuf = null;
-        try {
-            proxyToWebBuf = new BufferedOutputStream(con.getOutputStream());
-            proxyToWebBuf.write(bytes);
-        } finally {
-            if (proxyToWebBuf != null) {
-                try {
-                    proxyToWebBuf.flush();
-                    proxyToWebBuf.close();
-                } catch (Exception ignored) {
-                }
-            }
+        try (OutputStream out = con.getOutputStream()) {
+            out.write(bytes);
         }
     }
 

@@ -53,8 +53,6 @@ public class ELFGeoLocatorParser {
     private Map<String, Double> elfScalesForType = null;
     private Map<String, Integer> elfLocationPriority = null;
 
-
-    private static final String PROPERTY_FORCEXY = "org.geotools.referencing.forceXY";
     private String serviceSrs = "EPSG:4258";
 
     public ELFGeoLocatorParser() {
@@ -139,7 +137,6 @@ public class ELFGeoLocatorParser {
             }
             FeatureIterator features = fc.features();
 
-            int nfeatures = 0;
             while (features.hasNext()) {
 
                 SimpleFeature feature = (SimpleFeature) features.next();
@@ -243,7 +240,6 @@ public class ELFGeoLocatorParser {
                 }
                 searchResultList.addItem(item);
 
-                nfeatures++;
             }  // Feature loop
 
         } catch (Exception e) {
