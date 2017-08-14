@@ -11,7 +11,7 @@ public interface AnalysisMapper {
     void insertAnalysisRow(final Analysis analysis);
     void updateAnalysisCols(final Analysis analysis);
     Analysis getAnalysisById(long id);
-    List<Analysis> getAnalysisById(List<Long> idList);
+    List<Analysis> getAnalysisByIdList(List<Long> idList);
     List<Analysis> getAnalysisByUid(String uid);
     List<HashMap<String,Object>> getAnalysisDataByIdUid(Map<String, Object> params);
     void deleteAnalysisById(final long id);

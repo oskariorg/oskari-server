@@ -36,6 +36,7 @@ public class AnalysisStyleDbServiceMybatisImpl implements AnalysisStyleDbService
         final Environment environment = new Environment("development", transactionFactory, dataSource);
 
         final Configuration configuration = new Configuration(environment);
+        configuration.getTypeAliasRegistry().registerAlias(AnalysisStyle.class);
         configuration.setLazyLoadingEnabled(true);
         configuration.addMapper(AnalysisMapper.class);
 

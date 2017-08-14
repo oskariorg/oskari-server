@@ -47,6 +47,7 @@ public class KeywordRelationServiceMybatisImpl implements KeywordRelationService
         final Environment environment = new Environment("development", transactionFactory, dataSource);
 
         final Configuration configuration = new Configuration(environment);
+        configuration.getTypeAliasRegistry().registerAlias(Relation.class);
         configuration.setLazyLoadingEnabled(true);
         configuration.addMapper(KeywordMapper.class);
 

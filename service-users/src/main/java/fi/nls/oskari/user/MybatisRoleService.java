@@ -4,7 +4,6 @@ import fi.nls.oskari.db.DatasourceHelper;
 import fi.nls.oskari.domain.Role;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.ontology.service.KeywordMapper;
 import org.apache.ibatis.mapping.Environment;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.SqlSession;
@@ -40,8 +39,9 @@ public class MybatisRoleService {
         final Environment environment = new Environment("development", transactionFactory, dataSource);
 
         final Configuration configuration = new Configuration(environment);
+        configuration.getTypeAliasRegistry().registerAlias(Role.class);
         configuration.setLazyLoadingEnabled(true);
-        configuration.addMapper(KeywordMapper.class);
+        configuration.addMapper(RolesMapper.class);
 
         return new SqlSessionFactoryBuilder().build(configuration);
     }

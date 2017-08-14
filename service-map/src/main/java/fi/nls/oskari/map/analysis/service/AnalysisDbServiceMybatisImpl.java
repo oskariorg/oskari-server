@@ -46,6 +46,7 @@ public class AnalysisDbServiceMybatisImpl implements AnalysisDbService {
         final Environment environment = new Environment("development", transactionFactory, dataSource);
 
         final Configuration configuration = new Configuration(environment);
+        configuration.getTypeAliasRegistry().registerAlias(Analysis.class);
         configuration.setLazyLoadingEnabled(true);
         configuration.addMapper(AnalysisMapper.class);
 
@@ -127,7 +128,7 @@ public class AnalysisDbServiceMybatisImpl implements AnalysisDbService {
         try {
             log.debug("Finding analysis matching: ", idList);
             final AnalysisMapper mapper = session.getMapper(AnalysisMapper.class);
-            analysisList =  mapper.getAnalysisById(idList);
+            analysisList =  mapper.getAnalysisByIdList(idList);
             if(analysisList == null) {
                 analysisList = Collections.emptyList();
             }

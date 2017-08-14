@@ -3,7 +3,7 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="fi.nls.oskari.ontology.domain.KeywordRelation">
+<mapper namespace="fi.nls.oskari.ontology.domain.KeywordRelationMapper">
 
     <resultMap id="relation" type="Relation">
         <result property="keyid1"   column="keyid1" />

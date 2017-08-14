@@ -3,7 +3,7 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="fi.nls.oskari.domain.Role">
+<mapper namespace="fi.nls.oskari.user.RolesMapper">
 
     <resultMap id="RolesResult" type="Role">
         <result property="id" column="id" />
