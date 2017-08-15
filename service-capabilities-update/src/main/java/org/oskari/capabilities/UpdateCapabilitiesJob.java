@@ -34,28 +34,27 @@ public class UpdateCapabilitiesJob extends ScheduledJob {
     private OskariLayerService layerService;
     private CapabilitiesCacheService capabilitiesService;
     
-    @Override
-    public void execute(Map<String, Object> params) {
-        layerService = new OskariLayerServiceIbatisImpl();
-        capabilitiesService = new CapabilitiesCacheServiceMybatisImpl();
-        updateCapabilities();
+    public UpdateCapabilitiesJob() {
+        this(new OskariLayerServiceIbatisImpl(), new CapabilitiesCacheServiceMybatisImpl());
     }
     
-    public void setLayerService(OskariLayerService layerService) {
+    public UpdateCapabilitiesJob(OskariLayerService layerService, CapabilitiesCacheService capabilitiesService) {
         this.layerService = layerService;
-    }
-    
-    public void setCapabilitiesService(CapabilitiesCacheService capabilitiesService) {
         this.capabilitiesService = capabilitiesService;
     }
     
-    private void updateCapabilities() {
+    @Override
+    public void execute(Map<String, Object> params) {
+        updateCapabilities();
+    }
+    
+    protected void updateCapabilities() {
         for (OskariLayer layer : layerService.findAll()) {
             updateCapabilities(layer);
         }
     }
     
-    private void updateCapabilities(OskariLayer layer) {
+    protected void updateCapabilities(OskariLayer layer) {
         if (layer == null) {
             return;
         }
@@ -63,7 +62,7 @@ public class UpdateCapabilitiesJob extends ScheduledJob {
         switch (layer.getType()) {
         case OskariLayer.TYPE_WMS:
         case OskariLayer.TYPE_WMTS:
-            JSONObject capabilitiesJSON = getCapabilitiesJSON(capabilitiesService, layer);
+            JSONObject capabilitiesJSON = getCapabilitiesJSON(layer);
             if (capabilitiesJSON != null) {
                 layer.setCapabilities(capabilitiesJSON);
             }
@@ -74,17 +73,21 @@ public class UpdateCapabilitiesJob extends ScheduledJob {
         }
     }
 
-    private JSONObject getCapabilitiesJSON(OskariLayer layer) throws ServiceException {
-        OskariLayerCapabilities capabilities = capabilitiesService.getCapabilities(layer, true);
-        // flush cache, otherwise only db is updated but code retains the old cached version
-        WebMapServiceFactory.flushCache(layer.getId());
+    protected JSONObject getCapabilitiesJSON(OskariLayer layer) {
+        try {
+            OskariLayerCapabilities capabilities = capabilitiesService.getCapabilities(layer, true);
+            // flush cache, otherwise only db is updated but code retains the old cached version
+            WebMapServiceFactory.flushCache(layer.getId());
 
-        switch (layer.getType()) {
-        case OskariLayer.TYPE_WMS:
-            return getCapabilitiesJSON_WMS(layer, capabilities);
-        case OskariLayer.TYPE_WMTS:
-            return getCapabilitiesJSON_WMTS(layer, capabilities);
-        default:
+            switch (layer.getType()) {
+            case OskariLayer.TYPE_WMS:
+                return getCapabilitiesJSON_WMS(layer, capabilities);
+            case OskariLayer.TYPE_WMTS:
+                return getCapabilitiesJSON_WMTS(layer, capabilities);
+            default:
+                return null;
+            }
+        } catch (ServiceException e) {
             return null;
         }
     }
@@ -93,7 +96,6 @@ public class UpdateCapabilitiesJob extends ScheduledJob {
         WebMapService wms = WebMapServiceFactory.createFromXML(layer.getName(), capabilities.getData());
         if (wms == null) {
             LOG.warn("Failed to parse WMS capabilities, layer: ", layer.getName());
-            throw new ServiceException("Couldn't parse capabilities for service!");
         }
         return LayerJSONFormatterWMS.createCapabilitiesJSON(wms);
     }
@@ -104,6 +106,7 @@ public class UpdateCapabilitiesJob extends ScheduledJob {
             return LayerJSONFormatterWMTS.createCapabilitiesJSON(caps, caps.getLayer(layer.getName()));
         } catch (Exception e) {
             LOG.warn(e, "Failed to parse WMTS capabilities, layer: ", layer.getName());
+            return null;
         }
     }
 

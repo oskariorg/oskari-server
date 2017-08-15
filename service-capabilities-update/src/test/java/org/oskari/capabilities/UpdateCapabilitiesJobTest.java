@@ -6,7 +6,7 @@ public class UpdateCapabilitiesJobTest {
     
     @Test
     public void foo() {
-        UpdateCapabilitiesJob job = new UpdateCapabilitiesJob();
+        new UpdateCapabilitiesJob().execute(null);
     }
 
 }
