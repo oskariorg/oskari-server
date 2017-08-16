@@ -1,31 +1,28 @@
-package fi.nls.oskari.control.layer;
+package fi.nls.oskari.service.capabilities;
+
+import java.sql.Timestamp;
 
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.service.capabilities.CapabilitiesCacheService;
 import fi.nls.oskari.service.capabilities.OskariLayerCapabilities;
 
-/**
- * Created by SMAKINEN on 28.8.2015.
- */
 public class CapabilitiesCacheServiceMock extends CapabilitiesCacheService {
-    private String response = null;
+
+    private final String response;
 
     public CapabilitiesCacheServiceMock(final String response) {
         this.response = response;
     }
+
     @Override
     public OskariLayerCapabilities find(String url, String layertype, String version) {
-        return new OskariLayerCapabilities.Builder()
-            .url(url)
-            .layertype(layertype)
-            .data(response)
-            .version(version)
-            .build();
+        final Timestamp ts = new Timestamp(System.currentTimeMillis());
+        return new OskariLayerCapabilities(10, url, layertype, version, response, ts, ts);
     }
 
     @Override
-    public OskariLayerCapabilities save(OskariLayerCapabilities capabilities) {
+    public OskariLayerCapabilities save(OskariLayerCapabilitiesDraft draft) {
         return null;
     }
 

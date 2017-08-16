@@ -32,14 +32,6 @@ public abstract class CapabilitiesCacheService extends OskariComponent {
     public abstract OskariLayerCapabilities find(final String url, final String layertype, final String version);
     public abstract OskariLayerCapabilities save(final OskariLayerCapabilitiesDraft draft);
 
-    /**
-     * Tries to load capabilities from the database
-     * @return null if not saved to db
-     */
-    public OskariLayerCapabilities find(final OskariLayer layer) {
-        return find(layer.getSimplifiedUrl(true), layer.getType(), layer.getVersion());
-    }
-
     public OskariLayerCapabilities getCapabilities(String url, String serviceType, String serviceVersion) throws ServiceException {
         return getCapabilities(url, serviceType, null, null, serviceVersion);
     }
@@ -66,22 +58,20 @@ public abstract class CapabilitiesCacheService extends OskariComponent {
     }
 
     public OskariLayerCapabilities getCapabilities(final OskariLayer layer, String encoding, final boolean loadFromService) {
+        final String url = layer.getSimplifiedUrl(true);
+        final String type = layer.getType();
+        final String version = layer.getVersion();
+
         // prefer saved db version over network call by default
-        if(!loadFromService) {
-            OskariLayerCapabilities dbCapabilities = find(layer);
-            if(dbCapabilities != null) {
+        if (!loadFromService) {
+            OskariLayerCapabilities dbCapabilities = find(url, type, version);
+            if (dbCapabilities != null) {
                 return dbCapabilities;
             }
         }
         // get xml from service
-        String data = loadCapabilitiesFromService(layer, encoding, loadFromService);
-
-        final OskariLayerCapabilitiesDraft draft = new OskariLayerCapabilitiesDraft(
-                layer.getSimplifiedUrl(true),
-                layer.getType(),
-                layer.getVersion(),
-                data);
-        return save(draft);
+        final String data = loadCapabilitiesFromService(layer, encoding, loadFromService);
+        return save(new OskariLayerCapabilitiesDraft(url, type, version, data));
     }
 
     public static String loadCapabilitiesFromService(OskariLayer layer, String encoding) {

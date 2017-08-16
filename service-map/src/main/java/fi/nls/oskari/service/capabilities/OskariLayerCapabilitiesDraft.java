@@ -13,11 +13,11 @@ public class OskariLayerCapabilitiesDraft {
 
     public OskariLayerCapabilitiesDraft(String url, String layertype, String version, String data)
             throws IllegalArgumentException {
-        if (layertype == null || layertype.isEmpty()) {
-            throw new IllegalArgumentException("layertype is null or empty!");
-        }
         if (url == null || url.isEmpty()) {
             throw new IllegalArgumentException("url is null or empty!");
+        }
+        if (layertype == null || layertype.isEmpty()) {
+            throw new IllegalArgumentException("layertype is null or empty!");
         }
         if (data == null || data.isEmpty()) {
             throw new IllegalArgumentException("data is null or empty!");

@@ -14,7 +14,9 @@ import fi.nls.oskari.permission.domain.Permission;
 import fi.nls.oskari.permission.domain.Resource;
 import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.service.capabilities.CapabilitiesCacheService;
+import fi.nls.oskari.service.capabilities.CapabilitiesCacheServiceMock;
 import fi.nls.test.control.JSONActionRouteTest;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
