@@ -5,7 +5,6 @@ import fi.nls.oskari.domain.Role;
 import fi.nls.oskari.domain.User;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.ontology.service.KeywordMapper;
 import org.apache.ibatis.mapping.Environment;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.SqlSession;
@@ -43,7 +42,7 @@ public class MybatisUserService {
         final Configuration configuration = new Configuration(environment);
         configuration.getTypeAliasRegistry().registerAlias(User.class);
         configuration.setLazyLoadingEnabled(true);
-        configuration.addMapper(KeywordMapper.class);
+        configuration.addMapper(UsersMapper.class);
 
         return new SqlSessionFactoryBuilder().build(configuration);
     }

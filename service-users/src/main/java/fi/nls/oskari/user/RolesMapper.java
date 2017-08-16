@@ -7,7 +7,6 @@ import org.apache.ibatis.annotations.Options;
 import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
-import java.util.Map;
 
 public interface RolesMapper {
 
@@ -31,7 +30,7 @@ public interface RolesMapper {
     @Delete("DELETE FROM oskari_roles WHERE id = #{userId}")
     void delete(long userId);
 
-    List<Object> getExternalRolesMapping(String type);
     List<Role> findByUserName(String username);
     List<Role> findByUserId(long userId);
+    List<Object> getExternalRolesMapping(String type);
 }

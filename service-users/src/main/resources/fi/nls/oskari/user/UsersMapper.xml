@@ -3,7 +3,7 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="fi.nls.oskari.domain.UsersMapper">
+<mapper namespace="fi.nls.oskari.user.UsersMapper">
 
     <resultMap id="UsersResult" type="User">
         <result property="id" column="id" />
@@ -15,7 +15,7 @@
         <result property="attributes" column="attributes" />
     </resultMap>
 
-    <insert id="addUser" parameterType="User"> <!--TODO resultMap="Long"-->
+    <insert id="addUser" parameterType="User">
         INSERT INTO oskari_users (
             first_name,
             last_name,

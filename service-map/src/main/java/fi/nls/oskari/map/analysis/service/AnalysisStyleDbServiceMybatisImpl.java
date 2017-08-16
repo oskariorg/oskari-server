@@ -38,7 +38,7 @@ public class AnalysisStyleDbServiceMybatisImpl implements AnalysisStyleDbService
         final Configuration configuration = new Configuration(environment);
         configuration.getTypeAliasRegistry().registerAlias(AnalysisStyle.class);
         configuration.setLazyLoadingEnabled(true);
-        configuration.addMapper(AnalysisMapper.class);
+        configuration.addMapper(AnalysisStyleMapper.class);
 
         return new SqlSessionFactoryBuilder().build(configuration);
     }
