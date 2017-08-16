@@ -28,7 +28,7 @@ public interface CapabilitiesMapper {
             + " (layertype, url, data, version, updated) VALUES"
             + " (#{layertype}, #{url}, #{data}, #{version}, current_timestamp)"
             + " RETURNING id, created, updated")
-    CapabilitiesInsertInfo insert(OskariLayerCapabilitiesDraft draft);
+    OskariLayerCapabilitiesInsertInfo insert(OskariLayerCapabilitiesDraft draft);
 
     @Select("UPDATE oskari_capabilities_cache SET"
             + " data = #{data},"

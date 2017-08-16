@@ -83,7 +83,7 @@ public class CapabilitiesCacheServiceMybatisImpl extends CapabilitiesCacheServic
             }
 
             // Insert
-            final CapabilitiesInsertInfo info = mapper.insert(draft);
+            final OskariLayerCapabilitiesInsertInfo info = mapper.insert(draft);
             session.commit();
             OskariLayerCapabilities inserted = new OskariLayerCapabilities(info.id,
                     draft.getUrl(), draft.getLayertype(), draft.getVersion(),
