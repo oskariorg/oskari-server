@@ -1,73 +1,59 @@
 package fi.nls.oskari.service.capabilities;
 
+import javax.sql.DataSource;
+
+import org.apache.ibatis.session.SqlSession;
+import org.apache.ibatis.session.SqlSessionFactory;
+
 import fi.nls.oskari.annotation.Oskari;
 import fi.nls.oskari.db.DatasourceHelper;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
-import org.apache.ibatis.mapping.Environment;
-import org.apache.ibatis.session.Configuration;
-import org.apache.ibatis.session.SqlSession;
-import org.apache.ibatis.session.SqlSessionFactory;
-import org.apache.ibatis.session.SqlSessionFactoryBuilder;
-import org.apache.ibatis.transaction.TransactionFactory;
-import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
-
-import javax.sql.DataSource;
+import fi.nls.oskari.mybatis.MyBatisHelper;
 
 @Oskari
 public class CapabilitiesCacheServiceMybatisImpl extends CapabilitiesCacheService {
 
     private static final Logger LOG = LogFactory.getLogger(CapabilitiesCacheServiceMybatisImpl.class);
-    private SqlSessionFactory factory = null;
+
+    private final SqlSessionFactory factory;
 
     public CapabilitiesCacheServiceMybatisImpl() {
+        this(DatasourceHelper.getInstance().getDataSource());
     }
 
-    private SqlSessionFactory getFactory() {
-        if(factory != null) {
-            return factory;
-        }
-        final DatasourceHelper helper = DatasourceHelper.getInstance();
-        final DataSource dataSource = helper.getDataSource(helper.getOskariDataSourceName());
-        if(dataSource != null) {
-            factory = initializeMyBatis(dataSource);
-        } else {
-            LOG.error("Couldn't get datasource for", getClass().getName());
-        }
-        return factory;
+    public CapabilitiesCacheServiceMybatisImpl(DataSource ds) {
+        this.factory = MyBatisHelper.initMyBatis(ds, CapabilitiesMapper.class);
     }
 
-    private SqlSessionFactory initializeMyBatis(final DataSource dataSource) {
-        final TransactionFactory transactionFactory = new JdbcTransactionFactory();
-        final Environment environment = new Environment("development", transactionFactory, dataSource);
-
-        final Configuration configuration = new Configuration(environment);
-        configuration.getTypeAliasRegistry().registerAlias(OskariLayerCapabilities.class);
-        configuration.setLazyLoadingEnabled(true);
-        configuration.addMapper(CapabilitiesMapper.class);
-
-        return new SqlSessionFactoryBuilder().build(configuration);
+    private CapabilitiesMapper getMapper(SqlSession session) {
+        return session.getMapper(CapabilitiesMapper.class);
     }
 
     /**
      * Tries to load capabilities from the database
      * @return null if not saved to db
+     * @throws IllegalArgumentException if url or layertype is null or empty
      */
-    public OskariLayerCapabilities find(final String url, final String layertype, final String version) {
-        if(url == null || layertype == null) {
-            LOG.warn("Incomplete params for capabilities loading:", url, layertype);
-            return null;
+    public OskariLayerCapabilities find(String url, String layertype, String version)
+            throws IllegalArgumentException {
+        if (url == null || url.isEmpty()) {
+            LOG.warn("Missing required parameter url");
+            throw new IllegalArgumentException("Missing required parameter url");
+        }
+        if (layertype == null || layertype.isEmpty()) {
+            LOG.warn("Layertype can not be null or empty");
+            throw new IllegalArgumentException("Layertype can not be null or empty");
         }
 
-        final SqlSession session = getFactory().openSession();
-        try {
-            final CapabilitiesMapper mapper = session.getMapper(CapabilitiesMapper.class);
-            return mapper.find(url.toLowerCase(), layertype.toLowerCase(), version);
+        url = url.toLowerCase();
+        layertype = layertype.toLowerCase();
+        if (version != null) {
+            version = version.toLowerCase();
+        }
 
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to load capabilities", e);
-        } finally {
-            session.close();
+        try (final SqlSession session = factory.openSession()) {
+            return getMapper(session).findByUrlTypeVersion(url, layertype, version);
         }
     }
 
@@ -75,31 +61,34 @@ public class CapabilitiesCacheServiceMybatisImpl extends CapabilitiesCacheServic
      * Inserts or updates a capabilities XML in database
      */
     public OskariLayerCapabilities save(final OskariLayerCapabilities capabilities) {
+        try (final SqlSession session = factory.openSession()) {
+            final CapabilitiesMapper mapper = getMapper(session);
+            final OskariLayerCapabilities db = mapper.findByUrlTypeVersion(capabilities.getUrl(),
+                    capabilities.getLayertype(),
+                    capabilities.getVersion());
 
-        final SqlSession session = getFactory().openSession();
-        try {
-            final CapabilitiesMapper mapper = session.getMapper(CapabilitiesMapper.class);
-
-            OskariLayerCapabilities db = mapper.find(capabilities.getUrl().toLowerCase(), capabilities.getLayertype().toLowerCase(), capabilities.getVersion());
-
+            long id;
             if (db != null) {
-                if (db.getData() != null && !db.getData().trim().isEmpty() &&
-                        (capabilities.getData() == null || capabilities.getData().trim().isEmpty())) {
+                if (db.hasData() && !capabilities.hasData()) {
                     LOG.info("Trying to write empty capabilities on top of existing ones, not saving!");
                     return db;
                 }
-                capabilities.setId(db.getId());
-                mapper.updateData(capabilities);
+                // Update
+                id = db.getId();
+                mapper.updateData(id, capabilities.getData());
             } else {
-                mapper.insert(capabilities);
+                // Insert
+                id = mapper.insert(capabilities);
             }
+
             session.commit();
-            LOG.debug("Saved cap with id", capabilities.getId());
-            return capabilities;
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to save capabilities", e);
-        } finally {
-            session.close();
+
+            // After we've updated or inserted the row read it from the database
+            // to get correct created and updated column values
+            final OskariLayerCapabilities saved = mapper.findById(id);
+            LOG.debug("Saved capabilities with id: ", saved.getId());
+            return saved;
         }
     }
+
 }

@@ -34,27 +34,21 @@ public class V1_32_1__populate_capabilities_cache implements JdbcMigration {
         Set<String> keys = new HashSet<>();
         int progress = 0;
         for(OskariLayer layer : layers) {
-            try {
-                final String layerKey = (layer.getSimplifiedUrl(true) + "----" + layer.getType()).toLowerCase();
-                if(keys.contains(layerKey)) {
-                    progress++;
-                    continue;
-                }
-                keys.add(layerKey);
-                final String xml = CAPABILITIES_SERVICE.loadCapabilitiesFromService(layer, null);
-
-                OskariLayerCapabilities caps = CAPABILITIES_SERVICE.createTemplate(layer);
-                caps.setData(xml);
-                insertCaps(connection, caps);
+            final String layerKey = (layer.getSimplifiedUrl(true) + "----" + layer.getType()).toLowerCase();
+            if(keys.contains(layerKey)) {
                 progress++;
-                LOG.info("Capabilities populated:", progress, "/", layers.size());
-            } catch (IOException e) {
-                // save empty result so we don't hang the system when having multiple layers from problematic service
-                OskariLayerCapabilities caps = CAPABILITIES_SERVICE.createTemplate(layer);
-                caps.setData("");
-                insertCaps(connection, caps);
-                LOG.error(e, "Error getting capabilities for service", layer.getUrl());
+                continue;
             }
+            keys.add(layerKey);
+            final OskariLayerCapabilities caps = new OskariLayerCapabilities.Builder()
+                .url(layer.getSimplifiedUrl(true))
+                .layertype(layer.getType())
+                .version(layer.getVersion())
+                .data(CAPABILITIES_SERVICE.loadCapabilitiesFromService(layer, null))
+                .build();
+            insertCaps(connection, caps);
+            progress++;
+            LOG.info("Capabilities populated:", progress, "/", layers.size());
         }
     }
 

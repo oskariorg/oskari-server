@@ -5,24 +5,35 @@ import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
-/**
- * Created by SMAKINEN on 24.8.2015.
- */
 public interface CapabilitiesMapper {
 
-    @Select("SELECT id, layertype, url, data, created, updated, version" +
-            " FROM oskari_capabilities_cache" +
-            " WHERE url = #{url} AND layertype = #{type} AND" +
-            " (version = #{version} OR version is null)" +
-            " ORDER BY version ASC LIMIT 1")
-    OskariLayerCapabilities find(@Param("url") final String url, @Param("type")final String type, @Param("version") final String version);
+    @Select("SELECT id, layertype, url, data, created, updated, version"
+            + " FROM oskari_capabilities_cache"
+            + " WHERE id = #{id}")
+    OskariLayerCapabilities findById(@Param("id") final long id);
 
-    @Insert("INSERT INTO oskari_capabilities_cache(layertype, url, data, version) VALUES (lower(#{layertype}), lower(#{url}), #{data}, #{version})")
-    void insert(OskariLayerCapabilities capabilities);
+    @Select("SELECT id, layertype, url, data, created, updated, version"
+            + " FROM oskari_capabilities_cache"
+            + " WHERE url = #{url}"
+            + " AND layertype = #{type}"
+            + " AND (version = #{version} OR version IS NULL)"
+            + " ORDER BY version ASC"
+            + " LIMIT 1")
+    OskariLayerCapabilities findByUrlTypeVersion(
+            @Param("url") final String url,
+            @Param("type") final String type,
+            @Param("version") final String version);
 
-    @Update("UPDATE oskari_capabilities_cache SET " +
-            "   data = #{data}," +
-            "   updated = current_timestamp" +
-            "   WHERE id = #{id}")
-    void updateData(OskariLayerCapabilities capabilities);
+    @Insert("INSERT INTO oskari_capabilities_cache"
+            + " (layertype, url, data, version) VALUES"
+            + " (#{layertype}, #{url}, #{data}, #{version})"
+            + " RETURNING id")
+    long insert(OskariLayerCapabilities capabilities);
+
+    @Update("UPDATE oskari_capabilities_cache SET"
+            + " data = #{data},"
+            + " updated = current_timestamp"
+            + " WHERE id = #{id}")
+    void updateData(@Param("id") final long id, @Param("data") final String data);
+
 }

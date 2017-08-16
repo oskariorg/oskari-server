@@ -16,12 +16,12 @@ public class CapabilitiesCacheServiceMock extends CapabilitiesCacheService {
     }
     @Override
     public OskariLayerCapabilities find(String url, String layertype, String version) {
-        OskariLayerCapabilities caps = new OskariLayerCapabilities();
-        caps.setUrl(url);
-        caps.setLayertype(layertype);
-        caps.setData(response);
-        caps.setVersion(version);
-        return caps;
+        return new OskariLayerCapabilities.Builder()
+            .url(url)
+            .layertype(layertype)
+            .data(response)
+            .version(version)
+            .build();
     }
 
     @Override

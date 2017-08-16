@@ -1,5 +1,10 @@
 package fi.nls.oskari.service.capabilities;
 
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.util.HashMap;
+import java.util.Map;
+
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
@@ -7,12 +12,6 @@ import fi.nls.oskari.service.OskariComponent;
 import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.PropertyUtil;
-
-import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.SocketTimeoutException;
-import java.util.HashMap;
-import java.util.Map;
 
 public abstract class CapabilitiesCacheService extends OskariComponent {
 
@@ -48,6 +47,7 @@ public abstract class CapabilitiesCacheService extends OskariComponent {
     public OskariLayerCapabilities getCapabilities(String url, String serviceType, final String user, final String passwd, final String version) throws ServiceException {
         return getCapabilities(url, serviceType, user, passwd,  version, false);
     }
+
     public OskariLayerCapabilities getCapabilities(String url, String serviceType, final String user, final String passwd, final String version, final boolean loadFromService) throws ServiceException {
         OskariLayer layer = new OskariLayer();
         layer.setUrl(url);
@@ -65,75 +65,66 @@ public abstract class CapabilitiesCacheService extends OskariComponent {
         return getCapabilities(layer, null, loadFromService);
     }
 
-    public OskariLayerCapabilities getCapabilities(final OskariLayer layer, String encoding, final boolean loadFromService) throws ServiceException {
+    public OskariLayerCapabilities getCapabilities(final OskariLayer layer, String encoding, final boolean loadFromService) {
+        // prefer saved db version over network call by default
+        if(!loadFromService) {
+            OskariLayerCapabilities dbCapabilities = find(layer);
+            if(dbCapabilities != null) {
+                return dbCapabilities;
+            }
+        }
+        // get xml from service
+        final OskariLayerCapabilities caps = new OskariLayerCapabilities.Builder()
+            .url(layer.getSimplifiedUrl(true))
+            .layertype(layer.getType())
+            .version(layer.getVersion())
+            .data(loadCapabilitiesFromService(layer, encoding, loadFromService))
+            .build();
 
-        final OskariLayerCapabilities cap = createTemplate(layer);
-        try {
-            // prefer saved db version over network call by default (only when encoding null == don't check twice)
-            if(!loadFromService) {
-                OskariLayerCapabilities dbCapabilities = find(layer);
-                if(dbCapabilities != null) {
-                    return dbCapabilities;
-                }
-            }
-            // get xml from service
-            final String xml = loadCapabilitiesFromService(layer, encoding, loadFromService);
-            cap.setData(xml);
-            // save before returning
-            save(cap);
-            LOG.debug("Saved capabilities", cap.getId());
-            return cap;
-        }
-        catch (IOException e) {
-            if(e instanceof SocketTimeoutException) {
-                LOG.warn("Getting capabilities for layer timed out. You can adjust timeout with property",
-                        PROP_TIMEOUT, ". Current value is:", TIMEOUT_SECONDS, "seconds");
-            }
-            // save empty result so we don't hang the system when having multiple layers from problematic service
-            cap.setData("");
-            save(cap);
-            throw new ServiceException("Error loading capabilities from URL:" + layer.getUrl(), e);
-        }
+        save(caps);
+        LOG.debug("Saved capabilities! id: ", caps.getId(), " layer id:", layer.getId());
+
+        return caps;
     }
 
-    public static String loadCapabilitiesFromService(OskariLayer layer, String encoding) throws IOException {
+    public static String loadCapabilitiesFromService(OskariLayer layer, String encoding) {
         return loadCapabilitiesFromService(layer, encoding, false);
     }
 
-    private static String loadCapabilitiesFromService(OskariLayer layer, String encoding, final boolean norecursion) throws IOException {
-
+    private static String loadCapabilitiesFromService(OskariLayer layer, String encoding, final boolean norecursion) {
         final String url = contructCapabilitiesUrl(layer);
-        if(encoding == null) {
+        if (encoding == null) {
             encoding = IOHelper.DEFAULT_CHARSET;
         }
-        final HttpURLConnection conn = IOHelper.getConnection(url, layer.getUsername(), layer.getPassword());
-        conn.setReadTimeout(TIMEOUT_MS);
-        if(conn.getResponseCode() != HttpURLConnection.HTTP_OK) {
-            throw new IOException("Couldn't load capabilities from " + url);
-        }
-        final String contentType = conn.getContentType();
-        if(contentType != null && contentType.toLowerCase().indexOf("xml") == -1) {
-            // not xml based on contentType
-            throw new IOException("Unexpected result contentType for capabilities query: " + contentType + " - url:" + url);
-        }
-        final String response = IOHelper.readString(conn, encoding);
-        final String charset = getEncodingFromXml(response);
 
-        //if encoding differs from that of the xml, we always have to re-read from service.
-        if (charset != null && !encoding.equalsIgnoreCase(charset))  {
+        try {
+            final HttpURLConnection conn = IOHelper.getConnection(url, layer.getUsername(), layer.getPassword());
+            conn.setReadTimeout(TIMEOUT_MS);
+
+            final int sc = conn.getResponseCode();
+            if (sc != HttpURLConnection.HTTP_OK) {
+                LOG.warn("Unexpected Status code: ", sc, " url: ", url);
+                return "";
+            }
+
+            final String contentType = conn.getContentType();
+            if (contentType != null && contentType.toLowerCase().indexOf("xml") == -1) {
+                // not xml based on contentType
+                LOG.warn("Unexpected Content-Type: ", contentType, " url: ", url);
+                return "";
+            }
+
+            final String response = IOHelper.readString(conn, encoding);
+            final String charset = getEncodingFromXml(response);
+
+            if (norecursion || charset == null || encoding.equalsIgnoreCase(charset)) {
+                return response;
+            }
             return loadCapabilitiesFromService(layer, charset, true);
-        } else if(norecursion || charset == null || encoding.equalsIgnoreCase(charset)) {
-            return response;
+        } catch (IOException e) {
+            LOG.warn(e, "IOException occured, url: ", url, " error message: ", e.getMessage());
+            return "";
         }
-        return loadCapabilitiesFromService(layer, charset, true);
-    }
-
-    public static OskariLayerCapabilities createTemplate(OskariLayer layer) {
-        OskariLayerCapabilities cap = new OskariLayerCapabilities();
-        cap.setUrl(layer.getSimplifiedUrl(true));
-        cap.setLayertype(layer.getType());
-        cap.setVersion(layer.getVersion());
-        return cap;
     }
 
     public static String contructCapabilitiesUrl(final OskariLayer layer) {
