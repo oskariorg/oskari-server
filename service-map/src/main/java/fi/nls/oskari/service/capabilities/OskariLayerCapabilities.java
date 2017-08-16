@@ -1,6 +1,6 @@
 package fi.nls.oskari.service.capabilities;
 
-import java.util.Date;
+import java.sql.Timestamp;
 
 public class OskariLayerCapabilities {
 
@@ -9,8 +9,8 @@ public class OskariLayerCapabilities {
     private final String layertype;
     private final String version;
     private final String data;
-    private final Date created;
-    private final Date updated;
+    private final Timestamp created;
+    private final Timestamp updated;
 
     public OskariLayerCapabilities(String url, String layertype, String version, String data)
             throws IllegalArgumentException {
@@ -20,7 +20,7 @@ public class OskariLayerCapabilities {
     /**
      * @throws IllegalArgumentException if url, layertype, data is null or empty
      */
-    public OskariLayerCapabilities(long id, String url, String layertype, String version, String data, Date created, Date updated)
+    public OskariLayerCapabilities(long id, String url, String layertype, String version, String data, Timestamp created, Timestamp updated)
             throws IllegalArgumentException {
         if (layertype == null || layertype.isEmpty()) {
             throw new IllegalArgumentException("layertype is null or empty!");
@@ -61,11 +61,11 @@ public class OskariLayerCapabilities {
         return data;
     }
 
-    public Date getCreated() {
+    public Timestamp getCreated() {
         return created;
     }
 
-    public Date getUpdated() {
+    public Timestamp getUpdated() {
         return updated;
     }
 

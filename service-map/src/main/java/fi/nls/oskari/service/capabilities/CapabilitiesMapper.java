@@ -7,12 +7,12 @@ import org.apache.ibatis.annotations.Update;
 
 public interface CapabilitiesMapper {
 
-    @Select("SELECT id, layertype, url, data, created, updated, version"
+    @Select("SELECT id, url, layertype, version, data, created, updated"
             + " FROM oskari_capabilities_cache"
             + " WHERE id = #{id}")
     OskariLayerCapabilities findById(@Param("id") final long id);
 
-    @Select("SELECT id, layertype, url, data, created, updated, version"
+    @Select("SELECT id, url, layertype, version, data, created, updated"
             + " FROM oskari_capabilities_cache"
             + " WHERE url = #{url}"
             + " AND layertype = #{type}"

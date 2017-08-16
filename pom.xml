@@ -102,7 +102,7 @@
         <flexjson.version>2.0</flexjson.version>
         <deegree.version>2</deegree.version>
 
-        <mybatis.version>3.4.1</mybatis.version>
+        <mybatis.version>3.4.3</mybatis.version>
         <com.google.guava.version>18.0</com.google.guava.version>
         <!-- Test deps versions -->
         <powermock.version>1.5</powermock.version>
