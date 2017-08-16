@@ -30,7 +30,7 @@ public abstract class CapabilitiesCacheService extends OskariComponent {
     private static final int TIMEOUT_MS = TIMEOUT_SECONDS * 1000;
 
     public abstract OskariLayerCapabilities find(final String url, final String layertype, final String version);
-    public abstract OskariLayerCapabilities save(final OskariLayerCapabilities capabilities);
+    public abstract OskariLayerCapabilities save(final OskariLayerCapabilitiesDraft draft);
 
     /**
      * Tries to load capabilities from the database
@@ -74,17 +74,14 @@ public abstract class CapabilitiesCacheService extends OskariComponent {
             }
         }
         // get xml from service
-        final OskariLayerCapabilities caps = new OskariLayerCapabilities.Builder()
-            .url(layer.getSimplifiedUrl(true))
-            .layertype(layer.getType())
-            .version(layer.getVersion())
-            .data(loadCapabilitiesFromService(layer, encoding, loadFromService))
-            .build();
+        String data = loadCapabilitiesFromService(layer, encoding, loadFromService);
 
-        save(caps);
-        LOG.debug("Saved capabilities! id: ", caps.getId(), " layer id:", layer.getId());
-
-        return caps;
+        final OskariLayerCapabilitiesDraft draft = new OskariLayerCapabilitiesDraft(
+                layer.getSimplifiedUrl(true),
+                layer.getType(),
+                layer.getVersion(),
+                data);
+        return save(draft);
     }
 
     public static String loadCapabilitiesFromService(OskariLayer layer, String encoding) {

@@ -1,5 +1,7 @@
 package fi.nls.oskari.service.capabilities;
 
+import java.sql.Timestamp;
+
 import javax.sql.DataSource;
 
 import org.apache.ibatis.session.SqlSession;
@@ -46,48 +48,48 @@ public class CapabilitiesCacheServiceMybatisImpl extends CapabilitiesCacheServic
             throw new IllegalArgumentException("Layertype can not be null or empty");
         }
 
-        url = url.toLowerCase();
-        layertype = layertype.toLowerCase();
-        if (version != null) {
-            version = version.toLowerCase();
-        }
-
         try (final SqlSession session = factory.openSession()) {
-            return getMapper(session).findByUrlTypeVersion(url, layertype, version);
+            return getMapper(session).findByUrlTypeVersion(url.toLowerCase(),
+                    layertype.toLowerCase(),
+                    version != null ? version.toLowerCase() : null);
         }
     }
 
     /**
      * Inserts or updates a capabilities XML in database
+     * The rows in the table are UNIQUE (layertype, version, url)
      */
-    public OskariLayerCapabilities save(final OskariLayerCapabilities capabilities) {
+    public OskariLayerCapabilities save(final OskariLayerCapabilitiesDraft draft) {
         try (final SqlSession session = factory.openSession()) {
             final CapabilitiesMapper mapper = getMapper(session);
-            final OskariLayerCapabilities db = mapper.findByUrlTypeVersion(capabilities.getUrl(),
-                    capabilities.getLayertype(),
-                    capabilities.getVersion());
 
-            long id;
+            // Check if a row already exists
+            OskariLayerCapabilities db = mapper.findByUrlTypeVersion(draft.getUrl(),
+                    draft.getLayertype(),
+                    draft.getVersion());
             if (db != null) {
-                if (db.hasData() && !capabilities.hasData()) {
+                if (db.hasData() && !draft.hasData()) {
                     LOG.info("Trying to write empty capabilities on top of existing ones, not saving!");
                     return db;
                 }
                 // Update
-                id = db.getId();
-                mapper.updateData(id, capabilities.getData());
-            } else {
-                // Insert
-                id = mapper.insert(capabilities);
+                Timestamp updatedTs = mapper.updateData(db.getId(), draft.getData());
+                session.commit();
+                OskariLayerCapabilities updated = new OskariLayerCapabilities(db.getId(),
+                        db.getUrl(), db.getLayertype(), db.getVersion(),
+                        draft.getData(), db.getCreated(), updatedTs);
+                LOG.info("Updated capabilities:", updated);
+                return updated;
             }
 
+            // Insert
+            final CapabilitiesInsertInfo info = mapper.insert(draft);
             session.commit();
-
-            // After we've updated or inserted the row read it from the database
-            // to get correct created and updated column values
-            final OskariLayerCapabilities saved = mapper.findById(id);
-            LOG.debug("Saved capabilities with id: ", saved.getId());
-            return saved;
+            OskariLayerCapabilities inserted = new OskariLayerCapabilities(info.id,
+                    draft.getUrl(), draft.getLayertype(), draft.getVersion(),
+                    draft.getData(), info.created, info.updated);
+            LOG.info("Inserted capabilities:", inserted);
+            return inserted;
         }
     }
 

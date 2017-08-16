@@ -1,9 +1,9 @@
 package fi.nls.oskari.service.capabilities;
 
-import org.apache.ibatis.annotations.Insert;
+import java.sql.Timestamp;
+
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.Update;
 
 public interface CapabilitiesMapper {
 
@@ -24,16 +24,17 @@ public interface CapabilitiesMapper {
             @Param("type") final String type,
             @Param("version") final String version);
 
-    @Insert("INSERT INTO oskari_capabilities_cache"
-            + " (layertype, url, data, version) VALUES"
-            + " (#{layertype}, #{url}, #{data}, #{version})"
-            + " RETURNING id")
-    long insert(OskariLayerCapabilities capabilities);
+    @Select("INSERT INTO oskari_capabilities_cache"
+            + " (layertype, url, data, version, updated) VALUES"
+            + " (#{layertype}, #{url}, #{data}, #{version}, current_timestamp)"
+            + " RETURNING id, created, updated")
+    CapabilitiesInsertInfo insert(OskariLayerCapabilitiesDraft draft);
 
-    @Update("UPDATE oskari_capabilities_cache SET"
+    @Select("UPDATE oskari_capabilities_cache SET"
             + " data = #{data},"
             + " updated = current_timestamp"
-            + " WHERE id = #{id}")
-    void updateData(@Param("id") final long id, @Param("data") final String data);
+            + " WHERE id = #{id}"
+            + " RETURNING updated")
+    Timestamp updateData(@Param("id") final long id, @Param("data") final String data);
 
 }

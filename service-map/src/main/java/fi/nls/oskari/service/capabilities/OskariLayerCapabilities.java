@@ -2,63 +2,24 @@ package fi.nls.oskari.service.capabilities;
 
 import java.sql.Timestamp;
 
-public class OskariLayerCapabilities {
+/**
+ * Immutable representation of a single row in oskari_capabilities_cache table
+ */
+public final class OskariLayerCapabilities extends OskariLayerCapabilitiesDraft {
 
     private final long id;
-    private final String url;
-    private final String layertype;
-    private final String version;
-    private final String data;
     private final Timestamp created;
     private final Timestamp updated;
 
-    public OskariLayerCapabilities(String url, String layertype, String version, String data)
-            throws IllegalArgumentException {
-        this(-1L, url, layertype, version, data, null, null);
-    }
-
-    /**
-     * @throws IllegalArgumentException if url, layertype, data is null or empty
-     */
-    public OskariLayerCapabilities(long id, String url, String layertype, String version, String data, Timestamp created, Timestamp updated)
-            throws IllegalArgumentException {
-        if (layertype == null || layertype.isEmpty()) {
-            throw new IllegalArgumentException("layertype is null or empty!");
-        }
-        if (url == null || url.isEmpty()) {
-            throw new IllegalArgumentException("url is null or empty!");
-        }
-        if (data == null || data.isEmpty()) {
-            throw new IllegalArgumentException("data is null or empty!");
-        }
-
+    protected OskariLayerCapabilities(long id, String url, String layertype, String version, String data, Timestamp created, Timestamp updated) {
+        super(url, layertype, version, data);
         this.id = id;
-        this.url = url.toLowerCase();
-        this.layertype = layertype.toLowerCase();
-        this.version = version;
-        this.data = data;
         this.created = created;
         this.updated = updated;
     }
 
     public long getId() {
         return id;
-    }
-
-    public String getUrl() {
-        return url;
-    }
-
-    public String getLayertype() {
-        return layertype;
-    }
-
-    public String getVersion() {
-        return version;
-    }
-
-    public String getData() {
-        return data;
     }
 
     public Timestamp getCreated() {
@@ -69,45 +30,19 @@ public class OskariLayerCapabilities {
         return updated;
     }
 
-    public boolean hasData() {
-        return data == null || data.trim().isEmpty();
-    }
-
-    public OskariLayerCapabilities setId(long newId) {
-        return new OskariLayerCapabilities(newId, url, layertype, version, data, created, updated);
-    }
-
-    public static class Builder {
-
-        private String url;
-        private String layertype;
-        private String version;
-        private String data;
-
-        public Builder url(String url) {
-            this.url = url;
-            return this;
-        }
-
-        public Builder layertype(String layertype) {
-            this.layertype = layertype;
-            return this;
-        }
-
-        public Builder version(String version) {
-            this.version = version;
-            return this;
-        }
-
-        public Builder data(String data) {
-            this.data = data;
-            return this;
-        }
-
-        public OskariLayerCapabilities build() throws IllegalArgumentException {
-            return new OskariLayerCapabilities(url, layertype, version, data);
-        }
-
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append('{');
+        sb.append("id=").append(id);
+        sb.append(",url=").append(url);
+        sb.append(",layertype=").append(layertype);
+        sb.append(",version=").append(id);
+        sb.append(",data=").append(data.length() > 30 ? data.substring(0,  27) + "..." : data);
+        sb.append(",created=").append(created);
+        sb.append(",updated=").append(updated);
+        sb.append('}');
+        return sb.toString();
     }
 
 }
