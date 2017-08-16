@@ -3,8 +3,11 @@ package fi.nls.oskari.pojo;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.wfs.WFSImage;
 import fi.nls.test.util.ResourceHelper;
+import org.custommonkey.xmlunit.Diff;
+import org.custommonkey.xmlunit.XMLUnit;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.xml.sax.SAXException;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -42,6 +45,12 @@ public class WFSCustomStyleStoreTest {
         customStyle.setDotSize(3);
 
         customStyle.setGeometry("geom");
+
+        // use relaxed comparison settings
+        XMLUnit.setIgnoreComments(true);
+        XMLUnit.setIgnoreWhitespace(true);
+        XMLUnit.setIgnoreDiffBetweenTextAndCDATA(true);
+        XMLUnit.setIgnoreAttributeOrder(true);
     }
 
     @Test
@@ -58,7 +67,7 @@ public class WFSCustomStyleStoreTest {
     }
 
     @Test
-    public void testXML() throws IOException {
+    public void testXML() throws IOException, SAXException {
         InputStream resource = WFSImage.class.getResourceAsStream(WFSImage.OSKARI_CUSTOM_SLD);
         if(resource == null) {
             fail("Resource not found");
@@ -72,11 +81,13 @@ public class WFSCustomStyleStoreTest {
         }
 
         String res = ResourceHelper.readStringResource("custom_sld.xml", this);
-        assertEquals("should have same result", res, xml);
+
+        Diff xmlDiff = new Diff(xml, res);
+        assertTrue("should have same result" + xmlDiff, xmlDiff.similar());
     }
 
     @Test
-    public void testHighlightXML() throws IOException {
+    public void testHighlightXML() throws IOException, SAXException {
         InputStream resource = WFSImage.class.getResourceAsStream(WFSImage.OSKARI_CUSTOM_SLD);
         if(resource == null) {
             fail("Resource not found");
@@ -90,7 +101,8 @@ public class WFSCustomStyleStoreTest {
         }
 
         String res = ResourceHelper.readStringResource("custom_highlight_sld.xml", this);
-        assertEquals("should have same result", res, xml);
+        Diff xmlDiff = new Diff(xml, res);
+        assertTrue("should have same result" + xmlDiff, xmlDiff.similar());
     }
 
     @Test(expected=IOException.class)
