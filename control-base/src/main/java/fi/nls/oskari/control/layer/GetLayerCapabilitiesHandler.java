@@ -53,8 +53,9 @@ public class GetLayerCapabilitiesHandler extends ActionHandler {
             final HttpServletResponse response = params.getResponse();
             response.setContentType("text/xml");
             ResponseHelper.writeResponse(params, caps.getData());
-        } catch (ServiceException ex) {
-            throw new ActionException("Error reading capabilities", ex);
+        } catch (ServiceException e) {
+            ResponseHelper.writeError(params, e.getMessage());
         }
     }
+
 }

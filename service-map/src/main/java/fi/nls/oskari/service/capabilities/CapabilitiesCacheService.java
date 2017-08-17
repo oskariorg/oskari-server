@@ -11,6 +11,7 @@ import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.service.OskariComponent;
+import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.PropertyUtil;
 
@@ -36,15 +37,18 @@ public abstract class CapabilitiesCacheService extends OskariComponent {
     protected abstract void updateMultiple(final List<OskariLayerCapabilitiesDataUpdate> updateDrafts);
     protected abstract List<OskariLayerCapabilities> getAllOlderThan(final long maxAgeMs);
 
-    public OskariLayerCapabilities getCapabilities(String url, String type, String version) {
+    public OskariLayerCapabilities getCapabilities(String url, String type, String version)
+            throws ServiceException {
         return getCapabilities(url, type, null, null, version);
     }
 
-    public OskariLayerCapabilities getCapabilities(String url, String type, final String user, final String passwd, final String version) {
+    public OskariLayerCapabilities getCapabilities(String url, String type, final String user, final String passwd, final String version)
+            throws ServiceException {
         return getCapabilities(url, type, user, passwd, version, false);
     }
 
-    public OskariLayerCapabilities getCapabilities(String url, String type, final String user, final String passwd, final String version, final boolean loadFromService) {
+    public OskariLayerCapabilities getCapabilities(String url, String type, final String user, final String passwd, final String version, final boolean loadFromService)
+            throws ServiceException {
         return getCapabilities(createTempOskariLayer(url, type, user, passwd, version), loadFromService);
     }
 
@@ -58,15 +62,18 @@ public abstract class CapabilitiesCacheService extends OskariComponent {
         return layer;
     }
 
-    public OskariLayerCapabilities getCapabilities(final OskariLayer layer) {
+    public OskariLayerCapabilities getCapabilities(final OskariLayer layer)
+            throws ServiceException {
         return getCapabilities(layer, false);
     }
 
-    public OskariLayerCapabilities getCapabilities(final OskariLayer layer, final boolean loadFromService) {
+    public OskariLayerCapabilities getCapabilities(final OskariLayer layer, final boolean loadFromService)
+            throws ServiceException {
         return getCapabilities(layer, null, loadFromService);
     }
 
-    public OskariLayerCapabilities getCapabilities(final OskariLayer layer, String encoding, final boolean loadFromService) {
+    public OskariLayerCapabilities getCapabilities(final OskariLayer layer, String encoding, final boolean loadFromService)
+            throws ServiceException {
         final String url = layer.getSimplifiedUrl(true);
         final String type = layer.getType();
         final String version = layer.getVersion();
@@ -81,7 +88,14 @@ public abstract class CapabilitiesCacheService extends OskariComponent {
 
         // get xml from service
         final String data = loadCapabilitiesFromService(layer, encoding, loadFromService);
-        return save(new OskariLayerCapabilitiesDraft(url, type, version, data));
+        if (data == null || data.trim().isEmpty()) {
+            throw new ServiceException("Failed to load capabilities from service!");
+        }
+        try {
+            return save(new OskariLayerCapabilitiesDraft(url, type, version, data));
+        } catch (IllegalArgumentException e) {
+            throw new ServiceException("Failed to save capabilities: " + e.getMessage());
+        }
     }
 
     public static String loadCapabilitiesFromService(OskariLayer layer, String encoding) {
