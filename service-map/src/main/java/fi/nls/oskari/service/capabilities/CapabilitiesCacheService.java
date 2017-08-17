@@ -2,14 +2,15 @@ package fi.nls.oskari.service.capabilities;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.service.OskariComponent;
-import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.PropertyUtil;
 
@@ -32,28 +33,36 @@ public abstract class CapabilitiesCacheService extends OskariComponent {
     public abstract OskariLayerCapabilities find(final String url, final String layertype, final String version);
     public abstract OskariLayerCapabilities save(final OskariLayerCapabilitiesDraft draft);
 
-    public OskariLayerCapabilities getCapabilities(String url, String serviceType, String serviceVersion) throws ServiceException {
-        return getCapabilities(url, serviceType, null, null, serviceVersion);
+    protected abstract void updateMultiple(final List<OskariLayerCapabilitiesDataUpdate> updateDrafts);
+    protected abstract List<OskariLayerCapabilities> getAllOlderThan(final long maxAgeMs);
+
+    public OskariLayerCapabilities getCapabilities(String url, String type, String version) {
+        return getCapabilities(url, type, null, null, version);
     }
 
-    public OskariLayerCapabilities getCapabilities(String url, String serviceType, final String user, final String passwd, final String version) throws ServiceException {
-        return getCapabilities(url, serviceType, user, passwd,  version, false);
+    public OskariLayerCapabilities getCapabilities(String url, String type, final String user, final String passwd, final String version) {
+        return getCapabilities(url, type, user, passwd, version, false);
     }
 
-    public OskariLayerCapabilities getCapabilities(String url, String serviceType, final String user, final String passwd, final String version, final boolean loadFromService) throws ServiceException {
+    public OskariLayerCapabilities getCapabilities(String url, String type, final String user, final String passwd, final String version, final boolean loadFromService) {
+        return getCapabilities(createTempOskariLayer(url, type, user, passwd, version), loadFromService);
+    }
+
+    private OskariLayer createTempOskariLayer(String url, String type, final String user, final String passwd, final String version) {
         OskariLayer layer = new OskariLayer();
         layer.setUrl(url);
-        layer.setType(serviceType);
+        layer.setType(type);
+        layer.setVersion(version);
         layer.setUsername(user);
         layer.setPassword(passwd);
-        layer.setVersion(version);
-        return getCapabilities(layer, loadFromService);
+        return layer;
     }
 
-    public OskariLayerCapabilities getCapabilities(final OskariLayer layer) throws ServiceException {
+    public OskariLayerCapabilities getCapabilities(final OskariLayer layer) {
         return getCapabilities(layer, false);
     }
-    public OskariLayerCapabilities getCapabilities(final OskariLayer layer, final boolean loadFromService) throws ServiceException {
+
+    public OskariLayerCapabilities getCapabilities(final OskariLayer layer, final boolean loadFromService) {
         return getCapabilities(layer, null, loadFromService);
     }
 
@@ -69,6 +78,7 @@ public abstract class CapabilitiesCacheService extends OskariComponent {
                 return dbCapabilities;
             }
         }
+
         // get xml from service
         final String data = loadCapabilitiesFromService(layer, encoding, loadFromService);
         return save(new OskariLayerCapabilitiesDraft(url, type, version, data));
@@ -114,6 +124,35 @@ public abstract class CapabilitiesCacheService extends OskariComponent {
         }
     }
 
+    public void updateAllOlderThan(final long maxAgeMs) {
+        long prevId = -1L;
+
+        List<OskariLayerCapabilitiesDataUpdate> updates = new ArrayList<>();
+        for (OskariLayerCapabilities capabilities : getAllOlderThan(maxAgeMs)) {
+            long id = capabilities.getId();
+            if (prevId == id) {
+                continue;
+            }
+
+            String url = capabilities.getUrl();
+            String type = capabilities.getLayertype();
+            String version = capabilities.getVersion();
+
+            final OskariLayer layer = createTempOskariLayer(url, type, null, null, version);
+            final String data = loadCapabilitiesFromService(layer, IOHelper.DEFAULT_CHARSET);
+
+            if (data.isEmpty()) {
+                LOG.warn("Getting Capabilities from service failed for url:", url, "- skipping!");
+                continue;
+            }
+
+            updates.add(new OskariLayerCapabilitiesDataUpdate(id, data));
+            prevId = id;
+        }
+
+        updateMultiple(updates);
+    }
+
     public static String contructCapabilitiesUrl(final OskariLayer layer) {
         if (layer == null) {
             return "";
@@ -154,4 +193,5 @@ public abstract class CapabilitiesCacheService extends OskariComponent {
 
         return null;
     }
+
 }

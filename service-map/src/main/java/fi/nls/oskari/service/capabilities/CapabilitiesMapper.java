@@ -1,9 +1,12 @@
 package fi.nls.oskari.service.capabilities;
 
 import java.sql.Timestamp;
+import java.util.List;
 
+import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 
 public interface CapabilitiesMapper {
 
@@ -24,17 +27,33 @@ public interface CapabilitiesMapper {
             @Param("type") final String type,
             @Param("version") final String version);
 
-    @Select("INSERT INTO oskari_capabilities_cache"
-            + " (layertype, url, data, version, updated) VALUES"
-            + " (#{layertype}, #{url}, #{data}, #{version}, current_timestamp)"
-            + " RETURNING id, created, updated")
-    OskariLayerCapabilitiesInsertInfo insert(OskariLayerCapabilitiesDraft draft);
+    @Select("SELECT id"
+            + " FROM oskari_capabilities_cache"
+            + " WHERE url = #{url}"
+            + " AND layertype = #{type}"
+            + " AND (version = #{version} OR version IS NULL)"
+            + " ORDER BY version ASC"
+            + " LIMIT 1")
+    Long selectIdByUrlTypeVersion(
+            @Param("url") final String url,
+            @Param("type") final String type,
+            @Param("version") final String version);
 
-    @Select("UPDATE oskari_capabilities_cache SET"
+    @Select("SELECT id, url, layertype, version, data, created, updated"
+            + " FROM oskari_capabilities_cache"
+            + " WHERE updated <= #{ts}"
+            + " ORDER BY id, version ASC")
+    List<OskariLayerCapabilities> findAllNotUpdatedSince(@Param("ts") final Timestamp ts);
+
+    @Insert("INSERT INTO oskari_capabilities_cache"
+            + " (layertype, url, data, version) VALUES"
+            + " (#{layertype}, #{url}, #{data}, #{version})")
+    void insert(OskariLayerCapabilitiesDraft draft);
+
+    @Update("UPDATE oskari_capabilities_cache SET"
             + " data = #{data},"
             + " updated = current_timestamp"
-            + " WHERE id = #{id}"
-            + " RETURNING updated")
-    Timestamp updateData(@Param("id") final long id, @Param("data") final String data);
+            + " WHERE id = #{id}")
+    void updateData(@Param("id") final long id, @Param("data") final String data);
 
 }

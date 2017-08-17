@@ -1,9 +1,11 @@
 package fi.nls.oskari.service.capabilities;
 
 import java.sql.Timestamp;
+import java.util.List;
 
 import javax.sql.DataSource;
 
+import org.apache.ibatis.session.ExecutorType;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 
@@ -39,19 +41,10 @@ public class CapabilitiesCacheServiceMybatisImpl extends CapabilitiesCacheServic
      */
     public OskariLayerCapabilities find(String url, String layertype, String version)
             throws IllegalArgumentException {
-        if (url == null || url.isEmpty()) {
-            LOG.warn("Missing required parameter url");
-            throw new IllegalArgumentException("Missing required parameter url");
-        }
-        if (layertype == null || layertype.isEmpty()) {
-            LOG.warn("Layertype can not be null or empty");
-            throw new IllegalArgumentException("Layertype can not be null or empty");
-        }
-
+        url = OskariLayerCapabilitiesDraft.trim(url, "url");
+        layertype = OskariLayerCapabilitiesDraft.trim(layertype, "layertype");
         try (final SqlSession session = factory.openSession()) {
-            return getMapper(session).findByUrlTypeVersion(url.toLowerCase(),
-                    layertype.toLowerCase(),
-                    version != null ? version.toLowerCase() : null);
+            return getMapper(session).findByUrlTypeVersion(url, layertype, version);
         }
     }
 
@@ -60,36 +53,58 @@ public class CapabilitiesCacheServiceMybatisImpl extends CapabilitiesCacheServic
      * The rows in the table are UNIQUE (layertype, version, url)
      */
     public OskariLayerCapabilities save(final OskariLayerCapabilitiesDraft draft) {
-        try (final SqlSession session = factory.openSession()) {
+        try (final SqlSession session = factory.openSession(false)) {
             final CapabilitiesMapper mapper = getMapper(session);
 
+            String url = draft.getUrl();
+            String type = draft.getLayertype();
+            String version = draft.getVersion();
+
             // Check if a row already exists
-            OskariLayerCapabilities db = mapper.findByUrlTypeVersion(draft.getUrl(),
-                    draft.getLayertype(),
-                    draft.getVersion());
-            if (db != null) {
-                if (db.hasData() && !draft.hasData()) {
-                    LOG.info("Trying to write empty capabilities on top of existing ones, not saving!");
-                    return db;
-                }
+            Long id = mapper.selectIdByUrlTypeVersion(url, type, version);
+            if (id != null) {
                 // Update
-                Timestamp updatedTs = mapper.updateData(db.getId(), draft.getData());
+                mapper.updateData(id, draft.getData());
                 session.commit();
-                OskariLayerCapabilities updated = new OskariLayerCapabilities(db.getId(),
-                        db.getUrl(), db.getLayertype(), db.getVersion(),
-                        draft.getData(), db.getCreated(), updatedTs);
+                OskariLayerCapabilities updated = mapper.findById(id);
                 LOG.info("Updated capabilities:", updated);
                 return updated;
+            } else {
+                // Insert
+                mapper.insert(draft);
+                session.commit();
+                OskariLayerCapabilities inserted = mapper.findByUrlTypeVersion(url, type, version);
+                LOG.info("Inserted capabilities:", inserted);
+                return inserted;
             }
+        }
+    }
 
-            // Insert
-            final OskariLayerCapabilitiesInsertInfo info = mapper.insert(draft);
+    @Override
+    protected List<OskariLayerCapabilities> getAllOlderThan(long maxAgeMs) {
+        try (final SqlSession session = factory.openSession()) {
+            final CapabilitiesMapper mapper = getMapper(session);
+            final long time = System.currentTimeMillis() - maxAgeMs;
+            final Timestamp ts = new Timestamp(time);
+            LOG.debug("Getting all rows not updated since:", ts);
+            List<OskariLayerCapabilities> list = mapper.findAllNotUpdatedSince(ts);
+            LOG.debug("Found", list.size(), "row(s) not updated since:", ts);
+            return list;
+        }
+    }
+
+    @Override
+    protected void updateMultiple(List<OskariLayerCapabilitiesDataUpdate> updates) {
+        if (updates == null || updates.isEmpty()) {
+            return;
+        }
+        try (final SqlSession session = factory.openSession(ExecutorType.BATCH, false)) {
+            final CapabilitiesMapper mapper = getMapper(session);
+            for (OskariLayerCapabilitiesDataUpdate update : updates) {
+                LOG.debug("Updating capabilities id:", update.id, "data:", update.data);
+                mapper.updateData(update.id, update.data);
+            }
             session.commit();
-            OskariLayerCapabilities inserted = new OskariLayerCapabilities(info.id,
-                    draft.getUrl(), draft.getLayertype(), draft.getVersion(),
-                    draft.getData(), info.created, info.updated);
-            LOG.info("Inserted capabilities:", inserted);
-            return inserted;
         }
     }
 

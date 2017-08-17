@@ -13,20 +13,10 @@ public class OskariLayerCapabilitiesDraft {
 
     public OskariLayerCapabilitiesDraft(String url, String layertype, String version, String data)
             throws IllegalArgumentException {
-        if (url == null || url.isEmpty()) {
-            throw new IllegalArgumentException("url is null or empty!");
-        }
-        if (layertype == null || layertype.isEmpty()) {
-            throw new IllegalArgumentException("layertype is null or empty!");
-        }
-        if (data == null || data.isEmpty()) {
-            throw new IllegalArgumentException("data is null or empty!");
-        }
-
-        this.url = url;
-        this.layertype = layertype.toLowerCase();
+        this.url = trim(url, "url");
+        this.layertype = trim(layertype, "layertype");
+        this.data = trim(data, "data");
         this.version = version;
-        this.data = data;
     }
 
     public String getUrl() {
@@ -45,8 +35,23 @@ public class OskariLayerCapabilitiesDraft {
         return data;
     }
 
-    public boolean hasData() {
-        return data == null || data.trim().isEmpty();
+    /**
+     * Returns a trimmed copy of String
+     * @param str value to be trimmed
+     * @param fieldName for exception message
+     * @return trimmed value
+     * @throws IllegalArgumentException if str is null or empty after trimming
+     */
+    public static String trim(final String str, final String fieldName)
+            throws IllegalArgumentException {
+        if (str == null) {
+            throw new IllegalArgumentException(fieldName + " is null");
+        }
+        final String trimmed = str.trim();
+        if (trimmed.isEmpty()) {
+           throw new IllegalArgumentException(fieldName + " is empty!");
+        }
+        return trimmed;
     }
 
 }
