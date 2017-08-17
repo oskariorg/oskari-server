@@ -32,7 +32,7 @@ public class MybatisUserService {
             dataSource = helper.createDataSource();
         }
         if (dataSource == null) {
-            log.error("Couldn't get datasource for roleservice");
+            log.error("Couldn't get datasource for userservice");
         }
         factory = initializeMyBatis(dataSource);
     }

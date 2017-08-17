@@ -15,8 +15,7 @@
     </resultMap>
 
 
-    <insert id="addKeyword"
-            parameterType="Keyword">
+    <insert id="addKeyword" parameterType="Keyword" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
     INSERT INTO portti_keywords (keyword, uri, lang, editable )
     VALUES ( #{value}, #{uri}, #{lang}, #{editable} )
     </insert>

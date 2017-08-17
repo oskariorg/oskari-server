@@ -27,14 +27,16 @@ public class KeywordServiceMybatisImpl extends KeywordService {
     private SqlSessionFactory factory = null;
 
     public KeywordServiceMybatisImpl() {
+
         final DatasourceHelper helper = DatasourceHelper.getInstance();
-        final DataSource dataSource = helper.getDataSource(helper.getOskariDataSourceName("keyword"));
-        if(dataSource != null) {
-            factory = initializeMyBatis(dataSource);
+        DataSource dataSource = helper.getDataSource();
+        if (dataSource == null) {
+            dataSource = helper.createDataSource();
         }
-        else {
+        if (dataSource == null) {
             log.error("Couldn't get datasource for keywordservice");
         }
+        factory = initializeMyBatis(dataSource);
     }
 
     private SqlSessionFactory initializeMyBatis(final DataSource dataSource) {
@@ -273,6 +275,7 @@ public class KeywordServiceMybatisImpl extends KeywordService {
             log.debug("Adding keyword: ", keyword);
             final KeywordMapper mapper = session.getMapper(KeywordMapper.class);
             mapper.addKeyword(keyword);
+            session.commit();
         } catch (Exception e) {
             log.warn(e, "Exception when trying to add keyword: ", keyword);
         } finally {

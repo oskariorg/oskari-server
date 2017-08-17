@@ -8,7 +8,7 @@ import java.util.List;
 public abstract class KeywordService extends OskariComponent {
 
     public abstract List<Keyword> findKeywordsMatching(final String name);
-    public abstract List<Keyword> findKeywordsMatching(final String name, String lang);
+    public abstract List<Keyword> findKeywordsMatching(final String name, final String lang);
     public abstract Keyword findExactKeyword(final String name, final String language);
     public abstract List<Keyword> findSynonyms(final Long id, final String language);
     public abstract List<Keyword> findParents(final Long id, final String language);
