@@ -276,7 +276,7 @@ public class OskariLayerWorker {
             JSONHelper.putValue(permission, "publish", PUBLICATION_PERMISSION_OK);
             JSONHelper.putValue(permission, "download", DOWNLOAD_PERMISSION_OK);
         } else if (user.isGuest()) {
-          JSONHelper.putValue(permission, "publish", NO_PUBLICATION_PERMISSION);
+            JSONHelper.putValue(permission, "publish", NO_PUBLICATION_PERMISSION);
         } else {
             for (Role role : user.getRoles()) {
                 if (editAccessList != null && editAccessList.contains(layerPermissionKey + ":" + role.getId())) {
