@@ -26,12 +26,13 @@ public class MybatisRoleService {
 
     public MybatisRoleService() {
         final DatasourceHelper helper = DatasourceHelper.getInstance();
-        final DataSource dataSource = helper.getDataSource();
-        if (dataSource != null) {
-            factory = initializeMyBatis(dataSource);
+        DataSource dataSource = helper.getDataSource();
+        if (dataSource == null) {
+            dataSource = helper.createDataSource();
         } else {
             log.error("Couldn't get datasource for roleservice");
         }
+        factory = initializeMyBatis(dataSource);
     }
 
     private SqlSessionFactory initializeMyBatis(final DataSource dataSource) {

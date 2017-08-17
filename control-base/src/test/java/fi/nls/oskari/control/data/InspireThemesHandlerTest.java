@@ -7,6 +7,8 @@ import fi.nls.oskari.control.ActionDeniedException;
 import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.control.ActionParamsException;
 import fi.nls.oskari.domain.map.InspireTheme;
+import fi.nls.oskari.util.DuplicateException;
+import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.test.control.JSONActionRouteTest;
 import fi.nls.test.util.ResourceHelper;
 import org.junit.Before;
@@ -15,6 +17,7 @@ import org.junit.Test;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
@@ -35,6 +38,13 @@ public class InspireThemesHandlerTest extends JSONActionRouteTest {
 
     @Before
     public void setUp() throws Exception {
+        Properties properties = new Properties();
+        try {
+            properties.load(InspireThemesHandlerTest.class.getResourceAsStream("test.properties"));
+            PropertyUtil.addProperties(properties);
+        } catch (DuplicateException e) {
+            //fail("Should not throw exception" + e.getStackTrace());
+        }
         inspireThemeService = mock(InspireThemeServiceIbatisImpl.class);
         InspireTheme theme1 = new InspireTheme();
         theme1.setId(1);
