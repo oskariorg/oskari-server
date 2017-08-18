@@ -32,7 +32,10 @@ public class AnalysisDbServiceMybatisImpl implements AnalysisDbService {
     public AnalysisDbServiceMybatisImpl() {
 
         final DatasourceHelper helper = DatasourceHelper.getInstance();
-        final DataSource dataSource = helper.getDataSource(helper.getOskariDataSourceName("analysis"));
+        DataSource dataSource = helper.getDataSource(helper.getOskariDataSourceName("analysis"));
+        if (dataSource == null) {
+            dataSource = helper.createDataSource();
+        }
         if(dataSource != null) {
             factory = initializeMyBatis(dataSource);
         }

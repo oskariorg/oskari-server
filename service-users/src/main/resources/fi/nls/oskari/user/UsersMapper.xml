@@ -32,7 +32,6 @@
             #{uuid},
             #{attributes}
         )
-        <!--TODO RETURNING id-->
     </insert>
 
     <update id="updateUser" parameterType="User">

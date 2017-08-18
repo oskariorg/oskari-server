@@ -22,7 +22,10 @@ public class AnalysisStyleDbServiceMybatisImpl implements AnalysisStyleDbService
 
     public AnalysisStyleDbServiceMybatisImpl() {
         final DatasourceHelper helper = DatasourceHelper.getInstance();
-        final DataSource dataSource = helper.getDataSource(helper.getOskariDataSourceName("analysisStyle"));
+        DataSource dataSource = helper.getDataSource(helper.getOskariDataSourceName("analysisStyle"));
+        if (dataSource == null) {
+            dataSource = helper.createDataSource();
+        }
         if(dataSource != null) {
             factory = initializeMyBatis(dataSource);
         }
@@ -52,7 +55,6 @@ public class AnalysisStyleDbServiceMybatisImpl implements AnalysisStyleDbService
 
     public long insertAnalysisStyleRow(final AnalysisStyle analysisStyle) {
         final SqlSession session = factory.openSession();
-        long analysisStylelId = 0;
         try {
             log.debug("Insert analysisiStyle row:", analysisStyle);
             final AnalysisStyleMapper mapper = session.getMapper(AnalysisStyleMapper.class);
@@ -64,7 +66,7 @@ public class AnalysisStyleDbServiceMybatisImpl implements AnalysisStyleDbService
         } finally {
             session.close();
         }
-        return analysisStylelId;
+        return analysisStyle.getId();
     }
 	   
 	 

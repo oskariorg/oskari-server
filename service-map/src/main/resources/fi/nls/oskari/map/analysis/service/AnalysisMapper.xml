@@ -125,7 +125,7 @@
 
 
 
-    <insert id="insertAnalysisRow" parameterType="Analysis">
+    <insert id="insertAnalysisRow" parameterType="Analysis" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
         INSERT INTO analysis (
         uuid,
         name,
