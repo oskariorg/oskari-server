@@ -12,11 +12,10 @@ import fi.nls.oskari.util.DuplicateException;
 import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.test.control.JSONActionRouteTest;
 import fi.nls.test.util.ResourceHelper;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.*;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.util.*;
 
 import static org.junit.Assert.fail;
@@ -38,7 +37,7 @@ public class SearchKeywordsHandlerTest extends JSONActionRouteTest {
     public static void addLocales() throws Exception {
         Properties properties = new Properties();
         try {
-            properties.load(SearchKeywordsHandlerTest.class.getResourceAsStream("test.properties"));
+            properties.load(new FileInputStream(new File("C:\\Omat\\Jetty\\resources\\oskari-ext.properties")));
             PropertyUtil.addProperties(properties);
             String locales = PropertyUtil.getNecessary("oskari.locales");
             if (locales == null)
@@ -170,6 +169,10 @@ public class SearchKeywordsHandlerTest extends JSONActionRouteTest {
         handler.handleAction(actionParameters);
         verifyResponseWritten(actionParameters);
         verifyResponseContent(ResourceHelper.readJSONArrayResource("SearchKeywordsHandlerTest-non-permitted-layer-on-exact-match.json", this));
+    }
 
+    @After
+    public void delete() {
+        PropertyUtil.clearProperties();
     }
 }

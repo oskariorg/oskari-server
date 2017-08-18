@@ -27,7 +27,6 @@ public class KeywordServiceMybatisImpl extends KeywordService {
     private SqlSessionFactory factory = null;
 
     public KeywordServiceMybatisImpl() {
-
         final DatasourceHelper helper = DatasourceHelper.getInstance();
         DataSource dataSource = helper.getDataSource();
         if (dataSource == null) {

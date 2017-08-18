@@ -10,7 +10,7 @@ package fi.nls.oskari.ontology.domain;
 public class Relation {
     private Long keyid1;
     private Long keyid2;
-    private RelationType relationType;
+    private RelationType type;
 
     public Long getKeyid1() {
         return keyid1;
@@ -29,15 +29,15 @@ public class Relation {
     }
 
     public RelationType getRelationType() {
-        return relationType;
+        return type;
     }
 
     public void setRelationType(RelationType relationType) {
         // insert null if NONE so we won't store NONE to the DB by accident
         if (relationType == RelationType.NONE) {
-            this.relationType = null;
+            this.type = null;
         } else {
-            this.relationType = relationType;
+            this.type = relationType;
         }
     }
 }

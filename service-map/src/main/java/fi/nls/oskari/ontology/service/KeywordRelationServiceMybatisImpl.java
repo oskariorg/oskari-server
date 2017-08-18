@@ -33,13 +33,14 @@ public class KeywordRelationServiceMybatisImpl implements KeywordRelationService
 
     public KeywordRelationServiceMybatisImpl() {
         final DatasourceHelper helper = DatasourceHelper.getInstance();
-        final DataSource dataSource = helper.getDataSource(helper.getOskariDataSourceName("keywordrelation"));
-        if(dataSource != null) {
-            factory = initializeMyBatis(dataSource);
+        DataSource dataSource = helper.getDataSource();
+        if (dataSource == null) {
+            dataSource = helper.createDataSource();
         }
-        else {
+        if (dataSource == null) {
             log.error("Couldn't get datasource for keywordrelationservice");
         }
+        factory = initializeMyBatis(dataSource);
     }
 
     private SqlSessionFactory initializeMyBatis(final DataSource dataSource) {
@@ -49,7 +50,7 @@ public class KeywordRelationServiceMybatisImpl implements KeywordRelationService
         final Configuration configuration = new Configuration(environment);
         configuration.getTypeAliasRegistry().registerAlias(Relation.class);
         configuration.setLazyLoadingEnabled(true);
-        configuration.addMapper(KeywordMapper.class);
+        configuration.addMapper(KeywordRelationMapper.class);
 
         return new SqlSessionFactoryBuilder().build(configuration);
     }

@@ -3,9 +3,12 @@ package fi.nls.oskari.ontology;
 import fi.nls.oskari.ontology.domain.Keyword;
 import fi.nls.oskari.ontology.service.KeywordServiceMybatisImpl;
 import fi.nls.oskari.util.PropertyUtil;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.util.List;
 import java.util.Properties;
 
@@ -23,10 +26,10 @@ public class KeywordServiceMybatisImplTest {
 
         Properties properties = new Properties();
         try {
-            properties.load(KeywordServiceMybatisImplTest.class.getResourceAsStream("test.properties"));
+            properties.load(new FileInputStream(new File("C:\\Omat\\Jetty\\resources\\oskari-ext.properties")));
             PropertyUtil.addProperties(properties);
         } catch (Exception e) {
-            //fail("Should not throw exception" + e.getStackTrace());
+            e.getStackTrace();
         }
         keywordServiceMybatis = new KeywordServiceMybatisImpl();
         testKeyword = "testKeyword";
@@ -53,5 +56,10 @@ public class KeywordServiceMybatisImplTest {
         List<Keyword> keywordList = keywordServiceMybatis.findKeywordsMatching(testKeyword);
 
         assertTrue("Keyword added and found", keyword.getValue().equals(keywordList.get(0).getValue()));
+    }
+
+    @After
+    public void delete() {
+        PropertyUtil.clearProperties();
     }
 }

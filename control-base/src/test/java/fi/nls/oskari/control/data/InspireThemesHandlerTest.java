@@ -11,9 +11,12 @@ import fi.nls.oskari.util.DuplicateException;
 import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.test.control.JSONActionRouteTest;
 import fi.nls.test.util.ResourceHelper;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -40,7 +43,7 @@ public class InspireThemesHandlerTest extends JSONActionRouteTest {
     public void setUp() throws Exception {
         Properties properties = new Properties();
         try {
-            properties.load(InspireThemesHandlerTest.class.getResourceAsStream("test.properties"));
+            properties.load(new FileInputStream(new File("C:\\Omat\\Jetty\\resources\\oskari-ext.properties")));
             PropertyUtil.addProperties(properties);
         } catch (DuplicateException e) {
             //fail("Should not throw exception" + e.getStackTrace());
@@ -142,5 +145,10 @@ public class InspireThemesHandlerTest extends JSONActionRouteTest {
                 put(ActionConstants.PARAM_NAME_PREFIX + "en", "theme en").
                 put(ActionConstants.PARAM_NAME_PREFIX + "fi", "teema fi").done();
         return map;
+    }
+
+    @After
+    public void delete() {
+        PropertyUtil.clearProperties();
     }
 }

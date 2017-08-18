@@ -13,7 +13,6 @@ import java.util.List;
  */
 public interface KeywordRelationMapper {
     void insert(final Relation relation);
-    void addRelation(final Relation relation);
     Relation getRelation(final Relation relation);
     List<Relation> getRelationsForKeyword(final Long keyId);
     List<Relation> getRelationsByTypeForKeyword(final Relation relation);
