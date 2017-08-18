@@ -82,12 +82,8 @@ public class GetGeoPointDataHandler extends ActionHandler {
 
 			final OskariLayer layer = mapLayerService.find(layerId);
 			final String layerType = layer.getType();
-			//HSY doesn't want GFI from basemaps.
-			boolean isBaseMap = false;
-			if(layer.isBaseMap() || layer.getAttributes().optBoolean("basemap")) {
-				isBaseMap = true;
-			}
-			if (OskariLayer.TYPE_WMS.equals(layerType) && !isBaseMap) {
+
+			if (OskariLayer.TYPE_WMS.equals(layerType)) {
 			    final GFIRequestParams gfiParams = new GFIRequestParams();
 			    gfiParams.setBbox(params.getRequiredParam(PARAM_BBOX));
 			    gfiParams.setCurrentStyle(params.getHttpParam(PARAM_STYLES, ""));
@@ -106,7 +102,7 @@ public class GetGeoPointDataHandler extends ActionHandler {
                     data.put(response);
                 }
 				continue;
-			} else if (OskariLayer.TYPE_ARCGIS93.equals(layerType) && !isBaseMap) {
+			} else if (OskariLayer.TYPE_ARCGIS93.equals(layerType)) {
 				final GFIRestQueryParams gfiParams = new GFIRestQueryParams();
 
 				gfiParams.setBbox(params.getRequiredParam(PARAM_BBOX));
