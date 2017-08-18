@@ -15,7 +15,7 @@
         <result property="attributes" column="attributes" />
     </resultMap>
 
-    <insert id="addUser" parameterType="User">
+    <insert id="addUser" parameterType="User" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
         INSERT INTO oskari_users (
             first_name,
             last_name,
