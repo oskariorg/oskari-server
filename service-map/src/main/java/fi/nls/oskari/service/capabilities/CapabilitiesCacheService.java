@@ -32,9 +32,9 @@ public abstract class CapabilitiesCacheService extends OskariComponent {
     private static final int TIMEOUT_MS = TIMEOUT_SECONDS * 1000;
 
     public abstract OskariLayerCapabilities find(final String url, final String layertype, final String version);
-    public abstract OskariLayerCapabilities save(final OskariLayerCapabilitiesDraft draft);
+    public abstract OskariLayerCapabilities save(final OskariLayerCapabilities capabilities);
 
-    protected abstract void updateMultiple(final List<OskariLayerCapabilitiesDataUpdate> updateDrafts);
+    protected abstract void updateMultiple(final List<OskariLayerCapabilities> capabilities);
     protected abstract List<OskariLayerCapabilities> getAllOlderThan(final long maxAgeMs);
 
     public OskariLayerCapabilities getCapabilities(String url, String type, String version)
@@ -92,7 +92,7 @@ public abstract class CapabilitiesCacheService extends OskariComponent {
             throw new ServiceException("Failed to load capabilities from service!");
         }
         try {
-            return save(new OskariLayerCapabilitiesDraft(url, type, version, data));
+            return save(new OskariLayerCapabilities(url, type, version, data));
         } catch (IllegalArgumentException e) {
             throw new ServiceException("Failed to save capabilities: " + e.getMessage());
         }
@@ -139,29 +139,28 @@ public abstract class CapabilitiesCacheService extends OskariComponent {
     }
 
     public void updateAllOlderThan(final long maxAgeMs) {
-        long prevId = -1L;
-
-        List<OskariLayerCapabilitiesDataUpdate> updates = new ArrayList<>();
+        List<OskariLayerCapabilities> updates = new ArrayList<>();
         for (OskariLayerCapabilities capabilities : getAllOlderThan(maxAgeMs)) {
-            long id = capabilities.getId();
-            if (prevId == id) {
-                continue;
-            }
-
             String url = capabilities.getUrl();
             String type = capabilities.getLayertype();
             String version = capabilities.getVersion();
+            String dataOld = capabilities.getData();
 
-            final OskariLayer layer = createTempOskariLayer(url, type, null, null, version);
-            final String data = loadCapabilitiesFromService(layer, IOHelper.DEFAULT_CHARSET);
+            OskariLayer layer = createTempOskariLayer(url, type, null, null, version);
+            String data = loadCapabilitiesFromService(layer, IOHelper.DEFAULT_CHARSET);
 
             if (data.isEmpty()) {
                 LOG.warn("Getting Capabilities from service failed for url:", url, "- skipping!");
                 continue;
             }
 
-            updates.add(new OskariLayerCapabilitiesDataUpdate(id, data));
-            prevId = id;
+            if (dataOld.equals(data)) {
+                LOG.warn("New data is equal to old data for url:", url, "- skipping!");
+                continue;
+            }
+
+            capabilities.setData(data);
+            updates.add(capabilities);
         }
 
         updateMultiple(updates);

@@ -4,6 +4,7 @@ import java.sql.Timestamp;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Insert;
+import org.apache.ibatis.annotations.Options;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
@@ -48,7 +49,7 @@ public interface CapabilitiesMapper {
     @Insert("INSERT INTO oskari_capabilities_cache"
             + " (layertype, url, data, version) VALUES"
             + " (#{layertype}, #{url}, #{data}, #{version})")
-    void insert(OskariLayerCapabilitiesDraft draft);
+    void insert(OskariLayerCapabilities draft);
 
     @Update("UPDATE oskari_capabilities_cache SET"
             + " data = #{data},"

@@ -15,7 +15,7 @@ import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.service.capabilities.CapabilitiesCacheService;
-import fi.nls.oskari.service.capabilities.OskariLayerCapabilitiesDraft;
+import fi.nls.oskari.service.capabilities.OskariLayerCapabilities;
 
 public class V1_32_1__populate_capabilities_cache implements JdbcMigration {
 
@@ -36,7 +36,7 @@ public class V1_32_1__populate_capabilities_cache implements JdbcMigration {
 
             keys.add(layerKey);
             String data = CapabilitiesCacheService.loadCapabilitiesFromService(layer, null);
-            OskariLayerCapabilitiesDraft draft = new OskariLayerCapabilitiesDraft(
+            OskariLayerCapabilities draft = new OskariLayerCapabilities(
                     layer.getSimplifiedUrl(true),
                     layer.getType(),
                     layer.getVersion(),
@@ -65,7 +65,7 @@ public class V1_32_1__populate_capabilities_cache implements JdbcMigration {
         return layers;
     }
 
-    private void insertCaps(Connection conn, OskariLayerCapabilitiesDraft caps) throws SQLException {
+    private void insertCaps(Connection conn, OskariLayerCapabilities caps) throws SQLException {
         final String sql = "INSERT INTO oskari_capabilities_cache (layertype, url, data, version) VALUES(?,?,?,?)";
         try(PreparedStatement statement = conn.prepareStatement(sql)) {
             statement.setString(1, caps.getLayertype());

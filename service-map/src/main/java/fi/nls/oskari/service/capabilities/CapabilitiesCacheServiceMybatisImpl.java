@@ -41,8 +41,6 @@ public class CapabilitiesCacheServiceMybatisImpl extends CapabilitiesCacheServic
      */
     public OskariLayerCapabilities find(String url, String layertype, String version)
             throws IllegalArgumentException {
-        url = OskariLayerCapabilitiesDraft.trim(url, "url");
-        layertype = OskariLayerCapabilitiesDraft.trim(layertype, "layertype");
         try (final SqlSession session = factory.openSession()) {
             return getMapper(session).findByUrlTypeVersion(url, layertype, version);
         }
@@ -50,9 +48,9 @@ public class CapabilitiesCacheServiceMybatisImpl extends CapabilitiesCacheServic
 
     /**
      * Inserts or updates a capabilities XML in database
-     * The rows in the table are UNIQUE (layertype, version, url)
+     * The rows in the table are UNIQUE (url, layertype, version)
      */
-    public OskariLayerCapabilities save(final OskariLayerCapabilitiesDraft draft) {
+    public OskariLayerCapabilities save(final OskariLayerCapabilities draft) {
         try (final SqlSession session = factory.openSession(false)) {
             final CapabilitiesMapper mapper = getMapper(session);
 
@@ -65,16 +63,16 @@ public class CapabilitiesCacheServiceMybatisImpl extends CapabilitiesCacheServic
             if (id != null) {
                 // Update
                 mapper.updateData(id, draft.getData());
-                session.commit();
                 OskariLayerCapabilities updated = mapper.findById(id);
                 LOG.info("Updated capabilities:", updated);
+                session.commit();
                 return updated;
             } else {
                 // Insert
                 mapper.insert(draft);
-                session.commit();
                 OskariLayerCapabilities inserted = mapper.findByUrlTypeVersion(url, type, version);
                 LOG.info("Inserted capabilities:", inserted);
+                session.commit();
                 return inserted;
             }
         }
@@ -94,15 +92,21 @@ public class CapabilitiesCacheServiceMybatisImpl extends CapabilitiesCacheServic
     }
 
     @Override
-    protected void updateMultiple(List<OskariLayerCapabilitiesDataUpdate> updates) {
+    protected void updateMultiple(List<OskariLayerCapabilities> updates) {
         if (updates == null || updates.isEmpty()) {
             return;
         }
         try (final SqlSession session = factory.openSession(ExecutorType.BATCH, false)) {
             final CapabilitiesMapper mapper = getMapper(session);
-            for (OskariLayerCapabilitiesDataUpdate update : updates) {
-                LOG.debug("Updating capabilities id:", update.id, "data:", update.data);
-                mapper.updateData(update.id, update.data);
+            for (OskariLayerCapabilities capabilities : updates) {
+                Long id = capabilities.getId();
+                if (id == null) {
+                    LOG.warn("Tried to update OskariLayerCapabilities with null id field! "
+                            + "Capabilities:", capabilities);
+                } else {
+                    mapper.updateData(id, capabilities.getData());
+                    LOG.info("Updated capabilities id:", id);
+                }
             }
             session.commit();
         }
