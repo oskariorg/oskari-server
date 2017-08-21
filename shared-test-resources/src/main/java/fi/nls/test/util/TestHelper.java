@@ -1,11 +1,20 @@
 package fi.nls.test.util;
 
 import fi.nls.oskari.cache.JedisManager;
+import fi.nls.oskari.db.DatasourceHelper;
 import fi.nls.oskari.service.ServiceRuntimeException;
+import fi.nls.oskari.util.IOHelper;
+import fi.nls.oskari.util.PropertyUtil;
 
+import javax.sql.DataSource;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.sql.SQLException;
+import java.util.Properties;
 
 /**
  * Helper for checking if we have correct proxy settings available. Tests can use
@@ -13,6 +22,7 @@ import java.net.URL;
  */
 public class TestHelper {
 
+    public static final String DB_PROPS_KEY = "oskari_db_test_props";
     public static final String TEST_URL = "http://httpbin.org/ip";
     private static enum STATUS {
         NONE,
@@ -25,6 +35,7 @@ public class TestHelper {
     };
     private static STATUS networkingStatus = STATUS.NONE;
     private static STATUS redisStatus = STATUS.NONE;
+    private static STATUS dbStatus = STATUS.NONE;
 
     /**
      * Tests network connectivity by polling #TEST_URL with 3 second timeout.
@@ -63,5 +74,41 @@ public class TestHelper {
             }
         }
         return redisStatus.equals(STATUS.ENABLED);
+    }
+
+    public static boolean dbAvailable() {
+        if(dbStatus.equals(STATUS.NONE)) {
+            DataSource ds = getDBforUnitTest();
+            try {
+                if(ds == null || ds.getConnection() == null) {
+                    dbStatus = STATUS.DISABLED;
+                } else {
+                    dbStatus = STATUS.ENABLED;
+                }
+            } catch (SQLException ex) {
+                redisStatus = STATUS.DISABLED;
+            }
+        }
+        return dbStatus.equals(STATUS.ENABLED);
+    }
+
+    public static DataSource getDBforUnitTest() {
+        String propFileLocation = System.getenv(DB_PROPS_KEY);
+        if(propFileLocation == null) {
+            propFileLocation = System.getProperty(DB_PROPS_KEY);
+            if(propFileLocation == null) {
+                return null;
+            }
+        }
+        File file = new File(propFileLocation);
+        try (FileInputStream fis = new FileInputStream(file)){
+            Properties prop = new Properties();
+            prop.load(fis);
+            PropertyUtil.addProperties(prop, true);
+            return DatasourceHelper.getInstance().createDataSource();
+        } catch (Exception ex) {
+            System.err.println("Error reading properties from " + propFileLocation);
+        }
+        return null;
     }
 }

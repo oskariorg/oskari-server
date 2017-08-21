@@ -63,6 +63,26 @@ WMS-layers GFI functionality can now be enabled/disabled overwriting layer capab
         "isQueryable" : false
     }
 
+### Test resources/helper
+
+Added a database connection helper in shared-test-resources/TestHelper.
+Provide database credentials/url with env property:
+
+    # linux
+    export oskari_db_test_props=/opt/my.test.properties
+    # windows
+    set oskari_db_test_props=C:/somefolder/my.test.properties
+
+Use assumeTrue to check for db connection WHEN test relies on database connection as it might not always
+ be available depending on the build environment:
+
+    @Test
+    public void testingDB() {
+        assumeTrue(TestHelper.dbAvailable());
+        DataSource ds = TestHelper.getDBforUnitTest();
+        // TODO: use ds for tests
+    }    
+
 ## 1.43.0
 
 ### servlet-printout
