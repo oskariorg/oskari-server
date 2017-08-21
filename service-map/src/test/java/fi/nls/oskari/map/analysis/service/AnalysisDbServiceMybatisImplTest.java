@@ -3,35 +3,28 @@ package fi.nls.oskari.map.analysis.service;
 import fi.nls.oskari.domain.map.analysis.Analysis;
 import fi.nls.oskari.domain.map.analysis.AnalysisStyle;
 import fi.nls.oskari.util.PropertyUtil;
-import org.junit.After;
-import org.junit.Before;
+import fi.nls.test.util.TestHelper;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.util.List;
-import java.util.Properties;
 
 import static junit.framework.Assert.assertTrue;
+import static org.junit.Assume.assumeTrue;
 
 public class AnalysisDbServiceMybatisImplTest {
 
-    private AnalysisDbServiceMybatisImpl analysisDbServiceMybatis = null;
-    private AnalysisStyleDbServiceMybatisImpl analysisStyleDbServiceMybatis = null;
+    private static AnalysisDbServiceMybatisImpl analysisDbServiceMybatis = null;
+    private static AnalysisStyleDbServiceMybatisImpl analysisStyleDbServiceMybatis = null;
 
-    private Analysis testAnalysis = null;
-    private String testAnalysisName = "testAnalysis";
-    private String testUid = "1000";
+    private static Analysis testAnalysis = null;
+    private static String testAnalysisName = "testAnalysis";
+    private static String testUid = "1000";
 
-    @Before
-    public void init() {
-        Properties properties = new Properties();
-        try {
-            properties.load(new FileInputStream(new File("C:\\Omat\\Jetty\\resources\\oskari-ext.properties")));
-            PropertyUtil.addProperties(properties);
-        } catch (Exception e) {
-            e.getStackTrace();
-        }
+    @BeforeClass
+    public static void init() {
+        assumeTrue(TestHelper.dbAvailable());
         analysisDbServiceMybatis = new AnalysisDbServiceMybatisImpl();
         analysisStyleDbServiceMybatis = new AnalysisStyleDbServiceMybatisImpl();
 
@@ -61,8 +54,8 @@ public class AnalysisDbServiceMybatisImplTest {
         assertTrue("Analysis added and found", testAnalysis.getUuid().equals(analysisList.get(0).getUuid()));
     }
 
-    @After
-    public void delete() {
+    @AfterClass
+    public static void delete() {
         try {
             analysisDbServiceMybatis.deleteAnalysis(testAnalysis);
         }

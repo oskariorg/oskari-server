@@ -6,35 +6,27 @@ import fi.nls.oskari.ontology.domain.RelationType;
 import fi.nls.oskari.ontology.service.KeywordRelationServiceMybatisImpl;
 import fi.nls.oskari.ontology.service.KeywordServiceMybatisImpl;
 import fi.nls.oskari.util.PropertyUtil;
-import org.junit.After;
-import org.junit.Before;
+import fi.nls.test.util.TestHelper;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.util.List;
-import java.util.Properties;
 
 import static junit.framework.Assert.assertTrue;
+import static org.junit.Assume.assumeTrue;
 
 public class KeywordRelationServiceMybatisImplTest {
 
-    private KeywordRelationServiceMybatisImpl keywordRelationServiceMybatis = null;
-    private Relation testRelation = null;
-    private Long testId1 = null;
-    private Long testId2 = null;
-    private RelationType testRelationType = null;
+    private static KeywordRelationServiceMybatisImpl keywordRelationServiceMybatis = null;
+    private static Relation testRelation = null;
+    private static Long testId1 = null;
+    private static Long testId2 = null;
+    private static RelationType testRelationType = null;
 
-    @Before
-    public void init() {
-        Properties properties = new Properties();
-        try {
-            properties.load(new FileInputStream(new File("C:\\Omat\\Jetty\\resources\\oskari-ext.properties")));
-            PropertyUtil.addProperties(properties);
-        } catch (Exception e) {
-            e.getStackTrace();
-        }
-
+    @BeforeClass
+    public static void init() {
+        assumeTrue(TestHelper.dbAvailable());
         Keyword keyword = new Keyword();
         keyword.setEditable(true);
         keyword.setLang("FI");
@@ -75,8 +67,8 @@ public class KeywordRelationServiceMybatisImplTest {
 
         assertTrue("Add and get relation by type", relationList.get(0).getKeyid1().equals(testRelation.getKeyid1()));
     }
-    @After
-    public void delete() {
+    @AfterClass
+    public static void delete() {
         try {
             keywordRelationServiceMybatis.deleteAllRelations();
         }

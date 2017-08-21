@@ -3,34 +3,26 @@ package fi.nls.oskari.ontology;
 import fi.nls.oskari.ontology.domain.Keyword;
 import fi.nls.oskari.ontology.service.KeywordServiceMybatisImpl;
 import fi.nls.oskari.util.PropertyUtil;
-import org.junit.After;
-import org.junit.Before;
+import fi.nls.test.util.TestHelper;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.util.List;
-import java.util.Properties;
 
 import static junit.framework.Assert.assertTrue;
+import static org.junit.Assume.assumeTrue;
 
 public class KeywordServiceMybatisImplTest {
 
-    private KeywordServiceMybatisImpl keywordServiceMybatis = null;
-    private String testKeyword = null;
-    private String testLang = null;
-    private Keyword keyword = null;
+    private static KeywordServiceMybatisImpl keywordServiceMybatis = null;
+    private static String testKeyword = null;
+    private static String testLang = null;
+    private static Keyword keyword = null;
 
-    @Before
-    public void init() {
-
-        Properties properties = new Properties();
-        try {
-            properties.load(new FileInputStream(new File("C:\\Omat\\Jetty\\resources\\oskari-ext.properties")));
-            PropertyUtil.addProperties(properties);
-        } catch (Exception e) {
-            e.getStackTrace();
-        }
+    @BeforeClass
+    public static void init() {
+        assumeTrue(TestHelper.dbAvailable());
         keywordServiceMybatis = new KeywordServiceMybatisImpl();
         testKeyword = "testKeyword";
         testLang = "FI";
@@ -58,8 +50,8 @@ public class KeywordServiceMybatisImplTest {
         assertTrue("Keyword added and found", keyword.getValue().equals(keywordList.get(0).getValue()));
     }
 
-    @After
-    public void delete() {
+    @AfterClass
+    public static void delete() {
         PropertyUtil.clearProperties();
     }
 }

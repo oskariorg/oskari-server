@@ -81,11 +81,11 @@ public class KeywordRelationServiceMybatisImpl implements KeywordRelationService
 
         // check that the relation doesn't already exist so we don't have to handle and exception for it...
         if (getRelation(relation) == null) {
-            long maxId1 = insert(relation);
+            insert(relation);
         }
 
         if (getRelation(inverseRelation) == null) {
-            long maxId2 = insert(inverseRelation);
+            insert(inverseRelation);
         }
     }
 
