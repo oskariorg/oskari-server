@@ -4,19 +4,16 @@ import java.sql.Timestamp;
 
 public class OskariLayerCapabilities {
 
-    private Long id;
-    private String url;
-    private String layertype;
-    private String version;
+    private final Long id;
+    private final String url;
+    private final String layertype;
+    private final String version;
+    private final Timestamp created;
+    private final Timestamp updated;
     private String data;
-    private Timestamp created;
-    private Timestamp updated;
 
     public OskariLayerCapabilities(String url, String layertype, String version, String data) {
-        this.url = url;
-        this.layertype = layertype;
-        this.version = version;
-        this.data = data;
+        this(null, url, layertype, version, data, null, null);
     }
 
     protected OskariLayerCapabilities(Long id, String url, String layertype, String version, String data, Timestamp created, Timestamp updated) {
@@ -31,10 +28,6 @@ public class OskariLayerCapabilities {
 
     public Long getId() {
         return id;
-    }
-
-    protected void setId(Long id) {
-        this.id = id;
     }
 
     public String getUrl() {
@@ -61,16 +54,8 @@ public class OskariLayerCapabilities {
         return created;
     }
 
-    protected void setCreated(Timestamp created) {
-        this.created = created;
-    }
-
     public Timestamp getUpdated() {
         return updated;
-    }
-
-    protected void setUpdated(Timestamp updated) {
-        this.updated = updated;
     }
 
     @Override
