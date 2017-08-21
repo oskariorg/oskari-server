@@ -19,12 +19,12 @@ public class CapabilitiesCacheServiceMock extends CapabilitiesCacheService {
     @Override
     public OskariLayerCapabilities find(String url, String layertype, String version) {
         final Timestamp ts = new Timestamp(System.currentTimeMillis());
-        return new OskariLayerCapabilities(10, url, layertype, version, response, ts, ts);
+        return new OskariLayerCapabilities(10L, url, layertype, version, response, ts, ts);
     }
 
     @Override
-    public OskariLayerCapabilities save(OskariLayerCapabilitiesDraft draft) {
-        return null;
+    public OskariLayerCapabilities save(OskariLayerCapabilities draft) {
+        return draft;
     }
 
     public OskariLayerCapabilities getCapabilities(OskariLayer layer) throws ServiceException {
@@ -35,7 +35,7 @@ public class CapabilitiesCacheServiceMock extends CapabilitiesCacheService {
     }
 
     @Override
-    protected void updateMultiple(List<OskariLayerCapabilitiesDataUpdate> updateDrafts) {
+    protected void updateMultiple(List<OskariLayerCapabilities> caps) {
         // Do nothing
     }
 
