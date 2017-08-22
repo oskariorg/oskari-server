@@ -40,9 +40,6 @@ import com.sun.mail.smtp.SMTPTransport;
 
 /**
  * Send download details email service (thread).
- * @author Marko Kuosmanen
- * @copyright Dimenteq Oy
- *
  */
 public class SendDownloadDetailsToEmailThread extends Thread{
 	JSONArray downLoadDetails;
