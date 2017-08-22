@@ -1,6 +1,7 @@
 package fi.nls.oskari.search.util;
 
 import fi.mml.portti.service.search.ChannelSearchResult;
+import fi.nls.oskari.search.channel.ELFGeoLocatorSearchChannel;
 import fi.nls.oskari.util.IOHelper;
 import org.junit.Test;
 
@@ -24,7 +25,7 @@ public class ELFGeoLocatorParserTest {
     @Test
     public void testParse() throws Exception {
 
-        ELFGeoLocatorParser parser = new ELFGeoLocatorParser();
+        ELFGeoLocatorParser parser = new ELFGeoLocatorParser(new ELFGeoLocatorSearchChannel());
         ChannelSearchResult result = parser.parse(resultXML, "EPSG:4258", Locale.ENGLISH, true);
         assertEquals("Should parse 10 result items", 10, result.getNumberOfResults());
     }

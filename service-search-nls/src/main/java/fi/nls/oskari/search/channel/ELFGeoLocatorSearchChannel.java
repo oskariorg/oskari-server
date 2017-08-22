@@ -6,18 +6,15 @@ import fi.mml.portti.service.search.SearchResultItem;
 import fi.nls.oskari.annotation.Oskari;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.search.util.ELFGeoLocatorCountries;
 import fi.nls.oskari.search.util.ELFGeoLocatorParser;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
-
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URLEncoder;
 import java.util.*;
@@ -66,23 +63,17 @@ public class ELFGeoLocatorSearchChannel extends SearchChannel implements SearchA
     public static final String PARAM_REGION = "region";
     public static final String PARAM_FILTER = "filter";
     public static final String PARAM_FUZZY = "fuzzy";
-    public static final String PARAM_LON = "lon";
-    public static final String PARAM_LAT = "lat";
-    public static final String PARAM_NEAREST = "nearest";
-    public static final String PARAM_LOCATION_TYPE = "locationtype";
-    public static final String PARAM_NAME_LANG = "namelanguage";
     
     private static final String LIKE_LITERAL_HOLDER = "_like-literal_";
     private static Map<String, Double> elfScalesForType = new HashMap<String, Double>();
     private static Map<String, Integer> elfLocationPriority = new HashMap<String, Integer>();
-    private static JSONObject elfCountryMap = null;
     private static JSONObject elfLocationTypes = null;
     private static JSONObject elfNameLanguages = null;
-    private final String geolocatorCountries = "geolocator-countries.json";
     private final String locationType = "ELFGEOLOCATOR_CHANNEL.json";
     private final String nameLanguages = "namelanguage.json";
     public String serviceURL = null;
     public ELFGeoLocatorParser elfParser = null;
+    private ELFGeoLocatorCountries countriesParser = null;
     private Logger log = LogFactory.getLogger(this.getClass());
 
     /* --- For unit testing: ----------------------------------------------- */
@@ -114,16 +105,11 @@ public class ELFGeoLocatorSearchChannel extends SearchChannel implements SearchA
         if(serviceURL == null) {
             throw new RuntimeException("ELFGeolocator didn't initialize - provide url with property: " + PROPERTY_SERVICE_URL);
         }
-
         log.debug("ServiceURL set to " + serviceURL);
-        try (InputStream inp = this.getClass().getResourceAsStream(geolocatorCountries);
-             InputStreamReader reader = new InputStreamReader(inp, "UTF-8")) {
-            JSONTokener tokenizer = new JSONTokener(reader);
-            this.elfCountryMap = JSONHelper.createJSONObject4Tokener(tokenizer);
-        } catch (Exception e) {
-            log.info("Country mapping setup failed for country based search", e);
-        }
+        countriesParser = new ELFGeoLocatorCountries(this);
+
         readLocationTypes();
+
         try (InputStream inp3 = this.getClass().getResourceAsStream(nameLanguages)) {
             if (inp3 != null) {
                 InputStreamReader reader = new InputStreamReader(inp3);
@@ -134,7 +120,7 @@ public class ELFGeoLocatorSearchChannel extends SearchChannel implements SearchA
             log.info("Failed fetching namelanguages", e);
         }
 
-        elfParser = new ELFGeoLocatorParser(PropertyUtil.getOptional(PROPERTY_SERVICE_SRS));
+        elfParser = new ELFGeoLocatorParser(PropertyUtil.getOptional(PROPERTY_SERVICE_SRS), this);
 
         try {
             likeQueryXMLtemplate = IOHelper.readString(getClass().getResourceAsStream("geolocator-wildcard.xml"));
@@ -330,7 +316,7 @@ public class ELFGeoLocatorSearchChannel extends SearchChannel implements SearchA
                 filter = ADMIN_FILTER_TEMPLATE;
                 String country = searchCriteria.getParam(PARAM_COUNTRY).toString();
                 //TODO add or filter, if there are many variations of admin names
-                filter = filter.replace(KEY_ADMIN_HOLDER, URLEncoder.encode(elfParser.getAdminName(country)[0], "UTF-8"));
+                filter = filter.replace(KEY_ADMIN_HOLDER, URLEncoder.encode(elfParser.getAdminName(country), "UTF-8"));
             }
             filter = filter.replace(KEY_PLACE_HOLDER, URLEncoder.encode(searchCriteria.getSearchString(), "UTF-8"));
             String request = REQUEST_GETFEATURE_TEMPLATE.replace(KEY_LANG_HOLDER, lang3);
@@ -367,8 +353,8 @@ public class ELFGeoLocatorSearchChannel extends SearchChannel implements SearchA
      *
      * @return
      */
-    public JSONObject getElfCountryMap() {
-        return this.elfCountryMap;
+    public Map<String, String> getElfCountryMap() throws IOException {
+        return countriesParser.getCountryMap();
     }
 
     /**
