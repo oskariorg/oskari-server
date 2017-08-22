@@ -7,6 +7,7 @@ package fi.nls.oskari.search.util;
  * Time: 10:09
  * To change this template use File | Settings | File Templates.
  */
+
 import fi.mml.portti.service.search.ChannelSearchResult;
 import fi.mml.portti.service.search.SearchResultItem;
 import fi.nls.oskari.domain.geo.Point;
@@ -14,19 +15,16 @@ import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.geometry.ProjectionHelper;
 import fi.nls.oskari.search.channel.ELFGeoLocatorSearchChannel;
+import fi.nls.oskari.service.OskariComponentManager;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureIterator;
-import org.geotools.geometry.DirectPosition2D;
-import org.geotools.referencing.CRS;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.opengis.feature.Property;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
-import org.opengis.referencing.crs.CoordinateReferenceSystem;
-import org.opengis.referencing.cs.AxisDirection;
-import org.opengis.referencing.operation.MathTransform;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -49,37 +47,47 @@ public class ELFGeoLocatorParser {
     public static final String KEY_LOCATIONTYPE_ROLE = "locationType_role";
     public static final String KEY_PARENT_TITLE = "parent_title";
     public static final String KEY_ADMINISTRATOR = "administrator";
-    private JSONObject countryMap = null;
+    private static Map<String, String> countryMap = null;
     private Map<String, Double> elfScalesForType = null;
     private Map<String, Integer> elfLocationPriority = null;
+    private ELFGeoLocatorSearchChannel channel;
 
     private String serviceSrs = "EPSG:4258";
 
-    public ELFGeoLocatorParser() {
-        this(null);
+    public ELFGeoLocatorParser(ELFGeoLocatorSearchChannel elfchannel) {
+        this(null, elfchannel);
     }
-    public ELFGeoLocatorParser(final String serviceSrs) {
+    public ELFGeoLocatorParser(final String serviceSrs, ELFGeoLocatorSearchChannel elfchannel) {
 
         // use provided SRS or default to EPSG:4258
         if(serviceSrs != null) {
             log.debug("Using", serviceSrs, "as native SRS");
             this.serviceSrs = serviceSrs.toUpperCase();
         }
+        channel = elfchannel;
 
-        final ELFGeoLocatorSearchChannel elfchannel = new ELFGeoLocatorSearchChannel();
-        countryMap = elfchannel.getElfCountryMap();
-        if(countryMap == null) {
-            log.debug("CountryMap is not set ");
-        }
+        loadCountryMap();
 
-        elfScalesForType = elfchannel.getElfScalesForType();
+        elfScalesForType = channel.getElfScalesForType();
         if(elfScalesForType == null) {
             log.debug("Scale relation to locationtypes is not set ");
         }
 
-        elfLocationPriority = elfchannel.getElfLocationPriority();
+        elfLocationPriority = channel.getElfLocationPriority();
         if(elfLocationPriority == null) {
             log.debug("priority relation to locationtypes is not set ");
+        }
+    }
+
+    private void loadCountryMap () {
+        try {
+            countryMap = channel.getElfCountryMap();
+            if(countryMap.isEmpty()) {
+                log.debug("Could not get countries");
+            }
+        }
+        catch (Exception e) {
+            log.debug(e, "Could not get countries");
         }
     }
 
@@ -301,7 +309,6 @@ public class ELFGeoLocatorParser {
                 } else if (value instanceof List) {
                     parseFeaturePropertiesMapList(result, (List) value, field);
                 } else {
-
                     result.put(field, value);
                 }
             }
@@ -361,7 +368,7 @@ public class ELFGeoLocatorParser {
                 if (value instanceof String) {
                     if (entry.getKey().endsWith(key)) {
                         values.add(value.toString());
-                       // Trick order num hack for ordering properties later on because of original hash order
+                        // Trick order num hack for ordering properties later on because of original hash order
                         String[] num = entry.getKey().split("_");
                         if (num.length > 2){
                             order.add(Integer.parseInt(num[num.length - 2]));
@@ -392,23 +399,21 @@ public class ELFGeoLocatorParser {
      * @param country_code ISO Country code 2 ch
      * @return
      */
-    public String[] getAdminName(String country_code) {
-        String[] value = {""};
+    public String getAdminName(String country_code) {
+        return getAdminName(country_code, true);
+    }
 
-        try {
-
-            if (this.countryMap.has(country_code)) {
-                value = countryMap.getString(country_code).split(";");
-            }
-
-        } catch (Exception e) {
-            log.debug("Failed to get ELF country codes to " + country_code);
-
+    private String getAdminName(String country_code, boolean reloadIfNotFound) {
+        if (countryMap.containsKey(country_code)) {
+            return countryMap.get(country_code);
         }
-
-
-        return value;
-
+        if(!reloadIfNotFound) {
+            // loading didn't get us the requested country so just return empty string
+            return "";
+        }
+        // reload countries map contents and try again
+        loadCountryMap();
+        return getAdminName(country_code, false);
     }
 
     /**
@@ -418,33 +423,24 @@ public class ELFGeoLocatorParser {
      * @return
      */
     public String getAdminCountry(Locale locale, String admin_name) {
-        String country = "";
+        return getAdminCountry(locale, admin_name, true);
+    }
 
-        try {
-
-            Iterator<?> keys = countryMap.keys();
-
-            while( keys.hasNext() ){
-                String key = (String)keys.next();
-                String[] admins = countryMap.get(key).toString().split(";");
-                for (String s: admins)
-                {
-                    if(s.equals(admin_name)) {
-                        Locale obj = new Locale("", key);
-                        return obj.getDisplayCountry(locale);
-                    }
-                }
-
+    public String getAdminCountry(Locale locale, String admin_name, boolean reloadIfNotFound) {
+        for (Map.Entry<String, String> entry : countryMap.entrySet()) {
+            String admin = entry.getValue();
+            if (admin.equals(admin_name)) {
+                Locale obj = new Locale("", entry.getKey());
+                return obj.getDisplayCountry(locale);
             }
-
-        } catch (JSONException e) {
-            log.debug("Failed to get ELF country name to " + admin_name);
-
         }
-
-
-        return country;
-
+        if(!reloadIfNotFound) {
+            // loading didn't get us the requested country so just return empty string
+            return "";
+        }
+        // reload countries map contents and try again
+        loadCountryMap();
+        return getAdminCountry(locale, admin_name, false);
     }
 
     /**
