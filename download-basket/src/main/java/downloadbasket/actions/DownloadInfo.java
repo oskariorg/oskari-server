@@ -16,10 +16,10 @@ import org.json.JSONObject;
  * Returns boolean "success".
  */
 
-@OskariActionRoute("DownloadAll")
-public class DownloadAll extends ActionHandler {
+@OskariActionRoute("DownloadInfo")
+public class DownloadInfo extends ActionHandler {
 
-	private final Logger LOGGER = LogFactory.getLogger(DownloadAll.class);
+	private final Logger LOGGER = LogFactory.getLogger(DownloadInfo.class);
 
 	private static final String PARAM_DOWNLOAD_DETAILS = "downloadDetails";
 	private static final String PARAM_USER_DETAILS = "userDetails";
@@ -37,7 +37,7 @@ public class DownloadAll extends ActionHandler {
 			new SendDownloadDetailsToEmailThread(ddArray, userDetails).start();
 			job.put("success", true);
 		} catch (Exception e) {
-			throw new ActionException("Could not handle DownloadAll request: ", e);
+			throw new ActionException("Could not handle DownloadInfo request: ", e);
 		}
 
 		ResponseHelper.writeResponse(params, job);
