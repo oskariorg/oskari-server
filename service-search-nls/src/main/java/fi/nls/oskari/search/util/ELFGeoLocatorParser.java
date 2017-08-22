@@ -15,6 +15,7 @@ import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.geometry.ProjectionHelper;
 import fi.nls.oskari.search.channel.ELFGeoLocatorSearchChannel;
+import fi.nls.oskari.service.OskariComponentManager;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureIterator;
 import org.opengis.feature.Property;
@@ -47,65 +48,46 @@ public class ELFGeoLocatorParser {
     public static final String KEY_PARENT_TITLE = "parent_title";
     public static final String KEY_ADMINISTRATOR = "administrator";
     private static Map<String, String> countryMap = null;
-    private String countries = null;
     private Map<String, Double> elfScalesForType = null;
     private Map<String, Integer> elfLocationPriority = null;
+    private ELFGeoLocatorSearchChannel channel;
 
     private String serviceSrs = "EPSG:4258";
 
-    public ELFGeoLocatorParser() {
-        this(null);
+    public ELFGeoLocatorParser(ELFGeoLocatorSearchChannel elfchannel) {
+        this(null, elfchannel);
     }
-    public ELFGeoLocatorParser(final String serviceSrs) {
+    public ELFGeoLocatorParser(final String serviceSrs, ELFGeoLocatorSearchChannel elfchannel) {
 
         // use provided SRS or default to EPSG:4258
         if(serviceSrs != null) {
             log.debug("Using", serviceSrs, "as native SRS");
             this.serviceSrs = serviceSrs.toUpperCase();
         }
+        channel = elfchannel;
 
         loadCountryMap();
 
-        final ELFGeoLocatorSearchChannel elfchannel = new ELFGeoLocatorSearchChannel();
-
-        elfScalesForType = elfchannel.getElfScalesForType();
+        elfScalesForType = channel.getElfScalesForType();
         if(elfScalesForType == null) {
             log.debug("Scale relation to locationtypes is not set ");
         }
 
-        elfLocationPriority = elfchannel.getElfLocationPriority();
+        elfLocationPriority = channel.getElfLocationPriority();
         if(elfLocationPriority == null) {
             log.debug("priority relation to locationtypes is not set ");
         }
     }
 
-    public void loadCountryMap () {
-        final ELFGeoLocatorSearchChannel elfchannel = new ELFGeoLocatorSearchChannel();
+    private void loadCountryMap () {
         try {
-            countries = elfchannel.getElfCountryMap();
-            if(countries == null) {
+            countryMap = channel.getElfCountryMap();
+            if(countryMap.isEmpty()) {
                 log.debug("Could not get countries");
             }
         }
         catch (Exception e) {
-            log.debug("Could not get countries, got exception: ", e);
-        }
-        try {
-            DocumentBuilder dBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-            Document doc = dBuilder.parse(new ByteArrayInputStream(countries.getBytes("UTF-8")));
-
-            NodeList nList = doc.getElementsByTagName("Country");
-            countryMap = new HashMap<>();
-            for (int temp = 0; temp < nList.getLength(); temp++) {
-                Node nNode = nList.item(temp);
-                if (nNode.getNodeType() == Node.ELEMENT_NODE) {
-                    Element eElement = (Element) nNode;
-                    countryMap.put(eElement.getElementsByTagName("code").item(0).getTextContent(),
-                            eElement.getElementsByTagName("administrator").item(0).getTextContent());
-                }
-            }
-        } catch (Exception e) {
-            log.error("Error parsing countries with ELFGeolocator, got exception", e);
+            log.debug(e, "Could not get countries");
         }
     }
 
@@ -418,24 +400,20 @@ public class ELFGeoLocatorParser {
      * @return
      */
     public String getAdminName(String country_code) {
-        boolean countriesReloaded = false;
-        try {
-            while (true) {
-                if (countryMap.containsKey(country_code)) {
-                    return countryMap.get(country_code);
-                } else {
-                    if (countriesReloaded) {
-                        return "";
-                    }
-                    loadCountryMap();
-                    continue;
-                }
-            }
-        } catch (Exception e) {
-            log.debug("Failed to get ELF country codes to " + country_code);
+        return getAdminName(country_code, true);
+    }
+
+    private String getAdminName(String country_code, boolean reloadIfNotFound) {
+        if (countryMap.containsKey(country_code)) {
+            return countryMap.get(country_code);
         }
-        
-        return getAdminName(country_code);
+        if(!reloadIfNotFound) {
+            // loading didn't get us the requested country so just return empty string
+            return "";
+        }
+        // reload countries map contents and try again
+        loadCountryMap();
+        return getAdminName(country_code, false);
     }
 
     /**
@@ -445,23 +423,24 @@ public class ELFGeoLocatorParser {
      * @return
      */
     public String getAdminCountry(Locale locale, String admin_name) {
-        boolean countriesReloaded = false;
-        while (true) {
-            for (Map.Entry<String, String> entry : countryMap.entrySet()) {
-                String countryCode = entry.getKey();
-                String admin = entry.getValue();
-                if (admin.equals(admin_name)) {
-                    Locale obj = new Locale("", countryCode);
-                    return obj.getDisplayCountry(locale);
-                }
+        return getAdminCountry(locale, admin_name, true);
+    }
+
+    public String getAdminCountry(Locale locale, String admin_name, boolean reloadIfNotFound) {
+        for (Map.Entry<String, String> entry : countryMap.entrySet()) {
+            String admin = entry.getValue();
+            if (admin.equals(admin_name)) {
+                Locale obj = new Locale("", entry.getKey());
+                return obj.getDisplayCountry(locale);
             }
-            if (countriesReloaded) {
-                return "";
-            }
-            loadCountryMap();
-            countriesReloaded = true;
-            continue;
         }
+        if(!reloadIfNotFound) {
+            // loading didn't get us the requested country so just return empty string
+            return "";
+        }
+        // reload countries map contents and try again
+        loadCountryMap();
+        return getAdminCountry(locale, admin_name, false);
     }
 
     /**

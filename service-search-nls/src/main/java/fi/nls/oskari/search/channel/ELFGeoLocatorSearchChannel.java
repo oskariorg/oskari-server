@@ -6,18 +6,15 @@ import fi.mml.portti.service.search.SearchResultItem;
 import fi.nls.oskari.annotation.Oskari;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.search.util.ELFGeoLocatorCountries;
 import fi.nls.oskari.search.util.ELFGeoLocatorParser;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
-
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URLEncoder;
 import java.util.*;
@@ -43,7 +40,6 @@ public class ELFGeoLocatorSearchChannel extends SearchChannel implements SearchA
     public static final String DEFAULT_GETFEATURE_TEMPLATE = "?SERVICE=WFS&VERSION=2.0.0&REQUEST=GetFeature&TYPENAMES=SI_LocationInstance&language=_LANG_&FILTER=";
     public static final String GETFEATURE_FILTER_TEMPLATE = "%3Cfes:Filter%20xmlns:fes=%22http://www.opengis.net/fes/2.0%22%20xmlns:xsi=%22http://www.w3.org/2001/XMLSchema-instance%22%20xmlns:iso19112=%22http://www.isotc211.org/19112%22%20xsi:schemaLocation=%22http://www.opengis.net/fes/2.0%20http://schemas.opengis.net/filter/2.0/filterAll.xsd%22%3E%3Cfes:PropertyIsEqualTo%20matchCase=%22false%22%3E%3Cfes:ValueReference%3Eiso19112:alternativeGeographicIdentifiers/iso19112:alternativeGeographicIdentifier/iso19112:name%3C/fes:ValueReference%3E%3Cfes:Literal%3E_PLACE_HOLDER_%3C/fes:Literal%3E%3C/fes:PropertyIsEqualTo%3E%3C/fes:Filter%3E";
     public static final String ADMIN_FILTER_TEMPLATE = "%3Cfes:Filter%20xmlns:fes=%22http://www.opengis.net/fes/2.0%22%20xmlns:xsi=%22http://www.w3.org/2001/XMLSchema-instance%22%20xmlns:iso19112=%22http://www.isotc211.org/19112%22%20xmlns:gmdsf1=%22http://www.isotc211.org/2005/gmdsf1%22%20xsi:schemaLocation=%22http://www.opengis.net/fes/2.0%20http://schemas.opengis.net/filter/2.0/filterAll.xsd%22%3E%3Cfes:And%3E%3Cfes:PropertyIsEqualTo%20matchCase=%22false%22%3E%3Cfes:ValueReference%3Eiso19112:alternativeGeographicIdentifiers/iso19112:alternativeGeographicIdentifier/iso19112:name%3C/fes:ValueReference%3E%3Cfes:Literal%3E_PLACE_HOLDER_%3C/fes:Literal%3E%3C/fes:PropertyIsEqualTo%3E%3Cfes:PropertyIsEqualTo%3E%3Cfes:ValueReference%3Eiso19112:administrator/gmdsf1:CI_ResponsibleParty/gmdsf1:organizationName%3C/fes:ValueReference%3E%3Cfes:Literal%3E_ADMIN_HOLDER_%3C/fes:Literal%3E%3C/fes:PropertyIsEqualTo%3E%3C/fes:And%3E%3C/fes:Filter%3E";
-    public static final String DEFAULT_GETCOUNTRIES_TEMPLATE = "?SERVICE=WFS&VERSION=2.0.0&REQUEST=CountryFilter";
     public static final String JSONKEY_LOCATIONTYPES = "SI_LocationTypes";
     public static final String LOCATIONTYPE_ID_PREFIX = "SI_LocationType.";
     public static final String PARAM_COUNTRY = "country";
@@ -67,22 +63,17 @@ public class ELFGeoLocatorSearchChannel extends SearchChannel implements SearchA
     public static final String PARAM_REGION = "region";
     public static final String PARAM_FILTER = "filter";
     public static final String PARAM_FUZZY = "fuzzy";
-    public static final String PARAM_LON = "lon";
-    public static final String PARAM_LAT = "lat";
-    public static final String PARAM_NEAREST = "nearest";
-    public static final String PARAM_LOCATION_TYPE = "locationtype";
-    public static final String PARAM_NAME_LANG = "namelanguage";
     
     private static final String LIKE_LITERAL_HOLDER = "_like-literal_";
     private static Map<String, Double> elfScalesForType = new HashMap<String, Double>();
     private static Map<String, Integer> elfLocationPriority = new HashMap<String, Integer>();
-    private static JSONObject elfCountryMap = null;
     private static JSONObject elfLocationTypes = null;
     private static JSONObject elfNameLanguages = null;
     private final String locationType = "ELFGEOLOCATOR_CHANNEL.json";
     private final String nameLanguages = "namelanguage.json";
     public String serviceURL = null;
     public ELFGeoLocatorParser elfParser = null;
+    private ELFGeoLocatorCountries countriesParser = null;
     private Logger log = LogFactory.getLogger(this.getClass());
 
     /* --- For unit testing: ----------------------------------------------- */
@@ -115,6 +106,7 @@ public class ELFGeoLocatorSearchChannel extends SearchChannel implements SearchA
             throw new RuntimeException("ELFGeolocator didn't initialize - provide url with property: " + PROPERTY_SERVICE_URL);
         }
         log.debug("ServiceURL set to " + serviceURL);
+        countriesParser = new ELFGeoLocatorCountries(this);
 
         readLocationTypes();
 
@@ -128,7 +120,7 @@ public class ELFGeoLocatorSearchChannel extends SearchChannel implements SearchA
             log.info("Failed fetching namelanguages", e);
         }
 
-        elfParser = new ELFGeoLocatorParser(PropertyUtil.getOptional(PROPERTY_SERVICE_SRS));
+        elfParser = new ELFGeoLocatorParser(PropertyUtil.getOptional(PROPERTY_SERVICE_SRS), this);
 
         try {
             likeQueryXMLtemplate = IOHelper.readString(getClass().getResourceAsStream("geolocator-wildcard.xml"));
@@ -361,19 +353,8 @@ public class ELFGeoLocatorSearchChannel extends SearchChannel implements SearchA
      *
      * @return
      */
-    public String getElfCountryMap() throws Exception{
-        serviceURL = PropertyUtil.getOptional(PROPERTY_SERVICE_URL);
-        if (serviceURL == null) {
-            log.warn("ServiceURL not configured. Add property with key", PROPERTY_SERVICE_URL);
-            return null;
-        }
-        String countriesUrl = serviceURL + DEFAULT_GETCOUNTRIES_TEMPLATE;
-        StringBuffer buf = new StringBuffer(countriesUrl);
-        log.debug("Server request: " + buf.toString());
-        HttpURLConnection conn = getConnection(buf.toString());
-        String response = IOHelper.readString(conn);
-        log.debug("Server response: " + response);
-        return response;
+    public Map<String, String> getElfCountryMap() throws IOException {
+        return countriesParser.getCountryMap();
     }
 
     /**
