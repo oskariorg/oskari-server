@@ -25,7 +25,7 @@ import fi.nls.oskari.map.layer.OskariLayerServiceIbatisImpl;
 import fi.nls.oskari.util.ResponseHelper;
 
 /**
- * Handles the cropping of data before adding it to the download basket.
+ * Handles the cropping of the data before adding it to the download basket.
  * Gets layer attributes and geometry for the cropping process.
  */
 
@@ -56,10 +56,10 @@ public class GetFeatureForCropping extends ActionHandler {
 			FINAL_WMS_URL = oskariLayer.getUrl();
 		}
 
-		String wmsUrl = Helpers.getGetFeatureInfoUrlForProxy(FINAL_WMS_URL, params.getHttpParam(PARAM_SRS).toString(),
-				params.getHttpParam(PARAM_BBOX).toString(), params.getHttpParam(PARAM_WIDTH).toString(),
-				params.getHttpParam(PARAM_HEIGHT).toString(), params.getHttpParam(PARAM_X).toString(),
-				params.getHttpParam(PARAM_Y).toString(), params.getHttpParam(PARAM_LAYERS).toString());
+		String wmsUrl = Helpers.getGetFeatureInfoUrlForProxy(FINAL_WMS_URL, params.getHttpParam(PARAM_SRS),
+				params.getHttpParam(PARAM_BBOX), params.getHttpParam(PARAM_WIDTH),
+				params.getHttpParam(PARAM_HEIGHT), params.getHttpParam(PARAM_X),
+				params.getHttpParam(PARAM_Y), params.getHttpParam(PARAM_LAYERS));
 
 		System.out.println(wmsUrl);
 		URL wms;
