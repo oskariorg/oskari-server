@@ -83,6 +83,13 @@ Use assumeTrue to check for db connection WHEN test relies on database connectio
         // TODO: use ds for tests
     }    
 
+The TestHelper reads the properties to PropertyUtil so remember to clean up after a test using database:
+
+    @AfterClass
+    public static void teardown() {
+        PropertyUtil.clearProperties();
+    }
+
 ## 1.43.0
 
 ### servlet-printout
