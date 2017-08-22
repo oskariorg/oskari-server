@@ -597,9 +597,9 @@ public class TransportService extends AbstractService {
         customStyle.setLayerId(layerId);
         customStyle.setClient(store.getClient());
 
-        customStyle.setFillColor(style.get(WFSCustomStyleStore.PARAM_FILL_COLOR).toString());
+        customStyle.setFillColor((String)style.get(WFSCustomStyleStore.PARAM_FILL_COLOR));
         customStyle.setFillPattern(((Number)style.get(WFSCustomStyleStore.PARAM_FILL_PATTERN)).intValue());
-        customStyle.setBorderColor(style.get(WFSCustomStyleStore.PARAM_BORDER_COLOR).toString());
+        customStyle.setBorderColor((String)style.get(WFSCustomStyleStore.PARAM_BORDER_COLOR));
         customStyle.setBorderLinejoin(style.get(WFSCustomStyleStore.PARAM_BORDER_LINEJOIN).toString());
         customStyle.setBorderDasharray(style.get(WFSCustomStyleStore.PARAM_BORDER_DASHARRAY).toString());
         customStyle.setBorderWidth(((Number)style.get(WFSCustomStyleStore.PARAM_BORDER_WIDTH)).intValue());

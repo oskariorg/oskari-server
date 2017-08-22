@@ -98,7 +98,7 @@ public class UserLayerDataService {
     /**
      * @param geoJson import data in geojson format
      * @param user    oskari user
-     * @param id      user layer id in user_layer table
+     * @param userLayer      user layer id in user_layer table
      * @return
      */
     public List <UserLayerData> getUserLayerData(JSONObject geoJson, User user, UserLayer userLayer) throws ServiceException{
@@ -134,8 +134,9 @@ public class UserLayerDataService {
                 userLayerDataList.add(userLayerData);
 
                 count++;
-                if (count > USERLAYER_MAX_FEATURES_COUNT && USERLAYER_MAX_FEATURES_COUNT != -1) break;
-
+                if (count > USERLAYER_MAX_FEATURES_COUNT && USERLAYER_MAX_FEATURES_COUNT != -1) {
+                    break;
+                }
             }
         } catch (Exception e) {
             log.error(e, "Failed to parse geojson features to userlayer data list");
@@ -199,20 +200,21 @@ public class UserLayerDataService {
             return null;
         }
     }
-
+    // parse SimpleFeatureType schema to JSONArray to keep same order in fields as in the imported file
     public String parseFields(FeatureType schema) {
 
-        JSONObject jsfields = new JSONObject();
+        JSONArray jsfields = new JSONArray();
         try {
             String fields = DataUtilities.encodeType((SimpleFeatureType) schema);
             String[] tfields = fields.split("[:,]");
             for (int i = 0; i < tfields.length - 1; i = i + 2) {
-                jsfields.put(tfields[i], tfields[i + 1]);
+
+                jsfields.put(new JSONObject().put(tfields[i], tfields[i + 1]));
             }
 
         } catch (Exception ex) {
             log.error(ex, "Couldn't parse field schema");
         }
-        return JSONHelper.getStringFromJSON(jsfields, "{}");
+        return JSONHelper.getStringFromJSON(jsfields, "[]");
     }
 }

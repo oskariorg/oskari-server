@@ -24,6 +24,7 @@ public class PublisherHandler extends BundleHandler {
     private static JSONArray DRAW_ENABLED_ROLES = new JSONArray();
     private static final String KEY_DRAW_ROLE_IDS = "drawRoleIds";
     private static final String KEY_TERMS_OF_USE_URL = "termsOfUseUrl";
+    public static final String PROPERTY_PUBLISH_TERMS_OF_USE_URL = "oskari.map.publish.terms.url";
     public static final String PROPERTY_TERMS_OF_USE_URL = "oskari.map.terms.url";
 
     public void init() {
@@ -57,7 +58,11 @@ public class PublisherHandler extends BundleHandler {
         if(config.has(KEY_TERMS_OF_USE_URL)) {
             return;
         }
-        final Object termsObj = PropertyUtil.getLocalizableProperty(PROPERTY_TERMS_OF_USE_URL);
+
+        Object termsObj = PropertyUtil.getLocalizableProperty(PROPERTY_PUBLISH_TERMS_OF_USE_URL);
+        if(termsObj == null) {
+            termsObj = PropertyUtil.getLocalizableProperty(PROPERTY_TERMS_OF_USE_URL);
+        }
         if(termsObj instanceof String) {
             JSONHelper.putValue(config, KEY_TERMS_OF_USE_URL, termsObj);
         } else if(termsObj instanceof Map) {

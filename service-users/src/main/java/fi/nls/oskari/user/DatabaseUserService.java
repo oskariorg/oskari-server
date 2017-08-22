@@ -4,8 +4,10 @@ import fi.nls.oskari.domain.Role;
 import fi.nls.oskari.domain.User;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.service.UserService;
+import fi.nls.oskari.service.db.UserContentService;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 
@@ -72,6 +74,11 @@ public class DatabaseUserService extends UserService {
     @Override
     public User getUser(String username) throws ServiceException {
         return userService.findByUserName(username);
+    }
+
+    // TODO: make this part of the UserService interface
+    public User getUserByEmail(String email) throws ServiceException {
+        return userService.findByEmail(email);
     }
 
     @Override
@@ -217,9 +224,21 @@ public class DatabaseUserService extends UserService {
         log.debug("deleteUser");
         User user = userService.find(id);
         if (user != null) {
-            userService.deletePassword(user.getScreenname());
-            roleService.deleteUsersRoles(id);
-            userService.delete(id);
+            Map<String, UserContentService> userContentServices = OskariComponentManager.getComponentsOfType(UserContentService.class);
+            String serviceClass = "";
+            try {
+                for (Map.Entry<String, UserContentService> userContentService : userContentServices.entrySet()) {
+                    serviceClass = userContentService.getKey();
+                    userContentService.getValue().deleteUserContent(user);
+                }
+                userService.deletePassword(user.getScreenname());
+                roleService.deleteUsersRoles(id);
+                userService.delete(id);
+            }
+            catch (Exception e) {
+                log.error("Deleting user data failed in service:", serviceClass);
+                throw new ServiceException("Deleting user data failed in service: " + serviceClass);
+            }
         }
     }
 

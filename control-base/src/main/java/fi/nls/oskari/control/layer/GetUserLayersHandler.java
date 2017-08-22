@@ -8,11 +8,9 @@ import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.domain.User;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.domain.map.userlayer.UserLayer;
-import fi.nls.oskari.log.LogFactory;
-import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.userlayer.service.UserLayerDataService;
 import fi.nls.oskari.map.userlayer.service.UserLayerDbService;
-import fi.nls.oskari.map.userlayer.service.UserLayerDbServiceMybatisImpl;
+import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.ResponseHelper;
 import org.json.JSONArray;
@@ -26,12 +24,14 @@ import java.util.List;
 @OskariActionRoute("GetUserLayers")
 public class GetUserLayersHandler extends ActionHandler {
 
-    private static final Logger log = LogFactory.getLogger(GetUserLayersHandler.class);
-    private static final UserLayerDbService userLayerService = new UserLayerDbServiceMybatisImpl();
+    private UserLayerDbService userLayerService;
     private final UserLayerDataService userLayerDataService = new UserLayerDataService();
 
     private static final String JSKEY_USERLAYERS = "userlayers";
-    private static final String USERLAYER_BASELAYER_ID = "userlayer.baselayer.id";
+
+    public void init() {
+        userLayerService = OskariComponentManager.getComponentOfType(UserLayerDbService.class);
+    }
 
     @Override
     public void handleAction(ActionParameters params) throws ActionException {

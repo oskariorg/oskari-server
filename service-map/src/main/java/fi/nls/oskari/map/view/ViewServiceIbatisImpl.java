@@ -124,8 +124,7 @@ public class ViewServiceIbatisImpl extends BaseIbatisService<Object> implements
     public List<View> getViewsForUser(long userId) {
         List<View> views = queryForList("View.views-with-conf-by-user-id",
                 userId);
-        System.err.println("[ViewService] Got " + views.size()
-                + " views for user " + userId);
+        LOG.debug("Found", views.size(), "views for user", userId);
         return views;
     }
 
@@ -187,8 +186,6 @@ public class ViewServiceIbatisImpl extends BaseIbatisService<Object> implements
         SqlMapSession session = openSession();
         try {
             session.startTransaction();
-            delete("View.delete-state-by-user", userId);
-            delete("View.delete-seq-by-user", userId);
             delete("View.delete-view-by-user", userId);
             session.commitTransaction();
         } catch (Exception e) {

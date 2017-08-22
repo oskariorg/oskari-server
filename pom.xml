@@ -6,7 +6,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>fi.nls.oskari</groupId>
     <artifactId>oskari-parent</artifactId>
-    <version>1.43.0-SNAPSHOT</version>
+    <version>1.44.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>Oskari parent POM</name>
@@ -372,6 +372,23 @@
                 <artifactId>wms</artifactId>
                 <version>${fi.mml.wms.version}</version>
             </dependency>
+            
+            <dependency>
+            	<groupId>org.oskari</groupId>
+            	<artifactId>webapp-print</artifactId>
+            	<version>${fi.nls.oskari.version}</version>
+            </dependency>
+            <dependency>
+            	<groupId>org.oskari</groupId>
+            	<artifactId>servlet-print</artifactId>
+            	<version>${fi.nls.oskari.version}</version>
+            </dependency>
+            <dependency>
+            	<groupId>org.oskari</groupId>
+            	<artifactId>service-print</artifactId>
+            	<version>${fi.nls.oskari.version}</version>
+            </dependency>
+            
 
             <!-- Spring -->
             <dependency>
@@ -1043,6 +1060,10 @@
         <module>service-feedback</module>
         <module>service-feedback-open311</module>
 
+		<!-- print -->
+        <module>service-print</module>
+        <module>servlet-print</module>
+        <module>webapp-print</module>
     </modules>
 
 </project>

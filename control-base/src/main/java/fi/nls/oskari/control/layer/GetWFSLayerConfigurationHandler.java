@@ -31,7 +31,7 @@ public class GetWFSLayerConfigurationHandler extends ActionHandler {
 
     private final WFSLayerConfigurationService layerConfigurationService = new WFSLayerConfigurationServiceIbatisImpl();
     private AnalysisDataService analysisDataService = new AnalysisDataService();
-    private UserLayerDbService userLayerDbService = new UserLayerDbServiceMybatisImpl();
+    private UserLayerDbService userLayerDbService;
     private MyPlacesService myPlacesService = null;
 
     private final static String PARAMS_ID = "id";
@@ -54,6 +54,7 @@ public class GetWFSLayerConfigurationHandler extends ActionHandler {
 
     public void init() {
         myPlacesService = OskariComponentManager.getComponentOfType(MyPlacesService.class);
+        userLayerDbService = OskariComponentManager.getComponentOfType(UserLayerDbService.class);
     }
 
     public void handleAction(ActionParameters params) throws ActionException {

@@ -379,7 +379,7 @@ UNRESTRICTED_USAGE_ROLE = PropertyUtil.get("view.published.usage.unrestrictedRol
                 return new JSONObject(value);
             }
         } catch (Exception je) {
-            log.warn("Got cookie but couldnt transform to JSON", cookie);
+            log.info("Got cookie but couldn't transform to JSON", cookie);
         }
         return null;
     }
@@ -409,34 +409,34 @@ UNRESTRICTED_USAGE_ROLE = PropertyUtil.get("view.published.usage.unrestrictedRol
         log.info("[GetAppSetupHandler] Fetching View from cookie", myview);
         // merge cookie state for mapfull
         try {
-            // TODO: add error handling a bit more
-            JSONObject viewdata = new JSONObject(myview.getString(VIEW_DATA));
+            JSONObject viewdata = myview.optJSONObject(VIEW_DATA);
+            if(viewdata == null) {
+                return;
+            }
             for ( Iterator<String> bundleIterator = viewdata.keys(); bundleIterator.hasNext(); ) {
                 final String bundleName = bundleIterator.next();
-                final String bundle = viewdata.getString(bundleName);
-                String bundleState = null;
-                if (!"{}".equals(bundle)) {
-                    bundleState = new JSONObject(bundle).getString(STATE);
-                    log.debug("Got state for bundle", bundleName, "- state:", bundleState);
-                } else {
+                //final String bundle = viewdata.getString(bundleName);
+                final JSONObject bundle = viewdata.optJSONObject(bundleName);
+                if(bundle == null) {
                     continue;
                 }
-                if (!"{}".equals(bundleState)) {
-                    view.getBundleByName(bundleName).setState(bundleState);
+                final JSONObject state = bundle.optJSONObject(STATE);
+                if(state == null || state.names().length() == 0) {
+                    continue;
+                }
+                log.debug("Got state for bundle", bundleName, "- state:", state);
+                if(ViewModifier.BUNDLE_MAPFULL.equals(bundleName) &&
+                        state.optJSONArray("selectedLayers").length() == 0) {
+                    // Do not use mapfull state if there's no selected layers
+                    continue;
+                }
+                Bundle b = view.getBundleByName(bundleName);
+                if(b != null) {
+                    b.setState(state.toString());
                 }
             }
-
-            final String cookiestate = viewdata.getString(ViewModifier.BUNDLE_MAPFULL);
-            final JSONObject jscookiestate = new JSONObject(cookiestate);
-            final String cookiestatedata = jscookiestate.getString(STATE);
-
-            // Check for empty layers array/is valid
-            if (cookiestatedata.indexOf("[]") !=  -1) {
-                view.getBundleByName(ViewModifier.BUNDLE_MAPFULL).setState(
-                        cookiestatedata);
-            }
         } catch (Exception ex) {
-            log.warn("Error parsing cookie JSON:", myview, ex);
+            log.info(ex, "Error parsing cookie JSON:", myview);
         }
     }
 

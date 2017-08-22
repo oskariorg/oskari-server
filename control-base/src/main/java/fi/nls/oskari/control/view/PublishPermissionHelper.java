@@ -63,7 +63,7 @@ public class PublishPermissionHelper {
         }
 
         if (userLayerService == null) {
-            setUserLayerService(new UserLayerDbServiceMybatisImpl());
+            setUserLayerService(OskariComponentManager.getComponentOfType(UserLayerDbService.class));
         }
 
         if (permissionsService == null) {

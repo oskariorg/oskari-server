@@ -1,46 +1,44 @@
 package fi.nls.oskari.map.userlayer.service;
 
 
+import fi.nls.oskari.annotation.Oskari;
 import fi.nls.oskari.db.DatasourceHelper;
 import fi.nls.oskari.domain.map.userlayer.UserLayer;
 import fi.nls.oskari.domain.map.userlayer.UserLayerData;
 import fi.nls.oskari.domain.map.userlayer.UserLayerStyle;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.service.OskariComponent;
 import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.util.PropertyUtil;
-
 import org.apache.ibatis.mapping.Environment;
-import org.apache.ibatis.session.Configuration;
-import org.apache.ibatis.session.ExecutorType;
-import org.apache.ibatis.session.SqlSession;
-import org.apache.ibatis.session.SqlSessionFactory;
-import org.apache.ibatis.session.SqlSessionFactoryBuilder;
+import org.apache.ibatis.session.*;
 import org.apache.ibatis.transaction.TransactionFactory;
 import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
 
-import java.util.List;
 import javax.sql.DataSource;
+import java.util.List;
 
-public class UserLayerDbServiceMybatisImpl implements UserLayerDbService{
+@Oskari
+public class UserLayerDbServiceMybatisImpl extends UserLayerDbService {
 
     private static final Logger log = LogFactory.getLogger(UserLayerDbServiceMybatisImpl.class);
-    private SqlSessionFactory factory = null;
     private static final String USERLAYER_MYBATIS_BATCH_SIZE = "userlayer.mybatis.batch.size";
     final int batchSize = PropertyUtil.getOptional(USERLAYER_MYBATIS_BATCH_SIZE, 1000);
+    private SqlSessionFactory factory = null;
 
 
-    public UserLayerDbServiceMybatisImpl(){
+    public UserLayerDbServiceMybatisImpl() {
         final DatasourceHelper helper = DatasourceHelper.getInstance();
         final DataSource dataSource = helper.getDataSource(helper.getOskariDataSourceName("userlayer"));
 
-        if(dataSource != null) {
+        if (dataSource != null) {
             factory = initializeMyBatis(dataSource);
-        }
-        else {
+        } else {
             log.error("Couldn't get datasource for userlayer");
         }
     }
+
     private SqlSessionFactory initializeMyBatis(final DataSource dataSource) {
         final TransactionFactory transactionFactory = new JdbcTransactionFactory();
         final Environment environment = new Environment("development", transactionFactory, dataSource);
@@ -53,8 +51,8 @@ public class UserLayerDbServiceMybatisImpl implements UserLayerDbService{
         configuration.addMapper(UserLayerMapper.class);
         return new SqlSessionFactoryBuilder().build(configuration);
     }
-  
-    public int insertUserLayer(final UserLayer userLayer, final UserLayerStyle userLayerStyle, final List <UserLayerData> userLayerDataList) throws ServiceException {
+
+    public int insertUserLayer(final UserLayer userLayer, final UserLayerStyle userLayerStyle, final List<UserLayerData> userLayerDataList) throws ServiceException {
         final SqlSession session = factory.openSession(ExecutorType.BATCH);
         int count = 0;
         try {
@@ -62,29 +60,29 @@ public class UserLayerDbServiceMybatisImpl implements UserLayerDbService{
             mapper.insertUserLayerStyleRow(userLayerStyle);
             session.flushStatements();
             log.debug("got style id", userLayerStyle.getId());
-            userLayer.setStyle_id(userLayerStyle.getId());            
+            userLayer.setStyle_id(userLayerStyle.getId());
             mapper.insertUserLayerRow(userLayer);
             session.flushStatements();
             long userLayerId = userLayer.getId();
             log.debug("got layer id", userLayerId);
 
-            for (UserLayerData userLayerData : userLayerDataList){
+            for (UserLayerData userLayerData : userLayerDataList) {
                 mapper.insertUserLayerDataRow(userLayerData, userLayerId);
                 count++;
                 // Flushes batch statements and clears local session cache
-                if (count % batchSize == 0){
+                if (count % batchSize == 0) {
                     session.flushStatements();
                     session.clearCache();
                 }
             }
             session.flushStatements();
-            if (count == 0) throw new ServiceException ("no_features");
+            if (count == 0) throw new ServiceException("no_features");
             log.debug("stored:", count, "rows");
             session.commit();
             return count;
         } catch (Exception e) {
             session.rollback();
-            log.error(e, "Rolling back, failed to insert userlayer with id:", + userLayer.getId());
+            log.error(e, "Rolling back, failed to insert userlayer with id:", +userLayer.getId());
             throw new ServiceException("unable_to_store_data");
         } finally {
             session.close();
@@ -156,7 +154,7 @@ public class UserLayerDbServiceMybatisImpl implements UserLayerDbService{
     }
 
     public void deleteUserLayer(final UserLayer userLayer) throws ServiceException {
-        if(userLayer == null) {
+        if (userLayer == null) {
             throw new ServiceException("Tried to delete userLayer with <null> param");
         }
         final SqlSession session = factory.openSession();
@@ -174,22 +172,18 @@ public class UserLayerDbServiceMybatisImpl implements UserLayerDbService{
             session.close();
         }
     }
-    
-    public void deleteUserLayersByUuid (String uuid) throws ServiceException{
+
+    public void deleteUserLayersByUuid(String uuid) throws ServiceException {
         final SqlSession session = factory.openSession();
         try {
             final UserLayerMapper mapper = session.getMapper(UserLayerMapper.class);
             List<UserLayer> userLayers = mapper.findUserLayerByUuid(uuid);
-            if (userLayers.isEmpty()){
+            if (userLayers.isEmpty()) {
                 log.info("Couldn't find any userlayer with uuid:", uuid);
                 return;
             }
-            for (UserLayer layer: userLayers){
+            for (UserLayer layer : userLayers) {
                 deleteUserLayer(layer);
-                //long id = layer.getId();
-                //mapper.deleteUserLayerDataByLayerId(id);
-                //mapper.deleteUserLayerRow(id);
-                //mapper.deleteUserLayerStyleRow(id);
             }
             session.commit();
         } catch (Exception e) {
@@ -200,6 +194,7 @@ public class UserLayerDbServiceMybatisImpl implements UserLayerDbService{
             session.close();
         }
     }
+
     /**
      * Updates a userLayer publisher screenName
      *
@@ -211,10 +206,10 @@ public class UserLayerDbServiceMybatisImpl implements UserLayerDbService{
         final SqlSession session = factory.openSession();
         try {
             final UserLayerMapper mapper = session.getMapper(UserLayerMapper.class);
-             int result = mapper.updatePublisherName(id,uuid,name);
-             session.commit();
-             return result;
-        } catch (Exception e){
+            int result = mapper.updatePublisherName(id, uuid, name);
+            session.commit();
+            return result;
+        } catch (Exception e) {
             log.error(e, "Failed to update publisher name:", name, "id:", id, "uuid", uuid);
         } finally {
             session.close();
@@ -223,7 +218,7 @@ public class UserLayerDbServiceMybatisImpl implements UserLayerDbService{
     }
 
     public int updateUserLayerStyleCols(final UserLayerStyle userLayerStyle) {
-        final SqlSession session = factory.openSession();       
+        final SqlSession session = factory.openSession();
         try {
             final UserLayerMapper mapper = session.getMapper(UserLayerMapper.class);
             int result = mapper.updateUserLayerStyleCols(userLayerStyle);
@@ -236,7 +231,7 @@ public class UserLayerDbServiceMybatisImpl implements UserLayerDbService{
         }
         return 0;
     }
-    
+
     public UserLayerStyle getUserLayerStyleById(long id) {
         final SqlSession session = factory.openSession();
         try {
@@ -250,26 +245,26 @@ public class UserLayerDbServiceMybatisImpl implements UserLayerDbService{
         return null;
     }
 
-     /**
-      * update UserLayerData table row field mapping
-      *
-      * @param userLayer
-      */
-     public int updateUserLayerDataCols(final UserLayerData userLayerData) {
-         final SqlSession session = factory.openSession();       
-         try {
-             final UserLayerMapper mapper = session.getMapper(UserLayerMapper.class);
-             int result = mapper.updateUserLayerDataCols(userLayerData);
-             return result;
-         } catch (Exception e) {
-             log.error(e, "Failed to update userlayerdata col mapping", userLayerData);
-         } finally {
-             session.close();
-         }
-         return 0;
-     }
-
-     public String getUserLayerExtent(long id) {
+    /**
+     * update UserLayerData table row field mapping
+     *
+     * @param userLayerData
+     */
+    public int updateUserLayerDataCols(final UserLayerData userLayerData) {
+        final SqlSession session = factory.openSession();
+        try {
+            final UserLayerMapper mapper = session.getMapper(UserLayerMapper.class);
+            int result = mapper.updateUserLayerDataCols(userLayerData);
+            return result;
+        } catch (Exception e) {
+            log.error(e, "Failed to update userlayerdata col mapping", userLayerData);
+        } finally {
+            session.close();
+        }
+        return 0;
+    }
+	
+	public String getUserLayerExtent(long id) {
          final SqlSession session = factory.openSession();
          try {
              final UserLayerMapper mapper = session.getMapper(UserLayerMapper.class);
@@ -281,4 +276,5 @@ public class UserLayerDbServiceMybatisImpl implements UserLayerDbService{
          }
          return "";
      }
+
 }

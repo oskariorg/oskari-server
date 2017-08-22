@@ -105,12 +105,14 @@ public class RequestHelper {
      * @return host part or the URL or "" if an invalid url was given
      */
     public static final String getDomainFromReferer(final String referrer) {
-
+        if(referrer == null) {
+            return "";
+        }
         try {
             final URL url = new URL(referrer);
             return url.getHost();
         } catch (Exception e) {
-            log.error("Error getting referer from URL:", referrer);
+            log.warn("Error getting referer from URL:", referrer);
         }
         return "";
     }

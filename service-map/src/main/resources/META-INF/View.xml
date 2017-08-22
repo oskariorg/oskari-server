@@ -213,7 +213,6 @@
     <update id="update-bundle-settings-in-view"
             parameterClass="java.util.Map">
         UPDATE portti_view_bundle_seq SET
-            seqno = #seqno#,
             startup = #startup#,
             config = #config#,
             state = #state#,

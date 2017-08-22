@@ -47,13 +47,27 @@ public class IbatisUserService extends BaseIbatisService<User> {
         return (String) queryForRawObject(getNameSpace() + ".getPassword", params);
     }
 
+
     public User findByUserName(String username) {
         User user = queryForObject(getNameSpace() + ".findByUserName", username);
-        List<Role> roleList = roleService.findByUserName(username);
+        loadRoles(user);
+        return user;
+    }
+
+    public User findByEmail(String email) {
+        User user = queryForObject(getNameSpace() + ".findByEmail", email.toLowerCase());
+        loadRoles(user);
+        return user;
+    }
+
+    private void loadRoles(User user) {
+        if(user == null) {
+            return;
+        }
+        List<Role> roleList = roleService.findByUserId(user.getId());
         for(Role role : roleList) {
             user.addRole(role.getId(), role.getName());
         }
-        return user;
     }
 
     public void delete(long id) {

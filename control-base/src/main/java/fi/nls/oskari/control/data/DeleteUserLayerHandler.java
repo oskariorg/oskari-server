@@ -5,6 +5,7 @@ import fi.nls.oskari.control.*;
 import fi.nls.oskari.domain.map.userlayer.UserLayer;
 import fi.nls.oskari.map.userlayer.service.UserLayerDbService;
 import fi.nls.oskari.map.userlayer.service.UserLayerDbServiceMybatisImpl;
+import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.JSONHelper;
@@ -31,7 +32,7 @@ public class DeleteUserLayerHandler extends ActionHandler {
     public void init() {
         super.init();
         if(userLayerDbService == null) {
-            setUserLayerDbService(new UserLayerDbServiceMybatisImpl());
+            setUserLayerDbService(OskariComponentManager.getComponentOfType(UserLayerDbService.class));
         }
     }
 
