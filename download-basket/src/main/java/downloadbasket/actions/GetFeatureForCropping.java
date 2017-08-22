@@ -61,7 +61,7 @@ public class GetFeatureForCropping extends ActionHandler {
 				params.getHttpParam(PARAM_HEIGHT), params.getHttpParam(PARAM_X),
 				params.getHttpParam(PARAM_Y), params.getHttpParam(PARAM_LAYERS));
 
-		System.out.println(wmsUrl);
+		LOGGER.debug("Details of the data cropping feature");
 		URL wms;
 		try {
 			wms = new URL(wmsUrl);
