@@ -135,7 +135,7 @@ public class DownloadServices {
 			}
 
 		} catch (Exception ex) {
-			ex.printStackTrace();
+			LOGGER.error(ex, "Error");
 		} finally {
 			if (writer != null) {
 				writer.close();
@@ -237,7 +237,7 @@ public class DownloadServices {
 			email.addTo(PropertyUtil.getNecessary("hsy.wfs.download.error.report.support.email"));
 			email.send();
 		} catch (Exception ex) {
-			ex.printStackTrace();
+			LOGGER.error(ex, "Error: e-mail was not sent");
 		}
 	}
 
