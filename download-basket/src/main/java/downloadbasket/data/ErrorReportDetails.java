@@ -7,10 +7,6 @@ public class ErrorReportDetails {
 	private String userEmail = null;
 	private String language = null;
 
-	public ErrorReportDetails() {
-
-	}
-
 	public String getXmlRequest() {
 		return xmlRequest;
 	}
