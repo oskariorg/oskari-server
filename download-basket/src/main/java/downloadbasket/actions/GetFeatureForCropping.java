@@ -24,6 +24,11 @@ import fi.nls.oskari.map.layer.OskariLayerService;
 import fi.nls.oskari.map.layer.OskariLayerServiceIbatisImpl;
 import fi.nls.oskari.util.ResponseHelper;
 
+/**
+ * Handles the cropping of data before adding it to the download basket.
+ * Gets layer attributes and geometry for the cropping process.
+ */
+
 @OskariActionRoute("GetFeatureForCropping")
 public class GetFeatureForCropping extends ActionHandler {
 
