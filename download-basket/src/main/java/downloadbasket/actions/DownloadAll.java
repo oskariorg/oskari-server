@@ -12,7 +12,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 /**
- * Checks all user info and data info of the download basket and when starting the download process.
+ * Checks all download- and user details of the download basket when starting the download process.
  * Returns boolean "success".
  */
 
