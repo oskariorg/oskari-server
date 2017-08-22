@@ -15,17 +15,17 @@ import org.json.JSONObject;
 public class DownloadAll extends ActionHandler {
 
 	private final Logger LOGGER = LogFactory.getLogger(DownloadAll.class);
-		
-    private static final String PARAM_DOWNLOAD_DETAILS = "downloadDetails";
-    private static final String PARAM_USER_DETAILS = "userDetails";
+
+	private static final String PARAM_DOWNLOAD_DETAILS = "downloadDetails";
+	private static final String PARAM_USER_DETAILS = "userDetails";
 
 	@Override
-    public void handleAction(final ActionParameters params) throws ActionException {
-	     
+	public void handleAction(final ActionParameters params) throws ActionException {
+
 		JSONObject job = new JSONObject();
 		String downloadDetails = params.getHttpParam(PARAM_DOWNLOAD_DETAILS).toString();
 		String strUserDetails = params.getHttpParam(PARAM_USER_DETAILS).toString();
-					
+
 		try {
 			JSONObject userDetails = new JSONObject(strUserDetails);
 			JSONArray ddArray = new JSONArray(downloadDetails);
@@ -34,7 +34,7 @@ public class DownloadAll extends ActionHandler {
 		} catch (Exception e) {
 			throw new ActionException("Could not handle DownloadAll request: ", e);
 		}
-		
+
 		ResponseHelper.writeResponse(params, job);
 	}
 }

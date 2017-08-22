@@ -1,56 +1,53 @@
 package downloadbasket.data;
 
-/**
- * Created by markokuo on 6.10.2015.
- */
 public class ErrorReportDetails {
-    private String xmlRequest = null;
-    private String wfsUrl = null;
-    private String errorFileLocation = null;
-    private String userEmail = null;
-    private String language = null;
+	private String xmlRequest = null;
+	private String wfsUrl = null;
+	private String errorFileLocation = null;
+	private String userEmail = null;
+	private String language = null;
 
-    public ErrorReportDetails(){
+	public ErrorReportDetails() {
 
-    }
+	}
 
-    public String getXmlRequest() {
-        return xmlRequest;
-    }
+	public String getXmlRequest() {
+		return xmlRequest;
+	}
 
-    public void setXmlRequest(String xmlRequest) {
-        this.xmlRequest = xmlRequest;
-    }
+	public void setXmlRequest(String xmlRequest) {
+		this.xmlRequest = xmlRequest;
+	}
 
-    public String getWfsUrl() {
-        return wfsUrl;
-    }
+	public String getWfsUrl() {
+		return wfsUrl;
+	}
 
-    public void setWfsUrl(String wfsUrl) {
-        this.wfsUrl = wfsUrl;
-    }
+	public void setWfsUrl(String wfsUrl) {
+		this.wfsUrl = wfsUrl;
+	}
 
-    public String getErrorFileLocation() {
-        return errorFileLocation;
-    }
+	public String getErrorFileLocation() {
+		return errorFileLocation;
+	}
 
-    public void setErrorFileLocation(final String errorFileLocation) {
-        this.errorFileLocation = errorFileLocation;
-    }
+	public void setErrorFileLocation(final String errorFileLocation) {
+		this.errorFileLocation = errorFileLocation;
+	}
 
-    public String getUserEmail() {
-        return userEmail;
-    }
+	public String getUserEmail() {
+		return userEmail;
+	}
 
-    public void setUserEmail(String userEmail) {
-        this.userEmail = userEmail;
-    }
+	public void setUserEmail(String userEmail) {
+		this.userEmail = userEmail;
+	}
 
-    public String getLanguage() {
-        return language;
-    }
+	public String getLanguage() {
+		return language;
+	}
 
-    public void setLanguage(String language) {
-        this.language = language;
-    }
+	public void setLanguage(String language) {
+		this.language = language;
+	}
 }
