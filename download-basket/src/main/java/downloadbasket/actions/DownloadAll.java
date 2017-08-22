@@ -11,6 +11,11 @@ import downloadbasket.helpers.SendDownloadDetailsToEmailThread;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+/**
+ * Checks all user info and data info of the download basket and when starting the download process.
+ * Returns boolean "success".
+ */
+
 @OskariActionRoute("DownloadAll")
 public class DownloadAll extends ActionHandler {
 
