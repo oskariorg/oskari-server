@@ -44,6 +44,7 @@ public class ELFGeoLocatorSearchChannel extends SearchChannel {
     public static final String DEFAULT_GETFEATURE_TEMPLATE = "?SERVICE=WFS&VERSION=2.0.0&REQUEST=GetFeature&TYPENAMES=SI_LocationInstance&language=_LANG_&FILTER=";
     public static final String GETFEATURE_FILTER_TEMPLATE = "%3Cfes:Filter%20xmlns:fes=%22http://www.opengis.net/fes/2.0%22%20xmlns:xsi=%22http://www.w3.org/2001/XMLSchema-instance%22%20xmlns:iso19112=%22http://www.isotc211.org/19112%22%20xsi:schemaLocation=%22http://www.opengis.net/fes/2.0%20http://schemas.opengis.net/filter/2.0/filterAll.xsd%22%3E%3Cfes:PropertyIsEqualTo%20matchCase=%22false%22%3E%3Cfes:ValueReference%3Eiso19112:alternativeGeographicIdentifiers/iso19112:alternativeGeographicIdentifier/iso19112:name%3C/fes:ValueReference%3E%3Cfes:Literal%3E_PLACE_HOLDER_%3C/fes:Literal%3E%3C/fes:PropertyIsEqualTo%3E%3C/fes:Filter%3E";
     public static final String ADMIN_FILTER_TEMPLATE = "%3Cfes:Filter%20xmlns:fes=%22http://www.opengis.net/fes/2.0%22%20xmlns:xsi=%22http://www.w3.org/2001/XMLSchema-instance%22%20xmlns:iso19112=%22http://www.isotc211.org/19112%22%20xmlns:gmdsf1=%22http://www.isotc211.org/2005/gmdsf1%22%20xsi:schemaLocation=%22http://www.opengis.net/fes/2.0%20http://schemas.opengis.net/filter/2.0/filterAll.xsd%22%3E%3Cfes:And%3E%3Cfes:PropertyIsEqualTo%20matchCase=%22false%22%3E%3Cfes:ValueReference%3Eiso19112:alternativeGeographicIdentifiers/iso19112:alternativeGeographicIdentifier/iso19112:name%3C/fes:ValueReference%3E%3Cfes:Literal%3E_PLACE_HOLDER_%3C/fes:Literal%3E%3C/fes:PropertyIsEqualTo%3E%3Cfes:PropertyIsEqualTo%3E%3Cfes:ValueReference%3Eiso19112:administrator/gmdsf1:CI_ResponsibleParty/gmdsf1:organizationName%3C/fes:ValueReference%3E%3Cfes:Literal%3E_ADMIN_HOLDER_%3C/fes:Literal%3E%3C/fes:PropertyIsEqualTo%3E%3C/fes:And%3E%3C/fes:Filter%3E";
+    public static final String DEFAULT_GETCOUNTRIES_TEMPLATE = "?SERVICE=WFS&VERSION=2.0.0&REQUEST=CountryFilter";
     public static final String JSONKEY_LOCATIONTYPES = "SI_LocationTypes";
     public static final String LOCATIONTYPE_ID_PREFIX = "SI_LocationType.";
     public static final String PARAM_COUNTRY = "country";
@@ -76,7 +77,6 @@ public class ELFGeoLocatorSearchChannel extends SearchChannel {
     private static JSONObject elfCountryMap = null;
     private static JSONObject elfLocationTypes = null;
     private static JSONObject elfNameLanguages = null;
-    private final String geolocatorCountries = "geolocator-countries.json";
     private final String locationType = "ELFGEOLOCATOR_CHANNEL.json";
     private final String nameLanguages = "namelanguage.json";
     public String serviceURL = null;
@@ -112,16 +112,10 @@ public class ELFGeoLocatorSearchChannel extends SearchChannel {
         if(serviceURL == null) {
             throw new RuntimeException("ELFGeolocator didn't initialize - provide url with property: " + PROPERTY_SERVICE_URL);
         }
-
         log.debug("ServiceURL set to " + serviceURL);
-        try (InputStream inp = this.getClass().getResourceAsStream(geolocatorCountries);
-             InputStreamReader reader = new InputStreamReader(inp, "UTF-8")) {
-            JSONTokener tokenizer = new JSONTokener(reader);
-            this.elfCountryMap = JSONHelper.createJSONObject4Tokener(tokenizer);
-        } catch (Exception e) {
-            log.info("Country mapping setup failed for country based search", e);
-        }
+
         readLocationTypes();
+
         try (InputStream inp3 = this.getClass().getResourceAsStream(nameLanguages)) {
             if (inp3 != null) {
                 InputStreamReader reader = new InputStreamReader(inp3);
@@ -320,7 +314,7 @@ public class ELFGeoLocatorSearchChannel extends SearchChannel {
                 filter = ADMIN_FILTER_TEMPLATE;
                 String country = searchCriteria.getParam(PARAM_COUNTRY).toString();
                 //TODO add or filter, if there are many variations of admin names
-                filter = filter.replace(KEY_ADMIN_HOLDER, URLEncoder.encode(elfParser.getAdminName(country)[0], "UTF-8"));
+                filter = filter.replace(KEY_ADMIN_HOLDER, URLEncoder.encode(elfParser.getAdminName(country), "UTF-8"));
             }
             filter = filter.replace(KEY_PLACE_HOLDER, URLEncoder.encode(searchCriteria.getSearchString(), "UTF-8"));
             String request = REQUEST_GETFEATURE_TEMPLATE.replace(KEY_LANG_HOLDER, lang3);
@@ -357,8 +351,19 @@ public class ELFGeoLocatorSearchChannel extends SearchChannel {
      *
      * @return
      */
-    public JSONObject getElfCountryMap() {
-        return this.elfCountryMap;
+    public String getElfCountryMap() throws Exception{
+        serviceURL = PropertyUtil.getOptional(PROPERTY_SERVICE_URL);
+        if (serviceURL == null) {
+            log.warn("ServiceURL not configured. Add property with key", PROPERTY_SERVICE_URL);
+            return null;
+        }
+        String countriesUrl = serviceURL + DEFAULT_GETCOUNTRIES_TEMPLATE;
+        StringBuffer buf = new StringBuffer(countriesUrl);
+        log.debug("Server request: " + buf.toString());
+        HttpURLConnection conn = getConnection(buf.toString());
+        String response = IOHelper.readString(conn);
+        log.debug("Server response: " + response);
+        return response;
     }
 
     /**
