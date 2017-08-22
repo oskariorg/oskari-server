@@ -5,7 +5,7 @@ import fi.nls.oskari.ontology.service.KeywordServiceMybatisImpl;
 import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.test.util.TestHelper;
 import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.util.List;
@@ -20,8 +20,8 @@ public class KeywordServiceMybatisImplTest {
     private static String testLang = null;
     private static Keyword keyword = null;
 
-    @BeforeClass
-    public static void init() {
+    @Before
+    public void setUp() {
         assumeTrue(TestHelper.dbAvailable());
         keywordServiceMybatis = new KeywordServiceMybatisImpl();
         testKeyword = "testKeyword";
