@@ -94,7 +94,7 @@ public class OGCServices {
 			}
 			s.append(URLEncoder.encode(getPluginFilter(download, true, false), "UTF-8"));
 		} catch (Exception e) {
-			e.printStackTrace();
+			LOGGER.error(e, "Error");
 		}
 		return s.toString();
 	}
@@ -188,8 +188,7 @@ public class OGCServices {
 			LOGGER.debug("Created plugin filtter:" + filter.toString());
 
 		} catch (Exception e) {
-			e.printStackTrace();
-			filter = new StringWriter();
+			LOGGER.error(e, "Error");
 		}
 		return s.toString();
 	}
