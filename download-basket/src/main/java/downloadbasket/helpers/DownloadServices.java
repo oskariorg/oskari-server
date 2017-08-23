@@ -70,7 +70,7 @@ public class DownloadServices {
 		OutputStream ostream = null;
 
 		try {
-			System.out.println(ldz.getWFSUrl());
+			LOGGER.debug("WFS URL: " + ldz.getWFSUrl());
 
 			if (ldz.isDownloadNormalWay()) {
 				System.out.println("Download normal way");
@@ -135,7 +135,7 @@ public class DownloadServices {
 			}
 
 		} catch (Exception ex) {
-			LOGGER.error(ex, "Error");
+			LOGGER.error("Error: ", ex);
 		} finally {
 			if (writer != null) {
 				writer.close();
