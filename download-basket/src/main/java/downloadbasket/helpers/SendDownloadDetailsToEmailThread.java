@@ -137,7 +137,7 @@ public class SendDownloadDetailsToEmailThread extends Thread {
 				f.mkdirs();
 				out = new ZipOutputStream(new FileOutputStream(strTempDir + "/" + strZipFileName));
 
-				Hashtable<String, Integer> indeksit = new Hashtable<String, Integer>();
+				Hashtable<String, Integer> indexes = new Hashtable<String, Integer>();
 				byte[] buffer = new byte[1024];
 
 				for (int i = 0; i < mergeThese.size(); i++) {
@@ -147,15 +147,15 @@ public class SendDownloadDetailsToEmailThread extends Thread {
 						ZipDownloadDetails zdd = mergeThese.get(i);
 						String strTempFile = zdd.getFileName();
 
-						Integer index = indeksit.get(zdd.getLayerName());
+						Integer index = indexes.get(zdd.getLayerName());
 						if (index == null) {
 							index = 0;
 						} else {
 							index++;
-							indeksit.remove(zdd.getLayerName());
+							indexes.remove(zdd.getLayerName());
 						}
 
-						indeksit.put(zdd.getLayerName(), index);
+						indexes.put(zdd.getLayerName(), index);
 
 						String folderName = zdd.getLayerName() + "_" + index + "/";
 						out.putNextEntry(new ZipEntry(folderName));
