@@ -57,7 +57,7 @@ public class DownloadServices {
 	 * Load shape-ZIP from Geoserver.
 	 * 
 	 * @param ldz
-	 *            load zip details
+	 *           load zip details
 	 * @return filename file name
 	 * @throws IOException
 	 */
