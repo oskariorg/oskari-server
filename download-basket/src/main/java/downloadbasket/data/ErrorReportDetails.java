@@ -1,11 +1,11 @@
 package downloadbasket.data;
 
 public class ErrorReportDetails {
-	private String xmlRequest = null;
-	private String wfsUrl = null;
-	private String errorFileLocation = null;
-	private String userEmail = null;
-	private String language = null;
+	private String xmlRequest;
+	private String wfsUrl;
+	private String errorFileLocation;
+	private String userEmail;
+	private String language;
 
 	public String getXmlRequest() {
 		return xmlRequest;
