@@ -2,6 +2,7 @@ package fi.nls.oskari.util;
 
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+
 import org.apache.axiom.om.OMAttribute;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.util.AXIOMUtil;
@@ -139,6 +140,22 @@ public class XmlHelper {
             log.error(ex, "Error creating xpath:", str);
         }
         return null;
+    }
+
+    /**
+     * Strips away the XML prolog
+     * @param xml containing the XML message
+     * @return XML message without the prolog
+     */
+    public static String stripPrologFromXML(String xml) {
+        if (xml.startsWith("<?xml")) {
+            int i = xml.indexOf("?>", 5);
+            if (i < 0) {
+                throw new IllegalArgumentException("Invalid XML prolog!");
+            }
+            return xml.substring(i + 2);
+        }
+        return xml;
     }
 
 }
