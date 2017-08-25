@@ -1,7 +1,6 @@
 package fi.nls.oskari.ontology.service;
 
 import fi.nls.oskari.ontology.domain.Relation;
-import fi.nls.oskari.service.db.BaseService;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -12,27 +11,27 @@ import java.util.List;
  * Time: 13:37
  * Service for keyword ontology relations
  */
-public interface KeywordRelationService extends BaseService<Relation> {
+public interface KeywordRelationService {
     /**
      * Adds a relationship between the two keywords: <keyword1> has <keyword2> as a <relationType>.
      * Also adds the inverse relationship.
      * @param relation
      */
-    public void addRelation(final Relation relation);
+    void addRelation(final Relation relation);
 
     /**
      * Returns the exact match for the given relation
      * @param relation
      * @return Relation
      */
-    public Relation getRelation(final Relation relation);
+    Relation getRelation(final Relation relation);
 
     /**
      * Returns all relations for the given keyword
      * @param keyId
      * @return List of relations
      */
-    public List<Relation> getRelationsForKeyword(final Long keyId);
+    List<Relation> getRelationsForKeyword(final Long keyId);
 
     /**
      * Returns relations of given type for the given keyword.
@@ -41,11 +40,11 @@ public interface KeywordRelationService extends BaseService<Relation> {
      * @param relation
      * @return List of Relations
      */
-    public List<Relation> getRelationsByTypeForKeyword(final Relation relation);
+    List<Relation> getRelationsByTypeForKeyword(final Relation relation);
 
     /**
      * Deletes all relations so they can be rebuilt from scratch
      */
-    public void deleteAllRelations() throws SQLException;
+    void deleteAllRelations() throws SQLException;
 
 }

@@ -7,19 +7,20 @@ import fi.nls.oskari.control.ontology.SearchKeywordsHandler;
 import fi.nls.oskari.domain.User;
 import fi.nls.oskari.ontology.domain.Keyword;
 import fi.nls.oskari.ontology.service.KeywordService;
-import fi.nls.oskari.ontology.service.KeywordServiceIbatisImpl;
-import fi.nls.oskari.util.DuplicateException;
+import fi.nls.oskari.ontology.service.KeywordServiceMybatisImpl;
 import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.test.control.JSONActionRouteTest;
 import fi.nls.test.util.ResourceHelper;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.AfterClass;
-import org.junit.Test;
+import fi.nls.test.util.TestHelper;
+import org.junit.*;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static org.junit.Assert.fail;
+import static org.junit.Assume.assumeTrue;
 import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -36,21 +37,16 @@ public class SearchKeywordsHandlerTest extends JSONActionRouteTest {
 
     @BeforeClass
     public static void addLocales() throws Exception {
-        Properties properties = new Properties();
-        try {
-            properties.load(SearchKeywordsHandlerTest.class.getResourceAsStream("test.properties"));
-            PropertyUtil.addProperties(properties);
-            String locales = PropertyUtil.getNecessary("oskari.locales");
-            if (locales == null)
-                fail("No darned locales");
-        } catch (DuplicateException e) {
-            //fail("Should not throw exception" + e.getStackTrace());
-        }
+        assumeTrue(TestHelper.dbAvailable());
+
+        String locales = PropertyUtil.getNecessary("oskari.locales");
+        if (locales == null)
+            fail("No darned locales");
     }
 
     @Before
     public void setUp() throws Exception {
-        keywordService = mock(KeywordServiceIbatisImpl.class);
+        keywordService = mock(KeywordServiceMybatisImpl.class);
         permissionsService = mock(PermissionsServiceIbatisImpl.class);
 
         handler.setService(keywordService);
@@ -170,6 +166,10 @@ public class SearchKeywordsHandlerTest extends JSONActionRouteTest {
         handler.handleAction(actionParameters);
         verifyResponseWritten(actionParameters);
         verifyResponseContent(ResourceHelper.readJSONArrayResource("SearchKeywordsHandlerTest-non-permitted-layer-on-exact-match.json", this));
+    }
 
+    @After
+    public void delete() {
+        PropertyUtil.clearProperties();
     }
 }

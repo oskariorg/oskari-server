@@ -87,6 +87,12 @@
             <artifactId>shared-test-resources</artifactId>
             <scope>test</scope>
         </dependency>
+
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <scope>test</scope>
+        </dependency>
         <!-- PowerMock can be used to mock static/private methods -->
         <dependency>
             <groupId>org.powermock</groupId>

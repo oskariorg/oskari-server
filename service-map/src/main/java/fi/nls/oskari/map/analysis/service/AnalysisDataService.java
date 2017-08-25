@@ -30,8 +30,8 @@ public class AnalysisDataService {
     private static final Logger log = LogFactory
             .getLogger(AnalysisDataService.class);
 
-    private static final AnalysisStyleDbService styleService = new AnalysisStyleDbServiceIbatisImpl();
-    private static final AnalysisDbService analysisService = new AnalysisDbServiceIbatisImpl();
+    private static final AnalysisStyleDbService styleService = new AnalysisStyleDbServiceMybatisImpl();
+    private static final AnalysisDbService analysisService = new AnalysisDbServiceMybatisImpl();
     private static final TransformationService transformationService = new TransformationService();
 
     public Analysis storeAnalysisData(final String featureset,
@@ -122,7 +122,7 @@ public class AnalysisDataService {
             analysis.setCols(fields);
 
             log.debug("Update analysis row", analysis);
-            int updrows = analysisService.updateAnalysisCols(analysis);
+            long updrows = analysisService.updateAnalysisCols(analysis);
             log.debug("Updated rows", updrows);
 
         } catch (Exception e) {

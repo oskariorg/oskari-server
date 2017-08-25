@@ -2,13 +2,16 @@ package fi.nls.oskari.control.admin;
 
 import fi.nls.oskari.control.ActionDeniedException;
 import fi.nls.oskari.control.ActionHandler;
+import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.test.control.JSONActionRouteTest;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Properties;
 
 import static org.junit.Assert.fail;
 
@@ -19,6 +22,17 @@ import static org.junit.Assert.fail;
 public class UserCredentialsTest extends JSONActionRouteTest {
 
     private ActionHandler handler = null;
+
+    @Before
+    public void initPropertiese() {
+        Properties properties = new Properties();
+        try {
+            properties.load(UserCredentialsTest.class.getResourceAsStream("test.properties"));
+            PropertyUtil.addProperties(properties);
+        } catch (Exception e) {
+            //fail("Should not throw exception" + e.getStackTrace());
+        }
+    }
 
     @Parameterized.Parameters
     public static Collection getAdminHandlers() {
