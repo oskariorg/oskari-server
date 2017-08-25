@@ -1,7 +1,8 @@
+dist: trusty
 language: java
 jdk:
   - oraclejdk8
-  - oraclejdk7
+  - openjdk8
   - openjdk7
 notifications:
   slack: oskari:N5vZf0lzsIGpQ8nAPRfHgQ91
