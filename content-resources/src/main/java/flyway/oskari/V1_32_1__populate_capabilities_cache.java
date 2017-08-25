@@ -35,7 +35,11 @@ public class V1_32_1__populate_capabilities_cache implements JdbcMigration {
             }
 
             keys.add(layerKey);
-            String data = CapabilitiesCacheService.loadCapabilitiesFromService(layer, null);
+            String data = CapabilitiesCacheService.loadCapabilitiesFromService(layer);
+            if (data == null) {
+                LOG.warn("Failed to read capabilities from service!");
+                continue;
+            }
             OskariLayerCapabilities draft = new OskariLayerCapabilities(
                     layer.getSimplifiedUrl(true),
                     layer.getType(),
