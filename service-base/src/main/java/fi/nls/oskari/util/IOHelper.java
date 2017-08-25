@@ -608,7 +608,7 @@ public class IOHelper {
 
     public static HttpURLConnection postForm(String url, Map<String, String> keyValuePairs)
             throws IOException {
-        String requestBody = formURLEncode(keyValuePairs);
+        String requestBody = getParams(keyValuePairs);
         return post(url, CONTENTTYPE_FORM_URLENCODED,
                 requestBody.getBytes(StandardCharsets.UTF_8));
     }
@@ -835,39 +835,8 @@ public class IOHelper {
         return constructUrl(url, params);
     }
 
-    public static String getParams(Map<String, String> params) {
-        if(params == null || params.isEmpty()) {
-            return "";
-        }
-
-        final StringBuilder urlBuilder = new StringBuilder();
-        for(Map.Entry<String,String> entry : params.entrySet()) {
-            final String value = entry.getValue();
-            if(entry.getValue() == null) {
-                continue;
-            }
-            urlBuilder.append(entry.getKey());
-            urlBuilder.append("=");
-            try {
-                urlBuilder.append(URLEncoder.encode(value, DEFAULT_CHARSET));
-            } catch (UnsupportedEncodingException e) {
-                log.error(e, "Couldn't encode value - using raw input", value);
-                urlBuilder.append(value);
-            }
-            urlBuilder.append("&");
-        }
-        // drop last character ('?' or '&')
-        return urlBuilder.substring(0, urlBuilder.length()-1);
-    }
-
-    /**
-     * Very similiar to IOHelper.getParams(Map<String, String> params)
-     * only difference is that this method encodes the keys as well as the values
-     * @param kvps map containing the key value pairs
-     * @return String
-     */
-    public static String formURLEncode(final Map<String, String> kvps) {
-        if(kvps == null || kvps.isEmpty()) {
+    public static String getParams(Map<String, String> kvps) {
+        if (kvps == null || kvps.isEmpty()) {
             return "";
         }
 

@@ -50,28 +50,28 @@ public class IOHelperTest {
     }
 
     @Test
-    public void testFormURLEncode() {
-        assertEquals("null map should return an empty string", "", IOHelper.formURLEncode(null));
+    public void testGetParams() {
+        assertEquals("null map should return an empty string", "", IOHelper.getParams(null));
 
         Map<String, String> params = new LinkedHashMap<String, String>();
-        assertEquals("Empty map should return an empty string", "", IOHelper.formURLEncode(params));
+        assertEquals("Empty map should return an empty string", "", IOHelper.getParams(params));
 
         params.put("key1", "foo");
-        assertEquals("Key and value should be separated with a '='", "key1=foo", IOHelper.formURLEncode(params));
+        assertEquals("Key and value should be separated with a '='", "key1=foo", IOHelper.getParams(params));
 
         params.put("key2", "bar");
-        assertEquals("Values should be separated with a '&'", "key1=foo&key2=bar", IOHelper.formURLEncode(params));
+        assertEquals("Values should be separated with a '&'", "key1=foo&key2=bar", IOHelper.getParams(params));
         params.remove("key2");
 
         params.put("key1", "baz+qux");
-        assertEquals("Values should be URL encoded", "key1=baz%2Bqux", IOHelper.formURLEncode(params));
+        assertEquals("Values should be URL encoded", "key1=baz%2Bqux", IOHelper.getParams(params));
         params.remove("key1");
 
         params.put("foo+bar", "baz+qux");
-        assertEquals("Keys should be URL encoded", "foo%2Bbar=baz%2Bqux", IOHelper.formURLEncode(params));
+        assertEquals("Keys should be URL encoded", "foo%2Bbar=baz%2Bqux", IOHelper.getParams(params));
         params.remove("foo+bar");
 
         params.put("key1", "baz qux");
-        assertEquals("Space characters are replaced by '+' in form encoding", "key1=baz+qux", IOHelper.formURLEncode(params));
+        assertEquals("Space characters are replaced by '+' in form encoding", "key1=baz+qux", IOHelper.getParams(params));
     }
 }
