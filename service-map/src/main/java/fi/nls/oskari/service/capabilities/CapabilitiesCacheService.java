@@ -265,7 +265,7 @@ public abstract class CapabilitiesCacheService extends OskariComponent {
     }
 
     private static boolean checkCapabilities(String type, String version, String ns, String name) {
-        LOG.debug("Checking capabilities, type:", type, "version:", version, 
+        LOG.debug("Checking capabilities, type:", type, "version:", version,
                 "namespace", ns, "root element", name);
 
         switch (type) {
@@ -292,8 +292,8 @@ public abstract class CapabilitiesCacheService extends OskariComponent {
     }
 
     private static boolean isWMS130Capabilities(String ns, String name) {
-        return ns != null 
-                && ns.startsWith("http://www.opengis.net/wms/") 
+        return ns != null
+                && ns.startsWith("http://www.opengis.net/wms/")
                 && "WMS_Capabilities".equals(name);
     }
 
