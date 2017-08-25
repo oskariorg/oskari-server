@@ -1,5 +1,8 @@
-package org.oskari.spatineo.monitor.maplayer;
+package org.oskari.service.backendstatus.maplayer;
 
+/**
+ * Simplified version of OskariLayer
+ */
 public class MapLayer {
 
     private final int id;

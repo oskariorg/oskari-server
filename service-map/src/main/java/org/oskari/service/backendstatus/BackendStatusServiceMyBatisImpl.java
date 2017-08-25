@@ -50,7 +50,7 @@ public class BackendStatusServiceMyBatisImpl implements BackendStatusService {
         }
     }
 
-    private BackendStatusMapper getMapper(final SqlSession session) {
+    private static BackendStatusMapper getMapper(final SqlSession session) {
         return session.getMapper(BackendStatusMapper.class);
     }
 

@@ -1,4 +1,4 @@
-package org.oskari.spatineo.monitor.maplayer;
+package org.oskari.service.backendstatus.maplayer;
 
 import java.util.List;
 

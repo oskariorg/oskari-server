@@ -18,7 +18,7 @@ import fi.nls.oskari.util.IOHelper;
 public class SpatineoMonitorDao {
 
     private static final Logger LOG = LogFactory.getLogger(SpatineoMonitorDao.class);
-    private static final String CONTENT_TYPE_JSON = "application/json; charset=utf-8";
+    private static final String CONTENT_TYPE_JSON = "application/json";
 
     private static final String PARAM_ACCESS_KEY = "privateAccessKey";
     private static final String PARAM_ALL_METERS = "allMeters";
@@ -76,12 +76,12 @@ public class SpatineoMonitorDao {
             final HttpURLConnection conn = IOHelper.getConnection(url);
             final int sc = conn.getResponseCode();
             if (sc != HttpURLConnection.HTTP_OK) {
-                LOG.warn("Request: ", url, " failed! Unexpected Status Code: ", sc);
+                LOG.warn("Request:", url, "failed! Unexpected Status Code:", sc);
                 return null;
             }
             final String contentType = conn.getContentType();
-            if (!CONTENT_TYPE_JSON.equals(contentType)) {
-                LOG.warn("Request: ", url, " failed! Unexpected Content-Type: ", contentType);
+            if (contentType == null || !contentType.startsWith(CONTENT_TYPE_JSON)) {
+                LOG.warn("Request:", url, "failed! Unexpected Content-Type:", contentType);
                 return null;
             }
             try (InputStream in = conn.getInputStream()) {

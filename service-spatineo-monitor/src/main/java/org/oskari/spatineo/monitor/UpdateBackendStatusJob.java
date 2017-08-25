@@ -5,15 +5,15 @@ import java.util.List;
 
 import org.oskari.service.backendstatus.BackendStatusService;
 import org.oskari.service.backendstatus.BackendStatusServiceMyBatisImpl;
+import org.oskari.service.backendstatus.BackendStatusCode;
+import org.oskari.service.backendstatus.maplayer.MapLayer;
+import org.oskari.service.backendstatus.maplayer.MapLayerDao;
 import org.oskari.spatineo.monitor.api.SpatineoMonitorDao;
-import org.oskari.spatineo.monitor.api.Status;
 import org.oskari.spatineo.monitor.api.model.Indicator;
 import org.oskari.spatineo.monitor.api.model.Meter;
 import org.oskari.spatineo.monitor.api.model.Response;
 import org.oskari.spatineo.monitor.api.model.Result;
 import org.oskari.spatineo.monitor.api.model.Service;
-import org.oskari.spatineo.monitor.maplayer.MapLayer;
-import org.oskari.spatineo.monitor.maplayer.MapLayerDao;
 
 import fi.nls.oskari.domain.map.BackendStatus;
 import fi.nls.oskari.log.LogFactory;
@@ -112,9 +112,30 @@ public class UpdateBackendStatusJob {
     private static BackendStatus getStatus(int mapLayerId, Meter meter) {
         Indicator indicator = meter.getIndicator();
         String statusMessage = indicator.getStatus();
-        Status status = Status.getEnumByNewAPI(statusMessage);
+        BackendStatusCode status = getStatusFromMessage(statusMessage);
         String monitorLink = meter.getMonitorLink();
         return new BackendStatus(mapLayerId, status.toString(), statusMessage, monitorLink);
+    }
+
+    private static BackendStatusCode getStatusFromMessage(String statusMessage) {
+        switch (statusMessage) {
+        case "NO_INDICATOR":
+            return BackendStatusCode.UNKNOWN;
+        case "NO_ALERTS":
+            return BackendStatusCode.UNKNOWN;
+        case "NEW":
+            return BackendStatusCode.OK;
+        case "OK":
+            return BackendStatusCode.OK;
+        case "WARNING":
+            return BackendStatusCode.UNSTABLE;
+        case "ALERT":
+            return BackendStatusCode.DOWN;
+        case "INSUFFICIENT_DATA":
+            return BackendStatusCode.UNKNOWN;
+        default:
+            return BackendStatusCode.UNKNOWN;
+        }
     }
 
 }
