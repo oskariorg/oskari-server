@@ -97,7 +97,7 @@ public class SendDownloadDetailsToEmailThread extends Thread {
 				ldz.setTemporaryDirectory(strTempDir);
 				ldz.setUserEmail(userDetails.getString("email"));
 				ldz.setLanguage(this.language);
-				ldz.setDownloadNormalWay(normalDownloads.isNormalWayDownload(croppingMode, croppingLayer));
+				ldz.setDownloadNormalWay(normalDownloads.isBboxCropping(croppingMode, croppingLayer));
 
 				if (ldz.isDownloadNormalWay()) {
 

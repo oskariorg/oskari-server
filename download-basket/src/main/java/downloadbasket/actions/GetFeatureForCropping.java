@@ -43,12 +43,10 @@ public class GetFeatureForCropping extends ActionHandler {
 	private static final String PARAM_SRS = "srs";
 	private static final String PARAM_ID = "id";
 
+	private static OskariLayerService mapLayerService;
+
 	@Override
 	public void handleAction(final ActionParameters params) throws ActionException {
-
-		final JSONArray data = new JSONArray();
-
-		OskariLayerService mapLayerService = new OskariLayerServiceIbatisImpl();
 		OskariLayer oskariLayer = mapLayerService.find(params.getHttpParam(PARAM_ID));
 
 		if (oskariLayer != null) {
@@ -71,15 +69,22 @@ public class GetFeatureForCropping extends ActionHandler {
 				ResponseHelper.writeResponse(params, json);
 
 			} catch (JSONException e) {
-				throw new ActionException("Could not populate Response JSON: " + LOGGER.getAsString(data), e);
+				throw new ActionException("Could not get cropping");
 			} catch (MalformedURLException e) {
-				throw new ActionException("Could not populate Response JSON: " + LOGGER.getAsString(data), e);
+				throw new ActionException("Could not get cropping");
 			} catch (IOException e) {
-				throw new ActionException("Could not populate Response JSON: " + LOGGER.getAsString(data), e);
+				throw new ActionException("Could not get cropping");
 			}
 		} else {
 			throw new ActionException("Could not get cropping");
 		}
 
+	}
+
+	@Override
+	public void init() {
+		super.init();
+
+		mapLayerService = new OskariLayerServiceIbatisImpl();
 	}
 }

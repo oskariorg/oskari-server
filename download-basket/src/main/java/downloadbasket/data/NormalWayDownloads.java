@@ -8,7 +8,7 @@ import java.util.List;
 
 public class NormalWayDownloads {
 	private final Logger LOGGER = LogFactory.getLogger(NormalWayDownloads.class);
-	private List<String> downloads = new ArrayList<>();
+	private Set<String> downloads = new HashSet<>();
 
 	/**
 	 * Add normal way download.
@@ -22,7 +22,8 @@ public class NormalWayDownloads {
 	}
 
 	/**
-	 * Cheks at dowload is normal way download.
+	 * Cheks if dowload is cropped with BBOX. Normal way uses BBOX as the
+	 * cropping method. If not, Filter is used.
 	 * 
 	 * @param croppingMode
 	 *            the cropping mode
@@ -30,23 +31,13 @@ public class NormalWayDownloads {
 	 *            the cropping layer
 	 * @return
 	 */
-	public boolean isNormalWayDownload(String croppingMode, String croppingLayer) {
+	public boolean isBboxCropping(String croppingMode, String croppingLayer) {
 		boolean isNormalWay = false;
 
 		for (String cropping : downloads) {
-			if (cropping.contains("__")) {
-				String tmp[] = cropping.split("__");
-				if (tmp.length == 2) {
-					if (tmp[0].equals(croppingMode) && tmp[1].equals(croppingLayer)) {
-						isNormalWay = true;
-						break;
-					}
-				}
-			} else {
-				if (cropping.equals(croppingMode)) {
-					isNormalWay = true;
-					break;
-				}
+			if (cropping.equals(croppingMode)) {
+				isNormalWay = true;
+				break;
 			}
 		}
 

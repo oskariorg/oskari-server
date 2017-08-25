@@ -36,11 +36,10 @@ public class OGCServices {
 	public static String getFilter(JSONObject download, Boolean writeParam) throws JSONException {
 		StringWriter s = new StringWriter();
 
-		String normalWayDownload = PropertyUtil.get("hsy.wfs.download.normal.way.downloads");
-		String[] temp = normalWayDownload.split(",");
+		String[] normalWayDownloadTypes = PropertyUtil.getCommaSeparatedList("hsy.wfs.download.normal.way.downloads");
 		NormalWayDownloads normalDownloads = new NormalWayDownloads();
-		for (int i = 0; i < temp.length; i++) {
-			normalDownloads.addDownload(temp[i]);
+		for (String download : normalWayDownloadTypes) {
+			normalDownloads.addDownload(download);
 		}
 
 		final String croppingMode = download.getString(PARAM_CROPPING_MODE);
@@ -49,7 +48,7 @@ public class OGCServices {
 			croppingLayer = download.getString(PARAM_CROPPING_LAYER);
 		}
 
-		if (normalDownloads.isNormalWayDownload(croppingMode, croppingLayer)) {
+		if (normalDownloads.isBboxCropping(croppingMode, croppingLayer)) {
 			s.append(getFilterByBBOX(writeParam, download));
 		} else {
 			s.append(getFilterByFilter(writeParam, download));
