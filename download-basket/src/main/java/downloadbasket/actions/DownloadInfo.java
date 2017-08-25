@@ -34,7 +34,7 @@ public class DownloadInfo extends ActionHandler {
 		try {
 			JSONObject userDetails = new JSONObject(strUserDetails);
 			JSONArray ddArray = new JSONArray(downloadDetails);
-			new SendDownloadDetailsToEmailThread(ddArray, userDetails).start();
+			new SendDownloadDetailsToEmailThread(ddArray, userDetails, params.getLocale()).start();
 			job.put("success", true);
 		} catch (Exception e) {
 			throw new ActionException("Could not handle DownloadInfo request: ", e);

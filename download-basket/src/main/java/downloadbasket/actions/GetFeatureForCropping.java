@@ -23,6 +23,8 @@ import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.layer.OskariLayerService;
 import fi.nls.oskari.map.layer.OskariLayerServiceIbatisImpl;
 import fi.nls.oskari.util.ResponseHelper;
+import fi.nls.oskari.util.IOHelper;
+import java.net.HttpURLConnection;
 
 /**
  * Handles the cropping of the data before adding it to the download basket.
@@ -60,7 +62,7 @@ public class GetFeatureForCropping extends ActionHandler {
 			LOGGER.debug("Details of the data cropping feature");
 			try {
 
-				HttpURLConnection con = IOHelper.getConnection(wmsUrl, user, pass);
+				HttpURLConnection con = IOHelper.getConnection(wmsUrl);
 				con.setRequestProperty("Accept-Charset", "UTF-8");
 				final String data = IOHelper.readString(con, "UTF-8");
 

@@ -8,6 +8,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.StringWriter;
+import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
 public class OGCServices {
@@ -26,75 +27,41 @@ public class OGCServices {
 	/**
 	 * Get filter
 	 * 
-	 * @param download
+	 * @param downloadDetails
 	 *            download details
 	 * @param writeParam
 	 *            write param
 	 *
 	 * @return filter url param and value
 	 */
-	public static String getFilter(JSONObject download, Boolean writeParam) throws JSONException {
+	public static String getFilter(JSONObject downloadDetails, Boolean writeParam)
+			throws JSONException, UnsupportedEncodingException {
 		StringWriter s = new StringWriter();
 
-		String[] normalWayDownloadTypes = PropertyUtil.getCommaSeparatedList("hsy.wfs.download.normal.way.downloads");
+		String[] bboxDownloadTypes = PropertyUtil.getCommaSeparatedList("oskari.wfs.bbox.downloads");
 		NormalWayDownloads normalDownloads = new NormalWayDownloads();
-		for (String download : normalWayDownloadTypes) {
+		for (String download : bboxDownloadTypes) {
 			normalDownloads.addDownload(download);
 		}
 
-		final String croppingMode = download.getString(PARAM_CROPPING_MODE);
+		final String croppingMode = downloadDetails.getString(PARAM_CROPPING_MODE);
 		String croppingLayer = "";
-		if (download.has(PARAM_CROPPING_LAYER)) {
-			croppingLayer = download.getString(PARAM_CROPPING_LAYER);
+		if (downloadDetails.has(PARAM_CROPPING_LAYER)) {
+			croppingLayer = downloadDetails.getString(PARAM_CROPPING_LAYER);
 		}
 
 		if (normalDownloads.isBboxCropping(croppingMode, croppingLayer)) {
-			s.append(getFilterByBBOX(writeParam, download));
+			if (writeParam) {
+				s.append("&bbox=");
+			}
+			s.append(getBbox(downloadDetails.getJSONObject(PARAM_BBOX)));
 		} else {
-			s.append(getFilterByFilter(writeParam, download));
-		}
-
-		return s.toString();
-	}
-
-	/**
-	 * Get BBOX filter param and value
-	 * 
-	 * @param writeParam
-	 *            write param name
-	 * @param download
-	 *            download details
-	 * @return BBOX filter
-	 */
-	private static String getFilterByBBOX(Boolean writeParam, JSONObject download) throws JSONException {
-		StringWriter s = new StringWriter();
-
-		if (writeParam) {
-			s.append("&bbox=");
-		}
-		s.append(getBbox(download.getJSONObject(PARAM_BBOX)));
-		return s.toString();
-	}
-
-	/**
-	 * Get filter param and value
-	 * 
-	 * @param writeParam
-	 *            write aram name
-	 * @param download
-	 *            download details
-	 * @return filter
-	 */
-	private static String getFilterByFilter(Boolean writeParam, JSONObject download) throws JSONException {
-		StringWriter s = new StringWriter();
-		try {
 			if (writeParam) {
 				s.append("&filter=");
 			}
-			s.append(URLEncoder.encode(getPluginFilter(download, true, false), "UTF-8"));
-		} catch (Exception e) {
-			LOGGER.error(e, "Error");
+			s.append(URLEncoder.encode(getPluginFilter(downloadDetails, true, false), "UTF-8"));
 		}
+
 		return s.toString();
 	}
 
@@ -127,7 +94,7 @@ public class OGCServices {
 		JSONArray identifiers = new JSONArray(download.getString(PARAM_IDENTIFIERS));
 		StringWriter s = new StringWriter();
 		StringWriter filter = new StringWriter();
-		String croppingNameSpace = PropertyUtil.get("hsy.wfs.cropping.namespace");
+		String croppingNameSpace = PropertyUtil.get("oskari.wfs.cropping.namespace");
 
 		try {
 			if (identifiers.length() > 1) {
@@ -203,18 +170,17 @@ public class OGCServices {
 	 *            add namespace to layer name
 	 * @return WFS GET feature URL
 	 */
-	public static String doGetFeatureUrl(String wfsUrl, JSONObject download, boolean addNameSpace)
-			throws JSONException {
+	public static String doGetFeatureUrl(String srs, JSONObject download, boolean addNameSpace) throws JSONException {
 		String getFeatureUrl = "";
 		StringWriter s = new StringWriter();
-		wfsUrl = wfsUrl.replace("wms", "wfs");
-		s.append(wfsUrl);
+		s.append(PropertyUtil.get("download.basket.wfs.service.url"));
 
 		if (addNameSpace) {
-			s.append("?SERVICE=wfs&version=1.0.0&request=GetFeature&srsName=EPSG:3879&outputFormat=SHAPE-ZIP&typeNames="
-					+ download.getString(PARAM_LAYER));
+			s.append("?SERVICE=wfs&version=1.0.0&request=GetFeature&srsName=" + srs
+					+ "&outputFormat=SHAPE-ZIP&typeNames=" + download.getString(PARAM_LAYER));
 		} else {
-			s.append("?SERVICE=wfs&version=1.0.0&request=GetFeature&srsName=EPSG:3879&outputFormat=SHAPE-ZIP&typeNames="
+			s.append("?SERVICE=wfs&version=1.0.0&request=GetFeature&srsName=" + srs
+					+ "&outputFormat=SHAPE-ZIP&typeNames="
 					+ Helpers.getLayerNameWithoutNameSpace(download.getString(PARAM_LAYER)));
 		}
 		getFeatureUrl = s.toString();

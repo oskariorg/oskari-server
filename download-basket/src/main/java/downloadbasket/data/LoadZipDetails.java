@@ -2,7 +2,7 @@ package downloadbasket.data;
 
 public class LoadZipDetails {
 	private String getFeatureInfoRequest = null;
-	private String wFSUrl = null;
+	private String wfsUrl = null;
 	private String temporaryDirectory = null;
 	private String userEmail = null;
 	private String language = null;
@@ -20,11 +20,11 @@ public class LoadZipDetails {
 	}
 
 	public String getWFSUrl() {
-		return wFSUrl;
+		return this.wfsUrl;
 	}
 
-	public void setWFSUrl(final String wFSUrl) {
-		wFSUrl = wFSUrl;
+	public void setWFSUrl(final String wfsUrl) {
+		this.wfsUrl = wfsUrl;
 	}
 
 	public String getTemporaryDirectory() {
@@ -32,7 +32,7 @@ public class LoadZipDetails {
 	}
 
 	public void setTemporaryDirectory(final String temporaryDirectory) {
-		temporaryDirectory = temporaryDirectory;
+		this.temporaryDirectory = temporaryDirectory;
 	}
 
 	public String getUserEmail() {

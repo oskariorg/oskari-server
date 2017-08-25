@@ -1,8 +1,10 @@
 package downloadbasket.helpers;
 
 import fi.nls.oskari.log.LogFactory;
+
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.util.PropertyUtil;
+import fi.nls.oskari.util.IOHelper;
 import downloadbasket.data.ErrorReportDetails;
 import downloadbasket.data.LoadZipDetails;
 import org.apache.commons.mail.MultiPartEmail;
@@ -17,8 +19,11 @@ import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.UUID;
+import java.util.Locale;
 import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
+import org.springframework.context.MessageSource;
+import fi.nls.oskari.spring.SpringContextHolder;
 
 /**
  * Download services.
@@ -30,6 +35,8 @@ public class DownloadServices {
 	public static final String WFS_USED_URL = "url";
 	public static final String WFS_FEATURETYPES = "featureTypes";
 	private final Logger LOGGER = LogFactory.getLogger(DownloadServices.class);
+	
+	private MessageSource messages;
 
 	/**
 	 * Default Constructor.
@@ -38,30 +45,14 @@ public class DownloadServices {
 	}
 
 	/**
-	 * Enum of Http methods.
-	 */
-	public enum HttpMetodes {
-		POST("POST"), GET("GET");
-		private final String stringValue;
-
-		private HttpMetodes(final String s) {
-			stringValue = s;
-		}
-
-		public String toString() {
-			return stringValue;
-		}
-	}
-
-	/**
 	 * Load shape-ZIP from Geoserver.
 	 * 
 	 * @param ldz
-	 *           load zip details
+	 *            load zip details
 	 * @return filename file name
 	 * @throws IOException
 	 */
-	public String loadZip(LoadZipDetails ldz) throws IOException {
+	public String loadZip(LoadZipDetails ldz, Locale locale) throws IOException {
 		String realFileName = "";
 		String returnFileName = "";
 		OutputStreamWriter writer = null;
@@ -100,18 +91,7 @@ public class DownloadServices {
 			File dir0 = new File(strTempDir);
 			dir0.mkdirs();
 
-			String slashType = "";
-			String myFullFileName = dir0.getName();
-			if (myFullFileName.lastIndexOf("\\") > 0) {
-				slashType = "\\";
-			} else {
-				slashType = "/";
-			}
-
-			realFileName = strTempDir + slashType + filename + ".zip";
-
-			returnFileName = strTempDir + slashType + filename + ".zip";
-			ostream = new FileOutputStream(realFileName);
+			ostream = new FileOutputStream(new File(dir0, filename + ".zip"));
 
 			final byte[] buffer = new byte[8 * 1024];
 
@@ -123,32 +103,28 @@ public class DownloadServices {
 				ostream.write(buffer, 0, len);
 			}
 
-			if (!isValid(new File(realFileName))) {
+			if (!isValid(new File(dir0, filename + ".zip"))) {
 				ErrorReportDetails erd = new ErrorReportDetails();
 				erd.setErrorFileLocation(realFileName);
 				erd.setWfsUrl(ldz.getWFSUrl());
 				erd.setXmlRequest(ldz.getGetFeatureInfoRequest());
 				erd.setUserEmail(ldz.getUserEmail());
-				erd.setLanguage(ldz.getLanguage());
+				erd.setLanguage(locale.getLanguage());
 				sendErrorReportToEmail(erd);
-				sendErrorReportToUserEmail(erd);
 			}
 
 		} catch (Exception ex) {
 			LOGGER.error("Error: ", ex);
 		} finally {
-			if (writer != null) {
-				writer.close();
-			}
+
+			IOHelper.close(writer);
+
 			if (conn != null) {
 				conn.disconnect();
 			}
-			if (istream != null) {
-				istream.close();
-			}
-			if (ostream != null) {
-				ostream.close();
-			}
+			IOHelper.close(istream);
+			IOHelper.close(ostream);
+
 		}
 		return returnFileName;
 	}
@@ -196,12 +172,23 @@ public class DownloadServices {
 	 * @param errorDetails
 	 *            error report details
 	 */
+
+	private MessageSource getMessages() {
+		if (messages == null) {
+			// "manual autowire"
+			messages = SpringContextHolder.getBean(MessageSource.class);
+
+		}
+		return messages;
+	}
+
+	private String getMessage(String key, String language) {
+		return getMessages().getMessage(key, new String[] {}, new Locale(language));
+	}
+
 	private void sendErrorReportToEmail(ErrorReportDetails errorDetails) {
 		try {
-			String msg = "";
-			msg += "<b>Tapahtui virhe WFS-latauksessa</b><br/><br/>WFS-url:<br/>" + errorDetails.getWfsUrl()
-					+ "<br/><br/>"
-					+ "WFS-pyyntö ja GeoServerin vastaus liitetiedostona.<br/><br/><b>HUOM!</b> Tämä on järjestelmän generoima virheilmoitus, älä vastaa tähän viestiin.";
+			String msg = getMessage("download.basket.wfs.error.msg", errorDetails.getLanguage());
 
 			// Using Multipart because HtmlEmail doesn't handle attachments very
 			// well.
@@ -227,58 +214,18 @@ public class DownloadServices {
 				multipart.addBodyPart(part);
 			}
 
-			email.setSmtpPort(Integer.parseInt(PropertyUtil.getNecessary(("hsy.wfs.download.smtp.port"))));
+			email.setSmtpPort(Integer.parseInt(PropertyUtil.getNecessary(("oskari.email.port"))));
 			email.setCharset("UTF-8");
 
 			email.setContent(multipart);
-			email.setHostName(PropertyUtil.getNecessary("hsy.wfs.download.smtp.host"));
-			email.setFrom(PropertyUtil.getNecessary("hsy.wfs.download.email.from"));
-			email.setSubject(PropertyUtil.getNecessary("hsy.wfs.download.error.report.subject"));
-			email.addTo(PropertyUtil.getNecessary("hsy.wfs.download.error.report.support.email"));
+			email.setHostName(PropertyUtil.getNecessary("oskari.email.host"));
+			email.setFrom(PropertyUtil.getNecessary("oskari.email.sender"));
+			email.setSubject(getMessage("download.basket.wfs.error.subject", errorDetails.getLanguage()));
+			email.addTo(errorDetails.getUserEmail());
+			email.addBcc(PropertyUtil.getNecessary("oskari.support.email"));
 			email.send();
 		} catch (Exception ex) {
 			LOGGER.error(ex, "Error: e-mail was not sent");
-		}
-	}
-
-	/**
-	 * Send error report to user email.
-	 * 
-	 * @param errorDetails
-	 *            error report details
-	 */
-	private void sendErrorReportToUserEmail(ErrorReportDetails errorDetails) {
-		try {
-			String topic = PropertyUtil.getNecessary("hsy.wfs.download.email.error.user.topic");
-			String msg = "<b>" + topic + "</b><br/><br/>"
-					+ PropertyUtil.getNecessary("hsy.wfs.download.email.error.user.message") + "<br/><br/>"
-					+ PropertyUtil.getNecessary("hsy.wfs.download.email.error.user.automatic");
-
-			// Using Multipart because HtmlEmail doesn't handle attachments very
-			// well.
-			MultiPartEmail email = new MultiPartEmail();
-			MimeBodyPart messageBodyPart = new MimeBodyPart();
-			messageBodyPart.setContent(msg, "text/html; charset=UTF-8");
-			MimeMultipart multipart = new MimeMultipart();
-			multipart.addBodyPart(messageBodyPart);
-
-			byte[] bytes = errorDetails.getXmlRequest().getBytes();
-
-			DataSource dataSource = new ByteArrayDataSource(bytes, "application/xml");
-			MimeBodyPart bodyPart = new MimeBodyPart();
-			bodyPart.setDataHandler(new DataHandler(dataSource));
-
-			email.setSmtpPort(Integer.parseInt(PropertyUtil.getNecessary("hsy.wfs.download.smtp.port")));
-			email.setCharset("UTF-8");
-
-			email.setContent(multipart);
-			email.setHostName(PropertyUtil.getNecessary("hsy.wfs.download.smtp.host"));
-			email.setFrom(PropertyUtil.getNecessary("hsy.wfs.download.email.from"));
-			email.setSubject(topic);
-			email.addTo(errorDetails.getUserEmail());
-			email.send();
-		} catch (Exception ex) {
-			LOGGER.error("Cannot send error report to user", ex);
 		}
 	}
 

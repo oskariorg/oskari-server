@@ -11,6 +11,7 @@ import java.util.Date;
 import java.util.Hashtable;
 import java.util.Properties;
 import java.util.UUID;
+import java.util.Locale;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
@@ -44,13 +45,13 @@ import com.sun.mail.smtp.SMTPTransport;
 public class SendDownloadDetailsToEmailThread extends Thread {
 	JSONArray downLoadDetails;
 	JSONObject userDetails;
-	String language = "fi";
+	Locale locale;
 
 	private final Logger LOGGER = LogFactory.getLogger(SendDownloadDetailsToEmailThread.class);
 	private final String PARAM_CROPPING_MODE = "croppingMode";
 	private final String PARAM_CROPPING_LAYER = "croppingLayer";
 	private final String PARAM_LAYER = "layer";
-	private final String PARAM_WMS_URL = "wmsUrl";
+	private final String PARAM_LAYER_ID = "id";
 
 	/**
 	 * Constructor.
@@ -60,9 +61,10 @@ public class SendDownloadDetailsToEmailThread extends Thread {
 	 * @param userDetails
 	 *            user details
 	 */
-	public SendDownloadDetailsToEmailThread(JSONArray downLoadDetails, JSONObject userDetails) {
+	public SendDownloadDetailsToEmailThread(JSONArray downLoadDetails, JSONObject userDetails, Locale locale) {
 		this.downLoadDetails = downLoadDetails;
 		this.userDetails = userDetails;
+		this.locale = locale;
 	}
 
 	/**
@@ -96,30 +98,25 @@ public class SendDownloadDetailsToEmailThread extends Thread {
 				LoadZipDetails ldz = new LoadZipDetails();
 				ldz.setTemporaryDirectory(strTempDir);
 				ldz.setUserEmail(userDetails.getString("email"));
-				ldz.setLanguage(this.language);
+				ldz.setLanguage(this.locale.getLanguage());
 				ldz.setDownloadNormalWay(normalDownloads.isBboxCropping(croppingMode, croppingLayer));
+				OskariLayerService mapLayerService = new OskariLayerServiceIbatisImpl();
+				OskariLayer oskariLayer = mapLayerService.find(download.getString(PARAM_LAYER_ID));
+				String srs = "EPSG:4326";
+				if (oskariLayer != null) {
+					srs = oskariLayer.getSrs_name();
+				}
 
 				if (ldz.isDownloadNormalWay()) {
-
-					OskariLayerService mapLayerService = new OskariLayerServiceIbatisImpl();
-					OskariLayer oskariLayer = mapLayerService.find(download.getString(PARAM_WMS_URL));
-					String wfsUrl = "";
-
-					if (oskariLayer != null) {
-						wfsUrl = oskariLayer.getUrl();
-					}
-
 					ldz.setGetFeatureInfoRequest(OGCServices.getFilter(download, true));
-					ldz.setWFSUrl(OGCServices.doGetFeatureUrl(wfsUrl, download, false));
+					ldz.setWFSUrl(OGCServices.doGetFeatureUrl(srs, download, false));
 				} else {
 
 					ldz.setGetFeatureInfoRequest(OGCServices.getPluginFilter(download, true, true));
-					ldz.setWFSUrl(OGCServices.doGetFeatureUrl(PropertyUtil.get("hsy.wfs.service.url"), download, true));
+					ldz.setWFSUrl(OGCServices.doGetFeatureUrl(srs, download, true));
 				}
 
-				final String fileLocation = ds.loadZip(ldz);
-
-				// LOGITUS POISTETTU
+				final String fileLocation = ds.loadZip(ldz, this.locale);
 
 				if (fileLocation != null) {
 					ZipDownloadDetails zdd = new ZipDownloadDetails();

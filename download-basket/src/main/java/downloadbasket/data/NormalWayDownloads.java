@@ -3,8 +3,8 @@ package downloadbasket.data;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 public class NormalWayDownloads {
 	private final Logger LOGGER = LogFactory.getLogger(NormalWayDownloads.class);
