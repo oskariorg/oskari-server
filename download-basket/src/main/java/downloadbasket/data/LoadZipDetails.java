@@ -1,61 +1,61 @@
 package downloadbasket.data;
 
 public class LoadZipDetails {
-	private String GetFeatureInfoRequest = null;
-	private String WFSUrl = null;
-	private String TemporaryDirectory = null;
-	private String UserEmail = null;
-	private String Language = null;
-	private boolean DownloadNormalWay = true;
+	private String getFeatureInfoRequest = null;
+	private String wFSUrl = null;
+	private String temporaryDirectory = null;
+	private String userEmail = null;
+	private String language = null;
+	private boolean downloadNormalWay = true;
 
 	public LoadZipDetails() {
 	}
 
 	public String getGetFeatureInfoRequest() {
-		return GetFeatureInfoRequest;
+		return getFeatureInfoRequest;
 	}
 
 	public void setGetFeatureInfoRequest(String getFeatureInfoRequest) {
-		GetFeatureInfoRequest = getFeatureInfoRequest;
+		getFeatureInfoRequest = getFeatureInfoRequest;
 	}
 
 	public String getWFSUrl() {
-		return WFSUrl;
+		return wFSUrl;
 	}
 
 	public void setWFSUrl(final String wFSUrl) {
-		WFSUrl = wFSUrl;
+		wFSUrl = wFSUrl;
 	}
 
 	public String getTemporaryDirectory() {
-		return TemporaryDirectory;
+		return temporaryDirectory;
 	}
 
 	public void setTemporaryDirectory(final String temporaryDirectory) {
-		TemporaryDirectory = temporaryDirectory;
+		temporaryDirectory = temporaryDirectory;
 	}
 
 	public String getUserEmail() {
-		return UserEmail;
+		return userEmail;
 	}
 
 	public void setUserEmail(String userEmail) {
-		UserEmail = userEmail;
+		userEmail = userEmail;
 	}
 
 	public String getLanguage() {
-		return Language;
+		return language;
 	}
 
 	public void setLanguage(String language) {
-		Language = language;
+		language = language;
 	}
 
 	public boolean isDownloadNormalWay() {
-		return DownloadNormalWay;
+		return downloadNormalWay;
 	}
 
 	public void setDownloadNormalWay(boolean downloadNormalWay) {
-		DownloadNormalWay = downloadNormalWay;
+		downloadNormalWay = downloadNormalWay;
 	}
 }

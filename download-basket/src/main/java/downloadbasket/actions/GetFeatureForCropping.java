@@ -41,8 +41,7 @@ public class GetFeatureForCropping extends ActionHandler {
 	private static final String PARAM_WIDTH = "width";
 	private static final String PARAM_HEIGHT = "height";
 	private static final String PARAM_SRS = "srs";
-	private static final String PARAM_URL = "url";
-	private static String FINAL_WMS_URL = "";
+	private static final String PARAM_ID = "id";
 
 	@Override
 	public void handleAction(final ActionParameters params) throws ActionException {
@@ -50,43 +49,37 @@ public class GetFeatureForCropping extends ActionHandler {
 		final JSONArray data = new JSONArray();
 
 		OskariLayerService mapLayerService = new OskariLayerServiceIbatisImpl();
-		OskariLayer oskariLayer = mapLayerService.find(params.getHttpParam(PARAM_URL));
+		OskariLayer oskariLayer = mapLayerService.find(params.getHttpParam(PARAM_ID));
 
 		if (oskariLayer != null) {
-			FINAL_WMS_URL = oskariLayer.getUrl();
-		}
+			String url = oskariLayer.getUrl();
 
-		String wmsUrl = Helpers.getGetFeatureInfoUrlForProxy(FINAL_WMS_URL, params.getHttpParam(PARAM_SRS),
-				params.getHttpParam(PARAM_BBOX), params.getHttpParam(PARAM_WIDTH),
-				params.getHttpParam(PARAM_HEIGHT), params.getHttpParam(PARAM_X),
-				params.getHttpParam(PARAM_Y), params.getHttpParam(PARAM_LAYERS));
+			String wmsUrl = Helpers.getGetFeatureInfoUrlForProxy(url, params.getHttpParam(PARAM_SRS),
+					params.getHttpParam(PARAM_BBOX), params.getHttpParam(PARAM_WIDTH),
+					params.getHttpParam(PARAM_HEIGHT), params.getHttpParam(PARAM_X), params.getHttpParam(PARAM_Y),
+					params.getHttpParam(PARAM_LAYERS));
 
-		LOGGER.debug("Details of the data cropping feature");
-		URL wms;
-		try {
-			wms = new URL(wmsUrl);
-			URLConnection wmsConn = wms.openConnection();
-			wmsConn.setRequestProperty("Accept-Charset", "UTF-8");
-			BufferedReader in = new BufferedReader(new InputStreamReader(wmsConn.getInputStream(), "UTF-8"));
+			LOGGER.debug("Details of the data cropping feature");
+			try {
 
-			String inputLine;
-			String html = "";
+				HttpURLConnection con = IOHelper.getConnection(wmsUrl, user, pass);
+				con.setRequestProperty("Accept-Charset", "UTF-8");
+				final String data = IOHelper.readString(con, "UTF-8");
 
-			while ((inputLine = in.readLine()) != null) {
-				html += inputLine;
+				JSONObject json = new JSONObject(data);
+
+				ResponseHelper.writeResponse(params, json);
+
+			} catch (JSONException e) {
+				throw new ActionException("Could not populate Response JSON: " + LOGGER.getAsString(data), e);
+			} catch (MalformedURLException e) {
+				throw new ActionException("Could not populate Response JSON: " + LOGGER.getAsString(data), e);
+			} catch (IOException e) {
+				throw new ActionException("Could not populate Response JSON: " + LOGGER.getAsString(data), e);
 			}
-			in.close();
-
-			JSONObject jsoni = new JSONObject(html);
-
-			ResponseHelper.writeResponse(params, jsoni);
-
-		} catch (JSONException e) {
-			throw new ActionException("Could not populate Response JSON: " + LOGGER.getAsString(data), e);
-		} catch (MalformedURLException e) {
-			throw new ActionException("Could not populate Response JSON: " + LOGGER.getAsString(data), e);
-		} catch (IOException e) {
-			throw new ActionException("Could not populate Response JSON: " + LOGGER.getAsString(data), e);
+		} else {
+			throw new ActionException("Could not get cropping");
 		}
+
 	}
 }

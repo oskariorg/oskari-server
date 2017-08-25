@@ -1,22 +1,22 @@
 package downloadbasket.data;
 
 public class ZipDownloadDetails {
-	private String FileName = "";
-	private String LayerName = "";
+	private String fileName = "";
+	private String layerName = "";
 
 	public String getFileName() {
-		return FileName;
+		return fileName;
 	}
 
 	public void setFileName(String fileName) {
-		FileName = fileName;
+		fileName = fileName;
 	}
 
 	public String getLayerName() {
-		return LayerName;
+		return layerName;
 	}
 
 	public void setLayerName(String layerName) {
-		LayerName = layerName;
+		layerName = layerName;
 	}
 }

@@ -28,8 +28,8 @@ public class DownloadInfo extends ActionHandler {
 	public void handleAction(final ActionParameters params) throws ActionException {
 
 		JSONObject job = new JSONObject();
-		String downloadDetails = params.getHttpParam(PARAM_DOWNLOAD_DETAILS).toString();
-		String strUserDetails = params.getHttpParam(PARAM_USER_DETAILS).toString();
+		String downloadDetails = params.getHttpParam(PARAM_DOWNLOAD_DETAILS);
+		String strUserDetails = params.getHttpParam(PARAM_USER_DETAILS);
 
 		try {
 			JSONObject userDetails = new JSONObject(strUserDetails);
