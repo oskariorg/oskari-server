@@ -1,6 +1,8 @@
 package org.oskari.util;
 
 public class Units {
+    
+    private Units() {}
 
     public static final double MM_PER_INCH = 25.4;
 

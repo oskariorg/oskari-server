@@ -7,11 +7,12 @@ import java.util.List;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
-import org.oskari.print.PrintLayer;
+import org.oskari.print.request.PrintLayer;
 import org.oskari.print.wmts.GetTileBuilderREST;
 import org.oskari.util.Units;
 
 import com.netflix.hystrix.HystrixCommand;
+import com.netflix.hystrix.HystrixCommandGroupKey;
 
 import fi.nls.oskari.wmts.domain.TileMatrix;
 
@@ -28,14 +29,13 @@ public class CommandLoadImageWMTS extends HystrixCommand<BufferedImage> {
     private final double metersPerUnit;
     private final double[] bbox;
 
-    public CommandLoadImageWMTS(Setter config,
-            PrintLayer layer,
+    public CommandLoadImageWMTS(PrintLayer layer,
             int width,
             int height,
             double[] bbox,
             TileMatrix matrix,
             double metersPerUnit) {
-        super(config);
+        super(HystrixCommandGroupKey.Factory.asKey(AsyncImageLoader.GROUP_KEY));
         this.layer = layer;
         this.width = width;
         this.height = height;

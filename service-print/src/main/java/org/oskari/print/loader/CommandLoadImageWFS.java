@@ -7,10 +7,11 @@ import java.util.List;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
-import org.oskari.print.PrintLayer;
-import org.oskari.print.Tile;
+import org.oskari.print.request.PrintLayer;
+import org.oskari.print.request.Tile;
 
 import com.netflix.hystrix.HystrixCommand;
+import com.netflix.hystrix.HystrixCommandGroupKey;
 
 public class CommandLoadImageWFS extends HystrixCommand<BufferedImage> {
 
@@ -19,12 +20,11 @@ public class CommandLoadImageWFS extends HystrixCommand<BufferedImage> {
     private final int height;
     private final double[] bbox;
 
-    public CommandLoadImageWFS(final Setter config, 
-            final PrintLayer layer, 
-            final int width, 
-            final int height, 
-            final double[] bbox) {
-        super(config);
+    public CommandLoadImageWFS(PrintLayer layer, 
+            int width, 
+            int height, 
+            double[] bbox) {
+        super(HystrixCommandGroupKey.Factory.asKey(AsyncImageLoader.GROUP_KEY));
         this.layer = layer;
         this.width = width;
         this.height = height;

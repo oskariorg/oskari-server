@@ -13,6 +13,8 @@ import org.apache.pdfbox.pdmodel.graphics.optionalcontent.PDOptionalContentPrope
 import org.apache.pdfbox.util.Matrix;
 
 public class PDFBoxUtil {
+    
+    private PDFBoxUtil() {}
 
     public static float mmToPt(int mm) {
         return (float) (mm * Units.PDF_DPI / Units.MM_PER_INCH);

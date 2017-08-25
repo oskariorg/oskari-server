@@ -21,10 +21,10 @@ import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
 import org.apache.pdfbox.pdmodel.graphics.optionalcontent.PDOptionalContentGroup;
 import org.apache.pdfbox.pdmodel.graphics.state.PDExtendedGraphicsState;
 import org.oskari.print.loader.AsyncImageLoader;
+import org.oskari.print.request.PrintLayer;
+import org.oskari.print.request.PrintRequest;
 import org.oskari.util.PDFBoxUtil;
 import org.oskari.util.Units;
-
-import com.netflix.hystrix.HystrixCommand.Setter;
 
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
@@ -75,7 +75,8 @@ public class PDF {
     /**
      * This method should be called via PrintService
      */
-    protected static boolean getPDF(PrintRequest request, PDDocument doc, Setter config) {
+    protected static void getPDF(PrintRequest request, PDDocument doc) 
+            throws IOException, IllegalArgumentException {
         float mapWidth = pixelsToPoints(request.getWidth());
         float mapHeight = pixelsToPoints(request.getHeight());
 
@@ -83,13 +84,13 @@ public class PDF {
                 mapWidth + MAP_MIN_MARGINALS, 
                 mapHeight + MAP_MIN_MARGINALS);
         if (pageSize == null) {
-            LOG.debug("Could not find page size! width {} height {}", 
+            LOG.info("Could not find page size! width {} height {}", 
                     mapWidth, mapHeight);
-            return false;
+            throw new IllegalArgumentException("Could not find a proper page size!");
         }
 
         // Init requests to run in the background
-        List<Future<BufferedImage>> layerImages = AsyncImageLoader.initLayers(request, config);
+        List<Future<BufferedImage>> layerImages = AsyncImageLoader.initLayers(request);
 
         PDPage page = new PDPage(pageSize);
         doc.addPage(page);
@@ -106,12 +107,7 @@ public class PDF {
             drawLayers(doc, stream, request.getLayers(), layerImages, 
                     x, y, mapWidth, mapHeight);
             drawBorder(stream, x, y, mapWidth, mapHeight);
-        } catch (IOException e) {
-            LOG.error(e);
-            return false;
         }
-
-        return true;
     }
 
     /**

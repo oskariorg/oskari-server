@@ -8,8 +8,8 @@ import java.util.List;
 import java.util.concurrent.Future;
 
 import org.oskari.print.loader.AsyncImageLoader;
-
-import com.netflix.hystrix.HystrixCommand.Setter;
+import org.oskari.print.request.PrintLayer;
+import org.oskari.print.request.PrintRequest;
 
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
@@ -21,13 +21,13 @@ public class PNG {
     /**
      * This method should be called via PrintService
      */
-    protected static BufferedImage getBufferedImage(PrintRequest request, Setter config) {
+    protected static BufferedImage getBufferedImage(PrintRequest request) {
         final int width = request.getWidth();
         final int height = request.getHeight();
 
         final List<PrintLayer> layers = request.getLayers();
 
-        List<Future<BufferedImage>> images = AsyncImageLoader.initLayers(request, config);
+        List<Future<BufferedImage>> images = AsyncImageLoader.initLayers(request);
 
         BufferedImage canvas = new BufferedImage(width, height,
                 BufferedImage.TYPE_INT_ARGB);
@@ -41,12 +41,7 @@ public class PNG {
                 if (bi == null) {
                     continue;
                 }
-                int opacity = layer.getOpacity();
-                if (opacity <= 0) {
-                    continue;
-                }
-
-                float alpha = opacity == 100 ? 1.0f : 0.01f * opacity;
+                float alpha = getAlpha(layer.getOpacity());
                 g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha));
                 g2d.drawImage(bi, 0, 0, null);
             }
@@ -63,6 +58,10 @@ public class PNG {
                 RenderingHints.VALUE_INTERPOLATION_BICUBIC);
 
         return scaled;
+    }
+
+    private static float getAlpha(int opacity) {
+        return opacity == 100 ? 1.0f : 0.01f * opacity;
     }
 
     public static BufferedImage scale(BufferedImage bi, int targetWidth, int targetHeight, Object interpolation) {
