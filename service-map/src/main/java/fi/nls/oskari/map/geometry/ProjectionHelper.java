@@ -113,7 +113,7 @@ public class ProjectionHelper implements PointTransformer {
             }
             return new Point(destDirectPosition2D.x, destDirectPosition2D.y);
         } catch (Exception e) {
-            log.error(e, "Transform failed! Params: sourceSRS", sourceCrs, "targetSRS", targetCrs, "Point", point);
+            log.error("Transform failed! Params: sourceSRS", sourceCrs.getName(), "targetSRS", targetCrs.getName(), "Point", point, "Msg:", e.getMessage());
         }
         return null;
     }
