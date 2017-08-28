@@ -2,6 +2,10 @@
 
 ## 1.44.0
 
+### Requirements change
+
+*Oskari-server now requires Java 8* to run and compile due to (and in preparation of) library upgrades. 
+
 ### Transparent fill & stroke on polygons
 
 DefaultStyle SLDs needs to be manually updated on Geoserver from

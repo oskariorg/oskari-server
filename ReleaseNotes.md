@@ -2,6 +2,16 @@
 
 ## 1.44.0
 
+### Library changes and Java requirement change
+
+*Oskari-server now requires Java 8.*
+
+Updated libs:
+
+- Postgres JDBC from 9.3-1102-jdbc41 to 42.1.4
+- Jedis from 2.7.2 to 2.9.0
+- MyBatis from 3.4.1 to 3.4.5
+
 ### State cookie handling
 
 Added error handling to state handling. 
@@ -94,6 +104,10 @@ The TestHelper reads the properties to PropertyUtil so remember to clean up afte
 
 Removed countries listing resource JSON. Instead uses a CountryFilter operation to fetch the countries from
  the service. 
+
+### Spationeo integration
+
+Removed serval API integration and now only including the monitor API.
 
 ## 1.43.0
 

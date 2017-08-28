@@ -236,7 +236,7 @@ public class MetadataCatalogueChannelSearchService extends SearchChannel {
 
             return WKTHelper.getBBOX(p1.getLon(), p1.getLat(), p2.getLon(), p2.getLat());
         } catch(Exception e){
-            log.error(e, "Cannot get BBOX");
+            log.error("Unable to transform BBOX WKT:", e.getMessage());
         }
         return null;
     }
