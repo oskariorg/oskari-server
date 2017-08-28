@@ -86,30 +86,6 @@ public class GetPrintHandler extends ActionHandler {
             ResponseHelper.writeError(params, "Invalid format", 400);
         }
     }
-    
-    private void handlePNG(PrintRequest pr, ActionParameters params) {
-        try {
-            BufferedImage bi = PrintService.getPNG(pr);
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            ImageIO.write(bi, PrintFormat.PNG.fileExtension, baos);
-            ResponseHelper.writeResponse(resp, PrintFormat.PNG.contentType, baos.toByteArray());
-        } catch (IOException e) {
-            LOG.warn(e);
-            ResponseHelper.serverError(resp);
-        }
-    }
-
-    private void handlePDF(PrintRequest pr, ActionParameters params) {
-        try (PDDocument doc = new PDDocument()) {
-            PrintService.getPDF(pr, doc);
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            doc.save(baos);
-            ResponseHelper.ok(resp, PrintFormat.PDF.contentType, baos.toByteArray());
-        } catch (IOException e) {
-            LOG.warn(e);
-            ResponseHelper.serverError(resp);
-        }
-    }
 
     private PrintRequest createPrintRequest(ActionParameters params)
             throws ActionException {
@@ -321,6 +297,30 @@ public class GetPrintHandler extends ActionHandler {
             }
         }
         return null;
+    }
+
+    private void handlePNG(PrintRequest pr, ActionParameters params) {
+        try {
+            BufferedImage bi = PrintService.getPNG(pr);
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            ImageIO.write(bi, PrintFormat.PNG.fileExtension, baos);
+            ResponseHelper.writeResponse(params, 200, PrintFormat.PNG.contentType, baos.toByteArray());
+        } catch (IOException e) {
+            LOG.warn(e);
+            ResponseHelper.writeError(params);
+        }
+    }
+
+    private void handlePDF(PrintRequest pr, ActionParameters params) {
+        try (PDDocument doc = new PDDocument()) {
+            PrintService.getPDF(pr, doc);
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            doc.save(baos);
+            ResponseHelper.writeResponse(params, 200, PrintFormat.PDF.contentType, baos.toByteArray());
+        } catch (IOException e) {
+            LOG.warn(e);
+            ResponseHelper.writeError(params);
+        }
     }
 
     public static class LayerProperties {
