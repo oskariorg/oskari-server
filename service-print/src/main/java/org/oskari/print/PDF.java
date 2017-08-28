@@ -13,6 +13,7 @@ import java.util.concurrent.TimeoutException;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
+import org.apache.pdfbox.pdmodel.PDPageContentStream.AppendMode;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.apache.pdfbox.pdmodel.font.PDType1Font;
@@ -23,8 +24,8 @@ import org.apache.pdfbox.pdmodel.graphics.state.PDExtendedGraphicsState;
 import org.oskari.print.loader.AsyncImageLoader;
 import org.oskari.print.request.PrintLayer;
 import org.oskari.print.request.PrintRequest;
-import org.oskari.util.PDFBoxUtil;
-import org.oskari.util.Units;
+import org.oskari.print.util.PDFBoxUtil;
+import org.oskari.print.util.Units;
 
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
@@ -84,8 +85,7 @@ public class PDF {
                 mapWidth + MAP_MIN_MARGINALS, 
                 mapHeight + MAP_MIN_MARGINALS);
         if (pageSize == null) {
-            LOG.info("Could not find page size! width {} height {}", 
-                    mapWidth, mapHeight);
+            LOG.info("Could not find page size! width:", mapWidth, "height:", mapHeight);
             throw new IllegalArgumentException("Could not find a proper page size!");
         }
 
@@ -99,7 +99,7 @@ public class PDF {
         float x = (pageSize.getWidth() - mapWidth) / 2;
         float y = (pageSize.getHeight() - mapHeight) / 2;
 
-        try (PDPageContentStream stream = new PDPageContentStream(doc, page)) {
+        try (PDPageContentStream stream = new PDPageContentStream(doc, page, AppendMode.APPEND, false)) {
             drawTitle(stream, request, pageSize);
             drawLogo(doc, stream, request);
             drawScale(stream, request);
@@ -154,10 +154,14 @@ public class PDF {
             return;
         }
 
-        PDImageXObject img = PDImageXObject.createFromFile(logoPath, doc);
-        float x = OFFSET_LOGO_LEFT;
-        float y = OFFSET_LOGO_BOTTOM;
-        stream.drawImage(img, x, y);
+        try {
+            PDImageXObject img = PDImageXObject.createFromFile(logoPath, doc);
+            float x = OFFSET_LOGO_LEFT;
+            float y = OFFSET_LOGO_BOTTOM;
+            stream.drawImage(img, x, y);
+        } catch (IllegalArgumentException | IOException e) {
+            LOG.warn("Failed to draw logo from path:", logoPath);
+        }
     }
 
     private static void drawDate(PDPageContentStream stream, 
@@ -205,7 +209,7 @@ public class PDF {
             mppx = request.getResolution() * Units.METRES_PER_MILE;
             break;
         default:
-            LOG.warn("Unknown unit {}, not drawing Scale line", units);
+            LOG.warn("Unknown unit", units, "- not drawing Scale line");
             return;
         }
 
@@ -268,8 +272,8 @@ public class PDF {
                     stream.saveGraphicsState();
                     PDExtendedGraphicsState gs = new PDExtendedGraphicsState();
                     gs.setNonStrokingAlphaConstant(0.01f * opacity);
-                    stream.drawImage(imgObject, x, y, w, h);
                     stream.setGraphicsStateParameters(gs);
+                    stream.drawImage(imgObject, x, y, w, h);
                     stream.restoreGraphicsState();
                 } else {
                     stream.drawImage(imgObject, x, y, w, h);

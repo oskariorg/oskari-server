@@ -9,8 +9,6 @@ import org.oskari.print.request.PrintLayer;
 import org.oskari.print.request.PrintRequest;
 import org.oskari.print.wmts.TileMatrixSetCache;
 
-import com.netflix.hystrix.HystrixCommand.Setter;
-
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.wmts.domain.TileMatrix;
 import fi.nls.oskari.wmts.domain.TileMatrixSet;

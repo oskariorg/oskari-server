@@ -7,24 +7,19 @@ public class PrintRequest {
     private double east;
     private double north;
     private String srsName;
-
     private int zoomLevel;
     private double resolution;
     private double metersPerUnit;
     private String units;
-
     private int width;
     private int height;
     private int targetWidth;
     private int targetHeight;
-
     private String format;
-
     private boolean showScale;
     private boolean showDate;
     private String logo;
     private String title;
-
     private List<PrintLayer> layers;
 
     public double getEast() {

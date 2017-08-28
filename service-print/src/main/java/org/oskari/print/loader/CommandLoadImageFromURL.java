@@ -18,7 +18,7 @@ import fi.nls.oskari.log.Logger;
  */
 public class CommandLoadImageFromURL extends HystrixCommand<BufferedImage> {
 
-    private static final Logger LOG = LogFactory.getLogger(CommandLoadImageWMS.class);
+    private static final Logger LOG = LogFactory.getLogger(CommandLoadImageFromURL.class);
     private static final int RETRY_COUNT = 3;
 
     private final String uri;

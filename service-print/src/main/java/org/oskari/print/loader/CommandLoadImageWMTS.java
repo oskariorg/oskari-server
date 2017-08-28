@@ -8,8 +8,8 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
 import org.oskari.print.request.PrintLayer;
+import org.oskari.print.util.Units;
 import org.oskari.print.wmts.GetTileBuilderREST;
-import org.oskari.util.Units;
 
 import com.netflix.hystrix.HystrixCommand;
 import com.netflix.hystrix.HystrixCommandGroupKey;

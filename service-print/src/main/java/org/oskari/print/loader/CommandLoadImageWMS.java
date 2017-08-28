@@ -3,7 +3,7 @@ package org.oskari.print.loader;
 import java.awt.image.BufferedImage;
 
 import org.oskari.print.request.PrintLayer;
-import org.oskari.util.GetMapBuilder;
+import org.oskari.print.util.GetMapBuilder;
 
 import com.netflix.hystrix.HystrixCommand;
 import com.netflix.hystrix.HystrixCommandGroupKey;

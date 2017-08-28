@@ -1,11 +1,11 @@
 package org.oskari.print.request;
 
-public class Tile {
+public class PrintTile {
 
     private final double[] bbox;
     private final String url;
 
-    public Tile(double[] bbox, String url) {
+    public PrintTile(double[] bbox, String url) {
         this.bbox = bbox;
         this.url = url;
     }

@@ -12,8 +12,15 @@ import org.oskari.print.request.PrintRequest;
 public class PrintService {
 
     private static final int MAX_PX = 2048;
+    
+    public static void validate(PrintRequest request) throws IllegalArgumentException {
+        String err = validateRequest(request);
+        if (err != null) {
+            throw new IllegalArgumentException(err);
+        }
+    }
 
-    public static String validate(PrintRequest request) {
+    private static String validateRequest(PrintRequest request) {
         if (PrintFormat.getByContentType(request.getFormat()) == null) {
             return ("Unknown format");
         }

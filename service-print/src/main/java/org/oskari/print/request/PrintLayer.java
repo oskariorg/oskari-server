@@ -13,7 +13,7 @@ public class PrintLayer {
     private int opacity;
     private String username;
     private String password;
-    private Tile[] tiles;
+    private PrintTile[] tiles;
 
     public String getId() {
         return id;
@@ -95,11 +95,11 @@ public class PrintLayer {
         this.password = password;
     }
 
-    public Tile[] getTiles() {
+    public PrintTile[] getTiles() {
         return tiles;
     }
 
-    public void setTiles(Tile[] tiles) {
+    public void setTiles(PrintTile[] tiles) {
         this.tiles = tiles;
     }
 

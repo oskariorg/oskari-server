@@ -8,7 +8,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
 import org.oskari.print.request.PrintLayer;
-import org.oskari.print.request.Tile;
+import org.oskari.print.request.PrintTile;
 
 import com.netflix.hystrix.HystrixCommand;
 import com.netflix.hystrix.HystrixCommandGroupKey;
@@ -33,7 +33,7 @@ public class CommandLoadImageWFS extends HystrixCommand<BufferedImage> {
 
     @Override
     public BufferedImage run() throws Exception {
-        final Tile[] tiles = layer.getTiles();
+        final PrintTile[] tiles = layer.getTiles();
         final List<Future<BufferedImage>> images = new ArrayList<>(tiles.length);
 
         for (int i = 0; i < tiles.length; i++) {
@@ -51,7 +51,7 @@ public class CommandLoadImageWFS extends HystrixCommand<BufferedImage> {
         Graphics2D g2d = canvas.createGraphics();
 
         for (int i = 0; i < tiles.length; i++) {
-            Tile tile = tiles[i];
+            PrintTile tile = tiles[i];
 
             double[] tileBbox = tile.getBbox();
             // Flip y-axis, BufferedImages (0,0) is at top left
