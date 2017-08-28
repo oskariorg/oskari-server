@@ -5,7 +5,6 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
 
 import org.oskari.print.request.PrintLayer;
 import org.oskari.print.util.Units;
@@ -49,9 +48,6 @@ public class CommandLoadImageWMTS extends HystrixCommand<BufferedImage> {
         int tileWidth = matrix.getTileWidth();
         int tileHeight = matrix.getTileHeight();
 
-        int countTileCols = 1 + width / tileWidth;
-        int countTileRows = 1 + height / tileHeight;
-
         double[] topLeft = matrix.getTopLeftCorner();
         double minX = topLeft[0];
         double maxY = topLeft[1];
@@ -74,11 +70,14 @@ public class CommandLoadImageWMTS extends HystrixCommand<BufferedImage> {
         int offsetXPixels = (int) Math.round((offsetX / pixelSpan));
         int offsetYPixels = (int) Math.round((offsetY / pixelSpan));
 
+        int countTileCols = 1 + (width + offsetXPixels) / tileWidth;
+        int countTileRows = 1 + (height + offsetYPixels) / tileHeight;
+
         // If the tile happens to fit perfectly don't fetch unnecessary tiles
-        if (width % tileWidth == 0 && offsetXPixels == 0) {
+        if (offsetXPixels == 0 && width % tileWidth == 0) {
             countTileCols--;
         }
-        if (height % tileHeight == 0 && offsetYPixels == 0) {
+        if (offsetYPixels == 0 && height % tileHeight == 0) {
             countTileRows--;
         }
 
@@ -109,7 +108,7 @@ public class CommandLoadImageWMTS extends HystrixCommand<BufferedImage> {
             for (int col = 0; col < countTileCols; col++) {
                 int x = tileWidth * col - offsetXPixels;
                 Future<BufferedImage> futureTile = futureTiles.get(tileIndex++);
-                BufferedImage tile = futureTile.get(5L, TimeUnit.SECONDS);
+                BufferedImage tile = futureTile.get();
                 g2d.drawImage(tile, x, y, null);
             }
         }

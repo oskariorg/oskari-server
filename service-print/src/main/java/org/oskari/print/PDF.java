@@ -7,8 +7,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
@@ -259,7 +257,7 @@ public class PDF {
             PrintLayer layer = layers.get(i);
             Future<BufferedImage> image = images.get(i);
             try {
-                BufferedImage bi = image.get(5L, TimeUnit.SECONDS);
+                BufferedImage bi = image.get();
                 PDImageXObject imgObject = LosslessFactory.createFromImage(doc, bi);
 
                 // Set layer (Optional Content Group)
@@ -278,7 +276,7 @@ public class PDF {
                 } else {
                     stream.drawImage(imgObject, x, y, w, h);
                 }
-            } catch (InterruptedException | ExecutionException | TimeoutException e) {
+            } catch (InterruptedException | ExecutionException e) {
                 LOG.warn(e);
                 throw new IOException(e.getMessage());
             }
