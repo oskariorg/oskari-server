@@ -14,6 +14,9 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.junit.Test;
 import org.xml.sax.SAXException;
 
+import fi.nls.oskari.wmts.domain.TileMatrix;
+import fi.nls.oskari.wmts.domain.TileMatrixSet;
+
 public class WMTSTileMatrixSetParserTest {
     
     @Test
