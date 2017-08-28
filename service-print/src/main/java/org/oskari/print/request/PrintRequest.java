@@ -15,7 +15,7 @@ public class PrintRequest {
     private int height;
     private int targetWidth;
     private int targetHeight;
-    private String format;
+    private PrintFormat format;
     private boolean showScale;
     private boolean showDate;
     private String logo;
@@ -110,11 +110,11 @@ public class PrintRequest {
         this.targetHeight = targetHeight;
     }
 
-    public String getFormat() {
+    public PrintFormat getFormat() {
         return format;
     }
 
-    public void setFormat(String format) {
+    public void setFormat(PrintFormat format) {
         this.format = format;
     }
 

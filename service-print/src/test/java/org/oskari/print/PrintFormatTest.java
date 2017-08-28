@@ -2,7 +2,7 @@ package org.oskari.print;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.oskari.print.PrintFormat;
+import org.oskari.print.request.PrintFormat;
 
 public class PrintFormatTest {
 

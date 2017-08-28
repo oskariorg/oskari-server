@@ -5,15 +5,11 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
 
 import org.oskari.print.request.PrintLayer;
 import org.oskari.print.request.PrintTile;
 
-import com.netflix.hystrix.HystrixCommand;
-import com.netflix.hystrix.HystrixCommandGroupKey;
-
-public class CommandLoadImageWFS extends HystrixCommand<BufferedImage> {
+public class CommandLoadImageWFS extends CommandLoadImageBase {
 
     private final PrintLayer layer;
     private final int width;
@@ -24,7 +20,6 @@ public class CommandLoadImageWFS extends HystrixCommand<BufferedImage> {
             int width, 
             int height, 
             double[] bbox) {
-        super(HystrixCommandGroupKey.Factory.asKey(AsyncImageLoader.GROUP_KEY));
         this.layer = layer;
         this.width = width;
         this.height = height;
@@ -38,7 +33,7 @@ public class CommandLoadImageWFS extends HystrixCommand<BufferedImage> {
 
         for (int i = 0; i < tiles.length; i++) {
             String url = tiles[i].getURL();
-            images.add(new CommandLoadImageFromURL(commandGroup, url).queue());
+            images.add(new CommandLoadImageFromURL(url).queue());
         }
 
         final double x1 = bbox[0];
@@ -60,7 +55,7 @@ public class CommandLoadImageWFS extends HystrixCommand<BufferedImage> {
             int dx2 = getPt(tileBbox[2], x1, distanceWidth, width);
             int dy2 = getPt(tileBbox[1], y1, distanceHeight, height);
 
-            BufferedImage img = images.get(i).get(5L, TimeUnit.SECONDS);
+            BufferedImage img = images.get(i).get();
             g2d.drawImage(img, dx1, dy1, dx2, dy2, 0, 0, img.getWidth(), img.getHeight(), null);
         }
 

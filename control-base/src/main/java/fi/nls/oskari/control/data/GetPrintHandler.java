@@ -1,7 +1,24 @@
 package fi.nls.oskari.control.data;
 
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+import javax.imageio.ImageIO;
+
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.oskari.print.PrintService;
+import org.oskari.print.request.PrintFormat;
+import org.oskari.print.request.PrintLayer;
+import org.oskari.print.request.PrintRequest;
+import org.oskari.print.request.PrintTile;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.ActionHandler;
@@ -12,27 +29,9 @@ import fi.nls.oskari.domain.User;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.service.ProxyService;
 import fi.nls.oskari.util.ConversionHelper;
-import fi.nls.oskari.util.IOHelper;
-import fi.nls.oskari.util.PropertyUtil;
+import fi.nls.oskari.util.ResponseHelper;
 import fi.nls.oskari.util.ServiceFactory;
-import org.oskari.print.PrintFormat;
-import org.oskari.print.PrintLayer;
-import org.oskari.print.PrintRequest;
-import org.oskari.print.Tile;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.Iterator;
-import java.util.List;
 
 @OskariActionRoute("GetPrint")
 public class GetPrintHandler extends ActionHandler {
@@ -61,7 +60,6 @@ public class GetPrintHandler extends ActionHandler {
     private static final int MARGIN_WIDTH = 10 * 2;
     private static final int MARGIN_HEIGHT = 15 * 2;
 
-    private String servicePrintURL;
     private PermissionHelper permissionHelper;
 
     public static int mmToPx(int mm) {
@@ -69,24 +67,47 @@ public class GetPrintHandler extends ActionHandler {
     }
 
     public void init() {
-        servicePrintURL = PropertyUtil.get("service.print.url");
         permissionHelper = new PermissionHelper(
                 ServiceFactory.getMapLayerService(),
                 ServiceFactory.getPermissionsService());
-        ProxyService.init();
     }
 
     public void handleAction(ActionParameters params) throws ActionException {
+        PrintRequest pr = createPrintRequest(params);
+        PrintService.validate(pr);
+        switch (pr.getFormat()) {
+        case PDF:
+            handlePDF(pr, params);
+            break;
+        case PNG:
+            handlePNG(pr, params);
+            break;
+        default:
+            ResponseHelper.writeError(params, "Invalid format", 400);
+        }
+    }
+    
+    private void handlePNG(PrintRequest pr, ActionParameters params) {
         try {
-            PrintRequest request = createPrintRequest(params);
-            byte[] json = OBJECT_MAPPER.writeValueAsBytes(request);
+            BufferedImage bi = PrintService.getPNG(pr);
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            ImageIO.write(bi, PrintFormat.PNG.fileExtension, baos);
+            ResponseHelper.writeResponse(resp, PrintFormat.PNG.contentType, baos.toByteArray());
+        } catch (IOException e) {
+            LOG.warn(e);
+            ResponseHelper.serverError(resp);
+        }
+    }
 
-            HttpURLConnection con = IOHelper.getConnection(servicePrintURL);
-            copyHeaders(con, params.getRequest());
-            postRequest(con, json);
-            passResponseThrough(con, params.getResponse());
-        } catch (Exception e) {
-            throw new ActionException("Couldn't handle print request", e);
+    private void handlePDF(PrintRequest pr, ActionParameters params) {
+        try (PDDocument doc = new PDDocument()) {
+            PrintService.getPDF(pr, doc);
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            doc.save(baos);
+            ResponseHelper.ok(resp, PrintFormat.PDF.contentType, baos.toByteArray());
+        } catch (IOException e) {
+            LOG.warn(e);
+            ResponseHelper.serverError(resp);
         }
     }
 
@@ -103,20 +124,11 @@ public class GetPrintHandler extends ActionHandler {
         setFormat(params.getRequiredParam(PARM_FORMAT), request);
 
         List<PrintLayer> layers = getLayers(params.getRequiredParam(PARM_MAPLAYERS),
-                params.getUser(), request);
+                params.getUser());
+        request.setLayers(layers);
         setTiles(params, layers);
 
         return request;
-    }
-
-
-    private PrintLayer find(final List<PrintLayer> layers, final String layerId) {
-        for (PrintLayer layer : layers) {
-            if (layerId.equals(layer.getId())) {
-                return layer;
-            }
-        }
-        return null;
     }
 
 
@@ -128,24 +140,24 @@ public class GetPrintHandler extends ActionHandler {
         int height;
 
         switch (pageSizeStr) {
-            case "A4":
-                width = A4W;
-                height = A4H;
-                break;
-            case "A4_Landscape":
-                width = A4H;
-                height = A4W;
-                break;
-            case "A3":
-                width = A3W;
-                height = A3H;
-                break;
-            case "A3_Landscape":
-                width = A3H;
-                height = A3W;
-                break;
-            default:
-                throw new ActionParamsException("Unknown pageSize");
+        case "A4":
+            width = A4W;
+            height = A4H;
+            break;
+        case "A4_Landscape":
+            width = A4H;
+            height = A4W;
+            break;
+        case "A3":
+            width = A3W;
+            height = A3H;
+            break;
+        case "A3_Landscape":
+            width = A3H;
+            height = A3W;
+            break;
+        default:
+            throw new ActionParamsException("Unknown pageSize");
         }
 
         width -= MARGIN_WIDTH;
@@ -178,18 +190,16 @@ public class GetPrintHandler extends ActionHandler {
         req.setNorth(n);
     }
 
-
     private void setFormat(String formatStr, PrintRequest req)
             throws ActionParamsException {
         PrintFormat format = PrintFormat.getByContentType(formatStr);
         if (format == null) {
             throw new ActionParamsException("Invalid value for key '" + PARM_FORMAT + "'");
         }
-        req.setFormat(format.contentType);
+        req.setFormat(format);
     }
 
-
-    private List<PrintLayer> getLayers(String mapLayers, User user, PrintRequest request)
+    private List<PrintLayer> getLayers(String mapLayers, User user)
             throws ActionException {
         LayerProperties[] requestedLayers = LayerProperties.parse(mapLayers);
 
@@ -204,7 +214,6 @@ public class GetPrintHandler extends ActionHandler {
 
         return printLayers;
     }
-
 
     private PrintLayer createPrintLayer(OskariLayer oskariLayer, LayerProperties requestedLayer) {
         int opacity = getOpacity(requestedLayer.getOpacity(), oskariLayer.getOpacity());
@@ -225,26 +234,20 @@ public class GetPrintHandler extends ActionHandler {
         return layer;
     }
 
-    private int getOpacity(int requestedOpacity, Integer layersDefaultOpacity) {
+    private int getOpacity(Integer requestedOpacity, Integer layersDefaultOpacity) {
         int opacity;
-        if (requestedOpacity != LayerProperties.NULL) {
+        if (requestedOpacity != null) {
             // If the opacity is set in the request use that
-            opacity = requestedOpacity;
+            opacity = requestedOpacity.intValue();
         } else if (layersDefaultOpacity != null) {
             // Otherwise use layers default opacity
-            opacity = layersDefaultOpacity;
+            opacity = layersDefaultOpacity.intValue();
         } else {
             // If that's missing just use 100 (full opacity)
             opacity = 100;
         }
-
-        if (opacity > 100) {
-            opacity = 100;
-        }
-
-        return opacity;
+        return opacity > 100 ? 100 : opacity;
     }
-
 
     private void setTiles(ActionParameters params, List<PrintLayer> layers)
             throws ActionException {
@@ -276,7 +279,7 @@ public class GetPrintHandler extends ActionHandler {
                 }
 
                 int m = tilesNode.size();
-                Tile[] tiles = new Tile[m];
+                PrintTile[] tiles = new PrintTile[m];
 
                 for (int j = 0; j < m; j++) {
                     JsonNode tileNode = tilesNode.get(j);
@@ -300,7 +303,7 @@ public class GetPrintHandler extends ActionHandler {
                     }
                     String url = urlNode.asText();
 
-                    tiles[j] = new Tile(bbox, url);
+                    tiles[j] = new PrintTile(bbox, url);
                 }
 
                 printLayer.setTiles(tiles);
@@ -311,64 +314,22 @@ public class GetPrintHandler extends ActionHandler {
         }
     }
 
-
-    private void copyHeaders(HttpURLConnection con, HttpServletRequest request) {
-        for (Enumeration<String> e = request.getHeaderNames();
-             e.hasMoreElements(); ) {
-            final String key = e.nextElement();
-            final String value = request.getHeader(key);
-            if ("Content-Type".equals(key) || "Content-Length".equals(key)) {
-                continue;
+    private PrintLayer find(final List<PrintLayer> layers, final String layerId) {
+        for (PrintLayer layer : layers) {
+            if (layerId.equals(layer.getId())) {
+                return layer;
             }
-            con.setRequestProperty(key, value);
         }
+        return null;
     }
-
-    private void postRequest(HttpURLConnection con, byte[] body) throws IOException {
-        con.setRequestMethod("POST");
-        con.setDoOutput(true);
-        con.setDoInput(true);
-        con.setUseCaches(false);
-        con.setRequestProperty("Content-Type", "application/json");
-        con.setRequestProperty("Content-Length", Integer.toString(body.length));
-        con.connect();
-
-        if (LOG.isDebugEnabled()) {
-            LOG.debug(new String(body, StandardCharsets.UTF_8));
-        }
-
-        try (OutputStream out = con.getOutputStream()) {
-            out.write(body);
-        }
-    }
-
-
-    private void passResponseThrough(HttpURLConnection con, HttpServletResponse response)
-            throws IOException {
-        final int sc = con.getResponseCode();
-        final int len = con.getContentLength();
-        final String type = con.getContentType();
-
-        response.setStatus(sc);
-        response.setContentLength(len);
-        response.setContentType(type);
-
-        try (InputStream in = con.getInputStream();
-             OutputStream out = response.getOutputStream()) {
-            IOHelper.copy(in, out);
-        }
-    }
-
 
     public static class LayerProperties {
 
-        private static final int NULL = Integer.MIN_VALUE;
-
         private final String id;
-        private final int opacity;
+        private final Integer opacity;
         private final String style;
 
-        public LayerProperties(String id, int opacity, String style) {
+        public LayerProperties(String id, Integer opacity, String style) {
             this.id = id;
             this.opacity = opacity;
             this.style = style;
@@ -382,10 +343,8 @@ public class GetPrintHandler extends ActionHandler {
             }
 
             String id = layerParam[0];
-            int opacity = layerParam.length > 1 ?
-                    ConversionHelper.getInt(layerParam[1], NULL) : NULL;
+            Integer opacity = layerParam.length > 1 ? Integer.valueOf(layerParam[1]) : null;
             String style = layerParam.length > 2 ? layerParam[2] : null;
-
             return new LayerProperties(id, opacity, style);
         }
 
@@ -403,15 +362,11 @@ public class GetPrintHandler extends ActionHandler {
             return layerProperties;
         }
 
-        public static int getDefaultOpacity() {
-            return NULL;
-        }
-
         public String getId() {
             return id;
         }
 
-        public int getOpacity() {
+        public Integer getOpacity() {
             return opacity;
         }
 

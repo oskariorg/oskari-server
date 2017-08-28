@@ -1,4 +1,4 @@
-package org.oskari.print;
+package org.oskari.print.request;
 
 public enum PrintFormat {
 

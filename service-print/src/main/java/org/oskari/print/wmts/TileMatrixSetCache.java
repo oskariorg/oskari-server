@@ -9,7 +9,6 @@ import org.oskari.print.request.PrintLayer;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.wmts.domain.TileMatrixSet;
 
 /**
  * Parses TileMatrixSet information from WMTSCapabilities

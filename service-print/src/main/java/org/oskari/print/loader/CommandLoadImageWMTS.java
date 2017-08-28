@@ -9,17 +9,15 @@ import java.util.concurrent.Future;
 import org.oskari.print.request.PrintLayer;
 import org.oskari.print.util.Units;
 import org.oskari.print.wmts.GetTileBuilderREST;
-
-import com.netflix.hystrix.HystrixCommand;
-import com.netflix.hystrix.HystrixCommandGroupKey;
-
-import fi.nls.oskari.wmts.domain.TileMatrix;
+import org.oskari.print.wmts.TileMatrix;
+import org.oskari.print.wmts.TileMatrixSet;
+import org.oskari.print.wmts.TileMatrixSetCache;
 
 /**
  * HystrixCommand that loads tiles from a WMTS service
  * and combines them to a single BufferedImage
  */
-public class CommandLoadImageWMTS extends HystrixCommand<BufferedImage> {
+public class CommandLoadImageWMTS extends CommandLoadImageBase {
 
     private final PrintLayer layer;
     private final int width;
@@ -34,7 +32,6 @@ public class CommandLoadImageWMTS extends HystrixCommand<BufferedImage> {
             double[] bbox,
             TileMatrix matrix,
             double metersPerUnit) {
-        super(HystrixCommandGroupKey.Factory.asKey(AsyncImageLoader.GROUP_KEY));
         this.layer = layer;
         this.width = width;
         this.height = height;
@@ -95,7 +92,7 @@ public class CommandLoadImageWMTS extends HystrixCommand<BufferedImage> {
             for (int col = 0; col < countTileCols; col++) {
                 requestBuilder.tileCol(minTileCol + col);
                 String uri = requestBuilder.build();
-                futureTiles.add(new CommandLoadImageFromURL(commandGroup, uri).queue());
+                futureTiles.add(new CommandLoadImageFromURL(uri).queue());
             }
         }
 
@@ -116,7 +113,7 @@ public class CommandLoadImageWMTS extends HystrixCommand<BufferedImage> {
         g2d.dispose();
         return bi;
     }
-
+    
     public static double getPixelSpan(double scaleDenominator, double metersPerUnit) {
         return scaleDenominator * Units.OGC_PIXEL_SIZE_METRE / metersPerUnit;
     }

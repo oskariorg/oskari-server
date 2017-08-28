@@ -7,14 +7,14 @@ import java.util.concurrent.Future;
 
 import org.oskari.print.request.PrintLayer;
 import org.oskari.print.request.PrintRequest;
+import org.oskari.print.wmts.TileMatrix;
+import org.oskari.print.wmts.TileMatrixSet;
 import org.oskari.print.wmts.TileMatrixSetCache;
 
 import fi.nls.oskari.domain.map.OskariLayer;
-import fi.nls.oskari.wmts.domain.TileMatrix;
-import fi.nls.oskari.wmts.domain.TileMatrixSet;
 
 public class AsyncImageLoader {
-    
+
     public static final String GROUP_KEY = "LoadImageFromURL";
 
     public static List<Future<BufferedImage>> initLayers(PrintRequest request) {
@@ -55,13 +55,11 @@ public class AsyncImageLoader {
         return images;
     }
 
-
     public static TileMatrix findTileMatrix(PrintLayer layer, int zoomLevel) {
         TileMatrixSet set = TileMatrixSetCache.get(layer);
         String id = Integer.toString(zoomLevel);
         return set.getTileMatrixMap().get(id);
     }
-
 
     public static double[] getBoundingBox(double east, double north, double resolution, int width, int height) {
         double halfResolution = resolution / 2;

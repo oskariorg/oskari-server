@@ -21,8 +21,8 @@ public class PrintService {
     }
 
     private static String validateRequest(PrintRequest request) {
-        if (PrintFormat.getByContentType(request.getFormat()) == null) {
-            return ("Unknown format");
+        if (request.getFormat() == null) {
+            return ("'format' is missing");
         }
         if (request.getWidth() <= 0) {
             return "'width' must be positive integer";

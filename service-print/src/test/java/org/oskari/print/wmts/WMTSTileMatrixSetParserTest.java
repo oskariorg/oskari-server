@@ -1,6 +1,8 @@
 package org.oskari.print.wmts;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -11,9 +13,6 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.junit.Test;
 import org.xml.sax.SAXException;
-
-import fi.nls.oskari.wmts.domain.TileMatrix;
-import fi.nls.oskari.wmts.domain.TileMatrixSet;
 
 public class WMTSTileMatrixSetParserTest {
     
