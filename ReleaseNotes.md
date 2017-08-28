@@ -49,6 +49,51 @@ See service-search-nls/src/main/java/fi/nls/oskari/search/channel/ELFGeoLocatorS
 Polygon style now supports no fill and no stroke. The condition is expressed as allowed null color string values for
  "fill_color" and "border_color" in UserLayerStyle/AnalysisStyle/MyPlaceCategory/WFSLayerStore.
 
+### Initial version of print functionality rewrite
+
+New Maven modules service-print, servlet-print and webapp-print which will be replacing servlet-printout once it has
+ been proved production ready.
+
+### Additional layer configuration 
+
+WMS-layers GFI functionality can now be enabled/disabled overwriting layer capabilities by adding a configuration in database
+ oskari_maplayer.attributes:
+ 
+    {
+        "isQueryable" : false
+    }
+
+### Test resources/helper
+
+Added a database connection helper in shared-test-resources/TestHelper.
+Provide database credentials/url with env property:
+
+    # linux
+    export oskari_db_test_props=/opt/my.test.properties
+    # windows
+    set oskari_db_test_props=C:/somefolder/my.test.properties
+
+Use assumeTrue to check for db connection WHEN test relies on database connection as it might not always
+ be available depending on the build environment:
+
+    @Test
+    public void testingDB() {
+        assumeTrue(TestHelper.dbAvailable());
+        DataSource ds = TestHelper.getDBforUnitTest();
+        // TODO: use ds for tests
+    }    
+
+The TestHelper reads the properties to PropertyUtil so remember to clean up after a test using database:
+
+    @AfterClass
+    public static void teardown() {
+        PropertyUtil.clearProperties();
+    }
+
+### ELF GeoLocator search channel
+
+Removed countries listing resource JSON. Instead uses a CountryFilter operation to fetch the countries from
+ the service. 
 
 ## 1.43.0
 
