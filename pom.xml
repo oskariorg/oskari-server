@@ -1041,6 +1041,8 @@
         <module>servlet-transport</module>
         <module>webapp-transport</module>
 
+        <!-- printout -->
+        <module>servlet-printout</module>
         <!-- setup -->
         <module>webapp-setup</module>
 
@@ -1049,8 +1051,6 @@
 
 		<!-- print -->
         <module>service-print</module>
-        <module>servlet-print</module>
-        <module>webapp-print</module>
     </modules>
 
 </project>

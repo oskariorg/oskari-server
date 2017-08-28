@@ -9,9 +9,8 @@ import java.util.concurrent.Future;
 import org.oskari.print.request.PrintLayer;
 import org.oskari.print.util.Units;
 import org.oskari.print.wmts.GetTileBuilderREST;
-import org.oskari.print.wmts.TileMatrix;
-import org.oskari.print.wmts.TileMatrixSet;
-import org.oskari.print.wmts.TileMatrixSetCache;
+
+import fi.nls.oskari.wmts.domain.TileMatrix;
 
 /**
  * HystrixCommand that loads tiles from a WMTS service
@@ -113,7 +112,7 @@ public class CommandLoadImageWMTS extends CommandLoadImageBase {
         g2d.dispose();
         return bi;
     }
-    
+
     public static double getPixelSpan(double scaleDenominator, double metersPerUnit) {
         return scaleDenominator * Units.OGC_PIXEL_SIZE_METRE / metersPerUnit;
     }

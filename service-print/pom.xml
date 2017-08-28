@@ -17,6 +17,10 @@
 
     <dependencies>
         <dependency>
+            <groupId>fi.nls.oskari.service</groupId>
+            <artifactId>oskari-map</artifactId>
+        </dependency>
+        <dependency>
             <groupId>fi.nls.oskari</groupId>
             <artifactId>service-logging</artifactId>
         </dependency>

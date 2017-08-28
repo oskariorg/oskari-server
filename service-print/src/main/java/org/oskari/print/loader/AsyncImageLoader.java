@@ -7,11 +7,11 @@ import java.util.concurrent.Future;
 
 import org.oskari.print.request.PrintLayer;
 import org.oskari.print.request.PrintRequest;
-import org.oskari.print.wmts.TileMatrix;
-import org.oskari.print.wmts.TileMatrixSet;
 import org.oskari.print.wmts.TileMatrixSetCache;
 
 import fi.nls.oskari.domain.map.OskariLayer;
+import fi.nls.oskari.wmts.domain.TileMatrix;
+import fi.nls.oskari.wmts.domain.TileMatrixSet;
 
 public class AsyncImageLoader {
 

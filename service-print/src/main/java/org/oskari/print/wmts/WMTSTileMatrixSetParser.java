@@ -18,6 +18,8 @@ import org.xml.sax.SAXException;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.util.ConversionHelper;
+import fi.nls.oskari.wmts.domain.TileMatrix;
+import fi.nls.oskari.wmts.domain.TileMatrixSet;
 
 /**
  * Parses TileMatrixSet information from WMTSCapabilities.xml
