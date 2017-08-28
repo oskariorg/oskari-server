@@ -90,6 +90,15 @@ The TestHelper reads the properties to PropertyUtil so remember to clean up afte
         PropertyUtil.clearProperties();
     }
 
+### ELF GeoLocator search channel
+
+Removed countries listing resource JSON. Instead uses a CountryFilter operation to fetch the countries from
+ the service. 
+
+### Spationeo integration
+
+Removed serval API integration and now only including the monitor API.
+
 ## 1.43.0
 
 ### servlet-printout
