@@ -19,6 +19,13 @@ Updated libs:
 Added error handling to state handling. 
 State cookie parsing no longer assumes that referenced bundles are part of the appsetup.
 
+### GFI response sanitation
+
+Style-tags in GFI html response were interfering with global Oskari CSS. 
+Response html is now sanitized with Jsoup if presentation type is TEXT which removes potentially dangerous
+ script injections as well. 
+Only tags in in Jsoup ["relaxed" whitelist](https://jsoup.org/apidocs/org/jsoup/safety/Whitelist.html#relaxed--) are allowed.
+
 ### Terms of use for map publish functionality
  
 Separate terms of use for map publishing functionality can now be configured in oskari-ext.properties:
