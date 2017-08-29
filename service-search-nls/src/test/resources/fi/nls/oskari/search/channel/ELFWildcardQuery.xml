@@ -1,0 +1,25 @@
+<wfs:GetFeature
+        xmlns:wfs="http://www.opengis.net/wfs/2.0"
+        xmlns:fes="http://www.opengis.org/fes/2.0"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.opengis.net/wfs/2.0 http://schemas.opengis.net/wfs/2.0/wfs.xsd"
+        xmlns:iso19112="http://www.isotc211.org/19112"
+        outputFormat="text/xml; subtype=gml/3.1.1"
+        service="WFS"
+        version="2.0.0"
+        count="500">
+    <wfs:Query typeNames="SI_LocationInstance">
+        <fes:Filter xmlns:fes="http://www.opengis.net/fes/2.0" xmlns:iso19112="http://www.isotc211.org/19112">
+            <fes:And>
+                <fes:PropertyIsLike wildCard="*" singleChar="#" escapeChar="!">
+                    <fes:ValueReference>iso19112:alternativeGeographicIdentifiers/iso19112:alternativeGeographicIdentifier/iso19112:name</fes:ValueReference>
+                    <fes:Literal>Hel*ki</fes:Literal>
+                </fes:PropertyIsLike>
+                <fes:PropertyIsEqualTo>
+                    <fes:ValueReference xmlns:iso19112="http://www.isotc211.org/19112">iso19112:alternativeGeographicIdentifiers/iso19112:alternativeGeographicIdentifier/iso19112:name/@xml:lang</fes:ValueReference>
+                    <fes:Literal>fin</fes:Literal>
+                </fes:PropertyIsEqualTo>
+            </fes:And>
+        </fes:Filter>
+    </wfs:Query>
+</wfs:GetFeature>

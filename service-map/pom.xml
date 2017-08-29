@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>fi.nls.oskari</groupId>
 		<artifactId>oskari-parent</artifactId>
-        <version>1.43.0-SNAPSHOT</version>
+        <version>1.44.0-SNAPSHOT</version>
 	</parent>
 
     <groupId>fi.nls.oskari.service</groupId>
@@ -20,8 +20,8 @@
             <artifactId>oskari-search</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.mybatis</groupId>
-            <artifactId>mybatis</artifactId>
+            <groupId>fi.nls.oskari.service</groupId>
+            <artifactId>oskari-mybatis</artifactId>
         </dependency>
         <dependency>
             <groupId>fi.nls.oskari.service</groupId>

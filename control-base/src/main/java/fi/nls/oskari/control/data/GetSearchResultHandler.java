@@ -1,6 +1,8 @@
 package fi.nls.oskari.control.data;
 
 import fi.mml.portti.service.search.SearchCriteria;
+import fi.mml.portti.service.search.SearchService;
+import fi.mml.portti.service.search.SearchServiceImpl;
 import fi.nls.oskari.SearchWorker;
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.ActionException;
@@ -9,7 +11,6 @@ import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.control.ActionParamsException;
 import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.util.ResponseHelper;
-import org.json.JSONObject;
 
 import java.util.Locale;
 
@@ -19,6 +20,8 @@ public class GetSearchResultHandler extends ActionHandler {
     private static final String PARAM_SEARCH_KEY = "searchKey";
     private static final String PARAM_EPSG_KEY = "epsg";
     private static final String PARAM_CHANNELIDS_KEY = "channels";
+    private static final String PARAM_AUTOCOMPLETE = "autocomplete";
+    private static final SearchService searchService = new SearchServiceImpl();
 
     private String[] channels = new String[0];
 
@@ -61,7 +64,10 @@ public class GetSearchResultHandler extends ActionHandler {
         sc.setSRS(epsg);  // eg. EPSG:3067
         sc.setLocale(locale.getLanguage());
 
-        final JSONObject result = SearchWorker.doSearch(sc);
-        ResponseHelper.writeResponse(params, result);
+        if (params.getHttpParam(PARAM_AUTOCOMPLETE, false)) {
+            ResponseHelper.writeResponse(params, searchService.doSearchAutocomplete(sc));
+        } else {
+            ResponseHelper.writeResponse(params, SearchWorker.doSearch(sc));
+        }
     }
 }

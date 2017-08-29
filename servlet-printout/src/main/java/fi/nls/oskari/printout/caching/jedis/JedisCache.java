@@ -1,50 +1,60 @@
 package fi.nls.oskari.printout.caching.jedis;
 
 import fi.nls.oskari.printout.caching.BlobCache;
+import fi.nls.oskari.printout.config.ConfigValue;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
 
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
+
 public class JedisCache {
 
-	static private class JedisBlobCacheImpl implements BlobCache {
-		JedisPool pool;
+    private static final Log LOG = LogFactory.getLog(JedisCache.class);
+    public static final BlobCache CACHE;
 
-		JedisBlobCacheImpl(JedisPool pool) {
-			this.pool = pool;
-		}
+    static {
+        String host = "localhost";
+        int port = 6379;
 
-		
-		public byte[] getFromCache(byte[] key) {
-			byte[] blob = null;
-			Jedis jedis = pool.getResource();
-			try {
-				blob = jedis.get(key);
-			} finally {
-				pool.returnResource(jedis);
-			}
-			return blob;
-		}
+        String conf = System.getProperty(ConfigValue.CONFIG_SYSTEM_PROPERTY);
+        try (InputStream in = conf != null ? new FileInputStream(conf)
+                : JedisCache.class.getResourceAsStream(ConfigValue.DEFAULT_PROPERTIES)) {
+            Properties props = new Properties();
+            props.load(in);
+            host = ConfigValue.REDIS_HOST.getConfigProperty(props, host);
+            port = ConfigValue.REDIS_PORT.getConfigProperty(props, port);
+        } catch (IOException e) {
+            LOG.warn(e.getMessage(), e);
+        }
+        CACHE = new JedisBlobCacheImpl(new JedisPool(new JedisPoolConfig(), host, port));
+    }
 
-		
-		public void putToCache(byte[] key, byte[] blob) {
-			Jedis jedis = pool.getResource();
-			try {
-				jedis.set(key, blob);
-				jedis.expire(key, 4 * 60 * 60);
-			} finally {
-				pool.returnResource(jedis);
-			}
+    private static class JedisBlobCacheImpl implements BlobCache {
+        private final JedisPool pool;
 
-		}
+        JedisBlobCacheImpl(JedisPool pool) {
+            this.pool = pool;
+        }
 
-	}
+        public byte[] getFromCache(byte[] key) {
+            try (Jedis jedis = pool.getResource()) {
+                return jedis.get(key);
+            }
+        }
 
-	static JedisBlobCacheImpl cache = new JedisBlobCacheImpl(new JedisPool(
-			new JedisPoolConfig(), "localhost"));
+        public void putToCache(byte[] key, byte[] blob) {
+            try (Jedis jedis = pool.getResource()) {
+                jedis.set(key, blob);
+                jedis.expire(key, 4 * 60 * 60);
+            }
+        }
 
-	public static BlobCache getBlobCache() {
-		return cache;
-	}
+    }
 
 }

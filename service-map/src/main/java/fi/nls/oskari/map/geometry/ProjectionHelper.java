@@ -1,8 +1,8 @@
 package fi.nls.oskari.map.geometry;
 
-import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.CoordinateSequenceFilter;
 import com.vividsolutions.jts.geom.CoordinateSequence;
+import com.vividsolutions.jts.geom.CoordinateSequenceFilter;
+import com.vividsolutions.jts.geom.Geometry;
 import fi.nls.oskari.domain.geo.Point;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
@@ -113,7 +113,7 @@ public class ProjectionHelper implements PointTransformer {
             }
             return new Point(destDirectPosition2D.x, destDirectPosition2D.y);
         } catch (Exception e) {
-            log.error(e, "Transform failed! Params: sourceSRS", sourceCrs, "targetSRS", targetCrs, "Point", point);
+            log.error("Transform failed! Params: sourceSRS", sourceCrs.getName(), "targetSRS", targetCrs.getName(), "Point", point, "Msg:", e.getMessage());
         }
         return null;
     }

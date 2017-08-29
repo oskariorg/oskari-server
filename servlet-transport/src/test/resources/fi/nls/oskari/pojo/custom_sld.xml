@@ -3,7 +3,6 @@
                        xsi:schemaLocation="http://www.opengis.net/sld http://schemas.opengis.net/sld/1.0.0/StyledLayerDescriptor.xsd"
                        xmlns="http://www.opengis.net/sld"
                        xmlns:ogc="http://www.opengis.net/ogc"
-                       xmlns:xlink="http://www.w3.org/1999/xlink"
                        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <NamedLayer>
         <Name>custom_style</Name>
@@ -469,77 +468,15 @@
                     </ogc:Filter>
                     <PolygonSymbolizer>
                         <Fill>
-                            <CssParameter name="fill">#ffde00</CssParameter>
-                            <CssParameter name="fill-opacity">0.7</CssParameter>
-
-                            <!--
-                            if fill_pattern == -1
-                                <CssParameter name="fill">#ffde00</CssParameter>
-                            0
-                                <GraphicFill>
-                                    <Graphic>
-                                        <Mark>
-                                            <WellKnownName>shape://slash</WellKnownName>
-                                            <Stroke>
-                                                <CssParameter name="stroke">#ffde00</CssParameter>
-                                                <CssParameter name="stroke-width">1</CssParameter>
-                                            </Stroke>
-                                        </Mark>
-                                        <Size>4</Size>
-                                    </Graphic>
-                                </GraphicFill>
-                            1
-                                <GraphicFill>
-                                    <Graphic>
-                                        <Mark>
-                                            <WellKnownName>shape://slash</WellKnownName>
-                                            <Stroke>
-                                                <CssParameter name="stroke">#ffde00</CssParameter>
-                                                <CssParameter name="stroke-width">2</CssParameter>
-                                            </Stroke>
-                                        </Mark>
-                                        <Size>6</Size>
-                                    </Graphic>
-                                </GraphicFill>
-                            2
-                                <GraphicFill>
-                                    <Graphic>
-                                        <Mark>
-                                            <WellKnownName>shape://horline</WellKnownName>
-                                            <Stroke>
-                                                <CssParameter name="stroke">#ffde00</CssParameter>
-                                                <CssParameter name="stroke-width">0.4</CssParameter>
-                                            </Stroke>
-                                        </Mark>
-                                        <Size>4.5</Size>
-                                    </Graphic>
-                                </GraphicFill>
-                            3
-                                <GraphicFill>
-                                    <Graphic>
-                                        <Mark>
-                                            <WellKnownName>shape://horline</WellKnownName>
-                                            <Stroke>
-                                                <CssParameter name="stroke">#ffde00</CssParameter>
-                                                <CssParameter name="stroke-width">2</CssParameter>
-                                            </Stroke>
-                                        </Mark>
-                                        <Size>5.5</Size>
-                                    </Graphic>
-                                </GraphicFill>
-                            -->
-                        </Fill>
+    <CssParameter name="fill">#ffde00</CssParameter>
+    <CssParameter name="fill-opacity">0.7</CssParameter>
+</Fill>
                         <Stroke>
-                            <CssParameter name="stroke">#000000</CssParameter>
-                            <CssParameter name="stroke-width">1</CssParameter>
-                            <CssParameter name="stroke-linejoin">mitre</CssParameter>
-
-                            
-                            <!--
-                            if border_dasharray != 0
-                                <CssParameter name="stroke-dasharray">5 2</CssParameter>
-                            -->
-                        </Stroke>
+    <CssParameter name="stroke">#000000</CssParameter>
+    <CssParameter name="stroke-width">1</CssParameter>
+    <CssParameter name="stroke-linejoin">mitre</CssParameter>
+    
+</Stroke>
                     </PolygonSymbolizer>
                 </Rule>
             </FeatureTypeStyle>

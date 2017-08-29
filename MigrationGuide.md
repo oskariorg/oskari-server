@@ -1,5 +1,30 @@
 # Migration guide
 
+## 1.44.0
+
+### Requirements change
+
+*Oskari-server now requires Java 8* to run and compile due to (and in preparation of) library upgrades. 
+
+### Transparent fill & stroke on polygons
+
+DefaultStyle SLDs needs to be manually updated on Geoserver from
+https://github.com/oskariorg/oskari-server/tree/master/content-resources/src/main/resources/sld
+
+## 1.42.1
+
+### User registration feature
+
+The feature has been significantly changed. See ReleaseNotes for details.
+
+### Layer urls handling for https-services
+
+Layers with http:// urls are now proxied using the GetLayerTile action route by default.
+Previously the protocol was replaced with https:// and to preserve this functionality you can add a property
+ for oskari-ext.properties:
+
+    maplayer.wmsurl.secure=https://
+
 ## 1.42.0
 
 ### Thematic maps regionsets
@@ -14,6 +39,26 @@ If you don't want it to be added to the sample you can add this property to oska
 
     flyway.sample.1_0_10.skip=true
 
+### Openlayers 3 version for geoportal view for development
+ 
+Initial Openlayers 3 geoportal view can be added for the sample application. To add it a property is required in oskari-ext.properties:
+
+    flyway.sample.1_0_11.skip=false
+
+The view is NOT added automatically if you don't opt in. The view to create can be further configured with optional properties:
+
+    flyway.sample.1_0_11.file=ol3-geoportal-view.json
+    flyway.sample.1_0_11.view=[id for view to use as config/state template]
+    
+File needs to point to a json-file similar to 
+https://github.com/oskariorg/oskari-server/blob/master/content-resources/src/main/resources/json/views/default-full-view.json.
+The file should be located in the server classpath under /json/views/[filename].
+Note that only bundle startup information is used while config/state is being copied from the default view of the Oskari-instance.
+If you want to use a custom view as config/state template you can use the flyway.sample.1_0_11.view-property to point such view.
+The log will show the uuid for the new view once it's added or you can check the database table
+ portti_view for the uuid of the latest view in the system.
+
+    
 ## 1.41.0
 
 ### Code refactoring

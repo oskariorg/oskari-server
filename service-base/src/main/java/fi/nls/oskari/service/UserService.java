@@ -20,6 +20,7 @@ public abstract class UserService {
 
     private static final Logger log = LogFactory.getLogger(UserService.class);
     private static UserService instance = null;
+
     /**
      * Returns a concrete implementation of UserService. Class to be returned is defined with property "oskari.user.service".
      * @return

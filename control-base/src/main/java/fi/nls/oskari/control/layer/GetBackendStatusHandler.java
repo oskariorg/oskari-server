@@ -1,7 +1,7 @@
 package fi.nls.oskari.control.layer;
 
-import fi.mml.map.mapwindow.service.db.BackendStatusService;
-import fi.mml.map.mapwindow.service.db.BackendStatusServiceIbatisImpl;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.ActionHandler;
@@ -9,59 +9,48 @@ import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.domain.map.BackendStatus;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.ResponseHelper;
-import org.json.JSONArray;
-import org.json.JSONObject;
+import org.oskari.service.backendstatus.BackendStatusService;
+import org.oskari.service.backendstatus.BackendStatusServiceMyBatisImpl;
 
 import java.util.List;
 
 @OskariActionRoute("GetBackendStatus")
 public class GetBackendStatusHandler extends ActionHandler {
 
-    
-    private static final Logger log = LogFactory.getLogger(GetBackendStatusHandler.class);
-    private final BackendStatusService backendStatusService = new BackendStatusServiceIbatisImpl();
-    
-    private final static String ID = "id";
-    private final static String TS = "ts";
-    private final static String MAPLAYER_ID = "maplayer_id";
-    private final static String STATUS = "status";
-    private final static String INFOURL = "infourl";
-    private final static String STATUSJSON = "statusjson";
-    private final static String BACKEND_STATUS = "backendstatus";
+    private static final Logger LOG = LogFactory.getLogger(GetBackendStatusHandler.class);
 
-    private final static String PARAM_SUBSET = "Subset";
-    private final static String DEFAULT_SUBSET = "Alert";
-    private final static String SUBSET_ALL_KNOWN = "AllKnown";
+    private static final String PARAM_SUBSET = "Subset";
+    private static final String SUBSET_ALL_KNOWN = "AllKnown";
+
+    private final BackendStatusService service;
+    private final ObjectMapper om;
+
+    public GetBackendStatusHandler() {
+        this(new BackendStatusServiceMyBatisImpl(), new ObjectMapper());
+    }
+
+    public GetBackendStatusHandler(BackendStatusService service, ObjectMapper om)  {
+        this.service = service != null ? service : new BackendStatusServiceMyBatisImpl();
+        this.om = om != null ? om : new ObjectMapper();
+    }
 
     public void handleAction(ActionParameters params) throws ActionException {
-       
-       List<BackendStatus> bes;
-       
-       if (SUBSET_ALL_KNOWN.equals(params.getHttpParam(PARAM_SUBSET, DEFAULT_SUBSET))) {
-           bes = backendStatusService.findAllKnown();
-       } else {
-           bes = backendStatusService.findAll();
-       }
-       
-       log.debug("BackendStatus list size = " + bes.size());
+        boolean alert = isRequestOnlyForLayersWithAlerts(params);
+        List<BackendStatus> statuses = alert ? service.findAllWithAlert() : service.findAll();
+        LOG.debug("BackendStatus list size: " + statuses.size());
 
-       final JSONArray rootList = new JSONArray();
-       for (final BackendStatus  be: bes) {
-            final JSONObject status = new JSONObject();
-            JSONHelper.putValue(status, ID, be.getId());
-            JSONHelper.putValue(status, TS, be.getTs());
-            JSONHelper.putValue(status, MAPLAYER_ID, be.getMaplayer_id());
-            JSONHelper.putValue(status, STATUS, be.getStatus());
-            JSONHelper.putValue(status, INFOURL, be.getInfourl());
-            JSONHelper.putValue(status, STATUSJSON, be.getStatusjson());
-            rootList.put(status);
-       }
-       
-       final JSONObject root = new JSONObject();
-       JSONHelper.putValue(root, BACKEND_STATUS, rootList);
+        try {
+            byte[] b = om.writeValueAsBytes(statuses);
+            ResponseHelper.writeResponse(params, 200, ResponseHelper.CONTENT_TYPE_JSON_UTF8, b);
+        } catch (JsonProcessingException e) {
+            LOG.warn(e, "Failed to write JSON!");
+            throw new ActionException("Failed to serialize response to JSON!", e);
+        }
+    }
 
-       ResponseHelper.writeResponse(params,root);
+    protected boolean isRequestOnlyForLayersWithAlerts(ActionParameters params) {
+        String subset = params.getHttpParam(PARAM_SUBSET);
+        return !SUBSET_ALL_KNOWN.equals(subset);
     }
 }

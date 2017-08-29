@@ -51,27 +51,25 @@ public class ELFGeoLocatorParser {
     private static final String PROPERTY_FORCEXY = "org.geotools.referencing.forceXY";
     private String serviceSrs = "EPSG:4258";
 
-    public ELFGeoLocatorParser() {
-        this(null);
+    public ELFGeoLocatorParser(ELFGeoLocatorSearchChannel elfchannel) {
+        this(null, elfchannel);
     }
-    public ELFGeoLocatorParser(final String serviceSrs) {
+    public ELFGeoLocatorParser(final String serviceSrs, ELFGeoLocatorSearchChannel elfchannel) {
 
         // use provided SRS or default to EPSG:4258
         if(serviceSrs != null) {
             log.debug("Using", serviceSrs, "as native SRS");
             this.serviceSrs = serviceSrs.toUpperCase();
         }
-
-        final ELFGeoLocatorSearchChannel elfchannel = new ELFGeoLocatorSearchChannel();
-
+        channel = elfchannel;
         countries = new ELFGeoLocatorCountries();
 
-        elfScalesForType = elfchannel.getElfScalesForType();
+        elfScalesForType = channel.getElfScalesForType();
         if(elfScalesForType == null) {
             log.debug("Scale relation to locationtypes is not set ");
         }
 
-        elfLocationPriority = elfchannel.getElfLocationPriority();
+        elfLocationPriority = channel.getElfLocationPriority();
         if(elfLocationPriority == null) {
             log.debug("priority relation to locationtypes is not set ");
         }
@@ -131,7 +129,6 @@ public class ELFGeoLocatorParser {
             }
             FeatureIterator features = fc.features();
 
-            int nfeatures = 0;
             while (features.hasNext()) {
 
                 SimpleFeature feature = (SimpleFeature) features.next();
@@ -235,7 +232,6 @@ public class ELFGeoLocatorParser {
                 }
                 searchResultList.addItem(item);
 
-                nfeatures++;
             }  // Feature loop
 
         } catch (Exception e) {
@@ -297,7 +293,6 @@ public class ELFGeoLocatorParser {
                 } else if (value instanceof List) {
                     parseFeaturePropertiesMapList(result, (List) value, field);
                 } else {
-
                     result.put(field, value);
                 }
             }
@@ -357,7 +352,7 @@ public class ELFGeoLocatorParser {
                 if (value instanceof String) {
                     if (entry.getKey().endsWith(key)) {
                         values.add(value.toString());
-                       // Trick order num hack for ordering properties later on because of original hash order
+                        // Trick order num hack for ordering properties later on because of original hash order
                         String[] num = entry.getKey().split("_");
                         if (num.length > 2){
                             order.add(Integer.parseInt(num[num.length - 2]));

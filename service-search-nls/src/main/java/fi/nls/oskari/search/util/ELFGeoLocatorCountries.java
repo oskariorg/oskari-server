@@ -55,7 +55,7 @@ public class ELFGeoLocatorCountries {
         }
     }
 
-    private Map<String, String> getCountryMap() throws IOException {
+    public Map<String, String> getCountryMap() throws IOException {
         // not properly configured
         if (serviceURL == null) {
             return countries;
@@ -86,7 +86,7 @@ public class ELFGeoLocatorCountries {
                 }
                 Element eElement = (Element) nNode;
                 NodeList elements = eElement.getElementsByTagName("administrator");
-                for(int i=1; i<elements.getLength(); i++) {
+                for(int i=0; i<elements.getLength(); i++) {
                     countries.put(eElement.getElementsByTagName("administrator").item(i).getTextContent(),
                             eElement.getElementsByTagName("code").item(0).getTextContent());
                 }
@@ -100,7 +100,9 @@ public class ELFGeoLocatorCountries {
 
     public String getAdminCountry(Locale locale, String admin_name, boolean reloadIfNotFound) {
         if (countryMap.containsKey(admin_name)) {
-            return countryMap.get(admin_name);
+            String countryCode = countryMap.get(admin_name);
+            Locale obj = new Locale("", countryCode);
+            return obj.getDisplayCountry(locale);
         }
         if(!reloadIfNotFound) {
             // loading didn't get us the requested country so just return empty string

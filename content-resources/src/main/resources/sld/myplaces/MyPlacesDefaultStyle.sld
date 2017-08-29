@@ -10,7 +10,7 @@
         <UserStyle>
             <Title>MyPlaces</Title>
             <FeatureTypeStyle>
-                <!--  Polygons: no fill pattern, no border dash, no attention text -->
+                <!--  Polygons: opaque stroke, no fill pattern, no border dash, no attention text -->
                 <Rule>
                     <ogc:Filter>
                         <ogc:And>
@@ -39,6 +39,12 @@
                                     <ogc:PropertyName>attention_text</ogc:PropertyName>
                                 </ogc:Function>
                                 <ogc:Literal>0</ogc:Literal>
+                            </ogc:PropertyIsEqualTo>
+                            <ogc:PropertyIsEqualTo>
+                                <ogc:Function name="isNull">
+                                    <ogc:PropertyName>border_color</ogc:PropertyName>
+                                </ogc:Function>
+                                <ogc:Literal>false</ogc:Literal>
                             </ogc:PropertyIsEqualTo>
                         </ogc:And>
                     </ogc:Filter>
@@ -87,7 +93,7 @@
                     </TextSymbolizer>
                 </Rule>
 
-                <!--  Polygons: no fill pattern, no border dash, attention text -->
+                <!--  Polygons: opaque stroke, no fill pattern, no border dash, attention text -->
                 <Rule>
                     <ogc:Filter>
                         <ogc:And>
@@ -117,6 +123,12 @@
                                 </ogc:Function>
                                 <ogc:Literal>0</ogc:Literal>
                             </ogc:PropertyIsGreaterThan>
+                            <ogc:PropertyIsEqualTo>
+                                <ogc:Function name="isNull">
+                                    <ogc:PropertyName>border_color</ogc:PropertyName>
+                                </ogc:Function>
+                                <ogc:Literal>false</ogc:Literal>
+                            </ogc:PropertyIsEqualTo>
                         </ogc:And>
                     </ogc:Filter>
                     <PolygonSymbolizer>
@@ -164,7 +176,7 @@
                     </TextSymbolizer>
                 </Rule>
 
-                <!--  Polygons: no fill pattern, border dash, no attention text -->
+                <!--  Polygons: opaque stroke, no fill pattern, border dash, no attention text -->
                 <Rule>
                     <ogc:Filter>
                         <ogc:And>
@@ -193,6 +205,12 @@
                                     <ogc:PropertyName>attention_text</ogc:PropertyName>
                                 </ogc:Function>
                                 <ogc:Literal>0</ogc:Literal>
+                            </ogc:PropertyIsEqualTo>
+                            <ogc:PropertyIsEqualTo>
+                                <ogc:Function name="isNull">
+                                    <ogc:PropertyName>border_color</ogc:PropertyName>
+                                </ogc:Function>
+                                <ogc:Literal>false</ogc:Literal>
                             </ogc:PropertyIsEqualTo>
                         </ogc:And>
                     </ogc:Filter>
@@ -242,7 +260,7 @@
                     </TextSymbolizer>
                 </Rule>
 
-                <!--  Polygons: no fill pattern, border dash, attention text -->
+                <!--  Polygons: opaque stroke, no fill pattern, border dash, attention text -->
                 <Rule>
                     <ogc:Filter>
                         <ogc:And>
@@ -272,6 +290,12 @@
                                 </ogc:Function>
                                 <ogc:Literal>0</ogc:Literal>
                             </ogc:PropertyIsGreaterThan>
+                            <ogc:PropertyIsEqualTo>
+                                <ogc:Function name="isNull">
+                                    <ogc:PropertyName>border_color</ogc:PropertyName>
+                                </ogc:Function>
+                                <ogc:Literal>false</ogc:Literal>
+                            </ogc:PropertyIsEqualTo>
                         </ogc:And>
                     </ogc:Filter>
                     <PolygonSymbolizer>
@@ -320,7 +344,7 @@
                     </TextSymbolizer>
                 </Rule>
 
-                <!--  Polygons: thin slash fill pattern, no border dash, no attention text -->
+                <!--  Polygons: opaque stroke, thin slash fill pattern, no border dash, no attention text -->
                 <Rule>
                     <ogc:Filter>
                         <ogc:And>
@@ -349,6 +373,12 @@
                                     <ogc:PropertyName>attention_text</ogc:PropertyName>
                                 </ogc:Function>
                                 <ogc:Literal>0</ogc:Literal>
+                            </ogc:PropertyIsEqualTo>
+                            <ogc:PropertyIsEqualTo>
+                                <ogc:Function name="isNull">
+                                    <ogc:PropertyName>border_color</ogc:PropertyName>
+                                </ogc:Function>
+                                <ogc:Literal>false</ogc:Literal>
                             </ogc:PropertyIsEqualTo>
                         </ogc:And>
                     </ogc:Filter>
@@ -408,7 +438,7 @@
                     </TextSymbolizer>
                 </Rule>
 
-                <!--  Polygons: thin slash fill pattern, no border dash, attention text -->
+                <!--  Polygons: opaque stroke, thin slash fill pattern, no border dash, attention text -->
                 <Rule>
                     <ogc:Filter>
                         <ogc:And>
@@ -438,6 +468,12 @@
                                 </ogc:Function>
                                 <ogc:Literal>0</ogc:Literal>
                             </ogc:PropertyIsGreaterThan>
+                            <ogc:PropertyIsEqualTo>
+                                <ogc:Function name="isNull">
+                                    <ogc:PropertyName>border_color</ogc:PropertyName>
+                                </ogc:Function>
+                                <ogc:Literal>false</ogc:Literal>
+                            </ogc:PropertyIsEqualTo>
                         </ogc:And>
                     </ogc:Filter>
                     <PolygonSymbolizer>
@@ -496,7 +532,7 @@
                     </TextSymbolizer>
                 </Rule>
 
-                <!--  Polygons: thin slash fill pattern, border dash, no attention text -->
+                <!--  Polygons: opaque stroke, thin slash fill pattern, border dash, no attention text -->
                 <Rule>
                     <ogc:Filter>
                         <ogc:And>
@@ -525,6 +561,12 @@
                                     <ogc:PropertyName>attention_text</ogc:PropertyName>
                                 </ogc:Function>
                                 <ogc:Literal>0</ogc:Literal>
+                            </ogc:PropertyIsEqualTo>
+                            <ogc:PropertyIsEqualTo>
+                                <ogc:Function name="isNull">
+                                    <ogc:PropertyName>border_color</ogc:PropertyName>
+                                </ogc:Function>
+                                <ogc:Literal>false</ogc:Literal>
                             </ogc:PropertyIsEqualTo>
                         </ogc:And>
                     </ogc:Filter>
@@ -585,7 +627,7 @@
                     </TextSymbolizer>
                 </Rule>
 
-                <!--  Polygons: thin slash fill pattern, border dash, attention text -->
+                <!--  Polygons: opaque stroke, thin slash fill pattern, border dash, attention text -->
                 <Rule>
                     <ogc:Filter>
                         <ogc:And>
@@ -615,6 +657,12 @@
                                 </ogc:Function>
                                 <ogc:Literal>0</ogc:Literal>
                             </ogc:PropertyIsGreaterThan>
+                            <ogc:PropertyIsEqualTo>
+                                <ogc:Function name="isNull">
+                                    <ogc:PropertyName>border_color</ogc:PropertyName>
+                                </ogc:Function>
+                                <ogc:Literal>false</ogc:Literal>
+                            </ogc:PropertyIsEqualTo>
                         </ogc:And>
                     </ogc:Filter>
                     <PolygonSymbolizer>
@@ -674,7 +722,7 @@
                     </TextSymbolizer>
                 </Rule>
 
-                <!--  Polygons: thick slash fill pattern, no border dash, no attention text -->
+                <!--  Polygons: opaque stroke, thick slash fill pattern, no border dash, no attention text -->
                 <Rule>
                     <ogc:Filter>
                         <ogc:And>
@@ -703,6 +751,12 @@
                                     <ogc:PropertyName>attention_text</ogc:PropertyName>
                                 </ogc:Function>
                                 <ogc:Literal>0</ogc:Literal>
+                            </ogc:PropertyIsEqualTo>
+                            <ogc:PropertyIsEqualTo>
+                                <ogc:Function name="isNull">
+                                    <ogc:PropertyName>border_color</ogc:PropertyName>
+                                </ogc:Function>
+                                <ogc:Literal>false</ogc:Literal>
                             </ogc:PropertyIsEqualTo>
                         </ogc:And>
                     </ogc:Filter>
@@ -762,7 +816,7 @@
                     </TextSymbolizer>
                 </Rule>
 
-                <!--  Polygons: thick slash fill pattern, no border dash, attention text -->
+                <!--  Polygons: opaque stroke, thick slash fill pattern, no border dash, attention text -->
                 <Rule>
                     <ogc:Filter>
                         <ogc:And>
@@ -792,6 +846,12 @@
                                 </ogc:Function>
                                 <ogc:Literal>0</ogc:Literal>
                             </ogc:PropertyIsGreaterThan>
+                            <ogc:PropertyIsEqualTo>
+                                <ogc:Function name="isNull">
+                                    <ogc:PropertyName>border_color</ogc:PropertyName>
+                                </ogc:Function>
+                                <ogc:Literal>false</ogc:Literal>
+                            </ogc:PropertyIsEqualTo>
                         </ogc:And>
                     </ogc:Filter>
                     <PolygonSymbolizer>
@@ -850,7 +910,7 @@
                     </TextSymbolizer>
                 </Rule>
 
-                <!--  Polygons: thick slash fill pattern, border dash, no attention text -->
+                <!--  Polygons: opaque stroke, thick slash fill pattern, border dash, no attention text -->
                 <Rule>
                     <ogc:Filter>
                         <ogc:And>
@@ -879,6 +939,12 @@
                                     <ogc:PropertyName>attention_text</ogc:PropertyName>
                                 </ogc:Function>
                                 <ogc:Literal>0</ogc:Literal>
+                            </ogc:PropertyIsEqualTo>
+                            <ogc:PropertyIsEqualTo>
+                                <ogc:Function name="isNull">
+                                    <ogc:PropertyName>border_color</ogc:PropertyName>
+                                </ogc:Function>
+                                <ogc:Literal>false</ogc:Literal>
                             </ogc:PropertyIsEqualTo>
                         </ogc:And>
                     </ogc:Filter>
@@ -939,7 +1005,7 @@
                     </TextSymbolizer>
                 </Rule>
 
-                <!--  Polygons: thick slash fill pattern, border dash, attention text -->
+                <!--  Polygons: opaque stroke, thick slash fill pattern, border dash, attention text -->
                 <Rule>
                     <ogc:Filter>
                         <ogc:And>
@@ -969,6 +1035,12 @@
                                 </ogc:Function>
                                 <ogc:Literal>0</ogc:Literal>
                             </ogc:PropertyIsGreaterThan>
+                            <ogc:PropertyIsEqualTo>
+                                <ogc:Function name="isNull">
+                                    <ogc:PropertyName>border_color</ogc:PropertyName>
+                                </ogc:Function>
+                                <ogc:Literal>false</ogc:Literal>
+                            </ogc:PropertyIsEqualTo>
                         </ogc:And>
                     </ogc:Filter>
                     <PolygonSymbolizer>
@@ -1028,7 +1100,7 @@
                     </TextSymbolizer>
                 </Rule>
 
-                <!--  Polygons: thin line fill pattern, no border dash, no attention text -->
+                <!--  Polygons: opaque stroke, thin line fill pattern, no border dash, no attention text -->
                 <Rule>
                     <ogc:Filter>
                         <ogc:And>
@@ -1057,6 +1129,12 @@
                                     <ogc:PropertyName>attention_text</ogc:PropertyName>
                                 </ogc:Function>
                                 <ogc:Literal>0</ogc:Literal>
+                            </ogc:PropertyIsEqualTo>
+                            <ogc:PropertyIsEqualTo>
+                                <ogc:Function name="isNull">
+                                    <ogc:PropertyName>border_color</ogc:PropertyName>
+                                </ogc:Function>
+                                <ogc:Literal>false</ogc:Literal>
                             </ogc:PropertyIsEqualTo>
                         </ogc:And>
                     </ogc:Filter>
@@ -1116,7 +1194,7 @@
                     </TextSymbolizer>
                 </Rule>
 
-                <!--  Polygons: thin line fill pattern, no border dash, attention text -->
+                <!--  Polygons: opaque stroke, thin line fill pattern, no border dash, attention text -->
                 <Rule>
                     <ogc:Filter>
                         <ogc:And>
@@ -1146,6 +1224,12 @@
                                 </ogc:Function>
                                 <ogc:Literal>0</ogc:Literal>
                             </ogc:PropertyIsGreaterThan>
+                            <ogc:PropertyIsEqualTo>
+                                <ogc:Function name="isNull">
+                                    <ogc:PropertyName>border_color</ogc:PropertyName>
+                                </ogc:Function>
+                                <ogc:Literal>false</ogc:Literal>
+                            </ogc:PropertyIsEqualTo>
                         </ogc:And>
                     </ogc:Filter>
                     <PolygonSymbolizer>
@@ -1204,7 +1288,7 @@
                     </TextSymbolizer>
                 </Rule>
 
-                <!--  Polygons: thin line fill pattern, border dash, no attention text -->
+                <!--  Polygons: opaque stroke, thin line fill pattern, border dash, no attention text -->
                 <Rule>
                     <ogc:Filter>
                         <ogc:And>
@@ -1233,6 +1317,12 @@
                                     <ogc:PropertyName>attention_text</ogc:PropertyName>
                                 </ogc:Function>
                                 <ogc:Literal>0</ogc:Literal>
+                            </ogc:PropertyIsEqualTo>
+                            <ogc:PropertyIsEqualTo>
+                                <ogc:Function name="isNull">
+                                    <ogc:PropertyName>border_color</ogc:PropertyName>
+                                </ogc:Function>
+                                <ogc:Literal>false</ogc:Literal>
                             </ogc:PropertyIsEqualTo>
                         </ogc:And>
                     </ogc:Filter>
@@ -1293,7 +1383,7 @@
                     </TextSymbolizer>
                 </Rule>
 
-                <!--  Polygons: thin line fill pattern, border dash, attention text -->
+                <!--  Polygons: opaque stroke, thin line fill pattern, border dash, attention text -->
                 <Rule>
                     <ogc:Filter>
                         <ogc:And>
@@ -1323,6 +1413,12 @@
                                 </ogc:Function>
                                 <ogc:Literal>0</ogc:Literal>
                             </ogc:PropertyIsGreaterThan>
+                            <ogc:PropertyIsEqualTo>
+                                <ogc:Function name="isNull">
+                                    <ogc:PropertyName>border_color</ogc:PropertyName>
+                                </ogc:Function>
+                                <ogc:Literal>false</ogc:Literal>
+                            </ogc:PropertyIsEqualTo>
                         </ogc:And>
                     </ogc:Filter>
                     <PolygonSymbolizer>
@@ -1382,7 +1478,7 @@
                     </TextSymbolizer>
                 </Rule>
 
-                <!--  Polygons: thick line fill pattern, no border dash, no attention text -->
+                <!--  Polygons: opaque stroke, thick line fill pattern, no border dash, no attention text -->
                 <Rule>
                     <ogc:Filter>
                         <ogc:And>
@@ -1411,6 +1507,12 @@
                                     <ogc:PropertyName>attention_text</ogc:PropertyName>
                                 </ogc:Function>
                                 <ogc:Literal>0</ogc:Literal>
+                            </ogc:PropertyIsEqualTo>
+                            <ogc:PropertyIsEqualTo>
+                                <ogc:Function name="isNull">
+                                    <ogc:PropertyName>border_color</ogc:PropertyName>
+                                </ogc:Function>
+                                <ogc:Literal>false</ogc:Literal>
                             </ogc:PropertyIsEqualTo>
                         </ogc:And>
                     </ogc:Filter>
@@ -1470,7 +1572,7 @@
                     </TextSymbolizer>
                 </Rule>
 
-                <!--  Polygons: thick line fill pattern, no border dash, attention text -->
+                <!--  Polygons: opaque stroke, thick line fill pattern, no border dash, attention text -->
                 <Rule>
                     <ogc:Filter>
                         <ogc:And>
@@ -1500,6 +1602,12 @@
                                 </ogc:Function>
                                 <ogc:Literal>0</ogc:Literal>
                             </ogc:PropertyIsGreaterThan>
+                            <ogc:PropertyIsEqualTo>
+                                <ogc:Function name="isNull">
+                                    <ogc:PropertyName>border_color</ogc:PropertyName>
+                                </ogc:Function>
+                                <ogc:Literal>false</ogc:Literal>
+                            </ogc:PropertyIsEqualTo>
                         </ogc:And>
                     </ogc:Filter>
                     <PolygonSymbolizer>
@@ -1558,7 +1666,7 @@
                     </TextSymbolizer>
                 </Rule>
 
-                <!--  Polygons: thick line fill pattern, border dash, no attention text -->
+                <!--  Polygons: opaque stroke, thick line fill pattern, border dash, no attention text -->
                 <Rule>
                     <ogc:Filter>
                         <ogc:And>
@@ -1587,6 +1695,12 @@
                                     <ogc:PropertyName>attention_text</ogc:PropertyName>
                                 </ogc:Function>
                                 <ogc:Literal>0</ogc:Literal>
+                            </ogc:PropertyIsEqualTo>
+                            <ogc:PropertyIsEqualTo>
+                                <ogc:Function name="isNull">
+                                    <ogc:PropertyName>border_color</ogc:PropertyName>
+                                </ogc:Function>
+                                <ogc:Literal>false</ogc:Literal>
                             </ogc:PropertyIsEqualTo>
                         </ogc:And>
                     </ogc:Filter>
@@ -1647,7 +1761,7 @@
                     </TextSymbolizer>
                 </Rule>
 
-                <!--  Polygons: thick line fill pattern, border dash, attention text -->
+                <!--  Polygons: opaque stroke, thick line fill pattern, border dash, attention text -->
                 <Rule>
                     <ogc:Filter>
                         <ogc:And>
@@ -1677,6 +1791,12 @@
                                 </ogc:Function>
                                 <ogc:Literal>0</ogc:Literal>
                             </ogc:PropertyIsGreaterThan>
+                            <ogc:PropertyIsEqualTo>
+                                <ogc:Function name="isNull">
+                                    <ogc:PropertyName>border_color</ogc:PropertyName>
+                                </ogc:Function>
+                                <ogc:Literal>false</ogc:Literal>
+                            </ogc:PropertyIsEqualTo>
                         </ogc:And>
                     </ogc:Filter>
                     <PolygonSymbolizer>
@@ -1700,6 +1820,786 @@
                             <CssParameter name="stroke-dasharray">5 2</CssParameter>
                             <CssParameter name="stroke-linejoin"><ogc:PropertyName>border_linejoin</ogc:PropertyName></CssParameter>
                         </Stroke>
+                    </PolygonSymbolizer>
+                    <TextSymbolizer>
+                        <Geometry>
+                            <ogc:Function name="centroid">
+                                <ogc:PropertyName>geometry</ogc:PropertyName>
+                            </ogc:Function>
+                        </Geometry>
+                        <Label><ogc:PropertyName>attention_text</ogc:PropertyName></Label>
+                        <Font>
+                            <CssParameter name="font-family">SansSerif.plain</CssParameter>
+                            <CssParameter name="font-size">14</CssParameter>
+                            <CssParameter name="font-style">normal</CssParameter>
+                            <CssParameter name="font-weight">bold</CssParameter>
+                        </Font>
+                        <LabelPlacement>
+                            <PointPlacement>
+                                <AnchorPoint>
+                                    <AnchorPointX>0.5</AnchorPointX>
+                                    <AnchorPointY>0.5</AnchorPointY>
+                                </AnchorPoint>
+                            </PointPlacement>
+                        </LabelPlacement>
+                        <Fill>
+                            <CssParameter name="fill">F000000</CssParameter>
+                        </Fill>
+                        <Halo>
+                            <Radius>1</Radius>
+                            <Fill>
+                                <CssParameter name="fill">#FFFFFF</CssParameter>
+                            </Fill>
+                        </Halo>
+                        <VendorOption name="autoWrap">60</VendorOption>
+                        <VendorOption name="maxDisplacement">150</VendorOption>
+                    </TextSymbolizer>
+                </Rule>
+
+                <!--  Polygons: transparent stroke, no fill pattern, no attention text -->
+                <Rule>
+                    <ogc:Filter>
+                        <ogc:And>
+                            <ogc:PropertyIsEqualTo>
+                                <ogc:Function name="in2">
+                                    <ogc:Function name="geometryType">
+                                        <ogc:PropertyName>geometry</ogc:PropertyName>
+                                    </ogc:Function>
+                                    <ogc:Literal>Polygon</ogc:Literal>
+                                    <ogc:Literal>MultiPolygon</ogc:Literal>
+                                </ogc:Function>
+                                <ogc:Literal>true</ogc:Literal>
+                            </ogc:PropertyIsEqualTo>
+                            <ogc:PropertyIsEqualTo>
+                                <ogc:PropertyName>fill_pattern</ogc:PropertyName>
+                                <ogc:Literal>-1</ogc:Literal>
+                            </ogc:PropertyIsEqualTo>
+                            <ogc:PropertyIsEqualTo>
+                                <ogc:Function name="strLength">
+                                    <ogc:PropertyName>attention_text</ogc:PropertyName>
+                                </ogc:Function>
+                                <ogc:Literal>0</ogc:Literal>
+                            </ogc:PropertyIsEqualTo>
+                            <ogc:PropertyIsNull>
+                                <ogc:PropertyName>border_color</ogc:PropertyName>
+                            </ogc:PropertyIsNull>
+                        </ogc:And>
+                    </ogc:Filter>
+                    <PolygonSymbolizer>
+                        <Fill>
+                            <CssParameter name="fill"><ogc:PropertyName>fill_color</ogc:PropertyName></CssParameter>
+                        </Fill>
+                    </PolygonSymbolizer>
+                    <TextSymbolizer>
+                        <Geometry>
+                            <ogc:Function name="centroid">
+                                <ogc:PropertyName>geometry</ogc:PropertyName>
+                            </ogc:Function>
+                        </Geometry>
+                        <Label><ogc:PropertyName>name</ogc:PropertyName></Label>
+                        <Font>
+                            <CssParameter name="font-family">SansSerif.plain</CssParameter>
+                            <CssParameter name="font-size">14</CssParameter>
+                            <CssParameter name="font-style">normal</CssParameter>
+                            <CssParameter name="font-weight">bold</CssParameter>
+                        </Font>
+                        <LabelPlacement>
+                            <PointPlacement>
+                                <AnchorPoint>
+                                    <AnchorPointX>0.5</AnchorPointX>
+                                    <AnchorPointY>0.5</AnchorPointY>
+                                </AnchorPoint>
+                            </PointPlacement>
+                        </LabelPlacement>
+                        <Fill>
+                            <CssParameter name="fill">F000000</CssParameter>
+                        </Fill>
+                        <Halo>
+                            <Radius>1</Radius>
+                            <Fill>
+                                <CssParameter name="fill">#FFFFFF</CssParameter>
+                            </Fill>
+                        </Halo>
+                        <VendorOption name="autoWrap">60</VendorOption>
+                        <VendorOption name="maxDisplacement">150</VendorOption>
+                    </TextSymbolizer>
+                </Rule>
+
+                <!--  Polygons: transparent stroke, no fill pattern, attention text -->
+                <Rule>
+                    <ogc:Filter>
+                        <ogc:And>
+                            <ogc:PropertyIsEqualTo>
+                                <ogc:Function name="in2">
+                                    <ogc:Function name="geometryType">
+                                        <ogc:PropertyName>geometry</ogc:PropertyName>
+                                    </ogc:Function>
+                                    <ogc:Literal>Polygon</ogc:Literal>
+                                    <ogc:Literal>MultiPolygon</ogc:Literal>
+                                </ogc:Function>
+                                <ogc:Literal>true</ogc:Literal>
+                            </ogc:PropertyIsEqualTo>
+                            <ogc:PropertyIsEqualTo>
+                                <ogc:PropertyName>fill_pattern</ogc:PropertyName>
+                                <ogc:Literal>-1</ogc:Literal>
+                            </ogc:PropertyIsEqualTo>
+                            <ogc:PropertyIsGreaterThan>
+                                <ogc:Function name="strLength">
+                                    <ogc:PropertyName>attention_text</ogc:PropertyName>
+                                </ogc:Function>
+                                <ogc:Literal>0</ogc:Literal>
+                            </ogc:PropertyIsGreaterThan>
+                            <ogc:PropertyIsNull>
+                                <ogc:PropertyName>border_color</ogc:PropertyName>
+                            </ogc:PropertyIsNull>
+                        </ogc:And>
+                    </ogc:Filter>
+                    <PolygonSymbolizer>
+                        <Fill>
+                            <CssParameter name="fill"><ogc:PropertyName>fill_color</ogc:PropertyName></CssParameter>
+                        </Fill>
+                    </PolygonSymbolizer>
+                    <TextSymbolizer>
+                        <Geometry>
+                            <ogc:Function name="centroid">
+                                <ogc:PropertyName>geometry</ogc:PropertyName>
+                            </ogc:Function>
+                        </Geometry>
+                        <Label><ogc:PropertyName>attention_text</ogc:PropertyName></Label>
+                        <Font>
+                            <CssParameter name="font-family">SansSerif.plain</CssParameter>
+                            <CssParameter name="font-size">14</CssParameter>
+                            <CssParameter name="font-style">normal</CssParameter>
+                            <CssParameter name="font-weight">bold</CssParameter>
+                        </Font>
+                        <LabelPlacement>
+                            <PointPlacement>
+                                <AnchorPoint>
+                                    <AnchorPointX>0.5</AnchorPointX>
+                                    <AnchorPointY>0.5</AnchorPointY>
+                                </AnchorPoint>
+                            </PointPlacement>
+                        </LabelPlacement>
+                        <Fill>
+                            <CssParameter name="fill">F000000</CssParameter>
+                        </Fill>
+                        <Halo>
+                            <Radius>1</Radius>
+                            <Fill>
+                                <CssParameter name="fill">#FFFFFF</CssParameter>
+                            </Fill>
+                        </Halo>
+                        <VendorOption name="autoWrap">60</VendorOption>
+                        <VendorOption name="maxDisplacement">150</VendorOption>
+                    </TextSymbolizer>
+                </Rule>
+
+                <!--  Polygons: transparent stroke, thin slash fill pattern, no attention text -->
+                <Rule>
+                    <ogc:Filter>
+                        <ogc:And>
+                            <ogc:PropertyIsEqualTo>
+                                <ogc:Function name="in2">
+                                    <ogc:Function name="geometryType">
+                                        <ogc:PropertyName>geometry</ogc:PropertyName>
+                                    </ogc:Function>
+                                    <ogc:Literal>Polygon</ogc:Literal>
+                                    <ogc:Literal>MultiPolygon</ogc:Literal>
+                                </ogc:Function>
+                                <ogc:Literal>true</ogc:Literal>
+                            </ogc:PropertyIsEqualTo>
+                            <ogc:PropertyIsEqualTo>
+                                <ogc:PropertyName>fill_pattern</ogc:PropertyName>
+                                <ogc:Literal>0</ogc:Literal>
+                            </ogc:PropertyIsEqualTo>
+                            <ogc:PropertyIsEqualTo>
+                                <ogc:Function name="strLength">
+                                    <ogc:PropertyName>attention_text</ogc:PropertyName>
+                                </ogc:Function>
+                                <ogc:Literal>0</ogc:Literal>
+                            </ogc:PropertyIsEqualTo>
+                            <ogc:PropertyIsNull>
+                                <ogc:PropertyName>border_color</ogc:PropertyName>
+                            </ogc:PropertyIsNull>
+                        </ogc:And>
+                    </ogc:Filter>
+                    <PolygonSymbolizer>
+                        <Fill>
+                            <GraphicFill>
+                                <Graphic>
+                                    <Mark>
+                                        <WellKnownName>shape://slash</WellKnownName>
+                                        <Stroke>
+                                            <CssParameter name="stroke"><ogc:PropertyName>fill_color</ogc:PropertyName></CssParameter>
+                                            <CssParameter name="stroke-width">1</CssParameter>
+                                        </Stroke>
+                                    </Mark>
+                                    <Size>4</Size>
+                                </Graphic>
+                            </GraphicFill>
+                        </Fill>
+                    </PolygonSymbolizer>
+                    <TextSymbolizer>
+                        <Geometry>
+                            <ogc:Function name="centroid">
+                                <ogc:PropertyName>geometry</ogc:PropertyName>
+                            </ogc:Function>
+                        </Geometry>
+                        <Label><ogc:PropertyName>name</ogc:PropertyName></Label>
+                        <Font>
+                            <CssParameter name="font-family">SansSerif.plain</CssParameter>
+                            <CssParameter name="font-size">14</CssParameter>
+                            <CssParameter name="font-style">normal</CssParameter>
+                            <CssParameter name="font-weight">bold</CssParameter>
+                        </Font>
+                        <LabelPlacement>
+                            <PointPlacement>
+                                <AnchorPoint>
+                                    <AnchorPointX>0.5</AnchorPointX>
+                                    <AnchorPointY>0.5</AnchorPointY>
+                                </AnchorPoint>
+                            </PointPlacement>
+                        </LabelPlacement>
+                        <Fill>
+                            <CssParameter name="fill">F000000</CssParameter>
+                        </Fill>
+                        <Halo>
+                            <Radius>1</Radius>
+                            <Fill>
+                                <CssParameter name="fill">#FFFFFF</CssParameter>
+                            </Fill>
+                        </Halo>
+                        <VendorOption name="autoWrap">60</VendorOption>
+                        <VendorOption name="maxDisplacement">150</VendorOption>
+                    </TextSymbolizer>
+                </Rule>
+
+                <!--  Polygons: transparent stroke, thin slash fill pattern, attention text -->
+                <Rule>
+                    <ogc:Filter>
+                        <ogc:And>
+                            <ogc:PropertyIsEqualTo>
+                                <ogc:Function name="in2">
+                                    <ogc:Function name="geometryType">
+                                        <ogc:PropertyName>geometry</ogc:PropertyName>
+                                    </ogc:Function>
+                                    <ogc:Literal>Polygon</ogc:Literal>
+                                    <ogc:Literal>MultiPolygon</ogc:Literal>
+                                </ogc:Function>
+                                <ogc:Literal>true</ogc:Literal>
+                            </ogc:PropertyIsEqualTo>
+                            <ogc:PropertyIsEqualTo>
+                                <ogc:PropertyName>fill_pattern</ogc:PropertyName>
+                                <ogc:Literal>0</ogc:Literal>
+                            </ogc:PropertyIsEqualTo>
+                            <ogc:PropertyIsGreaterThan>
+                                <ogc:Function name="strLength">
+                                    <ogc:PropertyName>attention_text</ogc:PropertyName>
+                                </ogc:Function>
+                                <ogc:Literal>0</ogc:Literal>
+                            </ogc:PropertyIsGreaterThan>
+                            <ogc:PropertyIsNull>
+                                <ogc:PropertyName>border_color</ogc:PropertyName>
+                            </ogc:PropertyIsNull>
+                        </ogc:And>
+                    </ogc:Filter>
+                    <PolygonSymbolizer>
+                        <Fill>
+                            <GraphicFill>
+                                <Graphic>
+                                    <Mark>
+                                        <WellKnownName>shape://slash</WellKnownName>
+                                        <Stroke>
+                                            <CssParameter name="stroke"><ogc:PropertyName>fill_color</ogc:PropertyName></CssParameter>
+                                            <CssParameter name="stroke-width">1</CssParameter>
+                                        </Stroke>
+                                    </Mark>
+                                    <Size>4</Size>
+                                </Graphic>
+                            </GraphicFill>
+                        </Fill>
+                    </PolygonSymbolizer>
+                    <TextSymbolizer>
+                        <Geometry>
+                            <ogc:Function name="centroid">
+                                <ogc:PropertyName>geometry</ogc:PropertyName>
+                            </ogc:Function>
+                        </Geometry>
+                        <Label><ogc:PropertyName>attention_text</ogc:PropertyName></Label>
+                        <Font>
+                            <CssParameter name="font-family">SansSerif.plain</CssParameter>
+                            <CssParameter name="font-size">14</CssParameter>
+                            <CssParameter name="font-style">normal</CssParameter>
+                            <CssParameter name="font-weight">bold</CssParameter>
+                        </Font>
+                        <LabelPlacement>
+                            <PointPlacement>
+                                <AnchorPoint>
+                                    <AnchorPointX>0.5</AnchorPointX>
+                                    <AnchorPointY>0.5</AnchorPointY>
+                                </AnchorPoint>
+                            </PointPlacement>
+                        </LabelPlacement>
+                        <Fill>
+                            <CssParameter name="fill">F000000</CssParameter>
+                        </Fill>
+                        <Halo>
+                            <Radius>1</Radius>
+                            <Fill>
+                                <CssParameter name="fill">#FFFFFF</CssParameter>
+                            </Fill>
+                        </Halo>
+                        <VendorOption name="autoWrap">60</VendorOption>
+                        <VendorOption name="maxDisplacement">150</VendorOption>
+                    </TextSymbolizer>
+                </Rule>
+
+                <!--  Polygons: transparent stroke, thick slash fill pattern, no attention text -->
+                <Rule>
+                    <ogc:Filter>
+                        <ogc:And>
+                            <ogc:PropertyIsEqualTo>
+                                <ogc:Function name="in2">
+                                    <ogc:Function name="geometryType">
+                                        <ogc:PropertyName>geometry</ogc:PropertyName>
+                                    </ogc:Function>
+                                    <ogc:Literal>Polygon</ogc:Literal>
+                                    <ogc:Literal>MultiPolygon</ogc:Literal>
+                                </ogc:Function>
+                                <ogc:Literal>true</ogc:Literal>
+                            </ogc:PropertyIsEqualTo>
+                            <ogc:PropertyIsEqualTo>
+                                <ogc:PropertyName>fill_pattern</ogc:PropertyName>
+                                <ogc:Literal>1</ogc:Literal>
+                            </ogc:PropertyIsEqualTo>
+                            <ogc:PropertyIsEqualTo>
+                                <ogc:Function name="strLength">
+                                    <ogc:PropertyName>attention_text</ogc:PropertyName>
+                                </ogc:Function>
+                                <ogc:Literal>0</ogc:Literal>
+                            </ogc:PropertyIsEqualTo>
+                            <ogc:PropertyIsNull>
+                                <ogc:PropertyName>border_color</ogc:PropertyName>
+                            </ogc:PropertyIsNull>
+                        </ogc:And>
+                    </ogc:Filter>
+                    <PolygonSymbolizer>
+                        <Fill>
+                            <GraphicFill>
+                                <Graphic>
+                                    <Mark>
+                                        <WellKnownName>shape://slash</WellKnownName>
+                                        <Stroke>
+                                            <CssParameter name="stroke"><ogc:PropertyName>fill_color</ogc:PropertyName></CssParameter>
+                                            <CssParameter name="stroke-width">2</CssParameter>
+                                        </Stroke>
+                                    </Mark>
+                                    <Size>6</Size>
+                                </Graphic>
+                            </GraphicFill>
+                        </Fill>
+                    </PolygonSymbolizer>
+                    <TextSymbolizer>
+                        <Geometry>
+                            <ogc:Function name="centroid">
+                                <ogc:PropertyName>geometry</ogc:PropertyName>
+                            </ogc:Function>
+                        </Geometry>
+                        <Label><ogc:PropertyName>name</ogc:PropertyName></Label>
+                        <Font>
+                            <CssParameter name="font-family">SansSerif.plain</CssParameter>
+                            <CssParameter name="font-size">14</CssParameter>
+                            <CssParameter name="font-style">normal</CssParameter>
+                            <CssParameter name="font-weight">bold</CssParameter>
+                        </Font>
+                        <LabelPlacement>
+                            <PointPlacement>
+                                <AnchorPoint>
+                                    <AnchorPointX>0.5</AnchorPointX>
+                                    <AnchorPointY>0.5</AnchorPointY>
+                                </AnchorPoint>
+                            </PointPlacement>
+                        </LabelPlacement>
+                        <Fill>
+                            <CssParameter name="fill">F000000</CssParameter>
+                        </Fill>
+                        <Halo>
+                            <Radius>1</Radius>
+                            <Fill>
+                                <CssParameter name="fill">#FFFFFF</CssParameter>
+                            </Fill>
+                        </Halo>
+                        <VendorOption name="autoWrap">60</VendorOption>
+                        <VendorOption name="maxDisplacement">150</VendorOption>
+                    </TextSymbolizer>
+                </Rule>
+
+                <!--  Polygons: transparent stroke, thick slash fill pattern, attention text -->
+                <Rule>
+                    <ogc:Filter>
+                        <ogc:And>
+                            <ogc:PropertyIsEqualTo>
+                                <ogc:Function name="in2">
+                                    <ogc:Function name="geometryType">
+                                        <ogc:PropertyName>geometry</ogc:PropertyName>
+                                    </ogc:Function>
+                                    <ogc:Literal>Polygon</ogc:Literal>
+                                    <ogc:Literal>MultiPolygon</ogc:Literal>
+                                </ogc:Function>
+                                <ogc:Literal>true</ogc:Literal>
+                            </ogc:PropertyIsEqualTo>
+                            <ogc:PropertyIsEqualTo>
+                                <ogc:PropertyName>fill_pattern</ogc:PropertyName>
+                                <ogc:Literal>1</ogc:Literal>
+                            </ogc:PropertyIsEqualTo>
+                            <ogc:PropertyIsGreaterThan>
+                                <ogc:Function name="strLength">
+                                    <ogc:PropertyName>attention_text</ogc:PropertyName>
+                                </ogc:Function>
+                                <ogc:Literal>0</ogc:Literal>
+                            </ogc:PropertyIsGreaterThan>
+                            <ogc:PropertyIsNull>
+                                <ogc:PropertyName>border_color</ogc:PropertyName>
+                            </ogc:PropertyIsNull>
+                        </ogc:And>
+                    </ogc:Filter>
+                    <PolygonSymbolizer>
+                        <Fill>
+                            <GraphicFill>
+                                <Graphic>
+                                    <Mark>
+                                        <WellKnownName>shape://slash</WellKnownName>
+                                        <Stroke>
+                                            <CssParameter name="stroke"><ogc:PropertyName>fill_color</ogc:PropertyName></CssParameter>
+                                            <CssParameter name="stroke-width">2</CssParameter>
+                                        </Stroke>
+                                    </Mark>
+                                    <Size>6</Size>
+                                </Graphic>
+                            </GraphicFill>
+                        </Fill>
+                    </PolygonSymbolizer>
+                    <TextSymbolizer>
+                        <Geometry>
+                            <ogc:Function name="centroid">
+                                <ogc:PropertyName>geometry</ogc:PropertyName>
+                            </ogc:Function>
+                        </Geometry>
+                        <Label><ogc:PropertyName>attention_text</ogc:PropertyName></Label>
+                        <Font>
+                            <CssParameter name="font-family">SansSerif.plain</CssParameter>
+                            <CssParameter name="font-size">14</CssParameter>
+                            <CssParameter name="font-style">normal</CssParameter>
+                            <CssParameter name="font-weight">bold</CssParameter>
+                        </Font>
+                        <LabelPlacement>
+                            <PointPlacement>
+                                <AnchorPoint>
+                                    <AnchorPointX>0.5</AnchorPointX>
+                                    <AnchorPointY>0.5</AnchorPointY>
+                                </AnchorPoint>
+                            </PointPlacement>
+                        </LabelPlacement>
+                        <Fill>
+                            <CssParameter name="fill">F000000</CssParameter>
+                        </Fill>
+                        <Halo>
+                            <Radius>1</Radius>
+                            <Fill>
+                                <CssParameter name="fill">#FFFFFF</CssParameter>
+                            </Fill>
+                        </Halo>
+                        <VendorOption name="autoWrap">60</VendorOption>
+                        <VendorOption name="maxDisplacement">150</VendorOption>
+                    </TextSymbolizer>
+                </Rule>
+
+
+                <!--  Polygons: transparent stroke, thin line fill pattern, no attention text -->
+                <Rule>
+                    <ogc:Filter>
+                        <ogc:And>
+                            <ogc:PropertyIsEqualTo>
+                                <ogc:Function name="in2">
+                                    <ogc:Function name="geometryType">
+                                        <ogc:PropertyName>geometry</ogc:PropertyName>
+                                    </ogc:Function>
+                                    <ogc:Literal>Polygon</ogc:Literal>
+                                    <ogc:Literal>MultiPolygon</ogc:Literal>
+                                </ogc:Function>
+                                <ogc:Literal>true</ogc:Literal>
+                            </ogc:PropertyIsEqualTo>
+                            <ogc:PropertyIsEqualTo>
+                                <ogc:PropertyName>fill_pattern</ogc:PropertyName>
+                                <ogc:Literal>2</ogc:Literal>
+                            </ogc:PropertyIsEqualTo>
+                            <ogc:PropertyIsEqualTo>
+                                <ogc:Function name="strLength">
+                                    <ogc:PropertyName>attention_text</ogc:PropertyName>
+                                </ogc:Function>
+                                <ogc:Literal>0</ogc:Literal>
+                            </ogc:PropertyIsEqualTo>
+                            <ogc:PropertyIsNull>
+                                <ogc:PropertyName>border_color</ogc:PropertyName>
+                            </ogc:PropertyIsNull>
+                        </ogc:And>
+                    </ogc:Filter>
+                    <PolygonSymbolizer>
+                        <Fill>
+                            <GraphicFill>
+                                <Graphic>
+                                    <Mark>
+                                        <WellKnownName>shape://horline</WellKnownName>
+                                        <Stroke>
+                                            <CssParameter name="stroke"><ogc:PropertyName>fill_color</ogc:PropertyName></CssParameter>
+                                            <CssParameter name="stroke-width">0.4</CssParameter>
+                                        </Stroke>
+                                    </Mark>
+                                    <Size>4.5</Size>
+                                </Graphic>
+                            </GraphicFill>
+                        </Fill>
+                    </PolygonSymbolizer>
+                    <TextSymbolizer>
+                        <Geometry>
+                            <ogc:Function name="centroid">
+                                <ogc:PropertyName>geometry</ogc:PropertyName>
+                            </ogc:Function>
+                        </Geometry>
+                        <Label><ogc:PropertyName>name</ogc:PropertyName></Label>
+                        <Font>
+                            <CssParameter name="font-family">SansSerif.plain</CssParameter>
+                            <CssParameter name="font-size">14</CssParameter>
+                            <CssParameter name="font-style">normal</CssParameter>
+                            <CssParameter name="font-weight">bold</CssParameter>
+                        </Font>
+                        <LabelPlacement>
+                            <PointPlacement>
+                                <AnchorPoint>
+                                    <AnchorPointX>0.5</AnchorPointX>
+                                    <AnchorPointY>0.5</AnchorPointY>
+                                </AnchorPoint>
+                            </PointPlacement>
+                        </LabelPlacement>
+                        <Fill>
+                            <CssParameter name="fill">F000000</CssParameter>
+                        </Fill>
+                        <Halo>
+                            <Radius>1</Radius>
+                            <Fill>
+                                <CssParameter name="fill">#FFFFFF</CssParameter>
+                            </Fill>
+                        </Halo>
+                        <VendorOption name="autoWrap">60</VendorOption>
+                        <VendorOption name="maxDisplacement">150</VendorOption>
+                    </TextSymbolizer>
+                </Rule>
+
+                <!--  Polygons: transparent stroke, thin line fill pattern, attention text -->
+                <Rule>
+                    <ogc:Filter>
+                        <ogc:And>
+                            <ogc:PropertyIsEqualTo>
+                                <ogc:Function name="in2">
+                                    <ogc:Function name="geometryType">
+                                        <ogc:PropertyName>geometry</ogc:PropertyName>
+                                    </ogc:Function>
+                                    <ogc:Literal>Polygon</ogc:Literal>
+                                    <ogc:Literal>MultiPolygon</ogc:Literal>
+                                </ogc:Function>
+                                <ogc:Literal>true</ogc:Literal>
+                            </ogc:PropertyIsEqualTo>
+                            <ogc:PropertyIsEqualTo>
+                                <ogc:PropertyName>fill_pattern</ogc:PropertyName>
+                                <ogc:Literal>2</ogc:Literal>
+                            </ogc:PropertyIsEqualTo>
+                            <ogc:PropertyIsGreaterThan>
+                                <ogc:Function name="strLength">
+                                    <ogc:PropertyName>attention_text</ogc:PropertyName>
+                                </ogc:Function>
+                                <ogc:Literal>0</ogc:Literal>
+                            </ogc:PropertyIsGreaterThan>
+                            <ogc:PropertyIsNull>
+                                <ogc:PropertyName>border_color</ogc:PropertyName>
+                            </ogc:PropertyIsNull>
+                        </ogc:And>
+                    </ogc:Filter>
+                    <PolygonSymbolizer>
+                        <Fill>
+                            <GraphicFill>
+                                <Graphic>
+                                    <Mark>
+                                        <WellKnownName>shape://horline</WellKnownName>
+                                        <Stroke>
+                                            <CssParameter name="stroke"><ogc:PropertyName>fill_color</ogc:PropertyName></CssParameter>
+                                            <CssParameter name="stroke-width">0.4</CssParameter>
+                                        </Stroke>
+                                    </Mark>
+                                    <Size>4.5</Size>
+                                </Graphic>
+                            </GraphicFill>
+                        </Fill>
+                    </PolygonSymbolizer>
+                    <TextSymbolizer>
+                        <Geometry>
+                            <ogc:Function name="centroid">
+                                <ogc:PropertyName>geometry</ogc:PropertyName>
+                            </ogc:Function>
+                        </Geometry>
+                        <Label><ogc:PropertyName>attention_text</ogc:PropertyName></Label>
+                        <Font>
+                            <CssParameter name="font-family">SansSerif.plain</CssParameter>
+                            <CssParameter name="font-size">14</CssParameter>
+                            <CssParameter name="font-style">normal</CssParameter>
+                            <CssParameter name="font-weight">bold</CssParameter>
+                        </Font>
+                        <LabelPlacement>
+                            <PointPlacement>
+                                <AnchorPoint>
+                                    <AnchorPointX>0.5</AnchorPointX>
+                                    <AnchorPointY>0.5</AnchorPointY>
+                                </AnchorPoint>
+                            </PointPlacement>
+                        </LabelPlacement>
+                        <Fill>
+                            <CssParameter name="fill">F000000</CssParameter>
+                        </Fill>
+                        <Halo>
+                            <Radius>1</Radius>
+                            <Fill>
+                                <CssParameter name="fill">#FFFFFF</CssParameter>
+                            </Fill>
+                        </Halo>
+                        <VendorOption name="autoWrap">60</VendorOption>
+                        <VendorOption name="maxDisplacement">150</VendorOption>
+                    </TextSymbolizer>
+                </Rule>
+
+
+                <!--  Polygons: transparent stroke, thick line fill pattern, no attention text -->
+                <Rule>
+                    <ogc:Filter>
+                        <ogc:And>
+                            <ogc:PropertyIsEqualTo>
+                                <ogc:Function name="in2">
+                                    <ogc:Function name="geometryType">
+                                        <ogc:PropertyName>geometry</ogc:PropertyName>
+                                    </ogc:Function>
+                                    <ogc:Literal>Polygon</ogc:Literal>
+                                    <ogc:Literal>MultiPolygon</ogc:Literal>
+                                </ogc:Function>
+                                <ogc:Literal>true</ogc:Literal>
+                            </ogc:PropertyIsEqualTo>
+                            <ogc:PropertyIsEqualTo>
+                                <ogc:PropertyName>fill_pattern</ogc:PropertyName>
+                                <ogc:Literal>3</ogc:Literal>
+                            </ogc:PropertyIsEqualTo>
+                            <ogc:PropertyIsEqualTo>
+                                <ogc:Function name="strLength">
+                                    <ogc:PropertyName>attention_text</ogc:PropertyName>
+                                </ogc:Function>
+                                <ogc:Literal>0</ogc:Literal>
+                            </ogc:PropertyIsEqualTo>
+                            <ogc:PropertyIsNull>
+                                <ogc:PropertyName>border_color</ogc:PropertyName>
+                            </ogc:PropertyIsNull>
+                        </ogc:And>
+                    </ogc:Filter>
+                    <PolygonSymbolizer>
+                        <Fill>
+                            <GraphicFill>
+                                <Graphic>
+                                    <Mark>
+                                        <WellKnownName>shape://horline</WellKnownName>
+                                        <Stroke>
+                                            <CssParameter name="stroke"><ogc:PropertyName>fill_color</ogc:PropertyName></CssParameter>
+                                            <CssParameter name="stroke-width">2</CssParameter>
+                                        </Stroke>
+                                    </Mark>
+                                    <Size>5.5</Size>
+                                </Graphic>
+                            </GraphicFill>
+                        </Fill>
+                    </PolygonSymbolizer>
+                    <TextSymbolizer>
+                        <Geometry>
+                            <ogc:Function name="centroid">
+                                <ogc:PropertyName>geometry</ogc:PropertyName>
+                            </ogc:Function>
+                        </Geometry>
+                        <Label><ogc:PropertyName>name</ogc:PropertyName></Label>
+                        <Font>
+                            <CssParameter name="font-family">SansSerif.plain</CssParameter>
+                            <CssParameter name="font-size">14</CssParameter>
+                            <CssParameter name="font-style">normal</CssParameter>
+                            <CssParameter name="font-weight">bold</CssParameter>
+                        </Font>
+                        <LabelPlacement>
+                            <PointPlacement>
+                                <AnchorPoint>
+                                    <AnchorPointX>0.5</AnchorPointX>
+                                    <AnchorPointY>0.5</AnchorPointY>
+                                </AnchorPoint>
+                            </PointPlacement>
+                        </LabelPlacement>
+                        <Fill>
+                            <CssParameter name="fill">F000000</CssParameter>
+                        </Fill>
+                        <Halo>
+                            <Radius>1</Radius>
+                            <Fill>
+                                <CssParameter name="fill">#FFFFFF</CssParameter>
+                            </Fill>
+                        </Halo>
+                        <VendorOption name="autoWrap">60</VendorOption>
+                        <VendorOption name="maxDisplacement">150</VendorOption>
+                    </TextSymbolizer>
+                </Rule>
+
+                <!--  Polygons: transparent stroke, thick line fill pattern, attention text -->
+                <Rule>
+                    <ogc:Filter>
+                        <ogc:And>
+                            <ogc:PropertyIsEqualTo>
+                                <ogc:Function name="in2">
+                                    <ogc:Function name="geometryType">
+                                        <ogc:PropertyName>geometry</ogc:PropertyName>
+                                    </ogc:Function>
+                                    <ogc:Literal>Polygon</ogc:Literal>
+                                    <ogc:Literal>MultiPolygon</ogc:Literal>
+                                </ogc:Function>
+                                <ogc:Literal>true</ogc:Literal>
+                            </ogc:PropertyIsEqualTo>
+                            <ogc:PropertyIsEqualTo>
+                                <ogc:PropertyName>fill_pattern</ogc:PropertyName>
+                                <ogc:Literal>3</ogc:Literal>
+                            </ogc:PropertyIsEqualTo>
+                            <ogc:PropertyIsGreaterThan>
+                                <ogc:Function name="strLength">
+                                    <ogc:PropertyName>attention_text</ogc:PropertyName>
+                                </ogc:Function>
+                                <ogc:Literal>0</ogc:Literal>
+                            </ogc:PropertyIsGreaterThan>
+                            <ogc:PropertyIsNull>
+                                <ogc:PropertyName>border_color</ogc:PropertyName>
+                            </ogc:PropertyIsNull>
+                        </ogc:And>
+                    </ogc:Filter>
+                    <PolygonSymbolizer>
+                        <Fill>
+                            <GraphicFill>
+                                <Graphic>
+                                    <Mark>
+                                        <WellKnownName>shape://horline</WellKnownName>
+                                        <Stroke>
+                                            <CssParameter name="stroke"><ogc:PropertyName>fill_color</ogc:PropertyName></CssParameter>
+                                            <CssParameter name="stroke-width">2</CssParameter>
+                                        </Stroke>
+                                    </Mark>
+                                    <Size>5.5</Size>
+                                </Graphic>
+                            </GraphicFill>
+                        </Fill>
                     </PolygonSymbolizer>
                     <TextSymbolizer>
                         <Geometry>

@@ -21,7 +21,6 @@ import fi.nls.oskari.map.analysis.service.AnalysisDbService;
 import fi.nls.oskari.map.analysis.service.AnalysisDbServiceIbatisImpl;
 import fi.nls.oskari.map.layer.OskariLayerService;
 import fi.nls.oskari.map.userlayer.service.UserLayerDbService;
-import fi.nls.oskari.map.userlayer.service.UserLayerDbServiceIbatisImpl;
 import fi.nls.oskari.myplaces.MyPlacesService;
 import fi.nls.oskari.permission.domain.Permission;
 import fi.nls.oskari.permission.domain.Resource;
@@ -63,7 +62,7 @@ public class PublishPermissionHelper {
         }
 
         if (userLayerService == null) {
-            setUserLayerService(new UserLayerDbServiceIbatisImpl());
+            setUserLayerService(OskariComponentManager.getComponentOfType(UserLayerDbService.class));
         }
 
         if (permissionsService == null) {

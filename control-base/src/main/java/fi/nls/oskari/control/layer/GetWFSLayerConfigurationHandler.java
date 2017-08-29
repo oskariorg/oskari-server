@@ -12,7 +12,6 @@ import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.analysis.service.AnalysisDataService;
 import fi.nls.oskari.map.userlayer.service.UserLayerDbService;
-import fi.nls.oskari.map.userlayer.service.UserLayerDbServiceIbatisImpl;
 import fi.nls.oskari.myplaces.MyPlacesService;
 import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.util.ConversionHelper;
@@ -31,7 +30,7 @@ public class GetWFSLayerConfigurationHandler extends ActionHandler {
 
     private final WFSLayerConfigurationService layerConfigurationService = new WFSLayerConfigurationServiceIbatisImpl();
     private AnalysisDataService analysisDataService = new AnalysisDataService();
-    private UserLayerDbService userLayerDbService = new UserLayerDbServiceIbatisImpl();
+    private UserLayerDbService userLayerDbService;
     private MyPlacesService myPlacesService = null;
 
     private final static String PARAMS_ID = "id";
@@ -54,6 +53,7 @@ public class GetWFSLayerConfigurationHandler extends ActionHandler {
 
     public void init() {
         myPlacesService = OskariComponentManager.getComponentOfType(MyPlacesService.class);
+        userLayerDbService = OskariComponentManager.getComponentOfType(UserLayerDbService.class);
     }
 
     public void handleAction(ActionParameters params) throws ActionException {
