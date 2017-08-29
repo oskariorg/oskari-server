@@ -76,7 +76,6 @@ public class ELFGeoLocatorSearchChannel extends SearchChannel {
     private static JSONObject elfCountryMap = null;
     private static JSONObject elfLocationTypes = null;
     private static JSONObject elfNameLanguages = null;
-    private final String geolocatorCountries = "geolocator-countries.json";
     private final String locationType = "ELFGEOLOCATOR_CHANNEL.json";
     private final String nameLanguages = "namelanguage.json";
     public String serviceURL = null;
@@ -114,14 +113,8 @@ public class ELFGeoLocatorSearchChannel extends SearchChannel {
         }
 
         log.debug("ServiceURL set to " + serviceURL);
-        try (InputStream inp = this.getClass().getResourceAsStream(geolocatorCountries);
-             InputStreamReader reader = new InputStreamReader(inp, "UTF-8")) {
-            JSONTokener tokenizer = new JSONTokener(reader);
-            this.elfCountryMap = JSONHelper.createJSONObject4Tokener(tokenizer);
-        } catch (Exception e) {
-            log.info("Country mapping setup failed for country based search", e);
-        }
         readLocationTypes();
+
         try (InputStream inp3 = this.getClass().getResourceAsStream(nameLanguages)) {
             if (inp3 != null) {
                 InputStreamReader reader = new InputStreamReader(inp3);
@@ -320,7 +313,7 @@ public class ELFGeoLocatorSearchChannel extends SearchChannel {
                 filter = ADMIN_FILTER_TEMPLATE;
                 String country = searchCriteria.getParam(PARAM_COUNTRY).toString();
                 //TODO add or filter, if there are many variations of admin names
-                filter = filter.replace(KEY_ADMIN_HOLDER, URLEncoder.encode(elfParser.getAdminName(country)[0], "UTF-8"));
+                filter = filter.replace(KEY_ADMIN_HOLDER, URLEncoder.encode(elfParser.getAdminName(country), "UTF-8"));
             }
             filter = filter.replace(KEY_PLACE_HOLDER, URLEncoder.encode(searchCriteria.getSearchString(), "UTF-8"));
             String request = REQUEST_GETFEATURE_TEMPLATE.replace(KEY_LANG_HOLDER, lang3);

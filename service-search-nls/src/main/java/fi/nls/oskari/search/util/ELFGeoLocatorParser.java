@@ -7,6 +7,7 @@ package fi.nls.oskari.search.util;
  * Time: 10:09
  * To change this template use File | Settings | File Templates.
  */
+
 import fi.mml.portti.service.search.ChannelSearchResult;
 import fi.mml.portti.service.search.SearchResultItem;
 import fi.nls.oskari.domain.geo.Point;
@@ -16,16 +17,9 @@ import fi.nls.oskari.map.geometry.ProjectionHelper;
 import fi.nls.oskari.search.channel.ELFGeoLocatorSearchChannel;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureIterator;
-import org.geotools.geometry.DirectPosition2D;
-import org.geotools.referencing.CRS;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.opengis.feature.Property;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
-import org.opengis.referencing.crs.CoordinateReferenceSystem;
-import org.opengis.referencing.cs.AxisDirection;
-import org.opengis.referencing.operation.MathTransform;
 import org.w3c.dom.Document;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -49,10 +43,10 @@ public class ELFGeoLocatorParser {
     public static final String KEY_LOCATIONTYPE_ROLE = "locationType_role";
     public static final String KEY_PARENT_TITLE = "parent_title";
     public static final String KEY_ADMINISTRATOR = "administrator";
-    private JSONObject countryMap = null;
     private Map<String, Double> elfScalesForType = null;
     private Map<String, Integer> elfLocationPriority = null;
-
+    private ELFGeoLocatorSearchChannel channel;
+    private ELFGeoLocatorCountries countries = null;
 
     private static final String PROPERTY_FORCEXY = "org.geotools.referencing.forceXY";
     private String serviceSrs = "EPSG:4258";
@@ -69,10 +63,8 @@ public class ELFGeoLocatorParser {
         }
 
         final ELFGeoLocatorSearchChannel elfchannel = new ELFGeoLocatorSearchChannel();
-        countryMap = elfchannel.getElfCountryMap();
-        if(countryMap == null) {
-            log.debug("CountryMap is not set ");
-        }
+
+        countries = new ELFGeoLocatorCountries();
 
         elfScalesForType = elfchannel.getElfScalesForType();
         if(elfScalesForType == null) {
@@ -396,23 +388,8 @@ public class ELFGeoLocatorParser {
      * @param country_code ISO Country code 2 ch
      * @return
      */
-    public String[] getAdminName(String country_code) {
-        String[] value = {""};
-
-        try {
-
-            if (this.countryMap.has(country_code)) {
-                value = countryMap.getString(country_code).split(";");
-            }
-
-        } catch (Exception e) {
-            log.debug("Failed to get ELF country codes to " + country_code);
-
-        }
-
-
-        return value;
-
+    public String getAdminName(String country_code) {
+        return countries.getAdminName(country_code, true);
     }
 
     /**
@@ -422,33 +399,7 @@ public class ELFGeoLocatorParser {
      * @return
      */
     public String getAdminCountry(Locale locale, String admin_name) {
-        String country = "";
-
-        try {
-
-            Iterator<?> keys = countryMap.keys();
-
-            while( keys.hasNext() ){
-                String key = (String)keys.next();
-                String[] admins = countryMap.get(key).toString().split(";");
-                for (String s: admins)
-                {
-                    if(s.equals(admin_name)) {
-                        Locale obj = new Locale("", key);
-                        return obj.getDisplayCountry(locale);
-                    }
-                }
-
-            }
-
-        } catch (JSONException e) {
-            log.debug("Failed to get ELF country name to " + admin_name);
-
-        }
-
-
-        return country;
-
+        return countries.getAdminCountry(locale, admin_name, true);
     }
 
     /**
