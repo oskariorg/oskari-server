@@ -11,6 +11,8 @@ Updated libs:
 - Postgres JDBC from 9.3-1102-jdbc41 to 42.1.4
 - Jedis from 2.7.2 to 2.9.0
 - MyBatis from 3.4.1 to 3.4.5
+- jsoup from 1.7.2 to 1.10.3
+- Jackson from 2.5.4 to 2.9.0
 
 ### State cookie handling
 

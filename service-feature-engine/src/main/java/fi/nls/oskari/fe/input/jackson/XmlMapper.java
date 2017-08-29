@@ -1,7 +1,6 @@
 package fi.nls.oskari.fe.input.jackson;
 
 
-import com.fasterxml.jackson.core.PrettyPrinter;
 import com.fasterxml.jackson.core.Version;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JavaType;
@@ -9,7 +8,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.xml.JacksonXmlModule;
 import com.fasterxml.jackson.dataformat.xml.ser.ToXmlGenerator;
 import com.fasterxml.jackson.dataformat.xml.ser.XmlSerializerProvider;
-import com.fasterxml.jackson.dataformat.xml.util.DefaultXmlPrettyPrinter;
 import com.fasterxml.jackson.dataformat.xml.util.XmlRootNameLookup;
 
 import javax.xml.stream.XMLInputFactory;
@@ -59,11 +57,11 @@ public class XmlMapper extends ObjectMapper
     public XmlMapper(XmlFactory xmlFactory) {
         this(xmlFactory, DEFAULT_XML_MODULE);
     }
-    
+
     public XmlMapper(JacksonXmlModule module) {
         this(new XmlFactory(), module);
     }
-    
+
     public XmlMapper(XmlFactory xmlFactory, JacksonXmlModule module)
     {
         /* Need to override serializer provider (due to root name handling);
@@ -96,30 +94,11 @@ public class XmlMapper extends ObjectMapper
     /**********************************************************
      */
 
-    /**
-     * Method called by {@link JacksonXmlModule} to pass configuration
-     * information to {@link XmlFactory}, during registration.
-     * 
-     * @since 2.1
-     */
-    protected void setXMLTextElementName(String name) {
-        ((XmlFactory) _jsonFactory).setXMLTextElementName(name);
-    }
-
     /*
     /**********************************************************
     /* Access to configuration settings
     /**********************************************************
      */
-
-    /**
-     * @deprecated Since 2.1, use {@link #getFactory} instead
-     */
-    @Override
-    @Deprecated
-    public XmlFactory getJsonFactory() {
-        return (XmlFactory) _jsonFactory;
-    }
 
     @Override
     public XmlFactory getFactory() {
@@ -212,20 +191,5 @@ public class XmlMapper extends ObjectMapper
         /* NOTE: above call should do flush(); and we should NOT close here.
          * Finally, 'g' has no buffers to release.
          */
-    }
-    
-    /*
-    /**********************************************************
-    /* Overridden methods
-    /**********************************************************
-     */
-
-    /**
-     * XML indentation differs from JSON indentation, thereby
-     * need to change default pretty-printer
-     */
-    @Override
-    protected PrettyPrinter _defaultPrettyPrinter() {
-        return new DefaultXmlPrettyPrinter();
     }
 }
