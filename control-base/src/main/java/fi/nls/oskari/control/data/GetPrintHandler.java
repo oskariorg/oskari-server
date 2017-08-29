@@ -19,6 +19,7 @@ import org.oskari.print.request.PrintTile;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import fi.mml.portti.service.db.permissions.PermissionsService;
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.ActionHandler;
@@ -29,6 +30,7 @@ import fi.nls.oskari.domain.User;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.map.layer.OskariLayerService;
 import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.ResponseHelper;
 import fi.nls.oskari.util.ServiceFactory;
@@ -47,9 +49,10 @@ public class GetPrintHandler extends ActionHandler {
     private static final String PARM_MAPLAYERS = "mapLayers";
     private static final String PARM_FORMAT = "format";
     private static final String PARM_SRSNAME = "srs";
+    private static final String PARM_TILES = "tiles";
 
     private static final double MM_PER_INCH = 25.4;
-    public static final double OGC_DPI = MM_PER_INCH / 0.28;
+    private static final double OGC_DPI = MM_PER_INCH / 0.28;
 
     private static final int A4W = 210;
     private static final int A4H = 297;
@@ -66,7 +69,11 @@ public class GetPrintHandler extends ActionHandler {
         return (int) Math.round((OGC_DPI * mm) / MM_PER_INCH);
     }
 
-    public void init() {
+    public GetPrintHandler() {
+        this(ServiceFactory.getMapLayerService(), ServiceFactory.getPermissionsService());
+    }
+
+    public GetPrintHandler(OskariLayerService layerService, PermissionsService permissionService) {
         permissionHelper = new PermissionHelper(
                 ServiceFactory.getMapLayerService(),
                 ServiceFactory.getPermissionsService());
@@ -107,7 +114,6 @@ public class GetPrintHandler extends ActionHandler {
         return request;
     }
 
-
     private void setPagesize(ActionParameters params, PrintRequest request)
             throws ActionParamsException {
         String pageSizeStr = params.getRequiredParam(PARM_PAGE_SIZE);
@@ -145,7 +151,6 @@ public class GetPrintHandler extends ActionHandler {
         request.setWidth(width);
         request.setHeight(height);
     }
-
 
     private void setCoordinates(String coord, PrintRequest req)
             throws ActionParamsException {
@@ -227,9 +232,11 @@ public class GetPrintHandler extends ActionHandler {
 
     private void setTiles(ActionParameters params, List<PrintLayer> layers)
             throws ActionException {
+        String tilesJson = params.getHttpParam(PARM_TILES);
+        if (tilesJson == null || tilesJson.isEmpty()) {
+            return;
+        }
         try {
-            String tilesJson = params.getHttpParam("PARM_TILES");
-
             JsonNode root = OBJECT_MAPPER.readTree(tilesJson);
             if (!root.isArray()) {
                 throw new ActionParamsException("Tiles not array!");
