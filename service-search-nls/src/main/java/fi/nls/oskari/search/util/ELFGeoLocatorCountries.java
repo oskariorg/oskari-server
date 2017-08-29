@@ -15,9 +15,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.HttpURLConnection;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Parses countries map for
@@ -110,22 +108,37 @@ public class ELFGeoLocatorCountries {
         }
         // reload countries map contents and try again
         loadCountryMap();
-        return getAdminName(admin_name, false);
+        return getAdminCountry(locale, admin_name, false);
     }
 
-    public String getAdminName(String country_code, boolean reloadIfNotFound) {
+    public List<String> getAdminName(String country_code, boolean reloadIfNotFound) {
+        List<String> adminNameList = new ArrayList<String>();
         for (Map.Entry<String, String> entry : countryMap.entrySet()) {
             String country = entry.getValue();
             if (country.equals(country_code)) {
-                return entry.getKey();
+                adminNameList.add(entry.getKey());
             }
         }
         if(!reloadIfNotFound) {
             // loading didn't get us the requested country so just return empty string
-            return "";
+            return Collections.emptyList();
         }
         // reload countries map contents and try again
         loadCountryMap();
         return getAdminName(country_code, false);
+    }
+
+    public String getAdminNamesForFilter(String country) {
+        List<String> adminNameList = getAdminName(country, true);
+        String adminNames = "";
+        if (adminNameList.size() == 1) {
+            adminNames = adminNameList.get(0);
+        } else {
+            for (int i = 0; i < adminNameList.size()-1; i++) {
+                adminNames = adminNames + adminNameList.get(i) + "<OR>";
+            }
+            adminNames = adminNames + adminNameList.get(adminNameList.size() - 1);
+        }
+        return adminNames;
     }
 }

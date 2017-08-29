@@ -378,16 +378,6 @@ public class ELFGeoLocatorParser {
     }
 
     /**
-     * Get ELF geolocator administrator name(s) of country based
-     *
-     * @param country_code ISO Country code 2 ch
-     * @return
-     */
-    public String getAdminName(String country_code) {
-        return countries.getAdminName(country_code, true);
-    }
-
-    /**
      * Get ELF geolocator administrator country code
      * @param locale  Locale current locale
      * @param admin_name  administrator name
@@ -397,6 +387,15 @@ public class ELFGeoLocatorParser {
         return countries.getAdminCountry(locale, admin_name, true);
     }
 
+    /**
+     * Get ELF geolocator administrator name(s) of country based
+     *
+     * @param country_code ISO Country code 2 ch
+     * @return
+     */
+    public String getAdminNamesForFilter(String country) {
+        return countries.getAdminNamesForFilter(country);
+    }
     /**
      * Transform point to  CoordinateReferenceSystem sourceCrs = CRS.decode("EPSG:4258")
      *

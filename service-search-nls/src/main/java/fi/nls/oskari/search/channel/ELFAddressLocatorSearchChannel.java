@@ -49,7 +49,9 @@ public class ELFAddressLocatorSearchChannel extends ELFGeoLocatorSearchChannel {
             filter = ADMIN_FILTER_TEMPLATE;
             String country = searchCriteria.getParam(PARAM_COUNTRY).toString();
             //TODO add or filter, if there are many variations of admin names
-            filter = filter.replace(KEY_ADMIN_HOLDER, URLEncoder.encode(elfParser.getAdminName(country), "UTF-8"));
+
+            filter = filter.replace(KEY_ADMIN_HOLDER, URLEncoder.encode(
+                    elfParser.getAdminNamesForFilter(country), "UTF-8"));
         }
         filter = filter.replace(KEY_PLACE_HOLDER, URLEncoder.encode(searchCriteria.getSearchString(), "UTF-8"));
         String request = REQUEST_GETFEATURE_TEMPLATE.replace(KEY_LANG_HOLDER, lang3);
