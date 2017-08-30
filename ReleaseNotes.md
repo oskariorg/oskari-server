@@ -16,35 +16,35 @@ Updated libs:
 
 ### State cookie handling
 
-Added error handling to state handling. 
+Added error handling to state handling.
 State cookie parsing no longer assumes that referenced bundles are part of the appsetup.
 
 ### GFI response sanitation
 
-Style-tags in GFI html response were interfering with global Oskari CSS. 
+Style-tags in GFI html response were interfering with global Oskari CSS.
 Response html is now sanitized with Jsoup if presentation type is TEXT which removes potentially dangerous
- script injections as well. 
+ script injections as well.
 Only tags in in Jsoup ["relaxed" whitelist](https://jsoup.org/apidocs/org/jsoup/safety/Whitelist.html#relaxed--) are allowed.
 
 ### Terms of use for map publish functionality
- 
+
 Separate terms of use for map publishing functionality can now be configured in oskari-ext.properties:
- 
-    oskari.map.terms.url=https://my.site/terms    
+
+    oskari.map.terms.url=https://my.site/terms
     oskari.map.publish.terms.url=https://my.site/terms-for-publishing
-    
-The code will look for publish terms first and default to the generic terms config if not found. 
+
+The code will look for publish terms first and default to the generic terms config if not found.
 Both properties can be localized by adding .fi/.en etc language code at the end of the key.
 The value will be populated to publisher/publisher2 bundle configs.
 
 ### Userlayer import
 
-In the user_layer table "fields" json is migrated from JSONObject to JSONArray to keep order of the feature properties. 
+In the user_layer table "fields" json is migrated from JSONObject to JSONArray to keep order of the feature properties.
 New imported userlayer's feature properties will be handled in same order than in the source file (e.g. Shapefile).
 
-The database access library has been updated from Ibatis to Mybatis. 
-UserLayerDbService has been changed to be suitable for new Mybatis implementation. 
-Old iBATIS implementation isn't compatible with new UserLayerDbService. 
+The database access library has been updated from Ibatis to Mybatis.
+UserLayerDbService has been changed to be suitable for new Mybatis implementation.
+Old iBATIS implementation isn't compatible with new UserLayerDbService.
 Now layer, style and data inserts are handled in one transaction.
 
 Added error codes (e.g. invalid_file) to response instead of textual messages to support localization in the frontend.
@@ -70,14 +70,14 @@ Polygon style now supports no fill and no stroke. The condition is expressed as 
 
 ### Initial version of print functionality rewrite
 
-New Maven modules service-print, servlet-print and webapp-print which will be replacing servlet-printout once it has
- been proved production ready.
+New Maven module service-print which provides built-in png/pdf generation for replacing the current
+ servlet-printout once it has been proved production ready.
 
-### Additional layer configuration 
+### Additional layer configuration
 
 WMS-layers GFI functionality can now be enabled/disabled overwriting layer capabilities by adding a configuration in database
  oskari_maplayer.attributes:
- 
+
     {
         "isQueryable" : false
     }
@@ -100,7 +100,7 @@ Use assumeTrue to check for db connection WHEN test relies on database connectio
         assumeTrue(TestHelper.dbAvailable());
         DataSource ds = TestHelper.getDBforUnitTest();
         // TODO: use ds for tests
-    }    
+    }
 
 The TestHelper reads the properties to PropertyUtil so remember to clean up after a test using database:
 
@@ -112,7 +112,7 @@ The TestHelper reads the properties to PropertyUtil so remember to clean up afte
 ### ELF GeoLocator search channel
 
 Removed countries listing resource JSON. Instead uses a CountryFilter operation to fetch the countries from
- the service. 
+ the service.
 
 ### Spationeo integration
 
