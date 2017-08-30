@@ -169,7 +169,7 @@ public class WFSMapLayerJob extends OWSMapLayerJob {
             final Map<String, Object> output = createCommonResponse();
             if(features == null || features.isEmpty()) {
                 log.debug("Empty result for", this.layerId, "type:", type);
-                output.put(OUTPUT_FEATURES, "empty");
+                output.put(OUTPUT_FEATURE, "empty");
                 log.debug(PROCESS_ENDED, getKey());
                 if(this.type == JobType.MAP_CLICK) {
                     output.put(OUTPUT_KEEP_PREVIOUS, this.session.isKeepPrevious());
