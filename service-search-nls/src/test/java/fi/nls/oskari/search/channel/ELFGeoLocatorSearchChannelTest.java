@@ -1,6 +1,7 @@
 package fi.nls.oskari.search.channel;
 
 import fi.mml.portti.service.search.SearchCriteria;
+import fi.nls.oskari.search.util.ELFGeoLocatorCountries;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
@@ -12,6 +13,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.util.Locale;
 
 import static org.junit.Assert.assertTrue;
 
@@ -54,6 +56,22 @@ public class ELFGeoLocatorSearchChannelTest {
         String xml = channel.getWildcardQuery(searchCriteria);
         Diff xmlDiff = new Diff(wildcardQueryXML, xml);
         assertTrue("Should get expected query " + xmlDiff, xmlDiff.similar());
+    }
+
+
+    @Test
+    public void testCountrySearch() throws Exception {
+        System.out.println("testCountrySearch");
+
+        ELFGeoLocatorCountries countries = new ELFGeoLocatorCountries();
+        String response = IOHelper.readString(getClass().getResourceAsStream("ASDIService.xml"));
+        countries.parseCountryMap(response);
+
+        String adminNames = countries.getAdminNamesForFilter("no");
+        assertTrue(adminNames.equals("Norway polar - GN<OR>Norway - GN"));
+
+        String countryName = countries.getAdminCountry(new Locale("en"), "Norway polar - GN", true);
+        assertTrue(countryName.equals("Norway"));
     }
 
     @Test

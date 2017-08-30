@@ -30,8 +30,7 @@ public class ELFGeoLocatorCountries {
     private long lastSync;
     private String serviceURL;
     private ELFGeoLocatorSearchChannel channel;
-    private Map<String, String> countries = new HashMap<>();
-    private static Map<String, String> countryMap = null;
+    private static Map<String, String> countryMap = new HashMap<>();
 
     public ELFGeoLocatorCountries() {
         serviceURL = PropertyUtil.getOptional(ELFGeoLocatorSearchChannel.PROPERTY_SERVICE_URL);
@@ -43,7 +42,16 @@ public class ELFGeoLocatorCountries {
 
     public void loadCountryMap () {
         try {
-            countryMap = getCountryMap();
+            // not properly configured
+            if (serviceURL == null) {
+                return ;
+            }
+
+            // synced recently
+            if(System.currentTimeMillis() < lastSync + REFRESH_INTERVAL) {
+                return ;
+            }
+            parseCountryMap(getCountryData());
             if(countryMap.isEmpty()) {
                 log.debug("Could not get countries");
             }
@@ -51,32 +59,28 @@ public class ELFGeoLocatorCountries {
         catch (Exception e) {
             log.debug(e, "Could not get countries");
         }
+        lastSync = System.currentTimeMillis();
     }
 
-    public Map<String, String> getCountryMap() throws IOException {
-        // not properly configured
-        if (serviceURL == null) {
-            return countries;
-        }
-        // synced recently
-        if(System.currentTimeMillis() < lastSync + REFRESH_INTERVAL) {
-            return countries;
-        }
-
-        // Start from scratch
+    public String getCountryData() throws IOException {
         String countriesUrl = serviceURL + DEFAULT_GETCOUNTRIES_TEMPLATE;
-        StringBuffer buf = new StringBuffer(countriesUrl);
-        log.debug("Server request: " + buf.toString());
-        HttpURLConnection conn = IOHelper.getConnection(buf.toString());
+        log.debug("Server request: " + countriesUrl);
+        HttpURLConnection conn = IOHelper.getConnection(countriesUrl);
         String response = IOHelper.readString(conn);
-        log.debug("Server response: " + response);
+        return response;
+    }
+
+    public void parseCountryMap(String response) {
+        if (response == null || response.isEmpty()) {
+            return ;
+        }
 
         try {
             DocumentBuilder dBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
             Document doc = dBuilder.parse(new ByteArrayInputStream(response.getBytes("UTF-8")));
 
             NodeList nList = doc.getElementsByTagName("Country");
-            countries.clear();
+            countryMap.clear();
             for (int temp = 0; temp < nList.getLength(); temp++) {
                 Node nNode = nList.item(temp);
                 if (nNode.getNodeType() != Node.ELEMENT_NODE) {
@@ -85,15 +89,13 @@ public class ELFGeoLocatorCountries {
                 Element eElement = (Element) nNode;
                 NodeList elements = eElement.getElementsByTagName("administrator");
                 for(int i=0; i<elements.getLength(); i++) {
-                    countries.put(eElement.getElementsByTagName("administrator").item(i).getTextContent(),
+                    countryMap.put(eElement.getElementsByTagName("administrator").item(i).getTextContent(),
                             eElement.getElementsByTagName("code").item(0).getTextContent());
                 }
             }
         } catch (Exception e) {
             log.error(e, "Error parsing countries with ELFGeolocator, got exception");
         }
-        lastSync = System.currentTimeMillis();
-        return countries;
     }
 
     public String getAdminCountry(Locale locale, String admin_name, boolean reloadIfNotFound) {
@@ -117,11 +119,12 @@ public class ELFGeoLocatorCountries {
             String country = entry.getValue();
             if (country.equals(country_code)) {
                 adminNameList.add(entry.getKey());
+                reloadIfNotFound = false;
             }
         }
         if(!reloadIfNotFound) {
             // loading didn't get us the requested country so just return empty string
-            return Collections.emptyList();
+            return adminNameList;
         }
         // reload countries map contents and try again
         loadCountryMap();
