@@ -1,43 +1,28 @@
 package org.oskari.print;
 
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.imageio.ImageIO;
-
 import org.apache.pdfbox.pdmodel.PDDocument;
-import org.oskari.util.PDFBoxUtil;
-
-import com.netflix.hystrix.HystrixCommand;
-import com.netflix.hystrix.HystrixCommand.Setter;
-import com.netflix.hystrix.HystrixCommandGroupKey;
-import com.netflix.hystrix.HystrixCommandProperties;
-import com.netflix.hystrix.HystrixThreadPoolProperties;
-
-import fi.nls.oskari.log.LogFactory;
-import fi.nls.oskari.log.Logger;
+import org.oskari.print.request.PrintLayer;
+import org.oskari.print.request.PrintRequest;
 
 public class PrintService {
 
     private static final int MAX_PX = 2048;
+    
+    public static void validate(PrintRequest request) throws IllegalArgumentException {
+        String err = validateRequest(request);
+        if (err != null) {
+            throw new IllegalArgumentException(err);
+        }
+    }
 
-    private static final Logger LOG = LogFactory.getLogger(PrintService.class);
-    private static final Setter CONFIG = HystrixCommand.Setter
-            .withGroupKey(HystrixCommandGroupKey.Factory.asKey("test"))
-            .andCommandPropertiesDefaults(HystrixCommandProperties.Setter()
-                    .withExecutionTimeoutEnabled(false))
-                    .andThreadPoolPropertiesDefaults(HystrixThreadPoolProperties.Setter()
-                            .withCoreSize(25)
-                            .withMaximumSize(50)
-                            .withMaxQueueSize(1000)
-                            .withQueueSizeRejectionThreshold(1000));
-
-    public static String validate(PrintRequest request) {
-        if (PrintFormat.getByContentType(request.getFormat()) == null) {
-            return ("Unknown format");
+    private static String validateRequest(PrintRequest request) {
+        if (request.getFormat() == null) {
+            return ("'format' is missing");
         }
         if (request.getWidth() <= 0) {
             return "'width' must be positive integer";
@@ -54,66 +39,28 @@ public class PrintService {
         if (request.getLayers() == null || request.getLayers().size() == 0) {
             return "'layers' not specified!";
         }
-
-        removeFullyTransparentLayers(request);
-
         return null;
     }
 
-    public static byte[] getPNG(PrintRequest request, String formatName) {
-        try {
-            BufferedImage bi = getPNG(request, CONFIG);
-            if (bi != null) {
-                ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                ImageIO.write(bi, formatName, baos);
-                return baos.toByteArray();
-            }
-        } catch (IOException e) {
-            LOG.error(e);
-        }
-        return null;
+    public static BufferedImage getPNG(PrintRequest request) {
+        request.setLayers(filterLayersWithZeroOpacity(request.getLayers()));
+        return PNG.getBufferedImage(request);
     }
 
-    public static BufferedImage getPNG(PrintRequest request, Setter config) {
-        if (config == null) {
-            config = CONFIG;
-        }
-        return PNG.getBufferedImage(request, config);
+    public static void getPDF(PrintRequest request, PDDocument doc) 
+            throws IllegalArgumentException, IOException {
+        request.setLayers(filterLayersWithZeroOpacity(request.getLayers()));
+        PDF.getPDF(request, doc);
     }
 
-    public static byte[] getPDF(PrintRequest request) {
-        PDDocument doc = new PDDocument();
-        try {
-            boolean success = getPDF(request, doc, CONFIG);
-            if (success) {
-                ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                doc.save(baos);
-                return baos.toByteArray();
-            }
-        } catch (IOException e) {
-            // ByteArrayOutputStream should not throw IOExceptions
-            LOG.error(e);
-        } finally {
-            PDFBoxUtil.closeSilently(doc);
-        }
-        return null;
-    }
-
-    public static boolean getPDF(PrintRequest request, PDDocument doc, Setter config) {
-        if (config == null) {
-            config = CONFIG;
-        }
-        return PDF.getPDF(request, doc, config);
-    }
-
-    private static void removeFullyTransparentLayers(PrintRequest request) {
+    private static List<PrintLayer> filterLayersWithZeroOpacity(List<PrintLayer> layers) {
         List<PrintLayer> filtered = new ArrayList<>();
-        for (PrintLayer layer : request.getLayers()) {
+        for (PrintLayer layer : layers) {
             if (layer.getOpacity() > 0) {
                 filtered.add(layer);
             }
         }
-        request.setLayers(filtered);
+        return filtered;
     }
 
 }

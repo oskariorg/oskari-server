@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.oskari.print.PrintLayer;
+import org.oskari.print.request.PrintLayer;
 
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.log.LogFactory;
@@ -42,7 +42,7 @@ public class TileMatrixSetCache {
             if (tileMatrixSets != null) {
                 for (TileMatrixSet tileMatrixSet : tileMatrixSets) {
                     String key = getKey(layer.getId(), tileMatrixSet.getId());
-                    LOG.debug("Adding {} to cache", key);
+                    LOG.debug("Adding", key, "to cache");
                     CACHE.put(key, tileMatrixSet);
                 }
             }

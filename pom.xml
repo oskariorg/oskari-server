@@ -375,20 +375,9 @@
             
             <dependency>
             	<groupId>org.oskari</groupId>
-            	<artifactId>webapp-print</artifactId>
-            	<version>${fi.nls.oskari.version}</version>
-            </dependency>
-            <dependency>
-            	<groupId>org.oskari</groupId>
-            	<artifactId>servlet-print</artifactId>
-            	<version>${fi.nls.oskari.version}</version>
-            </dependency>
-            <dependency>
-            	<groupId>org.oskari</groupId>
             	<artifactId>service-print</artifactId>
             	<version>${fi.nls.oskari.version}</version>
             </dependency>
-            
 
             <!-- Spring -->
             <dependency>
@@ -1095,8 +1084,6 @@
 
 		<!-- print -->
         <module>service-print</module>
-        <module>servlet-print</module>
-        <module>webapp-print</module>
     </modules>
 
 </project>

@@ -1,16 +1,15 @@
 package org.oskari.print.loader;
 
 import java.awt.image.BufferedImage;
+import java.net.URL;
 
-import org.oskari.print.PrintLayer;
-import org.oskari.util.GetMapBuilder;
-
-import com.netflix.hystrix.HystrixCommand;
+import org.oskari.print.request.PrintLayer;
+import org.oskari.print.util.GetMapBuilder;
 
 /**
  * HystrixCommand that loads BufferedImage from WMS
  */
-public class CommandLoadImageWMS extends HystrixCommand<BufferedImage> {
+public class CommandLoadImageWMS extends CommandLoadImageBase {
 
     private static final String FORMAT = "image/png";
 
@@ -20,13 +19,11 @@ public class CommandLoadImageWMS extends HystrixCommand<BufferedImage> {
     private final double[] bbox;
     private final String srsName;
 
-    public CommandLoadImageWMS(Setter config, 
-            final PrintLayer layer, 
-            final int width, 
-            final int height,
-            final double[] bbox,
-            final String srsName) {
-        super(config);
+    public CommandLoadImageWMS(PrintLayer layer, 
+            int width, 
+            int height,
+            double[] bbox,
+            String srsName) {
         this.layer = layer;
         this.width = width;
         this.height = height;
@@ -46,7 +43,7 @@ public class CommandLoadImageWMS extends HystrixCommand<BufferedImage> {
                 .format(FORMAT)
                 .transparent(true)
                 .toKVP();
-        return new CommandLoadImageFromURL(commandGroup, request).execute();
+        return CommandLoadImageFromURL.loadImageFromURL(new URL(request));
     }
 
 }
