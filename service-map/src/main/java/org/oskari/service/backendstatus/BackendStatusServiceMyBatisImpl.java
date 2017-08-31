@@ -14,6 +14,8 @@ import fi.nls.oskari.mybatis.MyBatisHelper;
 
 public class BackendStatusServiceMyBatisImpl implements BackendStatusService {
 
+    private static final Class<BackendStatusMapper> MAPPER = BackendStatusMapper.class;
+
     private final SqlSessionFactory factory;
 
     public BackendStatusServiceMyBatisImpl() {
@@ -21,37 +23,33 @@ public class BackendStatusServiceMyBatisImpl implements BackendStatusService {
     }
 
     public BackendStatusServiceMyBatisImpl(DataSource ds) {
-        this.factory = MyBatisHelper.initMyBatis(ds, BackendStatusMapper.class);
+        this.factory = MyBatisHelper.initMyBatis(ds, MAPPER);
     }
 
     @Override
     public List<BackendStatus> findAll() {
         try (SqlSession session = factory.openSession()) {
-            return getMapper(session).getAll();
+            return session.getMapper(MAPPER).getAll();
         }
     }
 
     @Override
     public List<BackendStatus> findAllWithAlert() {
         try (SqlSession session = factory.openSession()) {
-            return getMapper(session).getAllAlert();
+            return session.getMapper(MAPPER).getAllAlert();
         }
     }
 
     @Override
     public void insertAll(List<BackendStatus> statuses) {
         try (SqlSession session = factory.openSession(ExecutorType.BATCH, false)) {
-            BackendStatusMapper mapper = getMapper(session);
+            BackendStatusMapper mapper = session.getMapper(MAPPER);
             mapper.truncate();
             for (BackendStatus status : statuses) {
                 mapper.saveStatus(status);
             }
             session.commit();
         }
-    }
-
-    private static BackendStatusMapper getMapper(final SqlSession session) {
-        return session.getMapper(BackendStatusMapper.class);
     }
 
 }
