@@ -79,8 +79,8 @@ public class SendDownloadDetailsToEmailThread extends Thread {
 		try {
 			DownloadServices ds = new DownloadServices();
 			ArrayList<ZipDownloadDetails> mergeThese = new ArrayList<ZipDownloadDetails>();
-			final String strTempDir = PropertyUtil.get("hsy.wfs.download.folder.name");
-			String normalWayDownload = PropertyUtil.get("hsy.wfs.download.normal.way.downloads");
+			final String strTempDir = PropertyUtil.get("oskari.wfs.download.folder.name");
+			String normalWayDownload = PropertyUtil.get("oskari.wfs.download.normal.way.downloads");
 			String[] temp = normalWayDownload.split(",");
 			NormalWayDownloads normalDownloads = new NormalWayDownloads();
 			for (int i = 0; i < temp.length; i++) {
@@ -132,7 +132,7 @@ public class SendDownloadDetailsToEmailThread extends Thread {
 			try {
 				File f = new File(strTempDir);
 				f.mkdirs();
-				out = new ZipOutputStream(new FileOutputStream(strTempDir + "/" + strZipFileName));
+				out = new ZipOutputStream(new FileOutputStream(new File(strTempDir, strZipFileName)));
 
 				Hashtable<String, Integer> indexes = new Hashtable<String, Integer>();
 				byte[] buffer = new byte[1024];
@@ -172,11 +172,13 @@ public class SendDownloadDetailsToEmailThread extends Thread {
 						out.closeEntry();
 						in.close();
 						deleteFile(strTempFile);
+
 					} catch (Exception ex) {
 						LOGGER.error("Cannot  parse JSON download details", ex);
 					} finally {
 						if (in != null)
 							in.close();
+
 					}
 				}
 
@@ -211,11 +213,11 @@ public class SendDownloadDetailsToEmailThread extends Thread {
 		try {
 			HtmlEmail email = new HtmlEmail();
 
-			int smtpPort = Integer.parseInt(PropertyUtil.getNecessary("hsy.wfs.download.smtp.port"));
+			int smtpPort = Integer.parseInt(PropertyUtil.getNecessary("oskari.wfs.download.smtp.port"));
 			email.setSmtpPort(smtpPort);
-			email.setHostName(PropertyUtil.getNecessary("hsy.wfs.download.smtp.host"));
-			email.setFrom(PropertyUtil.getNecessary("hsy.wfs.download.email.from"));
-			email.setSubject(PropertyUtil.getNecessary("hsy.wfs.download.email.subject"));
+			email.setHostName(PropertyUtil.getNecessary("oskari.wfs.download.smtp.host"));
+			email.setFrom(PropertyUtil.getNecessary("oskari.wfs.download.email.from"));
+			email.setSubject(PropertyUtil.getNecessary("oskari.wfs.download.email.subject"));
 			email.setCharset("UTF-8");
 
 			StringBuilder htmlHeader = new StringBuilder();
@@ -226,35 +228,35 @@ public class SendDownloadDetailsToEmailThread extends Thread {
 			StringBuilder txtMsg = new StringBuilder();
 			StringBuilder txtFooter = new StringBuilder();
 
-			htmlHeader.append(PropertyUtil.getNecessary("hsy.wfs.download.email.header"));
-			txtHeader.append(PropertyUtil.getNecessary("hsy.wfs.download.email.header"));
+			htmlHeader.append(PropertyUtil.getNecessary("oskari.wfs.download.email.header"));
+			txtHeader.append(PropertyUtil.getNecessary("oskari.wfs.download.email.header"));
 
 			htmlHeader.append("<br/><br/>");
 			txtHeader.append("\n\n");
-			htmlMsg.append(PropertyUtil.getNecessary("hsy.wfs.download.email.message"));
-			txtMsg.append(PropertyUtil.getNecessary("hsy.wfs.download.email.message"));
+			htmlMsg.append(PropertyUtil.getNecessary("oskari.wfs.download.email.message"));
+			txtMsg.append(PropertyUtil.getNecessary("oskari.wfs.download.email.message"));
 
 			htmlMsg.append("<br/>");
 			txtMsg.append("\n");
 
-			String url = PropertyUtil.getNecessary("hsy.wfs.download.link.url.prefix") + strZipFileName;
+			String url = PropertyUtil.getNecessary("oskari.wfs.download.link.url.prefix") + strZipFileName;
 			htmlMsg.append("<a href=\"" + url + "\">" + url + "</a>");
 			txtMsg.append(url);
 
 			htmlFooter.append("<br/><br/>");
 			txtFooter.append("\n\n");
-			String f = PropertyUtil.get("hsy.wfs.download.email.footer", "");
+			String f = PropertyUtil.get("oskari.wfs.download.email.footer", "");
 			String ff = f.replaceAll("\\{RIVINVAIHTO\\}", "\n");
 			f = f.replaceAll("\\{RIVINVAIHTO\\}", "<br/>");
 			htmlFooter.append(f);
 			txtFooter.append(ff);
-			String d = PropertyUtil.get("hsy.wfs.download.email.message.datadescription", "");
+			String d = PropertyUtil.get("oskari.wfs.download.email.message.datadescription", "");
 			String dd = d.replaceAll("\\{RIVINVAIHTO\\}", "\n");
 			d = d.replaceAll("\\{RIVINVAIHTO\\}", "<br/>");
 			htmlFooter.append(d);
 			txtFooter.append(dd);
-			htmlFooter.append(PropertyUtil.get("hsy.wfs.download.email.datadescription_link", ""));
-			txtFooter.append(PropertyUtil.get("hsy.wfs.download.email.datadescription_link", ""));
+			htmlFooter.append(PropertyUtil.get("oskari.wfs.download.email.datadescription_link", ""));
+			txtFooter.append(PropertyUtil.get("oskari.wfs.download.email.datadescription_link", ""));
 
 			String htmlFullMessage = "<html>" + htmlHeader.toString() + htmlMsg.toString() + htmlFooter.toString()
 					+ "</html>";
