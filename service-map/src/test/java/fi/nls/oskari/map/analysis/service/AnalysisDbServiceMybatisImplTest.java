@@ -4,9 +4,7 @@ import fi.nls.oskari.domain.map.analysis.Analysis;
 import fi.nls.oskari.domain.map.analysis.AnalysisStyle;
 import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.test.util.TestHelper;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.*;
 
 import java.util.List;
 
@@ -25,6 +23,10 @@ public class AnalysisDbServiceMybatisImplTest {
     @BeforeClass
     public static void init() {
         assumeTrue(TestHelper.dbAvailable());
+    }
+
+    @Before
+    public void setUp() {
         analysisDbServiceMybatis = new AnalysisDbServiceMybatisImpl();
         analysisStyleDbServiceMybatis = new AnalysisStyleDbServiceMybatisImpl();
 
@@ -54,14 +56,17 @@ public class AnalysisDbServiceMybatisImplTest {
         assertTrue("Analysis added and found", testAnalysis.getUuid().equals(analysisList.get(0).getUuid()));
     }
 
-    @AfterClass
-    public static void delete() {
+    @After
+    public void tearDown() {
         try {
             analysisDbServiceMybatis.deleteAnalysis(testAnalysis);
         }
         catch (Exception e) {
-            //TODO handle error
         }
+    }
+
+    @AfterClass
+    public static void delete() {
         PropertyUtil.clearProperties();
     }
 }

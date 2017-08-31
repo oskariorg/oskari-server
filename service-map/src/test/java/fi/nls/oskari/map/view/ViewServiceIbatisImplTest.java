@@ -4,6 +4,7 @@ import fi.nls.oskari.domain.GuestUser;
 import fi.nls.oskari.domain.User;
 import fi.nls.oskari.service.DummyUserService;
 import fi.nls.oskari.util.PropertyUtil;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -44,5 +45,10 @@ public class ViewServiceIbatisImplTest {
         user.addRole(3, "Admin");
         assertEquals("User with Admin role should end up using the value configure in 'view.default.Admin'", 2, service.getDefaultViewId(user));
 
+    }
+
+    @After
+    public void tearDown() {
+        PropertyUtil.clearProperties();
     }
 }
