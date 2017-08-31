@@ -4,15 +4,14 @@ import fi.nls.oskari.ontology.domain.Keyword;
 import fi.nls.oskari.ontology.service.KeywordServiceMybatisImpl;
 import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.test.util.TestHelper;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.*;
 
 import java.util.List;
 
 import static junit.framework.Assert.assertTrue;
 import static org.junit.Assume.assumeTrue;
 
+@Ignore
 public class KeywordServiceMybatisImplTest {
 
     private static KeywordServiceMybatisImpl keywordServiceMybatis = null;
@@ -20,9 +19,13 @@ public class KeywordServiceMybatisImplTest {
     private static String testLang = null;
     private static Keyword keyword = null;
 
+    @BeforeClass
+    public static void init() {
+        assumeTrue(TestHelper.dbAvailable());
+    }
+
     @Before
     public void setUp() {
-        assumeTrue(TestHelper.dbAvailable());
         keywordServiceMybatis = new KeywordServiceMybatisImpl();
         testKeyword = "testKeyword";
         testLang = "FI";
