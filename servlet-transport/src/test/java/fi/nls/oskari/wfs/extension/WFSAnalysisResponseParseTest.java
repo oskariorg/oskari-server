@@ -23,6 +23,7 @@ import fi.nls.test.util.TestHelper;
 import org.custommonkey.xmlunit.XMLUnit;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureIterator;
+import org.junit.After;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.opengis.feature.simple.SimpleFeature;
@@ -33,7 +34,10 @@ import org.opengis.referencing.operation.MathTransform;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Properties;
 
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -215,5 +219,8 @@ public class WFSAnalysisResponseParseTest {
 
     }
 
-
+    @After
+    public void tearDown() {
+        PropertyUtil.clearProperties();
+    }
 }
