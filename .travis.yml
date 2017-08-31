@@ -1,11 +1,21 @@
 dist: trusty
 language: java
+sudo: false
+install: true
+addons:
+  sonarcloud:
+    organization: "oskari"
+    token:
+      secure: "ada6781cdcbef4cc32abeab5d0174e9da31bbeca"
 jdk:
   - oraclejdk8
   - openjdk8
 notifications:
   slack: oskari:N5vZf0lzsIGpQ8nAPRfHgQ91
 
+script:
+  - mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent package sonar:sonar
 cache:
   directories:
-    - $HOME/.m2
+    - '$HOME/.m2/repository'
+    - '$HOME/.sonar/cache'
