@@ -11,8 +11,8 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <pdfbox.version>2.0.5</pdfbox.version>
-        <hystrix.version>1.5.10</hystrix.version>
+        <pdfbox.version>2.0.6</pdfbox.version>
+        <hystrix.version>1.5.12</hystrix.version>
     </properties>
 
     <dependencies>
@@ -25,11 +25,6 @@
             <artifactId>service-logging</artifactId>
         </dependency>
         <dependency>
-            <groupId>fi.nls.oskari</groupId>
-            <artifactId>shared-test-resources</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
             <groupId>org.apache.pdfbox</groupId>
             <artifactId>pdfbox</artifactId>
             <version>${pdfbox.version}</version>
@@ -38,6 +33,11 @@
             <groupId>com.netflix.hystrix</groupId>
             <artifactId>hystrix-core</artifactId>
             <version>${hystrix.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 

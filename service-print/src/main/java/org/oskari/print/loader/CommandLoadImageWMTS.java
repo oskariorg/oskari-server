@@ -5,13 +5,10 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
 
-import org.oskari.print.PrintLayer;
+import org.oskari.print.request.PrintLayer;
+import org.oskari.print.util.Units;
 import org.oskari.print.wmts.GetTileBuilderREST;
-import org.oskari.util.Units;
-
-import com.netflix.hystrix.HystrixCommand;
 
 import fi.nls.oskari.wmts.domain.TileMatrix;
 
@@ -19,7 +16,7 @@ import fi.nls.oskari.wmts.domain.TileMatrix;
  * HystrixCommand that loads tiles from a WMTS service
  * and combines them to a single BufferedImage
  */
-public class CommandLoadImageWMTS extends HystrixCommand<BufferedImage> {
+public class CommandLoadImageWMTS extends CommandLoadImageBase {
 
     private final PrintLayer layer;
     private final int width;
@@ -28,14 +25,12 @@ public class CommandLoadImageWMTS extends HystrixCommand<BufferedImage> {
     private final double metersPerUnit;
     private final double[] bbox;
 
-    public CommandLoadImageWMTS(Setter config,
-            PrintLayer layer,
+    public CommandLoadImageWMTS(PrintLayer layer,
             int width,
             int height,
             double[] bbox,
             TileMatrix matrix,
             double metersPerUnit) {
-        super(config);
         this.layer = layer;
         this.width = width;
         this.height = height;
@@ -48,9 +43,6 @@ public class CommandLoadImageWMTS extends HystrixCommand<BufferedImage> {
     public BufferedImage run() throws Exception {
         int tileWidth = matrix.getTileWidth();
         int tileHeight = matrix.getTileHeight();
-
-        int countTileCols = 1 + width / tileWidth;
-        int countTileRows = 1 + height / tileHeight;
 
         double[] topLeft = matrix.getTopLeftCorner();
         double minX = topLeft[0];
@@ -74,11 +66,14 @@ public class CommandLoadImageWMTS extends HystrixCommand<BufferedImage> {
         int offsetXPixels = (int) Math.round((offsetX / pixelSpan));
         int offsetYPixels = (int) Math.round((offsetY / pixelSpan));
 
+        int countTileCols = 1 + (width + offsetXPixels) / tileWidth;
+        int countTileRows = 1 + (height + offsetYPixels) / tileHeight;
+
         // If the tile happens to fit perfectly don't fetch unnecessary tiles
-        if (width % tileWidth == 0 && offsetXPixels == 0) {
+        if (offsetXPixels == 0 && width % tileWidth == 0) {
             countTileCols--;
         }
-        if (height % tileHeight == 0 && offsetYPixels == 0) {
+        if (offsetYPixels == 0 && height % tileHeight == 0) {
             countTileRows--;
         }
 
@@ -96,7 +91,7 @@ public class CommandLoadImageWMTS extends HystrixCommand<BufferedImage> {
             for (int col = 0; col < countTileCols; col++) {
                 requestBuilder.tileCol(minTileCol + col);
                 String uri = requestBuilder.build();
-                futureTiles.add(new CommandLoadImageFromURL(commandGroup, uri).queue());
+                futureTiles.add(new CommandLoadImageFromURL(uri).queue());
             }
         }
 
@@ -109,7 +104,7 @@ public class CommandLoadImageWMTS extends HystrixCommand<BufferedImage> {
             for (int col = 0; col < countTileCols; col++) {
                 int x = tileWidth * col - offsetXPixels;
                 Future<BufferedImage> futureTile = futureTiles.get(tileIndex++);
-                BufferedImage tile = futureTile.get(5L, TimeUnit.SECONDS);
+                BufferedImage tile = futureTile.get();
                 g2d.drawImage(tile, x, y, null);
             }
         }
