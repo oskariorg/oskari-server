@@ -10,6 +10,10 @@ addons:
       - develop
 jdk:
   - oraclejdk8
+  - openjdk8
+
+notifications:
+  slack: oskari:N5vZf0lzsIGpQ8nAPRfHgQ91
 
 before_install: "echo \"MAVEN_OPTS='-Xms1g -Xmx2g'\" > ~/.mavenrc"
 
