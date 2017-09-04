@@ -1,26 +1,30 @@
 package org.oskari.print.wmts;
 
-import fi.nls.oskari.wmts.domain.TileMatrix;
-import fi.nls.oskari.wmts.domain.TileMatrixSet;
-import org.junit.Test;
-import org.xml.sax.SAXException;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
-import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.Assert.*;
+import javax.xml.parsers.ParserConfigurationException;
+
+import org.junit.Test;
+import org.xml.sax.SAXException;
+
+import fi.nls.oskari.wmts.domain.TileMatrix;
+import fi.nls.oskari.wmts.domain.TileMatrixSet;
 
 public class WMTSTileMatrixSetParserTest {
-    
+
     @Test
     public void works() throws ParserConfigurationException, SAXException, IOException {
         TileMatrixSet expected = new TileMatrixSet();
         expected.setId("ETRS-TM35FIN");
         expected.setCrs("urn:ogc:def:crs:EPSG:6.3:3067");
-        
+
         double scaleDenominator = 29257142.85714285820722579956;
         for (int i = 0; i <= 15; i++) {
             TileMatrix tileMatrix = new TileMatrix();
@@ -34,17 +38,17 @@ public class WMTSTileMatrixSetParserTest {
             expected.addTileMatrix(tileMatrix);
             scaleDenominator /= 2;
         }
-        
+
         List<TileMatrixSet> list;
         try (InputStream in = getClass().getClassLoader().getResourceAsStream("WMTSCapabilities.xml")) {
             list = WMTSTileMatrixSetParser.parse(in);
         }
-        
+
         assertEquals(1, list.size());
         TileMatrixSet actual = list.get(0);
         assertEquals(expected.getId(), actual.getId());
         assertEquals(expected.getCrs(), actual.getCrs());
-        
+
         Map<String, TileMatrix> eTileMatrises = expected.getTileMatrixMap();
         Map<String, TileMatrix> aTileMatrises = actual.getTileMatrixMap();
         assertEquals(eTileMatrises.size(), aTileMatrises.size());

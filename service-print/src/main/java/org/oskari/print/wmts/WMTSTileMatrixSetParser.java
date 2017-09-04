@@ -1,23 +1,25 @@
 package org.oskari.print.wmts;
 
-import fi.nls.oskari.log.LogFactory;
-import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.util.ConversionHelper;
-import fi.nls.oskari.wmts.domain.TileMatrix;
-import fi.nls.oskari.wmts.domain.TileMatrixSet;
-import org.oskari.util.DOMHelper;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.xml.sax.SAXException;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+
+import org.oskari.print.util.DOMHelper;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.xml.sax.SAXException;
+
+import fi.nls.oskari.log.LogFactory;
+import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.util.ConversionHelper;
+import fi.nls.oskari.wmts.domain.TileMatrix;
+import fi.nls.oskari.wmts.domain.TileMatrixSet;
 
 /**
  * Parses TileMatrixSet information from WMTSCapabilities.xml
@@ -36,7 +38,7 @@ public class WMTSTileMatrixSetParser {
         }
     }
 
-    public static List<TileMatrixSet> parse(InputStream in) 
+    public static List<TileMatrixSet> parse(InputStream in)
             throws ParserConfigurationException, SAXException, IOException {
         // The result of this function should be cached
         // therefore it's not worth the hassle to cache

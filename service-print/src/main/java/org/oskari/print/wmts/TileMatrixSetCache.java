@@ -1,14 +1,15 @@
 package org.oskari.print.wmts;
 
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
+import org.oskari.print.request.PrintLayer;
+
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.wmts.domain.TileMatrixSet;
-import org.oskari.print.PrintLayer;
-
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Parses TileMatrixSet information from WMTSCapabilities
@@ -41,7 +42,7 @@ public class TileMatrixSetCache {
             if (tileMatrixSets != null) {
                 for (TileMatrixSet tileMatrixSet : tileMatrixSets) {
                     String key = getKey(layer.getId(), tileMatrixSet.getId());
-                    LOG.debug("Adding {} to cache", key);
+                    LOG.debug("Adding", key, "to cache");
                     CACHE.put(key, tileMatrixSet);
                 }
             }

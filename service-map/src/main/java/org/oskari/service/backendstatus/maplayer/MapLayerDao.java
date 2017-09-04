@@ -13,6 +13,8 @@ import java.util.List;
  */
 public class MapLayerDao {
 
+    private static final Class<MapLayerMapper> MAPPER = MapLayerMapper.class;
+
     private final SqlSessionFactory factory;
 
     public MapLayerDao() {
@@ -20,18 +22,18 @@ public class MapLayerDao {
     }
 
     public MapLayerDao(final DataSource ds) {
-        this.factory = MyBatisHelper.initMyBatis(ds, MapLayer.class);
+        this.factory = MyBatisHelper.initMyBatis(ds, MAPPER);
     }
 
     public List<MapLayer> findWMSMapLayers() {
         try (SqlSession session = factory.openSession()) {
-            return session.getMapper(MapLayerMapper.class).selectWMSLayers();
+            return session.getMapper(MAPPER).selectWMSLayers();
         }
     }
 
     public List<MapLayer> findWFSMapLayers() {
         try (SqlSession session = factory.openSession()) {
-            return session.getMapper(MapLayerMapper.class).selectWFSLayers();
+            return session.getMapper(MAPPER).selectWFSLayers();
         }
     }
 
