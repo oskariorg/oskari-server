@@ -25,9 +25,10 @@ public class V1_32_1__populate_capabilities_cache implements JdbcMigration {
 
     private static final Logger LOG = LogFactory.getLogger(V1_32_1__populate_capabilities_cache.class);
 
-    private static final CapabilitiesCacheService CAPABILITIES_SERVICE = OskariComponentManager.getComponentOfType(CapabilitiesCacheService.class);
+    private CapabilitiesCacheService capabilitiesService;
 
     public void migrate(Connection connection) throws SQLException {
+        capabilitiesService = OskariComponentManager.getComponentOfType(CapabilitiesCacheService.class);
         List<OskariLayer> layers = getLayers(connection);
 
         LOG.info("Start populating capabilities for layers - count:", layers.size());
@@ -41,16 +42,16 @@ public class V1_32_1__populate_capabilities_cache implements JdbcMigration {
                     continue;
                 }
                 keys.add(layerKey);
-                final String xml = CAPABILITIES_SERVICE.loadCapabilitiesFromService(layer, null);
+                final String xml = capabilitiesService.loadCapabilitiesFromService(layer, null);
 
-                OskariLayerCapabilities caps = CAPABILITIES_SERVICE.createTemplate(layer);
+                OskariLayerCapabilities caps = capabilitiesService.createTemplate(layer);
                 caps.setData(xml);
                 insertCaps(connection, caps);
                 progress++;
                 LOG.info("Capabilities populated:", progress, "/", layers.size());
             } catch (IOException e) {
                 // save empty result so we don't hang the system when having multiple layers from problematic service
-                OskariLayerCapabilities caps = CAPABILITIES_SERVICE.createTemplate(layer);
+                OskariLayerCapabilities caps = capabilitiesService.createTemplate(layer);
                 caps.setData("");
                 insertCaps(connection, caps);
                 LOG.error(e, "Error getting capabilities for service", layer.getUrl());
