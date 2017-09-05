@@ -55,7 +55,7 @@ public class OskariComponentManager {
     /**
      * Uses ServiceLoader to find all OskariComponents in classpath.
      */
-    public static void addDefaultComponents() {
+    public synchronized static void addDefaultComponents() {
 
         ServiceLoader<OskariComponent> impl = ServiceLoader.load(OskariComponent.class);
         for (OskariComponent loadedImpl : impl) {
