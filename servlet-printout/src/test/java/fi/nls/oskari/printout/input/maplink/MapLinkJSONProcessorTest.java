@@ -4,7 +4,9 @@ import fi.nls.oskari.printout.input.layers.LayerDefinition;
 import fi.nls.oskari.printout.output.map.MapProducerResource;
 import fi.nls.oskari.printout.ws.jaxrs.map.WebServiceMapProducerResource;
 import fi.nls.oskari.printout.ws.jaxrs.resource.MapResource;
+import fi.nls.oskari.util.PropertyUtil;
 import org.apache.log4j.PropertyConfigurator;
+import org.junit.After;
 import org.junit.Before;
 
 import java.io.FileReader;
@@ -74,4 +76,8 @@ public class MapLinkJSONProcessorTest {
         testLayerDefs.add(layerDefinition);
     }
 
+    @After
+    public void tearDown() {
+        PropertyUtil.clearProperties();
+    }
 }

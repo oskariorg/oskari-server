@@ -16,7 +16,7 @@ import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.analysis.domain.AnalysisLayer;
 import fi.nls.oskari.map.analysis.service.AnalysisDbService;
-import fi.nls.oskari.map.analysis.service.AnalysisDbServiceIbatisImpl;
+import fi.nls.oskari.map.analysis.service.AnalysisDbServiceMybatisImpl;
 import fi.nls.oskari.map.userlayer.service.UserLayerDataService;
 import fi.nls.oskari.map.userlayer.service.UserLayerDbService;
 import fi.nls.oskari.myplaces.MyPlacesService;
@@ -32,7 +32,9 @@ import org.json.JSONTokener;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 @OskariViewModifier("mapfull")
 public class MapfullHandler extends BundleHandler {
@@ -70,7 +72,7 @@ public class MapfullHandler extends BundleHandler {
 
 
     private static MyPlacesService myPlaceService = null;
-    private static final AnalysisDbService analysisService = new AnalysisDbServiceIbatisImpl();
+    private static final AnalysisDbService analysisService = new AnalysisDbServiceMybatisImpl();
     private static UserLayerDbService userLayerService;
     private static final UserLayerDataService userLayerDataService = new UserLayerDataService();
 

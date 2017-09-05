@@ -115,7 +115,7 @@ public class User implements Serializable {
     public boolean hasRole(String pRoleName) {
         for (Role r : getRoles()) {
             if (r.getName().equals(pRoleName)
-                    || r.getName().equalsIgnoreCase(Role.getAdminRoleName())) {
+                    || r.getName().equalsIgnoreCase(Role.getAdminRole().getName())) {
                 return true;
             }
         }
@@ -141,7 +141,7 @@ public class User implements Serializable {
         final List<String> rolesToCheck = Arrays.asList(pRoleName);
         for (Role r : getRoles()) {
             if (rolesToCheck.contains(r.getName())
-                    || r.getName().equalsIgnoreCase(Role.getAdminRoleName())) {
+                    || r.getName().equalsIgnoreCase(Role.getAdminRole().getName())) {
                 return true;
             }
         }
@@ -182,7 +182,7 @@ public class User implements Serializable {
     }
 
     public Boolean isAdmin() {
-        return hasRole(Role.getAdminRoleName());
+        return hasRole(Role.getAdminRole().getName());
     }
 
     public String getScreenname() {
