@@ -1,20 +1,19 @@
 package fi.nls.oskari.control.users;
 
+import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.*;
+import fi.nls.oskari.control.users.model.EmailToken;
+import fi.nls.oskari.control.users.service.UserRegistrationService;
 import fi.nls.oskari.domain.Role;
+import fi.nls.oskari.domain.User;
+import fi.nls.oskari.log.LogFactory;
+import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.service.OskariComponentManager;
+import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.service.UserService;
 import fi.nls.oskari.util.JSONHelper;
-import fi.nls.oskari.util.PropertyUtil;
-import org.json.JSONObject;
-
-import fi.nls.oskari.annotation.OskariActionRoute;
-import fi.nls.oskari.control.users.model.Email;
-import fi.nls.oskari.control.users.service.UserRegistrationService;
-import fi.nls.oskari.control.users.service.MailSenderService;
-import fi.nls.oskari.domain.User;
-import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.util.ResponseHelper;
+import org.json.JSONObject;
 
 import java.util.Iterator;
 import java.util.Map;
@@ -23,22 +22,16 @@ import java.util.Map;
  * Note! This might change a bit to make it more RESTish instead of params to tell the operation
  */
 @OskariActionRoute("UserRegistration")
-public class UserRegistrationHandler extends ActionHandler {
+public class UserRegistrationHandler extends RestActionHandler {
 
-	private static final String PARAM_REGISTER = "register";
-	private static final String PARAM_EDIT = "edit";
-	private static final String PARAM_UPDATE = "update";
-	private static final String PARAM_DELETE = "delete";
-	
+	private static final Logger LOG = LogFactory.getLogger(UserRegistrationHandler.class);
     private static final String PARAM_FIRSTNAME = "firstname";
     private static final String PARAM_LASTNAME = "lastname";
     private static final String PARAM_USERNAME = "username";
-    private static final String PARAM_EMAIL = "email";
 	private static final String ATTR_PARAM_PREFIX = "user_";
     
     private UserService userService;
 	private UserRegistrationService registerTokenService = null;
-    private final MailSenderService mailSenderService = new MailSenderService();
 	private Role defaultRole = null;
 
 	public void init() {
@@ -51,109 +44,112 @@ public class UserRegistrationHandler extends ActionHandler {
 		}
 		registerTokenService = OskariComponentManager.getComponentOfType(UserRegistrationService.class);
 	}
-    
+
 	@Override
-	public void handleAction(ActionParameters params) throws ActionException {
-		if(!PropertyUtil.getOptional("allow.registration", false)) {
+	public void preProcess(ActionParameters params) throws ActionException {
+		if(!RegistrationUtil.isEnabled()) {
 			throw new ActionDeniedException("Registration disabled");
 		}
-		// TODO: this check seems a bit weird, maybe do some other validation instead?
-		if (getRequestParameterCount(params.getRequest().getQueryString()) != 1) {
-			throw new ActionException("Request URL must contain ONLY ONE parameter.");
+	}
+
+    @Override
+    public void handleGet(ActionParameters params) throws ActionException {
+        // check if username is reserved
+        if (registerTokenService.isUsernameReserved(params.getRequiredParam("username"))) {
+            throw new ActionParamsException("Username already exists.");
+        }
+        ResponseHelper.writeResponse(params, "OK");
+    }
+
+    @Override
+	public void handlePost(ActionParameters params) throws ActionException {
+		if(!params.getUser().isGuest()) {
+			throw new ActionDeniedException("Registration expects guest user");
 		}
-					
-		String requestEdit = params.getRequest().getParameter(PARAM_EDIT);	
-		User user = new User();
-		if (params.getHttpParam(PARAM_REGISTER) != null) {
-			getUserParams(user, params);
-			if (isEmailAlreadyExist(user.getEmail())) {
-				throw new ActionException("Email already exists.");
+        final String uuid = params.getRequiredParam("uuid");
+        final String password = params.getRequiredParam("password");
+        if(!RegistrationUtil.isPasswordOk(password)) {
+            throw new ActionParamsException("Password too weak");
+        }
+
+        // uuid:a5f1a383-47d5-458c-8373-efbc10cdac16
+        EmailToken token = registerTokenService.findByToken(uuid);
+        if(token == null) {
+            // "Please restart the registration process"
+            throw new ActionParamsException("Unknown token");
+        }
+        // check expiration here
+        if(token.hasExpired()) {
+            // "Please restart the registration process"
+            throw new ActionParamsException("Token expired");
+        }
+        if (isEmailRegistered(token.getEmail())) {
+            // "You can use forgot password feature to reset the password"
+            throw new ActionParamsException("User already exists.");
+        }
+        User user = new User();
+        getUserParams(user, params);
+        user.setEmail(token.getEmail());
+
+		if (registerTokenService.isUsernameReserved(user.getScreenname())) {
+			throw new ActionParamsException("Username already exists.");
+		}
+		try {
+			user.addRole(defaultRole);
+			userService.createUser(user);
+            // add password
+            userService.setUserPassword(user.getScreenname(), password);
+            // cleanup the token
+            registerTokenService.removeTokenByUUID(uuid);
+		} catch (ServiceException se) {
+			throw new ActionException(se.getMessage(), se);
+		}
+		ResponseHelper.writeResponse(params, user2Json(user));
+	}
+
+	@Override
+	public void handleDelete(ActionParameters params) throws ActionException {
+		// remove
+		params.requireLoggedInUser();
+		User sessionUser = params.getUser();
+		try {
+			User retUser = userService.getUser(sessionUser.getId());
+			if (retUser == null) {
+				throw new ActionParamsException("User doesn't exist.");
 			}
-			if (isUsernameAlreadyExist(user.getScreenname())) {
-				throw new ActionException("Username already exists.");
-			}
-			try {
-				user.addRole(defaultRole);
-				userService.createUser(user);
-			} catch (ServiceException se) {			
-				throw new ActionException(se.getMessage(), se);
-			}
-			
-	    	Email emailToken = new Email();
-	    	emailToken.setEmail(user.getEmail());
-			emailToken.setScreenname(user.getScreenname());
-	    	emailToken.setUuid(user.getUuid());
-	    	emailToken.setExpiryTimestamp(RegistrationUtil.createExpiryTime());
-	    	registerTokenService.addEmail(emailToken);
-	    	
-	    	mailSenderService.sendEmailForRegistrationActivation(user, RegistrationUtil.getServerAddress(params));
-				    	
-		} else if (requestEdit != null && !requestEdit.isEmpty()) {
-			try {
-				params.requireLoggedInUser();
-				// we could propably just use params.getUser() instead of loading from db
-				User retUser = userService.getUser(params.getUser().getId());
-				ResponseHelper.writeResponse(params, user2Json(retUser));
-			} catch (ServiceException se) {			
-				throw new ActionException(se.getMessage(), se);
-			}
-			
-		} else if (params.getHttpParam(PARAM_UPDATE) != null) {
-			params.requireLoggedInUser();
-			User sessionUser = params.getUser();
-			getUserParams(user, params);
-			user.setId(sessionUser.getId());
-			try {
-				User retUser = userService.getUser(user.getId());
-				if (retUser == null)
-					throw new ActionException("User doesn't exist.");
-				if (!retUser.getEmail().equals(user.getEmail()) && isEmailAlreadyExist(user.getEmail()))
-					throw new ActionException("Email already exists.");
-				user.setScreenname(retUser.getScreenname());
-				userService.modifyUser(user);				
-			} catch (ServiceException se) {			
-				throw new ActionException(se.getMessage(), se);				
-			} 
-			
-		} else if (params.getHttpParam(PARAM_DELETE) != null) {
-			User sessionUser = params.getUser();
-			params.requireLoggedInUser();
-			try {
-				User retUser = userService.getUser(sessionUser.getId());
-				if (retUser == null)
-					throw new ActionException("User doesn't exist.");					
-				userService.deleteUser(sessionUser.getId());				
-			} catch (ServiceException se) {			
-				throw new ActionException(se.getMessage(), se);				
-			} 
-		
-		} else {
-			throw new ActionException("Request URL should contain ONLY ONE: Either 'register' OR "
-					+ "'edit' OR 'update' OR 'delete'.");
+			userService.deleteUser(sessionUser.getId());
+            // logout for current user
+			params.getRequest().getSession().invalidate();
+		} catch (ServiceException se) {
+			throw new ActionException(se.getMessage(), se);
 		}
 	}
-	
-	private final boolean isEmailAlreadyExist(final String emailAddress) {
-		if (registerTokenService.findUsernameForEmail(emailAddress) != null)
-			return true;
-		else 
-			return false;
+
+	@Override
+	public void handlePut(ActionParameters params) throws ActionException {
+		// edit
+		params.requireLoggedInUser();
+		User user = params.getUser();
+		getUserParams(user, params);
+		try {
+			userService.modifyUser(user);
+		} catch (ServiceException se) {
+			throw new ActionException(se.getMessage(), se);
+		}
+
+		ResponseHelper.writeResponse(params, user2Json(user));
 	}
 	
-	private final boolean isUsernameAlreadyExist(final String username) {
-		if (registerTokenService.findEmailForUsername(username) != null)
-			return true;
-		else 
-			return false;
+	private final boolean isEmailRegistered(final String emailAddress) {
+		return registerTokenService.findUsernameForEmail(emailAddress) != null;
 	}
-	
+
 	private void getUserParams(User user, ActionParameters params) throws ActionParamsException {
         user.setFirstname(params.getRequiredParam(PARAM_FIRSTNAME));
-        user.setLastname(params.getRequiredParam(PARAM_LASTNAME));       
-        user.setEmail(params.getRequiredParam(PARAM_EMAIL));
+        user.setLastname(params.getRequiredParam(PARAM_LASTNAME));
         //check is done because while updating user info, username is not changed.
-        if (params.getRequest().getParameter(PARAM_USERNAME) != null) {
-			user.setScreenname(params.getRequest().getParameter(PARAM_USERNAME));
+		if(user.getId() == -1) {
+			user.setScreenname(params.getRequiredParam(PARAM_USERNAME));
 		}
 		// loop parameters and add the rest starting with user_
 		for(Map.Entry<String, String[]> param : params.getRequest().getParameterMap().entrySet()) {
@@ -168,7 +164,6 @@ public class UserRegistrationHandler extends ActionHandler {
 		}
     }
 
-    
     private JSONObject user2Json(User user) throws ActionException {
 		if (user == null) {
 			throw new ActionParamsException("User doesn't exists.");
@@ -185,14 +180,4 @@ public class UserRegistrationHandler extends ActionHandler {
 		json.remove("roles");
 		return json;
     }
-    
-    public final int getRequestParameterCount(String query) {   
-    	int count = 0;
-    	for (int i = 0; i < query.length(); i++){
-    		if (query.charAt(i) == '&')
-    			++count;
-    	}
-    	return count;
-    }
-    
 }

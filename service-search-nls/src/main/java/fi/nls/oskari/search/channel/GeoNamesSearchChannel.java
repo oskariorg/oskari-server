@@ -114,7 +114,7 @@ public class GeoNamesSearchChannel extends SearchChannel {
                     adminName = adminName + ", ";
                 }
                 adminName = adminName + JSONHelper.getStringFromJSON(dataItem, "countryName", "");
-                item.setVillage(adminName);
+                item.setRegion(adminName);
                 item.setLon(JSONHelper.getStringFromJSON(dataItem, "lng", ""));
                 item.setLat(JSONHelper.getStringFromJSON(dataItem, "lat", ""));
                 searchResultList.addItem(item);

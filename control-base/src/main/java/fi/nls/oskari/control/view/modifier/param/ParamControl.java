@@ -93,7 +93,7 @@ public class ParamControl {
      * Uses ViewModifierManager to get all instances of ParamHandler and registers them as parameter handlers.
      * @see ViewModifierManager
      */
-    public static void addDefaultControls() {
+    public synchronized static void addDefaultControls() {
         if (!actions.isEmpty()) {
             return;
         }

@@ -117,6 +117,7 @@ public class MapController {
         if(env.isHandleLoginForm()) {
             if(!params.getUser().isGuest()) {
                 model.addAttribute("_logout_uri", env.getLogoutUrl());
+                model.addAttribute("_registration_uri", env.getRegisterUrl());
             }
             else {
                 // move possible "failed" parameter to attribute as JSP checks attribute
@@ -216,6 +217,7 @@ public class MapController {
         }
         model.addAttribute("application", view.getApplication());
         model.addAttribute("viewName", view.getName());
+        model.addAttribute("user", params.getUser());
         model.addAttribute("language", params.getLocale().getLanguage());
 
         model.addAttribute(KEY_AJAX_URL,

@@ -1,5 +1,6 @@
 package fi.nls.oskari.csw.domain;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vividsolutions.jts.geom.GeometryCollection;
 import fi.nls.oskari.util.JSONHelper;
 import org.json.JSONArray;
@@ -27,9 +28,17 @@ public class CSWIsoRecord {
     private List<Identification> identifications = new ArrayList<Identification>();
     private List<DistributionFormat> distributionFormats = new ArrayList<DistributionFormat>();
     private List<OnlineResource> onlineResources = new ArrayList<OnlineResource>();
-    private List<DataQuality> dataQualities = new ArrayList<DataQuality>();
+    private DataQualityObject dataQualityObject;
     private URL metadataURL;
     private List<String> referenceSystems = new ArrayList<String>();
+
+    public DataQualityObject getDataQualityObject() {
+        return dataQualityObject;
+    }
+
+    public void setDataQualityObject(DataQualityObject dataQualityObject) {
+        this.dataQualityObject = dataQualityObject;
+    }
 
     public String getFileIdentifier() {
         return fileIdentifier;
@@ -119,14 +128,6 @@ public class CSWIsoRecord {
         this.onlineResources = onlineResources;
     }
 
-    public List<DataQuality> getDataQualities() {
-        return dataQualities;
-    }
-
-    public void setDataQualities(List<DataQuality> dataQualities) {
-        this.dataQualities = dataQualities;
-    }
-
     public URL getMetadataURL() {
         return metadataURL;
     }
@@ -169,11 +170,16 @@ public class CSWIsoRecord {
         }
         JSONHelper.putValue(ret, "onlineResources", arr);
 
-        arr = new JSONArray();
-        for (DataQuality dataQuality : dataQualities) {
-            arr.put(dataQuality.toJSON());
+        ObjectMapper mapper = new ObjectMapper();
+        String jsonInString = "";
+        try {
+            jsonInString = mapper.writeValueAsString(dataQualityObject);
         }
-        JSONHelper.putValue(ret, "dataQualities", arr);
+        catch (Exception e) {
+            //TODO?
+        }
+        JSONHelper.putValue(ret, "dataQualityObject", JSONHelper.createJSONObject(jsonInString));
+
         return ret;
     }
 
@@ -181,266 +187,179 @@ public class CSWIsoRecord {
         return referenceSystems;
     }
 
-    public static class DataQuality {
 
-        public static class DataQualityObject {
-            private List<String> list = new ArrayList<String>();
-            private String pass = "false";
+    public static class DataQualityObject {
+        private List<DataQualityNode> dataQualityNodes = new ArrayList<>();
 
-            public List<String> getList() {
-                return this.list;
-            }
-            public void setList(List<String> list) {
-                this.list = list; 
-            }
-            public String getPass() {
-                return this.pass;
-            }
-            public void setPass(String pass) {
-                this.pass = pass; 
-            }
-
-            public JSONObject toJSON() {
-                JSONObject ret = new JSONObject();
-                JSONHelper.putValue(ret, "list", list);
-                JSONHelper.putValue(ret, "pass", pass);
-                return ret;
-            }
-
+        public List<DataQualityNode> getDataQualityNodes() {
+            return dataQualityNodes;
         }
 
+        public void setDataQualityNodes(List<DataQualityNode> dataQualityNodes) {
+            this.dataQualityNodes = dataQualityNodes;
+        }
+    }
 
-        private List<String> reportConformances = new ArrayList<String>();
-        private String lineageStatement;
+    public static class DataQualityNode {
+        private String nodeName;
+        private String linageStatement;
+        private String nameOfMeasure;
+        private String measureIdentificationCode;
+        private String measureIdentificationAuthorization;
+        private String measureDescription;
+        private String evaluationMethodType;
+        private Object evaluationProcecdure; // TODO parse
+        private List<String> dateTime;
+        private List<DataQualityConformanceResult> conformanceResultList = new ArrayList<>();
+        private List<DataQualityQuantitativeResult> quantitativeResultList = new ArrayList<>();
 
-
-        private List<DataQualityObject> absoluteExternalPositionalAccuracyList = new ArrayList<DataQualityObject>();
-        private List<DataQualityObject> accuracyOfTimeMeasurementList = new ArrayList<DataQualityObject>(); 
-        private List<DataQualityObject> completenessCommissionList = new ArrayList<DataQualityObject>(); 
-        private List<DataQualityObject> completenessOmissionList = new ArrayList<DataQualityObject>(); 
-        private List<DataQualityObject> conceptualConsistencyList = new ArrayList<DataQualityObject>(); 
-        private List<DataQualityObject> domainConsistencyList = new ArrayList<DataQualityObject>(); 
-        private List<DataQualityObject> formatConsistencyList = new ArrayList<DataQualityObject>(); 
-        private List<DataQualityObject> griddedDataPositionalAccuracyList = new ArrayList<DataQualityObject>(); 
-        private List<DataQualityObject> nonQuantitativeAttributeAccuracyList = new ArrayList<DataQualityObject>(); 
-        private List<DataQualityObject> quantitativeAttributeAccuracyList = new ArrayList<DataQualityObject>(); 
-        private List<DataQualityObject> relativeInternalPositionalAccuracyList = new ArrayList<DataQualityObject>(); 
-        private List<DataQualityObject> temporalConsistencyList = new ArrayList<DataQualityObject>(); 
-        private List<DataQualityObject> temporalValidityList = new ArrayList<DataQualityObject>(); 
-        private List<DataQualityObject> thematicClassificationCorrectnessList = new ArrayList<DataQualityObject>(); 
-        private List<DataQualityObject> topologicalConsistencyList= new ArrayList<DataQualityObject>(); 
-
-
-        public List<String> getReportConformances() {
-            return reportConformances;
+        public String getNodeName() {
+            return nodeName;
         }
 
-        public void setReportConformances(List<String> reportConformances) {
-            this.reportConformances = reportConformances;
+        public void setNodeName(String nodeName) {
+            this.nodeName = nodeName;
         }
 
-        public String getLineageStatement() {
-            return lineageStatement;
+        public String getLinageStatement() {
+            return linageStatement;
         }
 
-        public void setLineageStatement(String lineageStatement) {
-            this.lineageStatement = lineageStatement;
+        public void setLinageStatement(String linageStatement) {
+            this.linageStatement = linageStatement;
         }
 
-        public List<DataQualityObject> getAbsoluteExternalPositionalAccuracyList() {
-            return absoluteExternalPositionalAccuracyList;
+        public String getNameOfMeasure() {
+            return nameOfMeasure;
         }
 
-        public void setAbsoluteExternalPositionalAccuracyList(List<DataQualityObject> absoluteExternalPositionalAccuracyList) {
-            this.absoluteExternalPositionalAccuracyList = absoluteExternalPositionalAccuracyList;
+        public void setNameOfMeasure(String nameOfMeasure) {
+            this.nameOfMeasure = nameOfMeasure;
         }
 
-        public List<DataQualityObject> getAccuracyOfTimeMeasurementList() {
-            return accuracyOfTimeMeasurementList;
+        public String getMeasureIdentificationCode() {
+            return measureIdentificationCode;
         }
 
-        public void setAccuracyOfTimeMeasurementList(List<DataQualityObject> accuracyOfTimeMeasurementList) {
-            this.accuracyOfTimeMeasurementList = accuracyOfTimeMeasurementList; 
-        }
-        public List<DataQualityObject> getCompletenessCommissionList() {
-            return completenessCommissionList;
-        }
-        public void setCompletenessCommissionList(List<DataQualityObject> completenessCommissionList) {
-            this.completenessCommissionList = completenessCommissionList; 
-        }
-        public List<DataQualityObject> getCompletenessOmissionList() {
-            return completenessOmissionList;
-        }
-        public void setCompletenessOmissionList(List<DataQualityObject> completenessOmissionList) {
-            this.completenessOmissionList = completenessOmissionList; 
-        }
-        public List<DataQualityObject> getConceptualConsistencyList() {
-            return conceptualConsistencyList;
-        }
-        public void setConceptualConsistencyList(List<DataQualityObject> conceptualConsistencyList) {
-            this.conceptualConsistencyList = conceptualConsistencyList; 
-        }
-        public List<DataQualityObject> getDomainConsistencyList() {
-            return domainConsistencyList;
-        }
-        public void setDomainConsistencyList(List<DataQualityObject> domainConsistencyList) {
-            this.domainConsistencyList = domainConsistencyList; 
-        }
-        public List<DataQualityObject> getFormatConsistencyList() {
-            return formatConsistencyList;
-        }
-        public void setFormatConsistencyList(List<DataQualityObject> formatConsistencyList) {
-            this.formatConsistencyList = formatConsistencyList;
-        }
-        public List<DataQualityObject> getGriddedDataPositionalAccuracyList() {
-            return griddedDataPositionalAccuracyList;
-        }
-        public void setGriddedDataPositionalAccuracyList(List<DataQualityObject> griddedDataPositionalAccuracyList) {
-            this.griddedDataPositionalAccuracyList = griddedDataPositionalAccuracyList;
-        }
-        public List<DataQualityObject> getNonQuantitativeAttributeAccuracyList() {
-            return nonQuantitativeAttributeAccuracyList;
-        }
-        public void setNonQuantitativeAttributeAccuracyList(List<DataQualityObject> nonQuantitativeAttributeAccuracyList) {
-            this.nonQuantitativeAttributeAccuracyList = nonQuantitativeAttributeAccuracyList;
-        }
-        public List<DataQualityObject> getQuantitativeAttributeAccuracyList() {
-            return quantitativeAttributeAccuracyList;
-        }
-        public void setQuantitativeAttributeAccuracyList(List<DataQualityObject> quantitativeAttributeAccuracyList) {
-            this.quantitativeAttributeAccuracyList = quantitativeAttributeAccuracyList;
-        }
-        public List<DataQualityObject> getRelativeInternalPositionalAccuracyList() {
-            return relativeInternalPositionalAccuracyList;
-        }
-        public void setRelativeInternalPositionalAccuracyList(List<DataQualityObject> relativeInternalPositionalAccuracyList) {
-            this.relativeInternalPositionalAccuracyList = relativeInternalPositionalAccuracyList;
-        }
-        public List<DataQualityObject> getTemporalConsistencyList() {
-            return temporalConsistencyList;
-        }
-        public void setTemporalConsistencyList(List<DataQualityObject> temporalConsistencyList) {
-            this.temporalConsistencyList = temporalConsistencyList; 
-        }
-        public List<DataQualityObject> getTemporalValidityList() {
-            return temporalValidityList;
-        }
-        public void setTemporalValidityList(List<DataQualityObject> temporalValidityList) {
-            this.temporalValidityList = temporalValidityList;
-        }
-        public List<DataQualityObject> getThematicClassificationCorrectnessList() {
-            return thematicClassificationCorrectnessList;
-        }
-        public void setThematicClassificationCorrectnessList(List<DataQualityObject> thematicClassificationCorrectnessList) {
-            this.thematicClassificationCorrectnessList = thematicClassificationCorrectnessList;
-        }
-        public List<DataQualityObject> getTopologicalConsistencyList() {
-            return topologicalConsistencyList;
-        }
-        public void setTopologicalConsistencyList(List<DataQualityObject> topologicalConsistencyList) {
-            this.topologicalConsistencyList = topologicalConsistencyList;
+        public void setMeasureIdentificationCode(String measureIdentificationCode) {
+            this.measureIdentificationCode = measureIdentificationCode;
         }
 
-        public JSONObject toJSON() {
-            JSONObject ret = new JSONObject();
-            JSONHelper.putValue(ret, "reportConformances", reportConformances);
-            JSONHelper.putValue(ret, "lineageStatement", lineageStatement);
+        public String getMeasureIdentificationAuthorization() {
+            return measureIdentificationAuthorization;
+        }
 
-//            JSONHelper.putValue(ret, "absoluteExternalPositionalAccuracy", absoluteExternalPositionalAccuracy.toJSON());
-//            JSONHelper.putValue(ret, "absoluteExternalPositionalAccuracy", absoluteExternalPositionalAccuracy.toJSON());
+        public void setMeasureIdentificationAuthorization(String measureIdentificationAuthorization) {
+            this.measureIdentificationAuthorization = measureIdentificationAuthorization;
+        }
 
-//            JSONHelper.putValue(ret, "absoluteExternalPositionalAccuracy", absoluteExternalPositionalAccuracy);
-            JSONArray arr = new JSONArray();
-            for (DataQualityObject dqObject : absoluteExternalPositionalAccuracyList) {
-                arr.put(dqObject.toJSON());
-            }
-            JSONHelper.putValue(ret, "absoluteExternalPositionalAccuracyList", arr);
+        public String getMeasureDescription() {
+            return measureDescription;
+        }
 
-            arr = new JSONArray();
-            for (DataQualityObject dqObject : accuracyOfTimeMeasurementList) {
-                arr.put(dqObject.toJSON());
-            }
-            JSONHelper.putValue(ret, "accuracyOfTimeMeasurementList", arr);
+        public void setMeasureDescription(String measureDescription) {
+            this.measureDescription = measureDescription;
+        }
 
-            arr = new JSONArray();
-            for (DataQualityObject dqObject : completenessCommissionList) {
-                arr.put(dqObject.toJSON());
-            }
-            JSONHelper.putValue(ret, "completenessCommissionList", arr);
+        public String getEvaluationMethodType() {
+            return evaluationMethodType;
+        }
 
-            arr = new JSONArray();
-            for (DataQualityObject dqObject : completenessOmissionList) {
-                arr.put(dqObject.toJSON());
-            }
-            JSONHelper.putValue(ret, "completenessOmissionList", arr);
+        public void setEvaluationMethodType(String evaluationMethodType) {
+            this.evaluationMethodType = evaluationMethodType;
+        }
 
-            arr = new JSONArray();
-            for (DataQualityObject dqObject : conceptualConsistencyList) {
-                arr.put(dqObject.toJSON());
-            }
-            JSONHelper.putValue(ret, "conceptualConsistencyList", arr);
+        public Object getEvaluationProcecdure() {
+            return evaluationProcecdure;
+        }
 
-            arr = new JSONArray();
-            for (DataQualityObject dqObject : domainConsistencyList) {
-                arr.put(dqObject.toJSON());
-            }
-            JSONHelper.putValue(ret, "domainConsistencyList", arr);
+        public void setEvaluationProcedure(Object evaluationProcecdure) {
+            this.evaluationProcecdure = evaluationProcecdure;
+        }
 
-            arr = new JSONArray();
-            for (DataQualityObject dqObject : formatConsistencyList) {
-                arr.put(dqObject.toJSON());
-            }
-            JSONHelper.putValue(ret, "formatConsistencyList", arr);
+        public List<String> getDateTime() {
+            return dateTime;
+        }
 
-            arr = new JSONArray();
-            for (DataQualityObject dqObject : griddedDataPositionalAccuracyList) {
-                arr.put(dqObject.toJSON());
-            }
-            JSONHelper.putValue(ret, "griddedDataPositionalAccuracyList", arr);
+        public void setDateTime(List<String> dateTime) {
+            this.dateTime = dateTime;
+        }
 
-            arr = new JSONArray();
-            for (DataQualityObject dqObject : nonQuantitativeAttributeAccuracyList) {
-                arr.put(dqObject.toJSON());
-            }
-            JSONHelper.putValue(ret, "nonQuantitativeAttributeAccuracyList", arr);
+        public List<DataQualityConformanceResult> getConformanceResultList() {
+            return conformanceResultList;
+        }
 
-            arr = new JSONArray();
-            for (DataQualityObject dqObject : quantitativeAttributeAccuracyList) {
-                arr.put(dqObject.toJSON());
-            }
-            JSONHelper.putValue(ret, "quantitativeAttributeAccuracyList", arr);
+        public List<DataQualityQuantitativeResult> getQuantitativeResultList() {
+            return quantitativeResultList;
+        }
+    }
 
-            arr = new JSONArray();
-            for (DataQualityObject dqObject : relativeInternalPositionalAccuracyList) {
-                arr.put(dqObject.toJSON());
-            }
-            JSONHelper.putValue(ret, "relativeInternalPositionalAccuracyList", arr);
+    public static class DataQualityConformanceResult {
+        private Object specification; //TODO parse
+        private String explanation;
+        private String pass;
 
-            arr = new JSONArray();
-            for (DataQualityObject dqObject : temporalConsistencyList) {
-                arr.put(dqObject.toJSON());
-            }
-            JSONHelper.putValue(ret, "temporalConsistencyList", arr);
+        public Object getSpecification() {
+            return specification;
+        }
 
-            arr = new JSONArray();
-            for (DataQualityObject dqObject : temporalValidityList) {
-                arr.put(dqObject.toJSON());
-            }
-            JSONHelper.putValue(ret, "temporalValidityList", arr);
+        public void setSpecification(Object specification) {
+            this.specification = specification;
+        }
 
-            arr = new JSONArray();
-            for (DataQualityObject dqObject : thematicClassificationCorrectnessList) {
-                arr.put(dqObject.toJSON());
-            }
-            JSONHelper.putValue(ret, "thematicClassificationCorrectnessList", arr);
+        public String getExplanation() {
+            return explanation;
+        }
 
-            arr = new JSONArray();
-            for (DataQualityObject dqObject : topologicalConsistencyList) {
-                arr.put(dqObject.toJSON());
-            }
-            JSONHelper.putValue(ret, "topologicalConsistencyList", arr);
+        public void setExplanation(String explanation) {
+            this.explanation = explanation;
+        }
 
-            return ret;
+        public String getPass() {
+            return pass;
+        }
+
+        public void setPass(String pass) {
+            this.pass = pass;
+        }
+    }
+
+    public static class DataQualityQuantitativeResult {
+        private String valueType;
+        private String valueUnit;
+        private String errorStatistic;
+        private List<String> value;
+
+        public String getValueType() {
+            return valueType;
+        }
+
+        public void setValueType(String valueType) {
+            this.valueType = valueType;
+        }
+
+        public String getValueUnit() {
+            return valueUnit;
+        }
+
+        public void setValueUnit(String valueUnit) {
+            this.valueUnit = valueUnit;
+        }
+
+        public String getErrorStatistic() {
+            return errorStatistic;
+        }
+
+        public void setErrorStatistic(String errorStatistic) {
+            this.errorStatistic = errorStatistic;
+        }
+
+        public List<String> getValue() {
+            return value;
+        }
+
+        public void setValue(List<String> value) {
+            this.value = value;
         }
     }
 
@@ -775,6 +694,13 @@ public class CSWIsoRecord {
         public static class DateWithType {
             private Date date;
             private String dateType;
+            private String xmlDate;
+
+            public String getXmlDate() { return xmlDate; }
+
+            public void setXmlDate(String xmlDate) {
+                this.xmlDate = xmlDate;
+            }
 
             public Date getDate() {
                 return date;
@@ -794,9 +720,17 @@ public class CSWIsoRecord {
 
             public JSONObject toJSON() {
                 JSONObject ret = new JSONObject();
-                // TODO fix format
-                final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
-                JSONHelper.putValue(ret, "date", date != null ? sdf.format(date) : "");
+                String formattedDate = null;
+                if (xmlDate == null || xmlDate.isEmpty()) {
+                    try {
+                        final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
+                        formattedDate = sdf.format(date);
+                    }
+                    catch (Exception e){
+                        //do nothing
+                    }
+                }
+                JSONHelper.putValue(ret, "date", formattedDate != null ? formattedDate : xmlDate);
                 JSONHelper.putValue(ret, "dateType", dateType != null ? dateType : "");
                 return ret;
             }

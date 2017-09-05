@@ -1,7 +1,6 @@
 package fi.nls.oskari.map.layer.formatters;
 
 import fi.mml.map.mapwindow.service.wms.WebMapService;
-import fi.mml.map.mapwindow.service.wms.WebMapServiceV1_3_0_Impl;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
@@ -91,42 +90,33 @@ public class LayerJSONFormatterWMS extends LayerJSONFormatter {
             return;
         }
 
-        final boolean useProxy = useProxy(layer);
         try {
             final JSONArray styles;
-            if (useProxy) {
-                // construct a modified styles list
-                final JSONArray styleList = capabilities.optJSONArray(KEY_STYLES);
-                styles = new JSONArray();
-                // replace legendimage urls
-                if(styleList != null) {
-                    for(int i = 0; i < styleList.length(); ++i) {
-                        JSONObject style = styleList.optJSONObject(i);
-                        if (style != null && style.has(KEY_LEGEND)) {
-                            // copy the values to a new object to not affect the original
-                            style = new JSONObject(style, STYLE_KEYS);
-                            // update url from actual to proxied version
-                            JSONHelper.putValue(style, KEY_LEGEND, buildLegendUrl(layer, style.optString("name")));
-                        }
-                        styles.put(style);
-                    }
-                }
+            // construct a modified styles list
+            final JSONArray styleList = capabilities.optJSONArray(KEY_STYLES);
+            styles = new JSONArray();
+            // replace legendimage urls
+            if(styleList != null) {
+            	for(int i = 0; i < styleList.length(); ++i) {
+            		JSONObject style = styleList.optJSONObject(i);
+            		if (style != null && style.has(KEY_LEGEND)) {
+            			// copy the values to a new object to not affect the original
+            			style = new JSONObject(style, STYLE_KEYS);
+            			// update url from actual to proxied version
+            			JSONHelper.putValue(style, KEY_LEGEND, buildLegendUrl(layer, style.optString("name")));
+            		}
+            		styles.put(style);
+            	}
             }
-            else {
-                styles = capabilities.optJSONArray(KEY_STYLES);
-            }
+
             JSONHelper.putValue(layerJson, KEY_STYLES, styles);
 
             final String globalLegend = layer.getLegendImage();
             // if we have a global legend url, setup the JSON
             if(globalLegend != null && !globalLegend.isEmpty()) {
-                if (useProxy) {
-                    JSONHelper.putValue(layerJson, KEY_LEGENDIMAGE, buildLegendUrl(layer, null));
-                    // copy the original value so we can show them for admins
-                    addInfoForAdmin(layerJson, KEY_LEGENDIMAGE, globalLegend);
-                } else {
-                    JSONHelper.putValue(layerJson, KEY_LEGENDIMAGE, globalLegend);
-                }
+            	JSONHelper.putValue(layerJson, KEY_LEGENDIMAGE, buildLegendUrl(layer, null));
+            	// copy the original value so we can show them for admins
+            	addInfoForAdmin(layerJson, KEY_LEGENDIMAGE, globalLegend);
             }
 
         } catch (Exception e) {
@@ -134,7 +124,15 @@ public class LayerJSONFormatterWMS extends LayerJSONFormatter {
         }
 
         JSONHelper.putValue(layerJson, KEY_FORMATS, capabilities.optJSONObject(KEY_FORMATS));
-        JSONHelper.putValue(layerJson, KEY_ISQUERYABLE, capabilities.optBoolean(KEY_ISQUERYABLE));
+
+        final JSONObject attrs = layer.getAttributes();
+        if(attrs != null && attrs.has(KEY_ISQUERYABLE)) {
+            // attributes can be used to force GFI for layer even if capabilities allow it or enable it not
+            JSONHelper.putValue(layerJson, KEY_ISQUERYABLE, attrs.optBoolean(KEY_ISQUERYABLE));
+        } else {
+            JSONHelper.putValue(layerJson, KEY_ISQUERYABLE, capabilities.optBoolean(KEY_ISQUERYABLE));
+        }
+
         // Do not override version, if already available
         if(!layerJson.has(KEY_VERSION)) {
             JSONHelper.putValue(layerJson, KEY_VERSION, JSONHelper.getStringFromJSON(capabilities, KEY_VERSION, null));

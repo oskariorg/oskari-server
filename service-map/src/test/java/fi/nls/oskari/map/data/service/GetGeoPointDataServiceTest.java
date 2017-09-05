@@ -1,17 +1,26 @@
 package fi.nls.oskari.map.data.service;
 
+import fi.nls.oskari.domain.map.OskariLayer;
+import fi.nls.oskari.map.data.domain.GFIRequestParams;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.JSONHelper;
 import org.json.JSONObject;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.io.IOException;
 
 import static org.junit.Assert.*;
+import static org.mockito.Matchers.anyString;
 
 /**
  * Created by SMAKINEN on 24.11.2016.
  */
+@RunWith(PowerMockRunner.class)
+@PrepareForTest(GetGeoPointDataService.class)
 public class GetGeoPointDataServiceTest {
 
     @Test
@@ -30,4 +39,22 @@ public class GetGeoPointDataServiceTest {
         assertNotNull(parsed.optString("Staður"));
 
     }
+
+    @Test
+    public void testResponseCleaning()
+            throws Exception {
+        final String dirty = "<style></style><script>alert('illegal!')</script><h4>Allowed</h4>";
+        GetGeoPointDataService partialMock = PowerMockito.spy(new GetGeoPointDataService());
+        PowerMockito.doReturn(dirty).when(partialMock, "makeGFIcall", anyString(), anyString(), anyString());
+        GFIRequestParams params = new GFIRequestParams();
+        final OskariLayer layer = new OskariLayer();
+        layer.setUsername("name");
+        layer.setPassword("anything");
+        layer.setUrl("http://example.com/");
+        layer.setName("layerName");
+        params.setLayer(layer);
+        JSONObject response = partialMock.getWMSFeatureInfo(params);
+        assertEquals("Should have cleaned html", response.optString("content"), "<h4>Allowed</h4>");
+    }
+
 }

@@ -1,8 +1,11 @@
 package fi.nls.oskari.search.channel;
 
 import fi.mml.portti.service.search.ChannelSearchResult;
+import fi.mml.portti.service.search.IllegalSearchCriteriaException;
 import fi.mml.portti.service.search.SearchCriteria;
 import fi.mml.portti.service.search.SearchResultItem;
+import fi.nls.oskari.log.LogFactory;
+import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.search.util.QueryParser;
 import fi.nls.oskari.search.util.SearchUtil;
 import fi.nls.oskari.search.util.StreetNameComparator;
@@ -14,12 +17,14 @@ import org.w3c.dom.NodeList;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.util.*;
 
 public abstract class BaseWfsAddressChannelSearchService extends SearchChannel {
+    private Logger log = LogFactory.getLogger(this.getClass());
         
     private static final String BOUNDED_BY              = "gml:boundedBy";
     private static final String OSOITE_NIMI     = "oso:Osoitenimi";
@@ -35,17 +40,28 @@ public abstract class BaseWfsAddressChannelSearchService extends SearchChannel {
         String iso3Lang = loc.getISO3Language();
         return Character.toUpperCase(iso3Lang.charAt(0)) + iso3Lang.substring(1);
     }
+
+    public boolean isValidSearchTerm(SearchCriteria criteria) {
+        QueryParser parser = new QueryParser(criteria.getSearchString());
+        try {
+            parser.parse();
+            return true;
+        } catch (IllegalSearchCriteriaException e) {
+            return false;
+        }
+    }
         
     public ChannelSearchResult doSearch(SearchCriteria searchCriteria) {
         ChannelSearchResult searchResultList = new ChannelSearchResult();
+        String queryUrl = null;
         try {
                         
             QueryParser queryParser = createQueryParser(searchCriteria.getSearchString());
             queryParser.parse();
                         
             WFSOsoitenimiFilterMaker wfsoFM = new WFSOsoitenimiFilterMaker(queryParser);
-            String filterXml = URLEncoder.encode(wfsoFM.getFilter(), "UTF-8"); 
-            final String queryUrl = this.getQueryUrl(filterXml, getMaxResults(searchCriteria.getMaxResults()));
+            String filterXml = URLEncoder.encode(wfsoFM.getFilter(), "UTF-8");
+            queryUrl = this.getQueryUrl(filterXml, getMaxResults(searchCriteria.getMaxResults()));
             if(queryUrl == null) {
                 return null;
             }
@@ -120,7 +136,7 @@ public abstract class BaseWfsAddressChannelSearchService extends SearchChannel {
                                     + language + ", Kielikoodi=" + languageCode 
                                     + ", Kunta=" + village);
                 item.setMapURL(getMapUrl(searchCriteria));
-                item.setVillage(village);
+                item.setRegion(village);
                 searchResultList.addItem(item);
                                 
             }
@@ -134,7 +150,19 @@ public abstract class BaseWfsAddressChannelSearchService extends SearchChannel {
                         
             return searchResultList;
                                                 
-        } catch (Exception e) {
+        }
+        catch (IllegalSearchCriteriaException e) {
+            searchResultList.setException(e);
+            searchResultList.setQueryFailed(true);
+            return searchResultList;
+        }
+        catch (IOException e) {
+            log.warn("Error connecting to service/reading response:", e.getMessage(), "- URL:", queryUrl);
+            searchResultList.setException(e);
+            searchResultList.setQueryFailed(true);
+            return searchResultList;
+        }
+        catch (Exception e) {
             throw new RuntimeException("Failed to search address from '" + this.getClass().getName() + "'", e);
         }
     }

@@ -10,7 +10,6 @@ import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.layer.formatters.LayerJSONFormatter;
 import fi.nls.oskari.map.layer.formatters.LayerJSONFormatterWMS;
 import fi.nls.oskari.util.*;
-import org.eclipse.emf.common.util.Enumerator;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -68,20 +67,18 @@ public class GetLayerTileHandler extends ActionHandler {
             actionTimer = timer.time();
         }
 
-        String url  = null;
-        String postParams = null;
         String httpMethod = params.getRequest().getMethod();
-        HttpURLConnection con = null;
-        boolean doOutPut = false;
-        if (httpMethod.equals("POST")) {
-            doOutPut = true;
+        String url;
+        String postParams = null;
+        boolean doOutPut = httpMethod.equals("POST");
+        if (doOutPut) {
             url = layer.getUrl();
             postParams = IOHelper.getParams(getUrlParams(params.getRequest()));
         } else {
             url = getURL(params, layer);
         }
-
-        con = getConnection(url, layer);
+        // TODO: we should handle redirects here or in IOHelper or start using a lib that handles 301/302 properly
+        HttpURLConnection con = getConnection(url, layer);
 
         try {
             con.setRequestMethod(httpMethod);
@@ -93,12 +90,12 @@ public class GetLayerTileHandler extends ActionHandler {
             con.setUseCaches(false);
             con.connect();
 
-            if (httpMethod.equals("POST")) {
+            if (doOutPut) {
                 IOHelper.writeToConnection(con, postParams);
             }
 
             final int responseCode = con.getResponseCode();
-            final String contentType = con.getContentType();
+            final String contentType = con.getContentType().toLowerCase();
             if(responseCode != HttpURLConnection.HTTP_OK || !contentType.startsWith("image/")) {
                 LOG.warn("URL", url, "returned HTTP response code", responseCode,
                         "with message", con.getResponseMessage(), "and content-type:", contentType);
@@ -127,7 +124,6 @@ public class GetLayerTileHandler extends ActionHandler {
                 con.disconnect();
             }
         }
-
     }
 
     private String getURL(final ActionParameters params, final OskariLayer layer) {

@@ -94,7 +94,7 @@ public class OpenStreetMapSearchChannel extends SearchChannel {
                 item.setDescription(JSONHelper.getStringFromJSON(dataItem, "display_name", ""));
                 item.setLocationTypeCode(JSONHelper.getStringFromJSON(dataItem, "class", ""));
                 item.setType(JSONHelper.getStringFromJSON(dataItem, "class", ""));
-                item.setVillage(JSONHelper.getStringFromJSON(address, "city", ""));
+                item.setRegion(JSONHelper.getStringFromJSON(address, "city", ""));
 
                 item.setLon(JSONHelper.getStringFromJSON(dataItem, "lon", ""));
                 item.setLat(JSONHelper.getStringFromJSON(dataItem, "lat", ""));

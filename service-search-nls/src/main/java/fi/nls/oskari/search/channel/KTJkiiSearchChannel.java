@@ -13,6 +13,7 @@ import fi.nls.oskari.search.ktjkiiwfs.RegisterUnitParcelSearchResult;
 import fi.nls.oskari.search.util.SearchUtil;
 import fi.nls.oskari.util.PropertyUtil;
 
+import java.io.IOException;
 import java.util.List;
 
 @Oskari(KTJkiiSearchChannel.ID)
@@ -57,10 +58,10 @@ public class KTJkiiSearchChannel extends SearchChannel {
             List<RegisterUnitParcelSearchResult> results = impl
                     .searchByRegisterUnitIdWithParcelFeature(registerUnitId);
 
-            if (results == null) {
-                log.debug("RegisterUnitParcelSearchResult was null for query: '", 
-                        searchCriteria.getSearchString(), "' and RegisterUnitId: ", 
-                        registerUnitId.getValue());
+            if (results == null || results.isEmpty()) {
+                log.info("No result for: '",
+                        searchCriteria.getSearchString(), "' and RegisterUnitId: '",
+                        registerUnitId.getValue(), "' ServiceURL:", serviceURL);
                 return searchResultList;
             }
 
@@ -90,14 +91,22 @@ public class KTJkiiSearchChannel extends SearchChannel {
                 item.setType(SearchUtil.getLocationType("Kiinteistötunnus_" +
                         SearchUtil.getLocaleCode(searchCriteria.getLocale())));
                 item.setMapURL(SearchUtil.getMapURL(searchCriteria.getLocale()));
-                item.setVillage("");
+                item.setRegion("");
                 // resource id == feature id
                 item.setResourceId(rupsr.getGmlID());
                 item.setResourceNameSpace(serviceURL);
                 searchResultList.addItem(item);
             }
 
-        } catch (Exception e) {
+        }
+        catch (IOException e) {
+            // If the service is down we don't care about the stack trace
+            log.warn("Error connecting to service/reading response:", e.getMessage(), "- URL:", serviceURL);
+            searchResultList.setException(e);
+            searchResultList.setQueryFailed(true);
+            return searchResultList;
+        }
+        catch (Exception e) {
             // never actually throws IllegalSearchCriteriaException
             // since its thrown only by QueryParser.parse() which is not used here
             // so we can catch all

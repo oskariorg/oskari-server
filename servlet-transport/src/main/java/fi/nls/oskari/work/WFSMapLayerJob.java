@@ -14,6 +14,8 @@ import fi.nls.oskari.wfs.WFSFilter;
 import fi.nls.oskari.wfs.WFSParser;
 import fi.nls.oskari.wfs.pojo.WFSLayerStore;
 import fi.nls.oskari.wfs.util.HttpHelper;
+import fi.nls.oskari.wfs.extension.UserLayerProcessor;
+import fi.nls.oskari.wfs.LayerProcessor;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureIterator;
 import org.opengis.feature.Property;
@@ -28,6 +30,7 @@ import java.util.*;
  * Job for WFS Map Layer
  */
 public class WFSMapLayerJob extends OWSMapLayerJob {
+	LayerProcessor layerProcessor = new UserLayerProcessor ();
 
 	/**
 	 * Creates a new runnable job with own Jedis instance
@@ -113,6 +116,10 @@ public class WFSMapLayerJob extends OWSMapLayerJob {
         BufferedReader response = ((WFSRequestResponse) requestResponse).getResponse();
         FeatureCollection<SimpleFeatureType, SimpleFeature> features = WFSCommunicator.parseSimpleFeatures(response, layer);
 
+        if (layerProcessor.isProcessable(layer)) {
+			features = layerProcessor.process(features,layer);
+        }
+
         IOHelper.close(response);
 
         return features;
@@ -162,7 +169,7 @@ public class WFSMapLayerJob extends OWSMapLayerJob {
             final Map<String, Object> output = createCommonResponse();
             if(features == null || features.isEmpty()) {
                 log.debug("Empty result for", this.layerId, "type:", type);
-                output.put(OUTPUT_FEATURES, "empty");
+                output.put(OUTPUT_FEATURE, "empty");
                 log.debug(PROCESS_ENDED, getKey());
                 if(this.type == JobType.MAP_CLICK) {
                     output.put(OUTPUT_KEEP_PREVIOUS, this.session.isKeepPrevious());

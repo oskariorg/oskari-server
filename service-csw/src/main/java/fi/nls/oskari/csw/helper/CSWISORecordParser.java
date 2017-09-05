@@ -352,7 +352,13 @@ public class CSWISORecordParser {
 
         nodeList = (NodeList) XPATH_DATA_QUALITY.evaluate(elem, XPathConstants.NODESET);
         if (nodeList.getLength() > 0) {
-            parseDataQualities(nodeList, record.getDataQualities(), pathToLocalizedValue);
+            try {
+                CSWISORecordDataQualityParser dataQualityParser = new CSWISORecordDataQualityParser();
+                record.setDataQualityObject(dataQualityParser.parseDataQualities(nodeList, locale));
+            }
+            catch (Exception e) {
+                log.warn("parseDataQualities FAIL! "+e.getMessage());
+            }
         }
 
         node = (Node) XPATH_DISTRIBUTION_INFO.evaluate(elem, XPathConstants.NODE);
@@ -599,7 +605,13 @@ public class CSWISORecordParser {
         }
         node = (Node) XPATH_DI_SI_CITATION_DATE_VALUE.evaluate(cNode, XPathConstants.NODE);
         if (node != null) {
-            dateWithType.setDate(dateFormat().parse(getText(node)));
+            try {
+                dateWithType.setDate(dateFormat().parse(getText(node)));
+            }
+            catch (Exception e) {
+                dateWithType.setXmlDate(getText(node));
+            }
+
         }
         citation.setDate(dateWithType);
         nodeList = (NodeList) XPATH_DI_SI_CITATION_RESOURCE_IDENTIFIERS.evaluate(cNode, XPathConstants.NODESET);
@@ -620,141 +632,6 @@ public class CSWISORecordParser {
             }
         }
     }
-
-    private void parseDataQualities(NodeList dqNodes, List<CSWIsoRecord.DataQuality> dataQualities, XPathExpression pathToLocalizedValue) throws XPathExpressionException {
-        Node parentNode;
-        NodeList nodeList;
-        List<String> list;
-
-
-        try {
-        for (int i = 0; i < dqNodes.getLength(); i++) {
-            
-            parentNode = dqNodes.item(i);
-            CSWIsoRecord.DataQuality dataQuality = new CSWIsoRecord.DataQuality();
-            Node lineageStatementNode = (Node) XPATH_DATA_QUALITY_LINEAGE.evaluate(parentNode, XPathConstants.NODE);
-            if (lineageStatementNode != null) {
-                dataQuality.setLineageStatement(getLocalizedContent(lineageStatementNode, pathToLocalizedValue));
-            }
-
-            /*this is essentially the same as domainconsistency, but is used on another tab in the gui...Leaving this as it is for now...*/
-            NodeList dataQualityConformancesNodeList = (NodeList) XPATH_DATA_QUALITY_CONFORMANCES.evaluate(parentNode, XPathConstants.NODESET);
-            List<String> reportConformancesList = dataQuality.getReportConformances();
-            parseNodeListStrings(dataQualityConformancesNodeList, reportConformancesList, pathToLocalizedValue);
-
-            NodeList positionalAccuracyNodeList = (NodeList) XPATH_DATA_QUALITY_ABSOLUTE_EXTERNAL_POSITIONAL_ACCURACY.evaluate(parentNode, XPathConstants.NODESET);
-            List<CSWIsoRecord.DataQuality.DataQualityObject> positionalAccuracyObjectList = dataQuality.getAbsoluteExternalPositionalAccuracyList();
-            this.processDataQualityNodeList(positionalAccuracyNodeList, positionalAccuracyObjectList, pathToLocalizedValue);
-
-            NodeList accuracyOfTimeMeasurementNodeList = (NodeList) XPATH_DATA_QUALITY_ACCURACY_OF_TIME_MEASUREMENT.evaluate(parentNode, XPathConstants.NODESET);
-            List<CSWIsoRecord.DataQuality.DataQualityObject> accuracyOfTimeMeasurementObject = dataQuality.getAccuracyOfTimeMeasurementList();
-            this.processDataQualityNodeList(accuracyOfTimeMeasurementNodeList, accuracyOfTimeMeasurementObject, pathToLocalizedValue);
-
-            NodeList completenessCommissionNodeList = (NodeList) XPATH_DATA_QUALITY_COMPLETENESS_COMMISSION.evaluate(parentNode, XPathConstants.NODESET);
-            List<CSWIsoRecord.DataQuality.DataQualityObject> completenessCommissionObject = dataQuality.getCompletenessCommissionList();
-            this.processDataQualityNodeList(completenessCommissionNodeList, completenessCommissionObject, pathToLocalizedValue);
-
-            NodeList completenessOmissionNodeList = (NodeList) XPATH_DATA_QUALITY_COMPLETENESS_OMISSION.evaluate(parentNode, XPathConstants.NODESET);
-            List<CSWIsoRecord.DataQuality.DataQualityObject> completenessOmissionObject = dataQuality.getCompletenessOmissionList();
-            this.processDataQualityNodeList(completenessOmissionNodeList, completenessOmissionObject, pathToLocalizedValue);
-
-            NodeList conceptualConsistencyNodeList = (NodeList) XPATH_DATA_QUALITY_CONCEPTUAL_CONSISTENCY.evaluate(parentNode, XPathConstants.NODESET);
-            List<CSWIsoRecord.DataQuality.DataQualityObject> conceptualConsistencyObject = dataQuality.getConceptualConsistencyList();
-            this.processDataQualityNodeList(conceptualConsistencyNodeList, conceptualConsistencyObject, pathToLocalizedValue);
-
-            NodeList domainConsistencyNodeList = (NodeList) XPATH_DATA_QUALITY_DOMAIN_CONSISTENCY.evaluate(parentNode, XPathConstants.NODESET);
-            List<CSWIsoRecord.DataQuality.DataQualityObject> domainConsistencyObject = dataQuality.getDomainConsistencyList();
-            this.processDataQualityNodeList(domainConsistencyNodeList, domainConsistencyObject, pathToLocalizedValue);
-
-            NodeList formatConsistencyNodeList = (NodeList) XPATH_DATA_QUALITY_FORMAT_CONSISTENCY.evaluate(parentNode, XPathConstants.NODESET);
-            List<CSWIsoRecord.DataQuality.DataQualityObject> formatConsistencyObject = dataQuality.getFormatConsistencyList();
-            this.processDataQualityNodeList(formatConsistencyNodeList, formatConsistencyObject, pathToLocalizedValue);
-
-            NodeList griddedDataPositionalAccuracyNodeList = (NodeList) XPATH_DATA_QUALITY_GRIDDED_DATA_POSITIONAL_ACCURACY.evaluate(parentNode, XPathConstants.NODESET);
-            List<CSWIsoRecord.DataQuality.DataQualityObject> griddedDataPositionalAccuracyObject = dataQuality.getGriddedDataPositionalAccuracyList();
-            this.processDataQualityNodeList(griddedDataPositionalAccuracyNodeList, griddedDataPositionalAccuracyObject, pathToLocalizedValue);
-
-            NodeList nonQuantitativeAttributeAccuracyNodeList = (NodeList) XPATH_DATA_QUALITY_NON_QUANTITATIVE_ATTRIBUTE_ACCURACY.evaluate(parentNode, XPathConstants.NODESET);
-            List<CSWIsoRecord.DataQuality.DataQualityObject> nonQuantitativeAttributeAccuracyObject = dataQuality.getNonQuantitativeAttributeAccuracyList();
-            this.processDataQualityNodeList(nonQuantitativeAttributeAccuracyNodeList, nonQuantitativeAttributeAccuracyObject, pathToLocalizedValue);
-
-            NodeList quantitativeAttributeAccuracyNodeList = (NodeList) XPATH_DATA_QUALITY_QUANTITATIVE_ATTRIBUTE_ACCURACY.evaluate(parentNode, XPathConstants.NODESET);
-            List<CSWIsoRecord.DataQuality.DataQualityObject> quantitativeAttributeAccuracyObject = dataQuality.getQuantitativeAttributeAccuracyList();
-            this.processDataQualityNodeList(quantitativeAttributeAccuracyNodeList, quantitativeAttributeAccuracyObject, pathToLocalizedValue);
-
-            NodeList relativeInternalPositionalAccuracyNodeList = (NodeList) XPATH_DATA_QUALITY_RELATIVE_INTERNAL_POSITIONAL_ACCURACY.evaluate(parentNode, XPathConstants.NODESET);
-            List<CSWIsoRecord.DataQuality.DataQualityObject> relativeInternalPositionalAccuracyObject = dataQuality.getRelativeInternalPositionalAccuracyList();
-            this.processDataQualityNodeList(relativeInternalPositionalAccuracyNodeList, relativeInternalPositionalAccuracyObject, pathToLocalizedValue);
-
-            NodeList temporalConsistencyNodeList = (NodeList) XPATH_DATA_QUALITY_TEMPORAL_CONSISTENCY.evaluate(parentNode, XPathConstants.NODESET);
-            List<CSWIsoRecord.DataQuality.DataQualityObject> temporalConsistencyObject = dataQuality.getTemporalConsistencyList();
-            this.processDataQualityNodeList(temporalConsistencyNodeList, temporalConsistencyObject, pathToLocalizedValue);
-
-            NodeList temporalValidityNodeList = (NodeList) XPATH_DATA_QUALITY_TEMPORAL_VALIDITY.evaluate(parentNode, XPathConstants.NODESET);
-            List<CSWIsoRecord.DataQuality.DataQualityObject> temporalValidityObject = dataQuality.getTemporalValidityList();
-            this.processDataQualityNodeList(temporalValidityNodeList, temporalValidityObject, pathToLocalizedValue);
-
-            NodeList thematicClassificationCorrectnessNodeList = (NodeList) XPATH_DATA_QUALITY_TEMPORAL_VALIDITY.evaluate(parentNode, XPathConstants.NODESET);
-            List<CSWIsoRecord.DataQuality.DataQualityObject> thematicClassificationCorrectnessObject = dataQuality.getThematicClassificationCorrectnessList();
-            this.processDataQualityNodeList(thematicClassificationCorrectnessNodeList, thematicClassificationCorrectnessObject, pathToLocalizedValue);
-
-            NodeList topologicalConsistencyNodeList = (NodeList) XPATH_DATA_QUALITY_TEMPORAL_VALIDITY.evaluate(parentNode, XPathConstants.NODESET);
-            List<CSWIsoRecord.DataQuality.DataQualityObject> topologicalConsistencyObject = dataQuality.getTopologicalConsistencyList();
-            this.processDataQualityNodeList(topologicalConsistencyNodeList, topologicalConsistencyObject, pathToLocalizedValue);
-            
-            dataQualities.add(dataQuality);
-
-        }
-    } catch (Exception e) {
-        log.warn("parseDataQualities FAIL! "+e.getMessage());
-    }
-    }
-
-    /**
-     * Processes a set of DQ_* - nodes into a corresponding json structure
-     *
-     * @param nodeList list of nodes
-     * @param dataQualityObjectList the list of objects to generate based on nodeList
-     * @param pathToLocalizedValue
-     * @return
-     * @throws XPathExpressionException
-     */
-
-    private void processDataQualityNodeList(NodeList nodeList, List<CSWIsoRecord.DataQuality.DataQualityObject> dataQualityObjectList, XPathExpression pathToLocalizedValue)  throws XPathExpressionException {
-        for (int i = 0; i < nodeList.getLength(); i++) {
-            Node node = nodeList.item(i);
-            CSWIsoRecord.DataQuality.DataQualityObject dqObject = new CSWIsoRecord.DataQuality.DataQualityObject();
-            parseDataQualityNodeAttributes(node, dqObject, pathToLocalizedValue);
-            dataQualityObjectList.add(dqObject);         
-        }
-    }
-
-    /**
-     * Parse the values from inside a DQ_* - node into a corresponding json structure
-     *
-     * @param node the node to process
-     * @param dataQualityObject the object to add the values to
-     * @param pathToLocalizedValue
-     * @return
-     * @throws XPathExpressionException
-     */
-    private void parseDataQualityNodeAttributes(Node node, CSWIsoRecord.DataQuality.DataQualityObject dataQualityObject, XPathExpression pathToLocalizedValue)  throws XPathExpressionException {
-        if (node != null) {
-            List<String> list = dataQualityObject.getList(); 
-            //Character strings
-            NodeList nodeList  = (NodeList) XPATH_DATA_QUALITY_NODE_CHARACTER_STRINGS.evaluate(node, XPathConstants.NODESET);
-            if (nodeList != null) {
-                parseNodeListStrings(nodeList, list, pathToLocalizedValue);
-            }
-
-            //"pass" tag.
-            Node pass = (Node)XPATH_DATA_QUALITY_NODE_PASS.evaluate(node, XPathConstants.NODE);
-            if (pass != null) {
-                dataQualityObject.setPass(getText(pass));
-            }
-            
-        }
-    };
 
     private void parseDistributionInfo(Node diNode, CSWIsoRecord record, XPathExpression pathToLocalizedValue) throws XPathExpressionException {
         int i;

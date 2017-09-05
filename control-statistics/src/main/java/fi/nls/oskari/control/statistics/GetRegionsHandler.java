@@ -5,6 +5,7 @@ import fi.nls.oskari.cache.JedisManager;
 import fi.nls.oskari.control.*;
 import fi.nls.oskari.control.statistics.db.RegionSet;
 import fi.nls.oskari.control.statistics.xml.Region;
+import fi.nls.oskari.domain.geo.Point;
 import fi.nls.oskari.map.geometry.ProjectionHelper;
 import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.service.ServiceException;
@@ -60,14 +61,14 @@ public class GetRegionsHandler extends ActionHandler {
     }
 
     /**
-     * 
+     *
      * @param layerId For example: 9
      * @return For example: [{"name": "Alajärvi"}]
      * @throws ActionException
      */
     public JSONObject getRegionInfoJSON(long layerId, final String srs) throws ActionException {
         final RegionSet regionset = service.getRegionSet(layerId);
-        
+
         if (regionset == null) {
             throw new ActionParamsException("Regionset not found");
         }
@@ -92,6 +93,7 @@ public class GetRegionsHandler extends ActionHandler {
             final List<Region> result = service.getRegions(regionset);
             for (Region region : result) {
                 region.setGeojson(getTransformedGeoJSON(region.getGeojson(), regionset.getSrs(), srs));
+                region.setPointOnSurface(getTransformedPoint(region.getPointOnSurface(), regionset.getSrs(), srs));
                 regions.put(region.toJSON());
             }
         } catch (IOException e) {
@@ -110,5 +112,9 @@ public class GetRegionsHandler extends ActionHandler {
         JSONObject transformed = ProjectionHelper.transformGeometry(geojson.optJSONObject("geometry"), sourceSrs, targetSrs, true, true);
         JSONHelper.putValue(geojson, "geometry", transformed);
         return geojson;
+    }
+
+    private Point getTransformedPoint(final Point point, final String sourceSrs, final String targetSrs) {
+        return ProjectionHelper.transformPoint(point.getLon(), point.getLat(), sourceSrs, targetSrs);
     }
 }

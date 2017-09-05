@@ -48,4 +48,30 @@ public class IOHelperTest {
         assertEquals("Duplicate slashes should be removed", "http://testing/if/path/OK", IOHelper.fixPath("http://testing//if/path//OK"));
         assertEquals("Triple slashes should be duplicate slashes", "https://testing//if/path/OK", IOHelper.fixPath("https://testing///if/path//OK"));
     }
+
+    @Test
+    public void testGetParams() {
+        assertEquals("null map should return an empty string", "", IOHelper.getParams(null));
+
+        Map<String, String> params = new LinkedHashMap<String, String>();
+        assertEquals("Empty map should return an empty string", "", IOHelper.getParams(params));
+
+        params.put("key1", "foo");
+        assertEquals("Key and value should be separated with a '='", "key1=foo", IOHelper.getParams(params));
+
+        params.put("key2", "bar");
+        assertEquals("Values should be separated with a '&'", "key1=foo&key2=bar", IOHelper.getParams(params));
+        params.remove("key2");
+
+        params.put("key1", "baz+qux");
+        assertEquals("Values should be URL encoded", "key1=baz%2Bqux", IOHelper.getParams(params));
+        params.remove("key1");
+
+        params.put("foo+bar", "baz+qux");
+        assertEquals("Keys should be URL encoded", "foo%2Bbar=baz%2Bqux", IOHelper.getParams(params));
+        params.remove("foo+bar");
+
+        params.put("key1", "baz qux");
+        assertEquals("Space characters are replaced by '+' in form encoding", "key1=baz+qux", IOHelper.getParams(params));
+    }
 }
