@@ -66,6 +66,9 @@ public class OskariComponentManager {
     }
     public static <MOD extends OskariComponent> MOD getComponentOfType(final Class<MOD> clazz) {
         Map<String, MOD> map = getComponentsOfType(clazz);
+        if(map.isEmpty()) {
+            throw new NoSuchElementException("Coudldn't find component of type " + clazz.getName());
+        }
         // just pick the first one
         // TODO: error handling (nullpointer) and possibly prioritize implementations
         return map.values().iterator().next();
