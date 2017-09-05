@@ -162,7 +162,7 @@ public abstract class CapabilitiesCacheService extends OskariComponent {
         }
 
         try {
-            XMLInputFactory xif = XMLInputFactory.newFactory();
+            XMLInputFactory xif = XMLInputFactory.newInstance();
             xif.setProperty(XMLInputFactory.IS_NAMESPACE_AWARE, true);
             XMLStreamReader xsr = xif.createXMLStreamReader(new ByteArrayInputStream(data));
 
@@ -244,7 +244,7 @@ public abstract class CapabilitiesCacheService extends OskariComponent {
         }
         String ns = xsr.getNamespaceURI();
         String name = xsr.getLocalName();
-        return checkCapabilities(type, version, ns, name);
+        return validateCapabilities(type, version, ns, name);
     }
 
     private static boolean advanceToRootElement(XMLStreamReader xsr) {
@@ -264,8 +264,8 @@ public abstract class CapabilitiesCacheService extends OskariComponent {
         }
     }
 
-    private static boolean checkCapabilities(String type, String version, String ns, String name) {
-        LOG.debug("Checking capabilities, type:", type, "version:", version,
+    private static boolean validateCapabilities(String type, String version, String ns, String name) {
+        LOG.debug("Validating capabilities, type:", type, "version:", version,
                 "namespace", ns, "root element", name);
 
         switch (type) {
