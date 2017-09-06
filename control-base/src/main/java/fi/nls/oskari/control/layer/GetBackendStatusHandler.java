@@ -1,6 +1,7 @@
 package fi.nls.oskari.control.layer;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -13,7 +14,6 @@ import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.ActionHandler;
@@ -45,7 +45,14 @@ public class GetBackendStatusHandler extends ActionHandler {
 
     public void handleAction(ActionParameters params) throws ActionException {
         boolean alert = isRequestOnlyForLayersWithAlerts(params);
-        List<BackendStatus> statuses = alert ? service.findAllWithAlert() : service.findAll();
+        List<BackendStatus> statuses;
+        if (alert) {
+            // findAllWithAlert() MUST NOT return statuses that should be modified for the frontend
+            statuses = service.findAllWithAlert();
+        } else {
+            statuses = modifyErrorsWithUnknownMessageToUnknown(service.findAll());
+        }
+        statuses = modifyErrorsWithUnknownMessageToUnknown(statuses);
         LOG.debug("BackendStatus list size: " + statuses.size());
 
         try {
@@ -55,6 +62,24 @@ public class GetBackendStatusHandler extends ActionHandler {
             LOG.warn(e, "Failed to write JSON!");
             throw new ActionException("Failed to serialize response to JSON!", e);
         }
+    }
+
+    /**
+     * If the service is unrecognized by the Monitor API it's status is ERROR with statusMessage
+     * 'Unknown service' or 'Unknown offering ${foobar}'. Convert these to UNKNOWN for the frontend
+     */
+    private List<BackendStatus> modifyErrorsWithUnknownMessageToUnknown(List<BackendStatus> statuses) {
+        List<BackendStatus> modified = new ArrayList<>(statuses.size());
+        for (BackendStatus status : statuses) {
+            if ("ERROR".equals(status.getStatus())
+                    && status.getStatusMessage() != null
+                    && status.getStatusMessage().startsWith("Unknown")) {
+                modified.add(new BackendStatus(status.getMapLayerId(), "UNKNOWN", null, status.getInfoUrl()));
+            } else {
+                modified.add(status);
+            }
+        }
+        return modified;
     }
 
     protected static byte[] serialize(ObjectMapper om, List<BackendStatus> statuses) throws JsonProcessingException {
