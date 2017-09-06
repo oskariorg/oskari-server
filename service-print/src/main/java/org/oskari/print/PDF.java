@@ -1,5 +1,8 @@
 package org.oskari.print;
 
+import fi.nls.oskari.service.ServiceException;
+
+import org.oskari.print.wmts.TileMatrixSetCache;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -7,7 +10,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
-
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
@@ -24,7 +26,6 @@ import org.oskari.print.request.PrintLayer;
 import org.oskari.print.request.PrintRequest;
 import org.oskari.print.util.PDFBoxUtil;
 import org.oskari.print.util.Units;
-
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 
@@ -74,8 +75,8 @@ public class PDF {
     /**
      * This method should be called via PrintService
      */
-    protected static void getPDF(PrintRequest request, PDDocument doc) 
-            throws IOException, IllegalArgumentException {
+    protected static void getPDF(PrintRequest request, PDDocument doc, TileMatrixSetCache tmsCache)
+            throws IOException, ServiceException {
         float mapWidth = pixelsToPoints(request.getWidth());
         float mapHeight = pixelsToPoints(request.getHeight());
 
@@ -84,11 +85,11 @@ public class PDF {
                 mapHeight + MAP_MIN_MARGINALS);
         if (pageSize == null) {
             LOG.info("Could not find page size! width:", mapWidth, "height:", mapHeight);
-            throw new IllegalArgumentException("Could not find a proper page size!");
+            throw new ServiceException("Could not find a proper page size!");
         }
 
         // Init requests to run in the background
-        List<Future<BufferedImage>> layerImages = AsyncImageLoader.initLayers(request);
+        List<Future<BufferedImage>> layerImages = AsyncImageLoader.initLayers(request, tmsCache);
 
         PDPage page = new PDPage(pageSize);
         doc.addPage(page);

@@ -1,5 +1,7 @@
 package fi.nls.oskari.control.data;
 
+import fi.nls.oskari.service.ServiceException;
+
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -8,16 +10,13 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
-
 import javax.imageio.ImageIO;
-
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.oskari.print.PrintService;
 import org.oskari.print.request.PrintFormat;
 import org.oskari.print.request.PrintLayer;
 import org.oskari.print.request.PrintRequest;
 import org.oskari.print.request.PrintTile;
-
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -74,17 +73,22 @@ public class GetPrintHandler extends ActionHandler {
     private static final int MARGIN_HEIGHT = 15 * 2;
 
     private final PermissionHelper permissionHelper;
+    private final PrintService printService;
 
     public static int mmToPx(int mm) {
         return (int) Math.round((OGC_DPI * mm) / MM_PER_INCH);
     }
 
     public GetPrintHandler() {
-        this(ServiceFactory.getMapLayerService(), ServiceFactory.getPermissionsService());
+        this(ServiceFactory.getMapLayerService(),
+                ServiceFactory.getPermissionsService(),
+                new PrintService());
     }
 
-    public GetPrintHandler(OskariLayerService layerService, PermissionsService permissionService) {
-        permissionHelper = new PermissionHelper(layerService, permissionService);
+    public GetPrintHandler(OskariLayerService layerService,
+            PermissionsService permissionService, PrintService printService) {
+        this.permissionHelper = new PermissionHelper(layerService, permissionService);
+        this.printService = printService;
     }
 
     public void handleAction(ActionParameters params) throws ActionException {
@@ -352,22 +356,22 @@ public class GetPrintHandler extends ActionHandler {
 
     private void handlePNG(PrintRequest pr, ActionParameters params) throws ActionException {
         try {
-            BufferedImage bi = PrintService.getPNG(pr);
+            BufferedImage bi = printService.getPNG(pr);
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             ImageIO.write(bi, PrintFormat.PNG.fileExtension, baos);
             ResponseHelper.writeResponse(params, 200, PrintFormat.PNG.contentType, baos);
-        } catch (IOException e) {
+        } catch (IOException | ServiceException e) {
             throw new ActionException("Failed to create PNG", e);
         }
     }
 
     private void handlePDF(PrintRequest pr, ActionParameters params) throws ActionException {
         try (PDDocument doc = new PDDocument()) {
-            PrintService.getPDF(pr, doc);
+            printService.getPDF(pr, doc);
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             doc.save(baos);
             ResponseHelper.writeResponse(params, 200, PrintFormat.PDF.contentType, baos);
-        } catch (IOException e) {
+        } catch (IOException | ServiceException e) {
             throw new ActionException("Failed to create PDF", e);
         }
     }

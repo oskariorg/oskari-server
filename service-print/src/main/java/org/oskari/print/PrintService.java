@@ -1,25 +1,42 @@
 package org.oskari.print;
 
+import fi.nls.oskari.service.ServiceException;
+
+import fi.nls.oskari.service.capabilities.CapabilitiesCacheService;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.oskari.print.request.PrintLayer;
 import org.oskari.print.request.PrintRequest;
+import org.oskari.print.wmts.TileMatrixSetCache;
 
 public class PrintService {
 
-    public static BufferedImage getPNG(PrintRequest request) {
-        request.setLayers(filterLayersWithZeroOpacity(request.getLayers()));
-        return PNG.getBufferedImage(request);
+    private TileMatrixSetCache tmsCache;
+
+    public PrintService() {
+        this(new TileMatrixSetCache());
     }
 
-    public static void getPDF(PrintRequest request, PDDocument doc) 
-            throws IllegalArgumentException, IOException {
+    public PrintService(CapabilitiesCacheService capCacheService) {
+        this(new TileMatrixSetCache(capCacheService));
+    }
+
+    public PrintService(TileMatrixSetCache tmsCache) {
+        this.tmsCache = tmsCache;
+    }
+
+    public BufferedImage getPNG(PrintRequest request) throws ServiceException {
         request.setLayers(filterLayersWithZeroOpacity(request.getLayers()));
-        PDF.getPDF(request, doc);
+        return PNG.getBufferedImage(request, tmsCache);
+    }
+
+    public void getPDF(PrintRequest request, PDDocument doc)
+            throws IOException, ServiceException {
+        request.setLayers(filterLayersWithZeroOpacity(request.getLayers()));
+        PDF.getPDF(request, doc, tmsCache);
     }
 
     private static List<PrintLayer> filterLayersWithZeroOpacity(List<PrintLayer> layers) {
