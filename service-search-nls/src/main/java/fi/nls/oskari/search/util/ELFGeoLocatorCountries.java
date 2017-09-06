@@ -5,6 +5,12 @@ import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.search.channel.ELFGeoLocatorSearchChannel;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.PropertyUtil;
+import org.geotools.factory.CommonFactoryFinder;
+import org.geotools.filter.Filters;
+import org.geotools.xml.Configuration;
+import org.geotools.xml.Encoder;
+import org.opengis.filter.Filter;
+import org.opengis.filter.FilterFactory2;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -13,8 +19,10 @@ import org.w3c.dom.NodeList;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.HttpURLConnection;
+import java.net.URLEncoder;
 import java.util.*;
 
 /**
@@ -131,16 +139,25 @@ public class ELFGeoLocatorCountries {
         return getAdminName(country_code, false);
     }
 
-    public String getAdminNamesForFilter(String country) {
+    public String getAdminNamesFilter(String country) {
         List<String> adminNameList = getAdminName(country, true);
+        FilterFactory2 ff = CommonFactoryFinder.getFilterFactory2(null);
+        Configuration cfg = new org.geotools.filter.v2_0.FESConfiguration();
+        Encoder encoder = new Encoder(cfg);
+        encoder.setOmitXMLDeclaration(true);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        List<Filter> filterList = new ArrayList<>();
         String adminNames = "";
-        if (adminNameList.size() == 1) {
-            adminNames = adminNameList.get(0);
-        } else {
-            for (int i = 0; i < adminNameList.size()-1; i++) {
-                adminNames = adminNames + adminNameList.get(i) + "<OR>";
-            }
-            adminNames = adminNames + adminNameList.get(adminNameList.size() - 1);
+
+        for (int i = 0; i < adminNameList.size()-1; i++) {
+            filterList.add(ff.equals(ff.property("NAME"), ff.literal(adminNameList.get(i))));
+        }
+        Filter c = ff.or(filterList);
+        try {
+            encoder.encode(c, org.geotools.filter.v2_0.FES.Filter, baos);
+            adminNames = URLEncoder.encode(baos.toString("UTF-8"), "UTF-8");
+        } catch (Exception e) {
+
         }
         return adminNames;
     }

@@ -393,8 +393,8 @@ public class ELFGeoLocatorParser {
      * @param country_code ISO Country code 2 ch
      * @return
      */
-    public String getAdminNamesForFilter(String country) {
-        return countries.getAdminNamesForFilter(country);
+    public String getAdminNamesFilter(String country) {
+        return countries.getAdminNamesFilter(country);
     }
     /**
      * Transform point to  CoordinateReferenceSystem sourceCrs = CRS.decode("EPSG:4258")

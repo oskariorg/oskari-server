@@ -7,12 +7,21 @@ import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
 import org.custommonkey.xmlunit.Diff;
 import org.custommonkey.xmlunit.XMLUnit;
+import org.geotools.factory.CommonFactoryFinder;
+import org.geotools.filter.FilterTransformer;
+import org.geotools.filter.Filters;
+import org.geotools.xml.Configuration;
+import org.geotools.xml.Encoder;
 import org.json.JSONObject;
 import org.junit.After;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.opengis.filter.Filter;
+import org.opengis.filter.FilterFactory2;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.net.URLEncoder;
 import java.util.Locale;
 
 import static org.junit.Assert.assertTrue;
@@ -67,8 +76,7 @@ public class ELFGeoLocatorSearchChannelTest {
         String response = IOHelper.readString(getClass().getResourceAsStream("ASDIService.xml"));
         countries.parseCountryMap(response);
 
-        String adminNames = countries.getAdminNamesForFilter("no");
-        assertTrue(adminNames.equals("Norway polar - GN<OR>Norway - GN"));
+        String adminNames = countries.getAdminNamesFilter("no");
 
         String countryName = countries.getAdminCountry(new Locale("en"), "Norway polar - GN", true);
         assertTrue(countryName.equals("Norway"));
