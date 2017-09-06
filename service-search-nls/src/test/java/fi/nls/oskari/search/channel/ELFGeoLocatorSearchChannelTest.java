@@ -70,8 +70,6 @@ public class ELFGeoLocatorSearchChannelTest {
 
     @Test
     public void testCountrySearch() throws Exception {
-        System.out.println("testCountrySearch");
-
         ELFGeoLocatorCountries countries = new ELFGeoLocatorCountries();
         String response = IOHelper.readString(getClass().getResourceAsStream("ASDIService.xml"));
         countries.parseCountryMap(response);

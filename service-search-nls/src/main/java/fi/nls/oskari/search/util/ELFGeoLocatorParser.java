@@ -48,7 +48,6 @@ public class ELFGeoLocatorParser {
     private ELFGeoLocatorSearchChannel channel;
     private ELFGeoLocatorCountries countries = null;
 
-    private static final String PROPERTY_FORCEXY = "org.geotools.referencing.forceXY";
     private String serviceSrs = "EPSG:4258";
 
     public ELFGeoLocatorParser(ELFGeoLocatorSearchChannel elfchannel) {
