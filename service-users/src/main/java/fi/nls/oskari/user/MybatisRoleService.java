@@ -26,8 +26,9 @@ public class MybatisRoleService {
     }
 
     private SqlSessionFactory initializeMyBatis(final DataSource dataSource) {
-        final Configuration configuration = MyBatisHelper.getConfig(dataSource, RolesMapper.class);
-        MyBatisHelper.attachAliases(configuration, Role.class);
+        final Configuration configuration = MyBatisHelper.getConfig(dataSource);
+        MyBatisHelper.addAliases(configuration, Role.class);
+        MyBatisHelper.addMappers(configuration, RolesMapper.class);
         return MyBatisHelper.build(configuration);
     }
 

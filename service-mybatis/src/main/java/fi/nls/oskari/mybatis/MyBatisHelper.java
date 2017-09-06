@@ -24,15 +24,19 @@ public class MyBatisHelper {
         final Environment environment = new Environment("development", transactionFactory, ds);
         final Configuration configuration = new Configuration(environment);
         configuration.setLazyLoadingEnabled(true);
-        for (Class<?> mapper : mappers) {
-            configuration.addMapper(mapper);
-        }
+        addMappers(configuration, mappers);
         return configuration;
     }
 
-    public static void attachAliases(Configuration config, Class<?>... aliases) {
+    public static void addAliases(Configuration config, Class<?>... aliases) {
         for (Class<?> alias : aliases) {
             config.getTypeAliasRegistry().registerAlias(alias);
+        }
+    }
+
+    public static void addMappers(Configuration config, Class<?>... mappers) {
+        for (Class<?> mapper : mappers) {
+            config.addMapper(mapper);
         }
     }
 
