@@ -28,8 +28,8 @@ public class GetBackendStatusHandler extends ActionHandler {
 
     private static final Logger LOG = LogFactory.getLogger(GetBackendStatusHandler.class);
 
-    private static final String PARAM_SUBSET = "Subset";
-    private static final String SUBSET_ALL_KNOWN = "AllKnown";
+    protected static final String PARAM_SUBSET = "Subset";
+    protected static final String SUBSET_ALL_KNOWN = "AllKnown";
 
     private final BackendStatusService service;
     private final ObjectMapper om;
