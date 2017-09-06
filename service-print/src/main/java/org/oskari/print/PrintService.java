@@ -11,37 +11,6 @@ import org.oskari.print.request.PrintRequest;
 
 public class PrintService {
 
-    private static final int MAX_PX = 2048;
-    
-    public static void validate(PrintRequest request) throws IllegalArgumentException {
-        String err = validateRequest(request);
-        if (err != null) {
-            throw new IllegalArgumentException(err);
-        }
-    }
-
-    private static String validateRequest(PrintRequest request) {
-        if (request.getFormat() == null) {
-            return ("'format' is missing");
-        }
-        if (request.getWidth() <= 0) {
-            return "'width' must be positive integer";
-        }
-        if (request.getHeight() <= 0) {
-            return "'height' must be positive integer";
-        }
-        if (request.getWidth() > MAX_PX) {
-            return "'width' must be less than " + MAX_PX;
-        }
-        if (request.getHeight() > MAX_PX) {
-            return "'height' must be less than " + MAX_PX;
-        }
-        if (request.getLayers() == null || request.getLayers().size() == 0) {
-            return "'layers' not specified!";
-        }
-        return null;
-    }
-
     public static BufferedImage getPNG(PrintRequest request) {
         request.setLayers(filterLayersWithZeroOpacity(request.getLayers()));
         return PNG.getBufferedImage(request);
