@@ -6,7 +6,6 @@ import fi.mml.portti.service.search.SearchResultItem;
 import fi.nls.oskari.annotation.Oskari;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.search.util.ELFGeoLocatorCountries;
 import fi.nls.oskari.search.util.ELFGeoLocatorParser;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.JSONHelper;
@@ -14,7 +13,10 @@ import fi.nls.oskari.util.PropertyUtil;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.JSONTokener;
-import java.io.*;
+
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URLEncoder;
 import java.util.*;
@@ -39,7 +41,6 @@ public class ELFGeoLocatorSearchChannel extends SearchChannel implements SearchA
     public static final String DEFAULT_FUZZY_TEMPLATE = "?SERVICE=WFS&VERSION=2.0.0&REQUEST=FuzzyNameSearch&LANGUAGE=_LANG_&NAME=";
     public static final String DEFAULT_GETFEATURE_TEMPLATE = "?SERVICE=WFS&VERSION=2.0.0&REQUEST=GetFeature&TYPENAMES=SI_LocationInstance&language=_LANG_&FILTER=";
     public static final String GETFEATURE_FILTER_TEMPLATE = "%3Cfes:Filter%20xmlns:fes=%22http://www.opengis.net/fes/2.0%22%20xmlns:xsi=%22http://www.w3.org/2001/XMLSchema-instance%22%20xmlns:iso19112=%22http://www.isotc211.org/19112%22%20xsi:schemaLocation=%22http://www.opengis.net/fes/2.0%20http://schemas.opengis.net/filter/2.0/filterAll.xsd%22%3E%3Cfes:PropertyIsEqualTo%20matchCase=%22false%22%3E%3Cfes:ValueReference%3Eiso19112:alternativeGeographicIdentifiers/iso19112:alternativeGeographicIdentifier/iso19112:name%3C/fes:ValueReference%3E%3Cfes:Literal%3E_PLACE_HOLDER_%3C/fes:Literal%3E%3C/fes:PropertyIsEqualTo%3E%3C/fes:Filter%3E";
-    public static final String ADMIN_FILTER_TEMPLATE = "%3Cfes:Filter%20xmlns:fes=%22http://www.opengis.net/fes/2.0%22%20xmlns:xsi=%22http://www.w3.org/2001/XMLSchema-instance%22%20xmlns:iso19112=%22http://www.isotc211.org/19112%22%20xmlns:gmdsf1=%22http://www.isotc211.org/2005/gmdsf1%22%20xsi:schemaLocation=%22http://www.opengis.net/fes/2.0%20http://schemas.opengis.net/filter/2.0/filterAll.xsd%22%3E%3Cfes:And%3E%3Cfes:PropertyIsEqualTo%20matchCase=%22false%22%3E%3Cfes:ValueReference%3Eiso19112:alternativeGeographicIdentifiers/iso19112:alternativeGeographicIdentifier/iso19112:name%3C/fes:ValueReference%3E%3Cfes:Literal%3E_PLACE_HOLDER_%3C/fes:Literal%3E%3C/fes:PropertyIsEqualTo%3E%3Cfes:PropertyIsEqualTo%3E%3Cfes:ValueReference%3Eiso19112:administrator/gmdsf1:CI_ResponsibleParty/gmdsf1:organizationName%3C/fes:ValueReference%3E%3Cfes:Literal%3E_ADMIN_HOLDER_%3C/fes:Literal%3E%3C/fes:PropertyIsEqualTo%3E%3C/fes:And%3E%3C/fes:Filter%3E";
     public static final String JSONKEY_LOCATIONTYPES = "SI_LocationTypes";
     public static final String LOCATIONTYPE_ID_PREFIX = "SI_LocationType.";
     public static final String PARAM_COUNTRY = "country";
@@ -73,7 +74,6 @@ public class ELFGeoLocatorSearchChannel extends SearchChannel implements SearchA
     private final String nameLanguages = "namelanguage.json";
     public String serviceURL = null;
     public ELFGeoLocatorParser elfParser = null;
-    private ELFGeoLocatorCountries countriesParser = null;
     private Logger log = LogFactory.getLogger(this.getClass());
 
     /* --- For unit testing: ----------------------------------------------- */
@@ -106,19 +106,8 @@ public class ELFGeoLocatorSearchChannel extends SearchChannel implements SearchA
             throw new RuntimeException("ELFGeolocator didn't initialize - provide url with property: " + PROPERTY_SERVICE_URL);
         }
         log.debug("ServiceURL set to " + serviceURL);
-        countriesParser = new ELFGeoLocatorCountries(this);
 
         readLocationTypes();
-
-        try (InputStream inp3 = this.getClass().getResourceAsStream(nameLanguages)) {
-            if (inp3 != null) {
-                InputStreamReader reader = new InputStreamReader(inp3);
-                JSONTokener tokenizer = new JSONTokener(reader);
-                this.elfNameLanguages = JSONHelper.createJSONObject4Tokener(tokenizer);
-            }
-        } catch (Exception e) {
-            log.info("Failed fetching namelanguages", e);
-        }
 
         elfParser = new ELFGeoLocatorParser(PropertyUtil.getOptional(PROPERTY_SERVICE_SRS), this);
 
@@ -313,10 +302,8 @@ public class ELFGeoLocatorSearchChannel extends SearchChannel implements SearchA
             // Exact search - case sensitive
             String filter = GETFEATURE_FILTER_TEMPLATE;
             if (hasParam(searchCriteria, PARAM_COUNTRY)) {
-                filter = ADMIN_FILTER_TEMPLATE;
                 String country = searchCriteria.getParam(PARAM_COUNTRY).toString();
-                //TODO add or filter, if there are many variations of admin names
-                filter = filter.replace(KEY_ADMIN_HOLDER, URLEncoder.encode(elfParser.getAdminName(country), "UTF-8"));
+                filter = elfParser.getAdminNamesFilter(country);
             }
             filter = filter.replace(KEY_PLACE_HOLDER, URLEncoder.encode(searchCriteria.getSearchString(), "UTF-8"));
             String request = REQUEST_GETFEATURE_TEMPLATE.replace(KEY_LANG_HOLDER, lang3);
@@ -346,15 +333,6 @@ public class ELFGeoLocatorSearchChannel extends SearchChannel implements SearchA
 
     public JSONObject getElfNameLanguages() {
         return this.elfNameLanguages;
-    }
-
-    /**
-     * Returns Elf country map
-     *
-     * @return
-     */
-    public Map<String, String> getElfCountryMap() throws IOException {
-        return countriesParser.getCountryMap();
     }
 
     /**

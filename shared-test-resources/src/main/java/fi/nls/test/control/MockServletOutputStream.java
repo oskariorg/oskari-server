@@ -1,10 +1,9 @@
 package fi.nls.test.control;
 
-import java.io.IOException;
-import java.io.OutputStream;
-
 import javax.servlet.ServletOutputStream;
 import javax.servlet.WriteListener;
+import java.io.IOException;
+import java.io.OutputStream;
 
 public class MockServletOutputStream extends ServletOutputStream {
 

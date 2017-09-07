@@ -1,8 +1,14 @@
 package fi.nls.oskari.map.view.util;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
+import fi.nls.oskari.domain.map.view.Bundle;
+import fi.nls.oskari.domain.map.view.View;
+import fi.nls.oskari.map.view.BundleService;
+import fi.nls.oskari.map.view.BundleServiceMemory;
+import fi.nls.oskari.util.IOHelper;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -10,16 +16,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.UUID;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.junit.Before;
-import org.junit.Test;
-
-import fi.nls.oskari.domain.map.view.Bundle;
-import fi.nls.oskari.domain.map.view.View;
-import fi.nls.oskari.map.view.BundleService;
-import fi.nls.oskari.map.view.BundleServiceMemory;
-import fi.nls.oskari.util.IOHelper;
+import static org.junit.Assert.*;
 
 public class ViewHelperTest {
 

@@ -52,9 +52,9 @@ public class PNG {
             g2d.dispose();
         }
 
-        BufferedImage scaled = scale(canvas, 
-                request.getTargetWidth(), 
-                request.getTargetHeight(), 
+        BufferedImage scaled = scale(canvas,
+                request.getTargetWidth(),
+                request.getTargetHeight(),
                 RenderingHints.VALUE_INTERPOLATION_BICUBIC);
 
         return scaled;
@@ -65,9 +65,9 @@ public class PNG {
     }
 
     public static BufferedImage scale(BufferedImage bi, int targetWidth, int targetHeight, Object interpolation) {
-        if (targetWidth <= 0 
-                || targetWidth == bi.getWidth() 
-                || targetHeight <= 0 
+        if (targetWidth <= 0
+                || targetWidth == bi.getWidth()
+                || targetHeight <= 0
                 || targetHeight == bi.getHeight()) {
             // Return the original image
             return bi;

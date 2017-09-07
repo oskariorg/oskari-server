@@ -16,10 +16,10 @@ public class CommandLoadImageWFS extends CommandLoadImageBase {
     private final int height;
     private final double[] bbox;
 
-    public CommandLoadImageWFS(PrintLayer layer, 
-            int width, 
-            int height, 
-            double[] bbox) {
+    public CommandLoadImageWFS(PrintLayer layer,
+                               int width,
+                               int height,
+                               double[] bbox) {
         this.layer = layer;
         this.width = width;
         this.height = height;

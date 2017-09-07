@@ -1,8 +1,8 @@
 package org.oskari.service.backendstatus.maplayer;
 
-import java.util.List;
-
 import org.apache.ibatis.annotations.Select;
+
+import java.util.List;
 
 public interface MapLayerMapper {
 

@@ -1,14 +1,9 @@
 package org.oskari.service.backendstatus;
 
-import java.util.List;
-
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Result;
-import org.apache.ibatis.annotations.Results;
-import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.Update;
-
 import fi.nls.oskari.domain.map.BackendStatus;
+import org.apache.ibatis.annotations.*;
+
+import java.util.List;
 
 public interface BackendStatusMapper {
 

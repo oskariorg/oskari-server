@@ -1,14 +1,12 @@
 package org.oskari.service.backendstatus.maplayer;
 
-import java.util.List;
-
-import javax.sql.DataSource;
-
+import fi.nls.oskari.db.DatasourceHelper;
+import fi.nls.oskari.mybatis.MyBatisHelper;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 
-import fi.nls.oskari.db.DatasourceHelper;
-import fi.nls.oskari.mybatis.MyBatisHelper;
+import javax.sql.DataSource;
+import java.util.List;
 
 /**
  * Data access to basic information of MapLayers

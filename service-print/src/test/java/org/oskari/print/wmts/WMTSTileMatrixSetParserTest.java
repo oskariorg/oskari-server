@@ -18,13 +18,13 @@ import fi.nls.oskari.wmts.domain.TileMatrix;
 import fi.nls.oskari.wmts.domain.TileMatrixSet;
 
 public class WMTSTileMatrixSetParserTest {
-    
+
     @Test
     public void works() throws ParserConfigurationException, SAXException, IOException {
         TileMatrixSet expected = new TileMatrixSet();
         expected.setId("ETRS-TM35FIN");
         expected.setCrs("urn:ogc:def:crs:EPSG:6.3:3067");
-        
+
         double scaleDenominator = 29257142.85714285820722579956;
         for (int i = 0; i <= 15; i++) {
             TileMatrix tileMatrix = new TileMatrix();
@@ -38,17 +38,17 @@ public class WMTSTileMatrixSetParserTest {
             expected.addTileMatrix(tileMatrix);
             scaleDenominator /= 2;
         }
-        
+
         List<TileMatrixSet> list;
         try (InputStream in = getClass().getClassLoader().getResourceAsStream("WMTSCapabilities.xml")) {
             list = WMTSTileMatrixSetParser.parse(in);
         }
-        
+
         assertEquals(1, list.size());
         TileMatrixSet actual = list.get(0);
         assertEquals(expected.getId(), actual.getId());
         assertEquals(expected.getCrs(), actual.getCrs());
-        
+
         Map<String, TileMatrix> eTileMatrises = expected.getTileMatrixMap();
         Map<String, TileMatrix> aTileMatrises = actual.getTileMatrixMap();
         assertEquals(eTileMatrises.size(), aTileMatrises.size());
