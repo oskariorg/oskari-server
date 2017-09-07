@@ -14,6 +14,7 @@ Updated libs:
 - jsoup from 1.7.2 to 1.10.3
 - Jackson from 2.5.4 to 2.9.0
 - Axiom from 1.2.15 to 1.2.20
+- Dropwizard metrics from 3.1.0 to 3.2.4
 
 ### State cookie handling
 
