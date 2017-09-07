@@ -909,12 +909,12 @@
         </plugins>
     </build>
     <repositories>
-        <!-- In Project repository -->
+        <!-- In Project repository
         <repository>
             <id>in-project</id>
             <name>In Project Repo</name>
             <url>file://${project.basedir}/../external-libs/</url>
-        </repository>
+        </repository> -->
         <repository>
             <id>oskari_org</id>
             <name>Oskari.org repository</name>
@@ -953,6 +953,11 @@
             <id>geosolutions</id>
             <name>Geo-solutions Maven Repository</name>
             <url>http://maven.geo-solutions.it</url>
+        </repository>
+        <repository>
+            <id>boundless</id>
+            <name>Boundless Maven Repository</name>
+            <url>http://repo.boundlessgeo.com/main/</url>
         </repository>
     </repositories>
 
