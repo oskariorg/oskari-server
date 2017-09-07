@@ -67,19 +67,6 @@ public class ELFGeoLocatorSearchChannelTest {
         assertTrue("Should get expected query " + xmlDiff, xmlDiff.similar());
     }
 
-
-    @Test
-    public void testCountrySearch() throws Exception {
-        ELFGeoLocatorCountries countries = new ELFGeoLocatorCountries();
-        String response = IOHelper.readString(getClass().getResourceAsStream("ASDIService.xml"));
-        countries.parseCountryMap(response);
-
-        String adminNames = countries.getAdminNamesFilter("no");
-
-        String countryName = countries.getAdminCountry(new Locale("en"), "Norway polar - GN", true);
-        assertTrue(countryName.equals("Norway"));
-    }
-
     @Test
     public void getElasticQuery() {
         ELFGeoLocatorSearchChannel channel = new ELFGeoLocatorSearchChannel();

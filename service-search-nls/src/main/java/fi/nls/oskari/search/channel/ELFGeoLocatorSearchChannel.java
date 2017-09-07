@@ -7,6 +7,7 @@ import fi.nls.oskari.annotation.Oskari;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.search.util.ELFGeoLocatorParser;
+import fi.nls.oskari.service.ServiceRuntimeException;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
@@ -17,6 +18,7 @@ import org.json.JSONTokener;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URLEncoder;
 import java.util.*;
@@ -33,7 +35,6 @@ public class ELFGeoLocatorSearchChannel extends SearchChannel implements SearchA
     public static final String KEY_LATITUDE_HOLDER = "_LATITUDE_";
     public static final String KEY_LONGITUDE_HOLDER = "_LONGITUDE_";
     public static final String KEY_PLACE_HOLDER = "_PLACE_HOLDER_";
-    public static final String KEY_ADMIN_HOLDER = "_ADMIN_HOLDER_";
     public static final String KEY_AU_HOLDER = "_AU_HOLDER_";
     public static final String RESPONSE_CLEAN = "<?xml version='1.0' encoding='UTF-8'?>";
     public static final String DEFAULT_REVERSEGEOCODE_TEMPLATE = "?SERVICE=WFS&REQUEST=ReverseGeocode&LAT=_LATITUDE_&LON=_LONGITUDE_&LANGUAGE=_LANG_";
@@ -71,7 +72,6 @@ public class ELFGeoLocatorSearchChannel extends SearchChannel implements SearchA
     private static JSONObject elfLocationTypes = null;
     private static JSONObject elfNameLanguages = null;
     private final String locationType = "ELFGEOLOCATOR_CHANNEL.json";
-    private final String nameLanguages = "namelanguage.json";
     public String serviceURL = null;
     public ELFGeoLocatorParser elfParser = null;
     private Logger log = LogFactory.getLogger(this.getClass());
@@ -300,11 +300,7 @@ public class ELFGeoLocatorSearchChannel extends SearchChannel implements SearchA
             log.debug("Exact search");
             
             // Exact search - case sensitive
-            String filter = GETFEATURE_FILTER_TEMPLATE;
-            if (hasParam(searchCriteria, PARAM_COUNTRY)) {
-                String country = searchCriteria.getParam(PARAM_COUNTRY).toString();
-                filter = elfParser.getAdminNamesFilter(country);
-            }
+            String filter = getFilter(searchCriteria);
             filter = filter.replace(KEY_PLACE_HOLDER, URLEncoder.encode(searchCriteria.getSearchString(), "UTF-8"));
             String request = REQUEST_GETFEATURE_TEMPLATE.replace(KEY_LANG_HOLDER, lang3);
             buf.append(request);
@@ -313,6 +309,20 @@ public class ELFGeoLocatorSearchChannel extends SearchChannel implements SearchA
         
         log.debug("Server request: " + buf.toString());
         return IOHelper.readString(getConnection(buf.toString()));
+    }
+
+    protected String getFilter(SearchCriteria searchCriteria) {
+        String filter = GETFEATURE_FILTER_TEMPLATE;
+        if (hasParam(searchCriteria, PARAM_COUNTRY)) {
+            String country = searchCriteria.getParam(PARAM_COUNTRY).toString();
+            try {
+                final String adminFilter = elfParser.getAdminNamesFilter(country);
+                filter = URLEncoder.encode(adminFilter, IOHelper.CHARSET_UTF8);
+            } catch (ServiceRuntimeException | UnsupportedEncodingException e) {
+                log.error(e, "Couldn't create filter for country. Using default filter");
+            }
+        }
+        return filter;
     }
 
     /**

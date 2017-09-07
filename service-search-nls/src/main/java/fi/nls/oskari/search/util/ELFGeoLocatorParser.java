@@ -61,7 +61,7 @@ public class ELFGeoLocatorParser {
             this.serviceSrs = serviceSrs.toUpperCase();
         }
         channel = elfchannel;
-        countries = new ELFGeoLocatorCountries();
+        countries = ELFGeoLocatorCountries.getInstance();
 
         elfScalesForType = channel.getElfScalesForType();
         if(elfScalesForType == null) {
@@ -383,13 +383,13 @@ public class ELFGeoLocatorParser {
      * @return
      */
     public String getAdminCountry(Locale locale, String admin_name) {
-        return countries.getAdminCountry(locale, admin_name, true);
+        return countries.getAdminCountry(locale, admin_name);
     }
 
     /**
      * Get ELF geolocator administrator name(s) of country based
      *
-     * @param country_code ISO Country code 2 ch
+     * @param country ISO Country code 2 ch
      * @return
      */
     public String getAdminNamesFilter(String country) {

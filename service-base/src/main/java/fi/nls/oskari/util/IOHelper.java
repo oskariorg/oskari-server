@@ -33,7 +33,8 @@ public class IOHelper {
     public static final String HEADER_REFERER = "Referer";
     public static final String HEADER_ACCEPT = "Accept";
 
-    public static final String DEFAULT_CHARSET = "UTF-8";
+    public static final String CHARSET_UTF8 = "UTF-8";
+    public static final String DEFAULT_CHARSET = CHARSET_UTF8;
     public static final String CONTENTTYPE_FORM_URLENCODED = "application/x-www-form-urlencoded";
     public static final String CONTENT_TYPE_JSON = "application/json";
     public static final String CONTENT_TYPE_XML = "application/xml";
