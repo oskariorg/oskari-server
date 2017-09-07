@@ -4,14 +4,11 @@ import fi.nls.oskari.db.DatasourceHelper;
 import fi.nls.oskari.domain.Role;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
-import org.apache.ibatis.mapping.Environment;
+import fi.nls.oskari.mybatis.MyBatisHelper;
+import fi.nls.oskari.service.ServiceRuntimeException;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
-import org.apache.ibatis.session.SqlSessionFactoryBuilder;
-import org.apache.ibatis.transaction.TransactionFactory;
-import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
-
 import javax.sql.DataSource;
 import java.util.Collections;
 import java.util.HashMap;
@@ -25,27 +22,14 @@ public class MybatisRoleService {
     private SqlSessionFactory factory = null;
 
     public MybatisRoleService() {
-        final DatasourceHelper helper = DatasourceHelper.getInstance();
-        DataSource dataSource = helper.getDataSource();
-        if (dataSource == null) {
-            dataSource = helper.createDataSource();
-        }
-        if (dataSource == null) {
-            log.error("Couldn't get datasource for roleservice");
-        }
-        factory = initializeMyBatis(dataSource);
+        factory = initializeMyBatis(DatasourceHelper.getInstance().getDataSource());
     }
 
     private SqlSessionFactory initializeMyBatis(final DataSource dataSource) {
-        final TransactionFactory transactionFactory = new JdbcTransactionFactory();
-        final Environment environment = new Environment("development", transactionFactory, dataSource);
-
-        final Configuration configuration = new Configuration(environment);
-        configuration.getTypeAliasRegistry().registerAlias(Role.class);
-        configuration.setLazyLoadingEnabled(true);
-        configuration.addMapper(RolesMapper.class);
-
-        return new SqlSessionFactoryBuilder().build(configuration);
+        final Configuration configuration = MyBatisHelper.getConfig(dataSource);
+        MyBatisHelper.addAliases(configuration, Role.class);
+        MyBatisHelper.addMappers(configuration, RolesMapper.class);
+        return MyBatisHelper.build(configuration);
     }
 
     public List<Role> findAll(){
@@ -97,7 +81,6 @@ public class MybatisRoleService {
 
     public long insert(Role role){
         final SqlSession session = factory.openSession();
-        List<Role> roleList = null;
         try {
             log.debug("Inserting role: ", role);
             final RolesMapper mapper = session.getMapper(RolesMapper.class);
@@ -166,7 +149,7 @@ public class MybatisRoleService {
         } finally {
             session.close();
         }
-        if(roleList.isEmpty()) {
+        if(roleList == null || roleList.isEmpty()) {
             return null;
         }
         return roleList.get(0);
@@ -187,7 +170,7 @@ public class MybatisRoleService {
             log.debug("Linked role to new user with id: ", userId);
         } catch (Exception e) {
             log.warn(e, "Exception when trying link role to new user with id: ", userId);
-            throw new RuntimeException("Failed to insert", e);
+            throw new ServiceRuntimeException("Failed to insert", e);
         } finally {
             session.close();
         }
@@ -215,8 +198,9 @@ public class MybatisRoleService {
     }
 
     public Map<String, Role> getExternalRolesMapping(String type) {
+        final Map<String, Role> mapping = new HashMap<>();
         if(type == null) {
-            type = "";
+            return mapping;
         }
         final SqlSession session = factory.openSession();
         List<Object> roleMappingList = null;
@@ -231,7 +215,6 @@ public class MybatisRoleService {
             session.close();
         }
 
-        final Map<String, Role> mapping = new HashMap<String, Role>();
         for(Object obj : roleMappingList) {
             final Map<String, Object> result = (Map<String, Object>) obj;
             final String externalName = (String) result.get("ext");
