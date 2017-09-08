@@ -16,9 +16,8 @@ public interface BackendStatusMapper {
             + " maplayer_id, status, statusmessage, infourl, ts"
             + " FROM oskari_backendstatus";
     static final String getAllAlert = getAll
-            + " WHERE NOT status IS NULL"
-            + " AND NOT status = 'UNKNOWN'"
-            + " AND NOT status = 'OK'";
+            + " WHERE status = 'DOWN'"
+            + " OR (status = 'ERROR' AND statusmessage NOT LIKE 'Unknown%')";
 
     static final String truncate = "TRUNCATE oskari_backendstatus";
     static final String insert = "INSERT INTO oskari_backendstatus"
