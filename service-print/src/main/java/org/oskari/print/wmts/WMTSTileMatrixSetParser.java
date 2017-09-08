@@ -38,7 +38,7 @@ public class WMTSTileMatrixSetParser {
         }
     }
 
-    public static List<TileMatrixSet> parse(InputStream in) 
+    public static List<TileMatrixSet> parse(InputStream in)
             throws ParserConfigurationException, SAXException, IOException {
         // The result of this function should be cached
         // therefore it's not worth the hassle to cache

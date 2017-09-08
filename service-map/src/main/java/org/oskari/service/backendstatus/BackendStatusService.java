@@ -1,8 +1,8 @@
 package org.oskari.service.backendstatus;
 
-import java.util.List;
-
 import fi.nls.oskari.domain.map.BackendStatus;
+
+import java.util.List;
 
 public interface BackendStatusService {
 

@@ -10,8 +10,8 @@ import org.junit.Test;
 public class GetTileBuilderKVPTest {
 
     @Test
-    public void buildingWithAnyMandatoryParameterMissingThrowsException() 
-            throws IllegalAccessException, IllegalArgumentException, 
+    public void buildingWithAnyMandatoryParameterMissingThrowsException()
+            throws IllegalAccessException, IllegalArgumentException,
             InvocationTargetException, NoSuchMethodException, SecurityException {
         final String[] strFields = new String[] {
                 "endPoint",

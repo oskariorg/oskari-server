@@ -28,27 +28,27 @@ public class AsyncImageLoader {
         final int width = request.getWidth();
         final int height = request.getHeight();
         final double[] bbox = getBoundingBox(
-                request.getEast(), request.getNorth(), 
+                request.getEast(), request.getNorth(),
                 request.getResolution(), width, height);
         final String srsName = request.getSrsName();
 
         for (PrintLayer layer : requestedLayers) {
-            switch (layer.getType()) { 
-            case OskariLayer.TYPE_WMS:
-                images.add(new CommandLoadImageWMS(layer, 
-                        width, height, bbox, srsName).queue());
-                break;
-            case OskariLayer.TYPE_WMTS:
-                int zoom = request.getZoomLevel();
-                TileMatrix tileMatrix = findTileMatrix(layer, zoom);
-                images.add(new CommandLoadImageWMTS(layer, width, height, bbox,
-                        tileMatrix, request.getMetersPerUnit()).queue());
-                break;
-            case OskariLayer.TYPE_WFS:
-                images.add(new CommandLoadImageWFS(layer, width, height, bbox).queue());
-                break;
-            default:
-                throw new IllegalArgumentException("Invalid layer type!");
+            switch (layer.getType()) {
+                case OskariLayer.TYPE_WMS:
+                    images.add(new CommandLoadImageWMS(layer,
+                            width, height, bbox, srsName).queue());
+                    break;
+                case OskariLayer.TYPE_WMTS:
+                    int zoom = request.getZoomLevel();
+                    TileMatrix tileMatrix = findTileMatrix(layer, zoom);
+                    images.add(new CommandLoadImageWMTS(layer, width, height, bbox,
+                            tileMatrix, request.getMetersPerUnit()).queue());
+                    break;
+                case OskariLayer.TYPE_WFS:
+                    images.add(new CommandLoadImageWFS(layer, width, height, bbox).queue());
+                    break;
+                default:
+                    throw new IllegalArgumentException("Invalid layer type!");
             }
         }
 

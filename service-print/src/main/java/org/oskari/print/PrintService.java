@@ -12,7 +12,7 @@ import org.oskari.print.request.PrintRequest;
 public class PrintService {
 
     private static final int MAX_PX = 2048;
-    
+
     public static void validate(PrintRequest request) throws IllegalArgumentException {
         String err = validateRequest(request);
         if (err != null) {
@@ -47,7 +47,7 @@ public class PrintService {
         return PNG.getBufferedImage(request);
     }
 
-    public static void getPDF(PrintRequest request, PDDocument doc) 
+    public static void getPDF(PrintRequest request, PDDocument doc)
             throws IllegalArgumentException, IOException {
         request.setLayers(filterLayersWithZeroOpacity(request.getLayers()));
         PDF.getPDF(request, doc);

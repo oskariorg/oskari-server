@@ -3,12 +3,10 @@ package fi.nls.oskari.util;
 import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
-
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import javax.servlet.http.HttpServletResponse;
-
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;

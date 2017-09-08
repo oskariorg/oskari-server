@@ -135,7 +135,7 @@ public class GetMapBuilder {
         }
 
         return sb.toString();
-    } 
+    }
 
     public static String colorToHex(Color color) {
         final int argb = color.getRGB();

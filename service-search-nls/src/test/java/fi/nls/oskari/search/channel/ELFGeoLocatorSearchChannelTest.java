@@ -1,29 +1,30 @@
 package fi.nls.oskari.search.channel;
 
 import fi.mml.portti.service.search.SearchCriteria;
+import fi.nls.oskari.search.util.ELFGeoLocatorCountries;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.methods.PostMethod;
-import org.apache.commons.httpclient.params.HttpClientParams;
 import org.custommonkey.xmlunit.Diff;
 import org.custommonkey.xmlunit.XMLUnit;
+import org.geotools.factory.CommonFactoryFinder;
+import org.geotools.filter.FilterTransformer;
+import org.geotools.filter.Filters;
+import org.geotools.xml.Configuration;
+import org.geotools.xml.Encoder;
 import org.json.JSONObject;
 import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import static org.junit.Assert.*;
-import org.junit.runner.RunWith;
-import org.mockito.Mockito;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.opengis.filter.Filter;
+import org.opengis.filter.FilterFactory2;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.net.URLEncoder;
+import java.util.Locale;
+
+import static org.junit.Assert.assertTrue;
 
 public class ELFGeoLocatorSearchChannelTest {
 

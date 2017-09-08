@@ -1,11 +1,8 @@
 package fi.nls.oskari.map.layer.formatters;
 
 import fi.nls.oskari.domain.map.OskariLayer;
-import fi.nls.oskari.log.LogFactory;
-import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.geometry.ProjectionHelper;
 import fi.nls.oskari.util.JSONHelper;
-import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.wmts.domain.TileMatrixLimits;
 import fi.nls.oskari.wmts.domain.WMTSCapabilities;
 import fi.nls.oskari.wmts.domain.WMTSCapabilitiesLayer;

@@ -81,7 +81,7 @@ public class GetBackendStatusHandler extends ActionHandler {
 
         @Override
         public void serialize(List<BackendStatus> value, JsonGenerator gen,
-                SerializerProvider serializers) throws IOException {
+                              SerializerProvider serializers) throws IOException {
             gen.writeStartArray();
             for (BackendStatus bs : value) {
                 gen.writeStartObject();

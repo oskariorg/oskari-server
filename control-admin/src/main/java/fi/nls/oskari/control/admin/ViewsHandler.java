@@ -1,15 +1,5 @@
 package fi.nls.oskari.control.admin;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.ActionDeniedException;
 import fi.nls.oskari.control.ActionException;
@@ -18,14 +8,18 @@ import fi.nls.oskari.control.RestActionHandler;
 import fi.nls.oskari.domain.map.view.View;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.map.view.BundleService;
-import fi.nls.oskari.map.view.BundleServiceIbatisImpl;
-import fi.nls.oskari.map.view.ViewException;
-import fi.nls.oskari.map.view.ViewService;
-import fi.nls.oskari.map.view.ViewServiceIbatisImpl;
+import fi.nls.oskari.map.view.*;
 import fi.nls.oskari.map.view.util.ViewHelper;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.ResponseHelper;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 
 @OskariActionRoute("Views")
 public class ViewsHandler extends RestActionHandler {

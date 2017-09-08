@@ -11,7 +11,6 @@ import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.control.ActionParamsException;
 import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.util.ResponseHelper;
-import org.json.JSONObject;
 
 import java.util.Locale;
 

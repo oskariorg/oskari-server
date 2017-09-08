@@ -1,19 +1,17 @@
 package org.oskari.spatineo.monitor.api;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import fi.nls.oskari.log.LogFactory;
+import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.util.IOHelper;
+import org.oskari.spatineo.monitor.api.model.Response;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.util.LinkedHashMap;
 import java.util.Map;
-
-import org.oskari.spatineo.monitor.api.model.Response;
-
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import fi.nls.oskari.log.LogFactory;
-import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.util.IOHelper;
 
 public class SpatineoMonitorDao {
 

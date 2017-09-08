@@ -176,8 +176,8 @@
                 <artifactId>oskari-control-admin</artifactId>
                 <version>${fi.nls.oskari.service.version}</version>
             </dependency>
-			
-			<dependency>
+
+            <dependency>
                 <groupId>fi.nls.oskari.service</groupId>
                 <artifactId>oskari-control-users</artifactId>
                 <version>${fi.nls.oskari.service.version}</version>
@@ -250,7 +250,7 @@
                 <version>${fi.nls.oskari.service.version}</version>
             </dependency>
 
-             <dependency>
+            <dependency>
                 <groupId>fi.nls.oskari.service</groupId>
                 <artifactId>service-datamodel</artifactId>
                 <version>${fi.nls.oskari.service.version}</version>
@@ -372,11 +372,11 @@
                 <artifactId>wms</artifactId>
                 <version>${fi.mml.wms.version}</version>
             </dependency>
-            
+
             <dependency>
-            	<groupId>org.oskari</groupId>
-            	<artifactId>service-print</artifactId>
-            	<version>${fi.nls.oskari.version}</version>
+                <groupId>org.oskari</groupId>
+                <artifactId>service-print</artifactId>
+                <version>${fi.nls.oskari.version}</version>
             </dependency>
 
             <!-- Spring -->
@@ -1071,7 +1071,7 @@
         <module>control-admin</module>
         <module>content-resources</module>
         <module>control-routing</module>
-		<module>control-users</module>
+        <module>control-users</module>
 
         <!-- statistics -->
         <module>service-statistics-common</module>
@@ -1102,7 +1102,7 @@
         <module>service-feedback</module>
         <module>service-feedback-open311</module>
 
-		<!-- print -->
+        <!-- print -->
         <module>service-print</module>
     </modules>
 

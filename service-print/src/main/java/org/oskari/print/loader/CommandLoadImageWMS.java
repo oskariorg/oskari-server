@@ -19,11 +19,11 @@ public class CommandLoadImageWMS extends CommandLoadImageBase {
     private final double[] bbox;
     private final String srsName;
 
-    public CommandLoadImageWMS(PrintLayer layer, 
-            int width, 
-            int height,
-            double[] bbox,
-            String srsName) {
+    public CommandLoadImageWMS(PrintLayer layer,
+                               int width,
+                               int height,
+                               double[] bbox,
+                               String srsName) {
         this.layer = layer;
         this.width = width;
         this.height = height;

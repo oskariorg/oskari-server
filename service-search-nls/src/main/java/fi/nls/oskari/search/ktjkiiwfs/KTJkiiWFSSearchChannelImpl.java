@@ -5,7 +5,11 @@ import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.search.channel.ConnectionProvider;
 import fi.nls.oskari.util.IOHelper;
+import org.geotools.GML;
+import org.geotools.data.simple.SimpleFeatureCollection;
+import org.geotools.data.simple.SimpleFeatureIterator;
 import org.geotools.geometry.jts.ReferencedEnvelope;
+import org.opengis.feature.simple.SimpleFeature;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -23,13 +27,6 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.xpath.*;
-
-import org.geotools.GML;
-import org.geotools.data.simple.SimpleFeatureCollection;
-import org.geotools.data.simple.SimpleFeatureIterator;
-import org.opengis.feature.Property;
-import org.opengis.feature.simple.SimpleFeature;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;

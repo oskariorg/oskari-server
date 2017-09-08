@@ -8,6 +8,7 @@ import fi.mml.portti.service.search.SearchCriteria;
 import fi.nls.oskari.annotation.Oskari;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.service.ServiceRuntimeException;
 import fi.nls.oskari.util.IOHelper;
 
 import java.net.URLEncoder;
@@ -44,14 +45,7 @@ public class ELFAddressLocatorSearchChannel extends ELFGeoLocatorSearchChannel {
 
 
         // Exact search - case sensitive
-        String filter = GETFEATURE_FILTER_TEMPLATE;
-       if (hasParam(searchCriteria, PARAM_COUNTRY)) {
-            filter = ADMIN_FILTER_TEMPLATE;
-            String country = searchCriteria.getParam(PARAM_COUNTRY).toString();
-            //TODO add or filter, if there are many variations of admin names
-            filter = filter.replace(KEY_ADMIN_HOLDER, URLEncoder.encode(elfParser.getAdminName(country), "UTF-8"));
-        }
-        filter = filter.replace(KEY_PLACE_HOLDER, URLEncoder.encode(searchCriteria.getSearchString(), "UTF-8"));
+        String filter = getFilter(searchCriteria);
         String request = REQUEST_GETFEATURE_TEMPLATE.replace(KEY_LANG_HOLDER, lang3);
         buf.append(request);
         buf.append(filter);

@@ -7,8 +7,6 @@ import fi.nls.oskari.util.PropertyUtil;
 import javax.servlet.http.HttpServletRequest;
 import java.sql.Timestamp;
 import java.util.Calendar;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created by SMAKINEN on 1.9.2016.
