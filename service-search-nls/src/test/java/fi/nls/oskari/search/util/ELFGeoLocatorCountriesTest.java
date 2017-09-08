@@ -19,14 +19,6 @@ import static org.junit.Assert.*;
  */
 public class ELFGeoLocatorCountriesTest {
 
-    @BeforeClass
-    public static void setUp() {
-        // use relaxed comparison settings
-        XMLUnit.setIgnoreComments(true);
-        XMLUnit.setIgnoreWhitespace(true);
-        XMLUnit.setIgnoreDiffBetweenTextAndCDATA(true);
-        XMLUnit.setIgnoreAttributeOrder(true);
-    }
 
     @After
     public void tearDown() {
@@ -49,10 +41,5 @@ public class ELFGeoLocatorCountriesTest {
         String countryName = countries.getAdminCountry(new Locale("en"), "Norway polar - GN");
         assertEquals("Countryname should match expected", "Norway", countryName);
 
-        String adminFilter = countries.getAdminNamesFilter("no");
-
-        String expectedFilter = IOHelper.readString(getClass().getResourceAsStream("geolocator-admin-filter-expected.xml"));
-        Diff xmlDiff = new Diff(adminFilter, expectedFilter);
-        assertTrue("Should get expected admin filter " + xmlDiff, xmlDiff.similar());
     }
 }

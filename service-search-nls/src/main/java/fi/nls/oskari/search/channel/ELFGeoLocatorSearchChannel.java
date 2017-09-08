@@ -7,6 +7,7 @@ import fi.nls.oskari.annotation.Oskari;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.search.util.ELFGeoLocatorParser;
+import fi.nls.oskari.search.util.ELFGeoLocatorQueryHelper;
 import fi.nls.oskari.service.ServiceRuntimeException;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.JSONHelper;
@@ -41,7 +42,6 @@ public class ELFGeoLocatorSearchChannel extends SearchChannel implements SearchA
     public static final String DEFAULT_GETFEATUREAU_TEMPLATE = "?SERVICE=WFS&VERSION=2.0.0&REQUEST=GetFeatureInAu&NAME=_PLACE_HOLDER_&AU=_AU_HOLDER_&LANGUAGE=_LANG_";
     public static final String DEFAULT_FUZZY_TEMPLATE = "?SERVICE=WFS&VERSION=2.0.0&REQUEST=FuzzyNameSearch&LANGUAGE=_LANG_&NAME=";
     public static final String DEFAULT_GETFEATURE_TEMPLATE = "?SERVICE=WFS&VERSION=2.0.0&REQUEST=GetFeature&TYPENAMES=SI_LocationInstance&language=_LANG_&FILTER=";
-    public static final String GETFEATURE_FILTER_TEMPLATE = "%3Cfes:Filter%20xmlns:fes=%22http://www.opengis.net/fes/2.0%22%20xmlns:xsi=%22http://www.w3.org/2001/XMLSchema-instance%22%20xmlns:iso19112=%22http://www.isotc211.org/19112%22%20xsi:schemaLocation=%22http://www.opengis.net/fes/2.0%20http://schemas.opengis.net/filter/2.0/filterAll.xsd%22%3E%3Cfes:PropertyIsEqualTo%20matchCase=%22false%22%3E%3Cfes:ValueReference%3Eiso19112:alternativeGeographicIdentifiers/iso19112:alternativeGeographicIdentifier/iso19112:name%3C/fes:ValueReference%3E%3Cfes:Literal%3E_PLACE_HOLDER_%3C/fes:Literal%3E%3C/fes:PropertyIsEqualTo%3E%3C/fes:Filter%3E";
     public static final String JSONKEY_LOCATIONTYPES = "SI_LocationTypes";
     public static final String LOCATIONTYPE_ID_PREFIX = "SI_LocationType.";
     public static final String PARAM_COUNTRY = "country";
@@ -67,8 +67,8 @@ public class ELFGeoLocatorSearchChannel extends SearchChannel implements SearchA
     public static final String PARAM_FUZZY = "fuzzy";
     
     private static final String LIKE_LITERAL_HOLDER = "_like-literal_";
-    private static Map<String, Double> elfScalesForType = new HashMap<String, Double>();
-    private static Map<String, Integer> elfLocationPriority = new HashMap<String, Integer>();
+    private static Map<String, Double> elfScalesForType = new HashMap<>();
+    private static Map<String, Integer> elfLocationPriority = new HashMap<>();
     private static JSONObject elfLocationTypes = null;
     private static JSONObject elfNameLanguages = null;
     private final String locationType = "ELFGEOLOCATOR_CHANNEL.json";
@@ -259,7 +259,7 @@ public class ELFGeoLocatorSearchChannel extends SearchChannel implements SearchA
         String lang3 = locale.getISO3Language();
 
         StringBuffer buf = new StringBuffer(serviceURL);
-        if (hasParam(searchCriteria, PARAM_FILTER) && searchCriteria.getParam(PARAM_FILTER).toString().equals("true")) {
+        if ("true".equals(searchCriteria.getParamAsString(PARAM_FILTER))) {
             log.debug("Exact search (AU)");
             
             // Exact search limited to AU region - case sensitive - no fuzzy support
@@ -267,7 +267,7 @@ public class ELFGeoLocatorSearchChannel extends SearchChannel implements SearchA
             request = request.replace(KEY_AU_HOLDER, URLEncoder.encode(searchCriteria.getParam(PARAM_REGION).toString(), "UTF-8"));
             request = request.replace(KEY_LANG_HOLDER, lang3);
             buf.append(request);
-        } else if (hasParam(searchCriteria, PARAM_FUZZY) && searchCriteria.getParam(PARAM_FUZZY).toString().equals("true")) {
+        } else if ("true".equals(searchCriteria.getParamAsString(PARAM_FUZZY))) {
             log.debug("Fuzzy search");
             
             // Fuzzy search
@@ -301,7 +301,6 @@ public class ELFGeoLocatorSearchChannel extends SearchChannel implements SearchA
             
             // Exact search - case sensitive
             String filter = getFilter(searchCriteria);
-            filter = filter.replace(KEY_PLACE_HOLDER, URLEncoder.encode(searchCriteria.getSearchString(), "UTF-8"));
             String request = REQUEST_GETFEATURE_TEMPLATE.replace(KEY_LANG_HOLDER, lang3);
             buf.append(request);
             buf.append(filter);
@@ -312,17 +311,16 @@ public class ELFGeoLocatorSearchChannel extends SearchChannel implements SearchA
     }
 
     protected String getFilter(SearchCriteria searchCriteria) {
-        String filter = GETFEATURE_FILTER_TEMPLATE;
-        if (hasParam(searchCriteria, PARAM_COUNTRY)) {
-            String country = searchCriteria.getParam(PARAM_COUNTRY).toString();
-            try {
-                final String adminFilter = elfParser.getAdminNamesFilter(country);
-                filter = URLEncoder.encode(adminFilter, IOHelper.CHARSET_UTF8);
-            } catch (ServiceRuntimeException | UnsupportedEncodingException e) {
-                log.error(e, "Couldn't create filter for country. Using default filter");
-            }
+        String country = searchCriteria.getParamAsString(PARAM_COUNTRY);
+
+        try {
+            final String adminFilter = new ELFGeoLocatorQueryHelper().getFilter(searchCriteria.getSearchString(), country);
+            return URLEncoder.encode(adminFilter, IOHelper.CHARSET_UTF8);
+        } catch (ServiceRuntimeException | UnsupportedEncodingException e) {
+            log.error(e, "Couldn't create filter for country. Using default filter");
         }
-        return filter;
+        // will result in empty filter
+        return "";
     }
 
     /**
@@ -389,10 +387,11 @@ public class ELFGeoLocatorSearchChannel extends SearchChannel implements SearchA
 
     private String findSearchMethod(SearchCriteria sc) {
         String method = "unknown";
-        if (hasParam(sc, PARAM_FILTER) && sc.getParam(PARAM_FILTER).toString().equals("true")) {
+        if ("true".equals(sc.getParamAsString(PARAM_FILTER))) {
             // Exact search limited to AU region - case sensitive - no fuzzy support
             method = PARAM_FILTER;
-        } else if (hasParam(sc, PARAM_FUZZY) && sc.getParam(PARAM_FUZZY).toString().equals("true")) {
+
+        } else if ("true".equals(sc.getParamAsString(PARAM_FUZZY))) {
             // Fuzzy search
             method = PARAM_FUZZY;
         } else {

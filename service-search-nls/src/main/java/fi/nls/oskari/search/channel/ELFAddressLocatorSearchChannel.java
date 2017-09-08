@@ -46,7 +46,6 @@ public class ELFAddressLocatorSearchChannel extends ELFGeoLocatorSearchChannel {
 
         // Exact search - case sensitive
         String filter = getFilter(searchCriteria);
-        filter = filter.replace(KEY_PLACE_HOLDER, URLEncoder.encode(searchCriteria.getSearchString(), "UTF-8"));
         String request = REQUEST_GETFEATURE_TEMPLATE.replace(KEY_LANG_HOLDER, lang3);
         buf.append(request);
         buf.append(filter);

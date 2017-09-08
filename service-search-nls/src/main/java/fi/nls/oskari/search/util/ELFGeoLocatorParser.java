@@ -343,8 +343,8 @@ public class ELFGeoLocatorParser {
     }
 
     private static List<String> findProperties(Map<String, Object> result, String key) {
-        List<String> values = new ArrayList<String>();
-        List<Integer> order = new ArrayList<Integer>();
+        List<String> values = new ArrayList<>();
+        List<Integer> order = new ArrayList<>();
         for (Map.Entry<String, Object> entry : result.entrySet()) {
             Object value = entry.getValue();
             if (value != null) { // hide null properties
@@ -386,15 +386,7 @@ public class ELFGeoLocatorParser {
         return countries.getAdminCountry(locale, admin_name);
     }
 
-    /**
-     * Get ELF geolocator administrator name(s) of country based
-     *
-     * @param country ISO Country code 2 ch
-     * @return
-     */
-    public String getAdminNamesFilter(String country) {
-        return countries.getAdminNamesFilter(country);
-    }
+
     /**
      * Transform point to  CoordinateReferenceSystem sourceCrs = CRS.decode("EPSG:4258")
      *

@@ -91,10 +91,6 @@ public class ELFGeoLocatorCountries {
         return null;
     }
 
-    /**
-     * For testing purposes
-     * @param map
-     */
     protected void setCountryMap(Map<String, String> map) {
         countryMap = map;
     }
@@ -138,8 +134,23 @@ public class ELFGeoLocatorCountries {
         return new HashSet<>(countryMap.values());
     }
 
+    /**
+     * Returns a localized name for country based on admin value
+     * @param locale used for localizing the country name
+     * @param admin_name admin name that is used to detect country
+     * @return
+     */
     public String getAdminCountry(Locale locale, String admin_name) {
         return getAdminCountry(locale, admin_name, true);
+    }
+
+    /**
+     * List of admins for country.
+     * @param country_code
+     * @return
+     */
+    public List<String> getAdminName(String country_code) {
+        return getAdminName(country_code, true);
     }
 
     private String getAdminCountry(Locale locale, String admin_name, boolean reloadIfNotFound) {
@@ -174,34 +185,4 @@ public class ELFGeoLocatorCountries {
         loadCountryMap();
         return getAdminName(country_code, false);
     }
-
-    // FIXME: The filter MUST include the original user input as well... refactor...
-    public String getAdminNamesFilter(String country) {
-        List<String> adminNameList = getAdminName(country, true);
-        if(adminNameList.isEmpty()) {
-            throw new ServiceRuntimeException("Couldn't find admin(s) for country " + country);
-        }
-        FilterFactory2 ff = CommonFactoryFinder.getFilterFactory2(null);
-        Configuration cfg = new org.geotools.filter.v2_0.FESConfiguration();
-        Encoder encoder = new Encoder(cfg);
-        encoder.setOmitXMLDeclaration(true);
-        List<Filter> filterList = new ArrayList<>();
-
-        for (String admin : adminNameList) {
-            filterList.add(ff.equals(ff.property("iso19112:administrator/gmdsf1:CI_ResponsibleParty/gmdsf1:organizationName"), ff.literal(admin)));
-        }
-
-        Filter filter;
-        if(filterList.size() > 1) {
-            filter = ff.or(filterList);
-        } else {
-            filter =  filterList.get(0);
-        }
-        try {
-            return encoder.encodeAsString(filter, org.geotools.filter.v2_0.FES.Filter);
-        } catch (Exception e) {
-            throw new ServiceRuntimeException("Error encoding filter for country " + country, e);
-        }
-    }
-
 }
