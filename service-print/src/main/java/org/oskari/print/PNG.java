@@ -1,18 +1,19 @@
 package org.oskari.print;
 
+import fi.nls.oskari.service.ServiceException;
+
+import fi.nls.oskari.log.LogFactory;
+import fi.nls.oskari.log.Logger;
 import java.awt.AlphaComposite;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.util.List;
 import java.util.concurrent.Future;
-
 import org.oskari.print.loader.AsyncImageLoader;
 import org.oskari.print.request.PrintLayer;
 import org.oskari.print.request.PrintRequest;
-
-import fi.nls.oskari.log.LogFactory;
-import fi.nls.oskari.log.Logger;
+import org.oskari.print.wmts.TileMatrixSetCache;
 
 public class PNG {
 
@@ -21,13 +22,14 @@ public class PNG {
     /**
      * This method should be called via PrintService
      */
-    protected static BufferedImage getBufferedImage(PrintRequest request) {
+    protected static BufferedImage getBufferedImage(PrintRequest request, TileMatrixSetCache tmsCache)
+            throws ServiceException {
         final int width = request.getWidth();
         final int height = request.getHeight();
 
         final List<PrintLayer> layers = request.getLayers();
 
-        List<Future<BufferedImage>> images = AsyncImageLoader.initLayers(request);
+        List<Future<BufferedImage>> images = AsyncImageLoader.initLayers(request, tmsCache);
 
         BufferedImage canvas = new BufferedImage(width, height,
                 BufferedImage.TYPE_INT_ARGB);

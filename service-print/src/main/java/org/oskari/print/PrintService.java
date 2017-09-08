@@ -1,56 +1,42 @@
 package org.oskari.print;
 
+import fi.nls.oskari.service.ServiceException;
+
+import fi.nls.oskari.service.capabilities.CapabilitiesCacheService;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.oskari.print.request.PrintLayer;
 import org.oskari.print.request.PrintRequest;
+import org.oskari.print.wmts.TileMatrixSetCache;
 
 public class PrintService {
 
-    private static final int MAX_PX = 2048;
+    private TileMatrixSetCache tmsCache;
 
-    public static void validate(PrintRequest request) throws IllegalArgumentException {
-        String err = validateRequest(request);
-        if (err != null) {
-            throw new IllegalArgumentException(err);
-        }
+    public PrintService() {
+        this(new TileMatrixSetCache());
     }
 
-    private static String validateRequest(PrintRequest request) {
-        if (request.getFormat() == null) {
-            return ("'format' is missing");
-        }
-        if (request.getWidth() <= 0) {
-            return "'width' must be positive integer";
-        }
-        if (request.getHeight() <= 0) {
-            return "'height' must be positive integer";
-        }
-        if (request.getWidth() > MAX_PX) {
-            return "'width' must be less than " + MAX_PX;
-        }
-        if (request.getHeight() > MAX_PX) {
-            return "'height' must be less than " + MAX_PX;
-        }
-        if (request.getLayers() == null || request.getLayers().size() == 0) {
-            return "'layers' not specified!";
-        }
-        return null;
+    public PrintService(CapabilitiesCacheService capCacheService) {
+        this(new TileMatrixSetCache(capCacheService));
     }
 
-    public static BufferedImage getPNG(PrintRequest request) {
+    public PrintService(TileMatrixSetCache tmsCache) {
+        this.tmsCache = tmsCache;
+    }
+
+    public BufferedImage getPNG(PrintRequest request) throws ServiceException {
         request.setLayers(filterLayersWithZeroOpacity(request.getLayers()));
-        return PNG.getBufferedImage(request);
+        return PNG.getBufferedImage(request, tmsCache);
     }
 
-    public static void getPDF(PrintRequest request, PDDocument doc)
-            throws IllegalArgumentException, IOException {
+    public void getPDF(PrintRequest request, PDDocument doc)
+            throws IOException, ServiceException {
         request.setLayers(filterLayersWithZeroOpacity(request.getLayers()));
-        PDF.getPDF(request, doc);
+        PDF.getPDF(request, doc, tmsCache);
     }
 
     private static List<PrintLayer> filterLayersWithZeroOpacity(List<PrintLayer> layers) {
