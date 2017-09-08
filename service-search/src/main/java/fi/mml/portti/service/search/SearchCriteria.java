@@ -62,6 +62,14 @@ public class SearchCriteria implements Serializable {
         return parameters.get(key);
     }
 
+    public String getParamAsString(final String key) {
+        Object value = parameters.get(key);
+        if(value != null) {
+            return value.toString();
+        }
+        return null;
+    }
+
     public Map<String, Object> getParams() {
         return Collections.unmodifiableMap(parameters);
     }
