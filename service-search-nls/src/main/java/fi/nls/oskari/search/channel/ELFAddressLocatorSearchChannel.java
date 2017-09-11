@@ -8,10 +8,8 @@ import fi.mml.portti.service.search.SearchCriteria;
 import fi.nls.oskari.annotation.Oskari;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.service.ServiceRuntimeException;
 import fi.nls.oskari.util.IOHelper;
 
-import java.net.URLEncoder;
 import java.util.Locale;
 
 /**

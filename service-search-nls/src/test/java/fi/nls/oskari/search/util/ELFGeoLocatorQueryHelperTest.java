@@ -73,7 +73,6 @@ public class ELFGeoLocatorQueryHelperTest {
     public void testGetFilterNoCountry() throws Exception {
         ELFGeoLocatorQueryHelper helper = new ELFGeoLocatorQueryHelper();
         String adminFilter = helper.getFilter("asdf", null);
-        System.out.println(adminFilter);
 
         String expectedFilter = IOHelper.readString(getClass().getResourceAsStream("geolocator-admin-filter-expected-user-input-only.xml"));
         Diff xmlDiff = new Diff(adminFilter, expectedFilter);
