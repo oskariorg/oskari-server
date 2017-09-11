@@ -14,18 +14,18 @@ import org.geotools.xml.Encoder;
 import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory2;
 import org.opengis.filter.PropertyIsEqualTo;
-import org.w3c.dom.Document;
+import org.xml.sax.helpers.NamespaceSupport;
 
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
-import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 
 public class ELFGeoLocatorQueryHelper {
     private ELFGeoLocatorCountries countriesHelper = ELFGeoLocatorCountries.getInstance();
+    private NamespaceSupport namespaceSupport = new NamespaceSupport();
+
+    public ELFGeoLocatorQueryHelper() {
+        namespaceSupport.declarePrefix("iso19112", "http://www.isotc211.org/19112" );
+    }
 
     /**
      * Creates a filter based on user input and possible country filter
@@ -46,11 +46,14 @@ public class ELFGeoLocatorQueryHelper {
             String result = encoder.encodeAsString(
                     createOptionalAndFilter(ff, adminFilter, userInputFilter),
                     org.geotools.filter.v2_0.FES.Filter);
-            // xmlns:iso19112="http://www.isotc211.org/19112" is referenced in filter and geolocator returns empty result if it's not mentioned as namespace
+            // iso19112and gmdsf1 are referenced in filter and geolocator returns empty result if it's not mentioned as namespace...
+            // also matchAction causes problems on the server...
             // TODO: more elegant solution...
             String toReplace = "xmlns:fes=\"http://www.opengis.net/fes/2.0\"";
-            String replaceWith = "xmlns:fes=\"http://www.opengis.net/fes/2.0\" xmlns:iso19112=\"http://www.isotc211.org/19112\"";
-            return result.replace(toReplace, replaceWith);
+            String replaceWith = "xmlns:fes=\"http://www.opengis.net/fes/2.0\" xmlns:iso19112=\"http://www.isotc211.org/19112\" xmlns:gmdsf1=\"http://www.isotc211.org/2005/gmdsf1\" ";
+            return result
+                    .replace(toReplace, replaceWith)
+                    .replace("matchAction=\"ANY\"", "");
         } catch (Exception e) {
             throw new ServiceRuntimeException("Error encoding filter for country " + country, e);
         }
@@ -60,9 +63,8 @@ public class ELFGeoLocatorQueryHelper {
         if(input == null || input.isEmpty()) {
             return null;
         }
-
         PropertyIsEqualTo moi = ff.equal(
-                ff.property("iso19112:alternativeGeographicIdentifiers/iso19112:alternativeGeographicIdentifier/iso19112:name"),
+                ff.property("iso19112:alternativeGeographicIdentifiers/iso19112:alternativeGeographicIdentifier/iso19112:name", namespaceSupport),
                 ff.literal(input),
                 false
         );
@@ -70,7 +72,7 @@ public class ELFGeoLocatorQueryHelper {
     }
 
     private Filter getAdminFilter(String country, FilterFactory2 ff) {
-        if(country == null) {
+        if(country == null || country.isEmpty()) {
             return null;
         }
         List<String> adminNameList = countriesHelper.getAdminName(country);
@@ -80,7 +82,7 @@ public class ELFGeoLocatorQueryHelper {
 
         List<Filter> filterList = new ArrayList<>();
         for (String admin : adminNameList) {
-            filterList.add(ff.equals(ff.property("iso19112:administrator/gmdsf1:CI_ResponsibleParty/gmdsf1:organizationName"), ff.literal(admin)));
+            filterList.add(ff.equals(ff.property("iso19112:administrator/gmdsf1:CI_ResponsibleParty/gmdsf1:organizationName", namespaceSupport), ff.literal(admin)));
         }
 
         if (filterList.size() > 1) {

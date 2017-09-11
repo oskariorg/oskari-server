@@ -33,6 +33,7 @@ public class ELFGeoLocatorQueryHelperTest {
     public void testGetFilterMultipleAdmins() throws Exception {
         ELFGeoLocatorQueryHelper helper = new ELFGeoLocatorQueryHelper();
         String adminFilter = helper.getFilter("asdf", "no");
+        System.out.println(adminFilter);
 
         String expectedFilter = IOHelper.readString(getClass().getResourceAsStream("geolocator-admin-filter-expected-norway.xml"));
         Diff xmlDiff = new Diff(adminFilter, expectedFilter);

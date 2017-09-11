@@ -150,6 +150,9 @@ public class ELFGeoLocatorCountries {
      * @return
      */
     public List<String> getAdminName(String country_code) {
+        if(country_code == null || country_code.isEmpty()) {
+            return Collections.emptyList();
+        }
         return getAdminName(country_code, true);
     }
 
