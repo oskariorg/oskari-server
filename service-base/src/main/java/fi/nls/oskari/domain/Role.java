@@ -52,6 +52,10 @@ public class Role implements Serializable {
             // default to Administrator
             final String rolename = PropertyUtil.get("oskari.user.role.admin", DEFAULT_ADMIN_ROLE_NAME).trim();
             ADMIN_ROLE = getRoleByName(rolename);
+            if(ADMIN_ROLE == null) {
+                ADMIN_ROLE = new Role();
+                ADMIN_ROLE.setName(rolename);
+            }
         }
         return ADMIN_ROLE;
     }
