@@ -50,11 +50,12 @@ public class Role implements Serializable {
     public static Role getAdminRole() {
         if(ADMIN_ROLE == null) {
             // default to Administrator
-            final String rolename = PropertyUtil.get("oskari.user.role.admin", DEFAULT_ADMIN_ROLE_NAME).trim();
+            final String rolename = PropertyUtil.get("oskari.user.role.admin", DEFAULT_ADMIN_ROLE_NAME);
             ADMIN_ROLE = getRoleByName(rolename);
             if(ADMIN_ROLE == null) {
                 ADMIN_ROLE = new Role();
                 ADMIN_ROLE.setName(rolename);
+                log.warn("Admin role was not found, but was created and does not have id");
             }
         }
         return ADMIN_ROLE;
