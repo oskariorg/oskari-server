@@ -1,24 +1,19 @@
 package org.oskari.spatineo.monitor;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.oskari.service.backendstatus.BackendStatusService;
-import org.oskari.service.backendstatus.BackendStatusServiceMyBatisImpl;
-import org.oskari.service.backendstatus.BackendStatusCode;
-import org.oskari.service.backendstatus.maplayer.MapLayer;
-import org.oskari.service.backendstatus.maplayer.MapLayerDao;
-import org.oskari.spatineo.monitor.api.SpatineoMonitorDao;
-import org.oskari.spatineo.monitor.api.model.Indicator;
-import org.oskari.spatineo.monitor.api.model.Meter;
-import org.oskari.spatineo.monitor.api.model.Response;
-import org.oskari.spatineo.monitor.api.model.Result;
-import org.oskari.spatineo.monitor.api.model.Service;
-
 import fi.nls.oskari.domain.map.BackendStatus;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.util.PropertyUtil;
+import org.oskari.service.backendstatus.BackendStatusCode;
+import org.oskari.service.backendstatus.BackendStatusService;
+import org.oskari.service.backendstatus.BackendStatusServiceMyBatisImpl;
+import org.oskari.service.backendstatus.maplayer.MapLayer;
+import org.oskari.service.backendstatus.maplayer.MapLayerDao;
+import org.oskari.spatineo.monitor.api.SpatineoMonitorDao;
+import org.oskari.spatineo.monitor.api.model.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class UpdateBackendStatusJob {
     

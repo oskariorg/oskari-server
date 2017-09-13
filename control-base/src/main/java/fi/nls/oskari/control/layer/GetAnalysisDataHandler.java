@@ -11,7 +11,7 @@ import fi.nls.oskari.domain.map.analysis.Analysis;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.analysis.service.AnalysisDbService;
-import fi.nls.oskari.map.analysis.service.AnalysisDbServiceIbatisImpl;
+import fi.nls.oskari.map.analysis.service.AnalysisDbServiceMybatisImpl;
 import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.ResponseHelper;
@@ -30,7 +30,7 @@ import java.util.Map;
 public class GetAnalysisDataHandler extends ActionHandler {
 
     private static final Logger log = LogFactory.getLogger(GetAnalysisDataHandler.class);
-    private static final AnalysisDbService analysisService = new AnalysisDbServiceIbatisImpl();
+    private static final AnalysisDbService analysisService = new AnalysisDbServiceMybatisImpl();
 
     private static final String ANALYSE_ID = "analyse_id";
     private static final String JSKEY_ANALYSISDATA = "analysisdata";

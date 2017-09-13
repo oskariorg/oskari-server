@@ -1,8 +1,6 @@
 package fi.mml.map.mapwindow.service.db;
 
 import fi.nls.oskari.domain.map.InspireTheme;
-import fi.nls.oskari.service.OskariComponent;
-import fi.nls.oskari.service.db.BaseService;
 import fi.nls.oskari.service.db.OskariComponentIbatisService;
 
 import java.util.Collection;

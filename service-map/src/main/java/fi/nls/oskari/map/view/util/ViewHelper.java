@@ -7,7 +7,6 @@ import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.view.BundleService;
 import fi.nls.oskari.map.view.ViewException;
 import fi.nls.oskari.util.PropertyUtil;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;

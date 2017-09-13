@@ -6,6 +6,13 @@
 
 *Oskari-server now requires Java 8* to run and compile due to (and in preparation of) library upgrades. 
 
+Common issues:
+
+- Development environments need to be updated to compile using Java 8
+- Servers need to be updated to run Jetty with Java 8
+- Jetty start.ini needs to be updated (see https://github.com/oskariorg/sample-configs/commit/508e0ff5353515ead660d595c15870231c52714b)
+- server-extensions might use older versions of dependencies which might cause version conflicts. Update the dependencies on extensions as well.
+
 ### Transparent fill & stroke on polygons
 
 DefaultStyle SLDs needs to be manually updated on Geoserver from

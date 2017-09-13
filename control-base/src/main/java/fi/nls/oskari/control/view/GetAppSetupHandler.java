@@ -421,7 +421,7 @@ UNRESTRICTED_USAGE_ROLE = PropertyUtil.get("view.published.usage.unrestrictedRol
                     continue;
                 }
                 final JSONObject state = bundle.optJSONObject(STATE);
-                if(state == null || state.names().length() == 0) {
+                if(state == null || state.names() == null) {
                     continue;
                 }
                 log.debug("Got state for bundle", bundleName, "- state:", state);

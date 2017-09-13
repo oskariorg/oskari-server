@@ -76,7 +76,7 @@
         <kevinsawicki.http-request.version>4.0</kevinsawicki.http-request.version>
         <jsoup.version>1.10.3</jsoup.version>
         <ibatis.version>2.3.4.726</ibatis.version>
-        <axiom.version>1.2.15</axiom.version>
+        <axiom.version>1.2.20</axiom.version>
         <commons-lang3.version>3.0</commons-lang3.version>
         <stax-api.version>1.0-2</stax-api.version>
         <stax2-api.version>3.1.4</stax2-api.version>
@@ -110,7 +110,7 @@
 
         <log4j.version>1.2.17</log4j.version>
         <slf4j.version>1.7.12</slf4j.version>
-        <metrics.version>3.1.0</metrics.version>
+        <metrics.version>3.2.4</metrics.version>
     </properties>
 
     <!-- Managed dependencies -->
@@ -176,8 +176,8 @@
                 <artifactId>oskari-control-admin</artifactId>
                 <version>${fi.nls.oskari.service.version}</version>
             </dependency>
-			
-			<dependency>
+
+            <dependency>
                 <groupId>fi.nls.oskari.service</groupId>
                 <artifactId>oskari-control-users</artifactId>
                 <version>${fi.nls.oskari.service.version}</version>
@@ -250,7 +250,7 @@
                 <version>${fi.nls.oskari.service.version}</version>
             </dependency>
 
-             <dependency>
+            <dependency>
                 <groupId>fi.nls.oskari.service</groupId>
                 <artifactId>service-datamodel</artifactId>
                 <version>${fi.nls.oskari.service.version}</version>
@@ -372,11 +372,11 @@
                 <artifactId>wms</artifactId>
                 <version>${fi.mml.wms.version}</version>
             </dependency>
-            
+
             <dependency>
-            	<groupId>org.oskari</groupId>
-            	<artifactId>service-print</artifactId>
-            	<version>${fi.nls.oskari.version}</version>
+                <groupId>org.oskari</groupId>
+                <artifactId>service-print</artifactId>
+                <version>${fi.nls.oskari.version}</version>
             </dependency>
 
             <!-- Spring -->
@@ -484,6 +484,16 @@
                 <groupId>io.dropwizard.metrics</groupId>
                 <artifactId>metrics-json</artifactId>
                 <version>${metrics.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>com.fasterxml.jackson.core</groupId>
+                        <artifactId>jackson-core</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>com.fasterxml.jackson.core</groupId>
+                        <artifactId>jackson-databind</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
 
             <dependency>
@@ -618,6 +628,11 @@
                 <groupId>redis.clients</groupId>
                 <artifactId>jedis</artifactId>
                 <version>${jedis.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-core</artifactId>
+                <version>${jackson.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
@@ -909,12 +924,12 @@
         </plugins>
     </build>
     <repositories>
-        <!-- In Project repository -->
+        <!-- In Project repository
         <repository>
             <id>in-project</id>
             <name>In Project Repo</name>
             <url>file://${project.basedir}/../external-libs/</url>
-        </repository>
+        </repository> -->
         <repository>
             <id>oskari_org</id>
             <name>Oskari.org repository</name>
@@ -953,6 +968,11 @@
             <id>geosolutions</id>
             <name>Geo-solutions Maven Repository</name>
             <url>http://maven.geo-solutions.it</url>
+        </repository>
+        <repository>
+            <id>boundless</id>
+            <name>Boundless Maven Repository</name>
+            <url>http://repo.boundlessgeo.com/main/</url>
         </repository>
     </repositories>
 
@@ -1051,7 +1071,7 @@
         <module>control-admin</module>
         <module>content-resources</module>
         <module>control-routing</module>
-		<module>control-users</module>
+        <module>control-users</module>
 
         <!-- statistics -->
         <module>service-statistics-common</module>
@@ -1082,7 +1102,7 @@
         <module>service-feedback</module>
         <module>service-feedback-open311</module>
 
-		<!-- print -->
+        <!-- print -->
         <module>service-print</module>
     </modules>
 

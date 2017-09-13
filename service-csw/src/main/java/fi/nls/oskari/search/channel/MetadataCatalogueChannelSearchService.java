@@ -18,7 +18,6 @@ import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.PropertyUtil;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.impl.builder.StAXOMBuilder;
-import org.geotools.referencing.CRS;
 
 import java.net.HttpURLConnection;
 import java.util.*;

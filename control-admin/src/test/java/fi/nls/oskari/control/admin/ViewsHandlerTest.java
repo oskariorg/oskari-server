@@ -1,10 +1,15 @@
 package fi.nls.oskari.control.admin;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import fi.nls.oskari.control.ActionException;
+import fi.nls.oskari.control.ActionParameters;
+import fi.nls.oskari.domain.map.view.View;
+import fi.nls.oskari.map.view.*;
+import fi.nls.oskari.map.view.util.ViewHelper;
+import fi.nls.test.control.JSONActionRouteTest;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -13,21 +18,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.junit.Before;
-import org.junit.Test;
-
-import fi.nls.oskari.control.ActionException;
-import fi.nls.oskari.control.ActionParameters;
-import fi.nls.oskari.domain.map.view.View;
-import fi.nls.oskari.map.view.BundleService;
-import fi.nls.oskari.map.view.BundleServiceMemory;
-import fi.nls.oskari.map.view.ViewException;
-import fi.nls.oskari.map.view.ViewService;
-import fi.nls.oskari.map.view.ViewServiceMemory;
-import fi.nls.oskari.map.view.util.ViewHelper;
-import fi.nls.test.control.JSONActionRouteTest;
+import static org.junit.Assert.*;
 
 public class ViewsHandlerTest extends JSONActionRouteTest {
 

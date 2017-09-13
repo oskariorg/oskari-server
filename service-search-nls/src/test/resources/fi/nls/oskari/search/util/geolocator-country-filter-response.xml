@@ -1,0 +1,43 @@
+<CountryFilter>
+    <Country>
+        <code>ca</code>
+        <name>Canada</name>
+        <administrator service="GN">Canada - GN</administrator>
+    </Country>
+    <Country>
+        <code>dk</code>
+        <name>Denmark</name>
+        <administrator service="GN">Denmark - GN</administrator>
+    </Country>
+    <Country>
+        <code>fi</code>
+        <name>Finland</name>
+        <administrator service="GN">National Land Survey of Finland</administrator>
+    </Country>
+    <Country>
+        <code>gl</code>
+        <name>Greenland</name>
+        <administrator service="GN">Greenland - GN</administrator>
+    </Country>
+    <Country>
+        <code>is</code>
+        <name>Iceland</name>
+        <administrator service="GN">Iceland - GN</administrator>
+    </Country>
+    <Country>
+        <code>no</code>
+        <name>Norway</name>
+        <administrator service="GN">Norway - GN</administrator>
+        <administrator service="GN">Norway polar - GN</administrator>
+    </Country>
+    <Country>
+        <code>se</code>
+        <name>Sweden</name>
+        <administrator service="GN">Sweden - GN</administrator>
+    </Country>
+    <Country>
+        <code>us</code>
+        <name>USA</name>
+        <administrator service="GN">USA - GN</administrator>
+    </Country>
+</CountryFilter>

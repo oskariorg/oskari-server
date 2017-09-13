@@ -1,7 +1,6 @@
 package fi.nls.oskari.control.users.service;
 
 import fi.nls.oskari.control.users.model.EmailMessage;
-import fi.nls.oskari.domain.User;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.service.ServiceException;

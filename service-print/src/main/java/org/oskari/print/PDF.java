@@ -1,5 +1,8 @@
 package org.oskari.print;
 
+import fi.nls.oskari.service.ServiceException;
+
+import org.oskari.print.wmts.TileMatrixSetCache;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -7,7 +10,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
-
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
@@ -24,7 +26,6 @@ import org.oskari.print.request.PrintLayer;
 import org.oskari.print.request.PrintRequest;
 import org.oskari.print.util.PDFBoxUtil;
 import org.oskari.print.util.Units;
-
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 
@@ -34,11 +35,11 @@ public class PDF {
 
     private static final SimpleDateFormat SDF = new SimpleDateFormat("yyyy-MM-dd");
 
-    private static final PDRectangle[] PAGESIZES = 
+    private static final PDRectangle[] PAGESIZES =
             new PDRectangle[] { PDRectangle.A4, PDRectangle.A3, PDRectangle.A2 };
     private static final PDRectangle[] PAGESIZES_LANDSCAPE;
 
-    private static final float MAP_MIN_MARGINALS = PDFBoxUtil.mmToPt(10); 
+    private static final float MAP_MIN_MARGINALS = PDFBoxUtil.mmToPt(10);
 
     private static final PDFont FONT = PDType1Font.HELVETICA;
     private static final float FONT_SIZE = 12f;
@@ -74,21 +75,21 @@ public class PDF {
     /**
      * This method should be called via PrintService
      */
-    protected static void getPDF(PrintRequest request, PDDocument doc) 
-            throws IOException, IllegalArgumentException {
+    protected static void getPDF(PrintRequest request, PDDocument doc, TileMatrixSetCache tmsCache)
+            throws IOException, ServiceException {
         float mapWidth = pixelsToPoints(request.getWidth());
         float mapHeight = pixelsToPoints(request.getHeight());
 
         PDRectangle pageSize = findMinimalPageSize(
-                mapWidth + MAP_MIN_MARGINALS, 
+                mapWidth + MAP_MIN_MARGINALS,
                 mapHeight + MAP_MIN_MARGINALS);
         if (pageSize == null) {
             LOG.info("Could not find page size! width:", mapWidth, "height:", mapHeight);
-            throw new IllegalArgumentException("Could not find a proper page size!");
+            throw new ServiceException("Could not find a proper page size!");
         }
 
         // Init requests to run in the background
-        List<Future<BufferedImage>> layerImages = AsyncImageLoader.initLayers(request);
+        List<Future<BufferedImage>> layerImages = AsyncImageLoader.initLayers(request, tmsCache);
 
         PDPage page = new PDPage(pageSize);
         doc.addPage(page);
@@ -102,7 +103,7 @@ public class PDF {
             drawLogo(doc, stream, request);
             drawScale(stream, request);
             drawDate(stream, request, pageSize);
-            drawLayers(doc, stream, request.getLayers(), layerImages, 
+            drawLayers(doc, stream, request.getLayers(), layerImages,
                     x, y, mapWidth, mapHeight);
             drawBorder(stream, x, y, mapWidth, mapHeight);
         }
@@ -130,8 +131,8 @@ public class PDF {
         return null;
     }
 
-    private static void drawTitle(PDPageContentStream stream, 
-            PrintRequest request, PDRectangle pageSize) throws IOException {
+    private static void drawTitle(PDPageContentStream stream,
+                                  PrintRequest request, PDRectangle pageSize) throws IOException {
         String title = request.getTitle();
         if (title == null || title.length() == 0) {
             return;
@@ -146,7 +147,7 @@ public class PDF {
     }
 
     private static void drawLogo(PDDocument doc, PDPageContentStream stream,
-            PrintRequest request) throws IOException {
+                                 PrintRequest request) throws IOException {
         String logoPath = request.getLogo();
         if (logoPath == null || logoPath.length() == 0) {
             return;
@@ -162,8 +163,8 @@ public class PDF {
         }
     }
 
-    private static void drawDate(PDPageContentStream stream, 
-            PrintRequest request, PDRectangle pageSize) throws IOException {
+    private static void drawDate(PDPageContentStream stream,
+                                 PrintRequest request, PDRectangle pageSize) throws IOException {
         if (!request.isShowDate()) {
             return;
         }
@@ -174,7 +175,7 @@ public class PDF {
         PDFBoxUtil.drawText(stream, date, FONT, FONT_SIZE, x, y);
     }
 
-    private static void drawScale(PDPageContentStream stream, PrintRequest request) 
+    private static void drawScale(PDPageContentStream stream, PrintRequest request)
             throws IOException {
         if (!request.isShowScale()) {
             return;
@@ -190,25 +191,25 @@ public class PDF {
         double mppx = Double.NaN;
 
         switch (units) {
-        case "degrees":
-        case "dd":
-            LOG.debug("Map units is deegrees, not drawing Scale Line");
-            return;
-        case "m":
-            mppx = request.getResolution();
-            break;
-        case "km":
-            mppx = request.getResolution() * 1000;
-            break;
-        case "ft":
-            mppx = request.getResolution() * Units.METRES_PER_FOOT;
-            break;
-        case "mi":
-            mppx = request.getResolution() * Units.METRES_PER_MILE;
-            break;
-        default:
-            LOG.warn("Unknown unit", units, "- not drawing Scale line");
-            return;
+            case "degrees":
+            case "dd":
+                LOG.debug("Map units is deegrees, not drawing Scale Line");
+                return;
+            case "m":
+                mppx = request.getResolution();
+                break;
+            case "km":
+                mppx = request.getResolution() * 1000;
+                break;
+            case "ft":
+                mppx = request.getResolution() * Units.METRES_PER_FOOT;
+                break;
+            case "mi":
+                mppx = request.getResolution() * Units.METRES_PER_MILE;
+                break;
+            default:
+                LOG.warn("Unknown unit", units, "- not drawing Scale line");
+                return;
         }
 
         double mppt = mppx * Units.PDF_DPI / Units.OGC_DPI;
@@ -246,13 +247,13 @@ public class PDF {
         stream.stroke();
 
         float cx = x1 + ((x2 - x1) / 2);
-        PDFBoxUtil.drawTextCentered(stream, distanceStr, 
+        PDFBoxUtil.drawTextCentered(stream, distanceStr,
                 FONT, FONT_SIZE_SCALE, cx, y1 + 5);
     }
 
-    private static void drawLayers(PDDocument doc, PDPageContentStream stream, 
-            List<PrintLayer> layers, List<Future<BufferedImage>> images, 
-            float x, float y, float w, float h) throws IOException {
+    private static void drawLayers(PDDocument doc, PDPageContentStream stream,
+                                   List<PrintLayer> layers, List<Future<BufferedImage>> images,
+                                   float x, float y, float w, float h) throws IOException {
         for (int i = 0; i < layers.size(); i++) {
             PrintLayer layer = layers.get(i);
             Future<BufferedImage> image = images.get(i);
@@ -283,9 +284,9 @@ public class PDF {
         }
     }
 
-    private static void drawBorder(PDPageContentStream stream, 
-            float x, float y, float mapWidthPt, float mapHeightPt) 
-                    throws IOException {
+    private static void drawBorder(PDPageContentStream stream,
+                                   float x, float y, float mapWidthPt, float mapHeightPt)
+            throws IOException {
         stream.saveGraphicsState();
         stream.setLineWidth(0.5f);
         stream.addRect(x, y, mapWidthPt, mapHeightPt);

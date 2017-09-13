@@ -7,8 +7,11 @@ import fi.nls.oskari.control.ActionDeniedException;
 import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.control.ActionParamsException;
 import fi.nls.oskari.domain.map.InspireTheme;
+import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.test.control.JSONActionRouteTest;
 import fi.nls.test.util.ResourceHelper;
+import fi.nls.test.util.TestHelper;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -17,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 
 import static org.junit.Assert.fail;
+import static org.junit.Assume.assumeTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -35,6 +39,7 @@ public class InspireThemesHandlerTest extends JSONActionRouteTest {
 
     @Before
     public void setUp() throws Exception {
+        assumeTrue(TestHelper.dbAvailable());
         inspireThemeService = mock(InspireThemeServiceIbatisImpl.class);
         InspireTheme theme1 = new InspireTheme();
         theme1.setId(1);
@@ -132,5 +137,10 @@ public class InspireThemesHandlerTest extends JSONActionRouteTest {
                 put(ActionConstants.PARAM_NAME_PREFIX + "en", "theme en").
                 put(ActionConstants.PARAM_NAME_PREFIX + "fi", "teema fi").done();
         return map;
+    }
+
+    @AfterClass
+    public static void delete() {
+        PropertyUtil.clearProperties();
     }
 }

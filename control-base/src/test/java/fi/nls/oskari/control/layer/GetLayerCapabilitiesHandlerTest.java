@@ -14,7 +14,10 @@ import fi.nls.oskari.permission.domain.Permission;
 import fi.nls.oskari.permission.domain.Resource;
 import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.service.capabilities.CapabilitiesCacheService;
+import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.test.control.JSONActionRouteTest;
+import fi.nls.test.util.TestHelper;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,6 +27,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.junit.Assert.fail;
+import static org.junit.Assume.assumeTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -39,6 +43,7 @@ public class GetLayerCapabilitiesHandlerTest extends JSONActionRouteTest {
 
     @Before
     public void setup() {
+        assumeTrue(TestHelper.dbAvailable());
         OskariLayerService layerService = getOskariLayerService();
         PermissionsService permissionsService = getPermissionsService();
         // replace the cache service with a test service
@@ -115,5 +120,9 @@ public class GetLayerCapabilitiesHandlerTest extends JSONActionRouteTest {
         return service;
     }
 
+    @AfterClass
+    public static void delete() {
+        PropertyUtil.clearProperties();
+    }
 
 }

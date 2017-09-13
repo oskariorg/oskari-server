@@ -1,9 +1,9 @@
 package fi.nls.oskari.control.users.model;
 
+import fi.nls.oskari.domain.User;
+
 import java.sql.Timestamp;
 import java.util.Date;
-
-import fi.nls.oskari.domain.User;
 
 public class EmailToken extends User {
 		

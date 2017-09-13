@@ -1,14 +1,13 @@
 package fi.nls.oskari.util;
 
+import java.io.ByteArrayOutputStream;
+
 import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
-
 import org.json.JSONArray;
 import org.json.JSONObject;
-
 import javax.servlet.http.HttpServletResponse;
-
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
@@ -69,6 +68,30 @@ public class ResponseHelper {
         resp.setContentLength(len);
         try (OutputStream out = resp.getOutputStream()) {
             out.write(b, 0, len);
+        } catch (IOException e) {
+            LOG.warn(e);
+        }
+    }
+
+    /**
+     * Writes out the given response
+     * This method avoids creating a copy of the byte array if it is
+     * buffered to a ByteArrayOutputStream
+     *
+     * @param params reference to ActionParams
+     * @param sc HTTP Status Code to send
+     * @param contentType of the response
+     * @param baos ByteArrayOutputStream containing the response body
+     */
+    public static final void writeResponse(ActionParameters params, int sc, String contentType,
+            ByteArrayOutputStream baos) {
+        final int len = baos.size();
+        final HttpServletResponse resp = params.getResponse();
+        resp.setStatus(sc);
+        resp.setContentType(contentType);
+        resp.setContentLength(len);
+        try (OutputStream out = resp.getOutputStream()) {
+            baos.writeTo(out);
         } catch (IOException e) {
             LOG.warn(e);
         }
