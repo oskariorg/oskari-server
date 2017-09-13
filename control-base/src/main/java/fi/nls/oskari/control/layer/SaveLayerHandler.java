@@ -1,5 +1,7 @@
 package fi.nls.oskari.control.layer;
 
+import fi.nls.oskari.service.capabilities.OskariLayerCapabilitiesHelper;
+
 import fi.mml.map.mapwindow.service.db.InspireThemeService;
 import fi.mml.map.mapwindow.service.db.MaplayerProjectionService;
 import fi.mml.map.mapwindow.util.OskariLayerWorker;
@@ -21,16 +23,12 @@ import fi.nls.oskari.map.layer.OskariLayerService;
 import fi.nls.oskari.permission.domain.Permission;
 import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.service.capabilities.CapabilitiesCacheService;
-import fi.nls.oskari.service.capabilities.OskariLayerCapabilitiesHelper;
 import fi.nls.oskari.util.*;
 import fi.nls.oskari.wfs.WFSLayerConfigurationService;
 import fi.nls.oskari.wfs.util.WFSParserConfigs;
-
 import org.json.JSONArray;
 import org.json.JSONObject;
-
 import javax.servlet.http.HttpServletRequest;
-
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.*;

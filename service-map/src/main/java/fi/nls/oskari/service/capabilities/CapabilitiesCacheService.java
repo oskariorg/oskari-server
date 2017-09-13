@@ -1,5 +1,14 @@
 package fi.nls.oskari.service.capabilities;
 
+import fi.nls.oskari.domain.map.OskariLayer;
+import fi.nls.oskari.log.LogFactory;
+import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.service.OskariComponent;
+import fi.nls.oskari.service.ServiceException;
+import fi.nls.oskari.util.IOHelper;
+import fi.nls.oskari.util.PropertyUtil;
+import fi.nls.oskari.util.XmlHelper;
+
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -15,14 +24,6 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import fi.nls.oskari.domain.map.OskariLayer;
-import fi.nls.oskari.log.LogFactory;
-import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.service.OskariComponent;
-import fi.nls.oskari.service.ServiceException;
-import fi.nls.oskari.util.IOHelper;
-import fi.nls.oskari.util.PropertyUtil;
-import fi.nls.oskari.util.XmlHelper;
 
 public abstract class CapabilitiesCacheService extends OskariComponent {
 
