@@ -1,8 +1,5 @@
 package fi.nls.oskari.service.capabilities;
 
-import java.sql.Timestamp;
-import java.util.List;
-
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
@@ -38,12 +35,6 @@ public interface CapabilitiesMapper {
             @Param("url") final String url,
             @Param("type") final String type,
             @Param("version") final String version);
-
-    @Select("SELECT id, url, layertype, version, data, created, updated"
-            + " FROM oskari_capabilities_cache"
-            + " WHERE updated <= #{ts}"
-            + " ORDER BY id, version ASC")
-    List<OskariLayerCapabilities> findAllNotUpdatedSince(@Param("ts") final Timestamp ts);
 
     @Insert("INSERT INTO oskari_capabilities_cache"
             + " (layertype, url, data, version) VALUES"

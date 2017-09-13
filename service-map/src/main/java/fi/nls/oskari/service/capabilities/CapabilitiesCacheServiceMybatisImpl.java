@@ -7,10 +7,6 @@ import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
-import org.apache.ibatis.session.ExecutorType;
-
-import java.util.List;
-import java.sql.Timestamp;
 
 import javax.sql.DataSource;
 
@@ -74,40 +70,6 @@ public class CapabilitiesCacheServiceMybatisImpl extends CapabilitiesCacheServic
                 session.commit();
                 return inserted;
             }
-        }
-    }
-
-    @Override
-    protected List<OskariLayerCapabilities> getAllOlderThan(long maxAgeMs) {
-        try (final SqlSession session = factory.openSession()) {
-            final CapabilitiesMapper mapper = getMapper(session);
-            final long time = System.currentTimeMillis() - maxAgeMs;
-            final Timestamp ts = new Timestamp(time);
-            LOG.debug("Getting all rows not updated since:", ts);
-            List<OskariLayerCapabilities> list = mapper.findAllNotUpdatedSince(ts);
-            LOG.debug("Found", list.size(), "row(s) not updated since:", ts);
-            return list;
-        }
-    }
-
-    @Override
-    protected void updateMultiple(List<OskariLayerCapabilities> updates) {
-        if (updates == null || updates.isEmpty()) {
-            return;
-        }
-        try (final SqlSession session = factory.openSession(ExecutorType.BATCH, false)) {
-            final CapabilitiesMapper mapper = getMapper(session);
-            for (OskariLayerCapabilities capabilities : updates) {
-                Long id = capabilities.getId();
-                if (id == null) {
-                    LOG.warn("Tried to update OskariLayerCapabilities with null id field! "
-                            + "Capabilities:", capabilities);
-                } else {
-                    mapper.updateData(id, capabilities.getData());
-                    LOG.info("Updated capabilities id:", id);
-                }
-            }
-            session.commit();
         }
     }
 

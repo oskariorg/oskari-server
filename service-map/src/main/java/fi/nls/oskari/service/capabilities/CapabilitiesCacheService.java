@@ -8,16 +8,12 @@ import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.util.XmlHelper;
-
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-
 import javax.xml.stream.FactoryConfigurationError;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
@@ -39,39 +35,17 @@ public abstract class CapabilitiesCacheService extends OskariComponent {
     private static final int TIMEOUT_SECONDS = PropertyUtil.getOptional(PROP_TIMEOUT, 30);
     private static final int TIMEOUT_MS = TIMEOUT_SECONDS * 1000;
 
+    private static final String NAMESPACE_WMS = "http://www.opengis.net/wms/";
+    private static final String NAMESPACE_WFS = "http://www.opengis.net/wfs/";
+    private static final String NAMESPACE_WMTS = "http://www.opengis.net/wmts/";
+
+    private static final String ROOT_WMS_LESS_THAN_130 = "WMT_MS_Capabilities";
+    private static final String ROOT_WMS_130 = "WMS_Capabilities";
+    private static final String ROOT_WFS = "WFS_Capabilities";
+    private static final String ROOT_WMTS = "Capabilities";
+
     public abstract OskariLayerCapabilities find(final String url, final String layertype, final String version);
     public abstract OskariLayerCapabilities save(final OskariLayerCapabilities capabilities);
-
-    protected abstract void updateMultiple(final List<OskariLayerCapabilities> capabilities);
-    protected abstract List<OskariLayerCapabilities> getAllOlderThan(final long maxAgeMs);
-
-    public void updateAllOlderThan(final long maxAgeMs) {
-        List<OskariLayerCapabilities> updates = new ArrayList<>();
-        for (OskariLayerCapabilities capabilities : getAllOlderThan(maxAgeMs)) {
-            String url = capabilities.getUrl();
-            String type = capabilities.getLayertype();
-            String version = capabilities.getVersion();
-            String dataOld = capabilities.getData();
-
-            OskariLayer layer = createTempOskariLayer(url, type, null, null, version);
-            String data = loadCapabilitiesFromService(layer);
-
-            if (data.isEmpty()) {
-                LOG.warn("Getting Capabilities from service failed for url:", url, "- skipping!");
-                continue;
-            }
-
-            if (dataOld.equals(data)) {
-                LOG.warn("New data is equal to old data for url:", url, "- skipping!");
-                continue;
-            }
-
-            capabilities.setData(data);
-            updates.add(capabilities);
-        }
-
-        updateMultiple(updates);
-    }
 
     public OskariLayerCapabilities getCapabilities(String url, String type, String version)
             throws ServiceException {
@@ -100,6 +74,7 @@ public abstract class CapabilitiesCacheService extends OskariComponent {
 
     public OskariLayerCapabilities getCapabilities(final OskariLayer layer)
             throws ServiceException {
+        // prefer saved db version over network call by default
         return getCapabilities(layer, false);
     }
 
@@ -109,7 +84,6 @@ public abstract class CapabilitiesCacheService extends OskariComponent {
         final String type = layer.getType();
         final String version = layer.getVersion();
 
-        // prefer saved db version over network call by default
         if (!loadFromService) {
             OskariLayerCapabilities dbCapabilities = find(url, type, version);
             if (dbCapabilities != null) {
@@ -117,20 +91,14 @@ public abstract class CapabilitiesCacheService extends OskariComponent {
             }
         }
 
-        // get xml from service
+        // try to get xml from service
         final String data = loadCapabilitiesFromService(layer);
-        if (data == null || data.trim().isEmpty()) {
-            throw new ServiceException("Failed to load capabilities from service!");
-        }
 
-        try {
-            return save(new OskariLayerCapabilities(url, type, version, data));
-        } catch (IllegalArgumentException e) {
-            throw new ServiceException("Failed to save capabilities: " + e.getMessage());
-        }
+        final OskariLayerCapabilities draft = new OskariLayerCapabilities(url, type, version, data);
+        return save(draft);
     }
 
-    public static String loadCapabilitiesFromService(OskariLayer layer) {
+    public static String loadCapabilitiesFromService(OskariLayer layer) throws ServiceException {
         final String url = contructCapabilitiesUrl(layer);
         if (url.isEmpty()) {
             return null;
@@ -145,21 +113,21 @@ public abstract class CapabilitiesCacheService extends OskariComponent {
             final int sc = conn.getResponseCode();
             if (sc != HttpURLConnection.HTTP_OK) {
                 LOG.warn("Unexpected Status code:", sc, " url:", url);
-                return null;
+                throw new ServiceException("Unexpected Status code: " + sc);
             }
 
             final String contentType = conn.getContentType();
             if (contentType != null && contentType.toLowerCase().indexOf("xml") == -1) {
                 // not xml based on contentType
                 LOG.warn("Unexpected Content-Type:", contentType, "url:", url);
-                return null;
+                throw new ServiceException("Unexpected Content-Typee: " + contentType);
             }
 
             encoding = IOHelper.getCharset(conn);
             data = IOHelper.readBytes(conn);
         } catch (IOException e) {
             LOG.warn(e, "IOException occured, url:", url);
-            return null;
+            throw new ServiceException("IOException occured", e);
         }
 
         try {
@@ -171,8 +139,8 @@ public abstract class CapabilitiesCacheService extends OskariComponent {
             String xmlEncoding = xsr.getCharacterEncodingScheme();
             if (xmlEncoding != null) {
                 if (encoding != null && !xmlEncoding.equalsIgnoreCase(encoding)) {
-                    LOG.error("Content-Type header specified a different encoding than XML prolog!");
-                    return null;
+                    LOG.warn("Content-Type header specified a different encoding than XML prolog!");
+                    throw new ServiceException("Content-Type header specified a different encoding than XML prolog!");
                 }
                 encoding = xmlEncoding;
             }
@@ -183,9 +151,7 @@ public abstract class CapabilitiesCacheService extends OskariComponent {
             }
 
             // Check that the response is what we expect
-            if (!checkCapabilities(xsr, layer.getType(), layer.getVersion())) {
-                return null;
-            }
+            checkCapabilities(xsr, layer.getType(), layer.getVersion());
 
             // Convert "utf-8" to "UTF-8" for example
             encoding = encoding.toUpperCase();
@@ -238,64 +204,80 @@ public abstract class CapabilitiesCacheService extends OskariComponent {
         return "";
     }
 
-    private static boolean checkCapabilities(XMLStreamReader xsr, String type, String version) {
-        if (!advanceToRootElement(xsr)) {
-            // Could not advance to root element
-            return false;
-        }
+    private static void checkCapabilities(XMLStreamReader xsr, String type, String version)
+            throws ServiceException {
+        advanceToRootElement(xsr);
         String ns = xsr.getNamespaceURI();
         String name = xsr.getLocalName();
-        return validateCapabilities(type, version, ns, name);
+        validateCapabilities(type, version, ns, name);
     }
 
-    private static boolean advanceToRootElement(XMLStreamReader xsr) {
+    private static boolean advanceToRootElement(XMLStreamReader xsr)
+            throws ServiceException {
         try {
             if (xsr.nextTag() != XMLStreamConstants.START_DOCUMENT) {
-                LOG.warn("Document did not start with a START_DOCUMENT!");
-                return false;
+                throw new ServiceException("Document did not start with a START_DOCUMENT!");
             }
             if (xsr.nextTag() != XMLStreamConstants.START_ELEMENT) {
-                LOG.warn("Could not find root element!");
-                return false;
+                throw new ServiceException("Could not find root element!");
             }
             return true;
         } catch (XMLStreamException e) {
-            LOG.warn(e, "Failed to find root element!");
-            return false;
+            throw new ServiceException("XMLStreamException occured!", e);
         }
     }
 
-    private static boolean validateCapabilities(String type, String version, String ns, String name) {
+    private static void validateCapabilities(String type, String version, String ns, String name)
+            throws ServiceException {
         LOG.debug("Validating capabilities, type:", type, "version:", version,
                 "namespace", ns, "root element", name);
 
         switch (type) {
         case OskariLayer.TYPE_WMS:
             if (version == null) {
-                // Layer didn't specify a version - response could could be anything
-                return isWMS130Capabilities(ns, name) || isWMSLessThan130Capabilities(ns, name);
+                // Layer didn't specify a version - response could be of any WMS version
+                if (ns != null) {
+                    // Can only be 1.3.0
+                    checkNamespaceStartsWith(ns, NAMESPACE_WMS);
+                    checkRootElementNameEquals(name, ROOT_WMS_130);
+                } else {
+                    checkRootElementNameEquals(name, ROOT_WMS_LESS_THAN_130);
+                }
             } else if ("1.3.0".equals(version)) {
-                return isWMS130Capabilities(ns, name);
+                checkNamespaceStartsWith(ns, NAMESPACE_WMS);
+                checkRootElementNameEquals(name, ROOT_WMS_130);
             } else {
-                return isWMSLessThan130Capabilities(ns, name);
+                checkRootElementNameEquals(name, ROOT_WMS_LESS_THAN_130);
             }
+            break;
         case OskariLayer.TYPE_WFS:
-            return ns.startsWith("http://www.opengis.net/wfs/") && "WFS_Capabilities".equals(name);
+            checkNamespaceStartsWith(ns, NAMESPACE_WFS);
+            checkRootElementNameEquals(name, ROOT_WFS);
+            break;
         case OskariLayer.TYPE_WMTS:
-            return ns.startsWith("http://www.opengis.net/wmts/") && "Capabilities".equals(name);
+            checkNamespaceStartsWith(ns, NAMESPACE_WMTS);
+            checkRootElementNameEquals(name, ROOT_WMTS);
+            break;
         }
-        return false;
     }
 
-    private static boolean isWMSLessThan130Capabilities(String ns, String name) {
-        return ns == null
-                && "WMT_MS_Capabilities".equals(name);
+    private static void checkNamespaceStartsWith(final String ns, final String expected)
+            throws ServiceException {
+        if (ns == null) {
+            throw new ServiceException("Expected non-null namespace!");
+        }
+        if (!ns.startsWith(expected)) {
+            throw new ServiceException(String.format(
+                    "Expected namespace starting with '%s', got '%s'", expected, ns));
+        }
     }
 
-    private static boolean isWMS130Capabilities(String ns, String name) {
-        return ns != null
-                && ns.startsWith("http://www.opengis.net/wms/")
-                && "WMS_Capabilities".equals(name);
+    private static void checkRootElementNameEquals(final String name, final String expected)
+            throws ServiceException {
+        if (!expected.equals(name)) {
+            throw new ServiceException(String.format(
+                    "Expected root element with name '%s', got '%s'", expected, name));
+        }
     }
 
 }

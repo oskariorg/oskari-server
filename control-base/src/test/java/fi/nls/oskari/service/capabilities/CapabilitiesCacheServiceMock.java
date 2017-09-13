@@ -1,7 +1,6 @@
 package fi.nls.oskari.service.capabilities;
 
 import java.sql.Timestamp;
-import java.util.List;
 
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.service.ServiceException;
@@ -34,13 +33,4 @@ public class CapabilitiesCacheServiceMock extends CapabilitiesCacheService {
         return super.getCapabilities(layer);
     }
 
-    @Override
-    protected void updateMultiple(List<OskariLayerCapabilities> caps) {
-        // Do nothing
-    }
-
-    @Override
-    protected List<OskariLayerCapabilities> getAllOlderThan(long maxAgeMs) {
-        return null;
-    }
 }

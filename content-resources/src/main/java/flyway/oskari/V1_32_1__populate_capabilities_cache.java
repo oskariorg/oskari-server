@@ -1,12 +1,13 @@
 package flyway.oskari;
 
+import fi.nls.oskari.service.ServiceException;
+
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.service.capabilities.CapabilitiesCacheService;
 import fi.nls.oskari.service.capabilities.OskariLayerCapabilities;
 import org.flywaydb.core.api.migration.jdbc.JdbcMigration;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -34,19 +35,18 @@ public class V1_32_1__populate_capabilities_cache implements JdbcMigration {
             }
 
             keys.add(layerKey);
-            String data = CapabilitiesCacheService.loadCapabilitiesFromService(layer);
-            if (data == null) {
-                LOG.warn("Failed to read capabilities from service!");
-                continue;
+            try {
+                String data = CapabilitiesCacheService.loadCapabilitiesFromService(layer);
+                OskariLayerCapabilities draft = new OskariLayerCapabilities(
+                        layer.getSimplifiedUrl(true),
+                        layer.getType(),
+                        layer.getVersion(),
+                        data);
+                insertCaps(connection, draft);
+            } catch (ServiceException e) {
+                LOG.warn(e, "Failed to read capabilities from service!");
             }
-            OskariLayerCapabilities draft = new OskariLayerCapabilities(
-                    layer.getSimplifiedUrl(true),
-                    layer.getType(),
-                    layer.getVersion(),
-                    data);
-            insertCaps(connection, draft);
-            progress++;
-            LOG.info("Capabilities populated:", progress, "/", layers.size());
+            LOG.info("Capabilities populated:", ++progress, "/", layers.size());
         }
     }
 
