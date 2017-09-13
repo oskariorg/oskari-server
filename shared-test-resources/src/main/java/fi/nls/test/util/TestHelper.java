@@ -3,14 +3,12 @@ package fi.nls.test.util;
 import fi.nls.oskari.cache.JedisManager;
 import fi.nls.oskari.db.DatasourceHelper;
 import fi.nls.oskari.service.ServiceRuntimeException;
-import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.PropertyUtil;
 
 import javax.sql.DataSource;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.sql.SQLException;
@@ -86,7 +84,7 @@ public class TestHelper {
                     dbStatus = STATUS.ENABLED;
                 }
             } catch (SQLException ex) {
-                redisStatus = STATUS.DISABLED;
+                dbStatus = STATUS.DISABLED;
             }
         }
         return dbStatus.equals(STATUS.ENABLED);

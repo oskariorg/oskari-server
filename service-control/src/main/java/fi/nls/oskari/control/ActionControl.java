@@ -98,7 +98,7 @@ public class ActionControl {
      * Uses ServiceLoader to find all ActionHandlers in classpath. Adds them as handlers with the route key
      * returned by getName() method.
      */
-    public static void addDefaultControls() {
+    public synchronized static void addDefaultControls() {
 
         ServiceLoader<ActionHandler> impl = ServiceLoader.load(ActionHandler.class);
 

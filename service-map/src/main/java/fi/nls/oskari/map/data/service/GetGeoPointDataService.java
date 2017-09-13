@@ -72,7 +72,7 @@ public class GetGeoPointDataService {
         // use text content if respObj isn't present (transformed JSON not created)
         if(respObj == null) {
             JSONHelper.putValue(response, PRESENTATION_TYPE, PRESENTATION_TYPE_TEXT);
-            JSONHelper.putValue(response, CONTENT, gfiResponse);
+            JSONHelper.putValue(response, CONTENT, Jsoup.clean(gfiResponse, Whitelist.relaxed()));
         }
         // Add gfi content, it needs to be a separate field so we can mangle it as we like in the frontend
         final String gfiContent = params.getLayer().getGfiContent();

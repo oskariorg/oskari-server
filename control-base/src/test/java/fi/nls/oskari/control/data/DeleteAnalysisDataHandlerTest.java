@@ -5,13 +5,13 @@ import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.control.ActionParamsException;
 import fi.nls.oskari.domain.map.analysis.Analysis;
 import fi.nls.oskari.map.analysis.service.AnalysisDbService;
-import fi.nls.oskari.map.analysis.service.AnalysisDbServiceIbatisImpl;
+import fi.nls.oskari.map.analysis.service.AnalysisDbServiceMybatisImpl;
 import fi.nls.oskari.util.DuplicateException;
 import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.test.control.JSONActionRouteTest;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.AfterClass;
 import org.junit.Test;
 import org.mockito.exceptions.base.MockitoAssertionError;
 
@@ -55,7 +55,7 @@ public class DeleteAnalysisDataHandlerTest extends JSONActionRouteTest {
     @Before
     public void setUp() throws Exception {
 
-        service = mock(AnalysisDbServiceIbatisImpl.class);
+        service = mock(AnalysisDbServiceMybatisImpl.class);
         doReturn(analysisInvalid).when(service).getAnalysisById(ANOTHER_USERS_ANALYSIS_ID);
         // setup matching uuid to permit delete
         analysisValid.setUuid(getLoggedInUser().getUuid());

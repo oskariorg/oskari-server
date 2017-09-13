@@ -13,7 +13,7 @@ import fi.nls.oskari.map.layer.OskariLayerServiceIbatisImpl;
 import fi.nls.oskari.map.layer.formatters.LayerJSONFormatter;
 import fi.nls.oskari.permission.domain.Permission;
 import fi.nls.oskari.permission.domain.Resource;
-import fi.nls.oskari.user.IbatisRoleService;
+import fi.nls.oskari.user.MybatisRoleService;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.JSONHelper;
 import org.json.JSONArray;
@@ -36,7 +36,7 @@ public class LayerHelper {
     private static Logger log = LogFactory.getLogger(LayerHelper.class);
     private static final LayerJSONFormatter LAYER_JSON_PARSER = new LayerJSONFormatter();
     private static final PermissionsService permissionsService = new PermissionsServiceIbatisImpl();
-    private static final IbatisRoleService roleService = new IbatisRoleService();
+    private static final MybatisRoleService roleService = new MybatisRoleService();
 
     public static int setupLayer(final String layerfile) throws IOException, JSONException {
         final String jsonStr = IOHelper.readString(DBHandler.getInputStreamFromResource("/json/layers/" + layerfile));

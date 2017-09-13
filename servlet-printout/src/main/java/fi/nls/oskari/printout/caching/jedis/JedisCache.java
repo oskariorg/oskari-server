@@ -1,18 +1,17 @@
 package fi.nls.oskari.printout.caching.jedis;
 
+import fi.nls.oskari.printout.caching.BlobCache;
+import fi.nls.oskari.printout.config.ConfigValue;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import redis.clients.jedis.Jedis;
+import redis.clients.jedis.JedisPool;
+import redis.clients.jedis.JedisPoolConfig;
+
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import redis.clients.jedis.Jedis;
-import redis.clients.jedis.JedisPool;
-import redis.clients.jedis.JedisPoolConfig;
-import fi.nls.oskari.printout.caching.BlobCache;
-import fi.nls.oskari.printout.config.ConfigValue;
 
 public class JedisCache {
 

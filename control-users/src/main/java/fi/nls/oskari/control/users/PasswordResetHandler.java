@@ -16,7 +16,7 @@ import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.service.UserService;
 import fi.nls.oskari.spring.SpringContextHolder;
-import fi.nls.oskari.user.IbatisUserService;
+import fi.nls.oskari.user.MybatisUserService;
 import fi.nls.oskari.util.ResponseHelper;
 import org.springframework.context.MessageSource;
 
@@ -40,7 +40,7 @@ public class PasswordResetHandler extends RestActionHandler {
 
     private UserRegistrationService registerTokenService = null;
     private final MailSenderService mailSenderService = new MailSenderService();
-    private final IbatisUserService ibatisUserService = new IbatisUserService();
+    private final MybatisUserService mybatisUserService = new MybatisUserService();
     private UserService userService;
 
     @Override
@@ -126,7 +126,7 @@ public class PasswordResetHandler extends RestActionHandler {
             LOG.warn("User tried to set password for unknown account:", token.getEmail());
             throw new ActionParamsException("Username doesn't exist.");
         }
-        String loginPassword = ibatisUserService.getPassword(username);
+        String loginPassword = mybatisUserService.getPassword(username);
         try {
             LOG.warn("Setting password for user:", token.getEmail());
             if (loginPassword != null && !loginPassword.isEmpty()) {

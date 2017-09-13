@@ -14,8 +14,8 @@ import org.springframework.security.crypto.bcrypt.BCrypt;
 import java.util.*;
 
 public class DatabaseUserService extends UserService {
-    private IbatisRoleService roleService = new IbatisRoleService();
-    private IbatisUserService userService = new IbatisUserService();
+    private MybatisRoleService roleService = new MybatisRoleService();
+    private MybatisUserService userService = new MybatisUserService();
 
     private static final String ERR_USER_MISSING = "User was null";
     private static final int BCRYPT_PASSWORD_LENGTH = 60;

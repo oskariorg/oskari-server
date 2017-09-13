@@ -1,0 +1,8 @@
+<fes:Filter xmlns:fes="http://www.opengis.net/fes/2.0" xmlns:iso19112="http://www.isotc211.org/19112" xmlns:gmdsf1="http://www.isotc211.org/2005/gmdsf1">
+    <fes:PropertyIsEqualTo matchCase="false">
+        <fes:ValueReference>
+            iso19112:alternativeGeographicIdentifiers/iso19112:alternativeGeographicIdentifier/iso19112:name
+        </fes:ValueReference>
+        <fes:Literal>asdf</fes:Literal>
+    </fes:PropertyIsEqualTo>
+</fes:Filter>

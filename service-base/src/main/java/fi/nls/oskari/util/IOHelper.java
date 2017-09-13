@@ -10,6 +10,7 @@ import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
 import java.security.cert.X509Certificate;
 import java.util.Collections;
@@ -32,7 +33,8 @@ public class IOHelper {
     public static final String HEADER_REFERER = "Referer";
     public static final String HEADER_ACCEPT = "Accept";
 
-    public static final String DEFAULT_CHARSET = "UTF-8";
+    public static final String CHARSET_UTF8 = "UTF-8";
+    public static final String DEFAULT_CHARSET = CHARSET_UTF8;
     public static final String CONTENTTYPE_FORM_URLENCODED = "application/x-www-form-urlencoded";
     public static final String CONTENT_TYPE_JSON = "application/json";
     public static final String CONTENT_TYPE_XML = "application/xml";
@@ -605,6 +607,27 @@ public class IOHelper {
         return null;
     }
 
+    public static HttpURLConnection postForm(String url, Map<String, String> keyValuePairs)
+            throws IOException {
+        String requestBody = getParams(keyValuePairs);
+        return post(url, CONTENTTYPE_FORM_URLENCODED,
+                requestBody.getBytes(StandardCharsets.UTF_8));
+    }
+
+    public static HttpURLConnection post(String url, String contentType, byte[] body)
+            throws IOException {
+        HttpURLConnection conn = getConnection(url);
+        conn.setRequestMethod("POST");
+        conn.setDoOutput(true);
+        conn.setDoInput(true);
+        setContentType(conn, contentType);
+        conn.setRequestProperty("Content-Length", Integer.toString(body.length));
+        try (OutputStream out = conn.getOutputStream()) {
+            out.write(body);
+        }
+        return conn;
+    }
+
     public static String postRequest(String url) {
         return postRequest(url, "", "", "", null, null, null);
     }
@@ -628,14 +651,23 @@ public class IOHelper {
 
             HttpRequest.keepAlive(false);
             if (username != null && !username.isEmpty()) {
-                request = HttpRequest.post(url).basic(username, password)
-                        .contentType(contentType).connectTimeout(30)
-                        .acceptGzipEncoding().uncompress(true).trustAllCerts()
-                        .trustAllHosts().send(data);
+                request = HttpRequest.post(url)
+                        .basic(username, password)
+                        .contentType(contentType)
+                        .connectTimeout(getConnectionTimeoutMs())
+                        .acceptGzipEncoding()
+                        .uncompress(true)
+                        .trustAllCerts()
+                        .trustAllHosts()
+                        .send(data);
             } else {
-                request = HttpRequest.post(url).contentType(contentType)
-                        .connectTimeout(30).acceptGzipEncoding().uncompress(
-                                true).trustAllCerts().trustAllHosts()
+                request = HttpRequest.post(url)
+                        .contentType(contentType)
+                        .connectTimeout(getConnectionTimeoutMs())
+                        .acceptGzipEncoding()
+                        .uncompress(true)
+                        .trustAllCerts()
+                        .trustAllHosts()
                         .send(data);
             }
             if (host != null && !host.isEmpty()) {
@@ -804,28 +836,40 @@ public class IOHelper {
         return constructUrl(url, params);
     }
 
-    public static String getParams(Map<String, String> params) {
-        if(params == null || params.isEmpty()) {
+    public static String getParams(Map<String, String> kvps) {
+        if (kvps == null || kvps.isEmpty()) {
             return "";
         }
 
-        final StringBuilder urlBuilder = new StringBuilder();
-        for(Map.Entry<String,String> entry : params.entrySet()) {
+        final StringBuilder sb = new StringBuilder();
+        boolean first = true;
+        for (Map.Entry<String, String> entry : kvps.entrySet()) {
+            final String key = entry.getKey();
             final String value = entry.getValue();
-            if(entry.getValue() == null) {
+            if (key == null || key.isEmpty() || value == null || value.isEmpty()) {
                 continue;
             }
-            urlBuilder.append(entry.getKey());
-            urlBuilder.append("=");
             try {
-                urlBuilder.append(URLEncoder.encode(value, DEFAULT_CHARSET));
-            } catch (UnsupportedEncodingException e) {
-                log.error(e, "Couldn't encode value - using raw input", value);
-                urlBuilder.append(value);
+                final String keyEnc = URLEncoder.encode(key, DEFAULT_CHARSET);
+                final String valueEnc = URLEncoder.encode(value, DEFAULT_CHARSET);
+                if (!first) {
+                    sb.append('&');
+                }
+                sb.append(keyEnc).append('=').append(valueEnc);
+                first = false;
+            } catch (UnsupportedEncodingException ignore) {
+                // Ignore the exception, UTF-8 _IS_ supported
             }
-            urlBuilder.append("&");
         }
-        // drop last character ('?' or '&')
-        return urlBuilder.substring(0, urlBuilder.length()-1);
+        return sb.toString();
     }
+
+    public static InputStream getInputStream(HttpURLConnection conn) {
+        try {
+            return conn.getInputStream();
+        } catch (IOException e) {
+            return conn.getErrorStream();
+        }
+    }
+
 }

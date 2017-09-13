@@ -5,6 +5,7 @@ import fi.nls.oskari.domain.map.userlayer.UserLayerData;
 import fi.nls.oskari.domain.map.userlayer.UserLayerStyle;
 import fi.nls.oskari.service.ServiceException;
 import org.apache.ibatis.annotations.Param;
+
 import java.util.List;
 
 public interface UserLayerMapper {

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="fi.nls.oskari.map.analysis.service.AnalysisStyleMapper">
+
+    <insert id="insertAnalysisStyleRow" parameterType="AnalysisStyle" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+        INSERT INTO analysis_style (
+        stroke_width,
+        stroke_color,
+        fill_color,
+        dot_color,
+        dot_size,
+        border_width,
+        border_color,
+        dot_shape,
+        stroke_linejoin ,
+        fill_pattern ,
+        stroke_linecap ,
+        stroke_dasharray ,
+        border_linejoin ,
+        border_dasharray )
+        
+        VALUES (   #{stroke_width},
+        #{stroke_color},
+        #{fill_color},
+        #{dot_color},
+        #{dot_size},
+        #{border_width},
+        #{border_color},
+        #{dot_shape},
+        #{stroke_linejoin},
+        #{fill_pattern},
+        #{stroke_linecap},
+        #{stroke_dasharray},
+        #{border_linejoin},
+        #{border_dasharray})
+    </insert>
+</mapper>

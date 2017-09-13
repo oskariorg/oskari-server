@@ -4,7 +4,7 @@ import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.ontology.domain.Keyword;
 import fi.nls.oskari.ontology.service.KeywordService;
-import fi.nls.oskari.ontology.service.KeywordServiceIbatisImpl;
+import fi.nls.oskari.ontology.service.KeywordServiceMybatisImpl;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -262,7 +262,7 @@ public class GetLayerKeywords {
     }
 
     private void saveKeywords(Integer layerId, List<Keyword> keywords) {
-		KeywordService keywordService = new KeywordServiceIbatisImpl();
+		KeywordService keywordService = new KeywordServiceMybatisImpl();
 		Long keywordId;
 		for (Keyword keyword : keywords) {
 			// This'll return the keyword ID whether it was created or already existed

@@ -1,11 +1,10 @@
 package fi.nls.oskari.map.view;
 
+import fi.nls.oskari.domain.map.view.Bundle;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
-import fi.nls.oskari.domain.map.view.Bundle;
-import fi.nls.oskari.map.view.BundleService;
 
 /**
  * Not thread-safe implementation of BundleService
