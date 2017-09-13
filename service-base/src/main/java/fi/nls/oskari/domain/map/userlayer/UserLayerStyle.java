@@ -1,6 +1,8 @@
 package fi.nls.oskari.domain.map.userlayer;
 
 import fi.nls.oskari.util.ConversionHelper;
+import fi.nls.oskari.util.JSONHelper;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -45,6 +47,35 @@ public class UserLayerStyle {
             throw new JSONException(ex);
         }
 
+    }
+
+    public JSONObject parseUserLayerStyle2JSON(){
+        JSONObject json = new JSONObject();
+        //dot
+        JSONObject dot = new JSONObject();
+        JSONHelper.putValue(dot, "shape", getDot_shape());
+        JSONHelper.putValue(dot, "color", getDot_color());
+        JSONHelper.putValue(dot, "size", getDot_size());
+        JSONHelper.putValue(json, "dot", dot);
+        //line
+        JSONObject line = new JSONObject();
+        JSONHelper.putValue(line, "style", getStroke_dasharray());
+        JSONHelper.putValue(line, "cap", getStroke_linecap());
+        JSONHelper.putValue(line, "corner", getStroke_linejoin());
+        JSONHelper.putValue(line, "width", getStroke_width());
+        JSONHelper.putValue(line, "color", getStroke_color());
+        JSONHelper.putValue(json, "line", line);
+        //area
+        JSONObject area = new JSONObject();
+        JSONHelper.putValue(area, "lineStyle", getBorder_dasharray());
+        JSONHelper.putValue(area, "lineCorner", getBorder_linejoin());
+        JSONHelper.putValue(area, "lineWidth", getBorder_width());
+        JSONHelper.putValue(area, "lineColor", getBorder_color());
+        JSONHelper.putValue(area, "fillStyle", getFill_pattern());
+        JSONHelper.putValue(area, "fillColor", getFill_color());
+        JSONHelper.putValue(json, "area", area);
+
+        return json;
     }
 
     public long getId() {
