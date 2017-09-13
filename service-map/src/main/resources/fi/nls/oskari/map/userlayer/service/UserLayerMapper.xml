@@ -165,6 +165,7 @@
         stroke_dasharray,
         border_linejoin,
         border_dasharray
+		FROM user_layer_style
         WHERE id = #{id}
     </select>
 
