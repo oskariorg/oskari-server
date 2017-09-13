@@ -1,7 +1,5 @@
 package fi.nls.oskari.service.capabilities;
 
-import java.sql.Timestamp;
-
 import fi.nls.oskari.mybatis.MyBatisHelper;
 import fi.nls.oskari.annotation.Oskari;
 import fi.nls.oskari.db.DatasourceHelper;
@@ -10,7 +8,9 @@ import fi.nls.oskari.log.Logger;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.ExecutorType;
+
 import java.util.List;
+import java.sql.Timestamp;
 
 import javax.sql.DataSource;
 
