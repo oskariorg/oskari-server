@@ -518,7 +518,7 @@ public class SaveLayerHandler extends ActionHandler {
 
     private void handleWFSSpecific(final ActionParameters params, OskariLayer ml) throws ActionException {
         // These are only in insert
-        ml.setSrs_name(params.getHttpParam("srs_name", ml.getSrs_name()));
+        ml.setSrs_name(params.getHttpParam(PARAM_SRS_NAME, ml.getSrs_name()));
         ml.setVersion(params.getHttpParam("WFSVersion",ml.getVersion()));
 
         // Put manual Refresh mode to attributes if true
