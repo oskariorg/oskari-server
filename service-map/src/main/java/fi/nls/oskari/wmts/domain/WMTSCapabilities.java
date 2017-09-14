@@ -1,46 +1,31 @@
 package fi.nls.oskari.wmts.domain;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.Collection;
 
-/**
- * Created by SMAKINEN on 28.9.2015.
- */
+import java.util.Collections;
+import java.util.Map;
+
 public class WMTSCapabilities {
 
-    final Set<TileMatrixSet> tileMatrixSets = new HashSet<>();
-    final Set<WMTSCapabilitiesLayer> layers = new HashSet<>();
+    private final Map<String, TileMatrixSet> tileMatrixSets;
+    private final Map<String, WMTSCapabilitiesLayer> layers;
 
-    public void addLayer(WMTSCapabilitiesLayer layer) {
-        layers.add(layer);
-    }
-    public void addTileMatrixSet(TileMatrixSet set) {
-        tileMatrixSets.add(set);
-    }
-
-    public Set<TileMatrixSet> getTileMatrixSets() {
-        return tileMatrixSets;
+    public WMTSCapabilities(Map<String, TileMatrixSet> tileMatrixSets,
+            Map<String, WMTSCapabilitiesLayer> layers) {
+        this.tileMatrixSets = Collections.unmodifiableMap(tileMatrixSets);
+        this.layers = Collections.unmodifiableMap(layers);
     }
 
-    public Set<WMTSCapabilitiesLayer> getLayers() {
-        return layers;
+    public Collection<TileMatrixSet> getTileMatrixSets() {
+        return tileMatrixSets.values();
     }
 
-    public String getMatrixCRS(final String id) {
-        for(TileMatrixSet matrix : tileMatrixSets) {
-            if(matrix.getId().equals(id)) {
-                return matrix.getCrs();
-            }
-        }
-        return "CRS N/A";
+    public Collection<WMTSCapabilitiesLayer> getLayers() {
+        return layers.values();
     }
 
     public WMTSCapabilitiesLayer getLayer(final String name) {
-        for(WMTSCapabilitiesLayer layer : layers) {
-            if(layer.getId().equals(name)) {
-                return layer;
-            }
-        }
-        return null;
+        return layers.get(name);
     }
+
 }

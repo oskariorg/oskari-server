@@ -1,7 +1,8 @@
 package org.oskari.capabilities;
 
-import java.sql.Timestamp;
+import javax.xml.stream.XMLStreamException;
 
+import java.sql.Timestamp;
 import fi.nls.oskari.service.capabilities.OskariLayerCapabilities;
 import java.util.Map;
 import fi.nls.oskari.annotation.Oskari;
@@ -50,47 +51,24 @@ public class UpdateCapabilitiesJob extends ScheduledJob {
         if (layer == null) {
             return;
         }
-        try {
-            switch (layer.getType()) {
-            case OskariLayer.TYPE_WMS:
-                updateCapabilitiesWMS(layer);
-                break;
-            case OskariLayer.TYPE_WMTS:
-                updateCapabilitiesWMTS(layer);
-                break;
-            case OskariLayer.TYPE_WFS:
-                updateCapabilitiesWFS(layer);
-                break;
-            default:
-                LOG.info("Can't update capabilities of type:", layer.getType(),
-                        "layer id:", layer.getId(), "skipping!");
-                return;
-            }
-            layerService.update(layer);
-        } catch (ServiceException e) {
-            LOG.warn(e, "Failed to update capabilities of layer id:", layer.getId());
+        String type = layer.getType();
+        if (!OskariLayer.TYPE_WMS.equals(type)
+                && !OskariLayer.TYPE_WMTS.equals(type)) {
+            LOG.info("Can't update capabilities of type:", layer.getType(),
+                    "layer id:", layer.getId(), "skipping!");
         }
-    }
 
-    private void updateCapabilitiesWMS(OskariLayer layer)
-            throws ServiceException {
-        OskariLayerCapabilities caps = getCapabilities(layer);
-        OskariLayerCapabilitiesHelper.setPropertiesFromCapabilitiesWMS(caps, layer);
-    }
-
-    private void updateCapabilitiesWMTS(OskariLayer layer)
-            throws ServiceException {
         try {
             OskariLayerCapabilities caps = getCapabilities(layer);
-            OskariLayerCapabilitiesHelper.setPropertiesFromCapabilitiesWMTS(caps, layer, null);
-        } catch (Exception e) {
-            LOG.warn(e, "Failed to parse WMTS capabilities, layer: ", layer.getName());
+            if (OskariLayer.TYPE_WMS.equals(type)) {
+                OskariLayerCapabilitiesHelper.setPropertiesFromCapabilitiesWMS(caps, layer);
+            } else { // OskariLayer.TYPE_WMTS.equals(type)
+                OskariLayerCapabilitiesHelper.setPropertiesFromCapabilitiesWMTS(caps, layer, null);
+            }
+            layerService.update(layer);
+        } catch (ServiceException | XMLStreamException | IllegalArgumentException e) {
+            LOG.warn(e, "Failed to update capabilities of layer id:", layer.getId());
         }
-    }
-
-    private void updateCapabilitiesWFS(OskariLayer layer)
-            throws ServiceException {
-        OskariLayerCapabilitiesHelper.setPropertiesFromCapabilitiesWFS(layer);
     }
 
     private OskariLayerCapabilities getCapabilities(final OskariLayer layer)

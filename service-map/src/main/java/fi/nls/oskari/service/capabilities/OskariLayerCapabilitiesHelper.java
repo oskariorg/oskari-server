@@ -1,10 +1,10 @@
 package fi.nls.oskari.service.capabilities;
 
-import java.util.Map;
+import javax.xml.stream.XMLStreamException;
 
+import java.util.Map;
 import org.json.JSONArray;
 import org.json.JSONObject;
-
 import fi.mml.map.mapwindow.service.wms.WebMapService;
 import fi.mml.map.mapwindow.service.wms.WebMapServiceFactory;
 import fi.nls.oskari.domain.map.OskariLayer;
@@ -62,12 +62,9 @@ public class OskariLayerCapabilitiesHelper {
     }
 
     public static void setPropertiesFromCapabilitiesWMTS(OskariLayerCapabilities capabilities,
-            OskariLayer ml, String crs) throws Exception {
+            OskariLayer ml, String crs) throws IllegalArgumentException, XMLStreamException {
         // parse capabilities
-        WMTSCapabilities caps = new WMTSCapabilitiesParser().parseCapabilities(capabilities.getData());
-        if (caps == null) {
-            throw new ServiceException("Couldn't parse capabilities for service!");
-        }
+        WMTSCapabilities caps = WMTSCapabilitiesParser.parseCapabilities(capabilities.getData());
         WMTSCapabilitiesLayer layer = caps.getLayer(ml.getName());
         ResourceUrl resUrl = layer.getResourceUrlByType("tile");
         JSONObject options = ml.getOptions();

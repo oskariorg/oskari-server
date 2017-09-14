@@ -7,19 +7,12 @@ import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.util.AXIOMUtil;
 import org.apache.axiom.om.xpath.AXIOMXPath;
 import org.jaxen.NamespaceContext;
-
 import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import javax.xml.stream.XMLStreamException;
 
-/**
- * Created with IntelliJ IDEA.
- * User: SMAKINEN
- * Date: 26.3.2014
- * Time: 15:15
- * To change this template use File | Settings | File Templates.
- */
 public class XmlHelper {
 
     private static final Logger log = LogFactory.getLogger(XmlHelper.class);
@@ -89,15 +82,31 @@ public class XmlHelper {
         }
         return true;
     }
-    public static String getChildValue(final OMElement elem, final String localName) throws Exception {
+
+    /**
+     * Returns the text content of the first child element with the specified localName
+     * @see OMElement#getText()
+
+     * @param elem parent element
+     * @param localName to search
+     * @return the text content of the child element, null if not available
+     * @throws XMLStreamException if there is more than one matching element
+     */
+    public static String getChildValue(final OMElement elem, final String localName)
+            throws XMLStreamException {
         OMElement e = getChild(elem, localName);
-        if(e == null) {
-            return null;
-        }
-        return e.getText();
+        return e != null ? e.getText() : null;
     }
 
-    public static OMElement getChild(final OMElement elem, final String localName) throws Exception {
+    /**
+     * Returns the first child element with the specified localName
+     * @param elem parent element
+     * @param localName to search
+     * @return the child element, null if not available
+     * @throws XMLStreamException if there is more than one matching element
+     */
+    public static OMElement getChild(final OMElement elem, final String localName)
+            throws XMLStreamException {
         if(elem == null || localName == null) {
             return null;
         }
@@ -107,7 +116,7 @@ public class XmlHelper {
         }
         final OMElement result = it.next();
         if(it.hasNext()) {
-            throw new Exception("More than one element");
+            throw new XMLStreamException("More than one element with localName " + localName);
         }
         return result;
     }

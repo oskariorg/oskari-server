@@ -1,63 +1,55 @@
 package fi.nls.oskari.wmts.domain;
 
-import fi.nls.oskari.log.LogFactory;
-import fi.nls.oskari.log.Logger;
+import java.util.Collections;
+import java.util.stream.Collectors;
 import fi.nls.oskari.util.JSONHelper;
+import java.util.List;
+import java.util.Map;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.util.HashMap;
-import java.util.Map;
-
 /**
- * Created with IntelliJ IDEA.
- * User: SMAKINEN
- * Date: 6.6.2014
- * Time: 14:00
- * To change this template use File | Settings | File Templates.
+ * Immutable Java POJO presentation of <element name="TileMatrixSet">
+ * @see http://schemas.opengis.net/wmts/1.0/wmtsGetCapabilities_response.xsd
+ * Does not support BoundingBox and WellKnownScaleSet elements
  */
 public class TileMatrixSet {
 
-    private static final Logger log = LogFactory.getLogger(TileMatrixSet.class);
+    private final String id;
+    private final String crs;
+    private final Map<String, TileMatrix> tileMatrixMap;
 
-    private String id;
-    private String crs;
-    private Map<String, TileMatrix> tileMatrixMap = new HashMap<String, TileMatrix>();
+    public TileMatrixSet(String id, String crs, List<TileMatrix> tileMatrises)
+            throws IllegalArgumentException {
+        this.id = id;
+        this.crs = crs;
+        this.tileMatrixMap = Collections.unmodifiableMap(tileMatrises.stream()
+                .collect(Collectors.toMap(TileMatrix::getId, tm -> tm)));
+        validate();
+    }
+
+    private void validate() throws IllegalArgumentException {
+        if (this.id == null || id.isEmpty()) {
+            throw new IllegalArgumentException("Missing id");
+        }
+        if (this.crs == null || crs.isEmpty()) {
+            throw new IllegalArgumentException("Missing SupportedCrs");
+        }
+        if (this.tileMatrixMap == null || tileMatrixMap.isEmpty()) {
+            throw new IllegalArgumentException("Missing TileMatrix");
+        }
+    }
 
     public String getId() {
         return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
     }
 
     public String getCrs() {
         return crs;
     }
 
-    public void setCrs(String crs) {
-        this.crs = crs;
-    }
-
-    public void addTileMatrix(final TileMatrix matrix) {
-        if(matrix == null) {
-            return;
-        }
-        if(matrix.getId() == null || tileMatrixMap.get(matrix.getId()) != null) {
-            log.warn("TileMatrix already exists or id missing!!!", matrix);
-        }
-        else {
-            tileMatrixMap.put(matrix.getId(), matrix);
-        }
-    }
-
     public Map<String, TileMatrix> getTileMatrixMap() {
         return tileMatrixMap;
-    }
-
-    public void setTileMatrixMap(Map<String, TileMatrix> tileMatrixMap) {
-        this.tileMatrixMap = tileMatrixMap;
     }
 
     public JSONObject getAsJSON() {
