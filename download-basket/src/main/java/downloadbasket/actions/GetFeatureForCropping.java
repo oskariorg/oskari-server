@@ -17,6 +17,7 @@ import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.ActionHandler;
 import fi.nls.oskari.control.ActionParameters;
+import fi.nls.oskari.control.ActionParamsException;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
@@ -45,13 +46,16 @@ public class GetFeatureForCropping extends ActionHandler {
 	private static final String PARAM_SRS = "srs";
 	private static final String PARAM_ID = "id";
 
-	private static OskariLayerService mapLayerService;
+	private OskariLayerService mapLayerService;
 
 	@Override
 	public void handleAction(final ActionParameters params) throws ActionException {
-		OskariLayer oskariLayer = mapLayerService.find(params.getHttpParam(PARAM_ID));
-
-		if (oskariLayer != null) {
+		final int id = params.getRequiredParamInt(PARAM_ID);
+		final OskariLayer oskariLayer = mapLayerService.find(id);
+		if (oskariLayer == null) {
+		    throw new ActionParamsException("Layer not found, id: " + id);
+		}
+		
 			String url = oskariLayer.getUrl();
 
 			String wmsUrl = Helpers.getGetFeatureInfoUrlForProxy(url, params.getHttpParam(PARAM_SRS),
@@ -59,7 +63,7 @@ public class GetFeatureForCropping extends ActionHandler {
 					params.getHttpParam(PARAM_HEIGHT), params.getHttpParam(PARAM_X), params.getHttpParam(PARAM_Y),
 					params.getHttpParam(PARAM_LAYERS));
 
-			LOGGER.debug("Details of the data cropping feature");
+		LOGGER.debug("Details of the data cropping feature");
 			try {
 
 				HttpURLConnection con = IOHelper.getConnection(wmsUrl);
@@ -71,15 +75,12 @@ public class GetFeatureForCropping extends ActionHandler {
 				ResponseHelper.writeResponse(params, json);
 
 			} catch (JSONException e) {
-				throw new ActionException("Could not get cropping");
+				throw new ActionException("Could not get cropping:", e);
 			} catch (MalformedURLException e) {
-				throw new ActionException("Could not get cropping");
+				throw new ActionException("Could not get cropping:", e);
 			} catch (IOException e) {
-				throw new ActionException("Could not get cropping");
+				throw new ActionException("Could not get cropping:", e);
 			}
-		} else {
-			throw new ActionException("Could not get cropping");
-		}
 
 	}
 

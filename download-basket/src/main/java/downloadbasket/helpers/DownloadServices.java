@@ -35,7 +35,7 @@ public class DownloadServices {
 	public static final String WFS_USED_URL = "url";
 	public static final String WFS_FEATURETYPES = "featureTypes";
 	private final Logger LOGGER = LogFactory.getLogger(DownloadServices.class);
-	
+
 	private MessageSource messages;
 
 	/**
@@ -51,22 +51,23 @@ public class DownloadServices {
 	 *            load zip details
 	 * @return filename file name
 	 * @throws IOException
+	 * 
+	 *             Normal way download uses BBOX as the cropping method.
+	 *             Otherwise, filter plugin is used.
+	 * 
 	 */
 	public String loadZip(LoadZipDetails ldz, Locale locale) throws IOException {
 		String realFileName = "";
 		String returnFileName = "";
-		OutputStreamWriter writer = null;
 		HttpURLConnection conn = null;
-		InputStream istream = null;
-		OutputStream ostream = null;
 
 		try {
 			LOGGER.debug("WFS URL: " + ldz.getWFSUrl());
 
 			if (ldz.isDownloadNormalWay()) {
-				System.out.println("Download normal way");
+				LOGGER.debug("Download normal way");
 			} else {
-				System.out.println("Download plugin way");
+				LOGGER.debug("Download plugin way");
 			}
 
 			if (ldz.getGetFeatureInfoRequest().isEmpty()) {
@@ -84,23 +85,13 @@ public class DownloadServices {
 			conn.connect();
 
 			String filename = UUID.randomUUID().toString();
-			istream = conn.getInputStream();
-
 			String strTempDir = ldz.getTemporaryDirectory();
-
 			File dir0 = new File(strTempDir);
 			dir0.mkdirs();
 
-			ostream = new FileOutputStream(new File(dir0, filename + ".zip"));
-
-			final byte[] buffer = new byte[8 * 1024];
-
-			while (true) {
-				int len = istream.read(buffer);
-				if (len <= 0) {
-					break;
-				}
-				ostream.write(buffer, 0, len);
+			try (InputStream istream = conn.getInputStream();
+					OutputStream ostream = new FileOutputStream(new File(dir0, filename + ".zip"))) {
+				IOHelper.copy(istream, ostream);
 			}
 
 			if (!isValid(new File(dir0, filename + ".zip"))) {
@@ -115,16 +106,6 @@ public class DownloadServices {
 
 		} catch (Exception ex) {
 			LOGGER.error("Error: ", ex);
-		} finally {
-
-			IOHelper.close(writer);
-
-			if (conn != null) {
-				conn.disconnect();
-			}
-			IOHelper.close(istream);
-			IOHelper.close(ostream);
-
 		}
 		return returnFileName;
 	}

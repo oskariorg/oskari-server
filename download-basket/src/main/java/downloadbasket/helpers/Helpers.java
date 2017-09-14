@@ -33,24 +33,24 @@ public class Helpers {
 	 */
 	public static String getGetFeatureInfoUrlForProxy(String url, String projection, String bbox, String width,
 			String height, String x, String y, String layerName) {
-		Map<String,String> urlParams = new HashMap<String,String>();
-		urlParams.put("SERVICE","WMS");
-		urlParams.put("VERSION","1.1.1");
-		urlParams.put("REQUEST","GetFeatureInfo");
-		urlParams.put("SRS",projection);
-		urlParams.put("BBOX",bbox);
-		urlParams.put("WIDTH",width);
-		urlParams.put("HEIGHT",height);
-		urlParams.put("QUERY_LAYERS",layerName);
-		urlParams.put("X",Long.toString(Math.round(Float.parseFloat(x))));
-		urlParams.put("Y",Long.toString(Math.round(Float.parseFloat(y))));
-		urlParams.put("LAYERS",layerName);
-		urlParams.put("FEATURECOUNT","1");
-		urlParams.put("INFO_FORMAT","application/json");
-		urlParams.put("EXCEPTIONS","application/vnd.ogc.se_xml");
-		urlParams.put("BUFFER","0");
-		
-		return IOHelper.constructUrl(url,urlParams);
+		Map<String, String> urlParams = new HashMap<String, String>();
+		urlParams.put("SERVICE", "WMS");
+		urlParams.put("VERSION", "1.1.1");
+		urlParams.put("REQUEST", "GetFeatureInfo");
+		urlParams.put("SRS", projection);
+		urlParams.put("BBOX", bbox);
+		urlParams.put("WIDTH", width);
+		urlParams.put("HEIGHT", height);
+		urlParams.put("QUERY_LAYERS", layerName);
+		urlParams.put("X", Long.toString(Math.round(Float.parseFloat(x))));
+		urlParams.put("Y", Long.toString(Math.round(Float.parseFloat(y))));
+		urlParams.put("LAYERS", layerName);
+		urlParams.put("FEATURECOUNT", "1");
+		urlParams.put("INFO_FORMAT", "application/json");
+		urlParams.put("EXCEPTIONS", "application/vnd.ogc.se_xml");
+		urlParams.put("BUFFER", "0");
+
+		return IOHelper.constructUrl(url, urlParams);
 	}
 
 	/**

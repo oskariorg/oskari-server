@@ -12,8 +12,8 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 /**
- * Checks all download- and user details of the download basket when starting the download process.
- * Returns boolean "success".
+ * Checks all download- and user details of the download basket when starting
+ * the download process. Returns boolean "success".
  */
 
 @OskariActionRoute("DownloadInfo")
@@ -28,14 +28,14 @@ public class DownloadInfo extends ActionHandler {
 	public void handleAction(final ActionParameters params) throws ActionException {
 
 		JSONObject job = new JSONObject();
-		String downloadDetails = params.getHttpParam(PARAM_DOWNLOAD_DETAILS);
-		String strUserDetails = params.getHttpParam(PARAM_USER_DETAILS);
+		String downloadDetails = params.getRequiredParam(PARAM_DOWNLOAD_DETAILS);
+		String strUserDetails = params.getRequiredParam(PARAM_USER_DETAILS);
 
 		try {
 			JSONObject userDetails = new JSONObject(strUserDetails);
 			JSONArray ddArray = new JSONArray(downloadDetails);
-			new SendDownloadDetailsToEmailThread(ddArray, userDetails, params.getLocale()).start();
 			job.put("success", true);
+			new SendDownloadDetailsToEmailThread(ddArray, userDetails, params.getLocale()).run();
 		} catch (Exception e) {
 			throw new ActionException("Could not handle DownloadInfo request: ", e);
 		}

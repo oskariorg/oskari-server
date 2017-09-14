@@ -42,7 +42,7 @@ import com.sun.mail.smtp.SMTPTransport;
 /**
  * Send download details email service (thread).
  */
-public class SendDownloadDetailsToEmailThread extends Thread {
+public class SendDownloadDetailsToEmailThread implements Runnable {
 	JSONArray downLoadDetails;
 	JSONObject userDetails;
 	Locale locale;

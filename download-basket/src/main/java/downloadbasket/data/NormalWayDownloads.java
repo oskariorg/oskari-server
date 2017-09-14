@@ -16,9 +16,7 @@ public class NormalWayDownloads {
 	 * @param download
 	 */
 	public void addDownload(String download) {
-		if (!downloads.contains(download)) {
-			downloads.add(download);
-		}
+		downloads.add(download);
 	}
 
 	/**

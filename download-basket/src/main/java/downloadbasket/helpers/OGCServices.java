@@ -7,7 +7,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.StringWriter;
+import java.lang.StringBuilder;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
@@ -36,7 +36,7 @@ public class OGCServices {
 	 */
 	public static String getFilter(JSONObject downloadDetails, Boolean writeParam)
 			throws JSONException, UnsupportedEncodingException {
-		StringWriter s = new StringWriter();
+		StringBuilder s = new StringBuilder();
 
 		String[] bboxDownloadTypes = PropertyUtil.getCommaSeparatedList("oskari.wfs.bbox.downloads");
 		NormalWayDownloads normalDownloads = new NormalWayDownloads();
@@ -92,8 +92,8 @@ public class OGCServices {
 	public static String getPluginFilter(JSONObject download, boolean addNameSpaces, boolean writeParam)
 			throws JSONException {
 		JSONArray identifiers = new JSONArray(download.getString(PARAM_IDENTIFIERS));
-		StringWriter s = new StringWriter();
-		StringWriter filter = new StringWriter();
+		StringBuilder s = new StringBuilder();
+		StringBuilder filter = new StringBuilder();
 		String croppingNameSpace = PropertyUtil.get("oskari.wfs.cropping.namespace");
 
 		try {
@@ -172,16 +172,17 @@ public class OGCServices {
 	 */
 	public static String doGetFeatureUrl(String srs, JSONObject download, boolean addNameSpace) throws JSONException {
 		String getFeatureUrl = "";
-		StringWriter s = new StringWriter();
+		StringBuilder s = new StringBuilder();
 		s.append(PropertyUtil.get("download.basket.wfs.service.url"));
 
+		s.append("?SERVICE=wfs&version=1.0.0&request=GetFeature&srsName=");
+		s.append(srs);
+		s.append("&outputFormat=SHAPE-ZIP&typeNames=");
+
 		if (addNameSpace) {
-			s.append("?SERVICE=wfs&version=1.0.0&request=GetFeature&srsName=" + srs
-					+ "&outputFormat=SHAPE-ZIP&typeNames=" + download.getString(PARAM_LAYER));
+			s.append(download.getString(PARAM_LAYER));
 		} else {
-			s.append("?SERVICE=wfs&version=1.0.0&request=GetFeature&srsName=" + srs
-					+ "&outputFormat=SHAPE-ZIP&typeNames="
-					+ Helpers.getLayerNameWithoutNameSpace(download.getString(PARAM_LAYER)));
+			s.append(Helpers.getLayerNameWithoutNameSpace(download.getString(PARAM_LAYER)));
 		}
 		getFeatureUrl = s.toString();
 		return getFeatureUrl;
