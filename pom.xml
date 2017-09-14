@@ -44,7 +44,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <jdk.version>1.7</jdk.version>
+        <jdk.version>1.8</jdk.version>
         <fi.nls.oskari.version>${project.version}</fi.nls.oskari.version>
         <fi.nls.oskari.service.version>${project.version}</fi.nls.oskari.service.version>
 
@@ -74,17 +74,17 @@
         <staxon.version>1.2</staxon.version>
         <lambdaj.version>2.3.3</lambdaj.version>
         <kevinsawicki.http-request.version>4.0</kevinsawicki.http-request.version>
-        <jsoup.version>1.7.2</jsoup.version>
+        <jsoup.version>1.10.3</jsoup.version>
         <ibatis.version>2.3.4.726</ibatis.version>
-        <axiom.version>1.2.15</axiom.version>
+        <axiom.version>1.2.20</axiom.version>
         <commons-lang3.version>3.0</commons-lang3.version>
         <stax-api.version>1.0-2</stax-api.version>
         <stax2-api.version>3.1.4</stax2-api.version>
         <woodstox.version>5.0.1</woodstox.version>
         <jsonld-java.version>0.3</jsonld-java.version>
         <xmlunit.version>1.5</xmlunit.version>
-        <jedis.version>2.7.2</jedis.version>
-        <jackson.version>2.5.4</jackson.version>
+        <jedis.version>2.9.0</jedis.version>
+        <jackson.version>2.9.0</jackson.version>
 
         <fi.mml.capabilities.version>1.3.0</fi.mml.capabilities.version>
         <fi.mml.wms.version>1.1.1</fi.mml.wms.version>
@@ -92,7 +92,7 @@
 
         <jetty.version>9.1.0.M0</jetty.version>
 
-        <postgresql.version>9.3-1102-jdbc41</postgresql.version>
+        <postgresql.version>42.1.4</postgresql.version>
         <quartz-scheduler.version>2.2.1</quartz-scheduler.version>
 
         <xerces.version>2.10.0</xerces.version>
@@ -102,7 +102,7 @@
         <flexjson.version>2.0</flexjson.version>
         <deegree.version>2</deegree.version>
 
-        <mybatis.version>3.4.3</mybatis.version>
+        <mybatis.version>3.4.5</mybatis.version>
         <com.google.guava.version>18.0</com.google.guava.version>
         <!-- Test deps versions -->
         <powermock.version>1.5</powermock.version>
@@ -110,7 +110,7 @@
 
         <log4j.version>1.2.17</log4j.version>
         <slf4j.version>1.7.12</slf4j.version>
-        <metrics.version>3.1.0</metrics.version>
+        <metrics.version>3.2.4</metrics.version>
     </properties>
 
     <!-- Managed dependencies -->
@@ -176,8 +176,8 @@
                 <artifactId>oskari-control-admin</artifactId>
                 <version>${fi.nls.oskari.service.version}</version>
             </dependency>
-			
-			<dependency>
+
+            <dependency>
                 <groupId>fi.nls.oskari.service</groupId>
                 <artifactId>oskari-control-users</artifactId>
                 <version>${fi.nls.oskari.service.version}</version>
@@ -250,7 +250,7 @@
                 <version>${fi.nls.oskari.service.version}</version>
             </dependency>
 
-             <dependency>
+            <dependency>
                 <groupId>fi.nls.oskari.service</groupId>
                 <artifactId>service-datamodel</artifactId>
                 <version>${fi.nls.oskari.service.version}</version>
@@ -372,23 +372,12 @@
                 <artifactId>wms</artifactId>
                 <version>${fi.mml.wms.version}</version>
             </dependency>
-            
+
             <dependency>
-            	<groupId>org.oskari</groupId>
-            	<artifactId>webapp-print</artifactId>
-            	<version>${fi.nls.oskari.version}</version>
+                <groupId>org.oskari</groupId>
+                <artifactId>service-print</artifactId>
+                <version>${fi.nls.oskari.version}</version>
             </dependency>
-            <dependency>
-            	<groupId>org.oskari</groupId>
-            	<artifactId>servlet-print</artifactId>
-            	<version>${fi.nls.oskari.version}</version>
-            </dependency>
-            <dependency>
-            	<groupId>org.oskari</groupId>
-            	<artifactId>service-print</artifactId>
-            	<version>${fi.nls.oskari.version}</version>
-            </dependency>
-            
 
             <!-- Spring -->
             <dependency>
@@ -495,6 +484,16 @@
                 <groupId>io.dropwizard.metrics</groupId>
                 <artifactId>metrics-json</artifactId>
                 <version>${metrics.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>com.fasterxml.jackson.core</groupId>
+                        <artifactId>jackson-core</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>com.fasterxml.jackson.core</groupId>
+                        <artifactId>jackson-databind</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
 
             <dependency>
@@ -629,6 +628,11 @@
                 <groupId>redis.clients</groupId>
                 <artifactId>jedis</artifactId>
                 <version>${jedis.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-core</artifactId>
+                <version>${jackson.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
@@ -920,12 +924,12 @@
         </plugins>
     </build>
     <repositories>
-        <!-- In Project repository -->
+        <!-- In Project repository
         <repository>
             <id>in-project</id>
             <name>In Project Repo</name>
             <url>file://${project.basedir}/../external-libs/</url>
-        </repository>
+        </repository> -->
         <repository>
             <id>oskari_org</id>
             <name>Oskari.org repository</name>
@@ -965,6 +969,11 @@
             <name>Geo-solutions Maven Repository</name>
             <url>http://maven.geo-solutions.it</url>
         </repository>
+        <repository>
+            <id>boundless</id>
+            <name>Boundless Maven Repository</name>
+            <url>http://repo.boundlessgeo.com/main/</url>
+        </repository>
     </repositories>
 
     <!-- For uploading artifacts to oskari.org repository -->
@@ -996,6 +1005,39 @@
         </pluginRepository>
     </pluginRepositories>
 
+    <profiles>
+        <profile>
+            <id>owasp-check</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <!-- Requires Maven 3.1+ -->
+                        <groupId>org.owasp</groupId>
+                        <artifactId>dependency-check-maven</artifactId>
+                        <version>1.4.4</version>
+                        <configuration>
+                            <suppressionFile>owasp-dependency-check-suppressions.xml</suppressionFile>
+                        </configuration>
+
+                        <!-- version>2.1.1</version>
+                        <configuration>
+                            <suppressionFiles>
+                                <suppressionFile>owasp-dependency-check-suppressions.xml</suppressionFile>
+                            </suppressionFiles>
+                        </configuration -->
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <!--goal>check</goal -->
+                                    <goal>aggregate</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
     <modules>
         <!-- basic oskari map requirements -->
         <module>shared-test-resources</module>
@@ -1029,7 +1071,7 @@
         <module>control-admin</module>
         <module>content-resources</module>
         <module>control-routing</module>
-		<module>control-users</module>
+        <module>control-users</module>
 
         <!-- statistics -->
         <module>service-statistics-common</module>
@@ -1060,11 +1102,8 @@
         <module>service-feedback</module>
         <module>service-feedback-open311</module>
 
-        <module>service-capabilities-update</module>
         <!-- print -->
         <module>service-print</module>
-        <module>servlet-print</module>
-        <module>webapp-print</module>
     </modules>
 
 </project>

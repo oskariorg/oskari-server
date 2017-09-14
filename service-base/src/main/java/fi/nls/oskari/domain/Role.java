@@ -44,27 +44,19 @@ public class Role implements Serializable {
     }
 
     /**
-     * Deprecated - Use getAdminRole() instead.
-     * @return
-     */
-    @Deprecated
-    public static String getAdminRoleName() {
-        ADMIN_ROLE = getAdminRole();
-        if(ADMIN_ROLE == null) {
-            return PropertyUtil.get("oskari.user.role.admin", DEFAULT_ADMIN_ROLE_NAME).trim();
-        }
-        return getAdminRole().getName();
-    }
-
-    /**
      * Returns Admin role
      * @return
      */
     public static Role getAdminRole() {
         if(ADMIN_ROLE == null) {
             // default to Administrator
-            final String rolename = PropertyUtil.get("oskari.user.role.admin", DEFAULT_ADMIN_ROLE_NAME).trim();
+            final String rolename = PropertyUtil.get("oskari.user.role.admin", DEFAULT_ADMIN_ROLE_NAME);
             ADMIN_ROLE = getRoleByName(rolename);
+            if(ADMIN_ROLE == null) {
+                ADMIN_ROLE = new Role();
+                ADMIN_ROLE.setName(rolename);
+                log.warn("Admin role was not found, but was created and does not have id");
+            }
         }
         return ADMIN_ROLE;
     }
@@ -104,9 +96,11 @@ public class Role implements Serializable {
         this.name = name;
     }
 
+    /* deprecated
     public boolean isAdminRole() {
-        return (getAdminRoleName().equals(getName()));
+        return (getAdminRole().getName().equals(getName()));
     }
+    */
 
     public JSONObject toJSON() {
         try {

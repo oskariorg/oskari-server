@@ -18,7 +18,6 @@ import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.PropertyUtil;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.impl.builder.StAXOMBuilder;
-import org.geotools.referencing.CRS;
 
 import java.net.HttpURLConnection;
 import java.util.*;
@@ -236,7 +235,7 @@ public class MetadataCatalogueChannelSearchService extends SearchChannel {
 
             return WKTHelper.getBBOX(p1.getLon(), p1.getLat(), p2.getLon(), p2.getLat());
         } catch(Exception e){
-            log.error(e, "Cannot get BBOX");
+            log.error("Unable to transform BBOX WKT:", e.getMessage());
         }
         return null;
     }

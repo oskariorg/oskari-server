@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="fi.nls.oskari.user.UsersMapper">
+
+    <resultMap id="UsersResult" type="User">
+        <result property="id" column="id" />
+        <result property="firstname" column="first_name" />
+        <result property="lastname" column="last_name" />
+        <result property="email" column="email" />
+        <result property="uuid" column="uuid" />
+        <result property="screenname" column="user_name" />
+        <result property="attributes" column="attributes" />
+    </resultMap>
+
+    <insert id="addUser" parameterType="User" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+        INSERT INTO oskari_users (
+            first_name,
+            last_name,
+            user_name,
+            email,
+            uuid,
+            attributes
+        )
+        VALUES (
+            #{firstname},
+            #{lastname},
+            #{screenname},
+            #{email},
+            #{uuid},
+            #{attributes}
+        )
+    </insert>
+
+    <update id="updateUser" parameterType="User">
+        update
+        oskari_users set
+        first_name = #{firstname},
+        last_name = #{lastname},
+        user_name = #{screenname},
+        email = #{email},
+        attributes = #{attributes}
+        where id = #{id}
+    </update>
+
+    <select id="findAll" resultMap="UsersResult">
+        select id, first_name, last_name, user_name, email, uuid, attributes from oskari_users order by user_name
+    </select>
+
+    <select id="find" parameterType="Long" resultMap="UsersResult">
+        select id, first_name, last_name, user_name, email, uuid, attributes from oskari_users where id = #{id}
+    </select>
+
+    <select id="findByUserName" parameterType="String" resultMap="UsersResult">
+        select id, user_name, first_name, last_name, email, uuid, attributes from oskari_users where user_name = #{id}
+    </select>
+
+    <select id="findByEmail" parameterType="String" resultMap="UsersResult">
+        select id, user_name, first_name, last_name, email, uuid, attributes from oskari_users where LOWER(email) = #{email}
+    </select>
+
+    <select id="login" parameterType="java.util.HashMap" resultType="String">
+        select login
+        from oskari_jaas_users
+        where login = #{username} AND password=#{password}
+    </select>
+
+    <select id="getPassword" parameterType="java.util.HashMap" resultType="String">
+        select password
+        from oskari_jaas_users
+        where login = #{username}
+    </select>
+
+    <insert id="setPassword" parameterType="java.util.HashMap">
+        INSERT INTO oskari_jaas_users (
+            password,
+            login
+        )
+        VALUES (
+            #{password},
+            #{username}
+        )
+    </insert>
+
+    <update id="updatePassword" parameterType="java.util.HashMap">
+        update oskari_jaas_users
+        set password = #{password}
+        where login = #{username}
+    </update>
+
+    <delete id="deletePassword" parameterType="java.util.HashMap">
+        delete from oskari_jaas_users where login = #{username}
+    </delete>
+
+    <delete id="delete" parameterType="Long">
+        delete from oskari_users where id = #{id}
+    </delete>
+</mapper>

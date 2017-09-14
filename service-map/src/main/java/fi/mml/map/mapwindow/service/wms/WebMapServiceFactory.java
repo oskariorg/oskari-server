@@ -104,11 +104,9 @@ public class WebMapServiceFactory {
 	 * @return
 	 */
 	public static boolean isVersion1_1_1(String data) {
-        if (data.contains("version=\"1.1.1\"")) {
-			return true;
-		} else {
-            return data.contains("WMT_MS_Capabilities updateSequence=\"1\" version=\"1.1.1\"");
-        }
+        return data != null &&
+                data.contains("WMT_MS_Capabilities") &&
+                data.contains("version=\"1.1.1\"");
 	}
 
 	/**
@@ -118,9 +116,9 @@ public class WebMapServiceFactory {
 	 * @return
 	 */
 	public static boolean isVersion1_3_0(String data) {
-        return data.contains("version=\"1.3.0\"");
+        return data != null &&
+                data.contains("WMS_Capabilities") &&
+                data.contains("version=\"1.3.0\"");
 	}
-
-
 
 }

@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="fi.nls.oskari.ontology.service.KeywordRelationMapper">
+
+    <resultMap id="relation" type="Relation">
+        <result property="keyid1"   column="keyid1" />
+        <result property="keyid2"   column="keyid2" />
+        <result property="type"     column="type" javaType="fi.nls.oskari.ontology.domain.RelationType" />
+    </resultMap>
+
+    <insert id="insert" parameterType="Relation" keyProperty="keyId1" keyColumn="keyId1">
+        INSERT INTO
+        portti_keyword_association (
+            keyid1,
+            keyid2,
+            type
+        )
+        VALUES  ( #{keyid1},
+        #{keyid2},
+        #{type})
+    </insert>
+
+    <select id="getRelation"
+            parameterType="Relation"
+            resultMap="relation">
+        SELECT
+            ka.keyid1,
+            ka.keyid2,
+            ka.type
+        FROM
+            portti_keyword_association ka
+        WHERE
+            ka.keyid1 = #{keyid1} AND
+            ka.keyid2 = #{keyid2} AND
+            ka.type = #{type}
+    </select>
+
+    <select id="getRelationsForKeyword"
+            parameterType="java.lang.Long"
+            resultMap="relation">
+        SELECT
+            ka.keyid1,
+            ka.keyid2,
+            ka.type
+        FROM
+            portti_keyword_association ka
+        WHERE
+            ka.keyid1 = #{keyid1}
+        ORDER BY
+            type, keyid2
+    </select>
+
+    <select id="getRelationsByTypeForKeyword" resultMap="relation" parameterType="Relation">
+        SELECT
+            ka.keyid1,
+            ka.keyid2,
+            ka.type
+        FROM
+            portti_keyword_association ka
+        WHERE
+            ka.keyid1 = #{keyid1} AND
+            ka.type = #{type}
+        ORDER BY
+            ka.keyid2
+    </select>
+
+    <delete id="deleteAllRelations">
+        DELETE
+        FROM
+        portti_keyword_association
+    </delete>
+
+</mapper>

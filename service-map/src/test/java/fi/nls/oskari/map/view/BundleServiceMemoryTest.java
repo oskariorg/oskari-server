@@ -1,16 +1,12 @@
 package fi.nls.oskari.map.view;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
-import java.util.List;
-
+import fi.nls.oskari.domain.map.view.Bundle;
 import org.junit.Before;
 import org.junit.Test;
 
-import fi.nls.oskari.domain.map.view.Bundle;
+import java.util.List;
+
+import static org.junit.Assert.*;
 
 public class BundleServiceMemoryTest {
 

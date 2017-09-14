@@ -19,17 +19,13 @@ PUBLIC "-//ibatis.apache.org//DTD SQL Map Config 2.0//EN"
   </transactionManager>
 
   <sqlMap resource="META-INF/InspireTheme.xml" />
-  <sqlMap resource="META-INF/Users.xml" />
-  <sqlMap resource="META-INF/Roles.xml" />
   <sqlMap resource="META-INF/Permissions.xml" />
   <sqlMap resource="META-INF/PublishedMapUsage.xml" />
   <sqlMap resource="META-INF/TermsOfUse.xml" />
   <sqlMap resource="META-INF/View.xml" />
   <sqlMap resource="META-INF/Bundle.xml" />
-  <sqlMap resource="META-INF/BackendStatus.xml" />
   <sqlMap resource="META-INF/PublishedMap.xml" />
   <sqlMap resource="META-INF/WFSLayerConfiguration.xml" />
-  <sqlMap resource="META-INF/Keyword.xml" />
   <sqlMap resource="META-INF/UserIndicator.xml" />
   <sqlMap resource="META-INF/OskariLayer.xml" />
   <sqlMap resource="META-INF/LayerGroup.xml" />

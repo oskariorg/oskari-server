@@ -1,21 +1,13 @@
 package fi.nls.oskari.map.view;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-
 import fi.nls.oskari.domain.Role;
 import fi.nls.oskari.domain.User;
 import fi.nls.oskari.domain.map.view.Bundle;
 import fi.nls.oskari.domain.map.view.View;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.map.view.DeleteViewException;
-import fi.nls.oskari.map.view.ViewException;
-import fi.nls.oskari.map.view.ViewService;
+
+import java.util.*;
 
 /**
  * Not thread-safe implementation of ViewService

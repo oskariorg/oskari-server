@@ -1,0 +1,7 @@
+<fes:Filter xmlns:fes="http://www.opengis.net/fes/2.0" xmlns:iso19112="http://www.isotc211.org/19112" xmlns:gmdsf1="http://www.isotc211.org/2005/gmdsf1">
+    <fes:PropertyIsEqualTo matchCase="true">
+        <fes:ValueReference>iso19112:administrator/gmdsf1:CI_ResponsibleParty/gmdsf1:organizationName
+        </fes:ValueReference>
+        <fes:Literal>National Land Survey of Finland</fes:Literal>
+    </fes:PropertyIsEqualTo>
+</fes:Filter>

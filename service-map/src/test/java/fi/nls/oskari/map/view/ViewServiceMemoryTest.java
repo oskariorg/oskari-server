@@ -1,13 +1,12 @@
 package fi.nls.oskari.map.view;
 
-import static org.junit.Assert.*;
-
-import java.util.List;
-
+import fi.nls.oskari.domain.map.view.View;
 import org.junit.Before;
 import org.junit.Test;
 
-import fi.nls.oskari.domain.map.view.View;
+import java.util.List;
+
+import static org.junit.Assert.*;
 
 public class ViewServiceMemoryTest {
 

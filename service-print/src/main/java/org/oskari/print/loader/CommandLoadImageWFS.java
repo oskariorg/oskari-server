@@ -5,26 +5,21 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
 
-import org.oskari.print.PrintLayer;
-import org.oskari.print.Tile;
+import org.oskari.print.request.PrintLayer;
+import org.oskari.print.request.PrintTile;
 
-import com.netflix.hystrix.HystrixCommand;
-
-public class CommandLoadImageWFS extends HystrixCommand<BufferedImage> {
+public class CommandLoadImageWFS extends CommandLoadImageBase {
 
     private final PrintLayer layer;
     private final int width;
     private final int height;
     private final double[] bbox;
 
-    public CommandLoadImageWFS(final Setter config, 
-            final PrintLayer layer, 
-            final int width, 
-            final int height, 
-            final double[] bbox) {
-        super(config);
+    public CommandLoadImageWFS(PrintLayer layer,
+                               int width,
+                               int height,
+                               double[] bbox) {
         this.layer = layer;
         this.width = width;
         this.height = height;
@@ -33,12 +28,12 @@ public class CommandLoadImageWFS extends HystrixCommand<BufferedImage> {
 
     @Override
     public BufferedImage run() throws Exception {
-        final Tile[] tiles = layer.getTiles();
+        final PrintTile[] tiles = layer.getTiles();
         final List<Future<BufferedImage>> images = new ArrayList<>(tiles.length);
 
         for (int i = 0; i < tiles.length; i++) {
             String url = tiles[i].getURL();
-            images.add(new CommandLoadImageFromURL(commandGroup, url).queue());
+            images.add(new CommandLoadImageFromURL(url).queue());
         }
 
         final double x1 = bbox[0];
@@ -51,7 +46,7 @@ public class CommandLoadImageWFS extends HystrixCommand<BufferedImage> {
         Graphics2D g2d = canvas.createGraphics();
 
         for (int i = 0; i < tiles.length; i++) {
-            Tile tile = tiles[i];
+            PrintTile tile = tiles[i];
 
             double[] tileBbox = tile.getBbox();
             // Flip y-axis, BufferedImages (0,0) is at top left
@@ -60,7 +55,7 @@ public class CommandLoadImageWFS extends HystrixCommand<BufferedImage> {
             int dx2 = getPt(tileBbox[2], x1, distanceWidth, width);
             int dy2 = getPt(tileBbox[1], y1, distanceHeight, height);
 
-            BufferedImage img = images.get(i).get(5L, TimeUnit.SECONDS);
+            BufferedImage img = images.get(i).get();
             g2d.drawImage(img, dx1, dy1, dx2, dy2, 0, 0, img.getWidth(), img.getHeight(), null);
         }
 

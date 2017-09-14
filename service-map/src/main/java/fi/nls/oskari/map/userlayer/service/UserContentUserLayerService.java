@@ -9,21 +9,12 @@ import fi.nls.oskari.service.db.UserContentService;
 
 @Oskari("userlayer")
 public class UserContentUserLayerService extends UserContentService {
-
-    private UserLayerDbService userLayerService = null;
-
-    @Override
-    public void init() {
-        super.init();
-        if(DatasourceHelper.isModuleEnabled(getName())) {
-            userLayerService = OskariComponentManager.getComponentOfType(UserLayerDbService.class);
-        }
-    }
-
+    
     public void deleteUserContent(User user) throws ServiceException {
         if(!DatasourceHelper.isModuleEnabled(getName())) {
             return;
         }
+        UserLayerDbService userLayerService = OskariComponentManager.getComponentOfType(UserLayerDbService.class);
         userLayerService.deleteUserLayersByUuid(user.getUuid());
     }
 }
