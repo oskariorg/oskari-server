@@ -4,7 +4,6 @@ import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.map.layer.formatters.LayerJSONFormatterWMS;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.wms.WMSStyle;
-import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import org.json.JSONArray;
@@ -28,31 +27,26 @@ public class WMTSCapabilitiesLayer {
             List<TileMatrixLink> links) {
         this.id = id;
         this.title = title;
-        this.styles = Collections.unmodifiableList(styles);
+        this.styles = styles;
         this.defaultStyle = defaultStyle;
-        this.formats = Collections.unmodifiableSet(formats);
-        this.infoFormats = Collections.unmodifiableSet(infoFormats);
-        this.resourceUrls = Collections.unmodifiableList(resourceUrls);
-        this.links = Collections.unmodifiableList(links);
+        this.formats = formats;
+        this.infoFormats = infoFormats;
+        this.resourceUrls = resourceUrls;
+        this.links = links;
     }
-
 
     public List<ResourceUrl> getResourceUrls() {
         return resourceUrls;
     }
 
-    public void addResourceUrl(ResourceUrl url) {
-        getResourceUrls().add(url);
-    }
     public ResourceUrl getResourceUrlByType(final String type) {
-        for(ResourceUrl url : resourceUrls) {
-            if(url.getType().equalsIgnoreCase(type)) {
+        for (ResourceUrl url : resourceUrls) {
+            if (url.getType().equalsIgnoreCase(type)) {
                 return url;
             }
         }
         return null;
     }
-
 
     public boolean isQueryable() {
         return infoFormats.size() > 0;

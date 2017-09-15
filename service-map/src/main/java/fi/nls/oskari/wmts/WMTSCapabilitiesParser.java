@@ -35,7 +35,10 @@ public class WMTSCapabilitiesParser {
     public static WMTSCapabilities parseCapabilities(String xml)
             throws IllegalArgumentException, XMLStreamException {
         OMElement doc = XmlHelper.parseXML(xml);
-        return doc != null ? parseCapabilities(doc) : null;
+        if (doc == null) {
+            throw new XMLStreamException("Failed to parse XML");
+        }
+        return parseCapabilities(doc);
     }
 
     public static WMTSCapabilities parseCapabilities(InputStream in)

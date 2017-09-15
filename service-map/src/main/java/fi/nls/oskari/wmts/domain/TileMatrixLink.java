@@ -1,6 +1,5 @@
 package fi.nls.oskari.wmts.domain;
 
-import java.util.Collections;
 import java.util.List;
 
 public class TileMatrixLink {
@@ -10,7 +9,7 @@ public class TileMatrixLink {
 
     public TileMatrixLink(TileMatrixSet tms, List<TileMatrixLimits> limits) {
         this.tms = tms;
-        this.limits = limits != null ? Collections.unmodifiableList(limits) : null;
+        this.limits = limits;
     }
 
     public TileMatrixSet getTileMatrixSet() {

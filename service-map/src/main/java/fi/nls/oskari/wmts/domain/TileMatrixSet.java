@@ -1,10 +1,9 @@
 package fi.nls.oskari.wmts.domain;
 
-import java.util.Collections;
-import java.util.stream.Collectors;
 import fi.nls.oskari.util.JSONHelper;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -23,8 +22,8 @@ public class TileMatrixSet {
             throws IllegalArgumentException {
         this.id = id;
         this.crs = crs;
-        this.tileMatrixMap = Collections.unmodifiableMap(tileMatrises.stream()
-                .collect(Collectors.toMap(TileMatrix::getId, tm -> tm)));
+        this.tileMatrixMap = tileMatrises.stream()
+                .collect(Collectors.toMap(TileMatrix::getId, tm -> tm));
         validate();
     }
 

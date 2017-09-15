@@ -1,8 +1,6 @@
 package fi.nls.oskari.wmts.domain;
 
 import java.util.Collection;
-
-import java.util.Collections;
 import java.util.Map;
 
 public class WMTSCapabilities {
@@ -12,8 +10,8 @@ public class WMTSCapabilities {
 
     public WMTSCapabilities(Map<String, TileMatrixSet> tileMatrixSets,
             Map<String, WMTSCapabilitiesLayer> layers) {
-        this.tileMatrixSets = Collections.unmodifiableMap(tileMatrixSets);
-        this.layers = Collections.unmodifiableMap(layers);
+        this.tileMatrixSets = tileMatrixSets;
+        this.layers = layers;
     }
 
     public Collection<TileMatrixSet> getTileMatrixSets() {

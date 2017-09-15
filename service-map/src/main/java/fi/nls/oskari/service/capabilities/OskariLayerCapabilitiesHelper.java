@@ -80,7 +80,7 @@ public class OskariLayerCapabilitiesHelper {
         crs = crs != null ? crs : ml.getSrs_name();
         ml.setTileMatrixSetId(LayerJSONFormatterWMTS.getTileMatrixSetId(jscaps, crs));
 
-        ml.setSupportedCRSs(LayerJSONFormatterWMTS.getCRSs(caps, layer));
+        ml.setSupportedCRSs(LayerJSONFormatterWMTS.getCRSs(layer));
     }
 
     public static void setPropertiesFromCapabilitiesWFS(OskariLayer ml) {
