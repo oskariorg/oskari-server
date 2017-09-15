@@ -1,5 +1,7 @@
 package org.oskari.capabilities;
 
+import fi.nls.oskari.util.PropertyUtil;
+
 import fi.mml.map.mapwindow.service.wms.WebMapService;
 import fi.nls.oskari.annotation.Oskari;
 import fi.nls.oskari.domain.map.OskariLayer;
@@ -34,17 +36,20 @@ import javax.xml.stream.XMLStreamException;
 public class UpdateCapabilitiesJob extends ScheduledJob {
 
     private static final Logger LOG = LogFactory.getLogger(UpdateCapabilitiesJob.class);
-
+    private static final String PROP_MAX_AGE = "oskari.scheduler.job.UpdateCapabilitiesJob.maxAge";
+    
     private final OskariLayerService layerService;
     private final CapabilitiesCacheService capabilitiesService;
-    private final long maxAge;
+    private final int maxAge;
 
     public UpdateCapabilitiesJob() {
-        this(new OskariLayerServiceIbatisImpl(), new CapabilitiesCacheServiceMybatisImpl(), 0L);
+        this(new OskariLayerServiceIbatisImpl(), 
+                new CapabilitiesCacheServiceMybatisImpl(),
+                PropertyUtil.getOptional(PROP_MAX_AGE, 0));
     }
 
     public UpdateCapabilitiesJob(OskariLayerService layerService,
-            CapabilitiesCacheService capabilitiesService, long maxAge) {
+            CapabilitiesCacheService capabilitiesService, int maxAge) {
         this.layerService = layerService;
         this.capabilitiesService = capabilitiesService;
         this.maxAge = maxAge;
