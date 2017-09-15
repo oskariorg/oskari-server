@@ -1,7 +1,6 @@
 package fi.nls.oskari.wmts;
 
 import fi.nls.oskari.wmts.domain.TileMatrixLink;
-
 import fi.nls.oskari.map.geometry.ProjectionHelper;
 import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.JSONHelper;
@@ -236,13 +235,13 @@ public class WMTSCapabilitiesParser {
 
         List<TileMatrixLimits> limits = new ArrayList<>();
 
-        Map<String, TileMatrix> tileMatrises = tms.getTileMatrixMap();
+        Map<String, TileMatrix> tileMatrices = tms.getTileMatrixMap();
 
         Iterator<OMElement> it = eTMSLimits.getChildrenWithLocalName("TileMatrixLimits");
         while (it.hasNext()) {
             OMElement e = it.next();
             String ref = XmlHelper.getChildValue(e, "TileMatrix");
-            TileMatrix tm = tileMatrises.get(ref);
+            TileMatrix tm = tileMatrices.get(ref);
             if (tm == null) {
                 throw new XMLStreamException("Referred TileMatrix " + ref
                         + " does not appear in specified TileMatrixSet " + tms.getId());
@@ -301,7 +300,7 @@ public class WMTSCapabilitiesParser {
             String tmsCrs = tms.getCrs();
             String epsg = ProjectionHelper.shortSyntaxEpsg(tmsCrs);
             if (currentCrs.equals(epsg)) {
-                return tmsCrs;
+                return tms.getId();
             }
         }
         return null;

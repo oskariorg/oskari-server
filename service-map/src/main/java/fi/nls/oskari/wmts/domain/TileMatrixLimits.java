@@ -1,9 +1,14 @@
 package fi.nls.oskari.wmts.domain;
 
+import fi.nls.oskari.log.LogFactory;
+import fi.nls.oskari.log.Logger;
+
 /**
  * @see http://schemas.opengis.net/wmts/1.0/wmtsGetCapabilities_response.xsd
  */
 public class TileMatrixLimits {
+
+    private static Logger LOG = LogFactory.getLogger(TileMatrixLimits.class);
 
     private final TileMatrix tm;
     private final int minTileRow;
@@ -12,7 +17,7 @@ public class TileMatrixLimits {
     private final int maxTileCol;
 
     public TileMatrixLimits(TileMatrix tm, int minTileRow, int maxTileRow,
-            int minTileCol, int maxTileCol) throws IllegalArgumentException {
+            int minTileCol, int maxTileCol) {
         this.tm = tm;
         this.minTileRow = minTileRow;
         this.maxTileRow = maxTileRow;
@@ -21,24 +26,28 @@ public class TileMatrixLimits {
         validate();
     }
 
-    private void validate() throws IllegalArgumentException {
+    /**
+     * Just log as warnings instead of throwing exceptions for now
+     * TODO: Don't accept invalid values
+     */
+    private void validate() {
         if (minTileRow < 0) {
-            throw new IllegalArgumentException("Negative MinTileRow");
+            LOG.warn(tm.getId(), "Negative MinTileRow");
         }
         if (maxTileRow >= tm.getMatrixWidth()) {
-            throw new IllegalArgumentException("MaxTileRow must be < MatrixWidth");
+            LOG.warn(tm.getId(), "MaxTileRow must be < MatrixWidth");
         }
         if (minTileRow > maxTileRow) {
-            throw new IllegalArgumentException("MinTileRow must be < MaxTileRow");
+            LOG.warn(tm.getId(), "MinTileRow must be < MaxTileRow");
         }
         if (minTileCol < 0) {
-            throw new IllegalArgumentException("Negative MinTileCol");
+            LOG.warn(tm.getId(), "Negative MinTileCol");
         }
         if (maxTileCol >= tm.getMatrixHeight()) {
-            throw new IllegalArgumentException("MaxTileCol must be < MatrixHeight");
+            LOG.warn(tm.getId(), "MaxTileCol must be < MatrixHeight");
         }
         if (minTileCol > maxTileCol) {
-            throw new IllegalArgumentException("MinTileCol must be < MaxTileCol");
+            LOG.warn(tm.getId(), "MinTileCol must be < MaxTileCol");
         }
     }
 

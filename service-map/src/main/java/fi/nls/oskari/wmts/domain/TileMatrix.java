@@ -17,8 +17,7 @@ public class TileMatrix {
     private final int matrixHeight;
 
     public TileMatrix(String id, double scaleDenominator, double[] topLeftCorner,
-            int tileWidth, int tileHeight, int matrixWidth, int matrixHeight)
-                    throws IllegalArgumentException {
+            int tileWidth, int tileHeight, int matrixWidth, int matrixHeight) {
         this.id = id;
         this.scaleDenominator = scaleDenominator;
         this.topLeftCorner = topLeftCorner;

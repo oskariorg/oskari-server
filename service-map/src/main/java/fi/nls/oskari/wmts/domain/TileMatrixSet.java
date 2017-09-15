@@ -18,11 +18,11 @@ public class TileMatrixSet {
     private final String crs;
     private final Map<String, TileMatrix> tileMatrixMap;
 
-    public TileMatrixSet(String id, String crs, List<TileMatrix> tileMatrises)
+    public TileMatrixSet(String id, String crs, List<TileMatrix> tileMatrices)
             throws IllegalArgumentException {
         this.id = id;
         this.crs = crs;
-        this.tileMatrixMap = tileMatrises.stream()
+        this.tileMatrixMap = tileMatrices.stream()
                 .collect(Collectors.toMap(TileMatrix::getId, tm -> tm));
         validate();
     }
