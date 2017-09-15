@@ -1,9 +1,9 @@
 package fi.nls.oskari.control.layer;
 
 import fi.nls.oskari.service.capabilities.OskariLayerCapabilities;
-
 import fi.mml.map.mapwindow.service.db.InspireThemeService;
 import fi.mml.map.mapwindow.service.db.MaplayerProjectionService;
+import fi.mml.map.mapwindow.service.wms.WebMapService;
 import fi.mml.map.mapwindow.util.OskariLayerWorker;
 import fi.mml.portti.domain.permissions.Permissions;
 import fi.mml.portti.service.db.permissions.PermissionsService;
@@ -27,6 +27,8 @@ import fi.nls.oskari.service.capabilities.OskariLayerCapabilitiesHelper;
 import fi.nls.oskari.util.*;
 import fi.nls.oskari.wfs.WFSLayerConfigurationService;
 import fi.nls.oskari.wfs.util.WFSParserConfigs;
+import fi.nls.oskari.wmts.WMTSCapabilitiesParser;
+import fi.nls.oskari.wmts.domain.WMTSCapabilities;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import javax.servlet.http.HttpServletRequest;
@@ -496,8 +498,9 @@ public class SaveLayerHandler extends ActionHandler {
         ml.setGfiType(params.getHttpParam("gfiType", ml.getGfiType()));
 
         try {
-            OskariLayerCapabilities caps = capabilitiesService.getCapabilities(ml, true);
-            OskariLayerCapabilitiesHelper.setPropertiesFromCapabilitiesWMS(caps, ml);
+            OskariLayerCapabilities raw = capabilitiesService.getCapabilities(ml, true);
+            WebMapService wms = OskariLayerCapabilitiesHelper.parseWMSCapabilities(raw.getData(), ml);
+            OskariLayerCapabilitiesHelper.setPropertiesFromCapabilitiesWMS(wms, ml);
             return true;
         } catch (ServiceException ex) {
             LOG.error(ex, "Couldn't update capabilities for layer", ml);
@@ -508,7 +511,8 @@ public class SaveLayerHandler extends ActionHandler {
     private boolean handleWMTSSpecific(final ActionParameters params, OskariLayer ml) {
         try {
             String currentCrs = params.getHttpParam(PARAM_SRS_NAME, ml.getSrs_name());
-            OskariLayerCapabilities caps = capabilitiesService.getCapabilities(ml, true);
+            OskariLayerCapabilities raw = capabilitiesService.getCapabilities(ml, true);
+            WMTSCapabilities caps = WMTSCapabilitiesParser.parseCapabilities(raw.getData());
             OskariLayerCapabilitiesHelper.setPropertiesFromCapabilitiesWMTS(caps, ml, currentCrs);
             return true;
         } catch (Exception ex) {

@@ -149,11 +149,8 @@ public class LayerJSONFormatterWMS extends LayerJSONFormatter {
     }
 
     public static JSONObject createCapabilitiesJSON(final WebMapService wms) {
-
         JSONObject capabilities = new JSONObject();
-        if(wms == null) {
-            return capabilities;
-        }
+
         JSONHelper.putValue(capabilities, KEY_ISQUERYABLE, wms.isQueryable());
         List<JSONObject> styles = LayerJSONFormatterWMS.createStylesArray(wms);
         JSONHelper.putValue(capabilities, KEY_STYLES, new JSONArray(styles));
@@ -162,6 +159,7 @@ public class LayerJSONFormatterWMS extends LayerJSONFormatter {
         JSONHelper.putValue(capabilities, KEY_FORMATS, formats);
         JSONHelper.putValue(capabilities, KEY_VERSION, wms.getVersion());
         capabilities = JSONHelper.merge(capabilities, LayerJSONFormatterWMS.formatTime(wms.getTime()));
+
         return capabilities;
     }
 
