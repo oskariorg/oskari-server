@@ -53,7 +53,7 @@ public class V1_35_5__update_layer_WMTS_matrixes implements JdbcMigration {
                 if (parsed != null) {
                     WMTSCapabilitiesLayer capsLayer = parsed.getLayer(layer.getName());
                     if (capsLayer != null) {
-                        JSONObject jscaps = LayerJSONFormatterWMTS.createCapabilitiesJSON(parsed, capsLayer);
+                        JSONObject jscaps = LayerJSONFormatterWMTS.createCapabilitiesJSON(capsLayer);
                         if (jscaps != null) {
                             updateCapabilities(layer.getId(), jscaps, connection);
                         }else {

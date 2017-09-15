@@ -1,11 +1,10 @@
 package fi.nls.oskari.service.capabilities;
 
-import java.sql.Timestamp;
-
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.service.capabilities.CapabilitiesCacheService;
 import fi.nls.oskari.service.capabilities.OskariLayerCapabilities;
+import java.sql.Timestamp;
 
 public class CapabilitiesCacheServiceMock extends CapabilitiesCacheService {
 

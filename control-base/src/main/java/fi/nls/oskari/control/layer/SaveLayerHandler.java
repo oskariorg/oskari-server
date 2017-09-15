@@ -1,6 +1,6 @@
 package fi.nls.oskari.control.layer;
 
-import fi.nls.oskari.service.capabilities.OskariLayerCapabilitiesHelper;
+import fi.nls.oskari.service.capabilities.OskariLayerCapabilities;
 
 import fi.mml.map.mapwindow.service.db.InspireThemeService;
 import fi.mml.map.mapwindow.service.db.MaplayerProjectionService;
@@ -23,6 +23,7 @@ import fi.nls.oskari.map.layer.OskariLayerService;
 import fi.nls.oskari.permission.domain.Permission;
 import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.service.capabilities.CapabilitiesCacheService;
+import fi.nls.oskari.service.capabilities.OskariLayerCapabilitiesHelper;
 import fi.nls.oskari.util.*;
 import fi.nls.oskari.wfs.WFSLayerConfigurationService;
 import fi.nls.oskari.wfs.util.WFSParserConfigs;
@@ -486,10 +487,8 @@ public class SaveLayerHandler extends ActionHandler {
 
     }
 
-    private boolean handleWMSSpecific(final ActionParameters params, OskariLayer ml) throws ActionException {
-
-        HttpServletRequest request = params.getRequest();
-        final String xslt = request.getParameter("xslt");
+    private boolean handleWMSSpecific(final ActionParameters params, OskariLayer ml) {
+        final String xslt = params.getHttpParam("xslt");
         if(xslt != null) {
             // TODO: some validation of XSLT data
             ml.setGfiXslt(xslt);
@@ -497,7 +496,8 @@ public class SaveLayerHandler extends ActionHandler {
         ml.setGfiType(params.getHttpParam("gfiType", ml.getGfiType()));
 
         try {
-            OskariLayerCapabilitiesHelper.setPropertiesFromCapabilitiesWMS(capabilitiesService.getCapabilities(ml, true), ml);
+            OskariLayerCapabilities caps = capabilitiesService.getCapabilities(ml, true);
+            OskariLayerCapabilitiesHelper.setPropertiesFromCapabilitiesWMS(caps, ml);
             return true;
         } catch (ServiceException ex) {
             LOG.error(ex, "Couldn't update capabilities for layer", ml);
@@ -505,10 +505,11 @@ public class SaveLayerHandler extends ActionHandler {
         }
     }
 
-    private boolean handleWMTSSpecific(final ActionParameters params, OskariLayer ml) throws ActionException {
+    private boolean handleWMTSSpecific(final ActionParameters params, OskariLayer ml) {
         try {
-            final String currentCrs = params.getHttpParam(PARAM_SRS_NAME, ml.getSrs_name());
-            OskariLayerCapabilitiesHelper.setPropertiesFromCapabilitiesWMTS(capabilitiesService.getCapabilities(ml, true), ml, currentCrs);
+            String currentCrs = params.getHttpParam(PARAM_SRS_NAME, ml.getSrs_name());
+            OskariLayerCapabilities caps = capabilitiesService.getCapabilities(ml, true);
+            OskariLayerCapabilitiesHelper.setPropertiesFromCapabilitiesWMTS(caps, ml, currentCrs);
             return true;
         } catch (Exception ex) {
             LOG.error(ex, "Couldn't update capabilities for layer", ml);

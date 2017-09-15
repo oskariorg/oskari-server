@@ -61,9 +61,9 @@ public class WMTSCapabilitiesParser {
             throws IllegalArgumentException, XMLStreamException {
         Map<String, TileMatrixSet> tileMatrixSets = new HashMap<>();
 
-        Iterator<OMElement> matrixIterator = contents.getChildrenWithLocalName("TileMatrixSet");
-        while (matrixIterator.hasNext()) {
-            TileMatrixSet tms = parseTileMatrixSet(matrixIterator.next());
+        Iterator<OMElement> it = contents.getChildrenWithLocalName("TileMatrixSet");
+        while (it.hasNext()) {
+            TileMatrixSet tms = parseTileMatrixSet(it.next());
             tileMatrixSets.put(tms.getId(), tms);
         }
 
@@ -80,10 +80,6 @@ public class WMTSCapabilitiesParser {
      */
     private static TileMatrixSet parseTileMatrixSet(OMElement tileMatrixSet)
             throws XMLStreamException, IllegalArgumentException {
-        if (tileMatrixSet == null) {
-            return null;
-        }
-
         String identifier = XmlHelper.getChildValue(tileMatrixSet, "Identifier");
         String crs = XmlHelper.getChildValue(tileMatrixSet, "SupportedCRS");
 
@@ -135,6 +131,7 @@ public class WMTSCapabilitiesParser {
         Iterator<OMElement> it = contents.getChildrenWithLocalName("Layer");
         while (it.hasNext()) {
             WMTSCapabilitiesLayer l = parseLayer(it.next(), tileMatrixSets);
+            layers.put(l.getId(), l);
         }
 
         return layers;
@@ -232,6 +229,7 @@ public class WMTSCapabilitiesParser {
 
     private static List<TileMatrixLimits> parseLimits(OMElement eTMSLimits, TileMatrixSet tms)
             throws XMLStreamException, IllegalArgumentException {
+        // <TileMatrixSetLimits> might not exist
         if (eTMSLimits == null) {
             return null;
         }

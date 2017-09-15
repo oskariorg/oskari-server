@@ -74,7 +74,7 @@ public class OskariLayerCapabilitiesHelper {
             JSONHelper.putValue(options, "urlTemplate", resUrl.getTemplate());
         }
 
-        JSONObject jscaps = LayerJSONFormatterWMTS.createCapabilitiesJSON(caps, layer);
+        JSONObject jscaps = LayerJSONFormatterWMTS.createCapabilitiesJSON(layer);
         ml.setCapabilities(jscaps);
 
         crs = crs != null ? crs : ml.getSrs_name();

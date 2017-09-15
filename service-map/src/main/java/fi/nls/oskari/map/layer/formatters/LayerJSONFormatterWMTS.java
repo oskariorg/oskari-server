@@ -5,7 +5,6 @@ import fi.nls.oskari.map.geometry.ProjectionHelper;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.wmts.domain.TileMatrixSet;
 import fi.nls.oskari.wmts.domain.TileMatrixLink;
-import fi.nls.oskari.wmts.domain.WMTSCapabilities;
 import fi.nls.oskari.wmts.domain.WMTSCapabilitiesLayer;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -61,13 +60,7 @@ public class LayerJSONFormatterWMTS extends LayerJSONFormatter {
     }
 
 
-    /**
-     *
-     * @param wmts
-     * @param layer
-     * @return
-     */
-    public static JSONObject createCapabilitiesJSON(final WMTSCapabilities wmts,final WMTSCapabilitiesLayer layer) {
+    public static JSONObject createCapabilitiesJSON(final WMTSCapabilitiesLayer layer) {
         JSONObject capabilities = new JSONObject();
         if(layer == null) {
             return capabilities;
