@@ -35,7 +35,7 @@ import javax.xml.stream.XMLStreamException;
 public class UpdateCapabilitiesJob extends ScheduledJob {
 
     private static final Logger LOG = LogFactory.getLogger(UpdateCapabilitiesJob.class);
-    private static final String PROP_MAX_AGE = "oskari.scheduler.job.UpdateCapabilitiesJob.maxAge";
+    private static final String PROP_MAX_AGE = "oskari.scheduler.job.UpdateCapabilities.maxAge";
 
     private final OskariLayerService layerService;
     private final CapabilitiesCacheService capabilitiesService;
