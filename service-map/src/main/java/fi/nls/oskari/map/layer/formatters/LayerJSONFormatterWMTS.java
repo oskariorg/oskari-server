@@ -1,5 +1,7 @@
 package fi.nls.oskari.map.layer.formatters;
 
+import fi.nls.oskari.wmts.domain.WMTSCapabilities;
+
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.map.geometry.ProjectionHelper;
 import fi.nls.oskari.util.JSONHelper;
@@ -59,6 +61,13 @@ public class LayerJSONFormatterWMTS extends LayerJSONFormatter {
         return layerJson;
     }
 
+    /**
+     * @deprecated replaced by {@link #createCapabilitiesJSON(WMTSCapabilitiesLayer layer)}
+     */
+    @Deprecated
+    public static JSONObject createCapabilitiesJSON(final WMTSCapabilities wmts,final WMTSCapabilitiesLayer layer) {
+        return createCapabilitiesJSON(layer);
+    }
 
     public static JSONObject createCapabilitiesJSON(final WMTSCapabilitiesLayer layer) {
         JSONObject capabilities = new JSONObject();
