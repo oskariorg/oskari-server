@@ -22,7 +22,12 @@ public class CapabilitiesCacheServiceMybatisImpl extends CapabilitiesCacheServic
     }
 
     public CapabilitiesCacheServiceMybatisImpl(DataSource ds) {
-        this.factory = MyBatisHelper.initMyBatis(ds, CapabilitiesMapper.class);
+        if (ds == null) {
+            LOG.warn("DataSource was null, all future calls will throw NPEs!");
+            factory = null;
+        } else {
+            factory = MyBatisHelper.initMyBatis(ds, CapabilitiesMapper.class);
+        }
     }
 
     private CapabilitiesMapper getMapper(SqlSession session) {
