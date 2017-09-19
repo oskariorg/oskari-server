@@ -490,7 +490,9 @@ public class SaveLayerHandler extends ActionHandler {
     }
 
     private boolean handleWMSSpecific(final ActionParameters params, OskariLayer ml) {
-        final String xslt = params.getHttpParam("xslt");
+        // Do NOT modify the 'xslt' parameter
+        HttpServletRequest request = params.getRequest();
+        final String xslt = request.getParameter("xslt");
         if(xslt != null) {
             // TODO: some validation of XSLT data
             ml.setGfiXslt(xslt);
