@@ -89,6 +89,8 @@ public class UpdateCapabilitiesJob extends ScheduledJob {
             getCapabilitiesXML = getXMLFromService(layer);
         }
         if (getCapabilitiesXML == null || getCapabilitiesXML.isEmpty()) {
+            LOG.warn("Failed to Capabilities data from cache and from service"
+                    + "for layer id:", layer.getId());
             return;
         }
 
@@ -99,6 +101,7 @@ public class UpdateCapabilitiesJob extends ScheduledJob {
                     url, type, version, getCapabilitiesXML);
             capabilitiesService.save(draft);
             layerService.update(layer);
+            LOG.debug("Succesfully saved Capabilities for layer id:", layer.getId());
         }
     }
 
