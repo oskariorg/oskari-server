@@ -4,6 +4,9 @@ import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 
 /**
+ * Metadata describing the limits of a TileMatrix for a layer
+ *
+ * The schema and the specification are obviously erroneous - use common sense when validating
  * @see http://schemas.opengis.net/wmts/1.0/wmtsGetCapabilities_response.xsd
  */
 public class TileMatrixLimits {
@@ -28,26 +31,41 @@ public class TileMatrixLimits {
 
     /**
      * Just log as warnings instead of throwing exceptions for now
-     * TODO: Don't accept invalid values
+     * TODO: Throw exceptions instead of accepting invalid values
      */
     private void validate() {
         if (minTileRow < 0) {
-            LOG.warn(tm.getId(), "Negative MinTileRow");
+            LOG.warn(tm.getId(), "MinTileRow must be nonNegative");
         }
-        if (maxTileRow >= tm.getMatrixWidth()) {
-            LOG.warn(tm.getId(), "MaxTileRow must be < MatrixWidth");
+        // schema: positiveInteger
+        // But probably should be nonNegativeInteger
+        if (maxTileRow < 0) {
+            LOG.warn(tm.getId(), "MaxTileRow must be nonNegative");
         }
         if (minTileRow > maxTileRow) {
-            LOG.warn(tm.getId(), "MinTileRow must be < MaxTileRow");
+            LOG.warn(tm.getId(), "MinTileRow must be <= MaxTileRow");
         }
+        // schema: 'Maximim tile row index valid for this layer. From minTileRow to matrixWidth-1 ...'
+        // Should be from minTileRow to matrixHeight-1
+        if (maxTileRow >= tm.getMatrixHeight()) {
+            LOG.warn(tm.getId(), "MaxTileRow must be < MatrixHeight");
+        }
+
         if (minTileCol < 0) {
-            LOG.warn(tm.getId(), "Negative MinTileCol");
+            LOG.warn(tm.getId(), "MinTileCol must be nonNegative");
         }
-        if (maxTileCol >= tm.getMatrixHeight()) {
-            LOG.warn(tm.getId(), "MaxTileCol must be < MatrixHeight");
+        // schema: positiveInteger
+        // But probably should be nonNegativeInteger
+        if (maxTileCol < 0) {
+            LOG.warn(tm.getId(), "MaxTileCol must be nonNegative");
         }
         if (minTileCol > maxTileCol) {
-            LOG.warn(tm.getId(), "MinTileCol must be < MaxTileCol");
+            LOG.warn(tm.getId(), "MinTileCol must be <= MaxTileCol");
+        }
+        // schema: 'Maximim tile column index valid for this layer. From minTileCol to tileHeight-1 ...'
+        // Should be from minTileCol to matrixWidth-1
+        if (maxTileCol >= tm.getMatrixWidth()) {
+            LOG.warn(tm.getId(), "MaxTileCol must be < MatrixWidth");
         }
     }
 
