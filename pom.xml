@@ -1104,6 +1104,7 @@
 
         <!-- print -->
         <module>service-print</module>
+        <module>service-wcs</module>
     </modules>
 
 </project>
