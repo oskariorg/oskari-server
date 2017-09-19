@@ -1,12 +1,10 @@
 package flyway.oskari;
 
-import fi.nls.oskari.service.ServiceException;
-
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.service.capabilities.CapabilitiesCacheService;
-import fi.nls.oskari.service.capabilities.OskariLayerCapabilities;
+import fi.nls.oskari.service.ServiceException;
 import org.flywaydb.core.api.migration.jdbc.JdbcMigration;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -22,31 +20,37 @@ public class V1_32_1__populate_capabilities_cache implements JdbcMigration {
     private static final Logger LOG = LogFactory.getLogger(V1_32_1__populate_capabilities_cache.class);
 
     public void migrate(Connection connection) throws SQLException {
-        List<OskariLayer> layers = getLayers(connection);
+        final List<OskariLayer> layers = getLayers(connection);
+        final int n = layers.size();
 
-        LOG.info("Start populating capabilities for layers - count:", layers.size());
+        LOG.info("Start populating capabilities for layers - count:", n);
         Set<String> keys = new HashSet<>();
-        int progress = 0;
-        for(OskariLayer layer : layers) {
-            final String layerKey = (layer.getSimplifiedUrl(true) + "----" + layer.getType()).toLowerCase();
-            if(keys.contains(layerKey)) {
-                progress++;
+
+        for (int i = 0; i < n; i++) {
+            OskariLayer layer = layers.get(i);
+
+            String url = layer.getSimplifiedUrl(true);
+            String type = layer.getType();
+
+            String layerKey = url + "----" + layer.getType();
+            layerKey = layerKey.toLowerCase();
+            if (keys.contains(layerKey)) {
                 continue;
             }
 
-            keys.add(layerKey);
+            String data = "";
             try {
-                String data = CapabilitiesCacheService.loadCapabilitiesFromService(layer);
-                OskariLayerCapabilities draft = new OskariLayerCapabilities(
-                        layer.getSimplifiedUrl(true),
-                        layer.getType(),
-                        layer.getVersion(),
-                        data);
-                insertCaps(connection, draft);
+                data = CapabilitiesCacheService.loadCapabilitiesFromService(layer);
             } catch (ServiceException e) {
-                LOG.warn(e, "Failed to read capabilities from service!");
+                LOG.error(e, "Error getting capabilities for service", url);
             }
-            LOG.info("Capabilities populated:", ++progress, "/", layers.size());
+
+            insertCaps(connection, type, url, data);
+
+            // Don't try the same service again (another layer might have same url + type)
+            keys.add(layerKey);
+
+            LOG.info("Capabilities populated:", i + 1, "/", n);
         }
     }
 
@@ -68,13 +72,12 @@ public class V1_32_1__populate_capabilities_cache implements JdbcMigration {
         return layers;
     }
 
-    private void insertCaps(Connection conn, OskariLayerCapabilities caps) throws SQLException {
-        final String sql = "INSERT INTO oskari_capabilities_cache (layertype, url, data, version) VALUES(?,?,?,?)";
+    private void insertCaps(Connection conn, String type, String url, String data) throws SQLException {
+        final String sql = "INSERT INTO oskari_capabilities_cache (layertype, url, data) VALUES(?,?,?)";
         try(PreparedStatement statement = conn.prepareStatement(sql)) {
-            statement.setString(1, caps.getLayertype());
-            statement.setString(2, caps.getUrl());
-            statement.setString(3, caps.getData());
-            statement.setString(4, caps.getVersion());
+            statement.setString(1, type);
+            statement.setString(2, url);
+            statement.setString(3, data);
             statement.execute();
         }
     }
