@@ -337,9 +337,6 @@ public class SaveLayerHandler extends ActionHandler {
 
         String parameters = params.getHttpParam("params");
         if (parameters != null && !parameters.equals("")) {
-            if (!parameters.startsWith("{")) {
-                parameters = "{time=" + parameters + "}";
-            }
             ml.setParams(JSONHelper.createJSONObject(parameters));
         }
 
