@@ -120,6 +120,9 @@ Removed countries listing resource JSON. Instead uses a CountryFilter operation 
 
 Removed serval API integration and now only including the monitor API.
 
+### service-users
+The database access library has been updated from iBATIS to MyBatis. DatabaseUserService now uses MybatisRoleService and MybatisUserService.
+
 ## 1.43.0
 
 ### servlet-printout
