@@ -4,11 +4,6 @@ import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.mapping;
 import static java.util.stream.Collectors.toList;
 
-import org.oskari.wcs.capabilities.ServiceMetadata;
-
-import org.oskari.wcs.capabilities.BoundingBox;
-import org.oskari.wcs.capabilities.Contents;
-import org.oskari.wcs.capabilities.CoverageSummary;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -16,20 +11,23 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import org.oskari.ows.capabilities.Operation;
 import org.oskari.ows.capabilities.OperationsMetadata;
 import org.oskari.ows.capabilities.ServiceIdentification;
+import org.oskari.wcs.capabilities.BoundingBox;
+import org.oskari.wcs.capabilities.Contents;
+import org.oskari.wcs.capabilities.CoverageSummary;
+import org.oskari.wcs.capabilities.ServiceMetadata;
 import org.oskari.wcs.capabilities.WCSCapabilities;
+import org.oskari.wcs.util.WCS;
+import org.oskari.wcs.util.XML;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
 public class WCSCapabilitiesParser {
 
-    public static final String WCS_NS = "http://www.opengis.net/wcs/2.0";
     public static final String ALLOWED_VERSION = "2.0.1";
 
     public static WCSCapabilities parse(URL url) throws IOException, ParserConfigurationException,
@@ -41,23 +39,21 @@ public class WCSCapabilitiesParser {
 
     public static WCSCapabilities parse(InputStream in) throws ParserConfigurationException,
             SAXException, IOException {
-        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-        dbf.setNamespaceAware(true);
-        DocumentBuilder db = dbf.newDocumentBuilder();
-        Document doc = db.parse(in);
-        return parse(doc);
+        return parse(XML.readDocument(in));
     }
 
     public static WCSCapabilities parse(Document doc) throws IllegalArgumentException {
         Element root = doc.getDocumentElement();
-        if (!"Capabilities".equals(root.getNodeName())) {
-            throw new IllegalArgumentException("Invalid root element name!");
+        if (!"Capabilities".equals(root.getLocalName())) {
+            throw new IllegalArgumentException("Invalid root element name: " + root.getLocalName());
         }
-        if (!WCS_NS.equals(root.getNamespaceURI())) {
-            throw new IllegalArgumentException("Invalid XML root namespace!");
+        if (!WCS.NS.equals(root.getNamespaceURI())) {
+            throw new IllegalArgumentException("Invalid XML root namespace: "
+                    + root.getNamespaceURI());
         }
         if (!ALLOWED_VERSION.equals(root.getAttribute("version"))) {
-            throw new IllegalArgumentException("Invalid attribute 'version'");
+            throw new IllegalArgumentException("Invalid attribute 'version': "
+                    + root.getAttribute("version"));
         }
 
         String updateSequence = root.getAttribute("updateSequence");
@@ -68,7 +64,7 @@ public class WCSCapabilitiesParser {
 
         List<Element> children = XML.getChildren(root);
         for (Element child : children) {
-            switch (child.getNodeName()) {
+            switch (child.getLocalName()) {
             case "ServiceIdentification":
                 serviceIdentification = parseServiceIdentification(child);
                 break;
@@ -115,11 +111,11 @@ public class WCSCapabilitiesParser {
                     () -> new IllegalArgumentException("Could not find HTTP inside DCP"));
             Optional<Element> tmp = XML.getChild(http, "Get");
             if (tmp.isPresent()) {
-                get = tmp.get().getTextContent();
+                get = tmp.get().getAttribute("xlink:href");
             } else {
                 tmp = XML.getChild(http, "Post");
                 if (tmp.isPresent()) {
-                    post = tmp.get().getTextContent();
+                    post = tmp.get().getAttribute("xlink:href");
                 }
             }
         }
@@ -136,8 +132,8 @@ public class WCSCapabilitiesParser {
         }
 
         List<Element> exts = XML.getChildren(extension.get());
-        Map<String, List<String>> extensionsByNsLocalName = exts.stream()
-                .collect(groupingBy(e -> getNamespaceLocalName(e),
+        Map<String, List<String>> extensionsByNsLocalName = exts.stream().collect(
+                groupingBy(e -> getNamespaceLocalName(e),
                         mapping(Element::getTextContent, toList())));
 
         return new ServiceMetadata(formatSupported, extensionsByNsLocalName);

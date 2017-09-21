@@ -5,20 +5,20 @@ import java.util.Map;
 
 public class ServiceMetadata {
 
-    private final List<String> formatSupported;
+    private final List<String> supportedFormats;
     private final Map<String, List<String>> extensions;
 
-    public ServiceMetadata(List<String> formatSupported, Map<String, List<String>> extensions) {
-        this.formatSupported = formatSupported;
+    public ServiceMetadata(List<String> supportedFormats, Map<String, List<String>> extensions) {
+        this.supportedFormats = supportedFormats;
         this.extensions = extensions;
     }
 
-    public List<String> getFormatSupported() {
-        return formatSupported;
+    public List<String> getSupportedFormats() {
+        return supportedFormats;
     }
 
-    public List<String> getExtensions(String extension) {
-        return getExtensions(null, extension);
+    public List<String> getExtensions(Extensions ext) {
+        return extensions.get(getNamespaceLocalName(ext.ns, ext.name));
     }
 
     public List<String> getExtensions(String ns, String extension) {

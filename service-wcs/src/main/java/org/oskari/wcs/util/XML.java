@@ -1,4 +1,12 @@
-package org.oskari.wcs.capabilities.parser;
+package org.oskari.wcs.util;
+
+import java.io.IOException;
+import java.io.InputStream;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,10 +16,20 @@ import org.w3c.dom.Node;
 
 public class XML {
 
+    public static Document readDocument(InputStream in) throws ParserConfigurationException,
+            SAXException, IOException {
+        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+        dbf.setNamespaceAware(true);
+        DocumentBuilder db = dbf.newDocumentBuilder();
+        Document doc = db.parse(in);
+        in.close();
+        return doc;
+    }
+
     public static Optional<Element> getChild(Element e, String localName) {
         Node node = e.getFirstChild();
         while (node != null) {
-            if (node.getNodeType() == Node.ELEMENT_NODE && localName.equals(node.getNodeName())) {
+            if (node.getNodeType() == Node.ELEMENT_NODE && localName.equals(node.getLocalName())) {
                 return Optional.of((Element) node);
             }
             node = node.getNextSibling();
@@ -23,7 +41,7 @@ public class XML {
         List<Element> list = new ArrayList<>();
         Node node = e.getFirstChild();
         while (node != null) {
-            if (node.getNodeType() == Node.ELEMENT_NODE && localName.equals(node.getNodeName())) {
+            if (node.getNodeType() == Node.ELEMENT_NODE && localName.equals(node.getLocalName())) {
                 list.add((Element) node);
             }
             node = node.getNextSibling();
@@ -43,6 +61,17 @@ public class XML {
         return list;
     }
 
+    public static Optional<String> getChildText(Element e, String localName) {
+        Optional<Element> child = getChild(e, localName);
+        if (child.isPresent()) {
+            String text = child.get().getTextContent();
+            if (text != null && !text.isEmpty()) {
+                return Optional.of(text);
+            }
+        }
+        return Optional.empty();
+    }
+
     public static String getChildValue(Element e, String localName) {
         Optional<Element> child = getChild(e, localName);
         return child.isPresent() ? child.get().getTextContent() : null;
@@ -52,7 +81,7 @@ public class XML {
         List<String> list = new ArrayList<>();
         Node node = e.getFirstChild();
         while (node != null) {
-            if (node.getNodeType() == Node.ELEMENT_NODE && localName.equals(node.getNodeName())) {
+            if (node.getNodeType() == Node.ELEMENT_NODE && localName.equals(node.getLocalName())) {
                 String text = node.getTextContent();
                 if (text != null && text.length() > 0) {
                     list.add(text);
