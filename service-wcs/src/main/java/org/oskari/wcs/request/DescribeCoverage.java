@@ -1,11 +1,12 @@
 package org.oskari.wcs.request;
 
+import org.oskari.wcs.util.small.SmallMap;
+
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import org.oskari.ows.capabilities.Operation;
 import org.oskari.wcs.response.Capabilities;
-import org.oskari.wcs.util.smallmap.SmallMap;
 
 public class DescribeCoverage {
 

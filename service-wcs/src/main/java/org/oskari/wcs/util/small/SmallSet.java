@@ -1,4 +1,4 @@
-package org.oskari.wcs.util.smallmap;
+package org.oskari.wcs.util.small;
 
 import java.util.Collection;
 import java.util.Iterator;
