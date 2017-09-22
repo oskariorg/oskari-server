@@ -4,21 +4,21 @@ import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import org.oskari.wcs.parser.CoverageDescriptionsParser;
+
+import org.oskari.wcs.response.coverage.RectifiedGridCoverage;
+import org.oskari.wcs.response.CoverageDescription;
 import org.oskari.wcs.gml.Envelope;
 import org.oskari.wcs.gml.GridEnvelope;
 import org.oskari.wcs.gml.Point;
 import org.oskari.wcs.gml.RectifiedGrid;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 import javax.xml.parsers.ParserConfigurationException;
 import org.junit.Test;
-import org.oskari.wcs.coverage.CoverageDescription;
 import org.oskari.wcs.coverage.function.GridFunction;
 import org.oskari.wcs.coverage.function.SequenceRule;
-import org.oskari.wcs.coverage.parser.CoverageDescriptionsParser;
-import org.oskari.wcs.coverage.subtype.RectifiedGridCoverage;
 import org.oskari.wcs.util.XML;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;

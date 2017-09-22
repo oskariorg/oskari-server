@@ -1,9 +1,12 @@
-package org.oskari.wcs.capabilities;
+package org.oskari.wcs.response;
+
+import org.oskari.wcs.capabilities.Contents;
+import org.oskari.wcs.capabilities.ServiceMetadata;
 
 import org.oskari.ows.capabilities.OperationsMetadata;
 import org.oskari.ows.capabilities.ServiceIdentification;
 
-public class WCSCapabilities {
+public class Capabilities {
 
     private final String updateSequence;
     private final ServiceIdentification serviceIdentification;
@@ -11,7 +14,7 @@ public class WCSCapabilities {
     private final ServiceMetadata serviceMetadata;
     private final Contents contents;
 
-    public WCSCapabilities(String updateSequence, ServiceIdentification serviceIdentification,
+    public Capabilities(String updateSequence, ServiceIdentification serviceIdentification,
             OperationsMetadata operationsMetadata, ServiceMetadata serviceMetadata,
             Contents contents) {
         this.updateSequence = updateSequence;

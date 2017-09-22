@@ -1,8 +1,10 @@
-package org.oskari.wcs.capabilities.parser;
+package org.oskari.wcs.parser;
 
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.mapping;
 import static java.util.stream.Collectors.toList;
+
+import org.oskari.wcs.response.Capabilities;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -19,30 +21,29 @@ import org.oskari.wcs.capabilities.BoundingBox;
 import org.oskari.wcs.capabilities.Contents;
 import org.oskari.wcs.capabilities.CoverageSummary;
 import org.oskari.wcs.capabilities.ServiceMetadata;
-import org.oskari.wcs.capabilities.WCSCapabilities;
 import org.oskari.wcs.util.WCS;
 import org.oskari.wcs.util.XML;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
-public class WCSCapabilitiesParser {
+public class CapabilitiesParser {
 
     public static final String ALLOWED_VERSION = "2.0.1";
 
-    public static WCSCapabilities parse(URL url) throws IOException, ParserConfigurationException,
+    public static Capabilities parse(URL url) throws IOException, ParserConfigurationException,
             SAXException {
         try (InputStream in = url.openStream()) {
             return parse(in);
         }
     }
 
-    public static WCSCapabilities parse(InputStream in) throws ParserConfigurationException,
+    public static Capabilities parse(InputStream in) throws ParserConfigurationException,
             SAXException, IOException {
         return parse(XML.readDocument(in));
     }
 
-    public static WCSCapabilities parse(Document doc) throws IllegalArgumentException {
+    public static Capabilities parse(Document doc) throws IllegalArgumentException {
         Element root = doc.getDocumentElement();
         if (!"Capabilities".equals(root.getLocalName())) {
             throw new IllegalArgumentException("Invalid root element name: " + root.getLocalName());
@@ -80,7 +81,7 @@ public class WCSCapabilitiesParser {
             }
         }
 
-        return new WCSCapabilities(updateSequence, serviceIdentification, operationsMetadata,
+        return new Capabilities(updateSequence, serviceIdentification, operationsMetadata,
                 serviceMetadata, contents);
     }
 

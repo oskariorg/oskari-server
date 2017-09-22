@@ -2,22 +2,21 @@ package org.oskari.wcs.util;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import org.w3c.dom.Document;
-import org.xml.sax.SAXException;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
+import org.xml.sax.SAXException;
 
 public class XML {
 
-    public static Document readDocument(InputStream in) throws ParserConfigurationException,
-            SAXException, IOException {
+    public static Document readDocument(InputStream in)
+            throws ParserConfigurationException, SAXException, IOException {
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         dbf.setNamespaceAware(true);
         DocumentBuilder db = dbf.newDocumentBuilder();
@@ -29,7 +28,8 @@ public class XML {
     public static Optional<Element> getChild(Element e, String localName) {
         Node node = e.getFirstChild();
         while (node != null) {
-            if (node.getNodeType() == Node.ELEMENT_NODE && localName.equals(node.getLocalName())) {
+            if (node.getNodeType() == Node.ELEMENT_NODE
+                    && localName.equals(node.getLocalName())) {
                 return Optional.of((Element) node);
             }
             node = node.getNextSibling();
@@ -41,7 +41,8 @@ public class XML {
         List<Element> list = new ArrayList<>();
         Node node = e.getFirstChild();
         while (node != null) {
-            if (node.getNodeType() == Node.ELEMENT_NODE && localName.equals(node.getLocalName())) {
+            if (node.getNodeType() == Node.ELEMENT_NODE
+                    && localName.equals(node.getLocalName())) {
                 list.add((Element) node);
             }
             node = node.getNextSibling();
@@ -81,7 +82,8 @@ public class XML {
         List<String> list = new ArrayList<>();
         Node node = e.getFirstChild();
         while (node != null) {
-            if (node.getNodeType() == Node.ELEMENT_NODE && localName.equals(node.getLocalName())) {
+            if (node.getNodeType() == Node.ELEMENT_NODE
+                    && localName.equals(node.getLocalName())) {
                 String text = node.getTextContent();
                 if (text != null && text.length() > 0) {
                     list.add(text);

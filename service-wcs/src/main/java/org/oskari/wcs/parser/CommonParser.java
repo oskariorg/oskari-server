@@ -1,8 +1,9 @@
-package org.oskari.wcs.util;
+package org.oskari.wcs.parser;
+
+import org.oskari.wcs.util.XML;
 
 import org.oskari.wcs.gml.Envelope;
 import org.oskari.wcs.gml.Point;
-
 import java.util.Optional;
 import org.w3c.dom.Element;
 

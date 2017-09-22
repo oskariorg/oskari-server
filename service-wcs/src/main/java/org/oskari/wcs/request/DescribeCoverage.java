@@ -1,11 +1,12 @@
-package org.oskari.wcs.coverage;
+package org.oskari.wcs.request;
+
+import org.oskari.wcs.response.Capabilities;
 
 import java.util.Optional;
 import java.util.Map;
 import java.util.Objects;
 import java.util.TreeMap;
 import org.oskari.ows.capabilities.Operation;
-import org.oskari.wcs.capabilities.WCSCapabilities;
 
 public class DescribeCoverage {
 
@@ -18,7 +19,7 @@ public class DescribeCoverage {
      *            of the coverage
      * @return true if exists, false if not
      */
-    public static boolean coverageExists(WCSCapabilities wcs, String coverageId) {
+    public static boolean coverageExists(Capabilities wcs, String coverageId) {
         Objects.requireNonNull(wcs);
         Objects.requireNonNull(coverageId);
         return wcs.getContents().getCoverageSummary().stream()
@@ -27,7 +28,7 @@ public class DescribeCoverage {
 
     /**
      * Create query parameters for a GET encoded DescribeCoverage request You
-     * can use {@link #coverageExists(WCSCapabilities, String)} to see if the
+     * can use {@link #coverageExists(Capabilities, String)} to see if the
      * coverage exists
      * 
      * @param coverageId
@@ -54,7 +55,7 @@ public class DescribeCoverage {
      * @return the endpoint which might not exist for your binding or if the
      *         service did not declare support for DescribeCoverage at all
      */
-    public static Optional<String> getDescribeCoverageEndPoint(WCSCapabilities wcs, boolean get) {
+    public static Optional<String> getDescribeCoverageEndPoint(Capabilities wcs, boolean get) {
         Optional<Operation> opt = getDescribeCoverage(wcs);
         if (opt.isPresent()) {
             Operation op = opt.get();
@@ -66,7 +67,7 @@ public class DescribeCoverage {
         return Optional.empty();
     }
 
-    private static Optional<Operation> getDescribeCoverage(WCSCapabilities wcs) {
+    private static Optional<Operation> getDescribeCoverage(Capabilities wcs) {
         Objects.requireNonNull(wcs);
         return wcs.getOperationsMetadata().getOperation().stream()
                 .filter(op -> "DescribeCoverage".equals(op.getName())).findAny();
