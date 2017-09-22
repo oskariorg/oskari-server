@@ -1,7 +1,8 @@
 package org.oskari.wcs.coverage.subtype;
 
-import org.oskari.gml.Envelope;
-import org.oskari.gml.RectifiedGrid;
+import org.oskari.wcs.gml.Envelope;
+import org.oskari.wcs.gml.RectifiedGrid;
+
 import org.oskari.wcs.coverage.CoverageDescription;
 import org.oskari.wcs.coverage.function.GridFunction;
 

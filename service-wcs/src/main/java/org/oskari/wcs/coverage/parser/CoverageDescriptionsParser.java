@@ -1,5 +1,7 @@
 package org.oskari.wcs.coverage.parser;
 
+import org.oskari.wcs.gml.Envelope;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -7,7 +9,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import javax.xml.parsers.ParserConfigurationException;
-import org.oskari.gml.Envelope;
 import org.oskari.wcs.coverage.CoverageDescription;
 import org.oskari.wcs.util.CommonParser;
 import org.oskari.wcs.util.WCS;

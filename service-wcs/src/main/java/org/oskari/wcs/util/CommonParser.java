@@ -1,8 +1,9 @@
 package org.oskari.wcs.util;
 
-import org.oskari.gml.Point;
+import org.oskari.wcs.gml.Envelope;
+import org.oskari.wcs.gml.Point;
+
 import java.util.Optional;
-import org.oskari.gml.Envelope;
 import org.w3c.dom.Element;
 
 public class CommonParser {

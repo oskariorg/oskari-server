@@ -1,4 +1,4 @@
-package org.oskari.gml;
+package org.oskari.wcs.gml;
 
 public class Point {
 
