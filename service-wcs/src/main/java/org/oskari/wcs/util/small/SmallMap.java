@@ -7,8 +7,8 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
- * Immutable Map<String, String> with linear searching If you need another
- * constructor you are probably doing it wrong
+ * Immutable Map<String, String> with linear searching
+ * If you need another constructor you are probably using it wrong
  */
 public class SmallMap implements Map<String, String> {
 

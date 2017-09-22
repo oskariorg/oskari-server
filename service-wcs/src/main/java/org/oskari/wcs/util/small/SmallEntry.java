@@ -4,9 +4,9 @@ import java.util.Map;
 import java.util.Objects;
 
 /**
- * Immutable Map.Entry<String, String> Not necessarily any smaller than any
- * other Entry<String, String> But used with SmallEntry and SmallMap classes
- * hence the name
+ * Immutable Map.Entry<String, String>
+ * Not necessarily any smaller than any other Entry<String, String>
+ * but used with SmallEntry and SmallMap classes hence the name
  */
 public class SmallEntry implements Map.Entry<String, String> {
 
