@@ -17,19 +17,8 @@ public class ServiceMetadata {
         return supportedFormats;
     }
 
-    public List<String> getExtensions(Extensions ext) {
-        return extensions.get(getNamespaceLocalName(ext.ns, ext.name));
-    }
-
-    public List<String> getExtensions(String ns, String extension) {
-        return extensions.get(getNamespaceLocalName(ns, extension));
-    }
-
-    public static String getNamespaceLocalName(String ns, String localName) {
-        if (ns == null || ns.isEmpty()) {
-            return localName;
-        }
-        return String.format("{%s}%s", ns, localName);
+    public List<String> getExtensions(String extension) {
+        return extensions.get(extension);
     }
 
 }

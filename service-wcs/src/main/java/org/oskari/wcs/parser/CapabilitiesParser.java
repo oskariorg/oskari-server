@@ -140,14 +140,10 @@ public class CapabilitiesParser {
 
         List<Element> exts = XML.getChildren(extension.get());
         Map<String, List<String>> extensionsByNsLocalName = exts.stream().collect(
-                groupingBy(e -> getNamespaceLocalName(e),
+                groupingBy(e -> e.getLocalName(),
                         mapping(Element::getTextContent, toList())));
 
         return new ServiceMetadata(formatSupported, extensionsByNsLocalName);
-    }
-
-    private static String getNamespaceLocalName(Element e) {
-        return ServiceMetadata.getNamespaceLocalName(e.getNamespaceURI(), e.getLocalName());
     }
 
     private static Contents parseContents(Element e) throws IllegalArgumentException {

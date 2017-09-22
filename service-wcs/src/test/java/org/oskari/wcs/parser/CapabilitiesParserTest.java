@@ -4,21 +4,21 @@ import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-import org.oskari.wcs.capabilities.Capabilities;
-
-import org.oskari.wcs.capabilities.Operation;
-import org.oskari.wcs.capabilities.OperationsMetadata;
-import org.oskari.wcs.capabilities.ServiceIdentification;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 import javax.xml.parsers.ParserConfigurationException;
 import org.junit.Test;
 import org.oskari.wcs.capabilities.BoundingBox;
+import org.oskari.wcs.capabilities.Capabilities;
 import org.oskari.wcs.capabilities.Contents;
 import org.oskari.wcs.capabilities.CoverageSummary;
-import org.oskari.wcs.capabilities.Extensions;
+import org.oskari.wcs.capabilities.Operation;
+import org.oskari.wcs.capabilities.OperationsMetadata;
+import org.oskari.wcs.capabilities.ServiceIdentification;
 import org.oskari.wcs.capabilities.ServiceMetadata;
+import org.oskari.wcs.extension.CRS;
+import org.oskari.wcs.extension.Interpolation;
 import org.oskari.wcs.util.XML;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
@@ -74,9 +74,9 @@ public class CapabilitiesParserTest {
         assertEquals("GetCoverage", operations.get(2).getName());
         for (int i = 0; i < 3; i++) {
             assertEquals("http://avoindata.maanmittauslaitos.fi:80/geoserver/wcs?",
-                    operations.get(i).getGet());
+                    operations.get(i).getGet().get());
             assertEquals("http://avoindata.maanmittauslaitos.fi:80/geoserver/wcs?",
-                    operations.get(i).getPost());
+                    operations.get(i).getPost().get());
         }
     }
 
@@ -90,10 +90,9 @@ public class CapabilitiesParserTest {
                 "http://www.opengis.net/def/crs/EPSG/0/4326" };
         assertArrayEquals(
                 expectedCrsSupported,
-                sMetadata.getExtensions("http://www.opengis.net/wcs/service-extension/crs/1.0",
-                        "crsSupported").toArray());
-        assertArrayEquals(expectedCrsSupported, sMetadata.getExtensions(Extensions.CrsSupported)
-                .toArray());
+                sMetadata.getExtensions("crsSupported").toArray());
+        assertArrayEquals(expectedCrsSupported,
+                sMetadata.getExtensions(CRS.EXT_ELEMENT).toArray());
 
         String[] expectedInterpolationSupported = {
                 "http://www.opengis.net/def/interpolation/OGC/1/nearest-neighbor",
@@ -101,11 +100,9 @@ public class CapabilitiesParserTest {
                 "http://www.opengis.net/def/interpolation/OGC/1/cubic" };
         assertArrayEquals(
                 expectedInterpolationSupported,
-                sMetadata.getExtensions(
-                        "http://www.opengis.net/WCS_service-extension_interpolation/1.0",
-                        "interpolationSupported").toArray());
+                sMetadata.getExtensions("interpolationSupported").toArray());
         assertArrayEquals(expectedInterpolationSupported,
-                sMetadata.getExtensions(Extensions.InterpolationSupported).toArray());
+                sMetadata.getExtensions(Interpolation.EXTENSION_ELEMENT_LOCALNAME).toArray());
     }
 
     private void checkContents(Contents contents) {

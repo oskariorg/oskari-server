@@ -103,4 +103,14 @@ public class Capabilities {
                 .anyMatch(p -> interpProfile.equals(p));
     }
 
+    public boolean supportsCRS() {
+        return serviceIdentification.getProfile().stream()
+                .anyMatch(p -> WCS.PROFILE_EXT_CRS.equals(p));
+    }
+
+    public boolean supportsCRS(String crs) {
+        return serviceIdentification.getProfile().stream()
+                .anyMatch(p -> WCS.PROFILE_EXT_CRS.equals(p));
+    }
+
 }

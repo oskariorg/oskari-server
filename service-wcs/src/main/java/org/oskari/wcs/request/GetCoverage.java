@@ -19,7 +19,12 @@ public class GetCoverage {
     private final String format;
     private final List<String> subset;
     private boolean multiPart;
+
     private Interpolation interpolation;
+    private List<String> interpolationPerAxis;
+
+    private String subsettingCRS;
+    private String outputCRS;
 
     private GetCoverage(Capabilities wcs, CoverageDescription desc) {
         this(wcs, desc, desc.getNativeFormat());
@@ -43,31 +48,72 @@ public class GetCoverage {
     }
 
     public GetCoverage subset(String dimension, int low, int high) {
+        checkDimension(dimension);
         subset.add(String.format("%s(%d,%d)", dimension, low, high));
         return this;
     }
 
     public GetCoverage subset(String dimension, int point) {
+        checkDimension(dimension);
         subset.add(String.format("%s(%d)", dimension, point));
         return this;
     }
 
     public GetCoverage subset(String dimension, double low, double high) {
+        checkDimension(dimension);
         subset.add(String.format("%s(%.f,%.f)", dimension, low, high));
         return this;
     }
 
     public GetCoverage subset(String dimension, double point) {
+        checkDimension(dimension);
         subset.add(String.format("%s(%.f)", dimension, point));
         return this;
     }
 
-    public GetCoverage interpolation(Interpolation interpolation) {
-        if (!wcs.supportsInterpolation()
-                || !wcs.supportsInterpolation(interpolation)) {
+    private void checkDimension(String dimension) {
+        if (!desc.hasAxis(dimension)) {
             throw new UnsupportedOperationException();
         }
-        this.interpolation = interpolation;
+    }
+
+    public GetCoverage interpolation(Interpolation interp) {
+        if (!wcs.supportsInterpolation()
+                || !wcs.supportsInterpolation(interp)) {
+            throw new UnsupportedOperationException();
+        }
+        this.interpolation = interp;
+        return this;
+    }
+
+    public GetCoverage interpolationPerAxis(String axis, Interpolation interp) {
+        if (!wcs.supportsInterpolation()
+                || !wcs.supportsInterpolation(interp)
+                || !desc.hasAxis(axis)) {
+            throw new UnsupportedOperationException();
+        }
+        if (interpolationPerAxis == null) {
+            interpolationPerAxis = new ArrayList<>();
+        }
+        interpolationPerAxis.add(String.format("%s,%s", axis, interp.method));
+        return this;
+    }
+
+    public GetCoverage subsettingCRS(String crs) {
+        if (!wcs.supportsCRS()
+                || !wcs.supportsCRS(crs)) {
+            throw new UnsupportedOperationException();
+        }
+        this.subsettingCRS = crs;
+        return this;
+    }
+
+    public GetCoverage outputCRS(String crs) {
+        if (!wcs.supportsCRS()
+                || !wcs.supportsCRS(crs)) {
+            throw new UnsupportedOperationException();
+        }
+        this.outputCRS = crs;
         return this;
     }
 
@@ -81,9 +127,21 @@ public class GetCoverage {
         if (multiPart) {
             put(kvp, "mediaType", MEDIA_TYPE_MULTI_PART);
         }
-        kvp.put("subset", subset.toArray(new String[subset.size()]));
+        if (subset.size() > 0) {
+            kvp.put("subset", subset.toArray(new String[subset.size()]));
+        }
         if (interpolation != null) {
             put(kvp, "interpolation", interpolation.method);
+        }
+        if (interpolationPerAxis != null) {
+            kvp.put("interpolationPerAxis",
+                    interpolationPerAxis.toArray(new String[interpolationPerAxis.size()]));
+        }
+        if (subsettingCRS != null) {
+            put(kvp, "subsettingCRS", subsettingCRS);
+        }
+        if (outputCRS != null) {
+            put(kvp, "outputCRS", outputCRS);
         }
         return kvp;
     }

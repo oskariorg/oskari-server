@@ -26,4 +26,6 @@ public abstract class CoverageDescription {
         return nativeFormat;
     }
 
+    public abstract boolean hasAxis(String axis);
+
 }

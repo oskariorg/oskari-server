@@ -1,5 +1,6 @@
 package org.oskari.wcs.coverage;
 
+import java.util.Arrays;
 import org.oskari.wcs.coverage.function.GridFunction;
 import org.oskari.wcs.gml.Envelope;
 import org.oskari.wcs.gml.RectifiedGrid;
@@ -22,6 +23,12 @@ public class RectifiedGridCoverage extends CoverageDescription {
 
     public RectifiedGrid getDomainSet() {
         return domainSet;
+    }
+
+    @Override
+    public boolean hasAxis(String axis) {
+        return Arrays.stream(domainSet.getAxes())
+                .anyMatch(a -> axis.equals(a));
     }
 
 }

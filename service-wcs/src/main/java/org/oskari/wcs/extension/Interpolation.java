@@ -15,6 +15,10 @@ public enum Interpolation {
             "http://www.opengis.net/def/interpolation/OGC/1/cubic"
     );
 
+    public static final String NS_URI = "http://www.opengis.net/wcs/crs/1.0";
+    public static final String PROFILE_IDENTIFIER = "http://www.opengis.net/WCS_service-extension_interpolation/1.0";
+    public static final String EXTENSION_ELEMENT_LOCALNAME = "interpolationSupported";
+
     public final String profile;
     public final String method;
 

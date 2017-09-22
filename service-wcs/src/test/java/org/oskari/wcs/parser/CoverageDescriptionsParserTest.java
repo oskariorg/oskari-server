@@ -4,14 +4,13 @@ import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import org.oskari.wcs.coverage.CoverageDescription;
-
-import org.oskari.wcs.coverage.RectifiedGridCoverage;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 import javax.xml.parsers.ParserConfigurationException;
 import org.junit.Test;
+import org.oskari.wcs.coverage.CoverageDescription;
+import org.oskari.wcs.coverage.RectifiedGridCoverage;
 import org.oskari.wcs.coverage.function.GridFunction;
 import org.oskari.wcs.coverage.function.SequenceRule;
 import org.oskari.wcs.gml.Envelope;
