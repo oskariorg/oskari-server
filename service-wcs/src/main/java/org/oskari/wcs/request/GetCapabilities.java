@@ -1,8 +1,7 @@
 package org.oskari.wcs.request;
 
-import org.oskari.wcs.util.small.SmallMap;
-
 import java.util.Map;
+import org.oskari.wcs.util.small.SmallMap;
 
 public class GetCapabilities {
 
