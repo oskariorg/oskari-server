@@ -2,13 +2,13 @@ package org.oskari.wcs.parser;
 
 import java.util.List;
 import java.util.Optional;
+import org.oskari.wcs.coverage.RectifiedGridCoverage;
 import org.oskari.wcs.coverage.function.GridFunction;
 import org.oskari.wcs.coverage.function.SequenceRule;
 import org.oskari.wcs.gml.Envelope;
 import org.oskari.wcs.gml.GridEnvelope;
 import org.oskari.wcs.gml.Point;
 import org.oskari.wcs.gml.RectifiedGrid;
-import org.oskari.wcs.response.coverage.RectifiedGridCoverage;
 import org.oskari.wcs.util.XML;
 import org.w3c.dom.Element;
 

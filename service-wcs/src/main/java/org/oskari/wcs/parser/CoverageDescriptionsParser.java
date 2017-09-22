@@ -5,10 +5,9 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import javax.xml.parsers.ParserConfigurationException;
+import org.oskari.wcs.coverage.CoverageDescription;
 import org.oskari.wcs.gml.Envelope;
-import org.oskari.wcs.response.CoverageDescription;
 import org.oskari.wcs.util.WCS;
 import org.oskari.wcs.util.XML;
 import org.w3c.dom.Document;
@@ -36,7 +35,7 @@ public class CoverageDescriptionsParser {
             throw new IllegalArgumentException("Invalid root element name: "
                     + root.getLocalName());
         }
-        if (!WCS.NS.equals(root.getNamespaceURI())) {
+        if (!WCS.NS_WCS.equals(root.getNamespaceURI())) {
             throw new IllegalArgumentException("Invalid XML root namespace: "
                     + root.getNamespaceURI());
         }
@@ -57,14 +56,13 @@ public class CoverageDescriptionsParser {
                 .orElseThrow(() -> new IllegalArgumentException(
                         "Could not find CoverageId from CoverageDescription"));
 
-        Optional<Element> boundedByE = XML.getChild(coverageDescription, "boundedBy");
-        Envelope boundedBy = null;
-        if (boundedByE.isPresent()) {
-            Element envelope = XML.getChild(boundedByE.get(), "Envelope")
-                    .orElseThrow(() -> new IllegalArgumentException(
-                            "Could not find Envelope from boundedBy"));
-            boundedBy = CommonParser.parseEnvelope(envelope);
-        }
+        Element boundedByE = XML.getChild(coverageDescription, "boundedBy")
+                .orElseThrow(() -> new IllegalArgumentException(
+                        "The coverage element of every OfferedCoverage shall contain a valid gml:boundedBy element"));
+        Element envelope = XML.getChild(boundedByE, "Envelope")
+                .orElseThrow(() -> new IllegalArgumentException(
+                        "Could not find Envelope from boundedBy"));
+        Envelope boundedBy = CommonParser.parseEnvelope(envelope);
 
         Element serviceParameters = XML.getChild(coverageDescription, "ServiceParameters")
                 .orElseThrow(() -> new IllegalArgumentException(

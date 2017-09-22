@@ -4,25 +4,26 @@ import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+import org.oskari.wcs.capabilities.Capabilities;
+
+import org.oskari.wcs.capabilities.Operation;
+import org.oskari.wcs.capabilities.OperationsMetadata;
+import org.oskari.wcs.capabilities.ServiceIdentification;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 import javax.xml.parsers.ParserConfigurationException;
 import org.junit.Test;
-import org.oskari.ows.capabilities.Operation;
-import org.oskari.ows.capabilities.OperationsMetadata;
-import org.oskari.ows.capabilities.ServiceIdentification;
 import org.oskari.wcs.capabilities.BoundingBox;
 import org.oskari.wcs.capabilities.Contents;
 import org.oskari.wcs.capabilities.CoverageSummary;
 import org.oskari.wcs.capabilities.Extensions;
 import org.oskari.wcs.capabilities.ServiceMetadata;
-import org.oskari.wcs.response.Capabilities;
 import org.oskari.wcs.util.XML;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
-public class WCSCapabilitiesParserTest {
+public class CapabilitiesParserTest {
 
     @Test
     public void checkCapabilities() throws IOException, ParserConfigurationException, SAXException {

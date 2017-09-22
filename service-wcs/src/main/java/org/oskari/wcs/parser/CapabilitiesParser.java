@@ -12,14 +12,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import javax.xml.parsers.ParserConfigurationException;
-import org.oskari.ows.capabilities.Operation;
-import org.oskari.ows.capabilities.OperationsMetadata;
-import org.oskari.ows.capabilities.ServiceIdentification;
 import org.oskari.wcs.capabilities.BoundingBox;
+import org.oskari.wcs.capabilities.Capabilities;
 import org.oskari.wcs.capabilities.Contents;
 import org.oskari.wcs.capabilities.CoverageSummary;
+import org.oskari.wcs.capabilities.Operation;
+import org.oskari.wcs.capabilities.OperationsMetadata;
+import org.oskari.wcs.capabilities.ServiceIdentification;
 import org.oskari.wcs.capabilities.ServiceMetadata;
-import org.oskari.wcs.response.Capabilities;
 import org.oskari.wcs.util.WCS;
 import org.oskari.wcs.util.XML;
 import org.w3c.dom.Document;
@@ -48,7 +48,7 @@ public class CapabilitiesParser {
             throw new IllegalArgumentException("Invalid root element name: "
                     + root.getLocalName());
         }
-        if (!WCS.NS.equals(root.getNamespaceURI())) {
+        if (!WCS.NS_WCS.equals(root.getNamespaceURI())) {
             throw new IllegalArgumentException("Invalid XML root namespace: "
                     + root.getNamespaceURI());
         }
@@ -105,6 +105,9 @@ public class CapabilitiesParser {
 
     private static Operation parseOperation(Element op) {
         String name = op.getAttribute("name");
+        if (name == null || name.length() == 0) {
+            throw new IllegalArgumentException("Operation did not specify name attribute");
+        }
         String get = null;
         String post = null;
         for (Element dcp : XML.getChildren(op, "DCP")) {
@@ -120,7 +123,10 @@ public class CapabilitiesParser {
                 }
             }
         }
-        return new Operation(name, get, post);
+        if (get == null && post == null) {
+            throw new IllegalArgumentException("Operation did not specify either GET or POST encoding");
+        }
+        return new Operation(name, Optional.ofNullable(get), Optional.ofNullable(post));
     }
 
     private static ServiceMetadata parseServiceMetadata(Element serviceMetadata)

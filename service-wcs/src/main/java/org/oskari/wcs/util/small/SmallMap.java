@@ -31,35 +31,58 @@ public class SmallMap implements Map<String, String> {
         v = new String[] { v1, v2 };
     }
 
-    public SmallMap(String k1, String v1, String k2, String v2, String k3, String v3) {
+    public SmallMap(String k1, String v1, String k2, String v2,
+            String k3, String v3) {
         len = 3;
         k = new String[] { k1, k2, k3 };
         assertKeysUnique();
         v = new String[] { v1, v2, v3 };
     }
 
-    public SmallMap(String k1, String v1, String k2, String v2, String k3, String v3, String k4,
-            String v4) {
+    public SmallMap(String k1, String v1, String k2, String v2,
+            String k3, String v3, String k4, String v4) {
         len = 4;
         k = new String[] { k1, k2, k3, k4 };
         assertKeysUnique();
         v = new String[] { v1, v2, v3, v4 };
     }
 
-    public SmallMap(String k1, String v1, String k2, String v2, String k3, String v3, String k4,
-            String v4, String k5, String v5) {
+    public SmallMap(String k1, String v1, String k2, String v2,
+            String k3, String v3, String k4, String v4,
+            String k5, String v5) {
         len = 5;
         k = new String[] { k1, k2, k3, k4, k5 };
         assertKeysUnique();
         v = new String[] { v1, v2, v3, v4, v5 };
     }
 
-    public SmallMap(String k1, String v1, String k2, String v2, String k3, String v3, String k4,
-            String v4, String k5, String v5, String k6, String v6) {
+    public SmallMap(String k1, String v1, String k2, String v2,
+            String k3, String v3, String k4, String v4,
+            String k5, String v5, String k6, String v6) {
         len = 6;
         k = new String[] { k1, k2, k3, k4, k5, k6 };
         assertKeysUnique();
         v = new String[] { v1, v2, v3, v4, v5, v6 };
+    }
+
+    public SmallMap(String k1, String v1, String k2, String v2,
+            String k3, String v3, String k4, String v4,
+            String k5, String v5, String k6, String v6,
+            String k7, String v7) {
+        len = 7;
+        k = new String[] { k1, k2, k3, k4, k5, k6, k7 };
+        assertKeysUnique();
+        v = new String[] { v1, v2, v3, v4, v5, v6, v7 };
+    }
+
+    public SmallMap(String k1, String v1, String k2, String v2,
+            String k3, String v3, String k4, String v4,
+            String k5, String v5, String k6, String v6,
+            String k7, String v7, String k8, String v8) {
+        len = 8;
+        k = new String[] { k1, k2, k3, k4, k5, k6, k7, k8 };
+        assertKeysUnique();
+        v = new String[] { v1, v2, v3, v4, v5, v6, v7, v8 };
     }
 
     private void assertKeysUnique() {

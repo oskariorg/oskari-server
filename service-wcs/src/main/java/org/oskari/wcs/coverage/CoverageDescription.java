@@ -1,4 +1,4 @@
-package org.oskari.wcs.response;
+package org.oskari.wcs.coverage;
 
 import org.oskari.wcs.gml.Envelope;
 

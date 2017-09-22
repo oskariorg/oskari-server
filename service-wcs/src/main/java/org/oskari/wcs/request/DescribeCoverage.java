@@ -3,8 +3,8 @@ package org.oskari.wcs.request;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import org.oskari.ows.capabilities.Operation;
-import org.oskari.wcs.response.Capabilities;
+import org.oskari.wcs.capabilities.Capabilities;
+import org.oskari.wcs.capabilities.Operation;
 import org.oskari.wcs.util.small.SmallMap;
 
 public class DescribeCoverage {
@@ -12,26 +12,10 @@ public class DescribeCoverage {
     private DescribeCoverage() { /* Block */ }
 
     /**
-     * Check if the coverage appears in the GetCapabilities response
-     * 
-     * @param wcs
-     *            capabilities of the service
-     * @param coverageId
-     *            of the coverage
-     * @return true if exists, false if not
-     */
-    public static boolean coverageExists(Capabilities wcs, String coverageId) {
-        Objects.requireNonNull(wcs);
-        Objects.requireNonNull(coverageId);
-        return wcs.getContents().getCoverageSummary().stream()
-                .anyMatch(c -> coverageId.equals(c.getCoverageId()));
-    }
-
-    /**
      * Create query parameters for a GET encoded DescribeCoverage request You
      * can use {@link #coverageExists(Capabilities, String)} to see if the
      * coverage exists
-     * 
+     *
      * @param coverageId
      *            id of the coverage
      * @return Map with query parameters
@@ -47,31 +31,28 @@ public class DescribeCoverage {
     /**
      * Get the HTTP endpoint declared in GetCapabilities for DescribeCoverage
      * request
-     * 
-     * @param wcs
-     *            capabilities of the service
-     * @param get
-     *            true if you want the GET endpoint, false if POST
-     * @return the endpoint which might not exist for your binding or if the
-     *         service did not declare support for DescribeCoverage at all
+     *
+     * @param wcs capabilities of the service
+     * @param get true if you want the GET endpoint, false if POST
+     * @return the endpoint which might not exist for your binding
      */
     public static Optional<String> getDescribeCoverageEndPoint(Capabilities wcs, boolean get) {
-        Optional<Operation> opt = getDescribeCoverage(wcs);
-        if (opt.isPresent()) {
-            Operation op = opt.get();
-            String endPoint = get ? op.getGet() : op.getPost();
-            if (endPoint != null && !endPoint.isEmpty()) {
-                return Optional.of(endPoint);
+        Objects.requireNonNull(wcs);
+        if (get) {
+            if (!wcs.supportsGET()) {
+                return Optional.empty();
+            }
+        } else {
+            if (!wcs.supportsPOST()) {
+                return Optional.empty();
             }
         }
-        return Optional.empty();
-    }
-
-    private static Optional<Operation> getDescribeCoverage(Capabilities wcs) {
-        Objects.requireNonNull(wcs);
-        return wcs.getOperationsMetadata().getOperation().stream()
-                .filter(op -> "DescribeCoverage".equals(op.getName()))
-                .findAny();
+        Operation op = wcs.findOperation("DescribeCoverage")
+                .orElseThrow(() -> new IllegalArgumentException(
+                        "The OperationsMetadata component shall contain three "
+                                + "Operation instances with case-sensitive name values "
+                                + "'GetCapabilities', 'DescribeCoverage', and “GetCoverage'"));
+        return get ? op.getGet() : op.getPost();
     }
 
 }

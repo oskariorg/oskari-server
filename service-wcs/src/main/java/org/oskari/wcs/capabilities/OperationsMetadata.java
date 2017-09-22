@@ -1,4 +1,4 @@
-package org.oskari.ows.capabilities;
+package org.oskari.wcs.capabilities;
 
 import java.util.List;
 

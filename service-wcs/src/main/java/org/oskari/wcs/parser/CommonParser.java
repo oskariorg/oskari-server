@@ -13,7 +13,7 @@ public class CommonParser {
         String tmp = envelope.getAttribute("srsDimension");
         if (tmp == null || tmp.isEmpty()) {
             throw new IllegalArgumentException(
-                    "Invalid Envelope, could not find srsDimension attribute");
+                    "Invalid Envelope, srsDimension shall not be empty");
         }
         final int srsDimension = Integer.parseInt(tmp);
 
