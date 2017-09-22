@@ -1,10 +1,9 @@
 package org.oskari.wcs.response.coverage;
 
-import org.oskari.wcs.response.CoverageDescription;
-
+import org.oskari.wcs.coverage.function.GridFunction;
 import org.oskari.wcs.gml.Envelope;
 import org.oskari.wcs.gml.RectifiedGrid;
-import org.oskari.wcs.coverage.function.GridFunction;
+import org.oskari.wcs.response.CoverageDescription;
 
 public class RectifiedGridCoverage extends CoverageDescription {
 

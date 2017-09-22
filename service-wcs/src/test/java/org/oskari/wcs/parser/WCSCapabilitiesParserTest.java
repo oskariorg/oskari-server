@@ -1,12 +1,9 @@
-package org.oskari.wcs.capabilities.parser;
+package org.oskari.wcs.parser;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-import org.oskari.wcs.parser.CapabilitiesParser;
-
-import org.oskari.wcs.response.Capabilities;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
@@ -20,6 +17,7 @@ import org.oskari.wcs.capabilities.Contents;
 import org.oskari.wcs.capabilities.CoverageSummary;
 import org.oskari.wcs.capabilities.Extensions;
 import org.oskari.wcs.capabilities.ServiceMetadata;
+import org.oskari.wcs.response.Capabilities;
 import org.oskari.wcs.util.XML;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;

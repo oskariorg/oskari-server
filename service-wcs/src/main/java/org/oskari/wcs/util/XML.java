@@ -15,8 +15,8 @@ import org.xml.sax.SAXException;
 
 public class XML {
 
-    public static Document readDocument(InputStream in)
-            throws ParserConfigurationException, SAXException, IOException {
+    public static Document readDocument(InputStream in) throws ParserConfigurationException,
+            SAXException, IOException {
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         dbf.setNamespaceAware(true);
         DocumentBuilder db = dbf.newDocumentBuilder();
@@ -28,8 +28,7 @@ public class XML {
     public static Optional<Element> getChild(Element e, String localName) {
         Node node = e.getFirstChild();
         while (node != null) {
-            if (node.getNodeType() == Node.ELEMENT_NODE
-                    && localName.equals(node.getLocalName())) {
+            if (node.getNodeType() == Node.ELEMENT_NODE && localName.equals(node.getLocalName())) {
                 return Optional.of((Element) node);
             }
             node = node.getNextSibling();
@@ -41,8 +40,7 @@ public class XML {
         List<Element> list = new ArrayList<>();
         Node node = e.getFirstChild();
         while (node != null) {
-            if (node.getNodeType() == Node.ELEMENT_NODE
-                    && localName.equals(node.getLocalName())) {
+            if (node.getNodeType() == Node.ELEMENT_NODE && localName.equals(node.getLocalName())) {
                 list.add((Element) node);
             }
             node = node.getNextSibling();
@@ -82,8 +80,7 @@ public class XML {
         List<String> list = new ArrayList<>();
         Node node = e.getFirstChild();
         while (node != null) {
-            if (node.getNodeType() == Node.ELEMENT_NODE
-                    && localName.equals(node.getLocalName())) {
+            if (node.getNodeType() == Node.ELEMENT_NODE && localName.equals(node.getLocalName())) {
                 String text = node.getTextContent();
                 if (text != null && text.length() > 0) {
                     list.add(text);

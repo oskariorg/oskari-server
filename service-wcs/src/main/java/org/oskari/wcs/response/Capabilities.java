@@ -1,10 +1,9 @@
 package org.oskari.wcs.response;
 
-import org.oskari.wcs.capabilities.Contents;
-import org.oskari.wcs.capabilities.ServiceMetadata;
-
 import org.oskari.ows.capabilities.OperationsMetadata;
 import org.oskari.ows.capabilities.ServiceIdentification;
+import org.oskari.wcs.capabilities.Contents;
+import org.oskari.wcs.capabilities.ServiceMetadata;
 
 public class Capabilities {
 

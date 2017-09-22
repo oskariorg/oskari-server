@@ -4,8 +4,6 @@ import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.mapping;
 import static java.util.stream.Collectors.toList;
 
-import org.oskari.wcs.response.Capabilities;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -21,6 +19,7 @@ import org.oskari.wcs.capabilities.BoundingBox;
 import org.oskari.wcs.capabilities.Contents;
 import org.oskari.wcs.capabilities.CoverageSummary;
 import org.oskari.wcs.capabilities.ServiceMetadata;
+import org.oskari.wcs.response.Capabilities;
 import org.oskari.wcs.util.WCS;
 import org.oskari.wcs.util.XML;
 import org.w3c.dom.Document;

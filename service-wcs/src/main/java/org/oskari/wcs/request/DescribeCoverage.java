@@ -1,14 +1,16 @@
 package org.oskari.wcs.request;
 
-import org.oskari.wcs.response.Capabilities;
-
-import java.util.Optional;
 import java.util.Map;
 import java.util.Objects;
-import java.util.TreeMap;
+import java.util.Optional;
 import org.oskari.ows.capabilities.Operation;
+import org.oskari.wcs.response.Capabilities;
+import org.oskari.wcs.util.smallmap.SmallMap;
 
 public class DescribeCoverage {
+
+    private DescribeCoverage() { /* Block */
+    }
 
     /**
      * Check if the coverage appears in the GetCapabilities response
@@ -36,12 +38,8 @@ public class DescribeCoverage {
      * @return Map with query parameters
      */
     public static Map<String, String> toQueryParameters(String coverageId) {
-        Map<String, String> params = new TreeMap<>();
-        params.put("service", "WCS");
-        params.put("version", "2.0.1");
-        params.put("request", "DescribeCoverage");
-        params.put("coverageId", coverageId);
-        return params;
+        return new SmallMap("service", "WCS", "version", "2.0.1", "request", "DescribeCoverage",
+                "coverageId", coverageId);
     }
 
     /**
