@@ -30,22 +30,23 @@ public class CapabilitiesParser {
 
     public static final String ALLOWED_VERSION = "2.0.1";
 
-    public static Capabilities parse(URL url) throws IOException, ParserConfigurationException,
-            SAXException {
+    public static Capabilities parse(URL url)
+            throws IOException, ParserConfigurationException, SAXException {
         try (InputStream in = url.openStream()) {
             return parse(in);
         }
     }
 
-    public static Capabilities parse(InputStream in) throws ParserConfigurationException,
-            SAXException, IOException {
+    public static Capabilities parse(InputStream in)
+            throws ParserConfigurationException, SAXException, IOException {
         return parse(XML.readDocument(in));
     }
 
     public static Capabilities parse(Document doc) throws IllegalArgumentException {
         Element root = doc.getDocumentElement();
         if (!"Capabilities".equals(root.getLocalName())) {
-            throw new IllegalArgumentException("Invalid root element name: " + root.getLocalName());
+            throw new IllegalArgumentException("Invalid root element name: "
+                    + root.getLocalName());
         }
         if (!WCS.NS.equals(root.getNamespaceURI())) {
             throw new IllegalArgumentException("Invalid XML root namespace: "

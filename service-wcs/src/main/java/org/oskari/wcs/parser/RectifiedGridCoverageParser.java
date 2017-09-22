@@ -16,12 +16,13 @@ public class RectifiedGridCoverageParser {
 
     public static RectifiedGridCoverage parse(Element coverageDescriptionE, String coverageId,
             Envelope boundedBy, String nativeFormat) throws IllegalArgumentException {
-        Element domainSetE = XML.getChild(coverageDescriptionE, "domainSet").orElseThrow(
-                () -> new IllegalArgumentException(
+        Element domainSetE = XML.getChild(coverageDescriptionE, "domainSet")
+                .orElseThrow(() -> new IllegalArgumentException(
                         "Could not find domainSet from CoverageDescription"));
 
-        Element rectifiedGridE = XML.getChild(domainSetE, "RectifiedGrid").orElseThrow(
-                () -> new IllegalArgumentException("Could not find RectifiedGrid from domainSet"));
+        Element rectifiedGridE = XML.getChild(domainSetE, "RectifiedGrid")
+                .orElseThrow(() -> new IllegalArgumentException(
+                        "Could not find RectifiedGrid from domainSet"));
 
         RectifiedGrid domainSet = parseRectifiedGrid(rectifiedGridE);
 
@@ -34,16 +35,15 @@ public class RectifiedGridCoverageParser {
 
     private static RectifiedGrid parseRectifiedGrid(Element rectifiedGridE) {
         int dimension = CommonParser.parseInt(rectifiedGridE.getAttribute("dimension"))
-                .orElseThrow(
-                        () -> new IllegalArgumentException(
-                                "Invalid Rectified, invalid dimension value"));
+                .orElseThrow(() -> new IllegalArgumentException(
+                        "Invalid Rectified, invalid dimension value"));
 
         Element limitsE = XML.getChild(rectifiedGridE, "limits")
-                .orElseThrow(
-                        () -> new IllegalArgumentException(
-                                "Invalid RectifiedGrid, missing limits element"));
-        Element gridEnvelopeE = XML.getChild(limitsE, "GridEnvelope").orElseThrow(
-                () -> new IllegalArgumentException("Invalid limits, missing GridEnvelope element"));
+                .orElseThrow(() -> new IllegalArgumentException(
+                        "Invalid RectifiedGrid, missing limits element"));
+        Element gridEnvelopeE = XML.getChild(limitsE, "GridEnvelope")
+                .orElseThrow(() -> new IllegalArgumentException(
+                        "Invalid limits, missing GridEnvelope element"));
         GridEnvelope limits = parseGridEnvelope(gridEnvelopeE, dimension);
 
         String[] axes = parseAxisLables(rectifiedGridE, dimension);
@@ -74,9 +74,8 @@ public class RectifiedGridCoverageParser {
 
     private static Point parseOrigin(Element gridEnvelopeE, int dimension) {
         Element originE = XML.getChild(gridEnvelopeE, "origin")
-                .orElseThrow(
-                        () -> new IllegalArgumentException(
-                                "Invalid RectifiedGrid, missing origin element"));
+                .orElseThrow(() -> new IllegalArgumentException(
+                        "Invalid RectifiedGrid, missing origin element"));
         Element pointE = XML.getChild(originE, "Point").orElseThrow(
                 () -> new IllegalArgumentException("Invalid origin, missing Point element"));
         return CommonParser.parsePoint(pointE, dimension);
@@ -118,20 +117,26 @@ public class RectifiedGridCoverageParser {
     }
 
     private static GridEnvelope parseGridEnvelope(Element gridEnvelopeE, int dimension) {
-        String lowStr = XML.getChildText(gridEnvelopeE, "low").orElseThrow(
-                () -> new IllegalArgumentException("Invalid GridEnvelope, missing low element"));
-        int[] low = CommonParser.parseIntArray(lowStr, ' ').orElseThrow(
-                () -> new IllegalArgumentException("Invalid low value in GridEnvelope"));
+        String lowStr = XML.getChildText(gridEnvelopeE, "low")
+                .orElseThrow(() -> new IllegalArgumentException(
+                        "Invalid GridEnvelope, missing low element"));
+        int[] low = CommonParser.parseIntArray(lowStr, ' ')
+                .orElseThrow(() -> new IllegalArgumentException(
+                        "Invalid low value in GridEnvelope"));
         if (low.length != dimension) {
-            throw new IllegalArgumentException("GridEnvelope low length does not match dimension");
+            throw new IllegalArgumentException(
+                    "GridEnvelope low length does not match dimension");
         }
 
-        String highStr = XML.getChildText(gridEnvelopeE, "high").orElseThrow(
-                () -> new IllegalArgumentException("Invalid GridEnvelope, missing high element"));
-        int[] high = CommonParser.parseIntArray(highStr, ' ').orElseThrow(
-                () -> new IllegalArgumentException("Invalid high value in GridEnvelope"));
+        String highStr = XML.getChildText(gridEnvelopeE, "high")
+                .orElseThrow(() -> new IllegalArgumentException(
+                        "Invalid GridEnvelope, missing high element"));
+        int[] high = CommonParser.parseIntArray(highStr, ' ')
+                .orElseThrow(() -> new IllegalArgumentException(
+                        "Invalid high value in GridEnvelope"));
         if (high.length != dimension) {
-            throw new IllegalArgumentException("GridEnvelope high length does not match dimension");
+            throw new IllegalArgumentException(
+                    "GridEnvelope high length does not match dimension");
         }
 
         return new GridEnvelope(low, high);
@@ -141,12 +146,13 @@ public class RectifiedGridCoverageParser {
             RectifiedGrid domainSet) {
         if (!coverageFunction.isPresent()) {
             // Return default values
-            return new GridFunction(GridFunction.DEFAULT_SEQUENCE_RULE, domainSet.getLimits()
-                    .getLow());
+            return new GridFunction(
+                    GridFunction.DEFAULT_SEQUENCE_RULE,
+                    domainSet.getLimits().getLow());
         }
 
-        Element gridFunction = XML.getChild(coverageFunction.get(), "GridFunction").orElseThrow(
-                () -> new IllegalArgumentException(
+        Element gridFunction = XML.getChild(coverageFunction.get(), "GridFunction")
+                .orElseThrow(() -> new IllegalArgumentException(
                         "Could not find GridFunction from coverageFunction"));
 
         SequenceRule sequenceRule = parseSequenceRule(gridFunction);
@@ -154,8 +160,9 @@ public class RectifiedGridCoverageParser {
         Optional<String> startPointStr = XML.getChildText(gridFunction, "startPoint");
         int[] startPoint;
         if (startPointStr.isPresent()) {
-            startPoint = CommonParser.parseIntArray(startPointStr.get(), ' ').orElseThrow(
-                    () -> new IllegalArgumentException("Invalid GridFunction, invalid startPoint"));
+            startPoint = CommonParser.parseIntArray(startPointStr.get(), ' ')
+                    .orElseThrow(() -> new IllegalArgumentException(
+                            "Invalid GridFunction, invalid startPoint"));
         } else {
             startPoint = domainSet.getLimits().getLow();
         }
@@ -185,8 +192,9 @@ public class RectifiedGridCoverageParser {
         String axisOrderStr = elem.getAttribute("axisOrder");
         int[] axisOrder;
         if (axisOrderStr != null && !axisOrderStr.isEmpty()) {
-            axisOrder = CommonParser.parseIntArray(axisOrderStr, ' ').orElseThrow(
-                    () -> new IllegalArgumentException("Invalid sequenceRule, invalid axisOrder"));
+            axisOrder = CommonParser.parseIntArray(axisOrderStr, ' ')
+                    .orElseThrow(() -> new IllegalArgumentException(
+                            "Invalid sequenceRule, invalid axisOrder"));
         } else {
             axisOrder = SequenceRule.getDefaultAxisOrder();
         }

@@ -9,8 +9,7 @@ import org.oskari.wcs.util.small.SmallMap;
 
 public class DescribeCoverage {
 
-    private DescribeCoverage() { /* Block */
-    }
+    private DescribeCoverage() { /* Block */ }
 
     /**
      * Check if the coverage appears in the GetCapabilities response
@@ -38,7 +37,10 @@ public class DescribeCoverage {
      * @return Map with query parameters
      */
     public static Map<String, String> toQueryParameters(String coverageId) {
-        return new SmallMap("service", "WCS", "version", "2.0.1", "request", "DescribeCoverage",
+        return new SmallMap(
+                "service", "WCS",
+                "version", "2.0.1",
+                "request", "DescribeCoverage",
                 "coverageId", coverageId);
     }
 
@@ -68,7 +70,8 @@ public class DescribeCoverage {
     private static Optional<Operation> getDescribeCoverage(Capabilities wcs) {
         Objects.requireNonNull(wcs);
         return wcs.getOperationsMetadata().getOperation().stream()
-                .filter(op -> "DescribeCoverage".equals(op.getName())).findAny();
+                .filter(op -> "DescribeCoverage".equals(op.getName()))
+                .findAny();
     }
 
 }

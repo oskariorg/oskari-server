@@ -5,15 +5,14 @@ import org.oskari.wcs.util.small.SmallMap;
 
 public class GetCapabilities {
 
-    private static final Map<String, String> QUERY_PARAMS = new SmallMap("service", "WCS",
+    private static final Map<String, String> QUERY_PARAMS = new SmallMap(
+            "service", "WCS",
             "request", "GetCapabilities");
 
-    private GetCapabilities() { /* Block */
-    }
+    private GetCapabilities() { /* Block */ }
 
     /**
      * Get query parameters for a GET/KVP encoded GetCapabilities request
-     * 
      * @return Map with query parameters
      */
     public static Map<String, String> toQueryParameters() {
