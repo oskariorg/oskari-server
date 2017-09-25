@@ -1,5 +1,7 @@
 package org.oskari.wcs.coverage;
 
+import java.util.Arrays;
+
 import org.oskari.wcs.gml.Envelope;
 
 public abstract class CoverageDescription {
@@ -26,6 +28,9 @@ public abstract class CoverageDescription {
         return nativeFormat;
     }
 
-    public abstract boolean hasAxis(String axis);
+    public boolean hasAxis(String axis) {
+        return Arrays.stream(boundedBy.getAxisLabels())
+                .anyMatch(a -> axis.equals(a));
+    }
 
 }

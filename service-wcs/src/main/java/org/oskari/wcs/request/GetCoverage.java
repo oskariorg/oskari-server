@@ -1,7 +1,8 @@
 package org.oskari.wcs.request;
 
-import org.oskari.wcs.coverage.RectifiedGridCoverage;
+import java.util.Locale;
 
+import org.oskari.wcs.coverage.RectifiedGridCoverage;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -38,11 +39,11 @@ public class GetCoverage {
 
     private Scaling scaling;
 
-    private GetCoverage(Capabilities wcs, CoverageDescription desc) {
+    public GetCoverage(Capabilities wcs, CoverageDescription desc) {
         this(wcs, desc, desc.getNativeFormat());
     }
 
-    private GetCoverage(Capabilities wcs, CoverageDescription desc, String format)
+    public GetCoverage(Capabilities wcs, CoverageDescription desc, String format)
             throws IllegalArgumentException {
         if (!wcs.supportsFormat(format)) {
             throw new IllegalArgumentException("Invalid format");
@@ -73,13 +74,13 @@ public class GetCoverage {
 
     public GetCoverage subset(String dimension, double low, double high) {
         checkDimension(dimension);
-        subset.add(String.format("%s(%.f,%.f)", dimension, low, high));
+        subset.add(String.format(Locale.US, "%s(%f,%f)", dimension, low, high));
         return this;
     }
 
     public GetCoverage subset(String dimension, double point) {
         checkDimension(dimension);
-        subset.add(String.format("%s(%.f)", dimension, point));
+        subset.add(String.format(Locale.US, "%s(%f)", dimension, point));
         return this;
     }
 
@@ -87,6 +88,11 @@ public class GetCoverage {
         if (!desc.hasAxis(dimension)) {
             throw new UnsupportedOperationException();
         }
+    }
+
+    public GetCoverage multipart(boolean multiPart) {
+        this.multiPart = multiPart;
+        return this;
     }
 
     public GetCoverage interpolation(Interpolation interp) {
@@ -195,7 +201,7 @@ public class GetCoverage {
         int n = scaleAxes.length;
         String[] values = new String[n];
         for (int i = 0; i < n; i++) {
-            values[i] = String.format("%s(%.f)", scaleAxes[i].axis, scaleAxes[i].scaleFactor);
+            values[i] = String.format(Locale.US, "%s(%f)", scaleAxes[i].axis, scaleAxes[i].scaleFactor);
         }
         return join(values, ',');
     }
@@ -226,7 +232,7 @@ public class GetCoverage {
         int n = scaleAxes.length;
         String[] values = new String[n];
         for (int i = 0; i < n; i++) {
-            values[i] = String.format("%s(%.f:%.f)", scaleAxes[i].axis, scaleAxes[i].low, scaleAxes[i].high);
+            values[i] = String.format(Locale.US, "%s(%f:%f)", scaleAxes[i].axis, scaleAxes[i].low, scaleAxes[i].high);
         }
         return join(values, ',');
     }
