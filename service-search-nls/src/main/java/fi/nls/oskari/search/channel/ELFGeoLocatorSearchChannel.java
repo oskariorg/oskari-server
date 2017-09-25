@@ -429,16 +429,22 @@ public class ELFGeoLocatorSearchChannel extends SearchChannel implements SearchA
         if(PROPERTY_AUTOCOMPLETE_URL == null || PROPERTY_AUTOCOMPLETE_URL.isEmpty()) {
             return Collections.emptyList();
         }
+        JSONObject jsonObject;
         try {
             log.info("Creating autocomplete search url with url:", PROPERTY_AUTOCOMPLETE_URL);
             HttpURLConnection conn = IOHelper.getConnection(PROPERTY_AUTOCOMPLETE_URL,
                     PROPERTY_AUTOCOMPLETE_USERNAME, PROPERTY_AUTOCOMPLETE_PASSWORD);
             IOHelper.writeToConnection(conn, getElasticQuery(searchString));
             String result = IOHelper.readString(conn);
-            JSONObject jsonObject = new JSONObject(result);
+            jsonObject = new JSONObject(result);
+        }
+        catch (Exception ex) {
+            log.error("Couldn't open or read from connection for search channel!");
+            throw new RuntimeException("Couldn't open or read from connection!", ex);
+        }
 
-            HitCombiner combiner = new HitCombiner();
-
+        HitCombiner combiner = new HitCombiner();
+        try {
             JSONArray fuzzyHits = jsonObject.getJSONArray("fuzzy_search").getJSONObject(0).getJSONArray("options");
             for (int i = 0; i < fuzzyHits.length(); ++i) {
                 combiner.addHit(fuzzyHits.getJSONObject(i), 0);
@@ -448,13 +454,13 @@ public class ELFGeoLocatorSearchChannel extends SearchChannel implements SearchA
             for (int i = 0; i < exactHits.length(); ++i) {
                 combiner.addHit(exactHits.getJSONObject(i), 1000);
             }
+        }
+        catch (JSONException ex) {
+            log.error("Unexpected autocomplete service JSON response structure!");
+            throw new RuntimeException("Unexpected autocomplete service JSON response structure!", ex);
+        }
 
-            return combiner.getSortedHits();
-        }
-        catch (Exception ex) {
-            log.error("Couldn't open or read from connection for search channel!");
-            throw new RuntimeException("Couldn't open or read from connection!", ex);
-        }
+        return combiner.getSortedHits();
     }
 
 
