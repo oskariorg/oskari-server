@@ -5,7 +5,7 @@ import java.util.Objects;
 import java.util.Optional;
 import org.oskari.wcs.capabilities.Capabilities;
 import org.oskari.wcs.capabilities.Operation;
-import org.oskari.wcs.util.small.SmallMap;
+import org.oskari.wcs.util.Maps;
 
 public class DescribeCoverage {
 
@@ -21,7 +21,7 @@ public class DescribeCoverage {
      * @return Map with query parameters
      */
     public static Map<String, String> toQueryParameters(String coverageId) {
-        return new SmallMap(
+        return Maps.of(
                 "service", "WCS",
                 "version", "2.0.1",
                 "request", "DescribeCoverage",

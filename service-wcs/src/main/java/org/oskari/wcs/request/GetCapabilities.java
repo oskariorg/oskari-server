@@ -1,11 +1,11 @@
 package org.oskari.wcs.request;
 
 import java.util.Map;
-import org.oskari.wcs.util.small.SmallMap;
+import org.oskari.wcs.util.Maps;
 
 public class GetCapabilities {
 
-    private static final Map<String, String> QUERY_PARAMS = new SmallMap(
+    private static final Map<String, String> QUERY_PARAMS = Maps.of(
             "service", "WCS",
             "request", "GetCapabilities");
 

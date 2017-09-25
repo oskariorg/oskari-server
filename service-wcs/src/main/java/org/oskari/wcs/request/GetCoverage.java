@@ -1,14 +1,13 @@
 package org.oskari.wcs.request;
 
-import java.util.Locale;
-
-import org.oskari.wcs.coverage.RectifiedGridCoverage;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import org.oskari.wcs.capabilities.Capabilities;
 import org.oskari.wcs.coverage.CoverageDescription;
+import org.oskari.wcs.coverage.RectifiedGridCoverage;
 import org.oskari.wcs.extension.Interpolation;
 import org.oskari.wcs.extension.scaling.ScaleAxesByFactor;
 import org.oskari.wcs.extension.scaling.ScaleAxis;

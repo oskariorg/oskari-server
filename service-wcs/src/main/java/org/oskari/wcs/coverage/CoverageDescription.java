@@ -1,7 +1,6 @@
 package org.oskari.wcs.coverage;
 
 import java.util.Arrays;
-
 import org.oskari.wcs.gml.Envelope;
 
 public abstract class CoverageDescription {
