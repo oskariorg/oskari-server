@@ -1,5 +1,7 @@
 package org.oskari.wcs.request;
 
+import org.oskari.wcs.coverage.RectifiedGridCoverage;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -128,7 +130,11 @@ public class GetCoverage {
     }
 
     public GetCoverage scaling(Scaling scaling) {
-        // TODO check that axes exist
+        // TODO: once we support other types of GridCoverages should be removed
+        if (!(desc instanceof RectifiedGridCoverage)) {
+            throw new IllegalArgumentException("Scaling extension only defined for Grid based coverages");
+        }
+        // TODO: check that axes exist
         this.scaling = scaling;
         return this;
     }
