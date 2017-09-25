@@ -13,6 +13,7 @@ import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
@@ -436,13 +437,19 @@ public class ELFGeoLocatorSearchChannel extends SearchChannel implements SearchA
             String result = IOHelper.readString(conn);
             JSONObject jsonObject = new JSONObject(result);
 
-            JSONArray jsonHitsArray = jsonObject.getJSONObject("hits").getJSONArray("hits");
-            List<String> resultList = new ArrayList<>();
-            for (int i = 0; i < jsonHitsArray.length(); ++i ) {
-                String resultName = jsonHitsArray.getJSONObject(i).getJSONObject("_source").getString("name");
-                resultList.add(resultName);
+            HitCombiner combiner = new HitCombiner();
+
+            JSONArray fuzzyHits = jsonObject.getJSONArray("fuzzy_search").getJSONObject(0).getJSONArray("options");
+            for (int i = 0; i < fuzzyHits.length(); ++i) {
+                combiner.addHit(fuzzyHits.getJSONObject(i), 0);
             }
-            return resultList;
+
+            JSONArray exactHits = jsonObject.getJSONArray("normal_search").getJSONObject(0).getJSONArray("options");
+            for (int i = 0; i < exactHits.length(); ++i) {
+                combiner.addHit(exactHits.getJSONObject(i), 1000);
+            }
+
+            return combiner.getSortedHits();
         }
         catch (Exception ex) {
             log.error("Couldn't open or read from connection for search channel!");
@@ -450,13 +457,53 @@ public class ELFGeoLocatorSearchChannel extends SearchChannel implements SearchA
         }
     }
 
+
     protected String getElasticQuery(String query) {
-        // { "query": { "match": { "name": { "query": "[user input]", "analyzer": "standard" } } } };";
-        JSONObject elasticQueryTemplate = JSONHelper.createJSONObject("{ \"query\": { \"match\": { \"name\": { \"analyzer\": \"standard\" } } } };");
+        // {"normal_search":{"text":"[user input]","completion":{"field":"name_suggest","size":20}},"fuzzy_search":{"text":"[user input]","completion":{"field":"name_suggest","size":20,"fuzzy":{"fuzziness":5}}}}
+        JSONObject elasticQueryTemplate = JSONHelper.createJSONObject("{\"normal_search\":{\"completion\":{\"field\":\"name_suggest\",\"size\":20}},\"fuzzy_search\":{\"completion\":{\"field\":\"name_suggest\",\"size\":20,\"fuzzy\":{\"fuzziness\":5}}}}");
         try {
             // set the actual search query
-            elasticQueryTemplate.optJSONObject("query").optJSONObject("match").optJSONObject("name").put("query", query);
+            elasticQueryTemplate.optJSONObject("normal_search").put("text", query);
+            elasticQueryTemplate.optJSONObject("fuzzy_search").put("text", query);
         } catch(Exception ignored) {}
         return elasticQueryTemplate.toString();
+    }
+
+    private class HitCombiner {
+        Map<String, ScoredSearchHit> combinedHits = new TreeMap<>();
+
+        public void addHit(JSONObject hit, int scoreBoost) throws JSONException {
+            String text = hit.getString("text");
+            int score = hit.getInt("_score") + scoreBoost;
+            ScoredSearchHit existingHit = combinedHits.get(text);
+            if (existingHit == null || existingHit.score < score) {
+                combinedHits.put(text, new ScoredSearchHit(text, score));
+            }
+        }
+
+        public List<String> getSortedHits() {
+            List<ScoredSearchHit> suggestions = new ArrayList<>(combinedHits.values());
+            Collections.sort(suggestions, Collections.reverseOrder());
+            List<String> resultList = new ArrayList<>();
+            for (ScoredSearchHit hit : suggestions) {
+                resultList.add(hit.text);
+            }
+            return resultList;
+        }
+
+        private class ScoredSearchHit implements Comparable<ScoredSearchHit> {
+            public final int score;
+            public final String text;
+
+            public ScoredSearchHit(String t, int s) {
+                text = t;
+                score = s;
+            }
+
+            @Override
+            public int compareTo(ScoredSearchHit other) {
+                return score - other.score;
+            }
+        }
     }
 }
