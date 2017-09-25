@@ -7,6 +7,14 @@ import java.util.Map;
 import org.oskari.wcs.capabilities.Capabilities;
 import org.oskari.wcs.coverage.CoverageDescription;
 import org.oskari.wcs.extension.Interpolation;
+import org.oskari.wcs.extension.scaling.ScaleAxesByFactor;
+import org.oskari.wcs.extension.scaling.ScaleAxis;
+import org.oskari.wcs.extension.scaling.ScaleByFactor;
+import org.oskari.wcs.extension.scaling.ScaleToExtent;
+import org.oskari.wcs.extension.scaling.ScaleToSize;
+import org.oskari.wcs.extension.scaling.Scaling;
+import org.oskari.wcs.extension.scaling.TargetAxisExtent;
+import org.oskari.wcs.extension.scaling.TargetAxisSize;
 
 public class GetCoverage {
 
@@ -25,6 +33,8 @@ public class GetCoverage {
 
     private String subsettingCRS;
     private String outputCRS;
+
+    private Scaling scaling;
 
     private GetCoverage(Capabilities wcs, CoverageDescription desc) {
         this(wcs, desc, desc.getNativeFormat());
@@ -117,6 +127,12 @@ public class GetCoverage {
         return this;
     }
 
+    public GetCoverage scaling(Scaling scaling) {
+        // TODO check that axes exist
+        this.scaling = scaling;
+        return this;
+    }
+
     public Map<String, String[]> toKVP() {
         Map<String, String[]> kvp = new HashMap<>();
         put(kvp, "service", "WCS");
@@ -143,11 +159,81 @@ public class GetCoverage {
         if (outputCRS != null) {
             put(kvp, "outputCRS", outputCRS);
         }
+        if (scaling != null) {
+            if (scaling instanceof ScaleByFactor) {
+                ScaleByFactor sbf = (ScaleByFactor) scaling;
+                put(kvp, "SCALEFACTOR", Double.toString(sbf.scaleFactor));
+            } else if (scaling instanceof ScaleAxesByFactor) {
+                put(kvp, "SCALEAXES", scaleAxesKVP((ScaleAxesByFactor) scaling));
+            } else if (scaling instanceof ScaleToSize) {
+                put(kvp, "SCALESIZE", scaleAxesKVP((ScaleToSize) scaling));
+            } else if (scaling instanceof ScaleToExtent) {
+                put(kvp, "SCALEEXTENT", scaleAxesKVP((ScaleToExtent) scaling));
+
+            }
+        }
         return kvp;
     }
 
     private static void put(Map<String, String[]> map, String key, String value) {
         map.put(key, new String[] { value });
+    }
+
+    /**
+     * SCALEAXES=a1(s1),...,an(sn) where, for 1<=i<=n,
+     * - ai is an axis abbreviation;
+     * - si is a scaleFactor expressed as the ASCII representation of a positive floating-point number
+     */
+    private static String scaleAxesKVP(ScaleAxesByFactor sabf) {
+        ScaleAxis[] scaleAxes = sabf.scaleAxes;
+        int n = scaleAxes.length;
+        String[] values = new String[n];
+        for (int i = 0; i < n; i++) {
+            values[i] = String.format("%s(%.f)", scaleAxes[i].axis, scaleAxes[i].scaleFactor);
+        }
+        return join(values, ',');
+    }
+
+    /**
+     * SCALESIZE=a1(s1),...,an(sn) where, for 1<=i<=n,
+     * - ai is an axis abbreviation;
+     * - si are sizes
+     */
+    private static String scaleAxesKVP(ScaleToSize sts) {
+        TargetAxisSize[] targetAxisSizes = sts.targetAxisSizes;
+        int n = targetAxisSizes.length;
+        String[] values = new String[n];
+        for (int i = 0; i < n; i++) {
+            values[i] = String.format("%s(%d)", targetAxisSizes[i].axis, targetAxisSizes[i].targetSize);
+        }
+        return join(values, ',');
+    }
+
+    /**
+     * SCALEEXTENT=a1(lo1:hi1),...,an(lon:hin) where, for 1<=i<=n,
+     * - ai is an axis abbreviation;
+     * - loi and hii are low and high, respectively, each of them represented as either a string,
+     *               enclosed in double quotes, or a number
+     */
+    private static String scaleAxesKVP(ScaleToExtent ste) {
+        TargetAxisExtent[] scaleAxes = ste.axisExtents;
+        int n = scaleAxes.length;
+        String[] values = new String[n];
+        for (int i = 0; i < n; i++) {
+            values[i] = String.format("%s(%.f:%.f)", scaleAxes[i].axis, scaleAxes[i].low, scaleAxes[i].high);
+        }
+        return join(values, ',');
+    }
+
+    private static String join(String[] a, char c) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < a.length; i++) {
+            if (i > 0) {
+                sb.append(c);
+            }
+            sb.append(a[i]);
+        }
+        return sb.toString();
     }
 
 }
