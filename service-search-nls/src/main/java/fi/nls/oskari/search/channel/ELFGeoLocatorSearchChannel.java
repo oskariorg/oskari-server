@@ -8,6 +8,7 @@ import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.search.util.ELFGeoLocatorParser;
 import fi.nls.oskari.search.util.ELFGeoLocatorQueryHelper;
+import fi.nls.oskari.search.util.HitCombiner;
 import fi.nls.oskari.service.ServiceRuntimeException;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.JSONHelper;
@@ -475,41 +476,4 @@ public class ELFGeoLocatorSearchChannel extends SearchChannel implements SearchA
         return elasticQueryTemplate.toString();
     }
 
-    private class HitCombiner {
-        Map<String, ScoredSearchHit> combinedHits = new TreeMap<>();
-
-        public void addHit(JSONObject hit, int scoreBoost) throws JSONException {
-            String text = hit.getString("text");
-            int score = hit.getInt("_score") + scoreBoost;
-            ScoredSearchHit existingHit = combinedHits.get(text);
-            if (existingHit == null || existingHit.score < score) {
-                combinedHits.put(text, new ScoredSearchHit(text, score));
-            }
-        }
-
-        public List<String> getSortedHits() {
-            List<ScoredSearchHit> suggestions = new ArrayList<>(combinedHits.values());
-            Collections.sort(suggestions, Collections.reverseOrder());
-            List<String> resultList = new ArrayList<>();
-            for (ScoredSearchHit hit : suggestions) {
-                resultList.add(hit.text);
-            }
-            return resultList;
-        }
-
-        private class ScoredSearchHit implements Comparable<ScoredSearchHit> {
-            public final int score;
-            public final String text;
-
-            public ScoredSearchHit(String t, int s) {
-                text = t;
-                score = s;
-            }
-
-            @Override
-            public int compareTo(ScoredSearchHit other) {
-                return score - other.score;
-            }
-        }
-    }
 }
