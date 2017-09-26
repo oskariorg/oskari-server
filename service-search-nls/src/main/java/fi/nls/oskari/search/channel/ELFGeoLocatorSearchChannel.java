@@ -447,12 +447,12 @@ public class ELFGeoLocatorSearchChannel extends SearchChannel implements SearchA
         HitCombiner combiner = new HitCombiner();
         try {
             JSONArray fuzzyHits = jsonObject.getJSONArray("fuzzy_search").getJSONObject(0).getJSONArray("options");
-            for (int i = 0; i < fuzzyHits.length(); ++i) {
+            for (int i = 0; i < fuzzyHits.length(); i++) {
                 combiner.addHit(fuzzyHits.getJSONObject(i), 0);
             }
 
             JSONArray exactHits = jsonObject.getJSONArray("normal_search").getJSONObject(0).getJSONArray("options");
-            for (int i = 0; i < exactHits.length(); ++i) {
+            for (int i = 0; i < exactHits.length(); i++) {
                 combiner.addHit(exactHits.getJSONObject(i), 1000);
             }
         }

@@ -6,7 +6,7 @@ import org.json.JSONObject;
 import java.util.*;
 
 public class HitCombiner {
-    Map<String, ScoredSearchHit> combinedHits = new TreeMap<>();
+    Map<String, ScoredSearchHit> combinedHits = new HashMap<>();
 
     public void addHit(JSONObject hit, int scoreBoost) throws JSONException {
         String text = hit.getString("text");
@@ -20,7 +20,7 @@ public class HitCombiner {
     public List<String> getSortedHits() {
         List<ScoredSearchHit> suggestions = new ArrayList<>(combinedHits.values());
         Collections.sort(suggestions, Collections.reverseOrder());
-        List<String> resultList = new ArrayList<>();
+        List<String> resultList = new ArrayList<>(suggestions.size());
         for (ScoredSearchHit hit : suggestions) {
             resultList.add(hit.text);
         }
