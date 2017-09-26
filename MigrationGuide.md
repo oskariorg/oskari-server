@@ -18,6 +18,10 @@ Common issues:
 DefaultStyle SLDs needs to be manually updated on Geoserver from
 https://github.com/oskariorg/oskari-server/tree/master/content-resources/src/main/resources/sld
 
+### Users service
+
+The database access library has been updated from iBATIS to MyBatis. DatabaseUserService now uses MybatisRoleService and MybatisUserService. If you are using old IbatisRoleService or IbatisUserService in your own Oskari server extensions, you have to update them to use MybatisRoleService and MybatisUserService implementations.
+
 ## 1.42.1
 
 ### User registration feature
