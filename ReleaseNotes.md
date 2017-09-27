@@ -84,6 +84,12 @@ WMS-layers GFI functionality can now be enabled/disabled overwriting layer capab
         "isQueryable" : false
     }
 
+### Layer updating 
+
+Modifying layers registered to Oskari always updated "params" and "attributes" fields even if the client didn't send them.
+Now they are modified only if new values are sent in the request and like other parameters can be omitted without problem.
+
+
 ### Test resources/helper
 
 Added a database connection helper in shared-test-resources/TestHelper.
@@ -121,7 +127,22 @@ Removed countries listing resource JSON. Instead uses a CountryFilter operation 
 Removed serval API integration and now only including the monitor API.
 
 ### service-users
+
 The database access library has been updated from iBATIS to MyBatis. DatabaseUserService now uses MybatisRoleService and MybatisUserService.
+
+### Database services MyBatis migration
+
+Services have been migrated from Ibatis to MyBatis library:
+ 
+- KeywordService
+- KeywordRelationService
+- AnalysisService
+- AnalyisisStyleService
+- AnalysisAndStyleService removed because it's not used
+- UserService
+- RoleService
+
+Ibatis is still used by some services, but any new functionality should be implemented with MyBatis.
 
 ## 1.43.0
 
