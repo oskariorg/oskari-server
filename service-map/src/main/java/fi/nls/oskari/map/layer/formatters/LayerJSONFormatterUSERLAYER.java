@@ -43,9 +43,9 @@ public class LayerJSONFormatterUSERLAYER extends LayerJSONFormatter {
         JSONHelper.putValue(layerJson, "description",ulayer.getLayer_desc());
         JSONHelper.putValue(layerJson, "source",ulayer.getLayer_source());
         try{
-            JSONHelper.putValue(layerJson, "fields",JSONHelper.createJSONArrayJsonKeys(JSONHelper.createJSONObject(ulayer.getFields())));
-        }catch (IllegalArgumentException e){
             JSONHelper.putValue(layerJson, "fields", createJSONArrayJSONObjectKeys(JSONHelper.createJSONArray(ulayer.getFields())));
+        }catch (IllegalArgumentException e){
+            log.warn("Couldn't put fields array to layerJson", e);
         }
         // user layer rendering url - override DB url if property is defined
         JSONHelper.putValue(layerJson, "url", getUserLayerTileUrl());
