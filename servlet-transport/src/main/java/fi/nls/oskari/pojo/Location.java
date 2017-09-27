@@ -519,7 +519,7 @@ public class Location {
     @JsonIgnore
     public ReferencedEnvelope getEnlargedEnvelope() {
         if(this.enlargedEnvelope == null) {
-            log.error("Enlarged envelope not created");
+            log.warn("Enlarged envelope not created");
             if(this.envelope == null) {
                 this.getEnvelope();
             }
