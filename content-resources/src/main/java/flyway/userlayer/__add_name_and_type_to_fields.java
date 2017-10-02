@@ -11,9 +11,6 @@ import org.json.JSONObject;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Add name and type to fields
@@ -25,57 +22,40 @@ import java.util.Map;
 public class __add_name_and_type_to_fields implements JdbcMigration {
     private static final Logger LOG = LogFactory.getLogger(__add_name_and_type_to_fields.class);
 
-    public void migrate(Connection connection) throws Exception {
-        Map<Long, String> resultMap = getFields (connection);
-        for (Map.Entry<Long, String> entry: resultMap.entrySet()){
-            Long id = entry.getKey();
-            JSONArray json = JSONHelper.createJSONArray(entry.getValue()); 
-            JSONArray updatedJson = addNameAndType(json);
-            if (updatedJson != null){
-                updateFields (connection, id, updatedJson);
-                LOG.debug("Userlayer id:",id,"fields:",json.toString(),"migrated to:", updatedJson.toString());
-            }else{
-                LOG.error("Error on updating userlayer fields. Skipping id:", id);
-            }           
-        }
-    }
+   public void migrate(Connection connection) throws Exception {
+        String select = "SELECT id, fields::text FROM user_layer";
+        String update = "UPDATE user_layer SET fields=?::json WHERE id=?";
 
-    private Map<Long, String> getFields (Connection conn) throws SQLException {
-        final String sql = "SELECT id, fields::text FROM user_layer";
-        Map<Long, String> result = new  HashMap<Long, String>();
-        try (final PreparedStatement statement = conn.prepareStatement(sql)) {
-            try (ResultSet rs = statement.executeQuery()) {
-                while(rs.next()) {
-                    result.put(rs.getLong("id"), rs.getString("fields"));
-                }
+        try (PreparedStatement psSelect = connection.prepareStatement(select);
+             ResultSet rs = psSelect.executeQuery();
+             PreparedStatement psUpdate = connection.prepareStatement(update)) {
+            while (rs.next()) {
+                long id = rs.getLong("id");
+                String fields = rs.getString("fields");
+
+                JSONArray json = JSONHelper.createJSONArray(fields);
+                JSONArray updatedJson = addNameAndType(json);
+
+                psUpdate.setString(1, updatedJson.toString());
+                psUpdate.setLong(2, id);
+                psUpdate.addBatch();
             }
+            psUpdate.executeBatch();
+            connection.commit();
         }
-        return result;
     }
 
-    private void updateFields (Connection conn, Long id, JSONArray json) throws SQLException {
-        final String sql = "UPDATE user_layer SET " +
-                "fields=?::json " +
-                "WHERE id=?";
-
-        try (final PreparedStatement statement = conn.prepareStatement(sql)) {
-            statement.setString(1, json.toString());
-            statement.setLong(2, id);
-            statement.execute();
-        }
-
-    }
     private JSONArray addNameAndType (JSONArray json){
-        JSONArray jsonArr = new JSONArray();        
+        JSONArray jsonArr = new JSONArray();
         try{
             for (int i=0; i<json.length(); i++){
-                JSONObject obj = new JSONObject();
-                String key = jsonArr.getJSONObject(i).keys().next().toString();
-                String type =jsonArr.getJSONObject(i).get(key).toString();
+                String key = json.getJSONObject(i).keys().next().toString();
+                String type = json.getJSONObject(i).get(key).toString();
                 // simpleName
-                String simpleName = type.substring(type.lastIndexOf('.')+1);
+                type = type.substring(type.lastIndexOf('.')+1);
+                JSONObject obj = new JSONObject();
                 obj.put("name", key);
-                obj.put("type", simpleName);
+                obj.put("type", type);
                 jsonArr.put(obj);
             }
         }catch (JSONException e){
@@ -84,5 +64,4 @@ public class __add_name_and_type_to_fields implements JdbcMigration {
         }
         return jsonArr;
     }
-
 }
