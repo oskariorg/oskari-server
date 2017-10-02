@@ -41,6 +41,7 @@ import java.util.*;
  *          showIf is closely related to dependencies field
  *      - filterOp: used for creating query and mapped in code to Deegree filter operations (defaults to LIKE operations)
  *      - mustMatch: true means the field will be treated as AND filter instead of OR when creating query filter (defaults to false)
+ *      - blacklist: is a list of response values that will be filtered out
  *
  */
 @Oskari(MetadataCatalogueChannelSearchService.ID)
@@ -129,6 +130,7 @@ public class MetadataCatalogueChannelSearchService extends SearchChannel {
             field.setMustMatch(PropertyUtil.getOptional(propPrefix + name + ".mustMatch", false));
             field.setDependencies(PropertyUtil.getMap(propPrefix + name + ".dependencies"));
             field.setDefaultValue(PropertyUtil.getOptional(propPrefix + name + ".value"));
+            field.setBlacklist(Arrays.asList(PropertyUtil.getCommaSeparatedList(propPrefix + name + ".blacklist")));
             fields.add(field);
         }
         return fields;
