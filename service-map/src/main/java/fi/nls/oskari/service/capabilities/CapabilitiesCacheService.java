@@ -14,7 +14,6 @@ import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.util.HashMap;
 import java.util.Map;
-import javax.xml.stream.FactoryConfigurationError;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
@@ -100,7 +99,7 @@ public abstract class CapabilitiesCacheService extends OskariComponent {
     public static String loadCapabilitiesFromService(OskariLayer layer) throws ServiceException {
         final String url = contructCapabilitiesUrl(layer);
         if (url.isEmpty()) {
-            return null;
+            throw new ServiceException("URL was empty");
         }
 
         String encoding = null;
@@ -111,34 +110,28 @@ public abstract class CapabilitiesCacheService extends OskariComponent {
 
             final int sc = conn.getResponseCode();
             if (sc != HttpURLConnection.HTTP_OK) {
-                LOG.warn("Unexpected Status code:", sc, " url:", url);
                 throw new ServiceException("Unexpected Status code: " + sc);
             }
 
             final String contentType = conn.getContentType();
             if (contentType != null && contentType.toLowerCase().indexOf("xml") == -1) {
-                // not xml based on contentType
-                LOG.warn("Unexpected Content-Type:", contentType, "url:", url);
-                throw new ServiceException("Unexpected Content-Typee: " + contentType);
+                throw new ServiceException("Unexpected Content-Type: " + contentType);
             }
 
             encoding = IOHelper.getCharset(conn);
             data = IOHelper.readBytes(conn);
         } catch (IOException e) {
-            LOG.warn(e, "IOException occured, url:", url);
             throw new ServiceException("IOException occured", e);
         }
 
         try {
-            XMLInputFactory xif = XMLInputFactory.newInstance();
-            xif.setProperty(XMLInputFactory.IS_NAMESPACE_AWARE, true);
+            XMLInputFactory xif = getXMLInputFactory();
             XMLStreamReader xsr = xif.createXMLStreamReader(new ByteArrayInputStream(data));
 
             // Check XML prolog for character encoding
             String xmlEncoding = xsr.getCharacterEncodingScheme();
             if (xmlEncoding != null) {
                 if (encoding != null && !xmlEncoding.equalsIgnoreCase(encoding)) {
-                    LOG.warn("Content-Type header specified a different encoding than XML prolog!");
                     throw new ServiceException("Content-Type header specified a different encoding than XML prolog!");
                 }
                 encoding = xmlEncoding;
@@ -158,12 +151,17 @@ public abstract class CapabilitiesCacheService extends OskariComponent {
             // Strip the potential prolog from XML so that we
             // don't have to worry about the specified charset
             return XmlHelper.stripPrologFromXML(xml);
-        } catch (FactoryConfigurationError | XMLStreamException e) {
-            LOG.warn(e, "Failed to parse XML from response");
+        } catch (XMLStreamException e) {
+            throw new ServiceException("Failed to parse XML from response", e);
         } catch (UnsupportedEncodingException e) {
-            LOG.warn(e, "Failed to Encode byte[] to String encoding:", encoding);
+            throw new ServiceException("Failed to Encode byte[] to String using encoding " + encoding, e);
         }
-        return null;
+    }
+
+    private static XMLInputFactory getXMLInputFactory() {
+        XMLInputFactory xif = XMLInputFactory.newInstance();
+        xif.setProperty(XMLInputFactory.IS_NAMESPACE_AWARE, true);
+        return xif;
     }
 
     public static String contructCapabilitiesUrl(final OskariLayer layer) {

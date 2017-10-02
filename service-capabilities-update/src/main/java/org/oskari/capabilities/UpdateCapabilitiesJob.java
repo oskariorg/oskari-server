@@ -75,6 +75,8 @@ public class UpdateCapabilitiesJob extends ScheduledJob {
             return;
         }
 
+        LOG.debug("Updating Capabilities for layer id:", layer.getId());
+
         String url = layer.getSimplifiedUrl(true);
         String version = layer.getVersion();
 
@@ -89,8 +91,7 @@ public class UpdateCapabilitiesJob extends ScheduledJob {
             getCapabilitiesXML = getXMLFromService(layer);
         }
         if (getCapabilitiesXML == null || getCapabilitiesXML.isEmpty()) {
-            LOG.warn("Failed to Capabilities data from cache and from service"
-                    + "for layer id:", layer.getId());
+            LOG.warn("Failed to update Capabilities for layer id:", layer.getId());
             return;
         }
 
@@ -101,7 +102,7 @@ public class UpdateCapabilitiesJob extends ScheduledJob {
                     url, type, version, getCapabilitiesXML);
             capabilitiesService.save(draft);
             layerService.update(layer);
-            LOG.debug("Succesfully saved Capabilities for layer id:", layer.getId());
+            LOG.info("Updated Capabilities for layer id:", layer.getId());
         }
     }
 
@@ -113,8 +114,11 @@ public class UpdateCapabilitiesJob extends ScheduledJob {
         if (oldestAllowed != null) {
             OskariLayerCapabilities cached = capabilitiesService.find(url, type, version);
             // Check if we actually found data from DB and if it's recently updated
-            if (cached != null && cached.getUpdated().after(oldestAllowed)) {
-                return cached.getData();
+            if (cached != null) {
+                if (cached.getUpdated().after(oldestAllowed)) {
+                    return cached.getData();
+                }
+                LOG.debug("Found data from cache, but it was too old");
             }
         }
         return null;
@@ -124,7 +128,14 @@ public class UpdateCapabilitiesJob extends ScheduledJob {
         try {
             return CapabilitiesCacheService.loadCapabilitiesFromService(layer);
         } catch (ServiceException e) {
-            LOG.warn(e, "Failed to GetCapabilities for layer id:", layer.getId());
+            Throwable cause = e.getCause();
+            if (cause != null) {
+                LOG.warn(e, "Failed to get GetCapabilities response from service layer id:",
+                        layer.getId(), "error:", e.getMessage(), "cause:", cause);
+            } else {
+                LOG.warn(e, "Failed to get GetCapabilities response from service layer id:",
+                    layer.getId(), "error:", e.getMessage());
+            }
             return null;
         }
     }
