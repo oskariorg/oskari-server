@@ -1,0 +1,1 @@
+UPDATE user_layer set fields = '[]' WHERE fields::TEXT like '%srid=%';
