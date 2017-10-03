@@ -41,8 +41,7 @@ The value will be populated to publisher/publisher2 bundle configs.
 
 ### Userlayer import
 
-In the user_layer table "fields" json is migrated from JSONObject to JSONArray to keep order of the feature properties.
-New imported userlayer's feature properties will be handled in same order than in the source file (e.g. Shapefile).
+New imported userlayers now maintain order for feature properties (user_layer-table's fields-column stored as JSON array instead of object).
 
 The database access library has been updated from Ibatis to Mybatis.
 UserLayerDbService has been changed to be suitable for new Mybatis implementation.
