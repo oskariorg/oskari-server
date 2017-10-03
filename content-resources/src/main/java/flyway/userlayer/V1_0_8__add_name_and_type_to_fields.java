@@ -33,7 +33,7 @@ public class V1_0_8__add_name_and_type_to_fields implements JdbcMigration {
                 long id = rs.getLong("id");
                 String fields = rs.getString("fields");
 
-                JSONArray json = JSONHelper.createJSONArray(fields);
+                JSONArray json = JSONHelper.createJSONArray(fields, true);
                 JSONArray updatedJson = addNameAndType(json);
 
                 psUpdate.setString(1, updatedJson.toString());
