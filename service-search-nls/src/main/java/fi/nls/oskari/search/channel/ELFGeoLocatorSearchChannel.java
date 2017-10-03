@@ -457,8 +457,7 @@ public class ELFGeoLocatorSearchChannel extends SearchChannel implements SearchA
             }
         }
         catch (JSONException ex) {
-            log.error("Unexpected autocomplete service JSON response structure!");
-            throw new RuntimeException("Unexpected autocomplete service JSON response structure!", ex);
+            log.error("Unexpected autocomplete service JSON response structure!", ex.getMessage());
         }
 
         return combiner.getSortedHits();
