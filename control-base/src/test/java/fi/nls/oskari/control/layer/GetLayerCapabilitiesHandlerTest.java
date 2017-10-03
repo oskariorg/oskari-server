@@ -14,7 +14,6 @@ import fi.nls.oskari.permission.domain.Permission;
 import fi.nls.oskari.permission.domain.Resource;
 import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.service.capabilities.CapabilitiesCacheService;
-import fi.nls.oskari.service.capabilities.CapabilitiesCacheServiceMock;
 import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.test.control.JSONActionRouteTest;
 import fi.nls.test.util.TestHelper;
@@ -33,6 +32,9 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 
+/**
+ * Created by SMAKINEN on 28.8.2015.
+ */
 @RunWith(PowerMockRunner.class)
 public class GetLayerCapabilitiesHandlerTest extends JSONActionRouteTest {
 

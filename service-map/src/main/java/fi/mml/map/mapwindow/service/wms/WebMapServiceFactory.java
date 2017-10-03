@@ -1,9 +1,5 @@
 package fi.mml.map.mapwindow.service.wms;
 
-import fi.nls.oskari.log.LogFactory;
-import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.service.capabilities.OskariLayerCapabilitiesHelper;
-
 import fi.mml.map.mapwindow.util.RemoteServiceDownException;
 import fi.nls.oskari.cache.Cache;
 import fi.nls.oskari.cache.CacheManager;
@@ -20,8 +16,6 @@ import fi.nls.oskari.wms.WMSCapabilities;
  * 
  */
 public class WebMapServiceFactory {
-
-    private static final Logger LOG = LogFactory.getLogger(WebMapServiceFactory.class);
 
     private static final CapabilitiesCacheService CAPABILITIES_SERVICE = OskariComponentManager.getComponentOfType(CapabilitiesCacheService.class);
     private static final OskariLayerService LAYER_SERVICE = new OskariLayerServiceIbatisImpl();
@@ -83,7 +77,6 @@ public class WebMapServiceFactory {
                 return new WebMapServiceV1_1_1_Impl("from DataBase", xml, layerName);
             }
         } catch (WebMapServiceParseException ex) {
-            LOG.warn(ex);
         }
         return null;
     }
