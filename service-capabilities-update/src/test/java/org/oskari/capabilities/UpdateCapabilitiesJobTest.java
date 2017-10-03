@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class UpdateCapabilitiesJobTest {
@@ -72,6 +73,7 @@ public class UpdateCapabilitiesJobTest {
         assertTrue(a == layers.get(2));
     }
 
+    @Ignore("Outside dependency")
     @Test
     public void test() {
         String url = "https://karttamoottori.maanmittauslaitos.fi/maasto/wmts";
