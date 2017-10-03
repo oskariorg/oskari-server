@@ -15,12 +15,12 @@ import java.sql.ResultSet;
 /**
  * Add name and type to fields
  * [{"the_geom","MultiPolygon"},..] -> [{"name": "the_geom", "type":"MultiPolygon"},..]
- * 
- * Split java class name to simpleName format 
+ *
+ * Split java class name to simpleName format
  * java.lang.Long -> Long
  */
-public class __add_name_and_type_to_fields implements JdbcMigration {
-    private static final Logger LOG = LogFactory.getLogger(__add_name_and_type_to_fields.class);
+public class V1_0_8__add_name_and_type_to_fields implements JdbcMigration {
+    private static final Logger LOG = LogFactory.getLogger(V1_0_8__add_name_and_type_to_fields.class);
 
    public void migrate(Connection connection) throws Exception {
         String select = "SELECT id, fields::text FROM user_layer";
@@ -60,7 +60,7 @@ public class __add_name_and_type_to_fields implements JdbcMigration {
             }
         }catch (JSONException e){
             //LOG.error("Error on converting json", e);
-            return null;
+            return new JSONArray();
         }
         return jsonArr;
     }
