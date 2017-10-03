@@ -57,7 +57,7 @@ public class UpdateCapabilitiesJobTest {
     @Test
     public void testGetValidLayers() {
         List<OskariLayer> layers = job.getValidLayers();
-        assertEquals("WFS layer should be missing", 9, layers.size());
+        assertEquals("Only WMTS layer exist", 3, layers.size());
         assertTrue(a == layers.get(0));
         assertTrue(b == layers.get(1));
         assertTrue(c == layers.get(2));
