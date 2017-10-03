@@ -57,6 +57,11 @@ Added feature count to layerJSON response. Also adds a warning object with skipp
 
 Improved data quality information parsing for metadata.
 
+New configuration option for filtering out field values from MetadataSearchOptions query:
+
+    search.channel.METADATA_CATALOGUE_CHANNEL.field.<field name>.blacklist=<comma separated list of values>
+
+
 ### Initial search channel autocomplete functionality
 
 Added initial autocomplete support for search channels. Any search channel that can support autocompletion can
