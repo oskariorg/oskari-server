@@ -16,7 +16,7 @@ public class OskariLayerCapabilities {
         this(null, url, layertype, version, data, null, null);
     }
 
-    protected OskariLayerCapabilities(Long id, String url, String layertype, String version, String data, Timestamp created, Timestamp updated) {
+    public OskariLayerCapabilities(Long id, String url, String layertype, String version, String data, Timestamp created, Timestamp updated) {
         this.id = id;
         this.url = url;
         this.layertype = layertype;

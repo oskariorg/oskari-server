@@ -1,4 +1,4 @@
-package fi.nls.oskari.service.capabilities;
+package fi.nls.oskari.control.layer;
 
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.service.ServiceException;
