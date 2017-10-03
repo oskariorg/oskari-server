@@ -97,7 +97,7 @@ public class LayerJSONFormatterWMTS extends LayerJSONFormatter {
             String identifier = tms.getId();
             String crs = tms.getCrs();
             String epsg = ProjectionHelper.shortSyntaxEpsg(crs);
-            JSONHelper.createJSONObject(epsg, identifier);
+            tileMatrix.add(JSONHelper.createJSONObject(epsg, identifier));
         }
         return tileMatrix;
     }
@@ -136,7 +136,5 @@ public class LayerJSONFormatterWMTS extends LayerJSONFormatter {
         }
         return null;
     }
-
-
 
 }

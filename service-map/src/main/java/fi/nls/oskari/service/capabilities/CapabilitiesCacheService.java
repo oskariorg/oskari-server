@@ -97,23 +97,25 @@ public abstract class CapabilitiesCacheService extends OskariComponent {
     }
 
     public static String loadCapabilitiesFromService(OskariLayer layer) throws ServiceException {
-        final String url = contructCapabilitiesUrl(layer);
-        if (url.isEmpty()) {
-            throw new ServiceException("URL was empty");
-        }
+        return loadCapabilitiesFromService(layer.getSimplifiedUrl(true), layer.getType(),
+                layer.getVersion(), layer.getUsername(), layer.getPassword());
+    }
 
+    public static String loadCapabilitiesFromService(String url, String type,
+            String version, String user, String pass) throws ServiceException {
+        String request = contructCapabilitiesUrl(url, type, version);
         String encoding = null;
         byte[] data = null;
         try {
-            final HttpURLConnection conn = IOHelper.getConnection(url, layer.getUsername(), layer.getPassword());
+            HttpURLConnection conn = IOHelper.getConnection(request, user, pass);
             conn.setReadTimeout(TIMEOUT_MS);
 
-            final int sc = conn.getResponseCode();
+            int sc = conn.getResponseCode();
             if (sc != HttpURLConnection.HTTP_OK) {
                 throw new ServiceException("Unexpected Status code: " + sc);
             }
 
-            final String contentType = conn.getContentType();
+            String contentType = conn.getContentType();
             if (contentType != null && contentType.toLowerCase().indexOf("xml") == -1) {
                 throw new ServiceException("Unexpected Content-Type: " + contentType);
             }
@@ -143,7 +145,7 @@ public abstract class CapabilitiesCacheService extends OskariComponent {
             }
 
             // Check that the response is what we expect
-            checkCapabilities(xsr, layer.getType(), layer.getVersion());
+            checkCapabilities(xsr, type, version);
 
             // Convert "utf-8" to "UTF-8" for example
             encoding = encoding.toUpperCase();
@@ -168,10 +170,13 @@ public abstract class CapabilitiesCacheService extends OskariComponent {
         if (layer == null) {
             return "";
         }
+        return contructCapabilitiesUrl(layer.getSimplifiedUrl(true),
+                layer.getType(), layer.getVersion());
+    }
 
-        final String url = layer.getSimplifiedUrl(true);
-        final String urlLC = url.toLowerCase();
-        final String serviceType = TYPE_MAPPING.get(layer.getType());
+    public static String contructCapabilitiesUrl(String url, String type, String version) {
+        String urlLC = url.toLowerCase();
+        final String serviceType = TYPE_MAPPING.get(type);
 
         final Map<String, String> params = new HashMap<String, String>();
         // check existing params
@@ -181,8 +186,8 @@ public abstract class CapabilitiesCacheService extends OskariComponent {
         if (!urlLC.contains("request=")) {
             params.put("request", "GetCapabilities");
         }
-        if (!urlLC.contains("version=") && layer.getVersion() != null) {
-            params.put(getVersionNegotiationKey(serviceType), layer.getVersion());
+        if (!urlLC.contains("version=") && version != null && !version.isEmpty()) {
+            params.put(getVersionNegotiationKey(serviceType), version);
         }
 
         return IOHelper.constructUrl(url, params);
@@ -202,7 +207,7 @@ public abstract class CapabilitiesCacheService extends OskariComponent {
     }
 
     private static void checkCapabilities(XMLStreamReader xsr, String type, String version)
-            throws ServiceException {
+            throws ServiceException, XMLStreamException {
         advanceToRootElement(xsr);
         String ns = xsr.getNamespaceURI();
         String name = xsr.getLocalName();
@@ -210,18 +215,13 @@ public abstract class CapabilitiesCacheService extends OskariComponent {
     }
 
     private static boolean advanceToRootElement(XMLStreamReader xsr)
-            throws ServiceException {
-        try {
-            if (xsr.nextTag() != XMLStreamConstants.START_DOCUMENT) {
-                throw new ServiceException("Document did not start with a START_DOCUMENT!");
+            throws XMLStreamException {
+        while (xsr.hasNext()) {
+            if (xsr.next() == XMLStreamConstants.START_ELEMENT) {
+                return true;
             }
-            if (xsr.nextTag() != XMLStreamConstants.START_ELEMENT) {
-                throw new ServiceException("Could not find root element!");
-            }
-            return true;
-        } catch (XMLStreamException e) {
-            throw new ServiceException("XMLStreamException occured!", e);
         }
+        return false;
     }
 
     private static void validateCapabilities(String type, String version, String ns, String name)

@@ -162,7 +162,11 @@ public class XmlHelper {
             if (i < 0) {
                 throw new IllegalArgumentException("Invalid XML prolog!");
             }
-            return xml.substring(i + 2);
+            i = xml.indexOf('<', i + 2);
+            if (i < 0) {
+                throw new IllegalArgumentException("Can't find XML after prolog!");
+            }
+            return xml.substring(i);
         }
         return xml;
     }

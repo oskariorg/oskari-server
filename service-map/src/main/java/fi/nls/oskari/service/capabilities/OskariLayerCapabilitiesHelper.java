@@ -1,10 +1,10 @@
 package fi.nls.oskari.service.capabilities;
 
-import fi.nls.oskari.log.LogFactory;
-import fi.nls.oskari.log.Logger;
 import fi.mml.map.mapwindow.service.wms.WebMapService;
 import fi.mml.map.mapwindow.service.wms.WebMapServiceFactory;
 import fi.nls.oskari.domain.map.OskariLayer;
+import fi.nls.oskari.log.LogFactory;
+import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.layer.formatters.LayerJSONFormatterWMS;
 import fi.nls.oskari.map.layer.formatters.LayerJSONFormatterWMTS;
 import fi.nls.oskari.util.JSONHelper;
@@ -86,12 +86,11 @@ public class OskariLayerCapabilitiesHelper {
                     + " layer id", id, "name", name);
             throw new NullPointerException();
         }
+
         JSONObject options = ml.getOptions();
-        if(resUrl != null) {
-            JSONHelper.putValue(options, "requestEncoding", "REST");
-            JSONHelper.putValue(options, "format", resUrl.getFormat());
-            JSONHelper.putValue(options, "urlTemplate", resUrl.getTemplate());
-        }
+        JSONHelper.putValue(options, "requestEncoding", "REST");
+        JSONHelper.putValue(options, "format", resUrl.getFormat());
+        JSONHelper.putValue(options, "urlTemplate", resUrl.getTemplate());
 
         JSONObject jscaps = LayerJSONFormatterWMTS.createCapabilitiesJSON(layer);
         ml.setCapabilities(jscaps);
