@@ -875,6 +875,9 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>2.10</version>
                 <configuration>
+                    <!-- prevent forking java process from stealing
+                    window focus on Mac OS -->
+                    <argLine>-Djava.awt.headless=true</argLine>
                     <!--systemPropertyVariables>
                         <oskari.syslog.level></oskari.syslog.level>
                     </systemPropertyVariables -->

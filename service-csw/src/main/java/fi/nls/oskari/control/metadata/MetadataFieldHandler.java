@@ -19,6 +19,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.DataInputStream;
 import java.net.HttpURLConnection;
+import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -117,8 +118,12 @@ public class MetadataFieldHandler {
 
         final String url = getSearchURL() + propertyName;
         final NodeList valueList = getTags(url, "csw:Value");
+        List<String> blacklist = field.getBlacklist();
         for (int i = 0; i < valueList.getLength(); i++) {
             String value = valueList.item(i).getChildNodes().item(0).getTextContent();
+            if (blacklist.contains(value)) {
+                continue;
+            }
             response.add(new SelectItem(null, value));
         }
         cache.put(propertyName, response);
