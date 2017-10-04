@@ -2,24 +2,20 @@ package fi.nls.oskari.util;
 
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import org.apache.axiom.om.OMAbstractFactory;
 import org.apache.axiom.om.OMAttribute;
 import org.apache.axiom.om.OMElement;
-import org.apache.axiom.om.util.AXIOMUtil;
+import org.apache.axiom.om.OMXMLBuilderFactory;
+import org.apache.axiom.om.util.StAXParserConfiguration;
 import org.apache.axiom.om.xpath.AXIOMXPath;
 import org.jaxen.NamespaceContext;
 
+import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-/**
- * Created with IntelliJ IDEA.
- * User: SMAKINEN
- * Date: 26.3.2014
- * Time: 15:15
- * To change this template use File | Settings | File Templates.
- */
 public class XmlHelper {
 
     private static final Logger log = LogFactory.getLogger(XmlHelper.class);
@@ -51,7 +47,10 @@ public class XmlHelper {
 
     public static OMElement parseXML(final String xml) {
         try {
-            return AXIOMUtil.stringToOM(xml);
+            // Any external entity can be considered a serious security risk for at least
+            // wmts-capabilities and myplaces payload where this is used
+            // https://ws.apache.org/axiom/apidocs/org/apache/axiom/om/util/StAXParserConfiguration.html#STANDALONE
+            return OMXMLBuilderFactory.createOMBuilder(OMAbstractFactory.getOMFactory(), StAXParserConfiguration.STANDALONE, new StringReader(xml)).getDocumentElement();
         } catch (Exception e) {
             log.error("Couldnt't parse XML", log.getCauseMessages(e), xml);
         }

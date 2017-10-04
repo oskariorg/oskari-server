@@ -1,5 +1,11 @@
 # Release Notes
 
+## 1.44.1
+
+### XmlHelper
+
+Now configured to reject external entities in XML.
+
 ## 1.44.0
 
 ### Library changes and Java requirement change
