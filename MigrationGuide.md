@@ -18,6 +18,18 @@ Common issues:
 DefaultStyle SLDs needs to be manually updated on Geoserver from
 https://github.com/oskariorg/oskari-server/tree/master/content-resources/src/main/resources/sld
 
+### Users service
+
+The database access library has been updated from iBATIS to MyBatis. DatabaseUserService now uses MybatisRoleService and MybatisUserService. If you are using old IbatisRoleService or IbatisUserService in your own Oskari server extensions, you have to update them to use MybatisRoleService and MybatisUserService implementations.
+
+### Injected profile link (personaldata bundle)
+
+Personal data (My data in UI) previously used the "edit profile" link from property 'auth.register.url' which is also
+   used by other functionality as property that holds registration url.
+    
+This has been changed and personaldata now uses a more appropriate 'auth.profile.url' so registration and personaldata
+ can co-exist without conflict.
+
 ## 1.42.1
 
 ### User registration feature

@@ -41,8 +41,7 @@ The value will be populated to publisher/publisher2 bundle configs.
 
 ### Userlayer import
 
-In the user_layer table "fields" json is migrated from JSONObject to JSONArray to keep order of the feature properties.
-New imported userlayer's feature properties will be handled in same order than in the source file (e.g. Shapefile).
+New imported userlayers now maintain order for feature properties (user_layer-table's fields-column stored as JSON array instead of object).
 
 The database access library has been updated from Ibatis to Mybatis.
 UserLayerDbService has been changed to be suitable for new Mybatis implementation.
@@ -57,6 +56,11 @@ Added feature count to layerJSON response. Also adds a warning object with skipp
 ### Improvements to CSW response parsing
 
 Improved data quality information parsing for metadata.
+
+New configuration option for filtering out field values from MetadataSearchOptions query:
+
+    search.channel.METADATA_CATALOGUE_CHANNEL.field.<field name>.blacklist=<comma separated list of values>
+
 
 ### Initial search channel autocomplete functionality
 
@@ -83,6 +87,12 @@ WMS-layers GFI functionality can now be enabled/disabled overwriting layer capab
     {
         "isQueryable" : false
     }
+
+### Layer updating 
+
+Modifying layers registered to Oskari always updated "params" and "attributes" fields even if the client didn't send them.
+Now they are modified only if new values are sent in the request and like other parameters can be omitted without problem.
+
 
 ### Test resources/helper
 
@@ -119,6 +129,24 @@ Removed countries listing resource JSON. Instead uses a CountryFilter operation 
 ### Spationeo integration
 
 Removed serval API integration and now only including the monitor API.
+
+### service-users
+
+The database access library has been updated from iBATIS to MyBatis. DatabaseUserService now uses MybatisRoleService and MybatisUserService.
+
+### Database services MyBatis migration
+
+Services have been migrated from Ibatis to MyBatis library:
+ 
+- KeywordService
+- KeywordRelationService
+- AnalysisService
+- AnalyisisStyleService
+- AnalysisAndStyleService removed because it's not used
+- UserService
+- RoleService
+
+Ibatis is still used by some services, but any new functionality should be implemented with MyBatis.
 
 ## 1.43.0
 

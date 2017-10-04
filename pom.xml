@@ -6,7 +6,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>fi.nls.oskari</groupId>
     <artifactId>oskari-parent</artifactId>
-    <version>1.44.0-SNAPSHOT</version>
+    <version>1.45.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>Oskari parent POM</name>
@@ -113,6 +113,14 @@
         <metrics.version>3.2.4</metrics.version>
     </properties>
 
+    <dependencies>
+        <!-- overrides vulnerable version included by axiom -->
+        <dependency>
+            <groupId>org.apache.james</groupId>
+            <artifactId>apache-mime4j-core</artifactId>
+            <version>0.8.1</version>
+        </dependency>
+    </dependencies>
     <!-- Managed dependencies -->
     <dependencyManagement>
         <dependencies>
@@ -611,6 +619,10 @@
                         <groupId>maven-plugins</groupId>
                         <artifactId>maven-findbugs-plugin</artifactId>
                     </exclusion>
+                    <exclusion>
+                        <groupId>org.apache.james</groupId>
+                        <artifactId>apache-mime4j-core</artifactId>
+                    </exclusion>
                 </exclusions>
             </dependency>
             <dependency>
@@ -863,6 +875,9 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>2.10</version>
                 <configuration>
+                    <!-- prevent forking java process from stealing
+                    window focus on Mac OS -->
+                    <argLine>-Djava.awt.headless=true</argLine>
                     <!--systemPropertyVariables>
                         <oskari.syslog.level></oskari.syslog.level>
                     </systemPropertyVariables -->
@@ -1011,25 +1026,13 @@
             <build>
                 <plugins>
                     <plugin>
-                        <!-- Requires Maven 3.1+ -->
                         <groupId>org.owasp</groupId>
                         <artifactId>dependency-check-maven</artifactId>
-                        <version>1.4.4</version>
-                        <configuration>
-                            <suppressionFile>owasp-dependency-check-suppressions.xml</suppressionFile>
-                        </configuration>
-
-                        <!-- version>2.1.1</version>
-                        <configuration>
-                            <suppressionFiles>
-                                <suppressionFile>owasp-dependency-check-suppressions.xml</suppressionFile>
-                            </suppressionFiles>
-                        </configuration -->
+                        <version>2.1.1</version>
                         <executions>
                             <execution>
                                 <goals>
-                                    <!--goal>check</goal -->
-                                    <goal>aggregate</goal>
+                                    <goal>check</goal>
                                 </goals>
                             </execution>
                         </executions>

@@ -32,6 +32,12 @@ public class V1_39_1__migrate_publish_template_ol3 implements JdbcMigration {
         service = new ViewServiceIbatisImpl();
         long tplId = getTemplateId();
         View template = service.getViewWithConf(tplId);
+        if(template == null) {
+            LOG.warn("Publish template couldn't be loaded with id", tplId, "- If you are populating an empty DB this is fine.",
+                    "If you are migrating an old database you have misconfigured template property (", ViewService.PROPERTY_PUBLISH_TEMPLATE,
+                    ") in oskari-ext.properties!");
+            return;
+        }
 
         Bundle mapfull = template.getBundleByName("mapfull");
         if (isOl3(mapfull)) {
