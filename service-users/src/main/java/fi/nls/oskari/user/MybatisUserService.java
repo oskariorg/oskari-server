@@ -61,7 +61,7 @@ public class MybatisUserService {
         } finally {
             session.close();
         }
-        log.warn("Finished finding all users");
+        log.debug("Finished finding all users");
         return userList;
     }
 
@@ -72,12 +72,12 @@ public class MybatisUserService {
             final UsersMapper mapper = session.getMapper(UsersMapper.class);
             mapper.addUser(user);
             session.commit();
+            log.info("Added user id: ", user.getId());
         } catch (Exception e) {
             log.warn(e, "Exception when trying to add user: ", user);
         } finally {
             session.close();
         }
-        log.warn("Got user id:", user.getId());
         return user.getId();
     }
 
@@ -88,12 +88,12 @@ public class MybatisUserService {
             final UsersMapper mapper = session.getMapper(UsersMapper.class);
             mapper.updateUser(user);
             session.commit();
+            log.info("Updated user id: " + user.getId());
         } catch (Exception e) {
             log.warn(e, "Exception when trying to update user: ", user);
         } finally {
             session.close();
         }
-        log.warn("Got updated user: " + user);
     }
 
     public User find(long id) {
@@ -108,7 +108,7 @@ public class MybatisUserService {
         } finally {
             session.close();
         }
-        log.warn("Found user: " + user);
+        log.debug("Found user: " + user);
         return user;
     }
 
@@ -134,7 +134,7 @@ public class MybatisUserService {
         } finally {
             session.close();
         }
-        log.warn("Found login: " + login);
+        log.info(login != null ? "Username " + login + " logged in." : "User not found with username: " + username);
         return login;
     }
 
@@ -150,10 +150,9 @@ public class MybatisUserService {
         } finally {
             session.close();
         }
-        log.warn("Found password");
+        log.debug("Found password");
         return password;
     }
-
 
     public User findByUserName(String username) {
         final SqlSession session = factory.openSession();
@@ -167,7 +166,7 @@ public class MybatisUserService {
         } finally {
             session.close();
         }
-        log.warn("Found user: " + user);
+        log.debug("Found user: " + user);
         loadRoles(user);
         return user;
     }
@@ -184,7 +183,7 @@ public class MybatisUserService {
         } finally {
             session.close();
         }
-        log.warn("Found user: " + user);
+        log.debug("Found user: " + user);
         loadRoles(user);
         return user;
     }
@@ -211,7 +210,7 @@ public class MybatisUserService {
         } finally {
             session.close();
         }
-        log.warn("Deleted user with id: " + id);
+        log.info("Deleted user with id: " + id);
     }
 
     public void setPassword(String username, String password) {
@@ -229,7 +228,7 @@ public class MybatisUserService {
         } finally {
             session.close();
         }
-        log.warn("Set password for username: " + username);
+        log.info("Set password for username: " + username);
     }
 
     public void updatePassword(String username, String password) {
@@ -247,7 +246,7 @@ public class MybatisUserService {
         } finally {
             session.close();
         }
-        log.warn("Updated password for username: " + username);
+        log.info("Updated password for username: " + username);
     }
 
     public void deletePassword(String username) {
@@ -262,7 +261,7 @@ public class MybatisUserService {
         } finally {
             session.close();
         }
-        log.warn("Deleted password for username: " + username);
+        log.info("Deleted password for username: " + username);
     }
 
 }
