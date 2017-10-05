@@ -831,7 +831,7 @@ public abstract class OWSMapLayerJob extends AbstractJob<String> {
 
     public void notifyError(String error) {
         if (error == null) {
-            error = "Something went wrong";
+            error = "Layer could not be loaded - reason unknown";
         }
         log.error("On Error - layer:", layerId, "type:", type, "msg:", error);
         Map<String, Object> output = createCommonResponse(error, WFSExceptionHelper.ERROR_COMMON_JOB_FAILURE);
