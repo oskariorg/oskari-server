@@ -1,5 +1,10 @@
 # Release Notes
 
+## 1.45.0
+
+### service-map
+Adds bounding box to userlayer that encloses userlayer's geometries. If a userlayer is added to the map, the map moves and zooms to the userlayer's extent.
+
 ## 1.44.0
 
 ### Library changes and Java requirement change
