@@ -880,6 +880,9 @@ public class IOHelper {
             }
             String keyEnc = urlEncode(key);
             for (String value : values) {
+                if (value == null || value.isEmpty()) {
+                    continue;
+                }
                 String valueEnc = urlEncode(value);
                 if (!first) {
                     sb.append('&');
