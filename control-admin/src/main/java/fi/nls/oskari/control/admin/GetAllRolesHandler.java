@@ -1,6 +1,10 @@
-package fi.nls.oskari.control;
+package fi.nls.oskari.control.admin;
 
 import fi.nls.oskari.annotation.OskariActionRoute;
+import fi.nls.oskari.control.ActionException;
+import fi.nls.oskari.control.ActionParameters;
+import fi.nls.oskari.control.ActionParamsException;
+import fi.nls.oskari.control.RestActionHandler;
 import fi.nls.oskari.domain.Role;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
@@ -10,11 +14,11 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 /**
- * Example route returning all roles in the system.
+ * Route returning all roles in the system.
  * @author SMAKINEN
  */
 @OskariActionRoute("GetAllRoles")
-public class GetAllRolesHandler extends ActionHandler {
+public class GetAllRolesHandler extends RestActionHandler {
 
     private Logger log = LogFactory.getLogger(GetAllRolesHandler.class);
     private UserService userService = null;
@@ -33,10 +37,16 @@ public class GetAllRolesHandler extends ActionHandler {
     }
 
     @Override
-    public void handleAction(ActionParameters params) throws ActionException {
+    public void preProcess(ActionParameters params) throws ActionException {
+        params.requireAdminUser();
+
         if (userService == null) {
             throw new ActionParamsException("User service not initialized");
         }
+    }
+
+    @Override
+    public void handleGet(ActionParameters params) throws ActionException {
         try {
             final Role[] roles = userService.getRoles();
 
