@@ -19,6 +19,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.net.HttpURLConnection;
+import java.util.StringTokenizer;
 
 import static fi.nls.oskari.control.ActionConstants.*;
 
@@ -33,7 +34,7 @@ import static fi.nls.oskari.control.ActionConstants.*;
  *     srs : "EPSG:789"
  * }
  */
-@OskariActionRoute("Coordinates")
+@OskariActionRoute("CoordinateTransformation")
 public class CoordinateTransformation extends ActionHandler {
 
     private static final Logger LOG = LogFactory.getLogger(CoordinateTransformation.class);
@@ -43,6 +44,7 @@ public class CoordinateTransformation extends ActionHandler {
     static final String HEIGHT_CRS = "heightCrs";
     static final String TARGET_CRS = "targetCrs";
     static final String COORDINATES = "coords";
+    static final String HEIGHT = "height";
 
     private PointTransformer service = null;
 
@@ -57,30 +59,46 @@ public class CoordinateTransformation extends ActionHandler {
 
         //http://193.166.24.38/coordtrans/CoordTrans
         //?sourceCRS=EPSG:2393,EPSG:5717&targetCRS=EPSG:4937&coords=6674658,3363923,23.5;6674739,3363820,36.3
-        final StringBuffer request = new StringBuffer(URL);
+        final StringBuffer request = new StringBuffer();
         request.append("?sourceCRS=" + params.getRequiredParam(SOURCE_CRS));
-        String heightCrs = params.getRequiredParam(HEIGHT_CRS);
-        if (!heightCrs.isEmpty()) {
-            request.append("?heightCRS=" + heightCrs);
+        String heightCrs = params.getHttpParam(HEIGHT_CRS);
+        if (heightCrs != null && !heightCrs.isEmpty()) {
+            request.append("," + heightCrs);
         }
-        request.append("?targetCRS=" + params.getRequiredParam(TARGET_CRS));
-        request.append("?coords=");
+        request.append("&targetCRS=" + params.getRequiredParam(TARGET_CRS));
+        request.append("&coords=");
 
         final String coordinates = params.getRequiredParam(COORDINATES);
         try {
             final JSONArray coordinateArray = new JSONArray(coordinates);
             for (int i = 0; i < coordinateArray.length(); ++i) {
                 JSONObject coordinate = (JSONObject) coordinateArray.get(i);
-                request.append(coordinate.get(PARAM_LON)+";");
-                request.append(coordinate.get(PARAM_LAT)+";");
-                request.append(coordinate.get("height"));
-
+                request.append(coordinate.get(PARAM_LON));
+                request.append(","+coordinate.get(PARAM_LAT));
+                if (heightCrs != null && !heightCrs.isEmpty()) {
+                    request.append(","+coordinate.get(HEIGHT));
+                }
+                request.append(";");
             }
-            HttpURLConnection conn = IOHelper.getConnection(URL);
-            IOHelper.writeToConnection(conn, request.toString());
+            HttpURLConnection conn = IOHelper.getConnection(URL + request.toString());
             String result = IOHelper.readString(conn);
-            JSONObject response = new JSONObject();
-            JSONHelper.putValue(response, "result", result);
+
+            StringTokenizer coordinatesTokenizer = new StringTokenizer(result.toString(), ";");
+            JSONArray response = new JSONArray();
+            while(coordinatesTokenizer.hasMoreElements()) {
+                StringTokenizer coordinateTokenizer = new StringTokenizer(
+                        coordinatesTokenizer.nextToken(), ",");
+                while(coordinateTokenizer.hasMoreElements()) {
+                    JSONObject coordinateObject = new JSONObject();
+                    coordinateObject.put(PARAM_LON, coordinateTokenizer.nextElement());
+                    coordinateObject.put(PARAM_LAT, coordinateTokenizer.nextElement());
+                    if (heightCrs != null && !heightCrs.isEmpty()) {
+                        coordinateObject.put(HEIGHT, coordinateTokenizer.nextElement());
+                    }
+                    response.put(coordinateObject);
+                }
+            }
+
             ResponseHelper.writeResponse(params, response);
 
         } catch (Exception e) {
