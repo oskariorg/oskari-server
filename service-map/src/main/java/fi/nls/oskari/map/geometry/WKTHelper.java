@@ -117,7 +117,7 @@ public class WKTHelper {
                 continue;
             }
             if (dy == 0) {
-                int nSeg = (int) Math.ceil(Math.abs((dx / threshhold)));
+                int nSeg = (int) Math.ceil(Math.abs(dx) / threshhold);
                 for (int j = 0; j < nSeg - 1; j++) {
                     if (i == tempPointArray.length) {
                         tempPointArray = grow(tempPointArray);
@@ -127,7 +127,7 @@ public class WKTHelper {
                     tempPointArray[i++] = y0;
                 }
             } else if (dx == 0) {
-                int nSeg = (int) Math.ceil(Math.abs((dy / threshhold)));
+                int nSeg = (int) Math.ceil(Math.abs(dy) / threshhold);
                 for (int j = 0; j < nSeg - 1; j++) {
                     if (i == tempPointArray.length) {
                         tempPointArray = grow(tempPointArray);
@@ -137,7 +137,7 @@ public class WKTHelper {
                 }
             } else {
                 double c = Math.sqrt(dx * dx + dy * dy);
-                int nSeg = (int) Math.ceil(Math.abs((c / threshhold)));
+                int nSeg = (int) Math.ceil(c / threshhold);
                 for (int j = 0; j < nSeg - 1; j++) {
                     if (i == tempPointArray.length) {
                         tempPointArray = grow(tempPointArray);
