@@ -7,7 +7,10 @@ import com.vividsolutions.jts.geom.Point;
 
 public class GeometryHelper {
 
-    public static CoordinateSequence createCoordinateSequence(GeometryFactory gf,
+    /**
+     * Create a linear ring with 5 points from (x1,y1) (x2,y2) envelope
+     */
+    public static CoordinateSequence createLinearRing(GeometryFactory gf,
             double x1, double y1, double x2, double y2) {
         CoordinateSequence cs = gf.getCoordinateSequenceFactory().create(5, 2);
         cs.setOrdinate(0, 0, x1);
@@ -23,6 +26,18 @@ public class GeometryHelper {
         return cs;
     }
 
+    /**
+     * Linear interpolation for a LineString
+     * @param line
+     *      LineString to interpolate
+     * @param threshhold
+     *      if the distance between two consecutive points in the linestring is greater
+     *      than this value new points will be added to the returned coordinate sequence
+     * @param gf
+     *      geometry factory to use, if it's null a new one will be constructed
+     * @return
+     *      sequence of coordinates that
+     */
     public static CoordinateSequence interpolateLinear(LineString line, double threshhold, GeometryFactory gf) {
         double[] tempPointArray = new double[128];
         int i = 0;
