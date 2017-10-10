@@ -3,8 +3,6 @@ package fi.nls.oskari.map.geometry;
 import com.vividsolutions.jts.geom.CoordinateSequence;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryFactory;
-import com.vividsolutions.jts.geom.LineString;
-import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.Polygon;
 import com.vividsolutions.jts.io.WKTReader;
 import com.vividsolutions.jts.io.WKTWriter;
@@ -88,89 +86,14 @@ public class WKTHelper {
         if (geom == null) {
             return null;
         }
-        CoordinateSequence cs = interpolateLinear(((Polygon) geom).getExteriorRing(), 1.0, gf);
-        geom = gf.createPolygon(cs);
+        Polygon polygon = (Polygon) geom;
+        CoordinateSequence cs = GeometryHelper.interpolateLinear(polygon.getExteriorRing(), 1.0, gf);
+        polygon = gf.createPolygon(cs);
         // input axis orientation is / must be x=lon y=lat
         CoordinateReferenceSystem targetCrs = getCRS(targetSRS);
-        final Geometry transformed = transform(geom, CRS_EPSG_4326, targetCrs);
+        final Geometry transformed = transform(polygon, CRS_EPSG_4326, targetCrs);
         // output is x=lon y=lat always in every projection
         return getWKT(transformed);
-    }
-
-    protected static CoordinateSequence interpolateLinear(LineString line, double threshhold, GeometryFactory gf) {
-        double[] tempPointArray = new double[128];
-        int i = 0;
-
-        Point point = line.getPointN(0);
-        double x0 = point.getX();
-        double y0 = point.getY();
-        tempPointArray[i++] = x0;
-        tempPointArray[i++] = y0;
-
-        for (int p = 1; p < line.getNumPoints(); p++) {
-            point = line.getPointN(p);
-            double x1 = point.getX();
-            double y1 = point.getY();
-            double dx = x1 - x0;
-            double dy = y1 - y0;
-            if (dy == 0 && dx == 0) {
-                continue;
-            }
-            if (dy == 0) {
-                int nSeg = (int) Math.ceil(Math.abs(dx) / threshhold);
-                for (int j = 0; j < nSeg - 1; j++) {
-                    if (i == tempPointArray.length) {
-                        tempPointArray = grow(tempPointArray);
-                    }
-                    // Multiply each time to avoid snowballing a possible rounding error of dx / nSeg
-                    tempPointArray[i++] = x0 + (j + 1) * dx / nSeg;
-                    tempPointArray[i++] = y0;
-                }
-            } else if (dx == 0) {
-                int nSeg = (int) Math.ceil(Math.abs(dy) / threshhold);
-                for (int j = 0; j < nSeg - 1; j++) {
-                    if (i == tempPointArray.length) {
-                        tempPointArray = grow(tempPointArray);
-                    }
-                    tempPointArray[i++] = x0;
-                    tempPointArray[i++] = y0 + (j + 1) * dy / nSeg;
-                }
-            } else {
-                double c = Math.sqrt(dx * dx + dy * dy);
-                int nSeg = (int) Math.ceil(c / threshhold);
-                for (int j = 0; j < nSeg - 1; j++) {
-                    if (i == tempPointArray.length) {
-                        tempPointArray = grow(tempPointArray);
-                    }
-                    tempPointArray[i++] = x0 + (j + 1) * dx / nSeg;
-                    tempPointArray[i++] = y0 + (j + 1) * dy / nSeg;
-                }
-            }
-            if (i == tempPointArray.length) {
-                tempPointArray = grow(tempPointArray);
-            }
-            tempPointArray[i++] = x1;
-            tempPointArray[i++] = y1;
-            x0 = x1;
-            y0 = y1;
-        }
-
-        if (gf == null) {
-            gf = new GeometryFactory();
-        }
-        CoordinateSequence cs = gf.getCoordinateSequenceFactory().create(i / 2, 2);
-        for (int j = 0, k = 0; k < i; j++) {
-            cs.setOrdinate(j, 0, tempPointArray[k++]);
-            cs.setOrdinate(j, 1, tempPointArray[k++]);
-        }
-        return cs;
-    }
-
-    private static double[] grow(double[] arr) {
-        int len = arr.length;
-        double[] arr2 = new double[len * 2];
-        System.arraycopy(arr, 0, arr2, 0, len);
-        return arr2;
     }
 
     /**

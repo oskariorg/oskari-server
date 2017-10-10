@@ -1,8 +1,6 @@
 package fi.nls.oskari.map.geometry;
 
-import com.vividsolutions.jts.geom.CoordinateSequence;
 import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.GeometryFactory;
 import org.junit.Test;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
@@ -65,27 +63,6 @@ public class WKTHelperTest {
         Geometry point = WKTHelper.parseWKT(WKT_POINT);
         final String str = WKTHelper.getWKT(point);
         assertEquals("Should have same WKT", WKT_POINT, str);
-    }
-
-
-    @Test
-    public void testInterpolate() {
-        GeometryFactory gf = new GeometryFactory();
-        CoordinateSequence cs = gf.getCoordinateSequenceFactory().create(2, 2);
-        cs.setOrdinate(0, 0, -180.0);
-        cs.setOrdinate(0, 1,   45.0);
-        cs.setOrdinate(1, 0,  180.0);
-        cs.setOrdinate(1, 1,   45.0);
-        CoordinateSequence interpolated = WKTHelper.interpolateLinear(
-                gf.createLineString(cs), 20.0, gf);
-
-        double lon = -180.0;
-        double lat =   45.0;
-        for (int i = 0; i <= 18; i++) {
-            assertEquals(lon, interpolated.getOrdinate(i, 0), 0.0);
-            assertEquals(lat, interpolated.getOrdinate(i, 1), 0.0);
-            lon += 20.0;
-        }
     }
 
 }
