@@ -425,7 +425,6 @@ public class TransportService extends AbstractService {
     private String getOskariUid(SessionStore store) {
         String sessionId = store.getSession();
         String route = store.getRoute();
-        log.warn( JobHelper.getAPIUrl() + UID_API);
         return HttpHelper.getHeaderValue(JobHelper.getAPIUrl() + UID_API,
                 JobHelper.getCookiesValue(sessionId, route), KEY_UID);
     }

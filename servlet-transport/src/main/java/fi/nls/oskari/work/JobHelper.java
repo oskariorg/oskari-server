@@ -100,7 +100,6 @@ public class JobHelper {
         String json = WFSLayerPermissionsStore.getCache(sessionId);
         boolean fromCache = json != null;
         if(!fromCache) {
-            log.warn(getAPIUrl() + PERMISSIONS_API);
             json = HttpHelper.getRequest(getAPIUrl() + PERMISSIONS_API, getCookiesValue(sessionId, route));
             if(json == null) {
                 return false;
