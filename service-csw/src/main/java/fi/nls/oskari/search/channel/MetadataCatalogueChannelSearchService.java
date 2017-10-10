@@ -243,7 +243,7 @@ public class MetadataCatalogueChannelSearchService extends SearchChannel {
             double y2 = Double.parseDouble(item.getNorthBoundLatitude());
 
             GeometryFactory gf = new GeometryFactory();
-            CoordinateSequence cs = GeometryHelper.createCoordinateSequence(gf, x1, y1, x2, y2);
+            CoordinateSequence cs = GeometryHelper.createLinearRing(gf, x1, y1, x2, y2);
             LineString ls = gf.createLineString(cs);
             CoordinateSequence interpolated = GeometryHelper.interpolateLinear(ls, 1.0, gf);
             Polygon polygon = gf.createPolygon(interpolated);
