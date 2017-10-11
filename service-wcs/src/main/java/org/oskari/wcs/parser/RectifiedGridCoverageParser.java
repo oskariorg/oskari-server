@@ -2,6 +2,7 @@ package org.oskari.wcs.parser;
 
 import java.util.List;
 import java.util.Optional;
+import org.oskari.utils.common.StringUtils;
 import org.oskari.utils.xml.XML;
 import org.oskari.wcs.coverage.RectifiedGridCoverage;
 import org.oskari.wcs.coverage.function.GridFunction;
@@ -64,7 +65,7 @@ public class RectifiedGridCoverageParser {
 
     private static Point parseOffsetVector(Element offsetVector, int dimension) {
         String srsName = offsetVector.getAttribute("srsName");
-        double[] vector = CommonParser.parseDoubleArray(offsetVector.getTextContent(), ' ')
+        double[] vector = StringUtils.parseDoubleArray(offsetVector.getTextContent(), ' ')
                 .orElseThrow(() -> new IllegalArgumentException("Invalid offsetVector"));
         if (vector.length != dimension) {
             throw new IllegalArgumentException("offsetVector length differs from dimension");
@@ -120,7 +121,7 @@ public class RectifiedGridCoverageParser {
         String lowStr = XML.getChildText(gridEnvelopeE, "low")
                 .orElseThrow(() -> new IllegalArgumentException(
                         "Invalid GridEnvelope, missing low element"));
-        int[] low = CommonParser.parseIntArray(lowStr, ' ')
+        int[] low = StringUtils.parseIntArray(lowStr, ' ')
                 .orElseThrow(() -> new IllegalArgumentException(
                         "Invalid low value in GridEnvelope"));
         if (low.length != dimension) {
@@ -131,7 +132,7 @@ public class RectifiedGridCoverageParser {
         String highStr = XML.getChildText(gridEnvelopeE, "high")
                 .orElseThrow(() -> new IllegalArgumentException(
                         "Invalid GridEnvelope, missing high element"));
-        int[] high = CommonParser.parseIntArray(highStr, ' ')
+        int[] high = StringUtils.parseIntArray(highStr, ' ')
                 .orElseThrow(() -> new IllegalArgumentException(
                         "Invalid high value in GridEnvelope"));
         if (high.length != dimension) {
@@ -160,7 +161,7 @@ public class RectifiedGridCoverageParser {
         Optional<String> startPointStr = XML.getChildText(gridFunction, "startPoint");
         int[] startPoint;
         if (startPointStr.isPresent()) {
-            startPoint = CommonParser.parseIntArray(startPointStr.get(), ' ')
+            startPoint = StringUtils.parseIntArray(startPointStr.get(), ' ')
                     .orElseThrow(() -> new IllegalArgumentException(
                             "Invalid GridFunction, invalid startPoint"));
         } else {
@@ -192,7 +193,7 @@ public class RectifiedGridCoverageParser {
         String axisOrderStr = elem.getAttribute("axisOrder");
         int[] axisOrder;
         if (axisOrderStr != null && !axisOrderStr.isEmpty()) {
-            axisOrder = CommonParser.parseIntArray(axisOrderStr, ' ')
+            axisOrder = StringUtils.parseIntArray(axisOrderStr, ' ')
                     .orElseThrow(() -> new IllegalArgumentException(
                             "Invalid sequenceRule, invalid axisOrder"));
         } else {
