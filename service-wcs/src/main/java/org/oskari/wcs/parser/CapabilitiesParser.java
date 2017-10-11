@@ -105,7 +105,7 @@ public class CapabilitiesParser {
 
     private static Operation parseOperation(Element op) {
         String name = op.getAttribute("name");
-        if (name == null || name.length() == 0) {
+        if (name == null || name.isEmpty()) {
             throw new IllegalArgumentException("Operation did not specify name attribute");
         }
         String get = null;
