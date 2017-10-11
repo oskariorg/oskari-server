@@ -1,4 +1,4 @@
-package org.oskari.wcs.util;
+package org.oskari.wcs;
 
 public interface WCS {
 

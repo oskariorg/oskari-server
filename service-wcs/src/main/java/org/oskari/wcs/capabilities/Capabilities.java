@@ -1,8 +1,8 @@
 package org.oskari.wcs.capabilities;
 
 import java.util.Optional;
+import org.oskari.wcs.WCS;
 import org.oskari.wcs.extension.Interpolation;
-import org.oskari.wcs.util.WCS;
 
 public class Capabilities {
 

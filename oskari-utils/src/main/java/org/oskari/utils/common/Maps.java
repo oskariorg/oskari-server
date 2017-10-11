@@ -1,4 +1,4 @@
-package org.oskari.wcs.util;
+package org.oskari.utils.common;
 
 import java.util.LinkedHashMap;
 import java.util.Map;

@@ -387,6 +387,18 @@
                 <version>${fi.nls.oskari.version}</version>
             </dependency>
 
+            <dependency>
+                <groupId>org.oskari</groupId>
+                <artifactId>service-wcs</artifactId>
+                <version>${fi.nls.oskari.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.oskari</groupId>
+                <artifactId>oskari-utils</artifactId>
+                <version>${fi.nls.oskari.version}</version>
+            </dependency>
+
             <!-- Spring -->
             <dependency>
                 <groupId>org.springframework.security.extensions</groupId>
@@ -1107,7 +1119,9 @@
 
         <!-- print -->
         <module>service-print</module>
+
         <module>service-wcs</module>
+        <module>oskari-utils</module>
     </modules>
 
 </project>

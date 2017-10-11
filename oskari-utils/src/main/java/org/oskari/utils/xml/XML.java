@@ -1,4 +1,4 @@
-package org.oskari.wcs.util;
+package org.oskari.utils.xml;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -19,6 +19,7 @@ public class XML {
             SAXException, IOException {
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         dbf.setNamespaceAware(true);
+        dbf.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
         DocumentBuilder db = dbf.newDocumentBuilder();
         Document doc = db.parse(in);
         in.close();

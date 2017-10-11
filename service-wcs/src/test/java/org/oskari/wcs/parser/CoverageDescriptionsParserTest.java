@@ -9,6 +9,7 @@ import java.io.InputStream;
 import java.util.List;
 import javax.xml.parsers.ParserConfigurationException;
 import org.junit.Test;
+import org.oskari.utils.xml.XML;
 import org.oskari.wcs.coverage.CoverageDescription;
 import org.oskari.wcs.coverage.RectifiedGridCoverage;
 import org.oskari.wcs.coverage.function.GridFunction;
@@ -17,7 +18,6 @@ import org.oskari.wcs.gml.Envelope;
 import org.oskari.wcs.gml.GridEnvelope;
 import org.oskari.wcs.gml.Point;
 import org.oskari.wcs.gml.RectifiedGrid;
-import org.oskari.wcs.util.XML;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 

@@ -3,9 +3,9 @@ package org.oskari.wcs.request;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import org.oskari.utils.common.Maps;
 import org.oskari.wcs.capabilities.Capabilities;
 import org.oskari.wcs.capabilities.Operation;
-import org.oskari.wcs.util.Maps;
 
 public class DescribeCoverage {
 
