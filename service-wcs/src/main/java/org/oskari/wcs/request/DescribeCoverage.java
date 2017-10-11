@@ -4,6 +4,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import org.oskari.utils.common.Maps;
+import org.oskari.wcs.WCS;
 import org.oskari.wcs.capabilities.Capabilities;
 import org.oskari.wcs.capabilities.Operation;
 
@@ -23,7 +24,7 @@ public class DescribeCoverage {
     public static Map<String, String> toQueryParameters(String coverageId) {
         return Maps.of(
                 "service", "WCS",
-                "version", "2.0.1",
+                "version", WCS.VERSION_201,
                 "request", "DescribeCoverage",
                 "coverageId", coverageId);
     }

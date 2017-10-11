@@ -2,6 +2,8 @@ package org.oskari.wcs;
 
 public interface WCS {
 
+    public static final String VERSION_201 = "2.0.1";
+
     public static final String NS_XSD = "http://www.w3.org/2001/XMLSchema";
     public static final String NS_GML = "http://www.opengis.net/gml/3.2";
     public static final String NS_GML_COV = "http://www.opengis.net/gmlcov/1.0";

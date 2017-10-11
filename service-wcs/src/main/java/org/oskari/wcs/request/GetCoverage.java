@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import org.oskari.utils.common.StringUtils;
+import org.oskari.wcs.WCS;
 import org.oskari.wcs.capabilities.Capabilities;
 import org.oskari.wcs.coverage.CoverageDescription;
 import org.oskari.wcs.coverage.RectifiedGridCoverage;
@@ -148,7 +149,7 @@ public class GetCoverage {
     public Map<String, String[]> toKVP() {
         Map<String, String[]> kvp = new HashMap<>();
         put(kvp, "service", "WCS");
-        put(kvp, "version", "2.0.1");
+        put(kvp, "version", WCS.VERSION_201);
         put(kvp, "request", "GetCoverage");
         put(kvp, "coverageId", coverageId);
         put(kvp, "format", format);

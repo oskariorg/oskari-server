@@ -28,8 +28,6 @@ import org.xml.sax.SAXException;
 
 public class CapabilitiesParser {
 
-    public static final String ALLOWED_VERSION = "2.0.1";
-
     public static Capabilities parse(URL url)
             throws IOException, ParserConfigurationException, SAXException {
         try (InputStream in = url.openStream()) {
@@ -52,7 +50,7 @@ public class CapabilitiesParser {
             throw new IllegalArgumentException("Invalid XML root namespace: "
                     + root.getNamespaceURI());
         }
-        if (!ALLOWED_VERSION.equals(root.getAttribute("version"))) {
+        if (!WCS.VERSION_201.equals(root.getAttribute("version"))) {
             throw new IllegalArgumentException("Invalid attribute 'version': "
                     + root.getAttribute("version"));
         }
