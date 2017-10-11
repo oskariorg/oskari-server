@@ -46,7 +46,7 @@ public class RectifiedGridCoverageParser {
                         "Invalid limits, missing GridEnvelope element"));
         GridEnvelope limits = parseGridEnvelope(gridEnvelopeE, dimension);
 
-        String[] axes = parseAxisLables(rectifiedGridE, dimension);
+        String[] axes = parseAxisLabels(rectifiedGridE, dimension);
         Point origin = parseOrigin(rectifiedGridE, dimension);
         Point[] offsetVectors = parseOffsetVectors(rectifiedGridE, dimension);
 
@@ -81,7 +81,7 @@ public class RectifiedGridCoverageParser {
         return CommonParser.parsePoint(pointE, dimension);
     }
 
-    private static String[] parseAxisLables(Element gridEnvelopeE, int dimension) {
+    private static String[] parseAxisLabels(Element gridEnvelopeE, int dimension) {
         Optional<Element> axisLabelsE = XML.getChild(gridEnvelopeE, "axisLabels");
         if (axisLabelsE.isPresent()) {
             String labels = axisLabelsE.get().getTextContent();
