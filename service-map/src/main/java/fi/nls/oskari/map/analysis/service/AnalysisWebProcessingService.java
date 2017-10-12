@@ -10,6 +10,7 @@ import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
+import fi.nls.oskari.util.XmlHelper;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.geojson.feature.FeatureJSON;
 import org.json.JSONArray;
@@ -20,7 +21,11 @@ import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.util.ArrayList;
 import java.util.List;
@@ -78,8 +83,7 @@ public class AnalysisWebProcessingService {
 
             // 2) Transform XML to POST body
             // Use a Transformer for output
-            final TransformerFactory tFactory = TransformerFactory
-                    .newInstance();
+            final TransformerFactory tFactory = XmlHelper.newTransformerFactory();
             final Transformer transformer = tFactory.newTransformer();
 
             final DOMSource source = new DOMSource(doc);
