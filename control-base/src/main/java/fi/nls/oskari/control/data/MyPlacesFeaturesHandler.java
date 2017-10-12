@@ -28,19 +28,27 @@ public class MyPlacesFeaturesHandler extends ActionHandler {
 
         try {
             SimpleFeatureTypeBuilder b = new SimpleFeatureTypeBuilder();
-            b.setName("name");
+            b.setName("feature:my_places");
             b.setCRS( DefaultGeographicCRS.WGS84 ); // set crs first
             b.add( "feature:geometry", Point.class ); // then add geometry
             b.add( "feature:name", String.class );
             b.add( "feature:place_desc", String.class );
             b.add( "feature:attention_text", String.class );
+            b.add( "feature:link", String.class );
+            b.add( "feature:image_url", String.class );
+            b.add( "feature:category_id", String.class );
+            b.add( "feature:uuid", String.class );
             final SimpleFeatureType featureType = b.buildFeatureType();
 
             SimpleFeatureBuilder builder = new SimpleFeatureBuilder(featureType);
             builder.add( new Point( 376415.4647, 6678470.1552 ) );
             builder.add( "Nimi" );
-            builder.add( "Kuvaus" );
+            builder.add( "" );
+            builder.add( "" );
             builder.add( "Huomioteksti" );
+            builder.add( "Huomioteksti" );
+            builder.add( "77" );
+            builder.add( "aac41a8a-b7e5-4a47-b9ab-ba9e3d03dbc9" );
             SimpleFeature feature = builder.buildFeature( "fid.1" );
 
             Transaction transaction = new DefaultTransaction("insert");
