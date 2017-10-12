@@ -10,6 +10,13 @@ import org.apache.axiom.om.util.StAXParserConfiguration;
 import org.apache.axiom.om.xpath.AXIOMXPath;
 import org.jaxen.NamespaceContext;
 
+import javax.xml.XMLConstants;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.FactoryConfigurationError;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.TransformerFactoryConfigurationError;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.HashMap;
@@ -70,42 +77,44 @@ public class XmlHelper {
 
     /**
      * Checks OMElement direct children. Returns true if each child tag has given local name.
+     *
      * @param root element to check
-     * @param tag localname to check against
+     * @param tag  localname to check against
      * @return false if params are null or there is a direct children with another name
      */
     public static boolean containsOnlyDirectChildrenOfName(final OMElement root, final String tag) {
-        if(root == null || tag == null) {
+        if (root == null || tag == null) {
             return false;
         }
 
         final Iterator<OMElement> it = root.getChildElements();
-        while(it.hasNext()) {
+        while (it.hasNext()) {
             OMElement child = it.next();
-            if(!tag.equals(child.getLocalName())) {
+            if (!tag.equals(child.getLocalName())) {
                 return false;
             }
         }
         return true;
     }
+
     public static String getChildValue(final OMElement elem, final String localName) throws Exception {
         OMElement e = getChild(elem, localName);
-        if(e == null) {
+        if (e == null) {
             return null;
         }
         return e.getText();
     }
 
     public static OMElement getChild(final OMElement elem, final String localName) throws Exception {
-        if(elem == null || localName == null) {
+        if (elem == null || localName == null) {
             return null;
         }
         final Iterator<OMElement> it = elem.getChildrenWithLocalName(localName);
-        if(!it.hasNext()) {
+        if (!it.hasNext()) {
             return null;
         }
         final OMElement result = it.next();
-        if(it.hasNext()) {
+        if (it.hasNext()) {
             throw new Exception("More than one element");
         }
         return result;
@@ -114,11 +123,11 @@ public class XmlHelper {
 
     public static Map<String, String> getAttributesAsMap(final OMElement elem) {
         final Map<String, String> attributes = new HashMap<String, String>();
-        if(elem == null) {
+        if (elem == null) {
             return attributes;
         }
         final Iterator<OMAttribute> attrs = elem.getAllAttributes();
-        while(attrs.hasNext()) {
+        while (attrs.hasNext()) {
             final OMAttribute a = attrs.next();
             attributes.put(a.getLocalName(), a.getAttributeValue());
         }
@@ -140,4 +149,52 @@ public class XmlHelper {
         return null;
     }
 
+    /**
+     * Obtain a new instance of a DocumentBuilderFactory with security features enables.
+     * This static method creates a new factory instance.
+     *
+     * @return New instance of a DocumentBuilderFactory
+     * @throws FactoryConfigurationError - in case of service configuration error or if
+     * the implementation is not available or cannot be instantiated.
+     */
+    public static DocumentBuilderFactory newDocumentBuilderFactory() throws FactoryConfigurationError {
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        try {
+            // Note that these settings are XML parser implementation specific
+            // and may require adjustment in some environments. These are for Xerces 2
+            factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+            factory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+            factory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
+            factory.setFeature("http://xml.org/sax/features/external-general-entities", false);
+            factory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+        } catch (ParserConfigurationException ex) {
+            log.warn("Unable to enable security features for DocumentBuilderFactory", ex.getMessage());
+        }
+        factory.setXIncludeAware(false);
+        factory.setExpandEntityReferences(false);
+        return factory;
+    }
+
+    /**
+     * Obtain a new instance of a TransformerFactory with security features enabled.
+     * This static method creates a new factory instance.
+     *
+     * @return new TransformerFactory instance, never null.
+     * @throws TransformerFactoryConfigurationError - Thrown in case of service configuration error or if
+     * the implementation is not available or cannot be instantiated.
+     */
+    public static TransformerFactory newTransformerFactory() throws TransformerFactoryConfigurationError {
+        TransformerFactory transformerFactory = TransformerFactory.newInstance();
+        try {
+            transformerFactory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+        } catch (TransformerConfigurationException ex) {
+            log.warn("Unable to enable feature for secure processing for TransformerFactory", ex.getMessage());
+        }
+        // Empty protocol String to disable access to external resources
+        transformerFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+        transformerFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_STYLESHEET, "");
+        // Disable resolving of any kind of URIs, not sure if this is actually necessary
+        transformerFactory.setURIResolver((String href, String base) -> null);
+        return transformerFactory;
+    }
 }
