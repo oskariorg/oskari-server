@@ -1,20 +1,21 @@
 package fi.nls.oskari.control.data;
 
+
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.*;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.myplaces.MyPlacesService;
 import fi.nls.oskari.myplaces.MyPlacesServiceMybatisImpl;
-import fi.nls.oskari.service.OskariComponentManager;
-import fi.nls.oskari.util.*;
+import fi.nls.oskari.util.GeoServerHelper;
+import fi.nls.oskari.util.GeoServerRequestBuilder;
+import fi.nls.oskari.util.IOHelper;
 import org.json.JSONObject;
 
+@OskariActionRoute("MyPlacesLayer")
+public class MyPlacesLayersHandler extends RestActionHandler {
 
-@OskariActionRoute("MyPlacesFeture")
-public class MyPlacesFeaturesHandler extends RestActionHandler {
-
-    private final static Logger log = LogFactory.getLogger(MyPlacesFeaturesHandler.class);
+    private final static Logger log = LogFactory.getLogger(MyPlacesLayersHandler.class);
 
     private MyPlacesService service = new MyPlacesServiceMybatisImpl();
 
@@ -24,7 +25,7 @@ public class MyPlacesFeaturesHandler extends RestActionHandler {
         checkCredentials(params);
         GeoServerRequestBuilder builder = new GeoServerRequestBuilder();
         try {
-            GeoServerHelper.sendRequest(builder.buildFeaturesGet(readPayload(params)));
+            GeoServerHelper.sendRequest(builder.buildLayersGet(readPayload(params)));
         }
         catch (Exception e) {
             throw new ActionException(e.getMessage());
@@ -32,18 +33,18 @@ public class MyPlacesFeaturesHandler extends RestActionHandler {
     }
 
     public void handlePut(ActionParameters params) throws ActionException {
-        handleModifyRequest(params, ModifyOperationType.INSERT);
+        handleModifyRequest(params, MyPlacesFeaturesHandler.ModifyOperationType.DELETE);
     }
 
     public void handlePost(ActionParameters params) throws ActionException {
-        handleModifyRequest(params, ModifyOperationType.UPDATE);
+        handleModifyRequest(params, MyPlacesFeaturesHandler.ModifyOperationType.DELETE);
     }
 
     public void handleDelete(ActionParameters params) throws ActionException {
-        handleModifyRequest(params, ModifyOperationType.DELETE);
+        handleModifyRequest(params, MyPlacesFeaturesHandler.ModifyOperationType.DELETE);
     }
 
-    public void handleModifyRequest(ActionParameters params, ModifyOperationType operation) throws ActionException {
+    public void handleModifyRequest(ActionParameters params, MyPlacesFeaturesHandler.ModifyOperationType operation) throws ActionException {
         checkCredentials(params);
 
         String jsonString = readPayload(params);
@@ -61,13 +62,13 @@ public class MyPlacesFeaturesHandler extends RestActionHandler {
         }
         GeoServerRequestBuilder builder = new GeoServerRequestBuilder();
         try {
-            if(operation.equals(ModifyOperationType.INSERT)) {
-                GeoServerHelper.sendRequest(builder.buildFeaturesInsert(jsonString));
+            if(operation.equals(MyPlacesLayersHandler.ModifyOperationType.INSERT)) {
+                GeoServerHelper.sendRequest(builder.buildLayersInsert(jsonString));
             }
-            if(operation.equals(ModifyOperationType.UPDATE)) {
+            if(operation.equals(MyPlacesLayersHandler.ModifyOperationType.UPDATE)) {
                 GeoServerHelper.sendRequest(builder.buildFeaturesUpdate(jsonString));
             }
-            if(operation.equals(ModifyOperationType.INSERT)) {
+            if(operation.equals(MyPlacesLayersHandler.ModifyOperationType.INSERT)) {
                 GeoServerHelper.sendRequest(builder.buildFeaturesDelete(jsonString));
             }
         }
@@ -89,4 +90,4 @@ public class MyPlacesFeaturesHandler extends RestActionHandler {
             throw new ActionException(e.getMessage());
         }
     }
- }
+}
