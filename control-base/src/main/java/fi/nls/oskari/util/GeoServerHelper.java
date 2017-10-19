@@ -12,7 +12,7 @@ public class GeoServerHelper {
 
     private static GeoServerProxyService proxyService = new GeoServerProxyService();
 
-    public static void sendRequest(final OMElement xml) throws Exception {
+    public static String sendRequest(final OMElement xml) throws Exception {
         final ProxyRequest req = new ProxyRequest();
         req.setUrl(PropertyUtil.get("myplaces.ows.url"));
         req.setUserName(PropertyUtil.get("myplaces.user"));
@@ -21,7 +21,7 @@ public class GeoServerHelper {
         req.setPostData(XmlHelper.toString(xml));
 
         try {
-            final String response = proxyService.proxy(req);
+            return proxyService.proxy(req);
         } catch (Exception e) {
             throw new Exception("Couldn't proxy request to GeoServer", e);
         }

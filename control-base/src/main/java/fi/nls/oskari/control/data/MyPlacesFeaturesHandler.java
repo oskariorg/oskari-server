@@ -43,7 +43,7 @@ public class MyPlacesFeaturesHandler extends RestActionHandler {
         handleModifyRequest(params, ModifyOperationType.DELETE);
     }
 
-    public void handleModifyRequest(ActionParameters params, ModifyOperationType operation) throws ActionException {
+    private void handleModifyRequest(ActionParameters params, ModifyOperationType operation) throws ActionException {
         checkCredentials(params);
 
         String jsonString = readPayload(params);
@@ -59,16 +59,22 @@ public class MyPlacesFeaturesHandler extends RestActionHandler {
         if (!service.canModifyCategory(params.getUser(), categoryId)) {
             throw new ActionDeniedException("Not allowed");
         }
-        GeoServerRequestBuilder builder = new GeoServerRequestBuilder();
+        GeoServerRequestBuilder requestBuilder = new GeoServerRequestBuilder();
+        GeoServerRequestBuilder responseBuilder = new GeoServerRequestBuilder();
         try {
-            if(operation.equals(ModifyOperationType.INSERT)) {
-                GeoServerHelper.sendRequest(builder.buildFeaturesInsert(jsonString));
-            }
-            if(operation.equals(ModifyOperationType.UPDATE)) {
-                GeoServerHelper.sendRequest(builder.buildFeaturesUpdate(jsonString));
-            }
-            if(operation.equals(ModifyOperationType.INSERT)) {
-                GeoServerHelper.sendRequest(builder.buildFeaturesDelete(jsonString));
+            switch (operation) {
+                case INSERT:
+                    ResponseHelper.writeResponse(params, responseBuilder.buildFeaturesInsert(
+                            GeoServerHelper.sendRequest(requestBuilder.buildFeaturesInsert(jsonString))));
+                    break;
+                case UPDATE:
+                    ResponseHelper.writeResponse(params, responseBuilder.buildFeaturesUpdate(
+                            GeoServerHelper.sendRequest(requestBuilder.buildFeaturesUpdate(jsonString))));
+                    break;
+                case DELETE:
+                    ResponseHelper.writeResponse(params, responseBuilder.buildFeaturesDelete(
+                            GeoServerHelper.sendRequest(requestBuilder.buildFeaturesDelete(jsonString))));
+                    break;
             }
         }
         catch (Exception e) {
