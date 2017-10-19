@@ -16,6 +16,7 @@ import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.util.ResponseHelper;
+import fi.nls.oskari.util.XmlHelper;
 import org.apache.axiom.om.OMElement;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
@@ -26,7 +27,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.io.StringWriter;
@@ -226,7 +226,7 @@ public class GetStatsTileHandler extends ActionHandler {
         // TODO: maybe create GetMap XML somewhere on service level and inject the SLD part here?
         Element getMapElement = null;
         try {
-            DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+            DocumentBuilderFactory docFactory = XmlHelper.newDocumentBuilderFactory();
             DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
 
             // root elements
@@ -329,7 +329,7 @@ public class GetStatsTileHandler extends ActionHandler {
             height.appendChild(doc.createTextNode(params.getRequiredParam("HEIGHT")));
             size.appendChild(height);
 
-            final Transformer transformer = TransformerFactory.newInstance()
+            final Transformer transformer = XmlHelper.newTransformerFactory()
                     .newTransformer();
 
             final DOMSource source = new DOMSource(doc);

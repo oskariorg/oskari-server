@@ -1,5 +1,6 @@
 package fi.nls.oskari.csw.helper;
 
+import fi.nls.oskari.util.XmlHelper;
 import org.geotools.referencing.CRS;
 import org.junit.Test;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
@@ -33,7 +34,7 @@ public class CSWISORecordParserTest {
     }
 
     private Node getMetadataNode() {
-        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+        DocumentBuilderFactory dbf = XmlHelper.newDocumentBuilderFactory();
         dbf.setNamespaceAware(true);
         InputStream xmlInputStream = getClass().getResourceAsStream(CSW_INPUT_FILE_NAME);
 

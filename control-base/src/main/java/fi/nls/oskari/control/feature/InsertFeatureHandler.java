@@ -18,6 +18,7 @@ import fi.nls.oskari.permission.domain.Resource;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.ResponseHelper;
+import fi.nls.oskari.util.XmlHelper;
 import fi.nls.oskari.wfs.WFSLayerConfigurationService;
 import fi.nls.oskari.wfs.WFSLayerConfigurationServiceIbatisImpl;
 import org.apache.http.HttpEntity;
@@ -173,7 +174,7 @@ public class InsertFeatureHandler extends ActionHandler {
         }
 
         try {
-            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            DocumentBuilderFactory factory = XmlHelper.newDocumentBuilderFactory();
             DocumentBuilder builder = factory.newDocumentBuilder();
 
             ByteArrayInputStream input = new ByteArrayInputStream(response.getBytes("UTF-8"));
