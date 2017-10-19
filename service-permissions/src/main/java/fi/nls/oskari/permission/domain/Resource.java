@@ -1,6 +1,7 @@
 package fi.nls.oskari.permission.domain;
 
 import fi.mml.portti.domain.permissions.Permissions;
+import fi.nls.oskari.domain.Role;
 import fi.nls.oskari.domain.User;
 import fi.nls.oskari.util.ConversionHelper;
 
@@ -11,7 +12,7 @@ import java.util.List;
  * A generic mapping for resource. Reflects DB table oskari_resource.
  */
 public class Resource {
-    final private List<Permission> permissions = new ArrayList<Permission>();
+    final private List<Permission> permissions = new ArrayList<>();
     private long id = -1;
     private String mapping;
     private String type;
@@ -29,6 +30,20 @@ public class Resource {
             else if(perm.getExternalType().equals(Permissions.EXTERNAL_TYPE_USER)) {
                 final long userID = ConversionHelper.getLong(perm.getExternalId(), -1);
                 if(userID == user.getId()) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public boolean hasPermission(final Role role, final String permissionType) {
+        for(Permission perm: getPermissions()) {
+            if(!perm.isOfType(permissionType)) {
+                continue;
+            }
+            if(perm.getExternalType().equals(Permissions.EXTERNAL_TYPE_ROLE)) {
+                if(role.getId() == ConversionHelper.getInt(perm.getExternalId(), -1)) {
                     return true;
                 }
             }
