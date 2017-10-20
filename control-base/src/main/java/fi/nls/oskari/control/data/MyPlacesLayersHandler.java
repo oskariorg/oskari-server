@@ -10,6 +10,7 @@ import fi.nls.oskari.myplaces.MyPlacesServiceMybatisImpl;
 import fi.nls.oskari.util.GeoServerHelper;
 import fi.nls.oskari.util.GeoServerRequestBuilder;
 import fi.nls.oskari.util.IOHelper;
+import fi.nls.oskari.util.ResponseHelper;
 import org.json.JSONObject;
 
 @OskariActionRoute("MyPlacesLayer")
@@ -60,16 +61,22 @@ public class MyPlacesLayersHandler extends RestActionHandler {
         if (!service.canModifyCategory(params.getUser(), categoryId)) {
             throw new ActionDeniedException("Not allowed");
         }
-        GeoServerRequestBuilder builder = new GeoServerRequestBuilder();
+        GeoServerRequestBuilder requestBuilder = new GeoServerRequestBuilder();
+        GeoServerRequestBuilder responseBuilder = new GeoServerRequestBuilder();
         try {
-            if(operation.equals(MyPlacesLayersHandler.ModifyOperationType.INSERT)) {
-                GeoServerHelper.sendRequest(builder.buildLayersInsert(jsonString));
-            }
-            if(operation.equals(MyPlacesLayersHandler.ModifyOperationType.UPDATE)) {
-                GeoServerHelper.sendRequest(builder.buildFeaturesUpdate(jsonString));
-            }
-            if(operation.equals(MyPlacesLayersHandler.ModifyOperationType.INSERT)) {
-                GeoServerHelper.sendRequest(builder.buildFeaturesDelete(jsonString));
+            switch (operation) {
+                case INSERT:
+                    ResponseHelper.writeResponse(params, responseBuilder.buildLayersInsert(
+                            GeoServerHelper.sendRequest(requestBuilder.buildLayersInsert(jsonString))));
+                    break;
+                case UPDATE:
+                    ResponseHelper.writeResponse(params, responseBuilder.buildLayersUpdate(
+                            GeoServerHelper.sendRequest(requestBuilder.buildLayersUpdate(jsonString))));
+                    break;
+                case DELETE:
+                    ResponseHelper.writeResponse(params, responseBuilder.buildLayersDelete(
+                            GeoServerHelper.sendRequest(requestBuilder.buildLayersDelete(jsonString))));
+                    break;
             }
         }
         catch (Exception e) {

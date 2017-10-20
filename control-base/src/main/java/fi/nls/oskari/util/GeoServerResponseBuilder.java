@@ -24,8 +24,10 @@ public class GeoServerResponseBuilder {
 
     private static final Logger log = LogFactory.getLogger(GeoServerRequestBuilder.class);
 
-    //TODO
-    private static final List LAYERS_GET_LIST = Arrays.asList("", "");
+    private static final List<String> LAYERS_GET_LIST = Arrays.asList("category_name", "default", "stroke_width",
+            "stroke_color", "fill_color", "uuid", "dot_color", "dot_size", "border_width", "border_color",
+            "dot_shape", "stroke_linejoin", "fill_pattern", "stroke_linecap", "stroke_dasharray", "border_linejoin",
+            "border_dasharray");
 
     public JSONObject buildLayersGet(String response) throws Exception {
         return new JSONObject(parse(response, LAYERS_GET_LIST));

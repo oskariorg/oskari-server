@@ -12,6 +12,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class GeoServerRequestBuilder {
@@ -20,6 +21,11 @@ public class GeoServerRequestBuilder {
 
     private static final String VERSION_1_0_0 = "1.0.0";
     private static final String VERSION_1_1_0 = "1.1.0";
+
+    private static final List<String> LAYERS_GET_LIST = Arrays.asList("category_name", "default", "stroke_width",
+            "stroke_color", "fill_color", "uuid", "dot_color", "dot_size", "border_width", "border_color",
+            "dot_shape", "stroke_linejoin", "fill_pattern", "stroke_linecap", "stroke_dasharray", "border_linejoin",
+            "border_dasharray");
 
     public OMElement buildLayersGet(String payload) {
 
@@ -116,24 +122,10 @@ public class GeoServerRequestBuilder {
             try {
                 JSONArray jsonArray = new JSONArray(payload);
                 for (int i=0; i<jsonArray.length(); ++i) {
-                    JSONObject jsonObject = new JSONObject(jsonArray.getJSONObject(i));
-                    transaction.addChild(getElement(jsonObject, "category_name", feature));
-                    transaction.addChild(getElement(jsonObject, "default", feature));
-                    transaction.addChild(getElement(jsonObject, "stroke_width", feature));
-                    transaction.addChild(getElement(jsonObject, "stroke_dasharray", feature));
-                    transaction.addChild(getElement(jsonObject, "stroke_linecap", feature));
-                    transaction.addChild(getElement(jsonObject, "stroke_linejoin", feature));
-                    transaction.addChild(getElement(jsonObject, "stroke_color", feature));
-                    transaction.addChild(getElement(jsonObject, "border_width", feature));
-                    transaction.addChild(getElement(jsonObject, "border_dasharray", feature));
-                    transaction.addChild(getElement(jsonObject, "border_linejoin", feature));
-                    transaction.addChild(getElement(jsonObject, "border_color", feature));
-                    transaction.addChild(getElement(jsonObject, "fill_color", feature));
-                    transaction.addChild(getElement(jsonObject, "fill_pattern", feature));
-                    transaction.addChild(getElement(jsonObject, "dot_color", feature));
-                    transaction.addChild(getElement(jsonObject, "dot_size", feature));
-                    transaction.addChild(getElement(jsonObject, "dot_shape", feature));
-                    transaction.addChild(getElement(jsonObject, "uuid", feature));
+                    for (String property : LAYERS_GET_LIST) {
+                        JSONObject jsonObject = new JSONObject(jsonArray.getJSONObject(i));
+                        transaction.addChild(getElement(jsonObject, property, feature));
+                    }
                 }
             }
             catch (Exception e) {
