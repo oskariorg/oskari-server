@@ -1,5 +1,22 @@
 # Release Notes
 
+## 1.44.1
+
+### XmlHelper
+
+Now configured to reject external entities in XML.
+
+### CSW/layer coverage data handling 
+
+The extent of a layer is described with an envelope in WGS84 coordinates. Currently the envelope is reprojected to the
+ currently used coordinate system by reprojecting the bottom left corner and the upper right corner coordinates and
+  forming another envelope from those. This often creates creates unwanted results especially when dealing with huge
+   extents (for example (-180,45),(180,90)) or when using for example North Pole LAEA projections.
+
+This functionality has been improved by generating a polygon from the envelope with (possibly) more than five
+ coordinates (each corner + the first corner again for closing the ring) via linear interpolation.
+  The generated polygon is then transformed to the target coordinate system.
+
 ## 1.44.0
 
 ### Library changes and Java requirement change

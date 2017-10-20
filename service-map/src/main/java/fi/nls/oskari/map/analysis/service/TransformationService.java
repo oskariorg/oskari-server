@@ -3,6 +3,7 @@ package fi.nls.oskari.map.analysis.service;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.service.ServiceException;
+import fi.nls.oskari.util.XmlHelper;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.w3c.dom.Document;
@@ -20,7 +21,12 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.io.ByteArrayInputStream;
 import java.io.StringWriter;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 public class TransformationService {
 
@@ -153,7 +159,7 @@ public class TransformationService {
     private static String nodeToString(Node node) throws ServiceException {
         try {
             StringWriter sw = new StringWriter();
-            Transformer t = TransformerFactory.newInstance().newTransformer();
+            Transformer t = XmlHelper.newTransformerFactory().newTransformer();
             t.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
             t.setOutputProperty(OutputKeys.INDENT, "yes");
             t.transform(new DOMSource(node), new StreamResult(sw));
@@ -164,8 +170,7 @@ public class TransformationService {
     }
     private Document createDoc(final String content) throws ServiceException {
         try {
-            final DocumentBuilderFactory dbf = DocumentBuilderFactory
-                    .newInstance();
+            final DocumentBuilderFactory dbf = XmlHelper.newDocumentBuilderFactory();
             // dbf.setNamespaceAware(true);
             final DocumentBuilder builder = dbf.newDocumentBuilder();
             final Document wpsDoc = builder.parse(new InputSource(
@@ -390,7 +395,7 @@ public class TransformationService {
     {
         try
         {
-            Transformer transformer = TransformerFactory.newInstance().newTransformer();
+            Transformer transformer = XmlHelper.newTransformerFactory().newTransformer();
             StreamResult result = new StreamResult(new StringWriter());
             DOMSource source = new DOMSource(doc);
             transformer.transform(source, result);

@@ -14,6 +14,7 @@ import fi.nls.oskari.domain.geo.Point;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.geometry.ProjectionHelper;
+import fi.nls.oskari.util.XmlHelper;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureIterator;
 import org.opengis.feature.Property;
@@ -24,10 +25,9 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.Result;
 import javax.xml.transform.Source;
-import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.Transformer;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.io.ByteArrayInputStream;
@@ -70,7 +70,7 @@ public class NLSNearestFeatureParser {
 
         try {
             //Remove schemalocation for faster parse
-            DocumentBuilder db = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+            DocumentBuilder db = XmlHelper.newDocumentBuilderFactory().newDocumentBuilder();
             InputStream datain = new ByteArrayInputStream(data.getBytes("UTF-8"));
             Document d = db.parse(datain);
             d.getDocumentElement().removeAttribute("xsi:schemaLocation");
@@ -79,7 +79,8 @@ public class NLSNearestFeatureParser {
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
             Source xmlSource = new DOMSource(d);
             Result outputTarget = new StreamResult(outputStream);
-            TransformerFactory.newInstance().newTransformer().transform(xmlSource, outputTarget);
+            Transformer transformer = XmlHelper.newTransformerFactory().newTransformer();
+            transformer.transform(xmlSource, outputTarget);
             InputStream xml = new ByteArrayInputStream(outputStream.toByteArray());
 
             //create the parser with the gml 3.0 configuration
