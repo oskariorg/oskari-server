@@ -25,6 +25,8 @@ public abstract class UserLayerDbService extends OskariComponent {
     public abstract void deleteUserLayersByUuid(String uuid) throws ServiceException;
 
     public abstract int updatePublisherName(final long id, final String uuid, final String name);
+	
+	public abstract String getUserLayerExtent (final long id);
 
     //UserLayerStyle related
     public abstract int updateUserLayerStyleCols(final UserLayerStyle userLayerStyle);
@@ -33,4 +35,5 @@ public abstract class UserLayerDbService extends OskariComponent {
 
     //UserLayerData related
     public abstract int updateUserLayerDataCols(final UserLayerData userlayerdata);
+
 }

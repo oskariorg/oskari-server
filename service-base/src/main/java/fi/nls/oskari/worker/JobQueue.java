@@ -157,7 +157,7 @@ public class JobQueue
     public void onJobFailed(final Job job, final Throwable value) {
         final boolean knownCause = value != null;
         // convenience method for extension hooks
-        log.error("Exception while running job:", knownCause ? value.getMessage() : "");
+        log.error("Exception while running job:", knownCause ? value.getMessage() : "Unknown error", job.getKey());
         if(knownCause) {
             log.debug(value, "Stacktrace");
         }
