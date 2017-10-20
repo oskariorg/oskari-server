@@ -22,9 +22,11 @@ public class MyPlacesFeaturesHandler extends RestActionHandler {
 
     public void handleGet(ActionParameters params) throws ActionException {
         checkCredentials(params);
-        GeoServerRequestBuilder builder = new GeoServerRequestBuilder();
+        GeoServerRequestBuilder requestBuilder = new GeoServerRequestBuilder();
+        GeoServerRequestBuilder responseBuilder = new GeoServerRequestBuilder();
         try {
-            GeoServerHelper.sendRequest(builder.buildFeaturesGet(readPayload(params)));
+            ResponseHelper.writeResponse(params, responseBuilder.buildFeaturesGet(
+                    GeoServerHelper.sendRequest(requestBuilder.buildFeaturesGet(params.getUser().getUuid()))));
         }
         catch (Exception e) {
             throw new ActionException(e.getMessage());

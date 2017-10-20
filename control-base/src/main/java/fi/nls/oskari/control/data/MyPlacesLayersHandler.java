@@ -11,6 +11,7 @@ import fi.nls.oskari.util.GeoServerHelper;
 import fi.nls.oskari.util.GeoServerRequestBuilder;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.ResponseHelper;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 @OskariActionRoute("MyPlacesLayer")
@@ -24,9 +25,11 @@ public class MyPlacesLayersHandler extends RestActionHandler {
 
     public void handleGet(ActionParameters params) throws ActionException {
         checkCredentials(params);
-        GeoServerRequestBuilder builder = new GeoServerRequestBuilder();
+        GeoServerRequestBuilder requestBuilder = new GeoServerRequestBuilder();
+        GeoServerRequestBuilder responseBuilder = new GeoServerRequestBuilder();
         try {
-            GeoServerHelper.sendRequest(builder.buildLayersGet(readPayload(params)));
+            ResponseHelper.writeResponse(params, responseBuilder.buildLayersInsert(
+                    GeoServerHelper.sendRequest(requestBuilder.buildLayersGet(params.getUser().getUuid()))));
         }
         catch (Exception e) {
             throw new ActionException(e.getMessage());
@@ -49,11 +52,11 @@ public class MyPlacesLayersHandler extends RestActionHandler {
         checkCredentials(params);
 
         String jsonString = readPayload(params);
-        JSONObject json = null;
+        JSONArray json = null;
         Integer categoryId = null;
-        try {
-            json = new JSONObject(jsonString);
-            categoryId = json.getInt("categoryId");
+        try { //TODO: Loop through array and get category_name
+            //json = new JSONObject(jsonString).getJSONArray("categories");
+            //categoryId = json.getInt("category_name");
         }
         catch (Exception e) {
             throw new ActionParamsException("Invalid input, expected JSON");
