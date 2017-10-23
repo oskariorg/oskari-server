@@ -7,10 +7,7 @@ import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.myplaces.MyPlacesService;
 import fi.nls.oskari.myplaces.MyPlacesServiceMybatisImpl;
-import fi.nls.oskari.util.GeoServerHelper;
-import fi.nls.oskari.util.GeoServerRequestBuilder;
-import fi.nls.oskari.util.IOHelper;
-import fi.nls.oskari.util.ResponseHelper;
+import fi.nls.oskari.util.*;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -21,12 +18,12 @@ public class MyPlacesLayersHandler extends RestActionHandler {
 
     private MyPlacesService service = new MyPlacesServiceMybatisImpl();
 
-    enum ModifyOperationType { INSERT, UPDATE, DELETE }
+    private enum ModifyOperationType { INSERT, UPDATE, DELETE }
 
     public void handleGet(ActionParameters params) throws ActionException {
         //checkCredentials(params);
         GeoServerRequestBuilder requestBuilder = new GeoServerRequestBuilder();
-        GeoServerRequestBuilder responseBuilder = new GeoServerRequestBuilder();
+        GeoServerResponseBuilder responseBuilder = new GeoServerResponseBuilder();
         try {
             ResponseHelper.writeResponse(params, responseBuilder.buildLayersGet(
                     GeoServerHelper.sendRequest(requestBuilder.buildLayersGet("fdsa-fdsa-fdsa-fdsa-fdsa"))));//;params.getUser().getUuid()))));
@@ -48,7 +45,7 @@ public class MyPlacesLayersHandler extends RestActionHandler {
         handleModifyRequest(params, MyPlacesFeaturesHandler.ModifyOperationType.DELETE);
     }
 
-    public void handleModifyRequest(ActionParameters params, MyPlacesFeaturesHandler.ModifyOperationType operation) throws ActionException {
+    private void handleModifyRequest(ActionParameters params, MyPlacesFeaturesHandler.ModifyOperationType operation) throws ActionException {
         //checkCredentials(params);
 
         String jsonString = readPayload(params);
@@ -65,7 +62,7 @@ public class MyPlacesLayersHandler extends RestActionHandler {
             throw new ActionDeniedException("Not allowed");
         }*/
         GeoServerRequestBuilder requestBuilder = new GeoServerRequestBuilder();
-        GeoServerRequestBuilder responseBuilder = new GeoServerRequestBuilder();
+        GeoServerResponseBuilder responseBuilder = new GeoServerResponseBuilder();
         try {
             switch (operation) {
                 case INSERT:

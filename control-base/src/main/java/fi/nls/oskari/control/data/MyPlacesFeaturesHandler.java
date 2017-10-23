@@ -62,7 +62,7 @@ public class MyPlacesFeaturesHandler extends RestActionHandler {
             throw new ActionDeniedException("Not allowed");
         }*/
         GeoServerRequestBuilder requestBuilder = new GeoServerRequestBuilder();
-        GeoServerRequestBuilder responseBuilder = new GeoServerRequestBuilder();
+        GeoServerResponseBuilder responseBuilder = new GeoServerResponseBuilder();
         try {
             switch (operation) {
                 case INSERT:
