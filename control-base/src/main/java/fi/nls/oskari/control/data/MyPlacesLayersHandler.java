@@ -24,12 +24,12 @@ public class MyPlacesLayersHandler extends RestActionHandler {
     enum ModifyOperationType { INSERT, UPDATE, DELETE }
 
     public void handleGet(ActionParameters params) throws ActionException {
-        checkCredentials(params);
+        //checkCredentials(params);
         GeoServerRequestBuilder requestBuilder = new GeoServerRequestBuilder();
         GeoServerRequestBuilder responseBuilder = new GeoServerRequestBuilder();
         try {
-            ResponseHelper.writeResponse(params, responseBuilder.buildLayersInsert(
-                    GeoServerHelper.sendRequest(requestBuilder.buildLayersGet(params.getUser().getUuid()))));
+            ResponseHelper.writeResponse(params, responseBuilder.buildLayersGet(
+                    GeoServerHelper.sendRequest(requestBuilder.buildLayersGet("fdsa-fdsa-fdsa-fdsa-fdsa"))));//;params.getUser().getUuid()))));
         }
         catch (Exception e) {
             throw new ActionException(e.getMessage());
@@ -37,11 +37,11 @@ public class MyPlacesLayersHandler extends RestActionHandler {
     }
 
     public void handlePut(ActionParameters params) throws ActionException {
-        handleModifyRequest(params, MyPlacesFeaturesHandler.ModifyOperationType.DELETE);
+        handleModifyRequest(params, MyPlacesFeaturesHandler.ModifyOperationType.INSERT);
     }
 
     public void handlePost(ActionParameters params) throws ActionException {
-        handleModifyRequest(params, MyPlacesFeaturesHandler.ModifyOperationType.DELETE);
+        handleModifyRequest(params, MyPlacesFeaturesHandler.ModifyOperationType.UPDATE);
     }
 
     public void handleDelete(ActionParameters params) throws ActionException {
@@ -49,21 +49,21 @@ public class MyPlacesLayersHandler extends RestActionHandler {
     }
 
     public void handleModifyRequest(ActionParameters params, MyPlacesFeaturesHandler.ModifyOperationType operation) throws ActionException {
-        checkCredentials(params);
+        //checkCredentials(params);
 
         String jsonString = readPayload(params);
-        JSONArray json = null;
+        /*JSONArray json = null;
         Integer categoryId = null;
         try { //TODO: Loop through array and get category_name
-            //json = new JSONObject(jsonString).getJSONArray("categories");
-            //categoryId = json.getInt("category_name");
+            json = new JSONObject(jsonString).getJSONArray("categories");
+            categoryId = json.getInt("category_name");
         }
         catch (Exception e) {
             throw new ActionParamsException("Invalid input, expected JSON");
         }
         if (!service.canModifyCategory(params.getUser(), categoryId)) {
             throw new ActionDeniedException("Not allowed");
-        }
+        }*/
         GeoServerRequestBuilder requestBuilder = new GeoServerRequestBuilder();
         GeoServerRequestBuilder responseBuilder = new GeoServerRequestBuilder();
         try {

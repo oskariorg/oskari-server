@@ -49,7 +49,7 @@ public class GeoServerRequestBuilder {
             query.addAttribute(srsName);
             root.addChild(query);
 
-            OMNamespace ogc = factory.createOMNamespace("http://www.opengis.net/wfs", "wfs");
+            OMNamespace ogc = factory.createOMNamespace("http://www.opengis.net/ogc", "ogc");
             OMElement filter = factory.createOMElement("Filter", ogc);
 
             OMElement propertyIsEqualTo = factory.createOMElement("PropertyIsEqualTo", ogc);
@@ -101,16 +101,16 @@ public class GeoServerRequestBuilder {
             root.addAttribute(service);
 
             OMElement transaction = factory.createOMElement("Insert", wfs);
-
-            OMElement categories = factory.createOMElement("categories", wfs);
             OMNamespace feature = factory.createOMNamespace("http://www.oskari.org", "feature");
+
+            OMElement categories = factory.createOMElement("categories", feature);
+            transaction.addChild(categories);
 
             try {
                 JSONArray jsonArray = new JSONObject(payload).getJSONArray("categories");
                 for (int i=0; i<jsonArray.length(); ++i) {
                     for (String property : LAYERS_GET_LIST) {
-                        JSONObject jsonObject = new JSONObject(jsonArray.getJSONObject(i));
-                        transaction.addChild(getElement(jsonObject, property, feature));
+                        transaction.addChild(getElement(jsonArray.getJSONObject(i), property, feature));
                     }
                 }
             }
