@@ -13,7 +13,6 @@ public class GeoServerRequestBuilder {
 
     private static final Logger log = LogFactory.getLogger(GeoServerRequestBuilder.class);
 
-    private static final String VERSION_1_0_0 = "1.0.0";
     private static final String VERSION_1_1_0 = "1.1.0";
 
     private static final List<String> LAYERS_GET_LIST = Arrays.asList("category_name", "default", "stroke_width",
@@ -33,9 +32,9 @@ public class GeoServerRequestBuilder {
             OMAttribute schemaLocation = factory.createOMAttribute("schemaLocation",
                     xsi,
                     "http://www.opengis.net/wfs http://schemas.opengis.net/wfs/"
-                            + VERSION_1_0_0 + "/wfs.xsd");
+                            + VERSION_1_1_0 + "/wfs.xsd");
 
-            OMAttribute version = factory.createOMAttribute("version", null, VERSION_1_0_0);
+            OMAttribute version = factory.createOMAttribute("version", null, VERSION_1_1_0);
             OMAttribute service = factory.createOMAttribute("service", null, "WFS");
 
             root.addAttribute(schemaLocation);
@@ -44,10 +43,9 @@ public class GeoServerRequestBuilder {
 
             OMElement query = factory.createOMElement("Query", wfs);
             OMAttribute typeName = factory.createOMAttribute("typeName", null, "feature:categories");
-            OMAttribute srsName = factory.createOMAttribute("srsName", null, "ESPG:3067");
+            OMAttribute srsName = factory.createOMAttribute("srsName", null, "EPSG:3067");
             query.addAttribute(typeName);
             query.addAttribute(srsName);
-            root.addChild(query);
 
             OMNamespace ogc = factory.createOMNamespace("http://www.opengis.net/ogc", "ogc");
             OMElement filter = factory.createOMElement("Filter", ogc);
@@ -56,17 +54,18 @@ public class GeoServerRequestBuilder {
 
             OMAttribute matchCase = factory.createOMAttribute("matchCase", null, "true");
             propertyIsEqualTo.addAttribute(matchCase);
-            filter.addChild(propertyIsEqualTo);
 
             OMElement property = factory.createOMElement("PropertyName", ogc);
             property.setText("uuid");
             propertyIsEqualTo.addChild(property);
 
             OMElement literal = factory.createOMElement("Literal", ogc);
-            property.setText(uuid);
+            literal.setText(uuid);
             propertyIsEqualTo.addChild(literal);
 
-            root.addChild(filter);
+            filter.addChild(propertyIsEqualTo);
+            query.addChild(filter);
+            root.addChild(query);
         }
         catch (Exception e){
             log.error(e, "Failed to create payload - root: ", root);
@@ -91,9 +90,9 @@ public class GeoServerRequestBuilder {
             OMAttribute schemaLocation = factory.createOMAttribute("schemaLocation",
                     xsi,
                     "http://www.opengis.net/wfs http://schemas.opengis.net/wfs/"
-                            + VERSION_1_0_0 + "/wfs.xsd");
+                            + VERSION_1_1_0 + "/wfs.xsd");
 
-            OMAttribute version = factory.createOMAttribute("version", null, VERSION_1_0_0);
+            OMAttribute version = factory.createOMAttribute("version", null, VERSION_1_1_0);
             OMAttribute service = factory.createOMAttribute("service", null, "WFS");
 
             root.addAttribute(schemaLocation);

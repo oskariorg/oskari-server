@@ -17,7 +17,7 @@ public class GeoServerHelper {
         req.setUrl(PropertyUtil.get("myplaces.ows.url"));
         req.setUserName(PropertyUtil.get("myplaces.user"));
         req.setPassword(PropertyUtil.get("myplaces.password"));
-        req.setMethod(req.getMethod());
+        req.setMethod("POST");
         req.setPostData(XmlHelper.toString(xml));
 
         try {
