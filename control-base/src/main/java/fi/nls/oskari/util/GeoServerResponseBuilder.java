@@ -4,20 +4,16 @@ import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.service.ServiceRuntimeException;
-import org.apache.commons.collections.map.HashedMap;
 import org.apache.commons.io.IOUtils;
 import org.geotools.GML;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.data.simple.SimpleFeatureIterator;
 import org.json.JSONObject;
-import org.opengis.feature.Property;
 import org.opengis.feature.simple.SimpleFeature;
 
 import java.io.InputStream;
-import java.lang.reflect.Array;
 import java.util.*;
 
-import static java.util.Arrays.asList;
 import static org.geotools.GML.Version.GML3;
 
 
@@ -71,23 +67,27 @@ public class GeoServerResponseBuilder {
         }
     }
 
-    public static Map<String, String> parse(String response, List<String> propertyList) throws ServiceException {
-        Map map = new HashMap();
+    public static Map<String, Object> parse(String response, List<String> propertyList) throws ServiceException {
+        List featuresList = new ArrayList();
         try {
             InputStream inputStream = IOUtils.toInputStream(response, "UTF-8");
             SimpleFeatureCollection fc = getFeatureCollection(inputStream);
             SimpleFeatureIterator it = fc.features();
 
             while (it.hasNext()) {
+                final SimpleFeature feature = it.next();
+                Map featureMap = new HashMap();
                 for (String property : propertyList) {
-                    final SimpleFeature feature = it.next();
-                    map.put(property, feature.getProperty(property));
+                    featureMap.put(property, feature.getProperty(property).getValue());
                 }
+                featuresList.add(featureMap);
             }
         }
         catch (Exception e) {
 
         }
-        return map;
+        Map result = new HashMap();
+        result.put("categories", featuresList);
+        return result;
     }
 }
