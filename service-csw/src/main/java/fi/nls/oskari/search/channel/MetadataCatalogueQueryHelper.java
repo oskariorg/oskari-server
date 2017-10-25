@@ -23,6 +23,8 @@ import org.deegree.ogcwebservices.csw.discovery.Query;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.geojson.feature.FeatureJSON;
 import org.geotools.geometry.jts.ReferencedEnvelope;
+import org.geotools.referencing.CRS;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
 import java.io.ByteArrayInputStream;
 import java.io.StringWriter;
@@ -293,9 +295,14 @@ public class MetadataCatalogueQueryHelper {
             fc = fjs.readFeatureCollection(new ByteArrayInputStream(
                     searchCriterion.getBytes("utf-8")));
             ReferencedEnvelope env = fc.getBounds();
+
+            CoordinateReferenceSystem sourceCRS = env.getCoordinateReferenceSystem();
+            if (sourceCRS == null) {
+                sourceCRS = CRS.decode("EPSG:4326", true); // default CRS in GeoJSON
+            }
             //Transform to target crs
-            Point minb = ProjectionHelper.transformPoint(env.getMinX(), env.getMinY(), env.getCoordinateReferenceSystem(), TARGET_SRS);
-            Point maxb = ProjectionHelper.transformPoint(env.getMaxX(), env.getMaxY(), env.getCoordinateReferenceSystem(), TARGET_SRS);
+            Point minb = ProjectionHelper.transformPoint(env.getMinX(), env.getMinY(), sourceCRS, TARGET_SRS);
+            Point maxb = ProjectionHelper.transformPoint(env.getMaxX(), env.getMaxY(), sourceCRS, TARGET_SRS);
 
             sb.append(minb.getLonToString()+" ");
             sb.append(minb.getLatToString());
