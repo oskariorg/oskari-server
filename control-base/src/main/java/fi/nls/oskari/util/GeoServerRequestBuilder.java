@@ -103,13 +103,12 @@ public class GeoServerRequestBuilder {
             OMNamespace feature = factory.createOMNamespace("http://www.oskari.org", "feature");
 
             OMElement categories = factory.createOMElement("categories", feature);
-            transaction.addChild(categories);
 
             try {
                 JSONArray jsonArray = new JSONObject(payload).getJSONArray("categories");
                 for (int i=0; i<jsonArray.length(); ++i) {
                     for (String property : LAYERS_GET_LIST) {
-                        transaction.addChild(getElement(jsonArray.getJSONObject(i), property, feature));
+                        categories.addChild(getElement(jsonArray.getJSONObject(i), property, feature));
                     }
                 }
             }
@@ -118,6 +117,7 @@ public class GeoServerRequestBuilder {
                 throw new RuntimeException(e.getMessage());
             }
 
+            transaction.addChild(categories);
             root.addChild(transaction);
         }
         catch (Exception e){
