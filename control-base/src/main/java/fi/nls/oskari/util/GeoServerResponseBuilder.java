@@ -18,6 +18,7 @@ import java.lang.reflect.Array;
 import java.util.*;
 
 import static java.util.Arrays.asList;
+import static org.geotools.GML.Version.GML3;
 
 
 public class GeoServerResponseBuilder {
@@ -63,7 +64,7 @@ public class GeoServerResponseBuilder {
 
     private static SimpleFeatureCollection getFeatureCollection(InputStream inputStream) {
         try {
-            GML gml = new GML(GML.Version.GML3);
+            GML gml = new GML(GML3);
             return gml.decodeFeatureCollection(inputStream);
         } catch (Exception ex) {
             throw new ServiceRuntimeException("Couldn't parse response to feature collection", ex);

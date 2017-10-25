@@ -97,7 +97,7 @@
 
         <xerces.version>2.10.0</xerces.version>
         <xmlbeans.version>2.6.0</xmlbeans.version>
-        <geotools.version>18-RC1</geotools.version>
+        <geotools.version>14.2</geotools.version>
         <!-- gt-xsd-kml.version>9.3</gt-xsd-kml.version -->
         <flexjson.version>2.0</flexjson.version>
         <deegree.version>2</deegree.version>

@@ -6,8 +6,8 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <geotools.version>18-RC1</geotools.version>
-        <geoserver.version>2.12-RC1</geoserver.version>
+        <geotools.version>13.1</geotools.version>
+        <geoserver.version>2.7.1</geoserver.version>
     </properties>
 
     <groupId>org.geoserver</groupId>
