@@ -18,7 +18,7 @@ public class MyPlacesLayersHandler extends RestActionHandler {
 
     private MyPlacesService service = new MyPlacesServiceMybatisImpl();
 
-    private enum ModifyOperationType { INSERT, UPDATE, DELETE }
+    public enum ModifyOperationType { INSERT, UPDATE, DELETE }
 
     public void handleGet(ActionParameters params) throws ActionException {
         //checkCredentials(params);
@@ -34,18 +34,18 @@ public class MyPlacesLayersHandler extends RestActionHandler {
     }
 
     public void handlePut(ActionParameters params) throws ActionException {
-        handleModifyRequest(params, MyPlacesFeaturesHandler.ModifyOperationType.INSERT);
+        handleModifyRequest(params, ModifyOperationType.INSERT);
     }
 
     public void handlePost(ActionParameters params) throws ActionException {
-        handleModifyRequest(params, MyPlacesFeaturesHandler.ModifyOperationType.UPDATE);
+        handleModifyRequest(params, ModifyOperationType.UPDATE);
     }
 
     public void handleDelete(ActionParameters params) throws ActionException {
-        handleModifyRequest(params, MyPlacesFeaturesHandler.ModifyOperationType.DELETE);
+        handleModifyRequest(params, ModifyOperationType.DELETE);
     }
 
-    private void handleModifyRequest(ActionParameters params, MyPlacesFeaturesHandler.ModifyOperationType operation) throws ActionException {
+    private void handleModifyRequest(ActionParameters params, ModifyOperationType operation) throws ActionException {
         //checkCredentials(params);
 
         String jsonString = readPayload(params);
