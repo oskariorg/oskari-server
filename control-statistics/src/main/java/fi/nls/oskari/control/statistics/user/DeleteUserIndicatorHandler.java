@@ -15,15 +15,14 @@ import fi.nls.oskari.util.ResponseHelper;
  */
 @OskariActionRoute("DeleteUserIndicator")
 public class DeleteUserIndicatorHandler extends ActionHandler {
-    private static UserIndicatorService userIndicatorService = new UserIndicatorServiceImpl();
-    private static String PARAM_INDICATOR_ID = "id";
+    private UserIndicatorService userIndicatorService = new UserIndicatorServiceImpl();
     private static final Logger log = LogFactory.getLogger(GetUserIndicatorsHandler.class);
 
     public void handleAction(ActionParameters params) throws ActionException {
         // user indicators are user content so deleting one requires to be logged in
         params.requireLoggedInUser();
 
-        int id  = params.getRequiredParamInt(PARAM_INDICATOR_ID);
+        int id  = params.getRequiredParamInt(ActionConstants.PARAM_ID);
         UserIndicator ui = userIndicatorService.find(id);
         if(ui == null) {
             throw new ActionParamsException("Unknown indicator");
