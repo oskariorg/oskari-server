@@ -15,8 +15,8 @@ import fi.nls.oskari.util.ResponseHelper;
  */
 @OskariActionRoute("DeleteUserIndicator")
 public class DeleteUserIndicatorHandler extends ActionHandler {
+    private static final Logger LOG = LogFactory.getLogger(GetUserIndicatorsHandler.class);
     private UserIndicatorService userIndicatorService = new UserIndicatorServiceImpl();
-    private static final Logger log = LogFactory.getLogger(GetUserIndicatorsHandler.class);
 
     public void handleAction(ActionParameters params) throws ActionException {
         // user indicators are user content so deleting one requires to be logged in
@@ -30,7 +30,7 @@ public class DeleteUserIndicatorHandler extends ActionHandler {
         if(params.getUser().getId() != ui.getUserId()) {
             throw new ActionDeniedException("User has no right to delete indicator");
         }
-        log.info("Deleting indicator", id, "belonging to user", ui.getUserId());
+        LOG.info("Deleting indicator", id, "belonging to user", ui.getUserId());
         userIndicatorService.delete(id);
         // write the removed indicator as response
         ResponseHelper.writeResponse(params, GetUserIndicatorsHandler.makeJson(ui));
