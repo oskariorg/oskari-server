@@ -142,23 +142,21 @@ public class GeoServerRequestBuilder {
             root.addAttribute(version);
             root.addAttribute(service);
 
-            OMElement transaction = factory.createOMElement("Update", wfs);
-            OMNamespace feature = factory.createOMNamespace("http://www.oskari.org", "wfs");
-            OMAttribute typeName = factory.createOMAttribute("typeName", feature, "feature:categories");
+            OMNamespace feature = factory.createOMNamespace("http://www.oskari.org", "feature");
+            OMElement transaction = factory.createOMElement("Update", feature);
+            OMAttribute typeName = factory.createOMAttribute("typeName", null, "feature:categories");
             transaction.addAttribute(typeName);
 
-            OMElement properties = factory.createOMElement("Property", feature);
 
             try {
                 JSONArray jsonArray = new JSONObject(payload).getJSONArray("categories");
-                addElements(jsonArray, feature, properties, ModifyOperationType.UPDATE);
+                addElements(jsonArray, wfs, transaction, ModifyOperationType.UPDATE);
             }
             catch (Exception e) {
                 log.error(e, "Failed to read payload json - payload: ", payload);
                 throw new RuntimeException(e.getMessage());
             }
 
-            transaction.addChild(properties);
             root.addChild(transaction);
         }
         catch (Exception e){
@@ -177,9 +175,11 @@ public class GeoServerRequestBuilder {
                         break;
                     case UPDATE:
                         parentElement.addChild(getPropertyElement(array.getJSONObject(i), property, feature));
-                        parentElement.addChild(createUpdateIdFilter(array.getJSONObject(i).getString("category_id")));
                         break;
                 }
+            }
+            if(type.equals(ModifyOperationType.UPDATE)){
+                parentElement.addChild(createUpdateIdFilter(array.getJSONObject(i).getString("category_id")));
             }
         }
     }
@@ -209,7 +209,7 @@ public class GeoServerRequestBuilder {
             property.addChild(propertyName);
 
             String value = jsonObject.getString(fieldName);
-            OMElement propertyValue = factory.createOMElement("Name", feature);
+            OMElement propertyValue = factory.createOMElement("Value", feature);
             propertyValue.setText(value);
             property.addChild(propertyValue);
         }
@@ -226,7 +226,7 @@ public class GeoServerRequestBuilder {
         OMElement filter = factory.createOMElement("Filter", ogc);
 
         OMElement property = factory.createOMElement("FeatureId", ogc);
-        OMAttribute idAttribute = factory.createOMAttribute("fid", ogc, categoryId);
+        OMAttribute idAttribute = factory.createOMAttribute("fid", null, categoryId);
         property.addAttribute(idAttribute);
 
         filter.addChild(property);

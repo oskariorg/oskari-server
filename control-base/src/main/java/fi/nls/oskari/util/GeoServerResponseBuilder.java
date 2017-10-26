@@ -77,6 +77,7 @@ public class GeoServerResponseBuilder {
             while (it.hasNext()) {
                 final SimpleFeature feature = it.next();
                 Map featureMap = new HashMap();
+                featureMap.put("category_id", feature.getID());
                 for (String property : propertyList) {
                     featureMap.put(property, feature.getProperty(property).getValue());
                 }
