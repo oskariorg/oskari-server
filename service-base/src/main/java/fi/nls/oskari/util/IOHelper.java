@@ -616,8 +616,22 @@ public class IOHelper {
 
     public static HttpURLConnection post(String url, String contentType, byte[] body)
             throws IOException {
-        HttpURLConnection conn = getConnection(url);
-        conn.setRequestMethod("POST");
+        return send(getConnection(url), "POST", contentType, body);
+    }
+
+    public static HttpURLConnection put(String url, String contentType, byte[] body)
+            throws IOException {
+        return put(getConnection(url), contentType, body);
+    }
+
+    public static HttpURLConnection put(HttpURLConnection conn, String contentType, byte[] body)
+            throws IOException {
+        return send(conn, "PUT", contentType, body);
+    }
+
+    private static HttpURLConnection send(HttpURLConnection conn, String method,
+            String contentType, byte[] body) throws IOException {
+        conn.setRequestMethod(method);
         conn.setDoOutput(true);
         conn.setDoInput(true);
         setContentType(conn, contentType);
