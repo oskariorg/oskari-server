@@ -6,7 +6,10 @@ import downloadbasket.data.NormalWayDownloads;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
+import java.io.ByteArrayOutputStream;
+import javax.xml.stream.XMLOutputFactory;
+import javax.xml.stream.XMLStreamWriter;
+import java.nio.charset.StandardCharsets;
 import java.lang.StringBuilder;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -59,7 +62,7 @@ public class OGCServices {
 			if (writeParam) {
 				s.append("&filter=");
 			}
-			s.append(URLEncoder.encode(getPluginFilter(downloadDetails, true, false), "UTF-8"));
+			s.append(URLEncoder.encode(getPluginFilter(downloadDetails), "UTF-8"));
 		}
 
 		return s.toString();
@@ -78,40 +81,28 @@ public class OGCServices {
 	}
 
 	/**
-	 * Get WFS Query layer plugin WFS request
+	 * Get WFS Query layer (GeoServer plugin) WFS request
 	 * 
 	 * @param download
 	 *            download details
-	 * @param addNameSpaces
-	 *            add namespaces?
-	 * @param writeParam
-	 *            write param
-	 *
 	 * @return filter writer
 	 */
-	public static String getPluginFilter(JSONObject download, boolean addNameSpaces, boolean writeParam)
+	
+	public static String getPluginFilter(JSONObject download)
 			throws JSONException {
 		JSONArray identifiers = new JSONArray(download.getString(PARAM_IDENTIFIERS));
-		StringBuilder s = new StringBuilder();
-		StringBuilder filter = new StringBuilder();
+		String xml = "";
 		String croppingNameSpace = PropertyUtil.get("oskari.wfs.cropping.namespace");
 
 		try {
-			if (identifiers.length() > 1) {
-				if (!addNameSpaces) {
-					filter.append("<ogc:Or>");
-				} else {
-					filter.append("<Or xmlns:ogc=\"http://www.opengis.net/ogc\">");
-				}
-			}
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
-			String intersectStart = "<ogc:Intersects>";
-			if (identifiers.length() == 1 && addNameSpaces) {
-				intersectStart = "<Intersects xmlns:ogc=\"http://www.opengis.net/ogc\">";
-			}
-			String intersectEnd = "</ogc:Intersects>";
-			if (identifiers.length() == 1 && addNameSpaces) {
-				intersectEnd = "</Intersects>";
+			XMLStreamWriter xsw = XMLOutputFactory.newInstance().createXMLStreamWriter(baos);
+			String OGC = "http://www.opengis.net/ogc";
+			xsw.setPrefix("ogc", OGC);
+			
+			if (identifiers.length() > 1) {
+				xsw.writeStartElement(OGC, "Or");
 			}
 
 			for (int id = 0; id < identifiers.length(); id++) {
@@ -121,42 +112,45 @@ public class OGCServices {
 				String uniqueValue = identifier.getString("uniqueValue");
 				String cropGeomColumn = identifier.getString("geometryName");
 				String filterColumnType = identifier.getString("geometryColumn");
-				filter.append(intersectStart);
-				filter.append("<ogc:PropertyName>" + cropGeomColumn + "</ogc:PropertyName>");
-				filter.append("<ogc:Function name=\"querySingle\">");
-				filter.append("<ogc:Literal>" + croppingNameSpace + ":" + layerName + "</ogc:Literal>");
-
-				filter.append("<ogc:Literal>" + cropGeomColumn + "</ogc:Literal>");
+				xsw.writeStartElement(OGC, "Intersects");
+				
+				xsw.writeStartElement(OGC, "PropertyName");
+				xsw.writeCharacters(cropGeomColumn);
+				xsw.writeEndElement();
+				xsw.writeStartElement(OGC, "Function");
+				xsw.writeAttribute("name", "querySingle");				
+				xsw.writeStartElement(OGC, "Literal");
+				xsw.writeCharacters(croppingNameSpace + ":" + layerName);
+				xsw.writeEndElement();
+				xsw.writeStartElement(OGC, "Literal");
+				xsw.writeCharacters(cropGeomColumn);
+				xsw.writeEndElement();
 				if (filterColumnType.equals("STRING")) {
-					filter.append(
-							"<ogc:Literal>" + uniqueColumn + " LIKE '" + uniqueValue.trim() + "%" + "'</ogc:Literal>");
+					xsw.writeStartElement(OGC, "Literal");
+					xsw.writeCharacters(uniqueColumn + " LIKE '" + uniqueValue.trim() + "%" + "'");
+					xsw.writeEndElement();
 				} else {
-					filter.append("<ogc:Literal>" + uniqueColumn + " =  " + uniqueValue + "</ogc:Literal>");
+					xsw.writeStartElement(OGC, "Literal");
+					xsw.writeCharacters(uniqueColumn + " =  " + uniqueValue);
+					xsw.writeEndElement();
 				}
-				filter.append("</ogc:Function>");
-				filter.append(intersectEnd);
+				xsw.writeEndElement();
+				xsw.writeEndElement();
 			}
 
 			if (identifiers.length() > 1) {
-				if (!addNameSpaces) {
-					filter.append("</ogc:Or>");
-				} else {
-					filter.append("</Or>");
-				}
+				xsw.writeEndElement();
 			}
 
-			if (writeParam) {
-				s.append("&filter=");
-			}
+			xsw.close();
 
-			s.append(URLEncoder.encode(filter.toString(), "UTF-8"));
-
-			LOGGER.debug("Created plugin filtter:" + filter.toString());
+			xml = baos.toString(StandardCharsets.UTF_8.name());
+			LOGGER.debug("Created plugin filter:" + xml);
 
 		} catch (Exception e) {
 			LOGGER.error(e, "Error");
 		}
-		return s.toString();
+		return xml;
 	}
 
 	/**

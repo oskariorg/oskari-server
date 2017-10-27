@@ -112,7 +112,7 @@ public class SendDownloadDetailsToEmailThread implements Runnable {
 					ldz.setWFSUrl(OGCServices.doGetFeatureUrl(srs, download, false));
 				} else {
 
-					ldz.setGetFeatureInfoRequest(OGCServices.getPluginFilter(download, true, true));
+					ldz.setGetFeatureInfoRequest("&filter=" +OGCServices.getPluginFilter(download));
 					ldz.setWFSUrl(OGCServices.doGetFeatureUrl(srs, download, true));
 				}
 
