@@ -20,8 +20,8 @@ public class NormalWayDownloads {
 	}
 
 	/**
-	 * Cheks if dowload is cropped with BBOX. Normal way uses BBOX as the
-	 * cropping method. If not, Filter is used.
+	 * Cheks if download is cropped with BBOX. Normal way uses BBOX as the
+	 * cropping method. If not, GeoServer Cross-layer filtering is used.
 	 * 
 	 * @param croppingMode
 	 *            the cropping mode

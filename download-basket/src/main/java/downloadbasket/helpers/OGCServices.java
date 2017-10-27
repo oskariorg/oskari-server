@@ -81,11 +81,10 @@ public class OGCServices {
 	}
 
 	/**
-	 * Get WFS Query layer (GeoServer plugin) WFS request
+	 * Get WFS Query layer WFS request by using GeoServer Cross-layer filtering plugin.
 	 * 
 	 * @param download
 	 *            download details
-	 * @return filter writer
 	 */
 	
 	public static String getPluginFilter(JSONObject download)
