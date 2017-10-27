@@ -16,6 +16,18 @@ public class GeoServerRequestBuilder {
 
     private static final String VERSION_1_1_0 = "1.1.0";
 
+    private static OMFactory factory = null;
+    private static OMNamespace xmlSchemaInstance = null;
+    private static OMNamespace wfsNameSpace = null;
+
+    public GeoServerRequestBuilder() {
+
+        factory = OMAbstractFactory.getOMFactory();
+
+        xmlSchemaInstance = factory.createOMNamespace("http://www.w3.org/2001/XMLSchema-instance", "xsi");
+        wfsNameSpace = factory.createOMNamespace("http://www.opengis.net/wfs", "wfs");
+    }
+
     private static final List<String> LAYERS_LIST = Arrays.asList("category_name", "default", "stroke_width",
             "stroke_color", "fill_color", "uuid", "dot_color", "dot_size", "border_width", "border_color",
             "dot_shape", "stroke_linejoin", "fill_pattern", "stroke_linecap", "stroke_dasharray", "border_linejoin",
@@ -23,26 +35,12 @@ public class GeoServerRequestBuilder {
 
     public OMElement buildLayersGet(String uuid) {
 
-        OMFactory factory = OMAbstractFactory.getOMFactory();
+        OMElement root = null;
 
-        OMNamespace xsi = factory.createOMNamespace("http://www.w3.org/2001/XMLSchema-instance", "xsi");
-        OMNamespace wfs = factory.createOMNamespace("http://www.opengis.net/wfs", "wfs");
-
-        OMElement root = factory.createOMElement("GetFeature", wfs);
         try {
-            OMAttribute schemaLocation = factory.createOMAttribute("schemaLocation",
-                    xsi,
-                    "http://www.opengis.net/wfs http://schemas.opengis.net/wfs/"
-                            + VERSION_1_1_0 + "/wfs.xsd");
+            root = buildWFSRootNode("GetFeature");
 
-            OMAttribute version = factory.createOMAttribute("version", null, VERSION_1_1_0);
-            OMAttribute service = factory.createOMAttribute("service", null, "WFS");
-
-            root.addAttribute(schemaLocation);
-            root.addAttribute(version);
-            root.addAttribute(service);
-
-            OMElement query = factory.createOMElement("Query", wfs);
+            OMElement query = factory.createOMElement("Query", wfsNameSpace);
             OMAttribute typeName = factory.createOMAttribute("typeName", null, "feature:categories");
             OMAttribute srsName = factory.createOMAttribute("srsName", null, "EPSG:3067");
             query.addAttribute(typeName);
@@ -78,37 +76,21 @@ public class GeoServerRequestBuilder {
 
     public OMElement buildLayersInsert(String payload) {
 
-        OMFactory factory = OMAbstractFactory.getOMFactory();
+        OMElement root = null;
 
-        OMNamespace xsi = factory.createOMNamespace("http://www.w3.org/2001/XMLSchema-instance", "xsi");
-        OMNamespace wfs = factory.createOMNamespace("http://www.opengis.net/wfs", "wfs");
-
-        OMElement root = factory.createOMElement("Transaction", wfs);
         try {
-            OMAttribute schemaLocation = factory.createOMAttribute("schemaLocation",
-                    xsi,
-                    "http://www.opengis.net/wfs http://schemas.opengis.net/wfs/"
-                            + VERSION_1_1_0 + "/wfs.xsd");
+            root = buildWFSRootNode("Transaction");
 
-            OMAttribute version = factory.createOMAttribute("version", null, VERSION_1_1_0);
-            OMAttribute service = factory.createOMAttribute("service", null, "WFS");
-
-            root.addAttribute(schemaLocation);
-            root.addAttribute(version);
-            root.addAttribute(service);
-
-            OMElement transaction = factory.createOMElement("Insert", wfs);
+            OMElement transaction = factory.createOMElement("Insert", wfsNameSpace);
             OMNamespace feature = factory.createOMNamespace("http://www.oskari.org", "feature");
 
             OMElement categories = factory.createOMElement("categories", feature);
 
-            try {
-                JSONArray jsonArray = new JSONObject(payload).getJSONArray("categories");
-                addElements(jsonArray, feature, categories, ModifyOperationType.INSERT);
-            }
-            catch (Exception e) {
-                log.error(e, "Failed to read payload json - payload: ", payload);
-                throw new RuntimeException(e.getMessage());
+            JSONArray jsonArray = new JSONObject(payload).getJSONArray("categories");
+            for (int i = 0; i < jsonArray.length(); ++i) {
+                for (String property : LAYERS_LIST) {
+                    transaction.addChild(getElement(jsonArray.getJSONObject(i), property, feature));
+                }
             }
 
             transaction.addChild(categories);
@@ -123,40 +105,23 @@ public class GeoServerRequestBuilder {
 
     public OMElement buildLayersUpdate(String payload) {
 
-        OMFactory factory = OMAbstractFactory.getOMFactory();
+        OMElement root = null;
 
-        OMNamespace xsi = factory.createOMNamespace("http://www.w3.org/2001/XMLSchema-instance", "xsi");
-        OMNamespace wfs = factory.createOMNamespace("http://www.opengis.net/wfs", "wfs");
-
-        OMElement root = factory.createOMElement("Transaction", wfs);
         try {
-            OMAttribute schemaLocation = factory.createOMAttribute("schemaLocation",
-                    xsi,
-                    "http://www.opengis.net/wfs http://schemas.opengis.net/wfs/"
-                            + VERSION_1_1_0 + "/wfs.xsd");
-
-            OMAttribute version = factory.createOMAttribute("version", null, VERSION_1_1_0);
-            OMAttribute service = factory.createOMAttribute("service", null, "WFS");
-
-            root.addAttribute(schemaLocation);
-            root.addAttribute(version);
-            root.addAttribute(service);
+            root = buildWFSRootNode("Transaction");
 
             OMNamespace feature = factory.createOMNamespace("http://www.oskari.org", "feature");
             OMElement transaction = factory.createOMElement("Update", feature);
             OMAttribute typeName = factory.createOMAttribute("typeName", null, "feature:categories");
             transaction.addAttribute(typeName);
 
-
-            try {
-                JSONArray jsonArray = new JSONObject(payload).getJSONArray("categories");
-                addElements(jsonArray, wfs, transaction, ModifyOperationType.UPDATE);
+            JSONArray jsonArray = new JSONObject(payload).getJSONArray("categories");
+            for (int i = 0; i < jsonArray.length(); ++i) {
+                for (String property : LAYERS_LIST) {
+                    transaction.addChild(buildPropertyElement(jsonArray.getJSONObject(i), property, feature));
+                }
+                transaction.addChild(buildCategoryIdFilter(jsonArray.getJSONObject(i).getString("category_id")));
             }
-            catch (Exception e) {
-                log.error(e, "Failed to read payload json - payload: ", payload);
-                throw new RuntimeException(e.getMessage());
-            }
-
             root.addChild(transaction);
         }
         catch (Exception e){
@@ -166,22 +131,47 @@ public class GeoServerRequestBuilder {
         return root;
     }
 
-    private void addElements (JSONArray array, OMNamespace feature, OMElement parentElement, ModifyOperationType type) throws Exception {
-        for (int i = 0; i < array.length(); ++i) {
-            for (String property : LAYERS_LIST) {
-                switch (type) {
-                    case INSERT:
-                        parentElement.addChild(getElement(array.getJSONObject(i), property, feature));
-                        break;
-                    case UPDATE:
-                        parentElement.addChild(getPropertyElement(array.getJSONObject(i), property, feature));
-                        break;
-                }
-            }
-            if(type.equals(ModifyOperationType.UPDATE)){
-                parentElement.addChild(createUpdateIdFilter(array.getJSONObject(i).getString("category_id")));
-            }
+
+    public OMElement buildLayersDelete(String categoryId) {
+
+        OMElement root = null;
+
+        try {
+            root = buildWFSRootNode("Transaction");
+
+            OMNamespace feature = factory.createOMNamespace("http://www.oskari.org", "feature");
+            OMElement transaction = factory.createOMElement("Delete", feature);
+            OMAttribute typeName = factory.createOMAttribute("typeName", null, "feature:categories");
+            transaction.addAttribute(typeName);
+
+            transaction.addChild(buildCategoryIdFilter(categoryId));
+
+            root.addChild(transaction);
         }
+        catch (Exception e){
+            log.error(e, "Failed to create payload - root: ", root);
+            throw new RuntimeException(e.getMessage());
+        }
+
+        return root;
+
+    }
+
+    private OMElement buildWFSRootNode (String wfsType ) throws Exception {
+        OMElement root = factory.createOMElement(wfsType, wfsNameSpace);
+        OMAttribute schemaLocation = factory.createOMAttribute("schemaLocation",
+                xmlSchemaInstance,
+                "http://www.opengis.net/wfs http://schemas.opengis.net/wfs/"
+                        + VERSION_1_1_0 + "/wfs.xsd");
+
+        OMAttribute version = factory.createOMAttribute("version", null, VERSION_1_1_0);
+        OMAttribute service = factory.createOMAttribute("service", null, "WFS");
+
+        root.addAttribute(schemaLocation);
+        root.addAttribute(version);
+        root.addAttribute(service);
+
+        return root;
     }
 
     private OMElement getElement(JSONObject jsonObject, String fieldName, OMNamespace feature) throws Exception {
@@ -198,7 +188,7 @@ public class GeoServerRequestBuilder {
         return var;
     }
 
-    private OMElement getPropertyElement(JSONObject jsonObject, String fieldName, OMNamespace feature) throws Exception {
+    private OMElement buildPropertyElement(JSONObject jsonObject, String fieldName, OMNamespace feature) throws Exception {
         OMFactory factory = OMAbstractFactory.getOMFactory();
         OMElement property = null;
         try {
@@ -219,7 +209,7 @@ public class GeoServerRequestBuilder {
         return property;
     }
 
-    private OMElement createUpdateIdFilter(String categoryId) {
+    private OMElement buildCategoryIdFilter(String categoryId) {
         OMFactory factory = OMAbstractFactory.getOMFactory();
 
         OMNamespace ogc = factory.createOMNamespace("http://www.opengis.net/ogc", "ogc");
@@ -232,10 +222,6 @@ public class GeoServerRequestBuilder {
         filter.addChild(property);
 
         return filter;
-    }
-
-    public OMElement buildLayersDelete(String payload) {
-        return null;
     }
 
     public OMElement buildFeaturesGet(String payload) {
