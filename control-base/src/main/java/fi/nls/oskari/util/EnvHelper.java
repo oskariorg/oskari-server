@@ -11,7 +11,13 @@ import org.json.JSONObject;
 import java.io.InputStream;
 import java.text.DecimalFormatSymbols;
 /**
- * Created by SMAKINEN on 16.5.2016.
+ * Describes the environment the appsetup is used in:
+ * - Who's the user
+ * - What's the API url
+ * - Which locales are supported
+ * - Which markers are used
+ *
+ * Attached as part of the GetAppSetup response.
  */
 public class EnvHelper {
     private static final Logger LOGGER = LogFactory.getLogger(EnvHelper.class);
@@ -19,6 +25,7 @@ public class EnvHelper {
     private static final String KEY_DECIMAL_SEPARATOR = "decimalSeparator";
     private static final String KEY_SUPPORTED_LOCALES = "locales";
     private static final String KEY_SVG_MARKERS = "svgMarkers";
+    private static final String KEY_USER = "user";
 
     public static final String SVG_MARKERS_JSON = "svg-markers.json";
 
@@ -30,6 +37,10 @@ public class EnvHelper {
         final DecimalFormatSymbols dfs = new DecimalFormatSymbols(params.getLocale());
         JSONHelper.putValue(env, KEY_DECIMAL_SEPARATOR, Character.toString(dfs.getDecimalSeparator()));
 
+        // setup user data
+        final JSONObject user = params.getUser().toJSON();
+        JSONHelper.putValue(user, "apikey", params.getAPIkey());
+        JSONHelper.putValue(env, KEY_USER, user);
 
         try {
             InputStream inp = EnvHelper.class.getResourceAsStream(SVG_MARKERS_JSON);

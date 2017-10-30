@@ -49,9 +49,6 @@ public class MapfullHandler extends BundleHandler {
     private static final String KEY_SEL_LAYERS = "selectedLayers";
     private static final String KEY_ID = "id";
 
-    private static final String KEY_USER = "user";
-
-
     private static final String KEY_MAP_OPTIONS = "mapOptions";
     private static final String KEY_PROJ_DEFS = "projectionDefs";
     private static final String KEY_SRS = "srsName";
@@ -108,10 +105,12 @@ public class MapfullHandler extends BundleHandler {
                     params.getBaseAjaxUrl());
         }
 
+        // TODO: moved to "env" part of the appsetup - remove once frontend has been changed!
         // setup user data
         final JSONObject user = params.getUser().toJSON();
         JSONHelper.putValue(user, "apikey", params.getActionParams().getAPIkey());
-        JSONHelper.putValue(mapfullConfig, KEY_USER, user);
+        JSONHelper.putValue(mapfullConfig, "user", user);
+        // /moved to "env" part of the appsetup - remove once frontend has been changed!
 
         // Any layer referenced in state.selectedLayers array NEEDS to
         // be in conf.layers otherwise it cant be added to map on startup
