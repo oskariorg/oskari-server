@@ -1,4 +1,4 @@
-package org.oskari.wcs.util;
+package org.oskari.utils.common;
 
 import static org.junit.Assert.assertEquals;
 

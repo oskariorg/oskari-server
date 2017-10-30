@@ -12,6 +12,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import javax.xml.parsers.ParserConfigurationException;
+import org.oskari.utils.xml.XML;
+import org.oskari.wcs.WCS;
 import org.oskari.wcs.capabilities.BoundingBox;
 import org.oskari.wcs.capabilities.Capabilities;
 import org.oskari.wcs.capabilities.Contents;
@@ -20,15 +22,11 @@ import org.oskari.wcs.capabilities.Operation;
 import org.oskari.wcs.capabilities.OperationsMetadata;
 import org.oskari.wcs.capabilities.ServiceIdentification;
 import org.oskari.wcs.capabilities.ServiceMetadata;
-import org.oskari.wcs.util.WCS;
-import org.oskari.wcs.util.XML;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
 public class CapabilitiesParser {
-
-    public static final String ALLOWED_VERSION = "2.0.1";
 
     public static Capabilities parse(URL url)
             throws IOException, ParserConfigurationException, SAXException {
@@ -52,7 +50,7 @@ public class CapabilitiesParser {
             throw new IllegalArgumentException("Invalid XML root namespace: "
                     + root.getNamespaceURI());
         }
-        if (!ALLOWED_VERSION.equals(root.getAttribute("version"))) {
+        if (!WCS.VERSION_201.equals(root.getAttribute("version"))) {
             throw new IllegalArgumentException("Invalid attribute 'version': "
                     + root.getAttribute("version"));
         }
@@ -105,7 +103,7 @@ public class CapabilitiesParser {
 
     private static Operation parseOperation(Element op) {
         String name = op.getAttribute("name");
-        if (name == null || name.length() == 0) {
+        if (name == null || name.isEmpty()) {
             throw new IllegalArgumentException("Operation did not specify name attribute");
         }
         String get = null;

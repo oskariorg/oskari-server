@@ -9,6 +9,7 @@ import java.io.InputStream;
 import java.util.List;
 import javax.xml.parsers.ParserConfigurationException;
 import org.junit.Test;
+import org.oskari.utils.xml.XML;
 import org.oskari.wcs.capabilities.BoundingBox;
 import org.oskari.wcs.capabilities.Capabilities;
 import org.oskari.wcs.capabilities.Contents;
@@ -19,7 +20,6 @@ import org.oskari.wcs.capabilities.ServiceIdentification;
 import org.oskari.wcs.capabilities.ServiceMetadata;
 import org.oskari.wcs.extension.CRS;
 import org.oskari.wcs.extension.Interpolation;
-import org.oskari.wcs.util.XML;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 

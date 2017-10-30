@@ -1,8 +1,8 @@
 package org.oskari.wcs.capabilities;
 
 import java.util.Optional;
+import org.oskari.wcs.WCS;
 import org.oskari.wcs.extension.Interpolation;
-import org.oskari.wcs.util.WCS;
 
 public class Capabilities {
 
@@ -46,7 +46,7 @@ public class Capabilities {
      * Check if the coverage appears in the GetCapabilities response
      */
     public boolean servesCoverage(String coverageId) {
-        if (coverageId == null || coverageId.length() == 0) {
+        if (coverageId == null || coverageId.isEmpty()) {
             return false;
         }
         return contents.getCoverageSummary().stream()
@@ -57,7 +57,7 @@ public class Capabilities {
      * Check if the format appears in the GetCapabilities response
      */
     public boolean supportsFormat(String format) {
-        if (format == null || format.length() == 0) {
+        if (format == null || format.isEmpty()) {
             return false;
         }
         return serviceMetadata.getSupportedFormats().stream()
@@ -73,7 +73,7 @@ public class Capabilities {
     }
 
     public boolean supportsProfile(String profile) {
-        if (profile == null || profile.length() == 0) {
+        if (profile == null || profile.isEmpty()) {
             return false;
         }
         return serviceIdentification.getProfile().stream()
@@ -81,7 +81,7 @@ public class Capabilities {
     }
 
     public Optional<Operation> findOperation(String name) {
-        if (name == null || name.length() == 0) {
+        if (name == null || name.isEmpty()) {
             return Optional.empty();
         }
         return operationsMetadata.getOperation().stream()

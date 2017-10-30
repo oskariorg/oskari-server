@@ -1,7 +1,7 @@
 package org.oskari.wcs.request;
 
 import java.util.Map;
-import org.oskari.wcs.util.Maps;
+import org.oskari.utils.common.Maps;
 
 public class GetCapabilities {
 

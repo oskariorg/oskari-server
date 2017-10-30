@@ -1,9 +1,10 @@
 package org.oskari.wcs.parser;
 
 import java.util.Optional;
+import org.oskari.utils.common.StringUtils;
+import org.oskari.utils.xml.XML;
 import org.oskari.wcs.gml.Envelope;
 import org.oskari.wcs.gml.Point;
-import org.oskari.wcs.util.XML;
 import org.w3c.dom.Element;
 
 public class CommonParser {
@@ -39,43 +40,17 @@ public class CommonParser {
 
         String lowerCornerStr = XML.getChildText(envelope, "lowerCorner").orElseThrow(
                 () -> new IllegalArgumentException("Could not find lowerCorner from Envelope"));
-        double[] lowerCorner = parseDoubleArray(lowerCornerStr, ' ').orElseThrow(
+        double[] lowerCorner = StringUtils.parseDoubleArray(lowerCornerStr, ' ').orElseThrow(
                 () -> new IllegalArgumentException("Invalid Envelope,"
                         + " failed to parse doubleList from lowerCorner"));
 
         String upperCornerStr = XML.getChildText(envelope, "upperCorner").orElseThrow(
                 () -> new IllegalArgumentException("Could not find lowerCorner from Envelope"));
-        double[] upperCorner = parseDoubleArray(upperCornerStr, ' ').orElseThrow(
+        double[] upperCorner = StringUtils.parseDoubleArray(upperCornerStr, ' ').orElseThrow(
                 () -> new IllegalArgumentException("Invalid Envelope,"
                         + " failed to parse doubleList from upperCorner"));
 
         return new Envelope(srsName, srsDimension, axisLabels, uomLabels, lowerCorner, upperCorner);
-    }
-
-    public static Optional<double[]> parseDoubleArray(String str, char c) {
-        try {
-            final String[] split = str.split("" + c);
-            final double[] arr = new double[split.length];
-            for (int i = 0; i < split.length; i++) {
-                arr[i] = Double.parseDouble(split[i]);
-            }
-            return Optional.of(arr);
-        } catch (NumberFormatException ignore) {
-            return Optional.empty();
-        }
-    }
-
-    public static Optional<int[]> parseIntArray(String str, char c) {
-        try {
-            final String[] split = str.split("" + c);
-            final int[] arr = new int[split.length];
-            for (int i = 0; i < split.length; i++) {
-                arr[i] = Integer.parseInt(split[i]);
-            }
-            return Optional.of(arr);
-        } catch (NumberFormatException ignore) {
-            return Optional.empty();
-        }
     }
 
     public static Optional<Integer> parseInt(String str) {
@@ -92,7 +67,7 @@ public class CommonParser {
         String srsName = elem.getAttribute("srsName");
         Element posE = XML.getChild(elem, "pos").orElseThrow(
                 () -> new IllegalArgumentException("Invalid Point, missing pos element"));
-        double[] pos = parseDoubleArray(posE.getTextContent(), ' ').orElseThrow(
+        double[] pos = StringUtils.parseDoubleArray(posE.getTextContent(), ' ').orElseThrow(
                 () -> new IllegalArgumentException("Invalid Point, failed to parse doubleList"));
         if (pos.length != dimension) {
             throw new IllegalArgumentException(

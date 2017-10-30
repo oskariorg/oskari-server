@@ -8,10 +8,10 @@ import java.util.List;
 import java.util.Map;
 import javax.xml.parsers.ParserConfigurationException;
 import org.junit.Test;
+import org.oskari.utils.xml.XML;
 import org.oskari.wcs.capabilities.Capabilities;
 import org.oskari.wcs.coverage.CoverageDescription;
 import org.oskari.wcs.request.GetCoverage;
-import org.oskari.wcs.util.XML;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 

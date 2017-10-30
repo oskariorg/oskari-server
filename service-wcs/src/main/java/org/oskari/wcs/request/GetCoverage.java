@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import org.oskari.utils.common.StringUtils;
+import org.oskari.wcs.WCS;
 import org.oskari.wcs.capabilities.Capabilities;
 import org.oskari.wcs.coverage.CoverageDescription;
 import org.oskari.wcs.coverage.RectifiedGridCoverage;
@@ -147,7 +149,7 @@ public class GetCoverage {
     public Map<String, String[]> toKVP() {
         Map<String, String[]> kvp = new HashMap<>();
         put(kvp, "service", "WCS");
-        put(kvp, "version", "2.0.1");
+        put(kvp, "version", WCS.VERSION_201);
         put(kvp, "request", "GetCoverage");
         put(kvp, "coverageId", coverageId);
         put(kvp, "format", format);
@@ -202,7 +204,7 @@ public class GetCoverage {
         for (int i = 0; i < n; i++) {
             values[i] = String.format(Locale.US, "%s(%f)", scaleAxes[i].axis, scaleAxes[i].scaleFactor);
         }
-        return join(values, ',');
+        return StringUtils.join(values, ',');
     }
 
     /**
@@ -217,7 +219,7 @@ public class GetCoverage {
         for (int i = 0; i < n; i++) {
             values[i] = String.format("%s(%d)", targetAxisSizes[i].axis, targetAxisSizes[i].targetSize);
         }
-        return join(values, ',');
+        return StringUtils.join(values, ',');
     }
 
     /**
@@ -233,18 +235,7 @@ public class GetCoverage {
         for (int i = 0; i < n; i++) {
             values[i] = String.format(Locale.US, "%s(%f:%f)", scaleAxes[i].axis, scaleAxes[i].low, scaleAxes[i].high);
         }
-        return join(values, ',');
-    }
-
-    private static String join(String[] a, char c) {
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < a.length; i++) {
-            if (i > 0) {
-                sb.append(c);
-            }
-            sb.append(a[i]);
-        }
-        return sb.toString();
+        return StringUtils.join(values, ',');
     }
 
 }

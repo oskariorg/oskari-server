@@ -1,5 +1,27 @@
 # Release Notes
 
+## 1.45.0
+
+### service-map
+Adds bounding box to userlayer that encloses userlayer's geometries. If a userlayer is added to the map, the map moves and zooms to the userlayer's extent.
+
+### transport
+
+Added new config options for oskari(/transport)-ext.properties for controlling when to stop sending requests to service that doesn't answer fast enough (service might be slowed down by getting too many requests and we don't want to pile up requests that will fail):
+
+    # milliseconds as observation window for counting failures before stop sending more WFS-requests to a problematic service (defaults 100 seconds)
+    oskari.transport.rollingwindow = 100000
+    
+    # amount of WFS-requests that need to fail/layer in rolling window to do a cooldown (circuit break)
+    oskari.transport.failrequests = 5
+    
+    # milliseconds to wait after circuit break until start sending new WFS-requests to problematic WFS-service (defaults 20 seconds)
+    oskari.transport.sleepwindow = 20000
+
+Also increased the defaut timeout from 15 seconds to 25 - configurable with:
+
+    oskari.transport.job.timeoutms = 25000
+
 ## 1.44.0
 
 ### Library changes and Java requirement change

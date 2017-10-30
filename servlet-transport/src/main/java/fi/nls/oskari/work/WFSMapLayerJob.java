@@ -321,7 +321,6 @@ public class WFSMapLayerJob extends OWSMapLayerJob {
 
             // send values
             if(!this.sendFeatures) {
-                log.warn("Didn't request properties - skipping", fid);
                 continue;
             }
             Point centerPoint = WFSParser.getGeometryCenter(geometry);
