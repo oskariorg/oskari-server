@@ -93,6 +93,7 @@ public class MapfullHandler extends BundleHandler {
         if (mapfullConfig == null) {
             return false;
         }
+        // TODO: moved to "env" part of the appsetup - remove once frontend has been changed!
         // setup correct ajax url
         final String ajaxUrl = mapfullConfig.optString("globalMapAjaxUrl");
         try {
@@ -105,7 +106,6 @@ public class MapfullHandler extends BundleHandler {
                     params.getBaseAjaxUrl());
         }
 
-        // TODO: moved to "env" part of the appsetup - remove once frontend has been changed!
         // setup user data
         final JSONObject user = params.getUser().toJSON();
         JSONHelper.putValue(user, "apikey", params.getActionParams().getAPIkey());

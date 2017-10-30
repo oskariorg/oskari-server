@@ -106,38 +106,6 @@ public class GetAppSetupHandlerTest extends JSONActionRouteTest {
 
 
     @Test
-    public void testIsSecure() {
-        // no params test
-        assertFalse("isSecure should be false with default params", GetAppSetupHandler.isSecure(createActionParams()));
-
-        // TRUE CASES
-        Map<String, String> parameters = new HashMap<String, String>();
-        parameters.put(ActionConstants.PARAM_SECURE, "true");
-        assertTrue("isSecure should be true for request with param '" + ActionConstants.PARAM_SECURE  + "' with value 'true'", GetAppSetupHandler.isSecure(createActionParams(parameters)));
-
-        parameters.clear();
-        parameters.put(ActionConstants.PARAM_SECURE, "True");
-        assertTrue("isSecure should be true for request with param '" + ActionConstants.PARAM_SECURE  + "' with value 'True'", GetAppSetupHandler.isSecure(createActionParams(parameters)));
-
-        parameters.clear();
-        parameters.put(ActionConstants.PARAM_SECURE, "TRUE");
-        assertTrue("isSecure should be true for request with param '" + ActionConstants.PARAM_SECURE  + "' with value 'TRUE'", GetAppSetupHandler.isSecure(createActionParams(parameters)));
-
-        // FALSE CASES
-        parameters.clear();
-        parameters.put(ActionConstants.PARAM_SECURE, "false");
-        assertFalse("isSecure should be false for request with param '" + ActionConstants.PARAM_SECURE  + "' with value 'false'", GetAppSetupHandler.isSecure(createActionParams(parameters)));
-
-        parameters.clear();
-        parameters.put(ActionConstants.PARAM_SECURE, "1");
-        assertFalse("isSecure should be false for request with param '" + ActionConstants.PARAM_SECURE  + "' with value '1'", GetAppSetupHandler.isSecure(createActionParams(parameters)));
-
-        parameters.clear();
-        parameters.put(ActionConstants.PARAM_SECURE, "yes");
-        assertFalse("isSecure should be false for request with param '" + ActionConstants.PARAM_SECURE  + "' with value 'yes'", GetAppSetupHandler.isSecure(createActionParams(parameters)));
-    }
-
-    @Test
     public void testWithNoViewIdAndGuestUser() throws Exception {
         final ActionParameters params = createActionParams();
         handler.handleAction(params);

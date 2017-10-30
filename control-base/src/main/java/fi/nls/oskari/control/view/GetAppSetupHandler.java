@@ -53,7 +53,6 @@ public class GetAppSetupHandler extends ActionHandler {
 
     // TODO: this is paikkatietoikkuna-specific. Remove/make configurable
     private final static long DEFAULT_USERID = 10110;
-    private String SECURE_AJAX_PREFIX = "";
 
 
     // for adding extra bundle(s) for users with specific roles
@@ -122,7 +121,6 @@ public class GetAppSetupHandler extends ActionHandler {
                 }
             }
         }
-        SECURE_AJAX_PREFIX = PropertyUtil.get("actionhandler.GetAppSetup.secureAjaxUrlPrefix", "");
     }
 
     public void handleAction(final ActionParameters params) throws ActionException {
@@ -224,7 +222,7 @@ UNRESTRICTED_USAGE_ROLE = PropertyUtil.get("view.published.usage.unrestrictedRol
         // modify the loaded view before serving it if there are any control
         // parameters
         final ModifierParams modifierParams = new ModifierParams();
-        modifierParams.setBaseAjaxUrl(getBaseAjaxUrl(params));
+        modifierParams.setBaseAjaxUrl(EnvHelper.getAPIurl(params));
         modifierParams.setConfig(configuration);
         modifierParams.setActionParams(params);
 
@@ -232,7 +230,7 @@ UNRESTRICTED_USAGE_ROLE = PropertyUtil.get("view.published.usage.unrestrictedRol
         modifierParams.setView(view);
         modifierParams.setStartupSequence(startupSequence);
         modifierParams.setOldPublishedMap(oldId != -1);
-        modifierParams.setModifyURLs(isSecure(params));
+        modifierParams.setModifyURLs(EnvHelper.isSecure(params));
         modifierParams.setAjaxRouteParamName(ActionControl.PARAM_ROUTE);
 
         // Add admin-layerselector/layer-rights bundle, if admin role and default view
@@ -382,24 +380,6 @@ UNRESTRICTED_USAGE_ROLE = PropertyUtil.get("view.published.usage.unrestrictedRol
             log.info("Got cookie but couldn't transform to JSON", cookie);
         }
         return null;
-    }
-
-    private String getBaseAjaxUrl(final ActionParameters params) {
-        final String baseAjaxUrl = PropertyUtil.get(params.getLocale(), PROPERTY_AJAXURL);
-        if (isSecure(params)) {
-            return SECURE_AJAX_PREFIX + baseAjaxUrl;
-        }
-        return baseAjaxUrl;
-    }
-
-    /**
-     * Check if we are dealing with a forwarded "secure" url. This means that we will
-     * modify urls on the fly to match proxy forwards. Checks an http parameter "ssl" for boolean value.
-     * @param params
-     * @return
-     */
-    public static boolean isSecure(final ActionParameters params) {
-        return params.getHttpParam(PARAM_SECURE, params.getRequest().isSecure());
     }
 
     private void modifyView(final View view, JSONObject myview) {
