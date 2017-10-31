@@ -2,9 +2,9 @@ package fi.nls.oskari.util;
 
 import fi.nls.oskari.control.ActionConstants;
 import fi.nls.oskari.control.ActionParameters;
+import fi.nls.oskari.domain.map.view.View;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
-import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -29,36 +29,47 @@ public class EnvHelper {
     private static final String KEY_SUPPORTED_LOCALES = "locales";
     private static final String KEY_SVG_MARKERS = "svgMarkers";
     private static final String KEY_USER = "user";
-    private static final String KEY_API = "api";
+    private static final String KEY_URLS = "urls";
+    private static final String KEY_APPSETUP = "appsetup";
 
     public static final String SVG_MARKERS_JSON = "svg-markers.json";
     public static final String PROPERTY_AJAXURL = "oskari.ajax.url.prefix";
 
-    public static JSONObject getEnvironmentJSON(ActionParameters params) {
+    public static JSONObject getEnvironmentJSON(ActionParameters params, View view) {
         final JSONObject env = new JSONObject();
-        JSONHelper.putValue(env, ActionConstants.PARAM_LANGUAGE, params.getLocale().getLanguage());
 
+        // setup locale info
+        JSONHelper.putValue(env, ActionConstants.PARAM_LANGUAGE, params.getLocale().getLanguage());
         JSONHelper.putValue(env, KEY_SUPPORTED_LOCALES, PropertyUtil.getSupportedLocales());
         final DecimalFormatSymbols dfs = new DecimalFormatSymbols(params.getLocale());
         JSONHelper.putValue(env, KEY_DECIMAL_SEPARATOR, Character.toString(dfs.getDecimalSeparator()));
 
-        // setup user data
+        // setup user info
         final JSONObject user = params.getUser().toJSON();
-        // TODO: Remove "apikey" once frontend has been modifed to use it from under env.api.key
         JSONHelper.putValue(user, "apikey", params.getAPIkey());
         JSONHelper.putValue(env, KEY_USER, user);
 
-        // setup API info
-        JSONObject apiConfig = new JSONObject();
-        JSONHelper.putValue(apiConfig, "key", params.getAPIkey());
-        JSONHelper.putValue(apiConfig, "url", getAPIurl(params));
-        JSONHelper.putValue(env, KEY_API, apiConfig);
+        // setup env urls info (api, terms of use, "geoportal url?")
+        JSONObject urlConfig = new JSONObject();
+        JSONHelper.putValue(urlConfig, "api", getAPIurl(params));
+        JSONHelper.putValue(env, KEY_URLS, urlConfig);
 
+        // setup appsetup info
+        JSONObject viewConfig = new JSONObject();
+        JSONHelper.putValue(viewConfig, "uuid", view.getUuid());
+        // should type be only system OR user?
+        // for links the main interest is to know if the link would point to a non-public user view
+        // for other functionality it might be interesting to check if we are in a published map or a geoportal view
+        JSONHelper.putValue(viewConfig, "type", view.getType().toLowerCase());
+        JSONHelper.putValue(viewConfig, "public", view.isPublic());
+        // srs?
+        JSONHelper.putValue(env, KEY_APPSETUP, viewConfig);
 
+        // setup markers SVG info
         try {
             InputStream inp = EnvHelper.class.getResourceAsStream(SVG_MARKERS_JSON);
             if (inp != null) {
-                JSONArray svgMarkers = JSONHelper.createJSONArray(IOUtils.toString(inp, "UTF-8") );
+                JSONArray svgMarkers = JSONHelper.createJSONArray(IOHelper.readString(inp));
                 if(svgMarkers != null || svgMarkers.length() > 0) {
                     JSONHelper.putValue(env, KEY_SVG_MARKERS, svgMarkers);
                 }
@@ -86,5 +97,4 @@ public class EnvHelper {
     public static boolean isSecure(final ActionParameters params) {
         return params.getHttpParam(PARAM_SECURE, params.getRequest().isSecure());
     }
-
 }

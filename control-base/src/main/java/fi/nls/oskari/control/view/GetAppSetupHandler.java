@@ -292,7 +292,7 @@ UNRESTRICTED_USAGE_ROLE = PropertyUtil.get("view.published.usage.unrestrictedRol
         // write response
         try {
             JSONObject appSetup = new JSONObject();
-            appSetup.put(KEY_ENV, EnvHelper.getEnvironmentJSON(params));
+            appSetup.put(KEY_ENV, EnvHelper.getEnvironmentJSON(params, view));
             appSetup.put(KEY_STARTUP, startupSequence);
             appSetup.put(KEY_CONFIGURATION, configuration);
             ResponseHelper.writeResponse(params, appSetup);
