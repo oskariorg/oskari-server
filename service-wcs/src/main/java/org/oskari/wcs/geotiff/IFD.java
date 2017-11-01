@@ -2,12 +2,9 @@ package org.oskari.wcs.geotiff;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.util.logging.Logger;
 
 public class IFD {
 
-    private static final Logger LOG = Logger.getLogger(IFD.class.getName());
-    
     private int width;
     private int height;
     private int[] bitsPerSample;
@@ -19,12 +16,12 @@ public class IFD {
     private int[] stripOffsets;
     private int[] stripByteCounts;
     private int orientation;
-    
+
     private int tileWidth;
     private int tileHeight;
     private int[] tileOffsets;
     private int[] tileByteCounts;
-    
+
     private int planarConfiguration;
     private int predictor;
 
@@ -33,14 +30,14 @@ public class IFD {
     private int resolutionUnit;
 
     private int[] sampleFormat;
-    
+
     private int subfileType;
 
     private int minSampleValue;
     private int maxSampleValue;
     private int sMinSampleValue;
     private int sMaxSampleValue;
-    
+
     private int[] geoKeyDirectory;
     private double[] modelTransformation;
 
@@ -62,27 +59,6 @@ public class IFD {
             bb.position(pos + 12);
         }
     }
-    
-    
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("width=").append(width).append('\n');
-        sb.append("height=").append(height).append('\n');
-        sb.append("bitsPerSample=").append(bitsPerSample).append('\n');
-        sb.append("samplesPerPixel=").append(samplesPerPixel).append('\n');
-        sb.append("photometricInterpration=").append(photometricInterpration).append('\n');
-        sb.append("compression=").append(compression).append('\n');
-        sb.append("rowsPerStrip=").append(rowsPerStrip).append('\n');
-        // sb.append("stripOffsets=").append(Arrays.toString(stripOffsets)).append('\n');
-        // sb.append("stripByteCounts=").append(Arrays.toString(stripByteCounts)).append('\n');
-        sb.append("xResolution=").append(xResolution).append('\n');
-        sb.append("yResolution=").append(yResolution).append('\n');
-        sb.append("resolutionUnit=").append(resolutionUnit).append('\n');
-        sb.append("sampleFormat=").append(sampleFormat).append('\n');
-        return sb.toString();
-    }
-
 
     private void parseTag(ByteBuffer bb, int id, int type, int count, int offset) {
         int typeLen = getFieldTypeLength(type);
@@ -102,7 +78,6 @@ public class IFD {
         }
     }
 
-
     private void parseValue(ByteBuffer bb, int id, int type, int count) {
         if (count == 1) {
             parseSingleValue(bb, id, type);
@@ -111,20 +86,15 @@ public class IFD {
         }
     }
 
-
     private void parseSingleValue(ByteBuffer bb, int id, int type) {
+        // Ignore types of <= 4 bytes
         switch (type) {
-        // Only these can be >4 bytes
         case 5:
         case 10:
             setValue(id, bb.getLong());
             break;
-        case 12:
-            setValue(id, bb.getDouble());
-            break;
         }
     }
-
 
     private void parseMultipleValues(ByteBuffer bb, int id, int type, int count) {
         switch (type) {
@@ -138,12 +108,9 @@ public class IFD {
         case 12:
             setValue(id, getDoubleArray(bb, count));
             break;
-        default:
-            LOG.info("Can't handle tag " + id + " array type " + type);
-            break;
         }
     }
-    
+
     private static int[] getUShortArray(ByteBuffer bb, int count) {
         int[] arr = new int[count];
         for (int i = 0; i < count; i++) {
@@ -151,13 +118,13 @@ public class IFD {
         }
         return arr;
     }
-    
+
     private static int[] getIntArray(ByteBuffer bb, int count) {
         int[] arr = new int[count];
         bb.asIntBuffer().get(arr);
         return arr;
     }
-    
+
     private static double[] getDoubleArray(ByteBuffer bb, int count) {
         double[] arr = new double[count];
         bb.asDoubleBuffer().get(arr);
@@ -185,7 +152,6 @@ public class IFD {
         }
         throw new IllegalArgumentException("Invalid field type " + type);
     }
-
 
     private void setValue(int id, int value) {
         switch (id) {
@@ -258,13 +224,9 @@ public class IFD {
         case 341:
             sMaxSampleValue = value;
             break;
-        default:
-            LOG.info("id " + id + " can't handle int value");
-            break;
         }
     }
-    
-    
+
     private void setValue(int id, long value) {
         switch (id) {
         case 282:
@@ -272,18 +234,6 @@ public class IFD {
             break;
         case 283:
             yResolution = value;
-            break;
-        default:
-            LOG.info("id " + id + " can't handle long value");
-            break;
-        }
-    }
-    
-    
-    private void setValue(int id, double value) {
-        switch (id) {
-        default:
-            LOG.info("id " + id + " can't handle double value");
             break;
         }
     }
@@ -311,152 +261,120 @@ public class IFD {
         case 34735:
             geoKeyDirectory = arr;
             break;
-        default:
-            LOG.info("id " + id + " can't handle int[] value");
-            break;
         }
     }
-    
+
     private void setValue(int id, double[] arr) {
         switch (id) {
         case 34264:
             modelTransformation = arr;
             break;
-        default:
-            LOG.info("id " + id + " can't handle double[] value");
-            break;
         }
     }
-    
+
     public int getWidth() {
         return width;
     }
-
 
     public int getHeight() {
         return height;
     }
 
-
     public int[] getBitsPerSample() {
         return bitsPerSample;
     }
-
 
     public int getSamplesPerPixel() {
         return samplesPerPixel;
     }
 
-
     public int getPhotometricInterpration() {
         return photometricInterpration;
     }
-
 
     public int getCompression() {
         return compression;
     }
 
-
     public int getRowsPerStrip() {
         return rowsPerStrip;
     }
-
 
     public int[] getStripOffsets() {
         return stripOffsets;
     }
 
-
     public int[] getStripByteCounts() {
         return stripByteCounts;
     }
-
 
     public int getOrientation() {
         return orientation;
     }
 
-
     public int getTileWidth() {
         return tileWidth;
     }
-
 
     public int getTileHeight() {
         return tileHeight;
     }
 
-
     public int[] getTileOffsets() {
         return tileOffsets;
     }
-
 
     public int[] getTileByteCounts() {
         return tileByteCounts;
     }
 
-    
     public int getPlanarConfiguration() {
         return planarConfiguration;
     }
-
 
     public int getPredictor() {
         return predictor;
     }
 
-    
     public long getXResolution() {
         return xResolution;
     }
-
 
     public long getYResolution() {
         return yResolution;
     }
 
-
     public int getResolutionUnit() {
         return resolutionUnit;
     }
-
 
     public int[] getSampleFormat() {
         return sampleFormat;
     }
 
-
     public int getSubfileType() {
         return subfileType;
     }
-
 
     public int getMinSampleValue() {
         return minSampleValue;
     }
 
-
     public int getMaxSampleValue() {
         return maxSampleValue;
     }
-
 
     public int getSMinSampleValue() {
         return sMinSampleValue;
     }
 
-
     public int getSMaxSampleValue() {
         return sMaxSampleValue;
     }
 
-
     public int[] getGeoKeyDirectory() {
         return geoKeyDirectory;
     }
-
 
     public double[] getModelTransformation() {
         return modelTransformation;

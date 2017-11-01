@@ -1,6 +1,5 @@
 package org.oskari.wcs.geotiff;
 
-import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.ArrayList;
@@ -47,7 +46,7 @@ public class TIFFReader {
 
     private void parseIFDs() {
         // TIFF file can contain zero images
-        // TODO: offset should be handled as uint32
+        // offset should be handled as uint32
         int off;
         while ((off = bb.getInt()) != 0) {
             ifds.add(new IFD(bb, off));
@@ -63,13 +62,13 @@ public class TIFFReader {
     }
 
     public void readTile(int ifdIdx, int tileIdx, float[] dst)
-            throws IOException {
+            throws IllegalArgumentException {
         IFD ifd = ifds.get(ifdIdx);
 
         if (ifd.getTileOffsets() == null) {
             throw new IllegalArgumentException("Specified IFD is not tiled");
         }
-        
+
         for (int sf : ifd.getSampleFormat()) {
             if (sf != 3) {
                 throw new IllegalArgumentException("Specified IFD sampleFormat is not Float32");
@@ -81,13 +80,14 @@ public class TIFFReader {
                 .asFloatBuffer()
                 .get(dst);
     }
-    
+
     private byte[] getTileData(IFD ifd, int tileIdx, byte[] data) 
-            throws IllegalArgumentException, IOException {
+            throws IllegalArgumentException {
         int off = ifd.getTileOffsets()[tileIdx];
         int len = ifd.getTileByteCounts()[tileIdx];
 
-        switch (ifd.getCompression()) {
+        int c = ifd.getCompression();
+        switch (c) {
         case 1:
             if (data == null || data.length != len) {
                 data = new byte[len];
@@ -96,7 +96,7 @@ public class TIFFReader {
             bb.get(data);
             break;
         default:
-            throw new IllegalArgumentException("Can't decompress compression " + ifd.getCompression());
+            throw new IllegalArgumentException("Can't decompress compression " + c);
         }
 
         return data;
