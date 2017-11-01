@@ -273,11 +273,11 @@ public class GeoServerRequestBuilder {
 
     private OMElement getGeometry() throws Exception {
 
-        SimpleFeatureType GEOMETRY_TYPE = DataUtilities.createType("Location", "geom:Point,name:String");
+        SimpleFeatureType GEOMETRY_TYPE = DataUtilities.createType("Location", "geometry:Point,name:String");
 
         DefaultFeatureCollection collection = new DefaultFeatureCollection();
         WKTReader2 wkt = new WKTReader2();
-        collection.add(SimpleFeatureBuilder.build(GEOMETRY_TYPE, new Object[] { wkt.read("POINT (1 2)"),
+        collection.add(SimpleFeatureBuilder.build(GEOMETRY_TYPE, new Object[] { wkt.read("POINT (1.0 2.0)"),
                 "name1" }, null));
 
         FeatureTransformer transform = new FeatureTransformer();
@@ -288,7 +288,9 @@ public class GeoServerRequestBuilder {
         transform.getFeatureTypeNamespaces().declareDefaultNamespace("feature", "http://www.opengis.net/wfs");
         transform.addSchemaLocation("schemaLocation", "http://www.opengis.net/wfs http://schemas.opengis.net/wfs/"
                 + VERSION_1_0_0 + "/wfs.xsd");
-        transform.setSrsName("EPSG:3076");
+        transform.setSrsName("EPSG:3067");
+        transform.setCollectionNamespace("urn:org.geotools.xml.example.collection");
+        transform.setCollectionBounding(false);
 
         ByteArrayOutputStream xmlOutput = new ByteArrayOutputStream();
         transform.transform(collection, xmlOutput);
