@@ -849,59 +849,19 @@ public class IOHelper {
             if (key == null || key.isEmpty() || value == null || value.isEmpty()) {
                 continue;
             }
-            final String keyEnc = urlEncode(key);
-            final String valueEnc = urlEncode(value);
-            if (!first) {
-                sb.append('&');
-            }
-            sb.append(keyEnc).append('=').append(valueEnc);
-            first = false;
-        }
-        return sb.toString();
-    }
-
-    /**
-     * Same as {@link #getParams(Map) getParams} but this allows
-     * the map and the generated query string to have multiple instances
-     * with the same key e.g. ?foo=bar&foo=baz
-     */
-    public static String getParamsMultiValue(Map<String, String[]> kvps) {
-        if (kvps == null || kvps.isEmpty()) {
-            return "";
-        }
-
-        final StringBuilder sb = new StringBuilder();
-        boolean first = true;
-        for (Map.Entry<String, String[]> entry : kvps.entrySet()) {
-            final String key = entry.getKey();
-            final String[] values = entry.getValue();
-            if (key == null || key.isEmpty() || values == null || values.length == 0) {
-                continue;
-            }
-            String keyEnc = urlEncode(key);
-            for (String value : values) {
-                if (value == null || value.isEmpty()) {
-                    continue;
-                }
-                String valueEnc = urlEncode(value);
+            try {
+                final String keyEnc = URLEncoder.encode(key, DEFAULT_CHARSET);
+                final String valueEnc = URLEncoder.encode(value, DEFAULT_CHARSET);
                 if (!first) {
                     sb.append('&');
                 }
                 sb.append(keyEnc).append('=').append(valueEnc);
                 first = false;
+            } catch (UnsupportedEncodingException ignore) {
+                // Ignore the exception, UTF-8 _IS_ supported
             }
         }
         return sb.toString();
-    }
-
-    private static String urlEncode(String s) {
-        try {
-            return URLEncoder.encode(s, CHARSET_UTF8);
-        } catch (UnsupportedEncodingException ignore) {
-            // Ignore the exception, 'UTF-8' is supported
-        }
-        // return something, this code is unreachable
-        return s;
     }
 
     public static InputStream getInputStream(HttpURLConnection conn) {
