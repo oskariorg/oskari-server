@@ -1,0 +1,11 @@
+
+{
+  "features" :
+          [
+            {
+            "geometry": {"type": "Point", "coordinates": "10.0, 0.0"},
+            "properties": {"name": "name", "place_desc": "place_desc", "link": "link", "attention_text": "attention_text",
+              "image_url": "image_url", "category_id": "category_id", "feature" : "feature"}
+            }
+          ]
+}
