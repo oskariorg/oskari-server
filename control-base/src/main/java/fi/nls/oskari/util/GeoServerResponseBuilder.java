@@ -51,7 +51,7 @@ public class GeoServerResponseBuilder {
     }
 
     public JSONObject buildFeaturesGet(String response) throws Exception {
-        return new JSONObject(parseTransactionResponse(response,configuration_v1_0));
+        return null;
     }
 
     public JSONObject buildFeaturesInsert(String response) throws Exception {
