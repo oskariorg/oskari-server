@@ -11,7 +11,7 @@ import org.json.JSONObject;
 import java.io.InputStream;
 import java.text.DecimalFormatSymbols;
 
-import static fi.nls.oskari.control.ActionConstants.PARAM_SECURE;
+import static fi.nls.oskari.control.ActionConstants.*;
 
 /**
  * Describes the environment the appsetup is used in:
@@ -30,7 +30,10 @@ public class EnvHelper {
     private static final String KEY_SVG_MARKERS = "svgMarkers";
     private static final String KEY_USER = "user";
     private static final String KEY_URLS = "urls";
-    private static final String KEY_APP = "app";
+    private static final String KEY_APPSETUP = "app";
+    private static final String KEY_API = "api";
+    private static final String KEY_APIKEY = "apikey";
+    private static final String KEY_ISPUBLIC = "public";
 
     public static final String SVG_MARKERS_JSON = "svg-markers.json";
     public static final String PROPERTY_AJAXURL = "oskari.ajax.url.prefix";
@@ -46,24 +49,23 @@ public class EnvHelper {
 
         // setup user info
         final JSONObject user = params.getUser().toJSON();
-        JSONHelper.putValue(user, "apikey", params.getAPIkey());
+        JSONHelper.putValue(user, KEY_APIKEY, params.getAPIkey());
         JSONHelper.putValue(env, KEY_USER, user);
 
         // setup env urls info (api, terms of use, "geoportal url?")
         JSONObject urlConfig = new JSONObject();
-        JSONHelper.putValue(urlConfig, "api", getAPIurl(params));
+        JSONHelper.putValue(urlConfig, KEY_API, getAPIurl(params));
         JSONHelper.putValue(env, KEY_URLS, urlConfig);
 
         // setup appsetup info
         JSONObject viewConfig = new JSONObject();
-        JSONHelper.putValue(viewConfig, "uuid", view.getUuid());
+        JSONHelper.putValue(viewConfig, KEY_UUID, view.getUuid());
         // should type be only system OR user?
         // for links the main interest is to know if the link would point to a non-public user view
         // for other functionality it might be interesting to check if we are in a published map or a geoportal view
-        JSONHelper.putValue(viewConfig, "type", view.getType().toLowerCase());
-        JSONHelper.putValue(viewConfig, "public", view.isPublic());
-        // srs?
-        JSONHelper.putValue(env, KEY_APP, viewConfig);
+        JSONHelper.putValue(viewConfig, KEY_TYPE, view.getType().toLowerCase());
+        JSONHelper.putValue(viewConfig, KEY_ISPUBLIC, view.isPublic());
+        JSONHelper.putValue(env, KEY_APPSETUP, viewConfig);
 
         // setup markers SVG info
         try {
@@ -83,6 +85,7 @@ public class EnvHelper {
     public static String getAPIurl(final ActionParameters params) {
         final String baseAjaxUrl = PropertyUtil.get(params.getLocale(), PROPERTY_AJAXURL);
         if (isSecure(params)) {
+            // this isn't really necessary any more
             return PropertyUtil.get("actionhandler.GetAppSetup.secureAjaxUrlPrefix", "") + baseAjaxUrl;
         }
         return baseAjaxUrl;
