@@ -2,20 +2,11 @@ package fi.nls.oskari.util;
 
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+
 import org.apache.axiom.om.*;
-import org.geotools.data.DataUtilities;
-import org.geotools.feature.DefaultFeatureCollection;
-import org.geotools.feature.simple.SimpleFeatureBuilder;
-import org.geotools.gml.producer.FeatureTransformer;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.opengis.feature.simple.SimpleFeatureType;
-import org.geotools.geometry.jts.WKTReader2;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
 
@@ -47,128 +38,175 @@ public class GeoServerRequestBuilder {
     private static final List<String> FEATURES_LIST = Arrays.asList("name", "place_desc", "attention_text", "link",
             "image_url", "category_id", "feature");
 
-    public OMElement buildLayersGet(String uuid) {
+    public OMElement buildLayersGet(String uuid) throws Exception {
+        return buildGet(uuid, "feature:categories");
+    }
 
-        OMElement root = null;
+    public OMElement buildLayersInsert(String payload) throws Exception {
 
-        try {
-            root = buildWFSRootNode("GetFeature", VERSION_1_1_0);
+        OMElement root = buildWFSRootNode("Transaction", VERSION_1_1_0);
 
-            OMElement query = factory.createOMElement("Query", wfsNameSpace);
-            OMAttribute typeName = factory.createOMAttribute("typeName", null, "feature:categories");
-            OMAttribute srsName = factory.createOMAttribute("srsName", null, "EPSG:3067");
-            query.addAttribute(typeName);
-            query.addAttribute(srsName);
+        OMElement transaction = factory.createOMElement("Insert", wfsNameSpace);
+        OMNamespace feature = factory.createOMNamespace("http://www.oskari.org", "feature");
 
-            OMNamespace ogc = factory.createOMNamespace("http://www.opengis.net/ogc", "ogc");
-            OMElement filter = factory.createOMElement("Filter", ogc);
+        OMElement categories = factory.createOMElement("categories", feature);
 
-            OMElement propertyIsEqualTo = factory.createOMElement("PropertyIsEqualTo", ogc);
-
-            OMAttribute matchCase = factory.createOMAttribute("matchCase", null, "true");
-            propertyIsEqualTo.addAttribute(matchCase);
-
-            OMElement property = factory.createOMElement("PropertyName", ogc);
-            property.setText("uuid");
-            propertyIsEqualTo.addChild(property);
-
-            OMElement literal = factory.createOMElement("Literal", ogc);
-            literal.setText(uuid);
-            propertyIsEqualTo.addChild(literal);
-
-            filter.addChild(propertyIsEqualTo);
-            query.addChild(filter);
-            root.addChild(query);
+        JSONArray jsonArray = new JSONObject(payload).getJSONArray("categories");
+        for (int i = 0; i < jsonArray.length(); ++i) {
+            for (String property : LAYERS_LIST) {
+                transaction.addChild(getElement(jsonArray.getJSONObject(i), property, feature));
+            }
         }
-        catch (Exception e){
-            log.error(e, "Failed to create payload - root: ", root);
-            throw new RuntimeException(e.getMessage());
-        }
+
+        transaction.addChild(categories);
+        root.addChild(transaction);
 
         return root;
     }
 
-    public OMElement buildLayersInsert(String payload) {
+    public OMElement buildLayersUpdate(String payload) throws Exception {
 
-        OMElement root = null;
+        OMElement root = buildWFSRootNode("Transaction", VERSION_1_1_0);
 
-        try {
-            root = buildWFSRootNode("Transaction", VERSION_1_1_0);
+        OMNamespace feature = factory.createOMNamespace("http://www.oskari.org", "feature");
+        OMElement transaction = factory.createOMElement("Update", feature);
+        OMAttribute typeName = factory.createOMAttribute("typeName", null, "feature:categories");
+        transaction.addAttribute(typeName);
 
-            OMElement transaction = factory.createOMElement("Insert", wfsNameSpace);
-            OMNamespace feature = factory.createOMNamespace("http://www.oskari.org", "feature");
+        JSONArray jsonArray = new JSONObject(payload).getJSONArray("categories");
+        for (int i = 0; i < jsonArray.length(); ++i) {
+            for (String property : LAYERS_LIST) {
+                transaction.addChild(buildPropertyElement(jsonArray.getJSONObject(i), property, feature));
+            }
+            transaction.addChild(buildIdFilter(jsonArray.getJSONObject(i).getString("category_id")));
+        }
+        root.addChild(transaction);
 
-            OMElement categories = factory.createOMElement("categories", feature);
+        return root;
+    }
 
-            JSONArray jsonArray = new JSONObject(payload).getJSONArray("categories");
-            for (int i = 0; i < jsonArray.length(); ++i) {
-                for (String property : LAYERS_LIST) {
-                    transaction.addChild(getElement(jsonArray.getJSONObject(i), property, feature));
-                }
+
+    public OMElement buildLayersDelete(String categoryId) throws Exception {
+
+        OMElement root = buildWFSRootNode("Transaction", VERSION_1_1_0);
+
+        OMNamespace feature = factory.createOMNamespace("http://www.oskari.org", "feature");
+        OMElement transaction = factory.createOMElement("Delete", feature);
+        OMAttribute typeName = factory.createOMAttribute("typeName", null, "feature:categories");
+        transaction.addAttribute(typeName);
+
+        transaction.addChild(buildIdFilter(categoryId));
+
+        root.addChild(transaction);
+
+        return root;
+    }
+
+    public OMElement buildFeaturesGet(String uuid) throws Exception {
+        return buildGet(uuid, "feature:myplaces");
+    }
+
+    public OMElement buildFeaturesInsert(String payload) throws Exception {
+
+        OMElement root = buildWFSRootNode("Transaction", VERSION_1_0_0);
+
+        OMElement transaction = factory.createOMElement("Insert", wfsNameSpace);
+        OMNamespace feature = factory.createOMNamespace("http://www.oskari.org", "feature");
+
+        OMElement myPlaces = factory.createOMElement("my_places", feature);
+
+        JSONArray jsonArray = new JSONObject(payload).getJSONArray("features");
+        for (int i = 0; i < jsonArray.length(); ++i) {
+
+            OMElement geometry = factory.createOMElement("geometry", feature);
+            geometry.addChild(getGeometry(jsonArray.getJSONObject(i).getJSONObject("geometry")));
+            myPlaces.addChild(geometry);
+
+            for (String property : FEATURES_LIST) {
+                myPlaces.addChild(getElement(jsonArray.getJSONObject(i).getJSONObject("properties"), property, feature));
+            }
+        }
+        transaction.addChild(myPlaces);
+        root.addChild(transaction);
+
+        return root;
+    }
+
+    public OMElement buildFeaturesUpdate(String payload) throws Exception {
+
+        OMElement root = buildWFSRootNode("Transaction", VERSION_1_0_0);
+
+        OMElement transaction = factory.createOMElement("Update", wfsNameSpace);
+        OMNamespace feature = factory.createOMNamespace("http://www.oskari.org", "feature");
+
+        OMElement myPlaces = factory.createOMElement("my_places", feature);
+
+        JSONArray jsonArray = new JSONObject(payload).getJSONArray("features");
+        for (int i = 0; i < jsonArray.length(); ++i) {
+
+            OMElement geometry = factory.createOMElement("geometry", feature);
+            geometry.addChild(getGeometry(jsonArray.getJSONObject(i).getJSONObject("geometry")));
+            myPlaces.addChild(geometry);
+
+            for (String property : FEATURES_LIST) {
+                myPlaces.addChild(getElement(jsonArray.getJSONObject(i).getJSONObject("properties"), property, feature));
             }
 
-            transaction.addChild(categories);
-            root.addChild(transaction);
+            myPlaces.addChild(buildIdFilter(jsonArray.getJSONObject(i).getString("feature_id")));
         }
-        catch (Exception e){
-            log.error(e, "Failed to create payload - root: ", root);
-            throw new RuntimeException(e.getMessage());
-        }
+        transaction.addChild(myPlaces);
+        root.addChild(transaction);
+
         return root;
     }
 
-    public OMElement buildLayersUpdate(String payload) {
+    public OMElement buildFeaturesDelete(String featureId) throws Exception {
 
-        OMElement root = null;
+        OMElement root = buildWFSRootNode("Transaction", VERSION_1_0_0);
 
-        try {
-            root = buildWFSRootNode("Transaction", VERSION_1_1_0);
+        OMNamespace feature = factory.createOMNamespace("http://www.oskari.org", "feature");
+        OMElement transaction = factory.createOMElement("Delete", feature);
+        OMAttribute typeName = factory.createOMAttribute("typeName", null, "feature:my_places");
+        transaction.addAttribute(typeName);
 
-            OMNamespace feature = factory.createOMNamespace("http://www.oskari.org", "feature");
-            OMElement transaction = factory.createOMElement("Update", feature);
-            OMAttribute typeName = factory.createOMAttribute("typeName", null, "feature:categories");
-            transaction.addAttribute(typeName);
+        transaction.addChild(buildIdFilter(featureId));
 
-            JSONArray jsonArray = new JSONObject(payload).getJSONArray("categories");
-            for (int i = 0; i < jsonArray.length(); ++i) {
-                for (String property : LAYERS_LIST) {
-                    transaction.addChild(buildPropertyElement(jsonArray.getJSONObject(i), property, feature));
-                }
-                transaction.addChild(buildCategoryIdFilter(jsonArray.getJSONObject(i).getString("category_id")));
-            }
-            root.addChild(transaction);
-        }
-        catch (Exception e){
-            log.error(e, "Failed to create payload - root: ", root);
-            throw new RuntimeException(e.getMessage());
-        }
+        root.addChild(transaction);
+
         return root;
     }
 
+    private OMElement buildGet(String uuid, String from) throws Exception {
 
-    public OMElement buildLayersDelete(String categoryId) {
+        OMElement root = buildWFSRootNode("GetFeature", VERSION_1_1_0);
 
-        OMElement root = null;
+        OMElement query = factory.createOMElement("Query", wfsNameSpace);
+        OMAttribute typeName = factory.createOMAttribute("typeName", null, from);
+        OMAttribute srsName = factory.createOMAttribute("srsName", null, "EPSG:3067");
+        query.addAttribute(typeName);
+        query.addAttribute(srsName);
 
-        try {
-            root = buildWFSRootNode("Transaction", VERSION_1_1_0);
+        OMNamespace ogc = factory.createOMNamespace("http://www.opengis.net/ogc", "ogc");
+        OMElement filter = factory.createOMElement("Filter", ogc);
 
-            OMNamespace feature = factory.createOMNamespace("http://www.oskari.org", "feature");
-            OMElement transaction = factory.createOMElement("Delete", feature);
-            OMAttribute typeName = factory.createOMAttribute("typeName", null, "feature:categories");
-            transaction.addAttribute(typeName);
+        OMElement propertyIsEqualTo = factory.createOMElement("PropertyIsEqualTo", ogc);
 
-            transaction.addChild(buildCategoryIdFilter(categoryId));
+        OMAttribute matchCase = factory.createOMAttribute("matchCase", null, "true");
+        propertyIsEqualTo.addAttribute(matchCase);
 
-            root.addChild(transaction);
-        }
-        catch (Exception e){
-            log.error(e, "Failed to create payload - root: ", root);
-            throw new RuntimeException(e.getMessage());
-        }
+        OMElement property = factory.createOMElement("PropertyName", ogc);
+        property.setText("uuid");
+        propertyIsEqualTo.addChild(property);
+
+        OMElement literal = factory.createOMElement("Literal", ogc);
+        literal.setText(uuid);
+        propertyIsEqualTo.addChild(literal);
+
+        filter.addChild(propertyIsEqualTo);
+        query.addChild(filter);
+        root.addChild(query);
 
         return root;
-
     }
 
     private OMElement buildWFSRootNode (String wfsType, String version) throws Exception {
@@ -176,7 +214,7 @@ public class GeoServerRequestBuilder {
         OMAttribute schemaLocation = factory.createOMAttribute("schemaLocation",
                 xmlSchemaInstance,
                 "http://www.opengis.net/wfs http://schemas.opengis.net/wfs/"
-                        + VERSION_1_1_0 + "/wfs.xsd");
+                        + version + "/wfs.xsd");
 
         OMAttribute versionElement = factory.createOMAttribute("version", null, version);
         OMAttribute serviceElement = factory.createOMAttribute("service", null, "WFS");
@@ -189,41 +227,36 @@ public class GeoServerRequestBuilder {
     }
 
     private OMElement getElement(JSONObject jsonObject, String fieldName, OMNamespace feature) throws Exception {
+
         OMFactory factory = OMAbstractFactory.getOMFactory();
         OMElement var = null;
-        try {
-            String value = jsonObject.getString(fieldName);
-            var = factory.createOMElement(fieldName, feature);
-            var.setText(value);
-        }
-        catch (Exception e) {
-            throw new Exception(e.getMessage());
-        }
+
+        String value = jsonObject.getString(fieldName);
+        var = factory.createOMElement(fieldName, feature);
+        var.setText(value);
+
         return var;
     }
 
     private OMElement buildPropertyElement(JSONObject jsonObject, String fieldName, OMNamespace feature) throws Exception {
         OMFactory factory = OMAbstractFactory.getOMFactory();
         OMElement property = null;
-        try {
-            property = factory.createOMElement("Property", feature);
 
-            OMElement propertyName = factory.createOMElement("Name", feature);
-            propertyName.setText(fieldName);
-            property.addChild(propertyName);
+        property = factory.createOMElement("Property", feature);
 
-            String value = jsonObject.getString(fieldName);
-            OMElement propertyValue = factory.createOMElement("Value", feature);
-            propertyValue.setText(value);
-            property.addChild(propertyValue);
-        }
-        catch (Exception e) {
-            throw new Exception(e.getMessage());
-        }
+        OMElement propertyName = factory.createOMElement("Name", feature);
+        propertyName.setText(fieldName);
+        property.addChild(propertyName);
+
+        String value = jsonObject.getString(fieldName);
+        OMElement propertyValue = factory.createOMElement("Value", feature);
+        propertyValue.setText(value);
+        property.addChild(propertyValue);
+
         return property;
     }
 
-    private OMElement buildCategoryIdFilter(String categoryId) {
+    private OMElement buildIdFilter(String categoryId) {
 
         OMNamespace ogc = factory.createOMNamespace("http://www.opengis.net/ogc", "ogc");
         OMElement filter = factory.createOMElement("Filter", ogc);
@@ -235,43 +268,6 @@ public class GeoServerRequestBuilder {
         filter.addChild(property);
 
         return filter;
-    }
-
-    public OMElement buildFeaturesGet(String payload) {
-        return null;
-    }
-
-    public OMElement buildFeaturesInsert(String payload) throws Exception {
-
-        OMElement root = null;
-
-        try {
-            root = buildWFSRootNode("Transaction", VERSION_1_0_0);
-
-            OMElement transaction = factory.createOMElement("Insert", wfsNameSpace);
-            OMNamespace feature = factory.createOMNamespace("http://www.oskari.org", "feature");
-
-            OMElement myPlaces = factory.createOMElement("my_places", feature);
-
-            JSONArray jsonArray = new JSONObject(payload).getJSONArray("features");
-            for (int i = 0; i < jsonArray.length(); ++i) {
-
-                OMElement geometry = factory.createOMElement("geometry", feature);
-                geometry.addChild(getGeometry(jsonArray.getJSONObject(i).getJSONObject("geometry")));
-                myPlaces.addChild(geometry);
-
-                for (String property : FEATURES_LIST) {
-                    myPlaces.addChild(getElement(jsonArray.getJSONObject(i).getJSONObject("properties"), property, feature));
-                }
-            }
-            transaction.addChild(myPlaces);
-            root.addChild(transaction);
-
-        } catch (Exception e) {
-            log.error(e, "Failed to create payload - root: ", root);
-            throw new RuntimeException(e.getMessage());
-        }
-        return root;
     }
 
     private OMElement getGeometry(JSONObject geometryJson) throws Exception {
@@ -297,13 +293,5 @@ public class GeoServerRequestBuilder {
         geometry.addChild(coordinates);
 
         return geometry;
-    }
-
-    public OMElement buildFeaturesUpdate(String payload) {
-        return null;
-    }
-
-    public OMElement buildFeaturesDelete(String payload) {
-        return null;
     }
 }

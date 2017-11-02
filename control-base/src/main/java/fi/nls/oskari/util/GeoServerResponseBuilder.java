@@ -31,36 +31,39 @@ public class GeoServerResponseBuilder {
             "dot_shape", "stroke_linejoin", "fill_pattern", "stroke_linecap", "stroke_dasharray", "border_linejoin",
             "border_dasharray");
 
+    private static WFSConfiguration configuration_v1_1 = new org.geotools.wfs.v1_1.WFSConfiguration();
+    private static WFSConfiguration configuration_v1_0 = new org.geotools.wfs.v1_0.WFSConfiguration();
+
     public JSONObject buildLayersGet(String response) throws Exception {
         return new JSONObject(parseLayersGet(response, LAYERS_GET_LIST));
     }
 
-    public JSONObject buildLayersInsert(String response) throws Exception{
-        return new JSONObject(parseLayersTransactionResponse(response));
+    public JSONObject buildLayersInsert(String response) throws Exception {
+        return new JSONObject(parseTransactionResponse(response,configuration_v1_1));
     }
 
-    public JSONObject buildLayersUpdate(String response) throws Exception{
-        return new JSONObject(parseLayersTransactionResponse(response));
+    public JSONObject buildLayersUpdate(String response) throws Exception {
+        return new JSONObject(parseTransactionResponse(response,configuration_v1_1));
     }
 
-    public JSONObject buildLayersDelete(String response) throws Exception{
-        return new JSONObject(parseLayersTransactionResponse(response));
+    public JSONObject buildLayersDelete(String response) throws Exception {
+        return new JSONObject(parseTransactionResponse(response,configuration_v1_1));
     }
 
-    public JSONObject buildFeaturesGet(String response) {
-        return null;
+    public JSONObject buildFeaturesGet(String response) throws Exception {
+        return new JSONObject(parseTransactionResponse(response,configuration_v1_0));
     }
 
-    public JSONObject buildFeaturesInsert(String response) {
-        return null;
+    public JSONObject buildFeaturesInsert(String response) throws Exception {
+        return new JSONObject(parseTransactionResponse(response,configuration_v1_0));
     }
 
-    public JSONObject buildFeaturesUpdate(String response) {
-        return null;
+    public JSONObject buildFeaturesUpdate(String response) throws Exception {
+        return new JSONObject(parseTransactionResponse(response,configuration_v1_0));
     }
 
-    public JSONObject buildFeaturesDelete(String response) {
-        return null;
+    public JSONObject buildFeaturesDelete(String response) throws Exception {
+        return new JSONObject(parseTransactionResponse(response,configuration_v1_0));
     }
 
     private static SimpleFeatureCollection getFeatureCollection(InputStream inputStream, Version configuration) {
@@ -94,12 +97,11 @@ public class GeoServerResponseBuilder {
     }
 
 
-    public static Map<String, Object> parseLayersTransactionResponse(String response) throws Exception {
+    public static Map<String, Object> parseTransactionResponse(String response, WFSConfiguration configuration) throws Exception {
 
         List fidList = new ArrayList();
 
         InputStream inputStream = IOUtils.toInputStream(response, "UTF-8");
-        WFSConfiguration configuration = new org.geotools.wfs.v1_1.WFSConfiguration();
         Parser parser = new Parser(configuration);
         Object parsedResponse = parser.parse(inputStream);
 
