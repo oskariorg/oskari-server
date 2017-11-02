@@ -252,18 +252,18 @@ public class GeoServerRequestBuilder {
             OMNamespace feature = factory.createOMNamespace("http://www.oskari.org", "feature");
 
             OMElement myPlaces = factory.createOMElement("my_places", feature);
-            OMElement geometry = factory.createOMElement("geometry", feature);
-
-            geometry.addChild(getGeometry());
-            myPlaces.addChild(geometry);
 
             JSONArray jsonArray = new JSONObject(payload).getJSONArray("features");
             for (int i = 0; i < jsonArray.length(); ++i) {
+
+                OMElement geometry = factory.createOMElement("geometry", feature);
+                geometry.addChild(getGeometry(jsonArray.getJSONObject(i).getJSONObject("geometry")));
+                myPlaces.addChild(geometry);
+
                 for (String property : FEATURES_LIST) {
                     myPlaces.addChild(getElement(jsonArray.getJSONObject(i).getJSONObject("properties"), property, feature));
                 }
             }
-
             transaction.addChild(myPlaces);
             root.addChild(transaction);
 
@@ -274,7 +274,7 @@ public class GeoServerRequestBuilder {
         return root;
     }
 
-    private OMElement getGeometry() throws Exception {
+    private OMElement getGeometry(JSONObject geometryJson) throws Exception {
 
         OMNamespace gml = factory.createOMNamespace("http://www.opengis.net/gml", "gml");
         OMElement geometry = factory.createOMElement("Point", gml);
