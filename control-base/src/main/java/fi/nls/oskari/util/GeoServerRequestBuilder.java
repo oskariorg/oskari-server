@@ -39,7 +39,7 @@ public class GeoServerRequestBuilder {
             "image_url", "category_id", "feature");
 
     public OMElement buildLayersGet(String uuid) throws Exception {
-        return buildGet(uuid, "feature:categories");
+        return buildGet(uuid, "feature:categories", VERSION_1_1_0);
     }
 
     public OMElement buildLayersInsert(String payload) throws Exception {
@@ -103,7 +103,12 @@ public class GeoServerRequestBuilder {
     }
 
     public OMElement buildFeaturesGet(String uuid) throws Exception {
-        return buildGet(uuid, "feature:myplaces");
+
+        OMElement root = buildGet(uuid, "feature:my_places", VERSION_1_0_0);
+        OMAttribute outputElement = factory.createOMAttribute("outputFormat", null, "application/json");
+        root.addAttribute(outputElement);
+
+        return root;
     }
 
     public OMElement buildFeaturesInsert(String payload) throws Exception {
@@ -176,9 +181,9 @@ public class GeoServerRequestBuilder {
         return root;
     }
 
-    private OMElement buildGet(String uuid, String from) throws Exception {
+    private OMElement buildGet(String uuid, String from, String version) throws Exception {
 
-        OMElement root = buildWFSRootNode("GetFeature", VERSION_1_1_0);
+        OMElement root = buildWFSRootNode("GetFeature", version);
 
         OMElement query = factory.createOMElement("Query", wfsNameSpace);
         OMAttribute typeName = factory.createOMAttribute("typeName", null, from);

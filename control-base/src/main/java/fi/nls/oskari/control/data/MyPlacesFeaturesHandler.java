@@ -25,8 +25,7 @@ public class MyPlacesFeaturesHandler extends RestActionHandler {
         GeoServerRequestBuilder requestBuilder = new GeoServerRequestBuilder();
         GeoServerResponseBuilder responseBuilder = new GeoServerResponseBuilder();
         try {
-            ResponseHelper.writeResponse(params, responseBuilder.buildFeaturesGet(
-                    GeoServerHelper.sendRequest(requestBuilder.buildFeaturesGet("fdsa-fdsa-fdsa-fdsa-fdsa"))));//TODO params.getUser().getUuid()))));
+            ResponseHelper.writeResponse(params, GeoServerHelper.sendRequest(requestBuilder.buildFeaturesGet("fdsa-fdsa-fdsa-fdsa-fdsa")));//TODO params.getUser().getUuid()))));
         }
         catch (Exception e) {
             throw new ActionException(e.getMessage());
