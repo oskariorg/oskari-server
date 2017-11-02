@@ -93,24 +93,6 @@ public class MapfullHandler extends BundleHandler {
         if (mapfullConfig == null) {
             return false;
         }
-        // TODO: moved to "env" part of the appsetup - remove once frontend has been changed!
-        // setup correct ajax url
-        final String ajaxUrl = mapfullConfig.optString("globalMapAjaxUrl");
-        try {
-            // fix ajaxurl to current community if possible
-            // (required to show correct help articles)
-            mapfullConfig.put("globalMapAjaxUrl", params.getBaseAjaxUrl());
-            LOGGER.debug("Replaced ajax url: ", ajaxUrl, "->", params.getBaseAjaxUrl());
-        } catch (Exception e) {
-            LOGGER.error(e, "Replacing ajax url failed: ", ajaxUrl, "- Parsed:",
-                    params.getBaseAjaxUrl());
-        }
-
-        // setup user data
-        final JSONObject user = params.getUser().toJSON();
-        JSONHelper.putValue(user, "apikey", params.getActionParams().getAPIkey());
-        JSONHelper.putValue(mapfullConfig, "user", user);
-        // /moved to "env" part of the appsetup - remove once frontend has been changed!
 
         // Any layer referenced in state.selectedLayers array NEEDS to
         // be in conf.layers otherwise it cant be added to map on startup
@@ -233,11 +215,6 @@ public class MapfullHandler extends BundleHandler {
         }
         return null;
     }
-
-
-
-
-
 
     /**
      * Creates JSON array of layer configurations.

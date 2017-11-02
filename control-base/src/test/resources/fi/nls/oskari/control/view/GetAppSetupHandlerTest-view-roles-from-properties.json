@@ -83,7 +83,6 @@
         "north": "6874042"
       },
       "conf": {
-        "globalMapAjaxUrl": "--oskari.ajax.url.prefix--",
         "plugins": [
           {
             "id": "Oskari.mapframework.bundle.mapmodule.plugin.LayersPlugin"
@@ -135,25 +134,6 @@
         "imageLocation": "/Oskari/resources",
         "projectionDefs": {
           "EPSG:3067": "+proj=utm +zone=35 +ellps=GRS80 +units=m +no_defs"
-        },
-        "user": {
-          "apikey": "testkey",
-          "userID": 123,
-          "lastName": "Oskari",
-          "nickName": "Ozkari",
-          "roles": [
-            {
-              "id": 1,
-              "name": "User"
-            },
-            {
-              "id": 42,
-              "name": "Karttajulkaisija_Tre"
-            }
-          ],
-          "userUUID": "my uuid is secrets",
-          "firstName": "Test",
-          "email": "test@oskari.org"
         }
       }
     }
