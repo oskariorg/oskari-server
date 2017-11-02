@@ -30,7 +30,7 @@ public class EnvHelper {
     private static final String KEY_SVG_MARKERS = "svgMarkers";
     private static final String KEY_USER = "user";
     private static final String KEY_URLS = "urls";
-    private static final String KEY_APPSETUP = "appsetup";
+    private static final String KEY_APP = "app";
 
     public static final String SVG_MARKERS_JSON = "svg-markers.json";
     public static final String PROPERTY_AJAXURL = "oskari.ajax.url.prefix";
@@ -63,7 +63,7 @@ public class EnvHelper {
         JSONHelper.putValue(viewConfig, "type", view.getType().toLowerCase());
         JSONHelper.putValue(viewConfig, "public", view.isPublic());
         // srs?
-        JSONHelper.putValue(env, KEY_APPSETUP, viewConfig);
+        JSONHelper.putValue(env, KEY_APP, viewConfig);
 
         // setup markers SVG info
         try {

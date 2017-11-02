@@ -7,7 +7,7 @@
       "sv_SE",
       "en_EN"
     ],
-    "appsetup": {
+    "app": {
       "public": true,
       "type": "user",
       "uuid": "aaaa-bbbbb-cccc"

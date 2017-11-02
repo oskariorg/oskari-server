@@ -8,7 +8,7 @@
       "en_EN"
     ],
     "urls": {"api": "--oskari.ajax.url.prefix--"},
-    "appsetup": {
+    "app": {
       "public": true,
       "type": "user",
       "uuid": "aaaa-bbbbb-cccc"
