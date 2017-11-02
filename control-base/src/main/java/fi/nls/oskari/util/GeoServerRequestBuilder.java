@@ -224,7 +224,6 @@ public class GeoServerRequestBuilder {
     }
 
     private OMElement buildCategoryIdFilter(String categoryId) {
-        OMFactory factory = OMAbstractFactory.getOMFactory();
 
         OMNamespace ogc = factory.createOMNamespace("http://www.opengis.net/ogc", "ogc");
         OMElement filter = factory.createOMElement("Filter", ogc);
@@ -253,7 +252,10 @@ public class GeoServerRequestBuilder {
             OMNamespace feature = factory.createOMNamespace("http://www.oskari.org", "feature");
 
             OMElement myPlaces = factory.createOMElement("my_places", feature);
-            myPlaces.addChild(getGeometry());
+            OMElement geometry = factory.createOMElement("geometry", feature);
+
+            geometry.addChild(getGeometry());
+            myPlaces.addChild(geometry);
 
             JSONArray jsonArray = new JSONObject(payload).getJSONArray("features");
             for (int i = 0; i < jsonArray.length(); ++i) {
@@ -264,6 +266,7 @@ public class GeoServerRequestBuilder {
 
             transaction.addChild(myPlaces);
             root.addChild(transaction);
+
         } catch (Exception e) {
             log.error(e, "Failed to create payload - root: ", root);
             throw new RuntimeException(e.getMessage());
@@ -273,31 +276,27 @@ public class GeoServerRequestBuilder {
 
     private OMElement getGeometry() throws Exception {
 
-        SimpleFeatureType GEOMETRY_TYPE = DataUtilities.createType("Location", "geometry:Point,name:String");
+        OMNamespace gml = factory.createOMNamespace("http://www.opengis.net/gml", "gml");
+        OMElement geometry = factory.createOMElement("Point", gml);
 
-        DefaultFeatureCollection collection = new DefaultFeatureCollection();
-        WKTReader2 wkt = new WKTReader2();
-        collection.add(SimpleFeatureBuilder.build(GEOMETRY_TYPE, new Object[] { wkt.read("POINT (1.0 2.0)"),
-                "name1" }, null));
+        OMAttribute srsAttribute = factory.createOMAttribute("srsName", null, "EPSG:3067");
+        geometry.addAttribute(srsAttribute);
 
-        FeatureTransformer transform = new FeatureTransformer();
-        transform.setEncoding(StandardCharsets.UTF_8);
-        transform.setGmlPrefixing(true);
+        OMElement coordinates = factory.createOMElement("coordinates", gml);
+        OMAttribute decimalAttribute = factory.createOMAttribute("decimal", null, ".");
+        coordinates.addAttribute(decimalAttribute);
 
-        // define feature information
-        transform.getFeatureTypeNamespaces().declareDefaultNamespace("feature", "http://www.opengis.net/wfs");
-        transform.addSchemaLocation("schemaLocation", "http://www.opengis.net/wfs http://schemas.opengis.net/wfs/"
-                + VERSION_1_0_0 + "/wfs.xsd");
-        transform.setSrsName("EPSG:3067");
-        transform.setCollectionNamespace("urn:org.geotools.xml.example.collection");
-        transform.setCollectionBounding(false);
+        OMAttribute csAttribute = factory.createOMAttribute("cs", null, ",");
+        coordinates.addAttribute(csAttribute);
 
-        ByteArrayOutputStream xmlOutput = new ByteArrayOutputStream();
-        transform.transform(collection, xmlOutput);
+        OMAttribute tsAttribute = factory.createOMAttribute("ts", null, " ");
+        coordinates.addAttribute(tsAttribute);
 
-        InputStream xmlInput = new ByteArrayInputStream(xmlOutput.toByteArray());
-        OMElement root = OMXMLBuilderFactory.createOMBuilder(xmlInput).getDocumentElement();
-        return root;
+        coordinates.setText("387783.46467153,6683374.1552176");
+
+        geometry.addChild(coordinates);
+
+        return geometry;
     }
 
     public OMElement buildFeaturesUpdate(String payload) {
