@@ -36,7 +36,7 @@ public class GeoServerRequestBuilder {
 
 
     private static final List<String> FEATURES_LIST = Arrays.asList("name", "place_desc", "attention_text", "link",
-            "image_url", "category_id", "feature");
+            "image_url", "category_id", "feature", "uuid");
 
     public OMElement buildLayersGet(String uuid) throws Exception {
         return buildGet(uuid, "feature:categories", VERSION_1_1_0);
@@ -54,7 +54,7 @@ public class GeoServerRequestBuilder {
         JSONArray jsonArray = new JSONObject(payload).getJSONArray("categories");
         for (int i = 0; i < jsonArray.length(); ++i) {
             for (String property : LAYERS_LIST) {
-                transaction.addChild(getElement(jsonArray.getJSONObject(i), property, feature));
+                categories.addChild(getElement(jsonArray.getJSONObject(i), property, feature));
             }
         }
 
@@ -196,8 +196,8 @@ public class GeoServerRequestBuilder {
 
         OMElement propertyIsEqualTo = factory.createOMElement("PropertyIsEqualTo", ogc);
 
-        OMAttribute matchCase = factory.createOMAttribute("matchCase", null, "true");
-        propertyIsEqualTo.addAttribute(matchCase);
+        //OMAttribute matchCase = factory.createOMAttribute("matchCase", null, "true");
+        //propertyIsEqualTo.addAttribute(matchCase);
 
         OMElement property = factory.createOMElement("PropertyName", ogc);
         property.setText("uuid");
@@ -234,10 +234,8 @@ public class GeoServerRequestBuilder {
     private OMElement getElement(JSONObject jsonObject, String fieldName, OMNamespace feature) throws Exception {
 
         OMFactory factory = OMAbstractFactory.getOMFactory();
-        OMElement var = null;
-
         String value = jsonObject.getString(fieldName);
-        var = factory.createOMElement(fieldName, feature);
+        OMElement var = factory.createOMElement(fieldName, feature);
         var.setText(value);
 
         return var;

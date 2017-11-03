@@ -11,7 +11,7 @@ import fi.nls.oskari.util.*;
 import org.json.JSONObject;
 
 
-@OskariActionRoute("MyPlacesFeture")
+@OskariActionRoute("MyPlacesFeature")
 public class MyPlacesFeaturesHandler extends RestActionHandler {
 
     private final static Logger log = LogFactory.getLogger(MyPlacesFeaturesHandler.class);
