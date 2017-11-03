@@ -25,7 +25,11 @@ public class V1_45_0__limit_geoserver_max_request_memory implements JdbcMigratio
 
     private static final String GS_REST_WMS_SETTINGS_ENDPOINT = "/rest/services/wms/settings.json";
 
-    public void migrate(Connection connection) throws JSONException {
+    public void migrate(Connection connection) throws IOException, JSONException {
+        if(PropertyUtil.getOptional("flyway.1_45_0.skip", false)) {
+            LOG.info("Migration to set 'Max rendering memory' WMS setting in GeoServer skipped.");
+            return;
+        }
         String endPoint = PropertyUtil.getNecessary(PROP_GS_URL) + GS_REST_WMS_SETTINGS_ENDPOINT;
         String user = PropertyUtil.getNecessary(PROP_GS_USER);
         String pass = PropertyUtil.getNecessary(PROP_GS_PASS);
@@ -33,8 +37,10 @@ public class V1_45_0__limit_geoserver_max_request_memory implements JdbcMigratio
         try {
             setGeoserverMaxRequestMemory(endPoint, user, pass, maxReqMem);
         } catch (IOException ex) {
-            LOG.warn("Couldn't connect to Geoserver for updating the Max rendering memory WMS setting. You should update it " +
-                    "manually on the Geoserver if your environment has one. Tried updating it to", maxReqMem, "kB.");
+            LOG.warn("Couldn't connect to GeoServer for updating the Max rendering memory WMS setting. Tried connecting to",
+                    endPoint, ". If you don't have a GeoServer or don't want to update the settings you can skip this",
+                    "migration by adding 'flyway.1_45_0.skip=true' to oskari-ext.properties");
+            throw ex;
         }
     }
 
