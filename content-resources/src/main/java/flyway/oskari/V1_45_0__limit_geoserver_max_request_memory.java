@@ -20,24 +20,34 @@ public class V1_45_0__limit_geoserver_max_request_memory implements JdbcMigratio
     private static final String PROP_GS_USER = "geoserver.user";
     private static final String PROP_GS_PASS = "geoserver.password";
 
-    private static final String PROP_MAX_REQ_MEM = "geoserver.V145.wms.max.request.memory";
+    private static final String PROP_MAX_REQ_MEM = "flyway.1_45_0.geoserver.wms.max.request.memory";
     private static final int DEFAULT_MAX_REQ_MEM_KB = 128 * 1024;
 
     private static final String GS_REST_WMS_SETTINGS_ENDPOINT = "/rest/services/wms/settings.json";
 
     public void migrate(Connection connection) throws IOException, JSONException {
+        if(PropertyUtil.getOptional("flyway.1_45_0.skip", false)) {
+            LOG.info("Migration to set 'Max rendering memory' WMS setting in GeoServer skipped.");
+            return;
+        }
         String endPoint = PropertyUtil.getNecessary(PROP_GS_URL) + GS_REST_WMS_SETTINGS_ENDPOINT;
         String user = PropertyUtil.getNecessary(PROP_GS_USER);
         String pass = PropertyUtil.getNecessary(PROP_GS_PASS);
         int maxReqMem = PropertyUtil.getOptional(PROP_MAX_REQ_MEM, DEFAULT_MAX_REQ_MEM_KB);
-        setGeoserverMaxRequestMemory(endPoint, user, pass, maxReqMem);
+        try {
+            setGeoserverMaxRequestMemory(endPoint, user, pass, maxReqMem);
+        } catch (IOException ex) {
+            LOG.warn("Couldn't connect to GeoServer for updating the Max rendering memory WMS setting. Tried connecting to",
+                    endPoint, ". If you don't have a GeoServer or don't want to update the settings you can skip this",
+                    "migration by adding 'flyway.1_45_0.skip=true' to oskari-ext.properties");
+            throw ex;
+        }
     }
 
     protected static void setGeoserverMaxRequestMemory(String endPoint,
             String user, String pass, int maxReqMem) throws IOException, JSONException {
         LOG.debug("Trying to set maxRequestMemory to", maxReqMem,
                 "settings:", endPoint, user, pass);
-
         HttpURLConnection conn = IOHelper.getConnection(endPoint, user, pass);
         JSONObject settingsJson = toJSON(IOHelper.readBytes(conn));
 
