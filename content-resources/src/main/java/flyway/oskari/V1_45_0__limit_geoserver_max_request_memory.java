@@ -25,19 +25,23 @@ public class V1_45_0__limit_geoserver_max_request_memory implements JdbcMigratio
 
     private static final String GS_REST_WMS_SETTINGS_ENDPOINT = "/rest/services/wms/settings.json";
 
-    public void migrate(Connection connection) throws IOException, JSONException {
+    public void migrate(Connection connection) throws JSONException {
         String endPoint = PropertyUtil.getNecessary(PROP_GS_URL) + GS_REST_WMS_SETTINGS_ENDPOINT;
         String user = PropertyUtil.getNecessary(PROP_GS_USER);
         String pass = PropertyUtil.getNecessary(PROP_GS_PASS);
         int maxReqMem = PropertyUtil.getOptional(PROP_MAX_REQ_MEM, DEFAULT_MAX_REQ_MEM_KB);
-        setGeoserverMaxRequestMemory(endPoint, user, pass, maxReqMem);
+        try {
+            setGeoserverMaxRequestMemory(endPoint, user, pass, maxReqMem);
+        } catch (IOException ex) {
+            LOG.warn("Couldn't connect to Geoserver for updating the Max rendering memory WMS setting. You should update it " +
+                    "manually on the Geoserver if your environment has one. Tried updating it to", maxReqMem, "kB.");
+        }
     }
 
     protected static void setGeoserverMaxRequestMemory(String endPoint,
             String user, String pass, int maxReqMem) throws IOException, JSONException {
         LOG.debug("Trying to set maxRequestMemory to", maxReqMem,
                 "settings:", endPoint, user, pass);
-
         HttpURLConnection conn = IOHelper.getConnection(endPoint, user, pass);
         JSONObject settingsJson = toJSON(IOHelper.readBytes(conn));
 
