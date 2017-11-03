@@ -20,7 +20,7 @@ public class V1_45_0__limit_geoserver_max_request_memory implements JdbcMigratio
     private static final String PROP_GS_USER = "geoserver.user";
     private static final String PROP_GS_PASS = "geoserver.password";
 
-    private static final String PROP_MAX_REQ_MEM = "geoserver.V145.wms.max.request.memory";
+    private static final String PROP_MAX_REQ_MEM = "flyway.1_45_0.geoserver.wms.max.request.memory";
     private static final int DEFAULT_MAX_REQ_MEM_KB = 128 * 1024;
 
     private static final String GS_REST_WMS_SETTINGS_ENDPOINT = "/rest/services/wms/settings.json";
