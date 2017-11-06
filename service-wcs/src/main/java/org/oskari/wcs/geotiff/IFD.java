@@ -3,6 +3,16 @@ package org.oskari.wcs.geotiff;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
+/**
+ * Image File Directory describing an image within a TIFF file
+ * A TIFF file consists of 0..n IFDs
+ *
+ * For a nice summary of the TIFF file format
+ * @see http://www.fileformat.info/format/tiff/egff.htm
+ *
+ * For more information about different tag/field codes and their explanation
+ * @see https://www.awaresystems.be/imaging/tiff/tifftags.html
+ */
 public class IFD {
 
     private int width;
@@ -38,9 +48,13 @@ public class IFD {
     private int sMinSampleValue;
     private int sMaxSampleValue;
 
+    // GeoTIFF Extension tags
+    // for general information
+    // @see https://earthdata.nasa.gov/files/geotiff-1.8.1-1995-10-31.pdf
+    // for the spec (Note that some evolution has happened since v1.8.1)
+    // @see https://earthdata.nasa.gov/user-resources/standards-and-references/geotiff
     private int[] geoKeyDirectory;
     private double[] modelTransformation;
-
 
     public IFD(ByteBuffer bb, int pos) {
         // Set the initial position
@@ -133,21 +147,21 @@ public class IFD {
 
     private static final int getFieldTypeLength(int type) throws IllegalArgumentException {
         switch (type) {
-        case 1:
-        case 2:
-        case 6:
-        case 7:
+        case 1: // BYTE uint8
+        case 2: // ASCII NULL-terminated string
+        case 6: // SBYTE uint8
+        case 7: // UNDEFINE sint8
             return 1;
-        case 3:
-        case 8:
+        case 3: // SHORT uint16
+        case 8: // SSHORT sint16
             return 2;
-        case 4:
-        case 9:
-        case 11:
+        case 4: // LONG uint32
+        case 9: // SLONG sint32
+        case 11: // FLOAT float32
             return 4;
-        case 5:
-        case 10:
-        case 12:
+        case 5: // RATIONAL 2x uint32
+        case 10: // SRATIONAL 2x sint32
+        case 12: // DOUBLE float64
             return 8;
         }
         throw new IllegalArgumentException("Invalid field type " + type);
@@ -177,7 +191,7 @@ public class IFD {
             stripOffsets = new int[] { value };
             break;
         case 274:
-            orientation = value; 
+            orientation = value;
             break;
         case 277:
             samplesPerPixel = value;

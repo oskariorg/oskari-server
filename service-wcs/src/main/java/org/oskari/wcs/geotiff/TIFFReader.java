@@ -5,6 +5,12 @@ import java.nio.ByteOrder;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Very basic TIFF file reader
+ *
+ * For a nice summary of the TIFF file format
+ * @see http://www.fileformat.info/format/tiff/egff.htm
+ */
 public class TIFFReader {
 
     private final ByteBuffer bb;
@@ -81,7 +87,7 @@ public class TIFFReader {
                 .get(dst);
     }
 
-    private byte[] getTileData(IFD ifd, int tileIdx, byte[] data) 
+    private byte[] getTileData(IFD ifd, int tileIdx, byte[] data)
             throws IllegalArgumentException {
         int off = ifd.getTileOffsets()[tileIdx];
         int len = ifd.getTileByteCounts()[tileIdx];
