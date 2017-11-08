@@ -67,6 +67,46 @@ public class TIFFReader {
         return ifds.get(i);
     }
 
+    public void readStrip(int ifdIdx, int stripIdx, float[] dst) {
+        IFD ifd = ifds.get(ifdIdx);
+
+        if (ifd.getStripOffsets() == null) {
+            throw new IllegalArgumentException("Specified IFD is not striped");
+        }
+
+        for (int sf : ifd.getSampleFormat()) {
+            if (sf != 3) {
+                throw new IllegalArgumentException("Specified IFD sampleFormat is not Float32");
+            }
+        }
+
+        ByteBuffer.wrap(getStripData(ifd, stripIdx, null))
+                .order(bb.order())
+                .asFloatBuffer()
+                .get(dst);
+    }
+
+    private byte[] getStripData(IFD ifd, int stripIdx, byte[] data)
+            throws IllegalArgumentException {
+        int off = ifd.getStripOffsets()[stripIdx];
+        int len = ifd.getStripByteCounts()[stripIdx];
+
+        int c = ifd.getCompression();
+        switch (c) {
+        case 1:
+            if (data == null || data.length != len) {
+                data = new byte[len];
+            }
+            bb.position(off);
+            bb.get(data);
+            break;
+        default:
+            throw new IllegalArgumentException("Can't decompress compression " + c);
+        }
+
+        return data;
+    }
+
     public void readTile(int ifdIdx, int tileIdx, float[] dst)
             throws IllegalArgumentException {
         IFD ifd = ifds.get(ifdIdx);
