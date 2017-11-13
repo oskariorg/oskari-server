@@ -1,7 +1,6 @@
 package fi.nls.oskari.control.statistics.plugins.pxweb.parser;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import fi.nls.oskari.cache.JedisManager;
 import fi.nls.oskari.control.statistics.data.StatisticalIndicator;
 import fi.nls.oskari.control.statistics.data.StatisticalIndicatorDataDimension;
 import fi.nls.oskari.control.statistics.data.StatisticalIndicatorDataModel;
@@ -75,15 +74,16 @@ public class PxwebIndicatorsParser {
             // Example: "http://pxweb.hel.ninja/PXWeb/api/v1/en/hri/hri/"
             return config.getUrl();
         }
-        String url = config.getUrl() + "/" + path + "/";
+        String url = config.getUrl() + "/" + IOHelper.urlEncode(path) + "/";
         return IOHelper.fixPath(url);
     }
+
 
     private String getPath(String path, String nextPart) {
         if(path == null) {
             return nextPart;
         }
-        String url = path + "/" + nextPart;
+        String url = path + "/" +  IOHelper.urlEncode(nextPart);
         return url.replaceAll("//", "/");
     }
 /*
