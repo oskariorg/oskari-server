@@ -908,7 +908,7 @@ public class IOHelper {
         return sb.toString();
     }
 
-    private static String urlEncode(String s) {
+    public static String urlEncode(String s) {
         try {
             return URLEncoder.encode(s, CHARSET_UTF8);
         } catch (UnsupportedEncodingException ignore) {
