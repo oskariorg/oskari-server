@@ -185,8 +185,6 @@ public class XmlHelper {
         return xml;
     }
 
-}
-
     /**
      * Obtain a new instance of a DocumentBuilderFactory with security features enables.
      * This static method creates a new factory instance.
