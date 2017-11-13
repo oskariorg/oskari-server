@@ -139,7 +139,7 @@ public class PxwebStatisticalDatasourcePlugin extends StatisticalDatasourcePlugi
             JSONObject json = JSONHelper.createJSONObject(data);
             if(json == null) {
                 LOG.debug("Got non-json response:", data);
-                throw new APIException("Response wan't JSON");
+                throw new APIException("Response wasn't JSON");
             }
             //dataset.dimension.Alue.category.index -> key==region id & value == index pointer to dataset.value
             JSONObject stats = json.optJSONObject("dataset").optJSONObject("dimension").optJSONObject(regionKey).optJSONObject("category").optJSONObject("index");
