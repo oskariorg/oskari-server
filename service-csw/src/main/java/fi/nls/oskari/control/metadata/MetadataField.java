@@ -6,6 +6,7 @@ import fi.nls.oskari.util.JSONHelper;
 import org.json.JSONArray;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -19,6 +20,7 @@ import java.util.Map;
  * - dependencies maps a possible field value to another field for combining filter (example type=service can be further filtered with serviceType field ->
  * these need to be wrapped in Logical AND operation)
  * - shownIf is a dumb JSON presentation for frontend form (example serviceType should only be shown if value 'service' is selected in field 'type')
+ * - blacklist is a list of response values that will be filtered out
  */
 public class MetadataField {
 
@@ -33,6 +35,7 @@ public class MetadataField {
     private MetadataFieldHandler handler = null;
     private JSONArray shownIf = null;
     private String defaultValue = null;
+    private List<String> blacklist = null;
 
     public static final String RESULT_KEY_ORGANIZATION = "organization";
 
@@ -157,5 +160,13 @@ public class MetadataField {
 
     public void setDefaultValue(String defaultValue) {
         this.defaultValue = defaultValue;
+    }
+
+    public List<String> getBlacklist() {
+        return blacklist;
+    }
+
+    public void setBlacklist(List<String> blacklist) {
+        this.blacklist = blacklist;
     }
 }

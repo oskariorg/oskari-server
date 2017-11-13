@@ -12,19 +12,17 @@ import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
+import fi.nls.oskari.util.XmlHelper;
 import fi.nls.oskari.wfs.util.WFSParserConfigs;
-import org.apache.commons.collections.map.MultiKeyMap;
 import org.geotools.data.DataStore;
 import org.geotools.data.DataStoreFinder;
 import org.geotools.data.FeatureSource;
-import org.geotools.data.ResourceInfo;
 import org.geotools.data.wfs.WFSDataStore;
 import org.geotools.referencing.CRS;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
-import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -34,7 +32,14 @@ import org.xml.sax.InputSource;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.ByteArrayInputStream;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Methods for parsing WFS capabilities data
@@ -173,8 +178,7 @@ public class GetGtWFSCapabilities {
         try {
             // GetCapabilities request
             String data = IOHelper.getURL(getUrl(rurl, version), user, pw);
-            final DocumentBuilderFactory dbf = DocumentBuilderFactory
-                    .newInstance();
+            final DocumentBuilderFactory dbf = XmlHelper.newDocumentBuilderFactory();
             // dbf.setNamespaceAware(true);  //default false
             final DocumentBuilder builder = dbf.newDocumentBuilder();
             final Document doc = builder.parse(new InputSource(

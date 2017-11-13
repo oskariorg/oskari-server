@@ -56,7 +56,7 @@
             <groupId>org.oskari</groupId>
             <artifactId>service-print</artifactId>
         </dependency>
-        
+
         <dependency>
             <groupId>fi.nls.oskari</groupId>
             <artifactId>shared-test-resources</artifactId>

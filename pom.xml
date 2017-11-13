@@ -387,6 +387,18 @@
                 <version>${fi.nls.oskari.version}</version>
             </dependency>
 
+            <dependency>
+                <groupId>org.oskari</groupId>
+                <artifactId>service-wcs</artifactId>
+                <version>${fi.nls.oskari.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.oskari</groupId>
+                <artifactId>oskari-utils</artifactId>
+                <version>${fi.nls.oskari.version}</version>
+            </dependency>
+
             <!-- Spring -->
             <dependency>
                 <groupId>org.springframework.security.extensions</groupId>
@@ -875,6 +887,9 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>2.10</version>
                 <configuration>
+                    <!-- prevent forking java process from stealing
+                    window focus on Mac OS -->
+                    <argLine>-Djava.awt.headless=true</argLine>
                     <!--systemPropertyVariables>
                         <oskari.syslog.level></oskari.syslog.level>
                     </systemPropertyVariables -->
@@ -1105,6 +1120,9 @@
 
         <!-- print -->
         <module>service-print</module>
+
+        <module>service-wcs</module>
+        <module>oskari-utils</module>
     </modules>
 
 </project>

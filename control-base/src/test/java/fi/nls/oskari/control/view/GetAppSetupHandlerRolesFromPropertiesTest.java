@@ -128,7 +128,7 @@ public class GetAppSetupHandlerRolesFromPropertiesTest extends JSONActionRouteTe
         params.getUser().addRole(r);
         handler.handleAction(params);
 
-        verifyResponseContent(ResourceHelper.readJSONResource("GetAppSetupHandlerTest-view-roles-from-properties-admin.json", this))  ;
+        verifyResponseContent(ResourceHelper.readJSONResource("GetAppSetupHandlerTest-view-roles-from-properties-admin.json", this));
     }
 
 

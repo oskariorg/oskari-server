@@ -1,8 +1,9 @@
 package fi.nls.oskari.map.geometry;
 
-import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.CoordinateSequence;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryFactory;
+import com.vividsolutions.jts.geom.Polygon;
 import com.vividsolutions.jts.io.WKTReader;
 import com.vividsolutions.jts.io.WKTWriter;
 import fi.nls.oskari.log.LogFactory;
@@ -80,13 +81,17 @@ public class WKTHelper {
      * @return projected geometry as wkt
      */
     public static String transformLayerCoverage(final String wkt, final String targetSRS) {
-        Geometry geom = parseWKT(wkt);
+        GeometryFactory gf = new GeometryFactory();
+        Geometry geom = parseWKT(wkt, gf);
         if (geom == null) {
             return null;
         }
+        Polygon polygon = (Polygon) geom;
+        CoordinateSequence cs = GeometryHelper.interpolateLinear(polygon.getExteriorRing(), 1.0, gf);
+        polygon = gf.createPolygon(cs);
         // input axis orientation is / must be x=lon y=lat
         CoordinateReferenceSystem targetCrs = getCRS(targetSRS);
-        final Geometry transformed = transform(geom, CRS_EPSG_4326, targetCrs);
+        final Geometry transformed = transform(polygon, CRS_EPSG_4326, targetCrs);
         // output is x=lon y=lat always in every projection
         return getWKT(transformed);
     }
@@ -105,14 +110,18 @@ public class WKTHelper {
         return wrt.write(geometry);
     }
 
+    public static Geometry parseWKT(final String wkt) {
+        return parseWKT(wkt, null);
+    }
+
     /**
      * Parses given WKT String to a Geometry object
      *
      * @param wkt
      * @return geometry
      */
-    public static Geometry parseWKT(final String wkt) {
-        final GeometryFactory geometryFactory = new GeometryFactory();
+    public static Geometry parseWKT(final String wkt, GeometryFactory gf) {
+        final GeometryFactory geometryFactory = gf != null ?  gf : new GeometryFactory();
         WKTReader parser = new WKTReader(geometryFactory);
         try {
             return parser.read(wkt);

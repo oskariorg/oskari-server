@@ -88,7 +88,7 @@ public class GetUserIndicatorsHandler extends ActionHandler {
         return  obj;
     }
 
-    private JSONObject makeJson(UserIndicator ui) {
+    public static JSONObject makeJson(UserIndicator ui) {
         JSONObject descJSON =  ui.getDescription() == null ? new JSONObject() : JSONHelper.createJSONObject(ui.getDescription());
         JSONObject titleJSON =  ui.getTitle() == null ? new JSONObject() : JSONHelper.createJSONObject(ui.getTitle());
         JSONArray dataJSON =  ui.getData() == null ? new JSONArray() : JSONHelper.createJSONArray(ui.getData());

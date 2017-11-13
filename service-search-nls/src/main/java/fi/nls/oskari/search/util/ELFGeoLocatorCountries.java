@@ -3,21 +3,15 @@ package fi.nls.oskari.search.util;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.search.channel.ELFGeoLocatorSearchChannel;
-import fi.nls.oskari.service.ServiceRuntimeException;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.PropertyUtil;
-import org.geotools.factory.CommonFactoryFinder;
-import org.geotools.xml.Configuration;
-import org.geotools.xml.Encoder;
-import org.opengis.filter.Filter;
-import org.opengis.filter.FilterFactory2;
+import fi.nls.oskari.util.XmlHelper;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -102,7 +96,7 @@ public class ELFGeoLocatorCountries {
         }
 
         try {
-            DocumentBuilder dBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+            DocumentBuilder dBuilder = XmlHelper.newDocumentBuilderFactory().newDocumentBuilder();
             Document doc = dBuilder.parse(new ByteArrayInputStream(response.getBytes(IOHelper.CHARSET_UTF8)));
 
             NodeList nList = doc.getElementsByTagName("Country");

@@ -74,4 +74,23 @@ public class IOHelperTest {
         params.put("key1", "baz qux");
         assertEquals("Space characters are replaced by '+' in form encoding", "key1=baz+qux", IOHelper.getParams(params));
     }
+
+    @Test
+    public void testGetParamsMultiValue() {
+        assertEquals("null map should return an empty string", "", IOHelper.getParamsMultiValue(null));
+
+        Map<String, String[]> params = new LinkedHashMap<String, String[]>();
+        assertEquals("Empty map should return an empty string", "", IOHelper.getParamsMultiValue(params));
+
+        params.put("key1", new String[]{ "foo" });
+        assertEquals("If there's only one key-value pair no '&' follows", "key1=foo", IOHelper.getParamsMultiValue(params));
+
+        params.put("key2", new String[]{ "bar" });
+        assertEquals("Values are be separated with a '&'", "key1=foo&key2=bar", IOHelper.getParamsMultiValue(params));
+
+        params.put("key3", new String[]{ "foobar", "baz+qux" });
+        assertEquals("Values are URL encoded, keys with multiple values appear as multiple ${key}=${value1} entries",
+                "key1=foo&key2=bar&key3=foobar&key3=baz%2Bqux", IOHelper.getParamsMultiValue(params));
+    }
+
 }

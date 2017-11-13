@@ -49,9 +49,6 @@ public class MapfullHandler extends BundleHandler {
     private static final String KEY_SEL_LAYERS = "selectedLayers";
     private static final String KEY_ID = "id";
 
-    private static final String KEY_USER = "user";
-
-
     private static final String KEY_MAP_OPTIONS = "mapOptions";
     private static final String KEY_PROJ_DEFS = "projectionDefs";
     private static final String KEY_SRS = "srsName";
@@ -96,22 +93,6 @@ public class MapfullHandler extends BundleHandler {
         if (mapfullConfig == null) {
             return false;
         }
-        // setup correct ajax url
-        final String ajaxUrl = mapfullConfig.optString("globalMapAjaxUrl");
-        try {
-            // fix ajaxurl to current community if possible
-            // (required to show correct help articles)
-            mapfullConfig.put("globalMapAjaxUrl", params.getBaseAjaxUrl());
-            LOGGER.debug("Replaced ajax url: ", ajaxUrl, "->", params.getBaseAjaxUrl());
-        } catch (Exception e) {
-            LOGGER.error(e, "Replacing ajax url failed: ", ajaxUrl, "- Parsed:",
-                    params.getBaseAjaxUrl());
-        }
-
-        // setup user data
-        final JSONObject user = params.getUser().toJSON();
-        JSONHelper.putValue(user, "apikey", params.getActionParams().getAPIkey());
-        JSONHelper.putValue(mapfullConfig, KEY_USER, user);
 
         // Any layer referenced in state.selectedLayers array NEEDS to
         // be in conf.layers otherwise it cant be added to map on startup
@@ -234,11 +215,6 @@ public class MapfullHandler extends BundleHandler {
         }
         return null;
     }
-
-
-
-
-
 
     /**
      * Creates JSON array of layer configurations.

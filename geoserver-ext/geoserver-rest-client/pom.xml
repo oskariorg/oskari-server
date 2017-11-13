@@ -20,6 +20,7 @@
 
     <dependencies>
         <dependency>
+            <!-- Current development moved to io.github.openfeign » feign-core » 9.5.1 -->
             <groupId>com.netflix.feign</groupId>
             <artifactId>feign-core</artifactId>
             <version>${feign.version}</version>
