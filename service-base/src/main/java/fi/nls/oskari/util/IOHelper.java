@@ -262,6 +262,10 @@ public class IOHelper {
         return debug;
     }
 
+    public static String getCharset(final HttpURLConnection con) {
+        return getCharset(con, null);
+    }
+
     public static String getCharset(final HttpURLConnection con, final String defaultCharset) {
         final String contentType = con.getContentType();
         final String[] values = contentType.split(";");

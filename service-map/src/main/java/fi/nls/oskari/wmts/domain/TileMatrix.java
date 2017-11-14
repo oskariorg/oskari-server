@@ -1,93 +1,83 @@
 package fi.nls.oskari.wmts.domain;
 
-import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.JSONHelper;
 import org.json.JSONObject;
 
 /**
- * Created with IntelliJ IDEA.
- * User: SMAKINEN
- * Date: 6.6.2014
- * Time: 14:00
- * To change this template use File | Settings | File Templates.
+ * @see http://schemas.opengis.net/wmts/1.0/wmtsGetCapabilities_response.xsd
  */
 public class TileMatrix {
 
-    private String id;
-    private double scaleDenominator;
-    private double[] topLeftCorner = {-1, -1};
-    private int tileWidth = 256;
-    private int tileHeight = 256;
-    private int matrixWidth;
-    private int matrixHeight;
+    private final String id;
+    private final double scaleDenominator;
+    private final double[] topLeftCorner;
+    private final int tileWidth;
+    private final int tileHeight;
+    private final int matrixWidth;
+    private final int matrixHeight;
+
+    public TileMatrix(String id, double scaleDenominator, double[] topLeftCorner,
+            int tileWidth, int tileHeight, int matrixWidth, int matrixHeight) {
+        this.id = id;
+        this.scaleDenominator = scaleDenominator;
+        this.topLeftCorner = topLeftCorner;
+        this.tileWidth = tileWidth;
+        this.tileHeight = tileHeight;
+        this.matrixWidth = matrixWidth;
+        this.matrixHeight = matrixHeight;
+        validate();
+    }
+
+    private void validate() throws IllegalArgumentException {
+        if (id == null || id.isEmpty()) {
+            throw new IllegalArgumentException("Missing id");
+        }
+        if (scaleDenominator < 0) {
+            throw new IllegalArgumentException("ScaleDenominator must be non-negative");
+        }
+        if (topLeftCorner == null || topLeftCorner.length != 2) {
+            throw new IllegalArgumentException("TopLeftCorner must exist and must have two points");
+        }
+        if (tileWidth < 1) {
+            throw new IllegalArgumentException("TileWidth must be positive");
+        }
+        if (tileHeight < 1) {
+            throw new IllegalArgumentException("TileHeight must be positive");
+        }
+        if (matrixWidth < 1) {
+            throw new IllegalArgumentException("MatrixWidth must be positive");
+        }
+        if (matrixHeight < 1) {
+            throw new IllegalArgumentException("MatrixHeight must be positive");
+        }
+    }
 
     public String getId() {
         return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
     }
 
     public double getScaleDenominator() {
         return scaleDenominator;
     }
 
-    public void setScaleDenominator(double scaleDenominator) {
-        this.scaleDenominator = scaleDenominator;
-    }
-
     public double[] getTopLeftCorner() {
         return topLeftCorner;
-    }
-
-    public void setTopLeftCorner(double first, double second) {
-        topLeftCorner[0] = first;
-        topLeftCorner[1] = second;
-    }
-
-    public void setTopLeftCorner(String topLeftCorner) {
-        if(topLeftCorner == null) {
-            return;
-        }
-        final String[] split = topLeftCorner.split("\\s+");
-        if(split.length != 2) {
-            return;
-        }
-        setTopLeftCorner(ConversionHelper.getDouble(split[0], -1),
-                ConversionHelper.getDouble(split[1], -1));
     }
 
     public int getTileWidth() {
         return tileWidth;
     }
 
-    public void setTileWidth(int tileWidth) {
-        this.tileWidth = tileWidth;
-    }
-
     public int getTileHeight() {
         return tileHeight;
-    }
-
-    public void setTileHeight(int tileHeight) {
-        this.tileHeight = tileHeight;
     }
 
     public int getMatrixWidth() {
         return matrixWidth;
     }
 
-    public void setMatrixWidth(int matrixWidth) {
-        this.matrixWidth = matrixWidth;
-    }
-
     public int getMatrixHeight() {
         return matrixHeight;
-    }
-
-    public void setMatrixHeight(int matrixHeight) {
-        this.matrixHeight = matrixHeight;
     }
 
     public JSONObject getAsJSON() {
@@ -121,4 +111,5 @@ public class TileMatrix {
         JSONHelper.putValue(obj, "matrixHeight", getMatrixHeight());
         return obj;
     }
+
 }

@@ -1066,6 +1066,7 @@
         <module>service-wfs</module>
         <module>service-myplaces</module>
         <module>service-rating</module>
+        <module>service-capabilities-update</module>
 
         <module>service-search</module>
         <module>service-search-nls</module>
