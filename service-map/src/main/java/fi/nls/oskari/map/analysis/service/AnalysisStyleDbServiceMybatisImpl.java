@@ -52,6 +52,7 @@ public class AnalysisStyleDbServiceMybatisImpl implements AnalysisStyleDbService
             LOG.debug("Inserted analysis style - id", analysisStyle.getId());
             return analysisStyle.getId();
         } catch (Exception e) {
+            LOG.warn(e, "Failed to insert analysis style", analysisStyle);
             throw new ServiceException("Failed to insert analysis style", e);
         }
     }
