@@ -7,6 +7,7 @@ import fi.nls.oskari.domain.map.analysis.AnalysisStyle;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.analysis.domain.*;
+import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.JSONHelper;
@@ -35,7 +36,7 @@ public class AnalysisDataService {
     private static final TransformationService transformationService = new TransformationService();
 
     public Analysis storeAnalysisData(final String featureset,
-                                      AnalysisLayer analysislayer, String json, User user) {
+            AnalysisLayer analysislayer, String json, User user) throws ServiceException {
 
         final String wfsURL = PropertyUtil.get("geoserver.wfs.url");
         final String wpsUser = PropertyUtil.get("geoserver.wms.user");
@@ -53,7 +54,6 @@ public class AnalysisDataService {
             log.debug("Unable to get AnalysisLayer style JSON", e);
         }
         // FIXME: do we really want to insert possibly empty style??
-        log.debug("Adding style", style);
         styleService.insertAnalysisStyleRow(style);
 
         try {
