@@ -7,14 +7,19 @@ import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.mybatis.MyBatisHelper;
 import fi.nls.oskari.service.ServiceException;
 
+import org.apache.ibatis.mapping.Environment;
+import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
+import org.apache.ibatis.session.SqlSessionFactoryBuilder;
+import org.apache.ibatis.transaction.TransactionFactory;
+import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
+
 import javax.sql.DataSource;
 
 public class AnalysisStyleDbServiceMybatisImpl implements AnalysisStyleDbService {
 
     private static final Logger LOG = LogFactory.getLogger(AnalysisStyleDbServiceMybatisImpl.class);
-    private static final Class<AnalysisStyleMapper> MAPPER_CLASS = AnalysisStyleMapper.class;
 
     private SqlSessionFactory factory = null;
 
@@ -25,14 +30,25 @@ public class AnalysisStyleDbServiceMybatisImpl implements AnalysisStyleDbService
         String dataSourceName = helper.getOskariDataSourceName(prefix);
         DataSource dataSource = helper.getDataSource(dataSourceName);
         if (dataSource == null) {
-            // If we can't find analysis datasource use default datasource
-            dataSource = helper.getDataSource();
+            dataSource = helper.createDataSource();
         }
         if (dataSource == null) {
             LOG.error("Failed to start, could not get datasource");
         } else {
-            factory = MyBatisHelper.initMyBatis(dataSource, MAPPER_CLASS);
+            factory = initializeMyBatis(dataSource);
         }
+    }
+
+    private SqlSessionFactory initializeMyBatis(final DataSource dataSource) {
+        final TransactionFactory transactionFactory = new JdbcTransactionFactory();
+        final Environment environment = new Environment("development", transactionFactory, dataSource);
+
+        final Configuration configuration = new Configuration(environment);
+        configuration.getTypeAliasRegistry().registerAlias(AnalysisStyle.class);
+        configuration.setLazyLoadingEnabled(true);
+        configuration.addMapper(AnalysisStyleMapper.class);
+
+        return new SqlSessionFactoryBuilder().build(configuration);
     }
 
     /**
@@ -47,7 +63,7 @@ public class AnalysisStyleDbServiceMybatisImpl implements AnalysisStyleDbService
             throw new ServiceException("Service not initialized");
         }
         try (SqlSession session = factory.openSession()) {
-            session.getMapper(MAPPER_CLASS).insertAnalysisStyleRow(analysisStyle);
+            session.getMapper(AnalysisStyleMapper.class).insertAnalysisStyleRow(analysisStyle);
             session.commit();
             LOG.debug("Inserted analysis style - id", analysisStyle.getId());
             return analysisStyle.getId();
