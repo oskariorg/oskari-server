@@ -148,7 +148,7 @@ public class AnalysisDataService {
      * @param user
      * @return Analysis (stored analysis)
      */
-    public Analysis mergeAnalysisData(AnalysisLayer analysislayer, String json, User user) {
+    public Analysis mergeAnalysisData(AnalysisLayer analysislayer, String json, User user) throws ServiceException {
 
         final AnalysisStyle style = new AnalysisStyle();
         Analysis analysis = null;
