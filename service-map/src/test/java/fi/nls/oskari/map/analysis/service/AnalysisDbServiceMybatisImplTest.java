@@ -2,6 +2,7 @@ package fi.nls.oskari.map.analysis.service;
 
 import fi.nls.oskari.domain.map.analysis.Analysis;
 import fi.nls.oskari.domain.map.analysis.AnalysisStyle;
+import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.test.util.TestHelper;
 import org.junit.*;
@@ -26,7 +27,7 @@ public class AnalysisDbServiceMybatisImplTest {
     }
 
     @Before
-    public void setUp() {
+    public void setUp() throws ServiceException {
         analysisDbServiceMybatis = new AnalysisDbServiceMybatisImpl();
         analysisStyleDbServiceMybatis = new AnalysisStyleDbServiceMybatisImpl();
 

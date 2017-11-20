@@ -1,7 +1,5 @@
 package fi.nls.oskari.map.analysis.service;
 
-import fi.mml.portti.service.db.permissions.PermissionsService;
-import fi.mml.portti.service.db.permissions.PermissionsServiceIbatisImpl;
 import fi.nls.oskari.db.DatasourceHelper;
 import fi.nls.oskari.domain.map.analysis.Analysis;
 import fi.nls.oskari.log.LogFactory;
@@ -23,16 +21,16 @@ import java.util.Map;
 
 public class AnalysisDbServiceMybatisImpl implements AnalysisDbService {
 
-    private static final Logger log = LogFactory.getLogger(AnalysisDbServiceMybatisImpl.class);
+    protected static final String DATASOURCE_ANALYSIS = "analysis";
 
-    private PermissionsService permissionsService = new PermissionsServiceIbatisImpl();
+    private static final Logger log = LogFactory.getLogger(AnalysisDbServiceMybatisImpl.class);
 
     private SqlSessionFactory factory = null;
 
     public AnalysisDbServiceMybatisImpl() {
 
         final DatasourceHelper helper = DatasourceHelper.getInstance();
-        DataSource dataSource = helper.getDataSource(helper.getOskariDataSourceName("analysis"));
+        DataSource dataSource = helper.getDataSource(helper.getOskariDataSourceName(DATASOURCE_ANALYSIS));
         if (dataSource == null) {
             dataSource = helper.createDataSource();
         }
