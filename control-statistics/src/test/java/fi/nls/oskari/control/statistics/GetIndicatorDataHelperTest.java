@@ -13,7 +13,7 @@ public class GetIndicatorDataHelperTest {
         Long layerId = 1850L;
         String selectionStr = "{\"year\":\"2015\",\"sex\":\"female\"}";
         String actual = GetIndicatorDataHelper.getCacheKey(pluginId, indicatorId, layerId, selectionStr);
-        String expected = "oskari_get_indicator_data_handler:1:232:1850:sex=female:year=2015";
+        String expected = "oskari:stats:1:data:232:1850:sex=female:year=2015";
         Assert.assertEquals(expected, actual);
     }
 

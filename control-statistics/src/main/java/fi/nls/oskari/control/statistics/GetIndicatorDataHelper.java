@@ -16,13 +16,11 @@ import org.json.JSONObject;
  */
 public class GetIndicatorDataHelper {
 
-    private final static String CACHE_KEY_PREFIX = "oskari_get_indicator_data_handler:";
-
-    protected static String getCacheKey(long pluginId, String indicatorId,
+    protected static String getCacheKey(long datasourceId, String indicatorId,
             Long layerId, String selectorsStr) throws JSONException {
-        StringBuilder cacheKey = new StringBuilder(CACHE_KEY_PREFIX);
-        cacheKey.append(pluginId);
-        cacheKey.append(':');
+        StringBuilder cacheKey = new StringBuilder("oskari:stats:");
+        cacheKey.append(datasourceId);
+        cacheKey.append(":data:");
         cacheKey.append(indicatorId);
         cacheKey.append(':');
         cacheKey.append(layerId);
