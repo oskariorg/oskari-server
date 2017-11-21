@@ -46,11 +46,11 @@ public class GetAnalysisDataHandler extends ActionHandler {
         Analysis analysis;
         try {
             analysis = analysisService.getAnalysisById(id);
-            if (analysis == null) {
-                new ActionParamsException("Analysis not found, id: " + id);
-            }
         } catch (Exception e) {
             throw new ActionException("Unexpected error occured trying to find analysis", e);
+        }
+        if (analysis == null) {
+            throw new ActionParamsException("Analysis not found, id: " + id);
         }
 
         String select_items = AnalysisHelper.getAnalysisSelectItems(analysis);
@@ -63,11 +63,11 @@ public class GetAnalysisDataHandler extends ActionHandler {
         try {
             String uid = params.getUser().getUuid();
             list = analysisService.getAnalysisDataByIdUid(id, uid, select_items);
-            if (list.isEmpty()) {
-                throw new ActionParamsException("Could not find analysis data");
-            }
         } catch (Exception e) {
             throw new ActionException("Unexpected error occured trying to find analysis data", e);
+        }
+        if (list.isEmpty()) {
+            throw new ActionParamsException("Could not find analysis data");
         }
 
         final JSONArray rows = new JSONArray();
