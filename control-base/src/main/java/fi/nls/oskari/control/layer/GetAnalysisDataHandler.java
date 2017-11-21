@@ -6,10 +6,7 @@ import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.ActionHandler;
 import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.control.ActionParamsException;
-import fi.nls.oskari.domain.User;
 import fi.nls.oskari.domain.map.analysis.Analysis;
-import fi.nls.oskari.log.LogFactory;
-import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.analysis.service.AnalysisDbService;
 import fi.nls.oskari.map.analysis.service.AnalysisDbServiceMybatisImpl;
 import fi.nls.oskari.util.ConversionHelper;
@@ -29,7 +26,6 @@ import java.util.Map;
 @OskariActionRoute("GetAnalysisData")
 public class GetAnalysisDataHandler extends ActionHandler {
 
-    private static final Logger log = LogFactory.getLogger(GetAnalysisDataHandler.class);
     private static final AnalysisDbService analysisService = new AnalysisDbServiceMybatisImpl();
 
     private static final String ANALYSE_ID = "analyse_id";
@@ -43,28 +39,48 @@ public class GetAnalysisDataHandler extends ActionHandler {
 
         final long id = ConversionHelper.getLong(params.getHttpParam(ANALYSE_ID), -1);
         if (id == -1) {
-            throw new ActionParamsException("Parameter missing or non-numeric: " + ANALYSE_ID + "=" + params.getHttpParam(ANALYSE_ID));
+            throw new ActionParamsException("Parameter missing or non-numeric: "
+                    + ANALYSE_ID + "=" + params.getHttpParam(ANALYSE_ID));
         }
 
-        final User user = params.getUser();
-        // Get analysis select items
-        final Analysis analysis = analysisService.getAnalysisById(id);
-        final String select_items = AnalysisHelper.getAnalysisSelectItems(analysis);
+        Analysis analysis;
+        try {
+            analysis = analysisService.getAnalysisById(id);
+            if (analysis == null) {
+                new ActionParamsException("Analysis not found, id: " + id);
+            }
+        } catch (Exception e) {
+            throw new ActionException("Unexpected error occured trying to find analysis", e);
+        }
+
+        String select_items = AnalysisHelper.getAnalysisSelectItems(analysis);
+        if (select_items == null) {
+            throw new ActionException("Unable to retrieve Aalysis data, "
+                    + "this Analysis is not stored correctly, id:" + id);
+        }
+
+        List<HashMap<String, Object>> list;
+        try {
+            String uid = params.getUser().getUuid();
+            list = analysisService.getAnalysisDataByIdUid(id, uid, select_items);
+            if (list.isEmpty()) {
+                throw new ActionException("Could not find analysis data");
+            }
+        } catch (Exception e) {
+            throw new ActionException("Unexpected failure trying to find analysis data", e);
+        }
+
+        final JSONArray rows = new JSONArray();
+        for (HashMap<String, Object> analysisData : list) {
+            final JSONObject row = convertToOldResultJSON(analysisData, select_items);
+            if (row != null) {
+                rows.put(row);
+            }
+        }
 
         final JSONObject response = new JSONObject();
-        if (select_items != null) {
-
-            final List<HashMap<String, Object>> list = analysisService.getAnalysisDataByIdUid(id, user.getUuid(), select_items);
-            final JSONArray rows = new JSONArray();
-            for (HashMap<String, Object> analysisData : list) {
-                final JSONObject row = convertToOldResultJSON(analysisData, select_items);
-                if (row != null) {
-                    rows.put(row);
-                }
-            }
-            JSONHelper.putValue(response, JSKEY_ANALYSISDATA, rows);
-            JSONHelper.putValue(response, ANALYSE_ID, id);
-        }
+        JSONHelper.putValue(response, JSKEY_ANALYSISDATA, rows);
+        JSONHelper.putValue(response, ANALYSE_ID, id);
 
         ResponseHelper.writeResponse(params, response);
     }
