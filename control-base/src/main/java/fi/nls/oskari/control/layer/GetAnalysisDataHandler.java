@@ -33,46 +33,28 @@ public class GetAnalysisDataHandler extends ActionHandler {
 
     @Override
     public void handleAction(ActionParameters params) throws ActionException {
-
-        // only for logged in users!
         params.requireLoggedInUser();
 
-        final long id = ConversionHelper.getLong(params.getHttpParam(ANALYSE_ID), -1);
-        if (id == -1) {
+        final long id = ConversionHelper.getLong(params.getHttpParam(ANALYSE_ID), -1L);
+        if (id == -1L) {
             throw new ActionParamsException("Parameter missing or non-numeric: "
                     + ANALYSE_ID + "=" + params.getHttpParam(ANALYSE_ID));
         }
 
-        Analysis analysis;
-        try {
-            analysis = analysisService.getAnalysisById(id);
-        } catch (Exception e) {
-            throw new ActionException("Unexpected error occured trying to find analysis", e);
-        }
-        if (analysis == null) {
-            throw new ActionParamsException("Analysis not found, id: " + id);
-        }
+        Analysis analysis = findAnalysis(id);
 
-        String select_items = AnalysisHelper.getAnalysisSelectItems(analysis);
-        if (select_items == null) {
+        String selectItems = AnalysisHelper.getAnalysisSelectItems(analysis);
+        if (selectItems == null) {
             throw new ActionException("Unable to retrieve Analysis data, "
                     + "this Analysis is not stored correctly, id:" + id);
         }
 
-        List<HashMap<String, Object>> list;
-        try {
-            String uid = params.getUser().getUuid();
-            list = analysisService.getAnalysisDataByIdUid(id, uid, select_items);
-        } catch (Exception e) {
-            throw new ActionException("Unexpected error occured trying to find analysis data", e);
-        }
-        if (list.isEmpty()) {
-            throw new ActionParamsException("Could not find analysis data");
-        }
+        String uid = params.getUser().getUuid();
+        List<HashMap<String, Object>> list = findAnalysisData(id, uid, selectItems);
 
         final JSONArray rows = new JSONArray();
         for (HashMap<String, Object> analysisData : list) {
-            final JSONObject row = convertToOldResultJSON(analysisData, select_items);
+            final JSONObject row = convertToOldResultJSON(analysisData, selectItems);
             if (row != null) {
                 rows.put(row);
             }
@@ -83,6 +65,33 @@ public class GetAnalysisDataHandler extends ActionHandler {
         JSONHelper.putValue(response, ANALYSE_ID, id);
 
         ResponseHelper.writeResponse(params, response);
+    }
+
+    private Analysis findAnalysis(long id) throws ActionException {
+        Analysis analysis;
+        try {
+            analysis = analysisService.getAnalysisById(id);
+        } catch (Exception e) {
+            throw new ActionException("Unexpected error occured trying to find analysis", e);
+        }
+        if (analysis == null) {
+            throw new ActionParamsException("Analysis not found, id: " + id);
+        }
+        return analysis;
+    }
+
+    private List<HashMap<String, Object>> findAnalysisData(long id, String uid, String selectItems)
+            throws ActionException {
+        List<HashMap<String, Object>> list;
+        try {
+            list = analysisService.getAnalysisDataByIdUid(id, uid, selectItems);
+        } catch (Exception e) {
+            throw new ActionException("Unexpected error occured trying to find analysis data", e);
+        }
+        if (list.isEmpty()) {
+            throw new ActionParamsException("Could not find analysis data");
+        }
+        return list;
     }
 
     /**
