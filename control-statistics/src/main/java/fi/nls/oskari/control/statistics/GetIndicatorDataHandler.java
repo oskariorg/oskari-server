@@ -10,6 +10,7 @@ import fi.nls.oskari.control.statistics.data.*;
 import fi.nls.oskari.control.statistics.plugins.*;
 import fi.nls.oskari.domain.User;
 import fi.nls.oskari.util.ResponseHelper;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -29,7 +30,7 @@ import java.util.Map.Entry;
  */
 @OskariActionRoute("GetIndicatorData")
 public class GetIndicatorDataHandler extends ActionHandler {
-    private final static String CACHE_KEY_PREFIX = "oskari_get_indicator_data_handler:";
+
     private final static String PARAM_PLUGIN_ID = "datasource"; // previously plugin_id
     private final static String PARAM_INDICATOR_ID = "indicator"; // previously indicator_id
     private final static String PARAM_LAYER_ID = "regionset"; // previously layer_id
@@ -54,7 +55,12 @@ public class GetIndicatorDataHandler extends ActionHandler {
     public JSONObject getIndicatorDataJSON(User user, long pluginId, String indicatorId,
             Long layerId, String selectorsStr)
             throws ActionException {
-        final String cacheKey = CACHE_KEY_PREFIX + pluginId + ":" + indicatorId + ":" + layerId + ":" + selectorsStr;
+        final String cacheKey;
+        try {
+             cacheKey = GetIndicatorDataHelper.getCacheKey(pluginId, indicatorId, layerId, selectorsStr);
+        } catch (JSONException e) {
+            throw new ActionParamsException("Could not create cache key", e);
+        }
         final String cachedData = JedisManager.get(cacheKey);
         StatisticalDatasourcePlugin plugin = pluginManager.getPlugin(pluginId);
         if (plugin.canCache()) {
