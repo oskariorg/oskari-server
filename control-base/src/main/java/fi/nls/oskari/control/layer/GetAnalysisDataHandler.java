@@ -64,7 +64,7 @@ public class GetAnalysisDataHandler extends ActionHandler {
             String uid = params.getUser().getUuid();
             list = analysisService.getAnalysisDataByIdUid(id, uid, select_items);
             if (list.isEmpty()) {
-                throw new ActionException("Could not find analysis data");
+                throw new ActionParamsException("Could not find analysis data");
             }
         } catch (Exception e) {
             throw new ActionException("Unexpected error occured trying to find analysis data", e);
