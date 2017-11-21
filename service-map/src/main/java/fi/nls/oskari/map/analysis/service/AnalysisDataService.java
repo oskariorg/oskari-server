@@ -136,6 +136,10 @@ public class AnalysisDataService {
         return analysis;
     }
 
+    public Analysis getAnalysisById(long id) {
+        return analysisService.getAnalysisById(id);
+    }
+
     /**
      * Merge analyses to one new analyse
      *
@@ -167,7 +171,7 @@ public class AnalysisDataService {
 
         try {
             // Insert analysis row - use old for seed
-            analysis = analysisService.getAnalysisById(ids.get(0));
+            analysis = getAnalysisById(ids.get(0));
             // --------------------
             analysis.setAnalyse_json(json.toString());
             analysis.setLayer_id(analysislayer.getId());
