@@ -55,7 +55,7 @@ public class GetAnalysisDataHandler extends ActionHandler {
 
         String select_items = AnalysisHelper.getAnalysisSelectItems(analysis);
         if (select_items == null) {
-            throw new ActionException("Unable to retrieve Aalysis data, "
+            throw new ActionException("Unable to retrieve Analysis data, "
                     + "this Analysis is not stored correctly, id:" + id);
         }
 
