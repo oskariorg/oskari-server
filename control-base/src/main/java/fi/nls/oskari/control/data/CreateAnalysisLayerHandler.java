@@ -136,7 +136,7 @@ public class CreateAnalysisLayerHandler extends ActionHandler {
                 analysisLayer.setWpsLayerId(-1);
                 final String aggregateResult = this.localiseAggregateResult(
                         analysisParser.parseAggregateResults(featureSet, analysisLayer), analyseJson);
-                log.debug("\nAggregate results:\n", aggregateResult, "\n");
+                log.debug("Aggregate results:", aggregateResult);
 
                 analysisLayer.setResult(aggregateResult);
 
