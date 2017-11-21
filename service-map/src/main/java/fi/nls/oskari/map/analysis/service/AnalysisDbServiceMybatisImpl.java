@@ -5,6 +5,7 @@ import fi.nls.oskari.domain.map.analysis.Analysis;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.service.ServiceException;
+
 import org.apache.ibatis.mapping.Environment;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.SqlSession;
@@ -104,19 +105,17 @@ public class AnalysisDbServiceMybatisImpl implements AnalysisDbService {
      * @return analysis object
      */
     public Analysis getAnalysisById(long id) {
-        final SqlSession session = factory.openSession();
-        Analysis analysis = null;
-        try {
-            log.debug("Finding analysis matching id: ", id);
-            final AnalysisMapper mapper = session.getMapper(AnalysisMapper.class);
-            analysis =  mapper.getAnalysisById(id);
+        try (SqlSession session = factory.openSession()) {
+            log.debug("Finding analysis by id:", id);
+            AnalysisMapper mapper = session.getMapper(AnalysisMapper.class);
+            Analysis analysis =  mapper.getAnalysisById(id);
+            if (analysis == null) {
+                log.debug("Could not find analysis by id:", id);
+                return null;
+            }
             log.debug("Found analysis: ", analysis);
-        } catch (Exception e) {
-            log.warn(e, "Exception when trying get analysis by id: ", id);
-        } finally {
-            session.close();
+            return analysis;
         }
-        return analysis;
     }
 
     public List<Analysis> getAnalysisById(List<Long> idList) {
@@ -187,31 +186,24 @@ public class AnalysisDbServiceMybatisImpl implements AnalysisDbService {
      * @return List of analysis data rows
      */
     public List<HashMap<String,Object>> getAnalysisDataByIdUid(long id, String uuid, String select_items) {
-        final SqlSession session = factory.openSession();
-        List<HashMap<String,Object>> analysisdataList = null;
-        try {
-            log.debug("Finding analysis data matching id and uid", id, uuid);
-            final AnalysisMapper mapper = session.getMapper(AnalysisMapper.class);
+        try (SqlSession session = factory.openSession()) {
+            log.debug("Finding analysis data for id:", id, " uid:", uuid);
+            AnalysisMapper mapper = session.getMapper(AnalysisMapper.class);
             Map<String, Object> params = new HashMap<String, Object>();
             params.put("id", id);
             params.put("uuid", uuid);
             params.put("select_items", select_items);
-            analysisdataList =  mapper.getAnalysisDataByIdUid(params);
-            if(analysisdataList == null) {
-                analysisdataList = Collections.emptyList();
+            List<HashMap<String,Object>> analysisdataList = mapper.getAnalysisDataByIdUid(params);
+            if (analysisdataList == null) {
+                return Collections.emptyList();
             }
             log.debug("Found analysis data: ", analysisdataList);
-        } catch (Exception e) {
-            log.warn(e, "Exception when trying get analysis data by Id and Uid: ", id, uuid);
-        } finally {
-            session.close();
+            return analysisdataList;
         }
-        return analysisdataList;
     }
 
     public void deleteAnalysisById(final long id) throws ServiceException {
-        final Analysis analysis = getAnalysisById(id);
-        deleteAnalysis(analysis);
+        deleteAnalysis(getAnalysisById(id));
     }
 
 
