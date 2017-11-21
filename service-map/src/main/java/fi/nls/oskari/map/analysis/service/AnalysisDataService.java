@@ -16,9 +16,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 public class AnalysisDataService {
     private static final String ANALYSIS_INPUT_TYPE_GS_VECTOR = "gs_vector";
@@ -136,10 +136,6 @@ public class AnalysisDataService {
         return analysis;
     }
 
-    public Analysis getAnalysisById(long id) {
-        return analysisService.getAnalysisById(id);
-    }
-
     /**
      * Merge analyses to one new analyse
      *
@@ -171,7 +167,7 @@ public class AnalysisDataService {
 
         try {
             // Insert analysis row - use old for seed
-            analysis = getAnalysisById(ids.get(0));
+            analysis = analysisService.getAnalysisById(ids.get(0));
             // --------------------
             analysis.setAnalyse_json(json.toString());
             analysis.setLayer_id(analysislayer.getId());
@@ -203,26 +199,29 @@ public class AnalysisDataService {
      * @return analysis columns
      */
     public Map<String, String> getAnalysisColumns(final String analysis_id) {
-        if (analysis_id != null) {
-            final Map<String, String> columnNames = new ConcurrentHashMap<String, String>(); // key,
-            // name
-            Analysis analysis = analysisService
-                    .getAnalysisById(ConversionHelper.getLong(analysis_id, 0));
-            if (analysis != null) {
-                for (int j = 1; j < 11; j++) {
-                    String colx = analysis.getColx(j);
-                    if (colx != null && !colx.isEmpty()) {
-                        if (colx.contains("=")) {
-                            columnNames.put(colx.split("=")[0],
-                                    colx.split("=")[1]);
-                        }
-                    }
+        long id = ConversionHelper.getLong(analysis_id, -1L);
+        if (id == -1L) {
+            return null;
+        }
+        Analysis analysis = analysisService.getAnalysisById(id);
+        if (analysis == null) {
+            return null;
+        }
 
+        // key, name
+        Map<String, String> columnNames = new LinkedHashMap<String, String>();
+        for (int j = 1; j < 11; j++) {
+            String colx = analysis.getColx(j);
+            if (colx != null && !colx.isEmpty()) {
+                int i = colx.indexOf('=');
+                if (i > 0) {
+                    String key = colx.substring(0, i);
+                    String name = colx.substring(i + 1);
+                    columnNames.put(key, name);
                 }
-                return columnNames;
             }
         }
-        return null;
+        return columnNames;
     }
 
     /**
