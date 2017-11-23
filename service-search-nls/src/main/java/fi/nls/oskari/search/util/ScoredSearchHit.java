@@ -3,7 +3,7 @@ package fi.nls.oskari.search.util;
 class ScoredSearchHit implements Comparable<ScoredSearchHit> {
     public final String text;
     public final int score;
-    public final Boolean isExact;
+    public final boolean isExact;
 
     public ScoredSearchHit(String t, int s, boolean e) {
         text = t;
@@ -13,9 +13,9 @@ class ScoredSearchHit implements Comparable<ScoredSearchHit> {
 
     @Override
     public int compareTo(ScoredSearchHit other) {
-        int comparison = this.isExact.compareTo(other.isExact);
+        int comparison = Boolean.compare(isExact, other.isExact);
         if (comparison == 0) {
-            return score - other.score;
+            return Integer.compare(score, other.score);
         }
         return comparison;
     }
