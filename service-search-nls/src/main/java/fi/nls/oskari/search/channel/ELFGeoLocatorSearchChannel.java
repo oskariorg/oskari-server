@@ -448,12 +448,14 @@ public class ELFGeoLocatorSearchChannel extends SearchChannel implements SearchA
         try {
             JSONArray fuzzyHits = jsonObject.getJSONArray("fuzzy_search").getJSONObject(0).getJSONArray("options");
             for (int i = 0; i < fuzzyHits.length(); i++) {
-                combiner.addHit(fuzzyHits.getJSONObject(i), 0);
+                combiner.addHit(fuzzyHits.getJSONObject(i), false);
             }
 
-            JSONArray exactHits = jsonObject.getJSONArray("normal_search").getJSONObject(0).getJSONArray("options");
-            for (int i = 0; i < exactHits.length(); i++) {
-                combiner.addHit(exactHits.getJSONObject(i), 1000);
+            JSONArray normalHits = jsonObject.getJSONArray("normal_search").getJSONObject(0).getJSONArray("options");
+            for (int i = 0; i < normalHits.length(); i++) {
+                JSONObject hit = normalHits.getJSONObject(i);
+                boolean isExact = searchString.trim().equalsIgnoreCase(hit.getString("text"));
+                combiner.addHit(hit, isExact);
             }
         }
         catch (JSONException ex) {
