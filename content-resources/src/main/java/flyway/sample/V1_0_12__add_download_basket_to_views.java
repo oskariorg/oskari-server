@@ -5,6 +5,8 @@ import java.sql.PreparedStatement;
 
 import org.flywaydb.core.api.migration.jdbc.JdbcMigration;
 
+import fi.nls.oskari.util.FlywayHelper;
+import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.map.view.ViewService;
 import fi.nls.oskari.map.view.ViewServiceIbatisImpl;
 

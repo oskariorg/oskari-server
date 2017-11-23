@@ -29,6 +29,7 @@ import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.layer.OskariLayerService;
 import fi.nls.oskari.map.layer.OskariLayerServiceIbatisImpl;
 import fi.nls.oskari.util.PropertyUtil;
+import fi.nls.oskari.util.IOHelper;
 import downloadbasket.data.LoadZipDetails;
 import downloadbasket.data.NormalWayDownloads;
 import downloadbasket.data.ZipDownloadDetails;
@@ -112,7 +113,7 @@ public class SendDownloadDetailsToEmailThread implements Runnable {
 					ldz.setWFSUrl(OGCServices.doGetFeatureUrl(srs, download, false));
 				} else {
 
-					ldz.setGetFeatureInfoRequest("&filter=" +OGCServices.getPluginFilter(download));
+					ldz.setGetFeatureInfoRequest("&filter=" + OGCServices.getPluginFilter(download));
 					ldz.setWFSUrl(OGCServices.doGetFeatureUrl(srs, download, true));
 				}
 
@@ -170,30 +171,22 @@ public class SendDownloadDetailsToEmailThread implements Runnable {
 						}
 
 						out.closeEntry();
-						in.close();
 						deleteFile(strTempFile);
 
 					} catch (Exception ex) {
-						LOGGER.error("Cannot  parse JSON download details", ex);
+						LOGGER.error("Cannot parse JSON download details", ex);
 					} finally {
 						if (in != null)
 							in.close();
-
 					}
 				}
 
 			} catch (FileNotFoundException fe) {
-
+				LOGGER.error("File not found", fe);
 			} catch (Exception ex) {
-				ex.printStackTrace();
+				LOGGER.error("Error", ex);
 			} finally {
-				if (out != null) {
-					try {
-						out.close();
-					} catch (Exception ex) {
-						LOGGER.error("Cannot close output", ex);
-					}
-				}
+				IOHelper.close(out);
 			}
 			sendZipFile(strZipFileName);
 		} catch (Exception ex) {
@@ -246,13 +239,13 @@ public class SendDownloadDetailsToEmailThread implements Runnable {
 			htmlFooter.append("<br/><br/>");
 			txtFooter.append("\n\n");
 			String f = PropertyUtil.get("oskari.wfs.download.email.footer", "");
-			String ff = f.replaceAll("\\{RIVINVAIHTO\\}", "\n");
-			f = f.replaceAll("\\{RIVINVAIHTO\\}", "<br/>");
+			String ff = f.replaceAll("\\{LINEBREAK\\}", "\n");
+			f = f.replaceAll("\\{LINEBREAK\\}", "<br/>");
 			htmlFooter.append(f);
 			txtFooter.append(ff);
 			String d = PropertyUtil.get("oskari.wfs.download.email.message.datadescription", "");
-			String dd = d.replaceAll("\\{RIVINVAIHTO\\}", "\n");
-			d = d.replaceAll("\\{RIVINVAIHTO\\}", "<br/>");
+			String dd = d.replaceAll("\\{LINEBREAK\\}", "\n");
+			d = d.replaceAll("\\{LINEBREAK\\}", "<br/>");
 			htmlFooter.append(d);
 			txtFooter.append(dd);
 			htmlFooter.append(PropertyUtil.get("oskari.wfs.download.email.datadescription_link", ""));
@@ -268,7 +261,7 @@ public class SendDownloadDetailsToEmailThread implements Runnable {
 			email.addTo(userDetails.getString("email"));
 			email.send();
 		} catch (Exception ex) {
-			ex.printStackTrace();
+			LOGGER.error("HTML email error", ex);
 		}
 	}
 

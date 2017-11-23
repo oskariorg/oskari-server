@@ -30,10 +30,6 @@ import fi.nls.oskari.spring.SpringContextHolder;
  *
  */
 public class DownloadServices {
-	public static final String WFS_GETCAPABILITIES_XML_JSON_VALUE = "WFSGetCapabilitiesXML";
-	public static final String WFS_METADATA_URL_JSON_VALUE = "linkForMetadata";
-	public static final String WFS_USED_URL = "url";
-	public static final String WFS_FEATURETYPES = "featureTypes";
 	private final Logger LOGGER = LogFactory.getLogger(DownloadServices.class);
 
 	private MessageSource messages;
@@ -66,16 +62,10 @@ public class DownloadServices {
 
 			if (ldz.isDownloadNormalWay()) {
 				LOGGER.debug("Download normal way");
-			} else {
-				LOGGER.debug("Download plugin way");
-			}
-
-			if (ldz.getGetFeatureInfoRequest().isEmpty()) {
-				return null;
 			}
 
 			LOGGER.debug("WFS URL: " + ldz.getWFSUrl());
-			LOGGER.debug("-- filtter: " + ldz.getGetFeatureInfoRequest());
+			LOGGER.debug("-- filter: " + ldz.getGetFeatureInfoRequest());
 			final URL url = new URL(ldz.getWFSUrl() + ldz.getGetFeatureInfoRequest());
 
 			conn = (HttpURLConnection) url.openConnection();
