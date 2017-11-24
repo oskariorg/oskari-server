@@ -21,6 +21,8 @@ import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.referencing.operation.MathTransform;
 
 import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -198,9 +200,17 @@ public class WFSCommunicator {
 			parser = GMLParser3.getParser(layer);
 		}
 
+		Reader reader;
+		try {
+		    reader = new LoggingReader(response);
+		} catch (IOException e) {
+		    log.warn(e, "Failed to init logging reader");
+		    reader = response;
+		}
+
 		Object obj = null;
 		try {
-			obj = parser.parse(response);
+			obj = parser.parse(reader);
             if(obj instanceof FeatureCollection) {
                 FeatureCollection<SimpleFeatureType, SimpleFeature> featureCollection = (FeatureCollection<SimpleFeatureType, SimpleFeature>) obj;
                 return featureCollection;
