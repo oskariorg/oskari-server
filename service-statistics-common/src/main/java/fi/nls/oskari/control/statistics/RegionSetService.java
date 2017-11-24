@@ -31,7 +31,7 @@ public abstract class RegionSetService extends OskariComponent {
         params.put("service", "wfs");
         params.put("version", "1.1.0");
         params.put("request", "GetFeature");
-        params.put("typeNames", regionset.getOskariLayerName());
+        params.put("typeName", regionset.getOskariLayerName());
         params.put("srsName", requestedSRS);
         //params.put("propertyName", propId + "," + propName);
 
