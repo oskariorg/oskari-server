@@ -8,12 +8,13 @@ import java.util.*;
 public class HitCombiner {
     Map<String, ScoredSearchHit> combinedHits = new HashMap<>();
 
-    public void addHit(JSONObject hit, int scoreBoost) throws JSONException {
+    public void addHit(JSONObject hit, boolean isExact) throws JSONException {
         String text = hit.getString("text");
-        int score = hit.getInt("_score") + scoreBoost;
+        int score = hit.getInt("_score");
         ScoredSearchHit existingHit = combinedHits.get(text);
-        if (existingHit == null || existingHit.score < score) {
-            combinedHits.put(text, new ScoredSearchHit(text, score));
+        ScoredSearchHit incoming = new ScoredSearchHit(text, score, isExact);
+        if (existingHit == null || incoming.compareTo(existingHit) > 0) {
+            combinedHits.put(text, incoming);
         }
     }
 
