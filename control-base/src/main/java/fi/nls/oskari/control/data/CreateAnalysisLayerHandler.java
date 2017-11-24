@@ -88,10 +88,7 @@ public class CreateAnalysisLayerHandler extends ActionHandler {
      *               **********************************************************************
      */
     public void handleAction(ActionParameters params) throws ActionException {
-
-        if (params.getUser().isGuest()) {
-            throw new ActionDeniedException("Session expired");
-        }
+        params.requireLoggedInUser();
 
         final String analyse = params.getRequiredParam(PARAM_ANALYSE, ERROR_ANALYSE_PARAMETER_MISSING);
         JSONObject analyseJson = JSONHelper.createJSONObject(analyse);
@@ -139,7 +136,7 @@ public class CreateAnalysisLayerHandler extends ActionHandler {
                 analysisLayer.setWpsLayerId(-1);
                 final String aggregateResult = this.localiseAggregateResult(
                         analysisParser.parseAggregateResults(featureSet, analysisLayer), analyseJson);
-                log.debug("\nAggregate results:\n", aggregateResult, "\n");
+                log.debug("Aggregate results:", aggregateResult);
 
                 analysisLayer.setResult(aggregateResult);
 
