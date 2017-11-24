@@ -90,10 +90,8 @@ public class GetRegionsHandler extends ActionHandler {
         JSONHelper.putValue(response, KEY_REGIONS, regions);
 
         try {
-            final List<Region> result = service.getRegions(regionset);
+            final List<Region> result = service.getRegions(regionset, srs);
             for (Region region : result) {
-                region.setGeojson(getTransformedGeoJSON(region.getGeojson(), regionset.getSrs(), srs));
-                region.setPointOnSurface(getTransformedPoint(region.getPointOnSurface(), regionset.getSrs(), srs));
                 regions.put(region.toJSON());
             }
         } catch (IOException e) {
@@ -106,15 +104,5 @@ public class GetRegionsHandler extends ActionHandler {
 
         JedisManager.setex(cacheKey, JedisManager.EXPIRY_TIME_DAY, response.toString());
         return response;
-    }
-
-    private JSONObject getTransformedGeoJSON(JSONObject geojson, String sourceSrs, final String targetSrs) {
-        JSONObject transformed = ProjectionHelper.transformGeometry(geojson.optJSONObject("geometry"), sourceSrs, targetSrs, true, true);
-        JSONHelper.putValue(geojson, "geometry", transformed);
-        return geojson;
-    }
-
-    private Point getTransformedPoint(final Point point, final String sourceSrs, final String targetSrs) {
-        return ProjectionHelper.transformPoint(point.getLon(), point.getLat(), sourceSrs, targetSrs);
     }
 }
