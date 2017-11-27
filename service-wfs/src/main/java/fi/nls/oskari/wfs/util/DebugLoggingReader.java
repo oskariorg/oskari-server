@@ -1,4 +1,4 @@
-package fi.nls.oskari.wfs;
+package fi.nls.oskari.wfs.util;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -6,16 +6,16 @@ import java.io.Reader;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 
-public class LoggingReader extends Reader {
+public class DebugLoggingReader extends Reader {
 
-    private static final Logger LOG = LogFactory.getLogger(LoggingReader.class);
+    private static final Logger LOG = LogFactory.getLogger(DebugLoggingReader.class);
 
     private final Reader in;
     private final char[] arr;
     private final int len;
     private int pos;
 
-    public LoggingReader(Reader in) throws IOException {
+    public DebugLoggingReader(Reader in) throws IOException {
         char[] buf = new char[8192];
         int read = 0;
         while (true) {

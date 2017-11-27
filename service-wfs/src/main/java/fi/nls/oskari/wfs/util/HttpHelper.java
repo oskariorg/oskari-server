@@ -9,7 +9,7 @@ import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.wfs.WFSExceptionHelper;
 
 import java.io.BufferedInputStream;
-import java.io.BufferedReader;
+import java.io.Reader;
 
 /**
  * Implements HTTP request and response methods
@@ -43,8 +43,10 @@ public class HttpHelper {
             if(cookies != null) {
                 request.getConnection().setRequestProperty("Cookie", cookies);
             }
-            if(request.ok() || request.code() == 304)
+            if(request.ok() || request.code() == 304) {
 				response = request.body();
+                log.debug(response);
+            }
 			else {
 				handleHTTPError("GET", url, request.code(), false);
 			}
@@ -111,7 +113,7 @@ public class HttpHelper {
      * @param password
      * @return response body
      */
-    public static BufferedReader getRequestReader(String url, String contentType, String username, String password) {
+    public static Reader getRequestReader(String url, String contentType, String username, String password) {
 		HttpRequest request = getRequest(url, contentType, username, password);
 		if(request != null) {
 			return request.bufferedReader();
@@ -173,7 +175,7 @@ public class HttpHelper {
      * @param password
      * @return response body
      */
-    public static BufferedReader postRequestReader(String url, String contentType, String data, String username,
+    public static Reader postRequestReader(String url, String contentType, String data, String username,
                                                    String password) {
         return postRequestReader(url, contentType, data, username, password, false);
     }
@@ -188,10 +190,10 @@ public class HttpHelper {
      * @param throwException
      * @return response body
      */
-    public static BufferedReader postRequestReader(String url, String contentType, String data, String username,
+    public static Reader postRequestReader(String url, String contentType, String data, String username,
                                                    String password, boolean throwException) {
 		HttpRequest request;
-		BufferedReader response = null;
+		Reader response = null;
 		try {
 			
 			HttpRequest.keepAlive(false);
@@ -216,11 +218,14 @@ public class HttpHelper {
 						.send(data);
 			}
 			if(request.ok() || request.code() == 304) {
-                // default charset is UTF-8
-                log.debug("request charset:", request.charset());
-				response = request.bufferedReader();
-            } else {
-				handleHTTPError("POST", url, request.code(), throwException);
+			    // default charset is UTF-8
+			    log.debug("request charset:", request.charset());
+			    response = request.bufferedReader();
+			    if (log.isDebugEnabled()) {
+			        response = new DebugLoggingReader(response);
+			    }
+			} else {
+			    handleHTTPError("POST", url, request.code(), throwException);
 			}
 			
 		} catch (HttpRequestException e) {

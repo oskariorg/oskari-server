@@ -9,6 +9,7 @@ import fi.nls.oskari.service.ServiceRuntimeException;
 import fi.nls.oskari.transport.TransportJobException;
 import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.wfs.pojo.WFSLayerStore;
+import fi.nls.oskari.wfs.util.DebugLoggingReader;
 import fi.nls.oskari.wfs.util.XMLHelper;
 import fi.nls.oskari.work.JobType;
 import org.apache.axiom.om.*;
@@ -189,7 +190,7 @@ public class WFSCommunicator {
 	 */
 	@SuppressWarnings("unchecked")
 	public static FeatureCollection<SimpleFeatureType, SimpleFeature> parseSimpleFeatures(
-            BufferedReader response,
+	        Reader response,
             final WFSLayerStore layer) {
 		Parser parser = null;
 		if(Character.getNumericValue(layer.getGMLVersion().charAt(2)) == 2) { // 3.2
@@ -200,18 +201,9 @@ public class WFSCommunicator {
 			parser = GMLParser3.getParser(layer);
 		}
 
-		Reader reader;
-		try {
-		    log.info("Wrapping response in LoggingReader");
-		    reader = new LoggingReader(response);
-		} catch (IOException e) {
-		    log.warn(e, "Failed to init logging reader");
-		    reader = response;
-		}
-
 		Object obj = null;
 		try {
-			obj = parser.parse(reader);
+			obj = parser.parse(response);
             if(obj instanceof FeatureCollection) {
                 FeatureCollection<SimpleFeatureType, SimpleFeature> featureCollection = (FeatureCollection<SimpleFeatureType, SimpleFeature>) obj;
                 return featureCollection;

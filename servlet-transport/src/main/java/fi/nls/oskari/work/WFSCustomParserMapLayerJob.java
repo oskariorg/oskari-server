@@ -10,7 +10,7 @@ import org.geotools.feature.FeatureCollection;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 
-import java.io.BufferedReader;
+import java.io.Reader;
 
 /**
  * Job for WFS Map Layer
@@ -36,7 +36,7 @@ public class WFSCustomParserMapLayerJob extends  WFSMapLayerJob {
      */
     public FeatureCollection<SimpleFeatureType, SimpleFeature> response(
             WFSLayerStore layer, RequestResponse requestResponse) {
-        BufferedReader response = ((WFSRequestResponse) requestResponse).getResponse();
+        Reader response = ((WFSRequestResponse) requestResponse).getResponse();
 
         log.debug("Custom parser layer id: ", layer.getLayerId());
         WFSParser parser = new WFSParser(response, layer);
