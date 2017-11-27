@@ -202,6 +202,7 @@ public class WFSCommunicator {
 
 		Reader reader;
 		try {
+		    log.info("Wrapping response in LoggingReader");
 		    reader = new LoggingReader(response);
 		} catch (IOException e) {
 		    log.warn(e, "Failed to init logging reader");

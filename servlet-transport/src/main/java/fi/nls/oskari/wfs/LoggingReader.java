@@ -37,7 +37,20 @@ public class LoggingReader extends Reader {
     }
 
     @Override
-    public int read(char[] cbuf, int off, int len) throws IOException {
+    public int read() {
+        if (pos == len) {
+            return -1;
+        }
+        return arr[pos++] & 0xFF;
+    }
+
+    @Override
+    public int read(char[] cbuf) {
+        return read(cbuf, 0, cbuf.length);
+    }
+
+    @Override
+    public int read(char[] cbuf, int off, int len) {
         int left = this.len - this.pos;
         if (left == 0) {
             return -1;
