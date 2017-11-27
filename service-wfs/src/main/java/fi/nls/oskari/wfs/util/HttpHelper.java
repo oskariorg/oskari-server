@@ -82,11 +82,13 @@ public class HttpHelper {
             if(cookies != null) {
                 request.getConnection().setRequestProperty("Cookie", cookies);
             }
-            if(request.ok() || request.code() == 304)
-                if(key != null) headerValue = request.header(key);
-                else {
-                    handleHTTPError("GET", url, request.code(), false);
+            if(request.ok() || request.code() == 304) {
+                if(key != null) {
+                    headerValue = request.header(key);
                 }
+            } else {
+                handleHTTPError("GET", url, request.code(), false);
+            }
         } catch (HttpRequestException e) {
             handleHTTPRequestFail(url, e, false);
         } catch (Exception e) {
