@@ -1,6 +1,5 @@
 package fi.nls.oskari.wfs;
 
-import com.vividsolutions.jts.geom.Geometry;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.geometry.ProjectionHelper;
@@ -9,20 +8,16 @@ import fi.nls.oskari.service.ServiceRuntimeException;
 import fi.nls.oskari.transport.TransportJobException;
 import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.wfs.pojo.WFSLayerStore;
-import fi.nls.oskari.wfs.util.DebugLoggingReader;
 import fi.nls.oskari.wfs.util.XMLHelper;
 import fi.nls.oskari.work.JobType;
 import org.apache.axiom.om.*;
 import org.apache.axiom.om.impl.builder.StAXOMBuilder;
 import org.geotools.feature.FeatureCollection;
-import org.geotools.feature.FeatureIterator;
 import org.geotools.xml.Parser;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.referencing.operation.MathTransform;
 
-import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
