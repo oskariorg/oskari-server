@@ -39,20 +39,21 @@ public class GetIndicatorDataHandler extends ActionHandler {
     private static final StatisticalDatasourcePluginManager PLUGIN_MANAGER = StatisticalDatasourcePluginManager.getInstance();
 
     @Override
-    public void handleAction(ActionParameters ap) throws ActionException {
-        final long pluginId = ap.getRequiredParamLong(PARAM_PLUGIN_ID);
-        final String indicatorId = ap.getRequiredParam(PARAM_INDICATOR_ID);
-        final long layerId = ap.getRequiredParamLong(PARAM_LAYER_ID);
-        final String selectors = ap.getRequiredParam(PARAM_SELECTORS);
+    public void handleAction(ActionParameters params) throws ActionException {
+        final long pluginId = params.getRequiredParamLong(PARAM_PLUGIN_ID);
+        final String indicatorId = params.getRequiredParam(PARAM_INDICATOR_ID);
+        final long layerId = params.getRequiredParamLong(PARAM_LAYER_ID);
+        final String selectors = params.getRequiredParam(PARAM_SELECTORS);
         JSONObject selectorsJSON;
         try {
             selectorsJSON = new JSONObject(selectors);
         } catch (JSONException e) {
-            throw new ActionParamsException("Invalid parameter value "
-                    + PARAM_SELECTORS + " expected JSON object");
+            throw new ActionParamsException("Invalid parameter value: "
+                    + PARAM_SELECTORS + " - expected JSON object");
         }
-        JSONObject response = getIndicatorDataJSON(ap.getUser(), pluginId, indicatorId, layerId, selectorsJSON);
-        ResponseHelper.writeResponse(ap, response);
+        JSONObject response = getIndicatorDataJSON(params.getUser(),
+                pluginId, indicatorId, layerId, selectorsJSON);
+        ResponseHelper.writeResponse(params, response);
     }
 
     private JSONObject getIndicatorDataJSON(User user, long pluginId, String indicatorId,
