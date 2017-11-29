@@ -83,32 +83,34 @@ public class GetIndicatorDataHandler extends ActionHandler {
             throw new ActionParamsException("No such regionset");
         }
 
-        JSONObject response;
-        try {
-            StatisticalIndicatorDataModel selectors = new StatisticalIndicatorDataModel();
-            @SuppressWarnings("unchecked")
-            Iterator<String> keys = selectorJSON.keys();
-            while (keys.hasNext()) {
-                String key = keys.next();
-                String value = selectorJSON.getString(key);
-                StatisticalIndicatorDataDimension selector = new StatisticalIndicatorDataDimension(key, value);
-                selectors.addDimension(selector);
-            }
-            Map<String, IndicatorValue> values = plugin.getIndicatorValues(indicator, selectors, layer);
-            response = toJSON(values);
-        } catch (Exception e) {
-            if(e instanceof ActionException) {
-                throw (ActionException)e;
-            }
-            throw new ActionException("Something went wrong in serializing indicator data.", e);
-        }
+        StatisticalIndicatorDataModel selectors = getIndicatorDataModel(selectorJSON);
+        Map<String, IndicatorValue> values = plugin.getIndicatorValues(indicator, selectors, layer);
+        JSONObject response = toJSON(values);
+
         // Note that there is an another layer of caches in the plugins doing the web queries.
         // Two layers are necessary, because deserialization and conversion to the internal data model
         // is a pretty heavy operation.
-        if (plugin.canCache() && response != null) {
+        if (plugin.canCache()) {
             JedisManager.setex(cacheKey, JedisManager.EXPIRY_TIME_DAY, response.toString());
         }
+
         return response;
+    }
+
+    private StatisticalIndicatorDataModel getIndicatorDataModel(JSONObject selectorJSON) {
+        StatisticalIndicatorDataModel selectors = new StatisticalIndicatorDataModel();
+        @SuppressWarnings("unchecked")
+        Iterator<String> keys = selectorJSON.keys();
+        while (keys.hasNext()) {
+            try {
+                String key = keys.next();
+                String value = selectorJSON.getString(key);
+                selectors.addDimension(new StatisticalIndicatorDataDimension(key, value));
+            } catch (JSONException ignore) {
+                // The key _does_ exist
+            }
+        }
+        return selectors;
     }
 
     private JSONObject getFromCache(String cacheKey) {
@@ -116,11 +118,15 @@ public class GetIndicatorDataHandler extends ActionHandler {
         return JSONHelper.createJSONObject(cachedData);
     }
 
-    private JSONObject toJSON(Map<String, IndicatorValue> values) throws JSONException {
-        JSONObject json = new JSONObject();
-        for (Entry<String, IndicatorValue> entry : values.entrySet()) {
-            entry.getValue().putToJSONObject(json, entry.getKey());
+    private JSONObject toJSON(Map<String, IndicatorValue> values) throws ActionException {
+        try {
+            JSONObject json = new JSONObject();
+            for (Entry<String, IndicatorValue> entry : values.entrySet()) {
+                entry.getValue().putToJSONObject(json, entry.getKey());
+            }
+            return json;
+        } catch (JSONException e) {
+            throw new ActionException("Something went wrong in serializing indicator data", e);
         }
-        return json;
     }
 }
