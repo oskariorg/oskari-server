@@ -11,7 +11,7 @@ public class GetIndicatorDataHelperTest {
     public void testGetCacheKey() throws JSONException {
         long pluginId = 1L;
         String indicatorId = "232";
-        Long layerId = 1850L;
+        long layerId = 1850L;
         String selectionStr = "{\"year\":\"2015\",\"sex\":\"female\"}";
         JSONObject selectionJSON = new JSONObject(selectionStr);
         String actual = GetIndicatorDataHelper.getCacheKey(pluginId, indicatorId, layerId, selectionJSON);

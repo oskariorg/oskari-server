@@ -17,7 +17,7 @@ import org.json.JSONObject;
 public class GetIndicatorDataHelper {
 
     protected static String getCacheKey(long datasourceId, String indicatorId,
-            Long layerId, JSONObject selectorJSON) {
+            long layerId, JSONObject selectorJSON) {
         StringBuilder cacheKey = new StringBuilder("oskari:stats:");
         cacheKey.append(datasourceId);
         cacheKey.append(":data:");
