@@ -17,21 +17,24 @@ import org.json.JSONObject;
 public class GetIndicatorDataHelper {
 
     protected static String getCacheKey(long datasourceId, String indicatorId,
-            Long layerId, String selectorsStr) throws JSONException {
+            Long layerId, JSONObject selectorJSON) {
         StringBuilder cacheKey = new StringBuilder("oskari:stats:");
         cacheKey.append(datasourceId);
         cacheKey.append(":data:");
         cacheKey.append(indicatorId);
         cacheKey.append(':');
         cacheKey.append(layerId);
-        JSONObject selector = new JSONObject(selectorsStr);
-        Iterator<String> it = selector.sortedKeys();
+        Iterator<String> it = selectorJSON.sortedKeys();
         while (it.hasNext()) {
             String key = it.next();
             cacheKey.append(':');
             cacheKey.append(key);
             cacheKey.append('=');
-            cacheKey.append(selector.get(key));
+            try {
+                cacheKey.append(selectorJSON.get(key));
+            } catch (JSONException e) {
+                // Ignore, we are iterating the keys, the key _does_ exist
+            }
         }
         return cacheKey.toString();
     }

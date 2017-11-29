@@ -48,18 +48,20 @@ public class GetIndicatorDataHandler extends ActionHandler {
         final String indicatorId = ap.getRequiredParam(PARAM_INDICATOR_ID);
         final long layerId = ap.getRequiredParamLong(PARAM_LAYER_ID);
         final String selectors = ap.getRequiredParam(PARAM_SELECTORS);
-        JSONObject response = getIndicatorDataJSON(ap.getUser(), pluginId, indicatorId, layerId, selectors);
+        JSONObject selectorsJSON;
+        try {
+            selectorsJSON = new JSONObject(selectors);
+        } catch (JSONException e) {
+            throw new ActionParamsException("Invalid parameter value "
+                    + PARAM_SELECTORS + " expected JSON object");
+        }
+        JSONObject response = getIndicatorDataJSON(ap.getUser(), pluginId, indicatorId, layerId, selectorsJSON);
         ResponseHelper.writeResponse(ap, response);
     }
 
     public JSONObject getIndicatorDataJSON(User user, long pluginId, String indicatorId,
-            long layerId, String selectorsStr) throws ActionException {
-        final String cacheKey;
-        try {
-            cacheKey = GetIndicatorDataHelper.getCacheKey(pluginId, indicatorId, layerId, selectorsStr);
-        } catch (JSONException e) {
-            throw new ActionParamsException("Could not create cache key", e);
-        }
+            long layerId, JSONObject selectorJSON) throws ActionException {
+        final String cacheKey = GetIndicatorDataHelper.getCacheKey(pluginId, indicatorId, layerId, selectorJSON);
         final String cachedData = JedisManager.get(cacheKey);
         StatisticalDatasourcePlugin plugin = PLUGIN_MANAGER.getPlugin(pluginId);
         if (plugin.canCache()) {
@@ -90,7 +92,6 @@ public class GetIndicatorDataHandler extends ActionHandler {
 
             // Note: Layer version is handled already in the indicator metadata.
             // We found the correct indicator and the layer.
-            JSONObject selectorJSON = new JSONObject(selectorsStr);
 
             StatisticalIndicatorDataModel selectors = new StatisticalIndicatorDataModel();
             @SuppressWarnings("unchecked")
