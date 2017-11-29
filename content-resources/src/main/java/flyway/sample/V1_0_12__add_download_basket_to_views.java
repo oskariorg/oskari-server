@@ -1,4 +1,4 @@
-package flyway.downloadbasket;
+package flyway.sample;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -11,41 +11,38 @@ import fi.nls.oskari.map.view.ViewService;
 import fi.nls.oskari.map.view.ViewServiceIbatisImpl;
 
 public class V1_0_12__add_download_basket_to_views implements JdbcMigration {
-	
+
 	private static final ViewService VIEW_SERVICE = new ViewServiceIbatisImpl();
-	private static final  String DOWNLOAD_BASKET = "download-basket";
-	
+	private static final String DOWNLOAD_BASKET = "download-basket";
+
 	public void migrate(Connection connection) throws Exception {
+        if(PropertyUtil.getOptional("flyway.sample.1_0_12.skip", true)) {
+            return;
+        }
 		long viewId = VIEW_SERVICE.getDefaultViewId();
 		makeInsert(viewId,connection);
 	}
-	
-	private void makeInsert(long viewId, Connection connection)
-            throws Exception {
 
-        final PreparedStatement statement =
-                connection.prepareStatement("INSERT INTO portti_view_bundle_seq" +
-                        "(view_id, bundle_id, seqno, config, state, startup, bundleinstance) " +
-                        "VALUES (" +
-                        "?, " +
-                        "(SELECT id FROM portti_bundle WHERE name=?), " +
-                        "(SELECT max(seqno)+1 FROM portti_view_bundle_seq WHERE view_id=?), " +
-                        "?, ?, " +
-                        "(SELECT startup FROM portti_bundle WHERE name=?), " +
-                        "?)");
+	private void makeInsert(long viewId, Connection connection) throws Exception {
 
-        statement.setLong(1, viewId);
-        statement.setString(2, DOWNLOAD_BASKET);
-        statement.setLong(3, viewId);
-        statement.setString(4, "{}");
-        statement.setString(5, "{}");
-        statement.setString(6, DOWNLOAD_BASKET);
-        statement.setString(7, DOWNLOAD_BASKET);
+		final PreparedStatement statement = connection.prepareStatement("INSERT INTO portti_view_bundle_seq"
+				+ "(view_id, bundle_id, seqno, config, state, startup, bundleinstance) " + "VALUES (" + "?, "
+				+ "(SELECT id FROM portti_bundle WHERE name=?), "
+				+ "(SELECT max(seqno)+1 FROM portti_view_bundle_seq WHERE view_id=?), " + "?, ?, "
+				+ "(SELECT startup FROM portti_bundle WHERE name=?), " + "?)");
 
-        try {
-            statement.execute();
-        } finally {
-            statement.close();
-        }
-    }
+		statement.setLong(1, viewId);
+		statement.setString(2, DOWNLOAD_BASKET);
+		statement.setLong(3, viewId);
+		statement.setString(4, "{}");
+		statement.setString(5, "{}");
+		statement.setString(6, DOWNLOAD_BASKET);
+		statement.setString(7, DOWNLOAD_BASKET);
+
+		try {
+			statement.execute();
+		} finally {
+			statement.close();
+		}
+	}
 }
