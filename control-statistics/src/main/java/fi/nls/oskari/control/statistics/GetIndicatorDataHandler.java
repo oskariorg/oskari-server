@@ -48,7 +48,7 @@ public class GetIndicatorDataHandler extends ActionHandler {
         try {
             selectorsJSON = new JSONObject(selectors);
         } catch (JSONException e) {
-            throw new ActionParamsException("Invalid parameter value: "
+            throw new ActionParamsException("Invalid parameter value for key: "
                     + PARAM_SELECTORS + " - expected JSON object");
         }
         JSONObject response = getIndicatorDataJSON(params.getUser(),
