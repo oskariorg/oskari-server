@@ -61,10 +61,12 @@ public class GetIndicatorDataHandler extends ActionHandler {
 
     public JSONObject getIndicatorDataJSON(User user, long pluginId, String indicatorId,
             long layerId, JSONObject selectorJSON) throws ActionException {
-        final String cacheKey = GetIndicatorDataHelper.getCacheKey(pluginId, indicatorId, layerId, selectorJSON);
-        final String cachedData = JedisManager.get(cacheKey);
-        StatisticalDatasourcePlugin plugin = PLUGIN_MANAGER.getPlugin(pluginId);
+        final StatisticalDatasourcePlugin plugin = PLUGIN_MANAGER.getPlugin(pluginId);
+
+        final String cacheKey;
         if (plugin.canCache()) {
+            cacheKey = GetIndicatorDataHelper.getCacheKey(pluginId, indicatorId, layerId, selectorJSON);
+            String cachedData = JedisManager.get(cacheKey);
             if (cachedData != null && !cachedData.isEmpty()) {
                 try {
                     return new JSONObject(cachedData);
@@ -72,7 +74,10 @@ public class GetIndicatorDataHandler extends ActionHandler {
                     // Failed serializing. Skipping the cache.
                 }
             }
+        } else {
+            cacheKey = null;
         }
+
         JSONObject response;
         try {
 
