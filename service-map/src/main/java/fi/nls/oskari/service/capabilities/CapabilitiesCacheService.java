@@ -33,9 +33,9 @@ public abstract class CapabilitiesCacheService extends OskariComponent {
     private static final int TIMEOUT_SECONDS = PropertyUtil.getOptional(PROP_TIMEOUT, 30);
     private static final int TIMEOUT_MS = TIMEOUT_SECONDS * 1000;
 
-    private static final String NAMESPACE_WMS = "http://www.opengis.net/wms/";
-    private static final String NAMESPACE_WFS = "http://www.opengis.net/wfs/";
-    private static final String NAMESPACE_WMTS = "http://www.opengis.net/wmts/";
+    private static final String NAMESPACE_WMS = "http://www.opengis.net/wms";
+    private static final String NAMESPACE_WFS = "http://www.opengis.net/wfs";
+    private static final String NAMESPACE_WMTS = "http://www.opengis.net/wmts";
 
     private static final String ROOT_WMS_LESS_THAN_130 = "WMT_MS_Capabilities";
     private static final String ROOT_WMS_130 = "WMS_Capabilities";
