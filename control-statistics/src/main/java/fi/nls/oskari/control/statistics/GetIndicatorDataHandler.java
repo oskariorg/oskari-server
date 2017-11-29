@@ -40,29 +40,28 @@ public class GetIndicatorDataHandler extends ActionHandler {
      * For now, this uses pretty much static global store for the plugins.
      * In the future it might make sense to inject the pluginManager references to different controllers using DI.
      */
-    private static final StatisticalDatasourcePluginManager pluginManager = StatisticalDatasourcePluginManager.getInstance();
+    private static final StatisticalDatasourcePluginManager PLUGIN_MANAGER = StatisticalDatasourcePluginManager.getInstance();
 
     @Override
     public void handleAction(ActionParameters ap) throws ActionException {
-        final long pluginId = ap.getRequiredParamInt(PARAM_PLUGIN_ID);
+        final long pluginId = ap.getRequiredParamLong(PARAM_PLUGIN_ID);
         final String indicatorId = ap.getRequiredParam(PARAM_INDICATOR_ID);
-        final long layerId = new Long(ap.getRequiredParam(PARAM_LAYER_ID));
+        final long layerId = ap.getRequiredParamLong(PARAM_LAYER_ID);
         final String selectors = ap.getRequiredParam(PARAM_SELECTORS);
         JSONObject response = getIndicatorDataJSON(ap.getUser(), pluginId, indicatorId, layerId, selectors);
         ResponseHelper.writeResponse(ap, response);
     }
 
     public JSONObject getIndicatorDataJSON(User user, long pluginId, String indicatorId,
-            Long layerId, String selectorsStr)
-            throws ActionException {
+            long layerId, String selectorsStr) throws ActionException {
         final String cacheKey;
         try {
-             cacheKey = GetIndicatorDataHelper.getCacheKey(pluginId, indicatorId, layerId, selectorsStr);
+            cacheKey = GetIndicatorDataHelper.getCacheKey(pluginId, indicatorId, layerId, selectorsStr);
         } catch (JSONException e) {
             throw new ActionParamsException("Could not create cache key", e);
         }
         final String cachedData = JedisManager.get(cacheKey);
-        StatisticalDatasourcePlugin plugin = pluginManager.getPlugin(pluginId);
+        StatisticalDatasourcePlugin plugin = PLUGIN_MANAGER.getPlugin(pluginId);
         if (plugin.canCache()) {
             if (cachedData != null && !cachedData.isEmpty()) {
                 try {
