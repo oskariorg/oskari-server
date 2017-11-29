@@ -95,6 +95,11 @@ public class GetIndicatorDataHandler extends ActionHandler {
         return response;
     }
 
+    private JSONObject getFromCache(String cacheKey) {
+        String cachedData = JedisManager.get(cacheKey);
+        return JSONHelper.createJSONObject(cachedData);
+    }
+
     private StatisticalIndicatorDataModel getIndicatorDataModel(JSONObject selectorJSON) {
         StatisticalIndicatorDataModel selectors = new StatisticalIndicatorDataModel();
         @SuppressWarnings("unchecked")
@@ -109,11 +114,6 @@ public class GetIndicatorDataHandler extends ActionHandler {
             }
         }
         return selectors;
-    }
-
-    private JSONObject getFromCache(String cacheKey) {
-        String cachedData = JedisManager.get(cacheKey);
-        return JSONHelper.createJSONObject(cachedData);
     }
 
     private JSONObject toJSON(Map<String, IndicatorValue> values) throws ActionException {
