@@ -63,9 +63,9 @@ public class GetIndicatorDataHandler extends ActionHandler {
 
     public JSONObject getIndicatorDataJSON(User user, long pluginId, String indicatorId,
             long layerId, JSONObject selectorJSON) throws ActionException {
-        final StatisticalDatasourcePlugin plugin = PLUGIN_MANAGER.getPlugin(pluginId);
+        StatisticalDatasourcePlugin plugin = PLUGIN_MANAGER.getPlugin(pluginId);
 
-        final String cacheKey = GetIndicatorDataHelper.getCacheKey(pluginId, indicatorId, layerId, selectorJSON);
+        String cacheKey = GetIndicatorDataHelper.getCacheKey(pluginId, indicatorId, layerId, selectorJSON);
         if (plugin.canCache()) {
             JSONObject cached = getFromCache(cacheKey);
             if (cached != null) {
@@ -73,26 +73,18 @@ public class GetIndicatorDataHandler extends ActionHandler {
             }
         }
 
+        StatisticalIndicator indicator = plugin.getIndicator(user, indicatorId);
+        if (indicator == null) {
+            throw new ActionParamsException("No such indicator");
+        }
+
+        StatisticalIndicatorLayer layer = indicator.getLayer(layerId);
+        if (layer == null) {
+            throw new ActionParamsException("No such regionset");
+        }
+
         JSONObject response;
         try {
-
-            // TODO: Might be faster to store the indicator id to indicator map in a proper map.
-            //       Who should do this, though? We don't want to put this functionality into the plugins.
-            //       It should be in a common wrapper for the plugins.
-
-            StatisticalIndicator indicator = plugin.getIndicator(user, indicatorId);
-            if(indicator == null) {
-                throw new ActionParamsException("No such indicator");
-            }
-
-            StatisticalIndicatorLayer layer = indicator.getLayer(layerId);
-            if(layer == null) {
-                throw new ActionParamsException("No such regionset");
-            }
-
-            // Note: Layer version is handled already in the indicator metadata.
-            // We found the correct indicator and the layer.
-
             StatisticalIndicatorDataModel selectors = new StatisticalIndicatorDataModel();
             @SuppressWarnings("unchecked")
             Iterator<String> keys = selectorJSON.keys();
