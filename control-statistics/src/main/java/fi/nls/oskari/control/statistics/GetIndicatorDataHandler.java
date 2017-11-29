@@ -55,7 +55,7 @@ public class GetIndicatorDataHandler extends ActionHandler {
         ResponseHelper.writeResponse(ap, response);
     }
 
-    public JSONObject getIndicatorDataJSON(User user, long pluginId, String indicatorId,
+    private JSONObject getIndicatorDataJSON(User user, long pluginId, String indicatorId,
             long layerId, JSONObject selectorJSON) throws ActionException {
         StatisticalDatasourcePlugin plugin = PLUGIN_MANAGER.getPlugin(pluginId);
         if (plugin == null) {
