@@ -9,6 +9,7 @@ import fi.nls.oskari.control.ActionParamsException;
 import fi.nls.oskari.control.statistics.data.*;
 import fi.nls.oskari.control.statistics.plugins.*;
 import fi.nls.oskari.domain.User;
+import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.ResponseHelper;
 
 import org.json.JSONException;
@@ -19,12 +20,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 /**
- * This interface gives the data for one indicator to the frontend for showing it on the map and on the table.
- * 
- * - action_route=GetIndicatorData&plugin_id=plugin_id&indicator_id=indicator_id&layer_id=layer_id&selectors=URL_ENCODED_JSON
- * 
- * For example SotkaNET requires selectors for year and gender. This means that selectors parameter content
- * could be for example: selectors=%7B%22gender%22%3A%20%22male%22%2C%20%22year%22%3A%20%222005%22%7D
+ * This ActionHandler retrieves data for an indicator for the frontend
  * 
  * Response is in JSON, and contains the indicator data.
  */
@@ -40,90 +36,95 @@ public class GetIndicatorDataHandler extends ActionHandler {
      * For now, this uses pretty much static global store for the plugins.
      * In the future it might make sense to inject the pluginManager references to different controllers using DI.
      */
-    private static final StatisticalDatasourcePluginManager pluginManager = StatisticalDatasourcePluginManager.getInstance();
+    private static final StatisticalDatasourcePluginManager PLUGIN_MANAGER = StatisticalDatasourcePluginManager.getInstance();
 
     @Override
-    public void handleAction(ActionParameters ap) throws ActionException {
-        final long pluginId = ap.getRequiredParamInt(PARAM_PLUGIN_ID);
-        final String indicatorId = ap.getRequiredParam(PARAM_INDICATOR_ID);
-        final long layerId = new Long(ap.getRequiredParam(PARAM_LAYER_ID));
-        final String selectors = ap.getRequiredParam(PARAM_SELECTORS);
-        JSONObject response = getIndicatorDataJSON(ap.getUser(), pluginId, indicatorId, layerId, selectors);
-        ResponseHelper.writeResponse(ap, response);
+    public void handleAction(ActionParameters params) throws ActionException {
+        final long pluginId = params.getRequiredParamLong(PARAM_PLUGIN_ID);
+        final String indicatorId = params.getRequiredParam(PARAM_INDICATOR_ID);
+        final long layerId = params.getRequiredParamLong(PARAM_LAYER_ID);
+        final String selectors = params.getRequiredParam(PARAM_SELECTORS);
+        JSONObject selectorsJSON;
+        try {
+            selectorsJSON = new JSONObject(selectors);
+        } catch (JSONException e) {
+            throw new ActionParamsException("Invalid parameter value for key: "
+                    + PARAM_SELECTORS + " - expected JSON object");
+        }
+        JSONObject response = getIndicatorDataJSON(params.getUser(),
+                pluginId, indicatorId, layerId, selectorsJSON);
+        ResponseHelper.writeResponse(params, response);
     }
 
-    public JSONObject getIndicatorDataJSON(User user, long pluginId, String indicatorId,
-            Long layerId, String selectorsStr)
-            throws ActionException {
-        final String cacheKey;
-        try {
-             cacheKey = GetIndicatorDataHelper.getCacheKey(pluginId, indicatorId, layerId, selectorsStr);
-        } catch (JSONException e) {
-            throw new ActionParamsException("Could not create cache key", e);
+    private JSONObject getIndicatorDataJSON(User user, long pluginId, String indicatorId,
+            long layerId, JSONObject selectorJSON) throws ActionException {
+        StatisticalDatasourcePlugin plugin = PLUGIN_MANAGER.getPlugin(pluginId);
+        if (plugin == null) {
+            throw new ActionParamsException("No such datasource");
         }
-        final String cachedData = JedisManager.get(cacheKey);
-        StatisticalDatasourcePlugin plugin = pluginManager.getPlugin(pluginId);
+
+        String cacheKey = GetIndicatorDataHelper.getCacheKey(pluginId, indicatorId, layerId, selectorJSON);
         if (plugin.canCache()) {
-            if (cachedData != null && !cachedData.isEmpty()) {
-                try {
-                    return new JSONObject(cachedData);
-                } catch (JSONException e) {
-                    // Failed serializing. Skipping the cache.
-                }
+            JSONObject cached = getFromCache(cacheKey);
+            if (cached != null) {
+                return cached;
             }
         }
-        JSONObject response;
-        try {
 
-            // TODO: Might be faster to store the indicator id to indicator map in a proper map.
-            //       Who should do this, though? We don't want to put this functionality into the plugins.
-            //       It should be in a common wrapper for the plugins.
-
-            StatisticalIndicator indicator = plugin.getIndicator(user, indicatorId);
-            if(indicator == null) {
-                throw new ActionParamsException("No such indicator");
-            }
-
-            StatisticalIndicatorLayer layer = indicator.getLayer(layerId);
-            if(layer == null) {
-                throw new ActionParamsException("No such regionset");
-            }
-
-            // Note: Layer version is handled already in the indicator metadata.
-            // We found the correct indicator and the layer.
-            JSONObject selectorJSON = new JSONObject(selectorsStr);
-
-            StatisticalIndicatorDataModel selectors = new StatisticalIndicatorDataModel();
-            @SuppressWarnings("unchecked")
-            Iterator<String> keys = selectorJSON.keys();
-            while (keys.hasNext()) {
-                String key = keys.next();
-                String value = selectorJSON.getString(key);
-                StatisticalIndicatorDataDimension selector = new StatisticalIndicatorDataDimension(key, value);
-                selectors.addDimension(selector);
-            }
-            Map<String, IndicatorValue> values = plugin.getIndicatorValues(indicator, selectors, layer);
-            response = toJSON(values);
-        } catch (Exception e) {
-            if(e instanceof ActionException) {
-                throw (ActionException)e;
-            }
-            throw new ActionException("Something went wrong in serializing indicator data.", e);
+        StatisticalIndicator indicator = plugin.getIndicator(user, indicatorId);
+        if (indicator == null) {
+            throw new ActionParamsException("No such indicator");
         }
+
+        StatisticalIndicatorLayer layer = indicator.getLayer(layerId);
+        if (layer == null) {
+            throw new ActionParamsException("No such regionset");
+        }
+
+        StatisticalIndicatorDataModel selectors = getIndicatorDataModel(selectorJSON);
+        Map<String, IndicatorValue> values = plugin.getIndicatorValues(indicator, selectors, layer);
+        JSONObject response = toJSON(values);
+
         // Note that there is an another layer of caches in the plugins doing the web queries.
         // Two layers are necessary, because deserialization and conversion to the internal data model
         // is a pretty heavy operation.
-        if (plugin.canCache() && response != null) {
+        if (plugin.canCache()) {
             JedisManager.setex(cacheKey, JedisManager.EXPIRY_TIME_DAY, response.toString());
         }
+
         return response;
     }
 
-    private JSONObject toJSON(Map<String, IndicatorValue> values) throws JSONException {
-        JSONObject json = new JSONObject();
-        for (Entry<String, IndicatorValue> entry : values.entrySet()) {
-            entry.getValue().putToJSONObject(json, entry.getKey());
+    private JSONObject getFromCache(String cacheKey) {
+        String cachedData = JedisManager.get(cacheKey);
+        return JSONHelper.createJSONObject(cachedData);
+    }
+
+    private StatisticalIndicatorDataModel getIndicatorDataModel(JSONObject selectorJSON) {
+        StatisticalIndicatorDataModel selectors = new StatisticalIndicatorDataModel();
+        @SuppressWarnings("unchecked")
+        Iterator<String> keys = selectorJSON.keys();
+        while (keys.hasNext()) {
+            try {
+                String key = keys.next();
+                String value = selectorJSON.getString(key);
+                selectors.addDimension(new StatisticalIndicatorDataDimension(key, value));
+            } catch (JSONException ignore) {
+                // The key _does_ exist
+            }
         }
-        return json;
+        return selectors;
+    }
+
+    private JSONObject toJSON(Map<String, IndicatorValue> values) throws ActionException {
+        try {
+            JSONObject json = new JSONObject();
+            for (Entry<String, IndicatorValue> entry : values.entrySet()) {
+                entry.getValue().putToJSONObject(json, entry.getKey());
+            }
+            return json;
+        } catch (JSONException e) {
+            throw new ActionException("Something went wrong in serializing indicator data", e);
+        }
     }
 }
