@@ -9,7 +9,7 @@ import fi.nls.oskari.domain.map.view.Bundle;
 
 public class V1_45_2__register_download_basket_bundle implements JdbcMigration{
 
-	private static final String NAMESPACE = "hsy";
+	private static final String NAMESPACE = "framework";
 	private static final String DOWNLOAD_BASKET = "download-basket";
 
 	public void migrate(Connection connection) {
