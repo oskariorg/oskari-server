@@ -9,6 +9,7 @@ import fi.nls.oskari.control.ActionParamsException;
 import fi.nls.oskari.control.statistics.data.*;
 import fi.nls.oskari.control.statistics.plugins.*;
 import fi.nls.oskari.domain.User;
+import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.ResponseHelper;
 
 import org.json.JSONException;
@@ -17,6 +18,7 @@ import org.json.JSONObject;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 
 /**
  * This interface gives the data for one indicator to the frontend for showing it on the map and on the table.
@@ -63,19 +65,12 @@ public class GetIndicatorDataHandler extends ActionHandler {
             long layerId, JSONObject selectorJSON) throws ActionException {
         final StatisticalDatasourcePlugin plugin = PLUGIN_MANAGER.getPlugin(pluginId);
 
-        final String cacheKey;
+        final String cacheKey = GetIndicatorDataHelper.getCacheKey(pluginId, indicatorId, layerId, selectorJSON);
         if (plugin.canCache()) {
-            cacheKey = GetIndicatorDataHelper.getCacheKey(pluginId, indicatorId, layerId, selectorJSON);
-            String cachedData = JedisManager.get(cacheKey);
-            if (cachedData != null && !cachedData.isEmpty()) {
-                try {
-                    return new JSONObject(cachedData);
-                } catch (JSONException e) {
-                    // Failed serializing. Skipping the cache.
-                }
+            JSONObject cached = getFromCache(cacheKey);
+            if (cached != null) {
+                return cached;
             }
-        } else {
-            cacheKey = null;
         }
 
         JSONObject response;
@@ -122,6 +117,11 @@ public class GetIndicatorDataHandler extends ActionHandler {
             JedisManager.setex(cacheKey, JedisManager.EXPIRY_TIME_DAY, response.toString());
         }
         return response;
+    }
+
+    private JSONObject getFromCache(String cacheKey) {
+        String cachedData = JedisManager.get(cacheKey);
+        return JSONHelper.createJSONObject(cachedData);
     }
 
     private JSONObject toJSON(Map<String, IndicatorValue> values) throws JSONException {
