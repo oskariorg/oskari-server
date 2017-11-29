@@ -64,6 +64,9 @@ public class GetIndicatorDataHandler extends ActionHandler {
     public JSONObject getIndicatorDataJSON(User user, long pluginId, String indicatorId,
             long layerId, JSONObject selectorJSON) throws ActionException {
         StatisticalDatasourcePlugin plugin = PLUGIN_MANAGER.getPlugin(pluginId);
+        if (plugin == null) {
+            throw new ActionParamsException("No such datasource");
+        }
 
         String cacheKey = GetIndicatorDataHelper.getCacheKey(pluginId, indicatorId, layerId, selectorJSON);
         if (plugin.canCache()) {
