@@ -147,7 +147,7 @@ public class DownloadServices {
 
 	private void sendErrorReportToEmail(ErrorReportDetails errorDetails) {
 		try {
-			String msg = getMessage("download.basket.wfs.error.msg", errorDetails.getLanguage());
+			String msg = getMessage("oskari.wfs.error.message", errorDetails.getLanguage());
 
 			// Using Multipart because HtmlEmail doesn't handle attachments very
 			// well.
@@ -173,15 +173,15 @@ public class DownloadServices {
 				multipart.addBodyPart(part);
 			}
 
-			email.setSmtpPort(Integer.parseInt(PropertyUtil.getNecessary(("oskari.email.port"))));
+			email.setSmtpPort(Integer.parseInt(PropertyUtil.getNecessary(("oskari.wfs.download.smtp.port"))));
 			email.setCharset("UTF-8");
 
 			email.setContent(multipart);
-			email.setHostName(PropertyUtil.getNecessary("oskari.email.host"));
-			email.setFrom(PropertyUtil.getNecessary("oskari.email.sender"));
-			email.setSubject(getMessage("download.basket.wfs.error.subject", errorDetails.getLanguage()));
+			email.setHostName(PropertyUtil.getNecessary("oskari.wfs.download.smtp.host"));
+			email.setFrom(PropertyUtil.getNecessary("oskari.wfs.download.email.from"));
+			email.setSubject(getMessage("oskari.wfs.download.error.report.subject", errorDetails.getLanguage()));
 			email.addTo(errorDetails.getUserEmail());
-			email.addBcc(PropertyUtil.getNecessary("oskari.support.email"));
+			email.addBcc(PropertyUtil.getNecessary("oskari.wfs.download.error.report.support.email"));
 			email.send();
 		} catch (Exception ex) {
 			LOGGER.error(ex, "Error: e-mail was not sent");
