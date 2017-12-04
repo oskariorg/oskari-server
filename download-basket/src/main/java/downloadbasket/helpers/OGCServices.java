@@ -41,7 +41,7 @@ public class OGCServices {
 			throws JSONException, UnsupportedEncodingException {
 		StringBuilder s = new StringBuilder();
 
-		String[] bboxDownloadTypes = PropertyUtil.getCommaSeparatedList("oskari.wfs.bbox.downloads");
+		String[] bboxDownloadTypes = PropertyUtil.getCommaSeparatedList("oskari.wfs.download.normal.way.downloads");
 		NormalWayDownloads normalDownloads = new NormalWayDownloads();
 		for (String download : bboxDownloadTypes) {
 			normalDownloads.addDownload(download);
