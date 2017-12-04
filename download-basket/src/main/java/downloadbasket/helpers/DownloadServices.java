@@ -54,7 +54,6 @@ public class DownloadServices {
 	 */
 	public String loadZip(LoadZipDetails ldz, Locale locale) throws IOException {
 		String realFileName = "";
-		String returnFileName = "";
 		HttpURLConnection conn = null;
 
 		try {
@@ -97,34 +96,23 @@ public class DownloadServices {
 		} catch (Exception ex) {
 			LOGGER.error("Error: ", ex);
 		}
-		return returnFileName;
+		return realFileName;
 	}
 
 	/**
-	 * Check at is zipfile valid.
+	 * Check if zipfile is valid.
 	 * 
 	 * @param file
 	 *            zip file
 	 * @return
 	 */
-	static boolean isValid(final File file) {
-		ZipFile zipfile = null;
+	public boolean isValid(File file) {
 
-		try {
-			zipfile = new ZipFile(file);
+		try (ZipFile zipFile = new ZipFile(file)) {
 			return true;
-		} catch (ZipException e) {
-			return false;
 		} catch (IOException e) {
+			LOGGER.debug("Zip-file is not valid", e);
 			return false;
-		} finally {
-			try {
-				if (zipfile != null) {
-					zipfile.close();
-					zipfile = null;
-				}
-			} catch (IOException e) {
-			}
 		}
 	}
 

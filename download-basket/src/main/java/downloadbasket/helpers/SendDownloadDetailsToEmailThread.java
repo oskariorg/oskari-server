@@ -130,6 +130,7 @@ public class SendDownloadDetailsToEmailThread implements Runnable {
 
 			ZipOutputStream out = null;
 			String strZipFileName = UUID.randomUUID().toString() + ".zip";
+
 			try {
 				File f = new File(strTempDir);
 				f.mkdirs();
@@ -177,7 +178,7 @@ public class SendDownloadDetailsToEmailThread implements Runnable {
 						LOGGER.error("Cannot parse JSON download details", ex);
 					} finally {
 						if (in != null)
-							in.close();
+							IOHelper.close(in);
 					}
 				}
 
