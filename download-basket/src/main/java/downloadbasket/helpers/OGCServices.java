@@ -166,7 +166,7 @@ public class OGCServices {
 	public static String doGetFeatureUrl(String srs, JSONObject download, boolean addNameSpace) throws JSONException {
 		String getFeatureUrl = "";
 		StringBuilder s = new StringBuilder();
-		s.append(PropertyUtil.get("download.basket.wfs.service.url"));
+		s.append(PropertyUtil.get("oskari.wfs.service.url"));
 
 		s.append("?SERVICE=wfs&version=1.0.0&request=GetFeature&srsName=");
 		s.append(srs);
