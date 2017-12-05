@@ -21,6 +21,7 @@ import fi.nls.oskari.wmts.domain.TileMatrixSet;
 import fi.nls.oskari.wmts.domain.WMTSCapabilities;
 import fi.nls.oskari.wmts.domain.WMTSCapabilitiesLayer;
 import fi.nls.oskari.worker.ScheduledJob;
+
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -35,7 +36,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 /**
- * ScheludedJob that updates Capabilities of WMTS layers
+ * ScheludedJob that updates Capabilities of WMS and WMTS layers
  * <ul>
  * <li>Updates oskari_capabilities_cache rows</li>
  * <li>Updates OskariLayer objects via #setCapabilities()</li>
@@ -83,7 +84,13 @@ public class UpdateCapabilitiesJob extends ScheduledJob {
     }
 
     protected boolean canUpdate(String type) {
-        return OskariLayer.TYPE_WMTS.equals(type);
+        switch (type) {
+        case OskariLayer.TYPE_WMS:
+        case OskariLayer.TYPE_WMTS:
+            return true;
+        default:
+            return false;
+        }
     }
 
     protected void sortLayersByUrlTypeVersion(List<OskariLayer> layers) {
@@ -160,6 +167,9 @@ public class UpdateCapabilitiesJob extends ScheduledJob {
         }
 
         switch (type) {
+        case OskariLayer.TYPE_WMS:
+            // TODO: implement
+            break;
         case OskariLayer.TYPE_WMTS:
             try {
                 WMTSCapabilities wmts = WMTSCapabilitiesParser.parseCapabilities(data);
