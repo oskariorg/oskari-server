@@ -248,14 +248,14 @@ public class UpdateCapabilitiesJob extends ScheduledJob {
 
     static class UrlTypeVersion {
 
-        final String url;
-        final String type;
-        final String version;
+        private final String url;
+        private final String type;
+        private final String version;
 
-        public UrlTypeVersion(OskariLayer layer) {
-            this.url = layer.getSimplifiedUrl(true);
-            this.type = layer.getType();
-            this.version = layer.getVersion();
+        private UrlTypeVersion(OskariLayer layer) {
+            url = layer.getSimplifiedUrl(true);
+            type = layer.getType();
+            version = layer.getVersion();
         }
 
         @Override
