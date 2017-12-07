@@ -4,40 +4,27 @@ import static java.util.stream.Collectors.groupingBy;
 
 import java.sql.Timestamp;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
 
 import javax.xml.stream.XMLStreamException;
-
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 import fi.mml.map.mapwindow.service.wms.WebMapService;
 import fi.nls.oskari.annotation.Oskari;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.map.geometry.ProjectionHelper;
 import fi.nls.oskari.map.layer.OskariLayerService;
 import fi.nls.oskari.map.layer.OskariLayerServiceIbatisImpl;
-import fi.nls.oskari.map.layer.formatters.LayerJSONFormatterWMTS;
 import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.service.capabilities.CapabilitiesCacheService;
 import fi.nls.oskari.service.capabilities.CapabilitiesCacheServiceMybatisImpl;
 import fi.nls.oskari.service.capabilities.OskariLayerCapabilities;
 import fi.nls.oskari.service.capabilities.OskariLayerCapabilitiesHelper;
-import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.wmts.WMTSCapabilitiesParser;
-import fi.nls.oskari.wmts.domain.ResourceUrl;
-import fi.nls.oskari.wmts.domain.TileMatrixLink;
-import fi.nls.oskari.wmts.domain.TileMatrixSet;
 import fi.nls.oskari.wmts.domain.WMTSCapabilities;
-import fi.nls.oskari.wmts.domain.WMTSCapabilitiesLayer;
 import fi.nls.oskari.worker.ScheduledJob;
 
 /**
@@ -137,7 +124,7 @@ public class UpdateCapabilitiesJob extends ScheduledJob {
         for (OskariLayer layer : layers) {
             WebMapService wms = OskariLayerCapabilitiesHelper.parseWMSCapabilities(data, layer);
             if (wms == null) {
-                LOG.warn("Failed to parse WMS Capabilities for layerId:", layer.getId());
+                LOG.warn("Failed to parse Capabilities for layerId:", layer.getId());
                 continue;
             }
             OskariLayerCapabilitiesHelper.setPropertiesFromCapabilitiesWMS(wms, layer);
@@ -150,9 +137,13 @@ public class UpdateCapabilitiesJob extends ScheduledJob {
         if (wmts == null) {
             return false;
         }
+
         for (OskariLayer layer : layers) {
-            if (updateWMTS(wmts, layer)) {
+            try {
+                OskariLayerCapabilitiesHelper.setPropertiesFromCapabilitiesWMTS(wmts, layer, null);
                 layerService.update(layer);
+            } catch (IllegalArgumentException e) {
+                LOG.warn(e, "Failed to update layerId:", layer.getId());
             }
         }
         return true;
@@ -190,7 +181,7 @@ public class UpdateCapabilitiesJob extends ScheduledJob {
                     "type:", type, "version:", version);
         } else {
             LOG.info("Could not find capabilities from cache, url:", url,
-                "type:", type, "version:", version);
+                    "type:", type, "version:", version);
         }
         return null;
     }
@@ -209,53 +200,6 @@ public class UpdateCapabilitiesJob extends ScheduledJob {
             }
             return null;
         }
-    }
-
-    private boolean updateWMTS(WMTSCapabilities wmts, OskariLayer layer) {
-        int id = layer.getId();
-        String name = layer.getName();
-
-        WMTSCapabilitiesLayer layerCaps = wmts.getLayer(name);
-        if (layerCaps == null) {
-            // TODO: Add notification via admin notification service (once such service is built)
-            LOG.warn("Couldn't find layer from Capabilities! Layer id:", id, "name:", name);
-            return false;
-        }
-
-        ResourceUrl resUrl = layerCaps.getResourceUrlByType("tile");
-        if (resUrl == null) {
-            // TODO: Add notification via admin notification service (once such service is built)
-            LOG.warn("Couldn't find ResourceUrl of type 'tile' from GetCapabilities"
-                    + " layer id:", id, "name:", name);
-            return false;
-        }
-
-        JSONObject options = layer.getOptions();
-        JSONHelper.putValue(options, "requestEncoding", "REST");
-        JSONHelper.putValue(options, "format", resUrl.getFormat());
-        JSONHelper.putValue(options, "urlTemplate", resUrl.getTemplate());
-
-        JSONArray epsgToTileMatrixSet = new JSONArray();
-        Set<String> supportedCrs = new HashSet<String>();
-
-        for (TileMatrixLink link : layerCaps.getLinks()) {
-            TileMatrixSet tms = link.getTileMatrixSet();
-            String identifier = tms.getId();
-            String crs = tms.getCrs();
-            String epsg = ProjectionHelper.shortSyntaxEpsg(crs);
-            epsgToTileMatrixSet.put(JSONHelper.createJSONObject(epsg, identifier));
-            supportedCrs.add(epsg);
-        }
-
-        JSONObject capabilitiesJSON = new JSONObject();
-        if (epsgToTileMatrixSet.length() > 0) {
-            JSONHelper.put(capabilitiesJSON,
-                    LayerJSONFormatterWMTS.KEY_TILEMATRIXIDS, epsgToTileMatrixSet);
-        }
-        layer.setCapabilities(capabilitiesJSON);
-        layer.setSupportedCRSs(supportedCrs);
-
-        return true;
     }
 
     static class UrlTypeVersion {

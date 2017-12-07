@@ -74,7 +74,7 @@ public class OskariLayerCapabilitiesHelper {
              */
             LOG.warn("Can not find Layer from GetCapabilities"
                     + " layer id", id, "name", name);
-            throw new NullPointerException();
+            throw new IllegalArgumentException();
         }
 
         ResourceUrl resUrl = layer.getResourceUrlByType("tile");
@@ -84,7 +84,7 @@ public class OskariLayerCapabilitiesHelper {
              */
             LOG.warn("Can not find ResourceUrl of type 'tile' from GetCapabilities"
                     + " layer id", id, "name", name);
-            throw new NullPointerException();
+            throw new IllegalArgumentException();
         }
 
         JSONObject options = ml.getOptions();
