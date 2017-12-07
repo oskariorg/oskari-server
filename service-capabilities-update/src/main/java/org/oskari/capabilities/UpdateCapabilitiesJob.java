@@ -8,6 +8,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 
 import javax.xml.stream.XMLStreamException;
@@ -99,9 +100,11 @@ public class UpdateCapabilitiesJob extends ScheduledJob {
 
     protected void updateCapabilitiesGroup(UrlTypeVersion utv,
             List<OskariLayer> layers, Timestamp oldestAllowed) {
-        String url = utv.url;
-        String type = utv.type;
-        String version = utv.version;
+        final String url = utv.url;
+        final String type = utv.type;
+        final String version = utv.version;
+        final String user = layers.get(0).getUsername();
+        final String pass = layers.get(0).getPassword();
 
         int[] ids = layers.stream().mapToInt(l -> l.getId()).toArray();
         if (LOG.isDebugEnabled()) {
@@ -109,22 +112,9 @@ public class UpdateCapabilitiesJob extends ScheduledJob {
                     "type:", type, "version:", version, "ids:", Arrays.toString(ids));
         }
 
-        String data = getFromCache(url, type, version, oldestAllowed);
+        final String data = getCapabilities(url, type, version, user, pass, oldestAllowed);
         if (data == null || data.isEmpty()) {
-            /*
-             * If cache didn't have it
-             * or it was too old
-             * or cached value happened to be empty for whatever reason
-             * -> try to get it straight from the service
-             */
-            if (containsDifferentUsernames(layers)) {
-                LOG.warn("OH NOES!");
-            }
-            data = getFromService(url, type, version,
-                    layers.get(0).getUsername(), layers.get(0).getPassword());
-            if (data == null || data.isEmpty()) {
-                return;
-            }
+            return;
         }
 
         switch (type) {
@@ -132,53 +122,50 @@ public class UpdateCapabilitiesJob extends ScheduledJob {
             // TODO: implement
             break;
         case OskariLayer.TYPE_WMTS:
+            WMTSCapabilities wmts;
             try {
-                WMTSCapabilities wmts = WMTSCapabilitiesParser.parseCapabilities(data);
-                capabilitiesCacheService.save(new OskariLayerCapabilities(url, type, version, data));
-                for (OskariLayer layer : layers) {
-                    if (updateWMTS(wmts, layer)) {
-                        layerService.update(layer);
-                    }
-                }
+                wmts = WMTSCapabilitiesParser.parseCapabilities(data);
             } catch (XMLStreamException | IllegalArgumentException e) {
                 LOG.warn(e, "Failed to parse WMTS GetCapabilities - url:", url,
                         "type:", type, "version:", version);
+                break;
+            }
+            // Save to cache only if data was parse-able
+            capabilitiesCacheService.save(new OskariLayerCapabilities(url, type, version, data));
+            for (OskariLayer layer : layers) {
+                if (updateWMTS(wmts, layer)) {
+                    layerService.update(layer);
+                }
             }
             break;
-            // Add more cases
         }
 
     }
 
-    private boolean containsDifferentUsernames(List<OskariLayer> layers) {
-        String old = layers.get(0).getUsername();
-        for (int i = 1; i < layers.size(); i++) {
-            String username = layers.get(i).getUsername();
-            if (old == null) {
-                if (username != null) {
-                    return true;
-                }
-            } else {
-                if (!old.equals(username)) {
-                    return true;
-                }
+    private String getCapabilities(String url, String type, String version,
+            String user, String pass, Timestamp oldestAllowed) {
+        // If oldestAllowed is null we don't want to check cache
+        if (oldestAllowed != null) {
+            String cached = getFromCache(url, type, version, oldestAllowed);
+            if (cached != null && !cached.isEmpty()) {
+                return cached;
             }
-
         }
-        return false;
+        return getFromService(url, type, version, user, pass);
     }
 
     protected String getFromCache(String url, String type, String version, Timestamp oldestAllowed) {
-        if (oldestAllowed != null) {
-            OskariLayerCapabilities cached = capabilitiesCacheService.find(url, type, version);
-            // Check if we actually found data from DB and if it's recently updated
-            if (cached != null) {
-                if (cached.getUpdated().after(oldestAllowed)) {
-                    return cached.getData();
-                }
-                LOG.warn("Found data from cache, but it was too old - url:", url,
-                        "type:", type, "version:", version);
+        OskariLayerCapabilities cached = capabilitiesCacheService.find(url, type, version);
+        // Check if we actually found data from DB and if it's recently updated
+        if (cached != null) {
+            if (cached.getUpdated().after(oldestAllowed)) {
+                return cached.getData();
             }
+            LOG.warn("Found capabilities from cache, but it was too old, url:", url,
+                    "type:", type, "version:", version);
+        } else {
+            LOG.info("Could not find capabilities from cache, url:", url,
+                "type:", type, "version:", version);
         }
         return null;
     }
