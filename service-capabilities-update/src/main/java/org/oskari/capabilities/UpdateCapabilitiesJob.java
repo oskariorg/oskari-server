@@ -99,10 +99,10 @@ public class UpdateCapabilitiesJob extends ScheduledJob {
 
     protected void updateCapabilitiesGroup(UrlTypeVersion utv,
             List<OskariLayer> layers, Timestamp oldestAllowed) {
-        String url = utv.getUrl();
-        String type = utv.getType();
-        String version = utv.getVersion();
-        
+        String url = utv.url;
+        String type = utv.type;
+        String version = utv.version;
+
         int[] ids = layers.stream().mapToInt(l -> l.getId()).toArray();
         if (LOG.isDebugEnabled()) {
             LOG.debug("Updating Capabilities for a group of layers - url:", url,
@@ -248,9 +248,9 @@ public class UpdateCapabilitiesJob extends ScheduledJob {
 
     static class UrlTypeVersion {
 
-        private final String url;
-        private final String type;
-        private final String version;
+        final String url;
+        final String type;
+        final String version;
 
         public UrlTypeVersion(OskariLayer layer) {
             this.url = layer.getSimplifiedUrl(true);
@@ -258,24 +258,9 @@ public class UpdateCapabilitiesJob extends ScheduledJob {
             this.version = layer.getVersion();
         }
 
-        public String getUrl() {
-            return url;
-        }
-
-        public String getType() {
-            return type;
-        }
-
-        public String getVersion() {
-            return version;
-        }
-
         @Override
         public boolean equals(Object o) {
-            if (o == null) {
-                return false;
-            }
-            if (!(o instanceof UrlTypeVersion)) {
+            if (o == null || !(o instanceof UrlTypeVersion)) {
                 return false;
             }
             UrlTypeVersion s = (UrlTypeVersion) o;
