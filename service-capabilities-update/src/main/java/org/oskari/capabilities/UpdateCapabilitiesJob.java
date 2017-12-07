@@ -1,6 +1,19 @@
 package org.oskari.capabilities;
 
-import static java.util.stream.Collectors.*;
+import static java.util.stream.Collectors.groupingBy;
+
+import java.sql.Timestamp;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+
+import javax.xml.stream.XMLStreamException;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import fi.nls.oskari.annotation.Oskari;
 import fi.nls.oskari.domain.map.OskariLayer;
@@ -23,16 +36,6 @@ import fi.nls.oskari.wmts.domain.TileMatrixSet;
 import fi.nls.oskari.wmts.domain.WMTSCapabilities;
 import fi.nls.oskari.wmts.domain.WMTSCapabilitiesLayer;
 import fi.nls.oskari.worker.ScheduledJob;
-
-import java.sql.Timestamp;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import javax.xml.stream.XMLStreamException;
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 /**
  * ScheludedJob that updates Capabilities of WMS and WMTS layers
@@ -70,28 +73,21 @@ public class UpdateCapabilitiesJob extends ScheduledJob {
 
     @Override
     public void execute(Map<String, Object> params) {
-        List<OskariLayer> allLayers = layerService.findAll();
-        Map<UrlTypeVersion, List<OskariLayer>> layersByUrlTypeVersion = filterAndGroup(allLayers);
+        Map<UrlTypeVersion, List<OskariLayer>> layersByUrlTypeVersion = layerService.findAll()
+                .stream()
+                .filter(l -> canUpdate(l.getType()))
+                .collect(groupingBy(l -> new UrlTypeVersion(l)));
 
         long now = System.currentTimeMillis();
         Timestamp oldestAllowed = maxAge > 0L ? new Timestamp(now - maxAge) : null;
         for (Map.Entry<UrlTypeVersion, List<OskariLayer>> group : layersByUrlTypeVersion.entrySet()) {
             UrlTypeVersion utv = group.getKey();
-            String url = utv.getUrl();
-            String type = utv.getType();
-            String version = utv.getVersion();
             List<OskariLayer> layers = group.getValue();
-            updateCapabilitiesGroup(url, type, version, layers, oldestAllowed);
+            updateCapabilitiesGroup(utv, layers, oldestAllowed);
         }
     }
 
-    protected Map<UrlTypeVersion, List<OskariLayer>> filterAndGroup(List<OskariLayer> layers) {
-        return layers.stream()
-                .filter(l -> canUpdate(l.getType()))
-                .collect(groupingBy(l -> new UrlTypeVersion(l)));
-    }
-
-    protected boolean canUpdate(String type) {
+    protected static boolean canUpdate(String type) {
         switch (type) {
         case OskariLayer.TYPE_WMS:
         case OskariLayer.TYPE_WMTS:
@@ -101,7 +97,12 @@ public class UpdateCapabilitiesJob extends ScheduledJob {
         }
     }
 
-    protected void updateCapabilitiesGroup(String url, String type, String version, List<OskariLayer> layers, Timestamp oldestAllowed) {
+    protected void updateCapabilitiesGroup(UrlTypeVersion utv,
+            List<OskariLayer> layers, Timestamp oldestAllowed) {
+        String url = utv.getUrl();
+        String type = utv.getType();
+        String version = utv.getVersion();
+        
         int[] ids = layers.stream().mapToInt(l -> l.getId()).toArray();
         if (LOG.isDebugEnabled()) {
             LOG.debug("Updating Capabilities for a group of layers - url:", url,
@@ -245,7 +246,7 @@ public class UpdateCapabilitiesJob extends ScheduledJob {
         return true;
     }
 
-    private final class UrlTypeVersion {
+    static class UrlTypeVersion {
 
         private final String url;
         private final String type;
@@ -281,6 +282,11 @@ public class UpdateCapabilitiesJob extends ScheduledJob {
             return url.equals(s.url)
                     && type.equals(s.type)
                     && version.equals(s.version);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(url, type, version);
         }
 
     }
