@@ -279,19 +279,22 @@ public class LayerJSONFormatterWMS extends LayerJSONFormatter {
         }
         return formatJSON;
     }
+
     /**
-     * Constructs a  csr set containing the supported coordinate ref systems of WMS service
+     * Constructs a unique set of coordinate ref systems supported by the WMS service
      *
      * @param wms WebMapService
-     * @return Set<String> containing the supported coordinate ref systems of WMS service
+     * @return Set<String> containing the supported coordinate ref systems of the WMS service
      */
     public static Set<String> getCRSs(WebMapService wms) {
-        if(wms.getCRSs().length > 0){
-            final Set<String> crss = new HashSet<String>(Arrays.asList(wms.getCRSs()));
-            return crss;
+        String[] crss = wms.getCRSs();
+        if (crss == null || crss.length == 0) {
+            return Collections.emptySet();
         }
-
-
-        return null;
+        Set<String> set = new HashSet<>(crss.length);
+        for (String crs : crss) {
+            set.add(crs);
+        }
+        return set;
     }
 }
