@@ -16,6 +16,7 @@ import javax.xml.stream.XMLStreamException;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import fi.mml.map.mapwindow.service.wms.WebMapService;
 import fi.nls.oskari.annotation.Oskari;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.log.LogFactory;
@@ -28,6 +29,7 @@ import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.service.capabilities.CapabilitiesCacheService;
 import fi.nls.oskari.service.capabilities.CapabilitiesCacheServiceMybatisImpl;
 import fi.nls.oskari.service.capabilities.OskariLayerCapabilities;
+import fi.nls.oskari.service.capabilities.OskariLayerCapabilitiesHelper;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.wmts.WMTSCapabilitiesParser;
@@ -119,27 +121,50 @@ public class UpdateCapabilitiesJob extends ScheduledJob {
 
         switch (type) {
         case OskariLayer.TYPE_WMS:
-            // TODO: implement
+            updateWMSLayers(layers, data);
             break;
         case OskariLayer.TYPE_WMTS:
-            WMTSCapabilities wmts;
-            try {
-                wmts = WMTSCapabilitiesParser.parseCapabilities(data);
-            } catch (XMLStreamException | IllegalArgumentException e) {
-                LOG.warn(e, "Failed to parse WMTS GetCapabilities - url:", url,
-                        "type:", type, "version:", version);
-                break;
-            }
-            // Save to cache only if data was parse-able
-            capabilitiesCacheService.save(new OskariLayerCapabilities(url, type, version, data));
-            for (OskariLayer layer : layers) {
-                if (updateWMTS(wmts, layer)) {
-                    layerService.update(layer);
-                }
+            boolean success = updateWMTSLayers(layers, data);
+            if (success) {
+                capabilitiesCacheService.save(new OskariLayerCapabilities(url, type, version, data));
             }
             break;
         }
 
+    }
+
+    private void updateWMSLayers(List<OskariLayer> layers, String data) {
+        for (OskariLayer layer : layers) {
+            WebMapService wms = OskariLayerCapabilitiesHelper.parseWMSCapabilities(data, layer);
+            if (wms == null) {
+                LOG.warn("Failed to parse WMS Capabilities for layerId:", layer.getId());
+                continue;
+            }
+            OskariLayerCapabilitiesHelper.setPropertiesFromCapabilitiesWMS(wms, layer);
+            layerService.update(layer);
+        }
+    }
+
+    private boolean updateWMTSLayers(List<OskariLayer> layers, String data) {
+        WMTSCapabilities wmts = parseWMTSCapabilities(data);
+        if (wmts == null) {
+            return false;
+        }
+        for (OskariLayer layer : layers) {
+            if (updateWMTS(wmts, layer)) {
+                layerService.update(layer);
+            }
+        }
+        return true;
+    }
+
+    private WMTSCapabilities parseWMTSCapabilities(String data) {
+        try {
+            return WMTSCapabilitiesParser.parseCapabilities(data);
+        } catch (XMLStreamException | IllegalArgumentException e) {
+            LOG.warn(e, "Failed to parse WMTS GetCapabilities");
+            return null;
+        }
     }
 
     private String getCapabilities(String url, String type, String version,
@@ -154,7 +179,7 @@ public class UpdateCapabilitiesJob extends ScheduledJob {
         return getFromService(url, type, version, user, pass);
     }
 
-    protected String getFromCache(String url, String type, String version, Timestamp oldestAllowed) {
+    private String getFromCache(String url, String type, String version, Timestamp oldestAllowed) {
         OskariLayerCapabilities cached = capabilitiesCacheService.find(url, type, version);
         // Check if we actually found data from DB and if it's recently updated
         if (cached != null) {
@@ -170,7 +195,7 @@ public class UpdateCapabilitiesJob extends ScheduledJob {
         return null;
     }
 
-    protected String getFromService(String url, String type, String version, String user, String pass) {
+    private String getFromService(String url, String type, String version, String user, String pass) {
         try {
             return CapabilitiesCacheService.loadCapabilitiesFromService(url, type, version, user, pass);
         } catch (ServiceException e) {
