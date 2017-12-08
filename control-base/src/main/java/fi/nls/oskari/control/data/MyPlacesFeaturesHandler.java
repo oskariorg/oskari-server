@@ -73,13 +73,17 @@ public class MyPlacesFeaturesHandler extends RestActionHandler {
 
     public void handlePost(ActionParameters params) throws ActionException {
         //params.requireLoggedInUser();
-        JSONObject responseJson = new JSONObject();
         try {
+            JSONObject responseJson = new JSONObject();
             String jsonString = params.getHttpParam(PARAM_FEATURES);
             OMElement request = requestBuilder.buildFeaturesInsert(params.getUser(), jsonString);
             String response = GeoServerHelper.sendRequest(request);
             JSONArray idList = responseBuilder.buildFeaturesInsert(response);
             JSONHelper.putValue(responseJson, JSKEY_IDLIST, idList);
+            request = requestBuilder.buildFeaturesGetByIds(params.getUser(), idList.join(","));
+            response = GeoServerHelper.sendRequest(request);
+            JSONArray features = responseBuilder.buildFeaturesGet(response);
+            JSONHelper.putValue(responseJson, JSKEY_FEATURES, features);
             ResponseHelper.writeResponse(params, responseJson);
         }
         catch (Exception e) {
@@ -89,15 +93,25 @@ public class MyPlacesFeaturesHandler extends RestActionHandler {
 
     public void handlePut(ActionParameters params) throws ActionException {
         //params.requireLoggedInUser();
-        JSONObject responseJson = new JSONObject();
-
         try {
+            JSONObject responseJson = new JSONObject();
             String jsonString = params.getHttpParam(PARAM_FEATURES);
             OMElement request = requestBuilder.buildFeaturesUpdate(params.getUser(), jsonString);
             String response = GeoServerHelper.sendRequest(request);
             int updated = responseBuilder.buildFeaturesUpdate(response);
             JSONHelper.putValue(responseJson, JSKEY_SUCCESS, true); //TODO add checking
             JSONHelper.putValue(responseJson, JSKEY_UPDATED, updated);
+            //get feature ids
+            JSONArray jsonArray = new JSONArray(jsonString);
+            String idList = "";
+            for (int i=0; i < jsonArray.length(); i++){
+                idList += jsonArray.getJSONObject(i).get("id");
+            }
+            request = requestBuilder.buildFeaturesGetByIds(params.getUser(), idList);
+            response = GeoServerHelper.sendRequest(request);
+            //add features to response
+            JSONArray features = responseBuilder.buildFeaturesGet(response);
+            JSONHelper.putValue(responseJson, JSKEY_FEATURES, features);
             ResponseHelper.writeResponse(params, responseJson);
         }
         catch (Exception e) {
