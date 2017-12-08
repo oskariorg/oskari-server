@@ -201,10 +201,10 @@ public class LayerJSONFormatterWMS extends LayerJSONFormatter {
         String time = times.get(0);
         int i = time.indexOf('/');
         if (i < 0) {
-            // One or more singular values
+            // Singular value(s)
             JSONHelper.put(wrapper, KEY_TIMES, new JSONArray(times));
         } else {
-            // First one is (potentially) a TimeRange
+            // First one is potentially a TimeRange
             JSONHelper.putValue(wrapper, KEY_TIMES, parseTimeRange(time, i));
             if (times.size() > 1) {
                 log.info("Handled only one (1) TimeRange out of", times.size());
