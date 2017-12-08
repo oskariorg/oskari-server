@@ -2,21 +2,22 @@ package fi.mml.map.mapwindow.service.wms;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Map;
+import java.util.Optional;
 
-import javax.xml.namespace.QName;
+import org.apache.xmlbeans.XmlCursor;
+import org.apache.xmlbeans.XmlObject;
 
 import fi.mml.wms.v111.Format;
 import fi.mml.wms.v111.GetFeatureInfo;
 import fi.mml.wms.v111.Keyword;
 import fi.mml.wms.v111.Layer;
 import fi.mml.wms.v111.LegendURL;
-import fi.mml.wms.v111.Name;
 import fi.mml.wms.v111.SRS;
 import fi.mml.wms.v111.Style;
-import fi.mml.wms.v111.Title;
 import fi.mml.wms.v111.WMTMSCapabilitiesDocument;
-import fi.nls.oskari.map.geometry.ProjectionHelper;
 
 /**
  * 1.1.1 implementation of WMS
@@ -36,15 +37,17 @@ public class WebMapServiceV1_1_1_Impl extends AbstractWebMapService {
         try {
             WMTMSCapabilitiesDocument wmtms = WMTMSCapabilitiesDocument.Factory.parse(data);
 
-            Layer rootLayer = wmtms.getWMTMSCapabilities().getCapability().getLayer();
+            Layer layerCapabilities = wmtms.getWMTMSCapabilities().getCapability().getLayer();
             LinkedList<Layer> path = new LinkedList<>();
-            boolean found = find(rootLayer, layerName, path, 0);
+            boolean found = find(layerCapabilities, layerName, path, 0);
             if (!found) {
                 throw new WebMapServiceParseException("Could not find layer");
             }
 
+            this.styles = new HashMap<>();
+            this.legends = new HashMap<>();
             for (Layer layer : path) {
-                parseStylesAndLegends(layer);
+                parseStylesAndLegends(layer, styles, legends);
             }
             this.formats = parseFormats(wmtms);
             this.CRSs = parseCRSs(wmtms);
@@ -54,7 +57,9 @@ public class WebMapServiceV1_1_1_Impl extends AbstractWebMapService {
             this.time = Arrays.stream(layer.getExtentArray())
                 .filter(ext -> "time".equals(ext.getName()))
                 .findAny()
-                .map(ext -> Arrays.asList(ext.xmlText().split(",")))
+                .map(ext -> getText(ext))
+                .map(Optional::get)
+                .map(s -> Arrays.asList(s.split(",")))
                 .orElse(Collections.emptyList());
             this.keywords = parseKeywords(layer);
         } catch (Exception e) {
@@ -78,7 +83,7 @@ public class WebMapServiceV1_1_1_Impl extends AbstractWebMapService {
                     "We tried to parse layers to fifth level of recursion,"
                     + " this is too much. Cancel.");
         }
-        if (layerName.equals(layer.getName().xmlText())) {
+        if (layerName.equals(getText(layer.getName()).orElse(null))) {
             // Add current layer before returning
             path.addLast(layer);
             return true;
@@ -98,38 +103,31 @@ public class WebMapServiceV1_1_1_Impl extends AbstractWebMapService {
         return false;
     }
 
-    private void parseStylesAndLegends(Layer layer) {
+    private void parseStylesAndLegends(Layer layer,
+            Map<String, String> styles,
+            Map<String, String> legends) {
         Style[] stylesArray = layer.getStyleArray();
         if (stylesArray == null) {
             return;
         }
         for (Style style : stylesArray) {
-            Name name = style.getName();
-            if (name == null) {
+            Optional<String> styleNameOpt = getText(style.getName());
+            if (!styleNameOpt.isPresent()) {
                 continue;
             }
-            String styleName = name.xmlText();
+            String styleName = styleNameOpt.get();
+            String styleTitle = getText(style.getTitle()).orElse(styleName);
 
-            Title title = style.getTitle();
-            String styleTitle = title.xmlText();
-            if (title != null) {
-                styleTitle = title.xmlText();
-            }
-            // Use styleName if styleTitle is not available
-            if (styleTitle == null || styleTitle.isEmpty()) {
-                styleTitle = styleName;
-            }
-
-            this.styles.put(styleName, styleTitle);
+            styles.put(styleName, styleTitle);
 
             LegendURL[] lurl = style.getLegendURLArray();
             if (lurl == null || lurl.length == 0 || lurl[0].getOnlineResource() == null) {
                 continue;
             }
             /* OnlineResource is in xlink namespace */
-            String href = lurl[0].getOnlineResource().newCursor().getAttributeText(new QName("http://www.w3.org/1999/xlink", "href"));
+            String href = lurl[0].getOnlineResource().newCursor().getAttributeText(XLINK_HREF);
             if (href != null) {
-                this.legends.put(styleName + LEGEND_HASHMAP_KEY_SEPARATOR + styleTitle, href);
+                legends.put(styleName + LEGEND_HASHMAP_KEY_SEPARATOR + styleTitle, href);
             }
         }
     }
@@ -140,7 +138,8 @@ public class WebMapServiceV1_1_1_Impl extends AbstractWebMapService {
             if (words != null) {
                 String[] keywords = new String[words.length];
                 for (int i = 0; i < words.length; i++) {
-                    keywords[i] = words[i].xmlText();
+                    keywords[i] = getText(words[i])
+                            .orElseThrow(() -> new IllegalArgumentException("Empty keyword"));
                 }
                 return keywords;
             }
@@ -154,7 +153,8 @@ public class WebMapServiceV1_1_1_Impl extends AbstractWebMapService {
             Format[] tmpformats = gfi.getFormatArray();
             String[] formats = new String[tmpformats.length];
             for (int i = 0; i < tmpformats.length; i++) {
-                formats[i] = tmpformats[i].newCursor().getTextValue();
+                formats[i] = getText(tmpformats[i])
+                        .orElseThrow(() -> new IllegalArgumentException("Empty format"));
             }
             return formats;
         }
@@ -165,9 +165,25 @@ public class WebMapServiceV1_1_1_Impl extends AbstractWebMapService {
         SRS[] crss = wmtms.getWMTMSCapabilities().getCapability().getLayer().getSRSArray();
         String[] CRSs = new String[crss.length];
         for (int i = 0; i < crss.length; i++) {
-            CRSs[i] = ProjectionHelper.shortSyntaxEpsg(crss[i].newCursor().getTextValue());
+            CRSs[i] = getText(crss[i])
+                    .orElseThrow(() -> new IllegalArgumentException("Empty EPSG code"));
         }
         return CRSs;
+    }
+
+    private static Optional<String> getText(XmlObject obj) {
+        if (obj == null) {
+            return Optional.empty();
+        }
+        XmlCursor cursor = obj.newCursor();
+        if (cursor == null) {
+            return Optional.empty();
+        }
+        String text = cursor.getTextValue();
+        if (text == null || text.isEmpty()) {
+            return Optional.empty();
+        }
+        return Optional.of(text);
     }
 
 }

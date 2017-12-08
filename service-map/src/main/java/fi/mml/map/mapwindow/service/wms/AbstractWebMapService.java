@@ -1,6 +1,5 @@
 package fi.mml.map.mapwindow.service.wms;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -11,20 +10,19 @@ public abstract class AbstractWebMapService implements WebMapService {
     protected static final QName XLINK_HREF = new QName("http://www.w3.org/1999/xlink", "href");
     protected static final String LEGEND_HASHMAP_KEY_SEPARATOR = "_";
 
-    protected AbstractWebMapService(String getCapabilitiesUrl) {
-        this.getCapabilitiesUrl = getCapabilitiesUrl;
-    }
-
     protected String getCapabilitiesUrl;
-    protected boolean queryable = false;
+    protected boolean queryable;
     protected String[] formats;
     protected String[] keywords;
     protected String[] CRSs;
     protected List<String> time;
-    protected Map<String, String> styles = new HashMap<String, String>();
-    protected Map<String, String> legends = new HashMap<String, String>();
+    protected Map<String, String> styles;
+    protected Map<String, String> legends;
 
-    @Override
+    protected AbstractWebMapService(String getCapabilitiesUrl) {
+        this.getCapabilitiesUrl = getCapabilitiesUrl;
+    }
+
     public String getCapabilitiesUrl() {
         return null;
     }

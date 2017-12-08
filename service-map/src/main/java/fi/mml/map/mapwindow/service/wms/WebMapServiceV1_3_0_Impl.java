@@ -2,7 +2,9 @@ package fi.mml.map.mapwindow.service.wms;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Map;
 
 import fi.mml.capabilities.KeywordDocument;
 import fi.mml.capabilities.LayerDocument.Layer;
@@ -29,18 +31,20 @@ public class WebMapServiceV1_3_0_Impl extends AbstractWebMapService {
 		try {
 			WMSCapabilitiesDocument wms = WMSCapabilitiesDocument.Factory.parse(data);
 
-			Layer rootLayer = wms.getWMSCapabilities().getCapability().getLayer();
+			Layer layerCapabilities = wms.getWMSCapabilities().getCapability().getLayer();
 			LinkedList<Layer> path = new LinkedList<>();
-			boolean found = find(rootLayer, layerName, path, 0);
+			boolean found = find(layerCapabilities, layerName, path, 0);
 			if (!found) {
                 throw new WebMapServiceParseException("Could not find layer");
 			}
 
+			this.styles = new HashMap<>();
+            this.legends = new HashMap<>();
 			for (Layer layer : path) {
-			    parseStylesAndLegends(layer);
+			    parseStylesAndLegends(layer, styles, legends);
             }
 			this.formats = parseFormats(wms);
-            this.CRSs = rootLayer.getCRSArray();
+            this.CRSs = layerCapabilities.getCRSArray();
 
             Layer layer = path.getLast();
             this.queryable = layer.getQueryable();
@@ -91,7 +95,9 @@ public class WebMapServiceV1_3_0_Impl extends AbstractWebMapService {
         return false;
     }
 
-    private void parseStylesAndLegends(Layer layer) {
+    private void parseStylesAndLegends(Layer layer,
+            Map<String, String> styles,
+            Map<String, String> legends) {
 	    Style[] stylesArray = layer.getStyleArray();
 	    if (stylesArray == null) {
 			return;
@@ -102,7 +108,7 @@ public class WebMapServiceV1_3_0_Impl extends AbstractWebMapService {
 			if (styleTitle == null || styleTitle.isEmpty()) {
 				styleTitle = styleName;
 			}
-			this.styles.put(styleName, styleTitle);
+			styles.put(styleName, styleTitle);
 
 			LegendURL[] lurl = style.getLegendURLArray();
 			if (lurl == null || lurl.length == 0 || lurl[0].getOnlineResource() == null) {
@@ -111,7 +117,7 @@ public class WebMapServiceV1_3_0_Impl extends AbstractWebMapService {
 			/* Online resource is in xlink namespace */
 			String href = lurl[0].getOnlineResource().newCursor().getAttributeText(XLINK_HREF);
 			if (href != null) {
-				this.legends.put(styleName + LEGEND_HASHMAP_KEY_SEPARATOR + styleTitle, href);
+				legends.put(styleName + LEGEND_HASHMAP_KEY_SEPARATOR + styleTitle, href);
 			}
 		}
 	}
