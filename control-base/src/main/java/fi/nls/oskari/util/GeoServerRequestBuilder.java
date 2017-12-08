@@ -156,7 +156,7 @@ public class GeoServerRequestBuilder {
         String [] idList = ids.split(",");
         for (String id: idList){
             if (!service.canModifyCategory(user, Long.parseLong(id))){
-                throw new ActionDeniedException("Tried to delete category: " + id); 
+                throw new ActionDeniedException("Tried to delete category: " + id);
             }
             OMElement delete = factory.createOMElement("Delete", wfsNS);
             delete.addAttribute("typeName", TYPE_LAYERS, null);
@@ -175,15 +175,16 @@ public class GeoServerRequestBuilder {
     public OMElement buildFeaturesGetByLayer(User user, String layerId) throws Exception {
         if (!service.canModifyCategory(user, Long.parseLong(layerId))){
             throw new ActionDeniedException("Tried to get features from my places layer: " + layerId);
-        }        
+        }
         return buildGetFeature(ATTR_LAYERID, layerId, TYPE_FEATURES, WFS_VERSION_FEATURES);
     }
+    //TODO: ids -> String/String[]/JSONArray,.. ??
     public OMElement buildFeaturesGetByIds(User user, String ids) throws Exception {
         OMElement root = buildWFSRootNode("GetFeature", WFS_VERSION_FEATURES);
         root.addAttribute("outputFormat", GET_FEATURE_OUTPUT_FORMAT, null);
 
         OMElement query = factory.createOMElement("Query", wfsNS);
-        query.declareNamespace(featureNS); 
+        query.declareNamespace(featureNS);
         query.addAttribute("typeName", TYPE_FEATURES, null);
         query.addAttribute("srsName", SRS_NAME, null);
 
@@ -191,7 +192,7 @@ public class GeoServerRequestBuilder {
         String [] idList = ids.split(",");
         String fid;
         for (String id : idList){
-            if (!service.canModifyPlace(user, Long.getLong(id))){
+            if (!service.canModifyPlace(user, Long.parseLong(id))){
                 throw new ActionDeniedException("Tried to get feature: " + id);
             }
             fid = FID_PREFIX_FEATURES + id;
@@ -208,13 +209,13 @@ public class GeoServerRequestBuilder {
         JSONArray jsonArray = new JSONArray(payload);
 
         for (int i = 0; i < jsonArray.length(); ++i) {
-            long categoryId = jsonArray.getJSONObject(i).getLong(ATTR_LAYERID); //TODO 
+            long categoryId = jsonArray.getJSONObject(i).getLong(ATTR_LAYERID);
 
             if (!service.canInsert(user, categoryId)){
                 throw new ActionDeniedException("Tried to insert feature into category: " + categoryId);
             }
             OMElement insert = factory.createOMElement("Insert", wfsNS);
-    
+
             OMElement myPlaces = factory.createOMElement(TAG_FEATURES, featureNS);
 
             OMElement geometry = factory.createOMElement(GEOMETRY_NAME, featureNS);
@@ -223,16 +224,16 @@ public class GeoServerRequestBuilder {
 
             OMElement uuidElem = factory.createOMElement(TAG_UUID, featureNS);
             uuidElem.setText(user.getUuid());
-            myPlaces.addChild(uuidElem);           
+            myPlaces.addChild(uuidElem);
 
             OMElement categoryElem = factory.createOMElement(ATTR_LAYERID, featureNS);
             categoryElem.setText(Long.toString(categoryId));
-            myPlaces.addChild(categoryElem);           
+            myPlaces.addChild(categoryElem);
 
             for (String property : FEATURES_LIST) {
                 myPlaces.addChild(getElement(jsonArray.getJSONObject(i).getJSONObject("properties"), property, featureNS));
             }
-        
+
             insert.addChild(myPlaces);
             transaction.addChild(insert);
         }
@@ -259,7 +260,7 @@ public class GeoServerRequestBuilder {
 
             String propertyValue;
             for (String property : FEATURES_LIST) {
-                propertyValue = properties.get(property).toString();                
+                propertyValue = properties.get(property).toString();
                 update.addChild(buildPropertyElement(property, propertyValue));
             }
             update.addChild(buildPropertyElement("uuid", user.getUuid()));
@@ -297,7 +298,7 @@ public class GeoServerRequestBuilder {
         root.addAttribute("outputFormat", GET_FEATURE_OUTPUT_FORMAT, null);
 
         OMElement query = factory.createOMElement("Query", wfsNS);
-        query.declareNamespace(featureNS); 
+        query.declareNamespace(featureNS);
         query.addAttribute("typeName", type, null);
         query.addAttribute("srsName", SRS_NAME, null);
 
@@ -408,54 +409,70 @@ public class GeoServerRequestBuilder {
 
     private OMElement getGeometry(JSONObject geometryJson) throws Exception {
         String geometryType = geometryJson.getString("type");
-        //Point, MultiPoint, LineString, MultiLineString, Polygon, MultiPolygon
+        JSONArray coordsJson;
+        //GeometryCollection's geometry objects must be same type (Point, LineString, Polygon) not Multi geometry
+        //TODO: add Multi geometry handling for GeometryCollection
+        if (geometryType.equals("GeometryCollection")){
+            JSONArray geometries = geometryJson.getJSONArray("geometries");
+            coordsJson= new JSONArray();
+            for (int i = 0; i < geometries.length(); i++){
+                coordsJson.put(geometries.getJSONObject(i).getJSONArray("coordinates"));
+            }
+            //TODO:
+            return getGeometry("Multi"+ geometries.getJSONObject(0).getString("type"), coordsJson);
+        }else {
+            //Point, MultiPoint, LineString, MultiLineString, Polygon, MultiPolygon
+            coordsJson = geometryJson.getJSONArray("coordinates");
+            return getGeometry(geometryType, coordsJson);
+        }
+    }
 
-        OMElement geometry = factory.createOMElement(geometryType, gmlNS);        
-        JSONArray coordsJson = geometryJson.getJSONArray("coordinates");     
+    private OMElement getGeometry(String geometryType, JSONArray coords) throws Exception {
+        OMElement geometry = factory.createOMElement(geometryType, gmlNS);
+
         OMElement memberElem;
 
         switch (geometryType){
-            case "Point": 
+            case "Point":
                 //single position [x, y]
-                geometry = createPoint(coordsJson);
+                geometry = createPoint(coords);
                 break;
-            case "MultiPoint": 
+            case "MultiPoint":
                 //an array of positions
-                for (int i = 0; i < coordsJson.length();i++){
+                for (int i = 0; i < coords.length();i++){
                     memberElem = createMember("pointMember");
-                    memberElem.addChild(createPoint(coordsJson.getJSONArray(i)));
+                    memberElem.addChild(createPoint(coords.getJSONArray(i)));
                     geometry.addChild(memberElem);
                 }
                 break;
-            case "LineString": 
+            case "LineString":
                 //array of two or more positions
-                geometry = createLineString(coordsJson);
+                geometry = createLineString(coords);
                 break;
-            case "MultiLineString": 
+            case "MultiLineString":
                 //an array of LineString coordinate arrays
-                for (int i = 0; i < coordsJson.length();i++){
+                for (int i = 0; i < coords.length();i++){
                     memberElem = createMember("lineStringMember");
-                    memberElem.addChild(createLineString(coordsJson.getJSONArray(i)));
+                    memberElem.addChild(createLineString(coords.getJSONArray(i)));
                     geometry.addChild(memberElem);
                 }
                 break;
-            case "Polygon": 
+            case "Polygon":
                 //array of linear ring (closed LineString) coordinate arrays, first linear ring is exterior ring
-                geometry = createPolygon(coordsJson);
+                geometry = createPolygon(coords);
                 break;
-            case "MultiPolygon": 
+            case "MultiPolygon":
                 //an array of Polygon coordinate arrays
-                for (int i = 0; i < coordsJson.length();i++){
+                for (int i = 0; i < coords.length();i++){
                     memberElem = createMember("polygonMember");
-                    memberElem.addChild(createPolygon(coordsJson.getJSONArray(i)));
+                    memberElem.addChild(createPolygon(coords.getJSONArray(i)));
                     geometry.addChild(memberElem);
-                }              
+                }
                 break;
-            default: 
-                throw new Exception("Illegal geometry type: " + geometryType);        
+            default:
+                throw new Exception("Illegal geometry type: " + geometryType);
         }
         geometry.addAttribute("srsName", SRS_NAME, null);
-
         return geometry;
     }
     private OMElement createPoint (JSONArray pointCoords) throws JSONException {
@@ -475,14 +492,14 @@ public class GeoServerRequestBuilder {
         OMElement boundary;
         OMElement linearRing;
         String coord;
-        //outerBoundary coords[0]  
+        //outerBoundary coords[0]
         boundary = factory.createOMElement("outerBoundaryIs", gmlNS);
         linearRing = factory.createOMElement("LinearRing", gmlNS);
         coord = parseGMLCoordinateFromPositionsArray(polygonCoords.getJSONArray(0));
         linearRing.addChild(createCoordinateElement(coord));
         boundary.addChild (linearRing);
         geomElem.addChild(boundary);
-        //innerBoundaries (holes) 0-n, array [1-n+1] 
+        //innerBoundaries (holes) 0-n, array [1-n+1]
         for (int i = 1; i < polygonCoords.length(); i++ ){
             boundary = factory.createOMElement("innerBoundaryIs", gmlNS);
             linearRing = factory.createOMElement("LinearRing", gmlNS);
@@ -498,10 +515,10 @@ public class GeoServerRequestBuilder {
         OMElement memberElem = factory.createOMElement(type, gmlNS);
         return memberElem;
     }
-    
+
     private String parseGMLCoordinateFromPositionsArray (JSONArray array) throws JSONException {
         // GeoJSON coordinates to GML coordinates
-        //[[293738.4555,6827928.7191],[300970.4555,6827800.7191]] 
+        //[[293738.4555,6827928.7191],[300970.4555,6827800.7191]]
         //-->
         //293738.4555,6827928.7191 300970.4555,6827800.7191
         String gml = "";
@@ -515,9 +532,9 @@ public class GeoServerRequestBuilder {
     }
     
     private OMElement createCoordinateElement (String gmlCoords){
-        OMElement elem = factory.createOMElement("coordinates", gmlNS);        
-        elem.addAttribute(decimalAttribute);        
-        elem.addAttribute(csAttribute);        
+        OMElement elem = factory.createOMElement("coordinates", gmlNS);
+        elem.addAttribute(decimalAttribute);
+        elem.addAttribute(csAttribute);
         elem.addAttribute(tsAttribute);
         elem.setText(gmlCoords);
         return elem;
