@@ -24,7 +24,7 @@ public abstract class AbstractWebMapService implements WebMapService {
     }
 
     public String getCapabilitiesUrl() {
-        return null;
+        return getCapabilitiesUrl;
     }
 
     public Map<String, String> getSupportedStyles() {
