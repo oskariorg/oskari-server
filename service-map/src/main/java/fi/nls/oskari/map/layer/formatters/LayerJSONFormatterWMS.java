@@ -186,49 +186,44 @@ public class LayerJSONFormatterWMS extends LayerJSONFormatter {
         return IOHelper.constructUrl(PropertyUtil.get(PROPERTY_AJAXURL), urlParams);
     }
 
-    public static JSONObject formatTime(List<String> timeList) {
-        final JSONArray values = new JSONArray();
-        for (String string : timeList) {
-            values.put(string);
+    private static JSONObject formatTime(List<String> times) {
+        if (times == null || times.isEmpty()) {
+            return new JSONObject();
         }
-        return createTimesJSON(values);
-    }
 
-    public static JSONObject createTimesJSON(final JSONArray time) {
+        JSONObject wrapper = new JSONObject();
+        JSONArray timesArray = new JSONArray();
+        JSONHelper.put(wrapper, KEY_TIMES, timesArray);
 
-        JSONObject times = new JSONObject();
-        JSONObject timerange = new JSONObject();
-        try {
-
-            if (time == null) {
-                return times;
+        for (String time : times) {
+            int i = time.indexOf('/');
+            if (i < 1) {
+                // Single value
+                timesArray.put(time);
+                continue;
             }
-            //Loop array
-            for (int i = 0; i < time.length(); i++) {
-                String tim = time.getString(i);
-                String[] tims = tim.split("/");
-                if(tims.length > 2){
-                    JSONHelper.putValue(timerange, "start", tims[0]);
-                    JSONHelper.putValue(timerange, "end", tims[1]);
-                    JSONHelper.putValue(timerange, "interval", tims[2]);
-                    JSONHelper.putValue(times, KEY_TIMES, timerange);
-                }
-                else {
-                    final JSONArray values = new JSONArray();
-                    String[] atims = tim.split(",");
-                    for (String string : atims) {
-                        values.put(string);
-                    }
-                    JSONHelper.putValue(times, KEY_TIMES, values);
-                }
-                break;
+            // TimeRange timeMin/timeMax/interval
+            int j = time.indexOf('/', i + 1);
+            if (j < 0 // Second slash doesn't exist
+                    || j == time.length() - 1 // Second slash is last char
+                    || time.indexOf('/', j + 1) > 0) { // Third slash exists
+                throw new IllegalArgumentException("Invalid time range");
             }
+            // Interval
+            String start = time.substring(0, i);
+            String end = time.substring(i + 1, j);
+            String interval = time.substring(j + 1);
 
-
-        } catch (Exception e) {
-            log.warn(e, "Populating layer time failed!");
+            // Instead of writing this as a range consider "unrolling"
+            // the timeRange to a list of singular values
+            JSONObject timeRange = new JSONObject();
+            JSONHelper.putValue(timeRange, "start", start);
+            JSONHelper.putValue(timeRange, "end", end);
+            JSONHelper.putValue(timeRange, "interval", interval);
+            timesArray.put(timeRange);
         }
-        return times;
+
+        return wrapper;
     }
 
     /**
