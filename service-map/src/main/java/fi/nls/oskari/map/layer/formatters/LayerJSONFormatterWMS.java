@@ -186,44 +186,55 @@ public class LayerJSONFormatterWMS extends LayerJSONFormatter {
         return IOHelper.constructUrl(PropertyUtil.get(PROPERTY_AJAXURL), urlParams);
     }
 
-    private static JSONObject formatTime(List<String> times) {
+    private static JSONObject formatTime(List<String> times) throws IllegalArgumentException {
         if (times == null || times.isEmpty()) {
             return new JSONObject();
         }
 
+        // TODO: Fix logic, currently we only support one TimeRange or one or more singular values
+        // An interesting solution would be to "unroll" the time ranges to a list of singular
+        // values -- then KEY_TIMES would always be an array of ISO timestamps as strings
+
         JSONObject wrapper = new JSONObject();
-        JSONArray timesArray = new JSONArray();
-        JSONHelper.put(wrapper, KEY_TIMES, timesArray);
 
-        for (String time : times) {
-            int i = time.indexOf('/');
-            if (i < 1) {
-                // Single value
-                timesArray.put(time);
-                continue;
+        // Check if the first value is a TimeRange
+        String time = times.get(0);
+        int i = time.indexOf('/');
+        if (i < 0) {
+            // One or more singular values
+            JSONHelper.put(wrapper, KEY_TIMES, new JSONArray(times));
+        } else {
+            // First one is (potentially) a TimeRange
+            JSONHelper.putValue(wrapper, KEY_TIMES, parseTimeRange(time, i));
+            if (times.size() > 1) {
+                log.info("Handled only one (1) TimeRange out of", times.size());
             }
-            // TimeRange timeMin/timeMax/interval
-            int j = time.indexOf('/', i + 1);
-            if (j < 0 // Second slash doesn't exist
-                    || j == time.length() - 1 // Second slash is last char
-                    || time.indexOf('/', j + 1) > 0) { // Third slash exists
-                throw new IllegalArgumentException("Invalid time range");
-            }
-            // Interval
-            String start = time.substring(0, i);
-            String end = time.substring(i + 1, j);
-            String interval = time.substring(j + 1);
-
-            // Instead of writing this as a range consider "unrolling"
-            // the timeRange to a list of singular values
-            JSONObject timeRange = new JSONObject();
-            JSONHelper.putValue(timeRange, "start", start);
-            JSONHelper.putValue(timeRange, "end", end);
-            JSONHelper.putValue(timeRange, "interval", interval);
-            timesArray.put(timeRange);
         }
 
         return wrapper;
+    }
+
+    private static JSONObject parseTimeRange(String time, int i)
+            throws IllegalArgumentException {
+        // TimeRange format: timeMin/timeMax/interval
+        int j = time.indexOf('/', i + 1);
+        if (j < 0 // Second slash doesn't exist
+                || j == time.length() - 1 // Second slash is last char
+                || time.indexOf('/', j + 1) > 0) { // Third slash exists
+            throw new IllegalArgumentException("Invalid time range");
+        }
+        // Interval
+        String start = time.substring(0, i);
+        String end = time.substring(i + 1, j);
+        String interval = time.substring(j + 1);
+
+        // Instead of writing this as a range consider "unrolling"
+        // the timeRange to a list of singular values
+        JSONObject timeRange = new JSONObject();
+        JSONHelper.putValue(timeRange, "start", start);
+        JSONHelper.putValue(timeRange, "end", end);
+        JSONHelper.putValue(timeRange, "interval", interval);
+        return timeRange;
     }
 
     /**
