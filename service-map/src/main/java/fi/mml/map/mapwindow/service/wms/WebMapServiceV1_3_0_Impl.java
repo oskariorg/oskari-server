@@ -1,10 +1,13 @@
 package fi.mml.map.mapwindow.service.wms;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import fi.mml.capabilities.KeywordDocument;
 import fi.mml.capabilities.LayerDocument.Layer;
@@ -18,16 +21,23 @@ import fi.mml.capabilities.WMSCapabilitiesDocument;
  */
 public class WebMapServiceV1_3_0_Impl extends AbstractWebMapService {
 
-    public WebMapServiceV1_3_0_Impl(String url, String data, String layerName) throws WebMapServiceParseException {
+    public WebMapServiceV1_3_0_Impl(String url, String data, String layerName)
+            throws WebMapServiceParseException {
+        this(url, data, layerName, null);
+    }
+
+    public WebMapServiceV1_3_0_Impl(String url, String data, String layerName, Set<String> allowedCRS)
+            throws WebMapServiceParseException {
         super(url);
-        parseXML(data, layerName);
+        parseXML(data, layerName, allowedCRS);
     }
 
     public String getVersion() {
         return "1.3.0";
     }
 
-    private void parseXML(String data, String layerName) throws WebMapServiceParseException {
+    private void parseXML(String data, String layerName, Set<String> allowedCRS)
+            throws WebMapServiceParseException {
 		try {
 			WMSCapabilitiesDocument wms = WMSCapabilitiesDocument.Factory.parse(data);
 
@@ -44,7 +54,7 @@ public class WebMapServiceV1_3_0_Impl extends AbstractWebMapService {
 			    parseStylesAndLegends(layer, styles, legends);
             }
 			this.formats = parseFormats(wms);
-            this.CRSs = layerCapabilities.getCRSArray();
+            this.CRSs = parseCRSs(layerCapabilities.getCRSArray(), allowedCRS);
 
             Layer layer = path.getLast();
             this.queryable = layer.getQueryable();
@@ -122,6 +132,24 @@ public class WebMapServiceV1_3_0_Impl extends AbstractWebMapService {
 		}
 	}
 
+    private String[] parseFormats(WMSCapabilitiesDocument wms) {
+        OperationType gfi = wms.getWMSCapabilities().getCapability().getRequest().getGetFeatureInfo();
+        return gfi == null ? new String[0] : gfi.getFormatArray();
+    }
+
+    private String[] parseCRSs(String[] crsArray, Set<String> allowedCRS) {
+        if (allowedCRS == null) {
+            return crsArray;
+        }
+        List<String> parsed = new ArrayList<>();
+        for (String crs : crsArray) {
+            if (allowedCRS.contains(crs)) {
+                parsed.add(crs);
+            }
+        }
+        return parsed.toArray(new String[parsed.size()]);
+    }
+
     private String[] parseKeywords(Layer layer) {
         KeywordDocument.Keyword[] words = layer.getKeywordList().getKeywordArray();
         if (words == null) {
@@ -132,11 +160,6 @@ public class WebMapServiceV1_3_0_Impl extends AbstractWebMapService {
             keywords[i] = words[i].getStringValue();
         }
         return keywords;
-    }
-
-    private String[] parseFormats(WMSCapabilitiesDocument wms) {
-        OperationType gfi = wms.getWMSCapabilities().getCapability().getRequest().getGetFeatureInfo();
-        return gfi == null ? new String[0] : gfi.getFormatArray();
     }
 
 }

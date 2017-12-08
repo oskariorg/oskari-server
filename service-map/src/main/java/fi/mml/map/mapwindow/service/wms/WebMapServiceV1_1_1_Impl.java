@@ -1,11 +1,14 @@
 package fi.mml.map.mapwindow.service.wms;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 import org.apache.xmlbeans.XmlCursor;
 import org.apache.xmlbeans.XmlObject;
@@ -24,16 +27,23 @@ import fi.mml.wms.v111.WMTMSCapabilitiesDocument;
  */
 public class WebMapServiceV1_1_1_Impl extends AbstractWebMapService {
 
-    public WebMapServiceV1_1_1_Impl(String url, String data, String layerName) throws WebMapServiceParseException {
+    public WebMapServiceV1_1_1_Impl(String url, String data, String layerName)
+            throws WebMapServiceParseException {
+        this(url, data, layerName, null);
+    }
+
+    public WebMapServiceV1_1_1_Impl(String url, String data, String layerName, Set<String> allowedCRS)
+            throws WebMapServiceParseException {
         super(url);
-        parseXML(data, layerName);
+        parseXML(data, layerName, allowedCRS);
     }
 
     public String getVersion() {
         return "1.1.1";
     }
 
-    private void parseXML(String data, String layerName) throws WebMapServiceParseException {
+    private void parseXML(String data, String layerName, Set<String> allowedCRS)
+            throws WebMapServiceParseException {
         try {
             WMTMSCapabilitiesDocument wmtms = WMTMSCapabilitiesDocument.Factory.parse(data);
 
@@ -50,7 +60,7 @@ public class WebMapServiceV1_1_1_Impl extends AbstractWebMapService {
                 parseStylesAndLegends(layer, styles, legends);
             }
             this.formats = parseFormats(wmtms);
-            this.CRSs = parseCRSs(wmtms);
+            this.CRSs = parseCRSs(wmtms, allowedCRS);
 
             Layer layer = path.getLast();
             this.queryable = "1".equals(layer.getQueryable().toString());
@@ -161,14 +171,32 @@ public class WebMapServiceV1_1_1_Impl extends AbstractWebMapService {
         return new String[0];
     }
 
-    private String[] parseCRSs(WMTMSCapabilitiesDocument wmtms) {
-        SRS[] crss = wmtms.getWMTMSCapabilities().getCapability().getLayer().getSRSArray();
-        String[] CRSs = new String[crss.length];
-        for (int i = 0; i < crss.length; i++) {
-            CRSs[i] = getText(crss[i])
-                    .orElseThrow(() -> new IllegalArgumentException("Empty EPSG code"));
+    private String[] parseCRSs(WMTMSCapabilitiesDocument wmtms, Set<String> allowedCRS)
+            throws IllegalArgumentException {
+        SRS[] srss = wmtms.getWMTMSCapabilities().getCapability().getLayer().getSRSArray();
+        return allowedCRS == null ? parseCRSs(srss) : parseCRSs(srss, allowedCRS);
+    }
+
+    private String[] parseCRSs(SRS[] srss) throws IllegalArgumentException {
+        String[] crss = new String[srss.length];
+        for (int i = 0; i < srss.length; i++) {
+            crss[i] = getText(srss[i])
+                    .orElseThrow(() -> new IllegalArgumentException("Invalid SRSName"));
         }
-        return CRSs;
+        return crss;
+    }
+
+    private String[] parseCRSs(SRS[] srss, Set<String> allowedCRS)
+            throws IllegalArgumentException {
+        List<String> parsed = new ArrayList<>();
+        for (SRS srs : srss) {
+            String srsName = getText(srs)
+                    .orElseThrow(() -> new IllegalArgumentException("Invalid SRSName"));
+            if (allowedCRS.contains(srsName)) {
+                parsed.add(srsName);
+            }
+        }
+        return parsed.toArray(new String[parsed.size()]);
     }
 
     private static Optional<String> getText(XmlObject obj) {
