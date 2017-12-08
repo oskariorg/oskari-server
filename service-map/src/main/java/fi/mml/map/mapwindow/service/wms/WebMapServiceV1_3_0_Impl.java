@@ -61,28 +61,31 @@ public class WebMapServiceV1_3_0_Impl extends AbstractWebMapService {
      * @param layerName name of the layer we're looking for
      * @param path holds information of the branches we are in
      * @param lvl how deep we are in the subLayers, if this gets too high we quit
-     * @return true if this is the layer we're looking for, false if not
+     * @return false if no such layer exists, true otherwise,
+     *         LinkedList<Layer> path contains the path from root to the layer
      */
     private boolean find(Layer layer, String layerName, LinkedList<Layer> path, int lvl)
             throws WebMapServiceParseException {
         if (lvl > 5) {
-            throw new WebMapServiceParseException("We tried to parse layers to fifth level of recursion, this is too much. Cancel.");
+            throw new WebMapServiceParseException(
+                    "We tried to parse layers to fifth level of recursion,"
+                    + " this is too much. Cancel.");
         }
         if (layerName.equals(layer.getName())) {
-            // Add current layer
+            // Add current layer before returning
             path.addLast(layer);
             return true;
         }
         Layer[] subLayers = layer.getLayerArray();
         if (subLayers != null && subLayers.length > 0) {
-            // Remember current layer while we're search its' subLayers
+            // Remember current layer while we check its subLayers
             path.addLast(layer);
             for (Layer subLayer : subLayers) {
                 if (find(subLayer, layerName, path, lvl + 1)) {
                     return true;
                 }
             }
-            // None of the subLayers matched, remove current layer from the path as well
+            // None of the subLayers matched, remove current layer from the correct path
             path.removeLast();
         }
         return false;
