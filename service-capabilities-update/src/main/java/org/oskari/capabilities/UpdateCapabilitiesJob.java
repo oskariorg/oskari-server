@@ -19,7 +19,6 @@ import fi.nls.oskari.map.layer.OskariLayerServiceIbatisImpl;
 import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.service.capabilities.CapabilitiesCacheService;
 import fi.nls.oskari.service.capabilities.CapabilitiesCacheServiceMybatisImpl;
-import fi.nls.oskari.service.capabilities.OskariLayerCapabilities;
 import fi.nls.oskari.service.capabilities.OskariLayerCapabilitiesHelper;
 import fi.nls.oskari.wmts.WMTSCapabilitiesParser;
 import fi.nls.oskari.wmts.domain.WMTSCapabilities;
@@ -61,7 +60,7 @@ public class UpdateCapabilitiesJob extends ScheduledJob {
         for (Map.Entry<UrlTypeVersion, List<OskariLayer>> group : layersByUrlTypeVersion.entrySet()) {
             UrlTypeVersion utv = group.getKey();
             List<OskariLayer> layers = group.getValue();
-            updateCapabilitiesGroup(utv, layers);
+            updateCapabilities(utv, layers);
         }
     }
 
@@ -75,7 +74,7 @@ public class UpdateCapabilitiesJob extends ScheduledJob {
         }
     }
 
-    protected void updateCapabilitiesGroup(UrlTypeVersion utv,
+    private void updateCapabilities(UrlTypeVersion utv,
             List<OskariLayer> layers) {
         final String url = utv.url;
         final String type = utv.type;
@@ -89,8 +88,12 @@ public class UpdateCapabilitiesJob extends ScheduledJob {
                     "type:", type, "version:", version, "ids:", Arrays.toString(ids));
         }
 
-        final String data = getCapabilities(url, type, version, user, pass);
-        if (data == null || data.isEmpty()) {
+        final String data;
+        try {
+            data = capabilitiesCacheService.getCapabilities(url, type, user, pass, version).getData();
+        } catch (ServiceException e) {
+            LOG.warn(e, "Could not find get Capabilities, url:", url,
+                "type:", type, "version:", version, "ids:", Arrays.toString(ids));
             return;
         }
 
@@ -99,10 +102,7 @@ public class UpdateCapabilitiesJob extends ScheduledJob {
             updateWMSLayers(layers, data);
             break;
         case OskariLayer.TYPE_WMTS:
-            boolean success = updateWMTSLayers(layers, data);
-            if (success) {
-                capabilitiesCacheService.save(new OskariLayerCapabilities(url, type, version, data));
-            }
+            updateWMTSLayers(layers, data);
             break;
         }
 
@@ -120,10 +120,10 @@ public class UpdateCapabilitiesJob extends ScheduledJob {
         }
     }
 
-    private boolean updateWMTSLayers(List<OskariLayer> layers, String data) {
+    private void updateWMTSLayers(List<OskariLayer> layers, String data) {
         WMTSCapabilities wmts = parseWMTSCapabilities(data);
         if (wmts == null) {
-            return false;
+            return;
         }
 
         for (OskariLayer layer : layers) {
@@ -134,7 +134,6 @@ public class UpdateCapabilitiesJob extends ScheduledJob {
                 LOG.warn(e, "Failed to update layerId:", layer.getId());
             }
         }
-        return true;
     }
 
     private WMTSCapabilities parseWMTSCapabilities(String data) {
@@ -142,42 +141,6 @@ public class UpdateCapabilitiesJob extends ScheduledJob {
             return WMTSCapabilitiesParser.parseCapabilities(data);
         } catch (XMLStreamException | IllegalArgumentException e) {
             LOG.warn(e, "Failed to parse WMTS GetCapabilities");
-            return null;
-        }
-    }
-
-    private String getCapabilities(String url, String type, String version,
-            String user, String pass) {
-        String cached = getFromCache(url, type, version);
-        if (cached != null && !cached.isEmpty()) {
-            return cached;
-        }
-        return getFromService(url, type, version, user, pass);
-    }
-
-    private String getFromCache(String url, String type, String version) {
-        OskariLayerCapabilities cached = capabilitiesCacheService.find(url, type, version);
-        // Check if we actually found data from DB and if it's recently updated
-        if (cached != null) {
-            return cached.getData();
-        }
-        LOG.info("Could not find capabilities from cache, url:", url,
-                "type:", type, "version:", version);
-        return null;
-    }
-
-    private String getFromService(String url, String type, String version, String user, String pass) {
-        try {
-            return CapabilitiesCacheService.loadCapabilitiesFromService(url, type, version, user, pass);
-        } catch (ServiceException e) {
-            Throwable cause = e.getCause();
-            if (cause != null) {
-                LOG.warn(e, "Failed to get GetCapabilities - url:", url,
-                        "type:", type, "version:", version, "cause:", cause.getMessage());
-            } else {
-                LOG.warn(e, "Failed to get GetCapabilities - url:", url,
-                        "type:", type, "version:", version);
-            }
             return null;
         }
     }
