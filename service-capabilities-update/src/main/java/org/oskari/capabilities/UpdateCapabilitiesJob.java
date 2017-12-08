@@ -2,7 +2,6 @@ package org.oskari.capabilities;
 
 import static java.util.stream.Collectors.groupingBy;
 
-import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -22,7 +21,6 @@ import fi.nls.oskari.service.capabilities.CapabilitiesCacheService;
 import fi.nls.oskari.service.capabilities.CapabilitiesCacheServiceMybatisImpl;
 import fi.nls.oskari.service.capabilities.OskariLayerCapabilities;
 import fi.nls.oskari.service.capabilities.OskariLayerCapabilitiesHelper;
-import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.wmts.WMTSCapabilitiesParser;
 import fi.nls.oskari.wmts.domain.WMTSCapabilities;
 import fi.nls.oskari.worker.ScheduledJob;
@@ -33,32 +31,24 @@ import fi.nls.oskari.worker.ScheduledJob;
  * <li>Updates oskari_capabilities_cache rows</li>
  * <li>Updates OskariLayer objects via #setCapabilities()</li>
  * </ul>
- * Available configuration:
- * <ul>
- * <li>maxAge, skip layer if its' oskari_capabilities_cache.updated is newer than (NOW() - maxAge)</li>
- * </ul>
  */
 @Oskari("UpdateCapabilities")
 public class UpdateCapabilitiesJob extends ScheduledJob {
 
     private static final Logger LOG = LogFactory.getLogger(UpdateCapabilitiesJob.class);
-    private static final String PROP_MAX_AGE = "oskari.scheduler.job.UpdateCapabilities.maxAge";
 
     private final OskariLayerService layerService;
     private final CapabilitiesCacheService capabilitiesCacheService;
-    private final int maxAge;
 
     public UpdateCapabilitiesJob() {
         this(new OskariLayerServiceIbatisImpl(),
-                new CapabilitiesCacheServiceMybatisImpl(),
-                PropertyUtil.getOptional(PROP_MAX_AGE, 0));
+                new CapabilitiesCacheServiceMybatisImpl());
     }
 
     public UpdateCapabilitiesJob(OskariLayerService layerService,
-            CapabilitiesCacheService capabilitiesService, int maxAge) {
+            CapabilitiesCacheService capabilitiesService) {
         this.layerService = layerService;
         this.capabilitiesCacheService = capabilitiesService;
-        this.maxAge = maxAge;
     }
 
     @Override
@@ -68,12 +58,10 @@ public class UpdateCapabilitiesJob extends ScheduledJob {
                 .filter(l -> canUpdate(l.getType()))
                 .collect(groupingBy(l -> new UrlTypeVersion(l)));
 
-        long now = System.currentTimeMillis();
-        Timestamp oldestAllowed = maxAge > 0L ? new Timestamp(now - maxAge) : null;
         for (Map.Entry<UrlTypeVersion, List<OskariLayer>> group : layersByUrlTypeVersion.entrySet()) {
             UrlTypeVersion utv = group.getKey();
             List<OskariLayer> layers = group.getValue();
-            updateCapabilitiesGroup(utv, layers, oldestAllowed);
+            updateCapabilitiesGroup(utv, layers);
         }
     }
 
@@ -88,7 +76,7 @@ public class UpdateCapabilitiesJob extends ScheduledJob {
     }
 
     protected void updateCapabilitiesGroup(UrlTypeVersion utv,
-            List<OskariLayer> layers, Timestamp oldestAllowed) {
+            List<OskariLayer> layers) {
         final String url = utv.url;
         final String type = utv.type;
         final String version = utv.version;
@@ -101,7 +89,7 @@ public class UpdateCapabilitiesJob extends ScheduledJob {
                     "type:", type, "version:", version, "ids:", Arrays.toString(ids));
         }
 
-        final String data = getCapabilities(url, type, version, user, pass, oldestAllowed);
+        final String data = getCapabilities(url, type, version, user, pass);
         if (data == null || data.isEmpty()) {
             return;
         }
@@ -159,30 +147,22 @@ public class UpdateCapabilitiesJob extends ScheduledJob {
     }
 
     private String getCapabilities(String url, String type, String version,
-            String user, String pass, Timestamp oldestAllowed) {
-        // If oldestAllowed is null we don't want to check cache
-        if (oldestAllowed != null) {
-            String cached = getFromCache(url, type, version, oldestAllowed);
-            if (cached != null && !cached.isEmpty()) {
-                return cached;
-            }
+            String user, String pass) {
+        String cached = getFromCache(url, type, version);
+        if (cached != null && !cached.isEmpty()) {
+            return cached;
         }
         return getFromService(url, type, version, user, pass);
     }
 
-    private String getFromCache(String url, String type, String version, Timestamp oldestAllowed) {
+    private String getFromCache(String url, String type, String version) {
         OskariLayerCapabilities cached = capabilitiesCacheService.find(url, type, version);
         // Check if we actually found data from DB and if it's recently updated
         if (cached != null) {
-            if (cached.getUpdated().after(oldestAllowed)) {
-                return cached.getData();
-            }
-            LOG.warn("Found capabilities from cache, but it was too old, url:", url,
-                    "type:", type, "version:", version);
-        } else {
-            LOG.info("Could not find capabilities from cache, url:", url,
-                    "type:", type, "version:", version);
+            return cached.getData();
         }
+        LOG.info("Could not find capabilities from cache, url:", url,
+                "type:", type, "version:", version);
         return null;
     }
 
