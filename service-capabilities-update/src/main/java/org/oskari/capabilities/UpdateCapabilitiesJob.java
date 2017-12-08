@@ -52,16 +52,10 @@ public class UpdateCapabilitiesJob extends ScheduledJob {
 
     @Override
     public void execute(Map<String, Object> params) {
-        Map<UrlTypeVersion, List<OskariLayer>> layersByUrlTypeVersion = layerService.findAll()
-                .stream()
+        layerService.findAll().stream()
                 .filter(l -> canUpdate(l.getType()))
-                .collect(groupingBy(l -> new UrlTypeVersion(l)));
-
-        for (Map.Entry<UrlTypeVersion, List<OskariLayer>> group : layersByUrlTypeVersion.entrySet()) {
-            UrlTypeVersion utv = group.getKey();
-            List<OskariLayer> layers = group.getValue();
-            updateCapabilities(utv, layers);
-        }
+                .collect(groupingBy(l -> new UrlTypeVersion(l)))
+                .forEach((k, v) -> updateCapabilities(k, v));
     }
 
     protected static boolean canUpdate(String type) {
