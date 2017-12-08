@@ -9,7 +9,9 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.junit.Test;
 
@@ -41,7 +43,8 @@ public class WebMapServiceV1_3_0ImplTest {
     @Test
     public void testChloro() throws IOException, WebMapServiceParseException {
         WebMapServiceV1_3_0_Impl wms;
-        wms = new WebMapServiceV1_3_0_Impl("http://unit.test/ing", readResource(CHLORO), "arctic_sdi:Chlorophyll");
+        wms = new WebMapServiceV1_3_0_Impl("http://unit.test/ing",
+                readResource(CHLORO), "arctic_sdi:Chlorophyll");
         assertEquals("http://unit.test/ing", wms.getCapabilitiesUrl());
         assertEquals("1.3.0", wms.getVersion());
         assertEquals(true, wms.queryable);
@@ -61,12 +64,21 @@ public class WebMapServiceV1_3_0ImplTest {
         assertTrue("Parsing was succesful, no exception was thrown", true);
     }
 
+    @Test
+    public void testReadingOnlyAllowedCRS() throws IOException, WebMapServiceParseException {
+        Set<String> allowed = new HashSet<>();
+        allowed.add("EPSG:3408");
+        allowed.add("EPSG:3857");
+        WebMapServiceV1_3_0_Impl wms;
+        wms = new WebMapServiceV1_3_0_Impl("http://unit.test/ing",
+                readResource(CHLORO), "arctic_sdi:Chlorophyll", allowed);
+        assertArrayEquals(new String[] { "EPSG:3408", "EPSG:3857" }, wms.getCRSs());
+    }
+
     private String readResource(String p) throws IOException {
         try (InputStream in = getClass().getClassLoader().getResourceAsStream(p)) {
             return new String(IOHelper.readBytes(in), StandardCharsets.UTF_8);
         }
     }
-
-
 
 }
