@@ -9,7 +9,7 @@ import java.sql.SQLException;
 
 public class V1_45_2__register_admin_publish_transfer_bundle implements JdbcMigration {
 
-    private static final String NAMESPACE = "admin";
+    private static final String NAMESPACE = "framework";
     private static final String BUNDLE_ID = "admin-publish-transfer";
 
     public void migrate(Connection connection) throws SQLException {
