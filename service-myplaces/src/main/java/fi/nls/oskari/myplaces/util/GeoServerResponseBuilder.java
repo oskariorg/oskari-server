@@ -37,50 +37,42 @@ public class GeoServerResponseBuilder {
     private static final String FID_PREFIX_LAYERS = "categories.";
     private static final String FID_PREFIX_FEATURES = "my_places.";
 
-    //WFS1.1 & JSON/GeoJSON response
-    public JSONArray buildLayersGet(String response) throws Exception {
-        JSONObject featCollection = new JSONObject(response);
-        JSONArray  feats = featCollection.getJSONArray("features");
-        JSONObject feat;
-        long id;
-        //parse id from geoserver fid
-        for (int i = 0; i < feats.length(); i++){
-            feat = feats.getJSONObject(i);
-            id = parseIdFromFid(feat.getString("id"));
-            feat.put("id", id);
+    public static JSONArray buildLayersGet(String response) throws JSONException {
+        JSONObject featureCollection = new JSONObject(response);
+        JSONArray features = featureCollection.getJSONArray("features");
+        for (int i = 0; i < features.length(); i++) {
+            JSONObject feature = features.getJSONObject(i);
+            long id = parseIdFromFid(feature.getString("id"));
+            feature.put("id", id);
         }
-        return feats;
-
+        return features;
     }
 
-    //WFS1.0 JSON/GeoJSON response
-    public JSONArray buildFeaturesGet(String response) throws JSONException {
-        JSONObject featCollection = new JSONObject(response);
-        JSONArray  feats = featCollection.getJSONArray("features");
-        JSONObject feat;
-        long id;
-        //parse id from fid
-        for (int i = 0; i < feats.length(); i++){
-            feat = feats.getJSONObject(i);
-            id = parseIdFromFid(feat.getString("id"));
-            feat.put("id", id);
+    /**
+     * Removes prefixes from ids (e.g. my_places.123 => 123)
+     */
+    public static void removePrefixesFromIds(JSONObject featureCollection) throws JSONException {
+        JSONArray features = featureCollection.getJSONArray("features");
+        for (int i = 0; i < features.length(); i++){
+            JSONObject feature = features.getJSONObject(i);
+            long id = parseIdFromFid(feature.getString("id"));
+            feature.put("id", id);
         }
-        return feats;
     }
 
-    public long[] getInsertedIds(String response) throws IllegalArgumentException {
+    public static long[] getInsertedIds(String response) throws IllegalArgumentException {
         return parseTransactionResponse(response)
                 .orElseThrow(() -> new IllegalArgumentException())
                 .insertedIds;
     }
 
-    public int getTotalUpdated(String response) throws IllegalArgumentException {
+    public static int getTotalUpdated(String response) throws IllegalArgumentException {
         return parseTransactionResponse(response)
                 .orElseThrow(() -> new IllegalArgumentException())
                 .updated;
     }
 
-    public int getTotalDeleted(String response) throws IllegalArgumentException {
+    public static int getTotalDeleted(String response) throws IllegalArgumentException {
         return parseTransactionResponse(response)
                 .orElseThrow(() -> new IllegalArgumentException())
                 .deleted;
@@ -119,7 +111,7 @@ public class GeoServerResponseBuilder {
     }
 
     //WFS 1.1.0
-    private Optional<MyPlacesResponse> parseTransactionResponse(String transaction) {
+    private static Optional<MyPlacesResponse> parseTransactionResponse(String transaction) {
         final WFSConfiguration configuration = new org.geotools.wfs.v1_1.WFSConfiguration();
         try (InputStream inputStream = IOUtils.toInputStream(transaction, "UTF-8")) {
             Parser parser = new Parser(configuration);
@@ -164,7 +156,7 @@ public class GeoServerResponseBuilder {
         return Long.parseLong(id);
     }
 
-    private class MyPlacesResponse {
+    private static class MyPlacesResponse {
 
         private final int updated;
         private final int deleted;

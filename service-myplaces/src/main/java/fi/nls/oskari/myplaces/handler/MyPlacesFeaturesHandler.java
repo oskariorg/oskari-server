@@ -15,8 +15,6 @@ import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.control.ActionParamsException;
 import fi.nls.oskari.control.RestActionHandler;
 import fi.nls.oskari.domain.User;
-import fi.nls.oskari.log.LogFactory;
-import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.myplaces.MyPlaceWithGeometry;
 import fi.nls.oskari.myplaces.MyPlacesService;
 import fi.nls.oskari.myplaces.util.GeoServerHelper;
@@ -29,22 +27,17 @@ import fi.nls.oskari.util.ResponseHelper;
 @OskariActionRoute("MyPlacesFeatures")
 public class MyPlacesFeaturesHandler extends RestActionHandler {
 
-    private static final Logger LOG = LogFactory.getLogger(MyPlacesFeaturesHandler.class);
-
     private static final String PARAM_FEATURES = "features";
     private static final String PARAM_LAYER_ID = "layerId";
-    private static final String JSKEY_FEATURES = "features";
     private static final String JSKEY_DELETED = "deleted";
 
     private GeoServerRequestBuilder requestBuilder;
-    private GeoServerResponseBuilder responseBuilder;
     private MyPlacesService service;
 
     @Override
     public void init() {
         super.init();
         requestBuilder = new GeoServerRequestBuilder();
-        responseBuilder = new GeoServerResponseBuilder();
         service = OskariComponentManager.getComponentOfType(MyPlacesService.class);
     }
 
@@ -57,30 +50,21 @@ public class MyPlacesFeaturesHandler extends RestActionHandler {
     public void handleGet(ActionParameters params) throws ActionException {
         final User user = params.getUser();
         final String layerId = params.getHttpParam(PARAM_LAYER_ID);
-        final OMElement request;
+
+        final String response;
         if (layerId != null && !layerId.isEmpty()) {
-            if (!service.canModifyCategory(user, Long.parseLong(layerId))) {
-                throw new ActionDeniedException("User " + user.getId() +
-                        " tried to GET features from layer " + layerId);
-            }
-            request = requestBuilder.getFeaturesByLayerId(layerId);
+            response = getFeaturesByLayerId(user, layerId);
         } else {
-            request = requestBuilder.getFeaturesByUserId(user.getUuid());
+            response = getFeaturesByUserId(user.getUuid());
         }
 
         try {
-            String response = GeoServerHelper.sendRequest(request);
-            JSONArray features = responseBuilder.buildFeaturesGet(response);
-            JSONObject responseJson = new JSONObject();
-            JSONHelper.putValue(responseJson, JSKEY_FEATURES, features);
-            ResponseHelper.writeResponse(params, responseJson);
-            return;
-        } catch (IOException e) {
-            LOG.warn(e, "Failed to get response for request:", request);
+            JSONObject featureCollection = new JSONObject(response);
+            GeoServerResponseBuilder.removePrefixesFromIds(featureCollection);
+            ResponseHelper.writeResponse(params, featureCollection);
         } catch (JSONException e) {
-            LOG.warn(e, "Failed to parse response for request:", request);
+            throw new ActionException("Received unexpected response");
         }
-        throw new ActionException("Failed to get Features!");
     }
 
     @Override
@@ -95,7 +79,7 @@ public class MyPlacesFeaturesHandler extends RestActionHandler {
                 .toArray();
         for (long categoryId : uniqueCategoryIds) {
             if (!service.canModifyCategory(user, categoryId)) {
-                throw new ActionDeniedException("User " + user.getId() +
+                throw new ActionDeniedException("User: " + user.getId() +
                         " tried to insert feature into category: " + categoryId);
             }
         }
@@ -104,12 +88,9 @@ public class MyPlacesFeaturesHandler extends RestActionHandler {
             place.setUuid(user.getUuid());
         }
 
-        long[] featureIds = insertFeatures(places);
-        JSONArray features = getFeatures(featureIds);
-
-        JSONObject response = new JSONObject();
-        JSONHelper.putValue(response, JSKEY_FEATURES, features);
-        ResponseHelper.writeResponse(params, response);
+        long[] ids = insertFeatures(places);
+        JSONObject featureCollection = getFeaturesByIds(ids);
+        ResponseHelper.writeResponse(params, featureCollection);
     }
 
     @Override
@@ -137,10 +118,8 @@ public class MyPlacesFeaturesHandler extends RestActionHandler {
             throw new ActionException("Failed to update features");
         }
 
-        JSONArray features = getFeatures(ids);
-        JSONObject response = new JSONObject();
-        JSONHelper.putValue(response, JSKEY_FEATURES, features);
-        ResponseHelper.writeResponse(params, response);
+        JSONObject featureCollection = getFeaturesByIds(ids);
+        ResponseHelper.writeResponse(params, featureCollection);
     }
 
     @Override
@@ -168,7 +147,29 @@ public class MyPlacesFeaturesHandler extends RestActionHandler {
         ResponseHelper.writeResponse(params, response);
     }
 
+    private String getFeaturesByUserId(String uuid) throws ActionException {
+        try {
+            OMElement request = requestBuilder.getFeaturesByUserId(uuid);
+            return GeoServerHelper.sendRequest(request);
+        } catch (IOException e) {
+            throw new ActionException("IOException occured", e);
+        }
+    }
 
+    private String getFeaturesByLayerId(User user, String layerIdStr)
+            throws ActionException {
+        long layerId = Long.parseLong(layerIdStr);
+        if (!service.canModifyCategory(user, layerId)) {
+            throw new ActionDeniedException("User: " + user.getId() +
+                    " tried to GET features from layer: " + layerId);
+        }
+        try {
+            OMElement request = requestBuilder.getFeaturesByLayerId(layerIdStr);
+            return GeoServerHelper.sendRequest(request);
+        } catch (IOException e) {
+            throw new ActionException("IOException occured", e);
+        }
+    }
 
     private MyPlaceWithGeometry[] parseMyPlaces(String featuresJSON, boolean shouldSetId) throws ActionParamsException {
         try {
@@ -181,7 +182,7 @@ public class MyPlacesFeaturesHandler extends RestActionHandler {
             }
             return null;
         } catch (JSONException e) {
-            throw new ActionParamsException("Could not parse");
+            throw new ActionParamsException("Invalid input");
         }
     }
 
@@ -205,11 +206,13 @@ public class MyPlacesFeaturesHandler extends RestActionHandler {
         return myPlace;
     }
 
-    private JSONArray getFeatures(long[] featureIds) throws ActionException {
+    private JSONObject getFeaturesByIds(long[] ids) throws ActionException {
         try {
-            OMElement getFeaturesRequest = requestBuilder.getFeaturesByIds(featureIds);
+            OMElement getFeaturesRequest = requestBuilder.getFeaturesByIds(ids);
             String getFeaturesResponse = GeoServerHelper.sendRequest(getFeaturesRequest);
-            return responseBuilder.buildFeaturesGet(getFeaturesResponse);
+            JSONObject featureCollection = new JSONObject(getFeaturesResponse);
+            GeoServerResponseBuilder.removePrefixesFromIds(featureCollection);
+            return featureCollection;
         } catch (IOException e) {
             throw new ActionException("IOException occured", e);
         } catch (JSONException e) {
@@ -221,7 +224,7 @@ public class MyPlacesFeaturesHandler extends RestActionHandler {
         try {
             OMElement insertFeaturesRequest = requestBuilder.insertFeatures(places);
             String insertFeaturesResponse = GeoServerHelper.sendRequest(insertFeaturesRequest);
-            return responseBuilder.getInsertedIds(insertFeaturesResponse);
+            return GeoServerResponseBuilder.getInsertedIds(insertFeaturesResponse);
         } catch (IOException e) {
             throw new ActionException("IOException occured", e);
         }
@@ -231,7 +234,7 @@ public class MyPlacesFeaturesHandler extends RestActionHandler {
         try {
             OMElement updateRequest = requestBuilder.updateFeatures(places);
             String updateResponse = GeoServerHelper.sendRequest(updateRequest);
-            return responseBuilder.getTotalUpdated(updateResponse);
+            return GeoServerResponseBuilder.getTotalUpdated(updateResponse);
         } catch (IOException e) {
             throw new ActionException("IOException occured!", e);
         }
@@ -241,7 +244,7 @@ public class MyPlacesFeaturesHandler extends RestActionHandler {
         try {
             OMElement deleteRequest = requestBuilder.deleteFeaturesByIds(ids);
             String deleteResponse = GeoServerHelper.sendRequest(deleteRequest);
-            return responseBuilder.getTotalDeleted(deleteResponse);
+            return GeoServerResponseBuilder.getTotalDeleted(deleteResponse);
         } catch (IOException e) {
             throw new ActionException("IOException occured!", e);
         }

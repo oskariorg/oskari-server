@@ -32,16 +32,13 @@ public class MyPlacesLayersHandler extends RestActionHandler {
     private static final String JSKEY_ID = "id";
     private static final String DEFAULT_CATEGORY = "default_category.json";
 
-
     private GeoServerRequestBuilder requestBuilder;
-    private GeoServerResponseBuilder responseBuilder;
     private MyPlacesService service;
 
     @Override
     public void init() {
         super.init();
         requestBuilder =  new GeoServerRequestBuilder();
-        responseBuilder = new GeoServerResponseBuilder();
         service = OskariComponentManager.getComponentOfType(MyPlacesService.class);
     }
 
@@ -56,12 +53,12 @@ public class MyPlacesLayersHandler extends RestActionHandler {
             JSONObject responseJson = new JSONObject();
             OMElement request = requestBuilder.getLayersByUserId(params.getUser().getUuid());
             String response = GeoServerHelper.sendRequest(request);
-            JSONArray layers = responseBuilder.buildLayersGet(response);
+            JSONArray layers = GeoServerResponseBuilder.buildLayersGet(response);
             // if user have no layers, create default
             if (layers.length() == 0){
                 createDefaultCategory(params.getUser().getUuid());
                 response = GeoServerHelper.sendRequest(request);
-                layers = responseBuilder.buildLayersGet(response);
+                layers = GeoServerResponseBuilder.buildLayersGet(response);
             }
             JSONHelper.putValue(responseJson, JSKEY_MYPLACESLAYERS, layers);
             ResponseHelper.writeResponse(params, responseJson);
@@ -78,7 +75,7 @@ public class MyPlacesLayersHandler extends RestActionHandler {
             String jsonString = params.getHttpParam(PARAM_LAYERS);
             OMElement request = requestBuilder.insertLayers(params.getUser().getUuid(), jsonString);
             String response = GeoServerHelper.sendRequest(request);
-            long[] idList = responseBuilder.getInsertedIds(response);
+            long[] idList = GeoServerResponseBuilder.getInsertedIds(response);
             JSONHelper.putValue(responseJson, JSKEY_IDLIST, idList);
             ResponseHelper.writeResponse(params, responseJson);
         }
@@ -102,7 +99,7 @@ public class MyPlacesLayersHandler extends RestActionHandler {
             }
             OMElement request = requestBuilder.updateLayers(user.getUuid(), jsonArray);
             String response = GeoServerHelper.sendRequest(request);
-            int updated = responseBuilder.getTotalUpdated(response);
+            int updated = GeoServerResponseBuilder.getTotalUpdated(response);
             JSONHelper.putValue(responseJson, JSKEY_UPDATED, updated);
             ResponseHelper.writeResponse(params, responseJson);
         }
@@ -130,7 +127,7 @@ public class MyPlacesLayersHandler extends RestActionHandler {
             }
             OMElement request = requestBuilder.deleteLayersById(idList);
             String response = GeoServerHelper.sendRequest(request);
-            int deleted = responseBuilder.getTotalDeleted(response);
+            int deleted = GeoServerResponseBuilder.getTotalDeleted(response);
             JSONHelper.putValue(responseJson, JSKEY_DELETED, deleted);
             ResponseHelper.writeResponse(params, responseJson);
         }
@@ -145,7 +142,7 @@ public class MyPlacesLayersHandler extends RestActionHandler {
             String jsonString = IOHelper.readString(inputStream);
             OMElement request = requestBuilder.insertLayers(uuid, jsonString);
             String response = GeoServerHelper.sendRequest(request);
-            long[] insertedIds = responseBuilder.getInsertedIds(response);
+            long[] insertedIds = GeoServerResponseBuilder.getInsertedIds(response);
             log.info("Created default category for user:", uuid,
                     "with layer id:", Arrays.toString(insertedIds));
         }
