@@ -1,7 +1,10 @@
-package fi.nls.oskari.util;
+package fi.nls.oskari.myplaces.util;
 
 import fi.nls.oskari.map.myplaces.domain.ProxyRequest;
 import fi.nls.oskari.map.myplaces.service.GeoServerProxyService;
+import fi.nls.oskari.util.PropertyUtil;
+import fi.nls.oskari.util.XmlHelper;
+
 import org.apache.axiom.om.OMElement;
 
 import java.io.IOException;

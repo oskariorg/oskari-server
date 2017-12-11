@@ -1,4 +1,4 @@
-package fi.nls.oskari.util;
+package fi.nls.oskari.myplaces.util;
 
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;

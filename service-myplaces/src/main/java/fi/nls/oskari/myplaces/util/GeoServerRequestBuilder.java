@@ -1,4 +1,4 @@
-package fi.nls.oskari.util;
+package fi.nls.oskari.myplaces.util;
 
 import org.apache.axiom.om.*;
 import org.json.JSONArray;

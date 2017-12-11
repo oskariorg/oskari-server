@@ -1,4 +1,4 @@
-package fi.nls.oskari.control.data;
+package fi.nls.oskari.myplaces.handler;
 
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.*;
@@ -6,6 +6,9 @@ import fi.nls.oskari.domain.User;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.myplaces.MyPlacesService;
+import fi.nls.oskari.myplaces.util.GeoServerHelper;
+import fi.nls.oskari.myplaces.util.GeoServerRequestBuilder;
+import fi.nls.oskari.myplaces.util.GeoServerResponseBuilder;
 import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.util.*;
 
