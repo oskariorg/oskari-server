@@ -1,13 +1,7 @@
 package fi.nls.oskari.util;
 
-import fi.nls.oskari.control.ActionDeniedException;
-import fi.nls.oskari.domain.User;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.myplaces.MyPlacesService;
-import fi.nls.oskari.myplaces.MyPlacesServiceMybatisImpl;
-import fi.nls.oskari.service.OskariComponentManager;
-
 import org.apache.axiom.om.*;
 import org.geotools.GML;
 import org.geotools.GML.Version;
@@ -76,7 +70,6 @@ public class GeoServerRequestBuilder {
     private OMAttribute decimalAttribute;
 
     private OMFactory factory = null;
-    private MyPlacesService service;
 
     private static final List<String> LAYERS_LIST = Arrays.asList("category_name", "default", "stroke_width",
             "stroke_color", "fill_color", "dot_color", "dot_size", "border_width", "border_color",
@@ -88,7 +81,6 @@ public class GeoServerRequestBuilder {
 
     public GeoServerRequestBuilder() {
         factory = OMAbstractFactory.getOMFactory();
-        service = OskariComponentManager.getComponentOfType(MyPlacesService.class);
 
         xmlSchemaInstance = factory.createOMNamespace("http://www.w3.org/2001/XMLSchema-instance", "xsi");
         wfsNS = factory.createOMNamespace("http://www.opengis.net/wfs", "wfs");
@@ -101,11 +93,11 @@ public class GeoServerRequestBuilder {
         decimalAttribute = factory.createOMAttribute("decimal", null, DECIMAL_SEPARATOR);
     }
 
-    public OMElement buildLayersGet(User user) throws Exception {
-        return buildGetFeature(ATTR_UUID, user.getUuid(), TYPE_LAYERS, WFS_VERSION_LAYERS);
+    public OMElement buildLayersGet(String uuid) throws Exception {
+        return buildGetFeature(ATTR_UUID, uuid, TYPE_LAYERS, WFS_VERSION_LAYERS);
     }
 
-    public OMElement buildLayersInsert(User user, String payload) throws Exception {
+    public OMElement buildLayersInsert(String uuid, String payload) throws Exception {
 
         OMElement transaction = buildWFSTRootNode(WFST_VERSION_LAYERS);
         JSONArray jsonArray = new JSONArray(payload);
@@ -114,7 +106,7 @@ public class GeoServerRequestBuilder {
             OMElement insert = factory.createOMElement("Insert", wfsNS);
             OMElement layer = factory.createOMElement(TAG_LAYER, featureNS);
             OMElement uuidElem = factory.createOMElement("uuid", featureNS);
-            uuidElem.setText(user.getUuid());
+            uuidElem.setText(uuid);
             layer.addChild(uuidElem);
 
             for (String property : LAYERS_LIST) {
@@ -126,38 +118,29 @@ public class GeoServerRequestBuilder {
         return transaction;
     }
 
-    public OMElement buildLayersUpdate(User user, String payload) throws Exception {
+    public OMElement buildLayersUpdate(String uuid, JSONArray jsonArray) throws Exception {
         OMElement transaction  = buildWFSTRootNode(WFST_VERSION_LAYERS);
-        JSONArray jsonArray = new JSONArray(payload);
 
         for (int i = 0; i < jsonArray.length(); ++i) {
-            long id = jsonArray.getJSONObject(i).getLong(JSON_ID);
-            if (!service.canModifyCategory(user, id)){
-                throw new ActionDeniedException("Tried to modify category: " + id);
-            }
-
             OMElement update = factory.createOMElement("Update", wfsNS);
             update.addAttribute("typeName",TYPE_LAYERS, null);
             update.declareNamespace(featureNS);
-            update.addChild(buildPropertyElement("uuid", user.getUuid()));
+            update.addChild(buildPropertyElement("uuid", uuid));
 
             for (String property : LAYERS_LIST) {
                 String propertyValue = jsonArray.getJSONObject(i).get(property).toString();
                 update.addChild(buildPropertyElement(property, propertyValue));
             }
+            int id = jsonArray.getJSONObject(i).getInt(JSON_ID);
             update.addChild(buildFidFilter(FID_PREFIX_LAYERS + id));
             transaction.addChild(update);
         }
         return transaction;
     }
 
-    public OMElement buildLayersDelete(User user, String ids) throws Exception {
+    public OMElement buildLayersDelete(String [] idList) throws Exception {
         OMElement transaction = buildWFSTRootNode(WFS_VERSION_LAYERS);
-        String [] idList = ids.split(",");
         for (String id: idList){
-            if (!service.canModifyCategory(user, Long.parseLong(id))){
-                throw new ActionDeniedException("Tried to delete category: " + id);
-            }
             OMElement delete = factory.createOMElement("Delete", wfsNS);
             delete.addAttribute("typeName", TYPE_LAYERS, null);
             delete.declareNamespace(featureNS);
@@ -168,18 +151,15 @@ public class GeoServerRequestBuilder {
         return transaction;
     }
 
-    public OMElement buildFeaturesGet(User user) throws Exception {
-        return buildGetFeature(ATTR_UUID, user.getUuid(), TYPE_FEATURES, WFS_VERSION_FEATURES);
+    public OMElement buildFeaturesGet(String uuid) throws Exception {
+        return buildGetFeature(ATTR_UUID, uuid, TYPE_FEATURES, WFS_VERSION_FEATURES);
     }
 
-    public OMElement buildFeaturesGetByLayer(User user, String layerId) throws Exception {
-        if (!service.canModifyCategory(user, Long.parseLong(layerId))){
-            throw new ActionDeniedException("Tried to get features from my places layer: " + layerId);
-        }
+    public OMElement buildFeaturesGetByLayer(String layerId) throws Exception {
         return buildGetFeature(ATTR_LAYERID, layerId, TYPE_FEATURES, WFS_VERSION_FEATURES);
     }
-    //TODO: ids -> String/String[]/JSONArray,.. ??
-    public OMElement buildFeaturesGetByIds(User user, String ids) throws Exception {
+
+    public OMElement buildFeaturesGetByIds(String [] idList) throws Exception {
         OMElement root = buildWFSRootNode("GetFeature", WFS_VERSION_FEATURES);
         root.addAttribute("outputFormat", GET_FEATURE_OUTPUT_FORMAT, null);
 
@@ -189,14 +169,26 @@ public class GeoServerRequestBuilder {
         query.addAttribute("srsName", SRS_NAME, null);
 
         OMElement filter = factory.createOMElement("Filter", ogcNS);
-        String [] idList = ids.split(",");
-        String fid;
         for (String id : idList){
-            if (!service.canModifyPlace(user, Long.parseLong(id))){
-                throw new ActionDeniedException("Tried to get feature: " + id);
-            }
-            fid = FID_PREFIX_FEATURES + id;
-            filter.addChild(buildFid(fid));
+            filter.addChild(buildFid(FID_PREFIX_FEATURES + id));
+        }
+        query.addChild(filter);
+        root.addChild(query);
+
+        return root;
+    }
+    public OMElement buildFeaturesGetByIds (List <Integer> ids) throws Exception {
+        OMElement root = buildWFSRootNode("GetFeature", WFS_VERSION_FEATURES);
+        root.addAttribute("outputFormat", GET_FEATURE_OUTPUT_FORMAT, null);
+
+        OMElement query = factory.createOMElement("Query", wfsNS);
+        query.declareNamespace(featureNS);
+        query.addAttribute("typeName", TYPE_FEATURES, null);
+        query.addAttribute("srsName", SRS_NAME, null);
+
+        OMElement filter = factory.createOMElement("Filter", ogcNS);
+        for (int id : ids){
+            filter.addChild(buildFid(FID_PREFIX_FEATURES + id));
         }
         query.addChild(filter);
         root.addChild(query);
@@ -204,52 +196,40 @@ public class GeoServerRequestBuilder {
         return root;
     }
 
-    public OMElement buildFeaturesInsert(User user, String payload) throws Exception {
+    public OMElement buildFeaturesInsert(String uuid, JSONArray jsonArray) throws Exception {
         OMElement transaction = buildWFSTRootNode(WFST_VERSION_FEATURES);
-        JSONArray jsonArray = new JSONArray(payload);
 
         for (int i = 0; i < jsonArray.length(); ++i) {
-            long categoryId = jsonArray.getJSONObject(i).getLong(ATTR_LAYERID);
-
-            if (!service.canInsert(user, categoryId)){
-                throw new ActionDeniedException("Tried to insert feature into category: " + categoryId);
-            }
+            JSONObject feat = jsonArray.getJSONObject(i);
             OMElement insert = factory.createOMElement("Insert", wfsNS);
-
             OMElement myPlaces = factory.createOMElement(TAG_FEATURES, featureNS);
 
             OMElement geometry = factory.createOMElement(GEOMETRY_NAME, featureNS);
-            geometry.addChild(getGeometry(jsonArray.getJSONObject(i).getJSONObject("geometry")));
+            geometry.addChild(getGeometry(feat.getJSONObject("geometry")));
             myPlaces.addChild(geometry);
 
             OMElement uuidElem = factory.createOMElement(TAG_UUID, featureNS);
-            uuidElem.setText(user.getUuid());
+            uuidElem.setText(uuid);
             myPlaces.addChild(uuidElem);
 
             OMElement categoryElem = factory.createOMElement(ATTR_LAYERID, featureNS);
-            categoryElem.setText(Long.toString(categoryId));
+            categoryElem.setText(feat.get(ATTR_LAYERID).toString());
             myPlaces.addChild(categoryElem);
 
             for (String property : FEATURES_LIST) {
-                myPlaces.addChild(getElement(jsonArray.getJSONObject(i).getJSONObject("properties"), property, featureNS));
+                myPlaces.addChild(getElement(feat.getJSONObject("properties"), property, featureNS));
             }
-
             insert.addChild(myPlaces);
             transaction.addChild(insert);
         }
         return transaction;
     }
 
-    public OMElement buildFeaturesUpdate(User user, String payload) throws Exception {
+    public OMElement buildFeaturesUpdate(String uuid, JSONArray jsonArray) throws Exception {
 
         OMElement transaction = buildWFSTRootNode(WFST_VERSION_FEATURES);
-        JSONArray jsonArray = new JSONArray(payload);
-        for (int i = 0; i < jsonArray.length(); ++i) {
-            long id = jsonArray.getJSONObject(i).getLong(JSON_ID);
-            if (!service.canModifyPlace(user, id)){
-                throw new ActionDeniedException("Tried to modify place: " + id);
-            }
 
+        for (int i = 0; i < jsonArray.length(); ++i) {
             OMElement update = factory.createOMElement("Update", wfsNS);
             update.addAttribute("typeName", TYPE_FEATURES, null);
             update.declareNamespace(featureNS);
@@ -263,24 +243,21 @@ public class GeoServerRequestBuilder {
                 propertyValue = properties.get(property).toString();
                 update.addChild(buildPropertyElement(property, propertyValue));
             }
-            update.addChild(buildPropertyElement("uuid", user.getUuid()));
+            update.addChild(buildPropertyElement("uuid", uuid));
             String categoryId = jsonArray.getJSONObject(i).get("category_id").toString();
             update.addChild(buildPropertyElement("category_id", categoryId));
 
-            update.addChild(buildFidFilter(FID_PREFIX_FEATURES + id));
+            update.addChild(buildFidFilter(FID_PREFIX_FEATURES + jsonArray.getJSONObject(i).getInt(JSON_ID)));
 
             transaction.addChild(update);
         }
         return transaction;
     }
 
-    public OMElement buildFeaturesDelete(User user, String ids) throws Exception {
+    public OMElement buildFeaturesDelete(String [] idList) throws Exception {
         OMElement transaction = buildWFSTRootNode(WFST_VERSION_FEATURES);
-        String [] idList = ids.split(",");
+
         for (String id: idList){
-            if (!service.canModifyPlace(user, Long.parseLong(id))){
-                throw new ActionDeniedException("Tried to delete place: " + id);
-            }
             OMElement delete = factory.createOMElement("Delete", wfsNS);
             delete.addAttribute("typeName", TYPE_FEATURES, null);
             delete.declareNamespace(featureNS);
