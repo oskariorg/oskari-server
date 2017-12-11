@@ -76,6 +76,8 @@ public class OskariLayer extends JSONLocalizedNameAndTitle implements Comparable
     private Set<LayerGroup> groups = new HashSet<LayerGroup>();
     private List<OskariLayer> sublayers = new ArrayList<OskariLayer>();
 
+    private Date capabilitiesLastUpdated;
+    private int capabilitiesUpdateRate;
 
     public boolean isCollection() {
         return TYPE_COLLECTION.equals(type);
@@ -452,5 +454,21 @@ public class OskariLayer extends JSONLocalizedNameAndTitle implements Comparable
 
     public void setSupportedCRSs(Set<String> supportedCrss) {
         this.supportedCRSs = supportedCrss;
+    }
+
+    public Date getCapabilitiesLastUpdated() {
+        return capabilitiesLastUpdated;
+    }
+
+    public void setCapabilitiesLastUpdated(Date capabilitiesLastUpdated) {
+        this.capabilitiesLastUpdated = capabilitiesLastUpdated;
+    }
+
+    public int getCapabilitiesUpdateRate() {
+        return capabilitiesUpdateRate;
+    }
+
+    public void setCapabilitiesUpdateRate(int capabilitiesUpdateRate) {
+        this.capabilitiesUpdateRate = capabilitiesUpdateRate;
     }
 }
