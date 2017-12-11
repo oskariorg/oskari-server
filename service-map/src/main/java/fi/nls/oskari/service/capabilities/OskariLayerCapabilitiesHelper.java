@@ -12,6 +12,8 @@ import fi.nls.oskari.wfs.GetGtWFSCapabilities;
 import fi.nls.oskari.wmts.domain.ResourceUrl;
 import fi.nls.oskari.wmts.domain.WMTSCapabilities;
 import fi.nls.oskari.wmts.domain.WMTSCapabilitiesLayer;
+
+import java.util.Date;
 import java.util.Map;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -36,6 +38,7 @@ public class OskariLayerCapabilitiesHelper {
     public static void setPropertiesFromCapabilitiesWMS(WebMapService wms, OskariLayer ml) {
         JSONObject caps = LayerJSONFormatterWMS.createCapabilitiesJSON(wms);
         ml.setCapabilities(caps);
+        ml.setCapabilitiesLastUpdated(new Date());
         //TODO: similiar parsing for WMS GetCapabilities for admin layerselector  and this
         // Parsing is processed twice:
         // 1st with geotools parsing for admin layerselector (styles are not parsered correct in all cases)
@@ -94,6 +97,7 @@ public class OskariLayerCapabilitiesHelper {
 
         JSONObject jscaps = LayerJSONFormatterWMTS.createCapabilitiesJSON(layer);
         ml.setCapabilities(jscaps);
+        ml.setCapabilitiesLastUpdated(new Date());
 
         crs = crs != null ? crs : ml.getSrs_name();
         ml.setTileMatrixSetId(LayerJSONFormatterWMTS.getTileMatrixSetId(jscaps, crs));
@@ -105,6 +109,7 @@ public class OskariLayerCapabilitiesHelper {
         Map<String, Object> capa = GetGtWFSCapabilities.getGtDataStoreCapabilities(
                 ml.getUrl(), ml.getVersion(), ml.getUsername(), ml.getPassword(), ml.getSrs_name());
         ml.setSupportedCRSs(GetGtWFSCapabilities.parseProjections(capa, ml.getVersion(), ml.getName()));
+        ml.setCapabilitiesLastUpdated(new Date());
     }
 
 }
