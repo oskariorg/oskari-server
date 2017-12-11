@@ -38,11 +38,6 @@ public class GeoServerResponseBuilder {
             "stroke_color", "fill_color", "uuid", "dot_color", "dot_size", "border_width", "border_color",
             "dot_shape", "stroke_linejoin", "fill_pattern", "stroke_linecap", "stroke_dasharray", "border_linejoin",
             "border_dasharray");
-    private static final String RESPONSE_FIDLIST = "fidList";
-    private static final String RESPONSE_IDLIST = "idList";
-    private static final String RESPONSE_UPDATED = "updated";
-    private static final String RESPONSE_INSERTED = "inserted";
-    private static final String RESPONSE_DELETED = "deleted";
     private static final String FID_PREFIX_LAYERS = "categories.";
     private static final String FID_PREFIX_FEATURES = "my_places.";
 
@@ -62,20 +57,20 @@ public class GeoServerResponseBuilder {
 
     }
     //WFS1.1
-    public JSONArray buildLayersInsert(String response) throws Exception {
-        Map <String, Object> responseMap = parseTransactionResponse(response);
-        return (JSONArray) responseMap.get(RESPONSE_FIDLIST);
+    public List<Integer> buildLayersInsert(String response) throws Exception {
+        //MyPlacesResponse resp = parseTransactionResponse(response);
+        return parseTransactionResponse(response).getIdList();
     }
 
     //WFS1.1
     public int buildLayersUpdate(String response) throws Exception {
-        Map <String, Object> responseMap = parseTransactionResponse(response);
-        return (int) responseMap.get(RESPONSE_UPDATED);
+        //MyPlacesResponse resp = parseTransactionResponse(response);
+        return parseTransactionResponse(response).getUpdated();
     }
     //WFS1.1
     public int buildLayersDelete(String response) throws Exception {
-        Map <String, Object> responseMap = parseTransactionResponse(response);
-        return (int) responseMap.get(RESPONSE_DELETED);
+        //MyPlacesResponse resp = parseTransactionResponse(response);
+        return parseTransactionResponse(response).getDeleted();
     }
     //WFS1.0 JSON/GeoJSON response
     public JSONArray buildFeaturesGet(String response) throws Exception {
@@ -92,20 +87,20 @@ public class GeoServerResponseBuilder {
         return feats;
     }
     //WFS1.1
-    public JSONArray buildFeaturesInsert(String response) throws Exception {
-        Map <String, Object> responseMap = parseTransactionResponse(response);
-        return (JSONArray) responseMap.get(RESPONSE_IDLIST);
+    public List<Integer> buildFeaturesInsert(String response) throws Exception {
+        //MyPlacesResponse resp = parseTransactionResponse(response);
+        return parseTransactionResponse(response).getIdList();
     }
     //WFS1.1
     public int buildFeaturesUpdate(String response) throws Exception {
-        Map <String, Object> responseMap = parseTransactionResponse(response);
-        return (int) responseMap.get(RESPONSE_UPDATED);
+        //MyPlacesResponse resp = parseTransactionResponse(response);
+        return parseTransactionResponse(response).getUpdated();
 
     }
     //WFS1.1
     public int buildFeaturesDelete(String response) throws Exception {
-        Map <String, Object> responseMap = parseTransactionResponse(response);
-        return (int) responseMap.get(RESPONSE_DELETED);
+        //MyPlacesResponse resp = parseTransactionResponse(response);
+        return parseTransactionResponse(response).getDeleted();
 
     }
 
@@ -140,38 +135,33 @@ public class GeoServerResponseBuilder {
     }
 
     //WFS 1.1.0
-    public static Map<String, Object> parseTransactionResponse(String response) throws Exception {
+    private MyPlacesResponse parseTransactionResponse(String transaction) throws Exception {
         final WFSConfiguration configuration = new org.geotools.wfs.v1_1.WFSConfiguration();
-        JSONArray fidList = new JSONArray();
-        JSONArray idList = new JSONArray();
-        InputStream inputStream = IOUtils.toInputStream(response, "UTF-8");
+        InputStream inputStream = IOUtils.toInputStream(transaction, "UTF-8");
         Parser parser = new Parser(configuration);
         Object parsedResponse = parser.parse(inputStream);
-        Map <String, Object> responseMap = new HashMap<String, Object>();
+        MyPlacesResponse response = new MyPlacesResponse();
 
         if (parsedResponse instanceof TransactionResponseType) {
             TransactionResponseType transactionResponse = (TransactionResponseType) parsedResponse;
             TransactionSummaryType summary = transactionResponse.getTransactionSummary();
-            responseMap.put(RESPONSE_DELETED, summary.getTotalDeleted().intValue());
-            responseMap.put(RESPONSE_INSERTED, summary.getTotalInserted().intValue());
-            responseMap.put(RESPONSE_UPDATED, summary.getTotalUpdated().intValue());
+            response.setDeleted(summary.getTotalDeleted().intValue());
+            response.setInserted(summary.getTotalInserted().intValue());
+            response.setUpdated(summary.getTotalUpdated().intValue());
             //TransactionResultsType result = transactionResponse.getTransactionResults();
             InsertResultsType insertResults = transactionResponse.getInsertResults();
             for (int i = 0; i < insertResults.getFeature().size(); ++i) {
                 String fid = ((InsertedFeatureType) insertResults.getFeature().get(i)).getFeatureId().get(0).toString();
-                int id = parseIdFromFid(fid);
-                idList.put(id);
-                fidList.put(fid);
+                response.addId(parseIdFromFid(fid));
             }
-            responseMap.put(RESPONSE_IDLIST, idList);
-            responseMap.put(RESPONSE_FIDLIST, fidList);
         } else if (parsedResponse instanceof ExceptionReportType){
             ExceptionReportType excReport = (ExceptionReportType) parsedResponse;
             for (Object e : excReport.getException()){
                 log.warn("e:" + e.toString());
             }
+            //TODO throw Exception. check what e contains
         }
-        return responseMap;
+        return response;
     }
     private static int parseIdFromFid (String fid){
         String id = "-1";
@@ -181,5 +171,39 @@ public class GeoServerResponseBuilder {
             id = fid.substring(FID_PREFIX_LAYERS.length());
         }
         return Integer.parseInt(id);
+    }
+    class MyPlacesResponse {
+        int updated;
+        int deleted;
+        int inserted;
+        List <Integer> idList = new ArrayList<Integer>();
+
+        void setDeleted (int deleted){
+            this.deleted = deleted;
+        }
+        int getDeleted (){
+            return deleted;
+        }
+        void setUpdated (int updated){
+            this.updated = updated;
+        }
+        int getUpdated (){
+            return updated;
+        }
+        void setInserted (int inserted){
+            this.inserted = inserted;
+        }
+        int getInserted (){
+            return inserted;
+        }
+        void setIdList (List<Integer> idList){
+            this.idList = idList;
+        }
+        void addId (int id){
+            idList.add(id);
+        }
+        List<Integer> getIdList (){
+            return idList;
+        }
     }
 }
