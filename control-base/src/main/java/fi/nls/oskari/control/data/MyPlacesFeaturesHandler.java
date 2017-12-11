@@ -9,23 +9,23 @@ import fi.nls.oskari.myplaces.MyPlacesService;
 import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.util.*;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import java.io.IOException;
+import java.util.Arrays;
 import org.apache.axiom.om.OMElement;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 
 @OskariActionRoute("MyPlacesFeatures")
 public class MyPlacesFeaturesHandler extends RestActionHandler {
 
-    private final static Logger log = LogFactory.getLogger(MyPlacesFeaturesHandler.class);
+    private static final Logger LOG = LogFactory.getLogger(MyPlacesFeaturesHandler.class);
+
     private static final String PARAM_FEATURES = "features";
     private static final String PARAM_LAYER_ID = "layerId";
     private static final String PARAM_FEATURE_ID = "featureId";
     private static final String JSKEY_FEATURES = "features";
-    private static final String JSKEY_IDLIST = "idList";
     private static final String JSKEY_UPDATED = "updated";
     private static final String JSKEY_DELETED = "deleted";
     private static final String JSKEY_LAYERID = "category_id";
@@ -45,133 +45,197 @@ public class MyPlacesFeaturesHandler extends RestActionHandler {
 
     @Override
     public void preProcess(ActionParameters params) throws ActionException {
-        super.preProcess(params);
-        //only for logged in user
         params.requireLoggedInUser();
     }
 
+    @Override
     public void handleGet(ActionParameters params) throws ActionException {
-        //params.requireLoggedInUser();
-        try {
-            JSONObject responseJson = new JSONObject();
-            OMElement request;
-            String layerId = params.getHttpParam(PARAM_LAYER_ID);
-            String featureIds = params.getHttpParam(PARAM_FEATURE_ID);
-            User user = params.getUser();
-            if (featureIds != null){
-                String [] idList = featureIds.split(",");
-                for (String id : idList){
-                    if (!service.canModifyPlace(user, Long.parseLong(id))){
-                        throw new ActionDeniedException("Tried to get feature: " + id);
-                    }
+        final User user = params.getUser();
+
+        final String layerId = params.getHttpParam(PARAM_LAYER_ID);
+        final String featureIds = params.getHttpParam(PARAM_FEATURE_ID);
+
+        final OMElement request;
+        if (featureIds != null && !featureIds.isEmpty()) {
+            String[] idList = featureIds.split(",");
+            long[] ids = Arrays.stream(idList)
+                    .mapToLong(Long::parseLong)
+                    .toArray();
+            for (long id : ids) {
+                if (!service.canModifyPlace(user, id)) {
+                    throw new ActionDeniedException("User " + user.getId() +
+                            "tried to GET feature " + id);
                 }
-                log.debug("Requested GetFeatures by feature ids: ", featureIds);
-                request = requestBuilder.buildFeaturesGetByIds(idList);
-            }else if (layerId != null){
-                if (!service.canModifyCategory(user, Long.parseLong(layerId))){
-                    throw new ActionDeniedException("Tried to get features from my places layer: " + layerId);
-                }
-                log.debug("Requested GetFeatures by layer ids: ", layerId);
-                request = requestBuilder.buildFeaturesGetByLayer(layerId);
-            }else{
-                log.debug("Requested GetFeatures by uuid: ", params.getUser().getUuid());
-                request = requestBuilder.buildFeaturesGet(user.getUuid());
             }
+            request = requestBuilder.buildFeaturesGetByIds(ids);
+        } else if (layerId != null && !layerId.isEmpty()) {
+            if (!service.canModifyCategory(user, Long.parseLong(layerId))) {
+                throw new ActionDeniedException("User " + user.getId() +
+                        " tried to GET features from layer " + layerId);
+            }
+            request = requestBuilder.buildFeaturesGetByLayer(layerId);
+        } else {
+            request = requestBuilder.buildFeaturesGet(user.getUuid());
+        }
+
+        try {
             String response = GeoServerHelper.sendRequest(request);
             JSONArray features = responseBuilder.buildFeaturesGet(response);
+            JSONObject responseJson = new JSONObject();
             JSONHelper.putValue(responseJson, JSKEY_FEATURES, features);
             ResponseHelper.writeResponse(params, responseJson);
+            return;
+        } catch (IOException e) {
+            LOG.warn(e, "Failed to get response for request:", request);
+        } catch (JSONException e) {
+            LOG.warn(e, "Failed to parse response for request:", request);
         }
-        catch (Exception e) {
-            throw new ActionException(e.getMessage());
-        }
+        throw new ActionException("Failed to get Features!");
     }
 
+    @Override
     public void handlePost(ActionParameters params) throws ActionException {
-        //params.requireLoggedInUser();
+        // TODO: I'm ugly, please help me get rid of using JSONArrays and JSONObjects
+        // and all the JSONExceptions by replacing the model with appropriate Java class, thanks!
+
+        final User user = params.getUser();
+
+        final JSONArray features;
         try {
-            User user = params.getUser();
-            JSONObject responseJson = new JSONObject();
-            JSONArray jsonArray = new JSONArray(params.getHttpParam(PARAM_FEATURES));
-            for (int i = 0 ; i < jsonArray.length() ; i++) {
-                long categoryId = jsonArray.getJSONObject(i).getLong(JSKEY_LAYERID);
-                if (!service.canInsert(user, categoryId)){
-                    throw new ActionDeniedException("Tried to insert feature into category: " + categoryId);
+            features = new JSONArray(params.getRequiredParam(PARAM_FEATURES));
+        } catch (JSONException e) {
+            throw new ActionParamsException("Invalid parameter for key " + PARAM_FEATURES);
+        }
+
+        try {
+            // Check that user has has rights
+            for (int i = 0; i < features.length(); i++) {
+                JSONObject feature = features.getJSONObject(i);
+                long categoryId = feature.getLong(JSKEY_LAYERID);
+                if (!service.canInsert(user, categoryId)) {
+                    throw new ActionDeniedException("User " + user.getId() +
+                            " tried to insert feature into category: " + categoryId);
                 }
             }
-            OMElement request = requestBuilder.buildFeaturesInsert(user.getUuid(), jsonArray);
-            String response = GeoServerHelper.sendRequest(request);
-            List <Integer> idList = responseBuilder.buildFeaturesInsert(response);
-            JSONHelper.putValue(responseJson, JSKEY_IDLIST, idList);
-            request = requestBuilder.buildFeaturesGetByIds(idList);
-            response = GeoServerHelper.sendRequest(request);
-            JSONArray features = responseBuilder.buildFeaturesGet(response);
-            JSONHelper.putValue(responseJson, JSKEY_FEATURES, features);
-            ResponseHelper.writeResponse(params, responseJson);
+        } catch (JSONException e) {
+            throw new ActionParamsException("Invalid parameter for key " + PARAM_FEATURES, e);
         }
-        catch (Exception e) {
-            throw new ActionException(e.getMessage());
+
+
+        OMElement insertFeaturesRequest;
+        try {
+            insertFeaturesRequest = requestBuilder.buildFeaturesInsert(user.getUuid(), features);
+        } catch (JSONException e) {
+            throw new ActionParamsException("Invalid parameter for key " + PARAM_FEATURES, e);
         }
+
+        try {
+            String insertFeaturesResponse = GeoServerHelper.sendRequest(insertFeaturesRequest);
+            long[] insertedIds = responseBuilder.getInsertedIds(insertFeaturesResponse);
+
+            OMElement getFeaturesRequest = requestBuilder.buildFeaturesGetByIds(insertedIds);
+            String getFeaturesResponse = GeoServerHelper.sendRequest(getFeaturesRequest);
+            JSONArray insertedFeatures = responseBuilder.buildFeaturesGet(getFeaturesResponse);
+
+            JSONObject response = new JSONObject();
+            JSONHelper.putValue(response, JSKEY_FEATURES, insertedFeatures);
+            ResponseHelper.writeResponse(params, response);
+        } catch (IOException e) {
+            throw new ActionException("IOException occured", e);
+        } catch (JSONException e) {
+            throw new ActionException("Internal error", e);
+        }
+
     }
 
+    @Override
     public void handlePut(ActionParameters params) throws ActionException {
-        //params.requireLoggedInUser();
+        // TODO: I'm ugly, please help me get rid of using JSONArrays and JSONObjects
+        // and all the JSONExceptions by replacing the model with appropriate Java class, thanks!
+
+        final User user = params.getUser();
+
+        final JSONArray features;
         try {
-            User user = params.getUser();
-            JSONObject responseJson = new JSONObject();
-            JSONArray jsonArray = new JSONArray(params.getHttpParam(PARAM_FEATURES));
-            List <Integer> idList = new ArrayList<Integer>();
-            for (int i = 0 ; i < jsonArray.length() ; i++) {
-                int id = jsonArray.getJSONObject(i).getInt(JSKEY_ID);
-                //store feature ids
-                idList.add(id);
-                if (!service.canModifyPlace(user, id)){
-                    throw new ActionDeniedException("Tried to modify place: " + id);
-                }
+            features = new JSONArray(params.getRequiredParam(PARAM_FEATURES));
+        } catch (JSONException e) {
+            throw new ActionParamsException("Invalid parameter for key " + PARAM_FEATURES);
+        }
+
+        final long[] ids = new long[features.length()];
+        try {
+            for (int i = 0; i < features.length() ; i++) {
+                JSONObject feature = features.getJSONObject(i);
+                long placeId = feature.getLong(JSKEY_ID);
+                ids[i] = placeId;
             }
-            OMElement request = requestBuilder.buildFeaturesUpdate(user.getUuid(), jsonArray);
-            String response = GeoServerHelper.sendRequest(request);
-            int updated = responseBuilder.buildFeaturesUpdate(response);
-            JSONHelper.putValue(responseJson, JSKEY_UPDATED, updated);
-            request = requestBuilder.buildFeaturesGetByIds(idList);
-            response = GeoServerHelper.sendRequest(request);
-            //add features to response
-            JSONArray features = responseBuilder.buildFeaturesGet(response);
-            JSONHelper.putValue(responseJson, JSKEY_FEATURES, features);
-            ResponseHelper.writeResponse(params, responseJson);
+        } catch (JSONException e) {
+            throw new ActionParamsException("Invalid parameter for key " + PARAM_FEATURES);
         }
-        catch (Exception e) {
-            throw new ActionException(e.getMessage());
+
+        for (long id : ids) {
+            if (!service.canModifyPlace(user, id)) {
+                throw new ActionDeniedException("User: " + user.getId() +
+                        " tried to modify place: " + id);
+            }
         }
+
+        OMElement updateRequest;
+        try {
+            updateRequest = requestBuilder.buildFeaturesUpdate(user.getUuid(), features);
+        } catch (JSONException e) {
+            throw new ActionParamsException("Invalid parameter for key " + PARAM_FEATURES);
+        }
+
+        JSONArray updatedFeatures;
+        try {
+            String updateResponse = GeoServerHelper.sendRequest(updateRequest);
+            int updated = responseBuilder.getTotalUpdated(updateResponse);
+            if (updated < 0) {
+                throw new ActionException("Failed to update features");
+            }
+
+            OMElement getFeaturesRequest = requestBuilder.buildFeaturesGetByIds(ids);
+            String getFeaturesResponse = GeoServerHelper.sendRequest(getFeaturesRequest);
+            updatedFeatures = responseBuilder.buildFeaturesGet(getFeaturesResponse);
+        } catch (IOException e) {
+            throw new ActionException("IOException occured", e);
+        } catch (JSONException e) {
+            throw new ActionException("Internal error", e);
+        }
+
+        JSONObject response = new JSONObject();
+        JSONHelper.putValue(response, JSKEY_FEATURES, updatedFeatures);
+        ResponseHelper.writeResponse(params, response);
     }
 
+    @Override
     public void handleDelete(ActionParameters params) throws ActionException {
-        //params.requireLoggedInUser();
-        try {
-            User user = params.getUser();
-            JSONObject responseJson = new JSONObject();
-            String [] idList = params.getHttpParam(PARAM_FEATURES).split(",");
-            for (String id : idList){
-                if (!service.canModifyPlace(user, Long.parseLong(id))){
-                    throw new ActionDeniedException("Tried to delete place: " + id);
-                }
+        final User user = params.getUser();
+        final long[] ids = Arrays.stream(params.getRequiredParam(PARAM_FEATURES).split(","))
+                .mapToLong(Long::parseLong)
+                .toArray();
+
+        for (long id : ids) {
+            if (!service.canModifyPlace(user, id)) {
+                throw new ActionDeniedException("User: " + user.getId() +
+                        " tried to delete place: " + id);
             }
-            OMElement request = requestBuilder.buildFeaturesDelete(idList);
-            String response = GeoServerHelper.sendRequest(request);
-            int deleted = responseBuilder.buildFeaturesDelete(response);
-            JSONHelper.putValue(responseJson, JSKEY_DELETED, deleted);
-            ResponseHelper.writeResponse(params, responseJson);
         }
-        catch (Exception e) {
-            throw new ActionException(e.getMessage(), e);
+
+        try {
+            OMElement deleteRequest = requestBuilder.buildFeaturesDelete(ids);
+            String deleteResponse = GeoServerHelper.sendRequest(deleteRequest);
+            int deleted = responseBuilder.getTotalDeleted(deleteResponse);
+            if (deleted < 0) {
+                throw new ActionException("Failed to delete features");
+            }
+            JSONObject response = new JSONObject();
+            JSONHelper.putValue(response, JSKEY_DELETED, deleted);
+            ResponseHelper.writeResponse(params, response);
+        } catch (IOException e) {
+            throw new ActionException("IOException occured", e);
         }
     }
 
-    private String readPayload(ActionParameters params) throws ActionException {
-        try {
-            return IOHelper.readString(params.getRequest().getInputStream());
-        } catch (Exception e) {
-            throw new ActionException(e.getMessage());
-        }
-    }
- }
+}

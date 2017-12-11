@@ -1,28 +1,14 @@
 package fi.nls.oskari.util;
 
-import fi.nls.oskari.log.LogFactory;
-import fi.nls.oskari.log.Logger;
 import org.apache.axiom.om.*;
-import org.geotools.GML;
-import org.geotools.GML.Version;
-import org.geotools.filter.v1_0.OGCConfiguration;
-import org.geotools.geojson.geom.GeometryJSON;
-import org.geotools.xml.Configuration;
-import org.geotools.xml.Encoder;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.omg.IOP.TAG_JAVA_CODEBASE;
-
-import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.GeometryCollection;
 
 import java.util.Arrays;
 import java.util.List;
 
 public class GeoServerRequestBuilder {
-
-    private static final Logger log = LogFactory.getLogger(GeoServerRequestBuilder.class);
 
     private static final String TAG_LAYER= "categories";
     private static final String TAG_FEATURES = "my_places";
@@ -57,8 +43,6 @@ public class GeoServerRequestBuilder {
     private static final String WFST_VERSION_LAYERS = "1.1.0";
     private static final String WFS_SCHEMA_BASE = "http://schemas.opengis.net/wfs/";
     private static final String WFS_SCHEMA = "/wfs.xsd";
-    private static final String WFST_SCHEMA = "/WFS-transaction.xsd";
-    //http://schemas.opengis.net/wfs/1.1.0/WFS-transaction.xsd
 
     private OMNamespace xmlSchemaInstance = null;
     private OMNamespace wfsNS = null;
@@ -151,15 +135,15 @@ public class GeoServerRequestBuilder {
         return transaction;
     }
 
-    public OMElement buildFeaturesGet(String uuid) throws Exception {
+    public OMElement buildFeaturesGet(String uuid) {
         return buildGetFeature(ATTR_UUID, uuid, TYPE_FEATURES, WFS_VERSION_FEATURES);
     }
 
-    public OMElement buildFeaturesGetByLayer(String layerId) throws Exception {
+    public OMElement buildFeaturesGetByLayer(String layerId) {
         return buildGetFeature(ATTR_LAYERID, layerId, TYPE_FEATURES, WFS_VERSION_FEATURES);
     }
 
-    public OMElement buildFeaturesGetByIds(String [] idList) throws Exception {
+    public OMElement buildFeaturesGetByIds(long[] ids) {
         OMElement root = buildWFSRootNode("GetFeature", WFS_VERSION_FEATURES);
         root.addAttribute("outputFormat", GET_FEATURE_OUTPUT_FORMAT, null);
 
@@ -169,25 +153,7 @@ public class GeoServerRequestBuilder {
         query.addAttribute("srsName", SRS_NAME, null);
 
         OMElement filter = factory.createOMElement("Filter", ogcNS);
-        for (String id : idList){
-            filter.addChild(buildFid(FID_PREFIX_FEATURES + id));
-        }
-        query.addChild(filter);
-        root.addChild(query);
-
-        return root;
-    }
-    public OMElement buildFeaturesGetByIds (List <Integer> ids) throws Exception {
-        OMElement root = buildWFSRootNode("GetFeature", WFS_VERSION_FEATURES);
-        root.addAttribute("outputFormat", GET_FEATURE_OUTPUT_FORMAT, null);
-
-        OMElement query = factory.createOMElement("Query", wfsNS);
-        query.declareNamespace(featureNS);
-        query.addAttribute("typeName", TYPE_FEATURES, null);
-        query.addAttribute("srsName", SRS_NAME, null);
-
-        OMElement filter = factory.createOMElement("Filter", ogcNS);
-        for (int id : ids){
+        for (long id : ids) {
             filter.addChild(buildFid(FID_PREFIX_FEATURES + id));
         }
         query.addChild(filter);
@@ -196,7 +162,7 @@ public class GeoServerRequestBuilder {
         return root;
     }
 
-    public OMElement buildFeaturesInsert(String uuid, JSONArray jsonArray) throws Exception {
+    public OMElement buildFeaturesInsert(String uuid, JSONArray jsonArray) throws JSONException {
         OMElement transaction = buildWFSTRootNode(WFST_VERSION_FEATURES);
 
         for (int i = 0; i < jsonArray.length(); ++i) {
@@ -225,7 +191,7 @@ public class GeoServerRequestBuilder {
         return transaction;
     }
 
-    public OMElement buildFeaturesUpdate(String uuid, JSONArray jsonArray) throws Exception {
+    public OMElement buildFeaturesUpdate(String uuid, JSONArray jsonArray) throws JSONException {
 
         OMElement transaction = buildWFSTRootNode(WFST_VERSION_FEATURES);
 
@@ -254,10 +220,10 @@ public class GeoServerRequestBuilder {
         return transaction;
     }
 
-    public OMElement buildFeaturesDelete(String [] idList) throws Exception {
+    public OMElement buildFeaturesDelete(long[] ids) {
         OMElement transaction = buildWFSTRootNode(WFST_VERSION_FEATURES);
 
-        for (String id: idList){
+        for (long id : ids) {
             OMElement delete = factory.createOMElement("Delete", wfsNS);
             delete.addAttribute("typeName", TYPE_FEATURES, null);
             delete.declareNamespace(featureNS);
@@ -270,7 +236,7 @@ public class GeoServerRequestBuilder {
         return transaction;
     }
 
-    private OMElement buildGetFeature(String filterProperty, String filterValue, String type, String version) throws Exception {
+    private OMElement buildGetFeature(String filterProperty, String filterValue, String type, String version) {
         OMElement root = buildWFSRootNode("GetFeature", version);
         root.addAttribute("outputFormat", GET_FEATURE_OUTPUT_FORMAT, null);
 
@@ -284,8 +250,9 @@ public class GeoServerRequestBuilder {
 
         return root;
     }
+
     //WFS
-    private OMElement buildWFSRootNode (String wfsType, String version) throws Exception {
+    private OMElement buildWFSRootNode (String wfsType, String version) {
         OMElement root = factory.createOMElement(wfsType, wfsNS);
         OMAttribute schemaLocation = factory.createOMAttribute("schemaLocation",
                 xmlSchemaInstance,
@@ -300,8 +267,9 @@ public class GeoServerRequestBuilder {
 
         return root;
     }
+
     //WFS-T
-    private OMElement buildWFSTRootNode (String version) throws Exception {
+    private OMElement buildWFSTRootNode (String version) {
         OMElement root = factory.createOMElement("Transaction", wfsNS);
         OMAttribute schemaLocation = factory.createOMAttribute("schemaLocation",
                 xmlSchemaInstance,
@@ -317,7 +285,7 @@ public class GeoServerRequestBuilder {
         return root;
     }
 
-    private OMElement getElement(JSONObject jsonObject, String fieldName, OMNamespace ns) throws Exception {
+    private OMElement getElement(JSONObject jsonObject, String fieldName, OMNamespace ns) throws JSONException {
         String value = jsonObject.getString(fieldName);
         OMElement var = factory.createOMElement(fieldName, ns);
         var.setText(value);
@@ -325,7 +293,7 @@ public class GeoServerRequestBuilder {
         return var;
     }
 
-    private OMElement buildPropertyElement(String propertyName, String propertyValue) throws Exception {
+    private OMElement buildPropertyElement(String propertyName, String propertyValue) {
         OMElement property = factory.createOMElement("Property", wfsNS);
 
         OMElement name = factory.createOMElement("Name", wfsNS);
@@ -339,7 +307,7 @@ public class GeoServerRequestBuilder {
         return property;
     }
 
-    private OMElement buildPropertyElement(String propertyName, OMElement propertyElem) throws Exception {
+    private OMElement buildPropertyElement(String propertyName, OMElement propertyElem) {
         OMElement property = factory.createOMElement("Property", wfsNS);
 
         OMElement name = factory.createOMElement("Name", wfsNS);
@@ -353,7 +321,7 @@ public class GeoServerRequestBuilder {
         return property;
     }
 
-    private OMElement buildFilter (String operator, String name, String value, boolean matchCase){
+    private OMElement buildFilter (String operator, String name, String value, boolean matchCase) {
         OMElement filterElem = factory.createOMElement("Filter", ogcNS);
         OMElement typeElem = factory.createOMElement(operator, ogcNS);
         if (matchCase){
@@ -384,7 +352,7 @@ public class GeoServerRequestBuilder {
         return fidElem;
     }
 
-    private OMElement getGeometry(JSONObject geometryJson) throws Exception {
+    private OMElement getGeometry(JSONObject geometryJson) throws JSONException {
         String geometryType = geometryJson.getString("type");
         JSONArray coordsJson;
         //GeometryCollection's geometry objects must be same type (Point, LineString, Polygon) not Multi geometry
@@ -404,7 +372,7 @@ public class GeoServerRequestBuilder {
         }
     }
 
-    private OMElement getGeometry(String geometryType, JSONArray coords) throws Exception {
+    private OMElement getGeometry(String geometryType, JSONArray coords) throws JSONException {
         OMElement geometry = factory.createOMElement(geometryType, gmlNS);
 
         OMElement memberElem;
@@ -447,7 +415,7 @@ public class GeoServerRequestBuilder {
                 }
                 break;
             default:
-                throw new Exception("Illegal geometry type: " + geometryType);
+                throw new JSONException("Illegal geometry type: " + geometryType);
         }
         geometry.addAttribute("srsName", SRS_NAME, null);
         return geometry;
@@ -507,7 +475,7 @@ public class GeoServerRequestBuilder {
         }
         return gml;
     }
-    
+
     private OMElement createCoordinateElement (String gmlCoords){
         OMElement elem = factory.createOMElement("coordinates", gmlNS);
         elem.addAttribute(decimalAttribute);
