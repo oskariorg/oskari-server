@@ -75,8 +75,8 @@ public class UpdateCapabilitiesJob extends ScheduledJob {
         final String user = layers.get(0).getUsername();
         final String pass = layers.get(0).getPassword();
 
-        int[] ids = layers.stream().mapToInt(l -> l.getId()).toArray();
         if (LOG.isDebugEnabled()) {
+            int[] ids = layers.stream().mapToInt(OskariLayer::getId).toArray();
             LOG.debug("Updating Capabilities for a group of layers - url:", url,
                     "type:", type, "version:", version, "ids:", Arrays.toString(ids));
         }
@@ -85,6 +85,7 @@ public class UpdateCapabilitiesJob extends ScheduledJob {
         try {
             data = capabilitiesCacheService.getCapabilities(url, type, user, pass, version).getData();
         } catch (ServiceException e) {
+            int[] ids = layers.stream().mapToInt(OskariLayer::getId).toArray();
             LOG.warn(e, "Could not find get Capabilities, url:", url,
                 "type:", type, "version:", version, "ids:", Arrays.toString(ids));
             return;
@@ -114,8 +115,12 @@ public class UpdateCapabilitiesJob extends ScheduledJob {
     }
 
     private void updateWMTSLayers(List<OskariLayer> layers, String data) {
-        WMTSCapabilities wmts = parseWMTSCapabilities(data);
-        if (wmts == null) {
+        final WMTSCapabilities wmts;
+        try {
+            wmts = WMTSCapabilitiesParser.parseCapabilities(data);
+        } catch (XMLStreamException | IllegalArgumentException e) {
+            int[] ids = layers.stream().mapToInt(OskariLayer::getId).toArray();
+            LOG.warn(e, "Failed to parse WMTS GetCapabilities ids:", Arrays.toString(ids));
             return;
         }
 
@@ -126,15 +131,6 @@ public class UpdateCapabilitiesJob extends ScheduledJob {
             } catch (IllegalArgumentException e) {
                 LOG.warn(e, "Failed to update layerId:", layer.getId());
             }
-        }
-    }
-
-    private WMTSCapabilities parseWMTSCapabilities(String data) {
-        try {
-            return WMTSCapabilitiesParser.parseCapabilities(data);
-        } catch (XMLStreamException | IllegalArgumentException e) {
-            LOG.warn(e, "Failed to parse WMTS GetCapabilities");
-            return null;
         }
     }
 
