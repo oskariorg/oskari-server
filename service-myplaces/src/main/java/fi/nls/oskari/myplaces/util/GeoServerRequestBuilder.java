@@ -5,6 +5,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.vividsolutions.jts.geom.Geometry;
+
+import fi.nls.oskari.myplaces.MyPlaceWithGeometry;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -12,7 +16,6 @@ public class GeoServerRequestBuilder {
 
     private static final String TAG_LAYER= "categories";
     private static final String TAG_FEATURES = "my_places";
-    private static final String TAG_UUID = "uuid";
     private static final String TYPE_LAYERS = "feature:categories";
     private static final String TYPE_FEATURES = "feature:my_places";
     private static final String ATTR_UUID = "uuid";
@@ -162,31 +165,37 @@ public class GeoServerRequestBuilder {
         return root;
     }
 
-    public OMElement insertFeatures(String uuid, JSONArray jsonArray) throws JSONException {
+    public OMElement insertFeatures(MyPlaceWithGeometry[] places) {
+        return editFeatures(places, false);
+    }
+
+    public OMElement updateFeatures(MyPlaceWithGeometry[] places) {
+        return editFeatures(places, true);
+    }
+
+    private OMElement editFeatures(MyPlaceWithGeometry[] places, boolean update) {
         OMElement transaction = buildWFSTRootNode(WFST_VERSION_FEATURES);
 
-        for (int i = 0; i < jsonArray.length(); ++i) {
-            JSONObject feat = jsonArray.getJSONObject(i);
-            OMElement insert = factory.createOMElement("Insert", wfsNS);
-            OMElement myPlaces = factory.createOMElement(TAG_FEATURES, featureNS);
+        for (MyPlaceWithGeometry place : places) {
+            String operationName = update ? "Update" : "Insert";
+            OMElement op = factory.createOMElement(operationName, wfsNS);
+            transaction.addChild(op);
+
+            op.addAttribute("typeName", TYPE_FEATURES, null);
+            op.declareNamespace(featureNS);
 
             OMElement geometry = factory.createOMElement(GEOMETRY_NAME, featureNS);
-            geometry.addChild(getGeometry(feat.getJSONObject("geometry")));
-            myPlaces.addChild(geometry);
-
-            OMElement uuidElem = factory.createOMElement(TAG_UUID, featureNS);
-            uuidElem.setText(uuid);
-            myPlaces.addChild(uuidElem);
-
-            OMElement categoryElem = factory.createOMElement(ATTR_LAYERID, featureNS);
-            categoryElem.setText(feat.get(ATTR_LAYERID).toString());
-            myPlaces.addChild(categoryElem);
-
-            for (String property : FEATURES_LIST) {
-                myPlaces.addChild(getElement(feat.getJSONObject("properties"), property, featureNS));
+            geometry.addChild(getGeometry(place.getGeometry()));
+            op.addChild(geometry);
+            op.addChild(createTextElement("category_id", featureNS, Long.toString(place.getCategoryId())));
+            op.addChild(createTextElement("name", featureNS, place.getName()));
+            op.addChild(createTextElement("attention_text", featureNS, place.getAttentionText()));
+            op.addChild(createTextElement("place_desc", featureNS, place.getDesc()));
+            op.addChild(createTextElement("link", featureNS, place.getLink()));
+            op.addChild(createTextElement("image_url", featureNS, place.getImageUrl()));
+            if (update) {
+                op.addChild(buildFidFilter(FID_PREFIX_FEATURES + place.getId()));
             }
-            insert.addChild(myPlaces);
-            transaction.addChild(insert);
         }
         return transaction;
     }
@@ -285,6 +294,12 @@ public class GeoServerRequestBuilder {
         return root;
     }
 
+    private OMElement createTextElement(String elementName, OMNamespace ns, String text) {
+        OMElement elem = factory.createOMElement(elementName, ns);
+        elem.setText(text);
+        return elem;
+    }
+
     private OMElement getElement(JSONObject jsonObject, String fieldName, OMNamespace ns) throws JSONException {
         String value = jsonObject.getString(fieldName);
         OMElement var = factory.createOMElement(fieldName, ns);
@@ -370,6 +385,10 @@ public class GeoServerRequestBuilder {
             coordsJson = geometryJson.getJSONArray("coordinates");
             return getGeometry(geometryType, coordsJson);
         }
+    }
+
+    private OMElement getGeometry(Geometry geometry) {
+        return null;
     }
 
     private OMElement getGeometry(String geometryType, JSONArray coords) throws JSONException {
