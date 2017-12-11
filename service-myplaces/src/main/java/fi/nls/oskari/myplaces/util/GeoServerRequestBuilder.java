@@ -77,11 +77,11 @@ public class GeoServerRequestBuilder {
         decimalAttribute = factory.createOMAttribute("decimal", null, DECIMAL_SEPARATOR);
     }
 
-    public OMElement buildLayersGet(String uuid) throws Exception {
-        return getFeatures(ATTR_UUID, uuid, TYPE_LAYERS, WFS_VERSION_LAYERS);
+    public OMElement getLayersByUserId(String userId) throws Exception {
+        return getFeatures(ATTR_UUID, userId, TYPE_LAYERS, WFS_VERSION_LAYERS);
     }
 
-    public OMElement buildLayersInsert(String uuid, String payload) throws Exception {
+    public OMElement insertLayers(String uuid, String payload) throws Exception {
 
         OMElement transaction = buildWFSTRootNode(WFST_VERSION_LAYERS);
         JSONArray jsonArray = new JSONArray(payload);
@@ -102,7 +102,7 @@ public class GeoServerRequestBuilder {
         return transaction;
     }
 
-    public OMElement buildLayersUpdate(String uuid, JSONArray jsonArray) throws Exception {
+    public OMElement updateLayers(String uuid, JSONArray jsonArray) throws Exception {
         OMElement transaction  = buildWFSTRootNode(WFST_VERSION_LAYERS);
 
         for (int i = 0; i < jsonArray.length(); ++i) {
@@ -122,7 +122,7 @@ public class GeoServerRequestBuilder {
         return transaction;
     }
 
-    public OMElement buildLayersDelete(String [] idList) throws Exception {
+    public OMElement deleteLayersById(String [] idList) throws Exception {
         OMElement transaction = buildWFSTRootNode(WFS_VERSION_LAYERS);
         for (String id: idList){
             OMElement delete = factory.createOMElement("Delete", wfsNS);
@@ -162,7 +162,7 @@ public class GeoServerRequestBuilder {
         return root;
     }
 
-    public OMElement buildFeaturesInsert(String uuid, JSONArray jsonArray) throws JSONException {
+    public OMElement insertFeatures(String uuid, JSONArray jsonArray) throws JSONException {
         OMElement transaction = buildWFSTRootNode(WFST_VERSION_FEATURES);
 
         for (int i = 0; i < jsonArray.length(); ++i) {
@@ -191,7 +191,7 @@ public class GeoServerRequestBuilder {
         return transaction;
     }
 
-    public OMElement buildFeaturesUpdate(String uuid, JSONArray jsonArray) throws JSONException {
+    public OMElement updateFeatures(String uuid, JSONArray jsonArray) throws JSONException {
 
         OMElement transaction = buildWFSTRootNode(WFST_VERSION_FEATURES);
 
@@ -220,7 +220,7 @@ public class GeoServerRequestBuilder {
         return transaction;
     }
 
-    public OMElement buildFeaturesDelete(long[] ids) {
+    public OMElement deleteFeaturesByIds(long[] ids) {
         OMElement transaction = buildWFSTRootNode(WFST_VERSION_FEATURES);
 
         for (long id : ids) {

@@ -111,7 +111,7 @@ public class MyPlacesFeaturesHandler extends RestActionHandler {
 
         OMElement insertFeaturesRequest;
         try {
-            insertFeaturesRequest = requestBuilder.buildFeaturesInsert(user.getUuid(), features);
+            insertFeaturesRequest = requestBuilder.insertFeatures(user.getUuid(), features);
         } catch (JSONException e) {
             throw new ActionParamsException("Invalid parameter for key " + PARAM_FEATURES, e);
         }
@@ -169,7 +169,7 @@ public class MyPlacesFeaturesHandler extends RestActionHandler {
 
         OMElement updateRequest;
         try {
-            updateRequest = requestBuilder.buildFeaturesUpdate(user.getUuid(), features);
+            updateRequest = requestBuilder.updateFeatures(user.getUuid(), features);
         } catch (JSONException e) {
             throw new ActionParamsException("Invalid parameter for key " + PARAM_FEATURES);
         }
@@ -211,7 +211,7 @@ public class MyPlacesFeaturesHandler extends RestActionHandler {
         }
 
         try {
-            OMElement deleteRequest = requestBuilder.buildFeaturesDelete(ids);
+            OMElement deleteRequest = requestBuilder.deleteFeaturesByIds(ids);
             String deleteResponse = GeoServerHelper.sendRequest(deleteRequest);
             int deleted = responseBuilder.getTotalDeleted(deleteResponse);
             if (deleted < 0) {

@@ -24,7 +24,7 @@ public class MyPlacesFeaturesHandlerTest {
         JSONObject request = new JSONObject(payload);
         JSONArray features = request.getJSONArray("features");
         GeoServerRequestBuilder handler = new GeoServerRequestBuilder();
-        OMElement insertRequest = handler.buildFeaturesInsert(uuid, features);
+        OMElement insertRequest = handler.insertFeatures(uuid, features);
     }
 
     private String getInput(String resource) throws IOException {

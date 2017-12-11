@@ -54,7 +54,7 @@ public class MyPlacesLayersHandler extends RestActionHandler {
     public void handleGet(ActionParameters params) throws ActionException {
         try {
             JSONObject responseJson = new JSONObject();
-            OMElement request = requestBuilder.buildLayersGet(params.getUser().getUuid());
+            OMElement request = requestBuilder.getLayersByUserId(params.getUser().getUuid());
             String response = GeoServerHelper.sendRequest(request);
             JSONArray layers = responseBuilder.buildLayersGet(response);
             // if user have no layers, create default
@@ -76,7 +76,7 @@ public class MyPlacesLayersHandler extends RestActionHandler {
         try {
             JSONObject responseJson = new JSONObject();
             String jsonString = params.getHttpParam(PARAM_LAYERS);
-            OMElement request = requestBuilder.buildLayersInsert(params.getUser().getUuid(), jsonString);
+            OMElement request = requestBuilder.insertLayers(params.getUser().getUuid(), jsonString);
             String response = GeoServerHelper.sendRequest(request);
             long[] idList = responseBuilder.getInsertedIds(response);
             JSONHelper.putValue(responseJson, JSKEY_IDLIST, idList);
@@ -100,7 +100,7 @@ public class MyPlacesLayersHandler extends RestActionHandler {
                     throw new ActionDeniedException("Tried to modify category: " + id);
                 }
             }
-            OMElement request = requestBuilder.buildLayersUpdate(user.getUuid(), jsonArray);
+            OMElement request = requestBuilder.updateLayers(user.getUuid(), jsonArray);
             String response = GeoServerHelper.sendRequest(request);
             int updated = responseBuilder.getTotalUpdated(response);
             JSONHelper.putValue(responseJson, JSKEY_UPDATED, updated);
@@ -128,7 +128,7 @@ public class MyPlacesLayersHandler extends RestActionHandler {
                     throw new ActionDeniedException("Tried to delete category: " + id);
                 }
             }
-            OMElement request = requestBuilder.buildLayersDelete(idList);
+            OMElement request = requestBuilder.deleteLayersById(idList);
             String response = GeoServerHelper.sendRequest(request);
             int deleted = responseBuilder.getTotalDeleted(response);
             JSONHelper.putValue(responseJson, JSKEY_DELETED, deleted);
@@ -143,7 +143,7 @@ public class MyPlacesLayersHandler extends RestActionHandler {
         try {
             InputStream inputStream = getClass().getResourceAsStream(DEFAULT_CATEGORY);
             String jsonString = IOHelper.readString(inputStream);
-            OMElement request = requestBuilder.buildLayersInsert(uuid, jsonString);
+            OMElement request = requestBuilder.insertLayers(uuid, jsonString);
             String response = GeoServerHelper.sendRequest(request);
             long[] insertedIds = responseBuilder.getInsertedIds(response);
             log.info("Created default category for user:", uuid,
