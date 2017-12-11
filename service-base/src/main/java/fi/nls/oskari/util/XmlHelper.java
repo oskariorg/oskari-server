@@ -22,6 +22,7 @@ import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import javax.xml.stream.XMLStreamException;
 
 public class XmlHelper {
 
@@ -97,26 +98,41 @@ public class XmlHelper {
         return true;
     }
 
-    public static String getChildValue(final OMElement elem, final String localName) throws Exception {
+    /**
+     * Returns the text content of the first child element with the specified localName
+     * @see OMElement#getText()
+
+     * @param elem parent element
+     * @param localName to search
+     * @return the text content of the child element, null if not available
+     * @throws XMLStreamException if there is more than one matching element
+     */
+    public static String getChildValue(final OMElement elem, final String localName)
+            throws XMLStreamException {
         OMElement e = getChild(elem, localName);
-        if (e == null) {
-            return null;
-        }
-        return e.getText();
+        return e != null ? e.getText() : null;
     }
 
-    public static OMElement getChild(final OMElement elem, final String localName) throws Exception {
-        if (elem == null || localName == null) {
-            return null;
+    /**
+     * Returns the first child element with the specified localName
+     * @param elem parent element
+     * @param localName to search
+     * @return the child element, null if not available
+     * @throws XMLStreamException if there is more than one matching element
+     */
+    public static OMElement getChild(final OMElement elem, final String localName)
+            throws XMLStreamException {
+        if(elem == null || localName == null) {
+           return null;
         }
         final Iterator<OMElement> it = elem.getChildrenWithLocalName(localName);
         if (!it.hasNext()) {
             return null;
         }
         final OMElement result = it.next();
-        if (it.hasNext()) {
-            throw new Exception("More than one element");
-        }
+        if(it.hasNext()) {
+            throw new XMLStreamException("More than one element with localName " + localName);
+       }
         return result;
     }
 
@@ -147,6 +163,26 @@ public class XmlHelper {
             log.error(ex, "Error creating xpath:", str);
         }
         return null;
+    }
+
+    /**
+     * Strips away the XML prolog
+     * @param xml containing the XML message
+     * @return XML message without the prolog
+     */
+    public static String stripPrologFromXML(String xml) {
+        if (xml.startsWith("<?xml")) {
+            int i = xml.indexOf("?>", 5);
+            if (i < 0) {
+                throw new IllegalArgumentException("Invalid XML prolog!");
+            }
+            i = xml.indexOf('<', i + 2);
+            if (i < 0) {
+                throw new IllegalArgumentException("Can't find XML after prolog!");
+            }
+            return xml.substring(i);
+        }
+        return xml;
     }
 
     /**

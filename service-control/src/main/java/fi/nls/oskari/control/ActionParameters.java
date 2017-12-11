@@ -111,6 +111,24 @@ public class ActionParameters {
             throw new ActionParamsException(errMsg);
         }
     }
+
+    /**
+     * Returns a cleaned up (think XSS) value for the requested parameter
+     * @param key parameter name
+     * @return cleaned up value for the parameter as long
+     * @throws ActionParamsException if parameter is not found, is empty or can't be parsed as long
+     */
+    public long getRequiredParamLong(final String key) throws ActionParamsException {
+        final String errMsg = "Required parameter '" + key + "' missing!";
+        final String val = getRequiredParam(key, errMsg);
+
+        try {
+            return Long.parseLong(val);
+        } catch (Exception e) {
+            throw new ActionParamsException(errMsg);
+        }
+    }
+
     /**
      * Returns a cleaned up (think XSS) value for the requested parameter
      * @param key parameter name

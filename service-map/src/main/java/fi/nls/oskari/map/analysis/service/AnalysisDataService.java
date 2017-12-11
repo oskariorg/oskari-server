@@ -7,6 +7,7 @@ import fi.nls.oskari.domain.map.analysis.AnalysisStyle;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.analysis.domain.*;
+import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.JSONHelper;
@@ -15,9 +16,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 public class AnalysisDataService {
     private static final String ANALYSIS_INPUT_TYPE_GS_VECTOR = "gs_vector";
@@ -35,7 +36,7 @@ public class AnalysisDataService {
     private static final TransformationService transformationService = new TransformationService();
 
     public Analysis storeAnalysisData(final String featureset,
-                                      AnalysisLayer analysislayer, String json, User user) {
+            AnalysisLayer analysislayer, String json, User user) throws ServiceException {
 
         final String wfsURL = PropertyUtil.get("geoserver.wfs.url");
         final String wpsUser = PropertyUtil.get("geoserver.wms.user");
@@ -53,7 +54,6 @@ public class AnalysisDataService {
             log.debug("Unable to get AnalysisLayer style JSON", e);
         }
         // FIXME: do we really want to insert possibly empty style??
-        log.debug("Adding style", style);
         styleService.insertAnalysisStyleRow(style);
 
         try {
@@ -148,7 +148,7 @@ public class AnalysisDataService {
      * @param user
      * @return Analysis (stored analysis)
      */
-    public Analysis mergeAnalysisData(AnalysisLayer analysislayer, String json, User user) {
+    public Analysis mergeAnalysisData(AnalysisLayer analysislayer, String json, User user) throws ServiceException {
 
         final AnalysisStyle style = new AnalysisStyle();
         Analysis analysis = null;
@@ -203,26 +203,29 @@ public class AnalysisDataService {
      * @return analysis columns
      */
     public Map<String, String> getAnalysisColumns(final String analysis_id) {
-        if (analysis_id != null) {
-            final Map<String, String> columnNames = new ConcurrentHashMap<String, String>(); // key,
-            // name
-            Analysis analysis = analysisService
-                    .getAnalysisById(ConversionHelper.getLong(analysis_id, 0));
-            if (analysis != null) {
-                for (int j = 1; j < 11; j++) {
-                    String colx = analysis.getColx(j);
-                    if (colx != null && !colx.isEmpty()) {
-                        if (colx.contains("=")) {
-                            columnNames.put(colx.split("=")[0],
-                                    colx.split("=")[1]);
-                        }
-                    }
+        long id = ConversionHelper.getLong(analysis_id, -1L);
+        if (id == -1L) {
+            return null;
+        }
+        Analysis analysis = analysisService.getAnalysisById(id);
+        if (analysis == null) {
+            return null;
+        }
 
+        // key, name
+        Map<String, String> columnNames = new LinkedHashMap<String, String>();
+        for (int j = 1; j < 11; j++) {
+            String colx = analysis.getColx(j);
+            if (colx != null && !colx.isEmpty()) {
+                int i = colx.indexOf('=');
+                if (i > 0) {
+                    String key = colx.substring(0, i);
+                    String name = colx.substring(i + 1);
+                    columnNames.put(key, name);
                 }
-                return columnNames;
             }
         }
-        return null;
+        return columnNames;
     }
 
     /**

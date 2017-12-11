@@ -1,23 +1,17 @@
 package fi.nls.oskari.map.layer.formatters;
 
+import fi.nls.oskari.wmts.domain.WMTSCapabilities;
+
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.map.geometry.ProjectionHelper;
 import fi.nls.oskari.util.JSONHelper;
-import fi.nls.oskari.wmts.domain.TileMatrixLimits;
-import fi.nls.oskari.wmts.domain.WMTSCapabilities;
+import fi.nls.oskari.wmts.domain.TileMatrixSet;
+import fi.nls.oskari.wmts.domain.TileMatrixLink;
 import fi.nls.oskari.wmts.domain.WMTSCapabilitiesLayer;
 import org.json.JSONArray;
 import org.json.JSONObject;
-
 import java.util.*;
 
-/**
- * Created with IntelliJ IDEA.
- * User: SMAKINEN
- * Date: 17.12.2013
- * Time: 15:37
- * To change this template use File | Settings | File Templates.
- */
 public class LayerJSONFormatterWMTS extends LayerJSONFormatter {
 
     public static final String KEY_TILEMATRIXIDS = "tileMatrixIds";
@@ -67,21 +61,21 @@ public class LayerJSONFormatterWMTS extends LayerJSONFormatter {
         return layerJson;
     }
 
-
     /**
-     *
-     * @param wmts
-     * @param layer
-     * @return
+     * @deprecated replaced by {@link #createCapabilitiesJSON(WMTSCapabilitiesLayer layer)}
      */
+    @Deprecated
     public static JSONObject createCapabilitiesJSON(final WMTSCapabilities wmts,final WMTSCapabilitiesLayer layer) {
+        return createCapabilitiesJSON(layer);
+    }
 
+    public static JSONObject createCapabilitiesJSON(final WMTSCapabilitiesLayer layer) {
         JSONObject capabilities = new JSONObject();
         if(layer == null) {
             return capabilities;
         }
 
-        List<JSONObject> tileMatrix = LayerJSONFormatterWMTS.createTileMatrixArray(wmts, layer);
+        List<JSONObject> tileMatrix = LayerJSONFormatterWMTS.createTileMatrixArray(layer);
         JSONHelper.putValue(capabilities, KEY_TILEMATRIXIDS, new JSONArray(tileMatrix));
 
         return capabilities;
@@ -89,55 +83,45 @@ public class LayerJSONFormatterWMTS extends LayerJSONFormatter {
 
     /**
      * Return array of wmts tilematrixsets  (Crs code and Identifier)
-     * @param wmts wmts service capabilities
-     * @param layer  wmts layer capabilities
+     * @param layer wmts layer capabilities
      * @return
      */
-    public static List<JSONObject> createTileMatrixArray(final WMTSCapabilities wmts, final WMTSCapabilitiesLayer layer) {
+    public static List<JSONObject> createTileMatrixArray(final WMTSCapabilitiesLayer layer) {
         final List<JSONObject> tileMatrix = new ArrayList<>();
-        Map<String, Set<TileMatrixLimits>> links = layer.getLinks();
-        if (links.size() > 0 ) {
-            //Loop matrixSet links
-            for (Map.Entry<String, Set<TileMatrixLimits>> entry : links.entrySet()) {
-                String crs = wmts.getMatrixCRS(entry.getKey());
-                if(crs != null){
-                    tileMatrix.add(JSONHelper.createJSONObject(ProjectionHelper.shortSyntaxEpsg(crs), entry.getKey()));
-                }
-            }
+        if (layer == null) {
+            return tileMatrix;
+        }
+
+        for (TileMatrixLink link : layer.getLinks()) {
+            TileMatrixSet tms = link.getTileMatrixSet();
+            String identifier = tms.getId();
+            String crs = tms.getCrs();
+            String epsg = ProjectionHelper.shortSyntaxEpsg(crs);
+            tileMatrix.add(JSONHelper.createJSONObject(epsg, identifier));
         }
         return tileMatrix;
     }
 
     /**
-     * Constructs a  csr set containing the supported coordinate ref systems of WMS service
-     *
-     * @param wmts WebMapService
-     * @return Set<String> containing the supported coordinate ref systems of WMS service
+     * Constructs a Set containing the supported Coordinate Reference Systems of WMTS service
      */
-    public static Set<String> getCRSs(final WMTSCapabilities wmts, final WMTSCapabilitiesLayer layer) {
-        if(layer == null || wmts == null){
+    public static Set<String> getCRSs(final WMTSCapabilitiesLayer layer) {
+        if (layer == null) {
             return null;
         }
 
-        Set<String>  crss = new HashSet<String>();
-
-        Map<String, Set<TileMatrixLimits>> links = layer.getLinks();
-        if (links.size() > 0 ) {
-            //Loop matrixSet links
-            for (Map.Entry<String, Set<TileMatrixLimits>> entry : links.entrySet()) {
-                String crs = wmts.getMatrixCRS(entry.getKey());
-                crss.add(ProjectionHelper.shortSyntaxEpsg(crs));
-            }
-            return crss;
+        Set<String> crss = new HashSet<String>();
+        for (TileMatrixLink link : layer.getLinks()) {
+            TileMatrixSet tms = link.getTileMatrixSet();
+            String crs = tms.getCrs();
+            String epsg = ProjectionHelper.shortSyntaxEpsg(crs);
+            crss.add(epsg);
         }
-
-        return null;
+        return crss;
     }
 
     /**
      * Get matrix id by current crs
-     * @param crs
-     * @return
      */
     public static String getTileMatrixSetId(final JSONObject capabilities, final String crs) {
         if (capabilities.has("tileMatrixIds")) {
@@ -152,7 +136,5 @@ public class LayerJSONFormatterWMTS extends LayerJSONFormatter {
         }
         return null;
     }
-
-
 
 }

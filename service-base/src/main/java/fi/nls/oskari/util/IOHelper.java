@@ -262,6 +262,10 @@ public class IOHelper {
         return debug;
     }
 
+    public static String getCharset(final HttpURLConnection con) {
+        return getCharset(con, null);
+    }
+
     public static String getCharset(final HttpURLConnection con, final String defaultCharset) {
         final String contentType = con.getContentType();
         final String[] values = contentType.split(";");
@@ -908,7 +912,7 @@ public class IOHelper {
         return sb.toString();
     }
 
-    private static String urlEncode(String s) {
+    public static String urlEncode(String s) {
         try {
             return URLEncoder.encode(s, CHARSET_UTF8);
         } catch (UnsupportedEncodingException ignore) {
