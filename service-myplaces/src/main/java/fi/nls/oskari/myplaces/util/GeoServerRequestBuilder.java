@@ -78,7 +78,7 @@ public class GeoServerRequestBuilder {
     }
 
     public OMElement buildLayersGet(String uuid) throws Exception {
-        return buildGetFeature(ATTR_UUID, uuid, TYPE_LAYERS, WFS_VERSION_LAYERS);
+        return getFeatures(ATTR_UUID, uuid, TYPE_LAYERS, WFS_VERSION_LAYERS);
     }
 
     public OMElement buildLayersInsert(String uuid, String payload) throws Exception {
@@ -135,15 +135,15 @@ public class GeoServerRequestBuilder {
         return transaction;
     }
 
-    public OMElement buildFeaturesGet(String uuid) {
-        return buildGetFeature(ATTR_UUID, uuid, TYPE_FEATURES, WFS_VERSION_FEATURES);
+    public OMElement getFeaturesByUserId(String userId) {
+        return getFeatures(ATTR_UUID, userId, TYPE_FEATURES, WFS_VERSION_FEATURES);
     }
 
-    public OMElement buildFeaturesGetByLayer(String layerId) {
-        return buildGetFeature(ATTR_LAYERID, layerId, TYPE_FEATURES, WFS_VERSION_FEATURES);
+    public OMElement getFeaturesByLayerId(String layerId) {
+        return getFeatures(ATTR_LAYERID, layerId, TYPE_FEATURES, WFS_VERSION_FEATURES);
     }
 
-    public OMElement buildFeaturesGetByIds(long[] ids) {
+    public OMElement getFeaturesByIds(long[] ids) {
         OMElement root = buildWFSRootNode("GetFeature", WFS_VERSION_FEATURES);
         root.addAttribute("outputFormat", GET_FEATURE_OUTPUT_FORMAT, null);
 
@@ -236,7 +236,7 @@ public class GeoServerRequestBuilder {
         return transaction;
     }
 
-    private OMElement buildGetFeature(String filterProperty, String filterValue, String type, String version) {
+    private OMElement getFeatures(String filterProperty, String filterValue, String type, String version) {
         OMElement root = buildWFSRootNode("GetFeature", version);
         root.addAttribute("outputFormat", GET_FEATURE_OUTPUT_FORMAT, null);
 

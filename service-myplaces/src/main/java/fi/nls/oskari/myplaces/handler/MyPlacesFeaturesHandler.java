@@ -60,9 +60,9 @@ public class MyPlacesFeaturesHandler extends RestActionHandler {
                 throw new ActionDeniedException("User " + user.getId() +
                         " tried to GET features from layer " + layerId);
             }
-            request = requestBuilder.buildFeaturesGetByLayer(layerId);
+            request = requestBuilder.getFeaturesByLayerId(layerId);
         } else {
-            request = requestBuilder.buildFeaturesGet(user.getUuid());
+            request = requestBuilder.getFeaturesByUserId(user.getUuid());
         }
 
         try {
@@ -120,7 +120,7 @@ public class MyPlacesFeaturesHandler extends RestActionHandler {
             String insertFeaturesResponse = GeoServerHelper.sendRequest(insertFeaturesRequest);
             long[] insertedIds = responseBuilder.getInsertedIds(insertFeaturesResponse);
 
-            OMElement getFeaturesRequest = requestBuilder.buildFeaturesGetByIds(insertedIds);
+            OMElement getFeaturesRequest = requestBuilder.getFeaturesByIds(insertedIds);
             String getFeaturesResponse = GeoServerHelper.sendRequest(getFeaturesRequest);
             JSONArray insertedFeatures = responseBuilder.buildFeaturesGet(getFeaturesResponse);
 
@@ -182,7 +182,7 @@ public class MyPlacesFeaturesHandler extends RestActionHandler {
                 throw new ActionException("Failed to update features");
             }
 
-            OMElement getFeaturesRequest = requestBuilder.buildFeaturesGetByIds(ids);
+            OMElement getFeaturesRequest = requestBuilder.getFeaturesByIds(ids);
             String getFeaturesResponse = GeoServerHelper.sendRequest(getFeaturesRequest);
             updatedFeatures = responseBuilder.buildFeaturesGet(getFeaturesResponse);
         } catch (IOException e) {
