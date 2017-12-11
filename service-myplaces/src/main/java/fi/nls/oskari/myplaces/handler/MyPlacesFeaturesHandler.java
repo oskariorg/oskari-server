@@ -1,6 +1,7 @@
 package fi.nls.oskari.myplaces.handler;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
 import org.apache.axiom.om.OMElement;
@@ -70,8 +71,8 @@ public class MyPlacesFeaturesHandler extends RestActionHandler {
     @Override
     public void handlePost(ActionParameters params) throws ActionException {
         final User user = params.getUser();
-        final String paramFeatures = params.getRequiredParam(PARAM_FEATURES);
-        final MyPlaceWithGeometry[] places = parseMyPlaces(paramFeatures, false);
+        final byte[] payload = params.getRequestPayload();
+        final MyPlaceWithGeometry[] places = parseMyPlaces(payload, false);
 
         long[] uniqueCategoryIds = Arrays.stream(places)
                 .mapToLong(MyPlaceWithGeometry::getCategoryId)
@@ -96,8 +97,8 @@ public class MyPlacesFeaturesHandler extends RestActionHandler {
     @Override
     public void handlePut(ActionParameters params) throws ActionException {
         final User user = params.getUser();
-        final String paramFeatures = params.getRequiredParam(PARAM_FEATURES);
-        final MyPlaceWithGeometry[] places = parseMyPlaces(paramFeatures, true);
+        final byte[] payload = params.getRequestPayload();
+        final MyPlaceWithGeometry[] places = parseMyPlaces(payload, true);
 
         long[] ids = Arrays.stream(places)
                 .mapToLong(MyPlaceWithGeometry::getId)
@@ -171,22 +172,25 @@ public class MyPlacesFeaturesHandler extends RestActionHandler {
         }
     }
 
-    private MyPlaceWithGeometry[] parseMyPlaces(String featuresJSON, boolean shouldSetId) throws ActionParamsException {
+    protected MyPlaceWithGeometry[] parseMyPlaces(byte[] input, boolean shouldSetId)
+            throws ActionParamsException {
         try {
-            JSONArray features = new JSONArray(featuresJSON);
+            String inputStr = new String(input, StandardCharsets.UTF_8);
+            JSONObject featureCollection = new JSONObject(inputStr);
+            JSONArray features = featureCollection.getJSONArray("features");
             final int n = features.length();
             MyPlaceWithGeometry[] myPlaces = new MyPlaceWithGeometry[n];
             for (int i = 0; i < n; i++) {
                 JSONObject feature = features.getJSONObject(i);
                 myPlaces[i] = parseMyPlace(feature, shouldSetId);
             }
-            return null;
+            return myPlaces;
         } catch (JSONException e) {
             throw new ActionParamsException("Invalid input");
         }
     }
 
-    private MyPlaceWithGeometry parseMyPlace(JSONObject feature, boolean shouldSetId) throws JSONException {
+    protected MyPlaceWithGeometry parseMyPlace(JSONObject feature, boolean shouldSetId) throws JSONException {
         MyPlaceWithGeometry myPlace = new MyPlaceWithGeometry();
 
         if (shouldSetId) {

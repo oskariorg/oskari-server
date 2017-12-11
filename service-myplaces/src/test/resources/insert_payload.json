@@ -31,11 +31,11 @@
 				]
 			},
 			"properties":{
-				"name":"name",
-				"place_desc":"place description",
-				"attention_text":"attention text",
-				"link":"url",
-				"image_url":"image url"
+				"name":"name2",
+				"place_desc":"place description2",
+				"attention_text":"attention text2",
+				"link":"url2",
+				"image_url":"image url2"
 			}
 		}
 	]

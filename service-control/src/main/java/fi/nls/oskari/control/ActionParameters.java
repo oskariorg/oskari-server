@@ -3,11 +3,15 @@ package fi.nls.oskari.control;
 import fi.nls.oskari.domain.GuestUser;
 import fi.nls.oskari.domain.User;
 import fi.nls.oskari.util.ConversionHelper;
+import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.RequestHelper;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -267,4 +271,19 @@ public class ActionParameters {
         // TODO: use something better than session id
         return getRequest().getSession().getId();
     }
+
+    /**
+     * Reads requests payload
+     * NOTE: this can be only called once
+     * @return payload of the request
+     * @throws IOException if one occurs
+     */
+    public byte[] getRequestPayload() throws ActionException {
+        try (InputStream in = request.getInputStream()) {
+            return IOHelper.readBytes(in);
+        } catch (IOException e) {
+            throw new ActionException("IOException occured", e);
+        }
+    }
+
 }
