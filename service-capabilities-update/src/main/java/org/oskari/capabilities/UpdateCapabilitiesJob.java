@@ -53,9 +53,9 @@ public class UpdateCapabilitiesJob extends ScheduledJob {
     @Override
     public void execute(Map<String, Object> params) {
         layerService.findAll().stream()
-                .filter(l -> canUpdate(l.getType()))
-                .collect(groupingBy(l -> new UrlTypeVersion(l)))
-                .forEach((k, v) -> updateCapabilities(k, v));
+                .filter(layer -> canUpdate(layer.getType()))
+                .collect(groupingBy(layer -> new UrlTypeVersion(layer)))
+                .forEach((utv, layers) -> updateCapabilities(utv, layers));
     }
 
     protected static boolean canUpdate(String type) {
@@ -68,8 +68,7 @@ public class UpdateCapabilitiesJob extends ScheduledJob {
         }
     }
 
-    private void updateCapabilities(UrlTypeVersion utv,
-            List<OskariLayer> layers) {
+    private void updateCapabilities(UrlTypeVersion utv, List<OskariLayer> layers) {
         final String url = utv.url;
         final String type = utv.type;
         final String version = utv.version;
