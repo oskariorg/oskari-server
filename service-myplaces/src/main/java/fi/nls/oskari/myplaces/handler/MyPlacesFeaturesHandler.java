@@ -26,9 +26,7 @@ public class MyPlacesFeaturesHandler extends RestActionHandler {
 
     private static final String PARAM_FEATURES = "features";
     private static final String PARAM_LAYER_ID = "layerId";
-    private static final String PARAM_FEATURE_ID = "featureId";
     private static final String JSKEY_FEATURES = "features";
-    private static final String JSKEY_UPDATED = "updated";
     private static final String JSKEY_DELETED = "deleted";
     private static final String JSKEY_LAYERID = "category_id";
     private static final String JSKEY_ID = "id";
@@ -55,22 +53,9 @@ public class MyPlacesFeaturesHandler extends RestActionHandler {
         final User user = params.getUser();
 
         final String layerId = params.getHttpParam(PARAM_LAYER_ID);
-        final String featureIds = params.getHttpParam(PARAM_FEATURE_ID);
 
         final OMElement request;
-        if (featureIds != null && !featureIds.isEmpty()) {
-            String[] idList = featureIds.split(",");
-            long[] ids = Arrays.stream(idList)
-                    .mapToLong(Long::parseLong)
-                    .toArray();
-            for (long id : ids) {
-                if (!service.canModifyPlace(user, id)) {
-                    throw new ActionDeniedException("User " + user.getId() +
-                            "tried to GET feature " + id);
-                }
-            }
-            request = requestBuilder.buildFeaturesGetByIds(ids);
-        } else if (layerId != null && !layerId.isEmpty()) {
+        if (layerId != null && !layerId.isEmpty()) {
             if (!service.canModifyCategory(user, Long.parseLong(layerId))) {
                 throw new ActionDeniedException("User " + user.getId() +
                         " tried to GET features from layer " + layerId);
