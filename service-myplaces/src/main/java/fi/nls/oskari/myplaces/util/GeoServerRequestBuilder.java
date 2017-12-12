@@ -7,8 +7,6 @@ import org.json.JSONObject;
 
 import com.vividsolutions.jts.geom.Geometry;
 
-import fi.nls.oskari.myplaces.MyPlaceWithGeometry;
-
 import java.util.Arrays;
 import java.util.List;
 
@@ -163,41 +161,6 @@ public class GeoServerRequestBuilder {
         root.addChild(query);
 
         return root;
-    }
-
-    public OMElement insertFeatures(MyPlaceWithGeometry[] places) {
-        return editFeatures(places, false);
-    }
-
-    public OMElement updateFeatures(MyPlaceWithGeometry[] places) {
-        return editFeatures(places, true);
-    }
-
-    private OMElement editFeatures(MyPlaceWithGeometry[] places, boolean update) {
-        OMElement transaction = buildWFSTRootNode(WFST_VERSION_FEATURES);
-
-        for (MyPlaceWithGeometry place : places) {
-            String operationName = update ? "Update" : "Insert";
-            OMElement op = factory.createOMElement(operationName, wfsNS);
-            transaction.addChild(op);
-
-            op.addAttribute("typeName", TYPE_FEATURES, null);
-            op.declareNamespace(featureNS);
-
-            OMElement geometry = factory.createOMElement(GEOMETRY_NAME, featureNS);
-            geometry.addChild(getGeometry(place.getGeometry()));
-            op.addChild(geometry);
-            op.addChild(createTextElement("category_id", featureNS, Long.toString(place.getCategoryId())));
-            op.addChild(createTextElement("name", featureNS, place.getName()));
-            op.addChild(createTextElement("attention_text", featureNS, place.getAttentionText()));
-            op.addChild(createTextElement("place_desc", featureNS, place.getDesc()));
-            op.addChild(createTextElement("link", featureNS, place.getLink()));
-            op.addChild(createTextElement("image_url", featureNS, place.getImageUrl()));
-            if (update) {
-                op.addChild(buildFidFilter(FID_PREFIX_FEATURES + place.getId()));
-            }
-        }
-        return transaction;
     }
 
     public OMElement updateFeatures(String uuid, JSONArray jsonArray) throws JSONException {

@@ -1,4 +1,4 @@
-package fi.nls.oskari.myplaces.util;
+package org.oskari.wfst;
 
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
@@ -15,7 +15,7 @@ import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.Polygon;
 import com.vividsolutions.jts.io.gml2.GMLConstants;
 
-public class GML3Writer {
+public class GML2Writer {
 
     public static void writeGeometry(XMLStreamWriter xsw, Geometry geometry)
             throws XMLStreamException {
@@ -42,7 +42,7 @@ public class GML3Writer {
             throws XMLStreamException {
         xsw.writeStartElement(GMLConstants.GML_NAMESPACE, GMLConstants.GML_POINT);
         writeSRID(xsw, geometry.getSRID());
-        writePos(xsw, geometry.getCoordinate());
+        writeCoordinates(xsw, geometry.getCoordinates());
         xsw.writeEndElement();
     }
 
@@ -50,7 +50,7 @@ public class GML3Writer {
             throws XMLStreamException {
         xsw.writeStartElement(GMLConstants.GML_NAMESPACE, GMLConstants.GML_POINT);
         writeSRID(xsw, geometry.getSRID());
-        writePosList(xsw, geometry.getCoordinates());
+        writeCoordinates(xsw, geometry.getCoordinates());
         xsw.writeEndElement();
     }
 
@@ -58,11 +58,11 @@ public class GML3Writer {
             throws XMLStreamException {
         xsw.writeStartElement(GMLConstants.GML_NAMESPACE, GMLConstants.GML_POLYGON);
         writeSRID(xsw, geometry.getSRID());
-        xsw.writeStartElement(GMLConstants.GML_NAMESPACE, "exterior");
+        xsw.writeStartElement(GMLConstants.GML_NAMESPACE, GMLConstants.GML_OUTER_BOUNDARY_IS);
         writeLinearRing(xsw, (LinearRing) geometry.getExteriorRing());
         xsw.writeEndElement();
         for (int i = 0; i < geometry.getNumInteriorRing(); i++) {
-            xsw.writeStartElement(GMLConstants.GML_NAMESPACE, "interior");
+            xsw.writeStartElement(GMLConstants.GML_NAMESPACE, GMLConstants.GML_INNER_BOUNDARY_IS);
             writeLinearRing(xsw, (LinearRing) geometry.getInteriorRingN(i));
             xsw.writeEndElement();
         }
@@ -117,31 +117,21 @@ public class GML3Writer {
         xsw.writeEndElement();
     }
 
-    private static void writePos(XMLStreamWriter xsw, Coordinate coordinate)
+    private static void writeCoordinates(XMLStreamWriter xsw, Coordinate[] coordinates)
             throws XMLStreamException {
-        xsw.writeStartElement(GMLConstants.GML_NAMESPACE, "pos");
-        xsw.writeAttribute("srsDimension", "2");
-        String pos = coordinate.x + " " + coordinate.y;
-        xsw.writeCharacters(pos);
-        xsw.writeEndElement();
-    }
-
-    private static void writePosList(XMLStreamWriter xsw, Coordinate[] coordinates)
-            throws XMLStreamException {
-        xsw.writeStartElement(GMLConstants.GML_NAMESPACE, "posList");
-        xsw.writeAttribute("srsDimension", "2");
+        xsw.writeStartElement(GMLConstants.GML_NAMESPACE, GMLConstants.GML_COORDINATES);
         StringBuilder sb = new StringBuilder();
         for (Coordinate coordinate : coordinates) {
-            sb.append(coordinate.x).append(' ').append(coordinate.y);
+            sb.append(' ').append(coordinate.x).append(',').append(coordinate.y);
         }
-        xsw.writeCharacters(sb.toString());
+        xsw.writeCharacters(sb.substring(1));
         xsw.writeEndElement();
     }
 
     private static void writeLinearRing(XMLStreamWriter xsw, LinearRing linearRing)
             throws XMLStreamException {
-        xsw.writeStartElement(GMLConstants.GML_NAMESPACE, GMLConstants.GML_COORDINATES);
-        writePosList(xsw, linearRing.getCoordinates());
+        xsw.writeStartElement(GMLConstants.GML_NAMESPACE, GMLConstants.GML_LINEARRING);
+        writeCoordinates(xsw, linearRing.getCoordinates());
         xsw.writeEndElement();
     }
 
