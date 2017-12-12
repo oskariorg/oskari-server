@@ -2,6 +2,7 @@ package flyway.oskari;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.flywaydb.core.api.migration.jdbc.JdbcMigration;
@@ -19,6 +20,7 @@ import fi.nls.oskari.util.JSONHelper;
  *
  * @see https://github.com/oskariorg/oskari-frontend/blob/master/bundles/statistics/statsgrid/plugin/ManageClassificationPlugin.js
  */
+@SuppressWarnings("JavadocReference")
 public class V1_45_3__migrate_thematic_maps implements JdbcMigration {
 
     private static final Logger LOG = LogFactory.getLogger(V1_45_3__migrate_thematic_maps.class);
@@ -27,13 +29,20 @@ public class V1_45_3__migrate_thematic_maps implements JdbcMigration {
     private static final String BUNDLE_NAME_PUBLISHEDGRID = "publishedgrid";
 
     private ThematicMapsRegionsetHelper regionsetHelper;
+    private long sotkanetId;
+    private long userIndicatorsId;
 
     public void migrate(Connection conn) throws SQLException, JSONException {
         regionsetHelper = new ThematicMapsRegionsetHelper(conn);
+        sotkanetId = ThematicMapsViewHelper.getDatasourceId(conn, "SotkaNET");
+        userIndicatorsId = ThematicMapsViewHelper.getDatasourceId(conn, "Your indicators");
         final boolean oldAutoCommit = conn.getAutoCommit();
         try {
             conn.setAutoCommit(false);
+            // TODO: migrate statsgrid to new one in portti_bundle
+            // TODO: only the ones with old statsgrid startup!!
             migrateBundle(conn, BUNDLE_NAME_STATSGRID);
+            // TODO: publishedgrid needs to be changed to statsgrid
             migrateBundle(conn, BUNDLE_NAME_PUBLISHEDGRID);
             // conn.commit();
         } catch (SQLException e) {
@@ -43,7 +52,6 @@ public class V1_45_3__migrate_thematic_maps implements JdbcMigration {
             conn.setAutoCommit(oldAutoCommit);
         }
     }
-
 
     private void migrateBundle(Connection conn, String bundleName)
             throws SQLException, JSONException {
@@ -58,8 +66,6 @@ public class V1_45_3__migrate_thematic_maps implements JdbcMigration {
         }
         ThematicMapsViewHelper.update(conn, configsAndStates);
     }
-
-
 
     private void migrate(ConfigNState configAndState)
             throws JSONException {
@@ -94,10 +100,6 @@ public class V1_45_3__migrate_thematic_maps implements JdbcMigration {
         }
         newState.put("regionset", regionsLayerId);
 
-
-        // OLD: "currentColumn": "indicator2882013total", // "indicator" + id + year + male/female/total
-        // NEW: "active" : "1_4_sex="total":year="2016"" // ds_id + '_' + ind_id + '_' + [alphabetical order for selections] key + '=' + value [separated by] ':'
-
         // Old thematic map supports only one indicator at a time
         // so the same classification will be used for all indicators
         JSONObject classification = migrateClassification(state);
@@ -110,13 +112,35 @@ public class V1_45_3__migrate_thematic_maps implements JdbcMigration {
         }
         // Active indicator
 
+        // OLD: "currentColumn": "indicator2882013total", // "indicator" + id + year + male/female/total
+        // NEW: "active" : "1_4_sex="total":year="2016"" // ds_id + '_' + ind_id + '_' + [alphabetical order for selections] key + '=' + value [separated by] ':'
+
         return newState;
     }
 
     private List<JSONObject> migrateIndicators(JSONArray indicators) {
-        // TODO Auto-generated method stub
-        // ds -> default to sotkanet or own indicators
-        return null;
+        List<JSONObject> list = new ArrayList<>(indicators.length());
+        for(int i = 0; i < indicators.length(); ++i) {
+            JSONObject oldIndicator = indicators.optJSONObject(i);
+            try {
+                JSONObject newIndicator = new JSONObject();
+                newIndicator.put("id", oldIndicator.getString("id"));
+                // ds -> default to sotkanet or own indicators
+                if(oldIndicator.optBoolean("ownIndicator")) {
+                    newIndicator.put("ds", userIndicatorsId);
+                } else {
+                    newIndicator.put("ds", sotkanetId);
+                }
+                JSONObject selections = new JSONObject();
+                selections.put("year", oldIndicator.optString("year"));
+                selections.put("gender", oldIndicator.optString("gender"));
+                newIndicator.put("selections", selections);
+                list.add(newIndicator);
+            } catch (JSONException e) {
+                LOG.error("Couldn't migrate indicator:", oldIndicator, e.getMessage());
+            }
+        }
+        return list;
     }
 
     private JSONObject migrateClassification(JSONObject state) throws JSONException {

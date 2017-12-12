@@ -25,6 +25,20 @@ public class ThematicMapsViewHelper {
         }
     }
 
+    public static long getDatasourceId(Connection conn, String name) throws SQLException {
+        // "SotkaNET" / "Your indicators"
+        String sql = "SELECT id FROM oskari_statistical_datasource WHERE locale LIKE ?";
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, "%" + name + "%");
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getLong("id");
+                }
+                return -1L;
+            }
+        }
+    }
+
     public static List<ConfigNState> getConfigsAndStates(Connection conn, long bundleId) throws SQLException {
         String sql = "SELECT view_id, bundle_id, seqno, config, state"
                 + " FROM portti_view_bundle_seq WHERE bundle_id = ?";
