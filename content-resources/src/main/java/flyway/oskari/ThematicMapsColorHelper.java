@@ -2,21 +2,8 @@ package flyway.oskari;
 
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.util.PropertyUtil;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.Map;
-
-/**
- * Created by SMAKINEN on 11.12.2017.
- */
 public class ThematicMapsColorHelper {
-
-    private static final Logger LOG = LogFactory.getLogger(ThematicMapsColorHelper.class);
 
     private static final String[] COLORSETS_DIV = {
             "BrBG",

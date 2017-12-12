@@ -76,10 +76,9 @@ public class V1_45_3__migrate_thematic_maps implements JdbcMigration {
     private JSONObject migrateConfig(JSONObject config, JSONObject state)
             throws JSONException {
         JSONObject newConfig = new JSONObject();
-        newConfig.put("vectorViewer", false);
-        newConfig.put("grid", true);
+        newConfig.put("grid", state.optBoolean("gridShown"));
         newConfig.put("legendLocation", "top right");
-        newConfig.put("allowClassification", false);
+        newConfig.put("allowClassification", config.optBoolean("allowClassification"));
         return newConfig;
     }
 
