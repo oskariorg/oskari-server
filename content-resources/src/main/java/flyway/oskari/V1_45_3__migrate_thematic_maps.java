@@ -3,6 +3,7 @@ package flyway.oskari;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.flywaydb.core.api.migration.jdbc.JdbcMigration;
@@ -107,16 +108,53 @@ public class V1_45_3__migrate_thematic_maps implements JdbcMigration {
         // Indicators
         JSONArray indicators = state.getJSONArray("indicators");
         List<JSONObject> newIndicators = migrateIndicators(indicators);
+        String currentColumn = state.optString("currentColumn", "");
         for (JSONObject indicator : newIndicators) {
             indicator.put("classification", classification);
+            // Active indicator
+            String myOldHash = getCurrentColumnStr(indicator);
+            if(currentColumn.equals(myOldHash) && !newState.has("active")) {
+                newState.put("active", geIndicatorHash(indicator));
+            }
         }
-        // Active indicator
-
-        // OLD: "currentColumn": "indicator2882013total", // "indicator" + id + year + male/female/total
-        // NEW: "active" : "1_4_sex="total":year="2016"" // ds_id + '_' + ind_id + '_' + [alphabetical order for selections] key + '=' + value [separated by] ':'
 
         return newState;
     }
+
+    // OLD: "currentColumn": "indicator2882013total"
+    // "indicator" + id + year + male/female/total
+    public static String getCurrentColumnStr(JSONObject indicator) throws JSONException {
+        JSONObject selections = indicator.getJSONObject("selections");
+        return "indicator" + indicator.optString("id") + selections.optString("year", "") +selections.optString("gender", "");
+    }
+
+    // NEW: "active" : "1_4_sex="total":year="2016""
+    // ds_id + '_' + ind_id + '_' + [alphabetical order for selections] key + '=' + value [separated by] ':'
+    public static String geIndicatorHash(JSONObject indicator) throws JSONException {
+        JSONObject selections = indicator.getJSONObject("selections");
+        StringBuilder idStr = new StringBuilder(indicator.optString("ds", ""));
+        idStr.append("_");
+        idStr.append(indicator.optString("id", ""));
+        idStr.append("_");
+        Iterator<String> it = selections.sortedKeys();
+        while (it.hasNext()) {
+            String key = it.next();
+            idStr.append(key);
+            idStr.append('=');
+            idStr.append('"');
+            try {
+                idStr.append(selections.get(key));
+            } catch (JSONException e) {
+                // Ignore, we are iterating the keys, the key _does_ exist
+            }
+            idStr.append('"');
+            if(it.hasNext()) {
+                idStr.append(':');
+            }
+        }
+        return idStr.toString();
+    }
+
 
     private List<JSONObject> migrateIndicators(JSONArray indicators) {
         List<JSONObject> list = new ArrayList<>(indicators.length());
