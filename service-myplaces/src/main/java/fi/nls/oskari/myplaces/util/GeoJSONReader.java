@@ -24,52 +24,52 @@ public class GeoJSONReader {
     private static final String TYPE = "type";
     private static final String COORDINATES = "coordinates";
 
-    public static Geometry getGeometry(JSONObject feature) throws JSONException {
+    public static Geometry toGeometry(JSONObject feature) throws JSONException {
         JSONObject geometry = feature.getJSONObject(GEOMETRY);
         String geomType = geometry.getString(TYPE);
         switch (geomType) {
         case "Point":
-            return getPoint(geometry);
+            return toPoint(geometry);
         case "LineString":
-            return getLineString(geometry);
+            return toLineString(geometry);
         case "Polygon":
-            return getPolygon(geometry);
+            return toPolygon(geometry);
         case "MultiPoint":
-            return getMultiPoint(geometry);
+            return toMultiPoint(geometry);
         case "MultiLineString":
-            return getMultiLineString(geometry);
+            return toMultiLineString(geometry);
         case "MultiPolygon":
-            return getMultiPolygon(geometry);
+            return toMultiPolygon(geometry);
         case "GeometryCollection":
-            return getGeometryCollection(geometry);
+            return toGeometryCollection(geometry);
         default:
             throw new IllegalArgumentException("Invalid geometry type");
         }
     }
 
-    public static Point getPoint(JSONObject geometry)
+    public static Point toPoint(JSONObject geometry)
             throws JSONException {
         return GF.createPoint(toCoordinate(geometry.getJSONArray(COORDINATES)));
     }
 
-    public static LineString getLineString(JSONObject geometry)
+    public static LineString toLineString(JSONObject geometry)
             throws JSONException {
         Coordinate[] coordinates = toCoordinates(geometry.getJSONArray(COORDINATES));
         return GF.createLineString(coordinates);
     }
 
-    public static Polygon getPolygon(JSONObject geometry)
+    public static Polygon toPolygon(JSONObject geometry)
             throws JSONException {
-        return getPolygon(geometry.getJSONArray(COORDINATES));
+        return toPolygon(geometry.getJSONArray(COORDINATES));
     }
 
-    public static MultiPoint getMultiPoint(JSONObject geometry)
+    public static MultiPoint toMultiPoint(JSONObject geometry)
             throws JSONException {
         Coordinate[] coordinates = toCoordinates(geometry.getJSONArray(COORDINATES));
         return GF.createMultiPoint(coordinates);
     }
 
-    public static MultiLineString getMultiLineString(JSONObject geometry)
+    public static MultiLineString toMultiLineString(JSONObject geometry)
             throws JSONException {
         Coordinate[][] coordinates = toCoordinatesArray(geometry.getJSONArray(COORDINATES));
         int n = coordinates.length;
@@ -80,24 +80,24 @@ public class GeoJSONReader {
         return GF.createMultiLineString(lineStrings);
     }
 
-    public static MultiPolygon getMultiPolygon(JSONObject geometry)
+    public static MultiPolygon toMultiPolygon(JSONObject geometry)
             throws JSONException {
         JSONArray arrayOfPolygons = geometry.getJSONArray(COORDINATES);
         int n = arrayOfPolygons.length();
         Polygon[] polygons = new Polygon[n];
         for (int i = 0; i < n; i++) {
-            polygons[i] = getPolygon(arrayOfPolygons.getJSONArray(i));
+            polygons[i] = toPolygon(arrayOfPolygons.getJSONArray(i));
         }
         return GF.createMultiPolygon(polygons);
     }
 
-    public static GeometryCollection getGeometryCollection(JSONObject geometry)
+    public static GeometryCollection toGeometryCollection(JSONObject geometry)
             throws JSONException {
-        JSONArray geometryArray = geometry.getJSONArray("geometry");
+        JSONArray geometryArray = geometry.getJSONArray(GEOMETRY);
         int n = geometryArray.length();
         Geometry[] geometries = new Geometry[n];
         for (int i = 0; i < n; i++) {
-            geometries[i] = getGeometry(geometryArray.getJSONObject(i));
+            geometries[i] = toGeometry(geometryArray.getJSONObject(i));
         }
         return GF.createGeometryCollection(geometries);
     }
@@ -127,7 +127,7 @@ public class GeoJSONReader {
         return coordinates;
     }
 
-    private static Polygon getPolygon(JSONArray coordinatesArray)
+    private static Polygon toPolygon(JSONArray coordinatesArray)
             throws JSONException {
         Coordinate[][] coordinates = toCoordinatesArray(coordinatesArray);
         LinearRing exterior = GF.createLinearRing(coordinates[0]);
