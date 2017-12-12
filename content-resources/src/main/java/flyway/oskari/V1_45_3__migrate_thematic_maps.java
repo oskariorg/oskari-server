@@ -94,6 +94,10 @@ public class V1_45_3__migrate_thematic_maps implements JdbcMigration {
         }
         newState.put("regionset", regionsLayerId);
 
+
+        // OLD: "currentColumn": "indicator2882013total", // "indicator" + id + year + male/female/total
+        // NEW: "active" : "1_4_sex="total":year="2016"" // ds_id + '_' + ind_id + '_' + [alphabetical order for selections] key + '=' + value [separated by] ':'
+
         // Old thematic map supports only one indicator at a time
         // so the same classification will be used for all indicators
         JSONObject classification = migrateClassification(state);
@@ -111,6 +115,7 @@ public class V1_45_3__migrate_thematic_maps implements JdbcMigration {
 
     private List<JSONObject> migrateIndicators(JSONArray indicators) {
         // TODO Auto-generated method stub
+        // ds -> default to sotkanet or own indicators
         return null;
     }
 
@@ -130,19 +135,16 @@ public class V1_45_3__migrate_thematic_maps implements JdbcMigration {
         JSONObject classification = new JSONObject();
         classification.put("method", method);
         classification.put("count", numberOfClasses);
-        classification.put("mode", classificationMode);
+        classification.put("mode", classificationMode); // "discontinuous" or "distinct"
+        classification.put("mapStyle", "choropleth"); // old had only choro so default to it
 
         if (state.has("colors")) {
             JSONObject colors = state.getJSONObject("colors");
             String set = colors.getString("set");
             int index = colors.getInt("index");
-            boolean flipped = false;
-            if (colors.has("flipped")) {
-                flipped = colors.getBoolean("flipped");
-            }
             classification.put("type", set);
             classification.put("name", ThematicMapsColorHelper.getColorNameFromIndex(set, index));
-            classification.put("reverseColors", flipped);
+            classification.put("reverseColors", colors.optBoolean("flipped"));
         }
 
         return classification;
