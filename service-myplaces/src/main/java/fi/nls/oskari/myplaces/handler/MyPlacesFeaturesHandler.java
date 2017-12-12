@@ -18,6 +18,7 @@ import fi.nls.oskari.control.RestActionHandler;
 import fi.nls.oskari.domain.User;
 import fi.nls.oskari.myplaces.MyPlaceWithGeometry;
 import fi.nls.oskari.myplaces.MyPlacesService;
+import fi.nls.oskari.myplaces.util.GeoJSONReader;
 import fi.nls.oskari.myplaces.util.GeoServerHelper;
 import fi.nls.oskari.myplaces.util.GeoServerRequestBuilder;
 import fi.nls.oskari.myplaces.util.GeoServerResponseBuilder;
@@ -197,6 +198,9 @@ public class MyPlacesFeaturesHandler extends RestActionHandler {
             myPlace.setId(feature.getLong("id"));
         }
         myPlace.setCategoryId(feature.getLong("category_id"));
+
+        JSONObject geomJSON = feature.getJSONObject("geometry");
+        myPlace.setGeometry(GeoJSONReader.toGeometry(geomJSON));
 
         JSONObject properties = feature.getJSONObject("properties");
         myPlace.setName(properties.getString("name"));

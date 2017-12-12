@@ -24,8 +24,7 @@ public class GeoJSONReader {
     private static final String TYPE = "type";
     private static final String COORDINATES = "coordinates";
 
-    public static Geometry toGeometry(JSONObject feature) throws JSONException {
-        JSONObject geometry = feature.getJSONObject(GEOMETRY);
+    public static Geometry toGeometry(JSONObject geometry) throws JSONException {
         String geomType = geometry.getString(TYPE);
         switch (geomType) {
         case "Point":
