@@ -1,13 +1,13 @@
 package fi.nls.oskari.myplaces.handler;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
+import java.io.InputStream;
 import java.util.Arrays;
+import java.util.List;
 
-import org.apache.axiom.om.OMElement;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.oskari.wfst.MyPlacesHelperWFST;
 
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.ActionDeniedException;
@@ -17,30 +17,35 @@ import fi.nls.oskari.control.ActionParamsException;
 import fi.nls.oskari.control.RestActionHandler;
 import fi.nls.oskari.domain.User;
 import fi.nls.oskari.domain.map.MyPlace;
+import fi.nls.oskari.log.LogFactory;
+import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.myplaces.MyPlacesService;
-import fi.nls.oskari.myplaces.util.GeoJSONReader;
-import fi.nls.oskari.myplaces.util.GeoServerHelper;
-import fi.nls.oskari.myplaces.util.GeoServerRequestBuilder;
-import fi.nls.oskari.myplaces.util.GeoServerResponseBuilder;
+import fi.nls.oskari.myplaces.service.MyPlacesFeaturesService;
+import fi.nls.oskari.myplaces.service.MyPlacesFeaturesServiceWFST;
 import fi.nls.oskari.service.OskariComponentManager;
+import fi.nls.oskari.service.ServiceException;
+import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.ResponseHelper;
 
 @OskariActionRoute("MyPlacesFeatures")
 public class MyPlacesFeaturesHandler extends RestActionHandler {
 
+    private final static Logger LOG = LogFactory.getLogger(MyPlacesFeaturesHandler.class);
+
     private static final String PARAM_FEATURES = "features";
+    private static final String PARAM_CRS = "crs";
     private static final String PARAM_LAYER_ID = "layerId";
     private static final String JSKEY_DELETED = "deleted";
 
-    private GeoServerRequestBuilder requestBuilder;
     private MyPlacesService service;
+    private MyPlacesFeaturesService featureService;
 
     @Override
     public void init() {
         super.init();
-        requestBuilder = new GeoServerRequestBuilder();
         service = OskariComponentManager.getComponentOfType(MyPlacesService.class);
+        featureService = new MyPlacesFeaturesServiceWFST();
     }
 
     @Override
@@ -51,77 +56,87 @@ public class MyPlacesFeaturesHandler extends RestActionHandler {
     @Override
     public void handleGet(ActionParameters params) throws ActionException {
         final User user = params.getUser();
+        final String crs = params.getHttpParam(PARAM_CRS, "EPSG:3067");
         final String layerId = params.getHttpParam(PARAM_LAYER_ID);
 
-        final String response;
-        if (layerId != null && !layerId.isEmpty()) {
-            response = getFeaturesByLayerId(user, layerId);
-        } else {
-            response = getFeaturesByUserId(user.getUuid());
-        }
-
         try {
-            JSONObject featureCollection = new JSONObject(response);
-            GeoServerResponseBuilder.removePrefixesFromIds(featureCollection);
+            final JSONObject featureCollection;
+            if (layerId != null && !layerId.isEmpty()) {
+                LOG.debug("Get MyPlaces by layer id, uuid:", user.getUuid(),
+                        "layerId:", layerId, "crs:", crs);
+                long categoryId = Long.parseLong(layerId);
+                if (!service.canModifyCategory(user, categoryId)) {
+                    throw new ActionDeniedException("User: " + user.getId() +
+                            " tried to GET features from category: " + categoryId);
+                }
+                featureCollection = featureService.getFeaturesByCategoryId(categoryId, crs);
+            } else {
+                LOG.debug("Get MyPlaces by user uuid, uuid:", user.getUuid(),
+                        "crs:", crs);
+                featureCollection = featureService.getFeaturesByUserId(user.getUuid(), crs);
+            }
+
             ResponseHelper.writeResponse(params, featureCollection);
-        } catch (JSONException e) {
-            throw new ActionException("Received unexpected response");
+        } catch (ServiceException e) {
+            LOG.warn(e);
+            throw new ActionException("Failed to get features");
         }
     }
 
     @Override
     public void handlePost(ActionParameters params) throws ActionException {
         final User user = params.getUser();
-        final byte[] payload = params.getRequestPayload();
-        final MyPlace[] places = parseMyPlaces(payload, false);
-
-        long[] uniqueCategoryIds = Arrays.stream(places)
-                .mapToLong(MyPlace::getCategoryId)
-                .distinct()
-                .toArray();
-        for (long categoryId : uniqueCategoryIds) {
-            if (!service.canModifyCategory(user, categoryId)) {
-                throw new ActionDeniedException("User: " + user.getId() +
-                        " tried to insert feature into category: " + categoryId);
-            }
-        }
-
+        final String crs = params.getHttpParam(PARAM_CRS, "EPSG:3067");
+        final List<MyPlace> places = readMyPlaces(params, false);
+        checkUserCanUseModifyCategories(user, places);
         for (MyPlace place : places) {
             place.setUuid(user.getUuid());
         }
 
-        long[] ids = insertFeatures(places);
-        JSONObject featureCollection = getFeaturesByIds(ids);
-        ResponseHelper.writeResponse(params, featureCollection);
+        long[] ids;
+        try {
+            ids = featureService.insert(places);
+            LOG.info("Inserted MyPlaces:", ids);
+        } catch (ServiceException e) {
+            LOG.warn(e);
+            throw new ActionException("Failed to insert features");
+        }
+
+        try {
+            ResponseHelper.writeResponse(params, featureService.getFeaturesByMyPlaceId(ids, crs));
+        } catch (ServiceException e) {
+            LOG.warn(e);
+            throw new ActionException("Failed to get features after insert");
+        }
     }
 
     @Override
     public void handlePut(ActionParameters params) throws ActionException {
         final User user = params.getUser();
-        final byte[] payload = params.getRequestPayload();
-        final MyPlace[] places = parseMyPlaces(payload, true);
-
-        long[] ids = Arrays.stream(places)
-                .mapToLong(MyPlace::getId)
-                .toArray();
-        for (long id : ids) {
-            if (!service.canModifyPlace(user, id)) {
-                throw new ActionDeniedException("User: " + user.getId() +
-                        " tried to modify place: " + id);
-            }
-        }
-
+        final String crs = params.getHttpParam(PARAM_CRS, "EPSG:3067");
+        final List<MyPlace> places = readMyPlaces(params, true);
+        checkUserCanModifyPlaces(user, places);
         for (MyPlace place : places) {
             place.setUuid(user.getUuid());
         }
 
-        int updated = updateFeatures(places);
-        if (updated < ids.length) {
+        long[] ids = places.stream().mapToLong(MyPlace::getId).toArray();
+
+        try {
+            LOG.debug("Updating MyPlaces:", ids);
+            int updated = featureService.update(places);
+            LOG.info("Updated", updated, "/", places.size());
+        } catch (ServiceException e) {
+            LOG.warn(e);
             throw new ActionException("Failed to update features");
         }
 
-        JSONObject featureCollection = getFeaturesByIds(ids);
-        ResponseHelper.writeResponse(params, featureCollection);
+        try {
+            ResponseHelper.writeResponse(params, featureService.getFeaturesByMyPlaceId(ids, crs));
+        } catch (ServiceException e) {
+            LOG.warn(e);
+            throw new ActionException("Failed to get features after update");
+        }
     }
 
     @Override
@@ -131,7 +146,6 @@ public class MyPlacesFeaturesHandler extends RestActionHandler {
         final long[] ids = Arrays.stream(paramFeatures.split(","))
                 .mapToLong(Long::parseLong)
                 .toArray();
-
         for (long id : ids) {
             if (!service.canModifyPlace(user, id)) {
                 throw new ActionDeniedException("User: " + user.getId() +
@@ -139,8 +153,13 @@ public class MyPlacesFeaturesHandler extends RestActionHandler {
             }
         }
 
-        int deleted = deleteFeatures(ids);
-        if (deleted < ids.length) {
+        int deleted;
+        try {
+            LOG.debug("Deleting MyPlaces:", ids);
+            deleted = featureService.delete(ids);
+            LOG.info("Deleted", deleted, "/", ids.length);
+        } catch (ServiceException e) {
+            LOG.warn(e);
             throw new ActionException("Failed to delete features");
         }
 
@@ -149,112 +168,42 @@ public class MyPlacesFeaturesHandler extends RestActionHandler {
         ResponseHelper.writeResponse(params, response);
     }
 
-    private String getFeaturesByUserId(String uuid) throws ActionException {
-        try {
-            OMElement request = requestBuilder.getFeaturesByUserId(uuid);
-            return GeoServerHelper.sendRequest(request);
-        } catch (IOException e) {
-            throw new ActionException("IOException occured", e);
-        }
-    }
-
-    private String getFeaturesByLayerId(User user, String layerIdStr)
+    private List<MyPlace> readMyPlaces(ActionParameters params, boolean checkId)
             throws ActionException {
-        long layerId = Long.parseLong(layerIdStr);
-        if (!service.canModifyCategory(user, layerId)) {
-            throw new ActionDeniedException("User: " + user.getId() +
-                    " tried to GET features from layer: " + layerId);
-        }
         try {
-            OMElement request = requestBuilder.getFeaturesByLayerId(layerIdStr);
-            return GeoServerHelper.sendRequest(request);
-        } catch (IOException e) {
-            throw new ActionException("IOException occured", e);
-        }
-    }
-
-    protected MyPlace[] parseMyPlaces(byte[] input, boolean shouldSetId)
-            throws ActionParamsException {
-        try {
-            String inputStr = new String(input, StandardCharsets.UTF_8);
-            JSONObject featureCollection = new JSONObject(inputStr);
-            JSONArray features = featureCollection.getJSONArray("features");
-            final int n = features.length();
-            MyPlace[] myPlaces = new MyPlace[n];
-            for (int i = 0; i < n; i++) {
-                JSONObject feature = features.getJSONObject(i);
-                myPlaces[i] = parseMyPlace(feature, shouldSetId);
+            final String payload;
+            try (InputStream in = params.getRequest().getInputStream()) {
+                payload = IOHelper.readString(in);
+            } catch (IOException e) {
+                throw new ActionException("IOException occured");
             }
-            return myPlaces;
+            return MyPlacesHelperWFST.parseMyPlaces(payload, checkId);
         } catch (JSONException e) {
-            throw new ActionParamsException("Invalid input");
+            throw new ActionParamsException("Invalid input", e);
         }
     }
 
-    protected MyPlace parseMyPlace(JSONObject feature, boolean shouldSetId) throws JSONException {
-        MyPlace myPlace = new MyPlace();
-
-        if (shouldSetId) {
-            myPlace.setId(feature.getLong("id"));
-        }
-        myPlace.setCategoryId(feature.getLong("category_id"));
-
-        JSONObject geomJSON = feature.getJSONObject("geometry");
-        myPlace.setGeometry(GeoJSONReader.toGeometry(geomJSON));
-
-        JSONObject properties = feature.getJSONObject("properties");
-        myPlace.setName(properties.getString("name"));
-
-        // Optional fields
-        myPlace.setAttentionText(properties.optString("attention_text"));
-        myPlace.setDesc(properties.optString("place_desc"));
-        myPlace.setLink(properties.optString("link"));
-        myPlace.setImageUrl(properties.optString("image_url"));
-
-        return myPlace;
-    }
-
-    private JSONObject getFeaturesByIds(long[] ids) throws ActionException {
-        try {
-            OMElement getFeaturesRequest = requestBuilder.getFeaturesByIds(ids);
-            String getFeaturesResponse = GeoServerHelper.sendRequest(getFeaturesRequest);
-            JSONObject featureCollection = new JSONObject(getFeaturesResponse);
-            GeoServerResponseBuilder.removePrefixesFromIds(featureCollection);
-            return featureCollection;
-        } catch (IOException e) {
-            throw new ActionException("IOException occured", e);
-        } catch (JSONException e) {
-            throw new ActionException("Received invalid JSON", e);
+    private void checkUserCanUseModifyCategories(User user, List<MyPlace> places)
+            throws ActionDeniedException {
+        long[] uniqueCategoryIds = places.stream()
+                .mapToLong(MyPlace::getCategoryId)
+                .distinct()
+                .toArray();
+        for (long categoryId : uniqueCategoryIds) {
+            if (!service.canModifyCategory(user, categoryId)) {
+                throw new ActionDeniedException("User: " + user.getId() +
+                        " tried to insert feature into category: " + categoryId);
+            }
         }
     }
 
-    private long[] insertFeatures(MyPlace[] places) throws ActionException {
-        try {
-            OMElement insertFeaturesRequest = requestBuilder.insertFeatures(places);
-            String insertFeaturesResponse = GeoServerHelper.sendRequest(insertFeaturesRequest);
-            return GeoServerResponseBuilder.getInsertedIds(insertFeaturesResponse);
-        } catch (IOException e) {
-            throw new ActionException("IOException occured", e);
-        }
-    }
-
-    private int updateFeatures(MyPlace[] places) throws ActionException {
-        try {
-            OMElement updateRequest = requestBuilder.updateFeatures(places);
-            String updateResponse = GeoServerHelper.sendRequest(updateRequest);
-            return GeoServerResponseBuilder.getTotalUpdated(updateResponse);
-        } catch (IOException e) {
-            throw new ActionException("IOException occured!", e);
-        }
-    }
-
-    private int deleteFeatures(long[] ids) throws ActionException {
-        try {
-            OMElement deleteRequest = requestBuilder.deleteFeaturesByIds(ids);
-            String deleteResponse = GeoServerHelper.sendRequest(deleteRequest);
-            return GeoServerResponseBuilder.getTotalDeleted(deleteResponse);
-        } catch (IOException e) {
-            throw new ActionException("IOException occured!", e);
+    private void checkUserCanModifyPlaces(User user, List<MyPlace> places)
+            throws ActionDeniedException {
+        for (MyPlace place : places) {
+            if (!service.canModifyPlace(user, place.getId())) {
+                throw new ActionDeniedException("User: " + user.getId() +
+                        " tried to modify place: " + place.getId());
+            }
         }
     }
 

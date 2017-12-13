@@ -272,18 +272,4 @@ public class ActionParameters {
         return getRequest().getSession().getId();
     }
 
-    /**
-     * Reads requests payload
-     * NOTE: this can be only called once
-     * @return payload of the request
-     * @throws IOException if one occurs
-     */
-    public byte[] getRequestPayload() throws ActionException {
-        try (InputStream in = request.getInputStream()) {
-            return IOHelper.readBytes(in);
-        } catch (IOException e) {
-            throw new ActionException("IOException occured", e);
-        }
-    }
-
 }

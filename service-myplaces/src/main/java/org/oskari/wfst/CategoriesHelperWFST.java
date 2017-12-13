@@ -2,17 +2,75 @@ package org.oskari.wfst;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.List;
 
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
 import fi.nls.oskari.domain.map.MyPlaceCategory;
 
-public class CategoriesHelper extends WFSTHelper {
+public class CategoriesHelperWFST extends WFSTHelper {
 
     private static final String TYPENAME_CATEGORIES = "feature:categories";
+    protected static final String APPLICATION_JSON = "application/json";
 
-    public static void insertCategories(OutputStream out, MyPlaceCategory[] categories)
+    public static void getCategoryById(OutputStream out, long categoryId)
+            throws XMLStreamException {
+        XMLStreamWriter xsw = XOF.createXMLStreamWriter(out);
+        writeGetFeature(xsw, "1.1.0");
+        xsw.writeAttribute("outputFormat", APPLICATION_JSON);
+
+        xsw.writeStartElement(WFS, "Query");
+        xsw.writeAttribute("typeName", TYPENAME_CATEGORIES);
+        writeFeatureIdFilter(xsw, prefixId(categoryId));
+        xsw.writeEndElement();
+
+        xsw.writeEndElement();
+        xsw.writeEndDocument();
+        xsw.close();
+    }
+
+    public static void getCategoriesById(OutputStream out, long[] categoryIds)
+            throws XMLStreamException {
+        XMLStreamWriter xsw = XOF.createXMLStreamWriter(out);
+        writeGetFeature(xsw, "1.1.0");
+        xsw.writeAttribute("outputFormat", APPLICATION_JSON);
+
+        xsw.writeStartElement(WFS, "Query");
+        xsw.writeAttribute("typeName", TYPENAME_CATEGORIES);
+        for (long categoryId : categoryIds) {
+            writeFeatureIdFilter(xsw, prefixId(categoryId));
+        }
+        xsw.writeEndElement();
+
+        xsw.writeEndElement();
+        xsw.writeEndDocument();
+        xsw.close();
+    }
+    public static void getCategoriesByUuid(OutputStream out, String uuid)
+            throws XMLStreamException {
+        XMLStreamWriter xsw = XOF.createXMLStreamWriter(out);
+        writeGetFeature(xsw, "1.1.0");
+        xsw.writeAttribute("outputFormat", APPLICATION_JSON);
+
+        xsw.writeStartElement(WFS, "Query");
+        xsw.writeAttribute("typeName", TYPENAME_CATEGORIES);
+
+        xsw.writeStartElement(OGC, "Filter");
+        xsw.writeStartElement(OGC, "PropertyIsEqualTo");
+        writeTextElement(xsw, OGC, "PropertyName", "uuid");
+        writeTextElement(xsw, OGC, "Literal", uuid);
+        xsw.writeEndElement();
+        xsw.writeEndElement();
+
+        xsw.writeEndElement(); // <wfs:Query>
+
+        xsw.writeEndElement(); // <wfs:GetFeature>
+        xsw.writeEndDocument();
+        xsw.close();
+    }
+
+    public static void insertCategories(OutputStream out, List<MyPlaceCategory> categories)
             throws XMLStreamException, IOException {
         XMLStreamWriter xsw = XOF.createXMLStreamWriter(out);
         writeStartTransaction(xsw);
@@ -25,7 +83,7 @@ public class CategoriesHelper extends WFSTHelper {
         xsw.close();
     }
 
-    public static void updateCategories(OutputStream out, MyPlaceCategory[] categories)
+    public static void updateCategories(OutputStream out, List<MyPlaceCategory> categories)
             throws XMLStreamException, IOException {
         XMLStreamWriter xsw = XOF.createXMLStreamWriter(out);
         writeStartTransaction(xsw);
@@ -99,10 +157,10 @@ public class CategoriesHelper extends WFSTHelper {
         writeProperty(xsw, "dot_shape", category.getDot_shape());
         writeProperty(xsw, "stroke_linejoin", category.getStroke_linejoin());
         writeProperty(xsw, "fill_pattern", category.getFill_pattern());
-        writeProperty(xsw, "stroke_linecap", category.getCategory_name());
-        writeProperty(xsw, "stroke_dasharray", category.getCategory_name());
-        writeProperty(xsw, "border_linejoin", category.getCategory_name());
-        writeProperty(xsw, "border_dasharray", category.getCategory_name());
+        writeProperty(xsw, "stroke_linecap", category.getStroke_linecap());
+        writeProperty(xsw, "stroke_dasharray", category.getStroke_dasharray());
+        writeProperty(xsw, "border_linejoin", category.getBorder_linejoin());
+        writeProperty(xsw, "border_dasharray", category.getBorder_dasharray());
 
         writeFeatureIdFilter(xsw, prefixId(category.getId()));
 
@@ -117,8 +175,30 @@ public class CategoriesHelper extends WFSTHelper {
         xsw.writeEndElement();
     }
 
-    private static String prefixId(long id) {
+    public static String prefixId(long id) {
         return "categories." + id;
+    }
+
+    public static String[] prefixIds(long[] ids) {
+        final int n = ids.length;
+        String[] prefixed = new String[n];
+        for (int i = 0; i < n; i++) {
+            prefixed[i] = prefixId(ids[i]);
+        }
+        return prefixed;
+    }
+
+    public static long removePrefixFromId(String prefixed) {
+        return Long.parseLong(prefixed.substring("categories.".length()));
+    }
+
+    public static long[] removePrefixFromIds(String[] prefixed) {
+        final int n = prefixed.length;
+        long[] ids = new long[n];
+        for (int i = 0; i < n; i++) {
+            ids[i] = removePrefixFromId(prefixed[i]);
+        }
+        return ids;
     }
 
 }

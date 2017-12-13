@@ -15,14 +15,25 @@ public class WFSTHelper {
 
     protected static void writeStartTransaction(XMLStreamWriter xsw)
             throws XMLStreamException {
+        writeWFSRootElement(xsw, "Transaction", "1.1.0");
+    }
+
+    protected static void writeGetFeature(XMLStreamWriter xsw, String version)
+            throws XMLStreamException {
+        writeWFSRootElement(xsw, "GetFeature", version);
+    }
+
+    private static void writeWFSRootElement(XMLStreamWriter xsw, String name,
+            String version) throws XMLStreamException {
         xsw.writeStartDocument();
-        xsw.writeStartElement("wfs", "Transaction", WFS);
+        xsw.writeStartElement("wfs", name, WFS);
         xsw.writeNamespace("wfs", WFS);
         xsw.writeNamespace("ogc", OGC);
         xsw.writeNamespace("gml", "http://www.opengis.net/gml");
         xsw.writeNamespace("xsi", "http://www.w3.org/2001/XMLSchema-instance");
+        xsw.writeNamespace(PREFIX_OSKARI, OSKARI);
         xsw.writeAttribute("service", "WFS");
-        xsw.writeAttribute("version", "1.1.0");
+        xsw.writeAttribute("version", version);
     }
 
     protected static void writeProperty(XMLStreamWriter xsw, String name, long v)
@@ -63,6 +74,17 @@ public class WFSTHelper {
         xsw.writeStartElement(OGC, "FeatureId");
         xsw.writeAttribute("fid", fid);
         xsw.writeEndElement();
+        xsw.writeEndElement();
+    }
+
+    protected static void writeFeatureIdFilter(XMLStreamWriter xsw, String[] fids)
+            throws XMLStreamException {
+        xsw.writeStartElement(OGC, "Filter");
+        for (String fid : fids) {
+            xsw.writeStartElement(OGC, "FeatureId");
+            xsw.writeAttribute("fid", fid);
+            xsw.writeEndElement();
+        }
         xsw.writeEndElement();
     }
 

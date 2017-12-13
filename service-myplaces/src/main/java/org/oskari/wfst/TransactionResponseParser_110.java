@@ -1,5 +1,6 @@
 package org.oskari.wfst;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
@@ -13,6 +14,11 @@ import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
 public class TransactionResponseParser_110 {
+
+    public static TransactionResponse_110 parse(byte[] b)
+            throws ParserConfigurationException, SAXException, IOException {
+        return parse(new ByteArrayInputStream(b));
+    }
 
     public static TransactionResponse_110 parse(InputStream in)
             throws ParserConfigurationException, SAXException, IOException {

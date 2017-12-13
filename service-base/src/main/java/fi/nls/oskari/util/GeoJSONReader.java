@@ -1,4 +1,4 @@
-package fi.nls.oskari.myplaces.util;
+package fi.nls.oskari.util;
 
 import org.json.JSONArray;
 import org.json.JSONException;

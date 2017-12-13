@@ -16,10 +16,10 @@ public class MyPlaceCategory extends UserDataLayer {
     private int fill_pattern;
 
     private String dot_color;
-    private long dot_size;
+    private int dot_size;
     private String dot_shape;
 
-    private long border_width;
+    private int border_width;
     private String border_color;
     private String border_linejoin;
     private String border_dasharray;
@@ -112,11 +112,11 @@ public class MyPlaceCategory extends UserDataLayer {
         this.dot_color = dot_color;
     }
 
-    public long getDot_size() {
+    public int getDot_size() {
         return dot_size;
     }
 
-    public void setDot_size(long dot_size) {
+    public void setDot_size(int dot_size) {
         this.dot_size = dot_size;
     }
 
@@ -128,11 +128,11 @@ public class MyPlaceCategory extends UserDataLayer {
         this.dot_shape = dot_shape;
     }
 
-    public long getBorder_width() {
+    public int getBorder_width() {
         return border_width;
     }
 
-    public void setBorder_width(long border_width) {
+    public void setBorder_width(int border_width) {
         this.border_width = border_width;
     }
 
