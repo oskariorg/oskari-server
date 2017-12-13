@@ -18,14 +18,14 @@ public class ThematicMapsRegionsetHelper {
 
     private static final Logger LOG = LogFactory.getLogger(ThematicMapsRegionsetHelper.class);
 
-    private static final String PROP_LAYER_KUNTA = "flyway.1_45_3.layer.name.kunta";
-    private static final String PROP_LAYER_ALUEHALLINTOVIRASTO = "flyway.1_45_3.layer.name.aluehallintovirasto";
-    private static final String PROP_LAYER_MAAKUNTA = "flyway.1_45_3.layer.name.maakunta";
-    private static final String PROP_LAYER_NUTS1 = "flyway.1_45_3.layer.name.nuts1";
-    private static final String PROP_LAYER_SAIRAANHOITOPIIRI = "flyway.1_45_3.layer.name.sairaanhoitopiiri";
-    private static final String PROP_LAYER_SEUTUKUNTA = "flyway.1_45_3.layer.name.seutukunta";
-    private static final String PROP_LAYER_ERVA = "flyway.1_45_3.layer.name.erva";
-    private static final String PROP_LAYER_ELY_KESKUS= "flyway.1_45_3.layer.name.elykeskus";
+    private static final String PROP_LAYER_KUNTA = "flyway.1_45_4.layer.name.kunta";
+    private static final String PROP_LAYER_ALUEHALLINTOVIRASTO = "flyway.1_45_4.layer.name.aluehallintovirasto";
+    private static final String PROP_LAYER_MAAKUNTA = "flyway.1_45_4.layer.name.maakunta";
+    private static final String PROP_LAYER_NUTS1 = "flyway.1_45_4.layer.name.nuts1";
+    private static final String PROP_LAYER_SAIRAANHOITOPIIRI = "flyway.1_45_4.layer.name.sairaanhoitopiiri";
+    private static final String PROP_LAYER_SEUTUKUNTA = "flyway.1_45_4.layer.name.seutukunta";
+    private static final String PROP_LAYER_ERVA = "flyway.1_45_4.layer.name.erva";
+    private static final String PROP_LAYER_ELY_KESKUS= "flyway.1_45_4.layer.name.elykeskus";
     
     // Old regionCategory => property that tells the name of the layer (oskari_maplayer.name)
     private static final Map<String, String> REGION_CATEGORY_TO_PROP;

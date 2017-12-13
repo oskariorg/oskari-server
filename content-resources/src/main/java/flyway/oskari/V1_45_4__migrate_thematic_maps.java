@@ -23,14 +23,14 @@ import fi.nls.oskari.util.JSONHelper;
  * @see https://github.com/oskariorg/oskari-frontend/blob/master/bundles/statistics/statsgrid/plugin/ManageClassificationPlugin.js
  */
 @SuppressWarnings("JavadocReference")
-public class V1_45_3__migrate_thematic_maps implements JdbcMigration {
+public class V1_45_4__migrate_thematic_maps implements JdbcMigration {
 
-    private static final Logger LOG = LogFactory.getLogger(V1_45_3__migrate_thematic_maps.class);
+    private static final Logger LOG = LogFactory.getLogger(V1_45_4__migrate_thematic_maps.class);
 
     private static final String BUNDLE_NAME_STATSGRID = "statsgrid";
     private static final String BUNDLE_NAME_PUBLISHEDGRID = "publishedgrid";
-    private static final String PROP_DS_SOTKA = "flyway.1_45_3.sotkanet.ds.id";
-    private static final String PROP_DS_USER = "flyway.1_45_3.userindicators.ds.id";
+    private static final String PROP_DS_SOTKA = "flyway.1_45_4.sotkanet.ds.id";
+    private static final String PROP_DS_USER = "flyway.1_45_4.userindicators.ds.id";
 
     private ThematicMapsRegionsetHelper regionsetHelper;
     private long sotkanetId;

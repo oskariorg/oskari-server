@@ -6,7 +6,7 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-public class V1_45_3__migrate_thematic_mapsTest {
+public class V1_45_4__migrate_thematic_mapsTest {
 
     private JSONObject getTestIndicator() throws JSONException{
         JSONObject ind = new JSONObject();
@@ -23,7 +23,7 @@ public class V1_45_3__migrate_thematic_mapsTest {
         // OLD: "currentColumn": "indicator2882013total"
         // "indicator" + id + year + male/female/total
         JSONObject indicator = getTestIndicator();
-        assertEquals("indicator22017total", V1_45_3__migrate_thematic_maps.getCurrentColumnStr(indicator));
+        assertEquals("indicator22017total", V1_45_4__migrate_thematic_maps.getCurrentColumnStr(indicator));
     }
 
     @Test
@@ -31,6 +31,6 @@ public class V1_45_3__migrate_thematic_mapsTest {
         // NEW: "active" : "1_4_sex="total":year="2016""
         // ds_id + '_' + ind_id + '_' + [alphabetical order for selections] key + '=' + value [separated by] ':'
         JSONObject indicator = getTestIndicator();
-        assertEquals("1_2_sex=\"total\":year=\"2017\"", V1_45_3__migrate_thematic_maps.geIndicatorHash(indicator));
+        assertEquals("1_2_sex=\"total\":year=\"2017\"", V1_45_4__migrate_thematic_maps.geIndicatorHash(indicator));
     }
 }
