@@ -125,7 +125,7 @@ public class V1_45_3__migrate_thematic_maps implements JdbcMigration {
     // "indicator" + id + year + male/female/total
     public static String getCurrentColumnStr(JSONObject indicator) throws JSONException {
         JSONObject selections = indicator.getJSONObject("selections");
-        return "indicator" + indicator.optString("id") + selections.optString("year", "") +selections.optString("gender", "");
+        return "indicator" + indicator.optString("id") + selections.optString("year", "") +selections.optString("sex", "");
     }
 
     // NEW: "active" : "1_4_sex="total":year="2016""
@@ -163,16 +163,16 @@ public class V1_45_3__migrate_thematic_maps implements JdbcMigration {
             try {
                 JSONObject newIndicator = new JSONObject();
                 newIndicator.put("id", oldIndicator.getString("id"));
+                JSONObject selections = new JSONObject();
+                newIndicator.put("selections", selections);
                 // ds -> default to sotkanet or own indicators
                 if(oldIndicator.optBoolean("ownIndicator")) {
                     newIndicator.put("ds", userIndicatorsId);
                 } else {
                     newIndicator.put("ds", sotkanetId);
                 }
-                JSONObject selections = new JSONObject();
+                selections.put("sex", oldIndicator.optString("gender"));
                 selections.put("year", oldIndicator.optString("year"));
-                selections.put("gender", oldIndicator.optString("gender"));
-                newIndicator.put("selections", selections);
                 list.add(newIndicator);
             } catch (JSONException e) {
                 LOG.error("Couldn't migrate indicator:", oldIndicator, e.getMessage());

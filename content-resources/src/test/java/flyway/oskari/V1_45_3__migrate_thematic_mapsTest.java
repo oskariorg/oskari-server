@@ -14,7 +14,7 @@ public class V1_45_3__migrate_thematic_mapsTest {
         ind.put("id", 2);
         JSONObject params = new JSONObject();
         params.put("year", "2017");
-        params.put("gender", "total");
+        params.put("sex", "total");
         ind.put("selections", params);
         return ind;
     }
@@ -31,6 +31,6 @@ public class V1_45_3__migrate_thematic_mapsTest {
         // NEW: "active" : "1_4_sex="total":year="2016""
         // ds_id + '_' + ind_id + '_' + [alphabetical order for selections] key + '=' + value [separated by] ':'
         JSONObject indicator = getTestIndicator();
-        assertEquals("1_2_gender=\"total\":year=\"2017\"", V1_45_3__migrate_thematic_maps.geIndicatorHash(indicator));
+        assertEquals("1_2_sex=\"total\":year=\"2017\"", V1_45_3__migrate_thematic_maps.geIndicatorHash(indicator));
     }
 }
