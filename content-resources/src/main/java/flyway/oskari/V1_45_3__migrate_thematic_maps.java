@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import fi.nls.oskari.util.PropertyUtil;
 import org.flywaydb.core.api.migration.jdbc.JdbcMigration;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -28,6 +29,8 @@ public class V1_45_3__migrate_thematic_maps implements JdbcMigration {
 
     private static final String BUNDLE_NAME_STATSGRID = "statsgrid";
     private static final String BUNDLE_NAME_PUBLISHEDGRID = "publishedgrid";
+    private static final String PROP_DS_SOTKA = "flyway.1_45_3.sotkanet.ds.id";
+    private static final String PROP_DS_USER = "flyway.1_45_3.userindicators.ds.id";
 
     private ThematicMapsRegionsetHelper regionsetHelper;
     private long sotkanetId;
@@ -35,16 +38,24 @@ public class V1_45_3__migrate_thematic_maps implements JdbcMigration {
 
     public void migrate(Connection conn) throws SQLException, JSONException {
         regionsetHelper = new ThematicMapsRegionsetHelper(conn);
-        sotkanetId = ThematicMapsViewHelper.getDatasourceId(conn, "SotkaNET");
-        userIndicatorsId = ThematicMapsViewHelper.getDatasourceId(conn, "Your indicators");
+        sotkanetId = PropertyUtil.getOptional(PROP_DS_SOTKA, -1);
+        userIndicatorsId = PropertyUtil.getOptional(PROP_DS_USER, -1);
         final boolean oldAutoCommit = conn.getAutoCommit();
         try {
             conn.setAutoCommit(false);
-            // TODO: migrate statsgrid to new one in portti_bundle
-            // TODO: only the ones with old statsgrid startup!!
-            migrateBundle(conn, BUNDLE_NAME_STATSGRID);
-            // TODO: publishedgrid needs to be changed to statsgrid
-            migrateBundle(conn, BUNDLE_NAME_PUBLISHEDGRID);
+            // migrate statsgrid to new one in portti_bundle
+            // sending bundlePath to only migrate the ones with old statsgrid startup!!
+            // update state and config from old to new model
+            migrateBundle(conn, BUNDLE_NAME_STATSGRID, "/packages/statistics/bundle/");
+            long statsgridId = ThematicMapsViewHelper.getBundleId(conn, BUNDLE_NAME_STATSGRID);
+            // reset startup for statsgrid to load the new code
+            ThematicMapsViewHelper.switchBundle(conn, statsgridId, statsgridId);
+
+            // update state and config from old to new model
+            long publishedgridId = ThematicMapsViewHelper.getBundleId(conn, BUNDLE_NAME_STATSGRID);
+            migrateBundle(conn, BUNDLE_NAME_PUBLISHEDGRID, null);
+            // publishedgrid needs to be changed to statsgrid
+            ThematicMapsViewHelper.switchBundle(conn, publishedgridId, statsgridId);
             // conn.commit();
         } catch (SQLException e) {
             conn.rollback();
@@ -54,14 +65,14 @@ public class V1_45_3__migrate_thematic_maps implements JdbcMigration {
         }
     }
 
-    private void migrateBundle(Connection conn, String bundleName)
+    private void migrateBundle(Connection conn, String bundleName, String bundlePath)
             throws SQLException, JSONException {
         long bundleId = ThematicMapsViewHelper.getBundleId(conn, bundleName);
         if (bundleId < 0) {
             LOG.warn("Could not find bundle by name:", bundleName);
             return;
         }
-        List<ConfigNState> configsAndStates = ThematicMapsViewHelper.getConfigsAndStates(conn, bundleId);
+        List<ConfigNState> configsAndStates = ThematicMapsViewHelper.getConfigsAndStates(conn, bundleId, bundlePath);
         for (ConfigNState configAndState : configsAndStates) {
             migrate(configAndState);
         }
@@ -167,8 +178,16 @@ public class V1_45_3__migrate_thematic_maps implements JdbcMigration {
                 newIndicator.put("selections", selections);
                 // ds -> default to sotkanet or own indicators
                 if(oldIndicator.optBoolean("ownIndicator")) {
+                    if(userIndicatorsId == -1L) {
+                        LOG.warn("Datasource id for user indicators not configured. Provide datasource id as property value for", PROP_DS_USER);
+                        throw new RuntimeException("Trying to migrate user indicator, but datasource id is not configured!");
+                    }
                     newIndicator.put("ds", userIndicatorsId);
                 } else {
+                    if(sotkanetId == -1L) {
+                        LOG.warn("Datasource id for sotkanet not configured. Provide datasource id as property value for", PROP_DS_SOTKA);
+                        throw new RuntimeException("Trying to migrate sotkanet indicator, but datasource id is not configured!");
+                    }
                     newIndicator.put("ds", sotkanetId);
                 }
                 selections.put("sex", oldIndicator.optString("gender"));

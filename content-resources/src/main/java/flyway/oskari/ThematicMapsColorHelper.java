@@ -1,8 +1,5 @@
 package flyway.oskari;
 
-import fi.nls.oskari.log.LogFactory;
-import fi.nls.oskari.log.Logger;
-
 public class ThematicMapsColorHelper {
 
     private static final String[] COLORSETS_DIV = {

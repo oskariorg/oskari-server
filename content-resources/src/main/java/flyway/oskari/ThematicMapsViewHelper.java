@@ -25,28 +25,33 @@ public class ThematicMapsViewHelper {
         }
     }
 
-    public static long getDatasourceId(Connection conn, String name) throws SQLException {
-        // "SotkaNET" / "Your indicators"
-        String sql = "SELECT id FROM oskari_statistical_datasource WHERE locale LIKE ?";
+    public static String getBundleStartup(Connection conn, long id) throws SQLException {
+        String sql = "SELECT startup FROM portti_bundle WHERE id = ?";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setString(1, "%" + name + "%");
+            ps.setLong(1, id);
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
-                    return rs.getLong("id");
+                    return rs.getString("startup");
                 }
-                return -1L;
+                throw new SQLException("Couldnt find bundle with id " +id);
             }
         }
     }
 
-    public static List<ConfigNState> getConfigsAndStates(Connection conn, long bundleId) throws SQLException {
-        String sql = "SELECT view_id, bundle_id, seqno, config, state"
+    public static List<ConfigNState> getConfigsAndStates(Connection conn, long bundleId, String bundlePath) throws SQLException {
+        String sql = "SELECT view_id, bundle_id, seqno, config, state, startup"
                 + " FROM portti_view_bundle_seq WHERE bundle_id = ?";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setLong(1, bundleId);
             try (ResultSet rs = ps.executeQuery()) {
                 List<ConfigNState> configsAndStates = new ArrayList<>();
                 while (rs.next()) {
+                    String startup = rs.getString("startup");
+                    if(bundlePath != null && startup.contains(bundlePath)) {
+                        // we are only interested in bundles with old path
+                        // not in ones using the new path
+                        continue;
+                    }
                     ConfigNState cfg = new ConfigNState();
                     cfg.view_id = rs.getLong("view_id");
                     cfg.bundle_id = rs.getLong("bundle_id");
@@ -74,6 +79,19 @@ public class ThematicMapsViewHelper {
                 ps.addBatch();
             }
             ps.executeBatch();
+        }
+    }
+
+    public static void switchBundle(Connection conn, long old_bundle_id, long new_bundle_id) throws SQLException {
+        final String startup = getBundleStartup(conn, new_bundle_id);
+        String sql = "UPDATE portti_view_bundle_seq SET"
+                + " startup = ?, bundle_id= ?"
+                + " WHERE bundle_id = ?";
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, startup);
+            ps.setLong(2, new_bundle_id);
+            ps.setLong(3, old_bundle_id);
+            ps.execute();
         }
     }
 
