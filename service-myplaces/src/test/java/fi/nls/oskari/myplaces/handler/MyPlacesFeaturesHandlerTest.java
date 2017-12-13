@@ -12,7 +12,7 @@ import com.vividsolutions.jts.geom.LineString;
 import com.vividsolutions.jts.geom.MultiLineString;
 import com.vividsolutions.jts.geom.Point;
 
-import fi.nls.oskari.myplaces.MyPlaceWithGeometry;
+import fi.nls.oskari.domain.map.MyPlace;
 import fi.nls.oskari.util.IOHelper;
 
 public class MyPlacesFeaturesHandlerTest {
@@ -25,10 +25,10 @@ public class MyPlacesFeaturesHandlerTest {
         byte[] payload = getInput(PAYLOAD);
 
         boolean shouldSetId = false;
-        MyPlaceWithGeometry[] myPlaces = handler.parseMyPlaces(payload, shouldSetId);
+        MyPlace[] myPlaces = handler.parseMyPlaces(payload, shouldSetId);
         assertEquals(2, myPlaces.length);
 
-        MyPlaceWithGeometry myPlace1 = myPlaces[0];
+        MyPlace myPlace1 = myPlaces[0];
         assertEquals(1, myPlace1.getCategoryId());
         assertEquals("id should not be set because we set shouldSetId to false",
                 0, myPlace1.getId());
@@ -43,7 +43,7 @@ public class MyPlacesFeaturesHandlerTest {
         assertEquals(381863.4646715279, p.getX(), 0.00000001);
         assertEquals(6679150.155217625, p.getY(), 0.00000001);
 
-        MyPlaceWithGeometry myPlace2 = myPlaces[1];
+        MyPlace myPlace2 = myPlaces[1];
         assertEquals(1, myPlace2.getCategoryId());
         assertEquals("id should not be set because we set shouldSetId to false",
                 0, myPlace1.getId());
@@ -84,7 +84,7 @@ public class MyPlacesFeaturesHandlerTest {
         MyPlacesFeaturesHandler handler = new MyPlacesFeaturesHandler();
         byte[] payload = getInput(PAYLOAD);
         boolean shouldSetId = true;
-        MyPlaceWithGeometry[] myPlaces = handler.parseMyPlaces(payload, shouldSetId);
+        MyPlace[] myPlaces = handler.parseMyPlaces(payload, shouldSetId);
         assertEquals("ids should be set", 123L, myPlaces[0].getId());
         assertEquals("ids larger than Integer.MAX work", 9876543210123456L, myPlaces[1].getId());
     }

@@ -21,7 +21,6 @@ public class WFSTHelper {
         xsw.writeNamespace("ogc", OGC);
         xsw.writeNamespace("gml", "http://www.opengis.net/gml");
         xsw.writeNamespace("xsi", "http://www.w3.org/2001/XMLSchema-instance");
-        xsw.writeDefaultNamespace(WFS);
         xsw.writeAttribute("service", "WFS");
         xsw.writeAttribute("version", "1.1.0");
     }

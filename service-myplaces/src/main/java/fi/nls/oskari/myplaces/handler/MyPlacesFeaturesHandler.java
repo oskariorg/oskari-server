@@ -16,7 +16,7 @@ import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.control.ActionParamsException;
 import fi.nls.oskari.control.RestActionHandler;
 import fi.nls.oskari.domain.User;
-import fi.nls.oskari.myplaces.MyPlaceWithGeometry;
+import fi.nls.oskari.domain.map.MyPlace;
 import fi.nls.oskari.myplaces.MyPlacesService;
 import fi.nls.oskari.myplaces.util.GeoJSONReader;
 import fi.nls.oskari.myplaces.util.GeoServerHelper;
@@ -73,10 +73,10 @@ public class MyPlacesFeaturesHandler extends RestActionHandler {
     public void handlePost(ActionParameters params) throws ActionException {
         final User user = params.getUser();
         final byte[] payload = params.getRequestPayload();
-        final MyPlaceWithGeometry[] places = parseMyPlaces(payload, false);
+        final MyPlace[] places = parseMyPlaces(payload, false);
 
         long[] uniqueCategoryIds = Arrays.stream(places)
-                .mapToLong(MyPlaceWithGeometry::getCategoryId)
+                .mapToLong(MyPlace::getCategoryId)
                 .distinct()
                 .toArray();
         for (long categoryId : uniqueCategoryIds) {
@@ -86,7 +86,7 @@ public class MyPlacesFeaturesHandler extends RestActionHandler {
             }
         }
 
-        for (MyPlaceWithGeometry place : places) {
+        for (MyPlace place : places) {
             place.setUuid(user.getUuid());
         }
 
@@ -99,10 +99,10 @@ public class MyPlacesFeaturesHandler extends RestActionHandler {
     public void handlePut(ActionParameters params) throws ActionException {
         final User user = params.getUser();
         final byte[] payload = params.getRequestPayload();
-        final MyPlaceWithGeometry[] places = parseMyPlaces(payload, true);
+        final MyPlace[] places = parseMyPlaces(payload, true);
 
         long[] ids = Arrays.stream(places)
-                .mapToLong(MyPlaceWithGeometry::getId)
+                .mapToLong(MyPlace::getId)
                 .toArray();
         for (long id : ids) {
             if (!service.canModifyPlace(user, id)) {
@@ -111,7 +111,7 @@ public class MyPlacesFeaturesHandler extends RestActionHandler {
             }
         }
 
-        for (MyPlaceWithGeometry place : places) {
+        for (MyPlace place : places) {
             place.setUuid(user.getUuid());
         }
 
@@ -173,14 +173,14 @@ public class MyPlacesFeaturesHandler extends RestActionHandler {
         }
     }
 
-    protected MyPlaceWithGeometry[] parseMyPlaces(byte[] input, boolean shouldSetId)
+    protected MyPlace[] parseMyPlaces(byte[] input, boolean shouldSetId)
             throws ActionParamsException {
         try {
             String inputStr = new String(input, StandardCharsets.UTF_8);
             JSONObject featureCollection = new JSONObject(inputStr);
             JSONArray features = featureCollection.getJSONArray("features");
             final int n = features.length();
-            MyPlaceWithGeometry[] myPlaces = new MyPlaceWithGeometry[n];
+            MyPlace[] myPlaces = new MyPlace[n];
             for (int i = 0; i < n; i++) {
                 JSONObject feature = features.getJSONObject(i);
                 myPlaces[i] = parseMyPlace(feature, shouldSetId);
@@ -191,8 +191,8 @@ public class MyPlacesFeaturesHandler extends RestActionHandler {
         }
     }
 
-    protected MyPlaceWithGeometry parseMyPlace(JSONObject feature, boolean shouldSetId) throws JSONException {
-        MyPlaceWithGeometry myPlace = new MyPlaceWithGeometry();
+    protected MyPlace parseMyPlace(JSONObject feature, boolean shouldSetId) throws JSONException {
+        MyPlace myPlace = new MyPlace();
 
         if (shouldSetId) {
             myPlace.setId(feature.getLong("id"));
@@ -228,7 +228,7 @@ public class MyPlacesFeaturesHandler extends RestActionHandler {
         }
     }
 
-    private long[] insertFeatures(MyPlaceWithGeometry[] places) throws ActionException {
+    private long[] insertFeatures(MyPlace[] places) throws ActionException {
         try {
             OMElement insertFeaturesRequest = requestBuilder.insertFeatures(places);
             String insertFeaturesResponse = GeoServerHelper.sendRequest(insertFeaturesRequest);
@@ -238,7 +238,7 @@ public class MyPlacesFeaturesHandler extends RestActionHandler {
         }
     }
 
-    private int updateFeatures(MyPlaceWithGeometry[] places) throws ActionException {
+    private int updateFeatures(MyPlace[] places) throws ActionException {
         try {
             OMElement updateRequest = requestBuilder.updateFeatures(places);
             String updateResponse = GeoServerHelper.sendRequest(updateRequest);

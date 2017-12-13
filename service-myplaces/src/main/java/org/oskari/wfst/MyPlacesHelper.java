@@ -1,34 +1,22 @@
 package org.oskari.wfst;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.util.UUID;
 
-import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
-import org.xml.sax.SAXException;
-
-import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.GeometryFactory;
-
-import fi.nls.oskari.myplaces.MyPlaceWithGeometry;
-import fi.nls.oskari.util.IOHelper;
+import fi.nls.oskari.domain.map.MyPlace;
 
 public class MyPlacesHelper extends WFSTHelper {
 
     private static final String TYPENAME_MY_PLACES = "feature:my_places";
 
-    public static void insertMyPlaces(OutputStream out, MyPlaceWithGeometry[] places)
-            throws XMLStreamException, IOException {
+    public static void insertMyPlaces(OutputStream out, MyPlace[] places)
+            throws XMLStreamException {
         XMLStreamWriter xsw = XOF.createXMLStreamWriter(out);
         writeStartTransaction(xsw);
         xsw.writeNamespace(PREFIX_OSKARI, OSKARI);
-        for (MyPlaceWithGeometry place : places) {
+        for (MyPlace place : places) {
             insertMyPlace(xsw, place);
         }
         xsw.writeEndElement();
@@ -49,12 +37,12 @@ public class MyPlacesHelper extends WFSTHelper {
         xsw.close();
     }
 
-    public static void updateMyPlaces(OutputStream out, MyPlaceWithGeometry[] places)
-            throws XMLStreamException, IOException {
+    public static void updateMyPlaces(OutputStream out, MyPlace[] places)
+            throws XMLStreamException {
         XMLStreamWriter xsw = XOF.createXMLStreamWriter(out);
         writeStartTransaction(xsw);
         xsw.writeNamespace(PREFIX_OSKARI, OSKARI);
-        for (MyPlaceWithGeometry place : places) {
+        for (MyPlace place : places) {
             updateMyPlace(xsw, place);
         }
         xsw.writeEndElement();
@@ -62,7 +50,7 @@ public class MyPlacesHelper extends WFSTHelper {
         xsw.close();
     }
 
-    private static void insertMyPlace(XMLStreamWriter xsw, MyPlaceWithGeometry place)
+    private static void insertMyPlace(XMLStreamWriter xsw, MyPlace place)
             throws XMLStreamException {
         xsw.writeStartElement(WFS, "Insert");
         xsw.writeAttribute("typeName", TYPENAME_MY_PLACES);
@@ -81,7 +69,7 @@ public class MyPlacesHelper extends WFSTHelper {
         xsw.writeEndElement(); // Close <wfs:Insert>
     }
 
-    private static void updateMyPlace(XMLStreamWriter xsw, MyPlaceWithGeometry place)
+    private static void updateMyPlace(XMLStreamWriter xsw, MyPlace place)
             throws XMLStreamException {
         xsw.writeStartElement(WFS, "Update");
         xsw.writeAttribute("typeName", TYPENAME_MY_PLACES);
@@ -116,45 +104,7 @@ public class MyPlacesHelper extends WFSTHelper {
     }
 
     private static String prefixId(long id) {
-        return "myplaces." + id;
-    }
-
-    public static void main(String[] args) throws XMLStreamException, IOException, SAXException, ParserConfigurationException {
-        MyPlaceWithGeometry place = new MyPlaceWithGeometry();
-        place.setName("foobar");
-        place.setUuid(UUID.randomUUID().toString());
-        place.setCategoryId(4);
-        place.setDesc("My description");
-        place.setAttentionText("My attentionText");
-        place.setLink("My link");
-        GeometryFactory gf = new GeometryFactory();
-        place.setGeometry(gf.createPoint(new Coordinate(500000, 6822000)));
-        MyPlaceWithGeometry[] places = { place };
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        insertMyPlaces(baos, places);
-        byte[] req = baos.toByteArray();
-        System.out.write(req);
-        System.out.println();
-        HttpURLConnection conn = IOHelper.post("http://localhost:6082/geoserver/wms", "application/xml", req);
-        byte[] resp = IOHelper.readBytes(conn);
-        System.out.write(resp);
-        System.out.println();
-        TransactionResponse_110 tr = TransactionResponseParser_110.parse(new ByteArrayInputStream(resp));
-
-        String id = tr.getInsertedIds()[0];
-        long idWithoutPrefix = Long.parseLong(id.substring(id.lastIndexOf('.') + 1));
-        place.setId(idWithoutPrefix);
-        place.setDesc("bazzzz");
-        baos.reset();
-        updateMyPlaces(baos, places);
-        req = baos.toByteArray();
-        System.out.write(req);
-        System.out.println();
-        conn = IOHelper.post("http://localhost:6082/geoserver/wms", "application/xml", req);
-        resp = IOHelper.readBytes(conn);
-        System.out.write(resp);
-        System.out.println();
-        tr = TransactionResponseParser_110.parse(new ByteArrayInputStream(resp));
+        return "my_places." + id;
     }
 
 }

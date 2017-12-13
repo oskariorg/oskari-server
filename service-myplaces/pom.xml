@@ -37,11 +37,6 @@
             <artifactId>shared-test-resources</artifactId>
             <scope>test</scope>
         </dependency>
-		<dependency>
-		    <groupId>com.vividsolutions</groupId>
-		    <artifactId>jts</artifactId>
-		    <version>${jts.version}</version>
-		</dependency>
     </dependencies>
 
     <build>
