@@ -20,6 +20,26 @@ import fi.nls.oskari.util.JSONHelper;
  * Migrate conf and state in portti_view_bundle_seq for
  * statsgrid and publishedgrid bundles
  *
+ * Required configuration:
+ * ----------------------------------
+ # datasource ids added for old indicators
+ # [SELECT id FROM oskari_statistical_datasource where config like '%sotkanet.fi/rest%']
+ flyway.1_45_4.sotkanet.ds.id=1
+ # [SELECT id FROM oskari_statistical_datasource where plugin = 'UserStats']
+ flyway.1_45_4.userindicators.ds.id=4
+
+ # layer name mappings for old regionsets
+ # [select name from oskari_maplayer where type = 'statslayer']
+ flyway.1_45_4.layer.name.kunta=tilastointialueet:kunta4500k_2017
+ flyway.1_45_4.layer.name.aluehallintovirasto=
+ flyway.1_45_4.layer.name.maakunta=
+ flyway.1_45_4.layer.name.nuts1=
+ flyway.1_45_4.layer.name.sairaanhoitopiiri=
+ flyway.1_45_4.layer.name.seutukunta=tilastointialueet:seutukunta4500k
+ flyway.1_45_4.layer.name.erva=
+ flyway.1_45_4.layer.name.elykeskus=
+ * ----------------------------------
+ *
  * @see https://github.com/oskariorg/oskari-frontend/blob/master/bundles/statistics/statsgrid/plugin/ManageClassificationPlugin.js
  */
 @SuppressWarnings("JavadocReference")
