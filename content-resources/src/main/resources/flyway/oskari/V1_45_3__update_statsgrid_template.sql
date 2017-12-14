@@ -1,6 +1,6 @@
 -- update startup to point to new implementation
 UPDATE portti_bundle SET startup='{
-    "bundlename" : "statsgrid"
+    "bundlename" : "statsgrid",
     "metadata" : {
         "Import-Bundle" : {
             "statsgrid" : {
