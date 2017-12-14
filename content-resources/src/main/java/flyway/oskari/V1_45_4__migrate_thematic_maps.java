@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.PropertyUtil;
 import org.flywaydb.core.api.migration.jdbc.JdbcMigration;
 import org.json.JSONArray;
@@ -31,13 +32,13 @@ import fi.nls.oskari.util.JSONHelper;
  # layer name mappings for old regionsets
  # [select name from oskari_maplayer where type = 'statslayer']
  flyway.1_45_4.layer.name.kunta=tilastointialueet:kunta4500k_2017
- flyway.1_45_4.layer.name.aluehallintovirasto=
- flyway.1_45_4.layer.name.maakunta=
- flyway.1_45_4.layer.name.nuts1=
- flyway.1_45_4.layer.name.sairaanhoitopiiri=
+ flyway.1_45_4.layer.name.aluehallintovirasto=tilastointialueet:avi4500k
+ flyway.1_45_4.layer.name.maakunta=tilastointialueet:maakunta4500k
  flyway.1_45_4.layer.name.seutukunta=tilastointialueet:seutukunta4500k
- flyway.1_45_4.layer.name.erva=
- flyway.1_45_4.layer.name.elykeskus=
+ flyway.1_45_4.layer.name.elykeskus=tilastointialueet:ely4500k
+ flyway.1_45_4.layer.name.nuts1=dummy:nuts1
+ flyway.1_45_4.layer.name.erva=dummy:erva
+ flyway.1_45_4.layer.name.sairaanhoitopiiri=dummy:sairaanhoitopiiri
  * ----------------------------------
  *
  * @see https://github.com/oskariorg/oskari-frontend/blob/master/bundles/statistics/statsgrid/plugin/ManageClassificationPlugin.js
@@ -137,7 +138,11 @@ public class V1_45_4__migrate_thematic_maps implements JdbcMigration {
         JSONObject classification = migrateClassification(state);
 
         // Indicators
-        JSONArray indicators = state.getJSONArray("indicators");
+        JSONArray indicators = state.optJSONArray("indicators");
+        if(indicators == null) {
+            // state is invalid if there's no indicators in it - reset it
+            return new JSONObject();
+        }
         List<JSONObject> newIndicators = migrateIndicators(indicators);
         String currentColumn = state.optString("currentColumn", "");
         for (JSONObject indicator : newIndicators) {
@@ -221,17 +226,14 @@ public class V1_45_4__migrate_thematic_maps implements JdbcMigration {
     }
 
     private JSONObject migrateClassification(JSONObject state) throws JSONException {
-        int methodId = Integer.parseInt(state.getString("methodId"));
+        // default to "jenks"
+        int methodId = ConversionHelper.getInt(state.optString("methodId", "1"), 1);
         String method = getMethodFromMethodId(methodId);
 
-        int numberOfClasses = 0;
-        if (state.has("numberOfClasses")) {
-            try {
-                numberOfClasses = state.getInt("numberOfClasses");
-            } catch (JSONException ignore) {}
-        }
+        int numberOfClasses = state.optInt("numberOfClasses", 0);
 
-        String classificationMode = state.getString("classificationMode");
+        // default to "distinct"
+        String classificationMode = state.optString("classificationMode", "distinct");
 
         JSONObject classification = new JSONObject();
         classification.put("method", method);
