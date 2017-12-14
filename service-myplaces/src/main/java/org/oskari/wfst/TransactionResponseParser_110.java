@@ -3,6 +3,8 @@ package org.oskari.wfst;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -38,23 +40,31 @@ public class TransactionResponseParser_110 {
         int totalUpdated = getRequiredIntFromChild(summary, "totalUpdated");
         int totalDeleted = getRequiredIntFromChild(summary, "totalDeleted");
 
-        String[] fids;
+        List<InsertedFeature> insertedFeatures;
         Optional<Element> insertResults = XML.getChild(transactionResponse, "InsertResults");
         if (insertResults.isPresent()) {
-            List<Element> insertedFeatures = XML.getChildren(insertResults.get(), "Feature");
-            fids = new String[insertedFeatures.size()];
-            for (int i = 0; i < insertedFeatures.size(); i++) {
-                Element feature = insertedFeatures.get(i);
-                fids[i] = XML.getChild(feature, "FeatureId")
-                        .map(FeatureId -> FeatureId.getAttribute("fid"))
-                        .orElseThrow(() -> new IllegalArgumentException(
-                                "Expected ogc:FeatureId element inside Feature"));
-            }
+            insertedFeatures = parseInsertedFeatures(insertResults.get());
         } else {
-            fids = new String[0];
+            insertedFeatures = Collections.emptyList();
         }
 
-        return new TransactionResponse_110(totalInserted, totalUpdated, totalDeleted, fids);
+        return new TransactionResponse_110(totalInserted, totalUpdated,
+                totalDeleted, insertedFeatures);
+    }
+
+    private static List<InsertedFeature> parseInsertedFeatures(Element insertResults) {
+        List<Element> features = XML.getChildren(insertResults, "Feature");
+        List<InsertedFeature> insertedFeatures = new ArrayList<>(features.size());
+        for (int i = 0; i < features.size(); i++) {
+            Element feature = features.get(i);
+            String fid = XML.getChild(feature, "FeatureId")
+                    .map(FeatureId -> FeatureId.getAttribute("fid"))
+                    .orElseThrow(() -> new IllegalArgumentException(
+                            "Expected ogc:FeatureId element inside Feature"));
+            String handle = feature.getAttribute("handle");
+            insertedFeatures.add(new InsertedFeature(fid, handle));
+        }
+        return insertedFeatures;
     }
 
     private static int getRequiredIntFromChild(Element parent, String element) {

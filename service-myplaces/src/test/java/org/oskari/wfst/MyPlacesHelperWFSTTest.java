@@ -24,7 +24,7 @@ import com.vividsolutions.jts.geom.Point;
 import fi.nls.oskari.domain.map.MyPlace;
 import fi.nls.oskari.util.IOHelper;
 
-public class MyPlacesHelperTest {
+public class MyPlacesHelperWFSTTest {
 
     private static final String PAYLOAD = "payload.json";
     private String endPoint = "http://localhost:6082/geoserver/wms";
@@ -131,8 +131,8 @@ public class MyPlacesHelperTest {
         assertEquals(1, tr.getTotalInserted());
         assertEquals(0, tr.getTotalUpdated());
         assertEquals(0, tr.getTotalDeleted());
-        assertEquals(1, tr.getInsertedIds().length);
-        String id = tr.getInsertedIds()[0];
+        assertEquals(1, tr.getInsertedFeatures().size());
+        String id = tr.getInsertedFeatures().get(0).getFid();
         assertTrue(id.startsWith("my_places."));
 
         // Update

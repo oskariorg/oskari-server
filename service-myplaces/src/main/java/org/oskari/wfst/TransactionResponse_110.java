@@ -1,18 +1,20 @@
 package org.oskari.wfst;
 
+import java.util.List;
+
 public class TransactionResponse_110 {
 
     private final int totalInserted;
     private final int totalUpdated;
     private final int totalDeleted;
-    private final String[] insertedIds;
+    private final List<InsertedFeature> insertedFeatures;
 
     public TransactionResponse_110(int totalInserted, int totalUpdated,
-            int totalDeleted, String[] insertedIds) {
+            int totalDeleted, List<InsertedFeature> insertedFeatures) {
         this.totalInserted = totalInserted;
         this.totalUpdated = totalUpdated;
         this.totalDeleted = totalDeleted;
-        this.insertedIds = insertedIds;
+        this.insertedFeatures = insertedFeatures;
     }
 
     public int getTotalInserted() {
@@ -27,8 +29,8 @@ public class TransactionResponse_110 {
         return totalDeleted;
     }
 
-    public String[] getInsertedIds() {
-        return insertedIds;
+    public List<InsertedFeature> getInsertedFeatures() {
+        return insertedFeatures;
     }
 
 }

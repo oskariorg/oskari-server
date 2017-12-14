@@ -47,6 +47,7 @@ public class CategoriesHelperWFST extends WFSTHelper {
         xsw.writeEndDocument();
         xsw.close();
     }
+
     public static void getCategoriesByUuid(OutputStream out, String uuid)
             throws XMLStreamException {
         XMLStreamWriter xsw = XOF.createXMLStreamWriter(out);
@@ -70,24 +71,31 @@ public class CategoriesHelperWFST extends WFSTHelper {
         xsw.close();
     }
 
-    public static void insertCategories(OutputStream out, List<MyPlaceCategory> categories)
+    public static String[] insertCategories(OutputStream out, List<MyPlaceCategory> categories)
             throws XMLStreamException, IOException {
         XMLStreamWriter xsw = XOF.createXMLStreamWriter(out);
         writeStartTransaction(xsw);
-        xsw.writeNamespace(PREFIX_OSKARI, OSKARI);
-        for (MyPlaceCategory category : categories) {
-            insertCategory(xsw, category);
+
+        final int n = categories.size();
+        String[] handles = new String[n];
+        for (int i = 0; i < n; i++) {
+            String handle = "c" + i;
+            handles[i] = handle;
+            MyPlaceCategory category = categories.get(i);
+            insertCategory(xsw, category, handle);
         }
+
         xsw.writeEndElement();
         xsw.writeEndDocument();
         xsw.close();
+
+        return handles;
     }
 
     public static void updateCategories(OutputStream out, List<MyPlaceCategory> categories)
             throws XMLStreamException, IOException {
         XMLStreamWriter xsw = XOF.createXMLStreamWriter(out);
         writeStartTransaction(xsw);
-        xsw.writeNamespace(PREFIX_OSKARI, OSKARI);
         for (MyPlaceCategory category : categories) {
             updateCategory(xsw, category);
         }
@@ -100,7 +108,6 @@ public class CategoriesHelperWFST extends WFSTHelper {
             throws XMLStreamException {
         XMLStreamWriter xsw = XOF.createXMLStreamWriter(out);
         writeStartTransaction(xsw);
-        xsw.writeNamespace(PREFIX_OSKARI, OSKARI);
         for (long categoryId : categoryIds) {
             deleteCategory(xsw, categoryId);
         }
@@ -109,10 +116,14 @@ public class CategoriesHelperWFST extends WFSTHelper {
         xsw.close();
     }
 
-    private static void insertCategory(XMLStreamWriter xsw, MyPlaceCategory category)
-            throws XMLStreamException {
+    private static void insertCategory(XMLStreamWriter xsw,
+            MyPlaceCategory category, String handle) throws XMLStreamException {
         xsw.writeStartElement(WFS, "Insert");
         xsw.writeAttribute("typeName", TYPENAME_CATEGORIES);
+        if (handle != null && !handle.isEmpty()) {
+            xsw.writeAttribute("handle", handle);
+        }
+
         xsw.writeStartElement(OSKARI, "categories");
 
         writeTextElement(xsw, OSKARI, "default", Boolean.toString(category.isDefault()));
@@ -134,7 +145,7 @@ public class CategoriesHelperWFST extends WFSTHelper {
         writeTextElement(xsw, OSKARI, "border_linejoin", category.getCategory_name());
         writeTextElement(xsw, OSKARI, "border_dasharray", category.getCategory_name());
 
-        xsw.writeEndElement(); // Close <feature:my_places>
+        xsw.writeEndElement(); // Close <feature:categories>
         xsw.writeEndElement(); // Close <wfs:Insert>
     }
 
@@ -190,15 +201,6 @@ public class CategoriesHelperWFST extends WFSTHelper {
 
     public static long removePrefixFromId(String prefixed) {
         return Long.parseLong(prefixed.substring("categories.".length()));
-    }
-
-    public static long[] removePrefixFromIds(String[] prefixed) {
-        final int n = prefixed.length;
-        long[] ids = new long[n];
-        for (int i = 0; i < n; i++) {
-            ids[i] = removePrefixFromId(prefixed[i]);
-        }
-        return ids;
     }
 
 }

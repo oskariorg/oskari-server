@@ -1,4 +1,4 @@
-package fi.nls.oskari.myplaces.service;
+package fi.nls.oskari.myplaces.service.wfst;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -11,9 +11,12 @@ import javax.xml.stream.XMLStreamException;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.oskari.wfst.InsertedFeature;
 import org.oskari.wfst.MyPlacesHelperWFST;
+import org.oskari.wfst.TransactionResponse_110;
 
 import fi.nls.oskari.domain.map.MyPlace;
+import fi.nls.oskari.myplaces.service.MyPlacesFeaturesService;
 import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.util.IOHelper;
 
@@ -78,8 +81,12 @@ public class MyPlacesFeaturesServiceWFST extends BaseServiceWFST implements MyPl
             MyPlacesHelperWFST.insertMyPlaces(baos, places);
             HttpURLConnection conn = getConnection();
             IOHelper.post(conn, APPLICATION_XML, baos);
-            String[] ids = readTransactionResp(conn).getInsertedIds();
-            return MyPlacesHelperWFST.removePrefixFromIds(ids);
+            TransactionResponse_110 resp = readTransactionResp(conn);
+            List<InsertedFeature> insertedFeatures = resp.getInsertedFeatures();
+            return insertedFeatures.stream()
+                    .map(InsertedFeature::getFid)
+                    .mapToLong(MyPlacesHelperWFST::removePrefixFromId)
+                    .toArray();
         } catch (XMLStreamException e) {
             throw new ServiceException("Failed to create WFS-T request", e);
         } catch (IOException e) {

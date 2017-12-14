@@ -1,45 +1,48 @@
 package fi.nls.oskari.myplaces.handler;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Arrays;
+import java.util.List;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.oskari.wfst.MyPlaceCategoryHelper;
+
 import fi.nls.oskari.annotation.OskariActionRoute;
-import fi.nls.oskari.control.*;
+import fi.nls.oskari.control.ActionDeniedException;
+import fi.nls.oskari.control.ActionException;
+import fi.nls.oskari.control.ActionParameters;
+import fi.nls.oskari.control.ActionParamsException;
+import fi.nls.oskari.control.RestActionHandler;
 import fi.nls.oskari.domain.User;
+import fi.nls.oskari.domain.map.MyPlaceCategory;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.myplaces.MyPlacesService;
-import fi.nls.oskari.myplaces.util.GeoServerHelper;
-import fi.nls.oskari.myplaces.util.GeoServerRequestBuilder;
-import fi.nls.oskari.myplaces.util.GeoServerResponseBuilder;
+import fi.nls.oskari.myplaces.service.MyPlacesLayersService;
+import fi.nls.oskari.myplaces.service.wfst.MyPlacesLayersServiceWFST;
 import fi.nls.oskari.service.OskariComponentManager;
-import fi.nls.oskari.util.*;
-
-import java.io.InputStream;
-import java.util.Arrays;
-
-import org.apache.axiom.om.OMElement;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import fi.nls.oskari.service.ServiceException;
+import fi.nls.oskari.util.IOHelper;
+import fi.nls.oskari.util.JSONHelper;
+import fi.nls.oskari.util.ResponseHelper;
 
 @OskariActionRoute("MyPlacesLayers")
 public class MyPlacesLayersHandler extends RestActionHandler {
 
-    private final static Logger log = LogFactory.getLogger(MyPlacesLayersHandler.class);
-    private static final String PARAM_LAYERS = "layers";
-    private static final String JSKEY_MYPLACESLAYERS = "myplaceslayers";
-    private static final String JSKEY_IDLIST = "idList";
-    private static final String JSKEY_UPDATED = "updated";
-    private static final String JSKEY_DELETED = "deleted";
-    private static final String JSKEY_ID = "id";
-    private static final String DEFAULT_CATEGORY = "default_category.json";
+    private final static Logger LOG = LogFactory.getLogger(MyPlacesLayersHandler.class);
 
-    private GeoServerRequestBuilder requestBuilder;
+    private static final String PARAM_LAYERS = "layers";
+    private static final String JSKEY_DELETED = "deleted";
+
     private MyPlacesService service;
+    private MyPlacesLayersService layerService;
 
     @Override
     public void init() {
-        super.init();
-        requestBuilder =  new GeoServerRequestBuilder();
         service = OskariComponentManager.getComponentOfType(MyPlacesService.class);
+        layerService = new MyPlacesLayersServiceWFST();
     }
 
     @Override
@@ -49,106 +52,135 @@ public class MyPlacesLayersHandler extends RestActionHandler {
 
     @Override
     public void handleGet(ActionParameters params) throws ActionException {
+        final String uuid = params.getUser().getUuid();
+
+        final List<MyPlaceCategory> categories;
         try {
-            JSONObject responseJson = new JSONObject();
-            OMElement request = requestBuilder.getLayersByUserId(params.getUser().getUuid());
-            String response = GeoServerHelper.sendRequest(request);
-            JSONArray layers = GeoServerResponseBuilder.buildLayersGet(response);
-            // if user have no layers, create default
-            if (layers.length() == 0){
-                createDefaultCategory(params.getUser().getUuid());
-                response = GeoServerHelper.sendRequest(request);
-                layers = GeoServerResponseBuilder.buildLayersGet(response);
-            }
-            JSONHelper.putValue(responseJson, JSKEY_MYPLACESLAYERS, layers);
-            ResponseHelper.writeResponse(params, responseJson);
+            categories = layerService.getByUserId(uuid);
+        } catch (ServiceException e) {
+            LOG.warn(e);
+            throw new ActionException("Failed to get users layers");
         }
-        catch (Exception e) {
-            throw new ActionException(e.getMessage());
+
+        if (categories.size() == 0) {
+            // If user has no categories insert a new default category
+            categories.add(insertDefaultCategory(uuid));
         }
+
+        // TODO: Serialize categories to GeoJSON, send to client
     }
 
     @Override
     public void handlePost(ActionParameters params) throws ActionException {
+        final String uuid = params.getUser().getUuid();
+        final List<MyPlaceCategory> categories = readCategories(params, false);
+        for (MyPlaceCategory category : categories) {
+            category.setUuid(uuid);
+        }
+
         try {
-            JSONObject responseJson = new JSONObject();
-            String jsonString = params.getHttpParam(PARAM_LAYERS);
-            OMElement request = requestBuilder.insertLayers(params.getUser().getUuid(), jsonString);
-            String response = GeoServerHelper.sendRequest(request);
-            long[] idList = GeoServerResponseBuilder.getInsertedIds(response);
-            JSONHelper.putValue(responseJson, JSKEY_IDLIST, idList);
-            ResponseHelper.writeResponse(params, responseJson);
+            int inserted = layerService.insert(categories);
+            LOG.info("Inserted", inserted, "/", categories.size());
+        } catch (ServiceException e) {
+            LOG.warn(e);
+            throw new ActionException("Failed to insert layers");
         }
-        catch (Exception e) {
-            log.error(e);
-            throw new ActionException(e.getMessage());
-        }
+
+        // TODO: Serialize categories to GeoJSON, send to client
     }
 
     @Override
     public void handlePut(ActionParameters params) throws ActionException {
+        final User user = params.getUser();
+        final List<MyPlaceCategory> categories = readCategories(params, true);
+        checkUserCanModifyCategories(user, categories);
+        long[] ids = categories.stream().mapToLong(MyPlaceCategory::getId).toArray();
         try {
-            User user = params.getUser();
-            JSONObject responseJson = new JSONObject();
-            JSONArray jsonArray = new JSONArray(params.getHttpParam(PARAM_LAYERS));
-            for (int i = 0 ; i < jsonArray.length() ; i++){
-                long id = jsonArray.getJSONObject(i).getLong(JSKEY_ID);
-                if (!service.canModifyCategory(user, id)){
-                    throw new ActionDeniedException("Tried to modify category: " + id);
-                }
-            }
-            OMElement request = requestBuilder.updateLayers(user.getUuid(), jsonArray);
-            String response = GeoServerHelper.sendRequest(request);
-            int updated = GeoServerResponseBuilder.getTotalUpdated(response);
-            JSONHelper.putValue(responseJson, JSKEY_UPDATED, updated);
-            ResponseHelper.writeResponse(params, responseJson);
+            LOG.debug("Updating Categories:", ids);
+            int updated = layerService.update(categories);
+            LOG.info("Updated", updated, "/", categories.size());
+        } catch (ServiceException e) {
+            LOG.warn(e);
+            throw new ActionException("Failed to update layers");
         }
-        catch (Exception e) {
-            if(e instanceof JSONException) {
-                throw new ActionException("JSON processing error", e);
-            } else if (e instanceof ActionDeniedException){
-                throw (ActionException) e;
-            }
-            throw new ActionException(e.getMessage(), e);
-        }
+
+        // TODO: Write something to client
     }
 
     @Override
     public void handleDelete(ActionParameters params) throws ActionException {
-        try {
-            JSONObject responseJson = new JSONObject();
-            User user = params.getUser();
-            String ids = params.getHttpParam(PARAM_LAYERS);
-            String [] idList = ids.split(",");
-            for (String id : idList){
-                if (!service.canModifyCategory(user, Long.parseLong(id))){
-                    throw new ActionDeniedException("Tried to delete category: " + id);
-                }
+        final User user = params.getUser();
+        final String layerIds = params.getRequiredParam(PARAM_LAYERS);
+        final long[] ids = Arrays.stream(layerIds.split(","))
+                .mapToLong(Long::parseLong)
+                .toArray();
+        for (long id : ids) {
+            if (!service.canModifyCategory(user, id)) {
+                throw new ActionDeniedException("Tried to delete category: " + id);
             }
-            OMElement request = requestBuilder.deleteLayersById(idList);
-            String response = GeoServerHelper.sendRequest(request);
-            int deleted = GeoServerResponseBuilder.getTotalDeleted(response);
-            JSONHelper.putValue(responseJson, JSKEY_DELETED, deleted);
-            ResponseHelper.writeResponse(params, responseJson);
         }
-        catch (Exception e) {
-            throw new ActionException(e.getMessage());
-        }
-    }
 
-    private void createDefaultCategory(String uuid) throws ActionException{
+        final int deleted;
         try {
-            InputStream inputStream = getClass().getResourceAsStream(DEFAULT_CATEGORY);
-            String jsonString = IOHelper.readString(inputStream);
-            OMElement request = requestBuilder.insertLayers(uuid, jsonString);
-            String response = GeoServerHelper.sendRequest(request);
-            long[] insertedIds = GeoServerResponseBuilder.getInsertedIds(response);
-            log.info("Created default category for user:", uuid,
-                    "with layer id:", Arrays.toString(insertedIds));
+            deleted = layerService.delete(ids);
+        } catch (ServiceException e) {
+            LOG.warn(e);
+            throw new ActionException("Failed to delete layers");
         }
-        catch (Exception e) {
-            throw new ActionException(e.getMessage());
+
+        JSONObject response = new JSONObject();
+        JSONHelper.putValue(response, JSKEY_DELETED, deleted);
+        ResponseHelper.writeResponse(params, response);
+    }
+
+    private MyPlaceCategory insertDefaultCategory(String uuid)
+            throws ActionException {
+        try {
+            MyPlaceCategory category = createDefaultCategory();
+            category.setUuid(uuid);
+            layerService.insert(Arrays.asList(category));
+            return category;
+        } catch (ServiceException e) {
+            LOG.warn(e);
+            throw new ActionException("Failed to insert default category");
         }
     }
 
+    private MyPlaceCategory createDefaultCategory() {
+        MyPlaceCategory category = new MyPlaceCategory();
+        category.setDefault(true);
+        category.setStroke_width(1);
+        category.setDot_color("#00FF00");
+        category.setDot_size(3);
+        category.setDot_shape("1");
+        category.setFill_pattern(-1);
+        return category;
+    }
+
+    private List<MyPlaceCategory> readCategories(ActionParameters params,
+            boolean checkId) throws ActionException {
+        try {
+            final String payload;
+            try (InputStream in = params.getRequest().getInputStream()) {
+                payload = IOHelper.readString(in);
+            } catch (IOException e) {
+                throw new ActionException("IOException occured");
+            }
+            return MyPlaceCategoryHelper.parseFromGeoJSON(payload, checkId);
+        } catch (JSONException e) {
+            throw new ActionParamsException("Invalid input", e);
+        } catch (IOException e) {
+            throw new ActionParamsException("IOException occured", e);
+        }
+    }
+
+    private void checkUserCanModifyCategories(User user,
+            List<MyPlaceCategory> categories) throws ActionDeniedException {
+        for (MyPlaceCategory category : categories) {
+            if (!service.canModifyCategory(user, category.getId())) {
+                throw new ActionDeniedException(
+                        "Tried to modify category: " + category.getId());
+            }
+        }
+    }
 }

@@ -21,7 +21,7 @@ import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.myplaces.MyPlacesService;
 import fi.nls.oskari.myplaces.service.MyPlacesFeaturesService;
-import fi.nls.oskari.myplaces.service.MyPlacesFeaturesServiceWFST;
+import fi.nls.oskari.myplaces.service.wfst.MyPlacesFeaturesServiceWFST;
 import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.util.IOHelper;
@@ -66,8 +66,8 @@ public class MyPlacesFeaturesHandler extends RestActionHandler {
                         "layerId:", layerId, "crs:", crs);
                 long categoryId = Long.parseLong(layerId);
                 if (!service.canModifyCategory(user, categoryId)) {
-                    throw new ActionDeniedException("User: " + user.getId() +
-                            " tried to GET features from category: " + categoryId);
+                    throw new ActionDeniedException(
+                            "Tried to GET features from category: " + categoryId);
                 }
                 featureCollection = featureService.getFeaturesByCategoryId(categoryId, crs);
             } else {
@@ -142,14 +142,13 @@ public class MyPlacesFeaturesHandler extends RestActionHandler {
     @Override
     public void handleDelete(ActionParameters params) throws ActionException {
         final User user = params.getUser();
-        final String paramFeatures = params.getRequiredParam(PARAM_FEATURES);
-        final long[] ids = Arrays.stream(paramFeatures.split(","))
+        final String featureIds = params.getRequiredParam(PARAM_FEATURES);
+        final long[] ids = Arrays.stream(featureIds.split(","))
                 .mapToLong(Long::parseLong)
                 .toArray();
         for (long id : ids) {
             if (!service.canModifyPlace(user, id)) {
-                throw new ActionDeniedException("User: " + user.getId() +
-                        " tried to delete place: " + id);
+                throw new ActionDeniedException("Tried to delete place: " + id);
             }
         }
 
@@ -191,8 +190,8 @@ public class MyPlacesFeaturesHandler extends RestActionHandler {
                 .toArray();
         for (long categoryId : uniqueCategoryIds) {
             if (!service.canModifyCategory(user, categoryId)) {
-                throw new ActionDeniedException("User: " + user.getId() +
-                        " tried to insert feature into category: " + categoryId);
+                throw new ActionDeniedException(
+                        "Tried to insert feature into category: " + categoryId);
             }
         }
     }
