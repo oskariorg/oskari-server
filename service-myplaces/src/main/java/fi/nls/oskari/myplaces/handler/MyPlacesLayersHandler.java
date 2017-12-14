@@ -1,5 +1,6 @@
 package fi.nls.oskari.myplaces.handler;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
@@ -67,7 +68,16 @@ public class MyPlacesLayersHandler extends RestActionHandler {
             categories.add(insertDefaultCategory(uuid));
         }
 
-        // TODO: Serialize categories to GeoJSON, send to client
+        ByteArrayOutputStream baos;
+        try {
+            baos = MyPlaceCategoryHelper.toGeoJSONFeatureCollection(categories);
+        } catch (IOException e) {
+            LOG.warn(e);
+            throw new ActionException("Failed to create response");
+        }
+
+        ResponseHelper.writeResponse(params, 200,
+                ResponseHelper.CONTENT_TYPE_JSON_UTF8, baos);
     }
 
     @Override
@@ -86,7 +96,16 @@ public class MyPlacesLayersHandler extends RestActionHandler {
             throw new ActionException("Failed to insert layers");
         }
 
-        // TODO: Serialize categories to GeoJSON, send to client
+        ByteArrayOutputStream baos;
+        try {
+            baos = MyPlaceCategoryHelper.toGeoJSONFeatureCollection(categories);
+        } catch (IOException e) {
+            LOG.warn(e);
+            throw new ActionException("Failed to create response");
+        }
+
+        ResponseHelper.writeResponse(params, 200,
+                ResponseHelper.CONTENT_TYPE_JSON_UTF8, baos);
     }
 
     @Override
@@ -104,7 +123,16 @@ public class MyPlacesLayersHandler extends RestActionHandler {
             throw new ActionException("Failed to update layers");
         }
 
-        // TODO: Write something to client
+        ByteArrayOutputStream baos;
+        try {
+            baos = MyPlaceCategoryHelper.toGeoJSONFeatureCollection(categories);
+        } catch (IOException e) {
+            LOG.warn(e);
+            throw new ActionException("Failed to create response");
+        }
+
+        ResponseHelper.writeResponse(params, 200,
+                ResponseHelper.CONTENT_TYPE_JSON_UTF8, baos);
     }
 
     @Override
