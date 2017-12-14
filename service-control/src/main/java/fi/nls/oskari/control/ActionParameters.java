@@ -8,7 +8,6 @@ import fi.nls.oskari.util.RequestHelper;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
