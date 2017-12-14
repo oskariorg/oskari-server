@@ -11,9 +11,8 @@ import javax.xml.stream.XMLStreamException;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.oskari.wfst.InsertedFeature;
-import org.oskari.wfst.MyPlacesHelperWFST;
-import org.oskari.wfst.TransactionResponse_110;
+import org.oskari.wfst.response.InsertedFeature;
+import org.oskari.wfst.response.TransactionResponse_110;
 
 import fi.nls.oskari.domain.map.MyPlace;
 import fi.nls.oskari.myplaces.service.MyPlacesFeaturesService;
@@ -30,7 +29,7 @@ public class MyPlacesFeaturesServiceWFST extends BaseServiceWFST implements MyPl
             throws ServiceException {
         try {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            MyPlacesHelperWFST.getMyPlacesByCategoryId(baos, crs, categoryId);
+            MyPlacesFeaturesWFSTRequestBuilder.getMyPlacesByCategoryId(baos, crs, categoryId);
             HttpURLConnection conn = getConnection();
             IOHelper.post(conn, APPLICATION_XML, baos);
             return readFeatureCollection(conn);
@@ -46,7 +45,7 @@ public class MyPlacesFeaturesServiceWFST extends BaseServiceWFST implements MyPl
             throws ServiceException {
         try {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            MyPlacesHelperWFST.getMyPlacesByUserId(baos, crs, uuid);
+            MyPlacesFeaturesWFSTRequestBuilder.getMyPlacesByUserId(baos, crs, uuid);
             HttpURLConnection conn = getConnection();
             IOHelper.post(conn, APPLICATION_XML, baos);
             return readFeatureCollection(conn);
@@ -62,8 +61,8 @@ public class MyPlacesFeaturesServiceWFST extends BaseServiceWFST implements MyPl
             throws ServiceException {
         try {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            String[] prefixedIds = MyPlacesHelperWFST.prefixIds(ids);
-            MyPlacesHelperWFST.getMyPlacesById(baos, crs, prefixedIds);
+            String[] prefixedIds = MyPlacesFeaturesWFSTRequestBuilder.prefixIds(ids);
+            MyPlacesFeaturesWFSTRequestBuilder.getMyPlacesById(baos, crs, prefixedIds);
             HttpURLConnection conn = getConnection();
             IOHelper.post(conn, APPLICATION_XML, baos);
             return readFeatureCollection(conn);
@@ -78,14 +77,14 @@ public class MyPlacesFeaturesServiceWFST extends BaseServiceWFST implements MyPl
     public long[] insert(List<MyPlace> places) throws ServiceException {
         try {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            MyPlacesHelperWFST.insertMyPlaces(baos, places);
+            MyPlacesFeaturesWFSTRequestBuilder.insertMyPlaces(baos, places);
             HttpURLConnection conn = getConnection();
             IOHelper.post(conn, APPLICATION_XML, baos);
             TransactionResponse_110 resp = readTransactionResp(conn);
             List<InsertedFeature> insertedFeatures = resp.getInsertedFeatures();
             return insertedFeatures.stream()
                     .map(InsertedFeature::getFid)
-                    .mapToLong(MyPlacesHelperWFST::removePrefixFromId)
+                    .mapToLong(MyPlacesFeaturesWFSTRequestBuilder::removePrefixFromId)
                     .toArray();
         } catch (XMLStreamException e) {
             throw new ServiceException("Failed to create WFS-T request", e);
@@ -98,7 +97,7 @@ public class MyPlacesFeaturesServiceWFST extends BaseServiceWFST implements MyPl
     public int update(List<MyPlace> places) throws ServiceException {
         try {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            MyPlacesHelperWFST.updateMyPlaces(baos, places);
+            MyPlacesFeaturesWFSTRequestBuilder.updateMyPlaces(baos, places);
             HttpURLConnection conn = getConnection();
             IOHelper.post(conn, APPLICATION_XML, baos);
             return readTransactionResp(conn).getTotalUpdated();
@@ -113,7 +112,7 @@ public class MyPlacesFeaturesServiceWFST extends BaseServiceWFST implements MyPl
     public int delete(long[] ids) throws ServiceException {
         try {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            MyPlacesHelperWFST.deleteMyPlaces(baos, ids);
+            MyPlacesFeaturesWFSTRequestBuilder.deleteMyPlaces(baos, ids);
             HttpURLConnection conn = getConnection();
             IOHelper.post(conn, APPLICATION_XML, baos);
             return readTransactionResp(conn).getTotalDeleted();
@@ -130,7 +129,7 @@ public class MyPlacesFeaturesServiceWFST extends BaseServiceWFST implements MyPl
         for (int i = 0; i < features.length(); i++) {
             JSONObject feature = features.getJSONObject(i);
             String id = feature.getString("id");
-            feature.put("id", MyPlacesHelperWFST.removePrefixFromId(id));
+            feature.put("id", MyPlacesFeaturesWFSTRequestBuilder.removePrefixFromId(id));
         }
     }
 

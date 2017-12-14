@@ -7,7 +7,6 @@ import java.util.List;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.oskari.wfst.MyPlaceCategoryHelper;
 
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.ActionDeniedException;
@@ -19,6 +18,7 @@ import fi.nls.oskari.domain.User;
 import fi.nls.oskari.domain.map.MyPlaceCategory;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.myplaces.MyPlaceCategoryHelper;
 import fi.nls.oskari.myplaces.MyPlacesService;
 import fi.nls.oskari.myplaces.service.MyPlacesLayersService;
 import fi.nls.oskari.myplaces.service.wfst.MyPlacesLayersServiceWFST;

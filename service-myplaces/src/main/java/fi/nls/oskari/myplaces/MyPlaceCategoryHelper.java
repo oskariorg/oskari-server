@@ -1,4 +1,4 @@
-package org.oskari.wfst;
+package fi.nls.oskari.myplaces;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -13,6 +13,7 @@ import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
 
 import fi.nls.oskari.domain.map.MyPlaceCategory;
+import fi.nls.oskari.myplaces.service.wfst.CategoriesWFSTRequestBuilder;
 
 public class MyPlaceCategoryHelper {
 
@@ -30,7 +31,7 @@ public class MyPlaceCategoryHelper {
                 Object id = feature.get("id");
                 long value;
                 if (id instanceof String) {
-                    value = CategoriesHelperWFST.removePrefixFromId((String) id);
+                    value = CategoriesWFSTRequestBuilder.removePrefixFromId((String) id);
                 } else {
                     value = ((Long) id).longValue();
                 }

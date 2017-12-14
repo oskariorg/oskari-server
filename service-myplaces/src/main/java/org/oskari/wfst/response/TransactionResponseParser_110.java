@@ -1,4 +1,4 @@
-package org.oskari.wfst;
+package org.oskari.wfst.response;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -15,6 +15,9 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
+/**
+ * Parses WFS-T TransactionResponse
+ */
 public class TransactionResponseParser_110 {
 
     public static TransactionResponse_110 parse(byte[] b)

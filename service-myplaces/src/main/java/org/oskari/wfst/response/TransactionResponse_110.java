@@ -1,4 +1,4 @@
-package org.oskari.wfst;
+package org.oskari.wfst.response;
 
 import java.util.List;
 

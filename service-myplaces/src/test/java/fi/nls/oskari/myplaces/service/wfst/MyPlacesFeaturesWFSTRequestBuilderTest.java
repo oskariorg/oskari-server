@@ -1,4 +1,4 @@
-package org.oskari.wfst;
+package fi.nls.oskari.myplaces.service.wfst;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -13,6 +13,8 @@ import java.util.UUID;
 
 import org.junit.Ignore;
 import org.junit.Test;
+import org.oskari.wfst.response.TransactionResponseParser_110;
+import org.oskari.wfst.response.TransactionResponse_110;
 
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
@@ -22,9 +24,10 @@ import com.vividsolutions.jts.geom.MultiLineString;
 import com.vividsolutions.jts.geom.Point;
 
 import fi.nls.oskari.domain.map.MyPlace;
+import fi.nls.oskari.myplaces.service.wfst.MyPlacesFeaturesWFSTRequestBuilder;
 import fi.nls.oskari.util.IOHelper;
 
-public class MyPlacesHelperWFSTTest {
+public class MyPlacesFeaturesWFSTRequestBuilderTest {
 
     private static final String PAYLOAD = "payload.json";
     private String endPoint = "http://localhost:6082/geoserver/wms";
@@ -36,7 +39,7 @@ public class MyPlacesHelperWFSTTest {
     public void testParseMyPlaces() throws Exception {
         String payload = getInput(PAYLOAD);
         boolean shouldSetId = false;
-        List<MyPlace> myPlaces = MyPlacesHelperWFST.parseMyPlaces(payload, shouldSetId);
+        List<MyPlace> myPlaces = MyPlacesFeaturesWFSTRequestBuilder.parseMyPlaces(payload, shouldSetId);
         assertEquals(2, myPlaces.size());
 
         MyPlace myPlace1 = myPlaces.get(0);
@@ -94,7 +97,7 @@ public class MyPlacesHelperWFSTTest {
     public void testParseMyPlacesWithIds() throws Exception {
         String payload = getInput(PAYLOAD);
         boolean shouldSetId = true;
-        List<MyPlace> myPlaces = MyPlacesHelperWFST.parseMyPlaces(payload, shouldSetId);
+        List<MyPlace> myPlaces = MyPlacesFeaturesWFSTRequestBuilder.parseMyPlaces(payload, shouldSetId);
         assertEquals("ids should be set", 123L, myPlaces.get(0).getId());
         assertEquals("ids larger than Integer.MAX work", 9876543210123456L, myPlaces.get(1).getId());
     }
@@ -107,7 +110,7 @@ public class MyPlacesHelperWFSTTest {
 
     @Test
     public void testRemovePrefixFromId() {
-        assertEquals(1234L, MyPlacesHelperWFST.removePrefixFromId("my_places.1234"));
+        assertEquals(1234L, MyPlacesFeaturesWFSTRequestBuilder.removePrefixFromId("my_places.1234"));
     }
 
     @Ignore("Requires Geoserver")
@@ -124,7 +127,7 @@ public class MyPlacesHelperWFSTTest {
         place.setGeometry(gf.createPoint(new Coordinate(500000, 6822000)));
 
         // Insert
-        MyPlacesHelperWFST.insertMyPlaces(baos, places);
+        MyPlacesFeaturesWFSTRequestBuilder.insertMyPlaces(baos, places);
         HttpURLConnection conn = IOHelper.post(endPoint, contentType, baos.toByteArray());
         byte[] resp = IOHelper.readBytes(conn);
         TransactionResponse_110 tr = TransactionResponseParser_110.parse(resp);
@@ -136,11 +139,11 @@ public class MyPlacesHelperWFSTTest {
         assertTrue(id.startsWith("my_places."));
 
         // Update
-        long idWithoutPrefix = MyPlacesHelperWFST.removePrefixFromId(id);
+        long idWithoutPrefix = MyPlacesFeaturesWFSTRequestBuilder.removePrefixFromId(id);
         place.setId(idWithoutPrefix);
         place.setDesc("bazzzz");
         baos.reset();
-        MyPlacesHelperWFST.updateMyPlaces(baos, places);
+        MyPlacesFeaturesWFSTRequestBuilder.updateMyPlaces(baos, places);
         conn = IOHelper.post(endPoint, contentType, baos.toByteArray());
         resp = IOHelper.readBytes(conn);
         tr = TransactionResponseParser_110.parse(resp);
@@ -151,7 +154,7 @@ public class MyPlacesHelperWFSTTest {
         // Delete
         long[] ids = { idWithoutPrefix };
         baos.reset();
-        MyPlacesHelperWFST.deleteMyPlaces(baos, ids);
+        MyPlacesFeaturesWFSTRequestBuilder.deleteMyPlaces(baos, ids);
         conn = IOHelper.post(endPoint, contentType, baos.toByteArray());
         resp = IOHelper.readBytes(conn);
         tr = TransactionResponseParser_110.parse(resp);

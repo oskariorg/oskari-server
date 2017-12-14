@@ -7,7 +7,6 @@ import java.util.List;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.oskari.wfst.MyPlacesHelperWFST;
 
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.ActionDeniedException;
@@ -22,6 +21,7 @@ import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.myplaces.MyPlacesService;
 import fi.nls.oskari.myplaces.service.MyPlacesFeaturesService;
 import fi.nls.oskari.myplaces.service.wfst.MyPlacesFeaturesServiceWFST;
+import fi.nls.oskari.myplaces.service.wfst.MyPlacesFeaturesWFSTRequestBuilder;
 import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.util.IOHelper;
@@ -176,7 +176,7 @@ public class MyPlacesFeaturesHandler extends RestActionHandler {
             } catch (IOException e) {
                 throw new ActionException("IOException occured");
             }
-            return MyPlacesHelperWFST.parseMyPlaces(payload, checkId);
+            return MyPlacesFeaturesWFSTRequestBuilder.parseMyPlaces(payload, checkId);
         } catch (JSONException e) {
             throw new ActionParamsException("Invalid input", e);
         }

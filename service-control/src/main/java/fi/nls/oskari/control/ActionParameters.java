@@ -3,15 +3,12 @@ package fi.nls.oskari.control;
 import fi.nls.oskari.domain.GuestUser;
 import fi.nls.oskari.domain.User;
 import fi.nls.oskari.util.ConversionHelper;
-import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.RequestHelper;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -271,5 +268,4 @@ public class ActionParameters {
         // TODO: use something better than session id
         return getRequest().getSession().getId();
     }
-
 }

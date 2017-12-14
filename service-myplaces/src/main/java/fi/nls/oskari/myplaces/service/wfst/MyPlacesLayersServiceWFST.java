@@ -9,12 +9,11 @@ import java.util.Optional;
 import javax.xml.stream.XMLStreamException;
 
 import org.json.JSONException;
-import org.oskari.wfst.CategoriesHelperWFST;
-import org.oskari.wfst.InsertedFeature;
-import org.oskari.wfst.MyPlaceCategoryHelper;
-import org.oskari.wfst.TransactionResponse_110;
+import org.oskari.wfst.response.InsertedFeature;
+import org.oskari.wfst.response.TransactionResponse_110;
 
 import fi.nls.oskari.domain.map.MyPlaceCategory;
+import fi.nls.oskari.myplaces.MyPlaceCategoryHelper;
 import fi.nls.oskari.myplaces.service.MyPlacesLayersService;
 import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.util.IOHelper;
@@ -34,7 +33,7 @@ public class MyPlacesLayersServiceWFST extends BaseServiceWFST implements MyPlac
     public List<MyPlaceCategory> getByIds(long[] ids) throws ServiceException {
         try {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            CategoriesHelperWFST.getCategoriesById(baos, ids);
+            CategoriesWFSTRequestBuilder.getCategoriesById(baos, ids);
             HttpURLConnection conn = getConnection();
             IOHelper.post(conn, APPLICATION_XML, baos);
             return MyPlaceCategoryHelper.parseFromGeoJSON(IOHelper.readString(conn), true);
@@ -52,7 +51,7 @@ public class MyPlacesLayersServiceWFST extends BaseServiceWFST implements MyPlac
             throws ServiceException {
         try {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            CategoriesHelperWFST.getCategoriesByUuid(baos, uuid);
+            CategoriesWFSTRequestBuilder.getCategoriesByUuid(baos, uuid);
             HttpURLConnection conn = getConnection();
             IOHelper.post(conn, APPLICATION_XML, baos);
             return MyPlaceCategoryHelper.parseFromGeoJSON(IOHelper.readString(conn), true);
@@ -70,7 +69,7 @@ public class MyPlacesLayersServiceWFST extends BaseServiceWFST implements MyPlac
             throws ServiceException {
         try {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            String[] handles = CategoriesHelperWFST.insertCategories(baos, categories);
+            String[] handles = CategoriesWFSTRequestBuilder.insertCategories(baos, categories);
             HttpURLConnection conn = getConnection();
             IOHelper.post(conn, APPLICATION_XML, baos);
             TransactionResponse_110 resp = readTransactionResp(conn);
@@ -89,7 +88,7 @@ public class MyPlacesLayersServiceWFST extends BaseServiceWFST implements MyPlac
             throws ServiceException {
         try {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            CategoriesHelperWFST.updateCategories(baos, categories);
+            CategoriesWFSTRequestBuilder.updateCategories(baos, categories);
             HttpURLConnection conn = getConnection();
             IOHelper.post(conn, APPLICATION_XML, baos);
             return readTransactionResp(conn).getTotalUpdated();
@@ -105,7 +104,7 @@ public class MyPlacesLayersServiceWFST extends BaseServiceWFST implements MyPlac
             throws ServiceException {
         try {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            CategoriesHelperWFST.deleteCategories(baos, ids);
+            CategoriesWFSTRequestBuilder.deleteCategories(baos, ids);
             HttpURLConnection conn = getConnection();
             IOHelper.post(conn, APPLICATION_XML, baos);
             return readTransactionResp(conn).getTotalDeleted();
@@ -127,7 +126,7 @@ public class MyPlacesLayersServiceWFST extends BaseServiceWFST implements MyPlac
                 .orElseThrow(() -> new ServiceException(
                         "Could not find inserted feature with matching handle"));
             String prefixedId = insertedFeature.getFid();
-            category.setId(CategoriesHelperWFST.removePrefixFromId(prefixedId));
+            category.setId(CategoriesWFSTRequestBuilder.removePrefixFromId(prefixedId));
         }
     }
 

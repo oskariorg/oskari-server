@@ -1,4 +1,4 @@
-package org.oskari.wfst;
+package fi.nls.oskari.myplaces.service.wfst;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -7,9 +7,11 @@ import java.util.List;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
+import org.oskari.wfst.WFSTRequestBuilder;
+
 import fi.nls.oskari.domain.map.MyPlaceCategory;
 
-public class CategoriesHelperWFST extends WFSTHelper {
+public class CategoriesWFSTRequestBuilder extends WFSTRequestBuilder {
 
     private static final String TYPENAME_CATEGORIES = "feature:categories";
     protected static final String APPLICATION_JSON = "application/json";

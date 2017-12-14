@@ -1,4 +1,4 @@
-package org.oskari.wfst;
+package fi.nls.oskari.myplaces.service.wfst;
 
 import java.io.OutputStream;
 import java.util.ArrayList;
@@ -10,12 +10,13 @@ import javax.xml.stream.XMLStreamWriter;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.oskari.wfst.WFSTRequestBuilder;
 
 import fi.nls.oskari.domain.map.MyPlace;
 import fi.nls.oskari.util.GML2Writer;
 import fi.nls.oskari.util.GeoJSONReader;
 
-public class MyPlacesHelperWFST extends WFSTHelper {
+public class MyPlacesFeaturesWFSTRequestBuilder extends WFSTRequestBuilder {
 
     private static final String TYPENAME_MY_PLACES = "feature:my_places";
     private static final String APPLICATION_JSON = "application/json";

@@ -5,8 +5,8 @@ import java.net.HttpURLConnection;
 
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.oskari.wfst.TransactionResponseParser_110;
-import org.oskari.wfst.TransactionResponse_110;
+import org.oskari.wfst.response.TransactionResponseParser_110;
+import org.oskari.wfst.response.TransactionResponse_110;
 import org.xml.sax.SAXException;
 
 import fi.nls.oskari.service.ServiceException;

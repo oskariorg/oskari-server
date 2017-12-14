@@ -37,6 +37,7 @@
             <artifactId>shared-test-resources</artifactId>
             <scope>test</scope>
         </dependency>
+
     </dependencies>
 
     <build>
