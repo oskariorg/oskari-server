@@ -2,6 +2,7 @@
   "features": [
 		{
 			"type": "Feature",
+			"id": 123,
 			"category_id": 1,
 			"geometry": {
 				"type": "Point",
@@ -16,6 +17,7 @@
 			}
 		},{
 			"type":"Feature",
+			"id": 9876543210123456,
 			"category_id":1,
 			"geometry":{
 				"type":"MultiLineString",
@@ -31,11 +33,11 @@
 				]
 			},
 			"properties":{
-				"name":"name",
-				"place_desc":"place description",
-				"attention_text":"attention text",
-				"link":"url",
-				"image_url":"image url"
+				"name":"name2",
+				"place_desc":"place description2",
+				"attention_text":"attention text2",
+				"link":"url2",
+				"image_url":"image url2"
 			}
 		}
 	]
