@@ -73,11 +73,11 @@ public class V1_45_4__migrate_thematic_maps implements JdbcMigration {
             ThematicMapsViewHelper.switchBundle(conn, statsgridId, statsgridId);
 
             // update state and config from old to new model
-            long publishedgridId = ThematicMapsViewHelper.getBundleId(conn, BUNDLE_NAME_STATSGRID);
+            long publishedgridId = ThematicMapsViewHelper.getBundleId(conn, BUNDLE_NAME_PUBLISHEDGRID);
             migrateBundle(conn, BUNDLE_NAME_PUBLISHEDGRID, null);
             // publishedgrid needs to be changed to statsgrid
             ThematicMapsViewHelper.switchBundle(conn, publishedgridId, statsgridId);
-            // conn.commit();
+            conn.commit();
         } catch (SQLException e) {
             conn.rollback();
             throw e;
@@ -153,6 +153,8 @@ public class V1_45_4__migrate_thematic_maps implements JdbcMigration {
                 newState.put("active", geIndicatorHash(indicator));
             }
         }
+        // attach the migrated indicators to the new state
+        newState.put("indicators", newIndicators);
 
         return newState;
     }

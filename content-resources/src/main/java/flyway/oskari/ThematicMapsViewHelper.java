@@ -85,7 +85,7 @@ public class ThematicMapsViewHelper {
     public static void switchBundle(Connection conn, long old_bundle_id, long new_bundle_id) throws SQLException {
         final String startup = getBundleStartup(conn, new_bundle_id);
         String sql = "UPDATE portti_view_bundle_seq SET"
-                + " startup = ?, bundle_id= ?"
+                + " startup = ?, bundle_id= ?, bundleinstance='statsgrid'"
                 + " WHERE bundle_id = ?";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, startup);
