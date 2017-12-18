@@ -30,7 +30,7 @@ public class GML2Writer {
         } else if (geometry instanceof MultiLineString) {
             writeMultiLineString(xsw, (MultiLineString) geometry);
         } else if (geometry instanceof MultiPolygon) {
-            writeMultiLineString(xsw, (MultiPolygon) geometry);
+            writeMultiPolygon(xsw, (MultiPolygon) geometry);
         } else if (geometry instanceof GeometryCollection) {
             writeMultiGeometry(xsw, (GeometryCollection) geometry);
         } else {
@@ -48,7 +48,7 @@ public class GML2Writer {
 
     private static void writeLineString(XMLStreamWriter xsw, LineString geometry)
             throws XMLStreamException {
-        xsw.writeStartElement(GMLConstants.GML_NAMESPACE, GMLConstants.GML_POINT);
+        xsw.writeStartElement(GMLConstants.GML_NAMESPACE, GMLConstants.GML_LINESTRING);
         writeSRID(xsw, geometry.getSRID());
         writeCoordinates(xsw, geometry.getCoordinates());
         xsw.writeEndElement();
@@ -93,7 +93,7 @@ public class GML2Writer {
         xsw.writeEndElement();
     }
 
-    private static void writeMultiLineString(XMLStreamWriter xsw, MultiPolygon geometry)
+    private static void writeMultiPolygon(XMLStreamWriter xsw, MultiPolygon geometry)
             throws XMLStreamException {
         xsw.writeStartElement(GMLConstants.GML_NAMESPACE, GMLConstants.GML_MULTI_POLYGON);
         writeSRID(xsw, geometry.getSRID());
