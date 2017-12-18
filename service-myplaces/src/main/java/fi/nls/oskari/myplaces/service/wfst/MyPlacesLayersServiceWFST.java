@@ -6,11 +6,14 @@ import java.net.HttpURLConnection;
 import java.util.List;
 import java.util.Optional;
 
+import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.stream.XMLStreamException;
 
 import org.json.JSONException;
 import org.oskari.wfst.response.InsertedFeature;
+import org.oskari.wfst.response.TransactionResponseParser_110;
 import org.oskari.wfst.response.TransactionResponse_110;
+import org.xml.sax.SAXException;
 
 import fi.nls.oskari.domain.map.MyPlaceCategory;
 import fi.nls.oskari.myplaces.MyPlaceCategoryHelper;
@@ -130,4 +133,15 @@ public class MyPlacesLayersServiceWFST extends BaseServiceWFST implements MyPlac
         }
     }
 
+    private TransactionResponse_110 readTransactionResp(HttpURLConnection conn)
+            throws ServiceException {
+        try {
+            byte[] resp = IOHelper.readBytes(conn);
+            return TransactionResponseParser_110.parse(resp);
+        } catch (IOException e) {
+            throw new ServiceException("IOException occured", e);
+        } catch (ParserConfigurationException | SAXException e) {
+            throw new ServiceException("Failed to parse TransactionResponse", e);
+        }
+    }
 }

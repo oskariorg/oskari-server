@@ -76,7 +76,7 @@ public class CategoriesWFSTRequestBuilder extends WFSTRequestBuilder {
     public static String[] insertCategories(OutputStream out, List<MyPlaceCategory> categories)
             throws XMLStreamException, IOException {
         XMLStreamWriter xsw = XOF.createXMLStreamWriter(out);
-        writeStartTransaction(xsw);
+        writeStartTransaction(xsw, "1.1.0");
 
         final int n = categories.size();
         String[] handles = new String[n];
@@ -97,7 +97,7 @@ public class CategoriesWFSTRequestBuilder extends WFSTRequestBuilder {
     public static void updateCategories(OutputStream out, List<MyPlaceCategory> categories)
             throws XMLStreamException, IOException {
         XMLStreamWriter xsw = XOF.createXMLStreamWriter(out);
-        writeStartTransaction(xsw);
+        writeStartTransaction(xsw, "1.1.0");
         for (MyPlaceCategory category : categories) {
             updateCategory(xsw, category);
         }
@@ -109,7 +109,7 @@ public class CategoriesWFSTRequestBuilder extends WFSTRequestBuilder {
     public static void deleteCategories(OutputStream out, long[] categoryIds)
             throws XMLStreamException {
         XMLStreamWriter xsw = XOF.createXMLStreamWriter(out);
-        writeStartTransaction(xsw);
+        writeStartTransaction(xsw, "1.1.0");
         for (long categoryId : categoryIds) {
             deleteCategory(xsw, categoryId);
         }

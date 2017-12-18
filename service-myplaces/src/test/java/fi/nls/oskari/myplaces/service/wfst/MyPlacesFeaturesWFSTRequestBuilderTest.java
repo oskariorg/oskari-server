@@ -13,7 +13,9 @@ import java.util.UUID;
 
 import org.junit.Ignore;
 import org.junit.Test;
+import org.oskari.wfst.response.TransactionResponseParser_100;
 import org.oskari.wfst.response.TransactionResponseParser_110;
+import org.oskari.wfst.response.TransactionResponse_100;
 import org.oskari.wfst.response.TransactionResponse_110;
 
 import com.vividsolutions.jts.geom.Coordinate;
@@ -22,9 +24,9 @@ import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.LineString;
 import com.vividsolutions.jts.geom.MultiLineString;
 import com.vividsolutions.jts.geom.Point;
+import com.vividsolutions.jts.geom.Polygon;
 
 import fi.nls.oskari.domain.map.MyPlace;
-import fi.nls.oskari.myplaces.service.wfst.MyPlacesFeaturesWFSTRequestBuilder;
 import fi.nls.oskari.util.IOHelper;
 
 public class MyPlacesFeaturesWFSTRequestBuilderTest {
@@ -113,7 +115,7 @@ public class MyPlacesFeaturesWFSTRequestBuilderTest {
         assertEquals(1234L, MyPlacesFeaturesWFSTRequestBuilder.removePrefixFromId("my_places.1234"));
     }
 
-    @Ignore("Requires Geoserver")
+    @Ignore("Requires Geoserver ++ Test codes that isn't run anywhere")
     @Test
     public void testInsertUpdateDelete() throws Exception {
         MyPlace place = new MyPlace();
@@ -161,6 +163,56 @@ public class MyPlacesFeaturesWFSTRequestBuilderTest {
         assertEquals(0, tr.getTotalInserted());
         assertEquals(0, tr.getTotalUpdated());
         assertEquals(1, tr.getTotalDeleted());
+    }
+
+    @Ignore("Requires Geoserver")
+    @Test
+    public void testInsertUpdateDeletePolygon() throws Exception {
+        MyPlace place = new MyPlace();
+        List<MyPlace> places = Arrays.asList(place);
+        place.setName("foobar");
+        place.setUuid(UUID.randomUUID().toString());
+        place.setCategoryId(4);
+        place.setDesc("My description");
+        place.setAttentionText("My attentionText");
+        place.setLink("My link");
+        Polygon poly = gf.createPolygon(gf.createLinearRing(new Coordinate[] {
+                new Coordinate(500000, 6822000),
+                new Coordinate(501000, 6822000),
+                new Coordinate(501000, 6823000),
+                new Coordinate(500000, 6823000),
+                new Coordinate(500000, 6822000),
+        }));
+        place.setGeometry(poly);
+
+        // Insert
+        MyPlacesFeaturesWFSTRequestBuilder.insertMyPlaces(baos, places);
+        HttpURLConnection conn = IOHelper.post(endPoint, contentType, baos.toByteArray());
+        byte[] resp = IOHelper.readBytes(conn);
+        TransactionResponse_100 tr = TransactionResponseParser_100.parse(resp);
+        assertEquals(1, tr.getInsertedFeatures().size());
+        String id = tr.getInsertedFeatures().get(0).getFid();
+        assertTrue(id.startsWith("my_places."));
+
+        // Update
+        long idWithoutPrefix = MyPlacesFeaturesWFSTRequestBuilder.removePrefixFromId(id);
+        place.setId(idWithoutPrefix);
+        place.setDesc("bazzzz");
+        baos.reset();
+        MyPlacesFeaturesWFSTRequestBuilder.updateMyPlaces(baos, places);
+        conn = IOHelper.post(endPoint, contentType, baos.toByteArray());
+        resp = IOHelper.readBytes(conn);
+        tr = TransactionResponseParser_100.parse(resp);
+        assertEquals(TransactionResponse_100.Status.SUCCESS, tr.getStatus());
+
+        // Delete
+        long[] ids = { idWithoutPrefix };
+        baos.reset();
+        MyPlacesFeaturesWFSTRequestBuilder.deleteMyPlaces(baos, ids);
+        conn = IOHelper.post(endPoint, contentType, baos.toByteArray());
+        resp = IOHelper.readBytes(conn);
+        tr = TransactionResponseParser_100.parse(resp);
+        assertEquals(TransactionResponse_100.Status.SUCCESS, tr.getStatus());
     }
 
 }

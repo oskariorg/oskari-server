@@ -132,9 +132,9 @@ public class GML3Writer {
         xsw.writeAttribute("srsDimension", "2");
         StringBuilder sb = new StringBuilder();
         for (Coordinate coordinate : coordinates) {
-            sb.append(coordinate.x).append(' ').append(coordinate.y);
+            sb.append(' ').append(coordinate.x).append(' ').append(coordinate.y);
         }
-        xsw.writeCharacters(sb.toString());
+        xsw.writeCharacters(sb.substring(1));
         xsw.writeEndElement();
     }
 
