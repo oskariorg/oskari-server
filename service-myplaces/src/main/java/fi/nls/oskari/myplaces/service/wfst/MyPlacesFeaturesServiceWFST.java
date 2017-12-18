@@ -6,13 +6,16 @@ import java.net.HttpURLConnection;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
+import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.stream.XMLStreamException;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.oskari.wfst.response.InsertedFeature;
-import org.oskari.wfst.response.TransactionResponse_110;
+import org.oskari.wfst.response.TransactionResponseParser_100;
+import org.oskari.wfst.response.TransactionResponse_100;
+import org.xml.sax.SAXException;
 
 import fi.nls.oskari.domain.map.MyPlace;
 import fi.nls.oskari.myplaces.service.MyPlacesFeaturesService;
@@ -80,7 +83,11 @@ public class MyPlacesFeaturesServiceWFST extends BaseServiceWFST implements MyPl
             MyPlacesFeaturesWFSTRequestBuilder.insertMyPlaces(baos, places);
             HttpURLConnection conn = getConnection();
             IOHelper.post(conn, APPLICATION_XML, baos);
-            TransactionResponse_110 resp = readTransactionResp(conn);
+            TransactionResponse_100 resp = readTransactionResp(conn);
+            if (resp.getStatus() != TransactionResponse_100.Status.SUCCESS) {
+                throw new ServiceException("Insert failed, locator:" +
+                        resp.getLocator() + " message: " + resp.getMessage());
+            }
             List<InsertedFeature> insertedFeatures = resp.getInsertedFeatures();
             return insertedFeatures.stream()
                     .map(InsertedFeature::getFid)
@@ -100,7 +107,12 @@ public class MyPlacesFeaturesServiceWFST extends BaseServiceWFST implements MyPl
             MyPlacesFeaturesWFSTRequestBuilder.updateMyPlaces(baos, places);
             HttpURLConnection conn = getConnection();
             IOHelper.post(conn, APPLICATION_XML, baos);
-            return readTransactionResp(conn).getTotalUpdated();
+            TransactionResponse_100 resp = readTransactionResp(conn);
+            if (resp.getStatus() != TransactionResponse_100.Status.SUCCESS) {
+                throw new ServiceException("Update failed, locator:" +
+                        resp.getLocator() + " message: " + resp.getMessage());
+            }
+            return places.size();
         } catch (XMLStreamException e) {
             throw new ServiceException("Failed to create WFS-T request", e);
         } catch (IOException e) {
@@ -115,7 +127,12 @@ public class MyPlacesFeaturesServiceWFST extends BaseServiceWFST implements MyPl
             MyPlacesFeaturesWFSTRequestBuilder.deleteMyPlaces(baos, ids);
             HttpURLConnection conn = getConnection();
             IOHelper.post(conn, APPLICATION_XML, baos);
-            return readTransactionResp(conn).getTotalDeleted();
+            TransactionResponse_100 resp = readTransactionResp(conn);
+            if (resp.getStatus() != TransactionResponse_100.Status.SUCCESS) {
+                throw new ServiceException("Delete failed, locator:" +
+                        resp.getLocator() + " message: " + resp.getMessage());
+            }
+            return ids.length;
         } catch (XMLStreamException e) {
             throw new ServiceException("Failed to create WFS-T request", e);
         } catch (IOException e) {
@@ -145,6 +162,18 @@ public class MyPlacesFeaturesServiceWFST extends BaseServiceWFST implements MyPl
             throw new ServiceException("IOException occured", e);
         } catch (JSONException e) {
             throw new ServiceException("Received invalid response from service", e);
+        }
+    }
+
+    protected TransactionResponse_100 readTransactionResp(HttpURLConnection conn)
+            throws ServiceException {
+        try {
+            byte[] resp = IOHelper.readBytes(conn);
+            return TransactionResponseParser_100.parse(resp);
+        } catch (IOException e) {
+            throw new ServiceException("IOException occured", e);
+        } catch (ParserConfigurationException | SAXException e) {
+            throw new ServiceException("Failed to parse TransactionResponse", e);
         }
     }
 

@@ -13,9 +13,9 @@ public class WFSTRequestBuilder {
     protected static final String OSKARI = "http://www.oskari.org";
     protected static final String PREFIX_OSKARI = "feature";
 
-    protected static void writeStartTransaction(XMLStreamWriter xsw)
+    protected static void writeStartTransaction(XMLStreamWriter xsw, String version)
             throws XMLStreamException {
-        writeWFSRootElement(xsw, "Transaction", "1.1.0");
+        writeWFSRootElement(xsw, "Transaction", version);
     }
 
     protected static void writeGetFeature(XMLStreamWriter xsw, String version)

@@ -92,7 +92,7 @@ public class MyPlacesFeaturesWFSTRequestBuilder extends WFSTRequestBuilder {
     private static void getMyPlacesByProperty(OutputStream out, String crs,
             String property, String value) throws XMLStreamException {
         XMLStreamWriter xsw = XOF.createXMLStreamWriter(out);
-        // Use WFS 1.0.0 for MyPlaces GetFeature
+        // Use WFS 1.0.0 for MyPlacesFeatures
         writeGetFeature(xsw, "1.0.0");
         xsw.writeAttribute("outputFormat", APPLICATION_JSON);
 
@@ -117,7 +117,7 @@ public class MyPlacesFeaturesWFSTRequestBuilder extends WFSTRequestBuilder {
     public static void getMyPlacesById(OutputStream out, String crs,
             String[] ids) throws XMLStreamException {
         XMLStreamWriter xsw = XOF.createXMLStreamWriter(out);
-        // Use WFS 1.0.0 for MyPlaces GetFeature
+        // Use WFS 1.0.0 for MyPlacesFeatures
         writeGetFeature(xsw, "1.0.0");
         xsw.writeAttribute("outputFormat", APPLICATION_JSON);
 
@@ -137,7 +137,8 @@ public class MyPlacesFeaturesWFSTRequestBuilder extends WFSTRequestBuilder {
     public static void insertMyPlaces(OutputStream out, List<MyPlace> places)
             throws XMLStreamException {
         XMLStreamWriter xsw = XOF.createXMLStreamWriter(out);
-        writeStartTransaction(xsw);
+        // Use WFS 1.0.0 for MyPlacesFeatures
+        writeStartTransaction(xsw, "1.0.0");
         for (MyPlace place : places) {
             insertMyPlace(xsw, place);
         }
@@ -149,7 +150,8 @@ public class MyPlacesFeaturesWFSTRequestBuilder extends WFSTRequestBuilder {
     public static void updateMyPlaces(OutputStream out, List<MyPlace> places)
             throws XMLStreamException {
         XMLStreamWriter xsw = XOF.createXMLStreamWriter(out);
-        writeStartTransaction(xsw);
+        // Use WFS 1.0.0 for MyPlacesFeatures
+        writeStartTransaction(xsw, "1.0.0");
         for (MyPlace place : places) {
             updateMyPlace(xsw, place);
         }
@@ -161,7 +163,8 @@ public class MyPlacesFeaturesWFSTRequestBuilder extends WFSTRequestBuilder {
     public static void deleteMyPlaces(OutputStream out, long[] ids)
             throws XMLStreamException {
         XMLStreamWriter xsw = XOF.createXMLStreamWriter(out);
-        writeStartTransaction(xsw);
+        // Use WFS 1.0.0 for MyPlacesFeatures
+        writeStartTransaction(xsw, "1.0.0");
         for (long id : ids) {
             deleteMyPlace(xsw, id);
         }
