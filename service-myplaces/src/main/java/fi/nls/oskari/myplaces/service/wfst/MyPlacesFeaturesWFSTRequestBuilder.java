@@ -12,6 +12,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.oskari.wfst.WFSTRequestBuilder;
 
+import com.vividsolutions.jts.geom.Geometry;
+
 import fi.nls.oskari.domain.map.MyPlace;
 import fi.nls.oskari.util.GML2Writer;
 import fi.nls.oskari.util.GeoJSONReader;
@@ -24,17 +26,34 @@ public class MyPlacesFeaturesWFSTRequestBuilder extends WFSTRequestBuilder {
     public static List<MyPlace> parseMyPlaces(String input, boolean shouldSetId)
             throws JSONException {
         JSONObject featureCollection = new JSONObject(input);
+        // Expect custom key featureCollection.srsName to contain srid in pattern of 'EPSG:srid'
+        // if that doesn't exist or if we fail to parse the srid part out of it use 0 (unknown)
+        String srsName = featureCollection.optString("srsName");
+        int srid = getSrid(srsName, 0);
         JSONArray features = featureCollection.getJSONArray("features");
         final int n = features.length();
         List<MyPlace> myPlaces = new ArrayList<>(n);
         for (int i = 0; i < n; i++) {
             JSONObject feature = features.getJSONObject(i);
-            myPlaces.add(parseMyPlace(feature, shouldSetId));
+            myPlaces.add(parseMyPlace(feature, shouldSetId, srid));
         }
         return myPlaces;
     }
 
-    public static MyPlace parseMyPlace(JSONObject feature, boolean shouldSetId)
+    private static int getSrid(String srsName, int defaultValue) {
+        if (srsName != null) {
+            int i = srsName.lastIndexOf(':');
+            if (i > 0) {
+                srsName = srsName.substring(i + 1);
+            }
+            try {
+                return Integer.parseInt(srsName);
+            } catch (NumberFormatException ignroe) {}
+        }
+        return defaultValue;
+    }
+
+    public static MyPlace parseMyPlace(JSONObject feature, boolean shouldSetId, int srid)
             throws JSONException {
         MyPlace myPlace = new MyPlace();
 
@@ -44,7 +63,9 @@ public class MyPlacesFeaturesWFSTRequestBuilder extends WFSTRequestBuilder {
         myPlace.setCategoryId(feature.getLong("category_id"));
 
         JSONObject geomJSON = feature.getJSONObject("geometry");
-        myPlace.setGeometry(GeoJSONReader.toGeometry(geomJSON));
+        Geometry geom = GeoJSONReader.toGeometry(geomJSON);
+        geom.setSRID(srid);
+        myPlace.setGeometry(geom);
 
         JSONObject properties = feature.getJSONObject("properties");
         myPlace.setName(properties.getString("name"));
