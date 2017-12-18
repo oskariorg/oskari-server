@@ -162,6 +162,27 @@ public class V1_45_4__migrate_thematic_maps implements JdbcMigration {
         // attach the migrated indicators to the new state
         newState.put("indicators", newIndicators);
 
+        // legacy-block
+        // things that we don't support yet, but we have a chance to restore later
+        // NOTE! These will be removed if someone edits the map with the publisher tool
+        JSONObject legacy = new JSONObject();
+        // state.manualBreaksInput (if methodId == 4)
+        if("4".equals(state.optString("methodId"))) {
+            // 4 is/was the manual method and for some reason the number is saved as a string
+            // value is like "0,50,70,100,300,700"
+            legacy.put("manualBreaks", state.optString("manualBreaksInput"));
+        }
+        // state.municipalities
+        JSONArray regionIds = state.optJSONArray("municipalities");
+        if(regionIds != null && regionIds.length() > 0) {
+            // the values are some internal sotkanet region ids, not something like municipality id
+            legacy.put("sotkanetRegions", state.optString("municipalities"));
+        }
+        // if there's something to save from the legacy stuff, lets attach it to the new state
+        if(legacy.length() > 0) {
+            newState.put("legacy", legacy);
+        }
+
         return newState;
     }
 
