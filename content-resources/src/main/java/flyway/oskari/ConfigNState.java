@@ -6,4 +6,5 @@ public class ConfigNState {
     int seqno;
     String config;
     String state;
+    String startup;
 }

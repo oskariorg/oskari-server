@@ -68,15 +68,21 @@ public class V1_45_4__migrate_thematic_maps implements JdbcMigration {
             // sending bundlePath to only migrate the ones with old statsgrid startup!!
             // update state and config from old to new model
             migrateBundle(conn, BUNDLE_NAME_STATSGRID, "/packages/statistics/bundle/");
-            long statsgridId = ThematicMapsViewHelper.getBundleId(conn, BUNDLE_NAME_STATSGRID);
+            final long statsgridId = ThematicMapsViewHelper.getBundleId(conn, BUNDLE_NAME_STATSGRID);
             // reset startup for statsgrid to load the new code
             ThematicMapsViewHelper.switchBundle(conn, statsgridId, statsgridId);
 
             // update state and config from old to new model
-            long publishedgridId = ThematicMapsViewHelper.getBundleId(conn, BUNDLE_NAME_PUBLISHEDGRID);
+            final long publishedgridId = ThematicMapsViewHelper.getBundleId(conn, BUNDLE_NAME_PUBLISHEDGRID);
             migrateBundle(conn, BUNDLE_NAME_PUBLISHEDGRID, null);
             // publishedgrid needs to be changed to statsgrid
             ThematicMapsViewHelper.switchBundle(conn, publishedgridId, statsgridId);
+
+            ConfigNState divmanazer = ThematicMapsViewHelper.getBundle(conn, ThematicMapsViewHelper.getBundleId(conn, "divmanazer"));
+            final long mapfullId = ThematicMapsViewHelper.getBundleId(conn, "mapfull");
+            for(long viewId: ThematicMapsViewHelper.findAppsetupsHavingBundleButNoDivmanazer(conn, statsgridId)){
+                ThematicMapsViewHelper.injectDivmanazerAfterMapfull(conn, viewId, divmanazer, mapfullId);
+            }
             conn.commit();
         } catch (SQLException e) {
             conn.rollback();
