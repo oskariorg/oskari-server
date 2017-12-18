@@ -74,7 +74,7 @@ public class GML3Writer {
         xsw.writeStartElement(GMLConstants.GML_NAMESPACE, GMLConstants.GML_MULTI_POINT);
         writeSRID(xsw, geometry.getSRID());
         for (int i = 0; i < geometry.getNumGeometries(); i++) {
-            xsw.writeStartElement(GMLConstants.GML_POINT_MEMBER);
+            xsw.writeStartElement(GMLConstants.GML_NAMESPACE, GMLConstants.GML_POINT_MEMBER);
             writePoint(xsw, (Point) geometry.getGeometryN(i));
             xsw.writeEndElement();
         }
@@ -86,7 +86,7 @@ public class GML3Writer {
         xsw.writeStartElement(GMLConstants.GML_NAMESPACE, GMLConstants.GML_MULTI_LINESTRING);
         writeSRID(xsw, geometry.getSRID());
         for (int i = 0; i < geometry.getNumGeometries(); i++) {
-            xsw.writeStartElement(GMLConstants.GML_LINESTRING_MEMBER);
+            xsw.writeStartElement(GMLConstants.GML_NAMESPACE, GMLConstants.GML_LINESTRING_MEMBER);
             writeLineString(xsw, (LineString) geometry.getGeometryN(i));
             xsw.writeEndElement();
         }
@@ -98,7 +98,7 @@ public class GML3Writer {
         xsw.writeStartElement(GMLConstants.GML_NAMESPACE, GMLConstants.GML_MULTI_POLYGON);
         writeSRID(xsw, geometry.getSRID());
         for (int i = 0; i < geometry.getNumGeometries(); i++) {
-            xsw.writeStartElement(GMLConstants.GML_POLYGON_MEMBER);
+            xsw.writeStartElement(GMLConstants.GML_NAMESPACE, GMLConstants.GML_POLYGON_MEMBER);
             writePolygon(xsw, (Polygon) geometry.getGeometryN(i));
             xsw.writeEndElement();
         }
@@ -110,7 +110,7 @@ public class GML3Writer {
         xsw.writeStartElement(GMLConstants.GML_NAMESPACE, GMLConstants.GML_MULTI_GEOMETRY);
         writeSRID(xsw, geometry.getSRID());
         for (int i = 0; i < geometry.getNumGeometries(); i++) {
-            xsw.writeStartElement(GMLConstants.GML_GEOMETRY_MEMBER);
+            xsw.writeStartElement(GMLConstants.GML_NAMESPACE, GMLConstants.GML_GEOMETRY_MEMBER);
             writeGeometry(xsw, geometry.getGeometryN(i));
             xsw.writeEndElement();
         }
