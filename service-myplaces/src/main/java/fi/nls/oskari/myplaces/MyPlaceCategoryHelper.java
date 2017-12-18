@@ -29,17 +29,24 @@ public class MyPlaceCategoryHelper {
             MyPlaceCategory category = parseFromGeoJSON(properties);
             if (checkId) {
                 Object id = feature.get("id");
-                long value;
-                if (id instanceof String) {
-                    value = CategoriesWFSTRequestBuilder.removePrefixFromId((String) id);
-                } else {
-                    value = ((Long) id).longValue();
-                }
-                category.setId(value);
+                category.setId(getLongFromIdObject(id));
             }
             categories.add(category);
         }
         return categories;
+    }
+
+    private static long getLongFromIdObject(Object id)
+            throws IllegalArgumentException {
+        if (id instanceof String) {
+            return CategoriesWFSTRequestBuilder.removePrefixFromId((String) id);
+        } else if (id instanceof Integer) {
+            return ((Integer) id).longValue();
+        } else if (id instanceof Long) {
+            return ((Long) id).longValue();
+        } else {
+            throw new IllegalArgumentException("Invalid id");
+        }
     }
 
     public static MyPlaceCategory parseFromGeoJSON(JSONObject properties)
