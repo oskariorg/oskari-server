@@ -17,6 +17,9 @@ import com.vividsolutions.jts.io.gml2.GMLConstants;
 
 public class GML2Writer {
 
+    /**
+     * Requires that gml namespace is already bound!
+     */
     public static void writeGeometry(XMLStreamWriter xsw, Geometry geometry)
             throws XMLStreamException {
         if (geometry instanceof Point) {
