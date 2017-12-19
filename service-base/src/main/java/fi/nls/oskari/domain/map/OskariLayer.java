@@ -471,4 +471,5 @@ public class OskariLayer extends JSONLocalizedNameAndTitle implements Comparable
     public void setCapabilitiesUpdateRateSec(int capabilitiesUpdateRateSec) {
         this.capabilitiesUpdateRateSec = capabilitiesUpdateRateSec;
     }
+
 }
