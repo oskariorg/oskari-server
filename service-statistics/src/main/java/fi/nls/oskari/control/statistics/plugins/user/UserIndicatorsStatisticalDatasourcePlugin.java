@@ -8,15 +8,13 @@ import fi.nls.oskari.domain.User;
 import fi.nls.oskari.domain.map.indicator.UserIndicator;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class UserIndicatorsStatisticalDatasourcePlugin extends StatisticalDatasourcePlugin {
     private final static Logger LOG = LogFactory.getLogger(UserIndicatorsStatisticalDatasourcePlugin.class);
@@ -55,18 +53,34 @@ public class UserIndicatorsStatisticalDatasourcePlugin extends StatisticalDataso
         for (UserIndicator userIndicator : userIndicators) {
             StatisticalIndicator ind = new StatisticalIndicator();
             ind.setId(String.valueOf(userIndicator.getId()));
-            ind.addName(language, userIndicator.getTitle());
-            ind.addSource(language, userIndicator.getSource());
-            ind.addDescription(language, userIndicator.getDescription());
+
+            JSONObject title = JSONHelper.createJSONObject(userIndicator.getTitle());
+            Iterator<String> langKeys = title.keys();
+            while(langKeys.hasNext()) {
+                String lang = langKeys.next();
+                ind.addName(lang, title.optString(lang));
+            }
+
+            JSONObject source = JSONHelper.createJSONObject(userIndicator.getSource());
+            langKeys = source.keys();
+            while(langKeys.hasNext()) {
+                String lang = langKeys.next();
+                ind.addSource(lang, source.optString(lang));
+            }
+
+            JSONObject desc = JSONHelper.createJSONObject(userIndicator.getDescription());
+            langKeys = desc.keys();
+            while(langKeys.hasNext()) {
+                String lang = langKeys.next();
+                ind.addSource(lang, desc.optString(lang));
+            }
             ind.setPublic(userIndicator.isPublished());
             ind.addLayer(new StatisticalIndicatorLayer(userIndicator.getMaterial(), ind.getId()));
 
-            /*
-            // If we want to provide year, need to do it like this. But there's always just one choice so what's the point?
+            // If we want to provide year, need to do it like this. But currently there's always just one choice
             StatisticalIndicatorDataDimension dim = new StatisticalIndicatorDataDimension("year");
             dim.addAllowedValue(String.valueOf(userIndicator.getYear()));
-            getDataModel().addDimension(dim);
-            */
+            ind.getDataModel().addDimension(dim);
             indicators.add(ind);
         }
         return indicators;
