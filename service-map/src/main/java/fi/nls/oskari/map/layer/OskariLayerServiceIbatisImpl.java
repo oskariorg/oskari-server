@@ -172,6 +172,10 @@ public class OskariLayerServiceIbatisImpl extends OskariLayerService {
         result.setCreated((Date) data.get("created"));
         result.setUpdated((Date) data.get("updated"));
 
+        // Automatic update of Capabilities
+        result.setCapabilitiesLastUpdated((Date) data.get("capabilities_last_updated"));
+        result.setCapabilitiesUpdateRateSec((Integer) data.get("capabilities_update_rate_sec"));
+
         // populate groups/themes for top level layers
         if(result.getParentId() == -1) {
             // sublayers and internal baselayers don't have groupId
