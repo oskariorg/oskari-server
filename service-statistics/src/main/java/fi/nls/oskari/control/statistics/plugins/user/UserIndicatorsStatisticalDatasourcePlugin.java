@@ -2,18 +2,21 @@ package fi.nls.oskari.control.statistics.plugins.user;
 
 import fi.mml.map.mapwindow.service.db.UserIndicatorService;
 import fi.mml.map.mapwindow.service.db.UserIndicatorServiceImpl;
+import fi.nls.oskari.cache.JedisManager;
 import fi.nls.oskari.control.statistics.data.*;
 import fi.nls.oskari.control.statistics.plugins.StatisticalDatasourcePlugin;
 import fi.nls.oskari.domain.User;
 import fi.nls.oskari.domain.map.indicator.UserIndicator;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.*;
 
 public class UserIndicatorsStatisticalDatasourcePlugin extends StatisticalDatasourcePlugin {
@@ -49,7 +52,6 @@ public class UserIndicatorsStatisticalDatasourcePlugin extends StatisticalDataso
 
     private List<StatisticalIndicator> toUserStatisticalIndicators(List<UserIndicator> userIndicators) {
         List<StatisticalIndicator> indicators = new ArrayList<>();
-        final String language = PropertyUtil.getDefaultLanguage();
         for (UserIndicator userIndicator : userIndicators) {
             StatisticalIndicator ind = new StatisticalIndicator();
             ind.setId(String.valueOf(userIndicator.getId()));
@@ -92,13 +94,30 @@ public class UserIndicatorsStatisticalDatasourcePlugin extends StatisticalDataso
         return false;
     }
 
+    /**
+     * Override as default impl expects indicators are stored in redis
+     * @param user
+     * @param indicatorId
+     * @return
+     */
+    @Override
+    public StatisticalIndicator getIndicator(User user, String indicatorId) {
+        // TODO: optimize to load single indicator or change indicatorset to be stored in redis
+        List<StatisticalIndicator> list = getIndicators(user);
+        for(StatisticalIndicator ind: list) {
+            if(ind.getId().equals(indicatorId)) {
+                return ind;
+            }
+        }
+        return null;
+    }
     @Override
     public Map<String, IndicatorValue> getIndicatorValues(StatisticalIndicator indicator,
                                                           StatisticalIndicatorDataModel params,
                                                           StatisticalIndicatorLayer regionset) {
         // Data is a serialized JSON for legacy and backwards compatibility reasons:
         // "data":[{"region":"727","primary value":"15"},{"region":"728","primary value":"20"}]
-        UserIndicator userIndicator = userIndicatorService.find(indicator.getId());
+        UserIndicator userIndicator = userIndicatorService.find(ConversionHelper.getInt(indicator.getId(), -1));
         Map<String, IndicatorValue> valueMap = new HashMap<>();
         try {
             JSONArray jsonData = new JSONArray(userIndicator.getData());
