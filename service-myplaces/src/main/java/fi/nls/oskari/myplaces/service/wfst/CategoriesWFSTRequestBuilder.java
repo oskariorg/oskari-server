@@ -142,10 +142,10 @@ public class CategoriesWFSTRequestBuilder extends WFSTRequestBuilder {
         writeTextElement(xsw, OSKARI, "dot_shape", category.getDot_shape());
         writeTextElement(xsw, OSKARI, "stroke_linejoin", category.getStroke_linejoin());
         writeTextElement(xsw, OSKARI, "fill_pattern", category.getFill_pattern());
-        writeTextElement(xsw, OSKARI, "stroke_linecap", category.getCategory_name());
-        writeTextElement(xsw, OSKARI, "stroke_dasharray", category.getCategory_name());
-        writeTextElement(xsw, OSKARI, "border_linejoin", category.getCategory_name());
-        writeTextElement(xsw, OSKARI, "border_dasharray", category.getCategory_name());
+        writeTextElement(xsw, OSKARI, "stroke_linecap", category.getStroke_linecap());
+        writeTextElement(xsw, OSKARI, "stroke_dasharray", category.getStroke_dasharray());
+        writeTextElement(xsw, OSKARI, "border_linejoin", category.getBorder_linejoin());
+        writeTextElement(xsw, OSKARI, "border_dasharray", category.getBorder_dasharray());
 
         xsw.writeEndElement(); // Close <feature:categories>
         xsw.writeEndElement(); // Close <wfs:Insert>
