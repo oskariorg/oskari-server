@@ -111,7 +111,11 @@ public class MyPlacesLayersHandler extends RestActionHandler {
     @Override
     public void handlePut(ActionParameters params) throws ActionException {
         final User user = params.getUser();
+        final String uuid = user.getUuid();
         final List<MyPlaceCategory> categories = readCategories(params, true);
+        for (MyPlaceCategory category : categories) {
+            category.setUuid(uuid);
+        }
         checkUserCanModifyCategories(user, categories);
         long[] ids = categories.stream().mapToLong(MyPlaceCategory::getId).toArray();
         try {
@@ -176,12 +180,27 @@ public class MyPlacesLayersHandler extends RestActionHandler {
 
     private MyPlaceCategory createDefaultCategory() {
         MyPlaceCategory category = new MyPlaceCategory();
+        category.setCategory_name("");
         category.setDefault(true);
-        category.setStroke_width(1);
-        category.setDot_color("#00FF00");
+        //point
+        category.setDot_color("#000000");
         category.setDot_size(3);
         category.setDot_shape("1");
+        //line
+        category.setStroke_width(1);
+        category.setStroke_dasharray("");
+        category.setStroke_linecap("butt");
+        category.setStroke_linejoin("mitre");
+        category.setStroke_color("#3233ff");
+        //area
         category.setFill_pattern(-1);
+        category.setBorder_dasharray("");
+        category.setBorder_linejoin("mitre");
+        category.setBorder_width(1);
+        category.setBorder_color("#000000");
+        category.setFill_color("#ffde00");
+        category.setFill_pattern(-1);
+
         return category;
     }
 
