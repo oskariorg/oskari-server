@@ -3,9 +3,11 @@ package org.oskari.capabilities;
 import static java.util.stream.Collectors.groupingBy;
 
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 import javax.xml.stream.XMLStreamException;
 
@@ -54,6 +56,7 @@ public class UpdateCapabilitiesJob extends ScheduledJob {
     public void execute(Map<String, Object> params) {
         layerService.findAll().stream()
                 .filter(layer -> canUpdate(layer.getType()))
+                .filter(layer -> shouldUpdate(layer))
                 .collect(groupingBy(layer -> new UrlTypeVersion(layer)))
                 .forEach((utv, layers) -> updateCapabilities(utv, layers));
     }
@@ -66,6 +69,22 @@ public class UpdateCapabilitiesJob extends ScheduledJob {
         default:
             return false;
         }
+    }
+
+    protected static boolean shouldUpdate(OskariLayer layer) {
+        int rate = layer.getCapabilitiesUpdateRate();
+        if (rate > 0) {
+            Date lastUpdated = layer.getCapabilitiesLastUpdated();
+            if (lastUpdated == null) {
+                return true;
+            }
+            long nextUpdate = lastUpdated.getTime() + TimeUnit.SECONDS.toMillis(rate);
+            if (nextUpdate <= System.currentTimeMillis()) {
+                return true;
+            }
+            LOG.debug("Skipping layerId:", layer.getId(), "as recently updated");
+        }
+        return false;
     }
 
     private void updateCapabilities(UrlTypeVersion utv, List<OskariLayer> layers) {
@@ -87,7 +106,7 @@ public class UpdateCapabilitiesJob extends ScheduledJob {
         } catch (ServiceException e) {
             int[] ids = layers.stream().mapToInt(OskariLayer::getId).toArray();
             LOG.warn(e, "Could not find get Capabilities, url:", url,
-                "type:", type, "version:", version, "ids:", Arrays.toString(ids));
+                    "type:", type, "version:", version, "ids:", Arrays.toString(ids));
             return;
         }
 
@@ -99,7 +118,6 @@ public class UpdateCapabilitiesJob extends ScheduledJob {
             updateWMTSLayers(layers, data);
             break;
         }
-
     }
 
     private void updateWMSLayers(List<OskariLayer> layers, String data) {
