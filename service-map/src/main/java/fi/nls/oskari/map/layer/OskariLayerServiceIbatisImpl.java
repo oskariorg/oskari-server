@@ -40,10 +40,6 @@ public class OskariLayerServiceIbatisImpl extends OskariLayerService {
     private static LayerGroupService layerGroupService = new LayerGroupServiceIbatisImpl();
     private static InspireThemeService inspireThemeService = new InspireThemeServiceIbatisImpl();
 
-    // map different layer types
-    private static Map<String, Class<OskariLayer>> typeMapping =
-            Collections.singletonMap(OskariLayer.TYPE_WMS, OskariLayer.class);
-
     /**
      * Static setter to override default location
      * @param newLocation
@@ -51,33 +47,17 @@ public class OskariLayerServiceIbatisImpl extends OskariLayerService {
     public static void setSqlMapLocation(final String newLocation) {
         SQL_MAP_LOCATION = newLocation;
     }
-    /**
-     * Returns SQLmap
-     *
-     * @return
-     */
-    protected SqlMapClient getSqlMapClient() {
-        if (client != null) {
-            return client;
-        }
 
-        Reader reader = null;
-        try {
+    protected SqlMapClient getSqlMapClient() {
+        if (client == null) {
             String sqlMapLocation = getSqlMapLocation();
-            reader = Resources.getResourceAsReader(sqlMapLocation);
-            client = SqlMapClientBuilder.buildSqlMapClient(reader);
-            return client;
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to retrieve SQL client", e);
-        } finally {
-            if (reader != null) {
-                try {
-                    reader.close();
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
-                }
+            try (Reader reader = Resources.getResourceAsReader(sqlMapLocation)) {
+                client = SqlMapClientBuilder.buildSqlMapClient(reader);
+            } catch (Exception e) {
+                throw new RuntimeException("Failed to retrieve SQL client", e);
             }
         }
+        return client;
     }
 
     /*
@@ -92,22 +72,6 @@ public class OskariLayerServiceIbatisImpl extends OskariLayerService {
         return "OskariLayer";
     }
 
-    private OskariLayer createLayerInstance(final String type) {
-        Class<OskariLayer> clazz = typeMapping.get(type);
-        if(clazz != null) {
-            try {
-                return clazz.newInstance();
-            }
-            catch (Exception ex) {
-                LOG.warn(ex, "Couldn't create instance for type:", type, "- Using default model.");
-            }
-        }
-        else {
-            //LOG.info("Unregistered layertype:", type, "- Using default model.");
-        }
-        return new OskariLayer();
-    }
-
     private OskariLayer mapData(Map<String, Object> data) {
         if(data == null) {
             return null;
@@ -119,11 +83,7 @@ public class OskariLayerServiceIbatisImpl extends OskariLayerService {
             data = caseInsensitiveData;
         }
 
-        final OskariLayer result = createLayerInstance((String) data.get("type"));
-        if(result == null) {
-            LOG.warn("Unknown layer type:", data.get("type"));
-            return null;
-        }
+        final OskariLayer result = new OskariLayer();
 
         result.setId((Integer) data.get("id"));
         result.setParentId((Integer) data.get("parentid"));
@@ -409,17 +369,5 @@ public class OskariLayerServiceIbatisImpl extends OskariLayerService {
         }
         return Collections.emptyList();
     }
-
-    private List<Map<String,Object>> queryForList(String sqlId) {
-        try {
-            client = getSqlMapClient();
-            List<Map<String,Object>> results = client.queryForList(sqlId);
-            return results;
-        } catch (Exception e) {
-            LOG.error(e, "Couldn't query list. SqlId:", sqlId);
-        }
-        return Collections.emptyList();
-    }
-
 
 }
