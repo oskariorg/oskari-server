@@ -77,7 +77,7 @@ public class OskariLayer extends JSONLocalizedNameAndTitle implements Comparable
     private List<OskariLayer> sublayers = new ArrayList<OskariLayer>();
 
     private Date capabilitiesLastUpdated;
-    private int capabilitiesUpdateRate;
+    private int capabilitiesUpdateRateSec;
 
     public boolean isCollection() {
         return TYPE_COLLECTION.equals(type);
@@ -464,11 +464,11 @@ public class OskariLayer extends JSONLocalizedNameAndTitle implements Comparable
         this.capabilitiesLastUpdated = capabilitiesLastUpdated;
     }
 
-    public int getCapabilitiesUpdateRate() {
-        return capabilitiesUpdateRate;
+    public int getCapabilitiesUpdateRateSec() {
+        return capabilitiesUpdateRateSec;
     }
 
-    public void setCapabilitiesUpdateRate(int capabilitiesUpdateRate) {
-        this.capabilitiesUpdateRate = capabilitiesUpdateRate;
+    public void setCapabilitiesUpdateRateSec(int capabilitiesUpdateRateSec) {
+        this.capabilitiesUpdateRateSec = capabilitiesUpdateRateSec;
     }
 }
