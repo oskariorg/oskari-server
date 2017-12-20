@@ -17,6 +17,7 @@ import com.vividsolutions.jts.geom.Geometry;
 import fi.nls.oskari.domain.map.MyPlace;
 import fi.nls.oskari.util.GML2Writer;
 import fi.nls.oskari.util.GeoJSONReader;
+import fi.nls.oskari.util.JSONHelper;
 
 public class MyPlacesFeaturesWFSTRequestBuilder extends WFSTRequestBuilder {
 
@@ -28,7 +29,7 @@ public class MyPlacesFeaturesWFSTRequestBuilder extends WFSTRequestBuilder {
         JSONObject featureCollection = new JSONObject(input);
         // Expect custom key featureCollection.srsName to contain srid in pattern of 'EPSG:srid'
         // if that doesn't exist or if we fail to parse the srid part out of it use 0 (unknown)
-        String srsName = featureCollection.optString("srsName");
+        String srsName = JSONHelper.optString(featureCollection, "srsName");
         int srid = getSrid(srsName, 0);
         JSONArray features = featureCollection.getJSONArray("features");
         final int n = features.length();
@@ -68,13 +69,13 @@ public class MyPlacesFeaturesWFSTRequestBuilder extends WFSTRequestBuilder {
         myPlace.setGeometry(geom);
 
         JSONObject properties = feature.getJSONObject("properties");
-        myPlace.setName(properties.getString("name"));
+        myPlace.setName(JSONHelper.getString(properties, "name"));
 
         // Optional fields
-        myPlace.setAttentionText(properties.optString("attention_text"));
-        myPlace.setDesc(properties.optString("place_desc"));
-        myPlace.setLink(properties.optString("link"));
-        myPlace.setImageUrl(properties.optString("image_url"));
+        myPlace.setAttentionText(JSONHelper.optString(properties, "attention_text"));
+        myPlace.setDesc(JSONHelper.optString(properties, "place_desc"));
+        myPlace.setLink(JSONHelper.optString(properties, "link"));
+        myPlace.setImageUrl(JSONHelper.optString(properties, "image_url"));
 
         return myPlace;
     }

@@ -14,6 +14,7 @@ import com.fasterxml.jackson.core.JsonGenerator;
 
 import fi.nls.oskari.domain.map.MyPlaceCategory;
 import fi.nls.oskari.myplaces.service.wfst.CategoriesWFSTRequestBuilder;
+import fi.nls.oskari.util.JSONHelper;
 
 public class MyPlaceCategoryHelper {
 
@@ -53,30 +54,30 @@ public class MyPlaceCategoryHelper {
             throws JSONException {
         MyPlaceCategory category = new MyPlaceCategory();
 
-        category.setUuid(properties.optString("uuid"));
-        category.setPublisher_name(properties.optString("publisher_name"));
+        category.setUuid(JSONHelper.optString(properties, "uuid"));
+        category.setPublisher_name(JSONHelper.optString(properties, "publisher_name"));
 
         // Everything is optional except category_name
-        category.setCategory_name(properties.getString("category_name"));
+        category.setCategory_name(JSONHelper.getString(properties, "category_name"));
         category.setDefault(properties.optBoolean("default"));
 
         category.setStroke_width(properties.optInt("stroke_width"));
-        category.setStroke_color(properties.optString("stroke_color"));
-        category.setStroke_linejoin(properties.optString("stroke_linejoin"));
-        category.setStroke_linecap(properties.optString("stroke_linecap"));
-        category.setStroke_dasharray(properties.optString("stroke_dasharray"));
+        category.setStroke_color(JSONHelper.optString(properties, "stroke_color"));
+        category.setStroke_linejoin(JSONHelper.optString(properties, "stroke_linejoin"));
+        category.setStroke_linecap(JSONHelper.optString(properties, "stroke_linecap"));
+        category.setStroke_dasharray(JSONHelper.optString(properties, "stroke_dasharray"));
 
-        category.setFill_color(properties.optString("fill_color"));
+        category.setFill_color(JSONHelper.optString(properties, "fill_color"));
         category.setFill_pattern(properties.optInt("fill_pattern"));
 
-        category.setDot_color(properties.optString("dot_color"));
+        category.setDot_color(JSONHelper.optString(properties, "dot_color"));
         category.setDot_size(properties.optInt("dot_size"));
-        category.setDot_shape(properties.optString("dot_shape"));
+        category.setDot_shape(JSONHelper.optString(properties, "dot_shape"));
 
         category.setBorder_width(properties.optInt("border_width"));
-        category.setBorder_color(properties.optString("border_color"));
-        category.setBorder_linejoin(properties.optString("border_linejoin"));
-        category.setBorder_dasharray(properties.optString("border_dasharray"));
+        category.setBorder_color(JSONHelper.optString(properties, "border_color"));
+        category.setBorder_linejoin(JSONHelper.optString(properties, "border_linejoin"));
+        category.setBorder_dasharray(JSONHelper.optString(properties, "border_dasharray"));
 
         return category;
     }

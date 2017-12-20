@@ -2,9 +2,9 @@ package fi.nls.oskari.myplaces.service.wfst;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Ignore;
@@ -66,16 +66,23 @@ public class MyPlacesLayersServiceWFSTTest {
         }
 
         MyPlaceCategory myCategory = createSomeCategory(uuid);
-        myCategories.add(myCategory);
         assertEquals("id should be 0 before inserting", 0, myCategory.getId());
-        assertEquals("Expect 1 inserted features", 1, service.insert(myCategories));
+        assertEquals("Expect 1 inserted feature", 1, service.insert(Arrays.asList(myCategory)));
         assertNotEquals("id should have been set to something other than 0", 0, myCategory.getId());
+
+        assertEquals("Expect 1 updated feature", 1, service.update(Arrays.asList(myCategory)));
 
         myCategories = service.getByUserId(uuid);
         MyPlaceCategory afterGet = myCategories.get(0);
         assertEquals("", afterGet.getPublisher_name());
         assertEquals("", afterGet.getBorder_dasharray());
         assertEquals("", afterGet.getStroke_dasharray());
+
+        myCategories = service.getByUserId(uuid);
+        MyPlaceCategory GETafterPUT = myCategories.get(0);
+        assertEquals("", GETafterPUT.getPublisher_name());
+        assertEquals("", GETafterPUT.getBorder_dasharray());
+        assertEquals("", GETafterPUT.getStroke_dasharray());
     }
 
     private MyPlaceCategory createSomeCategory(String uuid) {
