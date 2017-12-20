@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import fi.nls.oskari.control.statistics.plugins.sotka.requests.IndicatorDataJSON;
 import org.json.JSONException;
 
 import fi.nls.oskari.control.statistics.plugins.APIException;
@@ -45,7 +46,7 @@ public class SotkaIndicatorValuesFetcher {
      * @return
      */
     public Map<Integer, IndicatorValue> getAll(StatisticalIndicatorDataModel selectors, String indicator) {
-        SotkaRequest request = SotkaRequest.getInstance(IndicatorData.NAME);
+        SotkaRequest request = SotkaRequest.getInstance(IndicatorDataJSON.NAME);
         request.setBaseURL(config.getUrl());
         // If there is no defined values for gender or year, we will use "total" and an empty list.
         String gender = "total";
@@ -99,6 +100,7 @@ public class SotkaIndicatorValuesFetcher {
             String category = regionParser.getCategoryById(regionId);
             if (category != null && category.equalsIgnoreCase(regionCategoryId)) {
                 // We must include this value to the result.
+                // Mapping sotka regionId to region id of layer!
                 String code = regionParser.getCode(regionId);
                 if (code != null) {
                     filteredValues.put(code, value);

@@ -36,8 +36,17 @@ public class SotkaIndicatorDataParser {
         JSONArray responseArray = new JSONArray(response);
         for (int i = 0; i < responseArray.length(); i++) {
             // Example row:
-            // {"region":"117","indicator":"4","primary value":"6,0","gender":"male","year":"1996","absolute value":"16"}
+            // FOR IndicatorDataJSON: {"indicator" : 4,"region": 231,"year": 2012,"gender": "total","value": 3.4,"absValue": 9}
             JSONObject valueRow = responseArray.getJSONObject(i);
+            Double doubleValue = valueRow.optDouble("value");
+            if(Double.NaN != doubleValue) {
+                IndicatorValue indicatorValue = new IndicatorValueFloat(doubleValue);
+                Integer id = Integer.valueOf(valueRow.getString("region"));
+                indicatorMap.put(id, indicatorValue);
+                continue;
+            }
+            // try parsing with old API
+            // FOR IndicatorData Sotkanet request: {"region":"117","indicator":"4","primary value":"6,0","gender":"male","year":"1996","absolute value":"16"}
             String value = valueRow.getString("primary value");
             // TODO: We are ignoring the absolute value. This could be handled as a separate indicator.
             try {
