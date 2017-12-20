@@ -25,12 +25,13 @@ The configurations required for oskari-ext.properties are (based on the database
     flyway.1_45_4.layer.name.erva=dummy:erva
     flyway.1_45_4.layer.name.sairaanhoitopiiri=dummy:sairaanhoitopiiri
 
-If your instance wasn't using the thematic maps functionality you don't need to
+If your instance wasn't using the old thematic maps functionality you don't need to
 configure these. If you have the old thematic maps functionality in your application
- you need to add map-layers correspondind the regionsets before running the migration
+ you need to add map-layers corresponding the regionsets before running the migration
  and configure the layer-names in oskari-ext.properties.
 
 To configure the layers see: http://oskari.org/documentation/features/thematicmaps/config
+
 For more information about the migration see: https://github.com/oskariorg/oskari-server/pull/127
 
 ## 1.44.0
