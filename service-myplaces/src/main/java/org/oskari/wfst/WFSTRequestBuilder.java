@@ -62,7 +62,7 @@ public class WFSTRequestBuilder {
     protected static void writeTextElement(XMLStreamWriter xsw, String ns, String name, String text)
             throws XMLStreamException {
         xsw.writeStartElement(ns, name);
-        if (text != null && !text.isEmpty()) {
+        if (text != null) {
             xsw.writeCharacters(text);
         }
         xsw.writeEndElement();
