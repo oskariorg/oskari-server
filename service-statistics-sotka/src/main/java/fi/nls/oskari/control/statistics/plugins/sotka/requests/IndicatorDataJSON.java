@@ -1,6 +1,10 @@
 package fi.nls.oskari.control.statistics.plugins.sotka.requests;
 
-import java.io.StringWriter;
+
+import fi.nls.oskari.util.IOHelper;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Request class for SotkaNET statistics query to get indicator data in JSON format.
@@ -21,19 +25,12 @@ public class IndicatorDataJSON extends SotkaRequest {
 
     @Override
     public String getRequestSpecificParams() {
-        StringWriter writer = new StringWriter();
-        writer.write("/json?indicator=");
-        writer.write(getIndicator());
-        for (String year : getYears()) {
-            if (!year.isEmpty()) {
-                writer.write("&years=");
-                writer.write(year);
-            }
-        }
-        if (!getGender().isEmpty()) {
-            writer.write("&genders=");
-            writer.write(getGender());
-        }
-        return writer.toString();
+        Map<String, String> params = new HashMap<>();
+        params.put("indicator", getIndicator());
+        params.put("genders", getGender());
+        String url = IOHelper.constructUrl("/json", params);
+        Map<String, String[]> years = new HashMap<>();
+        years.put("years", getYears());
+        return url + "&" + IOHelper.getParamsMultiValue(years);
     }
 }

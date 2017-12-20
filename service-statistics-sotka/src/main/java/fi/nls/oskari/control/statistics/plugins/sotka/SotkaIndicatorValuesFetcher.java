@@ -8,6 +8,7 @@ import java.util.Map.Entry;
 
 import fi.nls.oskari.control.statistics.data.IndicatorValueFloat;
 import fi.nls.oskari.control.statistics.plugins.sotka.requests.IndicatorDataJSON;
+import fi.nls.oskari.service.ServiceRuntimeException;
 import org.json.JSONArray;
 import org.json.JSONException;
 
@@ -45,26 +46,24 @@ public class SotkaIndicatorValuesFetcher {
      */
     public Map<String, IndicatorValue> get(StatisticalIndicatorDataModel selectors, String indicator,
                                            String regionCategoryId) {
-        Map<Integer, IndicatorValue> allValues = fetchData(selectors, indicator);
+        if(regionCategoryId == null) {
+            throw new ServiceRuntimeException("Unknown regionset");
+        }
+        Map<Integer, IndicatorValue> allValues = fetchDataForAllRegionsets(selectors, indicator);
         Map<String, IndicatorValue> filteredValues = new HashMap<>();
         for (Entry<Integer, IndicatorValue> entry : allValues.entrySet()) {
-            Integer regionId = entry.getKey();
-            if (regionId == null) {
-                // sometimes this is null with 0.0 as value.
-                // TODO: check if this is a bug in some other code or an empty row from sotkanet
+            Integer sotkaRegionId = entry.getKey();
+            // SotkaNET gives "Kunta" in some places, "KUNTA" in others... type is determined for each region
+            String category = regionParser.getCategoryById(sotkaRegionId);
+            if (!regionCategoryId.equalsIgnoreCase(category)) {
+                // include only regions belonging to the requested regionset
                 continue;
             }
-
-            IndicatorValue value = entry.getValue();
-            // SotkaNET gives "Kunta" in some places, "KUNTA" in others...
-            String category = regionParser.getCategoryById(regionId);
-            if (category != null && category.equalsIgnoreCase(regionCategoryId)) {
-                // We must include this value to the result.
-                // Mapping sotka regionId to region id of layer!
-                String code = regionParser.getCode(regionId);
-                if (code != null) {
-                    filteredValues.put(code, value);
-                }
+            // Map sotkanet internal region id to the region id in Oskari regionset/layer
+            String oskariRegionId = regionParser.getCode(sotkaRegionId);
+            if (oskariRegionId != null) {
+                // only add ones that we can successfully map to the regionset
+                filteredValues.put(oskariRegionId, entry.getValue());
             }
         }
         return filteredValues;
@@ -78,7 +77,7 @@ public class SotkaIndicatorValuesFetcher {
      * @param indicator
      * @return
      */
-    protected Map<Integer, IndicatorValue> fetchData(StatisticalIndicatorDataModel selectors, String indicator) {
+    protected Map<Integer, IndicatorValue> fetchDataForAllRegionsets(StatisticalIndicatorDataModel selectors, String indicator) {
         SotkaRequest request = SotkaRequest.getInstance(IndicatorDataJSON.NAME);
         request.setBaseURL(config.getUrl());
         // If there is no defined values for gender or year, we will use "total" and an empty list.
@@ -90,8 +89,8 @@ public class SotkaIndicatorValuesFetcher {
                     gender = selector.getValue();
                     break;
                 case "year":
-                    // Even though SotkaNET API supports fetching multiple years, we don't do that here.
-                    // Multiple years can be fetched over several requests.
+                    // Even though SotkaNET API supports fetching multiple years the current frontend implementation
+                    // only sends one year. Parsing expects we request data for only one year.
                     years.add(selector.getValue());
                     break;
                 default:
@@ -103,9 +102,7 @@ public class SotkaIndicatorValuesFetcher {
             request.setYears(yearsArray);
             request.setIndicator(indicator);
             return parseJSON(request.getData());
-
         } catch (JSONException e) {
-            e.printStackTrace();
             throw new APIException("Something went wrong parsing JSON from SotkaNET getIndicatorValues API.", e);
         }
     }
@@ -125,10 +122,10 @@ public class SotkaIndicatorValuesFetcher {
             // Example row: {"indicator" : 4,"region": 231,"year": 2012,"gender": "total","value": 3.4,"absValue": 9}
             JSONObject valueRow = responseArray.getJSONObject(i);
             Double doubleValue = valueRow.optDouble("value");
-            if (Double.NaN != doubleValue) {
-                IndicatorValue indicatorValue = new IndicatorValueFloat(doubleValue);
-                Integer id = Integer.valueOf(valueRow.getString("region"));
-                indicatorMap.put(id, indicatorValue);
+            // sotkaRegionId is NOT the same as region id. It needs to be mapped to a region id later in the code
+            int sotkaRegionId = valueRow.optInt("region", -1);
+            if (sotkaRegionId != -1 && Double.NaN != doubleValue) {
+                indicatorMap.put(sotkaRegionId, new IndicatorValueFloat(doubleValue));
             }
         }
         return indicatorMap;
