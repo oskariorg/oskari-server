@@ -549,6 +549,76 @@
 
     </select>
 
+    <select id="findAllWithPositiveUpdateRateSec"
+        parameterClass="String"
+        resultClass="java.util.HashMap">
+
+    SELECT
+    l.id,
+    l.parentId,
+    l.externalId,
+    l.type,
+    l.base_map,
+    l.groupId,
+
+    l.name,
+    l.url,
+    l.locale,
+
+    l.opacity,
+    l.style,
+    l.minscale,
+    l.maxscale,
+
+    l.legend_image,
+    l.metadataId,
+
+    l.tile_matrix_set_id,
+    l.params,
+    l.options,
+    l.attributes,
+    l.capabilities,
+
+    l.gfi_xslt,
+    l.gfi_type,
+    l.gfi_content,
+    l.realtime,
+    l.refresh_rate,
+    l.username,
+    l.password,
+    l.version,
+    <dynamic>
+        <isParameterPresent>
+            #crs# as srs_name,
+        </isParameterPresent>
+        <isNotParameterPresent>
+            l.srs_name,
+        </isNotParameterPresent>
+    </dynamic>
+    l.srs_name,
+    m.wkt as geom,
+
+    l.created,
+    l.updated,
+
+    l.capabilities_last_updated,
+    l.capabilities_update_rate_sec
+
+    FROM
+    oskari_maplayer l LEFT OUTER JOIN oskari_maplayer_metadata m
+    ON  m.metadataid = l.metadataId
+    <dynamic>
+        <isParameterPresent>
+            LEFT OUTER JOIN oskari_maplayer_projections p
+            ON  p.maplayerid = l.id
+            WHERE p.name = #crs#
+        </isParameterPresent>
+    </dynamic>
+    ORDER BY l.parentId ASC
+
+    WHERE capabilities_update_rate_sec > 0
+    </select>
+
     <statement id="delete" parameterClass="int">
         <![CDATA[
         delete from oskari_maplayer where parentId=#id# AND parentId <> -1;

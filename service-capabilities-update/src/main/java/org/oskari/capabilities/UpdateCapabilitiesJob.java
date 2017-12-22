@@ -54,7 +54,8 @@ public class UpdateCapabilitiesJob extends ScheduledJob {
 
     @Override
     public void execute(Map<String, Object> params) {
-        layerService.findAll().stream()
+        LOG.info("Starting UpdateCapabilitiesJob");
+        layerService.findAllWithPositiveUpdateRateSec().stream()
                 .filter(layer -> canUpdate(layer.getType()))
                 .filter(layer -> shouldUpdate(layer))
                 .collect(groupingBy(layer -> new UrlTypeVersion(layer)))
@@ -72,19 +73,20 @@ public class UpdateCapabilitiesJob extends ScheduledJob {
     }
 
     protected static boolean shouldUpdate(OskariLayer layer) {
-        int rate = layer.getCapabilitiesUpdateRateSec();
-        if (rate > 0) {
-            Date lastUpdated = layer.getCapabilitiesLastUpdated();
-            if (lastUpdated == null) {
-                return true;
-            }
-            long nextUpdate = lastUpdated.getTime() + TimeUnit.SECONDS.toMillis(rate);
-            if (nextUpdate <= System.currentTimeMillis()) {
-                return true;
-            }
-            LOG.debug("Skipping layerId:", layer.getId(), "as recently updated");
+        Date lastUpdated = layer.getCapabilitiesLastUpdated();
+        if (lastUpdated == null) {
+            LOG.debug("Should update layer:", layer.getId(), "last updated unknown and update rate is positive");
+            return true;
         }
-        return false;
+        int rate = layer.getCapabilitiesUpdateRateSec();
+        long nextUpdate = lastUpdated.getTime() + TimeUnit.SECONDS.toMillis(rate);
+        long now = System.currentTimeMillis();
+        LOG.debug("Layer:", layer.getId(), "next scheduled update is:", nextUpdate, "now is", now);
+        if (nextUpdate <= now) {
+            return true;
+        }
+        LOG.debug("Skipping layerId:", layer.getId(), "as recently updated");
+        return true;
     }
 
     private void updateCapabilities(UrlTypeVersion utv, List<OskariLayer> layers) {
@@ -94,17 +96,14 @@ public class UpdateCapabilitiesJob extends ScheduledJob {
         final String user = layers.get(0).getUsername();
         final String pass = layers.get(0).getPassword();
 
-        if (LOG.isDebugEnabled()) {
-            int[] ids = layers.stream().mapToInt(OskariLayer::getId).toArray();
-            LOG.debug("Updating Capabilities for a group of layers - url:", url,
-                    "type:", type, "version:", version, "ids:", Arrays.toString(ids));
-        }
+        int[] ids = layers.stream().mapToInt(OskariLayer::getId).toArray();
+        LOG.debug("Updating Capabilities for a group of layers - url:", url,
+                "type:", type, "version:", version, "ids:", Arrays.toString(ids));
 
         final String data;
         try {
             data = capabilitiesCacheService.getCapabilities(url, type, user, pass, version).getData();
         } catch (ServiceException e) {
-            int[] ids = layers.stream().mapToInt(OskariLayer::getId).toArray();
             LOG.warn(e, "Could not find get Capabilities, url:", url,
                     "type:", type, "version:", version, "ids:", Arrays.toString(ids));
             return;

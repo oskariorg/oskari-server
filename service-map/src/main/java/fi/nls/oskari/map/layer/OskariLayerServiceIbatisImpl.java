@@ -306,6 +306,18 @@ public class OskariLayerServiceIbatisImpl extends OskariLayerService {
        return this.findAll(null);
     }
 
+    @Override
+    public List<OskariLayer> findAllWithPositiveUpdateRateSec() {
+        long t0 = System.currentTimeMillis();
+        List<Map<String,Object>> result = queryForList(getNameSpace() + ".findAllWithPositiveUpdateRateSec", null);
+        long t1 = System.currentTimeMillis();
+        LOG.debug("Find layers with positive update rate sec took:", t1-t0, "ms");
+        List<OskariLayer> layers = mapDataList(result);
+        long t2 = System.currentTimeMillis();
+        LOG.debug("Parse layers with positive update rate sec took:", t2-t1, "ms");
+        return layers;
+    }
+
     public void update(final OskariLayer layer) {
         try {
             getSqlMapClient().update(getNameSpace() + ".update", layer);
