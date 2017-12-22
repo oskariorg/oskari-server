@@ -2,6 +2,7 @@ package fi.nls.oskari.domain;
 
 import fi.nls.oskari.service.DummyUserService;
 import fi.nls.oskari.util.PropertyUtil;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -37,9 +38,13 @@ public class UserTest {
         user.addRole(3, "role 2");
         assertTrue("User should have role listed in given array", user.hasAnyRoleIn(rolesArray));
 
-        user.addRole(4, Role.getAdminRoleName());
+        user.addRole(4, Role.getAdminRole().getName());
         assertTrue("Admin user should have any role", user.hasRole("any role what so ever"));
+    }
 
+    @After
+    public void tearDown() {
+        PropertyUtil.clearProperties();
     }
 
 }

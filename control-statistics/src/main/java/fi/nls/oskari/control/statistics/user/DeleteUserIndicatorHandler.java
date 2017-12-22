@@ -3,46 +3,36 @@ package fi.nls.oskari.control.statistics.user;
 import fi.mml.map.mapwindow.service.db.UserIndicatorService;
 import fi.mml.map.mapwindow.service.db.UserIndicatorServiceImpl;
 import fi.nls.oskari.annotation.OskariActionRoute;
-import fi.nls.oskari.control.ActionDeniedException;
-import fi.nls.oskari.control.ActionException;
-import fi.nls.oskari.control.ActionHandler;
-import fi.nls.oskari.control.ActionParameters;
+import fi.nls.oskari.control.*;
 import fi.nls.oskari.domain.map.indicator.UserIndicator;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.util.ResponseHelper;
 
 /**
- * Created with IntelliJ IDEA.
- * User: APELTONEN
- * Date: 31.12.2013
- * Time: 10:31
- * To change this template use File | Settings | File Templates.
+ * Deletes indicator that the user has previously saved.
+ * Only allows deletion of the users own indicators
  */
 @OskariActionRoute("DeleteUserIndicator")
 public class DeleteUserIndicatorHandler extends ActionHandler {
-    private static UserIndicatorService userIndicatorService = new UserIndicatorServiceImpl();
-    private static String PARAM_INDICATOR_ID = "id";
-    private static final Logger log = LogFactory.getLogger(GetUserIndicatorsHandler.class);
+    private static final Logger LOG = LogFactory.getLogger(GetUserIndicatorsHandler.class);
+    private UserIndicatorService userIndicatorService = new UserIndicatorServiceImpl();
 
     public void handleAction(ActionParameters params) throws ActionException {
-        if (params.getUser().isGuest()) {
-            throw new ActionDeniedException("Session expired");
-        }
-        int id  = -1;
-        try {
-            id = Integer.parseInt(params.getHttpParam(PARAM_INDICATOR_ID, "-1"));
-        } catch (NumberFormatException nfe) {
-            throw new ActionException("Invalid number");
-        }
+        // user indicators are user content so deleting one requires to be logged in
+        params.requireLoggedInUser();
 
-        if (id != -1) {
-            UserIndicator ui = userIndicatorService.find(id);
-            if (ui != null && (params.getUser().getId() == ui.getUserId())) {
-                log.debug("Deleting indicator " + id + " belonging to user " + ui.getUserId());
-                userIndicatorService.delete(id);
-            } else {
-                throw new ActionDeniedException("User has no right to delete indicator");
-            }
+        int id  = params.getRequiredParamInt(ActionConstants.PARAM_ID);
+        UserIndicator ui = userIndicatorService.find(id);
+        if(ui == null) {
+            throw new ActionParamsException("Unknown indicator");
         }
+        if(params.getUser().getId() != ui.getUserId()) {
+            throw new ActionDeniedException("User has no right to delete indicator");
+        }
+        LOG.info("Deleting indicator", id, "belonging to user", ui.getUserId());
+        userIndicatorService.delete(id);
+        // write the removed indicator as response
+        ResponseHelper.writeResponse(params, GetUserIndicatorsHandler.makeJson(ui));
     }
 }

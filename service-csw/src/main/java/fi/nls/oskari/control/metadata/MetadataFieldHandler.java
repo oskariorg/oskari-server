@@ -10,15 +10,16 @@ import fi.nls.oskari.search.channel.MetadataCatalogueChannelSearchService;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
+import fi.nls.oskari.util.XmlHelper;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 
 import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.DataInputStream;
 import java.net.HttpURLConnection;
+import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -117,8 +118,12 @@ public class MetadataFieldHandler {
 
         final String url = getSearchURL() + propertyName;
         final NodeList valueList = getTags(url, "csw:Value");
+        List<String> blacklist = field.getBlacklist();
         for (int i = 0; i < valueList.getLength(); i++) {
             String value = valueList.item(i).getChildNodes().item(0).getTextContent();
+            if (blacklist.contains(value)) {
+                continue;
+            }
             response.add(new SelectItem(null, value));
         }
         cache.put(propertyName, response);
@@ -130,7 +135,7 @@ public class MetadataFieldHandler {
         try {
             final HttpURLConnection con = IOHelper.getConnection(url);
             dis = new DataInputStream(IOHelper.debugResponse(con.getInputStream()));
-            final DocumentBuilder dBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+            final DocumentBuilder dBuilder = XmlHelper.newDocumentBuilderFactory().newDocumentBuilder();
             final Document doc = dBuilder.parse(dis);
             doc.getDocumentElement().normalize();
             return doc.getElementsByTagName(tagName);

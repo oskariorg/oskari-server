@@ -1,15 +1,13 @@
 package org.oskari.spatineo.monitor.api;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import org.junit.Before;
+import org.junit.Test;
+import org.oskari.spatineo.monitor.api.model.Response;
 
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.oskari.spatineo.monitor.api.model.Response;
+import static org.junit.Assert.*;
 
 public class SpatineoMonitorDaoTest {
 

@@ -15,28 +15,29 @@ import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.geometry.ProjectionHelper;
 import fi.nls.oskari.search.channel.ELFGeoLocatorSearchChannel;
-import fi.nls.oskari.service.OskariComponentManager;
+import fi.nls.oskari.util.XmlHelper;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureIterator;
 import org.opengis.feature.Property;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.Result;
 import javax.xml.transform.Source;
-import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.Transformer;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 public class ELFGeoLocatorParser {
     private Logger log = LogFactory.getLogger(this.getClass());
@@ -47,10 +48,10 @@ public class ELFGeoLocatorParser {
     public static final String KEY_LOCATIONTYPE_ROLE = "locationType_role";
     public static final String KEY_PARENT_TITLE = "parent_title";
     public static final String KEY_ADMINISTRATOR = "administrator";
-    private static Map<String, String> countryMap = null;
     private Map<String, Double> elfScalesForType = null;
     private Map<String, Integer> elfLocationPriority = null;
     private ELFGeoLocatorSearchChannel channel;
+    private ELFGeoLocatorCountries countries = null;
 
     private String serviceSrs = "EPSG:4258";
 
@@ -65,8 +66,7 @@ public class ELFGeoLocatorParser {
             this.serviceSrs = serviceSrs.toUpperCase();
         }
         channel = elfchannel;
-
-        loadCountryMap();
+        countries = ELFGeoLocatorCountries.getInstance();
 
         elfScalesForType = channel.getElfScalesForType();
         if(elfScalesForType == null) {
@@ -76,18 +76,6 @@ public class ELFGeoLocatorParser {
         elfLocationPriority = channel.getElfLocationPriority();
         if(elfLocationPriority == null) {
             log.debug("priority relation to locationtypes is not set ");
-        }
-    }
-
-    private void loadCountryMap () {
-        try {
-            countryMap = channel.getElfCountryMap();
-            if(countryMap.isEmpty()) {
-                log.debug("Could not get countries");
-            }
-        }
-        catch (Exception e) {
-            log.debug(e, "Could not get countries");
         }
     }
 
@@ -106,7 +94,7 @@ public class ELFGeoLocatorParser {
 
         try {
             //Remove schemalocation for faster parse
-            DocumentBuilder db = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+            DocumentBuilder db = XmlHelper.newDocumentBuilderFactory().newDocumentBuilder();
             InputStream datain = new ByteArrayInputStream(data.getBytes("UTF-8"));
             Document d = db.parse(datain);
             if(d.getDocumentElement().hasAttribute("xsi:schemaLocation")){
@@ -117,7 +105,8 @@ public class ELFGeoLocatorParser {
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
             Source xmlSource = new DOMSource(d);
             Result outputTarget = new StreamResult(outputStream);
-            TransformerFactory.newInstance().newTransformer().transform(xmlSource, outputTarget);
+            Transformer transformer = XmlHelper.newTransformerFactory().newTransformer();
+            transformer.transform(xmlSource, outputTarget);
             InputStream xml = new ByteArrayInputStream(outputStream.toByteArray());
 
             //create the parser with the gml 3.0 configuration
@@ -360,8 +349,8 @@ public class ELFGeoLocatorParser {
     }
 
     private static List<String> findProperties(Map<String, Object> result, String key) {
-        List<String> values = new ArrayList<String>();
-        List<Integer> order = new ArrayList<Integer>();
+        List<String> values = new ArrayList<>();
+        List<Integer> order = new ArrayList<>();
         for (Map.Entry<String, Object> entry : result.entrySet()) {
             Object value = entry.getValue();
             if (value != null) { // hide null properties
@@ -394,54 +383,15 @@ public class ELFGeoLocatorParser {
     }
 
     /**
-     * Get ELF geolocator administrator name(s) of country based
-     *
-     * @param country_code ISO Country code 2 ch
-     * @return
-     */
-    public String getAdminName(String country_code) {
-        return getAdminName(country_code, true);
-    }
-
-    private String getAdminName(String country_code, boolean reloadIfNotFound) {
-        if (countryMap.containsKey(country_code)) {
-            return countryMap.get(country_code);
-        }
-        if(!reloadIfNotFound) {
-            // loading didn't get us the requested country so just return empty string
-            return "";
-        }
-        // reload countries map contents and try again
-        loadCountryMap();
-        return getAdminName(country_code, false);
-    }
-
-    /**
      * Get ELF geolocator administrator country code
      * @param locale  Locale current locale
      * @param admin_name  administrator name
      * @return
      */
     public String getAdminCountry(Locale locale, String admin_name) {
-        return getAdminCountry(locale, admin_name, true);
+        return countries.getAdminCountry(locale, admin_name);
     }
 
-    public String getAdminCountry(Locale locale, String admin_name, boolean reloadIfNotFound) {
-        for (Map.Entry<String, String> entry : countryMap.entrySet()) {
-            String admin = entry.getValue();
-            if (admin.equals(admin_name)) {
-                Locale obj = new Locale("", entry.getKey());
-                return obj.getDisplayCountry(locale);
-            }
-        }
-        if(!reloadIfNotFound) {
-            // loading didn't get us the requested country so just return empty string
-            return "";
-        }
-        // reload countries map contents and try again
-        loadCountryMap();
-        return getAdminCountry(locale, admin_name, false);
-    }
 
     /**
      * Transform point to  CoordinateReferenceSystem sourceCrs = CRS.decode("EPSG:4258")

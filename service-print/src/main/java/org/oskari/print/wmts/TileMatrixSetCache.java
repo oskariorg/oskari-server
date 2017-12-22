@@ -1,65 +1,75 @@
 package org.oskari.print.wmts;
 
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
-import org.oskari.print.request.PrintLayer;
+import fi.nls.oskari.service.ServiceException;
 
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.service.capabilities.CapabilitiesCacheService;
+import fi.nls.oskari.service.capabilities.CapabilitiesCacheServiceMybatisImpl;
+import fi.nls.oskari.service.capabilities.OskariLayerCapabilities;
+import fi.nls.oskari.wmts.WMTSCapabilitiesParser;
 import fi.nls.oskari.wmts.domain.TileMatrixSet;
+import fi.nls.oskari.wmts.domain.WMTSCapabilities;
+import java.util.Map;
+import java.util.Optional;
+import org.oskari.print.request.PrintLayer;
+import org.oskari.print.util.LRUCache;
 
 /**
- * Parses TileMatrixSet information from WMTSCapabilities
- * and caches the results in a map   
+ * Caches TileMatrixSets from WMTSCapabilities
  */
 public class TileMatrixSetCache {
 
     private static final Logger LOG = LogFactory.getLogger(TileMatrixSetCache.class);
 
-    private static final Map<String, TileMatrixSet> CACHE = new ConcurrentHashMap<>();
+    private final CapabilitiesCacheService capabilitiesService;
+    private final Map<String, TileMatrixSet> cache;
 
-    public static TileMatrixSet get(PrintLayer layer) {
+    public TileMatrixSetCache() {
+        this(new CapabilitiesCacheServiceMybatisImpl());
+    }
+
+    public TileMatrixSetCache(CapabilitiesCacheService capabilitiesService) {
+        this.capabilitiesService = capabilitiesService;
+        this.cache = LRUCache.createLRUCache(64);
+    }
+
+    public Optional<TileMatrixSet> get(PrintLayer layer) throws ServiceException {
         if (!OskariLayer.TYPE_WMTS.equals(layer.getType())) {
-            return null;
+            return Optional.empty();
         }
 
-        String key = getKey(layer.getId(), layer.getTileMatrixSet());
-        TileMatrixSet set = CACHE.get(key);
+        final String key = getKey(layer.getId(), layer.getTileMatrixSet());
+        TileMatrixSet set = cache.get(key);
         if (set == null) {
-            parse(layer);
-            set = CACHE.get(key);
+            parseCabalitiesToCache(layer);
+            set = cache.get(key);
         }
-        return set;
+        return Optional.ofNullable(set);
     }
 
-    private static void parse(PrintLayer layer) {
-        String uri = getWMTSGetCapabilitiesUri(layer.getUrl());
-        if (uri != null) {
-            List<TileMatrixSet> tileMatrixSets = WMTSTileMatrixSetParser.parse(uri);
-            if (tileMatrixSets != null) {
-                for (TileMatrixSet tileMatrixSet : tileMatrixSets) {
-                    String key = getKey(layer.getId(), tileMatrixSet.getId());
-                    LOG.debug("Adding", key, "to cache");
-                    CACHE.put(key, tileMatrixSet);
-                }
-            }
-        }
+    private String getKey(String id, String tileMatrixSet) {
+        return id + "_" + tileMatrixSet;
     }
 
-    protected static String getWMTSGetCapabilitiesUri(String url) {
-        int i = url.indexOf("/1.0.0/");
-        if (i < 0) {
-            return null;
-        }
-        i += "/1.0.0/".length();
-        return url.substring(0, i) + "WMTSCapabilities.xml";
-    }
+    private void parseCabalitiesToCache(PrintLayer layer) throws ServiceException {
+        OskariLayerCapabilities xml = capabilitiesService.getCapabilities(layer.getUrl(),
+                layer.getType(), layer.getUsername(), layer.getPassword(), layer.getVersion());
 
-    private static String getKey(String layerId, String tileMatrixSetId) {
-        return layerId + "_" + tileMatrixSetId;
+        WMTSCapabilities caps;
+        try {
+            caps = new WMTSCapabilitiesParser().parseCapabilities(xml.getData());
+        } catch (Exception e) {
+            throw new ServiceException("Failed to parse WMTS capabilities, layerId: "
+                    + layer.getId(), e);
+        }
+
+        for (TileMatrixSet tileMatrixSet : caps.getTileMatrixSets()) {
+            String key = getKey(layer.getId(), tileMatrixSet.getId());
+            LOG.debug("Adding", key, "to cache");
+            cache.put(key, tileMatrixSet);
+        }
     }
 
 }

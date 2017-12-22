@@ -22,6 +22,7 @@ import org.opengis.feature.simple.SimpleFeatureType;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -97,7 +98,7 @@ public class WFSCommunicatorTest {
         assertTrue("Should get expected bounds result " + xmlDiff, xmlDiff.similar());
 		
 		// request (maplayer_id 216)
-		BufferedReader response = HttpHelper.postRequestReader(layer.getURL(), "text/xml", payload, layer.getUsername(), layer.getPassword());
+        Reader response = HttpHelper.postRequestReader(layer.getURL(), "text/xml", payload, layer.getUsername(), layer.getPassword());
 		assertTrue("Should get valid response", response != null);
 		
 		// parse
@@ -113,7 +114,7 @@ public class WFSCommunicatorTest {
         WFSLayerStore userlayer = WFSLayerStore.setJSON(layerJSON);
 
         // get response xml
-        BufferedReader response = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("Userlayer-GetFeature-response.xml")));
+        Reader response = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("Userlayer-GetFeature-response.xml")));
         assertTrue("Should get valid response", response != null);
 
         // parse the xml

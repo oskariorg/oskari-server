@@ -46,17 +46,14 @@ public class GetGtWMSCapabilities {
     }
 
     // based on https://github.com/geotools/geotools/blob/master/modules/extension/wms/src/test/java/org/geotools/data/wms/test/WMS1_0_0_OnlineTest.java#L253-L276
-    public static WMSCapabilities createCapabilities(String xml, String encoding) {
+    public static WMSCapabilities createCapabilities(String xml) {
         if(xml == null || xml.isEmpty()) {
             return null;
-        }
-        if (encoding == null) {
-            encoding = StandardCharsets.UTF_8.toString();
         }
         final Map hints = new HashMap();
         hints.put(DocumentHandler.DEFAULT_NAMESPACE_HINT_KEY, WMSSchema.getInstance());
         hints.put(DocumentFactory.VALIDATION_HINT, false);
-        try(InputStream stream = new ByteArrayInputStream(xml.getBytes(encoding))) {
+        try(InputStream stream = new ByteArrayInputStream(xml.getBytes(StandardCharsets.UTF_8))) {
             final Object object = DocumentFactory.getInstance(stream, hints, Level.WARNING);
             if(object instanceof WMSCapabilities) {
                 return (WMSCapabilities) object;
@@ -85,11 +82,10 @@ public class GetGtWMSCapabilities {
             String capabilitiesXML = capabilities.getData();
             if(capabilitiesXML == null || capabilitiesXML.trim().isEmpty()) {
                 // retry from service - might get empty xml from db
-                capabilities = service.getCapabilities(rurl, "wmslayer", user, pwd, version, true);
+                capabilities = service.getCapabilities(rurl, OskariLayer.TYPE_WMS, user, pwd, version, true);
                 capabilitiesXML = capabilities.getData();
             }
-            String encoding = CapabilitiesCacheService.getEncodingFromXml(capabilitiesXML);
-            WMSCapabilities caps = createCapabilities(capabilitiesXML, encoding);
+            WMSCapabilities caps = createCapabilities(capabilitiesXML);
             // caps to json
             return parseLayer(caps.getLayer(), rurl, caps, capabilitiesXML, currentCrs, false);
         } catch (Exception ex) {

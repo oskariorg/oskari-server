@@ -8,6 +8,7 @@ import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.geometry.ProjectionHelper;
 import fi.nls.oskari.search.util.GeonetworkSpatialOperation;
 import fi.nls.oskari.util.IOHelper;
+import fi.nls.oskari.util.JSONHelper;
 import org.deegree.datatypes.QualifiedName;
 import org.deegree.model.crs.CRSFactory;
 import org.deegree.model.crs.CoordinateSystem;
@@ -23,6 +24,9 @@ import org.deegree.ogcwebservices.csw.discovery.Query;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.geojson.feature.FeatureJSON;
 import org.geotools.geometry.jts.ReferencedEnvelope;
+import org.geotools.referencing.CRS;
+import org.json.JSONObject;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
 import java.io.ByteArrayInputStream;
 import java.io.StringWriter;
@@ -284,9 +288,27 @@ public class MetadataCatalogueQueryHelper {
             list.add(op);
         }
     }
+
+    private String getSRS(JSONObject geojson) {
+        JSONObject crs = geojson.optJSONObject("crs");
+        if(crs != null) {
+            // old ol2 impl: { ..., "crs":{"type":"name","properties":{"name":"EPSG:3067"}}}
+            return crs.optJSONObject("properties").optString("name");
+        }
+        // new ol4 drawtools impl: { ..., "crs":"EPSG:3067"}
+        String srs = geojson.optString("crs");
+        if(srs != null) {
+            return srs;
+        }
+        return "EPSG:4326";
+    }
+
     /* "{"type":"FeatureCollection","features":[{"type":"Feature","properties":{},"geometry":{"type":"Polygon","coordinates":[[[382186.81433571,6677985.8855768],[382186.81433571,6682065.8855768],[391446.81433571,6682065.8855768],[391446.81433571,6677985.8855768],[382186.81433571,6677985.8855768]]]}}],"crs":{"type":"name","properties":{"name":"EPSG:3067"}}}" */
     private String parseWKTPolygon(final String searchCriterion) {
         try {
+            JSONObject geojson = JSONHelper.createJSONObject(searchCriterion);
+            String sourceSRS = getSRS(geojson);
+            geojson.remove("crs");
             FeatureCollection fc = null;
             StringBuilder sb = new StringBuilder("POLYGON((");
             FeatureJSON fjs = new FeatureJSON();
@@ -294,8 +316,8 @@ public class MetadataCatalogueQueryHelper {
                     searchCriterion.getBytes("utf-8")));
             ReferencedEnvelope env = fc.getBounds();
             //Transform to target crs
-            Point minb = ProjectionHelper.transformPoint(env.getMinX(), env.getMinY(), env.getCoordinateReferenceSystem(), TARGET_SRS);
-            Point maxb = ProjectionHelper.transformPoint(env.getMaxX(), env.getMaxY(), env.getCoordinateReferenceSystem(), TARGET_SRS);
+            Point minb = ProjectionHelper.transformPoint(env.getMinX(), env.getMinY(), sourceSRS, TARGET_SRS);
+            Point maxb = ProjectionHelper.transformPoint(env.getMaxX(), env.getMaxY(), sourceSRS, TARGET_SRS);
 
             sb.append(minb.getLonToString()+" ");
             sb.append(minb.getLatToString());

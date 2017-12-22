@@ -1,0 +1,14 @@
+<fes:Filter xmlns:fes="http://www.opengis.net/fes/2.0" xmlns:iso19112="http://www.isotc211.org/19112" xmlns:gmdsf1="http://www.isotc211.org/2005/gmdsf1">
+<fes:Or>
+    <fes:PropertyIsEqualTo matchCase="true">
+        <fes:ValueReference>iso19112:administrator/gmdsf1:CI_ResponsibleParty/gmdsf1:organizationName
+        </fes:ValueReference>
+        <fes:Literal>Norway polar - GN</fes:Literal>
+    </fes:PropertyIsEqualTo>
+    <fes:PropertyIsEqualTo matchCase="true">
+        <fes:ValueReference>iso19112:administrator/gmdsf1:CI_ResponsibleParty/gmdsf1:organizationName
+        </fes:ValueReference>
+        <fes:Literal>Norway - GN</fes:Literal>
+    </fes:PropertyIsEqualTo>
+</fes:Or>
+</fes:Filter>

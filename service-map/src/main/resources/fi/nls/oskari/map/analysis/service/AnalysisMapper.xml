@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="fi.nls.oskari.map.analysis.service.AnalysisMapper">
+
+    <resultMap id="AnalysisResult" type="Analysis">
+        <result property="id" column="id" />
+        <result property="uuid" column="uuid" />
+        <result property="name" column="name" />
+        <result property="layer_id" column="layer_id" />
+        <result property="analyse_json" column="analyse_json" />
+        <result property="style_id" column="style_id" />
+        <result property="col1" column="col1" />
+        <result property="col2" column="col2" />
+        <result property="col3" column="col3" />
+        <result property="col4" column="col4" />
+        <result property="col5" column="col5" />
+        <result property="col6" column="col6" />
+        <result property="col7" column="col7" />
+        <result property="col8" column="col8" />
+        <result property="col9" column="col9" />
+        <result property="col10" column="col10" />
+        <result property="select_to_data" column="select_to_data" />
+        <result property="override_sld" column="override_sld" />
+    </resultMap>
+
+
+
+    <select id="getAnalysisById" parameterType="long" resultMap="AnalysisResult">
+        select
+        id,
+        uuid,
+        name,
+        layer_id,
+        analyse_json,
+        style_id,
+        col1,
+        col2,
+        col3,
+        col4,
+        col5,
+        col6,
+        col7,
+        col8,
+        col9,
+        col10,
+        select_to_data,
+        override_sld
+
+        from
+        analysis
+        where id = #{id}
+ 
+    </select>
+
+    <select id="getAnalysisByIdList" parameterType="List" resultMap="AnalysisResult">
+        select
+        id,
+        uuid,
+        name,
+        layer_id,
+        analyse_json,
+        style_id,
+        col1,
+        col2,
+        col3,
+        col4,
+        col5,
+        col6,
+        col7,
+        col8,
+        col9,
+        col10,
+        select_to_data,
+        override_sld
+
+        from
+        analysis
+        <foreach item="id" collection="list" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </select>
+    
+     <select id="getAnalysisByUid" parameterType="string" resultMap="AnalysisResult">
+        select
+        id,
+        uuid,
+        name,
+        layer_id,
+        analyse_json,
+        style_id,
+        col1,
+        col2,
+        col3,
+        col4,
+        col5,
+        col6,
+        col7,
+        col8,
+        col9,
+        col10,
+        select_to_data,
+        override_sld
+
+        from
+        analysis
+        where uuid = #{uid}
+ 
+    </select>
+
+    <select id="getAnalysisDataByIdUid" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+        select
+        ${select_items}
+        from
+        analysis_data
+        where analysis_id = #{id} and uuid=#{uuid}
+    </select>
+
+    <delete id="deleteAnalysisById" parameterType="long">
+        delete from
+        analysis where id=#{analysisId}
+    </delete>
+
+
+
+    <insert id="insertAnalysisRow" parameterType="Analysis" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+        INSERT INTO analysis (
+        uuid,
+        name,
+        layer_id,
+        analyse_json,
+        style_id,
+        col1,
+        col2,
+        col3,
+        col4,
+        col5,
+        col6,
+        col7,
+        col8,
+        col9,
+        col10,
+        select_to_data,
+        override_sld)
+        VALUES ( #{uuid},
+        #{name},
+        #{layer_id},
+        #{analyse_json},
+        #{style_id},
+        #{col1},
+        #{col2},
+        #{col3},
+        #{col4},
+        #{col5},
+        #{col6},
+        #{col7},
+        #{col8},
+        #{col9},
+        #{col10},
+        #{select_to_data},
+        #{override_sld})
+    </insert>
+
+
+    <update id="updateAnalysisCols" parameterType="Analysis">
+        update
+        analysis set
+        col1 = #{col1},
+        col2 = #{col2},
+        col3 = #{col3},
+        col4 = #{col4},
+        col5 = #{col5},
+        col6 = #{col6},
+        col7 = #{col7},
+        col8 = #{col8},
+        col9 = #{col9},
+        col10 = #{col10},
+        select_to_data = #{select_to_data}
+
+        where id = #{id}
+    </update>
+
+    <update id="mergeAnalysisData" parameterType="Analysis">
+    update
+    analysis_data set
+    analysis_id = #{id}
+    WHERE analysis_id = #{old_id}
+    </update>
+
+    <delete id="deleteAnalysisDataById"
+            parameterType="java.lang.Long">
+        DELETE FROM analysis_data WHERE analysis_id = #{id}
+    </delete>
+
+    <delete id="deleteAnalysisStyleById"
+            parameterType="java.lang.Long">
+        <!-- Note! id is style_id from analysis table -->
+        DELETE FROM analysis_style WHERE id = #{id}
+    </delete>
+
+    <update id="updatePublisherName"
+        parameterType="Map">
+        update analysis set
+            publisher_name = #publisher_name:VarChar#
+        where uuid = #{uuid} and id = #{id}
+    </update>
+</mapper>

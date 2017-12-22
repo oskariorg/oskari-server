@@ -5,6 +5,8 @@ import fi.nls.oskari.control.statistics.plugins.APIException;
 import fi.nls.oskari.control.statistics.plugins.StatisticalDatasourcePlugin;
 import fi.nls.oskari.control.statistics.plugins.db.StatisticalDatasource;
 import fi.nls.oskari.control.statistics.plugins.pxweb.parser.PxwebIndicatorsParser;
+import fi.nls.oskari.log.LogFactory;
+import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.JSONHelper;
 import org.json.JSONArray;
@@ -17,6 +19,8 @@ import java.util.List;
 import java.util.Map;
 
 public class PxwebStatisticalDatasourcePlugin extends StatisticalDatasourcePlugin {
+
+    private static final Logger LOG = LogFactory.getLogger(PxwebStatisticalDatasourcePlugin.class);
     private PxwebIndicatorsParser indicatorsParser;
 
     private PxwebConfig config;
@@ -102,7 +106,7 @@ public class PxwebStatisticalDatasourcePlugin extends StatisticalDatasourcePlugi
                                                           StatisticalIndicatorDataModel params,
                                                           StatisticalIndicatorLayer regionset) {
         Map<String, IndicatorValue> values = new HashMap<>();
-        String url = IOHelper.fixPath(regionset.getParam("baseUrl") + "/" + indicator.getId());
+        String url = createUrl(regionset.getParam("baseUrl"), indicator.getId());
         JSONArray query = new JSONArray();
         JSONObject payload = JSONHelper.createJSONObject("query", query);
         final String regionKey = config.getRegionKey();
@@ -127,9 +131,16 @@ public class PxwebStatisticalDatasourcePlugin extends StatisticalDatasourcePlugi
         try {
             final HttpURLConnection con = IOHelper.getConnection(url);
             IOHelper.writeHeader(con, IOHelper.HEADER_CONTENTTYPE, IOHelper.CONTENT_TYPE_JSON + ";  charset=utf-8");
-            IOHelper.writeToConnection(con, payload.toString().getBytes("UTF-8"));
+            IOHelper.writeToConnection(con, payload.toString().getBytes(IOHelper.CHARSET_UTF8));
+            if (con.getResponseCode() != HttpURLConnection.HTTP_OK) {
+                throw new APIException("Couldn't connect to API at " + url);
+            }
             final String data = IOHelper.readString(con);
             JSONObject json = JSONHelper.createJSONObject(data);
+            if(json == null) {
+                LOG.debug("Got non-json response:", data);
+                throw new APIException("Response wasn't JSON");
+            }
             //dataset.dimension.Alue.category.index -> key==region id & value == index pointer to dataset.value
             JSONObject stats = json.optJSONObject("dataset").optJSONObject("dimension").optJSONObject(regionKey).optJSONObject("category").optJSONObject("index");
             JSONArray responseValues = json.optJSONObject("dataset").optJSONArray("value");
@@ -148,5 +159,9 @@ public class PxwebStatisticalDatasourcePlugin extends StatisticalDatasourcePlugi
         }
 
         return values;
+    }
+
+    private String createUrl(String baseUrl, String pathId) {
+        return IOHelper.fixPath(baseUrl + "/" + IOHelper.urlEncode(pathId));
     }
 }

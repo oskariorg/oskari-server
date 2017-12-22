@@ -6,6 +6,7 @@ import fi.nls.oskari.map.data.domain.GFIRequestParams;
 import fi.nls.oskari.map.data.domain.GFIRestQueryParams;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.JSONHelper;
+import fi.nls.oskari.util.XmlHelper;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.jsoup.Jsoup;
@@ -45,8 +46,6 @@ public class GetGeoPointDataService {
 
     public static final String PRESENTATION_TYPE_JSON = "JSON";
     public static final String PRESENTATION_TYPE_TEXT = "TEXT";
-
-
 
     public JSONObject getWMSFeatureInfo(final GFIRequestParams params) {
 
@@ -145,7 +144,6 @@ public class GetGeoPointDataService {
         return null;
     }
 
-  
     protected String transformResponse(final String xslt, final String response) {
 
         if (xslt == null || "".equals(xslt)) {
@@ -157,8 +155,7 @@ public class GetGeoPointDataService {
         ByteArrayInputStream xsltInStream = null;
         Writer outWriter = null;
         try {
-            final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-            factory.setValidating(false);
+            final DocumentBuilderFactory factory = XmlHelper.newDocumentBuilderFactory();
             factory.setNamespaceAware(true);
             final DocumentBuilder builder = factory.newDocumentBuilder();
 
@@ -166,7 +163,7 @@ public class GetGeoPointDataService {
             final Document document = builder.parse(respInStream);
             xsltInStream = new ByteArrayInputStream(xslt.getBytes());
             final StreamSource stylesource = new StreamSource(xsltInStream);
-            final String transformedResponse = getFormatedJSONString(document, stylesource);
+            final String transformedResponse = getFormattedJSONString(document, stylesource);
             
             if (transformedResponse == null
                     || transformedResponse.isEmpty()) {
@@ -202,10 +199,9 @@ public class GetGeoPointDataService {
         return Jsoup.clean(response, Whitelist.relaxed());
     }
 
-    
-    public static String getFormatedJSONString(Document document, StreamSource stylesource) throws TransformerException {
-        final Transformer transformer = TransformerFactory.newInstance()
-                .newTransformer(stylesource);
+    public static String getFormattedJSONString(Document document, StreamSource stylesource) throws TransformerException {
+        final TransformerFactory transformerFactory = XmlHelper.newTransformerFactory();
+        final Transformer transformer = transformerFactory.newTransformer(stylesource);
 
         final DOMSource source = new DOMSource(document);
         final StringWriter outWriter = new StringWriter();

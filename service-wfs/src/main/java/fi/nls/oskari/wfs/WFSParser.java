@@ -28,8 +28,8 @@ import org.xml.sax.SAXException;
 
 import javax.xml.namespace.QName;
 import javax.xml.parsers.ParserConfigurationException;
-import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.Reader;
 import java.io.StringReader;
 import java.util.*;
     
@@ -50,7 +50,7 @@ public class WFSParser {
 
     private static final String DEFAULT = "default";
     
-    private BufferedReader response = null;
+    private Reader response = null;
     private WFSLayerStore layer = null;
     private String geomProperty = null;
     private Map<String, SimpleFeatureType> featureTypes = null;
@@ -62,7 +62,7 @@ public class WFSParser {
      * @param response
      * @param layer
      */
-    public WFSParser(BufferedReader response, WFSLayerStore layer) {
+    public WFSParser(Reader response, WFSLayerStore layer) {
     	this.response = response;
     	this.layer = layer;
     	this.geomProperty = layer.getGMLGeometryProperty().replaceAll("^[^_]*:", "");

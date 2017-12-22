@@ -18,7 +18,8 @@ notifications:
 before_install: "echo \"MAVEN_OPTS='-Xms1g -Xmx2g'\" > ~/.mavenrc"
 
 script:
-  - mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent install sonar:sonar
+  - 'if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then mvn clean install; fi'
+  - 'if [ "$TRAVIS_PULL_REQUEST"  = "false" ]; then mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent install sonar:sonar; fi'
 cache:
   directories:
     - '$HOME/.m2/repository'

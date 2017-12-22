@@ -1,19 +1,20 @@
 package fi.nls.oskari.work;
 
-import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.Reader;
 
 /**
  * Created by SMAKINEN on 13.2.2015.
  */
 public class WFSRequestResponse  implements RequestResponse {
-        BufferedReader response ;
 
-    public BufferedReader getResponse() {
+    private Reader response;
+
+    public Reader getResponse() {
         return response;
     }
 
-    public void setResponse(BufferedReader response) {
+    public void setResponse(Reader response) {
         this.response = response;
     }
 

@@ -7,7 +7,7 @@
     <parent>
         <groupId>fi.nls.oskari</groupId>
         <artifactId>oskari-parent</artifactId>
-        <version>1.44.0-SNAPSHOT</version>
+        <version>1.45.0-SNAPSHOT</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
     <artifactId>geoserver-rest-client</artifactId>
@@ -20,6 +20,7 @@
 
     <dependencies>
         <dependency>
+            <!-- Current development moved to io.github.openfeign » feign-core » 9.5.1 -->
             <groupId>com.netflix.feign</groupId>
             <artifactId>feign-core</artifactId>
             <version>${feign.version}</version>

@@ -18,9 +18,11 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.FeatureType;
+import org.opengis.feature.type.PropertyDescriptor;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 
@@ -200,18 +202,18 @@ public class UserLayerDataService {
             return null;
         }
     }
-    // parse SimpleFeatureType schema to JSONArray to keep same order in fields as in the imported file
+    // parse FeatureType schema to JSONArray to keep same order in fields as in the imported file
     public String parseFields(FeatureType schema) {
 
         JSONArray jsfields = new JSONArray();
         try {
-            String fields = DataUtilities.encodeType((SimpleFeatureType) schema);
-            String[] tfields = fields.split("[:,]");
-            for (int i = 0; i < tfields.length - 1; i = i + 2) {
-
-                jsfields.put(new JSONObject().put(tfields[i], tfields[i + 1]));
+            Collection<PropertyDescriptor> types = schema.getDescriptors();
+            for (PropertyDescriptor type : types) {
+                JSONObject obj = new JSONObject();
+                obj.put("name", type.getName().getLocalPart());
+                obj.put("type", type.getType().getBinding().getSimpleName());
+                jsfields.put(obj);
             }
-
         } catch (Exception ex) {
             log.error(ex, "Couldn't parse field schema");
         }

@@ -5,7 +5,12 @@ import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.search.channel.ConnectionProvider;
 import fi.nls.oskari.util.IOHelper;
+import fi.nls.oskari.util.XmlHelper;
+import org.geotools.GML;
+import org.geotools.data.simple.SimpleFeatureCollection;
+import org.geotools.data.simple.SimpleFeatureIterator;
 import org.geotools.geometry.jts.ReferencedEnvelope;
+import org.opengis.feature.simple.SimpleFeature;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -22,19 +27,21 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-import javax.xml.xpath.*;
-
-import org.geotools.GML;
-import org.geotools.data.simple.SimpleFeatureCollection;
-import org.geotools.data.simple.SimpleFeatureIterator;
-import org.opengis.feature.Property;
-import org.opengis.feature.simple.SimpleFeature;
-
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpression;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
+import javax.xml.xpath.XPathVariableResolver;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URLConnection;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -266,7 +273,7 @@ public class KTJkiiWFSSearchChannelImpl implements KTJkiiWFSSearchChannel {
 		/**
 		 * 1) Read Query Template
 		 */
-		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+		DocumentBuilderFactory factory = XmlHelper.newDocumentBuilderFactory();
 		factory.setNamespaceAware(true);
 		DocumentBuilder builder;
 		Document doc = null;
@@ -301,7 +308,7 @@ public class KTJkiiWFSSearchChannelImpl implements KTJkiiWFSSearchChannel {
 		 * 
 		 */
 		// Use a Transformer for output
-		TransformerFactory tFactory = TransformerFactory.newInstance();
+		TransformerFactory tFactory = XmlHelper.newTransformerFactory();
 		Transformer transformer = tFactory.newTransformer();
 
 		DOMSource source = new DOMSource(doc);
@@ -392,7 +399,7 @@ public class KTJkiiWFSSearchChannelImpl implements KTJkiiWFSSearchChannel {
 		String requestedRegisterUnitId = registerUnitId.getValue();
 
 		logger.info("processResponseFromStream " + requestedRegisterUnitId);
-		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+		DocumentBuilderFactory factory = XmlHelper.newDocumentBuilderFactory();
 		factory.setNamespaceAware(true);
 		DocumentBuilder builder;
 		Document doc = null;

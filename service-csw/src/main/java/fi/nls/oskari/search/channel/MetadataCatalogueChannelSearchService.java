@@ -1,16 +1,24 @@
 package fi.nls.oskari.search.channel;
 
+import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.Polygon;
+import org.geotools.geometry.jts.JTS;
+import org.geotools.referencing.CRS;
+import org.opengis.referencing.operation.MathTransform;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import com.vividsolutions.jts.geom.LineString;
+import com.vividsolutions.jts.geom.CoordinateSequence;
+import com.vividsolutions.jts.geom.GeometryFactory;
 import fi.mml.portti.service.search.ChannelSearchResult;
 import fi.mml.portti.service.search.IllegalSearchCriteriaException;
 import fi.mml.portti.service.search.SearchCriteria;
 import fi.mml.portti.service.search.SearchResultItem;
 import fi.nls.oskari.annotation.Oskari;
 import fi.nls.oskari.control.metadata.MetadataField;
-import fi.nls.oskari.domain.geo.Point;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.map.geometry.ProjectionHelper;
+import fi.nls.oskari.map.geometry.GeometryHelper;
 import fi.nls.oskari.map.geometry.WKTHelper;
 import fi.nls.oskari.map.layer.OskariLayerService;
 import fi.nls.oskari.service.OskariComponentManager;
@@ -18,7 +26,6 @@ import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.PropertyUtil;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.impl.builder.StAXOMBuilder;
-import org.geotools.referencing.CRS;
 
 import java.net.HttpURLConnection;
 import java.util.*;
@@ -42,6 +49,7 @@ import java.util.*;
  *          showIf is closely related to dependencies field
  *      - filterOp: used for creating query and mapped in code to Deegree filter operations (defaults to LIKE operations)
  *      - mustMatch: true means the field will be treated as AND filter instead of OR when creating query filter (defaults to false)
+ *      - blacklist: is a list of response values that will be filtered out
  *
  */
 @Oskari(MetadataCatalogueChannelSearchService.ID)
@@ -130,6 +138,7 @@ public class MetadataCatalogueChannelSearchService extends SearchChannel {
             field.setMustMatch(PropertyUtil.getOptional(propPrefix + name + ".mustMatch", false));
             field.setDependencies(PropertyUtil.getMap(propPrefix + name + ".dependencies"));
             field.setDefaultValue(PropertyUtil.getOptional(propPrefix + name + ".value"));
+            field.setBlacklist(Arrays.asList(PropertyUtil.getCommaSeparatedList(propPrefix + name + ".blacklist")));
             fields.add(field);
         }
         return fields;
@@ -229,12 +238,23 @@ public class MetadataCatalogueChannelSearchService extends SearchChannel {
         }
         // transform points to map projection and create a WKT bbox
         try {
-            Point p1 = null;
-            Point p2 = null;
-            p1 = ProjectionHelper.transformPoint(item.getWestBoundLongitude(), item.getSouthBoundLatitude(), sourceSRS, targetSRS);
-            p2 = ProjectionHelper.transformPoint(item.getEastBoundLongitude(), item.getNorthBoundLatitude(), sourceSRS, targetSRS);
+            double x1 = Double.parseDouble(item.getWestBoundLongitude());
+            double y1 = Double.parseDouble(item.getSouthBoundLatitude());
+            double x2 = Double.parseDouble(item.getEastBoundLongitude());
+            double y2 = Double.parseDouble(item.getNorthBoundLatitude());
 
-            return WKTHelper.getBBOX(p1.getLon(), p1.getLat(), p2.getLon(), p2.getLat());
+            GeometryFactory gf = new GeometryFactory();
+            CoordinateSequence cs = GeometryHelper.createLinearRing(gf, x1, y1, x2, y2);
+            LineString ls = gf.createLineString(cs);
+            CoordinateSequence interpolated = GeometryHelper.interpolateLinear(ls, 1.0, gf);
+            Polygon polygon = gf.createPolygon(interpolated);
+
+            CoordinateReferenceSystem from = WKTHelper.getCRS(sourceSRS);
+            CoordinateReferenceSystem to = WKTHelper.getCRS(targetSRS);
+            MathTransform mt = CRS.findMathTransform(from, to, true);
+            Geometry projected = JTS.transform(polygon, mt);
+
+            return WKTHelper.getWKT(projected);
         } catch(Exception e){
             log.error("Unable to transform BBOX WKT:", e.getMessage());
         }

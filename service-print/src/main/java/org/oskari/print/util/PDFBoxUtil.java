@@ -13,7 +13,7 @@ import org.apache.pdfbox.pdmodel.graphics.optionalcontent.PDOptionalContentPrope
 import org.apache.pdfbox.util.Matrix;
 
 public class PDFBoxUtil {
-    
+
     private PDFBoxUtil() {}
 
     public static float mmToPt(int mm) {
@@ -25,9 +25,9 @@ public class PDFBoxUtil {
         return font.getStringWidth(text) * fontSize / 1000f;
     }
 
-    public static void drawTextCentered(PDPageContentStream stream, 
-            String text, PDFont font, float fontSize, float x, float y) 
-                    throws IOException {
+    public static void drawTextCentered(PDPageContentStream stream,
+                                        String text, PDFont font, float fontSize, float x, float y)
+            throws IOException {
         if (text == null || text.length() == 0) {
             return;
         }
@@ -36,9 +36,9 @@ public class PDFBoxUtil {
         drawText(stream, text, font, fontSize, x - textWidthHalf, y);
     }
 
-    public static void drawText(PDPageContentStream stream, 
-            String text, PDFont font, float fontSize, float x, float y) 
-                    throws IOException {
+    public static void drawText(PDPageContentStream stream,
+                                String text, PDFont font, float fontSize, float x, float y)
+            throws IOException {
         if (text == null || text.length() == 0) {
             return;
         }

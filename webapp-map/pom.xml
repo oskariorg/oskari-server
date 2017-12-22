@@ -4,7 +4,7 @@
     <parent>
         <groupId>fi.nls.oskari</groupId>
         <artifactId>oskari-parent</artifactId>
-        <version>1.44.0-SNAPSHOT</version>
+        <version>1.45.0-SNAPSHOT</version>
     </parent>
 
     <groupId>fi.nls.oskari</groupId>
@@ -100,6 +100,11 @@
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>fi.nls.oskari.service</groupId>
+            <artifactId>oskari-search-nls</artifactId>
         </dependency>
     </dependencies>
 

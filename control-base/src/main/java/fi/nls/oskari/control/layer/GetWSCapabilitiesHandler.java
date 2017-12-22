@@ -14,6 +14,7 @@ import fi.nls.oskari.util.ResponseHelper;
 import fi.nls.oskari.wfs.GetGtWFSCapabilities;
 import fi.nls.oskari.wms.GetGtWMSCapabilities;
 import fi.nls.oskari.wmts.WMTSCapabilitiesParser;
+import fi.nls.oskari.wmts.domain.WMTSCapabilities;
 import org.json.JSONObject;
 
 /**
@@ -60,8 +61,6 @@ public class GetWSCapabilitiesHandler extends ActionHandler {
             }
             else {
                 if (OskariLayer.TYPE_WMTS.equals(layerType)) {
-                    WMTSCapabilitiesParser parser = new WMTSCapabilitiesParser();
-
                     // setup capabilities URL
                     OskariLayerCapabilities caps  = capabilitiesService.getCapabilities(url, OskariLayer.TYPE_WMTS, user, pw, version);
                     String capabilitiesXML = caps.getData();
@@ -70,7 +69,8 @@ public class GetWSCapabilitiesHandler extends ActionHandler {
                         caps = capabilitiesService.getCapabilities(url, OskariLayer.TYPE_WMTS, user, pw, version, true);
                         capabilitiesXML = caps.getData();
                     }
-                    JSONObject resultJSON = parser.parseCapabilitiesToJSON(capabilitiesXML, url, currentCrs);
+                    WMTSCapabilities wmtsCaps = WMTSCapabilitiesParser.parseCapabilities(capabilitiesXML);
+                    JSONObject resultJSON = WMTSCapabilitiesParser.asJSON(wmtsCaps, url, currentCrs);
                     JSONHelper.putValue(resultJSON, "xml", caps.getData());
                     ResponseHelper.writeResponse(params, resultJSON);
                 }

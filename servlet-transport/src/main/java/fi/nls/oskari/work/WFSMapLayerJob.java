@@ -24,7 +24,7 @@ import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.filter.Filter;
 import org.opengis.referencing.operation.MathTransform;
 
-import java.io.BufferedReader;
+import java.io.Reader;
 import java.util.*;
 /**
  * Job for WFS Map Layer
@@ -79,7 +79,7 @@ public class WFSMapLayerJob extends OWSMapLayerJob {
     public RequestResponse request(JobType type, WFSLayerStore layer,
             SessionStore session, List<Double> bounds,
             MathTransform transformService) {
-        BufferedReader response = null;
+        Reader response = null;
         if (layer.getTemplateType() == null) { // default
             String payload = WFSCommunicator.createRequestPayload(type, layer,
                     session, bounds, transformService);
@@ -113,7 +113,7 @@ public class WFSMapLayerJob extends OWSMapLayerJob {
      */
     public FeatureCollection<SimpleFeatureType, SimpleFeature> response(
             WFSLayerStore layer, RequestResponse requestResponse) {
-        BufferedReader response = ((WFSRequestResponse) requestResponse).getResponse();
+        Reader response = ((WFSRequestResponse) requestResponse).getResponse();
         FeatureCollection<SimpleFeatureType, SimpleFeature> features = WFSCommunicator.parseSimpleFeatures(response, layer);
 
         if (layerProcessor.isProcessable(layer)) {
@@ -321,7 +321,6 @@ public class WFSMapLayerJob extends OWSMapLayerJob {
 
             // send values
             if(!this.sendFeatures) {
-                log.warn("Didn't request properties - skipping", fid);
                 continue;
             }
             Point centerPoint = WFSParser.getGeometryCenter(geometry);

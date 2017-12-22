@@ -1,10 +1,9 @@
 package fi.nls.test.control;
 
-import java.io.IOException;
-import java.io.OutputStream;
-
 import javax.servlet.ServletOutputStream;
 import javax.servlet.WriteListener;
+import java.io.IOException;
+import java.io.OutputStream;
 
 public class MockServletOutputStream extends ServletOutputStream {
 
@@ -27,6 +26,16 @@ public class MockServletOutputStream extends ServletOutputStream {
     @Override
     public void write(int b) throws IOException {
         out.write(b);
+    }
+
+    @Override
+    public void write(byte[] b) throws IOException {
+        write(b, 0, b.length);
+    }
+
+    @Override
+    public void write(byte[] b, int off, int len) throws IOException {
+        out.write(b, off, len);
     }
 
 }

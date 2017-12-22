@@ -8,7 +8,6 @@ import fi.nls.oskari.domain.map.userlayer.UserLayerData;
 import fi.nls.oskari.domain.map.userlayer.UserLayerStyle;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.service.OskariComponent;
 import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.util.PropertyUtil;
 import org.apache.ibatis.mapping.Environment;
@@ -263,4 +262,18 @@ public class UserLayerDbServiceMybatisImpl extends UserLayerDbService {
         }
         return 0;
     }
+	
+	public String getUserLayerExtent(long id) {
+         final SqlSession session = factory.openSession();
+         try {
+             final UserLayerMapper mapper = session.getMapper(UserLayerMapper.class);
+             return mapper.getUserLayerBbox(id);
+         } catch (Exception e) {
+             log.error(e, "Failed to get userlayer bbox with id:", id);
+         } finally {
+             session.close();
+         }
+         return "";
+     }
+
 }

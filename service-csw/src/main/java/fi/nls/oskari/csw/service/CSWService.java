@@ -7,6 +7,7 @@ import fi.nls.oskari.csw.helper.CSWISORecordNamespaceContext;
 import fi.nls.oskari.csw.helper.CSWISORecordParser;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.util.XmlHelper;
 import org.deegree.framework.xml.XMLException;
 import org.deegree.framework.xml.XMLParsingException;
 import org.deegree.ogcwebservices.OGCWebServiceException;
@@ -145,8 +146,9 @@ public class CSWService {
      */
     protected Node invokeCswGetRecordById(final URL url)
             throws URISyntaxException, IOException, SAXException, ParserConfigurationException {
-        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+        DocumentBuilderFactory dbf = XmlHelper.newDocumentBuilderFactory();
         dbf.setNamespaceAware(true);
+
         DocumentBuilder db = dbf.newDocumentBuilder();
         Document doc = db.parse(url.openStream());
         Node root = doc.getDocumentElement();

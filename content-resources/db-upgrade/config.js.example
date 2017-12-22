@@ -1,7 +1,0 @@
-module.exports = {
-  user: "example",
-  password: "example",
-  host: "localhost",
-  port: 5432,
-  database: "lportal"
-}

@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="fi.nls.oskari.ontology.service.KeywordMapper">
+
+    <resultMap id="keyword" type="Keyword">
+        <id property="id" column="id" />
+        <result property="value" column="keyword" />
+        <result property="uri" column="uri" />
+        <result property="lang" column="lang" />
+        <result property="editable" column="editable" />
+        <collection property="layerIds" javaType="List" column="layerid" ofType="Long"/>
+    </resultMap>
+
+
+    <insert id="addKeyword" parameterType="Keyword" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+    INSERT INTO portti_keywords (keyword, uri, lang, editable )
+    VALUES ( #{value}, #{uri}, #{lang}, #{editable} )
+    </insert>
+
+    <select id="findSynonyms"
+            parameterType="Keyword"
+            resultMap="keyword">
+        SELECT
+        k.id, k.keyword, k.uri, k.lang, k.editable, l.layerid AS layerid
+        FROM portti_keywords k
+        LEFT JOIN
+        portti_layer_keywords l
+        ON
+        k.id = l.keyid
+        WHERE
+        (k.lang = #{lang} OR k.lang IS NULL) AND
+        EXISTS (
+        SELECT *
+        FROM portti_keyword_association
+        WHERE
+        portti_keyword_association.type = 'SYN' AND
+        portti_keyword_association.keyid2 = k.id AND
+        portti_keyword_association.keyid1 = #{id}
+        )
+        ORDER BY k.keyword
+    </select>
+
+    <select id="findParents"
+            parameterType="Keyword"
+            resultMap="keyword">
+        SELECT
+        k.id, k.keyword, k.uri, k.lang, k.editable, l.layerid AS layerid
+        FROM portti_keywords k
+        LEFT JOIN
+        portti_layer_keywords l
+        ON
+        k.id = l.keyid
+        WHERE
+        (k.lang = #{lang} OR k.lang IS NULL) AND
+        EXISTS (
+        SELECT *
+        FROM portti_keyword_association
+        WHERE
+        portti_keyword_association.type = 'YLI' AND
+        portti_keyword_association.keyid2 = k.id AND
+        portti_keyword_association.keyid1 = #{id}
+        )
+        ORDER BY k.keyword
+    </select>
+
+    <select id="findSiblings"
+            parameterType="Keyword"
+            resultMap="keyword">
+        SELECT
+        k.id, k.keyword, k.uri, k.lang, k.editable, l.layerid AS layerid
+        FROM portti_keywords k
+        LEFT JOIN
+        portti_layer_keywords l
+        ON
+        k.id = l.keyid
+        WHERE
+        (k.lang = #{lang} OR k.lang IS NULL) AND
+        EXISTS (
+        SELECT *
+        FROM portti_keyword_association
+        WHERE
+        portti_keyword_association.type = 'LK' AND
+        portti_keyword_association.keyid2 = k.id AND
+        portti_keyword_association.keyid1 = #{id}
+        )
+        ORDER BY k.keyword
+    </select>
+
+    <select id="findKeywordsMatching"
+            parameterType="java.lang.String"
+            resultMap="keyword">
+        <!-- http://blog.sarathonline.com/2009/09/ibatis-sql-with-dynamic-like-operator.html -->
+        SELECT
+        k.id, k.keyword, k.uri, k.lang, k.editable, l.layerid AS layerid
+        FROM portti_keywords k
+        LEFT JOIN
+        portti_layer_keywords l
+        ON
+        k.id = l.keyid
+        WHERE
+        LOWER(k.keyword) LIKE #{name#} || '%'
+        ORDER BY k.lang, k.keyword
+    </select>
+
+    <select id="findMatchingKeyword"
+            parameterType="Keyword"
+            resultMap="keyword">
+        SELECT
+        k.id, k.keyword, k.uri, k.lang, k.editable, l.layerid AS layerid
+        FROM portti_keywords k
+        LEFT JOIN
+        portti_layer_keywords l
+        ON
+        k.id = l.keyid
+        WHERE
+        LOWER(k.keyword) LIKE '%' || #{value} || '%' AND
+        LOWER(k.keyword) != #{value} AND
+        (k.lang = #{lang} OR k.lang IS NULL)
+        ORDER BY k.keyword
+    </select>
+
+    <select id="findExactKeyword"
+            parameterType="Keyword"
+            resultMap="keyword">
+        SELECT
+        k.id, k.keyword, k.uri, k.lang, k.editable, l.layerid AS layerid
+        FROM portti_keywords k
+        LEFT JOIN
+        portti_layer_keywords l
+        ON
+        k.id = l.keyid
+        WHERE
+        LOWER(k.keyword) = #{value} AND
+        (k.lang = #{lang} OR k.lang IS NULL)
+        ORDER BY k.lang
+    </select>
+
+    <select id="findKeywordForLayer"
+            parameterType="java.lang.Long"
+            resultMap="keyword">
+        SELECT
+        k.id, k.keyword, k.uri, k.lang, k.editable, l.layerid AS layerid
+        FROM portti_keywords k
+        LEFT JOIN
+        portti_layer_keywords l
+        ON
+        k.id = l.keyid
+        WHERE
+        l.layerid = #{layerid}
+
+    </select>
+
+    <select id="findKeywordIdsLinkedToLayer"
+            parameterType="java.lang.Long"
+            resultType="java.lang.Long">
+        SELECT keyid
+        FROM portti_layer_keywords
+        WHERE layerid = #{layerid}
+    </select>
+
+
+    <insert id="linkKeywordToLayer"
+               parameterType="java.util.Map">
+        INSERT INTO portti_layer_keywords (keyid, layerid)
+        VALUES (#{keyid}, #{{layerid})
+    </insert>
+</mapper>

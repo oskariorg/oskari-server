@@ -382,7 +382,14 @@ public class JSONHelper {
                         log.debug("value1 was <null>, but value2 was:" + value2);
                         return false;
                     }
-                }  else if (!value1.equals(value2)) {
+                } else if (value1 instanceof Number && value2 instanceof Number) {
+                    double v1 = ((Number) value1).doubleValue();
+                    double v2 = ((Number) value2).doubleValue();
+                    if (Math.abs(v1-v2) > 1e-6) {
+                        log.debug("Values were not equal:", value1, "!=", value2);
+                        return false;
+                    }
+                } else if (!value1.equals(value2)) {
                     log.debug("Values were not equal:", value1, "!=", value2);
                     return false;
                 }

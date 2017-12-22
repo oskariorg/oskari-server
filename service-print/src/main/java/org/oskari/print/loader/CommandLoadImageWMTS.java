@@ -26,11 +26,11 @@ public class CommandLoadImageWMTS extends CommandLoadImageBase {
     private final double[] bbox;
 
     public CommandLoadImageWMTS(PrintLayer layer,
-            int width,
-            int height,
-            double[] bbox,
-            TileMatrix matrix,
-            double metersPerUnit) {
+                                int width,
+                                int height,
+                                double[] bbox,
+                                TileMatrix matrix,
+                                double metersPerUnit) {
         this.layer = layer;
         this.width = width;
         this.height = height;
@@ -77,14 +77,14 @@ public class CommandLoadImageWMTS extends CommandLoadImageBase {
             countTileRows--;
         }
 
-        List<Future<BufferedImage>> futureTiles = 
+        List<Future<BufferedImage>> futureTiles =
                 new ArrayList<Future<BufferedImage>>(countTileRows * countTileCols);
 
         GetTileBuilderREST requestBuilder = new GetTileBuilderREST(layer.getUrl())
-        .layer(layer.getName())
-        .style(layer.getStyle())
-        .tileMatrixSet(layer.getTileMatrixSet())
-        .tileMatrix(matrix.getId());
+                .layer(layer.getName())
+                .style(layer.getStyle())
+                .tileMatrixSet(layer.getTileMatrixSet())
+                .tileMatrix(matrix.getId());
 
         for (int row = 0; row < countTileRows; row++) {
             requestBuilder.tileRow(minTileRow + row);

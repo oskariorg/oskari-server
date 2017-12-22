@@ -29,11 +29,11 @@ public class CommandLoadImageFromURL extends HystrixCommand<BufferedImage> {
     private static final Setter SETTER = Setter.withGroupKey(HystrixCommandGroupKey.Factory.asKey(AsyncImageLoader.GROUP_KEY))
             .andThreadPoolPropertiesDefaults(
                     HystrixThreadPoolProperties.Setter()
-                    .withCoreSize(PropertyUtil.getOptional("oskari." + GROUP_KEY + ".job.pool.size", 10))
-                    .withMaxQueueSize(PropertyUtil.getOptional("oskari." + GROUP_KEY + ".job.pool.limit", 200))
-                    .withQueueSizeRejectionThreshold(PropertyUtil.getOptional("oskari." + GROUP_KEY + ".job.pool.queue", 200)))
-                    .andCommandPropertiesDefaults(
-                            HystrixCommandProperties.Setter()
+                            .withCoreSize(PropertyUtil.getOptional("oskari." + GROUP_KEY + ".job.pool.size", 10))
+                            .withMaxQueueSize(PropertyUtil.getOptional("oskari." + GROUP_KEY + ".job.pool.limit", 200))
+                            .withQueueSizeRejectionThreshold(PropertyUtil.getOptional("oskari." + GROUP_KEY + ".job.pool.queue", 200)))
+            .andCommandPropertiesDefaults(
+                    HystrixCommandProperties.Setter()
                             .withExecutionTimeoutInMilliseconds(PropertyUtil.getOptional("oskari." + GROUP_KEY + ".job.timeoutms", 15000)));
 
     private final String uri;
@@ -47,7 +47,7 @@ public class CommandLoadImageFromURL extends HystrixCommand<BufferedImage> {
     public BufferedImage run() throws Exception {
         return loadImageFromURL(new URL(uri));
     }
-    
+
     protected static BufferedImage loadImageFromURL(URL url) {
         LOG.debug(url.toString());
         for (int i = 0; i < RETRY_COUNT; i++) {
@@ -59,5 +59,5 @@ public class CommandLoadImageFromURL extends HystrixCommand<BufferedImage> {
         }
         throw new RuntimeException("Failed to read image from: " + url.toString());
     }
-    
+
 }
