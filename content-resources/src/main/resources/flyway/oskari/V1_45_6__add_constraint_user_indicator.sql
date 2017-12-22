@@ -1,0 +1,1 @@
+ALTER TABLE oskari_user_indicator ADD PRIMARY KEY (id);
