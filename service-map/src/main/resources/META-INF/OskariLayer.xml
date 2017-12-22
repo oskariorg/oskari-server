@@ -52,8 +52,8 @@
         <parameter property="created" jdbcType="DATETIME" javaType="java.util.Date" />
         <parameter property="updated" jdbcType="DATETIME" javaType="java.util.Date" />
 
-        <parameter property="capabilities_last_updated" jdbcType="DATETIME" javaType="java.util.Date" />
-        <parameter property="capabilities_update_rate_sec" jdbcType="INTEGER" javaType="int" />
+        <parameter property="capabilitiesLastUpdated" column="capabilities_last_updated" jdbcType="DATETIME" javaType="java.util.Date" />
+        <parameter property="capabilitiesUpdateRateSec" column="capabilities_update_rate_sec" jdbcType="INTEGER" javaType="int" />
 
         <!-- parameter property="id" jdbcType="INTEGER" javaType="java.lang.Integer" mode="OUT" / -->
     </parameterMap>
@@ -96,8 +96,8 @@
 
         <parameter property="updated" jdbcType="DATETIME" javaType="java.util.Date" />
 
-        <parameter property="capabilities_last_updated" jdbcType="DATETIME" javaType="java.util.Date" />
-        <parameter property="capabilities_update_rate_sec" jdbcType="INTEGER" javaType="int" />
+        <parameter property="capabilitiesLastUpdated" column="capabilities_last_updated" jdbcType="DATETIME" javaType="java.util.Date" />
+        <parameter property="capabilitiesUpdateRateSec" column="capabilities_update_rate_sec" jdbcType="INTEGER" javaType="int" />
 
         <parameter property="id" />
     </parameterMap>
