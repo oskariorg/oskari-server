@@ -33,7 +33,7 @@ import fi.nls.oskari.worker.ScheduledJob;
  * <li>Updates OskariLayer objects via #setCapabilities()</li>
  * </ul>
  */
-@Oskari("UpdateCapabilities")
+@Oskari("UpdateCapabilitiesJob")
 public class UpdateCapabilitiesJob extends ScheduledJob {
 
     private static final Logger LOG = LogFactory.getLogger(UpdateCapabilitiesJob.class);
