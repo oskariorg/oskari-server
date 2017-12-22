@@ -1,8 +1,7 @@
 package fi.nls.oskari.control.statistics.plugins.user;
 
-import fi.mml.map.mapwindow.service.db.UserIndicatorService;
-import fi.mml.map.mapwindow.service.db.UserIndicatorServiceImpl;
-import fi.nls.oskari.cache.JedisManager;
+import org.oskari.statistics.user.UserIndicatorService;
+import org.oskari.statistics.user.UserIndicatorServiceImpl;
 import fi.nls.oskari.control.statistics.data.*;
 import fi.nls.oskari.control.statistics.plugins.StatisticalDatasourcePlugin;
 import fi.nls.oskari.domain.User;
@@ -11,12 +10,10 @@ import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.JSONHelper;
-import fi.nls.oskari.util.PropertyUtil;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.util.*;
 
 public class UserIndicatorsStatisticalDatasourcePlugin extends StatisticalDatasourcePlugin {

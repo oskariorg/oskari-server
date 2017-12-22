@@ -1,5 +1,5 @@
 
-package fi.mml.map.mapwindow.service.db;
+package org.oskari.statistics.user;
 
 import fi.nls.oskari.annotation.Oskari;
 import fi.nls.oskari.domain.User;
