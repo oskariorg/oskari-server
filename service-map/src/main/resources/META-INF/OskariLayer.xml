@@ -614,9 +614,8 @@
             WHERE p.name = #crs#
         </isParameterPresent>
     </dynamic>
-    ORDER BY l.parentId ASC
-
     WHERE capabilities_update_rate_sec > 0
+    ORDER BY l.parentId ASC
     </select>
 
     <statement id="delete" parameterClass="int">
