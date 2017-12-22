@@ -23,10 +23,24 @@ public class LoadZipDetailsTest {
 	}
 
 	@Test
-	public void getGetFeatureInfoRequest() throws Exception {
+	public void testSetFeatureInfoRequest() throws Exception {
 		LoadZipDetails details = new LoadZipDetails();
-		details.setUserEmail(TESTING);
-		assertEquals(details.getUserEmail(), TESTING);
+		details.setGetFeatureInfoRequest(TESTING);
+		assertEquals(details.getGetFeatureInfoRequest(), TESTING);
+	}
+
+	@Test
+	public void testSetTemporaryDirectory() throws Exception {
+		LoadZipDetails details = new LoadZipDetails();
+		details.setTemporaryDirectory(TESTING);
+		assertEquals(details.getTemporaryDirectory(), TESTING);
+	}
+
+	@Test
+	public void testSetLanguage() throws Exception {
+		LoadZipDetails details = new LoadZipDetails();
+		details.setLanguage(TESTING);
+		assertEquals(details.getLanguage(), TESTING);
 	}
 
 	@Test

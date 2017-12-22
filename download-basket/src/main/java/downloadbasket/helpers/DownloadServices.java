@@ -178,5 +178,4 @@ public class DownloadServices {
 			LOGGER.error(ex, "Error: e-mail was not sent");
 		}
 	}
-
 }

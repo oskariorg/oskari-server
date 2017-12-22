@@ -6,7 +6,7 @@ import static org.junit.Assert.*;
 
 public class ZipDownloadDetailsTest {
 
-	final String TESTING = "hello world";
+	final String TESTING = "Hello world";
 
 	@Test
 	public void testSetFileName() throws Exception {

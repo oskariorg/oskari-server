@@ -4,25 +4,15 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.StringWriter;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Hashtable;
-import java.util.Properties;
 import java.util.UUID;
 import java.util.Locale;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
-import javax.mail.Address;
-import javax.mail.Message;
-import javax.mail.Transport;
-import javax.mail.internet.MimeBodyPart;
-import javax.mail.internet.MimeMessage;
-import javax.xml.bind.JAXBException;
-
+import downloadbasket.data.ErrorReportDetails;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
@@ -36,9 +26,6 @@ import downloadbasket.data.ZipDownloadDetails;
 import org.apache.commons.mail.HtmlEmail;
 import org.json.JSONArray;
 import org.json.JSONObject;
-
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.sun.mail.smtp.SMTPTransport;
 
 /**
  * Send download details email service (thread).
@@ -56,7 +43,7 @@ public class SendDownloadDetailsToEmailThread implements Runnable {
 
 	/**
 	 * Constructor.
-	 * 
+	 *
 	 * @param downLoadDetails
 	 *            download details
 	 * @param userDetails
@@ -68,26 +55,15 @@ public class SendDownloadDetailsToEmailThread implements Runnable {
 		this.locale = locale;
 	}
 
-	/**
-	 * 
-	 * Overrides the run method. Collects the download materials and sends them
-	 * using the variables given in constructor.
-	 * 
-	 */
-	@Override
-	public void run() {
-
+	private ArrayList<ZipDownloadDetails> downloadFromService() {
+		ArrayList<ZipDownloadDetails> mergeThese = new ArrayList<ZipDownloadDetails>();
+		final String strTempDir = PropertyUtil.get("oskari.wfs.download.folder.name");
+		NormalWayDownloads normalDownloads = new NormalWayDownloads();
+		for (String download : PropertyUtil.getCommaSeparatedList("oskari.wfs.download.normal.way.downloads")) {
+			normalDownloads.addDownload(download);
+		}
 		try {
 			DownloadServices ds = new DownloadServices();
-			ArrayList<ZipDownloadDetails> mergeThese = new ArrayList<ZipDownloadDetails>();
-			final String strTempDir = PropertyUtil.get("oskari.wfs.download.folder.name");
-			String normalWayDownload = PropertyUtil.get("oskari.wfs.download.normal.way.downloads");
-			String[] temp = normalWayDownload.split(",");
-			NormalWayDownloads normalDownloads = new NormalWayDownloads();
-			for (int i = 0; i < temp.length; i++) {
-				normalDownloads.addDownload(temp[i]);
-			}
-
 			for (int i = 0; i < downLoadDetails.length(); i++) {
 				JSONObject download = downLoadDetails.getJSONObject(i);
 				final String croppingMode = download.getString(PARAM_CROPPING_MODE);
@@ -119,86 +95,124 @@ public class SendDownloadDetailsToEmailThread implements Runnable {
 
 				final String fileLocation = ds.loadZip(ldz, this.locale);
 
-				if (fileLocation != null) {
+				if (fileLocation != null && ds.isValid(new File(fileLocation))) {
 					ZipDownloadDetails zdd = new ZipDownloadDetails();
 					zdd.setFileName(fileLocation);
 					final String sLayer = Helpers.getLayerNameWithoutNameSpace(download.getString(PARAM_LAYER));
 					zdd.setLayerName(sLayer);
 					mergeThese.add(zdd);
+				} else {
+					ErrorReportDetails erd = new ErrorReportDetails();
+					erd.setErrorFileLocation(fileLocation);
+					erd.setWfsUrl(ldz.getWFSUrl());
+					erd.setXmlRequest(ldz.getGetFeatureInfoRequest());
+					erd.setUserEmail(ldz.getUserEmail());
+					erd.setLanguage(locale.getLanguage());
+					ds.sendErrorReportToEmail(erd);
 				}
 			}
+		} catch (Exception ex) {
+			LOGGER.error("Cannot download shape zip.", ex);
+		}
 
-			ZipOutputStream out = null;
-			String strZipFileName = UUID.randomUUID().toString() + ".zip";
+		return mergeThese;
+	}
 
-			try {
-				File f = new File(strTempDir);
-				f.mkdirs();
-				out = new ZipOutputStream(new FileOutputStream(new File(strTempDir, strZipFileName)));
+	private String mergeZipsToOne(ArrayList<ZipDownloadDetails> mergeTheseFiles) {
+		final String strTempDir = PropertyUtil.get("oskari.wfs.download.folder.name");
+		ZipOutputStream out = null;
+		String strZipFileName = UUID.randomUUID().toString() + ".zip";
+		try {
+			File f = new File(strTempDir);
+			f.mkdirs();
+			out = new ZipOutputStream(new FileOutputStream(new File(strTempDir, strZipFileName)));
 
-				Hashtable<String, Integer> indexes = new Hashtable<String, Integer>();
-				byte[] buffer = new byte[1024];
+			Hashtable<String, Integer> indexes = new Hashtable<String, Integer>();
+			byte[] buffer = new byte[1024];
 
-				for (int i = 0; i < mergeThese.size(); i++) {
-					ZipInputStream in = null;
+			for (int i = 0; i < mergeTheseFiles.size(); i++) {
+				ZipInputStream in = null;
 
-					try {
-						ZipDownloadDetails zdd = mergeThese.get(i);
-						String strTempFile = zdd.getFileName();
+				try {
+					ZipDownloadDetails zdd = mergeTheseFiles.get(i);
+					String strTempFile = zdd.getFileName();
 
-						Integer index = indexes.get(zdd.getLayerName());
-						if (index == null) {
-							index = 0;
-						} else {
-							index++;
-							indexes.remove(zdd.getLayerName());
-						}
-
-						indexes.put(zdd.getLayerName(), index);
-
-						String folderName = zdd.getLayerName() + "_" + index + "/";
-						out.putNextEntry(new ZipEntry(folderName));
-
-						in = new ZipInputStream(new FileInputStream(strTempFile));
-						ZipEntry ze = in.getNextEntry();
-						while (ze != null) {
-							String fileName = ze.getName();
-							out.putNextEntry(new ZipEntry(folderName + fileName));
-							int len;
-							while ((len = in.read(buffer)) > 0) {
-								out.write(buffer, 0, len);
-							}
-							ze = in.getNextEntry();
-						}
-
-						out.closeEntry();
-						deleteFile(strTempFile);
-
-					} catch (Exception ex) {
-						LOGGER.error("Cannot parse JSON download details", ex);
-					} finally {
-						if (in != null)
-							IOHelper.close(in);
+					Integer index = indexes.get(zdd.getLayerName());
+					if (index == null) {
+						index = 0;
+					} else {
+						index++;
+						indexes.remove(zdd.getLayerName());
 					}
-				}
 
-			} catch (FileNotFoundException fe) {
-				LOGGER.error("File not found", fe);
-			} catch (Exception ex) {
-				LOGGER.error("Error", ex);
-			} finally {
-				IOHelper.close(out);
+					indexes.put(zdd.getLayerName(), index);
+
+					String folderName = zdd.getLayerName() + "_" + index + "/";
+					out.putNextEntry(new ZipEntry(folderName));
+
+					in = new ZipInputStream(new FileInputStream(strTempFile));
+					ZipEntry ze = in.getNextEntry();
+					while (ze != null) {
+						String fileName = ze.getName();
+						out.putNextEntry(new ZipEntry(folderName + fileName));
+						int len;
+						while ((len = in.read(buffer)) > 0) {
+							out.write(buffer, 0, len);
+						}
+						ze = in.getNextEntry();
+					}
+
+					out.closeEntry();
+					deleteFile(strTempFile);
+
+				} catch (Exception ex) {
+					LOGGER.error("Cannot parse JSON download details", ex);
+				} finally {
+					if (in != null)
+						IOHelper.close(in);
+				}
 			}
-			sendZipFile(strZipFileName);
+
+		} catch (FileNotFoundException fe) {
+			LOGGER.error("File not found", fe);
+		} catch (Exception ex) {
+			LOGGER.error("Error", ex);
+		} finally {
+			IOHelper.close(out);
+		}
+
+		return strZipFileName;
+	}
+
+	/**
+	 *
+	 * Overrides the run method. Collects the download materials and sends them
+	 * using the variables given in constructor.
+	 *
+	 */
+	@Override
+	public void run() {
+
+		try {
+
+			// Downlaod all shapes from service
+			ArrayList<ZipDownloadDetails> mergeThese = downloadFromService();
+
+			// Merge all zip files to one
+			String mergedZipFileName = mergeZipsToOne(mergeThese);
+
+			// Send zipped file to email
+			sendZipFile(mergedZipFileName);
+
 		} catch (Exception ex) {
 			LOGGER.error("Cannot download shape zip.", ex);
 		}
 	}
 
 	/**
-	 * 
+	 *
 	 * Sends the zip file to current user's email address.
-	 * 
+	 *
 	 * @param strZipFileName
 	 *            zip file name
 	 */
@@ -268,7 +282,7 @@ public class SendDownloadDetailsToEmailThread implements Runnable {
 
 	/**
 	 * Delete temp files.
-	 * 
+	 *
 	 * @param strFilePath
 	 *            temp path
 	 */
@@ -279,5 +293,4 @@ public class SendDownloadDetailsToEmailThread implements Runnable {
 			f.delete();
 		}
 	}
-
 }

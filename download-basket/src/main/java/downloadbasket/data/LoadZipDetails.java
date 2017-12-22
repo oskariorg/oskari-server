@@ -16,7 +16,7 @@ public class LoadZipDetails {
 	}
 
 	public void setGetFeatureInfoRequest(String getFeatureInfoRequest) {
-		getFeatureInfoRequest = getFeatureInfoRequest;
+		this.getFeatureInfoRequest = getFeatureInfoRequest;
 	}
 
 	public String getWFSUrl() {
@@ -48,7 +48,7 @@ public class LoadZipDetails {
 	}
 
 	public void setLanguage(String language) {
-		language = language;
+		this.language = language;
 	}
 
 	public boolean isDownloadNormalWay() {
