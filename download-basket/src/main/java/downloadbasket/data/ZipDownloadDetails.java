@@ -5,18 +5,18 @@ public class ZipDownloadDetails {
 	private String layerName = "";
 
 	public String getFileName() {
-		return fileName;
+		return this.fileName;
 	}
 
 	public void setFileName(String fileName) {
-		fileName = fileName;
+		this.fileName = fileName;
 	}
 
 	public String getLayerName() {
-		return layerName;
+		return this.layerName;
 	}
 
 	public void setLayerName(String layerName) {
-		layerName = layerName;
+		this.layerName = layerName;
 	}
 }

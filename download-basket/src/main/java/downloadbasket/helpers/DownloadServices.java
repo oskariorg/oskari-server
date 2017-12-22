@@ -53,7 +53,7 @@ public class DownloadServices {
 	 * 
 	 */
 	public String loadZip(LoadZipDetails ldz, Locale locale) throws IOException {
-		String realFileName = "";
+		String realFileName = null;
 		HttpURLConnection conn = null;
 
 		try {
@@ -81,16 +81,7 @@ public class DownloadServices {
 			try (InputStream istream = conn.getInputStream();
 					OutputStream ostream = new FileOutputStream(new File(dir0, filename + ".zip"))) {
 				IOHelper.copy(istream, ostream);
-			}
-
-			if (!isValid(new File(dir0, filename + ".zip"))) {
-				ErrorReportDetails erd = new ErrorReportDetails();
-				erd.setErrorFileLocation(realFileName);
-				erd.setWfsUrl(ldz.getWFSUrl());
-				erd.setXmlRequest(ldz.getGetFeatureInfoRequest());
-				erd.setUserEmail(ldz.getUserEmail());
-				erd.setLanguage(locale.getLanguage());
-				sendErrorReportToEmail(erd);
+				realFileName = new File(dir0, filename + ".zip").getAbsolutePath();
 			}
 
 		} catch (Exception ex) {
@@ -145,7 +136,7 @@ public class DownloadServices {
 		return getMessages().getMessage(key, new String[] {}, new Locale(language));
 	}
 
-	private void sendErrorReportToEmail(ErrorReportDetails errorDetails) {
+	public void sendErrorReportToEmail(ErrorReportDetails errorDetails) {
 		try {
 			String msg = getMessage("oskari.wfs.error.message", errorDetails.getLanguage());
 

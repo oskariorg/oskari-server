@@ -12,7 +12,7 @@ public class LoadZipDetails {
 	}
 
 	public String getGetFeatureInfoRequest() {
-		return getFeatureInfoRequest;
+		return this.getFeatureInfoRequest;
 	}
 
 	public void setGetFeatureInfoRequest(String getFeatureInfoRequest) {
@@ -28,7 +28,7 @@ public class LoadZipDetails {
 	}
 
 	public String getTemporaryDirectory() {
-		return temporaryDirectory;
+		return this.temporaryDirectory;
 	}
 
 	public void setTemporaryDirectory(final String temporaryDirectory) {
@@ -36,15 +36,15 @@ public class LoadZipDetails {
 	}
 
 	public String getUserEmail() {
-		return userEmail;
+		return this.userEmail;
 	}
 
 	public void setUserEmail(String userEmail) {
-		userEmail = userEmail;
+		this.userEmail = userEmail;
 	}
 
 	public String getLanguage() {
-		return language;
+		return this.language;
 	}
 
 	public void setLanguage(String language) {
