@@ -73,7 +73,7 @@ public class OskariLayer extends JSONLocalizedNameAndTitle implements Comparable
     private Date updated = null;
 
     private Set<InspireTheme> inspireThemes = new HashSet<InspireTheme>();
-    private Set<LayerGroup> groups = new HashSet<LayerGroup>();
+    private Set<DataProvider> groups = new HashSet<DataProvider>();
     private List<OskariLayer> sublayers = new ArrayList<OskariLayer>();
 
 
@@ -111,14 +111,14 @@ public class OskariLayer extends JSONLocalizedNameAndTitle implements Comparable
     }
 
     // we only link one group at the moment so get the first one
-    public LayerGroup getGroup() {
+    public DataProvider getGroup() {
         if(groups == null || groups.isEmpty()) {
             return null;
         }
         return groups.iterator().next();
     }
 
-    public void addGroup(final LayerGroup group) {
+    public void addGroup(final DataProvider group) {
         if(group != null) {
             groups.add(group);
             setGroupId(group.getId());

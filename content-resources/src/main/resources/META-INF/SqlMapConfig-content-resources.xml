@@ -15,7 +15,7 @@ PUBLIC "-//ibatis.apache.org//DTD SQL Map Config 2.0//EN"
       <dataSource type="fi.nls.oskari.db.IbatisDataSourceFactory" />
   </transactionManager>
   
-  <sqlMap resource="META-INF/LayerGroup.xml" />
+  <sqlMap resource="META-INF/DataProvider.xml" />
   <sqlMap resource="META-INF/OskariLayer.xml" />
   <sqlMap resource="META-INF/InspireTheme.xml" />
   <sqlMap resource="META-INF/Permissions.xml" />

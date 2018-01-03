@@ -12,7 +12,7 @@ import fi.nls.oskari.cache.JedisManager;
 import fi.nls.oskari.control.*;
 import fi.nls.oskari.domain.User;
 import fi.nls.oskari.domain.map.InspireTheme;
-import fi.nls.oskari.domain.map.LayerGroup;
+import fi.nls.oskari.domain.map.DataProvider;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.domain.map.wfs.WFSLayerConfiguration;
 import fi.nls.oskari.log.LogFactory;
@@ -253,7 +253,7 @@ public class SaveLayerHandler extends ActionHandler {
         }
 
         // organization id
-        final LayerGroup group = layerGroupService.find(params.getHttpParam("groupId", -1));
+        final DataProvider group = layerGroupService.find(params.getHttpParam("groupId", -1));
         ml.addGroup(group);
 
         // get names and descriptions

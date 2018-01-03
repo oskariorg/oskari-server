@@ -2,8 +2,8 @@ package fi.nls.oskari.map.layer.formatters;
 
 import fi.mml.map.mapwindow.service.db.InspireThemeService;
 import fi.mml.map.mapwindow.service.db.InspireThemeServiceIbatisImpl;
+import fi.nls.oskari.domain.map.DataProvider;
 import fi.nls.oskari.domain.map.InspireTheme;
-import fi.nls.oskari.domain.map.LayerGroup;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
@@ -298,7 +298,7 @@ public class LayerJSONFormatter {
         }
 
         // setup data producer/layergroup
-        final LayerGroup group = groupService.findByName(orgName);
+        final DataProvider group = groupService.findByName(orgName);
         if(group == null) {
             log.warn("Didn't find match for layergroup:", orgName);
         } else {

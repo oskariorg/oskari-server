@@ -4,7 +4,7 @@ import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.ActionHandler;
 import fi.nls.oskari.control.ActionParameters;
-import fi.nls.oskari.domain.map.LayerGroup;
+import fi.nls.oskari.domain.map.DataProvider;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.layer.LayerGroupService;
@@ -29,9 +29,9 @@ public class GetMapLayerClassesHandler extends ActionHandler {
     public void handleAction(ActionParameters params) throws ActionException {
 
         try {
-            final List<LayerGroup> groups = service.findAll();
+            final List<DataProvider> groups = service.findAll();
             final JSONArray list = new JSONArray();
-            for(LayerGroup group : groups) {
+            for(DataProvider group : groups) {
                 list.put(group.getAsJSON());
             }
             final JSONObject result = new JSONObject();

@@ -5,7 +5,7 @@ import org.json.JSONObject;
 
 import java.util.Map;
 
-public class LayerGroup extends JSONLocalizedName {
+public class DataProvider extends JSONLocalizedName {
 
 	private int id;
 

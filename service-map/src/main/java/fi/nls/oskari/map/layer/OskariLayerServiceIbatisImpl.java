@@ -7,8 +7,8 @@ import fi.mml.map.mapwindow.service.db.InspireThemeService;
 import fi.mml.map.mapwindow.service.db.InspireThemeServiceIbatisImpl;
 import fi.mml.map.mapwindow.util.OskariLayerWorker;
 import fi.nls.oskari.annotation.Oskari;
+import fi.nls.oskari.domain.map.DataProvider;
 import fi.nls.oskari.domain.map.InspireTheme;
-import fi.nls.oskari.domain.map.LayerGroup;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
@@ -181,7 +181,7 @@ public class OskariLayerServiceIbatisImpl extends OskariLayerService {
                 try {
                     // populate layer group
                     // first run (~700 layers) with this lasts ~1800ms, second run ~300ms (cached)
-                    final LayerGroup group = layerGroupService.find(result.getGroupId());
+                    final DataProvider group = layerGroupService.find(result.getGroupId());
                     result.addGroup(group);
                 } catch (Exception ex) {
                     LOG.error("Couldn't get organisation for layer", result.getId());

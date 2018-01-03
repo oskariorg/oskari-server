@@ -7,7 +7,7 @@
 <sqlMap namespace="LayerGroup">
 
     <!-- Use type aliases to avoid typing the full classname every time. -->
-    <typeAlias alias="LayerGroup" type="fi.nls.oskari.domain.map.LayerGroup" />
+    <typeAlias alias="LayerGroup" type="fi.nls.oskari.domain.map.DataProvider" />
 
     <resultMap id="LayerGroupResult" class="LayerGroup">
         <result property="id" column="id" />
