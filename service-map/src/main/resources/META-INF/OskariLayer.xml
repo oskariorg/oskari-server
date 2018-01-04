@@ -670,7 +670,7 @@
             capabilities_last_updated,
             capabilities_update_rate_sec)
 
-        values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,#capabilitiesLastUpdated#,#capabilitiesUpdateRateSec#)
+        values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
     </statement>
 
     <statement id="update" parameterMap="LayerUpdateParameter">
@@ -713,8 +713,8 @@
 
         updated=?,
 
-        capabilities_last_updated=#capabilitiesLastUpdated#,
-        capabilities_update_rate_sec=#capabilitiesUpdateRateSec#
+        capabilities_last_updated=?,
+        capabilities_update_rate_sec=?
 
         WHERE id = ?
     </statement>
