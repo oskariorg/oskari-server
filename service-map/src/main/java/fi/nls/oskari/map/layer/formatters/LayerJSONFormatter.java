@@ -1,9 +1,9 @@
 package fi.nls.oskari.map.layer.formatters;
 
-import fi.mml.map.mapwindow.service.db.InspireThemeService;
-import fi.mml.map.mapwindow.service.db.InspireThemeServiceIbatisImpl;
+import fi.mml.map.mapwindow.service.db.OskariMapLayerGroupService;
+import fi.mml.map.mapwindow.service.db.OskariMapLayerGroupServiceIbatisImpl;
 import fi.nls.oskari.domain.map.DataProvider;
-import fi.nls.oskari.domain.map.InspireTheme;
+import fi.nls.oskari.domain.map.MaplayerGroup;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
@@ -32,7 +32,7 @@ public class LayerJSONFormatter {
     public static final String PROPERTY_AJAXURL = "oskari.ajax.url.prefix";
     public static final String KEY_STYLES = "styles";
 
-    private static final InspireThemeService inspireThemeService = new InspireThemeServiceIbatisImpl();
+    private static final OskariMapLayerGroupService OSKARI_MAP_LAYER_GROUP_SERVICE = new OskariMapLayerGroupServiceIbatisImpl();
     private static final LayerGroupService groupService = new LayerGroupServiceIbatisImpl();
 
     private static final String KEY_ID = "id";
@@ -290,7 +290,7 @@ public class LayerJSONFormatter {
         }
 
         // handle inspiretheme
-        final InspireTheme theme = inspireThemeService.findByName(themeName);
+        final MaplayerGroup theme = OSKARI_MAP_LAYER_GROUP_SERVICE.findByName(themeName);
         if (theme == null) {
             log.warn("Didn't find match for theme:", themeName);
         } else {

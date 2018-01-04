@@ -4,39 +4,39 @@
     PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"      
     "http://ibatis.apache.org/dtd/sql-map-2.dtd">
 
-<sqlMap namespace="InspireTheme">
+<sqlMap namespace="MaplayerGroup">
 
     <!-- Use type aliases to avoid typing the full classname every time. -->
-    <typeAlias alias="InspireTheme" type="fi.nls.oskari.domain.map.InspireTheme" />
+    <typeAlias alias="MaplayerGroup" type="fi.nls.oskari.domain.map.MaplayerGroup" />
 
-    <resultMap id="InspireThemeResult" class="InspireTheme">
+    <resultMap id="MaplayerGroupResult" class="MaplayerGroup">
         <result property="id" column="id" />
         <result property="locale" column="locale" jdbcType="VARCHAR" javaType="org.json.JSONObject" />
     </resultMap>
 
-    <parameterMap id="InspireThemeInsertParameter" class="InspireTheme">
+    <parameterMap id="MaplayerGroupInsertParameter" class="MaplayerGroup">
         <parameter property="locale" jdbcType="VARCHAR" javaType="org.json.JSONObject" />
     </parameterMap>
 
-    <parameterMap id="InspireThemeUpdateParameter" class="InspireTheme">
+    <parameterMap id="MaplayerGroupUpdateParameter" class="MaplayerGroup">
         <parameter property="locale" jdbcType="VARCHAR" javaType="org.json.JSONObject" />
         <parameter property="id" />
     </parameterMap>
 
     <select id="maxId" resultClass="int">
-        select max(id) from portti_inspiretheme
+        select max(id) from oskari_maplayer_group
     </select>
 
-    <select id="find" parameterClass="int" resultMap="InspireThemeResult">
-        select id, locale from portti_inspiretheme where id = #id#
+    <select id="find" parameterClass="int" resultMap="MaplayerGroupResult">
+        select id, locale from oskari_maplayer_group where id = #id#
     </select>
 
-    <select id="findAll" resultMap="InspireThemeResult">
-        select id, locale from portti_inspiretheme order by id
+    <select id="findAll" resultMap="MaplayerGroupResult">
+        select id, locale from oskari_maplayer_group order by id
     </select>
 
-    <select id="findByMaplayer" parameterClass="int" resultMap="InspireThemeResult">
-        select t.id, t.locale from portti_inspiretheme t, oskari_maplayer_themes l
+    <select id="findByMaplayer" parameterClass="int" resultMap="MaplayerGroupResult">
+        select t.id, t.locale from oskari_maplayer_group t, oskari_maplayer_themes l
             where t.id = l.themeid AND l.maplayerid = #id#
     </select>
 
@@ -44,23 +44,23 @@
         select themeid, maplayerid from oskari_maplayer_themes
     </select>
 
-    <select id="findMaplayersByTheme" resultClass="int" parameterClass="int">
+    <select id="findMaplayersByGroup" resultClass="int" parameterClass="int">
         select maplayerid from oskari_maplayer_themes where themeid = #id#
     </select>
     
-    <statement id="insert" parameterMap="InspireThemeInsertParameter" resultClass="int">
-        insert into portti_inspiretheme (locale)
+    <statement id="insert" parameterMap="MaplayerGroupInsertParameter" resultClass="int">
+        insert into oskari_maplayer_group (locale)
         values (?)
     </statement>
     
-    <update id="update" parameterMap="InspireThemeUpdateParameter">
-        update portti_inspiretheme set
+    <update id="update" parameterMap="MaplayerGroupUpdateParameter">
+        update oskari_maplayer_group set
             locale = ?
         where id = ?
     </update>
     
     <delete id="delete" parameterClass="int">
-        delete from portti_inspiretheme where id = #id#
+        delete from oskari_maplayer_group where id = #id#
     </delete>
 
     <delete id="removeThemeLinks" parameterClass="long">

@@ -5,7 +5,7 @@ import org.json.JSONObject;
 
 import java.util.Map;
 
-public class InspireTheme extends JSONLocalizedName {
+public class MaplayerGroup extends JSONLocalizedName {
 
 	private int id;
 
