@@ -146,8 +146,8 @@
         l.created,
         l.updated,
 
-        l.capabilities_last_updated AS capabilitiesLastUpdated,
-        l.capabilities_update_rate_sec AS capabilitiesUpdateRateSec
+        l.capabilities_last_updated,
+        l.capabilities_update_rate_sec
 
         FROM
         oskari_maplayer l LEFT OUTER JOIN oskari_maplayer_metadata m
@@ -202,8 +202,8 @@
         l.created,
         l.updated,
 
-        l.capabilities_last_updated AS capabilitiesLastUpdated,
-        l.capabilities_update_rate_sec AS capabilitiesUpdateRateSec
+        l.capabilities_last_updated,
+        l.capabilities_update_rate_sec
 
         FROM
         oskari_maplayer l LEFT OUTER JOIN oskari_maplayer_metadata m
@@ -258,8 +258,8 @@
         l.created,
         l.updated,
 
-        l.capabilities_last_updated AS capabilitiesLastUpdated,
-        l.capabilities_update_rate_sec AS capabilitiesUpdateRateSec
+        l.capabilities_last_updated,
+        l.capabilities_update_rate_sec
 
         FROM
         oskari_maplayer l LEFT OUTER JOIN oskari_maplayer_metadata m
@@ -315,8 +315,8 @@
         l.created,
         l.updated,
 
-        l.capabilities_last_updated AS capabilitiesLastUpdated,
-        l.capabilities_update_rate_sec AS capabilitiesUpdateRateSec
+        l.capabilities_last_updated,
+        l.capabilities_update_rate_sec
 
         FROM
         oskari_maplayer l LEFT OUTER JOIN oskari_maplayer_metadata m
@@ -372,8 +372,8 @@
         l.created,
         l.updated,
 
-        l.capabilities_last_updated AS capabilitiesLastUpdated,
-        l.capabilities_update_rate_sec AS capabilitiesUpdateRateSec
+        l.capabilities_last_updated,
+        l.capabilities_update_rate_sec
 
         FROM
         oskari_maplayer l LEFT OUTER JOIN oskari_maplayer_metadata m
@@ -437,8 +437,8 @@
     l.created,
     l.updated,
 
-    l.capabilities_last_updated AS capabilitiesLastUpdated,
-    l.capabilities_update_rate_sec AS capabilitiesUpdateRateSec
+    l.capabilities_last_updated,
+    l.capabilities_update_rate_sec
 
     FROM
     oskari_maplayer l LEFT OUTER JOIN oskari_maplayer_metadata m
@@ -506,8 +506,8 @@
         l.created,
         l.updated,
 
-        l.capabilities_last_updated AS capabilitiesLastUpdated,
-        l.capabilities_update_rate_sec AS capabilitiesUpdateRateSec
+        l.capabilities_last_updated,
+        l.capabilities_update_rate_sec
 
         FROM
         oskari_maplayer l LEFT OUTER JOIN oskari_maplayer_metadata m
@@ -601,8 +601,8 @@
     l.created,
     l.updated,
 
-    l.capabilities_last_updated AS capabilitiesLastUpdated,
-    l.capabilities_update_rate_sec AS capabilitiesUpdateRateSec
+    l.capabilities_last_updated,
+    l.capabilities_update_rate_sec
 
     FROM
     oskari_maplayer l LEFT OUTER JOIN oskari_maplayer_metadata m
