@@ -52,8 +52,8 @@
         <parameter property="created" jdbcType="DATETIME" javaType="java.util.Date" />
         <parameter property="updated" jdbcType="DATETIME" javaType="java.util.Date" />
 
-        <parameter property="capabilitiesLastUpdated" column="capabilities_last_updated" jdbcType="DATETIME" javaType="java.util.Date" />
-        <parameter property="capabilitiesUpdateRateSec" column="capabilities_update_rate_sec" jdbcType="INTEGER" javaType="int" />
+        <parameter property="capabilitiesLastUpdated" jdbcType="DATETIME" javaType="java.util.Date" />
+        <parameter property="capabilitiesUpdateRateSec" jdbcType="INTEGER" javaType="int" />
 
         <!-- parameter property="id" jdbcType="INTEGER" javaType="java.lang.Integer" mode="OUT" / -->
     </parameterMap>
@@ -96,8 +96,8 @@
 
         <parameter property="updated" jdbcType="DATETIME" javaType="java.util.Date" />
 
-        <parameter property="capabilitiesLastUpdated" column="capabilities_last_updated" jdbcType="DATETIME" javaType="java.util.Date" />
-        <parameter property="capabilitiesUpdateRateSec" column="capabilities_update_rate_sec" jdbcType="INTEGER" javaType="int" />
+        <parameter property="capabilitiesLastUpdated" jdbcType="DATETIME" javaType="java.util.Date" />
+        <parameter property="capabilitiesUpdateRateSec" jdbcType="INTEGER" javaType="int" />
 
         <parameter property="id" />
     </parameterMap>
@@ -146,8 +146,8 @@
         l.created,
         l.updated,
 
-        l.capabilities_last_updated,
-        l.capabilities_update_rate_sec
+        l.capabilities_last_updated AS capabilitiesLastUpdated,
+        l.capabilities_update_rate_sec AS capabilitiesUpdateRateSec
 
         FROM
         oskari_maplayer l LEFT OUTER JOIN oskari_maplayer_metadata m
@@ -202,8 +202,8 @@
         l.created,
         l.updated,
 
-        l.capabilities_last_updated,
-        l.capabilities_update_rate_sec
+        l.capabilities_last_updated AS capabilitiesLastUpdated,
+        l.capabilities_update_rate_sec AS capabilitiesUpdateRateSec
 
         FROM
         oskari_maplayer l LEFT OUTER JOIN oskari_maplayer_metadata m
@@ -258,8 +258,8 @@
         l.created,
         l.updated,
 
-        l.capabilities_last_updated,
-        l.capabilities_update_rate_sec
+        l.capabilities_last_updated AS capabilitiesLastUpdated,
+        l.capabilities_update_rate_sec AS capabilitiesUpdateRateSec
 
         FROM
         oskari_maplayer l LEFT OUTER JOIN oskari_maplayer_metadata m
@@ -315,8 +315,8 @@
         l.created,
         l.updated,
 
-        l.capabilities_last_updated,
-        l.capabilities_update_rate_sec
+        l.capabilities_last_updated AS capabilitiesLastUpdated,
+        l.capabilities_update_rate_sec AS capabilitiesUpdateRateSec
 
         FROM
         oskari_maplayer l LEFT OUTER JOIN oskari_maplayer_metadata m
@@ -372,8 +372,8 @@
         l.created,
         l.updated,
 
-        l.capabilities_last_updated,
-        l.capabilities_update_rate_sec
+        l.capabilities_last_updated AS capabilitiesLastUpdated,
+        l.capabilities_update_rate_sec AS capabilitiesUpdateRateSec
 
         FROM
         oskari_maplayer l LEFT OUTER JOIN oskari_maplayer_metadata m
@@ -437,8 +437,8 @@
     l.created,
     l.updated,
 
-    l.capabilities_last_updated,
-    l.capabilities_update_rate_sec
+    l.capabilities_last_updated AS capabilitiesLastUpdated,
+    l.capabilities_update_rate_sec AS capabilitiesUpdateRateSec
 
     FROM
     oskari_maplayer l LEFT OUTER JOIN oskari_maplayer_metadata m
@@ -506,8 +506,8 @@
         l.created,
         l.updated,
 
-        l.capabilities_last_updated,
-        l.capabilities_update_rate_sec
+        l.capabilities_last_updated AS capabilitiesLastUpdated,
+        l.capabilities_update_rate_sec AS capabilitiesUpdateRateSec
 
         FROM
         oskari_maplayer l LEFT OUTER JOIN oskari_maplayer_metadata m
@@ -601,8 +601,8 @@
     l.created,
     l.updated,
 
-    l.capabilities_last_updated,
-    l.capabilities_update_rate_sec
+    l.capabilities_last_updated AS capabilitiesLastUpdated,
+    l.capabilities_update_rate_sec AS capabilitiesUpdateRateSec
 
     FROM
     oskari_maplayer l LEFT OUTER JOIN oskari_maplayer_metadata m
@@ -670,7 +670,7 @@
             capabilities_last_updated,
             capabilities_update_rate_sec)
 
-        values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+        values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,#capabilitiesLastUpdated#,#capabilitiesUpdateRateSec#)
     </statement>
 
     <statement id="update" parameterMap="LayerUpdateParameter">
@@ -713,8 +713,8 @@
 
         updated=?,
 
-        capabilities_last_updated=?,
-        capabilities_update_rate_sec=?
+        capabilities_last_updated=#capabilitiesLastUpdated#,
+        capabilities_update_rate_sec=#capabilitiesUpdateRateSec#
 
         WHERE id = ?
     </statement>
