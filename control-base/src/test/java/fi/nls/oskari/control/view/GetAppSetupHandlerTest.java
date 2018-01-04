@@ -9,7 +9,7 @@ import fi.nls.oskari.control.view.modifier.bundle.MapfullHandler;
 import fi.nls.oskari.control.view.modifier.param.CoordinateParamHandler;
 import fi.nls.oskari.control.view.modifier.param.WFSHighlightParamHandler;
 import fi.nls.oskari.domain.User;
-import fi.nls.oskari.domain.map.LayerGroup;
+import fi.nls.oskari.domain.map.DataProvider;
 import fi.nls.oskari.domain.map.view.View;
 import fi.nls.oskari.domain.map.view.ViewTypes;
 import fi.nls.oskari.map.data.service.PublishedMapRestrictionService;
@@ -275,7 +275,7 @@ public class GetAppSetupHandlerTest extends JSONActionRouteTest {
 
         //Whitebox.newInstance(LayerGroupServiceIbatisImpl.class);
         final LayerGroupService groupService = mock(LayerGroupServiceIbatisImpl.class);
-        LayerGroup group = mock(LayerGroup.class);
+        DataProvider group = mock(DataProvider.class);
         group.setName("en", "Testing");
         doReturn(group).when(groupService).find(anyInt());
         doReturn(Collections.emptyList()).when(groupService).findAll();

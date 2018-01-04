@@ -174,15 +174,15 @@ public class OskariLayerServiceIbatisImpl extends OskariLayerService {
 
         // populate groups/themes for top level layers
         if(result.getParentId() == -1) {
-            // sublayers and internal baselayers don't have groupId
-            Object groupId = data.get("groupid");
-            if(groupId != null) {
-                result.setGroupId((Integer)groupId);
+            // sublayers and internal baselayers don't have dataprovider_id
+            Object dataProviderId = data.get("dataprovider_id");
+            if(dataProviderId != null) {
+                result.setDataproviderId((Integer)dataProviderId);
                 try {
                     // populate layer group
                     // first run (~700 layers) with this lasts ~1800ms, second run ~300ms (cached)
-                    final DataProvider group = layerGroupService.find(result.getGroupId());
-                    result.addGroup(group);
+                    final DataProvider dataProvider = layerGroupService.find(result.getDataproviderId());
+                    result.addGroup(dataProvider);
                 } catch (Exception ex) {
                     LOG.error("Couldn't get organisation for layer", result.getId());
                     return null;

@@ -28,7 +28,7 @@ public class OskariLayer extends JSONLocalizedNameAndTitle implements Comparable
 	private String type;
 
     private boolean isBaseMap = false;
-    private int groupId;
+    private int dataproviderId;
 
     private String name;
     private String url;
@@ -121,7 +121,7 @@ public class OskariLayer extends JSONLocalizedNameAndTitle implements Comparable
     public void addGroup(final DataProvider group) {
         if(group != null) {
             groups.add(group);
-            setGroupId(group.getId());
+            setDataproviderId(group.getId());
         }
     }
 
@@ -278,12 +278,12 @@ public class OskariLayer extends JSONLocalizedNameAndTitle implements Comparable
         isBaseMap = baseMap;
     }
 
-    public int getGroupId() {
-        return groupId;
+    public int getDataproviderId() {
+        return dataproviderId;
     }
 
-    public void setGroupId(int groupId) {
-        this.groupId = groupId;
+    public void setDataproviderId(int dataproviderId) {
+        this.dataproviderId = dataproviderId;
     }
 
     public String getName() {
