@@ -102,7 +102,7 @@ public class UpdateCapabilitiesJob extends ScheduledJob {
 
         final String data;
         try {
-            data = capabilitiesCacheService.getCapabilities(url, type, user, pass, version).getData();
+            data = capabilitiesCacheService.getCapabilities(url, type, user, pass, version, true).getData();
         } catch (ServiceException e) {
             LOG.warn(e, "Could not find get Capabilities, url:", url,
                     "type:", type, "version:", version, "ids:", Arrays.toString(ids));
@@ -151,7 +151,7 @@ public class UpdateCapabilitiesJob extends ScheduledJob {
         }
     }
 
-    static class UrlTypeVersion {
+    private static class UrlTypeVersion {
 
         private final String url;
         private final String type;
