@@ -2,6 +2,15 @@
 
 ## 1.45.0
 
+### Database modifications
+
+
+- oskari_layergroup table renamed to oskari_dataprovider
+- oskari_maplayer.groupid column renamed oskari_maplayer.dataprovider_id
+- portti_inspiretheme table renamed to oskari_maplayer_group
+- oskari_maplayer_themes table renamed to oskari_maplayer_group_link
+- oskari_maplayer_group_link.themeid column renamed oskari_maplayer_group_link.groupid
+
 ### service-map
 Adds bounding box to userlayer that encloses userlayer's geometries. If a userlayer is added to the map, the map moves and zooms to the userlayer's extent.
 
