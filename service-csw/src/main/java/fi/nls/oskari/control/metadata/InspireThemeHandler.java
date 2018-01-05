@@ -23,9 +23,9 @@ public class InspireThemeHandler extends MetadataFieldHandler {
     private static OskariMapLayerGroupService oskariMapLayerGroupService = OskariComponentManager.getComponentOfType(OskariMapLayerGroupService.class);
 
     public void handleParam(final String param, final SearchCriteria criteria) {
-        final int themeId = ConversionHelper.getInt(param, -1);
-        if(themeId != -1) {
-            MaplayerGroup theme = oskariMapLayerGroupService.find(themeId);
+        final int groupId = ConversionHelper.getInt(param, -1);
+        if(groupId != -1) {
+            MaplayerGroup theme = oskariMapLayerGroupService.find(groupId);
             criteria.addParam(getPropertyName(), theme.getName(criteria.getLocale()));
         }
     }

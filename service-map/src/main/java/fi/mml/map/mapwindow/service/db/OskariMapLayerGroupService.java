@@ -13,7 +13,7 @@ import java.util.List;
  */
 public abstract class OskariMapLayerGroupService extends OskariComponentIbatisService<MaplayerGroup> {
     public abstract List<MaplayerGroup> findByMaplayerId(final int layerId);
-    public abstract void updateLayerThemes(final long maplayerId, final Collection<MaplayerGroup> themes);
+    public abstract void updateLayerGroups(final long maplayerId, final Collection<MaplayerGroup> groups);
     public abstract List<Integer> findMaplayersByGroup(int id);
     public abstract MaplayerGroup findByName(final String name);
 }

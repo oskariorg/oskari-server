@@ -57,7 +57,7 @@ public class OskariMapLayerGroupServiceIbatisImpl extends OskariMapLayerGroupSer
             }
             else {
                 log.warn("Layer with id", layerId, "links to a non-existing theme (id:", id,
-                        "). Rows referencing theme should be removed from oskari_maplayer_themes DB table.");
+                        "). Rows referencing theme should be removed from oskari_maplayer_group_link DB table.");
             }
         }
         return list;
@@ -110,16 +110,16 @@ public class OskariMapLayerGroupServiceIbatisImpl extends OskariMapLayerGroupSer
         LINK_CACHE.setLimit(mappings.size() + 10);
         LINK_CACHE.flush(true);
         for(Map<String,Object> result : mappings) {
-            if(result.get("themeid") == null) {
+            if(result.get("groupid") == null) {
                 // this will make the keys case insensitive (needed for hsqldb compatibility...)
                 final Map<String, Object> caseInsensitiveData = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
                 caseInsensitiveData.putAll(result);
                 result = caseInsensitiveData;
             }
-            final int themeid = (Integer) result.get("themeid");
+            final int groupid = (Integer) result.get("groupid");
             final int maplayerid = (Integer) result.get("maplayerid");
             List<Integer> themeLayers = getLinkCache(maplayerid);
-            themeLayers.add(themeid);
+            themeLayers.add(groupid);
         }
     }
 
@@ -149,25 +149,25 @@ public class OskariMapLayerGroupServiceIbatisImpl extends OskariMapLayerGroupSer
         return id;
     }
 
-    public synchronized void updateLayerThemes(final long maplayerId, final Collection<MaplayerGroup> themes) {
+    public synchronized void updateLayerGroups(final long maplayerId, final Collection<MaplayerGroup> groups) {
         // expects themes to be in database already - doesn't insert new ones
         SqlMapClient client = null;
         try {
             client = getSqlMapClient();
             client.startTransaction();
             // remove old links
-            client.delete(getNameSpace() + ".removeThemeLinks", maplayerId);
+            client.delete(getNameSpace() + ".removeGroupsLinks", maplayerId);
             final List<Integer> themeLayers = getLinkCache((int)maplayerId);
             themeLayers.clear();
             // link new set of themes and update cache
             final Map<String, Object> params = new HashMap<>(2);
             params.put("layerId", maplayerId);
-            if(themes != null) {
+            if(groups != null) {
                 // sublayers dont have themes
-                for(MaplayerGroup theme : themes) {
-                    params.put("themeId", theme.getId());
-                    client.insert(getNameSpace() + ".linkThemeToLayer", params);
-                    themeLayers.add(theme.getId());
+                for(MaplayerGroup group : groups) {
+                    params.put("groupId", group.getId());
+                    client.insert(getNameSpace() + ".linkGroupToLayer", params);
+                    themeLayers.add(group.getId());
                 }
             }
             client.commitTransaction();

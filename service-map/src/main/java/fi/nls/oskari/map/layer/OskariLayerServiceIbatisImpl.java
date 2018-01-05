@@ -346,7 +346,7 @@ public class OskariLayerServiceIbatisImpl extends OskariLayerService {
         try {
             getSqlMapClient().update(getNameSpace() + ".update", layer);
             // link to inspire theme(s)
-            oskariMapLayerGroupService.updateLayerThemes(layer.getId(), layer.getMaplayerGroups());
+            oskariMapLayerGroupService.updateLayerGroups(layer.getId(), layer.getMaplayerGroups());
         } catch (Exception e) {
             throw new RuntimeException("Failed to update", e);
         }
@@ -363,7 +363,7 @@ public class OskariLayerServiceIbatisImpl extends OskariLayerService {
             layer.setId(id);
             client.commitTransaction();
             // link to inspire theme(s)
-            oskariMapLayerGroupService.updateLayerThemes(id, layer.getMaplayerGroups());
+            oskariMapLayerGroupService.updateLayerGroups(id, layer.getMaplayerGroups());
             return id;
         } catch (Exception e) {
             throw new RuntimeException("Failed to insert", e);

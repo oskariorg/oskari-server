@@ -36,16 +36,16 @@
     </select>
 
     <select id="findByMaplayer" parameterClass="int" resultMap="MaplayerGroupResult">
-        select t.id, t.locale from oskari_maplayer_group t, oskari_maplayer_themes l
-            where t.id = l.themeid AND l.maplayerid = #id#
+        select t.id, t.locale from oskari_maplayer_group t, oskari_maplayer_group_link l
+            where t.id = l.groupid AND l.maplayerid = #id#
     </select>
 
     <select id="findByMaplayerMappings" resultClass="java.util.HashMap">
-        select themeid, maplayerid from oskari_maplayer_themes
+        select groupid, maplayerid from oskari_maplayer_group_link
     </select>
 
     <select id="findMaplayersByGroup" resultClass="int" parameterClass="int">
-        select maplayerid from oskari_maplayer_themes where themeid = #id#
+        select maplayerid from oskari_maplayer_group_link where groupid = #id#
     </select>
     
     <statement id="insert" parameterMap="MaplayerGroupInsertParameter" resultClass="int">
@@ -63,12 +63,12 @@
         delete from oskari_maplayer_group where id = #id#
     </delete>
 
-    <delete id="removeThemeLinks" parameterClass="long">
-        DELETE FROM oskari_maplayer_themes WHERE maplayerid = #id#;
+    <delete id="removeGroupsLinks" parameterClass="long">
+        DELETE FROM oskari_maplayer_group_link WHERE maplayerid = #id#;
     </delete>
 
-    <statement id="linkThemeToLayer" parameterClass="java.util.HashMap">
-        insert into oskari_maplayer_themes (maplayerid, themeid) values (#layerId#, #themeId#)
+    <statement id="linkGroupToLayer" parameterClass="java.util.HashMap">
+        insert into oskari_maplayer_group_link (maplayerid, groupid) values (#layerId#, #groupId#)
     </statement>
 
     
