@@ -168,6 +168,9 @@ public class UpdateCapabilitiesJob extends ScheduledJob {
             if (o == null || !(o instanceof UrlTypeVersion)) {
                 return false;
             }
+            if (o == this) {
+                return true;
+            }
             UrlTypeVersion s = (UrlTypeVersion) o;
             return url.equals(s.url)
                     && type.equals(s.type)
