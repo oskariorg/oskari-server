@@ -18,7 +18,7 @@ import fi.nls.oskari.domain.map.wfs.WFSLayerConfiguration;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.data.domain.OskariLayerResource;
-import fi.nls.oskari.map.layer.LayerGroupService;
+import fi.nls.oskari.map.layer.DataProviderService;
 import fi.nls.oskari.map.layer.OskariLayerService;
 import fi.nls.oskari.permission.domain.Permission;
 import fi.nls.oskari.service.ServiceException;
@@ -50,7 +50,7 @@ public class SaveLayerHandler extends ActionHandler {
     private OskariLayerService mapLayerService = ServiceFactory.getMapLayerService();
     private WFSLayerConfigurationService wfsLayerService = ServiceFactory.getWfsLayerService();
     private PermissionsService permissionsService = ServiceFactory.getPermissionsService();
-    private LayerGroupService layerGroupService = ServiceFactory.getLayerGroupService();
+    private DataProviderService dataProviderService = ServiceFactory.getDataProviderService();
     private OskariMapLayerGroupService oskariMapLayerGroupService = ServiceFactory.getOskariMapLayerGroupService();
     private MaplayerProjectionService maplayerProjectionService = ServiceFactory.getMaplayerProjectionService();
     private CapabilitiesCacheService capabilitiesService = ServiceFactory.getCapabilitiesCacheService();
@@ -253,7 +253,7 @@ public class SaveLayerHandler extends ActionHandler {
         }
 
         // organization id
-        final DataProvider group = layerGroupService.find(params.getHttpParam("groupId", -1));
+        final DataProvider group = dataProviderService.find(params.getHttpParam("groupId", -1));
         ml.addGroup(group);
 
         // get names and descriptions
@@ -272,7 +272,7 @@ public class SaveLayerHandler extends ActionHandler {
         }
 
         MaplayerGroup theme = oskariMapLayerGroupService.find(params.getHttpParam("inspireTheme", -1));
-        ml.addInspireTheme(theme);
+        ml.addGroup(theme);
 
         ml.setVersion(params.getHttpParam("version", ""));
 

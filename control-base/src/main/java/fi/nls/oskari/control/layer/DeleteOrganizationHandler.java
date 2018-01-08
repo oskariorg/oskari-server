@@ -7,7 +7,7 @@ import fi.nls.oskari.control.ActionHandler;
 import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.map.layer.LayerGroupService;
+import fi.nls.oskari.map.layer.DataProviderService;
 import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.ServiceFactory;
 
@@ -19,7 +19,7 @@ import fi.nls.oskari.util.ServiceFactory;
 @OskariActionRoute("DeleteOrganization")
 public class DeleteOrganizationHandler extends ActionHandler {
 
-    private LayerGroupService groupService = ServiceFactory.getLayerGroupService();
+    private DataProviderService groupService = ServiceFactory.getDataProviderService();
     private static final Logger log = LogFactory.getLogger(DeleteOrganizationHandler.class);
     private static final String PARAM_GROUP_ID = "id";
 

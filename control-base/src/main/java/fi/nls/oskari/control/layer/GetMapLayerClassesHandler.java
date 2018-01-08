@@ -7,7 +7,7 @@ import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.domain.map.DataProvider;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.map.layer.LayerGroupService;
+import fi.nls.oskari.map.layer.DataProviderService;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.ResponseHelper;
 import fi.nls.oskari.util.ServiceFactory;
@@ -22,7 +22,7 @@ import java.util.List;
 @OskariActionRoute("GetMapLayerGroups")
 public class GetMapLayerClassesHandler extends ActionHandler {
 
-    private LayerGroupService service = ServiceFactory.getLayerGroupService();
+    private DataProviderService service = ServiceFactory.getDataProviderService();
     private static final Logger log = LogFactory.getLogger(GetMapLayerClassesHandler.class);
 
     @Override

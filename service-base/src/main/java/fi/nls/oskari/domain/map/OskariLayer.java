@@ -82,31 +82,31 @@ public class OskariLayer extends JSONLocalizedNameAndTitle implements Comparable
     }
 
     // we only link one theme at the moment so get the first one
-	public MaplayerGroup getInspireTheme() {
+	public MaplayerGroup getMaplayerGroup() {
         if(maplayerGroups == null || maplayerGroups.isEmpty()) {
             return null;
         }
         if(maplayerGroups.size() > 1) {
             // TODO: remove this when we support more than one theme
-            log.warn("More than one inspire theme, this shouldn't happen!! layerId:", getId(), "- Themes:" , maplayerGroups);
+            log.warn("More than one maplayer group, this shouldn't happen!! layerId:", getId(), "- Maplayer groupsN:" , maplayerGroups);
         }
 		return maplayerGroups.iterator().next();
 	}
     public Set<MaplayerGroup> getMaplayerGroups() {
         return maplayerGroups;
     }
-    public void addInspireThemes(final List<MaplayerGroup> themes) {
-        if(themes != null && !themes.isEmpty()) {
-            addInspireTheme(themes.iterator().next());
+    public void addGroups(final List<MaplayerGroup> groups) {
+        if(groups != null && !groups.isEmpty()) {
+            addGroup(groups.iterator().next());
             // TODO: use addAll when we support more than one theme
             //maplayerGroups.addAll(themes);
         }
     }
-    public void addInspireTheme(final MaplayerGroup theme) {
-        if(theme != null) {
+    public void addGroup(final MaplayerGroup group) {
+        if(group != null) {
             // TODO: remove the clearing when we support more than one theme
             maplayerGroups.clear();
-            maplayerGroups.add(theme);
+            maplayerGroups.add(group);
         }
     }
 

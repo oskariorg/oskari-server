@@ -127,7 +127,7 @@ public class GetWmsServicesHandler extends ActionHandler {
 //                mapProperties.put("descriptionLink", ml.getDescriptionLink());
                 mapProperties.put("legendImage", ml.getLegendImage());
 
-                mapProperties.put("inspireTheme", ml.getInspireTheme().getId());
+                mapProperties.put("inspireTheme", ml.getMaplayerGroup().getId());
                 mapProperties.put("dataUrl", ml.getMetadataId());
 //                mapProperties.put("metadataUrl", ml.getMetadataUrl());
 //                mapProperties.put("orderNumber", ml.getOrdernumber());

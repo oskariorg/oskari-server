@@ -5,7 +5,7 @@ import fi.nls.oskari.control.*;
 import fi.nls.oskari.domain.map.DataProvider;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.map.layer.LayerGroupService;
+import fi.nls.oskari.map.layer.DataProviderService;
 import fi.nls.oskari.util.RequestHelper;
 import fi.nls.oskari.util.ResponseHelper;
 import fi.nls.oskari.util.ServiceFactory;
@@ -24,7 +24,7 @@ public class SaveOrganizationHandler extends ActionHandler {
 
     private static final Logger log = LogFactory.getLogger(SaveOrganizationHandler.class);
 
-    private final LayerGroupService layerGroupService = ServiceFactory.getLayerGroupService();
+    private final DataProviderService dataProviderService = ServiceFactory.getDataProviderService();
 
     @Override
     public void handleAction(ActionParameters params) throws ActionException {
@@ -41,15 +41,15 @@ public class SaveOrganizationHandler extends ActionHandler {
 
             // ************** UPDATE ************************
             if (groupId != -1) {
-                if (!layerGroupService.hasPermissionToUpdate(params.getUser(), groupId)) {
+                if (!dataProviderService.hasPermissionToUpdate(params.getUser(), groupId)) {
                     throw new ActionDeniedException("Unauthorized user tried to update layer group - id=" + groupId);
                 }
-                layerGroupService.update(group);
+                dataProviderService.update(group);
                 ResponseHelper.writeResponse(params, group.getAsJSON());
             }
             // ************** INSERT ************************
             else if (params.getUser().isAdmin()) {
-                final int id = layerGroupService.insert(group);
+                final int id = dataProviderService.insert(group);
                 group.setId(id);
                 ResponseHelper.writeResponse(params, group.getAsJSON());
             } else {

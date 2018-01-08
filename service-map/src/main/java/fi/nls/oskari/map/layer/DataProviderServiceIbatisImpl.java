@@ -16,12 +16,12 @@ import java.util.Map;
  * Time: 13:43
  * To change this template use File | Settings | File Templates.
  */
-public class LayerGroupServiceIbatisImpl extends BaseIbatisService<DataProvider> implements LayerGroupService {
+public class DataProviderServiceIbatisImpl extends BaseIbatisService<DataProvider> implements DataProviderService {
 
     // FIXME: use some caching lib for this, and clear cache on update/delete etc
     final private static Map<Integer, DataProvider> ID_CACHE = new HashMap<Integer, DataProvider>();
 
-    public LayerGroupServiceIbatisImpl() {
+    public DataProviderServiceIbatisImpl() {
         // populate cache on startup
         try {
             findAll();
