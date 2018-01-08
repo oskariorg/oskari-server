@@ -86,7 +86,7 @@ public class UpdateCapabilitiesJob extends ScheduledJob {
             return true;
         }
         LOG.debug("Skipping layerId:", layer.getId(), "as recently updated");
-        return true;
+        return false;
     }
 
     private void updateCapabilities(UrlTypeVersion utv, List<OskariLayer> layers) {
