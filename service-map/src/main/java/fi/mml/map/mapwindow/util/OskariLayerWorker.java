@@ -13,7 +13,6 @@ import fi.nls.oskari.map.layer.OskariLayerService;
 import fi.nls.oskari.map.layer.OskariLayerServiceIbatisImpl;
 import fi.nls.oskari.map.layer.formatters.LayerJSONFormatter;
 import fi.nls.oskari.util.JSONHelper;
-import fi.nls.oskari.util.PropertyUtil;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -217,7 +216,7 @@ public class OskariLayerWorker {
         FORMATTER.addInfoForAdmin(layerJson, "url", layer.getUrl());
         FORMATTER.addInfoForAdmin(layerJson, "capabilities", layer.getCapabilities());
 
-        FORMATTER.addInfoForAdmin(layerJson, "organizationId", layer.getGroupId());
+        FORMATTER.addInfoForAdmin(layerJson, "organizationId", layer.getDataproviderId());
 
         // for mapping under categories
         if(layer.getInspireTheme() != null) {

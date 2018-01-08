@@ -16,7 +16,7 @@
         <parameter property="parentId" jdbcType="INTEGER"  javaType="int" />
         <parameter property="type" />
         <parameter property="baseMap" />
-        <parameter property="groupId" />
+        <parameter property="dataproviderId" />
 
         <parameter property="name" />
         <parameter property="url" />
@@ -58,7 +58,7 @@
     <parameterMap id="LayerUpdateParameter" class="OskariLayer"> <!--  extends="OskariLayer.LayerInsertParameter" -->
         <parameter property="parentId" />
         <parameter property="baseMap" />
-        <parameter property="groupId" />
+        <parameter property="dataproviderId" />
 
         <parameter property="name" />
         <parameter property="url" />
@@ -106,7 +106,7 @@
         l.externalId,
         l.type,
         l.base_map,
-        l.groupId,
+        l.dataprovider_id,
 
         l.name,
         l.url,
@@ -159,7 +159,7 @@
         l.externalId,
         l.type,
         l.base_map,
-        l.groupId,
+        l.dataprovider_id,
 
         l.name,
         l.url,
@@ -212,7 +212,7 @@
         l.externalId,
         l.type,
         l.base_map,
-        l.groupId,
+        l.dataprovider_id,
 
         l.name,
         l.url,
@@ -266,7 +266,7 @@
         l.externalId,
         l.type,
         l.base_map,
-        l.groupId,
+        l.dataprovider_id,
 
         l.name,
         l.url,
@@ -320,7 +320,7 @@
         l.externalId,
         l.type,
         l.base_map,
-        l.groupId,
+        l.dataprovider_id,
 
         l.name,
         l.url,
@@ -374,7 +374,7 @@
     l.externalId,
     l.type,
     l.base_map,
-    l.groupId,
+    l.dataprovider_id,
 
     l.name,
     l.url,
@@ -440,7 +440,7 @@
         l.externalId,
         l.type,
         l.base_map,
-        l.groupId,
+        l.dataprovider_id,
 
         l.name,
         l.url,
@@ -535,7 +535,7 @@
             parentId,
             type,
             base_map,
-            groupId,
+            dataprovider_id,
 
             name,
             url,
@@ -578,7 +578,7 @@
         SET
         parentId = ?,
         base_map = ?,
-        groupId = ?,
+        dataprovider_id = ?,
 
         name = ?,
         url = ?,

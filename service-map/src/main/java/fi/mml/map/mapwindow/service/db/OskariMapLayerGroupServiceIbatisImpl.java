@@ -4,7 +4,7 @@ import com.ibatis.sqlmap.client.SqlMapClient;
 import fi.nls.oskari.annotation.Oskari;
 import fi.nls.oskari.cache.Cache;
 import fi.nls.oskari.cache.CacheManager;
-import fi.nls.oskari.domain.map.InspireTheme;
+import fi.nls.oskari.domain.map.MaplayerGroup;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.service.ServiceRuntimeException;
@@ -13,26 +13,26 @@ import java.sql.SQLException;
 import java.util.*;
 
 /**
- * InspireTheme implementation for Ibatis
+ * MaplayerGroup implementation for Ibatis
  * 
  *
  */
-@Oskari("InspireTheme")
-public class InspireThemeServiceIbatisImpl extends InspireThemeService {
+@Oskari("MaplayerGroup")
+public class OskariMapLayerGroupServiceIbatisImpl extends OskariMapLayerGroupService {
 
-    private Logger log = LogFactory.getLogger(InspireThemeServiceIbatisImpl.class);
+    private Logger log = LogFactory.getLogger(OskariMapLayerGroupServiceIbatisImpl.class);
 
     // key is theme id
-    private static final Cache<InspireTheme> ID_CACHE = CacheManager.getCache(InspireThemeServiceIbatisImpl.class.getName());
+    private static final Cache<MaplayerGroup> ID_CACHE = CacheManager.getCache(OskariMapLayerGroupServiceIbatisImpl.class.getName());
     // key is layer id
-    private static final Cache<List<Integer>> LINK_CACHE = CacheManager.getCache(InspireThemeServiceIbatisImpl.class.getName() + "Links");
+    private static final Cache<List<Integer>> LINK_CACHE = CacheManager.getCache(OskariMapLayerGroupServiceIbatisImpl.class.getName() + "Links");
 
 	@Override
 	protected String getNameSpace() {
-		return "InspireTheme";
+		return "MaplayerGroup";
 	}
 
-    public List<InspireTheme> findByMaplayerId(final int layerId) {
+    public List<MaplayerGroup> findByMaplayerId(final int layerId) {
 
         final List<Integer> links = LINK_CACHE.get(Integer.toString(layerId));
         if(links == null) {
@@ -41,23 +41,23 @@ public class InspireThemeServiceIbatisImpl extends InspireThemeService {
                 findLayerMappings();
                 findAll();
             }
-            final List<InspireTheme> themes = queryForList(getNameSpace() + ".findByMaplayer", layerId);
+            final List<MaplayerGroup> themes = queryForList(getNameSpace() + ".findByMaplayer", layerId);
             // populate link cache
             final List<Integer> newLinks = getLinkCache(layerId);
-            for(InspireTheme theme : themes) {
+            for(MaplayerGroup theme : themes) {
                 newLinks.add(theme.getId());
             }
             return themes;
         }
-        final List<InspireTheme> list = new ArrayList<>();
+        final List<MaplayerGroup> list = new ArrayList<>();
         for(Integer id : links) {
-            InspireTheme theme = find(id);
+            MaplayerGroup theme = find(id);
             if(theme != null) {
                 list.add(theme);
             }
             else {
                 log.warn("Layer with id", layerId, "links to a non-existing theme (id:", id,
-                        "). Rows referencing theme should be removed from oskari_maplayer_themes DB table.");
+                        "). Rows referencing theme should be removed from oskari_maplayer_group_link DB table.");
             }
         }
         return list;
@@ -71,9 +71,9 @@ public class InspireThemeServiceIbatisImpl extends InspireThemeService {
      * @param name
      * @return matching theme or null if no match
      */
-    public InspireTheme findByName(final String name) {
-        final List<InspireTheme> themes = findAll();
-        for(InspireTheme theme : themes) {
+    public MaplayerGroup findByName(final String name) {
+        final List<MaplayerGroup> themes = findAll();
+        for(MaplayerGroup theme : themes) {
             if(theme.getLocale().toString().indexOf(name) > -1) {
                 return theme;
             }
@@ -82,8 +82,8 @@ public class InspireThemeServiceIbatisImpl extends InspireThemeService {
     }
 
     @Override
-    public InspireTheme find(int id) {
-        InspireTheme theme = ID_CACHE.get(Integer.toString(id));
+    public MaplayerGroup find(int id) {
+        MaplayerGroup theme = ID_CACHE.get(Integer.toString(id));
         if(theme == null) {
             theme = super.find(id);
             if(theme != null) {
@@ -94,11 +94,11 @@ public class InspireThemeServiceIbatisImpl extends InspireThemeService {
     }
 
     @Override
-    public List<InspireTheme> findAll() {
-        final List<InspireTheme> groups = super.findAll();
+    public List<MaplayerGroup> findAll() {
+        final List<MaplayerGroup> groups = super.findAll();
         ID_CACHE.setLimit(groups.size() + 10);
         ID_CACHE.flush(true);
-        for(InspireTheme group : groups) {
+        for(MaplayerGroup group : groups) {
             ID_CACHE.put(Integer.toString(group.getId()), group);
         }
         return groups;
@@ -110,16 +110,16 @@ public class InspireThemeServiceIbatisImpl extends InspireThemeService {
         LINK_CACHE.setLimit(mappings.size() + 10);
         LINK_CACHE.flush(true);
         for(Map<String,Object> result : mappings) {
-            if(result.get("themeid") == null) {
+            if(result.get("groupid") == null) {
                 // this will make the keys case insensitive (needed for hsqldb compatibility...)
                 final Map<String, Object> caseInsensitiveData = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
                 caseInsensitiveData.putAll(result);
                 result = caseInsensitiveData;
             }
-            final int themeid = (Integer) result.get("themeid");
+            final int groupid = (Integer) result.get("groupid");
             final int maplayerid = (Integer) result.get("maplayerid");
             List<Integer> themeLayers = getLinkCache(maplayerid);
-            themeLayers.add(themeid);
+            themeLayers.add(groupid);
         }
     }
 
@@ -131,43 +131,43 @@ public class InspireThemeServiceIbatisImpl extends InspireThemeService {
         findLayerMappings();
     }
 
-    public List<Integer> findMaplayersByTheme(int id) {
-        return queryForList(getNameSpace() + ".findMaplayersByTheme", id);
+    public List<Integer> findMaplayersByGroup(int id) {
+        return queryForList(getNameSpace() + ".findMaplayersByGroup", id);
     }
 
     @Override
-    public void update(final InspireTheme theme) {
+    public void update(final MaplayerGroup theme) {
         ID_CACHE.put(Integer.toString(theme.getId()), theme);
         super.update(theme);
     }
 
     @Override
-    public int insert(final InspireTheme theme) {
+    public int insert(final MaplayerGroup theme) {
         final int id = super.insert(theme);
         theme.setId(id);
         ID_CACHE.put(Integer.toString(theme.getId()), theme);
         return id;
     }
 
-    public synchronized void updateLayerThemes(final long maplayerId, final Collection<InspireTheme> themes) {
+    public synchronized void updateLayerGroups(final long maplayerId, final Collection<MaplayerGroup> groups) {
         // expects themes to be in database already - doesn't insert new ones
         SqlMapClient client = null;
         try {
             client = getSqlMapClient();
             client.startTransaction();
             // remove old links
-            client.delete(getNameSpace() + ".removeThemeLinks", maplayerId);
+            client.delete(getNameSpace() + ".removeGroupsLinks", maplayerId);
             final List<Integer> themeLayers = getLinkCache((int)maplayerId);
             themeLayers.clear();
             // link new set of themes and update cache
             final Map<String, Object> params = new HashMap<>(2);
             params.put("layerId", maplayerId);
-            if(themes != null) {
+            if(groups != null) {
                 // sublayers dont have themes
-                for(InspireTheme theme : themes) {
-                    params.put("themeId", theme.getId());
-                    client.insert(getNameSpace() + ".linkThemeToLayer", params);
-                    themeLayers.add(theme.getId());
+                for(MaplayerGroup group : groups) {
+                    params.put("groupId", group.getId());
+                    client.insert(getNameSpace() + ".linkGroupToLayer", params);
+                    themeLayers.add(group.getId());
                 }
             }
             client.commitTransaction();

@@ -3,12 +3,12 @@ package fi.nls.oskari.map.layer;
 import com.ibatis.common.resources.Resources;
 import com.ibatis.sqlmap.client.SqlMapClient;
 import com.ibatis.sqlmap.client.SqlMapClientBuilder;
-import fi.mml.map.mapwindow.service.db.InspireThemeService;
-import fi.mml.map.mapwindow.service.db.InspireThemeServiceIbatisImpl;
+import fi.mml.map.mapwindow.service.db.OskariMapLayerGroupService;
+import fi.mml.map.mapwindow.service.db.OskariMapLayerGroupServiceIbatisImpl;
 import fi.mml.map.mapwindow.util.OskariLayerWorker;
 import fi.nls.oskari.annotation.Oskari;
-import fi.nls.oskari.domain.map.InspireTheme;
-import fi.nls.oskari.domain.map.LayerGroup;
+import fi.nls.oskari.domain.map.DataProvider;
+import fi.nls.oskari.domain.map.MaplayerGroup;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
@@ -38,7 +38,7 @@ public class OskariLayerServiceIbatisImpl extends OskariLayerService {
     private static String SQL_MAP_LOCATION = "META-INF/SqlMapConfig.xml";
 
     private static LayerGroupService layerGroupService = new LayerGroupServiceIbatisImpl();
-    private static InspireThemeService inspireThemeService = new InspireThemeServiceIbatisImpl();
+    private static OskariMapLayerGroupService oskariMapLayerGroupService = new OskariMapLayerGroupServiceIbatisImpl();
 
     // map different layer types
     private static Map<String, Class<OskariLayer>> typeMapping =
@@ -174,26 +174,26 @@ public class OskariLayerServiceIbatisImpl extends OskariLayerService {
 
         // populate groups/themes for top level layers
         if(result.getParentId() == -1) {
-            // sublayers and internal baselayers don't have groupId
-            Object groupId = data.get("groupid");
-            if(groupId != null) {
-                result.setGroupId((Integer)groupId);
+            // sublayers and internal baselayers don't have dataprovider_id
+            Object dataProviderId = data.get("dataprovider_id");
+            if(dataProviderId != null) {
+                result.setDataproviderId((Integer)dataProviderId);
                 try {
                     // populate layer group
                     // first run (~700 layers) with this lasts ~1800ms, second run ~300ms (cached)
-                    final LayerGroup group = layerGroupService.find(result.getGroupId());
-                    result.addGroup(group);
+                    final DataProvider dataProvider = layerGroupService.find(result.getDataproviderId());
+                    result.addGroup(dataProvider);
                 } catch (Exception ex) {
                     LOG.error("Couldn't get organisation for layer", result.getId());
                     return null;
                 }
             }
 
-            // FIXME: inspireThemeService has built in caching (very crude) to make this fast,
+            // FIXME: oskariMapLayerGroupService has built in caching (very crude) to make this fast,
             // without it getting themes makes the query 10 x slower
             // populate inspirethemes
             try {
-                final List<InspireTheme> themes = inspireThemeService.findByMaplayerId(result.getId());
+                final List<MaplayerGroup> themes = oskariMapLayerGroupService.findByMaplayerId(result.getId());
                 result.addInspireThemes(themes);
             } catch (Exception ex) {
                 LOG.error("Couldn't get inspirethemes for layer", result.getId());
@@ -346,7 +346,7 @@ public class OskariLayerServiceIbatisImpl extends OskariLayerService {
         try {
             getSqlMapClient().update(getNameSpace() + ".update", layer);
             // link to inspire theme(s)
-            inspireThemeService.updateLayerThemes(layer.getId(), layer.getInspireThemes());
+            oskariMapLayerGroupService.updateLayerGroups(layer.getId(), layer.getMaplayerGroups());
         } catch (Exception e) {
             throw new RuntimeException("Failed to update", e);
         }
@@ -363,7 +363,7 @@ public class OskariLayerServiceIbatisImpl extends OskariLayerService {
             layer.setId(id);
             client.commitTransaction();
             // link to inspire theme(s)
-            inspireThemeService.updateLayerThemes(id, layer.getInspireThemes());
+            oskariMapLayerGroupService.updateLayerGroups(id, layer.getMaplayerGroups());
             return id;
         } catch (Exception e) {
             throw new RuntimeException("Failed to insert", e);

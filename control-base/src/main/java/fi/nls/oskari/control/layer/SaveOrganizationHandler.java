@@ -2,7 +2,7 @@ package fi.nls.oskari.control.layer;
 
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.*;
-import fi.nls.oskari.domain.map.LayerGroup;
+import fi.nls.oskari.domain.map.DataProvider;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.layer.LayerGroupService;
@@ -32,7 +32,7 @@ public class SaveOrganizationHandler extends ActionHandler {
         final HttpServletRequest request = params.getRequest();
         try {
             final int groupId = params.getHttpParam(PARAM_ID, -1);
-            final LayerGroup group = new LayerGroup();
+            final DataProvider group = new DataProvider();
             group.setId(groupId);
             handleLocalizations(group, PARAM_NAME_PREFIX, request);
             if (group.getLocale() == null) {
@@ -61,7 +61,7 @@ public class SaveOrganizationHandler extends ActionHandler {
         }
     }
 
-    private void handleLocalizations(final LayerGroup lc, final String nameprefix, final HttpServletRequest request) {
+    private void handleLocalizations(final DataProvider lc, final String nameprefix, final HttpServletRequest request) {
         final Map<String, String> parsed = RequestHelper.parsePrefixedParamsMap(request, nameprefix);
         for(Map.Entry<String, String> entry : parsed.entrySet()) {
             lc.setName(entry.getKey(), entry.getValue());

@@ -1,10 +1,9 @@
 package fi.nls.oskari.util;
 
 
-import fi.mml.map.mapwindow.service.db.InspireThemeService;
-import fi.mml.map.mapwindow.service.db.InspireThemeServiceIbatisImpl;
-import fi.mml.map.mapwindow.service.db.MaplayerProjectionService;
-import fi.mml.map.mapwindow.service.db.MaplayerProjectionServiceIbatisImpl;
+import fi.mml.map.mapwindow.service.db.*;
+import fi.mml.map.mapwindow.service.db.OskariMapLayerGroupServiceIbatisImpl;
+import fi.mml.map.mapwindow.service.db.OskariMapLayerGroupService;
 import fi.mml.portti.service.db.permissions.PermissionsService;
 import fi.mml.portti.service.db.permissions.PermissionsServiceIbatisImpl;
 import fi.mml.portti.service.search.SearchService;
@@ -22,7 +21,7 @@ public class ServiceFactory {
 	
 	private static LayerGroupService layerGroupService;
 	private static OskariLayerService mapLayerService;
-	private static InspireThemeService inspireThemeService;
+	private static OskariMapLayerGroupService oskariMapLayerGroupService;
     private static MaplayerProjectionService maplayerProjectionService;
     private static PermissionsService permissionsService;
     private static SearchService searchService;
@@ -43,11 +42,11 @@ public class ServiceFactory {
 		return mapLayerService;
 	}
 
-	public static InspireThemeService getInspireThemeService() {
-		if (inspireThemeService == null) {
-			inspireThemeService = new InspireThemeServiceIbatisImpl();
+	public static OskariMapLayerGroupService getOskariMapLayerGroupService() {
+		if (oskariMapLayerGroupService == null) {
+			oskariMapLayerGroupService = new OskariMapLayerGroupServiceIbatisImpl();
 		}
-		return inspireThemeService;
+		return oskariMapLayerGroupService;
 	}
 
     public static MaplayerProjectionService getMaplayerProjectionService() {
