@@ -271,8 +271,9 @@ public class SaveLayerHandler extends ActionHandler {
             }
         }
 
-        MaplayerGroup theme = oskariMapLayerGroupService.find(params.getHttpParam("inspireTheme", -1));
-        ml.addGroup(theme);
+        // FIXME: Update JSON key when frontend implementation was updated
+        MaplayerGroup maplayerGroup = oskariMapLayerGroupService.find(params.getHttpParam("inspireTheme", -1));
+        ml.addGroup(maplayerGroup);
 
         ml.setVersion(params.getHttpParam("version", ""));
 

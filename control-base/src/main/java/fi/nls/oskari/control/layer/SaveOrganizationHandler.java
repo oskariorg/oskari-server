@@ -31,33 +31,33 @@ public class SaveOrganizationHandler extends ActionHandler {
 
         final HttpServletRequest request = params.getRequest();
         try {
-            final int groupId = params.getHttpParam(PARAM_ID, -1);
-            final DataProvider group = new DataProvider();
-            group.setId(groupId);
-            handleLocalizations(group, PARAM_NAME_PREFIX, request);
-            if (group.getLocale() == null) {
-                throw new ActionParamsException("Missing names for group!");
+            final int dataProviderId = params.getHttpParam(PARAM_ID, -1);
+            final DataProvider dataProvider = new DataProvider();
+            dataProvider.setId(dataProviderId);
+            handleLocalizations(dataProvider, PARAM_NAME_PREFIX, request);
+            if (dataProvider.getLocale() == null) {
+                throw new ActionParamsException("Missing names for layer dataprovider group!");
             }
 
             // ************** UPDATE ************************
-            if (groupId != -1) {
-                if (!dataProviderService.hasPermissionToUpdate(params.getUser(), groupId)) {
-                    throw new ActionDeniedException("Unauthorized user tried to update layer group - id=" + groupId);
+            if (dataProviderId != -1) {
+                if (!dataProviderService.hasPermissionToUpdate(params.getUser(), dataProviderId)) {
+                    throw new ActionDeniedException("Unauthorized user tried to update layer dataprovider group - id=" + dataProviderId);
                 }
-                dataProviderService.update(group);
-                ResponseHelper.writeResponse(params, group.getAsJSON());
+                dataProviderService.update(dataProvider);
+                ResponseHelper.writeResponse(params, dataProvider.getAsJSON());
             }
             // ************** INSERT ************************
             else if (params.getUser().isAdmin()) {
-                final int id = dataProviderService.insert(group);
-                group.setId(id);
-                ResponseHelper.writeResponse(params, group.getAsJSON());
+                final int id = dataProviderService.insert(dataProvider);
+                dataProvider.setId(id);
+                ResponseHelper.writeResponse(params, dataProvider.getAsJSON());
             } else {
-                throw new ActionDeniedException("Unauthorized user tried to update layer group - id=" + groupId);
+                throw new ActionDeniedException("Unauthorized user tried to update layer dataprovider group - id=" + dataProviderId);
             }
 
         } catch (Exception e) {
-            throw new ActionException("Couldn't update/insert map layer group", e);
+            throw new ActionException("Couldn't update/insert map layer dataprovider group", e);
         }
     }
 
