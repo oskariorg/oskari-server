@@ -65,12 +65,12 @@ public class WebMapServiceV1_1_1_Impl extends AbstractWebMapService {
             Layer layer = path.getLast();
             this.queryable = "1".equals(layer.getQueryable().toString());
             this.time = Arrays.stream(layer.getExtentArray())
-                .filter(ext -> "time".equals(ext.getName()))
-                .findAny()
-                .map(ext -> getText(ext))
-                .map(Optional::get)
-                .map(s -> Arrays.asList(s.split(",")))
-                .orElse(Collections.emptyList());
+                    .filter(ext -> "time".equals(ext.getName()))
+                    .findAny()
+                    .map(ext -> getText(ext))
+                    .map(Optional::get)
+                    .map(s -> Arrays.asList(s.split(",")))
+                    .orElse(Collections.emptyList());
             this.keywords = parseKeywords(layer);
         } catch (Exception e) {
             throw new WebMapServiceParseException(e);
@@ -91,7 +91,7 @@ public class WebMapServiceV1_1_1_Impl extends AbstractWebMapService {
         if (lvl > 5) {
             throw new WebMapServiceParseException(
                     "We tried to parse layers to fifth level of recursion,"
-                    + " this is too much. Cancel.");
+                            + " this is too much. Cancel.");
         }
         if (layerName.equals(getText(layer.getName()).orElse(null))) {
             // Add current layer before returning
