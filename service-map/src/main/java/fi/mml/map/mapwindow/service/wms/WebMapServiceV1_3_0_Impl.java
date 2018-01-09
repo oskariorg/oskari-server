@@ -38,38 +38,38 @@ public class WebMapServiceV1_3_0_Impl extends AbstractWebMapService {
 
     private void parseXML(String data, String layerName, Set<String> allowedCRS)
             throws WebMapServiceParseException {
-		try {
-			WMSCapabilitiesDocument wms = WMSCapabilitiesDocument.Factory.parse(data);
+        try {
+            WMSCapabilitiesDocument wms = WMSCapabilitiesDocument.Factory.parse(data);
 
-			Layer layerCapabilities = wms.getWMSCapabilities().getCapability().getLayer();
-			LinkedList<Layer> path = new LinkedList<>();
-			boolean found = find(layerCapabilities, layerName, path, 0);
-			if (!found) {
+            Layer layerCapabilities = wms.getWMSCapabilities().getCapability().getLayer();
+            LinkedList<Layer> path = new LinkedList<>();
+            boolean found = find(layerCapabilities, layerName, path, 0);
+            if (!found) {
                 throw new WebMapServiceParseException("Could not find layer");
-			}
-
-			this.styles = new HashMap<>();
-            this.legends = new HashMap<>();
-			for (Layer layer : path) {
-			    parseStylesAndLegends(layer, styles, legends);
             }
-			this.formats = parseFormats(wms);
+
+            this.styles = new HashMap<>();
+            this.legends = new HashMap<>();
+            for (Layer layer : path) {
+                parseStylesAndLegends(layer, styles, legends);
+            }
+            this.formats = parseFormats(wms);
             this.CRSs = parseCRSs(layerCapabilities.getCRSArray(), allowedCRS);
 
             Layer layer = path.getLast();
             this.queryable = layer.getQueryable();
             this.time = Arrays.stream(layer.getDimensionArray())
-                .filter(dimension -> "time".equals(dimension.getName()))
-                .findAny()
-                .map(d -> Arrays.asList(d.getStringValue().split(",")))
-                .orElse(Collections.emptyList());
+                    .filter(dimension -> "time".equals(dimension.getName()))
+                    .findAny()
+                    .map(d -> Arrays.asList(d.getStringValue().split(",")))
+                    .orElse(Collections.emptyList());
             this.keywords = parseKeywords(layer);
-		} catch (Exception e) {
-			throw new WebMapServiceParseException(e);
-		}
-	}
+        } catch (Exception e) {
+            throw new WebMapServiceParseException(e);
+        }
+    }
 
-	/**
+    /**
      * Traverse layer tree, trying to find one specific layer
      * @param layer layer to inspect
      * @param layerName name of the layer we're looking for
@@ -83,7 +83,7 @@ public class WebMapServiceV1_3_0_Impl extends AbstractWebMapService {
         if (lvl > 5) {
             throw new WebMapServiceParseException(
                     "We tried to parse layers to fifth level of recursion,"
-                    + " this is too much. Cancel.");
+                            + " this is too much. Cancel.");
         }
         if (layerName.equals(layer.getName())) {
             // Add current layer before returning
@@ -108,29 +108,29 @@ public class WebMapServiceV1_3_0_Impl extends AbstractWebMapService {
     private void parseStylesAndLegends(Layer layer,
             Map<String, String> styles,
             Map<String, String> legends) {
-	    Style[] stylesArray = layer.getStyleArray();
-	    if (stylesArray == null) {
-			return;
-		}
-		for (Style style : stylesArray) {
-			String styleName = style.getName();
-			String styleTitle = style.getTitle();
-			if (styleTitle == null || styleTitle.isEmpty()) {
-				styleTitle = styleName;
-			}
-			styles.put(styleName, styleTitle);
+        Style[] stylesArray = layer.getStyleArray();
+        if (stylesArray == null) {
+            return;
+        }
+        for (Style style : stylesArray) {
+            String styleName = style.getName();
+            String styleTitle = style.getTitle();
+            if (styleTitle == null || styleTitle.isEmpty()) {
+                styleTitle = styleName;
+            }
+            styles.put(styleName, styleTitle);
 
-			LegendURL[] lurl = style.getLegendURLArray();
-			if (lurl == null || lurl.length == 0 || lurl[0].getOnlineResource() == null) {
-				continue;
-			}
-			/* Online resource is in xlink namespace */
-			String href = lurl[0].getOnlineResource().newCursor().getAttributeText(XLINK_HREF);
-			if (href != null) {
-				legends.put(styleName + LEGEND_HASHMAP_KEY_SEPARATOR + styleTitle, href);
-			}
-		}
-	}
+            LegendURL[] lurl = style.getLegendURLArray();
+            if (lurl == null || lurl.length == 0 || lurl[0].getOnlineResource() == null) {
+                continue;
+            }
+            /* Online resource is in xlink namespace */
+            String href = lurl[0].getOnlineResource().newCursor().getAttributeText(XLINK_HREF);
+            if (href != null) {
+                legends.put(styleName + LEGEND_HASHMAP_KEY_SEPARATOR + styleTitle, href);
+            }
+        }
+    }
 
     private String[] parseFormats(WMSCapabilitiesDocument wms) {
         OperationType gfi = wms.getWMSCapabilities().getCapability().getRequest().getGetFeatureInfo();
