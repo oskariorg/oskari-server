@@ -186,49 +186,55 @@ public class LayerJSONFormatterWMS extends LayerJSONFormatter {
         return IOHelper.constructUrl(PropertyUtil.get(PROPERTY_AJAXURL), urlParams);
     }
 
-    public static JSONObject formatTime(List<String> timeList) {
-        final JSONArray values = new JSONArray();
-        for (String string : timeList) {
-            values.put(string);
+    private static JSONObject formatTime(List<String> times) throws IllegalArgumentException {
+        if (times == null || times.isEmpty()) {
+            return new JSONObject();
         }
-        return createTimesJSON(values);
+
+        // TODO: Fix logic, currently we only support one TimeRange or one or more singular values
+        // An interesting solution would be to "unroll" the time ranges to a list of singular
+        // values -- then KEY_TIMES would always be an array of ISO timestamps as strings
+
+        JSONObject wrapper = new JSONObject();
+
+        // Check if the first value is a TimeRange
+        String time = times.get(0);
+        int i = time.indexOf('/');
+        if (i < 0) {
+            // Singular value(s)
+            JSONHelper.put(wrapper, KEY_TIMES, new JSONArray(times));
+        } else {
+            // First one is potentially a TimeRange
+            JSONHelper.putValue(wrapper, KEY_TIMES, parseTimeRange(time, i));
+            if (times.size() > 1) {
+                log.info("Handled only one (1) TimeRange out of", times.size());
+            }
+        }
+
+        return wrapper;
     }
 
-    public static JSONObject createTimesJSON(final JSONArray time) {
-
-        JSONObject times = new JSONObject();
-        JSONObject timerange = new JSONObject();
-        try {
-
-            if (time == null) {
-                return times;
-            }
-            //Loop array
-            for (int i = 0; i < time.length(); i++) {
-                String tim = time.getString(i);
-                String[] tims = tim.split("/");
-                if(tims.length > 2){
-                    JSONHelper.putValue(timerange, "start", tims[0]);
-                    JSONHelper.putValue(timerange, "end", tims[1]);
-                    JSONHelper.putValue(timerange, "interval", tims[2]);
-                    JSONHelper.putValue(times, KEY_TIMES, timerange);
-                }
-                else {
-                    final JSONArray values = new JSONArray();
-                    String[] atims = tim.split(",");
-                    for (String string : atims) {
-                        values.put(string);
-                    }
-                    JSONHelper.putValue(times, KEY_TIMES, values);
-                }
-                break;
-            }
-
-
-        } catch (Exception e) {
-            log.warn(e, "Populating layer time failed!");
+    private static JSONObject parseTimeRange(String time, int i)
+            throws IllegalArgumentException {
+        // TimeRange format: timeMin/timeMax/interval
+        int j = time.indexOf('/', i + 1);
+        if (j < 0 // Second slash doesn't exist
+                || j == time.length() - 1 // Second slash is last char
+                || time.indexOf('/', j + 1) > 0) { // Third slash exists
+            throw new IllegalArgumentException("Invalid time range");
         }
-        return times;
+        // Interval
+        String start = time.substring(0, i);
+        String end = time.substring(i + 1, j);
+        String interval = time.substring(j + 1);
+
+        // Instead of writing this as a range consider "unrolling"
+        // the timeRange to a list of singular values
+        JSONObject timeRange = new JSONObject();
+        JSONHelper.putValue(timeRange, "start", start);
+        JSONHelper.putValue(timeRange, "end", end);
+        JSONHelper.putValue(timeRange, "interval", interval);
+        return timeRange;
     }
 
     /**
@@ -279,19 +285,22 @@ public class LayerJSONFormatterWMS extends LayerJSONFormatter {
         }
         return formatJSON;
     }
+
     /**
-     * Constructs a  csr set containing the supported coordinate ref systems of WMS service
+     * Constructs a unique set of coordinate ref systems supported by the WMS service
      *
      * @param wms WebMapService
-     * @return Set<String> containing the supported coordinate ref systems of WMS service
+     * @return Set<String> containing the supported coordinate ref systems of the WMS service
      */
     public static Set<String> getCRSs(WebMapService wms) {
-        if(wms.getCRSs().length > 0){
-            final Set<String> crss = new HashSet<String>(Arrays.asList(wms.getCRSs()));
-            return crss;
+        String[] crss = wms.getCRSs();
+        if (crss == null || crss.length == 0) {
+            return Collections.emptySet();
         }
-
-
-        return null;
+        Set<String> set = new HashSet<>(crss.length);
+        for (String crs : crss) {
+            set.add(crs);
+        }
+        return set;
     }
 }
