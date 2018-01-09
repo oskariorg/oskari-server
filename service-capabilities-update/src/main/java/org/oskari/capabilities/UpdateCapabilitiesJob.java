@@ -75,7 +75,7 @@ public class UpdateCapabilitiesJob extends ScheduledJob {
     protected static boolean shouldUpdate(OskariLayer layer) {
         Date lastUpdated = layer.getCapabilitiesLastUpdated();
         if (lastUpdated == null) {
-            LOG.debug("Should update layer:", layer.getId(), "last updated unknown and update rate is positive");
+            LOG.debug("Should update layer:", layer.getId(), "last updated unknown");
             return true;
         }
         int rate = layer.getCapabilitiesUpdateRateSec();
