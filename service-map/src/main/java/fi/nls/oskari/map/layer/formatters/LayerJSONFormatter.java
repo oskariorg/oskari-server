@@ -123,7 +123,10 @@ public class LayerJSONFormatter {
             JSONHelper.putValue(layerJson, "orgName", layer.getGroup().getName(lang));
         }
         if(layer.getMaplayerGroup() != null) {
+            // FIXME Remove inspire when frontend is ready
             JSONHelper.putValue(layerJson, "inspire", layer.getMaplayerGroup().getName(lang));
+            JSONHelper.put(layerJson, "group", JSONHelper.createJSONArray(layer.getMaplayerGroup().getName(lang)));
+            JSONHelper.put(layerJson, "groupId", JSONHelper.createJSONArray(layer.getMaplayerGroup().getId()));
         }
 
         if(layer.getOpacity() != null && layer.getOpacity() > -1 && layer.getOpacity() <= 100) {
