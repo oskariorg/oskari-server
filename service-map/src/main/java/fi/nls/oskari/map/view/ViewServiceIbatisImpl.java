@@ -335,7 +335,7 @@ public class ViewServiceIbatisImpl extends BaseIbatisService<Object> implements
     }
 
     public boolean isSystemDefaultView(final long id) {
-        return roleToDefaultViewId.containsValue(id) || getDefaultViewId() == id;
+        return getDefaultViewId() == id || roleToDefaultViewId.containsValue(id);
     }
 
     /**
