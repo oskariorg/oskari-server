@@ -76,7 +76,7 @@ public class GetSystemDefaultViews extends ActionHandler {
         String uuid = view.getUuid();
         String srsName = view.getBundleByName("mapfull")
                 .getConfigJSON()
-                .getJSONObject("mapConfig")
+                .getJSONObject("mapOptions")
                 .getString("srsName");
 
         json.writeStartObject();
