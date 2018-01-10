@@ -51,8 +51,11 @@ public class ViewServiceIbatisImpl extends BaseIbatisService<Object> implements
     private long initDefaultViewId() {
         final long property = ConversionHelper.getLong(PropertyUtil.get(PROP_VIEW_DEFAULT), -1);
         LOG.debug("Global default view id from properties:" , property);
+        if (property != -1) {
+            return property;
+        }
         // use one from db if property doesn't exist or is invalid
-        return property != -1 ? property : getDefaultViewId(ViewTypes.DEFAULT);
+        return ((Long) queryForObject("View.get-default-view-id", ViewTypes.DEFAULT)).longValue();
     }
 
     @Override
@@ -337,11 +340,6 @@ public class ViewServiceIbatisImpl extends BaseIbatisService<Object> implements
             return roleToDefaultViewId.get(roleName);
         }
         return getDefaultViewId();
-    }
-
-    public long getDefaultViewId(String type) {
-        return ((Long) queryForObject("View.get-default-view-id", type))
-                .longValue();
     }
 
 }
