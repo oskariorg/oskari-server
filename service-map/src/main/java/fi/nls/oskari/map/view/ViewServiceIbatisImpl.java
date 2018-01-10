@@ -143,7 +143,7 @@ public class ViewServiceIbatisImpl extends BaseIbatisService<Object> implements
         SqlMapSession session = openSession();
 
         try {
-        	view.setUuid(generateUuid());
+            view.setUuid(UUID.randomUUID().toString());
 
             session.startTransaction();
             Object ret =  queryForObject("View.add-view", view);
@@ -342,14 +342,6 @@ public class ViewServiceIbatisImpl extends BaseIbatisService<Object> implements
     public long getDefaultViewId(String type) {
         return ((Long) queryForObject("View.get-default-view-id", type))
                 .longValue();
-    }
-
-    /**
-     * Generates random UUID
-     * @return uuid
-     */
-    public String generateUuid() {
-        return UUID.randomUUID().toString();
     }
 
 }
