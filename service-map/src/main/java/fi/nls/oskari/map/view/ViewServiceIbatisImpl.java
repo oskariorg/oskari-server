@@ -24,19 +24,19 @@ public class ViewServiceIbatisImpl extends BaseIbatisService<Object> implements
     private static final String PROP_VIEW_DEFAULT = "view.default";
     private static final String PROP_VIEW_DEFAULT_ROLES = "view.default.roles";
 
-    private final Map<String, Long> defaultViewIds = new HashMap<String, Long>();
-    private final String[] viewRoles;
+    private final Map<String, Long> roleToDefaultViewId = new HashMap<String, Long>();
+    private final String[] defaultViewRoles;
     private final long defaultViewId;
 
     public ViewServiceIbatisImpl() {
         // roles in preferred order which we use to resolve default view
         // view.default.roles=Admin, User, Guest
-        viewRoles = PropertyUtil.getCommaSeparatedList(PROP_VIEW_DEFAULT_ROLES);
-        for (String role : viewRoles) {
+        defaultViewRoles = PropertyUtil.getCommaSeparatedList(PROP_VIEW_DEFAULT_ROLES);
+        for (String role : defaultViewRoles) {
             String roleViewIdStr = PropertyUtil.get(PROP_VIEW_DEFAULT + "." + role);
             long roleViewId = ConversionHelper.getLong(roleViewIdStr, -1);
             if (roleViewId != -1) {
-                defaultViewIds.put(role, roleViewId);
+                roleToDefaultViewId.put(role, roleViewId);
                 LOG.debug("Added default view", roleViewId, "for role", role);
             } else {
                 LOG.info("Failed to set default view id for role", role,
@@ -294,11 +294,11 @@ public class ViewServiceIbatisImpl extends BaseIbatisService<Object> implements
         }
         else {
             // Check the roles in given order and return the first match
-            for(String role : viewRoles) {
+            for (String role : defaultViewRoles) {
                 if(Role.hasRoleWithName(roles, role) &&
-                        defaultViewIds.containsKey(role)) {
-                    LOG.debug("Default view found for role", role, ":", defaultViewIds.get(role));
-                    return defaultViewIds.get(role);
+                        roleToDefaultViewId.containsKey(role)) {
+                    LOG.debug("Default view found for role", role, ":", roleToDefaultViewId.get(role));
+                    return roleToDefaultViewId.get(role);
                 }
             }
         }
@@ -307,7 +307,7 @@ public class ViewServiceIbatisImpl extends BaseIbatisService<Object> implements
     }
 
     public boolean isSystemDefaultView(final long id) {
-        return defaultViewIds.containsValue(id) || getDefaultViewId() == id;
+        return roleToDefaultViewId.containsValue(id) || getDefaultViewId() == id;
     }
 
     /**
@@ -333,8 +333,8 @@ public class ViewServiceIbatisImpl extends BaseIbatisService<Object> implements
      * @return
      */
     public long getDefaultViewIdForRole(final String roleName) {
-        if(defaultViewIds.containsKey(roleName)) {
-            return defaultViewIds.get(roleName);
+        if(roleToDefaultViewId.containsKey(roleName)) {
+            return roleToDefaultViewId.get(roleName);
         }
         return getDefaultViewId();
     }
