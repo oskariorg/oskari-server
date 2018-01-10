@@ -18,7 +18,7 @@ PUBLIC "-//ibatis.apache.org//DTD SQL Map Config 2.0//EN"
     </dataSource>
   </transactionManager>
 
-  <sqlMap resource="META-INF/InspireTheme.xml" />
+  <sqlMap resource="META-INF/MaplayerGroup.xml" />
   <sqlMap resource="META-INF/WFSLayerConfiguration.xml" />
   <sqlMap resource="META-INF/OskariLayer.xml" />
   <sqlMap resource="META-INF/DataProvider.xml" />

@@ -3,12 +3,12 @@ package fi.nls.oskari.map.layer;
 import com.ibatis.common.resources.Resources;
 import com.ibatis.sqlmap.client.SqlMapClient;
 import com.ibatis.sqlmap.client.SqlMapClientBuilder;
-import fi.mml.map.mapwindow.service.db.InspireThemeService;
-import fi.mml.map.mapwindow.service.db.InspireThemeServiceIbatisImpl;
+import fi.mml.map.mapwindow.service.db.OskariMapLayerGroupService;
+import fi.mml.map.mapwindow.service.db.OskariMapLayerGroupServiceIbatisImpl;
 import fi.mml.map.mapwindow.util.OskariLayerWorker;
 import fi.nls.oskari.annotation.Oskari;
 import fi.nls.oskari.domain.map.DataProvider;
-import fi.nls.oskari.domain.map.InspireTheme;
+import fi.nls.oskari.domain.map.MaplayerGroup;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
@@ -38,7 +38,7 @@ public class OskariLayerServiceIbatisImpl extends OskariLayerService {
     private static String SQL_MAP_LOCATION = "META-INF/SqlMapConfig.xml";
 
     private static LayerGroupService layerGroupService = new LayerGroupServiceIbatisImpl();
-    private static InspireThemeService inspireThemeService = new InspireThemeServiceIbatisImpl();
+    private static OskariMapLayerGroupService oskariMapLayerGroupService = new OskariMapLayerGroupServiceIbatisImpl();
 
     /**
      * Static setter to override default location
@@ -153,11 +153,11 @@ public class OskariLayerServiceIbatisImpl extends OskariLayerService {
                 }
             }
 
-            // FIXME: inspireThemeService has built in caching (very crude) to make this fast,
+            // FIXME: oskariMapLayerGroupService has built in caching (very crude) to make this fast,
             // without it getting themes makes the query 10 x slower
             // populate inspirethemes
             try {
-                final List<InspireTheme> themes = inspireThemeService.findByMaplayerId(result.getId());
+                final List<MaplayerGroup> themes = oskariMapLayerGroupService.findByMaplayerId(result.getId());
                 result.addInspireThemes(themes);
             } catch (Exception ex) {
                 LOG.error("Couldn't get inspirethemes for layer", result.getId());
@@ -322,7 +322,7 @@ public class OskariLayerServiceIbatisImpl extends OskariLayerService {
         try {
             getSqlMapClient().update(getNameSpace() + ".update", layer);
             // link to inspire theme(s)
-            inspireThemeService.updateLayerThemes(layer.getId(), layer.getInspireThemes());
+            oskariMapLayerGroupService.updateLayerGroups(layer.getId(), layer.getMaplayerGroups());
         } catch (Exception e) {
             throw new RuntimeException("Failed to update", e);
         }
@@ -339,7 +339,7 @@ public class OskariLayerServiceIbatisImpl extends OskariLayerService {
             layer.setId(id);
             client.commitTransaction();
             // link to inspire theme(s)
-            inspireThemeService.updateLayerThemes(id, layer.getInspireThemes());
+            oskariMapLayerGroupService.updateLayerGroups(id, layer.getMaplayerGroups());
             return id;
         } catch (Exception e) {
             throw new RuntimeException("Failed to insert", e);

@@ -1,7 +1,7 @@
 package fi.nls.oskari.control.layer;
 
+import fi.mml.map.mapwindow.service.db.OskariMapLayerGroupService;
 import fi.nls.oskari.service.capabilities.OskariLayerCapabilities;
-import fi.mml.map.mapwindow.service.db.InspireThemeService;
 import fi.mml.map.mapwindow.service.db.MaplayerProjectionService;
 import fi.mml.map.mapwindow.service.wms.WebMapService;
 import fi.mml.map.mapwindow.util.OskariLayerWorker;
@@ -11,7 +11,7 @@ import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.cache.JedisManager;
 import fi.nls.oskari.control.*;
 import fi.nls.oskari.domain.User;
-import fi.nls.oskari.domain.map.InspireTheme;
+import fi.nls.oskari.domain.map.MaplayerGroup;
 import fi.nls.oskari.domain.map.DataProvider;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.domain.map.wfs.WFSLayerConfiguration;
@@ -51,7 +51,7 @@ public class SaveLayerHandler extends ActionHandler {
     private WFSLayerConfigurationService wfsLayerService = ServiceFactory.getWfsLayerService();
     private PermissionsService permissionsService = ServiceFactory.getPermissionsService();
     private LayerGroupService layerGroupService = ServiceFactory.getLayerGroupService();
-    private InspireThemeService inspireThemeService = ServiceFactory.getInspireThemeService();
+    private OskariMapLayerGroupService oskariMapLayerGroupService = ServiceFactory.getOskariMapLayerGroupService();
     private MaplayerProjectionService maplayerProjectionService = ServiceFactory.getMaplayerProjectionService();
     private CapabilitiesCacheService capabilitiesService = ServiceFactory.getCapabilitiesCacheService();
     private WFSParserConfigs wfsParserConfigs = new WFSParserConfigs();
@@ -271,7 +271,7 @@ public class SaveLayerHandler extends ActionHandler {
             }
         }
 
-        InspireTheme theme = inspireThemeService.find(params.getHttpParam("inspireTheme", -1));
+        MaplayerGroup theme = oskariMapLayerGroupService.find(params.getHttpParam("inspireTheme", -1));
         ml.addInspireTheme(theme);
 
         ml.setVersion(params.getHttpParam("version", ""));
