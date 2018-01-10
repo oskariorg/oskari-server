@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE WMT_MS_Capabilities SYSTEM "https://fake.address/inspire-wms/schemas/wms/1.1.1/WMS_MS_Capabilities.dtd">
+<WMT_MS_Capabilities version="1.1.1" updateSequence="2085">
+  <Service>
+    <Name>OGC:WMS</Name>
+    <Title>Finland INSPIRE View Service for Cadastral Parcel</Title>
+    <Abstract>View Service for cadastral parcel spatial data theme</Abstract>
+    <KeywordList>
+      <Keyword>Cadastral parcels</Keyword>
+      <Keyword>infoMapAccessService</Keyword>
+    </KeywordList>
+    <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="https://fake.address/inspire-wms/CP"/>
+    <ContactInformation>
+      <ContactPersonPrimary>
+        <ContactPerson/>
+        <ContactOrganization>National Land Survey of Finland</ContactOrganization>
+      </ContactPersonPrimary>
+      <ContactPosition/>
+      <ContactAddress>
+        <AddressType/>
+        <Address/>
+        <City>Helsinki</City>
+        <StateOrProvince/>
+        <PostCode/>
+        <Country>Finland</Country>
+      </ContactAddress>
+      <ContactVoiceTelephone/>
+      <ContactFacsimileTelephone/>
+      <ContactElectronicMailAddress>fake@email</ContactElectronicMailAddress>
+    </ContactInformation>
+    <Fees>no conditions apply</Fees>
+    <AccessConstraints>None</AccessConstraints>
+  </Service>
+  <Capability>
+    <Request>
+      <GetCapabilities>
+        <Format>application/vnd.ogc.wms_xml</Format>
+        <Format>text/xml</Format>
+        <DCPType>
+          <HTTP>
+            <Get>
+              <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="https://fake.address/inspire-wms/CP/wms?SERVICE=WMS&amp;"/>
+            </Get>
+            <Post>
+              <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="https://fake.address/inspire-wms/CP/wms?SERVICE=WMS&amp;"/>
+            </Post>
+          </HTTP>
+        </DCPType>
+      </GetCapabilities>
+      <GetMap>
+        <Format>image/png</Format>
+        <Format>application/atom xml</Format>
+        <Format>application/atom+xml</Format>
+        <Format>application/json;type=utfgrid</Format>
+        <Format>application/openlayers</Format>
+        <Format>application/pdf</Format>
+        <Format>application/rss xml</Format>
+        <Format>application/rss+xml</Format>
+        <Format>application/vnd.google-earth.kml</Format>
+        <Format>application/vnd.google-earth.kml xml</Format>
+        <Format>application/vnd.google-earth.kml+xml</Format>
+        <Format>application/vnd.google-earth.kml+xml;mode=networklink</Format>
+        <Format>application/vnd.google-earth.kmz</Format>
+        <Format>application/vnd.google-earth.kmz xml</Format>
+        <Format>application/vnd.google-earth.kmz+xml</Format>
+        <Format>application/vnd.google-earth.kmz;mode=networklink</Format>
+        <Format>atom</Format>
+        <Format>image/geotiff</Format>
+        <Format>image/geotiff8</Format>
+        <Format>image/gif</Format>
+        <Format>image/gif;subtype=animated</Format>
+        <Format>image/jpeg</Format>
+        <Format>image/png8</Format>
+        <Format>image/png; mode=8bit</Format>
+        <Format>image/svg</Format>
+        <Format>image/svg xml</Format>
+        <Format>image/svg+xml</Format>
+        <Format>image/tiff</Format>
+        <Format>image/tiff8</Format>
+        <Format>image/vnd.jpeg-png</Format>
+        <Format>kml</Format>
+        <Format>kmz</Format>
+        <Format>openlayers</Format>
+        <Format>rss</Format>
+        <Format>text/html; subtype=openlayers</Format>
+        <Format>utfgrid</Format>
+        <Format>x-application/vispila-pdf</Format>
+        <DCPType>
+          <HTTP>
+            <Get>
+              <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="https://fake.address/inspire-wms/CP/wms?SERVICE=WMS&amp;"/>
+            </Get>
+          </HTTP>
+        </DCPType>
+      </GetMap>
+      <GetFeatureInfo>
+        <Format>text/plain</Format>
+        <Format>application/vnd.ogc.gml</Format>
+        <Format>text/xml</Format>
+        <Format>application/vnd.ogc.gml/3.1.1</Format>
+        <Format>text/xml; subtype=gml/3.1.1</Format>
+        <Format>text/html</Format>
+        <Format>application/json</Format>
+        <DCPType>
+          <HTTP>
+            <Get>
+              <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="https://fake.address/inspire-wms/CP/wms?SERVICE=WMS&amp;"/>
+            </Get>
+            <Post>
+              <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="https://fake.address/inspire-wms/CP/wms?SERVICE=WMS&amp;"/>
+            </Post>
+          </HTTP>
+        </DCPType>
+      </GetFeatureInfo>
+      <DescribeLayer>
+        <Format>application/vnd.ogc.wms_xml</Format>
+        <DCPType>
+          <HTTP>
+            <Get>
+              <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="https://fake.address/inspire-wms/CP/wms?SERVICE=WMS&amp;"/>
+            </Get>
+          </HTTP>
+        </DCPType>
+      </DescribeLayer>
+      <GetLegendGraphic>
+        <Format>image/png</Format>
+        <Format>image/jpeg</Format>
+        <Format>image/gif</Format>
+        <DCPType>
+          <HTTP>
+            <Get>
+              <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="https://fake.address/inspire-wms/CP/wms?SERVICE=WMS&amp;"/>
+            </Get>
+          </HTTP>
+        </DCPType>
+      </GetLegendGraphic>
+      <GetStyles>
+        <Format>application/vnd.ogc.sld+xml</Format>
+        <DCPType>
+          <HTTP>
+            <Get>
+              <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="https://fake.address/inspire-wms/CP/wms?SERVICE=WMS&amp;"/>
+            </Get>
+          </HTTP>
+        </DCPType>
+      </GetStyles>
+    </Request>
+    <Exception>
+      <Format>application/vnd.ogc.se_xml</Format>
+      <Format>application/vnd.ogc.se_inimage</Format>
+      <Format>application/vnd.ogc.se_blank</Format>
+      <Format>application/json</Format>
+    </Exception>
+    <UserDefinedSymbolization SupportSLD="1" UserLayer="1" UserStyle="1" RemoteWFS="1"/>
+    <Layer>
+      <Title>Finland INSPIRE View Service for Cadastral Parcel</Title>
+      <Abstract>View Service for cadastral parcel spatial data theme</Abstract>
+      <!--Limited list of EPSG projections:-->
+      <SRS>EPSG:3035</SRS>
+      <SRS>EPSG:3067</SRS>
+      <SRS>EPSG:3857</SRS>
+      <SRS>EPSG:4258</SRS>
+      <LatLonBoundingBox minx="15.608220469655935" miny="59.36205414098515" maxx="33.107629330539034" maxy="70.09468368748001"/>
+      <BoundingBox SRS="EPSG:3067" minx="-145529.69480174652" miny="6580400.245183562" maxx="846889.9708123368" maxy="7816851.964902581"/>
+      <BoundingBox SRS="EPSG:3035" minx="4536659.983084471" miny="4041638.290670051" maxx="5610862.603542793" maxy="5365983.066851244"/>
+      <BoundingBox SRS="EPSG:3857" minx="1737499.154871248" miny="8259055.59760463" maxx="3685524.438448054" maxy="1.109960315357159E7"/>
+      <BoundingBox SRS="EPSG:4258" minx="15.608220469655935" miny="59.36205414098515" maxx="33.107629330539034" maxy="70.09468368748001"/>
+      <Layer queryable="0" opaque="0">
+        <Name>CP.CadastralBoundary</Name>
+        <Title>Cadastral Boundary</Title>
+        <Abstract>Part of the outline of a cadastral parcel. One cadastral boundary may be shared by two neighbouring cadastral parcels.</Abstract>
+        <KeywordList>
+          <Keyword>Cadastral Boundary</Keyword>
+        </KeywordList>
+        <SRS>EPSG:3067</SRS>
+        <LatLonBoundingBox minx="15.608220469655935" miny="59.36205414098515" maxx="33.107629330539034" maxy="70.09468368748001"/>
+        <BoundingBox SRS="EPSG:3067" minx="61685.541" miny="6605838.894" maxx="732907.723" maxy="7776450.217"/>
+        <BoundingBox SRS="EPSG:3035" minx="4540364.7263626335" miny="4063504.7509866734" maxx="5498301.852916457" maxy="5355143.8303538505"/>
+        <BoundingBox SRS="EPSG:3857" minx="1737499.154871248" miny="8259055.603787741" maxx="3685524.438448054" maxy="1.1099603157178096E7"/>
+        <BoundingBox SRS="EPSG:4258" minx="15.608220469655935" miny="59.36205414181163" maxx="33.107629330539034" maxy="70.09468368808312"/>
+        <AuthorityURL name="NLS-FI">
+          <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://www.nls.fi"/>
+        </AuthorityURL>
+        <Identifier authority="NLS-FI">http://paikkatiedot.fi/so/1001077/CP/CadastralBoundary</Identifier>
+        <Style>
+          <Name>CP.CadastralBoundary.Default</Name>
+          <Title>Cadastral Boundary Default Style</Title>
+          <Abstract> Cadastral boundary: black (#000000) line 1 pixel.
+         </Abstract>
+          <LegendURL width="20" height="20">
+            <Format>image/png</Format>
+            <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="https://fake.address/inspire-wms/CP/wms?request=GetLegendGraphic&amp;format=image%2Fpng&amp;width=20&amp;height=20&amp;layer=CP.CadastralBoundary"/>
+          </LegendURL>
+        </Style>
+        <ScaleHint min="1.0" max="20000.0"/>
+      </Layer>
+      <Layer queryable="0" opaque="0">
+        <Name>CP.CadastralParcel</Name>
+        <Title>Cadastral Parcel</Title>
+        <Abstract>Areas defined by cadastral registers or equivalent.</Abstract>
+        <KeywordList>
+          <Keyword>Cadastral Parcel</Keyword>
+        </KeywordList>
+        <SRS>EPSG:3067</SRS>
+        <LatLonBoundingBox minx="15.608220469655935" miny="59.36205414098515" maxx="33.107629330539034" maxy="70.09468368748001"/>
+        <BoundingBox SRS="EPSG:3067" minx="61685.541" miny="6605838.894" maxx="732907.723" maxy="7776450.217"/>
+        <BoundingBox SRS="EPSG:3035" minx="4540364.7263626335" miny="4063504.7509866734" maxx="5498301.852916457" maxy="5355143.8303538505"/>
+        <BoundingBox SRS="EPSG:3857" minx="1737499.154871248" miny="8259055.603787741" maxx="3685524.438448054" maxy="1.1099603157178096E7"/>
+        <BoundingBox SRS="EPSG:4258" minx="15.608220469655935" miny="59.36205414181163" maxx="33.107629330539034" maxy="70.09468368808312"/>
+        <AuthorityURL name="NLS-FI">
+          <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://www.nls.fi"/>
+        </AuthorityURL>
+        <Identifier authority="NLS-FI">http://paikkatiedot.fi/so/1001077/CP/CadastralParcel</Identifier>
+        <Style>
+          <Name>CP.CadastralParcel.Default</Name>
+          <Title>Cadastral Parcel Default Style</Title>
+          <Abstract> Parcel outline as a black line carried by the attribute geometry + text with attribute label carried by the attribute geometry. Parcel outlines: black (#000000) line 1 pixel. Labels: in Arial 10 black (#000000).
+        </Abstract>
+          <LegendURL width="22" height="40">
+            <Format>image/png</Format>
+            <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="https://fake.address/inspire-wms/CP/wms?request=GetLegendGraphic&amp;format=image%2Fpng&amp;width=20&amp;height=20&amp;layer=CP.CadastralParcel"/>
+          </LegendURL>
+        </Style>
+        <Style>
+          <Name>CP.CadastralParcel.LabelOnReferencePoint</Name>
+          <Title>Cadastral Parcel - with label on reference point</Title>
+          <Abstract> Parcel outline carried by the attribute geometry + text with attribute label carried by the attribute referencePoint. Parcel outlines: black (#000000) line 1 pixel. Labels: in Arial 10 black (#000000).
+          </Abstract>
+          <LegendURL width="22" height="40">
+            <Format>image/png</Format>
+            <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="https://fake.address/inspire-wms/CP/wms?request=GetLegendGraphic&amp;format=image%2Fpng&amp;width=20&amp;height=20&amp;layer=CP.CadastralParcel&amp;style=CP.CadastralParcel.LabelOnReferencePoint"/>
+          </LegendURL>
+        </Style>
+        <Style>
+          <Name>CP.CadastralParcel.ReferencePointOnly</Name>
+          <Title>Cadastral Parcel - reference point only</Title>
+          <Abstract> Parcel representation carried by the attribute referencePoint. Parcel point : circle size 10 magenta (#FF00FF) 2 pixels.
+          </Abstract>
+          <LegendURL width="20" height="20">
+            <Format>image/png</Format>
+            <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="https://fake.address/inspire-wms/CP/wms?request=GetLegendGraphic&amp;format=image%2Fpng&amp;width=20&amp;height=20&amp;layer=CP.CadastralParcel&amp;style=CP.CadastralParcel.ReferencePointOnly"/>
+          </LegendURL>
+        </Style>
+        <Style>
+          <Name>CP.CadastralParcel.OutlinesOnly</Name>
+          <Title>Cadastral Parcel - outlines only</Title>
+          <Abstract> Parcel outline carried by the attribute geometry. Parcel outlines: black (#000000) line 1 pixel.
+          </Abstract>
+          <LegendURL width="20" height="20">
+            <Format>image/png</Format>
+            <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="https://fake.address/inspire-wms/CP/wms?request=GetLegendGraphic&amp;format=image%2Fpng&amp;width=20&amp;height=20&amp;layer=CP.CadastralParcel&amp;style=CP.CadastralParcel.OutlinesOnly"/>
+          </LegendURL>
+        </Style>
+        <ScaleHint min="1.0" max="60000.0"/>
+      </Layer>
+    </Layer>
+  </Capability>
+</WMT_MS_Capabilities>
