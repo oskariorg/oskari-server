@@ -24,7 +24,7 @@ public class ViewServiceIbatisImpl extends BaseIbatisService<Object> implements
     private static final String PROP_VIEW_DEFAULT = "view.default";
     private static final String PROP_VIEW_DEFAULT_ROLES = "view.default.roles";
 
-    private final Map<String, Long> roleToDefaultViewId = new HashMap<String, Long>();
+    private final Map<String, Long> roleToDefaultViewId;
     private final String[] defaultViewRoles;
     private final long defaultViewId;
 
@@ -32,7 +32,16 @@ public class ViewServiceIbatisImpl extends BaseIbatisService<Object> implements
         // roles in preferred order which we use to resolve default view
         // view.default.roles=Admin, User, Guest
         defaultViewRoles = PropertyUtil.getCommaSeparatedList(PROP_VIEW_DEFAULT_ROLES);
-        for (String role : defaultViewRoles) {
+        roleToDefaultViewId = initDefaultViewsByRole(defaultViewRoles);
+        defaultViewId = initDefaultViewId();
+    }
+
+    private Map<String, Long> initDefaultViewsByRole(String[] roles) {
+        if (roles.length == 0) {
+            return Collections.emptyMap();
+        }
+        Map<String, Long> roleToDefaultViewId = new HashMap<>();
+        for (String role : roles) {
             String roleViewIdStr = PropertyUtil.get(PROP_VIEW_DEFAULT + "." + role);
             long roleViewId = ConversionHelper.getLong(roleViewIdStr, -1);
             if (roleViewId != -1) {
@@ -43,19 +52,19 @@ public class ViewServiceIbatisImpl extends BaseIbatisService<Object> implements
                         "property missing or value invalid");
             }
         }
-
-        defaultViewId = initDefaultViewId();
-        LOG.debug("Global default view is:", defaultViewId);
+        return roleToDefaultViewId;
     }
 
     private long initDefaultViewId() {
-        final long property = ConversionHelper.getLong(PropertyUtil.get(PROP_VIEW_DEFAULT), -1);
-        LOG.debug("Global default view id from properties:" , property);
+        long property = ConversionHelper.getLong(PropertyUtil.get(PROP_VIEW_DEFAULT), -1);
         if (property != -1) {
+            LOG.debug("Global default view id from properties:" , property);
             return property;
         }
         // use one from db if property doesn't exist or is invalid
-        return ((Long) queryForObject("View.get-default-view-id", ViewTypes.DEFAULT)).longValue();
+        Long database = ((Long) queryForObject("View.get-default-view-id", ViewTypes.DEFAULT));
+        LOG.debug("Global default view id from database:" , database);
+        return database;
     }
 
     @Override
@@ -291,16 +300,15 @@ public class ViewServiceIbatisImpl extends BaseIbatisService<Object> implements
     }
 
     public long getSystemDefaultViewId(Collection<Role> roles) {
-        if(roles == null) {
+        if (roles == null) {
             LOG.debug("Tried to get default view for <null> roles");
-        }
-        else {
+        } else {
             // Check the roles in given order and return the first match
-            for (String role : defaultViewRoles) {
-                if(Role.hasRoleWithName(roles, role) &&
-                        roleToDefaultViewId.containsKey(role)) {
-                    LOG.debug("Default view found for role", role, ":", roleToDefaultViewId.get(role));
-                    return roleToDefaultViewId.get(role);
+            for (String defaultViewRole : defaultViewRoles) {
+                Long rolesDefaultViewId = roleToDefaultViewId.get(defaultViewRole);
+                if (rolesDefaultViewId != null && Role.hasRoleWithName(roles, defaultViewRole)) {
+                    LOG.debug("Default view found for role", defaultViewRole, ":", rolesDefaultViewId);
+                    return rolesDefaultViewId;
                 }
             }
         }
