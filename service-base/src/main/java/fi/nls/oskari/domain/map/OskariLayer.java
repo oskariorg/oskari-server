@@ -28,7 +28,7 @@ public class OskariLayer extends JSONLocalizedNameAndTitle implements Comparable
 	private String type;
 
     private boolean isBaseMap = false;
-    private int groupId;
+    private int dataproviderId;
 
     private String name;
     private String url;
@@ -72,56 +72,58 @@ public class OskariLayer extends JSONLocalizedNameAndTitle implements Comparable
     private Date created = null;
     private Date updated = null;
 
-    private Set<InspireTheme> inspireThemes = new HashSet<InspireTheme>();
-    private Set<LayerGroup> groups = new HashSet<LayerGroup>();
+    private Set<MaplayerGroup> maplayerGroups = new HashSet<MaplayerGroup>();
+    private Set<DataProvider> groups = new HashSet<DataProvider>();
     private List<OskariLayer> sublayers = new ArrayList<OskariLayer>();
 
+    private Date capabilitiesLastUpdated;
+    private int capabilitiesUpdateRateSec;
 
     public boolean isCollection() {
         return TYPE_COLLECTION.equals(type);
     }
 
     // we only link one theme at the moment so get the first one
-	public InspireTheme getInspireTheme() {
-        if(inspireThemes == null || inspireThemes.isEmpty()) {
+	public MaplayerGroup getMaplayerGroup() {
+        if(maplayerGroups == null || maplayerGroups.isEmpty()) {
             return null;
         }
-        if(inspireThemes.size() > 1) {
+        if(maplayerGroups.size() > 1) {
             // TODO: remove this when we support more than one theme
-            log.warn("More than one inspire theme, this shouldn't happen!! layerId:", getId(), "- Themes:" , inspireThemes);
+            log.warn("More than one maplayer group, this shouldn't happen!! layerId:", getId(), "- Maplayer groupsN:" , maplayerGroups);
         }
-		return inspireThemes.iterator().next();
+		return maplayerGroups.iterator().next();
 	}
-    public Set<InspireTheme> getInspireThemes() {
-        return inspireThemes;
+    public Set<MaplayerGroup> getMaplayerGroups() {
+        return maplayerGroups;
     }
-    public void addInspireThemes(final List<InspireTheme> themes) {
-        if(themes != null && !themes.isEmpty()) {
-            addInspireTheme(themes.iterator().next());
+    public void addGroups(final List<MaplayerGroup> groups) {
+        if(groups != null && !groups.isEmpty()) {
+            addGroup(groups.iterator().next());
             // TODO: use addAll when we support more than one theme
-            //inspireThemes.addAll(themes);
+            //maplayerGroups.addAll(themes);
         }
     }
-    public void addInspireTheme(final InspireTheme theme) {
-        if(theme != null) {
+    public void addGroup(final MaplayerGroup group) {
+        if(group != null) {
             // TODO: remove the clearing when we support more than one theme
-            inspireThemes.clear();
-            inspireThemes.add(theme);
+            maplayerGroups.clear();
+            maplayerGroups.add(group);
         }
     }
 
     // we only link one group at the moment so get the first one
-    public LayerGroup getGroup() {
+    public DataProvider getGroup() {
         if(groups == null || groups.isEmpty()) {
             return null;
         }
         return groups.iterator().next();
     }
 
-    public void addGroup(final LayerGroup group) {
+    public void addGroup(final DataProvider group) {
         if(group != null) {
             groups.add(group);
-            setGroupId(group.getId());
+            setDataproviderId(group.getId());
         }
     }
 
@@ -278,12 +280,12 @@ public class OskariLayer extends JSONLocalizedNameAndTitle implements Comparable
         isBaseMap = baseMap;
     }
 
-    public int getGroupId() {
-        return groupId;
+    public int getDataproviderId() {
+        return dataproviderId;
     }
 
-    public void setGroupId(int groupId) {
-        this.groupId = groupId;
+    public void setDataproviderId(int dataproviderId) {
+        this.dataproviderId = dataproviderId;
     }
 
     public String getName() {
@@ -453,4 +455,21 @@ public class OskariLayer extends JSONLocalizedNameAndTitle implements Comparable
     public void setSupportedCRSs(Set<String> supportedCrss) {
         this.supportedCRSs = supportedCrss;
     }
+
+    public Date getCapabilitiesLastUpdated() {
+        return capabilitiesLastUpdated;
+    }
+
+    public void setCapabilitiesLastUpdated(Date capabilitiesLastUpdated) {
+        this.capabilitiesLastUpdated = capabilitiesLastUpdated;
+    }
+
+    public int getCapabilitiesUpdateRateSec() {
+        return capabilitiesUpdateRateSec;
+    }
+
+    public void setCapabilitiesUpdateRateSec(int capabilitiesUpdateRateSec) {
+        this.capabilitiesUpdateRateSec = capabilitiesUpdateRateSec;
+    }
+
 }

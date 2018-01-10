@@ -1,7 +1,7 @@
 package fi.nls.oskari.map.layer;
 
 import fi.nls.oskari.domain.User;
-import fi.nls.oskari.domain.map.LayerGroup;
+import fi.nls.oskari.domain.map.DataProvider;
 import fi.nls.oskari.service.db.BaseService;
 
 /**
@@ -11,7 +11,7 @@ import fi.nls.oskari.service.db.BaseService;
  * Time: 13:43
  * To change this template use File | Settings | File Templates.
  */
-public interface LayerGroupService extends BaseService<LayerGroup> {
+public interface DataProviderService extends BaseService<DataProvider> {
     public boolean hasPermissionToUpdate(final User user, final int layerId);
-    public LayerGroup findByName(final String name);
+    public DataProvider findByName(final String name);
 }

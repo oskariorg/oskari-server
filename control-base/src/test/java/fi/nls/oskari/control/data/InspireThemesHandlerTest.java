@@ -1,12 +1,12 @@
 package fi.nls.oskari.control.data;
 
-import fi.mml.map.mapwindow.service.db.InspireThemeService;
-import fi.mml.map.mapwindow.service.db.InspireThemeServiceIbatisImpl;
+import fi.mml.map.mapwindow.service.db.OskariMapLayerGroupService;
+import fi.mml.map.mapwindow.service.db.OskariMapLayerGroupServiceIbatisImpl;
 import fi.nls.oskari.control.ActionConstants;
 import fi.nls.oskari.control.ActionDeniedException;
 import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.control.ActionParamsException;
-import fi.nls.oskari.domain.map.InspireTheme;
+import fi.nls.oskari.domain.map.MaplayerGroup;
 import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.test.control.JSONActionRouteTest;
 import fi.nls.test.util.ResourceHelper;
@@ -34,32 +34,32 @@ import static org.mockito.Mockito.mock;
  */
 public class InspireThemesHandlerTest extends JSONActionRouteTest {
 
-    private InspireThemeService inspireThemeService;
+    private OskariMapLayerGroupService oskariMapLayerGroupService;
     private InspireThemesHandler handler = new InspireThemesHandler();
 
     @Before
     public void setUp() throws Exception {
         assumeTrue(TestHelper.dbAvailable());
-        inspireThemeService = mock(InspireThemeServiceIbatisImpl.class);
-        InspireTheme theme1 = new InspireTheme();
+        oskariMapLayerGroupService = mock(OskariMapLayerGroupServiceIbatisImpl.class);
+        MaplayerGroup theme1 = new MaplayerGroup();
         theme1.setId(1);
         theme1.setName("fi", "teema 1");
         theme1.setName("en", "theme 1");
 
-        InspireTheme themeInsert = new InspireTheme();
+        MaplayerGroup themeInsert = new MaplayerGroup();
         themeInsert.setId(2);
         themeInsert.setName("fi", "teema fi");
         themeInsert.setName("en", "theme en");
-        doReturn(themeInsert).when(inspireThemeService).find(2);
+        doReturn(themeInsert).when(oskariMapLayerGroupService).find(2);
 
-        List<InspireTheme> list = new ArrayList<InspireTheme>(1);
+        List<MaplayerGroup> list = new ArrayList<MaplayerGroup>(1);
         list.add(theme1);
-        doReturn(list).when(inspireThemeService).findAll();
-        doReturn(theme1).when(inspireThemeService).find(1);
+        doReturn(list).when(oskariMapLayerGroupService).findAll();
+        doReturn(theme1).when(oskariMapLayerGroupService).find(1);
 
-        doReturn(2).when(inspireThemeService).insert(any(InspireTheme.class));
+        doReturn(2).when(oskariMapLayerGroupService).insert(any(MaplayerGroup.class));
 
-        handler.setInspireThemeService(inspireThemeService);
+        handler.setOskariMapLayerGroupService(oskariMapLayerGroupService);
         handler.init();
     }
     @Test

@@ -1,7 +1,7 @@
 package fi.nls.oskari.map.layer;
 
 import fi.nls.oskari.domain.User;
-import fi.nls.oskari.domain.map.LayerGroup;
+import fi.nls.oskari.domain.map.DataProvider;
 import fi.nls.oskari.service.db.BaseIbatisService;
 
 import java.util.HashMap;
@@ -16,12 +16,12 @@ import java.util.Map;
  * Time: 13:43
  * To change this template use File | Settings | File Templates.
  */
-public class LayerGroupServiceIbatisImpl extends BaseIbatisService<LayerGroup> implements LayerGroupService {
+public class DataProviderServiceIbatisImpl extends BaseIbatisService<DataProvider> implements DataProviderService {
 
     // FIXME: use some caching lib for this, and clear cache on update/delete etc
-    final private static Map<Integer, LayerGroup> ID_CACHE = new HashMap<Integer, LayerGroup>();
+    final private static Map<Integer, DataProvider> ID_CACHE = new HashMap<Integer, DataProvider>();
 
-    public LayerGroupServiceIbatisImpl() {
+    public DataProviderServiceIbatisImpl() {
         // populate cache on startup
         try {
             findAll();
@@ -46,14 +46,14 @@ public class LayerGroupServiceIbatisImpl extends BaseIbatisService<LayerGroup> i
 
     @Override
     protected String getNameSpace() {
-        return "LayerGroup";
+        return "DataProvider";
     }
 
-    public LayerGroup find(int id) {
+    public DataProvider find(int id) {
         if(id == -1) {
             return null;
         }
-        LayerGroup group = ID_CACHE.get(id);
+        DataProvider group = ID_CACHE.get(id);
         if(group != null) {
             return group;
         }
@@ -72,9 +72,9 @@ public class LayerGroupServiceIbatisImpl extends BaseIbatisService<LayerGroup> i
      * @param name
      * @return matching group or null if no match
      */
-    public LayerGroup findByName(final String name) {
-        final List<LayerGroup> groups = findAll();
-        for(LayerGroup group : groups) {
+    public DataProvider findByName(final String name) {
+        final List<DataProvider> groups = findAll();
+        for(DataProvider group : groups) {
             if(group.getLocale().toString().indexOf(name) > -1) {
                 return group;
             }
@@ -82,9 +82,9 @@ public class LayerGroupServiceIbatisImpl extends BaseIbatisService<LayerGroup> i
         return null;
     }
 
-    public List<LayerGroup> findAll() {
-        final List<LayerGroup> groups = super.findAll();
-        for(LayerGroup group : groups) {
+    public List<DataProvider> findAll() {
+        final List<DataProvider> groups = super.findAll();
+        for(DataProvider group : groups) {
             ID_CACHE.put(group.getId(), group);
         }
         return groups;
@@ -95,7 +95,7 @@ public class LayerGroupServiceIbatisImpl extends BaseIbatisService<LayerGroup> i
         super.delete(id);
     }
 
-    public void update(final LayerGroup group) {
+    public void update(final DataProvider group) {
         ID_CACHE.put(group.getId(), group);
         super.update(group);
     }

@@ -3,12 +3,12 @@ package fi.nls.oskari.map.layer;
 import com.ibatis.common.resources.Resources;
 import com.ibatis.sqlmap.client.SqlMapClient;
 import com.ibatis.sqlmap.client.SqlMapClientBuilder;
-import fi.mml.map.mapwindow.service.db.InspireThemeService;
-import fi.mml.map.mapwindow.service.db.InspireThemeServiceIbatisImpl;
+import fi.mml.map.mapwindow.service.db.OskariMapLayerGroupService;
+import fi.mml.map.mapwindow.service.db.OskariMapLayerGroupServiceIbatisImpl;
 import fi.mml.map.mapwindow.util.OskariLayerWorker;
 import fi.nls.oskari.annotation.Oskari;
-import fi.nls.oskari.domain.map.InspireTheme;
-import fi.nls.oskari.domain.map.LayerGroup;
+import fi.nls.oskari.domain.map.DataProvider;
+import fi.nls.oskari.domain.map.MaplayerGroup;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
@@ -37,12 +37,8 @@ public class OskariLayerServiceIbatisImpl extends OskariLayerService {
     // make it static so we can change this with one call to all services when needed
     private static String SQL_MAP_LOCATION = "META-INF/SqlMapConfig.xml";
 
-    private static LayerGroupService layerGroupService = new LayerGroupServiceIbatisImpl();
-    private static InspireThemeService inspireThemeService = new InspireThemeServiceIbatisImpl();
-
-    // map different layer types
-    private static Map<String, Class<OskariLayer>> typeMapping =
-            Collections.singletonMap(OskariLayer.TYPE_WMS, OskariLayer.class);
+    private static DataProviderService dataProviderService = new DataProviderServiceIbatisImpl();
+    private static OskariMapLayerGroupService oskariMapLayerGroupService = new OskariMapLayerGroupServiceIbatisImpl();
 
     /**
      * Static setter to override default location
@@ -51,33 +47,17 @@ public class OskariLayerServiceIbatisImpl extends OskariLayerService {
     public static void setSqlMapLocation(final String newLocation) {
         SQL_MAP_LOCATION = newLocation;
     }
-    /**
-     * Returns SQLmap
-     *
-     * @return
-     */
-    protected SqlMapClient getSqlMapClient() {
-        if (client != null) {
-            return client;
-        }
 
-        Reader reader = null;
-        try {
+    protected SqlMapClient getSqlMapClient() {
+        if (client == null) {
             String sqlMapLocation = getSqlMapLocation();
-            reader = Resources.getResourceAsReader(sqlMapLocation);
-            client = SqlMapClientBuilder.buildSqlMapClient(reader);
-            return client;
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to retrieve SQL client", e);
-        } finally {
-            if (reader != null) {
-                try {
-                    reader.close();
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
-                }
+            try (Reader reader = Resources.getResourceAsReader(sqlMapLocation)) {
+                client = SqlMapClientBuilder.buildSqlMapClient(reader);
+            } catch (Exception e) {
+                throw new RuntimeException("Failed to retrieve SQL client", e);
             }
         }
+        return client;
     }
 
     /*
@@ -92,22 +72,6 @@ public class OskariLayerServiceIbatisImpl extends OskariLayerService {
         return "OskariLayer";
     }
 
-    private OskariLayer createLayerInstance(final String type) {
-        Class<OskariLayer> clazz = typeMapping.get(type);
-        if(clazz != null) {
-            try {
-                return clazz.newInstance();
-            }
-            catch (Exception ex) {
-                LOG.warn(ex, "Couldn't create instance for type:", type, "- Using default model.");
-            }
-        }
-        else {
-            //LOG.info("Unregistered layertype:", type, "- Using default model.");
-        }
-        return new OskariLayer();
-    }
-
     private OskariLayer mapData(Map<String, Object> data) {
         if(data == null) {
             return null;
@@ -119,11 +83,7 @@ public class OskariLayerServiceIbatisImpl extends OskariLayerService {
             data = caseInsensitiveData;
         }
 
-        final OskariLayer result = createLayerInstance((String) data.get("type"));
-        if(result == null) {
-            LOG.warn("Unknown layer type:", data.get("type"));
-            return null;
-        }
+        final OskariLayer result = new OskariLayer();
 
         result.setId((Integer) data.get("id"));
         result.setParentId((Integer) data.get("parentid"));
@@ -172,31 +132,35 @@ public class OskariLayerServiceIbatisImpl extends OskariLayerService {
         result.setCreated((Date) data.get("created"));
         result.setUpdated((Date) data.get("updated"));
 
+        // Automatic update of Capabilities
+        result.setCapabilitiesLastUpdated((Date) data.get("capabilities_last_updated"));
+        result.setCapabilitiesUpdateRateSec((Integer) data.get("capabilities_update_rate_sec"));
+
         // populate groups/themes for top level layers
         if(result.getParentId() == -1) {
-            // sublayers and internal baselayers don't have groupId
-            Object groupId = data.get("groupid");
-            if(groupId != null) {
-                result.setGroupId((Integer)groupId);
+            // sublayers and internal baselayers don't have dataprovider_id
+            Object dataProviderId = data.get("dataprovider_id");
+            if(dataProviderId != null) {
+                result.setDataproviderId((Integer)dataProviderId);
                 try {
                     // populate layer group
                     // first run (~700 layers) with this lasts ~1800ms, second run ~300ms (cached)
-                    final LayerGroup group = layerGroupService.find(result.getGroupId());
-                    result.addGroup(group);
+                    final DataProvider dataProvider = dataProviderService.find(result.getDataproviderId());
+                    result.addGroup(dataProvider);
                 } catch (Exception ex) {
                     LOG.error("Couldn't get organisation for layer", result.getId());
                     return null;
                 }
             }
 
-            // FIXME: inspireThemeService has built in caching (very crude) to make this fast,
-            // without it getting themes makes the query 10 x slower
-            // populate inspirethemes
+            // FIXME: oskariMapLayerGroupService has built in caching (very crude) to make this fast,
+            // without it getting maplayer groups makes the query 10 x slower
+            // populate groups
             try {
-                final List<InspireTheme> themes = inspireThemeService.findByMaplayerId(result.getId());
-                result.addInspireThemes(themes);
+                final List<MaplayerGroup> groups = oskariMapLayerGroupService.findByMaplayerId(result.getId());
+                result.addGroups(groups);
             } catch (Exception ex) {
-                LOG.error("Couldn't get inspirethemes for layer", result.getId());
+                LOG.error("Couldn't get groups for layer", result.getId());
                 return null;
             }
         }
@@ -342,11 +306,23 @@ public class OskariLayerServiceIbatisImpl extends OskariLayerService {
        return this.findAll(null);
     }
 
+    @Override
+    public List<OskariLayer> findAllWithPositiveUpdateRateSec() {
+        long t0 = System.currentTimeMillis();
+        List<Map<String,Object>> result = queryForList(getNameSpace() + ".findAllWithPositiveUpdateRateSec", null);
+        long t1 = System.currentTimeMillis();
+        LOG.debug("Find layers with positive update rate sec took:", t1-t0, "ms");
+        List<OskariLayer> layers = mapDataList(result);
+        long t2 = System.currentTimeMillis();
+        LOG.debug("Parse layers with positive update rate sec took:", t2-t1, "ms");
+        return layers;
+    }
+
     public void update(final OskariLayer layer) {
         try {
             getSqlMapClient().update(getNameSpace() + ".update", layer);
             // link to inspire theme(s)
-            inspireThemeService.updateLayerThemes(layer.getId(), layer.getInspireThemes());
+            oskariMapLayerGroupService.updateLayerGroups(layer.getId(), layer.getMaplayerGroups());
         } catch (Exception e) {
             throw new RuntimeException("Failed to update", e);
         }
@@ -363,7 +339,7 @@ public class OskariLayerServiceIbatisImpl extends OskariLayerService {
             layer.setId(id);
             client.commitTransaction();
             // link to inspire theme(s)
-            inspireThemeService.updateLayerThemes(id, layer.getInspireThemes());
+            oskariMapLayerGroupService.updateLayerGroups(id, layer.getMaplayerGroups());
             return id;
         } catch (Exception e) {
             throw new RuntimeException("Failed to insert", e);
@@ -405,17 +381,5 @@ public class OskariLayerServiceIbatisImpl extends OskariLayerService {
         }
         return Collections.emptyList();
     }
-
-    private List<Map<String,Object>> queryForList(String sqlId) {
-        try {
-            client = getSqlMapClient();
-            List<Map<String,Object>> results = client.queryForList(sqlId);
-            return results;
-        } catch (Exception e) {
-            LOG.error(e, "Couldn't query list. SqlId:", sqlId);
-        }
-        return Collections.emptyList();
-    }
-
 
 }

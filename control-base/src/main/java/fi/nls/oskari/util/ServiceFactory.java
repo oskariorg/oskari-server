@@ -1,16 +1,15 @@
 package fi.nls.oskari.util;
 
 
-import fi.mml.map.mapwindow.service.db.InspireThemeService;
-import fi.mml.map.mapwindow.service.db.InspireThemeServiceIbatisImpl;
-import fi.mml.map.mapwindow.service.db.MaplayerProjectionService;
-import fi.mml.map.mapwindow.service.db.MaplayerProjectionServiceIbatisImpl;
+import fi.mml.map.mapwindow.service.db.*;
+import fi.mml.map.mapwindow.service.db.OskariMapLayerGroupServiceIbatisImpl;
+import fi.mml.map.mapwindow.service.db.OskariMapLayerGroupService;
 import fi.mml.portti.service.db.permissions.PermissionsService;
 import fi.mml.portti.service.db.permissions.PermissionsServiceIbatisImpl;
 import fi.mml.portti.service.search.SearchService;
 import fi.mml.portti.service.search.SearchServiceImpl;
-import fi.nls.oskari.map.layer.LayerGroupService;
-import fi.nls.oskari.map.layer.LayerGroupServiceIbatisImpl;
+import fi.nls.oskari.map.layer.DataProviderService;
+import fi.nls.oskari.map.layer.DataProviderServiceIbatisImpl;
 import fi.nls.oskari.map.layer.OskariLayerService;
 import fi.nls.oskari.map.layer.OskariLayerServiceIbatisImpl;
 import fi.nls.oskari.service.capabilities.CapabilitiesCacheService;
@@ -20,20 +19,20 @@ import fi.nls.oskari.wfs.WFSLayerConfigurationServiceIbatisImpl;
 
 public class ServiceFactory {
 	
-	private static LayerGroupService layerGroupService;
+	private static DataProviderService dataProviderService;
 	private static OskariLayerService mapLayerService;
-	private static InspireThemeService inspireThemeService;
+	private static OskariMapLayerGroupService oskariMapLayerGroupService;
     private static MaplayerProjectionService maplayerProjectionService;
     private static PermissionsService permissionsService;
     private static SearchService searchService;
     private static CapabilitiesCacheService capabilitiesCacheService;
     private static WFSLayerConfigurationService wfsLayerService;
  
-	public static LayerGroupService getLayerGroupService() {
-		if (layerGroupService == null) {
-            layerGroupService = new LayerGroupServiceIbatisImpl();
+	public static DataProviderService getDataProviderService() {
+		if (dataProviderService == null) {
+            dataProviderService = new DataProviderServiceIbatisImpl();
 		}
-		return layerGroupService;
+		return dataProviderService;
 	}
 	
 	public static OskariLayerService getMapLayerService() {
@@ -43,11 +42,11 @@ public class ServiceFactory {
 		return mapLayerService;
 	}
 
-	public static InspireThemeService getInspireThemeService() {
-		if (inspireThemeService == null) {
-			inspireThemeService = new InspireThemeServiceIbatisImpl();
+	public static OskariMapLayerGroupService getOskariMapLayerGroupService() {
+		if (oskariMapLayerGroupService == null) {
+			oskariMapLayerGroupService = new OskariMapLayerGroupServiceIbatisImpl();
 		}
-		return inspireThemeService;
+		return oskariMapLayerGroupService;
 	}
 
     public static MaplayerProjectionService getMaplayerProjectionService() {

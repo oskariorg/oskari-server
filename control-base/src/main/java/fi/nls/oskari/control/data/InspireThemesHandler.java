@@ -1,10 +1,10 @@
 package fi.nls.oskari.control.data;
 
-import fi.mml.map.mapwindow.service.db.InspireThemeService;
-import fi.mml.map.mapwindow.service.db.InspireThemeServiceIbatisImpl;
+import fi.mml.map.mapwindow.service.db.OskariMapLayerGroupService;
+import fi.mml.map.mapwindow.service.db.OskariMapLayerGroupServiceIbatisImpl;
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.*;
-import fi.nls.oskari.domain.map.InspireTheme;
+import fi.nls.oskari.domain.map.MaplayerGroup;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.RequestHelper;
 import fi.nls.oskari.util.ResponseHelper;
@@ -21,19 +21,20 @@ import static fi.nls.oskari.control.ActionConstants.PARAM_NAME_PREFIX;
 /**
  * CRUD for Inspire themes. Get is callable by anyone, other methods require admin user.
  */
+// FIXME: Update route and class name when frontend implementation was updated
 @OskariActionRoute("InspireThemes")
 public class InspireThemesHandler extends RestActionHandler {
 
-    private InspireThemeService inspireThemeService;
+    private OskariMapLayerGroupService oskariMapLayerGroupService;
 
-    public void setInspireThemeService(final InspireThemeService service) {
-        inspireThemeService = service;
+    public void setOskariMapLayerGroupService(final OskariMapLayerGroupService service) {
+        oskariMapLayerGroupService = service;
     }
 
     public void init() {
         // setup service if it hasn't been initialized
-        if(inspireThemeService == null) {
-            setInspireThemeService(new InspireThemeServiceIbatisImpl());
+        if(oskariMapLayerGroupService == null) {
+            setOskariMapLayerGroupService(new OskariMapLayerGroupServiceIbatisImpl());
         }
     }
 
@@ -46,15 +47,15 @@ public class InspireThemesHandler extends RestActionHandler {
         final int id = params.getHttpParam(PARAM_ID, -1);
         if(id != -1) {
             // find single theme
-            final InspireTheme theme = inspireThemeService.find(id);
+            final MaplayerGroup theme = oskariMapLayerGroupService.find(id);
             ResponseHelper.writeResponse(params, theme.getAsJSON());
             return;
         }
 
         // find all themes
-        final List<InspireTheme> inspireThemes = inspireThemeService.findAll();
+        final List<MaplayerGroup> maplayerGroups = oskariMapLayerGroupService.findAll();
         final JSONArray list = new JSONArray();
-        for (InspireTheme theme : inspireThemes) {
+        for (MaplayerGroup theme : maplayerGroups) {
             list.put(theme.getAsJSON());
         }
         final JSONObject result = new JSONObject();
@@ -69,11 +70,11 @@ public class InspireThemesHandler extends RestActionHandler {
      */
     public void handlePut(ActionParameters params) throws ActionException {
         checkForAdminPermission(params);
-        final InspireTheme theme = new InspireTheme();
+        final MaplayerGroup theme = new MaplayerGroup();
         populateFromRequest(params, theme);
-        final int id = inspireThemeService.insert(theme);
+        final int id = oskariMapLayerGroupService.insert(theme);
         // check insert by loading from DB
-        final InspireTheme savedTheme = inspireThemeService.find(id);
+        final MaplayerGroup savedTheme = oskariMapLayerGroupService.find(id);
         ResponseHelper.writeResponse(params, savedTheme.getAsJSON());
     }
 
@@ -85,9 +86,9 @@ public class InspireThemesHandler extends RestActionHandler {
     public void handlePost(ActionParameters params) throws ActionException {
         checkForAdminPermission(params);
         final int id = params.getRequiredParamInt(PARAM_ID);
-        final InspireTheme theme = inspireThemeService.find(id);
+        final MaplayerGroup theme = oskariMapLayerGroupService.find(id);
         populateFromRequest(params, theme);
-        inspireThemeService.update(theme);
+        oskariMapLayerGroupService.update(theme);
         ResponseHelper.writeResponse(params, theme.getAsJSON());
     }
 
@@ -99,13 +100,13 @@ public class InspireThemesHandler extends RestActionHandler {
     public void handleDelete(ActionParameters params) throws ActionException {
         checkForAdminPermission(params);
         final int id = params.getRequiredParamInt(PARAM_ID);
-        final InspireTheme theme = inspireThemeService.find(id);
-        final List<Integer> maplayerIds = inspireThemeService.findMaplayersByTheme(id);
+        final MaplayerGroup theme = oskariMapLayerGroupService.find(id);
+        final List<Integer> maplayerIds = oskariMapLayerGroupService.findMaplayersByGroup(id);
         if(!maplayerIds.isEmpty()) {
             // theme with maplayers under it can't be removed
             throw new ActionParamsException("Maplayers linked to theme", JSONHelper.createJSONObject("code", "not_empty"));
         }
-        inspireThemeService.delete(id);
+        oskariMapLayerGroupService.delete(id);
         ResponseHelper.writeResponse(params, theme.getAsJSON());
     }
 
@@ -120,7 +121,7 @@ public class InspireThemesHandler extends RestActionHandler {
         }
     }
 
-    private void populateFromRequest(ActionParameters params, InspireTheme theme) throws ActionException {
+    private void populateFromRequest(ActionParameters params, MaplayerGroup theme) throws ActionException {
         final Map<String, String> parsed = RequestHelper.parsePrefixedParamsMap(params.getRequest(), PARAM_NAME_PREFIX);
         for(Map.Entry<String, String> entry : parsed.entrySet()) {
             // TODO: check against supported locales?

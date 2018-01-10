@@ -16,7 +16,7 @@
         <parameter property="parentId" jdbcType="INTEGER"  javaType="int" />
         <parameter property="type" />
         <parameter property="baseMap" />
-        <parameter property="groupId" />
+        <parameter property="dataproviderId" />
 
         <parameter property="name" />
         <parameter property="url" />
@@ -52,13 +52,16 @@
         <parameter property="created" jdbcType="DATETIME" javaType="java.util.Date" />
         <parameter property="updated" jdbcType="DATETIME" javaType="java.util.Date" />
 
+        <parameter property="capabilitiesLastUpdated" jdbcType="DATETIME" javaType="java.util.Date" />
+        <parameter property="capabilitiesUpdateRateSec" jdbcType="INTEGER" javaType="int" />
+
         <!-- parameter property="id" jdbcType="INTEGER" javaType="java.lang.Integer" mode="OUT" / -->
     </parameterMap>
 
     <parameterMap id="LayerUpdateParameter" class="OskariLayer"> <!--  extends="OskariLayer.LayerInsertParameter" -->
         <parameter property="parentId" />
         <parameter property="baseMap" />
-        <parameter property="groupId" />
+        <parameter property="dataproviderId" />
 
         <parameter property="name" />
         <parameter property="url" />
@@ -93,6 +96,9 @@
 
         <parameter property="updated" jdbcType="DATETIME" javaType="java.util.Date" />
 
+        <parameter property="capabilitiesLastUpdated" jdbcType="DATETIME" javaType="java.util.Date" />
+        <parameter property="capabilitiesUpdateRateSec" jdbcType="INTEGER" javaType="int" />
+
         <parameter property="id" />
     </parameterMap>
 
@@ -106,7 +112,7 @@
         l.externalId,
         l.type,
         l.base_map,
-        l.groupId,
+        l.dataprovider_id,
 
         l.name,
         l.url,
@@ -138,7 +144,10 @@
         m.wkt as geom,
 
         l.created,
-        l.updated
+        l.updated,
+
+        l.capabilities_last_updated,
+        l.capabilities_update_rate_sec
 
         FROM
         oskari_maplayer l LEFT OUTER JOIN oskari_maplayer_metadata m
@@ -159,7 +168,7 @@
         l.externalId,
         l.type,
         l.base_map,
-        l.groupId,
+        l.dataprovider_id,
 
         l.name,
         l.url,
@@ -191,7 +200,10 @@
         m.wkt as geom,
 
         l.created,
-        l.updated
+        l.updated,
+
+        l.capabilities_last_updated,
+        l.capabilities_update_rate_sec
 
         FROM
         oskari_maplayer l LEFT OUTER JOIN oskari_maplayer_metadata m
@@ -212,7 +224,7 @@
         l.externalId,
         l.type,
         l.base_map,
-        l.groupId,
+        l.dataprovider_id,
 
         l.name,
         l.url,
@@ -244,7 +256,10 @@
         m.wkt as geom,
 
         l.created,
-        l.updated
+        l.updated,
+
+        l.capabilities_last_updated,
+        l.capabilities_update_rate_sec
 
         FROM
         oskari_maplayer l LEFT OUTER JOIN oskari_maplayer_metadata m
@@ -266,7 +281,7 @@
         l.externalId,
         l.type,
         l.base_map,
-        l.groupId,
+        l.dataprovider_id,
 
         l.name,
         l.url,
@@ -298,7 +313,10 @@
         m.wkt as geom,
 
         l.created,
-        l.updated
+        l.updated,
+
+        l.capabilities_last_updated,
+        l.capabilities_update_rate_sec
 
         FROM
         oskari_maplayer l LEFT OUTER JOIN oskari_maplayer_metadata m
@@ -320,7 +338,7 @@
         l.externalId,
         l.type,
         l.base_map,
-        l.groupId,
+        l.dataprovider_id,
 
         l.name,
         l.url,
@@ -352,7 +370,10 @@
         m.wkt as geom,
 
         l.created,
-        l.updated
+        l.updated,
+
+        l.capabilities_last_updated,
+        l.capabilities_update_rate_sec
 
         FROM
         oskari_maplayer l LEFT OUTER JOIN oskari_maplayer_metadata m
@@ -365,6 +386,170 @@
     </select>
         
 <select id="findAll"
+        parameterClass="String"
+        resultClass="java.util.HashMap">
+
+    SELECT
+    l.id,
+    l.parentId,
+    l.externalId,
+    l.type,
+    l.base_map,
+    l.dataprovider_id,
+
+    l.name,
+    l.url,
+    l.locale,
+
+    l.opacity,
+    l.style,
+    l.minscale,
+    l.maxscale,
+
+    l.legend_image,
+    l.metadataId,
+
+    l.tile_matrix_set_id,
+    l.params,
+    l.options,
+    l.attributes,
+    l.capabilities,
+
+    l.gfi_xslt,
+    l.gfi_type,
+    l.gfi_content,
+    l.realtime,
+    l.refresh_rate,
+    l.username,
+    l.password,
+    l.version,
+    <dynamic>
+        <isParameterPresent>
+            #crs# as srs_name,
+        </isParameterPresent>
+        <isNotParameterPresent>
+            l.srs_name,
+        </isNotParameterPresent>
+    </dynamic>
+    l.srs_name,
+    m.wkt as geom,
+
+    l.created,
+    l.updated,
+
+    l.capabilities_last_updated,
+    l.capabilities_update_rate_sec
+
+    FROM
+    oskari_maplayer l LEFT OUTER JOIN oskari_maplayer_metadata m
+    ON  m.metadataid = l.metadataId
+    <dynamic>
+        <isParameterPresent>
+            LEFT OUTER JOIN oskari_maplayer_projections p
+            ON  p.maplayerid = l.id
+            WHERE p.name = #crs#
+        </isParameterPresent>
+    </dynamic>
+    ORDER BY l.parentId ASC
+
+    </select>
+
+    <select id="findByIdList"
+            parameterClass="map"
+            resultClass="java.util.HashMap">
+
+        SELECT
+        l.id,
+        l.parentId,
+        l.externalId,
+        l.type,
+        l.base_map,
+        l.dataprovider_id,
+
+        l.name,
+        l.url,
+        l.locale,
+
+        l.opacity,
+        l.style,
+        l.minscale,
+        l.maxscale,
+
+        l.legend_image,
+        l.metadataId,
+
+        l.tile_matrix_set_id,
+        l.params,
+        l.options,
+        l.attributes,
+        l.capabilities,
+
+        l.gfi_xslt,
+        l.gfi_type,
+        l.gfi_content,
+        l.realtime,
+        l.refresh_rate,
+        l.username,
+        l.password,
+        l.version,
+        <dynamic>
+            <isNotNull property="crs">
+                #crs# as srs_name,
+            </isNotNull>
+            <isNull property="crs">
+                l.srs_name,
+            </isNull>
+        </dynamic>
+        l.srs_name,
+        m.wkt as geom,
+
+        l.created,
+        l.updated,
+
+        l.capabilities_last_updated,
+        l.capabilities_update_rate_sec
+
+        FROM
+        oskari_maplayer l LEFT OUTER JOIN oskari_maplayer_metadata m
+        ON  m.metadataid = l.metadataId
+        <dynamic>
+            <isNotNull property="crs">
+                LEFT OUTER JOIN oskari_maplayer_projections p
+                ON  p.maplayerid = l.id
+            </isNotNull>
+            WHERE
+            <isNotEmpty  property="intList" >
+                l.id in
+                <iterate property="intList" open="(" close=")" conjunction=",">
+                    #intList[]#
+                </iterate>
+                <isNotEmpty  property="strList" >
+                OR
+                </isNotEmpty>
+                <isEmpty  property="strList" >
+                    <isNotNull  property="crs">
+                        AND
+                    </isNotNull>
+                </isEmpty>
+            </isNotEmpty>
+            <isNotEmpty  property="strList" >
+                 l.externalId in
+                <iterate property="strList" open="(" close=")" conjunction=",">
+                    #strList[]#
+                </iterate>
+                <isNotNull  property="crs">
+                    AND
+                </isNotNull>
+            </isNotEmpty>
+            <isNotNull  property="crs">
+                 p.name = #crs#
+            </isNotNull>
+
+        </dynamic>
+
+    </select>
+
+    <select id="findAllWithPositiveUpdateRateSec"
         parameterClass="String"
         resultClass="java.util.HashMap">
 
@@ -414,7 +599,10 @@
     m.wkt as geom,
 
     l.created,
-    l.updated
+    l.updated,
+
+    l.capabilities_last_updated,
+    l.capabilities_update_rate_sec
 
     FROM
     oskari_maplayer l LEFT OUTER JOIN oskari_maplayer_metadata m
@@ -426,100 +614,8 @@
             WHERE p.name = #crs#
         </isParameterPresent>
     </dynamic>
+    WHERE capabilities_update_rate_sec > 0
     ORDER BY l.parentId ASC
-
-    </select>
-
-    <select id="findByIdList"
-            parameterClass="map"
-            resultClass="java.util.HashMap">
-
-        SELECT
-        l.id,
-        l.parentId,
-        l.externalId,
-        l.type,
-        l.base_map,
-        l.groupId,
-
-        l.name,
-        l.url,
-        l.locale,
-
-        l.opacity,
-        l.style,
-        l.minscale,
-        l.maxscale,
-
-        l.legend_image,
-        l.metadataId,
-
-        l.tile_matrix_set_id,
-        l.params,
-        l.options,
-        l.attributes,
-        l.capabilities,
-
-        l.gfi_xslt,
-        l.gfi_type,
-        l.gfi_content,
-        l.realtime,
-        l.refresh_rate,
-        l.username,
-        l.password,
-        l.version,
-        <dynamic>
-            <isNotNull property="crs">
-                #crs# as srs_name,
-            </isNotNull>
-            <isNull property="crs">
-                l.srs_name,
-            </isNull>
-        </dynamic>
-        l.srs_name,
-        m.wkt as geom,
-
-        l.created,
-        l.updated
-
-        FROM
-        oskari_maplayer l LEFT OUTER JOIN oskari_maplayer_metadata m
-        ON  m.metadataid = l.metadataId
-        <dynamic>
-            <isNotNull property="crs">
-                LEFT OUTER JOIN oskari_maplayer_projections p
-                ON  p.maplayerid = l.id
-            </isNotNull>
-            WHERE
-            <isNotEmpty  property="intList" >
-                l.id in
-                <iterate property="intList" open="(" close=")" conjunction=",">
-                    #intList[]#
-                </iterate>
-                <isNotEmpty  property="strList" >
-                OR
-                </isNotEmpty>
-                <isEmpty  property="strList" >
-                    <isNotNull  property="crs">
-                        AND
-                    </isNotNull>
-                </isEmpty>
-            </isNotEmpty>
-            <isNotEmpty  property="strList" >
-                 l.externalId in
-                <iterate property="strList" open="(" close=")" conjunction=",">
-                    #strList[]#
-                </iterate>
-                <isNotNull  property="crs">
-                    AND
-                </isNotNull>
-            </isNotEmpty>
-            <isNotNull  property="crs">
-                 p.name = #crs#
-            </isNotNull>
-
-        </dynamic>
-
     </select>
 
     <statement id="delete" parameterClass="int">
@@ -535,7 +631,7 @@
             parentId,
             type,
             base_map,
-            groupId,
+            dataprovider_id,
 
             name,
             url,
@@ -569,8 +665,12 @@
             srs_name,
 
             created,
-            updated)
-        values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+            updated,
+
+            capabilities_last_updated,
+            capabilities_update_rate_sec)
+
+        values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
     </statement>
 
     <statement id="update" parameterMap="LayerUpdateParameter">
@@ -578,7 +678,7 @@
         SET
         parentId = ?,
         base_map = ?,
-        groupId = ?,
+        dataprovider_id = ?,
 
         name = ?,
         url = ?,
@@ -611,7 +711,11 @@
         version = ?,
         srs_name = ?,
 
-        updated=?
+        updated=?,
+
+        capabilities_last_updated=?,
+        capabilities_update_rate_sec=?
+
         WHERE id = ?
     </statement>
 </sqlMap>
