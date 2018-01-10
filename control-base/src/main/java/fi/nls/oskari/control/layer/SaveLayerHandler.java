@@ -324,6 +324,8 @@ public class SaveLayerHandler extends ActionHandler {
         ml.setUsername(params.getHttpParam("username", ml.getUsername()));
         ml.setPassword(params.getHttpParam("password", ml.getPassword()));
 
+        ml.setCapabilitiesUpdateRateSec(params.getHttpParam("capabilitiesUpdateRateSec", 0));
+
         String attributes = params.getHttpParam("attributes");
         if (attributes != null && !attributes.equals("")) {
             ml.setAttributes(JSONHelper.createJSONObject(attributes));
