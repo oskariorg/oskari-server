@@ -291,7 +291,6 @@ public class ViewServiceIbatisImpl extends BaseIbatisService<Object> implements
     }
 
     public long getSystemDefaultViewId(Collection<Role> roles) {
-
         if(roles == null) {
             LOG.debug("Tried to get default view for <null> roles");
         }
@@ -309,10 +308,6 @@ public class ViewServiceIbatisImpl extends BaseIbatisService<Object> implements
         return getDefaultViewId();
     }
 
-    public boolean isSystemDefaultView(final long id) {
-        return roleToDefaultViewId.containsValue(id) || getDefaultViewId() == id;
-    }
-
     /**
      * Returns the saved default view id for the user, if one exists
      *
@@ -321,15 +316,18 @@ public class ViewServiceIbatisImpl extends BaseIbatisService<Object> implements
      */
     private long getPersonalizedDefaultViewId(final User user) {
         if (!user.isGuest() && user.getId() != -1) {
-            Object queryResult = queryForObject("View.get-default-view-id-by-user-id",user.getId());
+            Object queryResult = queryForObject("View.get-default-view-id-by-user-id", user.getId());
             if (queryResult != null) {
-                Long userDefaultViewId = (Long)queryResult;
-                return userDefaultViewId.longValue();
+                return (Long) queryResult;
             }
         }
-
         return -1;
     }
+
+    public boolean isSystemDefaultView(final long id) {
+        return roleToDefaultViewId.containsValue(id) || getDefaultViewId() == id;
+    }
+
     /**
      * Returns default view id for given role name
      * @param roleName
