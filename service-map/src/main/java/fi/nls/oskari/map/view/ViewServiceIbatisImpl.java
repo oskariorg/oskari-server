@@ -312,7 +312,7 @@ public class ViewServiceIbatisImpl extends BaseIbatisService<Object> implements
                 }
             }
         }
-        LOG.debug("No properties based default views matched user roles:", roles, ". Defaulting to DB.");
+        LOG.debug("No role based default views matched user roles:", roles, ". Defaulting to global default.");
         return getDefaultViewId();
     }
 
