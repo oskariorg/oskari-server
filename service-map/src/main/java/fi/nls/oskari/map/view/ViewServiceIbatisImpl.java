@@ -329,6 +329,10 @@ public class ViewServiceIbatisImpl extends BaseIbatisService<Object> implements
         }
     }
 
+    public boolean isSystemDefaultView(final long id) {
+        return roleToDefaultViewId.containsValue(id) || getDefaultViewId() == id;
+    }
+
     /**
      * Returns the saved default view id for the user, if one exists
      *
@@ -343,10 +347,6 @@ public class ViewServiceIbatisImpl extends BaseIbatisService<Object> implements
             }
         }
         return -1;
-    }
-
-    public boolean isSystemDefaultView(final long id) {
-        return getDefaultViewId() == id || roleToDefaultViewId.containsValue(id);
     }
 
     /**
