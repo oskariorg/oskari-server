@@ -29,8 +29,6 @@ public class ViewServiceIbatisImpl extends BaseIbatisService<Object> implements
     private final long defaultViewProperty;
 
     public ViewServiceIbatisImpl() {
-        super();
-
         // roles in preferred order which we use to resolve default view
         // view.default.roles=Admin, User, Guest
         viewRoles = PropertyUtil.getCommaSeparatedList(PROP_VIEW_DEFAULT_ROLES);
