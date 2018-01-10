@@ -293,9 +293,4 @@ public class ViewServiceMemory implements ViewService {
         }
     }
 
-    @Override
-    public String getSrsName(long viewId) throws ServiceException {
-        return null;
-    }
-
 }

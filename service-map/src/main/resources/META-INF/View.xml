@@ -146,19 +146,6 @@
         AND    creator = -1;
     </select>
 
-    <select id="get-srsname-by-view-id"
-        resultClass="java.lang.String"
-        parameterClass="java.lang.Long">
-        SELECT (config::json->'mapConfig'->'srsName')::text
-        FROM portti_view_bundle_seq
-        WHERE view_id = #id#
-        AND bundle_id = (
-            SELECT id
-            FROM portti_bundle
-            WHERE name = 'mapfull'
-        )        
-    </select>
-
     <statement id="add-view"
                resultClass="java.lang.Long"
                parameterClass="View">

@@ -96,6 +96,4 @@ public interface ViewService extends BaseService<Object> {
     void updateBundleSettingsForView(final long viewId, final Bundle bundle)
             throws ViewException;
 
-    String getSrsName(long viewId) throws ServiceException;
-
 }
