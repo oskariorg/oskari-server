@@ -20,8 +20,12 @@ public class ViewServiceIbatisImpl extends BaseIbatisService<Object> implements
         ViewService {
 
     private static final Logger LOG = LogFactory.getLogger(ViewServiceIbatisImpl.class);
+
+    private static final String PROP_VIEW_DEFAULT = "view.default";
+    private static final String PROP_VIEW_DEFAULT_ROLES = "view.default.roles";
+
     private final Map<String, Long> defaultViewIds = new HashMap<String, Long>();
-    private String[] viewRoles = new String[0];
+    private String[] viewRoles;
     private long defaultViewProperty = -1;
 
     public ViewServiceIbatisImpl() {
@@ -29,21 +33,17 @@ public class ViewServiceIbatisImpl extends BaseIbatisService<Object> implements
 
         // roles in preferred order which we use to resolve default view
         // view.default.roles=Admin, User, Guest
-        viewRoles = PropertyUtil.getCommaSeparatedList("view.default.roles");
-        for(int i= 0; i < viewRoles.length; ++i) {
-            final String role = viewRoles[i];
-
-            // populate role based properties if available
-            final long roleViewId = ConversionHelper.getLong(PropertyUtil.get("view.default." + role), -1);
-            if(roleViewId != -1) {
+        viewRoles = PropertyUtil.getCommaSeparatedList(PROP_VIEW_DEFAULT_ROLES);
+        for (String role : viewRoles) {
+            String roleViewIdStr = PropertyUtil.get(PROP_VIEW_DEFAULT + "." + role);
+            long roleViewId = ConversionHelper.getLong(roleViewIdStr, -1);
+            if (roleViewId != -1) {
                 defaultViewIds.put(role, roleViewId);
+                LOG.debug("Added default view", roleViewId, "for role", role);
+            } else {
+                LOG.info("Failed to set default view id for role", role,
+                        "property missing or value invalid");
             }
-        }
-        if(viewRoles.length > 0) {
-            LOG.debug("Added default views for roles:", defaultViewIds);
-        }
-        else {
-            LOG.debug("No role based default views configured");
         }
 
         // check properties for global default view
