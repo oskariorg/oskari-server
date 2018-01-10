@@ -6,6 +6,7 @@ import fi.nls.oskari.domain.map.view.Bundle;
 import fi.nls.oskari.domain.map.view.View;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.service.ServiceException;
 
 import java.util.*;
 
@@ -260,6 +261,11 @@ public class ViewServiceMemory implements ViewService {
     }
 
     @Override
+    public List<Long> getSystemDefaultViewIds() throws ServiceException {
+        return null;
+    }
+
+    @Override
     public void updatePublishedView(View view) throws ViewException {
         // TODO: implement
     }
@@ -285,6 +291,11 @@ public class ViewServiceMemory implements ViewService {
                 }
             }
         }
+    }
+
+    @Override
+    public String getSrsName(long viewId) throws ServiceException {
+        return null;
     }
 
 }

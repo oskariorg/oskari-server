@@ -1,7 +1,15 @@
 package fi.nls.oskari.map.view;
 
+import java.sql.SQLException;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 import com.ibatis.sqlmap.client.SqlMapSession;
+
 import fi.nls.oskari.domain.Role;
 import fi.nls.oskari.domain.User;
 import fi.nls.oskari.domain.map.view.Bundle;
@@ -9,12 +17,10 @@ import fi.nls.oskari.domain.map.view.View;
 import fi.nls.oskari.domain.map.view.ViewTypes;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.service.db.BaseIbatisService;
 import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.PropertyUtil;
-
-import java.sql.SQLException;
-import java.util.*;
 
 public class ViewServiceIbatisImpl extends BaseIbatisService<Object> implements
         ViewService {
@@ -318,6 +324,16 @@ public class ViewServiceIbatisImpl extends BaseIbatisService<Object> implements
         return getDefaultViewId();
     }
 
+    @SuppressWarnings("unchecked")
+    @Override
+    public List<Long> getSystemDefaultViewIds() throws ServiceException {
+        try {
+            return (List<Long>) getSqlMapClient().queryForList("View.get-default-view-ids");
+        } catch (SQLException e) {
+            throw new ServiceException(e.getMessage(), e);
+        }
+    }
+
     /**
      * Returns the saved default view id for the user, if one exists
      *
@@ -346,6 +362,15 @@ public class ViewServiceIbatisImpl extends BaseIbatisService<Object> implements
     public long getDefaultViewIdForRole(final String roleName) {
         Long rolesDefaultViewId = roleToDefaultViewId.get(roleName);
         return rolesDefaultViewId != null ? rolesDefaultViewId : defaultViewId;
+    }
+
+    @Override
+    public String getSrsName(long viewId) throws ServiceException {
+        try {
+            return (String) getSqlMapClient().queryForObject("View.get-srsname-by-view-id", viewId);
+        } catch (SQLException e) {
+            throw new ServiceException("Failed to get srsName for viewId:" + viewId, e);
+        }
     }
 
 }
