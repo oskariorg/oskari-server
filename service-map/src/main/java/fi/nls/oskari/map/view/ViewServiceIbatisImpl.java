@@ -26,7 +26,7 @@ public class ViewServiceIbatisImpl extends BaseIbatisService<Object> implements
 
     private final Map<String, Long> defaultViewIds = new HashMap<String, Long>();
     private final String[] viewRoles;
-    private final long defaultViewProperty;
+    private final long defaultViewId;
 
     public ViewServiceIbatisImpl() {
         // roles in preferred order which we use to resolve default view
@@ -44,9 +44,15 @@ public class ViewServiceIbatisImpl extends BaseIbatisService<Object> implements
             }
         }
 
-        // check properties for global default view
-        defaultViewProperty = ConversionHelper.getLong(PropertyUtil.get(PROP_VIEW_DEFAULT), -1);
-        LOG.debug("Global default view is:", defaultViewProperty);
+        defaultViewId = initDefaultViewId();
+        LOG.debug("Global default view is:", defaultViewId);
+    }
+
+    private long initDefaultViewId() {
+        final long property = ConversionHelper.getLong(PropertyUtil.get(PROP_VIEW_DEFAULT), -1);
+        LOG.debug("Global default view id from properties:" , property);
+        // use one from db if property doesn't exist or is invalid
+        return property != -1 ? property : getDefaultViewId(ViewTypes.DEFAULT);
     }
 
     @Override
@@ -253,11 +259,7 @@ public class ViewServiceIbatisImpl extends BaseIbatisService<Object> implements
     }
 
     public long getDefaultViewId() {
-        // property overrides db default, no particular reason for this
-        if(defaultViewProperty == -1) {
-            defaultViewProperty = getDefaultViewId(ViewTypes.DEFAULT);
-        }
-        return defaultViewProperty;
+        return defaultViewId;
     }
 
     /**
