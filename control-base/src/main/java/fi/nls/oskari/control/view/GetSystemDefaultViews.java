@@ -74,6 +74,7 @@ public class GetSystemDefaultViews extends ActionHandler {
 
     private void writeView(View view, JsonGenerator json) throws JSONException, IOException {
         String uuid = view.getUuid();
+        String name = view.getName();
         String srsName = view.getBundleByName("mapfull")
                 .getConfigJSON()
                 .getJSONObject("mapOptions")
@@ -81,6 +82,7 @@ public class GetSystemDefaultViews extends ActionHandler {
 
         json.writeStartObject();
         json.writeStringField("uuid", uuid);
+        json.writeStringField("name", name);
         json.writeStringField("srsName", srsName);
         json.writeEndObject();
     }
