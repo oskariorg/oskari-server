@@ -13,6 +13,7 @@ import com.fasterxml.jackson.core.JsonGenerator;
 
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.ActionException;
+import fi.nls.oskari.control.ActionHandler;
 import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.domain.map.view.View;
 import fi.nls.oskari.map.view.ViewService;
@@ -21,16 +22,18 @@ import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.util.ResponseHelper;
 
 @OskariActionRoute("GetSystemDefaultViews")
-public class GetSystemDefaultViews {
+public class GetSystemDefaultViews extends ActionHandler {
 
     private static final JsonFactory JSONF = new JsonFactory();
 
     private ViewService viewService;
 
+    @Override
     public void init() {
         viewService = new ViewServiceIbatisImpl();
     }
 
+    @Override
     public void handleAction(ActionParameters params) throws ActionException {
         List<Long> viewIds = getDefaultViewIds();
         List<View> views = getViews(viewIds);
