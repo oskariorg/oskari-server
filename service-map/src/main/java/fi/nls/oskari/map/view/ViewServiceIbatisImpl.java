@@ -344,10 +344,8 @@ public class ViewServiceIbatisImpl extends BaseIbatisService<Object> implements
      * @return
      */
     public long getDefaultViewIdForRole(final String roleName) {
-        if(roleToDefaultViewId.containsKey(roleName)) {
-            return roleToDefaultViewId.get(roleName);
-        }
-        return getDefaultViewId();
+        Long rolesDefaultViewId = roleToDefaultViewId.get(roleName);
+        return rolesDefaultViewId != null ? rolesDefaultViewId : defaultViewId;
     }
 
 }
