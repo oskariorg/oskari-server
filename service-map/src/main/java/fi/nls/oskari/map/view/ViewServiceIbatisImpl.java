@@ -305,10 +305,12 @@ public class ViewServiceIbatisImpl extends BaseIbatisService<Object> implements
         } else {
             // Check the roles in given order and return the first match
             for (String defaultViewRole : defaultViewRoles) {
-                Long rolesDefaultViewId = roleToDefaultViewId.get(defaultViewRole);
-                if (rolesDefaultViewId != null && Role.hasRoleWithName(roles, defaultViewRole)) {
-                    LOG.debug("Default view found for role", defaultViewRole, ":", rolesDefaultViewId);
-                    return rolesDefaultViewId;
+                if (Role.hasRoleWithName(roles, defaultViewRole)) {
+                    Long rolesDefaultViewId = roleToDefaultViewId.get(defaultViewRole);
+                    if (rolesDefaultViewId != null) {
+                        LOG.debug("Default view found for role", defaultViewRole, ":", rolesDefaultViewId);
+                        return rolesDefaultViewId;
+                    }
                 }
             }
         }
