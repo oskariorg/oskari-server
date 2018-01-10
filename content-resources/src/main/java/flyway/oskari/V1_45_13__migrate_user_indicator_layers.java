@@ -30,9 +30,9 @@ import java.util.Map;
  * @see https://github.com/oskariorg/oskari-frontend/blob/master/bundles/statistics/statsgrid/plugin/ManageClassificationPlugin.js
  */
 @SuppressWarnings("JavadocReference")
-public class V1_45_11__migrate_user_indicator_layers implements JdbcMigration {
+public class V1_45_13__migrate_user_indicator_layers implements JdbcMigration {
 
-    private static final Logger LOG = LogFactory.getLogger(V1_45_11__migrate_user_indicator_layers.class);
+    private static final Logger LOG = LogFactory.getLogger(V1_45_13__migrate_user_indicator_layers.class);
 
     public void migrate(Connection conn) throws SQLException {
         if(!migrationRequired(conn)) {

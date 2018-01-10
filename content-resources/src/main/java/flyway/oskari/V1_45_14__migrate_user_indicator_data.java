@@ -21,9 +21,9 @@ import java.util.List;
  * - layer_id -> regionset_id
  * - year -> year
  */
-public class V1_45_12__migrate_user_indicator_data implements JdbcMigration {
+public class V1_45_14__migrate_user_indicator_data implements JdbcMigration {
 
-    private static final Logger LOG = LogFactory.getLogger(V1_45_12__migrate_user_indicator_data.class);
+    private static final Logger LOG = LogFactory.getLogger(V1_45_14__migrate_user_indicator_data.class);
 
     class UserIndicator {
         long id;
