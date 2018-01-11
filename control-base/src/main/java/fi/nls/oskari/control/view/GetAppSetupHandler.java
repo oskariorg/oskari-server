@@ -27,8 +27,6 @@ import org.json.JSONObject;
 import java.net.URLDecoder;
 import java.util.*;
 
-import static fi.nls.oskari.control.ActionConstants.PARAM_SECURE;
-
 @OskariActionRoute("GetAppSetup")
 public class GetAppSetupHandler extends ActionHandler {
 
@@ -50,10 +48,6 @@ public class GetAppSetupHandler extends ActionHandler {
     private static final String KEY_CONFIGURATION = "configuration";
 
     public static final String COOKIE_SAVED_STATE = "oskaristate";
-
-    // TODO: this is paikkatietoikkuna-specific. Remove/make configurable
-    private final static long DEFAULT_USERID = 10110;
-
 
     // for adding extra bundle(s) for users with specific roles
     private Map<String, List<Bundle>> bundlesForRole = new HashMap<String, List<Bundle>>();
@@ -156,7 +150,7 @@ public class GetAppSetupHandler extends ActionHandler {
         // Check user/permission
         final long creator = view.getCreator();
         final long userId = params.getUser().getId();
-        if (view.isPublic() || creator == DEFAULT_USERID) {
+        if (view.isPublic()) {
             log.info("View ID:", viewId, "created by user", creator,
                     "is public, access granted for user with id", userId);
         } else if (creator == userId) {
