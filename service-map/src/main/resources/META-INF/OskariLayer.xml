@@ -386,7 +386,6 @@
     </select>
         
 <select id="findAll"
-        parameterClass="String"
         resultClass="java.util.HashMap">
 
     SELECT
@@ -511,7 +510,6 @@
     </select>
 
     <select id="findAllWithPositiveUpdateRateSec"
-        parameterClass="String"
         resultClass="java.util.HashMap">
 
     SELECT
