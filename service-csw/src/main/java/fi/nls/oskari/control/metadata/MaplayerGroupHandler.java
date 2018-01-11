@@ -18,7 +18,7 @@ import java.util.List;
  * Time: 13:59
  * To change this template use File | Settings | File Templates.
  */
-public class InspireThemeHandler extends MetadataFieldHandler {
+public class MaplayerGroupHandler extends MetadataFieldHandler {
 
     private static OskariMapLayerGroupService oskariMapLayerGroupService = OskariComponentManager.getComponentOfType(OskariMapLayerGroupService.class);
 

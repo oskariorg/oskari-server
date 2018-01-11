@@ -11,7 +11,7 @@ import fi.nls.oskari.service.db.BaseService;
  * Time: 13:43
  * To change this template use File | Settings | File Templates.
  */
-public interface LayerGroupService extends BaseService<DataProvider> {
+public interface DataProviderService extends BaseService<DataProvider> {
     public boolean hasPermissionToUpdate(final User user, final int layerId);
     public DataProvider findByName(final String name);
 }

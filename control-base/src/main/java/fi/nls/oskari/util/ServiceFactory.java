@@ -8,8 +8,8 @@ import fi.mml.portti.service.db.permissions.PermissionsService;
 import fi.mml.portti.service.db.permissions.PermissionsServiceIbatisImpl;
 import fi.mml.portti.service.search.SearchService;
 import fi.mml.portti.service.search.SearchServiceImpl;
-import fi.nls.oskari.map.layer.LayerGroupService;
-import fi.nls.oskari.map.layer.LayerGroupServiceIbatisImpl;
+import fi.nls.oskari.map.layer.DataProviderService;
+import fi.nls.oskari.map.layer.DataProviderServiceIbatisImpl;
 import fi.nls.oskari.map.layer.OskariLayerService;
 import fi.nls.oskari.map.layer.OskariLayerServiceIbatisImpl;
 import fi.nls.oskari.service.capabilities.CapabilitiesCacheService;
@@ -19,7 +19,7 @@ import fi.nls.oskari.wfs.WFSLayerConfigurationServiceIbatisImpl;
 
 public class ServiceFactory {
 	
-	private static LayerGroupService layerGroupService;
+	private static DataProviderService dataProviderService;
 	private static OskariLayerService mapLayerService;
 	private static OskariMapLayerGroupService oskariMapLayerGroupService;
     private static MaplayerProjectionService maplayerProjectionService;
@@ -28,11 +28,11 @@ public class ServiceFactory {
     private static CapabilitiesCacheService capabilitiesCacheService;
     private static WFSLayerConfigurationService wfsLayerService;
  
-	public static LayerGroupService getLayerGroupService() {
-		if (layerGroupService == null) {
-            layerGroupService = new LayerGroupServiceIbatisImpl();
+	public static DataProviderService getDataProviderService() {
+		if (dataProviderService == null) {
+            dataProviderService = new DataProviderServiceIbatisImpl();
 		}
-		return layerGroupService;
+		return dataProviderService;
 	}
 	
 	public static OskariLayerService getMapLayerService() {

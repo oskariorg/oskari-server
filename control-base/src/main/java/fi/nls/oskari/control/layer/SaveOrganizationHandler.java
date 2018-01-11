@@ -5,7 +5,7 @@ import fi.nls.oskari.control.*;
 import fi.nls.oskari.domain.map.DataProvider;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.map.layer.LayerGroupService;
+import fi.nls.oskari.map.layer.DataProviderService;
 import fi.nls.oskari.util.RequestHelper;
 import fi.nls.oskari.util.ResponseHelper;
 import fi.nls.oskari.util.ServiceFactory;
@@ -24,40 +24,40 @@ public class SaveOrganizationHandler extends ActionHandler {
 
     private static final Logger log = LogFactory.getLogger(SaveOrganizationHandler.class);
 
-    private final LayerGroupService layerGroupService = ServiceFactory.getLayerGroupService();
+    private final DataProviderService dataProviderService = ServiceFactory.getDataProviderService();
 
     @Override
     public void handleAction(ActionParameters params) throws ActionException {
 
         final HttpServletRequest request = params.getRequest();
         try {
-            final int groupId = params.getHttpParam(PARAM_ID, -1);
-            final DataProvider group = new DataProvider();
-            group.setId(groupId);
-            handleLocalizations(group, PARAM_NAME_PREFIX, request);
-            if (group.getLocale() == null) {
-                throw new ActionParamsException("Missing names for group!");
+            final int dataProviderId = params.getHttpParam(PARAM_ID, -1);
+            final DataProvider dataProvider = new DataProvider();
+            dataProvider.setId(dataProviderId);
+            handleLocalizations(dataProvider, PARAM_NAME_PREFIX, request);
+            if (dataProvider.getLocale() == null) {
+                throw new ActionParamsException("Missing names for layer dataprovider group!");
             }
 
             // ************** UPDATE ************************
-            if (groupId != -1) {
-                if (!layerGroupService.hasPermissionToUpdate(params.getUser(), groupId)) {
-                    throw new ActionDeniedException("Unauthorized user tried to update layer group - id=" + groupId);
+            if (dataProviderId != -1) {
+                if (!dataProviderService.hasPermissionToUpdate(params.getUser(), dataProviderId)) {
+                    throw new ActionDeniedException("Unauthorized user tried to update layer dataprovider group - id=" + dataProviderId);
                 }
-                layerGroupService.update(group);
-                ResponseHelper.writeResponse(params, group.getAsJSON());
+                dataProviderService.update(dataProvider);
+                ResponseHelper.writeResponse(params, dataProvider.getAsJSON());
             }
             // ************** INSERT ************************
             else if (params.getUser().isAdmin()) {
-                final int id = layerGroupService.insert(group);
-                group.setId(id);
-                ResponseHelper.writeResponse(params, group.getAsJSON());
+                final int id = dataProviderService.insert(dataProvider);
+                dataProvider.setId(id);
+                ResponseHelper.writeResponse(params, dataProvider.getAsJSON());
             } else {
-                throw new ActionDeniedException("Unauthorized user tried to update layer group - id=" + groupId);
+                throw new ActionDeniedException("Unauthorized user tried to update layer dataprovider group - id=" + dataProviderId);
             }
 
         } catch (Exception e) {
-            throw new ActionException("Couldn't update/insert map layer group", e);
+            throw new ActionException("Couldn't update/insert map layer dataprovider group", e);
         }
     }
 

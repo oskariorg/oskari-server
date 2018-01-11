@@ -37,7 +37,7 @@ public class OskariLayerServiceIbatisImpl extends OskariLayerService {
     // make it static so we can change this with one call to all services when needed
     private static String SQL_MAP_LOCATION = "META-INF/SqlMapConfig.xml";
 
-    private static LayerGroupService layerGroupService = new LayerGroupServiceIbatisImpl();
+    private static DataProviderService dataProviderService = new DataProviderServiceIbatisImpl();
     private static OskariMapLayerGroupService oskariMapLayerGroupService = new OskariMapLayerGroupServiceIbatisImpl();
 
     /**
@@ -145,7 +145,7 @@ public class OskariLayerServiceIbatisImpl extends OskariLayerService {
                 try {
                     // populate layer group
                     // first run (~700 layers) with this lasts ~1800ms, second run ~300ms (cached)
-                    final DataProvider dataProvider = layerGroupService.find(result.getDataproviderId());
+                    final DataProvider dataProvider = dataProviderService.find(result.getDataproviderId());
                     result.addGroup(dataProvider);
                 } catch (Exception ex) {
                     LOG.error("Couldn't get organisation for layer", result.getId());
@@ -154,13 +154,13 @@ public class OskariLayerServiceIbatisImpl extends OskariLayerService {
             }
 
             // FIXME: oskariMapLayerGroupService has built in caching (very crude) to make this fast,
-            // without it getting themes makes the query 10 x slower
-            // populate inspirethemes
+            // without it getting maplayer groups makes the query 10 x slower
+            // populate groups
             try {
-                final List<MaplayerGroup> themes = oskariMapLayerGroupService.findByMaplayerId(result.getId());
-                result.addInspireThemes(themes);
+                final List<MaplayerGroup> groups = oskariMapLayerGroupService.findByMaplayerId(result.getId());
+                result.addGroups(groups);
             } catch (Exception ex) {
-                LOG.error("Couldn't get inspirethemes for layer", result.getId());
+                LOG.error("Couldn't get groups for layer", result.getId());
                 return null;
             }
         }

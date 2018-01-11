@@ -219,8 +219,8 @@ public class OskariLayerWorker {
         FORMATTER.addInfoForAdmin(layerJson, "organizationId", layer.getDataproviderId());
 
         // for mapping under categories
-        if(layer.getInspireTheme() != null) {
-            FORMATTER.addInfoForAdmin(layerJson, "inspireId", layer.getInspireTheme().getId());
+        if(layer.getMaplayerGroup() != null) {
+            FORMATTER.addInfoForAdmin(layerJson, "inspireId", layer.getMaplayerGroup().getId());
         }
     }
 
