@@ -21,6 +21,7 @@ import static fi.nls.oskari.control.ActionConstants.PARAM_NAME_PREFIX;
 /**
  * CRUD for Inspire themes. Get is callable by anyone, other methods require admin user.
  */
+// FIXME: Update route and class name when frontend implementation was updated
 @OskariActionRoute("InspireThemes")
 public class InspireThemesHandler extends RestActionHandler {
 
