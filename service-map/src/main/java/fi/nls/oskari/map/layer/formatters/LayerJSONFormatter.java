@@ -18,6 +18,7 @@ import org.json.JSONObject;
 
 import java.net.URL;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 /**
@@ -125,8 +126,20 @@ public class LayerJSONFormatter {
         if(layer.getMaplayerGroup() != null) {
             // FIXME Remove inspire when frontend is ready
             JSONHelper.putValue(layerJson, "inspire", layer.getMaplayerGroup().getName(lang));
-            JSONHelper.put(layerJson, "group", JSONHelper.createJSONArray(layer.getMaplayerGroup().getName(lang)));
-            JSONHelper.put(layerJson, "groupId", JSONHelper.createJSONArray(layer.getMaplayerGroup().getId()));
+
+            JSONArray groups = new JSONArray();
+            try {
+                for (MaplayerGroup mapLayerGroup : layer.getMaplayerGroups()) {
+                    JSONObject group = new JSONObject();
+                    group.put("id", mapLayerGroup.getId());
+                    group.put("name", mapLayerGroup.getName(lang));
+                    groups.put(group);
+                }
+            } catch(JSONException ex) {
+                log.error("Cannot create groups array for layer: " + layer.getId(), ex);
+            }
+
+            JSONHelper.put(layerJson, "groups", groups);
         }
 
         if(layer.getOpacity() != null && layer.getOpacity() > -1 && layer.getOpacity() <= 100) {
