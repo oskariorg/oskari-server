@@ -2,7 +2,6 @@ package fi.nls.oskari.control.layer;
 
 import fi.mml.map.mapwindow.service.db.OskariMapLayerGroupService;
 import fi.nls.oskari.service.capabilities.OskariLayerCapabilities;
-import fi.mml.map.mapwindow.service.db.MaplayerProjectionService;
 import fi.mml.map.mapwindow.service.wms.WebMapService;
 import fi.mml.map.mapwindow.util.OskariLayerWorker;
 import fi.mml.portti.domain.permissions.Permissions;
@@ -52,7 +51,6 @@ public class SaveLayerHandler extends ActionHandler {
     private PermissionsService permissionsService = ServiceFactory.getPermissionsService();
     private DataProviderService dataProviderService = ServiceFactory.getDataProviderService();
     private OskariMapLayerGroupService oskariMapLayerGroupService = ServiceFactory.getOskariMapLayerGroupService();
-    private MaplayerProjectionService maplayerProjectionService = ServiceFactory.getMaplayerProjectionService();
     private CapabilitiesCacheService capabilitiesService = ServiceFactory.getCapabilitiesCacheService();
     private WFSParserConfigs wfsParserConfigs = new WFSParserConfigs();
 
@@ -145,10 +143,6 @@ public class SaveLayerHandler extends ActionHandler {
                     JedisManager.delAll(WFSLayerConfiguration.IMAGE_KEY + Integer.toString(ml.getId()));
                 }
 
-                //update maplayer projections - removes old ones and insert new ones
-                maplayerProjectionService.insertList(ml.getId(), ml.getSupportedCRSs());
-
-
                 LOG.debug(ml);
                 result.layerId = ml.getId();
                 return result;
@@ -204,9 +198,6 @@ public class SaveLayerHandler extends ActionHandler {
                 // update keywords
                 GetLayerKeywords glk = new GetLayerKeywords();
                 glk.updateLayerKeywords(id, ml.getMetadataId());
-
-                //update maplayer projections
-                maplayerProjectionService.insertList(ml.getId(), ml.getSupportedCRSs());
 
                 result.layerId = ml.getId();
                 return result;

@@ -1,7 +1,5 @@
 package fi.nls.oskari.util;
 
-
-import fi.mml.map.mapwindow.service.db.*;
 import fi.mml.map.mapwindow.service.db.OskariMapLayerGroupServiceIbatisImpl;
 import fi.mml.map.mapwindow.service.db.OskariMapLayerGroupService;
 import fi.mml.portti.service.db.permissions.PermissionsService;
@@ -22,7 +20,6 @@ public class ServiceFactory {
 	private static DataProviderService dataProviderService;
 	private static OskariLayerService mapLayerService;
 	private static OskariMapLayerGroupService oskariMapLayerGroupService;
-    private static MaplayerProjectionService maplayerProjectionService;
     private static PermissionsService permissionsService;
     private static SearchService searchService;
     private static CapabilitiesCacheService capabilitiesCacheService;
@@ -49,12 +46,6 @@ public class ServiceFactory {
 		return oskariMapLayerGroupService;
 	}
 
-    public static MaplayerProjectionService getMaplayerProjectionService() {
-        if (maplayerProjectionService == null) {
-            maplayerProjectionService = new MaplayerProjectionServiceIbatisImpl();
-        }
-        return maplayerProjectionService;
-    }
     public static PermissionsService getPermissionsService() {
         if (permissionsService == null) {
             permissionsService = new PermissionsServiceIbatisImpl();
