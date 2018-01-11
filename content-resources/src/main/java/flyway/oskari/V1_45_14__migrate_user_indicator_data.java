@@ -2,17 +2,24 @@ package flyway.oskari;
 
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.util.ConversionHelper;
+import fi.nls.oskari.util.IOHelper;
+import fi.nls.oskari.util.JSONHelper;
 import org.apache.commons.lang.NotImplementedException;
 import org.flywaydb.core.api.migration.jdbc.JdbcMigration;
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Migrates oskari_user_indicator data from sotkanet regions ids to features in regionsets.
@@ -34,15 +41,26 @@ public class V1_45_14__migrate_user_indicator_data implements JdbcMigration {
         String category = "";
     }
 
-    public void migrate(Connection conn) throws SQLException {
-        if(true) throw new NotImplementedException("Not ready yet");
+    private Map<Integer, String> sotkaIdToRegionId = new HashMap<>();
+
+    public void migrate(Connection conn) throws SQLException, IOException, JSONException {
+        populateRegionMapping();
         List<UserIndicator> indicators = getUserIndicators(conn);
         for(UserIndicator ind : indicators) {
-            if(migrateData(conn, ind)) {
+            if(migrateData(ind)) {
                 insertData(conn, ind);
             } else {
                 deleteData(conn, ind.id);
             }
+        }
+    }
+
+    private void populateRegionMapping() throws IOException, JSONException {
+        final String json = IOHelper.readString(getClass().getResourceAsStream("NonFlywayResource_1_45_14_regions.json"));
+        JSONArray sotkaRegions = new JSONArray(json);
+        for (int i = 0; i < sotkaRegions.length(); ++i) {
+            JSONObject region = sotkaRegions.getJSONObject(i);
+            sotkaIdToRegionId.put(region.getInt("id"), region.getString("code"));
         }
     }
 
@@ -68,12 +86,11 @@ public class V1_45_14__migrate_user_indicator_data implements JdbcMigration {
 
     /**
      * Returns true if indicator had content/migrated successfully and false if the indicator can be removed
-     * @param conn
      * @param indicator
      * @return
      * @throws SQLException
      */
-    private static boolean migrateData(Connection conn, UserIndicator indicator) throws SQLException {
+    private boolean migrateData(UserIndicator indicator) {
         JSONArray data = null;
         try {
             data = new JSONArray(indicator.data);
@@ -81,9 +98,21 @@ public class V1_45_14__migrate_user_indicator_data implements JdbcMigration {
             LOG.warn("User indicator data not JSON, removing it:\n", indicator);
             return false;
         }
-        // TODO: migrate data from sotkanet region ids to regionset feature ids and
+        // migrate data from sotkanet region ids to regionset feature ids and format data to new object format
         // from [{"region":"[SOTKANET region id]","primary value":"23"}...] to {"[region id for feature in regionset layer]":"23"}...]
-        return true;
+        JSONObject migratedData = new JSONObject();
+        for (int i = 0; i < data.length(); ++i) {
+            JSONObject region = data.optJSONObject(i);
+            if(region == null) {
+                continue;
+            }
+            String regionCode = sotkaIdToRegionId.get(region.optInt("region", -1));
+            if(regionCode != null) {
+                JSONHelper.putValue(migratedData, regionCode, region.optDouble("primary value"));
+            }
+        }
+        indicator.data = migratedData.toString();
+        return migratedData.length() > 0;
     }
 
     /**
