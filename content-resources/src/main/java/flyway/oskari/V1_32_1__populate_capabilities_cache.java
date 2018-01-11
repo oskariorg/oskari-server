@@ -40,7 +40,7 @@ public class V1_32_1__populate_capabilities_cache implements JdbcMigration {
 
             String data = "";
             try {
-                data = CapabilitiesCacheService.loadCapabilitiesFromService(layer);
+                data = CapabilitiesCacheService.getFromService(layer);
             } catch (ServiceException e) {
                 LOG.error(e, "Error getting capabilities for service", url);
             }

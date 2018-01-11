@@ -90,18 +90,18 @@ public abstract class CapabilitiesCacheService extends OskariComponent {
         }
 
         // try to get xml from service
-        final String data = loadCapabilitiesFromService(layer);
+        final String data = getFromService(layer);
 
         final OskariLayerCapabilities draft = new OskariLayerCapabilities(url, type, version, data);
         return save(draft);
     }
 
-    public static String loadCapabilitiesFromService(OskariLayer layer) throws ServiceException {
-        return loadCapabilitiesFromService(layer.getSimplifiedUrl(true), layer.getType(),
+    public static String getFromService(OskariLayer layer) throws ServiceException {
+        return getFromService(layer.getSimplifiedUrl(true), layer.getType(),
                 layer.getVersion(), layer.getUsername(), layer.getPassword());
     }
 
-    public static String loadCapabilitiesFromService(String url, String type,
+    private static String getFromService(String url, String type,
             String version, String user, String pass) throws ServiceException {
         String request = contructCapabilitiesUrl(url, type, version);
         String encoding = null;
