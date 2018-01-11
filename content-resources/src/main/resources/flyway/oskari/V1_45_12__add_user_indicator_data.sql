@@ -1,8 +1,8 @@
 CREATE TABLE oskari_user_indicator_data
 (
-  id bigserial NOT NULL,
-  indicator_id bigint NOT NULL,
-  regionset_id NOT NULL,
+  id serial NOT NULL,
+  indicator_id integer NOT NULL,
+  regionset_id integer NOT NULL,
   year integer NOT NULL,
   data text NOT NULL,
   CONSTRAINT oskari_user_indicator_data_pkey PRIMARY KEY (id),
