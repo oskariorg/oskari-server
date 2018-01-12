@@ -58,20 +58,21 @@
 
     <select id="find" parameterClass="int" resultMap="UserIndicatorResult">
       SELECT
-          id,
-          user_id,
-          title,
-          source,
-          layer_id,
-          description,
-          year,
-          data,
-          published,
-          category
+          i.id,
+          i.user_id,
+          i.title,
+          i.source,
+          i.description,
+          i.published,
+          i.category,
+          d.year,
+          d.data,
+          d.regionset_id as layer_id
       FROM
-          oskari_user_indicator
+          oskari_user_indicator i
+          JOIN oskari_user_indicator_data d ON i.id = d.indicator_id
       WHERE
-          id = #id#
+          i.id = #id#
     </select>
 
 

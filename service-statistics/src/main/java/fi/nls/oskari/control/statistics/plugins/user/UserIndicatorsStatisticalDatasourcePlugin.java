@@ -44,45 +44,45 @@ public class UserIndicatorsStatisticalDatasourcePlugin extends StatisticalDataso
         }
         long uid = user.getId();
         List<UserIndicator> userIndicators = userIndicatorService.findAllOfUser(uid);
-        return toUserStatisticalIndicators(userIndicators);
-    }
-
-    private List<StatisticalIndicator> toUserStatisticalIndicators(List<UserIndicator> userIndicators) {
         List<StatisticalIndicator> indicators = new ArrayList<>();
         for (UserIndicator userIndicator : userIndicators) {
-            StatisticalIndicator ind = new StatisticalIndicator();
-            ind.setId(String.valueOf(userIndicator.getId()));
-
-            JSONObject title = JSONHelper.createJSONObject(userIndicator.getTitle());
-            Iterator<String> langKeys = title.keys();
-            while(langKeys.hasNext()) {
-                String lang = langKeys.next();
-                ind.addName(lang, title.optString(lang));
-            }
-
-            JSONObject source = JSONHelper.createJSONObject(userIndicator.getSource());
-            langKeys = source.keys();
-            while(langKeys.hasNext()) {
-                String lang = langKeys.next();
-                ind.addSource(lang, source.optString(lang));
-            }
-
-            JSONObject desc = JSONHelper.createJSONObject(userIndicator.getDescription());
-            langKeys = desc.keys();
-            while(langKeys.hasNext()) {
-                String lang = langKeys.next();
-                ind.addSource(lang, desc.optString(lang));
-            }
-            ind.setPublic(userIndicator.isPublished());
-            ind.addLayer(new StatisticalIndicatorLayer(userIndicator.getMaterial(), ind.getId()));
-
-            // If we want to provide year, need to do it like this. But currently there's always just one choice
-            StatisticalIndicatorDataDimension dim = new StatisticalIndicatorDataDimension("year");
-            dim.addAllowedValue(String.valueOf(userIndicator.getYear()));
-            ind.getDataModel().addDimension(dim);
-            indicators.add(ind);
+            indicators.add(toUserStatisticalIndicator(userIndicator));
         }
         return indicators;
+    }
+
+    private StatisticalIndicator toUserStatisticalIndicator(UserIndicator userIndicator) {
+        StatisticalIndicator ind = new StatisticalIndicator();
+        ind.setId(String.valueOf(userIndicator.getId()));
+
+        JSONObject title = JSONHelper.createJSONObject(userIndicator.getTitle());
+        Iterator<String> langKeys = title.keys();
+        while(langKeys.hasNext()) {
+            String lang = langKeys.next();
+            ind.addName(lang, title.optString(lang));
+        }
+
+        JSONObject source = JSONHelper.createJSONObject(userIndicator.getSource());
+        langKeys = source.keys();
+        while(langKeys.hasNext()) {
+            String lang = langKeys.next();
+            ind.addSource(lang, source.optString(lang));
+        }
+
+        JSONObject desc = JSONHelper.createJSONObject(userIndicator.getDescription());
+        langKeys = desc.keys();
+        while(langKeys.hasNext()) {
+            String lang = langKeys.next();
+            ind.addSource(lang, desc.optString(lang));
+        }
+        ind.setPublic(userIndicator.isPublished());
+        ind.addLayer(new StatisticalIndicatorLayer(userIndicator.getMaterial(), ind.getId()));
+
+        // If we want to provide year, need to do it like this. But currently there's always just one choice
+        StatisticalIndicatorDataDimension dim = new StatisticalIndicatorDataDimension("year");
+        dim.addAllowedValue(String.valueOf(userIndicator.getYear()));
+        ind.getDataModel().addDimension(dim);
+        return ind;
     }
 
     @Override
@@ -100,6 +100,9 @@ public class UserIndicatorsStatisticalDatasourcePlugin extends StatisticalDataso
     @Override
     public StatisticalIndicator getIndicator(User user, String indicatorId) {
         // TODO: optimize to load single indicator or change indicatorset to be stored in redis
+        //int id = ConversionHelper.getInt(indicatorId, -1);
+        //UserIndicator ui = userIndicatorService.find(id);
+        //return toUserStatisticalIndicator(ui);
         List<StatisticalIndicator> list = getIndicators(user);
         for(StatisticalIndicator ind: list) {
             if(ind.getId().equals(indicatorId)) {
@@ -113,18 +116,19 @@ public class UserIndicatorsStatisticalDatasourcePlugin extends StatisticalDataso
                                                           StatisticalIndicatorDataModel params,
                                                           StatisticalIndicatorLayer regionset) {
         // Data is a serialized JSON for legacy and backwards compatibility reasons:
-        // "data":[{"region":"727","primary value":"15"},{"region":"728","primary value":"20"}]
+        // "data":{"[regionid]" : [value], ...}
         UserIndicator userIndicator = userIndicatorService.find(ConversionHelper.getInt(indicator.getId(), -1));
         Map<String, IndicatorValue> valueMap = new HashMap<>();
         try {
-            JSONArray jsonData = new JSONArray(userIndicator.getData());
-            for (int i = 0; i < jsonData.length(); i++) {
-                JSONObject value = jsonData.getJSONObject(i);
-                IndicatorValueFloat indicatorValue = new IndicatorValueFloat(value.getDouble("primary value"));
-                valueMap.put(value.getString("region"), indicatorValue);
+            JSONObject jsonData = new JSONObject(userIndicator.getData());
+            Iterator it = jsonData.keys();
+            while(it.hasNext()) {
+                String key = (String) it.next();
+                IndicatorValueFloat indicatorValue = new IndicatorValueFloat(jsonData.getDouble(key));
+                valueMap.put(key, indicatorValue);
             }
         } catch (JSONException e) {
-            e.printStackTrace();
+            LOG.error(e, "Error transforming data for user indicator");
         }
         return valueMap;
     }
