@@ -29,6 +29,5 @@ PUBLIC "-//ibatis.apache.org//DTD SQL Map Config 2.0//EN"
   <sqlMap resource="META-INF/UserIndicator.xml" />
   <sqlMap resource="META-INF/OskariLayer.xml" />
   <sqlMap resource="META-INF/DataProvider.xml" />
-  <sqlMap resource="META-INF/MaplayerProjections.xml" />
 
 </sqlMapConfig>
