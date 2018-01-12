@@ -1,12 +1,9 @@
 package fi.nls.oskari.control.statistics.user;
 
+import fi.nls.oskari.control.*;
 import org.oskari.statistics.user.UserIndicatorService;
 import org.oskari.statistics.user.UserIndicatorServiceImpl;
 import fi.nls.oskari.annotation.OskariActionRoute;
-import fi.nls.oskari.control.ActionDeniedException;
-import fi.nls.oskari.control.ActionException;
-import fi.nls.oskari.control.ActionHandler;
-import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.domain.map.indicator.UserIndicator;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
@@ -17,14 +14,6 @@ import org.json.JSONObject;
 
 import java.util.List;
 
-/**
- * Created with IntelliJ IDEA.
- * User: EVALANTO
- * Date: 22.11.2013
- * Time: 16:49
- * To change this template use File | Settings | File Templates.
- * 
- */
 @OskariActionRoute("GetUserIndicators")
 public class GetUserIndicatorsHandler extends ActionHandler {
 
@@ -35,35 +24,51 @@ public class GetUserIndicatorsHandler extends ActionHandler {
 
 
     public void handleAction(ActionParameters params) throws ActionException {
-        if (params.getUser().isGuest()) {
-            throw new ActionDeniedException("Session expired");
+        params.requireLoggedInUser();
+
+        int id = getRequestedId(params.getHttpParam(PARAM_INDICATOR_ID, "-1"));
+
+        if(id != -1) {
+            handleSingleIndicator(params, id);
+            return;
         }
-        int id  = -1;
+
+        long uid = params.getUser().getId();
+        List<UserIndicator> uiList = userIndicatorService.findAllOfUser(uid);
+        if ( uiList != null && uiList.size() > 0 )  {
+            log.debug("GetUserIndicatorsHandler" + uiList.get(0).toString());
+        }
+        final JSONArray result = makeJson(uiList);
+        ResponseHelper.writeResponse(params, result);
+    }
+
+    private void handleSingleIndicator(ActionParameters params, int id) throws ActionException {
+        UserIndicator ui = userIndicatorService.find(id);
+        if(ui == null) {
+            throw new ActionParamsException("Unknown indicator");
+        }
+        log.debug("Requested id", id, "found:", ui);
+        // should we allow download if indicator is published?
+        if(params.getUser().getId() != ui.getUserId()) {
+            throw new ActionDeniedException("Wrong user");
+        }
+        final JSONObject result = makeJson(ui);
+        ResponseHelper.writeResponse(params, result);
+    }
+
+    private int getRequestedId(String paramValue) throws ActionException {
         try {
-            id = Integer.parseInt(getId(params.getHttpParam(PARAM_INDICATOR_ID, "-1")));
+            return Integer.parseInt(getId(paramValue));
         } catch (NumberFormatException nfe) {
-            throw  new ActionException(" Invalid number ");
+            throw new ActionParamsException("Invalid id");
         }
+    }
 
-
-        if(id ==-1) {  //hae kaikille omille indikaattoreille
-            long uid = params.getUser().getId();
-            List<UserIndicator> uiList = userIndicatorService.findAllOfUser(uid);
-            if ( uiList != null && uiList.size() > 0 )  {
-                log.debug("GetUserIndicatorsHandler" + uiList.get(0).toString());
-
-            }
-            final JSONArray result = makeJson(uiList);
-            ResponseHelper.writeResponse(params, result);
-        } else {   //hae id:llä
-            UserIndicator ui = userIndicatorService.find(id);
-              log.debug("GetUserIndicatorsHandler: got "+ ui +" with id "+id);
-            if ( ui != null && (params.getUser().getId() == ui.getUserId()) ) {
-                final JSONObject result = makeJson(ui);
-                ResponseHelper.writeResponse(params, result);
-            }
-        }
-
+    private String getId(String id) {
+        // FIXME: the id shouldn't include _ with the new statsgrid bundle.
+        String [] parts = id.split("_");
+        if (parts.length < 2) return id;
+        return parts[parts.length-1];
     }
 
     private JSONArray makeJson(List<UserIndicator> uiList) {
@@ -91,7 +96,7 @@ public class GetUserIndicatorsHandler extends ActionHandler {
     public static JSONObject makeJson(UserIndicator ui) {
         JSONObject descJSON =  ui.getDescription() == null ? new JSONObject() : JSONHelper.createJSONObject(ui.getDescription());
         JSONObject titleJSON =  ui.getTitle() == null ? new JSONObject() : JSONHelper.createJSONObject(ui.getTitle());
-        JSONArray dataJSON =  ui.getData() == null ? new JSONArray() : JSONHelper.createJSONArray(ui.getData());
+        JSONObject dataJSON =  ui.getData() == null ? new JSONObject() : JSONHelper.createJSONObject(ui.getData());
         JSONObject organizationJSON =  ui.getSource() == null ? new JSONObject() : JSONHelper.createJSONObject(ui.getSource());
         JSONObject obj = new JSONObject();
         JSONHelper.putValue(obj, "id", ui.getId());
@@ -107,11 +112,6 @@ public class GetUserIndicatorsHandler extends ActionHandler {
 
     public void setUserIndicatorService(UserIndicatorService uis) {
         userIndicatorService = uis;
-    }
-    private String getId(String id) {
-        String [] parts = id.split("_");
-        if (parts.length < 2) return id;
-        return parts[parts.length-1];
     }
 }
 
