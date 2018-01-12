@@ -3,7 +3,7 @@ package fi.nls.oskari.control.statistics.user;
 import org.oskari.statistics.user.UserIndicatorService;
 import org.oskari.statistics.user.UserIndicatorServiceImpl;
 import fi.nls.oskari.control.ActionParameters;
-import fi.nls.oskari.domain.map.indicator.UserIndicator;
+import org.oskari.statistics.user.UserIndicator;
 import fi.nls.test.control.JSONActionRouteTest;
 import fi.nls.test.util.ResourceHelper;
 import org.junit.Before;

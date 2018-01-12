@@ -7,7 +7,7 @@
 <sqlMap namespace="UserIndicator">
 
     <!-- Use type aliases to avoid typing the full classname every time. -->
-    <typeAlias alias="UserIndicator" type="fi.nls.oskari.domain.map.indicator.UserIndicator" />
+    <typeAlias alias="UserIndicator" type="org.oskari.statistics.user.UserIndicator" />
 
     <resultMap id="UserIndicatorResult" class="UserIndicator">
         <result property="id" column="id" />

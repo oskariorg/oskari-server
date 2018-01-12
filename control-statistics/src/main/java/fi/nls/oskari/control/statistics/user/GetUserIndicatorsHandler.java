@@ -4,7 +4,7 @@ import fi.nls.oskari.control.*;
 import org.oskari.statistics.user.UserIndicatorService;
 import org.oskari.statistics.user.UserIndicatorServiceImpl;
 import fi.nls.oskari.annotation.OskariActionRoute;
-import fi.nls.oskari.domain.map.indicator.UserIndicator;
+import org.oskari.statistics.user.UserIndicator;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.util.JSONHelper;

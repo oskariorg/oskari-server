@@ -1,6 +1,5 @@
 package org.oskari.statistics.user;
 
-import fi.nls.oskari.domain.map.indicator.UserIndicator;
 import fi.nls.oskari.service.db.BaseIbatisService;
 
 import java.util.List;

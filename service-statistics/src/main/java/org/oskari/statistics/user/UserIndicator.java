@@ -1,4 +1,4 @@
-package fi.nls.oskari.domain.map.indicator;
+package org.oskari.statistics.user;
 
 /**
  * Created with IntelliJ IDEA.
