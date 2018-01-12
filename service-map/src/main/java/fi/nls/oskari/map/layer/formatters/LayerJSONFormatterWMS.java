@@ -31,6 +31,7 @@ public class LayerJSONFormatterWMS extends LayerJSONFormatter {
     public static final String KEY_GFICONTENT = "gfiContent";
     public static final String KEY_LEGENDIMAGE = "legendImage";
     public static final String KEY_VERSION = "version";
+    public static final String KEY_SRS = "srs";
     public static final String KEY_ISQUERYABLE = "isQueryable";
     public static final String KEY_ATTRIBUTES = "attributes";
 
@@ -161,6 +162,7 @@ public class LayerJSONFormatterWMS extends LayerJSONFormatter {
         JSONObject formats = LayerJSONFormatterWMS.getFormatsJSON(wms);
         JSONHelper.putValue(capabilities, KEY_FORMATS, formats);
         JSONHelper.putValue(capabilities, KEY_VERSION, wms.getVersion());
+        JSONHelper.putValue(capabilities, KEY_SRS, new JSONArray(LayerJSONFormatterWMS.getCRSs(wms)));
         capabilities = JSONHelper.merge(capabilities, LayerJSONFormatterWMS.formatTime(wms.getTime()));
         return capabilities;
     }
