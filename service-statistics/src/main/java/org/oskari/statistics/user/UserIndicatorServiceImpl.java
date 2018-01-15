@@ -4,6 +4,10 @@ import fi.nls.oskari.service.db.BaseIbatisService;
 
 import java.util.List;
 
+/**
+ * @deprecated Use StatisticalIndicatorServiceMybatisImpl instead
+ */
+@Deprecated
 public class UserIndicatorServiceImpl extends BaseIbatisService<UserIndicator> implements UserIndicatorService {
     @Override
     protected String getNameSpace() {
@@ -12,9 +16,5 @@ public class UserIndicatorServiceImpl extends BaseIbatisService<UserIndicator> i
 
     public List<UserIndicator> findAllOfUser(long userID){
         return queryForList(getNameSpace()+".findAllOfUser", userID);
-    }
-
-    public void deleteByUserId (long userID){
-        delete(getNameSpace()+".deleteByUserId", userID);
     }
 }

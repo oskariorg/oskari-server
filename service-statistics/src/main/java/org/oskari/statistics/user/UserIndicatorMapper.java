@@ -5,7 +5,9 @@ import org.apache.ibatis.annotations.*;
 import java.util.List;
 
 /**
- * MyBatis Mapper for the SQL table oskari_user_indicator for thematic map user indicators
+ * MyBatis Mapper for the SQL table oskari_user_indicator for thematic map user indicators.
+ * The database currently supports multiple years/regionsets per indicator, but these queries do not so the API
+ * will change a bit in the future.
  */
 public interface UserIndicatorMapper {
 

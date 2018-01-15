@@ -2,6 +2,8 @@ package fi.nls.oskari.control.statistics.plugins.user;
 
 import fi.nls.oskari.control.statistics.plugins.db.StatisticalDatasource;
 import fi.nls.oskari.service.OskariComponentManager;
+import fi.nls.oskari.service.ServiceException;
+import fi.nls.oskari.service.ServiceRuntimeException;
 import org.oskari.statistics.user.StatisticalIndicatorService;
 import org.oskari.statistics.user.UserIndicatorService;
 import org.oskari.statistics.user.UserIndicatorServiceImpl;
@@ -77,45 +79,19 @@ public class UserIndicatorsStatisticalDatasourcePlugin extends StatisticalDataso
      */
     @Override
     public StatisticalIndicator getIndicator(User user, String indicatorId) {
-        return service.findById(ConversionHelper.getInt(indicatorId, -1), user.getId());
-        // TODO: optimize to load single indicator or change indicatorset to be stored in redis
-        //int id = ConversionHelper.getInt(indicatorId, -1);
-        //UserIndicator ui = userIndicatorService.find(id);
-        //return toUserStatisticalIndicator(ui);
-        /*
-        List<StatisticalIndicator> list = getIndicators(user);
-        for(StatisticalIndicator ind: list) {
-            if(ind.getId().equals(indicatorId)) {
-                return ind;
-            }
+        try {
+            return service.findById(ConversionHelper.getInt(indicatorId, -1), user.getId());
+        } catch (ServiceRuntimeException ex) {
+            LOG.warn("Indicator not found:", ex.getMessage());
         }
         return null;
-        */
     }
     @Override
     public Map<String, IndicatorValue> getIndicatorValues(StatisticalIndicator indicator,
                                                           StatisticalIndicatorDataModel params,
                                                           StatisticalIndicatorLayer regionset) {
-        // Data is a serialized JSON for legacy and backwards compatibility reasons:
-        // "data":{"[regionid]" : [value], ...}
         return service.getData( ConversionHelper.getInt(indicator.getId(), -1),
                 regionset.getOskariLayerId(),
                 ConversionHelper.getInt(params.getDimension("year").getValue(), -1));
-        /*
-        UserIndicator userIndicator = userIndicatorService.find(ConversionHelper.getInt(indicator.getId(), -1));
-        Map<String, IndicatorValue> valueMap = new HashMap<>();
-        try {
-            JSONObject jsonData = new JSONObject(userIndicator.getData());
-            Iterator it = jsonData.keys();
-            while(it.hasNext()) {
-                String key = (String) it.next();
-                IndicatorValueFloat indicatorValue = new IndicatorValueFloat(jsonData.getDouble(key));
-                valueMap.put(key, indicatorValue);
-            }
-        } catch (JSONException e) {
-            LOG.error(e, "Error transforming data for user indicator");
-        }
-        return valueMap;
-        */
     }
 }

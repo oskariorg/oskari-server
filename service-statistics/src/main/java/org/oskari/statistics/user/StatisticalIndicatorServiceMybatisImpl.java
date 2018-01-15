@@ -82,14 +82,12 @@ public class StatisticalIndicatorServiceMybatisImpl extends StatisticalIndicator
         }
     }
 
-    // NOT TESTED
     public void delete(long id) {
         try (final SqlSession session = factory.openSession()) {
             getMapper(session).delete(id);
         }
     }
 
-    // NOT TESTED
     public void deleteByUser(long userId) {
         try (final SqlSession session = factory.openSession()) {
             getMapper(session).deleteByUser(userId);

@@ -1,18 +1,12 @@
 package org.oskari.statistics.user;
 
-/**
- * Created with IntelliJ IDEA.
- * User: EVAARASMAKI
- * Date: 22.11.2013
- * Time: 13:44
- * To change this template use File | Settings | File Templates.
- */
 public class UserIndicator {
 
     long id;
     long userId;
     String title = "";
     String source = "";
+    // material is the regionset id
     long material;
     String description = "";
     int year;
