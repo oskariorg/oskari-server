@@ -1,13 +1,13 @@
 package fi.nls.oskari.control.statistics.user;
 
-import fi.mml.map.mapwindow.service.db.UserIndicatorService;
-import fi.mml.map.mapwindow.service.db.UserIndicatorServiceImpl;
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.*;
-import fi.nls.oskari.domain.map.indicator.UserIndicator;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.service.OskariComponentManager;
+import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.ResponseHelper;
+import org.oskari.statistics.user.StatisticalIndicatorService;
 
 /**
  * Deletes indicator that the user has previously saved.
@@ -16,23 +16,25 @@ import fi.nls.oskari.util.ResponseHelper;
 @OskariActionRoute("DeleteUserIndicator")
 public class DeleteUserIndicatorHandler extends ActionHandler {
     private static final Logger LOG = LogFactory.getLogger(GetUserIndicatorsHandler.class);
-    private UserIndicatorService userIndicatorService = new UserIndicatorServiceImpl();
+    private StatisticalIndicatorService indicatorService;
+
+    @Override
+    public void init() {
+        super.init();
+        if (indicatorService == null) {
+            indicatorService = OskariComponentManager.getComponentOfType(StatisticalIndicatorService.class);
+        }
+    }
 
     public void handleAction(ActionParameters params) throws ActionException {
         // user indicators are user content so deleting one requires to be logged in
         params.requireLoggedInUser();
 
-        int id  = params.getRequiredParamInt(ActionConstants.PARAM_ID);
-        UserIndicator ui = userIndicatorService.find(id);
-        if(ui == null) {
-            throw new ActionParamsException("Unknown indicator");
+        int id = params.getRequiredParamInt(ActionConstants.PARAM_ID);
+        if (!indicatorService.delete(id, params.getUser().getId())) {
+            throw new ActionParamsException("Unknown indicator/not the owner of the indicator.");
         }
-        if(params.getUser().getId() != ui.getUserId()) {
-            throw new ActionDeniedException("User has no right to delete indicator");
-        }
-        LOG.info("Deleting indicator", id, "belonging to user", ui.getUserId());
-        userIndicatorService.delete(id);
-        // write the removed indicator as response
-        ResponseHelper.writeResponse(params, GetUserIndicatorsHandler.makeJson(ui));
+        LOG.info("Deleted indicator", id);
+        ResponseHelper.writeResponse(params, JSONHelper.createJSONObject("deleted", id));
     }
 }

@@ -5,6 +5,7 @@ import fi.nls.oskari.cache.JedisManager;
 import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.ActionHandler;
 import fi.nls.oskari.control.ActionParameters;
+import fi.nls.oskari.control.ActionParamsException;
 import fi.nls.oskari.control.statistics.data.*;
 import fi.nls.oskari.control.statistics.plugins.*;
 import fi.nls.oskari.domain.User;
@@ -54,6 +55,9 @@ public class GetIndicatorMetadataHandler extends ActionHandler {
      */
     public JSONObject getIndicatorMetadataJSON(User user, long pluginId, String indicatorId) throws ActionException {
         StatisticalDatasourcePlugin plugin = pluginManager.getPlugin(pluginId);
+        if(plugin == null) {
+            throw new ActionParamsException("No such datasource: " + pluginId);
+        }
         String cacheKey = CACHE_PREFIX + pluginId + ":" + indicatorId;
         if (plugin.canCache()) {
             final String cachedData = JedisManager.get(cacheKey);
@@ -65,8 +69,11 @@ public class GetIndicatorMetadataHandler extends ActionHandler {
                 }
             }
         }
+        StatisticalIndicator indicator = plugin.getIndicator(user, indicatorId);
+        if(indicator == null) {
+            throw new ActionParamsException("No such indicator: " + indicatorId + " on datasource: " + pluginId);
+        }
         try {
-            StatisticalIndicator indicator = plugin.getIndicator(user, indicatorId);
             JSONObject indicatorMetadata = toJSON(indicator);
             // Note that there is an another layer of caches in the plugins doing the web queries.
             // Two layers are necessary, because deserialization and conversion to the internal data model
