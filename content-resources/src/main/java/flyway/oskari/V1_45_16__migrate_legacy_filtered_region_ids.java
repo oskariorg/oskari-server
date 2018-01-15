@@ -90,7 +90,7 @@ public class V1_45_16__migrate_legacy_filtered_region_ids implements JdbcMigrati
             return false;
         }
         // migrate data from sotkanet region ids to regionset feature ids and format data to new object format
-        // from [list of sotkanetRegions] to {list of feature ids in regionset layer]
+        // from [list of sotkanetRegions] to [list of feature ids in regionset layer]
         JSONArray migratedRegionIds = new JSONArray();
         for (int i = 0; i < sotkanetRegions.length(); ++i) {
             int region = sotkanetRegions.optInt(i, -1);
