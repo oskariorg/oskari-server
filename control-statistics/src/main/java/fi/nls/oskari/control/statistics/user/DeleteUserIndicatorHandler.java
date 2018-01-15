@@ -34,10 +34,7 @@ public class DeleteUserIndicatorHandler extends ActionHandler {
         if (!indicatorService.delete(id, params.getUser().getId())) {
             throw new ActionParamsException("Unknown indicator/not the owner of the indicator.");
         }
-        LOG.info("Deleting indicator", id);
-        if (!indicatorService.delete(id, params.getUser().getId())) {
-            throw new ActionDeniedException("Tried to delete indicator from other user");
-        }
+        LOG.info("Deleted indicator", id);
         // write the removed indicator as response
         ResponseHelper.writeResponse(params, JSONHelper.createJSONObject("deleted", id));
     }
