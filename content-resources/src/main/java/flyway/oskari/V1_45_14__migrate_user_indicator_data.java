@@ -108,7 +108,11 @@ public class V1_45_14__migrate_user_indicator_data implements JdbcMigration {
             }
             String regionCode = sotkaIdToRegionId.get(region.optInt("region", -1));
             if(regionCode != null) {
-                JSONHelper.putValue(migratedData, regionCode, region.optDouble("primary value"));
+                Double value = region.optDouble("primary value");
+                if(!Double.isNaN(value)) {
+                    // we have a region with numeric value -> add to JSON
+                    JSONHelper.putValue(migratedData, regionCode, value);
+                }
             }
         }
         indicator.data = migratedData.toString();
