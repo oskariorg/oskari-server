@@ -61,8 +61,8 @@ public interface UserIndicatorMapper {
     String getData(@Param("indicator") long indicator, @Param("regionset") long regionset, @Param("year") int year);
 
 
-    @Delete("delete from oskari_user_indicator where id = #{id}")
-    void delete(long id);
+    @Delete("delete from oskari_user_indicator where id = #{id} AND user_id = #{userId}")
+    int delete(@Param("id") long id, @Param("userId") long userId);
 
     @Delete("delete from oskari_user_indicator where user_id = #{userId}")
     void deleteByUser(long userId);

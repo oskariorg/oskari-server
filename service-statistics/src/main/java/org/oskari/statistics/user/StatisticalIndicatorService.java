@@ -14,5 +14,5 @@ public abstract class StatisticalIndicatorService extends OskariComponent {
     public abstract List<StatisticalIndicator> findByUser(long userId);
     public abstract Map<String, IndicatorValue> getData(long indicator, long regionset, int year);
     public abstract void deleteByUser(long userId);
-    public abstract void delete(long userId);
+    public abstract boolean delete(long id, long userId);
 }
