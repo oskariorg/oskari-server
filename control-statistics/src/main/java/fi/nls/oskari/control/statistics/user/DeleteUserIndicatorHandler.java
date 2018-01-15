@@ -35,7 +35,6 @@ public class DeleteUserIndicatorHandler extends ActionHandler {
             throw new ActionParamsException("Unknown indicator/not the owner of the indicator.");
         }
         LOG.info("Deleted indicator", id);
-        // write the removed indicator as response
         ResponseHelper.writeResponse(params, JSONHelper.createJSONObject("deleted", id));
     }
 }
