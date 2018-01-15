@@ -71,7 +71,7 @@ public class V1_45_16__migrate_legacy_filtered_region_ids implements JdbcMigrati
     }
 
     /**
-     * Returns true if indicator had content/migrated successfully and false if the indicator can be removed
+     * Returns true if bundle was migrated and false if no update is required
      * @param bundle
      * @return
      * @throws SQLException
@@ -110,7 +110,7 @@ public class V1_45_16__migrate_legacy_filtered_region_ids implements JdbcMigrati
     }
 
     /**
-     * Inserts user indicator data to the new table
+     * Updates bundle state (called for migrated bundles)
      */
     private static void updateData(Connection conn, Bundle data) throws SQLException {
 
