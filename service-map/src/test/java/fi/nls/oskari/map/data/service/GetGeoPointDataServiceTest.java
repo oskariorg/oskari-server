@@ -5,8 +5,11 @@ import fi.nls.oskari.map.data.domain.GFIRequestParams;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.JSONHelper;
 import org.json.JSONObject;
+import org.jsoup.Jsoup;
+import org.jsoup.safety.Whitelist;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.oskari.util.HtmlDoc;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
@@ -43,7 +46,7 @@ public class GetGeoPointDataServiceTest {
     @Test
     public void testResponseCleaning()
             throws Exception {
-        final String dirty = "<style></style><script>alert('illegal!')</script><h4>Allowed</h4>";
+        final String dirty = "<html><head><title>Document title</title><style></style><script>alert('illegal!')</script></head><body><h4>Allowed</h4></body></html>";
         GetGeoPointDataService partialMock = PowerMockito.spy(new GetGeoPointDataService());
         PowerMockito.doReturn(dirty).when(partialMock, "makeGFIcall", anyString(), anyString(), anyString());
         GFIRequestParams params = new GFIRequestParams();
@@ -56,5 +59,4 @@ public class GetGeoPointDataServiceTest {
         JSONObject response = partialMock.getWMSFeatureInfo(params);
         assertEquals("Should have cleaned html", response.optString("content"), "<h4>Allowed</h4>");
     }
-
 }
