@@ -1,14 +1,14 @@
 package fi.nls.oskari.map.layer.formatters;
 
-import fi.mml.map.mapwindow.service.db.InspireThemeService;
-import fi.mml.map.mapwindow.service.db.InspireThemeServiceIbatisImpl;
-import fi.nls.oskari.domain.map.InspireTheme;
-import fi.nls.oskari.domain.map.LayerGroup;
+import fi.mml.map.mapwindow.service.db.OskariMapLayerGroupService;
+import fi.mml.map.mapwindow.service.db.OskariMapLayerGroupServiceIbatisImpl;
+import fi.nls.oskari.domain.map.DataProvider;
+import fi.nls.oskari.domain.map.MaplayerGroup;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.map.layer.LayerGroupService;
-import fi.nls.oskari.map.layer.LayerGroupServiceIbatisImpl;
+import fi.nls.oskari.map.layer.DataProviderService;
+import fi.nls.oskari.map.layer.DataProviderServiceIbatisImpl;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
@@ -32,8 +32,8 @@ public class LayerJSONFormatter {
     public static final String PROPERTY_AJAXURL = "oskari.ajax.url.prefix";
     public static final String KEY_STYLES = "styles";
 
-    private static final InspireThemeService inspireThemeService = new InspireThemeServiceIbatisImpl();
-    private static final LayerGroupService groupService = new LayerGroupServiceIbatisImpl();
+    private static final OskariMapLayerGroupService OSKARI_MAP_LAYER_GROUP_SERVICE = new OskariMapLayerGroupServiceIbatisImpl();
+    private static final DataProviderService groupService = new DataProviderServiceIbatisImpl();
 
     private static final String KEY_ID = "id";
     private static final String KEY_TYPE = "type";
@@ -122,8 +122,8 @@ public class LayerJSONFormatter {
         if(layer.getGroup() != null) {
             JSONHelper.putValue(layerJson, "orgName", layer.getGroup().getName(lang));
         }
-        if(layer.getInspireTheme() != null) {
-            JSONHelper.putValue(layerJson, "inspire", layer.getInspireTheme().getName(lang));
+        if(layer.getMaplayerGroup() != null) {
+            JSONHelper.putValue(layerJson, "inspire", layer.getMaplayerGroup().getName(lang));
         }
 
         if(layer.getOpacity() != null && layer.getOpacity() > -1 && layer.getOpacity() <= 100) {
@@ -290,15 +290,15 @@ public class LayerJSONFormatter {
         }
 
         // handle inspiretheme
-        final InspireTheme theme = inspireThemeService.findByName(themeName);
+        final MaplayerGroup theme = OSKARI_MAP_LAYER_GROUP_SERVICE.findByName(themeName);
         if (theme == null) {
             log.warn("Didn't find match for theme:", themeName);
         } else {
-            layer.addInspireTheme(theme);
+            layer.addGroup(theme);
         }
 
         // setup data producer/layergroup
-        final LayerGroup group = groupService.findByName(orgName);
+        final DataProvider group = groupService.findByName(orgName);
         if(group == null) {
             log.warn("Didn't find match for layergroup:", orgName);
         } else {

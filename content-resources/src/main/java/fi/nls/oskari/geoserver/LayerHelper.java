@@ -1,10 +1,10 @@
 package fi.nls.oskari.geoserver;
 
-import fi.nls.oskari.domain.map.LayerGroup;
+import fi.nls.oskari.domain.map.DataProvider;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.domain.map.wfs.WFSLayerConfiguration;
-import fi.nls.oskari.map.layer.LayerGroupService;
-import fi.nls.oskari.map.layer.LayerGroupServiceIbatisImpl;
+import fi.nls.oskari.map.layer.DataProviderService;
+import fi.nls.oskari.map.layer.DataProviderServiceIbatisImpl;
 import fi.nls.oskari.map.layer.OskariLayerService;
 import fi.nls.oskari.map.layer.OskariLayerServiceIbatisImpl;
 
@@ -16,7 +16,7 @@ import java.util.List;
 public class LayerHelper {
 
     private static final OskariLayerService LAYER_SERVICE = new OskariLayerServiceIbatisImpl();
-    private static final LayerGroupService GROUP_SERVICE = new LayerGroupServiceIbatisImpl();
+    private static final DataProviderService GROUP_SERVICE = new DataProviderServiceIbatisImpl();
 
     public static OskariLayer getLayerWithName(final String name) {
         final List<OskariLayer> layers = LAYER_SERVICE.findAll();
@@ -28,10 +28,10 @@ public class LayerHelper {
         return null;
     }
 
-    public static LayerGroup getGroup() {
+    public static DataProvider getGroup() {
 
         // setup data producer/layergroup since original doesn't have one
-        final List<LayerGroup> groups = GROUP_SERVICE.findAll();
+        final List<DataProvider> groups = GROUP_SERVICE.findAll();
         // just use the first one, doesn't really matter
         return groups.get(0);
     }

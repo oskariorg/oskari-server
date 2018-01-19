@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE sqlMap
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="UserIndicator">
+
+    <!-- Use type aliases to avoid typing the full classname every time. -->
+    <typeAlias alias="UserIndicator" type="org.oskari.statistics.user.UserIndicator" />
+
+    <resultMap id="UserIndicatorResult" class="UserIndicator">
+        <result property="id" column="id" />
+        <result property="userId" column="user_id" />
+        <result property="title" column="title" />
+        <result property="source" column="source" />
+        <result property="material" column="regionset_id" />
+        <result property="description" column="description"/>
+        <result property="year" column="year" />
+        <result property="data" column="data" />
+        <result property="published" column="published" />
+        <!-- result property="category" column="category" / -->
+    </resultMap>
+
+    <parameterMap id="UserIndicatorParameter" class="UserIndicator">
+        <parameter property="id" />
+        <parameter property="userId" />
+    </parameterMap>
+
+    <parameterMap id="UserIndicatorInsertParameter" class="UserIndicator">
+        <parameter property="userId" />
+        <parameter property="title" />
+        <parameter property="source" />
+        <!-- parameter property="material" / -->
+        <parameter property="description"/>
+        <!-- parameter property="year" />
+        <parameter property="data" / -->
+        <parameter property="published" />
+        <!-- parameter property="category" / -->
+    </parameterMap>
+
+    <parameterMap id="UserIndicatorUpdateParameter" class="UserIndicator">
+        <parameter property="userId" />
+        <parameter property="title" />
+        <parameter property="source" />
+        <!-- parameter property="material" / -->
+        <parameter property="description"/>
+        <!-- parameter property="year" />
+        <parameter property="data" / -->
+        <parameter property="published" />
+        <!-- parameter property="category" / -->
+        <parameter property="id" />
+    </parameterMap>
+
+    <select id="maxId" resultClass="int">
+        select max(id) from oskari_user_indicator
+    </select>
+
+    <select id="find" parameterClass="int" resultMap="UserIndicatorResult">
+      SELECT
+          i.id,
+          i.user_id,
+          i.title,
+          i.source,
+          i.description,
+          i.published,
+          d.year,
+          d.data,
+          d.regionset_id
+      FROM
+          oskari_user_indicator i
+          JOIN oskari_user_indicator_data d ON i.id = d.indicator_id
+      WHERE
+          i.id = #id#
+    </select>
+
+
+    <select id="findAll" resultMap="UserIndicatorResult">
+      SELECT
+          i.id,
+          i.user_id,
+          i.title,
+          i.source,
+          i.description,
+          i.published,
+          d.year,
+          d.data,
+          d.regionset_id
+      FROM
+          oskari_user_indicator i
+          JOIN oskari_user_indicator_data d ON i.id = d.indicator_id
+    </select>
+
+    <select id="findAllOfUser" resultMap="UserIndicatorResult">
+      SELECT
+          i.id,
+          i.user_id,
+          i.title,
+          i.source,
+          i.description,
+          i.published,
+          d.year,
+          d.data,
+          d.regionset_id
+      FROM
+          oskari_user_indicator i
+          JOIN oskari_user_indicator_data d ON i.id = d.indicator_id
+        WHERE
+            i.user_id = #userId#
+    </select>
+
+    <statement id="insert" parameterMap="UserIndicatorInsertParameter" resultClass="int">
+        insert into oskari_user_indicator (
+            user_id,
+            title,
+            source,
+            description,
+            published)
+        values (?, ?, ?, ?, ?)
+        <!-- TODO: data should be inserted into oskari_user_indicator_data table
+         Should be upgraded to MyBatis!
+        -->
+    </statement>
+
+
+    <update id="update" parameterMap="UserIndicatorUpdateParameter">
+        update oskari_user_indicator set
+            user_id = ?,
+            title = ?,
+            source = ?,
+            description = ?,
+            published = ?
+        where id = ?
+        <!-- TODO: data should be inserted into oskari_user_indicator_data table
+         Should be upgraded to MyBatis!
+        -->
+    </update>
+
+    <delete id="delete" parameterClass="int">
+        delete from oskari_user_indicator where id = #id#
+    </delete>
+
+
+    <delete id="deleteByUserId" parameterClass="long">
+        delete from oskari_user_indicator where user_id = #id#
+    </delete>
+
+</sqlMap>

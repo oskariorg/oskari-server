@@ -1,7 +1,7 @@
 package fi.nls.oskari.control.layer;
 
+import fi.mml.map.mapwindow.service.db.OskariMapLayerGroupService;
 import fi.nls.oskari.service.capabilities.OskariLayerCapabilities;
-import fi.mml.map.mapwindow.service.db.InspireThemeService;
 import fi.mml.map.mapwindow.service.db.MaplayerProjectionService;
 import fi.mml.map.mapwindow.service.wms.WebMapService;
 import fi.mml.map.mapwindow.util.OskariLayerWorker;
@@ -11,14 +11,14 @@ import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.cache.JedisManager;
 import fi.nls.oskari.control.*;
 import fi.nls.oskari.domain.User;
-import fi.nls.oskari.domain.map.InspireTheme;
-import fi.nls.oskari.domain.map.LayerGroup;
+import fi.nls.oskari.domain.map.MaplayerGroup;
+import fi.nls.oskari.domain.map.DataProvider;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.domain.map.wfs.WFSLayerConfiguration;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.data.domain.OskariLayerResource;
-import fi.nls.oskari.map.layer.LayerGroupService;
+import fi.nls.oskari.map.layer.DataProviderService;
 import fi.nls.oskari.map.layer.OskariLayerService;
 import fi.nls.oskari.permission.domain.Permission;
 import fi.nls.oskari.service.ServiceException;
@@ -50,8 +50,8 @@ public class SaveLayerHandler extends ActionHandler {
     private OskariLayerService mapLayerService = ServiceFactory.getMapLayerService();
     private WFSLayerConfigurationService wfsLayerService = ServiceFactory.getWfsLayerService();
     private PermissionsService permissionsService = ServiceFactory.getPermissionsService();
-    private LayerGroupService layerGroupService = ServiceFactory.getLayerGroupService();
-    private InspireThemeService inspireThemeService = ServiceFactory.getInspireThemeService();
+    private DataProviderService dataProviderService = ServiceFactory.getDataProviderService();
+    private OskariMapLayerGroupService oskariMapLayerGroupService = ServiceFactory.getOskariMapLayerGroupService();
     private MaplayerProjectionService maplayerProjectionService = ServiceFactory.getMaplayerProjectionService();
     private CapabilitiesCacheService capabilitiesService = ServiceFactory.getCapabilitiesCacheService();
     private WFSParserConfigs wfsParserConfigs = new WFSParserConfigs();
@@ -253,7 +253,7 @@ public class SaveLayerHandler extends ActionHandler {
         }
 
         // organization id
-        final LayerGroup group = layerGroupService.find(params.getHttpParam("groupId", -1));
+        final DataProvider group = dataProviderService.find(params.getHttpParam("groupId", -1));
         ml.addGroup(group);
 
         // get names and descriptions
@@ -271,8 +271,9 @@ public class SaveLayerHandler extends ActionHandler {
             }
         }
 
-        InspireTheme theme = inspireThemeService.find(params.getHttpParam("inspireTheme", -1));
-        ml.addInspireTheme(theme);
+        // FIXME: Update JSON key when frontend implementation was updated
+        MaplayerGroup maplayerGroup = oskariMapLayerGroupService.find(params.getHttpParam("inspireTheme", -1));
+        ml.addGroup(maplayerGroup);
 
         ml.setVersion(params.getHttpParam("version", ""));
 
@@ -323,6 +324,8 @@ public class SaveLayerHandler extends ActionHandler {
 
         ml.setUsername(params.getHttpParam("username", ml.getUsername()));
         ml.setPassword(params.getHttpParam("password", ml.getPassword()));
+
+        ml.setCapabilitiesUpdateRateSec(params.getHttpParam("capabilitiesUpdateRateSec", 0));
 
         String attributes = params.getHttpParam("attributes");
         if (attributes != null && !attributes.equals("")) {

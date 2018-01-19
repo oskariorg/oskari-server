@@ -60,7 +60,7 @@ public class GetIndicatorDataHandler extends ActionHandler {
             long layerId, JSONObject selectorJSON) throws ActionException {
         StatisticalDatasourcePlugin plugin = PLUGIN_MANAGER.getPlugin(pluginId);
         if (plugin == null) {
-            throw new ActionParamsException("No such datasource");
+            throw new ActionParamsException("No such datasource: " + pluginId);
         }
 
         String cacheKey = GetIndicatorDataHelper.getCacheKey(pluginId, indicatorId, layerId, selectorJSON);
@@ -73,12 +73,12 @@ public class GetIndicatorDataHandler extends ActionHandler {
 
         StatisticalIndicator indicator = plugin.getIndicator(user, indicatorId);
         if (indicator == null) {
-            throw new ActionParamsException("No such indicator");
+            throw new ActionParamsException("No such indicator: " + indicatorId + " on datasource: " + pluginId);
         }
 
         StatisticalIndicatorLayer layer = indicator.getLayer(layerId);
         if (layer == null) {
-            throw new ActionParamsException("No such regionset");
+            throw new ActionParamsException("No such regionset: " + layerId);
         }
 
         StatisticalIndicatorDataModel selectors = getIndicatorDataModel(selectorJSON);
