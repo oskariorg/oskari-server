@@ -480,4 +480,42 @@ public class JSONHelper {
         }
         return result;
     }
+
+    /**
+     * Returns optional String from obj.key
+     * JSONObject.optString() returns "null" if the thing behind key is JSONObject$Null
+     * @param obj
+     * @param key
+     */
+    public static String optString(JSONObject obj, String key) {
+        return optString(obj, key, "");
+    }
+
+    /**
+     * Returns optional String from obj.key
+     * JSONObject.optString() returns "null" if the thing behind key is JSONObject$Null
+     * @param obj
+     * @param key
+     */
+    public static String optString(JSONObject obj, String key, String defaultValue) {
+        try {
+            Object o = obj.get(key);
+            if (o != null && o != JSONObject.NULL) {
+                return o.toString();
+            }
+        } catch (JSONException ignore) {}
+        return defaultValue;
+    }
+
+    /**
+     * Returns required String from obj.key
+     * JSONObject.optString() returns "null" if the thing behind key is JSONObject$Null
+     * @param obj
+     * @param key
+     * @throws JSONException
+     */
+    public static String getString(JSONObject obj, String key) throws JSONException {
+        Object o = obj.get(key);
+        return o == JSONObject.NULL ? null : o.toString();
+    }
 }

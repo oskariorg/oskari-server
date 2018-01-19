@@ -1,5 +1,7 @@
 package fi.nls.oskari.domain.map;
 
+import com.vividsolutions.jts.geom.Geometry;
+
 public class MyPlace {
     
     private long id;
@@ -10,6 +12,7 @@ public class MyPlace {
     private String link;
     private String imageUrl;
     private String attentionText;
+    private Geometry geometry;
 
     public long getId() {
         return id;
@@ -73,6 +76,14 @@ public class MyPlace {
 
     public void setAttentionText(String attentionText) {
         this.attentionText = attentionText;
+    }
+
+    public Geometry getGeometry() {
+        return geometry;
+    }
+
+    public void setGeometry(Geometry geometry) {
+        this.geometry = geometry;
     }
 
     public boolean isOwnedBy(final String uuid) {
