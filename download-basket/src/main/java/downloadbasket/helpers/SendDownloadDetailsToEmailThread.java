@@ -17,7 +17,6 @@ import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.layer.OskariLayerService;
-import fi.nls.oskari.map.layer.OskariLayerServiceIbatisImpl;
 import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.util.IOHelper;
 import downloadbasket.data.LoadZipDetails;
@@ -47,8 +46,6 @@ public class SendDownloadDetailsToEmailThread implements Runnable {
 	 *
 	 * @param mapLayerService
 	 *            map layer service
-	 * @param downLoadDetails
-	 *            download details
 	 * @param userDetails
 	 *            user details
 	 * @param downLoadDetails
