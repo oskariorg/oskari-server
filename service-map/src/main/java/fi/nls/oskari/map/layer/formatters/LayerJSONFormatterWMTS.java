@@ -78,7 +78,7 @@ public class LayerJSONFormatterWMTS extends LayerJSONFormatter {
 
         List<JSONObject> tileMatrix = LayerJSONFormatterWMTS.createTileMatrixArray(layer);
         JSONHelper.putValue(capabilities, KEY_TILEMATRIXIDS, new JSONArray(tileMatrix));
-        JSONHelper.putValue(capabilities, KEY_SRS, new JSONArray(LayerJSONFormatterWMTS.getCRSs(layer)));
+        JSONHelper.putValue(capabilities, KEY_SRS, new JSONArray(getCRSs(layer)));
 
         return capabilities;
     }
