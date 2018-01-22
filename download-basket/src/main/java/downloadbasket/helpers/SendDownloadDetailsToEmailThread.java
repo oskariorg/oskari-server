@@ -31,6 +31,7 @@ import org.json.JSONObject;
  * Send download details email service (thread).
  */
 public class SendDownloadDetailsToEmailThread implements Runnable {
+	OskariLayerService mapLayerService;
 	JSONArray downLoadDetails;
 	JSONObject userDetails;
 	Locale locale;
@@ -44,15 +45,25 @@ public class SendDownloadDetailsToEmailThread implements Runnable {
 	/**
 	 * Constructor.
 	 *
+	 * @param mapLayerService
+	 *            map layer service
 	 * @param downLoadDetails
 	 *            download details
 	 * @param userDetails
 	 *            user details
+	 * @param downLoadDetails
+	 *            download details
+	 * @param Locale
+	 *            locale
+	 * 
 	 */
-	public SendDownloadDetailsToEmailThread(JSONArray downLoadDetails, JSONObject userDetails, Locale locale) {
+
+	public SendDownloadDetailsToEmailThread(OskariLayerService mapLayerService, JSONArray downLoadDetails,
+			JSONObject userDetails, Locale locale) {
 		this.downLoadDetails = downLoadDetails;
 		this.userDetails = userDetails;
 		this.locale = locale;
+		this.mapLayerService = mapLayerService;
 	}
 
 	private ArrayList<ZipDownloadDetails> downloadFromService() {
@@ -77,7 +88,6 @@ public class SendDownloadDetailsToEmailThread implements Runnable {
 				ldz.setUserEmail(userDetails.getString("email"));
 				ldz.setLanguage(this.locale.getLanguage());
 				ldz.setDownloadNormalWay(normalDownloads.isBboxCropping(croppingMode, croppingLayer));
-				OskariLayerService mapLayerService = new OskariLayerServiceIbatisImpl();
 				OskariLayer oskariLayer = mapLayerService.find(download.getString(PARAM_LAYER_ID));
 				String srs = "EPSG:4326";
 				if (oskariLayer != null) {
