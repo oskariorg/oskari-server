@@ -43,7 +43,7 @@ public class GetGeoPointDataHandler extends ActionHandler {
 	@Override
     public void handleAction(final ActionParameters params) throws ActionException {
 	     
-		final String layerIds = params.getHttpParam(PARAM_LAYERS);
+		final String layerIds = params.getRequiredParam(PARAM_LAYERS);
 		final String[] layerIdsArr = layerIds.split(",");
 		
         final User user = params.getUser();

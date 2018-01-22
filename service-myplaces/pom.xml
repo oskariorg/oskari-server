@@ -24,6 +24,14 @@
             <artifactId>oskari-map</artifactId>
         </dependency>
         <dependency>
+            <groupId>fi.nls.oskari.service</groupId>
+            <artifactId>oskari-control</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.oskari</groupId>
+            <artifactId>oskari-utils</artifactId>
+        </dependency>
+        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <scope>test</scope>

@@ -11,6 +11,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Whitelist;
+import org.oskari.util.HtmlDoc;
 import org.w3c.dom.Document;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -47,6 +48,8 @@ public class GetGeoPointDataService {
     public static final String PRESENTATION_TYPE_JSON = "JSON";
     public static final String PRESENTATION_TYPE_TEXT = "TEXT";
 
+    private static final String CONFIG_KEY_FOR_SANITIZE = "gfi";
+
     public JSONObject getWMSFeatureInfo(final GFIRequestParams params) {
 
         final String gfiResponse = makeGFIcall(params.getGFIUrl(), params.getLayer().getUsername(), params.getLayer().getPassword());
@@ -71,7 +74,8 @@ public class GetGeoPointDataService {
         // use text content if respObj isn't present (transformed JSON not created)
         if(respObj == null) {
             JSONHelper.putValue(response, PRESENTATION_TYPE, PRESENTATION_TYPE_TEXT);
-            JSONHelper.putValue(response, CONTENT, Jsoup.clean(gfiResponse, Whitelist.relaxed()));
+            // Note! This might not be html. Might be xml or plain text etc
+            JSONHelper.putValue(response, CONTENT, getSafeHtmlContent(gfiResponse, params.getGFIUrl()));
         }
         // Add gfi content, it needs to be a separate field so we can mangle it as we like in the frontend
         final String gfiContent = params.getLayer().getGfiContent();
@@ -79,6 +83,12 @@ public class GetGeoPointDataService {
             JSONHelper.putValue(response, GFI_CONTENT, gfiContent);
         }
         return response;
+    }
+
+    public static String getSafeHtmlContent(String response, String url) {
+        return new HtmlDoc(response)
+                .modifyLinks(url)
+                .getFiltered(CONFIG_KEY_FOR_SANITIZE);
     }
 
     public JSONObject getRESTFeatureInfo(final GFIRestQueryParams params) {

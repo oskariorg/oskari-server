@@ -54,8 +54,9 @@ public class WfsXmlParser {
             Property id = feature.getProperty(idProperty);
             Property name = feature.getProperty(nameProperty);
             if (id == null || name == null) {
-                throw new ServiceException("Couldn't find id (" + idProperty + ") and/or name(" + nameProperty +
+                LOG.warn("Couldn't find id (" + idProperty + ") and/or name(" + nameProperty +
                         ") property for region. Properties are:" + LOG.getAsString(feature.getProperties()));
+                continue;
             }
             Region region = new Region(
                     (String) id.getValue(),
@@ -63,10 +64,10 @@ public class WfsXmlParser {
             try {
                 region.setPointOnSurface(getPointOnSurface(feature));
                 region.setGeojson(getGeoJSON(feature, idProperty, nameProperty));
+                nameCodes.add(region);
             } catch (Exception ex) {
-                throw new ServiceRuntimeException("Error parsing region to GeoJson:" + region.toString(), ex);
+                LOG.warn("Region had invalid geometry:", region, "Error:", ex.getMessage());
             }
-            nameCodes.add(region);
         }
 
         if (nameCodes.isEmpty()) {

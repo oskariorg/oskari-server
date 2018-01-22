@@ -24,8 +24,8 @@ import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.referencing.operation.MathTransform;
 
 import java.awt.image.BufferedImage;
-import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.Reader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -86,11 +86,11 @@ public class ArcGisMapLayerJob extends OWSMapLayerJob {
      * @param bounds
      * @return response
      */
-    public static BufferedReader sendQueryRequest(JobType type,
+    public static Reader sendQueryRequest(JobType type,
                                                   WFSLayerStore layer, ArcGisLayerStore arcGisLayer,
                                                   SessionStore session, List<Double> bounds,
                                                   String token) {
-        BufferedReader response = null;
+        Reader response = null;
         if(layer.getTemplateType() == null) { // default
             String payload = ArcGisCommunicator.createQueryRequestPayload(type, layer, session, bounds, token);
             String url = layer.getURL() + "/" + arcGisLayer.getId() + "/query?";
@@ -106,10 +106,10 @@ public class ArcGisMapLayerJob extends OWSMapLayerJob {
         return response;
     }
 
-    private BufferedReader sendIdentifyRequest(WFSLayerStore layer, List<ArcGisLayerStore> layers,
+    private Reader sendIdentifyRequest(WFSLayerStore layer, List<ArcGisLayerStore> layers,
                                                SessionStore session, List<Double> bounds,
                                                String token) {
-        BufferedReader response = null;
+        Reader response = null;
 
         String payload = ArcGisCommunicator.createIdentifyRequestPayload(layers, session, bounds, token);
         String url = layer.getURL() + "/identify?";
@@ -410,7 +410,7 @@ public class ArcGisMapLayerJob extends OWSMapLayerJob {
      */
     public FeatureCollection<SimpleFeatureType, SimpleFeature> response(
             WFSLayerStore layer, RequestResponse requestResponse) {
-        BufferedReader response = ((WFSRequestResponse) requestResponse).getResponse();
+        Reader response = ((WFSRequestResponse) requestResponse).getResponse();
         features = ArcGisCommunicator.parseFeatures(response, layer);
         //FeatureCollection<SimpleFeatureType, SimpleFeature> features = WFSCommunicator.parseSimpleFeatures(response, layer);
         IOHelper.close(response);
@@ -429,9 +429,9 @@ public class ArcGisMapLayerJob extends OWSMapLayerJob {
 
         log.debug("Starting request handler");
         Map<String, Object> output = new HashMap<String, Object>();
-        List<BufferedReader> responses = new ArrayList<BufferedReader>();
+        List<Reader> responses = new ArrayList<>();
         for (ArcGisLayerStore subLayer : this.arcGisLayers) {
-            BufferedReader response = sendQueryRequest(this.type, this.layer, subLayer, this.session, bounds, this.token);
+            Reader response = sendQueryRequest(this.type, this.layer, subLayer, this.session, bounds, this.token);
             // request failed
             if(response == null) {
                 log.warn("Request failed for layer", layer.getLayerId());

@@ -1,0 +1,1 @@
+ALTER TABLE oskari_maplayer_group_link RENAME themeid  TO groupid;

@@ -98,6 +98,7 @@
         <xerces.version>2.10.0</xerces.version>
         <xmlbeans.version>2.6.0</xmlbeans.version>
         <geotools.version>14.2</geotools.version>
+        <jts.version>1.13</jts.version>
         <!-- gt-xsd-kml.version>9.3</gt-xsd-kml.version -->
         <flexjson.version>2.0</flexjson.version>
         <deegree.version>2</deegree.version>
@@ -396,6 +397,12 @@
             <dependency>
                 <groupId>org.oskari</groupId>
                 <artifactId>oskari-utils</artifactId>
+                <version>${fi.nls.oskari.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.oskari</groupId>
+                <artifactId>service-capabilities-update</artifactId>
                 <version>${fi.nls.oskari.version}</version>
             </dependency>
 
@@ -1066,6 +1073,7 @@
         <module>service-wfs</module>
         <module>service-myplaces</module>
         <module>service-rating</module>
+        <module>service-capabilities-update</module>
 
         <module>service-search</module>
         <module>service-search-nls</module>
