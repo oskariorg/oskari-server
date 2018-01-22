@@ -26,7 +26,12 @@ public class DownloadInfo extends ActionHandler {
 
 	private static final String PARAM_DOWNLOAD_DETAILS = "downloadDetails";
 	private static final String PARAM_USER_DETAILS = "userDetails";
-	OskariLayerService mapLayerService;
+	private OskariLayerService mapLayerService;
+
+	@Override
+	public void init() {
+		mapLayerService = new OskariLayerServiceIbatisImpl();
+	}
 
 	@Override
 	public void handleAction(final ActionParameters params) throws ActionException {
@@ -36,7 +41,6 @@ public class DownloadInfo extends ActionHandler {
 		try {
 			JSONObject userDetails = new JSONObject(strUserDetails);
 			JSONArray ddArray = new JSONArray(downloadDetails);
-			mapLayerService = new OskariLayerServiceIbatisImpl();
 			new SendDownloadDetailsToEmailThread(mapLayerService, ddArray, userDetails, params.getLocale()).run();
 		} catch (Exception e) {
 			throw new ActionException("Could not handle DownloadInfo request: ", e);

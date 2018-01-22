@@ -30,10 +30,10 @@ import org.json.JSONObject;
  * Send download details email service (thread).
  */
 public class SendDownloadDetailsToEmailThread implements Runnable {
-	OskariLayerService mapLayerService;
-	JSONArray downLoadDetails;
-	JSONObject userDetails;
-	Locale locale;
+	private final OskariLayerService mapLayerService;
+	private final JSONArray downLoadDetails;
+	private final JSONObject userDetails;
+	private final Locale locale;
 
 	private final Logger LOGGER = LogFactory.getLogger(SendDownloadDetailsToEmailThread.class);
 	private final String PARAM_CROPPING_MODE = "croppingMode";
