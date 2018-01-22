@@ -52,7 +52,7 @@ public class ThematicMapsViewHelper {
                 List<ConfigNState> configsAndStates = new ArrayList<>();
                 while (rs.next()) {
                     String startup = rs.getString("startup");
-                    if(bundlePath != null && startup.contains(bundlePath)) {
+                    if(bundlePath != null && !startup.contains(bundlePath)) {
                         // we are only interested in bundles with old path
                         // not in ones using the new path
                         continue;
