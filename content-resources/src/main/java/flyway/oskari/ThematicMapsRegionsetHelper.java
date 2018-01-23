@@ -48,6 +48,9 @@ public class ThematicMapsRegionsetHelper {
     public Integer getLayerIdForName(String name) {
         return oldRegionNameToLayerId.get(name);
     }
+    public Map<String, Integer> getOldNameToLayerIdMapping() {
+        return oldRegionNameToLayerId;
+    }
 
     private Map<String, Integer> getRegionToLayerId(Connection conn) throws SQLException {
         Map<String, String> categoryToLayerName = getCategoryToLayerNameFromProperties();

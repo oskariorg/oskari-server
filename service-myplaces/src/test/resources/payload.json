@@ -1,0 +1,44 @@
+{
+  "features": [
+		{
+			"type": "Feature",
+			"id": 123,
+			"category_id": 1,
+			"geometry": {
+				"type": "Point",
+				"coordinates": [381863.4646715279,6679150.155217625]
+			},
+			"properties": {
+				"name": "name",
+				"place_desc": "place description",
+				"link": "url",
+				"attention_text": "attention text",
+				"image_url": "image url"
+			}
+		},{
+			"type":"Feature",
+			"id": 9876543210123456,
+			"category_id":1,
+			"geometry":{
+				"type":"MultiLineString",
+				"coordinates":[
+					[
+						[381863.4646715279,6679150.155217625],
+						[384807.4646715279,6682990.155217625],
+						[386599.4646715279,6678510.155217625]
+					],[
+						[378215.4646715279,6676878.155217625],
+						[381639.4646715279,6678318.155217625]
+					]
+				]
+			},
+			"properties":{
+				"name":"name2",
+				"place_desc":"place description2",
+				"attention_text":"attention text2",
+				"link":"url2",
+				"image_url":"image url2"
+			}
+		}
+	]
+}

@@ -26,7 +26,6 @@ PUBLIC "-//ibatis.apache.org//DTD SQL Map Config 2.0//EN"
   <sqlMap resource="META-INF/Bundle.xml" />
   <sqlMap resource="META-INF/PublishedMap.xml" />
   <sqlMap resource="META-INF/WFSLayerConfiguration.xml" />
-  <sqlMap resource="META-INF/UserIndicator.xml" />
   <sqlMap resource="META-INF/OskariLayer.xml" />
   <sqlMap resource="META-INF/DataProvider.xml" />
 

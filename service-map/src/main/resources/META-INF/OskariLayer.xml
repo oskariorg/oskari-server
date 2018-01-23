@@ -518,7 +518,7 @@
     l.externalId,
     l.type,
     l.base_map,
-    l.groupId,
+    l.dataprovider_id,
 
     l.name,
     l.url,
