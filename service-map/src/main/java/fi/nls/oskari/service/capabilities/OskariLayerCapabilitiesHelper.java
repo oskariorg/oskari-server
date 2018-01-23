@@ -13,6 +13,8 @@ import fi.nls.oskari.wmts.domain.WMTSCapabilities;
 import fi.nls.oskari.wmts.domain.WMTSCapabilitiesLayer;
 
 import java.util.Date;
+import java.util.Set;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -63,7 +65,7 @@ public class OskariLayerCapabilitiesHelper {
     }
 
     public static void setPropertiesFromCapabilitiesWMTS(WMTSCapabilities caps,
-            OskariLayer ml, String crs) {
+            OskariLayer ml, String crs, Set<String> systemCRSs) {
         int id = ml.getId();
         String name = ml.getName();
 
@@ -92,7 +94,7 @@ public class OskariLayerCapabilitiesHelper {
         JSONHelper.putValue(options, "format", resUrl.getFormat());
         JSONHelper.putValue(options, "urlTemplate", resUrl.getTemplate());
 
-        JSONObject jscaps = LayerJSONFormatterWMTS.createCapabilitiesJSON(layer);
+        JSONObject jscaps = LayerJSONFormatterWMTS.createCapabilitiesJSON(layer, systemCRSs);
         ml.setCapabilities(jscaps);
         ml.setCapabilitiesLastUpdated(new Date());
 

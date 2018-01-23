@@ -209,11 +209,14 @@ public class ViewHelper {
     }
 
     public static Set<String> getSystemCRSs(ViewService viewService)
-            throws ServiceException, JSONException {
+            throws ServiceException {
         List<View> views = getSystemViews(viewService);
         Set<String> crss = new HashSet<>();
         for (View view : views) {
-            crss.add(view.getSrsName());
+            String srsName = view.getSrsName();
+            if (srsName != null) {
+                crss.add(srsName);
+            }
         }
         return crss;
     }
