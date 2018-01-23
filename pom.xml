@@ -155,6 +155,11 @@
                 <artifactId>oskari-control</artifactId>
                 <version>${fi.nls.oskari.service.version}</version>
             </dependency>
+            <dependency>
+                <groupId>fi.nls.oskari</groupId>
+                <artifactId>download-basket</artifactId>
+                <version>${fi.nls.oskari.service.version}</version>
+            </dependency>
 
             <dependency>
                 <groupId>fi.nls.oskari.service</groupId>
