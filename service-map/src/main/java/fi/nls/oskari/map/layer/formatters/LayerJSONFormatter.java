@@ -15,10 +15,12 @@ import fi.nls.oskari.util.PropertyUtil;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.oskari.utils.common.Sets;
 
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Created with IntelliJ IDEA.
@@ -307,4 +309,13 @@ public class LayerJSONFormatter {
 
         return layer;
     }
+
+    protected static Set<String> getCRSsToStore(Set<String> systemCRSs,
+            Set<String> capabilitiesCRSs) {
+        if (systemCRSs == null) {
+            return capabilitiesCRSs;
+        }
+        return Sets.intersection(systemCRSs, capabilitiesCRSs);
+    }
+
 }

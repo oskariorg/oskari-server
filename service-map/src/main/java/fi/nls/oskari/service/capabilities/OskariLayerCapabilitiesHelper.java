@@ -35,8 +35,18 @@ public class OskariLayerCapabilitiesHelper {
         return WebMapServiceFactory.createFromXML(ml.getName(), xml);
     }
 
+    /**
+     * @deprecated
+     * use {@link OskariLayerCapabilitiesHelper#setPropertiesFromCapabilitiesWMS(WebMapService, OskariLayer, Set)}
+     */
+    @Deprecated
     public static void setPropertiesFromCapabilitiesWMS(WebMapService wms, OskariLayer ml) {
-        JSONObject caps = LayerJSONFormatterWMS.createCapabilitiesJSON(wms);
+        setPropertiesFromCapabilitiesWMS(wms, ml, null);
+    }
+
+    public static void setPropertiesFromCapabilitiesWMS(WebMapService wms,
+            OskariLayer ml, Set<String> systemCRSs) {
+        JSONObject caps = LayerJSONFormatterWMS.createCapabilitiesJSON(wms, systemCRSs);
         ml.setCapabilities(caps);
         ml.setCapabilitiesLastUpdated(new Date());
         //TODO: similiar parsing for WMS GetCapabilities for admin layerselector  and this

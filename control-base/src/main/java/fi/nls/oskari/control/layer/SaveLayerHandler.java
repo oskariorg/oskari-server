@@ -498,7 +498,7 @@ public class SaveLayerHandler extends ActionHandler {
         try {
             OskariLayerCapabilities raw = capabilitiesService.getCapabilities(ml, true);
             WebMapService wms = OskariLayerCapabilitiesHelper.parseWMSCapabilities(raw.getData(), ml);
-            OskariLayerCapabilitiesHelper.setPropertiesFromCapabilitiesWMS(wms, ml);
+            OskariLayerCapabilitiesHelper.setPropertiesFromCapabilitiesWMS(wms, ml, systemCRSs);
             return true;
         } catch (ServiceException ex) {
             LOG.error(ex, "Couldn't update capabilities for layer", ml);
