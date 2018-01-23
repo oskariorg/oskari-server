@@ -108,12 +108,10 @@ public class ELFGeoLocatorSearchChannel extends SearchChannel implements SearchA
 
         readLocationTypes();
 
-        try (InputStream inp3 = this.getClass().getResourceAsStream("namelanguage.json")) {
-            if (inp3 != null) {
-                InputStreamReader reader = new InputStreamReader(inp3);
-                JSONTokener tokenizer = new JSONTokener(reader);
-                elfNameLanguages = JSONHelper.createJSONObject4Tokener(tokenizer);
-            }
+        // read available languages
+        try (InputStream inp3 = this.getClass().getResourceAsStream("namelanguage.json");
+             InputStreamReader reader = new InputStreamReader(inp3)) {
+            elfNameLanguages = JSONHelper.createJSONObject4Tokener(new JSONTokener(reader));
         } catch (IOException e) {
             log.debug("Failed fetching namelanguages", e);
         }
