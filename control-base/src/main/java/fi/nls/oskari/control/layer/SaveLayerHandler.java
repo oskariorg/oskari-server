@@ -19,6 +19,7 @@ import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.data.domain.OskariLayerResource;
 import fi.nls.oskari.map.layer.DataProviderService;
 import fi.nls.oskari.map.layer.OskariLayerService;
+import fi.nls.oskari.map.view.ViewService;
 import fi.nls.oskari.permission.domain.Permission;
 import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.service.capabilities.CapabilitiesCacheService;
@@ -48,6 +49,7 @@ public class SaveLayerHandler extends ActionHandler {
     }
 
     private OskariLayerService mapLayerService = ServiceFactory.getMapLayerService();
+    private ViewService viewService = ServiceFactory.getViewService();
     private WFSLayerConfigurationService wfsLayerService = ServiceFactory.getWfsLayerService();
     private PermissionsService permissionsService = ServiceFactory.getPermissionsService();
     private DataProviderService dataProviderService = ServiceFactory.getDataProviderService();
@@ -335,18 +337,17 @@ public class SaveLayerHandler extends ActionHandler {
         ml.setRealtime(ConversionHelper.getBoolean(params.getHttpParam("realtime"), ml.getRealtime()));
         ml.setRefreshRate(ConversionHelper.getInt(params.getHttpParam("refreshRate"), ml.getRefreshRate()));
 
-        if(OskariLayer.TYPE_WMS.equals(ml.getType())) {
+        switch (ml.getType()) {
+        case OskariLayer.TYPE_WMS:
             return handleWMSSpecific(params, ml);
-        }
-        else if(OskariLayer.TYPE_WFS.equals(ml.getType())) {
-            handleWFSSpecific(params, ml);
+        case OskariLayer.TYPE_WMTS:
+            return handleWMTSSpecific(params, ml);
+        case OskariLayer.TYPE_WFS:
+            handleWFSSpecific(params, ml); // fallthrough
+        default:
+            // no capabilities to update, return true
             return true;
         }
-        else if(OskariLayer.TYPE_WMTS.equals(ml.getType())) {
-            return handleWMTSSpecific(params, ml);
-        }
-        // no capabilities to update, return true
-        return true;
     }
 
     private void handleRequestToWfsLayer(final ActionParameters params, WFSLayerConfiguration wfsl) throws ActionException {
