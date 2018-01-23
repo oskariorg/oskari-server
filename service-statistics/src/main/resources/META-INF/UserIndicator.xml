@@ -7,19 +7,19 @@
 <sqlMap namespace="UserIndicator">
 
     <!-- Use type aliases to avoid typing the full classname every time. -->
-    <typeAlias alias="UserIndicator" type="fi.nls.oskari.domain.map.indicator.UserIndicator" />
+    <typeAlias alias="UserIndicator" type="org.oskari.statistics.user.UserIndicator" />
 
     <resultMap id="UserIndicatorResult" class="UserIndicator">
         <result property="id" column="id" />
         <result property="userId" column="user_id" />
         <result property="title" column="title" />
         <result property="source" column="source" />
-        <result property="material" column="layer_id" />
+        <result property="material" column="regionset_id" />
         <result property="description" column="description"/>
         <result property="year" column="year" />
         <result property="data" column="data" />
         <result property="published" column="published" />
-        <result property="category" column="category" />
+        <!-- result property="category" column="category" / -->
     </resultMap>
 
     <parameterMap id="UserIndicatorParameter" class="UserIndicator">
@@ -31,24 +31,24 @@
         <parameter property="userId" />
         <parameter property="title" />
         <parameter property="source" />
-        <parameter property="material" />
+        <!-- parameter property="material" / -->
         <parameter property="description"/>
-        <parameter property="year" />
-        <parameter property="data" />
+        <!-- parameter property="year" />
+        <parameter property="data" / -->
         <parameter property="published" />
-        <parameter property="category" />
+        <!-- parameter property="category" / -->
     </parameterMap>
 
     <parameterMap id="UserIndicatorUpdateParameter" class="UserIndicator">
         <parameter property="userId" />
         <parameter property="title" />
         <parameter property="source" />
-        <parameter property="material" />
+        <!-- parameter property="material" / -->
         <parameter property="description"/>
-        <parameter property="year" />
-        <parameter property="data" />
+        <!-- parameter property="year" />
+        <parameter property="data" / -->
         <parameter property="published" />
-        <parameter property="category" />
+        <!-- parameter property="category" / -->
         <parameter property="id" />
     </parameterMap>
 
@@ -58,55 +58,55 @@
 
     <select id="find" parameterClass="int" resultMap="UserIndicatorResult">
       SELECT
-          id,
-          user_id,
-          title,
-          source,
-          layer_id,
-          description,
-          year,
-          data,
-          published,
-          category
+          i.id,
+          i.user_id,
+          i.title,
+          i.source,
+          i.description,
+          i.published,
+          d.year,
+          d.data,
+          d.regionset_id
       FROM
-          oskari_user_indicator
+          oskari_user_indicator i
+          JOIN oskari_user_indicator_data d ON i.id = d.indicator_id
       WHERE
-          id = #id#
+          i.id = #id#
     </select>
 
 
     <select id="findAll" resultMap="UserIndicatorResult">
       SELECT
-            id,
-            user_id,
-            title,
-            source,
-            layer_id,
-            description,
-            year,
-            data,
-            published,
-            category
+          i.id,
+          i.user_id,
+          i.title,
+          i.source,
+          i.description,
+          i.published,
+          d.year,
+          d.data,
+          d.regionset_id
       FROM
-            oskari_user_indicator
+          oskari_user_indicator i
+          JOIN oskari_user_indicator_data d ON i.id = d.indicator_id
     </select>
 
     <select id="findAllOfUser" resultMap="UserIndicatorResult">
-        SELECT
-            id,
-            user_id,
-            title,
-            source,
-            layer_id,
-            description,
-            year,
-            data,
-            published,
-            category
-        FROM
-            oskari_user_indicator
+      SELECT
+          i.id,
+          i.user_id,
+          i.title,
+          i.source,
+          i.description,
+          i.published,
+          d.year,
+          d.data,
+          d.regionset_id
+      FROM
+          oskari_user_indicator i
+          JOIN oskari_user_indicator_data d ON i.id = d.indicator_id
         WHERE
-            user_id = #userId#
+            i.user_id = #userId#
     </select>
 
     <statement id="insert" parameterMap="UserIndicatorInsertParameter" resultClass="int">
@@ -114,13 +114,12 @@
             user_id,
             title,
             source,
-            layer_id,
             description,
-            year,
-            data,
-            published,
-            category)
-        values (?, ?, ?, ?, ?, ?, ?, ?, ?)
+            published)
+        values (?, ?, ?, ?, ?)
+        <!-- TODO: data should be inserted into oskari_user_indicator_data table
+         Should be upgraded to MyBatis!
+        -->
     </statement>
 
 
@@ -129,13 +128,12 @@
             user_id = ?,
             title = ?,
             source = ?,
-            layer_id = ?,
             description = ?,
-            year = ?,
-            data = ?,
-            published = ?,
-            category = ?,
+            published = ?
         where id = ?
+        <!-- TODO: data should be inserted into oskari_user_indicator_data table
+         Should be upgraded to MyBatis!
+        -->
     </update>
 
     <delete id="delete" parameterClass="int">
