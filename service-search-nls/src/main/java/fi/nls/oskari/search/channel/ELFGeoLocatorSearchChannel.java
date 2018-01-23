@@ -18,10 +18,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URLEncoder;
 import java.util.*;
@@ -110,6 +107,16 @@ public class ELFGeoLocatorSearchChannel extends SearchChannel implements SearchA
         log.debug("ServiceURL set to " + serviceURL);
 
         readLocationTypes();
+
+        try (InputStream inp3 = this.getClass().getResourceAsStream("namelanguage.json")) {
+            if (inp3 != null) {
+                InputStreamReader reader = new InputStreamReader(inp3);
+                JSONTokener tokenizer = new JSONTokener(reader);
+                elfNameLanguages = JSONHelper.createJSONObject4Tokener(tokenizer);
+            }
+        } catch (IOException e) {
+            log.debug("Failed fetching namelanguages", e);
+        }
 
         elfParser = new ELFGeoLocatorParser(PropertyUtil.getOptional(PROPERTY_SERVICE_SRS), this);
 
