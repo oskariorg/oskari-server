@@ -16,7 +16,6 @@ import java.util.*;
 public class LayerJSONFormatterWMTS extends LayerJSONFormatter {
 
     public static final String KEY_TILEMATRIXIDS = "tileMatrixIds";
-    public static final String KEY_SRS = "srs";
 
     public JSONObject getJSON(OskariLayer layer,
                               final String lang,

@@ -33,6 +33,7 @@ public class LayerJSONFormatter {
 
     public static final String PROPERTY_AJAXURL = "oskari.ajax.url.prefix";
     public static final String KEY_STYLES = "styles";
+    public static final String KEY_SRS = "srs";
 
     private static final OskariMapLayerGroupService OSKARI_MAP_LAYER_GROUP_SERVICE = new OskariMapLayerGroupServiceIbatisImpl();
     private static final DataProviderService groupService = new DataProviderServiceIbatisImpl();
@@ -310,7 +311,7 @@ public class LayerJSONFormatter {
         return layer;
     }
 
-    protected static Set<String> getCRSsToStore(Set<String> systemCRSs,
+    public static Set<String> getCRSsToStore(Set<String> systemCRSs,
             Set<String> capabilitiesCRSs) {
         if (systemCRSs == null) {
             return capabilitiesCRSs;

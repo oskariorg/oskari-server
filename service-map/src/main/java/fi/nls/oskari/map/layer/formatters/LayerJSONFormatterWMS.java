@@ -31,7 +31,6 @@ public class LayerJSONFormatterWMS extends LayerJSONFormatter {
     public static final String KEY_GFICONTENT = "gfiContent";
     public static final String KEY_LEGENDIMAGE = "legendImage";
     public static final String KEY_VERSION = "version";
-    public static final String KEY_SRS = "srs";
     public static final String KEY_ISQUERYABLE = "isQueryable";
     public static final String KEY_ATTRIBUTES = "attributes";
 

@@ -5,14 +5,17 @@ import fi.mml.map.mapwindow.service.wms.WebMapServiceFactory;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.map.layer.formatters.LayerJSONFormatter;
 import fi.nls.oskari.map.layer.formatters.LayerJSONFormatterWMS;
 import fi.nls.oskari.map.layer.formatters.LayerJSONFormatterWMTS;
 import fi.nls.oskari.util.JSONHelper;
+import fi.nls.oskari.wfs.GetGtWFSCapabilities;
 import fi.nls.oskari.wmts.domain.ResourceUrl;
 import fi.nls.oskari.wmts.domain.WMTSCapabilities;
 import fi.nls.oskari.wmts.domain.WMTSCapabilitiesLayer;
 
 import java.util.Date;
+import java.util.Map;
 import java.util.Set;
 
 import org.json.JSONArray;
@@ -36,8 +39,7 @@ public class OskariLayerCapabilitiesHelper {
     }
 
     /**
-     * @deprecated
-     * use {@link OskariLayerCapabilitiesHelper#setPropertiesFromCapabilitiesWMS(WebMapService, OskariLayer, Set)}
+     * @deprecated use {@link #setPropertiesFromCapabilitiesWMS(WebMapService, OskariLayer, Set)}
      */
     @Deprecated
     public static void setPropertiesFromCapabilitiesWMS(WebMapService wms, OskariLayer ml) {
@@ -72,6 +74,15 @@ public class OskariLayerCapabilitiesHelper {
             }
         }
         return style;
+    }
+
+    /**
+     * @deprecated use {@link #setPropertiesFromCapabilitiesWMTS(WMTSCapabilities, OskariLayer, String, Set)}
+     */
+    @Deprecated
+    public static void setPropertiesFromCapabilitiesWMTS(WMTSCapabilities caps,
+            OskariLayer ml, String crs) {
+        setPropertiesFromCapabilitiesWMTS(caps, ml, crs, null);
     }
 
     public static void setPropertiesFromCapabilitiesWMTS(WMTSCapabilities caps,
@@ -112,4 +123,17 @@ public class OskariLayerCapabilitiesHelper {
         ml.setTileMatrixSetId(LayerJSONFormatterWMTS.getTileMatrixSetId(jscaps, crs));
     }
 
+    public static void setPropertiesFromCapabilitiesWFS(OskariLayer ml,
+            Set<String> systemCRSs) {
+        Map<String, Object> capa = GetGtWFSCapabilities.getGtDataStoreCapabilities(
+                ml.getUrl(), ml.getVersion(),
+                ml.getUsername(), ml.getPassword(), ml.getSrs_name());
+        Set<String> capabilitiesCRSs = GetGtWFSCapabilities.parseProjections(capa, ml.getName());
+        Set<String> crss = LayerJSONFormatter.getCRSsToStore(systemCRSs, capabilitiesCRSs);
+
+        JSONObject capabilities = new JSONObject();
+        JSONHelper.put(capabilities, LayerJSONFormatter.KEY_SRS, new JSONArray(crss));
+        ml.setCapabilities(capabilities);
+        ml.setCapabilitiesLastUpdated(new Date());
+    }
 }
