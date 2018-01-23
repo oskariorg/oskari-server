@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import javax.xml.stream.XMLStreamException;
@@ -18,6 +19,9 @@ import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.layer.OskariLayerService;
 import fi.nls.oskari.map.layer.OskariLayerServiceIbatisImpl;
+import fi.nls.oskari.map.view.ViewService;
+import fi.nls.oskari.map.view.ViewServiceIbatisImpl;
+import fi.nls.oskari.map.view.util.ViewHelper;
 import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.service.capabilities.CapabilitiesCacheService;
 import fi.nls.oskari.service.capabilities.CapabilitiesCacheServiceMybatisImpl;
@@ -40,26 +44,39 @@ public class UpdateCapabilitiesJob extends ScheduledJob {
 
     private final OskariLayerService layerService;
     private final CapabilitiesCacheService capabilitiesCacheService;
+    private final ViewService viewService;
 
     public UpdateCapabilitiesJob() {
         this(new OskariLayerServiceIbatisImpl(),
-                new CapabilitiesCacheServiceMybatisImpl());
+                new CapabilitiesCacheServiceMybatisImpl(),
+                new ViewServiceIbatisImpl());
     }
 
     public UpdateCapabilitiesJob(OskariLayerService layerService,
-            CapabilitiesCacheService capabilitiesService) {
+            CapabilitiesCacheService capabilitiesService,
+            ViewService viewService) {
         this.layerService = layerService;
         this.capabilitiesCacheService = capabilitiesService;
+        this.viewService = viewService;
     }
 
     @Override
     public void execute(Map<String, Object> params) {
         LOG.info("Starting UpdateCapabilitiesJob");
+
+        final Set<String> systemCRSs;
+        try {
+            systemCRSs = ViewHelper.getSystemCRSs(viewService);
+        } catch (ServiceException e) {
+            LOG.warn("Failed to get systemCRSs", e);
+            return;
+        }
+
         layerService.findAllWithPositiveUpdateRateSec().stream()
                 .filter(layer -> canUpdate(layer.getType()))
                 .filter(layer -> shouldUpdate(layer))
                 .collect(groupingBy(layer -> new UrlTypeVersion(layer)))
-                .forEach((utv, layers) -> updateCapabilities(utv, layers));
+                .forEach((utv, layers) -> updateCapabilities(utv, layers, systemCRSs));
     }
 
     protected static boolean canUpdate(String type) {
@@ -89,7 +106,8 @@ public class UpdateCapabilitiesJob extends ScheduledJob {
         return false;
     }
 
-    private void updateCapabilities(UrlTypeVersion utv, List<OskariLayer> layers) {
+    private void updateCapabilities(UrlTypeVersion utv,
+            List<OskariLayer> layers, Set<String> systemCRSs) {
         final String url = utv.url;
         final String type = utv.type;
         final String version = utv.version;
@@ -111,27 +129,27 @@ public class UpdateCapabilitiesJob extends ScheduledJob {
 
         switch (type) {
         case OskariLayer.TYPE_WMS:
-            updateWMSLayers(layers, data);
+            updateWMSLayers(layers, data, systemCRSs);
             break;
         case OskariLayer.TYPE_WMTS:
-            updateWMTSLayers(layers, data);
+            updateWMTSLayers(layers, data, systemCRSs);
             break;
         }
     }
 
-    private void updateWMSLayers(List<OskariLayer> layers, String data) {
+    private void updateWMSLayers(List<OskariLayer> layers, String data, Set<String> systemCRSs) {
         for (OskariLayer layer : layers) {
             WebMapService wms = OskariLayerCapabilitiesHelper.parseWMSCapabilities(data, layer);
             if (wms == null) {
                 LOG.warn("Failed to parse Capabilities for layerId:", layer.getId());
                 continue;
             }
-            OskariLayerCapabilitiesHelper.setPropertiesFromCapabilitiesWMS(wms, layer);
+            OskariLayerCapabilitiesHelper.setPropertiesFromCapabilitiesWMS(wms, layer, systemCRSs);
             layerService.update(layer);
         }
     }
 
-    private void updateWMTSLayers(List<OskariLayer> layers, String data) {
+    private void updateWMTSLayers(List<OskariLayer> layers, String data, Set<String> systemCRSs) {
         final WMTSCapabilities wmts;
         try {
             wmts = WMTSCapabilitiesParser.parseCapabilities(data);
@@ -143,7 +161,7 @@ public class UpdateCapabilitiesJob extends ScheduledJob {
 
         for (OskariLayer layer : layers) {
             try {
-                OskariLayerCapabilitiesHelper.setPropertiesFromCapabilitiesWMTS(wmts, layer, null);
+                OskariLayerCapabilitiesHelper.setPropertiesFromCapabilitiesWMTS(wmts, layer, null, systemCRSs);
                 layerService.update(layer);
             } catch (IllegalArgumentException e) {
                 LOG.warn(e, "Failed to update layerId:", layer.getId());
