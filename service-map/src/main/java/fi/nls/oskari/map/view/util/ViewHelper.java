@@ -6,12 +6,17 @@ import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.view.BundleService;
 import fi.nls.oskari.map.view.ViewException;
+import fi.nls.oskari.map.view.ViewService;
+import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.util.PropertyUtil;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class ViewHelper {
 
@@ -36,7 +41,7 @@ public class ViewHelper {
                 }
             } else {
                 throw new ViewException(
-                		"Could not get startup sequence fragment for bundle '" + name + "'");
+                        "Could not get startup sequence fragment for bundle '" + name + "'");
             }
         }
         return startupSequence;
@@ -72,7 +77,7 @@ public class ViewHelper {
                 // setup bundle node in config
                 JSONObject bundle = new JSONObject();
                 configuration.put(name, bundle);
-                
+
                 // setup conf for bundle
                 if (conf != null) {
                     bundle.put("conf", new JSONObject(conf));
@@ -191,6 +196,26 @@ public class ViewHelper {
             }
             view.addBundle(bundle);
         }
+    }
+
+    public static List<View> getSystemViews(ViewService viewService)
+            throws ServiceException {
+        List<Long> viewIds = viewService.getSystemDefaultViewIds();
+        List<View> views = new ArrayList<>(viewIds.size());
+        for (long viewId : viewIds) {
+            views.add(viewService.getViewWithConf(viewId));
+        }
+        return views;
+    }
+
+    public static Set<String> getSystemCRSs(ViewService viewService)
+            throws ServiceException, JSONException {
+        List<View> views = getSystemViews(viewService);
+        Set<String> crss = new HashSet<>();
+        for (View view : views) {
+            crss.add(view.getSrsName());
+        }
+        return crss;
     }
 
 }
