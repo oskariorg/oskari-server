@@ -61,6 +61,17 @@ public class XML {
         return list;
     }
 
+    public static Optional<Element> getFirstChildElement(Element e) {
+        Node node = e.getFirstChild();
+        while (node != null) {
+            if (node.getNodeType() == Node.ELEMENT_NODE) {
+                return Optional.of((Element) node);
+            }
+            node = node.getNextSibling();
+        }
+        return Optional.empty();
+    }
+
     public static Optional<String> getChildText(Element e, String localName) {
         Optional<Element> child = getChild(e, localName);
         if (child.isPresent()) {

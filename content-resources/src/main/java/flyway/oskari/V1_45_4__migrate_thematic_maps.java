@@ -97,6 +97,7 @@ public class V1_45_4__migrate_thematic_maps implements JdbcMigration {
         if(configsAndStates.isEmpty()) {
             return;
         }
+        LOG.info("Found", configsAndStates.size(),"appsetups in need of migration for", bundleName, "bundle.");
         if(regionsetHelper == null) {
             // lazy init so instances without migration don't need the configs to pass this migration
             regionsetHelper = new ThematicMapsRegionsetHelper(conn);

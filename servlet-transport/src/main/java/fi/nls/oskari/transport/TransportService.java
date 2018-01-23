@@ -390,9 +390,11 @@ public class TransportService extends AbstractService {
 
     	String layerId = layer.get(PARAM_LAYER_ID).toString();
     	String layerStyle = (String)layer.get(PARAM_LAYER_STYLE);
+        boolean layerVisible = (boolean) layer.getOrDefault(PARAM_LAYER_VISIBLE, true);
 
     	if(!store.containsLayer(layerId)) {
             Layer tmpLayer = new Layer(layerId, layerStyle);
+            tmpLayer.setVisible(layerVisible);
     		store.setLayer(layerId, tmpLayer);
         	this.save(store);
     	}

@@ -137,6 +137,15 @@
          AND   type = #type#
     </select>
 
+    <select id="get-default-view-ids"
+        resultClass="java.lang.Long">
+        SELECT id
+        FROM   portti_view
+        WHERE  is_default = TRUE
+        AND    type = 'DEFAULT'
+        AND    creator = -1;
+    </select>
+
     <statement id="add-view"
                resultClass="java.lang.Long"
                parameterClass="View">

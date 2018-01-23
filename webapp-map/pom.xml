@@ -4,7 +4,7 @@
     <parent>
         <groupId>fi.nls.oskari</groupId>
         <artifactId>oskari-parent</artifactId>
-        <version>1.45.0-SNAPSHOT</version>
+        <version>1.46.0-SNAPSHOT</version>
     </parent>
 
     <groupId>fi.nls.oskari</groupId>
@@ -62,10 +62,6 @@
         <!-- Statistics plugins -->
         <dependency>
             <groupId>fi.nls.oskari.service</groupId>
-            <artifactId>oskari-statistics-eurostat</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>fi.nls.oskari.service</groupId>
             <artifactId>service-statistics-pxweb</artifactId>
         </dependency>
         <!-- /Statistics plugins -->
@@ -82,7 +78,6 @@
         </dependency>
         <dependency>
             <groupId>fi.nls.oskari</groupId>
-            <!-- artifactId>map-servlet</artifactId -->
             <artifactId>servlet-map</artifactId>
             <exclusions>
                 <exclusion>

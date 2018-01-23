@@ -2,10 +2,17 @@
 
 ## 1.45.0
 
+### Database changes
+
+There's at least a couple of database table that have been renamed and due to the order of code is running on server
+ startup you will get an error with the first startup due to database migrations. The logs show some tables are missing.
+ This is expected and you should just restart the server after migrations have completed.
+ The latest version row in oskari_status database table should be at least 1.45.15 when the migrations have been completed. 
+
 ### Thematic maps
 
 The release will force thematic maps (statsgrid bundle in frontend) to be updated to the new version.
-This requires a migration of the appsetups and published maps using the old version of the bundle.
+This requires a migration for any appsetups (including published maps) using the old version of the bundle.
 The configurations required for oskari-ext.properties are (based on the database contents):
 
     # datasource ids added for old indicators
@@ -27,7 +34,7 @@ The configurations required for oskari-ext.properties are (based on the database
 
 If your instance wasn't using the old thematic maps functionality you don't need to
 configure these. If you have the old thematic maps functionality in your application
- you need to add map-layers corresponding the regionsets before running the migration
+ you need to add maplayers corresponding the regionsets before running the migration
  and configure the layer-names in oskari-ext.properties.
 
 To configure the layers see: http://oskari.org/documentation/features/thematicmaps/config
