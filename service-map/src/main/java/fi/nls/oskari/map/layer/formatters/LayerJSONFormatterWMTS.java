@@ -63,7 +63,7 @@ public class LayerJSONFormatterWMTS extends LayerJSONFormatter {
     }
 
     /**
-     * @deprecated replaces by {@link #createCapabilitiesJSON(WMTSCapabilitiesLayer, Set<String>)}
+     * @deprecated use {@link #createCapabilitiesJSON(WMTSCapabilitiesLayer, Set)}
      */
     @Deprecated
     public static JSONObject createCapabilitiesJSON(final WMTSCapabilities wmts,final WMTSCapabilitiesLayer layer) {
@@ -71,7 +71,7 @@ public class LayerJSONFormatterWMTS extends LayerJSONFormatter {
     }
 
     /**
-     * @deprecated replaces by {@link #createCapabilitiesJSON(WMTSCapabilitiesLayer, Set<String>)}
+     * @deprecated use {@link #createCapabilitiesJSON(WMTSCapabilitiesLayer, Set)}
      */
     @Deprecated
     public static JSONObject createCapabilitiesJSON(final WMTSCapabilitiesLayer layer) {
