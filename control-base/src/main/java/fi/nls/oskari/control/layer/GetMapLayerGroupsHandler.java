@@ -47,9 +47,10 @@ public class GetMapLayerGroupsHandler extends ActionHandler {
 			final JSONObject layers = OskariLayerWorker.getListOfMapLayersById(strLayerIds, params.getUser(), lang);
 			JSONArray list = layers.optJSONArray(OskariLayerWorker.KEY_LAYERS);
 	        // transform WKT for layers now that we know SRS
-//	        for(int i = 0; i < list.length(); ++i) {
-//	            OskariLayerWorker.transformWKTGeom(list.optJSONObject(i), params.getHttpParam(PARAM_SRS));
-//	        }
+	        for(int i = 0; i < list.length(); ++i) {
+	            OskariLayerWorker.transformWKTGeom(list.optJSONObject(i), params.getHttpParam(PARAM_SRS));
+	        }
+
 	        group.setLayers(list);
 	        json.put(group.getAsJSON());
         }
