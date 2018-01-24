@@ -1,7 +1,9 @@
 package fi.nls.oskari.service.capabilities;
 
+import fi.mml.map.mapwindow.service.wms.LayerNotFoundInCapabilitiesException;
 import fi.mml.map.mapwindow.service.wms.WebMapService;
 import fi.mml.map.mapwindow.service.wms.WebMapServiceFactory;
+import fi.mml.map.mapwindow.service.wms.WebMapServiceParseException;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
@@ -30,9 +32,12 @@ public class OskariLayerCapabilitiesHelper {
 
     /**
      * Tries to parse WMS GetCapabilities response
-     * @return the parsed WebMapService, null if something went wrong
+     * @return the parsed WebMapService
+     * @throws WebMapServiceParseException if something goes wrong
+     * @throws LayerNotFoundInCapabilitiesException if layer can't be found in capabilities
      */
-    public static WebMapService parseWMSCapabilities(String xml, OskariLayer ml) {
+    public static WebMapService parseWMSCapabilities(String xml, OskariLayer ml)
+            throws WebMapServiceParseException, LayerNotFoundInCapabilitiesException {
         // flush cache, otherwise only db is updated but code retains the old cached version
         WebMapServiceFactory.flushCache(ml.getId());
         return WebMapServiceFactory.createFromXML(ml.getName(), xml);
@@ -92,22 +97,18 @@ public class OskariLayerCapabilitiesHelper {
 
         WMTSCapabilitiesLayer layer = caps.getLayer(name);
         if (layer == null) {
-            /*
-             * TODO: Push a notification to a 'Admin notification service', disable layer?
-             */
-            LOG.warn("Can not find Layer from GetCapabilities"
-                    + " layer id", id, "name", name);
-            throw new IllegalArgumentException();
+            String err = "Can not find Layer from GetCapabilities"
+                    + " layer id:" + id + " name: " + name;
+            LOG.warn(err);
+            throw new IllegalArgumentException(err);
         }
 
         ResourceUrl resUrl = layer.getResourceUrlByType("tile");
         if (resUrl == null) {
-            /*
-             * TODO: Push a notification to a 'Admin notification service', disable layer?
-             */
-            LOG.warn("Can not find ResourceUrl of type 'tile' from GetCapabilities"
-                    + " layer id", id, "name", name);
-            throw new IllegalArgumentException();
+            String err = "Can not find ResourceUrl of type 'tile' from GetCapabilities"
+                    + " layer id: " + id + " name: " + name;
+            LOG.warn(err);
+            throw new IllegalArgumentException(err);
         }
 
         JSONObject options = ml.getOptions();

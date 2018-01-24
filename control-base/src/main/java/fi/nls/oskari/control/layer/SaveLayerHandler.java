@@ -2,7 +2,9 @@ package fi.nls.oskari.control.layer;
 
 import fi.mml.map.mapwindow.service.db.OskariMapLayerGroupService;
 import fi.nls.oskari.service.capabilities.OskariLayerCapabilities;
+import fi.mml.map.mapwindow.service.wms.LayerNotFoundInCapabilitiesException;
 import fi.mml.map.mapwindow.service.wms.WebMapService;
+import fi.mml.map.mapwindow.service.wms.WebMapServiceParseException;
 import fi.mml.map.mapwindow.util.OskariLayerWorker;
 import fi.mml.portti.domain.permissions.Permissions;
 import fi.mml.portti.service.db.permissions.PermissionsService;
@@ -502,8 +504,8 @@ public class SaveLayerHandler extends ActionHandler {
             WebMapService wms = OskariLayerCapabilitiesHelper.parseWMSCapabilities(raw.getData(), ml);
             OskariLayerCapabilitiesHelper.setPropertiesFromCapabilitiesWMS(wms, ml, systemCRSs);
             return true;
-        } catch (ServiceException ex) {
-            LOG.error(ex, "Couldn't update capabilities for layer", ml);
+        } catch (ServiceException | WebMapServiceParseException | LayerNotFoundInCapabilitiesException ex) {
+            LOG.error(ex, "Failed to set capabilities for layer", ml);
             return false;
         }
     }
@@ -516,7 +518,7 @@ public class SaveLayerHandler extends ActionHandler {
             OskariLayerCapabilitiesHelper.setPropertiesFromCapabilitiesWMTS(caps, ml, currentCrs, systemCRSs);
             return true;
         } catch (Exception ex) {
-            LOG.error(ex, "Couldn't update capabilities for layer", ml);
+            LOG.error(ex, "Failed to set capabilities for layer", ml);
             return false;
         }
     }

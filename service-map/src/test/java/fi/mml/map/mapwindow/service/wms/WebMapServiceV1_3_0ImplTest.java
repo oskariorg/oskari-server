@@ -23,7 +23,8 @@ public class WebMapServiceV1_3_0ImplTest {
     private static final String CHLORO = "capabilities_chloro_1_3_0.xml";
 
     @Test
-    public void testInspireCP() throws IOException, WebMapServiceParseException {
+    public void testInspireCP()
+            throws IOException, WebMapServiceParseException, LayerNotFoundInCapabilitiesException {
         WebMapServiceV1_3_0_Impl wms;
         wms = new WebMapServiceV1_3_0_Impl("http://unit.test/ing", readResource(INSPIRE_CP), "CP.CadastralBoundary");
         assertEquals("http://unit.test/ing", wms.getCapabilitiesUrl());
@@ -41,7 +42,8 @@ public class WebMapServiceV1_3_0ImplTest {
     }
 
     @Test
-    public void testChloro() throws IOException, WebMapServiceParseException {
+    public void testChloro()
+            throws IOException, WebMapServiceParseException, LayerNotFoundInCapabilitiesException {
         WebMapServiceV1_3_0_Impl wms;
         wms = new WebMapServiceV1_3_0_Impl("http://unit.test/ing",
                 readResource(CHLORO), "arctic_sdi:Chlorophyll");
@@ -65,7 +67,8 @@ public class WebMapServiceV1_3_0ImplTest {
     }
 
     @Test
-    public void testReadingOnlyAllowedCRS() throws IOException, WebMapServiceParseException {
+    public void testReadingOnlyAllowedCRS()
+            throws IOException, WebMapServiceParseException, LayerNotFoundInCapabilitiesException {
         Set<String> allowed = new HashSet<>();
         allowed.add("EPSG:3408");
         allowed.add("EPSG:3857");
