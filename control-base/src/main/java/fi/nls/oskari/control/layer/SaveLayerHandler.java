@@ -33,6 +33,8 @@ import fi.nls.oskari.wmts.WMTSCapabilitiesParser;
 import fi.nls.oskari.wmts.domain.WMTSCapabilities;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.oskari.service.util.ServiceFactory;
+
 import javax.servlet.http.HttpServletRequest;
 import java.net.MalformedURLException;
 import java.net.URL;

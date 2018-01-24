@@ -1,4 +1,4 @@
-package fi.nls.oskari.util;
+package org.oskari.service.util;
 
 import fi.mml.map.mapwindow.service.db.OskariMapLayerGroupServiceIbatisImpl;
 import fi.mml.map.mapwindow.service.db.OskariMapLayerGroupService;
