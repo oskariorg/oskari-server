@@ -1,2 +1,2 @@
 ALTER TABLE oskari_maplayer_group
-  ADD COLUMN selectable integer DEFAULT true NOT NULL;
+  ADD COLUMN selectable boolean DEFAULT true NOT NULL;
