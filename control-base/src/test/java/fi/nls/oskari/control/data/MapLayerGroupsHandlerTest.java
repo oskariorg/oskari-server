@@ -32,10 +32,10 @@ import static org.mockito.Mockito.mock;
  * Time: 16:03
  * To change this template use File | Settings | File Templates.
  */
-public class InspireThemesHandlerTest extends JSONActionRouteTest {
+public class MapLayerGroupsHandlerTest extends JSONActionRouteTest {
 
     private OskariMapLayerGroupService oskariMapLayerGroupService;
-    private InspireThemesHandler handler = new InspireThemesHandler();
+    private MapLayerGroupsHandler handler = new MapLayerGroupsHandler();
 
     @Before
     public void setUp() throws Exception {
@@ -66,14 +66,14 @@ public class InspireThemesHandlerTest extends JSONActionRouteTest {
     public void testHandleGetAll() throws Exception {
         ActionParameters params = createActionParams();
         handler.handleGet(params);
-        verifyResponseContent(ResourceHelper.readJSONResource("InspireThemesHandlerTest-findall-expected.json", this));
+        verifyResponseContent(ResourceHelper.readJSONResource("MapLayerGroupsHandlerTest-findall-expected.json", this));
     }
     @Test
     public void testHandleGetSingle() throws Exception {
         Map<String, String> map = buildParams().put(ActionConstants.PARAM_ID, 1).done();
         ActionParameters params = createActionParams(map);
         handler.handleGet(params);
-        verifyResponseContent(ResourceHelper.readJSONResource("InspireThemesHandlerTest-find-expected.json", this));
+        verifyResponseContent(ResourceHelper.readJSONResource("MapLayerGroupsHandlerTest-find-expected.json", this));
     }
 
     @Test(expected = ActionDeniedException.class)
@@ -92,7 +92,7 @@ public class InspireThemesHandlerTest extends JSONActionRouteTest {
     public void testHandlePutAdmin() throws Exception {
         ActionParameters params = createActionParams(createDummyLocale(), getAdminUser());
         handler.handlePut(params);
-        verifyResponseContent(ResourceHelper.readJSONResource("InspireThemesHandlerTest-insert-expected.json", this));
+        verifyResponseContent(ResourceHelper.readJSONResource("MapLayerGroupsHandlerTest-insert-expected.json", this));
     }
 
     @Test(expected = ActionParamsException.class)
@@ -108,7 +108,7 @@ public class InspireThemesHandlerTest extends JSONActionRouteTest {
                 put(createDummyLocale()).done();
         ActionParameters params = createActionParams(map, getAdminUser());
         handler.handlePost(params);
-        verifyResponseContent(ResourceHelper.readJSONResource("InspireThemesHandlerTest-update-expected.json", this));
+        verifyResponseContent(ResourceHelper.readJSONResource("MapLayerGroupsHandlerTest-update-expected.json", this));
     }
 
     @Test(expected = ActionDeniedException.class)
@@ -129,7 +129,7 @@ public class InspireThemesHandlerTest extends JSONActionRouteTest {
         Map<String, String> map = buildParams().put(ActionConstants.PARAM_ID, 1).done();
         ActionParameters params = createActionParams(map, getAdminUser());
         handler.handleDelete(params);
-        verifyResponseContent(ResourceHelper.readJSONResource("InspireThemesHandlerTest-find-expected.json", this));
+        verifyResponseContent(ResourceHelper.readJSONResource("MapLayerGroupsHandlerTest-find-expected.json", this));
     }
 
     private Map<String, String> createDummyLocale() {

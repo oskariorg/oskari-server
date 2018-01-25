@@ -5,25 +5,31 @@ import fi.mml.map.mapwindow.service.db.OskariMapLayerGroupServiceIbatisImpl;
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.*;
 import fi.nls.oskari.domain.map.MaplayerGroup;
+import fi.nls.oskari.log.LogFactory;
+import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.util.JSONHelper;
-import fi.nls.oskari.util.RequestHelper;
 import fi.nls.oskari.util.ResponseHelper;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import static fi.nls.oskari.control.ActionConstants.PARAM_ID;
-import static fi.nls.oskari.control.ActionConstants.PARAM_NAME_PREFIX;
 
 
 /**
  * CRUD for Inspire themes. Get is callable by anyone, other methods require admin user.
  */
 // FIXME: Update route and class name when frontend implementation was updated
-@OskariActionRoute("InspireThemes")
-public class InspireThemesHandler extends RestActionHandler {
+@OskariActionRoute("MapLayerGroups")
+public class MapLayerGroupsHandler extends RestActionHandler {
+    private static Logger log = LogFactory.getLogger(MapLayerGroupsHandler.class);
+
+    private static final String KEY_LOCALES = "locales";
+    private static final String KEY_PARENT_ID = "parentId";
+    private static final String KEY_SELECTABLE = "selectable";
 
     private OskariMapLayerGroupService oskariMapLayerGroupService;
 
@@ -70,9 +76,9 @@ public class InspireThemesHandler extends RestActionHandler {
      */
     public void handlePut(ActionParameters params) throws ActionException {
         checkForAdminPermission(params);
-        final MaplayerGroup theme = new MaplayerGroup();
-        populateFromRequest(params, theme);
-        final int id = oskariMapLayerGroupService.insert(theme);
+        final MaplayerGroup maplayerGroup = new MaplayerGroup();
+        populateFromRequest(params, maplayerGroup);
+        final int id = oskariMapLayerGroupService.insert(maplayerGroup);
         // check insert by loading from DB
         final MaplayerGroup savedTheme = oskariMapLayerGroupService.find(id);
         ResponseHelper.writeResponse(params, savedTheme.getAsJSON());
@@ -121,11 +127,24 @@ public class InspireThemesHandler extends RestActionHandler {
         }
     }
 
-    private void populateFromRequest(ActionParameters params, MaplayerGroup theme) throws ActionException {
-        final Map<String, String> parsed = RequestHelper.parsePrefixedParamsMap(params.getRequest(), PARAM_NAME_PREFIX);
-        for(Map.Entry<String, String> entry : parsed.entrySet()) {
-            // TODO: check against supported locales?
-            theme.setName(entry.getKey(), entry.getValue());
+    private void populateFromRequest(ActionParameters params, MaplayerGroup maplayerGroup) throws ActionException {
+
+        try{
+            JSONObject locales = new JSONObject(params.getRequiredParam(KEY_LOCALES));
+            int parentId = params.getHttpParam(KEY_PARENT_ID, -1);
+            boolean selectable = params.getHttpParam(KEY_SELECTABLE, false);
+            Iterator<?> keys = locales.keys();
+
+            while( keys.hasNext() ) {
+                String locale = (String)keys.next();
+                String name = locales.getString(locale);
+                maplayerGroup.setName(locale, name);
+            }
+            maplayerGroup.setParentId(parentId);
+            maplayerGroup.setSelectable(selectable);
+        } catch(JSONException ex) {
+            log.error("Cannot populate maplayergroup from request", ex);
+            throw new ActionException("Cannot populate maplayergroup from request");
         }
     }
 }

@@ -14,6 +14,10 @@ public class MaplayerGroup extends JSONLocalizedName {
 	
 	private JSONArray layers;
 
+	private int parentId;
+
+	private boolean selectable;
+
 	public int getId() {
 		return id;
 	}
@@ -30,6 +34,12 @@ public class MaplayerGroup extends JSONLocalizedName {
 		this.layers = layers;
 	}
 
+	public int getParentId() {
+		return parentId;
+	}
+
+	public void setParentId(int parent) {this.parentId = parentId;}
+
     public JSONObject getAsJSON() {
         final JSONObject me = new JSONObject();
         if(id > 0) {
@@ -44,4 +54,12 @@ public class MaplayerGroup extends JSONLocalizedName {
         JSONHelper.putValue(me, "layers", this.getLayers());
         return me;
     }
+
+	public boolean isSelectable() {
+		return selectable;
+	}
+
+	public void setSelectable(boolean selectable) {
+		this.selectable = selectable;
+	}
 }
