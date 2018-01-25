@@ -20,7 +20,7 @@ import static fi.nls.oskari.control.ActionConstants.PARAM_ID;
 
 
 /**
- * CRUD for Inspire themes. Get is callable by anyone, other methods require admin user.
+ * CRUD for Maplayer groups. Get is callable by anyone, other methods require admin user.
  */
 // FIXME: Update route and class name when frontend implementation was updated
 @OskariActionRoute("MapLayerGroups")
@@ -52,19 +52,20 @@ public class MapLayerGroupsHandler extends RestActionHandler {
     public void handleGet(ActionParameters params) throws ActionException {
         final int id = params.getHttpParam(PARAM_ID, -1);
         if(id != -1) {
-            // find single theme
-            final MaplayerGroup theme = oskariMapLayerGroupService.find(id);
-            ResponseHelper.writeResponse(params, theme.getAsJSON());
+            // find single group
+            final MaplayerGroup maplayerGroup = oskariMapLayerGroupService.find(id);
+            ResponseHelper.writeResponse(params, maplayerGroup.getAsJSON());
             return;
         }
 
         // find all themes
         final List<MaplayerGroup> maplayerGroups = oskariMapLayerGroupService.findAll();
         final JSONArray list = new JSONArray();
-        for (MaplayerGroup theme : maplayerGroups) {
-            list.put(theme.getAsJSON());
+        for (MaplayerGroup maplayerGroup : maplayerGroups) {
+            list.put(maplayerGroup.getAsJSON());
         }
         final JSONObject result = new JSONObject();
+        // FIXME ispire need named to maplayergroups
         JSONHelper.putValue(result, "inspire", list);
         ResponseHelper.writeResponse(params, result);
     }
