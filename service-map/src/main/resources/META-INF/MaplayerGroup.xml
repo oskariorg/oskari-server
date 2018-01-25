@@ -12,6 +12,8 @@
     <resultMap id="MaplayerGroupResult" class="MaplayerGroup">
         <result property="id" column="id" />
         <result property="locale" column="locale" jdbcType="VARCHAR" javaType="org.json.JSONObject" />
+        <result property="parentId" column="parentid" />
+        <result property="selectable" column="selectable" />
     </resultMap>
 
     <parameterMap id="MaplayerGroupInsertParameter" class="MaplayerGroup">
@@ -28,15 +30,15 @@
     </select>
 
     <select id="find" parameterClass="int" resultMap="MaplayerGroupResult">
-        select id, locale from oskari_maplayer_group where id = #id#
+        select id, locale, parentid, selectable from oskari_maplayer_group where id = #id#
     </select>
 
     <select id="findAll" resultMap="MaplayerGroupResult">
-        select id, locale from oskari_maplayer_group order by id
+        select id, locale, parentid, selectable from oskari_maplayer_group order by id
     </select>
 
     <select id="findByMaplayer" parameterClass="int" resultMap="MaplayerGroupResult">
-        select t.id, t.locale from oskari_maplayer_group t, oskari_maplayer_group_link l
+        select t.id, t.locale, t.parentid, t.selectable from oskari_maplayer_group t, oskari_maplayer_group_link l
             where t.id = l.groupid AND l.maplayerid = #id#
     </select>
 

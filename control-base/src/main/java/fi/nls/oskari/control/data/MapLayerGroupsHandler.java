@@ -80,8 +80,8 @@ public class MapLayerGroupsHandler extends RestActionHandler {
         populateFromRequest(params, maplayerGroup);
         final int id = oskariMapLayerGroupService.insert(maplayerGroup);
         // check insert by loading from DB
-        final MaplayerGroup savedTheme = oskariMapLayerGroupService.find(id);
-        ResponseHelper.writeResponse(params, savedTheme.getAsJSON());
+        final MaplayerGroup savedMapLayerGroup = oskariMapLayerGroupService.find(id);
+        ResponseHelper.writeResponse(params, savedMapLayerGroup.getAsJSON());
     }
 
     /**

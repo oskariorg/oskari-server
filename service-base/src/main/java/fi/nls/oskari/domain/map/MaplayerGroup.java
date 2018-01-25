@@ -52,6 +52,8 @@ public class MaplayerGroup extends JSONLocalizedName {
         }
         JSONHelper.putValue(me, "name", names);
         JSONHelper.putValue(me, "layers", this.getLayers());
+		JSONHelper.putValue(me, "selectable", this.isSelectable());
+		JSONHelper.putValue(me, "parentId", this.getParentId());
         return me;
     }
 
