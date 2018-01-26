@@ -1,0 +1,16 @@
+{
+    "sql": [
+        "populate-Inspire-themes.sql"
+    ],
+    "views" : [
+        "default-view.json",
+        "ol3-publisher-template-view-4326.json",
+        "default-transport-view.json",
+        "default-full-view.json",
+        "ol3-view.json"
+    ],
+    "sql" : [
+        "example-users.sql",
+        "example-user-credentials.sql"
+    ]
+}

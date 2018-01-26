@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.sql.*;
 import java.util.Properties;
+import java.util.Set;
 
 /**
  * @author EVAARASMAKI
@@ -25,7 +26,7 @@ import java.util.Properties;
  */
 public class DBHandler {
 
-    private static Logger log = LogFactory.getLogger(DBHandler.class);
+    private static Logger log;
     private static DataSource datasource;
 
     public static void main(String[] args) throws Exception {
@@ -104,17 +105,15 @@ public class DBHandler {
             datasource = ds;
             Connection conn = ds.getConnection();
             DatabaseMetaData dbmeta = conn.getMetaData();
-
             final String dbName = dbmeta.getDatabaseProductName().replace(' ', '_');
 
-            final ResultSet result = dbmeta.getTables(null, null, "portti_%", null);
-            final ResultSet result2 = dbmeta.getTables(null, null, "PORTTI_%", null);
-            final String propertyDropDB = System.getProperty("oskari.dropdb");
-
-            final boolean tablesExist = result.next() || result2.next();
-            // Portti tables available ?
-            if ("true".equals(propertyDropDB) || !tablesExist) {
+            if (!hasOskariTables(dbmeta)) {
                 log.info("Creating db for " + dbName);
+
+                executeSqlFromFile(conn, dbName, "create-base-tables.sql");
+                createContent(conn, dbName, "register-bundles.json");
+                // it's only one group, apps can remove this and without this the myplaces etc baselayer inserts will fail
+                executeSqlFromFile(conn, dbName, "example-layergroups.sql");
 
                 createContent(conn, dbName);
                 try {
@@ -126,20 +125,35 @@ public class DBHandler {
                 }
             }
             else {
-                log.info("Existing tables found in db. Use 'oskari.dropdb=true' system property to override.");
+                log.info("Existing tables found in db. Not creating initial tables");
             }
 
-            result.close();
         } catch (Exception e) {
             log.error(e, "Error creating db content!");
         }
     }
+
+    private static boolean hasOskariTables(DatabaseMetaData dbmeta) throws SQLException {
+        Set<String> tablePrefixes = ConversionHelper.asSet("portti_%", "PORTTI_%", "oskari_%", "OSKARI_%");
+        for(String tableTest: tablePrefixes) {
+            try(final ResultSet result = dbmeta.getTables(null, null, tableTest, null)) {
+                if(result.next()) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     private static void createContent(Connection conn, final String dbname) throws IOException{
         final String setup = ConversionHelper.getString(System.getProperty("oskari.setup"), "app-default");
         createContent(conn, dbname, setup);
     }
 
-    private static void createContent(Connection conn, final String dbname, final String setupFile) throws IOException{
+    public static void setupAppContent(Connection conn, final String setupFile) throws IOException {
+        createContent(conn, "PostgreSQL", setupFile);
+    }
+    private static void createContent(Connection conn, final String dbname, final String setupFile) throws IOException {
             String propertySetupFile = "/setup/" + setupFile;
             if(!setupFile.toLowerCase().endsWith(".json")) {
                 // accept setup file without file extension

@@ -1,24 +1,4 @@
 {
-    "setup" : [
-        "create-empty-db",
-        "register-bundles",
-        "postgres-add-myplaces",
-        "postgres-add-analysis",
-        "postgres-add-userlayers",
-        "postgres-add-users",
-        "postgres-add-JAAS",
-        "populate-inspire-themes-and-groups"
-    ],
-    "views" : [
-        "default-view.json",
-        "ol3-publisher-template-view-4326.json",
-        "default-transport-view.json",
-        "default-full-view.json",
-        "ol3-view.json",
-        "statsgrid-view.json"
-    ],
-    "sql" : [
-        "add_oskari_wfs_parser_config.sql",
-        "example-permissions.sql"
-    ]
+    "this_is" : "adefault setup that can be overridden in apps, but not recommended as database schema migrations might not work as you expect",
+    "instead": "Create an app specific module that modifies content only _after_ the database schema has been migrated."
 }

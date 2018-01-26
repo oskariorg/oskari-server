@@ -3,38 +3,6 @@
 -- EACH COMMENT _NEED_ TO END WITH A SEMICOLON OR OTHERWISE THE NEXT ACTUAL SQL IS NOT RUN!;
 -- ----------------------------------------------------------------------------------------;
 
-DROP TABLE IF EXISTS portti_layer_keywords;
-DROP TABLE IF EXISTS portti_keyword_association;
-DROP TABLE IF EXISTS portti_keywords;
-DROP TABLE IF EXISTS portti_stats_layer;
-DROP TABLE IF EXISTS portti_maplayer;
-DROP TABLE IF EXISTS portti_layerclass;
-DROP TABLE IF EXISTS oskari_permission;
-DROP TABLE IF EXISTS oskari_resource;
-DROP TABLE IF EXISTS oskari_maplayer_themes;
-DROP TABLE IF EXISTS oskari_maplayer;
-DROP TABLE IF EXISTS oskari_layergroup;
-DROP TABLE IF EXISTS portti_inspiretheme;
-
-DROP TABLE IF EXISTS oskari_maplayer_metadata;
--- portti_maplayer_metadata was removed in 1.25;
-DROP TABLE IF EXISTS portti_maplayer_metadata;
-DROP TABLE IF EXISTS portti_capabilities_cache;
-
-DROP VIEW IF EXISTS portti_backendalert;
-DROP VIEW IF EXISTS portti_backendstatus_allknown;
-DROP TABLE IF EXISTS portti_backendstatus;
-
-DROP TABLE IF EXISTS portti_view_bundle_seq;
-DROP TABLE IF EXISTS portti_bundle;
-DROP TABLE IF EXISTS portti_view;
--- portti_view_supplement was removed in 1.25;
-DROP TABLE IF EXISTS portti_view_supplement;
-
-DROP TABLE IF EXISTS portti_published_map_usage;
-DROP TABLE IF EXISTS portti_published_map_statistics;
-DROP TABLE IF EXISTS portti_terms_of_use_for_publishing;
-
 CREATE TABLE portti_capabilities_cache
 (
   layer_id serial NOT NULL,
@@ -252,3 +220,250 @@ CREATE TABLE portti_terms_of_use_for_publishing
   "time" timestamp with time zone
 );
 
+
+-- ----------------------------------------------------------------------------------------;
+-- WFS tables;
+-- ----------------------------------------------------------------------------------------;
+CREATE TABLE portti_wfs_layer
+(
+  id serial NOT NULL,
+  maplayer_id bigint NOT NULL,
+  layer_name character varying(256),
+  gml_geometry_property character varying(256),
+  gml_version character varying(64),
+  gml2_separator boolean NOT NULL DEFAULT false,
+  get_highlight_image boolean NOT NULL DEFAULT true,
+  max_features integer NOT NULL DEFAULT 100,
+  feature_namespace character varying DEFAULT 512,
+  wfs_template_model_id integer,
+  feature_type character varying(4000),
+  selected_feature_params character varying(4000) default '{}',
+  feature_params_locales text,
+  properties character varying(4000),
+  geometry_type character varying(8),
+  selection_sld_style_id integer,
+  get_map_tiles boolean NOT NULL DEFAULT true,
+  get_feature_info boolean NOT NULL DEFAULT true,
+  tile_request boolean NOT NULL DEFAULT false,
+  tile_buffer character varying(512) default '{}',
+  wms_layer_id integer,
+  wps_params character varying(256) default '{}',
+  feature_element character varying(512),
+  output_format character varying(256),
+  feature_namespace_uri character varying(512),
+  geometry_namespace_uri character varying(512),
+  job_type character varying(256),
+  request_impulse character varying(256),
+  CONSTRAINT portti_wfs_layer_pkey PRIMARY KEY (id)
+)
+WITH (
+OIDS=FALSE
+);
+
+CREATE TABLE portti_wfs_layer_style
+(
+  id serial NOT NULL,
+  "name" character varying(256),
+  sld_style text,
+  CONSTRAINT portti_wfs_layer_style_pkey PRIMARY KEY (id)
+)
+WITH (
+OIDS=FALSE
+);
+
+CREATE TABLE portti_wfs_layers_styles
+(
+  id serial NOT NULL,
+  wfs_layer_id bigint NOT NULL,
+  wfs_layer_style_id integer NOT NULL,
+  CONSTRAINT portti_wfs_layers_styles_pkey PRIMARY KEY (id),
+  CONSTRAINT portti_wfs_layers_styles_wfs_layer_fkey FOREIGN KEY (wfs_layer_id)
+  REFERENCES portti_wfs_layer (id) MATCH SIMPLE
+  ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT portti_wfs_layers_styles_wfs_layer_style_fkey FOREIGN KEY (wfs_layer_style_id)
+  REFERENCES portti_wfs_layer_style (id) MATCH SIMPLE
+  ON UPDATE NO ACTION ON DELETE NO ACTION
+)
+WITH (
+OIDS=FALSE
+);
+
+CREATE INDEX fki_portti_wfs_layers_styles_wfs_layer_style_fkey
+ON portti_wfs_layers_styles
+USING btree
+(wfs_layer_style_id);
+
+CREATE TABLE portti_wfs_template_model
+(
+  id serial NOT NULL,
+  "name" character varying(256),
+  description character varying(4000),
+  "type" character varying(64),
+  request_template text,
+  response_template text,
+  parse_config text,
+  CONSTRAINT portti_wfs_template_model_pkey PRIMARY KEY (id)
+)
+WITH (
+OIDS=FALSE
+);
+
+
+CREATE TABLE oskari_wfs_parser_config
+(
+  id serial NOT NULL,
+  name character varying(128),
+  type character varying(64),
+  request_template text,
+  response_template text,
+  parse_config text,
+  sld_style text,
+  CONSTRAINT oskari_wfs_parser_config_pkey PRIMARY KEY (id)
+)
+WITH (
+  OIDS=FALSE
+);
+
+-- ----------------------------------------------------------------------------------------;
+-- Thematic maps tables;
+-- ----------------------------------------------------------------------------------------;
+
+CREATE TABLE portti_stats_layer
+(
+  id bigserial NOT NULL,
+  maplayer_id integer,
+  name text,
+  visualization character varying(1000),
+  classes character varying(2000),
+  colors character varying(1000),
+  layername character varying(1000),
+  filterproperty character varying(200),
+  geometryproperty character varying(200),
+  externalid character varying(200),
+  CONSTRAINT portti_stats_layer_pkey PRIMARY KEY (id),
+  CONSTRAINT portti_stats_layer_maplayer_id_fkey FOREIGN KEY (maplayer_id)
+  REFERENCES oskari_maplayer (id) MATCH FULL
+  ON UPDATE NO ACTION ON DELETE CASCADE
+);
+
+CREATE TABLE oskari_user_indicator
+(
+  id serial NOT NULL,
+  user_id bigint,
+  title character varying(1000),
+  source character varying(1000),
+  layer_id bigint,
+  description character varying(1000),
+  year bigint,
+  data text,
+  published BOOLEAN,
+  category character varying(100)
+);
+
+-- ----------------------------------------------------------------------------------------;
+-- Keyword tables;
+-- ----------------------------------------------------------------------------------------;
+
+CREATE TABLE portti_keywords
+(
+  id serial NOT NULL,
+  keyword character varying(2000),
+  uri character varying(2000),
+  lang character varying(10),
+  editable boolean,
+  CONSTRAINT portti_keywords_pkey PRIMARY KEY (id)
+);
+
+CREATE TABLE portti_layer_keywords
+(
+  keyid bigint NOT NULL,
+  layerid bigint NOT NULL,
+  CONSTRAINT oskari_layer_keywords_layerid_fkey FOREIGN KEY (layerid)
+  REFERENCES oskari_maplayer (id) MATCH SIMPLE
+  ON UPDATE NO ACTION ON DELETE CASCADE,
+  CONSTRAINT portti_layer_keywords_keyid_fkey FOREIGN KEY (keyid)
+  REFERENCES portti_keywords (id) MATCH SIMPLE
+  ON UPDATE NO ACTION ON DELETE CASCADE
+);
+
+CREATE TABLE portti_keyword_association
+(
+  keyid1 bigint NOT NULL,
+  keyid2 bigint NOT NULL,
+  type character varying(10),
+  CONSTRAINT portti_keyword_association_keyid1_fkey FOREIGN KEY (keyid1)
+  REFERENCES portti_keywords (id) MATCH SIMPLE
+  ON UPDATE NO ACTION ON DELETE CASCADE,
+  CONSTRAINT portti_keyword_association_keyid2_fkey FOREIGN KEY (keyid2)
+  REFERENCES portti_keywords (id) MATCH SIMPLE
+  ON UPDATE NO ACTION ON DELETE CASCADE,
+  CONSTRAINT unique_all_columns UNIQUE (keyid1, keyid2, type)
+);
+
+-- ----------------------------------------------------------------------------------------;
+-- User data;
+-- ----------------------------------------------------------------------------------------;
+
+-- contains user information;
+CREATE TABLE oskari_users (
+  id serial NOT NULL,
+  user_name character varying(128) NOT NULL,
+  first_name character varying(128),
+  last_name character varying(128),
+  email character varying(256),
+  uuid character varying(64),
+  attributes text DEFAULT '{}',
+  CONSTRAINT oskari_users_pkey PRIMARY KEY (id),
+  CONSTRAINT oskari_users_user_name_key UNIQUE (user_name),
+  CONSTRAINT oskari_users_uuid_key UNIQUE (uuid)
+);
+
+-- contains roles used in Oskari;
+CREATE TABLE oskari_roles (
+  id serial NOT NULL,
+  name character varying(25) NOT NULL,
+  is_guest boolean default FALSE,
+  CONSTRAINT oskari_roles_pkey PRIMARY KEY (id),
+  UNIQUE (name)
+);
+
+-- maps Oskari roles to users;
+CREATE TABLE oskari_role_oskari_user
+(
+  id serial NOT NULL,
+  role_id integer,
+  user_id bigint,
+  CONSTRAINT oskari_role_oskari_user_pkey PRIMARY KEY (id),
+  CONSTRAINT oskari_role_oskari_user_role_id_fkey FOREIGN KEY (role_id)
+  REFERENCES oskari_roles (id) MATCH SIMPLE
+  ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT oskari_role_oskari_user_user_id_fkey FOREIGN KEY (user_id)
+  REFERENCES oskari_users (id) MATCH SIMPLE
+  ON UPDATE NO ACTION ON DELETE NO ACTION
+);
+
+-- maps external role name to Oskari role;
+CREATE TABLE oskari_role_external_mapping (
+  roleid  bigint NOT NULL,
+  name character varying(50) NOT NULL,
+  external_type character varying(50) NOT NULL default '',
+  CONSTRAINT oskari_role_external_mapping_fkey FOREIGN KEY (roleid)
+  REFERENCES oskari_roles (id) MATCH SIMPLE
+  ON UPDATE NO ACTION ON DELETE CASCADE
+);
+
+-- credentials for users;
+CREATE TABLE oskari_jaas_users (
+  id serial NOT NULL,
+  login character varying(25) NOT NULL,
+  password character varying(50) NOT NULL,
+  CONSTRAINT oskari_jaas_users_pkey PRIMARY KEY (id),
+  UNIQUE (login)
+);
+
+CREATE TABLE oskari_jaas_roles (
+  id serial NOT NULL,
+  login character varying(25) NOT NULL,
+  role character varying(50) NOT NULL,
+  CONSTRAINT oskari_jaas_roles_pkey PRIMARY KEY (id)
+);
