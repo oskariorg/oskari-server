@@ -18,10 +18,14 @@
 
     <parameterMap id="MaplayerGroupInsertParameter" class="MaplayerGroup">
         <parameter property="locale" jdbcType="VARCHAR" javaType="org.json.JSONObject" />
+        <parameter property="parentId" />
+        <parameter property="selectable" />
     </parameterMap>
 
     <parameterMap id="MaplayerGroupUpdateParameter" class="MaplayerGroup">
         <parameter property="locale" jdbcType="VARCHAR" javaType="org.json.JSONObject" />
+        <parameter property="parentId" />
+        <parameter property="selectable" />
         <parameter property="id" />
     </parameterMap>
 
@@ -51,13 +55,15 @@
     </select>
     
     <statement id="insert" parameterMap="MaplayerGroupInsertParameter" resultClass="int">
-        insert into oskari_maplayer_group (locale)
-        values (?)
+        insert into oskari_maplayer_group (locale, parentid, selectable)
+        values (?,?,?)
     </statement>
     
     <update id="update" parameterMap="MaplayerGroupUpdateParameter">
         update oskari_maplayer_group set
-            locale = ?
+            locale = ?,
+            parentid = ?,
+            selectable = ?
         where id = ?
     </update>
     
