@@ -38,7 +38,7 @@ public class MaplayerGroup extends JSONLocalizedName {
 		return parentId;
 	}
 
-	public void setParentId(int parent) {this.parentId = parentId;}
+	public void setParentId(int parentId) {this.parentId = parentId;}
 
     public JSONObject getAsJSON() {
         final JSONObject me = new JSONObject();

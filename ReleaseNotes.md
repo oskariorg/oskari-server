@@ -1,9 +1,14 @@
 # Release Notes
 
+## 1.46.0
+
+### Renamings
+- InspireThemes action renamed to MapLayerGroups
+
+
 ## 1.45.0
 
 ### Database modifications
-
 
 - oskari_layergroup table renamed to oskari_dataprovider
 - oskari_maplayer.groupid column renamed oskari_maplayer.dataprovider_id

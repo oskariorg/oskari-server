@@ -5,14 +5,21 @@ import fi.mml.map.mapwindow.service.db.OskariMapLayerGroupServiceIbatisImpl;
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.*;
 import fi.nls.oskari.domain.map.MaplayerGroup;
+import fi.nls.oskari.domain.map.view.View;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.map.view.util.ViewHelper;
+import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.ResponseHelper;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.Iterator;
 import java.util.List;
 
@@ -22,7 +29,6 @@ import static fi.nls.oskari.control.ActionConstants.PARAM_ID;
 /**
  * CRUD for Maplayer groups. Get is callable by anyone, other methods require admin user.
  */
-// FIXME: Update route and class name when frontend implementation was updated
 @OskariActionRoute("MapLayerGroups")
 public class MapLayerGroupsHandler extends RestActionHandler {
     private static Logger log = LogFactory.getLogger(MapLayerGroupsHandler.class);
@@ -128,12 +134,27 @@ public class MapLayerGroupsHandler extends RestActionHandler {
         }
     }
 
+    protected JSONObject getMapLayerGroup(HttpServletRequest req) throws ActionException {
+        try (InputStream in = req.getInputStream()) {
+            final byte[] json = IOHelper.readBytes(in);
+            final String jsonString = new String(json, StandardCharsets.UTF_8);
+            final JSONObject maplayerGroup = new JSONObject(jsonString);
+            return maplayerGroup;
+        } catch (IOException e) {
+            log.warn(e);
+            throw new ActionException("Failed to read request!");
+        } catch (IllegalArgumentException | JSONException e) {
+            log.warn(e);
+            throw new ActionException("Invalid request!");
+        }
+    }
     private void populateFromRequest(ActionParameters params, MaplayerGroup maplayerGroup) throws ActionException {
 
         try{
-            JSONObject locales = new JSONObject(params.getRequiredParam(KEY_LOCALES));
-            int parentId = params.getHttpParam(KEY_PARENT_ID, -1);
-            boolean selectable = params.getHttpParam(KEY_SELECTABLE, false);
+            JSONObject mapLayerGroup = getMapLayerGroup(params.getRequest());
+            JSONObject locales = mapLayerGroup.getJSONObject(KEY_LOCALES);
+            int parentId = mapLayerGroup.optInt(KEY_PARENT_ID, -1);
+            boolean selectable = mapLayerGroup.optBoolean(KEY_SELECTABLE, true);
             Iterator<?> keys = locales.keys();
 
             while( keys.hasNext() ) {
