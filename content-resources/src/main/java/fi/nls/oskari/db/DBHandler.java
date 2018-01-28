@@ -50,9 +50,6 @@ public class DBHandler {
             PropertyUtil.addProperties(props, true);
         }
 
-        // replace logger after properties are populated
-        log = LogFactory.getLogger(DBHandler.class);
-
         final DatasourceHelper helper = DatasourceHelper.getInstance();
         try {
             datasource = helper.createDataSource();
@@ -63,7 +60,7 @@ public class DBHandler {
             }
             else if(addLayer != null) {
                 final int id = LayerHelper.setupLayer(addLayer);
-                log.debug("Added layer with id:", id);
+                getLog().debug("Added layer with id:", id);
             }
             else {
                 // initialize db with demo data if tables are not present
@@ -96,8 +93,14 @@ public class DBHandler {
             createContentIfNotCreated(getDataSource());
         }
         catch (Exception ex) {
-            log.error(ex, "Couldn't get connection to db!");
+            getLog().error(ex, "Couldn't get connection to db!");
         }
+    }
+    private static Logger getLog() {
+        if(log == null) {
+            log = LogFactory.getLogger(DBHandler.class);
+        }
+        return log;
     }
 
     public static void createContentIfNotCreated(DataSource ds) {
@@ -108,7 +111,7 @@ public class DBHandler {
             final String dbName = dbmeta.getDatabaseProductName().replace(' ', '_');
 
             if (!hasOskariTables(dbmeta)) {
-                log.info("Creating db for " + dbName);
+                getLog().info("Creating db for " + dbName);
 
                 executeSqlFromFile(conn, dbName, "create-base-tables.sql");
                 createContent(conn, dbName, "register-bundles.json");
@@ -121,15 +124,15 @@ public class DBHandler {
                         conn.commit();
                     }
                 } catch (SQLException e) {
-                    log.error(e, "Couldn't commit changes!");
+                    getLog().error(e, "Couldn't commit changes!");
                 }
             }
             else {
-                log.info("Existing tables found in db. Not creating initial tables");
+                getLog().info("Existing tables found in db. Not creating initial tables");
             }
 
         } catch (Exception e) {
-            log.error(e, "Error creating db content!");
+            getLog().error(e, "Error creating db content!");
         }
     }
 
@@ -165,7 +168,7 @@ public class DBHandler {
                 throw new RuntimeException("Error reading file " + propertySetupFile);
             }
 
-            log.info("/ Initializing DB");
+            getLog().info("/ Initializing DB");
             final JSONObject setup = JSONHelper.createJSONObject(setupJSON);
             createContent(conn, dbname, setup);
 
@@ -194,37 +197,37 @@ public class DBHandler {
 
         try {
             if(setup.has("create")) {
-                log.info("/- running create scripts:");
+                getLog().info("/- running create scripts:");
                 final JSONArray createScripts = setup.getJSONArray("create");
                 for(int i = 0; i < createScripts.length(); ++i) {
                     final String sqlFileName = createScripts.getString(i);
                     System.out.println("/-  " + sqlFileName);
                     executeSqlFromFile(conn, dbname, sqlFileName);
                 }
-                log.info("/- Created tables");
+                getLog().info("/- Created tables");
             }
 
             if(setup.has("setup")) {
-                log.info("/- running recursive setups:");
+                getLog().info("/- running recursive setups:");
                 final JSONArray setupFiles = setup.getJSONArray("setup");
                 for(int i = 0; i < setupFiles.length(); ++i) {
                     final Object tmp = setupFiles.get(i);
                     if (tmp instanceof JSONObject) {
                         final JSONObject setupObj = (JSONObject) tmp;
-                        log.info("/-  as inline JSON");
+                        getLog().info("/-  as inline JSON");
                         createContent(conn, dbname, setupObj);
                     }
                     else {
                         final String setupFileName = (String) tmp;
-                        log.info("/-  " + setupFileName);
+                        getLog().info("/-  " + setupFileName);
                         createContent(conn, dbname, setupFileName);
                     }
                 }
-                log.info("/- recursive setups complete");
+                getLog().info("/- recursive setups complete");
             }
 
             if(setup.has("bundles")) {
-                log.info("/- registering bundles:");
+                getLog().info("/- registering bundles:");
                 final JSONObject bundlesSetup = setup.getJSONObject("bundles");
                 final JSONArray namespaces = bundlesSetup.names();
                 for(int namespaceIndex = 0; namespaceIndex < namespaces.length(); ++namespaceIndex) {
@@ -242,17 +245,17 @@ public class DBHandler {
             // with isPartial: true to NOT try migrate the db with flyway until the "main" setup has reached this point.
             // View and layers can be registered correctly using services after db is fully up to date
             if(!setup.optBoolean("isPartial", false)) {
-                log.info("/- flyway migration for core db");
+                getLog().info("/- flyway migration for core db");
                 try {
                     FlywaydbMigrator.migrate(getDataSource());
-                    log.info("Oskari core DB migrated successfully");
+                    getLog().info("Oskari core DB migrated successfully");
                 } catch (Exception e) {
-                    log.error(e, "DB migration for Oskari core failed!");
+                    getLog().error(e, "DB migration for Oskari core failed!");
                 }
             }
 
             if(setup.has("views")) {
-                log.info("/- adding views using ibatis");
+                getLog().info("/- adding views using ibatis");
                 final JSONArray viewsListing = setup.getJSONArray("views");
                 for(int i = 0; i < viewsListing.length(); ++i) {
                     final String viewConfFile = viewsListing.getString(i);
@@ -260,7 +263,7 @@ public class DBHandler {
                 }
             }
             if(setup.has("layers")) {
-                log.info("/- adding layers using ibatis");
+                getLog().info("/- adding layers using ibatis");
                 final JSONArray layersListing = setup.getJSONArray("layers");
                 for(int i = 0; i < layersListing.length(); ++i) {
                     final String layerConfFile = layersListing.getString(i);
@@ -270,7 +273,7 @@ public class DBHandler {
 
 
             if(setup.has("sql")) {
-                log.info("/- running additional sql files");
+                getLog().info("/- running additional sql files");
                 final JSONArray viewsListing = setup.getJSONArray("sql");
                 for(int i = 0; i < viewsListing.length(); ++i) {
                     final String sqlFileName = viewsListing.getString(i);
@@ -280,14 +283,14 @@ public class DBHandler {
             }
 
         } catch (Exception e) {
-            log.error(e, "Error creating content");
+            getLog().error(e, "Error creating content");
         }
     }
 
 
 
     private static void registerBundle(Connection conn, final String namespace, final String bundlefile) throws IOException, SQLException {
-        log.info("/ - /sql/views/01-bundles/" + namespace + "/" + bundlefile);
+        getLog().info("/ - /sql/views/01-bundles/" + namespace + "/" + bundlefile);
         String sqlContents = IOHelper.readString(getInputStreamFromResource("/sql/views/01-bundles/" + namespace + "/" + bundlefile));
         executeMultilineSql(conn, sqlContents);
     }
@@ -318,14 +321,14 @@ public class DBHandler {
             InputStream is = getInputStreamFromResource("/sql/" + dbName + "/" + fileName);
             if (is == null) {
                 is = getInputStreamFromResource("/sql/" + fileName);
-                log.info("   file: /sql/" + fileName);
+                getLog().info("   file: /sql/" + fileName);
             }
             else {
-                log.info("   file: /sql/" + dbName + "/" + fileName);
+                getLog().info("   file: /sql/" + dbName + "/" + fileName);
             }
             return IOHelper.readString(is);
         } catch (Exception ex) {
-            log.error("Error reading sql file for dbName", dbName, "and file", fileName, "  ", ex.getMessage());
+            getLog().error("Error reading sql file for dbName", dbName, "and file", fileName, "  ", ex.getMessage());
         }
         return "";
     }
