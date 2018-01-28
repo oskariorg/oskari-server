@@ -1,6 +1,7 @@
 {
-    "sql": [
-        "populate-Inspire-themes.sql"
+    "create": [
+        "populate-Inspire-themes.sql",
+        "example-users.sql"
     ],
     "views" : [
         "default-view.json",
@@ -10,7 +11,6 @@
         "ol3-view.json"
     ],
     "sql" : [
-        "example-users.sql",
         "example-user-credentials.sql"
     ]
 }
