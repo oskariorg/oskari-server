@@ -29,7 +29,7 @@ for the GeoServer so asking for very large image for myplaces etc won't cause th
 There's at least a couple of database table that have been renamed and due to the order of code is running on server
  startup you will get an error with the first startup due to database migrations. The logs show some tables are missing.
  This is expected and you should just restart the server after migrations have completed.
- The latest version row in oskari_status database table should be at least 1.45.15 when the migrations have been completed. 
+ The latest version row in oskari_status database table should be at least 1.45.18 when the migrations have been completed. 
 
 ### Thematic maps
 
