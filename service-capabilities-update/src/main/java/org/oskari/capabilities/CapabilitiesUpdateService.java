@@ -42,15 +42,15 @@ public class CapabilitiesUpdateService {
         this.capabilitiesCacheService = capabilitiesService;
     }
 
-    public List<UpdateResult> updateCapabilities(List<OskariLayer> layersToUpdate, Set<String> systemCRSs) {
-        List<UpdateResult> results = new ArrayList<>(layersToUpdate.size());
+    public List<CapabilitiesUpdateResult> updateCapabilities(List<OskariLayer> layersToUpdate, Set<String> systemCRSs) {
+        List<CapabilitiesUpdateResult> results = new ArrayList<>(layersToUpdate.size());
 
         List<OskariLayer> updateableLayers = new ArrayList<>();
         for (OskariLayer layer : layersToUpdate) {
             if (canUpdate(layer.getType())) {
                 updateableLayers.add(layer);
             } else {
-                results.add(UpdateResult.err(layer, ERR_LAYER_TYPE_UNSUPPORTED));
+                results.add(CapabilitiesUpdateResult.err(layer, ERR_LAYER_TYPE_UNSUPPORTED));
             }
         }
 
@@ -76,7 +76,7 @@ public class CapabilitiesUpdateService {
     }
 
     private void updateCapabilities(UrlTypeVersion utv,
-            List<OskariLayer> layers, Set<String> systemCRSs, List<UpdateResult> results) {
+            List<OskariLayer> layers, Set<String> systemCRSs, List<CapabilitiesUpdateResult> results) {
         final String url = utv.url;
         final String type = utv.type;
         final String version = utv.version;
@@ -94,7 +94,7 @@ public class CapabilitiesUpdateService {
             LOG.warn(e, "Could not find get Capabilities, url:", url,
                     "type:", type, "version:", version, "ids:", Arrays.toString(ids));
             for (OskariLayer layer : layers) {
-                results.add(UpdateResult.err(layer, ERR_FAILED_TO_FETCH_CAPABILITIES));
+                results.add(CapabilitiesUpdateResult.err(layer, ERR_FAILED_TO_FETCH_CAPABILITIES));
             }
             return;
         }
@@ -110,25 +110,25 @@ public class CapabilitiesUpdateService {
     }
 
     private void updateWMSLayers(List<OskariLayer> layers, String data,
-            Set<String> systemCRSs, List<UpdateResult> results) {
+            Set<String> systemCRSs, List<CapabilitiesUpdateResult> results) {
         for (OskariLayer layer : layers) {
             try {
                 WebMapService wms = OskariLayerCapabilitiesHelper.parseWMSCapabilities(data, layer);
                 OskariLayerCapabilitiesHelper.setPropertiesFromCapabilitiesWMS(wms, layer, systemCRSs);
                 layerService.update(layer);
-                results.add(UpdateResult.ok(layer));
+                results.add(CapabilitiesUpdateResult.ok(layer));
             } catch (WebMapServiceParseException e) {
                 LOG.warn(e, "Failed to update Capabilities for layerId:", layer.getId());
-                results.add(UpdateResult.err(layer, ERR_FAILED_TO_PARSE_CAPABILITIES));
+                results.add(CapabilitiesUpdateResult.err(layer, ERR_FAILED_TO_PARSE_CAPABILITIES));
             } catch (LayerNotFoundInCapabilitiesException e) {
                 LOG.warn(e, "Failed to update Capabilities for layerId:", layer.getId());
-                results.add(UpdateResult.err(layer, ERR_LAYER_NOT_FOUND_IN_CAPABILITIES));
+                results.add(CapabilitiesUpdateResult.err(layer, ERR_LAYER_NOT_FOUND_IN_CAPABILITIES));
             }
         }
     }
 
     private void updateWMTSLayers(List<OskariLayer> layers, String data,
-            Set<String> systemCRSs, List<UpdateResult> results) {
+            Set<String> systemCRSs, List<CapabilitiesUpdateResult> results) {
         final WMTSCapabilities wmts;
         try {
             wmts = WMTSCapabilitiesParser.parseCapabilities(data);
@@ -136,7 +136,7 @@ public class CapabilitiesUpdateService {
             int[] ids = layers.stream().mapToInt(OskariLayer::getId).toArray();
             LOG.warn(e, "Failed to parse WMTS GetCapabilities for layerIds:", Arrays.toString(ids));
             for (OskariLayer layer : layers) {
-                results.add(UpdateResult.err(layer, ERR_FAILED_TO_PARSE_CAPABILITIES));
+                results.add(CapabilitiesUpdateResult.err(layer, ERR_FAILED_TO_PARSE_CAPABILITIES));
             }
             return;
         }
@@ -145,9 +145,9 @@ public class CapabilitiesUpdateService {
             try {
                 OskariLayerCapabilitiesHelper.setPropertiesFromCapabilitiesWMTS(wmts, layer, null, systemCRSs);
                 layerService.update(layer);
-                results.add(UpdateResult.ok(layer));
+                results.add(CapabilitiesUpdateResult.ok(layer));
             } catch (IllegalArgumentException e) {
-                results.add(UpdateResult.err(layer, e.getMessage()));
+                results.add(CapabilitiesUpdateResult.err(layer, e.getMessage()));
             }
         }
     }
@@ -183,27 +183,6 @@ public class CapabilitiesUpdateService {
             return Objects.hash(url, type, version);
         }
 
-    }
-
-    private static class UpdateResult {
-
-        private static final String OK = null;
-
-        private final int layerId;
-        private final String errorMessage;
-
-        private UpdateResult(int layerId, String errorMessage) {
-            this.layerId = layerId;
-            this.errorMessage = errorMessage;
-        }
-
-        private static UpdateResult ok(OskariLayer layer) {
-            return new UpdateResult(layer.getId(), OK);
-        }
-
-        private static UpdateResult err(OskariLayer layer, String errorMessage) {
-            return new UpdateResult(layer.getId(), errorMessage);
-        }
     }
 
 }
