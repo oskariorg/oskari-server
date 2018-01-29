@@ -113,9 +113,14 @@ public class DBHandler {
             if (!hasOskariTables(dbmeta)) {
                 getLog().info("Creating db for " + dbName);
 
+                // core is responsible for creating initial database schema and migrating it
                 executeSqlFromFile(conn, dbName, "create-base-tables.sql");
+                // core is responsible for registering bundles that are not app-specific
                 createContent(conn, dbName, "register-bundles.json");
+                // so every application doesn't need to register the roles that are assumed as default
                 executeSqlFromFile(conn, dbName, "add-default-roles.sql");
+                // so myplaces etc can register baselayers without any application layergroups
+                executeSqlFromFile(conn, dbName, "add-internal-dataprovider.sql");
 
                 createContent(conn, dbName);
                 try {
