@@ -293,8 +293,8 @@ public class DBHandler {
 
 
     private static void registerBundle(Connection conn, final String namespace, final String bundlefile) throws IOException, SQLException {
-        getLog().info("/ - /sql/views/01-bundles/" + namespace + "/" + bundlefile);
-        String sqlContents = IOHelper.readString(getInputStreamFromResource("/sql/views/01-bundles/" + namespace + "/" + bundlefile));
+        getLog().info("/ - /sql/bundles/" + namespace + "/" + bundlefile);
+        String sqlContents = IOHelper.readString(getInputStreamFromResource("/sql/bundles/" + namespace + "/" + bundlefile));
         executeMultilineSql(conn, sqlContents);
     }
 
