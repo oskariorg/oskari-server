@@ -15,7 +15,6 @@
         {
             "id" : "mapfull",
             "config" : {
-                "globalMapAjaxUrl": "[REPLACED BY HANDLER]",
                 "plugins" : [
                     { "id" : "Oskari.mapframework.bundle.mapmodule.plugin.LayersPlugin" },
                     { "id" : "Oskari.mapframework.mapmodule.WmsLayerPlugin" },

@@ -2,6 +2,16 @@
 
 ## 1.45.0
 
+### GeoServer migration
+
+If you have the bundled GeoServer (for myplaces etc) running on the same Jetty as oskari-map you should add this to oskari-ext.properties:
+
+    # skip geoserver setting as its by default on the same server -> geoserver is not running when migrations are run
+    flyway.1_45_0.skip=true
+
+Otherwise migrations will stop at 1.45.0 as this migration cannot be run. You can manually add a memory restriction 
+for the GeoServer so asking for very large image for myplaces etc won't cause the server to run out of memory.
+
 ### Database changes
 
 There's at least a couple of database table that have been renamed and due to the order of code is running on server
