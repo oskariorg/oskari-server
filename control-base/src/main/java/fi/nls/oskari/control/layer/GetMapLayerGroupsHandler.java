@@ -77,7 +77,7 @@ public class GetMapLayerGroupsHandler extends ActionHandler {
                         strSubLayerIds.add(current.toString());
                     }
                     final JSONObject subLayers = OskariLayerWorker.getListOfMapLayersById(strSubLayerIds, params.getUser(), lang);
-                    JSONArray subLayerList = layers.optJSONArray(OskariLayerWorker.KEY_LAYERS);
+                    JSONArray subLayerList = subLayers.optJSONArray(OskariLayerWorker.KEY_LAYERS);
                     // transform WKT for layers now that we know SRS
                     for (int i = 0; i < subLayerList.length(); ++i) {
                         OskariLayerWorker.transformWKTGeom(subLayerList.optJSONObject(i), params.getHttpParam(PARAM_SRS));
