@@ -1,6 +1,0 @@
-{
-    "create" : [
-        "create-base-tables.sql"
-    ],
-    "isPartial" : true
-}
