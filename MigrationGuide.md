@@ -2,6 +2,18 @@
 
 ## 1.45.0
 
+## Oskari initialization
+
+Initialization of the software on empty database has been revised. All content creation has been moved to application
+ specific flyway modules. The core module only creates the base database, migrates the schema and transforms
+  existing data when needed.
+   
+For existing databases this is a non-issue and everything works as before. For new applications and application specific
+ initialization for the database (like initial layers and appsetups) this changes a few things.
+
+The sample application now creates the appsetups, layers and users for demo-purposes. 
+Any oskari-server-extension should modify the application init on empty db accordingly.
+
 ### GeoServer migration
 
 If you have the bundled GeoServer (for myplaces etc) running on the same Jetty as oskari-map you should add this to oskari-ext.properties:

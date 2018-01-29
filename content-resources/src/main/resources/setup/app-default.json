@@ -1,4 +1,0 @@
-{
-    "this_is" : "adefault setup that can be overridden in apps, but not recommended as database schema migrations might not work as you expect",
-    "instead": "Create an app specific module that modifies content only _after_ the database schema has been migrated."
-}

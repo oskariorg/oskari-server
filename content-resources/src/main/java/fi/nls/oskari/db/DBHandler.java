@@ -115,8 +115,7 @@ public class DBHandler {
 
                 executeSqlFromFile(conn, dbName, "create-base-tables.sql");
                 createContent(conn, dbName, "register-bundles.json");
-                // it's only one group, apps can remove this and without this the myplaces etc baselayer inserts will fail
-                executeSqlFromFile(conn, dbName, "example-layergroups.sql");
+                executeSqlFromFile(conn, dbName, "add-default-roles.sql");
 
                 createContent(conn, dbName);
                 try {
@@ -149,29 +148,33 @@ public class DBHandler {
     }
 
     private static void createContent(Connection conn, final String dbname) throws IOException{
-        final String setup = ConversionHelper.getString(System.getProperty("oskari.setup"), "app-default");
+        final String setup = ConversionHelper.getString(System.getProperty("oskari.setup"), null);
         createContent(conn, dbname, setup);
     }
 
     public static void setupAppContent(Connection conn, final String setupFile) throws IOException {
         createContent(conn, "PostgreSQL", setupFile);
     }
+
     private static void createContent(Connection conn, final String dbname, final String setupFile) throws IOException {
-            String propertySetupFile = "/setup/" + setupFile;
-            if(!setupFile.toLowerCase().endsWith(".json")) {
-                // accept setup file without file extension
-                propertySetupFile = propertySetupFile+ ".json";
-            }
+        if (setupFile == null) {
+            getLog().info("No setup file configured. Skipping content creation.");
+            return;
+        }
+        String propertySetupFile = "/setup/" + setupFile;
+        if (!setupFile.toLowerCase().endsWith(".json")) {
+            // accept setup file without file extension
+            propertySetupFile = propertySetupFile + ".json";
+        }
 
-            String setupJSON = IOHelper.readString(getInputStreamFromResource(propertySetupFile));
-            if(setupJSON == null || setupJSON.isEmpty()) {
-                throw new RuntimeException("Error reading file " + propertySetupFile);
-            }
+        String setupJSON = IOHelper.readString(getInputStreamFromResource(propertySetupFile));
+        if (setupJSON == null || setupJSON.isEmpty()) {
+            throw new RuntimeException("Error reading file " + propertySetupFile);
+        }
 
-            getLog().info("/ Initializing DB");
-            final JSONObject setup = JSONHelper.createJSONObject(setupJSON);
-            createContent(conn, dbname, setup);
-
+        getLog().info("/ Initializing DB");
+        final JSONObject setup = JSONHelper.createJSONObject(setupJSON);
+        createContent(conn, dbname, setup);
     }
 
     @SuppressWarnings("resource")
