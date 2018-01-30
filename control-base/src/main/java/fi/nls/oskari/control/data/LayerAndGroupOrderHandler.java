@@ -94,6 +94,7 @@ public class LayerAndGroupOrderHandler extends RestActionHandler {
             } else {
             	nodeGroup = oskariMapLayerGroupService.find(nodeId);
             }
+            //FIXME: Reassure that the layers and groups are handled in order.
             List<MaplayerGroup> groups = oskariMapLayerGroupService.findByParentId(targetGroupId);
             for(MaplayerGroup group : groups) {
             	log.debug(group);
@@ -113,11 +114,13 @@ public class LayerAndGroupOrderHandler extends RestActionHandler {
             }
             //TODO: TALLENNA 
             if(nodeLayer != null) {
-            	//nodeLayer.setOrderNumber(nodeIndex);
+            	nodeLayer.setOrderNumber(nodeIndex);
             	//nodeLayer.setGroup(targetGroupId);
+            	//oskariLayerService.updateOrder(nodeLayer);
             } else if(nodeGroup != null) {
             	nodeGroup.setOrderNumber(nodeIndex);
             	//nodeGroup.setGroup(targetGroupId);
+            	//oskariMapLayerGroupService.updateOrder(nodeGroup);
             }
         } catch (JSONException e) {
         	log.warn(e);
