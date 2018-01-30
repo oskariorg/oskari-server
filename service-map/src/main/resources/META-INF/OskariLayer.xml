@@ -699,6 +699,15 @@
             order_number = ?
         where maplayerid = ?
     </update>
+    
+    <update id="updateGroup" parameterClass="java.util.HashMap">
+        update oskari_maplayer_group_link set
+            groupid = #newGroupId#
+        where 
+        	groupid = #oldGroupId#
+        	and
+        	maplayerid = #layerId#
+    </update>
 
     <statement id="update" parameterMap="LayerUpdateParameter">
         UPDATE oskari_maplayer

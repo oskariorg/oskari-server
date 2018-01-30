@@ -343,7 +343,29 @@ public class OskariLayerServiceIbatisImpl extends OskariLayerService {
         try {
             client = getSqlMapClient();
             client.startTransaction();
-            client.insert(getNameSpace() + ".updateOrder", layer);
+            client.update(getNameSpace() + ".updateOrder", layer);
+            client.commitTransaction();
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to update layer ordering", e);
+        } finally {
+            if (client != null) {
+                try {
+                    client.endTransaction();
+                } catch (SQLException ignored) { }
+            }
+        }
+    }
+    
+    public void updateGroup(final int layerId, final int oldGroupId, final int newGroupId) {
+    	SqlMapClient client = null;
+        try {
+            client = getSqlMapClient();
+            client.startTransaction();
+            HashMap<String, Integer> insertMap = new HashMap<>();
+            insertMap.put("layerId", layerId);
+            insertMap.put("oldGroupId", oldGroupId);
+            insertMap.put("newGroupId", newGroupId);
+            client.update(getNameSpace() + ".updateGroup", insertMap);
             client.commitTransaction();
         } catch (Exception e) {
             throw new RuntimeException("Failed to update layer ordering", e);

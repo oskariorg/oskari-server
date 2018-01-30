@@ -71,7 +71,7 @@ public class OskariLayer extends JSONLocalizedNameAndTitle implements Comparable
 
     private Date created = null;
     private Date updated = null;
-    private int orderNumber;
+    private Integer orderNumber;
 
     private Set<MaplayerGroup> maplayerGroups = new HashSet<MaplayerGroup>();
     private Set<DataProvider> groups = new HashSet<DataProvider>();
@@ -198,11 +198,11 @@ public class OskariLayer extends JSONLocalizedNameAndTitle implements Comparable
 		this.updated = updated;
 	}
 
-	public int getOrderNumber() {
+	public Integer getOrderNumber() {
 		return orderNumber;
 	}
 
-	public void setOrderNumber(int orderNumber) {
+	public void setOrderNumber(Integer orderNumber) {
 		this.orderNumber = orderNumber;
 	}
 

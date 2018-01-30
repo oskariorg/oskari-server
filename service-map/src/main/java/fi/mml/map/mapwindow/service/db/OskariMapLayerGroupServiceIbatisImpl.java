@@ -217,6 +217,27 @@ public class OskariMapLayerGroupServiceIbatisImpl extends OskariMapLayerGroupSer
             }
         }
     }
+    
+    public void updateGroupParent(final int groupId, final int newParentId) {
+    	SqlMapClient client = null;
+        try {
+            client = getSqlMapClient();
+            client.startTransaction();
+            HashMap<String, Integer> insertMap = new HashMap<>();
+            insertMap.put("groupId", groupId);
+            insertMap.put("newParentId", newParentId);
+            client.update(getNameSpace() + ".updateGroupParent", insertMap);
+            client.commitTransaction();
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to update group parent", e);
+        } finally {
+            if (client != null) {
+                try {
+                    client.endTransaction();
+                } catch (SQLException ignored) { }
+            }
+        }
+    }
 
     private List<Map<String,Object>> queryForListMap(String sqlId) {
         try {
