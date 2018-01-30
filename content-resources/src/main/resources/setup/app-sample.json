@@ -1,0 +1,14 @@
+{
+    "create": [
+        "add-example-layergroup.sql",
+        "add-inspire-themes.sql",
+        "add-example-users.sql",
+        "add-example-credentials.sql"
+    ],
+    "views" : [
+        "default-view.json",
+        "ol3-publisher-template-view-4326.json",
+        "default-transport-view.json",
+        "default-full-view.json"
+    ]
+}
