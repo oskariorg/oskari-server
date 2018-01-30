@@ -64,6 +64,7 @@ public class LayerAndGroupOrderHandler extends RestActionHandler {
     
     /**
      * Handles updating the order and group of the given node ie. layer or group.
+     * FIXME: Remove sysouts!
      * @param params
      * @throws ActionException
      */
@@ -111,32 +112,32 @@ public class LayerAndGroupOrderHandler extends RestActionHandler {
             	//This way we can assure that the layers and groups are handled in correct order.
             	OskariLayer layer = this.getLayerByOrderNumber(layers, nextIndex, nodeId, type);
             	MaplayerGroup group = this.getGroupByOrderNumber(groups, nextIndex, nodeId, type);
+            	++nextIndex;
+            	System.out.println("Index running wheee: "+nextIndex);
             	if(layer != null) {
             		layer.setOrderNumber(nextIndex);
-            		System.out.println("oskariLayerService.updateOrder( "+layer.getId() + ", " +layer.getOrderNumber()+")");
+            		System.out.println("oskariLayerService.updateOrder("+layer.getId() + ", " +layer.getOrderNumber()+")");
                 	//oskariLayerService.updateOrder(layer);
             	} else if(group != null) {
             		group.setOrderNumber(nextIndex);
-            		System.out.println("oskariMapLayerGroupService.updateOrder( "+group.getId() + ", " +group.getOrderNumber()+")");
+            		System.out.println("oskariMapLayerGroupService.updateOrder("+group.getId() + ", " +group.getOrderNumber()+")");
                 	//oskariMapLayerGroupService.updateOrder(group);
             	}
-            	System.out.println("Index running wheee: "+nextIndex);
-            	++nextIndex;
             }
             if(nodeLayer != null) {
             	nodeLayer.setOrderNumber(nodeIndex);
-            	System.out.println("oskariLayerService.updateOrder( "+nodeLayer.getId() + ", " +nodeLayer.getOrderNumber()+")");
+            	System.out.println("oskariLayerService.updateOrder("+nodeLayer.getId() + ", " +nodeLayer.getOrderNumber()+")");
             	//oskariLayerService.updateOrder(nodeLayer);
             	if(changeGroup) {
-            		System.out.println("oskariLayerService.updateGroup( "+nodeLayer.getId() + ", " +oldGroupId+", "+targetGroupId+")");
+            		System.out.println("oskariLayerService.updateGroup("+nodeLayer.getId() + ", " +oldGroupId+", "+targetGroupId+")");
             		//oskariLayerService.updateGroup(nodeLayer.getId(), oldGroupId, targetGroupId);
             	}
             } else if(nodeGroup != null) {
             	nodeGroup.setOrderNumber(nodeIndex);
-            	System.out.println("oskariLayerService.updateOrder( "+nodeGroup.getId() + ", " +nodeGroup.getOrderNumber()+")");
+            	System.out.println("oskariLayerService.updateOrder("+nodeGroup.getId() + ", " +nodeGroup.getOrderNumber()+")");
             	//oskariMapLayerGroupService.updateOrder(nodeGroup);
             	if(changeGroup) {
-            		System.out.println("oskariMapLayerGroupService.updateGroupParent( "+nodeGroup.getId() + ", "+targetGroupId+")");
+            		System.out.println("oskariMapLayerGroupService.updateGroupParent("+nodeGroup.getId() + ", "+targetGroupId+")");
             		//oskariMapLayerGroupService.updateGroupParent(nodeGroup.getId(), targetGroupId);
             	}
             }
@@ -159,9 +160,12 @@ public class LayerAndGroupOrderHandler extends RestActionHandler {
     		OskariLayer layer = oskariLayerService.find(layerId);
     		//Check if the given order number matches this iteration's layer order number.
 			//If we are switching layer's order we want to assure we don't get the actual layer here.
-    		if(layer.getOrderNumber() != null && 
-    				layer.getOrderNumber().compareTo(orderNumber) == 0 &&
-    				(!"layer".equals(type) || ("layer".equals(type) && layer.getId() != nodeId))
+    		if(layer.getOrderNumber() == null ||
+    					(
+    						layer.getOrderNumber() != null && 
+    						layer.getOrderNumber().compareTo(orderNumber) == 0 &&
+    						(!"layer".equals(type) || ("layer".equals(type) && layer.getId() != nodeId))
+						)
     				) {
 				retLayer = layer;
     			break;
@@ -181,9 +185,12 @@ public class LayerAndGroupOrderHandler extends RestActionHandler {
     	for(MaplayerGroup group : groups) {
     		//Check if the given order number matches this iteration's group order number.
     		//Also if we are switching group's order we want to assure we don't get the actual group here.
-    		if(group.getOrderNumber() != null && 
-    				group.getOrderNumber().compareTo(orderNumber) == 0 &&
-    				(!"group".equals(type) || ("group".equals(type) && group.getId() != nodeId))
+    		if(group.getOrderNumber() == null ||
+    					(
+    						group.getOrderNumber() != null && 
+    						group.getOrderNumber().compareTo(orderNumber) == 0 &&
+    						(!"group".equals(type) || ("group".equals(type) && group.getId() != nodeId))
+						)
     				) {
     			retGroup = group;
     			break;
