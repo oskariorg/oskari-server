@@ -110,7 +110,7 @@ public class DBHandler {
             DatabaseMetaData dbmeta = conn.getMetaData();
             final String dbName = dbmeta.getDatabaseProductName().replace(' ', '_');
 
-            if (!hasOskariTables(dbmeta)) {
+            if (doesNotHaveOskariTables(dbmeta)) {
                 getLog().info("Creating db for " + dbName);
 
                 // core is responsible for creating initial database schema and migrating it
@@ -140,16 +140,16 @@ public class DBHandler {
         }
     }
 
-    private static boolean hasOskariTables(DatabaseMetaData dbmeta) throws SQLException {
+    private static boolean doesNotHaveOskariTables(DatabaseMetaData dbmeta) throws SQLException {
         Set<String> tablePrefixes = ConversionHelper.asSet("portti_%", "PORTTI_%", "oskari_%", "OSKARI_%");
         for(String tableTest: tablePrefixes) {
             try(final ResultSet result = dbmeta.getTables(null, null, tableTest, null)) {
                 if(result.next()) {
-                    return true;
+                    return false;
                 }
             }
         }
-        return false;
+        return true;
     }
 
     private static void createContent(Connection conn, final String dbname) throws IOException{
