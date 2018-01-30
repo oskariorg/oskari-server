@@ -16,4 +16,6 @@ public abstract class OskariMapLayerGroupService extends OskariComponentIbatisSe
     public abstract void updateLayerGroups(final long maplayerId, final Collection<MaplayerGroup> groups);
     public abstract List<Integer> findMaplayersByGroup(int id);
     public abstract MaplayerGroup findByName(final String name);
+    public abstract List<MaplayerGroup> findByParentId(final int groupId);
+    public abstract void updateOrder(MaplayerGroup group);
 }

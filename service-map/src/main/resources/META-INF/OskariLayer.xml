@@ -54,7 +54,7 @@
 
         <parameter property="capabilitiesLastUpdated" jdbcType="DATETIME" javaType="java.util.Date" />
         <parameter property="capabilitiesUpdateRateSec" jdbcType="INTEGER" javaType="int" />
-
+        
         <!-- parameter property="id" jdbcType="INTEGER" javaType="java.lang.Integer" mode="OUT" / -->
     </parameterMap>
 
@@ -98,7 +98,12 @@
 
         <parameter property="capabilitiesLastUpdated" jdbcType="DATETIME" javaType="java.util.Date" />
         <parameter property="capabilitiesUpdateRateSec" jdbcType="INTEGER" javaType="int" />
-
+        
+        <parameter property="id" />
+    </parameterMap>
+	
+	<parameterMap id="LayerUpdateOrderParameter" class="OskariLayer">
+		<parameter property="orderNumber" />
         <parameter property="id" />
     </parameterMap>
 
@@ -145,13 +150,15 @@
 
         l.created,
         l.updated,
+        gl.order_number,
 
         l.capabilities_last_updated,
         l.capabilities_update_rate_sec
 
         FROM
-        oskari_maplayer l LEFT OUTER JOIN oskari_maplayer_metadata m
-        ON  m.metadataid = l.metadataId
+        oskari_maplayer l
+        LEFT OUTER JOIN oskari_maplayer_metadata m ON  m.metadataid = l.metadataId
+        LEFT OUTER JOIN oskari_maplayer_group_link gl ON gl.maplayerid = l.id
         WHERE
         l.id = #id# OR l.parentId = #id#
         ORDER BY l.parentId ASC
@@ -201,13 +208,15 @@
 
         l.created,
         l.updated,
+        gl.order_number,
 
         l.capabilities_last_updated,
         l.capabilities_update_rate_sec
 
         FROM
-        oskari_maplayer l LEFT OUTER JOIN oskari_maplayer_metadata m
-        ON  m.metadataid = l.metadataId
+        oskari_maplayer l 
+        LEFT OUTER JOIN oskari_maplayer_metadata m ON  m.metadataid = l.metadataId
+        LEFT OUTER JOIN oskari_maplayer_group_link gl ON gl.maplayerid = l.id
         WHERE
         l.parentId = #id#
 
@@ -257,13 +266,15 @@
 
         l.created,
         l.updated,
+        gl.order_number,
 
         l.capabilities_last_updated,
         l.capabilities_update_rate_sec
 
         FROM
-        oskari_maplayer l LEFT OUTER JOIN oskari_maplayer_metadata m
-        ON  m.metadataid = l.metadataId
+        oskari_maplayer l 
+        LEFT OUTER JOIN oskari_maplayer_metadata m ON  m.metadataid = l.metadataId
+        LEFT OUTER JOIN oskari_maplayer_group_link gl ON gl.maplayerid = l.id
         WHERE
         l.externalId = #id#
         AND l.parentId = -1
@@ -314,13 +325,15 @@
 
         l.created,
         l.updated,
+        gl.order_number,
 
         l.capabilities_last_updated,
         l.capabilities_update_rate_sec
 
         FROM
-        oskari_maplayer l LEFT OUTER JOIN oskari_maplayer_metadata m
-        ON  m.metadataid = l.metadataId
+        oskari_maplayer l 
+        LEFT OUTER JOIN oskari_maplayer_metadata m ON  m.metadataid = l.metadataId
+        LEFT OUTER JOIN oskari_maplayer_group_link gl ON gl.maplayerid = l.id
         WHERE
         m.metadataid = #id#
         AND l.parentId = -1
@@ -371,13 +384,15 @@
 
         l.created,
         l.updated,
+        gl.order_number,
 
         l.capabilities_last_updated,
         l.capabilities_update_rate_sec
 
         FROM
-        oskari_maplayer l LEFT OUTER JOIN oskari_maplayer_metadata m
-        ON  m.metadataid = l.metadataId
+        oskari_maplayer l 
+        LEFT OUTER JOIN oskari_maplayer_metadata m ON  m.metadataid = l.metadataId
+        LEFT OUTER JOIN oskari_maplayer_group_link gl ON gl.maplayerid = l.id
         WHERE
         l.name = #name#
         AND  l.url = #url#
@@ -436,13 +451,15 @@
 
     l.created,
     l.updated,
+    gl.order_number,
 
     l.capabilities_last_updated,
     l.capabilities_update_rate_sec
 
     FROM
-    oskari_maplayer l LEFT OUTER JOIN oskari_maplayer_metadata m
-    ON  m.metadataid = l.metadataId
+    oskari_maplayer l 
+    LEFT OUTER JOIN oskari_maplayer_metadata m ON  m.metadataid = l.metadataId
+    LEFT OUTER JOIN oskari_maplayer_group_link gl ON gl.maplayerid = l.id
     <dynamic>
         <isParameterPresent>
             LEFT OUTER JOIN oskari_maplayer_projections p
@@ -505,13 +522,15 @@
 
         l.created,
         l.updated,
+    	gl.order_number,
 
         l.capabilities_last_updated,
         l.capabilities_update_rate_sec
 
         FROM
-        oskari_maplayer l LEFT OUTER JOIN oskari_maplayer_metadata m
-        ON  m.metadataid = l.metadataId
+        oskari_maplayer l
+        LEFT OUTER JOIN oskari_maplayer_metadata m ON  m.metadataid = l.metadataId
+    	LEFT OUTER JOIN oskari_maplayer_group_link gl ON gl.maplayerid = l.id
         <dynamic>
             <isNotNull property="crs">
                 LEFT OUTER JOIN oskari_maplayer_projections p
@@ -600,13 +619,15 @@
 
     l.created,
     l.updated,
+   	gl.order_number,
 
     l.capabilities_last_updated,
     l.capabilities_update_rate_sec
 
     FROM
-    oskari_maplayer l LEFT OUTER JOIN oskari_maplayer_metadata m
-    ON  m.metadataid = l.metadataId
+    oskari_maplayer l
+    LEFT OUTER JOIN oskari_maplayer_metadata m ON  m.metadataid = l.metadataId
+   	LEFT OUTER JOIN oskari_maplayer_group_link gl ON gl.maplayerid = l.id
     <dynamic>
         <isParameterPresent>
             LEFT OUTER JOIN oskari_maplayer_projections p
@@ -672,6 +693,12 @@
 
         values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
     </statement>
+    
+    <update id="updateOrder" parameterMap="LayerUpdateOrderParameter">
+        update oskari_maplayer_group_link set
+            order_number = ?
+        where maplayerid = ?
+    </update>
 
     <statement id="update" parameterMap="LayerUpdateParameter">
         UPDATE oskari_maplayer

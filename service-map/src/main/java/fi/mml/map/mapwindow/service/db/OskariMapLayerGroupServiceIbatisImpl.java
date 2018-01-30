@@ -134,6 +134,23 @@ public class OskariMapLayerGroupServiceIbatisImpl extends OskariMapLayerGroupSer
     public List<Integer> findMaplayersByGroup(int id) {
         return queryForList(getNameSpace() + ".findMaplayersByGroup", id);
     }
+    
+    /**
+     * Returns the map layer groups which belong to the given parent.
+     * FIXME: Quick and dirty
+     * @param groupId
+     * @return child groups of the given group
+     */
+    public List<MaplayerGroup> findByParentId(final int groupId) {
+    	final List<MaplayerGroup> allGroups = findAll();
+    	List<MaplayerGroup> retGroups = new ArrayList<>();
+        for(MaplayerGroup group : allGroups) {
+            if(group.getParentId() == groupId) {
+            	retGroups.add(group);
+            }
+        }
+        return retGroups;
+    }
 
     @Override
     public void update(final MaplayerGroup theme) {
@@ -174,6 +191,25 @@ public class OskariMapLayerGroupServiceIbatisImpl extends OskariMapLayerGroupSer
         } catch (Exception e) {
             throw new ServiceRuntimeException("Failed to set links", e);
         } finally {
+            if (client != null) {
+                try {
+                    client.endTransaction();
+                } catch (SQLException ignored) { }
+            }
+        }
+    }
+    
+
+    public void updateOrder(MaplayerGroup group) {
+    	SqlMapClient client = null;
+    	try {
+        	client = getSqlMapClient();
+            client.startTransaction();
+            client.update(getNameSpace() + ".updateOrder", group);
+            client.commitTransaction();
+    	} catch(Exception e) {
+    		throw new ServiceRuntimeException("Failed to update group ordering", e);
+    	} finally {
             if (client != null) {
                 try {
                     client.endTransaction();

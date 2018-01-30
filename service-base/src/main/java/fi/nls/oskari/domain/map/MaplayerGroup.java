@@ -17,6 +17,8 @@ public class MaplayerGroup extends JSONLocalizedName {
 	private int parentId;
 
 	private boolean selectable;
+	
+	private int orderNumber;
 
 	public int getId() {
 		return id;
@@ -63,5 +65,13 @@ public class MaplayerGroup extends JSONLocalizedName {
 
 	public void setSelectable(boolean selectable) {
 		this.selectable = selectable;
+	}
+
+	public int getOrderNumber() {
+		return orderNumber;
+	}
+
+	public void setOrderNumber(int orderNumber) {
+		this.orderNumber = orderNumber;
 	}
 }

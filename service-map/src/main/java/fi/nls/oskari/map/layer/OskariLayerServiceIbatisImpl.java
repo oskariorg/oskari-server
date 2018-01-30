@@ -317,7 +317,45 @@ public class OskariLayerServiceIbatisImpl extends OskariLayerService {
         LOG.debug("Parse layers with positive update rate sec took:", t2-t1, "ms");
         return layers;
     }
+    /**
+     * Returns the map layers which belong to the given parent.
+     * FIXME: Quick and dirty
+     * @param groupId
+     * @return layers of the given group
+     */
+    public List<OskariLayer> findAllByGroupId(final int groupId) {
+    	final List<OskariLayer> allLayers = findAll();
+    	List<OskariLayer> retLayers = new ArrayList<>();
+        for(OskariLayer layer : allLayers) {
+        	Set<MaplayerGroup> layerGroups = layer.getMaplayerGroups();
+        	for(MaplayerGroup group : layerGroups) {
+        		if(group.getParentId() == groupId) {
+        			retLayers.add(layer);
+        		}
+        	}
+        }
+        return retLayers;
+    }
 
+
+    public void updateOrder(OskariLayer layer) {
+    	SqlMapClient client = null;
+        try {
+            client = getSqlMapClient();
+            client.startTransaction();
+            client.insert(getNameSpace() + ".updateOrder", layer);
+            client.commitTransaction();
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to update layer ordering", e);
+        } finally {
+            if (client != null) {
+                try {
+                    client.endTransaction();
+                } catch (SQLException ignored) { }
+            }
+        }
+    }
+    
     public void update(final OskariLayer layer) {
         try {
             getSqlMapClient().update(getNameSpace() + ".update", layer);
