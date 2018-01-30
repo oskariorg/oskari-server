@@ -60,7 +60,11 @@ public class ViewHelper {
         if (layers != null) {
             for (int i = 0; i < layers.length(); ++i) {
                 final String layerfile = layers.getString(i);
-                selectedLayerIds.add(LayerHelper.setupLayer(layerfile));
+                try {
+                    selectedLayerIds.add(LayerHelper.setupLayer(layerfile));
+                } catch (Exception ex) {
+                    log.warn("Unable to setup layers from:", layerfile);
+                }
             }
         }
         return selectedLayerIds;
@@ -91,14 +95,7 @@ public class ViewHelper {
             view.setDevelopmentPath(oskari.getString("development_prefix"));
             view.setApplication(oskari.getString("application"));
 
-            final JSONArray layers = viewJSON.optJSONArray("selectedLayers");
-            final Set<Integer> selectedLayerIds = new HashSet<Integer>();
-            if (layers != null) {
-                for (int i = 0; i < layers.length(); ++i) {
-                    final String layerfile = layers.getString(i);
-                    selectedLayerIds.add(LayerHelper.setupLayer(layerfile));
-                }
-            }
+            setupLayers(viewJSON);
 
             final JSONArray bundles = viewJSON.getJSONArray("bundles");
             for (int i = 0; i < bundles.length(); ++i) {

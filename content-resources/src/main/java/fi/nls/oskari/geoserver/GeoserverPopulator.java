@@ -172,7 +172,7 @@ public class GeoserverPopulator {
         }
         // setup data producer/layergroup since original doesn't have one
         baseLayer.addGroup(LayerHelper.getGroup());
-        setupGeoserverConf(baseLayer, AnalysisHelper.MODULE_NAME);
+        setupGeoserverConf(baseLayer, UserlayerHelper.MODULE_NAME);
         baseLayer.setSrs_name(srs);
         if (!doInsert) {
             LayerHelper.update(baseLayer);

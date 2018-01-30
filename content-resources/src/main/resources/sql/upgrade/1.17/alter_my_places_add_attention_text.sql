@@ -1,1 +1,0 @@
-ALTER TABLE my_places ADD attention_text text;
