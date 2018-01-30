@@ -2,9 +2,22 @@
 
 ## 1.45.0
 
-## Oskari initialization
+### myplaces, userlayer, analysis baselayers migration
 
-Initialization of the software on empty database has been revised. All content creation has been moved to application
+Due to changes in the initialization the baselayer setup has been moved from core to functionality specific flyway modules.
+The layers are now inserted with the same code used with the setup.war that initializes geoserver configuration. Configs
+that are used include:
+
+    # initialized the layer srs (also updated by setup.war if used to generate GeoServer config)
+    oskari.native.srs=EPSG:4326
+    # connection info for GeoServer hosting the myplaces etc user content
+    geoserver.url=http://localhost:8080
+    geoserver.user=admin
+    geoserver.password=geoserver
+
+### Oskari initialization
+
+Initialization of Oskari on empty database has been revised. All content creation has been moved to application
  specific flyway modules. The core module only creates the base database, migrates the schema and transforms
   existing data when needed.
    
@@ -13,6 +26,10 @@ For existing databases this is a non-issue and everything works as before. For n
 
 The sample application now creates the appsetups, layers and users for demo-purposes. 
 Any oskari-server-extension should modify the application init on empty db accordingly.
+
+The template for oskari-server-extension has been updated to match this change: https://github.com/oskariorg/oskari-server-extension-template
+
+Check the readme for details!
 
 ### GeoServer migration
 
