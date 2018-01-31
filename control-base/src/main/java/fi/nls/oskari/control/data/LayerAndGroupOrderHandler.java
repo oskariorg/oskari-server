@@ -117,28 +117,28 @@ public class LayerAndGroupOrderHandler extends RestActionHandler {
             	if(layer != null) {
             		layer.setOrderNumber(nextIndex);
             		System.out.println("oskariLayerService.updateOrder("+layer.getId() + ", " +layer.getOrderNumber()+")");
-                	//oskariLayerService.updateOrder(layer);
+                	oskariLayerService.updateOrder(layer);
             	} else if(group != null) {
             		group.setOrderNumber(nextIndex);
             		System.out.println("oskariMapLayerGroupService.updateOrder("+group.getId() + ", " +group.getOrderNumber()+")");
-                	//oskariMapLayerGroupService.updateOrder(group);
+                	oskariMapLayerGroupService.updateOrder(group);
             	}
             }
             if(nodeLayer != null) {
             	nodeLayer.setOrderNumber(nodeIndex);
             	System.out.println("oskariLayerService.updateOrder("+nodeLayer.getId() + ", " +nodeLayer.getOrderNumber()+")");
-            	//oskariLayerService.updateOrder(nodeLayer);
+            	oskariLayerService.updateOrder(nodeLayer);
             	if(changeGroup) {
             		System.out.println("oskariLayerService.updateGroup("+nodeLayer.getId() + ", " +oldGroupId+", "+targetGroupId+")");
-            		//oskariLayerService.updateGroup(nodeLayer.getId(), oldGroupId, targetGroupId);
+            		oskariLayerService.updateGroup(nodeLayer.getId(), oldGroupId, targetGroupId);
             	}
             } else if(nodeGroup != null) {
             	nodeGroup.setOrderNumber(nodeIndex);
             	System.out.println("oskariLayerService.updateOrder("+nodeGroup.getId() + ", " +nodeGroup.getOrderNumber()+")");
-            	//oskariMapLayerGroupService.updateOrder(nodeGroup);
+            	oskariMapLayerGroupService.updateOrder(nodeGroup);
             	if(changeGroup) {
             		System.out.println("oskariMapLayerGroupService.updateGroupParent("+nodeGroup.getId() + ", "+targetGroupId+")");
-            		//oskariMapLayerGroupService.updateGroupParent(nodeGroup.getId(), targetGroupId);
+            		oskariMapLayerGroupService.updateGroupParent(nodeGroup.getId(), targetGroupId);
             	}
             }
         } catch (JSONException e) {
