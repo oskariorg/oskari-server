@@ -38,6 +38,8 @@ public class LayerAndGroupOrderHandler extends RestActionHandler {
     private static final String KEY_NODE_TYPE = "type";
     private static final String KEY_OLD_GROUP_ID = "oldGroupId";
     private static final String KEY_TARGET_GROUP_ID = "targetGroupId";
+    private static final String NODE_TYPE_LAYER = "layer";
+    private static final String NODE_TYPE_GROUP = "group";
 	
 	private OskariMapLayerGroupService oskariMapLayerGroupService;
 	private OskariLayerService oskariLayerService;
@@ -64,15 +66,13 @@ public class LayerAndGroupOrderHandler extends RestActionHandler {
     
     /**
      * Handles updating the order and group of the given node ie. layer or group.
-     * FIXME: Remove sysouts!
      * @param params
      * @throws ActionException
      */
     @Override
     public void handlePost(ActionParameters params) throws ActionException {
         checkForAdminPermission(params);
-        log.info("Updating layer/group order");
-        System.out.println("Updating layer/group order");
+        log.debug("Updating layer/group order");
         JSONObject orderJSON = getOrderJSON(params.getRequest());
         try {
         	//Get the dragged node id. Can be either a layer id or a group id.
@@ -81,11 +81,11 @@ public class LayerAndGroupOrderHandler extends RestActionHandler {
             int nodeIndex = orderJSON.getInt(KEY_NODE_INDEX);
             //Variable for the next index.
             int nextIndex = nodeIndex;
-            //The node has an old group.
+            //The node's old group.
             int oldGroupId = orderJSON.getInt(KEY_OLD_GROUP_ID);
-            //The node has a new group.
+            //The node's new group.
             int targetGroupId = orderJSON.getInt(KEY_TARGET_GROUP_ID);
-            //The node has a type
+            //The node's type
             String type = orderJSON.getString(KEY_NODE_TYPE);
             //Boolean flag to inform us later whether we want to change the group of the node.
             boolean changeGroup = false;
@@ -95,11 +95,9 @@ public class LayerAndGroupOrderHandler extends RestActionHandler {
             OskariLayer nodeLayer = null;
             MaplayerGroup nodeGroup = null;
             //Check if the node we dragged was either a layer or a group.
-            if("layer".equals(type)) {
-            	System.out.println("LAYER");
+            if(NODE_TYPE_LAYER.equals(type)) {
             	nodeLayer = oskariLayerService.find(nodeId);
             } else {
-            	System.out.println("GROUP");
             	nodeGroup = oskariMapLayerGroupService.find(nodeId);
             }
             //Get the layers and groups under the target group
@@ -113,39 +111,33 @@ public class LayerAndGroupOrderHandler extends RestActionHandler {
             	OskariLayer layer = this.getLayerByOrderNumber(layers, nextIndex, nodeId, type);
             	MaplayerGroup group = this.getGroupByOrderNumber(groups, nextIndex, nodeId, type);
             	++nextIndex;
-            	System.out.println("Index running wheee: "+nextIndex);
             	if(layer != null) {
             		layer.setOrderNumber(nextIndex);
-            		System.out.println("oskariLayerService.updateOrder("+layer.getId() + ", " +layer.getOrderNumber()+")");
                 	oskariLayerService.updateOrder(layer);
             	} else if(group != null) {
             		group.setOrderNumber(nextIndex);
-            		System.out.println("oskariMapLayerGroupService.updateOrder("+group.getId() + ", " +group.getOrderNumber()+")");
                 	oskariMapLayerGroupService.updateOrder(group);
             	}
             }
             if(nodeLayer != null) {
             	nodeLayer.setOrderNumber(nodeIndex);
-            	System.out.println("oskariLayerService.updateOrder("+nodeLayer.getId() + ", " +nodeLayer.getOrderNumber()+")");
             	oskariLayerService.updateOrder(nodeLayer);
             	if(changeGroup) {
-            		System.out.println("oskariLayerService.updateGroup("+nodeLayer.getId() + ", " +oldGroupId+", "+targetGroupId+")");
             		oskariLayerService.updateGroup(nodeLayer.getId(), oldGroupId, targetGroupId);
             	}
             } else if(nodeGroup != null) {
             	nodeGroup.setOrderNumber(nodeIndex);
-            	System.out.println("oskariLayerService.updateOrder("+nodeGroup.getId() + ", " +nodeGroup.getOrderNumber()+")");
             	oskariMapLayerGroupService.updateOrder(nodeGroup);
             	if(changeGroup) {
-            		System.out.println("oskariMapLayerGroupService.updateGroupParent("+nodeGroup.getId() + ", "+targetGroupId+")");
             		oskariMapLayerGroupService.updateGroupParent(nodeGroup.getId(), targetGroupId);
             	}
             }
+            orderJSON.put("success", true);
         } catch (JSONException e) {
         	log.warn(e);
             throw new ActionException("Failed to read request!");
         }
-        ResponseHelper.writeResponse(params, "{success: true}");
+        ResponseHelper.writeResponse(params, orderJSON);
     }
     
     /**
@@ -164,7 +156,7 @@ public class LayerAndGroupOrderHandler extends RestActionHandler {
     					(
     						layer.getOrderNumber() != null && 
     						layer.getOrderNumber().compareTo(orderNumber) == 0 &&
-    						(!"layer".equals(type) || ("layer".equals(type) && layer.getId() != nodeId))
+    						(!NODE_TYPE_LAYER.equals(type) || (layer.getId() != nodeId))
 						)
     				) {
 				retLayer = layer;
@@ -189,7 +181,7 @@ public class LayerAndGroupOrderHandler extends RestActionHandler {
     					(
     						group.getOrderNumber() != null && 
     						group.getOrderNumber().compareTo(orderNumber) == 0 &&
-    						(!"group".equals(type) || ("group".equals(type) && group.getId() != nodeId))
+    						(!NODE_TYPE_GROUP.equals(type) || (group.getId() != nodeId))
 						)
     				) {
     			retGroup = group;
@@ -209,8 +201,7 @@ public class LayerAndGroupOrderHandler extends RestActionHandler {
         try (InputStream in = req.getInputStream()) {
             final byte[] json = IOHelper.readBytes(in);
             final String jsonString = new String(json, StandardCharsets.UTF_8);
-            final JSONObject orderJSON = new JSONObject(jsonString);
-            return orderJSON;
+            return new JSONObject(jsonString);
         } catch (IOException e) {
             log.warn(e);
             throw new ActionException("Failed to read request!");
