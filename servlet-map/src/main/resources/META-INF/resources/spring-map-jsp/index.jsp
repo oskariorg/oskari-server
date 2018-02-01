@@ -6,9 +6,9 @@
 <html>
 <head>
     <title>Oskari - ${viewName}</title>
-    <script type="text/javascript" src="//code.jquery.com/jquery-1.7.2.min.js">
+    <script type="text/javascript" src="//code.jquery.com/jquery-1.10.2.min.js">
     </script>
-	
+
     <!-- ############# css ################# -->
     <link
             rel="stylesheet"
