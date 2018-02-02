@@ -1,7 +1,7 @@
 package org.oskari.print.wmts;
 
 import fi.nls.oskari.service.ServiceException;
-
+import fi.nls.oskari.cache.Cache;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
@@ -11,10 +11,8 @@ import fi.nls.oskari.service.capabilities.OskariLayerCapabilities;
 import fi.nls.oskari.wmts.WMTSCapabilitiesParser;
 import fi.nls.oskari.wmts.domain.TileMatrixSet;
 import fi.nls.oskari.wmts.domain.WMTSCapabilities;
-import java.util.Map;
 import java.util.Optional;
 import org.oskari.print.request.PrintLayer;
-import org.oskari.print.util.LRUCache;
 
 /**
  * Caches TileMatrixSets from WMTSCapabilities
@@ -24,7 +22,7 @@ public class TileMatrixSetCache {
     private static final Logger LOG = LogFactory.getLogger(TileMatrixSetCache.class);
 
     private final CapabilitiesCacheService capabilitiesService;
-    private final Map<String, TileMatrixSet> cache;
+    private final Cache<TileMatrixSet> cache;
 
     public TileMatrixSetCache() {
         this(new CapabilitiesCacheServiceMybatisImpl());
@@ -32,7 +30,7 @@ public class TileMatrixSetCache {
 
     public TileMatrixSetCache(CapabilitiesCacheService capabilitiesService) {
         this.capabilitiesService = capabilitiesService;
-        this.cache = LRUCache.createLRUCache(64);
+        this.cache = new Cache<>();
     }
 
     public Optional<TileMatrixSet> get(PrintLayer layer) throws ServiceException {
@@ -59,7 +57,7 @@ public class TileMatrixSetCache {
 
         WMTSCapabilities caps;
         try {
-            caps = new WMTSCapabilitiesParser().parseCapabilities(xml.getData());
+            caps = WMTSCapabilitiesParser.parseCapabilities(xml.getData());
         } catch (Exception e) {
             throw new ServiceException("Failed to parse WMTS capabilities, layerId: "
                     + layer.getId(), e);
