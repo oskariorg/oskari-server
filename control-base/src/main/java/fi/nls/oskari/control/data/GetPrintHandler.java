@@ -272,7 +272,7 @@ public class GetPrintHandler extends ActionHandler {
             // If that's missing just use 100 (full opacity)
             opacity = 100;
         }
-        return opacity > 100 ? 100 : opacity;
+        return Math.min(opacity, 100);
     }
 
     private void setTiles(ActionParameters params, List<PrintLayer> layers)
