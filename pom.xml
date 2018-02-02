@@ -105,6 +105,7 @@
 
         <mybatis.version>3.4.5</mybatis.version>
         <com.google.guava.version>18.0</com.google.guava.version>
+        <pdfbox.version>2.0.6</pdfbox.version>
         <!-- Test deps versions -->
         <powermock.version>1.5</powermock.version>
         <junit.version>4.11</junit.version>
@@ -786,6 +787,11 @@
                 <groupId>com.google.guava</groupId>
                 <artifactId>guava</artifactId>
                 <version>${com.google.guava.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.pdfbox</groupId>
+                <artifactId>pdfbox</artifactId>
+                <version>${pdfbox.version}</version>
             </dependency>
 
             <!-- Managed test dependencies -->
