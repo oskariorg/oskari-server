@@ -2,7 +2,7 @@ package org.oskari.print;
 
 import fi.nls.oskari.service.ServiceException;
 
-import org.oskari.print.wmts.TileMatrixSetCache;
+import org.oskari.print.wmts.WMTSCapabilitiesCache;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -60,7 +60,7 @@ public class PDF {
         PAGESIZES_LANDSCAPE = new PDRectangle[PAGESIZES.length];
         for (int i = 0; i < PAGESIZES.length; i++) {
             PDRectangle rect = PAGESIZES[i];
-            PAGESIZES_LANDSCAPE[i] = new PDRectangle(rect.getHeight(), rect.getHeight());
+            PAGESIZES_LANDSCAPE[i] = new PDRectangle(rect.getHeight(), rect.getWidth());
         }
 
         // 1, 2, 5, 10, 20, 50, ...
@@ -75,7 +75,7 @@ public class PDF {
     /**
      * This method should be called via PrintService
      */
-    protected static void getPDF(PrintRequest request, PDDocument doc, TileMatrixSetCache tmsCache)
+    protected static void getPDF(PrintRequest request, PDDocument doc, WMTSCapabilitiesCache tmsCache)
             throws IOException, ServiceException {
         float mapWidth = pixelsToPoints(request.getWidth());
         float mapHeight = pixelsToPoints(request.getHeight());

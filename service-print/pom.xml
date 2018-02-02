@@ -33,9 +33,8 @@
             <version>${hystrix.version}</version>
         </dependency>
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <scope>test</scope>
+            <groupId>fi.nls.oskari</groupId>
+            <artifactId>shared-test-resources</artifactId>
         </dependency>
     </dependencies>
 

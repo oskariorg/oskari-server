@@ -1,9 +1,9 @@
 package org.oskari.print.wmts;
 
 /**
- * WMTS GetTile Request (KVP) Builder
+ * WMTS GetTile Request Builder (KVP)
  */
-public class GetTileBuilderKVP {
+public class GetTileRequestBuilderKVP implements GetTileRequestBuilder {
 
     private String endPoint;
     private String layer;
@@ -14,42 +14,42 @@ public class GetTileBuilderKVP {
     private int tileRow = -1;
     private int tileCol = -1;
 
-    public GetTileBuilderKVP endPoint(String endPoint) {
+    public GetTileRequestBuilderKVP endPoint(String endPoint) {
         this.endPoint = endPoint;
         return this;
     }
 
-    public GetTileBuilderKVP format(String format) {
+    public GetTileRequestBuilderKVP format(String format) {
         this.format = format;
         return this;
     }
 
-    public GetTileBuilderKVP layer(String layer) {
+    public GetTileRequestBuilderKVP layer(String layer) {
         this.layer = layer;
         return this;
     }
 
-    public GetTileBuilderKVP style(String style) {
+    public GetTileRequestBuilderKVP style(String style) {
         this.style = style;
         return this;
     }
 
-    public GetTileBuilderKVP tileMatrixSet(String tileMatrixSet) {
+    public GetTileRequestBuilderKVP tileMatrixSet(String tileMatrixSet) {
         this.tileMatrixSet = tileMatrixSet;
         return this;
     }
 
-    public GetTileBuilderKVP tileMatrix(String tileMatrix) {
+    public GetTileRequestBuilderKVP tileMatrix(String tileMatrix) {
         this.tileMatrix = tileMatrix;
         return this;
     }
 
-    public GetTileBuilderKVP tileRow(int tileRow) {
+    public GetTileRequestBuilderKVP tileRow(int tileRow) {
         this.tileRow = tileRow;
         return this;
     }
 
-    public GetTileBuilderKVP tileCol(int tileCol) {
+    public GetTileRequestBuilderKVP tileCol(int tileCol) {
         this.tileCol = tileCol;
         return this;
     }

@@ -13,7 +13,7 @@ import java.util.concurrent.Future;
 import org.oskari.print.loader.AsyncImageLoader;
 import org.oskari.print.request.PrintLayer;
 import org.oskari.print.request.PrintRequest;
-import org.oskari.print.wmts.TileMatrixSetCache;
+import org.oskari.print.wmts.WMTSCapabilitiesCache;
 
 public class PNG {
 
@@ -22,7 +22,7 @@ public class PNG {
     /**
      * This method should be called via PrintService
      */
-    protected static BufferedImage getBufferedImage(PrintRequest request, TileMatrixSetCache tmsCache)
+    protected static BufferedImage getBufferedImage(PrintRequest request, WMTSCapabilitiesCache tmsCache)
             throws ServiceException {
         final int width = request.getWidth();
         final int height = request.getHeight();

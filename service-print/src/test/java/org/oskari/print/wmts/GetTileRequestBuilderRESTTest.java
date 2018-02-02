@@ -4,21 +4,21 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
-public class GetTileBuilderRESTTest {
+public class GetTileRequestBuilderRESTTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void nullTemplateThrowsException() {
-        new GetTileBuilderREST(null);
+        new GetTileRequestBuilderREST(null);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void emptyTemplateThrowsException() {
-        new GetTileBuilderREST("");
+        new GetTileRequestBuilderREST("");
     }
 
     @Test
     public void singleKnownParameterWorks() {
-        GetTileBuilderREST builder = new GetTileBuilderREST("foo/{layer}/baz");
+        GetTileRequestBuilderREST builder = new GetTileRequestBuilderREST("foo/{layer}/baz");
         builder.layer("bar");
 
         String expected = "foo/bar/baz";
@@ -28,7 +28,7 @@ public class GetTileBuilderRESTTest {
 
     @Test
     public void settingTheWrongParameterChangesNothing() {
-        GetTileBuilderREST builder = new GetTileBuilderREST("foo/{layer}/baz");
+        GetTileRequestBuilderREST builder = new GetTileRequestBuilderREST("foo/{layer}/baz");
         builder.style("bar");
 
         String expected = "foo//baz";
@@ -38,7 +38,7 @@ public class GetTileBuilderRESTTest {
 
     @Test
     public void unknownKeyInTemplateIsHandledAsText() {
-        GetTileBuilderREST builder = new GetTileBuilderREST("foo/{bar}/baz");
+        GetTileRequestBuilderREST builder = new GetTileRequestBuilderREST("foo/{bar}/baz");
 
         String expected = "foo/{bar}/baz";
         String actual = builder.build();
@@ -48,7 +48,7 @@ public class GetTileBuilderRESTTest {
     @Test
     public void changingTheBuildersValueUpdatesResult() {
         String template = "http://www.maps.bob/wmts/1.0.0/{layer}/{style}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png";
-        GetTileBuilderREST builder = new GetTileBuilderREST(template).layer("etopo2")
+        GetTileRequestBuilderREST builder = new GetTileRequestBuilderREST(template).layer("etopo2")
                 .style("default")
                 .tileMatrixSet("WholeWorld_CRS_84")
                 .tileMatrix("1g")

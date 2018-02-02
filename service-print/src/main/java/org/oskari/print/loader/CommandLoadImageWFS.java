@@ -20,6 +20,7 @@ public class CommandLoadImageWFS extends CommandLoadImageBase {
                                int width,
                                int height,
                                double[] bbox) {
+        super(layer.getId());
         this.layer = layer;
         this.width = width;
         this.height = height;
@@ -33,7 +34,7 @@ public class CommandLoadImageWFS extends CommandLoadImageBase {
 
         for (int i = 0; i < tiles.length; i++) {
             String url = tiles[i].getURL();
-            images.add(new CommandLoadImageFromURL(url).queue());
+            images.add(new CommandLoadImageFromURL(layer.getId(), url).queue());
         }
 
         final double x1 = bbox[0];
@@ -56,7 +57,9 @@ public class CommandLoadImageWFS extends CommandLoadImageBase {
             int dy2 = getPt(tileBbox[1], y1, distanceHeight, height);
 
             BufferedImage img = images.get(i).get();
-            g2d.drawImage(img, dx1, dy1, dx2, dy2, 0, 0, img.getWidth(), img.getHeight(), null);
+            if (img != null) {
+                g2d.drawImage(img, dx1, dy1, dx2, dy2, 0, 0, img.getWidth(), img.getHeight(), null);
+            }
         }
 
         g2d.dispose();
