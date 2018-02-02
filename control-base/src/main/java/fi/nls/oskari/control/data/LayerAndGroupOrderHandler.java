@@ -132,7 +132,6 @@ public class LayerAndGroupOrderHandler extends RestActionHandler {
             		oskariMapLayerGroupService.updateGroupParent(nodeGroup.getId(), targetGroupId);
             	}
             }
-            orderJSON.put("success", true);
         } catch (JSONException e) {
         	log.warn(e);
             throw new ActionException("Failed to read request!");
