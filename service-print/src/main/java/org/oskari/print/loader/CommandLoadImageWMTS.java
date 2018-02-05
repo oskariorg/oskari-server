@@ -52,7 +52,8 @@ public class CommandLoadImageWMTS extends CommandLoadImageBase {
             String srs,
             WMTSCapabilities capabilities,
             double resolution) {
-        super(layer.getId());
+        // Use Layers id as commandName
+        super(Integer.toString(layer.getId()));
         this.layer = layer;
         this.width = width;
         this.height = height;
@@ -118,7 +119,8 @@ public class CommandLoadImageWMTS extends CommandLoadImageBase {
             for (int col = 0; col < countTileCols; col++) {
                 requestBuilder.tileCol(minTileCol + col);
                 String uri = requestBuilder.build();
-                futureTiles.add(new CommandLoadImageFromURL(layer.getId(), uri).queue());
+                futureTiles.add(new CommandLoadImageFromURL(
+                        Integer.toString(layer.getId()), uri).queue());
             }
         }
 

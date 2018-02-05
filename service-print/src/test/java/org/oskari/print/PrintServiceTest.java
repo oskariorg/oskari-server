@@ -37,7 +37,7 @@ public class PrintServiceTest {
         request.setResolution(2);
 
         PrintLayer bg = new PrintLayer();
-        bg.setId("foo");
+        bg.setId(1);
         bg.setName("ortokuva_vaaravari");
         bg.setType(OskariLayer.TYPE_WMTS);
         bg.setVersion("1.0.0");
@@ -46,7 +46,7 @@ public class PrintServiceTest {
         bg.setOpacity(100);
 
         PrintLayer fg = new PrintLayer();
-        fg.setId("bar");
+        fg.setId(2);
         fg.setName("kiinteistotunnukset");
         fg.setType(OskariLayer.TYPE_WMTS);
         fg.setVersion("1.0.0");
@@ -90,7 +90,7 @@ public class PrintServiceTest {
         request.setResolution(2);
 
         PrintLayer bg = new PrintLayer();
-        bg.setId("foo");
+        bg.setId(1);
         bg.setName("taustakartta");
         bg.setType(OskariLayer.TYPE_WMTS);
         bg.setVersion("1.0.0");
@@ -99,7 +99,7 @@ public class PrintServiceTest {
         bg.setOpacity(100);
 
         PrintLayer fg = new PrintLayer();
-        fg.setId("bar");
+        fg.setId(2);
         fg.setType(OskariLayer.TYPE_WMTS);
         fg.setVersion("1.0.0");
         fg.setName("kiinteistotunnukset");

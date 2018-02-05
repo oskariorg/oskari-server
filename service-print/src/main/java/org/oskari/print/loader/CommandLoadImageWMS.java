@@ -32,7 +32,7 @@ public class CommandLoadImageWMS extends CommandLoadImageBase {
                                int height,
                                double[] bbox,
                                String srsName) {
-        super(layer.getId());
+        super(Integer.toString(layer.getId()));
         this.layer = layer;
         this.width = width;
         this.height = height;

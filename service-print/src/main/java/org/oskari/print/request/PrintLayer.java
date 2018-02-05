@@ -2,7 +2,7 @@ package org.oskari.print.request;
 
 public class PrintLayer {
 
-    private String id;
+    private int id;
     private String type;
     private String url;
     private String name;
@@ -14,11 +14,11 @@ public class PrintLayer {
     private String password;
     private PrintTile[] tiles;
 
-    public String getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(int id) {
         this.id = id;
     }
 

@@ -264,7 +264,7 @@ public class PDF {
                 PDImageXObject imgObject = LosslessFactory.createFromImage(doc, bi);
 
                 // Set layer (Optional Content Group)
-                PDOptionalContentGroup ocg = PDFBoxUtil.getOCG(doc, layer.getId());
+                PDOptionalContentGroup ocg = PDFBoxUtil.getOCG(doc, layer.getName());
                 PDFBoxUtil.setOCG(imgObject, ocg);
 
                 int opacity = layer.getOpacity();

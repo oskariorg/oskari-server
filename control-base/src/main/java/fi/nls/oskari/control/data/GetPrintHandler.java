@@ -247,7 +247,7 @@ public class GetPrintHandler extends ActionHandler {
         }
 
         PrintLayer layer = new PrintLayer();
-        layer.setId(oskariLayer.getExternalId());
+        layer.setId(oskariLayer.getId());
         layer.setType(oskariLayer.getType());
         layer.setUrl(oskariLayer.getUrl());
         layer.setVersion(oskariLayer.getVersion());

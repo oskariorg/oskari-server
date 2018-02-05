@@ -27,10 +27,10 @@ public class WMTSCapabilitiesCache {
     }
 
     public WMTSCapabilities get(PrintLayer layer) throws ServiceException {
-        WMTSCapabilities capabilities = wmtsCapabilitiesCache.get(layer.getId());
+        WMTSCapabilities capabilities = wmtsCapabilitiesCache.get(Integer.toString(layer.getId()));
         if (capabilities == null) {
             capabilities = parseCapabilities(layer);
-            wmtsCapabilitiesCache.put(layer.getId(), capabilities);
+            wmtsCapabilitiesCache.put(Integer.toString(layer.getId()), capabilities);
         }
         return capabilities;
     }
