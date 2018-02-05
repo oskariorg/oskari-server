@@ -128,7 +128,7 @@ public class LayerJSONFormatter {
 
             JSONArray groups = new JSONArray();
             try {
-                for (MaplayerGroup mapLayerGroup : layer.getMaplayerGroups()) {
+                for (MaplayerGroup mapLayerGroup : OSKARI_MAP_LAYER_GROUP_SERVICE.findByMaplayerId(layer.getId())) {
                     JSONObject group = new JSONObject();
                     group.put("id", mapLayerGroup.getId());
                     group.put("name", mapLayerGroup.getName(lang));
