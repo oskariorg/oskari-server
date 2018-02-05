@@ -9,7 +9,6 @@ public class PrintLayer {
     private String style;
     private String srsName;
     private String version;
-    private String tileMatrixSet;
     private int opacity;
     private String username;
     private String password;
@@ -61,14 +60,6 @@ public class PrintLayer {
 
     public void setVersion(String version) {
         this.version = version;
-    }
-
-    public String getTileMatrixSet() {
-        return tileMatrixSet;
-    }
-
-    public void setTileMatrixSet(String tileMatrixSet) {
-        this.tileMatrixSet = tileMatrixSet;
     }
 
     public int getOpacity() {

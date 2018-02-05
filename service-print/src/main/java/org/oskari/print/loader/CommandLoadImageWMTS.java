@@ -13,6 +13,7 @@ import org.oskari.print.wmts.GetTileRequestBuilder;
 import org.oskari.print.wmts.GetTileRequestBuilderKVP;
 import org.oskari.print.wmts.GetTileRequestBuilderREST;
 
+import fi.nls.oskari.map.geometry.ProjectionHelper;
 import fi.nls.oskari.wmts.domain.ResourceUrl;
 import fi.nls.oskari.wmts.domain.TileMatrix;
 import fi.nls.oskari.wmts.domain.TileMatrixSet;
@@ -38,11 +39,13 @@ public class CommandLoadImageWMTS extends CommandLoadImageBase {
     private final WMTSCapabilities capabilities;
     private final double metersPerUnit;
     private final double[] bbox;
+    private final String srs;
 
     public CommandLoadImageWMTS(PrintLayer layer,
             int width,
             int height,
             double[] bbox,
+            String srs,
             int zoom,
             WMTSCapabilities capabilities,
             double metersPerUnit) {
@@ -51,6 +54,7 @@ public class CommandLoadImageWMTS extends CommandLoadImageBase {
         this.width = width;
         this.height = height;
         this.bbox = bbox;
+        this.srs = srs;
         this.zoom = zoom;
         this.capabilities = capabilities;
         this.metersPerUnit = metersPerUnit;
@@ -58,30 +62,18 @@ public class CommandLoadImageWMTS extends CommandLoadImageBase {
 
     @Override
     public BufferedImage run() throws Exception {
-        String tileMatrixSetId = layer.getTileMatrixSet();
-        TileMatrixSet tileMatrixSet = capabilities.getTileMatrixSets().stream()
-                .filter(tms -> tileMatrixSetId.equals(tms.getId()))
-                .findAny()
-                .orElseThrow(() -> new RuntimeException("Could not find TileMatrixSet with id: "
-                        + tileMatrixSetId + " from Services Capabilities response"));
+        WMTSCapabilitiesLayer layerCapabilities = getLayerCapabilities();
+        TileMatrixSet tms = getTileMatrixSet();
+        TileMatrix tm = getTileMatrix(tms);
+        
+        int tileWidth = tm.getTileWidth();
+        int tileHeight = tm.getTileHeight();
 
-        // Only support TileMatrices where the id is identical to the zoom level
-        String tileMatrixId = Integer.toString(zoom);
-        TileMatrix matrix = tileMatrixSet.getTileMatrixMap().get(tileMatrixId);
-        if (matrix == null) {
-            throw new RuntimeException(String.format(
-                    "Could not find TileMatrix with id: %s from TileMatrixSet: %s",
-                    tileMatrixId, tileMatrixSetId));
-        }
-
-        int tileWidth = matrix.getTileWidth();
-        int tileHeight = matrix.getTileHeight();
-
-        double[] topLeft = matrix.getTopLeftCorner();
+        double[] topLeft = tm.getTopLeftCorner();
         double minX = topLeft[0];
         double maxY = topLeft[1];
 
-        double pixelSpan = getPixelSpan(matrix.getScaleDenominator(), metersPerUnit);
+        double pixelSpan = getPixelSpan(tm.getScaleDenominator(), metersPerUnit);
 
         // Round to the nearest px
         long minXPx = Math.round((bbox[0] - minX) / pixelSpan);
@@ -113,17 +105,12 @@ public class CommandLoadImageWMTS extends CommandLoadImageBase {
         List<Future<BufferedImage>> futureTiles =
                 new ArrayList<Future<BufferedImage>>(countTileRows * countTileCols);
 
-        WMTSCapabilitiesLayer layerCapabilities = capabilities.getLayer(layer.getName());
-        if (layerCapabilities == null) {
-            throw new RuntimeException("Could not find layer from capabilities");
-        }
-
         ResourceUrl tileResourceUrl = layerCapabilities.getResourceUrlByType("tile");
         GetTileRequestBuilder requestBuilder;
         if (tileResourceUrl != null) {
-            requestBuilder = sendTileRequestREST(tileMatrixId, tileResourceUrl);
+            requestBuilder = sendTileRequestREST(tms.getId(), tm.getId(), tileResourceUrl);
         } else {
-            requestBuilder = sendTileRequestsKVP(tileMatrixId, layerCapabilities);
+            requestBuilder = sendTileRequestsKVP(tms.getId(), tm.getId(), layerCapabilities);
         }
 
         for (int row = 0; row < countTileRows; row++) {
@@ -155,21 +142,50 @@ public class CommandLoadImageWMTS extends CommandLoadImageBase {
         return bi;
     }
 
-    private GetTileRequestBuilder sendTileRequestREST(String tileMatrixId, ResourceUrl tileResourceUrl) {
+    private WMTSCapabilitiesLayer getLayerCapabilities() throws IllegalArgumentException {
+        WMTSCapabilitiesLayer layerCapabilities = capabilities.getLayer(layer.getName());
+        if (layerCapabilities != null) {
+            return layerCapabilities;
+        }
+        throw new IllegalArgumentException("Could not find layer from Capabilities");
+    }
+
+    private TileMatrix getTileMatrix(TileMatrixSet tms) throws IllegalArgumentException {
+        // Only support TileMatrices where the id is identical to the zoom level
+        String tileMatrixId = Integer.toString(zoom);
+        TileMatrix matrix = tms.getTileMatrixMap().get(tileMatrixId);
+        if (matrix != null) {
+            return matrix;
+        }
+        throw new IllegalArgumentException(String.format(
+                "Could not find TileMatrix with id: %s from TileMatrixSet: %s",
+                tileMatrixId, tms.getId()));
+    }
+
+    private TileMatrixSet getTileMatrixSet() throws IllegalArgumentException {
+        for (TileMatrixSet tms : capabilities.getTileMatrixSets()) {
+            if (srs.equals(ProjectionHelper.shortSyntaxEpsg(tms.getCrs()))) {
+                return tms;
+            }
+        }
+        throw new IllegalArgumentException("Could not find TileMatrixSet for the requested crs");
+    }
+
+    private GetTileRequestBuilder sendTileRequestREST(String tileMatrixSetId, String tileMatrixId, ResourceUrl tileResourceUrl) {
         String template = tileResourceUrl.getTemplate();
         return new GetTileRequestBuilderREST(template)
             .layer(layer.getName())
             .style(layer.getStyle())
-            .tileMatrixSet(layer.getTileMatrixSet())
+            .tileMatrixSet(tileMatrixSetId)
             .tileMatrix(tileMatrixId);
     }
 
-    private GetTileRequestBuilder sendTileRequestsKVP(String tileMatrixId, WMTSCapabilitiesLayer layerCapabilities) {
+    private GetTileRequestBuilder sendTileRequestsKVP(String tileMatrixSetId, String tileMatrixId, WMTSCapabilitiesLayer layerCapabilities) {
         String format = getFormat(layerCapabilities.getFormats());
         return new GetTileRequestBuilderKVP().endPoint(layer.getUrl())
                 .layer(layer.getName())
                 .style(layer.getStyle())
-                .tileMatrixSet(layer.getTileMatrixSet())
+                .tileMatrixSet(tileMatrixSetId)
                 .tileMatrix(tileMatrixId)
                 .format(format);
     }

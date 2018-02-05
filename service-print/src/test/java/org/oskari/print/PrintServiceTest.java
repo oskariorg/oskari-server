@@ -47,7 +47,6 @@ public class PrintServiceTest {
         bg.setVersion("1.0.0");
         bg.setUrl("https://karttamoottori.maanmittauslaitos.fi/maasto/wmts");
         bg.setStyle("default");
-        bg.setTileMatrixSet("ETRS-TM35FIN");
         bg.setOpacity(100);
 
         PrintLayer fg = new PrintLayer();
@@ -57,7 +56,6 @@ public class PrintServiceTest {
         fg.setVersion("1.0.0");
         fg.setUrl("https://karttamoottori.maanmittauslaitos.fi/kiinteisto/wmts");
         fg.setStyle("default");
-        fg.setTileMatrixSet("ETRS-TM35FIN");
         fg.setOpacity(100);
 
         request.setLayers(Arrays.asList(bg, fg));
@@ -80,7 +78,7 @@ public class PrintServiceTest {
     }
 
     @Test
-    // @Ignore("Depends on karttamoottori.maanmittauslaitos.fi, doesn't test anything")
+    @Ignore("Depends on karttamoottori.maanmittauslaitos.fi, doesn't test anything")
     public void testPDF() throws ServiceException, IOException {
         PrintRequest request = new PrintRequest();
         request.setFormat(PrintFormat.PDF);
@@ -100,23 +98,21 @@ public class PrintServiceTest {
 
         PrintLayer bg = new PrintLayer();
         bg.setId("foo");
-        bg.setName("ortokuva_vaaravari");
+        bg.setName("taustakartta");
         bg.setType(OskariLayer.TYPE_WMTS);
         bg.setVersion("1.0.0");
         bg.setUrl("https://karttamoottori.maanmittauslaitos.fi/maasto/wmts");
         bg.setStyle("default");
-        bg.setTileMatrixSet("ETRS-TM35FIN");
         bg.setOpacity(100);
 
         PrintLayer fg = new PrintLayer();
         fg.setId("bar");
-        fg.setName("kiinteistotunnukset");
         fg.setType(OskariLayer.TYPE_WMTS);
         fg.setVersion("1.0.0");
+        fg.setName("kiinteistotunnukset");
         fg.setUrl("https://karttamoottori.maanmittauslaitos.fi/kiinteisto/wmts");
         fg.setStyle("default");
-        fg.setTileMatrixSet("ETRS-TM35FIN");
-        fg.setOpacity(100);
+        fg.setOpacity(30);
 
         request.setLayers(Arrays.asList(bg, fg));
 
@@ -133,8 +129,7 @@ public class PrintServiceTest {
         PrintService service = new PrintService(mock);
         PDDocument doc = new PDDocument();
         service.getPDF(request, doc);
-        // File file = File.createTempFile("print-test", ".pdf");
-        File file = new File("C:/Omat/pdf.pdf");
+        File file = File.createTempFile("print-test", ".pdf");
         doc.save(file);
         doc.close();
         Desktop.getDesktop().open(file);

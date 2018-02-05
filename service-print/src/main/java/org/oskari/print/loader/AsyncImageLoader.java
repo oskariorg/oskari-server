@@ -37,7 +37,7 @@ public class AsyncImageLoader {
                         width, height, bbox, srsName).queue());
                 break;
             case OskariLayer.TYPE_WMTS:
-                images.add(new CommandLoadImageWMTS(layer, width, height, bbox,
+                images.add(new CommandLoadImageWMTS(layer, width, height, bbox, srsName,
                         request.getZoomLevel(), cache.get(layer), request.getMetersPerUnit()).queue());
                 break;
             case OskariLayer.TYPE_WFS:
