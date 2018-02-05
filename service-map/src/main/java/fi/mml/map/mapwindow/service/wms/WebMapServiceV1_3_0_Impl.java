@@ -9,6 +9,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.geotools.geometry.jts.JTS;
+import org.geotools.referencing.CRS;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.opengis.referencing.operation.MathTransform;
+
+import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.GeometryFactory;
+import com.vividsolutions.jts.geom.Polygon;
+
+import fi.mml.capabilities.BoundingBoxDocument.BoundingBox;
 import fi.mml.capabilities.KeywordDocument;
 import fi.mml.capabilities.LayerDocument.Layer;
 import fi.mml.capabilities.LegendURLDocument.LegendURL;
@@ -42,6 +53,32 @@ public class WebMapServiceV1_3_0_Impl extends AbstractWebMapService {
             WMSCapabilitiesDocument wms = WMSCapabilitiesDocument.Factory.parse(data);
 
             Layer layerCapabilities = wms.getWMSCapabilities().getCapability().getLayer();
+            BoundingBox bbox = layerCapabilities.getBoundingBoxArray()[0];
+            if(bbox != null) {
+            	String crs = bbox.getCRS();
+        		double maxx = bbox.getMaxx();
+            	double maxy = bbox.getMaxy();
+            	double minx = bbox.getMinx();
+            	double miny = bbox.getMiny();
+            	Coordinate topRightCoord = new Coordinate(maxx, maxy);
+            	Coordinate lowerRightCoord = new Coordinate(maxx, miny);
+            	Coordinate lowerLeftCoord = new Coordinate(minx, miny);
+            	Coordinate topLeftCoord = new Coordinate(minx, maxy);
+            	Coordinate topRightEndCoord = new Coordinate(maxx, maxy);
+            	ArrayList<Coordinate> coords = new ArrayList<>();
+            	coords.add(topRightCoord);
+            	coords.add(lowerRightCoord);
+            	coords.add(lowerLeftCoord);
+            	coords.add(topLeftCoord);
+            	coords.add(topRightEndCoord);
+            	GeometryFactory fact = new GeometryFactory();
+            	Polygon poly = fact.createPolygon(coords.toArray(new Coordinate[coords.size()]));
+            	CoordinateReferenceSystem sourceCRS = CRS.decode(crs, true);
+                CoordinateReferenceSystem targetCRS = CRS.decode("EPSG:4326", true);
+                MathTransform transform = CRS.findMathTransform(sourceCRS, targetCRS, true);
+                Geometry targetGeometry = JTS.transform(poly, transform);
+            	this.geom = targetGeometry.toText();
+            }
             LinkedList<Layer> path = new LinkedList<>();
             boolean found = find(layerCapabilities, layerName, path, 0);
             if (!found) {

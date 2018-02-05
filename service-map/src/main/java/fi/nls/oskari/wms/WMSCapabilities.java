@@ -24,6 +24,7 @@ public class WMSCapabilities implements WebMapService {
     private List<WMSStyle> styles = new ArrayList<WMSStyle>();
     private List<String> time = new ArrayList<>();
     private String[] CRSs = new String[0];
+    private String geom = null;
 
     public void setQueryable(boolean val) {
         this.queryable = val;
@@ -117,6 +118,11 @@ public class WMSCapabilities implements WebMapService {
     @Override
     public String[] getCRSs() {
         return CRSs;
+    }
+    
+    @Override
+    public String getGeom() {
+        return geom;
     }
 
 }

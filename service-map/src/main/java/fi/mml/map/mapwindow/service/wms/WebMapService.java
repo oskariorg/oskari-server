@@ -72,5 +72,11 @@ public interface WebMapService {
      * @return String array
      */
     String[] getCRSs();
+    
+    /**
+     * Returns a WKT representation of the bounding box of the layer.
+     * @return String bounding box
+     */
+    String getGeom();
 
 }
