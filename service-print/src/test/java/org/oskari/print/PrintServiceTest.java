@@ -32,13 +32,10 @@ public class PrintServiceTest {
         request.setEast(500000);
         request.setNorth(6750000);
         request.setSrsName("EPSG:3067");
-
-        request.setWidth(1000);
-        request.setHeight(1000);
+        request.setWidth(512);
+        request.setHeight(512);
         request.setZoomLevel(12);
         request.setResolution(2);
-        request.setUnits("m");
-        request.setMetersPerUnit(1);
 
         PrintLayer bg = new PrintLayer();
         bg.setId("foo");
@@ -93,8 +90,6 @@ public class PrintServiceTest {
         request.setHeight(700);
         request.setZoomLevel(12);
         request.setResolution(2);
-        request.setUnits("m");
-        request.setMetersPerUnit(1);
 
         PrintLayer bg = new PrintLayer();
         bg.setId("foo");

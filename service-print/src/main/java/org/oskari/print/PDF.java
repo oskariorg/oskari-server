@@ -181,6 +181,7 @@ public class PDF {
             return;
         }
 
+        /*
         String units = request.getUnits();
         if (units == null) {
             LOG.debug("Units not available in request, not drawing Scale Line");
@@ -249,6 +250,7 @@ public class PDF {
         float cx = x1 + ((x2 - x1) / 2);
         PDFBoxUtil.drawTextCentered(stream, distanceStr,
                 FONT, FONT_SIZE_SCALE, cx, y1 + 5);
+        */
     }
 
     private static void drawLayers(PDDocument doc, PDPageContentStream stream,

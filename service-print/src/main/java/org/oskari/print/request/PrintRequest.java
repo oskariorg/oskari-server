@@ -9,8 +9,6 @@ public class PrintRequest {
     private String srsName;
     private int zoomLevel;
     private double resolution;
-    private double metersPerUnit;
-    private String units;
     private int width;
     private int height;
     private int targetWidth;
@@ -60,22 +58,6 @@ public class PrintRequest {
 
     public void setResolution(double resolution) {
         this.resolution = resolution;
-    }
-
-    public double getMetersPerUnit() {
-        return metersPerUnit;
-    }
-
-    public void setMetersPerUnit(double metersPerUnit) {
-        this.metersPerUnit = metersPerUnit;
-    }
-
-    public void setUnits(String units) {
-        this.units = units;
-    }
-
-    public String getUnits() {
-        return units;
     }
 
     public int getWidth() {

@@ -8,7 +8,6 @@ import java.util.Set;
 import java.util.concurrent.Future;
 
 import org.oskari.print.request.PrintLayer;
-import org.oskari.print.util.Units;
 import org.oskari.print.wmts.GetTileRequestBuilder;
 import org.oskari.print.wmts.GetTileRequestBuilderKVP;
 import org.oskari.print.wmts.GetTileRequestBuilderREST;
@@ -36,10 +35,10 @@ public class CommandLoadImageWMTS extends CommandLoadImageBase {
     private final int width;
     private final int height;
     private final int zoom;
-    private final WMTSCapabilities capabilities;
-    private final double metersPerUnit;
     private final double[] bbox;
+    private final double resolution;
     private final String srs;
+    private final WMTSCapabilities capabilities;
 
     public CommandLoadImageWMTS(PrintLayer layer,
             int width,
@@ -48,7 +47,7 @@ public class CommandLoadImageWMTS extends CommandLoadImageBase {
             String srs,
             int zoom,
             WMTSCapabilities capabilities,
-            double metersPerUnit) {
+            double resolution) {
         super(layer.getId());
         this.layer = layer;
         this.width = width;
@@ -57,7 +56,7 @@ public class CommandLoadImageWMTS extends CommandLoadImageBase {
         this.srs = srs;
         this.zoom = zoom;
         this.capabilities = capabilities;
-        this.metersPerUnit = metersPerUnit;
+        this.resolution = resolution;
     }
 
     @Override
@@ -73,23 +72,21 @@ public class CommandLoadImageWMTS extends CommandLoadImageBase {
         double minX = topLeft[0];
         double maxY = topLeft[1];
 
-        double pixelSpan = getPixelSpan(tm.getScaleDenominator(), metersPerUnit);
-
         // Round to the nearest px
-        long minXPx = Math.round((bbox[0] - minX) / pixelSpan);
-        long maxYPx = Math.round((maxY - bbox[3]) / pixelSpan);
+        long minXPx = Math.round((bbox[0] - minX) / resolution);
+        long maxYPx = Math.round((maxY - bbox[3]) / resolution);
 
         int minTileCol = (int) (minXPx / tileWidth);
         int minTileRow = (int) (maxYPx / tileHeight);
 
-        double minTileX = minX + minTileCol * tileWidth * pixelSpan;
-        double maxTileY = maxY - minTileRow * tileHeight * pixelSpan;
+        double minTileX = minX + minTileCol * tileWidth * resolution;
+        double maxTileY = maxY - minTileRow * tileHeight * resolution;
 
         double offsetX = bbox[0] - minTileX;
         double offsetY = maxTileY - bbox[3];
 
-        int offsetXPixels = (int) Math.round((offsetX / pixelSpan));
-        int offsetYPixels = (int) Math.round((offsetY / pixelSpan));
+        int offsetXPixels = (int) Math.round((offsetX / resolution));
+        int offsetYPixels = (int) Math.round((offsetY / resolution));
 
         int countTileCols = 1 + (width + offsetXPixels) / tileWidth;
         int countTileRows = 1 + (height + offsetYPixels) / tileHeight;
@@ -197,10 +194,6 @@ public class CommandLoadImageWMTS extends CommandLoadImageBase {
             }
         }
         throw new RuntimeException("Layer doesn't support any of the supported formats");
-    }
-
-    public static double getPixelSpan(double scaleDenominator, double metersPerUnit) {
-        return scaleDenominator * Units.OGC_PIXEL_SIZE_METRE / metersPerUnit;
     }
 
 }
