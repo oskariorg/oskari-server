@@ -151,7 +151,7 @@ public class CommandLoadImageWMTS extends CommandLoadImageBase {
     }
 
     private TileMatrix getTileMatrix(TileMatrixSet tms) throws IllegalArgumentException {
-        double wantedScale = resolution * Units.OGC_PIXEL_SIZE_METRE;
+        double wantedScale = resolution / Units.OGC_PIXEL_SIZE_METRE;
         for (TileMatrix matrix : tms.getTileMatrixMap().values()) {
             double scaleDenominator = matrix.getScaleDenominator();
             LOG.debug("Comparing scaleDenominators, wanted:", wantedScale,
