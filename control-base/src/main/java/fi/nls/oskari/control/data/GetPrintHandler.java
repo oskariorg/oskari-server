@@ -45,7 +45,6 @@ public class GetPrintHandler extends ActionHandler {
 
     private static final String PARM_COORD = "coord";
     private static final String PARM_RESOLUTION = "resolution";
-    private static final String PARM_ZOOMLEVEL = "zoomLevel";
     private static final String PARM_PAGE_SIZE = "pageSize";
     private static final String PARM_MAPLAYERS = "mapLayers";
     private static final String PARM_FORMAT = "format";
@@ -112,7 +111,6 @@ public class GetPrintHandler extends ActionHandler {
         PrintRequest request = new PrintRequest();
 
         request.setSrsName(params.getRequiredParam(PARM_SRSNAME));
-        request.setZoomLevel(params.getRequiredParamInt(PARM_ZOOMLEVEL));
         request.setResolution(params.getRequiredParamDouble(PARM_RESOLUTION));
 
         setPagesize(params, request);

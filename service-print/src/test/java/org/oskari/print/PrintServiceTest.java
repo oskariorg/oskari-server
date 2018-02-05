@@ -34,7 +34,6 @@ public class PrintServiceTest {
         request.setSrsName("EPSG:3067");
         request.setWidth(512);
         request.setHeight(512);
-        request.setZoomLevel(12);
         request.setResolution(2);
 
         PrintLayer bg = new PrintLayer();
@@ -88,7 +87,6 @@ public class PrintServiceTest {
 
         request.setWidth(1500);
         request.setHeight(700);
-        request.setZoomLevel(12);
         request.setResolution(2);
 
         PrintLayer bg = new PrintLayer();

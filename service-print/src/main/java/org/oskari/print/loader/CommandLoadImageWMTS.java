@@ -8,10 +8,13 @@ import java.util.Set;
 import java.util.concurrent.Future;
 
 import org.oskari.print.request.PrintLayer;
+import org.oskari.print.util.Units;
 import org.oskari.print.wmts.GetTileRequestBuilder;
 import org.oskari.print.wmts.GetTileRequestBuilderKVP;
 import org.oskari.print.wmts.GetTileRequestBuilderREST;
 
+import fi.nls.oskari.log.LogFactory;
+import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.geometry.ProjectionHelper;
 import fi.nls.oskari.wmts.domain.ResourceUrl;
 import fi.nls.oskari.wmts.domain.TileMatrix;
@@ -25,6 +28,9 @@ import fi.nls.oskari.wmts.domain.WMTSCapabilitiesLayer;
  */
 public class CommandLoadImageWMTS extends CommandLoadImageBase {
 
+    private static final Logger LOG = LogFactory.getLogger(CommandLoadImageWMTS.class);
+    private static final double EPSILON = 0.015625;
+
     private static final String[] FORMAT_TO_USE = new String[] {
             "image/png",
             "image/png8",
@@ -34,7 +40,6 @@ public class CommandLoadImageWMTS extends CommandLoadImageBase {
     private final PrintLayer layer;
     private final int width;
     private final int height;
-    private final int zoom;
     private final double[] bbox;
     private final double resolution;
     private final String srs;
@@ -45,7 +50,6 @@ public class CommandLoadImageWMTS extends CommandLoadImageBase {
             int height,
             double[] bbox,
             String srs,
-            int zoom,
             WMTSCapabilities capabilities,
             double resolution) {
         super(layer.getId());
@@ -54,7 +58,6 @@ public class CommandLoadImageWMTS extends CommandLoadImageBase {
         this.height = height;
         this.bbox = bbox;
         this.srs = srs;
-        this.zoom = zoom;
         this.capabilities = capabilities;
         this.resolution = resolution;
     }
@@ -148,15 +151,17 @@ public class CommandLoadImageWMTS extends CommandLoadImageBase {
     }
 
     private TileMatrix getTileMatrix(TileMatrixSet tms) throws IllegalArgumentException {
-        // Only support TileMatrices where the id is identical to the zoom level
-        String tileMatrixId = Integer.toString(zoom);
-        TileMatrix matrix = tms.getTileMatrixMap().get(tileMatrixId);
-        if (matrix != null) {
-            return matrix;
+        double wantedScale = resolution * Units.OGC_PIXEL_SIZE_METRE;
+        for (TileMatrix matrix : tms.getTileMatrixMap().values()) {
+            double scaleDenominator = matrix.getScaleDenominator();
+            LOG.debug("Comparing scaleDenominators, wanted:", wantedScale,
+                    "current:", scaleDenominator);
+            if (Math.abs(wantedScale - matrix.getScaleDenominator()) < EPSILON) {
+                return matrix;
+            }
         }
         throw new IllegalArgumentException(String.format(
-                "Could not find TileMatrix with id: %s from TileMatrixSet: %s",
-                tileMatrixId, tms.getId()));
+                "Could not find TileMatrix with scaleDenominator: %f", wantedScale));
     }
 
     private TileMatrixSet getTileMatrixSet() throws IllegalArgumentException {
