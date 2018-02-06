@@ -269,8 +269,7 @@ public class SaveLayerHandler extends ActionHandler {
             }
         }
 
-        // FIXME: Update JSON key when frontend implementation was updated
-        String groupId = params.getHttpParam("inspireTheme", "-1");
+        String groupId = params.getHttpParam("maplayerGroups", "-1");
         ml.emptyMaplayerGroups();
         if(groupId.contains(",")) {
             String[] groupIds = groupId.split(",");
