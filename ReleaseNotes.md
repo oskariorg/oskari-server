@@ -3,8 +3,24 @@
 ## 1.46.0
 
 ### Renamings
-- InspireThemes action renamed to MapLayerGroups
 
+#### InspireThmeHandler
+- InspireThemes action renamed to MapLayerGroups
+- also handler class renamed to MapLayerGroupsHandler
+
+#### inspireTheme key
+
+Changed inpireTheme key to maplayerGroups in GetWmsServicesHandler and SaveLayerHandler.
+
+### control-base
+
+#### New `GetHierarchicalMapLayerGroups` action
+
+This new action handles hierarchical layerlist layers getting ordered by groups.
+
+#### New `LayerAndGroupOrder` action
+
+This new action handles layers and groups order savings.
 
 ## 1.45.0
 
