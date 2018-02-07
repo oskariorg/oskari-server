@@ -4,6 +4,7 @@ import static fi.nls.oskari.control.ActionConstants.PARAM_LANGUAGE;
 import static fi.nls.oskari.control.ActionConstants.PARAM_SRS;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -21,10 +22,6 @@ import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.domain.map.MaplayerGroup;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.map.layer.OskariLayerService;
-import fi.nls.oskari.map.layer.OskariLayerServiceIbatisImpl;
-import fi.nls.oskari.service.capabilities.CapabilitiesCacheService;
-import fi.nls.oskari.service.capabilities.CapabilitiesCacheServiceMybatisImpl;
 import fi.nls.oskari.util.ResponseHelper;
 
 /**
@@ -35,13 +32,7 @@ public class GetMapLayerGroupsHandler extends ActionHandler {
 	
 	private static Logger log = LogFactory.getLogger(GetMapLayerGroupsHandler.class);
 
-	private final static String KEY_GROUPS = "groups";
-	private final static String KEY_PARENT_ID = "parentId";
-	private final static String KEY_ID = "id";
-	
-	private final OskariLayerService layerService = new OskariLayerServiceIbatisImpl();
-    private final CapabilitiesCacheService capabilitiesCacheService = new CapabilitiesCacheServiceMybatisImpl();
-
+	private static final String KEY_GROUPS = "groups";
 
     @Override
     public void handleAction(ActionParameters params) throws ActionException {
@@ -54,8 +45,9 @@ public class GetMapLayerGroupsHandler extends ActionHandler {
 
         // Get main groups
         List<MaplayerGroup> mainGroups = layerGroups.stream()
-                .filter(g -> g.getParentId() == -1).collect(Collectors.toList());
-
+                .filter(g -> g.getParentId() == -1)
+                .sorted(Comparator.comparing(MaplayerGroup::getOrderNumber, Comparator.nullsLast(Comparator.naturalOrder())))
+                .collect(Collectors.toList());
         JSONArray json = new JSONArray();
         try{
             for(MaplayerGroup group : mainGroups) {
@@ -73,7 +65,9 @@ public class GetMapLayerGroupsHandler extends ActionHandler {
 
                 // Get main group subgroups
                 List<MaplayerGroup> subgroups = layerGroups.stream()
-                        .filter(g -> g.getParentId() == group.getId()).collect(Collectors.toList());
+                        .filter(g -> g.getParentId() == group.getId())
+                		.sorted(Comparator.comparing(MaplayerGroup::getOrderNumber, Comparator.nullsLast(Comparator.naturalOrder())))
+                        .collect(Collectors.toList());
                 for(MaplayerGroup subgroup: subgroups) {
                     List<Integer> intSubLayerIds = groupService.findMaplayersByGroup(subgroup.getId());
                     List<String> strSubLayerIds = new ArrayList<>();
@@ -89,7 +83,9 @@ public class GetMapLayerGroupsHandler extends ActionHandler {
 
                     // Get subgroup subgroups
                     List<MaplayerGroup> subgroupSubgroups = layerGroups.stream()
-                            .filter(g -> g.getParentId() == subgroup.getId()).collect(Collectors.toList());
+                            .filter(g -> g.getParentId() == subgroup.getId())
+                    		.sorted(Comparator.comparing(MaplayerGroup::getOrderNumber, Comparator.nullsLast(Comparator.naturalOrder())))
+                            .collect(Collectors.toList());
                     JSONArray subgroupSubgroupsJSON = new JSONArray();
                     for(MaplayerGroup subgroupSubgroup: subgroupSubgroups) {
                         List<Integer> intSubgroupLayerIds = groupService.findMaplayersByGroup(subgroupSubgroup.getId());

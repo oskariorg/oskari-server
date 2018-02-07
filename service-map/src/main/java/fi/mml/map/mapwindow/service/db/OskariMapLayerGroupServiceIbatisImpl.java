@@ -32,6 +32,10 @@ public class OskariMapLayerGroupServiceIbatisImpl extends OskariMapLayerGroupSer
 		return "MaplayerGroup";
 	}
 
+	public void flushCache() {
+		ID_CACHE.flush(true);
+	}
+	
     public List<MaplayerGroup> findByMaplayerId(final int layerId) {
 
         final List<Integer> links = LINK_CACHE.get(Integer.toString(layerId));
@@ -149,6 +153,7 @@ public class OskariMapLayerGroupServiceIbatisImpl extends OskariMapLayerGroupSer
             	retGroups.add(group);
             }
         }
+        retGroups.sort((g1, g2) -> g1.getOrderNumber().compareTo(g2.getOrderNumber()));
         return retGroups;
     }
 

@@ -57,7 +57,7 @@
     </select>
 
     <select id="findMaplayersByGroup" resultClass="int" parameterClass="int">
-        select maplayerid from oskari_maplayer_group_link where groupid = #id#
+        select maplayerid from oskari_maplayer_group_link where groupid = #id# order by order_number
     </select>
     
     <statement id="insert" parameterMap="MaplayerGroupInsertParameter" resultClass="int">
