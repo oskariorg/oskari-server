@@ -127,8 +127,7 @@ public class GetWmsServicesHandler extends ActionHandler {
 //                mapProperties.put("descriptionLink", ml.getDescriptionLink());
                 mapProperties.put("legendImage", ml.getLegendImage());
 
-                // FIXME: Update JSON key when frontend implementation was updated
-                mapProperties.put("inspireTheme", ml.getMaplayerGroup().getId());
+                mapProperties.put("maplayerGroups", ml.getMaplayerGroup().getId());
                 mapProperties.put("dataUrl", ml.getMetadataId());
 //                mapProperties.put("metadataUrl", ml.getMetadataUrl());
 //                mapProperties.put("orderNumber", ml.getOrdernumber());

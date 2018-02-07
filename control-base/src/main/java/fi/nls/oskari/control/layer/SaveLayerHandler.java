@@ -191,8 +191,6 @@ public class SaveLayerHandler extends ActionHandler {
 
                     // Styles setup
                     handleWfsLayerStyles(params, wfsl);
-
-
                 }
 
                 addPermissionsForRoles(ml,
@@ -271,9 +269,18 @@ public class SaveLayerHandler extends ActionHandler {
             }
         }
 
-        // FIXME: Update JSON key when frontend implementation was updated
-        MaplayerGroup maplayerGroup = oskariMapLayerGroupService.find(params.getHttpParam("inspireTheme", -1));
-        ml.addGroup(maplayerGroup);
+        String groupId = params.getHttpParam("maplayerGroups", "-1");
+        ml.emptyMaplayerGroups();
+        if(groupId.contains(",")) {
+            String[] groupIds = groupId.split(",");
+            for (String groupid: groupIds) {
+                MaplayerGroup maplayerGroup = oskariMapLayerGroupService.find(ConversionHelper.getInt(groupid, -1));
+                ml.addGroup(maplayerGroup);
+            }
+        } else {
+            MaplayerGroup maplayerGroup = oskariMapLayerGroupService.find(ConversionHelper.getInt(groupId, -1));
+            ml.addGroup(maplayerGroup);
+        }
 
         ml.setVersion(params.getHttpParam("version", ""));
 

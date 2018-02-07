@@ -100,17 +100,17 @@ public class OskariLayer extends JSONLocalizedNameAndTitle implements Comparable
     }
     public void addGroups(final List<MaplayerGroup> groups) {
         if(groups != null && !groups.isEmpty()) {
-            addGroup(groups.iterator().next());
-            // TODO: use addAll when we support more than one theme
-            //maplayerGroups.addAll(themes);
+            maplayerGroups.addAll(groups);
         }
     }
     public void addGroup(final MaplayerGroup group) {
         if(group != null) {
-            // TODO: remove the clearing when we support more than one theme
-            maplayerGroups.clear();
             maplayerGroups.add(group);
         }
+    }
+
+    public void emptyMaplayerGroups() {
+        maplayerGroups.clear();
     }
 
     // we only link one group at the moment so get the first one
