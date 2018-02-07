@@ -119,11 +119,17 @@ public class LayerAndGroupOrderHandler extends RestActionHandler {
             //Check if the node we dragged was either a layer or a group.
             if(NODE_TYPE_LAYER.equals(type)) {
             	nodeLayer = oskariLayerService.find(nodeId);
+            	if(nodeLayer == null) {
+            		throw new ActionException("No layer found with the given id: "+nodeId);
+            	}
             	nodePrevIndex = (nodeLayer.getOrderNumber() == null) ? nodePrevIndex : nodeLayer.getOrderNumber();
             } else {
             	//Bypass cache here so that we can get the real previous index from the database.
             	oskariMapLayerGroupService.flushCache();
             	nodeGroup = oskariMapLayerGroupService.find(nodeId);
+            	if(nodeGroup == null) {
+            		throw new ActionException("No group found with the given id: "+nodeId);
+            	}
             	nodePrevIndex = (nodeGroup.getOrderNumber() == null) ? nodePrevIndex : nodeGroup.getOrderNumber();
             }
             //Get the layers and groups under the target group.
