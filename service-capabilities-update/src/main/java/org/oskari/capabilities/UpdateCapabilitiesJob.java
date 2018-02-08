@@ -1,18 +1,12 @@
 package org.oskari.capabilities;
 
-import static java.util.stream.Collectors.groupingBy;
-
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
-import javax.xml.stream.XMLStreamException;
-
-import fi.mml.map.mapwindow.service.wms.WebMapService;
 import fi.nls.oskari.annotation.Oskari;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.log.LogFactory;
@@ -25,13 +19,10 @@ import fi.nls.oskari.map.view.util.ViewHelper;
 import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.service.capabilities.CapabilitiesCacheService;
 import fi.nls.oskari.service.capabilities.CapabilitiesCacheServiceMybatisImpl;
-import fi.nls.oskari.service.capabilities.OskariLayerCapabilitiesHelper;
-import fi.nls.oskari.wmts.WMTSCapabilitiesParser;
-import fi.nls.oskari.wmts.domain.WMTSCapabilities;
 import fi.nls.oskari.worker.ScheduledJob;
 
 /**
- * ScheludedJob that updates Capabilities of WMS and WMTS layers
+ * ScheludedJob that updates Capabilities of layers
  * <ul>
  * <li>Updates oskari_capabilities_cache rows</li>
  * <li>Updates OskariLayer objects via #setCapabilities()</li>
@@ -43,7 +34,7 @@ public class UpdateCapabilitiesJob extends ScheduledJob {
     private static final Logger LOG = LogFactory.getLogger(UpdateCapabilitiesJob.class);
 
     private final OskariLayerService layerService;
-    private final CapabilitiesCacheService capabilitiesCacheService;
+    private final CapabilitiesUpdateService capabilitiesUpdateService;
     private final ViewService viewService;
 
     public UpdateCapabilitiesJob() {
@@ -53,10 +44,11 @@ public class UpdateCapabilitiesJob extends ScheduledJob {
     }
 
     public UpdateCapabilitiesJob(OskariLayerService layerService,
-            CapabilitiesCacheService capabilitiesService,
+            CapabilitiesCacheService capabilitiesCacheService,
             ViewService viewService) {
         this.layerService = layerService;
-        this.capabilitiesCacheService = capabilitiesService;
+        this.capabilitiesUpdateService = new CapabilitiesUpdateService(
+                layerService, capabilitiesCacheService);
         this.viewService = viewService;
     }
 
@@ -72,21 +64,11 @@ public class UpdateCapabilitiesJob extends ScheduledJob {
             return;
         }
 
-        layerService.findAllWithPositiveUpdateRateSec().stream()
-                .filter(layer -> canUpdate(layer.getType()))
+        List<OskariLayer> layersToUpdate = layerService.findAllWithPositiveUpdateRateSec().stream()
                 .filter(layer -> shouldUpdate(layer))
-                .collect(groupingBy(layer -> new UrlTypeVersion(layer)))
-                .forEach((utv, layers) -> updateCapabilities(utv, layers, systemCRSs));
-    }
+                .collect(Collectors.toList());
 
-    protected static boolean canUpdate(String type) {
-        switch (type) {
-        case OskariLayer.TYPE_WMS:
-        case OskariLayer.TYPE_WMTS:
-            return true;
-        default:
-            return false;
-        }
+        capabilitiesUpdateService.updateCapabilities(layersToUpdate, systemCRSs);
     }
 
     protected static boolean shouldUpdate(OskariLayer layer) {
@@ -104,102 +86,6 @@ public class UpdateCapabilitiesJob extends ScheduledJob {
         }
         LOG.debug("Skipping layerId:", layer.getId(), "as recently updated");
         return false;
-    }
-
-    private void updateCapabilities(UrlTypeVersion utv,
-            List<OskariLayer> layers, Set<String> systemCRSs) {
-        final String url = utv.url;
-        final String type = utv.type;
-        final String version = utv.version;
-        final String user = layers.get(0).getUsername();
-        final String pass = layers.get(0).getPassword();
-
-        int[] ids = layers.stream().mapToInt(OskariLayer::getId).toArray();
-        LOG.debug("Updating Capabilities for a group of layers - url:", url,
-                "type:", type, "version:", version, "ids:", Arrays.toString(ids));
-
-        final String data;
-        try {
-            data = capabilitiesCacheService.getCapabilities(url, type, user, pass, version, true).getData();
-        } catch (ServiceException e) {
-            LOG.warn(e, "Could not find get Capabilities, url:", url,
-                    "type:", type, "version:", version, "ids:", Arrays.toString(ids));
-            return;
-        }
-
-        switch (type) {
-        case OskariLayer.TYPE_WMS:
-            updateWMSLayers(layers, data, systemCRSs);
-            break;
-        case OskariLayer.TYPE_WMTS:
-            updateWMTSLayers(layers, data, systemCRSs);
-            break;
-        }
-    }
-
-    private void updateWMSLayers(List<OskariLayer> layers, String data, Set<String> systemCRSs) {
-        for (OskariLayer layer : layers) {
-            WebMapService wms = OskariLayerCapabilitiesHelper.parseWMSCapabilities(data, layer);
-            if (wms == null) {
-                LOG.warn("Failed to parse Capabilities for layerId:", layer.getId());
-                continue;
-            }
-            OskariLayerCapabilitiesHelper.setPropertiesFromCapabilitiesWMS(wms, layer, systemCRSs);
-            layerService.update(layer);
-        }
-    }
-
-    private void updateWMTSLayers(List<OskariLayer> layers, String data, Set<String> systemCRSs) {
-        final WMTSCapabilities wmts;
-        try {
-            wmts = WMTSCapabilitiesParser.parseCapabilities(data);
-        } catch (XMLStreamException | IllegalArgumentException e) {
-            int[] ids = layers.stream().mapToInt(OskariLayer::getId).toArray();
-            LOG.warn(e, "Failed to parse WMTS GetCapabilities ids:", Arrays.toString(ids));
-            return;
-        }
-
-        for (OskariLayer layer : layers) {
-            try {
-                OskariLayerCapabilitiesHelper.setPropertiesFromCapabilitiesWMTS(wmts, layer, null, systemCRSs);
-                layerService.update(layer);
-            } catch (IllegalArgumentException e) {
-                LOG.warn(e, "Failed to update layerId:", layer.getId());
-            }
-        }
-    }
-
-    private static class UrlTypeVersion {
-
-        private final String url;
-        private final String type;
-        private final String version;
-
-        private UrlTypeVersion(OskariLayer layer) {
-            url = layer.getSimplifiedUrl(true);
-            type = layer.getType();
-            version = layer.getVersion();
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (o == null || !(o instanceof UrlTypeVersion)) {
-                return false;
-            }
-            if (o == this) {
-                return true;
-            }
-            UrlTypeVersion s = (UrlTypeVersion) o;
-            return url.equals(s.url)
-                    && type.equals(s.type)
-                    && version.equals(s.version);
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(url, type, version);
-        }
-
     }
 
 }

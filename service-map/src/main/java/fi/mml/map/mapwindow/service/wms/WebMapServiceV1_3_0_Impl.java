@@ -22,12 +22,12 @@ import fi.mml.capabilities.WMSCapabilitiesDocument;
 public class WebMapServiceV1_3_0_Impl extends AbstractWebMapService {
 
     public WebMapServiceV1_3_0_Impl(String url, String data, String layerName)
-            throws WebMapServiceParseException {
+            throws WebMapServiceParseException, LayerNotFoundInCapabilitiesException {
         this(url, data, layerName, null);
     }
 
     public WebMapServiceV1_3_0_Impl(String url, String data, String layerName, Set<String> allowedCRS)
-            throws WebMapServiceParseException {
+            throws WebMapServiceParseException, LayerNotFoundInCapabilitiesException {
         super(url);
         parseXML(data, layerName, allowedCRS);
     }
@@ -37,7 +37,7 @@ public class WebMapServiceV1_3_0_Impl extends AbstractWebMapService {
     }
 
     private void parseXML(String data, String layerName, Set<String> allowedCRS)
-            throws WebMapServiceParseException {
+            throws WebMapServiceParseException, LayerNotFoundInCapabilitiesException {
         try {
             WMSCapabilitiesDocument wms = WMSCapabilitiesDocument.Factory.parse(data);
 
@@ -45,7 +45,7 @@ public class WebMapServiceV1_3_0_Impl extends AbstractWebMapService {
             LinkedList<Layer> path = new LinkedList<>();
             boolean found = find(layerCapabilities, layerName, path, 0);
             if (!found) {
-                throw new WebMapServiceParseException("Could not find layer");
+                throw new LayerNotFoundInCapabilitiesException("Could not find layer " + layerName);
             }
 
             this.styles = new HashMap<>();

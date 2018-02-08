@@ -28,7 +28,10 @@
             <groupId>fi.nls.oskari.service</groupId>
             <artifactId>oskari-search-wfs</artifactId>
         </dependency>
-
+        <dependency>
+            <groupId>org.oskari</groupId>
+            <artifactId>service-capabilities-update</artifactId>
+        </dependency>
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>

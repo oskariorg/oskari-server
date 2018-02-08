@@ -11,9 +11,10 @@ import fi.nls.oskari.service.styles.SldStylesService;
 import fi.nls.oskari.service.styles.SldStylesServiceMybatisImpl;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.ResponseHelper;
-import fi.nls.oskari.util.ServiceFactory;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.oskari.service.util.ServiceFactory;
 
 import java.net.URLDecoder;
 import java.util.List;

@@ -8,9 +8,11 @@ import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.layer.DataProviderService;
 import fi.nls.oskari.util.RequestHelper;
 import fi.nls.oskari.util.ResponseHelper;
-import fi.nls.oskari.util.ServiceFactory;
 
 import javax.servlet.http.HttpServletRequest;
+
+import org.oskari.service.util.ServiceFactory;
+
 import java.util.Map;
 
 import static fi.nls.oskari.control.ActionConstants.PARAM_ID;

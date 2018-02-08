@@ -27,9 +27,10 @@ import fi.nls.oskari.permission.domain.Resource;
 import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.service.UserService;
 import fi.nls.oskari.util.ConversionHelper;
-import fi.nls.oskari.util.ServiceFactory;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.oskari.service.util.ServiceFactory;
 
 import java.util.ArrayList;
 import java.util.List;
