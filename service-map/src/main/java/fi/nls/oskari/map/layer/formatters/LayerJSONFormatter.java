@@ -34,6 +34,7 @@ public class LayerJSONFormatter {
     public static final String PROPERTY_AJAXURL = "oskari.ajax.url.prefix";
     public static final String KEY_STYLES = "styles";
     public static final String KEY_SRS = "srs";
+    public static final String KEY_ATTRIBUTE_FORCED_SRS = "forcedSRS";
 
     private static final OskariMapLayerGroupService OSKARI_MAP_LAYER_GROUP_SERVICE = new OskariMapLayerGroupServiceIbatisImpl();
     private static final DataProviderService groupService = new DataProviderServiceIbatisImpl();

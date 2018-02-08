@@ -59,6 +59,12 @@ public class LayerJSONFormatterWMTS extends LayerJSONFormatter {
                 layer.setUrl(originalUrl);
             }
         }
+
+        Set<String> srs = LayerJSONFormatterWMS.getSRSs(layer.getAttributes(), layer.getCapabilities());
+        if (srs != null) {
+            JSONHelper.putValue(layerJson, KEY_SRS, new JSONArray(srs));
+        }
+
         return layerJson;
     }
 
