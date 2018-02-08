@@ -1,5 +1,6 @@
 package fi.nls.oskari.domain.map.view;
 
+import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
 import org.apache.commons.lang.text.StrSubstitutor;
 import org.json.JSONObject;
@@ -270,4 +271,18 @@ public class View implements Serializable {
 
         return view;
     }
+
+    public String getSrsName() {
+        Bundle mapfull = getBundleByName("mapfull");
+        if (mapfull == null) {
+            return null;
+        }
+        JSONObject config = mapfull.getConfigJSON();
+        JSONObject mapOptions = JSONHelper.getJSONObject(config, "mapOptions");
+        if (mapOptions == null) {
+            return null;
+        }
+        return JSONHelper.getStringFromJSON(mapOptions, "srsName", null);
+    }
+
 }

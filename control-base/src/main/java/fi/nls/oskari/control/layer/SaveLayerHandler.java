@@ -19,6 +19,8 @@ import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.data.domain.OskariLayerResource;
 import fi.nls.oskari.map.layer.DataProviderService;
 import fi.nls.oskari.map.layer.OskariLayerService;
+import fi.nls.oskari.map.view.ViewService;
+import fi.nls.oskari.map.view.util.ViewHelper;
 import fi.nls.oskari.permission.domain.Permission;
 import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.service.capabilities.CapabilitiesCacheService;
@@ -48,6 +50,7 @@ public class SaveLayerHandler extends ActionHandler {
     }
 
     private OskariLayerService mapLayerService = ServiceFactory.getMapLayerService();
+    private ViewService viewService = ServiceFactory.getViewService();
     private WFSLayerConfigurationService wfsLayerService = ServiceFactory.getWfsLayerService();
     private PermissionsService permissionsService = ServiceFactory.getPermissionsService();
     private DataProviderService dataProviderService = ServiceFactory.getDataProviderService();
@@ -335,18 +338,24 @@ public class SaveLayerHandler extends ActionHandler {
         ml.setRealtime(ConversionHelper.getBoolean(params.getHttpParam("realtime"), ml.getRealtime()));
         ml.setRefreshRate(ConversionHelper.getInt(params.getHttpParam("refreshRate"), ml.getRefreshRate()));
 
-        if(OskariLayer.TYPE_WMS.equals(ml.getType())) {
-            return handleWMSSpecific(params, ml);
+        final Set<String> systemCRSs;
+        try {
+            systemCRSs = ViewHelper.getSystemCRSs(viewService);
+        } catch (ServiceException e) {
+            throw new ActionException("Failed to retrieve system CRSs", e);
         }
-        else if(OskariLayer.TYPE_WFS.equals(ml.getType())) {
-            handleWFSSpecific(params, ml);
+
+        switch (ml.getType()) {
+        case OskariLayer.TYPE_WMS:
+            return handleWMSSpecific(params, ml, systemCRSs);
+        case OskariLayer.TYPE_WMTS:
+            return handleWMTSSpecific(params, ml, systemCRSs);
+        case OskariLayer.TYPE_WFS:
+            handleWFSSpecific(params, ml, systemCRSs); // fallthrough
+        default:
+            // no capabilities to update, return true
             return true;
         }
-        else if(OskariLayer.TYPE_WMTS.equals(ml.getType())) {
-            return handleWMTSSpecific(params, ml);
-        }
-        // no capabilities to update, return true
-        return true;
     }
 
     private void handleRequestToWfsLayer(final ActionParameters params, WFSLayerConfiguration wfsl) throws ActionException {
@@ -476,7 +485,7 @@ public class SaveLayerHandler extends ActionHandler {
 
     }
 
-    private boolean handleWMSSpecific(final ActionParameters params, OskariLayer ml) {
+    private boolean handleWMSSpecific(final ActionParameters params, OskariLayer ml, Set<String> systemCRSs) {
         // Do NOT modify the 'xslt' parameter
         HttpServletRequest request = params.getRequest();
         final String xslt = request.getParameter("xslt");
@@ -489,7 +498,7 @@ public class SaveLayerHandler extends ActionHandler {
         try {
             OskariLayerCapabilities raw = capabilitiesService.getCapabilities(ml, true);
             WebMapService wms = OskariLayerCapabilitiesHelper.parseWMSCapabilities(raw.getData(), ml);
-            OskariLayerCapabilitiesHelper.setPropertiesFromCapabilitiesWMS(wms, ml);
+            OskariLayerCapabilitiesHelper.setPropertiesFromCapabilitiesWMS(wms, ml, systemCRSs);
             return true;
         } catch (ServiceException ex) {
             LOG.error(ex, "Couldn't update capabilities for layer", ml);
@@ -497,12 +506,12 @@ public class SaveLayerHandler extends ActionHandler {
         }
     }
 
-    private boolean handleWMTSSpecific(final ActionParameters params, OskariLayer ml) {
+    private boolean handleWMTSSpecific(final ActionParameters params, OskariLayer ml, Set<String> systemCRSs) {
         try {
             String currentCrs = params.getHttpParam(PARAM_SRS_NAME, ml.getSrs_name());
             OskariLayerCapabilities raw = capabilitiesService.getCapabilities(ml, true);
             WMTSCapabilities caps = WMTSCapabilitiesParser.parseCapabilities(raw.getData());
-            OskariLayerCapabilitiesHelper.setPropertiesFromCapabilitiesWMTS(caps, ml, currentCrs);
+            OskariLayerCapabilitiesHelper.setPropertiesFromCapabilitiesWMTS(caps, ml, currentCrs, systemCRSs);
             return true;
         } catch (Exception ex) {
             LOG.error(ex, "Couldn't update capabilities for layer", ml);
@@ -510,7 +519,7 @@ public class SaveLayerHandler extends ActionHandler {
         }
     }
 
-    private void handleWFSSpecific(final ActionParameters params, OskariLayer ml) throws ActionException {
+    private void handleWFSSpecific(final ActionParameters params, OskariLayer ml, Set<String> systemCRSs) throws ActionException {
         // These are only in insert
         ml.setSrs_name(params.getHttpParam(PARAM_SRS_NAME, ml.getSrs_name()));
         ml.setVersion(params.getHttpParam("WFSVersion",ml.getVersion()));

@@ -31,7 +31,6 @@ public class LayerJSONFormatterWMS extends LayerJSONFormatter {
     public static final String KEY_GFICONTENT = "gfiContent";
     public static final String KEY_LEGENDIMAGE = "legendImage";
     public static final String KEY_VERSION = "version";
-    public static final String KEY_SRS = "srs";
     public static final String KEY_ISQUERYABLE = "isQueryable";
     public static final String KEY_ATTRIBUTES = "attributes";
 
@@ -153,8 +152,17 @@ public class LayerJSONFormatterWMS extends LayerJSONFormatter {
 
     }
 
+    /**
+     * @deprecated
+     * use {@link LayerJSONFormatterWMS#createCapabilitiesJSON(WebMapService, Set)}
+     */
+    @Deprecated
     public static JSONObject createCapabilitiesJSON(final WebMapService wms) {
+        return createCapabilitiesJSON(wms, null);
+    }
 
+    public static JSONObject createCapabilitiesJSON(final WebMapService wms,
+            Set<String> systemCRSs) {
         JSONObject capabilities = new JSONObject();
         if(wms == null) {
             return capabilities;
@@ -166,7 +174,11 @@ public class LayerJSONFormatterWMS extends LayerJSONFormatter {
         JSONObject formats = getFormatsJSON(wms);
         JSONHelper.putValue(capabilities, KEY_FORMATS, formats);
         JSONHelper.putValue(capabilities, KEY_VERSION, wms.getVersion());
-        JSONHelper.putValue(capabilities, KEY_SRS, new JSONArray(getCRSs(wms)));
+
+        final Set<String> capabilitiesCRSs = getCRSs(wms);
+        final Set<String> crss = getCRSsToStore(systemCRSs, capabilitiesCRSs);
+        JSONHelper.putValue(capabilities, KEY_SRS, new JSONArray(crss));
+
         capabilities = JSONHelper.merge(capabilities, formatTime(wms.getTime()));
         return capabilities;
     }

@@ -10,12 +10,12 @@ import fi.nls.oskari.wmts.domain.TileMatrixLink;
 import fi.nls.oskari.wmts.domain.WMTSCapabilitiesLayer;
 import org.json.JSONArray;
 import org.json.JSONObject;
+
 import java.util.*;
 
 public class LayerJSONFormatterWMTS extends LayerJSONFormatter {
 
     public static final String KEY_TILEMATRIXIDS = "tileMatrixIds";
-    public static final String KEY_SRS = "srs";
 
     public JSONObject getJSON(OskariLayer layer,
                               final String lang,
@@ -63,14 +63,22 @@ public class LayerJSONFormatterWMTS extends LayerJSONFormatter {
     }
 
     /**
-     * @deprecated replaced by {@link #createCapabilitiesJSON(WMTSCapabilitiesLayer layer)}
+     * @deprecated use {@link #createCapabilitiesJSON(WMTSCapabilitiesLayer, Set)}
      */
     @Deprecated
     public static JSONObject createCapabilitiesJSON(final WMTSCapabilities wmts,final WMTSCapabilitiesLayer layer) {
-        return createCapabilitiesJSON(layer);
+        return createCapabilitiesJSON(layer, null);
     }
 
+    /**
+     * @deprecated use {@link #createCapabilitiesJSON(WMTSCapabilitiesLayer, Set)}
+     */
+    @Deprecated
     public static JSONObject createCapabilitiesJSON(final WMTSCapabilitiesLayer layer) {
+        return createCapabilitiesJSON(layer, null);
+    }
+
+    public static JSONObject createCapabilitiesJSON(final WMTSCapabilitiesLayer layer, Set<String> systemCRSs) {
         JSONObject capabilities = new JSONObject();
         if (layer == null) {
             return capabilities;
@@ -78,7 +86,10 @@ public class LayerJSONFormatterWMTS extends LayerJSONFormatter {
 
         List<JSONObject> tileMatrix = LayerJSONFormatterWMTS.createTileMatrixArray(layer);
         JSONHelper.putValue(capabilities, KEY_TILEMATRIXIDS, new JSONArray(tileMatrix));
-        JSONHelper.putValue(capabilities, KEY_SRS, new JSONArray(getCRSs(layer)));
+
+        final Set<String> capabilitiesCRSs = getCRSs(layer);
+        final Set<String> crss = getCRSsToStore(systemCRSs, capabilitiesCRSs);
+        JSONHelper.putValue(capabilities, KEY_SRS, new JSONArray(crss));
 
         return capabilities;
     }
