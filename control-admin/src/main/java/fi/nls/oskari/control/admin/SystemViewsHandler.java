@@ -136,7 +136,7 @@ public class SystemViewsHandler extends RestActionHandler {
                 layerIdList.add(layer.optString(PARAM_ID));
             }
 
-            final List<OskariLayer> notAvailableForGuest = getLayersNotAvailableForGuest(layerIdList, state);
+            final List<OskariLayer> notAvailableForGuest = getLayersNotAvailableForGuest(layerIdList);
             if(!notAvailableForGuest.isEmpty()) {
                 final JSONArray list = new JSONArray();
                 for (OskariLayer layer :notAvailableForGuest) {
@@ -185,8 +185,8 @@ public class SystemViewsHandler extends RestActionHandler {
         JSONHelper.putValue(state, ViewModifier.KEY_ZOOM, params.getRequiredParamInt(ViewModifier.KEY_ZOOM));
     }
 
-    private List<OskariLayer> getLayersNotAvailableForGuest(final List<String> layerIdList, final JSONObject state) throws ActionException {
-        final List<OskariLayer> layers = layerService.find(layerIdList, state.optString(PARAM_SRS));
+    private List<OskariLayer> getLayersNotAvailableForGuest(final List<String> layerIdList) throws ActionException {
+        final List<OskariLayer> layers = layerService.find(layerIdList);
         final List<OskariLayer> notAvailable = new ArrayList<OskariLayer>();
         try {
             User guest = UserService.getInstance().getGuestUser();

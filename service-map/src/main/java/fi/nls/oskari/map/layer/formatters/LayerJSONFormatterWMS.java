@@ -31,6 +31,7 @@ public class LayerJSONFormatterWMS extends LayerJSONFormatter {
     public static final String KEY_GFICONTENT = "gfiContent";
     public static final String KEY_LEGENDIMAGE = "legendImage";
     public static final String KEY_VERSION = "version";
+    public static final String KEY_SRS = "srs";
     public static final String KEY_ISQUERYABLE = "isQueryable";
     public static final String KEY_ATTRIBUTES = "attributes";
 
@@ -137,6 +138,10 @@ public class LayerJSONFormatterWMS extends LayerJSONFormatter {
         if(!layerJson.has(KEY_VERSION)) {
             JSONHelper.putValue(layerJson, KEY_VERSION, JSONHelper.getStringFromJSON(capabilities, KEY_VERSION, null));
         }
+
+        JSONArray srs = JSONHelper.getJSONArray(capabilities, KEY_SRS);
+        JSONHelper.putValue(layerJson, KEY_SRS, srs);
+
         // copy time from capabilities to attributes
         // timedata is merged into attributes  (times:{start:,end:,interval:}  or times: []
         // only reason for this is that admin can see the values offered by service
@@ -155,13 +160,14 @@ public class LayerJSONFormatterWMS extends LayerJSONFormatter {
             return capabilities;
         }
         JSONHelper.putValue(capabilities, KEY_ISQUERYABLE, wms.isQueryable());
-        List<JSONObject> styles = LayerJSONFormatterWMS.createStylesArray(wms);
+        List<JSONObject> styles = createStylesArray(wms);
         JSONHelper.putValue(capabilities, KEY_STYLES, new JSONArray(styles));
 
-        JSONObject formats = LayerJSONFormatterWMS.getFormatsJSON(wms);
+        JSONObject formats = getFormatsJSON(wms);
         JSONHelper.putValue(capabilities, KEY_FORMATS, formats);
         JSONHelper.putValue(capabilities, KEY_VERSION, wms.getVersion());
-        capabilities = JSONHelper.merge(capabilities, LayerJSONFormatterWMS.formatTime(wms.getTime()));
+        JSONHelper.putValue(capabilities, KEY_SRS, new JSONArray(getCRSs(wms)));
+        capabilities = JSONHelper.merge(capabilities, formatTime(wms.getTime()));
         return capabilities;
     }
 

@@ -39,17 +39,13 @@ public class OskariLayerWorker {
 
     private final static LayerJSONFormatter FORMATTER = new LayerJSONFormatter();
     
-    public static JSONObject getListOfAllMapLayers(final User user, final String lang, final String crs) {
-        return getListOfAllMapLayers(user, lang, crs, false);
-    }
-
     public static JSONObject getListOfAllMapLayers(final User user, final String lang) {
-        return getListOfAllMapLayers(user, lang, null, false);
+        return getListOfAllMapLayers(user, lang, false);
     }
 
-    public static JSONObject getListOfAllMapLayers(final User user, final String lang, final String crs, final boolean isSecure) {
+    public static JSONObject getListOfAllMapLayers(final User user, final String lang, final boolean isSecure) {
         long start = System.currentTimeMillis();
-        final List<OskariLayer> layers = mapLayerService.findAll(crs);
+        final List<OskariLayer> layers = mapLayerService.findAll();
         log.debug("Layers loaded in", System.currentTimeMillis() - start, "ms");
         final boolean isPublished = false;
         return getListOfMapLayers(layers, user, lang, isPublished, isSecure);
@@ -65,7 +61,7 @@ public class OskariLayerWorker {
      */
     public static JSONObject getListOfMapLayersById(final List<String> layerIdList, final User user,
                                                     final String lang) {
-        return getListOfMapLayersById(layerIdList, user, lang, null, false, false);
+        return getListOfMapLayersById(layerIdList, user, lang, false, false);
     }
     /**
      * Gets all the selected map layers
@@ -78,8 +74,8 @@ public class OskariLayerWorker {
      * @return JSONObject containing the selected layers
      */
     public static JSONObject getListOfMapLayersById(final List<String> layerIdList, final User user,
-                                                    final String lang, final String crs, final boolean isPublished, final boolean isSecure) {
-        final List<OskariLayer> layers = mapLayerService.find(layerIdList, crs);
+                                                    final String lang, final boolean isPublished, final boolean isSecure) {
+        final List<OskariLayer> layers = mapLayerService.find(layerIdList);
         return getListOfMapLayers(layers, user, lang, isPublished, isSecure);
     }
 

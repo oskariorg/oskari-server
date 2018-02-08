@@ -15,6 +15,7 @@ import java.util.*;
 public class LayerJSONFormatterWMTS extends LayerJSONFormatter {
 
     public static final String KEY_TILEMATRIXIDS = "tileMatrixIds";
+    public static final String KEY_SRS = "srs";
 
     public JSONObject getJSON(OskariLayer layer,
                               final String lang,
@@ -71,12 +72,13 @@ public class LayerJSONFormatterWMTS extends LayerJSONFormatter {
 
     public static JSONObject createCapabilitiesJSON(final WMTSCapabilitiesLayer layer) {
         JSONObject capabilities = new JSONObject();
-        if(layer == null) {
+        if (layer == null) {
             return capabilities;
         }
 
         List<JSONObject> tileMatrix = LayerJSONFormatterWMTS.createTileMatrixArray(layer);
         JSONHelper.putValue(capabilities, KEY_TILEMATRIXIDS, new JSONArray(tileMatrix));
+        JSONHelper.putValue(capabilities, KEY_SRS, new JSONArray(getCRSs(layer)));
 
         return capabilities;
     }
@@ -110,7 +112,7 @@ public class LayerJSONFormatterWMTS extends LayerJSONFormatter {
             return null;
         }
 
-        Set<String> crss = new HashSet<String>();
+        Set<String> crss = new HashSet<>();
         for (TileMatrixLink link : layer.getLinks()) {
             TileMatrixSet tms = link.getTileMatrixSet();
             String crs = tms.getCrs();

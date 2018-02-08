@@ -2,7 +2,6 @@ package fi.nls.oskari.control.layer;
 
 import fi.mml.map.mapwindow.service.db.OskariMapLayerGroupService;
 import fi.nls.oskari.service.capabilities.OskariLayerCapabilities;
-import fi.mml.map.mapwindow.service.db.MaplayerProjectionService;
 import fi.mml.map.mapwindow.service.wms.WebMapService;
 import fi.mml.map.mapwindow.util.OskariLayerWorker;
 import fi.mml.portti.domain.permissions.Permissions;
@@ -25,6 +24,7 @@ import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.service.capabilities.CapabilitiesCacheService;
 import fi.nls.oskari.service.capabilities.OskariLayerCapabilitiesHelper;
 import fi.nls.oskari.util.*;
+import fi.nls.oskari.wfs.GetGtWFSCapabilities;
 import fi.nls.oskari.wfs.WFSLayerConfigurationService;
 import fi.nls.oskari.wfs.util.WFSParserConfigs;
 import fi.nls.oskari.wmts.WMTSCapabilitiesParser;
@@ -52,7 +52,6 @@ public class SaveLayerHandler extends ActionHandler {
     private PermissionsService permissionsService = ServiceFactory.getPermissionsService();
     private DataProviderService dataProviderService = ServiceFactory.getDataProviderService();
     private OskariMapLayerGroupService oskariMapLayerGroupService = ServiceFactory.getOskariMapLayerGroupService();
-    private MaplayerProjectionService maplayerProjectionService = ServiceFactory.getMaplayerProjectionService();
     private CapabilitiesCacheService capabilitiesService = ServiceFactory.getCapabilitiesCacheService();
     private WFSParserConfigs wfsParserConfigs = new WFSParserConfigs();
 
@@ -145,10 +144,6 @@ public class SaveLayerHandler extends ActionHandler {
                     JedisManager.delAll(WFSLayerConfiguration.IMAGE_KEY + Integer.toString(ml.getId()));
                 }
 
-                //update maplayer projections - removes old ones and insert new ones
-                maplayerProjectionService.insertList(ml.getId(), ml.getSupportedCRSs());
-
-
                 LOG.debug(ml);
                 result.layerId = ml.getId();
                 return result;
@@ -204,9 +199,6 @@ public class SaveLayerHandler extends ActionHandler {
                 // update keywords
                 GetLayerKeywords glk = new GetLayerKeywords();
                 glk.updateLayerKeywords(id, ml.getMetadataId());
-
-                //update maplayer projections
-                maplayerProjectionService.insertList(ml.getId(), ml.getSupportedCRSs());
 
                 result.layerId = ml.getId();
                 return result;
@@ -342,8 +334,6 @@ public class SaveLayerHandler extends ActionHandler {
 
         ml.setRealtime(ConversionHelper.getBoolean(params.getHttpParam("realtime"), ml.getRealtime()));
         ml.setRefreshRate(ConversionHelper.getInt(params.getHttpParam("refreshRate"), ml.getRefreshRate()));
-        //Default supported crs for unknown crs layers
-        ml.setSupportedCRSs(new HashSet<String>(Arrays.asList(ml.getSrs_name())));
 
         if(OskariLayer.TYPE_WMS.equals(ml.getType())) {
             return handleWMSSpecific(params, ml);
@@ -540,7 +530,13 @@ public class SaveLayerHandler extends ActionHandler {
             ml.setAttributes(attributes);
         }
         // Get supported projections
-        OskariLayerCapabilitiesHelper.setPropertiesFromCapabilitiesWFS(ml);
+        Map<String, Object> capa = GetGtWFSCapabilities.getGtDataStoreCapabilities(
+                ml.getUrl(), ml.getVersion(), ml.getUsername(), ml.getPassword(), ml.getSrs_name());
+        Set<String> crss = GetGtWFSCapabilities.parseProjections(capa, ml.getName());
+        JSONObject capabilities = new JSONObject();
+        JSONHelper.put(capabilities, "srs", new JSONArray(crss));
+        ml.setCapabilities(capabilities);
+        ml.setCapabilitiesLastUpdated(new Date());
     }
 
 

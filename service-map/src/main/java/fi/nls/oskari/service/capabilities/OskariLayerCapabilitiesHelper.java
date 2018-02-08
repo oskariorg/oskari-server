@@ -8,13 +8,11 @@ import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.layer.formatters.LayerJSONFormatterWMS;
 import fi.nls.oskari.map.layer.formatters.LayerJSONFormatterWMTS;
 import fi.nls.oskari.util.JSONHelper;
-import fi.nls.oskari.wfs.GetGtWFSCapabilities;
 import fi.nls.oskari.wmts.domain.ResourceUrl;
 import fi.nls.oskari.wmts.domain.WMTSCapabilities;
 import fi.nls.oskari.wmts.domain.WMTSCapabilitiesLayer;
 
 import java.util.Date;
-import java.util.Map;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -48,7 +46,6 @@ public class OskariLayerCapabilitiesHelper {
         if (style != null) {
             ml.setStyle(style);
         }
-        ml.setSupportedCRSs(LayerJSONFormatterWMS.getCRSs(wms));
     }
 
     private static String getDefaultStyle(OskariLayer ml, final JSONObject caps) {
@@ -101,15 +98,6 @@ public class OskariLayerCapabilitiesHelper {
 
         crs = crs != null ? crs : ml.getSrs_name();
         ml.setTileMatrixSetId(LayerJSONFormatterWMTS.getTileMatrixSetId(jscaps, crs));
-
-        ml.setSupportedCRSs(LayerJSONFormatterWMTS.getCRSs(layer));
-    }
-
-    public static void setPropertiesFromCapabilitiesWFS(OskariLayer ml) {
-        Map<String, Object> capa = GetGtWFSCapabilities.getGtDataStoreCapabilities(
-                ml.getUrl(), ml.getVersion(), ml.getUsername(), ml.getPassword(), ml.getSrs_name());
-        ml.setSupportedCRSs(GetGtWFSCapabilities.parseProjections(capa, ml.getVersion(), ml.getName()));
-        ml.setCapabilitiesLastUpdated(new Date());
     }
 
 }
