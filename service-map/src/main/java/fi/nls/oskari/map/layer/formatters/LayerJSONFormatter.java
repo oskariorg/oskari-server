@@ -15,10 +15,12 @@ import fi.nls.oskari.util.PropertyUtil;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.oskari.utils.common.Sets;
 
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Created with IntelliJ IDEA.
@@ -31,6 +33,8 @@ public class LayerJSONFormatter {
 
     public static final String PROPERTY_AJAXURL = "oskari.ajax.url.prefix";
     public static final String KEY_STYLES = "styles";
+    public static final String KEY_SRS = "srs";
+    public static final String KEY_ATTRIBUTE_FORCED_SRS = "forcedSRS";
 
     private static final OskariMapLayerGroupService OSKARI_MAP_LAYER_GROUP_SERVICE = new OskariMapLayerGroupServiceIbatisImpl();
     private static final DataProviderService groupService = new DataProviderServiceIbatisImpl();
@@ -323,4 +327,13 @@ public class LayerJSONFormatter {
 
         return layer;
     }
+
+    public static Set<String> getCRSsToStore(Set<String> systemCRSs,
+            Set<String> capabilitiesCRSs) {
+        if (systemCRSs == null) {
+            return capabilitiesCRSs;
+        }
+        return Sets.intersection(systemCRSs, capabilitiesCRSs);
+    }
+
 }

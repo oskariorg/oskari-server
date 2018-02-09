@@ -2,8 +2,9 @@ package fi.nls.oskari.control.layer;
 
 import fi.mml.map.mapwindow.service.db.OskariMapLayerGroupService;
 import fi.nls.oskari.service.capabilities.OskariLayerCapabilities;
-import fi.mml.map.mapwindow.service.db.MaplayerProjectionService;
+import fi.mml.map.mapwindow.service.wms.LayerNotFoundInCapabilitiesException;
 import fi.mml.map.mapwindow.service.wms.WebMapService;
+import fi.mml.map.mapwindow.service.wms.WebMapServiceParseException;
 import fi.mml.map.mapwindow.util.OskariLayerWorker;
 import fi.mml.portti.domain.permissions.Permissions;
 import fi.mml.portti.service.db.permissions.PermissionsService;
@@ -20,17 +21,22 @@ import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.data.domain.OskariLayerResource;
 import fi.nls.oskari.map.layer.DataProviderService;
 import fi.nls.oskari.map.layer.OskariLayerService;
+import fi.nls.oskari.map.view.ViewService;
+import fi.nls.oskari.map.view.util.ViewHelper;
 import fi.nls.oskari.permission.domain.Permission;
 import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.service.capabilities.CapabilitiesCacheService;
 import fi.nls.oskari.service.capabilities.OskariLayerCapabilitiesHelper;
 import fi.nls.oskari.util.*;
+import fi.nls.oskari.wfs.GetGtWFSCapabilities;
 import fi.nls.oskari.wfs.WFSLayerConfigurationService;
 import fi.nls.oskari.wfs.util.WFSParserConfigs;
 import fi.nls.oskari.wmts.WMTSCapabilitiesParser;
 import fi.nls.oskari.wmts.domain.WMTSCapabilities;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.oskari.service.util.ServiceFactory;
+
 import javax.servlet.http.HttpServletRequest;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -48,11 +54,11 @@ public class SaveLayerHandler extends ActionHandler {
     }
 
     private OskariLayerService mapLayerService = ServiceFactory.getMapLayerService();
+    private ViewService viewService = ServiceFactory.getViewService();
     private WFSLayerConfigurationService wfsLayerService = ServiceFactory.getWfsLayerService();
     private PermissionsService permissionsService = ServiceFactory.getPermissionsService();
     private DataProviderService dataProviderService = ServiceFactory.getDataProviderService();
     private OskariMapLayerGroupService oskariMapLayerGroupService = ServiceFactory.getOskariMapLayerGroupService();
-    private MaplayerProjectionService maplayerProjectionService = ServiceFactory.getMaplayerProjectionService();
     private CapabilitiesCacheService capabilitiesService = ServiceFactory.getCapabilitiesCacheService();
     private WFSParserConfigs wfsParserConfigs = new WFSParserConfigs();
 
@@ -145,10 +151,6 @@ public class SaveLayerHandler extends ActionHandler {
                     JedisManager.delAll(WFSLayerConfiguration.IMAGE_KEY + Integer.toString(ml.getId()));
                 }
 
-                //update maplayer projections - removes old ones and insert new ones
-                maplayerProjectionService.insertList(ml.getId(), ml.getSupportedCRSs());
-
-
                 LOG.debug(ml);
                 result.layerId = ml.getId();
                 return result;
@@ -202,9 +204,6 @@ public class SaveLayerHandler extends ActionHandler {
                 // update keywords
                 GetLayerKeywords glk = new GetLayerKeywords();
                 glk.updateLayerKeywords(id, ml.getMetadataId());
-
-                //update maplayer projections
-                maplayerProjectionService.insertList(ml.getId(), ml.getSupportedCRSs());
 
                 result.layerId = ml.getId();
                 return result;
@@ -349,21 +348,25 @@ public class SaveLayerHandler extends ActionHandler {
 
         ml.setRealtime(ConversionHelper.getBoolean(params.getHttpParam("realtime"), ml.getRealtime()));
         ml.setRefreshRate(ConversionHelper.getInt(params.getHttpParam("refreshRate"), ml.getRefreshRate()));
-        //Default supported crs for unknown crs layers
-        ml.setSupportedCRSs(new HashSet<String>(Arrays.asList(ml.getSrs_name())));
 
-        if(OskariLayer.TYPE_WMS.equals(ml.getType())) {
-            return handleWMSSpecific(params, ml);
+        final Set<String> systemCRSs;
+        try {
+            systemCRSs = ViewHelper.getSystemCRSs(viewService);
+        } catch (ServiceException e) {
+            throw new ActionException("Failed to retrieve system CRSs", e);
         }
-        else if(OskariLayer.TYPE_WFS.equals(ml.getType())) {
-            handleWFSSpecific(params, ml);
+
+        switch (ml.getType()) {
+        case OskariLayer.TYPE_WMS:
+            return handleWMSSpecific(params, ml, systemCRSs);
+        case OskariLayer.TYPE_WMTS:
+            return handleWMTSSpecific(params, ml, systemCRSs);
+        case OskariLayer.TYPE_WFS:
+            handleWFSSpecific(params, ml, systemCRSs); // fallthrough
+        default:
+            // no capabilities to update, return true
             return true;
         }
-        else if(OskariLayer.TYPE_WMTS.equals(ml.getType())) {
-            return handleWMTSSpecific(params, ml);
-        }
-        // no capabilities to update, return true
-        return true;
     }
 
     private void handleRequestToWfsLayer(final ActionParameters params, WFSLayerConfiguration wfsl) throws ActionException {
@@ -493,7 +496,7 @@ public class SaveLayerHandler extends ActionHandler {
 
     }
 
-    private boolean handleWMSSpecific(final ActionParameters params, OskariLayer ml) {
+    private boolean handleWMSSpecific(final ActionParameters params, OskariLayer ml, Set<String> systemCRSs) {
         // Do NOT modify the 'xslt' parameter
         HttpServletRequest request = params.getRequest();
         final String xslt = request.getParameter("xslt");
@@ -506,32 +509,28 @@ public class SaveLayerHandler extends ActionHandler {
         try {
             OskariLayerCapabilities raw = capabilitiesService.getCapabilities(ml, true);
             WebMapService wms = OskariLayerCapabilitiesHelper.parseWMSCapabilities(raw.getData(), ml);
-            if(wms != null) {
-                OskariLayerCapabilitiesHelper.setPropertiesFromCapabilitiesWMS(wms, ml);
-            } else {
-            	return false;
-            }
+            OskariLayerCapabilitiesHelper.setPropertiesFromCapabilitiesWMS(wms, ml, systemCRSs);
             return true;
-        } catch (ServiceException ex) {
-            LOG.error(ex, "Couldn't update capabilities for layer", ml);
+        } catch (ServiceException | WebMapServiceParseException | LayerNotFoundInCapabilitiesException ex) {
+            LOG.error(ex, "Failed to set capabilities for layer", ml);
             return false;
         }
     }
 
-    private boolean handleWMTSSpecific(final ActionParameters params, OskariLayer ml) {
+    private boolean handleWMTSSpecific(final ActionParameters params, OskariLayer ml, Set<String> systemCRSs) {
         try {
             String currentCrs = params.getHttpParam(PARAM_SRS_NAME, ml.getSrs_name());
             OskariLayerCapabilities raw = capabilitiesService.getCapabilities(ml, true);
             WMTSCapabilities caps = WMTSCapabilitiesParser.parseCapabilities(raw.getData());
-            OskariLayerCapabilitiesHelper.setPropertiesFromCapabilitiesWMTS(caps, ml, currentCrs);
+            OskariLayerCapabilitiesHelper.setPropertiesFromCapabilitiesWMTS(caps, ml, currentCrs, systemCRSs);
             return true;
         } catch (Exception ex) {
-            LOG.error(ex, "Couldn't update capabilities for layer", ml);
+            LOG.error(ex, "Failed to set capabilities for layer", ml);
             return false;
         }
     }
 
-    private void handleWFSSpecific(final ActionParameters params, OskariLayer ml) throws ActionException {
+    private void handleWFSSpecific(final ActionParameters params, OskariLayer ml, Set<String> systemCRSs) throws ActionException {
         // These are only in insert
         ml.setSrs_name(params.getHttpParam(PARAM_SRS_NAME, ml.getSrs_name()));
         ml.setVersion(params.getHttpParam("WFSVersion",ml.getVersion()));
@@ -551,7 +550,13 @@ public class SaveLayerHandler extends ActionHandler {
             ml.setAttributes(attributes);
         }
         // Get supported projections
-        OskariLayerCapabilitiesHelper.setPropertiesFromCapabilitiesWFS(ml);
+        Map<String, Object> capa = GetGtWFSCapabilities.getGtDataStoreCapabilities(
+                ml.getUrl(), ml.getVersion(), ml.getUsername(), ml.getPassword(), ml.getSrs_name());
+        Set<String> crss = GetGtWFSCapabilities.parseProjections(capa, ml.getName());
+        JSONObject capabilities = new JSONObject();
+        JSONHelper.put(capabilities, "srs", new JSONArray(crss));
+        ml.setCapabilities(capabilities);
+        ml.setCapabilitiesLastUpdated(new Date());
     }
 
 

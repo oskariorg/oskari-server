@@ -24,6 +24,21 @@ This new action handles layers and groups order savings.
 
 ## 1.45.0
 
+For a full list of changes see: https://github.com/oskariorg/oskari-server/milestone/5
+
+### Statistical maps
+
+- Forced migration! Appsetups having the old statsgrid bundle are migrated to use the new one.
+- UserIndicator migration: data and region references are migrated to be compatible with the new statsgrid functionality.
+- PX-Web adapter for statistical maps has been improved.
+- Sotkanet adapter now fetches data in json format instead of csv.
+- Error handling and projection support improved for regionsets in statistical maps.
+- Indicator data caching improvements
+
+### Layer capabilities
+
+Capabilities for WMS and WMTS services can now be updated automatically (scheduled update). The parsing has been improved and includes changes to the service API (https://github.com/oskariorg/oskari-server/pull/86)
+
 ### Database modifications
 
 - oskari_layergroup table renamed to oskari_dataprovider
@@ -31,9 +46,6 @@ This new action handles layers and groups order savings.
 - portti_inspiretheme table renamed to oskari_maplayer_group
 - oskari_maplayer_themes table renamed to oskari_maplayer_group_link
 - oskari_maplayer_group_link.themeid column renamed oskari_maplayer_group_link.groupid
-
-### service-map
-Adds bounding box to userlayer that encloses userlayer's geometries. If a userlayer is added to the map, the map moves and zooms to the userlayer's extent.
 
 ### transport
 
@@ -51,6 +63,22 @@ Added new config options for oskari(/transport)-ext.properties for controlling w
 Also increased the defaut timeout from 15 seconds to 25 - configurable with:
 
     oskari.transport.job.timeoutms = 25000
+
+### Others
+
+- GetFeatureInfo responses handling improved and configuration options added to allow more tags in the response (https://github.com/oskariorg/oskari-server/pull/133)
+- Environmental configs moved out of mapfull bundle's config to a new "env" key under GetAppSetup response.
+- Database table name changes for inspire themes/layer groups/dataproviders
+- WCS-client is now available as service-wcs (https://github.com/oskariorg/oskari-server/pull/89)
+- Metadata search by area projection support improved.
+- IOHelper improvements for example on URL-parameter handling.
+- Fixes for handling analysis related data.
+- Analysis and Userlayers now use MyBatis instead of IBatis. Any Ibatis configuration can be removed from oskari-server-extensions and database settings are now completely configured in oskari-ext.properties
+- Added an action route for getting default views of the system in preparation of larger projection support functionality.
+- WFS-service timeout defaults changed/configuration options added (https://github.com/oskariorg/oskari-server/pull/92)
+- New action routes for MyPlaces functionality in preparation of OpenLayers 4 based myplaces.
+- Initial version of download basket functionality has been added to oskari-server (https://github.com/oskariorg/oskari-server/pull/74)
+- Logging improvements.
 
 ## 1.44.1
 

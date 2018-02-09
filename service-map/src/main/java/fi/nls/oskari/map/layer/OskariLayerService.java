@@ -10,9 +10,7 @@ public abstract class OskariLayerService extends OskariComponent {
     public abstract OskariLayer find(int id);
     public abstract OskariLayer find(final String idStr);
     public abstract List<OskariLayer> find(final List<String> idList);
-    public abstract List<OskariLayer> find(final List<String> idList, final String crs);
     public abstract List<OskariLayer> findAll();
-    public abstract List<OskariLayer> findAll(final String crs);
     public abstract List<OskariLayer> findByUrlAndName(final String url, final String name);
     public abstract List<OskariLayer> findByMetadataId(String uuid);
     public abstract List<OskariLayer> findAllWithPositiveUpdateRateSec();

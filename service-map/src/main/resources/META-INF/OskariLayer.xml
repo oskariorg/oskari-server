@@ -396,7 +396,6 @@
     </select>
         
 <select id="findAll"
-        parameterClass="String"
         resultClass="java.util.HashMap">
 
     SELECT
@@ -433,14 +432,6 @@
     l.username,
     l.password,
     l.version,
-    <dynamic>
-        <isParameterPresent>
-            #crs# as srs_name,
-        </isParameterPresent>
-        <isNotParameterPresent>
-            l.srs_name,
-        </isNotParameterPresent>
-    </dynamic>
     l.srs_name,
     m.wkt as geom,
 
@@ -452,16 +443,11 @@
     l.capabilities_update_rate_sec
 
     FROM
-    oskari_maplayer l 
+    oskari_maplayer l
     LEFT OUTER JOIN oskari_maplayer_metadata m ON  m.metadataid = l.metadataId
     LEFT OUTER JOIN oskari_maplayer_group_link gl ON gl.maplayerid = l.id
-    <dynamic>
-        <isParameterPresent>
-            LEFT OUTER JOIN oskari_maplayer_projections p
-            ON  p.maplayerid = l.id
-            WHERE p.name = #crs#
-        </isParameterPresent>
-    </dynamic>
+    WHERE
+    l.id = #id# OR l.parentId = #id#
     ORDER BY l.parentId ASC
 
     </select>
@@ -504,14 +490,6 @@
         l.username,
         l.password,
         l.version,
-        <dynamic>
-            <isNotNull property="crs">
-                #crs# as srs_name,
-            </isNotNull>
-            <isNull property="crs">
-                l.srs_name,
-            </isNull>
-        </dynamic>
         l.srs_name,
         m.wkt as geom,
 
@@ -527,10 +505,6 @@
         LEFT OUTER JOIN oskari_maplayer_metadata m ON  m.metadataid = l.metadataId
     	LEFT OUTER JOIN oskari_maplayer_group_link gl ON gl.maplayerid = l.id
         <dynamic>
-            <isNotNull property="crs">
-                LEFT OUTER JOIN oskari_maplayer_projections p
-                ON  p.maplayerid = l.id
-            </isNotNull>
             WHERE
             <isNotEmpty  property="intList" >
                 l.id in
@@ -540,31 +514,18 @@
                 <isNotEmpty  property="strList" >
                 OR
                 </isNotEmpty>
-                <isEmpty  property="strList" >
-                    <isNotNull  property="crs">
-                        AND
-                    </isNotNull>
-                </isEmpty>
             </isNotEmpty>
             <isNotEmpty  property="strList" >
                  l.externalId in
                 <iterate property="strList" open="(" close=")" conjunction=",">
                     #strList[]#
                 </iterate>
-                <isNotNull  property="crs">
-                    AND
-                </isNotNull>
             </isNotEmpty>
-            <isNotNull  property="crs">
-                 p.name = #crs#
-            </isNotNull>
-
         </dynamic>
 
     </select>
 
     <select id="findAllWithPositiveUpdateRateSec"
-        parameterClass="String"
         resultClass="java.util.HashMap">
 
     SELECT
@@ -601,14 +562,6 @@
     l.username,
     l.password,
     l.version,
-    <dynamic>
-        <isParameterPresent>
-            #crs# as srs_name,
-        </isParameterPresent>
-        <isNotParameterPresent>
-            l.srs_name,
-        </isNotParameterPresent>
-    </dynamic>
     l.srs_name,
     m.wkt as geom,
 
@@ -622,7 +575,7 @@
     FROM
     oskari_maplayer l
     LEFT OUTER JOIN oskari_maplayer_metadata m ON  m.metadataid = l.metadataId
-   	LEFT OUTER JOIN oskari_maplayer_group_link gl ON gl.maplayerid = l.id
+    LEFT OUTER JOIN oskari_maplayer_group_link gl ON gl.maplayerid = l.id
     <dynamic>
         <isParameterPresent>
             LEFT OUTER JOIN oskari_maplayer_projections p
@@ -632,7 +585,7 @@
     </dynamic>
     WHERE capabilities_update_rate_sec > 0
     ORDER BY l.parentId ASC
-    </select>
+</select>
 
     <statement id="delete" parameterClass="int">
         <![CDATA[

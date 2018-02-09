@@ -1,9 +1,0 @@
-{
-    "create" : [
-        "create-userdata-tables.sql"
-    ],
-    "sql" : [
-        "example-userlayer-wfs-baselayer.sql"
-    ],
-    "isPartial" : true
-}

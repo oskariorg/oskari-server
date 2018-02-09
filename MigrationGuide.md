@@ -2,12 +2,51 @@
 
 ## 1.45.0
 
+### myplaces, userlayer, analysis baselayers migration
+
+Due to changes in the initialization the baselayer setup has been moved from core to functionality specific flyway modules.
+The layers are now inserted with the same code used with the setup.war that initializes geoserver configuration. Configs
+that are used include:
+
+    # initialized the layer srs (also updated by setup.war if used to generate GeoServer config)
+    oskari.native.srs=EPSG:4326
+    # connection info for GeoServer hosting the myplaces etc user content
+    geoserver.url=http://localhost:8080
+    geoserver.user=admin
+    geoserver.password=geoserver
+
+### Oskari initialization
+
+Initialization of Oskari on empty database has been revised. All content creation has been moved to application
+ specific flyway modules. The core module only creates the base database, migrates the schema and transforms
+  existing data when needed.
+   
+For existing databases this is a non-issue and everything works as before. For new applications and application specific
+ initialization for the database (like initial layers and appsetups) this changes a few things.
+
+The sample application now creates the appsetups, layers and users for demo-purposes. 
+Any oskari-server-extension should modify the application init on empty db accordingly.
+
+The template for oskari-server-extension has been updated to match this change: https://github.com/oskariorg/oskari-server-extension-template
+
+Check the readme for details!
+
+### GeoServer migration
+
+If you have the bundled GeoServer (for myplaces etc) running on the same Jetty as oskari-map you should add this to oskari-ext.properties:
+
+    # skip geoserver setting as its by default on the same server -> geoserver is not running when migrations are run
+    flyway.1_45_0.skip=true
+
+Otherwise migrations will stop at 1.45.0 as this migration cannot be run. You can manually add a memory restriction 
+for the GeoServer so asking for very large image for myplaces etc won't cause the server to run out of memory.
+
 ### Database changes
 
 There's at least a couple of database table that have been renamed and due to the order of code is running on server
  startup you will get an error with the first startup due to database migrations. The logs show some tables are missing.
  This is expected and you should just restart the server after migrations have completed.
- The latest version row in oskari_status database table should be at least 1.45.15 when the migrations have been completed. 
+ The latest version row in oskari_status database table should be at least 1.45.18 when the migrations have been completed. 
 
 ### Thematic maps
 
