@@ -11,6 +11,7 @@ import fi.nls.oskari.service.ServiceRuntimeException;
 
 import java.sql.SQLException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * MaplayerGroup implementation for Ibatis
@@ -153,7 +154,10 @@ public class OskariMapLayerGroupServiceIbatisImpl extends OskariMapLayerGroupSer
             	retGroups.add(group);
             }
         }
-        retGroups.sort((g1, g2) -> g1.getOrderNumber().compareTo(g2.getOrderNumber()));
+        retGroups.stream()
+                .filter(g -> g.getParentId() == -1)
+                .sorted(Comparator.comparing(MaplayerGroup::getOrderNumber, Comparator.nullsLast(Comparator.naturalOrder())))
+                .collect(Collectors.toList());
         return retGroups;
     }
 

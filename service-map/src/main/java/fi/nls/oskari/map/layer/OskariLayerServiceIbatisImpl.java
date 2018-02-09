@@ -132,6 +132,8 @@ public class OskariLayerServiceIbatisImpl extends OskariLayerService {
         result.setCreated((Date) data.get("created"));
         result.setUpdated((Date) data.get("updated"));
 
+        result.setOrderNumber((Integer) data.get("order_number"));
+
         // Automatic update of Capabilities
         result.setCapabilitiesLastUpdated((Date) data.get("capabilities_last_updated"));
         result.setCapabilitiesUpdateRateSec((Integer) data.get("capabilities_update_rate_sec"));
@@ -338,12 +340,16 @@ public class OskariLayerServiceIbatisImpl extends OskariLayerService {
     }
 
 
-    public void updateOrder(OskariLayer layer) {
+    public void updateOrder(final int layerId, final int groupId, final int orderNumber) {
     	SqlMapClient client = null;
         try {
             client = getSqlMapClient();
             client.startTransaction();
-            client.update(getNameSpace() + ".updateOrder", layer);
+            HashMap<String, Integer> updateMap = new HashMap<>();
+            updateMap.put("layerId", layerId);
+            updateMap.put("groupId", groupId);
+            updateMap.put("orderNumber", orderNumber);
+            client.update(getNameSpace() + ".updateOrder", updateMap);
             client.commitTransaction();
         } catch (Exception e) {
             throw new RuntimeException("Failed to update layer ordering", e);

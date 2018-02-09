@@ -101,11 +101,6 @@
         
         <parameter property="id" />
     </parameterMap>
-	
-	<parameterMap id="LayerUpdateOrderParameter" class="OskariLayer">
-		<parameter property="orderNumber" />
-        <parameter property="id" />
-    </parameterMap>
 
     <select id="findById"
             parameterClass="int"
@@ -694,10 +689,19 @@
         values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
     </statement>
     
-    <update id="updateOrder" parameterMap="LayerUpdateOrderParameter">
-        update oskari_maplayer_group_link set
-            order_number = ?
-        where maplayerid = ?
+    <update id="updateOrder" parameterClass="java.util.HashMap">
+        WITH cte AS (
+                SELECT maplayerid
+                FROM   oskari_maplayer_group_link
+                WHERE  maplayerid=#layerId#
+                       AND groupid=#groupId#
+                LIMIT  1
+                FOR    UPDATE
+        )
+        UPDATE oskari_maplayer_group_link omgl
+        SET    order_number = #orderNumber#
+        FROM   cte
+        WHERE  omgl.maplayerid = cte.maplayerid
     </update>
     
     <update id="updateGroup" parameterClass="java.util.HashMap">

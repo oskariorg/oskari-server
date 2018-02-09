@@ -20,6 +20,6 @@ public abstract class OskariLayerService extends OskariComponent {
     public abstract int insert(final OskariLayer layer);
     public abstract void update(final OskariLayer layer);
     public abstract void delete(final int layerId);
-    public abstract void updateOrder(final OskariLayer layer);
+    public abstract void updateOrder(final int layerId, final int groupId, final int orderNumber);
     public abstract void updateGroup(final int layerId, final int oldGroupId, final int newGroupId);
 }
