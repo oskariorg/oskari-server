@@ -5,11 +5,17 @@ import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.domain.map.view.View;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.map.view.ViewService;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.InputStream;
 import java.text.DecimalFormatSymbols;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import static fi.nls.oskari.control.ActionConstants.*;
 
@@ -31,12 +37,34 @@ public class EnvHelper {
     private static final String KEY_USER = "user";
     private static final String KEY_URLS = "urls";
     private static final String KEY_APPSETUP = "app";
+    private static final String KEY_DEFAULT_VIEWS = "defaultApps";
     private static final String KEY_API = "api";
     private static final String KEY_APIKEY = "apikey";
     private static final String KEY_ISPUBLIC = "public";
+    private static final List<JSONObject> DEFAULT_VIEWS = new ArrayList<>();
 
     public static final String SVG_MARKERS_JSON = "svg-markers.json";
     public static final String PROPERTY_AJAXURL = "oskari.ajax.url.prefix";
+
+    public static void setupViews(List<View> views) {
+        DEFAULT_VIEWS.clear();
+        for(View view: views) {
+            try {
+                JSONObject json = new JSONObject();
+                String srsName = view.getBundleByName("mapfull")
+                        .getConfigJSON()
+                        .getJSONObject("mapOptions")
+                        .getString("srsName");
+
+                json.put("uuid", view.getUuid());
+                json.put("name", view.getName());
+                json.put("srsName", srsName);
+                DEFAULT_VIEWS.add(json);
+            } catch (JSONException e) {
+                LOGGER.warn("Couldn't format default views for appsetup.env:", e.getMessage());
+            }
+        }
+    }
 
     public static JSONObject getEnvironmentJSON(ActionParameters params, View view) {
         final JSONObject env = new JSONObject();
@@ -66,6 +94,9 @@ public class EnvHelper {
         JSONHelper.putValue(viewConfig, KEY_TYPE, view.getType().toLowerCase());
         JSONHelper.putValue(viewConfig, KEY_ISPUBLIC, view.isPublic());
         JSONHelper.putValue(env, KEY_APPSETUP, viewConfig);
+
+        // setup additional default views info
+        JSONHelper.putValue(env, KEY_DEFAULT_VIEWS, new JSONArray(DEFAULT_VIEWS));
 
         // setup markers SVG info
         try {
