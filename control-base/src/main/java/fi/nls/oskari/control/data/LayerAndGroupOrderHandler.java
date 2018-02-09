@@ -11,6 +11,7 @@ import java.util.Map.Entry;
 
 import javax.servlet.http.HttpServletRequest;
 
+import fi.nls.oskari.control.*;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -18,10 +19,6 @@ import org.json.JSONObject;
 import fi.mml.map.mapwindow.service.db.OskariMapLayerGroupService;
 import fi.mml.map.mapwindow.service.db.OskariMapLayerGroupServiceIbatisImpl;
 import fi.nls.oskari.annotation.OskariActionRoute;
-import fi.nls.oskari.control.ActionDeniedException;
-import fi.nls.oskari.control.ActionException;
-import fi.nls.oskari.control.ActionParameters;
-import fi.nls.oskari.control.RestActionHandler;
 import fi.nls.oskari.domain.map.MaplayerGroup;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.log.LogFactory;
@@ -47,15 +44,7 @@ public class LayerAndGroupOrderHandler extends RestActionHandler {
 	
 	private OskariMapLayerGroupService oskariMapLayerGroupService;
 	private OskariLayerService oskariLayerService;
-	
-	/**
-	 * Variable to keep track of the new order of the groups.
-	 */
-	private HashMap<Integer, Integer> newGroupOrderMap = new HashMap<>();
-	/**
-	 * Variable to keep track of the new order of the layers.
-	 */
-	private HashMap<Integer, Integer> newLayerOrderMap = new HashMap<>(); 
+
 
     public void setOskariMapLayerGroupService(final OskariMapLayerGroupService service) {
         oskariMapLayerGroupService = service;
@@ -75,12 +64,6 @@ public class LayerAndGroupOrderHandler extends RestActionHandler {
         if(oskariLayerService == null) {
         	setOskariLayerService(new OskariLayerServiceIbatisImpl());
         }
-        if(newGroupOrderMap == null) {
-        	newGroupOrderMap = new HashMap<>();
-        }
-        if(newLayerOrderMap == null) {
-        	newLayerOrderMap = new HashMap<>();
-        }
     }
 
     /**
@@ -90,7 +73,7 @@ public class LayerAndGroupOrderHandler extends RestActionHandler {
      */
     @Override
     public void handlePost(ActionParameters params) throws ActionException {
-        checkForAdminPermission(params);
+        params.requireAdminUser();
         log.debug("Updating layer/group order");
         JSONObject orderJSON = getOrderJSON(params.getRequest());
 
@@ -101,42 +84,56 @@ public class LayerAndGroupOrderHandler extends RestActionHandler {
 
 			// change main groups orders
 			if(parentID == -1){
-				for(int i=0;i<orders.length();i++){
-					JSONObject order = orders.getJSONObject(i);
-					int groupId = order.getInt(KEY_ID);
-					MaplayerGroup currentGroup = oskariMapLayerGroupService.find(groupId);
-					currentGroup.setOrderNumber(i);
-					oskariMapLayerGroupService.updateOrder(currentGroup);
-				}
+				updateGroupOrder(orders);
 			} else {
-				for(int i=0;i<orders.length();i++) {
-					JSONObject order = orders.getJSONObject(i);
-					String type = order.getString(KEY_TYPE);
-					int id = order.getInt(KEY_ID);
-					if(TYPE_LAYER.equals(type)) {
-                        if(order.has(KEY_OLD_PARENT)) {
-                            oskariLayerService.updateGroup(id, order.getInt(KEY_OLD_PARENT), parentID);
-                        }
-					    oskariLayerService.updateOrder(id, parentID, i);
-					} else {
-						MaplayerGroup currentGroup = oskariMapLayerGroupService.find(id);
-						currentGroup.setOrderNumber(i);
-						oskariMapLayerGroupService.updateOrder(currentGroup);
-						if(order.has(KEY_OLD_PARENT)){
-						    oskariMapLayerGroupService.updateGroupParent(id,parentID);
-                        }
-					}
-				}
+			    updateLAyerAndGroupOrders(orders, parentID);
 			}
-
-
-
         } catch (JSONException e) {
         	log.warn(e);
-            throw new ActionException("Failed to read request!");
+            throw new ActionParamsException("Cannot save orders!");
         }
 
         ResponseHelper.writeResponse(params, orderJSON);
+    }
+
+    /**
+     * Update group and layer orders
+     * @param orders
+     */
+    protected void updateLAyerAndGroupOrders(final JSONArray orders, final int parentID) throws JSONException{
+        for(int i=0;i<orders.length();i++) {
+            JSONObject order = orders.getJSONObject(i);
+            String type = order.getString(KEY_TYPE);
+            int id = order.getInt(KEY_ID);
+            if(TYPE_LAYER.equals(type)) {
+                if(order.has(KEY_OLD_PARENT)) {
+                    oskariLayerService.updateGroup(id, order.getInt(KEY_OLD_PARENT), parentID);
+                }
+                oskariLayerService.updateOrder(id, parentID, i);
+            } else {
+                MaplayerGroup currentGroup = oskariMapLayerGroupService.find(id);
+                currentGroup.setOrderNumber(i);
+                oskariMapLayerGroupService.updateOrder(currentGroup);
+                if(order.has(KEY_OLD_PARENT)){
+                    oskariMapLayerGroupService.updateGroupParent(id,parentID);
+                }
+            }
+        }
+    }
+
+    /**
+     * Update main group orders
+     * @param orders
+     * @throws JSONException
+     */
+    protected void updateGroupOrder(final JSONArray orders) throws JSONException{
+        for(int i=0;i<orders.length();i++){
+            JSONObject order = orders.getJSONObject(i);
+            int groupId = order.getInt(KEY_ID);
+            MaplayerGroup currentGroup = oskariMapLayerGroupService.find(groupId);
+            currentGroup.setOrderNumber(i);
+            oskariMapLayerGroupService.updateOrder(currentGroup);
+        }
     }
 
     
@@ -157,16 +154,6 @@ public class LayerAndGroupOrderHandler extends RestActionHandler {
         } catch (IllegalArgumentException | JSONException e) {
             log.warn(e);
             throw new ActionException("Invalid request!");
-        }
-    }
-    /**
-     * Commonly used with
-     * @param params
-     * @throws ActionException
-     */
-    private void checkForAdminPermission(ActionParameters params) throws ActionException {
-        if(!params.getUser().isAdmin()) {
-            throw new ActionDeniedException("Session expired");
         }
     }
 }
