@@ -14,7 +14,6 @@ import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.JSONHelper;
-import fi.nls.oskari.util.PropertyUtil;
 
 import java.io.Reader;
 import java.sql.SQLException;
@@ -31,7 +30,6 @@ import java.util.*;
 public class OskariLayerServiceIbatisImpl extends OskariLayerService {
 
     private static final Logger LOG = LogFactory.getLogger(OskariLayerServiceIbatisImpl.class);
-    private static boolean crsSupported = PropertyUtil.getOptional("oskari.crs.switch.supported", false);
     private SqlMapClient client = null;
 
     // make it static so we can change this with one call to all services when needed
@@ -223,10 +221,6 @@ public class OskariLayerServiceIbatisImpl extends OskariLayerService {
     }
 
     public List<OskariLayer> find(final List<String> idList) {
-        return find(idList, null);
-    }
-    
-    public List<OskariLayer> find(final List<String> idList, String crs) {
         // TODO: break list into external and internalIds -> make 2 "where id/externalID in (...)" SQLs
         // ensure order stays the same
         final List<Integer> intList = ConversionHelper.getIntList(idList);
@@ -237,11 +231,6 @@ public class OskariLayerServiceIbatisImpl extends OskariLayerService {
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("strList", strList);
         params.put("intList", intList);
-        if(crsSupported){
-            params.put("crs", crs);
-        } else {
-            params.put("crs", null);
-        }
 
         List<Map<String,Object>> result = queryForList(getNameSpace() + ".findByIdList", params);
         final List<OskariLayer> layers = mapDataList(result);
@@ -291,19 +280,14 @@ public class OskariLayerServiceIbatisImpl extends OskariLayerService {
         return null;
     }
 
-    public List<OskariLayer> findAll(String crs) {
+    public List<OskariLayer> findAll() {
         long start = System.currentTimeMillis();
-        String crsIn = crsSupported ? crs : null;
-        List<Map<String,Object>> result = queryForList(getNameSpace() + ".findAll", crsIn);
+        List<Map<String,Object>> result = queryForList(getNameSpace() + ".findAll", null);
         LOG.debug("Find all layers:", System.currentTimeMillis() - start, "ms");
         start = System.currentTimeMillis();
         final List<OskariLayer> layers = mapDataList(result);
         LOG.debug("Parsing all layers:", System.currentTimeMillis() - start, "ms");
         return layers;
-    }
-
-    public List<OskariLayer> findAll() {
-       return this.findAll(null);
     }
 
     @Override

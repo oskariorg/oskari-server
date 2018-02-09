@@ -1,7 +1,5 @@
-package fi.nls.oskari.util;
+package org.oskari.service.util;
 
-
-import fi.mml.map.mapwindow.service.db.*;
 import fi.mml.map.mapwindow.service.db.OskariMapLayerGroupServiceIbatisImpl;
 import fi.mml.map.mapwindow.service.db.OskariMapLayerGroupService;
 import fi.mml.portti.service.db.permissions.PermissionsService;
@@ -12,49 +10,52 @@ import fi.nls.oskari.map.layer.DataProviderService;
 import fi.nls.oskari.map.layer.DataProviderServiceIbatisImpl;
 import fi.nls.oskari.map.layer.OskariLayerService;
 import fi.nls.oskari.map.layer.OskariLayerServiceIbatisImpl;
+import fi.nls.oskari.map.view.ViewService;
+import fi.nls.oskari.map.view.ViewServiceIbatisImpl;
 import fi.nls.oskari.service.capabilities.CapabilitiesCacheService;
 import fi.nls.oskari.service.capabilities.CapabilitiesCacheServiceMybatisImpl;
 import fi.nls.oskari.wfs.WFSLayerConfigurationService;
 import fi.nls.oskari.wfs.WFSLayerConfigurationServiceIbatisImpl;
 
 public class ServiceFactory {
-	
-	private static DataProviderService dataProviderService;
-	private static OskariLayerService mapLayerService;
-	private static OskariMapLayerGroupService oskariMapLayerGroupService;
-    private static MaplayerProjectionService maplayerProjectionService;
+
+    private static DataProviderService dataProviderService;
+    private static OskariLayerService mapLayerService;
+    private static ViewService viewService;
+    private static OskariMapLayerGroupService oskariMapLayerGroupService;
     private static PermissionsService permissionsService;
     private static SearchService searchService;
     private static CapabilitiesCacheService capabilitiesCacheService;
     private static WFSLayerConfigurationService wfsLayerService;
- 
-	public static DataProviderService getDataProviderService() {
-		if (dataProviderService == null) {
+
+    public static DataProviderService getDataProviderService() {
+        if (dataProviderService == null) {
             dataProviderService = new DataProviderServiceIbatisImpl();
-		}
-		return dataProviderService;
-	}
-	
-	public static OskariLayerService getMapLayerService() {
-		if (mapLayerService == null) {
-			mapLayerService = new OskariLayerServiceIbatisImpl();
-		}
-		return mapLayerService;
-	}
-
-	public static OskariMapLayerGroupService getOskariMapLayerGroupService() {
-		if (oskariMapLayerGroupService == null) {
-			oskariMapLayerGroupService = new OskariMapLayerGroupServiceIbatisImpl();
-		}
-		return oskariMapLayerGroupService;
-	}
-
-    public static MaplayerProjectionService getMaplayerProjectionService() {
-        if (maplayerProjectionService == null) {
-            maplayerProjectionService = new MaplayerProjectionServiceIbatisImpl();
         }
-        return maplayerProjectionService;
+        return dataProviderService;
     }
+
+    public static OskariLayerService getMapLayerService() {
+        if (mapLayerService == null) {
+            mapLayerService = new OskariLayerServiceIbatisImpl();
+        }
+        return mapLayerService;
+    }
+
+    public static ViewService getViewService() {
+        if (viewService == null) {
+            viewService = new ViewServiceIbatisImpl();
+        }
+        return viewService;
+    }
+
+    public static OskariMapLayerGroupService getOskariMapLayerGroupService() {
+        if (oskariMapLayerGroupService == null) {
+            oskariMapLayerGroupService = new OskariMapLayerGroupServiceIbatisImpl();
+        }
+        return oskariMapLayerGroupService;
+    }
+
     public static PermissionsService getPermissionsService() {
         if (permissionsService == null) {
             permissionsService = new PermissionsServiceIbatisImpl();

@@ -12,9 +12,10 @@ import fi.nls.oskari.map.layer.formatters.LayerJSONFormatterWMS;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
-import fi.nls.oskari.util.ServiceFactory;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.oskari.service.util.ServiceFactory;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;

@@ -67,8 +67,6 @@ public class OskariLayer extends JSONLocalizedNameAndTitle implements Comparable
     private String version = "";
     private String srs_name;
 
-    private Set<String> supportedCRSs = null;
-
     private Date created = null;
     private Date updated = null;
 
@@ -445,15 +443,6 @@ public class OskariLayer extends JSONLocalizedNameAndTitle implements Comparable
 
     public void setSrs_name(String srs_name) {
         this.srs_name = srs_name;
-    }
-
-   // Only available for savelayer handler
-    public Set<String> getSupportedCRSs() {
-        return supportedCRSs;
-    }
-
-    public void setSupportedCRSs(Set<String> supportedCrss) {
-        this.supportedCRSs = supportedCrss;
     }
 
     public Date getCapabilitiesLastUpdated() {
