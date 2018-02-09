@@ -85,7 +85,7 @@ public class OskariLayerWorker {
      */
     public static JSONObject getListOfMapLayersById(final List<String> layerIdList, final User user,
             final String lang, final String crs) {
-    	final List<OskariLayer> layers = mapLayerService.find(layerIdList, crs);
+    	final List<OskariLayer> layers = mapLayerService.find(layerIdList);
         return getListOfMapLayers(layers, user, lang, crs, false, false);
     }
     /**
