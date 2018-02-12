@@ -332,10 +332,6 @@ public class AppSetupHandler extends RestActionHandler {
         }
         JSONObject finalConfig = mapfullBundle.getConfigJSON();
 
-        // Save user info - this is overwritten when view is loaded so it's more of an fyi
-        // TODO: remove as user is no longer overwritten in conf, but added to appsetup.env
-        JSONHelper.putValue(finalConfig, KEY_USER, user.toJSON());
-
         final JSONArray userConfiguredPlugins = mapfullConf.optJSONArray(KEY_PLUGINS);
         if(userConfiguredPlugins == null) {
             throw new ActionParamsException("Could not get map plugins from input");
