@@ -15,6 +15,7 @@ import fi.mml.capabilities.LegendURLDocument.LegendURL;
 import fi.mml.capabilities.OperationType;
 import fi.mml.capabilities.StyleDocument.Style;
 import fi.mml.capabilities.WMSCapabilitiesDocument;
+import fi.mml.capabilities.KeywordListDocument.KeywordList;
 
 /**
  * 1.3.0 implementation of WMS
@@ -151,7 +152,11 @@ public class WebMapServiceV1_3_0_Impl extends AbstractWebMapService {
     }
 
     private String[] parseKeywords(Layer layer) {
-        KeywordDocument.Keyword[] words = layer.getKeywordList().getKeywordArray();
+        KeywordList keywordList = layer.getKeywordList();
+        if (keywordList == null) {
+            return new String[0];
+        }
+        KeywordDocument.Keyword[] words = keywordList.getKeywordArray();
         if (words == null) {
             return new String[0];
         }
