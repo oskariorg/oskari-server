@@ -272,13 +272,17 @@ public class View implements Serializable {
         return view;
     }
 
-    public String getSrsName() {
+    public JSONObject getMapOptions() {
         Bundle mapfull = getBundleByName("mapfull");
         if (mapfull == null) {
             return null;
         }
         JSONObject config = mapfull.getConfigJSON();
-        JSONObject mapOptions = JSONHelper.getJSONObject(config, "mapOptions");
+        return JSONHelper.getJSONObject(config, "mapOptions");
+    }
+
+    public String getSrsName() {
+        JSONObject mapOptions = getMapOptions();
         if (mapOptions == null) {
             return null;
         }
