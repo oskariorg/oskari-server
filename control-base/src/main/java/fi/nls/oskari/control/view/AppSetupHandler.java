@@ -44,6 +44,7 @@ public class AppSetupHandler extends RestActionHandler {
     static final String KEY_PUBDATA = "pubdata";
     static final String KEY_METADATA = "metadata";
     static final String KEY_VIEWCONFIG = "configuration";
+    static final String PARAM_PUBLISHER_VIEW_UUID = "publishedFrom";
 
     public static final String KEY_DOMAIN = "domain";
     public static final String KEY_LANGUAGE = "language";
@@ -216,7 +217,8 @@ public class AppSetupHandler extends RestActionHandler {
         }
 
         // setup map state
-        setupMapState(view, user, viewdata.optJSONObject(ViewModifier.BUNDLE_MAPFULL));
+        setupMapState(view, user, viewdata.optJSONObject(ViewModifier.BUNDLE_MAPFULL),
+                params.getRequiredParam(PARAM_PUBLISHER_VIEW_UUID));
 
         // check if we need to add divmanazer
         for(String bundleid : BUNDLE_REQUIRES_DIVMANAZER) {
@@ -292,7 +294,7 @@ public class AppSetupHandler extends RestActionHandler {
         view.setOnlyForUuId(VIEW_ACCESS_UUID);
     }
 
-    private void setupMapState(final View view, final User user, final JSONObject input) throws ActionException {
+    private void setupMapState(final View view, final User user, final JSONObject input, final String publisherUUID) throws ActionException {
 
         final Bundle mapfullBundle = view.getBundleByName(ViewModifier.BUNDLE_MAPFULL);
         if (mapfullBundle == null) {
@@ -331,6 +333,7 @@ public class AppSetupHandler extends RestActionHandler {
         JSONObject finalConfig = mapfullBundle.getConfigJSON();
 
         // Save user info - this is overwritten when view is loaded so it's more of an fyi
+        // TODO: remove as user is no longer overwritten in conf, but added to appsetup.env
         JSONHelper.putValue(finalConfig, KEY_USER, user.toJSON());
 
         final JSONArray userConfiguredPlugins = mapfullConf.optJSONArray(KEY_PLUGINS);
@@ -361,17 +364,30 @@ public class AppSetupHandler extends RestActionHandler {
         // replace current plugins
         JSONHelper.putValue(finalConfig, KEY_PLUGINS, plugins);
 
-        // copy style definition from metadata to mapOptions
-        JSONObject mapOptions = finalConfig.optJSONObject(KEY_MAPOPTIONS);
-        if(mapOptions == null) {
-            // create mapOptions if it doesn't exist
-            mapOptions = new JSONObject();
-            JSONHelper.putValue(finalConfig, KEY_MAPOPTIONS, mapOptions);
+        // get mapOptions from publisher view, copy style definition from metadata to mapOptions
+        JSONHelper.putValue(finalConfig, KEY_MAPOPTIONS,
+                getMapOptions(publisherUUID, input, view.getMetadata().optJSONObject(KEY_STYLE)));
+    }
+
+    /**
+     * Get mapOptions for the requested view. UUID should be of the view that was used to publish the map.
+     * This overrides any mapOptions on the publish template so we can have published maps on different projections.
+     * @param publisherUUID view uuid - usually of the view that had the publisher
+     * @return mapOptions - part of the conf of mapfull bundle
+     */
+    private JSONObject getMapOptions(String publisherUUID, final JSONObject input, JSONObject style) throws ActionException {
+        // uuid is a request parameter (PARAM_PUBLISHER_VIEW_UUID)
+        View publisherView = viewService.getViewWithConfByUuId(publisherUUID);
+        if (publisherView == null) {
+            throw new ActionParamsException("Could not get the parent appsetup for uuid " + publisherUUID);
         }
-
+        JSONObject mapOptions = publisherView.getMapOptions();
+        if (mapOptions == null) {
+            throw new ActionParamsException("Could not get the mapOptions from appsetup for uuid " + publisherUUID);
+        }
         JSONHelper.putValue(mapOptions, KEY_CROSSHAIR, crosshairEnabled(input));
-
-        JSONHelper.putValue(mapOptions, KEY_STYLE, view.getMetadata().optJSONObject(KEY_STYLE));
+        JSONHelper.putValue(mapOptions, KEY_STYLE, style);
+        return mapOptions;
     }
 
     private boolean crosshairEnabled(JSONObject input) {
@@ -402,8 +418,6 @@ public class AppSetupHandler extends RestActionHandler {
         // NOTE! allowing guests to draw features on the layer
         JSONHelper.putValue(config, "allowGuest", true);
     }
-
-
 
     private JSONObject getPublisherInput(final String input) throws ActionException {
         try {
