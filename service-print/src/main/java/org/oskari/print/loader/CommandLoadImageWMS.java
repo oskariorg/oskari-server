@@ -67,8 +67,7 @@ public class CommandLoadImageWMS extends CommandLoadImageBase {
 
     @Override
     public BufferedImage getFallback() {
-        // Return fully transparent image as fallback
-        return new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+        return null;
     }
 
 }

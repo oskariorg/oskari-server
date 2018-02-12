@@ -261,6 +261,9 @@ public class PDF {
             Future<BufferedImage> image = images.get(i);
             try {
                 BufferedImage bi = image.get();
+                if (bi == null) {
+                    continue;
+                }
                 PDImageXObject imgObject = LosslessFactory.createFromImage(doc, bi);
 
                 // Set layer (Optional Content Group)
