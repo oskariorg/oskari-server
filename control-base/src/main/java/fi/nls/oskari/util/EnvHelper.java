@@ -51,14 +51,9 @@ public class EnvHelper {
         for(View view: views) {
             try {
                 JSONObject json = new JSONObject();
-                String srsName = view.getBundleByName("mapfull")
-                        .getConfigJSON()
-                        .getJSONObject("mapOptions")
-                        .getString("srsName");
-
                 json.put("uuid", view.getUuid());
                 json.put("name", view.getName());
-                json.put("srsName", srsName);
+                json.put("srsName", view.getSrsName());
                 DEFAULT_VIEWS.add(json);
             } catch (JSONException e) {
                 LOGGER.warn("Couldn't format default views for appsetup.env:", e.getMessage());
