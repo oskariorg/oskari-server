@@ -115,6 +115,17 @@ public class GetAppSetupHandler extends ActionHandler {
                 }
             }
         }
+        
+        // setup default views for appsetup.env
+        try {
+            List<View> views = new ArrayList<>();
+            for (long viewId : viewService.getSystemDefaultViewIds()) {
+                views.add(viewService.getViewWithConf(viewId));
+            }
+            EnvHelper.setupViews(views);
+        } catch (Exception ex) {
+            log.warn(ex, "Couldn't setup default views for appsetup! Default views are not working properly in appsetup.env");
+        }
     }
 
     public void handleAction(final ActionParameters params) throws ActionException {
