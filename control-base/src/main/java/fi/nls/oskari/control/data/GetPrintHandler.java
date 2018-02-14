@@ -51,6 +51,8 @@ public class GetPrintHandler extends ActionHandler {
     private static final String PARM_FORMAT = "format";
     private static final String PARM_SRSNAME = "srs";
     private static final String PARM_TILES = "tiles";
+    private static final String PARM_TITLE = "title";
+    private static final String PARM_LOGO = "logo";
 
     private static final String ALLOWED_FORMATS = Arrays.toString(new String[] {
             PrintFormat.PDF.contentType, PrintFormat.PNG.contentType
@@ -113,6 +115,8 @@ public class GetPrintHandler extends ActionHandler {
 
         request.setSrsName(params.getRequiredParam(PARM_SRSNAME));
         request.setResolution(params.getRequiredParamDouble(PARM_RESOLUTION));
+        request.setTitle(params.getHttpParam(PARM_TITLE));
+        request.setLogo(params.getHttpParam(PARM_LOGO));
 
         setPagesize(params, request);
         setCoordinates(params.getRequiredParam(PARM_COORD), request);
