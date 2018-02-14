@@ -31,5 +31,5 @@ public abstract class CommandLoadImageBase extends HystrixCommand<BufferedImage>
                         .withCircuitBreakerSleepWindowInMilliseconds(PropertyUtil.getOptional("oskari." + GROUP_KEY + ".sleepwindow", 20000)))
         );
     }
-    
+
 }
