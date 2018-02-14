@@ -41,7 +41,6 @@ public class GetMapLayerGroupsHandler extends ActionHandler {
         oskariMapLayerGroupService = service;
     }
 
-
     @Override
     public void init() {
         // setup service if it hasn't been initialized
@@ -50,72 +49,47 @@ public class GetMapLayerGroupsHandler extends ActionHandler {
         }
     }
 
-    @Override
-    public void handleAction(ActionParameters params) throws ActionException {
-
+    /**
+     * Get group json, max depth is 3
+     * @param parentId parent id
+     * @param params params
+     * @param depth current depth
+     * @return
+     * @throws ActionException
+     */
+    private JSONArray getGroupJSON(int parentId, ActionParameters params, int depth) throws ActionException {
         final String lang = params.getHttpParam(PARAM_LANGUAGE, params.getLocale().getLanguage());
-
-        log.debug("Getting layer groups");
-        List<MaplayerGroup> layerGroups = oskariMapLayerGroupService.findAll();
-
-        // Get main groups
-        List<MaplayerGroup> mainGroups = layerGroups.stream()
-                .filter(g -> g.getParentId() == -1)
-                .sorted(Comparator.comparing(MaplayerGroup::getOrderNumber, Comparator.nullsLast(Comparator.naturalOrder())))
-                .collect(Collectors.toList());
+        List<MaplayerGroup> layerGroups = oskariMapLayerGroupService.findByParentId(parentId);
         JSONArray json = new JSONArray();
+        depth++;
         try{
-            for(MaplayerGroup group : mainGroups) {
+            // Loop groups and their subgroups (max depth is 3)
+            for(MaplayerGroup group : layerGroups) {
                 List<String> strLayerIds = ConversionHelper.getStringListFromIntegers(oskariMapLayerGroupService.findMaplayersByGroup(group.getId()));
 
                 final JSONObject layers = OskariLayerWorker.getListOfMapLayersById(strLayerIds, params.getUser(), lang, params.getHttpParam(PARAM_SRS));
                 JSONArray layerList = layers.optJSONArray(OskariLayerWorker.KEY_LAYERS);
-
                 group.setLayers(layerList);
-                JSONObject groupJson = group.getAsJSON();
-                JSONArray subGroupsJSON = new JSONArray();
 
-                // Get main group subgroups
-                List<MaplayerGroup> subgroups = layerGroups.stream()
-                        .filter(g -> g.getParentId() == group.getId())
-                		.sorted(Comparator.comparing(MaplayerGroup::getOrderNumber, Comparator.nullsLast(Comparator.naturalOrder())))
-                        .collect(Collectors.toList());
-                for(MaplayerGroup subgroup: subgroups) {
-                    List<String> strSubLayerIds = ConversionHelper.getStringListFromIntegers(oskariMapLayerGroupService.findMaplayersByGroup(subgroup.getId()));
-
-                    final JSONObject subLayers = OskariLayerWorker.getListOfMapLayersById(strSubLayerIds, params.getUser(), lang);
-                    JSONArray subLayerList = subLayers.optJSONArray(OskariLayerWorker.KEY_LAYERS);
-
-                    subgroup.setLayers(subLayerList);
-                    JSONObject subgroupJson = subgroup.getAsJSON();
-
-
-                    // Get subgroup subgroups
-                    List<MaplayerGroup> subgroupSubgroups = layerGroups.stream()
-                            .filter(g -> g.getParentId() == subgroup.getId())
-                    		.sorted(Comparator.comparing(MaplayerGroup::getOrderNumber, Comparator.nullsLast(Comparator.naturalOrder())))
-                            .collect(Collectors.toList());
-                    JSONArray subgroupSubgroupsJSON = new JSONArray();
-                    for(MaplayerGroup subgroupSubgroup: subgroupSubgroups) {
-                        List<String> strSubgroupLayerIds = ConversionHelper.getStringListFromIntegers(oskariMapLayerGroupService.findMaplayersByGroup(subgroupSubgroup.getId()));
-                        final JSONObject subgroupLayers = OskariLayerWorker.getListOfMapLayersById(strSubgroupLayerIds, params.getUser(), lang);
-                        JSONArray subgroupLayerList = subgroupLayers.optJSONArray(OskariLayerWorker.KEY_LAYERS);
-
-                        subgroupSubgroup.setLayers(subgroupLayerList);
-                        subgroupSubgroupsJSON.put(subgroupSubgroup.getAsJSON());
-                    }
-                    subgroupJson.put(KEY_GROUPS, subgroupSubgroupsJSON);
-                    subGroupsJSON.put(subgroupJson);
+                if(depth<=3) {
+                    JSONObject groupJson = group.getAsJSON();
+                    JSONArray subGroupsJSON = getGroupJSON(group.getId(), params, depth);
+                    groupJson.put(KEY_GROUPS, subGroupsJSON);
+                    json.put(groupJson);
                 }
-
-                groupJson.put(KEY_GROUPS, subGroupsJSON);
-                json.put(groupJson);
             }
         } catch(JSONException ex) {
             log.error("Group layerlist error", ex);
-            throw new ActionException("Group layerlist error");
+            throw new ActionException("Cannot get groupped layerlist");
         }
+        return json;
+    }
 
+    @Override
+    public void handleAction(ActionParameters params) throws ActionException {
+
+        log.debug("Getting layer groups");
+        JSONArray json = getGroupJSON(-1,params, 0);
         log.debug("Got layer groups");
         ResponseHelper.writeResponse(params, json);
     }
