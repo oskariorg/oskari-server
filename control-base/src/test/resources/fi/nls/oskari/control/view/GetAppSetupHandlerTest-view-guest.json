@@ -12,6 +12,7 @@
       "type": "user",
       "uuid": "aaaa-bbbbb-cccc"
     },
+    "defaultApps": [],
     "urls": {"api": "--oskari.ajax.url.prefix--"},
     "user": {
       "apikey": "testkey",

@@ -175,18 +175,19 @@ public class WebMapServiceV1_1_1_Impl extends AbstractWebMapService {
     }
 
     private String[] parseKeywords(Layer layer) {
-        if (layer.getKeywordList() != null) {
-            Keyword[] words = layer.getKeywordList().getKeywordArray();
-            if (words != null) {
-                String[] keywords = new String[words.length];
-                for (int i = 0; i < words.length; i++) {
-                    keywords[i] = getText(words[i])
-                            .orElseThrow(() -> new IllegalArgumentException("Empty keyword"));
-                }
-                return keywords;
-            }
+        if (layer.getKeywordList() == null) {
+            return new String[0];
         }
-        return new String[0];
+        Keyword[] words = layer.getKeywordList().getKeywordArray();
+        if (words == null) {
+            return new String[0];
+        }
+        String[] keywords = new String[words.length];
+        for (int i = 0; i < words.length; i++) {
+            keywords[i] = getText(words[i])
+                    .orElseThrow(() -> new IllegalArgumentException("Empty keyword"));
+        }
+        return keywords;
     }
 
     private String[] parseFormats(WMTMSCapabilitiesDocument wmtms) {
