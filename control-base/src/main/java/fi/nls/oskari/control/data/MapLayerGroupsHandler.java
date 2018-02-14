@@ -64,15 +64,14 @@ public class MapLayerGroupsHandler extends RestActionHandler {
             return;
         }
 
-        // find all themes
+        // find all maplayerGroups
         final List<MaplayerGroup> maplayerGroups = oskariMapLayerGroupService.findAll();
         final JSONArray list = new JSONArray();
         for (MaplayerGroup maplayerGroup : maplayerGroups) {
             list.put(maplayerGroup.getAsJSON());
         }
         final JSONObject result = new JSONObject();
-        // FIXME ispire need named to maplayergroups
-        JSONHelper.putValue(result, "inspire", list);
+        JSONHelper.putValue(result, "mapLayerGroups", list);
         ResponseHelper.writeResponse(params, result);
     }
 
@@ -82,9 +81,8 @@ public class MapLayerGroupsHandler extends RestActionHandler {
      * @throws ActionException
      */
     public void handlePut(ActionParameters params) throws ActionException {
-        checkForAdminPermission(params);
-        final MaplayerGroup maplayerGroup = new MaplayerGroup();
-        populateFromRequest(params, maplayerGroup);
+        params.requireAdminUser();
+        MaplayerGroup maplayerGroup = populateFromRequest(params.getPayLoadJSON());
         final int id = oskariMapLayerGroupService.insert(maplayerGroup);
         // check insert by loading from DB
         final MaplayerGroup savedMapLayerGroup = oskariMapLayerGroupService.find(id);
@@ -97,12 +95,11 @@ public class MapLayerGroupsHandler extends RestActionHandler {
      * @throws ActionException
      */
     public void handlePost(ActionParameters params) throws ActionException {
-        checkForAdminPermission(params);
-        final int id = params.getRequiredParamInt(PARAM_ID);
-        final MaplayerGroup theme = oskariMapLayerGroupService.find(id);
-        populateFromRequest(params, theme);
-        oskariMapLayerGroupService.update(theme);
-        ResponseHelper.writeResponse(params, theme.getAsJSON());
+        params.requireAdminUser();
+        MaplayerGroup maplayerGroup = populateFromRequest(params.getPayLoadJSON());
+        maplayerGroup.setId(params.getRequiredParamInt(PARAM_ID));
+        oskariMapLayerGroupService.update(maplayerGroup);
+        ResponseHelper.writeResponse(params, maplayerGroup.getAsJSON());
     }
 
     /**
@@ -111,7 +108,7 @@ public class MapLayerGroupsHandler extends RestActionHandler {
      * @throws ActionException
      */
     public void handleDelete(ActionParameters params) throws ActionException {
-        checkForAdminPermission(params);
+        params.requireAdminUser();
         final int id = params.getRequiredParamInt(PARAM_ID);
         final MaplayerGroup theme = oskariMapLayerGroupService.find(id);
         final List<Integer> maplayerIds = oskariMapLayerGroupService.findMaplayersByGroup(id);
@@ -123,38 +120,12 @@ public class MapLayerGroupsHandler extends RestActionHandler {
         ResponseHelper.writeResponse(params, theme.getAsJSON());
     }
 
-    /**
-     * Commonly used with
-     * @param params
-     * @throws ActionException
-     */
-    private void checkForAdminPermission(ActionParameters params) throws ActionException {
-        if(!params.getUser().isAdmin()) {
-            throw new ActionDeniedException("Session expired");
-        }
-    }
-
-    protected JSONObject getMapLayerGroup(HttpServletRequest req) throws ActionException {
-        try (InputStream in = req.getInputStream()) {
-            final byte[] json = IOHelper.readBytes(in);
-            final String jsonString = new String(json, StandardCharsets.UTF_8);
-            final JSONObject maplayerGroup = new JSONObject(jsonString);
-            return maplayerGroup;
-        } catch (IOException e) {
-            log.warn(e);
-            throw new ActionException("Failed to read request!");
-        } catch (IllegalArgumentException | JSONException e) {
-            log.warn(e);
-            throw new ActionException("Invalid request!");
-        }
-    }
-    private void populateFromRequest(ActionParameters params, MaplayerGroup maplayerGroup) throws ActionException {
-
+    private MaplayerGroup populateFromRequest(JSONObject mapLayerGroupJSON) throws ActionException {
+        MaplayerGroup maplayerGroup = new MaplayerGroup();
         try{
-            JSONObject mapLayerGroup = getMapLayerGroup(params.getRequest());
-            JSONObject locales = mapLayerGroup.getJSONObject(KEY_LOCALES);
-            int parentId = mapLayerGroup.optInt(KEY_PARENT_ID, -1);
-            boolean selectable = mapLayerGroup.optBoolean(KEY_SELECTABLE, true);
+            JSONObject locales = mapLayerGroupJSON.getJSONObject(KEY_LOCALES);
+            int parentId = mapLayerGroupJSON.optInt(KEY_PARENT_ID, -1);
+            boolean selectable = mapLayerGroupJSON.optBoolean(KEY_SELECTABLE, true);
             Iterator<?> keys = locales.keys();
 
             while( keys.hasNext() ) {
@@ -168,5 +139,7 @@ public class MapLayerGroupsHandler extends RestActionHandler {
             log.error("Cannot populate maplayergroup from request", ex);
             throw new ActionException("Cannot populate maplayergroup from request");
         }
+
+        return maplayerGroup;
     }
 }

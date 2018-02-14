@@ -147,18 +147,8 @@ public class OskariMapLayerGroupServiceIbatisImpl extends OskariMapLayerGroupSer
      * @return child groups of the given group
      */
     public List<MaplayerGroup> findByParentId(final int groupId) {
-    	final List<MaplayerGroup> allGroups = findAll();
-    	List<MaplayerGroup> retGroups = new ArrayList<>();
-        for(MaplayerGroup group : allGroups) {
-            if(group.getParentId() == groupId) {
-            	retGroups.add(group);
-            }
-        }
-        retGroups.stream()
-                .filter(g -> g.getParentId() == -1)
-                .sorted(Comparator.comparing(MaplayerGroup::getOrderNumber, Comparator.nullsLast(Comparator.naturalOrder())))
-                .collect(Collectors.toList());
-        return retGroups;
+        final List<MaplayerGroup> groups = queryForList(getNameSpace() + ".findByParentId", groupId);
+        return groups;
     }
 
     @Override

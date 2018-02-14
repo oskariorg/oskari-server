@@ -9,15 +9,10 @@ import java.util.List;
 import java.util.Map;
 
 public class MaplayerGroup extends JSONLocalizedName {
-
 	private int id;
-	
 	private JSONArray layers;
-
 	private int parentId;
-
 	private boolean selectable;
-	
 	private Integer orderNumber;
 
 	public int getId() {

@@ -3,11 +3,18 @@ package fi.nls.oskari.control;
 import fi.nls.oskari.domain.GuestUser;
 import fi.nls.oskari.domain.User;
 import fi.nls.oskari.util.ConversionHelper;
+import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.RequestHelper;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -284,5 +291,20 @@ public class ActionParameters {
     public String getAPIkey() {
         // TODO: use something better than session id
         return getRequest().getSession().getId();
+    }
+
+    /**
+     * Get play load JSON
+     * @return
+     */
+    public JSONObject getPayLoadJSON() {
+        JSONObject payloadJSON = null;
+        HttpServletRequest req = this.getRequest();
+        try (InputStream in = req.getInputStream()) {
+            final byte[] json = IOHelper.readBytes(in);
+            final String jsonString = new String(json, StandardCharsets.UTF_8);
+            return new JSONObject(jsonString);
+        } catch (Exception ignored) {}
+        return payloadJSON;
     }
 }

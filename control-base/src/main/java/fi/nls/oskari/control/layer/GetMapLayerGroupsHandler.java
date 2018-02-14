@@ -8,6 +8,8 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import fi.nls.oskari.map.layer.OskariLayerServiceIbatisImpl;
+import fi.nls.oskari.util.ConversionHelper;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -33,6 +35,20 @@ public class GetMapLayerGroupsHandler extends ActionHandler {
 	private static Logger log = LogFactory.getLogger(GetMapLayerGroupsHandler.class);
 
 	private static final String KEY_GROUPS = "groups";
+    private OskariMapLayerGroupService oskariMapLayerGroupService;
+
+    public void setOskariMapLayerGroupService(final OskariMapLayerGroupService service) {
+        oskariMapLayerGroupService = service;
+    }
+
+
+    @Override
+    public void init() {
+        // setup service if it hasn't been initialized
+        if(oskariMapLayerGroupService == null) {
+            setOskariMapLayerGroupService(new OskariMapLayerGroupServiceIbatisImpl());
+        }
+    }
 
     @Override
     public void handleAction(ActionParameters params) throws ActionException {
@@ -40,8 +56,7 @@ public class GetMapLayerGroupsHandler extends ActionHandler {
         final String lang = params.getHttpParam(PARAM_LANGUAGE, params.getLocale().getLanguage());
 
         log.debug("Getting layer groups");
-        OskariMapLayerGroupService groupService = new OskariMapLayerGroupServiceIbatisImpl();
-        List<MaplayerGroup> layerGroups = groupService.findAll();
+        List<MaplayerGroup> layerGroups = oskariMapLayerGroupService.findAll();
 
         // Get main groups
         List<MaplayerGroup> mainGroups = layerGroups.stream()
@@ -51,11 +66,8 @@ public class GetMapLayerGroupsHandler extends ActionHandler {
         JSONArray json = new JSONArray();
         try{
             for(MaplayerGroup group : mainGroups) {
-                List<Integer> intLayerIds = groupService.findMaplayersByGroup(group.getId());
-                List<String> strLayerIds = new ArrayList<>();
-                for(Integer current : intLayerIds){
-                    strLayerIds.add(current.toString());
-                }
+                List<String> strLayerIds = ConversionHelper.getStringListFromIntegers(oskariMapLayerGroupService.findMaplayersByGroup(group.getId()));
+
                 final JSONObject layers = OskariLayerWorker.getListOfMapLayersById(strLayerIds, params.getUser(), lang, params.getHttpParam(PARAM_SRS));
                 JSONArray layerList = layers.optJSONArray(OskariLayerWorker.KEY_LAYERS);
 
@@ -69,11 +81,8 @@ public class GetMapLayerGroupsHandler extends ActionHandler {
                 		.sorted(Comparator.comparing(MaplayerGroup::getOrderNumber, Comparator.nullsLast(Comparator.naturalOrder())))
                         .collect(Collectors.toList());
                 for(MaplayerGroup subgroup: subgroups) {
-                    List<Integer> intSubLayerIds = groupService.findMaplayersByGroup(subgroup.getId());
-                    List<String> strSubLayerIds = new ArrayList<>();
-                    for (Integer current : intSubLayerIds) {
-                        strSubLayerIds.add(current.toString());
-                    }
+                    List<String> strSubLayerIds = ConversionHelper.getStringListFromIntegers(oskariMapLayerGroupService.findMaplayersByGroup(subgroup.getId()));
+
                     final JSONObject subLayers = OskariLayerWorker.getListOfMapLayersById(strSubLayerIds, params.getUser(), lang);
                     JSONArray subLayerList = subLayers.optJSONArray(OskariLayerWorker.KEY_LAYERS);
 
@@ -88,11 +97,7 @@ public class GetMapLayerGroupsHandler extends ActionHandler {
                             .collect(Collectors.toList());
                     JSONArray subgroupSubgroupsJSON = new JSONArray();
                     for(MaplayerGroup subgroupSubgroup: subgroupSubgroups) {
-                        List<Integer> intSubgroupLayerIds = groupService.findMaplayersByGroup(subgroupSubgroup.getId());
-                        List<String> strSubgroupLayerIds = new ArrayList<>();
-                        for (Integer current : intSubgroupLayerIds) {
-                            strSubgroupLayerIds.add(current.toString());
-                        }
+                        List<String> strSubgroupLayerIds = ConversionHelper.getStringListFromIntegers(oskariMapLayerGroupService.findMaplayersByGroup(subgroupSubgroup.getId()));
                         final JSONObject subgroupLayers = OskariLayerWorker.getListOfMapLayersById(strSubgroupLayerIds, params.getUser(), lang);
                         JSONArray subgroupLayerList = subgroupLayers.optJSONArray(OskariLayerWorker.KEY_LAYERS);
 

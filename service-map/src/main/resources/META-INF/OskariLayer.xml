@@ -576,13 +576,6 @@
     oskari_maplayer l
     LEFT OUTER JOIN oskari_maplayer_metadata m ON  m.metadataid = l.metadataId
     LEFT OUTER JOIN oskari_maplayer_group_link gl ON gl.maplayerid = l.id
-    <dynamic>
-        <isParameterPresent>
-            LEFT OUTER JOIN oskari_maplayer_projections p
-            ON  p.maplayerid = l.id
-            WHERE p.name = #crs#
-        </isParameterPresent>
-    </dynamic>
     WHERE capabilities_update_rate_sec > 0
     ORDER BY l.parentId ASC
 </select>
@@ -643,18 +636,10 @@
     </statement>
     
     <update id="updateOrder" parameterClass="java.util.HashMap">
-        WITH cte AS (
-                SELECT maplayerid
-                FROM   oskari_maplayer_group_link
-                WHERE  maplayerid=#layerId#
-                       AND groupid=#groupId#
-                LIMIT  1
-                FOR    UPDATE
-        )
-        UPDATE oskari_maplayer_group_link omgl
+        UPDATE oskari_maplayer_group_link
         SET    order_number = #orderNumber#
-        FROM   cte
-        WHERE  omgl.maplayerid = cte.maplayerid
+        WHERE maplayerid = #layerId#
+        AND groupid = #groupId#
     </update>
     
     <update id="updateGroup" parameterClass="java.util.HashMap">

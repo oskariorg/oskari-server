@@ -75,8 +75,7 @@ public class LayerAndGroupOrderHandler extends RestActionHandler {
     public void handlePost(ActionParameters params) throws ActionException {
         params.requireAdminUser();
         log.debug("Updating layer/group order");
-        JSONObject orderJSON = getOrderJSON(params.getRequest());
-
+        JSONObject orderJSON = params.getPayLoadJSON();
 
 		try {
 			int parentID = orderJSON.getInt(KEY_PARENT);
@@ -86,7 +85,7 @@ public class LayerAndGroupOrderHandler extends RestActionHandler {
 			if(parentID == -1){
 				updateGroupOrder(orders);
 			} else {
-			    updateLAyerAndGroupOrders(orders, parentID);
+			    updateLayerAndGroupOrders(orders, parentID);
 			}
         } catch (JSONException e) {
         	log.warn(e);
@@ -100,7 +99,7 @@ public class LayerAndGroupOrderHandler extends RestActionHandler {
      * Update group and layer orders
      * @param orders
      */
-    protected void updateLAyerAndGroupOrders(final JSONArray orders, final int parentID) throws JSONException{
+    protected void updateLayerAndGroupOrders(final JSONArray orders, final int parentID) throws JSONException{
         for(int i=0;i<orders.length();i++) {
             JSONObject order = orders.getJSONObject(i);
             String type = order.getString(KEY_TYPE);
@@ -133,27 +132,6 @@ public class LayerAndGroupOrderHandler extends RestActionHandler {
             MaplayerGroup currentGroup = oskariMapLayerGroupService.find(groupId);
             currentGroup.setOrderNumber(i);
             oskariMapLayerGroupService.updateOrder(currentGroup);
-        }
-    }
-
-    
-    /**
-     * Read JSON from request
-     * @param req
-     * @return
-     * @throws ActionException
-     */
-    protected JSONObject getOrderJSON(HttpServletRequest req) throws ActionException {
-        try (InputStream in = req.getInputStream()) {
-            final byte[] json = IOHelper.readBytes(in);
-            final String jsonString = new String(json, StandardCharsets.UTF_8);
-            return new JSONObject(jsonString);
-        } catch (IOException e) {
-            log.warn(e);
-            throw new ActionException("Failed to read request!");
-        } catch (IllegalArgumentException | JSONException e) {
-            log.warn(e);
-            throw new ActionException("Invalid request!");
         }
     }
 }

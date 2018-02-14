@@ -47,6 +47,10 @@
         select id, locale, parentid, selectable, order_number from oskari_maplayer_group order by id
     </select>
 
+    <select id="findByParentId" parameterClass="int" resultMap="MaplayerGroupResult">
+        SELECT id, locale, parentid, selectable, order_number FROM oskari_maplayer_group  WHERE parentid=#id# ORDER BY order_number ASC
+    </select>
+
     <select id="findByMaplayer" parameterClass="int" resultMap="MaplayerGroupResult">
         select t.id, t.locale, t.parentid, t.selectable, t.order_number from oskari_maplayer_group t, oskari_maplayer_group_link l
             where t.id = l.groupid AND l.maplayerid = #id#
