@@ -142,7 +142,6 @@ public class OskariMapLayerGroupServiceIbatisImpl extends OskariMapLayerGroupSer
     
     /**
      * Returns the map layer groups which belong to the given parent.
-     * FIXME: Quick and dirty
      * @param groupId
      * @return child groups of the given group
      */
