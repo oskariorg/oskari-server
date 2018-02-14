@@ -43,7 +43,7 @@ public class PDF {
 
     private static final PDFont FONT = PDType1Font.HELVETICA;
     private static final float FONT_SIZE = 12f;
-    private static final float FONT_SIZE_SCALE = 10f;
+    // private static final float FONT_SIZE_SCALE = 10f;
 
     private static final float OFFSET_DATE_RIGHT = PDFBoxUtil.mmToPt(40);
     private static final float OFFSET_DATE_TOP = PDFBoxUtil.mmToPt(10);
@@ -51,8 +51,8 @@ public class PDF {
     private static final float OFFSET_LOGO_LEFT = PDFBoxUtil.mmToPt(10);
     private static final float OFFSET_LOGO_BOTTOM = PDFBoxUtil.mmToPt(5);
 
-    private static final float OFFSET_SCALE_LEFT = PDFBoxUtil.mmToPt(40);
-    private static final float OFFSET_SCALE_BOTTOM = PDFBoxUtil.mmToPt(5);
+    // private static final float OFFSET_SCALE_LEFT = PDFBoxUtil.mmToPt(40);
+    // private static final float OFFSET_SCALE_BOTTOM = PDFBoxUtil.mmToPt(5);
 
     private static final double[] SCALE_LINE_DISTANCES_METRES = new double[24];
 
@@ -101,7 +101,7 @@ public class PDF {
         try (PDPageContentStream stream = new PDPageContentStream(doc, page, AppendMode.APPEND, false)) {
             drawTitle(stream, request, pageSize);
             drawLogo(doc, stream, request);
-            drawScale(stream, request);
+            // drawScale(stream, request);
             drawDate(stream, request, pageSize);
             drawLayers(doc, stream, request.getLayers(), layerImages,
                     x, y, mapWidth, mapHeight);
@@ -175,13 +175,13 @@ public class PDF {
         PDFBoxUtil.drawText(stream, date, FONT, FONT_SIZE, x, y);
     }
 
+    /*
     private static void drawScale(PDPageContentStream stream, PrintRequest request)
             throws IOException {
         if (!request.isShowScale()) {
             return;
         }
 
-        /*
         String units = request.getUnits();
         if (units == null) {
             LOG.debug("Units not available in request, not drawing Scale Line");
@@ -250,8 +250,8 @@ public class PDF {
         float cx = x1 + ((x2 - x1) / 2);
         PDFBoxUtil.drawTextCentered(stream, distanceStr,
                 FONT, FONT_SIZE_SCALE, cx, y1 + 5);
-        */
     }
+     */
 
     private static void drawLayers(PDDocument doc, PDPageContentStream stream,
                                    List<PrintLayer> layers, List<Future<BufferedImage>> images,
