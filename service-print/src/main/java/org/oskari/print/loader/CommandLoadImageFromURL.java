@@ -34,6 +34,8 @@ public class CommandLoadImageFromURL extends CommandLoadImageBase {
                 return ImageIO.read(url);
             } catch (IOException e) {
                 LOG.warn(e);
+                // Sleep for a tiny moment between retries
+                Thread.sleep(50);
             }
         }
         return ImageIO.read(url);

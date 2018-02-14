@@ -15,7 +15,6 @@ public class PrintRequest {
     private PrintFormat format;
     private boolean showScale;
     private boolean showDate;
-    private String logo;
     private String title;
     private List<PrintLayer> layers;
 
@@ -105,14 +104,6 @@ public class PrintRequest {
 
     public void setShowDate(boolean showDate) {
         this.showDate = showDate;
-    }
-
-    public String getLogo() {
-        return logo;
-    }
-
-    public void setLogo(String logo) {
-        this.logo = logo;
     }
 
     public String getTitle() {

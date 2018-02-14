@@ -1,15 +1,14 @@
 package org.oskari.print;
 
-import fi.nls.oskari.service.ServiceException;
-
-import org.oskari.print.wmts.WMTSCapabilitiesCache;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
@@ -26,8 +25,13 @@ import org.oskari.print.request.PrintLayer;
 import org.oskari.print.request.PrintRequest;
 import org.oskari.print.util.PDFBoxUtil;
 import org.oskari.print.util.Units;
+import org.oskari.print.wmts.WMTSCapabilitiesCache;
+
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.service.ServiceException;
+import fi.nls.oskari.util.IOHelper;
+import fi.nls.oskari.util.PropertyUtil;
 
 public class PDF {
 
@@ -55,6 +59,9 @@ public class PDF {
     // private static final float OFFSET_SCALE_BOTTOM = PDFBoxUtil.mmToPt(5);
 
     private static final double[] SCALE_LINE_DISTANCES_METRES = new double[24];
+
+    private static final String LOGO_PATH_DEFAULT = "/img/logo.png";
+    private static final String LOGO_PATH = PropertyUtil.get("print.logo.path", LOGO_PATH_DEFAULT);
 
     static {
         PAGESIZES_LANDSCAPE = new PDRectangle[PAGESIZES.length];
@@ -100,7 +107,7 @@ public class PDF {
 
         try (PDPageContentStream stream = new PDPageContentStream(doc, page, AppendMode.APPEND, false)) {
             drawTitle(stream, request, pageSize);
-            drawLogo(doc, stream, request);
+            drawLogo(doc, stream);
             // drawScale(stream, request);
             drawDate(stream, request, pageSize);
             drawLayers(doc, stream, request.getLayers(), layerImages,
@@ -146,21 +153,23 @@ public class PDF {
         PDFBoxUtil.drawTextCentered(stream, title, FONT, FONT_SIZE, x, y);
     }
 
-    private static void drawLogo(PDDocument doc, PDPageContentStream stream,
-                                 PrintRequest request) throws IOException {
-        String logoPath = request.getLogo();
-        if (logoPath == null || logoPath.length() == 0) {
+    private static void drawLogo(PDDocument doc, PDPageContentStream stream) throws IOException {
+        if (LOGO_PATH == null || LOGO_PATH.isEmpty()) {
             return;
         }
 
-        try {
-            PDImageXObject img = PDImageXObject.createFromFile(logoPath, doc);
-            float x = OFFSET_LOGO_LEFT;
-            float y = OFFSET_LOGO_BOTTOM;
-            stream.drawImage(img, x, y);
-        } catch (IllegalArgumentException | IOException e) {
-            LOG.warn("Failed to draw logo from path:", logoPath);
+        byte[] b;
+        try (InputStream in = ClassLoader.getSystemResourceAsStream(LOGO_PATH)) {
+            b = IOHelper.readBytes(in);
+        } catch (IOException e) {
+            LOG.warn("Failed to read logo file");
+            return;
         }
+
+        PDImageXObject img = PDImageXObject.createFromByteArray(doc, b, "logo");
+        float x = OFFSET_LOGO_LEFT;
+        float y = OFFSET_LOGO_BOTTOM;
+        stream.drawImage(img, x, y);
     }
 
     private static void drawDate(PDPageContentStream stream,
