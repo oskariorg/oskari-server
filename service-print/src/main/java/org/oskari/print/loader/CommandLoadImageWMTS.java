@@ -68,7 +68,7 @@ public class CommandLoadImageWMTS extends CommandLoadImageBase {
         WMTSCapabilitiesLayer layerCapabilities = getLayerCapabilities();
         TileMatrixSet tms = getTileMatrixSet();
         TileMatrix tm = getTileMatrix(tms);
-        
+
         int tileWidth = tm.getTileWidth();
         int tileHeight = tm.getTileHeight();
 
@@ -178,10 +178,10 @@ public class CommandLoadImageWMTS extends CommandLoadImageBase {
     private GetTileRequestBuilder sendTileRequestREST(String tileMatrixSetId, String tileMatrixId, ResourceUrl tileResourceUrl) {
         String template = tileResourceUrl.getTemplate();
         return new GetTileRequestBuilderREST(template)
-            .layer(layer.getName())
-            .style(layer.getStyle())
-            .tileMatrixSet(tileMatrixSetId)
-            .tileMatrix(tileMatrixId);
+                .layer(layer.getName())
+                .style(layer.getStyle())
+                .tileMatrixSet(tileMatrixSetId)
+                .tileMatrix(tileMatrixId);
     }
 
     private GetTileRequestBuilder sendTileRequestsKVP(String tileMatrixSetId, String tileMatrixId, WMTSCapabilitiesLayer layerCapabilities) {
