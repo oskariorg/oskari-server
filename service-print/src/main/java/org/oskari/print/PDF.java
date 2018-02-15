@@ -163,12 +163,16 @@ public class PDF {
         BufferedImage logo = null;
         try (InputStream in = PDF.class.getResourceAsStream(LOGO_PATH)) {
             if (in == null) {
-                LOG.debug("Could not find logo");
+                LOG.debug("Logo file not found");
                 return;
             }
             logo = ImageIO.read(new BufferedInputStream(in));
         } catch (IOException e) {
             LOG.warn(e, "Failed to read logo");
+            return;
+        }
+        if (logo == null) {
+            LOG.info("Couldn't read logo with ImageIO");
             return;
         }
         try {
