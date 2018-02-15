@@ -106,7 +106,7 @@ public class PDF {
         float y = (pageSize.getHeight() - mapHeight) / 2;
 
         try (PDPageContentStream stream = new PDPageContentStream(doc, page, AppendMode.APPEND, false)) {
-            drawTitle(stream, request, pageSize);
+            drawTitle(stream, request, pageSize, mapHeight);
             drawLogo(doc, stream, request);
             // drawScale(stream, request);
             drawDate(stream, request, pageSize);
@@ -139,14 +139,13 @@ public class PDF {
     }
 
     private static void drawTitle(PDPageContentStream stream,
-            PrintRequest request, PDRectangle pageSize) throws IOException {
+            PrintRequest request, PDRectangle pageSize, float mapHeight) throws IOException {
         String title = request.getTitle();
         if (title == null || title.isEmpty()) {
             return;
         }
 
         float x = pageSize.getWidth() / 2;
-        float mapHeight = request.getHeight();
         float marginBottomPx = (pageSize.getHeight() - mapHeight) / 2;
         float y = marginBottomPx + mapHeight + 5;
 
