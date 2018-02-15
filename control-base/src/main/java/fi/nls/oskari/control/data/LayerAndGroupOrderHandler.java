@@ -91,8 +91,6 @@ public class LayerAndGroupOrderHandler extends RestActionHandler {
         	log.warn(e);
             throw new ActionParamsException("Cannot save orders!");
         }
-
-        ResponseHelper.writeResponse(params, orderJSON);
     }
 
     /**

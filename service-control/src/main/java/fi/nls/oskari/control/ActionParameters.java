@@ -297,14 +297,14 @@ public class ActionParameters {
      * Get play load JSON
      * @return
      */
-    public JSONObject getPayLoadJSON() {
-        JSONObject payloadJSON = null;
+    public JSONObject getPayLoadJSON() throws ActionParamsException {
         HttpServletRequest req = this.getRequest();
         try (InputStream in = req.getInputStream()) {
             final byte[] json = IOHelper.readBytes(in);
             final String jsonString = new String(json, StandardCharsets.UTF_8);
             return new JSONObject(jsonString);
-        } catch (Exception ignored) {}
-        return payloadJSON;
+        } catch (Exception exception) {
+            throw new ActionParamsException("Cannot get payload JSON");
+        }
     }
 }
