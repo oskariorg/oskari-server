@@ -1,14 +1,16 @@
 package org.oskari.print;
 
 import java.awt.image.BufferedImage;
+import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+
+import javax.imageio.ImageIO;
 
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
@@ -31,7 +33,6 @@ import org.oskari.print.wmts.WMTSCapabilitiesCache;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.service.ServiceException;
-import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.PropertyUtil;
 
 public class PDF {
@@ -159,24 +160,19 @@ public class PDF {
             return;
         }
 
-        byte[] b = null;
-        URL logoURL = PDF.class.getResource(LOGO_PATH);
-        LOG.debug("Logo file path:", logoURL.getPath());
-        if (logoURL != null) {
-            try (InputStream in = logoURL.openStream()) {
-                b = IOHelper.readBytes(in);
-            } catch (IOException e) {
-                LOG.warn(e, "Failed to read logo");
+        BufferedImage logo = null;
+        try (InputStream in = PDF.class.getResourceAsStream(LOGO_PATH)) {
+            if (in == null) {
+                LOG.debug("Could not find logo");
                 return;
             }
-        }
-        if (b == null || b.length == 0) {
-            LOG.debug("Logo doesn't exists");
+            logo = ImageIO.read(new BufferedInputStream(in));
+        } catch (IOException e) {
+            LOG.warn(e, "Failed to read logo");
             return;
         }
-
         try {
-            PDImageXObject img = PDImageXObject.createFromByteArray(doc, b, "logo");
+            PDImageXObject img = LosslessFactory.createFromImage(doc, logo);
             float x = OFFSET_LOGO_LEFT;
             float y = OFFSET_LOGO_BOTTOM;
             stream.drawImage(img, x, y);
