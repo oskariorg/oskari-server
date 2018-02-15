@@ -3,6 +3,7 @@ package org.oskari.print;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -159,11 +160,15 @@ public class PDF {
         }
 
         byte[] b = null;
-        try (InputStream in = ClassLoader.getSystemResourceAsStream(LOGO_PATH)) {
-            b = IOHelper.readBytes(in);
-        } catch (IOException e) {
-            LOG.warn(e, "Failed to read logo");
-            return;
+        URL logoURL = PDF.class.getResource(LOGO_PATH);
+        LOG.debug("Logo file path:", logoURL.getPath());
+        if (logoURL != null) {
+            try (InputStream in = logoURL.openStream()) {
+                b = IOHelper.readBytes(in);
+            } catch (IOException e) {
+                LOG.warn(e, "Failed to read logo");
+                return;
+            }
         }
         if (b == null || b.length == 0) {
             LOG.debug("Logo doesn't exists");
