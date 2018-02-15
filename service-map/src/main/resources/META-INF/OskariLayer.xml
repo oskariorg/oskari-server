@@ -446,8 +446,13 @@
     oskari_maplayer l
     LEFT OUTER JOIN oskari_maplayer_metadata m ON  m.metadataid = l.metadataId
     LEFT OUTER JOIN oskari_maplayer_group_link gl ON gl.maplayerid = l.id
-    WHERE
-    l.id = #id# OR l.parentId = #id#
+    <dynamic>
+        <isNotEmpty property="id">
+            WHERE
+            l.id = #id# OR l.parentId = #id#
+        </isNotEmpty>
+    </dynamic>
+
     ORDER BY l.parentId ASC
 
     </select>
