@@ -28,6 +28,10 @@ public class CommandLoadImageFromURL extends CommandLoadImageBase {
 
     @Override
     public BufferedImage run() throws Exception {
+        return load(uri);
+    }
+    
+    public static BufferedImage load(String uri) throws InterruptedException, IOException {
         LOG.info("Loading image from:", uri);
         URL url = new URL(uri);
         IOException toLog = null;
