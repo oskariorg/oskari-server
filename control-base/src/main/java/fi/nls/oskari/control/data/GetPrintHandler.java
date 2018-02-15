@@ -1,17 +1,18 @@
 package fi.nls.oskari.control.data;
 
-import fi.nls.oskari.service.ServiceException;
-
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Optional;
+
 import javax.imageio.ImageIO;
+
 import org.apache.pdfbox.pdmodel.PDDocument;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.oskari.print.PrintService;
 import org.oskari.print.request.PrintFormat;
 import org.oskari.print.request.PrintLayer;
@@ -19,9 +20,8 @@ import org.oskari.print.request.PrintRequest;
 import org.oskari.print.request.PrintTile;
 import org.oskari.service.util.ServiceFactory;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import fi.mml.portti.service.db.permissions.PermissionsService;
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.ActionException;
@@ -34,6 +34,7 @@ import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.layer.OskariLayerService;
+import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.ResponseHelper;
 
@@ -292,76 +293,64 @@ public class GetPrintHandler extends ActionHandler {
             return;
         }
         try {
-            JsonNode root = OBJECT_MAPPER.readTree(tilesJson);
-            if (!root.isArray()) {
-                throw new ActionParamsException(String.format(
-                        "Invalid value for key '%s'. root object not JSON array",
-                        PARM_TILES));
+            JSONArray tiles = new JSONArray(tilesJson);
+            for (int i = 0; i < tiles.length(); i++) {
+                JSONObject layersTiles = tiles.getJSONObject(i);
+                setTiles(layers, layersTiles);
             }
-
-            Iterator<String> it = root.fieldNames();
-            while (it.hasNext()) {
-                String layerId = it.next();
-                Optional<PrintLayer> printLayer = layers.stream()
-                        .filter(l -> layerId.equals(l.getName()))
-                        .findAny();
-                if (!printLayer.isPresent()) {
-                    LOG.info("Could not find layerId:", layerId);
-                    continue;
-                }
-
-                JsonNode layerNode = root.get(layerId);
-                int n = layerNode.size();
-                if (n != 1) {
-                    throw new ActionParamsException(String.format(
-                            "Invalid value for key '%s'", PARM_TILES));
-                }
-
-                JsonNode tilesNode = layerNode.get(0);
-                if (!tilesNode.isArray()) {
-                    throw new ActionParamsException(String.format(
-                            "Invalid value for key '%s'", PARM_TILES));
-                }
-
-                int m = tilesNode.size();
-                PrintTile[] tiles = new PrintTile[m];
-
-                for (int j = 0; j < m; j++) {
-                    JsonNode tileNode = tilesNode.get(j);
-
-                    JsonNode bboxNode = tileNode.get("bbox");
-                    if (bboxNode == null
-                            || !bboxNode.isArray()
-                            || bboxNode.size() != 4) {
-                        throw new ActionParamsException(String.format(
-                                "Invalid value for key '%s'. Invalid or missing 'bbox'",
-                                PARM_TILES));
-                    }
-
-                    JsonNode urlNode = tileNode.get("url");
-                    if (urlNode == null || !urlNode.isTextual()) {
-                        throw new ActionParamsException(String.format(
-                                "Invalid value for key '%s'. Missing or invalid 'url'",
-                                PARM_TILES));
-                    }
-                    double[] bbox = new double[4];
-                    for (int k = 0; k < 4; k++) {
-                        bbox[k] = bboxNode.get(k).asDouble();
-                    }
-                    String url = urlNode.asText();
-
-                    tiles[j] = new PrintTile(bbox, url);
-                }
-
-                // This is safe because we've check for the presence earlier
-                printLayer.get().setTiles(tiles);
-            }
-        } catch (JsonParseException e) {
+        } catch (JSONException e) {
             throw new ActionParamsException(String.format(
                     "Invalid value for key '%s'", PARM_TILES), e);
-        } catch (IOException e) {
-            throw new ActionException("Failed to parse tiles", e);
         }
+    }
+
+    private void setTiles(List<PrintLayer> layers, JSONObject layersTiles)
+            throws JSONException, ActionParamsException {
+        String key = (String) layersTiles.keys().next();
+        int layerId = ConversionHelper.getInt(key, -1);
+        if (layerId == -1) {
+            LOG.info("Could not parse integer layerId from:", key);
+            return;
+        }
+
+        final PrintLayer layer = findById(layers, layerId);
+        if (layer == null) {
+            LOG.info("Could not find layerId:", layerId);
+            return;
+        }
+
+        final JSONArray tilesArray = layersTiles.getJSONArray(key);
+        final int n = tilesArray.length();
+        final PrintTile[] tiles = new PrintTile[n];
+        for (int i = 0; i < n; i++) {
+            JSONObject tile = tilesArray.getJSONObject(i);
+            JSONArray bboxArray = tile.getJSONArray("bbox");
+            double[] bbox = toDoubleArray(bboxArray);
+            if (bbox.length != 4) {
+                throw new ActionParamsException("bbox length must be 4");
+            }
+            String url = tile.getString("url");
+            tiles[i] = new PrintTile(bbox, url);
+        }
+        layer.setTiles(tiles);
+    }
+
+    private PrintLayer findById(List<PrintLayer> layers, int id) {
+        for (PrintLayer l : layers) {
+            if (l.getId() == id) {
+                return l;
+            }
+        }
+        return null;
+    }
+
+    private double[] toDoubleArray(JSONArray array) throws JSONException {
+        final int n = array.length();
+        final double[] arr = new double[n];
+        for (int i = 0; i < n; i++) {
+            arr[i] = array.getDouble(i);
+        }
+        return arr;
     }
 
     private void handlePNG(PrintRequest pr, ActionParameters params) throws ActionException {
