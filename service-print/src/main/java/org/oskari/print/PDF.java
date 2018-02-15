@@ -159,13 +159,19 @@ public class PDF {
             return;
         }
 
+        byte[] b = null;
         try (InputStream in = ClassLoader.getSystemResourceAsStream(LOGO_PATH)) {
-            byte[] b = IOHelper.readBytes(in);
-            in.close();
-            if (b.length == 0) {
-                LOG.debug("Skipping drawing logo, bytes");
-                return;
-            }
+            b = IOHelper.readBytes(in);
+        } catch (IOException e) {
+            LOG.warn(e, "Failed to read logo");
+            return;
+        }
+        if (b == null || b.length == 0) {
+            LOG.debug("Logo doesn't exists");
+            return;
+        }
+
+        try {
             PDImageXObject img = PDImageXObject.createFromByteArray(doc, b, "logo");
             float x = OFFSET_LOGO_LEFT;
             float y = OFFSET_LOGO_BOTTOM;
