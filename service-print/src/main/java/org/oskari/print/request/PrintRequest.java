@@ -13,6 +13,7 @@ public class PrintRequest {
     private int targetWidth;
     private int targetHeight;
     private PrintFormat format;
+    private boolean showLogo;
     private boolean showScale;
     private boolean showDate;
     private String title;
@@ -120,6 +121,14 @@ public class PrintRequest {
 
     public void setLayers(List<PrintLayer> layers) {
         this.layers = layers;
+    }
+
+    public boolean isShowLogo() {
+        return showLogo;
+    }
+
+    public void setShowLogo(boolean showLogo) {
+        this.showLogo = showLogo;
     }
 
 }

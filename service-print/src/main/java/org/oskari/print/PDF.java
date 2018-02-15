@@ -107,7 +107,7 @@ public class PDF {
 
         try (PDPageContentStream stream = new PDPageContentStream(doc, page, AppendMode.APPEND, false)) {
             drawTitle(stream, request, pageSize);
-            drawLogo(doc, stream);
+            drawLogo(doc, stream, request);
             // drawScale(stream, request);
             drawDate(stream, request, pageSize);
             drawLayers(doc, stream, request.getLayers(), layerImages,
@@ -139,9 +139,9 @@ public class PDF {
     }
 
     private static void drawTitle(PDPageContentStream stream,
-                                  PrintRequest request, PDRectangle pageSize) throws IOException {
+            PrintRequest request, PDRectangle pageSize) throws IOException {
         String title = request.getTitle();
-        if (title == null || title.length() == 0) {
+        if (title == null || title.isEmpty()) {
             return;
         }
 
@@ -153,27 +153,30 @@ public class PDF {
         PDFBoxUtil.drawTextCentered(stream, title, FONT, FONT_SIZE, x, y);
     }
 
-    private static void drawLogo(PDDocument doc, PDPageContentStream stream) throws IOException {
-        if (LOGO_PATH == null || LOGO_PATH.isEmpty()) {
+    private static void drawLogo(PDDocument doc, PDPageContentStream stream,
+            PrintRequest request) throws IOException {
+        if (!request.isShowLogo() || LOGO_PATH == null || LOGO_PATH.isEmpty()) {
             return;
         }
 
-        byte[] b;
         try (InputStream in = ClassLoader.getSystemResourceAsStream(LOGO_PATH)) {
-            b = IOHelper.readBytes(in);
+            byte[] b = IOHelper.readBytes(in);
+            in.close();
+            if (b.length == 0) {
+                LOG.debug("Skipping drawing logo, bytes");
+                return;
+            }
+            PDImageXObject img = PDImageXObject.createFromByteArray(doc, b, "logo");
+            float x = OFFSET_LOGO_LEFT;
+            float y = OFFSET_LOGO_BOTTOM;
+            stream.drawImage(img, x, y);
         } catch (IOException e) {
-            LOG.warn("Failed to read logo file");
-            return;
+            LOG.warn(e, "Failed to draw logo");
         }
-
-        PDImageXObject img = PDImageXObject.createFromByteArray(doc, b, "logo");
-        float x = OFFSET_LOGO_LEFT;
-        float y = OFFSET_LOGO_BOTTOM;
-        stream.drawImage(img, x, y);
     }
 
     private static void drawDate(PDPageContentStream stream,
-                                 PrintRequest request, PDRectangle pageSize) throws IOException {
+            PrintRequest request, PDRectangle pageSize) throws IOException {
         if (!request.isShowDate()) {
             return;
         }
@@ -263,8 +266,8 @@ public class PDF {
      */
 
     private static void drawLayers(PDDocument doc, PDPageContentStream stream,
-                                   List<PrintLayer> layers, List<Future<BufferedImage>> images,
-                                   float x, float y, float w, float h) throws IOException {
+            List<PrintLayer> layers, List<Future<BufferedImage>> images,
+            float x, float y, float w, float h) throws IOException {
         for (int i = 0; i < layers.size(); i++) {
             PrintLayer layer = layers.get(i);
             Future<BufferedImage> image = images.get(i);
@@ -299,8 +302,8 @@ public class PDF {
     }
 
     private static void drawBorder(PDPageContentStream stream,
-                                   float x, float y, float mapWidthPt, float mapHeightPt)
-            throws IOException {
+            float x, float y, float mapWidthPt, float mapHeightPt)
+                    throws IOException {
         stream.saveGraphicsState();
         stream.setLineWidth(0.5f);
         stream.addRect(x, y, mapWidthPt, mapHeightPt);
