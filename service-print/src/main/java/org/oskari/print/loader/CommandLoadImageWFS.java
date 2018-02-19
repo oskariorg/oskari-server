@@ -32,6 +32,10 @@ public class CommandLoadImageWFS extends CommandLoadImageBase {
     @Override
     public BufferedImage run() throws Exception {
         PrintTile[] tiles = layer.getTiles();
+        if (tiles == null) {
+            // Preview doesn't set tiles
+            return null;
+        }
 
         // Sort the tiles so that we will combine the tiles
         // from top to bottom and left to right
@@ -52,7 +56,7 @@ public class CommandLoadImageWFS extends CommandLoadImageBase {
                 double t1y1 = t1.getBbox()[3];
                 double t2x1 = t2.getBbox()[0];
                 double t2y1 = t2.getBbox()[3];
-                int c = Double.compare(t1y1, t2y1);
+                int c = Double.compare(t2y1, t1y1);
                 return c != 0 ? c : Double.compare(t1x1, t2x1); 
             }
         });
