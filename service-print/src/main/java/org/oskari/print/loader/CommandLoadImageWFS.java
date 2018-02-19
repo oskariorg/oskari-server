@@ -42,6 +42,12 @@ public class CommandLoadImageWFS extends CommandLoadImageBase {
             @Override
             public int compare(PrintTile t1, PrintTile t2) {
                 // y1 here is the "max north" which translates to the row in the "master-image"
+                if (t1.getBbox() == null) {
+                    return t2.getBbox() == null ? 0 : 1;
+                }
+                if (t2.getBbox() == null) {
+                    return -1;
+                }
                 double t1x1 = t1.getBbox()[0];
                 double t1y1 = t1.getBbox()[3];
                 double t2x1 = t2.getBbox()[0];
@@ -67,13 +73,12 @@ public class CommandLoadImageWFS extends CommandLoadImageBase {
 
         for (int i = 0; i < tiles.length; i++) {
             PrintTile tile = tiles[i];
-
             double[] tileBbox = tile.getBbox();
             // Flip y-axis, BufferedImages (0,0) is at top left
             int dx1 = getPt(tileBbox[0], x1, widthInNature, width);
-            int dy1 = getPt(tileBbox[3], y1, heightInNature, height);
+            int dy1 = getPt(y1, tileBbox[3], heightInNature, height);
             int dx2 = getPt(tileBbox[2], x1, widthInNature, width);
-            int dy2 = getPt(tileBbox[1], y1, heightInNature, height);
+            int dy2 = getPt(y1, tileBbox[1], heightInNature, height);
 
             BufferedImage img = images.get(i).get();
             if (img != null) {

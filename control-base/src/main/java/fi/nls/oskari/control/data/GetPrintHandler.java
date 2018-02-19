@@ -20,8 +20,6 @@ import org.oskari.print.request.PrintRequest;
 import org.oskari.print.request.PrintTile;
 import org.oskari.service.util.ServiceFactory;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import fi.mml.portti.service.db.permissions.PermissionsService;
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.ActionException;
@@ -42,8 +40,6 @@ import fi.nls.oskari.util.ResponseHelper;
 public class GetPrintHandler extends ActionHandler {
 
     private static final Logger LOG = LogFactory.getLogger(GetPrintHandler.class);
-
-    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
     private static final String PARM_COORD = "coord";
     private static final String PARM_RESOLUTION = "resolution";
@@ -329,9 +325,6 @@ public class GetPrintHandler extends ActionHandler {
             JSONObject tile = tilesArray.getJSONObject(i);
             JSONArray bboxArray = tile.getJSONArray("bbox");
             double[] bbox = toDoubleArray(bboxArray);
-            if (bbox.length != 4) {
-                throw new ActionParamsException("bbox length must be 4");
-            }
             String url = tile.getString("url");
             tiles[i] = new PrintTile(bbox, url);
         }
