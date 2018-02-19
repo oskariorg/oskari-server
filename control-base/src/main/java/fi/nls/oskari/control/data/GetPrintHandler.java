@@ -130,7 +130,7 @@ public class GetPrintHandler extends ActionHandler {
         List<PrintLayer> layers = getLayers(params.getRequiredParam(PARM_MAPLAYERS),
                 params.getUser());
         request.setLayers(layers);
-        setTiles(params, layers);
+        setTiles(layers, params.getHttpParam(PARM_TILES));
 
         return request;
     }
@@ -286,9 +286,8 @@ public class GetPrintHandler extends ActionHandler {
         return Math.min(opacity, 100);
     }
 
-    private void setTiles(ActionParameters params, List<PrintLayer> layers)
+    private void setTiles(List<PrintLayer> layers, String tilesJson)
             throws ActionException {
-        String tilesJson = params.getHttpParam(PARM_TILES);
         if (tilesJson == null || tilesJson.isEmpty()) {
             return;
         }
@@ -320,6 +319,10 @@ public class GetPrintHandler extends ActionHandler {
         }
 
         final JSONArray tilesArray = layersTiles.getJSONArray(key);
+        layer.setTiles(parseTiles(tilesArray));
+    }
+
+    private PrintTile[] parseTiles(JSONArray tilesArray) throws JSONException, ActionParamsException {
         final int n = tilesArray.length();
         final PrintTile[] tiles = new PrintTile[n];
         for (int i = 0; i < n; i++) {
@@ -332,7 +335,7 @@ public class GetPrintHandler extends ActionHandler {
             String url = tile.getString("url");
             tiles[i] = new PrintTile(bbox, url);
         }
-        layer.setTiles(tiles);
+        return tiles;
     }
 
     private PrintLayer findById(List<PrintLayer> layers, int id) {
