@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * WMTS GetTile Request (REST) Builder
+ * WMTS GetTile Request Builder (REST)
  */
-public class GetTileBuilderREST {
+public class GetTileRequestBuilderREST implements GetTileRequestBuilder {
 
     private static final String TEMPLATE_LAYER = "layer";
     private static final String TEMPLATE_STYLE = "style";
@@ -32,7 +32,7 @@ public class GetTileBuilderREST {
     private int tileRow;
     private int tileCol;
 
-    public GetTileBuilderREST(String template) throws IllegalArgumentException {
+    public GetTileRequestBuilderREST(String template) throws IllegalArgumentException {
         if (template == null || template.length() == 0) {
             throw new IllegalArgumentException("Template must be non-empty!");
         }
@@ -78,32 +78,32 @@ public class GetTileBuilderREST {
         }
     }
 
-    public GetTileBuilderREST layer(String layer) {
+    public GetTileRequestBuilderREST layer(String layer) {
         this.layer = layer;
         return this;
     }
 
-    public GetTileBuilderREST style(String style) {
+    public GetTileRequestBuilderREST style(String style) {
         this.style = style;
         return this;
     }
 
-    public GetTileBuilderREST tileMatrixSet(String tileMatrixSet) {
+    public GetTileRequestBuilderREST tileMatrixSet(String tileMatrixSet) {
         this.tileMatrixSet = tileMatrixSet;
         return this;
     }
 
-    public GetTileBuilderREST tileMatrix(String tileMatrix) {
+    public GetTileRequestBuilderREST tileMatrix(String tileMatrix) {
         this.tileMatrix = tileMatrix;
         return this;
     }
 
-    public GetTileBuilderREST tileRow(int tileRow) {
+    public GetTileRequestBuilderREST tileRow(int tileRow) {
         this.tileRow = tileRow;
         return this;
     }
 
-    public GetTileBuilderREST tileCol(int tileCol) {
+    public GetTileRequestBuilderREST tileCol(int tileCol) {
         this.tileCol = tileCol;
         return this;
     }

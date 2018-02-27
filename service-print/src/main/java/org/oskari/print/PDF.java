@@ -1,15 +1,17 @@
 package org.oskari.print;
 
-import fi.nls.oskari.service.ServiceException;
-
-import org.oskari.print.wmts.TileMatrixSetCache;
 import java.awt.image.BufferedImage;
+import java.io.BufferedInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+
+import javax.imageio.ImageIO;
+
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
@@ -26,8 +28,12 @@ import org.oskari.print.request.PrintLayer;
 import org.oskari.print.request.PrintRequest;
 import org.oskari.print.util.PDFBoxUtil;
 import org.oskari.print.util.Units;
+import org.oskari.print.wmts.WMTSCapabilitiesCache;
+
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.service.ServiceException;
+import fi.nls.oskari.util.PropertyUtil;
 
 public class PDF {
 
@@ -43,7 +49,7 @@ public class PDF {
 
     private static final PDFont FONT = PDType1Font.HELVETICA;
     private static final float FONT_SIZE = 12f;
-    private static final float FONT_SIZE_SCALE = 10f;
+    // private static final float FONT_SIZE_SCALE = 10f;
 
     private static final float OFFSET_DATE_RIGHT = PDFBoxUtil.mmToPt(40);
     private static final float OFFSET_DATE_TOP = PDFBoxUtil.mmToPt(10);
@@ -51,16 +57,19 @@ public class PDF {
     private static final float OFFSET_LOGO_LEFT = PDFBoxUtil.mmToPt(10);
     private static final float OFFSET_LOGO_BOTTOM = PDFBoxUtil.mmToPt(5);
 
-    private static final float OFFSET_SCALE_LEFT = PDFBoxUtil.mmToPt(40);
-    private static final float OFFSET_SCALE_BOTTOM = PDFBoxUtil.mmToPt(5);
+    // private static final float OFFSET_SCALE_LEFT = PDFBoxUtil.mmToPt(40);
+    // private static final float OFFSET_SCALE_BOTTOM = PDFBoxUtil.mmToPt(5);
 
     private static final double[] SCALE_LINE_DISTANCES_METRES = new double[24];
+
+    private static final String LOGO_PATH_DEFAULT = "/img/logo.png";
+    private static final String LOGO_PATH = PropertyUtil.get("print.logo.path", LOGO_PATH_DEFAULT);
 
     static {
         PAGESIZES_LANDSCAPE = new PDRectangle[PAGESIZES.length];
         for (int i = 0; i < PAGESIZES.length; i++) {
             PDRectangle rect = PAGESIZES[i];
-            PAGESIZES_LANDSCAPE[i] = new PDRectangle(rect.getHeight(), rect.getHeight());
+            PAGESIZES_LANDSCAPE[i] = new PDRectangle(rect.getHeight(), rect.getWidth());
         }
 
         // 1, 2, 5, 10, 20, 50, ...
@@ -75,7 +84,7 @@ public class PDF {
     /**
      * This method should be called via PrintService
      */
-    protected static void getPDF(PrintRequest request, PDDocument doc, TileMatrixSetCache tmsCache)
+    protected static void getPDF(PrintRequest request, PDDocument doc, WMTSCapabilitiesCache tmsCache)
             throws IOException, ServiceException {
         float mapWidth = pixelsToPoints(request.getWidth());
         float mapHeight = pixelsToPoints(request.getHeight());
@@ -99,9 +108,9 @@ public class PDF {
         float y = (pageSize.getHeight() - mapHeight) / 2;
 
         try (PDPageContentStream stream = new PDPageContentStream(doc, page, AppendMode.APPEND, false)) {
-            drawTitle(stream, request, pageSize);
+            drawTitle(stream, request, pageSize, mapHeight);
             drawLogo(doc, stream, request);
-            drawScale(stream, request);
+            // drawScale(stream, request);
             drawDate(stream, request, pageSize);
             drawLayers(doc, stream, request.getLayers(), layerImages,
                     x, y, mapWidth, mapHeight);
@@ -132,14 +141,13 @@ public class PDF {
     }
 
     private static void drawTitle(PDPageContentStream stream,
-                                  PrintRequest request, PDRectangle pageSize) throws IOException {
+            PrintRequest request, PDRectangle pageSize, float mapHeight) throws IOException {
         String title = request.getTitle();
-        if (title == null || title.length() == 0) {
+        if (title == null || title.isEmpty()) {
             return;
         }
 
         float x = pageSize.getWidth() / 2;
-        float mapHeight = request.getHeight();
         float marginBottomPx = (pageSize.getHeight() - mapHeight) / 2;
         float y = marginBottomPx + mapHeight + 5;
 
@@ -147,24 +155,38 @@ public class PDF {
     }
 
     private static void drawLogo(PDDocument doc, PDPageContentStream stream,
-                                 PrintRequest request) throws IOException {
-        String logoPath = request.getLogo();
-        if (logoPath == null || logoPath.length() == 0) {
+            PrintRequest request) throws IOException {
+        if (!request.isShowLogo() || LOGO_PATH == null || LOGO_PATH.isEmpty()) {
             return;
         }
 
+        BufferedImage logo = null;
+        try (InputStream in = PDF.class.getResourceAsStream(LOGO_PATH)) {
+            if (in == null) {
+                LOG.debug("Logo file not found");
+                return;
+            }
+            logo = ImageIO.read(new BufferedInputStream(in));
+        } catch (IOException e) {
+            LOG.warn(e, "Failed to read logo");
+            return;
+        }
+        if (logo == null) {
+            LOG.info("Couldn't read logo with ImageIO");
+            return;
+        }
         try {
-            PDImageXObject img = PDImageXObject.createFromFile(logoPath, doc);
+            PDImageXObject img = LosslessFactory.createFromImage(doc, logo);
             float x = OFFSET_LOGO_LEFT;
             float y = OFFSET_LOGO_BOTTOM;
             stream.drawImage(img, x, y);
-        } catch (IllegalArgumentException | IOException e) {
-            LOG.warn("Failed to draw logo from path:", logoPath);
+        } catch (IOException e) {
+            LOG.warn(e, "Failed to draw logo");
         }
     }
 
     private static void drawDate(PDPageContentStream stream,
-                                 PrintRequest request, PDRectangle pageSize) throws IOException {
+            PrintRequest request, PDRectangle pageSize) throws IOException {
         if (!request.isShowDate()) {
             return;
         }
@@ -175,6 +197,7 @@ public class PDF {
         PDFBoxUtil.drawText(stream, date, FONT, FONT_SIZE, x, y);
     }
 
+    /*
     private static void drawScale(PDPageContentStream stream, PrintRequest request)
             throws IOException {
         if (!request.isShowScale()) {
@@ -250,19 +273,23 @@ public class PDF {
         PDFBoxUtil.drawTextCentered(stream, distanceStr,
                 FONT, FONT_SIZE_SCALE, cx, y1 + 5);
     }
+     */
 
     private static void drawLayers(PDDocument doc, PDPageContentStream stream,
-                                   List<PrintLayer> layers, List<Future<BufferedImage>> images,
-                                   float x, float y, float w, float h) throws IOException {
+            List<PrintLayer> layers, List<Future<BufferedImage>> images,
+            float x, float y, float w, float h) throws IOException {
         for (int i = 0; i < layers.size(); i++) {
             PrintLayer layer = layers.get(i);
             Future<BufferedImage> image = images.get(i);
             try {
                 BufferedImage bi = image.get();
+                if (bi == null) {
+                    continue;
+                }
                 PDImageXObject imgObject = LosslessFactory.createFromImage(doc, bi);
 
                 // Set layer (Optional Content Group)
-                PDOptionalContentGroup ocg = PDFBoxUtil.getOCG(doc, layer.getId());
+                PDOptionalContentGroup ocg = PDFBoxUtil.getOCG(doc, layer.getName());
                 PDFBoxUtil.setOCG(imgObject, ocg);
 
                 int opacity = layer.getOpacity();
@@ -285,8 +312,8 @@ public class PDF {
     }
 
     private static void drawBorder(PDPageContentStream stream,
-                                   float x, float y, float mapWidthPt, float mapHeightPt)
-            throws IOException {
+            float x, float y, float mapWidthPt, float mapHeightPt)
+                    throws IOException {
         stream.saveGraphicsState();
         stream.setLineWidth(0.5f);
         stream.addRect(x, y, mapWidthPt, mapHeightPt);
