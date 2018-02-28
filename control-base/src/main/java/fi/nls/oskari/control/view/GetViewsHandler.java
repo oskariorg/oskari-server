@@ -17,6 +17,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static fi.nls.oskari.control.ActionConstants.*;
@@ -47,57 +48,21 @@ public class GetViewsHandler extends ActionHandler {
         }
     }
 
-
     public void handleAction(final ActionParameters params) throws ActionException {
         // require a logged in user when requesting views
         params.requireLoggedInUser();
         final long userId = params.getUser().getId();
 
-        final String expectedType = params.getHttpParam(ViewTypes.VIEW_TYPE, ViewTypes.USER);
+        final String type = params.getHttpParam(ViewTypes.VIEW_TYPE, ViewTypes.USER);
         final List<View> views = viewService.getViewsForUser(userId);
-        final List<View> viewsOfCorrectType = views.stream()
-                .filter(v -> isTypeCorrect(expectedType, v.getType()))
+        final List<JSONObject> viewsAsJsonObjects = views.stream()
+                .filter(v -> isTypeCorrect(type, v.getType()))
+                .map(v -> toJSONObject(v))
+                .filter(Optional::isPresent)
+                .map(Optional::get)
                 .collect(Collectors.toList());
-
-        final JSONArray viewArray = new JSONArray();
-        for (View view : viewsOfCorrectType) {
-            final JSONObject viewJson = new JSONObject();
-            try {
-                viewJson.put(KEY_NAME, view.getName());
-                viewJson.put(KEY_DESCRIPTION, view.getDescription());
-                viewJson.put(KEY_LANG, view.getLang());
-                viewJson.put(KEY_ID, view.getId());
-                viewJson.put(KEY_UUID, view.getUuid());
-                viewJson.put(KEY_ISPUBLIC, view.isPublic());
-                viewJson.put(KEY_ISDEFAULT, view.isDefault());
-                viewJson.put(KEY_PUBDOMAIN, view.getPubDomain());
-                viewJson.put(KEY_URL, view.getUrl());
-                viewJson.put(KEY_METADATA, view.getMetadata());
-                // publisher 2 doesn't need the view info since it loads it using id
-                // The old publisher and normal view listing need them.
-                final JSONObject stateAccu = new JSONObject();
-                for (Bundle bundle : view.getBundles()) {
-                    final JSONObject bundleNode = new JSONObject();
-                    try {
-                        bundleNode.put(KEY_STATE, new JSONObject(bundle.getState()));
-                        bundleNode.put(KEY_CONFIG, new JSONObject(bundle.getConfig()));
-                        stateAccu.put(bundle.getBundleinstance(), bundleNode);
-                    } catch (Exception e) {
-                        log.debug("Status " + bundle.getStartup());
-                        log.debug("Config " + bundle.getConfig());
-                    }
-                }
-                viewJson.put(KEY_STATE, stateAccu);
-                viewArray.put(viewJson);
-
-            } catch (Exception ex) {
-                log.error("[GetViewsHandler] Failed to parse states "
-                        + "for view:", view);
-            }
-
-        }
-
-        JSONObject ret = JSONHelper.createJSONObject(KEY_VIEWS, viewArray);
+        final JSONArray viewArray = new JSONArray(viewsAsJsonObjects);
+        final JSONObject ret = JSONHelper.createJSONObject(KEY_VIEWS, viewArray);
         ResponseHelper.writeResponse(params, ret);
     }
 
@@ -106,6 +71,42 @@ public class GetViewsHandler extends ActionHandler {
             type = ViewTypes.USER;
         }
         return expected.equalsIgnoreCase(type);
+    }
+
+    private Optional<JSONObject> toJSONObject(View view) {
+        try {
+            final JSONObject viewJson = new JSONObject();
+            viewJson.put(KEY_NAME, view.getName());
+            viewJson.put(KEY_DESCRIPTION, view.getDescription());
+            viewJson.put(KEY_LANG, view.getLang());
+            viewJson.put(KEY_ID, view.getId());
+            viewJson.put(KEY_UUID, view.getUuid());
+            viewJson.put(KEY_ISPUBLIC, view.isPublic());
+            viewJson.put(KEY_ISDEFAULT, view.isDefault());
+            viewJson.put(KEY_PUBDOMAIN, view.getPubDomain());
+            viewJson.put(KEY_URL, view.getUrl());
+            viewJson.put(KEY_METADATA, view.getMetadata());
+            // publisher 2 doesn't need the view info since it loads it using id
+            // The old publisher and normal view listing need them.
+            final JSONObject stateAccu = new JSONObject();
+            for (Bundle bundle : view.getBundles()) {
+                final JSONObject bundleNode = new JSONObject();
+                try {
+                    bundleNode.put(KEY_STATE, new JSONObject(bundle.getState()));
+                    bundleNode.put(KEY_CONFIG, new JSONObject(bundle.getConfig()));
+                    stateAccu.put(bundle.getBundleinstance(), bundleNode);
+                } catch (Exception e) {
+                    log.debug("Status " + bundle.getStartup());
+                    log.debug("Config " + bundle.getConfig());
+                }
+            }
+            viewJson.put(KEY_STATE, stateAccu);
+            return Optional.of(viewJson);
+        } catch (Exception ex) {
+            log.error("[GetViewsHandler] Failed to parse states "
+                    + "for view:", view);
+        }
+        return Optional.empty();
     }
 
 }
