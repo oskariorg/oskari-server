@@ -34,15 +34,14 @@ public class GetViewsHandler extends ActionHandler {
 
     private static final Logger log = LogFactory.getLogger(GetViewsHandler.class);
 
-    private ViewService viewService = null;
-
+    private ViewService viewService;
 
     public void setViewService(final ViewService service) {
         viewService = service;
     }
 
     public void init() {
-        // setup service if it hasn't been initialized
+        // setup service only if it hasn't been set via the setter
         if (viewService == null) {
             setViewService(new ViewServiceIbatisImpl());
         }
