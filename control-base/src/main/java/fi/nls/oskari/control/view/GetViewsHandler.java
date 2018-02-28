@@ -16,6 +16,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static fi.nls.oskari.control.ActionConstants.*;
 
@@ -45,27 +46,20 @@ public class GetViewsHandler extends ActionHandler {
         }
     }
 
+
     public void handleAction(final ActionParameters params) throws ActionException {
-
-        final String viewType = params.getHttpParam(ViewTypes.VIEW_TYPE, ViewTypes.USER);
-
         // require a logged in user when requesting views
         params.requireLoggedInUser();
         final long userId = params.getUser().getId();
 
-        // TODO: send type as second param
+        final String expectedType = params.getHttpParam(ViewTypes.VIEW_TYPE, ViewTypes.USER);
         final List<View> views = viewService.getViewsForUser(userId);
+        final List<View> viewsOfCorrectType = views.stream()
+                .filter(v -> isTypeCorrect(expectedType, v.getType()))
+                .collect(Collectors.toList());
+
         final JSONArray viewArray = new JSONArray();
-        for (View view : views) {
-
-            if (view.getType() == null) {
-                view.setType(ViewTypes.USER);
-            }
-
-            if (!viewType.equalsIgnoreCase(view.getType())) {
-                continue;
-            }
-
+        for (View view : viewsOfCorrectType) {
             final JSONObject viewJson = new JSONObject();
             try {
                 viewJson.put(KEY_NAME, view.getName());
@@ -112,4 +106,12 @@ public class GetViewsHandler extends ActionHandler {
             log.error(ex);
         }
     }
+
+    private boolean isTypeCorrect(String expected, String type) {
+        if (type == null) {
+            type = ViewTypes.USER;
+        }
+        return expected.equalsIgnoreCase(type);
+    }
+
 }
