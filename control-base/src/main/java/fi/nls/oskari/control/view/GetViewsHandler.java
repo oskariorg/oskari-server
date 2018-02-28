@@ -55,8 +55,13 @@ public class GetViewsHandler extends ActionHandler {
 
         final String type = params.getHttpParam(ViewTypes.VIEW_TYPE, ViewTypes.USER);
         final List<View> views = viewService.getViewsForUser(userId);
+        for (View view : views) {
+            if (view.getType() == null) {
+                view.setType(ViewTypes.USER);
+            }
+        }
         final List<JSONObject> viewsAsJsonObjects = views.stream()
-                .filter(v -> isTypeCorrect(type, v.getType()))
+                .filter(v -> type.equalsIgnoreCase(v.getType()))
                 .map(v -> toJSONObject(v))
                 .filter(Optional::isPresent)
                 .map(Optional::get)
@@ -64,13 +69,6 @@ public class GetViewsHandler extends ActionHandler {
         final JSONArray viewArray = new JSONArray(viewsAsJsonObjects);
         final JSONObject ret = JSONHelper.createJSONObject(KEY_VIEWS, viewArray);
         ResponseHelper.writeResponse(params, ret);
-    }
-
-    private boolean isTypeCorrect(String expected, String type) {
-        if (type == null) {
-            type = ViewTypes.USER;
-        }
-        return expected.equalsIgnoreCase(type);
     }
 
     private Optional<JSONObject> toJSONObject(View view) {
