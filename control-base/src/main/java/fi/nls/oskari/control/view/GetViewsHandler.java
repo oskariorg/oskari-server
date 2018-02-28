@@ -29,9 +29,9 @@ public class GetViewsHandler extends ActionHandler {
     public static final String KEY_VIEWS = "views";
     public static final String KEY_METADATA = "metadata";
 
-    private ViewService viewService = null;
+    private static final Logger log = LogFactory.getLogger(GetViewsHandler.class);
 
-    private final static Logger log = LogFactory.getLogger(GetViewsHandler.class);
+    private ViewService viewService = null;
 
 
     public void setViewService(final ViewService service) {
