@@ -11,6 +11,7 @@ import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.view.ViewService;
 import fi.nls.oskari.map.view.ViewServiceIbatisImpl;
+import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.ResponseHelper;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -76,7 +77,6 @@ public class GetViewsHandler extends ActionHandler {
                 // The old publisher and normal view listing need them.
                 final JSONObject stateAccu = new JSONObject();
                 for (Bundle bundle : view.getBundles()) {
-
                     final JSONObject bundleNode = new JSONObject();
                     try {
                         bundleNode.put(KEY_STATE, new JSONObject(bundle.getState()));
@@ -97,14 +97,8 @@ public class GetViewsHandler extends ActionHandler {
 
         }
 
-        try {
-            JSONObject ret = new JSONObject();
-            ret.put(KEY_VIEWS, viewArray);
-            ResponseHelper.writeResponse(params, ret);
-        } catch (Exception ex) {
-            ResponseHelper.writeResponse(params, false);
-            log.error(ex);
-        }
+        JSONObject ret = JSONHelper.createJSONObject(KEY_VIEWS, viewArray);
+        ResponseHelper.writeResponse(params, ret);
     }
 
     private boolean isTypeCorrect(String expected, String type) {
