@@ -31,6 +31,7 @@ public class GetViewsHandler extends ActionHandler {
     public static final String KEY_PUBDOMAIN = "pubDomain";
     public static final String KEY_VIEWS = "views";
     public static final String KEY_METADATA = "metadata";
+    public static final String KEY_SRSNAME = "srsName";
 
     private static final Logger log = LogFactory.getLogger(GetViewsHandler.class);
 
@@ -85,6 +86,7 @@ public class GetViewsHandler extends ActionHandler {
             viewJson.put(KEY_PUBDOMAIN, view.getPubDomain());
             viewJson.put(KEY_URL, view.getUrl());
             viewJson.put(KEY_METADATA, view.getMetadata());
+            viewJson.put(KEY_SRSNAME, view.getSrsName());
             // publisher 2 doesn't need the view info since it loads it using id
             // The old publisher and normal view listing need them.
             final JSONObject stateAccu = new JSONObject();
