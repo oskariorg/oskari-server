@@ -318,11 +318,11 @@ public class LayerJSONFormatter {
         }
 
         // setup data producer/layergroup
-        final DataProvider group = groupService.findByName(orgName);
-        if(group == null) {
+        final DataProvider dataProvider = groupService.findByName(orgName);
+        if(dataProvider == null) {
             log.warn("Didn't find match for layergroup:", orgName);
         } else {
-            layer.addGroup(group);
+            layer.addDataprovider(dataProvider);
         }
 
         return layer;

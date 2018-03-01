@@ -305,8 +305,8 @@ public class SaveLayerHandler extends ActionHandler {
         }
 
         // organization id
-        final DataProvider group = dataProviderService.find(params.getHttpParam(PARAM_GROUP_ID, -1));
-        ml.addGroup(group);
+        final DataProvider dataProvider = dataProviderService.find(params.getHttpParam(PARAM_GROUP_ID, -1));
+        ml.addDataprovider(dataProvider);
 
         // get names and descriptions
         final Enumeration<String> paramNames = request.getParameterNames();
@@ -325,14 +325,8 @@ public class SaveLayerHandler extends ActionHandler {
 
         String groupId = params.getHttpParam(PARAM_MAPLAYER_GROUPS, "-1");
         ml.emptyMaplayerGroups();
-        if(groupId.contains(",")) {
-            String[] groupIds = groupId.split(",");
-            for (String groupid: groupIds) {
-                MaplayerGroup maplayerGroup = oskariMapLayerGroupService.find(ConversionHelper.getInt(groupid, -1));
-                ml.addGroup(maplayerGroup);
-            }
-        } else {
-            MaplayerGroup maplayerGroup = oskariMapLayerGroupService.find(ConversionHelper.getInt(groupId, -1));
+        for (String id: groupId.split(",")) {
+            MaplayerGroup maplayerGroup = oskariMapLayerGroupService.find(ConversionHelper.getInt(id, -1));
             ml.addGroup(maplayerGroup);
         }
 

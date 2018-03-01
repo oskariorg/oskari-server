@@ -49,6 +49,16 @@ public class GetMapLayerGroupsHandler extends ActionHandler {
         }
     }
 
+    @Override
+    public void handleAction(ActionParameters params) throws ActionException {
+
+        log.debug("Getting layer groups");
+        JSONArray json = getGroupJSON(-1,params, 0);
+        log.debug("Got layer groups");
+        ResponseHelper.writeResponse(params, json);
+    }
+
+
     /**
      * Get group json, max depth is 3
      * @param parentId parent id
@@ -79,18 +89,10 @@ public class GetMapLayerGroupsHandler extends ActionHandler {
                 }
             }
         } catch(JSONException ex) {
-            log.error("Group layerlist error", ex);
-            throw new ActionException("Cannot get groupped layerlist");
+            throw new ActionException("Cannot get groupped layerlist", ex);
         }
         return json;
     }
 
-    @Override
-    public void handleAction(ActionParameters params) throws ActionException {
 
-        log.debug("Getting layer groups");
-        JSONArray json = getGroupJSON(-1,params, 0);
-        log.debug("Got layer groups");
-        ResponseHelper.writeResponse(params, json);
-    }
 }

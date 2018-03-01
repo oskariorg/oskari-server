@@ -28,7 +28,7 @@ public class LayerHelper {
         return null;
     }
 
-    public static DataProvider getGroup() {
+    public static DataProvider getDataprovider() {
 
         // setup data producer/layergroup since original doesn't have one
         final List<DataProvider> groups = GROUP_SERVICE.findAll();

@@ -72,7 +72,7 @@ public class OskariLayer extends JSONLocalizedNameAndTitle implements Comparable
     private Integer orderNumber;
 
     private Set<MaplayerGroup> maplayerGroups = new HashSet<MaplayerGroup>();
-    private Set<DataProvider> groups = new HashSet<DataProvider>();
+    private Set<DataProvider> dataProviders = new HashSet<DataProvider>();
     private List<OskariLayer> sublayers = new ArrayList<OskariLayer>();
 
     private Date capabilitiesLastUpdated;
@@ -113,16 +113,16 @@ public class OskariLayer extends JSONLocalizedNameAndTitle implements Comparable
 
     // we only link one group at the moment so get the first one
     public DataProvider getGroup() {
-        if(groups == null || groups.isEmpty()) {
+        if(dataProviders == null || dataProviders.isEmpty()) {
             return null;
         }
-        return groups.iterator().next();
+        return dataProviders.iterator().next();
     }
 
-    public void addGroup(final DataProvider group) {
-        if(group != null) {
-            groups.add(group);
-            setDataproviderId(group.getId());
+    public void addDataprovider(final DataProvider dataProvider) {
+        if(dataProvider != null) {
+            dataProviders.add(dataProvider);
+            setDataproviderId(dataProvider.getId());
         }
     }
 

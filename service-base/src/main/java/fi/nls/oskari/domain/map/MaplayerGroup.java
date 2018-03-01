@@ -27,6 +27,10 @@ public class MaplayerGroup extends JSONLocalizedName {
 		return layers;
 	}
 
+	/**
+	 * Set layers
+	 * @param layers array of OskariLayer JSONObjects
+	 */
 	public void setLayers(JSONArray layers) {
 		this.layers = layers;
 	}

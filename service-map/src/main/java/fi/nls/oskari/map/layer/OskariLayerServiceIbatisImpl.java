@@ -146,7 +146,7 @@ public class OskariLayerServiceIbatisImpl extends OskariLayerService {
                     // populate layer group
                     // first run (~700 layers) with this lasts ~1800ms, second run ~300ms (cached)
                     final DataProvider dataProvider = dataProviderService.find(result.getDataproviderId());
-                    result.addGroup(dataProvider);
+                    result.addDataprovider(dataProvider);
                 } catch (Exception ex) {
                     LOG.error("Couldn't get organisation for layer", result.getId());
                     return null;

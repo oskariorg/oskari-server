@@ -51,7 +51,7 @@ public class MapLayerGroupsHandler extends RestActionHandler {
     }
 
     /**
-     * Handles listing and single theme find
+     * Handles listing and single maplayer group find
      * @param params
      * @throws ActionException
      */
@@ -110,14 +110,14 @@ public class MapLayerGroupsHandler extends RestActionHandler {
     public void handleDelete(ActionParameters params) throws ActionException {
         params.requireAdminUser();
         final int id = params.getRequiredParamInt(PARAM_ID);
-        final MaplayerGroup theme = oskariMapLayerGroupService.find(id);
+        final MaplayerGroup maplayerGroup = oskariMapLayerGroupService.find(id);
         final List<Integer> maplayerIds = oskariMapLayerGroupService.findMaplayersByGroup(id);
         if(!maplayerIds.isEmpty()) {
-            // theme with maplayers under it can't be removed
-            throw new ActionParamsException("Maplayers linked to theme", JSONHelper.createJSONObject("code", "not_empty"));
+            // maplayer group with maplayers under it can't be removed
+            throw new ActionParamsException("Maplayers linked to maplayer group", JSONHelper.createJSONObject("code", "not_empty"));
         }
         oskariMapLayerGroupService.delete(id);
-        ResponseHelper.writeResponse(params, theme.getAsJSON());
+        ResponseHelper.writeResponse(params, maplayerGroup.getAsJSON());
     }
 
     private MaplayerGroup populateFromRequest(JSONObject mapLayerGroupJSON) throws ActionException {
@@ -136,8 +136,7 @@ public class MapLayerGroupsHandler extends RestActionHandler {
             maplayerGroup.setParentId(parentId);
             maplayerGroup.setSelectable(selectable);
         } catch(JSONException ex) {
-            log.error("Cannot populate maplayergroup from request", ex);
-            throw new ActionException("Cannot populate maplayergroup from request");
+            throw new ActionException("Cannot populate maplayer group from request", ex);
         }
 
         return maplayerGroup;

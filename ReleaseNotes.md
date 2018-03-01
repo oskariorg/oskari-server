@@ -1,27 +1,5 @@
 # Release Notes
 
-## 1.46.0
-
-### Renamings
-
-#### InspireThmeHandler
-- InspireThemes action renamed to MapLayerGroups
-- also handler class renamed to MapLayerGroupsHandler
-
-#### inspireTheme key
-
-Changed inpireTheme key to maplayerGroups in GetWmsServicesHandler and SaveLayerHandler.
-
-### control-base
-
-#### New `GetHierarchicalMapLayerGroups` action
-
-This new action handles hierarchical layerlist layers getting ordered by groups.
-
-#### New `LayerAndGroupOrder` action
-
-This new action handles layers and groups order savings.
-
 ## 1.45.0
 
 For a full list of changes see: https://github.com/oskariorg/oskari-server/milestone/5
