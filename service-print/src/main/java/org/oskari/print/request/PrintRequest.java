@@ -7,18 +7,15 @@ public class PrintRequest {
     private double east;
     private double north;
     private String srsName;
-    private int zoomLevel;
     private double resolution;
-    private double metersPerUnit;
-    private String units;
     private int width;
     private int height;
     private int targetWidth;
     private int targetHeight;
     private PrintFormat format;
+    private boolean showLogo;
     private boolean showScale;
     private boolean showDate;
-    private String logo;
     private String title;
     private List<PrintLayer> layers;
 
@@ -46,36 +43,12 @@ public class PrintRequest {
         this.srsName = srsName;
     }
 
-    public int getZoomLevel() {
-        return zoomLevel;
-    }
-
-    public void setZoomLevel(int zoomLevel) {
-        this.zoomLevel = zoomLevel;
-    }
-
     public double getResolution() {
         return resolution;
     }
 
     public void setResolution(double resolution) {
         this.resolution = resolution;
-    }
-
-    public double getMetersPerUnit() {
-        return metersPerUnit;
-    }
-
-    public void setMetersPerUnit(double metersPerUnit) {
-        this.metersPerUnit = metersPerUnit;
-    }
-
-    public void setUnits(String units) {
-        this.units = units;
-    }
-
-    public String getUnits() {
-        return units;
     }
 
     public int getWidth() {
@@ -134,14 +107,6 @@ public class PrintRequest {
         this.showDate = showDate;
     }
 
-    public String getLogo() {
-        return logo;
-    }
-
-    public void setLogo(String logo) {
-        this.logo = logo;
-    }
-
     public String getTitle() {
         return title;
     }
@@ -156,6 +121,14 @@ public class PrintRequest {
 
     public void setLayers(List<PrintLayer> layers) {
         this.layers = layers;
+    }
+
+    public boolean isShowLogo() {
+        return showLogo;
+    }
+
+    public void setShowLogo(boolean showLogo) {
+        this.showLogo = showLogo;
     }
 
 }

@@ -2,24 +2,23 @@ package org.oskari.print.request;
 
 public class PrintLayer {
 
-    private String id;
+    private int id;
     private String type;
     private String url;
     private String name;
     private String style;
     private String srsName;
     private String version;
-    private String tileMatrixSet;
     private int opacity;
     private String username;
     private String password;
     private PrintTile[] tiles;
 
-    public String getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -61,14 +60,6 @@ public class PrintLayer {
 
     public void setVersion(String version) {
         this.version = version;
-    }
-
-    public String getTileMatrixSet() {
-        return tileMatrixSet;
-    }
-
-    public void setTileMatrixSet(String tileMatrixSet) {
-        this.tileMatrixSet = tileMatrixSet;
     }
 
     public int getOpacity() {

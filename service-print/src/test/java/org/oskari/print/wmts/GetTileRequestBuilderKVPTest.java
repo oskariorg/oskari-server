@@ -7,7 +7,7 @@ import java.lang.reflect.Method;
 
 import org.junit.Test;
 
-public class GetTileBuilderKVPTest {
+public class GetTileRequestBuilderKVPTest {
 
     @Test
     public void buildingWithAnyMandatoryParameterMissingThrowsException()
@@ -29,11 +29,11 @@ public class GetTileBuilderKVPTest {
 
         final String exceptionPattern = "Required parameter '%s' missing";
 
-        GetTileBuilderKVP builder = new GetTileBuilderKVP();
+        GetTileRequestBuilderKVP builder = new GetTileRequestBuilderKVP();
 
         for (int i = 0; i < strFields.length; i++) {
             String f = strFields[i];
-            Method m = GetTileBuilderKVP.class.getMethod(f, String.class);
+            Method m = GetTileRequestBuilderKVP.class.getMethod(f, String.class);
             assertNotNull(m);
             String expected = String.format(exceptionPattern, f);
             String actual = null;
@@ -48,7 +48,7 @@ public class GetTileBuilderKVPTest {
 
         for (int i = 0; i < intFields.length; i++) {
             String f = intFields[i];
-            Method m = GetTileBuilderKVP.class.getMethod(f, int.class);
+            Method m = GetTileRequestBuilderKVP.class.getMethod(f, int.class);
             assertNotNull(m);
             String expected = String.format(exceptionPattern, f);
             String actual = null;

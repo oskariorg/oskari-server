@@ -1,17 +1,18 @@
 package fi.nls.oskari.control.data;
 
-import fi.nls.oskari.service.ServiceException;
-
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Optional;
+
 import javax.imageio.ImageIO;
+
 import org.apache.pdfbox.pdmodel.PDDocument;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.oskari.print.PrintService;
 import org.oskari.print.request.PrintFormat;
 import org.oskari.print.request.PrintLayer;
@@ -19,9 +20,6 @@ import org.oskari.print.request.PrintRequest;
 import org.oskari.print.request.PrintTile;
 import org.oskari.service.util.ServiceFactory;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import fi.mml.portti.service.db.permissions.PermissionsService;
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.ActionException;
@@ -34,6 +32,7 @@ import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.layer.OskariLayerService;
+import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.ResponseHelper;
 
@@ -42,16 +41,17 @@ public class GetPrintHandler extends ActionHandler {
 
     private static final Logger LOG = LogFactory.getLogger(GetPrintHandler.class);
 
-    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
-
     private static final String PARM_COORD = "coord";
     private static final String PARM_RESOLUTION = "resolution";
-    private static final String PARM_ZOOMLEVEL = "zoomLevel";
     private static final String PARM_PAGE_SIZE = "pageSize";
     private static final String PARM_MAPLAYERS = "mapLayers";
     private static final String PARM_FORMAT = "format";
     private static final String PARM_SRSNAME = "srs";
     private static final String PARM_TILES = "tiles";
+    private static final String PARM_TITLE = "pageTitle";
+    private static final String PARM_SCALE = "pageScale";
+    private static final String PARM_LOGO = "pageLogo";
+    private static final String PARM_DATE = "pageDate";
 
     private static final String ALLOWED_FORMATS = Arrays.toString(new String[] {
             PrintFormat.PDF.contentType, PrintFormat.PNG.contentType
@@ -113,8 +113,11 @@ public class GetPrintHandler extends ActionHandler {
         PrintRequest request = new PrintRequest();
 
         request.setSrsName(params.getRequiredParam(PARM_SRSNAME));
-        request.setZoomLevel(params.getRequiredParamInt(PARM_ZOOMLEVEL));
         request.setResolution(params.getRequiredParamDouble(PARM_RESOLUTION));
+        request.setTitle(params.getHttpParam(PARM_TITLE));
+        request.setShowLogo(params.getHttpParam(PARM_LOGO, false));
+        request.setShowScale(params.getHttpParam(PARM_SCALE, false));
+        request.setShowDate(params.getHttpParam(PARM_DATE, false));
 
         setPagesize(params, request);
         setCoordinates(params.getRequiredParam(PARM_COORD), request);
@@ -123,7 +126,7 @@ public class GetPrintHandler extends ActionHandler {
         List<PrintLayer> layers = getLayers(params.getRequiredParam(PARM_MAPLAYERS),
                 params.getUser());
         request.setLayers(layers);
-        setTiles(params, layers);
+        setTiles(layers, params.getHttpParam(PARM_TILES));
 
         return request;
     }
@@ -250,7 +253,7 @@ public class GetPrintHandler extends ActionHandler {
         }
 
         PrintLayer layer = new PrintLayer();
-        layer.setId(oskariLayer.getExternalId());
+        layer.setId(oskariLayer.getId());
         layer.setType(oskariLayer.getType());
         layer.setUrl(oskariLayer.getUrl());
         layer.setVersion(oskariLayer.getVersion());
@@ -258,6 +261,9 @@ public class GetPrintHandler extends ActionHandler {
         layer.setUsername(oskariLayer.getUsername());
         layer.setPassword(oskariLayer.getPassword());
         layer.setOpacity(opacity);
+        if (requestedLayer.getStyle() != null && !requestedLayer.getStyle().isEmpty()) {
+            layer.setStyle(requestedLayer.getStyle());
+        }
         return layer;
     }
 
@@ -273,86 +279,74 @@ public class GetPrintHandler extends ActionHandler {
             // If that's missing just use 100 (full opacity)
             opacity = 100;
         }
-        return opacity > 100 ? 100 : opacity;
+        return Math.min(opacity, 100);
     }
 
-    private void setTiles(ActionParameters params, List<PrintLayer> layers)
+    private void setTiles(List<PrintLayer> layers, String tilesJson)
             throws ActionException {
-        String tilesJson = params.getHttpParam(PARM_TILES);
         if (tilesJson == null || tilesJson.isEmpty()) {
             return;
         }
         try {
-            JsonNode root = OBJECT_MAPPER.readTree(tilesJson);
-            if (!root.isArray()) {
-                throw new ActionParamsException(String.format(
-                        "Invalid value for key '%s'. root object not JSON array",
-                        PARM_TILES));
+            JSONArray tiles = new JSONArray(tilesJson);
+            for (int i = 0; i < tiles.length(); i++) {
+                JSONObject layersTiles = tiles.getJSONObject(i);
+                setTiles(layers, layersTiles);
             }
-
-            Iterator<String> it = root.fieldNames();
-            while (it.hasNext()) {
-                String layerId = it.next();
-                Optional<PrintLayer> printLayer = layers.stream()
-                        .filter(l -> layerId.equals(l.getName()))
-                        .findAny();
-                if (!printLayer.isPresent()) {
-                    LOG.info("Could not find layerId:", layerId);
-                    continue;
-                }
-
-                JsonNode layerNode = root.get(layerId);
-                int n = layerNode.size();
-                if (n != 1) {
-                    throw new ActionParamsException(String.format(
-                            "Invalid value for key '%s'", PARM_TILES));
-                }
-
-                JsonNode tilesNode = layerNode.get(0);
-                if (!tilesNode.isArray()) {
-                    throw new ActionParamsException(String.format(
-                            "Invalid value for key '%s'", PARM_TILES));
-                }
-
-                int m = tilesNode.size();
-                PrintTile[] tiles = new PrintTile[m];
-
-                for (int j = 0; j < m; j++) {
-                    JsonNode tileNode = tilesNode.get(j);
-
-                    JsonNode bboxNode = tileNode.get("bbox");
-                    if (bboxNode == null
-                            || !bboxNode.isArray()
-                            || bboxNode.size() != 4) {
-                        throw new ActionParamsException(String.format(
-                                "Invalid value for key '%s'. Invalid or missing 'bbox'",
-                                PARM_TILES));
-                    }
-
-                    JsonNode urlNode = tileNode.get("url");
-                    if (urlNode == null || !urlNode.isTextual()) {
-                        throw new ActionParamsException(String.format(
-                                "Invalid value for key '%s'. Missing or invalid 'url'",
-                                PARM_TILES));
-                    }
-                    double[] bbox = new double[4];
-                    for (int k = 0; k < 4; k++) {
-                        bbox[k] = bboxNode.get(k).asDouble();
-                    }
-                    String url = urlNode.asText();
-
-                    tiles[j] = new PrintTile(bbox, url);
-                }
-
-                // This is safe because we've check for the presence earlier
-                printLayer.get().setTiles(tiles);
-            }
-        } catch (JsonParseException e) {
+        } catch (JSONException e) {
             throw new ActionParamsException(String.format(
                     "Invalid value for key '%s'", PARM_TILES), e);
-        } catch (IOException e) {
-            throw new ActionException("Failed to parse tiles", e);
         }
+    }
+
+    private void setTiles(List<PrintLayer> layers, JSONObject layersTiles)
+            throws JSONException, ActionParamsException {
+        String key = (String) layersTiles.keys().next();
+        int layerId = ConversionHelper.getInt(key, -1);
+        if (layerId == -1) {
+            LOG.info("Could not parse integer layerId from:", key);
+            return;
+        }
+
+        final PrintLayer layer = findById(layers, layerId);
+        if (layer == null) {
+            LOG.info("Could not find layerId:", layerId);
+            return;
+        }
+
+        final JSONArray tilesArray = layersTiles.getJSONArray(key);
+        layer.setTiles(parseTiles(tilesArray));
+    }
+
+    private PrintTile[] parseTiles(JSONArray tilesArray) throws JSONException, ActionParamsException {
+        final int n = tilesArray.length();
+        final PrintTile[] tiles = new PrintTile[n];
+        for (int i = 0; i < n; i++) {
+            JSONObject tile = tilesArray.getJSONObject(i);
+            JSONArray bboxArray = tile.getJSONArray("bbox");
+            double[] bbox = toDoubleArray(bboxArray);
+            String url = tile.getString("url");
+            tiles[i] = new PrintTile(bbox, url);
+        }
+        return tiles;
+    }
+
+    private PrintLayer findById(List<PrintLayer> layers, int id) {
+        for (PrintLayer l : layers) {
+            if (l.getId() == id) {
+                return l;
+            }
+        }
+        return null;
+    }
+
+    private double[] toDoubleArray(JSONArray array) throws JSONException {
+        final int n = array.length();
+        final double[] arr = new double[n];
+        for (int i = 0; i < n; i++) {
+            arr[i] = array.getDouble(i);
+        }
+        return arr;
     }
 
     private void handlePNG(PrintRequest pr, ActionParameters params) throws ActionException {
