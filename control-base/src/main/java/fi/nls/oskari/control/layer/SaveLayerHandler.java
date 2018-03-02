@@ -71,7 +71,7 @@ public class SaveLayerHandler extends ActionHandler {
     private static final String PARAM_VIEW_PERMISSIONS = "viewPermissions";
     private static final String PARAM_PUBLISH_PERMISSIONS = "publishPermissions";
     private static final String PARAM_DOWNLOAD_PERMISSIONS = "downloadPermissions";
-    private static final String PARAM_ENBEDDED_PERMISSIONS = "enbeddedPermissions";
+    private static final String PARAM_EMBEDDED_PERMISSIONS = "embeddedPermissions";
     private static final String PARAM_LAYER_TYPE ="layerType";
     private static final String PARAM_PARENT_ID ="parentId";
     private static final String PARAM_GROUP_ID ="groupId";
@@ -254,7 +254,7 @@ public class SaveLayerHandler extends ActionHandler {
                         getPermissionSet(params.getHttpParam(PARAM_VIEW_PERMISSIONS)),
                         getPermissionSet(params.getHttpParam(PARAM_PUBLISH_PERMISSIONS)),
                         getPermissionSet(params.getHttpParam(PARAM_DOWNLOAD_PERMISSIONS)),
-                        getPermissionSet(params.getHttpParam(PARAM_ENBEDDED_PERMISSIONS)));
+                        getPermissionSet(params.getHttpParam(PARAM_EMBEDDED_PERMISSIONS)));
 
                 // update keywords
                 GetLayerKeywords glk = new GetLayerKeywords();
