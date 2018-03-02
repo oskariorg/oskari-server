@@ -88,6 +88,21 @@ public class OskariLayerWorker {
     	final List<OskariLayer> layers = mapLayerService.find(layerIdList);
         return getListOfMapLayers(layers, user, lang, crs, false, false);
     }
+
+    /**
+     * Gets all the selected map layers
+     *
+     * @param layerIdList
+     * @param user
+     * @param lang
+     * @param crs
+     * @return JSONObject containing the selected layers
+     */
+    public static JSONObject getListOfMapLayersByIdList(final List<Integer> layerIdList, final User user,
+                                                    final String lang, final String crs) {
+        final List<OskariLayer> layers = mapLayerService.findByIdList(layerIdList);
+        return getListOfMapLayers(layers, user, lang, crs, false, false);
+    }
     /**
      * Gets all the selected map layers
      *
@@ -457,18 +472,15 @@ public class OskariLayerWorker {
      * @return  reorder layers
      */
     public static List<OskariLayer> reorderLayers(List<OskariLayer> layers, List<String> ids) {
-
         List<OskariLayer> reLayers = new ArrayList<OskariLayer>();
 
         for (String id : ids) {
             for (OskariLayer lay : layers) {
-
                 if (Integer.toString(lay.getId()).equals(id) || (lay.getExternalId() != null && lay.getExternalId().equals(id))) {
                     reLayers.add(lay);
                     break;
                 }
             }
-
         }
         return reLayers;
     }

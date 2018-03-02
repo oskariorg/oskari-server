@@ -51,7 +51,6 @@ public class GetMapLayerGroupsHandler extends ActionHandler {
 
     @Override
     public void handleAction(ActionParameters params) throws ActionException {
-
         log.debug("Getting layer groups");
         JSONArray json = getGroupJSON(-1,params, 0);
         log.debug("Got layer groups");
@@ -75,9 +74,7 @@ public class GetMapLayerGroupsHandler extends ActionHandler {
         try{
             // Loop groups and their subgroups (max depth is 3)
             for(MaplayerGroup group : layerGroups) {
-                List<String> strLayerIds = ConversionHelper.getStringListFromIntegers(oskariMapLayerGroupService.findMaplayersByGroup(group.getId()));
-
-                final JSONObject layers = OskariLayerWorker.getListOfMapLayersById(strLayerIds, params.getUser(), lang, params.getHttpParam(PARAM_SRS));
+                final JSONObject layers = OskariLayerWorker.getListOfMapLayersByIdList(oskariMapLayerGroupService.findMaplayersByGroup(group.getId()), params.getUser(), lang, params.getHttpParam(PARAM_SRS));
                 JSONArray layerList = layers.optJSONArray(OskariLayerWorker.KEY_LAYERS);
                 group.setLayers(layerList);
 
