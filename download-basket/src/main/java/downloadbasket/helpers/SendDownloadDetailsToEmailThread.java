@@ -31,7 +31,7 @@ import org.json.JSONObject;
  */
 public class SendDownloadDetailsToEmailThread implements Runnable {
 	private final OskariLayerService mapLayerService;
-	private final JSONArray downLoadDetails;
+	private final JSONArray downloadDetails;
 	private final JSONObject userDetails;
 	private final Locale locale;
 
@@ -48,16 +48,16 @@ public class SendDownloadDetailsToEmailThread implements Runnable {
 	 *            map layer service
 	 * @param userDetails
 	 *            user details
-	 * @param downLoadDetails
+	 * @param downloadDetails
 	 *            download details
 	 * @param Locale
 	 *            locale
 	 * 
 	 */
 
-	public SendDownloadDetailsToEmailThread(OskariLayerService mapLayerService, JSONArray downLoadDetails,
+	public SendDownloadDetailsToEmailThread(OskariLayerService mapLayerService, JSONArray downloadDetails,
 			JSONObject userDetails, Locale locale) {
-		this.downLoadDetails = downLoadDetails;
+		this.downloadDetails = downloadDetails;
 		this.userDetails = userDetails;
 		this.locale = locale;
 		this.mapLayerService = mapLayerService;
@@ -72,8 +72,8 @@ public class SendDownloadDetailsToEmailThread implements Runnable {
 		}
 		try {
 			DownloadServices ds = new DownloadServices();
-			for (int i = 0; i < downLoadDetails.length(); i++) {
-				JSONObject download = downLoadDetails.getJSONObject(i);
+			for (int i = 0; i < downloadDetails.length(); i++) {
+				JSONObject download = downloadDetails.getJSONObject(i);
 				final String croppingMode = download.getString(PARAM_CROPPING_MODE);
 				String croppingLayer = "";
 				if (download.has(PARAM_CROPPING_LAYER)) {
@@ -95,7 +95,6 @@ public class SendDownloadDetailsToEmailThread implements Runnable {
 					ldz.setGetFeatureInfoRequest(OGCServices.getFilter(download, true));
 					ldz.setWFSUrl(OGCServices.doGetFeatureUrl(srs, download, false));
 				} else {
-
 					ldz.setGetFeatureInfoRequest("&filter=" + OGCServices.getPluginFilter(download));
 					ldz.setWFSUrl(OGCServices.doGetFeatureUrl(srs, download, true));
 				}
