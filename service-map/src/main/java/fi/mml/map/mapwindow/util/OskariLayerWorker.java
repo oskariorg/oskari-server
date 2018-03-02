@@ -1,5 +1,21 @@
 package fi.mml.map.mapwindow.util;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import org.geotools.geometry.jts.JTS;
+import org.geotools.referencing.CRS;
+import org.json.JSONArray;
+import org.json.JSONObject;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.opengis.referencing.operation.MathTransform;
+
+import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.io.WKTReader;
+
 import fi.mml.portti.domain.permissions.Permissions;
 import fi.mml.portti.service.db.permissions.PermissionsService;
 import fi.mml.portti.service.db.permissions.PermissionsServiceIbatisImpl;
@@ -13,11 +29,6 @@ import fi.nls.oskari.map.layer.OskariLayerService;
 import fi.nls.oskari.map.layer.OskariLayerServiceIbatisImpl;
 import fi.nls.oskari.map.layer.formatters.LayerJSONFormatter;
 import fi.nls.oskari.util.JSONHelper;
-
-import org.json.JSONArray;
-import org.json.JSONObject;
-
-import java.util.*;
 
 /**
  * Worker class for rendering json objects from domain objects
@@ -65,6 +76,35 @@ public class OskariLayerWorker {
     }
     /**
      * Gets all the selected map layers
+     * 
+     * @param layerIdList
+     * @param user
+     * @param lang
+     * @param crs
+     * @return JSONObject containing the selected layers
+     */
+    public static JSONObject getListOfMapLayersById(final List<String> layerIdList, final User user,
+            final String lang, final String crs) {
+    	final List<OskariLayer> layers = mapLayerService.find(layerIdList);
+        return getListOfMapLayers(layers, user, lang, crs, false, false);
+    }
+
+    /**
+     * Gets all the selected map layers
+     *
+     * @param layerIdList
+     * @param user
+     * @param lang
+     * @param crs
+     * @return JSONObject containing the selected layers
+     */
+    public static JSONObject getListOfMapLayersByIdList(final List<Integer> layerIdList, final User user,
+                                                    final String lang, final String crs) {
+        final List<OskariLayer> layers = mapLayerService.findByIdList(layerIdList);
+        return getListOfMapLayers(layers, user, lang, crs, false, false);
+    }
+    /**
+     * Gets all the selected map layers
      *
      * @param layerIdList List of selected layer IDs
      * @param user        User
@@ -90,9 +130,9 @@ public class OskariLayerWorker {
      * @return JSONObject of map layers
      */
     public static JSONObject getListOfMapLayers(final List<OskariLayer> layers, final User user,
-                                                final String lang, final boolean isPublished, final boolean isSecure) {
+                                                final String lang, final String crs, final boolean isPublished, final boolean isSecure) {
 
-        final String permissionType = getPermissionType(isPublished);
+    	final String permissionType = getPermissionType(isPublished);
         long start = System.currentTimeMillis();
         final List<String> resources = permissionsService.getResourcesWithGrantedPermissions(
                 Permissions.RESOURCE_TYPE_MAP_LAYER, user, permissionType);
@@ -125,6 +165,7 @@ public class OskariLayerWorker {
         final JSONArray layersList = new JSONArray();
         start = System.currentTimeMillis();
         for (OskariLayer layer : layers) {
+        	
             final String permissionKey = layer.getType()+ "+" + layer.getUrl() + "+" + layer.getName();
             if (layer.getParentId() == -1 && !resources.contains(permissionKey)) {
                 // not permitted if resource NOT found in permissions!
@@ -132,9 +173,27 @@ public class OskariLayerWorker {
                 continue;
             }
             try {
+            	String boundingBoxWKT = layer.getCapabilities().optString("geom");
+            	if(boundingBoxWKT != null && boundingBoxWKT.length() > 0) {
+            		Geometry jtsGeometry = null;
+            	    WKTReader reader = new WKTReader();
+            	    jtsGeometry = reader.read(boundingBoxWKT);
+            	    CoordinateReferenceSystem sourceCRS = CRS.decode("EPSG:4326", true);
+            	    String strTargetCRS = crs;
+            	    if(layer.getSrs_name() != null) {
+            	    	strTargetCRS = layer.getSrs_name();
+            	    }
+                    CoordinateReferenceSystem targetCRS = CRS.decode(strTargetCRS, true);
+                    MathTransform transform = CRS.findMathTransform(sourceCRS, targetCRS, true);
+                    Geometry targetGeometry = JTS.transform(jtsGeometry, transform);
+                    layer.setGeometry(targetGeometry.toText());
+            	}
                 final JSONObject layerJson = FORMATTER.getJSON(layer, lang, isSecure);
                 //log.debug("Generated JSON");
                 if (layerJson != null) {
+                    if(layer.getGeometry() != null && layer.getGeometry().length() > 0) {
+                    	JSONHelper.putValue(layerJson, "geom", layer.getGeometry());
+                    }
                     //log.debug("Generating permissions JSON");
                     JSONObject permissions = getPermissions(user, permissionKey, permissionsList, downloadPermissionsList, editAccessList, dynamicPermissions);
                     JSONHelper.putValue(layerJson, "permissions", permissions);
@@ -145,7 +204,103 @@ public class OskariLayerWorker {
                     else {
                         FORMATTER.removeAdminInfo(layerJson);
                     }
+                    //log.debug("Adding layer to list");
+                    layersList.put(layerJson);
+                }
+            }
+            catch(Exception ex) {
+                log.error(ex);
+            }
+        }
+        log.debug("Created JSON in", System.currentTimeMillis() - start, "ms");
+        log.debug("Returning", layersList.length(), "/", layers.size(),"layers");
 
+        final JSONObject result = new JSONObject();
+        JSONHelper.putValue(result, KEY_LAYERS, layersList);
+        return result;
+    }
+    
+    /**
+     * Gets all the map layers the user is permitted to view
+     *
+     * @param layers      list of layers to render
+     * @param user        User
+     * @param lang        Language
+     * @param isPublished Determines the permission type used for the layers (view/published view)
+     * @param isSecure    true to modify urls for easier proxy forwarding/false to keep as is
+     * @return JSONObject of map layers
+     */
+    public static JSONObject getListOfMapLayers(final List<OskariLayer> layers, final User user,
+                                                final String lang, final boolean isPublished, final boolean isSecure) {
+
+    	final String permissionType = getPermissionType(isPublished);
+        long start = System.currentTimeMillis();
+        final List<String> resources = permissionsService.getResourcesWithGrantedPermissions(
+                Permissions.RESOURCE_TYPE_MAP_LAYER, user, permissionType);
+        log.debug("View permissions loaded in", System.currentTimeMillis() - start, "ms");
+
+        start = System.currentTimeMillis();
+        final Set<String> permissionsList = permissionsService.getPublishPermissions();
+        log.debug("Publish permissions loaded in", System.currentTimeMillis() - start, "ms");
+
+        start = System.currentTimeMillis();
+        final Set<String> downloadPermissionsList = permissionsService.getDownloadPermissions();
+        log.debug("Download permissions loaded in", System.currentTimeMillis() - start, "ms");
+
+        start = System.currentTimeMillis();
+        final Set<String> editAccessList = permissionsService.getEditPermissions();
+        log.debug("Edit permissions loaded in", System.currentTimeMillis() - start, "ms");
+
+        final Set<String> additionalPermissions = permissionsService.getAdditionalPermissions();
+    	log.debug("Loading dynamic permissions ", additionalPermissions);
+        final Map<String, List<String>> dynamicPermissions = new HashMap<String, List<String>>();
+        for (String permissionId : additionalPermissions) {
+            final List<String> permissions = permissionsService
+                    .getResourcesWithGrantedPermissions(
+                            Permissions.RESOURCE_TYPE_MAP_LAYER, user,
+                            permissionId);
+            dynamicPermissions.put(permissionId,permissions);
+            log.debug("Got " + permissions.size() + " permissions of type " + permissionId);
+        }
+
+        final JSONArray layersList = new JSONArray();
+        start = System.currentTimeMillis();
+        for (OskariLayer layer : layers) {
+        	
+            final String permissionKey = layer.getType()+ "+" + layer.getUrl() + "+" + layer.getName();
+            if (layer.getParentId() == -1 && !resources.contains(permissionKey)) {
+                // not permitted if resource NOT found in permissions!
+                // sublayers can pass through since their parentId != -1
+                continue;
+            }
+            try {
+            	String boundingBoxWKT = layer.getCapabilities().optString("geom");
+            	if(boundingBoxWKT != null && boundingBoxWKT.length() > 0) {
+            		Geometry jtsGeometry = null;
+            	    WKTReader reader = new WKTReader();
+            	    jtsGeometry = reader.read(boundingBoxWKT);
+            	    CoordinateReferenceSystem sourceCRS = CRS.decode("EPSG:4326", true);
+                    CoordinateReferenceSystem targetCRS = CRS.decode(layer.getSrs_name(), true);
+                    MathTransform transform = CRS.findMathTransform(sourceCRS, targetCRS, true);
+                    Geometry targetGeometry = JTS.transform(jtsGeometry, transform);
+                    layer.setGeometry(targetGeometry.toText());
+            	}
+                final JSONObject layerJson = FORMATTER.getJSON(layer, lang, isSecure);
+                //log.debug("Generated JSON");
+                if (layerJson != null) {
+                    if(layer.getGeometry() != null && layer.getGeometry().length() > 0) {
+                    	JSONHelper.putValue(layerJson, "geom", layer.getGeometry());
+                    }
+                    //log.debug("Generating permissions JSON");
+                    JSONObject permissions = getPermissions(user, permissionKey, permissionsList, downloadPermissionsList, editAccessList, dynamicPermissions);
+                    JSONHelper.putValue(layerJson, "permissions", permissions);
+                    if(permissions.optBoolean("edit")) {
+                        // has edit rights, alter JSON/add info for admin bundle
+                        modifyCommonFieldsForEditing(layerJson, layer);
+                    }
+                    else {
+                        FORMATTER.removeAdminInfo(layerJson);
+                    }
                     //log.debug("Adding layer to list");
                     layersList.put(layerJson);
                 }
@@ -317,18 +472,35 @@ public class OskariLayerWorker {
      * @return  reorder layers
      */
     public static List<OskariLayer> reorderLayers(List<OskariLayer> layers, List<String> ids) {
-
         List<OskariLayer> reLayers = new ArrayList<OskariLayer>();
 
         for (String id : ids) {
             for (OskariLayer lay : layers) {
-
                 if (Integer.toString(lay.getId()).equals(id) || (lay.getExternalId() != null && lay.getExternalId().equals(id))) {
                     reLayers.add(lay);
                     break;
                 }
             }
+        }
+        return reLayers;
+    }
 
+    /**
+     * Reorder Oskari layers in to requested order
+     * @param layers
+     * @param ids  layer ids and externalids
+     * @return  reorder layers
+     */
+    public static List<OskariLayer> reorderLayersByIntList(List<OskariLayer> layers, List<Integer> ids) {
+        List<OskariLayer> reLayers = new ArrayList<OskariLayer>();
+
+        for (Integer id : ids) {
+            for (OskariLayer lay : layers) {
+                if (lay.getId() == id || (lay.getExternalId() != null && Integer.parseInt(lay.getExternalId()) == id)) {
+                    reLayers.add(lay);
+                    break;
+                }
+            }
         }
         return reLayers;
     }

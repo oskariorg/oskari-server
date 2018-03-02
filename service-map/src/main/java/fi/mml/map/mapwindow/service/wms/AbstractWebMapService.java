@@ -15,6 +15,7 @@ public abstract class AbstractWebMapService implements WebMapService {
     protected String[] formats;
     protected String[] keywords;
     protected String[] CRSs;
+    protected String geom;
     protected List<String> time;
     protected Map<String, String> styles;
     protected Map<String, String> legends;
@@ -51,7 +52,11 @@ public abstract class AbstractWebMapService implements WebMapService {
         return CRSs;
     }
 
-    public List<String> getTime() {
+	public String getGeom() {
+		return geom;
+	}
+
+	public List<String> getTime() {
         return time;
     }
 

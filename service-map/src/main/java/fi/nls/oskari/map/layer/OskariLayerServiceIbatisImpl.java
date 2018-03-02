@@ -130,6 +130,8 @@ public class OskariLayerServiceIbatisImpl extends OskariLayerService {
         result.setCreated((Date) data.get("created"));
         result.setUpdated((Date) data.get("updated"));
 
+        result.setOrderNumber((Integer) data.get("order_number"));
+
         // Automatic update of Capabilities
         result.setCapabilitiesLastUpdated((Date) data.get("capabilities_last_updated"));
         result.setCapabilitiesUpdateRateSec((Integer) data.get("capabilities_update_rate_sec"));
@@ -144,7 +146,7 @@ public class OskariLayerServiceIbatisImpl extends OskariLayerService {
                     // populate layer group
                     // first run (~700 layers) with this lasts ~1800ms, second run ~300ms (cached)
                     final DataProvider dataProvider = dataProviderService.find(result.getDataproviderId());
-                    result.addGroup(dataProvider);
+                    result.addDataprovider(dataProvider);
                 } catch (Exception ex) {
                     LOG.error("Couldn't get organisation for layer", result.getId());
                     return null;
@@ -240,6 +242,21 @@ public class OskariLayerServiceIbatisImpl extends OskariLayerService {
 
     }
 
+    public List<OskariLayer> findByIdList(final List<Integer> intList) {
+        if(intList.size() < 1){
+            return new ArrayList<OskariLayer>();
+        }
+        Map<String, Object> params = new HashMap<String, Object>();
+
+        params.put("intList", intList);
+
+        List<Map<String,Object>> result = queryForList(getNameSpace() + ".findByIdList", params);
+        final List<OskariLayer> layers = mapDataList(result);
+
+        //Reorder layers to requested order
+        return OskariLayerWorker.reorderLayersByIntList(layers, intList);
+    }
+
 
     public OskariLayer find(int id) {
         try {
@@ -301,7 +318,71 @@ public class OskariLayerServiceIbatisImpl extends OskariLayerService {
         LOG.debug("Parse layers with positive update rate sec took:", t2-t1, "ms");
         return layers;
     }
+    /**
+     * Returns the map layers which belong to the given parent.
+     * FIXME: Quick and dirty
+     * @param groupId
+     * @return layers of the given group
+     */
+    public List<OskariLayer> findAllByGroupId(final int groupId) {
+    	final List<OskariLayer> allLayers = findAll();
+    	List<OskariLayer> retLayers = new ArrayList<>();
+        for(OskariLayer layer : allLayers) {
+        	Set<MaplayerGroup> layerGroups = layer.getMaplayerGroups();
+        	for(MaplayerGroup group : layerGroups) {
+        		if(group.getParentId() == groupId) {
+        			retLayers.add(layer);
+        		}
+        	}
+        }
+        return retLayers;
+    }
 
+
+    public void updateOrder(final int layerId, final int groupId, final int orderNumber) {
+    	SqlMapClient client = null;
+        try {
+            client = getSqlMapClient();
+            client.startTransaction();
+            HashMap<String, Integer> updateMap = new HashMap<>();
+            updateMap.put("layerId", layerId);
+            updateMap.put("groupId", groupId);
+            updateMap.put("orderNumber", orderNumber);
+            client.update(getNameSpace() + ".updateOrder", updateMap);
+            client.commitTransaction();
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to update layer ordering", e);
+        } finally {
+            if (client != null) {
+                try {
+                    client.endTransaction();
+                } catch (SQLException ignored) { }
+            }
+        }
+    }
+    
+    public void updateGroup(final int layerId, final int oldGroupId, final int newGroupId) {
+    	SqlMapClient client = null;
+        try {
+            client = getSqlMapClient();
+            client.startTransaction();
+            HashMap<String, Integer> insertMap = new HashMap<>();
+            insertMap.put("layerId", layerId);
+            insertMap.put("oldGroupId", oldGroupId);
+            insertMap.put("newGroupId", newGroupId);
+            client.update(getNameSpace() + ".updateGroup", insertMap);
+            client.commitTransaction();
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to update layer ordering", e);
+        } finally {
+            if (client != null) {
+                try {
+                    client.endTransaction();
+                } catch (SQLException ignored) { }
+            }
+        }
+    }
+    
     public void update(final OskariLayer layer) {
         try {
             getSqlMapClient().update(getNameSpace() + ".update", layer);

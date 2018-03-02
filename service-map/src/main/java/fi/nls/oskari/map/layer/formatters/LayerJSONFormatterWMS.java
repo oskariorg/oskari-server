@@ -35,6 +35,7 @@ public class LayerJSONFormatterWMS extends LayerJSONFormatter {
     public static final String KEY_VERSION = "version";
     public static final String KEY_ISQUERYABLE = "isQueryable";
     public static final String KEY_ATTRIBUTES = "attributes";
+    public static final String KEY_GEOM = "geom";
 
     // There working only plain text and html so ranked up
     private static String[] SUPPORTED_GET_FEATURE_INFO_FORMATS = new String[] {
@@ -200,6 +201,7 @@ public class LayerJSONFormatterWMS extends LayerJSONFormatter {
         JSONObject formats = getFormatsJSON(wms);
         JSONHelper.putValue(capabilities, KEY_FORMATS, formats);
         JSONHelper.putValue(capabilities, KEY_VERSION, wms.getVersion());
+        JSONHelper.putValue(capabilities, KEY_GEOM, wms.getGeom());
 
         final Set<String> capabilitiesCRSs = getCRSs(wms);
         final Set<String> crss = getCRSsToStore(systemCRSs, capabilitiesCRSs);

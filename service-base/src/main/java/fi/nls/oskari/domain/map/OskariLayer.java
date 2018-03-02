@@ -69,9 +69,10 @@ public class OskariLayer extends JSONLocalizedNameAndTitle implements Comparable
 
     private Date created = null;
     private Date updated = null;
+    private Integer orderNumber;
 
     private Set<MaplayerGroup> maplayerGroups = new HashSet<MaplayerGroup>();
-    private Set<DataProvider> groups = new HashSet<DataProvider>();
+    private Set<DataProvider> dataProviders = new HashSet<DataProvider>();
     private List<OskariLayer> sublayers = new ArrayList<OskariLayer>();
 
     private Date capabilitiesLastUpdated;
@@ -97,31 +98,31 @@ public class OskariLayer extends JSONLocalizedNameAndTitle implements Comparable
     }
     public void addGroups(final List<MaplayerGroup> groups) {
         if(groups != null && !groups.isEmpty()) {
-            addGroup(groups.iterator().next());
-            // TODO: use addAll when we support more than one theme
-            //maplayerGroups.addAll(themes);
+            maplayerGroups.addAll(groups);
         }
     }
     public void addGroup(final MaplayerGroup group) {
         if(group != null) {
-            // TODO: remove the clearing when we support more than one theme
-            maplayerGroups.clear();
             maplayerGroups.add(group);
         }
     }
 
-    // we only link one group at the moment so get the first one
-    public DataProvider getGroup() {
-        if(groups == null || groups.isEmpty()) {
-            return null;
-        }
-        return groups.iterator().next();
+    public void emptyMaplayerGroups() {
+        maplayerGroups.clear();
     }
 
-    public void addGroup(final DataProvider group) {
-        if(group != null) {
-            groups.add(group);
-            setDataproviderId(group.getId());
+    // we only link one group at the moment so get the first one
+    public DataProvider getGroup() {
+        if(dataProviders == null || dataProviders.isEmpty()) {
+            return null;
+        }
+        return dataProviders.iterator().next();
+    }
+
+    public void addDataprovider(final DataProvider dataProvider) {
+        if(dataProvider != null) {
+            dataProviders.add(dataProvider);
+            setDataproviderId(dataProvider.getId());
         }
     }
 
@@ -193,6 +194,14 @@ public class OskariLayer extends JSONLocalizedNameAndTitle implements Comparable
 
 	public void setUpdated(Date updated) {
 		this.updated = updated;
+	}
+
+	public Integer getOrderNumber() {
+		return orderNumber;
+	}
+
+	public void setOrderNumber(Integer orderNumber) {
+		this.orderNumber = orderNumber;
 	}
 
 	public int getId() {
