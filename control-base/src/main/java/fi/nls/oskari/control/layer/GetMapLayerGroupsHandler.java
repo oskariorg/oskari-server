@@ -31,10 +31,10 @@ import fi.nls.oskari.util.ResponseHelper;
  */
 @OskariActionRoute("GetHierarchicalMapLayerGroups")
 public class GetMapLayerGroupsHandler extends ActionHandler {
-	
-	private static Logger log = LogFactory.getLogger(GetMapLayerGroupsHandler.class);
 
-	private static final String KEY_GROUPS = "groups";
+    private static Logger log = LogFactory.getLogger(GetMapLayerGroupsHandler.class);
+
+    private static final String KEY_GROUPS = "groups";
     private OskariMapLayerGroupService oskariMapLayerGroupService;
 
     public void setOskariMapLayerGroupService(final OskariMapLayerGroupService service) {
@@ -44,7 +44,7 @@ public class GetMapLayerGroupsHandler extends ActionHandler {
     @Override
     public void init() {
         // setup service if it hasn't been initialized
-        if(oskariMapLayerGroupService == null) {
+        if (oskariMapLayerGroupService == null) {
             setOskariMapLayerGroupService(new OskariMapLayerGroupServiceIbatisImpl());
         }
     }
@@ -52,7 +52,7 @@ public class GetMapLayerGroupsHandler extends ActionHandler {
     @Override
     public void handleAction(ActionParameters params) throws ActionException {
         log.debug("Getting layer groups");
-        JSONArray json = getGroupJSON(-1,params, 0);
+        JSONArray json = getGroupJSON(-1, params, 0);
         log.debug("Got layer groups");
         ResponseHelper.writeResponse(params, json);
     }
@@ -60,9 +60,10 @@ public class GetMapLayerGroupsHandler extends ActionHandler {
 
     /**
      * Get group json, max depth is 3
+     *
      * @param parentId parent id
-     * @param params params
-     * @param depth current depth
+     * @param params   params
+     * @param depth    current depth
      * @return
      * @throws ActionException
      */
@@ -71,21 +72,21 @@ public class GetMapLayerGroupsHandler extends ActionHandler {
         List<MaplayerGroup> layerGroups = oskariMapLayerGroupService.findByParentId(parentId);
         JSONArray json = new JSONArray();
         depth++;
-        try{
+        try {
             // Loop groups and their subgroups (max depth is 3)
-            for(MaplayerGroup group : layerGroups) {
+            for (MaplayerGroup group : layerGroups) {
                 final JSONObject layers = OskariLayerWorker.getListOfMapLayersByIdList(oskariMapLayerGroupService.findMaplayersByGroup(group.getId()), params.getUser(), lang, params.getHttpParam(PARAM_SRS));
                 JSONArray layerList = layers.optJSONArray(OskariLayerWorker.KEY_LAYERS);
                 group.setLayers(layerList);
 
-                if(depth<=3) {
+                if (depth <= 3) {
                     JSONObject groupJson = group.getAsJSON();
                     JSONArray subGroupsJSON = getGroupJSON(group.getId(), params, depth);
                     groupJson.put(KEY_GROUPS, subGroupsJSON);
                     json.put(groupJson);
                 }
             }
-        } catch(JSONException ex) {
+        } catch (JSONException ex) {
             throw new ActionException("Cannot get groupped layerlist", ex);
         }
         return json;
