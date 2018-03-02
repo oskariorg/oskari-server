@@ -83,6 +83,12 @@ public class MapLayerGroupsHandler extends RestActionHandler {
     public void handlePut(ActionParameters params) throws ActionException {
         params.requireAdminUser();
         MaplayerGroup maplayerGroup = populateFromRequest(params.getPayLoadJSON());
+
+        // Check at group depth is maximum 3
+        if(!isAllowedGroupDepth(maplayerGroup)) {
+            throw new ActionParamsException("Maximum group depth is 3");
+        }
+
         final int id = oskariMapLayerGroupService.insert(maplayerGroup);
         // check insert by loading from DB
         final MaplayerGroup savedMapLayerGroup = oskariMapLayerGroupService.find(id);
@@ -118,6 +124,33 @@ public class MapLayerGroupsHandler extends RestActionHandler {
         }
         oskariMapLayerGroupService.delete(id);
         ResponseHelper.writeResponse(params, maplayerGroup.getAsJSON());
+    }
+
+    /**
+     * Calculate group depth
+     * @param groupId group id
+     * @param depth current depth
+     * @return group depth
+     */
+    private int getGroupDepth(int groupId, int depth) {
+        depth++;
+        MaplayerGroup maplayerGroup = oskariMapLayerGroupService.find(groupId);
+        if(maplayerGroup.getParentId() == -1) {
+            return depth;
+        }
+        return getGroupDepth(maplayerGroup.getParentId(), depth);
+    }
+
+    /**
+     * Has allowed group depth
+     * @param maplayerGroup maplayer group
+     * @return is allowed group depth
+     */
+    private boolean isAllowedGroupDepth(MaplayerGroup maplayerGroup) {
+        if(maplayerGroup.getParentId() != -1 && getGroupDepth(maplayerGroup.getParentId(), 0) > 2) {
+            return false;
+        }
+        return true;
     }
 
     private MaplayerGroup populateFromRequest(JSONObject mapLayerGroupJSON) throws ActionException {

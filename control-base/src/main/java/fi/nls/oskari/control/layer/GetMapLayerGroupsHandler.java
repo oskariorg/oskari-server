@@ -52,26 +52,24 @@ public class GetMapLayerGroupsHandler extends ActionHandler {
     @Override
     public void handleAction(ActionParameters params) throws ActionException {
         log.debug("Getting layer groups");
-        JSONArray json = getGroupJSON(-1, params, 0);
+        JSONArray json = getGroupJSON(-1, params);
         log.debug("Got layer groups");
         ResponseHelper.writeResponse(params, json);
     }
 
 
     /**
-     * Get group json, max depth is 3
+     * Get group JSON recursive
      *
      * @param parentId parent id
      * @param params   params
-     * @param depth    current depth
      * @return
      * @throws ActionException
      */
-    private JSONArray getGroupJSON(int parentId, ActionParameters params, int depth) throws ActionException {
+    private JSONArray getGroupJSON(int parentId, ActionParameters params) throws ActionException {
         final String lang = params.getHttpParam(PARAM_LANGUAGE, params.getLocale().getLanguage());
         List<MaplayerGroup> layerGroups = oskariMapLayerGroupService.findByParentId(parentId);
         JSONArray json = new JSONArray();
-        depth++;
         try {
             // Loop groups and their subgroups (max depth is 3)
             for (MaplayerGroup group : layerGroups) {
@@ -79,12 +77,10 @@ public class GetMapLayerGroupsHandler extends ActionHandler {
                 JSONArray layerList = layers.optJSONArray(OskariLayerWorker.KEY_LAYERS);
                 group.setLayers(layerList);
 
-                if (depth <= 3) {
-                    JSONObject groupJson = group.getAsJSON();
-                    JSONArray subGroupsJSON = getGroupJSON(group.getId(), params, depth);
-                    groupJson.put(KEY_GROUPS, subGroupsJSON);
-                    json.put(groupJson);
-                }
+                JSONObject groupJson = group.getAsJSON();
+                JSONArray subGroupsJSON = getGroupJSON(group.getId(), params);
+                groupJson.put(KEY_GROUPS, subGroupsJSON);
+                json.put(groupJson);
             }
         } catch (JSONException ex) {
             throw new ActionException("Cannot get groupped layerlist", ex);
