@@ -243,19 +243,18 @@ public class OskariLayerServiceIbatisImpl extends OskariLayerService {
     }
 
     public List<OskariLayer> findByIdList(final List<Integer> intList) {
-        final List<String> strList =  ConversionHelper.getStringListFromIntegers(intList);
-        if(intList.size() < 1 && strList.size() < 1){
+        if(intList.size() < 1){
             return new ArrayList<OskariLayer>();
         }
         Map<String, Object> params = new HashMap<String, Object>();
-        params.put("strList", strList);
+
         params.put("intList", intList);
 
         List<Map<String,Object>> result = queryForList(getNameSpace() + ".findByIdList", params);
         final List<OskariLayer> layers = mapDataList(result);
 
         //Reorder layers to requested order
-        return OskariLayerWorker.reorderLayers(layers, strList);
+        return OskariLayerWorker.reorderLayersByIntList(layers, intList);
     }
 
 

@@ -212,15 +212,6 @@ public class ConversionHelper {
         return strList;
     }
 
-    public static final List<String> getStringListFromIntegers(final List<Integer> idList) {
-        List<String> strList = new ArrayList<String>();
-        for (Integer id : idList)
-        {
-            strList.add(id.toString());
-        }
-        return strList;
-    }
-
     /**
      * Pickups integer values out of String List
      * @param idList
