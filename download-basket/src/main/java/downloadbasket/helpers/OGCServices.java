@@ -48,7 +48,7 @@ public class OGCServices {
 	 * @throws JSONException
 	 * @throws UnsupportedEncodingException
 	 */
-	public static String getFilter(JSONObject downloadDetails, Boolean writeParam)
+	public static String getFilter(JSONObject downloadDetails, Boolean writeParam, OskariLayerService mapLayerService)
 			throws JSONException, UnsupportedEncodingException {
 		StringBuilder s = new StringBuilder();
 
@@ -73,7 +73,7 @@ public class OGCServices {
 			if (writeParam) {
 				s.append("&filter=");
 			}
-			s.append(URLEncoder.encode(getPluginFilter(downloadDetails), "UTF-8"));
+			s.append(URLEncoder.encode(getPluginFilter(downloadDetails, mapLayerService), "UTF-8"));
 		}
 
 		return s.toString();
@@ -106,11 +106,10 @@ public class OGCServices {
 	 *            
 	 */
 
-	public static String getPluginFilter(JSONObject download) throws JSONException {
+	public static String getPluginFilter(JSONObject download, OskariLayerService mapLayerService) throws JSONException {
 		JSONArray identifiers = new JSONArray(download.getString(KEY_IDENTIFIERS));
 		String xml = "";
 		String croppingNameSpace = PropertyUtil.get("oskari.wfs.cropping.namespace");
-		final OskariLayerService mapLayerService = new OskariLayerServiceIbatisImpl();
 
 		try {
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();

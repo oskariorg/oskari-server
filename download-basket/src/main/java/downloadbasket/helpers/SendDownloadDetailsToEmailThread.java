@@ -92,10 +92,10 @@ public class SendDownloadDetailsToEmailThread implements Runnable {
 				}
 
 				if (ldz.isDownloadNormalWay()) {
-					ldz.setGetFeatureInfoRequest(OGCServices.getFilter(download, true));
+					ldz.setGetFeatureInfoRequest(OGCServices.getFilter(download, true, mapLayerService));
 					ldz.setWFSUrl(OGCServices.doGetFeatureUrl(srs, download, false));
 				} else {
-					ldz.setGetFeatureInfoRequest("&filter=" + OGCServices.getPluginFilter(download));
+					ldz.setGetFeatureInfoRequest("&filter=" + OGCServices.getPluginFilter(download, mapLayerService));
 					ldz.setWFSUrl(OGCServices.doGetFeatureUrl(srs, download, true));
 				}
 
