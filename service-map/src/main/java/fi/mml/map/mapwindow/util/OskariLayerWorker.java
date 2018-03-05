@@ -496,7 +496,7 @@ public class OskariLayerWorker {
 
         for (Integer id : ids) {
             for (OskariLayer lay : layers) {
-                if (lay.getId() == id || (lay.getExternalId() != null && Integer.parseInt(lay.getExternalId()) == id)) {
+                if (lay.getId() == id || (lay.getExternalId() != null && lay.getExternalId().equals(id))) {
                     reLayers.add(lay);
                     break;
                 }
