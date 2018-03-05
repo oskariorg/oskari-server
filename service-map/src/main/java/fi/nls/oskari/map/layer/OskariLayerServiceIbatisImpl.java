@@ -227,7 +227,7 @@ public class OskariLayerServiceIbatisImpl extends OskariLayerService {
         // ensure order stays the same
         final List<Integer> intList = ConversionHelper.getIntList(idList);
         final List<String> strList =  ConversionHelper.getStringList(idList);
-        if(intList.size() < 1 && strList.size() < 1){
+        if(intList.isEmpty() && strList.isEmpty()){
             return new ArrayList<OskariLayer>();
         }
         Map<String, Object> params = new HashMap<String, Object>();
