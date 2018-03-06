@@ -485,26 +485,6 @@ public class OskariLayerWorker {
         return reLayers;
     }
 
-    /**
-     * Reorder Oskari layers in to requested order
-     * @param layers
-     * @param ids  layer ids and externalids
-     * @return  reorder layers
-     */
-    public static List<OskariLayer> reorderLayersByIntList(List<OskariLayer> layers, List<Integer> ids) {
-        List<OskariLayer> reLayers = new ArrayList<OskariLayer>();
-
-        for (Integer id : ids) {
-            for (OskariLayer lay : layers) {
-                if (lay.getId() == id || (lay.getExternalId() != null && lay.getExternalId().equals(id))) {
-                    reLayers.add(lay);
-                    break;
-                }
-            }
-        }
-        return reLayers;
-    }
-
     private static String getPermissionType(final boolean isPublished) {
         if (isPublished) {
             return Permissions.PERMISSION_TYPE_VIEW_PUBLISHED;

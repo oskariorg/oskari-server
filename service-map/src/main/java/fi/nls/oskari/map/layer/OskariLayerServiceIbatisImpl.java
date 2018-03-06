@@ -227,7 +227,7 @@ public class OskariLayerServiceIbatisImpl extends OskariLayerService {
         // ensure order stays the same
         final List<Integer> intList = ConversionHelper.getIntList(idList);
         final List<String> strList =  ConversionHelper.getStringList(idList);
-        if(intList.size() < 1 && strList.size() < 1){
+        if(intList.isEmpty() && strList.isEmpty()){
             return new ArrayList<OskariLayer>();
         }
         Map<String, Object> params = new HashMap<String, Object>();
@@ -243,7 +243,7 @@ public class OskariLayerServiceIbatisImpl extends OskariLayerService {
     }
 
     public List<OskariLayer> findByIdList(final List<Integer> intList) {
-        if(intList.size() < 1){
+        if(intList.isEmpty()){
             return new ArrayList<OskariLayer>();
         }
         Map<String, Object> params = new HashMap<String, Object>();
@@ -254,7 +254,16 @@ public class OskariLayerServiceIbatisImpl extends OskariLayerService {
         final List<OskariLayer> layers = mapDataList(result);
 
         //Reorder layers to requested order
-        return OskariLayerWorker.reorderLayersByIntList(layers, intList);
+        List<OskariLayer> reLayers = new ArrayList<OskariLayer>();
+        for (Integer id : intList) {
+            for (OskariLayer lay : layers) {
+                if (lay.getId() == id) {
+                    reLayers.add(lay);
+                    break;
+                }
+            }
+        }
+        return reLayers;
     }
 
 
