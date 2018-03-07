@@ -509,25 +509,28 @@
         oskari_maplayer l
         LEFT OUTER JOIN oskari_maplayer_metadata m ON  m.metadataid = l.metadataId
     	LEFT OUTER JOIN oskari_maplayer_group_link gl ON gl.maplayerid = l.id
-        <dynamic>
-            WHERE
-            <isNotEmpty  property="intList" >
+
+        <dynamic prepend="WHERE">
+            <isNotEmpty  property="intList" prepend="OR">
                 l.id in
                 <iterate property="intList" open="(" close=")" conjunction=",">
                     #intList[]#
                 </iterate>
-                <isNotEmpty  property="strList" >
-                OR
-                </isNotEmpty>
+
             </isNotEmpty>
-            <isNotEmpty  property="strList" >
-                 l.externalId in
+            <isNotEmpty  property="strList" prepend="OR">
+                l.externalId in
                 <iterate property="strList" open="(" close=")" conjunction=",">
                     #strList[]#
                 </iterate>
             </isNotEmpty>
+            <isNotEmpty property="parentIntList" prepend="OR">
+                l.parentId in
+                <iterate property="parentIntList" open="(" close=")" conjunction=",">
+                    #parentIntList[]#
+                </iterate>
+            </isNotEmpty>
         </dynamic>
-
     </select>
 
     <select id="findAllWithPositiveUpdateRateSec"
