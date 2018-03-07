@@ -25,7 +25,6 @@ import fi.nls.oskari.map.layer.OskariLayerService;
 import fi.nls.oskari.map.layer.OskariLayerServiceIbatisImpl;
 import fi.nls.oskari.util.ResponseHelper;
 import fi.nls.oskari.util.IOHelper;
-import fi.nls.oskari.util.PropertyUtil;
 import java.net.HttpURLConnection;
 
 /**
@@ -49,9 +48,6 @@ public class GetFeatureForCropping extends ActionHandler {
 	private static final String PARAM_ID = "id";
 
 	private OskariLayerService mapLayerService;
-
-	private String croppingUsername;
-	private String croppingPassword;
 
 	@Override
 	public void handleAction(final ActionParameters params) throws ActionException {
