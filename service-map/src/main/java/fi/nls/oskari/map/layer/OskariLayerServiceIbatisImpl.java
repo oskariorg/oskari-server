@@ -247,8 +247,8 @@ public class OskariLayerServiceIbatisImpl extends OskariLayerService {
             return new ArrayList<OskariLayer>();
         }
         Map<String, Object> params = new HashMap<String, Object>();
-
         params.put("intList", intList);
+        params.put("parentIntList", intList);
 
         List<Map<String,Object>> result = queryForList(getNameSpace() + ".findByIdList", params);
         final List<OskariLayer> layers = mapDataList(result);
