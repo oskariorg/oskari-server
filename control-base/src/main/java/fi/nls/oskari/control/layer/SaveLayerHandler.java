@@ -42,6 +42,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.*;
 
+import static fi.nls.oskari.control.ActionConstants.PARAM_SRS;
+
 /**
  * Admin insert/update of WMS map layer
  */
@@ -147,7 +149,7 @@ public class SaveLayerHandler extends ActionHandler {
         }
 
         // construct response as layer json
-        final JSONObject layerJSON = OskariLayerWorker.getMapLayerJSON(ml, params.getUser(), params.getLocale().getLanguage());
+        final JSONObject layerJSON = OskariLayerWorker.getMapLayerJSON(ml, params.getUser(), params.getLocale().getLanguage(), params.getHttpParam(PARAM_SRS));
         if (layerJSON == null) {
             // handle error getting JSON failed
             throw new ActionException("Error constructing JSON for layer");

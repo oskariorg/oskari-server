@@ -531,6 +531,8 @@
                 </iterate>
             </isNotEmpty>
         </dynamic>
+
+        ORDER BY l.parentId ASC
     </select>
 
     <select id="findAllWithPositiveUpdateRateSec"

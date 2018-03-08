@@ -22,6 +22,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import static fi.nls.oskari.control.ActionConstants.PARAM_SRS;
+
 @OskariActionRoute("SearchWFSChannel")
 public class SearchWFSChannelActionHandler extends RestActionHandler {
 
@@ -60,7 +62,7 @@ public class SearchWFSChannelActionHandler extends RestActionHandler {
                 JSONObject channelJSON = channel.getAsJSONObject();
                 List<String> layerIds = new ArrayList<String>();
                 layerIds.add(String.valueOf(channel.getWFSLayerId()));
-                JSONObject userLayers = OskariLayerWorker.getListOfMapLayersById(layerIds, params.getUser(), params.getLocale().getLanguage());
+                JSONObject userLayers = OskariLayerWorker.getListOfMapLayersById(layerIds, params.getUser(), params.getLocale().getLanguage(), params.getHttpParam(PARAM_SRS));
                 JSONArray layers = userLayers.getJSONArray(OskariLayerWorker.KEY_LAYERS);
 
                 if(layers.length() > 0){
