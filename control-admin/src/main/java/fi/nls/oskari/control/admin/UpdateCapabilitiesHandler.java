@@ -25,6 +25,8 @@ import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.service.capabilities.CapabilitiesCacheService;
 import fi.nls.oskari.util.ResponseHelper;
 
+import static fi.nls.oskari.control.ActionConstants.PARAM_SRS;
+
 /**
  * ActionRoute to update the capabilities of layers
  * Can be called with 'id' parameter where the value is a layer id.
@@ -138,7 +140,7 @@ public class UpdateCapabilitiesHandler extends ActionHandler {
 
         if (layerId != NOT_SPECIFIED_VALUE && success.size() == 1) {
             OskariLayer layer = layerService.find(layerId);
-            org.json.JSONObject layerJSON = OskariLayerWorker.getMapLayerJSON(layer, params.getUser(), params.getLocale().getLanguage());
+            org.json.JSONObject layerJSON = OskariLayerWorker.getMapLayerJSON(layer, params.getUser(), params.getLocale().getLanguage(), params.getHttpParam(PARAM_SRS));
             response.put("layerUpdate", layerJSON);
         }
 
