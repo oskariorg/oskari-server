@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
+import fi.mml.map.mapwindow.util.OskariLayerWorker;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.oskari.capabilities.CapabilitiesUpdateResult;
@@ -23,6 +24,8 @@ import fi.nls.oskari.map.view.util.ViewHelper;
 import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.service.capabilities.CapabilitiesCacheService;
 import fi.nls.oskari.util.ResponseHelper;
+
+import static fi.nls.oskari.control.ActionConstants.PARAM_SRS;
 
 /**
  * ActionRoute to update the capabilities of layers
@@ -49,6 +52,8 @@ public class UpdateCapabilitiesHandler extends ActionHandler {
     private CapabilitiesCacheService capabilitiesCacheService;
     private CapabilitiesUpdateService capabilitiesUpdateService;
     private ViewService viewService;
+
+    private static final int NOT_SPECIFIED_VALUE = -1;
 
     public UpdateCapabilitiesHandler() {
         // No-param constructor for @OskariActionRoute
@@ -85,14 +90,14 @@ public class UpdateCapabilitiesHandler extends ActionHandler {
     public void handleAction(ActionParameters params) throws ActionException {
         params.requireAdminUser();
 
-        int layerId = params.getHttpParam(ActionConstants.KEY_ID, -1);
-        List<OskariLayer> layers = getLayersToUpdate(layerId, -1);
+        int layerId = params.getHttpParam(ActionConstants.KEY_ID, NOT_SPECIFIED_VALUE);
+        List<OskariLayer> layers = getLayersToUpdate(layerId, NOT_SPECIFIED_VALUE);
         Set<String> systemCRSs = getSystemCRSs();
 
         List<CapabilitiesUpdateResult> result =
                 capabilitiesUpdateService.updateCapabilities(layers, systemCRSs);
 
-        JSONObject response = createResponse(result);
+        JSONObject response = createResponse(result, layerId, params);
         ResponseHelper.writeResponse(params, response);
     }
 
@@ -116,7 +121,7 @@ public class UpdateCapabilitiesHandler extends ActionHandler {
         }
     }
 
-    private JSONObject createResponse(List<CapabilitiesUpdateResult> result)
+    private JSONObject createResponse(List<CapabilitiesUpdateResult> result, int layerId, ActionParameters params)
             throws ActionException {
         JSONArray success = new JSONArray();
         JSONObject errors = new JSONObject();
@@ -132,6 +137,13 @@ public class UpdateCapabilitiesHandler extends ActionHandler {
         JSONObject response = new JSONObject();
         response.put("success", success);
         response.put("error", errors);
+
+        if (layerId != NOT_SPECIFIED_VALUE && success.size() == 1) {
+            OskariLayer layer = layerService.find(layerId);
+            org.json.JSONObject layerJSON = OskariLayerWorker.getMapLayerJSON(layer, params.getUser(), params.getLocale().getLanguage(), params.getHttpParam(PARAM_SRS));
+            response.put("layerUpdate", layerJSON);
+        }
+
         return response;
     }
 }
