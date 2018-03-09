@@ -6,15 +6,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.geotools.geometry.jts.JTS;
-import org.geotools.referencing.CRS;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.opengis.referencing.crs.CoordinateReferenceSystem;
-import org.opengis.referencing.operation.MathTransform;
-
-import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.io.WKTReader;
 
 import fi.mml.portti.domain.permissions.Permissions;
 import fi.mml.portti.service.db.permissions.PermissionsService;
@@ -41,8 +34,6 @@ public class OskariLayerWorker {
     private static final String PUBLICATION_PERMISSION_OK = "publication_permission_ok";
 
     private static final String DOWNLOAD_PERMISSION_OK = "download_permission_ok";
-    private static final String NO_DOWNLOAD_PERMISSION = "no_download_permission";
-    private static final String KEY_GEOM = "geom";
 
     private static Logger log = LogFactory.getLogger(OskariLayerWorker.class);
 
@@ -50,14 +41,6 @@ public class OskariLayerWorker {
     private static PermissionsService permissionsService = new PermissionsServiceIbatisImpl();
 
     private final static LayerJSONFormatter FORMATTER = new LayerJSONFormatter();
-
-    public static JSONObject getListOfAllMapLayers(final User user, final String lang, final boolean isSecure, final String crs) {
-        long start = System.currentTimeMillis();
-        final List<OskariLayer> layers = mapLayerService.findAll();
-        log.debug("Layers loaded in", System.currentTimeMillis() - start, "ms");
-        final boolean isPublished = false;
-        return getListOfMapLayers(layers, user, lang, crs, isPublished, isSecure);
-    }
 
     /**
      * Gets all the selected map layers
@@ -158,23 +141,23 @@ public class OskariLayerWorker {
                 continue;
             }
             try {
-                String strTargetCRS = crs;
                 final JSONObject layerJson = FORMATTER.getJSON(layer, lang, isSecure);
 
-            	if (layerJson != null) {
-            	    transformWKTGeom(layerJson, strTargetCRS);
-
-                    JSONObject permissions = getPermissions(user, permissionKey, permissionsList, downloadPermissionsList, editAccessList, dynamicPermissions);
-                    JSONHelper.putValue(layerJson, "permissions", permissions);
-                    if(permissions.optBoolean("edit")) {
-                        // has edit rights, alter JSON/add info for admin bundle
-                        modifyCommonFieldsForEditing(layerJson, layer);
-                    }
-                    else {
-                        FORMATTER.removeAdminInfo(layerJson);
-                    }
-                    layersList.put(layerJson);
+            	if (layerJson == null) {
+                    continue;
                 }
+                transformWKTGeom(layerJson, crs);
+
+                JSONObject permissions = getPermissions(user, permissionKey, permissionsList, downloadPermissionsList, editAccessList, dynamicPermissions);
+                JSONHelper.putValue(layerJson, "permissions", permissions);
+                if(permissions.optBoolean("edit")) {
+                    // has edit rights, alter JSON/add info for admin bundle
+                    modifyCommonFieldsForEditing(layerJson, layer);
+                }
+                else {
+                    FORMATTER.removeAdminInfo(layerJson);
+                }
+                layersList.put(layerJson);
             }
             catch(Exception ex) {
                 log.error(ex);

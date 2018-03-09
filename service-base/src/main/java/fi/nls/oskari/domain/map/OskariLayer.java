@@ -402,6 +402,7 @@ public class OskariLayer extends JSONLocalizedNameAndTitle implements Comparable
 
     public String getGeometry() {
         if(geometry == null) {
+            // geometry is from a CSW service. Capabilities "geom" is the coverage from layer capabilities
             return getCapabilities().optString("geom");
         }
         return geometry;
