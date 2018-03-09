@@ -42,6 +42,7 @@ public class OskariLayerWorker {
 
     private static final String DOWNLOAD_PERMISSION_OK = "download_permission_ok";
     private static final String NO_DOWNLOAD_PERMISSION = "no_download_permission";
+    private static final String KEY_GEOM = "geom";
 
     private static Logger log = LogFactory.getLogger(OskariLayerWorker.class);
 
@@ -158,21 +159,6 @@ public class OskariLayerWorker {
             }
             try {
                 String strTargetCRS = crs;
-
-                if(layer.getSrs_name() != null) {
-                    strTargetCRS = layer.getSrs_name();
-                }
-            	String boundingBoxWKT = layer.getCapabilities().optString("geom");
-            	if(boundingBoxWKT != null && boundingBoxWKT.length() > 0) {
-            		Geometry jtsGeometry = null;
-            	    WKTReader reader = new WKTReader();
-            	    jtsGeometry = reader.read(boundingBoxWKT);
-            	    CoordinateReferenceSystem sourceCRS = CRS.decode("EPSG:4326", true);
-                    CoordinateReferenceSystem targetCRS = CRS.decode(strTargetCRS, true);
-                    MathTransform transform = CRS.findMathTransform(sourceCRS, targetCRS, true);
-                    Geometry targetGeometry = JTS.transform(jtsGeometry, transform);
-                    layer.setGeometry(targetGeometry.toText());
-            	}
                 final JSONObject layerJson = FORMATTER.getJSON(layer, lang, isSecure);
 
             	if (layerJson != null) {

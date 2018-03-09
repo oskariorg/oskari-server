@@ -401,6 +401,9 @@ public class OskariLayer extends JSONLocalizedNameAndTitle implements Comparable
     }
 
     public String getGeometry() {
+        if(geometry == null) {
+            return getCapabilities().optString("geom");
+        }
         return geometry;
     }
 
