@@ -159,18 +159,6 @@ public class OskariLayerWorker {
             }
             try {
                 String strTargetCRS = crs;
-                if(layer.getSrs_name() != null) {
-                    strTargetCRS = layer.getSrs_name();
-                }
-
-                // if layer has not csw geom then try to use GetCapabilities bounding box
-                if(layer.getGeometry() == null  && layer.getCapabilities().has(KEY_GEOM)) {
-            	    WKTReader reader = new WKTReader();
-                    String boundingBoxWKT = layer.getCapabilities().getString(KEY_GEOM);
-                    Geometry geometry = reader.read(boundingBoxWKT);
-                    layer.setGeometry(geometry.toText());
-            	}
-
                 final JSONObject layerJson = FORMATTER.getJSON(layer, lang, isSecure);
 
             	if (layerJson != null) {
