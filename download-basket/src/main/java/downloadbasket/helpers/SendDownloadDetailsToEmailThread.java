@@ -46,13 +46,11 @@ public class SendDownloadDetailsToEmailThread implements Runnable {
 	 *
 	 * @param mapLayerService
 	 *            map layer service
-	 * @param userDetails
-	 *            user details
 	 * @param downloadDetails
 	 *            download details
-	 * @param Locale
-	 *            locale
-	 * 
+	 * @param userDetails
+	 *            user details
+	 * @param locale locale
 	 */
 
 	public SendDownloadDetailsToEmailThread(OskariLayerService mapLayerService, JSONArray downloadDetails,
@@ -92,10 +90,10 @@ public class SendDownloadDetailsToEmailThread implements Runnable {
 				}
 
 				if (ldz.isDownloadNormalWay()) {
-					ldz.setGetFeatureInfoRequest(OGCServices.getFilter(download, true, mapLayerService));
+					ldz.setGetFeatureInfoRequest(OGCServices.getFilter(download, true, oskariLayer));
 					ldz.setWFSUrl(OGCServices.doGetFeatureUrl(srs, download, false));
 				} else {
-					ldz.setGetFeatureInfoRequest("&filter=" + OGCServices.getPluginFilter(download, mapLayerService));
+					ldz.setGetFeatureInfoRequest("&filter=" + OGCServices.getPluginFilter(download, oskariLayer));
 					ldz.setWFSUrl(OGCServices.doGetFeatureUrl(srs, download, true));
 				}
 

@@ -64,7 +64,7 @@ public class GetFeatureForCropping extends ActionHandler {
 					params.getHttpParam(PARAM_HEIGHT), params.getHttpParam(PARAM_X), params.getHttpParam(PARAM_Y),
 					params.getHttpParam(PARAM_LAYERS));
 
-		LOGGER.debug("Details of the data cropping feature");
+			LOGGER.debug("Details of the data cropping feature");
 			try {
 
 				HttpURLConnection con = IOHelper.getConnection(wmsUrl, oskariLayer.getUsername(), oskariLayer.getPassword());

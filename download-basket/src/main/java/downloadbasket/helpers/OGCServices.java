@@ -28,7 +28,6 @@ public class OGCServices {
 	private static final String KEY_BBOX_TOP = "top";
 	private static final String KEY_IDENTIFIERS = "identifiers";
 	private static final String KEY_LAYER = "layer";
-	private static final String KEY_LAYER_ID = "id";
 	private static final String KEY_GEOMETRY_COLUMN = "geometryColumn";
 	private static final String KEY_GEOMETRY_COLUMN_NAME = "geometry";
 	private static final String KEY_LAYER_NAME = "layerName";
@@ -43,12 +42,13 @@ public class OGCServices {
 	 *            download details
 	 * @param writeParam
 	 *            write param
+	 * @param oskariLayer oskari layer
 	 *
 	 * @return filter url param and value
 	 * @throws JSONException
 	 * @throws UnsupportedEncodingException
 	 */
-	public static String getFilter(JSONObject downloadDetails, Boolean writeParam, OskariLayerService mapLayerService)
+	public static String getFilter(JSONObject downloadDetails, Boolean writeParam, OskariLayer oskariLayer)
 			throws JSONException, UnsupportedEncodingException {
 		StringBuilder s = new StringBuilder();
 
@@ -73,7 +73,7 @@ public class OGCServices {
 			if (writeParam) {
 				s.append("&filter=");
 			}
-			s.append(URLEncoder.encode(getPluginFilter(downloadDetails, mapLayerService), "UTF-8"));
+			s.append(URLEncoder.encode(getPluginFilter(downloadDetails, oskariLayer), "UTF-8"));
 		}
 
 		return s.toString();
@@ -97,24 +97,17 @@ public class OGCServices {
 	 * 
 	 * @param download
 	 *            download details
-	 * @param geometryColumnName
-	 * 			  name of the geometry column in a downloadable layer, configured in layer attributes
-	 * @param cropGeomColumn
-	 * 			  name of the geometry column in a cropping layer, configured in layer attributes
-	 * @param uniqueColumn
-	 * 			  name of a column in a cropping layer, that contains an unique value such as an id. Configured in layer attributes
+	 * @param oskariLayer oskari layer
 	 *            
 	 */
 
-	public static String getPluginFilter(JSONObject download, OskariLayerService mapLayerService) throws JSONException {
+	public static String getPluginFilter(JSONObject download, OskariLayer oskariLayer) throws JSONException {
 		JSONArray identifiers = new JSONArray(download.getString(KEY_IDENTIFIERS));
 		String xml = "";
 		String croppingNameSpace = PropertyUtil.get("oskari.wfs.cropping.namespace");
 
 		try {
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
-
-			OskariLayer oskariLayer = mapLayerService.find(download.getString(KEY_LAYER_ID));
 			String geometryColumnName = oskariLayer.getAttributes().optString(KEY_GEOMETRY_COLUMN_NAME, "SHAPE");
 
 			XMLStreamWriter xsw = XMLOutputFactory.newInstance().createXMLStreamWriter(baos);
