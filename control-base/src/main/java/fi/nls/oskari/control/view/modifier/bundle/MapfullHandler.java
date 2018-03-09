@@ -112,11 +112,6 @@ public class MapfullHandler extends BundleHandler {
                 params.isModifyURLs(),
                 mapSRS);
 
-
-        // transform WKT for layers now that we know SRS
-        for (int i = 0; i < fullConfigLayers.length(); ++i) {
-            OskariLayerWorker.transformWKTGeom(fullConfigLayers.optJSONObject(i), mapSRS);
-        }
         setProjDefsForMapConfig(mapfullConfig, mapSRS);
         // overwrite layers
         try {
