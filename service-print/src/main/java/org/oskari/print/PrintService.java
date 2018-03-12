@@ -10,21 +10,21 @@ import java.util.List;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.oskari.print.request.PrintLayer;
 import org.oskari.print.request.PrintRequest;
-import org.oskari.print.wmts.TileMatrixSetCache;
+import org.oskari.print.wmts.WMTSCapabilitiesCache;
 
 public class PrintService {
 
-    private TileMatrixSetCache tmsCache;
+    private WMTSCapabilitiesCache tmsCache;
 
     public PrintService() {
-        this(new TileMatrixSetCache());
+        this(new WMTSCapabilitiesCache());
     }
 
     public PrintService(CapabilitiesCacheService capCacheService) {
-        this(new TileMatrixSetCache(capCacheService));
+        this(new WMTSCapabilitiesCache(capCacheService));
     }
 
-    public PrintService(TileMatrixSetCache tmsCache) {
+    public PrintService(WMTSCapabilitiesCache tmsCache) {
         this.tmsCache = tmsCache;
     }
 

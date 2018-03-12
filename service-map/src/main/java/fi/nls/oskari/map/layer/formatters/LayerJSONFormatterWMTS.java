@@ -10,6 +10,7 @@ import fi.nls.oskari.wmts.domain.TileMatrixLink;
 import fi.nls.oskari.wmts.domain.WMTSCapabilitiesLayer;
 import org.json.JSONArray;
 import org.json.JSONObject;
+
 import java.util.*;
 
 public class LayerJSONFormatterWMTS extends LayerJSONFormatter {
@@ -58,25 +59,43 @@ public class LayerJSONFormatterWMTS extends LayerJSONFormatter {
                 layer.setUrl(originalUrl);
             }
         }
+
+        Set<String> srs = LayerJSONFormatterWMS.getSRSs(layer.getAttributes(), layer.getCapabilities());
+        if (srs != null) {
+            JSONHelper.putValue(layerJson, KEY_SRS, new JSONArray(srs));
+        }
+
         return layerJson;
     }
 
     /**
-     * @deprecated replaced by {@link #createCapabilitiesJSON(WMTSCapabilitiesLayer layer)}
+     * @deprecated use {@link #createCapabilitiesJSON(WMTSCapabilitiesLayer, Set)}
      */
     @Deprecated
     public static JSONObject createCapabilitiesJSON(final WMTSCapabilities wmts,final WMTSCapabilitiesLayer layer) {
-        return createCapabilitiesJSON(layer);
+        return createCapabilitiesJSON(layer, null);
     }
 
+    /**
+     * @deprecated use {@link #createCapabilitiesJSON(WMTSCapabilitiesLayer, Set)}
+     */
+    @Deprecated
     public static JSONObject createCapabilitiesJSON(final WMTSCapabilitiesLayer layer) {
+        return createCapabilitiesJSON(layer, null);
+    }
+
+    public static JSONObject createCapabilitiesJSON(final WMTSCapabilitiesLayer layer, Set<String> systemCRSs) {
         JSONObject capabilities = new JSONObject();
-        if(layer == null) {
+        if (layer == null) {
             return capabilities;
         }
 
         List<JSONObject> tileMatrix = LayerJSONFormatterWMTS.createTileMatrixArray(layer);
         JSONHelper.putValue(capabilities, KEY_TILEMATRIXIDS, new JSONArray(tileMatrix));
+
+        final Set<String> capabilitiesCRSs = getCRSs(layer);
+        final Set<String> crss = getCRSsToStore(systemCRSs, capabilitiesCRSs);
+        JSONHelper.putValue(capabilities, KEY_SRS, new JSONArray(crss));
 
         return capabilities;
     }
@@ -110,7 +129,7 @@ public class LayerJSONFormatterWMTS extends LayerJSONFormatter {
             return null;
         }
 
-        Set<String> crss = new HashSet<String>();
+        Set<String> crss = new HashSet<>();
         for (TileMatrixLink link : layer.getLinks()) {
             TileMatrixSet tms = link.getTileMatrixSet();
             String crs = tms.getCrs();

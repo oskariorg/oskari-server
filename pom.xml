@@ -105,6 +105,7 @@
 
         <mybatis.version>3.4.5</mybatis.version>
         <com.google.guava.version>18.0</com.google.guava.version>
+        <pdfbox.version>2.0.6</pdfbox.version>
         <!-- Test deps versions -->
         <powermock.version>1.5</powermock.version>
         <junit.version>4.11</junit.version>
@@ -153,6 +154,11 @@
             <dependency>
                 <groupId>fi.nls.oskari.service</groupId>
                 <artifactId>oskari-control</artifactId>
+                <version>${fi.nls.oskari.service.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>fi.nls.oskari</groupId>
+                <artifactId>download-basket</artifactId>
                 <version>${fi.nls.oskari.service.version}</version>
             </dependency>
 
@@ -782,6 +788,11 @@
                 <artifactId>guava</artifactId>
                 <version>${com.google.guava.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.apache.pdfbox</groupId>
+                <artifactId>pdfbox</artifactId>
+                <version>${pdfbox.version}</version>
+            </dependency>
 
             <!-- Managed test dependencies -->
             <dependency>
@@ -1124,6 +1135,7 @@
 
         <module>service-feedback</module>
         <module>service-feedback-open311</module>
+        <module>download-basket</module>
 
         <!-- print -->
         <module>service-print</module>

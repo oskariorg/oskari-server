@@ -20,6 +20,7 @@ import fi.nls.oskari.util.*;
 import fi.nls.oskari.wfs.WFSCapabilitiesParser;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.oskari.service.util.ServiceFactory;
 
 import java.util.*;
 

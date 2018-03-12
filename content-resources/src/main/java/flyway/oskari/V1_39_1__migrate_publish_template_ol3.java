@@ -52,7 +52,7 @@ public class V1_39_1__migrate_publish_template_ol3 implements JdbcMigration {
 
         try {
             // load view from json and update startups for bundles
-            final String file = PropertyUtil.get("flyway.1_39_1.file", "ol3-publisher-template-view.json");
+            final String file = PropertyUtil.get("flyway.1_39_1.file", "ol3-publisher-template-view-4326.json");
             JSONObject json = ViewHelper.readViewFile(file);
             View newTpl = ViewHelper.createView(json);
             newTpl.setId(tplId);

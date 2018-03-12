@@ -1,5 +1,6 @@
 package flyway.sample;
 
+import fi.nls.oskari.db.DBHandler;
 import fi.nls.oskari.domain.map.view.View;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
@@ -27,6 +28,8 @@ public class V1_0_0__add_coordinatetool_to_views implements JdbcMigration {
 
     public void migrate(Connection connection)
             throws Exception {
+
+        DBHandler.setupAppContent(connection, "app-sample");
         // check existing value before inserting
         final boolean hasCoordinateTool = hasExistingBundle(connection, COORDINATE_TOOL);
         if (!hasCoordinateTool) {

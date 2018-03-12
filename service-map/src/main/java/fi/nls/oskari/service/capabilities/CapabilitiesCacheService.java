@@ -101,7 +101,7 @@ public abstract class CapabilitiesCacheService extends OskariComponent {
                 layer.getVersion(), layer.getUsername(), layer.getPassword());
     }
 
-    private static String getFromService(String url, String type,
+    public static String getFromService(String url, String type,
             String version, String user, String pass) throws ServiceException {
         String request = contructCapabilitiesUrl(url, type, version);
         String encoding = null;

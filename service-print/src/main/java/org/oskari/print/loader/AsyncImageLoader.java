@@ -1,7 +1,5 @@
 package org.oskari.print.loader;
 
-import java.util.Optional;
-
 import fi.nls.oskari.service.ServiceException;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
@@ -9,16 +7,14 @@ import java.util.List;
 import java.util.concurrent.Future;
 import org.oskari.print.request.PrintLayer;
 import org.oskari.print.request.PrintRequest;
-import org.oskari.print.wmts.TileMatrixSetCache;
+import org.oskari.print.wmts.WMTSCapabilitiesCache;
 import fi.nls.oskari.domain.map.OskariLayer;
-import fi.nls.oskari.wmts.domain.TileMatrix;
-import fi.nls.oskari.wmts.domain.TileMatrixSet;
 
 public class AsyncImageLoader {
 
     public static final String GROUP_KEY = "LoadImageFromURL";
 
-    public static List<Future<BufferedImage>> initLayers(PrintRequest request, TileMatrixSetCache cache)
+    public static List<Future<BufferedImage>> initLayers(PrintRequest request, WMTSCapabilitiesCache cache)
             throws ServiceException {
         final List<Future<BufferedImage>> images = new ArrayList<>();
 
@@ -41,12 +37,8 @@ public class AsyncImageLoader {
                         width, height, bbox, srsName).queue());
                 break;
             case OskariLayer.TYPE_WMTS:
-                int zoom = request.getZoomLevel();
-                TileMatrix tileMatrix = findTileMatrix(cache, layer, zoom)
-                        .orElseThrow(() -> new ServiceException(
-                                "Couldn't find tileMatrix, layer: " + layer.getId()));
-                images.add(new CommandLoadImageWMTS(layer, width, height, bbox,
-                        tileMatrix, request.getMetersPerUnit()).queue());
+                images.add(new CommandLoadImageWMTS(layer, width, height, bbox, srsName,
+                        cache.get(layer), request.getResolution()).queue());
                 break;
             case OskariLayer.TYPE_WFS:
                 images.add(new CommandLoadImageWFS(layer, width, height, bbox).queue());
@@ -57,14 +49,6 @@ public class AsyncImageLoader {
         }
 
         return images;
-    }
-
-    public static Optional<TileMatrix> findTileMatrix(TileMatrixSetCache cache,
-            PrintLayer layer, int zoomLevel) throws ServiceException {
-        TileMatrixSet set = cache.get(layer)
-                .orElseThrow(() -> new ServiceException("Failed to load TileMatrix information!"));
-        String id = Integer.toString(zoomLevel);
-        return Optional.ofNullable(set.getTileMatrixMap().get(id));
     }
 
     public static double[] getBoundingBox(double e, double n, double resolution, int width, int height) {

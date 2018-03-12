@@ -1,9 +1,0 @@
-{
-    "create" : [
-        "create-analysis-tables.sql"
-    ],
-    "sql" : [
-        "example-analysis-wfs-baselayer.sql"
-    ],
-    "isPartial" : true
-}

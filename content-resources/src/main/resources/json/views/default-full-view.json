@@ -30,7 +30,6 @@
 					"projection": "EPSG:4326",
 					"resolutions": [0.500, 0.250, 0.125, 0.063, 0.032, 0.016, 0.010, 0.007, 0.003]
 				},
-                "globalMapAjaxUrl": "[REPLACED BY HANDLER]",
 				"projectionDefs" : {
 					"EPSG:4326" : "+title=WGS 84 +proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs"
 				},

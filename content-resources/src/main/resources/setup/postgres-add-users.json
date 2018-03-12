@@ -1,9 +1,0 @@
-{
-    "create": [
-        "create-user-tables.sql"
-    ],
-    "sql": [
-        "example-users.sql"
-    ],
-    "isPartial" : true
-}
