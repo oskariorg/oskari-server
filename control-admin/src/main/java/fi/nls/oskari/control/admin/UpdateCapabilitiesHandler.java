@@ -53,8 +53,6 @@ public class UpdateCapabilitiesHandler extends ActionHandler {
     private CapabilitiesUpdateService capabilitiesUpdateService;
     private ViewService viewService;
 
-    private static final int NOT_SPECIFIED_VALUE = -1;
-
     public UpdateCapabilitiesHandler() {
         // No-param constructor for @OskariActionRoute
     }
@@ -90,8 +88,8 @@ public class UpdateCapabilitiesHandler extends ActionHandler {
     public void handleAction(ActionParameters params) throws ActionException {
         params.requireAdminUser();
 
-        int layerId = params.getHttpParam(ActionConstants.KEY_ID, NOT_SPECIFIED_VALUE);
-        List<OskariLayer> layers = getLayersToUpdate(layerId, NOT_SPECIFIED_VALUE);
+        String layerId = params.getHttpParam(ActionConstants.KEY_ID);
+        List<OskariLayer> layers = getLayersToUpdate(layerId);
         Set<String> systemCRSs = getSystemCRSs();
 
         List<CapabilitiesUpdateResult> result =
@@ -101,9 +99,9 @@ public class UpdateCapabilitiesHandler extends ActionHandler {
         ResponseHelper.writeResponse(params, response);
     }
 
-    private List<OskariLayer> getLayersToUpdate(int layerId, int notSpecified)
+    private List<OskariLayer> getLayersToUpdate(String layerId)
             throws ActionParamsException {
-        if (layerId == notSpecified) {
+        if (layerId == null) {
             return layerService.findAll();
         }
         OskariLayer layer = layerService.find(layerId);
@@ -121,7 +119,7 @@ public class UpdateCapabilitiesHandler extends ActionHandler {
         }
     }
 
-    private JSONObject createResponse(List<CapabilitiesUpdateResult> result, int layerId, ActionParameters params)
+    private JSONObject createResponse(List<CapabilitiesUpdateResult> result, String layerId, ActionParameters params)
             throws ActionException {
         JSONArray success = new JSONArray();
         JSONObject errors = new JSONObject();
@@ -138,7 +136,7 @@ public class UpdateCapabilitiesHandler extends ActionHandler {
         response.put("success", success);
         response.put("error", errors);
 
-        if (layerId != NOT_SPECIFIED_VALUE && success.size() == 1) {
+        if (layerId != null && success.size() == 1) {
             OskariLayer layer = layerService.find(layerId);
             org.json.JSONObject layerJSON = OskariLayerWorker.getMapLayerJSON(layer, params.getUser(), params.getLocale().getLanguage(), params.getHttpParam(PARAM_SRS));
             response.put("layerUpdate", layerJSON);
