@@ -104,17 +104,17 @@ public class OskariLayerCapabilitiesHelper {
         }
 
         ResourceUrl resUrl = layer.getResourceUrlByType("tile");
-        if (resUrl == null) {
-            String err = "Can not find ResourceUrl of type 'tile' from GetCapabilities"
-                    + " layer id: " + id + " name: " + name;
-            LOG.warn(err);
-            throw new IllegalArgumentException(err);
-        }
-
         JSONObject options = ml.getOptions();
-        JSONHelper.putValue(options, "requestEncoding", "REST");
-        JSONHelper.putValue(options, "format", resUrl.getFormat());
-        JSONHelper.putValue(options, "urlTemplate", resUrl.getTemplate());
+        if (resUrl != null) {
+            JSONHelper.putValue(options, "requestEncoding", "REST");
+            JSONHelper.putValue(options, "format", resUrl.getFormat());
+            JSONHelper.putValue(options, "urlTemplate", resUrl.getTemplate());
+        } else {
+            LOG.debug("Layer", id, name, "does not report to support WMTS using RESTful");
+            options.remove("requestEncoding");
+            options.remove("format");
+            options.remove("urlTemplate");
+        }
 
         JSONObject jscaps = LayerJSONFormatterWMTS.createCapabilitiesJSON(layer, systemCRSs);
         ml.setCapabilities(jscaps);
