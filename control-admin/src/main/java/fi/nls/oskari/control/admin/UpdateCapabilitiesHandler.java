@@ -24,9 +24,8 @@ import fi.nls.oskari.map.view.ViewService;
 import fi.nls.oskari.map.view.util.ViewHelper;
 import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.service.capabilities.CapabilitiesCacheService;
+import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.ResponseHelper;
-
-import static fi.nls.oskari.control.ActionConstants.PARAM_SRS;
 
 /**
  * ActionRoute to update the capabilities of layers
@@ -97,6 +96,7 @@ public class UpdateCapabilitiesHandler extends ActionHandler {
                 capabilitiesUpdateService.updateCapabilities(layers, systemCRSs);
 
         JSONObject response = createResponse(result, layerId, params);
+
         ResponseHelper.writeResponse(params, response);
     }
 
@@ -139,14 +139,20 @@ public class UpdateCapabilitiesHandler extends ActionHandler {
             response.put("error", errors);
 
             if (layerId != null && success.length() == 1) {
+                // If this is a update-single-layer request then add the updated information 
+                // Fetch the OskariLayer again to make sure we have all the fields updated in the object
                 OskariLayer layer = layerService.find(layerId);
-                JSONObject layerJSON = OskariLayerWorker.getMapLayerJSON(layer, params.getUser(), params.getLocale().getLanguage(), params.getHttpParam(PARAM_SRS));
+                JSONObject layerJSON = OskariLayerWorker.getMapLayerJSON(layer,
+                        params.getUser(),
+                        params.getLocale().getLanguage(),
+                        params.getHttpParam(ActionConstants.PARAM_SRS));
                 response.put("layerUpdate", layerJSON);
             }
 
             return response;
         } catch (JSONException e) {
-            throw new ActionException("Failed to create JSON", e);
+            throw new ActionException("Failed to create response JSON", e);
         }
     }
+
 }
