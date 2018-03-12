@@ -95,7 +95,6 @@ public class UpdateCapabilitiesHandler extends ActionHandler {
                 capabilitiesUpdateService.updateCapabilities(layers, systemCRSs);
 
         JSONObject response = createResponse(result, layerId, params);
-
         ResponseHelper.writeResponse(params, response);
     }
 
