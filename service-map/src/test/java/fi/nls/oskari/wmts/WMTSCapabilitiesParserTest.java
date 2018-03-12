@@ -2,35 +2,65 @@ package fi.nls.oskari.wmts;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import fi.nls.oskari.util.JSONHelper;
-import fi.nls.oskari.wmts.domain.TileMatrix;
-import fi.nls.oskari.wmts.domain.TileMatrixSet;
-import fi.nls.oskari.wmts.domain.WMTSCapabilities;
-import fi.nls.test.util.ResourceHelper;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+
 import javax.xml.stream.XMLStreamException;
-import org.json.JSONObject;
+
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 import org.junit.Test;
+
+import fi.nls.oskari.domain.map.OskariLayer;
+import fi.nls.oskari.service.capabilities.OskariLayerCapabilitiesHelper;
+import fi.nls.oskari.util.JSONHelper;
+import fi.nls.oskari.wmts.domain.TileMatrix;
+import fi.nls.oskari.wmts.domain.TileMatrixSet;
+import fi.nls.oskari.wmts.domain.WMTSCapabilities;
+import fi.nls.test.util.ResourceHelper;
 
 public class WMTSCapabilitiesParserTest {
 
+    final String capabilitiesInput_ASDI = ResourceHelper.readStringResource("asdi.xml", this);
     final String capabilitiesInput_NLS = ResourceHelper.readStringResource("WMTSCapabilitiesParserTest-input-NLS.xml", this);
     final String capabilitiesInput_Tampere = ResourceHelper.readStringResource("WMTSCapabilitiesParserTest-input-tampere.xml", this);
     final String capabilitiesInput_Spain = ResourceHelper.readStringResource("WMTSCapabilitiesParserTest-input-spain.xml", this);
     final String expectedJSON_NLS = ResourceHelper.readStringResource("WMTSCapabilitiesParserTest-expected-results-NLS.json", this);
     final String expectedJSON_tampere = ResourceHelper.readStringResource("WMTSCapabilitiesParserTest-expected-results-tampere.json", this);
     final String expectedJSON_Spain = ResourceHelper.readStringResource("WMTSCapabilitiesParserTest-expected-results-spain.json", this);
+
+    @Test
+    public void testASDIParsing() throws Exception {
+        WMTSCapabilities caps = WMTSCapabilitiesParser.parseCapabilities(capabilitiesInput_ASDI);
+
+        Set<String> crss = new HashSet<>();
+        crss.add("EPSG:3575");
+
+        OskariLayer layer = new OskariLayer();
+        layer.setId(1);
+        layer.setName("arcticsdi_wmts");
+
+        JSONObject options = layer.getOptions();
+        options.put("format", "REST");
+        assertTrue(options.has("format"));
+
+        OskariLayerCapabilitiesHelper.setPropertiesFromCapabilitiesWMTS(caps, layer, "EPSG:3575", crss);
+
+        assertEquals("EPSG:3575_arcticsdi", layer.getTileMatrixSetId());
+        assertFalse("'format' value should have been removed since the layer doesn't support RESTful WMTS", options.has("format"));
+    }
 
     @Test
     public void testAsJSON_NLS() throws Exception {
