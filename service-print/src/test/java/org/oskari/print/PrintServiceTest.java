@@ -89,6 +89,8 @@ public class PrintServiceTest {
         request.setHeight(700);
         request.setResolution(2);
 
+        request.setShowScale(true);
+
         PrintLayer bg = new PrintLayer();
         bg.setId(1);
         bg.setName("taustakartta");

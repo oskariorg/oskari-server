@@ -14,7 +14,7 @@ public class AsyncImageLoader {
 
     public static final String GROUP_KEY = "LoadImageFromURL";
 
-    public static List<Future<BufferedImage>> initLayers(PrintRequest request, WMTSCapabilitiesCache cache)
+    public static List<Future<BufferedImage>> initLayers(PrintRequest request, WMTSCapabilitiesCache wmtsCapsCache)
             throws ServiceException {
         final List<Future<BufferedImage>> images = new ArrayList<>();
 
@@ -38,7 +38,7 @@ public class AsyncImageLoader {
                 break;
             case OskariLayer.TYPE_WMTS:
                 images.add(new CommandLoadImageWMTS(layer, width, height, bbox, srsName,
-                        cache.get(layer), request.getResolution()).queue());
+                        wmtsCapsCache.get(layer), request.getResolution()).queue());
                 break;
             case OskariLayer.TYPE_WFS:
                 images.add(new CommandLoadImageWFS(layer, width, height, bbox).queue());

@@ -23,6 +23,9 @@ import org.apache.pdfbox.pdmodel.graphics.image.LosslessFactory;
 import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
 import org.apache.pdfbox.pdmodel.graphics.optionalcontent.PDOptionalContentGroup;
 import org.apache.pdfbox.pdmodel.graphics.state.PDExtendedGraphicsState;
+import org.geotools.referencing.CRS;
+import org.opengis.referencing.FactoryException;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.oskari.print.loader.AsyncImageLoader;
 import org.oskari.print.request.PrintLayer;
 import org.oskari.print.request.PrintRequest;
@@ -49,7 +52,7 @@ public class PDF {
 
     private static final PDFont FONT = PDType1Font.HELVETICA;
     private static final float FONT_SIZE = 12f;
-    // private static final float FONT_SIZE_SCALE = 10f;
+    private static final float FONT_SIZE_SCALE = 10f;
 
     private static final float OFFSET_DATE_RIGHT = PDFBoxUtil.mmToPt(40);
     private static final float OFFSET_DATE_TOP = PDFBoxUtil.mmToPt(10);
@@ -57,8 +60,8 @@ public class PDF {
     private static final float OFFSET_LOGO_LEFT = PDFBoxUtil.mmToPt(10);
     private static final float OFFSET_LOGO_BOTTOM = PDFBoxUtil.mmToPt(5);
 
-    // private static final float OFFSET_SCALE_LEFT = PDFBoxUtil.mmToPt(40);
-    // private static final float OFFSET_SCALE_BOTTOM = PDFBoxUtil.mmToPt(5);
+    private static final float OFFSET_SCALE_LEFT = PDFBoxUtil.mmToPt(40);
+    private static final float OFFSET_SCALE_BOTTOM = PDFBoxUtil.mmToPt(5);
 
     private static final double[] SCALE_LINE_DISTANCES_METRES = new double[24];
 
@@ -84,7 +87,7 @@ public class PDF {
     /**
      * This method should be called via PrintService
      */
-    protected static void getPDF(PrintRequest request, PDDocument doc, WMTSCapabilitiesCache tmsCache)
+    protected static void getPDF(PrintRequest request, PDDocument doc, WMTSCapabilitiesCache wmtsCapsCache)
             throws IOException, ServiceException {
         float mapWidth = pixelsToPoints(request.getWidth());
         float mapHeight = pixelsToPoints(request.getHeight());
@@ -98,7 +101,7 @@ public class PDF {
         }
 
         // Init requests to run in the background
-        List<Future<BufferedImage>> layerImages = AsyncImageLoader.initLayers(request, tmsCache);
+        List<Future<BufferedImage>> layerImages = AsyncImageLoader.initLayers(request, wmtsCapsCache);
 
         PDPage page = new PDPage(pageSize);
         doc.addPage(page);
@@ -110,7 +113,7 @@ public class PDF {
         try (PDPageContentStream stream = new PDPageContentStream(doc, page, AppendMode.APPEND, false)) {
             drawTitle(stream, request, pageSize, mapHeight);
             drawLogo(doc, stream, request);
-            // drawScale(stream, request);
+            drawScale(stream, request);
             drawDate(stream, request, pageSize);
             drawLayers(doc, stream, request.getLayers(), layerImages,
                     x, y, mapWidth, mapHeight);
@@ -197,42 +200,28 @@ public class PDF {
         PDFBoxUtil.drawText(stream, date, FONT, FONT_SIZE, x, y);
     }
 
-    /*
     private static void drawScale(PDPageContentStream stream, PrintRequest request)
             throws IOException {
         if (!request.isShowScale()) {
             return;
         }
 
-        String units = request.getUnits();
+        String units = getUnits(request.getSrsName());
         if (units == null) {
-            LOG.debug("Units not available in request, not drawing Scale Line");
             return;
         }
-        units = units.toLowerCase();
 
-        double mppx = Double.NaN;
-
+        double mppx;
         switch (units) {
-            case "degrees":
-            case "dd":
-                LOG.debug("Map units is deegrees, not drawing Scale Line");
-                return;
-            case "m":
-                mppx = request.getResolution();
-                break;
-            case "km":
-                mppx = request.getResolution() * 1000;
-                break;
-            case "ft":
-                mppx = request.getResolution() * Units.METRES_PER_FOOT;
-                break;
-            case "mi":
-                mppx = request.getResolution() * Units.METRES_PER_MILE;
-                break;
-            default:
-                LOG.warn("Unknown unit", units, "- not drawing Scale line");
-                return;
+        case "m":
+            mppx = request.getResolution();
+            break;
+        case "°":
+            LOG.info("Map units is deegrees, not drawing Scale Line");
+            return;
+        default:
+            LOG.info("Unknown unit", units, "- not drawing Scale line");
+            return;
         }
 
         double mppt = mppx * Units.PDF_DPI / Units.OGC_DPI;
@@ -273,7 +262,16 @@ public class PDF {
         PDFBoxUtil.drawTextCentered(stream, distanceStr,
                 FONT, FONT_SIZE_SCALE, cx, y1 + 5);
     }
-     */
+
+    private static String getUnits(String srsName) {
+        try {
+            CoordinateReferenceSystem crs = CRS.decode(srsName);
+            return crs.getCoordinateSystem().getAxis(0).getUnit().toString();
+        } catch (FactoryException e) {
+            LOG.warn(e, "Unable to decode CRS from", srsName);
+            return null;
+        }
+    }
 
     private static void drawLayers(PDDocument doc, PDPageContentStream stream,
             List<PrintLayer> layers, List<Future<BufferedImage>> images,
