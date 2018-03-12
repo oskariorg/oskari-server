@@ -4,13 +4,14 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
-import fi.mml.map.mapwindow.util.OskariLayerWorker;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.oskari.capabilities.CapabilitiesUpdateResult;
 import org.oskari.capabilities.CapabilitiesUpdateService;
 import org.oskari.service.util.ServiceFactory;
 
+import fi.mml.map.mapwindow.util.OskariLayerWorker;
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.ActionConstants;
 import fi.nls.oskari.control.ActionException;
@@ -121,27 +122,31 @@ public class UpdateCapabilitiesHandler extends ActionHandler {
 
     private JSONObject createResponse(List<CapabilitiesUpdateResult> result, String layerId, ActionParameters params)
             throws ActionException {
-        JSONArray success = new JSONArray();
-        JSONObject errors = new JSONObject();
+        try {
+            JSONArray success = new JSONArray();
+            JSONObject errors = new JSONObject();
 
-        for (CapabilitiesUpdateResult r : result) {
-            if (r.getErrorMessage() == null) {
-                success.add(r.getLayerId());
-            } else {
-                errors.put(r.getLayerId(), r.getErrorMessage());
+            for (CapabilitiesUpdateResult r : result) {
+                if (r.getErrorMessage() == null) {
+                    success.put(r.getLayerId());
+                } else {
+                    errors.put(r.getLayerId(), r.getErrorMessage());
+                }
             }
+
+            JSONObject response = new JSONObject();
+            response.put("success", success);
+            response.put("error", errors);
+
+            if (layerId != null && success.length() == 1) {
+                OskariLayer layer = layerService.find(layerId);
+                JSONObject layerJSON = OskariLayerWorker.getMapLayerJSON(layer, params.getUser(), params.getLocale().getLanguage(), params.getHttpParam(PARAM_SRS));
+                response.put("layerUpdate", layerJSON);
+            }
+
+            return response;
+        } catch (JSONException e) {
+            throw new ActionException("Failed to create JSON", e);
         }
-
-        JSONObject response = new JSONObject();
-        response.put("success", success);
-        response.put("error", errors);
-
-        if (layerId != null && success.size() == 1) {
-            OskariLayer layer = layerService.find(layerId);
-            org.json.JSONObject layerJSON = OskariLayerWorker.getMapLayerJSON(layer, params.getUser(), params.getLocale().getLanguage(), params.getHttpParam(PARAM_SRS));
-            response.put("layerUpdate", layerJSON);
-        }
-
-        return response;
     }
 }
