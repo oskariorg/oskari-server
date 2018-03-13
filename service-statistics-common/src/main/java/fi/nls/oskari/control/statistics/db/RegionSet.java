@@ -1,6 +1,17 @@
 package fi.nls.oskari.control.statistics.db;
 
+import fi.nls.oskari.control.statistics.xml.Region;
+import fi.nls.oskari.control.statistics.xml.WfsXmlParser;
+import fi.nls.oskari.service.ServiceException;
+import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.JSONHelper;
+
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.json.JSONObject;
 
 /**
@@ -15,7 +26,7 @@ public class RegionSet {
     private String srs; // oskari_maplayer.srs_name
     private String attributes; // oskari_maplayer.attributes
 
-    private JSONObject stats; // Lazily populated by getStatsJSON()
+    private JSONObject stats; // oskari_maplayer.attributes.statistics, lazily populated by getStatsJSON()
 
     public long getOskariLayerId() {
         return oskariLayerId;
@@ -84,6 +95,25 @@ public class RegionSet {
             }
         }
         return stats;
+    }
+
+    public List<Region> getRegions(String requestedSRS) throws IOException, ServiceException {
+        final String propId = getIdProperty();
+        final String propName = getNameProperty();
+
+        // For example: http://localhost:8080/geoserver/wfs?service=wfs&version=1.1.0&request=GetFeature&typeNames=oskari:kunnat2013
+        //&propertyName=kuntakoodi,kuntanimi,geom
+        Map<String, String> params = new HashMap<>();
+        params.put("service", "wfs");
+        params.put("version", "1.1.0");
+        params.put("request", "GetFeature");
+        params.put("typeName", getOskariLayerName());
+        params.put("srsName", requestedSRS);
+        //params.put("propertyName", propId + "," + propName);
+
+        final String url = IOHelper.constructUrl(getFeaturesUrl(), params);
+        final HttpURLConnection connection = IOHelper.getConnection(url);
+        return WfsXmlParser.parse(connection.getInputStream(), propId, propName);
     }
 
 }
