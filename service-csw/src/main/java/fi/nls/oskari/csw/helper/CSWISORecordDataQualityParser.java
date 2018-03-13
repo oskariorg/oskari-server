@@ -97,12 +97,8 @@ public class CSWISORecordDataQualityParser {
         }
     }
 
-    public CSWIsoRecord.DataQualityObject parseDataQualities(final NodeList dataQualityNodes, final Locale locale)  throws XPathExpressionException {
-        if (locale != null) {
-                pathToLocalizedValue = xpath.compile(
-                        "../gmd:PT_FreeText/gmd:textGroup/gmd:LocalisedCharacterString[@locale='#"
-                                + locale.getLanguage().toUpperCase() + "']");
-        }
+    public CSWIsoRecord.DataQualityObject parseDataQualities(final NodeList dataQualityNodes, final XPathExpression pathToLoc)  throws XPathExpressionException {
+        pathToLocalizedValue = pathToLoc;
         CSWIsoRecord.DataQualityObject dataQualityObject = new CSWIsoRecord.DataQualityObject();
         List<CSWIsoRecord.DataQualityNode> dataQualityObjectNodeList = dataQualityObject.getDataQualityNodes();
         for (int i = 0; i < dataQualityNodes.getLength(); i++) {

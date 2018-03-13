@@ -354,7 +354,7 @@ public class CSWISORecordParser {
         if (nodeList.getLength() > 0) {
             try {
                 CSWISORecordDataQualityParser dataQualityParser = new CSWISORecordDataQualityParser();
-                record.setDataQualityObject(dataQualityParser.parseDataQualities(nodeList, locale));
+                record.setDataQualityObject(dataQualityParser.parseDataQualities(nodeList, pathToLocalizedValue));
             }
             catch (Exception e) {
                 log.warn("parseDataQualities FAIL! "+e.getMessage());
