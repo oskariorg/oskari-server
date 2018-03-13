@@ -6,13 +6,11 @@ import fi.nls.oskari.control.statistics.db.RegionSetMapper;
 import fi.nls.oskari.db.DatasourceHelper;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
-import org.apache.ibatis.mapping.Environment;
+import fi.nls.oskari.mybatis.MyBatisHelper;
+
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
-import org.apache.ibatis.session.SqlSessionFactoryBuilder;
-import org.apache.ibatis.transaction.TransactionFactory;
-import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
 
 import javax.sql.DataSource;
 import java.util.List;
@@ -34,15 +32,9 @@ public class RegionSetServiceMybatisImpl extends RegionSetService {
     }
 
     private SqlSessionFactory initializeMyBatis(final DataSource dataSource) {
-        final TransactionFactory transactionFactory = new JdbcTransactionFactory();
-        final Environment environment = new Environment("development", transactionFactory, dataSource);
-
-        final Configuration configuration = new Configuration(environment);
-        configuration.getTypeAliasRegistry().registerAlias(RegionSet.class);
-        configuration.setLazyLoadingEnabled(true);
-        configuration.addMapper(RegionSetMapper.class);
-
-        return new SqlSessionFactoryBuilder().build(configuration);
+        Configuration configuration = MyBatisHelper.getConfig(dataSource, RegionSetMapper.class);
+        MyBatisHelper.addAliases(configuration, RegionSet.class);
+        return MyBatisHelper.build(configuration);
     }
 
     public List<RegionSet> getRegionSets() {
