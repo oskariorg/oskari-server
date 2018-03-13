@@ -28,7 +28,6 @@ public class RegionSet {
 
     private String attributes;
     
-    private String type;
 // -----------------
     public long getId() {
         return oskariLayerId;
@@ -105,14 +104,6 @@ public class RegionSet {
 
     public void setUrl(String url) {
         this.url = url;
-    }
-
-    public String getType() {
-        return type;
-    }
-    
-    public void setType(String type) {
-        this.type = type;
     }
 
     public String getSrs() {
