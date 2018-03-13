@@ -28,12 +28,7 @@ public class RegionSet {
 
     private String attributes;
     
-// -----------------
-    public long getId() {
-        return oskariLayerId;
-    }
     public JSONObject asJSON() {
-
         JSONObject tags = new JSONObject();
         try {
             // only regionset id and regionIdTag is used in frontend, and regionIdTag should propably come from datasource...
