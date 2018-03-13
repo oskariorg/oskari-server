@@ -199,15 +199,15 @@ public class CSWISORecordDataQualityParser {
         Node quantitativeResultValueUnitNode = (Node) XPATH_QUANTITATIVE_RESULT_VALUE_UNIT.evaluate(parentNode, XPathConstants.NODE);
         dataQualityObjectQuantitativeResult.setValueUnit(localize(quantitativeResultValueUnitNode));
 
-        NodeList quantitativeResultErrorStatisticNode = (NodeList) XPATH_QUANTITATIVE_RESULT_ERROR_STATISTIC.evaluate(parentNode, XPathConstants.NODESET);
-        List<String> valueValueList = new ArrayList<>();
-        for (int i = 0;i < quantitativeResultErrorStatisticNode.getLength(); ++i) {
-            valueValueList.add(localize(quantitativeResultErrorStatisticNode.item(i)));
+        NodeList quantitativeValueNodeList = (NodeList) XPATH_QUANTITATIVE_RESULT_VALUE.evaluate(parentNode, XPathConstants.NODESET);
+        List<String> valueList = new ArrayList<>();
+        for (int i = 0;i < quantitativeValueNodeList.getLength(); ++i) {
+            valueList.add(localize(quantitativeValueNodeList.item(i)));
         }
-        dataQualityObjectQuantitativeResult.setValue(valueValueList);
+        dataQualityObjectQuantitativeResult.setValue(valueList);
 
-        Node quantitativeValueNode = (Node) XPATH_QUANTITATIVE_RESULT_VALUE.evaluate(parentNode, XPathConstants.NODE);
-        dataQualityObjectQuantitativeResult.setErrorStatistic(localize(quantitativeValueNode));
+        Node quantitativeResultErrorStatisticNode = (Node) XPATH_QUANTITATIVE_RESULT_ERROR_STATISTIC.evaluate(parentNode, XPathConstants.NODE);
+        dataQualityObjectQuantitativeResult.setErrorStatistic(localize(quantitativeResultErrorStatisticNode));
 
         return dataQualityObjectQuantitativeResult;
     }
