@@ -20,13 +20,13 @@ import org.json.JSONObject;
  */
 public class RegionSet {
 
-    private long id; // oskari_maplayer.id
-    private String name; // oskari_maplayer.name
-    private String url; // oskari_maplayer.url
-    private String srs_name; // oskari_maplayer.srs_name
-    private String attributes; // oskari_maplayer.attributes
+    private long id;
+    private String name;
+    private String url;
+    private String srs_name;
+    private String attributes;
 
-    private JSONObject stats; // oskari_maplayer.attributes.statistics, lazily populated by getStatsJSON()
+    private JSONObject stats; // Lazily populated by getStatsJSON()
 
     public long getId() {
         return id;
