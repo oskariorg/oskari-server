@@ -20,36 +20,28 @@ import org.json.JSONObject;
  */
 public class RegionSet {
 
-    private long oskariLayerId; // oskari_maplayer.id
-    private String oskariLayerName; // oskari_maplayer.name
+    private long id; // oskari_maplayer.id
+    private String name; // oskari_maplayer.name
     private String url; // oskari_maplayer.url
-    private String srs; // oskari_maplayer.srs_name
+    private String srs_name; // oskari_maplayer.srs_name
     private String attributes; // oskari_maplayer.attributes
 
     private JSONObject stats; // oskari_maplayer.attributes.statistics, lazily populated by getStatsJSON()
 
-    public long getOskariLayerId() {
-        return oskariLayerId;
+    public long getId() {
+        return id;
     }
 
-    public void setOskariLayerId(long oskariLayerId) {
-        this.oskariLayerId = oskariLayerId;
+    public void setId(long id) {
+        this.id = id;
     }
 
-    public String getOskariLayerName() {
-        return oskariLayerName;
+    public String getName() {
+        return name;
     }
 
-    public void setOskariLayerName(String oskariLayerName) {
-        this.oskariLayerName = oskariLayerName;
-    }
-
-    public String getAttributes() {
-        return attributes;
-    }
-
-    public void setAttributes(String attributes) {
-        this.attributes = attributes;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getUrl() {
@@ -60,12 +52,20 @@ public class RegionSet {
         this.url = url;
     }
 
-    public String getSrs() {
-        return srs;
+    public String getSrs_name() {
+        return srs_name;
     }
 
-    public void setSrs(String srs) {
-        this.srs = srs;
+    public void setSrs_name(String srs_name) {
+        this.srs_name = srs_name;
+    }
+
+    public String getAttributes() {
+        return attributes;
+    }
+
+    public void setAttributes(String attributes) {
+        this.attributes = attributes;
     }
 
     public JSONObject asJSON() {
@@ -107,7 +107,7 @@ public class RegionSet {
         params.put("service", "wfs");
         params.put("version", "1.1.0");
         params.put("request", "GetFeature");
-        params.put("typeName", getOskariLayerName());
+        params.put("typeName", "foo");
         params.put("srsName", requestedSRS);
         //params.put("propertyName", propId + "," + propName);
 
