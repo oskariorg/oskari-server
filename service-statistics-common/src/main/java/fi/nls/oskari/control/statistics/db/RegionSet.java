@@ -102,14 +102,12 @@ public class RegionSet {
         final String propName = getNameProperty();
 
         // For example: http://localhost:8080/geoserver/wfs?service=wfs&version=1.1.0&request=GetFeature&typeNames=oskari:kunnat2013
-        //&propertyName=kuntakoodi,kuntanimi,geom
         Map<String, String> params = new HashMap<>();
         params.put("service", "wfs");
         params.put("version", "1.1.0");
         params.put("request", "GetFeature");
         params.put("typeName", name);
         params.put("srsName", requestedSRS);
-        //params.put("propertyName", propId + "," + propName);
 
         final String url = IOHelper.constructUrl(getFeaturesUrl(), params);
         final HttpURLConnection connection = IOHelper.getConnection(url);
