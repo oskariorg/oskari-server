@@ -127,7 +127,22 @@ public class LayerJSONFormatter {
             JSONHelper.putValue(layerJson, "orgName", layer.getGroup().getName(lang));
         }
         if(layer.getMaplayerGroup() != null) {
+            // FIXME Remove inspire when frontend is ready
             JSONHelper.putValue(layerJson, "inspire", layer.getMaplayerGroup().getName(lang));
+
+            JSONArray groups = new JSONArray();
+            try {
+                for (MaplayerGroup mapLayerGroup : OSKARI_MAP_LAYER_GROUP_SERVICE.findByMaplayerId(layer.getId())) {
+                    JSONObject group = new JSONObject();
+                    group.put("id", mapLayerGroup.getId());
+                    group.put("name", mapLayerGroup.getName(lang));
+                    groups.put(group);
+                }
+            } catch(JSONException ex) {
+                log.error("Cannot create groups array for layer: " + layer.getId(), ex);
+            }
+
+            JSONHelper.put(layerJson, "groups", groups);
         }
 
         if(layer.getOpacity() != null && layer.getOpacity() > -1 && layer.getOpacity() <= 100) {
@@ -158,6 +173,7 @@ public class LayerJSONFormatter {
         JSONHelper.putValue(layerJson, "updated", layer.getUpdated());
 
         JSONHelper.putValue(layerJson, "dataUrl_uuid", getFixedDataUrl(layer));
+        JSONHelper.putValue(layerJson, "orderNumber", layer.getOrderNumber());
 
         // sublayer handling
         if(layer.getSublayers() != null && !layer.getSublayers().isEmpty()) {
@@ -302,11 +318,11 @@ public class LayerJSONFormatter {
         }
 
         // setup data producer/layergroup
-        final DataProvider group = groupService.findByName(orgName);
-        if(group == null) {
+        final DataProvider dataProvider = groupService.findByName(orgName);
+        if(dataProvider == null) {
             log.warn("Didn't find match for layergroup:", orgName);
         } else {
-            layer.addGroup(group);
+            layer.addDataprovider(dataProvider);
         }
 
         return layer;

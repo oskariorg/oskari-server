@@ -109,13 +109,9 @@ public class MapfullHandler extends BundleHandler {
                 params.getViewType(),
                 bundleIds,
                 useDirectURLForMyplaces,
-                params.isModifyURLs());
+                params.isModifyURLs(),
+                mapSRS);
 
-
-        // transform WKT for layers now that we know SRS
-        for (int i = 0; i < fullConfigLayers.length(); ++i) {
-            OskariLayerWorker.transformWKTGeom(fullConfigLayers.optJSONObject(i), mapSRS);
-        }
         setProjDefsForMapConfig(mapfullConfig, mapSRS);
         // overwrite layers
         try {
@@ -148,8 +144,8 @@ public class MapfullHandler extends BundleHandler {
     public static JSONArray getFullLayerConfig(final JSONArray layersArray,
                                                final User user, final String lang, final long viewID,
                                                final String viewType, final Set<String> bundleIds,
-                                               final boolean useDirectURLForMyplaces) {
-        return getFullLayerConfig(layersArray, user, lang, viewID, viewType, bundleIds, useDirectURLForMyplaces, false);
+                                               final boolean useDirectURLForMyplaces, final String mapSRS) {
+        return getFullLayerConfig(layersArray, user, lang, viewID, viewType, bundleIds, useDirectURLForMyplaces, false, mapSRS);
     }
 
     /**
@@ -232,7 +228,8 @@ public class MapfullHandler extends BundleHandler {
                                                final User user, final String lang, final long viewID,
                                                final String viewType, final Set<String> bundleIds,
                                                final boolean useDirectURLForMyplaces,
-                                               final boolean modifyURLs) {
+                                               final boolean modifyURLs,
+                                               final String mapSRS) {
 
         // Create a list of layer ids
         final List<String> layerIdList = new ArrayList<String>();
@@ -282,7 +279,7 @@ public class MapfullHandler extends BundleHandler {
         }
 
         final JSONObject struct = OskariLayerWorker.getListOfMapLayersById(
-                layerIdList, user, lang, ViewTypes.PUBLISHED.equals(viewType), modifyURLs);
+                layerIdList, user, lang, ViewTypes.PUBLISHED.equals(viewType), modifyURLs, mapSRS);
 
         if (struct.isNull(KEY_LAYERS)) {
             LOGGER.warn("getSelectedLayersStructure did not return layers when expanding:",
