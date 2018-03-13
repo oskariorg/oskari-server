@@ -95,10 +95,6 @@ public class RegionSet {
     }
     
     public String getUrl() {
-        if (url == null || url.trim().equals("")) {
-            // Default value.
-            return "http://localhost:8080/geoserver";
-        }
         return url;
     }
 
