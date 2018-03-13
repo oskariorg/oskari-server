@@ -50,27 +50,34 @@ public class PDF {
             PDRectangle.A2
     };
     private static final PDRectangle[] PAGESIZES_LANDSCAPE;
+
+    private static final int A4W_MM = 210;
+    private static final int A4H_MM = 297;
+    private static final int A3W_MM = 297;
+    private static final int A3H_MM = 420;
+    private static final int A2W_MM = 420;
+    private static final int A2H_MM = 594;
     private static final int MAP_MARGIN_MIN_LEFT_RIGHT_NM = 20;
     private static final int MAP_MARGIN_MIN_BOTTOM_TOP_MM = 30;
     private static final int[] MAP_MAX_WIDTH_PX = {
-            mmToPx(210 - MAP_MARGIN_MIN_LEFT_RIGHT_NM), // A4
-            mmToPx(297 - MAP_MARGIN_MIN_LEFT_RIGHT_NM), // A3
-            mmToPx(420 - MAP_MARGIN_MIN_LEFT_RIGHT_NM)  // A2
+            mmToPx(A4W_MM - MAP_MARGIN_MIN_LEFT_RIGHT_NM), // A4
+            mmToPx(A3W_MM - MAP_MARGIN_MIN_LEFT_RIGHT_NM), // A3
+            mmToPx(A2W_MM - MAP_MARGIN_MIN_LEFT_RIGHT_NM)  // A2
     };
     private static final int[] MAP_MAX_HEIGHT_PX = {
-            mmToPx(297 - MAP_MARGIN_MIN_BOTTOM_TOP_MM), // A4
-            mmToPx(420 - MAP_MARGIN_MIN_BOTTOM_TOP_MM), // A3
-            mmToPx(594 - MAP_MARGIN_MIN_BOTTOM_TOP_MM)  // A2
+            mmToPx(A4H_MM - MAP_MARGIN_MIN_BOTTOM_TOP_MM), // A4
+            mmToPx(A3H_MM - MAP_MARGIN_MIN_BOTTOM_TOP_MM), // A3
+            mmToPx(A2H_MM - MAP_MARGIN_MIN_BOTTOM_TOP_MM)  // A2
     };
     private static final int[] MAP_MAX_WIDTH_PX_LANDSCAPE = {
-            mmToPx(297 - MAP_MARGIN_MIN_LEFT_RIGHT_NM), // A4_LS
-            mmToPx(420 - MAP_MARGIN_MIN_LEFT_RIGHT_NM), // A3_LS
-            mmToPx(597 - MAP_MARGIN_MIN_LEFT_RIGHT_NM)  // A2_LS
+            mmToPx(A4H_MM - MAP_MARGIN_MIN_LEFT_RIGHT_NM), // A4_LS
+            mmToPx(A3H_MM - MAP_MARGIN_MIN_LEFT_RIGHT_NM), // A3_LS
+            mmToPx(A2H_MM - MAP_MARGIN_MIN_LEFT_RIGHT_NM)  // A2_LS
     };
     private static final int[] MAP_MAX_HEIGHT_PX_LANDSCAPE = {
-            mmToPx(210 - MAP_MARGIN_MIN_BOTTOM_TOP_MM), // A4_LS
-            mmToPx(297 - MAP_MARGIN_MIN_BOTTOM_TOP_MM), // A3_LS
-            mmToPx(420 - MAP_MARGIN_MIN_BOTTOM_TOP_MM)  // A2_LS
+            mmToPx(A4W_MM - MAP_MARGIN_MIN_BOTTOM_TOP_MM), // A4_LS
+            mmToPx(A3W_MM - MAP_MARGIN_MIN_BOTTOM_TOP_MM), // A3_LS
+            mmToPx(A2W_MM - MAP_MARGIN_MIN_BOTTOM_TOP_MM)  // A2_LS
     };
 
     private static final PDFont FONT = PDType1Font.HELVETICA;
