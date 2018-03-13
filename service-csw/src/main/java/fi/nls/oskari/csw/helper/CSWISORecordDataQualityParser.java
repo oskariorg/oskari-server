@@ -18,8 +18,8 @@ public class CSWISORecordDataQualityParser {
     private static final Logger log = LogFactory.getLogger(CSWISORecordDataQualityParser.class);
     private static XPathExpression pathToLocalizedValue = null;
 
-    //Linage statement
-    private static XPathExpression XPATH_LINAGE_STATEMENT = null;
+    //Lineage statement
+    private static XPathExpression XPATH_LINEAGE_STATEMENT = null;
 
     //Data quality node information
     private final static XPath xpath = XPathFactory.newInstance().newXPath();
@@ -65,10 +65,10 @@ public class CSWISORecordDataQualityParser {
         try {
             xpath.setNamespaceContext(new CSWISORecordNamespaceContext());
 
-            //Linage statement
-            XPATH_LINAGE_STATEMENT = xpath.compile("./gmd:lineage/gmd:LI_Lineage/gmd:statement");
+            //Lineage statement
+            XPATH_LINEAGE_STATEMENT = xpath.compile("./gmd:lineage/gmd:LI_Lineage/gmd:statement");
 
-            //Data quality node information
+            //Data quality node information: Aspect of quantitative quality information
             XPATH_NAME_OF_MEASURE = xpath.compile("./gmd:nameOfMeasure"); //many
             XPATH_MEASURE_IDENTIFICATION_CODE =  xpath.compile("./gmd:measureIdentification/gmd:code");
             XPATH_MEASURE_IDENTIFICATION_AUTHORIZATION =  xpath.compile("./gmd:measureIdentification/gmd:authorization");
@@ -90,6 +90,7 @@ public class CSWISORecordDataQualityParser {
             XPATH_QUANTITATIVE_RESULT_VALUE_UNIT = xpath.compile("./gmd:valueUnit");
             XPATH_QUANTITATIVE_RESULT_ERROR_STATISTIC = xpath.compile("./gmd:errorStatistic"); //many
             XPATH_QUANTITATIVE_RESULT_VALUE = xpath.compile("./gmd:value");
+
         }
         catch (Exception e) {
             log.error("Setting XPaths failed in data quality parser");
@@ -99,26 +100,33 @@ public class CSWISORecordDataQualityParser {
 
     public CSWIsoRecord.DataQualityObject parseDataQualities(final NodeList dataQualityNodes, final XPathExpression pathToLoc)  throws XPathExpressionException {
         pathToLocalizedValue = pathToLoc;
+
         CSWIsoRecord.DataQualityObject dataQualityObject = new CSWIsoRecord.DataQualityObject();
         List<CSWIsoRecord.DataQualityNode> dataQualityObjectNodeList = dataQualityObject.getDataQualityNodes();
+
         for (int i = 0; i < dataQualityNodes.getLength(); i++) {
             Node parentNode = dataQualityNodes.item(i);
 
+            // parse scope: The specific data to which the data quality information applies
+            //TODO should we parse scope?? <gmd:MD_ScopeCode codeListValue="dataset">
+
+            // parse reports: Quantitative quality information for the data specified by the scope
             for (Map.Entry<String, String> entry : dataQualities.entrySet()) {
                 String key = entry.getKey();
                 String value = entry.getValue();
-                XPathExpression XPATH_DATA_QUALITY_CHILD_NODES = xpath.compile(value);
-                NodeList dataQualityChildNodes = (NodeList) XPATH_DATA_QUALITY_CHILD_NODES.evaluate(parentNode, XPathConstants.NODESET);
+                XPathExpression pathToDQChildNode = xpath.compile(value);
+                NodeList dataQualityChildNodes = (NodeList) pathToDQChildNode.evaluate(parentNode, XPathConstants.NODESET);
 
                 if(dataQualityChildNodes == null || dataQualityChildNodes.getLength() < 1) {
                     continue;
                 }
                 CSWIsoRecord.DataQualityNode dataQualityObjectNode = null;
+
                 for (int j = 0;j < dataQualityChildNodes.getLength(); ++j) {
                     dataQualityObjectNode = GetDataQualityNodeInformation(dataQualityChildNodes.item(j), key);
 
-                    Node linageStatementNode = (Node) XPATH_LINAGE_STATEMENT.evaluate(parentNode, XPathConstants.NODE);
-                    dataQualityObjectNode.setLinageStatement(localize(linageStatementNode));
+                    Node lineageStatementNode = (Node) XPATH_LINEAGE_STATEMENT.evaluate(parentNode, XPathConstants.NODE);
+                    dataQualityObjectNode.setLineageStatement(localize(lineageStatementNode));
 
                     NodeList dataQualityConformanceResultNodes =
                             (NodeList) XPATH_CONFORMANCE_RESULT.evaluate(dataQualityChildNodes.item(j), XPathConstants.NODESET);

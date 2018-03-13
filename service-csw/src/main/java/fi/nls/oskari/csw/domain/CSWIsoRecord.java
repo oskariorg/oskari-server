@@ -169,7 +169,7 @@ public class CSWIsoRecord {
             arr.put(onlineResource.toJSON());
         }
         JSONHelper.putValue(ret, "onlineResources", arr);
-
+        //TODO: should we create toJSON() instead of using ObjectMapper
         ObjectMapper mapper = new ObjectMapper();
         String jsonInString = "";
         try {
@@ -202,7 +202,7 @@ public class CSWIsoRecord {
 
     public static class DataQualityNode {
         private String nodeName;
-        private String linageStatement;
+        private String lineageStatement;
         private String nameOfMeasure;
         private String measureIdentificationCode;
         private String measureIdentificationAuthorization;
@@ -221,12 +221,12 @@ public class CSWIsoRecord {
             this.nodeName = nodeName;
         }
 
-        public String getLinageStatement() {
-            return linageStatement;
+        public String getLineageStatement() {
+            return lineageStatement;
         }
 
-        public void setLinageStatement(String linageStatement) {
-            this.linageStatement = linageStatement;
+        public void setLineageStatement(String lineageStatement) {
+            this.lineageStatement = lineageStatement;
         }
 
         public String getNameOfMeasure() {
