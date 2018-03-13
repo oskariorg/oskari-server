@@ -1,7 +1,6 @@
 package fi.nls.oskari.control.statistics.db;
 
 import fi.nls.oskari.util.JSONHelper;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
@@ -59,17 +58,7 @@ public class RegionSet {
     }
 
     public JSONObject asJSON() {
-        JSONObject tags = new JSONObject();
-        try {
-            // only regionset id and regionIdTag is used in frontend, and regionIdTag should propably come from datasource...
-            //tags.put("nameIdTag", getNameProperty());
-            tags.put("regionIdTag", getIdProperty());
-            //tags.put("url", getUrl());
-            //tags.put("featuresUrl", getFeaturesUrl());
-        } catch (JSONException e) {
-            throw new RuntimeException("Something went wrong serializing the region set", e);
-        }
-        return tags;
+        return JSONHelper.createJSONObject("regionIdTag", getIdProperty());
     }
 
     public String getNameProperty() {
