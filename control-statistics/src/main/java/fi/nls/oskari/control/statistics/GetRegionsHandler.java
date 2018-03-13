@@ -33,12 +33,11 @@ import java.util.List;
  */
 @OskariActionRoute("GetRegions")
 public class GetRegionsHandler extends ActionHandler {
-    private final static String CACHE_KEY_PREFIX = "oskari:stats:regionset:";
 
+    private static final String CACHE_KEY_PREFIX = "oskari:stats:regionset:";
     private static final String KEY_REGIONS = "regions";
 
     private RegionSetService service;
-
 
     public void setRegionsetService(final RegionSetService service) {
         this.service = service;
@@ -59,7 +58,6 @@ public class GetRegionsHandler extends ActionHandler {
     }
 
     /**
-     *
      * @param layerId For example: 9
      * @return For example: [{"name": "Alajärvi"}]
      * @throws ActionException
@@ -103,4 +101,5 @@ public class GetRegionsHandler extends ActionHandler {
         JedisManager.setex(cacheKey, JedisManager.EXPIRY_TIME_DAY, response.toString());
         return response;
     }
+
 }
