@@ -16,6 +16,8 @@ public class RegionSet {
     private String srs; // oskari_maplayer.srs_name
     private String attributes; // oskari_maplayer.attributes
 
+    private JSONObject stats; // Lazily populated by getStatsJSON()
+
     public long getOskariLayerId() {
         return oskariLayerId;
     }
@@ -83,14 +85,14 @@ public class RegionSet {
     }
 
     private JSONObject getStatsJSON() {
-        JSONObject json = JSONHelper.createJSONObject(attributes);
-        if(json == null) {
-            return new JSONObject();
-        }
-        JSONObject stats = json.optJSONObject("statistics");
-
-        if(stats == null) {
-            return new JSONObject();
+        if (stats == null) {
+            JSONObject json = JSONHelper.createJSONObject(attributes);
+            if (json != null) {
+                stats = json.optJSONObject("statistics");
+            }
+            if (stats == null) {
+                stats = new JSONObject();
+            }
         }
         return stats;
     }
