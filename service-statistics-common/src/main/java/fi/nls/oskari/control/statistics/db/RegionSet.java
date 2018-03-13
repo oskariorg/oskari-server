@@ -107,7 +107,7 @@ public class RegionSet {
         params.put("service", "wfs");
         params.put("version", "1.1.0");
         params.put("request", "GetFeature");
-        params.put("typeName", "foo");
+        params.put("typeName", name);
         params.put("srsName", requestedSRS);
         //params.put("propertyName", propId + "," + propName);
 
