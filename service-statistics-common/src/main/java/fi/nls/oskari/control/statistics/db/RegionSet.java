@@ -9,61 +9,12 @@ import org.json.JSONObject;
  * MyBatis Type for the SQL table oskari_maplayers
  */
 public class RegionSet {
-    /**
-     *  The layer id in Oskari, for example: 9.
-     */
-    private long oskariLayerId;
-    
-    /**
-     *  The layer name in Oskari, for example: "oskari:kunnat2013".
-     */
-    private String oskariLayerName;
-    
-    /**
-     * The base url to the data source, for example: .
-     */
-    private String url;
 
-    private String srs;
-
-    private String attributes;
-    
-    public JSONObject asJSON() {
-        JSONObject tags = new JSONObject();
-        try {
-            // only regionset id and regionIdTag is used in frontend, and regionIdTag should propably come from datasource...
-            //tags.put("nameIdTag", getNameProperty());
-            tags.put("regionIdTag", getIdProperty());
-            //tags.put("url", getUrl());
-            //tags.put("featuresUrl", getFeaturesUrl());
-        } catch (JSONException e) {
-            throw new RuntimeException("Something went wrong serializing the region set", e);
-        }
-        return tags;
-    }
-    public String getNameProperty() {
-        return getStatsJSON().optString("nameIdTag");
-    }
-    public String getIdProperty() {
-        return getStatsJSON().optString("regionIdTag");
-    }
-    public String getFeaturesUrl() {
-        return getStatsJSON().optString("featuresUrl");
-    }
-    private JSONObject getStatsJSON() {
-        JSONObject json = JSONHelper.createJSONObject(attributes);
-        if(json == null) {
-            return new JSONObject();
-        }
-        JSONObject stats = json.optJSONObject("statistics");
-
-        if(stats == null) {
-            return new JSONObject();
-        }
-        return stats;
-    }
-
-// -----------------
+    private long oskariLayerId; // oskari_maplayer.id
+    private String oskariLayerName; // oskari_maplayer.name
+    private String url; // oskari_maplayer.url
+    private String srs; // oskari_maplayer.srs_name
+    private String attributes; // oskari_maplayer.attributes
 
     public long getOskariLayerId() {
         return oskariLayerId;
@@ -88,7 +39,7 @@ public class RegionSet {
     public void setAttributes(String attributes) {
         this.attributes = attributes;
     }
-    
+
     public String getUrl() {
         return url;
     }
@@ -104,4 +55,44 @@ public class RegionSet {
     public void setSrs(String srs) {
         this.srs = srs;
     }
+
+    public JSONObject asJSON() {
+        JSONObject tags = new JSONObject();
+        try {
+            // only regionset id and regionIdTag is used in frontend, and regionIdTag should propably come from datasource...
+            //tags.put("nameIdTag", getNameProperty());
+            tags.put("regionIdTag", getIdProperty());
+            //tags.put("url", getUrl());
+            //tags.put("featuresUrl", getFeaturesUrl());
+        } catch (JSONException e) {
+            throw new RuntimeException("Something went wrong serializing the region set", e);
+        }
+        return tags;
+    }
+
+    public String getNameProperty() {
+        return getStatsJSON().optString("nameIdTag");
+    }
+
+    public String getIdProperty() {
+        return getStatsJSON().optString("regionIdTag");
+    }
+
+    public String getFeaturesUrl() {
+        return getStatsJSON().optString("featuresUrl");
+    }
+
+    private JSONObject getStatsJSON() {
+        JSONObject json = JSONHelper.createJSONObject(attributes);
+        if(json == null) {
+            return new JSONObject();
+        }
+        JSONObject stats = json.optJSONObject("statistics");
+
+        if(stats == null) {
+            return new JSONObject();
+        }
+        return stats;
+    }
+
 }
