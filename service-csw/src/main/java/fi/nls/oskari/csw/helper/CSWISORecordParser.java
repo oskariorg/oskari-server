@@ -47,26 +47,7 @@ public class CSWISORecordParser {
     private XPath xpath = XPathFactory.newInstance().newXPath();
 
     private XPathExpression XPATH_DATA_QUALITY = null;
-    private XPathExpression XPATH_DATA_QUALITY_CONFORMANCES = null;
-    private XPathExpression XPATH_DATA_QUALITY_LINEAGE = null;
     private XPathExpression XPATH_DISTRIBUTION_INFO = null;
-    private XPathExpression XPATH_DATA_QUALITY_ABSOLUTE_EXTERNAL_POSITIONAL_ACCURACY = null;
-    private XPathExpression XPATH_DATA_QUALITY_ACCURACY_OF_TIME_MEASUREMENT = null;
-    private XPathExpression XPATH_DATA_QUALITY_COMPLETENESS_COMMISSION = null;
-    private XPathExpression XPATH_DATA_QUALITY_COMPLETENESS_OMISSION = null;
-    private XPathExpression XPATH_DATA_QUALITY_CONCEPTUAL_CONSISTENCY = null;
-    private XPathExpression XPATH_DATA_QUALITY_DOMAIN_CONSISTENCY = null;
-    private XPathExpression XPATH_DATA_QUALITY_FORMAT_CONSISTENCY = null;
-    private XPathExpression XPATH_DATA_QUALITY_GRIDDED_DATA_POSITIONAL_ACCURACY = null;
-    private XPathExpression XPATH_DATA_QUALITY_NON_QUANTITATIVE_ATTRIBUTE_ACCURACY = null;
-    private XPathExpression XPATH_DATA_QUALITY_QUANTITATIVE_ATTRIBUTE_ACCURACY = null;
-    private XPathExpression XPATH_DATA_QUALITY_RELATIVE_INTERNAL_POSITIONAL_ACCURACY = null;
-    private XPathExpression XPATH_DATA_QUALITY_TEMPORAL_CONSISTENCY = null;
-    private XPathExpression XPATH_DATA_QUALITY_TEMPORAL_VALIDITY = null;
-    private XPathExpression XPATH_DATA_QUALITY_THEMATIC_CLASSIFICATION_CORRECTNESS = null;
-    private XPathExpression XPATH_DATA_QUALITY_TOPOLOGICAL_CONSISTENCY = null;
-    private XPathExpression XPATH_DATA_QUALITY_NODE_CHARACTER_STRINGS = null;    
-    private XPathExpression XPATH_DATA_QUALITY_NODE_PASS = null;
     private XPathExpression XPATH_DISTRIBUTION_INFO_DISTRIBUTION_FORMATS = null;
     private XPathExpression XPATH_DISTRIBUTION_INFO_DISTRIBUTION_FORMAT_NAME = null;
     private XPathExpression XPATH_DISTRIBUTION_INFO_DISTRIBUTION_FORMAT_VERSION = null;
@@ -123,49 +104,6 @@ public class CSWISORecordParser {
         //(0..*)
         XPATH_DATA_QUALITY = xpath.compile(
                 "./gmd:dataQualityInfo/gmd:DQ_DataQuality");
-
-        XPATH_DATA_QUALITY_CONFORMANCES = xpath.compile(
-                "./gmd:report/gmd:DQ_DomainConsistency/gmd:result/gmd:DQ_ConformanceResult/gmd:specification/gmd:CI_Citation/gmd:title/gco:CharacterString");
-
-        XPATH_DATA_QUALITY_LINEAGE = xpath.compile(
-                "./gmd:lineage/gmd:LI_Lineage/gmd:statement/gco:CharacterString");
-
-        XPATH_DATA_QUALITY_ABSOLUTE_EXTERNAL_POSITIONAL_ACCURACY = xpath.compile(
-                "./gmd:report/gmd:DQ_AbsoluteExternalPositionalAccuracy/gmd:result/gmd:DQ_ConformanceResult");
-        XPATH_DATA_QUALITY_ACCURACY_OF_TIME_MEASUREMENT = xpath.compile(
-                "./gmd:report/gmd:DQ_AccuracyOfATimeMeasurement/gmd:result/gmd:DQ_ConformanceResult");
-        XPATH_DATA_QUALITY_COMPLETENESS_COMMISSION = xpath.compile(
-                "./gmd:report/gmd:DQ_CompletenessCommission/gmd:result/gmd:DQ_ConformanceResult");
-        XPATH_DATA_QUALITY_COMPLETENESS_OMISSION = xpath.compile(
-                "./gmd:report/gmd:DQ_CompletenessOmission/gmd:result/gmd:DQ_ConformanceResult");
-        XPATH_DATA_QUALITY_CONCEPTUAL_CONSISTENCY = xpath.compile(
-                "./gmd:report/gmd:DQ_ConceptualConsistency/gmd:result/gmd:DQ_ConformanceResult");
-        XPATH_DATA_QUALITY_DOMAIN_CONSISTENCY = xpath.compile(
-                "./gmd:report/gmd:DQ_DomainConsistency/gmd:result/gmd:DQ_ConformanceResult");
-        XPATH_DATA_QUALITY_FORMAT_CONSISTENCY = xpath.compile(
-                "./gmd:report/gmd:DQ_FormatConsistency/gmd:result/gmd:DQ_ConformanceResult");
-        XPATH_DATA_QUALITY_GRIDDED_DATA_POSITIONAL_ACCURACY = xpath.compile(
-                "./gmd:report/gmd:DQ_GriddedDataPositionalAccuracy/gmd:result/gmd:DQ_ConformanceResult");
-        XPATH_DATA_QUALITY_NON_QUANTITATIVE_ATTRIBUTE_ACCURACY = xpath.compile(
-                "./gmd:report/gmd:DQ_NonQuantitativeAttributeAccuracy/gmd:result/gmd:DQ_ConformanceResult");
-        XPATH_DATA_QUALITY_QUANTITATIVE_ATTRIBUTE_ACCURACY = xpath.compile(
-                "./gmd:report/gmd:DQ_AbsoluteExternalPositionalAccuracy/gmd:result/gmd:DQ_ConformanceResult");
-        XPATH_DATA_QUALITY_RELATIVE_INTERNAL_POSITIONAL_ACCURACY = xpath.compile(
-                "./gmd:report/gmd:DQ_RelativeInternalPositionalAccuracy/gmd:result/gmd:DQ_ConformanceResult");
-        XPATH_DATA_QUALITY_TEMPORAL_CONSISTENCY = xpath.compile(
-                "./gmd:report/gmd:DQ_TemporalConsistency/gmd:result/gmd:DQ_ConformanceResult");
-        XPATH_DATA_QUALITY_TEMPORAL_VALIDITY = xpath.compile(
-                "./gmd:report/gmd:DQ_TemporalValidity/gmd:result/gmd:DQ_ConformanceResult");
-        XPATH_DATA_QUALITY_THEMATIC_CLASSIFICATION_CORRECTNESS = xpath.compile(
-                "./gmd:report/gmd:DQ_ThematicClassificationCorrectness/gmd:result/gmd:DQ_ConformanceResult");
-        
-        XPATH_DATA_QUALITY_TOPOLOGICAL_CONSISTENCY = xpath.compile(
-                "./gmd:report/gmd:DQ_TopologicalConsistency/gmd:result/gmd:DQ_ConformanceResult");
-        /*parse the character strings from a qualitynode*/
-        XPATH_DATA_QUALITY_NODE_CHARACTER_STRINGS = xpath.compile(".//gco:CharacterString");
-
-        /*parse the "pass" tag from a qualitynode*/
-        XPATH_DATA_QUALITY_NODE_PASS = xpath.compile(".//gmd:pass/gco:Boolean");
 
         //(0..1)
         XPATH_DISTRIBUTION_INFO = xpath.compile(
