@@ -7,7 +7,7 @@ public class Sets {
 
     public static <T> Set<T> intersection(Set<T> a, Set<T> b) {
         Set<T> intersection = new HashSet<>(a);
-        a.retainAll(b);
+        intersection.retainAll(b);
         return intersection;
     }
 
