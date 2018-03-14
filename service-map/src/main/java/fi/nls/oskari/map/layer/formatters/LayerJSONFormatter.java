@@ -76,18 +76,20 @@ public class LayerJSONFormatter {
 
     public JSONObject getJSON(final OskariLayer layer,
                                      final String lang,
-                                     final boolean isSecure) {
+                                     final boolean isSecure,
+                                     final String crs) {
         LayerJSONFormatter formatter = getFormatter(layer.getType());
         // to prevent nullpointer and infinite loop
         if(formatter != null && !formatter.getClass().equals(LayerJSONFormatter.class)) {
-            return formatter.getJSON(layer, lang, isSecure);
+            return formatter.getJSON(layer, lang, isSecure, crs);
         }
-        return getBaseJSON(layer, lang, isSecure);
+        return getBaseJSON(layer, lang, isSecure, crs);
     }
 
     public JSONObject getBaseJSON(final OskariLayer layer,
                                      final String lang,
-                                     final boolean isSecure) {
+                                     final boolean isSecure,
+                                     final String crs) {
         JSONObject layerJson = new JSONObject();
 
         final String externalId = layer.getExternalId();
@@ -179,7 +181,7 @@ public class LayerJSONFormatter {
         if(layer.getSublayers() != null && !layer.getSublayers().isEmpty()) {
             JSONArray sublayers = new JSONArray();
             for(OskariLayer sub : layer.getSublayers()) {
-                JSONObject subJSON = getJSON(sub, lang, isSecure);
+                JSONObject subJSON = getJSON(sub, lang, isSecure, crs);
                 sublayers.put(subJSON);
             }
             JSONHelper.putValue(layerJson, "subLayer", sublayers);
