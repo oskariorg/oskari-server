@@ -171,15 +171,22 @@ public class CSWIsoRecord {
         JSONHelper.putValue(ret, "onlineResources", arr);
         //TODO: should we create toJSON() instead of using ObjectMapper
         ObjectMapper mapper = new ObjectMapper();
-        String jsonInString = "";
+        String json = "";
         try {
-            jsonInString = mapper.writeValueAsString(dataQualityObject);
+            arr = new JSONArray();
+            for (DataQuality dqNode: dataQualityObject.getDataQualities()){
+                json = mapper.writeValueAsString(dqNode);
+                arr.put(JSONHelper.createJSONObject(json));
+            }
+        } catch (Exception e) {
+            // TODO?
         }
-        catch (Exception e) {
-            //TODO?
+        JSONHelper.putValue(ret, "dataQualities", arr);
+        arr = new JSONArray();
+        for (String lineage : dataQualityObject.getLineageStatements()){
+            arr.put(lineage);
         }
-        JSONHelper.putValue(ret, "dataQualityObject", JSONHelper.createJSONObject(jsonInString));
-
+        JSONHelper.putValue(ret, "lineageStatements", arr);
         return ret;
     }
 
@@ -187,22 +194,28 @@ public class CSWIsoRecord {
         return referenceSystems;
     }
 
-
     public static class DataQualityObject {
-        private List<DataQualityNode> dataQualityNodes = new ArrayList<>();
+        private List<DataQuality> dataQualities = new ArrayList<>();
+        private List<String> lineageStatements = new ArrayList<>();
 
-        public List<DataQualityNode> getDataQualityNodes() {
-            return dataQualityNodes;
+        public List<DataQuality> getDataQualities() {
+            return dataQualities;
         }
 
-        public void setDataQualityNodes(List<DataQualityNode> dataQualityNodes) {
-            this.dataQualityNodes = dataQualityNodes;
+        public void setDataQualities(List<DataQuality> dataQualities) {
+            this.dataQualities = dataQualities;
+        }
+        public List<String> getLineageStatements() {
+            return lineageStatements;
+        }
+
+        public void setLineageStatements(List<String> lineageStatements) {
+            this.lineageStatements = lineageStatements;
         }
     }
 
-    public static class DataQualityNode {
+    public static class DataQuality {
         private String nodeName;
-        private String lineageStatement;
         private String nameOfMeasure;
         private String measureIdentificationCode;
         private String measureIdentificationAuthorization;
@@ -219,14 +232,6 @@ public class CSWIsoRecord {
 
         public void setNodeName(String nodeName) {
             this.nodeName = nodeName;
-        }
-
-        public String getLineageStatement() {
-            return lineageStatement;
-        }
-
-        public void setLineageStatement(String lineageStatement) {
-            this.lineageStatement = lineageStatement;
         }
 
         public String getNameOfMeasure() {
@@ -668,7 +673,6 @@ public class CSWIsoRecord {
                     this.code = code;
                 }
 
-
                 public JSONObject toJSON() {
                     JSONObject ret = new JSONObject();
                     JSONHelper.putValue(ret, "code", code);
@@ -696,7 +700,9 @@ public class CSWIsoRecord {
             private String dateType;
             private String xmlDate;
 
-            public String getXmlDate() { return xmlDate; }
+            public String getXmlDate() {
+                return xmlDate;
+            }
 
             public void setXmlDate(String xmlDate) {
                 this.xmlDate = xmlDate;
@@ -725,8 +731,7 @@ public class CSWIsoRecord {
                     try {
                         final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
                         formattedDate = sdf.format(date);
-                    }
-                    catch (Exception e){
+                    } catch (Exception e){
                         //do nothing
                     }
                 }

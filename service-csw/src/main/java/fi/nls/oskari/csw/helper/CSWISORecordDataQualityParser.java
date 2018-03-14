@@ -10,7 +10,6 @@ import org.w3c.dom.NodeList;
 import javax.xml.xpath.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 public class CSWISORecordDataQualityParser {
@@ -45,6 +44,8 @@ public class CSWISORecordDataQualityParser {
     private static XPathExpression XPATH_QUANTITATIVE_RESULT_VALUE_UNIT = null;
     private static XPathExpression XPATH_QUANTITATIVE_RESULT_ERROR_STATISTIC = null;
     private static XPathExpression XPATH_QUANTITATIVE_RESULT_VALUE = null;
+    //Free text (character string)
+    private static XPathExpression XPATH_CHARACTER_STRING = null;
 
     public CSWISORecordDataQualityParser() {
         dataQualities.put("absoluteExternalPositionalAccuracy", "./gmd:report/gmd:DQ_AbsoluteExternalPositionalAccuracy");
@@ -91,6 +92,8 @@ public class CSWISORecordDataQualityParser {
             XPATH_QUANTITATIVE_RESULT_ERROR_STATISTIC = xpath.compile("./gmd:errorStatistic"); //many
             XPATH_QUANTITATIVE_RESULT_VALUE = xpath.compile("./gmd:value");
 
+            //Free text (character string)
+            XPATH_CHARACTER_STRING = xpath.compile("./gco:CharacterString");
         }
         catch (Exception e) {
             log.error("Setting XPaths failed in data quality parser");
@@ -102,15 +105,25 @@ public class CSWISORecordDataQualityParser {
         pathToLocalizedValue = pathToLoc;
 
         CSWIsoRecord.DataQualityObject dataQualityObject = new CSWIsoRecord.DataQualityObject();
-        List<CSWIsoRecord.DataQualityNode> dataQualityObjectNodeList = dataQualityObject.getDataQualityNodes();
+        List<CSWIsoRecord.DataQuality> dataQualityList = dataQualityObject.getDataQualities();
+        CSWIsoRecord.DataQuality dataQuality;
+        String lineageStatement;
 
         for (int i = 0; i < dataQualityNodes.getLength(); i++) {
             Node parentNode = dataQualityNodes.item(i);
-
             // parse scope: The specific data to which the data quality information applies
-            //TODO should we parse scope?? <gmd:MD_ScopeCode codeListValue="dataset">
+            //TODO: should we parse scope?? or is it always dataset <gmd:MD_ScopeCode codeListValue="dataset">
 
-            // parse reports: Quantitative quality information for the data specified by the scope
+            // parse lineage statements
+            Node lineageStatementNode = (Node) XPATH_LINEAGE_STATEMENT.evaluate(parentNode, XPathConstants.NODE);
+            if (lineageStatementNode != null){
+                lineageStatement = localize(lineageStatementNode);
+                if (lineageStatement != null){
+                    dataQualityObject.getLineageStatements().add(lineageStatement);
+                }
+            }
+
+            // parse dataQualities (gmd:report)
             for (Map.Entry<String, String> entry : dataQualities.entrySet()) {
                 String key = entry.getKey();
                 String value = entry.getValue();
@@ -120,38 +133,32 @@ public class CSWISORecordDataQualityParser {
                 if(dataQualityChildNodes == null || dataQualityChildNodes.getLength() < 1) {
                     continue;
                 }
-                CSWIsoRecord.DataQualityNode dataQualityObjectNode = null;
-
                 for (int j = 0;j < dataQualityChildNodes.getLength(); ++j) {
-                    dataQualityObjectNode = GetDataQualityNodeInformation(dataQualityChildNodes.item(j), key);
-
-                    Node lineageStatementNode = (Node) XPATH_LINEAGE_STATEMENT.evaluate(parentNode, XPathConstants.NODE);
-                    dataQualityObjectNode.setLineageStatement(localize(lineageStatementNode));
+                    dataQuality = new CSWIsoRecord.DataQuality();
+                    dataQuality.setNodeName(key);
+                    getDataQualityNodeInformation(dataQualityChildNodes.item(j), dataQuality);
 
                     NodeList dataQualityConformanceResultNodes =
                             (NodeList) XPATH_CONFORMANCE_RESULT.evaluate(dataQualityChildNodes.item(j), XPathConstants.NODESET);
                     for (int k = 0;k < dataQualityConformanceResultNodes.getLength(); ++k) {
-                        dataQualityObjectNode.getConformanceResultList().add(GetConformanceResult(dataQualityConformanceResultNodes.item(k)));
+                        dataQuality.getConformanceResultList().add(getConformanceResult(dataQualityConformanceResultNodes.item(k)));
                     }
 
                     NodeList dataQualityQuantitativeResultNodes =
                             (NodeList) XPATH_QUANTITATIVE_RESULT.evaluate(dataQualityChildNodes.item(j), XPathConstants.NODESET);
                     for (int l = 0;l < dataQualityQuantitativeResultNodes.getLength(); ++l) {
-                        dataQualityObjectNode.getQuantitativeResultList().add(GetQuantitativeResult(dataQualityQuantitativeResultNodes.item(l)));
+                        dataQuality.getQuantitativeResultList().add(getQuantitativeResult(dataQualityQuantitativeResultNodes.item(l)));
                     }
 
-                    dataQualityObjectNodeList.add(dataQualityObjectNode);
+                    dataQualityList.add(dataQuality);
                 }
             }
         }
-        dataQualityObject.setDataQualityNodes(dataQualityObjectNodeList);
+        dataQualityObject.setDataQualities(dataQualityList);
         return dataQualityObject;
     }
-
-    private CSWIsoRecord.DataQualityNode GetDataQualityNodeInformation(Node parentNode, String listName)  throws XPathExpressionException {
-        CSWIsoRecord.DataQualityNode dataQualityObjectNode = new CSWIsoRecord.DataQualityNode();
-        dataQualityObjectNode.setNodeName(listName);
-
+    //
+    private void getDataQualityNodeInformation(Node parentNode, CSWIsoRecord.DataQuality dataQualityObjectNode)  throws XPathExpressionException {
         Node nameOfMeasureNode = (Node) XPATH_NAME_OF_MEASURE.evaluate(parentNode, XPathConstants.NODE);
         dataQualityObjectNode.setNameOfMeasure(localize(nameOfMeasureNode));
 
@@ -176,11 +183,9 @@ public class CSWISORecordDataQualityParser {
             dateTimeValueList.add(localize(dateTimeNode.item(i)));
         }
         dataQualityObjectNode.setDateTime(dateTimeValueList);
-
-        return dataQualityObjectNode;
     }
 
-    private CSWIsoRecord.DataQualityConformanceResult GetConformanceResult(Node parentNode)  throws XPathExpressionException {
+    private CSWIsoRecord.DataQualityConformanceResult getConformanceResult(Node parentNode)  throws XPathExpressionException {
         CSWIsoRecord.DataQualityConformanceResult dataQualityObjectConformanceResult =
                 new CSWIsoRecord.DataQualityConformanceResult();
 
@@ -196,7 +201,7 @@ public class CSWISORecordDataQualityParser {
         return dataQualityObjectConformanceResult;
     }
 
-    private CSWIsoRecord.DataQualityQuantitativeResult GetQuantitativeResult(Node parentNode) throws XPathExpressionException {
+    private CSWIsoRecord.DataQualityQuantitativeResult getQuantitativeResult(Node parentNode) throws XPathExpressionException {
 
         CSWIsoRecord.DataQualityQuantitativeResult dataQualityObjectQuantitativeResult =
                 new CSWIsoRecord.DataQualityQuantitativeResult();
@@ -222,14 +227,18 @@ public class CSWISORecordDataQualityParser {
 
     //Move to common utility class
     private String localize(final Node elem) {
-        String ret = getText(elem);
+        String ret = null;
         String localized;
-        if (elem != null && pathToLocalizedValue != null) {
+        if (elem != null) {
             try {
-                final Node localeNode = (Node) pathToLocalizedValue.evaluate(elem, XPathConstants.NODE);
-                localized  = getText(localeNode);
-                if (localized != null && !localized.isEmpty()) {
-                    ret = localized;
+                Node contentNode = (Node) XPATH_CHARACTER_STRING.evaluate(elem, XPathConstants.NODE);
+                ret = getText(contentNode);
+                if (pathToLocalizedValue != null){
+                    final Node localeNode = (Node) pathToLocalizedValue.evaluate(contentNode, XPathConstants.NODE);
+                    localized  = getText(localeNode);
+                    if (localized != null && !localized.isEmpty()) {
+                        ret = localized;
+                    }
                 }
             } catch (Exception e) {
                 log.warn("Error parsing localized value for:", elem.getLocalName(), ". Message:", e.getMessage());
@@ -239,6 +248,7 @@ public class CSWISORecordDataQualityParser {
     }
 
     //Move to common utility class
+    //also: CSWISORecordParser getText
     private String getText(final Node element) {
         String ret = null;
         if (element != null) {
