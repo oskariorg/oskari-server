@@ -5,6 +5,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.TreeSet;
 
 import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.PropertyUtil;
@@ -207,7 +208,7 @@ public class V1_45_4__migrate_thematic_maps implements JdbcMigration {
         idStr.append("_");
         idStr.append(indicator.optString("id", ""));
         idStr.append("_");
-        Iterator<String> it = selections.sortedKeys();
+        Iterator<String> it = new TreeSet<>(selections.keySet()).iterator();
         while (it.hasNext()) {
             String key = it.next();
             idStr.append(key);
