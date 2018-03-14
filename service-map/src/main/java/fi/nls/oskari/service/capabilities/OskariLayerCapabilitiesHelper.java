@@ -119,9 +119,6 @@ public class OskariLayerCapabilitiesHelper {
         JSONObject jscaps = LayerJSONFormatterWMTS.createCapabilitiesJSON(layer, systemCRSs);
         ml.setCapabilities(jscaps);
         ml.setCapabilitiesLastUpdated(new Date());
-
-        crs = crs != null ? crs : ml.getSrs_name();
-        ml.setTileMatrixSetId(LayerJSONFormatterWMTS.getTileMatrixSetId(jscaps, crs));
     }
 
     public static void setPropertiesFromCapabilitiesWFS(OskariLayer ml,
