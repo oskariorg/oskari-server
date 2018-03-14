@@ -13,7 +13,7 @@ import java.util.List;
 
 /**
  * Publishing functionality now uses the mapOptions from the appsetup where the publish was made.
- * This enables publishing using different projections and also makes sure the zoomlayers etc map
+ * This enables publishing using different projections and also makes sure the zoom levels etc map
  * configuration matches the ones on the preview.
  *
  * Because of the above publish template no longer needs to have mapOptions at all. This migration removes it from all
