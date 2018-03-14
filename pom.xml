@@ -104,7 +104,7 @@
         <deegree.version>2</deegree.version>
         <!-- JSONObject#sortedKeys() went missing after 20090211,
             and JSONObject#getString(String key) was changed in a
-            way that might cause unwanted and unwanted exceptions -->
+            way that might cause exceptions -->
         <json.version>20090211</json.version>
 
         <mybatis.version>3.4.5</mybatis.version>
