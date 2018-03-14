@@ -102,7 +102,7 @@
         <!-- gt-xsd-kml.version>9.3</gt-xsd-kml.version -->
         <flexjson.version>2.0</flexjson.version>
         <deegree.version>2</deegree.version>
-        <json.version>20180130</json.version>
+        <json.version>20090211</json.version>
 
         <mybatis.version>3.4.5</mybatis.version>
         <com.google.guava.version>18.0</com.google.guava.version>

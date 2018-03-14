@@ -1,7 +1,6 @@
 package fi.nls.oskari.control.statistics;
 
 import java.util.Iterator;
-import java.util.TreeSet;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -25,7 +24,7 @@ public class GetIndicatorDataHelper {
         cacheKey.append(indicatorId);
         cacheKey.append(':');
         cacheKey.append(layerId);
-        Iterator<String> it = new TreeSet<>(selectorJSON.keySet()).iterator();
+        Iterator<String> it = selectorJSON.sortedKeys();
         while (it.hasNext()) {
             String key = it.next();
             cacheKey.append(':');

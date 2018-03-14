@@ -62,9 +62,10 @@ public abstract class JSONLocalized {
             return names;
         }
         JSONObject localeJSON =  locale;
-        Iterator<String> keys = localeJSON.keys();
+        String locale;
+        Iterator keys = localeJSON.sortedKeys();
         while (keys.hasNext()) {
-            String locale = keys.next();
+            locale = (String)keys.next();
             names.put(locale, JSONHelper.getStringFromJSON(JSONHelper.getJSONObject(localeJSON, locale), key, ""));
         }
         return names;
