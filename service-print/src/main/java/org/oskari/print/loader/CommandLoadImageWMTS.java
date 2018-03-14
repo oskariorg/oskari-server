@@ -109,15 +109,31 @@ public class CommandLoadImageWMTS extends CommandLoadImageBase {
         ResourceUrl tileResourceUrl = layerCapabilities.getResourceUrlByType("tile");
         GetTileRequestBuilder requestBuilder;
         if (tileResourceUrl != null) {
-            requestBuilder = sendTileRequestREST(tms.getId(), tm.getId(), tileResourceUrl);
+            requestBuilder = getTileRequestBuilderREST(tms.getId(), tm.getId(), tileResourceUrl);
         } else {
-            requestBuilder = sendTileRequestsKVP(tms.getId(), tm.getId(), layerCapabilities);
+            requestBuilder = getTileRequestBuilderKVP(tms.getId(), tm.getId(), layerCapabilities);
         }
 
         for (int row = 0; row < countTileRows; row++) {
-            requestBuilder.tileRow(minTileRow + row);
+            int r = minTileRow + row;
+            if (r < 0 || r >= tm.getMatrixHeight()) {
+                // Don't request tiles outside of TileMatrix limits
+                // Add nulls instead so that the calculations are easier
+                for (int col = 0; col < countTileCols; col++) {
+                    futureTiles.add(null);
+                }
+                continue;
+            }
+            requestBuilder.tileRow(r);
             for (int col = 0; col < countTileCols; col++) {
-                requestBuilder.tileCol(minTileCol + col);
+                int c = minTileCol + col;
+                if (c < 0 || c >= tm.getMatrixWidth()) {
+                    // Don't request tiles outside of TileMatrix limits
+                    // Add nulls so that the calculations are easier
+                    futureTiles.add(null);
+                    continue;
+                }
+                requestBuilder.tileCol(c);
                 String uri = requestBuilder.build();
                 futureTiles.add(new CommandLoadImageFromURL(
                         Integer.toString(layer.getId()), uri).queue());
@@ -133,8 +149,14 @@ public class CommandLoadImageWMTS extends CommandLoadImageBase {
             for (int col = 0; col < countTileCols; col++) {
                 int x = tileWidth * col - offsetXPixels;
                 Future<BufferedImage> futureTile = futureTiles.get(tileIndex++);
+                if (futureTile == null) {
+                    // futureTile is null if the the tile is outside TileMatrix limits
+                    continue;
+                }
                 BufferedImage tile = futureTile.get();
                 if (tile != null) {
+                    // tile is null if something goes wrong
+                    // but we don't want to cancel the whole request
                     g2d.drawImage(tile, x, y, null);
                 }
             }
@@ -175,7 +197,7 @@ public class CommandLoadImageWMTS extends CommandLoadImageBase {
         throw new IllegalArgumentException("Could not find TileMatrixSet for the requested crs");
     }
 
-    private GetTileRequestBuilder sendTileRequestREST(String tileMatrixSetId, String tileMatrixId, ResourceUrl tileResourceUrl) {
+    private GetTileRequestBuilder getTileRequestBuilderREST(String tileMatrixSetId, String tileMatrixId, ResourceUrl tileResourceUrl) {
         String template = tileResourceUrl.getTemplate();
         return new GetTileRequestBuilderREST(template)
                 .layer(layer.getName())
@@ -184,7 +206,7 @@ public class CommandLoadImageWMTS extends CommandLoadImageBase {
                 .tileMatrix(tileMatrixId);
     }
 
-    private GetTileRequestBuilder sendTileRequestsKVP(String tileMatrixSetId, String tileMatrixId, WMTSCapabilitiesLayer layerCapabilities) {
+    private GetTileRequestBuilder getTileRequestBuilderKVP(String tileMatrixSetId, String tileMatrixId, WMTSCapabilitiesLayer layerCapabilities) {
         String format = getFormat(layerCapabilities.getFormats());
         return new GetTileRequestBuilderKVP().endPoint(layer.getUrl())
                 .layer(layer.getName())

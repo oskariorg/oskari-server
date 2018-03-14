@@ -31,7 +31,7 @@ import org.json.JSONObject;
  */
 public class SendDownloadDetailsToEmailThread implements Runnable {
 	private final OskariLayerService mapLayerService;
-	private final JSONArray downLoadDetails;
+	private final JSONArray downloadDetails;
 	private final JSONObject userDetails;
 	private final Locale locale;
 
@@ -46,18 +46,16 @@ public class SendDownloadDetailsToEmailThread implements Runnable {
 	 *
 	 * @param mapLayerService
 	 *            map layer service
+	 * @param downloadDetails
+	 *            download details
 	 * @param userDetails
 	 *            user details
-	 * @param downLoadDetails
-	 *            download details
-	 * @param Locale
-	 *            locale
-	 * 
+	 * @param locale locale
 	 */
 
-	public SendDownloadDetailsToEmailThread(OskariLayerService mapLayerService, JSONArray downLoadDetails,
+	public SendDownloadDetailsToEmailThread(OskariLayerService mapLayerService, JSONArray downloadDetails,
 			JSONObject userDetails, Locale locale) {
-		this.downLoadDetails = downLoadDetails;
+		this.downloadDetails = downloadDetails;
 		this.userDetails = userDetails;
 		this.locale = locale;
 		this.mapLayerService = mapLayerService;
@@ -72,8 +70,8 @@ public class SendDownloadDetailsToEmailThread implements Runnable {
 		}
 		try {
 			DownloadServices ds = new DownloadServices();
-			for (int i = 0; i < downLoadDetails.length(); i++) {
-				JSONObject download = downLoadDetails.getJSONObject(i);
+			for (int i = 0; i < downloadDetails.length(); i++) {
+				JSONObject download = downloadDetails.getJSONObject(i);
 				final String croppingMode = download.getString(PARAM_CROPPING_MODE);
 				String croppingLayer = "";
 				if (download.has(PARAM_CROPPING_LAYER)) {
@@ -92,11 +90,10 @@ public class SendDownloadDetailsToEmailThread implements Runnable {
 				}
 
 				if (ldz.isDownloadNormalWay()) {
-					ldz.setGetFeatureInfoRequest(OGCServices.getFilter(download, true));
+					ldz.setGetFeatureInfoRequest(OGCServices.getFilter(download, true, oskariLayer));
 					ldz.setWFSUrl(OGCServices.doGetFeatureUrl(srs, download, false));
 				} else {
-
-					ldz.setGetFeatureInfoRequest("&filter=" + OGCServices.getPluginFilter(download));
+					ldz.setGetFeatureInfoRequest("&filter=" + OGCServices.getPluginFilter(download, oskariLayer));
 					ldz.setWFSUrl(OGCServices.doGetFeatureUrl(srs, download, true));
 				}
 

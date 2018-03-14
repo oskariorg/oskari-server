@@ -85,9 +85,12 @@ public class PrintServiceTest {
 
         request.setTitle("Hello world!");
 
-        request.setWidth(1500);
-        request.setHeight(700);
+        request.setWidth(PDF.mmToPx(210 - 20));
+        request.setHeight(PDF.mmToPx(297 - 30));
         request.setResolution(2);
+
+        request.setShowLogo(true);
+        request.setShowScale(true);
 
         PrintLayer bg = new PrintLayer();
         bg.setId(1);
@@ -127,5 +130,5 @@ public class PrintServiceTest {
         doc.close();
         Desktop.getDesktop().open(file);
     }
-    
+
 }

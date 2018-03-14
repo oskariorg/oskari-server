@@ -4,23 +4,27 @@ import fi.nls.oskari.domain.map.OskariLayer;
 
 public class CapabilitiesUpdateResult {
 
-    private final int layerId;
+    private final String layerId;
     private final String errorMessage;
 
-    private CapabilitiesUpdateResult(int layerId, String errorMessage) {
-        this.layerId = layerId;
+    private CapabilitiesUpdateResult(OskariLayer layer, String errorMessage) {
+        if (layer.getExternalId() != null && !layer.getExternalId().isEmpty()) {
+            this.layerId = layer.getExternalId();
+        } else {
+            this.layerId = Integer.toString(layer.getId());
+        }
         this.errorMessage = errorMessage;
     }
 
     public static CapabilitiesUpdateResult ok(OskariLayer layer) {
-        return new CapabilitiesUpdateResult(layer.getId(), null);
+        return new CapabilitiesUpdateResult(layer, null);
     }
 
     public static CapabilitiesUpdateResult err(OskariLayer layer, String errorMessage) {
-        return new CapabilitiesUpdateResult(layer.getId(), errorMessage);
+        return new CapabilitiesUpdateResult(layer, errorMessage);
     }
 
-    public int getLayerId() {
+    public String getLayerId() {
         return layerId;
     }
 

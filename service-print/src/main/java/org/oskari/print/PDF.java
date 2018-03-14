@@ -23,6 +23,9 @@ import org.apache.pdfbox.pdmodel.graphics.image.LosslessFactory;
 import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
 import org.apache.pdfbox.pdmodel.graphics.optionalcontent.PDOptionalContentGroup;
 import org.apache.pdfbox.pdmodel.graphics.state.PDExtendedGraphicsState;
+import org.geotools.referencing.CRS;
+import org.opengis.referencing.FactoryException;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.oskari.print.loader.AsyncImageLoader;
 import org.oskari.print.request.PrintLayer;
 import org.oskari.print.request.PrintRequest;
@@ -41,24 +44,55 @@ public class PDF {
 
     private static final SimpleDateFormat SDF = new SimpleDateFormat("yyyy-MM-dd");
 
-    private static final PDRectangle[] PAGESIZES =
-            new PDRectangle[] { PDRectangle.A4, PDRectangle.A3, PDRectangle.A2 };
+    private static final PDRectangle[] PAGESIZES = new PDRectangle[] {
+            PDRectangle.A4,
+            PDRectangle.A3,
+            PDRectangle.A2
+    };
     private static final PDRectangle[] PAGESIZES_LANDSCAPE;
 
-    private static final float MAP_MIN_MARGINALS = PDFBoxUtil.mmToPt(10);
+    private static final int A4W_MM = 210;
+    private static final int A4H_MM = 297;
+    private static final int A3W_MM = 297;
+    private static final int A3H_MM = 420;
+    private static final int A2W_MM = 420;
+    private static final int A2H_MM = 594;
+    private static final int MAP_MARGIN_MIN_LEFT_RIGHT_NM = 20;
+    private static final int MAP_MARGIN_MIN_BOTTOM_TOP_MM = 30;
+    private static final int[] MAP_MAX_WIDTH_PX = {
+            mmToPx(A4W_MM - MAP_MARGIN_MIN_LEFT_RIGHT_NM), // A4
+            mmToPx(A3W_MM - MAP_MARGIN_MIN_LEFT_RIGHT_NM), // A3
+            mmToPx(A2W_MM - MAP_MARGIN_MIN_LEFT_RIGHT_NM)  // A2
+    };
+    private static final int[] MAP_MAX_HEIGHT_PX = {
+            mmToPx(A4H_MM - MAP_MARGIN_MIN_BOTTOM_TOP_MM), // A4
+            mmToPx(A3H_MM - MAP_MARGIN_MIN_BOTTOM_TOP_MM), // A3
+            mmToPx(A2H_MM - MAP_MARGIN_MIN_BOTTOM_TOP_MM)  // A2
+    };
+    private static final int[] MAP_MAX_WIDTH_PX_LANDSCAPE = {
+            mmToPx(A4H_MM - MAP_MARGIN_MIN_LEFT_RIGHT_NM), // A4_LS
+            mmToPx(A3H_MM - MAP_MARGIN_MIN_LEFT_RIGHT_NM), // A3_LS
+            mmToPx(A2H_MM - MAP_MARGIN_MIN_LEFT_RIGHT_NM)  // A2_LS
+    };
+    private static final int[] MAP_MAX_HEIGHT_PX_LANDSCAPE = {
+            mmToPx(A4W_MM - MAP_MARGIN_MIN_BOTTOM_TOP_MM), // A4_LS
+            mmToPx(A3W_MM - MAP_MARGIN_MIN_BOTTOM_TOP_MM), // A3_LS
+            mmToPx(A2W_MM - MAP_MARGIN_MIN_BOTTOM_TOP_MM)  // A2_LS
+    };
 
     private static final PDFont FONT = PDType1Font.HELVETICA;
     private static final float FONT_SIZE = 12f;
-    // private static final float FONT_SIZE_SCALE = 10f;
+    private static final float FONT_SIZE_SCALE = 10f;
 
     private static final float OFFSET_DATE_RIGHT = PDFBoxUtil.mmToPt(40);
     private static final float OFFSET_DATE_TOP = PDFBoxUtil.mmToPt(10);
 
     private static final float OFFSET_LOGO_LEFT = PDFBoxUtil.mmToPt(10);
     private static final float OFFSET_LOGO_BOTTOM = PDFBoxUtil.mmToPt(5);
+    private static final float LOGO_HEIGHT = PDFBoxUtil.mmToPt(9);
 
-    // private static final float OFFSET_SCALE_LEFT = PDFBoxUtil.mmToPt(40);
-    // private static final float OFFSET_SCALE_BOTTOM = PDFBoxUtil.mmToPt(5);
+    private static final float OFFSET_SCALE_LEFT = PDFBoxUtil.mmToPt(40);
+    private static final float OFFSET_SCALE_BOTTOM = PDFBoxUtil.mmToPt(5);
 
     private static final double[] SCALE_LINE_DISTANCES_METRES = new double[24];
 
@@ -81,24 +115,29 @@ public class PDF {
         }
     }
 
+    public static int mmToPx(int mm) {
+        return (int) Math.round((Units.OGC_DPI * mm) / Units.MM_PER_INCH);
+    }
+
     /**
      * This method should be called via PrintService
      */
-    protected static void getPDF(PrintRequest request, PDDocument doc, WMTSCapabilitiesCache tmsCache)
+    protected static void getPDF(PrintRequest request, PDDocument doc, WMTSCapabilitiesCache wmtsCapsCache)
             throws IOException, ServiceException {
-        float mapWidth = pixelsToPoints(request.getWidth());
-        float mapHeight = pixelsToPoints(request.getHeight());
+        int mapWidthPx = request.getWidth();
+        int mapHeightPx = request.getHeight();
 
-        PDRectangle pageSize = findMinimalPageSize(
-                mapWidth + MAP_MIN_MARGINALS,
-                mapHeight + MAP_MIN_MARGINALS);
+        PDRectangle pageSize = findMinimalPageSize(mapWidthPx, mapHeightPx);
         if (pageSize == null) {
-            LOG.info("Could not find page size! width:", mapWidth, "height:", mapHeight);
+            LOG.info("Could not find page size! width:", mapWidthPx, "height:", mapHeightPx);
             throw new ServiceException("Could not find a proper page size!");
         }
 
+        float mapWidth = pixelsToPoints(mapWidthPx);
+        float mapHeight = pixelsToPoints(mapHeightPx);
+
         // Init requests to run in the background
-        List<Future<BufferedImage>> layerImages = AsyncImageLoader.initLayers(request, tmsCache);
+        List<Future<BufferedImage>> layerImages = AsyncImageLoader.initLayers(request, wmtsCapsCache);
 
         PDPage page = new PDPage(pageSize);
         doc.addPage(page);
@@ -110,7 +149,7 @@ public class PDF {
         try (PDPageContentStream stream = new PDPageContentStream(doc, page, AppendMode.APPEND, false)) {
             drawTitle(stream, request, pageSize, mapHeight);
             drawLogo(doc, stream, request);
-            // drawScale(stream, request);
+            drawScale(stream, request);
             drawDate(stream, request, pageSize);
             drawLayers(doc, stream, request.getLayers(), layerImages,
                     x, y, mapWidth, mapHeight);
@@ -128,13 +167,23 @@ public class PDF {
     /**
      * Find minimum pagesize that will fit the map
      */
-    private static PDRectangle findMinimalPageSize(float width, float height) {
-        boolean landscape = width > height;
-        PDRectangle[] pageSizes = landscape ? PAGESIZES_LANDSCAPE : PAGESIZES;
-        for (PDRectangle pageSize : pageSizes) {
-            if (width <= pageSize.getWidth()
-                    && height <= pageSize.getHeight()) {
-                return pageSize;
+    private static PDRectangle findMinimalPageSize(int mapWidthPx, int mapHeightPx) {
+        boolean landscape = mapWidthPx > mapHeightPx;
+        int[] maxWidth;
+        int[] maxHeight;
+        PDRectangle[] pageSizes;
+        if (landscape) {
+            maxWidth = MAP_MAX_WIDTH_PX_LANDSCAPE;
+            maxHeight = MAP_MAX_HEIGHT_PX_LANDSCAPE;
+            pageSizes = PAGESIZES_LANDSCAPE;
+        } else {
+            maxWidth = MAP_MAX_WIDTH_PX;
+            maxHeight = MAP_MAX_HEIGHT_PX;
+            pageSizes = PAGESIZES;
+        }
+        for (int i = 0; i < maxWidth.length; i++) {
+            if (mapWidthPx <= maxWidth[i] && mapHeightPx <= maxHeight[i]) {
+                return pageSizes[i];
             }
         }
         return null;
@@ -179,7 +228,11 @@ public class PDF {
             PDImageXObject img = LosslessFactory.createFromImage(doc, logo);
             float x = OFFSET_LOGO_LEFT;
             float y = OFFSET_LOGO_BOTTOM;
-            stream.drawImage(img, x, y);
+            // Maintain the aspect ratio of the image
+            float f = LOGO_HEIGHT / img.getHeight();
+            float w = img.getWidth() * f;
+            float h = LOGO_HEIGHT;
+            stream.drawImage(img, x, y, w, h);
         } catch (IOException e) {
             LOG.warn(e, "Failed to draw logo");
         }
@@ -197,42 +250,28 @@ public class PDF {
         PDFBoxUtil.drawText(stream, date, FONT, FONT_SIZE, x, y);
     }
 
-    /*
     private static void drawScale(PDPageContentStream stream, PrintRequest request)
             throws IOException {
         if (!request.isShowScale()) {
             return;
         }
 
-        String units = request.getUnits();
+        String units = getUnits(request.getSrsName());
         if (units == null) {
-            LOG.debug("Units not available in request, not drawing Scale Line");
             return;
         }
-        units = units.toLowerCase();
 
-        double mppx = Double.NaN;
-
+        double mppx;
         switch (units) {
-            case "degrees":
-            case "dd":
-                LOG.debug("Map units is deegrees, not drawing Scale Line");
-                return;
-            case "m":
-                mppx = request.getResolution();
-                break;
-            case "km":
-                mppx = request.getResolution() * 1000;
-                break;
-            case "ft":
-                mppx = request.getResolution() * Units.METRES_PER_FOOT;
-                break;
-            case "mi":
-                mppx = request.getResolution() * Units.METRES_PER_MILE;
-                break;
-            default:
-                LOG.warn("Unknown unit", units, "- not drawing Scale line");
-                return;
+        case "m":
+            mppx = request.getResolution();
+            break;
+        case "°":
+            LOG.info("Map units is deegrees, not drawing Scale Line");
+            return;
+        default:
+            LOG.info("Unknown unit", units, "- not drawing Scale line");
+            return;
         }
 
         double mppt = mppx * Units.PDF_DPI / Units.OGC_DPI;
@@ -273,7 +312,16 @@ public class PDF {
         PDFBoxUtil.drawTextCentered(stream, distanceStr,
                 FONT, FONT_SIZE_SCALE, cx, y1 + 5);
     }
-     */
+
+    private static String getUnits(String srsName) {
+        try {
+            CoordinateReferenceSystem crs = CRS.decode(srsName);
+            return crs.getCoordinateSystem().getAxis(0).getUnit().toString();
+        } catch (FactoryException e) {
+            LOG.warn(e, "Unable to decode CRS from", srsName);
+            return null;
+        }
+    }
 
     private static void drawLayers(PDDocument doc, PDPageContentStream stream,
             List<PrintLayer> layers, List<Future<BufferedImage>> images,
