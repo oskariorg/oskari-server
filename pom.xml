@@ -102,6 +102,9 @@
         <!-- gt-xsd-kml.version>9.3</gt-xsd-kml.version -->
         <flexjson.version>2.0</flexjson.version>
         <deegree.version>2</deegree.version>
+        <!-- JSONObject#sortedKeys() went missing after 20090211,
+            and JSONObject#getString(String key) was changed in a
+            way that might cause unwanted and unwanted exceptions -->
         <json.version>20090211</json.version>
 
         <mybatis.version>3.4.5</mybatis.version>
