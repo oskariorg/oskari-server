@@ -53,7 +53,7 @@ public class V1_46_7__cleanup_publish_template implements JdbcMigration {
         return bundles;
     }
 
-    public static Bundle updateBundleConfig(Connection connection, Bundle bundle)
+    private void updateBundleConfig(Connection connection, Bundle bundle)
             throws SQLException {
         final String sql = "UPDATE portti_view_bundle_seq SET config=? WHERE bundle_id=? AND view_id=?";
 
@@ -64,7 +64,6 @@ public class V1_46_7__cleanup_publish_template implements JdbcMigration {
             statement.setLong(3, bundle.view);
             statement.execute();
         }
-        return null;
     }
 
     class Bundle {
