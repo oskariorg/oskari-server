@@ -101,7 +101,6 @@ public class OskariLayerServiceIbatisImpl extends OskariLayerService {
         // additional info
         result.setLegendImage((String) data.get("legend_image"));
         result.setMetadataId((String) data.get("metadataid"));
-        result.setTileMatrixSetId((String) data.get("tile_matrix_set_id"));
 
         // map implementation parameters
         result.setParams(JSONHelper.createJSONObject((String) data.get("params")));
