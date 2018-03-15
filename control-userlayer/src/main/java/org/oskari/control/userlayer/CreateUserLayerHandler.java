@@ -10,7 +10,6 @@ import fi.nls.oskari.domain.User;
 import fi.nls.oskari.domain.map.userlayer.UserLayer;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
-
 import org.oskari.control.userlayer.util.FileHelper;
 import org.oskari.map.userlayer.domain.GPXGeoJsonCollection;
 import org.oskari.map.userlayer.domain.KMLGeoJsonCollection;
@@ -34,7 +33,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.*;
-import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
