@@ -1,4 +1,4 @@
-package fi.nls.oskari.map.userlayer.service;
+package org.oskari.map.userlayer.service;
 
 
 import fi.nls.oskari.annotation.Oskari;

@@ -1,11 +1,10 @@
-package fi.nls.oskari.map.userlayer.domain;
+package org.oskari.map.userlayer.domain;
 
 import com.vividsolutions.jts.geom.Geometry;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.map.userlayer.service.GeoJsonWorker;
+import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.JSONHelper;
-import org.apache.commons.io.IOUtils;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.shapefile.ShapefileDataStore;
 import org.geotools.data.shapefile.ShapefileDataStoreFactory;
@@ -21,6 +20,7 @@ import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.type.FeatureType;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.MathTransform;
+import org.oskari.map.userlayer.service.GeoJsonWorker;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -123,7 +123,7 @@ public class SHPGeoJsonCollection extends GeoJsonCollection implements GeoJsonWo
             File cpgFile = new File(baseFilePath + ".cpg");
             if (cpgFile != null) {
                 try (FileInputStream inputStream = new FileInputStream(cpgFile)) {
-                    String content = IOUtils.toString(inputStream); //cpg file should have only charsets name
+                    String content = IOHelper.readString(inputStream); //cpg file should have only charsets name
                     if (AVAILABLE_CHARSETS.containsKey(content.trim())) {
                         Charset charset = AVAILABLE_CHARSETS.get(content.trim());
                         log.debug("Found charset from cpg file. Using charset:", charset.name());

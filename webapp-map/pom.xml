@@ -66,6 +66,10 @@
         </dependency>
         <!-- /Statistics plugins -->
 
+        <dependency>
+            <groupId>org.oskari</groupId>
+            <artifactId>control-userlayer</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>fi.nls.oskari</groupId>

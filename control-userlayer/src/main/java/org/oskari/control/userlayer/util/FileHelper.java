@@ -1,4 +1,4 @@
-package fi.nls.oskari.util;
+package org.oskari.control.userlayer.util;
 
 import java.io.File;
 import java.util.List;

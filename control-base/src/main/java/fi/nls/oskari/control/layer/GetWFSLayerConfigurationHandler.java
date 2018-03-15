@@ -11,7 +11,6 @@ import fi.nls.oskari.domain.map.wfs.WFSLayerConfiguration;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.analysis.service.AnalysisDataService;
-import fi.nls.oskari.map.userlayer.service.UserLayerDbService;
 import fi.nls.oskari.myplaces.MyPlacesService;
 import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.util.ConversionHelper;
@@ -21,6 +20,7 @@ import fi.nls.oskari.util.ResponseHelper;
 import fi.nls.oskari.wfs.WFSLayerConfigurationService;
 import fi.nls.oskari.wfs.WFSLayerConfigurationServiceIbatisImpl;
 import org.json.JSONObject;
+import org.oskari.map.userlayer.service.UserLayerDbService;
 
 @OskariActionRoute("GetWFSLayerConfiguration")
 public class GetWFSLayerConfigurationHandler extends ActionHandler {

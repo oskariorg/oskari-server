@@ -1,4 +1,32 @@
-package fi.nls.oskari.control.data;
+package org.oskari.control.userlayer;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Map;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload.FileUploadException;
+import org.apache.commons.fileupload.disk.DiskFileItemFactory;
+import org.apache.commons.fileupload.servlet.ServletFileUpload;
+import org.json.JSONObject;
+import org.oskari.control.userlayer.util.FileHelper;
+import org.oskari.map.userlayer.domain.GPXGeoJsonCollection;
+import org.oskari.map.userlayer.domain.KMLGeoJsonCollection;
+import org.oskari.map.userlayer.domain.MIFGeoJsonCollection;
+import org.oskari.map.userlayer.domain.SHPGeoJsonCollection;
+import org.oskari.map.userlayer.service.GeoJsonWorker;
+import org.oskari.map.userlayer.service.UserLayerDataService;
 
 import fi.mml.map.mapwindow.util.OskariLayerWorker;
 import fi.nls.oskari.annotation.OskariActionRoute;
@@ -10,31 +38,9 @@ import fi.nls.oskari.domain.User;
 import fi.nls.oskari.domain.map.userlayer.UserLayer;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.map.userlayer.domain.GPXGeoJsonCollection;
-import fi.nls.oskari.map.userlayer.domain.KMLGeoJsonCollection;
-import fi.nls.oskari.map.userlayer.domain.MIFGeoJsonCollection;
-import fi.nls.oskari.map.userlayer.domain.SHPGeoJsonCollection;
-import fi.nls.oskari.map.userlayer.service.GeoJsonWorker;
-import fi.nls.oskari.map.userlayer.service.UserLayerDataService;
-import fi.nls.oskari.util.FileHelper;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
-import org.apache.commons.fileupload.FileItem;
-import org.apache.commons.fileupload.FileUploadException;
-import org.apache.commons.fileupload.disk.DiskFileItemFactory;
-import org.apache.commons.fileupload.servlet.ServletFileUpload;
-import org.json.JSONObject;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.util.*;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
 
 /**
  * Store zipped file set to oskari_user_store database

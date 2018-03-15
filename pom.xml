@@ -412,6 +412,18 @@
                 <version>${fi.nls.oskari.version}</version>
             </dependency>
 
+            <dependency>
+                <groupId>org.oskari</groupId>
+                <artifactId>control-userlayer</artifactId>
+                <version>${fi.nls.oskari.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.oskari</groupId>
+                <artifactId>service-userlayer</artifactId>
+                <version>${fi.nls.oskari.version}</version>
+            </dependency>
+
             <!-- Spring -->
             <dependency>
                 <groupId>org.springframework.security.extensions</groupId>
@@ -1142,6 +1154,8 @@
 
         <module>service-wcs</module>
         <module>oskari-utils</module>
+        <module>control-userlayer</module>
+        <module>service-userlayer</module>
     </modules>
 
 </project>
