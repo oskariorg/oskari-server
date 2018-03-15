@@ -9,10 +9,6 @@
     <groupId>org.oskari</groupId>
     <artifactId>control-userlayer</artifactId>
 
-    <properties>
-        <fileupload.version>1.3.1</fileupload.version>
-    </properties>
-
     <dependencies>
         <dependency>
             <groupId>fi.nls.oskari.service</groupId>
@@ -23,10 +19,8 @@
             <artifactId>service-userlayer</artifactId>
         </dependency>
         <dependency>
-            <!-- This wont be here for long -->
             <groupId>commons-fileupload</groupId>
             <artifactId>commons-fileupload</artifactId>
-            <version>${fileupload.version}</version>
         </dependency>
         <dependency>
             <groupId>javax.servlet</groupId>

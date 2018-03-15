@@ -76,10 +76,6 @@
 			<version>4.5.1</version>
 		</dependency>
         <dependency>
-          <groupId>commons-fileupload</groupId>
-          <artifactId>commons-fileupload</artifactId>
-       </dependency>
-        <dependency>
             <groupId>org.apache.poi</groupId>
             <artifactId>poi-ooxml</artifactId>
             <version>3.13</version>
