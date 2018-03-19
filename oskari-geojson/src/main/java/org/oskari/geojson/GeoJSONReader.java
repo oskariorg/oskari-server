@@ -1,4 +1,4 @@
-package fi.nls.oskari.util;
+package org.oskari.geojson;
 
 import org.json.JSONArray;
 import org.json.JSONException;
