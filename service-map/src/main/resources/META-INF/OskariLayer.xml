@@ -30,7 +30,6 @@
         <parameter property="legendImage" />
         <parameter property="metadataId" />
 
-        <parameter property="tileMatrixSetId" />
         <parameter property="params" jdbcType="VARCHAR" javaType="org.json.JSONObject" />
         <parameter property="options" jdbcType="VARCHAR" javaType="org.json.JSONObject" />
         <parameter property="attributes" jdbcType="VARCHAR" javaType="org.json.JSONObject" />
@@ -75,7 +74,6 @@
         <parameter property="legendImage" />
         <parameter property="metadataId" />
 
-        <parameter property="tileMatrixSetId" />
         <parameter property="params" jdbcType="VARCHAR" javaType="org.json.JSONObject" />
         <parameter property="options" jdbcType="VARCHAR" javaType="org.json.JSONObject" />
         <parameter property="attributes" jdbcType="VARCHAR" javaType="org.json.JSONObject" />
@@ -126,7 +124,6 @@
         l.legend_image,
         l.metadataId,
 
-        l.tile_matrix_set_id,
         l.params,
         l.options,
         l.attributes,
@@ -184,7 +181,6 @@
         l.legend_image,
         l.metadataId,
 
-        l.tile_matrix_set_id,
         l.params,
         l.options,
         l.attributes,
@@ -242,7 +238,6 @@
         l.legend_image,
         l.metadataId,
 
-        l.tile_matrix_set_id,
         l.params,
         l.options,
         l.attributes,
@@ -301,7 +296,6 @@
         l.legend_image,
         l.metadataId,
 
-        l.tile_matrix_set_id,
         l.params,
         l.options,
         l.attributes,
@@ -360,7 +354,6 @@
         l.legend_image,
         l.metadataId,
 
-        l.tile_matrix_set_id,
         l.params,
         l.options,
         l.attributes,
@@ -418,7 +411,6 @@
     l.legend_image,
     l.metadataId,
 
-    l.tile_matrix_set_id,
     l.params,
     l.options,
     l.attributes,
@@ -481,7 +473,6 @@
         l.legend_image,
         l.metadataId,
 
-        l.tile_matrix_set_id,
         l.params,
         l.options,
         l.attributes,
@@ -558,7 +549,6 @@
     l.legend_image,
     l.metadataId,
 
-    l.tile_matrix_set_id,
     l.params,
     l.options,
     l.attributes,
@@ -617,7 +607,6 @@
             legend_image,
             metadataId,
 
-            tile_matrix_set_id,
             params,
             options,
             attributes,
@@ -642,7 +631,7 @@
             capabilities_last_updated,
             capabilities_update_rate_sec)
 
-        values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+        values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
     </statement>
     
     <update id="updateOrder" parameterClass="java.util.HashMap">
@@ -680,7 +669,6 @@
         legend_image = ?,
         metadataId = ?,
 
-        tile_matrix_set_id = ?,
         params = ?,
         options = ?,
         attributes = ?,

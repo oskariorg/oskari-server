@@ -85,7 +85,6 @@ public class SaveLayerHandler extends ActionHandler {
     private static final String PARAM_MAX_SCALE ="maxScale";
     private static final String PARAM_LEGEND_IMAGE ="legendImage";
     private static final String PARAM_METADATA_ID ="metadataId";
-    private static final String PARAM_TILE_MATRIX_SET_ID ="tileMatrixSetId";
     private static final String PARAM_GFI_CONTENT ="gfiContent";
     private static final String PARAM_USERNAME ="username";
     private static final String PARAM_PASSWORD ="password";
@@ -354,7 +353,6 @@ public class SaveLayerHandler extends ActionHandler {
 
         ml.setLegendImage(params.getHttpParam(PARAM_LEGEND_IMAGE, ml.getLegendImage()));
         ml.setMetadataId(params.getHttpParam(PARAM_METADATA_ID, ml.getMetadataId()));
-        ml.setTileMatrixSetId(params.getHttpParam(PARAM_TILE_MATRIX_SET_ID));
 
         final String gfiContent = request.getParameter(PARAM_GFI_CONTENT);
         if (gfiContent != null) {

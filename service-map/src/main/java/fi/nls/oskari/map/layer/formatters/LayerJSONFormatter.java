@@ -286,7 +286,6 @@ public class LayerJSONFormatter {
         layer.setMaxScale(json.optDouble("maxscale", layer.getMaxScale()));
         layer.setLegendImage(json.optString("legend_image", layer.getLegendImage()));
         layer.setMetadataId(json.optString("metadataid", layer.getMetadataId()));
-        layer.setTileMatrixSetId(json.optString("tile_matrix_set_id", layer.getTileMatrixSetId()));
         layer.setGfiType(json.optString("gfi_type", layer.getGfiType()));
         layer.setGfiXslt(json.optString("gfi_xslt", layer.getGfiXslt()));
         layer.setGfiContent(json.optString("gfi_content", layer.getGfiContent()));

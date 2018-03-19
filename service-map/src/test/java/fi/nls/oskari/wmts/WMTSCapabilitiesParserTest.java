@@ -58,7 +58,6 @@ public class WMTSCapabilitiesParserTest {
 
         OskariLayerCapabilitiesHelper.setPropertiesFromCapabilitiesWMTS(caps, layer, "EPSG:3575", crss);
 
-        assertEquals("EPSG:3575_arcticsdi", layer.getTileMatrixSetId());
         assertFalse("'format' value should have been removed since the layer doesn't support RESTful WMTS", options.has("format"));
     }
 
