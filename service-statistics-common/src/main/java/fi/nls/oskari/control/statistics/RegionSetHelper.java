@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.geotools.GML;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.data.simple.SimpleFeatureIterator;
 import org.geotools.feature.DefaultFeatureCollection;
@@ -30,12 +31,11 @@ import org.oskari.geojson.GeoJSONWriter;
 import com.vividsolutions.jts.geom.Geometry;
 
 import fi.nls.oskari.control.statistics.db.RegionSet;
-import fi.nls.oskari.control.statistics.xml.Region;
-import fi.nls.oskari.control.statistics.xml.WfsXmlParser;
 import fi.nls.oskari.domain.geo.Point;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.service.ServiceException;
+import fi.nls.oskari.service.ServiceRuntimeException;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.JSONHelper;
 
@@ -129,7 +129,16 @@ public class RegionSetHelper {
         final String url = IOHelper.constructUrl(regionset.getFeaturesUrl(), params);
         final HttpURLConnection connection = IOHelper.getConnection(url);
         try (InputStream in = new BufferedInputStream(connection.getInputStream())) {
-            return WfsXmlParser.getFeatureCollection(in);
+            return parseGMLFeatureCollection(in);
+        }
+    }
+
+    protected static SimpleFeatureCollection parseGMLFeatureCollection(InputStream inputStream) {
+        try {
+            GML gml = new GML(GML.Version.GML3);
+            return gml.decodeFeatureCollection(inputStream);
+        } catch (Exception ex) {
+            throw new ServiceRuntimeException("Couldn't parse response to feature collection", ex);
         }
     }
 

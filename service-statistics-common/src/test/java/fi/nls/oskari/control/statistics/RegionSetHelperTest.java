@@ -16,7 +16,6 @@ import org.opengis.referencing.operation.TransformException;
 import org.oskari.geojson.GeoJSON;
 
 import fi.nls.oskari.control.statistics.db.RegionSet;
-import fi.nls.oskari.control.statistics.xml.Region;
 import fi.nls.oskari.service.ServiceException;
 
 public class RegionSetHelperTest {
