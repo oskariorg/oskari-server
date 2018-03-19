@@ -27,8 +27,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
-import org.oskari.map.userlayer.service.UserLayerDataService;
-import org.oskari.map.userlayer.service.UserLayerDbService;
+import org.oskari.service.userlayer.UserLayerDataService;
+import org.oskari.service.userlayer.UserLayerDbService;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;

@@ -1,4 +1,4 @@
-package org.oskari.map.userlayer.service;
+package org.oskari.service.userlayer;
 
 import fi.nls.oskari.domain.User;
 import fi.nls.oskari.domain.map.OskariLayer;
@@ -13,12 +13,19 @@ import fi.nls.oskari.map.layer.formatters.LayerJSONFormatterUSERLAYER;
 import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
-import org.geotools.data.DataUtilities;
+import org.geotools.data.simple.SimpleFeatureCollection;
+import org.geotools.data.simple.SimpleFeatureIterator;
+import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.FeatureType;
 import org.opengis.feature.type.PropertyDescriptor;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.oskari.service.userlayer.mybatis.UserLayerDbServiceMybatisImpl;
+
+import com.vividsolutions.jts.geom.Geometry;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -44,24 +51,14 @@ public class UserLayerDataService {
     static final int USERLAYER_BASE_LAYER_ID = PropertyUtil.getOptional(USERLAYER_BASELAYER_ID, -1);
     static final int USERLAYER_MAX_FEATURES_COUNT = PropertyUtil.getOptional(USERLAYER_MAXFEATURES_COUNT, -1);
 
-    /**
-     * @param gjsWorker geoJSON and featurecollection items
-     * @param user      oskari user
-     * @param fparams   user given attributes for layer
-     * @return user layer data in user_layer table
-     */
-
-    public UserLayer storeUserData(GeoJsonWorker gjsWorker, User user, Map<String, String> fparams) throws ServiceException {
-
-
-        final UserLayer userLayer = new UserLayer();
-        final UserLayerStyle style = new UserLayerStyle();
-        List <UserLayerData> userLayerDataList = new ArrayList<UserLayerData>();
-
-        log.info("user data store start: ", fparams);
-
-        //TODO: Style insert
+    public UserLayer storeUserData(SimpleFeatureCollection fc, User user, Map<String, String> fparams) throws ServiceException {
         try {
+            //TODO: Style insert
+            log.info("user data store start: ", fparams);
+            final UserLayer userLayer = new UserLayer();
+            final UserLayerStyle style = new UserLayerStyle();
+            List <UserLayerData> userLayerDataList = new ArrayList<UserLayerData>();
+
             style.setId(1);  // for default, even if style should be always valued
             //set style from json
             if (fparams.containsKey(KEY_STYLE)) {
@@ -70,18 +67,21 @@ public class UserLayerDataService {
                 style.populateFromJSON(stylejs);
             }
             //set userLayer
-            userLayer.setLayer_name(gjsWorker.getTypeName());
+            SimpleFeatureType ft = fc.getSchema();
+            userLayer.setLayer_name(ft.getTypeName());
             userLayer.setLayer_desc("");
             userLayer.setLayer_source("");
-            userLayer.setFields(parseFields(gjsWorker.getFeatureType()));
+            userLayer.setFields(parseFields(ft));
             userLayer.setUuid(user.getUuid());
+            // TODO: Store the bounds in WGS84
+            // ReferencedEnvelope env = fc.getBounds();
 
             if (fparams.containsKey(KEY_NAME)) userLayer.setLayer_name(fparams.get(KEY_NAME));
             if (fparams.containsKey(KEY_DESC)) userLayer.setLayer_desc(fparams.get(KEY_DESC));
             if (fparams.containsKey(KEY_SOURCE)) userLayer.setLayer_source(fparams.get(KEY_SOURCE));
 
             //get userLayerData list
-            userLayerDataList = this.getUserLayerData(gjsWorker.getGeoJson(), user, userLayer);
+            userLayerDataList = getUserLayerData(fc, user, userLayer);
 
             if (userLayerDataList.isEmpty()){
                 throw new ServiceException ("no_features");
@@ -89,65 +89,62 @@ public class UserLayerDataService {
             //insert layer, style and data in one transaction
             int count = userLayerService.insertUserLayer(userLayer, style, userLayerDataList);
             log.info("stored:",count, "rows from", userLayer.getFeatures_count(), "features and skipped:",userLayer.getFeatures_skipped());
+            return userLayer;
         } catch (Exception e) {
             log.error(e, "Unable to store user layer  data");
             throw new ServiceException ("unable_to_store_data");
         }
-        return userLayer;
     }
 
-
-    /**
-     * @param geoJson import data in geojson format
-     * @param user    oskari user
-     * @param userLayer      user layer id in user_layer table
-     * @return
-     */
-    public List <UserLayerData> getUserLayerData(JSONObject geoJson, User user, UserLayer userLayer) throws ServiceException{
-
-
-        int count = 0;
-        int noGeometry = 0;
-        List <UserLayerData> userLayerDataList = new ArrayList<UserLayerData>();
-        String uuid = user.getUuid();
-
+    private List<UserLayerData> getUserLayerData(SimpleFeatureCollection fc, User user, UserLayer userLayer) throws ServiceException{
+        SimpleFeatureIterator it = fc.features();
         try {
-            final JSONArray geofeas = geoJson.getJSONArray("features");
+            final List<UserLayerData> userLayerDataList = new ArrayList<>();
+            final String uuid = user.getUuid();
+            
+            int count = 0;
+            int noGeometry = 0;
 
-            // Loop json features and fix to user_layer_data structure
-            for (int i = 0; i < geofeas.length(); i++) {
-                JSONObject geofea = geofeas.optJSONObject(i);
-                if (geofea == null){
-                    continue;
-                }
-
-                if (!geofea.has("geometry") || geofea.optJSONObject("geometry")== null) {
+            while (it.hasNext()) {
+                SimpleFeature f = it.next();
+                UserLayerData uld = toUserLayerData(f, uuid);
+                if (uld == null) {
                     noGeometry++;
-                    continue;
-                }
-
-                // Fix fea properties  (user_layer_id, uuid, property_json, feature_id
-                final UserLayerData userLayerData = new UserLayerData();
-                userLayerData.setUuid(uuid);
-                userLayerData.setFeature_id(geofea.optString("id", ""));
-                userLayerData.setGeometry(geofea.optJSONObject("geometry").toString());
-                userLayerData.setProperty_json(geofea.optJSONObject("properties").toString());
-
-                userLayerDataList.add(userLayerData);
-
-                count++;
-                if (count > USERLAYER_MAX_FEATURES_COUNT && USERLAYER_MAX_FEATURES_COUNT != -1) {
-                    break;
+                } else {
+                    userLayerDataList.add(toUserLayerData(f, uuid));
+                    count++;
+                    if (count > USERLAYER_MAX_FEATURES_COUNT && USERLAYER_MAX_FEATURES_COUNT != -1) {
+                        break;
+                    }
                 }
             }
+            userLayer.setFeatures_count(count);
+            userLayer.setFeatures_skipped(noGeometry);
+            return userLayerDataList;
         } catch (Exception e) {
             log.error(e, "Failed to parse geojson features to userlayer data list");
             throw new ServiceException ("failed_to_parse_geojson");
+        } finally {
+            it.close();
         }
-        userLayer.setFeatures_count(count);
-        userLayer.setFeatures_skipped(noGeometry);
-        return userLayerDataList;
     }
+
+    private UserLayerData toUserLayerData(SimpleFeature f, String uuid) {
+        Geometry geometry = (Geometry) f.getDefaultGeometry();
+        if (geometry == null) {
+            return null;
+        }
+
+        // JSONObject geoJSON = GeoJSONWriter.writeFeature(f);
+        
+        final UserLayerData userLayerData = new UserLayerData();
+        userLayerData.setUuid(uuid);
+        userLayerData.setFeature_id(null); // geoJSON.optString("id"));
+        userLayerData.setGeometry(null); // (GeoJSONWriter.toGeoJSON());
+        userLayerData.setProperty_json(null); // .optJSONObject("properties").toString());
+        return userLayerData;
+    }
+
 
     /**
      * Returns the base WFS-layer for userlayers

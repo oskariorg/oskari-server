@@ -13,8 +13,8 @@ import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.ResponseHelper;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.oskari.map.userlayer.service.UserLayerDataService;
-import org.oskari.map.userlayer.service.UserLayerDbService;
+import org.oskari.service.userlayer.UserLayerDataService;
+import org.oskari.service.userlayer.UserLayerDbService;
 
 import java.util.List;
 

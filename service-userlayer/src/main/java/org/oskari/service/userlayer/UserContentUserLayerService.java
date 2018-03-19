@@ -1,4 +1,4 @@
-package org.oskari.map.userlayer.service;
+package org.oskari.service.userlayer;
 
 import fi.nls.oskari.annotation.Oskari;
 import fi.nls.oskari.db.DatasourceHelper;

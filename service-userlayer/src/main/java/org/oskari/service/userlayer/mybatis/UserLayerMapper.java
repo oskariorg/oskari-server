@@ -1,4 +1,4 @@
-package org.oskari.map.userlayer.service;
+package org.oskari.service.userlayer.mybatis;
 
 import fi.nls.oskari.domain.map.userlayer.UserLayer;
 import fi.nls.oskari.domain.map.userlayer.UserLayerData;

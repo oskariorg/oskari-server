@@ -1,7 +1,7 @@
 package org.oskari.control.userlayer.util;
 
 import java.io.File;
-import java.util.List;
+import java.util.Collection;
 
 /**
  * Helper class to for files.
@@ -61,7 +61,4 @@ public class FileHelper {
         return baseName.replace(".", "_") + "." + getExtension();
     }
 
-    public boolean isOfType(List<String> fileExtensions) {
-        return fileExtensions.contains(getExtension().toUpperCase());
-    }
 }

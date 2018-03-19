@@ -6,17 +6,14 @@ import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.ActionHandler;
 import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.control.ActionParamsException;
-import fi.nls.oskari.domain.User;
 import fi.nls.oskari.domain.map.userlayer.UserLayer;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import org.oskari.control.userlayer.util.FileHelper;
-import org.oskari.map.userlayer.domain.GPXGeoJsonCollection;
-import org.oskari.map.userlayer.domain.KMLGeoJsonCollection;
-import org.oskari.map.userlayer.domain.MIFGeoJsonCollection;
-import org.oskari.map.userlayer.domain.SHPGeoJsonCollection;
-import org.oskari.map.userlayer.service.GeoJsonWorker;
-import org.oskari.map.userlayer.service.UserLayerDataService;
+import org.oskari.service.userlayer.UserLayerDataService;
+import org.oskari.service.userlayer.input.FeatureCollectionParser;
+import org.oskari.service.userlayer.input.FeatureCollectionParsers;
+
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
@@ -24,7 +21,10 @@ import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
+import org.geotools.data.simple.SimpleFeatureCollection;
+import org.geotools.referencing.CRS;
 import org.json.JSONObject;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -42,13 +42,7 @@ import java.util.zip.ZipInputStream;
 @OskariActionRoute("CreateUserLayer")
 public class CreateUserLayerHandler extends ActionHandler {
 
-    private static final Logger log = LogFactory
-            .getLogger(CreateUserLayerHandler.class);
-    private static final List<String> ACCEPTED_FORMATS = Arrays.asList("SHP", "KML", "GPX", "MIF");
-    private static final String IMPORT_SHP = ".SHP";
-    private static final String IMPORT_GPX = ".GPX";
-    private static final String IMPORT_MIF = ".MIF";
-    private static final String IMPORT_KML = ".KML";
+    private static final Logger log = LogFactory.getLogger(CreateUserLayerHandler.class);
     private static final String PARAM_EPSG_KEY = "epsg";
     private static final String PARAM_SOURCE_EPSG_KEY = "sourceEpsg";
     private static final String USERLAYER_MAX_FILE_SIZE_MB = "userlayer.max.filesize.mb";
@@ -66,7 +60,6 @@ public class CreateUserLayerHandler extends ActionHandler {
      */
 
     private static File unZip(FileItem zipFile) throws Exception {
-
         FileHelper mainFile = null;
 
         try (ZipInputStream zis = new ZipInputStream(zipFile.getInputStream())){
@@ -97,7 +90,7 @@ public class CreateUserLayerHandler extends ActionHandler {
                 filesBaseName = file.getSavedTo().substring(0, i);
                 //Cut too long basename
 
-                if (mainFile == null && file.isOfType(ACCEPTED_FORMATS)) {
+                if (mainFile == null && FeatureCollectionParsers.isMainFile(file.getExtension())) {
                     mainFile = file;
                 }
                 zis.closeEntry();
@@ -165,51 +158,40 @@ public class CreateUserLayerHandler extends ActionHandler {
         }
         return file;
     }
-
+    
     @Override
     public void handleAction(ActionParameters params) throws ActionException {
-
         // stop here if user isn't logged in
         params.requireLoggedInUser();
 
         final String target_epsg = params.getHttpParam(PARAM_EPSG_KEY, "EPSG:3067");
         final String source_epsg = params.getHttpParam(PARAM_SOURCE_EPSG_KEY, defaultSourceEpsg);
         try {
-
             // Only 1st file item is handled
             RawUpLoadItem loadItem = getZipFiles(params);
 
             // Checks file size
-
             File file = unZip(loadItem.getFileitem());
-
             if (file == null) {
                 log.error("Couldn't find valid import file in zip file");
                 throw new ActionParamsException("invalid_file");
             }
-
-            User user = params.getUser();
-            // import format
-            GeoJsonWorker geojsonWorker = null;
-
-            if (file.getName().toUpperCase().indexOf(IMPORT_SHP) > -1) {
-                geojsonWorker = new SHPGeoJsonCollection();
-            } else if (file.getName().toUpperCase().indexOf(IMPORT_KML) > -1) {
-                geojsonWorker = new KMLGeoJsonCollection();
-            } else if (file.getName().toUpperCase().indexOf(IMPORT_GPX) > -1) {
-                geojsonWorker = new GPXGeoJsonCollection();
-            } else if (file.getName().toUpperCase().indexOf(IMPORT_MIF) > -1) {
-                geojsonWorker = new MIFGeoJsonCollection();
+            
+            String fileName = file.getName();
+            String fileExt = fileName.substring(fileName.lastIndexOf('.') + 1);
+            
+            FeatureCollectionParser parser = FeatureCollectionParsers.byFileExt(fileExt);
+            if (parser == null) {
+                throw new ActionParamsException("Unknown file format");
             }
-            // Parse import data to geojson
-            String status = geojsonWorker.parseGeoJSON(file, source_epsg, target_epsg);
-            if (status != null) {
-                throw new ActionException(status);
-            }
-
-
+            
+            SimpleFeatureCollection fc = parser.parse(file);
+            CoordinateReferenceSystem fileCrs = parser.getDeterminedProjection();
+            // final CoordinateReferenceSystem crs = fileCrs != null ? fileCrs : CRS.decode(source_epsg);
+            // TODO Check projection stuff
+            
             // Store geojson via Mybatis
-            UserLayer ulayer = userlayerService.storeUserData(geojsonWorker, user, loadItem.getFparams());
+            UserLayer ulayer = userlayerService.storeUserData(fc, params.getUser(), loadItem.getFparams());
 
             // Store failed
             if (ulayer == null) {
