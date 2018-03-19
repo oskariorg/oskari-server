@@ -1,25 +1,10 @@
 package fi.nls.oskari.control.statistics.xml;
 
-import fi.nls.oskari.domain.geo.Point;
-import fi.nls.oskari.log.LogFactory;
-import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.service.ServiceRuntimeException;
-import fi.nls.oskari.util.JSONHelper;
 import org.geotools.GML;
 import org.geotools.data.simple.SimpleFeatureCollection;
-import org.geotools.data.simple.SimpleFeatureIterator;
-import org.geotools.geojson.feature.FeatureJSON;
-import org.json.JSONObject;
-import org.opengis.feature.Property;
-import org.opengis.feature.simple.SimpleFeature;
-import com.vividsolutions.jts.geom.Geometry;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
 
 
 /**
@@ -41,43 +26,7 @@ import java.util.List;
  */
 public class WfsXmlParser {
 
-    private static final Logger LOG = LogFactory.getLogger(WfsXmlParser.class);
-
-    public static List<Region> parse(InputStream inputStream, String idProperty, String nameProperty) throws ServiceException {
-
-        List<Region> nameCodes = new ArrayList<>();
-        SimpleFeatureCollection fc = getFeatureCollection(inputStream);
-        SimpleFeatureIterator it = fc.features();
-
-        while (it.hasNext()) {
-            final SimpleFeature feature = it.next();
-            Property id = feature.getProperty(idProperty);
-            Property name = feature.getProperty(nameProperty);
-            if (id == null || name == null) {
-                LOG.warn("Couldn't find id (" + idProperty + ") and/or name(" + nameProperty +
-                        ") property for region. Properties are:" + LOG.getAsString(feature.getProperties()));
-                continue;
-            }
-            Region region = new Region(
-                    (String) id.getValue(),
-                    (String) name.getValue());
-            try {
-                region.setPointOnSurface(getPointOnSurface(feature));
-                region.setGeojson(getGeoJSON(feature, idProperty, nameProperty));
-                nameCodes.add(region);
-            } catch (Exception ex) {
-                LOG.warn("Region had invalid geometry:", region, "Error:", ex.getMessage());
-            }
-        }
-
-        if (nameCodes.isEmpty()) {
-            throw new ServiceException("Empty result, check configuration for region id-property=" +
-                    idProperty + " and name-property =" + nameProperty);
-        }
-        return nameCodes;
-    }
-
-    private static SimpleFeatureCollection getFeatureCollection(InputStream inputStream) {
+    public static SimpleFeatureCollection getFeatureCollection(InputStream inputStream) {
         try {
             GML gml = new GML(GML.Version.GML3);
             return gml.decodeFeatureCollection(inputStream);
@@ -86,37 +35,4 @@ public class WfsXmlParser {
         }
     }
 
-    private static JSONObject getGeoJSON(SimpleFeature feature, String idProp, String nameProp) throws IOException {
-        FeatureJSON fj = new FeatureJSON();
-        ByteArrayOutputStream os = new ByteArrayOutputStream();
-        fj.writeFeature(feature, os);
-        String json = os.toString();
-        JSONObject jsonObj = JSONHelper.createJSONObject(json);
-        JSONObject props = getProps(jsonObj);
-        if(props != null) {
-            String id = props.optString(idProp);
-            String name = props.optString(nameProp);
-            JSONObject newProps = new JSONObject();
-            JSONHelper.putValue(newProps, Region.KEY_CODE, id);
-            JSONHelper.putValue(newProps, Region.KEY_NAME, name);
-            JSONHelper.putValue(jsonObj, "properties", newProps);
-        }
-        return jsonObj;
-    }
-
-    private static JSONObject getProps(JSONObject geojson) {
-        if(geojson == null) {
-            return null;
-        }
-        return geojson.optJSONObject("properties");
-    }
-
-    private static Point getPointOnSurface(SimpleFeature feature) {
-
-        Geometry geometry = (Geometry)feature.getDefaultGeometry();
-        // " An interior point is guaranteed to lie in the interior of the Geometry, if it possible to
-        // calculate such a point exactly. Otherwise, the point may lie on the boundary of the geometry."
-        com.vividsolutions.jts.geom.Point pos = geometry.getInteriorPoint();
-        return new Point(pos.getX(), pos.getY());
-    }
 }

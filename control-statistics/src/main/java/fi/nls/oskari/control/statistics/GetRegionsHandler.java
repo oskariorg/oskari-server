@@ -13,6 +13,9 @@ import fi.nls.oskari.util.ResponseHelper;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.opengis.geometry.MismatchedDimensionException;
+import org.opengis.referencing.FactoryException;
+import org.opengis.referencing.operation.TransformException;
 
 import java.io.IOException;
 import java.util.List;
@@ -86,7 +89,7 @@ public class GetRegionsHandler extends ActionHandler {
         JSONHelper.putValue(response, KEY_REGIONS, regions);
 
         try {
-            final List<Region> result = regionset.getRegions(srs);
+            final List<Region> result = RegionSetHelper.getRegions(regionset, srs);
             for (Region region : result) {
                 regions.put(region.toJSON());
             }
@@ -96,6 +99,10 @@ public class GetRegionsHandler extends ActionHandler {
             throw new ActionException("Regionset provider misconfiguration.", e);
         } catch (ServiceRuntimeException e) {
             throw new ActionException("Regionset provider returned unexpected response.", e);
+        } catch (FactoryException | MismatchedDimensionException e) {
+            throw new ActionException("Failed to create transformation", e);
+        } catch (TransformException e) {
+            throw new ActionException("Failed to perform transformation", e);
         }
 
         JedisManager.setex(cacheKey, JedisManager.EXPIRY_TIME_DAY, response.toString());
