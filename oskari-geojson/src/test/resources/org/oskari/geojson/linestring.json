@@ -1,0 +1,10 @@
+{
+  "type": "Feature",
+  "geometry": {
+    "type": "LineString",
+    "coordinates": [[125.6, 10.1], [10.1, 125.6]]
+  },
+  "properties": {
+    "name": "Dinagat Islands"
+  }
+}
