@@ -41,7 +41,7 @@ public class GeoJSONTest {
 
     @Test
     public void testLineString() throws IOException, JSONException {
-        JSONObject json = ResourceHelper.readJSONResource("lineString.json", this);
+        JSONObject json = ResourceHelper.readJSONResource("linestring.json", this);
         SimpleFeature f = GeoJSONReader.toFeature(json);
         assertEquals(2, f.getProperties().size());
 
