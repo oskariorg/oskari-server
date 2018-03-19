@@ -41,12 +41,12 @@ public class RegionSetHelperTest {
     @Test
     public void testGeoJSONResourceFileWorks() throws MismatchedDimensionException, FactoryException, TransformException, ServiceException, IOException {
         String endPoint = "resources://kunnat2013.json";
-        RegionSet kunnatWFS = new RegionSet();
-        kunnatWFS.setId(-1);
-        kunnatWFS.setName("oskari:kunnat2013");
-        kunnatWFS.setSrs_name("EPSG:3067");
-        kunnatWFS.setAttributes(getAttributes("kuntakoodi", "kuntanimi", endPoint));
-        List<Region> regions = RegionSetHelper.getRegions(kunnatWFS, "EPSG:3067");
+        RegionSet kunnatJSON = new RegionSet();
+        kunnatJSON.setId(-1);
+        kunnatJSON.setName("oskari:kunnat2013");
+        kunnatJSON.setSrs_name("EPSG:3067");
+        kunnatJSON.setAttributes(getAttributes("kuntakoodi", "kuntanimi", endPoint));
+        List<Region> regions = RegionSetHelper.getRegions(kunnatJSON, "EPSG:3067");
         assertEquals(320, regions.size());
         for (Region region : regions) {
             if ("082".equals(region.getCode())) {
