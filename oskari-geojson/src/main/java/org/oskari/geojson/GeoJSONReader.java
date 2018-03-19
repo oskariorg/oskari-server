@@ -1,8 +1,16 @@
 package org.oskari.geojson;
 
+import java.util.Iterator;
+
+import org.geotools.data.simple.SimpleFeatureCollection;
+import org.geotools.feature.DefaultFeatureCollection;
+import org.geotools.feature.simple.SimpleFeatureBuilder;
+import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.opengis.feature.simple.SimpleFeature;
+import org.opengis.feature.simple.SimpleFeatureType;
 
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
@@ -16,30 +24,154 @@ import com.vividsolutions.jts.geom.MultiPolygon;
 import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.Polygon;
 
+/**
+ * Convert org.json.JSONObjects (that follow GeoJSON spec) to
+ *  - GeoTools SimpleFeature(Collection)s
+ *  - JTS Geometries
+ */
 public class GeoJSONReader {
 
     private static final GeometryFactory GF = new GeometryFactory();
 
-    private static final String GEOMETRY = "geometry";
-    private static final String TYPE = "type";
-    private static final String COORDINATES = "coordinates";
+    public static SimpleFeatureCollection toFeatureCollection(JSONObject json)
+            throws JSONException {
+        return toFeatureCollection(json, null);
+    }
 
-    public static Geometry toGeometry(JSONObject geometry) throws JSONException {
-        String geomType = geometry.getString(TYPE);
+    public static SimpleFeatureCollection toFeatureCollection(JSONObject json, SimpleFeatureBuilder builder)
+            throws JSONException {
+        String type = json.getString(GeoJSON.TYPE);
+        if (!GeoJSON.FEATURE_COLLECTION.equals(type)) {
+            throw new IllegalArgumentException("type was not " + GeoJSON.FEATURE_COLLECTION);
+        }
+
+        JSONArray features = json.getJSONArray(GeoJSON.FEATURES);
+        final int n = features.length();
+        if (n == 0) {
+            return new DefaultFeatureCollection();
+        }
+
+        if (builder == null) {
+            builder = getBuilder(features.getJSONObject(0));
+        }
+
+        DefaultFeatureCollection fc = new DefaultFeatureCollection();
+        for (int i = 0; i < n; i++) {
+            fc.add(toFeature(features.getJSONObject(i), builder));
+        }
+
+        return fc;
+    }
+
+    public static SimpleFeature toFeature(JSONObject json)
+            throws JSONException {
+        return toFeature(json, null);
+    }
+
+    public static SimpleFeature toFeature(JSONObject json, SimpleFeatureBuilder builder)
+            throws JSONException {
+        String type = json.getString(GeoJSON.TYPE);
+        if (!GeoJSON.FEATURE.equals(type)) {
+            throw new IllegalArgumentException("type was not " + GeoJSON.FEATURE);
+        }
+
+        if (builder == null) {
+            builder = getBuilder(json);
+        }
+
+        builder.reset();
+
+        JSONObject geometry = json.optJSONObject(GeoJSON.GEOMETRY);
+        if (geometry != null) {
+            builder.set("geom", toGeometry(geometry));
+        }
+
+        JSONObject properties = json.optJSONObject(GeoJSON.PROPERTIES);
+        if (properties != null) {
+            @SuppressWarnings("unchecked")
+            Iterator<String> keys = properties.keys();
+            while (keys.hasNext()) {
+                String name = keys.next();
+                Object value = properties.get(name);
+                builder.set(name, value);
+            }
+        }
+
+        String id = json.optString(GeoJSON.ID);
+        return builder.buildFeature(id);
+    }
+
+    public static SimpleFeatureBuilder getBuilder(JSONObject json)
+            throws JSONException {
+        String type = json.getString(GeoJSON.TYPE);
+        if (!GeoJSON.FEATURE.equals(type)) {
+            throw new IllegalArgumentException("type was not " + GeoJSON.FEATURE);
+        }
+
+        SimpleFeatureTypeBuilder b = new SimpleFeatureTypeBuilder();
+        b.setName("temp");
+        b.setNamespaceURI("http://oskari.org");
+
+        JSONObject geom = json.optJSONObject(GeoJSON.GEOMETRY);
+        if (geom != null) {
+            b.setDefaultGeometry("geom");
+            switch (geom.getString(GeoJSON.TYPE)) {
+            case GeoJSON.POINT:
+                b.add("geom", Point.class);
+                break;
+            case GeoJSON.LINESTRING:
+                b.add("geom", LineString.class);
+                break;
+            case GeoJSON.POLYGON:
+                b.add("geom", Polygon.class);
+                break;
+            case GeoJSON.MULTI_POINT:
+                b.add("geom", MultiPoint.class);
+                break;
+            case GeoJSON.MULTI_LINESTRING:
+                b.add("geom", MultiLineString.class);
+                break;
+            case GeoJSON.MULTI_POLYGON:
+                b.add("geom", MultiPolygon.class);
+                break;
+            case GeoJSON.GEOMETRY_COLLECTION:
+                b.add("geom", GeometryCollection.class);
+                break;
+            }
+        }
+
+        JSONObject properties = json.optJSONObject(GeoJSON.PROPERTIES);
+        if (properties != null) {
+            @SuppressWarnings("unchecked")
+            Iterator<String> keys = properties.keys();
+            while (keys.hasNext()) {
+                String name = keys.next();
+                Object value = properties.get(name);
+                b.add(name, value.getClass());
+            }
+        }
+
+        SimpleFeatureType t = b.buildFeatureType();
+        return new SimpleFeatureBuilder(t);
+    }
+
+    public static Geometry toGeometry(JSONObject geometry)
+            throws JSONException {
+        String geomType = geometry.getString(GeoJSON.TYPE);
         switch (geomType) {
-        case "Point":
+        case GeoJSON.POINT:
             return toPoint(geometry);
-        case "LineString":
+        case GeoJSON.LINESTRING:
             return toLineString(geometry);
-        case "Polygon":
+        case GeoJSON.POLYGON:
             return toPolygon(geometry);
-        case "MultiPoint":
+        case GeoJSON.MULTI_POINT:
             return toMultiPoint(geometry);
-        case "MultiLineString":
+        case GeoJSON.MULTI_LINESTRING:
             return toMultiLineString(geometry);
-        case "MultiPolygon":
+        case GeoJSON.MULTI_POLYGON:
             return toMultiPolygon(geometry);
-        case "GeometryCollection":
+        case GeoJSON.GEOMETRY_COLLECTION:
             return toGeometryCollection(geometry);
         default:
             throw new IllegalArgumentException("Invalid geometry type");
@@ -48,29 +180,29 @@ public class GeoJSONReader {
 
     public static Point toPoint(JSONObject geometry)
             throws JSONException {
-        return GF.createPoint(toCoordinate(geometry.getJSONArray(COORDINATES)));
+        return GF.createPoint(toCoordinate(geometry.getJSONArray(GeoJSON.COORDINATES)));
     }
 
     public static LineString toLineString(JSONObject geometry)
             throws JSONException {
-        Coordinate[] coordinates = toCoordinates(geometry.getJSONArray(COORDINATES));
+        Coordinate[] coordinates = toCoordinates(geometry.getJSONArray(GeoJSON.COORDINATES));
         return GF.createLineString(coordinates);
     }
 
     public static Polygon toPolygon(JSONObject geometry)
             throws JSONException {
-        return toPolygon(geometry.getJSONArray(COORDINATES));
+        return toPolygon(geometry.getJSONArray(GeoJSON.COORDINATES));
     }
 
     public static MultiPoint toMultiPoint(JSONObject geometry)
             throws JSONException {
-        Coordinate[] coordinates = toCoordinates(geometry.getJSONArray(COORDINATES));
+        Coordinate[] coordinates = toCoordinates(geometry.getJSONArray(GeoJSON.COORDINATES));
         return GF.createMultiPoint(coordinates);
     }
 
     public static MultiLineString toMultiLineString(JSONObject geometry)
             throws JSONException {
-        Coordinate[][] coordinates = toCoordinatesArray(geometry.getJSONArray(COORDINATES));
+        Coordinate[][] coordinates = toCoordinatesArray(geometry.getJSONArray(GeoJSON.COORDINATES));
         int n = coordinates.length;
         LineString[] lineStrings = new LineString[n];
         for (int i = 0; i < n; i++) {
@@ -81,7 +213,7 @@ public class GeoJSONReader {
 
     public static MultiPolygon toMultiPolygon(JSONObject geometry)
             throws JSONException {
-        JSONArray arrayOfPolygons = geometry.getJSONArray(COORDINATES);
+        JSONArray arrayOfPolygons = geometry.getJSONArray(GeoJSON.COORDINATES);
         int n = arrayOfPolygons.length();
         Polygon[] polygons = new Polygon[n];
         for (int i = 0; i < n; i++) {
@@ -92,7 +224,7 @@ public class GeoJSONReader {
 
     public static GeometryCollection toGeometryCollection(JSONObject geometry)
             throws JSONException {
-        JSONArray geometryArray = geometry.getJSONArray(GEOMETRY);
+        JSONArray geometryArray = geometry.getJSONArray(GeoJSON.GEOMETRY);
         int n = geometryArray.length();
         Geometry[] geometries = new Geometry[n];
         for (int i = 0; i < n; i++) {
@@ -136,4 +268,5 @@ public class GeoJSONReader {
         }
         return GF.createPolygon(exterior, interiors);
     }
+
 }
