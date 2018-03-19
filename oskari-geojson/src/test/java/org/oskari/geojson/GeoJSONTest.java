@@ -4,8 +4,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -18,14 +16,14 @@ import com.vividsolutions.jts.geom.LineString;
 import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.Polygon;
 
-import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.JSONHelper;
+import fi.nls.test.util.ResourceHelper;
 
 public class GeoJSONTest {
 
     @Test
     public void testPoint() throws JSONException, IOException {
-        JSONObject json = readResource("point.json");
+        JSONObject json = ResourceHelper.readJSONResource("point.json", this);
         SimpleFeature f = GeoJSONReader.toFeature(json);
         assertEquals(2, f.getProperties().size());
 
@@ -43,7 +41,7 @@ public class GeoJSONTest {
 
     @Test
     public void testLineString() throws IOException, JSONException {
-        JSONObject json = readResource("lineString.json");
+        JSONObject json = ResourceHelper.readJSONResource("lineString.json", this);
         SimpleFeature f = GeoJSONReader.toFeature(json);
         assertEquals(2, f.getProperties().size());
 
@@ -66,7 +64,7 @@ public class GeoJSONTest {
 
     @Test
     public void testPolygon() throws IOException, JSONException {
-        JSONObject json = readResource("polygon.json");
+        JSONObject json = ResourceHelper.readJSONResource("polygon.json", this);
         SimpleFeature f = GeoJSONReader.toFeature(json);
         assertEquals(2, f.getProperties().size());
 
@@ -86,12 +84,6 @@ public class GeoJSONTest {
 
         GeoJSONWriter w = new GeoJSONWriter();
         assertTrue(JSONHelper.isEqual(json, w.writeFeature(f)));
-    }
-
-    private JSONObject readResource(String name) throws JSONException, IOException {
-        try (InputStream in = GeoJSONTest.class.getResourceAsStream(name)) {
-            return new JSONObject(new String(IOHelper.readBytes(in), StandardCharsets.UTF_8));
-        }
     }
 
 }
