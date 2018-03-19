@@ -89,7 +89,7 @@ public class GeoJSONTest {
     }
 
     private JSONObject readResource(String name) throws JSONException, IOException {
-        try (InputStream in = getClass().getResourceAsStream(name)) {
+        try (InputStream in = GeoJSONTest.class.getResourceAsStream(name)) {
             return new JSONObject(new String(IOHelper.readBytes(in), StandardCharsets.UTF_8));
         }
     }
