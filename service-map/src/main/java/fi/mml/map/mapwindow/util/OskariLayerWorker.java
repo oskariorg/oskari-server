@@ -141,11 +141,12 @@ public class OskariLayerWorker {
                 continue;
             }
             try {
-                final JSONObject layerJson = FORMATTER.getJSON(layer, lang, isSecure);
+                final JSONObject layerJson = FORMATTER.getJSON(layer, lang, isSecure, crs);
 
-            	if (layerJson == null) {
+                if (layerJson == null) {
                     continue;
                 }
+                // TODO: handle inside formatter now that crs is available there
                 transformWKTGeom(layerJson, crs);
 
                 JSONObject permissions = getPermissions(user, permissionKey, permissionsList, downloadPermissionsList, editAccessList, dynamicPermissions);
