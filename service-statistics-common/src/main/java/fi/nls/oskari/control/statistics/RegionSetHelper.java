@@ -16,6 +16,7 @@ import org.geotools.feature.FeatureIterator;
 import org.geotools.geojson.feature.FeatureJSON;
 import org.geotools.geometry.jts.JTS;
 import org.geotools.referencing.CRS;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.opengis.feature.Property;
 import org.opengis.feature.simple.SimpleFeature;
@@ -24,6 +25,8 @@ import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.MathTransform;
 import org.opengis.referencing.operation.TransformException;
+import org.oskari.geojson.GeoJSON;
+import org.oskari.geojson.GeoJSONWriter;
 
 import com.vividsolutions.jts.geom.Geometry;
 
@@ -138,19 +141,19 @@ public class RegionSetHelper {
             List<Region> nameCodes = new ArrayList<>();
             while (it.hasNext()) {
                 final SimpleFeature feature = it.next();
-                Property id = feature.getProperty(idProperty);
-                Property name = feature.getProperty(nameProperty);
-                if (id == null || name == null) {
-                    LOG.warn("Couldn't find id (" + idProperty + ") and/or name(" + nameProperty +
-                            ") property for region. Properties are:" + LOG.getAsString(feature.getProperties()));
+                Property idProp = feature.getProperty(idProperty);
+                Property nameProp = feature.getProperty(nameProperty);
+                if (idProp == null || nameProp == null) {
+                    LOG.warn("Couldn't find id (", idProperty, ") and/or name(", nameProperty,
+                            ") property for region. Properties are:", LOG.getAsString(feature.getProperties()));
                     continue;
                 }
-                Region region = new Region(
-                        (String) id.getValue(),
-                        (String) name.getValue());
+                String id = (String) idProp.getValue();
+                String name = (String) nameProp.getValue();
+                Region region = new Region(id, name);
                 try {
                     region.setPointOnSurface(getPointOnSurface(feature));
-                    region.setGeojson(toGeoJSON(feature, idProperty, nameProperty));
+                    region.setGeojson(toGeoJSON((Geometry) feature.getDefaultGeometry(), id, name));
                     nameCodes.add(region);
                 } catch (Exception ex) {
                     LOG.warn("Region had invalid geometry:", region, "Error:", ex.getMessage());
@@ -159,7 +162,7 @@ public class RegionSetHelper {
 
             if (nameCodes.isEmpty()) {
                 throw new ServiceException("Empty result, check configuration for region id-property=" +
-                        idProperty + " and name-property =" + nameProperty);
+                        idProperty + " and name-property=" + nameProperty);
             }
             return nameCodes;
         } finally {
@@ -167,26 +170,19 @@ public class RegionSetHelper {
         }
     }
 
-    protected static JSONObject toGeoJSON(SimpleFeature feature, String idProp, String nameProp) throws IOException {
-        String json = FJ.toString(feature);
-        JSONObject jsonObj = JSONHelper.createJSONObject(json);
-        JSONObject props = getProps(jsonObj);
-        if(props != null) {
-            String id = props.optString(idProp);
-            String name = props.optString(nameProp);
-            JSONObject newProps = new JSONObject();
-            JSONHelper.putValue(newProps, Region.KEY_CODE, id);
-            JSONHelper.putValue(newProps, Region.KEY_NAME, name);
-            JSONHelper.putValue(jsonObj, "properties", newProps);
-        }
-        return jsonObj;
-    }
+    protected static JSONObject toGeoJSON(Geometry geom, String id, String name) throws JSONException {
+        JSONObject feature = new JSONObject();
+        JSONHelper.putValue(feature, GeoJSON.TYPE, GeoJSON.FEATURE);
 
-    private static JSONObject getProps(JSONObject geojson) {
-        if(geojson == null) {
-            return null;
-        }
-        return geojson.optJSONObject("properties");
+        JSONObject geometry = new GeoJSONWriter().writeGeometry(geom);
+        JSONHelper.putValue(feature, GeoJSON.GEOMETRY, geometry);
+
+        JSONObject properties = new JSONObject();
+        JSONHelper.putValue(properties, Region.KEY_CODE, id);
+        JSONHelper.putValue(properties, Region.KEY_NAME, name);
+        JSONHelper.putValue(feature, GeoJSON.PROPERTIES, properties);
+
+        return feature;
     }
 
     private static Point getPointOnSurface(SimpleFeature feature) {
