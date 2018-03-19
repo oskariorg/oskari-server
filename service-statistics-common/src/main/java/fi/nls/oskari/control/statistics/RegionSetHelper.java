@@ -18,7 +18,6 @@ import org.geotools.geometry.jts.JTS;
 import org.geotools.referencing.CRS;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.opengis.feature.Property;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.geometry.MismatchedDimensionException;
 import org.opengis.referencing.FactoryException;
@@ -136,20 +135,18 @@ public class RegionSetHelper {
 
     protected static List<Region> parse(SimpleFeatureCollection fc, String idProperty, String nameProperty)
             throws ServiceException {
-        SimpleFeatureIterator it = fc.features();
+        final SimpleFeatureIterator it = fc.features();
         try {
-            List<Region> nameCodes = new ArrayList<>();
+            final List<Region> nameCodes = new ArrayList<>();
             while (it.hasNext()) {
                 final SimpleFeature feature = it.next();
-                Property idProp = feature.getProperty(idProperty);
-                Property nameProp = feature.getProperty(nameProperty);
-                if (idProp == null || nameProp == null) {
+                final String id = (String) feature.getAttribute(idProperty);
+                final String name = (String) feature.getAttribute(nameProperty);
+                if (id == null || name == null) {
                     LOG.warn("Couldn't find id (", idProperty, ") and/or name(", nameProperty,
                             ") property for region. Properties are:", LOG.getAsString(feature.getProperties()));
                     continue;
                 }
-                String id = (String) idProp.getValue();
-                String name = (String) nameProp.getValue();
                 Region region = new Region(id, name);
                 try {
                     region.setPointOnSurface(getPointOnSurface(feature));
@@ -159,7 +156,6 @@ public class RegionSetHelper {
                     LOG.warn("Region had invalid geometry:", region, "Error:", ex.getMessage());
                 }
             }
-
             if (nameCodes.isEmpty()) {
                 throw new ServiceException("Empty result, check configuration for region id-property=" +
                         idProperty + " and name-property=" + nameProperty);
