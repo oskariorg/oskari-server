@@ -1,5 +1,6 @@
 package fi.nls.oskari.map.geometry;
 
+import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.CoordinateSequence;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.LineString;
@@ -109,6 +110,29 @@ public class GeometryHelper {
         double[] arr2 = new double[len * 2];
         System.arraycopy(arr, 0, arr2, 0, len);
         return arr2;
+    }
+
+    public static boolean isWithin(final CoordinateSequence cs,
+            final double minX, final double minY,
+            final double maxX, final double maxY) {
+        if (maxX < minX) {
+            throw new IllegalArgumentException("maxX < minX");
+        }
+        if (maxY < minY) {
+            throw new IllegalArgumentException("maxY < minY");
+        }
+        for (int i = 0; i < cs.size(); i++) {
+            Coordinate c = cs.getCoordinate(i);
+            double x = c.x;
+            double y = c.y;
+            if (x < minX || x > maxX) {
+                return false;
+            }
+            if (y < minY || y > maxY) {
+                return false;
+            }
+        }
+        return true;
     }
 
 }

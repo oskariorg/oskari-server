@@ -3,6 +3,7 @@ package fi.nls.oskari.map.geometry;
 import com.vividsolutions.jts.geom.CoordinateSequence;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryFactory;
+import com.vividsolutions.jts.geom.LineString;
 import com.vividsolutions.jts.geom.Polygon;
 import com.vividsolutions.jts.io.WKTReader;
 import com.vividsolutions.jts.io.WKTWriter;
@@ -22,6 +23,12 @@ public class WKTHelper {
     public final static String PROJ_EPSG_3067 = "EPSG:3067";
     private static final Logger log = LogFactory.getLogger(WKTHelper.class);
     public final static CoordinateReferenceSystem CRS_EPSG_4326 = getCRS(PROJ_EPSG_4326);
+
+    private static final double INTEPOLATE_THRESHHOLD = 1.0;
+    private static final double WGS84_LON_MIN = -180.0;
+    private static final double WGS84_LON_MAX=   180.0;
+    private static final double WGS84_LAT_MIN =  -90.0;
+    private static final double WGS84_LAT_MAX =   90.0;
 
     /**
      * @param geometry  original geometry
@@ -87,7 +94,15 @@ public class WKTHelper {
             return null;
         }
         Polygon polygon = (Polygon) geom;
-        CoordinateSequence cs = GeometryHelper.interpolateLinear(polygon.getExteriorRing(), 1.0, gf);
+        LineString exterior = polygon.getExteriorRing();
+        boolean withinWGS84Bounds = GeometryHelper.isWithin(exterior.getCoordinateSequence(),
+                WGS84_LON_MIN, WGS84_LAT_MIN,
+                WGS84_LON_MAX, WGS84_LAT_MAX);
+        if (!withinWGS84Bounds) {
+            log.info("Layer coverage not within WGS84 bounds, not interpolating or transforming extent");
+            return wkt;
+        }
+        CoordinateSequence cs = GeometryHelper.interpolateLinear(exterior, INTEPOLATE_THRESHHOLD, gf);
         polygon = gf.createPolygon(cs);
         // input axis orientation is / must be x=lon y=lat
         CoordinateReferenceSystem targetCrs = getCRS(targetSRS);
