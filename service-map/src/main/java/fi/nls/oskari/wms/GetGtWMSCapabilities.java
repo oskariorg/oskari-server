@@ -264,7 +264,7 @@ OnlineResource xlink:type="simple" xlink:href="http://www.paikkatietohakemisto.f
             oskariLayerCapabilities.put("styles", styles);
             oskariLayer.setCapabilities(oskariLayerCapabilities);
 
-            JSONObject json = FORMATTER.getJSON(oskariLayer, PropertyUtil.getDefaultLanguage(), false);
+            JSONObject json = FORMATTER.getJSON(oskariLayer, PropertyUtil.getDefaultLanguage(), false, currentCrs);
 
             // add/modify admin specific fields
             OskariLayerWorker.modifyCommonFieldsForEditing(json, oskariLayer);

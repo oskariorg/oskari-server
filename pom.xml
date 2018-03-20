@@ -414,6 +414,12 @@
 
             <dependency>
                 <groupId>org.oskari</groupId>
+                <artifactId>oskari-geojson</artifactId>
+                <version>${fi.nls.oskari.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.oskari</groupId>
                 <artifactId>control-userlayer</artifactId>
                 <version>${fi.nls.oskari.version}</version>
             </dependency>
@@ -707,6 +713,11 @@
             <dependency>
                 <groupId>org.geotools</groupId>
                 <artifactId>gt-main</artifactId>
+                <version>${geotools.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.geotools</groupId>
+                <artifactId>gt-opengis</artifactId>
                 <version>${geotools.version}</version>
             </dependency>
             <dependency>
@@ -1154,6 +1165,8 @@
 
         <module>service-wcs</module>
         <module>oskari-utils</module>
+        <module>oskari-geojson</module>
+
         <module>control-userlayer</module>
         <module>service-userlayer</module>
     </modules>
