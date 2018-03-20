@@ -24,7 +24,7 @@ public class WKTHelper {
     private static final Logger log = LogFactory.getLogger(WKTHelper.class);
     public final static CoordinateReferenceSystem CRS_EPSG_4326 = getCRS(PROJ_EPSG_4326);
 
-    private static final double INTEPOLATE_THRESHOLD = 1.0;
+    private static final double INTERPOLATE_THRESHOLD = 1.0;
     private static final double WGS84_LON_MIN = -180.0;
     private static final double WGS84_LON_MAX=   180.0;
     private static final double WGS84_LAT_MIN =  -90.0;
@@ -85,12 +85,17 @@ public class WKTHelper {
     /**
      * @param wkt       original geometry in EPSG:4326
      * @param targetSRS "EPSG:3067"
-     * @return projected geometry as wkt
+     * @return null if:
+     *  - geometry is null
+     *  - geometry is not a Polygon
+     *  - any of the coordinates in the exterior ring is not within [-180,-90,180,90]
+     *  otherwise return the exterior ring of the polygon projected to the targetSRS and
+     *  possibly with extra interpolated points in-between of the original segments
      */
     public static String transformLayerCoverage(final String wkt, final String targetSRS) {
         GeometryFactory gf = new GeometryFactory();
         Geometry geom = parseWKT(wkt, gf);
-        if (geom == null) {
+        if (geom == null || !(geom instanceof Polygon)) {
             return null;
         }
         Polygon polygon = (Polygon) geom;
@@ -100,9 +105,9 @@ public class WKTHelper {
                 WGS84_LON_MAX, WGS84_LAT_MAX);
         if (!withinWGS84Bounds) {
             log.info("Layer coverage not within WGS84 bounds, not interpolating or transforming extent");
-            return wkt;
+            return null;
         }
-        CoordinateSequence cs = GeometryHelper.interpolateLinear(exterior, INTEPOLATE_THRESHOLD, gf);
+        CoordinateSequence cs = GeometryHelper.interpolateLinear(exterior, INTERPOLATE_THRESHOLD, gf);
         polygon = gf.createPolygon(cs);
         // input axis orientation is / must be x=lon y=lat
         CoordinateReferenceSystem targetCrs = getCRS(targetSRS);
