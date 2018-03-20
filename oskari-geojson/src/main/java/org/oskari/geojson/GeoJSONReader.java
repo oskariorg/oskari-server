@@ -32,6 +32,7 @@ import com.vividsolutions.jts.geom.Polygon;
 public class GeoJSONReader {
 
     private static final GeometryFactory GF = new GeometryFactory();
+    private static final String GEOM_ATTRIBUTE = "geometry";
 
     public static SimpleFeatureCollection toFeatureCollection(JSONObject json)
             throws JSONException {
@@ -83,7 +84,7 @@ public class GeoJSONReader {
 
         JSONObject geometry = json.optJSONObject(GeoJSON.GEOMETRY);
         if (geometry != null) {
-            builder.set("geom", toGeometry(geometry));
+            builder.set(GEOM_ATTRIBUTE, toGeometry(geometry));
         }
 
         JSONObject properties = json.optJSONObject(GeoJSON.PROPERTIES);
@@ -114,28 +115,28 @@ public class GeoJSONReader {
 
         JSONObject geom = json.optJSONObject(GeoJSON.GEOMETRY);
         if (geom != null) {
-            b.setDefaultGeometry("geom");
+            b.setDefaultGeometry(GEOM_ATTRIBUTE);
             switch (geom.getString(GeoJSON.TYPE)) {
             case GeoJSON.POINT:
-                b.add("geom", Point.class);
+                b.add(GEOM_ATTRIBUTE, Point.class);
                 break;
             case GeoJSON.LINESTRING:
-                b.add("geom", LineString.class);
+                b.add(GEOM_ATTRIBUTE, LineString.class);
                 break;
             case GeoJSON.POLYGON:
-                b.add("geom", Polygon.class);
+                b.add(GEOM_ATTRIBUTE, Polygon.class);
                 break;
             case GeoJSON.MULTI_POINT:
-                b.add("geom", MultiPoint.class);
+                b.add(GEOM_ATTRIBUTE, MultiPoint.class);
                 break;
             case GeoJSON.MULTI_LINESTRING:
-                b.add("geom", MultiLineString.class);
+                b.add(GEOM_ATTRIBUTE, MultiLineString.class);
                 break;
             case GeoJSON.MULTI_POLYGON:
-                b.add("geom", MultiPolygon.class);
+                b.add(GEOM_ATTRIBUTE, MultiPolygon.class);
                 break;
             case GeoJSON.GEOMETRY_COLLECTION:
-                b.add("geom", GeometryCollection.class);
+                b.add(GEOM_ATTRIBUTE, GeometryCollection.class);
                 break;
             }
         }
