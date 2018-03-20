@@ -24,7 +24,7 @@ public class WKTHelper {
     private static final Logger log = LogFactory.getLogger(WKTHelper.class);
     public final static CoordinateReferenceSystem CRS_EPSG_4326 = getCRS(PROJ_EPSG_4326);
 
-    private static final double INTEPOLATE_THRESHHOLD = 1.0;
+    private static final double INTEPOLATE_THRESHOLD = 1.0;
     private static final double WGS84_LON_MIN = -180.0;
     private static final double WGS84_LON_MAX=   180.0;
     private static final double WGS84_LAT_MIN =  -90.0;
@@ -102,7 +102,7 @@ public class WKTHelper {
             log.info("Layer coverage not within WGS84 bounds, not interpolating or transforming extent");
             return wkt;
         }
-        CoordinateSequence cs = GeometryHelper.interpolateLinear(exterior, INTEPOLATE_THRESHHOLD, gf);
+        CoordinateSequence cs = GeometryHelper.interpolateLinear(exterior, INTEPOLATE_THRESHOLD, gf);
         polygon = gf.createPolygon(cs);
         // input axis orientation is / must be x=lon y=lat
         CoordinateReferenceSystem targetCrs = getCRS(targetSRS);
