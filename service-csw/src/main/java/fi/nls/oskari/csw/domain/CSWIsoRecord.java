@@ -171,21 +171,17 @@ public class CSWIsoRecord {
         JSONHelper.putValue(ret, "onlineResources", arr);
         //TODO: should we create toJSON() instead of using ObjectMapper
         ObjectMapper mapper = new ObjectMapper();
-        String json = "";
         try {
             arr = new JSONArray();
             for (DataQuality dqNode: dataQualityObject.getDataQualities()){
-                json = mapper.writeValueAsString(dqNode);
+                String json = mapper.writeValueAsString(dqNode);
                 arr.put(JSONHelper.createJSONObject(json));
             }
         } catch (Exception e) {
             // TODO?
         }
         JSONHelper.putValue(ret, "dataQualities", arr);
-        arr = new JSONArray();
-        for (String lineage : dataQualityObject.getLineageStatements()){
-            arr.put(lineage);
-        }
+        arr = new JSONArray(dataQualityObject.getLineageStatements());
         JSONHelper.putValue(ret, "lineageStatements", arr);
         return ret;
     }
@@ -699,6 +695,7 @@ public class CSWIsoRecord {
             private Date date;
             private String dateType;
             private String xmlDate;
+            final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
 
             public String getXmlDate() {
                 return xmlDate;
@@ -729,7 +726,6 @@ public class CSWIsoRecord {
                 String formattedDate = null;
                 if (xmlDate == null || xmlDate.isEmpty()) {
                     try {
-                        final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
                         formattedDate = sdf.format(date);
                     } catch (Exception e){
                         //do nothing

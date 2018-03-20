@@ -21,31 +21,31 @@ public class CSWISORecordDataQualityParser {
     private static XPathExpression XPATH_LINEAGE_STATEMENT = null;
 
     //Data quality node information
-    private final static XPath xpath = XPathFactory.newInstance().newXPath();
-    private final static Map<String, String> dataQualities = new LinkedMap();
-    private static XPathExpression XPATH_NAME_OF_MEASURE = null; //many
-    private static XPathExpression XPATH_MEASURE_IDENTIFICATION_CODE = null;
-    private static XPathExpression XPATH_MEASURE_IDENTIFICATION_AUTHORIZATION = null;
-    private static XPathExpression XPATH_MEASURE_DESCRIPTION = null;
-    private static XPathExpression XPATH_EVALUATION_METHOD_TYPE = null;
-    private static XPathExpression XPATH_EVALUATION_METHOD_DESCRIPTION = null;
-    private static XPathExpression XPATH_EVALUATION_PROCEDURE = null; //TODO parse
-    private static XPathExpression XPATH_DATE_TIME = null; //many
+    private final XPath xpath = XPathFactory.newInstance().newXPath();
+    private final Map<String, String> dataQualities = new LinkedMap();
+    private XPathExpression XPATH_NAME_OF_MEASURE = null; //many
+    private XPathExpression XPATH_MEASURE_IDENTIFICATION_CODE = null;
+    private XPathExpression XPATH_MEASURE_IDENTIFICATION_AUTHORIZATION = null;
+    private XPathExpression XPATH_MEASURE_DESCRIPTION = null;
+    private XPathExpression XPATH_EVALUATION_METHOD_TYPE = null;
+    private XPathExpression XPATH_EVALUATION_METHOD_DESCRIPTION = null;
+    private XPathExpression XPATH_EVALUATION_PROCEDURE = null; //TODO parse
+    private XPathExpression XPATH_DATE_TIME = null; //many
 
     //Data quality node conformance result
-    private static XPathExpression XPATH_CONFORMANCE_RESULT = null;
-    private static XPathExpression XPATH_CONFORMANCE_RESULT_SPECIFICATION_TITLE = null;
-    private static XPathExpression XPATH_CONFORMANCE_RESULT_EXPLANATION = null;
-    private static XPathExpression XPATH_CONFORMANCE_RESULT_PASS = null;
+    private XPathExpression XPATH_CONFORMANCE_RESULT = null;
+    private XPathExpression XPATH_CONFORMANCE_RESULT_SPECIFICATION_TITLE = null;
+    private XPathExpression XPATH_CONFORMANCE_RESULT_EXPLANATION = null;
+    private XPathExpression XPATH_CONFORMANCE_RESULT_PASS = null;
 
     //Data quality node quantitative result
-    private static XPathExpression XPATH_QUANTITATIVE_RESULT = null;
-    private static XPathExpression XPATH_QUANTITATIVE_RESULT_VALUE_TYPE = null;
-    private static XPathExpression XPATH_QUANTITATIVE_RESULT_VALUE_UNIT = null;
-    private static XPathExpression XPATH_QUANTITATIVE_RESULT_ERROR_STATISTIC = null;
-    private static XPathExpression XPATH_QUANTITATIVE_RESULT_VALUE = null;
+    private XPathExpression XPATH_QUANTITATIVE_RESULT = null;
+    private XPathExpression XPATH_QUANTITATIVE_RESULT_VALUE_TYPE = null;
+    private XPathExpression XPATH_QUANTITATIVE_RESULT_VALUE_UNIT = null;
+    private XPathExpression XPATH_QUANTITATIVE_RESULT_ERROR_STATISTIC = null;
+    private XPathExpression XPATH_QUANTITATIVE_RESULT_VALUE = null;
     //Free text (character string)
-    private static XPathExpression XPATH_CHARACTER_STRING = null;
+    private XPathExpression XPATH_CHARACTER_STRING = null;
 
     public CSWISORecordDataQualityParser() {
         dataQualities.put("absoluteExternalPositionalAccuracy", "./gmd:report/gmd:DQ_AbsoluteExternalPositionalAccuracy");
@@ -105,9 +105,7 @@ public class CSWISORecordDataQualityParser {
         pathToLocalizedValue = pathToLoc;
 
         CSWIsoRecord.DataQualityObject dataQualityObject = new CSWIsoRecord.DataQualityObject();
-        List<CSWIsoRecord.DataQuality> dataQualityList = dataQualityObject.getDataQualities();
-        CSWIsoRecord.DataQuality dataQuality;
-        String lineageStatement;
+        List<CSWIsoRecord.DataQuality> dataQualityList = new ArrayList<>();
 
         for (int i = 0; i < dataQualityNodes.getLength(); i++) {
             Node parentNode = dataQualityNodes.item(i);
@@ -117,7 +115,7 @@ public class CSWISORecordDataQualityParser {
             // parse lineage statements
             Node lineageStatementNode = (Node) XPATH_LINEAGE_STATEMENT.evaluate(parentNode, XPathConstants.NODE);
             if (lineageStatementNode != null){
-                lineageStatement = localize(lineageStatementNode);
+                String lineageStatement = localize(lineageStatementNode);
                 if (lineageStatement != null){
                     dataQualityObject.getLineageStatements().add(lineageStatement);
                 }
@@ -134,7 +132,7 @@ public class CSWISORecordDataQualityParser {
                     continue;
                 }
                 for (int j = 0;j < dataQualityChildNodes.getLength(); ++j) {
-                    dataQuality = new CSWIsoRecord.DataQuality();
+                    CSWIsoRecord.DataQuality dataQuality = new CSWIsoRecord.DataQuality();
                     dataQuality.setNodeName(key);
                     getDataQualityNodeInformation(dataQualityChildNodes.item(j), dataQuality);
 
@@ -157,7 +155,7 @@ public class CSWISORecordDataQualityParser {
         dataQualityObject.setDataQualities(dataQualityList);
         return dataQualityObject;
     }
-    //
+
     private void getDataQualityNodeInformation(Node parentNode, CSWIsoRecord.DataQuality dataQualityObjectNode)  throws XPathExpressionException {
         Node nameOfMeasureNode = (Node) XPATH_NAME_OF_MEASURE.evaluate(parentNode, XPathConstants.NODE);
         dataQualityObjectNode.setNameOfMeasure(localize(nameOfMeasureNode));
@@ -229,20 +227,21 @@ public class CSWISORecordDataQualityParser {
     private String localize(final Node elem) {
         String ret = null;
         String localized;
-        if (elem != null) {
-            try {
-                Node contentNode = (Node) XPATH_CHARACTER_STRING.evaluate(elem, XPathConstants.NODE);
-                ret = getText(contentNode);
-                if (pathToLocalizedValue != null){
-                    final Node localeNode = (Node) pathToLocalizedValue.evaluate(contentNode, XPathConstants.NODE);
-                    localized  = getText(localeNode);
-                    if (localized != null && !localized.isEmpty()) {
-                        ret = localized;
-                    }
+        if (elem == null) {
+            return null;
+        }
+        try {
+            Node contentNode = (Node) XPATH_CHARACTER_STRING.evaluate(elem, XPathConstants.NODE);
+            ret = getText(contentNode);
+            if (pathToLocalizedValue != null){
+                final Node localeNode = (Node) pathToLocalizedValue.evaluate(contentNode, XPathConstants.NODE);
+                localized  = getText(localeNode);
+                if (localized != null && !localized.isEmpty()) {
+                    ret = localized;
                 }
-            } catch (Exception e) {
-                log.warn("Error parsing localized value for:", elem.getLocalName(), ". Message:", e.getMessage());
             }
+        } catch (Exception e) {
+            log.warn("Error parsing localized value for:", elem.getLocalName(), ". Message:", e.getMessage());
         }
         return ret;
     }
