@@ -6,7 +6,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.BufferedInputStream;
-import java.io.BufferedReader;
+import java.io.Reader;
 
 import static org.junit.Assert.assertTrue;
 
@@ -44,25 +44,25 @@ public class HttpHelperTest {
 	
 	@Test
 	public void testReaderGetRequest() {
-		BufferedReader responseReader = HttpHelper.getRequestReader("http://httpbin.org/ip", "text/html", null, null);
+	    Reader responseReader = HttpHelper.getRequestReader("http://httpbin.org/ip", "text/html", null, null);
 		assertTrue("Should get buffer", responseReader != null);
 	}
 	
 	@Test
 	public void testReaderGetRequestFail() {
-		BufferedReader responseReader = HttpHelper.getRequestReader("http://httpbin.org/asda", "text/html", null, null);
+	    Reader responseReader = HttpHelper.getRequestReader("http://httpbin.org/asda", "text/html", null, null);
 		assertTrue("Shouldn't get buffer", responseReader == null);
 	}
 	
 	@Test
 	public void testPostRequestSuccess() {
-		BufferedReader responseReader = HttpHelper.postRequestReader("http://httpbin.org/post", "text/html", "test", null, null);
+	    Reader responseReader = HttpHelper.postRequestReader("http://httpbin.org/post", "text/html", "test", null, null);
 		assertTrue("Should get buffer", responseReader != null);
 	}
 	
 	@Test
 	public void testPostRequestFail() {
-		BufferedReader responseReader = HttpHelper.postRequestReader("http://httpbin.org/asda", "text/html", "test", null, null);
+	    Reader responseReader = HttpHelper.postRequestReader("http://httpbin.org/asda", "text/html", "test", null, null);
 		assertTrue("Shouldn't get buffer", responseReader == null);
 	}
 }

@@ -37,52 +37,13 @@
                         "mapmodule": {
                             "bundlePath": "/Oskari/packages/mapping/ol3/"
                         },
-                        "service-base": {
-                            "bundlePath": "/Oskari/packages/framework/bundle/"
-                        },
-                        "event-map-layer": {
-                            "bundlePath": "/Oskari/packages/framework/bundle/"
-                        },
-                        "request-map-layer": {
-                            "bundlePath": "/Oskari/packages/framework/bundle/"
-                        },
                         "ui-components": {
-                            "bundlePath": "/Oskari/packages/framework/bundle/"
-                        },
-                        "event-base": {
                             "bundlePath": "/Oskari/packages/framework/bundle/"
                         },
                         "mapfull": {
                             "bundlePath": "/Oskari/packages/framework/bundle/"
                         },
-                        "core-base": {
-                            "bundlePath": "/Oskari/packages/framework/bundle/"
-                        },
                         "oskariui": {
-                            "bundlePath": "/Oskari/packages/framework/bundle/"
-                        },
-                        "request-base": {
-                            "bundlePath": "/Oskari/packages/framework/bundle/"
-                        },
-                        "domain": {
-                            "bundlePath": "/Oskari/packages/framework/bundle/"
-                        },
-                        "core-map": {
-                            "bundlePath": "/Oskari/packages/framework/bundle/"
-                        },
-                        "request-map": {
-                            "bundlePath": "/Oskari/packages/framework/bundle/"
-                        },
-                        "sandbox-base": {
-                            "bundlePath": "/Oskari/packages/framework/bundle/"
-                        },
-                        "service-map": {
-                            "bundlePath": "/Oskari/packages/framework/bundle/"
-                        },
-                        "sandbox-map": {
-                            "bundlePath": "/Oskari/packages/framework/bundle/"
-                        },
-                        "event-map": {
                             "bundlePath": "/Oskari/packages/framework/bundle/"
                         }
                     }
@@ -100,7 +61,6 @@
                     "srsName": "EPSG:4326",
                     "resolutions": [0.500, 0.250, 0.125, 0.063, 0.032, 0.016, 0.010, 0.007, 0.003]
                 },
-                "globalMapAjaxUrl": "[REPLACED BY HANDLER]",
                 "plugins": [
                     {
                         "id": "Oskari.mapframework.bundle.mapmodule.plugin.LayersPlugin"

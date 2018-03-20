@@ -11,6 +11,7 @@ import fi.nls.oskari.search.util.SearchUtil;
 import fi.nls.oskari.search.util.StreetNameComparator;
 import fi.nls.oskari.search.util.WFSOsoitenimiFilterMaker;
 import fi.nls.oskari.util.PropertyUtil;
+import fi.nls.oskari.util.XmlHelper;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -67,8 +68,8 @@ public abstract class BaseWfsAddressChannelSearchService extends SearchChannel {
             }
             URLConnection conn = getConnection(queryUrl);
             InputStream ins = conn.getInputStream();
-                        
-            DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+
+            DocumentBuilderFactory dbf = XmlHelper.newDocumentBuilderFactory();
 
             DocumentBuilder db = dbf.newDocumentBuilder();
 

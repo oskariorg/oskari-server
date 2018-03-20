@@ -13,8 +13,8 @@ import org.junit.Test;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 
-import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -67,7 +67,7 @@ public class WFSParserTest {
 
 		// request (maplayer_id 216)
 		// FIXME: instead of making actual http request, record an expected response and parse it.
-        BufferedReader response = HttpHelper.postRequestReader(this.layer.getURL(), "", payload, this.layer.getUsername(), this.layer.getPassword());
+		Reader response = HttpHelper.postRequestReader(this.layer.getURL(), "", payload, this.layer.getUsername(), this.layer.getPassword());
 		assertTrue("Should get valid response", response != null);
 
 		// parse

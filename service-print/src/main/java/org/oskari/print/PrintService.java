@@ -10,33 +10,33 @@ import java.util.List;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.oskari.print.request.PrintLayer;
 import org.oskari.print.request.PrintRequest;
-import org.oskari.print.wmts.TileMatrixSetCache;
+import org.oskari.print.wmts.WMTSCapabilitiesCache;
 
 public class PrintService {
 
-    private TileMatrixSetCache tmsCache;
+    private WMTSCapabilitiesCache wmtsCapsCache;
 
     public PrintService() {
-        this(new TileMatrixSetCache());
+        this(new WMTSCapabilitiesCache());
     }
 
     public PrintService(CapabilitiesCacheService capCacheService) {
-        this(new TileMatrixSetCache(capCacheService));
+        this(new WMTSCapabilitiesCache(capCacheService));
     }
 
-    public PrintService(TileMatrixSetCache tmsCache) {
-        this.tmsCache = tmsCache;
+    public PrintService(WMTSCapabilitiesCache wmtsCapsCache) {
+        this.wmtsCapsCache = wmtsCapsCache;
     }
 
     public BufferedImage getPNG(PrintRequest request) throws ServiceException {
         request.setLayers(filterLayersWithZeroOpacity(request.getLayers()));
-        return PNG.getBufferedImage(request, tmsCache);
+        return PNG.getBufferedImage(request, wmtsCapsCache);
     }
 
     public void getPDF(PrintRequest request, PDDocument doc)
             throws IOException, ServiceException {
         request.setLayers(filterLayersWithZeroOpacity(request.getLayers()));
-        PDF.getPDF(request, doc, tmsCache);
+        PDF.getPDF(request, doc, wmtsCapsCache);
     }
 
     private static List<PrintLayer> filterLayersWithZeroOpacity(List<PrintLayer> layers) {

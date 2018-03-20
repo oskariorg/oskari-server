@@ -27,7 +27,7 @@ public class PersonalDataHandler extends BundleHandler {
         final JSONObject config = getBundleConfig(params.getConfig());
         if(!config.has(PROFILE_URL)) {
             // only write if not configured in db
-            JSONHelper.putValue(config, PROFILE_URL, PropertyUtil.getLocalizableProperty("auth.register.url", defaultValue));
+            JSONHelper.putValue(config, PROFILE_URL, PropertyUtil.getLocalizableProperty("auth.profile.url", defaultValue));
             return true;
         }
         return false;

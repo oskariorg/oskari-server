@@ -1,5 +1,6 @@
 package fi.nls.oskari.search.util;
 
+import fi.nls.oskari.util.XmlHelper;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Text;
@@ -34,7 +35,7 @@ public class WFSOsoitenimiFilterMaker {
 			//Creating an empty XML Document
 
             //We need a Document
-			DocumentBuilderFactory dbfac = DocumentBuilderFactory.newInstance();
+			DocumentBuilderFactory dbfac = XmlHelper.newDocumentBuilderFactory();
 			DocumentBuilder docBuilder = dbfac.newDocumentBuilder();
             Document doc = docBuilder.newDocument();
 
@@ -106,8 +107,8 @@ public class WFSOsoitenimiFilterMaker {
             //Output the XML
 
             //set up a transformer
-            TransformerFactory transfac = TransformerFactory.newInstance();
-            Transformer trans = transfac.newTransformer();
+            TransformerFactory transformerFactory = XmlHelper.newTransformerFactory();
+            Transformer trans = transformerFactory.newTransformer();
             trans.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
             //trans.setOutputProperty(OutputKeys.INDENT, "yes");
 			

@@ -10,9 +10,10 @@ import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.service.capabilities.CapabilitiesCacheService;
 import fi.nls.oskari.service.capabilities.OskariLayerCapabilities;
 import fi.nls.oskari.util.ResponseHelper;
-import fi.nls.oskari.util.ServiceFactory;
 
 import javax.servlet.http.HttpServletResponse;
+
+import org.oskari.service.util.ServiceFactory;
 
 import static fi.nls.oskari.control.ActionConstants.KEY_ID;
 

@@ -37,6 +37,7 @@ public class UserLayerProcessor implements LayerProcessor {
         excludedProperties.add("created");
         excludedProperties.add("updated");
         excludedProperties.add("attention_text");
+        excludedProperties.add("id");
     }
 
     private ObjectMapper mapper = new ObjectMapper();

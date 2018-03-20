@@ -95,6 +95,9 @@ public class JSONHelper {
         }
     }
     public static final JSONArray getJSONArray(final JSONObject content, String key) {
+        if (content == null) {
+            return null;
+        }
         try {
             return content.getJSONArray(key);
         } catch (JSONException e) {
@@ -382,7 +385,14 @@ public class JSONHelper {
                         log.debug("value1 was <null>, but value2 was:" + value2);
                         return false;
                     }
-                }  else if (!value1.equals(value2)) {
+                } else if (value1 instanceof Number && value2 instanceof Number) {
+                    double v1 = ((Number) value1).doubleValue();
+                    double v2 = ((Number) value2).doubleValue();
+                    if (Math.abs(v1-v2) > 1e-6) {
+                        log.debug("Values were not equal:", value1, "!=", value2);
+                        return false;
+                    }
+                } else if (!value1.equals(value2)) {
                     log.debug("Values were not equal:", value1, "!=", value2);
                     return false;
                 }
@@ -473,4 +483,43 @@ public class JSONHelper {
         }
         return result;
     }
+
+    /**
+     * Returns optional String from obj.key
+     * JSONObject.optString() returns "null" if the thing behind key is JSONObject$Null
+     * @param obj
+     * @param key
+     */
+    public static String optString(JSONObject obj, String key) {
+        return optString(obj, key, "");
+    }
+
+    /**
+     * Returns optional String from obj.key
+     * JSONObject.optString() returns "null" if the thing behind key is JSONObject$Null
+     * @param obj
+     * @param key
+     */
+    public static String optString(JSONObject obj, String key, String defaultValue) {
+        try {
+            Object o = obj.get(key);
+            if (o != null && o != JSONObject.NULL) {
+                return o.toString();
+            }
+        } catch (JSONException ignore) {}
+        return defaultValue;
+    }
+
+    /**
+     * Returns required String from obj.key
+     * JSONObject.optString() returns "null" if the thing behind key is JSONObject$Null
+     * @param obj
+     * @param key
+     * @throws JSONException
+     */
+    public static String getString(JSONObject obj, String key) throws JSONException {
+        Object o = obj.get(key);
+        return o == JSONObject.NULL ? null : o.toString();
+    }
+
 }

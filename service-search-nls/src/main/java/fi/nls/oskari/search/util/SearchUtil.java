@@ -8,10 +8,10 @@ import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.search.channel.RegisterOfNomenclatureChannelSearchService;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.PropertyUtil;
+import fi.nls.oskari.util.XmlHelper;
 import org.apache.xmlbeans.XmlObject;
 import org.json.XMLTokener;
 import org.w3c.dom.Document;
-import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
@@ -217,8 +217,8 @@ public class SearchUtil {
 
     private static Document getDocument(InputStream inputStream)
             throws ParserConfigurationException, SAXException, IOException {
-        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        factory.setNamespaceAware(true);
+        DocumentBuilderFactory factory = XmlHelper.newDocumentBuilderFactory();
+		factory.setNamespaceAware(true);
         DocumentBuilder builder = factory.newDocumentBuilder();
         return builder.parse(new InputSource(inputStream));
     }

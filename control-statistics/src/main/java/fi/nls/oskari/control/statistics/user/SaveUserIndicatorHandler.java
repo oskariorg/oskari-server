@@ -1,13 +1,13 @@
 package fi.nls.oskari.control.statistics.user;
 
-import fi.mml.map.mapwindow.service.db.UserIndicatorService;
-import fi.mml.map.mapwindow.service.db.UserIndicatorServiceImpl;
+import org.oskari.statistics.user.UserIndicatorService;
+import org.oskari.statistics.user.UserIndicatorServiceImpl;
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.ActionDeniedException;
 import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.ActionHandler;
 import fi.nls.oskari.control.ActionParameters;
-import fi.nls.oskari.domain.map.indicator.UserIndicator;
+import org.oskari.statistics.user.UserIndicator;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.ResponseHelper;

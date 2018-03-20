@@ -1,12 +1,11 @@
 package fi.nls.oskari.control.metadata;
 
-import fi.mml.map.mapwindow.service.db.InspireThemeService;
-import fi.mml.map.mapwindow.service.db.InspireThemeServiceIbatisImpl;
+import fi.mml.map.mapwindow.service.db.OskariMapLayerGroupService;
+import fi.mml.map.mapwindow.service.db.OskariMapLayerGroupServiceIbatisImpl;
 import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.search.channel.MetadataCatalogueChannelSearchService;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.PropertyUtil;
-import fi.nls.oskari.util.ServiceFactory;
 import fi.nls.test.control.JSONActionRouteTest;
 import fi.nls.test.util.ResourceHelper;
 import org.json.JSONObject;
@@ -16,6 +15,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
+import org.oskari.service.util.ServiceFactory;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
@@ -53,13 +53,13 @@ public class GetMetadataSearchOptionsHandlerTest extends JSONActionRouteTest {
     }
 
     private void mockInternalServices() throws Exception {
-        final InspireThemeService service = mock(InspireThemeServiceIbatisImpl.class);
+        final OskariMapLayerGroupService service = mock(OskariMapLayerGroupServiceIbatisImpl.class);
         doReturn(Collections.emptyList()).when(service).findAll();
 
 
         // return mocked service if a new one is created
         // classes doing this must be listed in PrepareForTest annotation
-        PowerMockito.whenNew(InspireThemeServiceIbatisImpl.class).withNoArguments().
+        PowerMockito.whenNew(OskariMapLayerGroupServiceIbatisImpl.class).withNoArguments().
                 thenAnswer(new Answer<Object>() {
                     public Object answer(InvocationOnMock invocation) throws Throwable {
                         return service;

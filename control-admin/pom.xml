@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>fi.nls.oskari</groupId>
 		<artifactId>oskari-parent</artifactId>
-        <version>1.44.0-SNAPSHOT</version>
+        <version>1.46.0-SNAPSHOT</version>
 	</parent>
 
     <groupId>fi.nls.oskari.service</groupId>
@@ -28,7 +28,10 @@
             <groupId>fi.nls.oskari.service</groupId>
             <artifactId>oskari-search-wfs</artifactId>
         </dependency>
-
+        <dependency>
+            <groupId>org.oskari</groupId>
+            <artifactId>service-capabilities-update</artifactId>
+        </dependency>
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>

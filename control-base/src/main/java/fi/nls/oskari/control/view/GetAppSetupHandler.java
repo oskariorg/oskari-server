@@ -27,8 +27,6 @@ import org.json.JSONObject;
 import java.net.URLDecoder;
 import java.util.*;
 
-import static fi.nls.oskari.control.ActionConstants.PARAM_SECURE;
-
 @OskariActionRoute("GetAppSetup")
 public class GetAppSetupHandler extends ActionHandler {
 
@@ -50,11 +48,6 @@ public class GetAppSetupHandler extends ActionHandler {
     private static final String KEY_CONFIGURATION = "configuration";
 
     public static final String COOKIE_SAVED_STATE = "oskaristate";
-
-    // TODO: this is paikkatietoikkuna-specific. Remove/make configurable
-    private final static long DEFAULT_USERID = 10110;
-    private String SECURE_AJAX_PREFIX = "";
-
 
     // for adding extra bundle(s) for users with specific roles
     private Map<String, List<Bundle>> bundlesForRole = new HashMap<String, List<Bundle>>();
@@ -122,7 +115,17 @@ public class GetAppSetupHandler extends ActionHandler {
                 }
             }
         }
-        SECURE_AJAX_PREFIX = PropertyUtil.get("actionhandler.GetAppSetup.secureAjaxUrlPrefix", "");
+        
+        // setup default views for appsetup.env
+        try {
+            List<View> views = new ArrayList<>();
+            for (long viewId : viewService.getSystemDefaultViewIds()) {
+                views.add(viewService.getViewWithConf(viewId));
+            }
+            EnvHelper.setupViews(views);
+        } catch (Exception ex) {
+            log.warn(ex, "Couldn't setup default views for appsetup! Default views are not working properly in appsetup.env");
+        }
     }
 
     public void handleAction(final ActionParameters params) throws ActionException {
@@ -158,7 +161,7 @@ public class GetAppSetupHandler extends ActionHandler {
         // Check user/permission
         final long creator = view.getCreator();
         final long userId = params.getUser().getId();
-        if (view.isPublic() || creator == DEFAULT_USERID) {
+        if (view.isPublic()) {
             log.info("View ID:", viewId, "created by user", creator,
                     "is public, access granted for user with id", userId);
         } else if (creator == userId) {
@@ -224,7 +227,7 @@ UNRESTRICTED_USAGE_ROLE = PropertyUtil.get("view.published.usage.unrestrictedRol
         // modify the loaded view before serving it if there are any control
         // parameters
         final ModifierParams modifierParams = new ModifierParams();
-        modifierParams.setBaseAjaxUrl(getBaseAjaxUrl(params));
+        modifierParams.setBaseAjaxUrl(EnvHelper.getAPIurl(params));
         modifierParams.setConfig(configuration);
         modifierParams.setActionParams(params);
 
@@ -232,7 +235,7 @@ UNRESTRICTED_USAGE_ROLE = PropertyUtil.get("view.published.usage.unrestrictedRol
         modifierParams.setView(view);
         modifierParams.setStartupSequence(startupSequence);
         modifierParams.setOldPublishedMap(oldId != -1);
-        modifierParams.setModifyURLs(isSecure(params));
+        modifierParams.setModifyURLs(EnvHelper.isSecure(params));
         modifierParams.setAjaxRouteParamName(ActionControl.PARAM_ROUTE);
 
         // Add admin-layerselector/layer-rights bundle, if admin role and default view
@@ -294,7 +297,7 @@ UNRESTRICTED_USAGE_ROLE = PropertyUtil.get("view.published.usage.unrestrictedRol
         // write response
         try {
             JSONObject appSetup = new JSONObject();
-            appSetup.put(KEY_ENV, EnvHelper.getEnvironmentJSON(params));
+            appSetup.put(KEY_ENV, EnvHelper.getEnvironmentJSON(params, view));
             appSetup.put(KEY_STARTUP, startupSequence);
             appSetup.put(KEY_CONFIGURATION, configuration);
             ResponseHelper.writeResponse(params, appSetup);
@@ -382,24 +385,6 @@ UNRESTRICTED_USAGE_ROLE = PropertyUtil.get("view.published.usage.unrestrictedRol
             log.info("Got cookie but couldn't transform to JSON", cookie);
         }
         return null;
-    }
-
-    private String getBaseAjaxUrl(final ActionParameters params) {
-        final String baseAjaxUrl = PropertyUtil.get(params.getLocale(), PROPERTY_AJAXURL);
-        if (isSecure(params)) {
-            return SECURE_AJAX_PREFIX + baseAjaxUrl;
-        }
-        return baseAjaxUrl;
-    }
-
-    /**
-     * Check if we are dealing with a forwarded "secure" url. This means that we will
-     * modify urls on the fly to match proxy forwards. Checks an http parameter "ssl" for boolean value.
-     * @param params
-     * @return
-     */
-    public static boolean isSecure(final ActionParameters params) {
-        return params.getHttpParam(PARAM_SECURE, params.getRequest().isSecure());
     }
 
     private void modifyView(final View view, JSONObject myview) {

@@ -8,9 +8,12 @@ import fi.nls.oskari.service.db.UserContentService;
 @Oskari
 public class UserContentViewService extends UserContentService {
 
-    private ViewServiceIbatisImpl viewService = new ViewServiceIbatisImpl();
+    private ViewServiceIbatisImpl viewService;
 
     public void deleteUserContent(User user) throws ServiceException {
+        if (viewService == null) {
+            viewService = new ViewServiceIbatisImpl();
+        }
         try {
             viewService.deleteViewByUserId(user.getId());
         }

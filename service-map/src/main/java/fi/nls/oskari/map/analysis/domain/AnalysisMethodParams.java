@@ -1,6 +1,7 @@
 package fi.nls.oskari.map.analysis.domain;
 
 import fi.nls.oskari.map.analysis.service.AnalysisWPSNamespaceContext;
+import fi.nls.oskari.util.XmlHelper;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.xml.sax.InputSource;
@@ -9,7 +10,11 @@ import org.xml.sax.SAXException;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.xpath.*;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpression;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -335,7 +340,7 @@ public abstract class AnalysisMethodParams {
 
     protected Document getDocument(String templatePath)
             throws ParserConfigurationException, SAXException, IOException {
-        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        DocumentBuilderFactory factory = XmlHelper.newDocumentBuilderFactory();
         DocumentBuilder builder;
         Document doc = null;
 
@@ -350,7 +355,7 @@ public abstract class AnalysisMethodParams {
 
     protected Document getDocument2(String templatedoc)
             throws ParserConfigurationException, SAXException, IOException {
-        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        DocumentBuilderFactory factory = XmlHelper.newDocumentBuilderFactory();
         DocumentBuilder builder;
         Document doc = null;
 

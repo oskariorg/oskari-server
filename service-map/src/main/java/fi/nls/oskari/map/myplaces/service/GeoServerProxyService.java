@@ -6,6 +6,7 @@ import fi.nls.oskari.map.data.service.GetGeoPointDataService;
 import fi.nls.oskari.map.myplaces.domain.ProxyRequest;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.PropertyUtil;
+import fi.nls.oskari.util.XmlHelper;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.w3c.dom.Document;
@@ -21,7 +22,11 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
-import javax.xml.xpath.*;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpression;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -95,8 +100,7 @@ public class GeoServerProxyService {
             outs.flush();
             outs.close();
 
-            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-            factory.setValidating(false);
+            DocumentBuilderFactory factory = XmlHelper.newDocumentBuilderFactory();
             factory.setNamespaceAware(true);
 
             DocumentBuilder builder = factory.newDocumentBuilder();
@@ -110,7 +114,7 @@ public class GeoServerProxyService {
             String nof = document.getElementsByTagName(WFS_FEATURECOLLECTION).item(0).getAttributes().getNamedItem("numberOfFeatures").getTextContent();
 
             if (!"0".equals(nof)) {
-                String transformedResponse = GetGeoPointDataService.getFormatedJSONString(document, stylesource);
+                String transformedResponse = GetGeoPointDataService.getFormattedJSONString(document, stylesource);
                 JSONObject response = new JSONObject();
                 response.put(GetGeoPointDataService.TYPE, "wmslayer");
                 response.put(GetGeoPointDataService.LAYER_ID, id);
@@ -149,7 +153,7 @@ public class GeoServerProxyService {
         /**
          * 1) Read Query Template
          */
-        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        DocumentBuilderFactory factory = XmlHelper.newDocumentBuilderFactory();
         factory.setNamespaceAware(true);
         DocumentBuilder builder = factory.newDocumentBuilder();
 
@@ -180,7 +184,7 @@ public class GeoServerProxyService {
 
 
         // Use a Transformer for output
-        TransformerFactory tFactory = TransformerFactory.newInstance();
+        TransformerFactory tFactory = XmlHelper.newTransformerFactory();
         Transformer transformer = tFactory.newTransformer();
 
         DOMSource source = new DOMSource(doc);

@@ -88,6 +88,15 @@
         where uuid = #{uuid} and id = #{id}
     </update>
 
+    <select id="getUserLayerBbox" resultType="String" useCache="false">
+		SELECT
+		ST_AsText(ST_Extent (geometry))
+		FROM
+		user_layer_data
+		WHERE
+		user_layer_id = #{userLayerId}
+	</select>
+
 	<!-- UserLayerStyle related -->
 	<insert id="insertUserLayerStyleRow" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
         INSERT INTO user_layer_style (

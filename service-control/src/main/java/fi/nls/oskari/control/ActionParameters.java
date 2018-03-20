@@ -3,11 +3,18 @@ package fi.nls.oskari.control;
 import fi.nls.oskari.domain.GuestUser;
 import fi.nls.oskari.domain.User;
 import fi.nls.oskari.util.ConversionHelper;
+import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.RequestHelper;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -111,6 +118,24 @@ public class ActionParameters {
             throw new ActionParamsException(errMsg);
         }
     }
+
+    /**
+     * Returns a cleaned up (think XSS) value for the requested parameter
+     * @param key parameter name
+     * @return cleaned up value for the parameter as long
+     * @throws ActionParamsException if parameter is not found, is empty or can't be parsed as long
+     */
+    public long getRequiredParamLong(final String key) throws ActionParamsException {
+        final String errMsg = "Required parameter '" + key + "' missing!";
+        final String val = getRequiredParam(key, errMsg);
+
+        try {
+            return Long.parseLong(val);
+        } catch (Exception e) {
+            throw new ActionParamsException(errMsg);
+        }
+    }
+
     /**
      * Returns a cleaned up (think XSS) value for the requested parameter
      * @param key parameter name
@@ -266,5 +291,20 @@ public class ActionParameters {
     public String getAPIkey() {
         // TODO: use something better than session id
         return getRequest().getSession().getId();
+    }
+
+    /**
+     * Get play load JSON
+     * @return
+     */
+    public JSONObject getPayLoadJSON() throws ActionParamsException {
+        HttpServletRequest req = this.getRequest();
+        try (InputStream in = req.getInputStream()) {
+            final byte[] json = IOHelper.readBytes(in);
+            final String jsonString = new String(json, StandardCharsets.UTF_8);
+            return new JSONObject(jsonString);
+        } catch (Exception exception) {
+            throw new ActionParamsException("Cannot get payload JSON");
+        }
     }
 }

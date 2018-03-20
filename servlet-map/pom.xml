@@ -4,7 +4,7 @@
     <parent>
         <groupId>fi.nls.oskari</groupId>
         <artifactId>oskari-parent</artifactId>
-        <version>1.44.0-SNAPSHOT</version>
+        <version>1.46.0-SNAPSHOT</version>
     </parent>
     <artifactId>servlet-map</artifactId>
     <packaging>jar</packaging>
@@ -24,6 +24,11 @@
         <dependency>
             <groupId>fi.nls.oskari.service</groupId>
             <artifactId>oskari-control-base</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.oskari</groupId>
+            <artifactId>service-capabilities-update</artifactId>
         </dependency>
 
         <dependency>

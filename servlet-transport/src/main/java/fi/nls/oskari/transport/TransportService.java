@@ -390,9 +390,11 @@ public class TransportService extends AbstractService {
 
     	String layerId = layer.get(PARAM_LAYER_ID).toString();
     	String layerStyle = (String)layer.get(PARAM_LAYER_STYLE);
+        boolean layerVisible = (boolean) layer.getOrDefault(PARAM_LAYER_VISIBLE, true);
 
     	if(!store.containsLayer(layerId)) {
             Layer tmpLayer = new Layer(layerId, layerStyle);
+            tmpLayer.setVisible(layerVisible);
     		store.setLayer(layerId, tmpLayer);
         	this.save(store);
     	}
@@ -425,7 +427,6 @@ public class TransportService extends AbstractService {
     private String getOskariUid(SessionStore store) {
         String sessionId = store.getSession();
         String route = store.getRoute();
-        log.warn( JobHelper.getAPIUrl() + UID_API);
         return HttpHelper.getHeaderValue(JobHelper.getAPIUrl() + UID_API,
                 JobHelper.getCookiesValue(sessionId, route), KEY_UID);
     }

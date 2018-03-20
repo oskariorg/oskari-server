@@ -5,6 +5,7 @@ import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.service.db.BaseIbatisService;
 import fi.nls.oskari.util.IOHelper;
+import fi.nls.oskari.util.XmlHelper;
 import org.apache.axiom.om.OMAbstractFactory;
 import org.apache.axiom.om.OMAttribute;
 import org.apache.axiom.om.OMElement;
@@ -20,8 +21,8 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 public class VisualizationService extends BaseIbatisService<StatsVisualization> {
     
@@ -146,13 +147,13 @@ public class VisualizationService extends BaseIbatisService<StatsVisualization> 
      */
     public String transform(final OMElement xml, final OMElement xslt) throws Exception {
 
-        TransformerFactory factory = TransformerFactory.newInstance();
-        final Source xsltsource = xslt.getSAXSource(false);
-        final Transformer transformer = factory.newTransformer(xsltsource);
+        final TransformerFactory factory = XmlHelper.newTransformerFactory();
+        final Source xsltSource = xslt.getSAXSource(false);
+        final Transformer transformer = factory.newTransformer(xsltSource);
         
-        final Source xmlsource = xml.getSAXSource(false);
+        final Source xmlSource = xml.getSAXSource(false);
         StreamResult result = new StreamResult(new ByteArrayOutputStream());
-        transformer.transform(xmlsource, result);
+        transformer.transform(xmlSource, result);
         return result.getOutputStream().toString();
     }
 

@@ -262,4 +262,18 @@ public class UserLayerDbServiceMybatisImpl extends UserLayerDbService {
         }
         return 0;
     }
+	
+	public String getUserLayerExtent(long id) {
+         final SqlSession session = factory.openSession();
+         try {
+             final UserLayerMapper mapper = session.getMapper(UserLayerMapper.class);
+             return mapper.getUserLayerBbox(id);
+         } catch (Exception e) {
+             log.error(e, "Failed to get userlayer bbox with id:", id);
+         } finally {
+             session.close();
+         }
+         return "";
+     }
+
 }

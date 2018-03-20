@@ -28,4 +28,14 @@ public class MockServletOutputStream extends ServletOutputStream {
         out.write(b);
     }
 
+    @Override
+    public void write(byte[] b) throws IOException {
+        write(b, 0, b.length);
+    }
+
+    @Override
+    public void write(byte[] b, int off, int len) throws IOException {
+        out.write(b, off, len);
+    }
+
 }

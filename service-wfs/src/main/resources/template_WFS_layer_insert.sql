@@ -15,7 +15,7 @@
 
 
 -- add map layer;
-INSERT INTO oskari_maplayer(type, name, groupId,opacity,
+INSERT INTO oskari_maplayer(type, name, dataprovider_id,opacity,
                             minscale, maxscale,
                             url, locale)
   VALUES('wfslayer', '$LAYER_NAME', (SELECT id FROM oskari_layergroup WHERE locale LIKE '%$LAYER_GROUP%'),
@@ -23,8 +23,8 @@ INSERT INTO oskari_maplayer(type, name, groupId,opacity,
          'wfs', '{ fi:{name:"$FI_LAYER_TITLE",subtitle:""},sv:{name:"$SV_LAYER_TITLE",subtitle:""},en:{name:"$EN_LAYER_TITLE",subtitle:""}}');
 
 -- link to inspire theme;
-INSERT INTO oskari_maplayer_themes(maplayerid,
-                                   themeid)
+INSERT INTO oskari_maplayer_group_link(maplayerid,
+                                   groupid)
   VALUES((SELECT DISTINCT id FROM oskari_maplayer where name='$LAYER_NAME'),
          (SELECT id FROM portti_inspiretheme WHERE locale LIKE '%$INSPIRE_THEME%'));
 

@@ -41,6 +41,7 @@ public class SotkaRequest {
     static {
         // register possible actions
         registerAction(IndicatorData.class);
+        registerAction(IndicatorDataJSON.class);
         registerAction(IndicatorMetadata.class);
         registerAction(Indicators.class);
         registerAction(Regions.class);

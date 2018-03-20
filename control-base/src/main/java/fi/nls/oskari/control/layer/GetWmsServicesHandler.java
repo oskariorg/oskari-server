@@ -111,7 +111,7 @@ public class GetWmsServicesHandler extends ActionHandler {
                 JSONObject mapProperties = new JSONObject();
 
                 List<String> languages = ml.getLanguages();
-// TODO: maybe use fi.nls.oskari.map.layer.formatters.LayerJSONFormatter?
+                // TODO: maybe use fi.nls.oskari.map.layer.formatters.LayerJSONFormatter?
                 for (String lang : languages) {
                     mapProperties.put("name" + Character.toUpperCase(lang.charAt(0)) + lang.substring(1), ml.getName(lang));
                     mapProperties.put("title" + Character.toUpperCase(lang.charAt(0)) + lang.substring(1), ml.getTitle(lang));
@@ -127,13 +127,12 @@ public class GetWmsServicesHandler extends ActionHandler {
 //                mapProperties.put("descriptionLink", ml.getDescriptionLink());
                 mapProperties.put("legendImage", ml.getLegendImage());
 
-                mapProperties.put("inspireTheme", ml.getInspireTheme().getId());
+                mapProperties.put("maplayerGroups", ml.getMaplayerGroup().getId());
                 mapProperties.put("dataUrl", ml.getMetadataId());
 //                mapProperties.put("metadataUrl", ml.getMetadataUrl());
 //                mapProperties.put("orderNumber", ml.getOrdernumber());
 
                 mapProperties.put("layerType", ml.getType());
-                mapProperties.put("tileMatrixSetId", ml.getTileMatrixSetId());
 /*
                 mapProperties.put("wms_dcp_http", ml.getWms_dcp_http());
                 mapProperties.put("wms_parameter_layers", ml

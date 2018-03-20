@@ -15,7 +15,8 @@ public interface UserLayerMapper {
         public UserLayer findUserLayer(long id);
         public List<UserLayer> findUserLayerByUuid(String uuid);
         public void deleteUserLayerRow(final long id) throws ServiceException;
-        public int updatePublisherName(@Param ("id") long id, @Param ("uuid") String uuid, @Param ("publisher_name") String name);       
+        public int updatePublisherName(@Param ("id") long id, @Param ("uuid") String uuid, @Param ("publisher_name") String name);
+        public String getUserLayerBbox (final long userLayerId);
 
         //UserLayerStyle related
         public void insertUserLayerStyleRow(final UserLayerStyle userLayerStyle);

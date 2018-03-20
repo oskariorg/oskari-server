@@ -1,24 +1,26 @@
 package fi.nls.oskari.map.layer.formatters;
 
-import fi.mml.map.mapwindow.service.db.InspireThemeService;
-import fi.mml.map.mapwindow.service.db.InspireThemeServiceIbatisImpl;
-import fi.nls.oskari.domain.map.InspireTheme;
-import fi.nls.oskari.domain.map.LayerGroup;
+import fi.mml.map.mapwindow.service.db.OskariMapLayerGroupService;
+import fi.mml.map.mapwindow.service.db.OskariMapLayerGroupServiceIbatisImpl;
+import fi.nls.oskari.domain.map.DataProvider;
+import fi.nls.oskari.domain.map.MaplayerGroup;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.map.layer.LayerGroupService;
-import fi.nls.oskari.map.layer.LayerGroupServiceIbatisImpl;
+import fi.nls.oskari.map.layer.DataProviderService;
+import fi.nls.oskari.map.layer.DataProviderServiceIbatisImpl;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.oskari.utils.common.Sets;
 
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Created with IntelliJ IDEA.
@@ -31,9 +33,11 @@ public class LayerJSONFormatter {
 
     public static final String PROPERTY_AJAXURL = "oskari.ajax.url.prefix";
     public static final String KEY_STYLES = "styles";
+    public static final String KEY_SRS = "srs";
+    public static final String KEY_ATTRIBUTE_FORCED_SRS = "forcedSRS";
 
-    private static final InspireThemeService inspireThemeService = new InspireThemeServiceIbatisImpl();
-    private static final LayerGroupService groupService = new LayerGroupServiceIbatisImpl();
+    private static final OskariMapLayerGroupService OSKARI_MAP_LAYER_GROUP_SERVICE = new OskariMapLayerGroupServiceIbatisImpl();
+    private static final DataProviderService groupService = new DataProviderServiceIbatisImpl();
 
     private static final String KEY_ID = "id";
     private static final String KEY_TYPE = "type";
@@ -72,18 +76,20 @@ public class LayerJSONFormatter {
 
     public JSONObject getJSON(final OskariLayer layer,
                                      final String lang,
-                                     final boolean isSecure) {
+                                     final boolean isSecure,
+                                     final String crs) {
         LayerJSONFormatter formatter = getFormatter(layer.getType());
         // to prevent nullpointer and infinite loop
         if(formatter != null && !formatter.getClass().equals(LayerJSONFormatter.class)) {
-            return formatter.getJSON(layer, lang, isSecure);
+            return formatter.getJSON(layer, lang, isSecure, crs);
         }
-        return getBaseJSON(layer, lang, isSecure);
+        return getBaseJSON(layer, lang, isSecure, crs);
     }
 
     public JSONObject getBaseJSON(final OskariLayer layer,
                                      final String lang,
-                                     final boolean isSecure) {
+                                     final boolean isSecure,
+                                     final String crs) {
         JSONObject layerJson = new JSONObject();
 
         final String externalId = layer.getExternalId();
@@ -122,8 +128,23 @@ public class LayerJSONFormatter {
         if(layer.getGroup() != null) {
             JSONHelper.putValue(layerJson, "orgName", layer.getGroup().getName(lang));
         }
-        if(layer.getInspireTheme() != null) {
-            JSONHelper.putValue(layerJson, "inspire", layer.getInspireTheme().getName(lang));
+        if(layer.getMaplayerGroup() != null) {
+            // FIXME Remove inspire when frontend is ready
+            JSONHelper.putValue(layerJson, "inspire", layer.getMaplayerGroup().getName(lang));
+
+            JSONArray groups = new JSONArray();
+            try {
+                for (MaplayerGroup mapLayerGroup : OSKARI_MAP_LAYER_GROUP_SERVICE.findByMaplayerId(layer.getId())) {
+                    JSONObject group = new JSONObject();
+                    group.put("id", mapLayerGroup.getId());
+                    group.put("name", mapLayerGroup.getName(lang));
+                    groups.put(group);
+                }
+            } catch(JSONException ex) {
+                log.error("Cannot create groups array for layer: " + layer.getId(), ex);
+            }
+
+            JSONHelper.put(layerJson, "groups", groups);
         }
 
         if(layer.getOpacity() != null && layer.getOpacity() > -1 && layer.getOpacity() <= 100) {
@@ -154,12 +175,13 @@ public class LayerJSONFormatter {
         JSONHelper.putValue(layerJson, "updated", layer.getUpdated());
 
         JSONHelper.putValue(layerJson, "dataUrl_uuid", getFixedDataUrl(layer));
+        JSONHelper.putValue(layerJson, "orderNumber", layer.getOrderNumber());
 
         // sublayer handling
         if(layer.getSublayers() != null && !layer.getSublayers().isEmpty()) {
             JSONArray sublayers = new JSONArray();
             for(OskariLayer sub : layer.getSublayers()) {
-                JSONObject subJSON = getJSON(sub, lang, isSecure);
+                JSONObject subJSON = getJSON(sub, lang, isSecure, crs);
                 sublayers.put(subJSON);
             }
             JSONHelper.putValue(layerJson, "subLayer", sublayers);
@@ -266,7 +288,6 @@ public class LayerJSONFormatter {
         layer.setMaxScale(json.optDouble("maxscale", layer.getMaxScale()));
         layer.setLegendImage(json.optString("legend_image", layer.getLegendImage()));
         layer.setMetadataId(json.optString("metadataid", layer.getMetadataId()));
-        layer.setTileMatrixSetId(json.optString("tile_matrix_set_id", layer.getTileMatrixSetId()));
         layer.setGfiType(json.optString("gfi_type", layer.getGfiType()));
         layer.setGfiXslt(json.optString("gfi_xslt", layer.getGfiXslt()));
         layer.setGfiContent(json.optString("gfi_content", layer.getGfiContent()));
@@ -290,21 +311,30 @@ public class LayerJSONFormatter {
         }
 
         // handle inspiretheme
-        final InspireTheme theme = inspireThemeService.findByName(themeName);
+        final MaplayerGroup theme = OSKARI_MAP_LAYER_GROUP_SERVICE.findByName(themeName);
         if (theme == null) {
             log.warn("Didn't find match for theme:", themeName);
         } else {
-            layer.addInspireTheme(theme);
+            layer.addGroup(theme);
         }
 
         // setup data producer/layergroup
-        final LayerGroup group = groupService.findByName(orgName);
-        if(group == null) {
+        final DataProvider dataProvider = groupService.findByName(orgName);
+        if(dataProvider == null) {
             log.warn("Didn't find match for layergroup:", orgName);
         } else {
-            layer.addGroup(group);
+            layer.addDataprovider(dataProvider);
         }
 
         return layer;
     }
+
+    public static Set<String> getCRSsToStore(Set<String> systemCRSs,
+            Set<String> capabilitiesCRSs) {
+        if (systemCRSs == null) {
+            return capabilitiesCRSs;
+        }
+        return Sets.intersection(systemCRSs, capabilitiesCRSs);
+    }
+
 }

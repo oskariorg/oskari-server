@@ -20,7 +20,7 @@ import fi.nls.oskari.printout.output.layer.DirectFeatureLayer;
 import fi.nls.oskari.printout.output.layer.DirectTileLayer;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.geotools.data.collection.CollectionDataStore;
+import org.geotools.data.memory.MemoryDataStore;
 import org.geotools.data.simple.SimpleFeatureSource;
 import org.geotools.feature.DefaultFeatureCollection;
 import org.geotools.feature.FeatureCollection;
@@ -229,7 +229,7 @@ public class MapProducer {
 
                 if (layerDefinition.getData() != null
                         && layerDefinition.getData().size() > 0) {
-                    CollectionDataStore ds = new CollectionDataStore(
+                    MemoryDataStore ds = new MemoryDataStore(
                             layerDefinition.getData());
                     SimpleFeatureSource fs = ds.getFeatureSource(ds
                             .getTypeNames()[0]);

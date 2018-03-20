@@ -28,7 +28,7 @@ public class OskariLayer extends JSONLocalizedNameAndTitle implements Comparable
 	private String type;
 
     private boolean isBaseMap = false;
-    private int groupId;
+    private int dataproviderId;
 
     private String name;
     private String url;
@@ -45,8 +45,6 @@ public class OskariLayer extends JSONLocalizedNameAndTitle implements Comparable
 
     private String legendImage;
     private String metadataId;
-
-    private String tileMatrixSetId;
 
     private JSONObject params = new JSONObject();
     private JSONObject options = new JSONObject();
@@ -67,61 +65,62 @@ public class OskariLayer extends JSONLocalizedNameAndTitle implements Comparable
     private String version = "";
     private String srs_name;
 
-    private Set<String> supportedCRSs = null;
-
     private Date created = null;
     private Date updated = null;
+    private Integer orderNumber;
 
-    private Set<InspireTheme> inspireThemes = new HashSet<InspireTheme>();
-    private Set<LayerGroup> groups = new HashSet<LayerGroup>();
+    private Set<MaplayerGroup> maplayerGroups = new HashSet<MaplayerGroup>();
+    private Set<DataProvider> dataProviders = new HashSet<DataProvider>();
     private List<OskariLayer> sublayers = new ArrayList<OskariLayer>();
 
+    private Date capabilitiesLastUpdated;
+    private int capabilitiesUpdateRateSec;
 
     public boolean isCollection() {
         return TYPE_COLLECTION.equals(type);
     }
 
     // we only link one theme at the moment so get the first one
-	public InspireTheme getInspireTheme() {
-        if(inspireThemes == null || inspireThemes.isEmpty()) {
+	public MaplayerGroup getMaplayerGroup() {
+        if(maplayerGroups == null || maplayerGroups.isEmpty()) {
             return null;
         }
-        if(inspireThemes.size() > 1) {
+        if(maplayerGroups.size() > 1) {
             // TODO: remove this when we support more than one theme
-            log.warn("More than one inspire theme, this shouldn't happen!! layerId:", getId(), "- Themes:" , inspireThemes);
+            log.warn("More than one maplayer group, this shouldn't happen!! layerId:", getId(), "- Maplayer groupsN:" , maplayerGroups);
         }
-		return inspireThemes.iterator().next();
+		return maplayerGroups.iterator().next();
 	}
-    public Set<InspireTheme> getInspireThemes() {
-        return inspireThemes;
+    public Set<MaplayerGroup> getMaplayerGroups() {
+        return maplayerGroups;
     }
-    public void addInspireThemes(final List<InspireTheme> themes) {
-        if(themes != null && !themes.isEmpty()) {
-            addInspireTheme(themes.iterator().next());
-            // TODO: use addAll when we support more than one theme
-            //inspireThemes.addAll(themes);
+    public void addGroups(final List<MaplayerGroup> groups) {
+        if(groups != null && !groups.isEmpty()) {
+            maplayerGroups.addAll(groups);
         }
     }
-    public void addInspireTheme(final InspireTheme theme) {
-        if(theme != null) {
-            // TODO: remove the clearing when we support more than one theme
-            inspireThemes.clear();
-            inspireThemes.add(theme);
+    public void addGroup(final MaplayerGroup group) {
+        if(group != null) {
+            maplayerGroups.add(group);
         }
+    }
+
+    public void emptyMaplayerGroups() {
+        maplayerGroups.clear();
     }
 
     // we only link one group at the moment so get the first one
-    public LayerGroup getGroup() {
-        if(groups == null || groups.isEmpty()) {
+    public DataProvider getGroup() {
+        if(dataProviders == null || dataProviders.isEmpty()) {
             return null;
         }
-        return groups.iterator().next();
+        return dataProviders.iterator().next();
     }
 
-    public void addGroup(final LayerGroup group) {
-        if(group != null) {
-            groups.add(group);
-            setGroupId(group.getId());
+    public void addDataprovider(final DataProvider dataProvider) {
+        if(dataProvider != null) {
+            dataProviders.add(dataProvider);
+            setDataproviderId(dataProvider.getId());
         }
     }
 
@@ -195,6 +194,14 @@ public class OskariLayer extends JSONLocalizedNameAndTitle implements Comparable
 		this.updated = updated;
 	}
 
+	public Integer getOrderNumber() {
+		return orderNumber;
+	}
+
+	public void setOrderNumber(Integer orderNumber) {
+		this.orderNumber = orderNumber;
+	}
+
 	public int getId() {
 		return id;
 	}
@@ -246,13 +253,6 @@ public class OskariLayer extends JSONLocalizedNameAndTitle implements Comparable
 	public void setLegendImage(String legendImage) {
 		this.legendImage = legendImage;
 	}
-	public String getTileMatrixSetId() {
-		return tileMatrixSetId;
-	}
-
-	public void setTileMatrixSetId(String value) {
-		tileMatrixSetId = value;
-	}
 
     public int getParentId() {
         return parentId;
@@ -278,12 +278,12 @@ public class OskariLayer extends JSONLocalizedNameAndTitle implements Comparable
         isBaseMap = baseMap;
     }
 
-    public int getGroupId() {
-        return groupId;
+    public int getDataproviderId() {
+        return dataproviderId;
     }
 
-    public void setGroupId(int groupId) {
-        this.groupId = groupId;
+    public void setDataproviderId(int dataproviderId) {
+        this.dataproviderId = dataproviderId;
     }
 
     public String getName() {
@@ -392,6 +392,10 @@ public class OskariLayer extends JSONLocalizedNameAndTitle implements Comparable
     }
 
     public String getGeometry() {
+        if(geometry == null) {
+            // geometry is from a CSW service. Capabilities "geom" is the coverage from layer capabilities
+            return getCapabilities().optString("geom");
+        }
         return geometry;
     }
 
@@ -445,12 +449,20 @@ public class OskariLayer extends JSONLocalizedNameAndTitle implements Comparable
         this.srs_name = srs_name;
     }
 
-   // Only available for savelayer handler
-    public Set<String> getSupportedCRSs() {
-        return supportedCRSs;
+    public Date getCapabilitiesLastUpdated() {
+        return capabilitiesLastUpdated;
     }
 
-    public void setSupportedCRSs(Set<String> supportedCrss) {
-        this.supportedCRSs = supportedCrss;
+    public void setCapabilitiesLastUpdated(Date capabilitiesLastUpdated) {
+        this.capabilitiesLastUpdated = capabilitiesLastUpdated;
     }
+
+    public int getCapabilitiesUpdateRateSec() {
+        return capabilitiesUpdateRateSec;
+    }
+
+    public void setCapabilitiesUpdateRateSec(int capabilitiesUpdateRateSec) {
+        this.capabilitiesUpdateRateSec = capabilitiesUpdateRateSec;
+    }
+
 }

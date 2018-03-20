@@ -4,6 +4,7 @@ import fi.nls.oskari.domain.Role;
 import fi.nls.oskari.domain.User;
 import fi.nls.oskari.domain.map.view.Bundle;
 import fi.nls.oskari.domain.map.view.View;
+import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.service.db.BaseService;
 
 import java.sql.SQLException;
@@ -76,6 +77,8 @@ public interface ViewService extends BaseService<Object> {
      * @return
      */
     long getSystemDefaultViewId(Collection<Role> roles);
+
+    List<Long> getSystemDefaultViewIds() throws ServiceException;
 
     void updatePublishedView(View view)
             throws ViewException;

@@ -12,19 +12,17 @@ import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
+import fi.nls.oskari.util.XmlHelper;
 import fi.nls.oskari.wfs.util.WFSParserConfigs;
-import org.apache.commons.collections.map.MultiKeyMap;
 import org.geotools.data.DataStore;
 import org.geotools.data.DataStoreFinder;
 import org.geotools.data.FeatureSource;
-import org.geotools.data.ResourceInfo;
 import org.geotools.data.wfs.WFSDataStore;
 import org.geotools.referencing.CRS;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
-import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -34,7 +32,14 @@ import org.xml.sax.InputSource;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.ByteArrayInputStream;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Methods for parsing WFS capabilities data
@@ -173,8 +178,7 @@ public class GetGtWFSCapabilities {
         try {
             // GetCapabilities request
             String data = IOHelper.getURL(getUrl(rurl, version), user, pw);
-            final DocumentBuilderFactory dbf = DocumentBuilderFactory
-                    .newInstance();
+            final DocumentBuilderFactory dbf = XmlHelper.newDocumentBuilderFactory();
             // dbf.setNamespaceAware(true);  //default false
             final DocumentBuilder builder = dbf.newDocumentBuilder();
             final Document doc = builder.parse(new InputSource(
@@ -278,17 +282,17 @@ public class GetGtWFSCapabilities {
      * @param name
      * @return
      */
-    public static Set<String> parseProjections(Map<String, Object> capa, String version, String name)
+    public static Set<String> parseProjections(Map<String, Object> capa, String name)
     {
         if (capa == null) {
             return null;
         }
         if (capa.containsKey("WFSDataStore")) {
             WFSDataStore data = (WFSDataStore) capa.get("WFSDataStore");
-            return parseWfs1xProjections(data, version, name);
+            return parseWfs1xProjections(data, name);
         } else if (capa.containsKey("FeatureTypeList")) {
             Map<String,  ArrayList<WFS2FeatureType>> data = (Map<String,  ArrayList<WFS2FeatureType>>) capa.get("FeatureTypeList");
-            return parseWfs2xProjections(data, version, name);
+            return parseWfs2xProjections(data, name);
         }
         return null;
 
@@ -417,7 +421,7 @@ public class GetGtWFSCapabilities {
      * @param data geotools wfs DataStore
      * @throws fi.nls.oskari.service.ServiceException
      */
-    public static Set<String> parseWfs1xProjections(WFSDataStore data, String version, String typeName) {
+    public static Set<String> parseWfs1xProjections(WFSDataStore data, String typeName) {
         if (data == null || typeName == null) {
             return null;
         }
@@ -444,7 +448,7 @@ public class GetGtWFSCapabilities {
      * @param typeNames  wfs featuretype list
      * @throws fi.nls.oskari.service.ServiceException
      */
-    public static Set<String> parseWfs2xProjections(Map<String,  ArrayList<WFS2FeatureType>> typeNames, String version, String typeName) {
+    public static Set<String> parseWfs2xProjections(Map<String,  ArrayList<WFS2FeatureType>> typeNames, String typeName) {
 
         if (typeNames == null || typeName == null) {
             return null;
@@ -570,7 +574,7 @@ public class GetGtWFSCapabilities {
 
         try {
 
-            JSONObject json = FORMATTER.getJSON(oskariLayer, PropertyUtil.getDefaultLanguage(), false);
+            JSONObject json = FORMATTER.getJSON(oskariLayer, PropertyUtil.getDefaultLanguage(), false, null);
             // add/modify admin specific fields
             OskariLayerWorker.modifyCommonFieldsForEditing(json, oskariLayer);
             // for admin ui only

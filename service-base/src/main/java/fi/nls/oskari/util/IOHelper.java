@@ -262,6 +262,10 @@ public class IOHelper {
         return debug;
     }
 
+    public static String getCharset(final HttpURLConnection con) {
+        return getCharset(con, null);
+    }
+
     public static String getCharset(final HttpURLConnection con, final String defaultCharset) {
         final String contentType = con.getContentType();
         final String[] values = contentType.split(";");
@@ -614,16 +618,58 @@ public class IOHelper {
                 requestBody.getBytes(StandardCharsets.UTF_8));
     }
 
-    public static HttpURLConnection post(String url, String contentType, byte[] body)
+    public static HttpURLConnection post(String url, String contentType,
+            byte[] body) throws IOException {
+        return send(getConnection(url), "POST", contentType, body);
+    }
+
+    public static HttpURLConnection post(String url, String contentType,
+            ByteArrayOutputStream baos) throws IOException {
+        return send(getConnection(url), "POST", contentType, baos);
+    }
+
+    public static HttpURLConnection post(HttpURLConnection conn, String contentType,
+            byte[] body) throws IOException {
+        return send(conn, "POST", contentType, body);
+    }
+
+    public static HttpURLConnection post(HttpURLConnection conn, String contentType,
+            ByteArrayOutputStream baos) throws IOException {
+        return send(conn, "POST", contentType, baos);
+    }
+
+    public static HttpURLConnection put(String url, String contentType, byte[] body)
             throws IOException {
-        HttpURLConnection conn = getConnection(url);
-        conn.setRequestMethod("POST");
+        return put(getConnection(url), contentType, body);
+    }
+
+    public static HttpURLConnection put(HttpURLConnection conn, String contentType, byte[] body)
+            throws IOException {
+        return send(conn, "PUT", contentType, body);
+    }
+
+    private static HttpURLConnection send(HttpURLConnection conn, String method,
+            String contentType, byte[] body) throws IOException {
+        conn.setRequestMethod(method);
         conn.setDoOutput(true);
         conn.setDoInput(true);
         setContentType(conn, contentType);
         conn.setRequestProperty("Content-Length", Integer.toString(body.length));
         try (OutputStream out = conn.getOutputStream()) {
             out.write(body);
+        }
+        return conn;
+    }
+
+    private static HttpURLConnection send(HttpURLConnection conn, String method,
+            String contentType, ByteArrayOutputStream baos) throws IOException {
+        conn.setRequestMethod(method);
+        conn.setDoOutput(true);
+        conn.setDoInput(true);
+        setContentType(conn, contentType);
+        conn.setRequestProperty("Content-Length", Integer.toString(baos.size()));
+        try (OutputStream out = conn.getOutputStream()) {
+            baos.writeTo(out);
         }
         return conn;
     }
@@ -849,19 +895,59 @@ public class IOHelper {
             if (key == null || key.isEmpty() || value == null || value.isEmpty()) {
                 continue;
             }
-            try {
-                final String keyEnc = URLEncoder.encode(key, DEFAULT_CHARSET);
-                final String valueEnc = URLEncoder.encode(value, DEFAULT_CHARSET);
+            final String keyEnc = urlEncode(key);
+            final String valueEnc = urlEncode(value);
+            if (!first) {
+                sb.append('&');
+            }
+            sb.append(keyEnc).append('=').append(valueEnc);
+            first = false;
+        }
+        return sb.toString();
+    }
+
+    /**
+     * Same as {@link #getParams(Map) getParams} but this allows
+     * the map and the generated query string to have multiple instances
+     * with the same key e.g. ?foo=bar&foo=baz
+     */
+    public static String getParamsMultiValue(Map<String, String[]> kvps) {
+        if (kvps == null || kvps.isEmpty()) {
+            return "";
+        }
+
+        final StringBuilder sb = new StringBuilder();
+        boolean first = true;
+        for (Map.Entry<String, String[]> entry : kvps.entrySet()) {
+            final String key = entry.getKey();
+            final String[] values = entry.getValue();
+            if (key == null || key.isEmpty() || values == null || values.length == 0) {
+                continue;
+            }
+            String keyEnc = urlEncode(key);
+            for (String value : values) {
+                if (value == null || value.isEmpty()) {
+                    continue;
+                }
+                String valueEnc = urlEncode(value);
                 if (!first) {
                     sb.append('&');
                 }
                 sb.append(keyEnc).append('=').append(valueEnc);
                 first = false;
-            } catch (UnsupportedEncodingException ignore) {
-                // Ignore the exception, UTF-8 _IS_ supported
             }
         }
         return sb.toString();
+    }
+
+    public static String urlEncode(String s) {
+        try {
+            return URLEncoder.encode(s, CHARSET_UTF8);
+        } catch (UnsupportedEncodingException ignore) {
+            // Ignore the exception, 'UTF-8' is supported
+        }
+        // return something, this code is unreachable
+        return s;
     }
 
     public static InputStream getInputStream(HttpURLConnection conn) {

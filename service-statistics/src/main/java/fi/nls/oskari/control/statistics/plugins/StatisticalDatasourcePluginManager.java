@@ -19,6 +19,7 @@ import org.apache.ibatis.transaction.TransactionFactory;
 import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
 
 import javax.sql.DataSource;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -45,8 +46,6 @@ public class StatisticalDatasourcePluginManager {
         return plugins.get(id);
     }
 
-    private List<StatisticalDatasource> statisticalDatasources;
-
     public static StatisticalDatasourcePluginManager getInstance() {
         if(instance == null) {
             instance = new StatisticalDatasourcePluginManager();
@@ -58,6 +57,19 @@ public class StatisticalDatasourcePluginManager {
     private StatisticalDatasourcePluginManager() {}
 
     /**
+     * Returns a list of successfully registered datasources.
+     * There might be more in the database, but misconfigured ones are not registered.
+     * @return
+     */
+    public List<StatisticalDatasource> getDatasources() {
+        List<StatisticalDatasource> list = new ArrayList<>();
+        for(StatisticalDatasourcePlugin plugin : plugins.values()) {
+            list.add(plugin.getSource());
+        }
+        return list;
+    }
+
+    /**
      * Used for tests.
      */
     public void reset() {
@@ -65,7 +77,7 @@ public class StatisticalDatasourcePluginManager {
     }
 
     public void init() {
-        statisticalDatasources = getDatasources();
+        List<StatisticalDatasource> statisticalDatasources = getConfiguredDatasources();
         Map<String, StatisticalDatasourceFactory> allPlugins = OskariComponentManager.getComponentsOfType(StatisticalDatasourceFactory.class);
 
         for (StatisticalDatasource source : statisticalDatasources) {
@@ -89,13 +101,18 @@ public class StatisticalDatasourcePluginManager {
      * @param factory factory to create plugins for the source
      */
     public void registerDatasource(StatisticalDatasource source, StatisticalDatasourceFactory factory) {
-        LOG.info("Registering a Statistical Datasource: ", source.getId(), "with plugin", source.getPlugin());
-        factory.setupSourceLayers(source);
-        StatisticalDatasourcePlugin plugin = factory.create(source);
-        plugins.put(source.getId(), plugin);
+        LOG.info("Registering a Statistical Datasource:", source.getId(), "with plugin", source.getPlugin());
+        try {
+            factory.setupSourceLayers(source);
+            StatisticalDatasourcePlugin plugin = factory.create(source);
+            plugins.put(source.getId(), plugin);
+        } catch (APIException ex) {
+            LOG.error("Couldn't register a Statistical Datasource:", source.getId(),
+                    "with plugin", source.getPlugin(), "Reason:", ex.getMessage());
+        }
     }
 
-    public List<StatisticalDatasource> getDatasources() {
+    private List<StatisticalDatasource> getConfiguredDatasources() {
         // Fetching the plugins from the database.
         final DatasourceHelper helper = DatasourceHelper.getInstance();
         final DataSource dataSource = helper.getDataSource(helper.getOskariDataSourceName());

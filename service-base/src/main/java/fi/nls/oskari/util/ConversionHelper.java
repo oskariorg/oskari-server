@@ -116,6 +116,9 @@ public class ConversionHelper {
      * @return long
      */
     public static final long getLong(final String strToParse, final long defaultValue) {
+        if (strToParse == null) {
+            return defaultValue;
+        }
         try {
             return Long.parseLong(strToParse);
         } catch (Exception e) {

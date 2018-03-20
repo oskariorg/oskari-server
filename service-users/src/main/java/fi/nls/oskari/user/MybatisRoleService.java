@@ -200,7 +200,7 @@ public class MybatisRoleService {
     public Map<String, Role> getExternalRolesMapping(String type) {
         final Map<String, Role> mapping = new HashMap<>();
         if(type == null) {
-            return mapping;
+            type="";
         }
         final SqlSession session = factory.openSession();
         List<Object> roleMappingList = null;

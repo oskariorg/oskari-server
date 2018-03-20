@@ -9,6 +9,8 @@ import java.util.List;
  */
 public class GetMapBuilder {
 
+    private static final String DEFAULT_VERSION = "1.1.1";
+
     private String endPoint;
     private String version;
     private String bbox;
@@ -27,6 +29,9 @@ public class GetMapBuilder {
     }
 
     public GetMapBuilder version(String version) {
+        if (version == null || version.isEmpty()) {
+            version = DEFAULT_VERSION;
+        }
         this.version = version;
         return this;
     }
@@ -99,7 +104,13 @@ public class GetMapBuilder {
     public String toKVP() {
         StringBuilder sb = new StringBuilder();
         sb.append(endPoint);
-        sb.append("?SERVICE=WMS");
+        int j = endPoint.indexOf('?');
+        if (j < 0) {
+            sb.append('?');
+        } else if (j != (endPoint.length() - 1)) {
+            sb.append('&');
+        }
+        sb.append("SERVICE=WMS");
         sb.append("&REQUEST=GetMap");
         sb.append("&VERSION=").append(version);
         sb.append("&BBOX=").append(bbox);

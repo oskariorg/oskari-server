@@ -70,7 +70,7 @@ public class ELFGeoLocatorSearchChannelTest {
     @Test
     public void getElasticQuery() {
         ELFGeoLocatorSearchChannel channel = new ELFGeoLocatorSearchChannel();
-        final JSONObject expected = JSONHelper.createJSONObject("{\"query\":{\"match\":{\"name\":{\"analyzer\":\"standard\",\"query\":\"\\\"}, {\\\"break\\\": []\"}}}}");
+        final JSONObject expected = JSONHelper.createJSONObject("{\"normal_search\":{\"text\":\"\\\"}, {\\\"break\\\": []\",\"completion\":{\"field\":\"name_suggest\",\"size\":20}},\"fuzzy_search\":{\"text\":\"\\\"}, {\\\"break\\\": []\",\"completion\":{\"field\":\"name_suggest\",\"size\":20,\"fuzzy\":{\"fuzziness\":5}}}}");
         final JSONObject actual = JSONHelper.createJSONObject(channel.getElasticQuery("\"}, {\"break\": []"));
         assertTrue("JSON should not break", JSONHelper.isEqual(expected, actual));
     }

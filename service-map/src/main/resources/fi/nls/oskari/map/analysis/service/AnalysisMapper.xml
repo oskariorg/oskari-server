@@ -112,7 +112,7 @@
 
     <select id="getAnalysisDataByIdUid" parameterType="java.util.HashMap" resultType="java.util.HashMap">
         select
-        $select_items$
+        ${select_items}
         from
         analysis_data
         where analysis_id = #{id} and uuid=#{uuid}

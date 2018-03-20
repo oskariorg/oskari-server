@@ -9,6 +9,7 @@ import fi.nls.oskari.domain.map.view.View;
 import fi.nls.oskari.domain.map.view.ViewTypes;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.service.db.BaseIbatisService;
 import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.PropertyUtil;
@@ -20,37 +21,51 @@ public class ViewServiceIbatisImpl extends BaseIbatisService<Object> implements
         ViewService {
 
     private static final Logger LOG = LogFactory.getLogger(ViewServiceIbatisImpl.class);
-    private final Map<String, Long> defaultViewIds = new HashMap<String, Long>();
-    private String[] viewRoles = new String[0];
-    private long defaultViewProperty = -1;
+
+    private static final String PROP_VIEW_DEFAULT = "view.default";
+    private static final String PROP_VIEW_DEFAULT_ROLES = "view.default.roles";
+
+    private final Map<String, Long> roleToDefaultViewId;
+    private final String[] defaultViewRoles;
+    private final long defaultViewId;
 
     public ViewServiceIbatisImpl() {
-        super();
-
         // roles in preferred order which we use to resolve default view
         // view.default.roles=Admin, User, Guest
-        viewRoles = PropertyUtil.getCommaSeparatedList("view.default.roles");
-        for(int i= 0; i < viewRoles.length; ++i) {
-            final String role = viewRoles[i];
+        defaultViewRoles = PropertyUtil.getCommaSeparatedList(PROP_VIEW_DEFAULT_ROLES);
+        roleToDefaultViewId = initDefaultViewsByRole(defaultViewRoles);
+        defaultViewId = initDefaultViewId();
+    }
 
-            // populate role based properties if available
-            final long roleViewId = ConversionHelper.getLong(PropertyUtil.get("view.default." + role), -1);
-            if(roleViewId != -1) {
-                defaultViewIds.put(role, roleViewId);
+    private Map<String, Long> initDefaultViewsByRole(String[] roles) {
+        if (roles.length == 0) {
+            return Collections.emptyMap();
+        }
+        Map<String, Long> roleToDefaultViewId = new HashMap<>();
+        for (String role : roles) {
+            String roleViewIdStr = PropertyUtil.get(PROP_VIEW_DEFAULT + "." + role);
+            long roleViewId = ConversionHelper.getLong(roleViewIdStr, -1);
+            if (roleViewId != -1) {
+                roleToDefaultViewId.put(role, roleViewId);
+                LOG.debug("Added default view", roleViewId, "for role", role);
+            } else {
+                LOG.info("Failed to set default view id for role", role,
+                        "property missing or value invalid");
             }
         }
-        if(viewRoles.length > 0) {
-            LOG.debug("Added default views for roles:", defaultViewIds);
-        }
-        else {
-            LOG.debug("No role based default views configured");
-        }
+        return roleToDefaultViewId;
+    }
 
-        // check properties for global default view
-        defaultViewProperty = ConversionHelper.getLong(PropertyUtil.get("view.default"), -1);
-        if(defaultViewProperty != -1) {
-            LOG.debug("Global default view is:", defaultViewProperty);
+    private long initDefaultViewId() {
+        long property = ConversionHelper.getLong(PropertyUtil.get(PROP_VIEW_DEFAULT), -1);
+        if (property != -1) {
+            LOG.debug("Global default view id from properties:" , property);
+            return property;
         }
+        // use one from db if property doesn't exist or is invalid
+        Long database = ((Long) queryForObject("View.get-default-view-id", ViewTypes.DEFAULT));
+        LOG.debug("Global default view id from database:" , database);
+        return database;
     }
 
     @Override
@@ -141,7 +156,7 @@ public class ViewServiceIbatisImpl extends BaseIbatisService<Object> implements
         SqlMapSession session = openSession();
 
         try {
-        	view.setUuid(generateUuid());
+            view.setUuid(UUID.randomUUID().toString());
 
             session.startTransaction();
             Object ret =  queryForObject("View.add-view", view);
@@ -257,11 +272,7 @@ public class ViewServiceIbatisImpl extends BaseIbatisService<Object> implements
     }
 
     public long getDefaultViewId() {
-        // property overrides db default, no particular reason for this
-        if(defaultViewProperty == -1) {
-            defaultViewProperty = getDefaultViewId(ViewTypes.DEFAULT);
-        }
-        return defaultViewProperty;
+        return defaultViewId;
     }
 
     /**
@@ -290,26 +301,36 @@ public class ViewServiceIbatisImpl extends BaseIbatisService<Object> implements
     }
 
     public long getSystemDefaultViewId(Collection<Role> roles) {
-
-        if(roles == null) {
+        if (roles == null) {
             LOG.debug("Tried to get default view for <null> roles");
-        }
-        else {
+        } else {
             // Check the roles in given order and return the first match
-            for(String role : viewRoles) {
-                if(Role.hasRoleWithName(roles, role) &&
-                        defaultViewIds.containsKey(role)) {
-                    LOG.debug("Default view found for role", role, ":", defaultViewIds.get(role));
-                    return defaultViewIds.get(role);
+            for (String defaultViewRole : defaultViewRoles) {
+                if (Role.hasRoleWithName(roles, defaultViewRole)) {
+                    Long rolesDefaultViewId = roleToDefaultViewId.get(defaultViewRole);
+                    if (rolesDefaultViewId != null) {
+                        LOG.debug("Default view found for role", defaultViewRole, ":", rolesDefaultViewId);
+                        return rolesDefaultViewId;
+                    }
                 }
             }
         }
-        LOG.debug("No properties based default views matched user roles:", roles, ". Defaulting to DB.");
+        LOG.debug("No role based default views matched user roles:", roles, ". Defaulting to global default.");
         return getDefaultViewId();
     }
 
+    @SuppressWarnings("unchecked")
+    @Override
+    public List<Long> getSystemDefaultViewIds() throws ServiceException {
+        try {
+            return (List<Long>) getSqlMapClient().queryForList("View.get-default-view-ids");
+        } catch (SQLException e) {
+            throw new ServiceException(e.getMessage(), e);
+        }
+    }
+
     public boolean isSystemDefaultView(final long id) {
-        return defaultViewIds.containsValue(id) || getDefaultViewId() == id;
+        return roleToDefaultViewId.containsValue(id) || getDefaultViewId() == id;
     }
 
     /**
@@ -320,38 +341,22 @@ public class ViewServiceIbatisImpl extends BaseIbatisService<Object> implements
      */
     private long getPersonalizedDefaultViewId(final User user) {
         if (!user.isGuest() && user.getId() != -1) {
-            Object queryResult = queryForObject("View.get-default-view-id-by-user-id",user.getId());
+            Object queryResult = queryForObject("View.get-default-view-id-by-user-id", user.getId());
             if (queryResult != null) {
-                Long userDefaultViewId = (Long)queryResult;
-                return userDefaultViewId.longValue();
+                return (Long) queryResult;
             }
         }
-
         return -1;
     }
+
     /**
      * Returns default view id for given role name
      * @param roleName
      * @return
      */
     public long getDefaultViewIdForRole(final String roleName) {
-        if(defaultViewIds.containsKey(roleName)) {
-            return defaultViewIds.get(roleName);
-        }
-        return getDefaultViewId();
-    }
-
-    public long getDefaultViewId(String type) {
-        return ((Long) queryForObject("View.get-default-view-id", type))
-                .longValue();
-    }
-
-    /**
-     * Generates random UUID
-     * @return uuid
-     */
-    public String generateUuid() {
-        return UUID.randomUUID().toString();
+        Long rolesDefaultViewId = roleToDefaultViewId.get(roleName);
+        return rolesDefaultViewId != null ? rolesDefaultViewId : defaultViewId;
     }
 
 }

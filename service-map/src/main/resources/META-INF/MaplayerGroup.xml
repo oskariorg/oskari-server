@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE sqlMap      
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"      
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="MaplayerGroup">
+
+    <!-- Use type aliases to avoid typing the full classname every time. -->
+    <typeAlias alias="MaplayerGroup" type="fi.nls.oskari.domain.map.MaplayerGroup" />
+
+    <resultMap id="MaplayerGroupResult" class="MaplayerGroup">
+        <result property="id" column="id" />
+        <result property="locale" column="locale" jdbcType="VARCHAR" javaType="org.json.JSONObject" />
+        <result property="parentId" column="parentid" />
+        <result property="selectable" column="selectable" />
+        <result property="orderNumber" column="order_number" />
+    </resultMap>
+
+    <parameterMap id="MaplayerGroupInsertParameter" class="MaplayerGroup">
+        <parameter property="locale" jdbcType="VARCHAR" javaType="org.json.JSONObject" />
+        <parameter property="parentId" />
+        <parameter property="selectable" />
+    </parameterMap>
+
+    <parameterMap id="MaplayerGroupUpdateParameter" class="MaplayerGroup">
+        <parameter property="locale" jdbcType="VARCHAR" javaType="org.json.JSONObject" />
+        <parameter property="parentId" />
+        <parameter property="selectable" />
+        <parameter property="id" />
+    </parameterMap>
+
+    <parameterMap id="MaplayerGroupUpdateOrderParameter" class="MaplayerGroup">
+        <parameter property="orderNumber" />
+        <parameter property="id" />
+    </parameterMap>
+
+    <select id="maxId" resultClass="int">
+        select max(id) from oskari_maplayer_group
+    </select>
+
+    <select id="find" parameterClass="int" resultMap="MaplayerGroupResult">
+        select id, locale, parentid, selectable, order_number from oskari_maplayer_group where id = #id#
+    </select>
+
+    <select id="findAll" resultMap="MaplayerGroupResult">
+        select id, locale, parentid, selectable, order_number from oskari_maplayer_group order by id
+    </select>
+
+    <select id="findByParentId" parameterClass="int" resultMap="MaplayerGroupResult">
+        SELECT id, locale, parentid, selectable, order_number FROM oskari_maplayer_group  WHERE parentid=#id# ORDER BY order_number ASC
+    </select>
+
+    <select id="findByMaplayer" parameterClass="int" resultMap="MaplayerGroupResult">
+        select t.id, t.locale, t.parentid, t.selectable, t.order_number from oskari_maplayer_group t, oskari_maplayer_group_link l
+            where t.id = l.groupid AND l.maplayerid = #id#
+    </select>
+
+    <select id="findByMaplayerMappings" resultClass="java.util.HashMap">
+        select groupid, maplayerid from oskari_maplayer_group_link
+    </select>
+
+    <select id="findMaplayersByGroup" resultClass="int" parameterClass="int">
+        select maplayerid from oskari_maplayer_group_link where groupid = #id# order by order_number
+    </select>
+    
+    <statement id="insert" parameterMap="MaplayerGroupInsertParameter" resultClass="int">
+        insert into oskari_maplayer_group (locale, parentid, selectable)
+        values (?,?,?)
+    </statement>
+    
+    <update id="update" parameterMap="MaplayerGroupUpdateParameter">
+        update oskari_maplayer_group set
+            locale = ?,
+            parentid = ?,
+            selectable = ?
+        where id = ?
+    </update>
+    
+    <update id="updateOrder" parameterMap="MaplayerGroupUpdateOrderParameter">
+        update oskari_maplayer_group set
+            order_number = ?
+        where id = ?
+    </update>
+    
+    <update id="updateGroupParent" parameterClass="java.util.HashMap">
+        update oskari_maplayer_group set
+            parentid = #newGroupId#
+        where
+        	id = #groupId#
+    </update>
+    
+    <delete id="delete" parameterClass="int">
+        delete from oskari_maplayer_group where id = #id#
+    </delete>
+
+    <delete id="removeGroupsLinks" parameterClass="long">
+        DELETE FROM oskari_maplayer_group_link WHERE maplayerid = #id#;
+    </delete>
+
+    <statement id="linkGroupToLayer" parameterClass="java.util.HashMap">
+        insert into oskari_maplayer_group_link (maplayerid, groupid) values (#layerId#, #groupId#)
+    </statement>
+
+    
+</sqlMap>

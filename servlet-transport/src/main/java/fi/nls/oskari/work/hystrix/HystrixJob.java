@@ -28,7 +28,10 @@ public abstract class HystrixJob extends HystrixCommand<String> implements Job<S
                                     .withQueueSizeRejectionThreshold(PropertyUtil.getOptional("oskari." + groupName + ".job.pool.limit", 100)))
                     .andCommandPropertiesDefaults(
                             HystrixCommandProperties.Setter()
-                                    .withExecutionTimeoutInMilliseconds(PropertyUtil.getOptional("oskari." + groupName + ".job.timeoutms", 15000)))
+                                    .withExecutionTimeoutInMilliseconds(PropertyUtil.getOptional("oskari." + groupName + ".job.timeoutms", 25000))
+                                    .withCircuitBreakerRequestVolumeThreshold(PropertyUtil.getOptional("oskari." + groupName + ".failrequests", 5))
+                                    .withMetricsRollingStatisticalWindowInMilliseconds( PropertyUtil.getOptional("oskari." + groupName + ".rollingwindow", 100000))
+                                    .withCircuitBreakerSleepWindowInMilliseconds(PropertyUtil.getOptional("oskari." + groupName + ".sleepwindow", 20000)))
         );
     }
 

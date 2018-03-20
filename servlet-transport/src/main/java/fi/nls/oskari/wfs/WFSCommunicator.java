@@ -1,6 +1,5 @@
 package fi.nls.oskari.wfs;
 
-import com.vividsolutions.jts.geom.Geometry;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.geometry.ProjectionHelper;
@@ -14,13 +13,12 @@ import fi.nls.oskari.work.JobType;
 import org.apache.axiom.om.*;
 import org.apache.axiom.om.impl.builder.StAXOMBuilder;
 import org.geotools.feature.FeatureCollection;
-import org.geotools.feature.FeatureIterator;
 import org.geotools.xml.Parser;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.referencing.operation.MathTransform;
 
-import java.io.BufferedReader;
+import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -187,7 +185,7 @@ public class WFSCommunicator {
 	 */
 	@SuppressWarnings("unchecked")
 	public static FeatureCollection<SimpleFeatureType, SimpleFeature> parseSimpleFeatures(
-            BufferedReader response,
+	        Reader response,
             final WFSLayerStore layer) {
 		Parser parser = null;
 		if(Character.getNumericValue(layer.getGMLVersion().charAt(2)) == 2) { // 3.2

@@ -1,0 +1,958 @@
+<WMS_Capabilities version="1.3.0"  xmlns="http://www.opengis.net/wms"   xmlns:sld="http://www.opengis.net/sld"   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"   xmlns:ms="http://mapserver.gis.umn.edu/mapserver"   xmlns:inspire_common="http://inspire.ec.europa.eu/schemas/common/1.0"   xmlns:inspire_vs="http://inspire.ec.europa.eu/schemas/inspire_vs/1.0"   xsi:schemaLocation="http://www.opengis.net/wms http://schemas.opengis.net/wms/1.3.0/capabilities_1_3_0.xsd  http://www.opengis.net/sld http://schemas.opengis.net/sld/1.1.0/sld_capabilities.xsd  http://inspire.ec.europa.eu/schemas/inspire_vs/1.0  http://inspire.ec.europa.eu/schemas/inspire_vs/1.0/inspire_vs.xsd http://mapserver.gis.umn.edu/mapserver http://kartat.lounaispaikka.fi/ms6/maakuntakaavat/kymenlaakso/kymenlaakso_maakuntakaava_maaseutu_ms6?language=fin&amp;service=WMS&amp;version=1.3.0&amp;request=GetSchemaExtension">
+
+    <!-- MapServer version 6.4.1 OUTPUT=GIF OUTPUT=PNG OUTPUT=JPEG OUTPUT=KML SUPPORTS=PROJ SUPPORTS=GD SUPPORTS=AGG SUPPORTS=FREETYPE SUPPORTS=CAIRO SUPPORTS=SVG_SYMBOLS SUPPORTS=RSVG SUPPORTS=ICONV SUPPORTS=FRIBIDI SUPPORTS=WMS_SERVER SUPPORTS=WMS_CLIENT SUPPORTS=WFS_SERVER SUPPORTS=WFS_CLIENT SUPPORTS=WCS_SERVER SUPPORTS=SOS_SERVER SUPPORTS=FASTCGI SUPPORTS=THREADS SUPPORTS=GEOS INPUT=JPEG INPUT=POSTGIS INPUT=OGR INPUT=GDAL INPUT=SHAPEFILE -->
+
+    <Service>
+        <Name>WMS</Name>
+        <Title>Kymenlaakson maakuntakaava, maaseutu ja luonto</Title>
+        <Abstract>Aineiston on tuottanut Kymenlaakson liitto. Maaseutu ja luonto vahvistettiin 14.12.2010.</Abstract>
+        <KeywordList>
+            <Keyword>maakuntakaava</Keyword>
+            <Keyword> kymenlaakso</Keyword>
+            <Keyword> aluesuunnittelu</Keyword>
+            <Keyword> maankäyttö</Keyword>
+            <Keyword vocabulary="ISO">infoMapAccessService</Keyword>
+            <Keyword vocabulary="ISO">WMS</Keyword>
+        </KeywordList>
+        <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://www.lounaispaikka.fi"/>
+        <ContactInformation>
+            <ContactPersonPrimary>
+                <ContactPerson>Sanna Jokela</ContactPerson>
+                <ContactOrganization>Lounaispaikka</ContactOrganization>
+            </ContactPersonPrimary>
+            <ContactPosition>pointOfContact</ContactPosition>
+            <ContactElectronicMailAddress>info@lounaispaikka.fi</ContactElectronicMailAddress>
+        </ContactInformation>
+        <Fees>no conditions apply</Fees>
+        <AccessConstraints>None</AccessConstraints>
+        <MaxWidth>2048</MaxWidth>
+        <MaxHeight>2048</MaxHeight>
+    </Service>
+
+    <Capability>
+        <Request>
+            <GetCapabilities>
+                <Format>text/xml</Format>
+                <DCPType>
+                    <HTTP>
+                        <Get><OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://kartat.lounaispaikka.fi/ms6/maakuntakaavat/kymenlaakso/kymenlaakso_maakuntakaava_maaseutu_ms6?language=fin&amp;"/></Get>
+                        <Post><OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://kartat.lounaispaikka.fi/ms6/maakuntakaavat/kymenlaakso/kymenlaakso_maakuntakaava_maaseutu_ms6?language=fin&amp;"/></Post>
+                    </HTTP>
+                </DCPType>
+            </GetCapabilities>
+            <GetMap>
+                <Format>image/png</Format>
+                <Format>image/jpeg</Format>
+                <Format>image/gif</Format>
+                <Format>image/png; mode=8bit</Format>
+                <Format>application/x-pdf</Format>
+                <Format>image/svg+xml</Format>
+                <Format>image/tiff</Format>
+                <Format>application/vnd.google-earth.kml+xml</Format>
+                <Format>application/vnd.google-earth.kmz</Format>
+                <DCPType>
+                    <HTTP>
+                        <Get><OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://kartat.lounaispaikka.fi/ms6/maakuntakaavat/kymenlaakso/kymenlaakso_maakuntakaava_maaseutu_ms6?language=fin&amp;"/></Get>
+                        <Post><OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://kartat.lounaispaikka.fi/ms6/maakuntakaavat/kymenlaakso/kymenlaakso_maakuntakaava_maaseutu_ms6?language=fin&amp;"/></Post>
+                    </HTTP>
+                </DCPType>
+            </GetMap>
+            <GetFeatureInfo>
+                <Format>text/html</Format>
+                <Format>application/vnd.ogc.gml</Format>
+                <Format>text/plain</Format>
+                <DCPType>
+                    <HTTP>
+                        <Get><OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://kartat.lounaispaikka.fi/ms6/maakuntakaavat/kymenlaakso/kymenlaakso_maakuntakaava_maaseutu_ms6?language=fin&amp;"/></Get>
+                        <Post><OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://kartat.lounaispaikka.fi/ms6/maakuntakaavat/kymenlaakso/kymenlaakso_maakuntakaava_maaseutu_ms6?language=fin&amp;"/></Post>
+                    </HTTP>
+                </DCPType>
+            </GetFeatureInfo>
+        </Request>
+        <Exception>
+            <Format>XML</Format>
+            <Format>INIMAGE</Format>
+            <Format>BLANK</Format>
+        </Exception>
+        <inspire_vs:ExtendedCapabilities>
+            <inspire_common:MetadataUrl xsi:type="inspire_common:resourceLocatorType">
+                <inspire_common:URL>http://www.paikkatietohakemisto.fi/geonetwork/srv/fi/metadata.show.portti.metaMultiLingual?uuid=d04c6201-ea5a-4865-a9eb-3341e6c15a8a</inspire_common:URL>
+                <inspire_common:MediaType>application/vnd.ogc.csw.capabilities.response_xml</inspire_common:MediaType>
+            </inspire_common:MetadataUrl>
+            <inspire_common:SupportedLanguages>
+                <inspire_common:DefaultLanguage><inspire_common:Language>fin</inspire_common:Language></inspire_common:DefaultLanguage>
+            </inspire_common:SupportedLanguages>
+            <inspire_common:ResponseLanguage><inspire_common:Language>fin</inspire_common:Language></inspire_common:ResponseLanguage>
+        </inspire_vs:ExtendedCapabilities>
+        <Layer>
+            <Name>kymenlaakso_maakuntakaava</Name>
+            <Title>Kymenlaakson maakuntakaava, maaseutu ja luonto</Title>
+            <Abstract>Aineiston on tuottanut Kymenlaakson liitto. Maaseutu ja luonto vahvistettiin 14.12.2010.</Abstract>
+            <KeywordList>
+                <Keyword>maakuntakaava</Keyword>
+                <Keyword> kymenlaakso</Keyword>
+                <Keyword> aluesuunnittelu</Keyword>
+                <Keyword> maankäyttö</Keyword>
+            </KeywordList>
+            <CRS>EPSG:3067</CRS>
+            <CRS>EPSG:2393</CRS>
+            <CRS>EPSG:4326</CRS>
+            <EX_GeographicBoundingBox>
+                <westBoundLongitude>25.9856</westBoundLongitude>
+                <eastBoundLongitude>28.0104</eastBoundLongitude>
+                <southBoundLatitude>60.1681</southBoundLatitude>
+                <northBoundLatitude>61.2928</northBoundLatitude>
+            </EX_GeographicBoundingBox>
+            <BoundingBox CRS="EPSG:3067"
+                         minx="445639" miny="6.67054e+06" maxx="554152" maxy="6.79541e+06" />
+            <BoundingBox CRS="EPSG:2393"
+                         minx="6.67334e+06" miny="3.44579e+06" maxx="6.79826e+06" maxy="3.55434e+06" />
+            <BoundingBox CRS="EPSG:4326"
+                         minx="60.1681" miny="25.9856" maxx="61.2928" maxy="28.0104" />
+            <AuthorityURL name="FI">
+                <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://www.maanmittauslaitos.fi"/>
+            </AuthorityURL>
+            <Identifier authority="FI">1000448</Identifier>
+            <MetadataURL type="ISO19115:2003">
+                <Format>text/xml</Format>
+                <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://www.paikkatietohakemisto.fi/geonetwork/srv/fi/metadata.show.portti.metaMultiLingual?uuid=93a384df-31da-40fa-a001-2b3bb79c955c"/>
+            </MetadataURL>
+            <Style>
+                <Name>inspire_common:DEFAULT</Name>
+                <Title>Maakuntakaava</Title>
+                <LegendURL width="970" height="1518">
+                    <Format>image/png</Format>
+                    <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://kartat.lounaispaikka.fi/ms6/maakuntakaavat/kymenlaakso/kymenlaakso_maakuntakaava_maaseutu_ms6?language=fin&amp;version=1.3.0&amp;service=WMS&amp;request=GetLegendGraphic&amp;sld_version=1.1.0&amp;layer=kymenlaakso_maakuntakaava&amp;format=image/png&amp;STYLE=inspire_common:DEFAULT"/>
+                </LegendURL>
+            </Style>
+            <Layer queryable="0" opaque="0" cascaded="0">
+                <Name>kaavaraja</Name>
+                <Title>Kaava-aineiston kattavuus</Title>
+                <Abstract>Kymenlaakson maakuntakaava, maaseutu ja luonto: Kaava-aineiston kattavuus</Abstract>
+                <KeywordList>
+                    <Keyword>kaava</Keyword>
+                    <Keyword>kattavuus</Keyword>
+                    <Keyword>kymenlaakso</Keyword>
+                </KeywordList>
+                <CRS>EPSG:2393</CRS>
+                <EX_GeographicBoundingBox>
+                    <westBoundLongitude>25.9856</westBoundLongitude>
+                    <eastBoundLongitude>28.0104</eastBoundLongitude>
+                    <southBoundLatitude>60.1681</southBoundLatitude>
+                    <northBoundLatitude>61.2928</northBoundLatitude>
+                </EX_GeographicBoundingBox>
+                <BoundingBox CRS="EPSG:3067"
+                             minx="445639" miny="6.67054e+06" maxx="554152" maxy="6.79541e+06" />
+                <BoundingBox CRS="EPSG:2393"
+                             minx="6.67334e+06" miny="3.44579e+06" maxx="6.79826e+06" maxy="3.55434e+06" />
+                <BoundingBox CRS="EPSG:4326"
+                             minx="60.1681" miny="25.9856" maxx="61.2928" maxy="28.0104" />
+                <Identifier authority="FI">1000448</Identifier>
+                <MetadataURL type="ISO19115:2003">
+                    <Format>text/xml</Format>
+                    <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://www.paikkatietohakemisto.fi/geonetwork/srv/fi/metadata.show.portti.metaMultiLingual?uuid=93a384df-31da-40fa-a001-2b3bb79c955c"/>
+                </MetadataURL>
+                <Style>
+                    <Name>default</Name>
+                    <Title>default</Title>
+                    <LegendURL width="55" height="39">
+                        <Format>image/png</Format>
+                        <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://kartat.lounaispaikka.fi/ms6/maakuntakaavat/kymenlaakso/kymenlaakso_maakuntakaava_maaseutu_ms6?language=fin&amp;version=1.3.0&amp;service=WMS&amp;request=GetLegendGraphic&amp;sld_version=1.1.0&amp;layer=kaavaraja&amp;format=image/png&amp;STYLE=default"/>
+                    </LegendURL>
+                </Style>
+            </Layer>
+            <Layer>
+                <Name>aluevaraukset</Name>
+                <Title>Aluevaraukset</Title>
+                <Abstract>Kymenlaakson maakuntakaava, maaseutu ja luonto: Aluevaraukset</Abstract>
+                <Style>
+                    <Name>inspire_common:DEFAULT</Name>
+                    <Title>aluevaraukset</Title>
+                    <LegendURL width="893" height="515">
+                        <Format>image/png</Format>
+                        <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://kartat.lounaispaikka.fi/ms6/maakuntakaavat/kymenlaakso/kymenlaakso_maakuntakaava_maaseutu_ms6?language=fin&amp;version=1.3.0&amp;service=WMS&amp;request=GetLegendGraphic&amp;sld_version=1.1.0&amp;layer=aluevaraukset&amp;format=image/png&amp;STYLE=inspire_common:DEFAULT"/>
+                    </LegendURL>
+                </Style>
+                <Layer queryable="1" opaque="0" cascaded="0">
+                    <Name>alueet</Name>
+                    <Title>Alueet / Områden</Title>
+                    <Abstract>Kymenlaakson maakuntakaava, maaseutu ja luonto: Aluevaraukset</Abstract>
+                    <KeywordList>
+                        <Keyword>kaava</Keyword>
+                        <Keyword>maaseutu</Keyword>
+                        <Keyword>alue</Keyword>
+                        <Keyword>kymenlaakso</Keyword>
+                    </KeywordList>
+                    <EX_GeographicBoundingBox>
+                        <westBoundLongitude>25.9856</westBoundLongitude>
+                        <eastBoundLongitude>28.0104</eastBoundLongitude>
+                        <southBoundLatitude>60.1681</southBoundLatitude>
+                        <northBoundLatitude>61.2928</northBoundLatitude>
+                    </EX_GeographicBoundingBox>
+                    <BoundingBox CRS="EPSG:3067"
+                                 minx="445639" miny="6.67054e+06" maxx="554152" maxy="6.79541e+06" />
+                    <BoundingBox CRS="EPSG:2393"
+                                 minx="6.67334e+06" miny="3.44579e+06" maxx="6.79826e+06" maxy="3.55434e+06" />
+                    <BoundingBox CRS="EPSG:4326"
+                                 minx="60.1681" miny="25.9856" maxx="61.2928" maxy="28.0104" />
+                    <Identifier authority="FI">1000448</Identifier>
+                    <MetadataURL type="ISO19115:2003">
+                        <Format>text/xml</Format>
+                        <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://www.paikkatietohakemisto.fi/geonetwork/srv/fi/metadata.show.portti.metaMultiLingual?uuid=93a384df-31da-40fa-a001-2b3bb79c955c"/>
+                    </MetadataURL>
+                    <Style>
+                        <Name>default</Name>
+                        <Title>default</Title>
+                        <LegendURL width="761" height="277">
+                            <Format>image/png</Format>
+                            <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://kartat.lounaispaikka.fi/ms6/maakuntakaavat/kymenlaakso/kymenlaakso_maakuntakaava_maaseutu_ms6?language=fin&amp;version=1.3.0&amp;service=WMS&amp;request=GetLegendGraphic&amp;sld_version=1.1.0&amp;layer=alueet&amp;format=image/png&amp;STYLE=default"/>
+                        </LegendURL>
+                    </Style>
+                    <MinScaleDenominator>50000</MinScaleDenominator>
+                    <MaxScaleDenominator>1e+06</MaxScaleDenominator>
+                </Layer>
+                <Layer queryable="1" opaque="0" cascaded="0">
+                    <Name>GEO_alueet</Name>
+                    <Title>Arvokas geologinen muodostuma / Värdefull geologisk formation</Title>
+                    <Abstract>Kymenlaakson maakuntakaava, maaseutu ja luonto: Aluevaraukset</Abstract>
+                    <KeywordList>
+                        <Keyword>kaava</Keyword>
+                        <Keyword>maaseutu</Keyword>
+                        <Keyword>alue</Keyword>
+                        <Keyword>geologinen</Keyword>
+                        <Keyword>muodostuma</Keyword>
+                        <Keyword>kymenlaakso</Keyword>
+                    </KeywordList>
+                    <EX_GeographicBoundingBox>
+                        <westBoundLongitude>25.9856</westBoundLongitude>
+                        <eastBoundLongitude>28.0104</eastBoundLongitude>
+                        <southBoundLatitude>60.1681</southBoundLatitude>
+                        <northBoundLatitude>61.2928</northBoundLatitude>
+                    </EX_GeographicBoundingBox>
+                    <BoundingBox CRS="EPSG:3067"
+                                 minx="445639" miny="6.67054e+06" maxx="554152" maxy="6.79541e+06" />
+                    <BoundingBox CRS="EPSG:2393"
+                                 minx="6.67334e+06" miny="3.44579e+06" maxx="6.79826e+06" maxy="3.55434e+06" />
+                    <BoundingBox CRS="EPSG:4326"
+                                 minx="60.1681" miny="25.9856" maxx="61.2928" maxy="28.0104" />
+                    <Identifier authority="FI">1000448</Identifier>
+                    <MetadataURL type="ISO19115:2003">
+                        <Format>text/xml</Format>
+                        <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://www.paikkatietohakemisto.fi/geonetwork/srv/fi/metadata.show.portti.metaMultiLingual?uuid=93a384df-31da-40fa-a001-2b3bb79c955c"/>
+                    </MetadataURL>
+                    <Style>
+                        <Name>default</Name>
+                        <Title>default</Title>
+                        <LegendURL width="342" height="22">
+                            <Format>image/png</Format>
+                            <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://kartat.lounaispaikka.fi/ms6/maakuntakaavat/kymenlaakso/kymenlaakso_maakuntakaava_maaseutu_ms6?language=fin&amp;version=1.3.0&amp;service=WMS&amp;request=GetLegendGraphic&amp;sld_version=1.1.0&amp;layer=GEO_alueet&amp;format=image/png&amp;STYLE=default"/>
+                        </LegendURL>
+                    </Style>
+                    <MinScaleDenominator>100000</MinScaleDenominator>
+                    <MaxScaleDenominator>1e+06</MaxScaleDenominator>
+                </Layer>
+                <Layer queryable="1" opaque="0" cascaded="0">
+                    <Name>Natura_alueet</Name>
+                    <Title>Natura 2000-verkostoon kuuluva tai ehdotettu alue / Område som hör till eller föreslagits hora till nätverket natura 2000</Title>
+                    <Abstract>Kymenlaakson maakuntakaava, maaseutu ja luonto: Aluevaraukset</Abstract>
+                    <KeywordList>
+                        <Keyword>kaava</Keyword>
+                        <Keyword>maaseutu</Keyword>
+                        <Keyword>alue</Keyword>
+                        <Keyword>natura</Keyword>
+                        <Keyword>kymenlaakso</Keyword>
+                    </KeywordList>
+                    <EX_GeographicBoundingBox>
+                        <westBoundLongitude>25.9856</westBoundLongitude>
+                        <eastBoundLongitude>28.0104</eastBoundLongitude>
+                        <southBoundLatitude>60.1681</southBoundLatitude>
+                        <northBoundLatitude>61.2928</northBoundLatitude>
+                    </EX_GeographicBoundingBox>
+                    <BoundingBox CRS="EPSG:3067"
+                                 minx="445639" miny="6.67054e+06" maxx="554152" maxy="6.79541e+06" />
+                    <BoundingBox CRS="EPSG:2393"
+                                 minx="6.67334e+06" miny="3.44579e+06" maxx="6.79826e+06" maxy="3.55434e+06" />
+                    <BoundingBox CRS="EPSG:4326"
+                                 minx="60.1681" miny="25.9856" maxx="61.2928" maxy="28.0104" />
+                    <Identifier authority="FI">1000448</Identifier>
+                    <MetadataURL type="ISO19115:2003">
+                        <Format>text/xml</Format>
+                        <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://www.paikkatietohakemisto.fi/geonetwork/srv/fi/metadata.show.portti.metaMultiLingual?uuid=93a384df-31da-40fa-a001-2b3bb79c955c"/>
+                    </MetadataURL>
+                    <Style>
+                        <Name>default</Name>
+                        <Title>default</Title>
+                        <LegendURL width="598" height="22">
+                            <Format>image/png</Format>
+                            <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://kartat.lounaispaikka.fi/ms6/maakuntakaavat/kymenlaakso/kymenlaakso_maakuntakaava_maaseutu_ms6?language=fin&amp;version=1.3.0&amp;service=WMS&amp;request=GetLegendGraphic&amp;sld_version=1.1.0&amp;layer=Natura_alueet&amp;format=image/png&amp;STYLE=default"/>
+                        </LegendURL>
+                    </Style>
+                    <MinScaleDenominator>100000</MinScaleDenominator>
+                    <MaxScaleDenominator>1e+06</MaxScaleDenominator>
+                </Layer>
+                <Layer queryable="1" opaque="0" cascaded="0">
+                    <Name>maisema_alueet</Name>
+                    <Title>Kulttuuriympäristöt ja maisema-alueet / Kulturmiljön och landskapsvården</Title>
+                    <Abstract>Kymenlaakson maakuntakaava, maaseutu ja luonto: Aluevaraukset</Abstract>
+                    <KeywordList>
+                        <Keyword>kaava</Keyword>
+                        <Keyword>maaseutu</Keyword>
+                        <Keyword>alue</Keyword>
+                        <Keyword>kulttuuriympäristö</Keyword>
+                        <Keyword>maisema</Keyword>
+                        <Keyword>kymenlaakso</Keyword>
+                    </KeywordList>
+                    <EX_GeographicBoundingBox>
+                        <westBoundLongitude>25.9856</westBoundLongitude>
+                        <eastBoundLongitude>28.0104</eastBoundLongitude>
+                        <southBoundLatitude>60.1681</southBoundLatitude>
+                        <northBoundLatitude>61.2928</northBoundLatitude>
+                    </EX_GeographicBoundingBox>
+                    <BoundingBox CRS="EPSG:3067"
+                                 minx="445639" miny="6.67054e+06" maxx="554152" maxy="6.79541e+06" />
+                    <BoundingBox CRS="EPSG:2393"
+                                 minx="6.67334e+06" miny="3.44579e+06" maxx="6.79826e+06" maxy="3.55434e+06" />
+                    <BoundingBox CRS="EPSG:4326"
+                                 minx="60.1681" miny="25.9856" maxx="61.2928" maxy="28.0104" />
+                    <Identifier authority="FI">1000448</Identifier>
+                    <MetadataURL type="ISO19115:2003">
+                        <Format>text/xml</Format>
+                        <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://www.paikkatietohakemisto.fi/geonetwork/srv/fi/metadata.show.portti.metaMultiLingual?uuid=93a384df-31da-40fa-a001-2b3bb79c955c"/>
+                    </MetadataURL>
+                    <Style>
+                        <Name>default</Name>
+                        <Title>default</Title>
+                        <LegendURL width="893" height="39">
+                            <Format>image/png</Format>
+                            <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://kartat.lounaispaikka.fi/ms6/maakuntakaavat/kymenlaakso/kymenlaakso_maakuntakaava_maaseutu_ms6?language=fin&amp;version=1.3.0&amp;service=WMS&amp;request=GetLegendGraphic&amp;sld_version=1.1.0&amp;layer=maisema_alueet&amp;format=image/png&amp;STYLE=default"/>
+                        </LegendURL>
+                    </Style>
+                    <MinScaleDenominator>100000</MinScaleDenominator>
+                    <MaxScaleDenominator>1e+06</MaxScaleDenominator>
+                </Layer>
+                <Layer queryable="1" opaque="0" cascaded="0">
+                    <Name>Pintavesi_Tuulivoima</Name>
+                    <Title>Vedenhankinnan kannalta arvokas pintavesialue ja tuulivoima-alueet / Värdefullt  ytvattenområde med tanke på vattenanskffning och vindkraft område</Title>
+                    <Abstract>Kymenlaakson maakuntakaava, maaseutu ja luonto: Aluevaraukset</Abstract>
+                    <KeywordList>
+                        <Keyword>kaava</Keyword>
+                        <Keyword>maaseutu</Keyword>
+                        <Keyword>alue</Keyword>
+                        <Keyword>vedenhankinta</Keyword>
+                        <Keyword>pintavesi</Keyword>
+                        <Keyword>kymenlaakso</Keyword>
+                    </KeywordList>
+                    <EX_GeographicBoundingBox>
+                        <westBoundLongitude>25.9856</westBoundLongitude>
+                        <eastBoundLongitude>28.0104</eastBoundLongitude>
+                        <southBoundLatitude>60.1681</southBoundLatitude>
+                        <northBoundLatitude>61.2928</northBoundLatitude>
+                    </EX_GeographicBoundingBox>
+                    <BoundingBox CRS="EPSG:3067"
+                                 minx="445639" miny="6.67054e+06" maxx="554152" maxy="6.79541e+06" />
+                    <BoundingBox CRS="EPSG:2393"
+                                 minx="6.67334e+06" miny="3.44579e+06" maxx="6.79826e+06" maxy="3.55434e+06" />
+                    <BoundingBox CRS="EPSG:4326"
+                                 minx="60.1681" miny="25.9856" maxx="61.2928" maxy="28.0104" />
+                    <Identifier authority="FI">1000448</Identifier>
+                    <MetadataURL type="ISO19115:2003">
+                        <Format>text/xml</Format>
+                        <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://www.paikkatietohakemisto.fi/geonetwork/srv/fi/metadata.show.portti.metaMultiLingual?uuid=93a384df-31da-40fa-a001-2b3bb79c955c"/>
+                    </MetadataURL>
+                    <Style>
+                        <Name>default</Name>
+                        <Title>default</Title>
+                        <LegendURL width="553" height="39">
+                            <Format>image/png</Format>
+                            <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://kartat.lounaispaikka.fi/ms6/maakuntakaavat/kymenlaakso/kymenlaakso_maakuntakaava_maaseutu_ms6?language=fin&amp;version=1.3.0&amp;service=WMS&amp;request=GetLegendGraphic&amp;sld_version=1.1.0&amp;layer=Pintavesi_Tuulivoima&amp;format=image/png&amp;STYLE=default"/>
+                        </LegendURL>
+                    </Style>
+                    <MinScaleDenominator>100000</MinScaleDenominator>
+                    <MaxScaleDenominator>1e+06</MaxScaleDenominator>
+                </Layer>
+                <Layer queryable="1" opaque="0" cascaded="0">
+                    <Name>Pohjavesialueet</Name>
+                    <Title>Tärkeä pohjavesialue / Viktigt grundvattenområde</Title>
+                    <Abstract>Kymenlaakson maakuntakaava, maaseutu ja luonto: Aluevaraukset</Abstract>
+                    <KeywordList>
+                        <Keyword>kaava</Keyword>
+                        <Keyword>maaseutu</Keyword>
+                        <Keyword>alue</Keyword>
+                        <Keyword>pohjavesi</Keyword>
+                        <Keyword>kymenlaakso</Keyword>
+                    </KeywordList>
+                    <EX_GeographicBoundingBox>
+                        <westBoundLongitude>25.9856</westBoundLongitude>
+                        <eastBoundLongitude>28.0104</eastBoundLongitude>
+                        <southBoundLatitude>60.1681</southBoundLatitude>
+                        <northBoundLatitude>61.2928</northBoundLatitude>
+                    </EX_GeographicBoundingBox>
+                    <BoundingBox CRS="EPSG:3067"
+                                 minx="445639" miny="6.67054e+06" maxx="554152" maxy="6.79541e+06" />
+                    <BoundingBox CRS="EPSG:2393"
+                                 minx="6.67334e+06" miny="3.44579e+06" maxx="6.79826e+06" maxy="3.55434e+06" />
+                    <BoundingBox CRS="EPSG:4326"
+                                 minx="60.1681" miny="25.9856" maxx="61.2928" maxy="28.0104" />
+                    <Identifier authority="FI">1000448</Identifier>
+                    <MetadataURL type="ISO19115:2003">
+                        <Format>text/xml</Format>
+                        <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://www.paikkatietohakemisto.fi/geonetwork/srv/fi/metadata.show.portti.metaMultiLingual?uuid=93a384df-31da-40fa-a001-2b3bb79c955c"/>
+                    </MetadataURL>
+                    <Style>
+                        <Name>default</Name>
+                        <Title>default</Title>
+                        <LegendURL width="269" height="22">
+                            <Format>image/png</Format>
+                            <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://kartat.lounaispaikka.fi/ms6/maakuntakaavat/kymenlaakso/kymenlaakso_maakuntakaava_maaseutu_ms6?language=fin&amp;version=1.3.0&amp;service=WMS&amp;request=GetLegendGraphic&amp;sld_version=1.1.0&amp;layer=Pohjavesialueet&amp;format=image/png&amp;STYLE=default"/>
+                        </LegendURL>
+                    </Style>
+                    <MinScaleDenominator>100000</MinScaleDenominator>
+                    <MaxScaleDenominator>1e+06</MaxScaleDenominator>
+                </Layer>
+                <Layer queryable="1" opaque="0" cascaded="0">
+                    <Name>muut_osa_alueet</Name>
+                    <Title>Muut osa-alueet / Övriga delområden</Title>
+                    <Abstract>Kymenlaakson maakuntakaava, maaseutu ja luonto: Aluevaraukset</Abstract>
+                    <KeywordList>
+                        <Keyword>kaava</Keyword>
+                        <Keyword>maaseutu</Keyword>
+                        <Keyword>alue</Keyword>
+                        <Keyword>kymenlaakso</Keyword>
+                    </KeywordList>
+                    <EX_GeographicBoundingBox>
+                        <westBoundLongitude>25.9856</westBoundLongitude>
+                        <eastBoundLongitude>28.0104</eastBoundLongitude>
+                        <southBoundLatitude>60.1681</southBoundLatitude>
+                        <northBoundLatitude>61.2928</northBoundLatitude>
+                    </EX_GeographicBoundingBox>
+                    <BoundingBox CRS="EPSG:3067"
+                                 minx="445639" miny="6.67054e+06" maxx="554152" maxy="6.79541e+06" />
+                    <BoundingBox CRS="EPSG:2393"
+                                 minx="6.67334e+06" miny="3.44579e+06" maxx="6.79826e+06" maxy="3.55434e+06" />
+                    <BoundingBox CRS="EPSG:4326"
+                                 minx="60.1681" miny="25.9856" maxx="61.2928" maxy="28.0104" />
+                    <Identifier authority="FI">1000448</Identifier>
+                    <MetadataURL type="ISO19115:2003">
+                        <Format>text/xml</Format>
+                        <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://www.paikkatietohakemisto.fi/geonetwork/srv/fi/metadata.show.portti.metaMultiLingual?uuid=93a384df-31da-40fa-a001-2b3bb79c955c"/>
+                    </MetadataURL>
+                    <Style>
+                        <Name>default</Name>
+                        <Title>default</Title>
+                        <LegendURL width="619" height="124">
+                            <Format>image/png</Format>
+                            <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://kartat.lounaispaikka.fi/ms6/maakuntakaavat/kymenlaakso/kymenlaakso_maakuntakaava_maaseutu_ms6?language=fin&amp;version=1.3.0&amp;service=WMS&amp;request=GetLegendGraphic&amp;sld_version=1.1.0&amp;layer=muut_osa_alueet&amp;format=image/png&amp;STYLE=default"/>
+                        </LegendURL>
+                    </Style>
+                    <MinScaleDenominator>100000</MinScaleDenominator>
+                    <MaxScaleDenominator>1e+06</MaxScaleDenominator>
+                </Layer>
+            </Layer>
+            <Layer>
+                <Name>tiet_reitit</Name>
+                <Title>Tiet ja reitit</Title>
+                <Abstract>Kymenlaakson maakuntakaava, maaseutu ja luonto: Tiet ja reitit</Abstract>
+                <Style>
+                    <Name>inspire_common:DEFAULT</Name>
+                    <Title>tiet_reitit</Title>
+                    <LegendURL width="510" height="328">
+                        <Format>image/png</Format>
+                        <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://kartat.lounaispaikka.fi/ms6/maakuntakaavat/kymenlaakso/kymenlaakso_maakuntakaava_maaseutu_ms6?language=fin&amp;version=1.3.0&amp;service=WMS&amp;request=GetLegendGraphic&amp;sld_version=1.1.0&amp;layer=tiet_reitit&amp;format=image/png&amp;STYLE=inspire_common:DEFAULT"/>
+                    </LegendURL>
+                </Style>
+                <Layer queryable="1" opaque="0" cascaded="0">
+                    <Name>vaylat_raiteet</Name>
+                    <Title>Vesiväylät ja junaradat / Vattenpassager och järnvägar</Title>
+                    <Abstract>Kymenlaakson maakuntakaava, maaseutu ja luonto: Tiet ja reitit</Abstract>
+                    <KeywordList>
+                        <Keyword>kaava</Keyword>
+                        <Keyword>maaseutu</Keyword>
+                        <Keyword>tie</Keyword>
+                        <Keyword>vesiväylä</Keyword>
+                        <Keyword>juna</Keyword>
+                        <Keyword>kymenlaakso</Keyword>
+                    </KeywordList>
+                    <CRS>EPSG:2393</CRS>
+                    <EX_GeographicBoundingBox>
+                        <westBoundLongitude>25.9856</westBoundLongitude>
+                        <eastBoundLongitude>28.0104</eastBoundLongitude>
+                        <southBoundLatitude>60.1681</southBoundLatitude>
+                        <northBoundLatitude>61.2928</northBoundLatitude>
+                    </EX_GeographicBoundingBox>
+                    <BoundingBox CRS="EPSG:3067"
+                                 minx="445639" miny="6.67054e+06" maxx="554152" maxy="6.79541e+06" />
+                    <BoundingBox CRS="EPSG:2393"
+                                 minx="6.67334e+06" miny="3.44579e+06" maxx="6.79826e+06" maxy="3.55434e+06" />
+                    <BoundingBox CRS="EPSG:4326"
+                                 minx="60.1681" miny="25.9856" maxx="61.2928" maxy="28.0104" />
+                    <Identifier authority="FI">1000448</Identifier>
+                    <MetadataURL type="ISO19115:2003">
+                        <Format>text/xml</Format>
+                        <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://www.paikkatietohakemisto.fi/geonetwork/srv/fi/metadata.show.portti.metaMultiLingual?uuid=93a384df-31da-40fa-a001-2b3bb79c955c"/>
+                    </MetadataURL>
+                    <Style>
+                        <Name>default</Name>
+                        <Title>default</Title>
+                        <LegendURL width="342" height="141">
+                            <Format>image/png</Format>
+                            <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://kartat.lounaispaikka.fi/ms6/maakuntakaavat/kymenlaakso/kymenlaakso_maakuntakaava_maaseutu_ms6?language=fin&amp;version=1.3.0&amp;service=WMS&amp;request=GetLegendGraphic&amp;sld_version=1.1.0&amp;layer=vaylat_raiteet&amp;format=image/png&amp;STYLE=default"/>
+                        </LegendURL>
+                    </Style>
+                    <MinScaleDenominator>100000</MinScaleDenominator>
+                    <MaxScaleDenominator>1e+06</MaxScaleDenominator>
+                </Layer>
+                <Layer queryable="1" opaque="0" cascaded="0">
+                    <Name>tiekanta</Name>
+                    <Title>Tiet / Vägar</Title>
+                    <Abstract>Kymenlaakson maakuntakaava, maaseutu ja luonto: Tiet ja reitit</Abstract>
+                    <KeywordList>
+                        <Keyword>kaava</Keyword>
+                        <Keyword>maaseutu</Keyword>
+                        <Keyword>tie</Keyword>
+                        <Keyword>kymenlaakso</Keyword>
+                    </KeywordList>
+                    <CRS>EPSG:2393</CRS>
+                    <EX_GeographicBoundingBox>
+                        <westBoundLongitude>25.9856</westBoundLongitude>
+                        <eastBoundLongitude>28.0104</eastBoundLongitude>
+                        <southBoundLatitude>60.1681</southBoundLatitude>
+                        <northBoundLatitude>61.2928</northBoundLatitude>
+                    </EX_GeographicBoundingBox>
+                    <BoundingBox CRS="EPSG:3067"
+                                 minx="445639" miny="6.67054e+06" maxx="554152" maxy="6.79541e+06" />
+                    <BoundingBox CRS="EPSG:2393"
+                                 minx="6.67334e+06" miny="3.44579e+06" maxx="6.79826e+06" maxy="3.55434e+06" />
+                    <BoundingBox CRS="EPSG:4326"
+                                 minx="60.1681" miny="25.9856" maxx="61.2928" maxy="28.0104" />
+                    <Identifier authority="FI">1000448</Identifier>
+                    <MetadataURL type="ISO19115:2003">
+                        <Format>text/xml</Format>
+                        <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://www.paikkatietohakemisto.fi/geonetwork/srv/fi/metadata.show.portti.metaMultiLingual?uuid=93a384df-31da-40fa-a001-2b3bb79c955c"/>
+                    </MetadataURL>
+                    <Style>
+                        <Name>default</Name>
+                        <Title>default</Title>
+                        <LegendURL width="510" height="90">
+                            <Format>image/png</Format>
+                            <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://kartat.lounaispaikka.fi/ms6/maakuntakaavat/kymenlaakso/kymenlaakso_maakuntakaava_maaseutu_ms6?language=fin&amp;version=1.3.0&amp;service=WMS&amp;request=GetLegendGraphic&amp;sld_version=1.1.0&amp;layer=tiekanta&amp;format=image/png&amp;STYLE=default"/>
+                        </LegendURL>
+                    </Style>
+                    <MinScaleDenominator>100000</MinScaleDenominator>
+                    <MaxScaleDenominator>500000</MaxScaleDenominator>
+                </Layer>
+                <Layer queryable="1" opaque="0" cascaded="0">
+                    <Name>reitit</Name>
+                    <Title>Reitit / Leder</Title>
+                    <Abstract>Kymenlaakson maakuntakaava, maaseutu ja luonto: Tiet ja reitit</Abstract>
+                    <KeywordList>
+                        <Keyword>kaava</Keyword>
+                        <Keyword>maaseutu</Keyword>
+                        <Keyword>tie</Keyword>
+                        <Keyword>reitti</Keyword>
+                        <Keyword>kymenlaakso</Keyword>
+                    </KeywordList>
+                    <CRS>EPSG:2393</CRS>
+                    <EX_GeographicBoundingBox>
+                        <westBoundLongitude>25.9856</westBoundLongitude>
+                        <eastBoundLongitude>28.0104</eastBoundLongitude>
+                        <southBoundLatitude>60.1681</southBoundLatitude>
+                        <northBoundLatitude>61.2928</northBoundLatitude>
+                    </EX_GeographicBoundingBox>
+                    <BoundingBox CRS="EPSG:3067"
+                                 minx="445639" miny="6.67054e+06" maxx="554152" maxy="6.79541e+06" />
+                    <BoundingBox CRS="EPSG:2393"
+                                 minx="6.67334e+06" miny="3.44579e+06" maxx="6.79826e+06" maxy="3.55434e+06" />
+                    <BoundingBox CRS="EPSG:4326"
+                                 minx="60.1681" miny="25.9856" maxx="61.2928" maxy="28.0104" />
+                    <Identifier authority="FI">1000448</Identifier>
+                    <MetadataURL type="ISO19115:2003">
+                        <Format>text/xml</Format>
+                        <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://www.paikkatietohakemisto.fi/geonetwork/srv/fi/metadata.show.portti.metaMultiLingual?uuid=93a384df-31da-40fa-a001-2b3bb79c955c"/>
+                    </MetadataURL>
+                    <Style>
+                        <Name>default</Name>
+                        <Title>default</Title>
+                        <LegendURL width="403" height="107">
+                            <Format>image/png</Format>
+                            <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://kartat.lounaispaikka.fi/ms6/maakuntakaavat/kymenlaakso/kymenlaakso_maakuntakaava_maaseutu_ms6?language=fin&amp;version=1.3.0&amp;service=WMS&amp;request=GetLegendGraphic&amp;sld_version=1.1.0&amp;layer=reitit&amp;format=image/png&amp;STYLE=default"/>
+                        </LegendURL>
+                    </Style>
+                    <MinScaleDenominator>100000</MinScaleDenominator>
+                    <MaxScaleDenominator>150000</MaxScaleDenominator>
+                </Layer>
+            </Layer>
+            <Layer>
+                <Name>johtoverkosto</Name>
+                <Title>Johtoverkosto</Title>
+                <Abstract>Kymenlaakson maakuntakaava, maaseutu ja luonto: Johtoverkosto</Abstract>
+                <Style>
+                    <Name>inspire_common:DEFAULT</Name>
+                    <Title>johtoverkosto</Title>
+                    <LegendURL width="251" height="107">
+                        <Format>image/png</Format>
+                        <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://kartat.lounaispaikka.fi/ms6/maakuntakaavat/kymenlaakso/kymenlaakso_maakuntakaava_maaseutu_ms6?language=fin&amp;version=1.3.0&amp;service=WMS&amp;request=GetLegendGraphic&amp;sld_version=1.1.0&amp;layer=johtoverkosto&amp;format=image/png&amp;STYLE=inspire_common:DEFAULT"/>
+                    </LegendURL>
+                </Style>
+                <Layer queryable="0" opaque="0" cascaded="0">
+                    <Name>kansaivalinen_oljyjohto</Name>
+                    <Title>Kansainvälisen öljyjohdon yhteystarve</Title>
+                    <Abstract>Kymenlaakson maakuntakaava, maaseutu ja luonto: Johtoverkosto</Abstract>
+                    <KeywordList>
+                        <Keyword>kaava</Keyword>
+                        <Keyword>maaseutu</Keyword>
+                        <Keyword>tie</Keyword>
+                        <Keyword>öljy</Keyword>
+                        <Keyword>johto</Keyword>
+                        <Keyword>kymenlaakso</Keyword>
+                    </KeywordList>
+                    <CRS>EPSG:2393</CRS>
+                    <EX_GeographicBoundingBox>
+                        <westBoundLongitude>25.9856</westBoundLongitude>
+                        <eastBoundLongitude>28.0104</eastBoundLongitude>
+                        <southBoundLatitude>60.1681</southBoundLatitude>
+                        <northBoundLatitude>61.2928</northBoundLatitude>
+                    </EX_GeographicBoundingBox>
+                    <BoundingBox CRS="EPSG:3067"
+                                 minx="445639" miny="6.67054e+06" maxx="554152" maxy="6.79541e+06" />
+                    <BoundingBox CRS="EPSG:2393"
+                                 minx="6.67334e+06" miny="3.44579e+06" maxx="6.79826e+06" maxy="3.55434e+06" />
+                    <BoundingBox CRS="EPSG:4326"
+                                 minx="60.1681" miny="25.9856" maxx="61.2928" maxy="28.0104" />
+                    <Identifier authority="FI">1000448</Identifier>
+                    <MetadataURL type="ISO19115:2003">
+                        <Format>text/xml</Format>
+                        <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://www.paikkatietohakemisto.fi/geonetwork/srv/fi/metadata.show.portti.metaMultiLingual?uuid=93a384df-31da-40fa-a001-2b3bb79c955c"/>
+                    </MetadataURL>
+                    <Style>
+                        <Name>default</Name>
+                        <Title>default</Title>
+                        <LegendURL width="251" height="22">
+                            <Format>image/png</Format>
+                            <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://kartat.lounaispaikka.fi/ms6/maakuntakaavat/kymenlaakso/kymenlaakso_maakuntakaava_maaseutu_ms6?language=fin&amp;version=1.3.0&amp;service=WMS&amp;request=GetLegendGraphic&amp;sld_version=1.1.0&amp;layer=kansaivalinen_oljyjohto&amp;format=image/png&amp;STYLE=default"/>
+                        </LegendURL>
+                    </Style>
+                    <MinScaleDenominator>100000</MinScaleDenominator>
+                    <MaxScaleDenominator>150000</MaxScaleDenominator>
+                </Layer>
+                <Layer queryable="1" opaque="0" cascaded="0">
+                    <Name>johdot3</Name>
+                    <Title>Johdot / Ledningarna</Title>
+                    <Abstract>Kymenlaakson maakuntakaava, maaseutu ja luonto: Johtoverkosto</Abstract>
+                    <KeywordList>
+                        <Keyword>kaava</Keyword>
+                        <Keyword>maaseutu</Keyword>
+                        <Keyword>tie</Keyword>
+                        <Keyword>johto</Keyword>
+                        <Keyword>kymenlaakso</Keyword>
+                    </KeywordList>
+                    <CRS>EPSG:2393</CRS>
+                    <EX_GeographicBoundingBox>
+                        <westBoundLongitude>25.9856</westBoundLongitude>
+                        <eastBoundLongitude>28.0104</eastBoundLongitude>
+                        <southBoundLatitude>60.1681</southBoundLatitude>
+                        <northBoundLatitude>61.2928</northBoundLatitude>
+                    </EX_GeographicBoundingBox>
+                    <BoundingBox CRS="EPSG:3067"
+                                 minx="445639" miny="6.67054e+06" maxx="554152" maxy="6.79541e+06" />
+                    <BoundingBox CRS="EPSG:2393"
+                                 minx="6.67334e+06" miny="3.44579e+06" maxx="6.79826e+06" maxy="3.55434e+06" />
+                    <BoundingBox CRS="EPSG:4326"
+                                 minx="60.1681" miny="25.9856" maxx="61.2928" maxy="28.0104" />
+                    <Identifier authority="FI">1000448</Identifier>
+                    <MetadataURL type="ISO19115:2003">
+                        <Format>text/xml</Format>
+                        <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://www.paikkatietohakemisto.fi/geonetwork/srv/fi/metadata.show.portti.metaMultiLingual?uuid=93a384df-31da-40fa-a001-2b3bb79c955c"/>
+                    </MetadataURL>
+                    <Style>
+                        <Name>default</Name>
+                        <Title>default</Title>
+                        <LegendURL width="190" height="90">
+                            <Format>image/png</Format>
+                            <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://kartat.lounaispaikka.fi/ms6/maakuntakaavat/kymenlaakso/kymenlaakso_maakuntakaava_maaseutu_ms6?language=fin&amp;version=1.3.0&amp;service=WMS&amp;request=GetLegendGraphic&amp;sld_version=1.1.0&amp;layer=johdot3&amp;format=image/png&amp;STYLE=default"/>
+                        </LegendURL>
+                    </Style>
+                    <MinScaleDenominator>100000</MinScaleDenominator>
+                    <MaxScaleDenominator>500000</MaxScaleDenominator>
+                </Layer>
+            </Layer>
+            <Layer>
+                <Name>muinaismuistot</Name>
+                <Title>Muinaismuistot / Fornminnesobjekt</Title>
+                <Abstract>Kymenlaakson maakuntakaava, maaseutu ja luonto: Muinaismuistot</Abstract>
+                <Style>
+                    <Name>inspire_common:DEFAULT</Name>
+                    <Title>muinaismuistot</Title>
+                    <LegendURL width="410" height="56">
+                        <Format>image/png</Format>
+                        <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://kartat.lounaispaikka.fi/ms6/maakuntakaavat/kymenlaakso/kymenlaakso_maakuntakaava_maaseutu_ms6?language=fin&amp;version=1.3.0&amp;service=WMS&amp;request=GetLegendGraphic&amp;sld_version=1.1.0&amp;layer=muinaismuistot&amp;format=image/png&amp;STYLE=inspire_common:DEFAULT"/>
+                    </LegendURL>
+                </Style>
+                <Layer queryable="1" opaque="0" cascaded="0">
+                    <Name>muinaismuistot</Name>
+                    <Title>Muinaismuistot / Fornminnesobjekt</Title>
+                    <Abstract>Kymenlaakson maakuntakaava, maaseutu ja luonto: Muinaismuistot</Abstract>
+                    <KeywordList>
+                        <Keyword>kaava</Keyword>
+                        <Keyword>maaseutu</Keyword>
+                        <Keyword>muinaismuisto</Keyword>
+                        <Keyword>kymenlaakso</Keyword>
+                    </KeywordList>
+                    <CRS>EPSG:2393</CRS>
+                    <EX_GeographicBoundingBox>
+                        <westBoundLongitude>25.9856</westBoundLongitude>
+                        <eastBoundLongitude>28.0104</eastBoundLongitude>
+                        <southBoundLatitude>60.1681</southBoundLatitude>
+                        <northBoundLatitude>61.2928</northBoundLatitude>
+                    </EX_GeographicBoundingBox>
+                    <BoundingBox CRS="EPSG:3067"
+                                 minx="445639" miny="6.67054e+06" maxx="554152" maxy="6.79541e+06" />
+                    <BoundingBox CRS="EPSG:2393"
+                                 minx="6.67334e+06" miny="3.44579e+06" maxx="6.79826e+06" maxy="3.55434e+06" />
+                    <BoundingBox CRS="EPSG:4326"
+                                 minx="60.1681" miny="25.9856" maxx="61.2928" maxy="28.0104" />
+                    <Identifier authority="FI">1000448</Identifier>
+                    <MetadataURL type="ISO19115:2003">
+                        <Format>text/xml</Format>
+                        <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://www.paikkatietohakemisto.fi/geonetwork/srv/fi/metadata.show.portti.metaMultiLingual?uuid=93a384df-31da-40fa-a001-2b3bb79c955c"/>
+                    </MetadataURL>
+                    <Style>
+                        <Name>default</Name>
+                        <Title>default</Title>
+                        <LegendURL width="195" height="22">
+                            <Format>image/png</Format>
+                            <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://kartat.lounaispaikka.fi/ms6/maakuntakaavat/kymenlaakso/kymenlaakso_maakuntakaava_maaseutu_ms6?language=fin&amp;version=1.3.0&amp;service=WMS&amp;request=GetLegendGraphic&amp;sld_version=1.1.0&amp;layer=muinaismuistot&amp;format=image/png&amp;STYLE=default"/>
+                        </LegendURL>
+                    </Style>
+                    <MinScaleDenominator>100000</MinScaleDenominator>
+                    <MaxScaleDenominator>150000</MaxScaleDenominator>
+                </Layer>
+                <Layer queryable="1" opaque="0" cascaded="0">
+                    <Name>muinaisj_jaala_iitti_valkeala</Name>
+                    <Title>Muinaismuistot / Fornminnesobjekt: Jaala, Iitti, Valkeala</Title>
+                    <Abstract>Kymenlaakson maakuntakaava, maaseutu ja luonto: Muinaismuistot</Abstract>
+                    <KeywordList>
+                        <Keyword>kaava</Keyword>
+                        <Keyword>maaseutu</Keyword>
+                        <Keyword>muinaismuisto</Keyword>
+                        <Keyword>jaala</Keyword>
+                        <Keyword>iitti</Keyword>
+                        <Keyword>valkeala</Keyword>
+                        <Keyword>kymenlaakso</Keyword>
+                    </KeywordList>
+                    <CRS>EPSG:2393</CRS>
+                    <EX_GeographicBoundingBox>
+                        <westBoundLongitude>25.9856</westBoundLongitude>
+                        <eastBoundLongitude>28.0104</eastBoundLongitude>
+                        <southBoundLatitude>60.1681</southBoundLatitude>
+                        <northBoundLatitude>61.2928</northBoundLatitude>
+                    </EX_GeographicBoundingBox>
+                    <BoundingBox CRS="EPSG:3067"
+                                 minx="445639" miny="6.67054e+06" maxx="554152" maxy="6.79541e+06" />
+                    <BoundingBox CRS="EPSG:2393"
+                                 minx="6.67334e+06" miny="3.44579e+06" maxx="6.79826e+06" maxy="3.55434e+06" />
+                    <BoundingBox CRS="EPSG:4326"
+                                 minx="60.1681" miny="25.9856" maxx="61.2928" maxy="28.0104" />
+                    <Identifier authority="FI">1000448</Identifier>
+                    <MetadataURL type="ISO19115:2003">
+                        <Format>text/xml</Format>
+                        <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://www.paikkatietohakemisto.fi/geonetwork/srv/fi/metadata.show.portti.metaMultiLingual?uuid=93a384df-31da-40fa-a001-2b3bb79c955c"/>
+                    </MetadataURL>
+                    <Style>
+                        <Name>default</Name>
+                        <Title>default</Title>
+                        <LegendURL width="291" height="22">
+                            <Format>image/png</Format>
+                            <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://kartat.lounaispaikka.fi/ms6/maakuntakaavat/kymenlaakso/kymenlaakso_maakuntakaava_maaseutu_ms6?language=fin&amp;version=1.3.0&amp;service=WMS&amp;request=GetLegendGraphic&amp;sld_version=1.1.0&amp;layer=muinaisj_jaala_iitti_valkeala&amp;format=image/png&amp;STYLE=default"/>
+                        </LegendURL>
+                    </Style>
+                    <MinScaleDenominator>100000</MinScaleDenominator>
+                    <MaxScaleDenominator>150000</MaxScaleDenominator>
+                </Layer>
+                <Layer queryable="1" opaque="0" cascaded="0">
+                    <Name>muinais_elim_anjalank_kouv_kuusank</Name>
+                    <Title>Muinaismuistot / Fornminnesobjekt: Elimäki, Anjalankoski, Kouvola, Kuusankoski</Title>
+                    <Abstract>Kymenlaakson maakuntakaava, maaseutu ja luonto: Muinaismuistot</Abstract>
+                    <KeywordList>
+                        <Keyword>kaava</Keyword>
+                        <Keyword>maaseutu</Keyword>
+                        <Keyword>muinaismuisto</Keyword>
+                        <Keyword>elimäki</Keyword>
+                        <Keyword>anjalankoski</Keyword>
+                        <Keyword>kouvola</Keyword>
+                        <Keyword>kuusankoski</Keyword>
+                        <Keyword>kymenlaakso</Keyword>
+                    </KeywordList>
+                    <CRS>EPSG:2393</CRS>
+                    <EX_GeographicBoundingBox>
+                        <westBoundLongitude>25.9856</westBoundLongitude>
+                        <eastBoundLongitude>28.0104</eastBoundLongitude>
+                        <southBoundLatitude>60.1681</southBoundLatitude>
+                        <northBoundLatitude>61.2928</northBoundLatitude>
+                    </EX_GeographicBoundingBox>
+                    <BoundingBox CRS="EPSG:3067"
+                                 minx="445639" miny="6.67054e+06" maxx="554152" maxy="6.79541e+06" />
+                    <BoundingBox CRS="EPSG:2393"
+                                 minx="6.67334e+06" miny="3.44579e+06" maxx="6.79826e+06" maxy="3.55434e+06" />
+                    <BoundingBox CRS="EPSG:4326"
+                                 minx="60.1681" miny="25.9856" maxx="61.2928" maxy="28.0104" />
+                    <Identifier authority="FI">1000448</Identifier>
+                    <MetadataURL type="ISO19115:2003">
+                        <Format>text/xml</Format>
+                        <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://www.paikkatietohakemisto.fi/geonetwork/srv/fi/metadata.show.portti.metaMultiLingual?uuid=93a384df-31da-40fa-a001-2b3bb79c955c"/>
+                    </MetadataURL>
+                    <Style>
+                        <Name>default</Name>
+                        <Title>default</Title>
+                        <LegendURL width="410" height="22">
+                            <Format>image/png</Format>
+                            <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://kartat.lounaispaikka.fi/ms6/maakuntakaavat/kymenlaakso/kymenlaakso_maakuntakaava_maaseutu_ms6?language=fin&amp;version=1.3.0&amp;service=WMS&amp;request=GetLegendGraphic&amp;sld_version=1.1.0&amp;layer=muinais_elim_anjalank_kouv_kuusank&amp;format=image/png&amp;STYLE=default"/>
+                        </LegendURL>
+                    </Style>
+                    <MinScaleDenominator>100000</MinScaleDenominator>
+                    <MaxScaleDenominator>150000</MaxScaleDenominator>
+                </Layer>
+            </Layer>
+            <Layer>
+                <Name>pisteet</Name>
+                <Title>Pisteet / Punkter</Title>
+                <Abstract>Kymenlaakson maakuntakaava, maaseutu ja luonto: Pisteet</Abstract>
+                <Style>
+                    <Name>inspire_common:DEFAULT</Name>
+                    <Title>pisteet</Title>
+                    <LegendURL width="970" height="413">
+                        <Format>image/png</Format>
+                        <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://kartat.lounaispaikka.fi/ms6/maakuntakaavat/kymenlaakso/kymenlaakso_maakuntakaava_maaseutu_ms6?language=fin&amp;version=1.3.0&amp;service=WMS&amp;request=GetLegendGraphic&amp;sld_version=1.1.0&amp;layer=pisteet&amp;format=image/png&amp;STYLE=inspire_common:DEFAULT"/>
+                    </LegendURL>
+                </Style>
+                <Layer queryable="1" opaque="0" cascaded="0">
+                    <Name>pisteet_01</Name>
+                    <Title>Pisteet / Punkter</Title>
+                    <Abstract>Kymenlaakson maakuntakaava, maaseutu ja luonto: Pisteet</Abstract>
+                    <KeywordList>
+                        <Keyword>kaava</Keyword>
+                        <Keyword>maaseutu</Keyword>
+                        <Keyword>piste</Keyword>
+                        <Keyword>kymenlaakso</Keyword>
+                    </KeywordList>
+                    <CRS>EPSG:2393</CRS>
+                    <EX_GeographicBoundingBox>
+                        <westBoundLongitude>25.9856</westBoundLongitude>
+                        <eastBoundLongitude>28.0104</eastBoundLongitude>
+                        <southBoundLatitude>60.1681</southBoundLatitude>
+                        <northBoundLatitude>61.2928</northBoundLatitude>
+                    </EX_GeographicBoundingBox>
+                    <BoundingBox CRS="EPSG:3067"
+                                 minx="445639" miny="6.67054e+06" maxx="554152" maxy="6.79541e+06" />
+                    <BoundingBox CRS="EPSG:2393"
+                                 minx="6.67334e+06" miny="3.44579e+06" maxx="6.79826e+06" maxy="3.55434e+06" />
+                    <BoundingBox CRS="EPSG:4326"
+                                 minx="60.1681" miny="25.9856" maxx="61.2928" maxy="28.0104" />
+                    <Identifier authority="FI">1000448</Identifier>
+                    <MetadataURL type="ISO19115:2003">
+                        <Format>text/xml</Format>
+                        <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://www.paikkatietohakemisto.fi/geonetwork/srv/fi/metadata.show.portti.metaMultiLingual?uuid=93a384df-31da-40fa-a001-2b3bb79c955c"/>
+                    </MetadataURL>
+                    <Style>
+                        <Name>default</Name>
+                        <Title>default</Title>
+                        <LegendURL width="970" height="413">
+                            <Format>image/png</Format>
+                            <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://kartat.lounaispaikka.fi/ms6/maakuntakaavat/kymenlaakso/kymenlaakso_maakuntakaava_maaseutu_ms6?language=fin&amp;version=1.3.0&amp;service=WMS&amp;request=GetLegendGraphic&amp;sld_version=1.1.0&amp;layer=pisteet_01&amp;format=image/png&amp;STYLE=default"/>
+                        </LegendURL>
+                    </Style>
+                    <MinScaleDenominator>100000</MinScaleDenominator>
+                    <MaxScaleDenominator>150000</MaxScaleDenominator>
+                </Layer>
+            </Layer>
+            <Layer>
+                <Name>tunnukset</Name>
+                <Title>Tunnukset</Title>
+                <Abstract>Kymenlaakson maakuntakaava, maaseutu ja luonto: Tunnukset</Abstract>
+                <Style>
+                    <Name>inspire_common:DEFAULT</Name>
+                    <Title>tunnukset</Title>
+                    <LegendURL width="381" height="90">
+                        <Format>image/png</Format>
+                        <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://kartat.lounaispaikka.fi/ms6/maakuntakaavat/kymenlaakso/kymenlaakso_maakuntakaava_maaseutu_ms6?language=fin&amp;version=1.3.0&amp;service=WMS&amp;request=GetLegendGraphic&amp;sld_version=1.1.0&amp;layer=tunnukset&amp;format=image/png&amp;STYLE=inspire_common:DEFAULT"/>
+                    </LegendURL>
+                </Style>
+                <Layer queryable="0" opaque="0" cascaded="0">
+                    <Name>liittymat</Name>
+                    <Title>Johtoverkoston tunnukset</Title>
+                    <Abstract>Kymenlaakson maakuntakaava, maaseutu ja luonto: Tunnukset</Abstract>
+                    <KeywordList>
+                        <Keyword>kaava</Keyword>
+                        <Keyword>johtoverkosto</Keyword>
+                        <Keyword>tunnus</Keyword>
+                        <Keyword>kymenlaakso</Keyword>
+                    </KeywordList>
+                    <EX_GeographicBoundingBox>
+                        <westBoundLongitude>25.9856</westBoundLongitude>
+                        <eastBoundLongitude>28.0104</eastBoundLongitude>
+                        <southBoundLatitude>60.1681</southBoundLatitude>
+                        <northBoundLatitude>61.2928</northBoundLatitude>
+                    </EX_GeographicBoundingBox>
+                    <BoundingBox CRS="EPSG:3067"
+                                 minx="445639" miny="6.67054e+06" maxx="554152" maxy="6.79541e+06" />
+                    <BoundingBox CRS="EPSG:2393"
+                                 minx="6.67334e+06" miny="3.44579e+06" maxx="6.79826e+06" maxy="3.55434e+06" />
+                    <BoundingBox CRS="EPSG:4326"
+                                 minx="60.1681" miny="25.9856" maxx="61.2928" maxy="28.0104" />
+                    <Identifier authority="FI">1000448</Identifier>
+                    <MetadataURL type="ISO19115:2003">
+                        <Format>text/xml</Format>
+                        <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://www.paikkatietohakemisto.fi/geonetwork/srv/fi/metadata.show.portti.metaMultiLingual?uuid=93a384df-31da-40fa-a001-2b3bb79c955c"/>
+                    </MetadataURL>
+                    <Style>
+                        <Name>default</Name>
+                        <Title>default</Title>
+                        <LegendURL width="368" height="73">
+                            <Format>image/png</Format>
+                            <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://kartat.lounaispaikka.fi/ms6/maakuntakaavat/kymenlaakso/kymenlaakso_maakuntakaava_maaseutu_ms6?language=fin&amp;version=1.3.0&amp;service=WMS&amp;request=GetLegendGraphic&amp;sld_version=1.1.0&amp;layer=liittymat&amp;format=image/png&amp;STYLE=default"/>
+                        </LegendURL>
+                    </Style>
+                    <MinScaleDenominator>100000</MinScaleDenominator>
+                    <MaxScaleDenominator>150000</MaxScaleDenominator>
+                </Layer>
+                <Layer queryable="0" opaque="0" cascaded="0">
+                    <Name>pisteet_02</Name>
+                    <Title>Aluevarausten tunnukset</Title>
+                    <Abstract>Kymenlaakson maakuntakaava, maaseutu ja luonto: Tunnukset</Abstract>
+                    <KeywordList>
+                        <Keyword>kaava</Keyword>
+                        <Keyword>aluevaraus</Keyword>
+                        <Keyword>tunnus</Keyword>
+                        <Keyword>kymenlaakso</Keyword>
+                    </KeywordList>
+                    <EX_GeographicBoundingBox>
+                        <westBoundLongitude>25.9856</westBoundLongitude>
+                        <eastBoundLongitude>28.0104</eastBoundLongitude>
+                        <southBoundLatitude>60.1681</southBoundLatitude>
+                        <northBoundLatitude>61.2928</northBoundLatitude>
+                    </EX_GeographicBoundingBox>
+                    <BoundingBox CRS="EPSG:3067"
+                                 minx="445639" miny="6.67054e+06" maxx="554152" maxy="6.79541e+06" />
+                    <BoundingBox CRS="EPSG:2393"
+                                 minx="6.67334e+06" miny="3.44579e+06" maxx="6.79826e+06" maxy="3.55434e+06" />
+                    <BoundingBox CRS="EPSG:4326"
+                                 minx="60.1681" miny="25.9856" maxx="61.2928" maxy="28.0104" />
+                    <Identifier authority="FI">1000448</Identifier>
+                    <MetadataURL type="ISO19115:2003">
+                        <Format>text/xml</Format>
+                        <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://www.paikkatietohakemisto.fi/geonetwork/srv/fi/metadata.show.portti.metaMultiLingual?uuid=93a384df-31da-40fa-a001-2b3bb79c955c"/>
+                    </MetadataURL>
+                    <Style>
+                        <Name>default</Name>
+                        <Title>default</Title>
+                        <LegendURL width="381" height="22">
+                            <Format>image/png</Format>
+                            <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://kartat.lounaispaikka.fi/ms6/maakuntakaavat/kymenlaakso/kymenlaakso_maakuntakaava_maaseutu_ms6?language=fin&amp;version=1.3.0&amp;service=WMS&amp;request=GetLegendGraphic&amp;sld_version=1.1.0&amp;layer=pisteet_02&amp;format=image/png&amp;STYLE=default"/>
+                        </LegendURL>
+                    </Style>
+                    <MinScaleDenominator>100000</MinScaleDenominator>
+                    <MaxScaleDenominator>150000</MaxScaleDenominator>
+                </Layer>
+            </Layer>
+        </Layer>
+    </Capability>
+</WMS_Capabilities>

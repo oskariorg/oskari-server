@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE sqlMap      
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"      
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="DataProvider">
+
+    <!-- Use type aliases to avoid typing the full classname every time. -->
+    <typeAlias alias="DataProvider" type="fi.nls.oskari.domain.map.DataProvider" />
+
+    <resultMap id="DataProviderResult" class="DataProvider">
+        <result property="id" column="id" />
+        <result property="locale" column="locale" jdbcType="VARCHAR" javaType="org.json.JSONObject" />
+    </resultMap>
+
+    <parameterMap id="DataProviderInsertParameter" class="DataProvider">
+        <parameter property="locale" jdbcType="VARCHAR" javaType="org.json.JSONObject" />
+    </parameterMap>
+
+    <parameterMap id="DataProviderUpdateParameter" class="DataProvider">
+        <parameter property="locale" jdbcType="VARCHAR" javaType="org.json.JSONObject" />
+        <parameter property="id" />
+    </parameterMap>
+
+    <cacheModel type="LRU" id="group-cache" readOnly="true" serialize="false">
+        <flushInterval hours="24"/>
+        <flushOnExecute  statement="DataProvider.insert"/>
+        <flushOnExecute  statement="DataProvider.update"/>
+        <flushOnExecute  statement="DataProvider.delete"/>
+        <property name="CacheSize" value="200"/>
+    </cacheModel>
+
+    <select id="maxId" resultClass="int">
+        select max(id) from oskari_dataprovider
+    </select>
+
+    <select id="find" parameterClass="int" resultMap="DataProviderResult" cacheModel="group-cache">
+        select id, locale from oskari_dataprovider where id = #id#
+    </select>
+
+    <select id="findAll" resultMap="DataProviderResult">
+        select id, locale from oskari_dataprovider order by id
+    </select>
+    
+    <statement id="insert" parameterMap="DataProviderInsertParameter" resultClass="int">
+        insert into oskari_dataprovider (locale)
+        values (?)
+    </statement>
+    
+    <update id="update" parameterMap="DataProviderUpdateParameter">
+        update oskari_dataprovider set
+            locale = ?
+        where id = ?
+    </update>
+    
+    <delete id="delete" parameterClass="int">
+        delete from oskari_dataprovider where id = #id#
+    </delete>
+    
+</sqlMap>

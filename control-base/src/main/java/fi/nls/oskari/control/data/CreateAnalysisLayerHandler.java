@@ -72,6 +72,7 @@ public class CreateAnalysisLayerHandler extends ActionHandler {
     private static final String ERROR_UNABLE_TO_GET_WPS_FEATURES = "Unable_to_get_WPS_features";
     private static final String ERROR_WPS_EXECUTE_RETURNS_EXCEPTION = "WPS_execute_returns_Exception";
     private static final String ERROR_WPS_EXECUTE_RETURNS_NO_FEATURES = "WPS_execute_returns_no_features";
+    private static final String ERROR_UNABLE_TO_MERGE_ANALYSIS_DATA = "Unable_to_merge_analysis_data";
     private static final String ERROR_UNABLE_TO_PROCESS_AGGREGATE_UNION = "Unable_to_process_aggregate_union";
     private static final String ERROR_UNABLE_TO_GET_FEATURES_FOR_UNION = "Unable_to_get_features_for_union";
     private static final String ERROR_UNABLE_TO_STORE_ANALYSIS_DATA = "Unable_to_store_analysis_data";
@@ -87,10 +88,7 @@ public class CreateAnalysisLayerHandler extends ActionHandler {
      *               **********************************************************************
      */
     public void handleAction(ActionParameters params) throws ActionException {
-
-        if (params.getUser().isGuest()) {
-            throw new ActionDeniedException("Session expired");
-        }
+        params.requireLoggedInUser();
 
         final String analyse = params.getRequiredParam(PARAM_ANALYSE, ERROR_ANALYSE_PARAMETER_MISSING);
         JSONObject analyseJson = JSONHelper.createJSONObject(analyse);
@@ -114,8 +112,12 @@ public class CreateAnalysisLayerHandler extends ActionHandler {
 
         if (analysisLayer.getMethod().equals(AnalysisParser.LAYER_UNION)) {
             // no WPS for merge analysis
-            analysis = analysisDataService.mergeAnalysisData(
+            try {
+                analysis = analysisDataService.mergeAnalysisData(
                     analysisLayer, analyse, params.getUser());
+            } catch (ServiceException e) {
+                throw new ActionException(ERROR_UNABLE_TO_MERGE_ANALYSIS_DATA, e);
+            }
         } else {
             // Generate WPS XML
             String featureSet = executeWPSprocess(analysisLayer);
@@ -134,7 +136,7 @@ public class CreateAnalysisLayerHandler extends ActionHandler {
                 analysisLayer.setWpsLayerId(-1);
                 final String aggregateResult = this.localiseAggregateResult(
                         analysisParser.parseAggregateResults(featureSet, analysisLayer), analyseJson);
-                log.debug("\nAggregate results:\n", aggregateResult, "\n");
+                log.debug("Aggregate results:", aggregateResult);
 
                 analysisLayer.setResult(aggregateResult);
 
@@ -179,8 +181,12 @@ public class CreateAnalysisLayerHandler extends ActionHandler {
             // Fix property names for WFST (property names might be renamed in Wps method )
             featureSet = fixPropertyNames(featureSet, analysisLayer);
 
-            analysis = analysisDataService.storeAnalysisData(
-                    featureSet, analysisLayer, analyse, params.getUser());
+            try {
+                analysis = analysisDataService.storeAnalysisData(
+                        featureSet, analysisLayer, analyse, params.getUser());
+            } catch (ServiceException e) {
+                throw new ActionException(ERROR_UNABLE_TO_STORE_ANALYSIS_DATA, e);
+            }
         }
 
         if (analysis == null) {

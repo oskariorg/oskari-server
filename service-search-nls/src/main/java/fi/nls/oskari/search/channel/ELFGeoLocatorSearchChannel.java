@@ -8,18 +8,17 @@ import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.search.util.ELFGeoLocatorParser;
 import fi.nls.oskari.search.util.ELFGeoLocatorQueryHelper;
+import fi.nls.oskari.search.util.HitCombiner;
 import fi.nls.oskari.service.ServiceRuntimeException;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URLEncoder;
 import java.util.*;
@@ -108,6 +107,14 @@ public class ELFGeoLocatorSearchChannel extends SearchChannel implements SearchA
         log.debug("ServiceURL set to " + serviceURL);
 
         readLocationTypes();
+
+        // read available languages
+        try (InputStream languageStream = this.getClass().getResourceAsStream("namelanguage.json");
+             InputStreamReader reader = new InputStreamReader(languageStream)) {
+            elfNameLanguages = JSONHelper.createJSONObject4Tokener(new JSONTokener(reader));
+        } catch (IOException e) {
+            log.warn("Couldn't load language selection from 'namelanguage.json':", e.getMessage());
+        }
 
         elfParser = new ELFGeoLocatorParser(PropertyUtil.getOptional(PROPERTY_SERVICE_SRS), this);
 
@@ -428,35 +435,51 @@ public class ELFGeoLocatorSearchChannel extends SearchChannel implements SearchA
         if(PROPERTY_AUTOCOMPLETE_URL == null || PROPERTY_AUTOCOMPLETE_URL.isEmpty()) {
             return Collections.emptyList();
         }
+        JSONObject jsonObject;
         try {
             log.info("Creating autocomplete search url with url:", PROPERTY_AUTOCOMPLETE_URL);
             HttpURLConnection conn = IOHelper.getConnection(PROPERTY_AUTOCOMPLETE_URL,
                     PROPERTY_AUTOCOMPLETE_USERNAME, PROPERTY_AUTOCOMPLETE_PASSWORD);
             IOHelper.writeToConnection(conn, getElasticQuery(searchString));
             String result = IOHelper.readString(conn);
-            JSONObject jsonObject = new JSONObject(result);
-
-            JSONArray jsonHitsArray = jsonObject.getJSONObject("hits").getJSONArray("hits");
-            List<String> resultList = new ArrayList<>();
-            for (int i = 0; i < jsonHitsArray.length(); ++i ) {
-                String resultName = jsonHitsArray.getJSONObject(i).getJSONObject("_source").getString("name");
-                resultList.add(resultName);
-            }
-            return resultList;
+            jsonObject = new JSONObject(result);
         }
         catch (Exception ex) {
             log.error("Couldn't open or read from connection for search channel!");
             throw new RuntimeException("Couldn't open or read from connection!", ex);
         }
+
+        HitCombiner combiner = new HitCombiner();
+        try {
+            JSONArray fuzzyHits = jsonObject.getJSONArray("fuzzy_search").getJSONObject(0).getJSONArray("options");
+            for (int i = 0; i < fuzzyHits.length(); i++) {
+                combiner.addHit(fuzzyHits.getJSONObject(i), false);
+            }
+
+            JSONArray normalHits = jsonObject.getJSONArray("normal_search").getJSONObject(0).getJSONArray("options");
+            for (int i = 0; i < normalHits.length(); i++) {
+                JSONObject hit = normalHits.getJSONObject(i);
+                boolean isExact = searchString.trim().equalsIgnoreCase(hit.getString("text"));
+                combiner.addHit(hit, isExact);
+            }
+        }
+        catch (JSONException ex) {
+            log.error("Unexpected autocomplete service JSON response structure!", ex.getMessage());
+        }
+
+        return combiner.getSortedHits();
     }
 
+
     protected String getElasticQuery(String query) {
-        // { "query": { "match": { "name": { "query": "[user input]", "analyzer": "standard" } } } };";
-        JSONObject elasticQueryTemplate = JSONHelper.createJSONObject("{ \"query\": { \"match\": { \"name\": { \"analyzer\": \"standard\" } } } };");
+        // {"normal_search":{"text":"[user input]","completion":{"field":"name_suggest","size":20}},"fuzzy_search":{"text":"[user input]","completion":{"field":"name_suggest","size":20,"fuzzy":{"fuzziness":5}}}}
+        JSONObject elasticQueryTemplate = JSONHelper.createJSONObject("{\"normal_search\":{\"completion\":{\"field\":\"name_suggest\",\"size\":20}},\"fuzzy_search\":{\"completion\":{\"field\":\"name_suggest\",\"size\":20,\"fuzzy\":{\"fuzziness\":5}}}}");
         try {
             // set the actual search query
-            elasticQueryTemplate.optJSONObject("query").optJSONObject("match").optJSONObject("name").put("query", query);
+            elasticQueryTemplate.optJSONObject("normal_search").put("text", query);
+            elasticQueryTemplate.optJSONObject("fuzzy_search").put("text", query);
         } catch(Exception ignored) {}
         return elasticQueryTemplate.toString();
     }
+
 }

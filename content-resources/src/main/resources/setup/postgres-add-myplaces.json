@@ -1,9 +1,0 @@
-{
-    "create" : [
-        "create-myplaces-tables.sql"
-    ],
-    "sql" : [
-        "example-myplaces-wfs-baselayer.sql"
-    ],
-    "isPartial" : true
-}

@@ -4,9 +4,6 @@ import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.cache.JedisManager;
 import fi.nls.oskari.control.*;
 import fi.nls.oskari.control.statistics.db.RegionSet;
-import fi.nls.oskari.control.statistics.xml.Region;
-import fi.nls.oskari.domain.geo.Point;
-import fi.nls.oskari.map.geometry.ProjectionHelper;
 import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.service.ServiceRuntimeException;
@@ -15,6 +12,9 @@ import fi.nls.oskari.util.ResponseHelper;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.opengis.geometry.MismatchedDimensionException;
+import org.opengis.referencing.FactoryException;
+import org.opengis.referencing.operation.TransformException;
 
 import java.io.IOException;
 import java.util.List;
@@ -35,12 +35,11 @@ import java.util.List;
  */
 @OskariActionRoute("GetRegions")
 public class GetRegionsHandler extends ActionHandler {
-    private final static String CACHE_KEY_PREFIX = "oskari:stats:regionset:";
 
+    private static final String CACHE_KEY_PREFIX = "oskari:stats:regionset:";
     private static final String KEY_REGIONS = "regions";
 
     private RegionSetService service;
-
 
     public void setRegionsetService(final RegionSetService service) {
         this.service = service;
@@ -61,7 +60,6 @@ public class GetRegionsHandler extends ActionHandler {
     }
 
     /**
-     *
      * @param layerId For example: 9
      * @return For example: [{"name": "Alajärvi"}]
      * @throws ActionException
@@ -90,10 +88,8 @@ public class GetRegionsHandler extends ActionHandler {
         JSONHelper.putValue(response, KEY_REGIONS, regions);
 
         try {
-            final List<Region> result = service.getRegions(regionset);
+            final List<Region> result = RegionSetHelper.getRegions(regionset, srs);
             for (Region region : result) {
-                region.setGeojson(getTransformedGeoJSON(region.getGeojson(), regionset.getSrs(), srs));
-                region.setPointOnSurface(getTransformedPoint(region.getPointOnSurface(), regionset.getSrs(), srs));
                 regions.put(region.toJSON());
             }
         } catch (IOException e) {
@@ -102,19 +98,14 @@ public class GetRegionsHandler extends ActionHandler {
             throw new ActionException("Regionset provider misconfiguration.", e);
         } catch (ServiceRuntimeException e) {
             throw new ActionException("Regionset provider returned unexpected response.", e);
+        } catch (FactoryException | MismatchedDimensionException e) {
+            throw new ActionException("Failed to create transformation", e);
+        } catch (TransformException e) {
+            throw new ActionException("Failed to perform transformation", e);
         }
 
         JedisManager.setex(cacheKey, JedisManager.EXPIRY_TIME_DAY, response.toString());
         return response;
     }
 
-    private JSONObject getTransformedGeoJSON(JSONObject geojson, String sourceSrs, final String targetSrs) {
-        JSONObject transformed = ProjectionHelper.transformGeometry(geojson.optJSONObject("geometry"), sourceSrs, targetSrs, true, true);
-        JSONHelper.putValue(geojson, "geometry", transformed);
-        return geojson;
-    }
-
-    private Point getTransformedPoint(final Point point, final String sourceSrs, final String targetSrs) {
-        return ProjectionHelper.transformPoint(point.getLon(), point.getLat(), sourceSrs, targetSrs);
-    }
 }

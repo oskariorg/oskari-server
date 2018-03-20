@@ -7,6 +7,8 @@ import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
+
+import org.apache.commons.lang.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -33,6 +35,7 @@ public class LayerJSONFormatterWMS extends LayerJSONFormatter {
     public static final String KEY_VERSION = "version";
     public static final String KEY_ISQUERYABLE = "isQueryable";
     public static final String KEY_ATTRIBUTES = "attributes";
+    public static final String KEY_GEOM = "geom";
 
     // There working only plain text and html so ranked up
     private static String[] SUPPORTED_GET_FEATURE_INFO_FORMATS = new String[] {
@@ -43,9 +46,10 @@ public class LayerJSONFormatterWMS extends LayerJSONFormatter {
 
     public JSONObject getJSON(OskariLayer layer,
                               final String lang,
-                              final boolean isSecure) {
+                              final boolean isSecure,
+                              final String crs) {
 
-        final JSONObject layerJson = getBaseJSON(layer, lang, isSecure);
+        final JSONObject layerJson = getBaseJSON(layer, lang, isSecure, crs);
         JSONHelper.putValue(layerJson, KEY_STYLE, layer.getStyle());
         JSONHelper.putValue(layerJson, KEY_GFICONTENT, layer.getGfiContent());
 
@@ -68,9 +72,10 @@ public class LayerJSONFormatterWMS extends LayerJSONFormatter {
     public JSONObject getJSON(OskariLayer layer,
                               final String lang,
                               final boolean isSecure,
+                              final String crs,
                               final WebMapService capabilities) {
 
-        final JSONObject layerJson = getJSON(layer, lang, isSecure);
+        final JSONObject layerJson = getJSON(layer, lang, isSecure, crs);
         final JSONObject capsJSON = createCapabilitiesJSON(capabilities);
         includeCapabilitiesInfo(layerJson, layer, capsJSON);
 
@@ -137,6 +142,12 @@ public class LayerJSONFormatterWMS extends LayerJSONFormatter {
         if(!layerJson.has(KEY_VERSION)) {
             JSONHelper.putValue(layerJson, KEY_VERSION, JSONHelper.getStringFromJSON(capabilities, KEY_VERSION, null));
         }
+
+        Set<String> srs = getSRSs(attrs, capabilities);
+        if (srs != null) {
+            JSONHelper.putValue(layerJson, KEY_SRS, new JSONArray(srs));
+        }
+
         // copy time from capabilities to attributes
         // timedata is merged into attributes  (times:{start:,end:,interval:}  or times: []
         // only reason for this is that admin can see the values offered by service
@@ -148,20 +159,57 @@ public class LayerJSONFormatterWMS extends LayerJSONFormatter {
 
     }
 
-    public static JSONObject createCapabilitiesJSON(final WebMapService wms) {
+    /**
+     * Merge forced SRSs from attributes and the ones parsed from
+     * GetCapabilities response into one Set of unique values
+     * @param attributes of OskariLayer in question, can be null
+     * @param capabilities of OskariLayer in question, can be null
+     * @return null iff attributes.forcedSRS and capabilities.srs are both null
+     *         otherwise a Set containing both (can be empty)
+     */
+    protected static Set<String> getSRSs(JSONObject attributes, JSONObject capabilities) {
+        JSONArray jsonForcedSRS = JSONHelper.getJSONArray(attributes, KEY_ATTRIBUTE_FORCED_SRS);
+        JSONArray jsonCapabilitiesSRS = JSONHelper.getJSONArray(capabilities, KEY_SRS);
+        if (jsonForcedSRS == null && jsonCapabilitiesSRS == null) {
+            log.debug("No SRS information found from either attributes or capabilities");
+            return null;
+        }
+        Set<String> srs = new HashSet<>();
+        srs.addAll(JSONHelper.getArrayAsList(jsonForcedSRS));
+        srs.addAll(JSONHelper.getArrayAsList(jsonCapabilitiesSRS));
+        log.debug("SRSs from attributes and capabilities:", StringUtils.join(srs, ','));
+        return srs;
+    }
 
+    /**
+     * @deprecated
+     * use {@link LayerJSONFormatterWMS#createCapabilitiesJSON(WebMapService, Set)}
+     */
+    @Deprecated
+    public static JSONObject createCapabilitiesJSON(final WebMapService wms) {
+        return createCapabilitiesJSON(wms, null);
+    }
+
+    public static JSONObject createCapabilitiesJSON(final WebMapService wms,
+            Set<String> systemCRSs) {
         JSONObject capabilities = new JSONObject();
         if(wms == null) {
             return capabilities;
         }
         JSONHelper.putValue(capabilities, KEY_ISQUERYABLE, wms.isQueryable());
-        List<JSONObject> styles = LayerJSONFormatterWMS.createStylesArray(wms);
+        List<JSONObject> styles = createStylesArray(wms);
         JSONHelper.putValue(capabilities, KEY_STYLES, new JSONArray(styles));
 
-        JSONObject formats = LayerJSONFormatterWMS.getFormatsJSON(wms);
+        JSONObject formats = getFormatsJSON(wms);
         JSONHelper.putValue(capabilities, KEY_FORMATS, formats);
         JSONHelper.putValue(capabilities, KEY_VERSION, wms.getVersion());
-        capabilities = JSONHelper.merge(capabilities, LayerJSONFormatterWMS.formatTime(wms.getTime()));
+        JSONHelper.putValue(capabilities, KEY_GEOM, wms.getGeom());
+
+        final Set<String> capabilitiesCRSs = getCRSs(wms);
+        final Set<String> crss = getCRSsToStore(systemCRSs, capabilitiesCRSs);
+        JSONHelper.putValue(capabilities, KEY_SRS, new JSONArray(crss));
+
+        capabilities = JSONHelper.merge(capabilities, formatTime(wms.getTime()));
         return capabilities;
     }
 
@@ -186,49 +234,55 @@ public class LayerJSONFormatterWMS extends LayerJSONFormatter {
         return IOHelper.constructUrl(PropertyUtil.get(PROPERTY_AJAXURL), urlParams);
     }
 
-    public static JSONObject formatTime(List<String> timeList) {
-        final JSONArray values = new JSONArray();
-        for (String string : timeList) {
-            values.put(string);
+    private static JSONObject formatTime(List<String> times) throws IllegalArgumentException {
+        if (times == null || times.isEmpty()) {
+            return new JSONObject();
         }
-        return createTimesJSON(values);
+
+        // TODO: Fix logic, currently we only support one TimeRange or one or more singular values
+        // An interesting solution would be to "unroll" the time ranges to a list of singular
+        // values -- then KEY_TIMES would always be an array of ISO timestamps as strings
+
+        JSONObject wrapper = new JSONObject();
+
+        // Check if the first value is a TimeRange
+        String time = times.get(0);
+        int i = time.indexOf('/');
+        if (i < 0) {
+            // Singular value(s)
+            JSONHelper.put(wrapper, KEY_TIMES, new JSONArray(times));
+        } else {
+            // First one is potentially a TimeRange
+            JSONHelper.putValue(wrapper, KEY_TIMES, parseTimeRange(time, i));
+            if (times.size() > 1) {
+                log.info("Handled only one (1) TimeRange out of", times.size());
+            }
+        }
+
+        return wrapper;
     }
 
-    public static JSONObject createTimesJSON(final JSONArray time) {
-
-        JSONObject times = new JSONObject();
-        JSONObject timerange = new JSONObject();
-        try {
-
-            if (time == null) {
-                return times;
-            }
-            //Loop array
-            for (int i = 0; i < time.length(); i++) {
-                String tim = time.getString(i);
-                String[] tims = tim.split("/");
-                if(tims.length > 2){
-                    JSONHelper.putValue(timerange, "start", tims[0]);
-                    JSONHelper.putValue(timerange, "end", tims[1]);
-                    JSONHelper.putValue(timerange, "interval", tims[2]);
-                    JSONHelper.putValue(times, KEY_TIMES, timerange);
-                }
-                else {
-                    final JSONArray values = new JSONArray();
-                    String[] atims = tim.split(",");
-                    for (String string : atims) {
-                        values.put(string);
-                    }
-                    JSONHelper.putValue(times, KEY_TIMES, values);
-                }
-                break;
-            }
-
-
-        } catch (Exception e) {
-            log.warn(e, "Populating layer time failed!");
+    private static JSONObject parseTimeRange(String time, int i)
+            throws IllegalArgumentException {
+        // TimeRange format: timeMin/timeMax/interval
+        int j = time.indexOf('/', i + 1);
+        if (j < 0 // Second slash doesn't exist
+                || j == time.length() - 1 // Second slash is last char
+                || time.indexOf('/', j + 1) > 0) { // Third slash exists
+            throw new IllegalArgumentException("Invalid time range");
         }
-        return times;
+        // Interval
+        String start = time.substring(0, i);
+        String end = time.substring(i + 1, j);
+        String interval = time.substring(j + 1);
+
+        // Instead of writing this as a range consider "unrolling"
+        // the timeRange to a list of singular values
+        JSONObject timeRange = new JSONObject();
+        JSONHelper.putValue(timeRange, "start", start);
+        JSONHelper.putValue(timeRange, "end", end);
+        JSONHelper.putValue(timeRange, "interval", interval);
+        return timeRange;
     }
 
     /**
@@ -279,19 +333,22 @@ public class LayerJSONFormatterWMS extends LayerJSONFormatter {
         }
         return formatJSON;
     }
+
     /**
-     * Constructs a  csr set containing the supported coordinate ref systems of WMS service
+     * Constructs a unique set of coordinate ref systems supported by the WMS service
      *
      * @param wms WebMapService
-     * @return Set<String> containing the supported coordinate ref systems of WMS service
+     * @return Set<String> containing the supported coordinate ref systems of the WMS service
      */
     public static Set<String> getCRSs(WebMapService wms) {
-        if(wms.getCRSs().length > 0){
-            final Set<String> crss = new HashSet<String>(Arrays.asList(wms.getCRSs()));
-            return crss;
+        String[] crss = wms.getCRSs();
+        if (crss == null || crss.length == 0) {
+            return Collections.emptySet();
         }
-
-
-        return null;
+        Set<String> set = new HashSet<>(crss.length);
+        for (String crs : crss) {
+            set.add(crs);
+        }
+        return set;
     }
 }
