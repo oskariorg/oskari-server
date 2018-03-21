@@ -1,4 +1,4 @@
-package fi.nls.oskari.control.statistics.xml;
+package fi.nls.oskari.control.statistics;
 
 import fi.nls.oskari.domain.geo.Point;
 import fi.nls.oskari.util.JSONHelper;

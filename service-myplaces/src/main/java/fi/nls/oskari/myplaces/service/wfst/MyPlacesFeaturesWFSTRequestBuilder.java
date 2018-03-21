@@ -10,13 +10,13 @@ import javax.xml.stream.XMLStreamWriter;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.oskari.geojson.GeoJSONReader;
 import org.oskari.wfst.WFSTRequestBuilder;
 
 import com.vividsolutions.jts.geom.Geometry;
 
 import fi.nls.oskari.domain.map.MyPlace;
 import fi.nls.oskari.util.GML2Writer;
-import fi.nls.oskari.util.GeoJSONReader;
 import fi.nls.oskari.util.JSONHelper;
 
 public class MyPlacesFeaturesWFSTRequestBuilder extends WFSTRequestBuilder {

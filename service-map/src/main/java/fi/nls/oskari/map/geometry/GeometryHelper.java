@@ -1,5 +1,6 @@
 package fi.nls.oskari.map.geometry;
 
+import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.CoordinateSequence;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.LineString;
@@ -30,7 +31,7 @@ public class GeometryHelper {
      * Linear interpolation for a LineString
      * @param line
      *      LineString to interpolate
-     * @param threshhold
+     * @param threshold
      *      if the distance between two consecutive points in the linestring is greater
      *      than this value new points will be added to the returned coordinate sequence
      * @param gf
@@ -38,7 +39,7 @@ public class GeometryHelper {
      * @return
      *      sequence of coordinates that
      */
-    public static CoordinateSequence interpolateLinear(LineString line, double threshhold, GeometryFactory gf) {
+    public static CoordinateSequence interpolateLinear(LineString line, double threshold, GeometryFactory gf) {
         double[] tempPointArray = new double[128];
         int i = 0;
 
@@ -55,7 +56,7 @@ public class GeometryHelper {
             double dx = x1 - x0;
             double dy = y1 - y0;
             if (dy == 0) {
-                int nSeg = (int) Math.ceil(Math.abs(dx) / threshhold);
+                int nSeg = (int) Math.ceil(Math.abs(dx) / threshold);
                 for (int j = 0; j < nSeg - 1; j++) {
                     if (i == tempPointArray.length) {
                         tempPointArray = grow(tempPointArray);
@@ -65,7 +66,7 @@ public class GeometryHelper {
                     tempPointArray[i++] = y0;
                 }
             } else if (dx == 0) {
-                int nSeg = (int) Math.ceil(Math.abs(dy) / threshhold);
+                int nSeg = (int) Math.ceil(Math.abs(dy) / threshold);
                 for (int j = 0; j < nSeg - 1; j++) {
                     if (i == tempPointArray.length) {
                         tempPointArray = grow(tempPointArray);
@@ -75,7 +76,7 @@ public class GeometryHelper {
                 }
             } else {
                 double c = Math.sqrt(dx * dx + dy * dy);
-                int nSeg = (int) Math.ceil(c / threshhold);
+                int nSeg = (int) Math.ceil(c / threshold);
                 for (int j = 0; j < nSeg - 1; j++) {
                     if (i == tempPointArray.length) {
                         tempPointArray = grow(tempPointArray);
@@ -109,6 +110,29 @@ public class GeometryHelper {
         double[] arr2 = new double[len * 2];
         System.arraycopy(arr, 0, arr2, 0, len);
         return arr2;
+    }
+
+    public static boolean isWithin(final CoordinateSequence cs,
+            final double minX, final double minY,
+            final double maxX, final double maxY) {
+        if (maxX < minX) {
+            throw new IllegalArgumentException("maxX < minX");
+        }
+        if (maxY < minY) {
+            throw new IllegalArgumentException("maxY < minY");
+        }
+        for (int i = 0; i < cs.size(); i++) {
+            Coordinate c = cs.getCoordinate(i);
+            double x = c.x;
+            double y = c.y;
+            if (x < minX || x > maxX) {
+                return false;
+            }
+            if (y < minY || y > maxY) {
+                return false;
+            }
+        }
+        return true;
     }
 
 }

@@ -25,9 +25,10 @@ public class LayerJSONFormatterStats extends LayerJSONFormatter {
 
     public JSONObject getJSON(OskariLayer layer,
                                      final String lang,
-                                     final boolean isSecure) {
+                                     final boolean isSecure,
+                                     final String crs) {
 
-        final JSONObject layerJson = getBaseJSON(layer, lang, isSecure);
+        final JSONObject layerJson = getBaseJSON(layer, lang, isSecure, crs);
 
         // get visualizations for statslayers
         final List<StatsVisualization> list = service.findForLayerId(layer.getId());

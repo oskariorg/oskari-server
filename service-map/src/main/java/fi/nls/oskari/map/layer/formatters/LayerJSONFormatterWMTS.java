@@ -19,12 +19,13 @@ public class LayerJSONFormatterWMTS extends LayerJSONFormatter {
 
     public JSONObject getJSON(OskariLayer layer,
                               final String lang,
-                              final boolean isSecure) {
+                              final boolean isSecure,
+                              final String crs) {
 
-        final JSONObject layerJson = getBaseJSON(layer, lang, isSecure);
+        final JSONObject layerJson = getBaseJSON(layer, lang, isSecure, crs);
 
-        // Use capabities in 1st hand for to get matrix id
-        String tileMatrixSetId = LayerJSONFormatterWMTS.getTileMatrixSetId(layer.getCapabilities(), layer.getSrs_name());
+        String crsForTileMatrixSet = crs != null ? crs : layer.getSrs_name();
+        String tileMatrixSetId = LayerJSONFormatterWMTS.getTileMatrixSetId(layer.getCapabilities(), crsForTileMatrixSet);
         JSONHelper.putValue(layerJson, "tileMatrixSetId", tileMatrixSetId);
 
         // TODO: parse tileMatrixSetData for styles and set default style name from the one where isDefault = true

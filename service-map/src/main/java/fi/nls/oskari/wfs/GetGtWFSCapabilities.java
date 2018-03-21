@@ -574,7 +574,7 @@ public class GetGtWFSCapabilities {
 
         try {
 
-            JSONObject json = FORMATTER.getJSON(oskariLayer, PropertyUtil.getDefaultLanguage(), false);
+            JSONObject json = FORMATTER.getJSON(oskariLayer, PropertyUtil.getDefaultLanguage(), false, null);
             // add/modify admin specific fields
             OskariLayerWorker.modifyCommonFieldsForEditing(json, oskariLayer);
             // for admin ui only
