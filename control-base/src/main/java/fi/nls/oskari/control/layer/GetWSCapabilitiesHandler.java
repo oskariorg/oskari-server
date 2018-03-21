@@ -64,12 +64,12 @@ public class GetWSCapabilitiesHandler extends ActionHandler {
         ResponseHelper.writeResponse(params, capabilities);
     }
 
-    private JSONObject getCapabilities(String url, String type, String version,
+    protected JSONObject getCapabilities(String url, String type, String version,
             String user, String pw, String currentCrs) throws ActionException {
         try {
             switch (type) {
             case OskariLayer.TYPE_WMS:
-                return GetGtWMSCapabilities.getWMSCapabilities(url, user, pw, version, currentCrs);
+                return GetGtWMSCapabilities.getWMSCapabilities(capabilitiesService, url, user, pw, version, currentCrs);
             case OskariLayer.TYPE_WFS:
                 return GetGtWFSCapabilities.getWFSCapabilities(url, version, user, pw, currentCrs);
             case OskariLayer.TYPE_WMTS:
