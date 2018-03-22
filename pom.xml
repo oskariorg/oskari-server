@@ -424,6 +424,12 @@
                 <version>${fi.nls.oskari.version}</version>
             </dependency>
 
+            <dependency>
+                <groupId>org.oskari</groupId>
+                <artifactId>oskari-geojson</artifactId>
+                <version>${fi.nls.oskari.version}</version>
+            </dependency>
+
             <!-- Spring -->
             <dependency>
                 <groupId>org.springframework.security.extensions</groupId>
@@ -707,6 +713,11 @@
             <dependency>
                 <groupId>org.geotools</groupId>
                 <artifactId>gt-main</artifactId>
+                <version>${geotools.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.geotools</groupId>
+                <artifactId>gt-opengis</artifactId>
                 <version>${geotools.version}</version>
             </dependency>
             <dependency>
@@ -1156,6 +1167,7 @@
         <module>oskari-utils</module>
         <module>control-userlayer</module>
         <module>service-userlayer</module>
+        <module>oskari-geojson</module>
     </modules>
 
 </project>

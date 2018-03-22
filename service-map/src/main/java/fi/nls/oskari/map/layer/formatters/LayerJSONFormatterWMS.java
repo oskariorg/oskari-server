@@ -46,9 +46,10 @@ public class LayerJSONFormatterWMS extends LayerJSONFormatter {
 
     public JSONObject getJSON(OskariLayer layer,
                               final String lang,
-                              final boolean isSecure) {
+                              final boolean isSecure,
+                              final String crs) {
 
-        final JSONObject layerJson = getBaseJSON(layer, lang, isSecure);
+        final JSONObject layerJson = getBaseJSON(layer, lang, isSecure, crs);
         JSONHelper.putValue(layerJson, KEY_STYLE, layer.getStyle());
         JSONHelper.putValue(layerJson, KEY_GFICONTENT, layer.getGfiContent());
 
@@ -71,9 +72,10 @@ public class LayerJSONFormatterWMS extends LayerJSONFormatter {
     public JSONObject getJSON(OskariLayer layer,
                               final String lang,
                               final boolean isSecure,
+                              final String crs,
                               final WebMapService capabilities) {
 
-        final JSONObject layerJson = getJSON(layer, lang, isSecure);
+        final JSONObject layerJson = getJSON(layer, lang, isSecure, crs);
         final JSONObject capsJSON = createCapabilitiesJSON(capabilities);
         includeCapabilitiesInfo(layerJson, layer, capsJSON);
 
