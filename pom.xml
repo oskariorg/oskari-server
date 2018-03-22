@@ -414,6 +414,12 @@
 
             <dependency>
                 <groupId>org.oskari</groupId>
+                <artifactId>oskari-geojson</artifactId>
+                <version>${fi.nls.oskari.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.oskari</groupId>
                 <artifactId>control-userlayer</artifactId>
                 <version>${fi.nls.oskari.version}</version>
             </dependency>
@@ -421,12 +427,6 @@
             <dependency>
                 <groupId>org.oskari</groupId>
                 <artifactId>service-userlayer</artifactId>
-                <version>${fi.nls.oskari.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.oskari</groupId>
-                <artifactId>oskari-geojson</artifactId>
                 <version>${fi.nls.oskari.version}</version>
             </dependency>
 
@@ -1165,9 +1165,10 @@
 
         <module>service-wcs</module>
         <module>oskari-utils</module>
+        <module>oskari-geojson</module>
+
         <module>control-userlayer</module>
         <module>service-userlayer</module>
-        <module>oskari-geojson</module>
     </modules>
 
 </project>
