@@ -1,9 +1,8 @@
-package fi.nls.oskari.map.userlayer.domain;
+package org.oskari.map.userlayer.domain;
 
 import com.vividsolutions.jts.geom.Geometry;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.map.userlayer.service.GeoJsonWorker;
 import fi.nls.oskari.util.JSONHelper;
 import org.geotools.data.DataStore;
 import org.geotools.data.ogr.OGRDataStoreFactory;
@@ -22,6 +21,7 @@ import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.FeatureType;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.MathTransform;
+import org.oskari.map.userlayer.service.GeoJsonWorker;
 
 import java.io.File;
 import java.util.HashMap;

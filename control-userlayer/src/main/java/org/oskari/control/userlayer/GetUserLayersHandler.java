@@ -1,4 +1,4 @@
-package fi.nls.oskari.control.layer;
+package org.oskari.control.userlayer;
 
 import fi.mml.map.mapwindow.util.OskariLayerWorker;
 import fi.nls.oskari.annotation.OskariActionRoute;
@@ -8,13 +8,13 @@ import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.domain.User;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.domain.map.userlayer.UserLayer;
-import fi.nls.oskari.map.userlayer.service.UserLayerDataService;
-import fi.nls.oskari.map.userlayer.service.UserLayerDbService;
 import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.ResponseHelper;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.oskari.map.userlayer.service.UserLayerDataService;
+import org.oskari.map.userlayer.service.UserLayerDbService;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package fi.nls.oskari.control.data;
+package org.oskari.control.userlayer;
 
 import fi.mml.map.mapwindow.util.OskariLayerWorker;
 import fi.nls.oskari.annotation.OskariActionRoute;
@@ -10,13 +10,13 @@ import fi.nls.oskari.domain.User;
 import fi.nls.oskari.domain.map.userlayer.UserLayer;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.map.userlayer.domain.GPXGeoJsonCollection;
-import fi.nls.oskari.map.userlayer.domain.KMLGeoJsonCollection;
-import fi.nls.oskari.map.userlayer.domain.MIFGeoJsonCollection;
-import fi.nls.oskari.map.userlayer.domain.SHPGeoJsonCollection;
-import fi.nls.oskari.map.userlayer.service.GeoJsonWorker;
-import fi.nls.oskari.map.userlayer.service.UserLayerDataService;
-import fi.nls.oskari.util.FileHelper;
+import org.oskari.control.userlayer.util.FileHelper;
+import org.oskari.map.userlayer.domain.GPXGeoJsonCollection;
+import org.oskari.map.userlayer.domain.KMLGeoJsonCollection;
+import org.oskari.map.userlayer.domain.MIFGeoJsonCollection;
+import org.oskari.map.userlayer.domain.SHPGeoJsonCollection;
+import org.oskari.map.userlayer.service.GeoJsonWorker;
+import org.oskari.map.userlayer.service.UserLayerDataService;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;

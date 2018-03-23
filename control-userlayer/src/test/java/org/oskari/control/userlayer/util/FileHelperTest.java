@@ -1,7 +1,8 @@
-package fi.nls.oskari.util;
+package org.oskari.control.userlayer.util;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.oskari.control.userlayer.util.FileHelper;
 
 import static org.junit.Assert.assertEquals;
 

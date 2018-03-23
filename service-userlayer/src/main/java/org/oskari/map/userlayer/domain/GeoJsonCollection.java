@@ -1,4 +1,4 @@
-package fi.nls.oskari.map.userlayer.domain;
+package org.oskari.map.userlayer.domain;
 
 
 import org.json.JSONObject;

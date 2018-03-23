@@ -1,4 +1,4 @@
-package fi.nls.oskari.map.userlayer.service;
+package org.oskari.map.userlayer.service;
 
 import org.json.JSONObject;
 import org.opengis.feature.type.FeatureType;
