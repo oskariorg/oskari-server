@@ -1,5 +1,16 @@
 # Migration guide
 
+## 1.46.0
+
+### UserLayer to separate modules
+
+In order to use UserLayers in the future in your application you'll have to add the following dependency to your webapp-map:
+
+    <dependency>
+      <groupId>org.oskari</groupId>
+      <artifactId>control-userlayer</artifactId>
+    </dependency>
+
 ## 1.45.0
 
 ### myplaces, userlayer, analysis baselayers migration

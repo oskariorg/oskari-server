@@ -18,6 +18,7 @@ public abstract class ViewModifier {
     
     public static final String BUNDLE_MAPFULL = "mapfull";
     public static final String BUNDLE_MYPLACES2 = "myplaces2";
+    public static final String BUNDLE_MYPLACES3 = "myplaces3";
     public static final String BUNDLE_INFOBOX = "infobox";
     public static final String BUNDLE_POSTPROCESSOR = "postprocessor";
     public static final String BUNDLE_ADMINLAYERSELECTOR = "admin-layerselector";
