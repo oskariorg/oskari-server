@@ -5,6 +5,8 @@ import fi.nls.oskari.domain.map.userlayer.UserLayerData;
 import fi.nls.oskari.domain.map.userlayer.UserLayerStyle;
 import fi.nls.oskari.service.ServiceException;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 
 import java.util.List;
 
@@ -17,6 +19,10 @@ public interface UserLayerMapper {
         public void deleteUserLayerRow(final long id) throws ServiceException;
         public int updatePublisherName(@Param ("id") long id, @Param ("uuid") String uuid, @Param ("publisher_name") String name);
         public String getUserLayerBbox (final long userLayerId);
+        @Update("UPDATE user_layer SET wkt = #{wkt} WHERE id = #{id}")
+        public void setUserLayerWkt(@Param("id") final long id, @Param("wkt") final String wkt);
+        @Select("SELECT wkt FROM user_layer WHERE id = #{id}")
+        public String getUserLayerWkt (final long id);
 
         //UserLayerStyle related
         public void insertUserLayerStyleRow(final UserLayerStyle userLayerStyle);

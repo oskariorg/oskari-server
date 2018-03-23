@@ -28,6 +28,10 @@ public abstract class UserLayerDbService extends OskariComponent {
 	
 	public abstract String getUserLayerExtent (final long id);
 
+	public abstract void setUserLayerWkt(final long id, final String wkt);
+
+	public abstract String getUserLayerWkt (final long id);
+
     //UserLayerStyle related
     public abstract int updateUserLayerStyleCols(final UserLayerStyle userLayerStyle);
 

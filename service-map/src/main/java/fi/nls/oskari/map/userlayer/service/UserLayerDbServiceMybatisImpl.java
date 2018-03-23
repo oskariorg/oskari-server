@@ -275,5 +275,30 @@ public class UserLayerDbServiceMybatisImpl extends UserLayerDbService {
          }
          return "";
      }
+	public void setUserLayerWkt(long id, String wkt) {
+        final SqlSession session = factory.openSession();
+        try {
+            final UserLayerMapper mapper = session.getMapper(UserLayerMapper.class);
+            mapper.setUserLayerWkt(id, wkt);
+            session.commit();
+        } catch (Exception e) {
+            log.error(e, "Failed to set userlayer bbox", wkt ,"with id:", id);
+        } finally {
+            session.close();
+        }
+	}
+
+   public String getUserLayerWkt(long id) {
+         final SqlSession session = factory.openSession();
+         try {
+             final UserLayerMapper mapper = session.getMapper(UserLayerMapper.class);
+             return mapper.getUserLayerWkt(id);
+         } catch (Exception e) {
+             log.error(e, "Failed to get userlayer wkt with id:", id);
+         } finally {
+             session.close();
+         }
+         return "";
+     }
 
 }

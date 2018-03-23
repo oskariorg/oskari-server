@@ -49,8 +49,8 @@ public class CreateUserLayerHandler extends ActionHandler {
     private static final String IMPORT_GPX = ".GPX";
     private static final String IMPORT_MIF = ".MIF";
     private static final String IMPORT_KML = ".KML";
-    private static final String PARAM_EPSG_KEY = "epsg";
-    private static final String PARAM_SOURCE_EPSG_KEY = "sourceEpsg";
+    private static final String PARAM_EPSG_KEY = "epsg"; //maps srs
+    private static final String PARAM_SOURCE_EPSG_KEY = "sourceEpsg"; //frontend doesn't send this
     private static final String USERLAYER_MAX_FILE_SIZE_MB = "userlayer.max.filesize.mb";
     private static final String USERLAYER_DEFAULT_SOURCE_EPSG = "userlayer.default.source.epsg";
     private static final int MAX_FILES_IN_ZIP = 100;
@@ -172,7 +172,9 @@ public class CreateUserLayerHandler extends ActionHandler {
         // stop here if user isn't logged in
         params.requireLoggedInUser();
 
+        //TODO: should this come from properties (userlayer.default.target.epsg, oskari.native.srs,..) or from db (oskari_maplayer -> srs_name)
         final String target_epsg = params.getHttpParam(PARAM_EPSG_KEY, "EPSG:3067");
+        //TODO: should we ask source epsg from user if it's not found from import file
         final String source_epsg = params.getHttpParam(PARAM_SOURCE_EPSG_KEY, defaultSourceEpsg);
         try {
 
@@ -217,6 +219,9 @@ public class CreateUserLayerHandler extends ActionHandler {
                 throw new ActionException("unable_to_store_data");
             }
 
+            //set extent
+            userlayerService.setExtent(ulayer, source_epsg);
+
             // workaround because of IE iframe submit json download functionality
             //params.getResponse().setContentType("application/json;charset=utf-8");
             //ResponseHelper.writeResponse(params, userlayerService.parseUserLayer2JSON(ulayer));
@@ -228,6 +233,8 @@ public class CreateUserLayerHandler extends ActionHandler {
             JSONHelper.putValue(userLayer, "featuresCount", ulayer.getFeatures_count());
             JSONObject permissions = OskariLayerWorker.getAllowedPermissions();
             JSONHelper.putValue(userLayer, "permissions", permissions);
+            // transform WKT to map's srs
+            OskariLayerWorker.transformWKTGeom(userLayer, params.getHttpParam(PARAM_EPSG_KEY));
             //add warning if features were skipped
             if (ulayer.getFeatures_skipped() > 0) {
                 JSONObject featuresSkipped = new JSONObject();

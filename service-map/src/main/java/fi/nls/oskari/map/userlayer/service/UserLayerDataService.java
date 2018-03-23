@@ -7,6 +7,7 @@ import fi.nls.oskari.domain.map.userlayer.UserLayerData;
 import fi.nls.oskari.domain.map.userlayer.UserLayerStyle;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.map.geometry.WKTHelper;
 import fi.nls.oskari.map.layer.OskariLayerService;
 import fi.nls.oskari.map.layer.OskariLayerServiceIbatisImpl;
 import fi.nls.oskari.map.layer.formatters.LayerJSONFormatterUSERLAYER;
@@ -52,8 +53,6 @@ public class UserLayerDataService {
      */
 
     public UserLayer storeUserData(GeoJsonWorker gjsWorker, User user, Map<String, String> fparams) throws ServiceException {
-
-
         final UserLayer userLayer = new UserLayer();
         final UserLayerStyle style = new UserLayerStyle();
         List <UserLayerData> userLayerDataList = new ArrayList<UserLayerData>();
@@ -94,6 +93,14 @@ public class UserLayerDataService {
             throw new ServiceException ("unable_to_store_data");
         }
         return userLayer;
+    }
+    public void setExtent (UserLayer userLayer, String srs){
+        String extent = userLayerService.getUserLayerExtent(userLayer.getId());
+        //wkt is stored always in WGS84
+        String wkt = WKTHelper.transform(extent, srs, "EPSG:4326");
+        log.debug("Extent", extent, "transformed to wgs84", wkt);
+        userLayerService.setUserLayerWkt(userLayer.getId(), wkt);
+        userLayer.setWkt(wkt);
     }
 
 
