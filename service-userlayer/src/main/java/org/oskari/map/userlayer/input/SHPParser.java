@@ -1,4 +1,4 @@
-package org.oskari.service.userlayer.input;
+package org.oskari.map.userlayer.input;
 
 import java.io.File;
 import java.io.IOException;

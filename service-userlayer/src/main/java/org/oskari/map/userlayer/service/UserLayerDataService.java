@@ -1,4 +1,4 @@
-package org.oskari.service.userlayer;
+package org.oskari.map.userlayer.service;
 
 import fi.nls.oskari.domain.User;
 import fi.nls.oskari.domain.map.OskariLayer;
@@ -24,7 +24,6 @@ import org.opengis.feature.type.FeatureType;
 import org.opengis.feature.type.PropertyDescriptor;
 import org.oskari.geojson.GeoJSON;
 import org.oskari.geojson.GeoJSONWriter;
-import org.oskari.service.userlayer.mybatis.UserLayerDbServiceMybatisImpl;
 
 import java.util.ArrayList;
 import java.util.Collection;

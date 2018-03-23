@@ -1,7 +1,5 @@
 package org.oskari.control.userlayer;
 
-import org.oskari.service.userlayer.UserLayerDbService;
-
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.*;
 import fi.nls.oskari.domain.map.userlayer.UserLayer;
@@ -10,6 +8,7 @@ import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.ResponseHelper;
+import org.oskari.map.userlayer.service.UserLayerDbService;
 
 
 /**

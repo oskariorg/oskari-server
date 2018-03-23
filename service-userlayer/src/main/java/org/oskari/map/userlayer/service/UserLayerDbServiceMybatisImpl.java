@@ -1,4 +1,4 @@
-package org.oskari.service.userlayer.mybatis;
+package org.oskari.map.userlayer.service;
 
 
 import fi.nls.oskari.annotation.Oskari;
@@ -14,7 +14,6 @@ import org.apache.ibatis.mapping.Environment;
 import org.apache.ibatis.session.*;
 import org.apache.ibatis.transaction.TransactionFactory;
 import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
-import org.oskari.service.userlayer.UserLayerDbService;
 
 import javax.sql.DataSource;
 import java.util.List;

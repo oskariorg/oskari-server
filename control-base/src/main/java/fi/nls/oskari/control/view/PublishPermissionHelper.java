@@ -29,7 +29,7 @@ import fi.nls.oskari.util.ConversionHelper;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.oskari.service.userlayer.UserLayerDbService;
+import org.oskari.map.userlayer.service.UserLayerDbService;
 import org.oskari.service.util.ServiceFactory;
 
 import java.util.ArrayList;

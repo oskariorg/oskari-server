@@ -22,7 +22,7 @@ import fi.nls.oskari.view.modifier.ViewModifier;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.oskari.service.userlayer.UserLayerDbService;
+import org.oskari.map.userlayer.service.UserLayerDbService;
 
 import java.util.Set;
 

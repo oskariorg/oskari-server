@@ -1,4 +1,4 @@
-package org.oskari.service.userlayer.input;
+package org.oskari.map.userlayer.input;
 
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.data.simple.SimpleFeatureIterator;

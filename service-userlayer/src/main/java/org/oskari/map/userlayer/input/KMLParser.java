@@ -1,4 +1,4 @@
-package org.oskari.service.userlayer.input;
+package org.oskari.map.userlayer.input;
 
 import java.io.BufferedInputStream;
 import java.io.File;

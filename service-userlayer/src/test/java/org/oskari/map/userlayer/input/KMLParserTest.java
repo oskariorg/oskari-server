@@ -1,4 +1,4 @@
-package org.oskari.service.userlayer.input;
+package org.oskari.map.userlayer.input;
 
 import static org.junit.Assert.assertEquals;
 
@@ -11,6 +11,7 @@ import org.geotools.data.simple.SimpleFeatureIterator;
 import org.junit.Test;
 import org.opengis.feature.GeometryAttribute;
 import org.opengis.feature.simple.SimpleFeature;
+import org.oskari.map.userlayer.input.KMLParser;
 
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Point;
