@@ -15,17 +15,16 @@ import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.data.simple.SimpleFeatureIterator;
-import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.FeatureType;
 import org.opengis.feature.type.PropertyDescriptor;
-import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.oskari.geojson.GeoJSON;
+import org.oskari.geojson.GeoJSONWriter;
 import org.oskari.service.userlayer.mybatis.UserLayerDbServiceMybatisImpl;
-
-import com.vividsolutions.jts.geom.Geometry;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -57,7 +56,6 @@ public class UserLayerDataService {
             log.info("user data store start: ", fparams);
             final UserLayer userLayer = new UserLayer();
             final UserLayerStyle style = new UserLayerStyle();
-            List <UserLayerData> userLayerDataList = new ArrayList<UserLayerData>();
 
             style.setId(1);  // for default, even if style should be always valued
             //set style from json
@@ -76,12 +74,18 @@ public class UserLayerDataService {
             // TODO: Store the bounds in WGS84
             // ReferencedEnvelope env = fc.getBounds();
 
-            if (fparams.containsKey(KEY_NAME)) userLayer.setLayer_name(fparams.get(KEY_NAME));
-            if (fparams.containsKey(KEY_DESC)) userLayer.setLayer_desc(fparams.get(KEY_DESC));
-            if (fparams.containsKey(KEY_SOURCE)) userLayer.setLayer_source(fparams.get(KEY_SOURCE));
+            if (fparams.containsKey(KEY_NAME)) {
+                userLayer.setLayer_name(fparams.get(KEY_NAME));
+            }
+            if (fparams.containsKey(KEY_DESC)) {
+                userLayer.setLayer_desc(fparams.get(KEY_DESC));
+            }
+            if (fparams.containsKey(KEY_SOURCE)) {
+                userLayer.setLayer_source(fparams.get(KEY_SOURCE));
+            }
 
             //get userLayerData list
-            userLayerDataList = getUserLayerData(fc, user, userLayer);
+            List<UserLayerData> userLayerDataList = getUserLayerData(fc, user, userLayer);
 
             if (userLayerDataList.isEmpty()){
                 throw new ServiceException ("no_features");
@@ -97,25 +101,24 @@ public class UserLayerDataService {
     }
 
     private List<UserLayerData> getUserLayerData(SimpleFeatureCollection fc, User user, UserLayer userLayer) throws ServiceException{
-        SimpleFeatureIterator it = fc.features();
-        try {
+        try (SimpleFeatureIterator it = fc.features()) {
             final List<UserLayerData> userLayerDataList = new ArrayList<>();
             final String uuid = user.getUuid();
-            
+
             int count = 0;
             int noGeometry = 0;
 
             while (it.hasNext()) {
                 SimpleFeature f = it.next();
-                UserLayerData uld = toUserLayerData(f, uuid);
-                if (uld == null) {
+                if (f.getDefaultGeometry() == null) {
                     noGeometry++;
-                } else {
-                    userLayerDataList.add(toUserLayerData(f, uuid));
-                    count++;
-                    if (count > USERLAYER_MAX_FEATURES_COUNT && USERLAYER_MAX_FEATURES_COUNT != -1) {
-                        break;
-                    }
+                    continue;
+                }
+                UserLayerData uld = toUserLayerData(f, uuid);
+                userLayerDataList.add(uld);
+                count++;
+                if (USERLAYER_MAX_FEATURES_COUNT != -1 && count > USERLAYER_MAX_FEATURES_COUNT) {
+                    break;
                 }
             }
             userLayer.setFeatures_count(count);
@@ -123,25 +126,23 @@ public class UserLayerDataService {
             return userLayerDataList;
         } catch (Exception e) {
             log.error(e, "Failed to parse geojson features to userlayer data list");
-            throw new ServiceException ("failed_to_parse_geojson");
-        } finally {
-            it.close();
+            throw new ServiceException("failed_to_parse_geojson");
         }
     }
 
-    private UserLayerData toUserLayerData(SimpleFeature f, String uuid) {
-        Geometry geometry = (Geometry) f.getDefaultGeometry();
-        if (geometry == null) {
-            return null;
-        }
+    private UserLayerData toUserLayerData(SimpleFeature f, String uuid) throws JSONException {
+        JSONObject geoJSON = new GeoJSONWriter().writeFeature(f);
+        String id = geoJSON.optString(GeoJSON.ID);
+        JSONObject geometry = geoJSON.getJSONObject(GeoJSON.GEOMETRY);
+        String geometryJson = geometry.toString();
+        JSONObject properties = geoJSON.optJSONObject(GeoJSON.PROPERTIES);
+        String propertiesJson = properties != null ? properties.toString() : null;
 
-        // JSONObject geoJSON = GeoJSONWriter.writeFeature(f);
-        
-        final UserLayerData userLayerData = new UserLayerData();
+        UserLayerData userLayerData = new UserLayerData();
         userLayerData.setUuid(uuid);
-        userLayerData.setFeature_id(null); // geoJSON.optString("id"));
-        userLayerData.setGeometry(null); // (GeoJSONWriter.toGeoJSON());
-        userLayerData.setProperty_json(null); // .optJSONObject("properties").toString());
+        userLayerData.setFeature_id(id);
+        userLayerData.setGeometry(geometryJson);
+        userLayerData.setProperty_json(propertiesJson);
         return userLayerData;
     }
 

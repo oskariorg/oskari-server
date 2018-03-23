@@ -18,7 +18,7 @@ import com.vividsolutions.jts.geom.Point;
 import fi.nls.oskari.service.ServiceException;
 
 public class KMLParserTest {
-    
+
     @SuppressWarnings("unchecked")
     @Test
     public void testParse() throws ServiceException, URISyntaxException {
@@ -26,19 +26,19 @@ public class KMLParserTest {
 
         KMLParser kml = new KMLParser();
 
-        SimpleFeatureCollection fc = kml.parse(file);
-        
+        SimpleFeatureCollection fc = kml.parse(file, null, null);
+
         SimpleFeatureIterator it = fc.features();
         SimpleFeature doc = it.next();
         assertEquals("document", doc.getFeatureType().getTypeName());
         it.close();
-        
+
         List<SimpleFeature> folders = (List<SimpleFeature>) doc.getAttribute("Feature");
         assertEquals(6, folders.size());
 
         SimpleFeature folder = folders.get(0);
         assertEquals("Placemarks", folder.getAttribute("name"));
-        assertEquals("These are just some of the different kinds of placemarks with\n" + 
+        assertEquals("These are just some of the different kinds of placemarks with\n" +
                 "        which you can mark your favorite places", folder.getAttribute("description"));
         GeometryAttribute ga = folder.getDefaultGeometryProperty();
         assertEquals("LookAt", ga.getName().getLocalPart());

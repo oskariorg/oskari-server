@@ -13,7 +13,6 @@ import java.nio.file.Paths;
 import org.geotools.data.shapefile.ShapefileDataStore;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.data.simple.SimpleFeatureSource;
-import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
 import fi.nls.oskari.log.LogFactory;
@@ -26,34 +25,32 @@ import fi.nls.oskari.service.ServiceException;
 public class SHPParser implements FeatureCollectionParser {
 
     private static final Logger LOG = LogFactory .getLogger(SHPParser.class);
-    
+
     public static final String SUFFIX = "SHP";
-    
-    private CoordinateReferenceSystem crs;
 
     @Override
-    public SimpleFeatureCollection parse(File file) throws ServiceException {
+    public SimpleFeatureCollection parse(File file, CoordinateReferenceSystem sourceCRS,
+            CoordinateReferenceSystem targetCRS) throws ServiceException {
         ShapefileDataStore store = null;
         try {
             store = new ShapefileDataStore(file.toURI().toURL());
             store.setCharset(getCharset(file));
             String typeName = store.getTypeNames()[0];
             SimpleFeatureSource source = store.getFeatureSource(typeName);
-            SimpleFeatureType schema = source.getSchema();
-            crs = schema.getGeometryDescriptor().getCoordinateReferenceSystem();
-            return source.getFeatures();
-        } catch (IOException e) {
-            throw new ServiceException("IOException occured", e);
+            CoordinateReferenceSystem crs = source.getSchema()
+                    .getGeometryDescriptor()
+                    .getCoordinateReferenceSystem();
+            if (crs != null) {
+                sourceCRS = crs;
+            }
+            return FeatureCollectionParsers.read(source, sourceCRS, targetCRS);
+        } catch (Exception e) {
+            throw new ServiceException("Failed to parse SHP", e);
         } finally {
             if (store != null) {
                 store.dispose();
             }
         }
-    }
-
-    @Override
-    public CoordinateReferenceSystem getDeterminedProjection() {
-        return crs;
     }
 
     private Charset getCharset(File file) {
@@ -64,18 +61,19 @@ public class SHPParser implements FeatureCollectionParser {
         if (!Files.exists(path)) {
             return StandardCharsets.ISO_8859_1;
         }
-        String csName = null;
         try {
             byte[] b = Files.readAllBytes(path);
-            csName = new String(b, StandardCharsets.US_ASCII).trim();
+            String csName = new String(b, StandardCharsets.US_ASCII).trim();
             LOG.debug("Charset name in CPG file:", csName);
-            return Charset.forName(csName);
-        } catch (IllegalCharsetNameException | UnsupportedCharsetException e) {
-            LOG.warn(csName, "was invalid");
+            try {
+                return Charset.forName(csName);
+            } catch (IllegalCharsetNameException | UnsupportedCharsetException e) {
+                LOG.warn(csName, "was invalid");
+            }
         } catch (IOException e) {
             LOG.warn("IOException occured while reading CPG file, using default charset");
         }
         return StandardCharsets.ISO_8859_1;
     }
-    
+
 }

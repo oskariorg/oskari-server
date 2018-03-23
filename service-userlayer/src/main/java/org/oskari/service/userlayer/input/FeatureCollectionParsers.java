@@ -1,8 +1,26 @@
 package org.oskari.service.userlayer.input;
 
+import org.geotools.data.simple.SimpleFeatureCollection;
+import org.geotools.data.simple.SimpleFeatureIterator;
+import org.geotools.data.simple.SimpleFeatureSource;
+import org.geotools.feature.DefaultFeatureCollection;
+import org.geotools.geometry.jts.JTS;
+import org.geotools.referencing.CRS;
+import org.opengis.feature.simple.SimpleFeature;
+import org.opengis.referencing.FactoryException;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.opengis.referencing.operation.MathTransform;
+
+import com.vividsolutions.jts.geom.Geometry;
+
 public class FeatureCollectionParsers {
 
-    public static boolean isMainFile(String fileExt) {
+    private FeatureCollectionParsers() {}
+
+    public static boolean hasByFileExt(String fileExt) {
+        if (fileExt == null) {
+            return false;
+        }
         fileExt = fileExt.toUpperCase();
         switch (fileExt) {
         case GPXParser.SUFFIX:
@@ -15,7 +33,10 @@ public class FeatureCollectionParsers {
         }
     }
 
-    public static FeatureCollectionParser byFileExt(String fileExt) {
+    public static FeatureCollectionParser getByFileExt(String fileExt) {
+        if (fileExt == null) {
+            return null;
+        }
         fileExt = fileExt.toUpperCase();
         switch (fileExt) {
         case GPXParser.SUFFIX: return new GPXParser();
@@ -24,6 +45,42 @@ public class FeatureCollectionParsers {
         case SHPParser.SUFFIX: return new SHPParser();
         default: return null;
         }
+    }
+
+    /**
+     * Read Features from FeatureSource to memory (ensure they won't
+     * disappear when DataStore#dispose() is called) while transforming
+     * their geometries from source projection to target projection
+     * @throws Exception lots can go wrong
+     */
+    public static SimpleFeatureCollection read(SimpleFeatureSource src,
+            CoordinateReferenceSystem sourceCRS, CoordinateReferenceSystem targetCRS) throws Exception {
+        DefaultFeatureCollection fc = new DefaultFeatureCollection();
+        SimpleFeatureCollection sfc = src.getFeatures();
+        MathTransform transform = getTransform(sourceCRS, targetCRS);
+        try (SimpleFeatureIterator it = sfc.features()) {
+            while (it.hasNext()) {
+                SimpleFeature f = it.next();
+                if (transform != null) {
+                    Object g = f.getDefaultGeometry();
+                    if (g != null) {
+                        Geometry transformed = JTS.transform((Geometry) g, transform);
+                        f.setDefaultGeometry(transformed);
+                    }
+                }
+                fc.add(f);
+            }
+        }
+        return fc;
+    }
+
+    private static MathTransform getTransform(
+            CoordinateReferenceSystem sourceCRS,
+            CoordinateReferenceSystem targetCRS) throws FactoryException {
+        if (sourceCRS == null || targetCRS == null) {
+            return null;
+        }
+        return CRS.findMathTransform(sourceCRS, targetCRS);
     }
 
 }

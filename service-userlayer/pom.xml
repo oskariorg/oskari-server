@@ -24,6 +24,10 @@
             <artifactId>oskari-mybatis</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.oskari</groupId>
+            <artifactId>oskari-geojson</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.geotools</groupId>
             <artifactId>gt-opengis</artifactId>
             <version>${geotools.version}</version>

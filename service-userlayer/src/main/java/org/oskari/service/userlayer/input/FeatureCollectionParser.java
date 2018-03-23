@@ -9,7 +9,6 @@ import fi.nls.oskari.service.ServiceException;
 
 public interface FeatureCollectionParser {
 
-    public SimpleFeatureCollection parse(File file) throws ServiceException;
-    public CoordinateReferenceSystem getDeterminedProjection();
+    public SimpleFeatureCollection parse(File file, CoordinateReferenceSystem sourceCRS, CoordinateReferenceSystem targetCRS) throws ServiceException;
 
 }
