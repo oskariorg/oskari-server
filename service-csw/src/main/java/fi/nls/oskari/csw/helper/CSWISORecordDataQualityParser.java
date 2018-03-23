@@ -72,25 +72,25 @@ public class CSWISORecordDataQualityParser {
             //Data quality node information: Aspect of quantitative quality information
             XPATH_NAME_OF_MEASURE = xpath.compile("./gmd:nameOfMeasure"); //many
             XPATH_MEASURE_IDENTIFICATION_CODE =  xpath.compile("./gmd:measureIdentification/gmd:code");
-            XPATH_MEASURE_IDENTIFICATION_AUTHORIZATION =  xpath.compile("./gmd:measureIdentification/gmd:authorization");
+            XPATH_MEASURE_IDENTIFICATION_AUTHORIZATION =  xpath.compile("./gmd:measureIdentification/gmd:authorization"); //MD_Identifier (code, authority, RS_Identifier)
             XPATH_MEASURE_DESCRIPTION =  xpath.compile("./gmd:measureDescription");
-            XPATH_EVALUATION_METHOD_TYPE =  xpath.compile("./gmd:evaluationMethodType");
+            XPATH_EVALUATION_METHOD_TYPE =  xpath.compile("./gmd:evaluationMethodType"); //b.1.17
             XPATH_EVALUATION_METHOD_DESCRIPTION =  xpath.compile("./gmd:evaluationMethodDescription");
-            XPATH_EVALUATION_PROCEDURE =  xpath.compile("./gmd:evaluationProcedure");
+            XPATH_EVALUATION_PROCEDURE =  xpath.compile("./gmd:evaluationProcedure"); //CI_Citation
             XPATH_DATE_TIME =  xpath.compile("./gmd:dateTime"); //many
 
             //Data quality node conformance result
             XPATH_CONFORMANCE_RESULT = xpath.compile("./gmd:result/gmd:DQ_ConformanceResult"); //many
-            XPATH_CONFORMANCE_RESULT_SPECIFICATION_TITLE = xpath.compile("./gmd:specification/gmd:CI_Citation/gmd:title");
-            XPATH_CONFORMANCE_RESULT_EXPLANATION = xpath.compile("./gmd:explanation");;
-            XPATH_CONFORMANCE_RESULT_PASS = xpath.compile("./gmd:pass");
+            XPATH_CONFORMANCE_RESULT_SPECIFICATION_TITLE = xpath.compile("./gmd:specification/gmd:CI_Citation/gmd:title"); //FreeText
+            XPATH_CONFORMANCE_RESULT_EXPLANATION = xpath.compile("./gmd:explanation"); //FreeText
+            XPATH_CONFORMANCE_RESULT_PASS = xpath.compile("./gmd:pass"); //Boolean
 
             //Data quality node quantitative result
             XPATH_QUANTITATIVE_RESULT = xpath.compile("./gmd:result/gmd:DQ_QuantitativeResult"); //many
-            XPATH_QUANTITATIVE_RESULT_VALUE_TYPE = xpath.compile("./gmd:valueType");
-            XPATH_QUANTITATIVE_RESULT_VALUE_UNIT = xpath.compile("./gmd:valueUnit");
-            XPATH_QUANTITATIVE_RESULT_ERROR_STATISTIC = xpath.compile("./gmd:errorStatistic"); //many
-            XPATH_QUANTITATIVE_RESULT_VALUE = xpath.compile("./gmd:value");
+            XPATH_QUANTITATIVE_RESULT_VALUE_TYPE = xpath.compile("./gmd:valueType"); //RecordType
+            XPATH_QUANTITATIVE_RESULT_VALUE_UNIT = xpath.compile("./gmd:valueUnit"); //UOM
+            XPATH_QUANTITATIVE_RESULT_ERROR_STATISTIC = xpath.compile("./gmd:errorStatistic"); //FreeText
+            XPATH_QUANTITATIVE_RESULT_VALUE = xpath.compile("./gmd:value"); //many //Record
 
             //Free text (character string)
             XPATH_CHARACTER_STRING = xpath.compile("./gco:CharacterString");
@@ -99,6 +99,9 @@ public class CSWISORecordDataQualityParser {
             log.error("Setting XPaths failed in data quality parser");
             throw new RuntimeException("Setting XPaths failed in data quality parser");
         }
+    }
+    public Map<String, String> getDataQualitiesMap (){
+        return this.dataQualities;
     }
 
     public CSWIsoRecord.DataQualityObject parseDataQualities(final NodeList dataQualityNodes, final XPathExpression pathToLoc)  throws XPathExpressionException {
@@ -164,13 +167,13 @@ public class CSWISORecordDataQualityParser {
         dataQualityObjectNode.setMeasureIdentificationCode(localize(measureIdentificationCodeNode));
 
         Node measureIdentificationAuthorizationNode = (Node) XPATH_MEASURE_IDENTIFICATION_AUTHORIZATION.evaluate(parentNode, XPathConstants.NODE);
-        dataQualityObjectNode.setMeasureIdentificationAuthorization(localize(measureIdentificationAuthorizationNode));
+        dataQualityObjectNode.setMeasureIdentificationAuthorization(getText(measureIdentificationAuthorizationNode));
 
         Node measureDescriptionNode = (Node) XPATH_MEASURE_DESCRIPTION.evaluate(parentNode, XPathConstants.NODE);
         dataQualityObjectNode.setMeasureDescription(localize(measureDescriptionNode));
 
         Node evaluationMethodTypeNode = (Node) XPATH_EVALUATION_METHOD_TYPE.evaluate(parentNode, XPathConstants.NODE);
-        dataQualityObjectNode.setEvaluationMethodType(localize(evaluationMethodTypeNode));
+        dataQualityObjectNode.setEvaluationMethodType(getText(evaluationMethodTypeNode));
 
         Node evaluationProcedureNode = (Node) XPATH_EVALUATION_PROCEDURE.evaluate(parentNode, XPathConstants.NODE);
         dataQualityObjectNode.setEvaluationProcedure(null); //TODO parse
@@ -178,7 +181,7 @@ public class CSWISORecordDataQualityParser {
         NodeList dateTimeNode = (NodeList) XPATH_DATE_TIME.evaluate(parentNode, XPathConstants.NODESET);
         List<String> dateTimeValueList = new ArrayList<>();
         for (int i = 0;i < dateTimeNode.getLength(); ++i) {
-            dateTimeValueList.add(localize(dateTimeNode.item(i)));
+            dateTimeValueList.add(getText(dateTimeNode.item(i)));
         }
         dataQualityObjectNode.setDateTime(dateTimeValueList);
     }
@@ -194,7 +197,7 @@ public class CSWISORecordDataQualityParser {
         dataQualityObjectConformanceResult.setExplanation(localize(conformanceResultExplanationNode));
 
         Node conformanceResultPassNode = (Node) XPATH_CONFORMANCE_RESULT_PASS.evaluate(parentNode, XPathConstants.NODE);
-        dataQualityObjectConformanceResult.setPass(localize(conformanceResultPassNode));
+        dataQualityObjectConformanceResult.setPass(getText(conformanceResultPassNode));
 
         return dataQualityObjectConformanceResult;
     }
@@ -205,15 +208,15 @@ public class CSWISORecordDataQualityParser {
                 new CSWIsoRecord.DataQualityQuantitativeResult();
 
         Node quantitativeResultValueTypeNode = (Node) XPATH_QUANTITATIVE_RESULT_VALUE_TYPE.evaluate(parentNode, XPathConstants.NODE);
-        dataQualityObjectQuantitativeResult.setValueType(localize(quantitativeResultValueTypeNode));
+        dataQualityObjectQuantitativeResult.setValueType(getText(quantitativeResultValueTypeNode));
 
         Node quantitativeResultValueUnitNode = (Node) XPATH_QUANTITATIVE_RESULT_VALUE_UNIT.evaluate(parentNode, XPathConstants.NODE);
-        dataQualityObjectQuantitativeResult.setValueUnit(localize(quantitativeResultValueUnitNode));
+        dataQualityObjectQuantitativeResult.setValueUnit(getText(quantitativeResultValueUnitNode));
 
         NodeList quantitativeValueNodeList = (NodeList) XPATH_QUANTITATIVE_RESULT_VALUE.evaluate(parentNode, XPathConstants.NODESET);
         List<String> valueList = new ArrayList<>();
         for (int i = 0;i < quantitativeValueNodeList.getLength(); ++i) {
-            valueList.add(localize(quantitativeValueNodeList.item(i)));
+            valueList.add(getText(quantitativeValueNodeList.item(i)));
         }
         dataQualityObjectQuantitativeResult.setValue(valueList);
 
@@ -224,6 +227,7 @@ public class CSWISORecordDataQualityParser {
     }
 
     //Move to common utility class
+    //Only for gmd:PT_FreeText
     private String localize(final Node elem) {
         String ret = null;
         String localized;
