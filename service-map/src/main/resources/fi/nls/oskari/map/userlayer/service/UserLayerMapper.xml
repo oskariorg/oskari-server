@@ -15,6 +15,7 @@
         <result property="fields" column="fields" />
         <result property="publisher_name" column="publisher_name" />
         <result property="style_id" column="style_id" />
+        <result property="wkt" column = "wkt" />
     </resultMap>
 	<!-- UserLayer related -->
 	<insert id="insertUserLayerRow" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
@@ -57,7 +58,8 @@
         layer_source,
         CAST (fields as text),
         publisher_name,
-        style_id
+        style_id,
+        wkt
         from
         user_layer
         where id = #{id}  
@@ -72,7 +74,8 @@
         layer_source,
         CAST (fields as text),
         publisher_name,
-        style_id
+        style_id,
+        wkt
         from
          user_layer
         where uuid = #{uuid} 
