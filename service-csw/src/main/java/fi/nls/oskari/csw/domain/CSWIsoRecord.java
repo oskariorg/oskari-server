@@ -695,7 +695,7 @@ public class CSWIsoRecord {
             private Date date;
             private String dateType;
             private String xmlDate;
-            final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
+            private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
 
             public String getXmlDate() {
                 return xmlDate;
