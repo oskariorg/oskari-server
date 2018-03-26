@@ -217,6 +217,7 @@ public class CSWIsoRecord {
         private String measureIdentificationAuthorization;
         private String measureDescription;
         private String evaluationMethodType;
+        private String evaluationMethodDescription;
         private Object evaluationProcecdure; // TODO parse
         private List<String> dateTime;
         private List<DataQualityConformanceResult> conformanceResultList = new ArrayList<>();
@@ -293,12 +294,20 @@ public class CSWIsoRecord {
         public List<DataQualityQuantitativeResult> getQuantitativeResultList() {
             return quantitativeResultList;
         }
+
+        public String getEvaluationMethodDescription() {
+            return evaluationMethodDescription;
+        }
+
+        public void setEvaluationMethodDescription(String evaluationMethodDescription) {
+            this.evaluationMethodDescription = evaluationMethodDescription;
+        }
     }
 
     public static class DataQualityConformanceResult {
         private Object specification; //TODO parse
         private String explanation;
-        private String pass;
+        private boolean pass;
 
         public Object getSpecification() {
             return specification;
@@ -316,11 +325,11 @@ public class CSWIsoRecord {
             this.explanation = explanation;
         }
 
-        public String getPass() {
+        public boolean getPass() {
             return pass;
         }
 
-        public void setPass(String pass) {
+        public void setPass(boolean pass) {
             this.pass = pass;
         }
     }
