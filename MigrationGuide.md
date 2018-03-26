@@ -11,6 +11,14 @@ In order to use UserLayers in the future in your application you'll have to add 
       <artifactId>control-userlayer</artifactId>
     </dependency>
 
+### jQuery update 1.7.x -> 1.10.2
+
+The frontend has been updated to work with a bit newer jQuery library. We recommend updating any app-specific JSP-files
+ to be updated to use it as this is the version that is used when testing features:
+ 
+     -    <script type="text/javascript" src="/Oskari/libraries/jquery/jquery-1.7.1.min.js">
+     +    <script type="text/javascript" src="/Oskari/libraries/jquery/jquery-1.10.2.min.js">
+
 ## 1.45.0
 
 ### myplaces, userlayer, analysis baselayers migration
