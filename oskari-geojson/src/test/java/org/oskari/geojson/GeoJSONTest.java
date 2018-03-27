@@ -12,7 +12,11 @@ import org.opengis.feature.simple.SimpleFeature;
 
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.CoordinateSequence;
+import com.vividsolutions.jts.geom.GeometryCollection;
 import com.vividsolutions.jts.geom.LineString;
+import com.vividsolutions.jts.geom.MultiLineString;
+import com.vividsolutions.jts.geom.MultiPoint;
+import com.vividsolutions.jts.geom.MultiPolygon;
 import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.Polygon;
 
@@ -84,6 +88,102 @@ public class GeoJSONTest {
 
         GeoJSONWriter w = new GeoJSONWriter();
         assertTrue(JSONHelper.isEqual(json, w.writeFeature(f)));
+    }
+    
+    @Test
+    public void testMultiPoint() throws IOException, JSONException {
+        JSONObject json = ResourceHelper.readJSONResource("multipoint.json", this);
+        MultiPoint geom = (MultiPoint) GeoJSONReader.toGeometry(json);
+
+        assertEquals(2, geom.getNumGeometries());
+        Point p1 = (Point) geom.getGeometryN(0);
+        Point p2 = (Point) geom.getGeometryN(1);
+        
+        Coordinate c1 = p1.getCoordinate();
+        Coordinate c2 = p2.getCoordinate();
+        
+        assertEquals(100.0, c1.x, 1e6);
+        assertEquals(0.0, c1.y, 1e6);
+        
+        assertEquals(101.0, c2.x, 1e6);
+        assertEquals(1.0, c2.y, 1e6);
+        
+        GeoJSONWriter w = new GeoJSONWriter();
+        assertTrue(JSONHelper.isEqual(json, w.writeGeometry(geom)));
+    }
+
+    @Test
+    public void testMultiLineString() throws IOException, JSONException {
+        JSONObject json = ResourceHelper.readJSONResource("multilinestring.json", this);
+        MultiLineString geom = (MultiLineString) GeoJSONReader.toGeometry(json);
+
+        assertEquals(2, geom.getNumGeometries());
+        LineString ls1 = (LineString) geom.getGeometryN(0);
+        LineString ls2 = (LineString) geom.getGeometryN(1);
+        
+        assertEquals(2, ls1.getNumPoints());
+        assertEquals(2, ls2.getNumPoints());
+
+        CoordinateSequence cs2 = ls2.getCoordinateSequence();
+        Coordinate c2 = cs2.getCoordinate(1);
+        assertEquals(103.0, c2.x, 1e6);
+        assertEquals(3.0, c2.y, 1e6);
+        
+        GeoJSONWriter w = new GeoJSONWriter();
+        assertTrue(JSONHelper.isEqual(json, w.writeGeometry(geom)));
+    }
+    
+    @Test
+    public void testMultiPolygon() throws IOException, JSONException {
+        JSONObject json = ResourceHelper.readJSONResource("multipolygon.json", this);
+        MultiPolygon geom = (MultiPolygon) GeoJSONReader.toGeometry(json);
+
+        assertEquals(2, geom.getNumGeometries());
+        Polygon p1 = (Polygon) geom.getGeometryN(0);
+        Polygon p2 = (Polygon) geom.getGeometryN(1);
+        
+        assertEquals(0, p1.getNumInteriorRing());
+        CoordinateSequence cs1 = p1.getExteriorRing().getCoordinateSequence();
+        assertEquals(5, cs1.size());
+        Coordinate c1 = cs1.getCoordinate(0);
+        assertEquals(102.0, c1.x, 1e6);
+        assertEquals(2.0, c1.y, 1e6);
+        
+        assertEquals(1, p2.getNumInteriorRing());
+        CoordinateSequence cs2 = p2.getInteriorRingN(0).getCoordinateSequence();
+        assertEquals(5, cs2.size());
+        Coordinate c2 = cs2.getCoordinate(3);
+        assertEquals(100.8, c2.x, 1e6);
+        assertEquals(0.8, c2.y, 1e6);
+        
+        GeoJSONWriter w = new GeoJSONWriter();
+        assertTrue(JSONHelper.isEqual(json, w.writeGeometry(geom)));
+    }
+    
+    @Test
+    public void testGeometryCollection() throws IOException, JSONException {
+        JSONObject json = ResourceHelper.readJSONResource("geometrycollection.json", this);
+        GeometryCollection geom = (GeometryCollection) GeoJSONReader.toGeometry(json);
+
+        assertEquals(2, geom.getNumGeometries());
+        
+        Point p = (Point) geom.getGeometryN(0);
+        Coordinate c = p.getCoordinate();
+        assertEquals(100.0, c.x, 1e6);
+        assertEquals(0.0, c.y, 1e6);
+        
+        LineString ls = (LineString) geom.getGeometryN(1);
+        CoordinateSequence cs = ls.getCoordinateSequence();
+        assertEquals(2, cs.size());
+        c = cs.getCoordinate(0);
+        assertEquals(101.0, c.x, 1e6);
+        assertEquals(0.0, c.y, 1e6);
+        c = cs.getCoordinate(1);
+        assertEquals(102.0, c.x, 1e6);
+        assertEquals(1.0, c.y, 1e6);
+        
+        GeoJSONWriter w = new GeoJSONWriter();
+        assertTrue(JSONHelper.isEqual(json, w.writeGeometry(geom)));
     }
 
 }
