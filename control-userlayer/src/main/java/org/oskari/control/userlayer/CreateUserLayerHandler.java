@@ -76,7 +76,7 @@ public class CreateUserLayerHandler extends ActionHandler {
             targetCRS = CRS.decode(target_epsg);
         } catch (Exception e) {
             throw new ActionParamsException("Failed to decode CoordinateReferenceSystem from either "
-                    + PARAM_EPSG_KEY + " or from " + PARAM_EPSG_KEY);
+                    + PARAM_SOURCE_EPSG_KEY + " or from " + PARAM_EPSG_KEY);
         }
 
         List<FileItem> fileItems = getFileItems(params.getRequest());
