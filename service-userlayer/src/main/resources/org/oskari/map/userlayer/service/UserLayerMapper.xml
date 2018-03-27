@@ -4,7 +4,7 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="fi.nls.oskari.map.userlayer.service.UserLayerMapper">
+<mapper namespace="org.oskari.map.userlayer.service.UserLayerMapper">
 
     <resultMap id="UserLayerResult" type="UserLayer">
         <result property="id" column="id" />
