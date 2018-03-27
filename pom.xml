@@ -1151,8 +1151,6 @@
         <module>servlet-transport</module>
         <module>webapp-transport</module>
 
-        <!-- printout -->
-        <module>servlet-printout</module>
         <!-- setup -->
         <module>webapp-setup</module>
 
