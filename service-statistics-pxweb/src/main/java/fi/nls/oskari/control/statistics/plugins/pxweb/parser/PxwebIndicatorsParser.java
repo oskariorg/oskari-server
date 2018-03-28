@@ -7,7 +7,7 @@ import fi.nls.oskari.control.statistics.data.StatisticalIndicatorDataModel;
 import fi.nls.oskari.control.statistics.data.StatisticalIndicatorLayer;
 import fi.nls.oskari.control.statistics.plugins.db.DatasourceLayer;
 import fi.nls.oskari.control.statistics.plugins.pxweb.PxwebConfig;
-import fi.nls.oskari.control.statistics.plugins.pxweb.json.PxwebItem;
+import fi.nls.oskari.control.statistics.plugins.pxweb.json.PxFolderItem;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.util.IOHelper;
@@ -34,14 +34,14 @@ public class PxwebIndicatorsParser {
         return parse(null, null, layers);
     }
 
-    public List<StatisticalIndicator> parse(PxwebItem parent, String path, List<DatasourceLayer> layers) {
+    public List<StatisticalIndicator> parse(PxFolderItem parent, String path, List<DatasourceLayer> layers) {
         List<StatisticalIndicator> indicators = new ArrayList<>();
         try {
             final String url = getUrl(path);
             String jsonResponse = IOHelper.getURL(url);
-            List<PxwebItem> list =
-                    mapper.readValue(jsonResponse, mapper.getTypeFactory().constructCollectionType(List.class, PxwebItem.class));
-            for(PxwebItem item : list) {
+            List<PxFolderItem> list =
+                    mapper.readValue(jsonResponse, mapper.getTypeFactory().constructCollectionType(List.class, PxFolderItem.class));
+            for(PxFolderItem item : list) {
                 if("l".equalsIgnoreCase(item.type)) {
                     // recurse to pxweb "folder"
                     indicators.addAll(parse(item, getPath(path, item.id), layers));
