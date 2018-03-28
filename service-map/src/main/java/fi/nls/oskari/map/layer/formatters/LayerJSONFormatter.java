@@ -296,6 +296,8 @@ public class LayerJSONFormatter {
         layer.setRefreshRate(json.optInt("refresh_rate", layer.getRefreshRate()));
         layer.setSrs_name(json.optString("srs_name", layer.getSrs_name()));
         layer.setVersion(json.optString("version", layer.getVersion()));
+        layer.setUsername(json.optString("username", layer.getUsername()));
+        layer.setPassword(json.optString("password", layer.getPassword()));
         // omit permissions, these are handled by LayerHelper
 
         // handle params, check for null to avoid overwriting empty JS Object Literal
