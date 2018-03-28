@@ -1,4 +1,4 @@
-package fi.nls.oskari.control.data;
+package org.oskari.control.userlayer.data;
 
 import org.json.JSONObject;
 
@@ -9,10 +9,10 @@ import fi.nls.oskari.control.ActionHandler;
 import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.control.ActionParamsException;
 import fi.nls.oskari.domain.map.userlayer.UserLayerStyle;
-import fi.nls.oskari.map.userlayer.service.UserLayerDbService;
 import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.ResponseHelper;
+import org.oskari.map.userlayer.service.UserLayerDbService;
 
 
 /**

@@ -12,12 +12,12 @@ import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.control.ActionParamsException;
 import fi.nls.oskari.domain.map.userlayer.UserLayer;
 import fi.nls.oskari.domain.map.userlayer.UserLayerStyle;
-import fi.nls.oskari.map.userlayer.service.UserLayerDataService;
-import fi.nls.oskari.map.userlayer.service.UserLayerDbService;
 import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.ResponseHelper;
+import org.oskari.map.userlayer.service.UserLayerDataService;
+import org.oskari.map.userlayer.service.UserLayerDbService;
 
 /**
  * Expects to get layer id as http parameter "id".
@@ -59,10 +59,10 @@ public class EditUserLayerHandler extends ActionHandler {
         final UserLayerStyle style = new UserLayerStyle();
 
         if(userLayer == null) {
-            throw new ActionParamsException("User layer id didn't match any user layer: " + id);
+            throw new ActionParamsException("Userlayer id doesn't exist: " + id);
         }
         if(!userLayer.isOwnedBy(params.getUser().getUuid())) {
-            throw new ActionDeniedException("User layer belongs to another user");
+            throw new ActionDeniedException("Userlayer belongs to another user");
         }
                
         userLayer.setLayer_name(params.getHttpParam(PARAM_NAME));
