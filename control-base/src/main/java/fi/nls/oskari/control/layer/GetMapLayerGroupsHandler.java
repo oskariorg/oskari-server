@@ -108,10 +108,6 @@ public class GetMapLayerGroupsHandler extends ActionHandler {
             final PermissionCollection permissionCollection, int parentGroupId) throws ActionException {
         try {
             List<MaplayerGroup> layerGroups = oskariMapLayerGroupService.findByParentId(parentGroupId);
-            if (layerGroups.isEmpty()) {
-                return null;
-            }
-
             JSONArray json = new JSONArray();
             for (MaplayerGroup group : layerGroups) {
                 int groupId = group.getId();
@@ -130,10 +126,10 @@ public class GetMapLayerGroupsHandler extends ActionHandler {
                 group.setLayers(layerList);
 
                 JSONObject groupJson = group.getAsJSON();
+
                 JSONArray subGroupsJSON = getGroupJSON(layersById, user, lang, isSecure, crs, resources, permissionCollection, groupId);
-                if (subGroupsJSON != null) {
-                    groupJson.put(KEY_GROUPS, subGroupsJSON);
-                }
+                groupJson.put(KEY_GROUPS, subGroupsJSON);
+
                 json.put(groupJson);
             }
             return json;
