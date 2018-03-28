@@ -19,6 +19,13 @@ The frontend has been updated to work with a bit newer jQuery library. We recomm
      -    <script type="text/javascript" src="/Oskari/libraries/jquery/jquery-1.7.1.min.js">
      +    <script type="text/javascript" src="/Oskari/libraries/jquery/jquery-1.10.2.min.js">
 
+### New printout backend
+
+A new printout backend has been added as part of the oskari-server. 
+As of 1.46.0 (https://github.com/oskariorg/oskari-frontend/pull/288) the frontend uses the new backend so the old one can be removed.
+
+Note! The new backend is part of the oskari-map.war so any installations using oskari-printout-backend.war can remove it from Jetty.
+
 ## 1.45.0
 
 ### myplaces, userlayer, analysis baselayers migration
