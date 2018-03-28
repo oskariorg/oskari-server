@@ -56,7 +56,7 @@ import fi.nls.oskari.util.PropertyUtil;
  * @see org.oskari.map.userlayer.input.FeatureCollectionParsers
  *
  * For some of the file formats (GPX, KML) the coordinate reference system is fixed
- * (both use WGS84 lon,lat coordinates). For MIF and SHP we try to detect the coordinate
+ * (both use EPSG:4326,lon,lat coordinates). For MIF and SHP we try to detect the coordinate
  * reference system automatically. If the detection fails (for example there's no .prj file
  * in the SHP case) we use client submitted value ('sourceEpsg' parameter) as a fallback.
  */
@@ -64,28 +64,31 @@ import fi.nls.oskari.util.PropertyUtil;
 public class CreateUserLayerHandler extends ActionHandler {
 
     private static final Logger log = LogFactory.getLogger(CreateUserLayerHandler.class);
-    private static final String PARAM_EPSG_KEY = "epsg";
-    private static final String PARAM_SOURCE_EPSG_KEY = "sourceEpsg";
-    private static final String USERLAYER_MAX_FILE_SIZE_MB = "userlayer.max.filesize.mb";
-    private static final String USERLAYER_DEFAULT_TARGET_EPSG = "userlayer.default.target.epsg";
+
+    private static final String PROPERTY_USERLAYER_MAX_FILE_SIZE_MB = "userlayer.max.filesize.mb";
+    private static final String PROPERTY_TARGET_EPSG = "oskari.native.srs";
     private static final int MAX_FILES_IN_ZIP = 100;
+
+    private static final String PARAM_SOURCE_EPSG_KEY = "sourceEpsg";
+
     private static final int KB = 1024 * 1024;
     private static final int MB = 1024 * KB;
+
     // Store files smaller than 128kb in memory instead of writing them to disk
     private static final int MAX_SIZE_MEMORY = 128 * KB;
 
-    private final int userlayerMaxFileSize = PropertyUtil.getOptional(USERLAYER_MAX_FILE_SIZE_MB, 10) * MB;
-    private final String defaultTargetEPSG = PropertyUtil.getOptional(USERLAYER_DEFAULT_TARGET_EPSG);
     private final UserLayerDataService userlayerService = new UserLayerDataService();
     private final DiskFileItemFactory diskFileItemFactory = new DiskFileItemFactory(MAX_SIZE_MEMORY, null);
+    private final String targetEPSG = PropertyUtil.get(PROPERTY_TARGET_EPSG, "EPSG:4326");
+    private final int userlayerMaxFileSize = PropertyUtil.getOptional(PROPERTY_USERLAYER_MAX_FILE_SIZE_MB, 10) * MB;
 
     @Override
     public void handleAction(ActionParameters params) throws ActionException {
         params.requireLoggedInUser();
 
-        CoordinateReferenceSystem sourceCRS = getCRS(params, PARAM_SOURCE_EPSG_KEY, null);
-        // TODO: Does it make sense to let the client decide the targetEPSG??
-        CoordinateReferenceSystem targetCRS = getCRS(params, PARAM_EPSG_KEY, defaultTargetEPSG);
+        String sourceEPSG = params.getHttpParam(PARAM_SOURCE_EPSG_KEY);
+        CoordinateReferenceSystem sourceCRS = decodeCRS(sourceEPSG);
+        CoordinateReferenceSystem targetCRS = decodeCRS(targetEPSG);
 
         List<FileItem> fileItems = getFileItems(params.getRequest());
 
@@ -101,13 +104,11 @@ public class CreateUserLayerHandler extends ActionHandler {
         }
     }
 
-    private CoordinateReferenceSystem getCRS(ActionParameters params, String key, String defaultEPSG)
-            throws ActionParamsException {
+    private CoordinateReferenceSystem decodeCRS(String epsg) throws ActionParamsException {
         try {
-            String epsg = params.getHttpParam(key, defaultEPSG);
             return epsg == null ? null : CRS.decode(epsg);
         } catch (Exception e) {
-            throw new ActionParamsException("Failed to decode CoordinateReferenceSystem from " + key, e);
+            throw new ActionParamsException("Failed to decode CoordinateReferenceSystem from " + epsg, e);
         }
     }
 
