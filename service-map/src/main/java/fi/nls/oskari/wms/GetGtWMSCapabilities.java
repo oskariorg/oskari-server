@@ -9,7 +9,6 @@ import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.layer.formatters.LayerJSONFormatterWMS;
 import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.service.capabilities.CapabilitiesCacheService;
-import fi.nls.oskari.service.capabilities.CapabilitiesCacheServiceMybatisImpl;
 import fi.nls.oskari.service.capabilities.OskariLayerCapabilities;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
@@ -18,15 +17,23 @@ import org.geotools.data.ows.WMSCapabilities;
 import org.geotools.data.wms.xml.MetadataURL;
 import org.geotools.data.wms.xml.WMSSchema;
 import org.geotools.xml.DocumentFactory;
+import org.geotools.xml.XMLSAXHandler;
 import org.geotools.xml.handlers.DocumentHandler;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.xml.sax.SAXException;
+
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.logging.Level;
+
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
 
 /**
  * Methods for parsing WMS capabilities data
@@ -71,13 +78,12 @@ public class GetGtWMSCapabilities {
      * @return
      * @throws ServiceException
      */
-    public static JSONObject getWMSCapabilities(final String rurl, final String user, final String pwd,
-                                                final String version, final String currentCrs)
-            throws ServiceException {
+    public static JSONObject getWMSCapabilities(final CapabilitiesCacheService service,
+            final String rurl, final String user, final String pwd,
+            final String version, final String currentCrs) throws ServiceException {
         try {
             /*check url validity*/
             new URL(rurl);
-            CapabilitiesCacheService service = new CapabilitiesCacheServiceMybatisImpl();
             OskariLayerCapabilities capabilities = service.getCapabilities(rurl, OskariLayer.TYPE_WMS, user, pwd, version);
             String capabilitiesXML = capabilities.getData();
             if(capabilitiesXML == null || capabilitiesXML.trim().isEmpty()) {
@@ -349,4 +355,5 @@ OnlineResource xlink:type="simple" xlink:href="http://www.paikkatietohakemisto.f
         }
         return null;
     }
+
 }

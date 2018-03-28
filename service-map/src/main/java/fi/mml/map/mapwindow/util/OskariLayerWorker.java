@@ -240,6 +240,9 @@ public class OskariLayerWorker {
         try {
             // WTK is saved as EPSG:4326 in database
             final String transformed = WKTHelper.transformLayerCoverage(wktWGS84, mapSRS);
+            if(transformed == null) {
+                log.debug("Transform failed for layer id:", layerJSON.opt("id"), "WKT was:", wktWGS84);
+            }
             // value will be removed if transform failed, that's ok since client can't handle it if it's in unknown projection
             JSONHelper.putValue(layerJSON, "geom", transformed);
         } catch (Exception ex) {

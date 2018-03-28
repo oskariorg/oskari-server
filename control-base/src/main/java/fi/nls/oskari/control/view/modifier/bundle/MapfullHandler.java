@@ -17,18 +17,19 @@ import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.analysis.domain.AnalysisLayer;
 import fi.nls.oskari.map.analysis.service.AnalysisDbService;
 import fi.nls.oskari.map.analysis.service.AnalysisDbServiceMybatisImpl;
-import fi.nls.oskari.map.userlayer.service.UserLayerDataService;
-import fi.nls.oskari.map.userlayer.service.UserLayerDbService;
 import fi.nls.oskari.myplaces.MyPlacesService;
 import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.view.modifier.ModifierException;
 import fi.nls.oskari.view.modifier.ModifierParams;
+import fi.nls.oskari.view.modifier.ViewModifier;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
+import org.oskari.map.userlayer.service.UserLayerDataService;
+import org.oskari.map.userlayer.service.UserLayerDbService;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -61,6 +62,7 @@ public class MapfullHandler extends BundleHandler {
     private static final String PREFIX_MYPLACES = "myplaces_";
     private static final String PREFIX_ANALYSIS = "analysis_";
     private static final String PREFIX_USERLAYERS = "userlayer_";
+    private static final Set<String> BUNDLES_HANDLING_MYPLACES_LAYERS = ConversionHelper.asSet(ViewModifier.BUNDLE_MYPLACES2, ViewModifier.BUNDLE_MYPLACES3);
 
     private static final String PLUGIN_LAYERSELECTION = "Oskari.mapframework.bundle.mapmodule.plugin.LayerSelectionPlugin";
     private static final String PLUGIN_GEOLOCATION = "Oskari.mapframework.bundle.mapmodule.plugin.GeoLocationPlugin";
@@ -332,6 +334,14 @@ public class MapfullHandler extends BundleHandler {
         }
     }
 
+    private static boolean isMyplacesBundlePresent(Set<String> bundleIdList) {
+        for(String bundleId : BUNDLES_HANDLING_MYPLACES_LAYERS) {
+            if(bundleIdList.contains(bundleId)) {
+                return true;
+            }
+        }
+        return false;
+    }
 
     private static void appendMyPlacesLayers(final JSONArray layerList,
                                              final List<Long> publishedMyPlaces,
@@ -344,7 +354,7 @@ public class MapfullHandler extends BundleHandler {
         if (publishedMyPlaces.isEmpty()) {
             return;
         }
-        final boolean myPlacesBundlePresent = bundleIds.contains(BUNDLE_MYPLACES2);
+        final boolean myPlacesBundlePresent = isMyplacesBundlePresent(bundleIds);
         // get myplaces categories from service and generate layer jsons
         final String uuid = user.getUuid();
         final List<MyPlaceCategory> myPlacesLayers = myPlaceService

@@ -8,9 +8,6 @@ import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import fi.nls.oskari.map.userlayer.service.UserLayerDbService;
-import fi.nls.oskari.map.userlayer.service.UserLayerDbServiceMybatisImpl;
-
 
 /**
  * User layer to oskari layer json
@@ -24,7 +21,6 @@ public class LayerJSONFormatterUSERLAYER extends LayerJSONFormatter {
     final String userlayerRenderingElement = PropertyUtil.get(USERLAYER_RENDERING_ELEMENT);
 
     private static Logger log = LogFactory.getLogger(LayerJSONFormatterUSERLAYER.class);
-    private static final UserLayerDbService userLayerService = new UserLayerDbServiceMybatisImpl();
 
     /**
      *

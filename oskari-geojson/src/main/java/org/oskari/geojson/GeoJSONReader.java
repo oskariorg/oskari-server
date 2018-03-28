@@ -225,7 +225,7 @@ public class GeoJSONReader {
 
     public static GeometryCollection toGeometryCollection(JSONObject geometry)
             throws JSONException {
-        JSONArray geometryArray = geometry.getJSONArray(GeoJSON.GEOMETRY);
+        JSONArray geometryArray = geometry.getJSONArray(GeoJSON.GEOMETRIES);
         int n = geometryArray.length();
         Geometry[] geometries = new Geometry[n];
         for (int i = 0; i < n; i++) {
