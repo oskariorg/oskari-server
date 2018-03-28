@@ -11,6 +11,11 @@ In order to use UserLayers in the future in your application you'll have to add 
       <artifactId>control-userlayer</artifactId>
     </dependency>
 
+Additionally, `userlayer.default.source.epsg` property is no longer used.
+Instead `oskari.native.srs` (same property used by GeoServer populator, defaults to "EPSG:4326")
+is used to determine the target projection to which all the UserLayers will be reprojected 
+before they are stored in the database.
+
 ### jQuery update 1.7.x -> 1.10.2
 
 The frontend has been updated to work with a bit newer jQuery library. We recommend updating any app-specific JSP-files
