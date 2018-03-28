@@ -11,7 +11,6 @@ import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.analysis.service.AnalysisDbService;
 import fi.nls.oskari.map.layer.OskariLayerService;
-import fi.nls.oskari.map.userlayer.service.UserLayerDbService;
 import fi.nls.oskari.map.view.*;
 import fi.nls.oskari.map.view.util.ViewHelper;
 import fi.nls.oskari.myplaces.MyPlacesService;
@@ -23,6 +22,7 @@ import fi.nls.oskari.view.modifier.ViewModifier;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.oskari.map.userlayer.service.UserLayerDbService;
 
 import java.util.Set;
 

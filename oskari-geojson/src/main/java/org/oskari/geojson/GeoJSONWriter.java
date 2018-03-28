@@ -153,20 +153,22 @@ public class GeoJSONWriter {
             throws JSONException {
         JSONObject json = new JSONObject();
         json.put(GeoJSON.TYPE, GeoJSON.POLYGON);
-
+        
+        json.put(GeoJSON.COORDINATES, writePolygonCoordinates(geom));
+        return json;
+    }
+    
+    private JSONArray writePolygonCoordinates(Polygon polygon) throws JSONException {
         JSONArray rings = new JSONArray();
-        json.put(GeoJSON.COORDINATES, rings);
-
-        LineString ring = geom.getExteriorRing();
+        LineString ring = polygon.getExteriorRing();
         CoordinateSequence cs = ring.getCoordinateSequence();
         rings.put(writeCoordinateSequence(cs));
-        for (int i = 0; i < geom.getNumInteriorRing(); i++) {
-            ring = geom.getInteriorRingN(i);
+        for (int i = 0; i < polygon.getNumInteriorRing(); i++) {
+            ring = polygon.getInteriorRingN(i);
             cs = ring.getCoordinateSequence();
             rings.put(writeCoordinateSequence(cs));
         }
-
-        return json;
+        return rings;
     }
 
     public JSONObject writeMultiPoint(MultiPoint geom)
@@ -195,12 +197,9 @@ public class GeoJSONWriter {
         json.put(GeoJSON.COORDINATES, lineStrings);
 
         for (int i = 0; i < geom.getNumGeometries(); i++) {
-            JSONArray lineString = new JSONArray();
-            lineStrings.put(lineString);
-
             LineString ls = (LineString) geom.getGeometryN(i);
             CoordinateSequence cs = ls.getCoordinateSequence();
-            lineString.put(writeCoordinateSequence(cs));
+            lineStrings.put(writeCoordinateSequence(cs));
         }
 
         return json;
@@ -212,25 +211,10 @@ public class GeoJSONWriter {
         json.put(GeoJSON.TYPE, GeoJSON.MULTI_POLYGON);
 
         JSONArray polygons = new JSONArray();
-        json.put(GeoJSON.COORDINATES, polygons);
-
         for (int i = 0; i < geom.getNumGeometries(); i++) {
-            JSONArray polygon = new JSONArray();
-            polygons.put(polygon);
-
-            JSONArray rings = new JSONArray();
-            polygon.put(rings);
-
-            Polygon p = (Polygon) geom.getGeometryN(i);
-            LineString ring = p.getExteriorRing();
-            CoordinateSequence cs = ring.getCoordinateSequence();
-            rings.put(writeCoordinateSequence(cs));
-            for (int j = 0; j < p.getNumInteriorRing(); j++) {
-                ring = p.getInteriorRingN(j);
-                cs = ring.getCoordinateSequence();
-                rings.put(writeCoordinateSequence(cs));
-            }
+            polygons.put(writePolygonCoordinates((Polygon) geom.getGeometryN(i)));
         }
+        json.put(GeoJSON.COORDINATES, polygons);
 
         return json;
     }

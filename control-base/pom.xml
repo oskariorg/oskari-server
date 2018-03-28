@@ -56,7 +56,10 @@
             <groupId>org.oskari</groupId>
             <artifactId>service-print</artifactId>
         </dependency>
-
+        <dependency>
+            <groupId>org.oskari</groupId>
+            <artifactId>service-userlayer</artifactId>
+        </dependency>
         <dependency>
             <groupId>fi.nls.oskari</groupId>
             <artifactId>shared-test-resources</artifactId>
@@ -72,10 +75,6 @@
 			<artifactId>httpclient</artifactId>
 			<version>4.5.1</version>
 		</dependency>
-        <dependency>
-          <groupId>commons-fileupload</groupId>
-          <artifactId>commons-fileupload</artifactId>
-       </dependency>
         <dependency>
             <groupId>org.apache.poi</groupId>
             <artifactId>poi-ooxml</artifactId>
