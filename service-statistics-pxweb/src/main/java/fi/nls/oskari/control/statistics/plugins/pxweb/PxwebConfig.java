@@ -16,7 +16,7 @@ public class PxwebConfig {
     private String regionKey;
     private Set<String> ignoredVariables = new HashSet<>();
 
-    PxwebConfig(JSONObject json, long id) {
+    public PxwebConfig(JSONObject json, long id) {
         datasourceId = id;
         url = json.optString("url");
         regionKey = json.optString("regionKey");
