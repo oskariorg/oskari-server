@@ -45,7 +45,20 @@ import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
 
 /**
- * Store zipped file set to oskari_user_store database
+ * CreateUserLayer allows users to upload a collection of features to be stored in the system.
+ *
+ * The uploaded file must be a ZIP file and must contain a set of valid files within.
+ * Currently supported file formats are:
+ * - GPX ({name}.gpx file must be found within the zip)
+ * - KML ({name}.kml)
+ * - MIF ({name}.mif)
+ * - SHP ({name}.shp)
+ * @see org.oskari.map.userlayer.input.FeatureCollectionParsers
+ *
+ * For some of the file formats (GPX, KML) the coordinate reference system is fixed
+ * (both use WGS84 lon,lat coordinates). For MIF and SHP we try to detect the coordinate
+ * reference system automatically. If the detection fails (for example there's no .prj file
+ * in the SHP case) we use client submitted value ('sourceEpsg' parameter) as a fallback.
  */
 @OskariActionRoute("CreateUserLayer")
 public class CreateUserLayerHandler extends ActionHandler {
@@ -54,72 +67,47 @@ public class CreateUserLayerHandler extends ActionHandler {
     private static final String PARAM_EPSG_KEY = "epsg";
     private static final String PARAM_SOURCE_EPSG_KEY = "sourceEpsg";
     private static final String USERLAYER_MAX_FILE_SIZE_MB = "userlayer.max.filesize.mb";
+    private static final String USERLAYER_DEFAULT_TARGET_EPSG = "userlayer.default.target.epsg";
     private static final int MAX_FILES_IN_ZIP = 100;
+    private static final int KB = 1024 * 1024;
+    private static final int MB = 1024 * KB;
     // Store files smaller than 128kb in memory instead of writing them to disk
-    private static final int MAX_SIZE_MEMORY = 128 * 1024;
+    private static final int MAX_SIZE_MEMORY = 128 * KB;
 
-    private final int userlayerMaxFileSize = PropertyUtil.getOptional(USERLAYER_MAX_FILE_SIZE_MB, 10) * 1024 * 1024;
+    private final int userlayerMaxFileSize = PropertyUtil.getOptional(USERLAYER_MAX_FILE_SIZE_MB, 10) * MB;
+    private final String defaultTargetEPSG = PropertyUtil.getOptional(USERLAYER_DEFAULT_TARGET_EPSG);
     private final UserLayerDataService userlayerService = new UserLayerDataService();
     private final DiskFileItemFactory diskFileItemFactory = new DiskFileItemFactory(MAX_SIZE_MEMORY, null);
 
     @Override
     public void handleAction(ActionParameters params) throws ActionException {
-        // stop here if user isn't logged in
         params.requireLoggedInUser();
 
-        final CoordinateReferenceSystem sourceCRS;
-        final CoordinateReferenceSystem targetCRS;
-        try {
-            String source_epsg = params.getHttpParam(PARAM_SOURCE_EPSG_KEY);
-            String target_epsg = params.getHttpParam(PARAM_EPSG_KEY, "EPSG:3067");
-            sourceCRS = source_epsg != null ? CRS.decode(source_epsg) : null;
-            targetCRS = CRS.decode(target_epsg);
-        } catch (Exception e) {
-            throw new ActionParamsException("Failed to decode CoordinateReferenceSystem from either "
-                    + PARAM_SOURCE_EPSG_KEY + " or from " + PARAM_EPSG_KEY);
-        }
+        CoordinateReferenceSystem sourceCRS = getCRS(params, PARAM_SOURCE_EPSG_KEY, null);
+        // TODO: Does it make sense to let the client decide the targetEPSG??
+        CoordinateReferenceSystem targetCRS = getCRS(params, PARAM_EPSG_KEY, defaultTargetEPSG);
 
         List<FileItem> fileItems = getFileItems(params.getRequest());
 
-        Map<String, String> formParams = fileItems.stream()
-                .filter(f -> f.isFormField())
-                .collect(Collectors.toMap(
-                        f -> f.getFieldName(),
-                        f -> new String(f.get(), StandardCharsets.UTF_8)));
+        Map<String, String> formParams = getFormParams(fileItems);
         log.debug("Parsed form parameters:", formParams);
-
-        List<File> unzipped = null;
-        SimpleFeatureCollection fc;
-        try {
-            FileItem zipFile = fileItems.stream()
-                    .filter(f -> !f.isFormField())
-                    .findAny() // If there are more files we'll get the zip or fail miserably
-                    .orElseThrow(() -> new ActionParamsException("No file entries"));
-            log.debug("Using value from field:", zipFile.getFieldName(), "as the zip file");
-
-            unzipped = unZip(zipFile);
-            File mainFile = getMainFile(unzipped);
-            if (mainFile == null) {
-                throw new ActionParamsException("Couldn't find valid file for import in zip file");
-            }
-            FeatureCollectionParser parser = getParser(mainFile);
-            fc = parse(parser, mainFile, sourceCRS, targetCRS);
-        } finally {
-            for (FileItem fileItem : fileItems) {
-                fileItem.delete();
-            }
-            if (unzipped != null) {
-                for (File file : unzipped) {
-                    file.delete();
-                }
-            }
-        }
+        SimpleFeatureCollection fc = parseFeatures(fileItems, sourceCRS, targetCRS);
 
         try {
             UserLayer ulayer = userlayerService.storeUserData(fc, params.getUser(), formParams);
             writeResponse(params, ulayer);
         } catch (ServiceException e) {
             throw new ActionException("unable_to_store_data", e);
+        }
+    }
+
+    private CoordinateReferenceSystem getCRS(ActionParameters params, String key, String defaultEPSG)
+            throws ActionParamsException {
+        try {
+            String epsg = params.getHttpParam(key, defaultEPSG);
+            return epsg == null ? null : CRS.decode(epsg);
+        } catch (Exception e) {
+            throw new ActionParamsException("Failed to decode CoordinateReferenceSystem from " + key, e);
         }
     }
 
@@ -134,16 +122,48 @@ public class CreateUserLayerHandler extends ActionHandler {
         }
     }
 
-    private List<File> unZip(FileItem zipFile) throws ActionException {
-        try (InputStream in = zipFile.getInputStream()) {
-            return unZip(in);
-        } catch (IOException e) {
-            throw new ActionException("Failed to unzip file", e);
+    private Map<String, String> getFormParams(List<FileItem> fileItems) {
+        return fileItems.stream()
+                .filter(f -> f.isFormField())
+                .collect(Collectors.toMap(
+                        f -> f.getFieldName(),
+                        f -> new String(f.get(), StandardCharsets.UTF_8)));
+    }
+
+    private SimpleFeatureCollection parseFeatures(List<FileItem> fileItems,
+            CoordinateReferenceSystem sourceCRS,
+            CoordinateReferenceSystem targetCRS) throws ActionException {
+        List<File> unzipped = null;
+        try {
+            FileItem zipFile = fileItems.stream()
+                    .filter(f -> !f.isFormField())
+                    .findAny() // If there are more files we'll get the zip or fail miserably
+                    .orElseThrow(() -> new ActionParamsException("No file entries"));
+            log.debug("Using value from field:", zipFile.getFieldName(), "as the zip file");
+
+            unzipped = unZip(zipFile);
+            File mainFile = getMainFile(unzipped);
+            if (mainFile == null) {
+                throw new ActionParamsException("Couldn't find valid file for import in zip file");
+            }
+            FeatureCollectionParser parser = getParser(mainFile);
+            return parse(parser, mainFile, sourceCRS, targetCRS);
+        } finally {
+            // Clean up
+            for (FileItem fileItem : fileItems) {
+                fileItem.delete();
+            }
+            if (unzipped != null) {
+                for (File file : unzipped) {
+                    file.delete();
+                }
+            }
         }
     }
 
-    private List<File> unZip(InputStream in) throws IOException {
-        try (ZipInputStream zis = new ZipInputStream(in)) {
+    private List<File> unZip(FileItem zipFile) throws ActionException {
+        try (InputStream in = zipFile.getInputStream();
+                ZipInputStream zis = new ZipInputStream(in)) {
             List<File> files = new ArrayList<>();
             int filesInZip = 0;
             // Name all the files we find from zip with the same pattern
@@ -169,6 +189,8 @@ public class CreateUserLayerHandler extends ActionHandler {
                 files.add(file);
             }
             return files;
+        } catch (IOException e) {
+            throw new ActionException("Failed to unzip file", e);
         }
     }
 
@@ -211,8 +233,8 @@ public class CreateUserLayerHandler extends ActionHandler {
     }
 
     private SimpleFeatureCollection parse(FeatureCollectionParser parser, File file,
-            CoordinateReferenceSystem sourceCRS, CoordinateReferenceSystem targetCRS)
-                    throws ActionException {
+            CoordinateReferenceSystem sourceCRS,
+            CoordinateReferenceSystem targetCRS) throws ActionException {
         try {
             return parser.parse(file, sourceCRS, targetCRS);
         } catch (ServiceException e) {
@@ -220,6 +242,7 @@ public class CreateUserLayerHandler extends ActionHandler {
         }
     }
 
+    // FIXME: I'm ugly
     private void writeResponse(ActionParameters params, UserLayer ulayer) throws ActionException {
         try {
             // workaround because of IE iframe submit json download functionality
