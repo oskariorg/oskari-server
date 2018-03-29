@@ -265,7 +265,7 @@ public class CreateUserLayerHandler extends ActionHandler {
 
     private String getFileExt(String name) {
         int i = name.lastIndexOf('.');
-        if (i < 0 || i > name.length() - 1) {
+        if (i < 0 || i + 1 == name.length()) {
             return null;
         }
         return name.substring(i + 1);
