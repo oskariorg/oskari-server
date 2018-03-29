@@ -33,6 +33,7 @@ public class EditUserLayerHandler extends ActionHandler {
     private UserLayerDbService userLayerDbService;
     private final UserLayerDataService userlayerService = new UserLayerDataService();
 
+
     @Override
     public void init() {
         userLayerDbService = OskariComponentManager.getComponentOfType(UserLayerDbService.class));
@@ -42,11 +43,7 @@ public class EditUserLayerHandler extends ActionHandler {
     public void handleAction(ActionParameters params) throws ActionException {
         params.requireLoggedInUser();
 
-        final long id = ConversionHelper.getLong(params.getHttpParam(PARAM_ID), -1);
-
-        if(id == -1) {
-            throw new ActionParamsException("Parameter missing or non-numeric: " + PARAM_ID + "=" + params.getHttpParam(PARAM_ID));
-        }
+        final long id = params.getRequiredParamLong(PARAM_ID);
         
         final UserLayer userLayer = userLayerDbService.getUserLayerById(id);
         final UserLayerStyle style = new UserLayerStyle();

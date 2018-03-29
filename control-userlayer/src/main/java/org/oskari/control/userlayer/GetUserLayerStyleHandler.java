@@ -31,11 +31,8 @@ public class GetUserLayerStyleHandler extends ActionHandler {
     public void handleAction(ActionParameters params) throws ActionException {
         params.requireLoggedInUser();
 
-        final long id = ConversionHelper.getLong(params.getHttpParam(PARAM_ID), -1);
+        final long id = params.getRequiredParamLong(PARAM_ID);
 
-        if(id == -1) {
-            throw new ActionParamsException("Parameter missing or non-numeric: " + PARAM_ID + "=" + params.getHttpParam(PARAM_ID));
-        }
         final UserLayerStyle style = userLayerDbService.getUserLayerStyleById(id);
         if (style != null){
             JSONObject response = style.parseUserLayerStyle2JSON();
