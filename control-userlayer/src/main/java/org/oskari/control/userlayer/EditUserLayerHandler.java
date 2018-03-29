@@ -36,7 +36,7 @@ public class EditUserLayerHandler extends ActionHandler {
 
     @Override
     public void init() {
-        userLayerDbService = OskariComponentManager.getComponentOfType(UserLayerDbService.class));
+        userLayerDbService = OskariComponentManager.getComponentOfType(UserLayerDbService.class);
     }
 
     @Override
@@ -57,7 +57,7 @@ public class EditUserLayerHandler extends ActionHandler {
                
         userLayer.setLayer_name(params.getRequiredParam(PARAM_NAME));
         userLayer.setLayer_desc(params.getHttpParam(PARAM_DESC, userLayer.getLayer_desc()));
-        userLayer.setLayer_source(params.getHttpParam(PARAM_SOURCE, userLayer.getLayer_source));
+        userLayer.setLayer_source(params.getHttpParam(PARAM_SOURCE, userLayer.getLayer_source()));
         
         try {
             final JSONObject stylejs = JSONHelper
