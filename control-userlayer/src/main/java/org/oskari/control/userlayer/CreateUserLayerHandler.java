@@ -1,15 +1,16 @@
 package org.oskari.control.userlayer;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
@@ -40,7 +41,6 @@ import fi.nls.oskari.domain.map.userlayer.UserLayer;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.service.ServiceException;
-import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
 
@@ -67,7 +67,7 @@ public class CreateUserLayerHandler extends ActionHandler {
 
     private static final String PROPERTY_USERLAYER_MAX_FILE_SIZE_MB = "userlayer.max.filesize.mb";
     private static final String PROPERTY_TARGET_EPSG = "oskari.native.srs";
-    private static final int MAX_FILES_IN_ZIP = 100;
+    private static final int MAX_FILES_IN_ZIP = 10;
 
     private static final String PARAM_SOURCE_EPSG_KEY = "sourceEpsg";
 
@@ -91,10 +91,21 @@ public class CreateUserLayerHandler extends ActionHandler {
         CoordinateReferenceSystem targetCRS = decodeCRS(targetEPSG);
 
         List<FileItem> fileItems = getFileItems(params.getRequest());
-
-        Map<String, String> formParams = getFormParams(fileItems);
-        log.debug("Parsed form parameters:", formParams);
-        SimpleFeatureCollection fc = parseFeatures(fileItems, sourceCRS, targetCRS);
+        SimpleFeatureCollection fc;
+        Map<String, String> formParams;
+        try {
+            FileItem zipFile = fileItems.stream()
+                    .filter(f -> !f.isFormField())
+                    .findAny() // If there are more files we'll get the zip or fail miserably
+                    .orElseThrow(() -> new ActionParamsException("No file entries"));
+            log.debug("Using value from field:", zipFile.getFieldName(), "as the zip file");
+            Set<String> validFiles = checkZip(zipFile);
+            fc = parseFeatures(zipFile, validFiles, sourceCRS, targetCRS);
+            formParams = getFormParams(fileItems);
+            log.debug("Parsed form parameters:", formParams);
+        } finally {
+            fileItems.forEach(FileItem::delete);
+        }
 
         try {
             UserLayer ulayer = userlayerService.storeUserData(fc, params.getUser(), formParams);
@@ -123,6 +134,50 @@ public class CreateUserLayerHandler extends ActionHandler {
         }
     }
 
+    private Set<String> checkZip(FileItem zipFile) throws ActionException {
+        try (InputStream in = zipFile.getInputStream();
+                ZipInputStream zis = new ZipInputStream(in)) {
+            Set<String> validFiles = new HashSet<>();
+            Set<String> extensions = new HashSet<>();
+            ZipEntry ze;
+            int numEntries = 0;
+            while ((ze = zis.getNextEntry()) != null) {
+                if (++numEntries > MAX_FILES_IN_ZIP) {
+                    // safeguard against evil zip files, userlayers shouldn't have this many files in any case
+                    throw new ActionParamsException("Zip contains too many files");
+                }
+                if (ze.isDirectory()) {
+                    continue;
+                }
+                String name = ze.getName();
+                String ext = getFileExt(name).toLowerCase();
+                if (ext == null) {
+                    continue;
+                }
+                if (!extensions.add(ext)) {
+                    throw new ActionParamsException("Zip contains multiple files with same extension");
+                }
+                validFiles.add(name);
+            }
+            checkZipContainsExactlyOneMainFile(extensions);
+            return validFiles;
+        } catch (IOException e) {
+            throw new ActionException("Unexpected IOException occured", e);
+        }
+    }
+
+    private void checkZipContainsExactlyOneMainFile(Set<String> extensions) throws ActionParamsException {
+        long mainFileExtensions = extensions.stream()
+                .filter(FeatureCollectionParsers::hasByFileExt)
+                .limit(2)
+                .count();
+        if (mainFileExtensions == 0) {
+            throw new ActionParamsException("Couldn't find valid file for import in zip file");
+        } else if (mainFileExtensions == 2) {
+            throw new ActionParamsException("Found too many valid files for import in zip file");
+        }
+    }
+
     private Map<String, String> getFormParams(List<FileItem> fileItems) {
         return fileItems.stream()
                 .filter(f -> f.isFormField())
@@ -131,65 +186,78 @@ public class CreateUserLayerHandler extends ActionHandler {
                         f -> new String(f.get(), StandardCharsets.UTF_8)));
     }
 
-    private SimpleFeatureCollection parseFeatures(List<FileItem> fileItems,
+    private SimpleFeatureCollection parseFeatures(FileItem zipFile,
+            Set<String> validFiles,
             CoordinateReferenceSystem sourceCRS,
             CoordinateReferenceSystem targetCRS) throws ActionException {
-        List<File> unzipped = null;
+        File dir = null;
         try {
-            FileItem zipFile = fileItems.stream()
-                    .filter(f -> !f.isFormField())
-                    .findAny() // If there are more files we'll get the zip or fail miserably
-                    .orElseThrow(() -> new ActionParamsException("No file entries"));
-            log.debug("Using value from field:", zipFile.getFieldName(), "as the zip file");
-
-            unzipped = unZip(zipFile);
-            File mainFile = getMainFile(unzipped);
-            if (mainFile == null) {
-                throw new ActionParamsException("Couldn't find valid file for import in zip file");
-            }
+            dir = makeRandomTempDirectory();
+            File mainFile = unZip(zipFile, validFiles, dir);
             FeatureCollectionParser parser = getParser(mainFile);
             return parse(parser, mainFile, sourceCRS, targetCRS);
         } finally {
             // Clean up
-            for (FileItem fileItem : fileItems) {
-                fileItem.delete();
-            }
-            if (unzipped != null) {
-                for (File file : unzipped) {
-                    file.delete();
-                }
+            if (dir != null) {
+                deleteDir(dir);
             }
         }
     }
 
-    private List<File> unZip(FileItem zipFile) throws ActionException {
+    private void deleteDir(File file) {
+        File[] contents = file.listFiles();
+        // If file is non-empty directory recursive delete contents
+        if (contents != null) {
+            for (File f : contents) {
+                deleteDir(f);
+            }
+        }
+        file.delete();
+    }
+
+    private File makeRandomTempDirectory() throws ActionException {
+        try {
+            File tmpFile = File.createTempFile("temp", null);
+            File tmpDir = tmpFile.getParentFile();
+            tmpFile.delete();
+            while (true) {
+                String randomId = UUID.randomUUID().toString().substring(0, 24);
+                File dir = new File(tmpDir, randomId);
+                if (dir.exists()) {
+                    log.info("Temp directory exists already, trying another");
+                    continue;
+                }
+                if (dir.mkdir()) {
+                    return dir;
+                } else {
+                    throw new ActionException("Failed to create temp directory");
+                }
+            }
+        } catch (IOException e) {
+            throw new ActionException("Failed to create temp directory", e);
+        }
+    }
+
+    private File unZip(FileItem zipFile, Set<String> validFiles, File dir) throws ActionException {
         try (InputStream in = zipFile.getInputStream();
                 ZipInputStream zis = new ZipInputStream(in)) {
-            List<File> files = new ArrayList<>();
-            int filesInZip = 0;
-            // Name all the files we find from zip with the same pattern
-            // baseName.{ext} where {ext} is taken from the original filename
-            // Use a 24 letter random UUID as baseName
-            String baseName = UUID.randomUUID().toString().substring(0, 24);
             ZipEntry ze;
+            File mainFile = null;
             while ((ze = zis.getNextEntry()) != null) {
-                filesInZip++;
-                if (filesInZip > MAX_FILES_IN_ZIP) {
-                    // safeguard against infinite loop, userlayers shouldn't have this many files in any case
-                    break;
-                }
-                if (ze.isDirectory()) {
+                String name = ze.getName();
+                if (!validFiles.contains(name)) {
                     continue;
                 }
-                String ext = getFileExt(ze.getName());
-                if (ext == null) {
-                    continue;
+                File file = new File(dir, name);
+                Files.copy(zis, file.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                if (mainFile == null) {
+                    String ext = getFileExt(name);
+                    if (FeatureCollectionParsers.hasByFileExt(ext)) {
+                        mainFile = file;
+                    }
                 }
-                String name = baseName + '.' + ext;
-                File file = writeToTempFile(zis, name);
-                files.add(file);
             }
-            return files;
+            return mainFile;
         } catch (IOException e) {
             throw new ActionException("Failed to unzip file", e);
         }
@@ -203,36 +271,6 @@ public class CreateUserLayerHandler extends ActionHandler {
         return name.substring(i + 1);
     }
 
-    private File writeToTempFile(InputStream in, String name) throws IOException {
-        File file = new File(getTempDir(), name);
-        try (OutputStream out = new FileOutputStream(file)) {
-            IOHelper.copy(in, out);
-        }
-        return file;
-    }
-
-    private File getTempDir() throws IOException {
-        File tmp = File.createTempFile("temp", null);
-        File dir = tmp.getParentFile();
-        tmp.delete();
-        return dir;
-    }
-
-    private File getMainFile(List<File> files) {
-        for (File file : files) {
-            String ext = getFileExt(file.getName());
-            if (FeatureCollectionParsers.hasByFileExt(ext)) {
-                return file;
-            }
-        }
-        return null;
-    }
-
-    private FeatureCollectionParser getParser(File mainFile) {
-        String ext = getFileExt(mainFile.getName());
-        return FeatureCollectionParsers.getByFileExt(ext);
-    }
-
     private SimpleFeatureCollection parse(FeatureCollectionParser parser, File file,
             CoordinateReferenceSystem sourceCRS,
             CoordinateReferenceSystem targetCRS) throws ActionException {
@@ -241,6 +279,11 @@ public class CreateUserLayerHandler extends ActionHandler {
         } catch (ServiceException e) {
             throw new ActionException("Failed to parse Feature Collection", e);
         }
+    }
+
+    private FeatureCollectionParser getParser(File mainFile) {
+        String ext = getFileExt(mainFile.getName());
+        return FeatureCollectionParsers.getByFileExt(ext);
     }
 
     // FIXME: I'm ugly
