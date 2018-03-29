@@ -27,6 +27,13 @@ public class GPXParser implements FeatureCollectionParser {
             throw new ServiceException("GDAL library is not found for GPX import");
         }
 
+        try {
+            // GPX always lon,lat 4326
+            sourceCRS = CRS.decode("EPSG:4326", true);
+        } catch (FactoryException e) {
+            throw new ServiceException("Failed to decode EPSG:4326");
+        }
+
         Map<String, String> connectionParams = new HashMap<>();
         connectionParams.put("DriverName", "GPX");
         connectionParams.put("DatasourceName", file.getAbsolutePath());
@@ -39,14 +46,10 @@ public class GPXParser implements FeatureCollectionParser {
                 if ("track_points".equals(typeName)) {
                     continue;
                 }
-                // GPX always lon,lat 4326
-                sourceCRS = CRS.decode("EPSG:4326", true);
                 SimpleFeatureSource source = store.getFeatureSource(typeName);
                 return FeatureCollectionParsers.read(source, sourceCRS, targetCRS);
             }
             throw new ServiceException("Could not find any usable typeNames from GPX file");
-        } catch (FactoryException e) {
-            throw new ServiceException("Failed to decode EPSG:4326");
         } catch (Exception e) {
             throw new ServiceException("GPX parsing failed", e);
         } finally {
