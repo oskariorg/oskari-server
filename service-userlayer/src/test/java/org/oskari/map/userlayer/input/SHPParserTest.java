@@ -42,7 +42,7 @@ public class SHPParserTest {
         assertTrue(Double.isNaN(first.z));
     }
 
-    public static SimpleFeature getSHP16() throws URISyntaxException, ServiceException {
+    public static SimpleFeature getSHP16() throws URISyntaxException, ServiceException, NoSuchAuthorityCodeException, FactoryException {
         SimpleFeatureCollection fc = parse("SHP2017.shp");
         List<SimpleFeature> features = collectToList(fc);
         assertEquals("There are 21 Features in the file", 21, features.size());
@@ -54,10 +54,10 @@ public class SHPParserTest {
                 .orElseThrow(() -> new IllegalArgumentException());
     }
 
-    private static SimpleFeatureCollection parse(String resourcePath) throws URISyntaxException, ServiceException {
+    private static SimpleFeatureCollection parse(String resourcePath) throws URISyntaxException, ServiceException, NoSuchAuthorityCodeException, FactoryException {
         SHPParser parser = new SHPParser();
         File file = new File(SHPParserTest.class.getResource(resourcePath).toURI());
-        return parser.parse(file, null, null);
+        return parser.parse(file, null, CRS.decode("EPSG:3067"));
     }
 
     private static List<SimpleFeature> collectToList(SimpleFeatureCollection fc) {
