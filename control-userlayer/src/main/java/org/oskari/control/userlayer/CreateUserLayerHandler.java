@@ -17,7 +17,6 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUploadException;
@@ -43,6 +42,7 @@ import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
+import fi.nls.oskari.util.ResponseHelper;
 
 /**
  * CreateUserLayer allows users to upload a collection of features to be stored in the system.
@@ -286,30 +286,18 @@ public class CreateUserLayerHandler extends ActionHandler {
         return FeatureCollectionParsers.getByFileExt(ext);
     }
 
-    // FIXME: I'm ugly
     private void writeResponse(ActionParameters params, UserLayer ulayer) throws ActionException {
-        try {
-            // workaround because of IE iframe submit json download functionality
-            //params.getResponse().setContentType("application/json;charset=utf-8");
-            //ResponseHelper.writeResponse(params, userlayerService.parseUserLayer2JSON(ulayer));
-            final HttpServletResponse response = params.getResponse();
-            response.setContentType("text/plain;charset=utf-8");
-            response.setCharacterEncoding("UTF-8");
-
-            JSONObject userLayer = userlayerService.parseUserLayer2JSON(ulayer);
-            JSONHelper.putValue(userLayer, "featuresCount", ulayer.getFeatures_count());
-            JSONObject permissions = OskariLayerWorker.getAllowedPermissions();
-            JSONHelper.putValue(userLayer, "permissions", permissions);
-            //add warning if features were skipped
-            if (ulayer.getFeatures_skipped() > 0) {
-                JSONObject featuresSkipped = new JSONObject();
-                JSONHelper.putValue(featuresSkipped, "featuresSkipped", ulayer.getFeatures_skipped());
-                JSONHelper.putValue(userLayer, "warning", featuresSkipped);
-            }
-            response.getWriter().print(userLayer);
-        } catch (IOException e) {
-            throw new ActionException("Failed to write response", e);
+        JSONObject userLayer = userlayerService.parseUserLayer2JSON(ulayer);
+        JSONHelper.putValue(userLayer, "featuresCount", ulayer.getFeatures_count());
+        JSONObject permissions = OskariLayerWorker.getAllowedPermissions();
+        JSONHelper.putValue(userLayer, "permissions", permissions);
+        //add warning if features were skipped
+        if (ulayer.getFeatures_skipped() > 0) {
+            JSONObject featuresSkipped = new JSONObject();
+            JSONHelper.putValue(featuresSkipped, "featuresSkipped", ulayer.getFeatures_skipped());
+            JSONHelper.putValue(userLayer, "warning", featuresSkipped);
         }
+        ResponseHelper.writeResponse(params, userLayer);
     }
 
 }
