@@ -24,25 +24,18 @@ import org.oskari.map.userlayer.service.UserLayerDbService;
  */
 @OskariActionRoute("EditUserLayer")
 public class EditUserLayerHandler extends ActionHandler {
-    private final static String PARAM_ID = "id";
+    private static final String PARAM_ID = "id";
     private static final String PARAM_DESC = "desc";
     private static final String PARAM_NAME = "name";
     private static final String PARAM_SOURCE = "source";
     private static final String PARAM_STYLE = "style";
     
-    private UserLayerDbService userLayerDbService = null;
+    private UserLayerDbService userLayerDbService;
     private final UserLayerDataService userlayerService = new UserLayerDataService();
-    
-    public void setUserLayerDbService(final UserLayerDbService service) {
-        userLayerDbService = service;
-    }
 
     @Override
     public void init() {
-        super.init();
-        if(userLayerDbService == null) {
-            setUserLayerDbService(OskariComponentManager.getComponentOfType(UserLayerDbService.class));
-        }
+        userLayerDbService = OskariComponentManager.getComponentOfType(UserLayerDbService.class));
     }
 
     @Override
@@ -65,9 +58,9 @@ public class EditUserLayerHandler extends ActionHandler {
             throw new ActionDeniedException("Userlayer belongs to another user");
         }
                
-        userLayer.setLayer_name(params.getHttpParam(PARAM_NAME));
-        userLayer.setLayer_desc(params.getHttpParam(PARAM_DESC));
-        userLayer.setLayer_source(params.getHttpParam(PARAM_SOURCE));
+        userLayer.setLayer_name(params.getRequiredParam(PARAM_NAME));
+        userLayer.setLayer_desc(params.getHttpParam(PARAM_DESC, userLayer.getLayer_desc()));
+        userLayer.setLayer_source(params.getHttpParam(PARAM_SOURCE, userLayer.getLayer_source));
         
         try {
             final JSONObject stylejs = JSONHelper
@@ -75,7 +68,7 @@ public class EditUserLayerHandler extends ActionHandler {
             style.setId(id);
             style.populateFromJSON(stylejs);
         } catch (JSONException e) {
-            throw new ActionException("Unable to populate style from JSON", e);
+            throw new ActionParamsException("Unable to populate style from JSON", e);
         }
 
         userLayerDbService.updateUserLayerCols(userLayer);

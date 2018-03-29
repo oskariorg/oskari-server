@@ -20,21 +20,17 @@ import org.oskari.map.userlayer.service.UserLayerDbService;
  */
 @OskariActionRoute("GetUserLayerStyle")
 public class GetUserLayerStyleHandler extends ActionHandler {
-    private final static String PARAM_ID = "id";
-    private UserLayerDbService userLayerDbService = null;
+    private static final String PARAM_ID = "id";
+    private UserLayerDbService userLayerDbService;
     
     @Override
     public void init() {
-        super.init();
-        if(userLayerDbService == null) {
-            userLayerDbService = OskariComponentManager.getComponentOfType(UserLayerDbService.class);
-        }
+        userLayerDbService = OskariComponentManager.getComponentOfType(UserLayerDbService.class);
     }
     
     public void handleAction(ActionParameters params) throws ActionException {
-        if(params.getUser().isGuest()) {
-            throw new ActionDeniedException("Session expired");
-        }
+        params.requireLoggedInUser();
+
         final long id = ConversionHelper.getLong(params.getHttpParam(PARAM_ID), -1);
 
         if(id == -1) {
@@ -45,7 +41,7 @@ public class GetUserLayerStyleHandler extends ActionHandler {
             JSONObject response = style.parseUserLayerStyle2JSON();
             ResponseHelper.writeResponse(params, response);
         }else{
-            throw new ActionException("Unable to get style for id" + id);
+            throw new ActionParamsException("Unable to get style for id" + id);
         }        
     }    
 }
