@@ -30,12 +30,12 @@ public class UserLayerStyle {
             JSONObject areaSubObject = stylejs.getJSONObject("area");
 
             setBorder_color(areaSubObject.isNull("lineColor") ? null : areaSubObject.optString("lineColor")); // null is valid color value for "no stroke"
-            setBorder_width(areaSubObject.optInt("size"));
+            setBorder_width(areaSubObject.optInt("lineWidth"));
             setDot_color(stylejs.getJSONObject("dot").optString("color"));
             setDot_size(stylejs.getJSONObject("dot").optInt("size"));
             setFill_color(areaSubObject.isNull("fillColor") ? null : areaSubObject.optString("fillColor")); // null is valid color value for "no fill"
             setStroke_color(stylejs.getJSONObject("line").optString("color"));
-            setStroke_width(stylejs.getJSONObject("line").optInt("size"));
+            setStroke_width(stylejs.getJSONObject("line").optInt("width"));
             setDot_shape(stylejs.getJSONObject("dot").optString("shape"));
             setStroke_linejoin(stylejs.getJSONObject("line").optString("corner"));
             setFill_pattern(ConversionHelper.getInt(areaSubObject.optString("fillStyle"), -1));
