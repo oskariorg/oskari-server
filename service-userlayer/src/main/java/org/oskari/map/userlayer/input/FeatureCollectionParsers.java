@@ -61,12 +61,10 @@ public class FeatureCollectionParsers {
         try (SimpleFeatureIterator it = sfc.features()) {
             while (it.hasNext()) {
                 SimpleFeature f = it.next();
-                if (transform != null) {
-                    Object g = f.getDefaultGeometry();
-                    if (g != null) {
-                        Geometry transformed = JTS.transform((Geometry) g, transform);
-                        f.setDefaultGeometry(transformed);
-                    }
+                Object g = f.getDefaultGeometry();
+                if (g != null) {
+                    Geometry transformed = JTS.transform((Geometry) g, transform);
+                    f.setDefaultGeometry(transformed);
                 }
                 fc.add(f);
             }
@@ -76,9 +74,9 @@ public class FeatureCollectionParsers {
 
     private static MathTransform getTransform(
             CoordinateReferenceSystem sourceCRS,
-            CoordinateReferenceSystem targetCRS) throws FactoryException {
+            CoordinateReferenceSystem targetCRS) throws IllegalArgumentException, FactoryException {
         if (sourceCRS == null || targetCRS == null) {
-            return null;
+            throw new IllegalArgumentException("Both sourceCRS and targetCRS must be known!");
         }
         return CRS.findMathTransform(sourceCRS, targetCRS);
     }
