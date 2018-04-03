@@ -1,6 +1,7 @@
 package fi.nls.oskari.control.statistics;
 
 import java.io.BufferedInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -79,14 +80,17 @@ public class RegionSetHelper {
      * transforming geometries to the requestedSRS
      */
     protected static SimpleFeatureCollection getRegionsResourcesGeoJSON(RegionSet regionset, String requestedSRS, String path)
-            throws IOException, MismatchedDimensionException, TransformException, FactoryException {
+            throws FileNotFoundException, IOException, MismatchedDimensionException, TransformException, FactoryException {
         MathTransform transform = findMathTransform(regionset.getSrs_name(), requestedSRS);
+        if (!path.startsWith("/")) {
+            path = "/" + path;
+        }
         LOG.debug("Trying to read GeoJSON resource file from:", path);
         DefaultFeatureCollection fc = new DefaultFeatureCollection();
-        try (InputStream in = RegionSetHelper.class.getClassLoader().getResourceAsStream(path)) {
+        try (InputStream in = RegionSetHelper.class.getResourceAsStream(path)) {
             if (in == null) {
                 LOG.warn("Could not find resource for path:", path);
-                throw new NullPointerException();
+                throw new FileNotFoundException("Could not find resource");
             }
             try (FeatureIterator<SimpleFeature> it = FJ.streamFeatureCollection(in)) {
                 while (it.hasNext()) {
