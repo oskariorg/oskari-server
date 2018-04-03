@@ -18,7 +18,7 @@ public class CSWISORecordDataQualityParser {
     private static XPathExpression pathToLocalizedValue = null;
 
     //Lineage statement
-    private static XPathExpression XPATH_LINEAGE_STATEMENT = null;
+    private XPathExpression XPATH_LINEAGE_STATEMENT = null;
 
     //Data quality node information
     private final XPath xpath = XPathFactory.newInstance().newXPath();
