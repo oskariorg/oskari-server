@@ -33,35 +33,7 @@ public class PxwebIndicatorsParser {
         return parse(null, null, layers);
     }
 
-    public List<StatisticalIndicator> parsePxFile(String url, String path, List<DatasourceLayer> layers) {
-        if(config.getIndicatorKey() == null) {
-            LOG.warn("Tried to parse px-file as indicator list but missing indicator key configuration!");
-            return Collections.emptyList();
-        }
-        try {
-            PxTableItem table = getPxTable(path);
-            List<StatisticalIndicator> indicatorList = readPxTableAsIndicators(table);
-            setupLayers(indicatorList, layers, url);
-            return indicatorList;
-        } catch (IOException e) {
-            LOG.error(e, "Error getting indicators from Pxweb datasource:", config.getUrl());
-        }
-        return Collections.emptyList();
-    }
-
-    public List<PxFolderItem> readFolderListing(String url) {
-        try {
-            String jsonResponse = IOHelper.getURL(url);
-            List<PxFolderItem> list =
-                mapper.readValue(jsonResponse, mapper.getTypeFactory().constructCollectionType(List.class, PxFolderItem.class));
-            return list;
-        } catch (IOException e) {
-            LOG.error(e, "Error getting indicators from Pxweb datasource:", config.getUrl());
-        }
-        return Collections.emptyList();
-    }
-
-    public List<StatisticalIndicator> parse(PxFolderItem parent, String path, List<DatasourceLayer> layers) {
+    protected List<StatisticalIndicator> parse(PxFolderItem parent, String path, List<DatasourceLayer> layers) {
         final String url = getUrl(path);
         if(url.endsWith(".px")) {
             return parsePxFile(url, path, layers);
@@ -80,6 +52,13 @@ public class PxwebIndicatorsParser {
                 // only recognize l and t types
                 continue;
             }
+            /*
+            if(config.getIndicatorKey() != null) {
+                // go to the px-file
+                indicators.addAll(parse(item, getPath(path, item.id), layers));
+                continue;
+            }
+            */
 
             try {
                 PxTableItem table = getPxTable(path, item.id);
@@ -98,11 +77,40 @@ public class PxwebIndicatorsParser {
         return indicators;
     }
 
+    protected List<StatisticalIndicator> parsePxFile(String url, String path, List<DatasourceLayer> layers) {
+        if(config.getIndicatorKey() == null) {
+            LOG.warn("Tried to parse px-file as indicator list but missing indicator key configuration!");
+            return Collections.emptyList();
+        }
+        try {
+            PxTableItem table = getPxTable(path);
+            List<StatisticalIndicator> indicatorList = readPxTableAsIndicators(table);
+            setupLayers(indicatorList, layers, url);
+            return indicatorList;
+        } catch (IOException e) {
+            LOG.error(e, "Error getting indicators from Pxweb datasource:", config.getUrl());
+        }
+        return Collections.emptyList();
+    }
+
+    protected List<PxFolderItem> readFolderListing(String url) {
+        try {
+            String jsonResponse = IOHelper.getURL(url);
+            List<PxFolderItem> list =
+                    mapper.readValue(jsonResponse, mapper.getTypeFactory().constructCollectionType(List.class, PxFolderItem.class));
+            return list;
+        } catch (IOException e) {
+            LOG.error(e, "Error getting indicators from Pxweb datasource:", config.getUrl());
+        }
+        return Collections.emptyList();
+    }
+
     private void setupLayers(List<StatisticalIndicator> list, List<DatasourceLayer> layers, String baseUrl) {
         for(StatisticalIndicator ind: list) {
             setupLayers(ind, layers, baseUrl);
         }
     }
+
     private void setupLayers(StatisticalIndicator ind, List<DatasourceLayer> layers, String baseUrl) {
         for(DatasourceLayer layer : layers) {
             StatisticalIndicatorLayer l = new StatisticalIndicatorLayer(layer.getMaplayerId(), ind.getId());
@@ -177,22 +185,7 @@ public class PxwebIndicatorsParser {
         return table;
     }
 
-    private StatisticalIndicatorDataModel getModel(PxTableItem table) {
-        // selectors are shared between indicators in pxweb
-        final StatisticalIndicatorDataModel selectors = new StatisticalIndicatorDataModel();
-        for (VariablesItem item: table.getSelectors()) {
-            if(config.getIgnoredVariables().contains(item.getCode())) {
-                continue;
-            }
-            StatisticalIndicatorDataDimension selector = new StatisticalIndicatorDataDimension(item.getCode());
-            selector.setName(item.getLabel());
-            selector.setAllowedValues(item.getLabels());
-            selectors.addDimension(selector);
-        }
-        return selectors;
-    }
-
-    public List<StatisticalIndicator> readPxTableAsIndicators(PxTableItem table) throws IOException {
+    protected List<StatisticalIndicator> readPxTableAsIndicators(PxTableItem table) throws IOException {
         List<StatisticalIndicator> list = new ArrayList<>();
         if(table == null) {
             return list;
@@ -215,6 +208,22 @@ public class PxwebIndicatorsParser {
 
         return list;
     }
+
+    private StatisticalIndicatorDataModel getModel(PxTableItem table) {
+        // selectors are shared between indicators in pxweb
+        final StatisticalIndicatorDataModel selectors = new StatisticalIndicatorDataModel();
+        for (VariablesItem item: table.getSelectors()) {
+            if(config.getIgnoredVariables().contains(item.getCode())) {
+                continue;
+            }
+            StatisticalIndicatorDataDimension selector = new StatisticalIndicatorDataDimension(item.getCode());
+            selector.setName(item.getLabel());
+            selector.setAllowedValues(item.getLabels());
+            selectors.addDimension(selector);
+        }
+        return selectors;
+    }
+
 
     private String getUrl(String path) {
         if(path == null) {
