@@ -81,21 +81,22 @@ public class RegionSetHelper {
     protected static SimpleFeatureCollection getRegionsResourcesGeoJSON(RegionSet regionset, String requestedSRS, String path)
             throws IOException, MismatchedDimensionException, TransformException, FactoryException {
         MathTransform transform = findMathTransform(regionset.getSrs_name(), requestedSRS);
-        FeatureIterator<SimpleFeature> it = null;
+        LOG.debug("Trying to read GeoJSON resource file from:", path);
+        DefaultFeatureCollection fc = new DefaultFeatureCollection();
         try (InputStream in = RegionSetHelper.class.getResourceAsStream(path)) {
-            DefaultFeatureCollection fc = new DefaultFeatureCollection();
-            it = FJ.streamFeatureCollection(in);
-            while (it.hasNext()) {
-                SimpleFeature f = it.next();
-                transform(f, transform);
-                fc.add(f);
+            if (in == null) {
+                LOG.warn("Could not find resource for path:", path);
+                throw new NullPointerException();
             }
-            return fc;
-        } finally {
-            if (it != null) {
-                it.close();
+            try (FeatureIterator<SimpleFeature> it = FJ.streamFeatureCollection(in)) {
+                while (it.hasNext()) {
+                    SimpleFeature f = it.next();
+                    transform(f, transform);
+                    fc.add(f);
+                }
             }
         }
+        return fc;
     }
 
     protected static MathTransform findMathTransform(String from, String to) throws FactoryException {
