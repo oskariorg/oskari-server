@@ -31,6 +31,7 @@ public class CSWIsoRecord {
     private DataQualityObject dataQualityObject;
     private URL metadataURL;
     private List<String> referenceSystems = new ArrayList<String>();
+    private static final ObjectMapper mapper = new ObjectMapper();
 
     public DataQualityObject getDataQualityObject() {
         return dataQualityObject;
@@ -170,7 +171,6 @@ public class CSWIsoRecord {
         }
         JSONHelper.putValue(ret, "onlineResources", arr);
         //TODO: should we create toJSON() instead of using ObjectMapper
-        ObjectMapper mapper = new ObjectMapper();
         try {
             arr = new JSONArray();
             for (DataQuality dqNode: dataQualityObject.getDataQualities()){
