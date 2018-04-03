@@ -23,7 +23,10 @@ import java.util.Map;
 import static org.junit.Assert.assertEquals;
 
 /**
- * Tests that pxweb config can point directly to a px-file. Note! If the config is modified AFTER users have saved embedded maps/views the saved state won't match the indicator id anymore
+ * Tests that pxweb config can point directly to a px-file.
+ *
+ * Note! If the config is modified AFTER users have saved embedded maps/views the saved state won't match the
+ *  indicator id anymore -> migration to DB is required
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(value = {IOHelper.class})
