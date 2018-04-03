@@ -83,7 +83,7 @@ public class RegionSetHelper {
         MathTransform transform = findMathTransform(regionset.getSrs_name(), requestedSRS);
         LOG.debug("Trying to read GeoJSON resource file from:", path);
         DefaultFeatureCollection fc = new DefaultFeatureCollection();
-        try (InputStream in = RegionSetHelper.class.getResourceAsStream(path)) {
+        try (InputStream in = RegionSetHelper.class.getClassLoader().getResourceAsStream(path)) {
             if (in == null) {
                 LOG.warn("Could not find resource for path:", path);
                 throw new NullPointerException();
