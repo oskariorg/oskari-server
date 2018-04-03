@@ -4,8 +4,5 @@
     "url": "http://www.tilastokeskus.fi"
   },
   "regionKey": "Alue 2017",
-  "indicatorKey": "Tiedot",
-  "ignoredVariables": [
-    "Alue 2017"
-  ]
+  "indicatorKey": "Tiedot"
 }
