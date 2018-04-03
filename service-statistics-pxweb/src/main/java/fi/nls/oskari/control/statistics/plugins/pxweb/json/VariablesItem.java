@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import fi.nls.oskari.control.statistics.data.IdNamePair;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class VariablesItem {
@@ -30,10 +31,10 @@ public class VariablesItem {
     }
 
     public List<IdNamePair> getLabels() {
-        List<IdNamePair> list = new ArrayList<>(values.size());
         if(values == null) {
-            return list;
+            return Collections.emptyList();
         }
+        List<IdNamePair> list = new ArrayList<>(values.size());
         for(int i = 0; i < values.size(); i++) {
             String id = values.get(i);
             IdNamePair pair = new IdNamePair(id, getValueText(i, id));
