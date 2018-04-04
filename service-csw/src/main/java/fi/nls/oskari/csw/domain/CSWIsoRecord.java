@@ -7,11 +7,11 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.net.URL;
-import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 /**
  * Created by TMIKKOLAINEN on 2.9.2014.
@@ -22,7 +22,7 @@ public class CSWIsoRecord {
     private String metadataCharacterSet;
     private List<String> scopeCodes = new ArrayList<String>();
     private List<ResponsibleParty> metadataResponsibleParties = new ArrayList<ResponsibleParty>();
-    private Date metadataDateStamp;
+    private LocalDateTime metadataDateStamp;
     private String metadataStandardName;
     private String metadataStandardVersion;
     private List<Identification> identifications = new ArrayList<Identification>();
@@ -32,6 +32,7 @@ public class CSWIsoRecord {
     private URL metadataURL;
     private List<String> referenceSystems = new ArrayList<String>();
     private static final ObjectMapper mapper = new ObjectMapper();
+    private static final DateTimeFormatter DATE_TIME_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'kk:mm'Z'");
 
     public DataQualityObject getDataQualityObject() {
         return dataQualityObject;
@@ -81,11 +82,11 @@ public class CSWIsoRecord {
         this.metadataResponsibleParties = metadataResponsibleParties;
     }
 
-    public Date getMetadataDateStamp() {
+    public LocalDateTime getMetadataDateStamp() {
         return metadataDateStamp;
     }
 
-    public void setMetadataDateStamp(Date metadataDateStamp) {
+    public void setMetadataDateStamp(LocalDateTime metadataDateStamp) {
         this.metadataDateStamp = metadataDateStamp;
     }
 
@@ -149,7 +150,11 @@ public class CSWIsoRecord {
             arr.put(responsibleParty.toJSON());
         }
         JSONHelper.putValue(ret, "metadataResponsibleParties", arr);
-        JSONHelper.putValue(ret, "metadataDateStamp", metadataDateStamp);
+        try {
+            JSONHelper.putValue(ret, "metadataDateStamp", metadataDateStamp.format(DATE_TIME_FORMAT));
+        } catch (Exception e) {
+            //do nothing
+        }
         JSONHelper.putValue(ret, "metadataStandardName", metadataStandardName);
         JSONHelper.putValue(ret, "metadataStandardVersion", metadataStandardVersion);
         JSONHelper.putValue(ret, "metadataURL", metadataURL);
@@ -701,10 +706,10 @@ public class CSWIsoRecord {
         }
 
         public static class DateWithType {
-            private Date date;
+            private LocalDate date;
             private String dateType;
             private String xmlDate;
-            private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
+            private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
             public String getXmlDate() {
                 return xmlDate;
@@ -714,11 +719,11 @@ public class CSWIsoRecord {
                 this.xmlDate = xmlDate;
             }
 
-            public Date getDate() {
+            public LocalDate getDate() {
                 return date;
             }
 
-            public void setDate(Date date) {
+            public void setDate(LocalDate date) {
                 this.date = date;
             }
 
@@ -735,7 +740,7 @@ public class CSWIsoRecord {
                 String formattedDate = null;
                 if (xmlDate == null || xmlDate.isEmpty()) {
                     try {
-                        formattedDate = sdf.format(date);
+                        formattedDate = date.format(DATE_FORMATTER);
                     } catch (Exception e){
                         //do nothing
                     }

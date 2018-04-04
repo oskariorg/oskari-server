@@ -12,7 +12,9 @@ import org.w3c.dom.NodeList;
 
 import javax.xml.xpath.*;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 /**
@@ -24,23 +26,15 @@ public class CSWISORecordParser {
     private static final Logger log = LogFactory.getLogger(CSWISORecordParser.class);
 
     // we need to map languages from 3-letter codes to 2-letter codes so initialize a global codeMapping property
-    private final static Map<String, String> ISO3letterOskariLangMapping = new HashMap<String, String>();
+    private static final Map<String, String> ISO3letterOskariLangMapping = new HashMap<String, String>();
+    private static final DateTimeFormatter DATE_TIME_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'kk:mm:ss"); // or ISO_DATE_TIME
+    private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     static {
         for (final String language : Locale.getISOLanguages()) {
             final Locale locale = new Locale(language);
             ISO3letterOskariLangMapping.put(locale.getISO3Language(), locale.getLanguage());
         }
-    }
-
-    private static SimpleDateFormat dateTimeFormat() {
-        // 2011-02-23T14:32:09
-        return new SimpleDateFormat("yyyy-MM-dd'T'kk:mm:ss", Locale.US);
-    }
-
-    private static SimpleDateFormat dateFormat() {
-        // 2011-02-23
-        return new SimpleDateFormat("yyyy-MM-dd", Locale.US);
     }
 
     GeometryFactory gf = new GeometryFactory(new PrecisionModel(), 4326);
@@ -342,7 +336,11 @@ public class CSWISORecordParser {
         node = (Node) XPATH_METADATA_DATE.evaluate(elem, XPathConstants.NODE);
         if (node != null) {
             value = getLocalizedContent(node, pathToLocalizedValue);
-            record.setMetadataDateStamp(dateTimeFormat().parse(value));
+            try{
+                record.setMetadataDateStamp(LocalDateTime.parse(value, DATE_TIME_FORMAT));
+            }catch (Exception e){
+                // TODO: should we add raw xml content if parsing fails
+            }
         }
 
         nodeList = (NodeList) XPATH_METADATA_REFERENCESYSTEM.evaluate(elem, XPathConstants.NODESET);
@@ -544,7 +542,7 @@ public class CSWISORecordParser {
         node = (Node) XPATH_DI_SI_CITATION_DATE_VALUE.evaluate(cNode, XPathConstants.NODE);
         if (node != null) {
             try {
-                dateWithType.setDate(dateFormat().parse(getText(node)));
+                dateWithType.setDate(LocalDate.parse(getText(node), DATE_FORMAT));
             }
             catch (Exception e) {
                 dateWithType.setXmlDate(getText(node));
