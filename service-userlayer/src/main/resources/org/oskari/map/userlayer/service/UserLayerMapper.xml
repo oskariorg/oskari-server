@@ -26,7 +26,8 @@
         layer_source,
         fields,
         publisher_name,
-        style_id)
+        style_id,
+        wkt)
         VALUES (
         #{uuid},
         #{layer_name},
@@ -34,7 +35,8 @@
         #{layer_source},
         CAST (#{fields} as json),
         #{publisher_name},
-        #{style_id})
+        #{style_id},
+        #{wkt})
     </insert>
 	
 	<update id="updateUserLayerCols">
@@ -45,7 +47,8 @@
         layer_source = #{layer_source},
         fields =  CAST (#{fields} as json),
         publisher_name = #{publisher_name},
-        style_id = #{style_id}
+        style_id = #{style_id},
+        wkt = #{wkt}
         where id = #{id} and uuid = #{uuid}
     </update>
 

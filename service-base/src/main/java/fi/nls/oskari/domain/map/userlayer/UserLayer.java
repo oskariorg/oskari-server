@@ -77,10 +77,13 @@ public class UserLayer extends UserDataLayer {
     public void setFeatures_skipped (int noGeometry){
         this.features_skipped = noGeometry;
     }
-    public String getWkt (){
-        return this.wkt;
+
+    public String getWkt() {
+        return wkt;
     }
-    public void setWkt (String wkt){
+
+    public void setWkt(String wkt) {
         this.wkt = wkt;
     }
+
 }
