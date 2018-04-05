@@ -1,8 +1,19 @@
 package org.oskari.map.userlayer.service;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import fi.nls.oskari.domain.map.OskariLayer;
+import fi.nls.oskari.domain.map.userlayer.UserLayer;
+import fi.nls.oskari.domain.map.userlayer.UserLayerData;
+import fi.nls.oskari.domain.map.userlayer.UserLayerStyle;
+import fi.nls.oskari.log.LogFactory;
+import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.map.geometry.WKTHelper;
+import fi.nls.oskari.map.layer.OskariLayerService;
+import fi.nls.oskari.map.layer.OskariLayerServiceIbatisImpl;
+import fi.nls.oskari.map.layer.formatters.LayerJSONFormatterUSERLAYER;
+import fi.nls.oskari.service.ServiceException;
+import fi.nls.oskari.util.ConversionHelper;
+import fi.nls.oskari.util.JSONHelper;
+import fi.nls.oskari.util.PropertyUtil;
 
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.data.simple.SimpleFeatureIterator;
@@ -20,20 +31,9 @@ import org.opengis.referencing.operation.TransformException;
 import org.oskari.geojson.GeoJSON;
 import org.oskari.geojson.GeoJSONWriter;
 
-import fi.nls.oskari.domain.map.OskariLayer;
-import fi.nls.oskari.domain.map.userlayer.UserLayer;
-import fi.nls.oskari.domain.map.userlayer.UserLayerData;
-import fi.nls.oskari.domain.map.userlayer.UserLayerStyle;
-import fi.nls.oskari.log.LogFactory;
-import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.map.geometry.WKTHelper;
-import fi.nls.oskari.map.layer.OskariLayerService;
-import fi.nls.oskari.map.layer.OskariLayerServiceIbatisImpl;
-import fi.nls.oskari.map.layer.formatters.LayerJSONFormatterUSERLAYER;
-import fi.nls.oskari.service.ServiceException;
-import fi.nls.oskari.util.ConversionHelper;
-import fi.nls.oskari.util.JSONHelper;
-import fi.nls.oskari.util.PropertyUtil;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 public class UserLayerDataService {
 
