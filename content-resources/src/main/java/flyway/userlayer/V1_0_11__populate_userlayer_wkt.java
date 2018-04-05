@@ -17,8 +17,7 @@ public class V1_0_11__populate_userlayer_wkt implements JdbcMigration {
     private static final int WGS84_SRID = 4326;
 
     public void migrate(Connection connection) throws Exception {
-        //if srs is not found from properties, tries to find from oskari_maplayer
-        String srsName = PropertyUtil.get("oskari.native.srs", getSrsName(connection));
+        String srsName = getSrsName(connection);
         if (srsName == null){
             LOG.error("Cannot get srs name for userlayer data");
             throw new IllegalArgumentException("Cannot get srs name for userlayer data");
@@ -47,6 +46,11 @@ public class V1_0_11__populate_userlayer_wkt implements JdbcMigration {
     }
 
     private String getSrsName(Connection conn) throws SQLException {
+        String fromProperty = PropertyUtil.getOptionalNonLocalized("oskari.native.srs");
+        if (fromProperty != null && !fromProperty.isEmpty()) {
+            return fromProperty;
+        }
+        LOG.debug("Could not find 'oskari.native.srs' property");
         int baselayerId = PropertyUtil.getOptional("userlayer.baselayer.id", -1);
         String sql = "SELECT srs_name FROM oskari_maplayer WHERE id=?";
         try (PreparedStatement statement = conn.prepareStatement(sql)) {
