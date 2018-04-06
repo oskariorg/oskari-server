@@ -73,7 +73,7 @@ public class UserLayerDataService {
                     extentWGS84.getMaxY());
         } catch (FactoryException | TransformException e) {
             // This shouldn't really happen since EPSG:4326 shouldn't be problematic
-            // and converting to it should always work. But if it does happen
+            // and transforming into it should always work. But if it does happen
             // there's probably something wrong with the geometries of the features
             throw new ServiceRuntimeException("Failed to transform bounding extent", e);
         }
