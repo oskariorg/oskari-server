@@ -6,22 +6,29 @@ import fi.nls.oskari.domain.map.userlayer.UserLayerData;
 import fi.nls.oskari.domain.map.userlayer.UserLayerStyle;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.map.geometry.WKTHelper;
 import fi.nls.oskari.map.layer.OskariLayerService;
 import fi.nls.oskari.map.layer.OskariLayerServiceIbatisImpl;
 import fi.nls.oskari.map.layer.formatters.LayerJSONFormatterUSERLAYER;
 import fi.nls.oskari.service.ServiceException;
+import fi.nls.oskari.service.ServiceRuntimeException;
 import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
 
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.data.simple.SimpleFeatureIterator;
+import org.geotools.geometry.jts.ReferencedEnvelope;
+import org.geotools.referencing.CRS;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.PropertyDescriptor;
+import org.opengis.referencing.FactoryException;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.opengis.referencing.operation.TransformException;
 import org.oskari.geojson.GeoJSON;
 import org.oskari.geojson.GeoJSONWriter;
 
@@ -52,9 +59,24 @@ public class UserLayerDataService {
         userLayer.setLayer_desc(ConversionHelper.getString(desc, ""));
         userLayer.setLayer_source(ConversionHelper.getString(source, ""));
         userLayer.setFields(parseFields(ft));
-        // TODO: Store the bounds in WGS84
-        // ... ReferencedEnvelope env = fc.getBounds();
+        userLayer.setWkt(getWGS84ExtentAsWKT(fc));
         return userLayer;
+    }
+
+    private static String getWGS84ExtentAsWKT(SimpleFeatureCollection fc) {
+        try {
+            CoordinateReferenceSystem wgs84 = CRS.decode("EPSG:4326", true);
+            ReferencedEnvelope extentWGS84 = fc.getBounds().transform(wgs84, true);
+            return WKTHelper.getBBOX(extentWGS84.getMinX(),
+                    extentWGS84.getMinY(),
+                    extentWGS84.getMaxX(),
+                    extentWGS84.getMaxY());
+        } catch (FactoryException | TransformException e) {
+            // This shouldn't really happen since EPSG:4326 shouldn't be problematic
+            // and transforming into it should always work. But if it does happen
+            // there's probably something wrong with the geometries of the features
+            throw new ServiceRuntimeException("Failed to transform bounding extent", e);
+        }
     }
 
     private static String parseFields(SimpleFeatureType schema) {

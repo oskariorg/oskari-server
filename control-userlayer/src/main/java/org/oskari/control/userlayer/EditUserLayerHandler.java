@@ -1,4 +1,4 @@
-package fi.nls.oskari.control.data;
+package org.oskari.control.userlayer;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -13,7 +13,6 @@ import fi.nls.oskari.control.ActionParamsException;
 import fi.nls.oskari.domain.map.userlayer.UserLayer;
 import fi.nls.oskari.domain.map.userlayer.UserLayerStyle;
 import fi.nls.oskari.service.OskariComponentManager;
-import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.ResponseHelper;
 import org.oskari.map.userlayer.service.UserLayerDataService;

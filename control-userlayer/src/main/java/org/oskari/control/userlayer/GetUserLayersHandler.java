@@ -2,6 +2,7 @@ package org.oskari.control.userlayer;
 
 import fi.mml.map.mapwindow.util.OskariLayerWorker;
 import fi.nls.oskari.annotation.OskariActionRoute;
+import fi.nls.oskari.control.ActionConstants;
 import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.ActionHandler;
 import fi.nls.oskari.control.ActionParameters;
@@ -25,7 +26,6 @@ import java.util.List;
 public class GetUserLayersHandler extends ActionHandler {
 
     private UserLayerDbService userLayerService;
-    private final UserLayerDataService userLayerDataService = new UserLayerDataService();
 
     private static final String JSKEY_USERLAYERS = "userlayers";
 
@@ -43,12 +43,14 @@ public class GetUserLayersHandler extends ActionHandler {
         final User user = params.getUser();
         if (!user.isGuest()) {
             final List<UserLayer> list = userLayerService.getUserLayerByUuid(user.getUuid());
-            final OskariLayer baseLayer = userLayerDataService.getBaseLayer();
+            final OskariLayer baseLayer = UserLayerDataService.getBaseLayer();
             for (UserLayer ul : list) {
                 // Parse userlayer data to userlayer
-                final JSONObject userLayer = userLayerDataService.parseUserLayer2JSON(ul, baseLayer);
+                final JSONObject userLayer = UserLayerDataService.parseUserLayer2JSON(ul, baseLayer);
                 JSONObject permissions = OskariLayerWorker.getAllowedPermissions();
                 JSONHelper.putValue(userLayer, "permissions", permissions);
+                // transform WKT for layers now that we know SRS
+                OskariLayerWorker.transformWKTGeom(userLayer, params.getHttpParam(ActionConstants.PARAM_SRS));
                 layers.put(userLayer);
             }
         }
