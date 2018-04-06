@@ -1,5 +1,47 @@
 # Release Notes
 
+## 1.46.0
+
+For a full list of changes see: https://github.com/oskariorg/oskari-server/milestone/7?closed=1
+
+Also check the [MigrationGuide.md](MigrationGuide.md) for actions required on upgrade
+
+### Projection support
+
+- The layer JSON now includes information about supported projections.
+- Layers can have "forced SRS" which are included to the supported projections even if the capabilities response doesn't include it.
+- Supported projections are no longer stored as a long list in a separate database table, but are filtered to only
+ include projections supported by the Oskari instance (only include ones that are used in appsetups) and saved as part of the layer information.
+- New action route has been added for triggering capabilities update on layer(s)
+- ViewService now includes a method to find out projections used in the appsetups.
+- GetAppSetup response now includes more information about the Oskari environment like the default appsetups.
+- Publish functionality now uses the map options (like projection information/zoom levels etc) from the appsetup where the user is publishing the embedded map
+- Listing users saved views and embedded maps now include the projection information so frontend can handle different projections properly.
+- WMTS-layers TileMatrixSetId is now sent for the frontend based on the projection the frontend is using.
+
+### New printout implementation
+
+The new printout implementation has been deemed production ready and as such the old one has been removed. 
+The implementation is baked into oskari-map.war so server setup is a bit more admin-friendly.
+
+### Layer handling
+
+- Database tables around maplayers have been renamed to be more in line with the group/organization naming and
+ accommodate the new folder-like structure of layer groups (previously referred to as Inspire-themes).
+- Layers can now belong to multiple groups. 
+- The layer listing action route "GetMapLayers" have been replaced with "GetHierarchicalMapLayerGroups". 
+
+### Misc
+
+- Added error handling for layer capabilities parsing where layer didn't have any keywords.
+- Added a new service-module for parsing and generating GeoJSON.
+- Regionsets for thematic maps can now be added as resources files in GeoJSON format (in addition to reading the regions from a WFS-service).
+- Fixed an issue where having myplaces layers as initial selected layers prevented the feature from working properly on OpenLayers 3+ based maps.
+- Updated the linked jQuery version from 1.7.2 on Geoportal and 1.7.1 on published maps to 1.10.2 on both.
+- Handling user imported datasets (userlayer) have been improved.
+- Added serverside functionality for updating userlayer style and other information after it has been imported.
+- Improved layer metadata (CSW) parsing.
+
 ## 1.45.0
 
 For a full list of changes see: https://github.com/oskariorg/oskari-server/milestone/5
