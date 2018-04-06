@@ -17,6 +17,7 @@ import fi.nls.oskari.myplaces.MyPlacesServiceMybatisImpl;
 import fi.nls.oskari.service.UserService;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
+import fi.nls.oskari.view.modifier.ViewModifier;
 import fi.nls.test.control.JSONActionRouteTest;
 import fi.nls.test.util.ResourceHelper;
 import fi.nls.test.view.ViewTestHelper;
@@ -50,6 +51,7 @@ public class AppSetupHandlerTest extends JSONActionRouteTest {
     private BundleService bundleService = null;
 
     public static final String BUNDLE_WHITELISTED = "whitelistTestBundle";
+    public static final String VALUE_PARENT_UUID = "just-testing";
 
     @BeforeClass
     public static void addProperties() throws Exception {
@@ -89,7 +91,10 @@ public class AppSetupHandlerTest extends JSONActionRouteTest {
         final View dummyView = ViewTestHelper.createMockView("framework.mapfull", "framework.infobox", "framework.publishedgrid");
         dummyView.setType(ViewTypes.USER);
         dummyView.setCreator(getLoggedInUser().getId());
+        // inject mapOptions as it's required by publisher
+        JSONHelper.putValue(dummyView.getBundleByName(ViewModifier.BUNDLE_MAPFULL).getConfigJSON(), "mapOptions", JSONHelper.createJSONObject("srsName", "EPSG:3067"));
         doReturn(dummyView).when(viewService).getViewWithConf(anyLong());
+        doReturn(dummyView).when(viewService).getViewWithConfByUuId(VALUE_PARENT_UUID);
     }
     private void mockBundleService() {
         bundleService = mock(BundleServiceIbatisImpl.class);
@@ -113,6 +118,7 @@ public class AppSetupHandlerTest extends JSONActionRouteTest {
         // setup params
         Map<String, String> parameters = new HashMap<String, String>();
         parameters.put(AppSetupHandler.KEY_PUBDATA, ResourceHelper.readStringResource("AppSetupHandlerTest-input-simple.json", this));
+        parameters.put(AppSetupHandler.PARAM_PUBLISHER_VIEW_UUID, VALUE_PARENT_UUID);
 
         final ActionParameters params = createActionParams(parameters, getLoggedInUser());
 
@@ -136,7 +142,7 @@ public class AppSetupHandlerTest extends JSONActionRouteTest {
         assertTrue("Response should match expected", JSONHelper.isEqual(expectedResult, actualResponse));
     }
 
-    //@Test
+    @Test
     public void testWhiteListConfigMismatch() throws Exception {
 
         PropertyUtil.addProperty("actionhandler.AppSetup.bundles.simple", "", true);
@@ -144,6 +150,7 @@ public class AppSetupHandlerTest extends JSONActionRouteTest {
         // setup params
         Map<String, String> parameters = new HashMap<String, String>();
         parameters.put(AppSetupHandler.KEY_PUBDATA, ResourceHelper.readStringResource("AppSetupHandlerTest-input-whitelist.json", this));
+        parameters.put(AppSetupHandler.PARAM_PUBLISHER_VIEW_UUID, VALUE_PARENT_UUID);
 
         final ActionParameters params = createActionParams(parameters, getLoggedInUser());
         View view = handler.buildPublishedView(params);
@@ -159,6 +166,7 @@ public class AppSetupHandlerTest extends JSONActionRouteTest {
         // setup params
         Map<String, String> parameters = new HashMap<String, String>();
         parameters.put(AppSetupHandler.KEY_PUBDATA, ResourceHelper.readStringResource("AppSetupHandlerTest-input-whitelist.json", this));
+        parameters.put(AppSetupHandler.PARAM_PUBLISHER_VIEW_UUID, VALUE_PARENT_UUID);
 
         final ActionParameters params = createActionParams(parameters, getLoggedInUser());
         View view = handler.buildPublishedView(params);

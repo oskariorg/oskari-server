@@ -27,6 +27,8 @@ import java.io.FileOutputStream;
 import java.net.HttpURLConnection;
 import java.util.*;
 
+import static fi.nls.oskari.control.ActionConstants.PARAM_SRS;
+
 @OskariActionRoute("GetPreview")
 public class GetPreviewHandler extends ActionHandler {
 
@@ -41,7 +43,6 @@ public class GetPreviewHandler extends ActionHandler {
     private static final String PARM_TABLE = "tabledata";
     private static final String PARM_SAVE = "saveFile";
     private static final String PARM_TABLETEMPLATE = "tableTemplate";
-    private static final String PARM_SRSNAME = "srsName";
 
     private static final String KEY_LAYERS = "layers";
     private static final String KEY_MAPLINK = "maplink";
@@ -170,8 +171,6 @@ public class GetPreviewHandler extends ActionHandler {
     private JSONObject getPrintJSON(ActionParameters params)
             throws ActionException {
         final JSONObject jsonprint = new JSONObject();
-        final String crs = params.getHttpParam(PARM_SRSNAME,
-                null);
         try {
             final HttpServletRequest httpRequest = params.getRequest();
 
@@ -258,8 +257,8 @@ public class GetPreviewHandler extends ActionHandler {
             // populate layer details
             final JSONArray fullLayersConfigJson = MapfullHandler
                     .getFullLayerConfig(configLayers, params.getUser(), params
-                            .getLocale().getLanguage(), crs,
-                            PRINT_VIEW, ViewTypes.PRINT, Collections.EMPTY_SET, useDirectURLForMyplaces);
+                            .getLocale().getLanguage(),
+                            PRINT_VIEW, ViewTypes.PRINT, Collections.EMPTY_SET, useDirectURLForMyplaces, params.getHttpParam(PARAM_SRS));
 
             // GeoJson graphics layers + styles
             if (geojs != null) {

@@ -28,9 +28,10 @@ public class LayerJSONFormatterWFS extends LayerJSONFormatter {
 
     public JSONObject getJSON(OskariLayer layer,
                                      final String lang,
-                                     final boolean isSecure) {
+                                     final boolean isSecure,
+                                     final String crs) {
 
-        final JSONObject layerJson = getBaseJSON(layer, lang, isSecure);
+        final JSONObject layerJson = getBaseJSON(layer, lang, isSecure, crs);
         final WFSLayerConfiguration wfsConf = wfsService.findConfiguration(layer.getId());
         JSONHelper.putValue(layerJson, "styles", getStyles(wfsConf));
         // Use maplayer setup

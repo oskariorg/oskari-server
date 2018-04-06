@@ -6,7 +6,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>fi.nls.oskari</groupId>
     <artifactId>oskari-parent</artifactId>
-    <version>1.45.0</version>
+    <version>1.46.0</version>
     <packaging>pom</packaging>
 
     <name>Oskari parent POM</name>
@@ -105,6 +105,7 @@
 
         <mybatis.version>3.4.5</mybatis.version>
         <com.google.guava.version>18.0</com.google.guava.version>
+        <pdfbox.version>2.0.6</pdfbox.version>
         <!-- Test deps versions -->
         <powermock.version>1.5</powermock.version>
         <junit.version>4.11</junit.version>
@@ -411,6 +412,24 @@
                 <version>${fi.nls.oskari.version}</version>
             </dependency>
 
+            <dependency>
+                <groupId>org.oskari</groupId>
+                <artifactId>oskari-geojson</artifactId>
+                <version>${fi.nls.oskari.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.oskari</groupId>
+                <artifactId>control-userlayer</artifactId>
+                <version>${fi.nls.oskari.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.oskari</groupId>
+                <artifactId>service-userlayer</artifactId>
+                <version>${fi.nls.oskari.version}</version>
+            </dependency>
+
             <!-- Spring -->
             <dependency>
                 <groupId>org.springframework.security.extensions</groupId>
@@ -698,6 +717,11 @@
             </dependency>
             <dependency>
                 <groupId>org.geotools</groupId>
+                <artifactId>gt-opengis</artifactId>
+                <version>${geotools.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.geotools</groupId>
                 <artifactId>gt-shapefile</artifactId>
                 <version>${geotools.version}</version>
             </dependency>
@@ -786,6 +810,11 @@
                 <groupId>com.google.guava</groupId>
                 <artifactId>guava</artifactId>
                 <version>${com.google.guava.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.pdfbox</groupId>
+                <artifactId>pdfbox</artifactId>
+                <version>${pdfbox.version}</version>
             </dependency>
 
             <!-- Managed test dependencies -->
@@ -1122,8 +1151,6 @@
         <module>servlet-transport</module>
         <module>webapp-transport</module>
 
-        <!-- printout -->
-        <module>servlet-printout</module>
         <!-- setup -->
         <module>webapp-setup</module>
 
@@ -1136,6 +1163,10 @@
 
         <module>service-wcs</module>
         <module>oskari-utils</module>
+        <module>oskari-geojson</module>
+
+        <module>control-userlayer</module>
+        <module>service-userlayer</module>
     </modules>
 
 </project>

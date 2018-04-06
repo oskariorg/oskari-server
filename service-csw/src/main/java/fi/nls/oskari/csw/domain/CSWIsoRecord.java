@@ -7,11 +7,11 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.net.URL;
-import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 /**
  * Created by TMIKKOLAINEN on 2.9.2014.
@@ -22,7 +22,7 @@ public class CSWIsoRecord {
     private String metadataCharacterSet;
     private List<String> scopeCodes = new ArrayList<String>();
     private List<ResponsibleParty> metadataResponsibleParties = new ArrayList<ResponsibleParty>();
-    private Date metadataDateStamp;
+    private LocalDateTime metadataDateStamp;
     private String metadataStandardName;
     private String metadataStandardVersion;
     private List<Identification> identifications = new ArrayList<Identification>();
@@ -31,6 +31,8 @@ public class CSWIsoRecord {
     private DataQualityObject dataQualityObject;
     private URL metadataURL;
     private List<String> referenceSystems = new ArrayList<String>();
+    private static final ObjectMapper mapper = new ObjectMapper();
+    private static final DateTimeFormatter DATE_TIME_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'kk:mm'Z'");
 
     public DataQualityObject getDataQualityObject() {
         return dataQualityObject;
@@ -80,11 +82,11 @@ public class CSWIsoRecord {
         this.metadataResponsibleParties = metadataResponsibleParties;
     }
 
-    public Date getMetadataDateStamp() {
+    public LocalDateTime getMetadataDateStamp() {
         return metadataDateStamp;
     }
 
-    public void setMetadataDateStamp(Date metadataDateStamp) {
+    public void setMetadataDateStamp(LocalDateTime metadataDateStamp) {
         this.metadataDateStamp = metadataDateStamp;
     }
 
@@ -148,7 +150,11 @@ public class CSWIsoRecord {
             arr.put(responsibleParty.toJSON());
         }
         JSONHelper.putValue(ret, "metadataResponsibleParties", arr);
-        JSONHelper.putValue(ret, "metadataDateStamp", metadataDateStamp);
+        try {
+            JSONHelper.putValue(ret, "metadataDateStamp", metadataDateStamp.format(DATE_TIME_FORMAT));
+        } catch (Exception e) {
+            //do nothing
+        }
         JSONHelper.putValue(ret, "metadataStandardName", metadataStandardName);
         JSONHelper.putValue(ret, "metadataStandardVersion", metadataStandardVersion);
         JSONHelper.putValue(ret, "metadataURL", metadataURL);
@@ -169,17 +175,19 @@ public class CSWIsoRecord {
             arr.put(onlineResource.toJSON());
         }
         JSONHelper.putValue(ret, "onlineResources", arr);
-
-        ObjectMapper mapper = new ObjectMapper();
-        String jsonInString = "";
+        //TODO: should we create toJSON() instead of using ObjectMapper
         try {
-            jsonInString = mapper.writeValueAsString(dataQualityObject);
+            arr = new JSONArray();
+            for (DataQuality dqNode: dataQualityObject.getDataQualities()){
+                String json = mapper.writeValueAsString(dqNode);
+                arr.put(JSONHelper.createJSONObject(json));
+            }
+        } catch (Exception e) {
+            // TODO?
         }
-        catch (Exception e) {
-            //TODO?
-        }
-        JSONHelper.putValue(ret, "dataQualityObject", JSONHelper.createJSONObject(jsonInString));
-
+        JSONHelper.putValue(ret, "dataQualities", arr);
+        arr = new JSONArray(dataQualityObject.getLineageStatements());
+        JSONHelper.putValue(ret, "lineageStatements", arr);
         return ret;
     }
 
@@ -187,27 +195,34 @@ public class CSWIsoRecord {
         return referenceSystems;
     }
 
-
     public static class DataQualityObject {
-        private List<DataQualityNode> dataQualityNodes = new ArrayList<>();
+        private List<DataQuality> dataQualities = new ArrayList<>();
+        private List<String> lineageStatements = new ArrayList<>();
 
-        public List<DataQualityNode> getDataQualityNodes() {
-            return dataQualityNodes;
+        public List<DataQuality> getDataQualities() {
+            return dataQualities;
         }
 
-        public void setDataQualityNodes(List<DataQualityNode> dataQualityNodes) {
-            this.dataQualityNodes = dataQualityNodes;
+        public void setDataQualities(List<DataQuality> dataQualities) {
+            this.dataQualities = dataQualities;
+        }
+        public List<String> getLineageStatements() {
+            return lineageStatements;
+        }
+
+        public void setLineageStatements(List<String> lineageStatements) {
+            this.lineageStatements = lineageStatements;
         }
     }
 
-    public static class DataQualityNode {
+    public static class DataQuality {
         private String nodeName;
-        private String linageStatement;
         private String nameOfMeasure;
         private String measureIdentificationCode;
         private String measureIdentificationAuthorization;
         private String measureDescription;
         private String evaluationMethodType;
+        private String evaluationMethodDescription;
         private Object evaluationProcecdure; // TODO parse
         private List<String> dateTime;
         private List<DataQualityConformanceResult> conformanceResultList = new ArrayList<>();
@@ -219,14 +234,6 @@ public class CSWIsoRecord {
 
         public void setNodeName(String nodeName) {
             this.nodeName = nodeName;
-        }
-
-        public String getLinageStatement() {
-            return linageStatement;
-        }
-
-        public void setLinageStatement(String linageStatement) {
-            this.linageStatement = linageStatement;
         }
 
         public String getNameOfMeasure() {
@@ -292,12 +299,20 @@ public class CSWIsoRecord {
         public List<DataQualityQuantitativeResult> getQuantitativeResultList() {
             return quantitativeResultList;
         }
+
+        public String getEvaluationMethodDescription() {
+            return evaluationMethodDescription;
+        }
+
+        public void setEvaluationMethodDescription(String evaluationMethodDescription) {
+            this.evaluationMethodDescription = evaluationMethodDescription;
+        }
     }
 
     public static class DataQualityConformanceResult {
         private Object specification; //TODO parse
         private String explanation;
-        private String pass;
+        private boolean pass;
 
         public Object getSpecification() {
             return specification;
@@ -315,11 +330,11 @@ public class CSWIsoRecord {
             this.explanation = explanation;
         }
 
-        public String getPass() {
+        public boolean getPass() {
             return pass;
         }
 
-        public void setPass(String pass) {
+        public void setPass(boolean pass) {
             this.pass = pass;
         }
     }
@@ -668,7 +683,6 @@ public class CSWIsoRecord {
                     this.code = code;
                 }
 
-
                 public JSONObject toJSON() {
                     JSONObject ret = new JSONObject();
                     JSONHelper.putValue(ret, "code", code);
@@ -692,21 +706,24 @@ public class CSWIsoRecord {
         }
 
         public static class DateWithType {
-            private Date date;
+            private LocalDate date;
             private String dateType;
             private String xmlDate;
+            private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
-            public String getXmlDate() { return xmlDate; }
+            public String getXmlDate() {
+                return xmlDate;
+            }
 
             public void setXmlDate(String xmlDate) {
                 this.xmlDate = xmlDate;
             }
 
-            public Date getDate() {
+            public LocalDate getDate() {
                 return date;
             }
 
-            public void setDate(Date date) {
+            public void setDate(LocalDate date) {
                 this.date = date;
             }
 
@@ -723,10 +740,8 @@ public class CSWIsoRecord {
                 String formattedDate = null;
                 if (xmlDate == null || xmlDate.isEmpty()) {
                     try {
-                        final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
-                        formattedDate = sdf.format(date);
-                    }
-                    catch (Exception e){
+                        formattedDate = date.format(DATE_FORMATTER);
+                    } catch (Exception e){
                         //do nothing
                     }
                 }

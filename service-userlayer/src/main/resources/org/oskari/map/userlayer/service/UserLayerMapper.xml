@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.oskari.map.userlayer.service.UserLayerMapper">
+
+    <resultMap id="UserLayerResult" type="UserLayer">
+        <result property="id" column="id" />
+        <result property="uuid" column="uuid" />
+        <result property="layer_name" column="layer_name" />
+        <result property="layer_desc" column="layer_desc" />
+        <result property="layer_source" column="layer_source" />
+        <result property="fields" column="fields" />
+        <result property="publisher_name" column="publisher_name" />
+        <result property="style_id" column="style_id" />
+        <result property="wkt" column = "wkt" />
+    </resultMap>
+	<!-- UserLayer related -->
+	<insert id="insertUserLayerRow" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+		INSERT INTO user_layer (
+        uuid,
+        layer_name,
+        layer_desc,
+        layer_source,
+        fields,
+        publisher_name,
+        style_id,
+        wkt)
+        VALUES (
+        #{uuid},
+        #{layer_name},
+        #{layer_desc},
+        #{layer_source},
+        CAST (#{fields} as json),
+        #{publisher_name},
+        #{style_id},
+        #{wkt})
+    </insert>
+	
+	<update id="updateUserLayerCols">
+        update
+        user_layer set
+        layer_name = #{layer_name},
+        layer_desc = #{layer_desc},
+        layer_source = #{layer_source},
+        fields =  CAST (#{fields} as json),
+        publisher_name = #{publisher_name},
+        style_id = #{style_id},
+        wkt = #{wkt}
+        where id = #{id} and uuid = #{uuid}
+    </update>
+
+    <select id="findUserLayer" resultMap="UserLayerResult" useCache="false">
+        select
+        id,
+        uuid,
+        layer_name,
+        layer_desc,
+        layer_source,
+        CAST (fields as text),
+        publisher_name,
+        style_id,
+        wkt
+        from
+        user_layer
+        where id = #{id}  
+    </select>
+
+    <select id="findUserLayerByUuid" resultMap="UserLayerResult" useCache="false">
+        select
+          id,
+        uuid,
+        layer_name,
+        layer_desc,
+        layer_source,
+        CAST (fields as text),
+        publisher_name,
+        style_id,
+        wkt
+        from
+         user_layer
+        where uuid = #{uuid} 
+    </select>
+
+    <delete id="deleteUserLayerRow">
+        DELETE FROM user_layer WHERE id = #{id}
+    </delete>
+
+    <update id="updatePublisherName">
+        update user_layer set
+            publisher_name = #{publisher_name}
+        where uuid = #{uuid} and id = #{id}
+    </update>
+
+    <select id="getUserLayerBbox" resultType="String" useCache="false">
+		SELECT
+		ST_AsText(ST_Extent (geometry))
+		FROM
+		user_layer_data
+		WHERE
+		user_layer_id = #{userLayerId}
+	</select>
+
+	<!-- UserLayerStyle related -->
+	<insert id="insertUserLayerStyleRow" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+        INSERT INTO user_layer_style (
+        stroke_width,
+        stroke_color,
+        fill_color,
+        dot_color,
+        dot_size,
+        border_width,
+        border_color,
+        dot_shape,
+        stroke_linejoin,
+        fill_pattern,
+        stroke_linecap,
+        stroke_dasharray,
+        border_linejoin,
+        border_dasharray)        
+        VALUES (
+		#{stroke_width},
+        #{stroke_color},
+        #{fill_color},
+        #{dot_color},
+        #{dot_size},
+        #{border_width},
+        #{border_color},
+        #{dot_shape},
+        #{stroke_linejoin},
+        #{fill_pattern},
+        #{stroke_linecap},
+        #{stroke_dasharray},
+        #{border_linejoin},
+        #{border_dasharray})
+    </insert>
+
+    <delete id="deleteUserLayerStyleRow">
+		<!-- Note! #{id} is id from user_layer_style table or id or style_id from user_layer table -->
+        <!-- Note! user_layer.id == user_layer.style_id == user_layer_style.id -->
+        DELETE FROM user_layer_style WHERE id = #{id}
+    </delete>
+
+	<update id="updateUserLayerStyleCols">
+        UPDATE
+        user_layer_style SET
+        stroke_width = #{stroke_width},
+        stroke_color = #{stroke_color},
+        fill_color = #{fill_color},
+        dot_color =  #{dot_color},
+        dot_size = #{dot_size},
+        border_width = #{border_width},
+		border_color = #{border_color},
+		dot_shape = #{dot_shape},
+        stroke_linejoin = #{stroke_linejoin},
+        fill_pattern = #{fill_pattern},
+        stroke_linecap = #{stroke_linecap},
+        stroke_dasharray = #{stroke_dasharray},
+        border_linejoin = #{border_linejoin},
+        border_dasharray = #{border_dasharray}
+        WHERE id = #{id}
+    </update>
+
+	<select id="findUserLayerStyle" resultType="UserLayerStyle" useCache="false">
+        SELECT
+        id,
+        stroke_width,
+        stroke_color,
+        fill_color,
+        dot_color,
+        dot_size,
+        border_width,
+        border_color,
+        dot_shape,
+        stroke_linejoin,
+        fill_pattern,
+        stroke_linecap,
+        stroke_dasharray,
+        border_linejoin,
+        border_dasharray
+		FROM user_layer_style
+        WHERE id = #{id}
+    </select>
+
+	<!-- UserLayerData related-->
+	<insert id="insertUserLayerDataRow" useGeneratedKeys="true" keyProperty="user_layer_data.id" keyColumn="id">
+        INSERT INTO user_layer_data
+        (
+            user_layer_id,
+            uuid,
+            feature_id,
+            property_json,
+            geometry
+        ) VALUES (
+            #{user_layer_id},
+            #{user_layer_data.uuid},
+            #{user_layer_data.feature_id},
+            CAST(#{user_layer_data.property_json} as json),
+            ST_GeomFromGeoJSON(#{user_layer_data.geometry})
+        )
+    </insert>
+
+    <update id="updateUserLayerDataCols">
+        UPDATE user_layer_data
+        SET property_json = #{property_json},
+            geometry = ST_GeomFromGeoJSON(#{geometry})
+        WHERE feature_id = #{feature_id}
+          AND uuid = #{uuid}
+    </update>
+
+	<delete id="deleteUserLayerDataByLayerId">
+        DELETE FROM user_layer_data WHERE user_layer_id = #{userLayerId}
+    </delete>	
+
+	<delete id="deleteUserLayerDataRow">
+        DELETE FROM user_layer_data WHERE id = #{id}
+    </delete>
+
+</mapper>

@@ -6,7 +6,7 @@
     <parent>
         <groupId>fi.nls.oskari</groupId>
         <artifactId>oskari-parent</artifactId>
-        <version>1.45.0</version>
+        <version>1.46.0</version>
     </parent>
 
     <groupId>fi.nls.oskari.service</groupId>
@@ -30,6 +30,10 @@
         <dependency>
             <groupId>org.oskari</groupId>
             <artifactId>oskari-utils</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.oskari</groupId>
+            <artifactId>oskari-geojson</artifactId>
         </dependency>
         <dependency>
             <groupId>junit</groupId>

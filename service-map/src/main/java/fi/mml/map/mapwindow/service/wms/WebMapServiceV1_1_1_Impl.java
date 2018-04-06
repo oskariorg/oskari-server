@@ -12,15 +12,28 @@ import java.util.Set;
 
 import org.apache.xmlbeans.XmlCursor;
 import org.apache.xmlbeans.XmlObject;
+import org.geotools.geometry.jts.JTS;
+import org.geotools.referencing.CRS;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.opengis.referencing.operation.MathTransform;
 
+import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.GeometryFactory;
+import com.vividsolutions.jts.geom.Polygon;
+import com.vividsolutions.jts.io.WKTReader;
+
+import fi.mml.wms.v111.BoundingBox;
 import fi.mml.wms.v111.Format;
 import fi.mml.wms.v111.GetFeatureInfo;
 import fi.mml.wms.v111.Keyword;
+import fi.mml.wms.v111.LatLonBoundingBox;
 import fi.mml.wms.v111.Layer;
 import fi.mml.wms.v111.LegendURL;
 import fi.mml.wms.v111.SRS;
 import fi.mml.wms.v111.Style;
 import fi.mml.wms.v111.WMTMSCapabilitiesDocument;
+import fi.nls.oskari.map.geometry.ProjectionHelper;
 
 /**
  * 1.1.1 implementation of WMS
@@ -28,12 +41,12 @@ import fi.mml.wms.v111.WMTMSCapabilitiesDocument;
 public class WebMapServiceV1_1_1_Impl extends AbstractWebMapService {
 
     public WebMapServiceV1_1_1_Impl(String url, String data, String layerName)
-            throws WebMapServiceParseException {
+            throws WebMapServiceParseException, LayerNotFoundInCapabilitiesException {
         this(url, data, layerName, null);
     }
 
     public WebMapServiceV1_1_1_Impl(String url, String data, String layerName, Set<String> allowedCRS)
-            throws WebMapServiceParseException {
+            throws WebMapServiceParseException, LayerNotFoundInCapabilitiesException {
         super(url);
         parseXML(data, layerName, allowedCRS);
     }
@@ -43,15 +56,34 @@ public class WebMapServiceV1_1_1_Impl extends AbstractWebMapService {
     }
 
     private void parseXML(String data, String layerName, Set<String> allowedCRS)
-            throws WebMapServiceParseException {
+            throws WebMapServiceParseException, LayerNotFoundInCapabilitiesException {
         try {
             WMTMSCapabilitiesDocument wmtms = WMTMSCapabilitiesDocument.Factory.parse(data);
-
             Layer layerCapabilities = wmtms.getWMTMSCapabilities().getCapability().getLayer();
+            LatLonBoundingBox bbox = layerCapabilities.getLatLonBoundingBox();
+            if(bbox != null) {
+        		String maxx = bbox.getMaxx();
+            	String maxy = bbox.getMaxy();
+            	String minx = bbox.getMinx();
+            	String miny = bbox.getMiny();
+            	Coordinate topRightCoord = new Coordinate(Double.parseDouble(maxx), Double.parseDouble(maxy));
+            	Coordinate lowerRightCoord = new Coordinate(Double.parseDouble(maxx), Double.parseDouble(miny));
+            	Coordinate lowerLeftCoord = new Coordinate(Double.parseDouble(minx), Double.parseDouble(miny));
+            	Coordinate topLeftCoord = new Coordinate(Double.parseDouble(minx), Double.parseDouble(maxy));
+            	ArrayList<Coordinate> coords = new ArrayList<>();
+            	coords.add(topRightCoord);
+            	coords.add(lowerRightCoord);
+            	coords.add(lowerLeftCoord);
+            	coords.add(topLeftCoord);
+            	coords.add(topRightCoord);
+            	GeometryFactory fact = new GeometryFactory();
+            	Polygon poly = fact.createPolygon(coords.toArray(new Coordinate[coords.size()]));
+            	this.geom = poly.toText();
+            }
             LinkedList<Layer> path = new LinkedList<>();
             boolean found = find(layerCapabilities, layerName, path, 0);
             if (!found) {
-                throw new WebMapServiceParseException("Could not find layer");
+                throw new LayerNotFoundInCapabilitiesException("Could not find layer " + layerName);
             }
 
             this.styles = new HashMap<>();
@@ -143,18 +175,19 @@ public class WebMapServiceV1_1_1_Impl extends AbstractWebMapService {
     }
 
     private String[] parseKeywords(Layer layer) {
-        if (layer.getKeywordList() != null) {
-            Keyword[] words = layer.getKeywordList().getKeywordArray();
-            if (words != null) {
-                String[] keywords = new String[words.length];
-                for (int i = 0; i < words.length; i++) {
-                    keywords[i] = getText(words[i])
-                            .orElseThrow(() -> new IllegalArgumentException("Empty keyword"));
-                }
-                return keywords;
-            }
+        if (layer.getKeywordList() == null) {
+            return new String[0];
         }
-        return new String[0];
+        Keyword[] words = layer.getKeywordList().getKeywordArray();
+        if (words == null) {
+            return new String[0];
+        }
+        String[] keywords = new String[words.length];
+        for (int i = 0; i < words.length; i++) {
+            keywords[i] = getText(words[i])
+                    .orElseThrow(() -> new IllegalArgumentException("Empty keyword"));
+        }
+        return keywords;
     }
 
     private String[] parseFormats(WMTMSCapabilitiesDocument wmtms) {

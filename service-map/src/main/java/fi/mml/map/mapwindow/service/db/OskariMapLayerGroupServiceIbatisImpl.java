@@ -11,6 +11,7 @@ import fi.nls.oskari.service.ServiceRuntimeException;
 
 import java.sql.SQLException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * MaplayerGroup implementation for Ibatis
@@ -32,6 +33,10 @@ public class OskariMapLayerGroupServiceIbatisImpl extends OskariMapLayerGroupSer
 		return "MaplayerGroup";
 	}
 
+	public void flushCache() {
+		ID_CACHE.flush(true);
+	}
+	
     public List<MaplayerGroup> findByMaplayerId(final int layerId) {
 
         final List<Integer> links = LINK_CACHE.get(Integer.toString(layerId));
@@ -134,6 +139,16 @@ public class OskariMapLayerGroupServiceIbatisImpl extends OskariMapLayerGroupSer
     public List<Integer> findMaplayersByGroup(int id) {
         return queryForList(getNameSpace() + ".findMaplayersByGroup", id);
     }
+    
+    /**
+     * Returns the map layer groups which belong to the given parent.
+     * @param groupId
+     * @return child groups of the given group
+     */
+    public List<MaplayerGroup> findByParentId(final int groupId) {
+        final List<MaplayerGroup> groups = queryForList(getNameSpace() + ".findByParentId", groupId);
+        return groups;
+    }
 
     @Override
     public void update(final MaplayerGroup theme) {
@@ -173,6 +188,46 @@ public class OskariMapLayerGroupServiceIbatisImpl extends OskariMapLayerGroupSer
             client.commitTransaction();
         } catch (Exception e) {
             throw new ServiceRuntimeException("Failed to set links", e);
+        } finally {
+            if (client != null) {
+                try {
+                    client.endTransaction();
+                } catch (SQLException ignored) { }
+            }
+        }
+    }
+    
+
+    public void updateOrder(MaplayerGroup group) {
+    	SqlMapClient client = null;
+    	try {
+        	client = getSqlMapClient();
+            client.startTransaction();
+            client.update(getNameSpace() + ".updateOrder", group);
+            client.commitTransaction();
+    	} catch(Exception e) {
+    		throw new ServiceRuntimeException("Failed to update group ordering", e);
+    	} finally {
+            if (client != null) {
+                try {
+                    client.endTransaction();
+                } catch (SQLException ignored) { }
+            }
+        }
+    }
+    
+    public void updateGroupParent(final int groupId, final int newGroupId) {
+    	SqlMapClient client = null;
+        try {
+            client = getSqlMapClient();
+            client.startTransaction();
+            HashMap<String, Integer> insertMap = new HashMap<>();
+            insertMap.put("groupId", groupId);
+            insertMap.put("newGroupId", newGroupId);
+            client.update(getNameSpace() + ".updateGroupParent", insertMap);
+            client.commitTransaction();
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to update group parent", e);
         } finally {
             if (client != null) {
                 try {

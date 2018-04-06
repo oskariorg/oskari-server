@@ -13,6 +13,7 @@ public class UserLayer extends UserDataLayer {
     private long style_id;
     private int features_count;
     private int features_skipped; //if geojson feature doesn't have geometry object or it's null, feature is skipped
+    private String wkt;
 
     public long getId() {
         return id;
@@ -76,4 +77,13 @@ public class UserLayer extends UserDataLayer {
     public void setFeatures_skipped (int noGeometry){
         this.features_skipped = noGeometry;
     }
+
+    public String getWkt() {
+        return wkt;
+    }
+
+    public void setWkt(String wkt) {
+        this.wkt = wkt;
+    }
+
 }
