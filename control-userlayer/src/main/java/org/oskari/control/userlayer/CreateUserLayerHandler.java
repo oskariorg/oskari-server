@@ -26,9 +26,7 @@ import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.referencing.CRS;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
-import org.opengis.referencing.operation.TransformException;
 import org.oskari.map.userlayer.input.FeatureCollectionParser;
 import org.oskari.map.userlayer.input.FeatureCollectionParsers;
 import org.oskari.map.userlayer.service.UserLayerDataService;
@@ -319,13 +317,10 @@ public class CreateUserLayerHandler extends ActionHandler {
             throw new ActionException("Failed to encode feature as GeoJSON");
         } catch (ServiceException e) {
             throw new ActionException("Failed to store features to database");
-        } catch (FactoryException | TransformException e) {
-            throw new ActionException("Failed to transform bounding extent");
         }
     }
 
-    private UserLayer createUserLayer(SimpleFeatureCollection fc, String uuid, Map<String, String> formParams)
-            throws FactoryException, TransformException {
+    private UserLayer createUserLayer(SimpleFeatureCollection fc, String uuid, Map<String, String> formParams) {
         String name = formParams.get(KEY_NAME);
         String desc = formParams.get(KEY_DESC);
         String source = formParams.get(KEY_SOURCE);

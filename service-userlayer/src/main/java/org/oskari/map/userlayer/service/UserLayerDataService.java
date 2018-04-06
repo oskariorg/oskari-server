@@ -11,6 +11,7 @@ import fi.nls.oskari.map.layer.OskariLayerService;
 import fi.nls.oskari.map.layer.OskariLayerServiceIbatisImpl;
 import fi.nls.oskari.map.layer.formatters.LayerJSONFormatterUSERLAYER;
 import fi.nls.oskari.service.ServiceException;
+import fi.nls.oskari.service.ServiceRuntimeException;
 import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
@@ -50,8 +51,7 @@ public class UserLayerDataService {
     private static final int USERLAYER_BASE_LAYER_ID = PropertyUtil.getOptional(USERLAYER_BASELAYER_ID, -1);
 
     public static UserLayer createUserLayer(SimpleFeatureCollection fc,
-            String uuid, String name, String desc, String source)
-                    throws FactoryException, TransformException {
+            String uuid, String name, String desc, String source) {
         final SimpleFeatureType ft = fc.getSchema();
         final UserLayer userLayer = new UserLayer();
         userLayer.setUuid(uuid);
@@ -63,14 +63,20 @@ public class UserLayerDataService {
         return userLayer;
     }
 
-    private static String getWGS84ExtentAsWKT(SimpleFeatureCollection fc)
-            throws FactoryException, TransformException {
-        CoordinateReferenceSystem wgs84 = CRS.decode("EPSG:4326", true);
-        ReferencedEnvelope extentWGS84 = fc.getBounds().transform(wgs84, true);
-        return WKTHelper.getBBOX(extentWGS84.getMinX(),
-                extentWGS84.getMinY(),
-                extentWGS84.getMaxX(),
-                extentWGS84.getMaxY());
+    private static String getWGS84ExtentAsWKT(SimpleFeatureCollection fc) {
+        try {
+            CoordinateReferenceSystem wgs84 = CRS.decode("EPSG:4326", true);
+            ReferencedEnvelope extentWGS84 = fc.getBounds().transform(wgs84, true);
+            return WKTHelper.getBBOX(extentWGS84.getMinX(),
+                    extentWGS84.getMinY(),
+                    extentWGS84.getMaxX(),
+                    extentWGS84.getMaxY());
+        } catch (FactoryException | TransformException e) {
+            // This shouldn't really happen since EPSG:4326 shouldn't be problematic
+            // and converting to it should always work. But if it does happen
+            // there's probably something wrong with the geometries of the features
+            throw new ServiceRuntimeException("Failed to transform bounding extent", e);
+        }
     }
 
     private static String parseFields(SimpleFeatureType schema) {
