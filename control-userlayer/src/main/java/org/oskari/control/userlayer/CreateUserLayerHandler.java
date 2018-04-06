@@ -39,6 +39,7 @@ import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.ActionHandler;
 import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.control.ActionParamsException;
+import fi.nls.oskari.control.ActionConstants;
 import fi.nls.oskari.domain.map.userlayer.UserLayer;
 import fi.nls.oskari.domain.map.userlayer.UserLayerData;
 import fi.nls.oskari.domain.map.userlayer.UserLayerStyle;
@@ -351,6 +352,8 @@ public class CreateUserLayerHandler extends ActionHandler {
             JSONHelper.putValue(featuresSkipped, "featuresSkipped", ulayer.getFeatures_skipped());
             JSONHelper.putValue(userLayer, "warning", featuresSkipped);
         }
+        // transform WKT for layers now that we know SRS
+        OskariLayerWorker.transformWKTGeom(userLayer, params.getHttpParam(ActionConstants.PARAM_SRS));
         ResponseHelper.writeResponse(params, userLayer);
     }
 
