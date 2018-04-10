@@ -13,7 +13,7 @@ import org.apache.ibatis.annotations.Update;
 public interface OskariLayerGroupLinkMapper {
 
     @ConstructorArgs({
-        @Arg(name = "mapLayerId", column = "maplayerid"),
+        @Arg(name = "layerId", column = "maplayerid"),
         @Arg(name = "groupId", column = "groupid"),
         @Arg(name = "orderNumber", column = "order_number")
     })
@@ -24,7 +24,7 @@ public interface OskariLayerGroupLinkMapper {
     List<OskariLayerGroupLink> findByLayerId(@Param("layerId") int layerId);
 
     @ConstructorArgs({
-        @Arg(name = "mapLayerId", column = "maplayerid"),
+        @Arg(name = "layerId", column = "maplayerid"),
         @Arg(name = "groupId", column = "groupid"),
         @Arg(name = "orderNumber", column = "order_number")
     })
