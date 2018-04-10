@@ -51,6 +51,10 @@ public class PxwebConfig {
         return indicatorKey;
     }
 
+    public boolean hasIndicatorKey() {
+        return indicatorKey != null && !indicatorKey.isEmpty();
+    }
+
     public Set<String> getIgnoredVariables() {
         return ignoredVariables;
     }
