@@ -52,13 +52,13 @@ public class PxwebIndicatorsParser {
                 // only recognize l and t types
                 continue;
             }
-            /*
-            if(config.getIndicatorKey() != null) {
+
+            if(config.hasIndicatorKey()) {
                 // go to the px-file
                 indicators.addAll(parse(item, getPath(path, item.id), layers));
                 continue;
             }
-            */
+
 
             try {
                 PxTableItem table = getPxTable(path, item.id);
@@ -78,7 +78,7 @@ public class PxwebIndicatorsParser {
     }
 
     protected List<StatisticalIndicator> parsePxFile(String url, String path, List<DatasourceLayer> layers) {
-        if(config.getIndicatorKey() == null) {
+        if(!config.hasIndicatorKey()) {
             LOG.warn("Tried to parse px-file as indicator list but missing indicator key configuration!");
             return Collections.emptyList();
         }
@@ -95,7 +95,7 @@ public class PxwebIndicatorsParser {
 
     protected List<PxFolderItem> readFolderListing(String url) {
         try {
-            String jsonResponse = IOHelper.getURL(url);
+            String jsonResponse = loadUrl(url);
             List<PxFolderItem> list =
                     mapper.readValue(jsonResponse, mapper.getTypeFactory().constructCollectionType(List.class, PxFolderItem.class));
             return list;
@@ -175,7 +175,7 @@ public class PxwebIndicatorsParser {
         if(!url.endsWith(tableId)) {
             url = url + tableId;
         }
-        String json = IOHelper.getURL(url);
+        String json = loadUrl(url);
         PxTableItem table = mapper.readValue(json, PxTableItem.class);
         if(table == null) {
             return null;
@@ -230,7 +230,7 @@ public class PxwebIndicatorsParser {
             // Example: "http://pxweb.hel.ninja/PXWeb/api/v1/en/hri/hri/"
             return config.getUrl();
         }
-        String url = config.getUrl() + "/" + IOHelper.urlEncode(path) + "/";
+        String url = config.getUrl() + "/" + IOHelper.urlEncode(path);
         return IOHelper.fixPath(url);
     }
 
@@ -243,4 +243,7 @@ public class PxwebIndicatorsParser {
         return url.replaceAll("//", "/");
     }
 
+    protected String loadUrl(String url) throws IOException {
+        return IOHelper.getURL(url);
+    }
 }

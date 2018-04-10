@@ -11,16 +11,26 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+import static org.powermock.api.mockito.PowerMockito.spy;
 
 /**
  * Tests that pxweb config can point directly to a px-file.
@@ -28,24 +38,18 @@ import static org.junit.Assert.assertEquals;
  * Note! If the config is modified AFTER users have saved embedded maps/views the saved state won't match the
  *  indicator id anymore -> migration to DB is required
  */
-@RunWith(PowerMockRunner.class)
-@PrepareForTest(value = {IOHelper.class})
 public class PxwebIndicatorsParserTest {
 
-    @Before
-    public void setup() throws Exception {
-        Map<String, String> responses = new HashMap<>();
+    private static final Map<String, String> responses = new HashMap<>();
+    static {
         responses.put("https://pxnet2.stat.fi/pxweb/api/v1/fi/Kuntien_avainluvut/2017/", "px-folder-response.json");
         responses.put("https://pxnet2.stat.fi/pxweb/api/v1/fi/Kuntien_avainluvut/2017/kuntien_avainluvut_2017_aikasarja.px", "px-table-aikasarja-response.json");
         responses.put("https://pxnet2.stat.fi/pxweb/api/v1/fi/Kuntien_avainluvut/2017/kuntien_avainluvut_2017_viimeisin.px", "px-table-viimeisin-response.json");
-        PowerMockito.mockStatic(IOHelper.class);
-        for (String url : responses.keySet()) {
-            // use Mockito to set up your expectation
-            Mockito.when(IOHelper.getURL(url)).thenReturn(ResourceHelper.readStringResource(responses.get(url), PxwebIndicatorsParserTest.class));
-            Mockito.when(IOHelper.fixPath(url)).then(Mockito.CALLS_REAL_METHODS);
-        }
     }
 
+    /**
+     * Tests parsing when the configured url points directly to a px-file
+     */
     @Test
     public void testParseWithPXfileConfig() throws Exception {
         PxwebIndicatorsParser parser = getParser("config2pxfile.json");
@@ -61,6 +65,10 @@ public class PxwebIndicatorsParserTest {
         assertEquals("Should find dimension 'vuosi'", "Vuosi", indicators.get(0).getDataModel().getDimension("vuosi").getName());
     }
 
+    /**
+     * Tests parsing when the configured url points to a folder structure (NOT to a px-file) AND indicator key is NOT configured.
+     * PX-file refs are treated as indicators.
+     */
     @Test
     public void testParseConfigWithoutIndicatorKey() throws Exception {
         PxwebIndicatorsParser parser = getParser("config2folderstruct.json");
@@ -77,14 +85,20 @@ public class PxwebIndicatorsParserTest {
         // config.indicatorKey == Tiedot is parsed as dimension as well
         assertEquals("Should find dimension 'Tiedot'", "Tiedot", indicators.get(0).getDataModel().getDimension("Tiedot").getName());
     }
+
+    /**
+     * Tests parsing when the configured url points to a folder structure (NOT to a px-file) AND indicator key is configured.
+     * PX-file refs are processed like when configured url would point to a px-file AND all the indicators from all
+     *  the px-files in the whole folder structure is gathered as a single indicator list.
+     */
     @Test
     public void testParseWithFolderStructureConfig() throws Exception {
         PxwebIndicatorsParser parser = getParser("config2folderstructWithIndicatorKey.json");
         List<StatisticalIndicator> indicators = parser.parse(getLayers());
 
-        int expectedCount = 2;
-        String expectedName = "Kuntien avainluvut 1987-2016";
-        String expectedId = "kuntien_avainluvut_2017_aikasarja.px";
+        int expectedCount = 62;
+        String expectedName = "Taajama-aste, %";
+        String expectedId = "kuntien_avainluvut_2017_aikasarja.px::M408";
         assertEquals("Should find " + expectedCount + " indicators", expectedCount, indicators.size());
         assertEquals("Should find " + expectedName + " as first indicator name", expectedName, indicators.get(0).getName(PropertyUtil.getDefaultLanguage()));
         assertEquals("Should find " + expectedId + " as first indicator id", expectedId, indicators.get(0).getId());
@@ -101,7 +115,18 @@ public class PxwebIndicatorsParserTest {
     private PxwebIndicatorsParser getParser(String resource) {
         JSONObject json = ResourceHelper.readJSONResource(resource, this);
         PxwebConfig config = new PxwebConfig(json, 1);
-        return new PxwebIndicatorsParser(config);
+
+        //PxwebIndicatorsParser parser = mock(PxwebIndicatorsParser.class, Mockito.CALLS_REAL_METHODS);
+        PxwebIndicatorsParser parser = spy(new PxwebIndicatorsParser(config));
+        try {
+            for (String url : responses.keySet()) {
+                // use Mockito to set up your expectation
+                doReturn(ResourceHelper.readStringResource(responses.get(url), PxwebIndicatorsParserTest.class)).when(parser).loadUrl(url);
+                //Mockito.when(parser.loadUrl(url)).thenReturn();
+            }
+            return parser;
+        } catch (IOException ignored) {}
+        return null;
     }
 
 }
