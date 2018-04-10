@@ -44,7 +44,7 @@ public class OskariLayerWorker {
 
     /**
      * Gets all the selected map layers
-     * 
+     *
      * @param layerIdList
      * @param user
      * @param lang
@@ -53,7 +53,7 @@ public class OskariLayerWorker {
      */
     public static JSONObject getListOfMapLayersById(final List<String> layerIdList, final User user,
             final String lang, final String crs) {
-    	final List<OskariLayer> layers = mapLayerService.find(layerIdList);
+        final List<OskariLayer> layers = mapLayerService.find(layerIdList);
         return getListOfMapLayers(layers, user, lang, crs, false, false);
     }
 
@@ -67,7 +67,7 @@ public class OskariLayerWorker {
      * @return JSONObject containing the selected layers
      */
     public static JSONObject getListOfMapLayersByIdList(final List<Integer> layerIdList, final User user,
-                                                    final String lang, final String crs) {
+            final String lang, final String crs) {
         final List<OskariLayer> layers = mapLayerService.findByIdList(layerIdList);
         return getListOfMapLayers(layers, user, lang, crs, false, false);
     }
@@ -82,7 +82,7 @@ public class OskariLayerWorker {
      * @return JSONObject containing the selected layers
      */
     public static JSONObject getListOfMapLayersById(final List<String> layerIdList, final User user,
-                                                    final String lang, final boolean isPublished, final boolean isSecure, final String crs) {
+            final String lang, final boolean isPublished, final boolean isSecure, final String crs) {
         final List<OskariLayer> layers = mapLayerService.find(layerIdList);
         return getListOfMapLayers(layers, user, lang, crs, isPublished, isSecure);
     }
@@ -98,15 +98,21 @@ public class OskariLayerWorker {
      * @return JSONObject of map layers
      */
     public static JSONObject getListOfMapLayers(final List<OskariLayer> layers, final User user,
-                                                final String lang, final String crs, final boolean isPublished, final boolean isSecure) {
+            final String lang, final String crs, final boolean isPublished, final boolean isSecure) {
 
-    	final String permissionType = getPermissionType(isPublished);
+        final String permissionType = getPermissionType(isPublished);
         long start = System.currentTimeMillis();
         final List<String> resources = permissionsService.getResourcesWithGrantedPermissions(
                 Permissions.RESOURCE_TYPE_MAP_LAYER, user, permissionType);
         log.debug("View permissions loaded in", System.currentTimeMillis() - start, "ms");
 
-        start = System.currentTimeMillis();
+        PermissionCollection permissionCollection = getPermissionCollection(user);
+
+        return getListOfMapLayers(layers, user, lang, isSecure, crs, resources, permissionCollection);
+    }
+
+    public static PermissionCollection getPermissionCollection(User user) {
+        long start = System.currentTimeMillis();
         final Set<String> permissionsList = permissionsService.getPublishPermissions();
         log.debug("Publish permissions loaded in", System.currentTimeMillis() - start, "ms");
 
@@ -119,7 +125,7 @@ public class OskariLayerWorker {
         log.debug("Edit permissions loaded in", System.currentTimeMillis() - start, "ms");
 
         final Set<String> additionalPermissions = permissionsService.getAdditionalPermissions();
-    	log.debug("Loading dynamic permissions ", additionalPermissions);
+        log.debug("Loading dynamic permissions ", additionalPermissions);
         final Map<String, List<String>> dynamicPermissions = new HashMap<String, List<String>>();
         for (String permissionId : additionalPermissions) {
             final List<String> permissions = permissionsService
@@ -130,11 +136,20 @@ public class OskariLayerWorker {
             log.debug("Got " + permissions.size() + " permissions of type " + permissionId);
         }
 
+        return new PermissionCollection(permissionsList, downloadPermissionsList, editAccessList, dynamicPermissions);
+    }
+
+    public static JSONObject getListOfMapLayers(final List<OskariLayer> layers,
+            final User user,
+            final String lang,
+            final boolean isSecure,
+            final String crs,
+            final List<String> resources,
+            final PermissionCollection permissionCollection) {
         final JSONArray layersList = new JSONArray();
-        start = System.currentTimeMillis();
+        long start = System.currentTimeMillis();
         for (OskariLayer layer : layers) {
-        	
-            final String permissionKey = layer.getType()+ "+" + layer.getUrl() + "+" + layer.getName();
+            final String permissionKey = getPermissionKey(layer);
             if (layer.getParentId() == -1 && !resources.contains(permissionKey)) {
                 // not permitted if resource NOT found in permissions!
                 // sublayers can pass through since their parentId != -1
@@ -149,7 +164,7 @@ public class OskariLayerWorker {
                 // TODO: handle inside formatter now that crs is available there
                 transformWKTGeom(layerJson, crs);
 
-                JSONObject permissions = getPermissions(user, permissionKey, permissionsList, downloadPermissionsList, editAccessList, dynamicPermissions);
+                JSONObject permissions = getPermissions(user, permissionKey, permissionCollection);
                 JSONHelper.putValue(layerJson, "permissions", permissions);
                 if(permissions.optBoolean("edit")) {
                     // has edit rights, alter JSON/add info for admin bundle
@@ -172,6 +187,10 @@ public class OskariLayerWorker {
         return result;
     }
 
+    public static String getPermissionKey(OskariLayer layer) {
+        return layer.getType() + "+" + layer.getUrl() + "+" + layer.getName();
+    }
+
     /**
      * Convenience method to get JSON for single layer.
      * TODO: maybe tune the implementation a bit
@@ -181,7 +200,7 @@ public class OskariLayerWorker {
      * @return
      */
     public static JSONObject getMapLayerJSON(final OskariLayer layer, final User user,
-                                                final String lang, final String crs) {
+            final String lang, final String crs) {
 
         final List<OskariLayer> list = new ArrayList<OskariLayer>(1);
         list.add(layer);
@@ -249,21 +268,6 @@ public class OskariLayerWorker {
             log.debug("Error transforming coverage to", mapSRS, "from", wktWGS84);
         }
     }
-    
-    /**
-     * Create permission information for JSON
-     *
-     * @param user               Current user
-     * @param layerPermissionKey Layer permission key
-     * @param permissionsList    List of user publish permissions
-     * @param downloadPermissionsList    List of user download permissions
-     * @param editAccessList     List of user edit permissions
-     */
-    public static JSONObject getPermissions(final User user, final String layerPermissionKey,
-                                             final Set<String> permissionsList, final Set<String> downloadPermissionsList, final Set<String> editAccessList) {
-    
-    	return getPermissions(user, layerPermissionKey, permissionsList, downloadPermissionsList, editAccessList, null);
-    } 
 
     /**
      * Create permission information for JSON
@@ -273,10 +277,22 @@ public class OskariLayerWorker {
      * @param permissionsList    List of user publish permissions
      * @param downloadPermissionsList    List of user download permissions
      * @param editAccessList     List of user edit permissions
-     * @param dynamicPermissions 
      */
     public static JSONObject getPermissions(final User user, final String layerPermissionKey,
-                                             final Set<String> permissionsList, final Set<String> downloadPermissionsList, final Set<String> editAccessList, Map<String, List<String>> dynamicPermissions) {
+            final Set<String> permissionsList, final Set<String> downloadPermissionsList, final Set<String> editAccessList) {
+
+        return getPermissions(user, layerPermissionKey, new PermissionCollection(permissionsList, downloadPermissionsList, editAccessList, null));
+    }
+
+    /**
+     * Create permission information for JSON
+     *
+     * @param user                 Current user
+     * @param layerPermissionKey   Layer permission key
+     * @param permissionCollection Wrapper containing permissionsList, downloadPermissionsList,
+     *                              editAccessList, dynamicPermissions
+     */
+    public static JSONObject getPermissions(final User user, final String layerPermissionKey, final PermissionCollection permissionCollection) {
 
         final JSONObject permission = new JSONObject();
         if (user.isAdmin()) {
@@ -287,29 +303,31 @@ public class OskariLayerWorker {
             JSONHelper.putValue(permission, "publish", NO_PUBLICATION_PERMISSION);
         } else {
             for (Role role : user.getRoles()) {
-                if (editAccessList != null && editAccessList.contains(layerPermissionKey + ":" + role.getId())) {
+                if (permissionCollection.getEditAccessList() != null
+                        && permissionCollection.getEditAccessList().contains(layerPermissionKey + ":" + role.getId())) {
                     JSONHelper.putValue(permission, "edit", true);
                 }
-                if (permissionsList != null && permissionsList.contains(layerPermissionKey + ":" + role.getId())) {
+                if (permissionCollection.getPermissionsList() != null
+                        && permissionCollection.getPermissionsList().contains(layerPermissionKey + ":" + role.getId())) {
                     JSONHelper.putValue(permission, "publish", PUBLICATION_PERMISSION_OK);
                 }
-
-                if (downloadPermissionsList != null && downloadPermissionsList.contains(layerPermissionKey + ":" + role.getId())) {
+                if (permissionCollection.getDownloadPermissionsList() != null
+                        && permissionCollection.getDownloadPermissionsList().contains(layerPermissionKey + ":" + role.getId())) {
                     JSONHelper.putValue(permission, "download", DOWNLOAD_PERMISSION_OK);
                 }
             }
         }
-		if (dynamicPermissions != null) {
-			for (String permissionType : dynamicPermissions.keySet()) {
-				List<String> permissionList = dynamicPermissions
-						.get(permissionType);
-				if (permissionList != null
-						&& permissionList.contains(layerPermissionKey)) {
-					JSONHelper.putValue(permission, permissionType, true);
-				}
-			}
-		}
-        
+        Map<String, List<String>> dynamicPermissions = permissionCollection.getDynamicPermissions();
+        if (dynamicPermissions != null) {
+            for (Map.Entry<String, List<String>> entry : dynamicPermissions.entrySet()) {
+                String permissionType = entry.getKey();
+                List<String> permissionList = entry.getValue();
+                if (permissionList != null && permissionList.contains(layerPermissionKey)) {
+                    JSONHelper.putValue(permission, permissionType, true);
+                }
+            }
+        }
+
         return permission;
     }
 
@@ -343,7 +361,7 @@ public class OskariLayerWorker {
         return reLayers;
     }
 
-    private static String getPermissionType(final boolean isPublished) {
+    public static String getPermissionType(final boolean isPublished) {
         if (isPublished) {
             return Permissions.PERMISSION_TYPE_VIEW_PUBLISHED;
         }
