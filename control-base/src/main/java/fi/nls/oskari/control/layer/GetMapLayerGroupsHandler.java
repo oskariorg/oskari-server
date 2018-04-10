@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 
 import fi.nls.oskari.map.layer.OskariLayerService;
 import fi.nls.oskari.map.layer.OskariLayerServiceIbatisImpl;
+import fi.nls.oskari.util.EnvHelper;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -76,7 +77,7 @@ public class GetMapLayerGroupsHandler extends ActionHandler {
         final User user = params.getUser();
         final String lang = params.getHttpParam(PARAM_LANGUAGE, params.getLocale().getLanguage());
         final String crs = params.getHttpParam(PARAM_SRS);
-        final boolean isSecure = false;
+        final boolean isSecure = EnvHelper.isSecure(params);
         final boolean isPublished = false;
 
         final String permissionType = OskariLayerWorker.getPermissionType(isPublished);
