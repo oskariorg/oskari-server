@@ -8,6 +8,7 @@ import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.test.util.ResourceHelper;
 import org.json.JSONObject;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
@@ -42,9 +43,12 @@ public class PxwebIndicatorsParserTest {
 
     private static final Map<String, String> responses = new HashMap<>();
     static {
+        // tk
         responses.put("https://pxnet2.stat.fi/pxweb/api/v1/fi/Kuntien_avainluvut/2017/", "px-folder-response.json");
         responses.put("https://pxnet2.stat.fi/pxweb/api/v1/fi/Kuntien_avainluvut/2017/kuntien_avainluvut_2017_aikasarja.px", "px-table-aikasarja-response.json");
         responses.put("https://pxnet2.stat.fi/pxweb/api/v1/fi/Kuntien_avainluvut/2017/kuntien_avainluvut_2017_viimeisin.px", "px-table-viimeisin-response.json");
+        //hki
+        //responses.put("http://api.aluesarjat.fi/PXWeb/api/v1/fi/Helsingin%20seudun%20tilastot/P%C3%A4%C3%A4kaupunkiseutu%20alueittain", "");
     }
 
     /**
@@ -71,7 +75,7 @@ public class PxwebIndicatorsParserTest {
      */
     @Test
     public void testParseConfigWithoutIndicatorKey() throws Exception {
-        PxwebIndicatorsParser parser = getParser("config2folderstruct.json");
+        PxwebIndicatorsParser parser = getParser("config2folderstruct_tk.json");
         List<StatisticalIndicator> indicators = parser.parse(getLayers());
 
         int expectedCount = 2;
@@ -84,6 +88,30 @@ public class PxwebIndicatorsParserTest {
         assertEquals("Should find dimension 'vuosi'", "Vuosi", indicators.get(0).getDataModel().getDimension("vuosi").getName());
         // config.indicatorKey == Tiedot is parsed as dimension as well
         assertEquals("Should find dimension 'Tiedot'", "Tiedot", indicators.get(0).getDataModel().getDimension("Tiedot").getName());
+    }
+
+    /**
+     * Tests parsing when the configured url points to a DEEP folder structure (NOT to a px-file) AND indicator key is NOT configured.
+     * PX-file refs are treated as indicators.
+     *
+     * TODO: Should indicator id be prefixed with the path it was found in (relative to root url configuration)?
+     */
+    @Test
+    @Ignore("Assumes network connectivity")
+    public void testParseConfigWithoutIndicatorKeyHKI() throws Exception {
+        PxwebIndicatorsParser parser = getParser("config2folderstruct_hki.json");
+        List<StatisticalIndicator> indicators = parser.parse(getLayers());
+        int expectedCount = 16;
+        String expectedName = "Helsingin asuntokuntien tulot asuntokunnan elinvaiheen ja alueen mukaan 2014-";
+        String expectedId = "A01AS_HKI_Asuntokuntien_tulot_elinvaihe.px";
+        assertEquals("Should find " + expectedCount + " indicators", expectedCount, indicators.size());
+        assertEquals("Should find " + expectedName + " as first indicator name", expectedName, indicators.get(0).getName(PropertyUtil.getDefaultLanguage()));
+        assertEquals("Should find " + expectedId + " as first indicator id", expectedId, indicators.get(0).getId());
+        assertEquals("Should find three dimensions", 3, indicators.get(0).getDataModel().getDimensions().size());
+        assertEquals("Should find dimension 'vuosi'", "Vuosi", indicators.get(0).getDataModel().getDimension("vuosi").getName());
+        // config.indicatorKey == Tiedot is parsed as dimension as well
+        assertEquals("Should find dimension 'Elinvaihe'", "Elinvaihe", indicators.get(0).getDataModel().getDimension("Elinvaihe").getName());
+        assertEquals("Should find dimension 'Tieto'", "Tieto", indicators.get(0).getDataModel().getDimension("Tieto").getName());
     }
 
     /**

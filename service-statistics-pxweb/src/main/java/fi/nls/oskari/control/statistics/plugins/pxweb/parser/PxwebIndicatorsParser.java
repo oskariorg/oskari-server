@@ -173,6 +173,9 @@ public class PxwebIndicatorsParser {
     protected PxTableItem getPxTable(String path, String tableId) throws IOException {
         String url = getUrl(path);
         if(!url.endsWith(tableId)) {
+            if(!url.endsWith("/")) {
+                url = url + "/";
+            }
             url = url + tableId;
         }
         String json = loadUrl(url);
@@ -230,7 +233,7 @@ public class PxwebIndicatorsParser {
             // Example: "http://pxweb.hel.ninja/PXWeb/api/v1/en/hri/hri/"
             return config.getUrl();
         }
-        String url = config.getUrl() + "/" + IOHelper.urlEncode(path);
+        String url = config.getUrl() + "/" + IOHelper.urlEncode(path).replace("+", "%20").replace("%2F", "/");
         return IOHelper.fixPath(url);
     }
 
@@ -239,7 +242,7 @@ public class PxwebIndicatorsParser {
         if(path == null) {
             return nextPart;
         }
-        String url = path + "/" +  IOHelper.urlEncode(nextPart);
+        String url = path + "/" +  IOHelper.urlEncode(nextPart).replace("+", "%20").replace("%2F", "/");
         return url.replaceAll("//", "/");
     }
 
