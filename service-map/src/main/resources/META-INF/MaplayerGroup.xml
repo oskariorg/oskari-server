@@ -64,7 +64,7 @@
         select maplayerid from oskari_maplayer_group_link where groupid = #id# order by order_number
     </select>
 
-    <select id="findByName" resultClass="MaplayerGroupResult" parameterClass="String">
+    <select id="findByName" resultMap="MaplayerGroupResult" parameterClass="String">
         SELECT id, locale, parentid, selectable, order_number FROM oskari_maplayer_group_link WHERE locale LIKE '%' || #name# || '%';
     </select>
     
