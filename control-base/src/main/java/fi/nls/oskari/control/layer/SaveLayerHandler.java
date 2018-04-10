@@ -1,6 +1,5 @@
 package fi.nls.oskari.control.layer;
 
-import fi.mml.map.mapwindow.service.db.OskariMapLayerGroupService;
 import fi.nls.oskari.service.capabilities.OskariLayerCapabilities;
 import fi.mml.map.mapwindow.service.wms.LayerNotFoundInCapabilitiesException;
 import fi.mml.map.mapwindow.service.wms.WebMapService;
@@ -12,7 +11,6 @@ import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.cache.JedisManager;
 import fi.nls.oskari.control.*;
 import fi.nls.oskari.domain.User;
-import fi.nls.oskari.domain.map.MaplayerGroup;
 import fi.nls.oskari.domain.map.DataProvider;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.domain.map.wfs.WFSLayerConfiguration;
@@ -21,6 +19,8 @@ import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.data.domain.OskariLayerResource;
 import fi.nls.oskari.map.layer.DataProviderService;
 import fi.nls.oskari.map.layer.OskariLayerService;
+import fi.nls.oskari.map.layer.group.link.OskariLayerGroupLink;
+import fi.nls.oskari.map.layer.group.link.OskariLayerGroupLinkService;
 import fi.nls.oskari.map.view.ViewService;
 import fi.nls.oskari.map.view.util.ViewHelper;
 import fi.nls.oskari.permission.domain.Permission;
@@ -41,6 +41,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static fi.nls.oskari.control.ActionConstants.PARAM_SRS;
 
@@ -60,7 +61,7 @@ public class SaveLayerHandler extends ActionHandler {
     private WFSLayerConfigurationService wfsLayerService = ServiceFactory.getWfsLayerService();
     private PermissionsService permissionsService = ServiceFactory.getPermissionsService();
     private DataProviderService dataProviderService = ServiceFactory.getDataProviderService();
-    private OskariMapLayerGroupService oskariMapLayerGroupService = ServiceFactory.getOskariMapLayerGroupService();
+    private OskariLayerGroupLinkService layerGroupLinkService = ServiceFactory.getOskariLayerGroupLinkService();
     private CapabilitiesCacheService capabilitiesService = ServiceFactory.getCapabilitiesCacheService();
     private WFSParserConfigs wfsParserConfigs = new WFSParserConfigs();
     private static final Logger LOG = LogFactory.getLogger(SaveLayerHandler.class);
@@ -184,6 +185,12 @@ public class SaveLayerHandler extends ActionHandler {
 
                 ml.setUpdated(new Date(System.currentTimeMillis()));
                 mapLayerService.update(ml);
+
+                int[] groupIds = getMaplayerGroupIds(params.getHttpParam(PARAM_MAPLAYER_GROUPS, "-1"));
+                layerGroupLinkService.deleteLinksByLayerId(ml.getId());
+                List<OskariLayerGroupLink> links = getMaplayerGroupLinks(ml.getId(), groupIds);
+                layerGroupLinkService.insertAll(links);
+
                 //TODO: WFS spesific property update
                 if (OskariLayer.TYPE_WFS.equals(ml.getType())) {
                     final WFSLayerConfiguration wfsl = wfsLayerService.findConfiguration(ml.getId());
@@ -229,6 +236,10 @@ public class SaveLayerHandler extends ActionHandler {
                 int id = mapLayerService.insert(ml);
                 ml.setId(id);
 
+                int[] groupIds = getMaplayerGroupIds(params.getHttpParam(PARAM_MAPLAYER_GROUPS, "-1"));
+                List<OskariLayerGroupLink> links = getMaplayerGroupLinks(ml.getId(), groupIds);
+                layerGroupLinkService.insertAll(links);
+
                 if(ml.isCollection()) {
                     // update the name with the id for permission mapping
                     ml.setName(ml.getId() + "_group");
@@ -272,6 +283,22 @@ public class SaveLayerHandler extends ActionHandler {
                 throw new ActionException(ERROR_UPDATE_OR_INSERT_FAILED, e);
             }
         }
+    }
+
+    private List<OskariLayerGroupLink> getMaplayerGroupLinks(final int layerId, final int[] groupIds) {
+        if (groupIds == null || groupIds.length == 0) {
+            return Collections.emptyList();
+        }
+        return Arrays.stream(groupIds)
+                .mapToObj(groupId -> new OskariLayerGroupLink(layerId, groupId))
+                .collect(Collectors.toList());
+    }
+
+    private static int[] getMaplayerGroupIds(String maplayerGroups) {
+        return Arrays.stream(maplayerGroups.split(","))
+                .mapToInt(gid -> ConversionHelper.getInt(gid, -1))
+                .filter(gid -> gid >= 0)
+                .toArray();
     }
 
     /**
@@ -322,13 +349,6 @@ public class SaveLayerHandler extends ActionHandler {
                 String title = params.getHttpParam(paramName);
                 ml.setTitle(lang, title);
             }
-        }
-
-        String groupId = params.getHttpParam(PARAM_MAPLAYER_GROUPS, "-1");
-        ml.emptyMaplayerGroups();
-        for (String id: groupId.split(",")) {
-            MaplayerGroup maplayerGroup = oskariMapLayerGroupService.find(ConversionHelper.getInt(id, -1));
-            ml.addGroup(maplayerGroup);
         }
 
         ml.setVersion(params.getHttpParam(PARAM_VERSION, ""));
@@ -637,10 +657,10 @@ public class SaveLayerHandler extends ActionHandler {
     }
 
     private void addPermissionsForRoles(final OskariLayer ml,
-                                        final Set<Long> externalIds,
-                                        final Set<Long> publishRoleIds,
-                                        final Set<Long> downloadRoleIds,
-                                        final Set<Long> viewEmbeddedRoleIds) {
+            final Set<Long> externalIds,
+            final Set<Long> publishRoleIds,
+            final Set<Long> downloadRoleIds,
+            final Set<Long> viewEmbeddedRoleIds) {
 
         OskariLayerResource res = new OskariLayerResource(ml);
         // insert permissions

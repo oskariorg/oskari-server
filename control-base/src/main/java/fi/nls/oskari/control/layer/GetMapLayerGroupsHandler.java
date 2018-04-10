@@ -3,13 +3,20 @@ package fi.nls.oskari.control.layer;
 import static fi.nls.oskari.control.ActionConstants.PARAM_LANGUAGE;
 import static fi.nls.oskari.control.ActionConstants.PARAM_SRS;
 
-import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import fi.nls.oskari.map.layer.OskariLayerService;
 import fi.nls.oskari.map.layer.OskariLayerServiceIbatisImpl;
+import fi.nls.oskari.map.layer.group.link.OskariLayerGroupLink;
+import fi.nls.oskari.map.layer.group.link.OskariLayerGroupLinkService;
+import fi.nls.oskari.map.layer.group.link.OskariLayerGroupLinkServiceMybatisImpl;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -28,8 +35,6 @@ import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.domain.User;
 import fi.nls.oskari.domain.map.MaplayerGroup;
 import fi.nls.oskari.domain.map.OskariLayer;
-import fi.nls.oskari.log.LogFactory;
-import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.util.ResponseHelper;
 
 /**
@@ -38,12 +43,13 @@ import fi.nls.oskari.util.ResponseHelper;
 @OskariActionRoute("GetHierarchicalMapLayerGroups")
 public class GetMapLayerGroupsHandler extends ActionHandler {
 
-    private static Logger log = LogFactory.getLogger(GetMapLayerGroupsHandler.class);
-
     private static final String KEY_GROUPS = "groups";
+    private static final String KEY_LAYERS = "layers";
+
     private OskariLayerService layerService;
     private PermissionsService permissionsService;
-    private OskariMapLayerGroupService oskariMapLayerGroupService;
+    private OskariMapLayerGroupService groupService;
+    private OskariLayerGroupLinkService linkService;
 
     public void setLayerService(OskariLayerService layerService) {
         this.layerService = layerService;
@@ -53,8 +59,12 @@ public class GetMapLayerGroupsHandler extends ActionHandler {
         this.permissionsService = permissionsService;
     }
 
-    public void setOskariMapLayerGroupService(final OskariMapLayerGroupService service) {
-        oskariMapLayerGroupService = service;
+    public void setGroupService(OskariMapLayerGroupService groupService) {
+        this.groupService = groupService;
+    }
+
+    public void setLinkService(OskariLayerGroupLinkService linkService) {
+        this.linkService = linkService;
     }
 
     @Override
@@ -66,8 +76,11 @@ public class GetMapLayerGroupsHandler extends ActionHandler {
         if (permissionsService == null) {
             setPermissionsService(new PermissionsServiceIbatisImpl());
         }
-        if (oskariMapLayerGroupService == null) {
-            setOskariMapLayerGroupService(new OskariMapLayerGroupServiceIbatisImpl());
+        if (groupService == null) {
+            setGroupService(new OskariMapLayerGroupServiceIbatisImpl());
+        }
+        if (linkService == null) {
+            setLinkService(new OskariLayerGroupLinkServiceMybatisImpl());
         }
     }
 
@@ -81,61 +94,65 @@ public class GetMapLayerGroupsHandler extends ActionHandler {
 
         final String permissionType = OskariLayerWorker.getPermissionType(isPublished);
         final List<String> resources = permissionsService.getResourcesWithGrantedPermissions(Permissions.RESOURCE_TYPE_MAP_LAYER, user, permissionType);
+        final Set<String> resourcesSet = new HashSet<>(resources);
 
-        final Map<Integer, OskariLayer> layersById = layerService.findAll().stream()
-                .filter(layer -> layer.getParentId() != -1 || resources.contains(OskariLayerWorker.getPermissionKey(layer)))
-                .collect(Collectors.toMap(layer -> layer.getId(), layer -> layer));
-
+        final List<OskariLayer> layers = layerService.findAll().stream()
+                .filter(layer -> layer.isSublayer() || resourcesSet.contains(OskariLayerWorker.getPermissionKey(layer)))
+                .collect(Collectors.toList());
         final PermissionCollection permissionCollection = OskariLayerWorker.getPermissionCollection(user);
 
-        log.debug("Getting layer groups");
-        JSONArray json = getGroupJSON(layersById, user, lang, isSecure, crs, resources, permissionCollection, -1);
-        log.debug("Got layer groups");
-        ResponseHelper.writeResponse(params, json);
+        final JSONObject response = OskariLayerWorker.getListOfMapLayers(layers, user, lang, isSecure, crs, resources, permissionCollection);
+
+        final List<MaplayerGroup> groups = groupService.findAll();
+        final int[] layerIds = layers.stream().mapToInt(OskariLayer::getId).toArray();
+        Arrays.sort(layerIds);
+        final Map<Integer, List<MaplayerGroup>> groupsByParentId = groups.stream()
+                .collect(Collectors.groupingBy(MaplayerGroup::getParentId));
+
+        try {
+            response.put(KEY_GROUPS, getGroupJSON(groupsByParentId, layerIds, -1));
+            ResponseHelper.writeResponse(params, response);
+        } catch (JSONException e) {
+            throw new ActionException("Failed to add groups", e);
+        }
     }
 
 
     /**
-     * Get group JSON recursive
-     *
-     * @param parentGroupId parent id
-     * @param params   params
-     * @return
-     * @throws ActionException
+     * Get groups recursively
      */
-    private JSONArray getGroupJSON(final Map<Integer, OskariLayer> layersById, final User user,
-            final String lang, final boolean isSecure, final String crs, final List<String> resources,
-            final PermissionCollection permissionCollection, int parentGroupId) throws ActionException {
-        try {
-            List<MaplayerGroup> layerGroups = oskariMapLayerGroupService.findByParentId(parentGroupId);
-            JSONArray json = new JSONArray();
-            for (MaplayerGroup group : layerGroups) {
-                int groupId = group.getId();
-
-                List<Integer> layerIds = oskariMapLayerGroupService.findMaplayersByGroup(groupId);
-                List<OskariLayer> groupsLayers = new ArrayList<>();
-                for (Integer layerId : layerIds) {
-                    OskariLayer layer = layersById.get(layerId);
-                    if (layer != null) {
-                        groupsLayers.add(layer);
-                    }
-                }
-
-                final JSONObject layers = OskariLayerWorker.getListOfMapLayers(groupsLayers, user, lang, isSecure, crs, resources, permissionCollection);
-                JSONArray layerList = layers.optJSONArray(OskariLayerWorker.KEY_LAYERS);
-                group.setLayers(layerList);
-
-                JSONObject groupJson = group.getAsJSON();
-
-                JSONArray subGroupsJSON = getGroupJSON(layersById, user, lang, isSecure, crs, resources, permissionCollection, groupId);
-                groupJson.put(KEY_GROUPS, subGroupsJSON);
-
-                json.put(groupJson);
-            }
-            return json;
-        } catch (JSONException ex) {
-            throw new ActionException("Cannot get groupped layerlist", ex);
+    private JSONArray getGroupJSON(Map<Integer, List<MaplayerGroup>> groupsByParentId, int[] layerIds, int parentGroupId) throws JSONException {
+        List<MaplayerGroup> groups = groupsByParentId.get(parentGroupId);
+        if (groups == null || groups.isEmpty()) {
+            return null;
         }
+        JSONArray json = new JSONArray();
+        groups.sort(Comparator.comparing(MaplayerGroup::getOrderNumber));
+        for (MaplayerGroup group : groups) {
+            int groupId = group.getId();
+            JSONObject groupAsJson = group.getAsJSON();
+
+            JSONArray subGroups = getGroupJSON(groupsByParentId, layerIds, groupId);
+            if (subGroups != null) {
+                groupAsJson.put(KEY_GROUPS, subGroups);
+            }
+
+            List<Integer> groupsLayerIds = linkService.findByGroupId(groupId).stream()
+                    .filter(l -> contains(layerIds, l.getLayerId()))
+                    .sorted(Comparator.comparingInt(OskariLayerGroupLink::getOrderNumber))
+                    .map(OskariLayerGroupLink::getLayerId)
+                    .collect(Collectors.toList());
+            if (!groupsLayerIds.isEmpty()) {
+                groupAsJson.put(KEY_LAYERS, groupsLayerIds);
+            }
+
+            json.put(groupAsJson);
+        }
+        return json;
+    }
+
+    private boolean contains(int[] layerIds, int layerId) {
+        return Arrays.binarySearch(layerIds, layerId) >= 0;
     }
 
 }

@@ -63,6 +63,10 @@
     <select id="findMaplayersByGroup" resultClass="int" parameterClass="int">
         select maplayerid from oskari_maplayer_group_link where groupid = #id# order by order_number
     </select>
+
+    <select id="findByName" resultClass="MaplayerGroupResult" parameterClass="String">
+        SELECT id, locale, parentid, selectable, order_number FROM oskari_maplayer_group_link WHERE locale LIKE '%' || #name# || '%';
+    </select>
     
     <statement id="insert" parameterMap="MaplayerGroupInsertParameter" resultClass="int">
         insert into oskari_maplayer_group (locale, parentid, selectable)
@@ -91,16 +95,8 @@
     </update>
     
     <delete id="delete" parameterClass="int">
-        delete from oskari_maplayer_group where id = #id#
+        DELETE FROM oskari_maplayer_group
+        WHERE id = #id#
     </delete>
 
-    <delete id="removeGroupsLinks" parameterClass="long">
-        DELETE FROM oskari_maplayer_group_link WHERE maplayerid = #id#;
-    </delete>
-
-    <statement id="linkGroupToLayer" parameterClass="java.util.HashMap">
-        insert into oskari_maplayer_group_link (maplayerid, groupid) values (#layerId#, #groupId#)
-    </statement>
-
-    
 </sqlMap>

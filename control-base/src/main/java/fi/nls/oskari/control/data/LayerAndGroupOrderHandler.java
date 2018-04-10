@@ -1,16 +1,5 @@
 package fi.nls.oskari.control.data;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-
-import javax.servlet.http.HttpServletRequest;
-
 import fi.nls.oskari.control.*;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -20,20 +9,19 @@ import fi.mml.map.mapwindow.service.db.OskariMapLayerGroupService;
 import fi.mml.map.mapwindow.service.db.OskariMapLayerGroupServiceIbatisImpl;
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.domain.map.MaplayerGroup;
-import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.map.layer.OskariLayerService;
-import fi.nls.oskari.map.layer.OskariLayerServiceIbatisImpl;
-import fi.nls.oskari.util.IOHelper;
-import fi.nls.oskari.util.ResponseHelper;
+import fi.nls.oskari.map.layer.group.link.OskariLayerGroupLink;
+import fi.nls.oskari.map.layer.group.link.OskariLayerGroupLinkService;
+import fi.nls.oskari.map.layer.group.link.OskariLayerGroupLinkServiceMybatisImpl;
 
 /**
  * CRUD for layer and group order handling. Methods require admin user.
  */
 @OskariActionRoute("LayerAndGroupOrder")
 public class LayerAndGroupOrderHandler extends RestActionHandler {
-    private static Logger log = LogFactory.getLogger(LayerAndGroupOrderHandler.class);
+
+    private static final Logger log = LogFactory.getLogger(LayerAndGroupOrderHandler.class);
 
     private static final String KEY_PARENT = "parent";
     private static final String KEY_ORDERS = "orders";
@@ -42,27 +30,25 @@ public class LayerAndGroupOrderHandler extends RestActionHandler {
     private static final String KEY_OLD_PARENT = "oldParent";
     private static final String TYPE_LAYER = "layer";
 
-    private OskariMapLayerGroupService oskariMapLayerGroupService;
-    private OskariLayerService oskariLayerService;
+    private OskariMapLayerGroupService groupService;
+    private OskariLayerGroupLinkService linkService;
 
-
-    public void setOskariMapLayerGroupService(final OskariMapLayerGroupService service) {
-        oskariMapLayerGroupService = service;
+    public void setGroupService(OskariMapLayerGroupService groupService) {
+        this.groupService = groupService;
     }
 
-    public void setOskariLayerService(final OskariLayerService service) {
-        oskariLayerService = service;
+    public void setLinkService(final OskariLayerGroupLinkService linkService) {
+        this.linkService = linkService;
     }
 
     @Override
     public void init() {
         // setup service if it hasn't been initialized
-        if (oskariMapLayerGroupService == null) {
-            setOskariMapLayerGroupService(new OskariMapLayerGroupServiceIbatisImpl());
+        if (groupService == null) {
+            setGroupService(new OskariMapLayerGroupServiceIbatisImpl());
         }
-        // setup service if it hasn't been initialized
-        if (oskariLayerService == null) {
-            setOskariLayerService(new OskariLayerServiceIbatisImpl());
+        if (linkService == null) {
+            setLinkService(new OskariLayerGroupLinkServiceMybatisImpl());
         }
     }
 
@@ -77,11 +63,9 @@ public class LayerAndGroupOrderHandler extends RestActionHandler {
         params.requireAdminUser();
         log.debug("Updating layer/group order");
         JSONObject orderJSON = params.getPayLoadJSON();
-
         try {
             int parentID = orderJSON.getInt(KEY_PARENT);
             JSONArray orders = orderJSON.getJSONArray(KEY_ORDERS);
-
             // change main groups orders
             if (parentID == -1) {
                 updateGroupOrder(orders);
@@ -105,16 +89,16 @@ public class LayerAndGroupOrderHandler extends RestActionHandler {
             String type = order.getString(KEY_TYPE);
             int id = order.getInt(KEY_ID);
             if (TYPE_LAYER.equals(type)) {
-                if (order.has(KEY_OLD_PARENT)) {
-                    oskariLayerService.updateGroup(id, order.getInt(KEY_OLD_PARENT), parentID);
-                }
-                oskariLayerService.updateOrder(id, parentID, i);
+                int groupId = order.has(KEY_OLD_PARENT) ? order.getInt(KEY_OLD_PARENT) : parentID;
+                OskariLayerGroupLink old = new OskariLayerGroupLink(id, groupId);
+                OskariLayerGroupLink link = new OskariLayerGroupLink(id, parentID, i);
+                linkService.replace(old, link);
             } else {
-                MaplayerGroup currentGroup = oskariMapLayerGroupService.find(id);
+                MaplayerGroup currentGroup = groupService.find(id);
                 currentGroup.setOrderNumber(i);
-                oskariMapLayerGroupService.updateOrder(currentGroup);
+                groupService.updateOrder(currentGroup);
                 if (order.has(KEY_OLD_PARENT)) {
-                    oskariMapLayerGroupService.updateGroupParent(id, parentID);
+                    groupService.updateGroupParent(id, parentID);
                 }
             }
         }
@@ -130,9 +114,9 @@ public class LayerAndGroupOrderHandler extends RestActionHandler {
         for (int i = 0; i < orders.length(); i++) {
             JSONObject order = orders.getJSONObject(i);
             int groupId = order.getInt(KEY_ID);
-            MaplayerGroup currentGroup = oskariMapLayerGroupService.find(groupId);
+            MaplayerGroup currentGroup = groupService.find(groupId);
             currentGroup.setOrderNumber(i);
-            oskariMapLayerGroupService.updateOrder(currentGroup);
+            groupService.updateOrder(currentGroup);
         }
     }
 }

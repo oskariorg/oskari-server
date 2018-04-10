@@ -142,7 +142,6 @@
 
         l.created,
         l.updated,
-        gl.order_number,
 
         l.capabilities_last_updated,
         l.capabilities_update_rate_sec
@@ -150,7 +149,6 @@
         FROM
         oskari_maplayer l
         LEFT OUTER JOIN oskari_maplayer_metadata m ON  m.metadataid = l.metadataId
-        LEFT OUTER JOIN oskari_maplayer_group_link gl ON gl.maplayerid = l.id
         WHERE
         l.id = #id# OR l.parentId = #id#
         ORDER BY l.parentId ASC
@@ -199,7 +197,6 @@
 
         l.created,
         l.updated,
-        gl.order_number,
 
         l.capabilities_last_updated,
         l.capabilities_update_rate_sec
@@ -207,7 +204,6 @@
         FROM
         oskari_maplayer l 
         LEFT OUTER JOIN oskari_maplayer_metadata m ON  m.metadataid = l.metadataId
-        LEFT OUTER JOIN oskari_maplayer_group_link gl ON gl.maplayerid = l.id
         WHERE
         l.parentId = #id#
 
@@ -256,7 +252,6 @@
 
         l.created,
         l.updated,
-        gl.order_number,
 
         l.capabilities_last_updated,
         l.capabilities_update_rate_sec
@@ -264,7 +259,6 @@
         FROM
         oskari_maplayer l 
         LEFT OUTER JOIN oskari_maplayer_metadata m ON  m.metadataid = l.metadataId
-        LEFT OUTER JOIN oskari_maplayer_group_link gl ON gl.maplayerid = l.id
         WHERE
         l.externalId = #id#
         AND l.parentId = -1
@@ -314,7 +308,6 @@
 
         l.created,
         l.updated,
-        gl.order_number,
 
         l.capabilities_last_updated,
         l.capabilities_update_rate_sec
@@ -322,7 +315,6 @@
         FROM
         oskari_maplayer l 
         LEFT OUTER JOIN oskari_maplayer_metadata m ON  m.metadataid = l.metadataId
-        LEFT OUTER JOIN oskari_maplayer_group_link gl ON gl.maplayerid = l.id
         WHERE
         m.metadataid = #id#
         AND l.parentId = -1
@@ -372,7 +364,6 @@
 
         l.created,
         l.updated,
-        gl.order_number,
 
         l.capabilities_last_updated,
         l.capabilities_update_rate_sec
@@ -380,7 +371,6 @@
         FROM
         oskari_maplayer l 
         LEFT OUTER JOIN oskari_maplayer_metadata m ON  m.metadataid = l.metadataId
-        LEFT OUTER JOIN oskari_maplayer_group_link gl ON gl.maplayerid = l.id
         WHERE
         l.name = #name#
         AND  l.url = #url#
@@ -429,7 +419,6 @@
 
     l.created,
     l.updated,
-    gl.order_number,
 
     l.capabilities_last_updated,
     l.capabilities_update_rate_sec
@@ -437,7 +426,6 @@
     FROM
     oskari_maplayer l
     LEFT OUTER JOIN oskari_maplayer_metadata m ON  m.metadataid = l.metadataId
-    LEFT OUTER JOIN oskari_maplayer_group_link gl ON gl.maplayerid = l.id
     <dynamic>
         <isNotEmpty property="id">
             WHERE
@@ -491,7 +479,6 @@
 
         l.created,
         l.updated,
-    	gl.order_number,
 
         l.capabilities_last_updated,
         l.capabilities_update_rate_sec
@@ -499,8 +486,6 @@
         FROM
         oskari_maplayer l
         LEFT OUTER JOIN oskari_maplayer_metadata m ON  m.metadataid = l.metadataId
-    	LEFT OUTER JOIN oskari_maplayer_group_link gl ON gl.maplayerid = l.id
-
         <dynamic prepend="WHERE">
             <isNotEmpty  property="intList" prepend="OR">
                 l.id in
@@ -567,7 +552,6 @@
 
     l.created,
     l.updated,
-   	gl.order_number,
 
     l.capabilities_last_updated,
     l.capabilities_update_rate_sec
@@ -575,7 +559,6 @@
     FROM
     oskari_maplayer l
     LEFT OUTER JOIN oskari_maplayer_metadata m ON  m.metadataid = l.metadataId
-    LEFT OUTER JOIN oskari_maplayer_group_link gl ON gl.maplayerid = l.id
     WHERE capabilities_update_rate_sec > 0
     ORDER BY l.parentId ASC
 </select>
@@ -634,22 +617,6 @@
         values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
     </statement>
     
-    <update id="updateOrder" parameterClass="java.util.HashMap">
-        UPDATE oskari_maplayer_group_link
-        SET    order_number = #orderNumber#
-        WHERE maplayerid = #layerId#
-        AND groupid = #groupId#
-    </update>
-    
-    <update id="updateGroup" parameterClass="java.util.HashMap">
-        update oskari_maplayer_group_link set
-            groupid = #newGroupId#
-        where 
-        	groupid = #oldGroupId#
-        	and
-        	maplayerid = #layerId#
-    </update>
-
     <statement id="update" parameterMap="LayerUpdateParameter">
         UPDATE oskari_maplayer
         SET

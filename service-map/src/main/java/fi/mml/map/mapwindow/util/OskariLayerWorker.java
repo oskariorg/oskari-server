@@ -242,11 +242,6 @@ public class OskariLayerWorker {
         FORMATTER.addInfoForAdmin(layerJson, "capabilities", layer.getCapabilities());
 
         FORMATTER.addInfoForAdmin(layerJson, "organizationId", layer.getDataproviderId());
-
-        // for mapping under categories
-        if(layer.getMaplayerGroup() != null) {
-            FORMATTER.addInfoForAdmin(layerJson, "inspireId", layer.getMaplayerGroup().getId());
-        }
     }
 
     public static void transformWKTGeom(final JSONObject layerJSON, final String mapSRS) {
