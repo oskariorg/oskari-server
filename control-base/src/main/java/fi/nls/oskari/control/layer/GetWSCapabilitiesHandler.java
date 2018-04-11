@@ -73,11 +73,14 @@ public class GetWSCapabilitiesHandler extends ActionHandler {
             case OskariLayer.TYPE_WFS:
                 return GetGtWFSCapabilities.getWFSCapabilities(url, version, user, pw, currentCrs);
             case OskariLayer.TYPE_WMTS:
-                OskariLayerCapabilities caps = capabilitiesService.getCapabilities(url, OskariLayer.TYPE_WMTS, user, pw, version);
-                String capabilitiesXML = caps.getData();
-                WMTSCapabilities wmtsCaps = WMTSCapabilitiesParser.parseCapabilities(capabilitiesXML);
+                OskariLayerCapabilities caps = capabilitiesService.getCapabilities(url, type, version, user, pw);
+                String data = caps.getData();
+                WMTSCapabilities wmtsCaps = WMTSCapabilitiesParser.parseCapabilities(data);
                 JSONObject resultJSON = WMTSCapabilitiesParser.asJSON(wmtsCaps, url, currentCrs);
-                JSONHelper.putValue(resultJSON, "xml", caps.getData());
+                JSONHelper.putValue(resultJSON, "xml", data);
+                if (caps.getId() == null) {
+                    capabilitiesService.save(caps);
+                }
                 return resultJSON;
             default:
                 throw new ActionParamsException("Couldn't determine operation based on parameters");

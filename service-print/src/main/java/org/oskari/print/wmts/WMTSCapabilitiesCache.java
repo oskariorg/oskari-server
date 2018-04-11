@@ -38,9 +38,18 @@ public class WMTSCapabilitiesCache {
     private WMTSCapabilities parseCapabilities(PrintLayer layer)
             throws ServiceException {
         try {
-            OskariLayerCapabilities xml = capabilitiesService.getCapabilities(layer.getUrl(),
-                    layer.getType(), layer.getUsername(), layer.getPassword(), layer.getVersion());
-            return WMTSCapabilitiesParser.parseCapabilities(xml.getData());
+            final String url = layer.getUrl();
+            final String type = layer.getType();
+            final String version = layer.getVersion();
+            final String user = layer.getUsername();
+            final String pass = layer.getPassword();
+            final OskariLayerCapabilities caps = capabilitiesService.getCapabilities(url, type, version, user, pass);
+            final String data = caps.getData();
+            WMTSCapabilities wmtsCaps = WMTSCapabilitiesParser.parseCapabilities(data);
+            if (caps.getId() == null) {
+                capabilitiesService.save(caps);
+            }
+            return wmtsCaps;
         } catch (Exception e) {
             throw new ServiceException("Failed to parse WMTS capabilities, layerId: "
                     + layer.getId(), e);
