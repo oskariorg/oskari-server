@@ -70,4 +70,12 @@ public class SHPParserTest {
         return features;
     }
 
+    @Test
+    public void testParseToDifferentProjecion() throws ServiceException, URISyntaxException, NoSuchAuthorityCodeException, FactoryException {
+        File file = new File(SHPParserTest.class.getResource("SHP2017.shp").toURI());
+        SHPParser parser = new SHPParser();
+        SimpleFeatureCollection fc = parser.parse(file, null, CRS.decode("EPSG:4326"));
+        CoordinateReferenceSystem crs = fc.getSchema().getGeometryDescriptor().getCoordinateReferenceSystem();
+        assertEquals("Bounds is transformed correctly", "EPSG:4326", CRS.toSRS(fc.getBounds().getCoordinateReferenceSystem()));
+    }
 }
