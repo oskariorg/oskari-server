@@ -49,7 +49,7 @@ public abstract class CapabilitiesCacheService extends OskariComponent {
     public abstract OskariLayerCapabilities find(final String url, final String layertype, final String version);
 
     /**
-     * This method does not save what the response from the service. You have to call save() yourself.
+     * This method does not save the response. You have to call save() yourself.
      * If {@link OskariLayerCapabilities#getId()} returns null value was fetched from a service.
      */
     public OskariLayerCapabilities getCapabilities(final OskariLayer layer) throws ServiceException {
@@ -57,7 +57,7 @@ public abstract class CapabilitiesCacheService extends OskariComponent {
     }
 
     /**
-     * This method does not save what the response from the service. You have to call save() yourself.
+     * This method does not save the response. You have to call save() yourself.
      * If {@link OskariLayerCapabilities#getId()} returns null the value was fetched from a service.
      */
     public OskariLayerCapabilities getCapabilities(String url, String type, String version, String user, String pass) throws ServiceException {
