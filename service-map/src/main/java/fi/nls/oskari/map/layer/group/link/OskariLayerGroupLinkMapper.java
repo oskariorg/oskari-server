@@ -11,6 +11,10 @@ import org.apache.ibatis.annotations.Update;
 public interface OskariLayerGroupLinkMapper {
 
     @Select("SELECT maplayerid AS layerId, groupid AS groupId, order_number AS orderNumber"
+            + " FROM oskari_maplayer_group_link")
+    List<OskariLayerGroupLink> findAll();
+
+    @Select("SELECT maplayerid AS layerId, groupid AS groupId, order_number AS orderNumber"
             + " FROM oskari_maplayer_group_link"
             + " WHERE maplayerid = #{layerId}"
             + " ORDER BY order_number")

@@ -4,6 +4,8 @@ import java.util.List;
 
 public interface OskariLayerGroupLinkService {
 
+    public List<OskariLayerGroupLink> findAll();
+
     public List<OskariLayerGroupLink> findByLayerId(int layerId);
     public List<OskariLayerGroupLink> findByGroupId(int groupId);
 

@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -102,7 +103,7 @@ public class OskariLayerWorker {
 
         final String permissionType = getPermissionType(isPublished);
         long start = System.currentTimeMillis();
-        final List<String> resources = permissionsService.getResourcesWithGrantedPermissions(
+        final Set<String> resources = permissionsService.getResourcesWithGrantedPermissions(
                 Permissions.RESOURCE_TYPE_MAP_LAYER, user, permissionType);
         log.debug("View permissions loaded in", System.currentTimeMillis() - start, "ms");
 
@@ -126,9 +127,9 @@ public class OskariLayerWorker {
 
         final Set<String> additionalPermissions = permissionsService.getAdditionalPermissions();
         log.debug("Loading dynamic permissions ", additionalPermissions);
-        final Map<String, List<String>> dynamicPermissions = new HashMap<String, List<String>>();
+        final Map<String, Set<String>> dynamicPermissions = new HashMap<>();
         for (String permissionId : additionalPermissions) {
-            final List<String> permissions = permissionsService
+            final Set<String> permissions = permissionsService
                     .getResourcesWithGrantedPermissions(
                             Permissions.RESOURCE_TYPE_MAP_LAYER, user,
                             permissionId);
@@ -144,38 +145,47 @@ public class OskariLayerWorker {
             final String lang,
             final boolean isSecure,
             final String crs,
-            final List<String> resources,
+            final Set<String> resources,
+            final PermissionCollection permissionCollection) {
+        final List<OskariLayer> filtered = filterLayersWithResources(layers, resources);
+        return getListOfMapLayers(filtered, user, lang, isSecure, crs, permissionCollection);
+    }
+
+    public static List<OskariLayer> filterLayersWithResources(List<OskariLayer> layers, Set<String> resources) {
+        return layers.stream()
+                .filter(layer -> layer.isSublayer() || resources.contains(getPermissionKey(layer)))
+                .collect(Collectors.toList());
+    }
+
+    public static JSONObject getListOfMapLayers(final List<OskariLayer> layers,
+            final User user,
+            final String lang,
+            final boolean isSecure,
+            final String crs,
             final PermissionCollection permissionCollection) {
         final JSONArray layersList = new JSONArray();
         long start = System.currentTimeMillis();
         for (OskariLayer layer : layers) {
-            final String permissionKey = getPermissionKey(layer);
-            if (layer.getParentId() == -1 && !resources.contains(permissionKey)) {
-                // not permitted if resource NOT found in permissions!
-                // sublayers can pass through since their parentId != -1
-                continue;
-            }
             try {
                 final JSONObject layerJson = FORMATTER.getJSON(layer, lang, isSecure, crs);
-
                 if (layerJson == null) {
                     continue;
                 }
                 // TODO: handle inside formatter now that crs is available there
                 transformWKTGeom(layerJson, crs);
 
+                final String permissionKey = getPermissionKey(layer);
                 JSONObject permissions = getPermissions(user, permissionKey, permissionCollection);
                 JSONHelper.putValue(layerJson, "permissions", permissions);
                 if(permissions.optBoolean("edit")) {
                     // has edit rights, alter JSON/add info for admin bundle
                     modifyCommonFieldsForEditing(layerJson, layer);
-                }
-                else {
+                } else {
                     FORMATTER.removeAdminInfo(layerJson);
                 }
+
                 layersList.put(layerJson);
-            }
-            catch(Exception ex) {
+            } catch(Exception ex) {
                 log.error(ex);
             }
         }
@@ -312,11 +322,11 @@ public class OskariLayerWorker {
                 }
             }
         }
-        Map<String, List<String>> dynamicPermissions = permissionCollection.getDynamicPermissions();
+        Map<String, Set<String>> dynamicPermissions = permissionCollection.getDynamicPermissions();
         if (dynamicPermissions != null) {
-            for (Map.Entry<String, List<String>> entry : dynamicPermissions.entrySet()) {
+            for (Map.Entry<String, Set<String>> entry : dynamicPermissions.entrySet()) {
                 String permissionType = entry.getKey();
-                List<String> permissionList = entry.getValue();
+                Set<String> permissionList = entry.getValue();
                 if (permissionList != null && permissionList.contains(layerPermissionKey)) {
                     JSONHelper.putValue(permission, permissionType, true);
                 }
