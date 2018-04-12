@@ -144,7 +144,7 @@ public class GetMapLayerGroupsHandler extends ActionHandler {
 
             List<OskariLayerGroupLink> groupLinks = linksByGroupId.get(groupId);
             if (groupLinks != null && !groupLinks.isEmpty()) {
-                List<Integer> groupsLayerIds = linksByGroupId.get(groupId).stream()
+                List<Integer> groupsLayerIds = groupLinks.stream()
                     .filter(l -> contains(layerIds, l.getLayerId()))
                     .sorted(Comparator.comparingInt(OskariLayerGroupLink::getOrderNumber))
                     .map(OskariLayerGroupLink::getLayerId)
