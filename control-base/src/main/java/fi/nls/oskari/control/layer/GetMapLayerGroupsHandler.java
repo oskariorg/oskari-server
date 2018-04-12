@@ -142,13 +142,16 @@ public class GetMapLayerGroupsHandler extends ActionHandler {
                 groupAsJson.put(KEY_GROUPS, subGroups);
             }
 
-            List<Integer> groupsLayerIds = linksByGroupId.get(groupId).stream()
+            List<OskariLayerGroupLink> groupLinks = linksByGroupId.get(groupId);
+            if (groupLinks != null && groupLinks.isEmpty()) {
+                List<Integer> groupsLayerIds = linksByGroupId.get(groupId).stream()
                     .filter(l -> contains(layerIds, l.getLayerId()))
                     .sorted(Comparator.comparingInt(OskariLayerGroupLink::getOrderNumber))
                     .map(OskariLayerGroupLink::getLayerId)
                     .collect(Collectors.toList());
-            if (!groupsLayerIds.isEmpty()) {
-                groupAsJson.put(KEY_LAYERS, groupsLayerIds);
+                if (!groupsLayerIds.isEmpty()) {
+                    groupAsJson.put(KEY_LAYERS, groupsLayerIds);
+                }
             }
 
             json.put(groupAsJson);
