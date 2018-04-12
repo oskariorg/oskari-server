@@ -10,6 +10,7 @@ import java.util.List;
 
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.data.simple.SimpleFeatureIterator;
+import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
 import org.junit.Test;
 import org.opengis.feature.simple.SimpleFeature;
@@ -70,4 +71,17 @@ public class SHPParserTest {
         return features;
     }
 
+    @Test
+    public void testParseToDifferentProjecion() throws ServiceException, URISyntaxException, NoSuchAuthorityCodeException, FactoryException {
+        File file = new File(SHPParserTest.class.getResource("SHP2017.shp").toURI());
+        SHPParser parser = new SHPParser();
+        SimpleFeatureCollection fc = parser.parse(file, null, CRS.decode("EPSG:4326"));
+        ReferencedEnvelope bounds = fc.getBounds();
+        CoordinateReferenceSystem crs = bounds.getCoordinateReferenceSystem();
+        assertEquals("Bounds is transformed correctly", "EPSG:4326", CRS.toSRS(crs));
+        assertEquals(59.80841, bounds.getMinX(), 1e-5);
+        assertEquals(19.47275, bounds.getMinY(), 1e-5);
+        assertEquals(70.09210, bounds.getMaxX(), 1e-5);
+        assertEquals(31.58671, bounds.getMaxY(), 1e-5);
+    }
 }

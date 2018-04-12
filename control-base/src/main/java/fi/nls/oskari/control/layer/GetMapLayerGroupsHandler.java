@@ -33,6 +33,7 @@ import fi.nls.oskari.map.layer.OskariLayerServiceIbatisImpl;
 import fi.nls.oskari.map.layer.group.link.OskariLayerGroupLink;
 import fi.nls.oskari.map.layer.group.link.OskariLayerGroupLinkService;
 import fi.nls.oskari.map.layer.group.link.OskariLayerGroupLinkServiceMybatisImpl;
+import fi.nls.oskari.util.EnvHelper;
 import fi.nls.oskari.util.ResponseHelper;
 
 /**
@@ -87,7 +88,7 @@ public class GetMapLayerGroupsHandler extends ActionHandler {
         final User user = params.getUser();
         final String lang = params.getHttpParam(PARAM_LANGUAGE, params.getLocale().getLanguage());
         final String crs = params.getHttpParam(PARAM_SRS);
-        final boolean isSecure = false;
+        final boolean isSecure = EnvHelper.isSecure(params);
         final boolean isPublished = false;
 
         List<OskariLayer> layers = getLayersWithResources(user, isPublished);
