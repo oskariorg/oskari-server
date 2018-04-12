@@ -82,13 +82,7 @@ public class LayerJSONFormatter {
                                      final String crs) {
         JSONObject layerJson = new JSONObject();
 
-        final String externalId = layer.getExternalId();
-        if(externalId != null && !externalId.isEmpty()) {
-            JSONHelper.putValue(layerJson, KEY_ID, externalId);
-        }
-        else {
-            JSONHelper.putValue(layerJson, KEY_ID, layer.getId());
-        }
+        JSONHelper.putValue(layerJson, KEY_ID, layer.getId());
 
         //log.debug("Type", layer.getType());
         if(layer.isCollection()) {
