@@ -4,15 +4,15 @@ import java.util.Objects;
 
 public class OskariLayerExternalId {
 
-    private final Integer layerId;
+    private final int layerId;
     private final String externalId;
 
     public OskariLayerExternalId(Integer layerId, String externalId) {
-        this.layerId = Objects.requireNonNull(layerId);
+        this.layerId = layerId;
         this.externalId = Objects.requireNonNull(externalId);
     }
 
-    public Integer getLayerId() {
+    public int getLayerId() {
         return layerId;
     }
 
