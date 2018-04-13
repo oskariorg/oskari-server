@@ -10,6 +10,6 @@ public interface OskariLayerExternalIdMapper {
     Integer findByExternalId(@Param("externalId") String externalId);
 
     @Delete("DELETE FROM oskari_maplayer_externalid WHERE maplayerid = #{layerId}")
-    int delete(@Param("layerId") int layerId);
+    void delete(@Param("layerId") int layerId);
 
 }

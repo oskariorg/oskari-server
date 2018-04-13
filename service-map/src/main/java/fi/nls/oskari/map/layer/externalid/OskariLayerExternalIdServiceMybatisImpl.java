@@ -41,11 +41,10 @@ public class OskariLayerExternalIdServiceMybatisImpl implements OskariLayerExter
     }
 
     @Override
-    public int delete(int layerId) {
+    public void delete(int layerId) {
         try (SqlSession session = factory.openSession()) {
-            final int n = getMapper(session).delete(layerId);
+            getMapper(session).delete(layerId);
             session.commit();
-            return n;
         }
     }
 
