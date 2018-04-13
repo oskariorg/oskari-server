@@ -277,6 +277,9 @@ public class View implements Serializable {
             return null;
         }
         JSONObject config = mapfull.getConfigJSON();
+        if(config == null) {
+            return null;
+        }
         return JSONHelper.getJSONObject(config, "mapOptions");
     }
 
