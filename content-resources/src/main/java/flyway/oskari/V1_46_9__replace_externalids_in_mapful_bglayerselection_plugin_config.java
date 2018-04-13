@@ -21,9 +21,9 @@ import fi.nls.oskari.util.JSONHelper;
 
 public class V1_46_9__replace_externalids_in_mapful_bglayerselection_plugin_config implements JdbcMigration {
 
+    // These don't need to be static, we expect this class to be instantiated only once
     private final Logger LOG = LogFactory.getLogger(this.getClass());
-
-    private static final String PLUGIN_ID = "Oskari.mapframework.bundle.mapmodule.plugin.BackgroundLayerSelectionPlugin";
+    private final String PLUGIN_ID = "Oskari.mapframework.bundle.mapmodule.plugin.BackgroundLayerSelectionPlugin";
 
     public void migrate(Connection conn) throws Exception {
         Integer mapfullBundleId = getMapfullBundleId(conn);
@@ -31,11 +31,22 @@ public class V1_46_9__replace_externalids_in_mapful_bglayerselection_plugin_conf
             LOG.info("Mapfull bundle not found");
             return;
         }
-        final int bundleId = mapfullBundleId;
-        final Map<String, Integer> externalIdToLayerId = getExternalIds(conn);
-        final List<BundleConfig> bundleConfigs = getBundleConfigs(conn, bundleId);
-        final List<BundleConfig> bundleConfigsToUpdate = getBundleConfigsToUpdate(bundleConfigs, externalIdToLayerId);
-        updateBundleConfigs(conn, bundleConfigsToUpdate, bundleId);
+        int bundleId = mapfullBundleId;
+        Map<String, Integer> externalIdToLayerId = getExternalIds(conn);
+        List<BundleConfig> bundleConfigs = getBundleConfigs(conn, bundleId);
+        List<BundleConfig> toUpdate = getBundleConfigsToUpdate(bundleConfigs, externalIdToLayerId);
+        updateBundleConfigs(conn, toUpdate, bundleId);
+    }
+
+    private Integer getMapfullBundleId(Connection conn) throws SQLException {
+        String sql = "SELECT id FROM portti_bundle WHERE name = 'mapfull'";
+        try (PreparedStatement ps = conn.prepareStatement(sql);
+                ResultSet rs = ps.executeQuery()) {
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+        }
+        return null;
     }
 
     private Map<String, Integer> getExternalIds(Connection conn) throws SQLException {
@@ -47,17 +58,6 @@ public class V1_46_9__replace_externalids_in_mapful_bglayerselection_plugin_conf
                 int layerId = rs.getInt("maplayerid");
                 String externalId = rs.getString("externalid");
                 externalIdToLayerId.put(externalId, layerId);
-            }
-        }
-        return null;
-    }
-
-    private Integer getMapfullBundleId(Connection conn) throws SQLException {
-        final String sql = "SELECT id FROM portti_bundle WHERE name = 'mapfull'";
-        try (PreparedStatement ps = conn.prepareStatement(sql);
-                ResultSet rs = ps.executeQuery()) {
-            if (rs.next()) {
-                return rs.getInt(1);
             }
         }
         return null;
@@ -83,7 +83,7 @@ public class V1_46_9__replace_externalids_in_mapful_bglayerselection_plugin_conf
 
     private List<BundleConfig> getBundleConfigsToUpdate(List<BundleConfig> bundleConfigs,
             Map<String, Integer> externalIdToLayerId) {
-        List<BundleConfig> bundleConfigsToUpdate = new ArrayList<>();
+        List<BundleConfig> toUpdate = new ArrayList<>();
 
         for (BundleConfig bundleConfig : bundleConfigs) {
             try {
@@ -99,14 +99,14 @@ public class V1_46_9__replace_externalids_in_mapful_bglayerselection_plugin_conf
                 JSONArray baseLayers = bgPlugin.optJSONArray("baseLayers");
                 boolean replacedSomething = replaceExternalIds(baseLayers, externalIdToLayerId);
                 if (replacedSomething) {
-                    bundleConfigsToUpdate.add(bundleConfig);
+                    toUpdate.add(bundleConfig);
                 }
             } catch (JSONException e) {
                 LOG.debug(e);
             }
         }
 
-        return bundleConfigsToUpdate;
+        return toUpdate;
     }
 
     private JSONObject findBGPlugin(JSONArray plugins) {
@@ -129,7 +129,6 @@ public class V1_46_9__replace_externalids_in_mapful_bglayerselection_plugin_conf
         if (baseLayers == null) {
             return false;
         }
-
         boolean replaced = false;
         for (int i = 0; i < baseLayers.length(); i++) {
             String layerId = baseLayers.getString(i);
@@ -166,7 +165,6 @@ public class V1_46_9__replace_externalids_in_mapful_bglayerselection_plugin_conf
         } finally {
             conn.setAutoCommit(oldAutoCommit);
         }
-
     }
 
     class BundleConfig {
