@@ -34,18 +34,9 @@ public class OskariLayerExternalIdServiceMybatisImpl implements OskariLayerExter
     }
 
     @Override
-    public OskariLayerExternalId findByExternalId(String externalId) {
+    public Integer findByExternalId(String externalId) {
         try (SqlSession session = factory.openSession()) {
             return getMapper(session).findByExternalId(externalId);
-        }
-    }
-
-    @Override
-    public int insert(OskariLayerExternalId link) {
-        try (SqlSession session = factory.openSession()) {
-            final int n = getMapper(session).insert(link);
-            session.commit();
-            return n;
         }
     }
 

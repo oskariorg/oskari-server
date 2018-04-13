@@ -4,7 +4,6 @@ import fi.nls.oskari.annotation.OskariViewModifier;
 import fi.nls.oskari.view.modifier.ParamHandler;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.map.layer.externalid.OskariLayerExternalId;
 import fi.nls.oskari.map.layer.externalid.OskariLayerExternalIdService;
 import fi.nls.oskari.map.layer.externalid.OskariLayerExternalIdServiceMybatisImpl;
 import fi.nls.oskari.util.ConversionHelper;
@@ -60,10 +59,10 @@ public class LayersParamHandler extends ParamHandler {
 
         // Check if the layerId is the externalId of a maplayer
         if (ConversionHelper.getInt(layerId, -1) == -1) {
-            OskariLayerExternalId externalId = EXTERNAL_ID_SERVICE.findByExternalId(layerId);
-            if (externalId != null) {
+            Integer layerIdExt = EXTERNAL_ID_SERVICE.findByExternalId(layerId);
+            if (layerIdExt != null) {
                 // If it is, use the maplayer id instead
-                layerId = Integer.toString(externalId.getLayerId());
+                layerId = layerIdExt.toString();
             }
         }
 
