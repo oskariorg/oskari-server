@@ -50,8 +50,9 @@ public class V1_46_9__replace_externalids_in_mapful_bglayerselection_plugin_conf
     }
 
     private Map<String, Integer> getExternalIds(Connection conn) throws SQLException {
-        String sql = "SELECT maplayerid, externalid FROM oskari_maplayer_externalid";
         Map<String, Integer> externalIdToLayerId = new HashMap<>();
+
+        String sql = "SELECT maplayerid, externalid FROM oskari_maplayer_externalid";
         try (PreparedStatement ps = conn.prepareStatement(sql);
                 ResultSet rs = ps.executeQuery()) {
             while (rs.next()) {
@@ -60,15 +61,17 @@ public class V1_46_9__replace_externalids_in_mapful_bglayerselection_plugin_conf
                 externalIdToLayerId.put(externalId, layerId);
             }
         }
+
         return externalIdToLayerId;
     }
 
     private List<BundleConfig> getBundleConfigs(Connection conn, int mapfullBundleId) throws SQLException {
+        List<BundleConfig> configs = new ArrayList<>();
+
         String sql = "SELECT view_id, seqno, config FROM portti_view_bundle_seq WHERE bundle_id = ?";
         try (PreparedStatement statement = conn.prepareStatement(sql)) {
             statement.setInt(1, mapfullBundleId);
             try (ResultSet rs = statement.executeQuery()) {
-                List<BundleConfig> configs = new ArrayList<>();
                 while (rs.next()) {
                     BundleConfig config = new BundleConfig();
                     config.viewId = rs.getInt("view_id");
@@ -76,9 +79,10 @@ public class V1_46_9__replace_externalids_in_mapful_bglayerselection_plugin_conf
                     config.config = JSONHelper.createJSONObject(rs.getString("config"));
                     configs.add(config);
                 }
-                return configs;
             }
         }
+
+        return configs;
     }
 
     private List<BundleConfig> getBundleConfigsToUpdate(List<BundleConfig> bundleConfigs,
