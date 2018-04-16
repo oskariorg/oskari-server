@@ -33,9 +33,9 @@ public class V1_46_9__replace_externalids_in_mapful_bglayerselection_plugin_conf
         int bundleId = mapfullBundleId;
         LOG.debug("Mapfull bundle id:", bundleId);
         Map<String, Integer> externalIdToLayerId = getExternalIds(conn);
-        List<BundleConfig> bundleConfigs = getBundleConfigs(conn, bundleId);
-        List<BundleConfig> toUpdate = getBundleConfigsToUpdate(bundleConfigs, externalIdToLayerId);
-        updateBundleConfigs(conn, toUpdate, bundleId);
+        List<BundleConfigNState> bundleConfigs = getBundleConfigs(conn, bundleId);
+        List<BundleConfigNState> toUpdate = getBundleConfigsToUpdate(bundleConfigs, externalIdToLayerId);
+        update(conn, toUpdate, bundleId);
     }
 
     private Integer getMapfullBundleId(Connection conn) throws SQLException {
@@ -66,18 +66,19 @@ public class V1_46_9__replace_externalids_in_mapful_bglayerselection_plugin_conf
         return externalIdToLayerId;
     }
 
-    private List<BundleConfig> getBundleConfigs(Connection conn, int mapfullBundleId) throws SQLException {
-        List<BundleConfig> configs = new ArrayList<>();
+    private List<BundleConfigNState> getBundleConfigs(Connection conn, int mapfullBundleId) throws SQLException {
+        List<BundleConfigNState> configs = new ArrayList<>();
 
-        String sql = "SELECT view_id, seqno, config FROM portti_view_bundle_seq WHERE bundle_id = ?";
+        String sql = "SELECT view_id, seqno, config, state FROM portti_view_bundle_seq WHERE bundle_id = ?";
         try (PreparedStatement statement = conn.prepareStatement(sql)) {
             statement.setInt(1, mapfullBundleId);
             try (ResultSet rs = statement.executeQuery()) {
                 while (rs.next()) {
-                    BundleConfig config = new BundleConfig();
+                    BundleConfigNState config = new BundleConfigNState();
                     config.viewId = rs.getInt("view_id");
                     config.seqNo = rs.getInt("seqno");
                     config.config = JSONHelper.createJSONObject(rs.getString("config"));
+                    config.state = JSONHelper.createJSONObject(rs.getString("state"));
                     configs.add(config);
                 }
             }
@@ -86,35 +87,41 @@ public class V1_46_9__replace_externalids_in_mapful_bglayerselection_plugin_conf
         return configs;
     }
 
-    protected static List<BundleConfig> getBundleConfigsToUpdate(List<BundleConfig> bundleConfigs,
+    protected static List<BundleConfigNState> getBundleConfigsToUpdate(List<BundleConfigNState> bundleConfigs,
             Map<String, Integer> externalIdToLayerId) {
-        List<BundleConfig> toUpdate = new ArrayList<>();
+        List<BundleConfigNState> toUpdate = new ArrayList<>();
 
-        for (BundleConfig bundleConfig : bundleConfigs) {
-            if (bundleConfig.config == null) {
-                continue;
-            }
-            try {
-                JSONArray plugins = bundleConfig.config.optJSONArray("plugins");
-                JSONObject bgPlugin = findBGPlugin(plugins);
-                if (bgPlugin == null) {
-                    continue;
-                }
-                JSONObject bgPluginConfig = bgPlugin.optJSONObject("config");
-                if (bgPluginConfig == null) {
-                    continue;
-                }
-                JSONArray baseLayers = bgPluginConfig.optJSONArray("baseLayers");
-                boolean replacedSomething = replaceExternalIds(baseLayers, externalIdToLayerId);
-                if (replacedSomething) {
-                    toUpdate.add(bundleConfig);
-                }
-            } catch (JSONException e) {
-                LOG.debug(e);
+        for (BundleConfigNState bundleConfig : bundleConfigs) {
+            boolean updatedConfig = updateConfig(bundleConfig.config, externalIdToLayerId);
+            boolean updatedState = updateState(bundleConfig.state, externalIdToLayerId);
+            if (updatedConfig || updatedState) {
+                toUpdate.add(bundleConfig);
             }
         }
 
         return toUpdate;
+    }
+
+    protected static boolean updateConfig(JSONObject config, Map<String, Integer> externalIdToLayerId) {
+        if (config == null) {
+            return false;
+        }
+        try {
+            JSONArray plugins = config.optJSONArray("plugins");
+            JSONObject bgPlugin = findBGPlugin(plugins);
+            if (bgPlugin == null) {
+                return false;
+            }
+            JSONObject bgPluginConfig = bgPlugin.optJSONObject("config");
+            if (bgPluginConfig == null) {
+                return false;
+            }
+            JSONArray baseLayers = bgPluginConfig.optJSONArray("baseLayers");
+            return replaceExternalIds(baseLayers, externalIdToLayerId);
+        } catch (JSONException e) {
+            LOG.warn(e);
+            return false;
+        }
     }
 
     protected static JSONObject findBGPlugin(JSONArray plugins) {
@@ -137,33 +144,69 @@ public class V1_46_9__replace_externalids_in_mapful_bglayerselection_plugin_conf
         if (baseLayers == null) {
             return false;
         }
-        boolean replaced = false;
+        boolean replacedAtLeastOne = false;
         for (int i = 0; i < baseLayers.length(); i++) {
             String layerId = baseLayers.getString(i);
-            if (ConversionHelper.getInt(layerId, -1) == -1) {
-                // Not a number, possibly external id
-                Integer id = externalIdToLayerId.get(layerId);
-                if (id != null) {
-                    baseLayers.put(i, id.toString());
-                    replaced = true;
-                }
+            Integer newLayerId = getId(layerId, externalIdToLayerId);
+            if (newLayerId != null) {
+                baseLayers.put(i, newLayerId.toString());
+                replacedAtLeastOne = true;
             }
         }
-        return replaced;
+        return replacedAtLeastOne;
     }
 
-    private void updateBundleConfigs(Connection conn, List<BundleConfig> bundleConfigs,
+    /**
+     * @return null if shouldn't be replaced, otherwise the new value
+     */
+    protected static Integer getId(String oldId, Map<String, Integer> externalIdToLayerId) {
+        if (ConversionHelper.getInt(oldId, -1) == -1) {
+            return externalIdToLayerId.get(oldId);
+        }
+        return null;
+    }
+
+    protected static boolean updateState(JSONObject state, Map<String, Integer> externalIdToLayerId) {
+        if (state == null) {
+            return false;
+        }
+        try {
+            JSONArray selectedLayers = state.optJSONArray("selectedLayers");
+            if (selectedLayers == null) {
+                return false;
+            }
+            boolean replacedAtLeastOne = false;
+            for (int i = 0; i < selectedLayers.length(); i++) {
+                JSONObject selectedLayer = selectedLayers.optJSONObject(i);
+                Object layerId = selectedLayer.opt("id");
+                if (layerId != null && layerId instanceof String) {
+                    Integer newLayerId = getId((String) layerId, externalIdToLayerId);
+                    if (newLayerId != null) {
+                        selectedLayer.put("id", newLayerId);
+                        replacedAtLeastOne = true;
+                    }
+                }
+            }
+            return replacedAtLeastOne;
+        } catch (JSONException e) {
+            LOG.warn(e);
+            return false;
+        }
+    }
+
+    private void update(Connection conn, List<BundleConfigNState> bundleConfigs,
             int mapfullBundleId) throws SQLException {
         final boolean oldAutoCommit = conn.getAutoCommit();
         try {
             conn.setAutoCommit(false);
-            String sql = "UPDATE portti_view_bundle_seq SET config=? WHERE bundle_id=? AND view_id=? AND seqno=?";
+            String sql = "UPDATE portti_view_bundle_seq SET config=?,state=? WHERE bundle_id=? AND view_id=? AND seqno=?";
             try (PreparedStatement ps = conn.prepareStatement(sql)) {
-                ps.setInt(2, mapfullBundleId);
-                for (BundleConfig bundleConfig : bundleConfigs) {
+                ps.setInt(3, mapfullBundleId);
+                for (BundleConfigNState bundleConfig : bundleConfigs) {
                     ps.setString(1, bundleConfig.config.toString());
-                    ps.setInt(3, bundleConfig.viewId);
-                    ps.setInt(4, bundleConfig.seqNo);
+                    ps.setString(2, bundleConfig.state.toString());
+                    ps.setInt(4, bundleConfig.viewId);
+                    ps.setInt(5, bundleConfig.seqNo);
                     ps.addBatch();
                     LOG.debug(ps.toString());
                 }
@@ -175,10 +218,11 @@ public class V1_46_9__replace_externalids_in_mapful_bglayerselection_plugin_conf
         }
     }
 
-    protected static class BundleConfig {
+    protected static class BundleConfigNState {
         int viewId;
         int seqNo;
         JSONObject config;
+        JSONObject state;
     }
 
 }
