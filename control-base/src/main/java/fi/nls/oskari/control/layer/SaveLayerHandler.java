@@ -324,11 +324,13 @@ public class SaveLayerHandler extends ActionHandler {
             }
         }
 
-        String groupId = params.getHttpParam(PARAM_MAPLAYER_GROUPS, "-1");
-        ml.emptyMaplayerGroups();
-        for (String id: groupId.split(",")) {
-            MaplayerGroup maplayerGroup = oskariMapLayerGroupService.find(ConversionHelper.getInt(id, -1));
-            ml.addGroup(maplayerGroup);
+        String groupId = params.getHttpParam(PARAM_MAPLAYER_GROUPS);
+        if(groupId != null) {
+            ml.emptyMaplayerGroups();
+            for (String id: groupId.split(",")) {
+                MaplayerGroup maplayerGroup = oskariMapLayerGroupService.find(ConversionHelper.getInt(id, -1));
+                ml.addGroup(maplayerGroup);
+            }
         }
 
         ml.setVersion(params.getHttpParam(PARAM_VERSION, ""));
