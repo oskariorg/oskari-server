@@ -54,13 +54,13 @@ public class V1_46_9__replace_externalids_in_mapful_bglayerselection_plugin_conf
         Map<String, Integer> externalIdToLayerId = new HashMap<>();
         try (PreparedStatement ps = conn.prepareStatement(sql);
                 ResultSet rs = ps.executeQuery()) {
-            if (rs.next()) {
+            while (rs.next()) {
                 int layerId = rs.getInt("maplayerid");
                 String externalId = rs.getString("externalid");
                 externalIdToLayerId.put(externalId, layerId);
             }
         }
-        return null;
+        return externalIdToLayerId;
     }
 
     private List<BundleConfig> getBundleConfigs(Connection conn, int mapfullBundleId) throws SQLException {
