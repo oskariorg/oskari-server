@@ -21,9 +21,8 @@ import fi.nls.oskari.util.JSONHelper;
 
 public class V1_46_9__replace_externalids_in_mapful_bglayerselection_plugin_config implements JdbcMigration {
 
-    // These don't need to be static, we expect this class to be instantiated only once
-    private final Logger LOG = LogFactory.getLogger(this.getClass());
-    private final String PLUGIN_ID = "Oskari.mapframework.bundle.mapmodule.plugin.BackgroundLayerSelectionPlugin";
+    private static final Logger LOG = LogFactory.getLogger(V1_46_9__replace_externalids_in_mapful_bglayerselection_plugin_config.class);
+    private static final String PLUGIN_ID = "Oskari.mapframework.bundle.mapmodule.plugin.BackgroundLayerSelectionPlugin";
 
     public void migrate(Connection conn) throws Exception {
         Integer mapfullBundleId = getMapfullBundleId(conn);
@@ -32,6 +31,7 @@ public class V1_46_9__replace_externalids_in_mapful_bglayerselection_plugin_conf
             return;
         }
         int bundleId = mapfullBundleId;
+        LOG.debug("Mapfull bundle id:", bundleId);
         Map<String, Integer> externalIdToLayerId = getExternalIds(conn);
         List<BundleConfig> bundleConfigs = getBundleConfigs(conn, bundleId);
         List<BundleConfig> toUpdate = getBundleConfigsToUpdate(bundleConfigs, externalIdToLayerId);
@@ -58,6 +58,7 @@ public class V1_46_9__replace_externalids_in_mapful_bglayerselection_plugin_conf
             while (rs.next()) {
                 int layerId = rs.getInt("maplayerid");
                 String externalId = rs.getString("externalid");
+                LOG.debug("externalId:", externalId, "layerId:", layerId);
                 externalIdToLayerId.put(externalId, layerId);
             }
         }
@@ -85,11 +86,14 @@ public class V1_46_9__replace_externalids_in_mapful_bglayerselection_plugin_conf
         return configs;
     }
 
-    private List<BundleConfig> getBundleConfigsToUpdate(List<BundleConfig> bundleConfigs,
+    protected static List<BundleConfig> getBundleConfigsToUpdate(List<BundleConfig> bundleConfigs,
             Map<String, Integer> externalIdToLayerId) {
         List<BundleConfig> toUpdate = new ArrayList<>();
 
         for (BundleConfig bundleConfig : bundleConfigs) {
+            if (bundleConfig.config == null) {
+                continue;
+            }
             try {
                 JSONArray plugins = bundleConfig.config.optJSONArray("plugins");
                 JSONObject bgPlugin = findBGPlugin(plugins);
@@ -100,7 +104,7 @@ public class V1_46_9__replace_externalids_in_mapful_bglayerselection_plugin_conf
                 if (bgPluginConfig == null) {
                     continue;
                 }
-                JSONArray baseLayers = bgPlugin.optJSONArray("baseLayers");
+                JSONArray baseLayers = bgPluginConfig.optJSONArray("baseLayers");
                 boolean replacedSomething = replaceExternalIds(baseLayers, externalIdToLayerId);
                 if (replacedSomething) {
                     toUpdate.add(bundleConfig);
@@ -113,7 +117,7 @@ public class V1_46_9__replace_externalids_in_mapful_bglayerselection_plugin_conf
         return toUpdate;
     }
 
-    private JSONObject findBGPlugin(JSONArray plugins) {
+    protected static JSONObject findBGPlugin(JSONArray plugins) {
         if (plugins == null) {
             return null;
         }
@@ -128,7 +132,7 @@ public class V1_46_9__replace_externalids_in_mapful_bglayerselection_plugin_conf
         return null;
     }
 
-    private boolean replaceExternalIds(JSONArray baseLayers,
+    private static boolean replaceExternalIds(JSONArray baseLayers,
             Map<String, Integer> externalIdToLayerId) throws JSONException {
         if (baseLayers == null) {
             return false;
@@ -171,7 +175,7 @@ public class V1_46_9__replace_externalids_in_mapful_bglayerselection_plugin_conf
         }
     }
 
-    class BundleConfig {
+    protected static class BundleConfig {
         int viewId;
         int seqNo;
         JSONObject config;
