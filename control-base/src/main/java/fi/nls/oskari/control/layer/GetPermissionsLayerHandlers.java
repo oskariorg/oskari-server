@@ -57,8 +57,8 @@ public class GetPermissionsLayerHandlers extends ActionHandler {
 
     @Override
     public void handleAction(ActionParameters params) throws ActionException {
-
-        // require admin user
+    	
+    	// require admin user
         params.requireAdminUser();
 
         final String externalId = params.getRequiredParam("externalId");
@@ -67,8 +67,8 @@ public class GetPermissionsLayerHandlers extends ActionHandler {
         Map<String, Set<String>> resourcesMap = new HashMap<>();
 
         final JSONArray permissionNames = new JSONArray();
-        for (String id : PERMISSIONS)
-        {
+    	for (String id : PERMISSIONS)
+    	{
             JSONObject perm = new JSONObject();
             JSONHelper.putValue(perm, KEY_ID, id);
             JSONHelper.putValue(perm, KEY_NAME, permissionsService.getPermissionName(id, params.getLocale().getLanguage()));
@@ -100,7 +100,7 @@ public class GetPermissionsLayerHandlers extends ActionHandler {
                 	JSONObject layerJson = new JSONObject();
                     layerJson.put(KEY_ID, resource.getKey());
                     layerJson.put("allow", resource.getValue().contains(permissionMapping));
-                    jsonResults.put(layerJson);
+                	jsonResults.put(layerJson);
                 }
                 realJson.put("permissions", jsonResults);
 
