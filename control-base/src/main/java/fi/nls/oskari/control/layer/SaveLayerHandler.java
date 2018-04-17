@@ -285,6 +285,13 @@ public class SaveLayerHandler extends ActionHandler {
         }
     }
 
+    private static int[] getMaplayerGroupIds(String maplayerGroups) {
+        return Arrays.stream(maplayerGroups.split(","))
+                .mapToInt(gid -> ConversionHelper.getInt(gid, -1))
+                .filter(gid -> gid >= 0)
+                .toArray();
+    }
+
     private List<OskariLayerGroupLink> getMaplayerGroupLinks(final int layerId, final int[] groupIds) {
         if (groupIds == null || groupIds.length == 0) {
             return Collections.emptyList();
@@ -292,13 +299,6 @@ public class SaveLayerHandler extends ActionHandler {
         return Arrays.stream(groupIds)
                 .mapToObj(groupId -> new OskariLayerGroupLink(layerId, groupId))
                 .collect(Collectors.toList());
-    }
-
-    private static int[] getMaplayerGroupIds(String maplayerGroups) {
-        return Arrays.stream(maplayerGroups.split(","))
-                .mapToInt(gid -> ConversionHelper.getInt(gid, -1))
-                .filter(gid -> gid >= 0)
-                .toArray();
     }
 
     /**
