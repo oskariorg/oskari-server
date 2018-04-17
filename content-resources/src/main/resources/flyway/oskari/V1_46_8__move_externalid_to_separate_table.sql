@@ -8,6 +8,7 @@ WHERE externalid <> '';
 ALTER TABLE oskari_maplayer_externalid ADD PRIMARY KEY (maplayerid);
 ALTER TABLE oskari_maplayer_externalid ADD FOREIGN KEY (maplayerid) REFERENCES oskari_maplayer (id) ON DELETE CASCADE;
 ALTER TABLE oskari_maplayer_externalid ALTER externalid SET NOT NULL;
+ALTER TABLE oskari_maplayer_externalid ADD UNIQUE (externalid);
 
 COMMIT;
 
