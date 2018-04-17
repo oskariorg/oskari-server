@@ -129,7 +129,6 @@ public class PermissionsServiceIbatisImpl extends BaseIbatisService<Permissions>
 		groupPermissions.addAll(userPermissions);
 		return groupPermissions;
 	}
-
 	private Set<String> getResourcesWithGrantedPermissions(
             String resourceType,
             Set<String> externalId,
@@ -169,13 +168,8 @@ public class PermissionsServiceIbatisImpl extends BaseIbatisService<Permissions>
 	}
 
 	public List<Permissions> getResourcePermissions(UniqueResourceName uniqueResourceName, String externalIdType) {
-<<<<<<< HEAD
-		log.debug("Getting", externalIdType, "permissions to", uniqueResourceName);
-        Map<String, String> parameterMap = new HashMap<>();
-=======
 		log.debug("Getting ", externalIdType, " permissions to ", uniqueResourceName);
         Map<String, String> parameterMap = new HashMap<String, String>();
->>>>>>> oskari/hotfix/1.46.1
 		parameterMap.put("resourceMapping", uniqueResourceName.getNamespace() +"+"+ uniqueResourceName.getName());
 		parameterMap.put("resourceType", uniqueResourceName.getType());
 		parameterMap.put("externalIdType", externalIdType);
