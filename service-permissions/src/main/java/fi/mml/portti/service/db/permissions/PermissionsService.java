@@ -46,7 +46,7 @@ public interface PermissionsService extends BaseService<Permissions> {
 	 * @param resourceType resource type such as map layer
 	 * @param user current user
 	 * @param permissionsType permissions type such as VIEW or PUBLISH
-	 * @return list of String objects of format namespace+resourceName
+	 * @return Set of String objects of format namespace+resourceName
 	 */
 	public Set<String> getResourcesWithGrantedPermissions(
 			String resourceType, 
@@ -67,7 +67,7 @@ public interface PermissionsService extends BaseService<Permissions> {
 	 * @param externalId
 	 * @param externalIdType
 	 * @param permissionsType permissions type such as VIEW or PUBLISH
-	 * @return list of String objects of format namespace+resourceName
+	 * @return Set of String objects of format namespace+resourceName
 	 */
 	public Set<String> getResourcesWithGrantedPermissions(
 			String resourceType, 

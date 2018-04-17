@@ -119,11 +119,12 @@ public class PermissionsServiceIbatisImpl extends BaseIbatisService<Permissions>
         for(Role role : user.getRoles()) {
             roleIds.add("" + role.getId());
         }
+
         final Set<String> groupPermissions =
                 getResourcesWithGrantedPermissions(
                         resourceType, roleIds, Permissions.EXTERNAL_TYPE_ROLE, permissionsType);
 		log.debug("Found", groupPermissions.size(), "permissions given to roles that user has.");
-
+		
 		// Use groupPermissions as the base
 		groupPermissions.addAll(userPermissions);
 		return groupPermissions;
@@ -134,7 +135,8 @@ public class PermissionsServiceIbatisImpl extends BaseIbatisService<Permissions>
             Set<String> externalId,
             String externalIdType,
             String permissionsType) {
-        if(externalId == null || externalId.isEmpty()) {
+
+	    if(externalId == null || externalId.isEmpty()) {
             log.warn("Tried to get permissions without externalIds. ResourceType", resourceType, "Permission type", permissionsType, " ExternalIdType", externalIdType);
             return Collections.emptySet();
         }
@@ -167,8 +169,13 @@ public class PermissionsServiceIbatisImpl extends BaseIbatisService<Permissions>
 	}
 
 	public List<Permissions> getResourcePermissions(UniqueResourceName uniqueResourceName, String externalIdType) {
+<<<<<<< HEAD
 		log.debug("Getting", externalIdType, "permissions to", uniqueResourceName);
         Map<String, String> parameterMap = new HashMap<>();
+=======
+		log.debug("Getting ", externalIdType, " permissions to ", uniqueResourceName);
+        Map<String, String> parameterMap = new HashMap<String, String>();
+>>>>>>> oskari/hotfix/1.46.1
 		parameterMap.put("resourceMapping", uniqueResourceName.getNamespace() +"+"+ uniqueResourceName.getName());
 		parameterMap.put("resourceType", uniqueResourceName.getType());
 		parameterMap.put("externalIdType", externalIdType);
