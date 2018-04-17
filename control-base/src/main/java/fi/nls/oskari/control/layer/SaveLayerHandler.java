@@ -657,10 +657,10 @@ public class SaveLayerHandler extends ActionHandler {
     }
 
     private void addPermissionsForRoles(final OskariLayer ml,
-            final Set<Long> externalIds,
-            final Set<Long> publishRoleIds,
-            final Set<Long> downloadRoleIds,
-            final Set<Long> viewEmbeddedRoleIds) {
+                                        final Set<Long> externalIds,
+                                        final Set<Long> publishRoleIds,
+                                        final Set<Long> downloadRoleIds,
+                                        final Set<Long> viewEmbeddedRoleIds) {
 
         OskariLayerResource res = new OskariLayerResource(ml);
         // insert permissions
