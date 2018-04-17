@@ -5,21 +5,15 @@ import fi.mml.map.mapwindow.service.db.OskariMapLayerGroupServiceIbatisImpl;
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.*;
 import fi.nls.oskari.domain.map.MaplayerGroup;
-import fi.nls.oskari.domain.map.view.View;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.map.view.util.ViewHelper;
-import fi.nls.oskari.util.IOHelper;
+import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.ResponseHelper;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
 import java.util.Iterator;
 import java.util.List;
 
@@ -103,7 +97,10 @@ public class MapLayerGroupsHandler extends RestActionHandler {
     public void handlePost(ActionParameters params) throws ActionException {
         params.requireAdminUser();
         MaplayerGroup maplayerGroup = populateFromRequest(params.getPayLoadJSON());
-        maplayerGroup.setId(params.getRequiredParamInt(PARAM_ID));
+        if(maplayerGroup.getId() == -1) {
+            // hierarchical admin apparently sends id as separate param
+            maplayerGroup.setId(params.getRequiredParamInt(PARAM_ID));
+        }
         oskariMapLayerGroupService.update(maplayerGroup);
         ResponseHelper.writeResponse(params, maplayerGroup.getAsJSON());
     }
@@ -157,8 +154,10 @@ public class MapLayerGroupsHandler extends RestActionHandler {
         MaplayerGroup maplayerGroup = new MaplayerGroup();
         try{
             JSONObject locales = mapLayerGroupJSON.getJSONObject(KEY_LOCALES);
-            int parentId = mapLayerGroupJSON.optInt(KEY_PARENT_ID, -1);
-            boolean selectable = mapLayerGroupJSON.optBoolean(KEY_SELECTABLE, true);
+            // The classic admin sends id as part of the JSON payload (as string, but with number value...)
+            maplayerGroup.setId(ConversionHelper.getInt(mapLayerGroupJSON.optString("id"), -1));
+            maplayerGroup.setParentId(mapLayerGroupJSON.optInt(KEY_PARENT_ID, -1));
+            maplayerGroup.setSelectable(mapLayerGroupJSON.optBoolean(KEY_SELECTABLE, true));
             Iterator<?> keys = locales.keys();
 
             while( keys.hasNext() ) {
@@ -166,8 +165,6 @@ public class MapLayerGroupsHandler extends RestActionHandler {
                 String name = locales.getString(locale);
                 maplayerGroup.setName(locale, name);
             }
-            maplayerGroup.setParentId(parentId);
-            maplayerGroup.setSelectable(selectable);
         } catch(JSONException ex) {
             throw new ActionException("Cannot populate maplayer group from request", ex);
         }
