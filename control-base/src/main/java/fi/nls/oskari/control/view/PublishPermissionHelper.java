@@ -35,6 +35,7 @@ import org.oskari.service.util.ServiceFactory;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by SMAKINEN on 17.8.2015.
@@ -191,7 +192,7 @@ public class PublishPermissionHelper {
             return false;
         }
 
-        final List<String> permissionsList = permissionsService.getResourcesWithGrantedPermissions(
+        final Set<String> permissionsList = permissionsService.getResourcesWithGrantedPermissions(
                 AnalysisLayer.TYPE, user, Permissions.PERMISSION_TYPE_PUBLISH);
         LOG.debug("Analysis layer publish permissions", permissionsList);
         final String permissionKey = "analysis+"+analysis.getId();

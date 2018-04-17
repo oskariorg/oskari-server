@@ -102,7 +102,7 @@ public class OskariLayerWorker {
 
         final String permissionType = getPermissionType(isPublished);
         long start = System.currentTimeMillis();
-        final List<String> resources = permissionsService.getResourcesWithGrantedPermissions(
+        final Set<String> resources = permissionsService.getResourcesWithGrantedPermissions(
                 Permissions.RESOURCE_TYPE_MAP_LAYER, user, permissionType);
         log.debug("View permissions loaded in", System.currentTimeMillis() - start, "ms");
 
@@ -126,9 +126,9 @@ public class OskariLayerWorker {
 
         final Set<String> additionalPermissions = permissionsService.getAdditionalPermissions();
         log.debug("Loading dynamic permissions ", additionalPermissions);
-        final Map<String, List<String>> dynamicPermissions = new HashMap<String, List<String>>();
+        final Map<String, Set<String>> dynamicPermissions = new HashMap<>();
         for (String permissionId : additionalPermissions) {
-            final List<String> permissions = permissionsService
+            final Set<String> permissions = permissionsService
                     .getResourcesWithGrantedPermissions(
                             Permissions.RESOURCE_TYPE_MAP_LAYER, user,
                             permissionId);
@@ -144,7 +144,7 @@ public class OskariLayerWorker {
             final String lang,
             final boolean isSecure,
             final String crs,
-            final List<String> resources,
+            final Set<String> resources,
             final PermissionCollection permissionCollection) {
         final JSONArray layersList = new JSONArray();
         long start = System.currentTimeMillis();
@@ -317,11 +317,11 @@ public class OskariLayerWorker {
                 }
             }
         }
-        Map<String, List<String>> dynamicPermissions = permissionCollection.getDynamicPermissions();
+        Map<String, Set<String>> dynamicPermissions = permissionCollection.getDynamicPermissions();
         if (dynamicPermissions != null) {
-            for (Map.Entry<String, List<String>> entry : dynamicPermissions.entrySet()) {
+            for (Map.Entry<String, Set<String>> entry : dynamicPermissions.entrySet()) {
                 String permissionType = entry.getKey();
-                List<String> permissionList = entry.getValue();
+                Set<String> permissionList = entry.getValue();
                 if (permissionList != null && permissionList.contains(layerPermissionKey)) {
                     JSONHelper.putValue(permission, permissionType, true);
                 }

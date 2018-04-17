@@ -6,6 +6,7 @@ import static fi.nls.oskari.control.ActionConstants.PARAM_SRS;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import fi.nls.oskari.map.layer.OskariLayerService;
@@ -81,7 +82,7 @@ public class GetMapLayerGroupsHandler extends ActionHandler {
         final boolean isPublished = false;
 
         final String permissionType = OskariLayerWorker.getPermissionType(isPublished);
-        final List<String> resources = permissionsService.getResourcesWithGrantedPermissions(Permissions.RESOURCE_TYPE_MAP_LAYER, user, permissionType);
+        final Set<String> resources = permissionsService.getResourcesWithGrantedPermissions(Permissions.RESOURCE_TYPE_MAP_LAYER, user, permissionType);
 
         final Map<Integer, OskariLayer> layersById = layerService.findAll().stream()
                 .filter(layer -> layer.getParentId() != -1 || resources.contains(OskariLayerWorker.getPermissionKey(layer)))
@@ -105,7 +106,7 @@ public class GetMapLayerGroupsHandler extends ActionHandler {
      * @throws ActionException
      */
     private JSONArray getGroupJSON(final Map<Integer, OskariLayer> layersById, final User user,
-            final String lang, final boolean isSecure, final String crs, final List<String> resources,
+            final String lang, final boolean isSecure, final String crs, final Set<String> resources,
             final PermissionCollection permissionCollection, int parentGroupId) throws ActionException {
         try {
             List<MaplayerGroup> layerGroups = oskariMapLayerGroupService.findByParentId(parentGroupId);
