@@ -1,0 +1,150 @@
+{
+  "layers": [],
+  "mapOptions": {
+    "maxExtent": {
+      "bottom": 6291456,
+      "left": -548576,
+      "right": 1548576,
+      "top": 8388608
+    },
+    "resolutions": [
+      2048,
+      1024,
+      512,
+      256,
+      128,
+      64,
+      32,
+      16,
+      8,
+      4,
+      2,
+      1,
+      0.5,
+      0.25
+    ],
+    "srsName": "EPSG:3067"
+  },
+  "plugins": [
+    {"id": "Oskari.mapframework.bundle.mapmodule.plugin.LayersPlugin"},
+    {"id": "Oskari.mapframework.mapmodule.WmsLayerPlugin"},
+    {"id": "Oskari.mapframework.mapmodule.MarkersPlugin"},
+    {"id": "Oskari.mapframework.mapmodule.ControlsPlugin"},
+    {
+      "config": {
+        "ignoredLayerTypes": [
+          "WFS",
+          "MYPLACES",
+          "USERLAYER"
+        ],
+        "infoBox": false
+      },
+      "id": "Oskari.mapframework.mapmodule.GetInfoPlugin"
+    },
+    {"id": "Oskari.mapframework.bundle.mapwfs2.plugin.WfsLayerPlugin"},
+    {"id": "Oskari.mapframework.wmts.mapmodule.plugin.WmtsLayerPlugin"},
+    {"id": "Oskari.mapframework.bundle.mapmodule.plugin.ScaleBarPlugin"},
+    {"id": "Oskari.mapframework.bundle.mapmodule.plugin.Portti2Zoombar"},
+    {"id": "Oskari.mapframework.bundle.mapmodule.plugin.PanButtons"},
+    {"id": "Oskari.mapframework.bundle.mapmyplaces.plugin.MyPlacesLayerPlugin"},
+    {"id": "Oskari.mapframework.bundle.mapstats.plugin.StatsLayerPlugin"},
+    {"id": "Oskari.mapframework.bundle.mapanalysis.plugin.AnalysisLayerPlugin"},
+    {"id": "Oskari.mapframework.bundle.mapmodule.plugin.GeoLocationPlugin"},
+    {"id": "Oskari.mapframework.bundle.mapmodule.plugin.RealtimePlugin"},
+    {"id": "Oskari.mapframework.bundle.mapmodule.plugin.FullScreenPlugin"},
+    {
+      "config": {
+        "baseLayers": [
+          "base_2",
+          "24",
+          "base_35"
+        ],
+        "showAsDropdown": false
+      },
+      "id": "Oskari.mapframework.bundle.mapmodule.plugin.BackgroundLayerSelectionPlugin"
+    },
+    {
+      "config": {},
+      "id": "Oskari.mapframework.bundle.mapmodule.plugin.LogoPlugin"
+    },
+    {"id": "Oskari.mapframework.bundle.myplacesimport.plugin.UserLayersLayerPlugin"},
+    {"id": "Oskari.arcgis.bundle.maparcgis.plugin.ArcGisLayerPlugin"},
+    {"id": "Oskari.mapframework.mapmodule.VectorLayerPlugin"},
+    {"id": "Oskari.mapframework.bundle.mapmodule.plugin.MyLocationPlugin"}
+  ]
+}
+{
+  "layers": [],
+  "mapOptions": {
+    "maxExtent": {
+      "bottom": 6291456,
+      "left": -548576,
+      "right": 1548576,
+      "top": 8388608
+    },
+    "resolutions": [
+      2048,
+      1024,
+      512,
+      256,
+      128,
+      64,
+      32,
+      16,
+      8,
+      4,
+      2,
+      1,
+      0.5,
+      0.25
+    ],
+    "srsName": "EPSG:3067"
+  },
+  "plugins": [
+    {"id": "Oskari.mapframework.bundle.mapmodule.plugin.LayersPlugin"},
+    {"id": "Oskari.mapframework.mapmodule.WmsLayerPlugin"},
+    {"id": "Oskari.mapframework.mapmodule.MarkersPlugin"},
+    {"id": "Oskari.mapframework.mapmodule.ControlsPlugin"},
+    {
+      "config": {
+        "ignoredLayerTypes": [
+          "WFS",
+          "MYPLACES",
+          "USERLAYER"
+        ],
+        "infoBox": false
+      },
+      "id": "Oskari.mapframework.mapmodule.GetInfoPlugin"
+    },
+    {"id": "Oskari.mapframework.bundle.mapwfs2.plugin.WfsLayerPlugin"},
+    {"id": "Oskari.mapframework.wmts.mapmodule.plugin.WmtsLayerPlugin"},
+    {"id": "Oskari.mapframework.bundle.mapmodule.plugin.ScaleBarPlugin"},
+    {"id": "Oskari.mapframework.bundle.mapmodule.plugin.Portti2Zoombar"},
+    {"id": "Oskari.mapframework.bundle.mapmodule.plugin.PanButtons"},
+    {"id": "Oskari.mapframework.bundle.mapmyplaces.plugin.MyPlacesLayerPlugin"},
+    {"id": "Oskari.mapframework.bundle.mapstats.plugin.StatsLayerPlugin"},
+    {"id": "Oskari.mapframework.bundle.mapanalysis.plugin.AnalysisLayerPlugin"},
+    {"id": "Oskari.mapframework.bundle.mapmodule.plugin.GeoLocationPlugin"},
+    {"id": "Oskari.mapframework.bundle.mapmodule.plugin.RealtimePlugin"},
+    {"id": "Oskari.mapframework.bundle.mapmodule.plugin.FullScreenPlugin"},
+    {
+      "config": {
+        "baseLayers": [
+          "base_2",
+          "24",
+          "base_35"
+        ],
+        "showAsDropdown": false
+      },
+      "id": "Oskari.mapframework.bundle.mapmodule.plugin.BackgroundLayerSelectionPlugin"
+    },
+    {
+      "config": {},
+      "id": "Oskari.mapframework.bundle.mapmodule.plugin.LogoPlugin"
+    },
+    {"id": "Oskari.mapframework.bundle.myplacesimport.plugin.UserLayersLayerPlugin"},
+    {"id": "Oskari.arcgis.bundle.maparcgis.plugin.ArcGisLayerPlugin"},
+    {"id": "Oskari.mapframework.mapmodule.VectorLayerPlugin"},
+    {"id": "Oskari.mapframework.bundle.mapmodule.plugin.MyLocationPlugin"}
+  ]
+}
