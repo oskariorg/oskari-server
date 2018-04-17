@@ -94,8 +94,8 @@ public class GetMapLayerGroupsHandler extends ActionHandler {
         List<OskariLayer> layers = getLayersWithResources(user, isPublished);
         PermissionCollection permissionCollection = OskariLayerWorker.getPermissionCollection(user);
 
-        int[] layerIds = layers.stream().mapToInt(OskariLayer::getId).toArray();
-        Arrays.sort(layerIds); // Sort the array, we will use binary search later, which relies on this being sorted
+        int[] sortedLayerIds = layers.stream().mapToInt(OskariLayer::getId).toArray();
+        Arrays.sort(sortedLayerIds);
 
         Map<Integer, List<MaplayerGroup>> groupsByParentId = groupService.findAll().stream()
                 .collect(Collectors.groupingBy(MaplayerGroup::getParentId));
@@ -105,7 +105,7 @@ public class GetMapLayerGroupsHandler extends ActionHandler {
 
         try {
             JSONObject response = OskariLayerWorker.getListOfMapLayers(layers, user, lang, isSecure, crs, permissionCollection);
-            response.put(KEY_GROUPS, getGroupJSON(groupsByParentId, linksByGroupId, layerIds, -1));
+            response.put(KEY_GROUPS, getGroupJSON(groupsByParentId, linksByGroupId, sortedLayerIds, -1));
             ResponseHelper.writeResponse(params, response);
         } catch (JSONException e) {
             throw new ActionException("Failed to add groups", e);
@@ -124,7 +124,7 @@ public class GetMapLayerGroupsHandler extends ActionHandler {
      */
     private JSONArray getGroupJSON(final Map<Integer, List<MaplayerGroup>> groupsByParentId,
             final Map<Integer, List<OskariLayerGroupLink>> linksByGroupId,
-            final int[] layerIds,
+            final int[] sortedLayerIds,
             final int parentGroupId) throws JSONException {
         List<MaplayerGroup> groups = groupsByParentId.get(parentGroupId);
         if (groups == null || groups.isEmpty()) {
@@ -137,7 +137,7 @@ public class GetMapLayerGroupsHandler extends ActionHandler {
             int groupId = group.getId();
             JSONObject groupAsJson = group.getAsJSON();
 
-            JSONArray subGroups = getGroupJSON(groupsByParentId, linksByGroupId, layerIds, groupId);
+            JSONArray subGroups = getGroupJSON(groupsByParentId, linksByGroupId, sortedLayerIds, groupId);
             if (subGroups != null) {
                 groupAsJson.put(KEY_GROUPS, subGroups);
             }
@@ -145,7 +145,7 @@ public class GetMapLayerGroupsHandler extends ActionHandler {
             List<OskariLayerGroupLink> groupLinks = linksByGroupId.get(groupId);
             if (groupLinks != null && !groupLinks.isEmpty()) {
                 List<Integer> groupsLayerIds = groupLinks.stream()
-                    .filter(l -> contains(layerIds, l.getLayerId()))
+                    .filter(l -> contains(sortedLayerIds, l.getLayerId()))
                     .sorted(Comparator.comparingInt(OskariLayerGroupLink::getOrderNumber))
                     .map(OskariLayerGroupLink::getLayerId)
                     .collect(Collectors.toList());
@@ -159,8 +159,8 @@ public class GetMapLayerGroupsHandler extends ActionHandler {
         return json;
     }
 
-    private boolean contains(int[] layerIds, int layerId) {
-        return Arrays.binarySearch(layerIds, layerId) >= 0;
+    private boolean contains(int[] sortedLayerIds, int layerId) {
+        return Arrays.binarySearch(sortedLayerIds, layerId) >= 0;
     }
 
 }
