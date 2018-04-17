@@ -95,8 +95,7 @@
     </update>
     
     <delete id="delete" parameterClass="int">
-        DELETE FROM oskari_maplayer_group
-        WHERE id = #id#
+        delete from oskari_maplayer_group where id = #id#
     </delete>
 
 </sqlMap>
