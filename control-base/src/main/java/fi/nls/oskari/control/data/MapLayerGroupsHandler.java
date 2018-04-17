@@ -56,7 +56,6 @@ public class MapLayerGroupsHandler extends RestActionHandler {
      * @param params
      * @throws ActionException
      */
-    @Override
     public void handleGet(ActionParameters params) throws ActionException {
         final int id = params.getHttpParam(PARAM_ID, -1);
         if(id != -1) {
@@ -82,7 +81,6 @@ public class MapLayerGroupsHandler extends RestActionHandler {
      * @param params
      * @throws ActionException
      */
-    @Override
     public void handlePut(ActionParameters params) throws ActionException {
         params.requireAdminUser();
         MaplayerGroup maplayerGroup = populateFromRequest(params.getPayLoadJSON());
@@ -103,7 +101,6 @@ public class MapLayerGroupsHandler extends RestActionHandler {
      * @param params
      * @throws ActionException
      */
-    @Override
     public void handlePost(ActionParameters params) throws ActionException {
         params.requireAdminUser();
         MaplayerGroup maplayerGroup = populateFromRequest(params.getPayLoadJSON());
@@ -120,7 +117,6 @@ public class MapLayerGroupsHandler extends RestActionHandler {
      * @param params
      * @throws ActionException
      */
-    @Override
     public void handleDelete(ActionParameters params) throws ActionException {
         params.requireAdminUser();
         final int groupId = params.getRequiredParamInt(PARAM_ID);
