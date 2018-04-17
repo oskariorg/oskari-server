@@ -109,6 +109,7 @@ public class Permissions implements Comparable<Permissions> {
 		if (grantedPermissions == null) {
 			grantedPermissions = new ArrayList<String>();
 		}
+
 		return grantedPermissions;
 	}
 
