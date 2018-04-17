@@ -70,6 +70,4 @@ public class V1_46_9__replace_externalids_in_mapful_bglayerselection_plugin_conf
         assertEquals("myplaces_7509", selectedLayers.getJSONObject(3).getString("id"));
     }
 
-    // JSONObject state = new JSONObject(SELECTED_LAYERS_SAMPLE);
-    
 }
