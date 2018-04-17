@@ -306,7 +306,7 @@ public class MapfullHandler extends BundleHandler {
                                              final boolean modifyURLs) {
 
         final boolean analyseBundlePresent = bundleIds.contains(BUNDLE_ANALYSE);
-        final List<String> permissionsList = permissionsService.getResourcesWithGrantedPermissions(
+        final Set<String> permissionsList = permissionsService.getResourcesWithGrantedPermissions(
                 AnalysisLayer.TYPE, user, Permissions.PERMISSION_TYPE_VIEW_PUBLISHED);
         LOGGER.debug("Analysis layer permissions for published view", permissionsList);
 
