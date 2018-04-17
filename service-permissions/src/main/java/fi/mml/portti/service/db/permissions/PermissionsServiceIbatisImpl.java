@@ -129,6 +129,7 @@ public class PermissionsServiceIbatisImpl extends BaseIbatisService<Permissions>
 		groupPermissions.addAll(userPermissions);
 		return groupPermissions;
 	}
+
 	private Set<String> getResourcesWithGrantedPermissions(
             String resourceType,
             Set<String> externalId,
