@@ -129,14 +129,13 @@ public class PermissionsServiceIbatisImpl extends BaseIbatisService<Permissions>
 		groupPermissions.addAll(userPermissions);
 		return groupPermissions;
 	}
-
-	private Set<String> getResourcesWithGrantedPermissions(
+    private Set<String> getResourcesWithGrantedPermissions(
             String resourceType,
             Set<String> externalId,
             String externalIdType,
             String permissionsType) {
 
-	    if(externalId == null || externalId.isEmpty()) {
+        if(externalId == null || externalId.isEmpty()) {
             log.warn("Tried to get permissions without externalIds. ResourceType", resourceType, "Permission type", permissionsType, " ExternalIdType", externalIdType);
             return Collections.emptySet();
         }
