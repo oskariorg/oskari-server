@@ -186,10 +186,13 @@ public class SaveLayerHandler extends ActionHandler {
                 ml.setUpdated(new Date(System.currentTimeMillis()));
                 mapLayerService.update(ml);
 
-                int[] groupIds = getMaplayerGroupIds(params.getHttpParam(PARAM_MAPLAYER_GROUPS, "-1"));
-                layerGroupLinkService.deleteLinksByLayerId(ml.getId());
-                List<OskariLayerGroupLink> links = getMaplayerGroupLinks(ml.getId(), groupIds);
-                layerGroupLinkService.insertAll(links);
+                String maplayerGroups = params.getHttpParam(PARAM_MAPLAYER_GROUPS);
+                if (maplayerGroups != null) {
+                    int[] groupIds = getMaplayerGroupIds(maplayerGroups);
+                    List<OskariLayerGroupLink> links = getMaplayerGroupLinks(ml.getId(), groupIds);
+                    layerGroupLinkService.deleteLinksByLayerId(ml.getId());
+                    layerGroupLinkService.insertAll(links);
+                }
 
                 //TODO: WFS spesific property update
                 if (OskariLayer.TYPE_WFS.equals(ml.getType())) {
@@ -236,9 +239,12 @@ public class SaveLayerHandler extends ActionHandler {
                 int id = mapLayerService.insert(ml);
                 ml.setId(id);
 
-                int[] groupIds = getMaplayerGroupIds(params.getHttpParam(PARAM_MAPLAYER_GROUPS, "-1"));
-                List<OskariLayerGroupLink> links = getMaplayerGroupLinks(ml.getId(), groupIds);
-                layerGroupLinkService.insertAll(links);
+                String maplayerGroups = params.getHttpParam(PARAM_MAPLAYER_GROUPS);
+                if (maplayerGroups != null && !maplayerGroups.isEmpty()) {
+                    int[] groupIds = getMaplayerGroupIds(maplayerGroups);
+                    List<OskariLayerGroupLink> links = getMaplayerGroupLinks(ml.getId(), groupIds);
+                    layerGroupLinkService.insertAll(links);
+                }
 
                 if(ml.isCollection()) {
                     // update the name with the id for permission mapping
@@ -293,7 +299,7 @@ public class SaveLayerHandler extends ActionHandler {
     }
 
     private List<OskariLayerGroupLink> getMaplayerGroupLinks(final int layerId, final int[] groupIds) {
-        if (groupIds == null || groupIds.length == 0) {
+        if (groupIds.length == 0) {
             return Collections.emptyList();
         }
         return Arrays.stream(groupIds)
