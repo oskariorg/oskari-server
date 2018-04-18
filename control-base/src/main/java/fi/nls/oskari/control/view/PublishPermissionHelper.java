@@ -192,13 +192,13 @@ public class PublishPermissionHelper {
             return false;
         }
 
-        final Set<String> permissionsList = permissionsService.getResourcesWithGrantedPermissions(
+        final Set<String> permissions = permissionsService.getResourcesWithGrantedPermissions(
                 AnalysisLayer.TYPE, user, Permissions.PERMISSION_TYPE_PUBLISH);
-        LOG.debug("Analysis layer publish permissions", permissionsList);
+        LOG.debug("Analysis layer publish permissions", permissions);
         final String permissionKey = "analysis+"+analysis.getId();
 
-        LOG.debug("PublishPermissions:", permissionsList);
-        boolean hasPermission = permissionsList.contains(permissionKey);
+        LOG.debug("PublishPermissions:", permissions);
+        boolean hasPermission = permissions.contains(permissionKey);
         if (hasPermission) {
             // write publisher name for analysis
             analysisService.updatePublisherName(analysisId, user.getUuid(), user.getScreenname());

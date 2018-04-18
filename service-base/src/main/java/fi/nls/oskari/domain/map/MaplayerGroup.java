@@ -2,15 +2,12 @@ package fi.nls.oskari.domain.map;
 
 import fi.nls.oskari.util.JSONHelper;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.util.List;
 import java.util.Map;
 
 public class MaplayerGroup extends JSONLocalizedName {
     private int id;
-    private JSONArray layers;
     private int parentId;
     private boolean selectable;
     private Integer orderNumber;
@@ -21,19 +18,6 @@ public class MaplayerGroup extends JSONLocalizedName {
 
     public void setId(int id) {
         this.id = id;
-    }
-
-    public JSONArray getLayers() {
-        return layers;
-    }
-
-    /**
-     * Set layers
-     *
-     * @param layers array of OskariLayer JSONObjects
-     */
-    public void setLayers(JSONArray layers) {
-        this.layers = layers;
     }
 
     public int getParentId() {
@@ -55,7 +39,6 @@ public class MaplayerGroup extends JSONLocalizedName {
             JSONHelper.putValue(names, localization.getKey(), localization.getValue());
         }
         JSONHelper.putValue(me, "name", names);
-        JSONHelper.putValue(me, "layers", this.getLayers());
         JSONHelper.putValue(me, "selectable", this.isSelectable());
         JSONHelper.putValue(me, "parentId", this.getParentId());
         JSONHelper.putValue(me, "orderNumber", this.getOrderNumber());
