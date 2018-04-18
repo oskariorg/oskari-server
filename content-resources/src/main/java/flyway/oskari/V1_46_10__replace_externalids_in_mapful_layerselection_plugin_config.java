@@ -143,6 +143,9 @@ public class V1_46_10__replace_externalids_in_mapful_layerselection_plugin_confi
     private static boolean replaceDefaultBaseLayer(JSONObject plugin,
             Map<String, Integer> externalIdToLayerId) throws JSONException {
         String defaultBaseLayer = plugin.optString("defaultBaseLayer");
+        if (defaultBaseLayer == null) {
+            return false;
+        }
         Integer id = getId(defaultBaseLayer, externalIdToLayerId);
         if (id == null) {
             return false;
