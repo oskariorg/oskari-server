@@ -66,7 +66,6 @@ public abstract class MyPlacesService extends OskariComponent {
                                                 final String uuid, final boolean modifyURLs) {
 
         final OskariLayer layer = new OskariLayer();
-        layer.setExternalId(MYPLACES_LAYERID_PREFIX + mpLayer.getId());
         layer.setName(MYPLACES_WMS_NAME);
         layer.setType(OskariLayer.TYPE_WMS);
         layer.setName(lang, mpLayer.getCategory_name());
@@ -101,8 +100,7 @@ java.lang.RuntimeException: Unable to encode filter [[ geometry bbox POLYGON ((4
         JSONObject myPlaceLayer = JSON_FORMATTER.getJSON(layer, lang, modifyURLs, null, capabilities);
         // flag with metaType for frontend
         JSONHelper.putValue(myPlaceLayer, "metaType", "published");
+        JSONHelper.putValue(myPlaceLayer, "id", MYPLACES_LAYERID_PREFIX + mpLayer.getId());
         return myPlaceLayer;
     }
-
-
 }

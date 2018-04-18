@@ -180,6 +180,7 @@ public class UserLayerDataService {
             baseLayer.setType(OskariLayer.TYPE_USERLAYER);
             // create the JSON
             final JSONObject json = FORMATTER.getJSON(baseLayer, PropertyUtil.getDefaultLanguage(), false, null, ulayer);
+            JSONHelper.putValue(json, "id", USERLAYER_LAYER_PREFIX + ulayer.getId());
 
             // restore the previous values for baseLayer
             baseLayer.setExternalId(id);
