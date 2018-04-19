@@ -26,7 +26,7 @@ public interface OskariLayerGroupLinkMapper {
             + " ORDER BY order_number")
     List<OskariLayerGroupLink> findByGroupId(@Param("groupId") int groupId);
 
-    @Insert("INSERT INTO DEFAULT_ORDER_NUMBER"
+    @Insert("INSERT INTO oskari_maplayer_group_link"
             + " (maplayerid, groupid, order_number) VALUES"
             + " (#{layerId}, #{groupId}, #{orderNumber})")
     void insert(OskariLayerGroupLink link);
