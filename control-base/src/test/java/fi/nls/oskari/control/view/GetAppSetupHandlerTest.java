@@ -228,7 +228,7 @@ public class GetAppSetupHandlerTest extends JSONActionRouteTest {
 
         final PermissionsService service = mock(PermissionsServiceIbatisImpl.class);
         doReturn(
-                Collections.emptyList()
+                Collections.emptySet()
         ).when(service).getResourcesWithGrantedPermissions(anyString(), any(User.class), anyString());
 
         // return mocked  bundle service if a new one is created (in paramhandlers for example)

@@ -379,7 +379,9 @@ public class AppSetupHandler extends RestActionHandler {
         }
         JSONObject mapOptions = publisherView.getMapOptions();
         if (mapOptions == null) {
-            throw new ActionParamsException("Could not get the mapOptions from appsetup for uuid " + publisherUUID);
+            LOG.info("Could not get the mapOptions from appsetup for uuid", publisherUUID,
+                    "the embedded maps will use defaults from frontend code");
+            mapOptions = new JSONObject();
         }
         JSONHelper.putValue(mapOptions, KEY_CROSSHAIR, crosshairEnabled(input));
         JSONHelper.putValue(mapOptions, KEY_STYLE, style);

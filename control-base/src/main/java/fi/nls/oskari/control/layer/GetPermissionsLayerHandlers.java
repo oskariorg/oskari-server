@@ -64,7 +64,7 @@ public class GetPermissionsLayerHandlers extends ActionHandler {
         final String externalId = params.getRequiredParam("externalId");
         final String externalType = params.getRequiredParam("externalType");
 
-    	Map<String, List<String>> resourcesMap = new HashMap<String, List<String>>();
+        Map<String, Set<String>> resourcesMap = new HashMap<>();
 
         final JSONArray permissionNames = new JSONArray();
     	for (String id : PERMISSIONS)
@@ -74,7 +74,7 @@ public class GetPermissionsLayerHandlers extends ActionHandler {
             JSONHelper.putValue(perm, KEY_NAME, permissionsService.getPermissionName(id, params.getLocale().getLanguage()));
             permissionNames.put(perm);
             // list resources having the permission
-    		List<String> val = permissionsService.getResourcesWithGrantedPermissions(Permissions.RESOURCE_TYPE_MAP_LAYER, externalId, externalType, id);
+            Set<String> val = permissionsService.getResourcesWithGrantedPermissions(Permissions.RESOURCE_TYPE_MAP_LAYER, externalId, externalType, id);
         	resourcesMap.put(id, val);
     	}
         final JSONObject root = new JSONObject();
@@ -95,7 +95,7 @@ public class GetPermissionsLayerHandlers extends ActionHandler {
                 final String permissionMapping = res.getMapping();
 
                 JSONArray jsonResults = new JSONArray();
-                for (Entry<String, List<String>> resource : resourcesMap.entrySet())
+                for (Entry<String, Set<String>> resource : resourcesMap.entrySet())
                 {
                 	JSONObject layerJson = new JSONObject();
                     layerJson.put(KEY_ID, resource.getKey());

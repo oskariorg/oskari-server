@@ -6,7 +6,11 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>fi.nls.oskari</groupId>
     <artifactId>oskari-parent</artifactId>
+<<<<<<< HEAD
     <version>1.47.0-SNAPSHOT</version>
+=======
+    <version>1.46.1</version>
+>>>>>>> hotfix/1.46.1
     <packaging>pom</packaging>
 
     <name>Oskari parent POM</name>
