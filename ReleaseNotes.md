@@ -1,5 +1,20 @@
 # Release Notes
 
+## 1.46.1
+
+For a full list of changes see: https://github.com/oskariorg/oskari-server/milestone/9?closed=1
+
+- Fixed secure flag so unsecure services (e.g. WMS) are proxied like before on secured Oskari instances
+- GetHierarchicalMapLayerGroups action route response changed to return layers as a flat array beside the groups structure 
+- Userlayer/dataset import extent information is now properly transformed so coverage area can be sent for the frontend
+- Appsetups without mapfull.conf.mapOptions (relying on defaults) couldn't be used to publish maps. MapOptions config is now optional for publishing.
+- Fixed multiple issues for adding, editing and deleting dataprovider/groups via the admin user interface (both hierarchichal admin and the classical one work now).
+- Layer ids are now always used in layer JSON sent to the frontend (previously it could be an "external id" when configured)
+- oskari_maplayer no longer has the external_id column. It has been moved to another table, made unique and only the
+ mapLayers URL-parameter handling cares about it anymore. Migration for database have been provided to replace external ids in 
+ mapfull.state.selectedLayers and configs for BackgroundLayerSelectionPlugin and LayerSelectionPlugin.
+- PermissionService changed to return permissions as a Set instead of a List
+
 ## 1.46.0
 
 For a full list of changes see: https://github.com/oskariorg/oskari-server/milestone/7?closed=1
