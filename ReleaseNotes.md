@@ -5,7 +5,8 @@
 For a full list of changes see: https://github.com/oskariorg/oskari-server/milestone/9?closed=1
 
 - Fixed secure flag so unsecure services (e.g. WMS) are proxied like before on secured Oskari instances
-- GetHierarchicalMapLayerGroups action route response changed to return layers as a flat array beside the groups structure 
+- GetHierarchicalMapLayerGroups action route response changed to return layers as a flat array beside the groups structure
+- Layers can now belong to multiple groups (previously caused layer listing to fail) 
 - Userlayer/dataset import extent information is now properly transformed so coverage area can be sent for the frontend
 - Appsetups without mapfull.conf.mapOptions (relying on defaults) couldn't be used to publish maps. MapOptions config is now optional for publishing.
 - Fixed multiple issues for adding, editing and deleting dataprovider/groups via the admin user interface (both hierarchichal admin and the classical one work now).
