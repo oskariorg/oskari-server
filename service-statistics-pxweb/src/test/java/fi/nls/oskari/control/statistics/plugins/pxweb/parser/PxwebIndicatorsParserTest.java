@@ -1,8 +1,11 @@
 package fi.nls.oskari.control.statistics.plugins.pxweb.parser;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import fi.nls.oskari.control.statistics.data.StatisticalIndicator;
+import fi.nls.oskari.control.statistics.data.StatisticalIndicatorDataModel;
 import fi.nls.oskari.control.statistics.plugins.db.DatasourceLayer;
 import fi.nls.oskari.control.statistics.plugins.pxweb.PxwebConfig;
+import fi.nls.oskari.control.statistics.plugins.pxweb.json.PxTableItem;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.test.util.ResourceHelper;
@@ -133,6 +136,17 @@ public class PxwebIndicatorsParserTest {
         // config.indicatorKey is parsed as indicators so only vuosi is left as dimension
         assertEquals("Should find one dimension", 1, indicators.get(0).getDataModel().getDimensions().size());
         assertEquals("Should find dimension 'vuosi'", "Vuosi", indicators.get(0).getDataModel().getDimension("vuosi").getName());
+    }
+
+    @Test
+    public void testHKIModel() throws Exception {
+        PxwebIndicatorsParser parser = getParser("config2folderstruct_hki.json");
+        String json = ResourceHelper.readStringResource("px-table-hki.json", PxwebIndicatorsParserTest.class);
+        PxTableItem table = new ObjectMapper().readValue(json, PxTableItem.class);
+        StatisticalIndicatorDataModel model = parser.getModel(table);
+
+        // Alue is ignored as it's the region key
+        assertEquals("Should have 6 params", 6, model.getDimensions().size());
     }
 
     private List<DatasourceLayer> getLayers() {
