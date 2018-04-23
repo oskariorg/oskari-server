@@ -1,0 +1,177 @@
+{
+    "plugins": [{
+        "id": "Oskari.mapframework.bundle.mapmodule.plugin.LayersPlugin",
+        "config": {}
+    }, {
+        "id": "Oskari.mapframework.mapmodule.WmsLayerPlugin",
+        "config": {}
+    }, {
+        "id": "Oskari.mapframework.bundle.mapwfs2.plugin.WfsLayerPlugin"
+    }, {
+        "id": "Oskari.mapframework.wmts.mapmodule.plugin.WmtsLayerPlugin",
+        "config": {}
+    }, {
+        "id": "Oskari.mapframework.bundle.mapstats.plugin.StatsLayerPlugin",
+        "config": {}
+    }, {
+        "id": "Oskari.mapframework.bundle.mapmodule.plugin.RealtimePlugin",
+        "config": {}
+    }, {
+        "id": "Oskari.mapframework.bundle.mapmodule.plugin.LogoPlugin",
+        "config": {
+            "location": {
+                "classes": "bottom right"
+            },
+            "font": "arial"
+        }
+    }, {
+        "id": "Oskari.mapframework.bundle.myplacesimport.plugin.UserLayersLayerPlugin",
+        "config": {}
+    }, {
+        "id": "Oskari.mapframework.bundle.mapanalysis.plugin.AnalysisLayerPlugin",
+        "config": {}
+    }, {
+        "id": "Oskari.arcgis.bundle.maparcgis.plugin.ArcGisLayerPlugin",
+        "config": {}
+    }, {
+        "id": "Oskari.mapframework.mapmodule.MarkersPlugin",
+        "config": {
+            "markerButton": false
+        }
+    }, {
+        "id": "Oskari.mapframework.mapmodule.VectorLayerPlugin"
+    }, {
+        "id": "Oskari.mapframework.bundle.mapmodule.plugin.ScaleBarPlugin",
+        "config": {
+            "toolStyle": "rounded-light",
+            "location": {
+                "classes": "bottom right"
+            }
+        }
+    }, {
+        "id": "Oskari.mapframework.bundle.mapmodule.plugin.IndexMapPlugin",
+        "config": {
+            "toolStyle": "rounded-light",
+            "location": {
+                "classes": "bottom left"
+            }
+        }
+    }, {
+        "id": "Oskari.mapframework.bundle.mapmodule.plugin.PanButtons",
+        "config": {
+            "toolStyle": "rounded-light",
+            "location": {
+                "classes": "right top"
+            }
+        }
+    }, {
+        "id": "Oskari.mapframework.bundle.mapmodule.plugin.Portti2Zoombar",
+        "config": {
+            "toolStyle": {
+                "val": "rounded-light",
+                "heightPlus": "38px",
+                "heightCursor": "18px",
+                "widthCursor": "17px",
+                "widthMinus": "22px",
+                "widthCenter": "22px",
+                "widthPlus": "22px",
+                "heightMinus": "39px",
+                "heightCenter": 12
+            },
+            "location": {
+                "classes": "right top"
+            }
+        }
+    }, {
+        "id": "Oskari.mapframework.bundle.mapmodule.plugin.SearchPlugin",
+        "config": {
+            "toolStyle": {
+                "val": "rounded-light",
+                "widthLeft": 17,
+                "widthRight": 32
+            },
+            "location": {
+                "classes": "left top"
+            }
+        }
+    }, {
+        "id": "Oskari.mapframework.mapmodule.ControlsPlugin"
+    }, {
+        "id": "Oskari.mapframework.bundle.mapmodule.plugin.PublisherToolbarPlugin",
+        "config": {
+            "toolbarId": "PublisherToolbar",
+            "buttons": ["history_back", "history_forward", "measureline", "measurearea"],
+            "toolStyle": "rounded-light",
+            "location": {
+                "classes": "left top"
+            }
+        }
+    }, {
+        "id": "Oskari.mapframework.mapmodule.GetInfoPlugin",
+        "config": {
+            "toolStyle": "rounded-light",
+            "ignoredLayerTypes": ["WFS"],
+            "infoBox": false
+        }
+    }, {
+        "location": {
+            "classes": "top left"
+        },
+        "id": "Oskari.mapframework.bundle.mapmodule.plugin.LayerSelectionPlugin",
+        "config": {
+            "defaultBaseLayer": "base_35",
+            "baseLayers": ["base_35", "24"],
+            "toolStyle": "rounded-light",
+            "location": {
+                "classes": "left top"
+            }
+        }
+    }],
+    "mapOptions": {
+        "crosshair": false,
+        "srsName": "EPSG:3067",
+        "resolutions": [2048, 1024, 512, 256, 128, 64, 32, 16, 8, 4, 2, 1, 0.5, 0.25],
+        "style": {
+            "toolStyle": "rounded-light",
+            "font": "arial"
+        },
+        "maxExtent": {
+            "top": 8388608,
+            "left": -548576,
+            "bottom": 6291456,
+            "right": 1548576
+        }
+    },
+    "layers": [{
+        "style": "default",
+        "id": "base_35",
+        "opacity": "100"
+    }, {
+        "hidden": true,
+        "style": "default",
+        "id": 24,
+        "opacity": 100
+    }, {
+        "id": 440,
+        "opacity": 100
+    }, {
+        "id": 441,
+        "opacity": 100
+    }, {
+        "id": 786,
+        "opacity": 100
+    }, {
+        "id": 248,
+        "opacity": 100
+    }, {
+        "style": "default",
+        "id": 422,
+        "opacity": 100
+    }, {
+        "id": 353,
+        "opacity": 100
+    }, {
+        "id": 522,
+        "opacity": 100
+    }]
+}

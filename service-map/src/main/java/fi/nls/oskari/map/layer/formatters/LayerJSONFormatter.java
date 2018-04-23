@@ -1,19 +1,12 @@
 package fi.nls.oskari.map.layer.formatters;
 
-import fi.mml.map.mapwindow.service.db.OskariMapLayerGroupService;
-import fi.mml.map.mapwindow.service.db.OskariMapLayerGroupServiceIbatisImpl;
-import fi.nls.oskari.domain.map.DataProvider;
-import fi.nls.oskari.domain.map.MaplayerGroup;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.map.layer.DataProviderService;
-import fi.nls.oskari.map.layer.DataProviderServiceIbatisImpl;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 import org.oskari.utils.common.Sets;
 
@@ -35,9 +28,6 @@ public class LayerJSONFormatter {
     public static final String KEY_STYLES = "styles";
     public static final String KEY_SRS = "srs";
     public static final String KEY_ATTRIBUTE_FORCED_SRS = "forcedSRS";
-
-    private static final OskariMapLayerGroupService OSKARI_MAP_LAYER_GROUP_SERVICE = new OskariMapLayerGroupServiceIbatisImpl();
-    private static final DataProviderService groupService = new DataProviderServiceIbatisImpl();
 
     private static final String KEY_ID = "id";
     private static final String KEY_TYPE = "type";
@@ -92,13 +82,7 @@ public class LayerJSONFormatter {
                                      final String crs) {
         JSONObject layerJson = new JSONObject();
 
-        final String externalId = layer.getExternalId();
-        if(externalId != null && !externalId.isEmpty()) {
-            JSONHelper.putValue(layerJson, KEY_ID, externalId);
-        }
-        else {
-            JSONHelper.putValue(layerJson, KEY_ID, layer.getId());
-        }
+        JSONHelper.putValue(layerJson, KEY_ID, layer.getId());
 
         //log.debug("Type", layer.getType());
         if(layer.isCollection()) {
@@ -127,24 +111,6 @@ public class LayerJSONFormatter {
         JSONHelper.putValue(layerJson, "subtitle", layer.getTitle(lang));
         if(layer.getGroup() != null) {
             JSONHelper.putValue(layerJson, "orgName", layer.getGroup().getName(lang));
-        }
-        if(layer.getMaplayerGroup() != null) {
-            // FIXME Remove inspire when frontend is ready
-            JSONHelper.putValue(layerJson, "inspire", layer.getMaplayerGroup().getName(lang));
-
-            JSONArray groups = new JSONArray();
-            try {
-                for (MaplayerGroup mapLayerGroup : OSKARI_MAP_LAYER_GROUP_SERVICE.findByMaplayerId(layer.getId())) {
-                    JSONObject group = new JSONObject();
-                    group.put("id", mapLayerGroup.getId());
-                    group.put("name", mapLayerGroup.getName(lang));
-                    groups.put(group);
-                }
-            } catch(JSONException ex) {
-                log.error("Cannot create groups array for layer: " + layer.getId(), ex);
-            }
-
-            JSONHelper.put(layerJson, "groups", groups);
         }
 
         if(layer.getOpacity() != null && layer.getOpacity() > -1 && layer.getOpacity() <= 100) {
@@ -175,7 +141,6 @@ public class LayerJSONFormatter {
         JSONHelper.putValue(layerJson, "updated", layer.getUpdated());
 
         JSONHelper.putValue(layerJson, "dataUrl_uuid", getFixedDataUrl(layer));
-        JSONHelper.putValue(layerJson, "orderNumber", layer.getOrderNumber());
 
         // sublayer handling
         if(layer.getSublayers() != null && !layer.getSublayers().isEmpty()) {
@@ -188,6 +153,7 @@ public class LayerJSONFormatter {
         }
         return layerJson;
     }
+
     public void removeAdminInfo(final JSONObject layer) {
         if(layer == null) {
             return;
@@ -262,73 +228,6 @@ public class LayerJSONFormatter {
             return null;
         }
         return metadataId;
-    }
-
-    /**
-     * Minimal implementation for parsing layer in json format.
-     * @param json
-     * @return
-     */
-    public OskariLayer parseLayer (final JSONObject json) throws JSONException {
-        OskariLayer layer = new OskariLayer();
-
-        // read mandatory values, an JSONException is thrown if these are missing
-        layer.setType(json.getString("type"));
-        layer.setUrl(json.getString("url"));
-        layer.setName(json.getString("name"));
-        final String orgName = json.getString("organization");
-        final String themeName = json.getString("inspiretheme");
-        layer.setLocale(json.getJSONObject("locale"));
-
-        // read optional values
-        layer.setBaseMap(json.optBoolean("base_map", layer.isBaseMap()));
-        layer.setOpacity(json.optInt("opacity", layer.getOpacity()));
-        layer.setStyle(json.optString("style", layer.getStyle()));
-        layer.setMinScale(json.optDouble("minscale", layer.getMinScale()));
-        layer.setMaxScale(json.optDouble("maxscale", layer.getMaxScale()));
-        layer.setLegendImage(json.optString("legend_image", layer.getLegendImage()));
-        layer.setMetadataId(json.optString("metadataid", layer.getMetadataId()));
-        layer.setGfiType(json.optString("gfi_type", layer.getGfiType()));
-        layer.setGfiXslt(json.optString("gfi_xslt", layer.getGfiXslt()));
-        layer.setGfiContent(json.optString("gfi_content", layer.getGfiContent()));
-        layer.setGeometry(json.optString("geometry", layer.getGeometry()));
-        layer.setRealtime(json.optBoolean("realtime", layer.getRealtime()));
-        layer.setRefreshRate(json.optInt("refresh_rate", layer.getRefreshRate()));
-        layer.setSrs_name(json.optString("srs_name", layer.getSrs_name()));
-        layer.setVersion(json.optString("version", layer.getVersion()));
-        layer.setUsername(json.optString("username", layer.getUsername()));
-        layer.setPassword(json.optString("password", layer.getPassword()));
-        // omit permissions, these are handled by LayerHelper
-
-        // handle params, check for null to avoid overwriting empty JS Object Literal
-        final JSONObject params = json.optJSONObject("params");
-        if (params != null) {
-            layer.setParams(params);
-        }
-
-        // handle options, check for null to avoid overwriting empty JS Object Literal
-        final JSONObject options = json.optJSONObject("options");
-        if (options != null) {
-            layer.setOptions(options);
-        }
-
-        // handle inspiretheme
-        final MaplayerGroup theme = OSKARI_MAP_LAYER_GROUP_SERVICE.findByName(themeName);
-        if (theme == null) {
-            log.warn("Didn't find match for theme:", themeName);
-        } else {
-            layer.addGroup(theme);
-        }
-
-        // setup data producer/layergroup
-        final DataProvider dataProvider = groupService.findByName(orgName);
-        if(dataProvider == null) {
-            log.warn("Didn't find match for layergroup:", orgName);
-        } else {
-            layer.addDataprovider(dataProvider);
-        }
-
-        return layer;
     }
 
     public static Set<String> getCRSsToStore(Set<String> systemCRSs,

@@ -4,9 +4,12 @@ import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.data.simple.SimpleFeatureIterator;
 import org.geotools.data.simple.SimpleFeatureSource;
 import org.geotools.feature.DefaultFeatureCollection;
+import org.geotools.feature.simple.SimpleFeatureBuilder;
+import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
 import org.geotools.geometry.jts.JTS;
 import org.geotools.referencing.CRS;
 import org.opengis.feature.simple.SimpleFeature;
+import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.MathTransform;
@@ -55,18 +58,24 @@ public class FeatureCollectionParsers {
      */
     public static SimpleFeatureCollection read(SimpleFeatureSource src,
             CoordinateReferenceSystem sourceCRS, CoordinateReferenceSystem targetCRS) throws Exception {
-        DefaultFeatureCollection fc = new DefaultFeatureCollection();
+        SimpleFeatureType newSchema = SimpleFeatureTypeBuilder.retype(src.getSchema(), targetCRS);
+        SimpleFeatureBuilder b = new SimpleFeatureBuilder(newSchema);
+        DefaultFeatureCollection fc = new DefaultFeatureCollection(null, newSchema);
         SimpleFeatureCollection sfc = src.getFeatures();
         MathTransform transform = getTransform(sourceCRS, targetCRS);
         try (SimpleFeatureIterator it = sfc.features()) {
             while (it.hasNext()) {
                 SimpleFeature f = it.next();
+                for (int i = 0; i < f.getAttributeCount(); i++) {
+                    b.set(i, f.getAttribute(i));
+                }
+                SimpleFeature copy = b.buildFeature(f.getID());
                 Object g = f.getDefaultGeometry();
                 if (g != null) {
                     Geometry transformed = JTS.transform((Geometry) g, transform);
-                    f.setDefaultGeometry(transformed);
+                    copy.setDefaultGeometry(transformed);
                 }
-                fc.add(f);
+                fc.add(copy);
             }
         }
         return fc;

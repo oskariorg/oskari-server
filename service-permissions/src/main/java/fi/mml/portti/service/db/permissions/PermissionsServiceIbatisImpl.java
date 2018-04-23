@@ -99,7 +99,7 @@ public class PermissionsServiceIbatisImpl extends BaseIbatisService<Permissions>
 		WFSLayerPermissionsStore.destroyAll();
 	}
 	
-	public List<String> getResourcesWithGrantedPermissions(
+	public Set<String> getResourcesWithGrantedPermissions(
 			String resourceType, 
 			User user,
 			String permissionsType) {
@@ -108,7 +108,7 @@ public class PermissionsServiceIbatisImpl extends BaseIbatisService<Permissions>
         long userId = user.getId();
         log.debug("Getting resources with granted'", permissionsType, "' permissions to user '",
                 userId,"' for resource '", resourceType, "'");
-		List<String> userPermissions = 
+		Set<String> userPermissions =
 			getResourcesWithGrantedPermissions(
 				resourceType, String.valueOf(userId), Permissions.EXTERNAL_TYPE_USER, permissionsType);
 		
@@ -119,19 +119,15 @@ public class PermissionsServiceIbatisImpl extends BaseIbatisService<Permissions>
         for(Role role : user.getRoles()) {
             roleIds.add("" + role.getId());
         }
+
         final Set<String> groupPermissions =
                 getResourcesWithGrantedPermissions(
                         resourceType, roleIds, Permissions.EXTERNAL_TYPE_ROLE, permissionsType);
 		log.debug("Found", groupPermissions.size(), "permissions given to roles that user has.");
 		
-		// finally collect all together and sort
-		List<String> resourceList = new ArrayList<String>(userPermissions.size() + groupPermissions.size());
-        resourceList.addAll(userPermissions);
-        resourceList.addAll(groupPermissions);
-        // sort permissions
-		Collections.sort(resourceList);
-		
-		return resourceList;
+		// Use groupPermissions as the base
+		groupPermissions.addAll(userPermissions);
+		return groupPermissions;
 	}
     private Set<String> getResourcesWithGrantedPermissions(
             String resourceType,
@@ -139,17 +135,15 @@ public class PermissionsServiceIbatisImpl extends BaseIbatisService<Permissions>
             String externalIdType,
             String permissionsType) {
 
-        // declare sorted set
-        final Set<String> result = new TreeSet<String>();
         if(externalId == null || externalId.isEmpty()) {
             log.warn("Tried to get permissions without externalIds. ResourceType", resourceType, "Permission type", permissionsType, " ExternalIdType", externalIdType);
-            return result;
+            return Collections.emptySet();
         }
 
         log.debug("Getting resources with granted", permissionsType, "permissions for resourceType", resourceType,
                 " with externalIdType", externalIdType, "and idList of", externalId);
 
-        final Map<String, Object> parameterMap = new HashMap<String, Object>();
+        final Map<String, Object> parameterMap = new HashMap<>();
         parameterMap.put("resourceType", resourceType);
         // ibatis couldn't handle a set param out of the box so wrapping it in list
         // TODO: check if there is a way to use sets with ibatis
@@ -158,29 +152,23 @@ public class PermissionsServiceIbatisImpl extends BaseIbatisService<Permissions>
         parameterMap.put("permission", permissionsType);
 
         final List<String> permittedResources = queryForList(getNameSpace() + ".findResourcesWithGrantedPermissions", parameterMap);
-        result.addAll(permittedResources);
-        return result;
+        return new HashSet<>(permittedResources);
     }
 	
-	public List<String> getResourcesWithGrantedPermissions(
+	public Set<String> getResourcesWithGrantedPermissions(
 			String resourceType, 
 			String externalId,
 			String externalIdType,
 			String permissionsType) {
 
         // wrap single id to a set for convenience
-        final Set<String> idList = new HashSet<String>(1);
-        idList.add(externalId);
+        final Set<String> idList = Collections.singleton(externalId);
 
-        final Set<String> sortedPermissions = getResourcesWithGrantedPermissions(resourceType, idList, externalIdType, permissionsType);
-        // TODO: change signature to Set instead of List so we can get rid of this
-        final List<String> results = new ArrayList<String>();
-        results.addAll(sortedPermissions);
-        return results;
+        return getResourcesWithGrantedPermissions(resourceType, idList, externalIdType, permissionsType);
 	}
 
 	public List<Permissions> getResourcePermissions(UniqueResourceName uniqueResourceName, String externalIdType) {
-		log.debug("Getting " + externalIdType + " permissions to " + uniqueResourceName);
+		log.debug("Getting ", externalIdType, " permissions to ", uniqueResourceName);
         Map<String, String> parameterMap = new HashMap<String, String>();
 		parameterMap.put("resourceMapping", uniqueResourceName.getNamespace() +"+"+ uniqueResourceName.getName());
 		parameterMap.put("resourceType", uniqueResourceName.getType());
@@ -189,10 +177,10 @@ public class PermissionsServiceIbatisImpl extends BaseIbatisService<Permissions>
 		List<Map<String, Object>> listOfMaps = queryForList(getNameSpace() + ".findPermissionsOfResource", parameterMap);
 
 		// KEY: permissionsId, VALUE: permissions
-		Map<Integer, Permissions> permissionsMap = new HashMap<Integer, Permissions>();		
+		Map<Integer, Permissions> permissionsMap = new HashMap<>();
 
 		for (Map<String, Object> resultMap : listOfMaps) {
-			int permissionsId = (Integer) resultMap.get("id");			
+			Integer permissionsId = (Integer) resultMap.get("id");
 			Permissions p = permissionsMap.get(permissionsId);
 			
 			if (p == null) {
@@ -205,7 +193,7 @@ public class PermissionsServiceIbatisImpl extends BaseIbatisService<Permissions>
                 p.getUniqueResourceName().setType((String) resultMap.get("resourceType"));
                 p.setExternalId((String) resultMap.get("externalId"));
                 p.setExternalIdType((String) resultMap.get("externalIdType"));
-                permissionsMap.put(p.getId(), p);
+                permissionsMap.put(permissionsId, p);
 			}
 			
 			p.getGrantedPermissions().add((String) resultMap.get("permissions"));

@@ -3,12 +3,9 @@ package fi.nls.oskari.map.layer;
 import com.ibatis.common.resources.Resources;
 import com.ibatis.sqlmap.client.SqlMapClient;
 import com.ibatis.sqlmap.client.SqlMapClientBuilder;
-import fi.mml.map.mapwindow.service.db.OskariMapLayerGroupService;
-import fi.mml.map.mapwindow.service.db.OskariMapLayerGroupServiceIbatisImpl;
 import fi.mml.map.mapwindow.util.OskariLayerWorker;
 import fi.nls.oskari.annotation.Oskari;
 import fi.nls.oskari.domain.map.DataProvider;
-import fi.nls.oskari.domain.map.MaplayerGroup;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
@@ -19,13 +16,6 @@ import java.io.Reader;
 import java.sql.SQLException;
 import java.util.*;
 
-/**
- * Created with IntelliJ IDEA.
- * User: SMAKINEN
- * Date: 16.12.2013
- * Time: 13:43
- * To change this template use File | Settings | File Templates.
- */
 @Oskari("OskariLayerService")
 public class OskariLayerServiceIbatisImpl extends OskariLayerService {
 
@@ -36,7 +26,6 @@ public class OskariLayerServiceIbatisImpl extends OskariLayerService {
     private static String SQL_MAP_LOCATION = "META-INF/SqlMapConfig.xml";
 
     private static DataProviderService dataProviderService = new DataProviderServiceIbatisImpl();
-    private static OskariMapLayerGroupService oskariMapLayerGroupService = new OskariMapLayerGroupServiceIbatisImpl();
 
     /**
      * Static setter to override default location
@@ -129,13 +118,11 @@ public class OskariLayerServiceIbatisImpl extends OskariLayerService {
         result.setCreated((Date) data.get("created"));
         result.setUpdated((Date) data.get("updated"));
 
-        result.setOrderNumber((Integer) data.get("order_number"));
-
         // Automatic update of Capabilities
         result.setCapabilitiesLastUpdated((Date) data.get("capabilities_last_updated"));
         result.setCapabilitiesUpdateRateSec((Integer) data.get("capabilities_update_rate_sec"));
 
-        // populate groups/themes for top level layers
+        // populate dataproviders for top level layers
         if(result.getParentId() == -1) {
             // sublayers and internal baselayers don't have dataprovider_id
             Object dataProviderId = data.get("dataprovider_id");
@@ -152,16 +139,6 @@ public class OskariLayerServiceIbatisImpl extends OskariLayerService {
                 }
             }
 
-            // FIXME: oskariMapLayerGroupService has built in caching (very crude) to make this fast,
-            // without it getting maplayer groups makes the query 10 x slower
-            // populate groups
-            try {
-                final List<MaplayerGroup> groups = oskariMapLayerGroupService.findByMaplayerId(result.getId());
-                result.addGroups(groups);
-            } catch (Exception ex) {
-                LOG.error("Couldn't get groups for layer", result.getId());
-                return null;
-            }
         }
 
         return result;
@@ -326,76 +303,10 @@ public class OskariLayerServiceIbatisImpl extends OskariLayerService {
         LOG.debug("Parse layers with positive update rate sec took:", t2-t1, "ms");
         return layers;
     }
-    /**
-     * Returns the map layers which belong to the given parent.
-     * FIXME: Quick and dirty
-     * @param groupId
-     * @return layers of the given group
-     */
-    public List<OskariLayer> findAllByGroupId(final int groupId) {
-    	final List<OskariLayer> allLayers = findAll();
-    	List<OskariLayer> retLayers = new ArrayList<>();
-        for(OskariLayer layer : allLayers) {
-        	Set<MaplayerGroup> layerGroups = layer.getMaplayerGroups();
-        	for(MaplayerGroup group : layerGroups) {
-        		if(group.getParentId() == groupId) {
-        			retLayers.add(layer);
-        		}
-        	}
-        }
-        return retLayers;
-    }
 
-
-    public void updateOrder(final int layerId, final int groupId, final int orderNumber) {
-    	SqlMapClient client = null;
-        try {
-            client = getSqlMapClient();
-            client.startTransaction();
-            HashMap<String, Integer> updateMap = new HashMap<>();
-            updateMap.put("layerId", layerId);
-            updateMap.put("groupId", groupId);
-            updateMap.put("orderNumber", orderNumber);
-            client.update(getNameSpace() + ".updateOrder", updateMap);
-            client.commitTransaction();
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to update layer ordering", e);
-        } finally {
-            if (client != null) {
-                try {
-                    client.endTransaction();
-                } catch (SQLException ignored) { }
-            }
-        }
-    }
-    
-    public void updateGroup(final int layerId, final int oldGroupId, final int newGroupId) {
-    	SqlMapClient client = null;
-        try {
-            client = getSqlMapClient();
-            client.startTransaction();
-            HashMap<String, Integer> insertMap = new HashMap<>();
-            insertMap.put("layerId", layerId);
-            insertMap.put("oldGroupId", oldGroupId);
-            insertMap.put("newGroupId", newGroupId);
-            client.update(getNameSpace() + ".updateGroup", insertMap);
-            client.commitTransaction();
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to update layer ordering", e);
-        } finally {
-            if (client != null) {
-                try {
-                    client.endTransaction();
-                } catch (SQLException ignored) { }
-            }
-        }
-    }
-    
     public void update(final OskariLayer layer) {
         try {
             getSqlMapClient().update(getNameSpace() + ".update", layer);
-            // link to inspire theme(s)
-            oskariMapLayerGroupService.updateLayerGroups(layer.getId(), layer.getMaplayerGroups());
         } catch (Exception e) {
             throw new RuntimeException("Failed to update", e);
         }
@@ -411,8 +322,6 @@ public class OskariLayerServiceIbatisImpl extends OskariLayerService {
                     + ".maxId");
             layer.setId(id);
             client.commitTransaction();
-            // link to inspire theme(s)
-            oskariMapLayerGroupService.updateLayerGroups(id, layer.getMaplayerGroups());
             return id;
         } catch (Exception e) {
             throw new RuntimeException("Failed to insert", e);
