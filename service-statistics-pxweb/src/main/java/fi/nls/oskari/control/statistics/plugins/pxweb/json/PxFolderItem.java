@@ -6,7 +6,7 @@ package fi.nls.oskari.control.statistics.plugins.pxweb.json;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 
-public class PxwebItem {
+public class PxFolderItem {
     @JsonProperty("id")
     public String id;
     @JsonProperty("text")

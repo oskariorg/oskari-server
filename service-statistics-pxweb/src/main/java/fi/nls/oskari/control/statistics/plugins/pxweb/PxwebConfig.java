@@ -14,17 +14,25 @@ public class PxwebConfig {
     private long datasourceId;
     private String url;
     private String regionKey;
+    private String indicatorKey;
     private Set<String> ignoredVariables = new HashSet<>();
 
-    PxwebConfig(JSONObject json, long id) {
+    public PxwebConfig(JSONObject json, long id) {
         datasourceId = id;
         url = json.optString("url");
         regionKey = json.optString("regionKey");
+        indicatorKey = json.optString("indicatorKey");
         JSONArray ignored = json.optJSONArray("ignoredVariables");
         if(ignored != null) {
             for (int i = 0; i < ignored.length(); i++) {
                 ignoredVariables.add(ignored.optString(i));
             }
+        }
+        if(getRegionKey() != null) {
+            ignoredVariables.add(getRegionKey());
+        }
+        if(getIndicatorKey() != null) {
+            ignoredVariables.add(getIndicatorKey());
         }
     }
 
@@ -37,6 +45,14 @@ public class PxwebConfig {
 
     public String getRegionKey() {
         return regionKey;
+    }
+
+    public String getIndicatorKey() {
+        return indicatorKey;
+    }
+
+    public boolean hasIndicatorKey() {
+        return indicatorKey != null && !indicatorKey.isEmpty();
     }
 
     public Set<String> getIgnoredVariables() {
