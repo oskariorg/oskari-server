@@ -2,6 +2,7 @@ package fi.nls.oskari.control;
 
 import fi.nls.oskari.annotation.OskariViewModifier;
 import fi.nls.oskari.control.statistics.plugins.StatisticalDatasourcePluginManager;
+import fi.nls.oskari.control.statistics.plugins.db.DatasourceLayer;
 import fi.nls.oskari.control.statistics.plugins.db.StatisticalDatasource;
 import fi.nls.oskari.control.view.modifier.bundle.BundleHandler;
 import fi.nls.oskari.util.JSONHelper;
@@ -12,6 +13,7 @@ import org.json.JSONObject;
 import static fi.nls.oskari.control.ActionConstants.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Injects datasource list to statsgrid config
@@ -40,6 +42,7 @@ public class StatsgridHandler extends BundleHandler {
 
     private static final String KEY_DATASOURCES = "sources";
     private static final String KEY_INFO = "info";
+    private static final String KEY_REGIONSETS = "regionsets";
 
     private static final StatisticalDatasourcePluginManager pluginManager = StatisticalDatasourcePluginManager.getInstance();
 
@@ -59,6 +62,12 @@ public class StatsgridHandler extends BundleHandler {
             JSONHelper.putValue(item, KEY_NAME, src.getName(params.getLocale().getLanguage()));
             JSONHelper.putValue(item, KEY_TYPE, getType(src.getPlugin()));
             JSONHelper.putValue(item, KEY_INFO, src.getConfigJSON().optJSONObject(KEY_INFO));
+            // add layer ids as available regionsets for the datasource
+            JSONHelper.putValue(item, KEY_REGIONSETS, new JSONArray(src
+                    .getLayers()
+                    .stream()
+                    .map(DatasourceLayer::getMaplayerId)
+                    .collect(Collectors.toSet())));
 
             sourcesList.put(item);
         }
