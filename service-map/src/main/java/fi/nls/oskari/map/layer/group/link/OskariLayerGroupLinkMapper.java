@@ -41,7 +41,8 @@ public interface OskariLayerGroupLinkMapper {
     void deleteByLayerId(@Param("layerId") int layerId);
 
     @Update("UPDATE oskari_maplayer_group_link"
-            + " SET order_number = #{orderNumber}")
+            + " SET order_number = #{orderNumber}"
+            + " WHERE maplayerid = #{layerId} AND groupid = #{groupId}")
     void updateOrderNumber(OskariLayerGroupLink link);
 
     @Select("SELECT EXISTS (SELECT 1 FROM oskari_maplayer_group_link WHERE groupid = #{groupId})")
