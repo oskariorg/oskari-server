@@ -7,6 +7,7 @@ import fi.nls.oskari.control.statistics.plugins.db.StatisticalDatasource;
 import fi.nls.oskari.control.statistics.plugins.pxweb.parser.PxwebIndicatorsParser;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.service.ServiceRuntimeException;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.JSONHelper;
 import org.json.JSONArray;
@@ -106,7 +107,18 @@ public class PxwebStatisticalDatasourcePlugin extends StatisticalDatasourcePlugi
                                                           StatisticalIndicatorDataModel params,
                                                           StatisticalIndicatorLayer regionset) {
         Map<String, IndicatorValue> values = new HashMap<>();
-        String url = createUrl(regionset.getParam("baseUrl"), indicator.getId());
+        String indicatorId = indicator.getId();
+        if(config.hasIndicatorKey()) {
+            // indicatorId will be something.px::[value of indicatorKey]
+            int separatorIndex = indicatorId.lastIndexOf("::");
+            if(separatorIndex == -1) {
+                throw new ServiceRuntimeException("Unidentified indicator id: " + indicatorId);
+            }
+            String indicatorSelector = indicatorId.substring(separatorIndex + 2);
+            indicatorId = indicatorId.substring(0, separatorIndex);
+            params.addDimension(new StatisticalIndicatorDataDimension(config.getIndicatorKey(), indicatorSelector));
+        }
+        String url = createUrl(regionset.getParam("baseUrl"), indicatorId);
         JSONArray query = new JSONArray();
         JSONObject payload = JSONHelper.createJSONObject("query", query);
         final String regionKey = config.getRegionKey();
@@ -162,6 +174,9 @@ public class PxwebStatisticalDatasourcePlugin extends StatisticalDatasourcePlugi
     }
 
     private String createUrl(String baseUrl, String pathId) {
-        return IOHelper.fixPath(baseUrl + "/" + IOHelper.urlEncode(pathId));
+        if(!baseUrl.endsWith(".px")) {
+            return IOHelper.fixPath(baseUrl + "/" + IOHelper.urlEncode(pathId));
+        }
+        return baseUrl;
     }
 }
