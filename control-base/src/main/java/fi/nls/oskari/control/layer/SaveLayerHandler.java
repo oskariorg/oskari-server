@@ -159,6 +159,14 @@ public class SaveLayerHandler extends ActionHandler {
             JSONHelper.putValue(layerJSON, "warn", "metadataReadFailure");
             LOG.debug("Metadata read failure");
         }
+        // Also add groupId
+
+        List<OskariLayerGroupLink> groupLinks = layerGroupLinkService.findByLayerId(layerId);
+        JSONArray groups = new JSONArray();
+        for (OskariLayerGroupLink oskariLayerGroupLink:groupLinks) {
+            groups.put(oskariLayerGroupLink.getGroupId());
+        }
+        JSONHelper.putValue(layerJSON, "groups", groups);
         ResponseHelper.writeResponse(params, layerJSON);
     }
 

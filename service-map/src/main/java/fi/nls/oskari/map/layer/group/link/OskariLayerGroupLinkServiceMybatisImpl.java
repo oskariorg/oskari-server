@@ -118,4 +118,11 @@ public class OskariLayerGroupLinkServiceMybatisImpl implements OskariLayerGroupL
         }
     }
 
+    @Override
+    public List<OskariLayerGroupLink> findByMaplayerId(int layerId){
+        try (SqlSession session = factory.openSession()) {
+            return getMapper(session).findByLayerId(layerId);
+        }
+    }
+
 }

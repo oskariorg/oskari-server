@@ -1,5 +1,8 @@
 package fi.nls.oskari.map.layer.group.link;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class OskariLayerGroupLink {
 
     public static final int DEFAULT_ORDER_NUMBER = 1000000;
@@ -24,6 +27,13 @@ public class OskariLayerGroupLink {
 
     public int getLayerId() {
         return layerId;
+    }
+
+    public Map<String, Object> getLayerMap() {
+        Map<String, Object> map = new HashMap<>();
+        map.put("id", layerId);
+        map.put("orderNumber", orderNumber);
+        return map;
     }
 
     public void setLayerId(int layerId) {

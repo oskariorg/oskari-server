@@ -126,6 +126,7 @@ public class OskariMapLayerGroupServiceIbatisImpl extends OskariMapLayerGroupSer
         }
     }
 
+
     private String getCacheKey(int id) {
         return Integer.toString(id);
     }

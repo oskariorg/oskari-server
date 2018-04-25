@@ -3,11 +3,7 @@ package fi.nls.oskari.control.layer;
 import static fi.nls.oskari.control.ActionConstants.PARAM_LANGUAGE;
 import static fi.nls.oskari.control.ActionConstants.PARAM_SRS;
 
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import org.json.JSONArray;
@@ -44,6 +40,8 @@ public class GetMapLayerGroupsHandler extends ActionHandler {
 
     private static final String KEY_GROUPS = "groups";
     private static final String KEY_LAYERS = "layers";
+    private static final String KEY_ID = "id";
+    private static final String KEY_ORDER_NUMBER = "orderNumber";
 
     private OskariLayerService layerService;
     private PermissionsService permissionsService;
@@ -144,19 +142,33 @@ public class GetMapLayerGroupsHandler extends ActionHandler {
 
             List<OskariLayerGroupLink> groupLinks = linksByGroupId.get(groupId);
             if (groupLinks != null && !groupLinks.isEmpty()) {
-                List<Integer> groupsLayerIds = groupLinks.stream()
-                    .filter(l -> contains(sortedLayerIds, l.getLayerId()))
-                    .sorted(Comparator.comparingInt(OskariLayerGroupLink::getOrderNumber))
-                    .map(OskariLayerGroupLink::getLayerId)
-                    .collect(Collectors.toList());
-                if (!groupsLayerIds.isEmpty()) {
-                    groupAsJson.put(KEY_LAYERS, groupsLayerIds);
+
+                List<OskariLayerGroupLink> groupLayers = groupLinks.stream()
+                        .filter(l -> contains(sortedLayerIds, l.getLayerId()))
+                        .sorted(Comparator.comparingInt(OskariLayerGroupLink::getOrderNumber))
+                        //.map(OskariLayerGroupLink::getLayerId)
+                        .collect(Collectors.toList());
+                if (!groupLayers.isEmpty()) {
+                    groupAsJson.put(KEY_LAYERS, getLayersJSON(groupLayers));
                 }
             }
 
             json.put(groupAsJson);
         }
         return json;
+    }
+
+    private JSONArray getLayersJSON(List<OskariLayerGroupLink> groupLayers) throws JSONException {
+        JSONArray groupLayersJSON = new JSONArray();
+
+        for(OskariLayerGroupLink groupLayer: groupLayers) {
+            JSONObject groupLayerJSON = new JSONObject();
+            groupLayerJSON.put(KEY_ID, groupLayer.getLayerId());
+            groupLayerJSON.put(KEY_ORDER_NUMBER, groupLayer.getOrderNumber());
+            groupLayersJSON.put(groupLayerJSON);
+        }
+
+        return groupLayersJSON;
     }
 
     private boolean contains(int[] sortedLayerIds, int layerId) {
