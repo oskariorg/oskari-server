@@ -292,7 +292,7 @@ public class MapfullHandler extends BundleHandler {
         final JSONArray prefetch = getLayersArray(struct);
         appendMyPlacesLayers(prefetch, publishedMyPlaces, user, viewID, lang, bundleIds, useDirectURLForMyplaces, modifyURLs);
         appendAnalysisLayers(prefetch, publishedAnalysis, user, viewID, lang, bundleIds, useDirectURLForMyplaces, modifyURLs);
-        appendUserLayers(prefetch, publishedUserLayers, user, viewID, bundleIds);
+        appendUserLayers(prefetch, publishedUserLayers, user, viewID, bundleIds, mapSRS);
         return prefetch;
     }
 
@@ -385,7 +385,8 @@ public class MapfullHandler extends BundleHandler {
                                          final List<Long> publishedUserLayers,
                                          final User user,
                                          final long viewID,
-                                         final Set<String> bundleIds) {
+                                         final Set<String> bundleIds,
+                                         final String mapSrs) {
         final boolean userLayersBundlePresent = bundleIds.contains(BUNDLE_MYPLACESIMPORT);
         final OskariLayer baseLayer = userLayerDataService.getBaseLayer();
         for (Long id : publishedUserLayers) {
@@ -411,6 +412,8 @@ public class MapfullHandler extends BundleHandler {
 
             final JSONObject json = userLayerDataService.parseUserLayer2JSON(userLayer, baseLayer);
             if (json != null) {
+                // transform WKT (WGS84) to mapSrs
+                OskariLayerWorker.transformWKTGeom(json, mapSrs);
                 layerList.put(json);
             }
         }
