@@ -1,5 +1,13 @@
 # Release Notes
 
+## 1.46.2
+
+For a full list of changes see: https://github.com/oskariorg/oskari-server/milestone/10?closed=1
+
+- Imported dataset/userlayer coverage/extent is now transformed properly for embedded maps. Fixes an issue where the layer was immediately hidden by the frontend on embedded map.
+- Fixed an issue where layer/group sorting order wasn't saved properly on the hierarchical layer listing admin functions
+- Added more detailed ordering information for layers as hierarchical layer listing. Layers and groups can now be sorted as a mixed set instead of subgroups always being before any layers in the group. 
+
 ## 1.46.1
 
 For a full list of changes see: https://github.com/oskariorg/oskari-server/milestone/9?closed=1
