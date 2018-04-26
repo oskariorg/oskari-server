@@ -1,8 +1,5 @@
 package fi.nls.oskari.map.layer.group.link;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class OskariLayerGroupLink {
 
     public static final int DEFAULT_ORDER_NUMBER = 1000000;
