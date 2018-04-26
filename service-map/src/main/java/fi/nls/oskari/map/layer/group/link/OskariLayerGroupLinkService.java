@@ -17,6 +17,5 @@ public interface OskariLayerGroupLinkService {
 
     public void replace(OskariLayerGroupLink old, OskariLayerGroupLink link);
     public boolean hasLinks(int groupId);
-    public List<OskariLayerGroupLink> findByMaplayerId(int layerId);
 
 }
