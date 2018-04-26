@@ -117,5 +117,4 @@ public class OskariLayerGroupLinkServiceMybatisImpl implements OskariLayerGroupL
             return getMapper(session).hasLinks(groupId);
         }
     }
-
 }
