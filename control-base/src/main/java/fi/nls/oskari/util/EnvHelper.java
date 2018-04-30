@@ -73,7 +73,8 @@ public class EnvHelper {
         final JSONObject env = new JSONObject();
 
         // setup locale info
-        JSONHelper.putValue(env, ActionConstants.PARAM_LANGUAGE, params.getLocale().getLanguage());
+        final String language = params.getLocale().getLanguage();
+        JSONHelper.putValue(env, ActionConstants.PARAM_LANGUAGE, language);
         JSONHelper.putValue(env, KEY_SUPPORTED_LOCALES, PropertyUtil.getSupportedLocales());
         final DecimalFormatSymbols dfs = new DecimalFormatSymbols(params.getLocale());
         JSONHelper.putValue(env, KEY_DECIMAL_SEPARATOR, Character.toString(dfs.getDecimalSeparator()));
@@ -86,10 +87,10 @@ public class EnvHelper {
         // setup env urls info (api, terms of use, "geoportal url?")
         JSONObject urlConfig = new JSONObject();
         JSONHelper.putValue(urlConfig, KEY_API, getAPIurl(params));
-        JSONHelper.putValue(urlConfig, KEY_LOGIN, getLoginUrl());
-        JSONHelper.putValue(urlConfig, KEY_REGISTER, getRegisterUrl());
-        JSONHelper.putValue(urlConfig, KEY_LOGOUT, getLogoutUrl());
-        JSONHelper.putValue(urlConfig, KEY_PROFILE, getProfileUrl());
+        JSONHelper.putValue(urlConfig, KEY_LOGIN, getLoginUrl(language));
+        JSONHelper.putValue(urlConfig, KEY_REGISTER, getRegisterUrl(language));
+        JSONHelper.putValue(urlConfig, KEY_LOGOUT, getLogoutUrl(language));
+        JSONHelper.putValue(urlConfig, KEY_PROFILE, getProfileUrl(language));
         JSONHelper.putValue(env, KEY_URLS, urlConfig);
 
         // setup appsetup info
@@ -140,23 +141,54 @@ public class EnvHelper {
     }
 
     public static String getLoginUrl() {
-        return PropertyUtil.get("auth.login.url", null);
+        return getLoginUrl(PropertyUtil.getDefaultLanguage());
     }
 
-    public static String getRegisterUrl() {
-        if(!isRegistrationAllowed()) {
-            return null;
-        }
-        return PropertyUtil.get("auth.register.url", "/user");
-    }
-    public static String getLogoutUrl() {
-        return PropertyUtil.get("auth.logout.url", "/logout");
-    }
-    public static String getProfileUrl() {
-        return PropertyUtil.get("auth.profile.url", getRegisterUrl());
+    public static String getLoginUrl(String lang) {
+        return PropertyUtil.getWithOptionalModifier("auth.login.url", lang, PropertyUtil.getDefaultLanguage());
     }
 
     public static boolean isRegistrationAllowed() {
         return PropertyUtil.getOptional("allow.registration", false);
     }
+
+    public static String getRegisterUrl() {
+        return getRegisterUrl(PropertyUtil.getDefaultLanguage());
+    }
+
+    public static String getRegisterUrl(String lang) {
+        if(!isRegistrationAllowed()) {
+            return null;
+        }
+        final String url = PropertyUtil.getWithOptionalModifier("auth.register.url", lang, PropertyUtil.getDefaultLanguage());
+        if(url != null) {
+            return url;
+        }
+        return "/user";
+    }
+
+    public static String getProfileUrl() {
+        return getProfileUrl(PropertyUtil.getDefaultLanguage());
+    }
+
+    public static String getProfileUrl(String lang) {
+        final String url = PropertyUtil.getWithOptionalModifier("auth.profile.url", lang, PropertyUtil.getDefaultLanguage());
+        if(url != null) {
+            return url;
+        }
+        return getRegisterUrl();
+    }
+
+    public static String getLogoutUrl() {
+        return getLogoutUrl(PropertyUtil.getDefaultLanguage());
+    }
+
+    public static String getLogoutUrl(String lang) {
+        final String url = PropertyUtil.getWithOptionalModifier("auth.logout.url", lang, PropertyUtil.getDefaultLanguage());
+        if(url != null) {
+            return url;
+        }
+        return "/logout";
+    }
+
 }
