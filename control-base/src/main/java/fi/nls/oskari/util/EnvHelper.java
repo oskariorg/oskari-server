@@ -5,7 +5,6 @@ import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.domain.map.view.View;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.map.view.ViewService;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -13,9 +12,7 @@ import org.json.JSONObject;
 import java.io.InputStream;
 import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import static fi.nls.oskari.control.ActionConstants.*;
 
@@ -31,20 +28,35 @@ import static fi.nls.oskari.control.ActionConstants.*;
 public class EnvHelper {
     private static final Logger LOGGER = LogFactory.getLogger(EnvHelper.class);
 
-    private static final String KEY_DECIMAL_SEPARATOR = "decimalSeparator";
+    // localization
     private static final String KEY_SUPPORTED_LOCALES = "locales";
+    private static final String KEY_DECIMAL_SEPARATOR = "decimalSeparator";
+
+    // markers
     private static final String KEY_SVG_MARKERS = "svgMarkers";
-    private static final String KEY_USER = "user";
+    private static final String SVG_MARKERS_JSON = "svg-markers.json";
+
+    // urls
     private static final String KEY_URLS = "urls";
+    private static final String KEY_API = "api";
+    private static final String KEY_REGISTER = "register";
+    private static final String KEY_LOGIN = "login";
+    private static final String KEY_LOGOUT = "logout";
+
+    private static final String registerUrl = PropertyUtil.get("auth.register.url", "/user");
+    private static final String loginUrl = PropertyUtil.get("auth.login.url", "/j_security_check");
+    private static final String logoutUrl = PropertyUtil.get("auth.logout.url", "/logout");
+    private static final String PROPERTY_AJAXURL = "oskari.ajax.url.prefix";
+
+    // user
+    private static final String KEY_USER = "user";
+    private static final String KEY_APIKEY = "apikey";
+
+    // appsetups
     private static final String KEY_APPSETUP = "app";
     private static final String KEY_DEFAULT_VIEWS = "defaultApps";
-    private static final String KEY_API = "api";
-    private static final String KEY_APIKEY = "apikey";
     private static final String KEY_ISPUBLIC = "public";
     private static final List<JSONObject> DEFAULT_VIEWS = new ArrayList<>();
-
-    public static final String SVG_MARKERS_JSON = "svg-markers.json";
-    public static final String PROPERTY_AJAXURL = "oskari.ajax.url.prefix";
 
     public static void setupViews(List<View> views) {
         DEFAULT_VIEWS.clear();
@@ -78,6 +90,9 @@ public class EnvHelper {
         // setup env urls info (api, terms of use, "geoportal url?")
         JSONObject urlConfig = new JSONObject();
         JSONHelper.putValue(urlConfig, KEY_API, getAPIurl(params));
+        JSONHelper.putValue(urlConfig, KEY_LOGIN, getLoginUrl());
+        JSONHelper.putValue(urlConfig, KEY_REGISTER, getRegisterUrl());
+        JSONHelper.putValue(urlConfig, KEY_LOGOUT, getLogoutUrl());
         JSONHelper.putValue(env, KEY_URLS, urlConfig);
 
         // setup appsetup info
@@ -125,5 +140,15 @@ public class EnvHelper {
      */
     public static boolean isSecure(final ActionParameters params) {
         return params.getHttpParam(PARAM_SECURE, params.getRequest().isSecure());
+    }
+
+    public static String getLoginUrl() {
+        return loginUrl;
+    }
+    public static String getRegisterUrl() {
+        return registerUrl;
+    }
+    public static String getLogoutUrl() {
+        return logoutUrl;
     }
 }
