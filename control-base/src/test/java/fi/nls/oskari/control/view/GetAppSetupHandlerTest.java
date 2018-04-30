@@ -127,6 +127,7 @@ public class GetAppSetupHandlerTest extends JSONActionRouteTest {
 
         JSONObject responseUrls = getResponseJSON().optJSONObject("env").optJSONObject("urls");
         assertEquals("Should have login url", "/login", responseUrls.opt("login"));
+        assertNull("Should NOT have register url as allow.registration not set", responseUrls.opt("register"));
         teardown();
         addLocales();
     }
