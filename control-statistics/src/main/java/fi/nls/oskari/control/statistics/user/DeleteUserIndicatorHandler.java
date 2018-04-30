@@ -15,7 +15,7 @@ import org.oskari.statistics.user.StatisticalIndicatorService;
  */
 @OskariActionRoute("DeleteUserIndicator")
 public class DeleteUserIndicatorHandler extends ActionHandler {
-    private static final Logger LOG = LogFactory.getLogger(GetUserIndicatorsHandler.class);
+    private static final Logger LOG = LogFactory.getLogger(DeleteUserIndicatorHandler.class);
     private StatisticalIndicatorService indicatorService;
 
     @Override
