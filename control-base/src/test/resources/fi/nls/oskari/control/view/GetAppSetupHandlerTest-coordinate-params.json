@@ -12,7 +12,8 @@
       "api": "--oskari.ajax.url.prefix--",
       "login": "/j_security_check",
       "logout": "/logout",
-      "register": "/user"
+      "register": "/user",
+      "profile": "/user"
     },
     "app": {
       "public": true,
