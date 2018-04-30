@@ -143,4 +143,18 @@ public class PropertyUtilTest {
         assertEquals("Finnish Value should match", value + " fi", values.get("fi"));
     }
 
+    @Test
+    public void testLocalizablePropertyWithModifier() throws Exception {
+        final String KEY = "my.key";
+        final String value = "test value";
+        PropertyUtil.addProperty(KEY, value);
+        PropertyUtil.addProperty(KEY + ".en", value + " en");
+        PropertyUtil.addProperty(KEY + ".fi", value + " fi");
+        String o = PropertyUtil.getWithOptionalModifier(KEY, "fi", "en");
+        assertEquals("English value should match", value + " en", PropertyUtil.getWithOptionalModifier(KEY, "en"));
+        assertEquals("Finnish value should match", value + " fi", PropertyUtil.getWithOptionalModifier(KEY, "fi", "en"));
+        assertEquals("Missing value should fallback to english", value + " en", PropertyUtil.getWithOptionalModifier(KEY, "sv", "en"));
+        assertEquals("Missing value with spanish default should match default key", value, PropertyUtil.getWithOptionalModifier(KEY, "sv", "es"));
+    }
+
 }
