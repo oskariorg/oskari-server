@@ -10,7 +10,7 @@ import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.view.ViewService;
 import fi.nls.oskari.map.view.ViewServiceIbatisImpl;
 import fi.nls.oskari.map.view.util.ViewHelper;
-import fi.nls.oskari.spring.EnvHelper;
+import fi.nls.oskari.spring.SpringEnvHelper;
 import fi.nls.oskari.spring.extension.OskariParam;
 import fi.nls.oskari.util.*;
 import org.json.JSONObject;
@@ -52,7 +52,7 @@ public class MapController {
     private final Set<String> paramHandlers = new HashSet<String>();
 
     @Autowired
-    private EnvHelper env;
+    private SpringEnvHelper env;
 
     public MapController() {
         // check if we have development flag -> serve non-minified js

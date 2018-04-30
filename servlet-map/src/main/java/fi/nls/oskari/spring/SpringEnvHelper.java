@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
  * To change this template use File | Settings | File Templates.
  */
 @Component
-public class EnvHelper {
+public class SpringEnvHelper {
 
     public static final String PROFILE_LOGIN_DB = "LoginDatabase";
     public static final String PROFILE_LOGIN_SAML = "LoginSAML";
@@ -33,7 +33,7 @@ public class EnvHelper {
     @Autowired
     private Environment springEnvironment;
 
-    public EnvHelper() {
+    public SpringEnvHelper() {
         mapUrl = PropertyUtil.get("oskari.map.url", "/");
         // login related properties
         logoutUrl = PropertyUtil.get("auth.logout.url", "/logout");
