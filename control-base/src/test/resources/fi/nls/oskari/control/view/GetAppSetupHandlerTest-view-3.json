@@ -15,10 +15,7 @@
     "defaultApps": [],
     "urls": {
       "api": "--oskari.ajax.url.prefix--",
-      "login": "/j_security_check",
-      "logout": "/logout",
-      "register": "/user",
-      "profile": "/user"
+      "logout": "/logout"
     },
     "user": {
       "apikey": "testkey",

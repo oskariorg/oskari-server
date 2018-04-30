@@ -74,7 +74,14 @@ public class SpringEnvHelper {
     }
 
     public String getLoginUrl() {
-        return EnvHelper.getLoginUrl();
+        String url = EnvHelper.getLoginUrl();
+        if(url != null && !url.isEmpty()) {
+            return url;
+        }
+        return "/j_security_check";
+    }
+    public boolean isRegistrationAllowed() {
+        return EnvHelper.isRegistrationAllowed();
     }
     public String getRegisterUrl() {
         return EnvHelper.getRegisterUrl();

@@ -44,12 +44,6 @@ public class EnvHelper {
     private static final String KEY_LOGOUT = "logout";
     private static final String KEY_PROFILE = "profile";
 
-    private static final String registerUrl = PropertyUtil.get("auth.register.url", "/user");
-    private static final String profileUrl = PropertyUtil.get("auth.profile.url", "/user");
-    private static final String loginUrl = PropertyUtil.get("auth.login.url", "/j_security_check");
-    private static final String logoutUrl = PropertyUtil.get("auth.logout.url", "/logout");
-    private static final String PROPERTY_AJAXURL = "oskari.ajax.url.prefix";
-
     // user
     private static final String KEY_USER = "user";
     private static final String KEY_APIKEY = "apikey";
@@ -127,7 +121,7 @@ public class EnvHelper {
     }
 
     public static String getAPIurl(final ActionParameters params) {
-        final String baseAjaxUrl = PropertyUtil.get(params.getLocale(), PROPERTY_AJAXURL);
+        final String baseAjaxUrl = PropertyUtil.get(params.getLocale(), "oskari.ajax.url.prefix");
         if (isSecure(params)) {
             // this isn't really necessary any more
             return PropertyUtil.get("actionhandler.GetAppSetup.secureAjaxUrlPrefix", "") + baseAjaxUrl;
@@ -146,15 +140,23 @@ public class EnvHelper {
     }
 
     public static String getLoginUrl() {
-        return loginUrl;
+        return PropertyUtil.get("auth.login.url", null);
     }
+
     public static String getRegisterUrl() {
-        return registerUrl;
+        if(!isRegistrationAllowed()) {
+            return null;
+        }
+        return PropertyUtil.get("auth.register.url", "/user");
     }
     public static String getLogoutUrl() {
-        return logoutUrl;
+        return PropertyUtil.get("auth.logout.url", "/logout");
     }
     public static String getProfileUrl() {
-        return profileUrl;
+        return PropertyUtil.get("auth.profile.url", getRegisterUrl());
+    }
+
+    public static boolean isRegistrationAllowed() {
+        return PropertyUtil.getOptional("allow.registration", false);
     }
 }

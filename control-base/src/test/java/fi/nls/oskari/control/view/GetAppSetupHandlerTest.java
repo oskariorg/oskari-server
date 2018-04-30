@@ -28,6 +28,7 @@ import fi.nls.test.control.JSONActionRouteTest;
 import fi.nls.test.util.ResourceHelper;
 import fi.nls.test.view.BundleTestHelper;
 import fi.nls.test.view.ViewTestHelper;
+import org.json.JSONObject;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -102,6 +103,32 @@ public class GetAppSetupHandlerTest extends JSONActionRouteTest {
     @AfterClass
     public static void teardown() {
         PropertyUtil.clearProperties();
+    }
+
+    @Test
+    public void testURLsWithRegistrationAllowed() throws Exception {
+        PropertyUtil.addProperty("allow.registration", "true");
+        final ActionParameters params = createActionParams();
+        handler.handleAction(params);
+
+        JSONObject responseUrls = getResponseJSON().optJSONObject("env").optJSONObject("urls");
+        assertEquals("Should have default register url", "/user", responseUrls.opt("register"));
+        assertEquals("Should have default profile url", "/user", responseUrls.opt("profile"));
+
+        teardown();
+        addLocales();
+    }
+
+    @Test
+    public void testLoginUrl() throws Exception {
+        PropertyUtil.addProperty("auth.login.url", "/login");
+        final ActionParameters params = createActionParams();
+        handler.handleAction(params);
+
+        JSONObject responseUrls = getResponseJSON().optJSONObject("env").optJSONObject("urls");
+        assertEquals("Should have login url", "/login", responseUrls.opt("login"));
+        teardown();
+        addLocales();
     }
 
 
