@@ -13,7 +13,12 @@
       "uuid": "aaaa-bbbbb-cccc"
     },
     "defaultApps": [],
-    "urls": {"api": "--oskari.ajax.url.prefix--"},
+    "urls": {
+      "api": "--oskari.ajax.url.prefix--",
+      "login": "/j_security_check",
+      "logout": "/logout",
+      "register": "/user"
+    },
     "user": {
       "apikey": "testkey",
       "email": "",

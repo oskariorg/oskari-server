@@ -8,7 +8,12 @@
       "en_EN"
     ],
     "defaultApps": [],
-    "urls": {"api": "--oskari.ajax.url.prefix--"},
+    "urls": {
+      "api": "--oskari.ajax.url.prefix--",
+      "login": "/j_security_check",
+      "logout": "/logout",
+      "register": "/user"
+    },
     "app": {
       "public": true,
       "type": "default",
