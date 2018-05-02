@@ -6,7 +6,7 @@ package fi.nls.oskari.spring.security.saml;
 
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.spring.EnvHelper;
+import fi.nls.oskari.spring.SpringEnvHelper;
 import fi.nls.oskari.spring.security.OskariLoginFailureHandler;
 import fi.nls.oskari.util.PropertyUtil;
 import org.apache.commons.httpclient.HttpClient;
@@ -75,7 +75,7 @@ import java.util.*;
  * - Generate new keystore: keytool -genkey -alias oskari -keyalg RSA -keystore oskariSAML.jks -keysize 2048
  * - Add key to keystore: keytool -genkeypair -alias oskariKey -keypass oskariPass -keystore oskariSAML.jks
  */
-@Profile(EnvHelper.PROFILE_LOGIN_SAML)
+@Profile(SpringEnvHelper.PROFILE_LOGIN_SAML)
 @Configuration
 @EnableWebMvcSecurity
 @EnableGlobalMethodSecurity(securedEnabled = true)

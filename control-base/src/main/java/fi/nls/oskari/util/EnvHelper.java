@@ -5,7 +5,6 @@ import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.domain.map.view.View;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.map.view.ViewService;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -13,9 +12,7 @@ import org.json.JSONObject;
 import java.io.InputStream;
 import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import static fi.nls.oskari.control.ActionConstants.*;
 
@@ -31,20 +28,31 @@ import static fi.nls.oskari.control.ActionConstants.*;
 public class EnvHelper {
     private static final Logger LOGGER = LogFactory.getLogger(EnvHelper.class);
 
-    private static final String KEY_DECIMAL_SEPARATOR = "decimalSeparator";
+    // localization
     private static final String KEY_SUPPORTED_LOCALES = "locales";
+    private static final String KEY_DECIMAL_SEPARATOR = "decimalSeparator";
+
+    // markers
     private static final String KEY_SVG_MARKERS = "svgMarkers";
-    private static final String KEY_USER = "user";
+    private static final String SVG_MARKERS_JSON = "svg-markers.json";
+
+    // urls
     private static final String KEY_URLS = "urls";
+    private static final String KEY_API = "api";
+    private static final String KEY_REGISTER = "register";
+    private static final String KEY_LOGIN = "login";
+    private static final String KEY_LOGOUT = "logout";
+    private static final String KEY_PROFILE = "profile";
+
+    // user
+    private static final String KEY_USER = "user";
+    private static final String KEY_APIKEY = "apikey";
+
+    // appsetups
     private static final String KEY_APPSETUP = "app";
     private static final String KEY_DEFAULT_VIEWS = "defaultApps";
-    private static final String KEY_API = "api";
-    private static final String KEY_APIKEY = "apikey";
     private static final String KEY_ISPUBLIC = "public";
     private static final List<JSONObject> DEFAULT_VIEWS = new ArrayList<>();
-
-    public static final String SVG_MARKERS_JSON = "svg-markers.json";
-    public static final String PROPERTY_AJAXURL = "oskari.ajax.url.prefix";
 
     public static void setupViews(List<View> views) {
         DEFAULT_VIEWS.clear();
@@ -65,7 +73,8 @@ public class EnvHelper {
         final JSONObject env = new JSONObject();
 
         // setup locale info
-        JSONHelper.putValue(env, ActionConstants.PARAM_LANGUAGE, params.getLocale().getLanguage());
+        final String language = params.getLocale().getLanguage();
+        JSONHelper.putValue(env, ActionConstants.PARAM_LANGUAGE, language);
         JSONHelper.putValue(env, KEY_SUPPORTED_LOCALES, PropertyUtil.getSupportedLocales());
         final DecimalFormatSymbols dfs = new DecimalFormatSymbols(params.getLocale());
         JSONHelper.putValue(env, KEY_DECIMAL_SEPARATOR, Character.toString(dfs.getDecimalSeparator()));
@@ -78,6 +87,10 @@ public class EnvHelper {
         // setup env urls info (api, terms of use, "geoportal url?")
         JSONObject urlConfig = new JSONObject();
         JSONHelper.putValue(urlConfig, KEY_API, getAPIurl(params));
+        JSONHelper.putValue(urlConfig, KEY_LOGIN, getLoginUrl(language));
+        JSONHelper.putValue(urlConfig, KEY_REGISTER, getRegisterUrl(language));
+        JSONHelper.putValue(urlConfig, KEY_LOGOUT, getLogoutUrl(language));
+        JSONHelper.putValue(urlConfig, KEY_PROFILE, getProfileUrl(language));
         JSONHelper.putValue(env, KEY_URLS, urlConfig);
 
         // setup appsetup info
@@ -109,7 +122,7 @@ public class EnvHelper {
     }
 
     public static String getAPIurl(final ActionParameters params) {
-        final String baseAjaxUrl = PropertyUtil.get(params.getLocale(), PROPERTY_AJAXURL);
+        final String baseAjaxUrl = PropertyUtil.get(params.getLocale(), "oskari.ajax.url.prefix");
         if (isSecure(params)) {
             // this isn't really necessary any more
             return PropertyUtil.get("actionhandler.GetAppSetup.secureAjaxUrlPrefix", "") + baseAjaxUrl;
@@ -126,4 +139,56 @@ public class EnvHelper {
     public static boolean isSecure(final ActionParameters params) {
         return params.getHttpParam(PARAM_SECURE, params.getRequest().isSecure());
     }
+
+    public static String getLoginUrl() {
+        return getLoginUrl(PropertyUtil.getDefaultLanguage());
+    }
+
+    public static String getLoginUrl(String lang) {
+        return PropertyUtil.getWithOptionalModifier("auth.login.url", lang, PropertyUtil.getDefaultLanguage());
+    }
+
+    public static boolean isRegistrationAllowed() {
+        return PropertyUtil.getOptional("allow.registration", false);
+    }
+
+    public static String getRegisterUrl() {
+        return getRegisterUrl(PropertyUtil.getDefaultLanguage());
+    }
+
+    public static String getRegisterUrl(String lang) {
+        if(!isRegistrationAllowed()) {
+            return null;
+        }
+        final String url = PropertyUtil.getWithOptionalModifier("auth.register.url", lang, PropertyUtil.getDefaultLanguage());
+        if(url != null) {
+            return url;
+        }
+        return "/user";
+    }
+
+    public static String getProfileUrl() {
+        return getProfileUrl(PropertyUtil.getDefaultLanguage());
+    }
+
+    public static String getProfileUrl(String lang) {
+        final String url = PropertyUtil.getWithOptionalModifier("auth.profile.url", lang, PropertyUtil.getDefaultLanguage());
+        if(url != null) {
+            return url;
+        }
+        return getRegisterUrl();
+    }
+
+    public static String getLogoutUrl() {
+        return getLogoutUrl(PropertyUtil.getDefaultLanguage());
+    }
+
+    public static String getLogoutUrl(String lang) {
+        final String url = PropertyUtil.getWithOptionalModifier("auth.logout.url", lang, PropertyUtil.getDefaultLanguage());
+        if(url != null) {
+            return url;
+        }
+        return "/logout";
+    }
+
 }
