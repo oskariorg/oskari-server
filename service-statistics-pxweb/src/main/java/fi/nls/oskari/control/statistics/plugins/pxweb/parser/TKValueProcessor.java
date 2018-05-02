@@ -17,7 +17,7 @@ public class TKValueProcessor extends ValueProcessor {
         String propertiesPrefix = "stats.tk.";
         PropertyUtil.getPropertyNamesStartingWith(propertiesPrefix).stream()
                 .forEach(propName -> {
-                    String regionType = propName.substring(propertiesPrefix.length() + 1);
+                    String regionType = propName.substring(propertiesPrefix.length());
                     regionsetType.put(regionType.toLowerCase(), PropertyUtil.get(propName));
                 });
     }
@@ -41,7 +41,7 @@ public class TKValueProcessor extends ValueProcessor {
             return Optional.empty();
         }
         // take out the prefix
-        String newRegionId = v.getRegion().substring(regionIdPrefix.length() +1);
+        String newRegionId = v.getRegion().substring(regionIdPrefix.length());
         return Optional.of(new RegionValue(newRegionId, v.getValue()));
     }
 }

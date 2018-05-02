@@ -191,7 +191,7 @@ public class PxwebStatisticalDatasourcePlugin extends StatisticalDatasourcePlugi
         if(layer.getConfig() == null) {
             return DEFAULT_PROCESSOR;
         }
-        String className = layer.getConfig().optString("valueProcessor");
+        String className = layer.getConfig().optString("valueProcessor", null);
         if(className == null) {
             return DEFAULT_PROCESSOR;
         }
