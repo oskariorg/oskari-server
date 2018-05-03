@@ -250,6 +250,7 @@ public class OskariLayerWorker {
         FORMATTER.addInfoForAdmin(layerJson, "password", layer.getPassword());
         FORMATTER.addInfoForAdmin(layerJson, "url", layer.getUrl());
         FORMATTER.addInfoForAdmin(layerJson, "capabilities", layer.getCapabilities());
+        FORMATTER.addInfoForAdmin(layerJson, "capabilitiesUpdateRate", layer.getCapabilitiesUpdateRateSec());
 
         FORMATTER.addInfoForAdmin(layerJson, "organizationId", layer.getDataproviderId());
     }
