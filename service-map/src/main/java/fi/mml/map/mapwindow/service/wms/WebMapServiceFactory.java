@@ -38,37 +38,37 @@ public class WebMapServiceFactory {
         return buildWebMapService(LAYER_SERVICE.find(layerId));
     }
 
-    public static WebMapService buildWebMapService(OskariLayer layer)
-            throws ServiceException, WebMapServiceParseException, LayerNotFoundInCapabilitiesException {
-        final String cacheKey = "wmsCache_" + layer.getId();
+	public static WebMapService buildWebMapService(OskariLayer layer)
+	        throws ServiceException, WebMapServiceParseException, LayerNotFoundInCapabilitiesException {
+	    final String cacheKey = "wmsCache_" + layer.getId();
 
-        // Check own Cache<WebMapService>
-        WebMapService wms = wmsCache.get(cacheKey);
-		if (wms != null) {
-		    return wms;
-		}
+	    // Check own Cache<WebMapService>
+	    WebMapService wms = wmsCache.get(cacheKey);
+	    if (wms != null) {
+	        return wms;
+	    }
 
-		// Get Capabilities XML document from CapabilitiesCacheService
-		OskariLayerCapabilities cc = CAPABILITIES_SERVICE.getCapabilities(layer);
-		String data = cc.getData();
-		
-		try {
-		    wms = createFromXML(layer.getName(), data);
-		} catch (WebMapServiceParseException | LayerNotFoundInCapabilitiesException ex) {
-            // setup empty capabilities so we don't try to parse again before cache flush
-            wmsCache.put(cacheKey, new WMSCapabilities());
-            throw ex;
-        }
+	    // Get Capabilities XML document from CapabilitiesCacheService
+	    OskariLayerCapabilities cc = CAPABILITIES_SERVICE.getCapabilities(layer);
+	    String data = cc.getData();
 
-		if (cc.getId() == null) {
-		    // Capabilities originated from the service and was parseable, save it to DB
-            CAPABILITIES_SERVICE.save(layer, cc.getData());
-        }
-		
-        // Cache successfully parsed WebMapService
-        wmsCache.put(cacheKey, wms);
-        
-        return wms;
+	    try {
+	        wms = createFromXML(layer.getName(), data);
+	    } catch (WebMapServiceParseException | LayerNotFoundInCapabilitiesException ex) {
+	        // setup empty capabilities so we don't try to parse again before cache flush
+	        wmsCache.put(cacheKey, new WMSCapabilities());
+	        throw ex;
+	    }
+
+	    if (cc.getId() == null) {
+	        // Capabilities originated from the service and was parseable, save it to DB
+	        CAPABILITIES_SERVICE.save(layer, cc.getData());
+	    }
+
+	    // Cache successfully parsed WebMapService
+	    wmsCache.put(cacheKey, wms);
+
+	    return wms;
 	}
 
     public static WebMapService createFromXML(final String layerName, final String xml)
