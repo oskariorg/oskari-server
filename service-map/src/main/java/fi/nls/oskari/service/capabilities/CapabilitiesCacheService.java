@@ -139,7 +139,7 @@ public abstract class CapabilitiesCacheService extends OskariComponent {
             String xml = new String(data, encoding);
             // Strip the potential prolog from XML so that we
             // don't have to worry about the specified charset
-            return XmlHelper.stripPrologFromXML(xml).trim();
+            return XmlHelper.stripPrologFromXML(xml);
         } catch (XMLStreamException e) {
             throw new ServiceException("Failed to parse XML from response", e);
         } catch (UnsupportedEncodingException e) {
