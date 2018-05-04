@@ -42,11 +42,12 @@ public abstract class CapabilitiesCacheService extends OskariComponent {
     private static final String ROOT_WFS = "WFS_Capabilities";
     private static final String ROOT_WMTS = "Capabilities";
 
+    public abstract OskariLayerCapabilities find(final String url, final String layertype, final String version);
+    public abstract OskariLayerCapabilities save(final OskariLayerCapabilities capabilities);
+
     public OskariLayerCapabilities find(final OskariLayer layer) throws ServiceException {
         return find(layer.getSimplifiedUrl(true), layer.getType(), layer.getVersion());
     }
-
-    public abstract OskariLayerCapabilities find(final String url, final String layertype, final String version);
 
     /**
      * This method does not save the response. You have to call save() yourself.
@@ -72,8 +73,6 @@ public abstract class CapabilitiesCacheService extends OskariComponent {
     public OskariLayerCapabilities save(final OskariLayer layer, final String data) {
         return save(getDraft(layer, data));
     }
-
-    public abstract OskariLayerCapabilities save(final OskariLayerCapabilities capabilities);
 
     private OskariLayerCapabilities getDraft(final OskariLayer layer, final String data) {
         return getDraft(layer.getSimplifiedUrl(true), layer.getType(), layer.getVersion(), data);
