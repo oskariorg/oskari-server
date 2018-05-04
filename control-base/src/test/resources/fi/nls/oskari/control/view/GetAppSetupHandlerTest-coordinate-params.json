@@ -8,7 +8,10 @@
       "en_EN"
     ],
     "defaultApps": [],
-    "urls": {"api": "--oskari.ajax.url.prefix--"},
+    "urls": {
+      "api": "--oskari.ajax.url.prefix--",
+      "logout": "/logout"
+    },
     "app": {
       "public": true,
       "type": "user",

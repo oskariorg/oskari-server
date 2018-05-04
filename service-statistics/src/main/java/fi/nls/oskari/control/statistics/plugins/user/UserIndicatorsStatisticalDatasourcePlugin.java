@@ -1,24 +1,19 @@
 package fi.nls.oskari.control.statistics.plugins.user;
 
-import fi.nls.oskari.control.statistics.plugins.db.StatisticalDatasource;
-import fi.nls.oskari.service.OskariComponentManager;
-import fi.nls.oskari.service.ServiceException;
-import fi.nls.oskari.service.ServiceRuntimeException;
-import org.oskari.statistics.user.StatisticalIndicatorService;
-import org.oskari.statistics.user.UserIndicatorService;
-import org.oskari.statistics.user.UserIndicatorServiceImpl;
 import fi.nls.oskari.control.statistics.data.*;
 import fi.nls.oskari.control.statistics.plugins.StatisticalDatasourcePlugin;
+import fi.nls.oskari.control.statistics.plugins.db.StatisticalDatasource;
 import fi.nls.oskari.domain.User;
-import org.oskari.statistics.user.UserIndicator;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.service.OskariComponentManager;
+import fi.nls.oskari.service.ServiceRuntimeException;
 import fi.nls.oskari.util.ConversionHelper;
-import fi.nls.oskari.util.JSONHelper;
-import org.json.JSONException;
-import org.json.JSONObject;
+import org.oskari.statistics.user.StatisticalIndicatorService;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 public class UserIndicatorsStatisticalDatasourcePlugin extends StatisticalDatasourcePlugin {
     private final static Logger LOG = LogFactory.getLogger(UserIndicatorsStatisticalDatasourcePlugin.class);
@@ -37,7 +32,7 @@ public class UserIndicatorsStatisticalDatasourcePlugin extends StatisticalDataso
     @Override
     public IndicatorSet getIndicatorSet(User user) {
         IndicatorSet set = new IndicatorSet();
-        if(user != null) {
+        if (user != null) {
             set.setIndicators(getIndicators(user));
             set.setComplete(true);
         }
@@ -73,6 +68,7 @@ public class UserIndicatorsStatisticalDatasourcePlugin extends StatisticalDataso
 
     /**
      * Override as default impl expects indicators are stored in redis
+     *
      * @param user
      * @param indicatorId
      * @return
@@ -86,11 +82,12 @@ public class UserIndicatorsStatisticalDatasourcePlugin extends StatisticalDataso
         }
         return null;
     }
+
     @Override
     public Map<String, IndicatorValue> getIndicatorValues(StatisticalIndicator indicator,
                                                           StatisticalIndicatorDataModel params,
                                                           StatisticalIndicatorLayer regionset) {
-        return service.getData( ConversionHelper.getInt(indicator.getId(), -1),
+        return service.getData(ConversionHelper.getInt(indicator.getId(), -1),
                 regionset.getOskariLayerId(),
                 ConversionHelper.getInt(params.getDimension("year").getValue(), -1));
     }

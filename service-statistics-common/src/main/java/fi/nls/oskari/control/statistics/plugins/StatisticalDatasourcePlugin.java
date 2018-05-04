@@ -17,6 +17,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.stream.Collectors;
 
 /**
  * Each statistical datasource plugin encapsulates access to a single external API
@@ -58,6 +61,8 @@ public abstract class StatisticalDatasourcePlugin {
 
     private static final Logger LOG = LogFactory.getLogger(StatisticalDatasourcePlugin.class);
     private static final ObjectMapper MAPPER = new ObjectMapper();
+    // update at most 4 datasources at a time
+    private static final ExecutorService UPDATE_SCHEDULER = Executors.newFixedThreadPool(4);
 
     /**
      * This is called when datasource should start processing the indicators. Processed indicators
@@ -89,9 +94,7 @@ public abstract class StatisticalDatasourcePlugin {
             updater = new DataSourceUpdater(this);
         }
         // TODO: cancel previous if running?
-        Thread thread = new Thread(updater);
-        thread.setPriority(Thread.MIN_PRIORITY);
-        thread.start();
+        UPDATE_SCHEDULER.submit(updater);
     }
 
     /**
@@ -119,12 +122,9 @@ public abstract class StatisticalDatasourcePlugin {
         set.setComplete(!updateRequired && !status.isUpdating());
         final List<StatisticalIndicator> indicators = getProcessedIndicators();
         // filter by user
-        final List<StatisticalIndicator> result = new ArrayList<>();
-        for(StatisticalIndicator ind : indicators) {
-            if(hasPermission(ind, user)) {
-                result.add(ind);
-            }
-        }
+        final List<StatisticalIndicator> result = indicators.stream()
+                .filter(ind -> hasPermission(ind, user))
+                .collect(Collectors.toList());
         set.setIndicators(result);
         return set;
     }

@@ -43,6 +43,9 @@ public class StatisticalIndicator {
     public void addLayer(StatisticalIndicatorLayer layer) {
         layers.add(layer);
     }
+    public void addLayers(List<StatisticalIndicatorLayer> list) {
+        layers.addAll(list);
+    }
     public List<StatisticalIndicatorLayer> getLayers() {
         return layers;
     }

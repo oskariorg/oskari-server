@@ -2,7 +2,7 @@ package fi.nls.oskari.spring.security.database;
 
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.spring.EnvHelper;
+import fi.nls.oskari.spring.SpringEnvHelper;
 import fi.nls.oskari.spring.security.OskariLoginFailureHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
@@ -15,7 +15,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 /**
  * Database based authentication on Oskari
  */
-@Profile(EnvHelper.PROFILE_LOGIN_DB)
+@Profile(SpringEnvHelper.PROFILE_LOGIN_DB)
 @Configuration
 @EnableWebSecurity
 @Order(1)
@@ -23,7 +23,7 @@ public class OskariDatabaseSecurityConfig extends WebSecurityConfigurerAdapter {
     private Logger log = LogFactory.getLogger(OskariDatabaseSecurityConfig.class);
 
     @Autowired
-    private EnvHelper env;
+    private SpringEnvHelper env;
 
     protected void configure(HttpSecurity http) throws Exception {
         log.info("Configuring database login");

@@ -2,7 +2,7 @@ package fi.nls.oskari.spring.security;
 
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.spring.EnvHelper;
+import fi.nls.oskari.spring.SpringEnvHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
@@ -22,7 +22,7 @@ public class OskariCommonSecurityConfig extends WebSecurityConfigurerAdapter {
     private Logger log = LogFactory.getLogger(OskariCommonSecurityConfig.class);
 
     @Autowired
-    private EnvHelper env;
+    private SpringEnvHelper env;
 
     protected void configure(HttpSecurity http) throws Exception {
         log.info("Configuring common security options");
