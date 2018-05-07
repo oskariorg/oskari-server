@@ -48,7 +48,7 @@ public class DatasourceLayer {
         if(config == null) {
             return null;
         }
-        return config.optString(key);
+        return config.optString(key, null);
     }
     public JSONObject getConfig() {
         return config;
