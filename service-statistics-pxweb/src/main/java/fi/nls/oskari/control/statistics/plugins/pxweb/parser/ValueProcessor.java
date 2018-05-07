@@ -7,9 +7,11 @@ import org.json.JSONArray;
 
 import java.util.Optional;
 
+/**
+ * Returns the region ID/value pair if one is found.
+ */
 public class ValueProcessor {
     public Optional<RegionValue> getRegionValue(JSONArray values, String regionId, int valueIndex, DatasourceLayer layer) {
-        // check isRegionForLayer
         Double val = values.optDouble(valueIndex);
         if (val.isNaN()) {
             return Optional.empty();
