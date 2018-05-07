@@ -20,7 +20,6 @@ import java.net.HttpURLConnection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 public class PxwebStatisticalDatasourcePlugin extends StatisticalDatasourcePlugin {
 
@@ -191,7 +190,7 @@ public class PxwebStatisticalDatasourcePlugin extends StatisticalDatasourcePlugi
         if(layer.getConfig() == null) {
             return DEFAULT_PROCESSOR;
         }
-        String className = layer.getConfig().optString("valueProcessor", null);
+        String className = layer.getConfig("valueProcessor");
         if(className == null) {
             return DEFAULT_PROCESSOR;
         }
@@ -205,7 +204,7 @@ public class PxwebStatisticalDatasourcePlugin extends StatisticalDatasourcePlugi
             processors.put(className, processor);
             return processor;
         } catch (Exception e) {
-            LOG.error(e, "Error creating ValueProcessor for plugin id :", config.getId(), " - class:", className);
+            LOG.error(e, "Error creating ValueProcessor for plugin id:", config.getId(), " - class:", className);
         }
         return DEFAULT_PROCESSOR;
     }
