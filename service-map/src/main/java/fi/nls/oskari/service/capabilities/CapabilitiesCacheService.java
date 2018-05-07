@@ -45,55 +45,41 @@ public abstract class CapabilitiesCacheService extends OskariComponent {
     public abstract OskariLayerCapabilities find(final String url, final String layertype, final String version);
     public abstract OskariLayerCapabilities save(final OskariLayerCapabilities capabilities);
 
-    public OskariLayerCapabilities getCapabilities(String url, String type, String version)
-            throws ServiceException {
-        return getCapabilities(url, type, null, null, version);
+    public OskariLayerCapabilities find(final OskariLayer layer) throws ServiceException {
+        return find(layer.getSimplifiedUrl(true), layer.getType(), layer.getVersion());
     }
 
-    public OskariLayerCapabilities getCapabilities(String url, String type, final String user, final String passwd, final String version)
-            throws ServiceException {
-        return getCapabilities(url, type, user, passwd, version, false);
+    /**
+     * This method does not save the response. You have to call save() yourself.
+     * If {@link OskariLayerCapabilities#getId()} returns null value was fetched from a service.
+     */
+    public OskariLayerCapabilities getCapabilities(final OskariLayer layer) throws ServiceException {
+        return getCapabilities(layer.getSimplifiedUrl(true), layer.getType(), layer.getVersion(), layer.getUsername(), layer.getPassword());
     }
 
-    public OskariLayerCapabilities getCapabilities(String url, String type, final String user, final String passwd, final String version, final boolean loadFromService)
-            throws ServiceException {
-        return getCapabilities(createTempOskariLayer(url, type, user, passwd, version), loadFromService);
-    }
-
-    private OskariLayer createTempOskariLayer(String url, String type, final String user, final String passwd, final String version) {
-        OskariLayer layer = new OskariLayer();
-        layer.setUrl(url);
-        layer.setType(type);
-        layer.setVersion(version);
-        layer.setUsername(user);
-        layer.setPassword(passwd);
-        return layer;
-    }
-
-    public OskariLayerCapabilities getCapabilities(final OskariLayer layer)
-            throws ServiceException {
-        // prefer saved db version over network call by default
-        return getCapabilities(layer, false);
-    }
-
-    public OskariLayerCapabilities getCapabilities(final OskariLayer layer, final boolean loadFromService)
-            throws ServiceException {
-        final String url = layer.getSimplifiedUrl(true);
-        final String type = layer.getType();
-        final String version = layer.getVersion();
-
-        if (!loadFromService) {
-            OskariLayerCapabilities dbCapabilities = find(url, type, version);
-            if (dbCapabilities != null) {
-                return dbCapabilities;
-            }
+    /**
+     * This method does not save the response. You have to call save() yourself.
+     * If {@link OskariLayerCapabilities#getId()} returns null the value was fetched from a service.
+     */
+    public OskariLayerCapabilities getCapabilities(String url, String type, String version, String user, String pass) throws ServiceException {
+        OskariLayerCapabilities caps = find(url, type, version);
+        if (caps != null) {
+            return caps;
         }
+        String data = getFromService(url, type, version, user, pass);
+        return getDraft(url, type, version, data);
+    }
 
-        // try to get xml from service
-        final String data = getFromService(layer);
+    public OskariLayerCapabilities save(final OskariLayer layer, final String data) {
+        return save(getDraft(layer, data));
+    }
 
-        final OskariLayerCapabilities draft = new OskariLayerCapabilities(url, type, version, data);
-        return save(draft);
+    private OskariLayerCapabilities getDraft(final OskariLayer layer, final String data) {
+        return getDraft(layer.getSimplifiedUrl(true), layer.getType(), layer.getVersion(), data);
+    }
+
+    private OskariLayerCapabilities getDraft(String url, String type, String version, String data) {
+        return new OskariLayerCapabilities(url, type, version, data);
     }
 
     public static String getFromService(OskariLayer layer) throws ServiceException {

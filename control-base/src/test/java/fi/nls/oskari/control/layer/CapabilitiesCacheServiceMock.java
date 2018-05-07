@@ -25,11 +25,11 @@ public class CapabilitiesCacheServiceMock extends CapabilitiesCacheService {
         return draft;
     }
 
-    public OskariLayerCapabilities getCapabilities(OskariLayer layer) throws ServiceException {
+    public OskariLayerCapabilities find(OskariLayer layer) throws ServiceException {
         if(layer.getType().equals("ERROR")) {
             throw new ServiceException("Testcase");
         }
-        return super.getCapabilities(layer);
+        return super.find(layer);
     }
 
 }

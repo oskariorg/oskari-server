@@ -63,8 +63,8 @@ public class PrintServiceTest {
         OskariLayerCapabilities answerFg = new OskariLayerCapabilities(1L, fg.getUrl(), fg.getType(), fg.getVersion(), dataFg, null, null);
 
         CapabilitiesCacheService mock = Mockito.mock(CapabilitiesCacheService.class);
-        Mockito.when(mock.getCapabilities(bg.getUrl(), bg.getType(), bg.getUsername(), bg.getPassword(), bg.getVersion())).thenReturn(answerBg);
-        Mockito.when(mock.getCapabilities(fg.getUrl(), fg.getType(), fg.getUsername(), fg.getPassword(), fg.getVersion())).thenReturn(answerFg);
+        Mockito.when(mock.find(bg.getUrl(), bg.getType(), bg.getVersion())).thenReturn(answerBg);
+        Mockito.when(mock.find(fg.getUrl(), fg.getType(), fg.getVersion())).thenReturn(answerFg);
 
         PrintService service = new PrintService(mock);
         BufferedImage img = service.getPNG(request);
@@ -119,8 +119,8 @@ public class PrintServiceTest {
         OskariLayerCapabilities answerFg = new OskariLayerCapabilities(1L, fg.getUrl(), fg.getType(), fg.getVersion(), dataFg, null, null);
 
         CapabilitiesCacheService mock = Mockito.mock(CapabilitiesCacheService.class);
-        Mockito.when(mock.getCapabilities(bg.getUrl(), bg.getType(), bg.getUsername(), bg.getPassword(), bg.getVersion())).thenReturn(answerBg);
-        Mockito.when(mock.getCapabilities(fg.getUrl(), fg.getType(), fg.getUsername(), fg.getPassword(), fg.getVersion())).thenReturn(answerFg);
+        Mockito.when(mock.find(bg.getUrl(), bg.getType(), bg.getVersion())).thenReturn(answerBg);
+        Mockito.when(mock.find(fg.getUrl(), fg.getType(), fg.getVersion())).thenReturn(answerFg);
 
         PrintService service = new PrintService(mock);
         PDDocument doc = new PDDocument();

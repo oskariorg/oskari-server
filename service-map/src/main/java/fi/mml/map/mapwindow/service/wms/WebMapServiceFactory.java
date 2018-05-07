@@ -6,6 +6,7 @@ import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.map.layer.OskariLayerService;
 import fi.nls.oskari.map.layer.OskariLayerServiceIbatisImpl;
 import fi.nls.oskari.service.OskariComponentManager;
+import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.service.capabilities.CapabilitiesCacheService;
 import fi.nls.oskari.service.capabilities.OskariLayerCapabilities;
 import fi.nls.oskari.wms.WMSCapabilities;
@@ -28,45 +29,46 @@ public class WebMapServiceFactory {
 	 * 
 	 * @param layerId id of the map layer
 	 * 
+	 * @throws ServiceException if something goes wrong when getting capabilities from cache or from service 
 	 * @throws WebMapServiceParseException if something goes wrong when parsing
 	 * @throws LayerNotFoundInCapabilitiesException if layer is not found in capabilities
 	 */
 	public static WebMapService buildWebMapService(int layerId)
-	        throws WebMapServiceParseException, LayerNotFoundInCapabilitiesException {
+	        throws ServiceException, WebMapServiceParseException, LayerNotFoundInCapabilitiesException {
         return buildWebMapService(LAYER_SERVICE.find(layerId));
     }
 
-    public static WebMapService buildWebMapService(OskariLayer layer)
-            throws WebMapServiceParseException, LayerNotFoundInCapabilitiesException {
-        final String cacheKey = "wmsCache_" + layer.getId();
-		WebMapService wms = wmsCache.get(cacheKey);
-        // caching since this is called whenever a layer JSON is created!!
-		if (wms == null) {
-            OskariLayerCapabilities cc = getCaps(layer);
-            if(cc == null) {
-                // setup empty capabilities so we don't try to parse again before cache flush
-                WMSCapabilities emptyCaps = new WMSCapabilities();
-                wmsCache.put(cacheKey, emptyCaps);
-                return emptyCaps;
-            }
-            try {
-                final String data = cc.getData().trim();
-                if (isVersion1_3_0(data)) {
-                    wms = new WebMapServiceV1_3_0_Impl("from DataBase", data, layer.getName());
-                } else if (isVersion1_1_1(data)) {
-                    wms = new WebMapServiceV1_1_1_Impl("from DataBase", data, layer.getName());
-                }
-                if(wms != null) {
-                    // cache the parsed value
-                    wmsCache.put(cacheKey, wms);
-                }
-            } catch (WebMapServiceParseException ex) {
-                // setup empty capabilities so we don't try to parse again before cache flush
-                wmsCache.put(cacheKey, new WMSCapabilities());
-                throw ex;
-            }
-		}
-		return wms;
+	public static WebMapService buildWebMapService(OskariLayer layer)
+	        throws ServiceException, WebMapServiceParseException, LayerNotFoundInCapabilitiesException {
+	    final String cacheKey = "wmsCache_" + layer.getId();
+
+	    // Check own Cache<WebMapService>
+	    WebMapService wms = wmsCache.get(cacheKey);
+	    if (wms != null) {
+	        return wms;
+	    }
+
+	    // Get Capabilities XML document from CapabilitiesCacheService
+	    OskariLayerCapabilities cc = CAPABILITIES_SERVICE.getCapabilities(layer);
+	    String data = cc.getData();
+
+	    try {
+	        wms = createFromXML(layer.getName(), data);
+	    } catch (WebMapServiceParseException | LayerNotFoundInCapabilitiesException ex) {
+	        // setup empty capabilities so we don't try to parse again before cache flush
+	        wmsCache.put(cacheKey, new WMSCapabilities());
+	        throw ex;
+	    }
+
+	    if (cc.getId() == null) {
+	        // Capabilities originated from the service and was parseable, save it to DB
+	        CAPABILITIES_SERVICE.save(layer, cc.getData());
+	    }
+
+	    // Cache successfully parsed WebMapService
+	    wmsCache.put(cacheKey, wms);
+
+	    return wms;
 	}
 
     public static WebMapService createFromXML(final String layerName, final String xml)
@@ -77,14 +79,6 @@ public class WebMapServiceFactory {
             return new WebMapServiceV1_1_1_Impl("from DataBase", xml, layerName);
         } else {
             throw new WebMapServiceParseException("Could not detect version to be 1.3.0 or 1.1.1");
-        }
-    }
-
-    private static OskariLayerCapabilities getCaps(OskariLayer layer) throws WebMapServiceParseException {
-        try {
-            return CAPABILITIES_SERVICE.getCapabilities(layer);
-        } catch (Exception ex) {
-            throw new WebMapServiceParseException(ex);
         }
     }
 
