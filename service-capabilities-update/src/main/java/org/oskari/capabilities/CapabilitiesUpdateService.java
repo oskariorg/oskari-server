@@ -89,7 +89,7 @@ public class CapabilitiesUpdateService {
 
         final String data;
         try {
-            data = capabilitiesCacheService.getCapabilities(url, type, user, pass, version, true).getData();
+            data = CapabilitiesCacheService.getFromService(url, type, version, user, pass);
         } catch (ServiceException e) {
             LOG.warn(e, "Could not find get Capabilities, url:", url,
                     "type:", type, "version:", version, "ids:", Arrays.toString(ids));
@@ -111,10 +111,12 @@ public class CapabilitiesUpdateService {
 
     private void updateWMSLayers(List<OskariLayer> layers, String data,
             Set<String> systemCRSs, List<CapabilitiesUpdateResult> results) {
+        boolean shouldSaveCapabilities = false;
         for (OskariLayer layer : layers) {
             try {
                 WebMapService wms = OskariLayerCapabilitiesHelper.parseWMSCapabilities(data, layer);
                 OskariLayerCapabilitiesHelper.setPropertiesFromCapabilitiesWMS(wms, layer, systemCRSs);
+                shouldSaveCapabilities = true;
                 layerService.update(layer);
                 results.add(CapabilitiesUpdateResult.ok(layer));
             } catch (WebMapServiceParseException e) {
@@ -124,6 +126,9 @@ public class CapabilitiesUpdateService {
                 LOG.warn(e, "Failed to update Capabilities for layerId:", layer.getId());
                 results.add(CapabilitiesUpdateResult.err(layer, ERR_LAYER_NOT_FOUND_IN_CAPABILITIES));
             }
+        }
+        if (shouldSaveCapabilities) {
+            capabilitiesCacheService.save(layers.get(0), data);
         }
     }
 
@@ -140,15 +145,20 @@ public class CapabilitiesUpdateService {
             }
             return;
         }
-
+        boolean shouldSaveCapabilities = false;
         for (OskariLayer layer : layers) {
             try {
                 OskariLayerCapabilitiesHelper.setPropertiesFromCapabilitiesWMTS(wmts, layer, null, systemCRSs);
+                shouldSaveCapabilities = true;
                 layerService.update(layer);
                 results.add(CapabilitiesUpdateResult.ok(layer));
             } catch (IllegalArgumentException e) {
                 results.add(CapabilitiesUpdateResult.err(layer, e.getMessage()));
             }
+        }
+        if (shouldSaveCapabilities) {
+            // First will do, since we only need the url type and version
+            capabilitiesCacheService.save(layers.get(0), data);
         }
     }
 

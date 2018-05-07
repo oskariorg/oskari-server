@@ -17,23 +17,16 @@ import org.geotools.data.ows.WMSCapabilities;
 import org.geotools.data.wms.xml.MetadataURL;
 import org.geotools.data.wms.xml.WMSSchema;
 import org.geotools.xml.DocumentFactory;
-import org.geotools.xml.XMLSAXHandler;
 import org.geotools.xml.handlers.DocumentHandler;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.xml.sax.SAXException;
 
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.logging.Level;
-
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
 
 /**
  * Methods for parsing WMS capabilities data
@@ -84,16 +77,16 @@ public class GetGtWMSCapabilities {
         try {
             /*check url validity*/
             new URL(rurl);
-            OskariLayerCapabilities capabilities = service.getCapabilities(rurl, OskariLayer.TYPE_WMS, user, pwd, version);
-            String capabilitiesXML = capabilities.getData();
-            if(capabilitiesXML == null || capabilitiesXML.trim().isEmpty()) {
-                // retry from service - might get empty xml from db
-                capabilities = service.getCapabilities(rurl, OskariLayer.TYPE_WMS, user, pwd, version, true);
-                capabilitiesXML = capabilities.getData();
-            }
-            WMSCapabilities caps = createCapabilities(capabilitiesXML);
+            final String type = OskariLayer.TYPE_WMS;
+            final OskariLayerCapabilities capabilities = service.getCapabilities(rurl, type, version, user, pwd);
+            final String data = capabilities.getData();
+            WMSCapabilities caps = createCapabilities(data);
             // caps to json
-            return parseLayer(caps.getLayer(), rurl, caps, capabilitiesXML, currentCrs, false);
+            JSONObject toReturn = parseLayer(caps.getLayer(), rurl, caps, data, currentCrs, false);
+            if (capabilities.getId() == null) {
+                service.save(capabilities);
+            }
+            return toReturn;
         } catch (Exception ex) {
             throw new ServiceException("Couldn't read/get wms capabilities response from url.", ex);
         }

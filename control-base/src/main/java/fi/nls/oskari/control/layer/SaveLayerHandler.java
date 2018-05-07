@@ -1,6 +1,5 @@
 package fi.nls.oskari.control.layer;
 
-import fi.nls.oskari.service.capabilities.OskariLayerCapabilities;
 import fi.mml.map.mapwindow.service.wms.LayerNotFoundInCapabilitiesException;
 import fi.mml.map.mapwindow.service.wms.WebMapService;
 import fi.mml.map.mapwindow.service.wms.WebMapServiceParseException;
@@ -584,9 +583,10 @@ public class SaveLayerHandler extends ActionHandler {
         ml.setGfiType(params.getHttpParam(PARAM_GFI_TYPE, ml.getGfiType()));
 
         try {
-            OskariLayerCapabilities raw = capabilitiesService.getCapabilities(ml, true);
-            WebMapService wms = OskariLayerCapabilitiesHelper.parseWMSCapabilities(raw.getData(), ml);
+            String data = CapabilitiesCacheService.getFromService(ml);
+            WebMapService wms = OskariLayerCapabilitiesHelper.parseWMSCapabilities(data, ml);
             OskariLayerCapabilitiesHelper.setPropertiesFromCapabilitiesWMS(wms, ml, systemCRSs);
+            capabilitiesService.save(ml, data);
             return true;
         } catch (ServiceException | WebMapServiceParseException | LayerNotFoundInCapabilitiesException ex) {
             LOG.error(ex, "Failed to set capabilities for layer", ml);
@@ -597,9 +597,10 @@ public class SaveLayerHandler extends ActionHandler {
     private boolean handleWMTSSpecific(final ActionParameters params, OskariLayer ml, Set<String> systemCRSs) {
         try {
             String currentCrs = params.getHttpParam(PARAM_SRS_NAME, ml.getSrs_name());
-            OskariLayerCapabilities raw = capabilitiesService.getCapabilities(ml, true);
-            WMTSCapabilities caps = WMTSCapabilitiesParser.parseCapabilities(raw.getData());
+            String data = CapabilitiesCacheService.getFromService(ml);
+            WMTSCapabilities caps = WMTSCapabilitiesParser.parseCapabilities(data);
             OskariLayerCapabilitiesHelper.setPropertiesFromCapabilitiesWMTS(caps, ml, currentCrs, systemCRSs);
+            capabilitiesService.save(ml, data);
             return true;
         } catch (Exception ex) {
             LOG.error(ex, "Failed to set capabilities for layer", ml);

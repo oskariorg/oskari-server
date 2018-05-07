@@ -36,7 +36,7 @@ public class SpringInitializer implements WebApplicationInitializer {
 
     private AnnotationConfigWebApplicationContext getContext() {
         final AnnotationConfigWebApplicationContext context = new AnnotationConfigWebApplicationContext();
-        context.getEnvironment().setDefaultProfiles(EnvHelper.PROFILE_LOGIN_DB);
+        context.getEnvironment().setDefaultProfiles(SpringEnvHelper.PROFILE_LOGIN_DB);
         final String[] configuredProfiles = PropertyUtil.getCommaSeparatedList("oskari.profiles");
         if (configuredProfiles.length > 0) {
             log.info("Using profiles:", configuredProfiles);

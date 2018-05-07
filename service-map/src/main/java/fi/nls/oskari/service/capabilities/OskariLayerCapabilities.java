@@ -21,7 +21,7 @@ public class OskariLayerCapabilities {
         this.url = url;
         this.layertype = layertype;
         this.version = version;
-        this.data = data;
+        setData(data);
         this.created = created;
         this.updated = updated;
     }
@@ -47,6 +47,13 @@ public class OskariLayerCapabilities {
     }
 
     protected void setData(String data) {
+        if (data == null) {
+            throw new NullPointerException();
+        }
+        data = data.trim();
+        if (data.isEmpty()) {
+            throw new IllegalArgumentException("Data was empty");
+        }
         this.data = data;
     }
 
