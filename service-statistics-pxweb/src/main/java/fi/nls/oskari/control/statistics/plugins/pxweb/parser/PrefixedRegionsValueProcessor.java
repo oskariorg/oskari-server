@@ -9,6 +9,12 @@ import java.util.Optional;
 /**
  * Allows statistical datasource to have a prefix in region ID. If prefix is defined for layer this
  * processor returns values for ONLY the regions that have the prefix and removes the prefix from the returned region ID.
+ *
+ * Requires datasource layer link to have a config including:
+ *  {
+ *      "valueProcessor": "fi.nls.oskari.control.statistics.plugins.pxweb.parser.PrefixedRegionsValueProcessor",
+ *      "statsRegionPrefix": "[prefix for region ids in statistical data]"
+ *  }
  */
 public class PrefixedRegionsValueProcessor extends ValueProcessor {
 
