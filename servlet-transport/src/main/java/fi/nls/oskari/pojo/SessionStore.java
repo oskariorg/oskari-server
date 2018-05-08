@@ -1,5 +1,7 @@
 package fi.nls.oskari.pojo;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vividsolutions.jts.geom.Coordinate;
 import fi.nls.oskari.cache.JedisManager;
 import fi.nls.oskari.log.LogFactory;
@@ -11,8 +13,6 @@ import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.JsonParser;
 import org.codehaus.jackson.JsonToken;
 import org.codehaus.jackson.annotate.JsonIgnore;
-import org.codehaus.jackson.map.JsonMappingException;
-import org.codehaus.jackson.map.ObjectMapper;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -441,10 +441,8 @@ public class SessionStore {
 	public String getAsJSON() {
 		try {
 			return mapper.writeValueAsString(this);
-		} catch (JsonGenerationException e) {
+		} catch (JsonProcessingException e) {
 			log.error(e, "JSON Generation failed");
-		} catch (JsonMappingException e) {
-			log.error(e, "Mapping from Object to JSON String failed");
 		} catch (IOException e) {
 			log.error(e, "IO failed");
 		}
