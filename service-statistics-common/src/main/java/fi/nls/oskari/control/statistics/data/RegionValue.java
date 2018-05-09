@@ -1,8 +1,8 @@
 package fi.nls.oskari.control.statistics.data;
 
 public class RegionValue {
-    private String region;
-    private IndicatorValue value;
+    private final String region;
+    private final IndicatorValue value;
 
     public RegionValue(String region, IndicatorValue value) {
         this.region = region;

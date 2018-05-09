@@ -187,9 +187,6 @@ public class PxwebStatisticalDatasourcePlugin extends StatisticalDatasourcePlugi
     }
 
     private ValueProcessor getValueProcessor(DatasourceLayer layer) {
-        if(layer.getConfig() == null) {
-            return DEFAULT_PROCESSOR;
-        }
         String className = layer.getConfig("valueProcessor");
         if(className == null) {
             return DEFAULT_PROCESSOR;
