@@ -200,6 +200,10 @@ public class PxwebStatisticalDatasourcePlugin extends StatisticalDatasourcePlugi
         }
         try {
             final Class clazz = Class.forName(className);
+            if(!ValueProcessor.class.isAssignableFrom(clazz)) {
+                LOG.warn("Invalid ValueProcessor configured for datasource id:", config.getId(), " - class:", className);
+                return DEFAULT_PROCESSOR;
+            }
             processor = (ValueProcessor) clazz.newInstance();
             processors.put(className, processor);
             return processor;
