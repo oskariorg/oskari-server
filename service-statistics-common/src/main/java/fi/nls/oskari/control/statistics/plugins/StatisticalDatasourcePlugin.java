@@ -14,7 +14,9 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
@@ -121,12 +123,22 @@ public abstract class StatisticalDatasourcePlugin {
         IndicatorSet set = new IndicatorSet();
         set.setComplete(!updateRequired && !status.isUpdating());
         final List<StatisticalIndicator> indicators = getProcessedIndicators();
+        if(indicators.isEmpty() && set.isComplete() && lastUpdateAtleastSecondsAgo(status.getLastUpdate(), 60)) {
+            // we might have an empty set of indicators cached and update isn't scheduled yet
+            // trigger a fail-safe update after 60 seconds of serving the empty list
+            set.setComplete(false);
+            startUpdater();
+        }
         // filter by user
         final List<StatisticalIndicator> result = indicators.stream()
                 .filter(ind -> hasPermission(ind, user))
                 .collect(Collectors.toList());
         set.setIndicators(result);
         return set;
+    }
+
+    private boolean lastUpdateAtleastSecondsAgo(Date lastUpdate, int seconds) {
+        return lastUpdate != null && lastUpdate.toInstant().plusSeconds(seconds).isBefore(Instant.now());
     }
 
     public StatisticalIndicator getIndicator(User user, String indicatorId) {
