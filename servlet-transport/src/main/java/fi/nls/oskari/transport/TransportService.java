@@ -19,8 +19,8 @@ import fi.nls.oskari.work.*;
 import fi.nls.oskari.work.hystrix.HystrixJobQueue;
 import fi.nls.oskari.worker.Job;
 import fi.nls.oskari.worker.JobQueue;
-import org.cometd.bayeux.Message;
 import org.cometd.bayeux.server.BayeuxServer;
+import org.cometd.bayeux.server.ServerMessage;
 import org.cometd.bayeux.server.ServerSession;
 import org.cometd.server.AbstractService;
 import org.cometd.server.JacksonJSONContextServer;
@@ -219,7 +219,7 @@ public class TransportService extends AbstractService {
      * @param client
      * @param message
      */
-    public void disconnect(ServerSession client, Message message)
+    public void disconnect(ServerSession client, ServerMessage message)
     {
         String json = SessionStore.getCache(client.getId());
         if(json != null) {
@@ -248,7 +248,7 @@ public class TransportService extends AbstractService {
      * @param client
      * @param message
      */
-    public void processRequest(ServerSession client, Message message)
+    public void processRequest(ServerSession client, ServerMessage message)
     {
         log.debug("Serving client:", client.getId());
     	Map<String, Object> output = new HashMap<String, Object>();
