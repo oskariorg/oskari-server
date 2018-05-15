@@ -466,17 +466,10 @@ public class SessionStore {
 			parser.nextToken();
 			if (fieldName == null) {
 				break;
-			} else if (TransportService.PARAM_ID.equals(fieldName)) {
-				parser.getText();
-            } else if (TransportService.PARAM_UUID.equals(fieldName)) {
-                parser.getText();
 			} else if (TransportService.PARAM_DATA.equals(fieldName)) {
 				store = parse(parser);
-			} else if (TransportService.PARAM_CHANNEL.equals(fieldName)) {
-				parser.getText();
 			} else {
-				throw new IllegalStateException("Unrecognized field '"
-						+ fieldName + "'!");
+			    parser.getText();
 			}
 		}
 		parser.close();
