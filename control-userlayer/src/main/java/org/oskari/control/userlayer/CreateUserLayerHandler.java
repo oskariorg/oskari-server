@@ -1,12 +1,11 @@
 package org.oskari.control.userlayer;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.StandardCopyOption;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -46,6 +45,7 @@ import fi.nls.oskari.domain.map.userlayer.UserLayerStyle;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.service.ServiceException;
+import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.util.ResponseHelper;
@@ -86,6 +86,8 @@ public class CreateUserLayerHandler extends ActionHandler {
 
     // Store files smaller than 128kb in memory instead of writing them to disk
     private static final int MAX_SIZE_MEMORY = 128 * KB;
+
+    private static final int MAX_RETRY_RANDOM_UUID = 100;
 
     private final DiskFileItemFactory diskFileItemFactory = new DiskFileItemFactory(MAX_SIZE_MEMORY, null);
     private final String targetEPSG = PropertyUtil.get(PROPERTY_TARGET_EPSG, "EPSG:4326");
@@ -238,7 +240,7 @@ public class CreateUserLayerHandler extends ActionHandler {
             File tmpFile = File.createTempFile("temp", null);
             File tmpDir = tmpFile.getParentFile();
             tmpFile.delete();
-            while (true) {
+            for (int i = 0; i < MAX_RETRY_RANDOM_UUID; i++) {
                 String randomId = UUID.randomUUID().toString().substring(0, 24);
                 File dir = new File(tmpDir, randomId);
                 if (dir.exists()) {
@@ -251,6 +253,7 @@ public class CreateUserLayerHandler extends ActionHandler {
                     throw new ActionException("Failed to create temp directory");
                 }
             }
+            throw new ActionException("Failed to create temp directory after max attempts!");
         } catch (IOException e) {
             throw new ActionException("Failed to create temp directory", e);
         }
@@ -267,7 +270,9 @@ public class CreateUserLayerHandler extends ActionHandler {
                     continue;
                 }
                 File file = new File(dir, name);
-                Files.copy(zis, file.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                try (FileOutputStream fos = new FileOutputStream(file)) {
+                    IOHelper.copy(zis, fos);
+                }
                 if (mainFile == null) {
                     String ext = getFileExt(name);
                     if (FeatureCollectionParsers.hasByFileExt(ext)) {
