@@ -23,25 +23,35 @@ public class CacheHandler extends RestActionHandler {
     private Logger log = LogFactory.getLogger(CacheHandler.class);
 
     @Override
-    public void handleGet(ActionParameters params) throws ActionException {
+    public void handleGet(ActionParameters params) {
         final JSONObject response = new JSONObject();
         final JSONArray list = new JSONArray();
         Set<String> cacheNames = CacheManager.getCacheNames();
         for (String name : cacheNames) {
             Cache cache = CacheManager.getCache(name);
-            final JSONObject json = new JSONObject();
-            JSONHelper.putValue(json, "name", cache.getName());
-            JSONHelper.putValue(json, "size", cache.getSize());
-            JSONHelper.putValue(json, "limit", cache.getLimit());
-            JSONHelper.putValue(json, "expiration", (cache.getExpiration() / 1000));
-            JSONHelper.putValue(json, "lastFlush", (cache.getLastFlush() / 1000));
-            list.put(json);
+            list.put(getCacheJSON(cache));
         }
         JSONHelper.putValue(response, "caches", list);
         JSONHelper.putValue(response, "timestamp", new Date());
         ResponseHelper.writeResponse(params, response);
     }
 
+    @Override
+    public void handlePost(ActionParameters params) throws ActionException {
+        Cache cache = CacheManager.getCache(params.getRequiredParam("name"));
+        cache.flush(true);
+        handleGet(params);
+    }
+
+    private JSONObject getCacheJSON(Cache cache) {
+        final JSONObject json = new JSONObject();
+        JSONHelper.putValue(json, "name", cache.getName());
+        JSONHelper.putValue(json, "size", cache.getSize());
+        JSONHelper.putValue(json, "limit", cache.getLimit());
+        JSONHelper.putValue(json, "expiration", cache.getExpiration() / 1000);
+        JSONHelper.putValue(json, "secondsToExpire", cache.getTimeToExpirationMs() / 1000);
+        return json;
+    }
 
     @Override
     public void preProcess(ActionParameters params) throws ActionException {
