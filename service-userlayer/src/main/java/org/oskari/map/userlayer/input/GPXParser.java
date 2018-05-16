@@ -1,6 +1,7 @@
 package org.oskari.map.userlayer.input;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -13,11 +14,21 @@ import org.geotools.referencing.CRS;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
+import fi.nls.oskari.log.LogFactory;
+import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.service.ServiceException;
 
 public class GPXParser implements FeatureCollectionParser {
 
+    private static final Logger LOG = LogFactory.getLogger(KMLParser.class);
+
     public static final String SUFFIX = "GPX";
+
+    private static final String[] TYPENAMES = {
+            "tracks",
+            "routes",
+            "waypoints"
+    };
 
     @Override
     public SimpleFeatureCollection parse(File file, CoordinateReferenceSystem sourceCRS,
@@ -41,15 +52,21 @@ public class GPXParser implements FeatureCollectionParser {
         DataStore store = null;
         try {
             store = factory.createDataStore(connectionParams);
-            for (String typeName : store.getTypeNames()) {
-                // Skip track points
-                if ("track_points".equals(typeName)) {
+            String[] storeTypeNames = store.getTypeNames();
+            LOG.debug("gpx typeNames {}", Arrays.toString(storeTypeNames));
+            for (String typeName : TYPENAMES) {
+                if (!contains(storeTypeNames, typeName)) {
                     continue;
                 }
                 SimpleFeatureSource source = store.getFeatureSource(typeName);
-                return FeatureCollectionParsers.read(source, sourceCRS, targetCRS);
+                SimpleFeatureCollection collection = FeatureCollectionParsers.read(source, sourceCRS, targetCRS);
+                if (collection.isEmpty()) {
+                    LOG.info("FeatureCollection was empty, typeName {}", typeName);
+                } else {
+                    return collection;
+                }
             }
-            throw new ServiceException("Could not find any usable typeNames from GPX file");
+            throw new ServiceException("Could not find any un-empty FeatureCollections from GPX file");
         } catch (Exception e) {
             throw new ServiceException("GPX parsing failed", e);
         } finally {
@@ -59,4 +76,12 @@ public class GPXParser implements FeatureCollectionParser {
         }
     }
 
+    private boolean contains(String[] a, String k) {
+        for (String s : a) {
+            if (s.equals(k)) {
+                return true;
+            }
+        }
+        return false;
+    }
 }
