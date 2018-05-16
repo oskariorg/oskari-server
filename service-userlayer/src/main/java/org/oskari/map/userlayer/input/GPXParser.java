@@ -53,7 +53,7 @@ public class GPXParser implements FeatureCollectionParser {
         try {
             store = factory.createDataStore(connectionParams);
             String[] storeTypeNames = store.getTypeNames();
-            LOG.debug("gpx typeNames {}", Arrays.toString(storeTypeNames));
+            LOG.debug("Found typeNames from GPX:", storeTypeNames);
             for (String typeName : TYPENAMES) {
                 if (!contains(storeTypeNames, typeName)) {
                     continue;
@@ -61,7 +61,7 @@ public class GPXParser implements FeatureCollectionParser {
                 SimpleFeatureSource source = store.getFeatureSource(typeName);
                 SimpleFeatureCollection collection = FeatureCollectionParsers.read(source, sourceCRS, targetCRS);
                 if (collection.isEmpty()) {
-                    LOG.info("FeatureCollection was empty, typeName {}", typeName);
+                    LOG.info("FeatureCollection was empty, typeName:", typeName);
                 } else {
                     return collection;
                 }
