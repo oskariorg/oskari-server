@@ -65,7 +65,7 @@ public class GPXParser implements FeatureCollectionParser {
                 }
                 LOG.info("FeatureCollection was empty, typeName:", typeName);
             }
-            throw new ServiceException("Could not find any un-empty FeatureCollections from GPX file");
+            throw new ServiceException("Could not find any non-empty FeatureCollections from GPX file");
         } catch (Exception e) {
             throw new ServiceException("GPX parsing failed", e);
         } finally {
