@@ -20,7 +20,7 @@ import fi.nls.oskari.service.ServiceException;
 
 public class GPXParser implements FeatureCollectionParser {
 
-    private static final Logger LOG = LogFactory.getLogger(KMLParser.class);
+    private static final Logger LOG = LogFactory.getLogger(GPXParser.class);
 
     public static final String SUFFIX = "GPX";
 
