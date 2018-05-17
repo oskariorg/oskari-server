@@ -80,7 +80,7 @@ public class FeatureCollectionParsers {
                     Geometry transformed = JTS.transform((Geometry) g, transform);
                     copy.setDefaultGeometry(transformed);
                 } else {
-                    LOG.debug("No default geometry, feature id {}", f.getID());
+                    LOG.debug("No default geometry, feature id:", f.getID());
                 }
                 fc.add(copy);
             }
