@@ -1,6 +1,7 @@
 package org.oskari.map.userlayer.input;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -54,7 +55,7 @@ public class GPXParser implements FeatureCollectionParser {
             String[] storeTypeNames = store.getTypeNames();
             LOG.debug("Found typeNames from GPX:", storeTypeNames);
             for (String typeName : TYPENAMES) {
-                if (!contains(storeTypeNames, typeName)) {
+                if (Arrays.stream(storeTypeNames).noneMatch(s -> s.equals(typeName))) {
                     LOG.debug("typeName not found from GPX:", typeName);
                     continue;
                 }
@@ -73,15 +74,6 @@ public class GPXParser implements FeatureCollectionParser {
                 store.dispose();
             }
         }
-    }
-
-    private boolean contains(String[] a, String k) {
-        for (String s : a) {
-            if (s.equals(k)) {
-                return true;
-            }
-        }
-        return false;
     }
 
 }
