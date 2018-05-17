@@ -1,7 +1,6 @@
 package org.oskari.map.userlayer.input;
 
 import java.io.File;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -56,15 +55,15 @@ public class GPXParser implements FeatureCollectionParser {
             LOG.debug("Found typeNames from GPX:", storeTypeNames);
             for (String typeName : TYPENAMES) {
                 if (!contains(storeTypeNames, typeName)) {
+                    LOG.debug("typeName not found from GPX:", typeName);
                     continue;
                 }
                 SimpleFeatureSource source = store.getFeatureSource(typeName);
                 SimpleFeatureCollection collection = FeatureCollectionParsers.read(source, sourceCRS, targetCRS);
-                if (collection.isEmpty()) {
-                    LOG.info("FeatureCollection was empty, typeName:", typeName);
-                } else {
+                if (!collection.isEmpty()) {
                     return collection;
                 }
+                LOG.info("FeatureCollection was empty, typeName:", typeName);
             }
             throw new ServiceException("Could not find any un-empty FeatureCollections from GPX file");
         } catch (Exception e) {
@@ -84,4 +83,5 @@ public class GPXParser implements FeatureCollectionParser {
         }
         return false;
     }
+
 }
