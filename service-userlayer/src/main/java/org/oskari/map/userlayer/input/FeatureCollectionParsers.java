@@ -16,12 +16,7 @@ import org.opengis.referencing.operation.MathTransform;
 
 import com.vividsolutions.jts.geom.Geometry;
 
-import fi.nls.oskari.log.LogFactory;
-import fi.nls.oskari.log.Logger;
-
 public class FeatureCollectionParsers {
-
-    private static final Logger LOG = LogFactory.getLogger(FeatureCollectionParsers.class);
 
     private FeatureCollectionParsers() {}
 
@@ -79,8 +74,6 @@ public class FeatureCollectionParsers {
                 if (g != null) {
                     Geometry transformed = JTS.transform((Geometry) g, transform);
                     copy.setDefaultGeometry(transformed);
-                } else {
-                    LOG.debug("No default geometry, feature id:", f.getID());
                 }
                 fc.add(copy);
             }
