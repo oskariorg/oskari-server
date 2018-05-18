@@ -1,82 +1,144 @@
 package fi.nls.oskari.control.statistics.user;
 
-import org.oskari.statistics.user.UserIndicatorService;
-import org.oskari.statistics.user.UserIndicatorServiceImpl;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import fi.nls.oskari.control.*;
+import fi.nls.oskari.control.statistics.GetIndicatorDataHelper;
+import fi.nls.oskari.control.statistics.data.*;
+import fi.nls.oskari.control.statistics.plugins.StatisticalDatasourcePlugin;
+import fi.nls.oskari.control.statistics.plugins.StatisticalDatasourcePluginManager;
+import fi.nls.oskari.control.statistics.plugins.db.DatasourceLayer;
+import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.service.OskariComponentManager;
+import org.json.JSONException;
+import org.oskari.statistics.user.StatisticalIndicatorService;
 import fi.nls.oskari.annotation.OskariActionRoute;
-import fi.nls.oskari.control.ActionDeniedException;
-import fi.nls.oskari.control.ActionException;
-import fi.nls.oskari.control.ActionHandler;
-import fi.nls.oskari.control.ActionParameters;
-import org.oskari.statistics.user.UserIndicator;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.ResponseHelper;
 import org.json.JSONObject;
 
-/**
- * Created with IntelliJ IDEA.
- * User: EVAARASMAKI
- * Date: 22.11.2013
- * Time: 9:25
- * To change this template use File | Settings | File Templates.
- * 
- */
+import java.io.IOException;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 @OskariActionRoute("SaveUserIndicator")
 public class SaveUserIndicatorHandler extends ActionHandler {
 
+    private StatisticalIndicatorService indicatorService;
+    private static final ObjectMapper MAPPER = new ObjectMapper();
 
-    private static UserIndicatorService userIndicatorService = new UserIndicatorServiceImpl();
+    @Override
+    public void init() {
+        super.init();
+        if (indicatorService == null) {
+            indicatorService = OskariComponentManager.getComponentOfType(StatisticalIndicatorService.class);
+        }
+    }
 
-    protected static String PARAM_INDICATOR_ID = "id";
-    private static String PARAM_INDICATOR_TITLE = "title";
-    private static String PARAM_INDICATOR_SOURCE = "source";
-    private static String PARAM_INDICATOR_MATERIAL = "material"; //WMS- layer
-    private static String PARAM_INDICATOR_YEAR = "year";
-    private static String PARAM_INDICATOR_DATA = "data";
-    private static String PARAM_INDICATOR_PUBLISHED = "published";
-    private static String PARAM_INDICATOR_DESCRIPTION = "description";
-    private static String PARAM_INDICATOR_CATEGORY = "category";
+    private static String PARAM_DATASOURCE_ID = "datasrc";
+    private static String PARAM_NAME = "name";
+    private static String PARAM_DESCRIPTION = "desc";
+    private static String PARAM_SOURCE = "source";
+    private static String PARAM_SELECTORS = "selectors";
+    private static String PARAM_REGIONSET = "regionset";
+    private static String PARAM_DATA = "data";
 
-    private static final fi.nls.oskari.log.Logger log = LogFactory.getLogger(SaveUserIndicatorHandler.class);
+    private static final Logger log = LogFactory.getLogger(SaveUserIndicatorHandler.class);
 
     public void handleAction(ActionParameters params) throws ActionException {
-        if (params.getUser().isGuest()) {
-            throw new ActionDeniedException("Session expired");
+        params.requireLoggedInUser();
+        int datasourceId = params.getRequiredParamInt(PARAM_DATASOURCE_ID);
+        StatisticalDatasourcePlugin datasource = StatisticalDatasourcePluginManager.getInstance().getPlugin(datasourceId);
+        if(datasource == null) {
+            throw new ActionParamsException("Invalid datasource:" + datasourceId);
         }
-        int id = Integer.parseInt(params.getHttpParam(PARAM_INDICATOR_ID, "-1"));
+        if(!datasource.canModify(params.getUser())) {
+            throw new ActionDeniedException("User doesn't have permission to modify datasource:" + datasourceId);
+        }
+        String id = params.getHttpParam(ActionConstants.PARAM_ID);
+        StatisticalIndicator existingIndicator = null;
+        if (id != null) {
+            existingIndicator = datasource.getIndicator(params.getUser(), id);
+            if(existingIndicator == null) {
+                // indicator removed or is not owned by this user
+                throw new ActionParamsException("Requested invalid indicator:" + id);
+            }
+        }
+        StatisticalIndicator indicator = parseIndicator(params, existingIndicator);
+        try {
+            datasource.saveIndicator(indicator, params.getUser());
+        } catch (Exception ex) {
 
-        UserIndicator ui = populateUi(params);
+        }
+        // TODO: what about the old model?
+        StatisticalIndicatorDataModel model = parseIndicatorModel(params.getRequiredParam(PARAM_SELECTORS));
 
-        if (id != -1) {
-            //update
-           ui.setId(id);
-           userIndicatorService.update(ui);
-        } else {
-            //insert
-            id = userIndicatorService.insert(ui);
+        // add the layer if it doesn't exist yet (only if linked to the datasource)
+        int regionsetId = params.getRequiredParamInt(PARAM_REGIONSET);
+        DatasourceLayer layer = datasource.getSource().getLayers().stream()
+                .filter(x -> x.getMaplayerId() == regionsetId)
+                .findFirst()
+                .orElseThrow(() -> new ActionParamsException("Invalid regionset: " + regionsetId));
+        if(indicator.getLayer(layer.getMaplayerId()) == null) {
+            indicator.addLayer(layer);
+        }
+        try {
+            indicator.setDataModel(model);
+            Map<String, IndicatorValue> data = parseIndicatorData(params.getHttpParam(PARAM_DATA));
+            if (data != null) {
+                datasource.saveIndicatorData(indicator, regionsetId, data, params.getUser());
+            }
+        } catch (Exception ex) {
+
         }
 
         JSONObject jobj = new JSONObject();
         JSONHelper.putValue(jobj, "id", id);
+        //  String cacheKey = GetIndicatorDataHelper.getCacheKey(pluginId, indicatorId, layerId, selectorJSON);
         ResponseHelper.writeResponse(params,jobj);
     }
 
-    private UserIndicator populateUi(ActionParameters params) {
-        UserIndicator ui = new UserIndicator();
 
-        ui.setUserId(params.getUser().getId());
-        ui.setTitle(params.getHttpParam(PARAM_INDICATOR_TITLE));
-        ui.setSource(params.getHttpParam(PARAM_INDICATOR_SOURCE));
-        String material = params.getHttpParam(PARAM_INDICATOR_MATERIAL);
-        if (material != null) {
-            // New user indicators do not store material id, because mapping to layers is done through Oskari names.
-            ui.setMaterial(Long.parseLong(material));
+    private StatisticalIndicator parseIndicator(ActionParameters params, StatisticalIndicator existingIndicator) {
+        StatisticalIndicator ind = existingIndicator;
+        if(ind == null) {
+            ind = new StatisticalIndicator();
         }
-        ui.setDescription(params.getHttpParam(PARAM_INDICATOR_DESCRIPTION));
-        ui.setYear(Integer.parseInt(params.getHttpParam(PARAM_INDICATOR_YEAR)));
-        ui.setData(params.getHttpParam(PARAM_INDICATOR_DATA));
-        ui.setPublished(Boolean.parseBoolean(params.getHttpParam(PARAM_INDICATOR_PUBLISHED)));
-        ui.setCategory(params.getHttpParam(PARAM_INDICATOR_CATEGORY));
-        return ui;
+        // always set to true, but doesn't really matter?
+        // TODO: should this be the toggle if guest users can see the indicator on embedded maps?
+        ind.setPublic(true);
+
+        String language = params.getLocale().getLanguage();
+        ind.addName(language, params.getHttpParam(PARAM_NAME, ind.getName(language)));
+        ind.addDescription(language, params.getHttpParam(PARAM_DESCRIPTION, ind.getDescription(language)));
+        ind.addSource(language, params.getHttpParam(PARAM_SOURCE, ind.getSource(language)));
+        return ind;
+    }
+
+    private StatisticalIndicatorDataModel parseIndicatorModel(String json) throws ActionException {
+        try {
+            JSONObject selectors = new JSONObject(json);
+            return GetIndicatorDataHelper.getIndicatorDataModel(selectors);
+        } catch (JSONException e) {
+            throw new ActionParamsException("Invalid parameter value for key: " + PARAM_SELECTORS + " - expected JSON object");
+        }
+    }
+
+    protected Map<String, IndicatorValue> parseIndicatorData(String data) throws ActionException {
+        if (data == null) {
+            return null;
+        }
+        try {
+            // read json as map with strings and doubles
+            Map<String, Double> values = MAPPER.readValue(data, new TypeReference<Map<String, Double>>(){});
+            // map doubles to IndicatorValueFloat
+            return values.entrySet().stream()
+                    .collect(Collectors
+                            .toMap( e -> e.getKey(),
+                                    e -> new IndicatorValueFloat(e.getValue())));
+        } catch (IOException e) {
+            throw new ActionParamsException("Invalid parameter value for key: " + PARAM_SELECTORS + " - expected JSON object");
+        }
     }
 }
