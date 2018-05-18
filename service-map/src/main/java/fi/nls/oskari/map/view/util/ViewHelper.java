@@ -59,11 +59,11 @@ public class ViewHelper {
         }
         log.debug("Unrestricted domains:", UNRESTRICTED_USAGE_DOMAINS);
         for (String domain : UNRESTRICTED_USAGE_DOMAINS) {
-            if(domain.equals("*") || referer.endsWith(domain)) {
+            if(domain.equals("*") || referer.endsWith(domain.toLowerCase())) {
                 return true;
             }
         }
-        return referer.endsWith(pubdomain);
+        return referer.endsWith(pubdomain.toLowerCase());
     }
 
     public static JSONObject getConfiguration(final View view) throws ViewException {
