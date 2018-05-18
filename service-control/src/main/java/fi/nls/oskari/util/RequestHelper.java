@@ -110,7 +110,7 @@ public class RequestHelper {
         }
         try {
             final URL url = new URL(referrer);
-            return url.getHost();
+            return url.getHost().toLowerCase();
         } catch (Exception e) {
             log.warn("Error getting referer from URL:", referrer);
         }
