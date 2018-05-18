@@ -17,7 +17,6 @@ import java.util.Map;
 
 public class UserIndicatorsStatisticalDatasourcePlugin extends StatisticalDatasourcePlugin {
     private final static Logger LOG = LogFactory.getLogger(UserIndicatorsStatisticalDatasourcePlugin.class);
-    //private static UserIndicatorService userIndicatorService = new UserIndicatorServiceImpl();
     private StatisticalIndicatorService service;
 
     public UserIndicatorsStatisticalDatasourcePlugin() {
@@ -28,6 +27,21 @@ public class UserIndicatorsStatisticalDatasourcePlugin extends StatisticalDataso
         super.init(source);
         service = OskariComponentManager.getComponentOfType(StatisticalIndicatorService.class);
     }
+
+    @Override
+    public boolean canModify(User user) {
+        return true;
+    }
+
+    @Override
+    public void saveIndicator(StatisticalIndicator indicator, User user) {
+        // TODO: save indicator details
+    }
+    @Override
+    public void saveIndicatorData(StatisticalIndicator indicator, long regionsetId, Map<String, IndicatorValue> data, User user) {
+        // TODO: save indicator data
+    }
+
 
     @Override
     public IndicatorSet getIndicatorSet(User user) {
@@ -50,14 +64,6 @@ public class UserIndicatorsStatisticalDatasourcePlugin extends StatisticalDataso
         }
         long uid = user.getId();
         return service.findByUser(uid);
-        /*
-        List<UserIndicator> userIndicators = userIndicatorService.findAllOfUser(uid);
-        List<StatisticalIndicator> indicators = new ArrayList<>();
-        for (UserIndicator userIndicator : userIndicators) {
-            indicators.add(toUserStatisticalIndicator(userIndicator));
-        }
-        return indicators;
-        */
     }
 
     @Override
