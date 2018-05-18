@@ -2,6 +2,8 @@ package fi.nls.oskari.control.statistics;
 
 import java.util.Iterator;
 
+import fi.nls.oskari.control.statistics.data.StatisticalIndicatorDataDimension;
+import fi.nls.oskari.control.statistics.data.StatisticalIndicatorDataModel;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -37,6 +39,22 @@ public class GetIndicatorDataHelper {
             }
         }
         return cacheKey.toString();
+    }
+
+    public static StatisticalIndicatorDataModel getIndicatorDataModel(JSONObject selectorJSON) {
+        StatisticalIndicatorDataModel selectors = new StatisticalIndicatorDataModel();
+        @SuppressWarnings("unchecked")
+        Iterator<String> keys = selectorJSON.keys();
+        while (keys.hasNext()) {
+            try {
+                String key = keys.next();
+                String value = selectorJSON.getString(key);
+                selectors.addDimension(new StatisticalIndicatorDataDimension(key, value));
+            } catch (JSONException ignore) {
+                // The key _does_ exist
+            }
+        }
+        return selectors;
     }
 
 }

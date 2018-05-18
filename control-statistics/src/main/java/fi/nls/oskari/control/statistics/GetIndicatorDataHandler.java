@@ -81,7 +81,7 @@ public class GetIndicatorDataHandler extends ActionHandler {
             throw new ActionParamsException("No such regionset: " + layerId);
         }
 
-        StatisticalIndicatorDataModel selectors = getIndicatorDataModel(selectorJSON);
+        StatisticalIndicatorDataModel selectors = GetIndicatorDataHelper.getIndicatorDataModel(selectorJSON);
         Map<String, IndicatorValue> values = plugin.getIndicatorValues(indicator, selectors, layer);
         JSONObject response = toJSON(values);
 
@@ -100,21 +100,6 @@ public class GetIndicatorDataHandler extends ActionHandler {
         return JSONHelper.createJSONObject(cachedData);
     }
 
-    private StatisticalIndicatorDataModel getIndicatorDataModel(JSONObject selectorJSON) {
-        StatisticalIndicatorDataModel selectors = new StatisticalIndicatorDataModel();
-        @SuppressWarnings("unchecked")
-        Iterator<String> keys = selectorJSON.keys();
-        while (keys.hasNext()) {
-            try {
-                String key = keys.next();
-                String value = selectorJSON.getString(key);
-                selectors.addDimension(new StatisticalIndicatorDataDimension(key, value));
-            } catch (JSONException ignore) {
-                // The key _does_ exist
-            }
-        }
-        return selectors;
-    }
 
     private JSONObject toJSON(Map<String, IndicatorValue> values) throws ActionException {
         try {
