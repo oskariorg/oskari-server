@@ -36,6 +36,7 @@ public class UserIndicatorsStatisticalDatasourcePlugin extends StatisticalDataso
     @Override
     public void saveIndicator(StatisticalIndicator indicator, User user) {
         // TODO: save indicator details
+        service.saveIndicator(indicator, user.getId());
     }
     @Override
     public void saveIndicatorData(StatisticalIndicator indicator, long regionsetId, Map<String, IndicatorValue> data, User user) {

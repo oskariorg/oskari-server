@@ -23,15 +23,16 @@ public interface UserIndicatorMapper {
             "    d.regionset_id " +
             "FROM" +
             "    oskari_user_indicator i" +
-            "    JOIN oskari_user_indicator_data d ON i.id = d.indicator_id " +
+            "    LEFT JOIN oskari_user_indicator_data d ON i.id = d.indicator_id " +
             "WHERE" +
-            "    i.user_id =  #{userId}")
+            "    i.user_id =  #{userId} " +
+            "ORDER BY i.id, d.regionset_id, d.year")
     @Results({
             @Result(property = "userId", column = "user_id"),
-            @Result(property = "material", column = "regionset_id")
+            @Result(property = "regionsetId", column = "regionset_id")
     })
-    @ResultType(UserIndicator.class)
-    List<UserIndicator> findByUser(long userId);
+    @ResultType(UserIndicatorDataRow.class)
+    List<UserIndicatorDataRow> findByUser(long userId);
 
     // TODO: support multiple year/regionsets
     @Select("SELECT" +
@@ -45,15 +46,16 @@ public interface UserIndicatorMapper {
             "    d.regionset_id " +
             "FROM" +
             "    oskari_user_indicator i" +
-            "    JOIN oskari_user_indicator_data d ON i.id = d.indicator_id " +
+            "    LEFT JOIN oskari_user_indicator_data d ON i.id = d.indicator_id " +
             "WHERE" +
-            "    i.id = #{id}")
+            "    i.id = #{id} " +
+            "ORDER BY i.id, d.regionset_id, d.year")
     @Results({
             @Result(property = "userId", column = "user_id"),
-            @Result(property = "material", column = "regionset_id")
+            @Result(property = "regionsetId", column = "regionset_id")
     })
-    @ResultType(UserIndicator.class)
-    UserIndicator findById(long id);
+    @ResultType(UserIndicatorDataRow.class)
+    List<UserIndicatorDataRow> findById(long id);
 
 
     @Select("SELECT data FROM oskari_user_indicator_data" +
@@ -66,4 +68,32 @@ public interface UserIndicatorMapper {
 
     @Delete("delete from oskari_user_indicator where user_id = #{userId}")
     void deleteByUser(long userId);
+
+/*
+    <statement id="insert" parameterMap="UserIndicatorInsertParameter" resultClass="int">
+    insert into oskari_user_indicator (
+            user_id,
+            title,
+            source,
+            description,
+            published)
+    values (?, ?, ?, ?, ?)
+    <!-- TODO: data should be inserted into oskari_user_indicator_data table
+    Should be upgraded to MyBatis!
+            -->
+    </statement>
+
+
+    <update id="update" parameterMap="UserIndicatorUpdateParameter">
+    update oskari_user_indicator set
+    user_id = ?,
+    title = ?,
+    source = ?,
+    description = ?,
+    published = ?
+    where id = ?
+    <!-- TODO: data should be inserted into oskari_user_indicator_data table
+    Should be upgraded to MyBatis!
+            -->
+            */
 }

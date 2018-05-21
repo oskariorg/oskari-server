@@ -42,14 +42,19 @@ public class StatisticalIndicatorServiceMybatisImpl extends StatisticalIndicator
     @Override
     public StatisticalIndicator findById(long id, long userId) {
         try (final SqlSession session = factory.openSession()) {
-            UserIndicator ind = getMapper(session).findById(id);
-            if(ind == null) {
+            List<UserIndicatorDataRow> rows = getMapper(session).findById(id);
+            if(rows == null || rows.isEmpty()) {
                 return null;
             }
-            if(!ind.isPublished() && ind.getUserId() != userId) {
+            if(!rows.get(0).published && rows.get(0).userId != userId) {
                 throw new ServiceRuntimeException("Indicator found, but not public or users");
             }
-            return toUserStatisticalIndicator(ind);
+            Collection<StatisticalIndicator> result = mapToStatisticalIndicator(rows);
+            if(result.size() != 1) {
+                // Shouldn't happen...
+                throw new ServiceRuntimeException("Matched more than one indicator - id: " + id);
+            }
+            return result.stream().findFirst().get();
         }
     }
 
@@ -57,9 +62,7 @@ public class StatisticalIndicatorServiceMybatisImpl extends StatisticalIndicator
     public List<StatisticalIndicator> findByUser(long userId) {
         List<StatisticalIndicator> result = new ArrayList<>();
         try (final SqlSession session = factory.openSession()) {
-            for (UserIndicator ind : getMapper(session).findByUser(userId)) {
-                result.add(toUserStatisticalIndicator(ind));
-            }
+            result.addAll(mapToStatisticalIndicator(getMapper(session).findByUser(userId)));
         }
         return result;
     }
@@ -94,37 +97,65 @@ public class StatisticalIndicatorServiceMybatisImpl extends StatisticalIndicator
         }
     }
 
-    private StatisticalIndicator toUserStatisticalIndicator(UserIndicator userIndicator) {
-        StatisticalIndicator ind = new StatisticalIndicator();
-        ind.setId(String.valueOf(userIndicator.getId()));
+    private Collection<StatisticalIndicator> mapToStatisticalIndicator(List<UserIndicatorDataRow> rows) {
+        Map<Long, StatisticalIndicator> result = new HashMap<>();
+        for(UserIndicatorDataRow row: rows) {
+            StatisticalIndicator ind = result.get(row.id);
+            if(ind == null) {
+                ind = createStatisticalIndicator(row);
+                result.put(row.id, ind);
+            }
+            addDimension(ind, row);
+        }
+        return result.values();
+    }
 
-        JSONObject title = JSONHelper.createJSONObject(userIndicator.getTitle());
+    private StatisticalIndicator createStatisticalIndicator(UserIndicatorDataRow userIndicator) {
+        StatisticalIndicator ind = new StatisticalIndicator();
+        ind.setId(String.valueOf(userIndicator.id));
+
+        JSONObject title = JSONHelper.createJSONObject(userIndicator.title);
         Iterator<String> langKeys = title.keys();
         while (langKeys.hasNext()) {
             String lang = langKeys.next();
             ind.addName(lang, title.optString(lang));
         }
 
-        JSONObject source = JSONHelper.createJSONObject(userIndicator.getSource());
+        JSONObject source = JSONHelper.createJSONObject(userIndicator.source);
         langKeys = source.keys();
         while (langKeys.hasNext()) {
             String lang = langKeys.next();
             ind.addSource(lang, source.optString(lang));
         }
 
-        JSONObject desc = JSONHelper.createJSONObject(userIndicator.getDescription());
+        JSONObject desc = JSONHelper.createJSONObject(userIndicator.description);
         langKeys = desc.keys();
         while (langKeys.hasNext()) {
             String lang = langKeys.next();
             ind.addSource(lang, desc.optString(lang));
         }
-        ind.setPublic(userIndicator.isPublished());
-        ind.addLayer(new StatisticalIndicatorLayer(userIndicator.getMaterial(), ind.getId()));
+        ind.setPublic(userIndicator.published);
 
-        // If we want to provide year, need to do it like this. But currently there's always just one choice
+        // Initialize the year dimension as the only one.
         StatisticalIndicatorDataDimension dim = new StatisticalIndicatorDataDimension("year");
-        dim.addAllowedValue(String.valueOf(userIndicator.getYear()));
         ind.getDataModel().addDimension(dim);
         return ind;
+    }
+
+    private void addDimension(StatisticalIndicator ind, UserIndicatorDataRow row) {
+        if(ind.getLayer(row.regionsetId) == null) {
+            ind.addLayer(new StatisticalIndicatorLayer(row.regionsetId, ind.getId()));
+        }
+        ind.getDataModel().getDimension("year").addAllowedValue(String.valueOf(row.year));
+    }
+
+    public StatisticalIndicator saveIndicator(StatisticalIndicator ind, long userId) {
+        return null;
+    }
+    public StatisticalIndicator saveIndicatorData(long indicator, long regionset, int year, String data) {
+        return null;
+    }
+    public boolean deleteIndicatorData(long indicator, long regionset, int year) {
+        return false;
     }
 }
