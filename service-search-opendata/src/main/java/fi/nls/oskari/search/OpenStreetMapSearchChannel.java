@@ -36,7 +36,7 @@ public class OpenStreetMapSearchChannel extends SearchChannel {
     @Override
     public void init() {
         super.init();
-        serviceURL = PropertyUtil.get(PROPERTY_SERVICE_URL, "http://nominatim.openstreetmap.org/search");
+        serviceURL = PropertyUtil.get(PROPERTY_SERVICE_URL, "https://nominatim.openstreetmap.org/search");
         log.debug("ServiceURL set to " + serviceURL);
     }
 
