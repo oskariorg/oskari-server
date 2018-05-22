@@ -87,7 +87,7 @@ public class GetIndicatorMetadataHandler extends ActionHandler {
         }
     }
     
-    public JSONObject toJSON(StatisticalIndicator indicator) throws JSONException {
+    public static JSONObject toJSON(StatisticalIndicator indicator) throws JSONException {
         JSONObject pluginIndicatorJSON = new JSONObject();
         Map<String, String> name = indicator.getName();
         Map<String, String> description = indicator.getDescription();
@@ -105,7 +105,7 @@ public class GetIndicatorMetadataHandler extends ActionHandler {
         return pluginIndicatorJSON;
     }
 
-    public JSONArray toJSON(StatisticalIndicatorDataModel selectors) throws JSONException {
+    public static JSONArray toJSON(StatisticalIndicatorDataModel selectors) throws JSONException {
         JSONArray selectorsJSON = new JSONArray();
         for (StatisticalIndicatorDataDimension selector : selectors.getDimensions()) {
             JSONObject selectorJSON = new JSONObject();
@@ -118,7 +118,7 @@ public class GetIndicatorMetadataHandler extends ActionHandler {
         return selectorsJSON;
     }
 
-    private JSONArray toJSON(Collection<IdNamePair> stringCollection) {
+    private static JSONArray toJSON(Collection<IdNamePair> stringCollection) {
         JSONArray stringArray = new JSONArray();
         for (IdNamePair value : stringCollection) {
             stringArray.put(value.getValueForJson());
@@ -126,7 +126,7 @@ public class GetIndicatorMetadataHandler extends ActionHandler {
         return stringArray;
     }
 
-    public JSONArray toJSON(List<StatisticalIndicatorLayer> layers) throws JSONException {
+    public static JSONArray toJSON(List<StatisticalIndicatorLayer> layers) throws JSONException {
         JSONArray layersJSON = new JSONArray();
         for (StatisticalIndicatorLayer layer: layers) {
             layersJSON.put(layer.getOskariLayerId());
