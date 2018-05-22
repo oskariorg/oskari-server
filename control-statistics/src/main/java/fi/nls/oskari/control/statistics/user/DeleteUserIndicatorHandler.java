@@ -2,11 +2,14 @@ package fi.nls.oskari.control.statistics.user;
 
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.*;
+import fi.nls.oskari.control.statistics.GetIndicatorMetadataHandler;
+import fi.nls.oskari.control.statistics.data.StatisticalIndicator;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.ResponseHelper;
+import org.json.JSONException;
 import org.oskari.statistics.user.StatisticalIndicatorService;
 
 /**
@@ -31,10 +34,26 @@ public class DeleteUserIndicatorHandler extends ActionHandler {
         params.requireLoggedInUser();
 
         int id = params.getRequiredParamInt(ActionConstants.PARAM_ID);
-        if (!indicatorService.delete(id, params.getUser().getId())) {
-            throw new ActionParamsException("Unknown indicator/not the owner of the indicator.");
+        StatisticalIndicator ind = indicatorService.findById(id, params.getUser().getId());
+        if(ind == null) {
+            // or might not be the owner
+            throw new ActionParamsException("Unknown indicator: " + id );
+        }
+        int year = params.getHttpParam("year", -1);
+        if(year != -1) {
+            // if year present, regionset is also required
+            int regionset = params.getRequiredParamInt("regionset");
+            indicatorService.deleteIndicatorData(id, regionset, year);
+        } else if (!indicatorService.delete(id, params.getUser().getId())) {
+            // remove the whole indicator
+            throw new ActionParamsException("Indicator wasn't removed: " +  + id);
         }
         LOG.info("Deleted indicator", id);
-        ResponseHelper.writeResponse(params, JSONHelper.createJSONObject("deleted", id));
+        try {
+            ResponseHelper.writeResponse(params, GetIndicatorMetadataHandler.toJSON(ind));
+        } catch (JSONException ex) {
+            ResponseHelper.writeResponse(params, JSONHelper.createJSONObject("deleted", id));
+        }
+
     }
 }
