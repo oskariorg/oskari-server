@@ -37,7 +37,7 @@ public class DeleteUserIndicatorHandler extends ActionHandler {
         StatisticalIndicator ind = indicatorService.findById(id, params.getUser().getId());
         if(ind == null) {
             // or might not be the owner
-            throw new ActionParamsException("Unknown indicator: " + id );
+            throw new ActionDeniedException("Unknown indicator/not the owner: " + id );
         }
         int year = params.getHttpParam("year", -1);
         if(year != -1) {
