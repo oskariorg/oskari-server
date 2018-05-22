@@ -69,31 +69,25 @@ public interface UserIndicatorMapper {
     @Delete("delete from oskari_user_indicator where user_id = #{userId}")
     void deleteByUser(long userId);
 
-/*
-    <statement id="insert" parameterMap="UserIndicatorInsertParameter" resultClass="int">
-    insert into oskari_user_indicator (
-            user_id,
-            title,
-            source,
-            description,
-            published)
-    values (?, ?, ?, ?, ?)
-    <!-- TODO: data should be inserted into oskari_user_indicator_data table
-    Should be upgraded to MyBatis!
-            -->
-    </statement>
+    @Insert("INSERT INTO oskari_user_indicator_data"
+            + " (indicator_id, regionset_id, year, data)"
+            + " VALUES (#{indicator}, #{regionset}, #{year}, #{data})")
+    void addData(@Param("indicator") long indicator, @Param("regionset") long regionset, @Param("year") int year, @Param("data") String data);
 
+    @Delete("DELETE FROM oskari_user_indicator_data" +
+            " WHERE indicator_id = #{indicator} AND regionset_id = #{regionset} AND year = #{year}")
+    void deleteData(@Param("indicator") long indicator, @Param("regionset") long regionset, @Param("year") int year);
 
-    <update id="update" parameterMap="UserIndicatorUpdateParameter">
-    update oskari_user_indicator set
-    user_id = ?,
-    title = ?,
-    source = ?,
-    description = ?,
-    published = ?
-    where id = ?
-    <!-- TODO: data should be inserted into oskari_user_indicator_data table
-    Should be upgraded to MyBatis!
-            -->
-            */
+    @Insert("INSERT INTO oskari_user_indicator"
+            + " (user_id, title, source, description, published)"
+            + " VALUES (#{userId}, #{title}, #{source}, #{description}, #{published})")
+    void addIndicator(UserIndicatorDataRow row);
+
+    @Update("update oskari_user_indicator set" +
+            "    title = #{title}," +
+            "    source = #{source}," +
+            "    description = #{description}," +
+            "    published = #{published}" +
+            "    where id = #{id} AND user_id = #{userId}")
+    void updateIndicator(UserIndicatorDataRow row);
 }
