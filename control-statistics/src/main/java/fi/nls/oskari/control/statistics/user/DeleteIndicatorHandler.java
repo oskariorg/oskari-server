@@ -16,9 +16,9 @@ import org.oskari.statistics.user.StatisticalIndicatorService;
  * Deletes indicator that the user has previously saved.
  * Only allows deletion of the users own indicators
  */
-@OskariActionRoute("DeleteUserIndicator")
-public class DeleteUserIndicatorHandler extends ActionHandler {
-    private static final Logger LOG = LogFactory.getLogger(DeleteUserIndicatorHandler.class);
+@OskariActionRoute("DeleteIndicator")
+public class DeleteIndicatorHandler extends ActionHandler {
+    private static final Logger LOG = LogFactory.getLogger(DeleteIndicatorHandler.class);
     private StatisticalIndicatorService indicatorService;
 
     @Override

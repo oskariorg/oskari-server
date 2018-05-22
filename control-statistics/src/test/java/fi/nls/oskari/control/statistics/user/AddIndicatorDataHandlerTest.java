@@ -11,18 +11,18 @@ import static org.junit.Assert.*;
 /**
  * Created by SMAKINEN on 18.5.2018.
  */
-public class SaveUserIndicatorHandlerTest {
+public class AddIndicatorDataHandlerTest {
 
     @Test
     public void testParseIndicatorData() throws Exception {
-        SaveUserIndicatorHandler h = new SaveUserIndicatorHandler();
-        Map<String, IndicatorValue> values = h.parseIndicatorData("{\"moi\": 0.3}");
+        AddIndicatorDataHandler h = new AddIndicatorDataHandler();
+        Map<String, IndicatorValue> values = h.parseIndicatorData("{\"region\": 0.3}");
         assertNotNull("Values shouldn't be null", values);
         assertEquals("Should have one value", 1, values.size());
 
         JSONObject test = new JSONObject();
-        values.get("moi").putToJSONObject(test, "myKey");
-        assertEquals("Should have one value", "0.3", test.optString("myKey"));
+        values.get("region").putToJSONObject(test, "testKey");
+        assertEquals("Should have one value", "0.3", test.optString("testKey"));
 
     }
 }

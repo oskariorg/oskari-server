@@ -2,28 +2,31 @@ package fi.nls.oskari.control.statistics.user;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.*;
 import fi.nls.oskari.control.statistics.GetIndicatorDataHelper;
-import fi.nls.oskari.control.statistics.data.*;
+import fi.nls.oskari.control.statistics.data.IndicatorValue;
+import fi.nls.oskari.control.statistics.data.IndicatorValueFloat;
+import fi.nls.oskari.control.statistics.data.StatisticalIndicator;
+import fi.nls.oskari.control.statistics.data.StatisticalIndicatorDataModel;
 import fi.nls.oskari.control.statistics.plugins.StatisticalDatasourcePlugin;
 import fi.nls.oskari.control.statistics.plugins.StatisticalDatasourcePluginManager;
 import fi.nls.oskari.control.statistics.plugins.db.DatasourceLayer;
+import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.service.OskariComponentManager;
-import org.json.JSONException;
-import org.oskari.statistics.user.StatisticalIndicatorService;
-import fi.nls.oskari.annotation.OskariActionRoute;
-import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.ResponseHelper;
+import org.json.JSONException;
 import org.json.JSONObject;
+import org.oskari.statistics.user.StatisticalIndicatorService;
 
 import java.io.IOException;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-@OskariActionRoute("SaveUserIndicator")
-public class SaveUserIndicatorHandler extends ActionHandler {
+@OskariActionRoute("AddIndicatorData")
+public class AddIndicatorDataHandler extends ActionHandler {
 
     private StatisticalIndicatorService indicatorService;
     private static final ObjectMapper MAPPER = new ObjectMapper();
@@ -36,18 +39,16 @@ public class SaveUserIndicatorHandler extends ActionHandler {
         }
     }
 
-    private static String PARAM_DATASOURCE_ID = "datasrc";
-    private static String PARAM_NAME = "name";
-    private static String PARAM_DESCRIPTION = "desc";
-    private static String PARAM_SOURCE = "source";
+    private static String PARAM_DATASOURCE_ID = "datasource";
     private static String PARAM_SELECTORS = "selectors";
     private static String PARAM_REGIONSET = "regionset";
     private static String PARAM_DATA = "data";
 
-    private static final Logger log = LogFactory.getLogger(SaveUserIndicatorHandler.class);
+    private static final Logger log = LogFactory.getLogger(AddIndicatorDataHandler.class);
 
     public void handleAction(ActionParameters params) throws ActionException {
         params.requireLoggedInUser();
+
         int datasourceId = params.getRequiredParamInt(PARAM_DATASOURCE_ID);
         StatisticalDatasourcePlugin datasource = StatisticalDatasourcePluginManager.getInstance().getPlugin(datasourceId);
         if(datasource == null) {
@@ -56,21 +57,13 @@ public class SaveUserIndicatorHandler extends ActionHandler {
         if(!datasource.canModify(params.getUser())) {
             throw new ActionDeniedException("User doesn't have permission to modify datasource:" + datasourceId);
         }
-        String id = params.getHttpParam(ActionConstants.PARAM_ID);
-        StatisticalIndicator existingIndicator = null;
-        if (id != null) {
-            existingIndicator = datasource.getIndicator(params.getUser(), id);
-            if(existingIndicator == null) {
-                // indicator removed or is not owned by this user
-                throw new ActionParamsException("Requested invalid indicator:" + id);
-            }
+        String id = params.getRequiredParam(ActionConstants.PARAM_ID);
+        StatisticalIndicator indicator = datasource.getIndicator(params.getUser(), id);
+        if(indicator == null) {
+            // indicator removed or is not owned by this user
+            throw new ActionParamsException("Requested invalid indicator:" + id);
         }
-        StatisticalIndicator indicator = parseIndicator(params, existingIndicator);
-        try {
-            datasource.saveIndicator(indicator, params.getUser());
-        } catch (Exception ex) {
 
-        }
         // TODO: what about the old model?
         StatisticalIndicatorDataModel model = parseIndicatorModel(params.getRequiredParam(PARAM_SELECTORS));
 
@@ -97,23 +90,6 @@ public class SaveUserIndicatorHandler extends ActionHandler {
         JSONHelper.putValue(jobj, "id", id);
         //  String cacheKey = GetIndicatorDataHelper.getCacheKey(pluginId, indicatorId, layerId, selectorJSON);
         ResponseHelper.writeResponse(params,jobj);
-    }
-
-
-    private StatisticalIndicator parseIndicator(ActionParameters params, StatisticalIndicator existingIndicator) {
-        StatisticalIndicator ind = existingIndicator;
-        if(ind == null) {
-            ind = new StatisticalIndicator();
-        }
-        // always set to true, but doesn't really matter?
-        // TODO: should this be the toggle if guest users can see the indicator on embedded maps?
-        ind.setPublic(true);
-
-        String language = params.getLocale().getLanguage();
-        ind.addName(language, params.getHttpParam(PARAM_NAME, ind.getName(language)));
-        ind.addDescription(language, params.getHttpParam(PARAM_DESCRIPTION, ind.getDescription(language)));
-        ind.addSource(language, params.getHttpParam(PARAM_SOURCE, ind.getSource(language)));
-        return ind;
     }
 
     private StatisticalIndicatorDataModel parseIndicatorModel(String json) throws ActionException {
