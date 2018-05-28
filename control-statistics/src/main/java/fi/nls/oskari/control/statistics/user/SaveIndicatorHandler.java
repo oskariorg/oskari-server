@@ -2,6 +2,7 @@ package fi.nls.oskari.control.statistics.user;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fi.nls.oskari.control.*;
+import fi.nls.oskari.control.statistics.StatisticsHelper;
 import fi.nls.oskari.control.statistics.data.*;
 import fi.nls.oskari.control.statistics.plugins.StatisticalDatasourcePlugin;
 import fi.nls.oskari.control.statistics.plugins.StatisticalDatasourcePluginManager;
@@ -28,17 +29,16 @@ public class SaveIndicatorHandler extends ActionHandler {
         }
     }
 
-    private static String PARAM_DATASOURCE_ID = "datasource";
-    private static String PARAM_NAME = "name";
-    private static String PARAM_DESCRIPTION = "desc";
-    private static String PARAM_SOURCE = "source";
+    public static String PARAM_NAME = "name";
+    public static String PARAM_DESCRIPTION = "desc";
+    public static String PARAM_SOURCE = "source";
 
     private static final Logger log = LogFactory.getLogger(SaveIndicatorHandler.class);
 
     public void handleAction(ActionParameters params) throws ActionException {
         params.requireLoggedInUser();
 
-        int datasourceId = params.getRequiredParamInt(PARAM_DATASOURCE_ID);
+        int datasourceId = params.getRequiredParamInt(StatisticsHelper.PARAM_DATASOURCE_ID);
         StatisticalDatasourcePlugin datasource = StatisticalDatasourcePluginManager.getInstance().getPlugin(datasourceId);
         if(datasource == null) {
             throw new ActionParamsException("Invalid datasource:" + datasourceId);
@@ -64,7 +64,7 @@ public class SaveIndicatorHandler extends ActionHandler {
 
         JSONObject jobj = new JSONObject();
         JSONHelper.putValue(jobj, "id", id);
-        //  String cacheKey = GetIndicatorDataHelper.getCacheKey(pluginId, indicatorId, layerId, selectorJSON);
+        //  String cacheKey = StatisticsHelper.getCacheKey(pluginId, indicatorId, layerId, selectorJSON);
         ResponseHelper.writeResponse(params,jobj);
     }
 

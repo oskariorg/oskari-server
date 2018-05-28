@@ -2,6 +2,7 @@ package fi.nls.oskari.control.statistics;
 
 import java.util.Iterator;
 
+import fi.nls.oskari.cache.JedisManager;
 import fi.nls.oskari.control.statistics.data.StatisticalIndicatorDataDimension;
 import fi.nls.oskari.control.statistics.data.StatisticalIndicatorDataModel;
 import org.json.JSONException;
@@ -16,9 +17,13 @@ import org.json.JSONObject;
  * causing unit tests that load the class to fail. If this
  * issue gets fixed feel free to move these functions around.
  */
-public class GetIndicatorDataHelper {
+public class StatisticsHelper {
 
-    protected static String getCacheKey(long datasourceId, String indicatorId,
+    public static String PARAM_DATASOURCE_ID = "datasource";
+    public static String PARAM_SELECTORS = "selectors";
+    public static String PARAM_REGIONSET = "regionset";
+
+    public static String getCacheKey(long datasourceId, String indicatorId,
             long layerId, JSONObject selectorJSON) {
         StringBuilder cacheKey = new StringBuilder("oskari:stats:");
         cacheKey.append(datasourceId);
@@ -39,6 +44,11 @@ public class GetIndicatorDataHelper {
             }
         }
         return cacheKey.toString();
+    }
+
+    public static void flushDataFromCache(long pluginId, String indicatorId, long layerId, JSONObject selectorJSON) {
+        String cacheKey = StatisticsHelper.getCacheKey(pluginId, indicatorId, layerId, selectorJSON);
+        JedisManager.del(cacheKey);
     }
 
     public static StatisticalIndicatorDataModel getIndicatorDataModel(JSONObject selectorJSON) {

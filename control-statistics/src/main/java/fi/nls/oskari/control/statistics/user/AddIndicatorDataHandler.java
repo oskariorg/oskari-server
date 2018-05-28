@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.*;
-import fi.nls.oskari.control.statistics.GetIndicatorDataHelper;
+import fi.nls.oskari.control.statistics.StatisticsHelper;
 import fi.nls.oskari.control.statistics.data.IndicatorValue;
 import fi.nls.oskari.control.statistics.data.IndicatorValueFloat;
 import fi.nls.oskari.control.statistics.data.StatisticalIndicator;
@@ -39,17 +39,12 @@ public class AddIndicatorDataHandler extends ActionHandler {
         }
     }
 
-    private static String PARAM_DATASOURCE_ID = "datasource";
-    private static String PARAM_SELECTORS = "selectors";
-    private static String PARAM_REGIONSET = "regionset";
     private static String PARAM_DATA = "data";
-
-    private static final Logger log = LogFactory.getLogger(AddIndicatorDataHandler.class);
 
     public void handleAction(ActionParameters params) throws ActionException {
         params.requireLoggedInUser();
 
-        int datasourceId = params.getRequiredParamInt(PARAM_DATASOURCE_ID);
+        int datasourceId = params.getRequiredParamInt(StatisticsHelper.PARAM_DATASOURCE_ID);
         StatisticalDatasourcePlugin datasource = StatisticalDatasourcePluginManager.getInstance().getPlugin(datasourceId);
         if(datasource == null) {
             throw new ActionParamsException("Invalid datasource:" + datasourceId);
@@ -64,11 +59,12 @@ public class AddIndicatorDataHandler extends ActionHandler {
             throw new ActionParamsException("Requested invalid indicator:" + id);
         }
 
-        // TODO: what about the old model?
-        StatisticalIndicatorDataModel model = parseIndicatorModel(params.getRequiredParam(PARAM_SELECTORS));
+        // This is just an addition to the existing model, NOT the whole model
+        JSONObject selectors = params.getHttpParamAsJSON(StatisticsHelper.PARAM_SELECTORS);
+        StatisticalIndicatorDataModel model = StatisticsHelper.getIndicatorDataModel(selectors);
 
         // add the layer if it doesn't exist yet (only if linked to the datasource)
-        int regionsetId = params.getRequiredParamInt(PARAM_REGIONSET);
+        int regionsetId = params.getRequiredParamInt(StatisticsHelper.PARAM_REGIONSET);
         DatasourceLayer layer = datasource.getSource().getLayers().stream()
                 .filter(x -> x.getMaplayerId() == regionsetId)
                 .findFirst()
@@ -82,23 +78,14 @@ public class AddIndicatorDataHandler extends ActionHandler {
             if (data != null) {
                 datasource.saveIndicatorData(indicator, regionsetId, data, params.getUser());
             }
+            StatisticsHelper.flushDataFromCache(datasourceId, id, regionsetId, selectors);
         } catch (Exception ex) {
-
+            throw new ActionException("Couldn't save data", ex);
         }
 
         JSONObject jobj = new JSONObject();
         JSONHelper.putValue(jobj, "id", id);
-        //  String cacheKey = GetIndicatorDataHelper.getCacheKey(pluginId, indicatorId, layerId, selectorJSON);
         ResponseHelper.writeResponse(params,jobj);
-    }
-
-    private StatisticalIndicatorDataModel parseIndicatorModel(String json) throws ActionException {
-        try {
-            JSONObject selectors = new JSONObject(json);
-            return GetIndicatorDataHelper.getIndicatorDataModel(selectors);
-        } catch (JSONException e) {
-            throw new ActionParamsException("Invalid parameter value for key: " + PARAM_SELECTORS + " - expected JSON object");
-        }
     }
 
     protected Map<String, IndicatorValue> parseIndicatorData(String data) throws ActionException {
@@ -114,7 +101,7 @@ public class AddIndicatorDataHandler extends ActionHandler {
                             .toMap( e -> e.getKey(),
                                     e -> new IndicatorValueFloat(e.getValue())));
         } catch (IOException e) {
-            throw new ActionParamsException("Invalid parameter value for key: " + PARAM_SELECTORS + " - expected JSON object");
+            throw new ActionParamsException("Invalid parameter value for key: " + StatisticsHelper.PARAM_SELECTORS + " - expected JSON object");
         }
     }
 }

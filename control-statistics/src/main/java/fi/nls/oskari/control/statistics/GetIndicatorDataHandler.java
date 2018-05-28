@@ -15,7 +15,6 @@ import fi.nls.oskari.util.ResponseHelper;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -63,7 +62,7 @@ public class GetIndicatorDataHandler extends ActionHandler {
             throw new ActionParamsException("No such datasource: " + pluginId);
         }
 
-        String cacheKey = GetIndicatorDataHelper.getCacheKey(pluginId, indicatorId, layerId, selectorJSON);
+        String cacheKey = StatisticsHelper.getCacheKey(pluginId, indicatorId, layerId, selectorJSON);
         if (plugin.canCache()) {
             JSONObject cached = getFromCache(cacheKey);
             if (cached != null) {
@@ -81,7 +80,7 @@ public class GetIndicatorDataHandler extends ActionHandler {
             throw new ActionParamsException("No such regionset: " + layerId);
         }
 
-        StatisticalIndicatorDataModel selectors = GetIndicatorDataHelper.getIndicatorDataModel(selectorJSON);
+        StatisticalIndicatorDataModel selectors = StatisticsHelper.getIndicatorDataModel(selectorJSON);
         Map<String, IndicatorValue> values = plugin.getIndicatorValues(indicator, selectors, layer);
         JSONObject response = toJSON(values);
 

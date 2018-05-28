@@ -2,6 +2,7 @@ package fi.nls.oskari.control.statistics.user;
 
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.*;
+import fi.nls.oskari.control.statistics.StatisticsHelper;
 import fi.nls.oskari.control.statistics.GetIndicatorMetadataHandler;
 import fi.nls.oskari.control.statistics.data.StatisticalIndicator;
 import fi.nls.oskari.log.LogFactory;
@@ -10,6 +11,7 @@ import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.ResponseHelper;
 import org.json.JSONException;
+import org.json.JSONObject;
 import org.oskari.statistics.user.StatisticalIndicatorService;
 
 /**
@@ -33,17 +35,25 @@ public class DeleteIndicatorHandler extends ActionHandler {
         // user indicators are user content so deleting one requires to be logged in
         params.requireLoggedInUser();
 
+        int datasourceId = params.getRequiredParamInt(StatisticsHelper.PARAM_DATASOURCE_ID);
         int id = params.getRequiredParamInt(ActionConstants.PARAM_ID);
         StatisticalIndicator ind = indicatorService.findById(id, params.getUser().getId());
         if(ind == null) {
             // or might not be the owner
             throw new ActionDeniedException("Unknown indicator/not the owner: " + id );
         }
+        JSONObject selectors = params.getHttpParamAsJSON(StatisticsHelper.PARAM_SELECTORS);
         int year = params.getHttpParam("year", -1);
-        if(year != -1) {
+        if(selectors != null) {
             // if year present, regionset is also required
             int regionset = params.getRequiredParamInt("regionset");
-            indicatorService.deleteIndicatorData(id, regionset, year);
+            try {
+                indicatorService.deleteIndicatorData(id, regionset, selectors.getInt("year"));
+            } catch (JSONException ex) {
+                throw new ActionParamsException("Year was not part of the selectors parameter");
+            }
+
+            StatisticsHelper.flushDataFromCache(datasourceId, Integer.toString(id), regionset, selectors);
         } else if (!indicatorService.delete(id, params.getUser().getId())) {
             // remove the whole indicator
             throw new ActionParamsException("Indicator wasn't removed: " +  + id);
