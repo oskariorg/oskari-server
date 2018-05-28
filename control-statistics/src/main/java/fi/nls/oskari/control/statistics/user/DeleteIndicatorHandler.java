@@ -43,9 +43,8 @@ public class DeleteIndicatorHandler extends ActionHandler {
             throw new ActionDeniedException("Unknown indicator/not the owner: " + id );
         }
         JSONObject selectors = params.getHttpParamAsJSON(StatisticsHelper.PARAM_SELECTORS);
-        int year = params.getHttpParam("year", -1);
         if(selectors != null) {
-            // if year present, regionset is also required
+            // if selectors present, regionset is also required
             int regionset = params.getRequiredParamInt("regionset");
             try {
                 indicatorService.deleteIndicatorData(id, regionset, selectors.getInt("year"));
