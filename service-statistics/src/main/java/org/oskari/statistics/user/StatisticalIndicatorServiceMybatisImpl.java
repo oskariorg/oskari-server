@@ -132,7 +132,7 @@ public class StatisticalIndicatorServiceMybatisImpl extends StatisticalIndicator
         langKeys = desc.keys();
         while (langKeys.hasNext()) {
             String lang = langKeys.next();
-            ind.addSource(lang, desc.optString(lang));
+            ind.addDescription(lang, desc.optString(lang));
         }
         ind.setPublic(userIndicator.published);
 
