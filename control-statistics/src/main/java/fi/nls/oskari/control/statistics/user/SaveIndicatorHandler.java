@@ -64,7 +64,6 @@ public class SaveIndicatorHandler extends ActionHandler {
 
         JSONObject jobj = new JSONObject();
         JSONHelper.putValue(jobj, "id", id);
-        //  String cacheKey = StatisticsHelper.getCacheKey(pluginId, indicatorId, layerId, selectorJSON);
         ResponseHelper.writeResponse(params,jobj);
     }
 

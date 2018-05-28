@@ -9,6 +9,8 @@ import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.service.ServiceRuntimeException;
 import fi.nls.oskari.util.ConversionHelper;
+import fi.nls.oskari.util.JSONHelper;
+import org.json.JSONObject;
 import org.oskari.statistics.user.StatisticalIndicatorService;
 
 import java.util.ArrayList;
@@ -35,14 +37,22 @@ public class UserIndicatorsStatisticalDatasourcePlugin extends StatisticalDataso
 
     @Override
     public void saveIndicator(StatisticalIndicator indicator, User user) {
-        // TODO: save indicator details
         service.saveIndicator(indicator, user.getId());
     }
+
     @Override
     public void saveIndicatorData(StatisticalIndicator indicator, long regionsetId, Map<String, IndicatorValue> data, User user) {
-        // TODO: save indicator data
+        try {
+            int year = Integer.parseInt(indicator.getDataModel().getDimension("year").getValue());
+            int id = Integer.parseInt(indicator.getId());
+            JSONObject json = new JSONObject();
+            for (Map.Entry<String, IndicatorValue> entry : data.entrySet()) {
+                entry.getValue().putToJSONObject(json, entry.getKey());
+            }
+            service.saveIndicatorData(id, regionsetId, year, json.toString());
+        } catch (Exception e) {
+        }
     }
-
 
     @Override
     public IndicatorSet getIndicatorSet(User user) {
