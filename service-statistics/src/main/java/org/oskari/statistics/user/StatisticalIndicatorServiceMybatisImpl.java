@@ -182,14 +182,17 @@ public class StatisticalIndicatorServiceMybatisImpl extends StatisticalIndicator
                 // insert
                 getMapper(session).addIndicator(row);
             }
+            session.commit();
         }
         return findById(id, userId);
     }
     public void saveIndicatorData(long indicator, long regionset, int year, String data) {
-        // remove possible existing value
-        deleteIndicatorData(indicator, regionset, year);
         try (final SqlSession session = factory.openSession()) {
+            // remove possible existing data
+            getMapper(session).deleteData(indicator, regionset, year);
+            // insert new data
             getMapper(session).addData(indicator, regionset, year, data);
+            session.commit();
         }
     }
     public boolean deleteIndicatorData(long indicator, long regionset, int year) {
