@@ -7,6 +7,7 @@ import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.mybatis.MyBatisHelper;
 import fi.nls.oskari.service.ServiceRuntimeException;
+import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.JSONHelper;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
@@ -142,6 +143,15 @@ public class StatisticalIndicatorServiceMybatisImpl extends StatisticalIndicator
         return ind;
     }
 
+    private UserIndicatorDataRow createDBRow(StatisticalIndicator userIndicator) {
+        UserIndicatorDataRow row = new UserIndicatorDataRow();
+        row.title = new JSONObject(userIndicator.getName()).toString();
+        row.description = new JSONObject(userIndicator.getDescription()).toString();
+        row.source = new JSONObject(userIndicator.getSource()).toString();
+        row.published = userIndicator.isPublic();
+        return row;
+    }
+
     private void addDimension(StatisticalIndicator ind, UserIndicatorDataRow row) {
         if(ind.getLayer(row.regionsetId) == null) {
             ind.addLayer(new StatisticalIndicatorLayer(row.regionsetId, ind.getId()));
@@ -150,12 +160,45 @@ public class StatisticalIndicatorServiceMybatisImpl extends StatisticalIndicator
     }
 
     public StatisticalIndicator saveIndicator(StatisticalIndicator ind, long userId) {
-        return null;
+        int id = ConversionHelper.getInt(ind.getId(), -1);
+        UserIndicatorDataRow row = createDBRow(ind);
+        row.userId = userId;
+        row.id = id;
+        if (id != -1) {
+            // check that it's the users indicator
+            StatisticalIndicator existing = findById(id, userId);
+            if (existing == null) {
+                throw new ServiceRuntimeException("Indicator '" + id + "' not found for user: " + userId);
+            }
+        }
+        try (final SqlSession session = factory.openSession()) {
+            if (id != -1) {
+                // update
+                int updated = getMapper(session).updateIndicator(row);
+                if(updated != 1) {
+                    throw new ServiceRuntimeException("Update wasn't successful");
+                }
+            } else {
+                // insert
+                getMapper(session).addIndicator(row);
+            }
+        }
+        return findById(id, userId);
     }
-    public StatisticalIndicator saveIndicatorData(long indicator, long regionset, int year, String data) {
-        return null;
+    public void saveIndicatorData(long indicator, long regionset, int year, String data) {
+        // remove possible existing value
+        deleteIndicatorData(indicator, regionset, year);
+        try (final SqlSession session = factory.openSession()) {
+            getMapper(session).addData(indicator, regionset, year, data);
+        }
     }
     public boolean deleteIndicatorData(long indicator, long regionset, int year) {
-        return false;
+        try (final SqlSession session = factory.openSession()) {
+            int updated = getMapper(session).deleteData(indicator, regionset, year);
+            if(updated != 1) {
+                throw new ServiceRuntimeException("Delete wasn't successful");
+            }
+        }
+        return true;
     }
 }

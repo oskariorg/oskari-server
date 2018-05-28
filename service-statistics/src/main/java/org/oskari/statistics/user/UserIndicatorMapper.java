@@ -67,7 +67,7 @@ public interface UserIndicatorMapper {
     int delete(@Param("id") long id, @Param("userId") long userId);
 
     @Delete("delete from oskari_user_indicator where user_id = #{userId}")
-    void deleteByUser(long userId);
+    int deleteByUser(long userId);
 
     @Insert("INSERT INTO oskari_user_indicator_data"
             + " (indicator_id, regionset_id, year, data)"
@@ -76,7 +76,7 @@ public interface UserIndicatorMapper {
 
     @Delete("DELETE FROM oskari_user_indicator_data" +
             " WHERE indicator_id = #{indicator} AND regionset_id = #{regionset} AND year = #{year}")
-    void deleteData(@Param("indicator") long indicator, @Param("regionset") long regionset, @Param("year") int year);
+    int deleteData(@Param("indicator") long indicator, @Param("regionset") long regionset, @Param("year") int year);
 
     @Insert("INSERT INTO oskari_user_indicator"
             + " (user_id, title, source, description, published)"
@@ -89,5 +89,5 @@ public interface UserIndicatorMapper {
             "    description = #{description}," +
             "    published = #{published}" +
             "    where id = #{id} AND user_id = #{userId}")
-    void updateIndicator(UserIndicatorDataRow row);
+    int updateIndicator(UserIndicatorDataRow row);
 }

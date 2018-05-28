@@ -10,6 +10,7 @@ import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.service.ServiceRuntimeException;
 import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.JSONHelper;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.oskari.statistics.user.StatisticalIndicatorService;
 
@@ -42,15 +43,25 @@ public class UserIndicatorsStatisticalDatasourcePlugin extends StatisticalDataso
 
     @Override
     public void saveIndicatorData(StatisticalIndicator indicator, long regionsetId, Map<String, IndicatorValue> data, User user) {
+        int id = ConversionHelper.getInt(indicator.getId(), -1);
+        if (id == -1) {
+            throw new ServiceRuntimeException("No indicator id to save data to");
+        }
+        StatisticalIndicator existing = service.findById(id, user.getId());
+        if (existing == null) {
+            throw new ServiceRuntimeException("Referenced indicator (id:" + id + ") not found. Unable to save data.");
+        }
         try {
             int year = Integer.parseInt(indicator.getDataModel().getDimension("year").getValue());
-            int id = Integer.parseInt(indicator.getId());
             JSONObject json = new JSONObject();
             for (Map.Entry<String, IndicatorValue> entry : data.entrySet()) {
                 entry.getValue().putToJSONObject(json, entry.getKey());
             }
             service.saveIndicatorData(id, regionsetId, year, json.toString());
+        } catch (JSONException e) {
+            throw new ServiceRuntimeException("Values not valid for JSON.", e);
         } catch (Exception e) {
+            throw new ServiceRuntimeException("Unable to save the data.", e);
         }
     }
 
