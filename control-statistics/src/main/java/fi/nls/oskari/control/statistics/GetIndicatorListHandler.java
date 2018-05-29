@@ -36,7 +36,6 @@ public class GetIndicatorListHandler extends ActionHandler {
     private static final String KEY_COMPLETE = "complete";
     private static final String KEY_INDICATORS = "indicators";
     private static final String KEY_REGIONSETS = "regionsets";
-    private static final String PARAM_DATASOURCE = "datasource";
     /**
      * For now, this uses pretty much static global store for the plugins.
      * In the future it might make sense to inject the pluginManager references to different controllers using DI.
@@ -45,7 +44,7 @@ public class GetIndicatorListHandler extends ActionHandler {
 
     @Override
     public void handleAction(ActionParameters ap) throws ActionException {
-        final int srcId = ap.getRequiredParamInt(PARAM_DATASOURCE);
+        final int srcId = ap.getRequiredParamInt(StatisticsHelper.PARAM_DATASOURCE_ID);
         JSONObject response = getIndicatorsListJSON(srcId, ap.getUser(), ap.getLocale().getLanguage());
         ResponseHelper.writeResponse(ap, response);
     }

@@ -12,12 +12,9 @@ import fi.nls.oskari.control.statistics.data.StatisticalIndicatorDataModel;
 import fi.nls.oskari.control.statistics.plugins.StatisticalDatasourcePlugin;
 import fi.nls.oskari.control.statistics.plugins.StatisticalDatasourcePluginManager;
 import fi.nls.oskari.control.statistics.plugins.db.DatasourceLayer;
-import fi.nls.oskari.log.LogFactory;
-import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.ResponseHelper;
-import org.json.JSONException;
 import org.json.JSONObject;
 import org.oskari.statistics.user.StatisticalIndicatorService;
 

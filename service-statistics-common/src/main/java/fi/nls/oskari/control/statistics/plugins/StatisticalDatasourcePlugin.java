@@ -75,7 +75,7 @@ public abstract class StatisticalDatasourcePlugin {
         return false;
     }
 
-    public void saveIndicator(StatisticalIndicator indicator, User user) {
+    public StatisticalIndicator saveIndicator(StatisticalIndicator indicator, User user) {
         // NO-OP
         throw new SecurityException("Unable to save");
     }

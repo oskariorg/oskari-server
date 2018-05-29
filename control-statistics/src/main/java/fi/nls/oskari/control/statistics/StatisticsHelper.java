@@ -1,10 +1,13 @@
 package fi.nls.oskari.control.statistics;
 
+import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 import fi.nls.oskari.cache.JedisManager;
-import fi.nls.oskari.control.statistics.data.StatisticalIndicatorDataDimension;
-import fi.nls.oskari.control.statistics.data.StatisticalIndicatorDataModel;
+import fi.nls.oskari.control.statistics.data.*;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -19,9 +22,10 @@ import org.json.JSONObject;
  */
 public class StatisticsHelper {
 
-    public static String PARAM_DATASOURCE_ID = "datasource";
-    public static String PARAM_SELECTORS = "selectors";
-    public static String PARAM_REGIONSET = "regionset";
+    public static final String PARAM_DATASOURCE_ID = "datasource";
+    public static final String PARAM_INDICATOR_ID = "indicator"; // previously indicator_id
+    public static final String PARAM_SELECTORS = "selectors";
+    public static final String PARAM_REGIONSET = "regionset";
 
     public static String getCacheKey(long datasourceId, String indicatorId,
             long layerId, JSONObject selectorJSON) {
@@ -66,5 +70,53 @@ public class StatisticsHelper {
         }
         return selectors;
     }
+
+    public static JSONObject toJSON(StatisticalIndicator indicator) throws JSONException {
+        JSONObject pluginIndicatorJSON = new JSONObject();
+        Map<String, String> name = indicator.getName();
+        Map<String, String> description = indicator.getDescription();
+        Map<String, String> source = indicator.getSource();
+        List<StatisticalIndicatorLayer> layers = indicator.getLayers();
+        StatisticalIndicatorDataModel selectors = indicator.getDataModel();
+
+        pluginIndicatorJSON.put("id", indicator.getId());
+        pluginIndicatorJSON.put("name", name);
+        pluginIndicatorJSON.put("description", description);
+        pluginIndicatorJSON.put("source", source);
+        pluginIndicatorJSON.put("public", indicator.isPublic());
+        pluginIndicatorJSON.put("regionsets", toJSON(layers));
+        pluginIndicatorJSON.put("selectors", toJSON(selectors));
+        return pluginIndicatorJSON;
+    }
+
+    public static JSONArray toJSON(StatisticalIndicatorDataModel selectors) throws JSONException {
+        JSONArray selectorsJSON = new JSONArray();
+        for (StatisticalIndicatorDataDimension selector : selectors.getDimensions()) {
+            JSONObject selectorJSON = new JSONObject();
+            selectorJSON.put("id", selector.getId());
+            selectorJSON.put("name", selector.getName());
+            selectorJSON.put("allowedValues", toJSON(selector.getAllowedValues()));
+            // Note: Values are not given here, they are null anyhow in this phase.
+            selectorsJSON.put(selectorJSON);
+        }
+        return selectorsJSON;
+    }
+
+    private static JSONArray toJSON(Collection<IdNamePair> stringCollection) {
+        JSONArray stringArray = new JSONArray();
+        for (IdNamePair value : stringCollection) {
+            stringArray.put(value.getValueForJson());
+        }
+        return stringArray;
+    }
+
+    public static JSONArray toJSON(List<StatisticalIndicatorLayer> layers) throws JSONException {
+        JSONArray layersJSON = new JSONArray();
+        for (StatisticalIndicatorLayer layer: layers) {
+            layersJSON.put(layer.getOskariLayerId());
+        }
+        return layersJSON;
+    }
+
 
 }

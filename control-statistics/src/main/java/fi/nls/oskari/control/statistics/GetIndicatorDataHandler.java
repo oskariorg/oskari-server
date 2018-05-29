@@ -26,8 +26,6 @@ import java.util.Map.Entry;
 @OskariActionRoute("GetIndicatorData")
 public class GetIndicatorDataHandler extends ActionHandler {
 
-    private final static String PARAM_PLUGIN_ID = "datasource"; // previously plugin_id
-    private final static String PARAM_INDICATOR_ID = "indicator"; // previously indicator_id
     private final static String PARAM_LAYER_ID = "regionset"; // previously layer_id
     private final static String PARAM_SELECTORS = "selectors";
 
@@ -39,8 +37,8 @@ public class GetIndicatorDataHandler extends ActionHandler {
 
     @Override
     public void handleAction(ActionParameters params) throws ActionException {
-        final long pluginId = params.getRequiredParamLong(PARAM_PLUGIN_ID);
-        final String indicatorId = params.getRequiredParam(PARAM_INDICATOR_ID);
+        final long pluginId = params.getRequiredParamLong(StatisticsHelper.PARAM_DATASOURCE_ID);
+        final String indicatorId = params.getRequiredParam(StatisticsHelper.PARAM_INDICATOR_ID);
         final long layerId = params.getRequiredParamLong(PARAM_LAYER_ID);
         final String selectors = params.getRequiredParam(PARAM_SELECTORS);
         JSONObject selectorsJSON;

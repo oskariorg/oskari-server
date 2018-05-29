@@ -1,6 +1,5 @@
 package fi.nls.oskari.control.statistics.user;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import fi.nls.oskari.control.*;
 import fi.nls.oskari.control.statistics.StatisticsHelper;
 import fi.nls.oskari.control.statistics.data.*;
@@ -8,18 +7,17 @@ import fi.nls.oskari.control.statistics.plugins.StatisticalDatasourcePlugin;
 import fi.nls.oskari.control.statistics.plugins.StatisticalDatasourcePluginManager;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.service.OskariComponentManager;
+import org.json.JSONException;
 import org.oskari.statistics.user.StatisticalIndicatorService;
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.ResponseHelper;
-import org.json.JSONObject;
 
 @OskariActionRoute("SaveIndicator")
 public class SaveIndicatorHandler extends ActionHandler {
 
     private StatisticalIndicatorService indicatorService;
-    private static final ObjectMapper MAPPER = new ObjectMapper();
 
     @Override
     public void init() {
@@ -57,14 +55,16 @@ public class SaveIndicatorHandler extends ActionHandler {
         }
         StatisticalIndicator indicator = parseIndicator(params, existingIndicator);
         try {
-            datasource.saveIndicator(indicator, params.getUser());
+            existingIndicator = datasource.saveIndicator(indicator, params.getUser());
         } catch (Exception ex) {
-
+            throw new ActionException("Couldn't save indicator", ex);
         }
 
-        JSONObject jobj = new JSONObject();
-        JSONHelper.putValue(jobj, "id", id);
-        ResponseHelper.writeResponse(params,jobj);
+        try {
+            ResponseHelper.writeResponse(params, StatisticsHelper.toJSON(existingIndicator));
+        } catch (JSONException shouldNeverHappen) {
+            ResponseHelper.writeResponse(params, JSONHelper.createJSONObject("id", id));
+        }
     }
 
     private StatisticalIndicator parseIndicator(ActionParameters params, StatisticalIndicator existingIndicator) {

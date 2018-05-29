@@ -9,7 +9,6 @@ import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.service.ServiceRuntimeException;
 import fi.nls.oskari.util.ConversionHelper;
-import fi.nls.oskari.util.JSONHelper;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.oskari.statistics.user.StatisticalIndicatorService;
@@ -37,8 +36,8 @@ public class UserIndicatorsStatisticalDatasourcePlugin extends StatisticalDataso
     }
 
     @Override
-    public void saveIndicator(StatisticalIndicator indicator, User user) {
-        service.saveIndicator(indicator, user.getId());
+    public StatisticalIndicator saveIndicator(StatisticalIndicator indicator, User user) {
+        return service.saveIndicator(indicator, user.getId());
     }
 
     @Override

@@ -3,7 +3,6 @@ package fi.nls.oskari.control.statistics.user;
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.*;
 import fi.nls.oskari.control.statistics.StatisticsHelper;
-import fi.nls.oskari.control.statistics.GetIndicatorMetadataHandler;
 import fi.nls.oskari.control.statistics.data.StatisticalIndicator;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
@@ -59,7 +58,7 @@ public class DeleteIndicatorHandler extends ActionHandler {
         }
         LOG.info("Deleted indicator", id);
         try {
-            ResponseHelper.writeResponse(params, GetIndicatorMetadataHandler.toJSON(ind));
+            ResponseHelper.writeResponse(params, StatisticsHelper.toJSON(ind));
         } catch (JSONException ex) {
             ResponseHelper.writeResponse(params, JSONHelper.createJSONObject("deleted", id));
         }
