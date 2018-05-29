@@ -75,11 +75,16 @@ public class AddIndicatorDataHandler extends ActionHandler {
             if (data != null) {
                 datasource.saveIndicatorData(indicator, regionsetId, data, params.getUser());
             }
-            StatisticsHelper.flushDataFromCache(datasourceId, id, regionsetId, selectors);
         } catch (Exception ex) {
             throw new ActionException("Couldn't save data", ex);
         }
 
+        if (datasource.canCache()) {
+            // TODO: flush/update caches (also metadata and listing)
+            // Not an issue for now since user indicators are not cached and they are are the
+            //  only ones that can be added/edited/removed
+            StatisticsHelper.flushDataFromCache(datasourceId, id, regionsetId, selectors);
+        }
         JSONObject jobj = new JSONObject();
         JSONHelper.putValue(jobj, "id", id);
         ResponseHelper.writeResponse(params,jobj);

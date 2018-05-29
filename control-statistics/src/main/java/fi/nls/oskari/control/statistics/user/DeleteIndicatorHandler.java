@@ -1,9 +1,12 @@
 package fi.nls.oskari.control.statistics.user;
 
 import fi.nls.oskari.annotation.OskariActionRoute;
+import fi.nls.oskari.cache.JedisManager;
 import fi.nls.oskari.control.*;
 import fi.nls.oskari.control.statistics.StatisticsHelper;
 import fi.nls.oskari.control.statistics.data.StatisticalIndicator;
+import fi.nls.oskari.control.statistics.plugins.StatisticalDatasourcePlugin;
+import fi.nls.oskari.control.statistics.plugins.StatisticalDatasourcePluginManager;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.service.OskariComponentManager;
@@ -55,6 +58,13 @@ public class DeleteIndicatorHandler extends ActionHandler {
         } else if (!indicatorService.delete(id, params.getUser().getId())) {
             // remove the whole indicator
             throw new ActionParamsException("Indicator wasn't removed: " +  + id);
+        }
+
+        StatisticalDatasourcePlugin datasource = StatisticalDatasourcePluginManager.getInstance().getPlugin(datasourceId);
+        if (datasource != null && datasource.canCache()) {
+            // TODO: flush/update caches
+            // Not an issue for now since user indicators are not cached and they are are the
+            //  only ones that can be added/edited/removed
         }
         LOG.info("Deleted indicator", id);
         try {

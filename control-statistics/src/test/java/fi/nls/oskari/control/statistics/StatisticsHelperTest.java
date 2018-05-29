@@ -14,7 +14,7 @@ public class StatisticsHelperTest {
         long layerId = 1850L;
         String selectionStr = "{\"year\":\"2015\",\"sex\":\"female\"}";
         JSONObject selectionJSON = new JSONObject(selectionStr);
-        String actual = StatisticsHelper.getCacheKey(pluginId, indicatorId, layerId, selectionJSON);
+        String actual = StatisticsHelper.getIndicatorDataCacheKey(pluginId, indicatorId, layerId, selectionJSON);
         String expected = "oskari:stats:1:data:232:1850:sex=female:year=2015";
         Assert.assertEquals(expected, actual);
     }

@@ -27,8 +27,12 @@ public class StatisticsHelper {
     public static final String PARAM_SELECTORS = "selectors";
     public static final String PARAM_REGIONSET = "regionset";
 
-    public static String getCacheKey(long datasourceId, String indicatorId,
-            long layerId, JSONObject selectorJSON) {
+    public static String getIndicatorMetadataCacheKey(long datasourceId, String indicatorId) {
+        return "oskari_get_indicator_metadata_handler_" + datasourceId + ":" + indicatorId;
+    }
+
+    public static String getIndicatorDataCacheKey(long datasourceId, String indicatorId,
+                                                  long layerId, JSONObject selectorJSON) {
         StringBuilder cacheKey = new StringBuilder("oskari:stats:");
         cacheKey.append(datasourceId);
         cacheKey.append(":data:");
@@ -51,7 +55,7 @@ public class StatisticsHelper {
     }
 
     public static void flushDataFromCache(long pluginId, String indicatorId, long layerId, JSONObject selectorJSON) {
-        String cacheKey = StatisticsHelper.getCacheKey(pluginId, indicatorId, layerId, selectorJSON);
+        String cacheKey = getIndicatorDataCacheKey(pluginId, indicatorId, layerId, selectorJSON);
         JedisManager.del(cacheKey);
     }
 

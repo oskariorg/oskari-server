@@ -25,7 +25,6 @@ import org.json.JSONObject;
  */
 @OskariActionRoute("GetIndicatorMetadata")
 public class GetIndicatorMetadataHandler extends ActionHandler {
-    private final static String CACHE_PREFIX = "oskari_get_indicator_metadata_handler_";
 
     /**
      * For now, this uses pretty much static global store for the plugins.
@@ -51,7 +50,7 @@ public class GetIndicatorMetadataHandler extends ActionHandler {
         if(plugin == null) {
             throw new ActionParamsException("No such datasource: " + pluginId);
         }
-        String cacheKey = CACHE_PREFIX + pluginId + ":" + indicatorId;
+        String cacheKey = StatisticsHelper.getIndicatorMetadataCacheKey(pluginId, indicatorId);
         if (plugin.canCache()) {
             final String cachedData = JedisManager.get(cacheKey);
             if (cachedData != null && !cachedData.isEmpty()) {

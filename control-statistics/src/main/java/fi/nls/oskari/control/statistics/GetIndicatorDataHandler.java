@@ -60,7 +60,7 @@ public class GetIndicatorDataHandler extends ActionHandler {
             throw new ActionParamsException("No such datasource: " + pluginId);
         }
 
-        String cacheKey = StatisticsHelper.getCacheKey(pluginId, indicatorId, layerId, selectorJSON);
+        String cacheKey = StatisticsHelper.getIndicatorDataCacheKey(pluginId, indicatorId, layerId, selectorJSON);
         if (plugin.canCache()) {
             JSONObject cached = getFromCache(cacheKey);
             if (cached != null) {
