@@ -55,7 +55,7 @@ public class StatisticalIndicatorServiceMybatisImpl extends StatisticalIndicator
                 // Shouldn't happen...
                 throw new ServiceRuntimeException("Matched more than one indicator - id: " + id);
             }
-            return result.stream().findFirst().get();
+            return result.iterator().next();
         }
     }
 
@@ -143,7 +143,7 @@ public class StatisticalIndicatorServiceMybatisImpl extends StatisticalIndicator
         return ind;
     }
 
-    private UserIndicatorDataRow createDBRow(StatisticalIndicator userIndicator) {
+    private UserIndicatorDataRow getVO(StatisticalIndicator userIndicator) {
         UserIndicatorDataRow row = new UserIndicatorDataRow();
         row.title = new JSONObject(userIndicator.getName()).toString();
         row.description = new JSONObject(userIndicator.getDescription()).toString();
@@ -161,22 +161,15 @@ public class StatisticalIndicatorServiceMybatisImpl extends StatisticalIndicator
 
     public StatisticalIndicator saveIndicator(StatisticalIndicator ind, long userId) {
         int id = ConversionHelper.getInt(ind.getId(), -1);
-        UserIndicatorDataRow row = createDBRow(ind);
+        UserIndicatorDataRow row = getVO(ind);
         row.userId = userId;
         row.id = id;
-        if (id != -1) {
-            // check that it's the users indicator
-            StatisticalIndicator existing = findById(id, userId);
-            if (existing == null) {
-                throw new ServiceRuntimeException("Indicator '" + id + "' not found for user: " + userId);
-            }
-        }
         try (final SqlSession session = factory.openSession()) {
             if (id != -1) {
-                // update
+                // update (userId check is in the where clause)
                 int updated = getMapper(session).updateIndicator(row);
                 if(updated != 1) {
-                    throw new ServiceRuntimeException("Update wasn't successful");
+                    throw new ServiceRuntimeException("Indicator '" + id + "' not found for user: " + userId);
                 }
             } else {
                 // insert
@@ -198,10 +191,7 @@ public class StatisticalIndicatorServiceMybatisImpl extends StatisticalIndicator
     public boolean deleteIndicatorData(long indicator, long regionset, int year) {
         try (final SqlSession session = factory.openSession()) {
             int updated = getMapper(session).deleteData(indicator, regionset, year);
-            if(updated != 1) {
-                throw new ServiceRuntimeException("Delete wasn't successful");
-            }
+            return updated != 0;
         }
-        return true;
     }
 }
