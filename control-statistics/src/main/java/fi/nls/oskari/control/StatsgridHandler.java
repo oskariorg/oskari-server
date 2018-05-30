@@ -4,6 +4,7 @@ import fi.nls.oskari.annotation.OskariViewModifier;
 import fi.nls.oskari.control.statistics.plugins.StatisticalDatasourcePluginManager;
 import fi.nls.oskari.control.statistics.plugins.db.DatasourceLayer;
 import fi.nls.oskari.control.statistics.plugins.db.StatisticalDatasource;
+import fi.nls.oskari.control.statistics.plugins.user.UserIndicatorsStatisticalDatasourceFactory;
 import fi.nls.oskari.control.view.modifier.bundle.BundleHandler;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.view.modifier.ModifierException;
@@ -75,7 +76,7 @@ public class StatsgridHandler extends BundleHandler {
     }
 
     private String getType(final String plugin) {
-        if("UserStats".equalsIgnoreCase(plugin)) {
+        if(UserIndicatorsStatisticalDatasourceFactory.TYPE.equalsIgnoreCase(plugin)) {
             // with type = user -> user can save data as own indicator
             return "user";
         }

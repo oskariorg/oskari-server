@@ -1,6 +1,7 @@
 package fi.nls.oskari.control.statistics.data;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import fi.nls.oskari.control.statistics.plugins.db.DatasourceLayer;
 import fi.nls.oskari.util.PropertyUtil;
 
 import java.util.*;
@@ -39,6 +40,9 @@ public class StatisticalIndicator {
     }
     public void setPublic(boolean isPublic) {
         this.isPublic = isPublic;
+    }
+    public void addLayer(DatasourceLayer layer) {
+        addLayer(new StatisticalIndicatorLayer(layer.getMaplayerId(), this.getId()));
     }
     public void addLayer(StatisticalIndicatorLayer layer) {
         layers.add(layer);
