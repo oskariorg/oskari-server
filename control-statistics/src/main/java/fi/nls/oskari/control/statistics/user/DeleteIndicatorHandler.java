@@ -48,16 +48,14 @@ public class DeleteIndicatorHandler extends ActionHandler {
         if(selectors != null) {
             // if selectors present, regionset is also required
             int regionset = params.getRequiredParamInt("regionset");
-            try {
-                indicatorService.deleteIndicatorData(id, regionset, selectors.getInt("year"));
-            } catch (JSONException ex) {
-                throw new ActionParamsException("Year was not part of the selectors parameter");
-            }
-
+            int year = parseYearSelector(selectors);
+            indicatorService.deleteIndicatorData(id, regionset, year);
+            LOG.info("Deleted indicator data for indicator:", id, "year:", year, "regionset:", regionset);
             StatisticsHelper.flushDataFromCache(datasourceId, Integer.toString(id), regionset, selectors);
-        } else if (!indicatorService.delete(id, params.getUser().getId())) {
+        } else {
             // remove the whole indicator
-            throw new ActionParamsException("Indicator wasn't removed: " +  + id);
+            removeIndicator(id, params.getUser().getId());
+            LOG.info("Deleted indicator", id);
         }
 
         StatisticalDatasourcePlugin datasource = StatisticalDatasourcePluginManager.getInstance().getPlugin(datasourceId);
@@ -66,12 +64,25 @@ public class DeleteIndicatorHandler extends ActionHandler {
             // Not an issue for now since user indicators are not cached and they are are the
             //  only ones that can be added/edited/removed
         }
-        LOG.info("Deleted indicator", id);
         try {
             ResponseHelper.writeResponse(params, StatisticsHelper.toJSON(ind));
         } catch (JSONException ex) {
-            ResponseHelper.writeResponse(params, JSONHelper.createJSONObject("deleted", id));
+            ResponseHelper.writeResponse(params, JSONHelper.createJSONObject("id", id));
         }
+    }
 
+    private int parseYearSelector(JSONObject selectors) throws ActionException {
+        try {
+            return selectors.getInt("year");
+        } catch (JSONException ex) {
+            throw new ActionParamsException("Year was not part of the selectors parameter");
+        }
+    }
+
+    private void removeIndicator(int id, long userId) throws ActionException {
+        if (!indicatorService.delete(id, userId)) {
+            // remove the whole indicator
+            throw new ActionParamsException("Indicator wasn't removed: " +  + id);
+        }
     }
 }

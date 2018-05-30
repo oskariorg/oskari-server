@@ -17,6 +17,10 @@ import fi.nls.oskari.util.ResponseHelper;
 @OskariActionRoute("SaveIndicator")
 public class SaveIndicatorHandler extends ActionHandler {
 
+    public static final String PARAM_NAME = "name";
+    public static final String PARAM_DESCRIPTION = "desc";
+    public static final String PARAM_SOURCE = "source";
+
     private StatisticalIndicatorService indicatorService;
 
     @Override
@@ -26,12 +30,6 @@ public class SaveIndicatorHandler extends ActionHandler {
             indicatorService = OskariComponentManager.getComponentOfType(StatisticalIndicatorService.class);
         }
     }
-
-    public static String PARAM_NAME = "name";
-    public static String PARAM_DESCRIPTION = "desc";
-    public static String PARAM_SOURCE = "source";
-
-    private static final Logger log = LogFactory.getLogger(SaveIndicatorHandler.class);
 
     public void handleAction(ActionParameters params) throws ActionException {
         params.requireLoggedInUser();
@@ -45,31 +43,33 @@ public class SaveIndicatorHandler extends ActionHandler {
             throw new ActionDeniedException("User doesn't have permission to modify datasource:" + datasourceId);
         }
         String id = params.getHttpParam(ActionConstants.PARAM_ID);
-        StatisticalIndicator existingIndicator = null;
-        if (id != null) {
-            existingIndicator = datasource.getIndicator(params.getUser(), id);
-            if(existingIndicator == null) {
-                // indicator removed or is not owned by this user
-                throw new ActionParamsException("Requested invalid indicator:" + id);
-            }
-        }
-        StatisticalIndicator indicator = parseIndicator(params, existingIndicator);
+        StatisticalIndicator indicator = parseIndicator(params, datasource);
+        StatisticalIndicator savedIndicator;
         try {
-            existingIndicator = datasource.saveIndicator(indicator, params.getUser());
+            savedIndicator = datasource.saveIndicator(indicator, params.getUser());
         } catch (Exception ex) {
             throw new ActionException("Couldn't save indicator", ex);
         }
 
         try {
-            ResponseHelper.writeResponse(params, StatisticsHelper.toJSON(existingIndicator));
+            ResponseHelper.writeResponse(params, StatisticsHelper.toJSON(savedIndicator));
         } catch (JSONException shouldNeverHappen) {
             ResponseHelper.writeResponse(params, JSONHelper.createJSONObject("id", id));
         }
     }
 
-    private StatisticalIndicator parseIndicator(ActionParameters params, StatisticalIndicator existingIndicator) {
-        StatisticalIndicator ind = existingIndicator;
-        if(ind == null) {
+    private StatisticalIndicator parseIndicator(ActionParameters params, StatisticalDatasourcePlugin datasource)
+            throws ActionException {
+
+        StatisticalIndicator ind;
+        String id = params.getHttpParam(ActionConstants.PARAM_ID);
+        if (id != null) {
+            ind = datasource.getIndicator(params.getUser(), id);
+            if(ind == null) {
+                // indicator removed or is not owned by this user
+                throw new ActionParamsException("Requested invalid indicator:" + id);
+            }
+        } else {
             ind = new StatisticalIndicator();
         }
         // always set to true, but doesn't really matter?
