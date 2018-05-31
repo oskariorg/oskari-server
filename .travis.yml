@@ -14,6 +14,8 @@ jdk:
 
 notifications:
   slack: oskari:N5vZf0lzsIGpQ8nAPRfHgQ91
+  webhooks: "$CHAT_WEBHOOK_URL"
+
 
 before_install: "echo \"MAVEN_OPTS='-Xms1g -Xmx2g'\" > ~/.mavenrc"
 
