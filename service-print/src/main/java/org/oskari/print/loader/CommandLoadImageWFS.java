@@ -64,7 +64,8 @@ public class CommandLoadImageWFS extends CommandLoadImageBase {
         String layerId = Integer.toString(layer.getId());
         List<Future<BufferedImage>> images = new ArrayList<>(tiles.length);
         for (PrintTile tile : tiles) {
-            images.add(new CommandLoadImageFromURL(layerId, tile.getURL()).queue()); 
+            images.add(new CommandLoadImageFromURL(layerId, tile.getURL(),
+                    layer.getUsername(), layer.getPassword()).queue()); 
         }
 
         final double x1 = bbox[0];

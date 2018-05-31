@@ -19,10 +19,10 @@ public class CommandLoadImageWMS extends CommandLoadImageBase {
     private final String srsName;
 
     public CommandLoadImageWMS(PrintLayer layer,
-                               int width,
-                               int height,
-                               double[] bbox,
-                               String srsName) {
+            int width,
+            int height,
+            double[] bbox,
+            String srsName) {
         super(Integer.toString(layer.getId()));
         this.layer = layer;
         this.width = width;
@@ -43,8 +43,8 @@ public class CommandLoadImageWMS extends CommandLoadImageBase {
                 .format(FORMAT)
                 .transparent(true)
                 .toKVP();
-        
-        return CommandLoadImageFromURL.load(request);
+
+        return CommandLoadImageFromURL.load(request, layer.getUsername(), layer.getPassword());
     }
 
     @Override
