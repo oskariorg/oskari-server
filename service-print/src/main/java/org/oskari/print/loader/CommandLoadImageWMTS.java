@@ -136,7 +136,8 @@ public class CommandLoadImageWMTS extends CommandLoadImageBase {
                 requestBuilder.tileCol(c);
                 String uri = requestBuilder.build();
                 futureTiles.add(new CommandLoadImageFromURL(
-                        Integer.toString(layer.getId()), uri).queue());
+                        Integer.toString(layer.getId()), uri,
+                        layer.getUsername(), layer.getPassword()).queue());
             }
         }
 

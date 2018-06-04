@@ -71,6 +71,19 @@ public abstract class StatisticalDatasourcePlugin {
      */
     public abstract void update();
 
+    public boolean canModify(User user) {
+        return false;
+    }
+
+    public StatisticalIndicator saveIndicator(StatisticalIndicator indicator, User user) {
+        // NO-OP
+        throw new SecurityException("Unable to save");
+    }
+    public void saveIndicatorData(StatisticalIndicator indicator, long regionsetId, Map<String, IndicatorValue> data, User user) {
+        // NO-OP
+        throw new SecurityException("Unable to save");
+    }
+
     /**
      * Method to fetch indicator data.
      * @param indicator
@@ -200,10 +213,10 @@ public abstract class StatisticalDatasourcePlugin {
             // should we save it to listing directly?
         }
         // this is used for metadata requests
-        saveIndicator(indicator);
+        writeToCache(indicator);
     }
 
-    private void saveIndicator(StatisticalIndicator indicator) {
+    private void writeToCache(StatisticalIndicator indicator) {
         try {
             String json = MAPPER.writeValueAsString(indicator);
             JedisManager.setex(getIndicatorMetadataKey(indicator.getId()), JedisManager.EXPIRY_TIME_DAY * 7, json);

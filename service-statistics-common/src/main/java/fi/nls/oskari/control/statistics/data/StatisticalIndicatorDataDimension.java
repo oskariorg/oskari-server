@@ -51,7 +51,13 @@ public class StatisticalIndicatorDataDimension {
         addAllowedValue(new IdNamePair(value, label));
     }
     public void addAllowedValue(IdNamePair pair) {
-        allowedValues.add(pair);
+        // the values need to be sorted so doing "set-like" functionality here
+        if(!getAllowedValues().stream()
+                .filter(x -> x.getKey().equals(pair.getKey()))
+                .findFirst()
+                .isPresent()) {
+            allowedValues.add(pair);
+        }
     }
     public void setAllowedValues(List<IdNamePair> values) {
         allowedValues = values;

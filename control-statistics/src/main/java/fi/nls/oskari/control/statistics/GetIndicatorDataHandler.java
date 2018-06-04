@@ -15,7 +15,6 @@ import fi.nls.oskari.util.ResponseHelper;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -27,8 +26,6 @@ import java.util.Map.Entry;
 @OskariActionRoute("GetIndicatorData")
 public class GetIndicatorDataHandler extends ActionHandler {
 
-    private final static String PARAM_PLUGIN_ID = "datasource"; // previously plugin_id
-    private final static String PARAM_INDICATOR_ID = "indicator"; // previously indicator_id
     private final static String PARAM_LAYER_ID = "regionset"; // previously layer_id
     private final static String PARAM_SELECTORS = "selectors";
 
@@ -40,8 +37,8 @@ public class GetIndicatorDataHandler extends ActionHandler {
 
     @Override
     public void handleAction(ActionParameters params) throws ActionException {
-        final long pluginId = params.getRequiredParamLong(PARAM_PLUGIN_ID);
-        final String indicatorId = params.getRequiredParam(PARAM_INDICATOR_ID);
+        final long pluginId = params.getRequiredParamLong(StatisticsHelper.PARAM_DATASOURCE_ID);
+        final String indicatorId = params.getRequiredParam(StatisticsHelper.PARAM_INDICATOR_ID);
         final long layerId = params.getRequiredParamLong(PARAM_LAYER_ID);
         final String selectors = params.getRequiredParam(PARAM_SELECTORS);
         JSONObject selectorsJSON;
@@ -63,7 +60,7 @@ public class GetIndicatorDataHandler extends ActionHandler {
             throw new ActionParamsException("No such datasource: " + pluginId);
         }
 
-        String cacheKey = GetIndicatorDataHelper.getCacheKey(pluginId, indicatorId, layerId, selectorJSON);
+        String cacheKey = StatisticsHelper.getIndicatorDataCacheKey(pluginId, indicatorId, layerId, selectorJSON);
         if (plugin.canCache()) {
             JSONObject cached = getFromCache(cacheKey);
             if (cached != null) {
@@ -81,7 +78,7 @@ public class GetIndicatorDataHandler extends ActionHandler {
             throw new ActionParamsException("No such regionset: " + layerId);
         }
 
-        StatisticalIndicatorDataModel selectors = getIndicatorDataModel(selectorJSON);
+        StatisticalIndicatorDataModel selectors = StatisticsHelper.getIndicatorDataModel(selectorJSON);
         Map<String, IndicatorValue> values = plugin.getIndicatorValues(indicator, selectors, layer);
         JSONObject response = toJSON(values);
 
@@ -100,21 +97,6 @@ public class GetIndicatorDataHandler extends ActionHandler {
         return JSONHelper.createJSONObject(cachedData);
     }
 
-    private StatisticalIndicatorDataModel getIndicatorDataModel(JSONObject selectorJSON) {
-        StatisticalIndicatorDataModel selectors = new StatisticalIndicatorDataModel();
-        @SuppressWarnings("unchecked")
-        Iterator<String> keys = selectorJSON.keys();
-        while (keys.hasNext()) {
-            try {
-                String key = keys.next();
-                String value = selectorJSON.getString(key);
-                selectors.addDimension(new StatisticalIndicatorDataDimension(key, value));
-            } catch (JSONException ignore) {
-                // The key _does_ exist
-            }
-        }
-        return selectors;
-    }
 
     private JSONObject toJSON(Map<String, IndicatorValue> values) throws ActionException {
         try {
