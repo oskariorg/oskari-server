@@ -4,8 +4,8 @@
 
 ### AppSetup migration (OpenLayers 4)
 
-Oskari 1.47.0 drops support for OpenLayers 2 (oskariorg/oskari-docs#63). Existing AppSetups of type 'DEFAULT' and 'USER' 
-are automatically migrated to use the OpenLayers 4 implementations of the bundles. 
+Oskari 1.47.0 drops support for OpenLayers 2 (https://github.com/oskariorg/oskari-docs/issues/63). Existing AppSetups
+ of type 'DEFAULT' and 'USER' are automatically migrated to use the OpenLayers 4 implementations of the bundles. 
 The other types (PUBLISH and PUBLISHED) have been using OL 4 for a long time already and don't need the migration.
 
 Note! Any app using custom view types needs to make an app-specific migration for the custom types. 
