@@ -172,6 +172,7 @@ public class PxwebIndicatorsParser {
     protected StatisticalIndicatorDataModel getModel(PxTableItem table) {
         // selectors are shared between indicators in pxweb
         final StatisticalIndicatorDataModel selectors = new StatisticalIndicatorDataModel();
+        selectors.setTimeVariable(config.getTimeVariableId());
         for (VariablesItem item: table.getSelectors()) {
             if(config.getIgnoredVariables().contains(item.getCode())) {
                 continue;
