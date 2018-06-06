@@ -14,8 +14,28 @@ public class StatisticalIndicatorDataModel {
     /**
      * The dimensions have a defined order.
      */
-    private List<StatisticalIndicatorDataDimension> dimensions =
-            new ArrayList<StatisticalIndicatorDataDimension>();
+    private List<StatisticalIndicatorDataDimension> dimensions = new ArrayList<>();
+
+    // this is the id of the dimension that re-presents time -> enables time-series analyzes
+    private String timeVariable;
+    public String getTimeVariable() {
+        return timeVariable;
+    }
+
+    public boolean isTimeVariable(StatisticalIndicatorDataDimension selector) {
+        if (selector == null || getTimeVariable() == null) {
+            return false;
+        }
+        String id = selector.getId();
+        if (id == null) {
+            return false;
+        }
+        return id.equalsIgnoreCase(getTimeVariable());
+    }
+
+    public void setTimeVariable(String timeVariable) {
+        this.timeVariable = timeVariable;
+    }
     /**
      * @return A mutable list of dimensions.
      */
