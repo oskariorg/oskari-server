@@ -137,7 +137,8 @@ public class StatisticalIndicatorServiceMybatisImpl extends StatisticalIndicator
         }
         ind.setPublic(userIndicator.published);
 
-        // Initialize the year dimension as the only one.
+        // Initialize the year dimension as the only one and flag it as time variable to be used in time-series ops.
+        ind.getDataModel().setTimeVariable("year");
         StatisticalIndicatorDataDimension dim = new StatisticalIndicatorDataDimension("year");
         ind.getDataModel().addDimension(dim);
         return ind;
