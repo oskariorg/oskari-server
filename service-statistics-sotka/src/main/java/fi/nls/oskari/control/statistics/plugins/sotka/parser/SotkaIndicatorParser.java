@@ -110,6 +110,7 @@ public class SotkaIndicatorParser {
     private StatisticalIndicatorDataModel createModel(JSONObject jsonObject) throws JSONException {
         // Note that the key "region" must be skipped, because it was already serialized as layers.
         StatisticalIndicatorDataModel selectors = new StatisticalIndicatorDataModel();
+        selectors.setTimeVariable(config.getTimeVariableName());
         @SuppressWarnings("unchecked")
         Iterator<String> names = jsonObject.keys();
         while (names.hasNext()) {
