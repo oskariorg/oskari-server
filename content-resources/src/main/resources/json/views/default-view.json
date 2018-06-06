@@ -14,7 +14,6 @@
         "wmslayer-openstreetmap-demo-landsat.json"
     ],
     "bundles" : [
-        { "id" : "openlayers-default-theme" },
         {
             "id" : "mapfull",
             "config" : {
@@ -56,6 +55,7 @@
                 "zoom": 1
             }
         },
+        { "id" : "drawtools" },
         { "id" : "divmanazer" },
         { "id" : "toolbar" },
         { "id" : "infobox" },
@@ -72,7 +72,7 @@
 		},
         { "id" : "metadataflyout" },
         { "id" : "personaldata" },
-        { "id" : "publisher" },
+        { "id" : "publisher2" },
         { "id" : "maplegend" },
         { "id" : "userguide" },
         { "id" : "heatmap" }
