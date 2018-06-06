@@ -7,13 +7,13 @@ public class SotkaConfig {
     private long datasourceId;
     private String url;
     // default to year as it's the time variable on sotkanet
-    private String timeVariableName = "year";
+    private String timeVariableId = "year";
 
     public SotkaConfig(JSONObject json, long id) {
         datasourceId = id;
         url = json.optString("url");
         // allow override with db config
-        timeVariableName = json.optString("timeVariable", timeVariableName);
+        timeVariableId = json.optString("timeVariable", timeVariableId);
     }
 
     public long getId() {
@@ -31,7 +31,7 @@ public class SotkaConfig {
         this.url = url;
     }
 
-    public String getTimeVariableName() {
-        return timeVariableName;
+    public String getTimeVariableId() {
+        return timeVariableId;
     }
 }
