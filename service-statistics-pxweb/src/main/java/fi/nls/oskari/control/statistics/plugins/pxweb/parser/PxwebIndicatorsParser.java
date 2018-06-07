@@ -181,6 +181,10 @@ public class PxwebIndicatorsParser {
             selector.setName(item.getLabel());
             selector.setAllowedValues(item.getLabels());
             selectors.addDimension(selector);
+            if (item.isTimeVariable()) {
+                // override the time variable config for datasource if we get the information from the API
+                selectors.setTimeVariable(selector.getId());
+            }
         }
         return selectors;
     }
