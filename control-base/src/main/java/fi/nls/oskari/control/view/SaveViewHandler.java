@@ -24,6 +24,7 @@ public class SaveViewHandler extends ActionHandler {
     private static final ViewService viewService = new ViewServiceIbatisImpl();
 
     private final static String VIEW_NAME = "viewName";
+    private final static String VIEW_UUID = "uuid";
     private final static String VIEW_DESCRIPTION = "viewDescription";
     private final static String VIEW_DATA = "viewData";
     private final static String IS_DEFAULT = "isDefault";
@@ -34,7 +35,7 @@ public class SaveViewHandler extends ActionHandler {
             throw new ActionDeniedException("Session expired");
         }
 
-        // Cloned view based on user based default view
+        // Cloned view based on users current view
         final View view = getBaseView(params);
         final User user = params.getUser();
 
@@ -89,11 +90,27 @@ public class SaveViewHandler extends ActionHandler {
             throw new ActionParamsException("Parameter missing:" + VIEW_NAME);
         }
 
-        // get default view id for the user
-        final long currentViewId = viewService.getDefaultViewId(params.getUser());
-        final View currentView = viewService.getViewWithConf(currentViewId);
+        View currentView = null;
+        String uuid = params.getHttpParam(VIEW_UUID);
+        if (uuid != null) {
+            // get view by uuid
+            currentView = viewService.getViewWithConfByUuId(uuid);
+
+            if (currentView == null) {
+                throw new ActionParamsException("Could not fetch current view uuid:" + uuid);
+            }
+            else if (!currentView.isPublic() && currentView.getCreator() != params.getUser().getId()){
+                throw new ActionDeniedException("User has no right to edit view with uuid: " + uuid);
+            }
+        }
         if (currentView == null) {
-            throw new ActionParamsException("Could not fetch current view id:" + currentViewId);
+            // get default view id for the user
+            final long currentViewId = viewService.getDefaultViewId(params.getUser());
+            currentView = viewService.getViewWithConf(currentViewId);
+
+            if (currentView == null) {
+                throw new ActionParamsException("Could not fetch current view id:" + currentViewId);
+            }
         }
 
         // clone so we are not overwriting the template!
