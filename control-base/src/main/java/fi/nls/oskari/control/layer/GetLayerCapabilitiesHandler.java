@@ -47,7 +47,7 @@ public class GetLayerCapabilitiesHandler extends ActionHandler {
     @Override
     public void handleAction(final ActionParameters params)
             throws ActionException {
-        final String layerId = params.getRequiredParam(ActionConstants.KEY_ID);
+        final int layerId = params.getRequiredParamInt(ActionConstants.KEY_ID);
         final OskariLayer layer = permissionHelper.getLayer(layerId, params.getUser());
         final String data = getCapabilities(layer);
         ResponseHelper.writeResponse(params, HttpServletResponse.SC_OK,

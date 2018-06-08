@@ -31,6 +31,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static fi.nls.oskari.control.ActionConstants.*;
 
@@ -136,12 +137,9 @@ public class SystemViewsHandler extends RestActionHandler {
                 layerIdList.add(layer.optString(PARAM_ID));
             }
 
-            final List<OskariLayer> notAvailableForGuest = getLayersNotAvailableForGuest(layerIdList);
+            final List<String> notAvailableForGuest = getLayersNotAvailableForGuest(layerIdList);
             if(!notAvailableForGuest.isEmpty()) {
-                final JSONArray list = new JSONArray();
-                for (OskariLayer layer :notAvailableForGuest) {
-                    list.put(layer.getId());
-                }
+                final JSONArray list = new JSONArray(notAvailableForGuest);
                 // TODO: Respond with error and end execution
                 JSONObject info = JSONHelper.createJSONObject("selectedLayers", list);
                 JSONHelper.putValue(info, "code", ERROR_CODE_GUEST_NOT_AVAILABLE);
@@ -185,16 +183,24 @@ public class SystemViewsHandler extends RestActionHandler {
         JSONHelper.putValue(state, ViewModifier.KEY_ZOOM, params.getRequiredParamInt(ViewModifier.KEY_ZOOM));
     }
 
-    private List<OskariLayer> getLayersNotAvailableForGuest(final List<String> layerIdList) throws ActionException {
-        final List<OskariLayer> layers = layerService.find(layerIdList);
-        final List<OskariLayer> notAvailable = new ArrayList<OskariLayer>();
+    private List<String> getLayersNotAvailableForGuest(final List<String> layerIdList) throws ActionException {
+        final List<String> notAvailable = new ArrayList<>();
+        List<Integer> idList = new ArrayList<>();
+        for (String layerId : layerIdList) {
+            int id = ConversionHelper.getInt(layerId, -1);
+            if (id == -1) {
+                notAvailable.add(layerId);
+            } else {
+                idList.add(id);
+            }
+        }
+        final List<OskariLayer> layers = layerService.findByIdList(idList);
         try {
             User guest = UserService.getInstance().getGuestUser();
             for(OskariLayer layer : layers) {
                 final Resource resource = permissionsService.findResource(new OskariLayerResource(layer));
-                final boolean hasPermssion = resource.hasPermission(guest, Permissions.PERMISSION_TYPE_VIEW_LAYER);
-                if(!hasPermssion) {
-                    notAvailable.add(layer);
+                if(!resource.hasPermission(guest, Permissions.PERMISSION_TYPE_VIEW_LAYER)) {
+                    notAvailable.add(Integer.toString(layer.getId()));
                 }
             }
         } catch (ServiceException ex) {

@@ -40,7 +40,7 @@ public class PermissionHelper {
      * @return
      * @throws ActionException
      */
-    public OskariLayer getLayer(final String layerId, final User user) throws ActionException {
+    public OskariLayer getLayer(final int layerId, final User user) throws ActionException {
 
         final OskariLayer layer = getLayer(layerId);
         if (layer == null) {
@@ -64,15 +64,16 @@ public class PermissionHelper {
      * @param id Layer id
      * @return layer
      */
-    private OskariLayer getLayer(final String id) {
-        OskariLayer layer = layerCache.get(id);
+    private OskariLayer getLayer(final int id) {
+        String cacheKey = Integer.toString(id);
+        OskariLayer layer = layerCache.get(cacheKey);
         if (layer != null) {
             return layer;
         }
         layer = layerService.find(id);
         if (layer != null) {
             LOG.debug("Caching a layer with id ", id);
-            layerCache.put(id, layer);
+            layerCache.put(cacheKey, layer);
         }
         return layer;
     }

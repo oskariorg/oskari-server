@@ -3,14 +3,11 @@ package fi.nls.oskari.map.layer;
 import com.ibatis.common.resources.Resources;
 import com.ibatis.sqlmap.client.SqlMapClient;
 import com.ibatis.sqlmap.client.SqlMapClientBuilder;
-import fi.mml.map.mapwindow.util.OskariLayerWorker;
 import fi.nls.oskari.annotation.Oskari;
 import fi.nls.oskari.domain.map.DataProvider;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.map.layer.externalid.OskariLayerExternalIdService;
-import fi.nls.oskari.map.layer.externalid.OskariLayerExternalIdServiceMybatisImpl;
 import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.JSONHelper;
 
@@ -28,7 +25,6 @@ public class OskariLayerServiceIbatisImpl extends OskariLayerService {
     private static String SQL_MAP_LOCATION = "META-INF/SqlMapConfig.xml";
 
     private static DataProviderService dataProviderService = new DataProviderServiceIbatisImpl();
-    private static final OskariLayerExternalIdService EXTERNAL_ID_SERVICE = new OskariLayerExternalIdServiceMybatisImpl();
 
     /**
      * Static setter to override default location
@@ -180,38 +176,9 @@ public class OskariLayerServiceIbatisImpl extends OskariLayerService {
         return layers;
     }
 
-    public OskariLayer find(final String idStr) {
-        final int id = ConversionHelper.getInt(idStr, -1);
-        if(id != -1) {
-            return find(id);
-        }
-        // TODO: throw an exception instead?
-        return find(EXTERNAL_ID_SERVICE.findByExternalId(idStr));
-    }
-
-    public List<OskariLayer> find(final List<String> idList) {
-        // TODO: break list into external and internalIds -> make 2 "where id/externalID in (...)" SQLs
-        // ensure order stays the same
-        final List<Integer> intList = ConversionHelper.getIntList(idList);
-        final List<String> strList =  ConversionHelper.getStringList(idList);
-        if(intList.isEmpty() && strList.isEmpty()){
-            return new ArrayList<OskariLayer>();
-        }
-        Map<String, Object> params = new HashMap<String, Object>();
-        params.put("strList", strList);
-        params.put("intList", intList);
-
-        List<Map<String,Object>> result = queryForList(getNameSpace() + ".findByIdList", params);
-        final List<OskariLayer> layers = mapDataList(result);
-
-        //Reorder layers to requested order
-        return OskariLayerWorker.reorderLayers(layers, idList);
-
-    }
-
     public List<OskariLayer> findByIdList(final List<Integer> intList) {
         if(intList.isEmpty()){
-            return new ArrayList<OskariLayer>();
+            return new ArrayList<>();
         }
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("intList", intList);
@@ -232,7 +199,6 @@ public class OskariLayerServiceIbatisImpl extends OskariLayerService {
         }
         return reLayers;
     }
-
 
     public OskariLayer find(int id) {
         try {
