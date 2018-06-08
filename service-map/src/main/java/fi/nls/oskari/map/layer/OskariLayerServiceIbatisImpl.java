@@ -9,6 +9,8 @@ import fi.nls.oskari.domain.map.DataProvider;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.map.layer.externalid.OskariLayerExternalIdService;
+import fi.nls.oskari.map.layer.externalid.OskariLayerExternalIdServiceMybatisImpl;
 import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.JSONHelper;
 
@@ -26,6 +28,7 @@ public class OskariLayerServiceIbatisImpl extends OskariLayerService {
     private static String SQL_MAP_LOCATION = "META-INF/SqlMapConfig.xml";
 
     private static DataProviderService dataProviderService = new DataProviderServiceIbatisImpl();
+    private static final OskariLayerExternalIdService EXTERNAL_ID_SERVICE = new OskariLayerExternalIdServiceMybatisImpl();
 
     /**
      * Static setter to override default location
@@ -183,20 +186,8 @@ public class OskariLayerServiceIbatisImpl extends OskariLayerService {
         if(id != -1) {
             return find(id);
         }
-        // try to find with external id
-        try {
-            final List<Map<String, Object>> lresults = (List<Map<String, Object>>) getSqlMapClient().queryForList(getNameSpace() + ".findByExternalId", idStr);
-            final OskariLayer layer = mapData(lresults.get(0));
-            if(layer.isCollection()) {
-                final List<OskariLayer> sublayers = findByParentId(layer.getId());
-                LOG.debug("FindByParent returned", sublayers.size(), "sublayers for parent id:", layer.getId());
-                layer.addSublayers(sublayers);
-            }
-            return layer;
-        } catch (Exception e) {
-            LOG.warn(e, "Couldn't find layer with id:", idStr);
-        }
-        return null;
+        // TODO: throw an exception instead?
+        return find(EXTERNAL_ID_SERVICE.findByExternalId(idStr));
     }
 
     public List<OskariLayer> find(final List<String> idList) {
