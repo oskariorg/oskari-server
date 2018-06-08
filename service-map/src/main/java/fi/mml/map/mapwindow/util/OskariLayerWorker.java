@@ -153,6 +153,7 @@ public class OskariLayerWorker {
 
     public static List<OskariLayer> filterLayersWithResources(List<OskariLayer> layers, Set<String> resources) {
         return layers.stream()
+                .filter(layer -> !layer.isInternal())
                 .filter(layer -> layer.isSublayer() || resources.contains(getPermissionKey(layer)))
                 .collect(Collectors.toList());
     }
