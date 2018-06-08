@@ -15,10 +15,7 @@ import fi.nls.oskari.map.data.domain.OskariLayerResource;
 import fi.nls.oskari.map.layer.OskariLayerService;
 import fi.nls.oskari.map.layer.OskariLayerServiceIbatisImpl;
 import fi.nls.oskari.permission.domain.Resource;
-import fi.nls.oskari.util.IOHelper;
-import fi.nls.oskari.util.JSONHelper;
-import fi.nls.oskari.util.ResponseHelper;
-import fi.nls.oskari.util.XmlHelper;
+import fi.nls.oskari.util.*;
 import fi.nls.oskari.wfs.WFSLayerConfigurationService;
 import fi.nls.oskari.wfs.WFSLayerConfigurationServiceIbatisImpl;
 import org.apache.http.HttpEntity;
@@ -92,13 +89,21 @@ public class InsertFeatureHandler extends ActionHandler {
 
     private OskariLayer getLayerForEditing(String layerId, User user)
             throws ActionException {
-        OskariLayer layer = layerService.find(layerId);
+        OskariLayer layer = layerService.find(getLayerId(layerId));
         final Resource resource = permissionsService.findResource(new OskariLayerResource(layer));
         final boolean hasPermission = resource.hasPermission(user, Permissions.PERMISSION_TYPE_EDIT_LAYER_CONTENT);
         if (!hasPermission) {
             throw new ActionDeniedException("Can't insert feature");
         }
         return layer;
+    }
+
+    private int getLayerId(String layerId) throws ActionParamsException {
+        int id = ConversionHelper.getInt(layerId, -1);
+        if (id == -1) {
+            throw new ActionParamsException("Missing layer id");
+        }
+        return id;
     }
 
     private void clearLayerTileCache(int layerId) {
