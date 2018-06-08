@@ -78,7 +78,6 @@ public class OskariLayerServiceIbatisImpl extends OskariLayerService {
         result.setId((Integer) data.get("id"));
         result.setParentId((Integer) data.get("parentid"));
         result.setType((String) data.get("type"));
-        result.setExternalId((String) data.get("externalid"));
         result.setBaseMap((Boolean) data.get("base_map"));
         result.setInternal((Boolean) data.get("internal"));
         result.setName((String) data.get("name"));

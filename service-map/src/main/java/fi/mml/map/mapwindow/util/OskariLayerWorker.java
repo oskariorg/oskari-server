@@ -358,7 +358,7 @@ public class OskariLayerWorker {
 
         for (String id : ids) {
             for (OskariLayer lay : layers) {
-                if (Integer.toString(lay.getId()).equals(id) || (lay.getExternalId() != null && lay.getExternalId().equals(id))) {
+                if (Integer.toString(lay.getId()).equals(id)) {
                     reLayers.add(lay);
                     break;
                 }
