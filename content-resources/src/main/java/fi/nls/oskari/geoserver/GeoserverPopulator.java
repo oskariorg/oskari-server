@@ -105,6 +105,7 @@ public class GeoserverPopulator {
             baseLayer.setType(OskariLayer.TYPE_WFS);
             baseLayer.setVersion("1.1.0");
             baseLayer.setName(name);
+            baseLayer.setInternal(true);
             baseLayer.setLocale(JSONHelper.createJSONObject("{ fi:{name:\"Omat paikat\"},sv:{name:\"My places\"},en:{name:\"My places\"}}"));
             baseLayer.setOpacity(50);
         }
@@ -136,6 +137,7 @@ public class GeoserverPopulator {
             baseLayer.setType(OskariLayer.TYPE_WFS);
             baseLayer.setVersion("1.1.0");
             baseLayer.setName(name);
+            baseLayer.setInternal(true);
             baseLayer.setLocale(JSONHelper.createJSONObject("{ fi:{name:\"Analyysitaso\"},sv:{name:\"Analys\"},en:{name:\"Analyse\"}}"));
             baseLayer.setOpacity(50);
         }
@@ -167,6 +169,7 @@ public class GeoserverPopulator {
             baseLayer.setType(OskariLayer.TYPE_WFS);
             baseLayer.setVersion("1.1.0");
             baseLayer.setName(name);
+            baseLayer.setInternal(true);
             baseLayer.setLocale(JSONHelper.createJSONObject("{ fi:{name:\"Omat aineistot\"},sv:{name:\"User layers\"},en:{name:\"User layers\"}}"));
             baseLayer.setOpacity(80);
         }

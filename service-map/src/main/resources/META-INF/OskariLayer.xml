@@ -16,6 +16,7 @@
         <parameter property="parentId" jdbcType="INTEGER"  javaType="int" />
         <parameter property="type" />
         <parameter property="baseMap" />
+        <parameter property="internal" />
         <parameter property="dataproviderId" />
 
         <parameter property="name" />
@@ -60,6 +61,7 @@
     <parameterMap id="LayerUpdateParameter" class="OskariLayer"> <!--  extends="OskariLayer.LayerInsertParameter" -->
         <parameter property="parentId" />
         <parameter property="baseMap" />
+        <parameter property="internal" />
         <parameter property="dataproviderId" />
 
         <parameter property="name" />
@@ -110,6 +112,7 @@
         l.externalId,
         l.type,
         l.base_map,
+        l.internal,
         l.dataprovider_id,
 
         l.name,
@@ -165,6 +168,7 @@
         l.externalId,
         l.type,
         l.base_map,
+        l.internal,
         l.dataprovider_id,
 
         l.name,
@@ -220,6 +224,7 @@
         l.externalId,
         l.type,
         l.base_map,
+        l.internal,
         l.dataprovider_id,
 
         l.name,
@@ -276,6 +281,7 @@
         l.externalId,
         l.type,
         l.base_map,
+        l.internal,
         l.dataprovider_id,
 
         l.name,
@@ -332,6 +338,7 @@
         l.externalId,
         l.type,
         l.base_map,
+        l.internal,
         l.dataprovider_id,
 
         l.name,
@@ -387,6 +394,7 @@
     l.externalId,
     l.type,
     l.base_map,
+    l.internal,
     l.dataprovider_id,
 
     l.name,
@@ -447,6 +455,7 @@
         l.externalId,
         l.type,
         l.base_map,
+        l.internal,
         l.dataprovider_id,
 
         l.name,
@@ -520,6 +529,7 @@
     l.externalId,
     l.type,
     l.base_map,
+    l.internal,
     l.dataprovider_id,
 
     l.name,
@@ -576,6 +586,7 @@
             parentId,
             type,
             base_map,
+            internal,
             dataprovider_id,
 
             name,
@@ -614,7 +625,7 @@
             capabilities_last_updated,
             capabilities_update_rate_sec)
 
-        values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+        values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
     </statement>
     
     <statement id="update" parameterMap="LayerUpdateParameter">
@@ -622,6 +633,7 @@
         SET
         parentId = ?,
         base_map = ?,
+        internal = ?,
         dataprovider_id = ?,
 
         name = ?,
