@@ -17,6 +17,8 @@ import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.layer.OskariLayerService;
+import fi.nls.oskari.service.ServiceRuntimeException;
+import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.util.IOHelper;
 import downloadbasket.data.LoadZipDetails;
@@ -83,7 +85,11 @@ public class SendDownloadDetailsToEmailThread implements Runnable {
 				ldz.setUserEmail(userDetails.getString("email"));
 				ldz.setLanguage(this.locale.getLanguage());
 				ldz.setDownloadNormalWay(normalDownloads.isBboxCropping(croppingMode, croppingLayer));
-				OskariLayer oskariLayer = mapLayerService.find(download.getString(PARAM_LAYER_ID));
+				int layerId = ConversionHelper.getInt(download.getString(PARAM_LAYER_ID), -1);
+				if (layerId == -1) {
+					throw new ServiceRuntimeException("Invalid layer id: " + download.getString(PARAM_LAYER_ID));
+				}
+				OskariLayer oskariLayer = mapLayerService.find(layerId);
 				String srs = "EPSG:4326";
 				if (oskariLayer != null) {
 					srs = oskariLayer.getSrs_name();

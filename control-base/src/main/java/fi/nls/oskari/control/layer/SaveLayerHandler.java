@@ -172,12 +172,12 @@ public class SaveLayerHandler extends ActionHandler {
     private SaveResult saveLayer(final ActionParameters params) throws ActionException {
 
         // layer_id can be string -> external id!
-        final String layer_id = params.getHttpParam(PARAM_LAYER_ID);
+        final int layer_id = params.getHttpParam(PARAM_LAYER_ID, -1);
         SaveResult result = new SaveResult();
 
         try {
             // ************** UPDATE ************************
-            if (layer_id != null) {
+            if (layer_id != -1) {
 
                 final OskariLayer ml = mapLayerService.find(layer_id);
                 if (ml == null) {

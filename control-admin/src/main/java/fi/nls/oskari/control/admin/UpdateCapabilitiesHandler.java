@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
+import fi.nls.oskari.util.ConversionHelper;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -103,11 +104,20 @@ public class UpdateCapabilitiesHandler extends ActionHandler {
         if (layerId == null) {
             return layerService.findAll();
         }
-        OskariLayer layer = layerService.find(layerId);
+        int id = getId(layerId);
+        OskariLayer layer = layerService.find(id);
         if (layer == null) {
-            throw new ActionParamsException("Unknown layer id:" + layerId);
+            throw new ActionParamsException("Unknown layer id:" + id);
         }
         return Collections.singletonList(layer);
+    }
+
+    private int getId(String layerId) throws ActionParamsException {
+        try {
+            return Integer.parseInt(layerId);
+        } catch (NumberFormatException e) {
+            throw new ActionParamsException("Layer id is not a number:" + layerId);
+        }
     }
 
     private Set<String> getSystemCRSs() throws ActionException {
@@ -139,7 +149,7 @@ public class UpdateCapabilitiesHandler extends ActionHandler {
             if (layerId != null && success.length() == 1) {
                 // If this is a update-single-layer request then add the updated information 
                 // Fetch the OskariLayer again to make sure we have all the fields updated in the object
-                OskariLayer layer = layerService.find(layerId);
+                OskariLayer layer = layerService.find(getId(layerId));
                 JSONObject layerJSON = OskariLayerWorker.getMapLayerJSON(layer,
                         params.getUser(),
                         params.getLocale().getLanguage(),

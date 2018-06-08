@@ -100,10 +100,10 @@ public class GetLayerCapabilitiesHandlerTest extends JSONActionRouteTest {
 
         OskariLayer layer = new OskariLayer();
         layer.setType("WMTS");
-        doReturn(layer).when(layerService).find("1");
+        doReturn(layer).when(layerService).find(1);
         OskariLayer errorLayer = new OskariLayer();
         errorLayer.setType("ERROR");
-        doReturn(errorLayer).when(layerService).find("2");
+        doReturn(errorLayer).when(layerService).find(2);
         return layerService;
     }
     private PermissionsService getPermissionsService() {

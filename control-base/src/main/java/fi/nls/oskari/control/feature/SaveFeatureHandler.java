@@ -3,6 +3,8 @@ package fi.nls.oskari.control.feature;
 import java.io.IOException;
 import java.util.Set;
 
+import fi.nls.oskari.control.ActionParamsException;
+import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.JSONHelper;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -62,7 +64,7 @@ public class SaveFeatureHandler extends ActionHandler {
 		try {
 			JSONObject jsonObject = new JSONObject(featureData);
 			String srsName = JSONHelper.getStringFromJSON(jsonObject, "srsName", "http://www.opengis.net/gml/srs/epsg.xml#3067");
-			OskariLayer lay = layerService.find(jsonObject.getString("layerId"));
+			OskariLayer lay = layerService.find(getLayerId(jsonObject.getString("layerId")));
 			WFSLayerConfiguration lc = layerConfigurationService.findConfiguration(lay.getId());
 			String url = lc.getURL();
 			final String user = lc.getUsername();
@@ -121,6 +123,14 @@ public class SaveFeatureHandler extends ActionHandler {
 			log.error(ex, "IO error");
 			throw new ActionException("IO error", ex);
 		}
+	}
+
+	private int getLayerId(String layerId) throws ActionParamsException {
+		int id = ConversionHelper.getInt(layerId, -1);
+		if (id == -1) {
+			throw new ActionParamsException("Missing layer id");
+		}
+		return id;
 	}
 	
 	private void FillGeometries(StringBuilder requestData, JSONObject geometries, String srsName) throws JSONException
