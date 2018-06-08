@@ -25,6 +25,7 @@ public class OskariLayer extends JSONLocalizedNameAndTitle implements Comparable
 	private String type;
 
     private boolean isBaseMap = false;
+    private boolean isInternal = false;
     private int dataproviderId;
 
     private String name;
@@ -238,6 +239,14 @@ public class OskariLayer extends JSONLocalizedNameAndTitle implements Comparable
 
     public void setBaseMap(boolean baseMap) {
         isBaseMap = baseMap;
+    }
+
+    public boolean isInternal() {
+        return isInternal;
+    }
+
+    public void setInternal(boolean internal) {
+        isInternal = internal;
     }
 
     public int getDataproviderId() {
