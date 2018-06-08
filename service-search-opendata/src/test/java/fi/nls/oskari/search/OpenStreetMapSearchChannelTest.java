@@ -23,8 +23,6 @@ public class OpenStreetMapSearchChannelTest {
     public void testCoordinateTransforms() throws Exception {
 
         OpenStreetMapSearchChannel channel = new OpenStreetMapSearchChannel();
-        System.setProperty("http.proxyHost", "wwwp.nls.fi");
-        System.setProperty("http.proxyPort", "800");
         channel.init();
         SearchCriteria sc = new SearchCriteria();
         sc.setSearchString("Tampere");
