@@ -77,6 +77,7 @@ public class OskariLayerServiceIbatisImpl extends OskariLayerService {
         result.setType((String) data.get("type"));
         result.setExternalId((String) data.get("externalid"));
         result.setBaseMap((Boolean) data.get("base_map"));
+        result.setInternal((Boolean) data.get("internal"));
         result.setName((String) data.get("name"));
         result.setUrl((String) data.get("url"));
         result.setLocale(JSONHelper.createJSONObject((String) data.get("locale")));
