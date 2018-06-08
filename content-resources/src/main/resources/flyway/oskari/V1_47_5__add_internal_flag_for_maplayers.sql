@@ -1,2 +1,2 @@
 
-ALTER TABLE oskari_maplayer ADD COLUMN internal boolean DEFAULT false;
+ALTER TABLE oskari_maplayer ADD COLUMN internal boolean DEFAULT false NOT NULL;
