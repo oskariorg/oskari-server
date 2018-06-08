@@ -172,6 +172,7 @@ public class PxwebIndicatorsParser {
     protected StatisticalIndicatorDataModel getModel(PxTableItem table) {
         // selectors are shared between indicators in pxweb
         final StatisticalIndicatorDataModel selectors = new StatisticalIndicatorDataModel();
+        selectors.setTimeVariable(config.getTimeVariableId());
         for (VariablesItem item: table.getSelectors()) {
             if(config.getIgnoredVariables().contains(item.getCode())) {
                 continue;
@@ -180,6 +181,10 @@ public class PxwebIndicatorsParser {
             selector.setName(item.getLabel());
             selector.setAllowedValues(item.getLabels());
             selectors.addDimension(selector);
+            if (item.isTimeVariable()) {
+                // override the time variable config for datasource if we get the information from the API
+                selectors.setTimeVariable(selector.getId());
+            }
         }
         return selectors;
     }

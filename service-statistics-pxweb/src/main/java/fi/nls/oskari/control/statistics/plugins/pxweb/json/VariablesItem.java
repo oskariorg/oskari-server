@@ -23,6 +23,10 @@ public class VariablesItem {
         return code;
     }
 
+    public boolean isTimeVariable() {
+        return time;
+    }
+
     public String getLabel() {
         if(text == null) {
             return getCode();

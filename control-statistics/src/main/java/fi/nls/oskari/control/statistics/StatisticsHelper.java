@@ -99,6 +99,9 @@ public class StatisticsHelper {
             JSONObject selectorJSON = new JSONObject();
             selectorJSON.put("id", selector.getId());
             selectorJSON.put("name", selector.getName());
+            if(selectors.isTimeVariable(selector)) {
+                selectorJSON.put("time", true);
+            }
             selectorJSON.put("allowedValues", toJSON(selector.getAllowedValues()));
             // Note: Values are not given here, they are null anyhow in this phase.
             selectorsJSON.put(selectorJSON);

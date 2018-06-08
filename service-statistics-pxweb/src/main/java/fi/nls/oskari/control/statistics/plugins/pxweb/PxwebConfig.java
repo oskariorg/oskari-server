@@ -16,12 +16,16 @@ public class PxwebConfig {
     private String regionKey;
     private String indicatorKey;
     private Set<String> ignoredVariables = new HashSet<>();
+    private String timeVariableId = null;
 
     public PxwebConfig(JSONObject json, long id) {
         datasourceId = id;
         url = json.optString("url");
         regionKey = json.optString("regionKey");
         indicatorKey = json.optString("indicatorKey");
+
+        // allow override with db config
+        timeVariableId = json.optString("timeVariable", timeVariableId);
         JSONArray ignored = json.optJSONArray("ignoredVariables");
         if(ignored != null) {
             for (int i = 0; i < ignored.length(); i++) {
@@ -57,5 +61,9 @@ public class PxwebConfig {
 
     public Set<String> getIgnoredVariables() {
         return ignoredVariables;
+    }
+
+    public String getTimeVariableId() {
+        return timeVariableId;
     }
 }

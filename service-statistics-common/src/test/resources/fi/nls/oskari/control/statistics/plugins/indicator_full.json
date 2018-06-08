@@ -12,6 +12,7 @@
     "params" : {}
   }],
   "dataModel": {
+    "timeVariable": null,
     "dimensions": [{
       "id": "sex",
       "value": null,
