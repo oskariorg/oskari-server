@@ -41,7 +41,6 @@ public class LayerJSONFormatter {
         typeMapping.put(OskariLayer.TYPE_WMS, new LayerJSONFormatterWMS());
         typeMapping.put(OskariLayer.TYPE_WFS, new LayerJSONFormatterWFS());
         typeMapping.put(OskariLayer.TYPE_WMTS, new LayerJSONFormatterWMTS());
-        typeMapping.put(OskariLayer.TYPE_STATS, new LayerJSONFormatterStats());
     }
 
     private static LayerJSONFormatter getFormatter(final String type) {
