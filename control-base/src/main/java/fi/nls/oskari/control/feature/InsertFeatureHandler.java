@@ -4,8 +4,10 @@ import fi.mml.portti.domain.permissions.Permissions;
 import fi.mml.portti.service.db.permissions.PermissionsService;
 import fi.mml.portti.service.db.permissions.PermissionsServiceIbatisImpl;
 import fi.nls.oskari.annotation.OskariActionRoute;
-import fi.nls.oskari.cache.JedisManager;
-import fi.nls.oskari.control.*;
+import fi.nls.oskari.control.ActionDeniedException;
+import fi.nls.oskari.control.ActionException;
+import fi.nls.oskari.control.ActionParameters;
+import fi.nls.oskari.control.ActionParamsException;
 import fi.nls.oskari.domain.User;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.domain.map.wfs.WFSLayerConfiguration;
@@ -15,7 +17,10 @@ import fi.nls.oskari.map.data.domain.OskariLayerResource;
 import fi.nls.oskari.map.layer.OskariLayerService;
 import fi.nls.oskari.map.layer.OskariLayerServiceIbatisImpl;
 import fi.nls.oskari.permission.domain.Resource;
-import fi.nls.oskari.util.*;
+import fi.nls.oskari.util.IOHelper;
+import fi.nls.oskari.util.JSONHelper;
+import fi.nls.oskari.util.ResponseHelper;
+import fi.nls.oskari.util.XmlHelper;
 import fi.nls.oskari.wfs.WFSLayerConfigurationService;
 import fi.nls.oskari.wfs.WFSLayerConfigurationServiceIbatisImpl;
 import org.apache.http.HttpEntity;
@@ -44,10 +49,9 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.util.Set;
 
 @OskariActionRoute("InsertFeature")
-public class InsertFeatureHandler extends ActionHandler {
+public class InsertFeatureHandler extends AbstractFeatureHandler {
     private final static Logger LOG = LogFactory.getLogger(InsertFeatureHandler.class);
 
     private OskariLayerService layerService;
@@ -68,7 +72,7 @@ public class InsertFeatureHandler extends ActionHandler {
         final JSONObject jsonPayload = getJSONPayload(params);
         // throws denied exception if user doesn't have permission to edit the layer
         final OskariLayer layer = getLayerForEditing(jsonPayload.optString("layerId"), params.getUser());
-        clearLayerTileCache(layer.getId());
+        flushLayerTilesCache(layer.getId());
         final String wfstMessage = createWFSTMessage(jsonPayload, layer);
         LOG.debug("Inserting feature to service at", layer.getUrl(), "with payload", wfstMessage);
         final String responseString = postWFSTMessage(layer, wfstMessage);
@@ -96,19 +100,6 @@ public class InsertFeatureHandler extends ActionHandler {
             throw new ActionDeniedException("Can't insert feature");
         }
         return layer;
-    }
-
-    private int getLayerId(String layerId) throws ActionParamsException {
-        int id = ConversionHelper.getInt(layerId, -1);
-        if (id == -1) {
-            throw new ActionParamsException("Missing layer id");
-        }
-        return id;
-    }
-
-    private void clearLayerTileCache(int layerId) {
-        Set<String> keys = JedisManager.keys("WFSImage_" + Integer.toString(layerId));
-        JedisManager.del(keys.toArray(new String[0]));
     }
 
     private String postWFSTMessage(OskariLayer layer, String payload)
