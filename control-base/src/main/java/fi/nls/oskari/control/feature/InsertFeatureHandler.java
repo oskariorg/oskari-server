@@ -1,41 +1,18 @@
 package fi.nls.oskari.control.feature;
 
-import fi.mml.portti.domain.permissions.Permissions;
-import fi.mml.portti.service.db.permissions.PermissionsService;
-import fi.mml.portti.service.db.permissions.PermissionsServiceIbatisImpl;
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.ActionDeniedException;
 import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.control.ActionParamsException;
-import fi.nls.oskari.domain.User;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.domain.map.wfs.WFSLayerConfiguration;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.map.data.domain.OskariLayerResource;
-import fi.nls.oskari.map.layer.OskariLayerService;
-import fi.nls.oskari.map.layer.OskariLayerServiceIbatisImpl;
-import fi.nls.oskari.permission.domain.Resource;
-import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.ResponseHelper;
 import fi.nls.oskari.util.XmlHelper;
-import fi.nls.oskari.wfs.WFSLayerConfigurationService;
-import fi.nls.oskari.wfs.WFSLayerConfigurationServiceIbatisImpl;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.auth.AuthScope;
-import org.apache.http.auth.Credentials;
-import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.CredentialsProvider;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.BasicCredentialsProvider;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -54,89 +31,31 @@ import java.io.IOException;
 public class InsertFeatureHandler extends AbstractFeatureHandler {
     private final static Logger LOG = LogFactory.getLogger(InsertFeatureHandler.class);
 
-    private OskariLayerService layerService;
-    private PermissionsService permissionsService;
-    private WFSLayerConfigurationService layerConfigurationService;
-
-    @Override
-    public void init() {
-        super.init();
-        layerService = new OskariLayerServiceIbatisImpl();
-        permissionsService = new PermissionsServiceIbatisImpl();
-        layerConfigurationService = new WFSLayerConfigurationServiceIbatisImpl();
-    }
-
     @Override
     public void handleAction(ActionParameters params)
             throws ActionException {
-        final JSONObject jsonPayload = getJSONPayload(params);
-        // throws denied exception if user doesn't have permission to edit the layer
-        final OskariLayer layer = getLayerForEditing(jsonPayload.optString("layerId"), params.getUser());
-        flushLayerTilesCache(layer.getId());
-        final String wfstMessage = createWFSTMessage(jsonPayload, layer);
+
+        JSONObject jsonPayload = params.getHttpParamAsJSON("featureData");
+        OskariLayer layer = getLayer(jsonPayload.optString("layerId"));
+
+        if (!canEdit(layer, params.getUser())) {
+            throw new ActionDeniedException("User doesn't have edit permission for layer: " + layer.getId());
+        }
+
+        final WFSLayerConfiguration wfsMetadata = getWFSConfiguration(layer.getId());
+        final String wfstMessage = createWFSTMessage(jsonPayload, layer, wfsMetadata);
         LOG.debug("Inserting feature to service at", layer.getUrl(), "with payload", wfstMessage);
-        final String responseString = postWFSTMessage(layer, wfstMessage);
+        final String responseString = postPayload(layer, wfstMessage);
         final String updatedFeatureId = parseFeatureIdFromResponse(responseString);
+
+        flushLayerTilesCache(layer.getId());
         ResponseHelper.writeResponse(params, JSONHelper.createJSONObject("fid", updatedFeatureId));
     }
 
-    private JSONObject getJSONPayload(ActionParameters params)
-            throws ActionException {
-
-        String featureData = params.getHttpParam("featureData");
-        JSONObject jsonObject = JSONHelper.createJSONObject(featureData);
-        if (jsonObject == null) {
-            throw new ActionParamsException("Couldn't parse featureData JSON from request");
-        }
-        return jsonObject;
-    }
-
-    private OskariLayer getLayerForEditing(String layerId, User user)
-            throws ActionException {
-        OskariLayer layer = layerService.find(getLayerId(layerId));
-        final Resource resource = permissionsService.findResource(new OskariLayerResource(layer));
-        final boolean hasPermission = resource.hasPermission(user, Permissions.PERMISSION_TYPE_EDIT_LAYER_CONTENT);
-        if (!hasPermission) {
-            throw new ActionDeniedException("Can't insert feature");
-        }
-        return layer;
-    }
-
-    private String postWFSTMessage(OskariLayer layer, String payload)
-            throws ActionException {
-        HttpClient httpClient = getHttpClientForLayer(layer);
-        HttpPost request = new HttpPost(layer.getUrl());
-        request.addHeader(IOHelper.HEADER_CONTENTTYPE, IOHelper.CONTENT_TYPE_XML);
-        request.setEntity(new StringEntity(payload, "UTF-8"));
-        try {
-
-            HttpResponse response = httpClient.execute(request);
-            HttpEntity entity = response.getEntity();
-            String responseString = EntityUtils.toString(entity, "UTF-8");
-            if (responseString == null) {
-                throw new ActionParamsException("Didn't get any response from service");
-            }
-            return responseString;
-        } catch (IOException ex) {
-            throw new ActionParamsException("Error posting the WFS-T message to service");
-        }
-    }
-
-    private HttpClient getHttpClientForLayer(OskariLayer layer) {
-        HttpClientBuilder httpClientBuilder = HttpClientBuilder.create();
-        Credentials credentials = new UsernamePasswordCredentials(layer.getUsername(), layer.getPassword());
-        CredentialsProvider credsProvider = new BasicCredentialsProvider();
-        credsProvider.setCredentials(AuthScope.ANY, credentials);
-
-        httpClientBuilder.setDefaultCredentialsProvider(credsProvider);
-        return httpClientBuilder.build();
-    }
-
-    private String createWFSTMessage(JSONObject jsonPayload, OskariLayer layer)
+    private String createWFSTMessage(JSONObject jsonPayload, OskariLayer layer, WFSLayerConfiguration wfsMetadata)
             throws ActionException {
         final String srsName = JSONHelper.getStringFromJSON(jsonPayload, "srsName", "http://www.opengis.net/gml/srs/epsg.xml#3067");
-        final WFSLayerConfiguration lc = layerConfigurationService.findConfiguration(layer.getId());
-        final StringBuilder requestData = new StringBuilder("<wfs:Transaction service='WFS' version='1.1.0' xmlns:ogc='http://www.opengis.net/ogc' xmlns:wfs='http://www.opengis.net/wfs'><wfs:Insert><" + layer.getName() + " xmlns:" + lc.getFeatureNamespace() + "='" + lc.getFeatureNamespaceURI() + "'>");
+        final StringBuilder requestData = new StringBuilder("<wfs:Transaction service='WFS' version='1.1.0' xmlns:ogc='http://www.opengis.net/ogc' xmlns:wfs='http://www.opengis.net/wfs'><wfs:Insert><" + layer.getName() + " xmlns:" + wfsMetadata.getFeatureNamespace() + "='" + wfsMetadata.getFeatureNamespaceURI() + "'>");
         try {
             final JSONArray jsonArray = jsonPayload.getJSONArray("featureFields");
             for (int i = 0; i < jsonArray.length(); i++) {
@@ -148,7 +67,7 @@ public class InsertFeatureHandler extends AbstractFeatureHandler {
             }
 
             if (jsonPayload.has("geometries")) {
-                FillGeometries(lc.getGMLGeometryProperty(), requestData, jsonPayload.getJSONObject("geometries"), srsName);
+                FillGeometries(wfsMetadata.getGMLGeometryProperty(), requestData, jsonPayload.getJSONObject("geometries"), srsName);
             }
         } catch (JSONException ex) {
             throw new ActionParamsException("Couldn't create WFS-T message from params", jsonPayload.toString(), ex);

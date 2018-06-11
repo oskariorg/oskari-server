@@ -10,8 +10,6 @@ import fi.nls.oskari.util.ResponseHelper;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
-
 @OskariActionRoute("DeleteFeature")
 public class DeleteFeatureHandler extends AbstractFeatureHandler {
 
@@ -26,19 +24,26 @@ public class DeleteFeatureHandler extends AbstractFeatureHandler {
             throw new ActionDeniedException("User doesn't have edit permission for layer: " + layer.getId());
         }
 
-        try {
-            String payload = createPayload(layer.getName(), jsonObject.getString("featureId"));
-            String responseString = postPayload(layer, payload);
-            flushLayerTilesCache(layer.getId());
+        String payload = createPayload(layer.getName(), getFeatureId(jsonObject));
+        String responseString = postPayload(layer, payload);
+        flushLayerTilesCache(layer.getId());
 
-            if (responseString.indexOf("Exception") > -1) {
-                ResponseHelper.writeResponse(params, "Exception");
-            } else if (responseString.indexOf("<wfs:totalDeleted>1</wfs:totalDeleted>") > -1) {
-                ResponseHelper.writeResponse(params, "");
-            }
+        if (responseString.indexOf("Exception") > -1) {
+            // FIXME: throwing an exception would be better. Just need to sync the change with frontend
+            ResponseHelper.writeResponse(params, "Exception");
+        } else if (responseString.indexOf("<wfs:totalDeleted>1</wfs:totalDeleted>") > -1) {
+            // FIXME: empty response? why?
+            ResponseHelper.writeResponse(params, "");
+        } else {
             throw new ActionParamsException("Unexpected response from service: " + responseString);
-        } catch (JSONException | IOException ex) {
-            throw new ActionException("Could not update feature", ex);
+        }
+    }
+
+    private String getFeatureId(JSONObject json) throws ActionParamsException {
+        try {
+            return json.getString("featureId");
+        } catch (JSONException e) {
+            throw new ActionParamsException("Error getting featureId from payload");
         }
     }
 

@@ -9,11 +9,13 @@ import fi.nls.oskari.control.ActionHandler;
 import fi.nls.oskari.control.ActionParamsException;
 import fi.nls.oskari.domain.User;
 import fi.nls.oskari.domain.map.OskariLayer;
+import fi.nls.oskari.domain.map.wfs.WFSLayerConfiguration;
 import fi.nls.oskari.map.data.domain.OskariLayerResource;
 import fi.nls.oskari.map.layer.OskariLayerService;
 import fi.nls.oskari.map.layer.OskariLayerServiceIbatisImpl;
 import fi.nls.oskari.permission.domain.Resource;
 import fi.nls.oskari.util.ConversionHelper;
+import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.wfs.WFSLayerConfigurationService;
 import fi.nls.oskari.wfs.WFSLayerConfigurationServiceIbatisImpl;
 import org.apache.http.HttpEntity;
@@ -53,6 +55,10 @@ public abstract class AbstractFeatureHandler extends ActionHandler {
         return layerService.find(getLayerId(id));
     }
 
+    protected WFSLayerConfiguration getWFSConfiguration(int id) throws ActionParamsException {
+        return layerConfigurationService.findConfiguration(id);
+    }
+
     protected boolean canEdit(OskariLayer layer, User user) {
         final Resource resource = permissionsService.findResource(new OskariLayerResource(layer));
         return resource.hasPermission(user, Permissions.PERMISSION_TYPE_EDIT_LAYER_CONTENT);
@@ -66,21 +72,31 @@ public abstract class AbstractFeatureHandler extends ActionHandler {
         return id;
     }
 
-    protected String postPayload(OskariLayer layer, String payload) throws ActionException, IOException {
+    protected String postPayload(OskariLayer layer, String payload) throws ActionException {
 
-        HttpClientBuilder httpClientBuilder = HttpClientBuilder.create();
-        Credentials credentials = new UsernamePasswordCredentials(layer.getUsername(), layer.getPassword());
         CredentialsProvider credsProvider = new BasicCredentialsProvider();
+        Credentials credentials = new UsernamePasswordCredentials(layer.getUsername(), layer.getPassword());
         credsProvider.setCredentials(AuthScope.ANY, credentials);
 
+        HttpClientBuilder httpClientBuilder = HttpClientBuilder.create();
         httpClientBuilder.setDefaultCredentialsProvider(credsProvider);
-        HttpClient httpClient = httpClientBuilder.build();
+
         HttpPost request = new HttpPost(layer.getUrl());
-        request.addHeader("content-type", "application/xml");
+        request.addHeader(IOHelper.HEADER_CONTENTTYPE, IOHelper.CONTENT_TYPE_XML);
         request.setEntity(new StringEntity(payload, "UTF-8"));
-        HttpResponse response = httpClient.execute(request);
-        HttpEntity entity = response.getEntity();
-        return EntityUtils.toString(entity, "UTF-8");
+
+        HttpClient httpClient = httpClientBuilder.build();
+        try {
+            HttpResponse response = httpClient.execute(request);
+            HttpEntity entity = response.getEntity();
+            String responseString = EntityUtils.toString(entity, "UTF-8");
+            if (responseString == null) {
+                throw new ActionParamsException("Didn't get any response from service");
+            }
+            return responseString;
+        } catch (IOException ex) {
+            throw new ActionException("Error posting the WFS-T message to service", ex);
+        }
     }
 
     protected void flushLayerTilesCache(int layerId) {
