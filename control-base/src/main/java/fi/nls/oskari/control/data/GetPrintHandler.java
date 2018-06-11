@@ -213,6 +213,7 @@ public class GetPrintHandler extends ActionHandler {
         for (LayerProperties requestedLayer : requestedLayers) {
             int id = ConversionHelper.getInt(requestedLayer.getId(), -1);
             if (id == -1) {
+                // TODO: add support for myplaces/userlayers/analysis
                 continue;
             }
             OskariLayer oskariLayer = permissionHelper.getLayer(id, user);
