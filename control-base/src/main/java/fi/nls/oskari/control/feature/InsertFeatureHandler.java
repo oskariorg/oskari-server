@@ -26,6 +26,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.StringWriter;
 
 @OskariActionRoute("InsertFeature")
 public class InsertFeatureHandler extends AbstractFeatureHandler {
@@ -67,7 +68,7 @@ public class InsertFeatureHandler extends AbstractFeatureHandler {
             }
 
             if (jsonPayload.has("geometries")) {
-                FillGeometries(wfsMetadata.getGMLGeometryProperty(), requestData, jsonPayload.getJSONObject("geometries"), srsName);
+                insertGeometries(wfsMetadata.getGMLGeometryProperty(), requestData, jsonPayload.getJSONObject("geometries"), srsName);
             }
         } catch (JSONException ex) {
             throw new ActionParamsException("Couldn't create WFS-T message from params", jsonPayload.toString(), ex);
@@ -113,35 +114,18 @@ public class InsertFeatureHandler extends AbstractFeatureHandler {
         }
     }
 
-    private void FillGeometries(String geometryProperty, StringBuilder requestData, JSONObject geometries,
-                                String srsName)
-            throws JSONException {
-        String geometryType = geometries.getString("type");
-        if (geometryType.equals("multipoint")) {
-            FillMultiPointGeometries(geometryProperty, requestData, geometries, srsName);
-        } else if (geometryType.equals("multilinestring")) {
-            FillLineStringGeometries(geometryProperty, requestData, geometries, srsName);
-        } else if (geometryType.equals("multipolygon")) {
-            FillPolygonGeometries(geometryProperty, requestData, geometries, srsName);
-        }
-    }
-
-    private void FillMultiPointGeometries(String geometryProperty, StringBuilder requestData, JSONObject geometries,
+    @Override
+    protected void fillMultiPointGeometries(String geometryProperty, StringBuilder requestData, JSONObject geometries,
                                           String srsName)
             throws JSONException {
         JSONArray data = geometries.getJSONArray("data");
-        requestData.append("<" + geometryProperty
-                + "><gml:MultiPoint xmlns:gml='http://www.opengis.net/gml' srsName='" + srsName + "'>");
-
-        for (int i = 0; i < data.length(); i++) {
-            requestData.append("<gml:pointMember><gml:Point><gml:coordinates decimal=\".\" cs=\",\" ts=\" \">"
-                    + data.getJSONObject(i).getString("x") + "," + data.getJSONObject(i).getString("y")
-                    + "</gml:coordinates></gml:Point></gml:pointMember>");
-        }
-        requestData.append("</gml:MultiPoint></" + geometryProperty + ">");
+        requestData.append("<" + geometryProperty + ">");
+        requestData.append(getMultipoint(srsName, data));
+        requestData.append("</" + geometryProperty + ">");
     }
 
-    private void FillLineStringGeometries(String geometryProperty, StringBuilder requestData, JSONObject geometries,
+    @Override
+    protected void fillLineStringGeometries(String geometryProperty, StringBuilder requestData, JSONObject geometries,
                                           String srsName)
             throws JSONException {
         JSONArray data = geometries.getJSONArray("data");
@@ -163,7 +147,8 @@ public class InsertFeatureHandler extends AbstractFeatureHandler {
         requestData.append("</gml:MultiLineString></" + geometryProperty + ">");
     }
 
-    private void FillPolygonGeometries(String geometryProperty, StringBuilder requestData, JSONObject geometries,
+    @Override
+    protected void fillPolygonGeometries(String geometryProperty, StringBuilder requestData, JSONObject geometries,
                                        String srsName)
             throws JSONException {
         JSONArray data = geometries.getJSONArray("data");

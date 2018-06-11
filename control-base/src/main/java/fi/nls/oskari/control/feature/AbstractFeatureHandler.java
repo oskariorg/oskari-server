@@ -30,8 +30,12 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
+import java.io.StringWriter;
 import java.util.Set;
 
 
@@ -98,6 +102,41 @@ public abstract class AbstractFeatureHandler extends ActionHandler {
             throw new ActionException("Error posting the WFS-T message to service", ex);
         }
     }
+
+    protected void insertGeometries(String geometryProperty, StringBuilder requestData, JSONObject geometries, String srsName) throws JSONException {
+        String geometryType = geometries.getString("type");
+        if (geometryType.equals("multipoint")) {
+            fillMultiPointGeometries(geometryProperty, requestData, geometries, srsName);
+        } else if (geometryType.equals("multilinestring")) {
+            fillLineStringGeometries(geometryProperty, requestData, geometries, srsName);
+        } else if (geometryType.equals("multipolygon")) {
+            fillPolygonGeometries(geometryProperty, requestData, geometries, srsName);
+        }
+    }
+
+    protected String getMultipoint(String srsName, JSONArray data) throws JSONException {
+        StringWriter writer = new StringWriter();
+        writer.append("<gml:MultiPoint xmlns:gml=\"http://www.opengis.net/gml\" srsName=\"");
+        writer.append(srsName);
+        writer.append("\">");
+        for (int i = 0; i < data.length(); i++) {
+            writer.append("<gml:pointMember><gml:Point><gml:coordinates decimal=\".\" cs=\",\" ts=\" \">"
+                    + data.getJSONObject(i).getString("x") + "," + data.getJSONObject(i).getString("y")
+                    + "</gml:coordinates></gml:Point></gml:pointMember>");
+        }
+        writer.append("</gml:MultiPoint>");
+        return writer.toString();
+    }
+    protected void fillMultiPointGeometries(String geometryProperty, StringBuilder requestData, JSONObject geometries, String srsName) throws JSONException {
+
+    }
+    protected void fillLineStringGeometries(String geometryProperty, StringBuilder requestData, JSONObject geometries, String srsName) throws JSONException {
+
+    }
+    protected void fillPolygonGeometries(String geometryProperty, StringBuilder requestData, JSONObject geometries, String srsName) throws JSONException {
+
+    }
+
 
     protected void flushLayerTilesCache(int layerId) {
         Set<String> keys = JedisManager.keys(CACHKE_KEY_PREFIX + Integer.toString(layerId));
