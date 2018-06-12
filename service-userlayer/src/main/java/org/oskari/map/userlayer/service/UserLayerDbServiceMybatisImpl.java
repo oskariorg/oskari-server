@@ -52,9 +52,8 @@ public class UserLayerDbServiceMybatisImpl extends UserLayerDbService {
     }
 
     public int insertUserLayer(final UserLayer userLayer, final UserLayerStyle userLayerStyle, final List<UserLayerData> userLayerDataList) throws ServiceException {
-        final SqlSession session = factory.openSession(ExecutorType.BATCH);
-        int count = 0;
-        try {
+        try (SqlSession session = factory.openSession(ExecutorType.BATCH)) {
+            int count = 0;
             final UserLayerMapper mapper = session.getMapper(UserLayerMapper.class);
             mapper.insertUserLayerStyleRow(userLayerStyle);
             session.flushStatements();
@@ -80,11 +79,8 @@ public class UserLayerDbServiceMybatisImpl extends UserLayerDbService {
             session.commit();
             return count;
         } catch (Exception e) {
-            session.rollback();
             log.error(e, "Rolling back, failed to insert userlayer with id:", +userLayer.getId());
             throw new ServiceException("unable_to_store_data");
-        } finally {
-            session.close();
         }
     }
 
@@ -94,18 +90,15 @@ public class UserLayerDbServiceMybatisImpl extends UserLayerDbService {
      * @param userLayer
      */
     public int updateUserLayerCols(final UserLayer userLayer) {
-        final SqlSession session = factory.openSession();
-        try {
+        try (SqlSession session = factory.openSession()) {
             final UserLayerMapper mapper = session.getMapper(UserLayerMapper.class);
             int result = mapper.updateUserLayerCols(userLayer);
             session.commit();
             return result;
         } catch (Exception e) {
             log.error(e, "Failed to update userLayer col mapping", userLayer);
-        } finally {
-            session.close();
+            return 0;
         }
-        return 0;
     }
 
     /**
@@ -115,16 +108,13 @@ public class UserLayerDbServiceMybatisImpl extends UserLayerDbService {
      * @return userLayer object
      */
     public UserLayer getUserLayerById(long id) {
-        final SqlSession session = factory.openSession();
-        try {
+        try (SqlSession session = factory.openSession()) {
             final UserLayerMapper mapper = session.getMapper(UserLayerMapper.class);
             return mapper.findUserLayer(id);
         } catch (Exception e) {
             log.error(e, "Failed to get userLayer with id:", id);
-        } finally {
-            session.close();
+            return null;
         }
-        return null;
     }
 
 
@@ -135,16 +125,13 @@ public class UserLayerDbServiceMybatisImpl extends UserLayerDbService {
      * @return List of userLayer objects
      */
     public List<UserLayer> getUserLayerByUuid(String uuid) {
-        final SqlSession session = factory.openSession();
-        try {
+        try (SqlSession session = factory.openSession()) {
             final UserLayerMapper mapper = session.getMapper(UserLayerMapper.class);
             return mapper.findUserLayerByUuid(uuid);
         } catch (Exception e) {
             log.error(e, "Failed to get userLayer with uuid:", uuid);
-        } finally {
-            session.close();
+            return null;
         }
-        return null;
     }
 
     public void deleteUserLayerById(final long id) throws ServiceException {
@@ -156,25 +143,20 @@ public class UserLayerDbServiceMybatisImpl extends UserLayerDbService {
         if (userLayer == null) {
             throw new ServiceException("Tried to delete userLayer with <null> param");
         }
-        final SqlSession session = factory.openSession();
-        try {
+        try (SqlSession session = factory.openSession()) {
             final UserLayerMapper mapper = session.getMapper(UserLayerMapper.class);
             mapper.deleteUserLayerDataByLayerId(userLayer.getId());
             mapper.deleteUserLayerRow(userLayer.getId());
             mapper.deleteUserLayerStyleRow(userLayer.getStyle_id());
             session.commit();
         } catch (Exception e) {
-            session.rollback();
             log.error(e, "Error deleting userLayer with id:", userLayer.getId());
             throw new ServiceException("Error deleting userLayer with id:" + userLayer.getId(), e);
-        } finally {
-            session.close();
         }
     }
 
     public void deleteUserLayersByUuid(String uuid) throws ServiceException {
-        final SqlSession session = factory.openSession();
-        try {
+        try (SqlSession session = factory.openSession()) {
             final UserLayerMapper mapper = session.getMapper(UserLayerMapper.class);
             List<UserLayer> userLayers = mapper.findUserLayerByUuid(uuid);
             if (userLayers.isEmpty()) {
@@ -186,11 +168,8 @@ public class UserLayerDbServiceMybatisImpl extends UserLayerDbService {
             }
             session.commit();
         } catch (Exception e) {
-            session.rollback();
             log.error(e, "Error deleting user related userlayer content with uuid:", uuid);
             throw new ServiceException("Error deleting user related userlayer content with uuid:" + uuid, e);
-        } finally {
-            session.close();
         }
     }
 
@@ -202,46 +181,37 @@ public class UserLayerDbServiceMybatisImpl extends UserLayerDbService {
      * @param name
      */
     public int updatePublisherName(final long id, final String uuid, final String name) {
-        final SqlSession session = factory.openSession();
-        try {
+        try (SqlSession session = factory.openSession()) {
             final UserLayerMapper mapper = session.getMapper(UserLayerMapper.class);
             int result = mapper.updatePublisherName(id, uuid, name);
             session.commit();
             return result;
         } catch (Exception e) {
             log.error(e, "Failed to update publisher name:", name, "id:", id, "uuid", uuid);
-        } finally {
-            session.close();
+            return 0;
         }
-        return 0;
     }
 
     public int updateUserLayerStyleCols(final UserLayerStyle userLayerStyle) {
-        final SqlSession session = factory.openSession();
-        try {
+        try (SqlSession session = factory.openSession()) {
             final UserLayerMapper mapper = session.getMapper(UserLayerMapper.class);
             int result = mapper.updateUserLayerStyleCols(userLayerStyle);
             session.commit();
             return result;
         } catch (Exception e) {
             log.error(e, "Failed to update userlayerstyle col mapping", userLayerStyle);
-        } finally {
-            session.close();
+            return 0;
         }
-        return 0;
     }
 
     public UserLayerStyle getUserLayerStyleById(long id) {
-        final SqlSession session = factory.openSession();
-        try {
+        try (SqlSession session = factory.openSession()) {
             final UserLayerMapper mapper = session.getMapper(UserLayerMapper.class);
             return mapper.findUserLayerStyle(id);
         } catch (Exception e) {
             log.error(e, "Failed to get userLayer with id:", id);
-        } finally {
-            session.close();
+            return null;
         }
-        return null;
     }
 
     /**
@@ -250,30 +220,24 @@ public class UserLayerDbServiceMybatisImpl extends UserLayerDbService {
      * @param userLayerData
      */
     public int updateUserLayerDataCols(final UserLayerData userLayerData) {
-        final SqlSession session = factory.openSession();
-        try {
+        try (SqlSession session = factory.openSession()) {
             final UserLayerMapper mapper = session.getMapper(UserLayerMapper.class);
             int result = mapper.updateUserLayerDataCols(userLayerData);
             return result;
         } catch (Exception e) {
             log.error(e, "Failed to update userlayerdata col mapping", userLayerData);
-        } finally {
-            session.close();
+            return 0;
         }
-        return 0;
     }
 	
 	public String getUserLayerExtent(long id) {
-         final SqlSession session = factory.openSession();
-         try {
+	    try (SqlSession session = factory.openSession()) {
              final UserLayerMapper mapper = session.getMapper(UserLayerMapper.class);
              return mapper.getUserLayerBbox(id);
          } catch (Exception e) {
              log.error(e, "Failed to get userlayer bbox with id:", id);
-         } finally {
-             session.close();
+             return "";
          }
-         return "";
      }
 
 }
