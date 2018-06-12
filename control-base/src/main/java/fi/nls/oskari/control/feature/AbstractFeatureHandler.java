@@ -46,6 +46,7 @@ public abstract class AbstractFeatureHandler extends ActionHandler {
     private OskariLayerService layerService;
     private PermissionsService permissionsService;
     private WFSLayerConfigurationService layerConfigurationService;
+    private static final Set<String> ALLOWED_GEOM_TYPES = ConversionHelper.asSet("multipoint", "multilinestring", "multipolygon");
 
     @Override
     public void init() {
@@ -103,15 +104,22 @@ public abstract class AbstractFeatureHandler extends ActionHandler {
         }
     }
 
-    protected void insertGeometries(String geometryProperty, StringBuilder requestData, JSONObject geometries, String srsName) throws JSONException {
-        String geometryType = geometries.getString("type");
-        if (geometryType.equals("multipoint")) {
-            fillMultiPointGeometries(geometryProperty, requestData, geometries, srsName);
-        } else if (geometryType.equals("multilinestring")) {
-            fillLineStringGeometries(geometryProperty, requestData, geometries, srsName);
-        } else if (geometryType.equals("multipolygon")) {
-            fillPolygonGeometries(geometryProperty, requestData, geometries, srsName);
+    protected boolean isAllowedGeomType(String type) {
+        if (type == null) {
+            return false;
         }
+        return ALLOWED_GEOM_TYPES.contains(type);
+    }
+
+    protected String getGeometry(String geometryType, JSONArray data, String srsName) throws ActionParamsException, JSONException {
+        if ("multipoint".equals(geometryType)) {
+            return getMultipoint(srsName, data);
+        } else if ("multilinestring".equals(geometryType)) {
+            return getMultiLineStringGeometries(srsName, data);
+        } else if ("multipolygon".equals(geometryType)) {
+            return getMultiPolygonGeometries(srsName, data);
+        }
+        throw new ActionParamsException("Unknown type");
     }
 
     protected String getMultipoint(String srsName, JSONArray data) throws JSONException {
@@ -127,16 +135,68 @@ public abstract class AbstractFeatureHandler extends ActionHandler {
         writer.append("</gml:MultiPoint>");
         return writer.toString();
     }
-    protected void fillMultiPointGeometries(String geometryProperty, StringBuilder requestData, JSONObject geometries, String srsName) throws JSONException {
 
+    protected String getMultiLineStringGeometries(String srsName, JSONArray data) throws JSONException {
+        StringWriter writer = new StringWriter();
+        writer.append("<gml:MultiLineString xmlns:gml=\"http://www.opengis.net/gml\" srsName=\"");
+        writer.append(srsName);
+        writer.append("\">");
+        for (int lineIndex = 0; lineIndex < data.length(); lineIndex++) {
+            writer.append("<gml:lineStringMember><gml:LineString><gml:coordinates decimal=\".\" cs=\",\" ts=\" \">");
+            JSONArray lineCoordinates = data.getJSONArray(lineIndex);
+            for (int coordinateIndex = 0; coordinateIndex < lineCoordinates.length(); coordinateIndex++) {
+                JSONObject coord = lineCoordinates.getJSONObject(coordinateIndex);
+                writer.append(coord.getString("x") + "," + coord.getString("y"));
+                if (coordinateIndex < (lineCoordinates.length() - 1)) {
+                    writer.append(" ");
+                }
+            }
+            writer.append("</gml:coordinates></gml:LineString></gml:lineStringMember>");
+        }
+        writer.append("</gml:MultiLineString>");
+        return writer.toString();
     }
-    protected void fillLineStringGeometries(String geometryProperty, StringBuilder requestData, JSONObject geometries, String srsName) throws JSONException {
 
+    protected String getMultiPolygonGeometries(String srsName, JSONArray data) throws JSONException {
+        StringWriter writer = new StringWriter();
+        writer.append("<gml:MultiPolygon xmlns:gml=\"http://www.opengis.net/gml\" srsName=\"");
+        writer.append(srsName);
+        writer.append("\">");
+
+        for (int polygonIdx = 0; polygonIdx < data.length(); polygonIdx++) {
+            writer.append("<gml:polygonMember><gml:Polygon>");
+            JSONArray linearRings = data.getJSONArray(polygonIdx);
+            for (int ringIndex = 0; ringIndex < linearRings.length(); ringIndex++) {
+                boolean isExteriorRing = ringIndex == 0;
+                if (isExteriorRing) {
+                    writer.append("<gml:exterior>");
+                } else {
+                    writer.append("<gml:interior>");
+                }
+                writer.append("<gml:LinearRing><gml:posList>");
+
+                JSONArray currentRing = linearRings.getJSONArray(ringIndex);
+                for (int coordinateIndex = 0; coordinateIndex < currentRing.length(); coordinateIndex++) {
+                    JSONObject coord = currentRing.getJSONObject(coordinateIndex);
+                    writer.append(coord.getString("x") + " " + coord.getString("y"));
+                    if (coordinateIndex < (currentRing.length() - 1)) {
+                        writer.append(" ");
+                    }
+                }
+
+                writer.append("</gml:posList></gml:LinearRing>");
+                if (isExteriorRing) {
+                    writer.append("</gml:exterior>");
+                } else {
+                    writer.append("</gml:interior>");
+                }
+            }
+            writer.append("</gml:Polygon></gml:polygonMember>");
+        }
+
+        writer.append("</gml:MultiPolygon>");
+        return writer.toString();
     }
-    protected void fillPolygonGeometries(String geometryProperty, StringBuilder requestData, JSONObject geometries, String srsName) throws JSONException {
-
-    }
-
 
     protected void flushLayerTilesCache(int layerId) {
         Set<String> keys = JedisManager.keys(CACHKE_KEY_PREFIX + Integer.toString(layerId));

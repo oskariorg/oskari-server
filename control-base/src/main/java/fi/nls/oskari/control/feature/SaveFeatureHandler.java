@@ -4,6 +4,7 @@ import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.ActionDeniedException;
 import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.ActionParameters;
+import fi.nls.oskari.control.ActionParamsException;
 import fi.nls.oskari.db.DBHandler;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.domain.map.wfs.WFSLayerConfiguration;
@@ -32,6 +33,7 @@ public class SaveFeatureHandler extends AbstractFeatureHandler {
             String srsName = JSONHelper.getStringFromJSON(jsonObject, "srsName", "http://www.opengis.net/gml/srs/epsg.xml#3067");
             WFSLayerConfiguration lc = getWFSConfiguration(layer.getId());
 
+            // TODO: rewrite to use wfs-t related code under myplaces OR atleast using an xml lib
             StringBuilder requestData = new StringBuilder(
                     "<wfs:Transaction service='WFS' version='1.1.0' " +
                             "xmlns:ogc='http://www.opengis.net/ogc' " +
@@ -63,70 +65,17 @@ public class SaveFeatureHandler extends AbstractFeatureHandler {
         }
     }
 
-    @Override
-    protected void fillMultiPointGeometries(String geometryProperty, StringBuilder requestData, JSONObject geometries, String srsName) throws JSONException {
+    protected void insertGeometries(String geometryProperty, StringBuilder requestData, JSONObject geometries, String srsName) throws ActionParamsException, JSONException {
+        String geometryType = geometries.getString("type");
+        if(!isAllowedGeomType(geometryType)) {
+            throw new ActionParamsException("Invalid geometry type: " + geometryProperty);
+        }
         JSONArray data = geometries.getJSONArray("data");
         requestData.append("<wfs:Property><wfs:Name>");
         requestData.append(geometryProperty);
         requestData.append("</wfs:Name><wfs:Value>");
-        requestData.append(getMultipoint(srsName, data));
+        requestData.append(getGeometry(geometryType, data, srsName));
         requestData.append("</wfs:Value></wfs:Property>");
     }
-
-    @Override
-    protected void fillLineStringGeometries(String geometryProperty, StringBuilder requestData, JSONObject geometries, String srsName) throws JSONException {
-        JSONArray data = geometries.getJSONArray("data");
-        requestData.append("<wfs:Property><wfs:Name>" + geometryProperty
-                + "</wfs:Name><wfs:Value><gml:MultiLineString xmlns:gml='http://www.opengis.net/gml' srsName='" + srsName + "'>");
-        for (int i = 0; i < data.length(); i++) {
-            requestData
-                    .append("<gml:lineStringMember><gml:LineString><gml:coordinates decimal=\".\" cs=\",\" ts=\" \">");
-            JSONArray arr = data.getJSONArray(i);
-            for (int j = 0; j < arr.length(); j++) {
-                requestData.append(arr.getJSONObject(j).getString("x") + "," + arr.getJSONObject(j).getString("y"));
-                if (j < (arr.length() - 1)) {
-                    requestData.append(" ");
-                }
-            }
-            requestData.append("</gml:coordinates></gml:LineString></gml:lineStringMember>");
-        }
-        requestData.append("</gml:MultiLineString></wfs:Value></wfs:Property>");
-    }
-
-    @Override
-    protected void fillPolygonGeometries(String geometryProperty, StringBuilder requestData, JSONObject geometries, String srsName) throws JSONException {
-        JSONArray data = geometries.getJSONArray("data");
-        requestData.append("<wfs:Property><wfs:Name>" + geometryProperty
-                + "</wfs:Name><wfs:Value><gml:MultiPolygon xmlns:gml='http://www.opengis.net/gml' srsName='" + srsName + "'>");
-        for (int i = 0; i < data.length(); i++) {
-            requestData.append("<gml:polygonMember><gml:Polygon>");
-            JSONArray arr = data.getJSONArray(i);
-            for (int j = 0; j < arr.length(); j++) {
-                if (j > 0) {
-                    requestData.append("<gml:interior><gml:LinearRing><gml:posList>");
-                } else {
-                    requestData.append("<gml:exterior><gml:LinearRing><gml:posList>");
-                }
-
-                JSONArray arr2 = arr.getJSONArray(j);
-                for (int k = 0; k < arr2.length(); k++) {
-                    requestData
-                            .append(arr2.getJSONObject(k).getString("x") + " " + arr2.getJSONObject(k).getString("y"));
-                    if (k < (arr2.length() - 1)) {
-                        requestData.append(" ");
-                    }
-                }
-
-                if (j > 0) {
-                    requestData.append("</gml:posList></gml:LinearRing></gml:interior>");
-                } else {
-                    requestData.append("</gml:posList></gml:LinearRing></gml:exterior>");
-                }
-            }
-            requestData.append("</gml:Polygon></gml:polygonMember>");
-        }
-        requestData.append("</gml:MultiPolygon></wfs:Value></wfs:Property>");
-    }
-
 }
 
