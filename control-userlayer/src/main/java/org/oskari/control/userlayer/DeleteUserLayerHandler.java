@@ -1,15 +1,17 @@
 package org.oskari.control.userlayer;
 
+import org.json.JSONObject;
+import org.oskari.map.userlayer.service.UserLayerDbService;
+
 import fi.nls.oskari.annotation.OskariActionRoute;
-import fi.nls.oskari.control.*;
+import fi.nls.oskari.control.ActionException;
+import fi.nls.oskari.control.ActionHandler;
+import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.domain.map.userlayer.UserLayer;
 import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.service.ServiceException;
-import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.ResponseHelper;
-import org.oskari.map.userlayer.service.UserLayerDbService;
-
 
 /**
  * Deletes user layer and its style if it belongs to current user.
@@ -18,48 +20,29 @@ import org.oskari.map.userlayer.service.UserLayerDbService;
 @OskariActionRoute("DeleteUserLayer")
 public class DeleteUserLayerHandler extends ActionHandler {
 
-    private final static String PARAM_ID = "id";
-    //private final static Logger log = LogFactory.getLogger(DeleteAnalysisDataHandler.class);
+    private UserLayerDbService userLayerDbService;
 
-    private UserLayerDbService userLayerDbService = null;
-
-    public void setUserLayerDbService(final UserLayerDbService service) {
+    public void setUserLayerDbService(UserLayerDbService service) {
         userLayerDbService = service;
     }
 
     @Override
     public void init() {
-        super.init();
-        if(userLayerDbService == null) {
-            setUserLayerDbService(OskariComponentManager.getComponentOfType(UserLayerDbService.class));
+        if (userLayerDbService == null) {
+            userLayerDbService = OskariComponentManager.getComponentOfType(UserLayerDbService.class);
         }
     }
 
     @Override
     public void handleAction(ActionParameters params) throws ActionException {
-        if(params.getUser().isGuest()) {
-            throw new ActionDeniedException("Session expired");
-        }
-        final long id = ConversionHelper.getLong(params.getHttpParam(PARAM_ID), -1);
-        if(id == -1) {
-            throw new ActionParamsException("Parameter missing or non-numeric: " + PARAM_ID + "=" + params.getHttpParam(PARAM_ID));
-        }
-
-        final UserLayer userLayer = userLayerDbService.getUserLayerById(id);
-        if(userLayer == null) {
-            throw new ActionParamsException("User layer id didn't match any user layer: " + id);
-        }
-        if(!userLayer.isOwnedBy(params.getUser().getUuid())) {
-            throw new ActionDeniedException("User layer belongs to another user");
-        }
-
         try {
-            // remove userLayer
+            UserLayer userLayer = UserLayerHandlerHelper.getUserLayer(userLayerDbService, params);
             userLayerDbService.deleteUserLayer(userLayer);
-            // write static response to notify success {"result" : "success"}
-            ResponseHelper.writeResponse(params, JSONHelper.createJSONObject("result", "success"));
+            JSONObject response = JSONHelper.createJSONObject("result", "success");
+            ResponseHelper.writeResponse(params, response);
         } catch (ServiceException ex) {
             throw new ActionException("Error deleting userLayer", ex);
         }
     }
+
 }
