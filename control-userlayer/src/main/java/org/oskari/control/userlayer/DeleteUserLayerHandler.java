@@ -22,14 +22,14 @@ public class DeleteUserLayerHandler extends ActionHandler {
 
     private UserLayerDbService userLayerDbService;
 
-    public void setUserLayerDbService(final UserLayerDbService service) {
+    public void setUserLayerDbService(UserLayerDbService service) {
         userLayerDbService = service;
     }
 
     @Override
     public void init() {
         if (userLayerDbService == null) {
-            setUserLayerDbService(OskariComponentManager.getComponentOfType(UserLayerDbService.class));
+            userLayerDbService = OskariComponentManager.getComponentOfType(UserLayerDbService.class);
         }
     }
 
