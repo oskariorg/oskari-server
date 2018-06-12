@@ -44,4 +44,5 @@ public class DeleteUserLayerHandler extends ActionHandler {
             throw new ActionException("Error deleting userLayer", ex);
         }
     }
+
 }
