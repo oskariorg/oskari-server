@@ -18,7 +18,7 @@ import fi.nls.oskari.wfs.WFSSearchChannelsService;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -60,9 +60,8 @@ public class SearchWFSChannelActionHandler extends RestActionHandler {
         try {
             for(WFSSearchChannelsConfiguration channel : channelService.findChannels()) {
                 JSONObject channelJSON = channel.getAsJSONObject();
-                List<String> layerIds = new ArrayList<String>();
-                layerIds.add(String.valueOf(channel.getWFSLayerId()));
-                JSONObject userLayers = OskariLayerWorker.getListOfMapLayersById(layerIds, params.getUser(), params.getLocale().getLanguage(), params.getHttpParam(PARAM_SRS));
+                List<Integer> layerIds = Collections.singletonList(channel.getWFSLayerId());
+                JSONObject userLayers = OskariLayerWorker.getListOfMapLayersByIdList(layerIds, params.getUser(), params.getLocale().getLanguage(), params.getHttpParam(PARAM_SRS));
                 JSONArray layers = userLayers.getJSONArray(OskariLayerWorker.KEY_LAYERS);
 
                 if(layers.length() > 0){

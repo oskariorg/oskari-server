@@ -170,12 +170,10 @@ public class UserLayerDataService {
     public static JSONObject parseUserLayer2JSON(final UserLayer ulayer, final OskariLayer baseLayer) {
 
         try {
-            final String id = baseLayer.getExternalId();
             final String name = baseLayer.getName();
             final String type = baseLayer.getType();
 
             // Merge userlayer values
-            baseLayer.setExternalId(USERLAYER_LAYER_PREFIX + ulayer.getId());
             baseLayer.setName(ulayer.getLayer_name());
             baseLayer.setType(OskariLayer.TYPE_USERLAYER);
             // create the JSON
@@ -183,7 +181,6 @@ public class UserLayerDataService {
             JSONHelper.putValue(json, "id", USERLAYER_LAYER_PREFIX + ulayer.getId());
 
             // restore the previous values for baseLayer
-            baseLayer.setExternalId(id);
             baseLayer.setName(name);
             baseLayer.setType(type);
 

@@ -21,7 +21,6 @@ public class OskariLayer extends JSONLocalizedNameAndTitle implements Comparable
 
     private int id = -1;
     private int parentId = -1;
-    private String externalId;
 	private String type;
 
     private boolean isBaseMap = false;
@@ -223,14 +222,6 @@ public class OskariLayer extends JSONLocalizedNameAndTitle implements Comparable
 
     public boolean isSublayer() {
         return parentId != -1;
-    }
-
-    public String getExternalId() {
-        return externalId;
-    }
-
-    public void setExternalId(String externalId) {
-        this.externalId = externalId;
     }
 
     public boolean isBaseMap() {

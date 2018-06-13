@@ -60,7 +60,7 @@ public class GetLayerTileHandler extends ActionHandler {
             throws ActionException {
 
         // Resolve layer
-        final String layerId = params.getRequiredParam(KEY_ID);
+        final int layerId = params.getRequiredParamInt(KEY_ID);
         final OskariLayer layer = permissionHelper.getLayer(layerId, params.getUser());
 
         final MetricRegistry metrics = ActionControl.getMetrics();

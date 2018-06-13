@@ -211,7 +211,12 @@ public class GetPrintHandler extends ActionHandler {
 
         List<PrintLayer> printLayers = new ArrayList<>(requestedLayers.length);
         for (LayerProperties requestedLayer : requestedLayers) {
-            OskariLayer oskariLayer = permissionHelper.getLayer(requestedLayer.getId(), user);
+            int id = ConversionHelper.getInt(requestedLayer.getId(), -1);
+            if (id == -1) {
+                // TODO: add support for myplaces/userlayers/analysis
+                continue;
+            }
+            OskariLayer oskariLayer = permissionHelper.getLayer(id, user);
             PrintLayer printLayer = createPrintLayer(oskariLayer, requestedLayer);
             if (printLayer != null) {
                 printLayers.add(printLayer);

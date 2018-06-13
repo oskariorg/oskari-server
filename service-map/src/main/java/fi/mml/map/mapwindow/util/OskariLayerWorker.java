@@ -52,21 +52,6 @@ public class OskariLayerWorker {
      * @param crs
      * @return JSONObject containing the selected layers
      */
-    public static JSONObject getListOfMapLayersById(final List<String> layerIdList, final User user,
-            final String lang, final String crs) {
-        final List<OskariLayer> layers = mapLayerService.find(layerIdList);
-        return getListOfMapLayers(layers, user, lang, crs, false, false);
-    }
-
-    /**
-     * Gets all the selected map layers
-     *
-     * @param layerIdList
-     * @param user
-     * @param lang
-     * @param crs
-     * @return JSONObject containing the selected layers
-     */
     public static JSONObject getListOfMapLayersByIdList(final List<Integer> layerIdList, final User user,
             final String lang, final String crs) {
         final List<OskariLayer> layers = mapLayerService.findByIdList(layerIdList);
@@ -82,9 +67,9 @@ public class OskariLayerWorker {
      * @param isSecure    true to modify urls for easier proxy forwarding/false to keep as is
      * @return JSONObject containing the selected layers
      */
-    public static JSONObject getListOfMapLayersById(final List<String> layerIdList, final User user,
+    public static JSONObject getListOfMapLayersById(final List<Integer> layerIdList, final User user,
             final String lang, final boolean isPublished, final boolean isSecure, final String crs) {
-        final List<OskariLayer> layers = mapLayerService.find(layerIdList);
+        final List<OskariLayer> layers = mapLayerService.findByIdList(layerIdList);
         return getListOfMapLayers(layers, user, lang, crs, isPublished, isSecure);
     }
 
@@ -359,7 +344,7 @@ public class OskariLayerWorker {
 
         for (String id : ids) {
             for (OskariLayer lay : layers) {
-                if (Integer.toString(lay.getId()).equals(id) || (lay.getExternalId() != null && lay.getExternalId().equals(id))) {
+                if (Integer.toString(lay.getId()).equals(id)) {
                     reLayers.add(lay);
                     break;
                 }

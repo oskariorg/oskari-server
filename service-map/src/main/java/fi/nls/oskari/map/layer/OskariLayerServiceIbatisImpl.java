@@ -3,7 +3,6 @@ package fi.nls.oskari.map.layer;
 import com.ibatis.common.resources.Resources;
 import com.ibatis.sqlmap.client.SqlMapClient;
 import com.ibatis.sqlmap.client.SqlMapClientBuilder;
-import fi.mml.map.mapwindow.util.OskariLayerWorker;
 import fi.nls.oskari.annotation.Oskari;
 import fi.nls.oskari.domain.map.DataProvider;
 import fi.nls.oskari.domain.map.OskariLayer;
@@ -75,7 +74,6 @@ public class OskariLayerServiceIbatisImpl extends OskariLayerService {
         result.setId((Integer) data.get("id"));
         result.setParentId((Integer) data.get("parentid"));
         result.setType((String) data.get("type"));
-        result.setExternalId((String) data.get("externalid"));
         result.setBaseMap((Boolean) data.get("base_map"));
         result.setInternal((Boolean) data.get("internal"));
         result.setName((String) data.get("name"));
@@ -178,50 +176,9 @@ public class OskariLayerServiceIbatisImpl extends OskariLayerService {
         return layers;
     }
 
-    public OskariLayer find(final String idStr) {
-        final int id = ConversionHelper.getInt(idStr, -1);
-        if(id != -1) {
-            return find(id);
-        }
-        // try to find with external id
-        try {
-            final List<Map<String, Object>> lresults = (List<Map<String, Object>>) getSqlMapClient().queryForList(getNameSpace() + ".findByExternalId", idStr);
-            final OskariLayer layer = mapData(lresults.get(0));
-            if(layer.isCollection()) {
-                final List<OskariLayer> sublayers = findByParentId(layer.getId());
-                LOG.debug("FindByParent returned", sublayers.size(), "sublayers for parent id:", layer.getId());
-                layer.addSublayers(sublayers);
-            }
-            return layer;
-        } catch (Exception e) {
-            LOG.warn(e, "Couldn't find layer with id:", idStr);
-        }
-        return null;
-    }
-
-    public List<OskariLayer> find(final List<String> idList) {
-        // TODO: break list into external and internalIds -> make 2 "where id/externalID in (...)" SQLs
-        // ensure order stays the same
-        final List<Integer> intList = ConversionHelper.getIntList(idList);
-        final List<String> strList =  ConversionHelper.getStringList(idList);
-        if(intList.isEmpty() && strList.isEmpty()){
-            return new ArrayList<OskariLayer>();
-        }
-        Map<String, Object> params = new HashMap<String, Object>();
-        params.put("strList", strList);
-        params.put("intList", intList);
-
-        List<Map<String,Object>> result = queryForList(getNameSpace() + ".findByIdList", params);
-        final List<OskariLayer> layers = mapDataList(result);
-
-        //Reorder layers to requested order
-        return OskariLayerWorker.reorderLayers(layers, idList);
-
-    }
-
     public List<OskariLayer> findByIdList(final List<Integer> intList) {
         if(intList.isEmpty()){
-            return new ArrayList<OskariLayer>();
+            return new ArrayList<>();
         }
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("intList", intList);
@@ -242,7 +199,6 @@ public class OskariLayerServiceIbatisImpl extends OskariLayerService {
         }
         return reLayers;
     }
-
 
     public OskariLayer find(int id) {
         try {

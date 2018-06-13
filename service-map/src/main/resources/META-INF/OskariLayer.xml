@@ -109,7 +109,6 @@
         SELECT
         l.id,
         l.parentId,
-        l.externalId,
         l.type,
         l.base_map,
         l.internal,
@@ -165,7 +164,6 @@
         SELECT
         l.id,
         l.parentId,
-        l.externalId,
         l.type,
         l.base_map,
         l.internal,
@@ -213,63 +211,6 @@
 
     </select>
 
-    <select id="findByExternalId"
-            parameterClass="String"
-            resultClass="java.util.HashMap">
-
-
-        SELECT
-        l.id,
-        l.parentId,
-        l.externalId,
-        l.type,
-        l.base_map,
-        l.internal,
-        l.dataprovider_id,
-
-        l.name,
-        l.url,
-        l.locale,
-
-        l.opacity,
-        l.style,
-        l.minscale,
-        l.maxscale,
-
-        l.legend_image,
-        l.metadataId,
-
-        l.params,
-        l.options,
-        l.attributes,
-        l.capabilities,
-
-        l.gfi_xslt,
-        l.gfi_type,
-        l.gfi_content,
-        l.realtime,
-        l.refresh_rate,
-        l.username,
-        l.password,
-        l.version,
-        l.srs_name,
-        m.wkt as geom,
-
-        l.created,
-        l.updated,
-
-        l.capabilities_last_updated,
-        l.capabilities_update_rate_sec
-
-        FROM
-        oskari_maplayer l 
-        LEFT OUTER JOIN oskari_maplayer_metadata m ON  m.metadataid = l.metadataId
-        WHERE
-        l.externalId = #id#
-        AND l.parentId = -1
-
-    </select>
-    
     <select id="findByUuId"
             parameterClass="String"
             resultClass="java.util.HashMap">
@@ -278,7 +219,6 @@
         SELECT
         l.id,
         l.parentId,
-        l.externalId,
         l.type,
         l.base_map,
         l.internal,
@@ -335,7 +275,6 @@
         SELECT
         l.id,
         l.parentId,
-        l.externalId,
         l.type,
         l.base_map,
         l.internal,
@@ -391,7 +330,6 @@
     SELECT
     l.id,
     l.parentId,
-    l.externalId,
     l.type,
     l.base_map,
     l.internal,
@@ -452,7 +390,6 @@
         SELECT
         l.id,
         l.parentId,
-        l.externalId,
         l.type,
         l.base_map,
         l.internal,
@@ -503,12 +440,6 @@
                 </iterate>
 
             </isNotEmpty>
-            <isNotEmpty  property="strList" prepend="OR">
-                l.externalId in
-                <iterate property="strList" open="(" close=")" conjunction=",">
-                    #strList[]#
-                </iterate>
-            </isNotEmpty>
             <isNotEmpty property="parentIntList" prepend="OR">
                 l.parentId in
                 <iterate property="parentIntList" open="(" close=")" conjunction=",">
@@ -526,7 +457,6 @@
     SELECT
     l.id,
     l.parentId,
-    l.externalId,
     l.type,
     l.base_map,
     l.internal,

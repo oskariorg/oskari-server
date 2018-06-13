@@ -28,6 +28,7 @@ import fi.nls.oskari.permission.domain.Permission;
 import fi.nls.oskari.permission.domain.Resource;
 import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.service.UserService;
+import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.util.ResponseHelper;
@@ -279,9 +280,9 @@ public class CreateAnalysisLayerHandler extends ActionHandler {
         return featureSet;
     }
 
-    private Resource getSourcePermission(final String layerId, final User user) {
+    private Resource getSourcePermission(final String layerId, final User user) throws ActionParamsException {
         if(layerId == null) {
-            return null;
+            throw new ActionParamsException("Missing source layer id");
         }
 
         if (layerId.startsWith(AnalysisParser.ANALYSIS_LAYER_PREFIX)) {
@@ -316,7 +317,11 @@ public class CreateAnalysisLayerHandler extends ActionHandler {
             return resource;
         }
         // default to usual layer
-        final OskariLayer layer = mapLayerService.find(layerId);
+        int id = ConversionHelper.getInt(layerId, -1);
+        if (id == -1) {
+            throw new ActionParamsException("Invalid id: " + layerId);
+        }
+        final OskariLayer layer = mapLayerService.find(id);
         // copy permissions from source layer to new analysis
         return permissionsService.getResource(Permissions.RESOURCE_TYPE_MAP_LAYER, new OskariLayerResource(layer).getMapping());
     }

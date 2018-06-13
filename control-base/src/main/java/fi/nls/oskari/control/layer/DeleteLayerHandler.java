@@ -31,7 +31,7 @@ public class DeleteLayerHandler extends ActionHandler {
 
     public void handleAction(ActionParameters params) throws ActionException {
 
-        final String id = params.getRequiredParam(PARAM_LAYER_ID);
+        final int id = params.getRequiredParamInt(PARAM_LAYER_ID);
         final OskariLayer layer = mapLayerService.find(id);
         if(layer == null) {
             throw new ActionParamsException("Layer not found - id: " + id);

@@ -234,7 +234,7 @@ public class MapfullHandler extends BundleHandler {
                                                final String mapSRS) {
 
         // Create a list of layer ids
-        final List<String> layerIdList = new ArrayList<String>();
+        final List<Integer> layerIdList = new ArrayList<>();
         final List<Long> publishedMyPlaces = new ArrayList<Long>();
         final List<Long> publishedAnalysis = new ArrayList<Long>();
         final List<Long> publishedUserLayers = new ArrayList<Long>();
@@ -272,8 +272,11 @@ public class MapfullHandler extends BundleHandler {
                         LOGGER.warn("Found user layer in selected. Error parsing id with prefixed id: ", layerId);
                     }
                 } else {
-                    // these should all be pointing at a layer in oskari_maplayer
-                    layerIdList.add(layerId);
+                    int id = ConversionHelper.getInt(layerId, -1);
+                    if (id != -1) {
+                        // these should all be pointing at a layer in oskari_maplayer
+                        layerIdList.add(id);
+                    }
                 }
             } catch (JSONException je) {
                 LOGGER.error(je, "Problem handling layer id:", layerId, "skipping it!.");
