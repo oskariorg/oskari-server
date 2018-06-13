@@ -23,12 +23,14 @@ public class SaveFeatureHandler extends AbstractFeatureHandler {
     @Override
     public void handleAction(ActionParameters params) throws ActionException {
         params.requireLoggedInUser();
+
         JSONObject jsonObject = params.getHttpParamAsJSON("featureData");
         OskariLayer layer = getLayer(jsonObject.optString("layerId"));
 
         if (!canEdit(layer, params.getUser())) {
             throw new ActionDeniedException("User doesn't have edit permission for layer: " + layer.getId());
         }
+
         try {
             String srsName = JSONHelper.getStringFromJSON(jsonObject, "srsName", "http://www.opengis.net/gml/srs/epsg.xml#3067");
             WFSLayerConfiguration lc = getWFSConfiguration(layer.getId());

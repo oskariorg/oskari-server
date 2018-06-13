@@ -32,8 +32,8 @@ public class InsertFeatureHandler extends AbstractFeatureHandler {
     private final static Logger LOG = LogFactory.getLogger(InsertFeatureHandler.class);
 
     @Override
-    public void handleAction(ActionParameters params)
-            throws ActionException {
+    public void handleAction(ActionParameters params) throws ActionException {
+        params.requireLoggedInUser();
 
         JSONObject jsonPayload = params.getHttpParamAsJSON("featureData");
         OskariLayer layer = getLayer(jsonPayload.optString("layerId"));
