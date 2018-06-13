@@ -170,10 +170,11 @@ public class CreateUserLayerHandler extends ActionHandler {
                     continue;
                 }
                 String name = ze.getName();
-                String ext = getFileExt(name).toLowerCase();
+                String ext = getFileExt(name);
                 if (ext == null) {
                     continue;
                 }
+                ext = ext.toLowerCase();
                 if (!extensions.add(ext)) {
                     throw new ActionParamsException("Zip contains multiple files with same extension");
                 }
