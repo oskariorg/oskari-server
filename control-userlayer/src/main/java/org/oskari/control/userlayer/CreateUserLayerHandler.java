@@ -266,10 +266,17 @@ public class CreateUserLayerHandler extends ActionHandler {
             ZipEntry ze;
             File mainFile = null;
             while ((ze = zis.getNextEntry()) != null) {
+                if (ze.isDirectory()) {
+                    continue;
+                }
                 String name = ze.getName();
                 if (!validFiles.contains(name)) {
                     continue;
                 }
+                // Beyond this point all files in the root directory of the zip have a non-empty file extension
+                // Also we've checked that no two files share the same file extension
+                // Save all the files to $TEMP/{random_uuid_dir}/a.{ext} to eliminate the possibility of illegal characters in the filename
+                name = "a" + name.substring(name.lastIndexOf('.'));
                 File file = new File(dir, name);
                 try (FileOutputStream fos = new FileOutputStream(file)) {
                     IOHelper.copy(zis, fos);
