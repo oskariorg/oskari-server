@@ -148,7 +148,7 @@ public class CreateUserLayerHandler extends ActionHandler {
         try {
             for (Charset cs : POSSIBLE_CHARSETS_USED_IN_ZIP_FILE_NAMES) {
                 try (InputStream in = zipFile.getInputStream();
-                        ZipInputStream zis = new ZipInputStream(in)) {
+                        ZipInputStream zis = new ZipInputStream(in, cs)) {
                     while (zis.getNextEntry() != null) {
                         // Get next
                     }
@@ -293,7 +293,7 @@ public class CreateUserLayerHandler extends ActionHandler {
 
     private File unZip(FileItem zipFile, Charset cs, Set<String> validFiles, File dir) throws ActionException {
         try (InputStream in = zipFile.getInputStream();
-                ZipInputStream zis = new ZipInputStream(in)) {
+                ZipInputStream zis = new ZipInputStream(in, cs)) {
             ZipEntry ze;
             File mainFile = null;
             while ((ze = zis.getNextEntry()) != null) {
