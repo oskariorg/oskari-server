@@ -1,6 +1,7 @@
 package org.oskari.control.userlayer;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -14,6 +15,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
+import java.util.zip.ZipException;
 import java.util.zip.ZipInputStream;
 
 import javax.servlet.http.HttpServletRequest;
@@ -197,6 +199,9 @@ public class CreateUserLayerHandler extends ActionHandler {
                     continue;
                 }
                 String name = ze.getName();
+                if (name.indexOf('/') >= 0) {
+                    continue;
+                }
                 String ext = getFileExt(name);
                 if (ext == null) {
                     continue;
