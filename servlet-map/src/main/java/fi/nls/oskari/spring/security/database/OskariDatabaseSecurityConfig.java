@@ -11,6 +11,7 @@ import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 
 /**
  * Database based authentication on Oskari
@@ -34,7 +35,7 @@ public class OskariDatabaseSecurityConfig extends WebSecurityConfigurerAdapter {
  * - loginPage might not be needed since we permit all URLs
  */
         http.authenticationProvider( new OskariAuthenticationProvider() );
-        http.csrf().disable();
+        http.csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse());
         http.headers().frameOptions().disable();
 
         final String loginurl = env.getLoginUrl();
