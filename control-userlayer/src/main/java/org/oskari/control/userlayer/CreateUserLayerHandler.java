@@ -152,6 +152,7 @@ public class CreateUserLayerHandler extends ActionHandler {
                     while (zis.getNextEntry() != null) {
                         // Get next
                     }
+                    log.debug("Succesfully read zip file names with encoding:", cs.name());
                     return cs;
                 } catch (IllegalArgumentException ignore) {
                     log.debug("Failed to read zip file names with encoding:", cs.name());
@@ -199,16 +200,22 @@ public class CreateUserLayerHandler extends ActionHandler {
                 }
                 String name = ze.getName();
                 if (name.indexOf('/') >= 0) {
+                    log.debug(name, "is directory, ignoring");
                     continue;
+                }
+                if (name.indexOf('.') == 0) {
+                    log.debug(name, "starts with '.', ignoring");
                 }
                 String ext = getFileExt(name);
                 if (ext == null) {
+                    log.debug(name, "doesn't have non-empty file extension, ignoring");
                     continue;
                 }
                 ext = ext.toLowerCase();
                 if (!extensions.add(ext)) {
                     throw new ActionParamsException("Zip contains multiple files with same extension");
                 }
+                log.debug(name, "accepted as valid filename");
                 validFiles.add(name);
             }
             checkZipContainsExactlyOneMainFile(extensions);
