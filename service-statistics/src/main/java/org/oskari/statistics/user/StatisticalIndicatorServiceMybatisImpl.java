@@ -178,7 +178,7 @@ public class StatisticalIndicatorServiceMybatisImpl extends StatisticalIndicator
             }
             session.commit();
         }
-        return findById(id, userId);
+        return findById(row.id, userId);
     }
     public void saveIndicatorData(long indicator, long regionset, int year, String data) {
         try (final SqlSession session = factory.openSession()) {
