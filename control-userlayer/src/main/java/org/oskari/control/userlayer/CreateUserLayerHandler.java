@@ -195,34 +195,41 @@ public class CreateUserLayerHandler extends ActionHandler {
                     // safeguard against evil zip files, userlayers shouldn't have this many files in any case
                     throw new ActionParamsException("Zip contains too many files");
                 }
-                if (ze.isDirectory()) {
-                    continue;
+                String name = checkValidFileName(ze, extensions);
+                if (name != null) {
+                    validFiles.add(name);
                 }
-                String name = ze.getName();
-                if (name.indexOf('/') >= 0) {
-                    log.debug(name, "is directory, ignoring");
-                    continue;
-                }
-                if (name.indexOf('.') == 0) {
-                    log.debug(name, "starts with '.', ignoring");
-                }
-                String ext = getFileExt(name);
-                if (ext == null) {
-                    log.debug(name, "doesn't have non-empty file extension, ignoring");
-                    continue;
-                }
-                ext = ext.toLowerCase();
-                if (!extensions.add(ext)) {
-                    throw new ActionParamsException("Zip contains multiple files with same extension");
-                }
-                log.debug(name, "accepted as valid filename");
-                validFiles.add(name);
             }
             checkZipContainsExactlyOneMainFile(extensions);
             return validFiles;
         } catch (IOException e) {
             throw new ActionException("Unexpected IOException occured", e);
         }
+    }
+
+    private static String checkValidFileName(ZipEntry ze, Set<String> extensions) throws ActionParamsException {
+        if (ze.isDirectory()) {
+            return null;
+        }
+        String name = ze.getName();
+        if (name.indexOf('/') >= 0) {
+            log.debug(name, "is inside a directory, ignoring");
+            return null;
+        }
+        if (name.indexOf('.') == 0) {
+            log.debug(name, "starts with '.', ignoring");
+        }
+        String ext = getFileExt(name);
+        if (ext == null) {
+            log.debug(name, "doesn't have non-empty file extension, ignoring");
+            return null;
+        }
+        ext = ext.toLowerCase();
+        if (!extensions.add(ext)) {
+            throw new ActionParamsException("Zip contains multiple files with same extension");
+        }
+        log.debug(name, "accepted as valid filename");
+        return name;
     }
 
     private void checkZipContainsExactlyOneMainFile(Set<String> extensions) throws ActionParamsException {
@@ -332,7 +339,7 @@ public class CreateUserLayerHandler extends ActionHandler {
         }
     }
 
-    private String getFileExt(String name) {
+    private static String getFileExt(String name) {
         int i = name.lastIndexOf('.');
         if (i < 0 || i + 1 == name.length()) {
             return null;

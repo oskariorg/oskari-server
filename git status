@@ -1,0 +1,95 @@
+[1mdiff --git a/control-userlayer/src/main/java/org/oskari/control/userlayer/CreateUserLayerHandler.java b/control-userlayer/src/main/java/org/oskari/control/userlayer/CreateUserLayerHandler.java[m
+[1mindex 1be69b31e..84e45bf9e 100755[m
+[1m--- a/control-userlayer/src/main/java/org/oskari/control/userlayer/CreateUserLayerHandler.java[m
+[1m+++ b/control-userlayer/src/main/java/org/oskari/control/userlayer/CreateUserLayerHandler.java[m
+[36m@@ -1,6 +1,8 @@[m
+ package org.oskari.control.userlayer;[m
+ [m
+ import java.io.File;[m
+[32m+[m[32mimport java.io.FileInputStream;[m
+[32m+[m[32mimport java.io.FileNotFoundException;[m
+ import java.io.FileOutputStream;[m
+ import java.io.IOException;[m
+ import java.io.InputStream;[m
+[36m@@ -71,7 +73,7 @@[m [mimport fi.nls.oskari.util.ResponseHelper;[m
+ public class CreateUserLayerHandler extends ActionHandler {[m
+ [m
+     private static final Logger log = LogFactory.getLogger(CreateUserLayerHandler.class);[m
+[31m-[m
+[32m+[m[41m    [m
+     private static final String PROPERTY_USERLAYER_MAX_FILE_SIZE_MB = "userlayer.max.filesize.mb";[m
+     private static final String PROPERTY_TARGET_EPSG = "oskari.native.srs";[m
+     private static final int MAX_FILES_IN_ZIP = 10;[m
+[36m@@ -195,28 +197,10 @@[m [mpublic class CreateUserLayerHandler extends ActionHandler {[m
+                     // safeguard against evil zip files, userlayers shouldn't have this many files in any case[m
+                     throw new ActionParamsException("Zip contains too many files");[m
+                 }[m
+[31m-                if (ze.isDirectory()) {[m
+[31m-                    continue;[m
+[31m-                }[m
+[31m-                String name = ze.getName();[m
+[31m-                if (name.indexOf('/') >= 0) {[m
+[31m-                    log.debug(name, "is directory, ignoring");[m
+[31m-                    continue;[m
+[31m-                }[m
+[31m-                if (name.indexOf('.') == 0) {[m
+[31m-                    log.debug(name, "starts with '.', ignoring");[m
+[31m-                }[m
+[31m-                String ext = getFileExt(name);[m
+[31m-                if (ext == null) {[m
+[31m-                    log.debug(name, "doesn't have non-empty file extension, ignoring");[m
+[31m-                    continue;[m
+[31m-                }[m
+[31m-                ext = ext.toLowerCase();[m
+[31m-                if (!extensions.add(ext)) {[m
+[31m-                    throw new ActionParamsException("Zip contains multiple files with same extension");[m
+[32m+[m[32m                String name = getValidFileName(ze, extensions);[m
+[32m+[m[32m                if (name != null) {[m
+[32m+[m[32m                    validFiles.add(name);[m
+                 }[m
+[31m-                log.debug(name, "accepted as valid filename");[m
+[31m-                validFiles.add(name);[m
+             }[m
+             checkZipContainsExactlyOneMainFile(extensions);[m
+             return validFiles;[m
+[36m@@ -224,6 +208,31 @@[m [mpublic class CreateUserLayerHandler extends ActionHandler {[m
+             throw new ActionException("Unexpected IOException occured", e);[m
+         }[m
+     }[m
+[32m+[m[41m    [m
+[32m+[m[32m    private static String getValidFileName(ZipEntry ze, Set<String> extensions) throws ActionParamsException {[m
+[32m+[m[32m        if (ze.isDirectory()) {[m
+[32m+[m[32m            return null;[m
+[32m+[m[32m        }[m
+[32m+[m[32m        String name = ze.getName();[m
+[32m+[m[32m        if (name.indexOf('/') >= 0) {[m
+[32m+[m[32m            log.debug(name, "is inside a directory, ignoring");[m
+[32m+[m[32m            return null;[m
+[32m+[m[32m        }[m
+[32m+[m[32m        if (name.indexOf('.') == 0) {[m
+[32m+[m[32m            log.debug(name, "starts with '.', ignoring");[m
+[32m+[m[32m        }[m
+[32m+[m[32m        String ext = getFileExt(name);[m
+[32m+[m[32m        if (ext == null) {[m
+[32m+[m[32m            log.debug(name, "doesn't have non-empty file extension, ignoring");[m
+[32m+[m[32m            return null;[m
+[32m+[m[32m        }[m
+[32m+[m[32m        ext = ext.toLowerCase();[m
+[32m+[m[32m        if (!extensions.add(ext)) {[m
+[32m+[m[32m            throw new ActionParamsException("Zip contains multiple files with same extension");[m
+[32m+[m[32m        }[m
+[32m+[m[32m        log.debug(name, "accepted as valid filename");[m
+[32m+[m[32m        return name;[m
+[32m+[m[32m    }[m
+ [m
+     private void checkZipContainsExactlyOneMainFile(Set<String> extensions) throws ActionParamsException {[m
+         long mainFileExtensions = extensions.stream()[m
+[36m@@ -332,7 +341,7 @@[m [mpublic class CreateUserLayerHandler extends ActionHandler {[m
+         }[m
+     }[m
+ [m
+[31m-    private String getFileExt(String name) {[m
+[32m+[m[32m    private static String getFileExt(String name) {[m
+         int i = name.lastIndexOf('.');[m
+         if (i < 0 || i + 1 == name.length()) {[m
+             return null;[m
