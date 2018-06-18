@@ -218,6 +218,7 @@ public class CreateUserLayerHandler extends ActionHandler {
         }
         if (name.indexOf('.') == 0) {
             log.debug(name, "starts with '.', ignoring");
+            return null;
         }
         String ext = getFileExt(name);
         if (ext == null) {
