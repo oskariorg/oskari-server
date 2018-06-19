@@ -35,15 +35,12 @@ public class OskariDatabaseSecurityConfig extends WebSecurityConfigurerAdapter {
  * - loginPage might not be needed since we permit all URLs
  */
         http.authenticationProvider( new OskariAuthenticationProvider() );
-        http.csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse());
-        http.headers().frameOptions().disable();
-
-        final String loginurl = env.getLoginUrl();
         http
+            .headers().frameOptions().disable()
+            .and().csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
             // IMPORTANT! Only antMatch for processing url, otherwise SAML security filters are passed even if both are active
-            .antMatcher(loginurl)
-            .formLogin()
-                .loginProcessingUrl(loginurl)
+            .and().formLogin()
+                .loginProcessingUrl(env.getLoginUrl())
                 .passwordParameter(env.getParam_password())
                 .usernameParameter(env.getParam_username())
                 .failureHandler(new OskariLoginFailureHandler("/?loginState=failed"))

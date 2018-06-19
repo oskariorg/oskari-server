@@ -28,17 +28,13 @@ public class OskariCommonSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         log.info("Configuring common security options");
 
-        http.csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse());
-
         final String logoutUrl = env.getLogoutUrl();
 
         // IMPORTANT! Only antMatch for logoutUrl, otherwise SAML security filters are passed even if active
         // FIXME: When we want to use SAML singleLogout, we should disable this and call /saml/SingleLogout
         http
             .headers().frameOptions().disable()
-            .and()
-            .antMatcher(logoutUrl)
-            .logout()
+            .and().antMatcher(logoutUrl).logout()
                 .logoutRequestMatcher(new AntPathRequestMatcher(logoutUrl))
                 .logoutUrl(logoutUrl)
                 .invalidateHttpSession(true)
