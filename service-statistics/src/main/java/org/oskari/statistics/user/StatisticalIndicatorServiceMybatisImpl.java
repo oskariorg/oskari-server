@@ -157,6 +157,10 @@ public class StatisticalIndicatorServiceMybatisImpl extends StatisticalIndicator
     }
 
     private void addDimension(StatisticalIndicator ind, UserIndicatorDataRow row) {
+        if(row.regionsetId == 0) {
+            // no data for indicator
+            return;
+        }
         if(ind.getLayer(row.regionsetId) == null) {
             ind.addLayer(new StatisticalIndicatorLayer(row.regionsetId, ind.getId()));
         }
