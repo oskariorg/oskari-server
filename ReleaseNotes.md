@@ -1,5 +1,26 @@
 # Release Notes
 
+## 1.47.0
+
+For a full list of changes see: https://github.com/oskariorg/oskari-server/milestone/8?closed=1
+
+- Migration from OpenLayers 2 to OpenLayers 4 (see MigrationGuide.md)
+- Improvements to userlayer/imported datasets handling
+- Statistical maps PXWeb adapter improvements
+- Statistical datasource/indicator listings now include regionset and time-variable metadata where available
+- Statistical maps error handling improvements
+- Layer order modification in hierarchical layers have been fixed
+- GetAppSetup can now include common urls as environmental metadata (like login/register) configured in oskari-ext.properties
+- Maplayer capabilities caching improvements
+- Added Admin route for flushing caches (/action?action_route=Cache&name=[cache name])
+- Domain check for published maps is now case-insensitive
+- Added server functionalities for handling user generated statistical indicators
+- Print functionality now handles layers that require credentials properly
+- Saving a view/state of the geoportal now uses the current view as base instead of the system default (Fixes an issue with projection support and saving views)
+- Timeseries control can now be included in embedded maps
+- Added a concept of "internal layers" that are part of oskari_maplayer table, but are not intended for public view (like baselayers for my places etc)
+- Clean up deprecated code
+
 ## 1.46.2
 
 For a full list of changes see: https://github.com/oskariorg/oskari-server/milestone/10?closed=1
