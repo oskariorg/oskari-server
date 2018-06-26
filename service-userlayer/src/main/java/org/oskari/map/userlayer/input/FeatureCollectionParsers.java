@@ -87,7 +87,7 @@ public class FeatureCollectionParsers {
         if (sourceCRS == null || targetCRS == null) {
             throw new IllegalArgumentException("Both sourceCRS and targetCRS must be known!");
         }
-        return CRS.findMathTransform(sourceCRS, targetCRS);
+        return CRS.findMathTransform(sourceCRS, targetCRS, true);
     }
 
 }
