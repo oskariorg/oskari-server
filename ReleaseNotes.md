@@ -1,5 +1,9 @@
 # Release Notes
 
+## 1.47.1
+
+Fix for determining coordinate systems when importing userlayers/imported datasets.
+
 ## 1.47.0
 
 For a full list of changes see: https://github.com/oskariorg/oskari-server/milestone/8?closed=1
