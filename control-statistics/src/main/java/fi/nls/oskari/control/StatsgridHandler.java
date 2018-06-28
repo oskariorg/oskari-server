@@ -13,7 +13,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import static fi.nls.oskari.control.ActionConstants.*;
 
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -53,14 +53,16 @@ public class StatsgridHandler extends BundleHandler {
         if (config == null) {
             return false;
         }
+        final String language = params.getLocale().getLanguage();
         JSONArray sourcesList = new JSONArray();
         JSONHelper.putValue(config, KEY_DATASOURCES, sourcesList);
 
         List<StatisticalDatasource> list = pluginManager.getDatasources();
+        Map<Long, DatasourceLayer> regionsets = new HashMap<>();
         for(StatisticalDatasource src : list) {
             JSONObject item = new JSONObject();
             JSONHelper.putValue(item, KEY_ID, src.getId());
-            JSONHelper.putValue(item, KEY_NAME, src.getName(params.getLocale().getLanguage()));
+            JSONHelper.putValue(item, KEY_NAME, src.getName(language));
             JSONHelper.putValue(item, KEY_TYPE, getType(src.getPlugin()));
             JSONHelper.putValue(item, KEY_INFO, src.getConfigJSON().optJSONObject(KEY_INFO));
             // add layer ids as available regionsets for the datasource
@@ -71,6 +73,19 @@ public class StatsgridHandler extends BundleHandler {
                     .collect(Collectors.toSet())));
 
             sourcesList.put(item);
+            for(DatasourceLayer layer : src.getLayers()) {
+                regionsets.put(layer.getMaplayerId(), layer);
+            }
+        }
+
+        JSONArray regionsetList = new JSONArray();
+        JSONHelper.putValue(config, KEY_REGIONSETS, regionsetList);
+        // TODO: check permissions
+        for(DatasourceLayer layer : regionsets.values()) {
+            JSONObject item = new JSONObject();
+            JSONHelper.putValue(item, KEY_ID, layer.getMaplayerId());
+            JSONHelper.putValue(item, KEY_NAME, layer.getTitle(language));
+            regionsetList.put(item);
         }
         return false;
     }
