@@ -1,11 +1,13 @@
 package fi.nls.oskari.control.layer;
 
+import static fi.nls.oskari.control.ActionConstants.PARAM_FORCE_PROXY;
 import static fi.nls.oskari.control.ActionConstants.PARAM_LANGUAGE;
 import static fi.nls.oskari.control.ActionConstants.PARAM_SRS;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
+import fi.nls.oskari.util.JSONHelper;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -86,10 +88,23 @@ public class GetMapLayerGroupsHandler extends ActionHandler {
         final User user = params.getUser();
         final String lang = params.getHttpParam(PARAM_LANGUAGE, params.getLocale().getLanguage());
         final String crs = params.getHttpParam(PARAM_SRS);
+        final boolean forceProxy = params.getHttpParam(PARAM_FORCE_PROXY, false);
         final boolean isSecure = EnvHelper.isSecure(params);
         final boolean isPublished = false;
 
         List<OskariLayer> layers = getLayersWithResources(user, isPublished);
+
+        if (forceProxy) {
+            layers.forEach(lyr -> {
+                JSONObject attributes = lyr.getAttributes();
+                if (attributes == null) {
+                    attributes = new JSONObject();
+                }
+                JSONHelper.putValue(attributes, "forceProxy",true);
+                lyr.setAttributes(attributes);
+            });
+        }
+
         PermissionCollection permissionCollection = OskariLayerWorker.getPermissionCollection(user);
 
         int[] sortedLayerIds = layers.stream().mapToInt(OskariLayer::getId).toArray();
