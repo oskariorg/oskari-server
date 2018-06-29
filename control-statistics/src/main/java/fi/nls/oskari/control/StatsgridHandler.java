@@ -74,12 +74,12 @@ public class StatsgridHandler extends BundleHandler {
         Collection<JSONObject> regionsets = pluginManager.getDatasources().stream()
                 // get layers from sources
                 .map(src -> src.getLayers())
-                .flatMap(layer -> layer.stream())
-                // get distinct layers
+                .flatMap(layerList -> layerList.stream())
+                // get distinct layers by creating a map with layer ids as keys
                 .collect(Collectors.toMap(DatasourceLayer::getMaplayerId, Function.identity(), (a,b) -> a))
                 .values().stream()
-                // TODO: check permissions
-                .filter(l -> l.getMaplayerId() != -1)
+                // check permissions
+                .filter(l -> l.hasPermission(params.getUser()))
                 // write to JSON
                 .map(l -> toJSON(l, language))
                 .collect(Collectors.toList());

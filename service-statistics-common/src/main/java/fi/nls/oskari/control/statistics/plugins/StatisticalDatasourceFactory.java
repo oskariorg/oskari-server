@@ -1,5 +1,6 @@
 package fi.nls.oskari.control.statistics.plugins;
 
+import fi.mml.portti.domain.permissions.Permissions;
 import fi.nls.oskari.control.statistics.plugins.db.DatasourceLayer;
 import fi.nls.oskari.control.statistics.plugins.db.DatasourceLayerMapper;
 import fi.nls.oskari.control.statistics.plugins.db.StatisticalDatasource;
@@ -13,9 +14,14 @@ import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.apache.ibatis.transaction.TransactionFactory;
 import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
+import org.oskari.service.util.ServiceFactory;
 
 import javax.sql.DataSource;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Used to create plugin instances for source
@@ -28,13 +34,35 @@ public abstract class StatisticalDatasourceFactory extends OskariComponent {
         final DatasourceHelper helper = DatasourceHelper.getInstance();
         final DataSource dataSource = helper.getDataSource(helper.getOskariDataSourceName());
         final SqlSessionFactory factory = initializeIBatis(dataSource);
-        final SqlSession session = factory.openSession();
-        try {
+        try (final SqlSession session = factory.openSession()) {
             final List<DatasourceLayer> layerRows = session.getMapper(DatasourceLayerMapper.class).getLayersForDatasource(source.getId());
+
+            // fetch a list of permissions for the regionset layers
+            Map<Long, List<Permissions>> permissions = ServiceFactory.getPermissionsService()
+                    .getPermissionsForLayers(layerRows.stream()
+                            .map(DatasourceLayer::getMaplayerId)
+                            .collect(Collectors.toList()), Permissions.PERMISSION_TYPE_VIEW_LAYER);
+            // attach role ids that are permitted to see this regionset for each layer
+            layerRows.forEach(
+                    layer -> layer.addRoles(getRoleIdsForLayer(
+                            permissions.get(layer.getMaplayerId()))));
             source.setLayers(layerRows);
-        } finally {
-            session.close();
         }
+    }
+
+    /**
+     * Returns a list of role ids
+     * @param permissions
+     * @return
+     */
+    private Set<Long> getRoleIdsForLayer(List<Permissions> permissions) {
+        if(permissions == null) {
+            return Collections.emptySet();
+        }
+        return permissions.stream()
+                .filter(p -> p.getExternalIdType().equals(Permissions.EXTERNAL_TYPE_ROLE))
+                .map(p -> Long.parseLong(p.getExternalId()))
+                .collect(Collectors.toSet());
     }
 
     private SqlSessionFactory initializeIBatis(final DataSource dataSource) {

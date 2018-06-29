@@ -1,7 +1,13 @@
 package fi.nls.oskari.control.statistics.plugins.db;
 
+import fi.nls.oskari.domain.Role;
+import fi.nls.oskari.domain.User;
 import fi.nls.oskari.util.PropertyUtil;
 import org.json.JSONObject;
+
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * This is the value object for the statistical datasource layer
@@ -30,7 +36,10 @@ public class DatasourceLayer {
     private JSONObject config;
 
     // {"fi":{"name":"Pohjois-Karjalan maakuntakaava: Aluevaraukset"}}} from oskari_maplayer.locale
+    // set by mybatis mapper
     private JSONObject locale;
+
+    private Set<Long> allowedRoles = new HashSet<>();
 
     public long getDatasourceId() {
         return datasourceId;
@@ -62,6 +71,15 @@ public class DatasourceLayer {
         this.config = config;
     }
 
+    public void addRoles(Collection<Long> roleIds) {
+        allowedRoles.addAll(roleIds);
+    }
+
+    public boolean hasPermission(User user) {
+        return user.getRoles().stream()
+                .map(Role::getId)
+                .anyMatch(id -> allowedRoles.contains(id));
+    }
 
     public String getTitle(String lang) {
         JSONObject langJSON = getLocalized(lang);
