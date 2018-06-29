@@ -14,6 +14,7 @@ import org.json.JSONObject;
 import static fi.nls.oskari.control.ActionConstants.*;
 
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -23,18 +24,28 @@ import java.util.stream.Collectors;
      "datasources" : [{
          "id" : 1,
          "name" : "Omat indikaattorit",
-         "type" : "user"
+         "type" : "user",
+         "regionsets": [1]
      }, {
          "id" : 2,
          "name" : "SotkaNET",
          "type" : "system",
          "info" : {
             "url" : "http://moreinfoaboutthis.here
-        }
+         },
+         "regionsets": [1, 2]
      }, {
          "id" : 3,
          "name" : "KHR",
-         "type" : "system"
+         "type" : "system",
+         "regionsets": [1]
+     }],
+     "regionsets": [{
+        "id": 1,
+        "name": "Municipalities"
+     },{
+         "id": 2,
+         "name": "NUTS 1"
      }]
  }
  */
@@ -54,39 +65,26 @@ public class StatsgridHandler extends BundleHandler {
             return false;
         }
         final String language = params.getLocale().getLanguage();
-        JSONArray sourcesList = new JSONArray();
-        JSONHelper.putValue(config, KEY_DATASOURCES, sourcesList);
 
-        List<StatisticalDatasource> list = pluginManager.getDatasources();
-        Map<Long, DatasourceLayer> regionsets = new HashMap<>();
-        for(StatisticalDatasource src : list) {
-            JSONObject item = new JSONObject();
-            JSONHelper.putValue(item, KEY_ID, src.getId());
-            JSONHelper.putValue(item, KEY_NAME, src.getName(language));
-            JSONHelper.putValue(item, KEY_TYPE, getType(src.getPlugin()));
-            JSONHelper.putValue(item, KEY_INFO, src.getConfigJSON().optJSONObject(KEY_INFO));
-            // add layer ids as available regionsets for the datasource
-            JSONHelper.putValue(item, KEY_REGIONSETS, new JSONArray(src
-                    .getLayers()
-                    .stream()
-                    .map(DatasourceLayer::getMaplayerId)
-                    .collect(Collectors.toSet())));
+        List<JSONObject> sources = pluginManager.getDatasources().stream()
+                .map(src -> toJSON(src, language))
+                .collect(Collectors.toList());
+        JSONHelper.putValue(config, KEY_DATASOURCES, new JSONArray(sources));
 
-            sourcesList.put(item);
-            for(DatasourceLayer layer : src.getLayers()) {
-                regionsets.put(layer.getMaplayerId(), layer);
-            }
-        }
+        Collection<JSONObject> regionsets = pluginManager.getDatasources().stream()
+                // get layers from sources
+                .map(src -> src.getLayers())
+                .flatMap(layer -> layer.stream())
+                // get distinct layers
+                .collect(Collectors.toMap(DatasourceLayer::getMaplayerId, Function.identity(), (a,b) -> a))
+                .values().stream()
+                // TODO: check permissions
+                .filter(l -> l.getMaplayerId() != -1)
+                // write to JSON
+                .map(l -> toJSON(l, language))
+                .collect(Collectors.toList());
 
-        JSONArray regionsetList = new JSONArray();
-        JSONHelper.putValue(config, KEY_REGIONSETS, regionsetList);
-        // TODO: check permissions
-        for(DatasourceLayer layer : regionsets.values()) {
-            JSONObject item = new JSONObject();
-            JSONHelper.putValue(item, KEY_ID, layer.getMaplayerId());
-            JSONHelper.putValue(item, KEY_NAME, layer.getTitle(language));
-            regionsetList.put(item);
-        }
+        JSONHelper.putValue(config, KEY_REGIONSETS, new JSONArray(regionsets));
         return false;
     }
 
@@ -96,5 +94,27 @@ public class StatsgridHandler extends BundleHandler {
             return "user";
         }
         return "system";
+    }
+
+    private JSONObject toJSON(StatisticalDatasource src, String language) {
+        JSONObject item = new JSONObject();
+        JSONHelper.putValue(item, KEY_ID, src.getId());
+        JSONHelper.putValue(item, KEY_NAME, src.getName(language));
+        JSONHelper.putValue(item, KEY_TYPE, getType(src.getPlugin()));
+        JSONHelper.putValue(item, KEY_INFO, src.getConfigJSON().optJSONObject(KEY_INFO));
+        // add layer ids as available regionsets for the datasource
+        JSONHelper.putValue(item, KEY_REGIONSETS, new JSONArray(src
+                .getLayers()
+                .stream()
+                .map(DatasourceLayer::getMaplayerId)
+                .collect(Collectors.toSet())));
+        return item;
+    }
+
+    private JSONObject toJSON(DatasourceLayer layer, String language) {
+        JSONObject item = new JSONObject();
+        JSONHelper.putValue(item, KEY_ID, layer.getMaplayerId());
+        JSONHelper.putValue(item, KEY_NAME, layer.getTitle(language));
+        return item;
     }
 }
