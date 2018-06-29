@@ -38,16 +38,25 @@ public abstract class StatisticalDatasourceFactory extends OskariComponent {
             final List<DatasourceLayer> layerRows = session.getMapper(DatasourceLayerMapper.class).getLayersForDatasource(source.getId());
 
             // fetch a list of permissions for the regionset layers
+            List<Long> layerIdList = layerRows.stream()
+                    .map(DatasourceLayer::getMaplayerId)
+                    .collect(Collectors.toList());
             Map<Long, List<Permissions>> permissions = ServiceFactory.getPermissionsService()
-                    .getPermissionsForLayers(layerRows.stream()
-                            .map(DatasourceLayer::getMaplayerId)
-                            .collect(Collectors.toList()), Permissions.PERMISSION_TYPE_VIEW_LAYER);
+                    .getPermissionsForLayers(layerIdList, Permissions.PERMISSION_TYPE_VIEW_LAYER);
             // attach role ids that are permitted to see this regionset for each layer
-            layerRows.forEach(
-                    layer -> layer.addRoles(getRoleIdsForLayer(
-                            permissions.get(layer.getMaplayerId()))));
+            layerRows.forEach(layer -> attachRoles(layer, permissions));
             source.setLayers(layerRows);
         }
+    }
+
+    /**
+     * Adds roles that are permitted to see the regionset for the layer
+     * @param layer layer to attach permitted roles
+     * @param permissions map with layer id as key and layer permissions as value
+     */
+    private void attachRoles(DatasourceLayer layer, Map<Long, List<Permissions>> permissions) {
+        List<Permissions> perm = permissions.get(layer.getMaplayerId());
+        layer.addRoles(getRoleIdsForLayer(perm));
     }
 
     /**
