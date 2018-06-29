@@ -17,6 +17,7 @@ import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.analysis.domain.AnalysisLayer;
 import fi.nls.oskari.map.analysis.service.AnalysisDbService;
 import fi.nls.oskari.map.analysis.service.AnalysisDbServiceMybatisImpl;
+import fi.nls.oskari.map.layer.OskariLayerService;
 import fi.nls.oskari.myplaces.MyPlacesService;
 import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.util.ConversionHelper;
@@ -49,6 +50,7 @@ public class MapfullHandler extends BundleHandler {
     private static final String KEY_LAYERS = "layers";
     private static final String KEY_SEL_LAYERS = "selectedLayers";
     private static final String KEY_ID = "id";
+    private static final String KEY_FORCE_PROXY = "forceProxy";
 
     private static final String KEY_MAP_OPTIONS = "mapOptions";
     private static final String KEY_PROJ_DEFS = "projectionDefs";
@@ -74,6 +76,7 @@ public class MapfullHandler extends BundleHandler {
     private static final AnalysisDbService analysisService = new AnalysisDbServiceMybatisImpl();
     private static UserLayerDbService userLayerService;
     private static final UserLayerDataService userLayerDataService = new UserLayerDataService();
+    private static OskariLayerService mapLayerService;
 
     private static final LogoPluginHandler LOGO_PLUGIN_HANDLER = new LogoPluginHandler();
     private static final WfsLayerPluginHandler WFSLAYER_PLUGIN_HANDLER = new WfsLayerPluginHandler();
@@ -84,6 +87,7 @@ public class MapfullHandler extends BundleHandler {
     public void init() {
         myPlaceService = OskariComponentManager.getComponentOfType(MyPlacesService.class);
         userLayerService = OskariComponentManager.getComponentOfType(UserLayerDbService.class);
+        mapLayerService = OskariComponentManager.getComponentOfType(OskariLayerService.class);
         epsgInit();
         svgInit();
     }
@@ -104,6 +108,7 @@ public class MapfullHandler extends BundleHandler {
         final Set<String> bundleIds = getBundleIds(params.getStartupSequence());
         final boolean useDirectURLForMyplaces = false;
         final String mapSRS = getSRSFromMapConfig(mapfullConfig);
+        final boolean forceProxy = mapfullConfig.optBoolean(KEY_FORCE_PROXY, false);
         final JSONArray fullConfigLayers = getFullLayerConfig(mfConfigLayers,
                 params.getUser(),
                 params.getLocale().getLanguage(),
@@ -112,7 +117,8 @@ public class MapfullHandler extends BundleHandler {
                 bundleIds,
                 useDirectURLForMyplaces,
                 params.isModifyURLs(),
-                mapSRS);
+                mapSRS,
+                forceProxy);
 
         setProjDefsForMapConfig(mapfullConfig, mapSRS);
         // overwrite layers
@@ -148,6 +154,17 @@ public class MapfullHandler extends BundleHandler {
                                                final String viewType, final Set<String> bundleIds,
                                                final boolean useDirectURLForMyplaces, final String mapSRS) {
         return getFullLayerConfig(layersArray, user, lang, viewID, viewType, bundleIds, useDirectURLForMyplaces, false, mapSRS);
+    }
+
+    public static JSONArray getFullLayerConfig(final JSONArray layersArray,
+                                               final User user, final String lang, final long viewID,
+                                               final String viewType, final Set<String> bundleIds,
+                                               final boolean useDirectURLForMyplaces,
+                                               final boolean modifyURLs,
+                                               final String mapSRS) {
+        return getFullLayerConfig(
+                layersArray, user, lang, viewID, viewType, bundleIds,
+                useDirectURLForMyplaces, modifyURLs, mapSRS, false);
     }
 
     /**
@@ -224,6 +241,7 @@ public class MapfullHandler extends BundleHandler {
      * @param bundleIds
      * @param useDirectURLForMyplaces
      * @param modifyURLs              false to keep urls as is, true to modify them for easier proxy forwards
+     * @param forceProxy              false to keep urls as is, true to proxy all layers
      * @return
      */
     public static JSONArray getFullLayerConfig(final JSONArray layersArray,
@@ -231,7 +249,8 @@ public class MapfullHandler extends BundleHandler {
                                                final String viewType, final Set<String> bundleIds,
                                                final boolean useDirectURLForMyplaces,
                                                final boolean modifyURLs,
-                                               final String mapSRS) {
+                                               final String mapSRS,
+                                               final boolean forceProxy) {
 
         // Create a list of layer ids
         final List<Integer> layerIdList = new ArrayList<>();
@@ -283,8 +302,20 @@ public class MapfullHandler extends BundleHandler {
             }
         }
 
-        final JSONObject struct = OskariLayerWorker.getListOfMapLayersById(
-                layerIdList, user, lang, ViewTypes.PUBLISHED.equals(viewType), modifyURLs, mapSRS);
+        final List<OskariLayer> layers = mapLayerService.findByIdList(layerIdList);
+        if (forceProxy) {
+            layers.forEach(lyr -> {
+                JSONObject attributes = lyr.getAttributes();
+                if (attributes == null) {
+                    attributes = new JSONObject();
+                }
+                JSONHelper.putValue(attributes, "forceProxy", forceProxy);
+                lyr.setAttributes(attributes);
+            });
+        }
+
+        final JSONObject struct = OskariLayerWorker.getListOfMapLayers(
+                layers, user, lang, mapSRS, ViewTypes.PUBLISHED.equals(viewType), modifyURLs);
 
         if (struct.isNull(KEY_LAYERS)) {
             LOGGER.warn("getSelectedLayersStructure did not return layers when expanding:",
