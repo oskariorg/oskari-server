@@ -52,6 +52,7 @@ public class GetPrintHandler extends ActionHandler {
     private static final String PARM_SCALE = "pageScale";
     private static final String PARM_LOGO = "pageLogo";
     private static final String PARM_DATE = "pageDate";
+    private static final String PARM_SCALE_TEXT = "scaleText";
 
     private static final String ALLOWED_FORMATS = Arrays.toString(new String[] {
             PrintFormat.PDF.contentType, PrintFormat.PNG.contentType
@@ -118,6 +119,7 @@ public class GetPrintHandler extends ActionHandler {
         request.setShowLogo(params.getHttpParam(PARM_LOGO, false));
         request.setShowScale(params.getHttpParam(PARM_SCALE, false));
         request.setShowDate(params.getHttpParam(PARM_DATE, false));
+        request.setScaleText(params.getHttpParam(PARM_SCALE_TEXT, ""));
 
         setPagesize(params, request);
         setCoordinates(params.getRequiredParam(PARM_COORD), request);

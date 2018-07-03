@@ -263,15 +263,15 @@ public class PDF {
 
         double mppx;
         switch (units) {
-        case "m":
-            mppx = request.getResolution();
-            break;
-        case "°":
-            LOG.info("Map units is deegrees, not drawing Scale Line");
-            return;
-        default:
-            LOG.info("Unknown unit", units, "- not drawing Scale line");
-            return;
+            case "m":
+                mppx = request.getResolution();
+                break;
+            case "°":
+                LOG.info("Map units is deegrees, not drawing Scale Line");
+                return;
+            default:
+                LOG.info("Unknown unit", units, "- not drawing Scale line");
+                return;
         }
 
         double mppt = mppx * Units.PDF_DPI / Units.OGC_DPI;
@@ -287,14 +287,8 @@ public class PDF {
             }
         }
 
-        String distanceStr;
-        if (distance > 1000) {
-            distanceStr = Math.round(distance / 1000) + " km";
-        } else {
-            distanceStr = Math.round(distance) + " m";
-        }
-
         double pt = distance / mppt;
+
 
         // PDF (and PDFBox) uses single precision floating point numbers
         float x1 = (float) OFFSET_SCALE_LEFT;
@@ -302,15 +296,28 @@ public class PDF {
         float x2 = (float) (OFFSET_SCALE_LEFT + pt);
         float y2 = y1 + 10;
 
-        stream.moveTo(x1, y2);
-        stream.lineTo(x1, y1);
-        stream.lineTo(x2, y1);
-        stream.lineTo(x2, y2);
-        stream.stroke();
+        if(request.hasScaleText()) {
+            float cx = x1 + ((x2 - x1) / 2);
+            PDFBoxUtil.drawTextCentered(stream, request.getScaleText(),
+                    FONT, FONT_SIZE_SCALE, cx, y1 + 5);
+        } else {
+            String distanceStr;
+            if (distance > 1000) {
+                distanceStr = Math.round(distance / 1000) + " km";
+            } else {
+                distanceStr = Math.round(distance) + " m";
+            }
 
-        float cx = x1 + ((x2 - x1) / 2);
-        PDFBoxUtil.drawTextCentered(stream, distanceStr,
-                FONT, FONT_SIZE_SCALE, cx, y1 + 5);
+            stream.moveTo(x1, y2);
+            stream.lineTo(x1, y1);
+            stream.lineTo(x2, y1);
+            stream.lineTo(x2, y2);
+            stream.stroke();
+
+            float cx = x1 + ((x2 - x1) / 2);
+            PDFBoxUtil.drawTextCentered(stream, distanceStr,
+                    FONT, FONT_SIZE_SCALE, cx, y1 + 5);
+        }
     }
 
     private static String getUnits(String srsName) {
