@@ -19,7 +19,7 @@ public class PrintRequest {
     private String title;
     private List<PrintLayer> layers;
     private String scaleText;
-
+    private boolean useConfiguredScale;
 
     public double getEast() {
         return east;
@@ -141,7 +141,15 @@ public class PrintRequest {
         this.scaleText = scaleText;
     }
 
-    public boolean hasScaleText(){
+    public boolean isScaleText(){
         return (this.scaleText != null && !this.scaleText.isEmpty());
+    }
+
+    public boolean isUseConfiguredScale() {
+        return useConfiguredScale;
+    }
+
+    public void setUseConfiguredScale(boolean useConfiguredScale) {
+        this.useConfiguredScale = useConfiguredScale;
     }
 }

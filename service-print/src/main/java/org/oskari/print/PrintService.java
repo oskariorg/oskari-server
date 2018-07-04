@@ -1,5 +1,6 @@
 package org.oskari.print;
 
+import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.service.ServiceException;
 
 import fi.nls.oskari.service.capabilities.CapabilitiesCacheService;
@@ -29,24 +30,12 @@ public class PrintService {
     }
 
     public BufferedImage getPNG(PrintRequest request) throws ServiceException {
-        request.setLayers(filterLayersWithZeroOpacity(request.getLayers()));
         return PNG.getBufferedImage(request, wmtsCapsCache);
     }
 
     public void getPDF(PrintRequest request, PDDocument doc)
             throws IOException, ServiceException {
-        request.setLayers(filterLayersWithZeroOpacity(request.getLayers()));
         PDF.getPDF(request, doc, wmtsCapsCache);
-    }
-
-    private static List<PrintLayer> filterLayersWithZeroOpacity(List<PrintLayer> layers) {
-        List<PrintLayer> filtered = new ArrayList<>();
-        for (PrintLayer layer : layers) {
-            if (layer.getOpacity() > 0) {
-                filtered.add(layer);
-            }
-        }
-        return filtered;
     }
 
 }

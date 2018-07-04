@@ -53,6 +53,7 @@ public class GetPrintHandler extends ActionHandler {
     private static final String PARM_LOGO = "pageLogo";
     private static final String PARM_DATE = "pageDate";
     private static final String PARM_SCALE_TEXT = "scaleText";
+    private static final String PARM_USE_CONFIGURED_SCALE = "useConfiguredScale";
 
     private static final String ALLOWED_FORMATS = Arrays.toString(new String[] {
             PrintFormat.PDF.contentType, PrintFormat.PNG.contentType
@@ -96,16 +97,16 @@ public class GetPrintHandler extends ActionHandler {
     public void handleAction(ActionParameters params) throws ActionException {
         PrintRequest pr = createPrintRequest(params);
         switch (pr.getFormat()) {
-        case PDF:
-            handlePDF(pr, params);
-            break;
-        case PNG:
-            handlePNG(pr, params);
-            break;
-        default:
-            throw new ActionParamsException(String.format(
-                    "Invalid value for key '%s'. Allowed values are: %s",
-                    PARM_FORMAT, ALLOWED_FORMATS));
+            case PDF:
+                handlePDF(pr, params);
+                break;
+            case PNG:
+                handlePNG(pr, params);
+                break;
+            default:
+                throw new ActionParamsException(String.format(
+                        "Invalid value for key '%s'. Allowed values are: %s",
+                        PARM_FORMAT, ALLOWED_FORMATS));
         }
     }
 
@@ -120,17 +121,41 @@ public class GetPrintHandler extends ActionHandler {
         request.setShowScale(params.getHttpParam(PARM_SCALE, false));
         request.setShowDate(params.getHttpParam(PARM_DATE, false));
         request.setScaleText(params.getHttpParam(PARM_SCALE_TEXT, ""));
-
         setPagesize(params, request);
         setCoordinates(params.getRequiredParam(PARM_COORD), request);
         setFormat(params.getRequiredParam(PARM_FORMAT), request);
+        request.setUseConfiguredScale(params.getHttpParam(PARM_USE_CONFIGURED_SCALE, false));
 
         List<PrintLayer> layers = getLayers(params.getRequiredParam(PARM_MAPLAYERS),
                 params.getUser());
+        layers = filterLayersWithZeroOpacity(layers);
+        if(request.isUseConfiguredScale()) {
+            layers = filterLayersWithSupportOwnScale(layers);
+        }
         request.setLayers(layers);
         setTiles(layers, params.getHttpParam(PARM_TILES));
 
         return request;
+    }
+
+    private List<PrintLayer> filterLayersWithZeroOpacity(List<PrintLayer> layers) {
+        List<PrintLayer> filtered = new ArrayList<>();
+        for (PrintLayer layer : layers) {
+            if (layer.getOpacity() > 0) {
+                filtered.add(layer);
+            }
+        }
+        return filtered;
+    }
+
+    private List<PrintLayer> filterLayersWithSupportOwnScale(List<PrintLayer> layers) {
+        List<PrintLayer> filtered = new ArrayList<>();
+        for (PrintLayer layer : layers) {
+            if (!layer.getType().equals(OskariLayer.TYPE_WMTS)) {
+                filtered.add(layer);
+            }
+        }
+        return filtered;
     }
 
     private void setPagesize(ActionParameters params, PrintRequest request)

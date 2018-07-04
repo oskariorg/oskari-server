@@ -296,7 +296,7 @@ public class PDF {
         float x2 = (float) (OFFSET_SCALE_LEFT + pt);
         float y2 = y1 + 10;
 
-        if(request.hasScaleText()) {
+        if(request.isScaleText()) {
             float cx = x1 + ((x2 - x1) / 2);
             PDFBoxUtil.drawTextCentered(stream, request.getScaleText(),
                     FONT, FONT_SIZE_SCALE, cx, y1 + 5);
