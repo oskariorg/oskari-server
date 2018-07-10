@@ -145,11 +145,4 @@ public class PrintRequest {
         return (this.scaleText != null && !this.scaleText.isEmpty());
     }
 
-    public boolean isUseConfiguredScale() {
-        return useConfiguredScale;
-    }
-
-    public void setUseConfiguredScale(boolean useConfiguredScale) {
-        this.useConfiguredScale = useConfiguredScale;
-    }
 }
