@@ -12,9 +12,9 @@ import java.util.List;
  */
 public interface DatasourceLayerMapper {
 
-    @Select("SELECT datasource_id, layer_id, config" +
-            " FROM oskari_statistical_layer WHERE " +
-            " datasource_id = #{datasourceId}")
+    @Select("SELECT s.datasource_id, s.layer_id, s.config, l.locale" +
+            " FROM oskari_statistical_layer s JOIN oskari_maplayer l ON l.id = s.layer_id WHERE " +
+            " s.datasource_id = #{datasourceId}")
     @Results({
             @Result(property = "datasourceId", column = "datasource_id"),
             @Result(property = "maplayerId", column = "layer_id")

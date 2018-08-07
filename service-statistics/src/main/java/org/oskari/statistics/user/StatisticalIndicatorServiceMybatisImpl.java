@@ -88,13 +88,16 @@ public class StatisticalIndicatorServiceMybatisImpl extends StatisticalIndicator
 
     public boolean delete(long id, long userId) {
         try (final SqlSession session = factory.openSession()) {
-            return getMapper(session).delete(id, userId) != 0;
+            int count = getMapper(session).delete(id, userId);
+            session.commit();
+            return count != 0;
         }
     }
 
     public void deleteByUser(long userId) {
         try (final SqlSession session = factory.openSession()) {
             getMapper(session).deleteByUser(userId);
+            session.commit();
         }
     }
 
@@ -154,6 +157,10 @@ public class StatisticalIndicatorServiceMybatisImpl extends StatisticalIndicator
     }
 
     private void addDimension(StatisticalIndicator ind, UserIndicatorDataRow row) {
+        if(row.regionsetId == 0) {
+            // no data for indicator
+            return;
+        }
         if(ind.getLayer(row.regionsetId) == null) {
             ind.addLayer(new StatisticalIndicatorLayer(row.regionsetId, ind.getId()));
         }
@@ -178,7 +185,7 @@ public class StatisticalIndicatorServiceMybatisImpl extends StatisticalIndicator
             }
             session.commit();
         }
-        return findById(id, userId);
+        return findById(row.id, userId);
     }
     public void saveIndicatorData(long indicator, long regionset, int year, String data) {
         try (final SqlSession session = factory.openSession()) {
@@ -192,6 +199,7 @@ public class StatisticalIndicatorServiceMybatisImpl extends StatisticalIndicator
     public boolean deleteIndicatorData(long indicator, long regionset, int year) {
         try (final SqlSession session = factory.openSession()) {
             int updated = getMapper(session).deleteData(indicator, regionset, year);
+            session.commit();
             return updated != 0;
         }
     }
