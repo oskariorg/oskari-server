@@ -45,6 +45,11 @@ public class GetMapLayerGroupsHandler extends ActionHandler {
     private static final String KEY_ID = "id";
     private static final String KEY_ORDER_NUMBER = "orderNumber";
 
+    private static final List<String> PROXY_LYR_TYPES = Arrays.asList(
+            OskariLayer.TYPE_WMS,
+            OskariLayer.TYPE_WMTS,
+            OskariLayer.TYPE_ARCGIS93);
+
     private OskariLayerService layerService;
     private PermissionsService permissionsService;
     private OskariMapLayerGroupService groupService;
@@ -96,12 +101,14 @@ public class GetMapLayerGroupsHandler extends ActionHandler {
 
         if (forceProxy) {
             layers.forEach(lyr -> {
-                JSONObject attributes = lyr.getAttributes();
-                if (attributes == null) {
-                    attributes = new JSONObject();
+                if (PROXY_LYR_TYPES.contains(lyr.getType())) {
+                    JSONObject attributes = lyr.getAttributes();
+                    if (attributes == null) {
+                        attributes = new JSONObject();
+                    }
+                    JSONHelper.putValue(attributes, "forceProxy",true);
+                    lyr.setAttributes(attributes);
                 }
-                JSONHelper.putValue(attributes, "forceProxy",true);
-                lyr.setAttributes(attributes);
             });
         }
 
