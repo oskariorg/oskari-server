@@ -24,7 +24,7 @@ public class UserDataLayer {
     }
 
     public boolean isPublished() {
-        return getPublisher_name() != null;
+        return publisher_name != null && !publisher_name.isEmpty();
     }
 
     public boolean isOwnedBy(final String uuid) {

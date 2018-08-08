@@ -274,7 +274,7 @@ public class PDF {
             return;
         }
 
-        double mppt = mppx * Units.PDF_DPI / Units.OGC_DPI;
+        double mppt = mppx * Units.OGC_DPI / Units.PDF_DPI;
 
         // Draw atleast 50pt
         double minDistance = mppt * 50;
