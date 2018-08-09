@@ -39,7 +39,6 @@ public class OskariDatabaseSecurityConfig extends WebSecurityConfigurerAdapter {
 
         // require form parameter "_csrf" OR "X-XSRF-TOKEN" header with token as value or respond with an error message
         http.csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse());
-            //.ignoringAntMatchers("/saml/**");
 
         // IMPORTANT! Only antMatch for processing url, otherwise SAML security filters are passed even if both are active
         http.formLogin()

@@ -451,6 +451,7 @@ public class OskariSAMLSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse());
+                //.ignoringAntMatchers("/saml/**");
         http
                 .httpBasic()
                 .authenticationEntryPoint(samlEntryPoint());
