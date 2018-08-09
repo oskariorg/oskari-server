@@ -39,7 +39,7 @@ import java.net.URL;
 import java.util.*;
 
 @OskariActionRoute("CreateAnalysisLayer")
-public class CreateAnalysisLayerHandler extends ActionHandler {
+public class CreateAnalysisLayerHandler extends RestActionHandler {
 
     private static final Logger log = LogFactory
             .getLogger(CreateAnalysisLayerHandler.class);
@@ -82,13 +82,22 @@ public class CreateAnalysisLayerHandler extends ActionHandler {
 
     final private static String GEOSERVER_PROXY_BASE_URL = PropertyUtil.getOptional("analysis.baseproxy.url");
 
+    private AnalysisLayer getAggregateLayer(String analyse, String filter1, String filter2,
+                                      String baseUrl, AnalysisLayer analysisLayer, String outputFormat) throws ActionParamsException {
+        try {
+            return analysisParser.parseSwitch2UnionLayer(analysisLayer, analyse, filter1, filter2, baseUrl, outputFormat);
+        } catch (ServiceException e) {
+            throw new ActionParamsException(ERROR_UNABLE_TO_PROCESS_AGGREGATE_UNION, e.getMessage());
+        }
+    }
+
     /**
      * Handles action_route CreateAnalysisLayer
      *
      * @param params Ajax request parameters
      *               **********************************************************************
      */
-    public void handleAction(ActionParameters params) throws ActionException {
+    public void handlePost(ActionParameters params) throws ActionException {
         params.requireLoggedInUser();
 
         final String analyse = params.getRequiredParam(PARAM_ANALYSE, ERROR_ANALYSE_PARAMETER_MISSING);
@@ -115,7 +124,7 @@ public class CreateAnalysisLayerHandler extends ActionHandler {
             // no WPS for merge analysis
             try {
                 analysis = analysisDataService.mergeAnalysisData(
-                    analysisLayer, analyse, params.getUser());
+                        analysisLayer, analyse, params.getUser());
             } catch (ServiceException e) {
                 throw new ActionException(ERROR_UNABLE_TO_MERGE_ANALYSIS_DATA, e);
             }
@@ -241,15 +250,6 @@ public class CreateAnalysisLayerHandler extends ActionHandler {
         JSONHelper.putValue(analysisLayerJSON, "permissions", permissions);
 
         ResponseHelper.writeResponse(params, analysisLayerJSON);
-    }
-
-    private AnalysisLayer getAggregateLayer(String analyse, String filter1, String filter2,
-                                      String baseUrl, AnalysisLayer analysisLayer, String outputFormat) throws ActionParamsException {
-        try {
-            return analysisParser.parseSwitch2UnionLayer(analysisLayer, analyse, filter1, filter2, baseUrl, outputFormat);
-        } catch (ServiceException e) {
-            throw new ActionParamsException(ERROR_UNABLE_TO_PROCESS_AGGREGATE_UNION, e.getMessage());
-        }
     }
 
     private AnalysisLayer getAnalysisLayer(JSONObject analyseJson, String filter1, String filter2, String baseUrl,

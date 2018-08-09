@@ -15,7 +15,7 @@ import fi.nls.oskari.util.ResponseHelper;
  * Expects to get analysis id as http parameter "id".
  */
 @OskariActionRoute("DeleteAnalysisData")
-public class DeleteAnalysisDataHandler extends ActionHandler {
+public class DeleteAnalysisDataHandler extends RestActionHandler {
 
     private final static String PARAM_ID = "id";
     //private final static Logger log = LogFactory.getLogger(DeleteAnalysisDataHandler.class);
@@ -35,10 +35,8 @@ public class DeleteAnalysisDataHandler extends ActionHandler {
     }
 
     @Override
-    public void handleAction(ActionParameters params) throws ActionException {
-        if(params.getUser().isGuest()) {
-            throw new ActionDeniedException("Session expired");
-        }
+    public void handlePost(ActionParameters params) throws ActionException {
+        params.requireLoggedInUser();
         final long id = ConversionHelper.getLong(params.getHttpParam(PARAM_ID), -1);
         if(id == -1) {
             throw new ActionParamsException("Parameter missing or non-numeric: " + PARAM_ID + "=" + params.getHttpParam(PARAM_ID));

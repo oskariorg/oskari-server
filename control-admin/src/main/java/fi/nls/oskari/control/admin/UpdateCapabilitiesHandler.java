@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
+import fi.nls.oskari.control.*;
 import fi.nls.oskari.util.ConversionHelper;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -14,11 +15,6 @@ import org.oskari.service.util.ServiceFactory;
 
 import fi.mml.map.mapwindow.util.OskariLayerWorker;
 import fi.nls.oskari.annotation.OskariActionRoute;
-import fi.nls.oskari.control.ActionConstants;
-import fi.nls.oskari.control.ActionException;
-import fi.nls.oskari.control.ActionHandler;
-import fi.nls.oskari.control.ActionParameters;
-import fi.nls.oskari.control.ActionParamsException;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.map.layer.OskariLayerService;
 import fi.nls.oskari.map.view.ViewService;
@@ -46,7 +42,7 @@ import fi.nls.oskari.util.ResponseHelper;
  * Both "success" and "error" might be empty
  */
 @OskariActionRoute("UpdateCapabilities")
-public class UpdateCapabilitiesHandler extends ActionHandler {
+public class UpdateCapabilitiesHandler extends RestActionHandler {
 
     private OskariLayerService layerService;
     private CapabilitiesCacheService capabilitiesCacheService;
@@ -85,7 +81,7 @@ public class UpdateCapabilitiesHandler extends ActionHandler {
     }
 
     @Override
-    public void handleAction(ActionParameters params) throws ActionException {
+    public void handlePost(ActionParameters params) throws ActionException {
         params.requireAdminUser();
 
         String layerId = params.getHttpParam(ActionConstants.KEY_ID);
