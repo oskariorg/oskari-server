@@ -300,6 +300,17 @@ public class ActionParameters {
     }
 
     /**
+     * Throws an exception if the request isn't for the required method.
+     * @param mtd
+     * @throws ActionDeniedException
+     */
+    public void requireHTTPMethod(String mtd) throws ActionDeniedException {
+        if(!request.getMethod().equalsIgnoreCase(mtd)) {
+            throw new ActionDeniedException("Requires HTTP method: " + mtd);
+        }
+    }
+
+    /**
      * Returns an api key for the request
      * @return
      */
