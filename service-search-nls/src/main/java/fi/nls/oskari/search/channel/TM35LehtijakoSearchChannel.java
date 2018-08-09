@@ -1,108 +1,84 @@
 package fi.nls.oskari.search.channel;
 
 import fi.mml.portti.service.search.ChannelSearchResult;
-import fi.mml.portti.service.search.IllegalSearchCriteriaException;
 import fi.mml.portti.service.search.SearchCriteria;
 import fi.mml.portti.service.search.SearchResultItem;
-import fi.nls.aluejako.karttalehtijako.utm_karttalehti;
 import fi.nls.oskari.annotation.Oskari;
 import fi.nls.oskari.domain.geo.Point;
-import fi.nls.oskari.log.LogFactory;
-import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.geometry.ProjectionHelper;
+import fi.nls.oskari.search.util.TM35MapSheetDivision;
+import fi.nls.oskari.util.ConversionHelper;
 
 @Oskari("TM35LEHTIJAKO_CHANNEL")
 public class TM35LehtijakoSearchChannel extends SearchChannel {
 
     private static final int DEFAULT_TM35_SCALE = 5000;
     private static final String PARAM_TM35_SCALE = "scale";
-    private Logger log = LogFactory.getLogger(this.getClass());
 
     public Capabilities getCapabilities() {
         return Capabilities.BOTH;
     }
-    
+
     /**
-     * Find centroid for a grid square
-     * 
-     * @param searchCriteria
-     * @return 
+     * Find center of a map sheet
      */
     @Override
     public ChannelSearchResult doSearch(SearchCriteria searchCriteria) {
-        log.debug("lehtijako");
+        String mapSheet = searchCriteria.getSearchString();
 
-        String lehti = searchCriteria.getSearchString();
-        
-        utm_karttalehti l = new utm_karttalehti(lehti);
-        l = l.lehti_numerolla(lehti);
-
-        double[] sijainti = l.sijainti();   // suorakaide pisteet
-
-        ChannelSearchResult result = new ChannelSearchResult();
-        if(sijainti == null) {
-            return result;
+        if (!TM35MapSheetDivision.validate(mapSheet)) {
+            return new ChannelSearchResult();
         }
 
-        double[] keskipiste = laskeKeskipiste(sijainti);
+        int[] bbox = TM35MapSheetDivision.getBoundingBox(mapSheet);
+        double centerNorth = bbox[1] + (bbox[3] - bbox[1]) * 0.5;
+        double centerEast = bbox[0] + (bbox[2] - bbox[0]) * 0.5;
 
         SearchResultItem item = new SearchResultItem();
-        item.setTitle(l.lehtinumero());
         item.setType("tm35lehtijako");
-        item.setLat(keskipiste[1]);
-        item.setLon(keskipiste[0]);
-        result.addItem(item);
-         
-       return result;
-    }
-    
-    /**
-     * Find grid square for coordinates
-     * 
-     * @param searchCriteria
-     * @return
-     * @throws IllegalSearchCriteriaException 
-     */
-    public ChannelSearchResult reverseGeocode(SearchCriteria searchCriteria) throws IllegalSearchCriteriaException {
-        log.debug("lehtijako");
-
-        double y = searchCriteria.getLat();
-        double x = searchCriteria.getLon();
-        String epsg = searchCriteria.getSRS();
-        
-        Point p = ProjectionHelper.transformPoint(x, y, epsg, "EPSG:3067");
-
-        // pitää olla jokin näistä: 100000,50000,25000,20000,10000,5000
-        int scale = getScale((String) searchCriteria.getParam(PARAM_TM35_SCALE));
-
-        double[] pt = new double[]{p.getLon(), p.getLat()}; // E, N (EPSG:3067) lon,lat
-
-        utm_karttalehti lehti = new utm_karttalehti();
-        lehti = lehti.pisteessa(pt, scale);
+        item.setTitle(mapSheet);
+        item.setLat(centerNorth);
+        item.setLon(centerEast);
 
         ChannelSearchResult result = new ChannelSearchResult();
-        SearchResultItem item = new SearchResultItem();
-        item.setType("tm35lehtijako");
-        item.setTitle(lehti.lehtinumero());
-        item.setDescription(lehti.lehtinumero());
-        item.setLat(y);
-        item.setLon(x);
         result.addItem(item);
+
         return result;
     }
 
-    private int getScale(String requested) {
-        try {
-            return Integer.parseInt(requested); // pitää olla jokin näistä: 100000,50000,25000,20000,10000,5000
-        } catch (Exception e) {
-            log.ignore(e);
+    /**
+     * Find map sheet by coordinates
+     */
+    public ChannelSearchResult reverseGeocode(SearchCriteria searchCriteria) {
+        double lat = searchCriteria.getLat();
+        double lon = searchCriteria.getLon();
+        String epsg = searchCriteria.getSRS();
+        Point p = ProjectionHelper.transformPoint(lon, lat, epsg, "EPSG:3067");
+        double east = p.getLon();
+        double north = p.getLat();
+
+        if (!TM35MapSheetDivision.validate(east, north)) {
+            return new ChannelSearchResult();
         }
-        return DEFAULT_TM35_SCALE;
+
+        // Must be one of: 200000,100000,50000,25000,20000,10000,5000
+        String paramScale = (String) searchCriteria.getParam(PARAM_TM35_SCALE);
+        int scale = ConversionHelper.getInt(paramScale, DEFAULT_TM35_SCALE);
+        int charLen = TM35MapSheetDivision.getLen(scale);
+
+        String mapSheet = TM35MapSheetDivision.getMapSheetByCoordinate(east, north, charLen, false);
+
+        SearchResultItem item = new SearchResultItem();
+        item.setType("tm35lehtijako");
+        item.setTitle(mapSheet);
+        item.setDescription(mapSheet);
+        item.setLat(lat);
+        item.setLon(lon);
+
+        ChannelSearchResult result = new ChannelSearchResult();
+        result.addItem(item);
+
+        return result;
     }
-    
-    private double[] laskeKeskipiste(double[] pisteet) {
-        double x = ((pisteet[4] - pisteet[0]) / 2) + pisteet[0];
-        double y = ((pisteet[3] - pisteet[1]) / 2) + pisteet[1];
-        return new double[]{x, y};
-    }
+
 }
