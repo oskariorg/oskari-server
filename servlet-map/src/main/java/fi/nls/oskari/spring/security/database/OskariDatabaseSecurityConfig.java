@@ -35,16 +35,19 @@ public class OskariDatabaseSecurityConfig extends WebSecurityConfigurerAdapter {
  * - loginPage might not be needed since we permit all URLs
  */
         http.authenticationProvider( new OskariAuthenticationProvider() );
-        http
-            .headers().frameOptions().disable()
-            .and().csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-            // IMPORTANT! Only antMatch for processing url, otherwise SAML security filters are passed even if both are active
-            .and().formLogin()
-                .loginProcessingUrl(env.getLoginUrl())
-                .passwordParameter(env.getParam_password())
-                .usernameParameter(env.getParam_username())
-                .failureHandler(new OskariLoginFailureHandler("/?loginState=failed"))
-                .successHandler(new OskariAuthenticationSuccessHandler())
-                .loginPage("/");
+        http.headers().frameOptions().disable();
+
+        // require form parameter "_csrf" OR "X-XSRF-TOKEN" header with token as value or respond with an error message
+        http.csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse());
+            //.ignoringAntMatchers("/saml/**");
+
+        // IMPORTANT! Only antMatch for processing url, otherwise SAML security filters are passed even if both are active
+        http.formLogin()
+            .loginProcessingUrl(env.getLoginUrl())
+            .passwordParameter(env.getParam_password())
+            .usernameParameter(env.getParam_username())
+            .failureHandler(new OskariLoginFailureHandler("/?loginState=failed"))
+            .successHandler(new OskariAuthenticationSuccessHandler())
+            .loginPage("/");
     }
 }
