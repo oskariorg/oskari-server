@@ -5,17 +5,15 @@ import fi.nls.oskari.control.statistics.StatisticsHelper;
 import fi.nls.oskari.control.statistics.data.*;
 import fi.nls.oskari.control.statistics.plugins.StatisticalDatasourcePlugin;
 import fi.nls.oskari.control.statistics.plugins.StatisticalDatasourcePluginManager;
-import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.service.OskariComponentManager;
 import org.json.JSONException;
 import org.oskari.statistics.user.StatisticalIndicatorService;
 import fi.nls.oskari.annotation.OskariActionRoute;
-import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.ResponseHelper;
 
 @OskariActionRoute("SaveIndicator")
-public class SaveIndicatorHandler extends ActionHandler {
+public class SaveIndicatorHandler extends RestActionHandler {
 
     public static final String PARAM_NAME = "name";
     public static final String PARAM_DESCRIPTION = "desc";
@@ -31,7 +29,7 @@ public class SaveIndicatorHandler extends ActionHandler {
         }
     }
 
-    public void handleAction(ActionParameters params) throws ActionException {
+    public void handlePost(ActionParameters params) throws ActionException {
         params.requireLoggedInUser();
 
         int datasourceId = params.getRequiredParamInt(StatisticsHelper.PARAM_DATASOURCE_ID);
