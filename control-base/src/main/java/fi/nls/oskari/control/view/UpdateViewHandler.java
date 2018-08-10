@@ -1,10 +1,7 @@
 package fi.nls.oskari.control.view;
 
 import fi.nls.oskari.annotation.OskariActionRoute;
-import fi.nls.oskari.control.ActionDeniedException;
-import fi.nls.oskari.control.ActionException;
-import fi.nls.oskari.control.ActionHandler;
-import fi.nls.oskari.control.ActionParameters;
+import fi.nls.oskari.control.*;
 import fi.nls.oskari.domain.User;
 import fi.nls.oskari.domain.map.view.View;
 import fi.nls.oskari.log.LogFactory;
@@ -18,13 +15,13 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 @OskariActionRoute("UpdateView")
-public class UpdateViewHandler extends ActionHandler {
+public class UpdateViewHandler extends RestActionHandler {
 
     private static final Logger LOG = LogFactory.getLogger(UpdateViewHandler.class);
     private ViewService vs = new ViewServiceIbatisImpl();
 
     @Override
-    public void handleAction(ActionParameters params) throws ActionException {
+    public void handlePost(ActionParameters params) throws ActionException {
 
         final long viewId = ConversionHelper.getLong(params.getHttpParam("id"), -1);
 
