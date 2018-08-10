@@ -11,6 +11,7 @@ import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 
 /**
  * Database based authentication on Oskari
@@ -34,19 +35,18 @@ public class OskariDatabaseSecurityConfig extends WebSecurityConfigurerAdapter {
  * - loginPage might not be needed since we permit all URLs
  */
         http.authenticationProvider( new OskariAuthenticationProvider() );
-        http.csrf().disable();
         http.headers().frameOptions().disable();
 
-        final String loginurl = env.getLoginUrl();
-        http
-            // IMPORTANT! Only antMatch for processing url, otherwise SAML security filters are passed even if both are active
-            .antMatcher(loginurl)
-            .formLogin()
-                .loginProcessingUrl(loginurl)
-                .passwordParameter(env.getParam_password())
-                .usernameParameter(env.getParam_username())
-                .failureHandler(new OskariLoginFailureHandler("/?loginState=failed"))
-                .successHandler(new OskariAuthenticationSuccessHandler())
-                .loginPage("/");
+        // require form parameter "_csrf" OR "X-XSRF-TOKEN" header with token as value or respond with an error message
+        http.csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse());
+
+        // IMPORTANT! Only antMatch for processing url, otherwise SAML security filters are passed even if both are active
+        http.formLogin()
+            .loginProcessingUrl(env.getLoginUrl())
+            .passwordParameter(env.getParam_password())
+            .usernameParameter(env.getParam_username())
+            .failureHandler(new OskariLoginFailureHandler("/?loginState=failed"))
+            .successHandler(new OskariAuthenticationSuccessHandler())
+            .loginPage("/");
     }
 }

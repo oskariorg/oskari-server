@@ -1,5 +1,6 @@
 package org.oskari.control.userlayer;
 
+import fi.nls.oskari.control.RestActionHandler;
 import org.json.JSONObject;
 import org.oskari.map.userlayer.service.UserLayerDbService;
 
@@ -18,7 +19,7 @@ import fi.nls.oskari.util.ResponseHelper;
  * Expects to get layer id as http parameter "id".
  */
 @OskariActionRoute("DeleteUserLayer")
-public class DeleteUserLayerHandler extends ActionHandler {
+public class DeleteUserLayerHandler extends RestActionHandler {
 
     private UserLayerDbService userLayerDbService;
 
@@ -34,7 +35,7 @@ public class DeleteUserLayerHandler extends ActionHandler {
     }
 
     @Override
-    public void handleAction(ActionParameters params) throws ActionException {
+    public void handlePost(ActionParameters params) throws ActionException {
         try {
             UserLayer userLayer = UserLayerHandlerHelper.getUserLayer(userLayerDbService, params);
             userLayerDbService.deleteUserLayer(userLayer);

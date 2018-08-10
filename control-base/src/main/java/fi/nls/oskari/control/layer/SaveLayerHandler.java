@@ -48,7 +48,7 @@ import static fi.nls.oskari.control.ActionConstants.PARAM_SRS;
  * Admin insert/update of WMS map layer
  */
 @OskariActionRoute("SaveLayer")
-public class SaveLayerHandler extends ActionHandler {
+public class SaveLayerHandler extends RestActionHandler {
 
     private class SaveResult {
         long layerId = -1;
@@ -138,7 +138,7 @@ public class SaveLayerHandler extends ActionHandler {
     private static final String WFS1_1_0_VERSION = "1.1.0";
 
     @Override
-    public void handleAction(ActionParameters params) throws ActionException {
+    public void handlePost(ActionParameters params) throws ActionException {
 
         final SaveResult result = saveLayer(params);
         final int layerId = (int)result.layerId;

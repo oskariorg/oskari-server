@@ -21,7 +21,7 @@ public class SaveFeatureHandler extends AbstractFeatureHandler {
     private static Logger log = LogFactory.getLogger(DBHandler.class);
 
     @Override
-    public void handleAction(ActionParameters params) throws ActionException {
+    public void handlePost(ActionParameters params) throws ActionException {
         params.requireLoggedInUser();
 
         JSONObject jsonObject = params.getHttpParamAsJSON("featureData");

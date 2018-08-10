@@ -14,7 +14,7 @@ import org.json.JSONObject;
 public class DeleteFeatureHandler extends AbstractFeatureHandler {
 
     @Override
-    public void handleAction(ActionParameters params) throws ActionException {
+    public void handlePost(ActionParameters params) throws ActionException {
         params.requireLoggedInUser();
 
         JSONObject jsonObject = params.getHttpParamAsJSON("featureData");
