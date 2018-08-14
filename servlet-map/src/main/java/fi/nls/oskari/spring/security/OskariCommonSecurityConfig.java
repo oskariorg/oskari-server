@@ -34,8 +34,9 @@ public class OskariCommonSecurityConfig extends WebSecurityConfigurerAdapter {
         // FIXME: When we want to use SAML singleLogout, we should disable this and call /saml/SingleLogout
         http
             .headers().frameOptions().disable()
-            .and().antMatcher(logoutUrl).logout()
-                .logoutRequestMatcher(new AntPathRequestMatcher(logoutUrl))
+            .and()
+                // NOTE! With CSRF enabled, logout needs to happen with POST request
+                .logout()
                 .logoutUrl(logoutUrl)
                 .invalidateHttpSession(true)
                 .deleteCookies("oskaristate")
