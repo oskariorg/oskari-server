@@ -9,8 +9,6 @@ import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 /**
  * Common security config for logging out.
@@ -30,16 +28,18 @@ public class OskariCommonSecurityConfig extends WebSecurityConfigurerAdapter {
 
         final String logoutUrl = env.getLogoutUrl();
 
-        // IMPORTANT! Only antMatch for logoutUrl, otherwise SAML security filters are passed even if active
-        // FIXME: When we want to use SAML singleLogout, we should disable this and call /saml/SingleLogout
         http
             .headers().frameOptions().disable()
             .and()
-                // NOTE! With CSRF enabled, logout needs to happen with POST request
+                // IMPORTANT! Only antMatch for logoutUrl, otherwise SAML security filters are passed even if active
+                //            also server-extensions with custom config are affected
+                // FIXME: When we want to use SAML singleLogout, we should disable this and call /saml/SingleLogout
+                .antMatcher(logoutUrl)
+                // NOTE! With CSRF enabled logout needs to happen with POST request
                 .logout()
                 .logoutUrl(logoutUrl)
                 .invalidateHttpSession(true)
-                .deleteCookies("oskaristate")
+                .deleteCookies("oskaristate","JSESSIONID", "CSRF-TOKEN")
                 .logoutSuccessUrl("/");
     }
 }
