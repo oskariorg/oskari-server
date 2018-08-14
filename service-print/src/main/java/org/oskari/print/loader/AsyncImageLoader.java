@@ -44,7 +44,8 @@ public class AsyncImageLoader {
                 images.add(new CommandLoadImageWFS(layer, width, height, bbox).queue());
                 break;
             case "myplaces":
-                images.add(new CommandLoadImageMyPlaces(layer, width, height, bbox, srsName).queue());
+                images.add(new CommandLoadImageMyPlaces(request.getUser(),
+                        layer, width, height, bbox, srsName).queue());
                 break;
             default:
                 throw new IllegalArgumentException("Invalid layer type!");

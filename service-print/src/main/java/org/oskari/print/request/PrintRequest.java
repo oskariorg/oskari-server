@@ -2,8 +2,11 @@ package org.oskari.print.request;
 
 import java.util.List;
 
+import fi.nls.oskari.domain.User;
+
 public class PrintRequest {
 
+    private User user;
     private double east;
     private double north;
     private String srsName;
@@ -18,6 +21,14 @@ public class PrintRequest {
     private boolean showDate;
     private String title;
     private List<PrintLayer> layers;
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
 
     public double getEast() {
         return east;

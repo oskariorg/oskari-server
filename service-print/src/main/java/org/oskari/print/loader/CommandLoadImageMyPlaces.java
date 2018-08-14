@@ -12,6 +12,7 @@ import org.oskari.print.util.GetMapBuilder;
 import org.oskari.print.util.ModifiedActionParameters;
 
 import fi.nls.oskari.control.ActionParameters;
+import fi.nls.oskari.domain.User;
 import fi.nls.oskari.service.ProxyService;
 
 /**
@@ -21,18 +22,21 @@ public class CommandLoadImageMyPlaces extends CommandLoadImageBase {
 
     private static final String FORMAT = "image/png";
 
+    private final User user;
     private final PrintLayer layer;
     private final int width;
     private final int height;
     private final double[] bbox;
     private final String srsName;
 
-    public CommandLoadImageMyPlaces(PrintLayer layer,
+    public CommandLoadImageMyPlaces(User user,
+            PrintLayer layer,
             int width,
             int height,
             double[] bbox,
             String srsName) {
-        super(Integer.toString(layer.getId()));
+        super("myplaces_" + layer.getId());
+        this.user = user;
         this.layer = layer;
         this.width = width;
         this.height = height;
@@ -53,7 +57,7 @@ public class CommandLoadImageMyPlaces extends CommandLoadImageBase {
                 .transparent(true)
                 .toParamMap();
         queryParams.put("myCat", Integer.toString(layer.getId()));
-        ActionParameters params = new ModifiedActionParameters(queryParams);
+        ActionParameters params = new ModifiedActionParameters(user, queryParams);
         byte[] resp = ProxyService.proxyBinary("myplacestile", params);
         InputStream input = new ByteArrayInputStream(resp);
         return ImageIO.read(input);

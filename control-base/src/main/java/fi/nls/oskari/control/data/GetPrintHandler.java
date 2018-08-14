@@ -114,6 +114,7 @@ public class GetPrintHandler extends ActionHandler {
             throws ActionException {
         PrintRequest request = new PrintRequest();
 
+        request.setUser(params.getUser());
         request.setSrsName(params.getRequiredParam(PARM_SRSNAME));
         request.setResolution(params.getRequiredParamDouble(PARM_RESOLUTION));
         request.setTitle(params.getHttpParam(PARM_TITLE));
