@@ -43,6 +43,9 @@ public class AsyncImageLoader {
             case OskariLayer.TYPE_WFS:
                 images.add(new CommandLoadImageWFS(layer, width, height, bbox).queue());
                 break;
+            case "myplaces":
+                images.add(new CommandLoadImageMyPlaces(layer, width, height, bbox, srsName).queue());
+                break;
             default:
                 throw new IllegalArgumentException("Invalid layer type!");
             }
