@@ -96,16 +96,16 @@ public class GetPrintHandler extends ActionHandler {
     public void handleAction(ActionParameters params) throws ActionException {
         PrintRequest pr = createPrintRequest(params);
         switch (pr.getFormat()) {
-            case PDF:
-                handlePDF(pr, params);
-                break;
-            case PNG:
-                handlePNG(pr, params);
-                break;
-            default:
-                throw new ActionParamsException(String.format(
-                        "Invalid value for key '%s'. Allowed values are: %s",
-                        PARM_FORMAT, ALLOWED_FORMATS));
+        case PDF:
+            handlePDF(pr, params);
+            break;
+        case PNG:
+            handlePNG(pr, params);
+            break;
+        default:
+            throw new ActionParamsException(String.format(
+                    "Invalid value for key '%s'. Allowed values are: %s",
+                    PARM_FORMAT, ALLOWED_FORMATS));
         }
     }
 

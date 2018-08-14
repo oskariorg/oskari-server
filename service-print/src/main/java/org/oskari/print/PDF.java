@@ -263,15 +263,15 @@ public class PDF {
 
         double mppx;
         switch (units) {
-            case "m":
-                mppx = request.getResolution();
-                break;
-            case "°":
-                LOG.info("Map units is deegrees, not drawing Scale Line");
-                return;
-            default:
-                LOG.info("Unknown unit", units, "- not drawing Scale line");
-                return;
+        case "m":
+            mppx = request.getResolution();
+            break;
+        case "°":
+            LOG.info("Map units is deegrees, not drawing Scale Line");
+            return;
+        default:
+            LOG.info("Unknown unit", units, "- not drawing Scale line");
+            return;
         }
 
         double mppt = mppx * Units.PDF_DPI / Units.OGC_DPI;
@@ -296,11 +296,14 @@ public class PDF {
         float x2 = (float) (OFFSET_SCALE_LEFT + pt);
         float y2 = y1 + 10;
 
+        // If scale text is defined then draw scale text.
         if(request.isScaleText()) {
             float cx = x1 + ((x2 - x1) / 2);
             PDFBoxUtil.drawTextCentered(stream, request.getScaleText(),
                     FONT, FONT_SIZE_SCALE, cx, y1 + 5);
-        } else {
+        }
+        // else force to draw scalebar
+        else {
             String distanceStr;
             if (distance > 1000) {
                 distanceStr = Math.round(distance / 1000) + " km";

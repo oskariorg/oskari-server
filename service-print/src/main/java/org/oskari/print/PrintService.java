@@ -1,15 +1,11 @@
 package org.oskari.print;
 
-import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.service.ServiceException;
 
 import fi.nls.oskari.service.capabilities.CapabilitiesCacheService;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import org.apache.pdfbox.pdmodel.PDDocument;
-import org.oskari.print.request.PrintLayer;
 import org.oskari.print.request.PrintRequest;
 import org.oskari.print.wmts.WMTSCapabilitiesCache;
 

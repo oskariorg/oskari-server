@@ -19,7 +19,6 @@ public class PrintRequest {
     private String title;
     private List<PrintLayer> layers;
     private String scaleText;
-    private boolean useConfiguredScale;
 
     public double getEast() {
         return east;
