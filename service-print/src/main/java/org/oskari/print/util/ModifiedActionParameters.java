@@ -2,6 +2,8 @@ package org.oskari.print.util;
 
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.domain.User;
 
@@ -23,6 +25,11 @@ public class ModifiedActionParameters extends ActionParameters {
     @Override
     public String getHttpParam(String key) {
         return httpParams.get(key);
+    }
+
+    @Override
+    public HttpServletRequest getRequest() {
+        return new EmptyHttpServletRequest();
     }
 
 }

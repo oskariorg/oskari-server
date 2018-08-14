@@ -373,6 +373,7 @@ public class GetPrintHandler extends ActionHandler {
         layer.setVersion("1.3.0");
         layer.setName("oskari:my_places_categories");
         layer.setSrsName("EPSG:3067");
+        layer.setOpacity(opacity);
         return layer;
     }
 
