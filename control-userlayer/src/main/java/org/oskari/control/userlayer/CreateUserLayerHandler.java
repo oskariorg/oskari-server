@@ -18,6 +18,7 @@ import java.util.zip.ZipInputStream;
 
 import javax.servlet.http.HttpServletRequest;
 
+import fi.nls.oskari.control.*;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
@@ -35,11 +36,6 @@ import org.oskari.map.userlayer.service.UserLayerDbServiceMybatisImpl;
 
 import fi.mml.map.mapwindow.util.OskariLayerWorker;
 import fi.nls.oskari.annotation.OskariActionRoute;
-import fi.nls.oskari.control.ActionConstants;
-import fi.nls.oskari.control.ActionException;
-import fi.nls.oskari.control.ActionHandler;
-import fi.nls.oskari.control.ActionParameters;
-import fi.nls.oskari.control.ActionParamsException;
 import fi.nls.oskari.domain.map.userlayer.UserLayer;
 import fi.nls.oskari.domain.map.userlayer.UserLayerData;
 import fi.nls.oskari.domain.map.userlayer.UserLayerStyle;
@@ -68,7 +64,7 @@ import fi.nls.oskari.util.ResponseHelper;
  * in the SHP case) we use client submitted value ('sourceEpsg' parameter) as a fallback.
  */
 @OskariActionRoute("CreateUserLayer")
-public class CreateUserLayerHandler extends ActionHandler {
+public class CreateUserLayerHandler extends RestActionHandler {
 
     private static final Logger log = LogFactory.getLogger(CreateUserLayerHandler.class);
 
@@ -115,7 +111,7 @@ public class CreateUserLayerHandler extends ActionHandler {
     }
 
     @Override
-    public void handleAction(ActionParameters params) throws ActionException {
+    public void handlePost(ActionParameters params) throws ActionException {
         params.requireLoggedInUser();
 
         String sourceEPSG = params.getHttpParam(PARAM_SOURCE_EPSG_KEY);

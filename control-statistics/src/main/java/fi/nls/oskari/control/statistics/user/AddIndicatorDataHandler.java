@@ -23,7 +23,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @OskariActionRoute("AddIndicatorData")
-public class AddIndicatorDataHandler extends ActionHandler {
+public class AddIndicatorDataHandler extends RestActionHandler {
 
     private static final ObjectMapper MAPPER = new ObjectMapper();
     private static final String PARAM_DATA = "data";
@@ -38,7 +38,7 @@ public class AddIndicatorDataHandler extends ActionHandler {
         }
     }
 
-    public void handleAction(ActionParameters params) throws ActionException {
+    public void handlePost(ActionParameters params) throws ActionException {
         params.requireLoggedInUser();
 
         final int datasourceId = params.getRequiredParamInt(StatisticsHelper.PARAM_DATASOURCE_ID);

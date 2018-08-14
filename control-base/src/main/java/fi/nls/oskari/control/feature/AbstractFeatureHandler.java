@@ -7,6 +7,7 @@ import fi.nls.oskari.cache.JedisManager;
 import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.ActionHandler;
 import fi.nls.oskari.control.ActionParamsException;
+import fi.nls.oskari.control.RestActionHandler;
 import fi.nls.oskari.domain.User;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.domain.map.wfs.WFSLayerConfiguration;
@@ -39,7 +40,7 @@ import java.io.StringWriter;
 import java.util.Set;
 
 
-public abstract class AbstractFeatureHandler extends ActionHandler {
+public abstract class AbstractFeatureHandler extends RestActionHandler {
 
     public final static String CACHKE_KEY_PREFIX = "WFSImage_";
 

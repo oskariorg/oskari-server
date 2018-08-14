@@ -14,12 +14,12 @@ import static fi.nls.oskari.control.ActionConstants.PARAM_ID;
  * For deleting a dataprovider/organization
  */
 @OskariActionRoute("DeleteOrganization")
-public class DeleteOrganizationHandler extends ActionHandler {
+public class DeleteOrganizationHandler extends RestActionHandler {
 
     private DataProviderService groupService = ServiceFactory.getDataProviderService();
 
     @Override
-    public void handleAction(ActionParameters params) throws ActionException {
+    public void handleDelete(ActionParameters params) throws ActionException {
 
         final int groupId = params.getRequiredParamInt(PARAM_ID);
         

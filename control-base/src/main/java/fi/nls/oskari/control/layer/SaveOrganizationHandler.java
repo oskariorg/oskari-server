@@ -16,8 +16,6 @@ import javax.servlet.http.HttpServletRequest;
 import org.json.JSONObject;
 import org.oskari.service.util.ServiceFactory;
 
-import java.util.Map;
-
 import static fi.nls.oskari.control.ActionConstants.PARAM_ID;
 import static fi.nls.oskari.control.ActionConstants.PARAM_NAME_PREFIX;
 
@@ -25,14 +23,17 @@ import static fi.nls.oskari.control.ActionConstants.PARAM_NAME_PREFIX;
  * Admin insert/update of class layer or class sub layer
  */
 @OskariActionRoute("SaveOrganization")
-public class SaveOrganizationHandler extends ActionHandler {
+public class SaveOrganizationHandler extends RestActionHandler {
 
     private static final Logger log = LogFactory.getLogger(SaveOrganizationHandler.class);
 
     private final DataProviderService dataProviderService = ServiceFactory.getDataProviderService();
 
+    public void handlePut(ActionParameters params) throws ActionException {
+        handlePost(params);
+    }
     @Override
-    public void handleAction(ActionParameters params) throws ActionException {
+    public void handlePost(ActionParameters params) throws ActionException {
 
         final HttpServletRequest request = params.getRequest();
         final DataProvider dataProvider = new DataProvider();

@@ -9,6 +9,7 @@ import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 /**
@@ -27,17 +28,13 @@ public class OskariCommonSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         log.info("Configuring common security options");
 
-        http.csrf().disable();
-
         final String logoutUrl = env.getLogoutUrl();
 
         // IMPORTANT! Only antMatch for logoutUrl, otherwise SAML security filters are passed even if active
         // FIXME: When we want to use SAML singleLogout, we should disable this and call /saml/SingleLogout
         http
             .headers().frameOptions().disable()
-            .and()
-            .antMatcher(logoutUrl)
-            .logout()
+            .and().antMatcher(logoutUrl).logout()
                 .logoutRequestMatcher(new AntPathRequestMatcher(logoutUrl))
                 .logoutUrl(logoutUrl)
                 .invalidateHttpSession(true)

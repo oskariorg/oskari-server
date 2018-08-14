@@ -18,7 +18,7 @@ import org.json.JSONObject;
 
 
 @OskariActionRoute("AddView")
-public class SaveViewHandler extends ActionHandler {
+public class SaveViewHandler extends RestActionHandler {
 
     private final static Logger log = LogFactory.getLogger(SaveViewHandler.class);
     private static final ViewService viewService = new ViewServiceIbatisImpl();
@@ -29,7 +29,7 @@ public class SaveViewHandler extends ActionHandler {
     private final static String VIEW_DATA = "viewData";
     private final static String IS_DEFAULT = "isDefault";
 
-    public void handleAction(final ActionParameters params) throws ActionException {
+    public void handlePost(final ActionParameters params) throws ActionException {
 
         if (params.getUser().isGuest()) {
             throw new ActionDeniedException("Session expired");

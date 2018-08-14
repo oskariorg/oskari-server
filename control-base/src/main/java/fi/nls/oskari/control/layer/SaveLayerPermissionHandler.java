@@ -4,10 +4,7 @@ import fi.mml.portti.domain.permissions.Permissions;
 import fi.mml.portti.service.db.permissions.PermissionsService;
 import fi.mml.portti.service.db.permissions.PermissionsServiceIbatisImpl;
 import fi.nls.oskari.annotation.OskariActionRoute;
-import fi.nls.oskari.control.ActionException;
-import fi.nls.oskari.control.ActionHandler;
-import fi.nls.oskari.control.ActionParameters;
-import fi.nls.oskari.control.ActionParamsException;
+import fi.nls.oskari.control.*;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import org.json.JSONArray;
@@ -15,7 +12,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 @OskariActionRoute("SaveLayerPermission")
-public class SaveLayerPermissionHandler extends ActionHandler {
+public class SaveLayerPermissionHandler extends RestActionHandler {
 
     private static String PARAMETER_PERMISSION_DATA = "resource";
 
@@ -23,7 +20,7 @@ public class SaveLayerPermissionHandler extends ActionHandler {
     private final static PermissionsService permissionsService = new PermissionsServiceIbatisImpl();
 
     @Override
-    public void handleAction(ActionParameters params) throws ActionException {
+    public void handlePost(ActionParameters params) throws ActionException {
         log.debug("PERMISSION HANDLER LAYER");
         // only accept admins
         params.requireAdminUser();

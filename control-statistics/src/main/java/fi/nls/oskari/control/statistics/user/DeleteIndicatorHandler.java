@@ -1,7 +1,6 @@
 package fi.nls.oskari.control.statistics.user;
 
 import fi.nls.oskari.annotation.OskariActionRoute;
-import fi.nls.oskari.cache.JedisManager;
 import fi.nls.oskari.control.*;
 import fi.nls.oskari.control.statistics.StatisticsHelper;
 import fi.nls.oskari.control.statistics.data.StatisticalIndicator;
@@ -21,7 +20,7 @@ import org.oskari.statistics.user.StatisticalIndicatorService;
  * Only allows deletion of the users own indicators
  */
 @OskariActionRoute("DeleteIndicator")
-public class DeleteIndicatorHandler extends ActionHandler {
+public class DeleteIndicatorHandler extends RestActionHandler {
     private static final Logger LOG = LogFactory.getLogger(DeleteIndicatorHandler.class);
     private StatisticalIndicatorService indicatorService;
 
@@ -33,7 +32,7 @@ public class DeleteIndicatorHandler extends ActionHandler {
         }
     }
 
-    public void handleAction(ActionParameters params) throws ActionException {
+    public void handlePost(ActionParameters params) throws ActionException {
         // user indicators are user content so deleting one requires to be logged in
         params.requireLoggedInUser();
 

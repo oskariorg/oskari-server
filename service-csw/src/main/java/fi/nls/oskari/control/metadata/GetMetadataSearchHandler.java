@@ -2,10 +2,7 @@ package fi.nls.oskari.control.metadata;
 
 import fi.mml.portti.service.search.*;
 import fi.nls.oskari.annotation.OskariActionRoute;
-import fi.nls.oskari.control.ActionException;
-import fi.nls.oskari.control.ActionHandler;
-import fi.nls.oskari.control.ActionParameters;
-import fi.nls.oskari.control.ActionParamsException;
+import fi.nls.oskari.control.*;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.search.channel.MetadataCatalogueChannelSearchService;
@@ -33,7 +30,7 @@ import static fi.nls.oskari.control.ActionConstants.*;
  * </pre>
  */
 @OskariActionRoute("GetMetadataSearch")
-public class GetMetadataSearchHandler extends ActionHandler {
+public class GetMetadataSearchHandler extends RestActionHandler {
 
     private static final Logger log = LogFactory.getLogger(GetMetadataSearchHandler.class);
     private static final SearchService service = OskariComponentManager.getComponentOfType(SearchService.class);
@@ -43,7 +40,7 @@ public class GetMetadataSearchHandler extends ActionHandler {
     private static final String KEY_RESULTS = "results";
 
     @Override
-    public void handleAction(ActionParameters params) throws ActionException {
+    public void handlePost(ActionParameters params) throws ActionException {
 
         final SearchCriteria sc = new SearchCriteria();
         final String language = params.getLocale().getLanguage();

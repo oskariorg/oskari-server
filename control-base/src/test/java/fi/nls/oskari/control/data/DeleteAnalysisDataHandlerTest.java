@@ -82,7 +82,7 @@ public class DeleteAnalysisDataHandlerTest extends JSONActionRouteTest {
      */
     @Test(expected = ActionDeniedException.class)
     public void testWithGuest() throws Exception {
-        handler.handleAction(createActionParams());
+        handler.handlePost(createActionParams());
         checkDeleteNotCalled();
         fail("ActionDeniedException should have been thrown");
     }
@@ -95,7 +95,7 @@ public class DeleteAnalysisDataHandlerTest extends JSONActionRouteTest {
     @Test(expected = ActionParamsException.class)
     public void testWithMissingParam() throws Exception {
         final ActionParameters params = createActionParams(getLoggedInUser());
-        handler.handleAction(params);
+        handler.handlePost(params);
         checkDeleteNotCalled();
         fail("ActionParamsException should have been thrown");
     }
@@ -110,7 +110,7 @@ public class DeleteAnalysisDataHandlerTest extends JSONActionRouteTest {
         final Map<String, String> parameters = new HashMap<String, String>();
         parameters.put("id", "this should be of type long");
         final ActionParameters params = createActionParams(parameters, getLoggedInUser());
-        handler.handleAction(params);
+        handler.handlePost(params);
         checkDeleteNotCalled();
         fail("ActionParamsException should have been thrown");
     }
@@ -125,7 +125,7 @@ public class DeleteAnalysisDataHandlerTest extends JSONActionRouteTest {
         final Map<String, String> parameters = new HashMap<String, String>();
         parameters.put("id", NON_MATCHING_ID.toString());
         final ActionParameters params = createActionParams(parameters, getLoggedInUser());
-        handler.handleAction(params);
+        handler.handlePost(params);
         checkDeleteNotCalled();
         fail("ActionParamsException should have been thrown");
     }
@@ -141,7 +141,7 @@ public class DeleteAnalysisDataHandlerTest extends JSONActionRouteTest {
         final Map<String, String> parameters = new HashMap<String, String>();
         parameters.put("id", ANOTHER_USERS_ANALYSIS_ID.toString());
         final ActionParameters params = createActionParams(parameters, getLoggedInUser());
-        handler.handleAction(params);
+        handler.handlePost(params);
         checkDeleteNotCalled();
         fail("ActionDeniedException should have been thrown");
     }
@@ -156,7 +156,7 @@ public class DeleteAnalysisDataHandlerTest extends JSONActionRouteTest {
         final Map<String, String> parameters = new HashMap<String, String>();
         parameters.put("id", VALID_ANALYSIS_ID.toString());
         final ActionParameters params = createActionParams(parameters, getLoggedInUser());
-        handler.handleAction(params);
+        handler.handlePost(params);
         try {
             verify(service, times(1)).deleteAnalysis(analysisValid);
         } catch (MockitoAssertionError e) {

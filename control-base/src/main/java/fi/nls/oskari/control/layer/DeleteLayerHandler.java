@@ -20,7 +20,7 @@ import fi.nls.oskari.wfs.WFSLayerConfigurationServiceIbatisImpl;
  * 
  */
 @OskariActionRoute("DeleteLayer")
-public class DeleteLayerHandler extends ActionHandler {
+public class DeleteLayerHandler extends RestActionHandler {
 
     private static final Logger log = LogFactory.getLogger(DeleteLayerHandler.class);
     private static final OskariLayerService mapLayerService = new OskariLayerServiceIbatisImpl();
@@ -29,7 +29,7 @@ public class DeleteLayerHandler extends ActionHandler {
 
     private static final String PARAM_LAYER_ID = "layer_id";
 
-    public void handleAction(ActionParameters params) throws ActionException {
+    public void handlePost(ActionParameters params) throws ActionException {
 
         final int id = params.getRequiredParamInt(PARAM_LAYER_ID);
         final OskariLayer layer = mapLayerService.find(id);
