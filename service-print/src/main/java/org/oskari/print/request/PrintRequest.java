@@ -18,6 +18,7 @@ public class PrintRequest {
     private boolean showDate;
     private String title;
     private List<PrintLayer> layers;
+    private String scaleText;
 
     public double getEast() {
         return east;
@@ -129,6 +130,18 @@ public class PrintRequest {
 
     public void setShowLogo(boolean showLogo) {
         this.showLogo = showLogo;
+    }
+
+    public String getScaleText() {
+        return scaleText;
+    }
+
+    public void setScaleText(String scaleText) {
+        this.scaleText = scaleText;
+    }
+
+    public boolean isScaleText(){
+        return (this.scaleText != null && !this.scaleText.isEmpty());
     }
 
 }
