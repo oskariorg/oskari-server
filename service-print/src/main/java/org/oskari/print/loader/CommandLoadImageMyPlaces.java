@@ -6,10 +6,11 @@ import java.io.InputStream;
 import java.util.Map;
 
 import javax.imageio.ImageIO;
+import javax.servlet.http.HttpServletRequest;
 
 import org.oskari.print.request.PrintLayer;
 import org.oskari.print.util.GetMapBuilder;
-import org.oskari.print.util.ModifiedActionParameters;
+import org.oskari.print.util.ModifiedHttpServletRequest;
 
 import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.domain.User;
@@ -57,7 +58,12 @@ public class CommandLoadImageMyPlaces extends CommandLoadImageBase {
                 .transparent(true)
                 .toParamMap();
         queryParams.put("myCat", Integer.toString(layer.getId()));
-        ActionParameters params = new ModifiedActionParameters(user, queryParams);
+
+        HttpServletRequest request = new ModifiedHttpServletRequest(queryParams);
+        ActionParameters params = new ActionParameters();
+        params.setUser(user);
+        params.setRequest(request);
+
         byte[] resp = ProxyService.proxyBinary("myplacestile", params);
         InputStream input = new ByteArrayInputStream(resp);
         return ImageIO.read(input);

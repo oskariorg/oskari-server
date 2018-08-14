@@ -6,6 +6,7 @@ import java.io.UnsupportedEncodingException;
 import java.security.Principal;
 import java.util.Collection;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
@@ -24,7 +25,20 @@ import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpUpgradeHandler;
 import javax.servlet.http.Part;
 
-public class EmptyHttpServletRequest implements HttpServletRequest {
+public class ModifiedHttpServletRequest implements HttpServletRequest {
+
+    private final Map<String, String[]> params;
+
+    public ModifiedHttpServletRequest(Map<String, String> params) {
+        this.params = new HashMap<>();
+        for (Map.Entry<String, String> kvp : params.entrySet()) {
+            String key = kvp.getKey();
+            String value = kvp.getValue();
+            if (value != null) {
+                this.params.put(key, new String[] { value });
+            }
+        }
+    }
 
     @Override
     public Object getAttribute(String name) {
@@ -67,22 +81,23 @@ public class EmptyHttpServletRequest implements HttpServletRequest {
 
     @Override
     public String getParameter(String name) {
-        return null;
+        String[] a = params.get(name);
+        return a == null ? null : a[0];
     }
 
     @Override
     public Enumeration<String> getParameterNames() {
-        return null;
+        return new IteratorEnumeration<>(params.keySet().iterator());
     }
 
     @Override
     public String[] getParameterValues(String name) {
-        return null;
+        return params.get(name);
     }
 
     @Override
     public Map<String, String[]> getParameterMap() {
-        return null;
+        return params;
     }
 
     @Override
