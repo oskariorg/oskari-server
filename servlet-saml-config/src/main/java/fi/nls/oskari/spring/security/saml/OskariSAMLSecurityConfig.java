@@ -31,8 +31,8 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.config.annotation.web.servlet.configuration.EnableWebMvcSecurity;
 import org.springframework.security.saml.*;
 import org.springframework.security.saml.context.SAMLContextProviderImpl;
 import org.springframework.security.saml.context.SAMLContextProviderLB;
@@ -78,7 +78,7 @@ import java.util.*;
  */
 @Profile(SpringEnvHelper.PROFILE_LOGIN_SAML)
 @Configuration
-@EnableWebMvcSecurity
+@EnableWebSecurity
 @EnableGlobalMethodSecurity(securedEnabled = true)
 @ImportResource("classpath:/saml/samlBindings.xml")
 public class OskariSAMLSecurityConfig extends WebSecurityConfigurerAdapter {
