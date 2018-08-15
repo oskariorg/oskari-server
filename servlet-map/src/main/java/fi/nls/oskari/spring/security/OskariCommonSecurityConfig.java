@@ -28,6 +28,8 @@ public class OskariCommonSecurityConfig extends WebSecurityConfigurerAdapter {
 
         final String logoutUrl = env.getLogoutUrl();
 
+        // CSRF config is needed in this particular config even if it's not otherwise configured here...
+        http.csrf().ignoringAntMatchers(logoutUrl);
         http
             .headers().frameOptions().disable()
             .and()
@@ -38,8 +40,8 @@ public class OskariCommonSecurityConfig extends WebSecurityConfigurerAdapter {
                 // NOTE! With CSRF enabled logout needs to happen with POST request
                 .logout()
                 .logoutUrl(logoutUrl)
-                .invalidateHttpSession(true)
                 .deleteCookies("oskaristate","JSESSIONID", "CSRF-TOKEN")
+                .invalidateHttpSession(true)
                 .logoutSuccessUrl("/");
     }
 }
