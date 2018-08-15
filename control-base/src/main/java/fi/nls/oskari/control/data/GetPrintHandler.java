@@ -52,6 +52,7 @@ public class GetPrintHandler extends ActionHandler {
     private static final String PARM_SCALE = "pageScale";
     private static final String PARM_LOGO = "pageLogo";
     private static final String PARM_DATE = "pageDate";
+    private static final String PARM_SCALE_TEXT = "scaleText";
 
     private static final String ALLOWED_FORMATS = Arrays.toString(new String[] {
             PrintFormat.PDF.contentType, PrintFormat.PNG.contentType
@@ -121,17 +122,31 @@ public class GetPrintHandler extends ActionHandler {
         request.setShowLogo(params.getHttpParam(PARM_LOGO, false));
         request.setShowScale(params.getHttpParam(PARM_SCALE, false));
         request.setShowDate(params.getHttpParam(PARM_DATE, false));
-
+        request.setScaleText(params.getHttpParam(PARM_SCALE_TEXT, ""));
         setPagesize(params, request);
         setCoordinates(params.getRequiredParam(PARM_COORD), request);
         setFormat(params.getRequiredParam(PARM_FORMAT), request);
 
         List<PrintLayer> layers = getLayers(params.getRequiredParam(PARM_MAPLAYERS),
                 params.getUser());
+        if(request.isScaleText()) {
+            layers = filterLayersWithSupportOwnScale(layers);
+        }
         request.setLayers(layers);
         setTiles(layers, params.getHttpParam(PARM_TILES));
 
         return request;
+    }
+
+
+    private List<PrintLayer> filterLayersWithSupportOwnScale(List<PrintLayer> layers) {
+        List<PrintLayer> filtered = new ArrayList<>();
+        for (PrintLayer layer : layers) {
+            if (!layer.getType().equals(OskariLayer.TYPE_WMTS)) {
+                filtered.add(layer);
+            }
+        }
+        return filtered;
     }
 
     private void setPagesize(ActionParameters params, PrintRequest request)
