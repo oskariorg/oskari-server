@@ -74,6 +74,8 @@ public class GetPrintHandler extends ActionHandler {
     private static final int MARGIN_WIDTH = 10 * 2;
     private static final int MARGIN_HEIGHT = 15 * 2;
 
+    private static final String PREFIX_MY_PLACES = "myplaces_";
+
     private final PermissionHelper permissionHelper;
     private final PrintService printService;
 
@@ -113,6 +115,7 @@ public class GetPrintHandler extends ActionHandler {
             throws ActionException {
         PrintRequest request = new PrintRequest();
 
+        request.setUser(params.getUser());
         request.setSrsName(params.getRequiredParam(PARM_SRSNAME));
         request.setResolution(params.getRequiredParamDouble(PARM_RESOLUTION));
         request.setTitle(params.getHttpParam(PARM_TITLE));
@@ -226,13 +229,16 @@ public class GetPrintHandler extends ActionHandler {
 
         List<PrintLayer> printLayers = new ArrayList<>(requestedLayers.length);
         for (LayerProperties requestedLayer : requestedLayers) {
-            int id = ConversionHelper.getInt(requestedLayer.getId(), -1);
-            if (id == -1) {
-                // TODO: add support for myplaces/userlayers/analysis
-                continue;
+            String layerId = requestedLayer.getId();
+            int id = ConversionHelper.getInt(layerId, -1);
+            PrintLayer printLayer = null;
+            if (id != -1) {
+                OskariLayer oskariLayer = permissionHelper.getLayer(id, user);
+                printLayer = createPrintLayer(oskariLayer, requestedLayer);
+            } else if (layerId.startsWith(PREFIX_MY_PLACES)) {
+                int categoryId = ConversionHelper.getInt(layerId.substring(PREFIX_MY_PLACES.length()), -1);
+                printLayer = createMyPlacesPrintLayer(categoryId, requestedLayer);
             }
-            OskariLayer oskariLayer = permissionHelper.getLayer(id, user);
-            PrintLayer printLayer = createPrintLayer(oskariLayer, requestedLayer);
             if (printLayer != null) {
                 printLayers.add(printLayer);
             }
@@ -367,6 +373,22 @@ public class GetPrintHandler extends ActionHandler {
             arr[i] = array.getDouble(i);
         }
         return arr;
+    }
+
+    private PrintLayer createMyPlacesPrintLayer(int categoryId, LayerProperties requestedLayer) {
+        int opacity = requestedLayer.getOpacity() != null ? requestedLayer.getOpacity() : 100;
+        if (opacity <= 0) {
+            // Ignore fully transparent layers
+            return null;
+        }
+
+        PrintLayer layer = new PrintLayer();
+        layer.setId(categoryId);
+        layer.setType("myplaces");
+        layer.setVersion("1.3.0");
+        layer.setName("oskari:my_places_categories");
+        layer.setOpacity(opacity);
+        return layer;
     }
 
     private void handlePNG(PrintRequest pr, ActionParameters params) throws ActionException {

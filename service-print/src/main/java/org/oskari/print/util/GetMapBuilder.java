@@ -2,7 +2,9 @@ package org.oskari.print.util;
 
 import java.awt.Color;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * WMS GetMap Request (KVP) Builder
@@ -146,6 +148,29 @@ public class GetMapBuilder {
         }
 
         return sb.toString();
+    }
+
+    public Map<String, String> toParamMap() {
+        Map<String, String> params = new HashMap<>();
+        params.put("SERVICE", "WMS");
+        params.put("REQUEST", "GetMap");
+        params.put("VERSION", version);
+        params.put("BBOX", bbox);
+        if ("1.3.0".equals(version)) {
+            params.put("CRS", crs);
+        } else {
+            params.put("SRS", crs);
+        }
+        params.put("WIDTH", Integer.toString(width));
+        params.put("HEIGHT", Integer.toString(height));
+        params.put("FORMAT", format);
+        params.put("LAYERS", String.join(",", layers));
+        params.put("STYLES", String.join(",", styles));
+        params.put("TRANSPARENT", Boolean.toString(transparent));
+        if (bgColor != null) {
+            params.put("BGCOLOR", colorToHex(bgColor));
+        }
+        return params;
     }
 
     public static String colorToHex(Color color) {
