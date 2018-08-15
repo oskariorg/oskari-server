@@ -51,6 +51,10 @@ public class AsyncImageLoader {
                 images.add(new CommandLoadImageUserLayer(request.getUser(),
                         layer, width, height, bbox, srsName).queue());
                 break;
+            case OskariLayer.TYPE_ANALYSIS:
+                images.add(new CommandLoadImageAnalysis(request.getUser(),
+                        layer, width, height, bbox, srsName).queue());
+                break;
             default:
                 throw new IllegalArgumentException("Invalid layer type!");
             }

@@ -76,6 +76,7 @@ public class GetPrintHandler extends ActionHandler {
 
     private static final String PREFIX_MY_PLACES = "myplaces_";
     private static final String PREFIX_USER_LAYER = "userlayer_";
+    private static final String PREFIX_ANALYSIS = "analysis_";
 
     private final PermissionHelper permissionHelper;
     private final PrintService printService;
@@ -242,6 +243,9 @@ public class GetPrintHandler extends ActionHandler {
             } else if (layerId.startsWith(PREFIX_USER_LAYER)) {
                 int userLayerId = ConversionHelper.getInt(layerId.substring(PREFIX_USER_LAYER.length()), -1);
                 printLayer = createUserLayerPrintLayer(userLayerId, requestedLayer);
+            } else if (layerId.startsWith(PREFIX_ANALYSIS)) {
+                int analysisId = ConversionHelper.getInt(layerId.substring(PREFIX_ANALYSIS.length()), -1);
+                printLayer = createUserLayerPrintLayer(analysisId, requestedLayer);
             }
             if (printLayer != null) {
                 printLayers.add(printLayer);
@@ -407,6 +411,22 @@ public class GetPrintHandler extends ActionHandler {
         layer.setType(OskariLayer.TYPE_USERLAYER);
         layer.setVersion("1.3.0");
         layer.setName("oskari:user_layer_data_style");
+        layer.setOpacity(opacity);
+        return layer;
+    }
+
+    private PrintLayer createAnalysisPrintLayer(int analysisId, LayerProperties requestedLayer) {
+        int opacity = requestedLayer.getOpacity() != null ? requestedLayer.getOpacity() : 100;
+        if (opacity <= 0) {
+            // Ignore fully transparent layers
+            return null;
+        }
+
+        PrintLayer layer = new PrintLayer();
+        layer.setId(analysisId);
+        layer.setType(OskariLayer.TYPE_ANALYSIS);
+        layer.setVersion("1.3.0");
+        layer.setName("oskari:analysis_data_style");
         layer.setOpacity(opacity);
         return layer;
     }

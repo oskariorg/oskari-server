@@ -19,7 +19,7 @@ import fi.nls.oskari.service.ProxyService;
 /**
  * HystrixCommand that loads BufferedImage from UserLayer via ProxyService
  */
-public class CommandLoadImageUserLayer extends CommandLoadImageBase {
+public class CommandLoadImageAnalysis extends CommandLoadImageBase {
 
     private static final String FORMAT = "image/png";
 
@@ -30,13 +30,13 @@ public class CommandLoadImageUserLayer extends CommandLoadImageBase {
     private final double[] bbox;
     private final String srsName;
 
-    public CommandLoadImageUserLayer(User user,
+    public CommandLoadImageAnalysis(User user,
             PrintLayer layer,
             int width,
             int height,
             double[] bbox,
             String srsName) {
-        super("userlayer_" + layer.getId());
+        super("analysis_" + layer.getId());
         this.user = user;
         this.layer = layer;
         this.width = width;
@@ -57,14 +57,14 @@ public class CommandLoadImageUserLayer extends CommandLoadImageBase {
                 .format(FORMAT)
                 .transparent(true)
                 .toParamMap();
-        queryParams.put("id", Integer.toString(layer.getId()));
+        queryParams.put("wpsLayerId", Integer.toString(layer.getId()));
 
         HttpServletRequest request = new ModifiedHttpServletRequest(queryParams);
         ActionParameters params = new ActionParameters();
         params.setUser(user);
         params.setRequest(request);
 
-        byte[] resp = ProxyService.proxyBinary("userlayertile", params);
+        byte[] resp = ProxyService.proxyBinary("analysistile", params);
         InputStream input = new ByteArrayInputStream(resp);
         return ImageIO.read(input);
     }
