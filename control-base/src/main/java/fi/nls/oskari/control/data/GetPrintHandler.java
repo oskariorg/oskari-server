@@ -381,13 +381,16 @@ public class GetPrintHandler extends ActionHandler {
         int opacity = requestedLayer.getOpacity() != null ? requestedLayer.getOpacity() : 100;
         if (opacity <= 0) {
             // Ignore fully transparent layers
+            LOG.info("Ignoring zero opacity layer:", requestedLayer.getId());
             return null;
         }
 
-        String layerIdWithoutPrefix = requestedLayer.getId().substring(p.prefix.length());
-        int id = ConversionHelper.getInt(layerIdWithoutPrefix, -1);
+        int lastUnderscore = requestedLayer.getId().lastIndexOf('_');
+        String layerId = requestedLayer.getId().substring(lastUnderscore + 1);
+        int id = ConversionHelper.getInt(layerId, -1);
         if (id < 0) {
             // Ignore layers with negative id
+            LOG.info("Failed to parse integer id from:", requestedLayer.getId());
             return null;
         }
 
