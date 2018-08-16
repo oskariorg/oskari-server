@@ -5,11 +5,11 @@ import org.oskari.print.request.PrintLayer;
 import fi.nls.oskari.domain.User;
 
 /**
- * HystrixCommand that loads BufferedImage from UserLayer via ProxyService
+ * HystrixCommand that loads BufferedImage from Analysis Layer via ProxyService
  */
-public class CommandLoadImageUserLayer extends CommandLoadImageProxyService {
+public class CommandLoadImageAnalysis extends CommandLoadImageProxyService {
 
-    public CommandLoadImageUserLayer(User user,
+    public CommandLoadImageAnalysis(User user,
             PrintLayer layer,
             int width,
             int height,
@@ -17,15 +17,15 @@ public class CommandLoadImageUserLayer extends CommandLoadImageProxyService {
             String srsName) {
         super(user, layer, width, height, bbox, srsName);
     }
-
+    
     @Override
     public String getIdParamName() {
-        return "id";
+        return "wpsLayerId";
     }
 
     @Override
     public String getProxyServiceKey() {
-        return "userlayertile";
+        return "analysistile";
     }
 
 }
