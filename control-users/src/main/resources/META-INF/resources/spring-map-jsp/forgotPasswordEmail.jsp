@@ -111,7 +111,8 @@
             url: "/action?action_route=UserPasswordReset",
             type: 'POST',
             data: {
-                email: email
+                email: email,
+                _csrf: '${_csrf.token}'
             },
             success: function () {
                 inProgress = false;
