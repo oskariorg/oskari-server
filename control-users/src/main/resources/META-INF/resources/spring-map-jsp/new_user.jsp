@@ -182,7 +182,8 @@
                     lastname: jQuery('#lastname').val(),
                     username: jQuery('#username').val(),
                     password: jQuery('#password').val(),
-                    uuid: '${uuid}'
+                    uuid: '${uuid}',
+                    _csrf: '${_csrf.token}'
                 },
                 success: function () {
                     jQuery('#generalModal').on('hidden.bs.modal', function () {

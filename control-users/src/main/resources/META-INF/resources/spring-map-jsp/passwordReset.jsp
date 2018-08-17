@@ -135,7 +135,7 @@
 
             var uuid = '${uuid}';
             jQuery.ajax({
-                url: "/action?action_route=UserPasswordReset",
+                url: "/action?action_route=UserPasswordReset&_csrf=${_csrf.token}",
                 type: 'PUT',
                 contentType: "application/json; charset=UTF-8",
                 data: JSON.stringify({
