@@ -15,16 +15,9 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-/*
--- published views with toolbar
-select count(view_id) from portti_view_bundle_seq
- where view_id in (SELECT id FROM portti_view where type = 'PUBLISHED')
-and bundle_id = (select id from portti_bundle where name = 'toolbar')
-
--- published views without toolbar
-select count(id) from portti_view where type = 'PUBLISHED' and id NOT IN (select view_id from portti_view_bundle_seq
- where view_id in (SELECT id FROM portti_view where type = 'PUBLISHED')
-and bundle_id = (select id from portti_bundle where name = 'toolbar'))
+/**
+ * Migrates all mapfull configs and startups in the database by removing references to mapstats and
+ * 'Oskari.mapframework.bundle.mapstats.plugin.StatsLayerPlugin'
  */
 public class V1_48_1__remove_statslayerplugin implements JdbcMigration {
 
@@ -38,13 +31,24 @@ public class V1_48_1__remove_statslayerplugin implements JdbcMigration {
     }
 
     public void migrate(Connection connection) throws SQLException {
-        if(true) throw new SQLException("Not impl yet");
+        // appsetups
         List<Bundle> bundles = getMapfullBundles(connection);
         for(Bundle mapfull : bundles) {
             boolean removedPlugin = removeStatslayerPlugin(mapfull.config);
-            //removeMapstatsImport(mapfull.startup);
-            //updateBundleConfig(mapfull, connection);
+            boolean removedImport = removeMapstatsImport(mapfull.startup);
+            if(removedImport || removedPlugin) {
+                updateBundle(mapfull, connection);
+            }
         }
+
+        // template
+        Bundle template = getMapfullBundleTemplate(connection);
+        boolean removedPlugin = removeStatslayerPlugin(template.config);
+        boolean removedImport = removeMapstatsImport(template.startup);
+        if(removedImport || removedPlugin) {
+            updateBundleTemplate(template, connection);
+        }
+        connection.commit();
     }
 
     private boolean removeStatslayerPlugin(JSONObject mapfullConfig) {
@@ -62,13 +66,29 @@ public class V1_48_1__remove_statslayerplugin implements JdbcMigration {
         return plugins.length() != newPlugins.length();
     }
 
+    private boolean removeMapstatsImport(JSONObject startup) {
+        if (startup == null) {
+            return false;
+        }
+        JSONObject metadata = startup.optJSONObject("metadata");
+
+        if (metadata == null) {
+            return false;
+        }
+        JSONObject bundles = metadata.optJSONObject("Import-Bundle");
+        if (bundles == null) {
+            return false;
+        }
+        return bundles.remove("mapstats") != null;
+    }
+
     private List<Bundle> getMapfullBundles(Connection conn) throws SQLException {
         List<Bundle> list = new ArrayList<>();
         String sql = "select view_id, bundle_id, config, startup from portti_view_bundle_seq \n" +
                 "where bundle_id = (select id from portti_bundle where name = 'mapfull')";
         try(PreparedStatement statement = conn.prepareStatement(sql)) {
             try (ResultSet rs = statement.executeQuery()) {
-                if(rs.next()) {
+                while(rs.next()) {
                     Bundle bundle = new Bundle();
                     bundle.id = rs.getLong("bundle_id");
                     bundle.view = rs.getLong("view_id");
@@ -87,11 +107,42 @@ public class V1_48_1__remove_statslayerplugin implements JdbcMigration {
         return list;
     }
 
-    private void updateBundleConfig(Bundle bundle, Connection conn) throws SQLException {
-        final String sql = "UPDATE portti_view_bundle_seq SET config=? where view_id=? AND bundle_id=?";
+    private Bundle getMapfullBundleTemplate(Connection conn) throws SQLException {
+        String sql = "select id, config, startup from portti_bundle where name = 'mapfull'";
+        try(PreparedStatement statement = conn.prepareStatement(sql)) {
+            try (ResultSet rs = statement.executeQuery()) {
+                rs.next();
+                Bundle bundle = new Bundle();
+                bundle.id = rs.getLong("id");
+                bundle.config = JSONHelper.createJSONObject(rs.getString("config"));
+                if(bundle.config == null) {
+                    bundle.config = new JSONObject();
+                }
+                bundle.startup = JSONHelper.createJSONObject(rs.getString("startup"));
+                if(bundle.startup == null) {
+                    bundle.startup = new JSONObject();
+                }
+                return bundle;
+            }
+        }
+    }
+
+    private void updateBundle(Bundle bundle, Connection conn) throws SQLException {
+        final String sql = "UPDATE portti_view_bundle_seq SET config=?, startup=? where view_id=? AND bundle_id=?";
         try(PreparedStatement statement = conn.prepareStatement(sql)) {
             statement.setString(1, bundle.config.toString());
-            statement.setLong(2, bundle.view);
+            statement.setString(2, bundle.startup.toString());
+            statement.setLong(3, bundle.view);
+            statement.setLong(4, bundle.id);
+            statement.execute();
+        }
+    }
+
+    private void updateBundleTemplate(Bundle bundle, Connection conn) throws SQLException {
+        final String sql = "UPDATE portti_bundle SET config=?, startup=? where id=?";
+        try(PreparedStatement statement = conn.prepareStatement(sql)) {
+            statement.setString(1, bundle.config.toString());
+            statement.setString(2, bundle.startup.toString());
             statement.setLong(3, bundle.id);
             statement.execute();
         }
