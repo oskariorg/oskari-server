@@ -30,11 +30,13 @@ public class PrintService {
     }
 
     public BufferedImage getPNG(PrintRequest request) throws ServiceException {
+        request.setLayers(filterLayersWithZeroOpacity(request.getLayers()));
         return PNG.getBufferedImage(request, wmtsCapsCache);
     }
 
     public void getPDF(PrintRequest request, PDDocument doc)
             throws IOException, ServiceException {
+        request.setLayers(filterLayersWithZeroOpacity(request.getLayers()));
         PDF.getPDF(request, doc, wmtsCapsCache);
     }
 
