@@ -53,6 +53,9 @@ public class V1_48_1__remove_statslayerplugin implements JdbcMigration {
 
     private boolean removeStatslayerPlugin(JSONObject mapfullConfig) {
         JSONArray plugins = mapfullConfig.optJSONArray("plugins");
+        if(plugins == null) {
+            return false;
+        }
         JSONArray newPlugins = new JSONArray();
         for(int i = 0; i < plugins.length(); ++i) {
             JSONObject plugin = plugins.optJSONObject(i);
