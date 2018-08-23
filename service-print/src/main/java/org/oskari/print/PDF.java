@@ -4,6 +4,9 @@ import java.awt.image.BufferedImage;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
+import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -96,7 +99,7 @@ public class PDF {
 
     private static final double[] SCALE_LINE_DISTANCES_METRES = new double[24];
 
-    private static final String LOGO_PATH_DEFAULT = "/img/logo.png";
+    private static final String LOGO_PATH_DEFAULT = "logo.png";
     private static final String LOGO_PATH = PropertyUtil.get("print.logo.path", LOGO_PATH_DEFAULT);
 
     static {
@@ -210,20 +213,34 @@ public class PDF {
         }
 
         BufferedImage logo = null;
-        try (InputStream in = PDF.class.getResourceAsStream(LOGO_PATH)) {
-            if (in == null) {
-                LOG.debug("Logo file not found");
+
+        // Try file
+        try (InputStream in = Files.newInputStream(Paths.get(LOGO_PATH))) {
+            logo = ImageIO.read(new BufferedInputStream(in));
+        } catch (NoSuchFileException e) {
+            LOG.debug("Logo file " + LOGO_PATH + " does not exist");
+        } catch (IOException e) {
+            LOG.warn(e, "Failed to read logo from file");
+        }
+
+        // File didn't work, try resources file
+        if (logo == null) {
+            try (InputStream in = PDF.class.getResourceAsStream(LOGO_PATH)) {
+                if (in == null) {
+                    LOG.debug("Resource file " + LOGO_PATH + " does not exist");
+                    return;
+                }
+                logo = ImageIO.read(new BufferedInputStream(in));
+            } catch (IOException e) {
+                LOG.warn(e, "Failed to read logo from resource " + LOGO_PATH);
                 return;
             }
-            logo = ImageIO.read(new BufferedInputStream(in));
-        } catch (IOException e) {
-            LOG.warn(e, "Failed to read logo");
-            return;
+            if (logo == null) {
+                LOG.info("Couldn't read logo with ImageIO");
+                return;
+            }
         }
-        if (logo == null) {
-            LOG.info("Couldn't read logo with ImageIO");
-            return;
-        }
+
         try {
             PDImageXObject img = LosslessFactory.createFromImage(doc, logo);
             float x = OFFSET_LOGO_LEFT;
