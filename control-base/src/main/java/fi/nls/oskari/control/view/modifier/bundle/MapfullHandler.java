@@ -71,7 +71,6 @@ public class MapfullHandler extends BundleHandler {
     public static final String PLUGIN_SEARCH = "Oskari.mapframework.bundle.mapmodule.plugin.SearchPlugin";
     public static final String EPSG_PROJ4_FORMATS = "epsg_proj4_formats.json";
 
-
     private static MyPlacesService myPlaceService = null;
     private static final AnalysisDbService analysisService = new AnalysisDbServiceMybatisImpl();
     private static UserLayerDbService userLayerService;
@@ -305,6 +304,10 @@ public class MapfullHandler extends BundleHandler {
         final List<OskariLayer> layers = mapLayerService.findByIdList(layerIdList);
         if (forceProxy) {
             layers.forEach(lyr -> {
+                if (lyr.getType().equals(OskariLayer.TYPE_3DTILES)) {
+                    // Proxy is not supported for 3D layers
+                    return;
+                }
                 JSONObject attributes = lyr.getAttributes();
                 if (attributes == null) {
                     attributes = new JSONObject();
