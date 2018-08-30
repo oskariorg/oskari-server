@@ -76,10 +76,15 @@
                                 </c:forEach>
                             </ul>
                         </div>
+                        <c:if test="${not empty username}">
+                            <div class="form-group">
+                                <spring:message code="user.registration.password.new" arguments="${username}" htmlEscape="true" />
+                            </div>
+                        </c:if>
                         <div class="form-group">
                             <input class="form-control input-lg" size="16" id="password" name="password" type="password"
                                    placeholder="<spring:message code="user.password" htmlEscape="true"/>"
-                                   autofocus required>
+                            autofocus required>
                         </div>
                         <div class="form-group">
                             <input class="form-control input-lg" size="16" id="confirmPassword" name="confirmPassword"
