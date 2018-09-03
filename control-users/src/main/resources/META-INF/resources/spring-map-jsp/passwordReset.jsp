@@ -84,7 +84,7 @@
                         <div class="form-group">
                             <input class="form-control input-lg" size="16" id="password" name="password" type="password"
                                    placeholder="<spring:message code="user.password" htmlEscape="true"/>"
-                            autofocus required>
+                                   autofocus required>
                         </div>
                         <div class="form-group">
                             <input class="form-control input-lg" size="16" id="confirmPassword" name="confirmPassword"
