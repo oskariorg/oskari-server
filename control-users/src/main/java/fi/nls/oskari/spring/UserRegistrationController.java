@@ -176,6 +176,8 @@ public class UserRegistrationController {
             model.addAttribute("error", ERR_TOKEN_NOT_FOUND);
             return "forgotPasswordEmail";
         }
+        String username = emailService.findUsernameForEmail(emailToken.getEmail());
+        model.addAttribute("username", username);
         model.addAttribute("uuid", emailToken.getUuid());
         model.addAttribute("requirements", PasswordRules.asMap());
         return "passwordReset";
