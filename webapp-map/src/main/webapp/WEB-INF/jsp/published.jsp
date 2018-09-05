@@ -6,8 +6,6 @@
     <title>Standalone servlet - ${viewName} view</title>
 
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
-    <!-- script type="text/javascript" src="/Oskari/libraries/jquery/jquery-1.10.2.min.js">
-    </script -->
     <script type="text/javascript" src="/Oskari/libraries/jquery/jquery-3.3.1.min.js">
     </script>
 
