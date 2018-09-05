@@ -6,7 +6,7 @@
 <html>
 <head>
     <title>Oskari - ${viewName}</title>
-    <script type="text/javascript" src="/Oskari/libraries/jquery/jquery-1.10.2.min.js">
+    <script type="text/javascript" src="/Oskari/libraries/jquery/jquery-3.3.1.min.js">
     </script>
 
     <!-- ############# css ################# -->
