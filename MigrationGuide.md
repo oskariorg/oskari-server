@@ -1,5 +1,22 @@
 # Migration guide
 
+## 1.48.0
+
+### Changes to JSP-pages
+
+Security features in Oskari has been improved by enabling cross-site request forgery protection.
+Any requests done with HTTP-methods other than GET is required to include a token as header or parameter to be accepted. 
+
+There are some changes required for any customized JSP-pages:
+
+- Logout must be done with HTTP POST (https://github.com/oskariorg/oskari-server/commit/3aecfdd6c983c840e4d268f32d85c010041c5752)
+- Any additional customized pages/calls need to include the token for example user registration (https://github.com/oskariorg/oskari-server/commit/9d7440f08b73c8d033b8eab9562a2ca1ed036718)
+- jQuery version has been updated (https://github.com/oskariorg/oskari-server/commit/0dc08057a91282f09999f7d21f29d935b2664ece)
+
+Oskari frontend code will automatically include the token by default on any action route calls made by it
+ (https://github.com/oskariorg/oskari-frontend/blob/e42481ac6c4bf273cb1c55aa0857cb3b94482703/src/oskari.app.js#L9-L31).
+Most of the action routes (ones doing write operations) have been changed to only respond to non-GET requests(POST/PUT/DELETE).
+
 ## 1.47.0
 
 ### AppSetup migration (OpenLayers 4)
