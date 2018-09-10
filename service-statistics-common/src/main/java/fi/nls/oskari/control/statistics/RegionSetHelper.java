@@ -117,7 +117,8 @@ public class RegionSetHelper {
         if (transform != null) {
             Object geometry = f.getDefaultGeometry();
             if (geometry != null && geometry instanceof Geometry) {
-                JTS.transform((Geometry) geometry, transform);
+                Geometry geom = JTS.transform((Geometry) geometry, transform);
+                f.setDefaultGeometry(geom);
             }
         }
     }
