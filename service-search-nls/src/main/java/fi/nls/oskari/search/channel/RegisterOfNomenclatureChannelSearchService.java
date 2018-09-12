@@ -3,9 +3,9 @@ package fi.nls.oskari.search.channel;
 import fi.mml.nameregister.FeatureCollectionDocument;
 import fi.mml.nameregister.FeaturePropertyType;
 import fi.mml.portti.service.search.ChannelSearchResult;
+import fi.mml.portti.service.search.IllegalSearchCriteriaException;
 import fi.mml.portti.service.search.SearchCriteria;
 import fi.mml.portti.service.search.SearchResultItem;
-import fi.mml.portti.service.search.SearchService;
 import fi.nls.oskari.annotation.Oskari;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
@@ -16,19 +16,23 @@ import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.PropertyUtil;
 import org.apache.xmlbeans.XmlObject;
+import org.geotools.referencing.CRS;
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Whitelist;
+import org.opengis.referencing.operation.MathTransform;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
 import java.net.URLEncoder;
 
 @Oskari(RegisterOfNomenclatureChannelSearchService.ID)
 public class RegisterOfNomenclatureChannelSearchService extends SearchChannel {
-    /** logger */
-    private Logger log = LogFactory.getLogger(this.getClass());
+
+    private static final Logger log = LogFactory.getLogger(RegisterOfNomenclatureChannelSearchService.class);
 
     public static final String ID = "REGISTER_OF_NOMENCLATURE_CHANNEL";
     private static final String PROPERTY_SERVICE_URL = "search.channel.REGISTER_OF_NOMENCLATURE_CHANNEL.service.url";
     private static final String STR_UNDERSCORE = "_";
+    private static final String DEFAULT_CRS = "EPSG:3067";
 
     private String serviceURL = null;
 
@@ -47,7 +51,7 @@ public class RegisterOfNomenclatureChannelSearchService extends SearchChannel {
         return currentLocaleCode;
     }
 
-    public ChannelSearchResult doSearch(SearchCriteria searchCriteria) {
+    public ChannelSearchResult doSearch(SearchCriteria searchCriteria) throws IllegalSearchCriteriaException {
         if(serviceURL == null) {
             log.warn("ServiceURL not configured. Add property with key", PROPERTY_SERVICE_URL);
             return null;
@@ -127,6 +131,7 @@ public class RegisterOfNomenclatureChannelSearchService extends SearchChannel {
                 String sijainti = pos[0].newCursor().getTextValue();
 
                 String[] lonLat = sijainti.split("\\s");
+                lonLat = transform(lonLat, searchCriteria.getSRS());
 
                 SearchResultItem item = new SearchResultItem();
                 item.setRank(SearchUtil.getRank(paikkatyyppiKoodi));
@@ -159,6 +164,23 @@ public class RegisterOfNomenclatureChannelSearchService extends SearchChannel {
         }
 
         return searchResultList;
+    }
+
+    protected static String[] transform(String[] lonLat, String srs) throws IllegalSearchCriteriaException {
+        try {
+            CoordinateReferenceSystem sourceCRS = CRS.decode(DEFAULT_CRS);
+            CoordinateReferenceSystem targetCRS = CRS.decode(srs);
+            if (!CRS.equalsIgnoreMetadata(sourceCRS, targetCRS)) {
+                MathTransform t = CRS.findMathTransform(sourceCRS, targetCRS);
+                double[] coord = new double[] { Double.parseDouble(lonLat[0]), Double.parseDouble(lonLat[1]) };
+                t.transform(coord, 0, coord, 0, 1);
+                lonLat[0] = Double.toString(coord[0]);
+                lonLat[1] = Double.toString(coord[1]);
+            }
+            return lonLat;
+        } catch (Exception e) {
+            throw new IllegalSearchCriteriaException("Failed to transform projection", e);
+        }
     }
 
     @Override
