@@ -2,10 +2,7 @@ package fi.nls.oskari.control.statistics;
 
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.cache.JedisManager;
-import fi.nls.oskari.control.ActionException;
-import fi.nls.oskari.control.ActionHandler;
-import fi.nls.oskari.control.ActionParameters;
-import fi.nls.oskari.control.ActionParamsException;
+import fi.nls.oskari.control.*;
 import fi.nls.oskari.control.statistics.data.*;
 import fi.nls.oskari.control.statistics.plugins.*;
 import fi.nls.oskari.domain.User;
@@ -50,6 +47,11 @@ public class GetIndicatorMetadataHandler extends ActionHandler {
         if(plugin == null) {
             throw new ActionParamsException("No such datasource: " + pluginId);
         }
+        StatisticalIndicator indicator = plugin.getIndicator(user, indicatorId);
+        if(indicator == null) {
+            // indicator can be null if user doesn't have permission to it
+            throw new ActionParamsException("No such indicator: " + indicatorId + " on datasource: " + pluginId);
+        }
         String cacheKey = StatisticsHelper.getIndicatorMetadataCacheKey(pluginId, indicatorId);
         if (plugin.canCache()) {
             final String cachedData = JedisManager.get(cacheKey);
@@ -60,10 +62,6 @@ public class GetIndicatorMetadataHandler extends ActionHandler {
                     // Failed serializing. Skipping the cache.
                 }
             }
-        }
-        StatisticalIndicator indicator = plugin.getIndicator(user, indicatorId);
-        if(indicator == null) {
-            throw new ActionParamsException("No such indicator: " + indicatorId + " on datasource: " + pluginId);
         }
         try {
             JSONObject indicatorMetadata = StatisticsHelper.toJSON(indicator);

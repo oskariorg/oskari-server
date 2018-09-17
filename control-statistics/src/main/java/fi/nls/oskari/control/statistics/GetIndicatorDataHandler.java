@@ -60,17 +60,18 @@ public class GetIndicatorDataHandler extends ActionHandler {
             throw new ActionParamsException("No such datasource: " + pluginId);
         }
 
+        StatisticalIndicator indicator = plugin.getIndicator(user, indicatorId);
+        if (indicator == null) {
+            // indicator can be null if user doesn't have permission to it
+            throw new ActionParamsException("No such indicator: " + indicatorId + " on datasource: " + pluginId);
+        }
+
         String cacheKey = StatisticsHelper.getIndicatorDataCacheKey(pluginId, indicatorId, layerId, selectorJSON);
         if (plugin.canCache()) {
             JSONObject cached = getFromCache(cacheKey);
             if (cached != null) {
                 return cached;
             }
-        }
-
-        StatisticalIndicator indicator = plugin.getIndicator(user, indicatorId);
-        if (indicator == null) {
-            throw new ActionParamsException("No such indicator: " + indicatorId + " on datasource: " + pluginId);
         }
 
         StatisticalIndicatorLayer layer = indicator.getLayer(layerId);
