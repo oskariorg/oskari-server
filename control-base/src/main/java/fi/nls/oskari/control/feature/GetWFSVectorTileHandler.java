@@ -78,7 +78,7 @@ public class GetWFSVectorTileHandler extends ActionHandler {
         if (layer == null) {
             throw new ActionParamsException("Unknown layerId");
         }
-        if (layer.getType() != OskariLayer.TYPE_WFS) {
+        if (!OskariLayer.TYPE_WFS.equals(layer.getType())) {
             throw new ActionParamsException("Specified layer is not a WFS layer");
         }
         return layer;
