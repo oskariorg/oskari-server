@@ -59,7 +59,7 @@ public class GetWFSVectorTileHandler extends ActionHandler {
         String cacheKey = getCacheKey(layerId, bboxStr, srs);
         byte[] cached =  cache.get(cacheKey);
         if (cached != null) {
-            ResponseHelper.writeResponse(params, 200, "application/geo+json", cached);
+            ResponseHelper.writeResponse(params, 200, MVT_CONTENT_TYPE, cached);
             return;
         }
 
