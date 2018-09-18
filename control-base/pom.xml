@@ -61,6 +61,10 @@
             <artifactId>service-userlayer</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.oskari</groupId>
+            <artifactId>service-mvt</artifactId>
+        </dependency>
+        <dependency>
             <groupId>fi.nls.oskari</groupId>
             <artifactId>shared-test-resources</artifactId>
             <scope>test</scope>
@@ -84,6 +88,10 @@
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.geotools</groupId>
+            <artifactId>gt-xml</artifactId>
         </dependency>
     </dependencies>
     <build>
