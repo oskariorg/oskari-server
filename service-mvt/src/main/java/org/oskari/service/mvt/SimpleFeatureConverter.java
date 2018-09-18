@@ -1,5 +1,7 @@
 package org.oskari.service.mvt;
 
+import java.math.BigDecimal;
+
 import org.opengis.feature.Property;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.type.Name;
@@ -37,6 +39,9 @@ public class SimpleFeatureConverter implements IUserDataConverter {
                 // Skip null values
                 LOG.debug("Skipping", id + "." + prop, "value is null");
                 continue;
+            }
+            if (value instanceof BigDecimal) {
+                value = ((BigDecimal) value).doubleValue();
             }
 
             int valueIndex = layerProps.addValue(value);
