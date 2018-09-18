@@ -1,8 +1,6 @@
 package fi.nls.oskari.control.feature;
 
-import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
-import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.util.HashMap;
 import java.util.Map;
@@ -67,6 +65,7 @@ public class GetWFSVectorTileHandler extends ActionHandler {
         SimpleFeatureCollection sfc = getFeatures(layer, bbox, srs);
         byte[] encoded = SimpleFeaturesMVTEncoder.encodeToByteArray(sfc, layer.getName(), bbox, 4096, 256);
         cache.put(cacheKey, encoded);
+        params.getResponse().addHeader("Access-Control-Allow-Origin", "*");
         ResponseHelper.writeResponse(params, 200, MVT_CONTENT_TYPE, encoded);
     }
 
