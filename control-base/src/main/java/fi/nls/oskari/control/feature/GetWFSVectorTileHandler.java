@@ -1,6 +1,7 @@
 package fi.nls.oskari.control.feature;
 
 import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.util.HashMap;
@@ -105,20 +106,18 @@ public class GetWFSVectorTileHandler extends ActionHandler {
         String version = layer.getVersion();
         String typeName = layer.getName();
 
-        String getFeatureKVP = getFeature(endPoint, version, typeName, bbox, srsName, 1000);
+        String getFeatureKVP = getFeature(endPoint, version, typeName, bbox, srsName, 10000);
 
         OskariGMLConfiguration cfg = new OskariGMLConfiguration(layer.getUsername(), layer.getPassword());
         Parser parser = getParser(cfg);
 
         try {
-            HttpURLConnection conn = IOHelper.getConnection(getFeatureKVP);
-            int statusCode = conn.getResponseCode();
-            String contentType = conn.getContentType();
-            System.out.printf("%d %s%n", statusCode, contentType);
-            try (InputStream in = new BufferedInputStream(conn.getInputStream())) {
-                return toFeatureCollection(parser.parse(in));
-            }
+            HttpURLConnection conn = IOHelper.getConnection(getFeatureKVP, layer.getUsername(), layer.getPassword());
+            byte[] response = IOHelper.readBytes(conn);
+            Object result = parser.parse(new ByteArrayInputStream(response));
+            return toFeatureCollection(result);
         } catch (Exception e) {
+            e.printStackTrace();
             throw new ActionException("Failed to read feature collection from WFS service!", e);
         }
     }

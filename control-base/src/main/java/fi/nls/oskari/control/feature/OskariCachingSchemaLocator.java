@@ -12,6 +12,7 @@ import org.eclipse.xsd.util.XSDResourceImpl;
 import org.eclipse.xsd.util.XSDSchemaLocator;
 
 import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -42,13 +43,12 @@ public class OskariCachingSchemaLocator implements XSDSchemaLocator {
     protected static XSDSchema parseSchema(String rawSchemaLocationURI, String username, String password) {
         try {
             HttpURLConnection conn = IOHelper.getConnection(rawSchemaLocationURI, username, password);
-            try (InputStream in = new BufferedInputStream(conn.getInputStream())) {
-                ResourceSet resourceSet = new ResourceSetImpl();
-                resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put("xsd", new org.eclipse.xsd.util.XSDResourceFactoryImpl());
-                XSDResourceImpl xsdMainResource = (XSDResourceImpl) resourceSet.createResource(URI.createURI(".xsd"));
-                xsdMainResource.load(in, resourceSet.getLoadOptions());
-                return xsdMainResource.getSchema();
-            }
+            byte[] response = IOHelper.readBytes(conn);
+            ResourceSet resourceSet = new ResourceSetImpl();
+            resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put("xsd", new org.eclipse.xsd.util.XSDResourceFactoryImpl());
+            XSDResourceImpl xsdMainResource = (XSDResourceImpl) resourceSet.createResource(URI.createURI(".xsd"));
+            xsdMainResource.load(new ByteArrayInputStream(response), resourceSet.getLoadOptions());
+            return xsdMainResource.getSchema();
         } catch (IOException e) {
             LOG.warn(e, "Failed to locate schema:", rawSchemaLocationURI);
             return null;
