@@ -1,13 +1,16 @@
 package fi.nls.oskari.control.feature;
 
-import java.io.ByteArrayInputStream;
-import java.net.HttpURLConnection;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
-import org.geotools.data.DataUtilities;
 import org.geotools.data.simple.SimpleFeatureCollection;
-import org.geotools.xml.Parser;
+import org.geotools.data.simple.SimpleFeatureIterator;
+import org.geotools.feature.DefaultFeatureCollection;
 import org.opengis.feature.simple.SimpleFeature;
 import org.oskari.service.mvt.SimpleFeaturesMVTEncoder;
 import org.oskari.service.util.ServiceFactory;
@@ -21,15 +24,21 @@ import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.control.ActionParamsException;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.map.layer.OskariLayerService;
-import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.ResponseHelper;
-import net.opengis.wfs.FeatureCollectionType;
 
 @OskariActionRoute("GetWFSVectorTile")
 public class GetWFSVectorTileHandler extends ActionHandler {
 
     protected static final String MVT_CONTENT_TYPE = "application/vnd.mapbox-vector-tile";
-    protected static final String PARAM_BBOX = "bbox";
+    protected static final String PARAM_Z = "z";
+    protected static final String PARAM_X = "x";
+    protected static final String PARAM_Y = "y";
+
+    private static final Map<String, WFSTileGrid> KNOWN_TILE_GRIDS;
+    static {
+        KNOWN_TILE_GRIDS = new HashMap<>();
+        KNOWN_TILE_GRIDS.put("EPSG:3067", new WFSTileGrid(new double[] { -548576, 6291456, -548576 + (8192*256), 6291456 + (8192*256) }, 15));
+    }
 
     private final Cache<byte[]> cache = new Cache<>();
     private OskariLayerService layerService;
@@ -50,28 +59,89 @@ public class GetWFSVectorTileHandler extends ActionHandler {
         int layerId = params.getRequiredParamInt(ActionConstants.PARAM_ID);
         OskariLayer layer = getLayer(layerId);
 
-        String bboxStr = params.getRequiredParam(PARAM_BBOX);
-        double[] bbox = parseBbox(bboxStr);
-
         String srs = params.getRequiredParam(ActionConstants.PARAM_SRS);
+        WFSTileGrid grid = KNOWN_TILE_GRIDS.get(srs);
+        if (grid == null) {
+            throw new ActionParamsException("Unknown tile grid");
+        }
 
-        String cacheKey = getCacheKey(layerId, bboxStr, srs);
-        byte[] cached =  cache.get(cacheKey);
+        int z = params.getRequiredParamInt(PARAM_Z);
+        int x = params.getRequiredParamInt(PARAM_X);
+        int y = params.getRequiredParamInt(PARAM_Y);
+        validate(grid, z, x, y);
+
+        String cacheKey = getCacheKey(layerId, srs, z, x, y);
+        byte[] cached = cache.get(cacheKey);
         if (cached != null) {
             params.getResponse().addHeader("Access-Control-Allow-Origin", "*");
             ResponseHelper.writeResponse(params, 200, MVT_CONTENT_TYPE, cached);
             return;
         }
 
-        SimpleFeatureCollection sfc = getFeatures(layer, bbox, srs);
+        // Find nearest higher resolution
+        int targetZ = grid.getZForResolution(16, -1);
+
+        List<TileCoord> wfsTiles;
+        int dz = z - targetZ;
+        if (dz < 0) {
+            int d = (int) Math.pow(2, -dz);
+            int targetX1 = x * d;
+            int targetY1 = y * d;
+            int targetX2 = (x+1) * d;
+            int targetY2 = (y+1) * d;
+            wfsTiles = new ArrayList<>(); 
+            for (int targetX = targetX1; targetX < targetX2; targetX++) {
+                for (int targetY = targetY1; targetY < targetY2; targetY++) {
+                    wfsTiles.add(new TileCoord(targetZ, targetX, targetY));
+                }
+            }
+        } else if (dz == 0) {
+            wfsTiles = Collections.singletonList(new TileCoord(z, x, y));
+        } else {
+            int div = (int) Math.pow(2, dz);
+            int targetX = x / div;
+            int targetY = y / div;
+            wfsTiles = Collections.singletonList(new TileCoord(targetZ, targetX, targetY));
+        }
+
+        SimpleFeatureCollection sfc = null;
+        for (TileCoord tile : wfsTiles) {
+            SimpleFeatureCollection tileFeatures = WFSMetaTiles.getFeatures(layer, srs, grid, tile);
+            sfc = sfc == null ? tileFeatures : union(sfc, tileFeatures);
+        }
+
+        double[] bbox = grid.getTileExtent(new TileCoord(z, x, y));
         byte[] encoded = SimpleFeaturesMVTEncoder.encodeToByteArray(sfc, layer.getName(), bbox, 4096, 256);
         cache.put(cacheKey, encoded);
+
         params.getResponse().addHeader("Access-Control-Allow-Origin", "*");
         ResponseHelper.writeResponse(params, 200, MVT_CONTENT_TYPE, encoded);
     }
 
-    private String getCacheKey(int layerId, String bboxStr, String srs) {
-        return "WFS_" + layerId + "_" + bboxStr + "_" + srs;
+    public void validate(WFSTileGrid grid, int z, int x, int y) throws ActionParamsException {
+        if (z < 0) {
+            throw new ActionParamsException("z must be non-negative");
+        }
+        if (x < 0) {
+            throw new ActionParamsException("x must be non-negative");
+        }
+        if (y < 0) {
+            throw new ActionParamsException("y must be non-negative");
+        }
+        if (z > grid.getMaxZoom()) {
+            throw new ActionParamsException("z must be <= " + grid.getMaxZoom());
+        }
+        int matrixWidthHeight = WFSTileGrid.getMatrixSize(z);
+        if (x >= matrixWidthHeight) {
+            throw new ActionParamsException("x must be < " + matrixWidthHeight + " (z = " + z + ")");
+        }
+        if (y >= matrixWidthHeight) {
+            throw new ActionParamsException("y must be < " + matrixWidthHeight + " (z = " + z + ")");
+        }
+    }
+
+    private String getCacheKey(int layerId, String srs, int z, int x, int y) {
+        return "WFS_" + layerId + "_" + srs + "_" + z + "_" + x + "_" + y;
     }
 
     protected OskariLayer getLayer(int layerId) throws ActionParamsException {
@@ -85,102 +155,38 @@ public class GetWFSVectorTileHandler extends ActionHandler {
         return layer;
     }
 
-    protected double[] parseBbox(String str) throws ActionParamsException {
-        String[] coordinates = str.split(",");
-        if (coordinates.length != 4) {
-            throw new ActionParamsException("Invalid value for key: " + PARAM_BBOX);
-        }
-        try {
-            double[] bbox = new double[4];
-            for (int i = 0; i < 4; i++) {
-                bbox[i] = Double.parseDouble(coordinates[i]);
+    public static SimpleFeatureCollection union(SimpleFeatureCollection a, SimpleFeatureCollection b) {
+        try (SimpleFeatureIterator iterA = a.features();
+                SimpleFeatureIterator iterB = b.features()) {
+            if (!iterA.hasNext()) {
+                return b;
             }
-            return bbox;
-        } catch (NumberFormatException e) {
-            throw new ActionParamsException("Invalid value for key: " + PARAM_BBOX);
-        }
-    }
+            if (!iterB.hasNext()) {
+                return a;
+            }
 
-    private SimpleFeatureCollection getFeatures(OskariLayer layer, double[] bbox, String srsName) throws ActionException {
-        String endPoint = layer.getUrl();
-        String version = layer.getVersion();
-        String typeName = layer.getName();
+            Set<String> ids = new HashSet<>();
+            DefaultFeatureCollection union = new DefaultFeatureCollection();
 
-        String getFeatureKVP = getFeature(endPoint, version, typeName, bbox, srsName, 10000);
-
-        OskariGMLConfiguration cfg = new OskariGMLConfiguration(layer.getUsername(), layer.getPassword());
-        Parser parser = getParser(cfg);
-
-        try {
-            HttpURLConnection conn = IOHelper.getConnection(getFeatureKVP, layer.getUsername(), layer.getPassword());
-            byte[] response = IOHelper.readBytes(conn);
-            Object result = parser.parse(new ByteArrayInputStream(response));
-            return toFeatureCollection(result);
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new ActionException("Failed to read feature collection from WFS service!", e);
-        }
-    }
-
-    private String getFeature(String endPoint, String version, String typeName, double[] bbox, String srsName, int maxFeatures) {
-        Map<String, String> parameters = new HashMap<>();
-        parameters.put("SERVICE", "WFS");
-        parameters.put("VERSION", version);
-        parameters.put("REQUEST", "GetFeature");
-        parameters.put("TYPENAME", typeName);
-        parameters.put("BBOX", getBBOX(version, bbox, srsName));
-        parameters.put("SRSNAME", srsName);
-        parameters.put("MAXFEATURES", Integer.toString(maxFeatures));
-        return IOHelper.constructUrl(endPoint, parameters);
-    }
-
-    private String getBBOX(String version, double[] bbox, String srsName) {
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < 4; i++) {
-            sb.append(bbox[i]);
-            sb.append(',');
-        }
-        if ("1.1.0".equals(version)) {
-            sb.append(srsName);
-            return sb.toString();
-        } else {
-            return sb.substring(0, sb.length() - 1);
-        }
-    }
-
-    private Parser getParser(OskariGMLConfiguration cfg) {
-        Parser parser = new Parser(cfg);
-        parser.setValidating(false);
-        parser.setFailOnValidationError(false);
-        parser.setStrict(false);
-        return parser;
-    }
-
-    private SimpleFeatureCollection toFeatureCollection(Object obj) {
-        if (obj == null) {
-            return null;
-        }
-        if (obj instanceof SimpleFeatureCollection) {
-            return (SimpleFeatureCollection) obj;
-        }
-        if (obj instanceof SimpleFeature) {
-            SimpleFeature feature = (SimpleFeature) obj;
-            return DataUtilities.collection(feature);
-        }
-        if (obj instanceof FeatureCollectionType) {
-            FeatureCollectionType collectionType = (FeatureCollectionType) obj;
-            for (Object entry : collectionType.getFeature()) {
-                SimpleFeatureCollection collection = toFeatureCollection(entry);
-                if (entry != null) {
-                    return collection;
+            while (iterA.hasNext()) {
+                SimpleFeature f = iterA.next();
+                String id = f.getID();
+                if (id != null && ids.add(id)) {
+                    union.add(f);
                 }
             }
-            return null;
-        } else {
-            throw new ClassCastException(obj.getClass()
-                    + " produced when FeatureCollection expected"
-                    + " check schema use of AbstractFeatureCollection");
+
+            while (iterB.hasNext()) {
+                SimpleFeature f = iterB.next();
+                String id = f.getID();
+                if (id != null && ids.add(id)) {
+                    union.add(f);
+                }
+            }
+
+            return union;
         }
     }
+
 
 }
