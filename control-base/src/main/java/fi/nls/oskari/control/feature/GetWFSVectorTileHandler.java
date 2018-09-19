@@ -79,7 +79,7 @@ public class GetWFSVectorTileHandler extends ActionHandler {
         }
 
         // Find nearest higher resolution
-        int targetZ = grid.getZForResolution(16, -1);
+        int targetZ = grid.getZForResolution(8, -1);
 
         List<TileCoord> wfsTiles;
         int dz = z - targetZ;
@@ -110,8 +110,11 @@ public class GetWFSVectorTileHandler extends ActionHandler {
             sfc = sfc == null ? tileFeatures : union(sfc, tileFeatures);
         }
 
+        // long t0 = System.currentTimeMillis();
         double[] bbox = grid.getTileExtent(new TileCoord(z, x, y));
         byte[] encoded = SimpleFeaturesMVTEncoder.encodeToByteArray(sfc, layer.getName(), bbox, 4096, 256);
+        // long t1 = System.currentTimeMillis();
+        // System.out.println(t1-t0);
         cache.put(cacheKey, encoded);
 
         params.getResponse().addHeader("Access-Control-Allow-Origin", "*");

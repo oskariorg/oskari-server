@@ -5,24 +5,21 @@ import java.util.List;
 
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.data.simple.SimpleFeatureIterator;
-import org.geotools.geometry.jts.JTS;
 import org.opengis.feature.simple.SimpleFeature;
 
 import com.vividsolutions.jts.geom.Envelope;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryFactory;
-import com.vividsolutions.jts.operation.predicate.RectangleIntersects;
+import com.vividsolutions.jts.geom.TopologyException;
+import com.vividsolutions.jts.simplify.TopologyPreservingSimplifier;
 import com.wdtinc.mapbox_vector_tile.VectorTile;
 import com.wdtinc.mapbox_vector_tile.adapt.jts.IUserDataConverter;
 import com.wdtinc.mapbox_vector_tile.adapt.jts.JtsAdapter;
-import com.wdtinc.mapbox_vector_tile.adapt.jts.TileGeomResult;
 import com.wdtinc.mapbox_vector_tile.build.MvtLayerBuild;
-import com.wdtinc.mapbox_vector_tile.build.MvtLayerParams;
 import com.wdtinc.mapbox_vector_tile.build.MvtLayerProps;
 
 public class SimpleFeaturesMVTEncoder {
 
-    private static final int TARGET_PX = 512;
     private static final GeometryFactory GF = new GeometryFactory();
 
     public static byte[] encodeToByteArray(SimpleFeatureCollection sfc,
@@ -40,11 +37,15 @@ public class SimpleFeaturesMVTEncoder {
             double dy = bufferSizePercent * tileEnvelope.getHeight();
             clipEnvelope.expandBy(dx, dy);
         }
-        MvtLayerParams layerParams = new MvtLayerParams(TARGET_PX, extent);
+        Geometry tileClipGeom = GF.toGeometry(clipEnvelope);
 
-        RectangleIntersects intersectsChecker = new RectangleIntersects(JTS.toGeometry(tileEnvelope));
+        double tx = tileEnvelope.getMinX();
+        double ty = tileEnvelope.getMaxY();
+        double sx = (double) extent / tileEnvelope.getWidth();
+        double sy = -1.0 * extent / tileEnvelope.getHeight();
+        SnapToGrid snapToGrid = new SnapToGrid(tx, ty, sx, sy);
 
-        List<Geometry> geoms = new ArrayList<>();
+        List<Geometry> mvtGeoms = new ArrayList<>();
         try (SimpleFeatureIterator it = sfc.features()) {
             while (it.hasNext()) {
                 SimpleFeature sf = it.next();
@@ -52,23 +53,50 @@ public class SimpleFeaturesMVTEncoder {
                 if (g == null) {
                     continue;
                 }
+
                 Geometry geom = (Geometry) g;
-                if (!intersectsChecker.intersects(geom)) {
+
+                // Quickly check that atleast the envelopes intersect
+                if (!tileEnvelope.intersects(geom.getEnvelopeInternal())) {
                     continue;
                 }
+
+                // Clip
+                Geometry clipped;
+                try {
+                    clipped = tileClipGeom.intersection(geom);
+                    if (clipped.isEmpty()) {
+                        continue;
+                    }
+                } catch (TopologyException e) {
+                    // Ignore
+                    continue;
+                }
+
+                clipped.apply(snapToGrid);
+
+                if (clipped.getArea() > 0 && clipped.getArea() < 6) {
+                    // Drop very small polygons
+                    // Note that this is not 6px^2 but 6 square units in MVT space
+                    continue;
+                }
+
+                if (clipped.getLength() > 0 && clipped.getLength() < 6) {
+                    // Drop very small lines
+                    // Note that this is not 6px but 6 units in MVT space
+                    // With tileSize 512 6 units corresponds to 0.75px
+                }
+
+                // Simplify transformed geometry (6 should be fine with the 4096 extent)
+                // TODO: Figure out if it's better to simplify before calculating the intersection
+                // This is quite handy here, because it removes duplicated points,
+                // though it also would be trivial to ignore them in the actual encoding phase 
+                Geometry simplified = TopologyPreservingSimplifier.simplify(clipped, 6);
                 
-                // Make userData point to the SimpleFeature
-                // allows us to use SimpleFeatureConverter
-                geom.setUserData(sf);
-                geoms.add(geom);
+                simplified.setUserData(sf);
+                mvtGeoms.add(simplified);
             }
         }
-
-        TileGeomResult tileGeom = JtsAdapter.createTileGeom(
-                geoms,
-                tileEnvelope, clipEnvelope,
-                GF, layerParams,
-                g -> true);
 
         VectorTile.Tile.Layer.Builder layerBuilder = VectorTile.Tile.Layer.newBuilder();
         layerBuilder.setVersion(2);
@@ -77,7 +105,7 @@ public class SimpleFeaturesMVTEncoder {
 
         MvtLayerProps layerProps = new MvtLayerProps();
         IUserDataConverter converter = new SimpleFeatureConverter();
-        List<VectorTile.Tile.Feature> features = JtsAdapter.toFeatures(tileGeom.mvtGeoms, layerProps, converter);
+        List<VectorTile.Tile.Feature> features = JtsAdapter.toFeatures(mvtGeoms, layerProps, converter);
 
         layerBuilder.addAllFeatures(features);
         MvtLayerBuild.writeProps(layerBuilder, layerProps);

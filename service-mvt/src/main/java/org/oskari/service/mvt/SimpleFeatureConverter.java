@@ -36,8 +36,6 @@ public class SimpleFeatureConverter implements IUserDataConverter {
             String prop = name.getLocalPart();
             Object value = p.getValue();
             if (value == null) {
-                // Skip null values
-                LOG.debug("Skipping", id + "." + prop, "value is null");
                 continue;
             }
             if (value instanceof BigDecimal) {

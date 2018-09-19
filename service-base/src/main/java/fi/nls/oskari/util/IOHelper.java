@@ -958,4 +958,29 @@ public class IOHelper {
         }
     }
 
+    /**
+     * Ignore HttpURLConnection response fully 
+     * Useful for example when the status code or the content type
+     * wasn't what was expected. Allows HttpURLConnection
+     * pooling method to keep the underlying TCP connection alive 
+     */
+    public static void closeSilently(HttpURLConnection c) {
+        try (InputStream in = getInputStream(c)) {
+            readFullyIgnoring(in);
+        } catch (IOException ignore) {
+            // Ignore
+        }
+    }
+
+    /**
+     * Read InputStream fully and totally ignoring whatever is read
+     * @throws IOException if something goes wrong
+     */
+    public static void readFullyIgnoring(InputStream in) throws IOException {
+        byte[] b = new byte[8192];
+        while ((in.read(b, 0, 8192)) != -1) {
+            // Keep reading
+        }
+    }
+
 }

@@ -59,9 +59,9 @@ public class GetWFSVectorTileHandlerTest extends JSONActionRouteTest {
         Map<String, String> params = new HashMap<>();
         params.put(ActionConstants.PARAM_ID, "2");
         params.put(ActionConstants.PARAM_SRS, SRSNAME);
-        params.put("z", "8");
-        params.put("x", "105");
-        params.put("y", "65");
+        params.put("z", "10");
+        params.put("x", "428");
+        params.put("y", "257");
 
         ActionParameters ap = createActionParams(params);
 
