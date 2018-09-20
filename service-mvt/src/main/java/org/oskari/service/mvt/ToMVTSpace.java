@@ -7,6 +7,7 @@ import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.LineString;
 import com.vividsolutions.jts.geom.LinearRing;
+import com.vividsolutions.jts.geom.MultiPoint;
 import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.util.GeometryEditor.GeometryEditorOperation;
 
@@ -31,51 +32,82 @@ public class ToMVTSpace implements GeometryEditorOperation {
     public Geometry edit(Geometry geometry, GeometryFactory factory) {
         if (geometry instanceof LinearRing) {
             Coordinate[] coords = ((LinearRing) geometry).getCoordinates();
-            return factory.createLinearRing(edit(coords));
+            Coordinate[] edited = edit(coords, true, 4);
+            if (edited == null) {
+                // Too few points remaining
+                return null;
+            }
+            if (edited == coords) {
+                // Return the original geometry
+                return geometry;
+            }
+            return factory.createLinearRing(edited);
         }
 
         if (geometry instanceof LineString) {
             Coordinate[] coords = ((LineString) geometry).getCoordinates();
-            return factory.createLineString(edit(coords));
+            Coordinate[] edited = edit(coords, false, 2);
+            if (edited == null) {
+                // Too few points remaining
+                return null;
+            }
+            if (edited == coords) {
+                // Return the original geometry
+                return geometry;
+            }
+            return factory.createLineString(edited);
+        }
+        
+        if (geometry instanceof MultiPoint) {
+            Coordinate[] points = ((MultiPoint) geometry).getCoordinates();
+            Coordinate[] edited = edit(points, false, 0);
+            // Number of coords can never be < 0 so edit() will never
+            // return null unless points was null, but that's ok since null == null
+            if (edited == points) {
+                return geometry;
+            }
+            // Some points were removed, maybe there's only one left?
+            if (edited.length == 1) {
+                return factory.createPoint(edited[0]);
+            }
+            return factory.createMultiPoint(edited);
         }
 
         if (geometry instanceof Point) {
-            Coordinate c = ((Point) geometry).getCoordinate();
-            int x = (int) Math.round(sx * (c.x - tx));
-            int y = (int) Math.round(sy * (c.y - ty));
+            Coordinate coord = ((Point) geometry).getCoordinate();
+            int x = (int) Math.round(sx * (coord.x - tx));
+            int y = (int) Math.round(sy * (coord.y - ty));
             return factory.createPoint(new Coordinate(x, y));
         }
 
         return geometry;
     }
 
-    public Coordinate[] edit(Coordinate[] coords) {
-        Coordinate[] a = new Coordinate[coords.length];
+    public Coordinate[] edit(Coordinate[] coords, boolean mustClose, int minNumPoints) {
+        Coordinate[] edited = new Coordinate[coords.length];
+        int n = 0;
 
-        Coordinate c = coords[0];
-        int x = (int) Math.round(sx * (c.x - tx));
-        int y = (int) Math.round(sy * (c.y - ty));
-        a[0] = new Coordinate(x, y);
-        int prevX = x;
-        int prevY = y;
-
-        int n = 1;
-        for (int i = 1; i < coords.length; i++) {
-            c = coords[i];
-            x = (int) Math.round(sx * (c.x - tx));
-            y = (int) Math.round(sy * (c.y - ty));
-            if (x == prevX && y == prevY) {
+        int x0 = Integer.MAX_VALUE;
+        int y0 = Integer.MAX_VALUE;
+        for (Coordinate coord : coords) {
+            int x = (int) Math.round(sx * (coord.x - tx));
+            int y = (int) Math.round(sy * (coord.y - ty));
+            if (x == x0 && y == y0) {
                 continue;
             }
-            a[n++] = new Coordinate(x, y);
-            prevX = x;
-            prevY = y;
+            edited[n++] = new Coordinate(x, y);
+            x0 = x;
+            y0 = y;
         }
 
         if (n == coords.length) {
-            return a;
+            return coords;
         }
-        return Arrays.copyOf(a, n);
+        if (n < minNumPoints) {
+            return null;
+        }
+        
+        return Arrays.copyOf(edited, n);
     }
 
 }

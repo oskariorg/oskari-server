@@ -111,7 +111,10 @@ public class SimpleFeaturesMVTEncoder {
         double ty = tileEnvelope.getMaxY();
         double sx = (double) extent / tileEnvelope.getWidth();
         double sy = -((double) extent / tileEnvelope.getHeight());
+
+        // RemoveRepeatedPoints removeRepeatedPoints = new RemoveRepeatedPoints(resHalf);
         ToMVTSpace snapToGrid = new ToMVTSpace(tx, ty, sx, sy);
+        
         GeometryEditor editor = new GeometryEditor(GF);
 
         List<Geometry> mvtGeoms = new ArrayList<>();
@@ -144,7 +147,8 @@ public class SimpleFeaturesMVTEncoder {
                     }
                 }
 
-                geom = TopologyPreservingSimplifier.simplify(geom, resHalf);
+                // geom = editor.edit(geom, removeRepeatedPoints);
+                geom = TopologyPreservingSimplifier.simplify(geom, res);
                 if (geom.isEmpty()) {
                     continue;
                 }
