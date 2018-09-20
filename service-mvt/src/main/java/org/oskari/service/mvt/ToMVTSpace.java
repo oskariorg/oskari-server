@@ -37,10 +37,6 @@ public class ToMVTSpace implements GeometryEditorOperation {
                 // Too few points remaining
                 return null;
             }
-            if (edited == coords) {
-                // Return the original geometry
-                return geometry;
-            }
             return factory.createLinearRing(edited);
         }
 
@@ -51,22 +47,15 @@ public class ToMVTSpace implements GeometryEditorOperation {
                 // Too few points remaining
                 return null;
             }
-            if (edited == coords) {
-                // Return the original geometry
-                return geometry;
-            }
             return factory.createLineString(edited);
         }
         
         if (geometry instanceof MultiPoint) {
             Coordinate[] points = ((MultiPoint) geometry).getCoordinates();
             Coordinate[] edited = edit(points, false, 0);
-            // Number of coords can never be < 0 so edit() will never
-            // return null unless points was null, but that's ok since null == null
-            if (edited == points) {
-                return geometry;
+            if (edited == null) {
+                return null;
             }
-            // Some points were removed, maybe there's only one left?
             if (edited.length == 1) {
                 return factory.createPoint(edited[0]);
             }
@@ -100,13 +89,12 @@ public class ToMVTSpace implements GeometryEditorOperation {
             y0 = y;
         }
 
-        if (n == coords.length) {
-            return coords;
-        }
         if (n < minNumPoints) {
             return null;
         }
-        
+        if (n == edited.length) {
+            return edited;
+        }
         return Arrays.copyOf(edited, n);
     }
 
