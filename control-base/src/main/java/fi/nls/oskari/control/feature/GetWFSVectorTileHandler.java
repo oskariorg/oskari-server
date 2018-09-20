@@ -1,5 +1,7 @@
 package fi.nls.oskari.control.feature;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -7,6 +9,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.data.simple.SimpleFeatureIterator;
@@ -24,6 +28,7 @@ import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.control.ActionParamsException;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.map.layer.OskariLayerService;
+import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.ResponseHelper;
 
 @OskariActionRoute("GetWFSVectorTile")
@@ -74,7 +79,18 @@ public class GetWFSVectorTileHandler extends ActionHandler {
         byte[] cached = cache.get(cacheKey);
         if (cached != null) {
             params.getResponse().addHeader("Access-Control-Allow-Origin", "*");
-            ResponseHelper.writeResponse(params, 200, MVT_CONTENT_TYPE, cached);
+            if (shouldGzip(params.getRequest())) {
+                params.getResponse().addHeader("Content-Encoding", "gzip");
+                ResponseHelper.writeResponse(params, 200, MVT_CONTENT_TYPE, cached);
+            } else {
+                ByteArrayOutputStream ungzipped;
+                try {
+                    ungzipped = IOHelper.ungzip(cached);
+                } catch (IOException e) {
+                    throw new ActionException("Failed to decompress cached response", e);
+                }
+                ResponseHelper.writeResponse(params, 200, MVT_CONTENT_TYPE, ungzipped);
+            }
             return;
         }
 
@@ -113,12 +129,33 @@ public class GetWFSVectorTileHandler extends ActionHandler {
         // long t0 = System.currentTimeMillis();
         double[] bbox = grid.getTileExtent(new TileCoord(z, x, y));
         byte[] encoded = SimpleFeaturesMVTEncoder.encodeToByteArray(sfc, layer.getName(), bbox, 4096, 256);
-        // long t1 = System.currentTimeMillis();
-        // System.out.println(t1-t0);
-        cache.put(cacheKey, encoded);
 
+        byte[] gzip = null;
+        try {
+            gzip = IOHelper.gzip(encoded).toByteArray();
+        } catch (IOException e) {
+            throw new ActionException("Unexpected exception occured, try again", e);
+        }
+
+        cache.put(cacheKey, gzip);
+
+        byte[] response;
+        if (shouldGzip(params.getRequest())) {
+            params.getResponse().addHeader("Content-Encoding", "gzip");
+            response = gzip;
+        } else {
+            response = encoded;
+        }
         params.getResponse().addHeader("Access-Control-Allow-Origin", "*");
-        ResponseHelper.writeResponse(params, 200, MVT_CONTENT_TYPE, encoded);
+        ResponseHelper.writeResponse(params, 200, MVT_CONTENT_TYPE, response);
+    }
+
+    private boolean shouldGzip(HttpServletRequest request) {
+        String acceptEncoding = request.getHeader("Accept-Encoding");
+        if (acceptEncoding == null) {
+            return false;
+        }
+        return acceptEncoding.contains("gzip");
     }
 
     public void validate(WFSTileGrid grid, int z, int x, int y) throws ActionParamsException {

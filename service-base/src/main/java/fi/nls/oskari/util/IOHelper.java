@@ -18,6 +18,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.zip.GZIPInputStream;
+import java.util.zip.GZIPOutputStream;
 
 /*
 Methods using HttpRequest were moved from a class called wmshelper and are
@@ -981,6 +982,21 @@ public class IOHelper {
         while ((in.read(b, 0, 8192)) != -1) {
             // Keep reading
         }
+    }
+    public static ByteArrayOutputStream gzip(byte[] bytes) throws IOException {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        try (GZIPOutputStream gzip = new GZIPOutputStream(baos)) {
+            gzip.write(bytes);
+        }
+        return baos;
+    }
+    public static ByteArrayOutputStream ungzip(byte[] cached) throws IOException {
+        ByteArrayInputStream bais = new ByteArrayInputStream(cached);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        try (GZIPInputStream gzip = new GZIPInputStream(bais)) {
+            copy(gzip, baos);
+        }
+        return baos;
     }
 
 }
