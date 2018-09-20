@@ -1,21 +1,27 @@
 package org.oskari.service.mvt;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.data.simple.SimpleFeatureIterator;
 import org.opengis.feature.simple.SimpleFeature;
 
+import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Envelope;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.LineString;
+import com.vividsolutions.jts.geom.LinearRing;
 import com.vividsolutions.jts.geom.MultiLineString;
+import com.vividsolutions.jts.geom.MultiPoint;
 import com.vividsolutions.jts.geom.MultiPolygon;
+import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.Polygon;
 import com.vividsolutions.jts.geom.TopologyException;
 import com.vividsolutions.jts.geom.util.GeometryEditor;
+import com.vividsolutions.jts.operation.predicate.RectangleIntersects;
 import com.vividsolutions.jts.simplify.TopologyPreservingSimplifier;
 import com.wdtinc.mapbox_vector_tile.VectorTile;
 import com.wdtinc.mapbox_vector_tile.adapt.jts.GeomMinSizeFilter;
@@ -94,7 +100,9 @@ public class SimpleFeaturesMVTEncoder {
             double dy = bufferSizePercent * tileEnvelope.getHeight();
             clipEnvelope.expandBy(dx, dy);
         }
+        Geometry tileEnvelopeGeom = GF.toGeometry(tileEnvelope);
         Geometry tileClipGeom = GF.toGeometry(clipEnvelope);
+        RectangleIntersects rectIntersects = new RectangleIntersects((Polygon) tileEnvelopeGeom);
 
         double res = tileEnvelope.getWidth() / extent;
         double resHalf = res / 2;
@@ -136,21 +144,29 @@ public class SimpleFeaturesMVTEncoder {
                     }
                 }
 
-                // TODO: Remove repeated points with tolerance of resHalf
-
                 geom = TopologyPreservingSimplifier.simplify(geom, resHalf);
                 if (geom.isEmpty()) {
                     continue;
                 }
 
-                try {
-                    geom = tileClipGeom.intersection(geom);
-                } catch (TopologyException ignore) {
+                geom = within(geom, tileEnvelope, rectIntersects);
+                if (geom == null) {
                     continue;
                 }
 
-                if (geom.isEmpty()) {
-                    continue;
+                if (buffer > 0) {
+                    try {
+                        geom = tileClipGeom.intersection(geom);
+                        if (geom.isEmpty()) {
+                            continue;
+                        }
+                        geom = within(geom, tileEnvelope, rectIntersects);
+                        if (geom == null) {
+                            continue;
+                        }
+                    } catch (TopologyException ignore) {
+                        continue;
+                    }
                 }
 
                 geom = editor.edit(geom, snapToGrid);
@@ -163,6 +179,117 @@ public class SimpleFeaturesMVTEncoder {
             }
         }
         return mvtGeoms;
+    }
+
+    private static Geometry within(Geometry geom, Envelope rect, RectangleIntersects rectIntersects) {
+        if (geom instanceof Point) {
+            Coordinate c = ((Point) geom).getCoordinate();
+            boolean within = c.x >= rect.getMinX() && c.x <= rect.getMaxX() && c.y >= rect.getMinY() && c.y <= rect.getMaxY();
+            return within ? geom : null;
+        }
+
+        if (geom instanceof LineString) {
+            return rectIntersects.intersects(geom) ? geom : null;
+        }
+
+        if (geom instanceof Polygon) {
+            Polygon polygon = (Polygon) geom;
+            LinearRing exterior = (LinearRing) polygon.getExteriorRing();
+            if (!rectIntersects.intersects(exterior)) {
+                return null;
+            }
+            int numInteriorRing = polygon.getNumInteriorRing();
+            if (numInteriorRing == 0) {
+                return geom;
+            }
+            LinearRing[] interiorRings = new LinearRing[numInteriorRing];
+            int n = 0;
+            for (int i = 0; i < numInteriorRing; i++) {
+                LinearRing interiorRing = (LinearRing) polygon.getInteriorRingN(i);
+                if (rectIntersects.intersects(interiorRing)) {
+                    interiorRings[n++] = interiorRing;
+                }
+            }
+            if (n == 0) {
+                return GF.createPolygon(exterior);
+            }
+            if (n == numInteriorRing) {
+                return geom;
+            }
+            return GF.createPolygon(exterior, Arrays.copyOf(interiorRings, n));
+        }
+
+        if (geom instanceof MultiPoint) {
+            MultiPoint multi = (MultiPoint) geom;
+            int num = multi.getNumGeometries();
+            Point[] subGeomsWithin = new Point[num];
+            int n = 0;
+            for (int i = 0; i < num; i++) {
+                Geometry subGeom = within(multi.getGeometryN(i), rect, rectIntersects);
+                if (subGeom != null) {
+                    subGeomsWithin[n++] = (Point) subGeom;
+                }
+            }
+            if (n == 0) {
+                return null;
+            }
+            if (n == 1) {
+                return subGeomsWithin[0];
+            }
+            if (n == num) {
+                return geom;
+            }
+            return GF.createMultiPoint(Arrays.copyOf(subGeomsWithin, n));
+        }
+
+        if (geom instanceof MultiLineString) {
+            MultiLineString multi = (MultiLineString) geom;
+            int num = multi.getNumGeometries();
+            LineString[] subGeomsWithin = new LineString[num];
+            int n = 0;
+            for (int i = 0; i < num; i++) {
+                Geometry subGeom = within(multi.getGeometryN(i), rect, rectIntersects);
+                if (subGeom != null) {
+                    subGeomsWithin[n++] = (LineString) subGeom;
+                }
+            }
+            if (n == 0) {
+                return null;
+            }
+            if (n == 1) {
+                return subGeomsWithin[0];
+            }
+            if (n == num) {
+                return geom;
+            }
+            return GF.createMultiLineString(Arrays.copyOf(subGeomsWithin, n));
+        }
+
+        if (geom instanceof MultiPolygon) {
+            MultiPolygon multi = (MultiPolygon) geom;
+            int num = multi.getNumGeometries();
+            Polygon[] subGeomsWithin = new Polygon[num];
+            int n = 0;
+            for (int i = 0; i < num; i++) {
+                Geometry subGeom = within(multi.getGeometryN(i), rect, rectIntersects);
+                if (subGeom != null) {
+                    subGeomsWithin[n++] = (Polygon) subGeom;
+                }
+            }
+            if (n == 0) {
+                return null;
+            }
+            if (n == 1) {
+                return subGeomsWithin[0];
+            }
+            if (n == num) {
+                return geom;
+            }
+            return GF.createMultiPolygon(Arrays.copyOf(subGeomsWithin, n));
+        }
+
+        // TODO handle
+        return null;
     }
 
 }
