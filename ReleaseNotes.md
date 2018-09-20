@@ -1,5 +1,23 @@
 # Release Notes
 
+## 1.48.0
+
+For a full list of changes see: https://github.com/oskariorg/oskari-server/milestone/11?closed=1
+
+- A new flag for "internal layers" has been added for map layers. Internal layers are not sent to the frontend in map layer listings.
+   Baselayers for user generated content and layers for statistical regional divisions have been flagged as "internal".
+- "Global" forced proxy: mapfull config and GetHierarchicalMapLayerGroups action route now support a flag to force all layers to be proxied via oskari-server with forceProxy=true
+- Scale line calculation in printouts (PDF) has been corrected
+- Added cross-site request forgery protection (login/logout and any POST-requests need to include a token).
+    Note! Any customized JSP pages might need to be modified to include the token.
+- jQuery has been updated to 3.3.1 from 1.10.2. 
+    The old version works as well but remember to update the script tag on any customized JSP.
+- Printout now supports user generated content layers (my places, userlayer, analysis)
+- Improved security for user generated statistical datasets. 
+- User registration now shows the users username on password reset page.
+- Axis order issue has been fixed on MyPlaces WFS-T payload (previously features could end up with the wrong axis order on certain map projections).
+- Regional divisions for statistical map that are used from resource-files (not from WFS-service) now support different map projections.
+
 ## 1.47.1
 
 Fix for determining coordinate systems when importing userlayers/imported datasets.
