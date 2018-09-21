@@ -45,9 +45,8 @@ public class KMLParserTest {
         assertEquals("LookAt", ga.getName().getLocalPart());
         Point lookAt = (Point) folder.getAttribute("LookAt");
         Coordinate c = lookAt.getCoordinate();
-        // LookAt is parsed as lon -> y, lat -> x
-        assertEquals(-122.0839597145766, c.y, 1e-6);
-        assertEquals(37.42222904525232, c.x, 1e-6);
+        assertEquals(-122.0839597145766, c.x, 1e-6);
+        assertEquals(37.42222904525232, c.y, 1e-6);
         assertEquals(0.0, c.z, 0.0);
     }
 
