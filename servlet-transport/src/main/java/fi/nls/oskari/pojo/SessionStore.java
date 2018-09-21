@@ -1,5 +1,7 @@
 package fi.nls.oskari.pojo;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vividsolutions.jts.geom.Coordinate;
 import fi.nls.oskari.cache.JedisManager;
 import fi.nls.oskari.log.LogFactory;
@@ -7,12 +9,9 @@ import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.transport.MessageParseHelper;
 import fi.nls.oskari.transport.TransportService;
 import org.codehaus.jackson.JsonFactory;
-import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.JsonParser;
 import org.codehaus.jackson.JsonToken;
 import org.codehaus.jackson.annotate.JsonIgnore;
-import org.codehaus.jackson.map.JsonMappingException;
-import org.codehaus.jackson.map.ObjectMapper;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -26,11 +25,6 @@ import java.util.Map;
 public class SessionStore {
 	private static final Logger log = LogFactory.getLogger(SessionStore.class);
 
-    /*
-     * This uses the Jackson 1.x version since it's used anyway by the current version of CometD.
-     * Using Jackson 2.x results in problems with serialization/deserialization.
-     * Perhaps needs a custom serializer...
-     */
 	private static final ObjectMapper mapper = new ObjectMapper();
 
 	public static final String KEY = "Session_";
@@ -441,10 +435,8 @@ public class SessionStore {
 	public String getAsJSON() {
 		try {
 			return mapper.writeValueAsString(this);
-		} catch (JsonGenerationException e) {
+		} catch (JsonProcessingException e) {
 			log.error(e, "JSON Generation failed");
-		} catch (JsonMappingException e) {
-			log.error(e, "Mapping from Object to JSON String failed");
 		} catch (IOException e) {
 			log.error(e, "IO failed");
 		}
@@ -474,17 +466,10 @@ public class SessionStore {
 			parser.nextToken();
 			if (fieldName == null) {
 				break;
-			} else if (TransportService.PARAM_ID.equals(fieldName)) {
-				parser.getText();
-            } else if (TransportService.PARAM_UUID.equals(fieldName)) {
-                parser.getText();
 			} else if (TransportService.PARAM_DATA.equals(fieldName)) {
 				store = parse(parser);
-			} else if (TransportService.PARAM_CHANNEL.equals(fieldName)) {
-				parser.getText();
 			} else {
-				throw new IllegalStateException("Unrecognized field '"
-						+ fieldName + "'!");
+			    parser.getText();
 			}
 		}
 		parser.close();
