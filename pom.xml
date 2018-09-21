@@ -287,12 +287,6 @@
 
             <dependency>
                 <groupId>fi.nls.oskari.service</groupId>
-                <artifactId>oskari-search-nls</artifactId>
-                <version>${fi.nls.oskari.service.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>fi.nls.oskari.service</groupId>
                 <artifactId>oskari-search-wfs</artifactId>
                 <version>${fi.nls.oskari.service.version}</version>
             </dependency>
@@ -1108,7 +1102,6 @@
         <module>service-capabilities-update</module>
 
         <module>service-search</module>
-        <module>service-search-nls</module>
         <module>service-search-wfs</module>
         <module>service-search-opendata</module>
         <module>service-spatineo-monitor</module>
