@@ -6,6 +6,7 @@
 <html>
 <head>
     <title>Oskari - ${viewName}</title>
+    <link rel="shortcut icon" href="/Oskari${path}/logo.png" type="image/png" />
     <script type="text/javascript" src="/Oskari/libraries/jquery/jquery-3.3.1.min.js">
     </script>
 
