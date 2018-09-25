@@ -1,8 +1,8 @@
-package fi.nls.oskari.control.feature;
+package org.oskari.service.mvt.wfs;
 
 public class WFSTileGrid {
 
-    private static final int TILE_SIZE = 512;
+    public static final int TILE_SIZE = 512;
 
     private final double originX;
     private final double originY;
@@ -45,7 +45,7 @@ public class WFSTileGrid {
         if (resolutions[0] <= resolution) {
             return 0;
         }
-        
+
         int maxZoom = getMaxZoom();
         for (int z = 1; z < maxZoom; z++) {
             if (resolutions[z] == resolution) {
@@ -65,6 +65,10 @@ public class WFSTileGrid {
             }
         }
         return maxZoom;
+    }
+
+    public double getResolutionForZ(int z) {
+        return resolutions[z];
     }
 
 }

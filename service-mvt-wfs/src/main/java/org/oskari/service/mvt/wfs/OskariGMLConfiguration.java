@@ -1,4 +1,5 @@
-package fi.nls.oskari.control.feature;
+package org.oskari.service.mvt.wfs;
+
 
 import javax.xml.namespace.QName;
 

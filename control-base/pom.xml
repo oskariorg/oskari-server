@@ -61,10 +61,6 @@
             <artifactId>service-userlayer</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.oskari</groupId>
-            <artifactId>service-mvt</artifactId>
-        </dependency>
-        <dependency>
             <groupId>fi.nls.oskari</groupId>
             <artifactId>shared-test-resources</artifactId>
             <scope>test</scope>

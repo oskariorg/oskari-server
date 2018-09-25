@@ -8,7 +8,7 @@
     </parent>
 
     <groupId>org.oskari</groupId>
-    <artifactId>service-mvt</artifactId>
+    <artifactId>service-mvt-wfs</artifactId>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -24,12 +24,12 @@
             <artifactId>junit</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.wdtinc</groupId>
-            <artifactId>mapbox-vector-tile</artifactId>
+            <groupId>org.geotools</groupId>
+            <artifactId>gt-main</artifactId>
         </dependency>
         <dependency>
             <groupId>org.geotools</groupId>
-            <artifactId>gt-main</artifactId>
+            <artifactId>gt-xml</artifactId>
         </dependency>
         <dependency>
             <groupId>org.geotools</groupId>

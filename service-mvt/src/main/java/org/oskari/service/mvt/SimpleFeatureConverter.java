@@ -20,7 +20,7 @@ public class SimpleFeatureConverter implements IUserDataConverter {
     @Override
     public void addTags(Object userData, MvtLayerProps layerProps, Builder featureBuilder) {
         if (!(userData instanceof SimpleFeature)) {
-            LOG.warn("userData not a SimpleFeature!");
+            LOG.debug("userData not a SimpleFeature!");
             return;
         }
 

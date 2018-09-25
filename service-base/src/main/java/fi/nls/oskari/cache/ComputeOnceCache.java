@@ -1,10 +1,8 @@
-package fi.nls.oskari.control.feature;
+package fi.nls.oskari.cache;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Function;
-
-import fi.nls.oskari.cache.Cache;
 
 public class ComputeOnceCache<T> {
 

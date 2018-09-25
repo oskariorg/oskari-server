@@ -1,4 +1,5 @@
-package fi.nls.oskari.control.feature;
+package org.oskari.service.mvt.wfs;
+
 
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;

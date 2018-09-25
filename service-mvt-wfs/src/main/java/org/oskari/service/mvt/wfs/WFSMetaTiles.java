@@ -1,4 +1,4 @@
-package fi.nls.oskari.control.feature;
+package org.oskari.service.mvt.wfs;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
@@ -17,7 +17,7 @@ import org.geotools.geojson.feature.FeatureJSON;
 import org.geotools.xml.Parser;
 import org.opengis.feature.simple.SimpleFeature;
 
-import fi.nls.oskari.control.ActionException;
+import fi.nls.oskari.cache.ComputeOnceCache;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
@@ -33,8 +33,7 @@ public class WFSMetaTiles {
     private static final int LIMIT = 100;
     private static final ComputeOnceCache<SimpleFeatureCollection> CACHE = new ComputeOnceCache<>(LIMIT);
 
-    public static SimpleFeatureCollection getFeatures(OskariLayer layer, String srs, WFSTileGrid grid, TileCoord tile)
-            throws ActionException {
+    public static SimpleFeatureCollection getFeatures(OskariLayer layer, String srs, WFSTileGrid grid, TileCoord tile) {
         String endPoint = layer.getUrl();
         String version = layer.getVersion();
         String typeName = layer.getName();
@@ -51,9 +50,6 @@ public class WFSMetaTiles {
             return fc != null ? fc : getFeatureGML(getFeatureKVP, user, pass);
         });
 
-        if (sfc == null) {
-            throw new ActionException("Failed to read features!");
-        }
         return sfc;
     }
 

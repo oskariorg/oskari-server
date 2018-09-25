@@ -1,4 +1,4 @@
-package fi.nls.oskari.control.feature;
+package org.oskari.service.mvt.wfs;
 
 import java.io.IOException;
 import java.io.InputStream;

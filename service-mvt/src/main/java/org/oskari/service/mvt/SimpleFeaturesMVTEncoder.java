@@ -112,7 +112,6 @@ public class SimpleFeaturesMVTEncoder {
         double sx = (double) extent / tileEnvelope.getWidth();
         double sy = -((double) extent / tileEnvelope.getHeight());
 
-        // RemoveRepeatedPoints removeRepeatedPoints = new RemoveRepeatedPoints(resHalf);
         ToMVTSpace snapToGrid = new ToMVTSpace(tx, ty, sx, sy);
         
         GeometryEditor editor = new GeometryEditor(GF);
@@ -165,7 +164,7 @@ public class SimpleFeaturesMVTEncoder {
                             continue;
                         }
                         geom = within(geom, tileEnvelope, rectIntersects);
-                        if (geom == null) {
+                        if (geom == null || geom.isEmpty()) {
                             continue;
                         }
                     } catch (TopologyException ignore) {
@@ -174,7 +173,7 @@ public class SimpleFeaturesMVTEncoder {
                 }
 
                 geom = editor.edit(geom, snapToGrid);
-                if (geom.isEmpty()) {
+                if (geom == null || geom.isEmpty()) {
                     continue;
                 }
 

@@ -1,4 +1,4 @@
-package fi.nls.oskari.control.feature;
+package org.oskari.control.mvt;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -17,6 +17,9 @@ import org.geotools.data.simple.SimpleFeatureIterator;
 import org.geotools.feature.DefaultFeatureCollection;
 import org.opengis.feature.simple.SimpleFeature;
 import org.oskari.service.mvt.SimpleFeaturesMVTEncoder;
+import org.oskari.service.mvt.wfs.TileCoord;
+import org.oskari.service.mvt.wfs.WFSMetaTiles;
+import org.oskari.service.mvt.wfs.WFSTileGrid;
 import org.oskari.service.util.ServiceFactory;
 
 import fi.nls.oskari.annotation.OskariActionRoute;
@@ -62,7 +65,7 @@ public class GetWFSVectorTileHandler extends ActionHandler {
     @Override
     public void handleAction(ActionParameters params) throws ActionException {
         int layerId = params.getRequiredParamInt(ActionConstants.PARAM_ID);
-        OskariLayer layer = getLayer(layerId);
+        OskariLayer layer = findLayer(layerId);
 
         String srs = params.getRequiredParam(ActionConstants.PARAM_SRS);
         WFSTileGrid grid = KNOWN_TILE_GRIDS.get(srs);
@@ -74,6 +77,13 @@ public class GetWFSVectorTileHandler extends ActionHandler {
         int x = params.getRequiredParamInt(PARAM_X);
         int y = params.getRequiredParamInt(PARAM_Y);
         validate(grid, z, x, y);
+
+        Double minScale = layer.getMinScale();
+        Double maxScale = layer.getMaxScale();
+        if (minScale != null || maxScale != null) {
+            double scaleDenominator = getScaleDenominator(grid, z);
+            validateScaleDenominator(scaleDenominator, minScale, maxScale);
+        }
 
         String cacheKey = getCacheKey(layerId, srs, z, x, y);
         byte[] cached = cache.get(cacheKey);
@@ -123,6 +133,9 @@ public class GetWFSVectorTileHandler extends ActionHandler {
         SimpleFeatureCollection sfc = null;
         for (TileCoord tile : wfsTiles) {
             SimpleFeatureCollection tileFeatures = WFSMetaTiles.getFeatures(layer, srs, grid, tile);
+            if (tileFeatures == null) {
+                throw new ActionException("Failed to get features from service");
+            }
             sfc = sfc == null ? tileFeatures : union(sfc, tileFeatures);
         }
 
@@ -150,15 +163,18 @@ public class GetWFSVectorTileHandler extends ActionHandler {
         ResponseHelper.writeResponse(params, 200, MVT_CONTENT_TYPE, response);
     }
 
-    private boolean shouldGzip(HttpServletRequest request) {
-        String acceptEncoding = request.getHeader("Accept-Encoding");
-        if (acceptEncoding == null) {
-            return false;
+    private OskariLayer findLayer(int layerId) throws ActionParamsException {
+        OskariLayer layer = layerService.find(layerId);
+        if (layer == null) {
+            throw new ActionParamsException("Unknown layerId");
         }
-        return acceptEncoding.contains("gzip");
+        if (!OskariLayer.TYPE_WFS.equals(layer.getType())) {
+            throw new ActionParamsException("Specified layer is not a WFS layer");
+        }
+        return layer;
     }
 
-    public void validate(WFSTileGrid grid, int z, int x, int y) throws ActionParamsException {
+    private void validate(WFSTileGrid grid, int z, int x, int y) throws ActionParamsException {
         if (z < 0) {
             throw new ActionParamsException("z must be non-negative");
         }
@@ -180,19 +196,41 @@ public class GetWFSVectorTileHandler extends ActionHandler {
         }
     }
 
+    private double getScaleDenominator(WFSTileGrid grid, int z) {
+        double resolution = grid.getResolutionForZ(z);
+        return getScaleDenominator(resolution);
+    }
+
+    protected static double getScaleDenominator(double resolution) {
+        return resolution * 1000 / 0.28; // OGC WMTS 0.28 mm/px
+    }
+
+    private void validateScaleDenominator(double scaleDenominator, Double minScale, Double maxScale)
+            throws ActionParamsException {
+        if (minScale != null) {
+            if (scaleDenominator > minScale) {
+                // Bigger denominator <=> Smaller scale
+                throw new ActionParamsException("z too low for layer");
+            }
+        }
+        if (maxScale != null) {
+            if (scaleDenominator < maxScale) {
+                // Smaller denominator <=> Bigger scale
+                throw new ActionParamsException("z too high for layer");
+            }
+        }
+    }
+
     private String getCacheKey(int layerId, String srs, int z, int x, int y) {
         return "WFS_" + layerId + "_" + srs + "_" + z + "_" + x + "_" + y;
     }
 
-    protected OskariLayer getLayer(int layerId) throws ActionParamsException {
-        OskariLayer layer = layerService.find(layerId);
-        if (layer == null) {
-            throw new ActionParamsException("Unknown layerId");
+    private boolean shouldGzip(HttpServletRequest request) {
+        String acceptEncoding = request.getHeader("Accept-Encoding");
+        if (acceptEncoding == null) {
+            return false;
         }
-        if (!OskariLayer.TYPE_WFS.equals(layer.getType())) {
-            throw new ActionParamsException("Specified layer is not a WFS layer");
-        }
-        return layer;
+        return acceptEncoding.contains("gzip");
     }
 
     public static SimpleFeatureCollection union(SimpleFeatureCollection a, SimpleFeatureCollection b) {
