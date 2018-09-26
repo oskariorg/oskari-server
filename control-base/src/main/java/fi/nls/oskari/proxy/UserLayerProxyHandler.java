@@ -37,7 +37,7 @@ public class UserLayerProxyHandler extends ProxyServiceConfig {
 
         final String requestedUserlayer = params.getHttpParam(PARAM_USERLAYER_ID);
         //(uuid='d3a216dd-077d-44ce-b79a-adf20ca88367')
-        final String cqlFilter = IOHelper.urlEncode("(uuid='" + params.getUser().getUuid() + "'+OR+publisher_name+IS+NOT+NULL)+AND+user_layer_id=" + requestedUserlayer);
+        final String cqlFilter = IOHelper.urlEncode("(uuid='" + params.getUser().getUuid() + "' OR publisher_name IS NOT NULL) AND user_layer_id=" + requestedUserlayer);
         final String userSpecificURL = getUrl() + cqlFilter;
         // setup user specific base url
         config.setUrl(userSpecificURL);
