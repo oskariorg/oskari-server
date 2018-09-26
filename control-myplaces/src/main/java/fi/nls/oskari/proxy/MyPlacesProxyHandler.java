@@ -2,6 +2,7 @@ package fi.nls.oskari.proxy;
 
 import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.service.ProxyServiceConfig;
+import fi.nls.oskari.util.IOHelper;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -33,7 +34,8 @@ public class MyPlacesProxyHandler extends ProxyServiceConfig {
 
         final String requestedCategory = params.getHttpParam(PARAM_CATEGORY_ID);
         //(uuid='d3a216dd-077d-44ce-b79a-adf20ca88367'+OR+publisher_name+IS+NOT+NULL)
-        final String userSpecificURL = getUrl() + "(uuid='" + params.getUser().getUuid() + "'+OR+(publisher_name+IS+NOT+NULL+AND+publisher_name<>''))+AND+category_id=" + requestedCategory;
+        final String cqlFilter = IOHelper.urlEncode("(uuid='" + params.getUser().getUuid() + "'+OR+(publisher_name+IS+NOT+NULL+AND+publisher_name<>''))+AND+category_id=" + requestedCategory); 
+        final String userSpecificURL = getUrl() + cqlFilter;
         // setup user specific base url
         config.setUrl(userSpecificURL);
         return config;
