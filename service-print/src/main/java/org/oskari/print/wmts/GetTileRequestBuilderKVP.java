@@ -1,5 +1,10 @@
 package org.oskari.print.wmts;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+
+import fi.nls.oskari.util.IOHelper;
+
 /**
  * WMTS GetTile Request Builder (KVP)
  */
@@ -61,9 +66,6 @@ public class GetTileRequestBuilderKVP implements GetTileRequestBuilder {
         if (layer == null || layer.length() == 0) {
             throw new IllegalArgumentException("Required parameter 'layer' missing");
         }
-        if (style == null || style.length() == 0) {
-            throw new IllegalArgumentException("Required parameter 'style' missing");
-        }
         if (format == null || format.length() == 0) {
             throw new IllegalArgumentException("Required parameter 'format' missing");
         }
@@ -80,19 +82,18 @@ public class GetTileRequestBuilderKVP implements GetTileRequestBuilder {
             throw new IllegalArgumentException("Required parameter 'tileCol' missing");
         }
 
-        StringBuilder sb = new StringBuilder();
-        sb.append(endPoint);
-        sb.append("?SERVICE=WMTS");
-        sb.append("&REQUEST=GetTile");
-        sb.append("&VERSION=1.0.0");
-        sb.append("&LAYER=").append(layer);
-        sb.append("&STYLE=").append(style);
-        sb.append("&FORMAT=").append(format);
-        sb.append("&TILEMATRIXSET=").append(tileMatrixSet);
-        sb.append("&TILEMATRIX=").append(tileMatrix);
-        sb.append("&TILEROW=").append(tileRow);
-        sb.append("&TILECOL=").append(tileCol);
-        return sb.toString();
+        Map<String, String> params = new LinkedHashMap<>();
+        params.put("SERVICE", "WMTS");
+        params.put("VERSION", "1.0.0");
+        params.put("REQUEST", "GetTile");
+        params.put("LAYER", layer);
+        params.put("STYLE", style == null ? "" : style);
+        params.put("FORMAT", format);
+        params.put("TILEMATRIXSET", tileMatrixSet);
+        params.put("TILEMATRIX", tileMatrix);
+        params.put("TILEROW", Integer.toString(tileRow));
+        params.put("TILECOL", Integer.toString(tileCol));
+        return IOHelper.constructUrl(endPoint, params);
     }
 
 }

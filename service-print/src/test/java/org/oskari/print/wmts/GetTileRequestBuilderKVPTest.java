@@ -16,7 +16,6 @@ public class GetTileRequestBuilderKVPTest {
         final String[] strFields = new String[] {
                 "endPoint",
                 "layer",
-                "style",
                 "format",
                 "tileMatrixSet",
                 "tileMatrix"
@@ -62,10 +61,10 @@ public class GetTileRequestBuilderKVPTest {
         }
 
         String expected = "foo?SERVICE=WMTS"
-                + "&REQUEST=GetTile"
                 + "&VERSION=1.0.0"
+                + "&REQUEST=GetTile"
                 + "&LAYER=foo"
-                + "&STYLE=foo"
+                + "&STYLE="
                 + "&FORMAT=foo"
                 + "&TILEMATRIXSET=foo"
                 + "&TILEMATRIX=foo"
@@ -74,5 +73,29 @@ public class GetTileRequestBuilderKVPTest {
         String actual = builder.build();
         assertEquals(expected, actual);
     }
+
+    @Test
+    public void testParametersAreURLEncoded() {
+        String actual = new GetTileRequestBuilderKVP().endPoint("foo")
+                .layer("foo bar")
+                .format("image/png")
+                .tileMatrixSet("ETRS-TM35FIN")
+                .tileMatrix("ETRS_TM35-FIN:8")
+                .tileRow(114)
+                .tileCol(208)
+                .build();
+        String expected = "foo?SERVICE=WMTS"
+                + "&VERSION=1.0.0"
+                + "&REQUEST=GetTile"
+                + "&LAYER=foo+bar"
+                + "&STYLE="
+                + "&FORMAT=image%2Fpng"
+                + "&TILEMATRIXSET=ETRS-TM35FIN"
+                + "&TILEMATRIX=ETRS_TM35-FIN%3A8"
+                + "&TILEROW=114"
+                + "&TILECOL=208";
+        assertEquals(expected, actual);
+    }
+
 
 }
