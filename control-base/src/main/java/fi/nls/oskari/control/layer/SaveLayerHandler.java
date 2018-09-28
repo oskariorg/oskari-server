@@ -416,17 +416,17 @@ public class SaveLayerHandler extends RestActionHandler {
         ml.setCapabilitiesUpdateRateSec(params.getHttpParam(PARAM_CAPABILITIES_UPDATE_RATE_SEC, 0));
 
         String attributes = params.getHttpParam(PARAM_ATTRIBUTES);
-        if (attributes != null && !attributes.equals("")) {
+        if (attributes != null && !attributes.isEmpty()) {
             ml.setAttributes(JSONHelper.createJSONObject(attributes));
         }
 
         String parameters = params.getHttpParam(PARAM_PARAMS);
-        if (parameters != null && !parameters.equals("")) {
+        if (parameters != null && !parameters.isEmpty()) {
             ml.setParams(JSONHelper.createJSONObject(parameters));
         }
 
         String options = params.getHttpParam(PARAM_OPTIONS);
-        if (options != null && !options.equals("")) {
+        if (options != null && !options.isEmpty()) {
             ml.setOptions(JSONHelper.createJSONObject(options));
         }
 
