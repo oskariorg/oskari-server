@@ -91,6 +91,7 @@ public class SaveLayerHandler extends RestActionHandler {
     private static final String PARAM_CAPABILITIES_UPDATE_RATE_SEC ="capabilitiesUpdateRateSec";
     private static final String PARAM_ATTRIBUTES ="attributes";
     private static final String PARAM_PARAMS ="params";
+    private static final String PARAM_OPTIONS ="options";
     private static final String PARAM_REALTIME ="realtime";
     private static final String PARAM_REFRESH_RATE ="refreshRate";
     private static final String PARAM_GML2_SEPARATOR = "GML2Separator";
@@ -415,13 +416,18 @@ public class SaveLayerHandler extends RestActionHandler {
         ml.setCapabilitiesUpdateRateSec(params.getHttpParam(PARAM_CAPABILITIES_UPDATE_RATE_SEC, 0));
 
         String attributes = params.getHttpParam(PARAM_ATTRIBUTES);
-        if (attributes != null && !attributes.equals("")) {
+        if (attributes != null && !attributes.isEmpty()) {
             ml.setAttributes(JSONHelper.createJSONObject(attributes));
         }
 
         String parameters = params.getHttpParam(PARAM_PARAMS);
-        if (parameters != null && !parameters.equals("")) {
+        if (parameters != null && !parameters.isEmpty()) {
             ml.setParams(JSONHelper.createJSONObject(parameters));
+        }
+
+        String options = params.getHttpParam(PARAM_OPTIONS);
+        if (options != null && !options.isEmpty()) {
+            ml.setOptions(JSONHelper.createJSONObject(options));
         }
 
         ml.setSrs_name(params.getHttpParam(PARAM_SRS_NAME, ml.getSrs_name()));
