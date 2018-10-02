@@ -46,6 +46,7 @@ public class GetWFSVectorTileHandler extends ActionHandler {
     static {
         KNOWN_TILE_GRIDS = new HashMap<>();
         KNOWN_TILE_GRIDS.put("EPSG:3067", new WFSTileGrid(new double[] { -548576, 6291456, -548576 + (8192*256), 6291456 + (8192*256) }, 15));
+        KNOWN_TILE_GRIDS.put("EPSG:3857", new WFSTileGrid(new double[] { -20037508.3427892, -20037508.3427892, 20037508.3427892, 20037508.3427892 }, 18));
     }
 
     private final Cache<byte[]> cache = new Cache<>();
@@ -139,7 +140,6 @@ public class GetWFSVectorTileHandler extends ActionHandler {
             sfc = sfc == null ? tileFeatures : union(sfc, tileFeatures);
         }
 
-        // long t0 = System.currentTimeMillis();
         double[] bbox = grid.getTileExtent(new TileCoord(z, x, y));
         byte[] encoded = SimpleFeaturesMVTEncoder.encodeToByteArray(sfc, layer.getName(), bbox, 4096, 256);
 
