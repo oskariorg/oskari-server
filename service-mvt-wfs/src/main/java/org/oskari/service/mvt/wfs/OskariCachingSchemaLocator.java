@@ -1,9 +1,9 @@
 package org.oskari.service.mvt.wfs;
 
-
-import fi.nls.oskari.log.LogFactory;
-import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.util.IOHelper;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.util.concurrent.TimeUnit;
 
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.ResourceSet;
@@ -12,16 +12,18 @@ import org.eclipse.xsd.XSDSchema;
 import org.eclipse.xsd.util.XSDResourceImpl;
 import org.eclipse.xsd.util.XSDSchemaLocator;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import fi.nls.oskari.cache.ComputeOnceCache;
+import fi.nls.oskari.log.LogFactory;
+import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.util.IOHelper;
 
 public class OskariCachingSchemaLocator implements XSDSchemaLocator {
 
+    private static final int LIMIT = 100;
+    private static final long ONE_DAY_IN_MS = TimeUnit.DAYS.toMillis(1);
+
     private static final Logger LOG = LogFactory.getLogger(OskariCachingSchemaLocator.class);
-    private static final Map<String, XSDSchema> CACHE = new ConcurrentHashMap<String, XSDSchema>();
+    private static final ComputeOnceCache<XSDSchema> CACHE = new ComputeOnceCache<>(LIMIT, ONE_DAY_IN_MS);
 
     private final String username;
     private final String password;
@@ -36,7 +38,7 @@ public class OskariCachingSchemaLocator implements XSDSchemaLocator {
             String namespaceURI,
             String rawSchemaLocationURI,
             String resolvedSchemaLocationURI) {
-        return CACHE.computeIfAbsent(rawSchemaLocationURI, uri -> parseSchema(uri, username, password));
+        return CACHE.get(rawSchemaLocationURI, uri -> parseSchema(uri, username, password));
     }
 
     protected static XSDSchema parseSchema(String rawSchemaLocationURI, String username, String password) {

@@ -1,17 +1,25 @@
 package fi.nls.oskari.cache;
 
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Function;
 
 public class ComputeOnceCache<T> {
 
+    private static final long EXPIRATION_DEFAULT = TimeUnit.MINUTES.toMillis(30);
+
     private final Cache<T> cache;
     private final ConcurrentHashMap<String, T> tmp;
     
     public ComputeOnceCache(int limit) {
+        this(limit, EXPIRATION_DEFAULT);
+    }
+
+    public ComputeOnceCache(int limit, long expiration) {
         cache = new Cache<>();
         cache.setLimit(limit);
+        cache.setExpiration(expiration);
         tmp = new ConcurrentHashMap<>();
     }
 
