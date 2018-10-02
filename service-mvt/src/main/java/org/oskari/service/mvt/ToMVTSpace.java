@@ -14,6 +14,8 @@ import com.vividsolutions.jts.geom.util.GeometryEditor.GeometryEditorOperation;
 /**
  * Transform Geometry to Vector tile space
  * Also snaps to integer grid and removes duplicate points
+ * 
+ * If the resulting geometry would be invalid, null is returned
  */
 public class ToMVTSpace implements GeometryEditorOperation {
 
