@@ -96,23 +96,21 @@ public class SimpleFeaturesMVTEncoder {
         Envelope clipEnvelope = new Envelope(tileEnvelope);
         if (buffer > 0) {
             double bufferSizePercent = (double) buffer / extent;
-            double dx = bufferSizePercent * tileEnvelope.getWidth();
-            double dy = bufferSizePercent * tileEnvelope.getHeight();
-            clipEnvelope.expandBy(dx, dy);
+            double deltaX = bufferSizePercent * tileEnvelope.getWidth();
+            double deltaY = bufferSizePercent * tileEnvelope.getHeight();
+            clipEnvelope.expandBy(deltaX, deltaY);
         }
         Geometry tileEnvelopeGeom = GF.toGeometry(tileEnvelope);
         Geometry tileClipGeom = GF.toGeometry(clipEnvelope);
         RectangleIntersects rectIntersects = new RectangleIntersects((Polygon) tileEnvelopeGeom);
 
         double res = tileEnvelope.getWidth() / extent;
-        double resHalf = res / 2;
 
-        double tx = tileEnvelope.getMinX();
-        double ty = tileEnvelope.getMaxY();
-        double sx = (double) extent / tileEnvelope.getWidth();
-        double sy = -((double) extent / tileEnvelope.getHeight());
-
-        ToMVTSpace snapToGrid = new ToMVTSpace(tx, ty, sx, sy);
+        double translateX = tileEnvelope.getMinX();
+        double translateY = tileEnvelope.getMaxY();
+        double scaleX = (double) extent / tileEnvelope.getWidth();
+        double scaleY = -((double) extent / tileEnvelope.getHeight());
+        ToMVTSpace snapToGrid = new ToMVTSpace(translateX, translateY, scaleX, scaleY);
         
         GeometryEditor editor = new GeometryEditor(GF);
 
@@ -120,60 +118,54 @@ public class SimpleFeaturesMVTEncoder {
         try (SimpleFeatureIterator it = sfc.features()) {
             while (it.hasNext()) {
                 SimpleFeature sf = it.next();
-                Object g = sf.getDefaultGeometry();
-                if (g == null) {
-                    continue;
-                }
-                Geometry geom = (Geometry) g;
-                if (geom.isEmpty()) {
+                Geometry geom = (Geometry) sf.getDefaultGeometry();
+                if (geom == null || geom.isEmpty()) {
                     continue;
                 }
                 Envelope geomEnvelope = geom.getEnvelopeInternal();
 
-                // Quickly check that atleast the envelopes intersect
-                if (!tileEnvelope.intersects(geom.getEnvelopeInternal())) {
+                // Check that tileEnvelope and geomEnvelope are not disjoint
+                if (!tileEnvelope.intersects(geomEnvelope)) {
                     continue;
                 }
 
-                if (geom instanceof LineString
-                        || geom instanceof Polygon
-                        || geom instanceof MultiLineString
-                        || geom instanceof MultiPolygon) {
-                    double bboxWidth = geomEnvelope.getWidth();
-                    double bboxHeight = geomEnvelope.getHeight();
-                    if (bboxWidth * bboxWidth + bboxHeight * bboxHeight < resHalf * resHalf) {
-                        continue;
-                    }
-                }
-
-                // geom = editor.edit(geom, removeRepeatedPoints);
+                // Simplify the geometry to reduce number of vertices
+                // Use resolution as tolerance
                 geom = TopologyPreservingSimplifier.simplify(geom, res);
-                if (geom.isEmpty()) {
+                if (geom == null || geom.isEmpty()) {
+                    // Geometry disappeared as a result of simplification
                     continue;
                 }
 
+                // Make sure the geometry actually intersects with our tileEnvelope
                 geom = within(geom, tileEnvelope, rectIntersects);
-                if (geom == null) {
+                if (geom == null || geom.isEmpty()) {
                     continue;
                 }
 
                 if (buffer > 0) {
                     try {
+                        // Calculate the intersection with our buffered envelope
                         geom = tileClipGeom.intersection(geom);
-                        if (geom.isEmpty()) {
+                        if (geom == null || geom.isEmpty()) {
+                            // Which might exist - skip the geometry
                             continue;
                         }
+                        // Make sure the geometry still intersects with the actual tileEnvelope
                         geom = within(geom, tileEnvelope, rectIntersects);
                         if (geom == null || geom.isEmpty()) {
                             continue;
                         }
                     } catch (TopologyException ignore) {
+                        // Calculating the intersection failed
                         continue;
                     }
                 }
 
+                // Snap the geometry to MVT grid (integer coordinates)
                 geom = editor.edit(geom, snapToGrid);
                 if (geom == null || geom.isEmpty()) {
+                    // Which might make the geometry disappear (for example LineString degenerated to a Point)
                     continue;
                 }
 
