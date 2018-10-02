@@ -12,10 +12,18 @@ import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.util.GeometryEditor.GeometryEditorOperation;
 
 /**
- * Transform Geometry to Vector tile space
- * Also snaps to integer grid and removes duplicate points
+ * This translates the real-world coordinates of a geometry to the inner
+ * virtual-coordinate space of the tile. Inside the tile a coordinate consists
+ * of two integers (x,y) both in the range of [0,extent] (usually extent=4096).
  * 
- * If the resulting geometry would be invalid, null is returned
+ * As a result of this snapping to integer grid, vertices of the original
+ * geometry might snap to the same point thereby creating duplicate points,
+ * which we don't want. Those are removed. This can make Points in MultiPoint
+ * disappear, LineStrings to deprecate to a single Point and LinearRings to collapse.
+ * 
+ * In case the generated geometry is not valid null is returned.
+ * For example when LineString deprecates to a Single Point, or Polygons exterior
+ * ring collapses.
  */
 public class ToMVTSpace implements GeometryEditorOperation {
 
