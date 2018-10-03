@@ -170,9 +170,15 @@ public class SearchServiceImpl extends SearchService implements SearchChannelCha
                 LOG.debug("Skipping ", channel.getId(), "- User doesn't have permission to access");
                 continue;
             }
-            if(!channel.isValidSearchTerm(searchCriteria)) {
-                // Skipping
-                LOG.debug("Skipping ", channel.getId(), "- criteria not valid");
+            try {
+                // Some implementations throw unchecked exceptions
+                if(!channel.isValidSearchTerm(searchCriteria)) {
+                    // Skipping
+                    LOG.debug("Skipping ", channel.getId(), "- criteria not valid");
+                    continue;
+                }
+            } catch (Exception e) {
+                LOG.debug(e, "Skipping ", channel.getId(), "- criteria not valid");
                 continue;
             }
             ChannelSearchResult result = handleChannelSearch(searchCriteria, channel);
