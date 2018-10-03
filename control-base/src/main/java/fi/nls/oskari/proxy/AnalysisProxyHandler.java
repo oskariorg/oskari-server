@@ -4,6 +4,7 @@ import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.service.ProxyServiceConfig;
+import fi.nls.oskari.util.IOHelper;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -34,7 +35,8 @@ public class AnalysisProxyHandler extends ProxyServiceConfig {
 
         final String requestedAnalysis = params.getHttpParam(PARAM_ANALYSIS_ID);
         //(uuid='d3a216dd-077d-44ce-b79a-adf20ca88367')
-        final String userSpecificURL = getUrl() + "(uuid='" + params.getUser().getUuid() + "'+OR+publisher_name+IS+NOT+NULL)+AND+analysis_id=" + requestedAnalysis;
+        final String cqlFilter = IOHelper.urlEncode("(uuid='" + params.getUser().getUuid() + "' OR publisher_name IS NOT NULL) AND analysis_id=" + requestedAnalysis);
+        final String userSpecificURL = getUrl() + cqlFilter;
         // setup user specific base url
         config.setUrl(userSpecificURL);
         return config;

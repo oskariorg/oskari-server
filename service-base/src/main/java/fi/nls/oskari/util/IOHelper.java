@@ -892,7 +892,7 @@ public class IOHelper {
         for (Map.Entry<String, String> entry : kvps.entrySet()) {
             final String key = entry.getKey();
             final String value = entry.getValue();
-            if (key == null || key.isEmpty() || value == null || value.isEmpty()) {
+            if (key == null || key.isEmpty()) {
                 continue;
             }
             final String keyEnc = urlEncode(key);
