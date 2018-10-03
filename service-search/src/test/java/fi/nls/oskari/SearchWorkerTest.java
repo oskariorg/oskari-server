@@ -11,9 +11,9 @@ public class SearchWorkerTest {
         assertEquals(SearchWorker.ERR_EMPTY, SearchWorker.checkLegalSearch(null));
         assertEquals(SearchWorker.ERR_EMPTY, SearchWorker.checkLegalSearch(""));
 
+        assertEquals(SearchWorker.STR_TRUE, SearchWorker.checkLegalSearch("foo"));
         assertEquals(SearchWorker.STR_TRUE, SearchWorker.checkLegalSearch("foobar*"));
 
-        assertEquals(SearchWorker.ERR_TOO_SHORT, SearchWorker.checkLegalSearch("foo"));
         assertEquals(SearchWorker.ERR_TOO_SHORT, SearchWorker.checkLegalSearch("foo*"));
         assertEquals(SearchWorker.ERR_TOO_SHORT, SearchWorker.checkLegalSearch("*foo"));
 
