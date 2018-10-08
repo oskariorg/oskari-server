@@ -78,7 +78,7 @@
         <commons-lang3.version>3.0</commons-lang3.version>
         <stax-api.version>1.0-2</stax-api.version>
         <stax2-api.version>3.1.4</stax2-api.version>
-        <woodstox.version>5.0.1</woodstox.version>
+        <woodstox.version>5.1.0</woodstox.version>
         <jsonld-java.version>0.3</jsonld-java.version>
         <xmlunit.version>1.5</xmlunit.version>
         <jedis.version>2.9.0</jedis.version>
@@ -102,7 +102,7 @@
         <deegree.version>2</deegree.version>
 
         <mybatis.version>3.4.5</mybatis.version>
-        <com.google.guava.version>18.0</com.google.guava.version>
+        <com.google.guava.version>23.0</com.google.guava.version>
         <pdfbox.version>2.0.6</pdfbox.version>
         <!-- Test deps versions -->
         <powermock.version>1.5</powermock.version>
@@ -119,6 +119,17 @@
             <groupId>org.apache.james</groupId>
             <artifactId>apache-mime4j-core</artifactId>
             <version>0.8.1</version>
+        </dependency>
+	<!-- Replacements for deprecated/removed modules in JDK9/JDK11 -->
+        <dependency>
+            <groupId>javax.xml.bind</groupId>
+            <artifactId>jaxb-api</artifactId>
+            <version>2.1</version>
+        </dependency>
+        <dependency>
+            <groupId>javax.annotation</groupId>
+            <artifactId>javax.annotation-api</artifactId>
+            <version>1.2</version>
         </dependency>
     </dependencies>
     <!-- Managed dependencies -->
@@ -866,7 +877,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.1</version>
+                <version>3.7.0</version>
                 <configuration>
                     <source>${jdk.version}</source>
                     <target>${jdk.version}</target>
@@ -874,7 +885,7 @@
             </plugin>
             <plugin>
                 <artifactId>maven-war-plugin</artifactId>
-                <version>2.4</version>
+                <version>3.2.2</version>
                 <configuration>
                     <failOnMissingWebXml>false</failOnMissingWebXml>
                 </configuration>
