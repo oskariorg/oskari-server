@@ -97,6 +97,7 @@
         <xmlbeans.version>2.6.0</xmlbeans.version>
         <geotools.version>14.2</geotools.version>
         <jts.version>1.13</jts.version>
+        <mvt.version>2.0.0</mvt.version>
         <!-- gt-xsd-kml.version>9.3</gt-xsd-kml.version -->
         <flexjson.version>2.0</flexjson.version>
         <deegree.version>2</deegree.version>
@@ -433,6 +434,24 @@
                 <version>${fi.nls.oskari.version}</version>
             </dependency>
 
+            <dependency>
+                <groupId>org.oskari</groupId>
+                <artifactId>control-mvt</artifactId>
+                <version>${fi.nls.oskari.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.oskari</groupId>
+                <artifactId>service-mvt</artifactId>
+                <version>${fi.nls.oskari.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.oskari</groupId>
+                <artifactId>service-mvt-wfs</artifactId>
+                <version>${fi.nls.oskari.version}</version>
+            </dependency>
+
             <!-- Spring -->
             <dependency>
                 <groupId>org.springframework.security.extensions</groupId>
@@ -711,6 +730,18 @@
                 <groupId>net.sf.flexjson</groupId>
                 <artifactId>flexjson</artifactId>
                 <version>${flexjson.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.vividsolutions</groupId>
+                <artifactId>jts</artifactId>
+                <version>${jts.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.wdtinc</groupId>
+                <artifactId>mapbox-vector-tile</artifactId>
+                <version>${mvt.version}</version>
             </dependency>
 
             <dependency>
@@ -1169,6 +1200,10 @@
 
         <module>control-userlayer</module>
         <module>service-userlayer</module>
+
+        <module>control-mvt</module>
+        <module>service-mvt</module>
+        <module>service-mvt-wfs</module>
     </modules>
 
 </project>

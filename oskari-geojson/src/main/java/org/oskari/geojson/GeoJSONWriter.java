@@ -55,7 +55,9 @@ public class GeoJSONWriter {
         featureCollection.put(GeoJSON.FEATURES, features);
 
         try (SimpleFeatureIterator it = fc.features()) {
-            features.put(writeFeature(it.next()));
+            while (it.hasNext()) {
+                features.put(writeFeature(it.next()));
+            }
         }
 
         return featureCollection;
