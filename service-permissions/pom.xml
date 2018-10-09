@@ -19,6 +19,10 @@
             <groupId>fi.nls.oskari.service</groupId>
             <artifactId>oskari-base</artifactId>
         </dependency>
+        <dependency>
+            <groupId>fi.nls.oskari.service</groupId>
+            <artifactId>oskari-mybatis</artifactId>
+        </dependency>
     </dependencies>
     <build>
     	<pluginManagement>
