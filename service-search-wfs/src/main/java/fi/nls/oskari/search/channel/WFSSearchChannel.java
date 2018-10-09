@@ -75,8 +75,7 @@ public class WFSSearchChannel extends SearchChannel {
         final String cacheKey = config.getUrl() + config.getLayerName();
         Resource resource = cache.get(cacheKey);
         if(resource == null) {
-            OskariLayerResource res = new OskariLayerResource(OskariLayer.TYPE_WFS, config.getUrl(), config.getLayerName());
-            resource = getPermissionService().findResource(res);
+            resource = getPermissionService().getResource(Resource.Type.maplayer.name(), Integer.toString(config.getWFSLayerId()));
             if(resource == null) {
                 return false;
             }

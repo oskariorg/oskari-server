@@ -90,8 +90,6 @@ public class GetPermissionsLayerHandlers extends ActionHandler {
                 JSONObject realJson = new JSONObject();
                 realJson.put(KEY_ID, layer.getId());
                 realJson.put(KEY_NAME, layer.getName(PropertyUtil.getDefaultLanguage()));
-                realJson.put(JSON_NAMES_SPACE, res.getNamespace());
-                realJson.put(JSON_RESOURCE_NAME, res.getName());
                 final String permissionMapping = res.getMapping();
 
                 JSONArray jsonResults = new JSONArray();
