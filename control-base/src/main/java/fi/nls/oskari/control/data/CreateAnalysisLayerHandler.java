@@ -24,8 +24,6 @@ import fi.nls.oskari.map.analysis.service.AnalysisWebProcessingService;
 import fi.nls.oskari.map.data.domain.OskariLayerResource;
 import fi.nls.oskari.map.layer.OskariLayerService;
 import fi.nls.oskari.map.layer.OskariLayerServiceIbatisImpl;
-import fi.nls.oskari.permission.domain.Permission;
-import fi.nls.oskari.permission.domain.Resource;
 import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.service.UserService;
 import fi.nls.oskari.util.ConversionHelper;
@@ -34,6 +32,8 @@ import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.util.ResponseHelper;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.oskari.permissions.model.Permission;
+import org.oskari.permissions.model.Resource;
 
 import java.net.URL;
 import java.util.*;

@@ -1,8 +1,9 @@
 package fi.nls.oskari.map.data.domain;
 
+import org.oskari.permissions.model.Resource;
+
 import fi.mml.portti.domain.permissions.Permissions;
 import fi.nls.oskari.domain.map.OskariLayer;
-import fi.nls.oskari.permission.domain.Resource;
 
 /**
  * Convenience mapping of oskari-permission/Resource for OskariLayer

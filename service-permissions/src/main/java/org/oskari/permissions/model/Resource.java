@@ -1,4 +1,4 @@
-package fi.nls.oskari.permission.domain;
+package org.oskari.permissions.model;
 
 import java.util.ArrayList;
 import java.util.Collections;

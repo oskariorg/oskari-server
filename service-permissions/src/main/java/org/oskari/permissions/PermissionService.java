@@ -2,7 +2,8 @@ package org.oskari.permissions;
 
 import java.util.Optional;
 
-import fi.nls.oskari.permission.domain.Resource;
+import org.oskari.permissions.model.Resource;
+
 import fi.nls.oskari.service.OskariComponent;
 
 public abstract class PermissionService extends OskariComponent {

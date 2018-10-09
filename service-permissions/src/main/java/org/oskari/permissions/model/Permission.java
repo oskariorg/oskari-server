@@ -1,4 +1,4 @@
-package fi.nls.oskari.permission.domain;
+package org.oskari.permissions.model;
 
 /**
  * A permission mapped to a resource. Reflects DB table oskari_permission.

@@ -6,11 +6,11 @@ import javax.sql.DataSource;
 
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
+import org.oskari.permissions.model.Permission;
+import org.oskari.permissions.model.Resource;
 
 import fi.nls.oskari.db.DatasourceHelper;
 import fi.nls.oskari.mybatis.MyBatisHelper;
-import fi.nls.oskari.permission.domain.Permission;
-import fi.nls.oskari.permission.domain.Resource;
 
 public class PermissionServiceMybatisImpl extends PermissionService {
 

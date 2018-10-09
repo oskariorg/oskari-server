@@ -19,14 +19,14 @@ import fi.nls.oskari.map.layer.OskariLayerServiceIbatisImpl;
 import fi.nls.oskari.map.layer.group.link.OskariLayerGroupLink;
 import fi.nls.oskari.map.layer.group.link.OskariLayerGroupLinkService;
 import fi.nls.oskari.map.layer.group.link.OskariLayerGroupLinkServiceMybatisImpl;
-import fi.nls.oskari.permission.domain.Permission;
-import fi.nls.oskari.permission.domain.Resource;
 import fi.nls.oskari.user.MybatisRoleService;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.JSONHelper;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.oskari.permissions.model.Permission;
+import org.oskari.permissions.model.Resource;
 
 import java.io.IOException;
 import java.util.Iterator;

@@ -22,7 +22,6 @@ import fi.nls.oskari.map.layer.group.link.OskariLayerGroupLink;
 import fi.nls.oskari.map.layer.group.link.OskariLayerGroupLinkService;
 import fi.nls.oskari.map.view.ViewService;
 import fi.nls.oskari.map.view.util.ViewHelper;
-import fi.nls.oskari.permission.domain.Permission;
 import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.service.capabilities.CapabilitiesCacheService;
 import fi.nls.oskari.service.capabilities.OskariLayerCapabilitiesHelper;
@@ -34,6 +33,7 @@ import fi.nls.oskari.wmts.WMTSCapabilitiesParser;
 import fi.nls.oskari.wmts.domain.WMTSCapabilities;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.oskari.permissions.model.Permission;
 import org.oskari.service.util.ServiceFactory;
 
 import javax.servlet.http.HttpServletRequest;

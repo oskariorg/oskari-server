@@ -11,9 +11,8 @@ import org.apache.ibatis.annotations.Result;
 import org.apache.ibatis.annotations.ResultMap;
 import org.apache.ibatis.annotations.Results;
 import org.apache.ibatis.annotations.Select;
-
-import fi.nls.oskari.permission.domain.Permission;
-import fi.nls.oskari.permission.domain.Resource;
+import org.oskari.permissions.model.Permission;
+import org.oskari.permissions.model.Resource;
 
 public interface ResourceMapper {
 
