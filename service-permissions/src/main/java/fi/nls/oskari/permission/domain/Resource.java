@@ -1,104 +1,121 @@
 package fi.nls.oskari.permission.domain;
 
-import fi.mml.portti.domain.permissions.Permissions;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import fi.nls.oskari.domain.Role;
 import fi.nls.oskari.domain.User;
-import fi.nls.oskari.util.ConversionHelper;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * A generic mapping for resource. Reflects DB table oskari_resource.
  */
 public class Resource {
-    final private List<Permission> permissions = new ArrayList<>();
-    private long id = -1;
-    private String mapping;
-    private String type;
 
-    public boolean hasPermission(final User user, final String permissionType) {
-        for(Permission perm: getPermissions()) {
-            if(!perm.isOfType(permissionType)) {
-                continue;
-            }
-            if(perm.getExternalType().equals(Permissions.EXTERNAL_TYPE_ROLE)) {
-                if(user.hasRoleWithId(ConversionHelper.getInt(perm.getExternalId(), -1))) {
-                    return true;
-                }
-            }
-            else if(perm.getExternalType().equals(Permissions.EXTERNAL_TYPE_USER)) {
-                final long userID = ConversionHelper.getLong(perm.getExternalId(), -1);
-                if(userID == user.getId()) {
-                    return true;
-                }
-            }
-        }
-        return false;
+    public enum Type {
+        maplayer,
+        analysislayer,
+        layerclass,
+        myplaces;
     }
 
-    public boolean hasPermission(final Role role, final String permissionType) {
-        for(Permission perm: getPermissions()) {
-            if(!perm.isOfType(permissionType)) {
-                continue;
-            }
-            if(perm.getExternalType().equals(Permissions.EXTERNAL_TYPE_ROLE)) {
-                if(role.getId() == ConversionHelper.getInt(perm.getExternalId(), -1)) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
+    private int id = -1;
+    private Type type;
+    private int mapping;
+    private List<Permission> permissions;
 
-    public void removePermissionsOfType(final String permissionType) {
-        final List<Permission> toRemove = new ArrayList<Permission>();
-        for(Permission perm: getPermissions()) {
-            if(perm.isOfType(permissionType)) {
-                toRemove.add(perm);
-            }
-        }
-        for(Permission perm : toRemove) {
-            getPermissions().remove(perm);
-        }
-    }
-
-
-    public List<Permission> getPermissions() {
-        return permissions;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public long getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(int id) {
         this.id = id;
     }
 
+    public String getType() {
+        return type.name();
+    }
+
+    public void setType(String type) {
+        setType(Type.valueOf(type));
+    }
+
+    public void setType(Type type) {
+        this.type = type;
+    }
+
     public String getMapping() {
-        return mapping;
+        return Integer.toString(mapping);
+    }
+
+    public void setMapping(String type, String mapping) {
+        setMapping(mapping);
     }
 
     public void setMapping(String mapping) {
+        setMapping(Integer.parseInt(mapping));
+    }
+
+    public void setMapping(int mapping) {
         this.mapping = mapping;
     }
 
-    public void setMapping(String namespace, String name) {
-        this.mapping = namespace + "+" + name;
+    public List<Permission> getPermissions() {
+        if (permissions == null) {
+            return Collections.emptyList();
+        }
+        return permissions;
+    }
+
+    public void setPermissions(List<Permission> permissions) {
+        this.permissions = permissions;
     }
 
     public void addPermission(Permission permission) {
-        if(permission != null) {
-            permissions.add(permission);
+        if (permission == null) {
+            permissions = new ArrayList<>();
         }
+        permissions.add(permission);
+    }
+
+    public boolean hasPermission(User user, String permissionType) {
+        return hasPermission(user, Permission.Type.valueOf(permissionType));
+    }
+
+    public boolean hasPermission(User user, Permission.Type permissionType) {
+        boolean userHasRoleWithId = permissions.stream()
+                .filter(p -> p.getExternalType() == Permission.ExternalType.ROLE)
+                .filter(p -> p.getType() == permissionType)
+                .filter(p -> user.hasRoleWithId(p.getExternalId()))
+                .findAny()
+                .isPresent();
+
+        if (userHasRoleWithId) {
+            return true;
+        }
+
+        return permissions.stream()
+                .filter(p -> p.getExternalType() == Permission.ExternalType.USER)
+                .filter(p -> p.getType() == permissionType)
+                .filter(p -> p.getExternalId() == user.getId())
+                .findAny()
+                .isPresent();
+    }
+
+    public boolean hasPermission(Role role, Permission.Type permissionType) {
+        return permissions.stream()
+                .filter(p -> p.getType() == permissionType)
+                .filter(p -> p.getExternalType() == Permission.ExternalType.ROLE)
+                .filter(p -> p.getExternalId() == role.getId())
+                .findAny()
+                .isPresent();
+    }
+
+    public void removePermissionsOfType(String permissionType) {
+        removePermissionsOfType(Permission.Type.valueOf(permissionType));
+    }
+
+    public void removePermissionsOfType(Permission.Type permissionType) {
+        permissions.removeIf(p -> p.getType() == permissionType);
     }
 }
