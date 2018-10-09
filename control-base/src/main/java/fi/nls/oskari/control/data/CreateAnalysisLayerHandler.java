@@ -21,7 +21,6 @@ import fi.nls.oskari.map.analysis.domain.AnalysisMethodParams;
 import fi.nls.oskari.map.analysis.domain.SpatialJoinStatisticsMethodParams;
 import fi.nls.oskari.map.analysis.service.AnalysisDataService;
 import fi.nls.oskari.map.analysis.service.AnalysisWebProcessingService;
-import fi.nls.oskari.map.data.domain.OskariLayerResource;
 import fi.nls.oskari.map.layer.OskariLayerService;
 import fi.nls.oskari.map.layer.OskariLayerServiceIbatisImpl;
 import fi.nls.oskari.service.ServiceException;
@@ -32,6 +31,7 @@ import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.util.ResponseHelper;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.oskari.permissions.model.OskariLayerResource;
 import org.oskari.permissions.model.Permission;
 import org.oskari.permissions.model.Resource;
 

@@ -11,13 +11,13 @@ import fi.nls.oskari.cache.CacheManager;
 import fi.nls.oskari.domain.SelectItem;
 import fi.nls.oskari.domain.User;
 import fi.nls.oskari.domain.map.OskariLayer;
-import fi.nls.oskari.map.data.domain.OskariLayerResource;
 import fi.nls.oskari.map.geometry.WKTHelper;
 import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.util.JSONHelper;
 import org.geotools.geojson.geom.GeometryJSON;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.oskari.permissions.model.OskariLayerResource;
 import org.oskari.permissions.model.Resource;
 
 import fi.nls.oskari.wfs.WFSSearchChannelsConfiguration;

@@ -12,7 +12,6 @@ import fi.nls.oskari.domain.map.view.Bundle;
 import fi.nls.oskari.domain.map.view.View;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.map.data.domain.OskariLayerResource;
 import fi.nls.oskari.map.layer.OskariLayerService;
 import fi.nls.oskari.map.layer.OskariLayerServiceIbatisImpl;
 import fi.nls.oskari.map.view.ViewException;
@@ -26,6 +25,7 @@ import fi.nls.oskari.util.ResponseHelper;
 import fi.nls.oskari.view.modifier.ViewModifier;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.oskari.permissions.model.OskariLayerResource;
 import org.oskari.permissions.model.Resource;
 
 import java.util.ArrayList;
