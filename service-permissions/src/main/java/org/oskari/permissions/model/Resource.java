@@ -12,15 +12,8 @@ import fi.nls.oskari.domain.User;
  */
 public class Resource {
 
-    public enum Type {
-        maplayer,
-        analysislayer,
-        layerclass,
-        myplaces;
-    }
-
     private int id = -1;
-    private Type type;
+    private ResourceType type;
     private int mapping;
     private List<Permission> permissions;
 
@@ -37,10 +30,10 @@ public class Resource {
     }
 
     public void setType(String type) {
-        setType(Type.valueOf(type));
+        setType(ResourceType.valueOf(type));
     }
 
-    public void setType(Type type) {
+    public void setType(ResourceType type) {
         this.type = type;
     }
 
@@ -82,13 +75,13 @@ public class Resource {
     }
 
     public boolean hasPermission(User user, String permissionType) {
-        return hasPermission(user, Permission.Type.valueOf(permissionType));
+        return hasPermission(user, PermissionType.valueOf(permissionType));
     }
 
-    public boolean hasPermission(User user, Permission.Type permissionType) {
+    public boolean hasPermission(User user, PermissionType permissionType) {
         boolean userHasRoleWithId = getPermissions().stream()
                 .filter(p -> p.getType() == permissionType)
-                .filter(p -> p.getExternalType() == Permission.ExternalType.ROLE)
+                .filter(p -> p.getExternalType() == PermissionExternalType.ROLE)
                 .filter(p -> user.hasRoleWithId(p.getExternalId()))
                 .findAny()
                 .isPresent();
@@ -99,26 +92,26 @@ public class Resource {
 
         return getPermissions().stream()
                 .filter(p -> p.getType() == permissionType)
-                .filter(p -> p.getExternalType() == Permission.ExternalType.USER)
+                .filter(p -> p.getExternalType() == PermissionExternalType.USER)
                 .filter(p -> p.getExternalId() == user.getId())
                 .findAny()
                 .isPresent();
     }
 
-    public boolean hasPermission(Role role, Permission.Type permissionType) {
+    public boolean hasPermission(Role role, PermissionType permissionType) {
         return getPermissions().stream()
                 .filter(p -> p.getType() == permissionType)
-                .filter(p -> p.getExternalType() == Permission.ExternalType.ROLE)
+                .filter(p -> p.getExternalType() == PermissionExternalType.ROLE)
                 .filter(p -> p.getExternalId() == role.getId())
                 .findAny()
                 .isPresent();
     }
 
     public void removePermissionsOfType(String permissionType) {
-        removePermissionsOfType(Permission.Type.valueOf(permissionType));
+        removePermissionsOfType(PermissionType.valueOf(permissionType));
     }
 
-    public void removePermissionsOfType(Permission.Type permissionType) {
+    public void removePermissionsOfType(PermissionType permissionType) {
         getPermissions().removeIf(p -> p.getType() == permissionType);
     }
 }

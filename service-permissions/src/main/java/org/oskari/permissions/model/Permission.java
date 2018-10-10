@@ -5,24 +5,9 @@ package org.oskari.permissions.model;
  */
 public class Permission {
 
-    public enum Type {
-        PUBLISH,
-        VIEW_LAYER,
-        EDIT_LAYER,
-        EDIT_LAYER_CONTENT,
-        VIEW_PUBLISHED,
-        DOWNLOAD,
-        EXECUTE;
-    }
-
-    public enum ExternalType {
-        ROLE,
-        USER;
-    }
-
     private int id = -1;
-    private Type type;
-    private ExternalType externalType;
+    private PermissionType type;
+    private PermissionExternalType externalType;
     private int externalId;
 
     public int getId() {
@@ -33,27 +18,27 @@ public class Permission {
         this.id = id;
     }
 
-    public Type getType() {
+    public PermissionType getType() {
         return type;
     }
 
     public void setType(String type) {
-        setType(Type.valueOf(type));
+        setType(PermissionType.valueOf(type));
     }
 
-    public void setType(Type type) {
+    public void setType(PermissionType type) {
         this.type = type;
     }
 
-    public ExternalType getExternalType() {
+    public PermissionExternalType getExternalType() {
         return externalType;
     }
 
     public void setExternalType(String externalType) {
-        setExternalType(ExternalType.valueOf(externalType));
+        setExternalType(PermissionExternalType.valueOf(externalType));
     }
 
-    public void setExternalType(ExternalType externalType) {
+    public void setExternalType(PermissionExternalType externalType) {
         this.externalType = externalType;
     }
 
@@ -70,10 +55,10 @@ public class Permission {
     }
 
     public boolean isOfType(String permissionType) {
-        return isOfType(Type.valueOf(permissionType));
+        return isOfType(PermissionType.valueOf(permissionType));
     }
 
-    public boolean isOfType(Type permissionType) {
+    public boolean isOfType(PermissionType permissionType) {
         return type == permissionType;
     }
 

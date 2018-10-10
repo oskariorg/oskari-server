@@ -8,7 +8,7 @@ import fi.nls.oskari.domain.map.OskariLayer;
 public class OskariLayerResource extends Resource {
 
     public OskariLayerResource(OskariLayer layer) {
-        setType(Type.maplayer);
+        setType(ResourceType.maplayer);
         setMapping(layer.getId());
     }
 

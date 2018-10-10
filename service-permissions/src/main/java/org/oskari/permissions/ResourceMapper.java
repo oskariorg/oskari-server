@@ -13,6 +13,7 @@ import org.apache.ibatis.annotations.Results;
 import org.apache.ibatis.annotations.Select;
 import org.oskari.permissions.model.Permission;
 import org.oskari.permissions.model.Resource;
+import org.oskari.permissions.model.ResourceType;
 
 public interface ResourceMapper {
 
@@ -37,7 +38,7 @@ public interface ResourceMapper {
             + "FROM oskari_resource "
             + "WHERE resource_type = #{type} "
             + "AND resource_mapping = #{mapping}")
-    Resource findByTypeAndMapping(@Param("type") Resource.Type type, @Param("mapping") int mapping);
+    Resource findByTypeAndMapping(@Param("type") ResourceType type, @Param("mapping") int mapping);
 
     @Results({
         @Result(property="id", column="id", id=true),

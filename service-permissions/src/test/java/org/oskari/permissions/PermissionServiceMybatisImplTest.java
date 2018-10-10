@@ -23,7 +23,10 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.oskari.permissions.model.Permission;
+import org.oskari.permissions.model.PermissionExternalType;
+import org.oskari.permissions.model.PermissionType;
 import org.oskari.permissions.model.Resource;
+import org.oskari.permissions.model.ResourceType;
 
 public class PermissionServiceMybatisImplTest {
 
@@ -51,18 +54,18 @@ public class PermissionServiceMybatisImplTest {
     @Before
     public void setup() {
         myResource = new Resource();
-        myResource.setType(Resource.Type.maplayer);
+        myResource.setType(ResourceType.maplayer);
         myResource.setMapping(1);
 
         myPermission = new Permission();
         myPermission.setExternalId(100);
-        myPermission.setExternalType(Permission.ExternalType.ROLE);
-        myPermission.setType(Permission.Type.DOWNLOAD);
+        myPermission.setExternalType(PermissionExternalType.ROLE);
+        myPermission.setType(PermissionType.DOWNLOAD);
 
         myPermission2 = new Permission();
         myPermission.setExternalId(100);
-        myPermission.setExternalType(Permission.ExternalType.ROLE);
-        myPermission.setType(Permission.Type.EDIT_LAYER);
+        myPermission.setExternalType(PermissionExternalType.ROLE);
+        myPermission.setType(PermissionType.EDIT_LAYER);
 
         myResource.addPermission(myPermission);
         myResource.addPermission(myPermission2);

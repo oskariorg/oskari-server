@@ -8,6 +8,7 @@ import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.oskari.permissions.model.Permission;
 import org.oskari.permissions.model.Resource;
+import org.oskari.permissions.model.ResourceType;
 
 import fi.nls.oskari.db.DatasourceHelper;
 import fi.nls.oskari.mybatis.MyBatisHelper;
@@ -34,7 +35,7 @@ public class PermissionServiceMybatisImpl extends PermissionService {
     }
 
     @Override
-    public Optional<Resource> findResource(Resource.Type type, int mapping) {
+    public Optional<Resource> findResource(ResourceType type, int mapping) {
         try (SqlSession session = factory.openSession()) {
             return Optional.ofNullable(session.getMapper(MAPPER).findByTypeAndMapping(type, mapping));
         }
