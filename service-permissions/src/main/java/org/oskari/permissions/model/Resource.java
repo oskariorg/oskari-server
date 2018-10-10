@@ -73,6 +73,9 @@ public class Resource {
 
     public void addPermission(Permission permission) {
         if (permission == null) {
+            return;
+        }
+        if (permissions == null) {
             permissions = new ArrayList<>();
         }
         permissions.add(permission);
@@ -83,9 +86,9 @@ public class Resource {
     }
 
     public boolean hasPermission(User user, Permission.Type permissionType) {
-        boolean userHasRoleWithId = permissions.stream()
-                .filter(p -> p.getExternalType() == Permission.ExternalType.ROLE)
+        boolean userHasRoleWithId = getPermissions().stream()
                 .filter(p -> p.getType() == permissionType)
+                .filter(p -> p.getExternalType() == Permission.ExternalType.ROLE)
                 .filter(p -> user.hasRoleWithId(p.getExternalId()))
                 .findAny()
                 .isPresent();
@@ -94,16 +97,16 @@ public class Resource {
             return true;
         }
 
-        return permissions.stream()
-                .filter(p -> p.getExternalType() == Permission.ExternalType.USER)
+        return getPermissions().stream()
                 .filter(p -> p.getType() == permissionType)
+                .filter(p -> p.getExternalType() == Permission.ExternalType.USER)
                 .filter(p -> p.getExternalId() == user.getId())
                 .findAny()
                 .isPresent();
     }
 
     public boolean hasPermission(Role role, Permission.Type permissionType) {
-        return permissions.stream()
+        return getPermissions().stream()
                 .filter(p -> p.getType() == permissionType)
                 .filter(p -> p.getExternalType() == Permission.ExternalType.ROLE)
                 .filter(p -> p.getExternalId() == role.getId())
@@ -116,6 +119,6 @@ public class Resource {
     }
 
     public void removePermissionsOfType(Permission.Type permissionType) {
-        permissions.removeIf(p -> p.getType() == permissionType);
+        getPermissions().removeIf(p -> p.getType() == permissionType);
     }
 }

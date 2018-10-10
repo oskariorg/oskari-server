@@ -20,7 +20,7 @@ public interface ResourceMapper {
             @Result(property="id", column="id", id=true),
             @Result(property="type", column="resource_type"),
             @Result(property="mapping", column="resource_mapping"),
-            @Result(property="permissions", column="oskari_resource_id",
+            @Result(property="permissions", column="id",
             javaType=List.class, many=@Many(select="findPermissionsByResourceId"))
     })
     @Select("SELECT id,"
@@ -39,6 +39,12 @@ public interface ResourceMapper {
             + "AND resource_mapping = #{mapping}")
     Resource findByTypeAndMapping(@Param("type") Resource.Type type, @Param("mapping") int mapping);
 
+    @Results({
+        @Result(property="id", column="id", id=true),
+        @Result(property="type", column="external_type"),
+        @Result(property="externalType", column="permission"),
+        @Result(property="externalId", column="external_id")
+    })
     @Select("SELECT id,"
             + "external_type,"
             + "permission,"
