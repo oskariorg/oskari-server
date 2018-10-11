@@ -35,7 +35,7 @@ public class PermissionServiceMybatisImpl extends PermissionService {
     }
 
     @Override
-    public Optional<Resource> findResource(ResourceType type, int mapping) {
+    public Optional<Resource> findResource(ResourceType type, String mapping) {
         try (SqlSession session = factory.openSession()) {
             return Optional.ofNullable(session.getMapper(MAPPER).findByTypeAndMapping(type, mapping));
         }
