@@ -22,11 +22,13 @@ import org.h2.jdbcx.JdbcDataSource;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.oskari.permissions.model.OskariLayerResource;
 import org.oskari.permissions.model.Permission;
 import org.oskari.permissions.model.PermissionExternalType;
 import org.oskari.permissions.model.PermissionType;
 import org.oskari.permissions.model.Resource;
-import org.oskari.permissions.model.ResourceType;
+
+import fi.nls.oskari.domain.map.OskariLayer;
 
 public class PermissionServiceMybatisImplTest {
 
@@ -53,9 +55,7 @@ public class PermissionServiceMybatisImplTest {
 
     @Before
     public void setup() {
-        myResource = new Resource();
-        myResource.setType(ResourceType.maplayer);
-        myResource.setMapping(1);
+        myResource = new OskariLayerResource(OskariLayer.TYPE_WFS, "http://www.foo.bar/wfs", "foo:bar");
 
         myPermission = new Permission();
         myPermission.setExternalId(100);

@@ -14,7 +14,7 @@ public class Resource {
 
     private int id = -1;
     private ResourceType type;
-    private int mapping;
+    private String mapping;
     private List<Permission> permissions;
 
     public int getId() {
@@ -38,19 +38,15 @@ public class Resource {
     }
 
     public String getMapping() {
-        return Integer.toString(mapping);
-    }
-
-    public void setMapping(String type, String mapping) {
-        setMapping(mapping);
+        return mapping;
     }
 
     public void setMapping(String mapping) {
-        setMapping(Integer.parseInt(mapping));
+        this.mapping = mapping;
     }
 
-    public void setMapping(int mapping) {
-        this.mapping = mapping;
+    public void setMapping(String namespace, String name) {
+        setMapping(namespace + "+" + name);
     }
 
     public List<Permission> getPermissions() {
