@@ -60,8 +60,6 @@ public class WebappHelper {
                 DBHandler.createContentIfNotCreated(DS_HELPER.getDataSource());
             }
 
-            migrateDB();
-
             // init jedis
             log.info("Initializing Redis connections");
             JedisManager.connect(
@@ -73,6 +71,8 @@ public class WebappHelper {
         } catch (Exception ex) {
             log.error(ex, "!!! Error initializing context for Oskari !!!");
         }
+
+        migrateDB();
 
         schedulerService = new SchedulerService();
         try {
@@ -108,13 +108,18 @@ public class WebappHelper {
             log.warn("Skipping flyway migration! Remove 'db.flyway' property or set it to 'true' to enable migration");
             return;
         }
+        boolean ingoreMigrationFailures = PropertyUtil.getOptional("db.ingoreMigrationFailures", false);
+
         // upgrade database structure with http://flywaydb.org/
         log.info("Oskari-map checking DB status");
         try {
             FlywaydbMigrator.migrate(DS_HELPER.getDataSource());
             log.info("Oskari core DB migrated successfully");
         } catch (Exception e) {
-            log.error(e, "DB migration for Oskari core failed!");
+            log.error("DB migration for Oskari core failed!");
+            if(!ingoreMigrationFailures) {
+                throw e;
+            }
         }
         final String[] additionalPools = DS_HELPER.getAdditionalModules();
         for(String module : additionalPools) {
@@ -123,8 +128,10 @@ public class WebappHelper {
                 FlywaydbMigrator.migrate(DS_HELPER.getDataSource(poolName), module);
                 log.info(module + " DB migrated successfully");
             } catch (Exception e) {
-                log.error(e, "DB migration for module " + module + " failed!", e);
-                e.printStackTrace();
+                log.error("DB migration for module " + module + " failed!", e);
+                if(!ingoreMigrationFailures) {
+                    throw e;
+                }
             }
         }
     }

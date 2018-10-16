@@ -49,7 +49,7 @@ public class SpringConfig extends WebMvcConfigurerAdapter implements Application
     private static final Logger LOG = LogFactory.getLogger(SpringConfig.class);
 
     @PostConstruct
-    public void oskariInit() throws Exception {
+    public void oskariInit() {
         // check DB connections/content
         WebappHelper.init();
     }
