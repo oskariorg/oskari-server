@@ -108,7 +108,7 @@ public class WebappHelper {
             log.warn("Skipping flyway migration! Remove 'db.flyway' property or set it to 'true' to enable migration");
             return;
         }
-        boolean ingoreMigrationFailures = PropertyUtil.getOptional("db.ingoreMigrationFailures", false);
+        boolean ignoreMigrationFailures = PropertyUtil.getOptional("db.ignoreMigrationFailures", false);
 
         // upgrade database structure with http://flywaydb.org/
         log.info("Oskari-map checking DB status");
@@ -117,7 +117,7 @@ public class WebappHelper {
             log.info("Oskari core DB migrated successfully");
         } catch (Exception e) {
             log.error("DB migration for Oskari core failed!");
-            if(!ingoreMigrationFailures) {
+            if(!ignoreMigrationFailures) {
                 throw e;
             }
         }
@@ -129,7 +129,7 @@ public class WebappHelper {
                 log.info(module + " DB migrated successfully");
             } catch (Exception e) {
                 log.error("DB migration for module " + module + " failed!", e);
-                if(!ingoreMigrationFailures) {
+                if(!ignoreMigrationFailures) {
                     throw e;
                 }
             }
