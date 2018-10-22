@@ -1,9 +1,6 @@
 package fi.nls.oskari.control.statistics;
 
-import java.io.BufferedInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -87,12 +84,14 @@ public class RegionSetHelper {
         }
         LOG.debug("Trying to read GeoJSON resource file from:", path);
         DefaultFeatureCollection fc = new DefaultFeatureCollection();
-        try (InputStream in = RegionSetHelper.class.getResourceAsStream(path)) {
+
+        try (InputStream in = RegionSetHelper.class.getResourceAsStream(path);
+             Reader utf8Reader = new InputStreamReader(in, IOHelper.CHARSET_UTF8)) {
             if (in == null) {
                 LOG.warn("Could not find resource for path:", path);
                 throw new FileNotFoundException("Could not find resource");
             }
-            try (FeatureIterator<SimpleFeature> it = FJ.streamFeatureCollection(in)) {
+            try (FeatureIterator<SimpleFeature> it = FJ.streamFeatureCollection(utf8Reader)) {
                 while (it.hasNext()) {
                     SimpleFeature f = it.next();
                     transform(f, transform);
@@ -155,7 +154,8 @@ public class RegionSetHelper {
             final List<Region> nameCodes = new ArrayList<>();
             while (it.hasNext()) {
                 final SimpleFeature feature = it.next();
-                final String id = (String) feature.getAttribute(idProperty);
+                // id might be numeric on source data
+                final String id = feature.getAttribute(idProperty).toString();
                 final String name = (String) feature.getAttribute(nameProperty);
                 if (id == null || name == null) {
                     LOG.warn("Couldn't find id (", idProperty, ") and/or name(", nameProperty,
