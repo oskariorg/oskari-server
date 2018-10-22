@@ -1,5 +1,6 @@
 package fi.nls.oskari.transport;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vividsolutions.jts.geom.Coordinate;
 import fi.nls.oskari.cache.JedisManager;
 import fi.nls.oskari.log.LogFactory;
@@ -18,13 +19,11 @@ import fi.nls.oskari.work.*;
 import fi.nls.oskari.work.hystrix.HystrixJobQueue;
 import fi.nls.oskari.worker.Job;
 import fi.nls.oskari.worker.JobQueue;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.cometd.bayeux.Message;
 import org.cometd.bayeux.server.BayeuxServer;
+import org.cometd.bayeux.server.ServerMessage;
 import org.cometd.bayeux.server.ServerSession;
 import org.cometd.server.AbstractService;
 import org.cometd.server.JacksonJSONContextServer;
-import org.cometd.server.JettyJSONContextServer;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -124,10 +123,7 @@ public class TransportService extends AbstractService {
         super(bayeux, "transport");
 
         Object jsonContext = bayeux.getOption("jsonContext");
-        if( jsonContext instanceof JettyJSONContextServer) {
-
-        } else if( jsonContext instanceof JacksonJSONContextServer) {
-            // CometD uses older version of Jackson so transport uses 1.x versions for this on purpose
+        if( jsonContext instanceof JacksonJSONContextServer) {
             ObjectMapper transportMapper =  ((JacksonJSONContextServer) jsonContext).getObjectMapper();
             transportMapper.registerModule(new GeometryJSONOutputModule());
         }
@@ -223,7 +219,7 @@ public class TransportService extends AbstractService {
      * @param client
      * @param message
      */
-    public void disconnect(ServerSession client, Message message)
+    public void disconnect(ServerSession client, ServerMessage message)
     {
         String json = SessionStore.getCache(client.getId());
         if(json != null) {
@@ -252,7 +248,7 @@ public class TransportService extends AbstractService {
      * @param client
      * @param message
      */
-    public void processRequest(ServerSession client, Message message)
+    public void processRequest(ServerSession client, ServerMessage message)
     {
         log.debug("Serving client:", client.getId());
     	Map<String, Object> output = new HashMap<String, Object>();
@@ -265,7 +261,7 @@ public class TransportService extends AbstractService {
             output.put("message", "Request failed because parameters were not set");
             output.put("key", WFSExceptionHelper.ERROR_PARAMETERS_NOT_SET);
             output.put("level", WFSExceptionHelper.ERROR_LEVEL);
-            client.deliver(local, ResultProcessor.CHANNEL_ERROR, output, null);
+            client.deliver(local, ResultProcessor.CHANNEL_ERROR, output);
             return;
         }
         String channel = message.getChannel();
@@ -313,7 +309,7 @@ public class TransportService extends AbstractService {
             if (e.getCause() != null) {
                 output.put("cause", e.getCause().getMessage());
             }
-            client.deliver(local, ResultProcessor.CHANNEL_ERROR, output, null);
+            client.deliver(local, ResultProcessor.CHANNEL_ERROR, output);
         }
     }
 

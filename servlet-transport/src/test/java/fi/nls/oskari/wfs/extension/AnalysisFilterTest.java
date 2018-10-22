@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -124,9 +125,7 @@ public class AnalysisFilterTest {
             StAXOMBuilder staxOMBuilder = XMLHelper.createBuilder(filterStr);
             filter = staxOMBuilder.getDocumentElement();
         }
-        Diff xmlDiff = new Diff(resultGeoJson, filter.toString());
-        assertTrue("Should get expected resultGeoJsonSimple " + xmlDiff, xmlDiff.similar());
-        //assertEquals("Should get expected resultGeoJson", resultGeoJson, filter.toString());
+        assertEquals("Should get expected resultGeoJsonSimple", resultGeoJson, filter.toString());
 
         // multiple geometries
         session.setFilter(geojsonComplexFilter);
@@ -136,9 +135,8 @@ public class AnalysisFilterTest {
             StAXOMBuilder staxOMBuilder = XMLHelper.createBuilder(filterStr);
             filter = staxOMBuilder.getDocumentElement();
         }
-
-        Diff xmlDiffComplex = new Diff(resultGeoJsonComplex, filter.toString());
-        assertTrue("Should get expected resultGeoJsonComplex " + xmlDiffComplex, xmlDiffComplex.similar());
+        Diff xmlDiff = new Diff(resultGeoJsonComplex, filter.toString());
+        assertTrue("Should get expected resultGeoJsonComplex " + xmlDiff, xmlDiff.similar());
     }
 
     @Test

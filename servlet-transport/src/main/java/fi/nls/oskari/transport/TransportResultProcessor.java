@@ -56,7 +56,7 @@ public class TransportResultProcessor implements ResultProcessor {
     public static void send(final ServerSession session, final BayeuxServer bayeux, String clientId, String channel, Object data) {
         ServerSession client = bayeux.getSession(clientId);
         if(client != null) {
-            client.deliver(session, channel, data, null);
+            client.deliver(session, channel, data);
         }
         else {
             LOG.info("Client disconnected before results were sent:", clientId);
