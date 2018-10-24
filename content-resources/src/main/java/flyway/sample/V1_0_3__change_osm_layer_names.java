@@ -22,7 +22,7 @@ public class V1_0_3__change_osm_layer_names implements JdbcMigration {
 
     private static final String OSM_WMS_WORLDWIDE_URL = "http://129.206.228.72/cached/osm";
     private static final String OSM_WMS_WORLDWIDE_NAME = "osm_auto:all";
-    private static final String OSM_WMS_WORLDWIDE_UI_NAME = "OSM Wordwide";
+    private static final String OSM_WMS_WORLDWIDE_UI_NAME = "OSM Worldwide";
     private static final String OSM_WMS_LANDSAT_URL = "http://irs.gis-lab.info/";
     private static final String OSM_WMS_LANDSAT_NAME = "landsat";
     private static final String OSM_WMS_LANDSAT_UI_NAME = "OSM Landsat";
