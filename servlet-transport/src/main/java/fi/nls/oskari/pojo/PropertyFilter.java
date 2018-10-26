@@ -56,24 +56,21 @@ public class PropertyFilter {
 	public static PropertyFilter setParamsJSON(String json) {
         PropertyFilter filter = new PropertyFilter();
 
-        JSONObject data = null;
+        JSONObject data;
 		try {
 			data = new JSONObject(json);
 		} catch (JSONException e) {
 			log.error(e, "Reading JSON data failed");
+			return filter;
 		}
-		
-        if(data != null && data.has("data")) {
-        	try {
-        		JSONObject dataJSON = (JSONObject) data.get("data");
-        		JSONObject filterJSON = (JSONObject) dataJSON.get("filter");
-                filter.setPropertyFilter( (JSONObject) filterJSON.get("filters"));
-                filter.setLayerId(filterJSON.get("layer_id").toString());
-			} catch (Exception e) {
-				log.error(e, "Reading JSON data data property filters failed");
-				return null;
-			}
-        }
+
+		try {
+			filter.setPropertyFilter( (JSONObject) data.get("filters"));
+			filter.setLayerId(data.get("layer_id").toString());
+		} catch (Exception e) {
+			log.error(e, "Reading JSON data data property filters failed");
+			return null;
+		}
 
 		return filter;
 	}
