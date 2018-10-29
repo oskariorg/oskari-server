@@ -73,19 +73,18 @@ public class GeoJSONFilter {
 			data = new JSONObject(json);
 		} catch (JSONException e) {
 			log.error(e, "Reading JSON data failed");
+			return null;
 		}
-		
-        if(data != null && data.has("data")) {
-        	try {
-        		JSONObject dataJSON = (JSONObject) data.get("data");
-        		JSONObject filterJSON = (JSONObject) dataJSON.get("filter");
-        		filter.setGeoJSON((JSONObject)filterJSON.get("geojson"));
+
+		try {
+			filter.setGeoJSON(data);
+			if (filter.getGeoJSON().has("features")) {
 				filter.setFeatures((JSONArray)filter.getGeoJSON().get("features"));
-			} catch (Exception e) {
-				log.error(e, "Reading JSON data data failed");
-				return null;
 			}
-        }
+		} catch (Exception e) {
+			log.error(e, "Reading JSON data data failed");
+			return null;
+		}
 
 		return filter;
 	}
