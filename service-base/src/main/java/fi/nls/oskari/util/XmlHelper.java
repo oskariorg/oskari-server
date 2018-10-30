@@ -234,9 +234,9 @@ public class XmlHelper {
             // https://www.owasp.org/index.php/XML_External_Entity_(XXE)_Prevention_Cheat_Sheet#JAXP_DocumentBuilderFactory.2C_SAXParserFactory_and_DOM4J
             // https://stackoverflow.com/questions/27128578/set-feature-accessexternaldtd-in-transformerfactory#29021326
 
-            // xalan is providing a custom TransformerFactory which doesn't support this.
-            // so for example having xalan in the classpath will give you this error
-            // you can check what dependency brings for example xalan to classpath by running "mvn dependency:tree"
+            // Fox example Xalan is providing a custom TransformerFactory which doesn't support this so having it in the
+            // classpath will give you this error and getting the actual impl class name is a huge win for debugging the reason.
+            // You can check which dependency brings for example Xalan to classpath by running "mvn dependency:tree"
             LOGGER.error(e, "Unable to disable external DTD and stylesheets for XML parsing. Transformer class impl is",
                     transformerFactory.getClass().getCanonicalName());
         }
