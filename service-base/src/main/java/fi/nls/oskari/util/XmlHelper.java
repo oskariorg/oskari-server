@@ -237,8 +237,8 @@ public class XmlHelper {
             // Fox example Xalan is providing a custom TransformerFactory which doesn't support this so having it in the
             // classpath will give you this error and getting the actual impl class name is a huge win for debugging the reason.
             // You can check which dependency brings for example Xalan to classpath by running "mvn dependency:tree"
-            LOGGER.error(e, "Unable to disable external DTD and stylesheets for XML parsing. Transformer class impl is",
-                    transformerFactory.getClass().getCanonicalName());
+            LOGGER.warn("Unable to disable external DTD and stylesheets for XML parsing. Transformer class impl is",
+                    transformerFactory.getClass().getCanonicalName(), ". Error was:", e.getMessage());
         }
         // Disable resolving of any kind of URIs, not sure if this is actually necessary
         transformerFactory.setURIResolver((String href, String base) -> null);
