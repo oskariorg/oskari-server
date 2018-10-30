@@ -26,7 +26,7 @@ import javax.xml.stream.XMLStreamException;
 
 public class XmlHelper {
 
-    private static final Logger log = LogFactory.getLogger(XmlHelper.class);
+    private static final Logger LOGGER = LogFactory.getLogger(XmlHelper.class);
 
 /*
     <wfs:Transaction xmlns:wfs="http://www.opengis.net/wfs" service="WFS" version="1.0.0" xsi:schemaLocation="http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.0.0/WFS-transaction.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
@@ -60,7 +60,7 @@ public class XmlHelper {
             // https://ws.apache.org/axiom/apidocs/org/apache/axiom/om/util/StAXParserConfiguration.html#STANDALONE
             return OMXMLBuilderFactory.createOMBuilder(OMAbstractFactory.getOMFactory(), StAXParserConfiguration.STANDALONE, new StringReader(xml)).getDocumentElement();
         } catch (Exception e) {
-            log.error("Couldnt't parse XML", log.getCauseMessages(e), xml);
+            LOGGER.error("Couldnt't parse XML", LOGGER.getCauseMessages(e), xml);
         }
         return null;
     }
@@ -71,7 +71,7 @@ public class XmlHelper {
             xml.serialize(writer);
             return writer.toString();
         } catch (Exception e) {
-            log.error("Couldnt't serialize XML to String", log.getCauseMessages(e), xml);
+            LOGGER.error("Couldnt't serialize XML to String", LOGGER.getCauseMessages(e), xml);
         }
         return null;
     }
@@ -160,7 +160,7 @@ public class XmlHelper {
             xpath.setNamespaceContext(ctx);
             return xpath;
         } catch (Exception ex) {
-            log.error(ex, "Error creating xpath:", str);
+            LOGGER.error(ex, "Error creating xpath:", str);
         }
         return null;
     }
@@ -204,7 +204,7 @@ public class XmlHelper {
             factory.setFeature("http://xml.org/sax/features/external-general-entities", false);
             factory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
         } catch (ParserConfigurationException ex) {
-            log.warn("Unable to enable security features for DocumentBuilderFactory", ex.getMessage());
+            LOGGER.warn("Unable to enable security features for DocumentBuilderFactory", ex.getMessage());
         }
         factory.setXIncludeAware(false);
         factory.setExpandEntityReferences(false);
@@ -224,11 +224,22 @@ public class XmlHelper {
         try {
             transformerFactory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
         } catch (TransformerConfigurationException ex) {
-            log.warn("Unable to enable feature for secure processing for TransformerFactory", ex.getMessage());
+            LOGGER.warn("Unable to enable feature for secure processing for TransformerFactory", ex.getMessage());
         }
         // Empty protocol String to disable access to external resources
-        transformerFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
-        transformerFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_STYLESHEET, "");
+        try {
+            transformerFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+            transformerFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_STYLESHEET, "");
+        } catch (Exception e) {
+            // https://www.owasp.org/index.php/XML_External_Entity_(XXE)_Prevention_Cheat_Sheet#JAXP_DocumentBuilderFactory.2C_SAXParserFactory_and_DOM4J
+            // https://stackoverflow.com/questions/27128578/set-feature-accessexternaldtd-in-transformerfactory#29021326
+
+            // Fox example Xalan is providing a custom TransformerFactory which doesn't support this so having it in the
+            // classpath will give you this error and getting the actual impl class name is a huge win for debugging the reason.
+            // You can check which dependency brings for example Xalan to classpath by running "mvn dependency:tree"
+            LOGGER.error(e, "Unable to disable external DTD and stylesheets for XML parsing. Transformer class impl is",
+                    transformerFactory.getClass().getCanonicalName());
+        }
         // Disable resolving of any kind of URIs, not sure if this is actually necessary
         transformerFactory.setURIResolver((String href, String base) -> null);
         return transformerFactory;
