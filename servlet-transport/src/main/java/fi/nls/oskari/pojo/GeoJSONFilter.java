@@ -1,8 +1,8 @@
 package fi.nls.oskari.pojo;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
-import org.codehaus.jackson.annotate.JsonIgnore;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;

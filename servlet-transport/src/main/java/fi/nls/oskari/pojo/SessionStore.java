@@ -1,6 +1,10 @@
 package fi.nls.oskari.pojo;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vividsolutions.jts.geom.Coordinate;
 import fi.nls.oskari.cache.JedisManager;
@@ -8,10 +12,6 @@ import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.transport.MessageParseHelper;
 import fi.nls.oskari.transport.TransportService;
-import org.codehaus.jackson.JsonFactory;
-import org.codehaus.jackson.JsonParser;
-import org.codehaus.jackson.JsonToken;
-import org.codehaus.jackson.annotate.JsonIgnore;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -58,27 +58,20 @@ public class SessionStore {
 		location = new Location();
 		grid = new Grid();
 		mapSize = new Tile();
-		mapScales = new ArrayList<Double>();
-		layers = new HashMap<String, Layer>();
+		mapScales = new ArrayList<>();
+		layers = new HashMap<>();
 	}
 
 	/**
 	 * Constructs object without parameters
 	 */
 	public SessionStore() {
-		this.client = "";
-		this.session = "";
-        this.route = "";
-		location = new Location();
-		grid = new Grid();
-		mapSize = new Tile();
-		mapScales = new ArrayList<Double>();
-		layers = new HashMap<String, Layer>();
+		this("");
 	}
 
 	/**
 	 * Gets session
-	 * 
+	 *
 	 * @return session
 	 */
 	public String getSession() {
@@ -87,7 +80,7 @@ public class SessionStore {
 
 	/**
 	 * Sets session
-	 * 
+	 *
 	 * @param session
 	 */
 	public void setSession(String session) {
@@ -114,7 +107,7 @@ public class SessionStore {
 
 	/**
 	 * Gets client
-	 * 
+	 *
 	 * @return client
 	 */
 	public String getClient() {
@@ -123,16 +116,16 @@ public class SessionStore {
 
 	/**
 	 * Sets client
-	 * 
+	 *
 	 * @param client
 	 */
 	public void setClient(String client) {
 		this.client = client;
 	}
-	
+
 	/**
 	 * Gets language
-	 * 
+	 *
 	 * @return language
 	 */
 	public String getLanguage() {
@@ -141,7 +134,7 @@ public class SessionStore {
 
 	/**
 	 * Sets language
-	 * 
+	 *
 	 * @param language
 	 */
 	public void setLanguage(String language) {
@@ -167,7 +160,7 @@ public class SessionStore {
 
     /**
 	 * Gets browser
-	 * 
+	 *
 	 * @return browser
 	 */
 	public String getBrowser() {
@@ -176,7 +169,7 @@ public class SessionStore {
 
 	/**
 	 * Sets browser
-	 * 
+	 *
 	 * @param browser
 	 */
 	public void setBrowser(String browser) {
@@ -194,7 +187,7 @@ public class SessionStore {
 
 	/**
 	 * Gets location
-	 * 
+	 *
 	 * @return location
 	 */
 	public Location getLocation() {
@@ -203,7 +196,7 @@ public class SessionStore {
 
 	/**
 	 * Sets location
-	 * 
+	 *
 	 * @param location
 	 */
 	public void setLocation(Location location) {
@@ -212,7 +205,7 @@ public class SessionStore {
 
 	/**
 	 * Gets grid
-	 * 
+	 *
 	 * @return grid
 	 */
 	public Grid getGrid() {
@@ -221,7 +214,7 @@ public class SessionStore {
 
 	/**
 	 * Sets grid
-	 * 
+	 *
 	 * @param grid
 	 */
 	public void setGrid(Grid grid) {
@@ -230,7 +223,7 @@ public class SessionStore {
 
 	/**
 	 * Gets tile size
-	 * 
+	 *
 	 * @return tile size
 	 */
 	public Tile getTileSize() {
@@ -239,16 +232,16 @@ public class SessionStore {
 
 	/**
 	 * Sets tile size
-	 * 
+	 *
 	 * @param tileSize
 	 */
 	public void setTileSize(Tile tileSize) {
 		this.tileSize = tileSize;
 	}
-	
+
 	/**
 	 * Gets map size
-	 * 
+	 *
 	 * @return map size
 	 */
 	public Tile getMapSize() {
@@ -257,7 +250,7 @@ public class SessionStore {
 
 	/**
 	 * Sets map size
-	 * 
+	 *
 	 * @param mapSize
 	 */
 	public void setMapSize(Tile mapSize) {
@@ -266,7 +259,7 @@ public class SessionStore {
 
 	/**
 	 * Gets map scales
-	 * 
+	 *
 	 * @return map scales
 	 */
 	public List<Double> getMapScales() {
@@ -275,16 +268,16 @@ public class SessionStore {
 
 	/**
 	 * Sets map scales
-	 * 
+	 *
 	 * @param mapScales
 	 */
 	public void setMapScales(List<Double> mapScales) {
 		this.mapScales = mapScales;
 	}
-	
+
 	/**
 	 * Gets location
-	 * 
+	 *
 	 * @return location
 	 */
 	public Map<String, Layer> getLayers() {
@@ -293,7 +286,7 @@ public class SessionStore {
 
 	/**
 	 * Sets layer
-	 * 
+	 *
 	 * @param layerId
 	 * @param layer
 	 */
@@ -303,7 +296,7 @@ public class SessionStore {
 
 	/**
 	 * Removes certain layer
-	 * 
+	 *
 	 * @param layerId
 	 */
 	public void removeLayer(String layerId) {
@@ -312,7 +305,7 @@ public class SessionStore {
 
 	/**
 	 * Checks if certain layer is set
-	 * 
+	 *
 	 * @param layerId
 	 * @return <code>true</code> if layer is found; <code>false</code>
 	 *         otherwise.
@@ -321,10 +314,10 @@ public class SessionStore {
 	public boolean containsLayer(String layerId) {
 		return this.layers.containsKey(layerId);
 	}
-	
+
 	/**
 	 * Gets map click
-	 * 
+	 *
 	 * @return map click
 	 */
 	@JsonIgnore
@@ -334,16 +327,16 @@ public class SessionStore {
 
 	/**
 	 * Sets map click
-	 * 
+	 *
 	 * @param mapClick
 	 */
 	public void setMapClick(Coordinate mapClick) {
 		this.mapClick = mapClick;
 	}
-	
+
 	/**
 	 * Gets filter
-	 * 
+	 *
 	 * @return filter
 	 */
 	@JsonIgnore
@@ -362,7 +355,7 @@ public class SessionStore {
 
 	/**
 	 * Sets filter
-	 * 
+	 *
 	 * @param filter
 	 */
 	public void setPropertyFilter(PropertyFilter filter) {
@@ -380,7 +373,7 @@ public class SessionStore {
 
 	/**
 	 * Checks if keeping previous in front
-	 * 
+	 *
 	 * @return <code>true</code> if kept; <code>false</code>
 	 *         otherwise.
 	 */
@@ -391,7 +384,7 @@ public class SessionStore {
 
 	/**
 	 * Sets filter
-	 * 
+	 *
 	 * @param keepPrevious
 	 */
 	public void setKeepPrevious(boolean keepPrevious) {
@@ -417,7 +410,7 @@ public class SessionStore {
 
     /**
 	 * Saves into redis
-	 * 
+	 *
 	 * @return <code>true</code> if saved a valid session; <code>false</code>
 	 *         otherwise.
 	 */
@@ -425,10 +418,10 @@ public class SessionStore {
         JedisManager.setex(KEY + client, 86400, getAsJSON());
     	return this.isValid();
 	}
-	
+
 	/**
 	 * Transforms object to JSON String
-	 * 
+	 *
 	 * @return JSON String
 	 */
 	@JsonIgnore
@@ -445,7 +438,7 @@ public class SessionStore {
 
 	/**
 	 * Transforms parameters JSON String to object
-	 * 
+	 *
 	 * @param json
 	 * @return object
 	 */
@@ -479,7 +472,7 @@ public class SessionStore {
 
 	/**
 	 * Transforms JSON String to object
-	 * 
+	 *
 	 * @param json
 	 * @return object
 	 */
@@ -498,7 +491,7 @@ public class SessionStore {
 
 	/**
 	 * Parser for object's JSON String format
-	 * 
+	 *
 	 * @param parser
 	 * @return object
 	 */
@@ -655,6 +648,12 @@ public class SessionStore {
                                     layer.setStyleName(parser.getText());
                                 } else if (TransportService.PARAM_LAYER_VISIBLE.equals(valueName)) {
                                     layer.setVisible(parser.getValueAsBoolean());
+                                } else if ("highlightedFeatureIds".equals(valueName)){
+                                    // for some reason these aren't handled in deserialization...
+                                    //layer.setHighlightedFeatureIds(...);
+                                } else if ("tiles".equals(valueName)){
+                                    // for some reason these aren't handled in deserialization...
+                                    //layer.setTiles(...);
                                 } else {
                                     throw new IllegalStateException(
                                             "Unrecognized value in layers '"
@@ -675,7 +674,7 @@ public class SessionStore {
 
 	/**
 	 * Gets saved session from redis
-	 * 
+	 *
 	 * @param client
 	 * @return layer as JSON String
 	 */
@@ -694,17 +693,17 @@ public class SessionStore {
     public static String getCacheNecessary(String client) {
         return JedisManager.getNecessary(KEY + client);
     }
-	
+
 
 	/**
 	 * Checks if session information is valid
-	 * 
+	 *
 	 * @return <code>true</code> if is valid; <code>false</code>
 	 *         otherwise.
 	 */
 	@JsonIgnore
 	public boolean isValid() {
-		if(this.session.length() == 0 || 
+		if(this.session.length() == 0 ||
 				this.language.equals("null") ||
 				this.browser.equals("null") ||
 				this.tileSize == null ||

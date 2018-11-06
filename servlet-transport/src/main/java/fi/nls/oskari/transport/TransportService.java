@@ -82,6 +82,7 @@ public class TransportService extends AbstractService {
 	public static final String PARAM_KEEP_PREVIOUS = "keepPrevious";
     public static final String PARAM_GEOM_REQUEST = "geomRequest";
 
+
     public static final String CHANNEL_INIT = "/service/wfs/init";
 	public static final String CHANNEL_ADD_MAP_LAYER = "/service/wfs/addMapLayer";
 	public static final String CHANNEL_REMOVE_MAP_LAYER = "/service/wfs/removeMapLayer";
