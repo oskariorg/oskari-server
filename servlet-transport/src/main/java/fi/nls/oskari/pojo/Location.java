@@ -1,7 +1,9 @@
 package fi.nls.oskari.pojo;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.utils.LocationSerializer;
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
@@ -21,6 +23,7 @@ import java.util.List;
  *
  * @see SessionStore
  */
+@JsonSerialize(using = LocationSerializer.class)
 public class Location {
 	private static final Logger log = LogFactory.getLogger(Location.class);
 	
@@ -37,7 +40,7 @@ public class Location {
 	 * Constructs object without parameters
 	 */
 	public Location() {
-		bbox = new ArrayList<Double>();
+		bbox = new ArrayList<>();
 	}
 
 	/**
