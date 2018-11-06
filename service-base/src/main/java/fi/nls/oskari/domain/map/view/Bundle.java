@@ -12,7 +12,7 @@ public class Bundle implements Comparable, Serializable {
 
     private String state;
     private String config;
-    private String startup;
+    private String startup = null;
     private String name;
     private String bundleinstance;
 
@@ -105,12 +105,18 @@ public class Bundle implements Comparable, Serializable {
     }
 
     public String getStartup() {
-        return startup;
+        StringBuilder builder = new StringBuilder();
+        builder.append("{\"bundlename\": \"");
+        builder.append(this.name);
+        if(this.bundleinstance != null && !this.bundleinstance.isEmpty() && !this.name.equals(this.bundleinstance)) {
+            builder.append("\", \"bundleinstancename\": \"");
+            builder.append(this.bundleinstance);
+        }
+        builder.append("\"}");
+        return builder.toString();
     }
 
-    public void setStartup(String startup) {
-        this.startup = startup;
-    }
+    public void setStartup(String startup) {/* always null in DB */}
 
     /**
      * Returns the "bundleid" as known by frontend
