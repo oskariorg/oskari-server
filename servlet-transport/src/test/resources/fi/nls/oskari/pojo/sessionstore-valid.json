@@ -153,10 +153,8 @@
   },
   "language": "fi",
   "layers": {"216": {
-    "highlightedFeatureIds": null,
     "id": "216",
     "styleName": "default",
-    "tiles": null,
     "visible": true
   }},
   "location": {
