@@ -16,6 +16,7 @@ import org.custommonkey.xmlunit.Diff;
 import org.custommonkey.xmlunit.XMLUnit;
 import org.geotools.feature.FeatureCollection;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
@@ -88,6 +89,7 @@ public class WFSCommunicatorTest {
 	}
 	
 	@Test
+    @Ignore("Service specified in layer json no longer exists")
 	public void testBounds() throws Exception {
         // check that we have http connectivity (correct proxy settings etc)
         assumeTrue(TestHelper.canDoHttp());
