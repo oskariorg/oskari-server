@@ -65,7 +65,7 @@
     </select>
 
     <select id="findByName" resultMap="MaplayerGroupResult" parameterClass="String">
-        SELECT id, locale, parentid, selectable, order_number FROM oskari_maplayer_group_link WHERE locale LIKE '%' || #name# || '%';
+        SELECT id, locale, parentid, selectable, order_number FROM oskari_maplayer_group WHERE locale LIKE '%' || #name# || '%';
     </select>
     
     <statement id="insert" parameterMap="MaplayerGroupInsertParameter" resultClass="int">
