@@ -1,0 +1,95 @@
+{
+    "name" : "Publisher template",
+    "type" : "PUBLISH",
+    "default" : false,
+    "public" : false,
+    "oskari" : {
+        "application" : "servlet_published_ol3",
+        "page" : "published",
+        "development_prefix" : "/applications/sample"
+    },
+    "bundles" : [
+        {
+            "id" : "mapfull",
+            "config" : {
+                "mapOptions": {
+                    "srsName": "EPSG:3857",
+                    "maxExtent" : {
+                        "left" : -20037508.34,
+                        "bottom" : -20037508.34,
+                        "right" : 20037508.34,
+                        "top" :  20037508.34
+                    },
+                    "resolutions": [
+                        39135.75848201024,
+                        19567.87924100512,
+                        9783.93962050256,
+                        4891.96981025128,
+                        2445.98490512564,
+                        1222.99245256282,
+                        611.49622628141,
+                        305.748113140705,
+                        152.8740565703525,
+                        76.43702828517625,
+                        38.21851414258813,
+                        19.109257071294063,
+                        9.554628535647032,
+                        4.777314267158508,
+                        2.388657133579254,
+                        1.194328566789627,
+                        0.5971642833948135,
+                        0.29858214169740677
+                    ]
+                },
+                "plugins":[
+                    {"id":"Oskari.mapframework.bundle.mapmodule.plugin.LayersPlugin"},
+                    {"id":"Oskari.mapframework.mapmodule.WmsLayerPlugin"},
+                    {"id":"Oskari.mapframework.bundle.mapwfs2.plugin.WfsLayerPlugin"},
+                    {"id":"Oskari.mapframework.wmts.mapmodule.plugin.WmtsLayerPlugin"},
+                    {"id":"Oskari.mapframework.bundle.mapmodule.plugin.RealtimePlugin"},
+                    {"id":"Oskari.mapframework.bundle.mapmodule.plugin.LogoPlugin"},
+                    {"id":"Oskari.mapframework.bundle.myplacesimport.plugin.UserLayersLayerPlugin"},
+                    {"id":"Oskari.arcgis.bundle.maparcgis.plugin.ArcGisLayerPlugin"},
+                    {
+                        "id":"Oskari.mapframework.mapmodule.MarkersPlugin",
+                        "config":{"markerButton":false}
+                    },
+                    {"id":"Oskari.mapframework.mapmodule.VectorLayerPlugin"}
+                ]
+            },
+            "state" : {
+                "east": 0,
+                "north": 0,
+                "zoom": 0
+            }
+        },
+        { "id" : "infobox" },
+        {
+            "id" : "toolbar",
+            "config" : {
+                "basictools": {
+                    "measurearea": false,
+                    "measureline": false,
+                    "select": false,
+                    "zoombox": false
+
+                },
+                "history": {
+                    "history_back": false,
+                    "history_forward": false,
+                    "reset": false
+                },
+                "viewtools": {
+                    "link": false
+                },
+                "toolbarId": "PublisherToolbar",
+                "hasContentContainer": true,
+                "defaultToolbarContainer": ".publishedToolbarContent"
+            }
+        },
+        { "id" : "publishedstatehandler" },
+        { "id" : "drawtools" },
+        { "id" : "routingService" },
+        { "id" : "rpc" }
+    ]
+}

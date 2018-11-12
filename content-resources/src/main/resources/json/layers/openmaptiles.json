@@ -1,0 +1,186 @@
+{
+	"srs_name": "EPSG:3857",
+    "type":"vectortilelayer",
+    "url2":"http://demo.oskari.org/cached/openmaptiles",
+    "url":"https://maps.tilehosting.com/data/v3/{z}/{x}/{y}.pbf?key=qrAN6vh4XeHdA2eCyKFa",
+    "name":"openmaptiles",
+    "organization": "Demo layers",
+    "inspiretheme": "Others",
+    "locale": {
+        "fi": {
+            "name": "OpenMapTiles"
+        },
+        "sv": {
+            "name": "OpenMapTiles"
+        },
+        "en": {
+            "name": "OpenMapTiles"
+        }
+    },
+    "role_permissions": {
+        "Guest" : ["VIEW_LAYER", "VIEW_PUBLISHED"],
+        "User" : ["VIEW_LAYER", "VIEW_PUBLISHED", "PUBLISH"]
+    },
+    "options": {
+        "styles": {
+            "default": {
+                "water": {
+                    "featureStyle": {
+                        "fill": {
+                            "color": "#c9ecfa"
+                        }
+                    }
+                },
+                "waterway": {
+                    "featureStyle": {
+                        "fill": {
+                            "color": "#c9ecfa"
+                        }
+                    }
+                },
+                "building": {
+                    "featureStyle": {
+                        "fill": {
+                            "color": "#f2eae2"
+                        },
+                        "stroke": {
+                            "color": "#dfdbd7",
+                            "width": 1
+                        }
+                    }
+                },
+                "landuse": {
+                    "featureStyle": {
+                        "fill": {
+                            "color": "#e6e6e6"
+                        }
+                    },
+                    "optionalStyles": [
+                        {
+                            "property": {
+                                "key": "class",
+                                "value": "cemetery"
+                            },
+                            "fill": {
+                                "color": "#e0e4dd"
+                            }
+                        },
+                        {
+                            "property": {
+                                "key": "class",
+                                "value": "hospital"
+                            },
+                            "fill": {
+                                "color": "#ffddee"
+                            }
+                        },
+                        {
+                            "property": {
+                                "key": "class",
+                                "value": "school"
+                            },
+                            "fill": {
+                                "color": "#f0e8f8"
+                            }
+                        },
+                        {
+                            "property": {
+                                "key": "class",
+                                "value": "wood"
+                            },
+                            "fill": {
+                                "color": "rgb(233,238,223)"
+                            }
+                        }
+                    ]
+                },
+                "park": {
+                    "featureStyle": {
+                        "stroke": {
+                            "color": "rgba(237, 245, 224, 0.4)",
+                            "width": 4
+                        }
+                    }
+                },
+                "place": {
+                    "featureStyle": {
+                        "stroke": {
+                            "color": "#e9ac77",
+                            "width": 2
+                        },
+                        "labelProperty": "name_en"
+                    },
+                    "optionalStyles": [
+                        {
+                            "property": {
+                                "key": "class",
+                                "value": "country"
+                            },
+                            "text": {
+                                "scale": 1.3,
+                                "fill": {
+                                    "color": "rgba(0,0,0,1)"
+                                },
+                                "stroke": {
+                                    "color": "rgba(255,255,255,1)",
+                                    "width": 2
+                                },
+                                "labelProperty": "name_en"
+                            }
+                        }
+                    ]
+                },
+                "transportation": {
+                    "featureStyle": {
+                        "stroke": {
+                            "color": "#e9ac77",
+                            "width": 2
+                        }
+                    },
+                    "optionalStyles": [
+                        {
+                            "property": {
+                                "key": "class",
+                                "value": "street"
+                            },
+                            "stroke": {
+                                "color": "#cfcdca",
+                                "width": 1
+                            }
+                        },
+                        {
+                            "property": {
+                                "key": "class",
+                                "value": "street_limited"
+                            },
+                            "stroke": {
+                                "color": "#cfcdca",
+                                "width": 1
+                            }
+                        },
+                        {
+                            "property": {
+                                "key": "class",
+                                "value": "path"
+                            },
+                            "stroke": {
+                                "color": "#ccbbaa",
+                                "width": 1
+                            }
+                        },
+                        {
+                            "property": {
+                                "key": "class",
+                                "value": "major_rail"
+                            },
+                            "stroke": {
+                                "color": "#bbbbbb",
+                                "width": 2
+                            }
+                        }
+                    ]
+                }
+            }
+        }
+    }
+}
