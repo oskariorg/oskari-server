@@ -96,7 +96,6 @@ public class FlywayHelper {
     public static Bundle updateBundleInView(Connection connection, Bundle bundle, Long viewId)
             throws SQLException {
         final String sql = "UPDATE portti_view_bundle_seq SET " +
-                "startup=?, " +
                 "config=?, " +
                 "state=?, " +
                 "seqno=?, " +
@@ -106,13 +105,12 @@ public class FlywayHelper {
 
         try (final PreparedStatement statement =
                      connection.prepareStatement(sql)) {
-            statement.setString(1, bundle.getStartup());
-            statement.setString(2, bundle.getConfig());
-            statement.setString(3, bundle.getState());
-            statement.setInt(4, bundle.getSeqNo());
-            statement.setString(5, bundle.getBundleinstance());
-            statement.setLong(6, bundle.getBundleId());
-            statement.setLong(7, viewId);
+            statement.setString(1, bundle.getConfig());
+            statement.setString(2, bundle.getState());
+            statement.setInt(3, bundle.getSeqNo());
+            statement.setString(4, bundle.getBundleinstance());
+            statement.setLong(5, bundle.getBundleId());
+            statement.setLong(6, viewId);
             statement.execute();
         }
         return null;
