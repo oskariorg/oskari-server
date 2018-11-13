@@ -6,7 +6,7 @@
     <title>Standalone servlet - ${viewName} view</title>
     <link rel="shortcut icon" href="/Oskari${path}/logo.png" type="image/png" />
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
-    <script type="text/javascript" src="/Oskari/libraries/jquery/jquery-3.3.1.min.js">
+    <script type="text/javascript" src="/Oskari/${version}/resources/js/jquery-3.3.1.min.js">
     </script>
 
     <!-- IE 9 polyfill for openlayers 3 - https://github.com/openlayers/ol3/issues/4865 -->
@@ -16,11 +16,11 @@
     <link
             rel="stylesheet"
             type="text/css"
-            href="/Oskari/resources/css/forms.css"/>
+            href="/Oskari/${version}/resources/css/forms.css"/>
     <link
             rel="stylesheet"
             type="text/css"
-            href="/Oskari/resources/css/portal.css"/>
+            href="/Oskari/${version}/resources/css/portal.css"/>
     <link
             rel="stylesheet"
             type="text/css"

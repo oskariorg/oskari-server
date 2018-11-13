@@ -7,18 +7,18 @@
 <head>
     <title>Oskari - ${viewName}</title>
     <link rel="shortcut icon" href="/Oskari${path}/logo.png" type="image/png" />
-    <script type="text/javascript" src="/Oskari/libraries/jquery/jquery-3.3.1.min.js">
+    <script type="text/javascript" src="/Oskari/${version}/resources/js/jquery-3.3.1.min.js">
     </script>
 
     <!-- ############# css ################# -->
     <link
             rel="stylesheet"
             type="text/css"
-            href="/Oskari/resources/css/forms.css"/>
+            href="/Oskari/${version}/resources/css/forms.css"/>
     <link
             rel="stylesheet"
             type="text/css"
-            href="/Oskari/resources/css/portal.css"/>
+            href="/Oskari/${version}/resources/css/portal.css"/>
     <link
             rel="stylesheet"
             type="text/css"
@@ -59,7 +59,7 @@
             #login input[type="text"], #login input[type="password"] {
                 width: 90%;
                 margin-bottom: 5px;
-                background-image: url("/Oskari/resources/images/forms/input_shadow.png");
+                background-image: url("/Oskari/${version}/resources/images/forms/input_shadow.png");
                 background-repeat: no-repeat;
                 padding-left: 5px;
                 padding-right: 5px;

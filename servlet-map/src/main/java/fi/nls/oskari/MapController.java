@@ -67,12 +67,6 @@ public class MapController {
         }
 
         writeCustomHeaders(params.getResponse());
-        // compatibility for <1.49 JSPs -> there was an if statement to use minified or non-minified code
-        model.addAttribute("preloaded", true);
-
-        // for figuring out paths for frontend files
-        model.addAttribute("version", version);
-        model.addAttribute("oskariApplication",version + PropertyUtil.get("oskari.application"));
 
         // JSP
         final String viewJSP = setupRenderParameters(params, model);
@@ -177,6 +171,7 @@ public class MapController {
             }
         }
 
+
         log.debug("Serving view with id:", view.getId());
         log.debug("View:", view.getDevelopmentPath(), "/", view.getApplication(), "/", view.getPage());
         model.addAttribute("viewId", view.getId());
@@ -188,9 +183,9 @@ public class MapController {
         // construct control params
         final JSONObject controlParams = getControlParams(params);
 
-        if(uuId != null){
+        if (uuId != null) {
             JSONHelper.putValue(controlParams, PARAM_UUID, view.getUuid());
-        }else{
+        } else {
             JSONHelper.putValue(controlParams, PARAM_VIEW_ID, view.getId());
         }
 
@@ -199,10 +194,17 @@ public class MapController {
         JSONHelper.putValue(controlParams, GetAppSetupHandler.PARAM_NO_SAVED_STATE, request.getParameter(GetAppSetupHandler.PARAM_NO_SAVED_STATE));
         model.addAttribute(KEY_CONTROL_PARAMS, controlParams.toString());
 
+        // compatibility for <1.49 JSPs -> there was an if statement to use minified or non-minified code
         model.addAttribute(KEY_PRELOADED, true);
+
+        // for figuring out paths for frontend files
+        model.addAttribute("version", version);
         model.addAttribute(KEY_PATH, "/" + version + "/" + view.getApplication());
         model.addAttribute("application", view.getApplication());
+
+        // title of the page
         model.addAttribute("viewName", view.getName());
+        
         model.addAttribute("user", params.getUser());
         model.addAttribute("language", params.getLocale().getLanguage());
 
