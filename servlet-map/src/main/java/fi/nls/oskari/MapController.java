@@ -70,8 +70,9 @@ public class MapController {
         // compatibility for <1.49 JSPs -> there was an if statement to use minified or non-minified code
         model.addAttribute("preloaded", true);
 
-        model.addAttribute("oskariApplication",
-                PropertyUtil.get("oskari.client.version") + PropertyUtil.get("oskari.application"));
+        // for figuring out paths for frontend files
+        model.addAttribute("version", version);
+        model.addAttribute("oskariApplication",version + PropertyUtil.get("oskari.application"));
 
         // JSP
         final String viewJSP = setupRenderParameters(params, model);
@@ -167,7 +168,7 @@ public class MapController {
             final String referer = RequestHelper.getDomainFromReferer(params.getHttpHeader(IOHelper.HEADER_REFERER));
             final String pubDomain = view.getPubDomain();
             if (ViewHelper.isRefererDomain(referer, pubDomain)) {
-                log.info("Granted access to published view in domain:",pubDomain, "for referer", referer);
+                log.info("Granted access to published view in domain:", pubDomain, "for referer", referer);
             } else {
                 log.debug("Referer: ", params.getHttpHeader(IOHelper.HEADER_REFERER), " -> ", referer);
                 log.warn("Denied access to published view in domain:", pubDomain, "for referer", referer);
