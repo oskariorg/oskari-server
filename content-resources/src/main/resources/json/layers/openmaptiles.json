@@ -20,6 +20,12 @@
         "Guest" : ["VIEW_LAYER", "VIEW_PUBLISHED"],
         "User" : ["VIEW_LAYER", "VIEW_PUBLISHED", "PUBLISH"]
     },
+    "attributes" : {
+        "attributions" : [
+            "<a href=\"https://www.maptiler.com/license/maps/\">© MapTiler</a>",
+            "<a href=\"https://www.openstreetmap.org/copyright\">© OpenStreetMap contributors</a>"
+        ]
+    },
     "options": {
         "styles": {
             "default": {
