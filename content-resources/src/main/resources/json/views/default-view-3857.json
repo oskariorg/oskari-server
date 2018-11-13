@@ -64,9 +64,7 @@
                     {"id":"Oskari.mapframework.bundle.mapmodule.plugin.FullScreenPlugin"},
                     {"id":"Oskari.mapframework.bundle.myplacesimport.plugin.UserLayersLayerPlugin"},
                     {"id":"Oskari.mapframework.bundle.mapmyplaces.plugin.MyPlacesLayerPlugin"},
-                    {"id":"Oskari.mapframework.bundle.mapanalysis.plugin.AnalysisLayerPlugin"},
-                    {"id":"Oskari.mapframework.mapmodule.VectorLayerPlugin"},
-                    {"id":"Oskari.mapframework.mapmodule.VectorTileLayerPlugin"}
+                    {"id":"Oskari.mapframework.mapmodule.VectorLayerPlugin"}
                 ]
             },
             "state" : {
@@ -77,14 +75,7 @@
         },
         { "id" : "drawtools" },
         { "id" : "divmanazer" },
-        {
-            "id" : "toolbar",
-            "config" : {
-                "viewtools": {
-                    "print" : false
-                }
-            }
-        },
+        { "id" : "toolbar" },
         {
             "id": "infobox",
             "config": {
@@ -98,16 +89,7 @@
         { "id" : "layerselection2" },
         {
             "id" : "coordinatetool",
-            "config" : {
-                "roundToDecimals" : 6,
-                "projectionShowFormat" : {
-                    "decimals" : 3,
-                    "format" : "metric",
-                    "EPSG:3067" : {
-                        "decimals" : 0
-                    }
-                }
-            }
+            "config" : {"roundToDecimals":6}
         },
         { "id" : "metadataflyout" },
         { "id" : "personaldata" },
@@ -126,6 +108,7 @@
         { "id" : "featuredata2" },
         { "id" : "heatmap" },
         { "id" : "timeseries" },
-        { "id" : "maprotator" }
+        { "id" : "maprotator" },
+        { "id" : "statsgrid" }
     ]
 }

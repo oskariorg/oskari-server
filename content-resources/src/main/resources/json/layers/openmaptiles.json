@@ -1,11 +1,10 @@
 {
 	"srs_name": "EPSG:3857",
     "type":"vectortilelayer",
-    "url2":"http://demo.oskari.org/cached/openmaptiles",
-    "url":"https://maps.tilehosting.com/data/v3/{z}/{x}/{y}.pbf?key=qrAN6vh4XeHdA2eCyKFa",
+    "url":"https://maps.tilehosting.com/data/v3/{z}/{x}/{y}.pbf?key=O5GDdNrARRI1s6kxgvxS",
     "name":"openmaptiles",
     "organization": "Demo layers",
-    "inspiretheme": "Others",
+    "inspiretheme": "Background maps",
     "locale": {
         "fi": {
             "name": "OpenMapTiles"

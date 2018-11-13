@@ -72,7 +72,6 @@
                     "measureline": false,
                     "select": false,
                     "zoombox": false
-
                 },
                 "history": {
                     "history_back": false,
@@ -89,7 +88,6 @@
         },
         { "id" : "publishedstatehandler" },
         { "id" : "drawtools" },
-        { "id" : "routingService" },
         { "id" : "rpc" }
     ]
 }
