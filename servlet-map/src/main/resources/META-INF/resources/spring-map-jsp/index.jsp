@@ -7,18 +7,8 @@
 <head>
     <title>Oskari - ${viewName}</title>
     <link rel="shortcut icon" href="/Oskari${path}/logo.png" type="image/png" />
-    <script type="text/javascript" src="/Oskari/${version}/resources/js/jquery-3.3.1.min.js">
-    </script>
 
     <!-- ############# css ################# -->
-    <link
-            rel="stylesheet"
-            type="text/css"
-            href="/Oskari/${version}/resources/css/forms.css"/>
-    <link
-            rel="stylesheet"
-            type="text/css"
-            href="/Oskari/${version}/resources/css/portal.css"/>
     <link
             rel="stylesheet"
             type="text/css"
