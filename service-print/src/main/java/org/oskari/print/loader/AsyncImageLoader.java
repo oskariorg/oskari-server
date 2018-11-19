@@ -55,6 +55,10 @@ public class AsyncImageLoader {
                 images.add(new CommandLoadImageAnalysis(request.getUser(),
                         layer, width, height, bbox, srsName).queue());
                 break;
+            case OskariLayer.TYPE_ARCGIS93:
+                images.add(new CommandLoadImageArcGISREST(layer,
+                        width, height, bbox, srsName).queue());
+                break;
             default:
                 throw new IllegalArgumentException("Invalid layer type!");
             }
