@@ -118,7 +118,7 @@ public class PropertyUtil {
             if(detailMessage != null) {
                 msg = msg + ". Message: " + detailMessage;
             }
-            throw new RuntimeException(msg);
+            throw new NoSuchElementException(msg);
         }
         return prop;
     }
