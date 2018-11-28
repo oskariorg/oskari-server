@@ -17,6 +17,7 @@
             rel="stylesheet"
             type="text/css"
             href="/Oskari${path}/css/overwritten.css"/>
+    <link href="https://fonts.googleapis.com/css?family=Noto+Sans" rel="stylesheet">
     <style type="text/css">
         @media screen {
             body {
