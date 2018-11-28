@@ -175,6 +175,8 @@ public class MapController {
         log.debug("Serving view with id:", view.getId());
         log.debug("View:", view.getDevelopmentPath(), "/", view.getApplication(), "/", view.getPage());
         model.addAttribute("viewId", view.getId());
+        model.addAttribute("uuid", view.getUuid());
+        model.addAttribute("appsetupType", view.getType());
 
         // viewJSP might change if using dev override
         String viewJSP = view.getPage();
