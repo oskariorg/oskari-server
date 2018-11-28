@@ -35,7 +35,20 @@
         <dependency>
             <groupId>org.springframework.security.extensions</groupId>
             <artifactId>spring-security-saml2-core</artifactId>
+            <exclusions>
+                <exclusion>
+                    <!-- Tries to include 1.4 which is not available on common repos -->
+                    <groupId>xml-apis</groupId>
+                    <artifactId>xml-apis</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
+        <!-- Internal dependency of spring-security-saml2-core 1.4 -> 1.4.01 -->
+        <!-- dependency>
+            <groupId>xml-apis</groupId>
+            <artifactId>xml-apis</artifactId>
+            <version>1.4.01</version>
+        </dependency -->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
@@ -54,4 +67,18 @@
         </dependency>
     </dependencies>
 
+    <repositories>
+        <!-- SAML dependencies -->
+        <repository>
+            <id>shibboleth</id>
+            <name>shibboleth repository</name>
+            <url>https://build.shibboleth.net/nexus/content/repositories/releases/</url>
+        </repository>
+
+        <repository>
+            <id>mulesoft</id>
+            <name>mulesoft repository</name>
+            <url>http://repository.mulesoft.org/releases/</url>
+        </repository>
+    </repositories>
 </project>
