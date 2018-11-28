@@ -53,7 +53,7 @@
             Tested with 4.2.6.
         -->
         <spring-security.version>4.2.9.RELEASE</spring-security.version>
-        <spring.saml.version>1.0.3.RELEASE</spring.saml.version>
+        <spring.saml.version>1.0.4.RELEASE</spring.saml.version>
 
         <javax.servlet.version>3.1.0</javax.servlet.version>
         <javax.servlet.jsp.version>2.0</javax.servlet.jsp.version>
@@ -72,7 +72,7 @@
         <staxon.version>1.2</staxon.version>
         <lambdaj.version>2.3.3</lambdaj.version>
         <kevinsawicki.http-request.version>4.0</kevinsawicki.http-request.version>
-        <jsoup.version>1.10.3</jsoup.version>
+        <jsoup.version>1.11.3</jsoup.version>
         <ibatis.version>2.3.4.726</ibatis.version>
         <axiom.version>1.2.20</axiom.version>
         <commons-lang3.version>3.0</commons-lang3.version>
@@ -103,16 +103,15 @@
         <flexjson.version>2.0</flexjson.version>
         <deegree.version>2</deegree.version>
 
-        <mybatis.version>3.4.5</mybatis.version>
-        <com.google.guava.version>23.0</com.google.guava.version>
-        <pdfbox.version>2.0.6</pdfbox.version>
+        <mybatis.version>3.4.6</mybatis.version>
+        <pdfbox.version>2.0.12</pdfbox.version>
         <!-- Test deps versions -->
         <powermock.version>1.5</powermock.version>
         <junit.version>4.11</junit.version>
 
         <log4j.version>1.2.17</log4j.version>
         <slf4j.version>1.7.12</slf4j.version>
-        <metrics.version>3.2.4</metrics.version>
+        <metrics.version>4.0.3</metrics.version>
     </properties>
 
     <dependencies>
@@ -840,11 +839,6 @@
                 <groupId>org.mybatis</groupId>
                 <artifactId>mybatis</artifactId>
                 <version>${mybatis.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.google.guava</groupId>
-                <artifactId>guava</artifactId>
-                <version>${com.google.guava.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.pdfbox</groupId>
