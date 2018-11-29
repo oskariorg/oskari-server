@@ -19,7 +19,7 @@
     <link
             rel="stylesheet"
             type="text/css"
-            href="/Oskari${path}/oskari.css"/>
+            href="/Oskari${path}/oskari.min.css"/>
 
     <style type="text/css">
         @media screen {
