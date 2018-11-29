@@ -62,7 +62,12 @@ public class StatisticalIndicator {
         return null;
     }
     public String getName(String lang) {
-        return getLocalizedValue(getName(), lang);
+        String name = getLocalizedValue(getName(), lang);
+
+        if(name == null || name.trim().isEmpty()) {
+            throw new NoSuchElementException("Value not found for " + lang + " or " + PropertyUtil.getDefaultLanguage());
+        }
+        return name;
     }
     public String getSource(String lang) {
         return getLocalizedValue(getSource(), lang);
@@ -80,7 +85,7 @@ public class StatisticalIndicator {
             lang = PropertyUtil.getDefaultLanguage();
         }
         String value = map.get(lang);
-        if(value == null) {
+        if(value == null || value.trim().isEmpty()) {
             // try with default language
             return map.get(PropertyUtil.getDefaultLanguage());
         }
