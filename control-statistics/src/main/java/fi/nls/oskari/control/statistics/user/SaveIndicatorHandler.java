@@ -12,6 +12,8 @@ import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.ResponseHelper;
 
+import java.util.NoSuchElementException;
+
 @OskariActionRoute("SaveIndicator")
 public class SaveIndicatorHandler extends RestActionHandler {
 
@@ -75,10 +77,18 @@ public class SaveIndicatorHandler extends RestActionHandler {
         ind.setPublic(true);
 
         String language = params.getLocale().getLanguage();
-        ind.addName(language, params.getHttpParam(PARAM_NAME, ind.getName(language)));
+        ind.addName(language, params.getHttpParam(PARAM_NAME, getExistingName(ind, language)));
         ind.addDescription(language, params.getHttpParam(PARAM_DESCRIPTION, ind.getDescription(language)));
         ind.addSource(language, params.getHttpParam(PARAM_SOURCE, ind.getSource(language)));
         return ind;
     }
 
+    private String getExistingName(StatisticalIndicator ind, String language) {
+        try {
+            return ind.getName(language);
+        } catch (NoSuchElementException e) {
+            // handle exception from getting existing name since new indicators don't have an existing one
+            return null;
+        }
+    }
 }
