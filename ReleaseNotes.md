@@ -2,6 +2,58 @@
 
 ## 1.48.0
 
+For a full list of changes see: https://github.com/oskariorg/oskari-server/milestone/13?closed=1
+
+### JSP-files modified to match the new frontend build:
+- bundles/bundle.js has been removed
+- resources/portal.css and forms.css are now part of oskari.min.css
+- app/overwritten.css is now part of oskari.min.css
+- frontend code is now always minified
+
+See the example app in oskari-server for template JSP in custom installs.
+
+### search-service-nls
+
+Due to being specific to NLS Finland services the code has been moved to nlsfi/oskari-server-extras#1 and but it's still available in oskari.org/nexus. For drop-in replacement change:
+
+     <dependency>
+        <groupId>fi.nls.oskari.service</groupId>
+        <artifactId>oskari-search-nls</artifactId>
+        <version>${oskari.version}</version>
+    </dependency>
+
+to:
+
+     <dependency>
+        <groupId>fi.nls.oskari.extras</groupId>
+        <artifactId>oskari-search-nls</artifactId>
+        <version>2.1</version>
+    </dependency>
+
+### Added initial vectortile support
+- New layer type: vectortilelayer
+- Initial support for generating vectortiles based on WFS-services.
+
+### Misc
+- URLencoding 
+- SearchChannel.isValidSearchTerm() runtimeexceptions are now catched so erronous search channel won't stop all the results from showing.
+- Library updates
+- Applications now halt on startup if migrations were not successfully completed. You can use the old functionality by having db.ignoreMigrationFailures=true on oskari-ext.properties
+- Statistical regionsets that are hosted as resource-files can now have numeric IDs and are read as UTF-8 to support wider range of characters
+- The server now filters out statistical indicators without names.
+- Errorhandling added for CSW metadata parsing
+- Customized labels for myplaces fixed for new empty database population
+- Fix an issue with XML-parsing when Xalan library is in the classpath (For example SAML has Xalan)
+- Fix for layer group matching on database populator/layers now get proper groups
+
+- Removed "startup" info for bundles from database!!!!
+- oskari-server now has a new "example" app that replaces the previous "sample" app to make it clear it's an example that can be used to demo the software, but will change/release so you shouldn't use it as your own geoportal if you wish to have control over content and/or functionalities included in it.
+- There's a new URL parameter handler for skipping the guided tour: showIntro=false
+- Print-functionality now has support for ArcGIS REST layers.
+- PropertyUtil.getNecessary() now throws NoSuchElementException instead of plain RuntimeException so misconfigurations are easier to handle
+
+## 1.48.0
+
 For a full list of changes see: https://github.com/oskariorg/oskari-server/milestone/11?closed=1
 
 - A new flag for "internal layers" has been added for map layers. Internal layers are not sent to the frontend in map layer listings.
