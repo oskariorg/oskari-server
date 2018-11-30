@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -121,21 +122,35 @@ public class CreateUserLayerHandler extends RestActionHandler {
         List<FileItem> fileItems = getFileItems(params.getRequest());
         SimpleFeatureCollection fc;
         Map<String, String> formParams;
+        Set<String> validFiles = new HashSet<>();
+        FileItem zipFile = null;
         try {
-            FileItem zipFile = fileItems.stream()
+            zipFile = fileItems.stream()
                     .filter(f -> !f.isFormField())
                     .findAny() // If there are more files we'll get the zip or fail miserably
                     .orElseThrow(() -> new ActionParamsException("No file entries"));
             log.debug("Using value from field:", zipFile.getFieldName(), "as the zip file");
             Charset cs = determineCharsetForZipFileNames(zipFile);
-            Set<String> validFiles = checkZip(zipFile, cs);
+            validFiles = checkZip(zipFile, cs);
             fc = parseFeatures(zipFile, cs, validFiles, sourceCRS, targetCRS);
             formParams = getFormParams(fileItems);
             log.debug("Parsed form parameters:", formParams);
+        } catch (ActionParamsException e) {
+            if (!validFiles.isEmpty()){
+                UserLayerHandlerHelper.addSetToErrorJSON(e.getOptions(), "files", validFiles);
+            }
+            log.error("User uuid:", params.getUser().getUuid(),
+                    "zip:", zipFile == null ? "no file" : zipFile.getName(),
+                    "info", e.getOptions().toString());
+            throw e;
+        } catch (ActionException e) {
+            log.error("User uuid:", params.getUser().getUuid(),
+                    "zip:", zipFile == null ? "no file" : zipFile.getName(),
+                    "files found ("+ validFiles.size() + ") including:", validFiles);
+            throw e;
         } finally {
             fileItems.forEach(FileItem::delete);
         }
-
         UserLayer userLayer = store(fc, params.getUser().getUuid(), formParams);
         writeResponse(params, userLayer);
     }
@@ -164,7 +179,7 @@ public class CreateUserLayerHandler extends RestActionHandler {
         try {
             return epsg == null ? null : CRS.decode(epsg);
         } catch (Exception e) {
-            throw new ActionParamsException("Failed to decode CoordinateReferenceSystem from " + epsg, e);
+            throw new ActionParamsException("Failed to decode CoordinateReferenceSystem from " + epsg, UserLayerHandlerHelper.createErrorJSON("epsg_decode"));
         }
     }
 
@@ -180,50 +195,58 @@ public class CreateUserLayerHandler extends RestActionHandler {
     }
 
     private Set<String> checkZip(FileItem zipFile, Charset cs) throws ActionException {
+        Set<String> validFiles = new HashSet<>();
+        Set<String> extensions = new HashSet<>();
+        Map<String,String> ignored = new HashMap<>();
         try (InputStream in = zipFile.getInputStream();
                 ZipInputStream zis = new ZipInputStream(in, cs)) {
-            Set<String> validFiles = new HashSet<>();
-            Set<String> extensions = new HashSet<>();
             ZipEntry ze;
             int numEntries = 0;
             while ((ze = zis.getNextEntry()) != null) {
                 if (++numEntries > MAX_FILES_IN_ZIP) {
                     // safeguard against evil zip files, userlayers shouldn't have this many files in any case
-                    throw new ActionParamsException("Zip contains too many files");
+                    throw new ActionParamsException("Zip: " + zipFile.getName() + " contains too many files", UserLayerHandlerHelper.createErrorJSON("too_many_files", "files", validFiles));
                 }
-                String name = checkValidFileName(ze, extensions);
+                String name = checkValidFileName(ze, extensions, ignored);
                 if (name != null) {
                     validFiles.add(name);
                 }
             }
             checkZipContainsExactlyOneMainFile(extensions);
             return validFiles;
+        } catch (ActionParamsException e) {
+            UserLayerHandlerHelper.addSetToErrorJSON(e.getOptions(), "files", validFiles);
+            UserLayerHandlerHelper.addMapToErrorJSON(e.getOptions(), "ignored", ignored);
+            throw e;
         } catch (IOException e) {
             throw new ActionException("Unexpected IOException occured", e);
         }
     }
 
-    private static String checkValidFileName(ZipEntry ze, Set<String> extensions) throws ActionParamsException {
+    private static String checkValidFileName(ZipEntry ze, Set<String> extensions, Map<String,String> ignored) throws ActionParamsException {
         if (ze.isDirectory()) {
             return null;
         }
         String name = ze.getName();
         if (name.indexOf('/') >= 0) {
+            ignored.put(name, "folder");
             log.debug(name, "is inside a directory, ignoring");
             return null;
         }
         if (name.indexOf('.') == 0) {
+            ignored.put(name, "hidden");
             log.debug(name, "starts with '.', ignoring");
             return null;
         }
         String ext = getFileExt(name);
         if (ext == null) {
+            ignored.put(name, "unknown");
             log.debug(name, "doesn't have non-empty file extension, ignoring");
             return null;
         }
         ext = ext.toLowerCase();
         if (!extensions.add(ext)) {
-            throw new ActionParamsException("Zip contains multiple files with same extension");
+            throw new ActionParamsException("Zip contains multiple files with same extension: " + ext, UserLayerHandlerHelper.createErrorJSON("multiple_extensions", "extension", ext));
         }
         log.debug(name, "accepted as valid filename");
         return name;
@@ -235,9 +258,12 @@ public class CreateUserLayerHandler extends RestActionHandler {
                 .limit(2)
                 .count();
         if (mainFileExtensions == 0) {
-            throw new ActionParamsException("Couldn't find valid file for import in zip file");
+            throw new ActionParamsException("Couldn't find valid file for import in zip file", UserLayerHandlerHelper.createErrorJSON("no_main_file"));
         } else if (mainFileExtensions == 2) {
-            throw new ActionParamsException("Found too many valid files for import in zip file");
+            Set <String> mainExtensions = extensions.stream()
+                    .filter(FeatureCollectionParsers::hasByFileExt)
+                    .collect(Collectors.toCollection(HashSet::new));
+            throw new ActionParamsException("Found too many valid files for import in zip file", UserLayerHandlerHelper.createErrorJSON("multiple_main", "extensions", mainExtensions));
         }
     }
 
@@ -252,13 +278,18 @@ public class CreateUserLayerHandler extends RestActionHandler {
     private SimpleFeatureCollection parseFeatures(FileItem zipFile,
             Charset cs, Set<String> validFiles,
             CoordinateReferenceSystem sourceCRS,
-            CoordinateReferenceSystem targetCRS) throws ActionException {
+            CoordinateReferenceSystem targetCRS) throws ActionParamsException {
         File dir = null;
+        FeatureCollectionParser parser = null;
         try {
             dir = makeRandomTempDirectory();
             File mainFile = unZip(zipFile, cs, validFiles, dir);
-            FeatureCollectionParser parser = getParser(mainFile);
+            parser = getParser(mainFile);
             return parse(parser, mainFile, sourceCRS, targetCRS);
+        } catch (ServiceException e){
+            UserLayerHandlerHelper.addStringToErrorJSON(e.getOptions(), "error", "parser_error");
+            UserLayerHandlerHelper.addStringToErrorJSON(e.getOptions(), "parser", parser == null ? null : parser.getSuffix());
+            throw new ActionParamsException (e.getMessage(), e.getOptions() );
         } finally {
             // Clean up
             if (dir != null) {
@@ -278,7 +309,7 @@ public class CreateUserLayerHandler extends RestActionHandler {
         file.delete();
     }
 
-    private File makeRandomTempDirectory() throws ActionException {
+    private File makeRandomTempDirectory() throws ServiceException {
         try {
             File tmpFile = File.createTempFile("temp", null);
             File tmpDir = tmpFile.getParentFile();
@@ -293,16 +324,16 @@ public class CreateUserLayerHandler extends RestActionHandler {
                 if (dir.mkdir()) {
                     return dir;
                 } else {
-                    throw new ActionException("Failed to create temp directory");
+                    throw new ServiceException ("Failed to create temp directory");
                 }
             }
-            throw new ActionException("Failed to create temp directory after max attempts!");
+            throw new ServiceException ("Failed to create temp directory after max attempts!");
         } catch (IOException e) {
-            throw new ActionException("Failed to create temp directory", e);
+            throw new ServiceException ("Failed to create temp directory", UserLayerHandlerHelper.createErrorJSON("io_exception", "message", e.getMessage()));
         }
     }
 
-    private File unZip(FileItem zipFile, Charset cs, Set<String> validFiles, File dir) throws ActionException {
+    private File unZip(FileItem zipFile, Charset cs, Set<String> validFiles, File dir) throws ServiceException {
         try (InputStream in = zipFile.getInputStream();
                 ZipInputStream zis = new ZipInputStream(in, cs)) {
             ZipEntry ze;
@@ -332,7 +363,8 @@ public class CreateUserLayerHandler extends RestActionHandler {
             }
             return mainFile;
         } catch (IOException e) {
-            throw new ActionException("Failed to unzip file", e);
+            log.warn("unzip:", e.getMessage());
+            throw new ServiceException("Failed to unzip file: " + zipFile.getName(), UserLayerHandlerHelper.createErrorJSON("unzip_failure", "file", zipFile.getName()));
         }
     }
 
@@ -346,12 +378,8 @@ public class CreateUserLayerHandler extends RestActionHandler {
 
     private SimpleFeatureCollection parse(FeatureCollectionParser parser, File file,
             CoordinateReferenceSystem sourceCRS,
-            CoordinateReferenceSystem targetCRS) throws ActionException {
-        try {
-            return parser.parse(file, sourceCRS, targetCRS);
-        } catch (ServiceException e) {
-            throw new ActionException("Failed to parse Feature Collection", e);
-        }
+            CoordinateReferenceSystem targetCRS) throws ServiceException {
+        return parser.parse(file, sourceCRS, targetCRS);
     }
 
     private FeatureCollectionParser getParser(File mainFile) {
@@ -360,19 +388,19 @@ public class CreateUserLayerHandler extends RestActionHandler {
     }
 
     private UserLayer store(SimpleFeatureCollection fc, String uuid, Map<String, String> formParams)
-            throws ActionException {
+            throws ActionParamsException {
         try {
             UserLayer userLayer = createUserLayer(fc, uuid, formParams);
             UserLayerStyle userLayerStyle = createUserLayerStyle(formParams);
             List<UserLayerData> userLayerDataList = UserLayerDataService.createUserLayerData(fc, uuid);
-            userLayer.setFeatures_count(fc.size());
+            userLayer.setFeatures_count(userLayerDataList.size());
             userLayer.setFeatures_skipped(fc.size() - userLayerDataList.size());
             userLayerService.insertUserLayer(userLayer, userLayerStyle, userLayerDataList);
             return userLayer;
         } catch (JSONException e) {
-            throw new ActionException("Failed to encode feature as GeoJSON");
+            throw new ActionParamsException("Failed to encode feature as GeoJSON");
         } catch (ServiceException e) {
-            throw new ActionException("Failed to store features to database");
+            throw new ActionParamsException("Failed to store features to database", UserLayerHandlerHelper.createErrorJSON(e.getMessage())); // no_features, unable_to_store_data
         }
     }
 
@@ -392,7 +420,7 @@ public class CreateUserLayerHandler extends RestActionHandler {
             }
             return UserLayerDataService.createUserLayerStyle(styleObject);
         } catch (JSONException e) {
-            throw new ActionParamsException("Invalid style json");
+            throw new ActionParamsException("Invalid style json: " + formParams.get(KEY_STYLE));
         }
     }
 
