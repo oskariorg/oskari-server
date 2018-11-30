@@ -12,6 +12,7 @@ import org.geotools.data.simple.SimpleFeatureSource;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
 import fi.nls.oskari.service.ServiceException;
+import fi.nls.oskari.util.JSONHelper;
 
 /**
  * Parse MapInfo MIF/MID
@@ -40,6 +41,9 @@ public class MIFParser implements FeatureCollectionParser {
             if (crs != null) {
                 sourceCRS = crs;
             }
+            if (sourceCRS == null) {
+                throw new ServiceException("Failed to parse MIF", JSONHelper.createJSONObject("cause", "no_source_crs"));
+            }
             return FeatureCollectionParsers.read(source, sourceCRS, targetCRS);
         } catch (Exception e) {
             throw new ServiceException("Failed to parse MIF", e);
@@ -48,6 +52,11 @@ public class MIFParser implements FeatureCollectionParser {
                 store.dispose();
             }
         }
+    }
+
+    @Override
+    public String getSuffix() {
+        return SUFFIX.toLowerCase();
     }
 
 }

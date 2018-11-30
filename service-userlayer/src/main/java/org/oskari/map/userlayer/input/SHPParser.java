@@ -18,6 +18,7 @@ import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.service.ServiceException;
+import fi.nls.oskari.util.JSONHelper;
 
 /**
  * Parse ESRI ShapeFiles with GeoTools
@@ -43,7 +44,12 @@ public class SHPParser implements FeatureCollectionParser {
             if (crs != null) {
                 sourceCRS = crs;
             }
+            if (sourceCRS == null) {
+                throw new ServiceException("Failed to parse SHP", JSONHelper.createJSONObject("cause", "no_source_crs"));
+            }
             return FeatureCollectionParsers.read(source, sourceCRS, targetCRS);
+        } catch (ServiceException e) {
+            throw e; //no_souurce_crs
         } catch (Exception e) {
             throw new ServiceException("Failed to parse SHP", e);
         } finally {
@@ -74,6 +80,11 @@ public class SHPParser implements FeatureCollectionParser {
             LOG.warn("IOException occured while reading CPG file, using default charset");
         }
         return StandardCharsets.ISO_8859_1;
+    }
+
+    @Override
+    public String getSuffix() {
+        return SUFFIX.toLowerCase();
     }
 
 }
