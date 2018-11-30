@@ -34,6 +34,7 @@ import com.wdtinc.mapbox_vector_tile.build.MvtLayerProps;
 public class SimpleFeaturesMVTEncoder {
 
     private static final GeometryFactory GF = new GeometryFactory();
+    private static final int TILE_SIZE = 256;
 
     public static byte[] encodeToByteArray(SimpleFeatureCollection sfc,
             String layer, double[] bbox, int extent, int buffer) {
@@ -88,7 +89,7 @@ public class SimpleFeaturesMVTEncoder {
         }
 
         return JtsAdapter.createTileGeom(geoms, tileEnvelope, clipEnvelope, GF,
-                new MvtLayerParams(512, extent), new GeomMinSizeFilter(6, 6)).mvtGeoms;
+                new MvtLayerParams(TILE_SIZE, extent), new GeomMinSizeFilter(6, 6)).mvtGeoms;
     }
 
     public static List<Geometry> asMVTGeoms(SimpleFeatureCollection sfc, double[] bbox, int extent, int buffer) {
@@ -191,7 +192,9 @@ public class SimpleFeaturesMVTEncoder {
             Polygon polygon = (Polygon) geom;
             LinearRing exterior = (LinearRing) polygon.getExteriorRing();
             if (!rectIntersects.intersects(exterior)) {
-                return null;
+                if (!polygon.covers(GF.toGeometry(rect))) {
+                    return null;
+                }
             }
             int numInteriorRing = polygon.getNumInteriorRing();
             if (numInteriorRing == 0) {
