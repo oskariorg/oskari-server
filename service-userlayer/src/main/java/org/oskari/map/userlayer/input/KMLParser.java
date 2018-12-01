@@ -87,10 +87,6 @@ public class KMLParser implements FeatureCollectionParser {
         }
     }
 
-    @Override
-    public String getSuffix() {
-        return SUFFIX.toLowerCase();
-    }
     @SuppressWarnings("unchecked")
     private DefaultFeatureCollection processFeatures (DefaultFeatureCollection fc_kml, Set<String> extendedData) {
         DefaultFeatureCollection fc = new DefaultFeatureCollection();
