@@ -31,6 +31,7 @@ import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.TransformException;
 import org.oskari.geojson.GeoJSON;
 import org.oskari.geojson.GeoJSONWriter;
+import org.oskari.map.userlayer.input.KMLParser;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -86,8 +87,26 @@ public class UserLayerDataService {
             Collection<PropertyDescriptor> types = schema.getDescriptors();
             for (PropertyDescriptor type : types) {
                 JSONObject obj = new JSONObject();
-                obj.put("name", type.getName().getLocalPart());
+                String name = type.getName().getLocalPart();
+                obj.put("name", name);
                 obj.put("type", type.getType().getBinding().getSimpleName());
+                JSONObject locales = new JSONObject();
+                // KML handling
+                if (KMLParser.KML_NAME.equals(name)){
+                    locales.put("fi", "Nimi");
+                    locales.put("en", "Name");
+                    locales.put("sv", "Namn");
+                } else if (KMLParser.KML_DESC.equals(name)){
+                    locales.put("fi", "Kuvaus");
+                    locales.put("en", "Description");
+                    locales.put("sv", "Beskrivning");
+                // use name as default localized value
+                } else {
+                    locales.put("fi", name);
+                    locales.put("en", name);
+                    locales.put("sv", name);
+                }
+                obj.put("locales", locales);
                 jsfields.put(obj);
             }
         } catch (Exception ex) {

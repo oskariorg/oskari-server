@@ -42,11 +42,17 @@ public class LayerJSONFormatterUSERLAYER extends LayerJSONFormatter {
         JSONHelper.putValue(layerJson, "name",ulayer.getLayer_name());
         JSONHelper.putValue(layerJson, "description",ulayer.getLayer_desc());
         JSONHelper.putValue(layerJson, "source",ulayer.getLayer_source());
+        JSONArray fields = JSONHelper.createJSONArray(ulayer.getFields());
         try{
-            JSONHelper.putValue(layerJson, "fields", getFieldsNames(JSONHelper.createJSONArray(ulayer.getFields())));
+            JSONHelper.putValue(layerJson, "fields", getFieldsNames(fields));
         }catch (IllegalArgumentException e){
             JSONHelper.putValue(layerJson, "fields", new JSONArray());
             log.warn("Couldn't put fields array to layerJson", e);
+        }
+        try {
+            JSONHelper.putValue(layerJson, "fieldLocales", getLocalizedFields(lang, fields));
+        }catch (IllegalArgumentException e){
+            // do nothing
         }
         // user layer rendering url - override DB url if property is defined
         JSONHelper.putValue(layerJson, "url", getUserLayerTileUrl());
@@ -75,6 +81,29 @@ public class LayerJSONFormatterUSERLAYER extends LayerJSONFormatter {
             return jsarray;
         } catch (Exception e) {
             throw new IllegalArgumentException("Couldn't create JSONArray from fields");
+        }
+    }
+    private static JSONArray getLocalizedFields(final String lang, final JSONArray json) {
+        try {
+            if (json.length() == 0){
+                throw new IllegalArgumentException("No fields");
+            }
+            JSONArray jsarray =  new JSONArray();
+            jsarray.put("ID");
+            for(int i = 0; i < json.length(); i++){
+                JSONObject obj = json.getJSONObject(i);
+                // skip geometry
+                if ("the_geom".equals(obj.getString("name"))) {
+                    continue;
+                }
+                // if get fails throws exception and locales are not added to layer
+                jsarray.put(obj.getJSONObject("locales").getString(lang));
+            }
+            jsarray.put("X");
+            jsarray.put("Y");
+            return jsarray;
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Couldn't create locales JSONArray from fields");
         }
     }
 }
