@@ -363,7 +363,6 @@ public class CreateUserLayerHandler extends RestActionHandler {
             }
             return mainFile;
         } catch (IOException e) {
-            log.warn("unzip:", e.getMessage());
             throw new ServiceException("Failed to unzip file: " + zipFile.getName(), UserLayerHandlerHelper.createErrorJSON("unzip_failure", "file", zipFile.getName()));
         }
     }
