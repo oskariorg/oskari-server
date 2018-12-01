@@ -56,7 +56,7 @@ public class MIFParser implements FeatureCollectionParser {
 
     @Override
     public String getSuffix() {
-        return SUFFIX.toLowerCase();
+        return SUFFIX;
     }
 
 }

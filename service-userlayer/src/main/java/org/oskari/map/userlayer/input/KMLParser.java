@@ -30,6 +30,11 @@ public class KMLParser implements FeatureCollectionParser {
     public static final String SUFFIX = "KML";
 
     @Override
+    public String getSuffix() {
+        return SUFFIX;
+    }
+
+    @Override
     public SimpleFeatureCollection parse(File file, CoordinateReferenceSystem sourceCRS,
             CoordinateReferenceSystem targetCRS) throws ServiceException {
         try (InputStream in = new BufferedInputStream(new FileInputStream(file))) {

@@ -78,7 +78,7 @@ public class GPXParser implements FeatureCollectionParser {
 
     @Override
     public String getSuffix() {
-        return SUFFIX.toLowerCase();
+        return SUFFIX;
     }
 
 }

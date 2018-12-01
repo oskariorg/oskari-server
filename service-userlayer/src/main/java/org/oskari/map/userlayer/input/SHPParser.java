@@ -84,7 +84,7 @@ public class SHPParser implements FeatureCollectionParser {
 
     @Override
     public String getSuffix() {
-        return SUFFIX.toLowerCase();
+        return SUFFIX;
     }
 
 }
