@@ -80,6 +80,9 @@ public class UserLayerDbServiceMybatisImpl extends UserLayerDbService {
             return count;
         } catch (Exception e) {
             log.error(e, "Rolling back, failed to insert userlayer with id:", +userLayer.getId());
+            if(e instanceof ServiceException){
+                throw e; // no_features
+            }
             throw new ServiceException("unable_to_store_data");
         }
     }
