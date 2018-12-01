@@ -140,14 +140,9 @@ public class KMLParser implements FeatureCollectionParser {
         builder.setNamespaceURI( "http://www.oskari.org" );
         builder.setSRS( "EPSG:4326" );
         builder.add(KML_NAME, String.class );
-        if (!extendedData.contains("description")) {
-            builder.add(KML_DESC, String.class );
-        }
+        builder.add(KML_DESC, String.class );
         extendedData.forEach((k) -> {
-            if (k.equals("description")){
-                builder.add(KML_DESC, String.class );
-                return;
-            }
+            if (k.equals("description")) return;
             builder.add(k, String.class);
         });
         builder.add(KML_GEOM, Geometry.class );
