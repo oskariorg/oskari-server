@@ -19,7 +19,7 @@ For a full list of changes see: https://github.com/oskariorg/oskari-server/miles
 - Removed "startup" info for bundles from database. All required bundles now have to be included in the frontend build.
 - oskari-server now has a new "example" app that replaces the previous "sample" app to make it clearer it's an example that can be used to demo the software, but will change in releases so you shouldn't use it as your own geoportal if you wish to have control over content and/or functionalities included in it.
 - There's a new URL parameter for skipping the guided tour: showIntro=false
-- Print-functionality now has support for ArcGIS REST layers.
+- Print-functionality now supports ArcGIS REST raster layers.
 - PropertyUtil.getNecessary() now throws NoSuchElementException instead of plain RuntimeException so misconfigurations are easier to separate from actual errors.
 - Library updates
 
