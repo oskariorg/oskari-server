@@ -6,6 +6,7 @@
 
 There are some changes required for any customized JSP-pages:
 
+- jQuery is now part of oskari.min.js - remove script tag for jQuery
 - bundles/bundle.js has been removed - remove reference to it
 - resources/portal.css and forms.css are now part of oskari.min.css - remove references to them
 - app/overwritten.css is now part of oskari.min.css - remove reference to it
