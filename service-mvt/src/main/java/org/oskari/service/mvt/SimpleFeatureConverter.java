@@ -56,7 +56,8 @@ public class SimpleFeatureConverter implements IUserDataConverter {
                 continue;
             }
 
-            featureBuilder.addTags(layerProps.addKey(prop));
+            int keyIndex = layerProps.addKey(prop);
+            featureBuilder.addTags(keyIndex);
             featureBuilder.addTags(valueIndex);
         }
     }
@@ -65,14 +66,9 @@ public class SimpleFeatureConverter implements IUserDataConverter {
         if (id == null || id.isEmpty()) {
             return;
         }
-        int valueIndex = layerProps.addKey(id);
-        if (valueIndex < 0) {
-            // This shouldn't happen as id is non-empty String
-            LOG.warn("Could not add id: " + id);
-            return;
-        }
-        layerProps.addValue(id);
-        featureBuilder.addTags(layerProps.addKey(KEY_ID));
+        int valueIndex = layerProps.addValue(id);
+        int keyIndex = layerProps.addKey(KEY_ID);
+        featureBuilder.addTags(keyIndex);
         featureBuilder.addTags(valueIndex);
     }
 
