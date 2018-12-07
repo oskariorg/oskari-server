@@ -1,5 +1,39 @@
 # Migration guide
 
+## 1.49.0
+
+### JSP-files modified to match the new frontend build
+
+There are some changes required for any customized JSP-pages:
+
+- jQuery is now part of oskari.min.js - remove script tag for jQuery
+- bundles/bundle.js has been removed - remove reference to it
+- resources/portal.css and forms.css are now part of oskari.min.css - remove references to them
+- app/overwritten.css is now part of oskari.min.css - remove reference to it
+- the "preloaded" variable is now always true - remove any logic using it
+
+The frontend code is now always minified/bundled as oskari.min.js even on development environment.
+See the example app in oskari-server for template JSP in custom installs.
+
+### search-service-nls
+
+Due to being specific to NLS Finland services the code has been moved to nlsfi/oskari-server-extras#1 and but it's still
+ available in oskari.org/nexus. For drop-in replacement change:
+
+     <dependency>
+        <groupId>fi.nls.oskari.service</groupId>
+        <artifactId>oskari-search-nls</artifactId>
+        <version>${oskari.version}</version>
+    </dependency>
+
+to:
+
+     <dependency>
+        <groupId>fi.nls.oskari.extras</groupId>
+        <artifactId>oskari-search-nls</artifactId>
+        <version>2.1</version>
+    </dependency>
+
 ## 1.48.0
 
 ### Changes to JSP-pages

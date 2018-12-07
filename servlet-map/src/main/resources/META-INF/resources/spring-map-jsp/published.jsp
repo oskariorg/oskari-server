@@ -13,10 +13,13 @@
             rel="stylesheet"
             type="text/css"
             href="/Oskari${path}/icons.css"/>
+
     <link
             rel="stylesheet"
             type="text/css"
-            href="/Oskari${path}/css/overwritten.css"/>
+            href="/Oskari${path}/oskari.min.css"/>
+
+    <link href="https://fonts.googleapis.com/css?family=Noto+Sans" rel="stylesheet">
     <style type="text/css">
         @media screen {
             body {
