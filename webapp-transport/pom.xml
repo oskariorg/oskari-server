@@ -53,7 +53,6 @@
         <dependency>
             <groupId>com.netflix.hystrix</groupId>
             <artifactId>hystrix-metrics-event-stream</artifactId>
-            <version>1.1.2</version>
         </dependency>
     </dependencies>
 </project>
