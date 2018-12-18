@@ -24,7 +24,7 @@ The migration is pretty straightforward:
 
     java -jar ../jetty-distribution-9.4.12.v20180830/start.jar
 
-See https://github.com/oskariorg/sample-configs/blob/master/jetty-9/Howto.md for details.
+See https://github.com/oskariorg/sample-configs/blob/master/jetty-9/Howto.md and oskari.org for more details.
 
 You will also need to update the frontend for Oskari 1.50.0+ as the CometD client library has been updated and
  the old one doesn't work with the new server or vice versa. 
