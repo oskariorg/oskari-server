@@ -15,7 +15,7 @@ The migration is pretty straightforward:
 - Note! Update the web.xml under {your server extension}/webapp-transport/src/main/webapp/WEB-INF/web.xml to
  match the changes in {oskari-server}/webapp-transport/src/main/webapp/WEB-INF/web.xml
 - Namely the servlet-class for transport has changed from org.cometd.server.CometdServlet to org.cometd.server.CometDServlet
- as seen here https://github.com/nls-oskari/kartta.paikkatietoikkuna.fi/commit/8ef277efaad86973922859270d99015a1caf074e
+ as seen here https://github.com/oskariorg/oskari-server-extension-template/commit/88ffa45bd649b1967f07dff0470e2fd044f7a35a
 
 4) Copy everything under {Jetty 8}/resources to {Jetty 9}/oskari-server/resources
 5) Start Jetty 9 with:
