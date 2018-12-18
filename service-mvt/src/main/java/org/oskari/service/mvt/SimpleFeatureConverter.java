@@ -17,16 +17,20 @@ public class SimpleFeatureConverter implements IUserDataConverter {
 
     private static final Logger LOG = LogFactory.getLogger(SimpleFeatureConverter.class);
 
+    private static final String KEY_ID = "_oid";
+
     @Override
     public void addTags(Object userData, MvtLayerProps layerProps, Builder featureBuilder) {
         if (!(userData instanceof SimpleFeature)) {
             LOG.debug("userData not a SimpleFeature!");
             return;
         }
-
         SimpleFeature f = (SimpleFeature) userData;
-        Name geomPropertyName = f.getDefaultGeometryProperty().getName();
+
         String id = f.getID();
+        addId(layerProps, featureBuilder, id);
+
+        Name geomPropertyName = f.getDefaultGeometryProperty().getName();
         for (Property p : f.getProperties()) {
             Name name = p.getName();
             if (geomPropertyName.equals(name)) {
@@ -52,9 +56,20 @@ public class SimpleFeatureConverter implements IUserDataConverter {
                 continue;
             }
 
-            featureBuilder.addTags(layerProps.addKey(prop));
+            int keyIndex = layerProps.addKey(prop);
+            featureBuilder.addTags(keyIndex);
             featureBuilder.addTags(valueIndex);
         }
+    }
+
+    private void addId(MvtLayerProps layerProps, Builder featureBuilder, String id) {
+        if (id == null || id.isEmpty()) {
+            return;
+        }
+        int valueIndex = layerProps.addValue(id);
+        int keyIndex = layerProps.addKey(KEY_ID);
+        featureBuilder.addTags(keyIndex);
+        featureBuilder.addTags(valueIndex);
     }
 
 }
