@@ -2,7 +2,7 @@ package org.oskari.service.mvt.wfs;
 
 public class WFSTileGrid {
 
-    public static final int TILE_SIZE = 512;
+    public static final int TILE_SIZE = 256;
 
     private final double originX;
     private final double originY;
@@ -16,7 +16,7 @@ public class WFSTileGrid {
         }
 
         this.originX = extent[0];
-        this.originY = extent[1];
+        this.originY = extent[3];
 
         this.resolutions = new double[maxZoom + 1];
 
@@ -33,8 +33,8 @@ public class WFSTileGrid {
     public double[] getTileExtent(TileCoord tile) {
         double tileSizeInNature = TILE_SIZE * resolutions[tile.getZ()];
         double x1 = originX + tile.getX() * tileSizeInNature;
-        double y1 = originY + tile.getY() * tileSizeInNature;
-        return new double[] { x1, y1, x1 + tileSizeInNature, y1 + tileSizeInNature };
+        double y1 = originY - tile.getY() * tileSizeInNature;
+        return new double[] { x1, y1 - tileSizeInNature, x1 + tileSizeInNature, y1 };
     }
 
     public static int getMatrixSize(int z) {

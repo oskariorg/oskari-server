@@ -290,7 +290,7 @@ public class WFSServiceTester {
                     WFSLayerConfiguration lc = GetGtWFSCapabilities.layerToWfsLayerConfiguration(wfsds, typeName, serviceUrl, user, pw);
                     if(epsg != null) lc.setSRSName(epsg);   // test request epsg entered by the user
                     // Write wfs layer insert scripts (sql) - only for Wfs version 1.1.0
-                    String title = wfsds.getFeatureTypeTitle(typeName);
+                    String title = GetGtWFSCapabilities.getFeaturetypeTitle(wfsds, typeName);
                     writeWFSSqlInsertScript(lc, title);
                     // test http GET GetFeature
                     final String response = TestGETWfsGetFeature(lc, version, count);

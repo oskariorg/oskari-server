@@ -1,0 +1,12 @@
+{
+    "create": [
+        "add-example-layergroup.sql",
+        "add-inspire-themes.sql",
+        "add-example-users.sql",
+        "add-example-credentials.sql"
+    ],
+    "views" : [
+        "default-view-3857.json",
+        "publisher-template-view-3857.json"
+    ]
+}

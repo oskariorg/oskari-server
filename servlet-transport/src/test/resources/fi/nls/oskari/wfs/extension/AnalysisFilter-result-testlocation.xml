@@ -1,10 +1,10 @@
-<ogc:Filter xmlns:ogc="http://www.opengis.net/ogc" xmlns:gml="http://www.opengis.net/gml">
+<ogc:Filter xmlns:ogc="http://www.opengis.net/ogc" xmlns:gml="http://www.opengis.net/gml" xmlns:xs="http://www.w3.org/2001/XMLSchema">
 <ogc:And>
     <ogc:BBOX>
         <ogc:PropertyName>geometry</ogc:PropertyName>
         <gml:Envelope srsDimension="2" srsName="EPSG:3067">
-            <gml:lowerCorner>425724.45809412 6695489.1337378</gml:lowerCorner>
-            <gml:upperCorner>427451.45809412 6696484.1337378</gml:upperCorner>
+            <gml:lowerCorner>425724.458094 6695489.133738</gml:lowerCorner>
+            <gml:upperCorner>427451.458094 6696484.133738</gml:upperCorner>
         </gml:Envelope>
     </ogc:BBOX>
     <ogc:And>

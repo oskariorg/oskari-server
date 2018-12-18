@@ -209,8 +209,8 @@
 
     <statement id="add-bundle"
             parameterClass="Bundle">
-      INSERT INTO portti_view_bundle_seq (view_id, bundle_id, seqno, state, config, startup, bundleinstance)
-           VALUES ( #viewId#, #bundleId#, #seqNo#, #state#, #config#, #startup#, #bundleinstance#)
+      INSERT INTO portti_view_bundle_seq (view_id, bundle_id, seqno, state, config, bundleinstance)
+           VALUES ( #viewId#, #bundleId#, #seqNo#, #state#, #config#, #bundleinstance#)
         RETURNING view_id
     </statement>
 
@@ -222,7 +222,6 @@
     <update id="update-bundle-settings-in-view"
             parameterClass="java.util.Map">
         UPDATE portti_view_bundle_seq SET
-            startup = #startup#,
             config = #config#,
             state = #state#,
             bundleinstance = #bundleinstance#

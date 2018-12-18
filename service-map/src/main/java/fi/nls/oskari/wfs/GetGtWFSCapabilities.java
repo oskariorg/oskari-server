@@ -966,7 +966,7 @@ public class GetGtWFSCapabilities {
         //ft.setDefaultSrs(srsval);  we use front side default srs
 
         try {
-            ft.setTitle(store.getFeatureTypeTitle(name));
+            ft.setTitle(getFeaturetypeTitle(store, name));
             // GetCapabilities request
             final DocumentBuilderFactory dbf = DocumentBuilderFactory
                     .newInstance();
