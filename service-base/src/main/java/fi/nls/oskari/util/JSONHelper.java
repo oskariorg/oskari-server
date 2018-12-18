@@ -441,8 +441,17 @@ public class JSONHelper {
                     return false;
                 }
                 else if(value1 != null && value2 != null && !value1.equals(value2)) {
-                    log.debug("Array values didn't match:", value1, value2);
-                    return false;
+                    if (value1 instanceof Number && value2 instanceof Number) {
+                        double v1 = ((Number) value1).doubleValue();
+                        double v2 = ((Number) value2).doubleValue();
+                        if (Math.abs(v1 - v2) > 1e-6) {
+                            log.debug("Values were not equal:", value1, "!=", value2);
+                            return false;
+                        }
+                    } else {
+                        log.debug("Array values didn't match:", value1, value2);
+                        return false;
+                    }
                 }
             } catch (Exception ex) {
                 log.warn(ex, "Error comparing JSONArrays");

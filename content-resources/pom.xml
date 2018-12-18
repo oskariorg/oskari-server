@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>fi.nls.oskari</groupId>
 		<artifactId>oskari-parent</artifactId>
-        <version>1.49.0-SNAPSHOT</version>
+        <version>1.51.0-SNAPSHOT</version>
 	</parent>
     <artifactId>content-resources</artifactId>
     <packaging>jar</packaging>
@@ -56,7 +56,7 @@
                     <dependency>
                         <groupId>org.postgresql</groupId>
                         <artifactId>postgresql</artifactId>
-                        <version>9.3-1102-jdbc41</version>
+                        <version>${postgresql.version}</version>
                     </dependency>
                 </dependencies>
             </plugin>
@@ -133,7 +133,6 @@
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
-            <version>9.3-1102-jdbc41</version>
             <scope>runtime</scope>
         </dependency>
         <dependency>

@@ -1,0 +1,1 @@
+alter table portti_view_bundle_seq alter column startup drop default;

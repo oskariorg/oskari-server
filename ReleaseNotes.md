@@ -1,5 +1,34 @@
 # Release Notes
 
+## 1.50.0
+
+Adds Jetty 9 support for oskari-server.
+
+Note! This version is no longer compatible with Jetty 8. See migration notes!
+
+## 1.49.0
+
+For a full list of changes see: https://github.com/oskariorg/oskari-server/milestone/13?closed=1
+
+- JSP-files modified to match the new frontend build. See migrationguide for details.
+- search-service-nls removed from oskari-server as it's adapters for NLS Finland specific search channels. See migrationguide for details. 
+- Added initial support for vectortile based layers
+- URLencoding added for some outgoing requests to improve parameters handling
+- Improved SearchChannel.isValidSearchTerm() error handling so single erratic search channel doesn't prevent search results from showing.
+- Applications now halt on startup if migrations are not successfully completed. You can use the old functionality (force startup after bad migration) by having db.ignoreMigrationFailures=true on oskari-ext.properties.
+- Statistical regionsets that are hosted as resource-files can now have numeric IDs and are read as UTF-8 to support wider range of characters
+- The server now filters out statistical indicators without names so the UI doesn't list empty/undefined indicators.
+- Error handling improved for CSW metadata parsing
+- Customized labels fixed for myplaces when a new/empty database is populated
+- Fix an issue with XML-parsing when Xalan library is in the classpath (For example SAML has Xalan)
+- Fix for layer group matching on database populator/layers now get proper groups
+- Removed "startup" info for bundles from database. All required bundles now have to be included in the frontend build.
+- oskari-server now has a new "example" app that replaces the previous "sample" app to make it clearer it's an example that can be used to demo the software, but will change in releases so you shouldn't use it as your own geoportal if you wish to have control over content and/or functionalities included in it.
+- There's a new URL parameter for skipping the guided tour: showIntro=false
+- Print-functionality now supports ArcGIS REST raster layers.
+- PropertyUtil.getNecessary() now throws NoSuchElementException instead of plain RuntimeException so misconfigurations are easier to separate from actual errors.
+- Library updates
+
 ## 1.48.0
 
 For a full list of changes see: https://github.com/oskariorg/oskari-server/milestone/11?closed=1

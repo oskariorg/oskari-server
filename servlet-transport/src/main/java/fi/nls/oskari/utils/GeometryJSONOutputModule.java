@@ -1,23 +1,20 @@
 package fi.nls.oskari.utils;
 
+import com.fasterxml.jackson.core.Version;
+import com.fasterxml.jackson.databind.Module;
+import com.fasterxml.jackson.databind.module.SimpleModule;
+import com.vividsolutions.jts.geom.Geometry;
 
-import org.codehaus.jackson.Version;
-import org.codehaus.jackson.map.Module;
-import org.codehaus.jackson.map.module.SimpleModule;
-
-/**
- * This uses the Jackson 1.x version since it's used by the current version of CometD.
- * Don't upgrade if not upgrading CometD.
- */
+@SuppressWarnings("serial")
 public class GeometryJSONOutputModule extends SimpleModule {
 
     public GeometryJSONOutputModule() {
-        super("SimpleModule", new Version(1, 0, 0, null));
+        super("SimpleModule", new Version(1, 0, 0, null, null, null));
     }
 
     @Override
     public void setupModule(Module.SetupContext context) {
-        addSerializer(new GeometrySerializer());
+        addSerializer(new GeometrySerializer(Geometry.class));
 
         super.setupModule(context);
     }

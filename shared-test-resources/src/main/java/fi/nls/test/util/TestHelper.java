@@ -59,6 +59,7 @@ public class TestHelper {
 
     public static boolean redisAvailable() {
         if(redisStatus.equals(STATUS.NONE)) {
+            JedisManager.connect(1, "localhost", 6379);
             final String testKey = "testing";
             final String testValue = "availability";
             try {

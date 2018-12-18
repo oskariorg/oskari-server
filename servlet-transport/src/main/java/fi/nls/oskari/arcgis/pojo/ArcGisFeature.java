@@ -4,13 +4,13 @@ import com.esri.core.geometry.Geometry.Type;
 import com.esri.core.geometry.MapGeometry;
 import com.esri.core.geometry.OperatorExportToWkb;
 import com.esri.core.geometry.OperatorImportFromJson;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.core.JsonParseException;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.io.ParseException;
 import com.vividsolutions.jts.io.WKBReader;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
-import org.codehaus.jackson.JsonParseException;
-import org.codehaus.jackson.annotate.JsonIgnore;
 import org.json.simple.JSONObject;
 
 import java.io.IOException;
