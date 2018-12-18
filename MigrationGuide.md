@@ -1,5 +1,34 @@
 # Migration guide
 
+## 1.50.0
+
+This release requires Jetty 9 to be used with the transport webapp. Jetty 8 no longer works as the CometD library has been updated.
+For migrating from the previous Jetty 8 package to the new Jetty 9 package you can download the new Jetty bundle from oskari.org. 
+The migration is pretty straightforward:
+
+1) Download the new Jetty 9 package from oskari.org/download
+
+2) Move any customized configuration from {Jetty 8}/start.ini to {Jetty 9}/oskari-server/start.d/oskari.ini
+
+3) Build your app with Oskari 1.50.0+ version and replace the war-files under {Jetty 9}/oskari-server/webapps
+
+- Note! Update the web.xml under {your server extension}/webapp-transport/src/main/webapp/WEB-INF/web.xml to
+ match the changes in {oskari-server}/webapp-transport/src/main/webapp/WEB-INF/web.xml
+- Namely the servlet-class for transport has changed from org.cometd.server.CometdServlet to org.cometd.server.CometDServlet
+ as seen here https://github.com/oskariorg/oskari-server-extension-template/commit/88ffa45bd649b1967f07dff0470e2fd044f7a35a
+
+4) Copy everything under {Jetty 8}/resources to {Jetty 9}/oskari-server/resources
+5) Start Jetty 9 with:
+- work directory as {Jetty 9}/oskari-server
+- Run:
+
+    java -jar ../jetty-distribution-9.4.12.v20180830/start.jar
+
+See https://github.com/oskariorg/sample-configs/blob/master/jetty-9/Howto.md and oskari.org for more details.
+
+You will also need to update the frontend for Oskari 1.50.0+ as the CometD client library has been updated and
+ the old one doesn't work with the new server or vice versa. 
+
 ## 1.49.0
 
 ### JSP-files modified to match the new frontend build
