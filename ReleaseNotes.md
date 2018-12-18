@@ -1,5 +1,11 @@
 # Release Notes
 
+## 1.50.0
+
+Adds Jetty 9 support for oskari-server.
+
+Note! This version is no longer compatible with Jetty 8. See migration notes!
+
 ## 1.49.0
 
 For a full list of changes see: https://github.com/oskariorg/oskari-server/milestone/13?closed=1
