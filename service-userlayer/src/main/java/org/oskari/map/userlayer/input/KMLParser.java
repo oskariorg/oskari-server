@@ -18,9 +18,12 @@ import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
 import org.geotools.kml.v22.KML;
 import org.geotools.kml.v22.KMLConfiguration;
+import org.geotools.referencing.CRS;
 import org.geotools.xml.PullParser;
+import org.geotools.geometry.jts.JTS;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.opengis.referencing.operation.MathTransform;
 import org.xml.sax.SAXException;
 
 import com.vividsolutions.jts.geom.Geometry;
@@ -77,7 +80,7 @@ public class KMLParser implements FeatureCollectionParser {
                 }
                 fc.add(f);
             }
-            return processFeatures(fc, extendedData);
+            return processFeatures(targetCRS, fc, extendedData);
         } catch (XMLStreamException e) {
             throw new ServiceException("XMLStreamException occured", e);
         } catch (IOException e) {
@@ -88,57 +91,68 @@ public class KMLParser implements FeatureCollectionParser {
     }
 
     @SuppressWarnings("unchecked")
-    private DefaultFeatureCollection processFeatures (DefaultFeatureCollection fc_kml, Set<String> extendedData) {
-        DefaultFeatureCollection fc = new DefaultFeatureCollection();
-        SimpleFeatureBuilder builder;
-        SimpleFeature f;
-        if (extendedData.isEmpty()){
-           builder = getBasicBuilder();
-        } else {
-           builder = getExtendedBuilder(extendedData);
-        }
-        SimpleFeatureIterator iter = fc_kml.features();
-        while (iter.hasNext()){
-            f = iter.next();
-            builder.set(KML_NAME, f.getAttribute("name"));
-            // Basic builder
+    private DefaultFeatureCollection processFeatures (CoordinateReferenceSystem targetCRS, DefaultFeatureCollection fc_kml, Set<String> extendedData) throws ServiceException {
+        try {
+            DefaultFeatureCollection fc = new DefaultFeatureCollection();
+            SimpleFeatureBuilder builder;
+            SimpleFeature f;
+            // KML always lon,lat 4326
+            CoordinateReferenceSystem sourceCRS = CRS.decode("EPSG:4326", true);
+            MathTransform transform = FeatureCollectionParsers.getTransform(sourceCRS, targetCRS);
+
             if (extendedData.isEmpty()){
-                builder.set(KML_DESC, f.getAttribute("description"));
-            // Extended builder
+               builder = getBasicBuilder(targetCRS);
             } else {
-                Map<String, Object> untypedData = (Map<String, Object>) f.getUserData().get("UntypedExtendedData");
-                if (untypedData != null){
-                    extendedData.forEach((k) -> {
-                        if (k.equals("description")){
-                            builder.set(KML_DESC, untypedData.get(k));
-                            return;
-                        }
-                        builder.set(k, untypedData.get(k));
-                    });
-                } else if (f.getAttribute("description") != null) {
-                    builder.set(KML_DESC, f.getAttribute("description"));
-                }
+               builder = getExtendedBuilder(targetCRS, extendedData);
             }
-            builder.set(KML_GEOM, f.getDefaultGeometry());
-            fc.add(builder.buildFeature(f.getID()));
+            SimpleFeatureIterator iter = fc_kml.features();
+            while (iter.hasNext()){
+                f = iter.next();
+                builder.set(KML_NAME, f.getAttribute("name"));
+                // Basic builder
+                if (extendedData.isEmpty()){
+                    builder.set(KML_DESC, f.getAttribute("description"));
+                // Extended builder
+                } else {
+                    Map<String, Object> untypedData = (Map<String, Object>) f.getUserData().get("UntypedExtendedData");
+                    if (untypedData != null){
+                        extendedData.forEach((k) -> {
+                            if (k.equals("description")){
+                                builder.set(KML_DESC, untypedData.get(k));
+                                return;
+                            }
+                            builder.set(k, untypedData.get(k));
+                        });
+                    } else if (f.getAttribute("description") != null) {
+                        builder.set(KML_DESC, f.getAttribute("description"));
+                    }
+                }
+                Geometry geom = (Geometry) f.getDefaultGeometry();
+                if (geom != null) {
+                    builder.set(KML_GEOM, JTS.transform(geom, transform));
+                }
+                fc.add(builder.buildFeature(f.getID()));
+            }
+            return fc;
+        } catch (Exception e) {
+            throw new ServiceException("Failed to parse KML", e);
         }
-        return fc;
     }
-    private SimpleFeatureBuilder getBasicBuilder () {
+    private SimpleFeatureBuilder getBasicBuilder (CoordinateReferenceSystem targetCRS) {
         SimpleFeatureTypeBuilder builder = new SimpleFeatureTypeBuilder();
         builder.setName( "BasciKMLBuilder" );
         builder.setNamespaceURI( "http://www.oskari.org" );
-        builder.setSRS( "EPSG:4326" );
+        builder.setCRS(targetCRS);
         builder.add(KML_NAME, String.class );
         builder.add(KML_DESC, String.class );
         builder.add(KML_GEOM, Geometry.class );
         return new SimpleFeatureBuilder(builder.buildFeatureType());
     }
-    private SimpleFeatureBuilder getExtendedBuilder (Set<String> extendedData) {
+    private SimpleFeatureBuilder getExtendedBuilder (CoordinateReferenceSystem targetCRS, Set<String> extendedData) {
         SimpleFeatureTypeBuilder builder = new SimpleFeatureTypeBuilder();
         builder.setName( "ExtendedKMLBuilder" );
         builder.setNamespaceURI( "http://www.oskari.org" );
-        builder.setSRS( "EPSG:4326" );
+        builder.setCRS(targetCRS);
         builder.add(KML_NAME, String.class );
         builder.add(KML_DESC, String.class );
         extendedData.forEach((k) -> {
