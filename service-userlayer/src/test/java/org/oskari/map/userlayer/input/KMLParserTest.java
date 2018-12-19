@@ -7,9 +7,12 @@ import java.net.URISyntaxException;
 
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.data.simple.SimpleFeatureIterator;
+import org.geotools.referencing.CRS;
 import org.junit.Test;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
+import org.opengis.referencing.FactoryException;
+import org.opengis.referencing.NoSuchAuthorityCodeException;
 import org.oskari.map.userlayer.input.KMLParser;
 
 import com.vividsolutions.jts.geom.Coordinate;
@@ -23,10 +26,10 @@ import fi.nls.oskari.service.ServiceException;
 public class KMLParserTest {
 
     @Test
-    public void testParseExtendedData() throws ServiceException, URISyntaxException {
+    public void testParseExtendedData() throws ServiceException, URISyntaxException, FactoryException {
         File file = new File(getClass().getResource("user_data.kml").toURI());
         KMLParser kml = new KMLParser();
-        SimpleFeatureCollection fc = kml.parse(file, null, null);
+        SimpleFeatureCollection fc = kml.parse(file, null, CRS.decode("EPSG:3067"));
         SimpleFeatureType schema = fc.getSchema();
         boolean found = false;
         // test schema
@@ -44,9 +47,8 @@ public class KMLParserTest {
                 found = true;
                 Point p = (Point) feature.getDefaultGeometry();
                 Coordinate c = p.getCoordinate();
-                // point is parsed as lon -> y, lat -> x
-                assertEquals(60.2063017, c.y, 1e-6);
-                assertEquals(24.9021089, c.x, 1e-6);
+                assertEquals(383726.9520816681, c.x, 1e-6);
+                assertEquals(6676234.520781213, c.y, 1e-6);
                 assertEquals(0.0, c.z, 0.0);
                 assertEquals("Floorball arena", feature.getAttribute(KMLParser.KML_DESC));
                 assertEquals("9-20", feature.getAttribute("Opening hours"));
@@ -61,10 +63,10 @@ public class KMLParserTest {
         assertEquals("Failed to parse feature Ruskeasuo", true, found);
     }
     @Test
-    public void testParseSampleData() throws ServiceException, URISyntaxException {
+    public void testParseSampleData() throws ServiceException, URISyntaxException, FactoryException {
         File file = new File(getClass().getResource("samples.kml").toURI());
         KMLParser kml = new KMLParser();
-        SimpleFeatureCollection fc = kml.parse(file, null, null);
+        SimpleFeatureCollection fc = kml.parse(file, null, CRS.decode("EPSG:4326"));
         boolean foundHidden = false;
         boolean foundPentagon = false;
         // test schema
@@ -84,17 +86,32 @@ public class KMLParserTest {
             } else if ("The Pentagon".equals(feature.getAttribute(KMLParser.KML_NAME))) {
                 foundPentagon = true;
                 assertEquals("Shouldn't have kml LookAt attribute", null, feature.getAttribute("LookAt"));
+                Polygon p = (Polygon) feature.getDefaultGeometry();
+                assertEquals(1, p.getNumInteriorRing());
+                LineString ring = p.getExteriorRing();
+                assertEquals (6, ring.getNumPoints());
+                Coordinate c = ring.getCoordinateN(0);
+                // KML has always lonlat 4326, but 4326 has latlon ordering
+                assertEquals(38.87253259892824, c.x, 1e-6);
+                assertEquals(-77.05788457660967, c.y, 1e-6);
+                assertEquals(100.0, c.z, 0);
+                ring = p.getInteriorRingN(0);
+                assertEquals (6, ring.getNumPoints());
+                c = ring.getCoordinateN(0);
+                assertEquals(38.87154239798456, c.x, 1e-6);
+                assertEquals(-77.05668055019126, c.y, 1e-6);
+                assertEquals(100.0, c.z, 0);
             }
         }
         assertEquals(true, foundHidden);
         assertEquals("Can't find The Pentagon. Has plane chrashed or just the test failed", true, foundPentagon);
     }
     //@Test PARSER DOESN'T SUPPORT TYPED EXTENDED DATA (types are defined in Schema element)
-    public void testParseTypedUserData() throws ServiceException, URISyntaxException {
+    public void testParseTypedUserData() throws ServiceException, URISyntaxException, FactoryException {
         // file is converted from shape
         File file = new File(getClass().getResource("hki.kml").toURI());
         KMLParser kml = new KMLParser();
-        SimpleFeatureCollection fc = kml.parse(file, null, null);
+        SimpleFeatureCollection fc = kml.parse(file, null, CRS.decode("EPSG:3067"));
         boolean found = false;
         // test schema
         SimpleFeatureType schema = fc.getSchema();
