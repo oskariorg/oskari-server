@@ -82,31 +82,43 @@ public class DatasourceLayer {
     }
 
     public String getTitle(String lang) {
-        JSONObject langJSON = getLocalized(lang);
-        if(langJSON == null) {
-            return null;
-        }
-        return langJSON.optString("name");
+        return getLocalized(lang, "name");
     }
-    private JSONObject getLocalized(String lang) {
+
+    private String getLocalized(String lang, String key) {
         if(locale == null || locale.length() == 0) {
             return null;
         }
         if (lang == null) {
             lang = PropertyUtil.getDefaultLanguage();
         }
-        final JSONObject value = locale.optJSONObject(lang);
-        if(value != null) {
+        String value = getLocalizedValue(locale.optJSONObject(lang), key);
+        if (value != null) {
             return value;
         }
-
+        // Try default language
         if (!lang.equalsIgnoreCase(PropertyUtil.getDefaultLanguage())) {
-            final JSONObject defaultValue = locale.optJSONObject(PropertyUtil.getDefaultLanguage());
-            if(defaultValue != null) {
-                return defaultValue;
+            value = getLocalizedValue(locale.optJSONObject(PropertyUtil.getDefaultLanguage()), key);
+            if (value != null) {
+                return value;
             }
         }
-        final String randomLang = (String) locale.keys().next();
-        return locale.optJSONObject(randomLang);
+        // Find any language
+        while (locale.keys().hasNext() && value == null) {
+            String randomLang = (String) locale.keys().next();
+            value = getLocalizedValue(locale.optJSONObject(randomLang), key);
+        }
+        return value;
+    }
+
+    private String getLocalizedValue(JSONObject langJSON, String key) {
+        if (langJSON == null) {
+            return null;
+        }
+        String value = langJSON.optString(key).trim();
+        if (!value.isEmpty()) {
+            return value;
+        }
+        return null;
     }
 }

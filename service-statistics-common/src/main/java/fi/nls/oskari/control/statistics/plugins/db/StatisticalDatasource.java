@@ -66,6 +66,7 @@ public class StatisticalDatasource {
     private JSONObject localeJSON = null;
 
     public String getName(String lang) {
+        final String key = "name";
         if(localeJSON == null) {
             localeJSON =  JSONHelper.createJSONObject(locale);
         }
@@ -76,16 +77,35 @@ public class StatisticalDatasource {
         if(lang == null) {
             lang = PropertyUtil.getDefaultLanguage();
         }
-        JSONObject langJson = localeJSON.optJSONObject(lang);
-        if(langJson == null) {
-            // try with default language
-            langJson = localeJSON.optJSONObject(PropertyUtil.getDefaultLanguage());
+
+        String value = getLocalizedValue(localeJSON.optJSONObject(lang), key);
+        if (value != null) {
+            return value;
         }
-        if(langJson == null) {
-            // nothing to use as name
+        // Try default language
+        if (!lang.equalsIgnoreCase(PropertyUtil.getDefaultLanguage())) {
+            value = getLocalizedValue(localeJSON.optJSONObject(PropertyUtil.getDefaultLanguage()), key);
+            if (value != null) {
+                return value;
+            }
+        }
+        // Find any language
+        while (localeJSON.keys().hasNext() && value == null) {
+            String randomLang = (String) localeJSON.keys().next();
+            value = getLocalizedValue(localeJSON.optJSONObject(randomLang), key);
+        }
+        return value;
+    }
+
+    private String getLocalizedValue(JSONObject langJSON, String key) {
+        if (langJSON == null) {
             return null;
         }
-        return langJson.optString("name");
+        String value = langJSON.optString(key).trim();
+        if (!value.isEmpty()) {
+            return value;
+        }
+        return null;
     }
 
     public void setLocale(String locale) {
