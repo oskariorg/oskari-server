@@ -87,7 +87,14 @@ public class StatisticalIndicator {
         String value = map.get(lang);
         if(value == null || value.trim().isEmpty()) {
             // try with default language
-            return map.get(PropertyUtil.getDefaultLanguage());
+            value = map.get(PropertyUtil.getDefaultLanguage());
+        }
+        if(value == null || value.trim().isEmpty()) {
+            // try any language
+            value = map.values().stream()
+                    .filter(val -> val.trim().isEmpty())
+                    .findFirst()
+                    .orElse(null);
         }
         return value;
     }
