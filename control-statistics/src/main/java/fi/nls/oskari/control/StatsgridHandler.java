@@ -80,6 +80,7 @@ public class StatsgridHandler extends BundleHandler {
                 .values().stream()
                 // check permissions
                 .filter(l -> l.hasPermission(params.getUser()))
+                .sorted(Comparator.comparing(DatasourceLayer::getOrderNumber))
                 // write to JSON
                 .map(l -> toJSON(l, language))
                 .collect(Collectors.toList());

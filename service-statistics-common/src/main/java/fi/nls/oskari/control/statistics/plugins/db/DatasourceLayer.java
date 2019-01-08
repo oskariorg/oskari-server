@@ -39,6 +39,8 @@ public class DatasourceLayer {
     // set by mybatis mapper
     private JSONObject locale;
 
+    private Integer orderNumber;
+
     private Set<Long> allowedRoles = new HashSet<>();
 
     public long getDatasourceId() {
@@ -69,6 +71,14 @@ public class DatasourceLayer {
 
     public void setConfig(JSONObject config) {
         this.config = config;
+    }
+
+    public Integer getOrderNumber() {
+        return orderNumber;
+    }
+
+    public void setOrderNumber(Integer orderNumber) {
+        this.orderNumber = orderNumber;
     }
 
     public void addRoles(Collection<Long> roleIds) {
