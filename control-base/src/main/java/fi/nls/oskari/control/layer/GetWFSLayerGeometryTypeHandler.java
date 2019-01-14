@@ -14,7 +14,7 @@ import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.util.ResponseHelper;
 import fi.nls.oskari.wfs.WFSLayerConfigurationService;
 import fi.nls.oskari.wfs.WFSLayerConfigurationServiceIbatisImpl;
-import fi.nls.oskari.wfs.util.WFSDescribeFeatureHelper;
+import fi.nls.oskari.util.WFSDescribeFeatureHelper;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
