@@ -1,6 +1,5 @@
 package org.oskari.control.mvt;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -9,8 +8,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import javax.servlet.http.HttpServletRequest;
+import java.util.concurrent.TimeUnit;
 
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.data.simple.SimpleFeatureIterator;
@@ -23,7 +21,7 @@ import org.oskari.service.mvt.wfs.WFSTileGrid;
 import org.oskari.service.util.ServiceFactory;
 
 import fi.nls.oskari.annotation.OskariActionRoute;
-import fi.nls.oskari.cache.Cache;
+import fi.nls.oskari.cache.ComputeOnceCache;
 import fi.nls.oskari.control.ActionConstants;
 import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.ActionHandler;
@@ -49,7 +47,7 @@ public class GetWFSVectorTileHandler extends ActionHandler {
         KNOWN_TILE_GRIDS.put("EPSG:3857", new WFSTileGrid(new double[] { -20037508.3427892, -20037508.3427892, 20037508.3427892, 20037508.3427892 }, 18));
     }
 
-    private final Cache<byte[]> cache = new Cache<>();
+    private final ComputeOnceCache<byte[]> tileCache = new ComputeOnceCache<>(256, TimeUnit.MINUTES.toMillis(5));
     private OskariLayerService layerService;
 
     public void setLayerService(OskariLayerService layerService) {
@@ -65,102 +63,31 @@ public class GetWFSVectorTileHandler extends ActionHandler {
 
     @Override
     public void handleAction(ActionParameters params) throws ActionException {
-        int layerId = params.getRequiredParamInt(ActionConstants.PARAM_ID);
-        OskariLayer layer = findLayer(layerId);
+        final int layerId = params.getRequiredParamInt(ActionConstants.PARAM_ID);
+        final OskariLayer layer = findLayer(layerId);
 
-        String srs = params.getRequiredParam(ActionConstants.PARAM_SRS);
-        WFSTileGrid grid = KNOWN_TILE_GRIDS.get(srs);
+        final String srs = params.getRequiredParam(ActionConstants.PARAM_SRS);
+        final WFSTileGrid grid = KNOWN_TILE_GRIDS.get(srs);
         if (grid == null) {
             throw new ActionParamsException("Unknown srs");
         }
 
-        int z = params.getRequiredParamInt(PARAM_Z);
-        int x = params.getRequiredParamInt(PARAM_X);
-        int y = params.getRequiredParamInt(PARAM_Y);
+        final int z = params.getRequiredParamInt(PARAM_Z);
+        final int x = params.getRequiredParamInt(PARAM_X);
+        final int y = params.getRequiredParamInt(PARAM_Y);
         validate(grid, z, x, y);
 
-        Double minScale = layer.getMinScale();
-        Double maxScale = layer.getMaxScale();
-        if (minScale != null || maxScale != null) {
-            double scaleDenominator = getScaleDenominator(grid, z);
-            validateScaleDenominator(scaleDenominator, minScale, maxScale);
-        }
+        validateScaleDenominator(layer, grid, z);
 
+        final ActionException[] errorHolder = new ActionException[1];
         String cacheKey = getCacheKey(layerId, srs, z, x, y);
-        byte[] cached = cache.get(cacheKey);
-        if (cached != null) {
-            params.getResponse().addHeader("Access-Control-Allow-Origin", "*");
-            if (shouldGzip(params.getRequest())) {
-                params.getResponse().addHeader("Content-Encoding", "gzip");
-                ResponseHelper.writeResponse(params, 200, MVT_CONTENT_TYPE, cached);
-            } else {
-                ByteArrayOutputStream ungzipped;
-                try {
-                    ungzipped = IOHelper.ungzip(cached);
-                } catch (IOException e) {
-                    throw new ActionException("Failed to decompress cached response", e);
-                }
-                ResponseHelper.writeResponse(params, 200, MVT_CONTENT_TYPE, ungzipped);
-            }
-            return;
-        }
-
-        // Find nearest higher resolution
-        int targetZ = grid.getZForResolution(8, -1);
-
-        List<TileCoord> wfsTiles;
-        int dz = z - targetZ;
-        if (dz < 0) {
-            int d = (int) Math.pow(2, -dz);
-            int targetX1 = x * d;
-            int targetY1 = y * d;
-            int targetX2 = (x+1) * d;
-            int targetY2 = (y+1) * d;
-            wfsTiles = new ArrayList<>(); 
-            for (int targetX = targetX1; targetX < targetX2; targetX++) {
-                for (int targetY = targetY1; targetY < targetY2; targetY++) {
-                    wfsTiles.add(new TileCoord(targetZ, targetX, targetY));
-                }
-            }
-        } else if (dz == 0) {
-            wfsTiles = Collections.singletonList(new TileCoord(z, x, y));
-        } else {
-            int div = (int) Math.pow(2, dz);
-            int targetX = x / div;
-            int targetY = y / div;
-            wfsTiles = Collections.singletonList(new TileCoord(targetZ, targetX, targetY));
-        }
-
-        SimpleFeatureCollection sfc = null;
-        for (TileCoord tile : wfsTiles) {
-            SimpleFeatureCollection tileFeatures = getFeatures(layer, srs, grid, tile);
-            if (tileFeatures == null) {
-                throw new ActionException("Failed to get features from service");
-            }
-            sfc = sfc == null ? tileFeatures : union(sfc, tileFeatures);
-        }
-
-        double[] bbox = grid.getTileExtent(new TileCoord(z, x, y));
-        byte[] encoded = SimpleFeaturesMVTEncoder.encodeToByteArray(sfc, layer.getName(), bbox, 4096, 256);
-
-        byte[] gzip = null;
-        try {
-            gzip = IOHelper.gzip(encoded).toByteArray();
-        } catch (IOException e) {
-            throw new ActionException("Unexpected exception occured, try again", e);
-        }
-
-        cache.put(cacheKey, gzip);
-
-        byte[] response;
-        if (shouldGzip(params.getRequest())) {
-            params.getResponse().addHeader("Content-Encoding", "gzip");
-            response = gzip;
-        } else {
-            response = encoded;
+        byte[] resp = tileCache.get(cacheKey, __ -> createTile(layer, srs, grid, z, x, y, errorHolder));
+        if (resp == null) {
+            throw errorHolder[0];
         }
         params.getResponse().addHeader("Access-Control-Allow-Origin", "*");
-        ResponseHelper.writeResponse(params, 200, MVT_CONTENT_TYPE, response);
+        params.getResponse().addHeader("Content-Encoding", "gzip");
+        ResponseHelper.writeResponse(params, 200, MVT_CONTENT_TYPE, resp);
     }
 
     private OskariLayer findLayer(int layerId) throws ActionParamsException {
@@ -196,44 +123,91 @@ public class GetWFSVectorTileHandler extends ActionHandler {
         }
     }
 
-    private double getScaleDenominator(WFSTileGrid grid, int z) {
-        double resolution = grid.getResolutionForZ(z);
-        return getScaleDenominator(resolution);
-    }
-
-    protected static double getScaleDenominator(double resolution) {
-        return resolution * 1000 / 0.28; // OGC WMTS 0.28 mm/px
-    }
-
-    private void validateScaleDenominator(double scaleDenominator, Double minScale, Double maxScale)
+    private void validateScaleDenominator(OskariLayer layer, WFSTileGrid grid, int z)
             throws ActionParamsException {
-        if (minScale != null) {
-            if (scaleDenominator > minScale) {
+        double scaleDenominator = getScaleDenominator(grid, z);
+        if (layer.getMinScale() != null) {
+            if (scaleDenominator > layer.getMinScale()) {
                 // Bigger denominator <=> Smaller scale
                 throw new ActionParamsException("z too low for layer");
             }
         }
-        if (maxScale != null) {
-            if (scaleDenominator < maxScale) {
+        if (layer.getMaxScale() != null) {
+            if (scaleDenominator < layer.getMaxScale()) {
                 // Smaller denominator <=> Bigger scale
                 throw new ActionParamsException("z too high for layer");
             }
         }
     }
 
+    private double getScaleDenominator(WFSTileGrid grid, int z) {
+        double resolution = grid.getResolutionForZ(z);
+        return getScaleDenominator(resolution);
+    }
+
+    private double getScaleDenominator(double resolution) {
+        return resolution * 1000 / 0.28; // OGC WMTS 0.28 mm/px
+    }
+
     private String getCacheKey(int layerId, String srs, int z, int x, int y) {
         return "WFS_" + layerId + "_" + srs + "_" + z + "_" + x + "_" + y;
     }
 
-    private boolean shouldGzip(HttpServletRequest request) {
-        String acceptEncoding = request.getHeader("Accept-Encoding");
-        if (acceptEncoding == null) {
-            return false;
+    /**
+     * Creates the actual MVT tile
+     * Accepts an ActionException[] errorHolder to avoid throwing ActionExceptions
+     * @return MVT tile as a GZipped byte array
+     */
+    private byte[] createTile(OskariLayer layer, String srs,
+            WFSTileGrid grid, int z, int x, int y, ActionException[] errorHolder) {
+        // Find nearest higher resolution
+        int targetZ = grid.getZForResolution(8, -1);
+
+        List<TileCoord> wfsTiles;
+        int dz = z - targetZ;
+        if (dz < 0) {
+            int d = (int) Math.pow(2, -dz);
+            int targetX1 = x * d;
+            int targetY1 = y * d;
+            int targetX2 = (x+1) * d;
+            int targetY2 = (y+1) * d;
+            wfsTiles = new ArrayList<>();
+            for (int targetX = targetX1; targetX < targetX2; targetX++) {
+                for (int targetY = targetY1; targetY < targetY2; targetY++) {
+                    wfsTiles.add(new TileCoord(targetZ, targetX, targetY));
+                }
+            }
+        } else if (dz == 0) {
+            wfsTiles = Collections.singletonList(new TileCoord(z, x, y));
+        } else {
+            int div = (int) Math.pow(2, dz);
+            int targetX = x / div;
+            int targetY = y / div;
+            wfsTiles = Collections.singletonList(new TileCoord(targetZ, targetX, targetY));
         }
-        return acceptEncoding.contains("gzip");
+
+        SimpleFeatureCollection sfc = null;
+        for (TileCoord tile : wfsTiles) {
+            SimpleFeatureCollection tileFeatures = getFeatures(layer, srs, grid, tile);
+            if (tileFeatures == null) {
+                errorHolder[0] = new ActionException("Failed to get features from service");
+                return null;
+            }
+            sfc = sfc == null ? tileFeatures : union(sfc, tileFeatures);
+        }
+
+        double[] bbox = grid.getTileExtent(new TileCoord(z, x, y));
+        byte[] encoded = SimpleFeaturesMVTEncoder.encodeToByteArray(sfc, layer.getName(), bbox, 4096, 256);
+        try {
+            return IOHelper.gzip(encoded).toByteArray();
+        } catch (IOException e) {
+            errorHolder[0] = new ActionException("Unexpected exception occured, try again", e);
+        }
+
+        return null;
     }
 
-    public static SimpleFeatureCollection getFeatures(OskariLayer layer, String srs, WFSTileGrid grid, TileCoord tile) {
+    private SimpleFeatureCollection getFeatures(OskariLayer layer, String srs, WFSTileGrid grid, TileCoord tile) {
         String endPoint = layer.getUrl();
         String typeName = layer.getName();
         String user = layer.getUsername();
