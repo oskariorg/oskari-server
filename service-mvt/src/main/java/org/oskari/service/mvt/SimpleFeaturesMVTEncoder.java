@@ -24,17 +24,14 @@ import com.vividsolutions.jts.geom.util.GeometryEditor;
 import com.vividsolutions.jts.operation.predicate.RectangleIntersects;
 import com.vividsolutions.jts.simplify.TopologyPreservingSimplifier;
 import com.wdtinc.mapbox_vector_tile.VectorTile;
-import com.wdtinc.mapbox_vector_tile.adapt.jts.GeomMinSizeFilter;
 import com.wdtinc.mapbox_vector_tile.adapt.jts.IUserDataConverter;
 import com.wdtinc.mapbox_vector_tile.adapt.jts.JtsAdapter;
 import com.wdtinc.mapbox_vector_tile.build.MvtLayerBuild;
-import com.wdtinc.mapbox_vector_tile.build.MvtLayerParams;
 import com.wdtinc.mapbox_vector_tile.build.MvtLayerProps;
 
 public class SimpleFeaturesMVTEncoder {
 
     private static final GeometryFactory GF = new GeometryFactory();
-    private static final int TILE_SIZE = 256;
 
     public static byte[] encodeToByteArray(SimpleFeatureCollection sfc,
             String layer, double[] bbox, int extent, int buffer) {
@@ -63,6 +60,7 @@ public class SimpleFeaturesMVTEncoder {
         return tileBuilder.build();
     }
 
+    /* Not currently used - this uses asMVTGeoms() is an optimized version of this function
     public static List<Geometry> asMVTGeoms2(SimpleFeatureCollection sfc, double[] bbox, int extent, int buffer) {
         Envelope tileEnvelope = new Envelope(bbox[0], bbox[2], bbox[1], bbox[3]);
         Envelope clipEnvelope = new Envelope(tileEnvelope);
@@ -89,8 +87,9 @@ public class SimpleFeaturesMVTEncoder {
         }
 
         return JtsAdapter.createTileGeom(geoms, tileEnvelope, clipEnvelope, GF,
-                new MvtLayerParams(TILE_SIZE, extent), new GeomMinSizeFilter(6, 6)).mvtGeoms;
+                new MvtLayerParams(256, extent), new GeomMinSizeFilter(6, 6)).mvtGeoms;
     }
+    */
 
     public static List<Geometry> asMVTGeoms(SimpleFeatureCollection sfc, double[] bbox, int extent, int buffer) {
         Envelope tileEnvelope = new Envelope(bbox[0], bbox[2], bbox[1], bbox[3]);
