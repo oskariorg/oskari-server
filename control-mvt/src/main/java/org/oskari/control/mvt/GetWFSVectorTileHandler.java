@@ -17,8 +17,8 @@ import org.geotools.data.simple.SimpleFeatureIterator;
 import org.geotools.feature.DefaultFeatureCollection;
 import org.opengis.feature.simple.SimpleFeature;
 import org.oskari.service.mvt.SimpleFeaturesMVTEncoder;
+import org.oskari.service.mvt.wfs.CachingWFSClient;
 import org.oskari.service.mvt.wfs.TileCoord;
-import org.oskari.service.mvt.wfs.WFSMetaTiles;
 import org.oskari.service.mvt.wfs.WFSTileGrid;
 import org.oskari.service.util.ServiceFactory;
 
@@ -71,7 +71,7 @@ public class GetWFSVectorTileHandler extends ActionHandler {
         String srs = params.getRequiredParam(ActionConstants.PARAM_SRS);
         WFSTileGrid grid = KNOWN_TILE_GRIDS.get(srs);
         if (grid == null) {
-            throw new ActionParamsException("Unknown tile grid");
+            throw new ActionParamsException("Unknown srs");
         }
 
         int z = params.getRequiredParamInt(PARAM_Z);
@@ -133,7 +133,7 @@ public class GetWFSVectorTileHandler extends ActionHandler {
 
         SimpleFeatureCollection sfc = null;
         for (TileCoord tile : wfsTiles) {
-            SimpleFeatureCollection tileFeatures = WFSMetaTiles.getFeatures(layer, srs, grid, tile);
+            SimpleFeatureCollection tileFeatures = getFeatures(layer, srs, grid, tile);
             if (tileFeatures == null) {
                 throw new ActionException("Failed to get features from service");
             }
@@ -231,6 +231,16 @@ public class GetWFSVectorTileHandler extends ActionHandler {
             return false;
         }
         return acceptEncoding.contains("gzip");
+    }
+
+    public static SimpleFeatureCollection getFeatures(OskariLayer layer, String srs, WFSTileGrid grid, TileCoord tile) {
+        String endPoint = layer.getUrl();
+        String typeName = layer.getName();
+        String user = layer.getUsername();
+        String pass = layer.getPassword();
+        double[] bbox = grid.getTileExtent(tile);
+        int maxFeatures = 10000;
+        return CachingWFSClient.getFeatures(endPoint, user, pass, typeName, bbox, srs, maxFeatures);
     }
 
     public static SimpleFeatureCollection union(SimpleFeatureCollection a, SimpleFeatureCollection b) {
