@@ -70,12 +70,12 @@ public class KMLParser implements FeatureCollectionParser {
             PullParser parser = new PullParser(new KMLConfiguration(), in, KML.Placemark);
             SimpleFeature f;
             Set<String> extendedData = new HashSet<String>();
-            Map<String, Object> untypedData;
 
             DefaultFeatureCollection fc = new DefaultFeatureCollection();
             while ((f = (SimpleFeature) parser.parse()) != null) {
-                if (f.getUserData().get("UntypedExtendedData") != null) {
-                    untypedData = (Map<String, Object>) f.getUserData().get("UntypedExtendedData");
+                // Collect all extended data keys. Features' untyped data may vary or can be null
+                Map<String, Object> untypedData = (Map<String, Object>) f.getUserData().get("UntypedExtendedData");
+                if (untypedData != null) {
                     untypedData.keySet().forEach((k) -> extendedData.add(k));
                 }
                 fc.add(f);
@@ -94,38 +94,29 @@ public class KMLParser implements FeatureCollectionParser {
     private DefaultFeatureCollection processFeatures (CoordinateReferenceSystem targetCRS, DefaultFeatureCollection fc_kml, Set<String> extendedData) throws ServiceException {
         try {
             DefaultFeatureCollection fc = new DefaultFeatureCollection();
-            SimpleFeatureBuilder builder;
             SimpleFeature f;
             // KML always lon,lat 4326
             CoordinateReferenceSystem sourceCRS = CRS.decode("EPSG:4326", true);
             MathTransform transform = FeatureCollectionParsers.getTransform(sourceCRS, targetCRS);
 
-            if (extendedData.isEmpty()){
-               builder = getBasicBuilder(targetCRS);
-            } else {
-               builder = getExtendedBuilder(targetCRS, extendedData);
-            }
+            SimpleFeatureBuilder builder = getBuilder(targetCRS, extendedData);
+
             SimpleFeatureIterator iter = fc_kml.features();
             while (iter.hasNext()){
                 f = iter.next();
                 builder.set(KML_NAME, f.getAttribute("name"));
-                // Basic builder
-                if (extendedData.isEmpty()){
+                Map<String, Object> untypedData = (Map<String, Object>) f.getUserData().get("UntypedExtendedData");
+                // Every feature doesn't have untyped data
+                if (extendedData.isEmpty() || untypedData == null ){
                     builder.set(KML_DESC, f.getAttribute("description"));
-                // Extended builder
                 } else {
-                    Map<String, Object> untypedData = (Map<String, Object>) f.getUserData().get("UntypedExtendedData");
-                    if (untypedData != null){
-                        extendedData.forEach((k) -> {
-                            if (k.equals("description")){
-                                builder.set(KML_DESC, untypedData.get(k));
-                                return;
-                            }
-                            builder.set(k, untypedData.get(k));
-                        });
-                    } else if (f.getAttribute("description") != null) {
-                        builder.set(KML_DESC, f.getAttribute("description"));
-                    }
+                    extendedData.forEach((k) -> {
+                        if (k.equals("description")){
+                            builder.set(KML_DESC, untypedData.get(k));
+                            return;
+                        }
+                        builder.set(k, untypedData.get(k));
+                    });
                 }
                 Geometry geom = (Geometry) f.getDefaultGeometry();
                 if (geom != null) {
@@ -138,19 +129,9 @@ public class KMLParser implements FeatureCollectionParser {
             throw new ServiceException("Failed to parse KML", e);
         }
     }
-    private SimpleFeatureBuilder getBasicBuilder (CoordinateReferenceSystem targetCRS) {
+    private SimpleFeatureBuilder getBuilder (CoordinateReferenceSystem targetCRS, Set<String> extendedData) {
         SimpleFeatureTypeBuilder builder = new SimpleFeatureTypeBuilder();
-        builder.setName( "BasciKMLBuilder" );
-        builder.setNamespaceURI( "http://www.oskari.org" );
-        builder.setCRS(targetCRS);
-        builder.add(KML_NAME, String.class );
-        builder.add(KML_DESC, String.class );
-        builder.add(KML_GEOM, Geometry.class );
-        return new SimpleFeatureBuilder(builder.buildFeatureType());
-    }
-    private SimpleFeatureBuilder getExtendedBuilder (CoordinateReferenceSystem targetCRS, Set<String> extendedData) {
-        SimpleFeatureTypeBuilder builder = new SimpleFeatureTypeBuilder();
-        builder.setName( "ExtendedKMLBuilder" );
+        builder.setName( "KMLBuilder" );
         builder.setNamespaceURI( "http://www.oskari.org" );
         builder.setCRS(targetCRS);
         builder.add(KML_NAME, String.class );

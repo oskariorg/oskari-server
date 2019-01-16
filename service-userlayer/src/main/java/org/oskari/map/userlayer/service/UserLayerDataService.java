@@ -48,6 +48,7 @@ public class UserLayerDataService {
 
     private static final String USERLAYER_MAXFEATURES_COUNT = "userlayer.maxfeatures.count";
     private static final int USERLAYER_MAX_FEATURES_COUNT = PropertyUtil.getOptional(USERLAYER_MAXFEATURES_COUNT, -1);
+    private static final String DEFAULT_LOCALES_LANGUAGE = "en";
 
     private static final int USERLAYER_BASE_LAYER_ID = PropertyUtil.getOptional(USERLAYER_BASELAYER_ID, -1);
 
@@ -90,23 +91,20 @@ public class UserLayerDataService {
                 String name = type.getName().getLocalPart();
                 obj.put("name", name);
                 obj.put("type", type.getType().getBinding().getSimpleName());
-                JSONObject locales = new JSONObject();
-                // KML handling
-                if (KMLParser.KML_NAME.equals(name)){
-                    locales.put("fi", "Nimi");
-                    locales.put("en", "Name");
-                    locales.put("sv", "Namn");
-                } else if (KMLParser.KML_DESC.equals(name)){
-                    locales.put("fi", "Kuvaus");
-                    locales.put("en", "Description");
-                    locales.put("sv", "Beskrivning");
-                // use name as default localized value
-                } else {
-                    locales.put("fi", name);
-                    locales.put("en", name);
-                    locales.put("sv", name);
+                // don't add locale for geometry
+                if (!KMLParser.KML_GEOM.equals(name)){
+                    JSONObject locales = new JSONObject();
+                    // use name as default localized value
+                    String localizedName = name;
+                    // KML handling
+                    if (KMLParser.KML_NAME.equals(name)){
+                        localizedName =  "Name";
+                    } else if (KMLParser.KML_DESC.equals(name)){
+                        localizedName =  "Description";
+                    }
+                    locales.put(DEFAULT_LOCALES_LANGUAGE, localizedName);
+                    obj.put("locales", locales);
                 }
-                obj.put("locales", locales);
                 jsfields.put(obj);
             }
         } catch (Exception ex) {

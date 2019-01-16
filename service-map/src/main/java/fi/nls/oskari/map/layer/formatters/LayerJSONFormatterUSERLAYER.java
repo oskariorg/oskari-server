@@ -16,6 +16,8 @@ public class LayerJSONFormatterUSERLAYER extends LayerJSONFormatter {
 
     private static final String USERLAYER_RENDERING_URL = "userlayer.rendering.url";
     private static final String USERLAYER_RENDERING_ELEMENT = "userlayer.rendering.element";
+    private static final String DEFAULT_GEOMETRY_NAME = "the_geom";
+    private static final String DEFAULT_LOCALES_LANGUAGE = "en";
 
     private static final String PROPERTY_RENDERING_URL = PropertyUtil.getOptional(USERLAYER_RENDERING_URL);
     final String userlayerRenderingElement = PropertyUtil.get(USERLAYER_RENDERING_ELEMENT);
@@ -37,7 +39,6 @@ public class LayerJSONFormatterUSERLAYER extends LayerJSONFormatter {
                                      UserLayer ulayer) {
 
         final JSONObject layerJson = getBaseJSON(layer, lang, isSecure, crs);
-
         JSONHelper.putValue(layerJson, "isQueryable", true);
         JSONHelper.putValue(layerJson, "name",ulayer.getLayer_name());
         JSONHelper.putValue(layerJson, "description",ulayer.getLayer_desc());
@@ -76,7 +77,12 @@ public class LayerJSONFormatterUSERLAYER extends LayerJSONFormatter {
             JSONArray jsarray =  new JSONArray();
             for(int i = 0; i < json.length(); i++){
                 JSONObject obj = json.getJSONObject(i);
-                jsarray.put(obj.getString("name"));
+                String name = obj.getString("name");
+                // skip geometry
+                if (DEFAULT_GEOMETRY_NAME.equals(name)) {
+                    continue;
+                }
+                jsarray.put(name);
             }
             return jsarray;
         } catch (Exception e) {
@@ -92,12 +98,19 @@ public class LayerJSONFormatterUSERLAYER extends LayerJSONFormatter {
             jsarray.put("ID");
             for(int i = 0; i < json.length(); i++){
                 JSONObject obj = json.getJSONObject(i);
+                String name = obj.getString("name");
                 // skip geometry
-                if ("the_geom".equals(obj.getString("name"))) {
+                if (DEFAULT_GEOMETRY_NAME.equals(name)) {
                     continue;
                 }
                 // if get fails throws exception and locales are not added to layer
-                jsarray.put(obj.getJSONObject("locales").getString(lang));
+                JSONObject locales = obj.getJSONObject("locales");
+                if (locales.has(lang)) {
+                    name = locales.getString(lang);
+                } else if (locales.has(DEFAULT_LOCALES_LANGUAGE)){
+                    name = locales.getString(DEFAULT_LOCALES_LANGUAGE);
+                }
+                jsarray.put(name);
             }
             jsarray.put("X");
             jsarray.put("Y");
