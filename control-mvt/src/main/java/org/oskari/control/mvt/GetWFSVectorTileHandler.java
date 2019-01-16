@@ -212,7 +212,7 @@ public class GetWFSVectorTileHandler extends ActionHandler {
         String pass = layer.getPassword();
         double[] bbox = grid.getTileExtent(tile);
         int maxFeatures = 10000;
-        return CachingWFSClient.getFeatures(endPoint, user, pass, typeName, bbox, srs, maxFeatures);
+        return CachingWFSClient.tryGetFeatures(endPoint, user, pass, typeName, bbox, srs, maxFeatures);
     }
 
     public static SimpleFeatureCollection union(SimpleFeatureCollection a, SimpleFeatureCollection b) {
