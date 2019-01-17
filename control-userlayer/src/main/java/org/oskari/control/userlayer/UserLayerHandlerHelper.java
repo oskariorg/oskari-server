@@ -31,7 +31,7 @@ public class UserLayerHandlerHelper {
     }
     public static JSONObject createErrorJSON (String error, String key, Set<String> set) {
         JSONObject obj = createErrorJSON (error);
-        JSONHelper.put(obj, key, parseStringSet(set));
+        JSONHelper.put(obj, key, new JSONArray(set));
         return obj;
     }
     public static JSONObject createErrorJSON (String error, String key, String value) {
@@ -49,7 +49,7 @@ public class UserLayerHandlerHelper {
         if (obj == null) {
             obj = new JSONObject();
         }
-        JSONHelper.put(obj, key, parseStringSet(set));
+        JSONHelper.put(obj, key, new JSONArray(set));
     }
     public static void addMapToErrorJSON (JSONObject obj, String key, Map<String,String> map) {
         if(map.isEmpty()){
@@ -66,11 +66,5 @@ public class UserLayerHandlerHelper {
         }
         JSONHelper.putValue(obj, key, str);
         return obj;
-    }
-    public static JSONArray parseStringSet (Set<String> set){
-        JSONArray json = new JSONArray();
-        set.stream()
-            .forEach(e -> json.put(e));
-        return json;
     }
 }

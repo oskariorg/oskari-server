@@ -262,7 +262,7 @@ public class CreateUserLayerHandler extends RestActionHandler {
         } else if (mainFileExtensions == 2) {
             Set <String> mainExtensions = extensions.stream()
                     .filter(FeatureCollectionParsers::hasByFileExt)
-                    .collect(Collectors.toCollection(HashSet::new));
+                    .collect(Collectors.toSet());
             throw new ActionParamsException("Found too many valid files for import in zip file", UserLayerHandlerHelper.createErrorJSON("multiple_main", "extensions", mainExtensions));
         }
     }
@@ -284,11 +284,15 @@ public class CreateUserLayerHandler extends RestActionHandler {
         try {
             dir = makeRandomTempDirectory();
             File mainFile = unZip(zipFile, cs, validFiles, dir);
-            parser = getParser(mainFile);
-            return parse(parser, mainFile, sourceCRS, targetCRS);
-        } catch (ServiceException e){
-            UserLayerHandlerHelper.addStringToErrorJSON(e.getOptions(), "error", "parser_error");
-            UserLayerHandlerHelper.addStringToErrorJSON(e.getOptions(), "parser", parser == null ? null : parser.getSuffix());
+            try {
+                parser = getParser(mainFile);
+                return parser.parse(mainFile, sourceCRS, targetCRS);
+            } catch (ServiceException e){
+                UserLayerHandlerHelper.addStringToErrorJSON(e.getOptions(), "error", "parser_error");
+                UserLayerHandlerHelper.addStringToErrorJSON(e.getOptions(), "parser", parser == null ? null : parser.getSuffix());
+                throw new ActionParamsException (e.getMessage(), e.getOptions() );
+            }
+        }catch (ServiceException e) {
             throw new ActionParamsException (e.getMessage(), e.getOptions() );
         } finally {
             // Clean up
@@ -373,12 +377,6 @@ public class CreateUserLayerHandler extends RestActionHandler {
             return null;
         }
         return name.substring(i + 1);
-    }
-
-    private SimpleFeatureCollection parse(FeatureCollectionParser parser, File file,
-            CoordinateReferenceSystem sourceCRS,
-            CoordinateReferenceSystem targetCRS) throws ServiceException {
-        return parser.parse(file, sourceCRS, targetCRS);
     }
 
     private FeatureCollectionParser getParser(File mainFile) {
