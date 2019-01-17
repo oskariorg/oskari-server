@@ -158,8 +158,8 @@ public class UserLayerDataService {
      * @param ulayer
      * @return
      */
-    public static JSONObject parseUserLayer2JSON(UserLayer ulayer) {
-        return parseUserLayer2JSON(ulayer, getBaseLayer());
+    public static JSONObject parseUserLayer2JSON(UserLayer ulayer, String mapSrs) {
+        return parseUserLayer2JSON(ulayer, getBaseLayer(), mapSrs);
     }
     /**
      * @param ulayer data in user_layer table
@@ -167,7 +167,7 @@ public class UserLayerDataService {
      * @return
      * @throws ServiceException
      */
-    public static JSONObject parseUserLayer2JSON(final UserLayer ulayer, final OskariLayer baseLayer) {
+    public static JSONObject parseUserLayer2JSON(final UserLayer ulayer, final OskariLayer baseLayer, final String mapSrs) {
 
         try {
             final String name = baseLayer.getName();
@@ -177,7 +177,7 @@ public class UserLayerDataService {
             baseLayer.setName(ulayer.getLayer_name());
             baseLayer.setType(OskariLayer.TYPE_USERLAYER);
             // create the JSON
-            final JSONObject json = FORMATTER.getJSON(baseLayer, PropertyUtil.getDefaultLanguage(), false, null, ulayer);
+            final JSONObject json = FORMATTER.getJSON(baseLayer, PropertyUtil.getDefaultLanguage(), false, mapSrs, ulayer);
             JSONHelper.putValue(json, "id", USERLAYER_LAYER_PREFIX + ulayer.getId());
 
             // restore the previous values for baseLayer

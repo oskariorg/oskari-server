@@ -35,7 +35,8 @@ public class LayerJSONFormatterUSERLAYER extends LayerJSONFormatter {
                                      final boolean isSecure,
                                      final String crs,
                                      UserLayer ulayer) {
-
+        // set geometry before parsing layerJson
+        layer.setGeometry(ulayer.getWkt());
         final JSONObject layerJson = getBaseJSON(layer, lang, isSecure, crs);
 
         JSONHelper.putValue(layerJson, "isQueryable", true);
@@ -51,7 +52,6 @@ public class LayerJSONFormatterUSERLAYER extends LayerJSONFormatter {
         // user layer rendering url - override DB url if property is defined
         JSONHelper.putValue(layerJson, "url", getUserLayerTileUrl());
         JSONHelper.putValue(layerJson, "renderingElement", userlayerRenderingElement);
-        JSONHelper.putValue(layerJson, "geom", ulayer.getWkt());
 
         return layerJson;
     }

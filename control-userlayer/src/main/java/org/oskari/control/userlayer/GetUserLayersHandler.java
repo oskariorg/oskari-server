@@ -35,22 +35,19 @@ public class GetUserLayersHandler extends ActionHandler {
 
     @Override
     public void handleAction(ActionParameters params) throws ActionException {
-
+        String mapSrs = params.getHttpParam(ActionConstants.PARAM_SRS);
         final JSONObject response = new JSONObject();
         final JSONArray layers = new JSONArray();
         JSONHelper.putValue(response, JSKEY_USERLAYERS, layers);
-
         final User user = params.getUser();
         if (!user.isGuest()) {
             final List<UserLayer> list = userLayerService.getUserLayerByUuid(user.getUuid());
             final OskariLayer baseLayer = UserLayerDataService.getBaseLayer();
             for (UserLayer ul : list) {
                 // Parse userlayer data to userlayer
-                final JSONObject userLayer = UserLayerDataService.parseUserLayer2JSON(ul, baseLayer);
+                final JSONObject userLayer = UserLayerDataService.parseUserLayer2JSON(ul, baseLayer, mapSrs);
                 JSONObject permissions = OskariLayerWorker.getAllowedPermissions();
                 JSONHelper.putValue(userLayer, "permissions", permissions);
-                // transform WKT for layers now that we know SRS
-                OskariLayerWorker.transformWKTGeom(userLayer, params.getHttpParam(ActionConstants.PARAM_SRS));
                 layers.put(userLayer);
             }
         }
