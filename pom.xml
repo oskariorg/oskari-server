@@ -97,7 +97,7 @@
         <xmlbeans.version>2.6.0</xmlbeans.version>
         <geotools.version>19.2</geotools.version>
         <geotools.major>19</geotools.major>
-        <jts.version>1.14</jts.version>
+        <jts.version>1.14.0</jts.version>
         <mvt.version>2.0.0</mvt.version>
         <!-- gt-xsd-kml.version>9.3</gt-xsd-kml.version -->
         <flexjson.version>2.0</flexjson.version>
