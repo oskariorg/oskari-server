@@ -174,7 +174,7 @@ public class GetGeoPointDataService {
             xsltInStream = new ByteArrayInputStream(xslt.getBytes());
             final StreamSource stylesource = new StreamSource(xsltInStream);
             final String transformedResponse = getFormattedJSONString(document, stylesource);
-            
+
             if (transformedResponse == null
                     || transformedResponse.isEmpty()) {
                 log.info("got empty result from transform with:", xslt, " - Response:", response);

@@ -27,6 +27,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.reflect.Whitebox;
@@ -41,6 +42,7 @@ import static org.mockito.Mockito.mock;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(value = {UserService.class})
+@PowerMockIgnore({"com.sun.org.apache.xalan.*", "com.sun.org.apache.xerces.*", "javax.xml.*", "org.w3c.dom.*", "org.xml.*", "com.sun.org.apache.xml.*"})
 public class AppSetupHandlerTest extends JSONActionRouteTest {
 	
     private AppSetupHandler handler = null;
@@ -111,7 +113,7 @@ public class AppSetupHandlerTest extends JSONActionRouteTest {
         doReturn(role).when(userService).getRoleByName(role.getName());
         Whitebox.setInternalState(UserService.class, "instance", userService);
     }
-    
+
     @Test
     public void testPublishFromTemplateSimpleInput() throws Exception {
 
