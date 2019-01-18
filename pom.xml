@@ -44,7 +44,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <jdk.version>9</jdk.version>
+        <jdk.version>1.8</jdk.version>
         <fi.nls.oskari.version>${project.version}</fi.nls.oskari.version>
         <fi.nls.oskari.service.version>${project.version}</fi.nls.oskari.service.version>
 
