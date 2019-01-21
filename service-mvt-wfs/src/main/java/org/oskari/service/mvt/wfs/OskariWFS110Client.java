@@ -103,7 +103,7 @@ public class OskariWFS110Client {
         return parameters;
     }
 
-    private String getBBOX(double[] bbox, String srsName) {
+    protected String getBBOX(double[] bbox, String srsName) {
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < 4; i++) {
             sb.append(bbox[i]);
