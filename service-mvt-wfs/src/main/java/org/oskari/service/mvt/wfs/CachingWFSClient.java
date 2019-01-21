@@ -1,11 +1,8 @@
 package org.oskari.service.mvt.wfs;
 
-import java.util.Map;
-
 import org.geotools.data.simple.SimpleFeatureCollection;
 
 import fi.nls.oskari.cache.ComputeOnceCache;
-import fi.nls.oskari.util.IOHelper;
 
 /**
  * Caching version of {@link org.oskari.service.mvt.wfs.OskariWFS110Client} WFSClient
@@ -28,14 +25,14 @@ public class CachingWFSClient extends OskariWFS110Client {
     @Override
     public SimpleFeatureCollection tryGetFeatures(String endPoint, String user, String pass,
             String typeName, double[] bbox, String srsName, Integer maxFeatures) {
-        String key = getCacheKey(endPoint, user, pass, typeName, bbox, srsName, maxFeatures);
+        String key = getCacheKey(endPoint, typeName, bbox, srsName, maxFeatures);
         return cache.get(key, __ -> super.tryGetFeatures(endPoint, user, pass, typeName, bbox, srsName, maxFeatures));
     }
 
-    private String getCacheKey(String endPoint, String user, String pass, String typeName, double[] bbox, String srsName, Integer maxFeatures) {
-        // Use the request as the cache key
-        Map<String, String> getFeatureKVP = getQueryParams(typeName, bbox, srsName, maxFeatures);
-        return IOHelper.constructUrl(endPoint, getFeatureKVP);
+    private String getCacheKey(String endPoint, String typeName, double[] bbox, String srsName, Integer maxFeatures) {
+        String bboxStr = bbox != null ? getBBOX(bbox, srsName) : "null";
+        String maxFeaturesStr = maxFeatures != null ? maxFeatures.toString() : "null";
+        return String.join(",", endPoint, typeName, bboxStr, maxFeaturesStr);
     }
 
 }
