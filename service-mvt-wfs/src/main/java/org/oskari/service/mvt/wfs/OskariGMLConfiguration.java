@@ -1,13 +1,12 @@
 package org.oskari.service.mvt.wfs;
 
-
 import javax.xml.namespace.QName;
 
 import org.eclipse.xsd.util.XSDSchemaLocator;
-import org.geotools.gml3.GMLConfiguration;
+import org.geotools.wfs.v1_1.WFSConfiguration;
 import org.picocontainer.MutablePicoContainer;
 
-public class OskariGMLConfiguration extends GMLConfiguration {
+public class OskariGMLConfiguration extends WFSConfiguration {
 
     private final String user;
     private final String pass;

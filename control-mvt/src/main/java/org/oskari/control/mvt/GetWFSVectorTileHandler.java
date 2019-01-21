@@ -16,6 +16,7 @@ import org.geotools.feature.DefaultFeatureCollection;
 import org.opengis.feature.simple.SimpleFeature;
 import org.oskari.service.mvt.SimpleFeaturesMVTEncoder;
 import org.oskari.service.mvt.wfs.CachingWFSClient;
+import org.oskari.service.mvt.wfs.OskariWFS110Client;
 import org.oskari.service.mvt.wfs.TileCoord;
 import org.oskari.service.mvt.wfs.WFSTileGrid;
 import org.oskari.service.util.ServiceFactory;
@@ -49,6 +50,7 @@ public class GetWFSVectorTileHandler extends ActionHandler {
 
     private final ComputeOnceCache<byte[]> tileCache = new ComputeOnceCache<>(256, TimeUnit.MINUTES.toMillis(5));
     private OskariLayerService layerService;
+    private OskariWFS110Client wfsClient;
 
     public void setLayerService(OskariLayerService layerService) {
         this.layerService = layerService;
@@ -59,6 +61,7 @@ public class GetWFSVectorTileHandler extends ActionHandler {
         if (layerService == null) {
             layerService = ServiceFactory.getMapLayerService();
         }
+        this.wfsClient = new CachingWFSClient();
     }
 
     @Override
@@ -212,7 +215,7 @@ public class GetWFSVectorTileHandler extends ActionHandler {
         String pass = layer.getPassword();
         double[] bbox = grid.getTileExtent(tile);
         int maxFeatures = 10000;
-        return CachingWFSClient.tryGetFeatures(endPoint, user, pass, typeName, bbox, srs, maxFeatures);
+        return wfsClient.tryGetFeatures(endPoint, user, pass, typeName, bbox, srs, maxFeatures);
     }
 
     public static SimpleFeatureCollection union(SimpleFeatureCollection a, SimpleFeatureCollection b) {

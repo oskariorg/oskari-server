@@ -27,12 +27,12 @@ public class CachingWFSClient extends OskariWFS110Client {
 
     @Override
     public SimpleFeatureCollection tryGetFeatures(String endPoint, String user, String pass,
-            String typeName, double[] bbox, String srsName, int maxFeatures) {
+            String typeName, double[] bbox, String srsName, Integer maxFeatures) {
         String key = getCacheKey(endPoint, user, pass, typeName, bbox, srsName, maxFeatures);
         return cache.get(key, __ -> super.tryGetFeatures(endPoint, user, pass, typeName, bbox, srsName, maxFeatures));
     }
 
-    private String getCacheKey(String endPoint, String user, String pass, String typeName, double[] bbox, String srsName, int maxFeatures) {
+    private String getCacheKey(String endPoint, String user, String pass, String typeName, double[] bbox, String srsName, Integer maxFeatures) {
         // Use the request as the cache key
         Map<String, String> getFeatureKVP = getQueryParams(typeName, bbox, srsName, maxFeatures);
         return IOHelper.constructUrl(endPoint, getFeatureKVP);
