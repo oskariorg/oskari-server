@@ -60,7 +60,6 @@ public class GetWFSVectorTileHandler extends ActionHandler {
         this.permissionHelper = new PermissionHelper(
                 ServiceFactory.getMapLayerService(),
                 ServiceFactory.getPermissionsService());
-        ServiceFactory.getPermissionsService();
         this.wfsClient = new CachingWFSClient();
     }
 
