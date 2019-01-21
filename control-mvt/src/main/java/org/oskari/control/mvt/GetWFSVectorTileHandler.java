@@ -28,8 +28,9 @@ import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.ActionHandler;
 import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.control.ActionParamsException;
+import fi.nls.oskari.control.layer.PermissionHelper;
+import fi.nls.oskari.domain.User;
 import fi.nls.oskari.domain.map.OskariLayer;
-import fi.nls.oskari.map.layer.OskariLayerService;
 import fi.nls.oskari.service.ServiceRuntimeException;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.ResponseHelper;
@@ -50,18 +51,16 @@ public class GetWFSVectorTileHandler extends ActionHandler {
     }
 
     private final ComputeOnceCache<byte[]> tileCache = new ComputeOnceCache<>(256, TimeUnit.MINUTES.toMillis(5));
-    private OskariLayerService layerService;
-    private OskariWFS110Client wfsClient;
 
-    public void setLayerService(OskariLayerService layerService) {
-        this.layerService = layerService;
-    }
+    private PermissionHelper permissionHelper;
+    private OskariWFS110Client wfsClient;
 
     @Override
     public void init() {
-        if (layerService == null) {
-            layerService = ServiceFactory.getMapLayerService();
-        }
+        this.permissionHelper = new PermissionHelper(
+                ServiceFactory.getMapLayerService(),
+                ServiceFactory.getPermissionsService());
+        ServiceFactory.getPermissionsService();
         this.wfsClient = new CachingWFSClient();
     }
 
@@ -73,7 +72,7 @@ public class GetWFSVectorTileHandler extends ActionHandler {
         final int x = params.getRequiredParamInt(PARAM_X);
         final int y = params.getRequiredParamInt(PARAM_Y);
 
-        final OskariLayer layer = findLayer(layerId);
+        final OskariLayer layer = findLayer(layerId, params.getUser());
         final WFSTileGrid grid = KNOWN_TILE_GRIDS.get(srs);
         validateTile(grid, z, x, y);
         validateScaleDenominator(layer, grid, z);
@@ -90,11 +89,8 @@ public class GetWFSVectorTileHandler extends ActionHandler {
         ResponseHelper.writeResponse(params, 200, MVT_CONTENT_TYPE, resp);
     }
 
-    private OskariLayer findLayer(int layerId) throws ActionParamsException {
-        OskariLayer layer = layerService.find(layerId);
-        if (layer == null) {
-            throw new ActionParamsException("Unknown layerId");
-        }
+    private OskariLayer findLayer(int layerId, User user) throws ActionException {
+        OskariLayer layer = permissionHelper.getLayer(layerId, user);
         if (!OskariLayer.TYPE_WFS.equals(layer.getType())) {
             throw new ActionParamsException("Specified layer is not a WFS layer");
         }
