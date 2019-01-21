@@ -19,11 +19,8 @@ import fi.nls.oskari.util.IOHelper;
 
 public class OskariCachingSchemaLocator implements XSDSchemaLocator {
 
-    private static final int LIMIT = 100;
-    private static final long ONE_DAY_IN_MS = TimeUnit.DAYS.toMillis(1);
-
     private static final Logger LOG = LogFactory.getLogger(OskariCachingSchemaLocator.class);
-    private static final ComputeOnceCache<XSDSchema> CACHE = new ComputeOnceCache<>(LIMIT, ONE_DAY_IN_MS);
+    private static final ComputeOnceCache<XSDSchema> CACHE = new ComputeOnceCache<>(100, TimeUnit.DAYS.toMillis(1));
 
     private final String username;
     private final String password;
@@ -42,6 +39,9 @@ public class OskariCachingSchemaLocator implements XSDSchemaLocator {
     }
 
     protected static XSDSchema parseSchema(String rawSchemaLocationURI, String username, String password) {
+        if (!rawSchemaLocationURI.startsWith("http://") && !rawSchemaLocationURI.startsWith("https://")) {
+            return null;
+        }
         try {
             HttpURLConnection conn = IOHelper.getConnection(rawSchemaLocationURI, username, password);
             byte[] response = IOHelper.readBytes(conn);
