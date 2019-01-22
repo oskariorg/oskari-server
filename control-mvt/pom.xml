@@ -29,7 +29,7 @@
         </dependency>
         <dependency>
             <groupId>org.oskari</groupId>
-            <artifactId>service-mvt-wfs</artifactId>
+            <artifactId>service-wfs-client</artifactId>
         </dependency>
         <dependency>
             <groupId>fi.nls.oskari</groupId>

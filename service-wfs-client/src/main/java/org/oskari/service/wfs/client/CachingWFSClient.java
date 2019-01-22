@@ -1,11 +1,11 @@
-package org.oskari.service.mvt.wfs;
+package org.oskari.service.wfs.client;
 
 import org.geotools.data.simple.SimpleFeatureCollection;
 
 import fi.nls.oskari.cache.ComputeOnceCache;
 
 /**
- * Caching version of {@link org.oskari.service.mvt.wfs.OskariWFS110Client} WFSClient
+ * Caching version of {@link org.oskari.service.wfs.client.OskariWFS110Client} WFSClient
  * Caches the parsed SimpleFeatureCollections
  */
 public class CachingWFSClient extends OskariWFS110Client {

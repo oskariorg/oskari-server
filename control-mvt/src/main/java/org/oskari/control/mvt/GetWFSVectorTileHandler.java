@@ -17,9 +17,9 @@ import org.opengis.feature.simple.SimpleFeature;
 import org.oskari.service.mvt.SimpleFeaturesMVTEncoder;
 import org.oskari.service.mvt.TileCoord;
 import org.oskari.service.mvt.WFSTileGrid;
-import org.oskari.service.mvt.wfs.CachingWFSClient;
-import org.oskari.service.mvt.wfs.OskariWFS110Client;
 import org.oskari.service.util.ServiceFactory;
+import org.oskari.service.wfs.client.CachingWFSClient;
+import org.oskari.service.wfs.client.OskariWFS110Client;
 
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.cache.ComputeOnceCache;
