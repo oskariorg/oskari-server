@@ -81,7 +81,7 @@ public class FeatureCollectionParsers {
         return fc;
     }
 
-    private static MathTransform getTransform(
+    public static MathTransform getTransform(
             CoordinateReferenceSystem sourceCRS,
             CoordinateReferenceSystem targetCRS) throws IllegalArgumentException, FactoryException {
         if (sourceCRS == null || targetCRS == null) {

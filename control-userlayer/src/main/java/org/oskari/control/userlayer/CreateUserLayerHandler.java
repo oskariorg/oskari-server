@@ -397,7 +397,8 @@ public class CreateUserLayerHandler extends RestActionHandler {
     }
 
     private void writeResponse(ActionParameters params, UserLayer ulayer) throws ActionException {
-        JSONObject userLayer = UserLayerDataService.parseUserLayer2JSON(ulayer);
+        String mapSrs = params.getHttpParam(ActionConstants.PARAM_SRS);
+        JSONObject userLayer = UserLayerDataService.parseUserLayer2JSON(ulayer, mapSrs);
         JSONHelper.putValue(userLayer, "featuresCount", ulayer.getFeatures_count());
         JSONObject permissions = OskariLayerWorker.getAllowedPermissions();
         JSONHelper.putValue(userLayer, "permissions", permissions);
@@ -407,8 +408,6 @@ public class CreateUserLayerHandler extends RestActionHandler {
             JSONHelper.putValue(featuresSkipped, "featuresSkipped", ulayer.getFeatures_skipped());
             JSONHelper.putValue(userLayer, "warning", featuresSkipped);
         }
-        // transform WKT for layers now that we know SRS
-        OskariLayerWorker.transformWKTGeom(userLayer, params.getHttpParam(ActionConstants.PARAM_SRS));
         ResponseHelper.writeResponse(params, userLayer);
     }
 

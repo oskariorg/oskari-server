@@ -86,7 +86,8 @@ public class GeoJSONWriter {
             }
             Object value = p.getValue();
             if (value == null) {
-                continue;
+                if (value instanceof Geometry) continue;
+                value = "";
             }
             if (properties == null) {
                 properties = new JSONObject();

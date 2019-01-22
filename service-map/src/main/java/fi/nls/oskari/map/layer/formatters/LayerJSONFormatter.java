@@ -3,6 +3,7 @@ package fi.nls.oskari.map.layer.formatters;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.map.geometry.WKTHelper;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
@@ -27,7 +28,9 @@ public class LayerJSONFormatter {
     public static final String PROPERTY_AJAXURL = "oskari.ajax.url.prefix";
     public static final String KEY_STYLES = "styles";
     public static final String KEY_SRS = "srs";
+    public static final String KEY_LAYER_COVERAGE = "geom";
     public static final String KEY_ATTRIBUTE_FORCED_SRS = "forcedSRS";
+    public static final String KEY_ATTRIBUTE_IGNORE_COVERAGE = "ignoreCoverage";
 
     private static final String KEY_ID = "id";
     private static final String KEY_TYPE = "type";
@@ -121,11 +124,14 @@ public class LayerJSONFormatter {
         if(layer.getMaxScale() != null && layer.getMaxScale() != -1) {
             JSONHelper.putValue(layerJson, "maxScale", layer.getMaxScale());
         }
-        JSONHelper.putValue(layerJson, "geom", layer.getGeometry());
+        JSONObject attributes = layer.getAttributes();
+        if (!attributes.optBoolean(KEY_ATTRIBUTE_IGNORE_COVERAGE, false)) {
+            addLayerCoverageWKT(layerJson, layer.getGeometry(), crs);
+        }
 
         JSONHelper.putValue(layerJson, "params", layer.getParams());
         JSONHelper.putValue(layerJson, "options", layer.getOptions());
-        JSONHelper.putValue(layerJson, "attributes", layer.getAttributes());
+        JSONHelper.putValue(layerJson, "attributes", attributes);
 
         JSONHelper.putValue(layerJson, "realtime", layer.getRealtime());
         JSONHelper.putValue(layerJson, "refreshRate", layer.getRefreshRate());
@@ -236,5 +242,21 @@ public class LayerJSONFormatter {
         }
         return Sets.intersection(systemCRSs, capabilitiesCRSs);
     }
-
+    // value will be not added if transform failed, that's ok since client can't handle it if it's in unknown projection
+    public static void addLayerCoverageWKT(final JSONObject layerJSON, final String wktWGS84, final String mapSRS) {
+        if(wktWGS84 == null || wktWGS84.isEmpty() || mapSRS == null || mapSRS.isEmpty()) {
+            return;
+        }
+        try {
+            // WTK is saved as EPSG:4326 in database
+            final String transformed = WKTHelper.transformLayerCoverage(wktWGS84, mapSRS);
+            if(transformed == null) {
+                log.debug("Transform failed for layer id:", layerJSON.opt("id"), "WKT was:", wktWGS84);
+                return;
+            }
+            JSONHelper.putValue(layerJSON, KEY_LAYER_COVERAGE, transformed);
+        } catch (Exception ex) {
+            log.debug("Error transforming coverage to", mapSRS, "from", wktWGS84);
+        }
+    }
 }

@@ -39,6 +39,8 @@ public class WebMapServiceV1_3_0ImplTest {
                 "text/xml; subtype=gml/3.1.1", "text/html", "application/json"
         }, wms.getFormats());
         assertEquals(0, wms.getTime().size());
+        String wkt = "POLYGON ((15.608220469655935 59.36205414098515, 15.608220469655935 70.09468368748001, 33.107629330539034 70.09468368748001, 33.107629330539034 59.36205414098515, 15.608220469655935 59.36205414098515))";
+        assertEquals(wkt, wms.getGeom());
     }
 
     @Test
@@ -76,6 +78,18 @@ public class WebMapServiceV1_3_0ImplTest {
         wms = new WebMapServiceV1_3_0_Impl("http://unit.test/ing",
                 readResource(CHLORO), "arctic_sdi:Chlorophyll", allowed);
         assertArrayEquals(new String[] { "EPSG:3408", "EPSG:3857" }, wms.getCRSs());
+    }
+
+    @Test
+    public void testBoundingBox()
+            throws IOException, WebMapServiceParseException, LayerNotFoundInCapabilitiesException {
+        WebMapServiceV1_3_0_Impl wms = new WebMapServiceV1_3_0_Impl("http://unit.test/ing", readResource(CHLORO),
+                "arctic_sdi:LandSurfaceTemperature");
+        // BBOX minx, minx, miny, maxx, maxy
+        // Abstract layer's bbox (-4462340.35076383, -4467019.64923622, 4467019.64923617, 4462340.35076378)
+        // Layer's bbox (-180.0, 30.669210068137946, 180.0, 90.0)
+        String wkt = "POLYGON ((-180.0 30.669210068137946, -180.0 90.0, 180.0 90.0, 180.0 30.669210068137946, -180.0 30.669210068137946))";
+        assertEquals(wkt, wms.getGeom());
     }
 
     private String readResource(String p) throws IOException {

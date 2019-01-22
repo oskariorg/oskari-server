@@ -34,6 +34,7 @@ public class EditUserLayerHandler extends RestActionHandler {
 
     @Override
     public void handlePost(ActionParameters params) throws ActionException {
+        String mapSrs = params.getHttpParam(ActionConstants.PARAM_SRS);
         final UserLayer userLayer = UserLayerHandlerHelper.getUserLayer(userLayerDbService, params);
         userLayer.setLayer_name(params.getRequiredParam(PARAM_NAME));
         userLayer.setLayer_desc(params.getHttpParam(PARAM_DESC, userLayer.getLayer_desc()));
@@ -46,7 +47,7 @@ public class EditUserLayerHandler extends RestActionHandler {
         userLayerDbService.updateUserLayerCols(userLayer);
         userLayerDbService.updateUserLayerStyleCols(style);
 
-        JSONObject ulayer = UserLayerDataService.parseUserLayer2JSON(userLayer);
+        JSONObject ulayer = UserLayerDataService.parseUserLayer2JSON(userLayer, mapSrs);
         JSONObject permissions = OskariLayerWorker.getAllowedPermissions();
         JSONHelper.putValue(ulayer, "permissions", permissions);
 

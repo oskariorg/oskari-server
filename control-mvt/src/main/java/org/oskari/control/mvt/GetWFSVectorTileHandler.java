@@ -28,8 +28,10 @@ import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.ActionHandler;
 import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.control.ActionParamsException;
+import fi.nls.oskari.control.layer.PermissionHelper;
+import fi.nls.oskari.domain.User;
 import fi.nls.oskari.domain.map.OskariLayer;
-import fi.nls.oskari.map.layer.OskariLayerService;
+import fi.nls.oskari.service.ServiceRuntimeException;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.ResponseHelper;
 
@@ -49,18 +51,15 @@ public class GetWFSVectorTileHandler extends ActionHandler {
     }
 
     private final ComputeOnceCache<byte[]> tileCache = new ComputeOnceCache<>(256, TimeUnit.MINUTES.toMillis(5));
-    private OskariLayerService layerService;
-    private OskariWFS110Client wfsClient;
 
-    public void setLayerService(OskariLayerService layerService) {
-        this.layerService = layerService;
-    }
+    private PermissionHelper permissionHelper;
+    private OskariWFS110Client wfsClient;
 
     @Override
     public void init() {
-        if (layerService == null) {
-            layerService = ServiceFactory.getMapLayerService();
-        }
+        this.permissionHelper = new PermissionHelper(
+                ServiceFactory.getMapLayerService(),
+                ServiceFactory.getPermissionsService());
         this.wfsClient = new CachingWFSClient();
     }
 
@@ -72,34 +71,33 @@ public class GetWFSVectorTileHandler extends ActionHandler {
         final int x = params.getRequiredParamInt(PARAM_X);
         final int y = params.getRequiredParamInt(PARAM_Y);
 
-        final OskariLayer layer = findLayer(layerId);
+        final OskariLayer layer = findLayer(layerId, params.getUser());
         final WFSTileGrid grid = KNOWN_TILE_GRIDS.get(srs);
         validateTile(grid, z, x, y);
         validateScaleDenominator(layer, grid, z);
 
-        final ActionException[] errorHolder = new ActionException[1];
         final String cacheKey = getCacheKey(layerId, srs, z, x, y);
-        final byte[] resp = tileCache.get(cacheKey, __ -> createTile(layer, srs, grid, z, x, y, errorHolder));
-        if (resp == null) {
-            throw errorHolder[0];
+        final byte[] resp;
+        try {
+            resp = tileCache.get(cacheKey, __ -> createTile(layer, srs, grid, z, x, y));
+        } catch (ServiceRuntimeException e) {
+            throw new ActionException(e.getMessage());
         }
         params.getResponse().addHeader("Access-Control-Allow-Origin", "*");
         params.getResponse().addHeader("Content-Encoding", "gzip");
         ResponseHelper.writeResponse(params, 200, MVT_CONTENT_TYPE, resp);
     }
 
-    private OskariLayer findLayer(int layerId) throws ActionParamsException {
-        OskariLayer layer = layerService.find(layerId);
-        if (layer == null) {
-            throw new ActionParamsException("Unknown layerId");
-        }
+    private OskariLayer findLayer(int layerId, User user) throws ActionException {
+        OskariLayer layer = permissionHelper.getLayer(layerId, user);
         if (!OskariLayer.TYPE_WFS.equals(layer.getType())) {
             throw new ActionParamsException("Specified layer is not a WFS layer");
         }
         return layer;
     }
 
-    private void validateTile(WFSTileGrid grid, int z, int x, int y) throws ActionParamsException {
+    private void validateTile(WFSTileGrid grid, int z, int x, int y)
+            throws ActionParamsException {
         if (grid == null) {
             throw new ActionParamsException("Unknown srs");
         }
@@ -156,12 +154,11 @@ public class GetWFSVectorTileHandler extends ActionHandler {
 
     /**
      * Creates the actual MVT tile
-     * Accepts an ActionException[] array to avoid throwing ActionExceptions
-     * (to avoid the pain when using this function in a lambda expression)
      * @return an MVT tile as a GZipped byte array
+     * @throws ActionException
      */
     private byte[] createTile(OskariLayer layer, String srs,
-            WFSTileGrid grid, int z, int x, int y, ActionException[] errorHolder) {
+            WFSTileGrid grid, int z, int x, int y) throws ServiceRuntimeException {
         // Find nearest higher resolution
         int targetZ = grid.getZForResolution(8, -1);
 
@@ -192,8 +189,7 @@ public class GetWFSVectorTileHandler extends ActionHandler {
         for (TileCoord tile : wfsTiles) {
             SimpleFeatureCollection tileFeatures = getFeatures(layer, srs, grid, tile);
             if (tileFeatures == null) {
-                errorHolder[0] = new ActionException("Failed to get features from service");
-                return null;
+                throw new ServiceRuntimeException("Failed to get features from service");
             }
             sfc = union(sfc, tileFeatures);
         }
@@ -203,8 +199,7 @@ public class GetWFSVectorTileHandler extends ActionHandler {
         try {
             return IOHelper.gzip(encoded).toByteArray();
         } catch (IOException e) {
-            errorHolder[0] = new ActionException("Unexpected exception occured, try again", e);
-            return null;
+            throw new ServiceRuntimeException("Unexpected IOException occured");
         }
     }
 

@@ -18,7 +18,6 @@ import fi.nls.oskari.domain.User;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.map.geometry.WKTHelper;
 import fi.nls.oskari.map.layer.OskariLayerService;
 import fi.nls.oskari.map.layer.OskariLayerServiceIbatisImpl;
 import fi.nls.oskari.map.layer.formatters.LayerJSONFormatter;
@@ -157,8 +156,6 @@ public class OskariLayerWorker {
                 if (layerJson == null) {
                     continue;
                 }
-                // TODO: handle inside formatter now that crs is available there
-                transformWKTGeom(layerJson, crs);
 
                 final String permissionKey = getPermissionKey(layer);
                 JSONObject permissions = getPermissions(user, permissionKey, permissionCollection);
@@ -239,26 +236,6 @@ public class OskariLayerWorker {
         FORMATTER.addInfoForAdmin(layerJson, "capabilitiesUpdateRate", layer.getCapabilitiesUpdateRateSec());
 
         FORMATTER.addInfoForAdmin(layerJson, "organizationId", layer.getDataproviderId());
-    }
-
-    public static void transformWKTGeom(final JSONObject layerJSON, final String mapSRS) {
-
-        final String wktWGS84 = layerJSON.optString("geom");
-        if(wktWGS84 == null || wktWGS84.isEmpty() || mapSRS == null || mapSRS.isEmpty()) {
-            layerJSON.remove("geom");
-            return;
-        }
-        try {
-            // WTK is saved as EPSG:4326 in database
-            final String transformed = WKTHelper.transformLayerCoverage(wktWGS84, mapSRS);
-            if(transformed == null) {
-                log.debug("Transform failed for layer id:", layerJSON.opt("id"), "WKT was:", wktWGS84);
-            }
-            // value will be removed if transform failed, that's ok since client can't handle it if it's in unknown projection
-            JSONHelper.putValue(layerJSON, "geom", transformed);
-        } catch (Exception ex) {
-            log.debug("Error transforming coverage to", mapSRS, "from", wktWGS84);
-        }
     }
 
     /**

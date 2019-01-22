@@ -203,7 +203,7 @@
         <dependency>
             <groupId>org.geotools</groupId>
             <artifactId>gt-svg</artifactId>
-            <version>19.2</version>
+            <version>${geotools.version}</version>
             <exclusions>
                 <exclusion>
                     <groupId>xalan</groupId>

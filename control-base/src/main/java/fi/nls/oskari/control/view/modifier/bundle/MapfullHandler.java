@@ -447,10 +447,8 @@ public class MapfullHandler extends BundleHandler {
                 continue;
             }
 
-            final JSONObject json = userLayerDataService.parseUserLayer2JSON(userLayer, baseLayer);
+            final JSONObject json = userLayerDataService.parseUserLayer2JSON(userLayer, baseLayer, mapSrs);
             if (json != null) {
-                // transform WKT (WGS84) to mapSrs
-                OskariLayerWorker.transformWKTGeom(json, mapSrs);
                 layerList.put(json);
             }
         }
