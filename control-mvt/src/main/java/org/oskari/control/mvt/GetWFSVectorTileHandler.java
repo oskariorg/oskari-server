@@ -15,10 +15,10 @@ import org.geotools.data.simple.SimpleFeatureIterator;
 import org.geotools.feature.DefaultFeatureCollection;
 import org.opengis.feature.simple.SimpleFeature;
 import org.oskari.service.mvt.SimpleFeaturesMVTEncoder;
+import org.oskari.service.mvt.TileCoord;
+import org.oskari.service.mvt.WFSTileGrid;
 import org.oskari.service.mvt.wfs.CachingWFSClient;
 import org.oskari.service.mvt.wfs.OskariWFS110Client;
-import org.oskari.service.mvt.wfs.TileCoord;
-import org.oskari.service.mvt.wfs.WFSTileGrid;
 import org.oskari.service.util.ServiceFactory;
 
 import fi.nls.oskari.annotation.OskariActionRoute;

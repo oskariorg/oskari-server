@@ -1,4 +1,4 @@
-package org.oskari.service.mvt.wfs;
+package org.oskari.service.mvt;
 
 import static org.junit.Assert.assertArrayEquals;
 
