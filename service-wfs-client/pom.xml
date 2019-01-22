@@ -6,9 +6,9 @@
         <artifactId>oskari-parent</artifactId>
         <version>1.51.0-SNAPSHOT</version>
     </parent>
-
     <groupId>org.oskari</groupId>
-    <artifactId>service-mvt-wfs</artifactId>
+    <artifactId>service-wfs-client</artifactId>
+    <description>Utilities for accessing WFS 1.1.0 services</description>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

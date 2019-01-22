@@ -1,4 +1,4 @@
-package org.oskari.service.mvt.wfs;
+package org.oskari.service.wfs.client;
 
 import javax.xml.namespace.QName;
 

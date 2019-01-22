@@ -1,4 +1,4 @@
-package org.oskari.service.mvt.wfs;
+package org.oskari.service.wfs.client;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;

@@ -318,11 +318,6 @@
 
             <dependency>
                 <groupId>fi.nls.oskari.service</groupId>
-                <artifactId>oskari-wfs</artifactId>
-                <version>${fi.nls.oskari.service.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>fi.nls.oskari.service</groupId>
                 <artifactId>oskari-feature-engine</artifactId>
                 <version>${fi.nls.oskari.service.version}</version>
             </dependency>
@@ -449,7 +444,7 @@
 
             <dependency>
                 <groupId>org.oskari</groupId>
-                <artifactId>service-mvt-wfs</artifactId>
+                <artifactId>service-wfs-client</artifactId>
                 <version>${fi.nls.oskari.version}</version>
             </dependency>
 
@@ -1144,7 +1139,6 @@
         <module>service-users</module>
         <module>service-permissions</module>
         <module>service-map</module>
-        <module>service-wfs</module>
         <module>service-myplaces</module>
         <module>service-rating</module>
         <module>service-capabilities-update</module>
@@ -1209,7 +1203,8 @@
 
         <module>control-mvt</module>
         <module>service-mvt</module>
-        <module>service-mvt-wfs</module>
+
+        <module>service-wfs-client</module>
     </modules>
 
 </project>
