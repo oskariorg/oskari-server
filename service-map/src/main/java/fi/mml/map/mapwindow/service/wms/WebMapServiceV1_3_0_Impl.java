@@ -9,15 +9,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.geotools.geometry.jts.JTS;
+import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
+import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
-import org.opengis.referencing.operation.MathTransform;
-
-import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.GeometryFactory;
-import com.vividsolutions.jts.geom.Polygon;
+import org.opengis.referencing.operation.TransformException;
 
 import fi.mml.capabilities.BoundingBoxDocument.BoundingBox;
 import fi.mml.capabilities.KeywordDocument;
@@ -26,6 +22,7 @@ import fi.mml.capabilities.LegendURLDocument.LegendURL;
 import fi.mml.capabilities.OperationType;
 import fi.mml.capabilities.StyleDocument.Style;
 import fi.mml.capabilities.WMSCapabilitiesDocument;
+import fi.nls.oskari.map.geometry.WKTHelper;
 import fi.mml.capabilities.KeywordListDocument.KeywordList;
 
 /**
@@ -54,38 +51,16 @@ public class WebMapServiceV1_3_0_Impl extends AbstractWebMapService {
             WMSCapabilitiesDocument wms = WMSCapabilitiesDocument.Factory.parse(data);
 
             Layer layerCapabilities = wms.getWMSCapabilities().getCapability().getLayer();
-            BoundingBox bbox = layerCapabilities.getBoundingBoxArray()[0];
-            if(bbox != null) {
-            	String crs = bbox.getCRS();
-        		double maxx = bbox.getMaxx();
-            	double maxy = bbox.getMaxy();
-            	double minx = bbox.getMinx();
-            	double miny = bbox.getMiny();
-            	Coordinate topRightCoord = new Coordinate(maxx, maxy);
-            	Coordinate lowerRightCoord = new Coordinate(maxx, miny);
-            	Coordinate lowerLeftCoord = new Coordinate(minx, miny);
-            	Coordinate topLeftCoord = new Coordinate(minx, maxy);
-            	Coordinate topRightEndCoord = new Coordinate(maxx, maxy);
-            	ArrayList<Coordinate> coords = new ArrayList<>();
-            	coords.add(topRightCoord);
-            	coords.add(lowerRightCoord);
-            	coords.add(lowerLeftCoord);
-            	coords.add(topLeftCoord);
-            	coords.add(topRightEndCoord);
-            	GeometryFactory fact = new GeometryFactory();
-            	Polygon poly = fact.createPolygon(coords.toArray(new Coordinate[coords.size()]));
-            	CoordinateReferenceSystem sourceCRS = CRS.decode(crs, true);
-                CoordinateReferenceSystem targetCRS = CRS.decode("EPSG:4326", true);
-                MathTransform transform = CRS.findMathTransform(sourceCRS, targetCRS, true);
-                Geometry targetGeometry = JTS.transform(poly, transform);
-            	this.geom = targetGeometry.toText();
+            BoundingBox bbox = null;
+            if (layerCapabilities.getBoundingBoxArray().length > 0) {
+                bbox = layerCapabilities.getBoundingBoxArray(0);
             }
+
             LinkedList<Layer> path = new LinkedList<>();
             boolean found = find(layerCapabilities, layerName, path, 0);
             if (!found) {
                 throw new LayerNotFoundInCapabilitiesException("Could not find layer " + layerName);
             }
-
             this.styles = new HashMap<>();
             this.legends = new HashMap<>();
             for (Layer layer : path) {
@@ -95,6 +70,14 @@ public class WebMapServiceV1_3_0_Impl extends AbstractWebMapService {
             this.CRSs = parseCRSs(layerCapabilities.getCRSArray(), allowedCRS);
 
             Layer layer = path.getLast();
+            // use layer's own bbox if exists
+            if (layer.getBoundingBoxArray().length > 0) {
+                bbox = layer.getBoundingBoxArray(0);
+            }
+
+            if(bbox != null) {
+                this.geom = bboxToWGS84WKT(bbox);
+            }
             this.queryable = layer.getQueryable();
             this.time = Arrays.stream(layer.getDimensionArray())
                     .filter(dimension -> "time".equals(dimension.getName()))
@@ -202,6 +185,14 @@ public class WebMapServiceV1_3_0_Impl extends AbstractWebMapService {
             keywords[i] = words[i].getStringValue();
         }
         return keywords;
+    }
+
+    private String bboxToWGS84WKT (BoundingBox bbox) throws FactoryException, TransformException {
+        CoordinateReferenceSystem sourceCRS = CRS.decode(bbox.getCRS());
+        CoordinateReferenceSystem wgs84  = CRS.decode("EPSG:4326", true);
+        ReferencedEnvelope env = new ReferencedEnvelope (bbox.getMinx(), bbox.getMaxx(),bbox.getMiny(), bbox.getMaxy(), sourceCRS);
+        env = env.transform(wgs84, true);
+        return WKTHelper.getBBOX(env.getMinX(), env.getMinY(), env.getMaxX(), env.getMaxY());
     }
 
 }

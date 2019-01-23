@@ -12,12 +12,15 @@ import java.util.List;
  */
 public interface DatasourceLayerMapper {
 
-    @Select("SELECT s.datasource_id, s.layer_id, s.config, l.locale" +
-            " FROM oskari_statistical_layer s JOIN oskari_maplayer l ON l.id = s.layer_id WHERE " +
+    @Select("SELECT s.datasource_id, s.layer_id, s.config, l.locale, gl.order_number FROM oskari_statistical_layer s " +
+            " JOIN oskari_maplayer l ON l.id = s.layer_id " +
+            " JOIN oskari_maplayer_group_link gl ON l.id = gl.maplayerid " +
+            "  WHERE " +
             " s.datasource_id = #{datasourceId}")
     @Results({
             @Result(property = "datasourceId", column = "datasource_id"),
-            @Result(property = "maplayerId", column = "layer_id")
+            @Result(property = "maplayerId", column = "layer_id"),
+            @Result(property = "orderNumber", column = "order_number")
     })
     @ResultType(DatasourceLayer.class)
     List<DatasourceLayer> getLayersForDatasource(long datasourceId);

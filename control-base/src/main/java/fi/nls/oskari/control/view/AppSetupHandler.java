@@ -24,6 +24,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.oskari.map.userlayer.service.UserLayerDbService;
 
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 import static fi.nls.oskari.control.ActionConstants.*;
@@ -56,10 +57,7 @@ public class AppSetupHandler extends RestActionHandler {
 
     private static final boolean VIEW_ACCESS_UUID = PropertyUtil.getOptional(PROPERTY_VIEW_UUID, true);
     // Simple bundles don't require extra processing
-    private static final Set<String> SIMPLE_BUNDLES = ConversionHelper.asSet(
-            ViewModifier.BUNDLE_INFOBOX, ViewModifier.BUNDLE_TOOLBAR, ViewModifier.BUNDLE_TIMESERIES,
-            ViewModifier.BUNDLE_PUBLISHEDGRID, ViewModifier.BUNDLE_FEATUREDATA2,
-            ViewModifier.BUNDLE_COORDINATETOOL, ViewModifier.BUNDLE_STATSGRID, ViewModifier.BUNDLE_FEEDBACKSERVICE);
+    private static final Set<String> SIMPLE_BUNDLES = new LinkedHashSet();
 
     // Bundles that we don't want to remove even if publisher doesn't provide config
     private static final Set<String> ALWAYSON_BUNDLES = ConversionHelper.asSet(
@@ -69,10 +67,7 @@ public class AppSetupHandler extends RestActionHandler {
     private static final Set<String> BUNDLE_REQUIRES_DIVMANAZER =
             ConversionHelper.asSet(ViewModifier.BUNDLE_FEATUREDATA2, ViewModifier.BUNDLE_COORDINATETOOL, ViewModifier.BUNDLE_STATSGRID);
 
-    // List of bundles that the user is able to publish
-    // mapfull not included since it's assumed to be part of publisher template handled anyways
-    private static final Set<String> BUNDLE_WHITELIST = ConversionHelper.asSet(
-            ViewModifier.BUNDLE_PUBLISHEDMYPLACES2,ViewModifier.BUNDLE_DIVMANAZER);
+    private static final Set<String> BUNDLE_WHITELIST = new LinkedHashSet();
 
     private static long PUBLISHED_VIEW_TEMPLATE_ID = -1;
 
@@ -136,10 +131,20 @@ public class AppSetupHandler extends RestActionHandler {
         if(configBundles.length > 0) {
             LOG.info("Whitelisting more bundles due to configuration configured ", configBundles);
         }
+        // Init bundles that don't require extra processing
+        SIMPLE_BUNDLES.clear();
+        SIMPLE_BUNDLES.addAll(ConversionHelper.asSet(
+                ViewModifier.BUNDLE_INFOBOX, ViewModifier.BUNDLE_TOOLBAR, ViewModifier.BUNDLE_TIMESERIES,
+                ViewModifier.BUNDLE_PUBLISHEDGRID, ViewModifier.BUNDLE_FEATUREDATA2,
+                ViewModifier.BUNDLE_COORDINATETOOL, ViewModifier.BUNDLE_STATSGRID, ViewModifier.BUNDLE_FEEDBACKSERVICE));
         for(String bundleId : configBundles) {
             SIMPLE_BUNDLES.add(bundleId);
         }
 
+        // List of bundles that the user is able to publish
+        // mapfull not included since it's assumed to be part of publisher template handled anyways
+        BUNDLE_WHITELIST.clear();
+        BUNDLE_WHITELIST.add(ViewModifier.BUNDLE_DIVMANAZER);
         // add all "simple" bundles to the whitelist
         BUNDLE_WHITELIST.addAll(SIMPLE_BUNDLES);
 

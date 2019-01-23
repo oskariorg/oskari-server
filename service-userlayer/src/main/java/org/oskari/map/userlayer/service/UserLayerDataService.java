@@ -31,6 +31,7 @@ import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.TransformException;
 import org.oskari.geojson.GeoJSON;
 import org.oskari.geojson.GeoJSONWriter;
+import org.oskari.map.userlayer.input.KMLParser;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -47,6 +48,7 @@ public class UserLayerDataService {
 
     private static final String USERLAYER_MAXFEATURES_COUNT = "userlayer.maxfeatures.count";
     private static final int USERLAYER_MAX_FEATURES_COUNT = PropertyUtil.getOptional(USERLAYER_MAXFEATURES_COUNT, -1);
+    private static final String DEFAULT_LOCALES_LANGUAGE = "en";
 
     private static final int USERLAYER_BASE_LAYER_ID = PropertyUtil.getOptional(USERLAYER_BASELAYER_ID, -1);
 
@@ -86,8 +88,23 @@ public class UserLayerDataService {
             Collection<PropertyDescriptor> types = schema.getDescriptors();
             for (PropertyDescriptor type : types) {
                 JSONObject obj = new JSONObject();
-                obj.put("name", type.getName().getLocalPart());
+                String name = type.getName().getLocalPart();
+                obj.put("name", name);
                 obj.put("type", type.getType().getBinding().getSimpleName());
+                // don't add locale for geometry
+                if (!KMLParser.KML_GEOM.equals(name)){
+                    JSONObject locales = new JSONObject();
+                    // use name as default localized value
+                    String localizedName = name;
+                    // KML handling
+                    if (KMLParser.KML_NAME.equals(name)){
+                        localizedName =  "Name";
+                    } else if (KMLParser.KML_DESC.equals(name)){
+                        localizedName =  "Description";
+                    }
+                    locales.put(DEFAULT_LOCALES_LANGUAGE, localizedName);
+                    obj.put("locales", locales);
+                }
                 jsfields.put(obj);
             }
         } catch (Exception ex) {
@@ -166,8 +183,8 @@ public class UserLayerDataService {
      * @param ulayer
      * @return
      */
-    public static JSONObject parseUserLayer2JSON(UserLayer ulayer) {
-        return parseUserLayer2JSON(ulayer, getBaseLayer());
+    public static JSONObject parseUserLayer2JSON(UserLayer ulayer, String mapSrs) {
+        return parseUserLayer2JSON(ulayer, getBaseLayer(), mapSrs);
     }
     /**
      * @param ulayer data in user_layer table
@@ -175,7 +192,7 @@ public class UserLayerDataService {
      * @return
      * @throws ServiceException
      */
-    public static JSONObject parseUserLayer2JSON(final UserLayer ulayer, final OskariLayer baseLayer) {
+    public static JSONObject parseUserLayer2JSON(final UserLayer ulayer, final OskariLayer baseLayer, final String mapSrs) {
 
         try {
             final String name = baseLayer.getName();
@@ -185,7 +202,7 @@ public class UserLayerDataService {
             baseLayer.setName(ulayer.getLayer_name());
             baseLayer.setType(OskariLayer.TYPE_USERLAYER);
             // create the JSON
-            final JSONObject json = FORMATTER.getJSON(baseLayer, PropertyUtil.getDefaultLanguage(), false, null, ulayer);
+            final JSONObject json = FORMATTER.getJSON(baseLayer, PropertyUtil.getDefaultLanguage(), false, mapSrs, ulayer);
             JSONHelper.putValue(json, "id", USERLAYER_LAYER_PREFIX + ulayer.getId());
 
             // restore the previous values for baseLayer

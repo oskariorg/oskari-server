@@ -89,7 +89,7 @@ public class FeatureCollectionParsers {
         }
     }
 
-    private static MathTransform getTransform(
+    public static MathTransform getTransform(
             CoordinateReferenceSystem sourceCRS,
             CoordinateReferenceSystem targetCRS) throws UserLayerException, ServiceException {
         if (sourceCRS == null) {

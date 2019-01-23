@@ -76,7 +76,6 @@
         <dependency>
             <groupId>com.netflix.hystrix</groupId>
             <artifactId>hystrix-core</artifactId>
-            <version>1.4.0</version>
         </dependency>
         <dependency>
             <groupId>com.netflix.rxjava</groupId>
@@ -204,7 +203,7 @@
         <dependency>
             <groupId>org.geotools</groupId>
             <artifactId>gt-svg</artifactId>
-            <version>19.2</version>
+            <version>${geotools.version}</version>
             <exclusions>
                 <exclusion>
                     <groupId>xalan</groupId>
@@ -225,9 +224,9 @@
             <groupId>fi.nls.oskari.service</groupId>
             <artifactId>oskari-feature-engine</artifactId>
         </dependency>
-         <dependency>
+        <dependency>
             <groupId>fi.nls.oskari.service</groupId>
-            <artifactId>oskari-wfs</artifactId>
+            <artifactId>oskari-map</artifactId>
         </dependency>
         <dependency>
             <groupId>fi.nls.oskari</groupId>

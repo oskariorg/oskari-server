@@ -55,10 +55,6 @@
 			<groupId>fi.nls.oskari.service</groupId>
 			<artifactId>service-datamodel</artifactId>
 		</dependency>
-        <dependency>
-            <groupId>fi.nls.oskari.service</groupId>
-            <artifactId>oskari-wfs</artifactId>
-        </dependency>
 		<dependency>
 			<groupId>org.geotools</groupId>
 			<artifactId>gt-main</artifactId>
@@ -159,8 +155,12 @@
 
 		<dependency>
 			<groupId>com.vividsolutions</groupId>
-			<artifactId>jts</artifactId>
-			<version>1.13</version>
+			<artifactId>jts-core</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>com.vividsolutions</groupId>
+			<artifactId>jts-io</artifactId>
 		</dependency>
 
 		<dependency>

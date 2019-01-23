@@ -46,10 +46,6 @@
         </dependency>
         <dependency>
             <groupId>fi.nls.oskari.service</groupId>
-            <artifactId>oskari-wfs</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>fi.nls.oskari.service</groupId>
             <artifactId>oskari-rating</artifactId>
         </dependency>
         <dependency>
@@ -88,6 +84,15 @@
         <dependency>
             <groupId>org.geotools</groupId>
             <artifactId>gt-xml</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.oskari</groupId>
+            <artifactId>service-wfs-client</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.geotools</groupId>
+            <artifactId>gt-epsg-hsql</artifactId>
+            <scope>test</scope>
         </dependency>
     </dependencies>
     <build>

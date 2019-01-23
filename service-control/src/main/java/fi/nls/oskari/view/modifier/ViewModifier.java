@@ -36,6 +36,7 @@ public abstract class ViewModifier {
     public static final String BUNDLE_RPC = "rpc";
     public static final String BUNDLE_TIMESERIES = "timeseries";
     public static final String BUNDLE_GUIDEDTOUR = "guidedtour";
+    public static final String BUNDLE_MAPROTATOR = "maprotator";
 
     public static final String KEY_EAST = "east";
     public static final String KEY_NORTH = "north";

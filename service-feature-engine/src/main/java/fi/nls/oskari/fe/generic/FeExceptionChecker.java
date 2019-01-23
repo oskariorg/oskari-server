@@ -9,7 +9,6 @@ package fi.nls.oskari.fe.generic;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.service.ServiceRuntimeException;
-import fi.nls.oskari.wfs.WFSExceptionHelper;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamReader;
@@ -19,6 +18,7 @@ public class FeExceptionChecker {
     private static final Logger log = LogFactory
             .getLogger(FeExceptionChecker.class);
 
+    private static final String ERROR_GETFEATURE_POSTREQUEST_FAILED = "getfeature_postrequest_failed";
     private static final String EXCEPTIONTEXT = "ExceptionText";
 
     /**
@@ -52,7 +52,7 @@ public class FeExceptionChecker {
         }
         log.debug(message);
         throw new ServiceRuntimeException(message,
-                WFSExceptionHelper.ERROR_GETFEATURE_POSTREQUEST_FAILED);
+                ERROR_GETFEATURE_POSTREQUEST_FAILED);
 
 
     }

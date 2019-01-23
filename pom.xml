@@ -97,7 +97,7 @@
         <xmlbeans.version>2.6.0</xmlbeans.version>
         <geotools.version>19.2</geotools.version>
         <geotools.major>19</geotools.major>
-        <jts.version>1.13</jts.version>
+        <jts.version>1.14.0</jts.version>
         <mvt.version>2.0.0</mvt.version>
         <!-- gt-xsd-kml.version>9.3</gt-xsd-kml.version -->
         <flexjson.version>2.0</flexjson.version>
@@ -105,6 +105,7 @@
 
         <mybatis.version>3.4.6</mybatis.version>
         <pdfbox.version>2.0.12</pdfbox.version>
+        <hystrix.version>1.5.18</hystrix.version>
         <!-- Test deps versions -->
         <powermock.version>1.5</powermock.version>
         <junit.version>4.11</junit.version>
@@ -317,11 +318,6 @@
 
             <dependency>
                 <groupId>fi.nls.oskari.service</groupId>
-                <artifactId>oskari-wfs</artifactId>
-                <version>${fi.nls.oskari.service.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>fi.nls.oskari.service</groupId>
                 <artifactId>oskari-feature-engine</artifactId>
                 <version>${fi.nls.oskari.service.version}</version>
             </dependency>
@@ -448,7 +444,7 @@
 
             <dependency>
                 <groupId>org.oskari</groupId>
-                <artifactId>service-mvt-wfs</artifactId>
+                <artifactId>service-wfs-client</artifactId>
                 <version>${fi.nls.oskari.version}</version>
             </dependency>
 
@@ -734,7 +730,12 @@
 
             <dependency>
                 <groupId>com.vividsolutions</groupId>
-                <artifactId>jts</artifactId>
+                <artifactId>jts-core</artifactId>
+                <version>${jts.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.vividsolutions</groupId>
+                <artifactId>jts-io</artifactId>
                 <version>${jts.version}</version>
             </dependency>
 
@@ -844,6 +845,11 @@
                 <groupId>org.apache.pdfbox</groupId>
                 <artifactId>pdfbox</artifactId>
                 <version>${pdfbox.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.netflix.hystrix</groupId>
+                <artifactId>hystrix-core</artifactId>
+                <version>${hystrix.version}</version>
             </dependency>
 
             <!-- Managed test dependencies -->
@@ -1133,7 +1139,6 @@
         <module>service-users</module>
         <module>service-permissions</module>
         <module>service-map</module>
-        <module>service-wfs</module>
         <module>service-myplaces</module>
         <module>service-rating</module>
         <module>service-capabilities-update</module>
@@ -1198,7 +1203,8 @@
 
         <module>control-mvt</module>
         <module>service-mvt</module>
-        <module>service-mvt-wfs</module>
+
+        <module>service-wfs-client</module>
     </modules>
 
 </project>
