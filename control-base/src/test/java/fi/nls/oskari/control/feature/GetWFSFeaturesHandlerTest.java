@@ -50,7 +50,7 @@ public class GetWFSFeaturesHandlerTest {
     }
 
     @Test
-    public void testBboxOutOfBounds() throws ActionException, NoSuchAuthorityCodeException, FactoryException {
+    public void testBboxOutOfBounds() throws ActionException {
         Envelope bbox3857 = new Envelope(20040000, 20040000, 20041000, 20041000);
         String targetSrsName = "EPSG:3857";
         String requestSrsName = "EPSG:4326";

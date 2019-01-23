@@ -45,7 +45,7 @@ public class GetWFSFeaturesHandler extends ActionHandler {
     protected static final String ERR_BBOX_OUT_OF_CRS = "bbox not within CRS extent";
     protected static final String ERR_CRS_DECODE_FAIL = "Failed to decode CRS";
     protected static final String ERR_TRANSFORM_FIND_FAIL = "Failed to find CRS transformation";
-    protected static final String ERR_REPOJECTION_FAIL = "Repojection failed";
+    protected static final String ERR_REPOJECTION_FAIL = "Reprojection failed";
 
     private static final String GEOJSON_CONTENT_TYPE = "application/vnd.geo+json";
     private static final String PROPERTY_NATIVE_SRS = "oskari.native.srs";
@@ -201,7 +201,7 @@ public class GetWFSFeaturesHandler extends ActionHandler {
         String typeName = layer.getName();
         String user = layer.getUsername();
         String pass = layer.getPassword();
-        // TODO: Figure out the maxFeatures from the layer 
+        // TODO: Figure out the maxFeatures from the layer
         int maxFeatures = 10000;
         double[] box = { bbox.getMinX(), bbox.getMinY(), bbox.getMaxX(), bbox.getMaxY() };
         return wfsClient.tryGetFeatures(endPoint, user, pass, typeName, box, srsName, maxFeatures);
