@@ -41,7 +41,7 @@ public class EditUserLayerHandler extends RestActionHandler {
 
         final UserLayerStyle style = new UserLayerStyle();
         style.setId(userLayer.getId());
-        updateStyleProperties(style, params.getHttpParam(PARAM_STYLE));
+        updateStyleProperties(style, params.getHttpParam(PARAM_STYLE), params.getHttpParam("useOskariStyle", false));
 
         userLayerDbService.updateUserLayerCols(userLayer);
         userLayerDbService.updateUserLayerStyleCols(style);
@@ -53,10 +53,15 @@ public class EditUserLayerHandler extends RestActionHandler {
         ResponseHelper.writeResponse(params, ulayer);
     }
 
-    private void updateStyleProperties(UserLayerStyle style, String styleJSON) throws ActionParamsException {
+    private void updateStyleProperties(UserLayerStyle style, String styleJSON, boolean useOskariStyle) throws ActionParamsException {
         try {
             JSONObject stylejs = JSONHelper.createJSONObject(styleJSON);
-            style.populateFromJSON(stylejs);
+            // This becomes redundant when oskari style json is used only
+            if (useOskariStyle) {
+                style.populateFromOskariJSON(stylejs);
+            } else {
+                style.populateFromJSON(stylejs);
+            }
         } catch (JSONException e) {
             throw new ActionParamsException("Unable to populate style from JSON", e);
         }
