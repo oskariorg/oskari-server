@@ -46,6 +46,7 @@ public class GetWFSFeaturesHandler extends ActionHandler {
     protected static final String ERR_CRS_DECODE_FAIL = "Failed to decode CRS";
     protected static final String ERR_TRANSFORM_FIND_FAIL = "Failed to find CRS transformation";
     protected static final String ERR_REPOJECTION_FAIL = "Reprojection failed";
+    protected static final String ERR_GEOJSON_ENCODE_FAIL = "Failed to write GeoJSON";
 
     private static final String GEOJSON_CONTENT_TYPE = "application/vnd.geo+json";
     private static final String PROPERTY_NATIVE_SRS = "oskari.native.srs";
@@ -100,7 +101,7 @@ public class GetWFSFeaturesHandler extends ActionHandler {
             }
             ResponseHelper.writeResponse(params, 200, GEOJSON_CONTENT_TYPE, baos);
         } catch (IOException e) {
-            ResponseHelper.writeError(params, "Failed to write GeoJSON");
+            ResponseHelper.writeError(params, ERR_GEOJSON_ENCODE_FAIL);
         }
     }
 
@@ -136,7 +137,7 @@ public class GetWFSFeaturesHandler extends ActionHandler {
             requestCRS = CRS.decode(requestSrsName, true);
             targetCRS = CRS.decode(targetSrsName, true);
         } catch (Exception e) {
-            throw new ActionException(ERR_CRS_DECODE_FAIL);
+            throw new ActionParamsException(ERR_CRS_DECODE_FAIL);
         }
 
         if (!isWithin(targetCRS, bbox)) {
@@ -153,12 +154,12 @@ public class GetWFSFeaturesHandler extends ActionHandler {
                 transformFromRequested = CRS.findMathTransform(requestCRS, targetCRS, true);
                 transformToRequested = CRS.findMathTransform(targetCRS, requestCRS, true);
             } catch (Exception e) {
-                throw new ActionException(ERR_TRANSFORM_FIND_FAIL);
+                throw new ActionParamsException(ERR_TRANSFORM_FIND_FAIL);
             }
             try {
                 requestBbox = JTS.transform(bbox, transformToRequested);
             } catch (Exception e) {
-                throw new ActionException(ERR_REPOJECTION_FAIL);
+                throw new ActionException(ERR_REPOJECTION_FAIL, e);
             }
         } else {
             transformFromRequested = null;
@@ -171,7 +172,7 @@ public class GetWFSFeaturesHandler extends ActionHandler {
             try {
                 features = transform(features, targetCRS, transformFromRequested);
             } catch (Exception e) {
-                throw new ActionException(ERR_REPOJECTION_FAIL);
+                throw new ActionException(ERR_REPOJECTION_FAIL, e);
             }
         }
         return features;
