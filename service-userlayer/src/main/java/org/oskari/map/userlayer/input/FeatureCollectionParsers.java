@@ -7,7 +7,6 @@ import org.geotools.feature.DefaultFeatureCollection;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
 import org.geotools.geometry.jts.JTS;
-import org.geotools.ows.ServiceException;
 import org.geotools.referencing.CRS;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
@@ -17,6 +16,8 @@ import org.opengis.referencing.operation.MathTransform;
 import org.oskari.map.userlayer.service.UserLayerException;
 
 import com.vividsolutions.jts.geom.Geometry;
+
+import fi.nls.oskari.service.ServiceException;
 
 public class FeatureCollectionParsers {
 
