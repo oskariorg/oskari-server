@@ -10,9 +10,9 @@ import org.geotools.data.ogr.bridj.BridjOGRDataStoreFactory;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.data.simple.SimpleFeatureSource;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.oskari.map.userlayer.service.UserLayerException;
 
 import fi.nls.oskari.service.ServiceException;
-import fi.nls.oskari.util.JSONHelper;
 
 /**
  * Parse MapInfo MIF/MID
@@ -41,12 +41,13 @@ public class MIFParser implements FeatureCollectionParser {
             if (crs != null) {
                 sourceCRS = crs;
             }
-            if (sourceCRS == null) {
-                throw new ServiceException("Failed to parse MIF", JSONHelper.createJSONObject("cause", "no_source_crs"));
-            }
             return FeatureCollectionParsers.read(source, sourceCRS, targetCRS);
+        } catch (ServiceException e) {
+            // forward error on read: if in file UserLayerException. if in service ServiceException
+            throw e;
         } catch (Exception e) {
-            throw new ServiceException("Failed to parse MIF", e);
+            throw new UserLayerException("Failed to parse MIF: " + e.getMessage(),
+                    UserLayerException.ErrorType.PARSER, UserLayerException.ErrorType.INVALID_FORMAT);
         } finally {
             if (store != null) {
                 store.dispose();

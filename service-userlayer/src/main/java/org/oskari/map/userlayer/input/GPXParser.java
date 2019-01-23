@@ -13,6 +13,7 @@ import org.geotools.data.simple.SimpleFeatureSource;
 import org.geotools.referencing.CRS;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.oskari.map.userlayer.service.UserLayerException;
 
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
@@ -42,7 +43,7 @@ public class GPXParser implements FeatureCollectionParser {
             // GPX always lon,lat 4326
             sourceCRS = CRS.decode("EPSG:4326", true);
         } catch (FactoryException e) {
-            throw new ServiceException("Failed to decode EPSG:4326");
+            throw new ServiceException("Failed to decode sourceCrs (EPSG:4326) for GPXParser");
         }
 
         Map<String, String> connectionParams = new HashMap<>();
@@ -66,9 +67,14 @@ public class GPXParser implements FeatureCollectionParser {
                 }
                 LOG.info("FeatureCollection was empty, typeName:", typeName);
             }
-            throw new ServiceException("Could not find any non-empty FeatureCollections from GPX file");
+            throw new UserLayerException("Could not find any non-empty FeatureCollections from GPX file",
+                    UserLayerException.ErrorType.PARSER, UserLayerException.ErrorType.NO_FEATURES);
+        } catch (ServiceException e) {
+            // forward error on read: if in file UserLayerException. if in service ServiceException
+            throw e;
         } catch (Exception e) {
-            throw new ServiceException("GPX parsing failed", e);
+            throw new UserLayerException("Failed to parse GPX: " + e.getMessage(),
+                    UserLayerException.ErrorType.PARSER, UserLayerException.ErrorType.INVALID_FORMAT);
         } finally {
             if (store != null) {
                 store.dispose();

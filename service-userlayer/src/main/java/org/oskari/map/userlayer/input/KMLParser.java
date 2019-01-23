@@ -14,6 +14,7 @@ import org.geotools.kml.v22.KMLConfiguration;
 import org.geotools.xml.Parser;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.oskari.map.userlayer.service.UserLayerException;
 import org.xml.sax.SAXException;
 
 import fi.nls.oskari.log.LogFactory;
@@ -44,10 +45,10 @@ public class KMLParser implements FeatureCollectionParser {
             fc.add(f);
             return fc;
         } catch (IOException e) {
-            throw new ServiceException("IOException occured", e);
+            throw new UserLayerException("IOException occured", UserLayerException.ErrorType.PARSER, UserLayerException.ErrorType.INVALID_FORMAT);
         } catch (SAXException e) {
             LOG.warn(e, "Failed to parse KML file");
-            throw new ServiceException("Invalid KML file: " + e.getMessage());
+            throw new UserLayerException("Invalid KML file: " + e.getMessage(), UserLayerException.ErrorType.PARSER, UserLayerException.ErrorType.INVALID_FORMAT);
         } catch (ParserConfigurationException e) {
             throw new ServiceException("KML parser failed to initialize");
         }
