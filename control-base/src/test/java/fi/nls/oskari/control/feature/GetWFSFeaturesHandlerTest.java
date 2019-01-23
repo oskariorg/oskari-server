@@ -58,7 +58,7 @@ public class GetWFSFeaturesHandlerTest {
             handler.getFeatures(null, bbox3857, requestSrsName, targetSrsName);
             fail();
         } catch (ActionParamsException e) {
-            assertEquals("Bbox not within CRS extent", e.getMessage());
+            assertEquals(GetWFSFeaturesHandler.ERR_BBOX_OUT_OF_CRS, e.getMessage());
         }
     }
 
