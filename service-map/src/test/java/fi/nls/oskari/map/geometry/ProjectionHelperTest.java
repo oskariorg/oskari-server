@@ -52,11 +52,11 @@ public class ProjectionHelperTest {
         double x = 25.017104;
 
         Point p2 = ProjectionHelper.transformPoint(new Point(x, y), EPSG_4258, EPSG_3067);
-        assertEquals("lon", 389790.2122344108, p2.getLon(), 0.0);
+        assertEquals("lon", 389790.212234411, p2.getLon(), 1e-9);
         assertEquals("lat", 6665752.471279182, p2.getLat(), 0.0);
 
         Point p3 = ProjectionHelper.transformPoint(x, y, EPSG_4258, EPSG_3067);
-        assertEquals("lon", 389790.2122344108, p3.getLon(), 0.0);
+        assertEquals("lon", 389790.212234411, p3.getLon(), 1e-9);
         assertEquals("lat", 6665752.471279182, p3.getLat(), 0.0);
         /*
         16:25:15,235 DEBUG [ELFGeoLocatorParser:39] Original coordinates - x: 60.113924 y: 25.017104

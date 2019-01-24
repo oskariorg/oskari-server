@@ -67,7 +67,7 @@ public class CoordinatesHandlerTest extends JSONActionRouteTest {
         handler.handleAction(createActionParams(params));
 
         assertEquals(PARAM_LAT, 6822546.781459001, getResponseJSON().getDouble(PARAM_LAT), 0.0);
-        assertEquals(PARAM_LON, 327578.7810839222, getResponseJSON().getDouble(PARAM_LON), 0.0);
+        assertEquals(PARAM_LON, 327578.78108392254, getResponseJSON().getDouble(PARAM_LON), 1e-9);
     }
     @Test
     public void testHandleAction3067to4326()
