@@ -43,4 +43,16 @@ public class UserLayerStyleTest {
         }
         assertTrue(JSONHelper.isEqual(json, style2.parseUserLayerStyle2JSON()));
     }
+    @Test
+    public void testOskariJSONParsing() {
+        UserLayerStyle style = getStyle();
+        JSONObject json = style.parseUserLayerStyleToOskariJSON();
+        UserLayerStyle style2 = new UserLayerStyle();
+        try {
+            style2.populateFromOskariJSON(json);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        assertTrue(JSONHelper.isEqual(json, style2.parseUserLayerStyleToOskariJSON()));
+    }
 }

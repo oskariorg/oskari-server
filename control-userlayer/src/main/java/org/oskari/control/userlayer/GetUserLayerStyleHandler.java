@@ -33,7 +33,13 @@ public class GetUserLayerStyleHandler extends ActionHandler {
         if (style == null) {
             throw new ActionParamsException("Unable to get style for id" + layer.getId());
         }
-        JSONObject response = style.parseUserLayerStyle2JSON();
+        JSONObject response;
+        // This becomes redundant when oskari style json is used only
+        if (params.getHttpParam("useOskariStyle", false)) {
+            response = style.parseUserLayerStyleToOskariJSON();
+        } else {
+            response = style.parseUserLayerStyle2JSON();
+        }
         ResponseHelper.writeResponse(params, response);
     }
 

@@ -49,6 +49,35 @@ public class UserLayerStyle {
 
     }
 
+    public void populateFromOskariJSON(final JSONObject style) throws JSONException {
+        try {
+            setDot_color(style.getJSONObject("image").getJSONObject("fill").optString("color"));
+            setDot_shape(style.getJSONObject("image").optString("shape"));
+            setDot_size(style.getJSONObject("image").optInt("size"));
+
+            setStroke_color(style.getJSONObject("stroke").optString("color"));
+            setStroke_width(style.getJSONObject("stroke").optInt("width"));
+            setStroke_linejoin(style.getJSONObject("stroke").getString("lineJoin"));
+            setStroke_linecap(style.getJSONObject("stroke").getString("lineCap"));
+            setStroke_dasharray(style.getJSONObject("stroke").getString("lineDash"));
+
+            // null is valid color value for "no fill"
+            setFill_color(style.getJSONObject("fill").isNull("color") ? null : style.getJSONObject("fill")
+                    .optString("color"));
+            // null is valid color value for "no stroke"
+            setBorder_color(style.getJSONObject("stroke").getJSONObject("area").isNull("color") ? null : style
+                    .getJSONObject("stroke").getJSONObject("area").optString("color"));
+            setFill_pattern(ConversionHelper.getInt(style.getJSONObject("fill").getJSONObject("area").
+                    optString("pattern"), -1));
+            setBorder_width(style.getJSONObject("stroke").getJSONObject("area").optInt("width"));
+            setBorder_linejoin(style.getJSONObject("stroke").getJSONObject("area").optString("lineJoin"));
+            setBorder_dasharray(style.getJSONObject("stroke").getJSONObject("area").optString("lineDash"));
+
+        } catch (Exception e) {
+            throw new JSONException(e);
+        }
+    }
+
     public JSONObject parseUserLayerStyle2JSON(){
         JSONObject json = new JSONObject();
         //dot
@@ -74,6 +103,42 @@ public class UserLayerStyle {
         JSONHelper.putValue(area, "fillStyle", getFill_pattern());
         JSONHelper.putValue(area, "fillColor", getFill_color());
         JSONHelper.putValue(json, "area", area);
+
+        return json;
+    }
+
+    public JSONObject parseUserLayerStyleToOskariJSON() {
+        JSONObject json = new JSONObject();
+        // dot
+        JSONObject image = new JSONObject();
+        JSONObject imageFill = new JSONObject();
+        JSONHelper.putValue(imageFill, "color", getDot_color());
+        JSONHelper.putValue(image, "fill", imageFill);
+        JSONHelper.putValue(image, "shape", getDot_shape());
+        JSONHelper.putValue(image, "size", getDot_size());
+        JSONHelper.putValue(json, "image", image);
+        // line
+        JSONObject stroke = new JSONObject();
+        JSONHelper.putValue(stroke, "color", getStroke_color());
+        JSONHelper.putValue(stroke, "width", getStroke_width());
+        JSONHelper.putValue(stroke, "lineDash", getStroke_dasharray());
+        JSONHelper.putValue(stroke, "lineCap", getStroke_linecap());
+        JSONHelper.putValue(stroke, "lineJoin", getStroke_linejoin());
+        // area
+        JSONObject strokeArea = new JSONObject();
+        JSONHelper.putValue(strokeArea, "color", getBorder_color());
+        JSONHelper.putValue(strokeArea, "width", getBorder_width());
+        JSONHelper.putValue(strokeArea, "lineDash", getBorder_dasharray());
+        JSONHelper.putValue(strokeArea, "lineJoin", getBorder_linejoin());
+        JSONHelper.putValue(stroke, "area", strokeArea);
+        JSONHelper.putValue(json, "stroke", stroke);
+        JSONObject fill = new JSONObject();
+        JSONHelper.putValue(fill, "color", getFill_color());
+        JSONObject fillArea = new JSONObject();
+        JSONHelper.putValue(fillArea, "pattern", getFill_pattern());
+        JSONHelper.putValue(fill, "area", fillArea);
+        JSONHelper.putValue(json, "fill", fill);
+
 
         return json;
     }
