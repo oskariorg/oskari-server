@@ -12,6 +12,12 @@ jdk:
   - oraclejdk8
   - openjdk8
 
+addons:
+  apt:
+    packages:
+      - oracle-java8-installer
+      - openjdk-8-jdk
+
 notifications:
   slack: oskari:N5vZf0lzsIGpQ8nAPRfHgQ91
   webhooks:
