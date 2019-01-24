@@ -3,6 +3,9 @@ package org.oskari.service.wfs.client;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Reader;
+import java.io.InputStreamReader;
+
 import java.net.HttpURLConnection;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -64,7 +67,9 @@ public class OskariWFS110Client {
         }
 
         try (InputStream in = conn.getInputStream();
-                FeatureIterator<SimpleFeature> it = FJ.streamFeatureCollection(in)) {
+             Reader utf8Reader = new InputStreamReader(in, IOHelper.CHARSET_UTF8);
+             FeatureIterator<SimpleFeature> it = FJ.streamFeatureCollection(utf8Reader)) {
+
             DefaultFeatureCollection features = new DefaultFeatureCollection(null, null);
             while (it.hasNext()) {
                 features.add(it.next());
