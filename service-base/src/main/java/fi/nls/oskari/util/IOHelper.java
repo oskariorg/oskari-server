@@ -33,6 +33,7 @@ public class IOHelper {
     public static final String HEADER_USERAGENT = "User-Agent";
     public static final String HEADER_REFERER = "Referer";
     public static final String HEADER_ACCEPT = "Accept";
+    public static final String HEADER_ACCEPT_CHARSET = "Accept-Charset";
 
     public static final String CHARSET_UTF8 = "UTF-8";
     public static final String DEFAULT_CHARSET = CHARSET_UTF8;
@@ -238,6 +239,7 @@ public class IOHelper {
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setConnectTimeout(CONNECTION_TIMEOUT_MS);
         conn.setReadTimeout(READ_TIMEOUT_MS);
+        conn.setRequestProperty(HEADER_ACCEPT_CHARSET, CHARSET_UTF8);
         if(trustAllCerts) trustAllCerts(conn);
         if(trustAllHosts) trustAllHosts(conn);
         return conn;
