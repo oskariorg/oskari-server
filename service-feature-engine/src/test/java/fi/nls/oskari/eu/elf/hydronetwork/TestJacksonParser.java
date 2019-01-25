@@ -12,7 +12,8 @@ import fi.nls.oskari.fe.input.format.gml.recipe.ParserRecipe;
 import fi.nls.oskari.fe.output.OutputStreamProcessor;
 import fi.nls.oskari.fe.output.format.json.JsonOutputProcessor;
 import fi.nls.oskari.util.JSONHelper;
-import org.apache.log4j.Logger;
+import fi.nls.oskari.log.LogFactory;
+import fi.nls.oskari.log.Logger;
 import org.json.JSONObject;
 import org.junit.Test;
 
@@ -23,7 +24,7 @@ import java.io.OutputStream;
 
 public class TestJacksonParser extends TestHelper {
 
-    static final Logger logger = Logger.getLogger(TestJacksonParser.class);
+    static final Logger logger = LogFactory.getLogger(TestJacksonParser.class);
 
     /**
      * 
