@@ -70,12 +70,12 @@ public class GetWFSFeaturesHandler extends ActionHandler {
 
     @Override
     public void init() {
-        if (permissionHelper != null) {
+        if (permissionHelper == null) {
             permissionHelper = new PermissionHelper(
                     ServiceFactory.getMapLayerService(),
                     ServiceFactory.getPermissionsService());
         };
-        if (wfsClient != null) {
+        if (wfsClient == null) {
             wfsClient = new OskariWFS110Client();
         }
     }
