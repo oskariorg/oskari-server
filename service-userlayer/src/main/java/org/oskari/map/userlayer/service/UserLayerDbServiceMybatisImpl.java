@@ -51,7 +51,7 @@ public class UserLayerDbServiceMybatisImpl extends UserLayerDbService {
         return new SqlSessionFactoryBuilder().build(configuration);
     }
 
-    public int insertUserLayer(final UserLayer userLayer, final UserLayerStyle userLayerStyle, final List<UserLayerData> userLayerDataList) throws ServiceException {
+    public int insertUserLayer(final UserLayer userLayer, final UserLayerStyle userLayerStyle, final List<UserLayerData> userLayerDataList) throws UserLayerException {
         try (SqlSession session = factory.openSession(ExecutorType.BATCH)) {
             int count = 0;
             final UserLayerMapper mapper = getMapper(session);
@@ -74,13 +74,16 @@ public class UserLayerDbServiceMybatisImpl extends UserLayerDbService {
                 }
             }
             session.flushStatements();
-            if (count == 0) throw new ServiceException("no_features");
+            if (count == 0) throw new UserLayerException("UserLayer doesn't contain features", UserLayerException.ErrorType.NO_FEATURES);
             log.debug("stored:", count, "rows");
             session.commit();
             return count;
         } catch (Exception e) {
             log.error(e, "Rolling back, failed to insert userlayer with id:", +userLayer.getId());
-            throw new ServiceException("unable_to_store_data");
+            if(e instanceof UserLayerException){
+                throw e; // no features
+            }
+            throw new UserLayerException("Failed to store features to database", UserLayerException.ErrorType.STORE);
         }
     }
 

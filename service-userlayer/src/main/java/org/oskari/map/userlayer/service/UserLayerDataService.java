@@ -114,17 +114,21 @@ public class UserLayerDataService {
     }
 
     public static UserLayerStyle createUserLayerStyle(JSONObject styleObject)
-            throws JSONException {
+            throws UserLayerException {
         final UserLayerStyle style = new UserLayerStyle();
-        style.setId(1);  // for default, even if style should be always valued
-        if (styleObject != null) {
-            style.populateFromJSON(styleObject);
+        try{
+            style.setId(1);  // for default, even if style should be always valued
+            if (styleObject != null) {
+                style.populateFromJSON(styleObject);
+            }
+            return style;
+        } catch (JSONException e) {
+            throw new UserLayerException("Invalid style json: " + styleObject);
         }
-        return style;
     }
 
     public static List<UserLayerData> createUserLayerData(SimpleFeatureCollection fc, String uuid)
-            throws JSONException {
+            throws UserLayerException {
         List<UserLayerData> userLayerDataList = new ArrayList<>();
         try (SimpleFeatureIterator it = fc.features()) {
             while (it.hasNext()) {
@@ -141,20 +145,24 @@ public class UserLayerDataService {
         return userLayerDataList;
     }
 
-    private static UserLayerData toUserLayerData(SimpleFeature f, String uuid) throws JSONException {
-        JSONObject geoJSON = new GeoJSONWriter().writeFeature(f);
-        String id = geoJSON.optString(GeoJSON.ID);
-        JSONObject geometry = geoJSON.getJSONObject(GeoJSON.GEOMETRY);
-        String geometryJson = geometry.toString();
-        JSONObject properties = geoJSON.optJSONObject(GeoJSON.PROPERTIES);
-        String propertiesJson = properties != null ? properties.toString() : null;
+    private static UserLayerData toUserLayerData(SimpleFeature f, String uuid) throws UserLayerException {
+        try {
+            JSONObject geoJSON = new GeoJSONWriter().writeFeature(f);
+            String id = geoJSON.optString(GeoJSON.ID);
+            JSONObject geometry = geoJSON.getJSONObject(GeoJSON.GEOMETRY);
+            String geometryJson = geometry.toString();
+            JSONObject properties = geoJSON.optJSONObject(GeoJSON.PROPERTIES);
+            String propertiesJson = properties != null ? properties.toString() : null;
 
-        UserLayerData userLayerData = new UserLayerData();
-        userLayerData.setUuid(uuid);
-        userLayerData.setFeature_id(id);
-        userLayerData.setGeometry(geometryJson);
-        userLayerData.setProperty_json(propertiesJson);
-        return userLayerData;
+            UserLayerData userLayerData = new UserLayerData();
+            userLayerData.setUuid(uuid);
+            userLayerData.setFeature_id(id);
+            userLayerData.setGeometry(geometryJson);
+            userLayerData.setProperty_json(propertiesJson);
+            return userLayerData;
+        } catch (JSONException e) {
+            throw new UserLayerException("Failed to encode feature as GeoJSON", UserLayerException.ErrorType.INVALID_FEATURE); //no geometry
+        }
     }
 
     /**

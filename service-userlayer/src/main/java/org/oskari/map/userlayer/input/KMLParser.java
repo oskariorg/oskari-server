@@ -23,13 +23,12 @@ import org.geotools.xml.PullParser;
 import org.geotools.geometry.jts.JTS;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.oskari.map.userlayer.service.UserLayerException;
 import org.opengis.referencing.operation.MathTransform;
 import org.xml.sax.SAXException;
 
 import com.vividsolutions.jts.geom.Geometry;
 
-import fi.nls.oskari.log.LogFactory;
-import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.service.ServiceException;
 
 /**
@@ -37,12 +36,15 @@ import fi.nls.oskari.service.ServiceException;
  */
 public class KMLParser implements FeatureCollectionParser {
 
-    private static final Logger LOG = LogFactory.getLogger(KMLParser.class);
-
     public static final String SUFFIX = "KML";
     public static final String KML_NAME = "kml_name"; // GML also has name and kml_name is localized to user
     public static final String KML_DESC = "kml_desc"; // GML also has description and kml_desc is localized to user
     public static final String KML_GEOM = "the_geom";
+
+    @Override
+    public String getSuffix() {
+        return SUFFIX;
+    }
 
     @Override
     @SuppressWarnings("unchecked")
@@ -82,11 +84,11 @@ public class KMLParser implements FeatureCollectionParser {
             }
             return processFeatures(targetCRS, fc, extendedData);
         } catch (XMLStreamException e) {
-            throw new ServiceException("XMLStreamException occured", e);
+            throw new UserLayerException("XMLStreamException occured: " + e.getMessage(), UserLayerException.ErrorType.PARSER, UserLayerException.ErrorType.INVALID_FORMAT);
         } catch (IOException e) {
-            throw new ServiceException("IOException occured", e);
+            throw new ServiceException("IOException occured: " + e.getMessage());
         } catch (SAXException e) {
-            throw new ServiceException("Invalid KML file: " + e.getMessage());
+            throw new UserLayerException("Invalid KML file: " + e.getMessage(), UserLayerException.ErrorType.PARSER, UserLayerException.ErrorType.INVALID_FORMAT);
         }
     }
 

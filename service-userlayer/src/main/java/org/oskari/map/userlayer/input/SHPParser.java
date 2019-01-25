@@ -14,6 +14,7 @@ import org.geotools.data.shapefile.ShapefileDataStore;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.data.simple.SimpleFeatureSource;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.oskari.map.userlayer.service.UserLayerException;
 
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
@@ -44,8 +45,12 @@ public class SHPParser implements FeatureCollectionParser {
                 sourceCRS = crs;
             }
             return FeatureCollectionParsers.read(source, sourceCRS, targetCRS);
+        } catch (ServiceException e) {
+            // forward error on read: if in file UserLayerException. if in service ServiceException
+            throw e;
         } catch (Exception e) {
-            throw new ServiceException("Failed to parse SHP", e);
+            throw new UserLayerException("Failed to parse SHP: " + e.getMessage(),
+                    UserLayerException.ErrorType.PARSER, UserLayerException.ErrorType.INVALID_FORMAT);
         } finally {
             if (store != null) {
                 store.dispose();
@@ -74,6 +79,11 @@ public class SHPParser implements FeatureCollectionParser {
             LOG.warn("IOException occured while reading CPG file, using default charset");
         }
         return StandardCharsets.ISO_8859_1;
+    }
+
+    @Override
+    public String getSuffix() {
+        return SUFFIX;
     }
 
 }

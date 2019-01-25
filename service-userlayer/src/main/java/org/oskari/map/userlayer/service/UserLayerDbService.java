@@ -11,7 +11,7 @@ import java.util.List;
 public abstract class UserLayerDbService extends OskariComponent {
 
     //UserLayer related
-    public abstract int insertUserLayer(final UserLayer userlayer, final UserLayerStyle userLayerStyle, final List<UserLayerData> userLayerDataList) throws ServiceException;
+    public abstract int insertUserLayer(final UserLayer userlayer, final UserLayerStyle userLayerStyle, final List<UserLayerData> userLayerDataList) throws UserLayerException;
     public abstract int updateUserLayerCols(final UserLayer userlayer);
     public abstract UserLayer getUserLayerById(long id);
     public abstract List<UserLayer> getUserLayerByUuid(String uuid);
