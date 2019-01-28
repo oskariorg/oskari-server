@@ -14,9 +14,8 @@ import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.PropertyUtil;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class PxwebIndicatorsParser {
     private final static Logger LOG = LogFactory.getLogger(PxwebIndicatorsParser.class);
@@ -30,68 +29,94 @@ public class PxwebIndicatorsParser {
     }
 
     public List<StatisticalIndicator> parse(List<DatasourceLayer> layers) {
-        return parse(null, null, layers);
+        return parse(null, layers);
     }
 
-    protected List<StatisticalIndicator> parse(PxFolderItem parent, String path, List<DatasourceLayer> layers) {
+    protected List<StatisticalIndicator> parse(String path, List<DatasourceLayer> layers) {
         final String url = getUrl(path);
-        if(url.endsWith(".px")) {
-            return parsePxFile(url, path, layers);
-        }
 
-        // if not a px file -> browse through the structure
+        Collection<String> languages = getLanguages();
+        List<StatisticalIndicator> indicatorList = null;
+        if(url.endsWith(".px")) {
+            // No id for indicator, assume the service has a separate indicator key config.
+            indicatorList = parsePxFileToMultipleIndicators(path, languages);
+        } else {
+            indicatorList = parseStructuredService(null, languages);
+        }
+        setupLayers(indicatorList, layers, url);
+        return indicatorList;
+    }
+
+    protected List<StatisticalIndicator> parseStructuredService(String path, Collection<String> languages) {
+        final String url = getUrl(path);
         List<StatisticalIndicator> indicators = new ArrayList<>();
         List<PxFolderItem> list = readFolderListing(url);
         for(PxFolderItem item : list) {
             if("l".equalsIgnoreCase(item.type)) {
                 // recurse to pxweb "folder"
-                indicators.addAll(parse(item, getPath(path, item.id), layers));
+                indicators.addAll(parseStructuredService(getPath(path, item.id), languages));
                 continue;
             }
             if(!"t".equalsIgnoreCase(item.type)) {
                 // only recognize l and t types
                 continue;
             }
-
             if(config.hasIndicatorKey()) {
                 // go to the px-file
-                indicators.addAll(parse(item, getPath(path, item.id), layers));
+                indicators.addAll(parsePxFileToMultipleIndicators(getPath(path, item.id), languages));
                 continue;
             }
-
-
-            try {
-                PxTableItem table = getPxTable(path, item.id);
-                StatisticalIndicator ind = new StatisticalIndicator();
-                ind.setId(item.id);
-                ind.addName(PropertyUtil.getDefaultLanguage(), item.text);
-                final StatisticalIndicatorDataModel selectors = getModel(table);
-                ind.setDataModel(selectors);
-                setupLayers(ind, layers, url);
-                indicators.add(ind);
-            } catch (IOException e) {
-                LOG.error(e, "Error getting indicators from Pxweb datasource:", config.getUrl());
-            }
+            HashMap<String, StatisticalIndicator> indicatorMap = new HashMap<>();
+            languages.forEach(lang -> {
+                try {
+                    PxTableItem table = getPxTable(path, lang, item.id);
+                    StatisticalIndicator ind = indicatorMap.get(item.id);
+                    if (ind == null) {
+                        ind = new StatisticalIndicator();
+                        ind.setId(item.id);
+                        indicatorMap.put(item.id, ind);
+                        indicators.add(ind);
+                    }
+                    ind.addName(lang, item.text);
+                    ind.setDataModel(getModel(table));
+                } catch (IOException e) {
+                    LOG.error(e, "Error getting indicators from Pxweb datasource:", config.getUrl());
+                }
+            });
         }
-
         return indicators;
     }
 
-    protected List<StatisticalIndicator> parsePxFile(String url, String path, List<DatasourceLayer> layers) {
+    protected List<StatisticalIndicator> parsePxFileToMultipleIndicators(String path, Collection<String> languages) {
+
         if(!config.hasIndicatorKey()) {
             LOG.warn("Tried to parse px-file as indicator list but missing indicator key configuration!");
             return Collections.emptyList();
         }
-        try {
-            PxTableItem table = getPxTable(path);
-            List<StatisticalIndicator> indicatorList = readPxTableAsIndicators(table);
-            setupLayers(indicatorList, layers, url);
-            return indicatorList;
-        } catch (IOException e) {
-            LOG.error(e, "Error getting indicators from Pxweb datasource:", config.getUrl());
-        }
-        return Collections.emptyList();
+        List<StatisticalIndicator> indicatorList = new ArrayList<>();
+        HashMap<String, StatisticalIndicator> indicatorMap = new HashMap<>();
+
+        languages.forEach(lang -> {
+            try {
+                PxTableItem table = getPxTable(path, lang);
+                List<StatisticalIndicator> indicators = readPxTableAsIndicators(table, lang);
+                indicators.stream().forEach(cur -> {
+                    StatisticalIndicator indicator = indicatorMap.get(cur.getId());
+                    if (indicator == null) {
+                        indicatorMap.put(cur.getId(), cur);
+                        indicatorList.add(cur);
+                        return;
+                    }
+                    indicator.addName(lang, cur.getName(lang));
+                    indicator.addDescription(lang, cur.getDescription(lang));
+                });
+            } catch (IOException e) {
+                LOG.error(e, "Error getting indicators from Pxweb datasource:", config.getUrl());
+            }
+        });
+        return indicatorList;
     }
+
 
     protected List<PxFolderItem> readFolderListing(String url) {
         try {
@@ -120,15 +145,18 @@ public class PxwebIndicatorsParser {
     }
 
     protected PxTableItem getPxTable(String path) throws IOException {
-        String url = getUrl(path);
+        return getPxTable(path, null);
+    }
+    protected PxTableItem getPxTable(String path, String lang) throws IOException {
+        String url = getUrl(path, lang);
         if(url.endsWith(".px")) {
             String id = url.substring(url.lastIndexOf('/') + 1);
-            return getPxTable(path, id);
+            return getPxTable(path, lang, id);
         }
         return null;
     }
-    protected PxTableItem getPxTable(String path, String tableId) throws IOException {
-        String url = getUrl(path);
+    protected PxTableItem getPxTable(String path, String lang, String tableId) throws IOException {
+        String url = getUrl(path, lang);
         if(!url.endsWith(tableId)) {
             if(!url.endsWith("/")) {
                 url = url + "/";
@@ -145,10 +173,13 @@ public class PxwebIndicatorsParser {
         return table;
     }
 
-    protected List<StatisticalIndicator> readPxTableAsIndicators(PxTableItem table) throws IOException {
+    protected List<StatisticalIndicator> readPxTableAsIndicators(PxTableItem table, String lang) throws IOException {
         List<StatisticalIndicator> list = new ArrayList<>();
         if(table == null) {
             return list;
+        }
+        if (lang == null) {
+            lang = PropertyUtil.getDefaultLanguage();
         }
         // selectors are shared between indicators in pxweb
         final StatisticalIndicatorDataModel selectors = getModel(table);
@@ -160,8 +191,8 @@ public class PxwebIndicatorsParser {
         for(IdNamePair item: indicatorList.getLabels()) {
             StatisticalIndicator indicator = new StatisticalIndicator();
             indicator.setId(table.getId() + "::" + item.getKey());
-            indicator.addName(PropertyUtil.getDefaultLanguage(), item.getValue());
-            indicator.addDescription(PropertyUtil.getDefaultLanguage(), table.getTitle());
+            indicator.addName(lang, item.getValue());
+            indicator.addDescription(lang, table.getTitle());
             indicator.setDataModel(selectors);
             list.add(indicator);
         }
@@ -191,14 +222,18 @@ public class PxwebIndicatorsParser {
 
 
     private String getUrl(String path) {
+        return getUrl(path, null);
+    }
+    private String getUrl(String path, String language) {
+        String lang = language != null ? language : PropertyUtil.getDefaultLanguage();
+        String url = config.getUrl().replace("{language}", lang);
         if(path == null) {
             // Example: "http://pxweb.hel.ninja/PXWeb/api/v1/en/hri/hri/"
-            return config.getUrl();
+            return url;
         }
-        String url = config.getUrl() + "/" + IOHelper.urlEncode(path).replace("+", "%20").replace("%2F", "/");
+        url += "/" + IOHelper.urlEncode(path).replace("+", "%20").replace("%2F", "/");
         return IOHelper.fixPath(url);
     }
-
 
     private String getPath(String path, String nextPart) {
         if(path == null) {
@@ -210,5 +245,18 @@ public class PxwebIndicatorsParser {
 
     protected String loadUrl(String url) throws IOException {
         return IOHelper.getURL(url);
+    }
+
+    private Collection<String> getLanguages() {
+        HashSet<String> languages = new HashSet<>();
+        languages.add(PropertyUtil.getDefaultLanguage());
+        if (serviceSupportsMultipleLanguages()) {
+            languages.addAll(Arrays.asList(PropertyUtil.getSupportedLanguages()));
+        }
+        return languages;
+    }
+
+    private boolean serviceSupportsMultipleLanguages() {
+        return config.getUrl().contains("{language}");
     }
 }
