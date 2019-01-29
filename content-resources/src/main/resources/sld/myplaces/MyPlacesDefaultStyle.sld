@@ -40,12 +40,11 @@
                                 </ogc:Function>
                                 <ogc:Literal>0</ogc:Literal>
                             </ogc:PropertyIsEqualTo>
-                            <ogc:PropertyIsEqualTo>
-                                <ogc:Function name="isNull">
+                            <ogc:Not>
+                                <ogc:PropertyIsNull>
                                     <ogc:PropertyName>border_color</ogc:PropertyName>
-                                </ogc:Function>
-                                <ogc:Literal>false</ogc:Literal>
-                            </ogc:PropertyIsEqualTo>
+                                </ogc:PropertyIsNull>
+                            </ogc:Not>
                         </ogc:And>
                     </ogc:Filter>
                     <PolygonSymbolizer>
@@ -123,12 +122,11 @@
                                 </ogc:Function>
                                 <ogc:Literal>0</ogc:Literal>
                             </ogc:PropertyIsGreaterThan>
-                            <ogc:PropertyIsEqualTo>
-                                <ogc:Function name="isNull">
+                            <ogc:Not>
+                                <ogc:PropertyIsNull>
                                     <ogc:PropertyName>border_color</ogc:PropertyName>
-                                </ogc:Function>
-                                <ogc:Literal>false</ogc:Literal>
-                            </ogc:PropertyIsEqualTo>
+                                </ogc:PropertyIsNull>
+                            </ogc:Not>
                         </ogc:And>
                     </ogc:Filter>
                     <PolygonSymbolizer>
@@ -206,12 +204,11 @@
                                 </ogc:Function>
                                 <ogc:Literal>0</ogc:Literal>
                             </ogc:PropertyIsEqualTo>
-                            <ogc:PropertyIsEqualTo>
-                                <ogc:Function name="isNull">
+                            <ogc:Not>
+                                <ogc:PropertyIsNull>
                                     <ogc:PropertyName>border_color</ogc:PropertyName>
-                                </ogc:Function>
-                                <ogc:Literal>false</ogc:Literal>
-                            </ogc:PropertyIsEqualTo>
+                                </ogc:PropertyIsNull>
+                            </ogc:Not>
                         </ogc:And>
                     </ogc:Filter>
                     <PolygonSymbolizer>
@@ -290,12 +287,11 @@
                                 </ogc:Function>
                                 <ogc:Literal>0</ogc:Literal>
                             </ogc:PropertyIsGreaterThan>
-                            <ogc:PropertyIsEqualTo>
-                                <ogc:Function name="isNull">
+                            <ogc:Not>
+                                <ogc:PropertyIsNull>
                                     <ogc:PropertyName>border_color</ogc:PropertyName>
-                                </ogc:Function>
-                                <ogc:Literal>false</ogc:Literal>
-                            </ogc:PropertyIsEqualTo>
+                                </ogc:PropertyIsNull>
+                            </ogc:Not>
                         </ogc:And>
                     </ogc:Filter>
                     <PolygonSymbolizer>
@@ -374,12 +370,11 @@
                                 </ogc:Function>
                                 <ogc:Literal>0</ogc:Literal>
                             </ogc:PropertyIsEqualTo>
-                            <ogc:PropertyIsEqualTo>
-                                <ogc:Function name="isNull">
+                            <ogc:Not>
+                                <ogc:PropertyIsNull>
                                     <ogc:PropertyName>border_color</ogc:PropertyName>
-                                </ogc:Function>
-                                <ogc:Literal>false</ogc:Literal>
-                            </ogc:PropertyIsEqualTo>
+                                </ogc:PropertyIsNull>
+                            </ogc:Not>
                         </ogc:And>
                     </ogc:Filter>
                     <PolygonSymbolizer>
@@ -468,12 +463,11 @@
                                 </ogc:Function>
                                 <ogc:Literal>0</ogc:Literal>
                             </ogc:PropertyIsGreaterThan>
-                            <ogc:PropertyIsEqualTo>
-                                <ogc:Function name="isNull">
+                            <ogc:Not>
+                                <ogc:PropertyIsNull>
                                     <ogc:PropertyName>border_color</ogc:PropertyName>
-                                </ogc:Function>
-                                <ogc:Literal>false</ogc:Literal>
-                            </ogc:PropertyIsEqualTo>
+                                </ogc:PropertyIsNull>
+                            </ogc:Not>
                         </ogc:And>
                     </ogc:Filter>
                     <PolygonSymbolizer>
@@ -562,12 +556,11 @@
                                 </ogc:Function>
                                 <ogc:Literal>0</ogc:Literal>
                             </ogc:PropertyIsEqualTo>
-                            <ogc:PropertyIsEqualTo>
-                                <ogc:Function name="isNull">
+                            <ogc:Not>
+                                <ogc:PropertyIsNull>
                                     <ogc:PropertyName>border_color</ogc:PropertyName>
-                                </ogc:Function>
-                                <ogc:Literal>false</ogc:Literal>
-                            </ogc:PropertyIsEqualTo>
+                                </ogc:PropertyIsNull>
+                            </ogc:Not>
                         </ogc:And>
                     </ogc:Filter>
                     <PolygonSymbolizer>
@@ -657,12 +650,11 @@
                                 </ogc:Function>
                                 <ogc:Literal>0</ogc:Literal>
                             </ogc:PropertyIsGreaterThan>
-                            <ogc:PropertyIsEqualTo>
-                                <ogc:Function name="isNull">
+                            <ogc:Not>
+                                <ogc:PropertyIsNull>
                                     <ogc:PropertyName>border_color</ogc:PropertyName>
-                                </ogc:Function>
-                                <ogc:Literal>false</ogc:Literal>
-                            </ogc:PropertyIsEqualTo>
+                                </ogc:PropertyIsNull>
+                            </ogc:Not>
                         </ogc:And>
                     </ogc:Filter>
                     <PolygonSymbolizer>
@@ -752,12 +744,11 @@
                                 </ogc:Function>
                                 <ogc:Literal>0</ogc:Literal>
                             </ogc:PropertyIsEqualTo>
-                            <ogc:PropertyIsEqualTo>
-                                <ogc:Function name="isNull">
+                            <ogc:Not>
+                                <ogc:PropertyIsNull>
                                     <ogc:PropertyName>border_color</ogc:PropertyName>
-                                </ogc:Function>
-                                <ogc:Literal>false</ogc:Literal>
-                            </ogc:PropertyIsEqualTo>
+                                </ogc:PropertyIsNull>
+                            </ogc:Not>
                         </ogc:And>
                     </ogc:Filter>
                     <PolygonSymbolizer>
@@ -846,12 +837,11 @@
                                 </ogc:Function>
                                 <ogc:Literal>0</ogc:Literal>
                             </ogc:PropertyIsGreaterThan>
-                            <ogc:PropertyIsEqualTo>
-                                <ogc:Function name="isNull">
+                            <ogc:Not>
+                                <ogc:PropertyIsNull>
                                     <ogc:PropertyName>border_color</ogc:PropertyName>
-                                </ogc:Function>
-                                <ogc:Literal>false</ogc:Literal>
-                            </ogc:PropertyIsEqualTo>
+                                </ogc:PropertyIsNull>
+                            </ogc:Not>
                         </ogc:And>
                     </ogc:Filter>
                     <PolygonSymbolizer>
@@ -940,12 +930,11 @@
                                 </ogc:Function>
                                 <ogc:Literal>0</ogc:Literal>
                             </ogc:PropertyIsEqualTo>
-                            <ogc:PropertyIsEqualTo>
-                                <ogc:Function name="isNull">
+                            <ogc:Not>
+                                <ogc:PropertyIsNull>
                                     <ogc:PropertyName>border_color</ogc:PropertyName>
-                                </ogc:Function>
-                                <ogc:Literal>false</ogc:Literal>
-                            </ogc:PropertyIsEqualTo>
+                                </ogc:PropertyIsNull>
+                            </ogc:Not>
                         </ogc:And>
                     </ogc:Filter>
                     <PolygonSymbolizer>
@@ -1035,12 +1024,11 @@
                                 </ogc:Function>
                                 <ogc:Literal>0</ogc:Literal>
                             </ogc:PropertyIsGreaterThan>
-                            <ogc:PropertyIsEqualTo>
-                                <ogc:Function name="isNull">
+                            <ogc:Not>
+                                <ogc:PropertyIsNull>
                                     <ogc:PropertyName>border_color</ogc:PropertyName>
-                                </ogc:Function>
-                                <ogc:Literal>false</ogc:Literal>
-                            </ogc:PropertyIsEqualTo>
+                                </ogc:PropertyIsNull>
+                            </ogc:Not>
                         </ogc:And>
                     </ogc:Filter>
                     <PolygonSymbolizer>
@@ -1130,12 +1118,11 @@
                                 </ogc:Function>
                                 <ogc:Literal>0</ogc:Literal>
                             </ogc:PropertyIsEqualTo>
-                            <ogc:PropertyIsEqualTo>
-                                <ogc:Function name="isNull">
+                            <ogc:Not>
+                                <ogc:PropertyIsNull>
                                     <ogc:PropertyName>border_color</ogc:PropertyName>
-                                </ogc:Function>
-                                <ogc:Literal>false</ogc:Literal>
-                            </ogc:PropertyIsEqualTo>
+                                </ogc:PropertyIsNull>
+                            </ogc:Not>
                         </ogc:And>
                     </ogc:Filter>
                     <PolygonSymbolizer>
@@ -1224,12 +1211,11 @@
                                 </ogc:Function>
                                 <ogc:Literal>0</ogc:Literal>
                             </ogc:PropertyIsGreaterThan>
-                            <ogc:PropertyIsEqualTo>
-                                <ogc:Function name="isNull">
+                            <ogc:Not>
+                                <ogc:PropertyIsNull>
                                     <ogc:PropertyName>border_color</ogc:PropertyName>
-                                </ogc:Function>
-                                <ogc:Literal>false</ogc:Literal>
-                            </ogc:PropertyIsEqualTo>
+                                </ogc:PropertyIsNull>
+                            </ogc:Not>
                         </ogc:And>
                     </ogc:Filter>
                     <PolygonSymbolizer>
@@ -1318,12 +1304,11 @@
                                 </ogc:Function>
                                 <ogc:Literal>0</ogc:Literal>
                             </ogc:PropertyIsEqualTo>
-                            <ogc:PropertyIsEqualTo>
-                                <ogc:Function name="isNull">
+                            <ogc:Not>
+                                <ogc:PropertyIsNull>
                                     <ogc:PropertyName>border_color</ogc:PropertyName>
-                                </ogc:Function>
-                                <ogc:Literal>false</ogc:Literal>
-                            </ogc:PropertyIsEqualTo>
+                                </ogc:PropertyIsNull>
+                            </ogc:Not>
                         </ogc:And>
                     </ogc:Filter>
                     <PolygonSymbolizer>
@@ -1413,12 +1398,11 @@
                                 </ogc:Function>
                                 <ogc:Literal>0</ogc:Literal>
                             </ogc:PropertyIsGreaterThan>
-                            <ogc:PropertyIsEqualTo>
-                                <ogc:Function name="isNull">
+                            <ogc:Not>
+                                <ogc:PropertyIsNull>
                                     <ogc:PropertyName>border_color</ogc:PropertyName>
-                                </ogc:Function>
-                                <ogc:Literal>false</ogc:Literal>
-                            </ogc:PropertyIsEqualTo>
+                                </ogc:PropertyIsNull>
+                            </ogc:Not>
                         </ogc:And>
                     </ogc:Filter>
                     <PolygonSymbolizer>
@@ -1508,12 +1492,11 @@
                                 </ogc:Function>
                                 <ogc:Literal>0</ogc:Literal>
                             </ogc:PropertyIsEqualTo>
-                            <ogc:PropertyIsEqualTo>
-                                <ogc:Function name="isNull">
+                            <ogc:Not>
+                                <ogc:PropertyIsNull>
                                     <ogc:PropertyName>border_color</ogc:PropertyName>
-                                </ogc:Function>
-                                <ogc:Literal>false</ogc:Literal>
-                            </ogc:PropertyIsEqualTo>
+                                </ogc:PropertyIsNull>
+                            </ogc:Not>
                         </ogc:And>
                     </ogc:Filter>
                     <PolygonSymbolizer>
@@ -1602,12 +1585,11 @@
                                 </ogc:Function>
                                 <ogc:Literal>0</ogc:Literal>
                             </ogc:PropertyIsGreaterThan>
-                            <ogc:PropertyIsEqualTo>
-                                <ogc:Function name="isNull">
+                            <ogc:Not>
+                                <ogc:PropertyIsNull>
                                     <ogc:PropertyName>border_color</ogc:PropertyName>
-                                </ogc:Function>
-                                <ogc:Literal>false</ogc:Literal>
-                            </ogc:PropertyIsEqualTo>
+                                </ogc:PropertyIsNull>
+                            </ogc:Not>
                         </ogc:And>
                     </ogc:Filter>
                     <PolygonSymbolizer>
@@ -1696,12 +1678,11 @@
                                 </ogc:Function>
                                 <ogc:Literal>0</ogc:Literal>
                             </ogc:PropertyIsEqualTo>
-                            <ogc:PropertyIsEqualTo>
-                                <ogc:Function name="isNull">
+                            <ogc:Not>
+                                <ogc:PropertyIsNull>
                                     <ogc:PropertyName>border_color</ogc:PropertyName>
-                                </ogc:Function>
-                                <ogc:Literal>false</ogc:Literal>
-                            </ogc:PropertyIsEqualTo>
+                                </ogc:PropertyIsNull>
+                            </ogc:Not>
                         </ogc:And>
                     </ogc:Filter>
                     <PolygonSymbolizer>
@@ -1791,12 +1772,11 @@
                                 </ogc:Function>
                                 <ogc:Literal>0</ogc:Literal>
                             </ogc:PropertyIsGreaterThan>
-                            <ogc:PropertyIsEqualTo>
-                                <ogc:Function name="isNull">
+                            <ogc:Not>
+                                <ogc:PropertyIsNull>
                                     <ogc:PropertyName>border_color</ogc:PropertyName>
-                                </ogc:Function>
-                                <ogc:Literal>false</ogc:Literal>
-                            </ogc:PropertyIsEqualTo>
+                                </ogc:PropertyIsNull>
+                            </ogc:Not>
                         </ogc:And>
                     </ogc:Filter>
                     <PolygonSymbolizer>
