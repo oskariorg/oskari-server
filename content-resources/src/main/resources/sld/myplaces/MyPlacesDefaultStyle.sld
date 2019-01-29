@@ -29,10 +29,8 @@
                                 <ogc:Literal>-1</ogc:Literal>
                             </ogc:PropertyIsEqualTo>
                             <ogc:PropertyIsEqualTo>
-                                <ogc:Function name="strLength">
-                                    <ogc:PropertyName>border_dasharray</ogc:PropertyName>
-                                </ogc:Function>
-                                <ogc:Literal>0</ogc:Literal>
+                                <ogc:PropertyName>border_dasharray</ogc:PropertyName>
+                                <ogc:Literal></ogc:Literal>
                             </ogc:PropertyIsEqualTo>
                             <ogc:PropertyIsEqualTo>
                                 <ogc:Function name="strLength">
@@ -111,10 +109,8 @@
                                 <ogc:Literal>-1</ogc:Literal>
                             </ogc:PropertyIsEqualTo>
                             <ogc:PropertyIsEqualTo>
-                                <ogc:Function name="strLength">
-                                    <ogc:PropertyName>border_dasharray</ogc:PropertyName>
-                                </ogc:Function>
-                                <ogc:Literal>0</ogc:Literal>
+                                <ogc:PropertyName>border_dasharray</ogc:PropertyName>
+                                <ogc:Literal></ogc:Literal>
                             </ogc:PropertyIsEqualTo>
                             <ogc:PropertyIsGreaterThan>
                                 <ogc:Function name="strLength">
@@ -193,10 +189,8 @@
                                 <ogc:Literal>-1</ogc:Literal>
                             </ogc:PropertyIsEqualTo>
                             <ogc:PropertyIsNotEqualTo>
-                                <ogc:Function name="strLength">
-                                    <ogc:PropertyName>border_dasharray</ogc:PropertyName>
-                                </ogc:Function>
-                                <ogc:Literal>0</ogc:Literal>
+                                <ogc:PropertyName>border_dasharray</ogc:PropertyName>
+                                <ogc:Literal></ogc:Literal>
                             </ogc:PropertyIsNotEqualTo>
                             <ogc:PropertyIsEqualTo>
                                 <ogc:Function name="strLength">
@@ -276,10 +270,8 @@
                                 <ogc:Literal>-1</ogc:Literal>
                             </ogc:PropertyIsEqualTo>
                             <ogc:PropertyIsNotEqualTo>
-                                <ogc:Function name="strLength">
-                                    <ogc:PropertyName>border_dasharray</ogc:PropertyName>
-                                </ogc:Function>
-                                <ogc:Literal>0</ogc:Literal>
+                                <ogc:PropertyName>border_dasharray</ogc:PropertyName>
+                                <ogc:Literal></ogc:Literal>
                             </ogc:PropertyIsNotEqualTo>
                             <ogc:PropertyIsGreaterThan>
                                 <ogc:Function name="strLength">
@@ -359,10 +351,8 @@
                                 <ogc:Literal>0</ogc:Literal>
                             </ogc:PropertyIsEqualTo>
                             <ogc:PropertyIsEqualTo>
-                                <ogc:Function name="strLength">
-                                    <ogc:PropertyName>border_dasharray</ogc:PropertyName>
-                                </ogc:Function>
-                                <ogc:Literal>0</ogc:Literal>
+                                <ogc:PropertyName>border_dasharray</ogc:PropertyName>
+                                <ogc:Literal></ogc:Literal>
                             </ogc:PropertyIsEqualTo>
                             <ogc:PropertyIsEqualTo>
                                 <ogc:Function name="strLength">
@@ -452,10 +442,8 @@
                                 <ogc:Literal>0</ogc:Literal>
                             </ogc:PropertyIsEqualTo>
                             <ogc:PropertyIsEqualTo>
-                                <ogc:Function name="strLength">
-                                    <ogc:PropertyName>border_dasharray</ogc:PropertyName>
-                                </ogc:Function>
-                                <ogc:Literal>0</ogc:Literal>
+                                <ogc:PropertyName>border_dasharray</ogc:PropertyName>
+                                <ogc:Literal></ogc:Literal>
                             </ogc:PropertyIsEqualTo>
                             <ogc:PropertyIsGreaterThan>
                                 <ogc:Function name="strLength">
@@ -545,10 +533,8 @@
                                 <ogc:Literal>0</ogc:Literal>
                             </ogc:PropertyIsEqualTo>
                             <ogc:PropertyIsNotEqualTo>
-                                <ogc:Function name="strLength">
-                                    <ogc:PropertyName>border_dasharray</ogc:PropertyName>
-                                </ogc:Function>
-                                <ogc:Literal>0</ogc:Literal>
+                                <ogc:PropertyName>border_dasharray</ogc:PropertyName>
+                                <ogc:Literal></ogc:Literal>
                             </ogc:PropertyIsNotEqualTo>
                             <ogc:PropertyIsEqualTo>
                                 <ogc:Function name="strLength">
@@ -639,10 +625,8 @@
                                 <ogc:Literal>0</ogc:Literal>
                             </ogc:PropertyIsEqualTo>
                             <ogc:PropertyIsNotEqualTo>
-                                <ogc:Function name="strLength">
-                                    <ogc:PropertyName>border_dasharray</ogc:PropertyName>
-                                </ogc:Function>
-                                <ogc:Literal>0</ogc:Literal>
+                                <ogc:PropertyName>border_dasharray</ogc:PropertyName>
+                                <ogc:Literal></ogc:Literal>
                             </ogc:PropertyIsNotEqualTo>
                             <ogc:PropertyIsGreaterThan>
                                 <ogc:Function name="strLength">
@@ -733,10 +717,8 @@
                                 <ogc:Literal>1</ogc:Literal>
                             </ogc:PropertyIsEqualTo>
                             <ogc:PropertyIsEqualTo>
-                                <ogc:Function name="strLength">
-                                    <ogc:PropertyName>border_dasharray</ogc:PropertyName>
-                                </ogc:Function>
-                                <ogc:Literal>0</ogc:Literal>
+                                <ogc:PropertyName>border_dasharray</ogc:PropertyName>
+                                <ogc:Literal></ogc:Literal>
                             </ogc:PropertyIsEqualTo>
                             <ogc:PropertyIsEqualTo>
                                 <ogc:Function name="strLength">
@@ -826,10 +808,8 @@
                                 <ogc:Literal>1</ogc:Literal>
                             </ogc:PropertyIsEqualTo>
                             <ogc:PropertyIsEqualTo>
-                                <ogc:Function name="strLength">
-                                    <ogc:PropertyName>border_dasharray</ogc:PropertyName>
-                                </ogc:Function>
-                                <ogc:Literal>0</ogc:Literal>
+                                <ogc:PropertyName>border_dasharray</ogc:PropertyName>
+                                <ogc:Literal></ogc:Literal>
                             </ogc:PropertyIsEqualTo>
                             <ogc:PropertyIsGreaterThan>
                                 <ogc:Function name="strLength">
@@ -919,10 +899,8 @@
                                 <ogc:Literal>1</ogc:Literal>
                             </ogc:PropertyIsEqualTo>
                             <ogc:PropertyIsNotEqualTo>
-                                <ogc:Function name="strLength">
-                                    <ogc:PropertyName>border_dasharray</ogc:PropertyName>
-                                </ogc:Function>
-                                <ogc:Literal>0</ogc:Literal>
+                                <ogc:PropertyName>border_dasharray</ogc:PropertyName>
+                                <ogc:Literal></ogc:Literal>
                             </ogc:PropertyIsNotEqualTo>
                             <ogc:PropertyIsEqualTo>
                                 <ogc:Function name="strLength">
@@ -1013,10 +991,8 @@
                                 <ogc:Literal>1</ogc:Literal>
                             </ogc:PropertyIsEqualTo>
                             <ogc:PropertyIsNotEqualTo>
-                                <ogc:Function name="strLength">
-                                    <ogc:PropertyName>border_dasharray</ogc:PropertyName>
-                                </ogc:Function>
-                                <ogc:Literal>0</ogc:Literal>
+                                <ogc:PropertyName>border_dasharray</ogc:PropertyName>
+                                <ogc:Literal></ogc:Literal>
                             </ogc:PropertyIsNotEqualTo>
                             <ogc:PropertyIsGreaterThan>
                                 <ogc:Function name="strLength">
@@ -1107,10 +1083,8 @@
                                 <ogc:Literal>2</ogc:Literal>
                             </ogc:PropertyIsEqualTo>
                             <ogc:PropertyIsEqualTo>
-                                <ogc:Function name="strLength">
-                                    <ogc:PropertyName>border_dasharray</ogc:PropertyName>
-                                </ogc:Function>
-                                <ogc:Literal>0</ogc:Literal>
+                                <ogc:PropertyName>border_dasharray</ogc:PropertyName>
+                                <ogc:Literal></ogc:Literal>
                             </ogc:PropertyIsEqualTo>
                             <ogc:PropertyIsEqualTo>
                                 <ogc:Function name="strLength">
@@ -1200,10 +1174,8 @@
                                 <ogc:Literal>2</ogc:Literal>
                             </ogc:PropertyIsEqualTo>
                             <ogc:PropertyIsEqualTo>
-                                <ogc:Function name="strLength">
-                                    <ogc:PropertyName>border_dasharray</ogc:PropertyName>
-                                </ogc:Function>
-                                <ogc:Literal>0</ogc:Literal>
+                                <ogc:PropertyName>border_dasharray</ogc:PropertyName>
+                                <ogc:Literal></ogc:Literal>
                             </ogc:PropertyIsEqualTo>
                             <ogc:PropertyIsGreaterThan>
                                 <ogc:Function name="strLength">
@@ -1293,10 +1265,8 @@
                                 <ogc:Literal>2</ogc:Literal>
                             </ogc:PropertyIsEqualTo>
                             <ogc:PropertyIsNotEqualTo>
-                                <ogc:Function name="strLength">
-                                    <ogc:PropertyName>border_dasharray</ogc:PropertyName>
-                                </ogc:Function>
-                                <ogc:Literal>0</ogc:Literal>
+                                <ogc:PropertyName>border_dasharray</ogc:PropertyName>
+                                <ogc:Literal></ogc:Literal>
                             </ogc:PropertyIsNotEqualTo>
                             <ogc:PropertyIsEqualTo>
                                 <ogc:Function name="strLength">
@@ -1387,10 +1357,8 @@
                                 <ogc:Literal>2</ogc:Literal>
                             </ogc:PropertyIsEqualTo>
                             <ogc:PropertyIsNotEqualTo>
-                                <ogc:Function name="strLength">
-                                    <ogc:PropertyName>border_dasharray</ogc:PropertyName>
-                                </ogc:Function>
-                                <ogc:Literal>0</ogc:Literal>
+                                <ogc:PropertyName>border_dasharray</ogc:PropertyName>
+                                <ogc:Literal></ogc:Literal>
                             </ogc:PropertyIsNotEqualTo>
                             <ogc:PropertyIsGreaterThan>
                                 <ogc:Function name="strLength">
@@ -1481,10 +1449,8 @@
                                 <ogc:Literal>3</ogc:Literal>
                             </ogc:PropertyIsEqualTo>
                             <ogc:PropertyIsEqualTo>
-                                <ogc:Function name="strLength">
-                                    <ogc:PropertyName>border_dasharray</ogc:PropertyName>
-                                </ogc:Function>
-                                <ogc:Literal>0</ogc:Literal>
+                                <ogc:PropertyName>border_dasharray</ogc:PropertyName>
+                                <ogc:Literal></ogc:Literal>
                             </ogc:PropertyIsEqualTo>
                             <ogc:PropertyIsEqualTo>
                                 <ogc:Function name="strLength">
@@ -1574,10 +1540,8 @@
                                 <ogc:Literal>3</ogc:Literal>
                             </ogc:PropertyIsEqualTo>
                             <ogc:PropertyIsEqualTo>
-                                <ogc:Function name="strLength">
-                                    <ogc:PropertyName>border_dasharray</ogc:PropertyName>
-                                </ogc:Function>
-                                <ogc:Literal>0</ogc:Literal>
+                                <ogc:PropertyName>border_dasharray</ogc:PropertyName>
+                                <ogc:Literal></ogc:Literal>
                             </ogc:PropertyIsEqualTo>
                             <ogc:PropertyIsGreaterThan>
                                 <ogc:Function name="strLength">
@@ -1667,10 +1631,8 @@
                                 <ogc:Literal>3</ogc:Literal>
                             </ogc:PropertyIsEqualTo>
                             <ogc:PropertyIsNotEqualTo>
-                                <ogc:Function name="strLength">
-                                    <ogc:PropertyName>border_dasharray</ogc:PropertyName>
-                                </ogc:Function>
-                                <ogc:Literal>0</ogc:Literal>
+                                <ogc:PropertyName>border_dasharray</ogc:PropertyName>
+                                <ogc:Literal></ogc:Literal>
                             </ogc:PropertyIsNotEqualTo>
                             <ogc:PropertyIsEqualTo>
                                 <ogc:Function name="strLength">
@@ -1761,10 +1723,8 @@
                                 <ogc:Literal>3</ogc:Literal>
                             </ogc:PropertyIsEqualTo>
                             <ogc:PropertyIsNotEqualTo>
-                                <ogc:Function name="strLength">
-                                    <ogc:PropertyName>border_dasharray</ogc:PropertyName>
-                                </ogc:Function>
-                                <ogc:Literal>0</ogc:Literal>
+                                <ogc:PropertyName>border_dasharray</ogc:PropertyName>
+                                <ogc:Literal></ogc:Literal>
                             </ogc:PropertyIsNotEqualTo>
                             <ogc:PropertyIsGreaterThan>
                                 <ogc:Function name="strLength">
