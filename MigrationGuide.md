@@ -1,5 +1,22 @@
 # Migration guide
 
+## 1.51.0
+
+Log4j was updated to version 2.x. 
+- If your application only uses the Oskari logger (fi.nls.oskari.log.LogFactory), no changes are needed.
+- If your application depends directly on the old 1.2.x log4j provided by Oskari, you should migrate to version 2
+- If your application depends slf4j provided by Oskari, you should change the slf4j implementation library from `slf4j-log4j12` to
+
+```
+<dependency>
+    <groupId>org.apache.logging.log4j</groupId>
+    <artifactId>log4j-slf4j-impl</artifactId>
+</dependency>
+```
+
+Log4j2 uses a new syntax for logger configuration. It will look for `log4j2.properties` named file on the class path (you can put it under Jetty directory `resources/`). Example configuration can be found in the documentation: https://logging.apache.org/log4j/2.0/manual/configuration.html 
+
+
 ## 1.50.0
 
 This release requires Jetty 9 to be used with the transport webapp. Jetty 8 no longer works as the CometD library has been updated.

@@ -1,5 +1,9 @@
 # Release Notes
 
+## 1.51.0
+
+- Changed logging implementation to log4j version 2.x.
+
 ## 1.50.0
 
 Adds Jetty 9 support for oskari-server.
