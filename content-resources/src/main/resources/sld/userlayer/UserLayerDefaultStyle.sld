@@ -490,6 +490,7 @@
                 </Rule>
 
                 <Rule>
+                    <Name>LineStrokeNoDash</Name>
                     <ogc:Filter>
                         <ogc:And>
                             <ogc:PropertyIsEqualTo>
@@ -503,10 +504,8 @@
                                 <ogc:Literal>true</ogc:Literal>
                             </ogc:PropertyIsEqualTo>
                             <ogc:PropertyIsEqualTo>
-                                <ogc:Function name="strLength">
-                                    <ogc:PropertyName>stroke_dasharray</ogc:PropertyName>
-                                </ogc:Function>
-                                <ogc:Literal>0</ogc:Literal>
+                                <ogc:PropertyName>stroke_dasharray</ogc:PropertyName>
+                                <ogc:Literal></ogc:Literal>
                             </ogc:PropertyIsEqualTo>
                         </ogc:And>
                     </ogc:Filter>
@@ -518,45 +517,10 @@
                             <CssParameter name="stroke-linecap"><ogc:PropertyName>stroke_linecap</ogc:PropertyName></CssParameter>
                         </Stroke>
                     </LineSymbolizer>
-                    <!--PointSymbolizer>
-                      <Geometry><ogc:Function name="vertices"><ogc:PropertyName>geometry</ogc:PropertyName></ogc:Function></Geometry>
-                      <Graphic>
-                        <Mark>
-                          <WellKnownName>square</WellKnownName>
-                          <Fill>
-                            <CssParameter name="fill"><ogc:PropertyName>stroke_color</ogc:PropertyName></CssParameter>
-                          </Fill>
-                        </Mark>
-                        <Size>6</Size>
-                      </Graphic>
-                    </PointSymbolizer-->
-                    <!--TextSymbolizer>
-                      <Label>
-                        <ogc:PropertyName>name</ogc:PropertyName>
-                      </Label>
-                      <Font>
-                        <CssParameter name="font-family">Arial</CssParameter>
-                        <CssParameter name="font-size">11</CssParameter>
-                        <CssParameter name="font-style">normal</CssParameter>
-                        <CssParameter name="font-weight">bold</CssParameter>
-                      </Font>
-                      <LabelPlacement>
-                        <PointPlacement>
-                          <AnchorPoint>
-                            <AnchorPointX>0.5</AnchorPointX>
-                            <AnchorPointY>0.5</AnchorPointY>
-                          </AnchorPoint>
-                        </PointPlacement>
-                      </LabelPlacement>
-                      <Fill>
-                        <CssParameter name="fill"><ogc:PropertyName>stroke_color</ogc:PropertyName></CssParameter>
-                      </Fill>
-                      <VendorOption name="autoWrap">60</VendorOption>
-                      <VendorOption name="maxDisplacement">150</VendorOption>
-                    </TextSymbolizer -->
                 </Rule>
 
                 <Rule>
+                    <Name>LineStrokeWithDash</Name>
                     <ogc:Filter>
                         <ogc:And>
                             <ogc:PropertyIsEqualTo>
@@ -570,10 +534,8 @@
                                 <ogc:Literal>true</ogc:Literal>
                             </ogc:PropertyIsEqualTo>
                             <ogc:PropertyIsNotEqualTo>
-                                <ogc:Function name="strLength">
-                                    <ogc:PropertyName>stroke_dasharray</ogc:PropertyName>
-                                </ogc:Function>
-                                <ogc:Literal>0</ogc:Literal>
+                                <ogc:PropertyName>stroke_dasharray</ogc:PropertyName>
+                                <ogc:Literal></ogc:Literal>
                             </ogc:PropertyIsNotEqualTo>
                         </ogc:And>
                     </ogc:Filter>
@@ -585,45 +547,10 @@
                             <CssParameter name="stroke-linejoin"><ogc:PropertyName>stroke_linejoin</ogc:PropertyName></CssParameter>
                         </Stroke>
                     </LineSymbolizer>
-                    <!--PointSymbolizer>
-                      <Geometry><ogc:Function name="vertices"><ogc:PropertyName>geometry</ogc:PropertyName></ogc:Function></Geometry>
-                      <Graphic>
-                        <Mark>
-                          <WellKnownName>square</WellKnownName>
-                          <Fill>
-                            <CssParameter name="fill"><ogc:PropertyName>stroke_color</ogc:PropertyName></CssParameter>
-                          </Fill>
-                        </Mark>
-                        <Size>6</Size>
-                      </Graphic>
-                    </PointSymbolizer-->
-                    <!--TextSymbolizer>
-                      <Label>
-                        <ogc:PropertyName>name</ogc:PropertyName>
-                      </Label>
-                      <Font>
-                        <CssParameter name="font-family">Arial</CssParameter>
-                        <CssParameter name="font-size">11</CssParameter>
-                        <CssParameter name="font-style">normal</CssParameter>
-                        <CssParameter name="font-weight">bold</CssParameter>
-                      </Font>
-                      <LabelPlacement>
-                        <PointPlacement>
-                          <AnchorPoint>
-                            <AnchorPointX>0.5</AnchorPointX>
-                            <AnchorPointY>0.5</AnchorPointY>
-                          </AnchorPoint>
-                        </PointPlacement>
-                      </LabelPlacement>
-                      <Fill>
-                        <CssParameter name="fill"><ogc:PropertyName>stroke_color</ogc:PropertyName></CssParameter>
-                      </Fill>
-                      <VendorOption name="autoWrap">60</VendorOption>
-                      <VendorOption name="maxDisplacement">150</VendorOption>
-                    </TextSymbolizer -->
                 </Rule>
 
                 <Rule>
+                    <Name>PolygonBorderNoDash</Name>
                     <ogc:Filter>
                         <ogc:And>
                             <ogc:PropertyIsEqualTo>
@@ -641,17 +568,14 @@
                                 <ogc:Literal>-1</ogc:Literal>
                             </ogc:PropertyIsEqualTo>
                             <ogc:PropertyIsEqualTo>
-                                <ogc:Function name="strLength">
-                                    <ogc:PropertyName>border_dasharray</ogc:PropertyName>
-                                </ogc:Function>
-                                <ogc:Literal>0</ogc:Literal>
+                                <ogc:PropertyName>stroke_dasharray</ogc:PropertyName>
+                                <ogc:Literal></ogc:Literal>
                             </ogc:PropertyIsEqualTo>
-                            <ogc:PropertyIsEqualTo>
-                                <ogc:Function name="isNull">
+                            <ogc:Not>
+                                <ogc:PropertyIsNull>
                                     <ogc:PropertyName>border_color</ogc:PropertyName>
-                                </ogc:Function>
-                                <ogc:Literal>false</ogc:Literal>
-                            </ogc:PropertyIsEqualTo>
+                                </ogc:PropertyIsNull>
+                            </ogc:Not>
                         </ogc:And>
                     </ogc:Filter>
                     <PolygonSymbolizer>
@@ -664,31 +588,10 @@
                             <CssParameter name="stroke-linejoin"><ogc:PropertyName>border_linejoin</ogc:PropertyName></CssParameter>
                         </Stroke>
                     </PolygonSymbolizer>
-                    <!--TextSymbolizer>
-                      <Label><ogc:PropertyName>name</ogc:PropertyName></Label>
-                      <Font>
-                        <CssParameter name="font-family">Arial</CssParameter>
-                        <CssParameter name="font-size">20</CssParameter>
-                        <CssParameter name="font-style">normal</CssParameter>
-                        <CssParameter name="font-weight">bold</CssParameter>
-                      </Font>
-                      <LabelPlacement>
-                        <PointPlacement>
-                          <AnchorPoint>
-                            <AnchorPointX>0.5</AnchorPointX>
-                            <AnchorPointY>0.5</AnchorPointY>
-                          </AnchorPoint>
-                        </PointPlacement>
-                      </LabelPlacement>
-                      <Fill>
-                        <CssParameter name="fill"><ogc:PropertyName>stroke_color</ogc:PropertyName></CssParameter>
-                      </Fill>
-                      <VendorOption name="autoWrap">60</VendorOption>
-                      <VendorOption name="maxDisplacement">150</VendorOption>
-                    </TextSymbolizer -->
                 </Rule>
 
                 <Rule>
+                    <Name>PolygonBorderWithDash</Name>
                     <ogc:Filter>
                         <ogc:And>
                             <ogc:PropertyIsEqualTo>
@@ -706,17 +609,14 @@
                                 <ogc:Literal>-1</ogc:Literal>
                             </ogc:PropertyIsEqualTo>
                             <ogc:PropertyIsNotEqualTo>
-                                <ogc:Function name="strLength">
-                                    <ogc:PropertyName>border_dasharray</ogc:PropertyName>
-                                </ogc:Function>
-                                <ogc:Literal>0</ogc:Literal>
+                                <ogc:PropertyName>stroke_dasharray</ogc:PropertyName>
+                                <ogc:Literal></ogc:Literal>
                             </ogc:PropertyIsNotEqualTo>
-                            <ogc:PropertyIsEqualTo>
-                                <ogc:Function name="isNull">
+                            <ogc:Not>
+                                <ogc:PropertyIsNull>
                                     <ogc:PropertyName>border_color</ogc:PropertyName>
-                                </ogc:Function>
-                                <ogc:Literal>false</ogc:Literal>
-                            </ogc:PropertyIsEqualTo>
+                                </ogc:PropertyIsNull>
+                            </ogc:Not>
                         </ogc:And>
                     </ogc:Filter>
                     <PolygonSymbolizer>
@@ -730,31 +630,10 @@
                             <CssParameter name="stroke-linejoin"><ogc:PropertyName>border_linejoin</ogc:PropertyName></CssParameter>
                         </Stroke>
                     </PolygonSymbolizer>
-                    <!--TextSymbolizer>
-                      <Label><ogc:PropertyName>name</ogc:PropertyName></Label>
-                      <Font>
-                        <CssParameter name="font-family">Arial</CssParameter>
-                        <CssParameter name="font-size">20</CssParameter>
-                        <CssParameter name="font-style">normal</CssParameter>
-                        <CssParameter name="font-weight">bold</CssParameter>
-                      </Font>
-                      <LabelPlacement>
-                        <PointPlacement>
-                          <AnchorPoint>
-                            <AnchorPointX>0.5</AnchorPointX>
-                            <AnchorPointY>0.5</AnchorPointY>
-                          </AnchorPoint>
-                        </PointPlacement>
-                      </LabelPlacement>
-                      <Fill>
-                        <CssParameter name="fill"><ogc:PropertyName>stroke_color</ogc:PropertyName></CssParameter>
-                      </Fill>
-                      <VendorOption name="autoWrap">60</VendorOption>
-                      <VendorOption name="maxDisplacement">150</VendorOption>
-                    </TextSymbolizer -->
                 </Rule>
 
                 <Rule>
+                    <Name>PolygonBorderNoDashWithFillPattern</Name>
                     <ogc:Filter>
                         <ogc:And>
                             <ogc:PropertyIsEqualTo>
@@ -772,17 +651,14 @@
                                 <ogc:Literal>0</ogc:Literal>
                             </ogc:PropertyIsEqualTo>
                             <ogc:PropertyIsEqualTo>
-                                <ogc:Function name="strLength">
-                                    <ogc:PropertyName>border_dasharray</ogc:PropertyName>
-                                </ogc:Function>
-                                <ogc:Literal>0</ogc:Literal>
+                                <ogc:PropertyName>stroke_dasharray</ogc:PropertyName>
+                                <ogc:Literal></ogc:Literal>
                             </ogc:PropertyIsEqualTo>
-                            <ogc:PropertyIsEqualTo>
-                                <ogc:Function name="isNull">
+                            <ogc:Not>
+                                <ogc:PropertyIsNull>
                                     <ogc:PropertyName>border_color</ogc:PropertyName>
-                                </ogc:Function>
-                                <ogc:Literal>false</ogc:Literal>
-                            </ogc:PropertyIsEqualTo>
+                                </ogc:PropertyIsNull>
+                            </ogc:Not>
                         </ogc:And>
                     </ogc:Filter>
                     <PolygonSymbolizer>
@@ -809,6 +685,7 @@
                 </Rule>
 
                 <Rule>
+                    <Name>PolygonBorderWithDashWithFillPattern0</Name>
                     <ogc:Filter>
                         <ogc:And>
                             <ogc:PropertyIsEqualTo>
@@ -826,17 +703,14 @@
                                 <ogc:Literal>0</ogc:Literal>
                             </ogc:PropertyIsEqualTo>
                             <ogc:PropertyIsNotEqualTo>
-                                <ogc:Function name="strLength">
-                                    <ogc:PropertyName>border_dasharray</ogc:PropertyName>
-                                </ogc:Function>
-                                <ogc:Literal>0</ogc:Literal>
+                                <ogc:PropertyName>stroke_dasharray</ogc:PropertyName>
+                                <ogc:Literal></ogc:Literal>
                             </ogc:PropertyIsNotEqualTo>
-                            <ogc:PropertyIsEqualTo>
-                                <ogc:Function name="isNull">
+                            <ogc:Not>
+                                <ogc:PropertyIsNull>
                                     <ogc:PropertyName>border_color</ogc:PropertyName>
-                                </ogc:Function>
-                                <ogc:Literal>false</ogc:Literal>
-                            </ogc:PropertyIsEqualTo>
+                                </ogc:PropertyIsNull>
+                            </ogc:Not>
                         </ogc:And>
                     </ogc:Filter>
                     <PolygonSymbolizer>
@@ -864,6 +738,7 @@
                 </Rule>
 
                 <Rule>
+                    <Name>PolygonBorderNoDashWithFillPattern1</Name>
                     <ogc:Filter>
                         <ogc:And>
                             <ogc:PropertyIsEqualTo>
@@ -881,17 +756,14 @@
                                 <ogc:Literal>1</ogc:Literal>
                             </ogc:PropertyIsEqualTo>
                             <ogc:PropertyIsEqualTo>
-                                <ogc:Function name="strLength">
-                                    <ogc:PropertyName>border_dasharray</ogc:PropertyName>
-                                </ogc:Function>
-                                <ogc:Literal>0</ogc:Literal>
+                                <ogc:PropertyName>stroke_dasharray</ogc:PropertyName>
+                                <ogc:Literal></ogc:Literal>
                             </ogc:PropertyIsEqualTo>
-                            <ogc:PropertyIsEqualTo>
-                                <ogc:Function name="isNull">
+                            <ogc:Not>
+                                <ogc:PropertyIsNull>
                                     <ogc:PropertyName>border_color</ogc:PropertyName>
-                                </ogc:Function>
-                                <ogc:Literal>false</ogc:Literal>
-                            </ogc:PropertyIsEqualTo>
+                                </ogc:PropertyIsNull>
+                            </ogc:Not>
                         </ogc:And>
                     </ogc:Filter>
                     <PolygonSymbolizer>
@@ -918,6 +790,7 @@
                 </Rule>
 
                 <Rule>
+                    <Name>PolygonBorderWithDashWithFillPattern1</Name>
                     <ogc:Filter>
                         <ogc:And>
                             <ogc:PropertyIsEqualTo>
@@ -935,17 +808,14 @@
                                 <ogc:Literal>1</ogc:Literal>
                             </ogc:PropertyIsEqualTo>
                             <ogc:PropertyIsNotEqualTo>
-                                <ogc:Function name="strLength">
-                                    <ogc:PropertyName>border_dasharray</ogc:PropertyName>
-                                </ogc:Function>
-                                <ogc:Literal>0</ogc:Literal>
+                                <ogc:PropertyName>stroke_dasharray</ogc:PropertyName>
+                                <ogc:Literal></ogc:Literal>
                             </ogc:PropertyIsNotEqualTo>
-                            <ogc:PropertyIsEqualTo>
-                                <ogc:Function name="isNull">
+                            <ogc:Not>
+                                <ogc:PropertyIsNull>
                                     <ogc:PropertyName>border_color</ogc:PropertyName>
-                                </ogc:Function>
-                                <ogc:Literal>false</ogc:Literal>
-                            </ogc:PropertyIsEqualTo>
+                                </ogc:PropertyIsNull>
+                            </ogc:Not>
                         </ogc:And>
                     </ogc:Filter>
                     <PolygonSymbolizer>
@@ -973,6 +843,7 @@
                 </Rule>
 
                 <Rule>
+                    <Name>PolygonBorderNoDashWithFillPattern2</Name>
                     <ogc:Filter>
                         <ogc:And>
                             <ogc:PropertyIsEqualTo>
@@ -990,17 +861,14 @@
                                 <ogc:Literal>2</ogc:Literal>
                             </ogc:PropertyIsEqualTo>
                             <ogc:PropertyIsEqualTo>
-                                <ogc:Function name="strLength">
-                                    <ogc:PropertyName>border_dasharray</ogc:PropertyName>
-                                </ogc:Function>
-                                <ogc:Literal>0</ogc:Literal>
+                                <ogc:PropertyName>stroke_dasharray</ogc:PropertyName>
+                                <ogc:Literal></ogc:Literal>
                             </ogc:PropertyIsEqualTo>
-                            <ogc:PropertyIsEqualTo>
-                                <ogc:Function name="isNull">
+                            <ogc:Not>
+                                <ogc:PropertyIsNull>
                                     <ogc:PropertyName>border_color</ogc:PropertyName>
-                                </ogc:Function>
-                                <ogc:Literal>false</ogc:Literal>
-                            </ogc:PropertyIsEqualTo>
+                                </ogc:PropertyIsNull>
+                            </ogc:Not>
                         </ogc:And>
                     </ogc:Filter>
                     <PolygonSymbolizer>
@@ -1027,6 +895,7 @@
                 </Rule>
 
                 <Rule>
+                    <Name>PolygonBorderWithDashWithFillPattern2</Name>
                     <ogc:Filter>
                         <ogc:And>
                             <ogc:PropertyIsEqualTo>
@@ -1044,17 +913,14 @@
                                 <ogc:Literal>2</ogc:Literal>
                             </ogc:PropertyIsEqualTo>
                             <ogc:PropertyIsNotEqualTo>
-                                <ogc:Function name="strLength">
-                                    <ogc:PropertyName>border_dasharray</ogc:PropertyName>
-                                </ogc:Function>
-                                <ogc:Literal>0</ogc:Literal>
+                                <ogc:PropertyName>stroke_dasharray</ogc:PropertyName>
+                                <ogc:Literal></ogc:Literal>
                             </ogc:PropertyIsNotEqualTo>
-                            <ogc:PropertyIsEqualTo>
-                                <ogc:Function name="isNull">
+                            <ogc:Not>
+                                <ogc:PropertyIsNull>
                                     <ogc:PropertyName>border_color</ogc:PropertyName>
-                                </ogc:Function>
-                                <ogc:Literal>false</ogc:Literal>
-                            </ogc:PropertyIsEqualTo>
+                                </ogc:PropertyIsNull>
+                            </ogc:Not>
                         </ogc:And>
                     </ogc:Filter>
                     <PolygonSymbolizer>
@@ -1082,6 +948,7 @@
                 </Rule>
 
                 <Rule>
+                    <Name>PolygonBorderNoDashWithFillPattern3</Name>
                     <ogc:Filter>
                         <ogc:And>
                             <ogc:PropertyIsEqualTo>
@@ -1099,17 +966,14 @@
                                 <ogc:Literal>3</ogc:Literal>
                             </ogc:PropertyIsEqualTo>
                             <ogc:PropertyIsEqualTo>
-                                <ogc:Function name="strLength">
-                                    <ogc:PropertyName>border_dasharray</ogc:PropertyName>
-                                </ogc:Function>
-                                <ogc:Literal>0</ogc:Literal>
+                                <ogc:PropertyName>stroke_dasharray</ogc:PropertyName>
+                                <ogc:Literal></ogc:Literal>
                             </ogc:PropertyIsEqualTo>
-                            <ogc:PropertyIsEqualTo>
-                                <ogc:Function name="isNull">
+                            <ogc:Not>
+                                <ogc:PropertyIsNull>
                                     <ogc:PropertyName>border_color</ogc:PropertyName>
-                                </ogc:Function>
-                                <ogc:Literal>false</ogc:Literal>
-                            </ogc:PropertyIsEqualTo>
+                                </ogc:PropertyIsNull>
+                            </ogc:Not>
                         </ogc:And>
                     </ogc:Filter>
                     <PolygonSymbolizer>
@@ -1136,6 +1000,7 @@
                 </Rule>
 
                 <Rule>
+                    <Name>PolygonBorderWithDashWithFillPattern3</Name>
                     <ogc:Filter>
                         <ogc:And>
                             <ogc:PropertyIsEqualTo>
@@ -1153,17 +1018,14 @@
                                 <ogc:Literal>3</ogc:Literal>
                             </ogc:PropertyIsEqualTo>
                             <ogc:PropertyIsNotEqualTo>
-                                <ogc:Function name="strLength">
-                                    <ogc:PropertyName>border_dasharray</ogc:PropertyName>
-                                </ogc:Function>
-                                <ogc:Literal>0</ogc:Literal>
+                                <ogc:PropertyName>stroke_dasharray</ogc:PropertyName>
+                                <ogc:Literal></ogc:Literal>
                             </ogc:PropertyIsNotEqualTo>
-                            <ogc:PropertyIsEqualTo>
-                                <ogc:Function name="isNull">
+                            <ogc:Not>
+                                <ogc:PropertyIsNull>
                                     <ogc:PropertyName>border_color</ogc:PropertyName>
-                                </ogc:Function>
-                                <ogc:Literal>false</ogc:Literal>
-                            </ogc:PropertyIsEqualTo>
+                                </ogc:PropertyIsNull>
+                            </ogc:Not>
                         </ogc:And>
                     </ogc:Filter>
                     <PolygonSymbolizer>
@@ -1189,8 +1051,9 @@
                         </Stroke>
                     </PolygonSymbolizer>
                 </Rule>
-                
+
                 <Rule>
+                    <Name>PolygonNoBorderFillOnly</Name>
                     <ogc:Filter>
                         <ogc:And>
                             <ogc:PropertyIsEqualTo>
@@ -1220,6 +1083,7 @@
                 </Rule>
 
                 <Rule>
+                    <Name>PolygonNoBorderFillPattern0</Name>
                     <ogc:Filter>
                         <ogc:And>
                             <ogc:PropertyIsEqualTo>
@@ -1260,6 +1124,7 @@
                 </Rule>
 
                 <Rule>
+                    <Name>PolygonNoBorderFillPattern1</Name>
                     <ogc:Filter>
                         <ogc:And>
                             <ogc:PropertyIsEqualTo>
@@ -1300,6 +1165,7 @@
                 </Rule>
 
                 <Rule>
+                    <Name>PolygonNoBorderFillPattern2</Name>
                     <ogc:Filter>
                         <ogc:And>
                             <ogc:PropertyIsEqualTo>
@@ -1340,6 +1206,7 @@
                 </Rule>
 
                 <Rule>
+                    <Name>PolygonNoBorderFillPattern3</Name>
                     <ogc:Filter>
                         <ogc:And>
                             <ogc:PropertyIsEqualTo>
