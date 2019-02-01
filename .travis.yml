@@ -23,7 +23,7 @@ before_install: "echo \"MAVEN_OPTS='-Xms1g -Xmx2g'\" > ~/.mavenrc"
 
 script:
   - 'if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then mvn clean install; fi'
-  - 'if [ "$TRAVIS_PULL_REQUEST"  = "false" ]; then mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent install sonar:sonar; fi'
+  - 'if [ "$TRAVIS_PULL_REQUEST"  = "false" ]; then mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent install sonar:sonar -Dsonar.host.url=https://sonarcloud.io; fi'
 cache:
   directories:
     - '$HOME/.m2/repository'
