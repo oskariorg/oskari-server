@@ -2,8 +2,8 @@ package fi.nls.oskari.eu.inspire;
 
 import fi.nls.oskari.fe.datamodel.SchemaRoaster;
 import fi.nls.oskari.fe.datamodel.TestHelper;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
+import fi.nls.oskari.log.LogFactory;
+import fi.nls.oskari.log.Logger;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -11,7 +11,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 
 public class TestSchemaRoaster extends TestHelper {
-    static final Logger logger = Logger.getLogger(TestSchemaRoaster.class);
+    static final Logger logger = LogFactory.getLogger(TestSchemaRoaster.class);
 
     @Ignore("Schema failure")
     @Test
@@ -24,7 +24,7 @@ public class TestSchemaRoaster extends TestHelper {
                 + "NAMESPACES=xmlns(tn-ro,urn%3Ax-inspire%3Aspecification%3Agmlas%3ARoadTransportNetwork%3A3.0)";
         final SchemaRoaster roaster = new SchemaRoaster();
         setupProxy(roaster);
-        logger.setLevel(Level.DEBUG);
+
 
         logger.debug(url);
 
@@ -47,7 +47,7 @@ public class TestSchemaRoaster extends TestHelper {
         final String url = "http://services.cuzk.cz/xsd/inspire/specification/3.0rc3/GeographicalNames.xsd";
         final SchemaRoaster roaster = new SchemaRoaster();
         setupProxy(roaster);
-        logger.setLevel(Level.DEBUG);
+
 
         logger.debug(url);
 
@@ -71,7 +71,7 @@ public class TestSchemaRoaster extends TestHelper {
         final String url = "http://inspire.ec.europa.eu/schemas/tn-ro/3.0/RoadTransportNetwork.xsd";
         final SchemaRoaster roaster = new SchemaRoaster();
         setupProxy(roaster);
-        logger.setLevel(Level.DEBUG);
+
 
         logger.debug(url);
 
@@ -94,7 +94,7 @@ public class TestSchemaRoaster extends TestHelper {
         final String url = "http://inspire.ec.europa.eu/schemas/gn/3.0/GeographicalNames.xsd";
         final SchemaRoaster roaster = new SchemaRoaster();
         setupProxy(roaster);
-        logger.setLevel(Level.DEBUG);
+
 
         logger.debug(url);
 
@@ -117,7 +117,7 @@ public class TestSchemaRoaster extends TestHelper {
         final String url = "http://inspire.ec.europa.eu/schemas/ad/3.0/Addresses.xsd";
         final SchemaRoaster roaster = new SchemaRoaster();
         setupProxy(roaster);
-        logger.setLevel(Level.DEBUG);
+
 
         logger.debug(url);
 
@@ -141,7 +141,7 @@ public class TestSchemaRoaster extends TestHelper {
         final String url = "http://inspire.ec.europa.eu/schemas/hy-p/3.0/HydroPhysicalWaters.xsd";
         final SchemaRoaster roaster = new SchemaRoaster();
         setupProxy(roaster);
-        logger.setLevel(Level.DEBUG);
+
 
         logger.debug(url);
 
@@ -164,7 +164,7 @@ public class TestSchemaRoaster extends TestHelper {
         final String url = "http://inspire.ec.europa.eu/schemas/hy-p/3.0/HydroPhysicalWaters.xsd";
         final SchemaRoaster roaster = new SchemaRoaster();
         setupProxy(roaster);
-        logger.setLevel(Level.DEBUG);
+
 
         logger.debug(url);
 
@@ -187,7 +187,7 @@ public class TestSchemaRoaster extends TestHelper {
         final String url = "http://inspire.ec.europa.eu/schemas/hy-p/3.0/HydroPhysicalWaters.xsd";
         final SchemaRoaster roaster = new SchemaRoaster();
         setupProxy(roaster);
-        logger.setLevel(Level.DEBUG);
+
 
         logger.debug(url);
 
@@ -210,7 +210,7 @@ public class TestSchemaRoaster extends TestHelper {
         final String url = "http://inspire.ec.europa.eu/schemas/cp/3.0/CadastralParcels.xsd";
         final SchemaRoaster roaster = new SchemaRoaster();
         setupProxy(roaster);
-        logger.setLevel(Level.DEBUG);
+
 
         logger.debug(url);
 
@@ -233,7 +233,7 @@ public class TestSchemaRoaster extends TestHelper {
         final String url = "http://inspire.ec.europa.eu/schemas/cp/3.0/CadastralParcels.xsd";
         final SchemaRoaster roaster = new SchemaRoaster();
         setupProxy(roaster);
-        logger.setLevel(Level.DEBUG);
+
 
         logger.debug(url);
 
@@ -256,7 +256,7 @@ public class TestSchemaRoaster extends TestHelper {
         final String url = "http://inspire.ec.europa.eu/schemas/au/3.0/AdministrativeUnits.xsd";
         final SchemaRoaster roaster = new SchemaRoaster();
         setupProxy(roaster);
-        logger.setLevel(Level.DEBUG);
+
 
         logger.debug(url);
 
@@ -279,7 +279,7 @@ public class TestSchemaRoaster extends TestHelper {
         final String url = "http://inspire.ec.europa.eu/schemas/au/3.0/AdministrativeUnits.xsd";
         final SchemaRoaster roaster = new SchemaRoaster();
         setupProxy(roaster);
-        logger.setLevel(Level.DEBUG);
+
 
         logger.debug(url);
 

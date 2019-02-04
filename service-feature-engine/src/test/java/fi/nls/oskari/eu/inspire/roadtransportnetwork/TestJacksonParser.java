@@ -13,7 +13,8 @@ import fi.nls.oskari.fe.output.format.json.LegacyJsonOutputProcessor;
 import fi.nls.oskari.fe.output.format.jsonld.JsonLdOutputProcessor;
 import fi.nls.oskari.fe.output.format.png.geotools.MapContentOutputProcessor;
 import fi.nls.oskari.log.LogFactory;
-import org.apache.log4j.Logger;
+import fi.nls.oskari.log.LogFactory;
+import fi.nls.oskari.log.Logger;
 import org.geotools.styling.Style;
 import org.junit.Test;
 
@@ -21,7 +22,7 @@ import javax.xml.stream.XMLStreamException;
 import java.io.*;
 
 public class TestJacksonParser extends TestHelper {
-    static final Logger logger = Logger.getLogger(TestJacksonParser.class);
+    static final Logger logger = LogFactory.getLogger(TestJacksonParser.class);
 
     /**
      * 
