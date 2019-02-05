@@ -29,10 +29,8 @@
                                 <ogc:Literal>-1</ogc:Literal>
                             </ogc:PropertyIsEqualTo>
                             <ogc:PropertyIsEqualTo>
-                                <ogc:Function name="strLength">
-                                    <ogc:PropertyName>border_dasharray</ogc:PropertyName>
-                                </ogc:Function>
-                                <ogc:Literal>0</ogc:Literal>
+                                <ogc:PropertyName>border_dasharray</ogc:PropertyName>
+                                <ogc:Literal></ogc:Literal>
                             </ogc:PropertyIsEqualTo>
                             <ogc:PropertyIsEqualTo>
                                 <ogc:Function name="strLength">
@@ -40,12 +38,11 @@
                                 </ogc:Function>
                                 <ogc:Literal>0</ogc:Literal>
                             </ogc:PropertyIsEqualTo>
-                            <ogc:PropertyIsEqualTo>
-                                <ogc:Function name="isNull">
+                            <ogc:Not>
+                                <ogc:PropertyIsNull>
                                     <ogc:PropertyName>border_color</ogc:PropertyName>
-                                </ogc:Function>
-                                <ogc:Literal>false</ogc:Literal>
-                            </ogc:PropertyIsEqualTo>
+                                </ogc:PropertyIsNull>
+                            </ogc:Not>
                         </ogc:And>
                     </ogc:Filter>
                     <PolygonSymbolizer>
@@ -112,10 +109,8 @@
                                 <ogc:Literal>-1</ogc:Literal>
                             </ogc:PropertyIsEqualTo>
                             <ogc:PropertyIsEqualTo>
-                                <ogc:Function name="strLength">
-                                    <ogc:PropertyName>border_dasharray</ogc:PropertyName>
-                                </ogc:Function>
-                                <ogc:Literal>0</ogc:Literal>
+                                <ogc:PropertyName>border_dasharray</ogc:PropertyName>
+                                <ogc:Literal></ogc:Literal>
                             </ogc:PropertyIsEqualTo>
                             <ogc:PropertyIsGreaterThan>
                                 <ogc:Function name="strLength">
@@ -123,12 +118,11 @@
                                 </ogc:Function>
                                 <ogc:Literal>0</ogc:Literal>
                             </ogc:PropertyIsGreaterThan>
-                            <ogc:PropertyIsEqualTo>
-                                <ogc:Function name="isNull">
+                            <ogc:Not>
+                                <ogc:PropertyIsNull>
                                     <ogc:PropertyName>border_color</ogc:PropertyName>
-                                </ogc:Function>
-                                <ogc:Literal>false</ogc:Literal>
-                            </ogc:PropertyIsEqualTo>
+                                </ogc:PropertyIsNull>
+                            </ogc:Not>
                         </ogc:And>
                     </ogc:Filter>
                     <PolygonSymbolizer>
@@ -195,10 +189,8 @@
                                 <ogc:Literal>-1</ogc:Literal>
                             </ogc:PropertyIsEqualTo>
                             <ogc:PropertyIsNotEqualTo>
-                                <ogc:Function name="strLength">
-                                    <ogc:PropertyName>border_dasharray</ogc:PropertyName>
-                                </ogc:Function>
-                                <ogc:Literal>0</ogc:Literal>
+                                <ogc:PropertyName>border_dasharray</ogc:PropertyName>
+                                <ogc:Literal></ogc:Literal>
                             </ogc:PropertyIsNotEqualTo>
                             <ogc:PropertyIsEqualTo>
                                 <ogc:Function name="strLength">
@@ -206,12 +198,11 @@
                                 </ogc:Function>
                                 <ogc:Literal>0</ogc:Literal>
                             </ogc:PropertyIsEqualTo>
-                            <ogc:PropertyIsEqualTo>
-                                <ogc:Function name="isNull">
+                            <ogc:Not>
+                                <ogc:PropertyIsNull>
                                     <ogc:PropertyName>border_color</ogc:PropertyName>
-                                </ogc:Function>
-                                <ogc:Literal>false</ogc:Literal>
-                            </ogc:PropertyIsEqualTo>
+                                </ogc:PropertyIsNull>
+                            </ogc:Not>
                         </ogc:And>
                     </ogc:Filter>
                     <PolygonSymbolizer>
@@ -279,10 +270,8 @@
                                 <ogc:Literal>-1</ogc:Literal>
                             </ogc:PropertyIsEqualTo>
                             <ogc:PropertyIsNotEqualTo>
-                                <ogc:Function name="strLength">
-                                    <ogc:PropertyName>border_dasharray</ogc:PropertyName>
-                                </ogc:Function>
-                                <ogc:Literal>0</ogc:Literal>
+                                <ogc:PropertyName>border_dasharray</ogc:PropertyName>
+                                <ogc:Literal></ogc:Literal>
                             </ogc:PropertyIsNotEqualTo>
                             <ogc:PropertyIsGreaterThan>
                                 <ogc:Function name="strLength">
@@ -290,12 +279,11 @@
                                 </ogc:Function>
                                 <ogc:Literal>0</ogc:Literal>
                             </ogc:PropertyIsGreaterThan>
-                            <ogc:PropertyIsEqualTo>
-                                <ogc:Function name="isNull">
+                            <ogc:Not>
+                                <ogc:PropertyIsNull>
                                     <ogc:PropertyName>border_color</ogc:PropertyName>
-                                </ogc:Function>
-                                <ogc:Literal>false</ogc:Literal>
-                            </ogc:PropertyIsEqualTo>
+                                </ogc:PropertyIsNull>
+                            </ogc:Not>
                         </ogc:And>
                     </ogc:Filter>
                     <PolygonSymbolizer>
@@ -363,10 +351,8 @@
                                 <ogc:Literal>0</ogc:Literal>
                             </ogc:PropertyIsEqualTo>
                             <ogc:PropertyIsEqualTo>
-                                <ogc:Function name="strLength">
-                                    <ogc:PropertyName>border_dasharray</ogc:PropertyName>
-                                </ogc:Function>
-                                <ogc:Literal>0</ogc:Literal>
+                                <ogc:PropertyName>border_dasharray</ogc:PropertyName>
+                                <ogc:Literal></ogc:Literal>
                             </ogc:PropertyIsEqualTo>
                             <ogc:PropertyIsEqualTo>
                                 <ogc:Function name="strLength">
@@ -374,12 +360,11 @@
                                 </ogc:Function>
                                 <ogc:Literal>0</ogc:Literal>
                             </ogc:PropertyIsEqualTo>
-                            <ogc:PropertyIsEqualTo>
-                                <ogc:Function name="isNull">
+                            <ogc:Not>
+                                <ogc:PropertyIsNull>
                                     <ogc:PropertyName>border_color</ogc:PropertyName>
-                                </ogc:Function>
-                                <ogc:Literal>false</ogc:Literal>
-                            </ogc:PropertyIsEqualTo>
+                                </ogc:PropertyIsNull>
+                            </ogc:Not>
                         </ogc:And>
                     </ogc:Filter>
                     <PolygonSymbolizer>
@@ -457,10 +442,8 @@
                                 <ogc:Literal>0</ogc:Literal>
                             </ogc:PropertyIsEqualTo>
                             <ogc:PropertyIsEqualTo>
-                                <ogc:Function name="strLength">
-                                    <ogc:PropertyName>border_dasharray</ogc:PropertyName>
-                                </ogc:Function>
-                                <ogc:Literal>0</ogc:Literal>
+                                <ogc:PropertyName>border_dasharray</ogc:PropertyName>
+                                <ogc:Literal></ogc:Literal>
                             </ogc:PropertyIsEqualTo>
                             <ogc:PropertyIsGreaterThan>
                                 <ogc:Function name="strLength">
@@ -468,12 +451,11 @@
                                 </ogc:Function>
                                 <ogc:Literal>0</ogc:Literal>
                             </ogc:PropertyIsGreaterThan>
-                            <ogc:PropertyIsEqualTo>
-                                <ogc:Function name="isNull">
+                            <ogc:Not>
+                                <ogc:PropertyIsNull>
                                     <ogc:PropertyName>border_color</ogc:PropertyName>
-                                </ogc:Function>
-                                <ogc:Literal>false</ogc:Literal>
-                            </ogc:PropertyIsEqualTo>
+                                </ogc:PropertyIsNull>
+                            </ogc:Not>
                         </ogc:And>
                     </ogc:Filter>
                     <PolygonSymbolizer>
@@ -551,10 +533,8 @@
                                 <ogc:Literal>0</ogc:Literal>
                             </ogc:PropertyIsEqualTo>
                             <ogc:PropertyIsNotEqualTo>
-                                <ogc:Function name="strLength">
-                                    <ogc:PropertyName>border_dasharray</ogc:PropertyName>
-                                </ogc:Function>
-                                <ogc:Literal>0</ogc:Literal>
+                                <ogc:PropertyName>border_dasharray</ogc:PropertyName>
+                                <ogc:Literal></ogc:Literal>
                             </ogc:PropertyIsNotEqualTo>
                             <ogc:PropertyIsEqualTo>
                                 <ogc:Function name="strLength">
@@ -562,12 +542,11 @@
                                 </ogc:Function>
                                 <ogc:Literal>0</ogc:Literal>
                             </ogc:PropertyIsEqualTo>
-                            <ogc:PropertyIsEqualTo>
-                                <ogc:Function name="isNull">
+                            <ogc:Not>
+                                <ogc:PropertyIsNull>
                                     <ogc:PropertyName>border_color</ogc:PropertyName>
-                                </ogc:Function>
-                                <ogc:Literal>false</ogc:Literal>
-                            </ogc:PropertyIsEqualTo>
+                                </ogc:PropertyIsNull>
+                            </ogc:Not>
                         </ogc:And>
                     </ogc:Filter>
                     <PolygonSymbolizer>
@@ -646,10 +625,8 @@
                                 <ogc:Literal>0</ogc:Literal>
                             </ogc:PropertyIsEqualTo>
                             <ogc:PropertyIsNotEqualTo>
-                                <ogc:Function name="strLength">
-                                    <ogc:PropertyName>border_dasharray</ogc:PropertyName>
-                                </ogc:Function>
-                                <ogc:Literal>0</ogc:Literal>
+                                <ogc:PropertyName>border_dasharray</ogc:PropertyName>
+                                <ogc:Literal></ogc:Literal>
                             </ogc:PropertyIsNotEqualTo>
                             <ogc:PropertyIsGreaterThan>
                                 <ogc:Function name="strLength">
@@ -657,12 +634,11 @@
                                 </ogc:Function>
                                 <ogc:Literal>0</ogc:Literal>
                             </ogc:PropertyIsGreaterThan>
-                            <ogc:PropertyIsEqualTo>
-                                <ogc:Function name="isNull">
+                            <ogc:Not>
+                                <ogc:PropertyIsNull>
                                     <ogc:PropertyName>border_color</ogc:PropertyName>
-                                </ogc:Function>
-                                <ogc:Literal>false</ogc:Literal>
-                            </ogc:PropertyIsEqualTo>
+                                </ogc:PropertyIsNull>
+                            </ogc:Not>
                         </ogc:And>
                     </ogc:Filter>
                     <PolygonSymbolizer>
@@ -741,10 +717,8 @@
                                 <ogc:Literal>1</ogc:Literal>
                             </ogc:PropertyIsEqualTo>
                             <ogc:PropertyIsEqualTo>
-                                <ogc:Function name="strLength">
-                                    <ogc:PropertyName>border_dasharray</ogc:PropertyName>
-                                </ogc:Function>
-                                <ogc:Literal>0</ogc:Literal>
+                                <ogc:PropertyName>border_dasharray</ogc:PropertyName>
+                                <ogc:Literal></ogc:Literal>
                             </ogc:PropertyIsEqualTo>
                             <ogc:PropertyIsEqualTo>
                                 <ogc:Function name="strLength">
@@ -752,12 +726,11 @@
                                 </ogc:Function>
                                 <ogc:Literal>0</ogc:Literal>
                             </ogc:PropertyIsEqualTo>
-                            <ogc:PropertyIsEqualTo>
-                                <ogc:Function name="isNull">
+                            <ogc:Not>
+                                <ogc:PropertyIsNull>
                                     <ogc:PropertyName>border_color</ogc:PropertyName>
-                                </ogc:Function>
-                                <ogc:Literal>false</ogc:Literal>
-                            </ogc:PropertyIsEqualTo>
+                                </ogc:PropertyIsNull>
+                            </ogc:Not>
                         </ogc:And>
                     </ogc:Filter>
                     <PolygonSymbolizer>
@@ -835,10 +808,8 @@
                                 <ogc:Literal>1</ogc:Literal>
                             </ogc:PropertyIsEqualTo>
                             <ogc:PropertyIsEqualTo>
-                                <ogc:Function name="strLength">
-                                    <ogc:PropertyName>border_dasharray</ogc:PropertyName>
-                                </ogc:Function>
-                                <ogc:Literal>0</ogc:Literal>
+                                <ogc:PropertyName>border_dasharray</ogc:PropertyName>
+                                <ogc:Literal></ogc:Literal>
                             </ogc:PropertyIsEqualTo>
                             <ogc:PropertyIsGreaterThan>
                                 <ogc:Function name="strLength">
@@ -846,12 +817,11 @@
                                 </ogc:Function>
                                 <ogc:Literal>0</ogc:Literal>
                             </ogc:PropertyIsGreaterThan>
-                            <ogc:PropertyIsEqualTo>
-                                <ogc:Function name="isNull">
+                            <ogc:Not>
+                                <ogc:PropertyIsNull>
                                     <ogc:PropertyName>border_color</ogc:PropertyName>
-                                </ogc:Function>
-                                <ogc:Literal>false</ogc:Literal>
-                            </ogc:PropertyIsEqualTo>
+                                </ogc:PropertyIsNull>
+                            </ogc:Not>
                         </ogc:And>
                     </ogc:Filter>
                     <PolygonSymbolizer>
@@ -929,10 +899,8 @@
                                 <ogc:Literal>1</ogc:Literal>
                             </ogc:PropertyIsEqualTo>
                             <ogc:PropertyIsNotEqualTo>
-                                <ogc:Function name="strLength">
-                                    <ogc:PropertyName>border_dasharray</ogc:PropertyName>
-                                </ogc:Function>
-                                <ogc:Literal>0</ogc:Literal>
+                                <ogc:PropertyName>border_dasharray</ogc:PropertyName>
+                                <ogc:Literal></ogc:Literal>
                             </ogc:PropertyIsNotEqualTo>
                             <ogc:PropertyIsEqualTo>
                                 <ogc:Function name="strLength">
@@ -940,12 +908,11 @@
                                 </ogc:Function>
                                 <ogc:Literal>0</ogc:Literal>
                             </ogc:PropertyIsEqualTo>
-                            <ogc:PropertyIsEqualTo>
-                                <ogc:Function name="isNull">
+                            <ogc:Not>
+                                <ogc:PropertyIsNull>
                                     <ogc:PropertyName>border_color</ogc:PropertyName>
-                                </ogc:Function>
-                                <ogc:Literal>false</ogc:Literal>
-                            </ogc:PropertyIsEqualTo>
+                                </ogc:PropertyIsNull>
+                            </ogc:Not>
                         </ogc:And>
                     </ogc:Filter>
                     <PolygonSymbolizer>
@@ -1024,10 +991,8 @@
                                 <ogc:Literal>1</ogc:Literal>
                             </ogc:PropertyIsEqualTo>
                             <ogc:PropertyIsNotEqualTo>
-                                <ogc:Function name="strLength">
-                                    <ogc:PropertyName>border_dasharray</ogc:PropertyName>
-                                </ogc:Function>
-                                <ogc:Literal>0</ogc:Literal>
+                                <ogc:PropertyName>border_dasharray</ogc:PropertyName>
+                                <ogc:Literal></ogc:Literal>
                             </ogc:PropertyIsNotEqualTo>
                             <ogc:PropertyIsGreaterThan>
                                 <ogc:Function name="strLength">
@@ -1035,12 +1000,11 @@
                                 </ogc:Function>
                                 <ogc:Literal>0</ogc:Literal>
                             </ogc:PropertyIsGreaterThan>
-                            <ogc:PropertyIsEqualTo>
-                                <ogc:Function name="isNull">
+                            <ogc:Not>
+                                <ogc:PropertyIsNull>
                                     <ogc:PropertyName>border_color</ogc:PropertyName>
-                                </ogc:Function>
-                                <ogc:Literal>false</ogc:Literal>
-                            </ogc:PropertyIsEqualTo>
+                                </ogc:PropertyIsNull>
+                            </ogc:Not>
                         </ogc:And>
                     </ogc:Filter>
                     <PolygonSymbolizer>
@@ -1119,10 +1083,8 @@
                                 <ogc:Literal>2</ogc:Literal>
                             </ogc:PropertyIsEqualTo>
                             <ogc:PropertyIsEqualTo>
-                                <ogc:Function name="strLength">
-                                    <ogc:PropertyName>border_dasharray</ogc:PropertyName>
-                                </ogc:Function>
-                                <ogc:Literal>0</ogc:Literal>
+                                <ogc:PropertyName>border_dasharray</ogc:PropertyName>
+                                <ogc:Literal></ogc:Literal>
                             </ogc:PropertyIsEqualTo>
                             <ogc:PropertyIsEqualTo>
                                 <ogc:Function name="strLength">
@@ -1130,12 +1092,11 @@
                                 </ogc:Function>
                                 <ogc:Literal>0</ogc:Literal>
                             </ogc:PropertyIsEqualTo>
-                            <ogc:PropertyIsEqualTo>
-                                <ogc:Function name="isNull">
+                            <ogc:Not>
+                                <ogc:PropertyIsNull>
                                     <ogc:PropertyName>border_color</ogc:PropertyName>
-                                </ogc:Function>
-                                <ogc:Literal>false</ogc:Literal>
-                            </ogc:PropertyIsEqualTo>
+                                </ogc:PropertyIsNull>
+                            </ogc:Not>
                         </ogc:And>
                     </ogc:Filter>
                     <PolygonSymbolizer>
@@ -1213,10 +1174,8 @@
                                 <ogc:Literal>2</ogc:Literal>
                             </ogc:PropertyIsEqualTo>
                             <ogc:PropertyIsEqualTo>
-                                <ogc:Function name="strLength">
-                                    <ogc:PropertyName>border_dasharray</ogc:PropertyName>
-                                </ogc:Function>
-                                <ogc:Literal>0</ogc:Literal>
+                                <ogc:PropertyName>border_dasharray</ogc:PropertyName>
+                                <ogc:Literal></ogc:Literal>
                             </ogc:PropertyIsEqualTo>
                             <ogc:PropertyIsGreaterThan>
                                 <ogc:Function name="strLength">
@@ -1224,12 +1183,11 @@
                                 </ogc:Function>
                                 <ogc:Literal>0</ogc:Literal>
                             </ogc:PropertyIsGreaterThan>
-                            <ogc:PropertyIsEqualTo>
-                                <ogc:Function name="isNull">
+                            <ogc:Not>
+                                <ogc:PropertyIsNull>
                                     <ogc:PropertyName>border_color</ogc:PropertyName>
-                                </ogc:Function>
-                                <ogc:Literal>false</ogc:Literal>
-                            </ogc:PropertyIsEqualTo>
+                                </ogc:PropertyIsNull>
+                            </ogc:Not>
                         </ogc:And>
                     </ogc:Filter>
                     <PolygonSymbolizer>
@@ -1307,10 +1265,8 @@
                                 <ogc:Literal>2</ogc:Literal>
                             </ogc:PropertyIsEqualTo>
                             <ogc:PropertyIsNotEqualTo>
-                                <ogc:Function name="strLength">
-                                    <ogc:PropertyName>border_dasharray</ogc:PropertyName>
-                                </ogc:Function>
-                                <ogc:Literal>0</ogc:Literal>
+                                <ogc:PropertyName>border_dasharray</ogc:PropertyName>
+                                <ogc:Literal></ogc:Literal>
                             </ogc:PropertyIsNotEqualTo>
                             <ogc:PropertyIsEqualTo>
                                 <ogc:Function name="strLength">
@@ -1318,12 +1274,11 @@
                                 </ogc:Function>
                                 <ogc:Literal>0</ogc:Literal>
                             </ogc:PropertyIsEqualTo>
-                            <ogc:PropertyIsEqualTo>
-                                <ogc:Function name="isNull">
+                            <ogc:Not>
+                                <ogc:PropertyIsNull>
                                     <ogc:PropertyName>border_color</ogc:PropertyName>
-                                </ogc:Function>
-                                <ogc:Literal>false</ogc:Literal>
-                            </ogc:PropertyIsEqualTo>
+                                </ogc:PropertyIsNull>
+                            </ogc:Not>
                         </ogc:And>
                     </ogc:Filter>
                     <PolygonSymbolizer>
@@ -1402,10 +1357,8 @@
                                 <ogc:Literal>2</ogc:Literal>
                             </ogc:PropertyIsEqualTo>
                             <ogc:PropertyIsNotEqualTo>
-                                <ogc:Function name="strLength">
-                                    <ogc:PropertyName>border_dasharray</ogc:PropertyName>
-                                </ogc:Function>
-                                <ogc:Literal>0</ogc:Literal>
+                                <ogc:PropertyName>border_dasharray</ogc:PropertyName>
+                                <ogc:Literal></ogc:Literal>
                             </ogc:PropertyIsNotEqualTo>
                             <ogc:PropertyIsGreaterThan>
                                 <ogc:Function name="strLength">
@@ -1413,12 +1366,11 @@
                                 </ogc:Function>
                                 <ogc:Literal>0</ogc:Literal>
                             </ogc:PropertyIsGreaterThan>
-                            <ogc:PropertyIsEqualTo>
-                                <ogc:Function name="isNull">
+                            <ogc:Not>
+                                <ogc:PropertyIsNull>
                                     <ogc:PropertyName>border_color</ogc:PropertyName>
-                                </ogc:Function>
-                                <ogc:Literal>false</ogc:Literal>
-                            </ogc:PropertyIsEqualTo>
+                                </ogc:PropertyIsNull>
+                            </ogc:Not>
                         </ogc:And>
                     </ogc:Filter>
                     <PolygonSymbolizer>
@@ -1497,10 +1449,8 @@
                                 <ogc:Literal>3</ogc:Literal>
                             </ogc:PropertyIsEqualTo>
                             <ogc:PropertyIsEqualTo>
-                                <ogc:Function name="strLength">
-                                    <ogc:PropertyName>border_dasharray</ogc:PropertyName>
-                                </ogc:Function>
-                                <ogc:Literal>0</ogc:Literal>
+                                <ogc:PropertyName>border_dasharray</ogc:PropertyName>
+                                <ogc:Literal></ogc:Literal>
                             </ogc:PropertyIsEqualTo>
                             <ogc:PropertyIsEqualTo>
                                 <ogc:Function name="strLength">
@@ -1508,12 +1458,11 @@
                                 </ogc:Function>
                                 <ogc:Literal>0</ogc:Literal>
                             </ogc:PropertyIsEqualTo>
-                            <ogc:PropertyIsEqualTo>
-                                <ogc:Function name="isNull">
+                            <ogc:Not>
+                                <ogc:PropertyIsNull>
                                     <ogc:PropertyName>border_color</ogc:PropertyName>
-                                </ogc:Function>
-                                <ogc:Literal>false</ogc:Literal>
-                            </ogc:PropertyIsEqualTo>
+                                </ogc:PropertyIsNull>
+                            </ogc:Not>
                         </ogc:And>
                     </ogc:Filter>
                     <PolygonSymbolizer>
@@ -1591,10 +1540,8 @@
                                 <ogc:Literal>3</ogc:Literal>
                             </ogc:PropertyIsEqualTo>
                             <ogc:PropertyIsEqualTo>
-                                <ogc:Function name="strLength">
-                                    <ogc:PropertyName>border_dasharray</ogc:PropertyName>
-                                </ogc:Function>
-                                <ogc:Literal>0</ogc:Literal>
+                                <ogc:PropertyName>border_dasharray</ogc:PropertyName>
+                                <ogc:Literal></ogc:Literal>
                             </ogc:PropertyIsEqualTo>
                             <ogc:PropertyIsGreaterThan>
                                 <ogc:Function name="strLength">
@@ -1602,12 +1549,11 @@
                                 </ogc:Function>
                                 <ogc:Literal>0</ogc:Literal>
                             </ogc:PropertyIsGreaterThan>
-                            <ogc:PropertyIsEqualTo>
-                                <ogc:Function name="isNull">
+                            <ogc:Not>
+                                <ogc:PropertyIsNull>
                                     <ogc:PropertyName>border_color</ogc:PropertyName>
-                                </ogc:Function>
-                                <ogc:Literal>false</ogc:Literal>
-                            </ogc:PropertyIsEqualTo>
+                                </ogc:PropertyIsNull>
+                            </ogc:Not>
                         </ogc:And>
                     </ogc:Filter>
                     <PolygonSymbolizer>
@@ -1685,10 +1631,8 @@
                                 <ogc:Literal>3</ogc:Literal>
                             </ogc:PropertyIsEqualTo>
                             <ogc:PropertyIsNotEqualTo>
-                                <ogc:Function name="strLength">
-                                    <ogc:PropertyName>border_dasharray</ogc:PropertyName>
-                                </ogc:Function>
-                                <ogc:Literal>0</ogc:Literal>
+                                <ogc:PropertyName>border_dasharray</ogc:PropertyName>
+                                <ogc:Literal></ogc:Literal>
                             </ogc:PropertyIsNotEqualTo>
                             <ogc:PropertyIsEqualTo>
                                 <ogc:Function name="strLength">
@@ -1696,12 +1640,11 @@
                                 </ogc:Function>
                                 <ogc:Literal>0</ogc:Literal>
                             </ogc:PropertyIsEqualTo>
-                            <ogc:PropertyIsEqualTo>
-                                <ogc:Function name="isNull">
+                            <ogc:Not>
+                                <ogc:PropertyIsNull>
                                     <ogc:PropertyName>border_color</ogc:PropertyName>
-                                </ogc:Function>
-                                <ogc:Literal>false</ogc:Literal>
-                            </ogc:PropertyIsEqualTo>
+                                </ogc:PropertyIsNull>
+                            </ogc:Not>
                         </ogc:And>
                     </ogc:Filter>
                     <PolygonSymbolizer>
@@ -1780,10 +1723,8 @@
                                 <ogc:Literal>3</ogc:Literal>
                             </ogc:PropertyIsEqualTo>
                             <ogc:PropertyIsNotEqualTo>
-                                <ogc:Function name="strLength">
-                                    <ogc:PropertyName>border_dasharray</ogc:PropertyName>
-                                </ogc:Function>
-                                <ogc:Literal>0</ogc:Literal>
+                                <ogc:PropertyName>border_dasharray</ogc:PropertyName>
+                                <ogc:Literal></ogc:Literal>
                             </ogc:PropertyIsNotEqualTo>
                             <ogc:PropertyIsGreaterThan>
                                 <ogc:Function name="strLength">
@@ -1791,12 +1732,11 @@
                                 </ogc:Function>
                                 <ogc:Literal>0</ogc:Literal>
                             </ogc:PropertyIsGreaterThan>
-                            <ogc:PropertyIsEqualTo>
-                                <ogc:Function name="isNull">
+                            <ogc:Not>
+                                <ogc:PropertyIsNull>
                                     <ogc:PropertyName>border_color</ogc:PropertyName>
-                                </ogc:Function>
-                                <ogc:Literal>false</ogc:Literal>
-                            </ogc:PropertyIsEqualTo>
+                                </ogc:PropertyIsNull>
+                            </ogc:Not>
                         </ogc:And>
                     </ogc:Filter>
                     <PolygonSymbolizer>

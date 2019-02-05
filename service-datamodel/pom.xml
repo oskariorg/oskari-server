@@ -64,12 +64,12 @@
             <version>2.1.0</version>
             <scope>test</scope>
         </dependency>
+        <!-- For logging -->
         <dependency>
-            <groupId>log4j</groupId>
-            <artifactId>log4j</artifactId>
+            <groupId>fi.nls.oskari.service</groupId>
+            <artifactId>oskari-base</artifactId>
             <scope>test</scope>
         </dependency>
-
         <dependency>
             <groupId>org.jboss.forge.roaster</groupId>
             <artifactId>roaster-api</artifactId>

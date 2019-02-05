@@ -2,8 +2,8 @@ package fi.nls.oskari.eu.elf;
 
 import fi.nls.oskari.fe.datamodel.SchemaRoaster;
 import fi.nls.oskari.fe.datamodel.TestHelper;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
+import fi.nls.oskari.log.LogFactory;
+import fi.nls.oskari.log.Logger;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -12,7 +12,7 @@ import java.net.MalformedURLException;
 
 public class TestSchemaRoaster extends TestHelper {
 
-    static final Logger logger = Logger.getLogger(TestSchemaRoaster.class);
+    static final Logger logger = LogFactory.getLogger(TestSchemaRoaster.class);
 
     @Ignore("Requires Web Service")
     @Test
@@ -26,7 +26,7 @@ public class TestSchemaRoaster extends TestHelper {
         final SchemaRoaster roaster = new SchemaRoaster();
         setupProxy(roaster);
 
-        logger.setLevel(Level.DEBUG);
+
         logger.debug(url);
 
         final String feature = "RoadLink";
@@ -50,7 +50,7 @@ public class TestSchemaRoaster extends TestHelper {
         final SchemaRoaster roaster = new SchemaRoaster();
         setupProxy(roaster);
 
-        logger.setLevel(Level.DEBUG);
+
         logger.debug(url);
 
         final String feature = "Building";
@@ -73,7 +73,7 @@ public class TestSchemaRoaster extends TestHelper {
         final SchemaRoaster roaster = new SchemaRoaster();
         setupProxy(roaster);
 
-        logger.setLevel(Level.DEBUG);
+
         logger.debug(url);
 
         final String feature = "Building";
@@ -95,7 +95,7 @@ public class TestSchemaRoaster extends TestHelper {
         final String url = "http://elfserver.kartverket.no/schemas/elf1.0/LoD0_Addresses.xsd";
         final SchemaRoaster roaster = new SchemaRoaster();
         setupProxy(roaster);
-        logger.setLevel(Level.DEBUG);
+
         logger.debug(url);
 
         final String feature = "Address";
@@ -118,7 +118,7 @@ public class TestSchemaRoaster extends TestHelper {
         final String url = "http://elfserver.kartverket.no/schemas/elf1.0/LoD0_CadastralParcels.xsd";
         final SchemaRoaster roaster = new SchemaRoaster();
         setupProxy(roaster);
-        logger.setLevel(Level.DEBUG);
+
         logger.debug(url);
 
         final String feature = "CadastralParcel";
@@ -141,7 +141,7 @@ public class TestSchemaRoaster extends TestHelper {
         final String url = "http://elfserver.kartverket.no/schemas/elf1.0/LoD1_AdministrativeUnits.xsd";
         final SchemaRoaster roaster = new SchemaRoaster();
         setupProxy(roaster);
-        logger.setLevel(Level.DEBUG);
+
         logger.debug(url);
 
         final String feature = "AdministrativeUnit";
@@ -164,7 +164,7 @@ public class TestSchemaRoaster extends TestHelper {
         final String url = "http://elfserver.kartverket.no/schemas/elf1.0/LoD1_AdministrativeUnits.xsd";
         final SchemaRoaster roaster = new SchemaRoaster();
         setupProxy(roaster);
-        logger.setLevel(Level.DEBUG);
+
         logger.debug(url);
 
         final String feature = "AdministrativeBoundary";
@@ -187,7 +187,7 @@ public class TestSchemaRoaster extends TestHelper {
         final String url = "http://elfserver.kartverket.no/schemas/elf1.0/LoD1_GeographicalNames.xsd";
         final SchemaRoaster roaster = new SchemaRoaster();
         setupProxy(roaster);
-        logger.setLevel(Level.DEBUG);
+
 
         logger.debug(url);
 
@@ -213,7 +213,7 @@ public class TestSchemaRoaster extends TestHelper {
         final String url = "http://elfserver.kartverket.no/schemas/elf1.0/LoD1_AirTransportNetwork.xsd";
         final SchemaRoaster roaster = new SchemaRoaster();
         setupProxy(roaster);
-        logger.setLevel(Level.DEBUG);
+
 
         logger.debug(url);
 
@@ -239,7 +239,7 @@ public class TestSchemaRoaster extends TestHelper {
         final String url = "http://elfserver.kartverket.no/schemas/elf1.0/LoD1_Elevation.xsd";
         final SchemaRoaster roaster = new SchemaRoaster();
         setupProxy(roaster);
-        logger.setLevel(Level.DEBUG);
+
 
         logger.debug(url);
 
@@ -265,7 +265,7 @@ public class TestSchemaRoaster extends TestHelper {
         final String url = "http://elfserver.kartverket.no/schemas/elf1.0/LoD1_HydroNetwork.xsd";
         final SchemaRoaster roaster = new SchemaRoaster();
         setupProxy(roaster);
-        logger.setLevel(Level.DEBUG);
+
 
         logger.debug(url);
 
@@ -290,7 +290,7 @@ public class TestSchemaRoaster extends TestHelper {
         final String url = "http://elfserver.kartverket.no/schemas/elf1.0/LoD1_HydroWaters.xsd";
         final SchemaRoaster roaster = new SchemaRoaster();
         setupProxy(roaster);
-        logger.setLevel(Level.DEBUG);
+
 
         logger.debug(url);
 
@@ -316,7 +316,7 @@ public class TestSchemaRoaster extends TestHelper {
         final String url = "http://elfserver.kartverket.no/schemas/elf1.0/LoD1_HydroWaters.xsd";
         final SchemaRoaster roaster = new SchemaRoaster();
         setupProxy(roaster);
-        logger.setLevel(Level.DEBUG);
+
 
         logger.debug(url);
 
@@ -342,7 +342,7 @@ public class TestSchemaRoaster extends TestHelper {
         final String url = "http://elfserver.kartverket.no/schemas/elf1.0/LoD1_LandCover.xsd";
         final SchemaRoaster roaster = new SchemaRoaster();
         setupProxy(roaster);
-        logger.setLevel(Level.DEBUG);
+
 
         logger.debug(url);
 
@@ -368,7 +368,7 @@ public class TestSchemaRoaster extends TestHelper {
         final String url = "http://elfserver.kartverket.no/schemas/elf1.0/LoD1_ProtectedSites.xsd";
         final SchemaRoaster roaster = new SchemaRoaster();
         setupProxy(roaster);
-        logger.setLevel(Level.DEBUG);
+
 
         logger.debug(url);
 
@@ -394,7 +394,7 @@ public class TestSchemaRoaster extends TestHelper {
         final String url = "http://elfserver.kartverket.no/schemas/elf1.0/LoD1_RailwayTransportNetwork.xsd";
         final SchemaRoaster roaster = new SchemaRoaster();
         setupProxy(roaster);
-        logger.setLevel(Level.DEBUG);
+
 
         logger.debug(url);
 
@@ -420,7 +420,7 @@ public class TestSchemaRoaster extends TestHelper {
         final String url = "http://elfserver.kartverket.no/schemas/elf1.0/LoD1_WaterTransportNetwork.xsd";
         final SchemaRoaster roaster = new SchemaRoaster();
         setupProxy(roaster);
-        logger.setLevel(Level.DEBUG);
+
 
         logger.debug(url);
 
@@ -446,7 +446,7 @@ public class TestSchemaRoaster extends TestHelper {
         final String url = "http://elfserver.kartverket.no/schemas/elf1.0/LoD1_SeaRegions.xsd";
         final SchemaRoaster roaster = new SchemaRoaster();
         setupProxy(roaster);
-        logger.setLevel(Level.DEBUG);
+
 
         logger.debug(url);
 
@@ -471,7 +471,7 @@ public class TestSchemaRoaster extends TestHelper {
         final String url = "http://elfserver.kartverket.no/schemas/elf1.0/LoD1_SeaRegions.xsd";
         final SchemaRoaster roaster = new SchemaRoaster();
         setupProxy(roaster);
-        logger.setLevel(Level.DEBUG);
+
 
         logger.debug(url);
 

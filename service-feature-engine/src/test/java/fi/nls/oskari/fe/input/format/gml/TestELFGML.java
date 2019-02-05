@@ -15,7 +15,8 @@ import fi.nls.oskari.fe.schema.XSDDatatype;
 import groovy.lang.GroovyClassLoader;
 import groovy.lang.GroovyCodeSource;
 import org.apache.commons.lang3.tuple.Pair;
-import org.apache.log4j.Logger;
+import fi.nls.oskari.log.LogFactory;
+import fi.nls.oskari.log.Logger;
 import org.geotools.styling.Style;
 import org.json.JSONObject;
 import org.junit.Ignore;
@@ -31,7 +32,7 @@ import static org.junit.Assert.assertTrue;
 @Deprecated
 public class TestELFGML extends TestHelper {
 
-    static final Logger logger = Logger.getLogger(TestELFGML.class);
+    static final Logger logger = LogFactory.getLogger(TestELFGML.class);
     static GroovyClassLoader gcl = new GroovyClassLoader();
 
     @SuppressWarnings("unchecked")

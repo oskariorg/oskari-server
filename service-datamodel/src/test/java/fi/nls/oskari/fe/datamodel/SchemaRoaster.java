@@ -1,7 +1,8 @@
 package fi.nls.oskari.fe.datamodel;
 
 import fi.nls.oskari.fe.schema.XSDDatatype;
-import org.apache.log4j.Logger;
+import fi.nls.oskari.log.LogFactory;
+import fi.nls.oskari.log.Logger;
 import org.apache.ws.commons.schema.*;
 import org.apache.ws.commons.schema.resolver.CollectionURIResolver;
 import org.apache.ws.commons.schema.resolver.DefaultURIResolver;
@@ -46,7 +47,7 @@ public class SchemaRoaster {
         return (Arrays.binarySearch(keywords, keyword) >= 0);
     }
 
-    static final Logger logger = Logger.getLogger("fi.nls.oskari.fe");
+    static final Logger logger = LogFactory.getLogger("fi.nls.oskari.fe");
 
     class RoastContext {
 
