@@ -168,8 +168,8 @@ public class LayerJSONFormatterWMS extends LayerJSONFormatter {
      *         otherwise a Set containing both (can be empty)
      */
     protected static Set<String> getSRSs(JSONObject attributes, JSONObject capabilities) {
-        JSONArray jsonForcedSRS = JSONHelper.getJSONArray(attributes, KEY_ATTRIBUTE_FORCED_SRS);
-        JSONArray jsonCapabilitiesSRS = JSONHelper.getJSONArray(capabilities, KEY_SRS);
+        JSONArray jsonForcedSRS = attributes != null ? attributes.optJSONArray(KEY_ATTRIBUTE_FORCED_SRS): null;
+        JSONArray jsonCapabilitiesSRS = capabilities != null ? capabilities.optJSONArray(KEY_SRS): null;
         if (jsonForcedSRS == null && jsonCapabilitiesSRS == null) {
             log.debug("No SRS information found from either attributes or capabilities");
             return null;
