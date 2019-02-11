@@ -19,7 +19,6 @@ import org.oskari.service.mvt.TileCoord;
 import org.oskari.service.mvt.WFSTileGrid;
 import org.oskari.service.util.ServiceFactory;
 import org.oskari.service.wfs.client.CachingWFSClient;
-import org.oskari.service.wfs.client.OskariWFS110Client;
 
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.cache.ComputeOnceCache;
@@ -53,7 +52,7 @@ public class GetWFSVectorTileHandler extends ActionHandler {
     private final ComputeOnceCache<byte[]> tileCache = new ComputeOnceCache<>(256, TimeUnit.MINUTES.toMillis(5));
 
     private PermissionHelper permissionHelper;
-    private OskariWFS110Client wfsClient;
+    private CachingWFSClient wfsClient;
 
     @Override
     public void init() {
@@ -205,12 +204,13 @@ public class GetWFSVectorTileHandler extends ActionHandler {
 
     private SimpleFeatureCollection getFeatures(OskariLayer layer, String srs, WFSTileGrid grid, TileCoord tile) {
         String endPoint = layer.getUrl();
+        String version = layer.getVersion();
         String typeName = layer.getName();
         String user = layer.getUsername();
         String pass = layer.getPassword();
         double[] bbox = grid.getTileExtent(tile);
         int maxFeatures = 10000;
-        return wfsClient.tryGetFeatures(endPoint, user, pass, typeName, bbox, srs, maxFeatures);
+        return wfsClient.tryGetFeatures(endPoint, version, user, pass, typeName, bbox, srs, maxFeatures);
     }
 
     public static SimpleFeatureCollection union(SimpleFeatureCollection a, SimpleFeatureCollection b) {

@@ -18,12 +18,26 @@ import org.geotools.feature.DefaultFeatureCollection;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.oskari.service.wfs.client.OskariWFSHttpUtil;
 
+import fi.nls.oskari.log.LogFactory;
+import fi.nls.oskari.log.Logger;
+
 /**
  * WFS 3.0.0 client for SimpleFeatures
  */
 public class OskariWFS3Client {
 
+    private static final Logger LOG = LogFactory.getLogger(OskariWFS3Client.class);
     private static final String CONTENT_TYPE_GEOJSON = "application/geo+json";
+
+    public SimpleFeatureCollection tryGetFeatures(String endPoint, String user, String pass,
+            String collectionId, double[] bbox, Integer limit) {
+        try {
+            return getFeatures(endPoint, user, pass, collectionId, bbox, limit);
+        } catch (Exception e) {
+            LOG.warn(e, "Failed to read WFS response");
+            return null;
+        }
+    }
 
     public SimpleFeatureCollection getFeatures(String endPoint, String user, String pass,
             String collectionId, double[] bbox, Integer limit) throws Exception {
