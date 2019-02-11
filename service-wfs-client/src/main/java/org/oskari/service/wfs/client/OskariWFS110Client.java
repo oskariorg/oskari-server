@@ -1,24 +1,23 @@
 package org.oskari.service.wfs.client;
 
 import java.io.BufferedInputStream;
-import java.io.IOException;
+import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.Reader;
 import java.io.InputStreamReader;
 
 import java.net.HttpURLConnection;
+import java.nio.charset.StandardCharsets;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.feature.DefaultFeatureCollection;
 import org.geotools.feature.FeatureIterator;
-import org.geotools.geojson.feature.FeatureJSON;
 import org.opengis.feature.simple.SimpleFeature;
 
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.util.IOHelper;
 
 /**
  * WFS 1.1.0 client for SimpleFeatures
@@ -26,9 +25,7 @@ import fi.nls.oskari.util.IOHelper;
 public class OskariWFS110Client {
 
     private static final Logger LOG = LogFactory.getLogger(OskariWFS110Client.class);
-    private static final FeatureJSON FJ = new FeatureJSON();
     private static final OskariGML OSKARI_GML = new OskariGML();
-    private static final int MAX_REDIRECTS = 5;
 
     /**
      * @return SimpleFeatureCollection containing the parsed Features, or null if all fails
@@ -55,7 +52,7 @@ public class OskariWFS110Client {
             String typeName, double[] bbox, String srsName, Integer maxFeatures) throws Exception {
         Map<String, String> queryParams = getQueryParams(typeName, bbox, srsName, maxFeatures);
         queryParams.put("OUTPUTFORMAT", "application/json");
-        HttpURLConnection conn = getConnection(endPoint, user, pass, queryParams);
+        HttpURLConnection conn = OskariWFSHttpUtil.getConnection(endPoint, user, pass, queryParams);
         if (conn.getResponseCode() != 200) {
             throw new Exception("Unexpected status code " + conn.getResponseCode());
         }
@@ -67,9 +64,8 @@ public class OskariWFS110Client {
         }
 
         try (InputStream in = conn.getInputStream();
-             Reader utf8Reader = new InputStreamReader(in, IOHelper.CHARSET_UTF8);
-             FeatureIterator<SimpleFeature> it = FJ.streamFeatureCollection(utf8Reader)) {
-
+             Reader utf8Reader = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8));
+             FeatureIterator<SimpleFeature> it = new FeatureCollectionIterator(utf8Reader)) {
             DefaultFeatureCollection features = new DefaultFeatureCollection(null, null);
             while (it.hasNext()) {
                 features.add(it.next());
@@ -81,7 +77,7 @@ public class OskariWFS110Client {
     public SimpleFeatureCollection getFeaturesGML(String endPoint, String user, String pass, String typeName,
             double[] bbox, String srsName, Integer maxFeatures) throws Exception {
         Map<String, String> queryParams = getQueryParams(typeName, bbox, srsName, maxFeatures);
-        HttpURLConnection conn = getConnection(endPoint, user, pass, queryParams);
+        HttpURLConnection conn = OskariWFSHttpUtil.getConnection(endPoint, user, pass, queryParams);
         if (conn.getResponseCode() != 200) {
             throw new Exception("Unexpected status code " + conn.getResponseCode());
         }
@@ -116,35 +112,6 @@ public class OskariWFS110Client {
         }
         sb.append(srsName);
         return sb.toString();
-    }
-
-    public static HttpURLConnection getConnection(String endPoint,
-            String user, String pass, Map<String, String> queryParams) throws IOException {
-        String request = IOHelper.constructUrl(endPoint, queryParams);
-        HttpURLConnection conn = IOHelper.getConnection(request, user, pass);
-        return followRedirect(conn, user, pass, queryParams, MAX_REDIRECTS);
-    }
-
-    private static HttpURLConnection followRedirect(HttpURLConnection conn,
-            String user, String pass, Map<String, String> queryParams, int redirectLatch) throws IOException {
-        final int sc = conn.getResponseCode();
-        if (sc == HttpURLConnection.HTTP_MOVED_PERM
-                || sc == HttpURLConnection.HTTP_MOVED_TEMP
-                || sc == HttpURLConnection.HTTP_SEE_OTHER) {
-            if (--redirectLatch == 0) {
-                throw new IOException("Too many redirects!");
-            }
-            String location = conn.getHeaderField("Location");
-            int i = location.indexOf('?');
-            i = i < 0 ? location.length() : i;
-            String newEndPoint = location.substring(0, i);
-            LOG.info("Following redirect to", newEndPoint);
-            String newRequest = IOHelper.constructUrl(newEndPoint, queryParams);
-            HttpURLConnection newConnection = IOHelper.getConnection(newRequest, user, pass);
-            return followRedirect(newConnection, user, pass, queryParams, redirectLatch);
-        } else {
-            return conn;
-        }
     }
 
 }
