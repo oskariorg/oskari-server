@@ -22,7 +22,7 @@ import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 
 /**
- * WFS 1.1.0 client for SimpleFeatures
+ * Client code for WFS 1.1.0 services
  */
 public class OskariWFS110Client {
 
@@ -43,6 +43,7 @@ public class OskariWFS110Client {
             LOG.warn(e, "Failed to read WFS response as GeoJSON");
         }
 
+        // Fallback to GML
         try {
             return getFeaturesGML(endPoint, user, pass, typeName, bbox, crs, maxFeatures);
         } catch (Exception e) {

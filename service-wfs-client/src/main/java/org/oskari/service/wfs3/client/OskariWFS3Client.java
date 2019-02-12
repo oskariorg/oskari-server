@@ -26,17 +26,20 @@ import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.service.ServiceException;
 
 /**
- * WFS 3.0.0 client for SimpleFeatures
+ * Client code for WFS 3 Core services
  */
 public class OskariWFS3Client {
 
     private static final Logger LOG = LogFactory.getLogger(OskariWFS3Client.class);
     private static final String CONTENT_TYPE_GEOJSON = "application/geo+json";
+
     private static CoordinateReferenceSystem CRS84;
     private static CoordinateReferenceSystem getCRS84() {
         if (CRS84 == null) {
             try {
-                CRS84 = CRS.decode("EPSG:4326", true);
+                // Default CRS for WFS 3 is CRS84 (= WGS84 with lon/lat order)
+                final boolean longitudeFirst = true;
+                CRS84 = CRS.decode("EPSG:4326", longitudeFirst);
             } catch (Exception e) {
                 LOG.error(e, "Failed to decode CRS84");
             }
@@ -71,12 +74,16 @@ public class OskariWFS3Client {
         validateResponse(conn, CONTENT_TYPE_GEOJSON);
         String next = readFeaturesTo(conn, features);
 
+        // Check if there's a link with rel="next"
+        // => While the next link exists there's a next page to be read
         while (next != null) {
             conn = OskariWFSHttpUtil.getConnection(next, user, pass, null, headers);
             validateResponse(conn, CONTENT_TYPE_GEOJSON);
             next = readFeaturesTo(conn, features);
         }
 
+        // Features are in CRS84
+        // Check if we need to transform them to the requested CRS
         if (CRS.equalsIgnoreMetadata(getCRS84(), crs)) {
             return features;
         }
@@ -105,6 +112,7 @@ public class OskariWFS3Client {
 
     private static String readFeaturesTo(HttpURLConnection conn, DefaultFeatureCollection fc)
             throws IOException {
+        // Avoid heterogenous warnings from GeoTools, use the (maybe) existing schema
         SimpleFeatureType sft = fc.getSchema();
         try (InputStream in = conn.getInputStream();
                 Reader reader = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8));
@@ -122,6 +130,7 @@ public class OskariWFS3Client {
 
     private static String getItemsPath(String endPoint, String collectionId) {
         StringBuilder path = new StringBuilder(endPoint);
+        // Remove (all) trailing / characters
         while (path.charAt(path.length() - 1) == '/') {
             path.setLength(path.length() - 1);
         }
@@ -133,11 +142,12 @@ public class OskariWFS3Client {
 
     protected static Map<String, String> getQueryParams(ReferencedEnvelope bbox, Integer limit)
             throws ServiceException {
+        // Linked not needed, but look better when logging the requests
         Map<String, String> parameters = new LinkedHashMap<>();
         if (bbox != null) {
-            // All WFS3 services must support CRS84 by default for bbox
-            // But not all of them will support CRS extension
-            // Better we request with CRS84 bbox
+            // All WFS3 services must support CRS84 for 'bbox'
+            // But not all of them will support the CRS extension
+            // => Best we request in CRS84 and do the transformation ourselves
             if (!CRS.equalsIgnoreMetadata(bbox.getCoordinateReferenceSystem(), getCRS84())) {
                 try {
                     bbox = bbox.transform(getCRS84(), true, 5);
@@ -146,10 +156,8 @@ public class OskariWFS3Client {
                 }
             }
             String bboxStr = String.format(Locale.US, "%f,%f,%f,%f",
-                    bbox.getMinX(),
-                    bbox.getMinY(),
-                    bbox.getMaxX(),
-                    bbox.getMaxY());
+                    bbox.getMinX(), bbox.getMinY(),
+                    bbox.getMaxX(), bbox.getMaxY());
             parameters.put("bbox", bboxStr);
         }
         if (limit != null) {

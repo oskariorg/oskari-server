@@ -15,7 +15,7 @@ import org.opengis.feature.simple.SimpleFeatureType;
 public class WFS3FeatureCollectionHandler extends FeatureCollectionHandler {
 
     private List<WFS3Link> links;
-    int level = 0;
+    int level = 0; // Track the level of deepness we are in
 
     public WFS3FeatureCollectionHandler(SimpleFeatureType sft) {
         super(sft, null);
@@ -23,6 +23,9 @@ public class WFS3FeatureCollectionHandler extends FeatureCollectionHandler {
 
     @Override
     public boolean startObjectEntry(String key) throws ParseException, IOException {
+        // We're only interested in the "links" element found at the FeatureCollection level
+        // Only checking for "links" wouldn't work, because when a feature has a property named
+        // links this path would activate, and we don't want that (obviously)
         if (level == 1 && "links".equals(key)) {
             delegate = new WFS3LinksHandler();
             return true;
