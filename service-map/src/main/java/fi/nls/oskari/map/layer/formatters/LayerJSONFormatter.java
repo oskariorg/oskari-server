@@ -146,6 +146,7 @@ public class LayerJSONFormatter {
         JSONHelper.putValue(layerJson, "updated", layer.getUpdated());
 
         JSONHelper.putValue(layerJson, "dataUrl_uuid", getFixedDataUrl(layer));
+        JSONHelper.putValue(layerJson, "style", layer.getStyle());
 
         // sublayer handling
         if(layer.getSublayers() != null && !layer.getSublayers().isEmpty()) {
