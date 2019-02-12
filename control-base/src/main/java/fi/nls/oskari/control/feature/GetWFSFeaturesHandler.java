@@ -81,7 +81,7 @@ public class GetWFSFeaturesHandler extends ActionHandler {
                 String nativeSrs = PropertyUtil.get(PROPERTY_NATIVE_SRS, "EPSG:4326");
                 nativeCRS = CRS.decode(nativeSrs, true);
             } catch (Exception e) {
-                LOG.error(e, "Failed to decode Web Mercator CRS!");
+                LOG.error(e, "Failed to decode Native CRS!");
             }
         }
         return nativeCRS;
