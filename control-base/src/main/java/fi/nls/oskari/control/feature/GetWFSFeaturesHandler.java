@@ -73,11 +73,6 @@ public class GetWFSFeaturesHandler extends ActionHandler {
         if (wfsClient == null) {
             wfsClient = new OskariWFS110Client();
         }
-        try {
-            webMercator = CRS.decode("EPSG:3857", true);
-        } catch (Exception e) {
-            LOG.error(e, "Failed to decode Web Mercator CRS!");
-        }
     }
 
     private CoordinateReferenceSystem getNativeCRS() {
