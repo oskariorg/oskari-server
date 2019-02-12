@@ -20,11 +20,11 @@ public class OskariWFSHttpUtil {
     }
 
     public static HttpURLConnection getConnection(String endPoint,
-            String user, String pass, Map<String, String> queryParams, Map<String, String> headers) throws IOException {
-        String request = IOHelper.constructUrl(endPoint, queryParams);
+            String user, String pass, Map<String, String> query, Map<String, String> headers) throws IOException {
+        String request = IOHelper.constructUrl(endPoint, query);
         HttpURLConnection conn = IOHelper.getConnection(request, user, pass);
         headers.forEach((k, v) -> conn.setRequestProperty(k, v));
-        return followRedirect(conn, user, pass, queryParams, headers, MAX_REDIRECTS);
+        return followRedirect(conn, user, pass, query, headers, MAX_REDIRECTS);
     }
 
     public static HttpURLConnection followRedirect(HttpURLConnection conn,

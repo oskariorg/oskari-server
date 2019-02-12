@@ -3,18 +3,20 @@ package org.oskari.service.wfs.client;
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.InputStream;
-import java.io.Reader;
 import java.io.InputStreamReader;
-
+import java.io.Reader;
 import java.net.HttpURLConnection;
 import java.nio.charset.StandardCharsets;
 import java.util.LinkedHashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.feature.DefaultFeatureCollection;
 import org.geotools.feature.FeatureIterator;
+import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.opengis.feature.simple.SimpleFeature;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
@@ -31,16 +33,16 @@ public class OskariWFS110Client {
      * @return SimpleFeatureCollection containing the parsed Features, or null if all fails
      */
     public SimpleFeatureCollection tryGetFeatures(String endPoint, String user, String pass,
-            String typeName, double[] bbox, String srsName, Integer maxFeatures) {
+            String typeName, ReferencedEnvelope bbox, CoordinateReferenceSystem crs, Integer maxFeatures) {
         // First try GeoJSON
         try {
-            return getFeaturesGeoJSON(endPoint, user, pass, typeName, bbox, srsName, maxFeatures);
+            return getFeaturesGeoJSON(endPoint, user, pass, typeName, bbox, crs, maxFeatures);
         } catch (Exception e) {
             LOG.warn(e, "Failed to read WFS response as GeoJSON");
         }
 
         try {
-            return getFeaturesGML(endPoint, user, pass, typeName, bbox, srsName, maxFeatures);
+            return getFeaturesGML(endPoint, user, pass, typeName, bbox, crs, maxFeatures);
         } catch (Exception e) {
             LOG.warn(e, "Failed to read WFS response as GML");
         }
@@ -49,8 +51,8 @@ public class OskariWFS110Client {
     }
 
     public SimpleFeatureCollection getFeaturesGeoJSON(String endPoint, String user, String pass,
-            String typeName, double[] bbox, String srsName, Integer maxFeatures) throws Exception {
-        Map<String, String> queryParams = getQueryParams(typeName, bbox, srsName, maxFeatures);
+            String typeName, ReferencedEnvelope bbox, CoordinateReferenceSystem crs, Integer maxFeatures) throws Exception {
+        Map<String, String> queryParams = getQueryParams(typeName, bbox, crs, maxFeatures);
         queryParams.put("OUTPUTFORMAT", "application/json");
         HttpURLConnection conn = OskariWFSHttpUtil.getConnection(endPoint, user, pass, queryParams);
         if (conn.getResponseCode() != 200) {
@@ -64,8 +66,8 @@ public class OskariWFS110Client {
         }
 
         try (InputStream in = conn.getInputStream();
-             Reader utf8Reader = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8));
-             FeatureIterator<SimpleFeature> it = new FeatureCollectionIterator(utf8Reader)) {
+                Reader utf8Reader = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8));
+                FeatureIterator<SimpleFeature> it = new FeatureCollectionIterator(utf8Reader)) {
             DefaultFeatureCollection features = new DefaultFeatureCollection(null, null);
             while (it.hasNext()) {
                 features.add(it.next());
@@ -75,9 +77,9 @@ public class OskariWFS110Client {
     }
 
     public SimpleFeatureCollection getFeaturesGML(String endPoint, String user, String pass, String typeName,
-            double[] bbox, String srsName, Integer maxFeatures) throws Exception {
-        Map<String, String> queryParams = getQueryParams(typeName, bbox, srsName, maxFeatures);
-        HttpURLConnection conn = OskariWFSHttpUtil.getConnection(endPoint, user, pass, queryParams);
+            ReferencedEnvelope bbox, CoordinateReferenceSystem crs, Integer maxFeatures) throws Exception {
+        Map<String, String> query = getQueryParams(typeName, bbox, crs, maxFeatures);
+        HttpURLConnection conn = OskariWFSHttpUtil.getConnection(endPoint, user, pass, query);
         if (conn.getResponseCode() != 200) {
             throw new Exception("Unexpected status code " + conn.getResponseCode());
         }
@@ -87,31 +89,34 @@ public class OskariWFS110Client {
         }
     }
 
-    protected Map<String, String> getQueryParams(String typeName, double[] bbox,
-            String srsName, Integer maxFeatures) {
+    protected Map<String, String> getQueryParams(String typeName, ReferencedEnvelope bbox,
+            CoordinateReferenceSystem crs, Integer maxFeatures) {
         Map<String, String> parameters = new LinkedHashMap<>();
         parameters.put("SERVICE", "WFS");
         parameters.put("VERSION", "1.1.0");
         parameters.put("REQUEST", "GetFeature");
         parameters.put("TYPENAME", typeName);
-        parameters.put("SRSNAME", srsName);
-        if (bbox != null) {
-            parameters.put("BBOX", getBBOX(bbox, srsName));
-        }
+        parameters.put("SRSNAME", crs.getIdentifiers().iterator().next().toString());
+        parameters.put("BBOX", getBBOX(bbox));
         if (maxFeatures != null) {
             parameters.put("MAXFEATURES", maxFeatures.toString());
         }
         return parameters;
     }
 
-    protected String getBBOX(double[] bbox, String srsName) {
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < 4; i++) {
-            sb.append(bbox[i]);
-            sb.append(',');
+    protected String getBBOX(ReferencedEnvelope bbox) {
+        if (bbox == null) {
+            return null;
         }
-        sb.append(srsName);
-        return sb.toString();
+        String srsName = bbox.getCoordinateReferenceSystem()
+                .getIdentifiers()
+                .iterator()
+                .next()
+                .toString();
+        return String.format(Locale.US, "%f,%f,%f,%f,%s",
+                bbox.getMinX(), bbox.getMinY(),
+                bbox.getMaxX(), bbox.getMaxY(),
+                srsName);
     }
 
 }

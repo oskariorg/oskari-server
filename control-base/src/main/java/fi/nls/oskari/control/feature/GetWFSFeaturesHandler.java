@@ -5,25 +5,16 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
 import org.geotools.data.simple.SimpleFeatureCollection;
-import org.geotools.data.simple.SimpleFeatureIterator;
-import org.geotools.feature.DefaultFeatureCollection;
-import org.geotools.feature.simple.SimpleFeatureBuilder;
-import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
 import org.geotools.geojson.feature.FeatureJSON;
-import org.geotools.geometry.jts.JTS;
+import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
-import org.opengis.feature.simple.SimpleFeature;
-import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.geometry.DirectPosition;
-import org.opengis.geometry.MismatchedDimensionException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
-import org.opengis.referencing.operation.MathTransform;
-import org.opengis.referencing.operation.TransformException;
 import org.oskari.service.util.ServiceFactory;
+import org.oskari.service.wfs.client.CoordinateTransformer;
 import org.oskari.service.wfs.client.OskariWFS110Client;
 
 import com.vividsolutions.jts.geom.Envelope;
-import com.vividsolutions.jts.geom.Geometry;
 
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.ActionConstants;
@@ -34,11 +25,15 @@ import fi.nls.oskari.control.ActionParamsException;
 import fi.nls.oskari.control.layer.PermissionHelper;
 import fi.nls.oskari.domain.User;
 import fi.nls.oskari.domain.map.OskariLayer;
+import fi.nls.oskari.log.LogFactory;
+import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.util.ResponseHelper;
 
 @OskariActionRoute("GetWFSFeatures")
 public class GetWFSFeaturesHandler extends ActionHandler {
+
+    private static final Logger LOG = LogFactory.getLogger(GetWFSFeaturesHandler.class);
 
     protected static final String ERR_LAYER_TYPE_NOT_WFS = "Specified layer is not a WFS layer";
     protected static final String ERR_BBOX_INVALID = "Invalid bbox";
@@ -54,11 +49,11 @@ public class GetWFSFeaturesHandler extends ActionHandler {
     private static final FeatureJSON FJ = new FeatureJSON();
     private static final byte[] EMPTY_GEOJSON_FEATURE_COLLECTION = "{\"type\": \"FeatureCollection\", \"features\": []}".getBytes(StandardCharsets.UTF_8);
 
-    // Request Features in Oskari Native SRS
-    private final String requestSrsName = PropertyUtil.get(PROPERTY_NATIVE_SRS, "EPSG:4326");
-
     private PermissionHelper permissionHelper;
     private OskariWFS110Client wfsClient;
+
+    private CoordinateReferenceSystem nativeCRS;
+    private CoordinateReferenceSystem webMercator;
 
     protected void setPermissionHelper(PermissionHelper permissionHelper) {
         this.permissionHelper = permissionHelper;
@@ -78,20 +73,49 @@ public class GetWFSFeaturesHandler extends ActionHandler {
         if (wfsClient == null) {
             wfsClient = new OskariWFS110Client();
         }
+        try {
+            webMercator = CRS.decode("EPSG:3857", true);
+        } catch (Exception e) {
+            LOG.error(e, "Failed to decode Web Mercator CRS!");
+        }
+    }
+
+    private CoordinateReferenceSystem getNativeCRS() {
+        if (nativeCRS == null) {
+            try {
+                String nativeSrs = PropertyUtil.get(PROPERTY_NATIVE_SRS, "EPSG:4326");
+                nativeCRS = CRS.decode(nativeSrs, true);
+            } catch (Exception e) {
+                LOG.error(e, "Failed to decode Web Mercator CRS!");
+            }
+        }
+        return nativeCRS;
+    }
+
+    private CoordinateReferenceSystem getWebMercator() {
+        if (webMercator == null) {
+            try {
+                webMercator = CRS.decode("EPSG:3857", true);
+            } catch (Exception e) {
+                LOG.error(e, "Failed to decode Web Mercator CRS!");
+            }
+        }
+        return webMercator;
     }
 
     @Override
     public void handleAction(ActionParameters params) throws ActionException {
         int layerId = params.getRequiredParamInt(ActionConstants.PARAM_ID);
-        Envelope bbox = parseBbox(params.getRequiredParam(PARAM_BBOX));
+        String bboxStr = params.getRequiredParam(PARAM_BBOX);
         OskariLayer layer = findLayer(layerId, params.getUser());
-        // Only support WebMercator for now
-        // String targetSrs = params.getRequiredParam(ActionConstants.PARAM_SRS);
-        String targetSrsName = "EPSG:3857";
+
+        CoordinateReferenceSystem nativeCRS = getNativeCRS();
+        CoordinateReferenceSystem targetCRS = getWebMercator(); // Only support WebMercator for now
+        ReferencedEnvelope bbox = parseBbox(bboxStr, targetCRS);
 
         // TODO: Figure out if layer supports targetSrsName
         // If it does let the WFS service do the transformation
-        SimpleFeatureCollection fc = getFeatures(layer, bbox, requestSrsName, targetSrsName);
+        SimpleFeatureCollection fc = getFeatures(layer, bbox, nativeCRS, targetCRS);
         try {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             if (fc.isEmpty()) {
@@ -105,17 +129,21 @@ public class GetWFSFeaturesHandler extends ActionHandler {
         }
     }
 
-    private Envelope parseBbox(String bbox) throws ActionParamsException {
+    protected ReferencedEnvelope parseBbox(String bbox, CoordinateReferenceSystem crs) throws ActionParamsException {
         String[] a = bbox.split(",", 4);
         if (a.length != 4) {
             throw new ActionParamsException(ERR_BBOX_INVALID);
         }
         try {
-            return new Envelope(
-                    Double.parseDouble(a[0]),  // x1
-                    Double.parseDouble(a[2]),  // x2
-                    Double.parseDouble(a[1]),  // y1
-                    Double.parseDouble(a[3])); // y2
+            double x1 = Double.parseDouble(a[0]);
+            double y1 = Double.parseDouble(a[1]);
+            double x2 = Double.parseDouble(a[2]);
+            double y2 = Double.parseDouble(a[3]);
+            Envelope envelope = new Envelope(x1, x2, y1, y2);
+            if (!isWithin(crs, envelope)) {
+                throw new ActionParamsException(ERR_BBOX_OUT_OF_CRS);
+            }
+            return new ReferencedEnvelope(envelope, crs);
         } catch (NumberFormatException e) {
             throw new ActionParamsException(ERR_BBOX_INVALID);
         }
@@ -129,53 +157,33 @@ public class GetWFSFeaturesHandler extends ActionHandler {
         return layer;
     }
 
-    protected SimpleFeatureCollection getFeatures(OskariLayer layer, Envelope bbox,
-            String requestSrsName, String targetSrsName) throws ActionException {
-        CoordinateReferenceSystem requestCRS;
-        CoordinateReferenceSystem targetCRS;
+    protected SimpleFeatureCollection getFeatures(OskariLayer layer, ReferencedEnvelope bbox,
+            CoordinateReferenceSystem nativeCRS, CoordinateReferenceSystem targetCRS) throws ActionException {
+        boolean needsTransform = !CRS.equalsIgnoreMetadata(nativeCRS, targetCRS);
+
+        // Request features in nativeCRS (of the installation)
+        // Most likely supported by all WFS layers
+        ReferencedEnvelope requestBbox = bbox;
+        if (needsTransform) {
+            try {
+                requestBbox = bbox.transform(nativeCRS, true);
+            } catch (Exception e) {
+                throw new ActionException(ERR_REPOJECTION_FAIL, e);
+            }
+        }
+
+        SimpleFeatureCollection features = getFeatures(layer, requestBbox, nativeCRS);
+        if (!needsTransform) {
+            return features;
+        }
+
+        // Transform features to targetCRS
         try {
-            requestCRS = CRS.decode(requestSrsName, true);
-            targetCRS = CRS.decode(targetSrsName, true);
+            CoordinateTransformer transformer = new CoordinateTransformer(nativeCRS, targetCRS);
+            return transformer.transform(features);
         } catch (Exception e) {
-            throw new ActionParamsException(ERR_CRS_DECODE_FAIL);
+            throw new ActionException(ERR_REPOJECTION_FAIL, e);
         }
-
-        if (!isWithin(targetCRS, bbox)) {
-            throw new ActionParamsException(ERR_BBOX_OUT_OF_CRS);
-        }
-
-        boolean shouldTransform = !CRS.equalsIgnoreMetadata(requestCRS, targetCRS);
-
-        MathTransform transformFromRequested;
-        MathTransform transformToRequested;
-        Envelope requestBbox;
-        if (shouldTransform) {
-            try {
-                transformFromRequested = CRS.findMathTransform(requestCRS, targetCRS, true);
-                transformToRequested = CRS.findMathTransform(targetCRS, requestCRS, true);
-            } catch (Exception e) {
-                throw new ActionParamsException(ERR_TRANSFORM_FIND_FAIL);
-            }
-            try {
-                requestBbox = JTS.transform(bbox, transformToRequested);
-            } catch (Exception e) {
-                throw new ActionException(ERR_REPOJECTION_FAIL, e);
-            }
-        } else {
-            transformFromRequested = null;
-            transformToRequested = null;
-            requestBbox = bbox;
-        }
-
-        SimpleFeatureCollection features = getFeatures(layer, requestSrsName, requestBbox);
-        if (shouldTransform) {
-            try {
-                features = transform(features, targetCRS, transformFromRequested);
-            } catch (Exception e) {
-                throw new ActionException(ERR_REPOJECTION_FAIL, e);
-            }
-        }
-        return features;
     }
 
     private boolean isWithin(CoordinateReferenceSystem targetCRS, Envelope bbox) {
@@ -197,41 +205,15 @@ public class GetWFSFeaturesHandler extends ActionHandler {
         return true;
     }
 
-    private SimpleFeatureCollection getFeatures(OskariLayer layer, String srsName, Envelope bbox) {
+    private SimpleFeatureCollection getFeatures(OskariLayer layer, ReferencedEnvelope bbox,
+            CoordinateReferenceSystem crs) {
         String endPoint = layer.getUrl();
         String typeName = layer.getName();
         String user = layer.getUsername();
         String pass = layer.getPassword();
         // TODO: Figure out the maxFeatures from the layer
         int maxFeatures = 10000;
-        double[] box = { bbox.getMinX(), bbox.getMinY(), bbox.getMaxX(), bbox.getMaxY() };
-        return wfsClient.tryGetFeatures(endPoint, user, pass, typeName, box, srsName, maxFeatures);
-    }
-
-    private SimpleFeatureCollection transform(SimpleFeatureCollection sfc, CoordinateReferenceSystem targetCRS, MathTransform transform)
-            throws MismatchedDimensionException, TransformException {
-        if (sfc.isEmpty()) {
-            return sfc;
-        }
-        SimpleFeatureType newSchema = SimpleFeatureTypeBuilder.retype(sfc.getSchema(), targetCRS);
-        SimpleFeatureBuilder b = new SimpleFeatureBuilder(newSchema);
-        DefaultFeatureCollection fc = new DefaultFeatureCollection(null, newSchema);
-        try (SimpleFeatureIterator it = sfc.features()) {
-            while (it.hasNext()) {
-                SimpleFeature f = it.next();
-                for (int i = 0; i < f.getAttributeCount(); i++) {
-                    b.set(i, f.getAttribute(i));
-                }
-                SimpleFeature copy = b.buildFeature(f.getID());
-                Object g = f.getDefaultGeometry();
-                if (g != null) {
-                    Geometry transformed = JTS.transform((Geometry) g, transform);
-                    copy.setDefaultGeometry(transformed);
-                }
-                fc.add(copy);
-            }
-        }
-        return fc;
+        return wfsClient.tryGetFeatures(endPoint, user, pass, typeName, bbox, crs, maxFeatures);
     }
 
 }

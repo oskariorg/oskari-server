@@ -13,12 +13,17 @@ import java.util.concurrent.TimeUnit;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.data.simple.SimpleFeatureIterator;
 import org.geotools.feature.DefaultFeatureCollection;
+import org.geotools.geometry.jts.ReferencedEnvelope;
+import org.geotools.referencing.CRS;
 import org.opengis.feature.simple.SimpleFeature;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.oskari.service.mvt.SimpleFeaturesMVTEncoder;
 import org.oskari.service.mvt.TileCoord;
 import org.oskari.service.mvt.WFSTileGrid;
 import org.oskari.service.util.ServiceFactory;
 import org.oskari.service.wfs.client.CachingWFSClient;
+
+import com.vividsolutions.jts.geom.Envelope;
 
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.cache.ComputeOnceCache;
@@ -75,10 +80,17 @@ public class GetWFSVectorTileHandler extends ActionHandler {
         validateTile(grid, z, x, y);
         validateScaleDenominator(layer, grid, z);
 
+        final CoordinateReferenceSystem crs;
+        try {
+            crs = CRS.decode(srs, true);
+        } catch (Exception e) {
+            throw new ActionParamsException("Invalid srs!");
+        }
+
         final String cacheKey = getCacheKey(layerId, srs, z, x, y);
         final byte[] resp;
         try {
-            resp = tileCache.get(cacheKey, __ -> createTile(layer, srs, grid, z, x, y));
+            resp = tileCache.get(cacheKey, __ -> createTile(layer, crs, grid, z, x, y));
         } catch (ServiceRuntimeException e) {
             throw new ActionException(e.getMessage());
         }
@@ -156,7 +168,7 @@ public class GetWFSVectorTileHandler extends ActionHandler {
      * @return an MVT tile as a GZipped byte array
      * @throws ActionException
      */
-    private byte[] createTile(OskariLayer layer, String srs,
+    private byte[] createTile(OskariLayer layer, CoordinateReferenceSystem crs,
             WFSTileGrid grid, int z, int x, int y) throws ServiceRuntimeException {
         // Find nearest higher resolution
         int targetZ = grid.getZForResolution(8, -1);
@@ -186,7 +198,7 @@ public class GetWFSVectorTileHandler extends ActionHandler {
 
         SimpleFeatureCollection sfc = null;
         for (TileCoord tile : wfsTiles) {
-            SimpleFeatureCollection tileFeatures = getFeatures(layer, srs, grid, tile);
+            SimpleFeatureCollection tileFeatures = getFeatures(layer, crs, grid, tile);
             if (tileFeatures == null) {
                 throw new ServiceRuntimeException("Failed to get features from service");
             }
@@ -202,15 +214,18 @@ public class GetWFSVectorTileHandler extends ActionHandler {
         }
     }
 
-    private SimpleFeatureCollection getFeatures(OskariLayer layer, String srs, WFSTileGrid grid, TileCoord tile) {
+    private SimpleFeatureCollection getFeatures(OskariLayer layer, CoordinateReferenceSystem crs,
+            WFSTileGrid grid, TileCoord tile) {
         String endPoint = layer.getUrl();
         String version = layer.getVersion();
         String typeName = layer.getName();
         String user = layer.getUsername();
         String pass = layer.getPassword();
-        double[] bbox = grid.getTileExtent(tile);
+        double[] box = grid.getTileExtent(tile);
+        Envelope envelope = new Envelope(box[0], box[2], box[1], box[3]);
+        ReferencedEnvelope bbox = new ReferencedEnvelope(envelope, crs);
         int maxFeatures = 10000;
-        return wfsClient.tryGetFeatures(endPoint, version, user, pass, typeName, bbox, srs, maxFeatures);
+        return wfsClient.tryGetFeatures(endPoint, version, user, pass, typeName, bbox, crs, maxFeatures);
     }
 
     public static SimpleFeatureCollection union(SimpleFeatureCollection a, SimpleFeatureCollection b) {

@@ -16,65 +16,44 @@ import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.MathTransform;
 import org.opengis.referencing.operation.TransformException;
 
-import com.vividsolutions.jts.geom.Envelope;
 import com.vividsolutions.jts.geom.Geometry;
 
 public class CoordinateTransformer {
 
-    private final CoordinateReferenceSystem a;
-    private final CoordinateReferenceSystem b;
-    private final boolean needsTransform;
-    private final MathTransform fromAtoB;
-    private final MathTransform fromBtoA;
+    private final CoordinateReferenceSystem from;
+    private final CoordinateReferenceSystem to;
+    private final MathTransform transform;
 
-    public CoordinateTransformer(String a, String b) throws NoSuchAuthorityCodeException, FactoryException {
-        this.a = CRS.decode(a, true);
-        this.b = CRS.decode(b, true);
-        this.needsTransform = !CRS.equalsIgnoreMetadata(this.a, this.b);
-        if (needsTransform) {
-            fromAtoB = CRS.findMathTransform(this.a, this.b, true);
-            fromBtoA = CRS.findMathTransform(this.b, this.a, true);
-        } else {
-            fromAtoB = null;
-            fromBtoA = null;
-        }
+    public CoordinateTransformer(String from, String to) throws NoSuchAuthorityCodeException, FactoryException {
+        this(CRS.decode(from, true), CRS.decode(to, true));
     }
 
-    public Envelope transformToB(Envelope envelope)
-            throws TransformException {
-        return transform(envelope, fromAtoB);
+    public CoordinateTransformer(CoordinateReferenceSystem from, CoordinateReferenceSystem to) throws FactoryException {
+        this.from = from;
+        this.to = to;
+        boolean needsTransform = !CRS.equalsIgnoreMetadata(from, to);
+        this.transform = needsTransform ? CRS.findMathTransform(from, to) : null;
     }
 
-    public Envelope transformToA(Envelope envelope)
-            throws TransformException {
-        return transform(envelope, fromBtoA);
+    public CoordinateReferenceSystem getA() {
+        return from;
     }
 
-    private Envelope transform(Envelope envelope, MathTransform transform)
-            throws TransformException {
-        if (!needsTransform) {
-            return envelope;
-        }
-        return JTS.transform(envelope, transform);
+    public CoordinateReferenceSystem getB() {
+        return to;
     }
 
-    public SimpleFeatureCollection transformToB(SimpleFeatureCollection sfc)
+    public boolean needsTransform() {
+        return transform != null;
+    }
+
+    public SimpleFeatureCollection transform(SimpleFeatureCollection sfc)
             throws MismatchedDimensionException, TransformException {
-        return transform(sfc, fromAtoB, b);
-    }
-
-    public SimpleFeatureCollection transformToA(SimpleFeatureCollection sfc)
-            throws MismatchedDimensionException, TransformException {
-        return transform(sfc, fromBtoA, a);
-    }
-
-    private SimpleFeatureCollection transform(SimpleFeatureCollection sfc,
-            MathTransform t, CoordinateReferenceSystem crs)
-                    throws MismatchedDimensionException, TransformException {
-        if (sfc == null || sfc.isEmpty() || !needsTransform) {
+        if (sfc == null || sfc.isEmpty() || !needsTransform()) {
             return sfc;
         }
-        SimpleFeatureType newSchema = SimpleFeatureTypeBuilder.retype(sfc.getSchema(), crs);
+
+        SimpleFeatureType newSchema = SimpleFeatureTypeBuilder.retype(sfc.getSchema(), to);
         SimpleFeatureBuilder b = new SimpleFeatureBuilder(newSchema);
         DefaultFeatureCollection fc = new DefaultFeatureCollection(null, newSchema);
         try (SimpleFeatureIterator it = sfc.features()) {
@@ -86,7 +65,7 @@ public class CoordinateTransformer {
                 SimpleFeature copy = b.buildFeature(f.getID());
                 Object g = f.getDefaultGeometry();
                 if (g != null) {
-                    Geometry transformed = JTS.transform((Geometry) g, t);
+                    Geometry transformed = JTS.transform((Geometry) g, transform);
                     copy.setDefaultGeometry(transformed);
                 }
                 fc.add(copy);
