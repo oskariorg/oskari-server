@@ -44,7 +44,9 @@ public class OskariWFS3Client {
         return CRS84;
     }
 
-    public SimpleFeatureCollection tryGetFeatures(String endPoint, String user, String pass,
+    private OskariWFS3Client() {}
+
+    public static SimpleFeatureCollection tryGetFeatures(String endPoint, String user, String pass,
             String collectionId, ReferencedEnvelope bbox, CoordinateReferenceSystem crs, Integer limit) {
         try {
             return getFeatures(endPoint, user, pass, collectionId, bbox, crs, limit);
@@ -54,7 +56,7 @@ public class OskariWFS3Client {
         }
     }
 
-    public SimpleFeatureCollection getFeatures(String endPoint,
+    public static SimpleFeatureCollection getFeatures(String endPoint,
             String user, String pass,
             String collectionId, ReferencedEnvelope bbox,
             CoordinateReferenceSystem crs, Integer limit) throws ServiceException, IOException {
@@ -87,7 +89,7 @@ public class OskariWFS3Client {
         }
     }
 
-    private void validateResponse(HttpURLConnection conn, String expectedContentType)
+    private static void validateResponse(HttpURLConnection conn, String expectedContentType)
             throws ServiceException, IOException {
         if (conn.getResponseCode() != 200) {
             throw new ServiceException("Unexpected status code " + conn.getResponseCode());
@@ -101,7 +103,7 @@ public class OskariWFS3Client {
         }
     }
 
-    private String readFeaturesTo(HttpURLConnection conn, DefaultFeatureCollection fc)
+    private static String readFeaturesTo(HttpURLConnection conn, DefaultFeatureCollection fc)
             throws IOException {
         SimpleFeatureType sft = fc.getSchema();
         try (InputStream in = conn.getInputStream();
@@ -118,7 +120,7 @@ public class OskariWFS3Client {
         }
     }
 
-    private String getItemsPath(String endPoint, String collectionId) {
+    private static String getItemsPath(String endPoint, String collectionId) {
         StringBuilder path = new StringBuilder(endPoint);
         while (path.charAt(path.length() - 1) == '/') {
             path.setLength(path.length() - 1);
@@ -129,7 +131,7 @@ public class OskariWFS3Client {
         return path.toString();
     }
 
-    protected Map<String, String> getQueryParams(ReferencedEnvelope bbox, Integer limit)
+    protected static Map<String, String> getQueryParams(ReferencedEnvelope bbox, Integer limit)
             throws ServiceException {
         Map<String, String> parameters = new LinkedHashMap<>();
         if (bbox != null) {

@@ -12,7 +12,7 @@ import org.opengis.geometry.DirectPosition;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.oskari.service.util.ServiceFactory;
 import org.oskari.service.wfs.client.CoordinateTransformer;
-import org.oskari.service.wfs.client.OskariWFS110Client;
+import org.oskari.service.wfs.client.OskariWFSClient;
 
 import com.vividsolutions.jts.geom.Envelope;
 
@@ -50,17 +50,12 @@ public class GetWFSFeaturesHandler extends ActionHandler {
     private static final byte[] EMPTY_GEOJSON_FEATURE_COLLECTION = "{\"type\": \"FeatureCollection\", \"features\": []}".getBytes(StandardCharsets.UTF_8);
 
     private PermissionHelper permissionHelper;
-    private OskariWFS110Client wfsClient;
 
     private CoordinateReferenceSystem nativeCRS;
     private CoordinateReferenceSystem webMercator;
 
     protected void setPermissionHelper(PermissionHelper permissionHelper) {
         this.permissionHelper = permissionHelper;
-    }
-
-    protected void setWFSClient(OskariWFS110Client wfsClient) {
-        this.wfsClient = wfsClient;
     }
 
     @Override
@@ -70,9 +65,6 @@ public class GetWFSFeaturesHandler extends ActionHandler {
                     ServiceFactory.getMapLayerService(),
                     ServiceFactory.getPermissionsService());
         };
-        if (wfsClient == null) {
-            wfsClient = new OskariWFS110Client();
-        }
     }
 
     private CoordinateReferenceSystem getNativeCRS() {
@@ -203,12 +195,13 @@ public class GetWFSFeaturesHandler extends ActionHandler {
     private SimpleFeatureCollection getFeatures(OskariLayer layer, ReferencedEnvelope bbox,
             CoordinateReferenceSystem crs) {
         String endPoint = layer.getUrl();
+        String version = layer.getVersion();
         String typeName = layer.getName();
         String user = layer.getUsername();
         String pass = layer.getPassword();
         // TODO: Figure out the maxFeatures from the layer
         int maxFeatures = 10000;
-        return wfsClient.tryGetFeatures(endPoint, user, pass, typeName, bbox, crs, maxFeatures);
+        return OskariWFSClient.tryGetFeatures(endPoint, version, user, pass, typeName, bbox, crs, maxFeatures);
     }
 
 }

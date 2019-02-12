@@ -29,10 +29,12 @@ public class OskariWFS110Client {
     private static final Logger LOG = LogFactory.getLogger(OskariWFS110Client.class);
     private static final OskariGML OSKARI_GML = new OskariGML();
 
+    private OskariWFS110Client() {}
+
     /**
      * @return SimpleFeatureCollection containing the parsed Features, or null if all fails
      */
-    public SimpleFeatureCollection tryGetFeatures(String endPoint, String user, String pass,
+    public static SimpleFeatureCollection tryGetFeatures(String endPoint, String user, String pass,
             String typeName, ReferencedEnvelope bbox, CoordinateReferenceSystem crs, Integer maxFeatures) {
         // First try GeoJSON
         try {
@@ -50,7 +52,7 @@ public class OskariWFS110Client {
         return null;
     }
 
-    public SimpleFeatureCollection getFeaturesGeoJSON(String endPoint, String user, String pass,
+    public static SimpleFeatureCollection getFeaturesGeoJSON(String endPoint, String user, String pass,
             String typeName, ReferencedEnvelope bbox, CoordinateReferenceSystem crs, Integer maxFeatures) throws Exception {
         Map<String, String> queryParams = getQueryParams(typeName, bbox, crs, maxFeatures);
         queryParams.put("OUTPUTFORMAT", "application/json");
@@ -76,7 +78,7 @@ public class OskariWFS110Client {
         }
     }
 
-    public SimpleFeatureCollection getFeaturesGML(String endPoint, String user, String pass, String typeName,
+    public static SimpleFeatureCollection getFeaturesGML(String endPoint, String user, String pass, String typeName,
             ReferencedEnvelope bbox, CoordinateReferenceSystem crs, Integer maxFeatures) throws Exception {
         Map<String, String> query = getQueryParams(typeName, bbox, crs, maxFeatures);
         HttpURLConnection conn = OskariWFSHttpUtil.getConnection(endPoint, user, pass, query);
@@ -89,7 +91,7 @@ public class OskariWFS110Client {
         }
     }
 
-    protected Map<String, String> getQueryParams(String typeName, ReferencedEnvelope bbox,
+    protected static Map<String, String> getQueryParams(String typeName, ReferencedEnvelope bbox,
             CoordinateReferenceSystem crs, Integer maxFeatures) {
         Map<String, String> parameters = new LinkedHashMap<>();
         parameters.put("SERVICE", "WFS");
@@ -104,7 +106,7 @@ public class OskariWFS110Client {
         return parameters;
     }
 
-    protected String getBBOX(ReferencedEnvelope bbox) {
+    protected static String getBBOX(ReferencedEnvelope bbox) {
         if (bbox == null) {
             return null;
         }

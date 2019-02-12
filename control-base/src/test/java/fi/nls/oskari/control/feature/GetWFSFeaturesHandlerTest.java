@@ -13,13 +13,11 @@ import org.junit.Test;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.NoSuchAuthorityCodeException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
-import org.oskari.service.wfs.client.OskariWFS110Client;
 
 import com.vividsolutions.jts.geom.Envelope;
 
 import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.ActionParamsException;
-import fi.nls.oskari.control.layer.PermissionHelper;
 import fi.nls.oskari.domain.map.OskariLayer;
 
 public class GetWFSFeaturesHandlerTest {
@@ -28,11 +26,7 @@ public class GetWFSFeaturesHandlerTest {
 
     @Before
     public void init() {
-        PermissionHelper permissionHelper = new PermissionHelper(null, null);
         handler = new GetWFSFeaturesHandler();
-        handler.setPermissionHelper(permissionHelper);
-        handler.setWFSClient(new OskariWFS110Client());
-        handler.init();
     }
 
     @Test
