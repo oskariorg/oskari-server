@@ -35,6 +35,7 @@ public class GetWFSFeaturesHandler extends ActionHandler {
 
     private static final Logger LOG = LogFactory.getLogger(GetWFSFeaturesHandler.class);
 
+    protected static final String ERR_NATIVE_CRS_UNAVAILABLE = "Failed to find system native CRS";
     protected static final String ERR_LAYER_TYPE_NOT_WFS = "Specified layer is not a WFS layer";
     protected static final String ERR_BBOX_INVALID = "Invalid bbox";
     protected static final String ERR_BBOX_OUT_OF_CRS = "bbox not within CRS extent";
@@ -52,7 +53,6 @@ public class GetWFSFeaturesHandler extends ActionHandler {
     private PermissionHelper permissionHelper;
 
     private CoordinateReferenceSystem nativeCRS;
-    private CoordinateReferenceSystem webMercator;
 
     protected void setPermissionHelper(PermissionHelper permissionHelper) {
         this.permissionHelper = permissionHelper;
@@ -79,25 +79,24 @@ public class GetWFSFeaturesHandler extends ActionHandler {
         return nativeCRS;
     }
 
-    private CoordinateReferenceSystem getWebMercator() {
-        if (webMercator == null) {
-            try {
-                webMercator = CRS.decode("EPSG:3857", true);
-            } catch (Exception e) {
-                LOG.error(e, "Failed to decode Web Mercator CRS!");
-            }
-        }
-        return webMercator;
-    }
-
     @Override
     public void handleAction(ActionParameters params) throws ActionException {
+        CoordinateReferenceSystem nativeCRS = getNativeCRS();
+        if (nativeCRS == null) {
+            throw new ActionException(ERR_NATIVE_CRS_UNAVAILABLE);
+        }
+
         int layerId = params.getRequiredParamInt(ActionConstants.PARAM_ID);
         String bboxStr = params.getRequiredParam(PARAM_BBOX);
         OskariLayer layer = findLayer(layerId, params.getUser());
 
-        CoordinateReferenceSystem nativeCRS = getNativeCRS();
-        CoordinateReferenceSystem targetCRS = getWebMercator(); // Only support WebMercator for now
+        String targetSRS = params.getHttpParam(ActionConstants.PARAM_SRS, "EPSG:3857");
+        CoordinateReferenceSystem targetCRS;
+        try {
+            targetCRS = CRS.decode(targetSRS);
+        } catch (Exception e) {
+            throw new ActionParamsException("Invalid " + ActionConstants.PARAM_SRS);
+        }
         ReferencedEnvelope bbox = parseBbox(bboxStr, targetCRS);
 
         // TODO: Figure out if layer supports targetSrsName
