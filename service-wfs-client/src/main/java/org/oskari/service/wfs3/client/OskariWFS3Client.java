@@ -19,11 +19,11 @@ import org.geotools.referencing.CRS;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.oskari.service.wfs.client.CoordinateTransformer;
-import org.oskari.service.wfs.client.OskariWFSHttpUtil;
 
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.service.ServiceException;
+import fi.nls.oskari.util.IOHelper;
 
 /**
  * Client code for WFS 3 Core services
@@ -32,6 +32,7 @@ public class OskariWFS3Client {
 
     private static final Logger LOG = LogFactory.getLogger(OskariWFS3Client.class);
     private static final String CONTENT_TYPE_GEOJSON = "application/geo+json";
+    private static final int MAX_REDIRECTS = 5;
 
     private static CoordinateReferenceSystem CRS84;
     private static CoordinateReferenceSystem getCRS84() {
@@ -70,14 +71,17 @@ public class OskariWFS3Client {
 
         DefaultFeatureCollection features = new DefaultFeatureCollection();
 
-        HttpURLConnection conn = OskariWFSHttpUtil.getConnection(path, user, pass, query, headers);
+        HttpURLConnection conn = IOHelper.getConnection(path, user, pass, query, headers);
+        conn = IOHelper.followRedirect(conn, user, pass, query, headers, MAX_REDIRECTS);
         validateResponse(conn, CONTENT_TYPE_GEOJSON);
         String next = readFeaturesTo(conn, features);
 
         // Check if there's a link with rel="next"
         // => While the next link exists there's a next page to be read
         while (next != null) {
-            conn = OskariWFSHttpUtil.getConnection(next, user, pass, null, headers);
+            // Blindly follow the next link, don't use the initial queryParameters
+            conn = IOHelper.getConnection(next, user, pass, null, headers);
+            conn = IOHelper.followRedirect(conn, user, pass, null, headers, MAX_REDIRECTS);
             validateResponse(conn, CONTENT_TYPE_GEOJSON);
             next = readFeaturesTo(conn, features);
         }

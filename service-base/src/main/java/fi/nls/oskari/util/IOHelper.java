@@ -228,9 +228,6 @@ public class IOHelper {
 
     /**
      * Opens a HttpURLConnection to given url
-     * @param pUrl
-     * @return
-     * @throws IOException
      */
     public static HttpURLConnection getConnection(final String pUrl)
             throws IOException {
@@ -243,6 +240,94 @@ public class IOHelper {
         if(trustAllCerts) trustAllCerts(conn);
         if(trustAllHosts) trustAllHosts(conn);
         return conn;
+    }
+
+    /**
+     * Opens a HttpURLConnection to given url and sets up basic authentication with given user/pass.
+     */
+    public static HttpURLConnection getConnection(final String pUrl,
+                                                  final String userName, final String password)
+            throws IOException {
+        final HttpURLConnection con = getConnection(pUrl);
+        setupBasicAuth(con, userName,password);
+        return con;
+    }
+
+    /**
+     * Opens a HttpURLConnection to given url and sets up basic authentication with given user/pass
+     * and with a map of query parameters
+     */
+    public static HttpURLConnection getConnection(String pUrl,
+            String user, String pass, Map<String, String> query) throws IOException {
+        return getConnection(pUrl, user, pass, query, null);
+    }
+
+    /**
+     * Opens a HttpURLConnection to given url and sets up basic authentication with given user/pass
+     * and with a map of query parameters and a map of request headers
+     */
+    public static HttpURLConnection getConnection(String pUrl,
+            String user, String pass, Map<String, String> query, Map<String, String> headers) throws IOException {
+        String request = constructUrl(pUrl, query);
+        HttpURLConnection conn = getConnection(request, user, pass);
+        if (headers != null) {
+            headers.forEach((k, v) -> conn.setRequestProperty(k, v));
+        }
+        return conn;
+    }
+
+    public static HttpURLConnection followRedirect(HttpURLConnection conn, int redirectLatch) throws IOException {
+        return followRedirect(conn, null, null, null, null, redirectLatch);
+    }
+
+    public static HttpURLConnection followRedirect(HttpURLConnection conn,
+            String user, String pass, int redirectLatch) throws IOException {
+        return followRedirect(conn, user, pass, null, null, redirectLatch);
+    }
+
+    public static HttpURLConnection followRedirect(HttpURLConnection conn,
+            String user, String pass, Map<String, String> query, int redirectLatch) throws IOException {
+        return followRedirect(conn, user, pass, query, null, redirectLatch);
+    }
+
+    /**
+     * Follows redirects on the response. Follows the redirect-chain up to redirectLatch times, if
+     * redirectLatch reaches 0 we fail with an IOException (avoid a->b->a->b... loops etc)
+     *
+     * @param conn HttpURLConnection waiting for a response that might be a redirect response
+     * @param user optional username for basic auth
+     * @param pass optional password for basic auth
+     * @param query optional query parameters that should be sent
+     * @param headers optional request headers that should be sent
+     * @param redirectLatch number of chained redirects to follow
+     * @return HttpURLConnection that is not a redirect response
+     * @throws IOException if one occurs naturally of if redirectLatch reaches 0
+     */
+    public static HttpURLConnection followRedirect(HttpURLConnection conn,
+            String user, String pass, Map<String, String> query,
+            Map<String, String> headers, int redirectLatch) throws IOException {
+        final int sc = conn.getResponseCode();
+        if (sc == HttpURLConnection.HTTP_MOVED_PERM
+                || sc == HttpURLConnection.HTTP_MOVED_TEMP
+                || sc == HttpURLConnection.HTTP_SEE_OTHER) {
+            if (--redirectLatch == 0) {
+                throw new IOException("Too many redirects!");
+            }
+            String location = conn.getHeaderField("Location");
+
+            // If user specified a query map then remove query part (if one exists) from the Location
+            if (query != null && !query.isEmpty()) {
+                int i = location.indexOf('?');
+                i = i < 0 ? location.length() : i;
+                location = location.substring(0, i);
+            }
+
+            log.info("Following redirect to", location);
+            HttpURLConnection newConnection = getConnection(location, user, pass, query, headers);
+            return followRedirect(newConnection, user, pass, query, headers, redirectLatch);
+        } else {
+            return conn;
+        }
     }
 
     /**
@@ -282,22 +367,6 @@ public class IOHelper {
         }
         return defaultCharset;
     }
-    /**
-     * Opens a HttpURLConnection to given url and sets up basic authentication with given user/pass.
-     * @param pUrl
-     * @param userName
-     * @param password
-     * @return
-     * @throws IOException
-     */
-    public static HttpURLConnection getConnection(final String pUrl,
-                                                  final String userName, final String password)
-            throws IOException {
-        final HttpURLConnection con = getConnection(pUrl);
-        setupBasicAuth(con, userName,password);
-        return con;
-    }
-
     /**
      * Sets the authorization header for connection.
      * @param con
