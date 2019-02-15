@@ -6,7 +6,7 @@
 COMMENT ON TABLE oskari_backendstatus IS 'Results of layer data source availability probes';
 COMMENT ON TABLE oskari_capabilities_cache IS 'Cache of GetCapabilities results for WMS/WMTS layers';
 COMMENT ON TABLE oskari_dataprovider IS 'Layer data provider name localizations';
--- COMMENT ON TABLE oskari_jaas_users IS '??';
+COMMENT ON TABLE oskari_jaas_users IS 'Credentials for users when using built-in login';
 COMMENT ON TABLE oskari_maplayer IS 'Map layers configuration';
 COMMENT ON TABLE oskari_maplayer_externalid IS 'Legacy "external id" associated with map layer';
 COMMENT ON TABLE oskari_maplayer_group IS 'Logical group for layers';
