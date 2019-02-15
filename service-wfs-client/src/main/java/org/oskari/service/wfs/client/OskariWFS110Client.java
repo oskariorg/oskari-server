@@ -20,6 +20,7 @@ import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.util.IOHelper;
 
 /**
  * Client code for WFS 1.1.0 services
@@ -28,6 +29,7 @@ public class OskariWFS110Client {
 
     private static final Logger LOG = LogFactory.getLogger(OskariWFS110Client.class);
     private static final OskariGML OSKARI_GML = new OskariGML();
+    private static final int MAX_REDIRECTS = 5;
 
     private OskariWFS110Client() {}
 
@@ -55,9 +57,10 @@ public class OskariWFS110Client {
 
     public static SimpleFeatureCollection getFeaturesGeoJSON(String endPoint, String user, String pass,
             String typeName, ReferencedEnvelope bbox, CoordinateReferenceSystem crs, Integer maxFeatures) throws Exception {
-        Map<String, String> queryParams = getQueryParams(typeName, bbox, crs, maxFeatures);
-        queryParams.put("OUTPUTFORMAT", "application/json");
-        HttpURLConnection conn = OskariWFSHttpUtil.getConnection(endPoint, user, pass, queryParams);
+        Map<String, String> query = getQueryParams(typeName, bbox, crs, maxFeatures);
+        query.put("OUTPUTFORMAT", "application/json");
+        HttpURLConnection conn = IOHelper.getConnection(endPoint, user, pass, query);
+        conn = IOHelper.followRedirect(conn, user, pass, query, MAX_REDIRECTS);
         if (conn.getResponseCode() != 200) {
             throw new Exception("Unexpected status code " + conn.getResponseCode());
         }
@@ -82,7 +85,8 @@ public class OskariWFS110Client {
     public static SimpleFeatureCollection getFeaturesGML(String endPoint, String user, String pass, String typeName,
             ReferencedEnvelope bbox, CoordinateReferenceSystem crs, Integer maxFeatures) throws Exception {
         Map<String, String> query = getQueryParams(typeName, bbox, crs, maxFeatures);
-        HttpURLConnection conn = OskariWFSHttpUtil.getConnection(endPoint, user, pass, query);
+        HttpURLConnection conn = IOHelper.getConnection(endPoint, user, pass, query);
+        conn = IOHelper.followRedirect(conn, user, pass, query, MAX_REDIRECTS);
         if (conn.getResponseCode() != 200) {
             throw new Exception("Unexpected status code " + conn.getResponseCode());
         }
