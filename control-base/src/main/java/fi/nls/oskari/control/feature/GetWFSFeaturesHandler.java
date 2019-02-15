@@ -6,6 +6,7 @@ import java.nio.charset.StandardCharsets;
 
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.geojson.feature.FeatureJSON;
+import org.geotools.geojson.geom.GeometryJSON;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
 import org.opengis.geometry.DirectPosition;
@@ -47,8 +48,10 @@ public class GetWFSFeaturesHandler extends ActionHandler {
     private static final String GEOJSON_CONTENT_TYPE = "application/vnd.geo+json";
     private static final String PROPERTY_NATIVE_SRS = "oskari.native.srs";
     private static final String PARAM_BBOX = "bbox";
-    private static final FeatureJSON FJ = new FeatureJSON();
     private static final byte[] EMPTY_GEOJSON_FEATURE_COLLECTION = "{\"type\": \"FeatureCollection\", \"features\": []}".getBytes(StandardCharsets.UTF_8);
+
+    private static final int NUM_DECIMAL_PLACES_DEGREE = 7; // For WGS84: 11.132mm precision at equator, more precise elsewhere, max error 5.5mm  
+    private static final int NUM_DECIMAL_PLACES_OTHER = 2; // For metric projections: 10mm precision, max error 5mm
 
     private PermissionHelper permissionHelper;
 
@@ -65,18 +68,6 @@ public class GetWFSFeaturesHandler extends ActionHandler {
                     ServiceFactory.getMapLayerService(),
                     ServiceFactory.getPermissionsService());
         };
-    }
-
-    private CoordinateReferenceSystem getNativeCRS() {
-        if (nativeCRS == null) {
-            try {
-                String nativeSrs = PropertyUtil.get(PROPERTY_NATIVE_SRS, "EPSG:4326");
-                nativeCRS = CRS.decode(nativeSrs, true);
-            } catch (Exception e) {
-                LOG.error(e, "Failed to decode Native CRS!");
-            }
-        }
-        return nativeCRS;
     }
 
     @Override
@@ -97,22 +88,35 @@ public class GetWFSFeaturesHandler extends ActionHandler {
         } catch (Exception e) {
             throw new ActionParamsException("Invalid " + ActionConstants.PARAM_SRS);
         }
-        ReferencedEnvelope bbox = parseBbox(bboxStr, targetCRS);
 
         // TODO: Figure out if layer supports targetSrsName
         // If it does let the WFS service do the transformation
+        ReferencedEnvelope bbox = parseBbox(bboxStr, targetCRS);
         SimpleFeatureCollection fc = getFeatures(layer, bbox, nativeCRS, targetCRS);
         try {
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
             if (fc.isEmpty()) {
-                baos.write(EMPTY_GEOJSON_FEATURE_COLLECTION);
+                ResponseHelper.writeResponse(params, 200, GEOJSON_CONTENT_TYPE, EMPTY_GEOJSON_FEATURE_COLLECTION);
             } else {
-                FJ.writeFeatureCollection(fc, baos);
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                int decimals = getNumDecimals(targetCRS);
+                new FeatureJSON(new GeometryJSON(decimals)).writeFeatureCollection(fc, baos);
+                ResponseHelper.writeResponse(params, 200, GEOJSON_CONTENT_TYPE, baos);
             }
-            ResponseHelper.writeResponse(params, 200, GEOJSON_CONTENT_TYPE, baos);
         } catch (IOException e) {
             ResponseHelper.writeError(params, ERR_GEOJSON_ENCODE_FAIL);
         }
+    }
+
+    private CoordinateReferenceSystem getNativeCRS() {
+        if (nativeCRS == null) {
+            try {
+                String nativeSrs = PropertyUtil.get(PROPERTY_NATIVE_SRS, "EPSG:4326");
+                nativeCRS = CRS.decode(nativeSrs, true);
+            } catch (Exception e) {
+                LOG.error(e, "Failed to decode Native CRS!");
+            }
+        }
+        return nativeCRS;
     }
 
     protected ReferencedEnvelope parseBbox(String bbox, CoordinateReferenceSystem crs) throws ActionParamsException {
@@ -201,6 +205,22 @@ public class GetWFSFeaturesHandler extends ActionHandler {
         // TODO: Figure out the maxFeatures from the layer
         int maxFeatures = 10000;
         return OskariWFSClient.tryGetFeatures(endPoint, version, user, pass, typeName, bbox, crs, maxFeatures);
+    }
+
+    /**
+     * Get number of decimal places to use (maximum) when writing out the GeoJSON response.
+     * The goal is to reduce the size of the actual response thereby reducing the amount
+     * of memory and network used to serve the response while maintaining a precision that still far exceedes
+     * the needs for our purposes
+     *
+     * @returns number of decimal places to use, the number depends on the unit of measure of the axes
+     * of the coordinate system:
+     * - NUM_DECIMAL_PLACES_DEGREE for degrees
+     * - NUM_DECIMAL_PLACES_OTHER for others (metres, feet, what have you)
+     */
+    private int getNumDecimals(CoordinateReferenceSystem targetCRS) {
+        boolean degrees = "°".equals(targetCRS.getCoordinateSystem().getAxis(0).getUnit().toString());
+        return degrees ? NUM_DECIMAL_PLACES_DEGREE : NUM_DECIMAL_PLACES_OTHER;
     }
 
 }
