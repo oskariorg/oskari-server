@@ -1,14 +1,14 @@
 package org.oskari.service.wfs.client;
 
 import org.geotools.data.simple.SimpleFeatureCollection;
+import org.geotools.geometry.jts.ReferencedEnvelope;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
+
+import com.vividsolutions.jts.geom.Envelope;
 
 import fi.nls.oskari.cache.ComputeOnceCache;
 
-/**
- * Caching version of {@link org.oskari.service.wfs.client.OskariWFS110Client} WFSClient
- * Caches the parsed SimpleFeatureCollections
- */
-public class CachingWFSClient extends OskariWFS110Client {
+public class CachingWFSClient {
 
     private static final int DEFAULT_LIMIT = 100;
 
@@ -22,17 +22,22 @@ public class CachingWFSClient extends OskariWFS110Client {
         cache = new ComputeOnceCache<>(cacheSize);
     }
 
-    @Override
-    public SimpleFeatureCollection tryGetFeatures(String endPoint, String user, String pass,
-            String typeName, double[] bbox, String srsName, Integer maxFeatures) {
-        String key = getCacheKey(endPoint, typeName, bbox, srsName, maxFeatures);
-        return cache.get(key, __ -> super.tryGetFeatures(endPoint, user, pass, typeName, bbox, srsName, maxFeatures));
+    public SimpleFeatureCollection tryGetFeatures(String endPoint, String version,
+            String user, String pass, String typeName,
+            ReferencedEnvelope bbox, CoordinateReferenceSystem crs, Integer maxFeatures) {
+        String key = getCacheKey(endPoint, typeName, bbox, crs, maxFeatures);
+        return cache.get(key, __ -> OskariWFSClient.tryGetFeatures(
+                endPoint, version,
+                user, pass, typeName,
+                bbox, crs, maxFeatures));
     }
 
-    private String getCacheKey(String endPoint, String typeName, double[] bbox, String srsName, Integer maxFeatures) {
-        String bboxStr = bbox != null ? getBBOX(bbox, srsName) : "null";
+    private String getCacheKey(String endPoint, String typeName, Envelope bbox,
+            CoordinateReferenceSystem crs, Integer maxFeatures) {
+        String bboxStr = bbox != null ? bbox.toString() : "null";
         String maxFeaturesStr = maxFeatures != null ? maxFeatures.toString() : "null";
-        return String.join(",", endPoint, typeName, bboxStr, maxFeaturesStr);
+        return String.join(",", endPoint, typeName, bboxStr,
+                crs.getIdentifiers().iterator().next().toString(), maxFeaturesStr);
     }
 
 }
