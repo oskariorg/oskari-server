@@ -1,12 +1,14 @@
-package org.oskari.service.wfs3.client;
+package org.oskari.service.wfs.client;
+
+import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
 
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.data.simple.SimpleFeatureIterator;
 import org.geotools.geometry.jts.ReferencedEnvelope;
+import org.junit.Ignore;
 import org.junit.Test;
-import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
 import com.vividsolutions.jts.geom.Envelope;
@@ -14,7 +16,8 @@ import com.vividsolutions.jts.geom.Envelope;
 import fi.nls.oskari.service.ServiceException;
 
 public class OskariWFS3ClientTest {
-    
+
+    @Ignore("Depends on outside service, results might vary")
     @Test
     public void testGetFeatures() throws ServiceException, IOException {
         String endPoint = "https://beta-paikkatieto.maanmittauslaitos.fi/geographic-names/wfs3/v1/";
@@ -26,15 +29,14 @@ public class OskariWFS3ClientTest {
         ReferencedEnvelope bbox = new ReferencedEnvelope(envelope, crs);
         int limit = 10;
         SimpleFeatureCollection sfc = OskariWFS3Client.getFeatures(endPoint, user, pass, collectionId, bbox, crs, limit);
+        int i = 0;
         try (SimpleFeatureIterator it = sfc.features()) {
-            int i = 0;
             while (it.hasNext()) {
                 i++;
-                SimpleFeature f = it.next();
-                System.out.println(f);
+                it.next();
             }
-            System.out.println(i);
         }
+        assertEquals(29, i);
     }
 
 }

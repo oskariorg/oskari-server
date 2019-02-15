@@ -1,4 +1,4 @@
-package org.oskari.service.wfs3.client;
+package org.oskari.service.wfs.client.geojson;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -15,25 +15,21 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import org.geotools.feature.FeatureIterator;
-import org.geotools.geojson.feature.FeatureJSON;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.opengis.feature.simple.SimpleFeature;
+import org.oskari.service.wfs.client.WFS3Link;
 
 import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.LineString;
 import com.vividsolutions.jts.io.ParseException;
 import com.vividsolutions.jts.io.WKTReader;
 
 public class WFS3FeatureCollectionIteratorTest {
     
-    @Ignore("Works, don't run when debugging")
     @Test
     public void testReadLinks() throws IOException {
         try (InputStream in = getClass().getClassLoader().getResourceAsStream("wfs3FeatureCollectionSimple.json");
                 Reader reader = new InputStreamReader(in, StandardCharsets.UTF_8);
-                WFS3FeatureCollectionIterator it = new WFS3FeatureCollectionIterator(reader, null)) {
+                WFS3FeatureCollectionIterator it = new WFS3FeatureCollectionIterator(reader)) {
             while (it.hasNext()) {
                 it.next();
             }
@@ -47,37 +43,13 @@ public class WFS3FeatureCollectionIteratorTest {
         }
     }
     
-    @Ignore("Works, don't run when debugging")
-    @Test
-    public void testGeoTools() throws IOException, ParseException {
-        try (InputStream in = getClass().getClassLoader().getResourceAsStream("wfs3FeatureCollectionSimple.json");
-                Reader reader = new InputStreamReader(in, StandardCharsets.UTF_8);
-                FeatureIterator<SimpleFeature> it = new FeatureJSON().streamFeatureCollection(reader)) {
-            SimpleFeature f1 = it.hasNext() ? it.next() : null;
-            assertTrue(it.hasNext());
-            it.next();
-            assertFalse(it.hasNext());
-            assertNotNull(f1);
-            assertEquals("P_10000001", f1.getID());
-            assertEquals(10000001L, f1.getAttribute("placeId"));
-            assertEquals(3L, f1.getAttribute("placeVersionId"));
-            assertEquals(1010110L, f1.getAttribute("placeType"));
-            assertEquals("M3233D4", f1.getAttribute("tm35MapSheet"));
-            assertEquals("2008-12-05T22:00:00Z", f1.getAttribute("placeCreationTime"));
-            assertNull(f1.getAttribute("placeNameDeletionTime"));
-            Geometry expected = new WKTReader().read("POINT (21.3587384 61.3939013)");
-            assertEquals(expected, f1.getDefaultGeometry());
-        }
-    }
-    
-    @Ignore("Works, don't run when debugging")
     @Test
     @SuppressWarnings("unchecked")
     public void testDeeplyComplex() throws IOException, ParseException {
         // We delved too greedily and too deep
         try (InputStream in = getClass().getClassLoader().getResourceAsStream("wfs3FeatureCollectionDeeplyComplex.json");
                 Reader reader = new InputStreamReader(in, StandardCharsets.UTF_8);
-                WFS3FeatureCollectionIterator it = new WFS3FeatureCollectionIterator(reader, null)) {
+                WFS3FeatureCollectionIterator it = new WFS3FeatureCollectionIterator(reader)) {
             assertTrue(it.hasNext()); 
             SimpleFeature f1 = it.next();
             assertFalse(it.hasNext());
@@ -94,14 +66,13 @@ public class WFS3FeatureCollectionIteratorTest {
         }
     }
     
-    @Ignore("Works, don't run when debugging")
     @Test
     public void testSimpleArrayComplexProperty() throws IOException, ParseException {
         // Simple arrays (arrays of numbers, Strings, booleans (not objects) work with GeoTools out of the box
         // So our extended version also has to work with those
         try (InputStream in = getClass().getClassLoader().getResourceAsStream("wfs3FeatureCollectionSimpleArray.json");
                 Reader reader = new InputStreamReader(in, StandardCharsets.UTF_8);
-                WFS3FeatureCollectionIterator it = new WFS3FeatureCollectionIterator(reader, null)) {
+                WFS3FeatureCollectionIterator it = new WFS3FeatureCollectionIterator(reader)) {
             assertTrue(it.hasNext()); 
             SimpleFeature f1 = it.next();
             assertFalse(it.hasNext());
@@ -115,12 +86,11 @@ public class WFS3FeatureCollectionIteratorTest {
         }
     }
 
-    @Ignore("Works, don't run when debugging")
     @Test
     public void testComplexProperties() throws IOException, ParseException {
         try (InputStream in = getClass().getClassLoader().getResourceAsStream("wfs3FeatureCollectionComplex.json");
                 Reader reader = new InputStreamReader(in, StandardCharsets.UTF_8);
-                WFS3FeatureCollectionIterator it = new WFS3FeatureCollectionIterator(reader, null)) {
+                WFS3FeatureCollectionIterator it = new WFS3FeatureCollectionIterator(reader)) {
             SimpleFeature f1 = it.hasNext() ? it.next() : null;
             SimpleFeature f2 = it.hasNext() ? it.next() : null;
             assertFalse(it.hasNext());
@@ -151,38 +121,11 @@ public class WFS3FeatureCollectionIteratorTest {
         }
     }
     
-    @Ignore("Doesn't work with GeoTools, don't fail")
-    @Test
-    public void testFeatureWithRegularGeometryAttributeReadAndGeometryAfterProperties() throws Exception {
-        String geojson = ""
-                + "{"
-                + "  'type': 'Feature',"
-                + "  'id': 'feature.0',"
-                + "  'properties': {"
-                + "    'otherGeometry': {"
-                + "      'type': 'LineString',"
-                + "      'coordinates': [[1.1, 1.2], [1.3, 1.4]]"
-                + "    }"
-                + "  },"
-                + "  'geometry': {"
-                + "    'type': 'Point',"
-                + "    'coordinates': [0.1, 0.1]"
-                + "  }"
-                + "}";
-        geojson = geojson.replace('\'', '"');
-        SimpleFeature f = new FeatureJSON().readFeature(geojson);
-        assertNotNull(f);
-        assertEquals("feature.0", f.getID());
-        WKTReader wkt = new WKTReader();
-        assertEquals(wkt.read("LINESTRING (1.1 1.2, 1.3 1.4)"), f.getAttribute("otherGeometry"));
-        assertEquals(wkt.read("POINT (0.1 0.1)"), f.getDefaultGeometry());
-    }
-
     @Test
     public void testMultipleGeometries() throws IOException, ParseException {
         try (InputStream in = getClass().getClassLoader().getResourceAsStream("wfs3FeatureCollectionMultipleGeometries.json");
                 Reader reader = new InputStreamReader(in, StandardCharsets.UTF_8);
-                WFS3FeatureCollectionIterator it = new WFS3FeatureCollectionIterator(reader, null)) {
+                WFS3FeatureCollectionIterator it = new WFS3FeatureCollectionIterator(reader)) {
             SimpleFeature f = it.hasNext() ? it.next() : null;
             assertFalse(it.hasNext());
             assertNotNull(f);

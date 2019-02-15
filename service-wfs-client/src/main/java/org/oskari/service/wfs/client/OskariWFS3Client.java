@@ -1,4 +1,4 @@
-package org.oskari.service.wfs3.client;
+package org.oskari.service.wfs.client;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -16,9 +16,8 @@ import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.feature.DefaultFeatureCollection;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
-import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
-import org.oskari.service.wfs.client.CoordinateTransformer;
+import org.oskari.service.wfs.client.geojson.WFS3FeatureCollectionIterator;
 
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
@@ -116,11 +115,9 @@ public class OskariWFS3Client {
 
     private static String readFeaturesTo(HttpURLConnection conn, DefaultFeatureCollection fc)
             throws IOException {
-        // Avoid heterogenous warnings from GeoTools, use the (maybe) existing schema
-        SimpleFeatureType sft = fc.getSchema();
         try (InputStream in = conn.getInputStream();
                 Reader reader = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8));
-                WFS3FeatureCollectionIterator it = new WFS3FeatureCollectionIterator(reader, sft)) {
+                WFS3FeatureCollectionIterator it = new WFS3FeatureCollectionIterator(reader)) {
             while (it.hasNext()) {
                 fc.add(it.next());
             }

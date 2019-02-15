@@ -1,4 +1,4 @@
-package org.oskari.service.wfs3.client;
+package org.oskari.service.wfs.client.geojson;
 
 import java.util.List;
 import java.util.Map;
