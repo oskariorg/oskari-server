@@ -34,7 +34,7 @@ public class OskariWFS3Client {
     private static final String CONTENT_TYPE_GEOJSON = "application/geo+json";
 
     private static CoordinateReferenceSystem CRS84;
-    private static CoordinateReferenceSystem getCRS84() {
+    protected static CoordinateReferenceSystem getCRS84() {
         if (CRS84 == null) {
             try {
                 // Default CRS for WFS 3 is CRS84 (= WGS84 with lon/lat order)

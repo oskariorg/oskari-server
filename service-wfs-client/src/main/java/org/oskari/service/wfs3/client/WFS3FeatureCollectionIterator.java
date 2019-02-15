@@ -3,7 +3,7 @@ package org.oskari.service.wfs3.client;
 import java.io.IOException;
 import java.io.Reader;
 
-import org.geotools.feature.FeatureIterator;
+import org.geotools.data.simple.SimpleFeatureIterator;
 import org.json.simple.parser.JSONParser;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
@@ -13,7 +13,7 @@ import org.opengis.feature.simple.SimpleFeatureType;
  * creates a modified FeatureCollectionHandler implementation that can handle "links"
  * object in WFS 3 GeoJSON responses
  */
-public class WFS3FeatureCollectionIterator implements FeatureIterator<SimpleFeature> {
+public class WFS3FeatureCollectionIterator implements SimpleFeatureIterator {
 
     private final Reader reader;
     private final JSONParser parser;
@@ -54,6 +54,7 @@ public class WFS3FeatureCollectionIterator implements FeatureIterator<SimpleFeat
             parser.parse(reader, handler, true);
             return handler.getValue();
         } catch (Exception e) {
+            e.printStackTrace();
             throw new RuntimeException(e);
         }
     }
