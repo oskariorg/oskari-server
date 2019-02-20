@@ -8,8 +8,6 @@ jdk:
   - oraclejdk11
 
 addons:
-#  sonarcloud:
-#    organization: "oskari"
   apt:
     packages:
       - oracle-java8-installer
