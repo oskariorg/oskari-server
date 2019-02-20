@@ -19,7 +19,7 @@ public class OskariWFS3ClientTest {
 
     @Ignore("Depends on outside service, results might vary")
     @Test
-    public void testGetFeatures() throws ServiceException, IOException {
+    public void testGetFeaturesPaging() throws ServiceException, IOException {
         String endPoint = "https://beta-paikkatieto.maanmittauslaitos.fi/geographic-names/wfs3/v1/";
         String user = null;
         String pass = null;
@@ -27,8 +27,8 @@ public class OskariWFS3ClientTest {
         CoordinateReferenceSystem crs = OskariWFS3Client.getCRS84();
         Envelope envelope = new Envelope(21.35, 21.40, 61.35, 61.40);
         ReferencedEnvelope bbox = new ReferencedEnvelope(envelope, crs);
-        int limit = 10;
-        SimpleFeatureCollection sfc = OskariWFS3Client.getFeatures(endPoint, user, pass, collectionId, bbox, crs, limit);
+        int pageSizeLimit = 10;
+        SimpleFeatureCollection sfc = OskariWFS3Client.getFeatures(endPoint, user, pass, collectionId, bbox, crs, pageSizeLimit);
         int i = 0;
         try (SimpleFeatureIterator it = sfc.features()) {
             while (it.hasNext()) {
