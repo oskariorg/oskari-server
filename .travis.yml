@@ -2,15 +2,14 @@ dist: trusty
 language: java
 sudo: false
 install: true
-addons:
-  sonarcloud:
-    organization: "oskari"
 jdk:
   - oraclejdk8
   - openjdk8
   - oraclejdk11
 
 addons:
+#  sonarcloud:
+#    organization: "oskari"
   apt:
     packages:
       - oracle-java8-installer
