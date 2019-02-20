@@ -12,8 +12,6 @@ import fi.nls.oskari.domain.User;
 import fi.nls.oskari.domain.map.DataProvider;
 import fi.nls.oskari.domain.map.view.View;
 import fi.nls.oskari.domain.map.view.ViewTypes;
-import fi.nls.oskari.map.data.service.PublishedMapRestrictionService;
-import fi.nls.oskari.map.data.service.PublishedMapRestrictionServiceImpl;
 import fi.nls.oskari.map.layer.DataProviderService;
 import fi.nls.oskari.map.layer.DataProviderServiceIbatisImpl;
 import fi.nls.oskari.map.layer.OskariLayerServiceIbatisImpl;
@@ -71,7 +69,6 @@ public class GetAppSetupHandlerTest extends JSONActionRouteTest {
 
     private ViewService viewService = null;
     private BundleService bundleService = null;
-    private PublishedMapRestrictionService restrictionService = null;
 
     //propertyutilsilla propertyt, checkataan että jsoniin tulee lisää bundlea.
     //
@@ -93,12 +90,10 @@ public class GetAppSetupHandlerTest extends JSONActionRouteTest {
 
         mockViewService();
         mockBundleService();
-        restrictionService = mock(PublishedMapRestrictionServiceImpl.class);
         mockInternalServices();
 
         handler.setViewService(viewService);
         handler.setBundleService(bundleService);
-        handler.setPublishedMapRestrictionService(restrictionService);
 
         handler.init();
     }
