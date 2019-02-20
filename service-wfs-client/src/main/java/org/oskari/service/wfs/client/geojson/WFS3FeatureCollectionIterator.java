@@ -1,33 +1,30 @@
-package org.oskari.service.wfs3.client;
+package org.oskari.service.wfs.client.geojson;
 
 import java.io.IOException;
 import java.io.Reader;
 
-import org.geotools.feature.FeatureIterator;
+import org.geotools.data.simple.SimpleFeatureIterator;
 import org.json.simple.parser.JSONParser;
 import org.opengis.feature.simple.SimpleFeature;
-import org.opengis.feature.simple.SimpleFeatureType;
 
 /**
  * Customized version of org.geotools.geojson.feature.FeatureJSON$FeatureIterator
  * creates a modified FeatureCollectionHandler implementation that can handle "links"
  * object in WFS 3 GeoJSON responses
  */
-public class WFS3FeatureCollectionIterator implements FeatureIterator<SimpleFeature> {
+public class WFS3FeatureCollectionIterator implements SimpleFeatureIterator {
 
     private final Reader reader;
     private final JSONParser parser;
-    private final SimpleFeatureType sft;
     private WFS3FeatureCollectionHandler handler;
     private SimpleFeature next;
 
-    public WFS3FeatureCollectionIterator(Reader reader, SimpleFeatureType sft) {
+    public WFS3FeatureCollectionIterator(Reader reader) {
         this.reader = reader;
         this.parser = new JSONParser();
-        this.sft = sft;
     }
 
-    WFS3FeatureCollectionHandler getHandler() {
+    public WFS3FeatureCollectionHandler getHandler() {
         return handler;
     }
 
@@ -35,9 +32,8 @@ public class WFS3FeatureCollectionIterator implements FeatureIterator<SimpleFeat
         if (next != null) {
             return true;
         }
-
         if (handler == null) {
-            handler = new WFS3FeatureCollectionHandler(sft);
+            handler = new WFS3FeatureCollectionHandler();
         }
         next = readNext();
         return next != null;
@@ -52,8 +48,9 @@ public class WFS3FeatureCollectionIterator implements FeatureIterator<SimpleFeat
     SimpleFeature readNext() {
         try {
             parser.parse(reader, handler, true);
-            return handler.getValue();
+            return handler.getFeature();
         } catch (Exception e) {
+            e.printStackTrace();
             throw new RuntimeException(e);
         }
     }

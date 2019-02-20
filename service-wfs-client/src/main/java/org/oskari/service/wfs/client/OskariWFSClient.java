@@ -3,7 +3,6 @@ package org.oskari.service.wfs.client;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
-import org.oskari.service.wfs3.client.OskariWFS3Client;
 
 public class OskariWFSClient {
 

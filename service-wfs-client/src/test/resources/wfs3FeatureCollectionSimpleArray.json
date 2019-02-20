@@ -1,0 +1,20 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "id": "ABC_123",
+      "properties": {
+        "foo": "bar",
+        "mySimpleIntArray":  [1,2,3]
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          21.3743445,
+          61.3764872
+        ]
+      }
+    }
+  ]
+}
