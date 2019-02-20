@@ -50,7 +50,6 @@ public class WFS3FeatureCollectionIterator implements SimpleFeatureIterator {
             parser.parse(reader, handler, true);
             return handler.getFeature();
         } catch (Exception e) {
-            e.printStackTrace();
             throw new RuntimeException(e);
         }
     }

@@ -22,7 +22,7 @@ class MapToGeoJSONFeature {
     /**
      * Tries to convert a Map<String, Object> presentation of a GeoJSON
      * Feature to a SimpleFeature.
-     * @param maybeGeometry the possibly GeoJSON Feature
+     * @param maybeFeature the possibly GeoJSON Feature
      * @return null if it can't be done, and the actual Feature if everything is OK
      */
     @SuppressWarnings("unchecked")
@@ -59,7 +59,6 @@ class MapToGeoJSONFeature {
 
             return buildFeature(id, geometry, properties);
         } catch (Exception ignore) {
-            ignore.printStackTrace();
             // Something failed, probably a NPE somewhere along the way
             // But we don't really care _why_ it wasn't a proper GeoJSON geometry
             // the fact that it wasn't is good enough for us
