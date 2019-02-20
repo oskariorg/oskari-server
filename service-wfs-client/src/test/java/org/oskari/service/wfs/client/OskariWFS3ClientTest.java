@@ -28,6 +28,7 @@ public class OskariWFS3ClientTest {
         Envelope envelope = new Envelope(21.35, 21.40, 61.35, 61.40);
         ReferencedEnvelope bbox = new ReferencedEnvelope(envelope, crs);
         int pageSizeLimit = 10;
+        // TODO: should we add an actual limit that we want to load at given time to not overload the browser/client etc?
         SimpleFeatureCollection sfc = OskariWFS3Client.getFeatures(endPoint, user, pass, collectionId, bbox, crs, pageSizeLimit);
         int i = 0;
         try (SimpleFeatureIterator it = sfc.features()) {
