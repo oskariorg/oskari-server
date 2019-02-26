@@ -44,7 +44,12 @@ public class SetupController {
     public ModelAndView index(ModelAndView model) {
         model.setViewName("index");
         Map<String, String> map = new LinkedHashMap<>(9);
+        final String srs = getSRS();
+        model.addObject("srs", srs);
+        map.put("oskari.native.srs", srs);
+
         model.addObject(KEY_PROPERTIES, map);
+        map.put("geoserver.myplaces.url", GeoserverPopulator.getGeoserverProp(MyplacesHelper.MODULE_NAME, GeoserverPopulator.KEY_URL));
         if (DatasourceHelper.isModuleEnabled("myplaces")) {
             map.put("geoserver.myplaces.url", GeoserverPopulator.getGeoserverProp(MyplacesHelper.MODULE_NAME, GeoserverPopulator.KEY_URL));
             map.put("geoserver.myplaces.user", GeoserverPopulator.getGeoserverProp(MyplacesHelper.MODULE_NAME, GeoserverPopulator.KEY_USER));
@@ -81,8 +86,12 @@ public class SetupController {
         model.setViewName("geoserver_result");
         try {
             GeoserverPopulator.setupAll(srs);
+            final String configuredSrs = getSRS();
             model.addObject(KEY_MESSAGE, "success");
-            Map<String, Integer> ids = new HashMap<>(3);
+            Map<String, Object> ids = new HashMap<>(3);
+            if(!srs.equalsIgnoreCase(configuredSrs)) {
+                ids.put("oskari.native.srs", srs);
+            }
             model.addObject(KEY_PROPERTIES, ids);
             if (DatasourceHelper.isModuleEnabled("myplaces")) {
                 int myplacesId = GeoserverPopulator.setupMyplacesLayer(srs);
@@ -112,6 +121,10 @@ public class SetupController {
             model.addObject(KEY_MESSAGE, errorMsg);
         }
         return model;
+    }
+
+    private String getSRS() {
+        return PropertyUtil.get("oskari.native.srs", "EPSG:4326");
     }
 
 }
