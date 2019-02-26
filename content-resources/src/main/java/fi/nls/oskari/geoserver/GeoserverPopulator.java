@@ -6,6 +6,7 @@ import feign.Feign;
 import feign.auth.BasicAuthRequestInterceptor;
 import feign.jackson.JacksonDecoder;
 import feign.jackson.JacksonEncoder;
+import fi.nls.oskari.db.DatasourceHelper;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.domain.map.wfs.WFSLayerConfiguration;
 import fi.nls.oskari.log.LogFactory;
@@ -33,25 +34,31 @@ public class GeoserverPopulator {
     public static void setupAll(final String srs)
             throws Exception {
 
-        try{
-            MyplacesHelper.setupMyplaces(srs);
-        }catch(Exception e){
-            LOG.error(e, "Error when setting my places");
-            LOG.debug(e.getMessage());
+        if (DatasourceHelper.isModuleEnabled("myplaces")) {
+            try {
+                MyplacesHelper.setupMyplaces(srs);
+            } catch(Exception e){
+                LOG.error(e, "Error when setting my places");
+                LOG.debug(e.getMessage());
+            }
         }
 
-        try{
-            AnalysisHelper.setupAnalysis(srs);
-        }catch(Exception e){
-            LOG.error(e, "Error when setting analysis");
-            LOG.debug(e.getMessage());
+        if (DatasourceHelper.isModuleEnabled("analysis")) {
+            try {
+                AnalysisHelper.setupAnalysis(srs);
+            } catch(Exception e){
+                LOG.error(e, "Error when setting analysis");
+                LOG.debug(e.getMessage());
+            }
         }
 
-        try{
-            UserlayerHelper.setupUserlayers(srs);
-        }catch(Exception e){
-            LOG.error(e, "Error when setting user layers");
-            LOG.debug(e.getMessage());
+        if (DatasourceHelper.isModuleEnabled("userlayer")) {
+            try {
+                UserlayerHelper.setupUserlayers(srs);
+            } catch(Exception e){
+                LOG.error(e, "Error when setting user layers");
+                LOG.debug(e.getMessage());
+            }
         }
     }
 
