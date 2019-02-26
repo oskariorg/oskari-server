@@ -44,6 +44,8 @@ public class UserlayerHelper {
 
             ds.connectionParameters.user = info.user;
             ds.connectionParameters.passwd = info.pass;
+            ds.connectionParameters.host = info.getHost();
+            ds.connectionParameters.port = info.getPort();
             ds.connectionParameters.database = info.getDBName();
             // !! in 2.5.2 namespace = NS PREFIX, in 2.7.1 it needs to be the NS URI!!
             ds.connectionParameters.namespace = ns.uri;

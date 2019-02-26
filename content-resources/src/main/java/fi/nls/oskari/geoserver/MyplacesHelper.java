@@ -44,6 +44,8 @@ public class MyplacesHelper {
 
             ds.connectionParameters.user = info.user;
             ds.connectionParameters.passwd = info.pass;
+            ds.connectionParameters.host = info.getHost();
+            ds.connectionParameters.port = info.getPort();
             ds.connectionParameters.database = info.getDBName();
             // in 2.5.2 namespace = NAMESPACE, in 2.7.1 it needs to be the uri?
             ds.connectionParameters.namespace = ns.uri;
