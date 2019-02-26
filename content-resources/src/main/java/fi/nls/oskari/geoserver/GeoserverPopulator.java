@@ -2,6 +2,7 @@ package fi.nls.oskari.geoserver;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.vividsolutions.jts.geom.Coordinate;
 import feign.Feign;
 import feign.auth.BasicAuthRequestInterceptor;
 import feign.jackson.JacksonDecoder;
@@ -16,6 +17,9 @@ import fi.nls.oskari.util.OskariRuntimeException;
 import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.wfs.WFSLayerConfigurationService;
 import fi.nls.oskari.wfs.WFSLayerConfigurationServiceIbatisImpl;
+import org.geotools.referencing.CRS;
+import org.opengis.geometry.Envelope;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
 /**
  * Created by SMAKINEN on 1.9.2015.
@@ -199,4 +203,24 @@ public class GeoserverPopulator {
         WFS_SERVICE.insert(conf);
         return baseLayer.getId();
     }
+
+    /**
+     * Calculate and set bounds for FeatureType based on it's CRS
+     * @param featureType
+     */
+    protected static void resolveCRS(FeatureType featureType, String srs) {
+        featureType.srs = srs;
+        featureType.nativeCRS = srs;
+        try {
+            CoordinateReferenceSystem sys = CRS.decode(featureType.srs);
+            Envelope bounds = CRS.getEnvelope(sys);
+            featureType.setBounds(bounds.getLowerCorner().getOrdinate(Coordinate.X),
+                    bounds.getUpperCorner().getOrdinate(Coordinate.X),
+                    bounds.getLowerCorner().getOrdinate(Coordinate.Y),
+                    bounds.getUpperCorner().getOrdinate(Coordinate.Y));
+        } catch (Exception e) {
+            LOG.warn(e, "Unable to setup native bounds for FeatureType:", featureType);
+        }
+    }
+
 }

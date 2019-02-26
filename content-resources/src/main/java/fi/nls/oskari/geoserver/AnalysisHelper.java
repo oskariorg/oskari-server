@@ -62,7 +62,7 @@ public class AnalysisHelper {
             FeatureType featureData = new FeatureType();
             featureData.enabled = true;
             featureData.name = "analysis_data";
-            featureData.srs = srs;
+            GeoserverPopulator.resolveCRS(featureData, srs);
 
             geoserver.createFeatureType(featureData, GeoserverPopulator.NAMESPACE, storeName);
             LOG.info("Added featuretype:", featureData);
@@ -75,7 +75,7 @@ public class AnalysisHelper {
         try {
             featureStyledData.enabled = true;
             featureStyledData.name = "analysis_data_style";
-            featureStyledData.srs = srs;
+            GeoserverPopulator.resolveCRS(featureStyledData, srs);
 
             geoserver.createFeatureType(featureStyledData, GeoserverPopulator.NAMESPACE, storeName);
             LOG.info("Added featuretype:", featureStyledData);
