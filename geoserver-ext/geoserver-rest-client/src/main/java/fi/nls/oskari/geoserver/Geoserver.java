@@ -40,19 +40,19 @@ interface Geoserver {
     void createFeatureType(FeatureType ds, @Param("ns") String namespace, @Param("ds") String dataStore);
 
     // Use raw-param: https://github.com/boundlessgeo/gsconfig/pull/94
-    @RequestLine("POST /styles.sld?name={name}&raw=true")
+    @RequestLine("POST /styles?name={name}&raw=true")
     @Headers("Content-Type: application/vnd.ogc.sld+xml") // , Accept: application/vnd.ogc.sld+xml
     @Body("{content}") // Body template is needed so content isn't transformed by Jackson
     void createSLD(@Param("name") final String name, @Param("content") final String content);
 
     // Use raw-param: https://github.com/boundlessgeo/gsconfig/pull/94
-    @RequestLine("POST /workspaces/{ws}/styles.sld?name={name}&raw=true")
+    @RequestLine("POST /workspaces/{ws}/styles?name={name}&raw=true")
     @Headers("Content-Type: application/vnd.ogc.sld+xml") // , Accept: application/vnd.ogc.sld+xml
     @Body("{content}") // Body template is needed so content isn't transformed by Jackson
     void createSLD(@Param("name") final String name, @Param("content") final String content, @Param("ws") final String workspace);
 
     // XML is simpler here, use it instead of json
-    @RequestLine("POST /layers/{layer}/styles.xml")
+    @RequestLine("POST /layers/{layer}/styles")
     @Headers("Content-Type: text/xml")
     @Body("<style><name>{style}</name></style>")
     void linkStyleToLayer(@Param("style") final String stylename, @Param("layer") final String layername);

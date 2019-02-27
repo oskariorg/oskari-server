@@ -1,5 +1,6 @@
 package fi.nls.oskari;
 
+import fi.nls.oskari.db.DatasourceHelper;
 import fi.nls.oskari.geoserver.AnalysisHelper;
 import fi.nls.oskari.geoserver.GeoserverPopulator;
 import fi.nls.oskari.geoserver.MyplacesHelper;
@@ -43,18 +44,28 @@ public class SetupController {
     public ModelAndView index(ModelAndView model) {
         model.setViewName("index");
         Map<String, String> map = new LinkedHashMap<>(9);
+        final String srs = getSRS();
+        model.addObject("srs", srs);
+        map.put("oskari.native.srs", srs);
+
         model.addObject(KEY_PROPERTIES, map);
         map.put("geoserver.myplaces.url", GeoserverPopulator.getGeoserverProp(MyplacesHelper.MODULE_NAME, GeoserverPopulator.KEY_URL));
-        map.put("geoserver.myplaces.user", GeoserverPopulator.getGeoserverProp(MyplacesHelper.MODULE_NAME, GeoserverPopulator.KEY_USER));
-        map.put("geoserver.myplaces.password", GeoserverPopulator.getGeoserverProp(MyplacesHelper.MODULE_NAME, GeoserverPopulator.KEY_PASSWD));
+        if (DatasourceHelper.isModuleEnabled("myplaces")) {
+            map.put("geoserver.myplaces.url", GeoserverPopulator.getGeoserverProp(MyplacesHelper.MODULE_NAME, GeoserverPopulator.KEY_URL));
+            map.put("geoserver.myplaces.user", GeoserverPopulator.getGeoserverProp(MyplacesHelper.MODULE_NAME, GeoserverPopulator.KEY_USER));
+            map.put("geoserver.myplaces.password", GeoserverPopulator.getGeoserverProp(MyplacesHelper.MODULE_NAME, GeoserverPopulator.KEY_PASSWD));
+        }
 
-        map.put("geoserver.analysis.url", GeoserverPopulator.getGeoserverProp(AnalysisHelper.MODULE_NAME, GeoserverPopulator.KEY_URL));
-        map.put("geoserver.analysis.user", GeoserverPopulator.getGeoserverProp(AnalysisHelper.MODULE_NAME, GeoserverPopulator.KEY_USER));
-        map.put("geoserver.analysis.password", GeoserverPopulator.getGeoserverProp(AnalysisHelper.MODULE_NAME, GeoserverPopulator.KEY_PASSWD));
-
-        map.put("geoserver.userlayer.url", GeoserverPopulator.getGeoserverProp(UserlayerHelper.MODULE_NAME, GeoserverPopulator.KEY_URL));
-        map.put("geoserver.userlayer.user", GeoserverPopulator.getGeoserverProp(UserlayerHelper.MODULE_NAME, GeoserverPopulator.KEY_USER));
-        map.put("geoserver.userlayer.password", GeoserverPopulator.getGeoserverProp(UserlayerHelper.MODULE_NAME, GeoserverPopulator.KEY_PASSWD));
+        if (DatasourceHelper.isModuleEnabled("analysis")) {
+            map.put("geoserver.analysis.url", GeoserverPopulator.getGeoserverProp(AnalysisHelper.MODULE_NAME, GeoserverPopulator.KEY_URL));
+            map.put("geoserver.analysis.user", GeoserverPopulator.getGeoserverProp(AnalysisHelper.MODULE_NAME, GeoserverPopulator.KEY_USER));
+            map.put("geoserver.analysis.password", GeoserverPopulator.getGeoserverProp(AnalysisHelper.MODULE_NAME, GeoserverPopulator.KEY_PASSWD));
+        }
+        if (DatasourceHelper.isModuleEnabled("userlayer")) {
+            map.put("geoserver.userlayer.url", GeoserverPopulator.getGeoserverProp(UserlayerHelper.MODULE_NAME, GeoserverPopulator.KEY_URL));
+            map.put("geoserver.userlayer.user", GeoserverPopulator.getGeoserverProp(UserlayerHelper.MODULE_NAME, GeoserverPopulator.KEY_USER));
+            map.put("geoserver.userlayer.password", GeoserverPopulator.getGeoserverProp(UserlayerHelper.MODULE_NAME, GeoserverPopulator.KEY_PASSWD));
+        }
         return model;
     }
 
@@ -75,22 +86,32 @@ public class SetupController {
         model.setViewName("geoserver_result");
         try {
             GeoserverPopulator.setupAll(srs);
+            final String configuredSrs = getSRS();
             model.addObject(KEY_MESSAGE, "success");
-            Map<String, Integer> ids = new HashMap<>(3);
+            Map<String, Object> ids = new HashMap<>(3);
+            if(!srs.equalsIgnoreCase(configuredSrs)) {
+                ids.put("oskari.native.srs", srs);
+            }
             model.addObject(KEY_PROPERTIES, ids);
-            int myplacesId = GeoserverPopulator.setupMyplacesLayer(srs);
-            if (PropertyUtil.getOptional(PROP_MYPLACES, -1) != myplacesId) {
-                ids.put(PROP_MYPLACES, myplacesId);
+            if (DatasourceHelper.isModuleEnabled("myplaces")) {
+                int myplacesId = GeoserverPopulator.setupMyplacesLayer(srs);
+                if (PropertyUtil.getOptional(PROP_MYPLACES, -1) != myplacesId) {
+                    ids.put(PROP_MYPLACES, myplacesId);
+                }
             }
 
-            int analysisId = GeoserverPopulator.setupAnalysisLayer(srs);
-            if (PropertyUtil.getOptional(PROP_ANALYSIS, -1) != analysisId) {
-                ids.put(PROP_ANALYSIS, analysisId);
+            if (DatasourceHelper.isModuleEnabled("analysis")) {
+                int analysisId = GeoserverPopulator.setupAnalysisLayer(srs);
+                if (PropertyUtil.getOptional(PROP_ANALYSIS, -1) != analysisId) {
+                    ids.put(PROP_ANALYSIS, analysisId);
+                }
             }
 
-            int userlayerId = GeoserverPopulator.setupUserLayer(srs);
-            if (PropertyUtil.getOptional(PROP_USERLAYER, -1) != userlayerId) {
-                ids.put(PROP_USERLAYER, userlayerId);
+            if (DatasourceHelper.isModuleEnabled("userlayer")) {
+                int userlayerId = GeoserverPopulator.setupUserLayer(srs);
+                if (PropertyUtil.getOptional(PROP_USERLAYER, -1) != userlayerId) {
+                    ids.put(PROP_USERLAYER, userlayerId);
+                }
             }
 
             return model;
@@ -100,6 +121,10 @@ public class SetupController {
             model.addObject(KEY_MESSAGE, errorMsg);
         }
         return model;
+    }
+
+    private String getSRS() {
+        return PropertyUtil.get("oskari.native.srs", "EPSG:4326");
     }
 
 }

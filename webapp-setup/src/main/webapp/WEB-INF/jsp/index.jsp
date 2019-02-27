@@ -15,7 +15,7 @@
     </c:forEach>
     </ul>
     <form action="setup">
-        <input type="text" name="srs" value="EPSG:4326" />
+        <input type="text" name="srs" value="${srs}" />
         <input type="submit" />
     </form>
 </div>
