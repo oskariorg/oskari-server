@@ -82,17 +82,6 @@
         <servlet-class>fi.nls.oskari.transport.StatusServlet</servlet-class>
     </servlet>
 
-    <servlet>
-        <display-name>HystrixMetricsStreamServlet</display-name>
-        <servlet-name>HystrixMetricsStreamServlet</servlet-name>
-        <servlet-class>com.netflix.hystrix.contrib.metrics.eventstream.HystrixMetricsStreamServlet</servlet-class>
-    </servlet>
-
-    <servlet-mapping>
-        <servlet-name>HystrixMetricsStreamServlet</servlet-name>
-        <url-pattern>/hystrix.stream</url-pattern>
-    </servlet-mapping>
-
     <servlet-mapping>
         <servlet-name>image</servlet-name>
         <url-pattern>/image/*</url-pattern>
