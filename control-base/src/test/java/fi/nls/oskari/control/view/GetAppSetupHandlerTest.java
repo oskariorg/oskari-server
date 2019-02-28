@@ -20,7 +20,7 @@ import fi.nls.oskari.map.layer.OskariLayerServiceMybatisImpl;
 import fi.nls.oskari.map.view.BundleService;
 import fi.nls.oskari.map.view.BundleServiceMybatisImpl;
 import fi.nls.oskari.map.view.ViewService;
-import fi.nls.oskari.map.view.ViewServiceIbatisImpl;
+import fi.nls.oskari.map.view.AppSetupServiceMybatisImpl;
 import fi.nls.oskari.util.DuplicateException;
 import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.view.modifier.ViewModifier;
@@ -212,7 +212,7 @@ public class GetAppSetupHandlerTest extends JSONActionRouteTest {
      */
     private void mockViewService() {
 
-        viewService = mock(ViewServiceIbatisImpl.class);
+        viewService = mock(AppSetupServiceMybatisImpl.class);
         // id 2 for guest user
         doReturn(2L).when(viewService).getDefaultViewId(getGuestUser());
         // id 1 for logged in user

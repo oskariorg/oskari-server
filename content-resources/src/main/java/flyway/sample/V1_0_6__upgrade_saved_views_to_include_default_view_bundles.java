@@ -3,7 +3,7 @@ package flyway.sample;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.view.ViewService;
-import fi.nls.oskari.map.view.ViewServiceIbatisImpl;
+import fi.nls.oskari.map.view.AppSetupServiceMybatisImpl;
 import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.util.UserViewMigrator1_33;
 import org.flywaydb.core.api.migration.jdbc.JdbcMigration;
@@ -24,7 +24,7 @@ public class V1_0_6__upgrade_saved_views_to_include_default_view_bundles impleme
     public void migrate(Connection connection)
             throws Exception {
         long templateId = PropertyUtil.getOptional("view.default", -1);
-        ViewService service = new ViewServiceIbatisImpl();
+        ViewService service = new AppSetupServiceMybatisImpl();
         LOG.info("Starting view update with template view id:", templateId);
         // Update USER views using the authenticated user default view as template
         UserViewMigrator1_33 migrator = new UserViewMigrator1_33();

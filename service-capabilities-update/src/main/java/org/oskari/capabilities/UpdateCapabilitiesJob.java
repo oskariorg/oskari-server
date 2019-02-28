@@ -14,7 +14,7 @@ import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.layer.OskariLayerService;
 import fi.nls.oskari.map.layer.OskariLayerServiceMybatisImpl;
 import fi.nls.oskari.map.view.ViewService;
-import fi.nls.oskari.map.view.ViewServiceIbatisImpl;
+import fi.nls.oskari.map.view.AppSetupServiceMybatisImpl;
 import fi.nls.oskari.map.view.util.ViewHelper;
 import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.service.capabilities.CapabilitiesCacheService;
@@ -40,7 +40,7 @@ public class UpdateCapabilitiesJob extends ScheduledJob {
     public UpdateCapabilitiesJob() {
         this(new OskariLayerServiceMybatisImpl(),
                 new CapabilitiesCacheServiceMybatisImpl(),
-                new ViewServiceIbatisImpl());
+                new AppSetupServiceMybatisImpl());
     }
 
     public UpdateCapabilitiesJob(OskariLayerService layerService,

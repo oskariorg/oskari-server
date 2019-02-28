@@ -5,7 +5,7 @@ import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.domain.map.view.View;
 import fi.nls.oskari.domain.map.view.ViewTypes;
 import fi.nls.oskari.map.view.ViewService;
-import fi.nls.oskari.map.view.ViewServiceIbatisImpl;
+import fi.nls.oskari.map.view.AppSetupServiceMybatisImpl;
 import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.test.control.JSONActionRouteTest;
 import fi.nls.test.util.ResourceHelper;
@@ -41,7 +41,7 @@ public class GetViewsHandlerTest extends JSONActionRouteTest {
     @Before
     public void setUp() throws Exception {
         loadProperties();
-        viewService = mock(ViewServiceIbatisImpl.class);
+        viewService = mock(AppSetupServiceMybatisImpl.class);
         handler.setViewService(viewService);
 
         handler.init();

@@ -17,7 +17,7 @@ import fi.nls.oskari.map.layer.OskariLayerService;
 import fi.nls.oskari.map.layer.OskariLayerServiceMybatisImpl;
 import fi.nls.oskari.map.view.ViewException;
 import fi.nls.oskari.map.view.ViewService;
-import fi.nls.oskari.map.view.ViewServiceIbatisImpl;
+import fi.nls.oskari.map.view.AppSetupServiceMybatisImpl;
 import fi.nls.oskari.permission.domain.Resource;
 import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.service.UserService;
@@ -47,7 +47,7 @@ public class SystemViewsHandler extends RestActionHandler {
     private final static String DEFAULT_SRS = "EPSG:3067";
 
     public void init() {
-        viewService = new ViewServiceIbatisImpl();
+        viewService = new AppSetupServiceMybatisImpl();
 
         layerService = new OskariLayerServiceMybatisImpl();
         permissionsService = new PermissionsServiceIbatisImpl();

@@ -4,49 +4,40 @@ import fi.nls.oskari.domain.Role;
 import fi.nls.oskari.domain.User;
 import fi.nls.oskari.domain.map.view.Bundle;
 import fi.nls.oskari.domain.map.view.View;
+import fi.nls.oskari.service.OskariComponent;
 import fi.nls.oskari.service.ServiceException;
-import fi.nls.oskari.service.db.BaseService;
-
 import java.sql.SQLException;
 import java.util.Collection;
 import java.util.List;
 
-public interface ViewService extends BaseService<Object> {
+public abstract class ViewService extends OskariComponent {
 
-    String PROPERTY_PUBLISH_TEMPLATE = "view.template.publish";
+    public static String PROPERTY_PUBLISH_TEMPLATE = "view.template.publish";
 
-    boolean hasPermissionToAlterView(final View view, final User user);
+    public abstract boolean hasPermissionToAlterView(final View view, final User user);
+    public abstract List<View> getViews(int page, int pagesize);
+    public abstract View getViewWithConf(long viewId);
+    public abstract View getViewWithConfByUuId(String uuId);
+    public abstract View getViewWithConfByOldId(long oldId);
+    public abstract View getViewWithConf(String viewName);
+    public abstract List<View> getViewsForUser(long userId);
 
-    List<View> getViews(int page, int pagesize);
-
-    View getViewWithConf(long viewId);
-
-    View getViewWithConfByUuId(String uuId);
-
-    View getViewWithConfByOldId(long oldId);
-
-    View getViewWithConf(String viewName);
-
-    List<View> getViewsForUser(long userId);
-
-    long addView(View view)
+    public abstract long addView(View view)
             throws ViewException;
 
-    void updateAccessFlag(View view);
+    public abstract void updateAccessFlag(View view);
 
-    void updateView(View view);
+    public abstract void updateView(View view);
 
-    void deleteViewById(long id)
+    public abstract void deleteViewById(long id)
             throws DeleteViewException;
 
-    void deleteViewByUserId(long id)
+    public abstract void deleteViewByUserId(long id)
             throws DeleteViewException;
 
-    long getDefaultViewId();
-
-    void updateViewUsage(View view);
-
-    void resetUsersDefaultViews(long userId);
+    public abstract long getDefaultViewId();
+    public abstract void updateViewUsage(View view);
+    public abstract void resetUsersDefaultViews(long userId);
 
     /**
      * Returns default view id for given role name
@@ -54,7 +45,7 @@ public interface ViewService extends BaseService<Object> {
      * @param roleName
      * @return
      */
-    long getDefaultViewIdForRole(final String roleName);
+    public abstract long getDefaultViewIdForRole(final String roleName);
 
     /**
      * Returns default view id for the user (based on role or personalized default view)
@@ -62,28 +53,28 @@ public interface ViewService extends BaseService<Object> {
      * @param user
      * @return view id
      */
-    long getDefaultViewId(final User user);
+    public abstract long getDefaultViewId(final User user);
 
     /**
      * Check if view is configured as default in system to distinguish between non-personalized default views
      * @param id
      * @return
      */
-    boolean isSystemDefaultView(final long id);
+    public abstract boolean isSystemDefaultView(final long id);
 
     /**
      * Returns if for system default view for given role set.
      * @param roles
      * @return
      */
-    long getSystemDefaultViewId(Collection<Role> roles);
+    public abstract long getSystemDefaultViewId(Collection<Role> roles);
 
-    List<Long> getSystemDefaultViewIds() throws ServiceException;
+    public abstract List<Long> getSystemDefaultViewIds() throws ServiceException;
 
-    void updatePublishedView(View view)
+    public abstract void updatePublishedView(View view)
             throws ViewException;
 
-    void addBundleForView(final long viewId, final Bundle bundle)
+    public abstract void addBundleForView(final long viewId, final Bundle bundle)
             throws SQLException;
 
     /**
@@ -93,7 +84,7 @@ public interface ViewService extends BaseService<Object> {
      * @param bundle
      * @throws ViewException if bundle is not part of the view or update failed.
      */
-    void updateBundleSettingsForView(final long viewId, final Bundle bundle)
+    public abstract void updateBundleSettingsForView(final long viewId, final Bundle bundle)
             throws ViewException;
 
 }

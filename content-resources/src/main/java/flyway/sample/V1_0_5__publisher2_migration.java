@@ -3,7 +3,7 @@ package flyway.sample;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.view.ViewService;
-import fi.nls.oskari.map.view.ViewServiceIbatisImpl;
+import fi.nls.oskari.map.view.AppSetupServiceMybatisImpl;
 import fi.nls.oskari.util.Publisher2Migrator;
 import org.flywaydb.core.api.migration.jdbc.JdbcMigration;
 
@@ -18,7 +18,7 @@ public class V1_0_5__publisher2_migration implements JdbcMigration {
 
     public void migrate(Connection connection)
             throws Exception {
-        ViewService service = new ViewServiceIbatisImpl();
+        ViewService service = new AppSetupServiceMybatisImpl();
         // generate the metadata
         Publisher2Migrator migrator = new Publisher2Migrator(service);
         migrator.migratePublishedAppsetups(connection);

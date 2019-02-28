@@ -30,7 +30,7 @@ public class ViewsHandler extends RestActionHandler {
     private final ViewService viewService;
 
     public ViewsHandler() {
-        this(new BundleServiceMybatisImpl(), new ViewServiceIbatisImpl());
+        this(new BundleServiceMybatisImpl(), new AppSetupServiceMybatisImpl());
     }
 
     public ViewsHandler(BundleService bundleService, ViewService viewService) {

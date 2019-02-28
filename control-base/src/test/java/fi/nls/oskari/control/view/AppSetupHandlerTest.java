@@ -11,7 +11,7 @@ import fi.nls.oskari.domain.map.view.ViewTypes;
 import fi.nls.oskari.map.view.BundleService;
 import fi.nls.oskari.map.view.BundleServiceMybatisImpl;
 import fi.nls.oskari.map.view.ViewService;
-import fi.nls.oskari.map.view.ViewServiceIbatisImpl;
+import fi.nls.oskari.map.view.AppSetupServiceMybatisImpl;
 import fi.nls.oskari.myplaces.MyPlacesService;
 import fi.nls.oskari.myplaces.MyPlacesServiceMybatisImpl;
 import fi.nls.oskari.service.UserService;
@@ -88,7 +88,7 @@ public class AppSetupHandlerTest extends JSONActionRouteTest {
     }
 
     private void mockViewService() {
-        viewService = mock(ViewServiceIbatisImpl.class);
+        viewService = mock(AppSetupServiceMybatisImpl.class);
         // add all bundles needed in test
         final View dummyView = ViewTestHelper.createMockView("framework.mapfull", "framework.infobox", "framework.publishedgrid");
         dummyView.setType(ViewTypes.USER);

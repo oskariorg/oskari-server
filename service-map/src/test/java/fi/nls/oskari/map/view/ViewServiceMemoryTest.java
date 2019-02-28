@@ -10,7 +10,7 @@ import static org.junit.Assert.*;
 
 public class ViewServiceMemoryTest {
 
-    private ViewService viewService;
+    private ViewServiceMemory viewService;
 
     @Before
     public void init() {
