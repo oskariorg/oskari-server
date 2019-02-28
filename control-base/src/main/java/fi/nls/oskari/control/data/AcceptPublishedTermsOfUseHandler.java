@@ -6,13 +6,13 @@ import fi.nls.oskari.control.ActionHandler;
 import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.control.RestActionHandler;
 import fi.nls.oskari.map.publish.service.PublishTermsOfUseService;
-import fi.nls.oskari.map.publish.service.PublishTermsOfUseServiceIbatisImpl;
+import fi.nls.oskari.map.publish.service.PublishTermsOfUseServiceMybatisImpl;
 import fi.nls.oskari.util.ResponseHelper;
 
 @OskariActionRoute("AcceptPublishedTermsOfUse")
 public class AcceptPublishedTermsOfUseHandler  extends RestActionHandler {
 
-    private PublishTermsOfUseService service = new PublishTermsOfUseServiceIbatisImpl();
+    private PublishTermsOfUseService service = new PublishTermsOfUseServiceMybatisImpl();
 
     @Override
     public void handlePost(ActionParameters params) throws ActionException {
