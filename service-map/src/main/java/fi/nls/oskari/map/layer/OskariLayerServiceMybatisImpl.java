@@ -36,7 +36,7 @@ public class OskariLayerServiceMybatisImpl extends OskariLayerService {
             dataSource = helper.createDataSource();
         }
         if (dataSource == null) {
-            LOG.error("Couldn't get datasource for data provider service");
+            LOG.error("Couldn't get datasource for oskari layer service");
         }
         factory = initializeMyBatis(dataSource);
     }

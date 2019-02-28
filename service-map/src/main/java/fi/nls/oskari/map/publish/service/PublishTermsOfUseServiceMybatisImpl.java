@@ -29,7 +29,7 @@ public class PublishTermsOfUseServiceMybatisImpl extends PublishTermsOfUseServic
             dataSource = helper.createDataSource();
         }
         if (dataSource == null) {
-            log.error("Couldn't get datasource for published terms of use service");
+            log.error("Couldn't get datasource for publish terms of use service");
         }
         factory = initializeMyBatis(dataSource);
     }
