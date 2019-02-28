@@ -15,8 +15,8 @@ import fi.nls.oskari.domain.map.view.ViewTypes;
 import fi.nls.oskari.map.data.service.PublishedMapRestrictionService;
 import fi.nls.oskari.map.data.service.PublishedMapRestrictionServiceImpl;
 import fi.nls.oskari.map.layer.DataProviderService;
-import fi.nls.oskari.map.layer.DataProviderServiceIbatisImpl;
-import fi.nls.oskari.map.layer.OskariLayerServiceIbatisImpl;
+import fi.nls.oskari.map.layer.DataProviderServiceMybatisImpl;
+import fi.nls.oskari.map.layer.OskariLayerServiceMybatisImpl;
 import fi.nls.oskari.map.view.BundleService;
 import fi.nls.oskari.map.view.BundleServiceMybatisImpl;
 import fi.nls.oskari.map.view.ViewService;
@@ -289,14 +289,14 @@ public class GetAppSetupHandlerTest extends JSONActionRouteTest {
                 });
 */
         //Whitebox.newInstance(OskariLayerServiceIbatisImpl.class);
-        suppress(constructor(OskariLayerServiceIbatisImpl.class));
-        final OskariLayerServiceIbatisImpl layerService = mock(OskariLayerServiceIbatisImpl.class);
+        suppress(constructor(OskariLayerServiceMybatisImpl.class));
+        final OskariLayerServiceMybatisImpl layerService = mock(OskariLayerServiceMybatisImpl.class);
         doReturn(null).when(layerService).find(anyInt());
         doReturn(Collections.emptyList()).when(layerService).findAll();
 
         // return mocked  bundle service if a new one is created (in paramhandlers for example)
         // classes doing this must be listed in PrepareForTest annotation
-        whenNew(OskariLayerServiceIbatisImpl.class).withNoArguments().
+        whenNew(OskariLayerServiceMybatisImpl.class).withNoArguments().
                 thenAnswer(new Answer<Object>() {
                     public Object answer(InvocationOnMock invocation) throws Throwable {
                         return layerService;
@@ -304,7 +304,7 @@ public class GetAppSetupHandlerTest extends JSONActionRouteTest {
                 });
 
         //Whitebox.newInstance(DataProviderServiceIbatisImpl.class);
-        final DataProviderService groupService = mock(DataProviderServiceIbatisImpl.class);
+        final DataProviderService groupService = mock(DataProviderServiceMybatisImpl.class);
         DataProvider group = mock(DataProvider.class);
         group.setName("en", "Testing");
         doReturn(group).when(groupService).find(anyInt());
@@ -312,7 +312,7 @@ public class GetAppSetupHandlerTest extends JSONActionRouteTest {
 
         // return mocked  bundle service if a new one is created (in paramhandlers for example)
         // classes doing this must be listed in PrepareForTest annotation
-        whenNew(DataProviderServiceIbatisImpl.class).withNoArguments().
+        whenNew(DataProviderServiceMybatisImpl.class).withNoArguments().
                 thenAnswer(new Answer<Object>() {
                     public Object answer(InvocationOnMock invocation) throws Throwable {
                         return groupService;

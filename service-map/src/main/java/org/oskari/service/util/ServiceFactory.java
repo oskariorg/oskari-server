@@ -9,7 +9,7 @@ import fi.mml.portti.service.search.SearchServiceImpl;
 import fi.nls.oskari.map.layer.DataProviderService;
 import fi.nls.oskari.map.layer.DataProviderServiceMybatisImpl;
 import fi.nls.oskari.map.layer.OskariLayerService;
-import fi.nls.oskari.map.layer.OskariLayerServiceIbatisImpl;
+import fi.nls.oskari.map.layer.OskariLayerServiceMybatisImpl;
 import fi.nls.oskari.map.layer.group.link.OskariLayerGroupLinkService;
 import fi.nls.oskari.map.layer.group.link.OskariLayerGroupLinkServiceMybatisImpl;
 import fi.nls.oskari.map.view.ViewService;
@@ -40,7 +40,7 @@ public class ServiceFactory {
 
     public static OskariLayerService getMapLayerService() {
         if (mapLayerService == null) {
-            mapLayerService = new OskariLayerServiceIbatisImpl();
+            mapLayerService = new OskariLayerServiceMybatisImpl();
         }
         return mapLayerService;
     }

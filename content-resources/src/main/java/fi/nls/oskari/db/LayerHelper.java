@@ -15,7 +15,7 @@ import fi.nls.oskari.map.data.domain.OskariLayerResource;
 import fi.nls.oskari.map.layer.DataProviderService;
 import fi.nls.oskari.map.layer.DataProviderServiceMybatisImpl;
 import fi.nls.oskari.map.layer.OskariLayerService;
-import fi.nls.oskari.map.layer.OskariLayerServiceIbatisImpl;
+import fi.nls.oskari.map.layer.OskariLayerServiceMybatisImpl;
 import fi.nls.oskari.map.layer.group.link.OskariLayerGroupLink;
 import fi.nls.oskari.map.layer.group.link.OskariLayerGroupLinkService;
 import fi.nls.oskari.map.layer.group.link.OskariLayerGroupLinkServiceMybatisImpl;
@@ -46,7 +46,7 @@ public class LayerHelper {
         final JSONObject json = JSONHelper.createJSONObject(jsonStr);
         final OskariLayer layer = parseLayer(json);
 
-        final OskariLayerService service = new OskariLayerServiceIbatisImpl();
+        final OskariLayerService service = new OskariLayerServiceMybatisImpl();
         final List<OskariLayer> dbLayers = service.findByUrlAndName(layer.getUrl(), layer.getName());
         if(!dbLayers.isEmpty()) {
             if(dbLayers.size() > 1) {
