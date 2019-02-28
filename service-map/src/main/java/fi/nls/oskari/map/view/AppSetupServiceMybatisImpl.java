@@ -1,0 +1,527 @@
+package fi.nls.oskari.map.view;
+
+import fi.nls.oskari.annotation.Oskari;
+import fi.nls.oskari.db.DatasourceHelper;
+import fi.nls.oskari.domain.Role;
+import fi.nls.oskari.domain.User;
+import fi.nls.oskari.domain.map.view.Bundle;
+import fi.nls.oskari.domain.map.view.View;
+import fi.nls.oskari.domain.map.view.ViewTypes;
+import fi.nls.oskari.log.LogFactory;
+import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.mybatis.JSONObjectMybatisTypeHandler;
+import fi.nls.oskari.service.ServiceException;
+import fi.nls.oskari.util.ConversionHelper;
+import fi.nls.oskari.util.PropertyUtil;
+import org.apache.ibatis.mapping.Environment;
+import org.apache.ibatis.session.Configuration;
+import org.apache.ibatis.session.SqlSession;
+import org.apache.ibatis.session.SqlSessionFactory;
+import org.apache.ibatis.session.SqlSessionFactoryBuilder;
+import org.apache.ibatis.transaction.TransactionFactory;
+import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
+
+import javax.sql.DataSource;
+import java.util.*;
+
+@Oskari
+public class AppSetupServiceMybatisImpl extends ViewService {
+
+    private static final Logger LOG = LogFactory.getLogger(AppSetupServiceMybatisImpl.class);
+
+    private static final String PROP_VIEW_DEFAULT = "view.default";
+    private static final String PROP_VIEW_DEFAULT_ROLES = "view.default.roles";
+
+    private final Map<String, Long> roleToDefaultViewId;
+    private final String[] defaultViewRoles;
+    private final long defaultViewId;
+
+    private SqlSessionFactory factory = null;
+
+    public AppSetupServiceMybatisImpl() {
+
+        final DatasourceHelper helper = DatasourceHelper.getInstance();
+        DataSource dataSource = helper.getDataSource();
+        if (dataSource == null) {
+            dataSource = helper.createDataSource();
+        }
+        if (dataSource == null) {
+            LOG.error("Couldn't get datasource for app setup service");
+        }
+        factory = initializeMyBatis(dataSource);
+
+        defaultViewRoles = PropertyUtil.getCommaSeparatedList(PROP_VIEW_DEFAULT_ROLES);
+        roleToDefaultViewId = initDefaultViewsByRole(defaultViewRoles);
+        defaultViewId = initDefaultViewId();
+
+    }
+
+    private SqlSessionFactory initializeMyBatis(final DataSource dataSource) {
+        final TransactionFactory transactionFactory = new JdbcTransactionFactory();
+        final Environment environment = new Environment("development", transactionFactory, dataSource);
+
+        final Configuration configuration = new Configuration(environment);
+        configuration.getTypeAliasRegistry().registerAlias(ViewService.class);
+        configuration.getTypeAliasRegistry().registerAlias(Bundle.class);
+        configuration.getTypeAliasRegistry().registerAlias(View.class);
+        configuration.getTypeHandlerRegistry().register(JSONObjectMybatisTypeHandler.class);
+        configuration.setLazyLoadingEnabled(true);
+        configuration.addMapper(AppSetupMapper.class);
+
+        return new SqlSessionFactoryBuilder().build(configuration);
+    }
+
+    private Map<String, Long> initDefaultViewsByRole(String[] roles) {
+        if (roles.length == 0) {
+            return Collections.emptyMap();
+        }
+        Map<String, Long> roleToDefaultViewId = new HashMap<>();
+        for (String role : roles) {
+            String roleViewIdStr = PropertyUtil.get(PROP_VIEW_DEFAULT + "." + role);
+            long roleViewId = ConversionHelper.getLong(roleViewIdStr, -1);
+            if (roleViewId != -1) {
+                roleToDefaultViewId.put(role, roleViewId);
+                LOG.debug("Added default view", roleViewId, "for role", role);
+            } else {
+                LOG.info("Failed to set default view id for role", role,
+                        "property missing or value invalid");
+            }
+        }
+        return roleToDefaultViewId;
+    }
+
+    private long initDefaultViewId() {
+        LOG.debug("Init default view id");
+        long property = ConversionHelper.getLong(PropertyUtil.get(PROP_VIEW_DEFAULT), -1);
+        if (property != -1) {
+            LOG.debug("Global default view id from properties:" , property);
+            return property;
+        }
+        final SqlSession session = factory.openSession();
+        try {
+            final AppSetupMapper mapper = session.getMapper(AppSetupMapper.class);
+            Long database = mapper.getDefaultViewId(ViewTypes.DEFAULT);
+            return database;
+        } catch (Exception e) {
+            LOG.warn(e, "Exception while init deafult view id");
+        } finally {
+            session.close();
+        }
+        return -1;
+    }
+
+    public boolean hasPermissionToAlterView(final View view, final User user) {
+
+        // uuids are much longer than 10 actually but check for atleast 10
+        if(user.getUuid() == null || user.getUuid().length() < 10) {
+            LOG.debug("Users uuid is missing or invalid: ", user.getUuid());
+            // user doesn't have an uuid, he shouldn't have any published maps
+            return false;
+        }
+        if(view == null) {
+            LOG.debug("View is null");
+            // view with id not found
+            return false;
+        }
+        if(user.isGuest()) {
+            LOG.debug("User is default/guest user");
+            return false;
+        }
+        if(view.getCreator() != user.getId()) {
+            // check current user id against view creator (is it the same user)
+            LOG.debug("Users id:", user.getId(), "didn't match view creator:", view.getCreator());
+            return false;
+        }
+        return true;
+    }
+
+    public List<View> getViews(int page, int pageSize) {
+        LOG.debug("Get views");
+        final SqlSession session = factory.openSession();
+        try {
+            final AppSetupMapper mapper = session.getMapper(AppSetupMapper.class);
+            final Map<String, Object> params = new HashMap<>();
+            params.put("limit", pageSize);
+            params.put("offset", (page -1) * pageSize);
+            return mapper.getViews(params);
+        } catch (Exception e) {
+            LOG.warn(e, "");
+        } finally {
+            session.close();
+        }
+        return Collections.emptyList();
+    }
+
+    public View getViewWithConf(long viewId) {
+        LOG.debug("Get view with conf by view id: " + viewId);
+        if (viewId < 1) {
+            return null;
+        }
+        final SqlSession session = factory.openSession();
+        try {
+            final AppSetupMapper mapper = session.getMapper(AppSetupMapper.class);
+            return mapper.getViewWithConfByViewId(viewId);
+        } catch (Exception e) {
+            LOG.warn(e, "Exception while getting view with conf by view id: " + viewId);
+        } finally {
+            session.close();
+        }
+        return null;
+    }
+
+    public View getViewWithConfByUuId(String uuId) {
+        if (uuId == null) {
+            return null;
+        }
+
+        final SqlSession session = factory.openSession();
+        try {
+            final AppSetupMapper mapper = session.getMapper(AppSetupMapper.class);
+            View view = mapper.getViewWithConfByUuId(uuId);
+            setBundlesForView(view);
+            return view;
+        } catch (Exception e) {
+            LOG.warn(e, "Exception while getting view with config by uuid: " + uuId);
+        } finally {
+            session.close();
+        }
+        return null;
+    }
+
+    public View getViewWithConfByOldId(long oldId) {
+        LOG.debug("Get view with conf by old id");
+        if (oldId < 1) {
+            return null;
+        }
+        final SqlSession session = factory.openSession();
+        try {
+            final AppSetupMapper mapper = session.getMapper(AppSetupMapper.class);
+            return mapper.getViewWithConfByOldId(oldId);
+        } catch (Exception e) {
+            LOG.warn(e, "Exception while getting view with config by old id");
+        } finally {
+            session.close();
+        }
+        return null;
+    }
+
+    public View getViewWithConf(String viewName) {
+        LOG.debug("Get view with conf by view name: " + viewName);
+        final SqlSession session = factory.openSession();
+        try {
+            final AppSetupMapper mapper = session.getMapper(AppSetupMapper.class);
+            return mapper.getViewWithConfByViewName(viewName);
+        } catch (Exception e) {
+            LOG.warn(e, "Exception while getting view with conf by view name");
+        } finally {
+            session.close();
+        }
+        return null;
+    }
+
+    public List<View> getViewsForUser(long userId) {
+        LOG.debug("Get views for user with id: " + userId);
+        final SqlSession session = factory.openSession();
+        try {
+            final AppSetupMapper mapper = session.getMapper(AppSetupMapper.class);
+            List<View> views = mapper.getViewsWithConfByUserId(userId);
+            LOG.debug("Found", views.size(), "views for user", userId);
+        } catch (Exception e) {
+            LOG.warn(e, "");
+        } finally {
+            session.close();
+        }
+
+        return Collections.emptyList();
+    }
+
+    private void setBundlesForView(View view) {
+        LOG.debug("Set bundles for view");
+        if (view == null) {
+            return;
+        }
+        final SqlSession session = factory.openSession();
+        try {
+            final AppSetupMapper mapper = session.getMapper(AppSetupMapper.class);
+            List<Bundle> bundles = mapper.getBundlesByViewId(view.getId());
+            view.setBundles(bundles);
+        } catch (Exception e) {
+            LOG.warn(e, "");
+        } finally {
+            session.close();
+        }
+    }
+
+    public long addView(View view) throws ViewException {
+        final SqlSession session = factory.openSession();
+        try {
+            final AppSetupMapper mapper = session.getMapper(AppSetupMapper.class);
+            view.setUuid(UUID.randomUUID().toString());
+            Object ret = mapper.addView(view);
+            long id = ((Long) ret).longValue();
+            LOG.info("Inserted view with id", id);
+            view.setId(id);
+            for (Bundle bundle : view.getBundles()) {
+                addBundleForView(view.getId(), bundle);
+            }
+            session.commit();
+            return id;
+        } catch (Exception e) {
+            LOG.warn(e, "Exception while adding a new view");
+        } finally {
+            session.close();
+        }
+        return -1;
+    }
+
+    public void updateAccessFlag(View view) {
+        LOG.debug("Update access flag");
+        final SqlSession session = factory.openSession();
+        try {
+            final AppSetupMapper mapper = session.getMapper(AppSetupMapper.class);
+            mapper.updateAccessFlag(view);
+        } catch (Exception e) {
+            LOG.warn(e, "Exception while updating access flag");
+        } finally {
+            session.close();
+        }
+    }
+
+    public void deleteViewById(final long id) throws DeleteViewException {
+        View view = getViewWithConf(id);
+        if (view == null) {
+            throw new DeleteViewException("Couldn't find a view with id:" + id);
+        }
+        final SqlSession session = factory.openSession();
+        try {
+            final AppSetupMapper mapper = session.getMapper(AppSetupMapper.class);
+            mapper.deleteBundleByView(id);
+            mapper.deleteView(id);
+            session.commit();
+        } catch (Exception e) {
+            throw new DeleteViewException("Error deleting a view with id:" + id, e);
+        } finally {
+            session.close();
+        }
+    }
+
+    public void deleteViewByUserId(long userId) throws DeleteViewException {
+        LOG.debug("Delete view by user id: " + userId);
+        final SqlSession session = factory.openSession();
+        try {
+            final AppSetupMapper mapper = session.getMapper(AppSetupMapper.class);
+            mapper.deleteViewByUser(userId);
+            session.commit();
+        } catch (Exception e) {
+            throw new DeleteViewException("Error deleting a view with user id:" + userId, e);
+        } finally {
+            session.close();
+        }
+    }
+
+    public void resetUsersDefaultViews(long userId) {
+        LOG.debug("Reset users default views for user id : " + userId);
+        final SqlSession session = factory.openSession();
+        try {
+            final AppSetupMapper mapper = session.getMapper(AppSetupMapper.class);
+            mapper.resetUsersDefaultViews(userId);
+        } catch (Exception e) {
+            LOG.warn(e, "Exception while resetting users default views");
+        } finally {
+            session.close();
+        }
+    }
+
+    public void updateView(View view) {
+        LOG.debug("Update view");
+        final SqlSession session = factory.openSession();
+        try {
+            final AppSetupMapper mapper = session.getMapper(AppSetupMapper.class);
+            mapper.update(view);
+            session.commit();
+        } catch (Exception e) {
+            LOG.warn(e, "Exception while updating view");
+        } finally {
+            session.close();
+        }
+    }
+
+    public void updateViewUsage(View view) {
+        LOG.debug("Update view usage");
+        final SqlSession session = factory.openSession();
+        try {
+            final AppSetupMapper mapper = session.getMapper(AppSetupMapper.class);
+            mapper.updateUsage(view);
+            session.commit();
+        } catch (Exception e) {
+            LOG.warn(e, "Exception while updating view usage");
+        } finally {
+            session.close();
+        }
+    }
+
+    public void updatePublishedView(final View view) throws ViewException {
+        LOG.debug("Update published view");
+        long id = view.getId();
+
+        final SqlSession session = factory.openSession();
+        try {
+            final AppSetupMapper mapper = session.getMapper(AppSetupMapper.class);
+            updateView(view);
+            mapper.deleteBundleByView(id);
+            for (Bundle bundle : view.getBundles()) {
+                addBundleForView(view.getId(), bundle);
+            }
+            session.commit();
+        } catch (Exception e) {
+            throw new ViewException("Error updating a view with id:" + id, e);
+        } finally {
+            session.close();
+        }
+    }
+
+    public void addBundleForView(final long viewId, final Bundle bundle) {
+        final SqlSession session = factory.openSession();
+        try {
+            bundle.setViewId(viewId);
+            final AppSetupMapper mapper = session.getMapper(AppSetupMapper.class);
+            mapper.addBundle(bundle);
+            LOG.debug("Added bundle to view", bundle.getName());
+        } catch (Exception e) {
+            LOG.warn(e, "Exception while adding bundle for view");
+        } finally {
+            session.close();
+        }
+    }
+
+    public void updateBundleSettingsForView(final long viewId, final Bundle bundle) throws ViewException {
+        LOG.debug("Update bundle settings for view");
+        final Map<String, Object> params = new HashMap<>();
+        params.put("view_id", viewId);
+        params.put("bundle_id", bundle.getBundleId());
+
+        params.put("seqno", bundle.getSeqNo());
+        params.put("startup", bundle.getStartup());
+        params.put("config", bundle.getConfig());
+        params.put("state", bundle.getState());
+        params.put("bundleinstance", bundle.getBundleinstance());
+
+        final SqlSession session = factory.openSession();
+        try {
+            final AppSetupMapper mapper = session.getMapper(AppSetupMapper.class);
+            final int numUpdated = mapper.updateBundleSettingsInView(params);
+            if(numUpdated == 0) {
+                // not updated, bundle not found
+                throw new ViewException("Failed to update - bundle not found in view?");
+            }
+        } catch (Exception e) {
+            throw new ViewException("Failed to update", e);
+        } finally {
+            session.close();
+        }
+    }
+
+    public long getDefaultViewId() {
+        return defaultViewId;
+    }
+
+    /**
+     * Returns default view id for the user, based on user roles. Configured by properties:
+     *
+     * view.default=[global default view id that is used if role-based default view is not found]
+     * view.default.roles=[comma-separated list of role names in descending order f.ex. Admin, User, Guest]
+     * view.default.[role name]=[default view id for the role]
+     *
+     * If properties are not found, defaults to #getDefaultViewId()
+     * @param user to get default view for
+     * @return view id based on users roles
+     */
+    public long getDefaultViewId(final User user) {
+        if(user == null) {
+            LOG.debug("Tried to get default view for <null> user");
+            return getDefaultViewId();
+        }
+        else {
+            final long personalizedId = getPersonalizedDefaultViewId(user);
+            if(personalizedId != -1) {
+                return personalizedId;
+            }
+            return getSystemDefaultViewId(user.getRoles());
+        }
+    }
+
+    public long getSystemDefaultViewId(Collection<Role> roles) {
+        if (roles == null) {
+            LOG.debug("Tried to get default view for <null> roles");
+        } else {
+            // Check the roles in given order and return the first match
+            for (String defaultViewRole : defaultViewRoles) {
+                if (Role.hasRoleWithName(roles, defaultViewRole)) {
+                    Long rolesDefaultViewId = roleToDefaultViewId.get(defaultViewRole);
+                    if (rolesDefaultViewId != null) {
+                        LOG.debug("Default view found for role", defaultViewRole, ":", rolesDefaultViewId);
+                        return rolesDefaultViewId;
+                    }
+                }
+            }
+        }
+        LOG.debug("No role based default views matched user roles:", roles, ". Defaulting to global default.");
+        return getDefaultViewId();
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public List<Long> getSystemDefaultViewIds() throws ServiceException {
+        LOG.debug("Get system default view ids");
+        final SqlSession session = factory.openSession();
+        try {
+            final AppSetupMapper mapper = session.getMapper(AppSetupMapper.class);
+            return mapper.getDefaultViewIds();
+        } catch (Exception e) {
+            throw new ServiceException(e.getMessage(), e);
+        } finally {
+            session.close();
+        }
+    }
+
+    public boolean isSystemDefaultView(final long id) {
+        return roleToDefaultViewId.containsValue(id) || getDefaultViewId() == id;
+    }
+
+    /**
+     * Returns the saved default view id for the user, if one exists
+     *
+     * @param user to get default view for
+     * @return view id of a saved default view
+     */
+    private long getPersonalizedDefaultViewId(final User user) {
+        LOG.debug("Get personalized default view id");
+        if (!user.isGuest() && user.getId() != -1) {
+
+            final SqlSession session = factory.openSession();
+            try {
+                final AppSetupMapper mapper = session.getMapper(AppSetupMapper.class);
+                Object queryResult = mapper.geDefaultViewIdByUserId(user.getId());
+                if (queryResult != null) {
+                    return (Long) queryResult;
+                }
+            } catch (Exception e) {
+                LOG.warn(e, "Exception while getting personalized default view id");
+            } finally {
+                session.close();
+            }
+        }
+        return -1;
+    }
+
+    /**
+     * Returns default view id for given role name
+     * @param roleName
+     * @return
+     */
+    public long getDefaultViewIdForRole(final String roleName) {
+        Long rolesDefaultViewId = roleToDefaultViewId.get(roleName);
+        return rolesDefaultViewId != null ? rolesDefaultViewId : defaultViewId;
+    }
+
+}
