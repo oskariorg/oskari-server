@@ -116,7 +116,7 @@ public class AppSetupHandler extends RestActionHandler {
         }
 
         if (bundleService == null) {
-            setBundleService(new BundleServiceIbatisImpl());
+            setBundleService(new BundleServiceMybatisImpl());
         }
         try {
             getPublishTemplate();

@@ -72,7 +72,7 @@ public class GetAppSetupHandler extends ActionHandler {
             setViewService(new ViewServiceIbatisImpl());
         }
         if(bundleService == null) {
-            setBundleService(new BundleServiceIbatisImpl());
+            setBundleService(new BundleServiceMybatisImpl());
         }
         if(restrictionService == null) {
             setPublishedMapRestrictionService(new PublishedMapRestrictionServiceImpl());

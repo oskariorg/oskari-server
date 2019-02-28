@@ -9,7 +9,7 @@ import fi.nls.oskari.domain.map.view.Bundle;
 import fi.nls.oskari.domain.map.view.View;
 import fi.nls.oskari.domain.map.view.ViewTypes;
 import fi.nls.oskari.map.view.BundleService;
-import fi.nls.oskari.map.view.BundleServiceIbatisImpl;
+import fi.nls.oskari.map.view.BundleServiceMybatisImpl;
 import fi.nls.oskari.map.view.ViewService;
 import fi.nls.oskari.map.view.ViewServiceIbatisImpl;
 import fi.nls.oskari.myplaces.MyPlacesService;
@@ -99,7 +99,7 @@ public class AppSetupHandlerTest extends JSONActionRouteTest {
         doReturn(dummyView).when(viewService).getViewWithConfByUuId(VALUE_PARENT_UUID);
     }
     private void mockBundleService() {
-        bundleService = mock(BundleServiceIbatisImpl.class);
+        bundleService = mock(BundleServiceMybatisImpl.class);
         // add all bundles needed in test
         Bundle bundle = new Bundle();
         bundle.setName(BUNDLE_WHITELISTED);

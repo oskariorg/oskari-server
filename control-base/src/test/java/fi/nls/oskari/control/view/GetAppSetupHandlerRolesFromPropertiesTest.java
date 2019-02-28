@@ -16,7 +16,7 @@ import fi.nls.oskari.map.data.service.PublishedMapRestrictionServiceImpl;
 import fi.nls.oskari.map.layer.DataProviderService;
 import fi.nls.oskari.map.layer.DataProviderServiceIbatisImpl;
 import fi.nls.oskari.map.view.BundleService;
-import fi.nls.oskari.map.view.BundleServiceIbatisImpl;
+import fi.nls.oskari.map.view.BundleServiceMybatisImpl;
 import fi.nls.oskari.map.view.ViewService;
 import fi.nls.oskari.map.view.ViewServiceIbatisImpl;
 import fi.nls.oskari.util.DuplicateException;
@@ -163,7 +163,7 @@ public class GetAppSetupHandlerRolesFromPropertiesTest extends JSONActionRouteTe
 
     private void mockBundleService() throws Exception {
 
-        bundleService = mock(BundleServiceIbatisImpl.class);
+        bundleService = mock(BundleServiceMybatisImpl.class);
         doReturn(
                 BundleTestHelper.loadBundle("integration.admin-layerselector")
         ).when(bundleService).getBundleTemplateByName(ViewModifier.BUNDLE_ADMINLAYERSELECTOR);
@@ -178,7 +178,7 @@ public class GetAppSetupHandlerRolesFromPropertiesTest extends JSONActionRouteTe
 
         // return mocked  bundle service if a new one is created (in paramhandlers for example)
         // classes doing this must be listed in PrepareForTest annotation
-        whenNew(BundleServiceIbatisImpl.class).withNoArguments().
+        whenNew(BundleServiceMybatisImpl.class).withNoArguments().
                 thenAnswer(new Answer<Object>() {
                     public Object answer(InvocationOnMock invocation) throws Throwable {
                         return bundleService;
