@@ -13,7 +13,7 @@ import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.data.domain.OskariLayerResource;
 import fi.nls.oskari.map.layer.DataProviderService;
-import fi.nls.oskari.map.layer.DataProviderServiceIbatisImpl;
+import fi.nls.oskari.map.layer.DataProviderServiceMybatisImpl;
 import fi.nls.oskari.map.layer.OskariLayerService;
 import fi.nls.oskari.map.layer.OskariLayerServiceIbatisImpl;
 import fi.nls.oskari.map.layer.group.link.OskariLayerGroupLink;
@@ -37,7 +37,7 @@ public class LayerHelper {
     private static final Logger log = LogFactory.getLogger(LayerHelper.class);
     private static final OskariMapLayerGroupService groupService = new OskariMapLayerGroupServiceIbatisImpl();
     private static final OskariLayerGroupLinkService linkService = new OskariLayerGroupLinkServiceMybatisImpl();
-    private static final DataProviderService dataProviderService = new DataProviderServiceIbatisImpl();
+    private static final DataProviderService dataProviderService = new DataProviderServiceMybatisImpl();
     private static final PermissionsService permissionsService = new PermissionsServiceIbatisImpl();
     private static final MybatisRoleService roleService = new MybatisRoleService();
 

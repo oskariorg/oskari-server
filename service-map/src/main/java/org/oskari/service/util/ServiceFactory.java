@@ -7,7 +7,7 @@ import fi.mml.portti.service.db.permissions.PermissionsServiceIbatisImpl;
 import fi.mml.portti.service.search.SearchService;
 import fi.mml.portti.service.search.SearchServiceImpl;
 import fi.nls.oskari.map.layer.DataProviderService;
-import fi.nls.oskari.map.layer.DataProviderServiceIbatisImpl;
+import fi.nls.oskari.map.layer.DataProviderServiceMybatisImpl;
 import fi.nls.oskari.map.layer.OskariLayerService;
 import fi.nls.oskari.map.layer.OskariLayerServiceIbatisImpl;
 import fi.nls.oskari.map.layer.group.link.OskariLayerGroupLinkService;
@@ -33,7 +33,7 @@ public class ServiceFactory {
 
     public static DataProviderService getDataProviderService() {
         if (dataProviderService == null) {
-            dataProviderService = new DataProviderServiceIbatisImpl();
+            dataProviderService = new DataProviderServiceMybatisImpl();
         }
         return dataProviderService;
     }
