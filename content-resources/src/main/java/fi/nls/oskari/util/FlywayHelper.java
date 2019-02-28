@@ -52,7 +52,7 @@ public class FlywayHelper {
     public static boolean viewContainsBundle(Connection connection, String bundle, Long viewId)
             throws SQLException {
         final String sql ="SELECT * FROM portti_view_bundle_seq " +
-                "WHERE bundle_id = (SELECT id FROM portti_bundle WHERE name=?) " +
+                "WHERE bundle_id = (SELECT id FROM oskari_bundle WHERE name=?) " +
                 "AND view_id=?";
 
         try (final PreparedStatement statement =
@@ -68,7 +68,7 @@ public class FlywayHelper {
     public static Bundle getBundleFromView(Connection connection, String bundle, Long viewId)
             throws SQLException {
         final String sql ="SELECT * FROM portti_view_bundle_seq " +
-                "WHERE bundle_id = (SELECT id FROM portti_bundle WHERE name=?) " +
+                "WHERE bundle_id = (SELECT id FROM oskari_bundle WHERE name=?) " +
                 "AND view_id=?";
 
         try (final PreparedStatement statement =
@@ -122,11 +122,11 @@ public class FlywayHelper {
                 "(view_id, bundle_id, seqno, config, state, startup, bundleinstance) " +
                 "VALUES (" +
                 "?, " +
-                "(SELECT id FROM portti_bundle WHERE name=?), " +
+                "(SELECT id FROM oskari_bundle WHERE name=?), " +
                 "(SELECT max(seqno)+1 FROM portti_view_bundle_seq WHERE view_id=?), " +
-                "(SELECT config FROM portti_bundle WHERE name=?), " +
-                "(SELECT state FROM portti_bundle WHERE name=?),  " +
-                "(SELECT startup FROM portti_bundle WHERE name=?), " +
+                "(SELECT config FROM oskari_bundle WHERE name=?), " +
+                "(SELECT state FROM oskari_bundle WHERE name=?),  " +
+                "(SELECT startup FROM oskari_bundle WHERE name=?), " +
                 "?)";
         try(final PreparedStatement statement =
                     connection.prepareStatement(sql)) {

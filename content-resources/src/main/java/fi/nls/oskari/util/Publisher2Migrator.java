@@ -175,7 +175,7 @@ public class Publisher2Migrator {
 
         final PreparedStatement statement =
                 conn.prepareStatement("SELECT view_id FROM portti_view_bundle_seq " +
-                        "WHERE bundle_id = (SELECT id FROM portti_bundle WHERE name=?)");
+                        "WHERE bundle_id = (SELECT id FROM oskari_bundle WHERE name=?)");
         statement.setString(1, BUNDLE_PUBLISHER_OLD);
         try (ResultSet rs = statement.executeQuery()) {
             while(rs.next()) {

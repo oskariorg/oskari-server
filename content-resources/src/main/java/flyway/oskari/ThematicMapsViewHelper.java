@@ -13,7 +13,7 @@ import java.util.List;
 public class ThematicMapsViewHelper {
 
     public static long getBundleId(Connection conn, String name) throws SQLException {
-        String sql = "SELECT id FROM portti_bundle WHERE name = ?";
+        String sql = "SELECT id FROM oskari_bundle WHERE name = ?";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, name);
             try (ResultSet rs = ps.executeQuery()) {
@@ -26,7 +26,7 @@ public class ThematicMapsViewHelper {
     }
 
     public static ConfigNState getBundle(Connection conn, long id) throws SQLException {
-        String sql = "SELECT id, config, state, startup FROM portti_bundle WHERE id = ?";
+        String sql = "SELECT id, config, state, startup FROM oskari_bundle WHERE id = ?";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setLong(1, id);
             try (ResultSet rs = ps.executeQuery()) {
@@ -105,7 +105,7 @@ public class ThematicMapsViewHelper {
      */
     public static List<Long> findAppsetupsHavingBundleButNoDivmanazer(Connection conn, long bundleId) throws SQLException {
         String sql = "SELECT view_id FROM portti_view_bundle_seq WHERE bundle_id = ? \n" +
-                "and view_id not in (select view_id FROM portti_view_bundle_seq WHERE bundle_id = (select id from portti_bundle where name = 'divmanazer'))";
+                "and view_id not in (select view_id FROM portti_view_bundle_seq WHERE bundle_id = (select id from oskari_bundle where name = 'divmanazer'))";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setLong(1, bundleId);
             try (ResultSet rs = ps.executeQuery()) {

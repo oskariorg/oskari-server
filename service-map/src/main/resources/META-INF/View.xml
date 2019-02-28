@@ -194,7 +194,7 @@
             parameterClass="java.lang.Long"
             resultMap="bundle">
       SELECT   s.state, s.view_id, s.seqno, s.config, s.startup, b.name, s.bundle_id, s.bundleinstance
-        FROM   portti_view_bundle_seq s, portti_bundle b
+        FROM   portti_view_bundle_seq s, oskari_bundle b
        WHERE   s.bundle_id = b.id AND view_id = #id# order by s.seqno ASC
     </select>
 
@@ -202,7 +202,7 @@
             parameterClass="java.lang.Long"
             resultMap="bundle">
       SELECT   s.view_id, s.bundle_id, s.seqno, s.state, s.config, s.startup, s.bundleinstance, b.name
-        FROM   portti_view_bundle_seq s, portti_bundle b
+        FROM   portti_view_bundle_seq s, oskari_bundle b
        WHERE   view_id = #view_id# AND s.bundle_id = b.id
        ORDER BY s.seqno ASC
     </select>
