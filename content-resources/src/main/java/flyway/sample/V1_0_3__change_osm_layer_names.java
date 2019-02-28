@@ -2,7 +2,7 @@ package flyway.sample;
 
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.map.layer.OskariLayerService;
-import fi.nls.oskari.map.layer.OskariLayerServiceIbatisImpl;
+import fi.nls.oskari.map.layer.OskariLayerServiceMybatisImpl;
 import fi.nls.oskari.map.view.ViewService;
 import fi.nls.oskari.map.view.ViewServiceIbatisImpl;
 import fi.nls.oskari.util.PropertyUtil;
@@ -18,7 +18,7 @@ import java.util.List;
  */
 public class V1_0_3__change_osm_layer_names implements JdbcMigration {
     private static final ViewService VIEW_SERVICE = new ViewServiceIbatisImpl();
-    private static final OskariLayerService LAYER_SERVICE = new OskariLayerServiceIbatisImpl();
+    private static final OskariLayerService LAYER_SERVICE = new OskariLayerServiceMybatisImpl();
 
     private static final String OSM_WMS_WORLDWIDE_URL = "http://129.206.228.72/cached/osm";
     private static final String OSM_WMS_WORLDWIDE_NAME = "osm_auto:all";

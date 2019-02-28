@@ -14,7 +14,7 @@ import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.data.domain.OskariLayerResource;
 import fi.nls.oskari.map.layer.OskariLayerService;
-import fi.nls.oskari.map.layer.OskariLayerServiceIbatisImpl;
+import fi.nls.oskari.map.layer.OskariLayerServiceMybatisImpl;
 import fi.nls.oskari.map.view.ViewException;
 import fi.nls.oskari.map.view.ViewService;
 import fi.nls.oskari.map.view.ViewServiceIbatisImpl;
@@ -49,7 +49,7 @@ public class SystemViewsHandler extends RestActionHandler {
     public void init() {
         viewService = new ViewServiceIbatisImpl();
 
-        layerService = new OskariLayerServiceIbatisImpl();
+        layerService = new OskariLayerServiceMybatisImpl();
         permissionsService = new PermissionsServiceIbatisImpl();
     }
 

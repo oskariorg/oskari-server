@@ -23,7 +23,7 @@ import fi.nls.oskari.map.analysis.service.AnalysisDataService;
 import fi.nls.oskari.map.analysis.service.AnalysisWebProcessingService;
 import fi.nls.oskari.map.data.domain.OskariLayerResource;
 import fi.nls.oskari.map.layer.OskariLayerService;
-import fi.nls.oskari.map.layer.OskariLayerServiceIbatisImpl;
+import fi.nls.oskari.map.layer.OskariLayerServiceMybatisImpl;
 import fi.nls.oskari.permission.domain.Permission;
 import fi.nls.oskari.permission.domain.Resource;
 import fi.nls.oskari.service.ServiceException;
@@ -46,7 +46,7 @@ public class CreateAnalysisLayerHandler extends RestActionHandler {
     private AnalysisDataService analysisDataService = new AnalysisDataService();
     private AnalysisWebProcessingService wpsService = new AnalysisWebProcessingService();
     private AnalysisParser analysisParser = new AnalysisParser();
-    private OskariLayerService mapLayerService = new OskariLayerServiceIbatisImpl();
+    private OskariLayerService mapLayerService = new OskariLayerServiceMybatisImpl();
 
     private static PermissionsService permissionsService = new PermissionsServiceIbatisImpl();
 

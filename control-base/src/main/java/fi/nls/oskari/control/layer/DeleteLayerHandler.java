@@ -10,7 +10,7 @@ import fi.nls.oskari.domain.map.wfs.WFSLayerConfiguration;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.layer.OskariLayerService;
-import fi.nls.oskari.map.layer.OskariLayerServiceIbatisImpl;
+import fi.nls.oskari.map.layer.OskariLayerServiceMybatisImpl;
 import fi.nls.oskari.wfs.WFSLayerConfigurationService;
 import fi.nls.oskari.wfs.WFSLayerConfigurationServiceIbatisImpl;
 
@@ -23,7 +23,7 @@ import fi.nls.oskari.wfs.WFSLayerConfigurationServiceIbatisImpl;
 public class DeleteLayerHandler extends RestActionHandler {
 
     private static final Logger log = LogFactory.getLogger(DeleteLayerHandler.class);
-    private static final OskariLayerService mapLayerService = new OskariLayerServiceIbatisImpl();
+    private static final OskariLayerService mapLayerService = new OskariLayerServiceMybatisImpl();
     private PermissionsService permissionsService = new PermissionsServiceIbatisImpl();
     WFSLayerConfigurationService wfsLayerService = new WFSLayerConfigurationServiceIbatisImpl();
 

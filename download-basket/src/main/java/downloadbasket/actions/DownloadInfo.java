@@ -7,7 +7,7 @@ import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.layer.OskariLayerService;
-import fi.nls.oskari.map.layer.OskariLayerServiceIbatisImpl;
+import fi.nls.oskari.map.layer.OskariLayerServiceMybatisImpl;
 import fi.nls.oskari.util.ResponseHelper;
 import fi.nls.oskari.util.JSONHelper;
 import downloadbasket.helpers.SendDownloadDetailsToEmailThread;
@@ -30,7 +30,7 @@ public class DownloadInfo extends ActionHandler {
 
 	@Override
 	public void init() {
-		mapLayerService = new OskariLayerServiceIbatisImpl();
+		mapLayerService = new OskariLayerServiceMybatisImpl();
 	}
 
 	@Override

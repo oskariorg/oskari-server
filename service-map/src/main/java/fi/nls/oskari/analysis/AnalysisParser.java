@@ -8,7 +8,7 @@ import fi.nls.oskari.map.analysis.domain.*;
 import fi.nls.oskari.map.analysis.service.AnalysisDataService;
 import fi.nls.oskari.map.analysis.service.TransformationService;
 import fi.nls.oskari.map.layer.OskariLayerService;
-import fi.nls.oskari.map.layer.OskariLayerServiceIbatisImpl;
+import fi.nls.oskari.map.layer.OskariLayerServiceMybatisImpl;
 import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.JSONHelper;
@@ -32,7 +32,7 @@ public class AnalysisParser {
     private AnalysisDataService analysisDataService = new AnalysisDataService();
     private static final TransformationService transformationService = new TransformationService();
 
-    private OskariLayerService mapLayerService = new OskariLayerServiceIbatisImpl();
+    private OskariLayerService mapLayerService = new OskariLayerServiceMybatisImpl();
 
 
     private static final List<String> HIDDEN_FIELDS = Arrays.asList("ID",

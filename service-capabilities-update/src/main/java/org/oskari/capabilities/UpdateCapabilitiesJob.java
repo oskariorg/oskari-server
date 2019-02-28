@@ -12,7 +12,7 @@ import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.layer.OskariLayerService;
-import fi.nls.oskari.map.layer.OskariLayerServiceIbatisImpl;
+import fi.nls.oskari.map.layer.OskariLayerServiceMybatisImpl;
 import fi.nls.oskari.map.view.ViewService;
 import fi.nls.oskari.map.view.ViewServiceIbatisImpl;
 import fi.nls.oskari.map.view.util.ViewHelper;
@@ -38,7 +38,7 @@ public class UpdateCapabilitiesJob extends ScheduledJob {
     private final ViewService viewService;
 
     public UpdateCapabilitiesJob() {
-        this(new OskariLayerServiceIbatisImpl(),
+        this(new OskariLayerServiceMybatisImpl(),
                 new CapabilitiesCacheServiceMybatisImpl(),
                 new ViewServiceIbatisImpl());
     }
