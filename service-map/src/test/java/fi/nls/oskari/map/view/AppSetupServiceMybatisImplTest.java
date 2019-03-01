@@ -10,7 +10,7 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
-public class ViewServiceIbatisImplTest {
+public class AppSetupServiceMybatisImplTest {
 
     private ViewService service;
 
@@ -28,7 +28,7 @@ public class ViewServiceIbatisImplTest {
         PropertyUtil.addProperty("view.default.roles", "Admin, User, Guest");
         PropertyUtil.addProperty("oskari.user.service", DummyUserService.class.getCanonicalName(), true);
 
-        service = new ViewServiceIbatisImpl();
+        service = new AppSetupServiceMybatisImpl();
     }
 
     @Test
