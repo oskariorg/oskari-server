@@ -2,6 +2,8 @@
 
 ## 1.51.0
 
+### Logging configuration changes required
+
 Log4j was updated to version 2.x. 
 - If your application only uses the Oskari logger (fi.nls.oskari.log.LogFactory), no changes are needed.
 - If your application depends directly on the old 1.2.x log4j provided by Oskari, you should migrate to version 2
@@ -14,8 +16,17 @@ Log4j was updated to version 2.x.
 </dependency>
 ```
 
-Log4j2 uses a new syntax for logger configuration. It will look for `log4j2.properties` named file on the class path (you can put it under Jetty directory `resources/`). Example configuration can be found in the documentation: https://logging.apache.org/log4j/2.0/manual/configuration.html 
+Log4j2 uses a new syntax for logger configuration. It will look for `log4j2.xml` named file on the class path (you can put it under Jetty directory `resources/`).
+Example configuration can be found in the documentation:
 
+- https://github.com/oskariorg/sample-configs/blob/master/jetty-9/oskari-server/resources/log4j2.xml
+- https://logging.apache.org/log4j/2.0/manual/configuration.html
+
+### SLDs need to be updated to work with current GeoServer version
+
+The updated SLDs can be found in https://github.com/oskariorg/oskari-server/tree/master/content-resources/src/main/resources/sld
+
+These need to be manually updated on the GeoServer that is used for provding the user generated content (the included GeoServer if not customized).
 
 ## 1.50.0
 

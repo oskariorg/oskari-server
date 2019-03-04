@@ -2,7 +2,22 @@
 
 ## 1.51.0
 
-- Changed logging implementation to log4j version 2.x.
+- Changed logging implementation to log4j version 2.x. See MigrationGuide.md for configuration changes.
+- Statistical datasources, region sets and indicators can now fallback to unlocalized name instead of assuming each language to have lozalized value.
+- Statistical region sets are now sorted based on the order number in oskari_maplayer_group_link database table.
+- Statistical datasource URLs can now have a placeholder for language. When used the indicators are loaded with all languages configured to Oskari to get localized names.
+- Layer coverage can now be ignored by adding ignoreCoverage: true in oskari_maplayer.attributes for misconfigured services. Workaround for an issue where layers from misconfigured services are hidden from the map when user browses to a viewport out of the layers coverage area described in GetCapabilities response.
+- Upgraded JTS to match GeoTools version to prevent duplicated versions and conflicting classes.
+- Improved KML parsing for userlayer imports.
+- Improvements on the WFS-MVT/GeoJSON client/server implementation GetWFSVectorTile/GetWFSFeatures action routes.
+- Added new action route for getting localized attribute names for WFS-layers "GetLocalizedPropertyNames".
+- Improvements to userlayer style handling.
+- Fixed SLDs for user generated layers (myplaces, analysis, userlayer) to work with the new GeoServer version. See MigrationGuide for details.
+- Fixed GeoServer REST API client and injecting SLDs when using the setup app and the new GeoServer version now works properly.
+- Improved the setup app https://github.com/oskariorg/oskari-server/pull/331
+- The database tables now have some comments added on them. These are used to generate documentation but are also there to help navigating the database.
+- Enabled support for asynchronous controllers for Spring. These can be used for creating action routes supporting long polling XHRs.
+
 
 ## 1.50.0
 
@@ -15,7 +30,7 @@ Note! This version is no longer compatible with Jetty 8. See migration notes!
 For a full list of changes see: https://github.com/oskariorg/oskari-server/milestone/13?closed=1
 
 - JSP-files modified to match the new frontend build. See migrationguide for details.
-- search-service-nls removed from oskari-server as it's adapters for NLS Finland specific search channels. See migrationguide for details. 
+- search-service-nls removed from oskari-server as it's adapters for NLS Finland specific search channels. See migrationguide for details.
 - Added initial support for vectortile based layers
 - URLencoding added for some outgoing requests to improve parameters handling
 - Improved SearchChannel.isValidSearchTerm() error handling so single erratic search channel doesn't prevent search results from showing.
@@ -43,10 +58,10 @@ For a full list of changes see: https://github.com/oskariorg/oskari-server/miles
 - Scale line calculation in printouts (PDF) has been corrected
 - Added cross-site request forgery protection (login/logout and any POST-requests need to include a token).
     Note! Any customized JSP pages might need to be modified to include the token.
-- jQuery has been updated to 3.3.1 from 1.10.2. 
+- jQuery has been updated to 3.3.1 from 1.10.2.
     The old version works as well but remember to update the script tag on any customized JSP.
 - Printout now supports user generated content layers (my places, userlayer, analysis)
-- Improved security for user generated statistical datasets. 
+- Improved security for user generated statistical datasets.
 - User registration now shows the users username on password reset page.
 - Axis order issue has been fixed on MyPlaces WFS-T payload (previously features could end up with the wrong axis order on certain map projections).
 - Regional divisions for statistical map that are used from resource-files (not from WFS-service) now support different map projections.
@@ -82,7 +97,7 @@ For a full list of changes see: https://github.com/oskariorg/oskari-server/miles
 
 - Imported dataset/userlayer coverage/extent is now transformed properly for embedded maps. Fixes an issue where the layer was immediately hidden by the frontend on embedded map.
 - Fixed an issue where layer/group sorting order wasn't saved properly on the hierarchical layer listing admin functions
-- Added more detailed ordering information for layers as hierarchical layer listing. Layers and groups can now be sorted as a mixed set instead of subgroups always being before any layers in the group. 
+- Added more detailed ordering information for layers as hierarchical layer listing. Layers and groups can now be sorted as a mixed set instead of subgroups always being before any layers in the group.
 
 ## 1.46.1
 
@@ -90,13 +105,13 @@ For a full list of changes see: https://github.com/oskariorg/oskari-server/miles
 
 - Fixed secure flag so unsecure services (e.g. WMS) are proxied like before on secured Oskari instances
 - GetHierarchicalMapLayerGroups action route response changed to return layers as a flat array beside the groups structure
-- Layers can now belong to multiple groups (previously caused layer listing to fail) 
+- Layers can now belong to multiple groups (previously caused layer listing to fail)
 - Userlayer/dataset import extent information is now properly transformed so coverage area can be sent for the frontend
 - Appsetups without mapfull.conf.mapOptions (relying on defaults) couldn't be used to publish maps. MapOptions config is now optional for publishing.
 - Fixed multiple issues for adding, editing and deleting dataprovider/groups via the admin user interface (both hierarchichal admin and the classical one work now).
 - Layer ids are now always used in layer JSON sent to the frontend (previously it could be an "external id" when configured)
 - oskari_maplayer no longer has the external_id column. It has been moved to another table, made unique and only the
- mapLayers URL-parameter handling cares about it anymore. Migration for database have been provided to replace external ids in 
+ mapLayers URL-parameter handling cares about it anymore. Migration for database have been provided to replace external ids in
  mapfull.state.selectedLayers and configs for BackgroundLayerSelectionPlugin and LayerSelectionPlugin.
 - PermissionService changed to return permissions as a Set instead of a List
 
@@ -121,15 +136,15 @@ Also check the [MigrationGuide.md](MigrationGuide.md) for actions required on up
 
 ### New printout implementation
 
-The new printout implementation has been deemed production ready and as such the old one has been removed. 
+The new printout implementation has been deemed production ready and as such the old one has been removed.
 The implementation is baked into oskari-map.war so server setup is a bit more admin-friendly.
 
 ### Layer handling
 
 - Database tables around maplayers have been renamed to be more in line with the group/organization naming and
  accommodate the new folder-like structure of layer groups (previously referred to as Inspire-themes).
-- Layers can now belong to multiple groups. 
-- The layer listing action route "GetMapLayers" have been replaced with "GetHierarchicalMapLayerGroups". 
+- Layers can now belong to multiple groups.
+- The layer listing action route "GetMapLayers" have been replaced with "GetHierarchicalMapLayerGroups".
 
 ### Misc
 
@@ -590,11 +605,11 @@ This will result in the query having an exact filter:
 
 fi.nls.oskari.control.view.modifier.param,ParamHandler has been moved from control-base to
 fi.nls.oskari.view.modifier.ParamHandler in service-control Maven module.
-Please update any references to point to the new package.  
+Please update any references to point to the new package.
 
 ### Layer urls with secure domains
 
-Layers that already use secure url or have no protocol/domain as part of the url are no longer prefixed when used in https-enabled Oskari-instance.  
+Layers that already use secure url or have no protocol/domain as part of the url are no longer prefixed when used in https-enabled Oskari-instance.
 
 ### User registration
 
@@ -3179,3 +3194,4 @@ Now has a convenience method to check if user has any of the roles in given Stri
 ### GetWSCapabilities action route
 
 Permitted roles for executing the action is now configurable with property 'actionhandler.GetWSCapabilitiesHandler.roles'
+- Support for new link parameter "degrees" was added that lets the map start at a rotated angle (requires maprotator on frontend to work)
