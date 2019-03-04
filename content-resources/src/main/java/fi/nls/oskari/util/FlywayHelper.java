@@ -19,7 +19,7 @@ public class FlywayHelper {
     public static List<Long> getViewIdsForTypes(Connection connection, String... types)
             throws SQLException {
         ArrayList<Long> ids = new ArrayList<>();
-        StringBuilder sql = new StringBuilder("SELECT id FROM portti_view");
+        StringBuilder sql = new StringBuilder("SELECT id FROM oskari_view");
         if (types != null && types.length > 0) {
             sql.append(" WHERE type IN (?");
             for (int i = 1; i < types.length; ++i) {
@@ -51,7 +51,7 @@ public class FlywayHelper {
 
     public static boolean viewContainsBundle(Connection connection, String bundle, Long viewId)
             throws SQLException {
-        final String sql ="SELECT * FROM portti_view_bundle_seq " +
+        final String sql ="SELECT * FROM oskari_view_bundle_seq " +
                 "WHERE bundle_id = (SELECT id FROM oskari_bundle WHERE name=?) " +
                 "AND view_id=?";
 
@@ -67,7 +67,7 @@ public class FlywayHelper {
 
     public static Bundle getBundleFromView(Connection connection, String bundle, Long viewId)
             throws SQLException {
-        final String sql ="SELECT * FROM portti_view_bundle_seq " +
+        final String sql ="SELECT * FROM oskari_view_bundle_seq " +
                 "WHERE bundle_id = (SELECT id FROM oskari_bundle WHERE name=?) " +
                 "AND view_id=?";
 
@@ -95,7 +95,7 @@ public class FlywayHelper {
 
     public static Bundle updateBundleInView(Connection connection, Bundle bundle, Long viewId)
             throws SQLException {
-        final String sql = "UPDATE portti_view_bundle_seq SET " +
+        final String sql = "UPDATE oskari_view_bundle_seq SET " +
                 "config=?, " +
                 "state=?, " +
                 "seqno=?, " +
@@ -118,12 +118,12 @@ public class FlywayHelper {
 
     public static void addBundleWithDefaults(Connection connection, Long viewId, String bundleid)
             throws SQLException {
-        final String sql ="INSERT INTO portti_view_bundle_seq" +
+        final String sql ="INSERT INTO oskari_view_bundle_seq" +
                 "(view_id, bundle_id, seqno, config, state, startup, bundleinstance) " +
                 "VALUES (" +
                 "?, " +
                 "(SELECT id FROM oskari_bundle WHERE name=?), " +
-                "(SELECT max(seqno)+1 FROM portti_view_bundle_seq WHERE view_id=?), " +
+                "(SELECT max(seqno)+1 FROM oskari_view_bundle_seq WHERE view_id=?), " +
                 "(SELECT config FROM oskari_bundle WHERE name=?), " +
                 "(SELECT state FROM oskari_bundle WHERE name=?),  " +
                 "(SELECT startup FROM oskari_bundle WHERE name=?), " +

@@ -45,7 +45,7 @@ public class ThematicMapsViewHelper {
 
     public static List<ConfigNState> getConfigsAndStates(Connection conn, long bundleId, String bundlePath) throws SQLException {
         String sql = "SELECT view_id, bundle_id, seqno, config, state, startup"
-                + " FROM portti_view_bundle_seq WHERE bundle_id = ?";
+                + " FROM oskari_view_bundle_seq WHERE bundle_id = ?";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setLong(1, bundleId);
             try (ResultSet rs = ps.executeQuery()) {
@@ -71,7 +71,7 @@ public class ThematicMapsViewHelper {
     }
 
     public static void update(Connection conn, List<ConfigNState> configsAndStates) throws SQLException {
-        String sql = "UPDATE portti_view_bundle_seq SET"
+        String sql = "UPDATE oskari_view_bundle_seq SET"
                 + " config = ?, state = ?"
                 + " WHERE view_id = ? AND bundle_id = ? AND seqno = ?";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -89,7 +89,7 @@ public class ThematicMapsViewHelper {
 
     public static void switchBundle(Connection conn, long old_bundle_id, long new_bundle_id) throws SQLException {
         final String startup = getBundle(conn, new_bundle_id).startup;
-        String sql = "UPDATE portti_view_bundle_seq SET"
+        String sql = "UPDATE oskari_view_bundle_seq SET"
                 + " startup = ?, bundle_id= ?, bundleinstance='statsgrid'"
                 + " WHERE bundle_id = ?";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -104,8 +104,8 @@ public class ThematicMapsViewHelper {
      * Returns a list of view ids that contain a bundle (statsgrid), but don't have divmanazer (required by the new statsgrid)
      */
     public static List<Long> findAppsetupsHavingBundleButNoDivmanazer(Connection conn, long bundleId) throws SQLException {
-        String sql = "SELECT view_id FROM portti_view_bundle_seq WHERE bundle_id = ? \n" +
-                "and view_id not in (select view_id FROM portti_view_bundle_seq WHERE bundle_id = (select id from oskari_bundle where name = 'divmanazer'))";
+        String sql = "SELECT view_id FROM oskari_view_bundle_seq WHERE bundle_id = ? \n" +
+                "and view_id not in (select view_id FROM oskari_view_bundle_seq WHERE bundle_id = (select id from oskari_bundle where name = 'divmanazer'))";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setLong(1, bundleId);
             try (ResultSet rs = ps.executeQuery()) {
@@ -124,7 +124,7 @@ public class ThematicMapsViewHelper {
      */
     public static void injectDivmanazerAfterMapfull(Connection conn, long viewId, ConfigNState divmanazer, long mapfullId) throws SQLException {
         String sql = "SELECT view_id, bundle_id, seqno, config, state, startup, bundleinstance\n" +
-                "  FROM portti_view_bundle_seq where view_id = ? order by seqno DESC";
+                "  FROM oskari_view_bundle_seq where view_id = ? order by seqno DESC";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setLong(1, viewId);
             try (ResultSet rs = ps.executeQuery()) {
@@ -153,7 +153,7 @@ public class ThematicMapsViewHelper {
      * @throws SQLException
      */
     private static void updateBundleSeq(Connection conn, List<ConfigNState> bundles, ConfigNState divmanazer, long mapfullId) throws SQLException {
-        String sql = "UPDATE portti_view_bundle_seq SET"
+        String sql = "UPDATE oskari_view_bundle_seq SET"
                 + " seqno = ?"
                 + " WHERE view_id = ? AND bundle_id = ?";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -184,7 +184,7 @@ public class ThematicMapsViewHelper {
      */
     private static void insertDivmanazer(Connection conn, ConfigNState divmanazer, int seqno, long viewId) throws SQLException {
 
-        final String sql ="INSERT INTO portti_view_bundle_seq" +
+        final String sql ="INSERT INTO oskari_view_bundle_seq" +
                 "(view_id, bundle_id, seqno, config, state, startup, bundleinstance) " +
                 "VALUES (?, ?, ?, ?, ?, ?, ?)";
         try(final PreparedStatement statement =
