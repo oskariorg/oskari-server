@@ -26,7 +26,7 @@ Example configuration can be found in the documentation:
 
 The updated SLDs can be found in https://github.com/oskariorg/oskari-server/tree/master/content-resources/src/main/resources/sld
 
-These need to be manually updated on the GeoServer that is used for provding the user generated content (the included GeoServer if not customized).
+These need to be manually updated on the GeoServer that is used for providing the user generated content (the included GeoServer if not customized).
 
 ## 1.50.0
 

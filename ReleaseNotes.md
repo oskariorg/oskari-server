@@ -3,9 +3,9 @@
 ## 1.51.0
 
 - Changed logging implementation to log4j version 2.x. See MigrationGuide.md for configuration changes.
-- Statistical datasources, region sets and indicators can now fallback to unlocalized name instead of assuming each language to have lozalized value.
+- Statistical data sources, region sets and indicators can now fallback to unlocalized name instead of assuming each language having a localized value.
 - Statistical region sets are now sorted based on the order number in oskari_maplayer_group_link database table.
-- Statistical datasource URLs can now have a placeholder for language. When used the indicators are loaded with all languages configured to Oskari to get localized names.
+- Statistical data source URLs can now have a placeholder for language. When used the indicators are loaded with all languages configured to Oskari to get localized names.
 - Layer coverage can now be ignored by adding ignoreCoverage: true in oskari_maplayer.attributes for misconfigured services. Workaround for an issue where layers from misconfigured services are hidden from the map when user browses to a viewport out of the layers coverage area described in GetCapabilities response.
 - Upgraded JTS to match GeoTools version to prevent duplicated versions and conflicting classes.
 - Improved KML parsing for userlayer imports.
@@ -17,7 +17,7 @@
 - Improved the setup app https://github.com/oskariorg/oskari-server/pull/331
 - The database tables now have some comments added on them. These are used to generate documentation but are also there to help navigating the database.
 - Enabled support for asynchronous controllers for Spring. These can be used for creating action routes supporting long polling XHRs.
-
+- Added initial WFS 3 client.
 
 ## 1.50.0
 
