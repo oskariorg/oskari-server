@@ -1,0 +1,1 @@
+ALTER TABLE portti_view RENAME TO oskari_appsetup;
