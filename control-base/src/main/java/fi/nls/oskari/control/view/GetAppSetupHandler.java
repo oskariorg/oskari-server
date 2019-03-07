@@ -63,10 +63,10 @@ public class GetAppSetupHandler extends ActionHandler {
     public void init() {
         // setup services if they haven't been initialized
         if(viewService == null) {
-            setViewService(new ViewServiceIbatisImpl());
+            setViewService(new AppSetupServiceMybatisImpl());
         }
         if(bundleService == null) {
-            setBundleService(new BundleServiceIbatisImpl());
+            setBundleService(new BundleServiceMybatisImpl());
         }
         // Returns names of @OskariViewModifier annotated classes of type ParamHandler from classpath
         paramHandlers.addAll(ParamControl.getHandlerKeys());

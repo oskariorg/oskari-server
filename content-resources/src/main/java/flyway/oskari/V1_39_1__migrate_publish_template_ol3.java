@@ -6,7 +6,7 @@ import fi.nls.oskari.domain.map.view.View;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.view.ViewService;
-import fi.nls.oskari.map.view.ViewServiceIbatisImpl;
+import fi.nls.oskari.map.view.AppSetupServiceMybatisImpl;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
 import org.flywaydb.core.api.migration.jdbc.JdbcMigration;
@@ -29,7 +29,7 @@ public class V1_39_1__migrate_publish_template_ol3 implements JdbcMigration {
                     "You will have to make an app specific migration since you skipped this one.");
             return;
         }
-        service = new ViewServiceIbatisImpl();
+        service = new AppSetupServiceMybatisImpl();
         long tplId = getTemplateId();
         View template = service.getViewWithConf(tplId);
         if(template == null) {

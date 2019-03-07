@@ -2,8 +2,6 @@ package downloadbasket.helpers;
 
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.log.LogFactory;
-import fi.nls.oskari.map.layer.OskariLayerService;
-import fi.nls.oskari.map.layer.OskariLayerServiceIbatisImpl;
 import fi.nls.oskari.util.PropertyUtil;
 import downloadbasket.data.NormalWayDownloads;
 import org.json.JSONArray;

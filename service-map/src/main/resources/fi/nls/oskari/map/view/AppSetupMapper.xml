@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="fi.nls.oskari.map.view.AppSetupMapper">
+
+    <resultMap id="viewWithConf" type="View">
+        <result property="id" column="id" />
+        <result property="oldId" column="old_id" />
+        <result property="uuid" column="uuid" />
+        <result property="name" column="name" />
+        <result property="description" column="description" />
+        <result property="type" column="type" />
+        <result property="application" column="application" />
+        <result property="page" column="page" />
+        <result property="developmentPath" column="application_dev_prefix" />
+        <result property="pubDomain" column="domain" />
+        <result property="lang" column="lang" />
+        <result property="creator" column="creator" />
+        <result property="onlyForUuId" column="only_uuid" />
+        <result property="isPublic" column="is_public" />
+        <result property="isDefault" column="is_default" />
+        <result property="metadata" column="metadata" jdbcType="VARCHAR" javaType="org.json.JSONObject" />
+        <collection property="bundles" column="id" select="getBundlesByViewId" />
+    </resultMap>
+
+    <resultMap id="bundle" type="Bundle">
+        <result property="bundleId" column="bundle_id" />
+        <result property="seqNo" column="seqno" />
+        <result property="viewId" column="view_id" />
+        <result property="state" column="state" />
+        <result property="config" column="config" />
+        <result property="startup" column="startup" />
+        <result property="name" column="name" />
+        <result property="bundleinstance" column="bundleinstance" />
+    </resultMap>
+
+    <select id="getDefaultViewId"
+            resultType="java.lang.Long"
+            parameterType="java.lang.String">
+        SELECT   MAX(id)
+        FROM   oskari_view
+        WHERE   is_default = TRUE
+        AND   type = #{type}
+    </select>
+
+    <select id="getViews"
+            parameterType="java.util.Map"
+            resultMap="viewWithConf">
+        SELECT   id, name, description, type, uuid, only_uuid,
+        application, page, application_dev_prefix, creator,
+        is_public, is_default, domain, lang, old_id, metadata
+        FROM   oskari_view
+        ORDER BY created ASC
+        OFFSET $offset$ limit $limit$
+    </select>
+
+    <select id="getViewWithConfByViewId"
+            parameterType="java.lang.Long"
+            resultMap="viewWithConf">
+        SELECT   id, name, description, type, uuid, only_uuid,
+        application, page, application_dev_prefix, creator,
+        is_public, is_default, domain, lang, old_id, metadata
+        FROM   oskari_view
+        WHERE   id = #{id}
+    </select>
+
+    <select id="getViewWithConfByUuId"
+            parameterType="java.lang.String"
+            resultMap="viewWithConf">
+        SELECT   id, name, description, type, uuid, only_uuid,
+        application, page, application_dev_prefix, creator,
+        is_public, is_default, domain, lang, old_id, metadata
+        FROM   oskari_view
+        WHERE   uuid::text = #{uuId}
+    </select>
+
+    <select id="getViewWithConfByOldId"
+            parameterType="java.lang.Long"
+            resultMap="viewWithConf">
+        SELECT   id, name, description, type, uuid, only_uuid,
+        application, page, application_dev_prefix, creator,
+        is_public, is_default, domain, lang, old_id, metadata
+        FROM   oskari_view
+        WHERE   old_id = #{old_id}
+    </select>
+
+    <select id="getViewWithConfByViewName"
+            parameterType="java.lang.String"
+            resultMap="viewWithConf">
+        SELECT   id, name, description, type, uuid, only_uuid,
+        application, page, application_dev_prefix, creator,
+        is_public, is_default, domain, lang, old_id, metadata
+        FROM   oskari_view
+        WHERE   name = #{name}
+    </select>
+
+    <select id="getViewsWithConfByUserId"
+            resultMap="viewWithConf">
+        SELECT   id, name, description, type, uuid, only_uuid,
+        application, page, application_dev_prefix, creator,
+        is_public, is_default, domain, lang, old_id, metadata
+        FROM   oskari_view
+        WHERE   creator = #{user_id}
+        ORDER BY   name ASC
+    </select>
+
+    <select id="getBundlesByViewId"
+            parameterType="java.lang.Long"
+            resultMap="bundle">
+        SELECT   s.view_id, s.bundle_id, s.seqno, s.state, s.config, s.startup, s.bundleinstance, b.name
+        FROM   oskari_view_bundle_seq s, oskari_bundle b
+        WHERE   view_id = #{view_id} AND s.bundle_id = b.id
+        ORDER BY s.seqno ASC
+    </select>
+
+    <insert id="addView" parameterType="View" useGeneratedKeys="true">
+        INSERT INTO oskari_view ( name, "description", type, application_dev_prefix, page, application,
+            uuid, only_uuid, domain, lang, creator, is_public, is_default, metadata)
+        VALUES ( #{name}, #{description}, #{type}, #{developmentPath}, #{page}, #{application}, '$uuid$', true,
+        #{pubDomain}, #{lang}, #{creator}, #{isPublic}, #{isDefault}, #{metadataAsString} )
+        RETURNING id
+    </insert>
+
+    <update id="updateAccess"
+               parameterType="View">
+        UPDATE oskari_view
+        SET is_public = #{isPublic}
+        WHERE id = {id}
+    </update>
+
+    <delete id="deleteBundleByView"
+               parameterType="java.lang.Long">
+        DELETE FROM oskari_view_bundle_seq WHERE view_id = #{id}
+    </delete>
+
+    <delete id="deleteView"
+        parameterType="java.lang.Long">
+        DELETE FROM oskari_view WHERE id = #{id}
+    </delete>
+
+    <delete id="deleteViewByUser"
+               parameterType="java.lang.Long">
+        DELETE FROM oskari_view
+        WHERE creator = #{userId}
+    </delete>
+
+    <update id="resetUsersDefaultViews"
+               parameterType="java.lang.Long">
+        UPDATE oskari_view
+        SET is_default = FALSE
+        WHERE creator = #{userId}
+        AND type = 'USER';
+    </update>
+
+    <update id="update"
+               parameterType="View">
+        UPDATE oskari_view
+        SET name = #{name}, description = #{description},
+        application = #{application}, page = #{page}, application_dev_prefix = #{developmentPath},
+        domain = #{pubDomain}, lang = #{lang}, is_public = #{isPublic}, is_default = #{isDefault}, metadata = #{metadataAsString}
+        WHERE id = #{id}
+    </update>
+
+    <update id="updateUsage"
+               parameterType="View">
+        UPDATE oskari_view
+        SET used=now(),
+        usagecount=(SELECT usagecount+1 FROM oskari_view WHERE id=#{id})
+        WHERE id=#{id};
+    </update>
+
+    <insert id="addBundle"
+               parameterType="Bundle">
+        INSERT INTO oskari_view_bundle_seq (view_id, bundle_id, seqno, state, config, bundleinstance)
+        VALUES ( #{viewId}, #{bundleId}, #{seqNo}, #{state}, #{config}, #{bundleinstance})
+        RETURNING view_id
+    </insert>
+
+    <update id="updateBundleSettingsInView"
+            parameterType="java.util.Map">
+        UPDATE oskari_view_bundle_seq SET
+        config = #{config},
+        state = #{state},
+        bundleinstance = #{bundleinstance}
+        WHERE view_id = #{view_id} AND bundle_id = #{bundle_id}
+    </update>
+
+    <select id="getDefaultViewIds"
+            resultType="java.lang.Long">
+        SELECT id
+        FROM   oskari_view
+        WHERE  is_default = TRUE
+        AND    type = 'DEFAULT'
+        AND    creator = -1;
+    </select>
+
+    <select id="geDefaultViewIdByUserId"
+            resultType="java.lang.Long"
+            parameterType="java.lang.Long">
+        SELECT   MAX(id)
+        FROM   oskari_view
+        WHERE   is_default = TRUE
+        AND   type = 'USER'
+        AND   creator = #{userId};
+    </select>
+
+</mapper>

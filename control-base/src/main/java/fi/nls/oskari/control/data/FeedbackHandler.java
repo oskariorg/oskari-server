@@ -10,7 +10,7 @@ import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.feedback.FeedbackService;
 import fi.nls.oskari.feedback.open311.FeedbackImpl;
 import fi.nls.oskari.map.view.ViewService;
-import fi.nls.oskari.map.view.ViewServiceIbatisImpl;
+import fi.nls.oskari.map.view.AppSetupServiceMybatisImpl;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.util.ResponseHelper;
@@ -42,7 +42,7 @@ public class FeedbackHandler extends RestActionHandler {
     public void init() {
         super.init();
         service = new FeedbackImpl();
-        viewService = new ViewServiceIbatisImpl();
+        viewService = new AppSetupServiceMybatisImpl();
     }
 
     @Override

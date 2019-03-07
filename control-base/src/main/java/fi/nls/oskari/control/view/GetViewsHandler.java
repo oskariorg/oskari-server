@@ -10,7 +10,7 @@ import fi.nls.oskari.domain.map.view.ViewTypes;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.view.ViewService;
-import fi.nls.oskari.map.view.ViewServiceIbatisImpl;
+import fi.nls.oskari.map.view.AppSetupServiceMybatisImpl;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.ResponseHelper;
 import org.json.JSONArray;
@@ -44,7 +44,7 @@ public class GetViewsHandler extends ActionHandler {
     public void init() {
         // setup service only if it hasn't been set via the setter
         if (viewService == null) {
-            setViewService(new ViewServiceIbatisImpl());
+            setViewService(new AppSetupServiceMybatisImpl());
         }
     }
 

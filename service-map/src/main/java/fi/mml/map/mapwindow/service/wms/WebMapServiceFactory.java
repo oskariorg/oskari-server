@@ -4,7 +4,7 @@ import fi.nls.oskari.cache.Cache;
 import fi.nls.oskari.cache.CacheManager;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.map.layer.OskariLayerService;
-import fi.nls.oskari.map.layer.OskariLayerServiceIbatisImpl;
+import fi.nls.oskari.map.layer.OskariLayerServiceMybatisImpl;
 import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.service.capabilities.CapabilitiesCacheService;
@@ -18,7 +18,7 @@ import fi.nls.oskari.wms.WMSCapabilities;
 public class WebMapServiceFactory {
 
     private static final CapabilitiesCacheService CAPABILITIES_SERVICE = OskariComponentManager.getComponentOfType(CapabilitiesCacheService.class);
-    private static final OskariLayerService LAYER_SERVICE = new OskariLayerServiceIbatisImpl();
+    private static final OskariLayerService LAYER_SERVICE = new OskariLayerServiceMybatisImpl();
     private static Cache<WebMapService> wmsCache = CacheManager.getCache(WebMapServiceFactory.class.getName());
     static {
         wmsCache.setExpiration(12L*60L*60L*1000L);

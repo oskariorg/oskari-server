@@ -5,9 +5,9 @@ import fi.nls.oskari.domain.map.view.View;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.view.BundleService;
-import fi.nls.oskari.map.view.BundleServiceIbatisImpl;
+import fi.nls.oskari.map.view.BundleServiceMybatisImpl;
 import fi.nls.oskari.map.view.ViewService;
-import fi.nls.oskari.map.view.ViewServiceIbatisImpl;
+import fi.nls.oskari.map.view.AppSetupServiceMybatisImpl;
 import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.JSONHelper;
@@ -29,8 +29,8 @@ import java.util.Set;
  */
 public class ViewHelper {
 
-    private static final ViewService viewService = new ViewServiceIbatisImpl();
-    private static final BundleService bundleService = new BundleServiceIbatisImpl();
+    private static final ViewService viewService = new AppSetupServiceMybatisImpl();
+    private static final BundleService bundleService = new BundleServiceMybatisImpl();
     private static Logger log = LogFactory.getLogger(ViewHelper.class);
 
     public static long insertView(Connection conn, final String viewfile)

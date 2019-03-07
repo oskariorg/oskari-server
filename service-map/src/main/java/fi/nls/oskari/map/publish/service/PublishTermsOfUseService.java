@@ -1,9 +1,9 @@
 package fi.nls.oskari.map.publish.service;
 
 import fi.nls.oskari.map.publish.domain.TermsOfUse;
-import fi.nls.oskari.service.db.BaseService;
+import fi.nls.oskari.service.OskariComponent;
 
-public interface PublishTermsOfUseService extends BaseService<TermsOfUse> {
-    public int setUserAgreed(final long userId);
-    public TermsOfUse findByUserId(final long userId);
+public abstract class PublishTermsOfUseService extends OskariComponent {
+    public abstract int setUserAgreed(final long userId);
+    public abstract TermsOfUse findByUserId(final long userId);
 }

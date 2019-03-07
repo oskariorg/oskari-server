@@ -7,13 +7,13 @@ import fi.mml.portti.service.db.permissions.PermissionsServiceIbatisImpl;
 import fi.mml.portti.service.search.SearchService;
 import fi.mml.portti.service.search.SearchServiceImpl;
 import fi.nls.oskari.map.layer.DataProviderService;
-import fi.nls.oskari.map.layer.DataProviderServiceIbatisImpl;
+import fi.nls.oskari.map.layer.DataProviderServiceMybatisImpl;
 import fi.nls.oskari.map.layer.OskariLayerService;
-import fi.nls.oskari.map.layer.OskariLayerServiceIbatisImpl;
+import fi.nls.oskari.map.layer.OskariLayerServiceMybatisImpl;
 import fi.nls.oskari.map.layer.group.link.OskariLayerGroupLinkService;
 import fi.nls.oskari.map.layer.group.link.OskariLayerGroupLinkServiceMybatisImpl;
 import fi.nls.oskari.map.view.ViewService;
-import fi.nls.oskari.map.view.ViewServiceIbatisImpl;
+import fi.nls.oskari.map.view.AppSetupServiceMybatisImpl;
 import fi.nls.oskari.service.capabilities.CapabilitiesCacheService;
 import fi.nls.oskari.service.capabilities.CapabilitiesCacheServiceMybatisImpl;
 import fi.nls.oskari.wfs.WFSLayerConfigurationService;
@@ -33,21 +33,21 @@ public class ServiceFactory {
 
     public static DataProviderService getDataProviderService() {
         if (dataProviderService == null) {
-            dataProviderService = new DataProviderServiceIbatisImpl();
+            dataProviderService = new DataProviderServiceMybatisImpl();
         }
         return dataProviderService;
     }
 
     public static OskariLayerService getMapLayerService() {
         if (mapLayerService == null) {
-            mapLayerService = new OskariLayerServiceIbatisImpl();
+            mapLayerService = new OskariLayerServiceMybatisImpl();
         }
         return mapLayerService;
     }
 
     public static ViewService getViewService() {
         if (viewService == null) {
-            viewService = new ViewServiceIbatisImpl();
+            viewService = new AppSetupServiceMybatisImpl();
         }
         return viewService;
     }

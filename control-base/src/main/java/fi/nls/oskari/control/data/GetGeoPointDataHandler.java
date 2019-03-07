@@ -12,7 +12,7 @@ import fi.nls.oskari.map.data.domain.GFIRequestParams;
 import fi.nls.oskari.map.data.domain.GFIRestQueryParams;
 import fi.nls.oskari.map.data.service.GetGeoPointDataService;
 import fi.nls.oskari.map.layer.OskariLayerService;
-import fi.nls.oskari.map.layer.OskariLayerServiceIbatisImpl;
+import fi.nls.oskari.map.layer.OskariLayerServiceMybatisImpl;
 import fi.nls.oskari.map.myplaces.service.GeoServerProxyService;
 import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.ResponseHelper;
@@ -24,7 +24,7 @@ import static fi.nls.oskari.control.ActionConstants.*;
 @OskariActionRoute("GetFeatureInfoWMS")
 public class GetGeoPointDataHandler extends ActionHandler {
 
-	private final OskariLayerService mapLayerService = new OskariLayerServiceIbatisImpl();
+	private final OskariLayerService mapLayerService = new OskariLayerServiceMybatisImpl();
 	private final GetGeoPointDataService geoPointService = new GetGeoPointDataService();
     private final GeoServerProxyService myplacesService = new GeoServerProxyService();
 

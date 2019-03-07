@@ -7,7 +7,7 @@ import fi.nls.oskari.domain.map.view.View;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.view.ViewService;
-import fi.nls.oskari.map.view.ViewServiceIbatisImpl;
+import fi.nls.oskari.map.view.AppSetupServiceMybatisImpl;
 import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.RequestHelper;
 import fi.nls.oskari.util.ResponseHelper;
@@ -18,7 +18,7 @@ import org.json.JSONObject;
 public class UpdateViewHandler extends RestActionHandler {
 
     private static final Logger LOG = LogFactory.getLogger(UpdateViewHandler.class);
-    private ViewService vs = new ViewServiceIbatisImpl();
+    private ViewService vs = new AppSetupServiceMybatisImpl();
 
     @Override
     public void handlePost(ActionParameters params) throws ActionException {

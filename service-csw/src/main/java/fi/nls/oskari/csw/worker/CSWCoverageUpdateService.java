@@ -11,7 +11,7 @@ import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.layer.OskariLayerService;
-import fi.nls.oskari.map.layer.OskariLayerServiceIbatisImpl;
+import fi.nls.oskari.map.layer.OskariLayerServiceMybatisImpl;
 import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.worker.ScheduledJob;
 
@@ -27,7 +27,7 @@ import java.util.Set;
 public class CSWCoverageUpdateService extends ScheduledJob {
     private static final Logger log = LogFactory.getLogger(CSWCoverageUpdateService.class);
 
-    final OskariLayerService layerService = new OskariLayerServiceIbatisImpl();
+    final OskariLayerService layerService = new OskariLayerServiceMybatisImpl();
     final private static String PROPERTY_BASE_URL = "service.metadata.url";
 
     @Override

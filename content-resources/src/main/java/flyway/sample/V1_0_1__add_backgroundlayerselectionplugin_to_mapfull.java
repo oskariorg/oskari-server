@@ -4,9 +4,9 @@ import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.domain.map.view.Bundle;
 import fi.nls.oskari.domain.map.view.View;
 import fi.nls.oskari.map.layer.OskariLayerService;
-import fi.nls.oskari.map.layer.OskariLayerServiceIbatisImpl;
+import fi.nls.oskari.map.layer.OskariLayerServiceMybatisImpl;
 import fi.nls.oskari.map.view.ViewService;
-import fi.nls.oskari.map.view.ViewServiceIbatisImpl;
+import fi.nls.oskari.map.view.AppSetupServiceMybatisImpl;
 import org.flywaydb.core.api.migration.jdbc.JdbcMigration;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -19,8 +19,8 @@ import java.util.List;
  * Created by Marko Kuosmanen on 23.9.2015.
  */
 public class V1_0_1__add_backgroundlayerselectionplugin_to_mapfull implements JdbcMigration {
-    private static final ViewService VIEW_SERVICE = new ViewServiceIbatisImpl();
-    private static final OskariLayerService LAYER_SERVICE = new OskariLayerServiceIbatisImpl();
+    private static final ViewService VIEW_SERVICE = new AppSetupServiceMybatisImpl();
+    private static final OskariLayerService LAYER_SERVICE = new OskariLayerServiceMybatisImpl();
     private static final String PLUGIN_NAME = "Oskari.mapframework.bundle.mapmodule.plugin.BackgroundLayerSelectionPlugin";
     private static final String MAPFULL = "mapfull";
 

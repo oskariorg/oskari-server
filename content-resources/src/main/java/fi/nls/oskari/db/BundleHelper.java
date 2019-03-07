@@ -4,7 +4,7 @@ import fi.nls.oskari.domain.map.view.Bundle;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.view.BundleService;
-import fi.nls.oskari.map.view.BundleServiceIbatisImpl;
+import fi.nls.oskari.map.view.BundleServiceMybatisImpl;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.OskariRuntimeException;
 
@@ -24,7 +24,7 @@ import java.sql.SQLException;
 public class BundleHelper {
 
     private static final Logger LOG = LogFactory.getLogger(BundleHelper.class);
-    private static final BundleService SERVICE = new BundleServiceIbatisImpl();
+    private static final BundleService SERVICE = new BundleServiceMybatisImpl();
 
     private static final String BUNDLE_STARTUP_TEMPLATE = "BundleHelper-startup.json";
     private static String startupTemplate = "";
@@ -77,7 +77,7 @@ public class BundleHelper {
         }
 
         try(PreparedStatement statement =
-                    conn.prepareStatement("INSERT INTO portti_bundle(name, startup, config, state) VALUES(?,?,?,?)")) {
+                    conn.prepareStatement("INSERT INTO oskari_bundle(name, startup, config, state) VALUES(?,?,?,?)")) {
             statement.setString(1,bundle.getName());
             statement.setString(2,bundle.getStartup());
             statement.setString(3,bundle.getConfig());
@@ -88,7 +88,7 @@ public class BundleHelper {
 
     public static Bundle getRegisteredBundle(final String id, Connection conn) throws SQLException {
         try(PreparedStatement statement =
-                    conn.prepareStatement("SELECT id, name, startup, config, state FROM portti_bundle WHERE name=?")) {
+                    conn.prepareStatement("SELECT id, name, startup, config, state FROM oskari_bundle WHERE name=?")) {
             statement.setString(1, id);
             try (ResultSet rs = statement.executeQuery()) {
                 if(!rs.next()) {

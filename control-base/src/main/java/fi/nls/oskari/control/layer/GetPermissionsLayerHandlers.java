@@ -19,7 +19,7 @@ import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.map.data.domain.OskariLayerResource;
 import fi.nls.oskari.map.layer.OskariLayerService;
-import fi.nls.oskari.map.layer.OskariLayerServiceIbatisImpl;
+import fi.nls.oskari.map.layer.OskariLayerServiceMybatisImpl;
 import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.util.ResponseHelper;
 
@@ -36,7 +36,7 @@ permission.EDIT_LAYER_CONTENT.name.en=Edit layer
 @OskariActionRoute("GetPermissionsLayerHandlers")
 public class GetPermissionsLayerHandlers extends ActionHandler {
 
-    private static OskariLayerService mapLayerService = new OskariLayerServiceIbatisImpl();
+    private static OskariLayerService mapLayerService = new OskariLayerServiceMybatisImpl();
     private static PermissionsService permissionsService = new PermissionsServiceIbatisImpl();
     private static String JSON_NAMES_SPACE = "namespace";
     private static String JSON_RESOURCE_NAME = "resourceName";

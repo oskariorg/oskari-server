@@ -19,7 +19,7 @@ import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.layer.OskariLayerService;
-import fi.nls.oskari.map.layer.OskariLayerServiceIbatisImpl;
+import fi.nls.oskari.map.layer.OskariLayerServiceMybatisImpl;
 import fi.nls.oskari.map.layer.formatters.LayerJSONFormatter;
 import fi.nls.oskari.util.JSONHelper;
 
@@ -37,7 +37,7 @@ public class OskariLayerWorker {
 
     private static Logger log = LogFactory.getLogger(OskariLayerWorker.class);
 
-    private static OskariLayerService mapLayerService = new OskariLayerServiceIbatisImpl();
+    private static OskariLayerService mapLayerService = new OskariLayerServiceMybatisImpl();
     private static PermissionsService permissionsService = new PermissionsServiceIbatisImpl();
 
     private final static LayerJSONFormatter FORMATTER = new LayerJSONFormatter();

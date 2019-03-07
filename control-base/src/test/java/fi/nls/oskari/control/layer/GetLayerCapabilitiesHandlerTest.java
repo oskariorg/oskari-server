@@ -9,7 +9,7 @@ import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.map.layer.OskariLayerService;
-import fi.nls.oskari.map.layer.OskariLayerServiceIbatisImpl;
+import fi.nls.oskari.map.layer.OskariLayerServiceMybatisImpl;
 import fi.nls.oskari.permission.domain.Permission;
 import fi.nls.oskari.permission.domain.Resource;
 import fi.nls.oskari.service.OskariComponentManager;
@@ -96,7 +96,7 @@ public class GetLayerCapabilitiesHandlerTest extends JSONActionRouteTest {
      */
     private OskariLayerService getOskariLayerService() {
 
-        OskariLayerService layerService = mock(OskariLayerServiceIbatisImpl.class);
+        OskariLayerService layerService = mock(OskariLayerServiceMybatisImpl.class);
 
         OskariLayer layer = new OskariLayer();
         layer.setType("WMTS");

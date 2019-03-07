@@ -5,7 +5,7 @@ import fi.nls.oskari.domain.map.view.View;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.view.ViewService;
-import fi.nls.oskari.map.view.ViewServiceIbatisImpl;
+import fi.nls.oskari.map.view.AppSetupServiceMybatisImpl;
 import org.flywaydb.core.api.migration.jdbc.JdbcMigration;
 
 import java.sql.Connection;
@@ -18,7 +18,7 @@ import java.util.List;
  * Created by Marko Kuosmanen on 23.9.2015.
  */
 public class V1_0_0__add_coordinatetool_to_views implements JdbcMigration {
-    private static final ViewService VIEW_SERVICE = new ViewServiceIbatisImpl();
+    private static final ViewService VIEW_SERVICE = new AppSetupServiceMybatisImpl();
     private static final Logger LOG = LogFactory.getLogger(V1_0_0__add_coordinatetool_to_views.class);
     private static final int BATCH_SIZE = 50;
     private static final  String COORDINATE_TOOL = "coordinatetool";

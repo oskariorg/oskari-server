@@ -46,8 +46,8 @@ public class V1_39_2__migrate_published_maps_to_ol3 implements JdbcMigration {
                     "You will have to make an app specific migration since you skipped this one.");
             return;
         }
-        service = new ViewServiceIbatisImpl();
-        bundleService = new BundleServiceIbatisImpl();
+        service = new AppSetupServiceMybatisImpl();
+        bundleService = new BundleServiceMybatisImpl();
         // 1. list view uuids that have openlayers2 and of type PUBLISHED
         List<String> uuidList = getOL2PublishedUUIDs(conn);
         for(String uuid : uuidList) {

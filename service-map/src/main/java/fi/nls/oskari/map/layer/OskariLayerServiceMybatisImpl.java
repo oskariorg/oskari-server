@@ -1,61 +1,57 @@
 package fi.nls.oskari.map.layer;
 
-import com.ibatis.common.resources.Resources;
-import com.ibatis.sqlmap.client.SqlMapClient;
-import com.ibatis.sqlmap.client.SqlMapClientBuilder;
 import fi.nls.oskari.annotation.Oskari;
+import fi.nls.oskari.db.DatasourceHelper;
 import fi.nls.oskari.domain.map.DataProvider;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.mybatis.JSONObjectMybatisTypeHandler;
 import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.JSONHelper;
+import org.apache.ibatis.mapping.Environment;
+import org.apache.ibatis.session.Configuration;
+import org.apache.ibatis.session.SqlSession;
+import org.apache.ibatis.session.SqlSessionFactory;
+import org.apache.ibatis.session.SqlSessionFactoryBuilder;
+import org.apache.ibatis.transaction.TransactionFactory;
+import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
 
-import java.io.Reader;
-import java.sql.SQLException;
+import javax.sql.DataSource;
 import java.util.*;
 
 @Oskari("OskariLayerService")
-public class OskariLayerServiceIbatisImpl extends OskariLayerService {
+public class OskariLayerServiceMybatisImpl extends OskariLayerService {
 
-    private static final Logger LOG = LogFactory.getLogger(OskariLayerServiceIbatisImpl.class);
-    private SqlMapClient client = null;
+    private static final Logger LOG = LogFactory.getLogger(OskariLayerServiceMybatisImpl.class);
 
-    // make it static so we can change this with one call to all services when needed
-    private static String SQL_MAP_LOCATION = "META-INF/SqlMapConfig.xml";
+    private static DataProviderService dataProviderService = new DataProviderServiceMybatisImpl();
 
-    private static DataProviderService dataProviderService = new DataProviderServiceIbatisImpl();
+    private SqlSessionFactory factory = null;
 
-    /**
-     * Static setter to override default location
-     * @param newLocation
-     */
-    public static void setSqlMapLocation(final String newLocation) {
-        SQL_MAP_LOCATION = newLocation;
-    }
-
-    protected SqlMapClient getSqlMapClient() {
-        if (client == null) {
-            String sqlMapLocation = getSqlMapLocation();
-            try (Reader reader = Resources.getResourceAsReader(sqlMapLocation)) {
-                client = SqlMapClientBuilder.buildSqlMapClient(reader);
-            } catch (Exception e) {
-                throw new RuntimeException("Failed to retrieve SQL client", e);
-            }
+    public OskariLayerServiceMybatisImpl() {
+        final DatasourceHelper helper = DatasourceHelper.getInstance();
+        DataSource dataSource = helper.getDataSource();
+        if (dataSource == null) {
+            dataSource = helper.createDataSource();
         }
-        return client;
+        if (dataSource == null) {
+            LOG.error("Couldn't get datasource for oskari layer service");
+        }
+        factory = initializeMyBatis(dataSource);
     }
 
-    /*
-     * The purpose of this method is to allow many SqlMapConfig.xml files in a
-     * single portlet
-     */
-    protected String getSqlMapLocation() {
-        return SQL_MAP_LOCATION;
-    }
+    private SqlSessionFactory initializeMyBatis(final DataSource dataSource) {
+        final TransactionFactory transactionFactory = new JdbcTransactionFactory();
+        final Environment environment = new Environment("development", transactionFactory, dataSource);
 
-    protected String getNameSpace() {
-        return "OskariLayer";
+        final Configuration configuration = new Configuration(environment);
+        configuration.getTypeAliasRegistry().registerAlias(OskariLayer.class);
+        configuration.setLazyLoadingEnabled(true);
+        configuration.getTypeHandlerRegistry().register(JSONObjectMybatisTypeHandler.class);
+        configuration.addMapper(OskariLayerMapper.class);
+
+        return new SqlSessionFactoryBuilder().build(configuration);
     }
 
     private OskariLayer mapData(Map<String, Object> data) {
@@ -169,156 +165,189 @@ public class OskariLayerServiceIbatisImpl extends OskariLayerService {
     }
 
     public List<OskariLayer> findByUrlAndName(final String url, final String name) {
-        Map<String, String> params = new HashMap<String, String>();
-        params.put("url", url);
-        params.put("name", name);
-        final List<OskariLayer> layers =  mapDataList(queryForList(getNameSpace() + ".findByUrlAndName", params));
+
+        LOG.debug("Find by url: " + url + " and name: " + name);
+        final SqlSession session = factory.openSession();
+        List<OskariLayer> layers = new ArrayList<>();
+        try {
+            final OskariLayerMapper mapper = session.getMapper(OskariLayerMapper.class);
+            Map<String, String> params = new HashMap<String, String>();
+            params.put("url", url);
+            params.put("name", name);
+            layers = mapDataList(mapper.findByUrlAndName(params));
+        } catch (Exception e) {
+            LOG.warn(e,"Unable to find by url: " + url + " and name: " + name);
+        } finally {
+            session.close();
+        }
         return layers;
     }
 
     public List<OskariLayer> findByIdList(final List<Integer> intList) {
+        LOG.debug("Find by id list");
         if(intList.isEmpty()){
             return new ArrayList<>();
         }
-        Map<String, Object> params = new HashMap<String, Object>();
-        params.put("intList", intList);
-        params.put("parentIntList", intList);
-
-        List<Map<String,Object>> result = queryForList(getNameSpace() + ".findByIdList", params);
-        final List<OskariLayer> layers = mapDataList(result);
-
-        //Reorder layers to requested order
-        List<OskariLayer> reLayers = new ArrayList<OskariLayer>();
-        for (Integer id : intList) {
-            for (OskariLayer lay : layers) {
-                if (lay.getId() == id) {
-                    reLayers.add(lay);
-                    break;
+        final SqlSession session = factory.openSession();
+        try {
+            final OskariLayerMapper mapper = session.getMapper(OskariLayerMapper.class);
+            Map<String, Object> params = new HashMap<>();
+            params.put("intList", intList);
+            params.put("parentIntList", intList);
+            List<Map<String,Object>> result = mapper.findByIdList(params);
+            final List<OskariLayer> layers = mapDataList(result);
+            //Reorder layers to requested order
+            List<OskariLayer> reLayers = new ArrayList<>();
+            for (Integer id : intList) {
+                for (OskariLayer lay : layers) {
+                    if (lay.getId() == id) {
+                        reLayers.add(lay);
+                        break;
+                    }
                 }
             }
+            return reLayers;
+        } catch (Exception e) {
+            LOG.warn(e, "Unable to find by id list");
+        } finally {
+            session.close();
         }
-        return reLayers;
+        return new ArrayList<>();
     }
 
     public OskariLayer find(int id) {
+        LOG.debug("find by id: " + id);
+        final SqlSession session = factory.openSession();
         try {
-            client = getSqlMapClient();
+            final OskariLayerMapper mapper = session.getMapper(OskariLayerMapper.class);
             // get as list since we might have a collection layer (get sublayers with same query)
-            final List<OskariLayer> layers =  mapDataList(queryForList(getNameSpace() + ".findById", id));
+            final List<OskariLayer> layers =  mapDataList(mapper.find(id));
             if(layers != null && !layers.isEmpty()) {
                 // should we check for multiples? only should have one since sublayers are mapped in mapDataList()
                 return layers.get(0);
             }
         } catch (Exception e) {
-            LOG.warn(e, "Exception when getting layer with id:", id);
+            LOG.warn(e, "Exception when getting layer with id: " + id);
+        } finally {
+            session.close();
         }
-        LOG.warn("Couldn't find layer with id:", id);
         return null;
     }
 
     public List<OskariLayer> findByMetadataId(String uuid) {
+        LOG.debug("Find by metadata id: " + uuid);
+        final SqlSession session = factory.openSession();
         try {
-            client = getSqlMapClient();
-            final List<Map<String,Object>> list = queryForList(getNameSpace() + ".findByUuId", uuid);
-            final List<OskariLayer> layers = mapDataList(list);
-            return layers;
+            final OskariLayerMapper mapper = session.getMapper(OskariLayerMapper.class);
+            return mapDataList(mapper.findByUuid(uuid));
         } catch (Exception e) {
-            LOG.warn(e, "Exception when getting layer with uuid:", uuid);
+            LOG.warn(e, "Exception while getting metadata with id: " + uuid);
+        } finally {
+            session.close();
         }
-        LOG.warn("Couldn't find layer with id:", uuid);
         return Collections.emptyList();
     }
 
     private List<OskariLayer> findByParentId(int parentId) {
+        LOG.debug("Find by parent id: " + parentId);
+        final SqlSession session = factory.openSession();
         try {
-            client = getSqlMapClient();
-            return mapDataList(queryForList(getNameSpace() + ".findByParentId", parentId));
+            final OskariLayerMapper mapper = session.getMapper(OskariLayerMapper.class);
+            return mapDataList(mapper.findByParentId(parentId));
         } catch (Exception e) {
-            LOG.warn(e, "Couldn't find layers with parentId:", parentId);
+            LOG.warn(e, "Exception while getting by parent id: " + parentId);
+        } finally {
+            session.close();
         }
         return null;
     }
 
     public List<OskariLayer> findAll() {
         long start = System.currentTimeMillis();
-        List<Map<String,Object>> result = queryForList(getNameSpace() + ".findAll", null);
-        LOG.debug("Find all layers:", System.currentTimeMillis() - start, "ms");
-        start = System.currentTimeMillis();
-        final List<OskariLayer> layers = mapDataList(result);
-        LOG.debug("Parsing all layers:", System.currentTimeMillis() - start, "ms");
-        return layers;
+        final SqlSession session = factory.openSession();
+        try {
+            final OskariLayerMapper mapper = session.getMapper(OskariLayerMapper.class);
+            List<Map<String,Object>> result = mapper.findAll();
+            LOG.debug("Find all layers:", System.currentTimeMillis() - start, "ms");
+            start = System.currentTimeMillis();
+            final List<OskariLayer> layers = mapDataList(result);
+            LOG.debug("Parsing all layers:", System.currentTimeMillis() - start, "ms");
+            return layers;
+        } catch (Exception e) {
+            LOG.warn(e, "");
+        } finally {
+            session.close();
+        }
+        return Collections.emptyList();
     }
 
     @Override
     public List<OskariLayer> findAllWithPositiveUpdateRateSec() {
         long t0 = System.currentTimeMillis();
-        List<Map<String,Object>> result = queryForList(getNameSpace() + ".findAllWithPositiveUpdateRateSec", null);
-        long t1 = System.currentTimeMillis();
-        LOG.debug("Find layers with positive update rate sec took:", t1-t0, "ms");
-        List<OskariLayer> layers = mapDataList(result);
-        long t2 = System.currentTimeMillis();
-        LOG.debug("Parse layers with positive update rate sec took:", t2-t1, "ms");
-        return layers;
+        LOG.debug("Find all with positive update rate sec");
+        final SqlSession session = factory.openSession();
+        try {
+            final OskariLayerMapper mapper = session.getMapper(OskariLayerMapper.class);
+            List<Map<String,Object>> result = mapper.findAllWithPositiveUpdateRateSec();
+            long t1 = System.currentTimeMillis();
+            LOG.debug("Find layers with positive update rate sec took:", t1-t0, "ms");
+            List<OskariLayer> layers = mapDataList(result);
+            long t2 = System.currentTimeMillis();
+            LOG.debug("Parse layers with positive update rate sec took:", t2-t1, "ms");
+            return layers;
+        } catch (Exception e) {
+            LOG.warn(e, "Exception while getting oskari layers with positive update rate sec");
+        } finally {
+            session.close();
+        }
+        return Collections.emptyList();
     }
 
     public void update(final OskariLayer layer) {
+        LOG.debug("update layer");
+        final SqlSession session = factory.openSession();
         try {
-            getSqlMapClient().update(getNameSpace() + ".update", layer);
+            final OskariLayerMapper mapper = session.getMapper(OskariLayerMapper.class);
+            mapper.update(layer);
+            session.commit();
         } catch (Exception e) {
             throw new RuntimeException("Failed to update", e);
+        } finally {
+            session.close();
         }
     }
 
     public synchronized int insert(final OskariLayer layer) {
-        SqlMapClient client = null;
+        LOG.debug("insert new layer");
+        final SqlSession session = factory.openSession();
         try {
-            client = getSqlMapClient();
-            client.startTransaction();
-            client.insert(getNameSpace() + ".insert", layer);
-            Integer id = (Integer) client.queryForObject(getNameSpace()
-                    + ".maxId");
-            layer.setId(id);
-            client.commitTransaction();
-            return id;
+            final OskariLayerMapper mapper = session.getMapper(OskariLayerMapper.class);
+            mapper.insert(layer);
+            session.commit();
         } catch (Exception e) {
             throw new RuntimeException("Failed to insert", e);
         } finally {
-            if (client != null) {
-                try {
-                    client.endTransaction();
-                } catch (SQLException ignored) { }
-            }
+            session.close();
         }
+        return layer.getId();
     }
 
     public void delete(int id) {
+        LOG.debug("delete layer with id: " + id);
+        final SqlSession session = factory.openSession();
         try {
-            client.delete(getNameSpace() + ".delete", id);
+            final OskariLayerMapper mapper = session.getMapper(OskariLayerMapper.class);
+            mapper.delete(id);
+            session.commit();
         } catch (Exception e) {
             LOG.error(e, "Couldn't delete with id:", id);
+        } finally {
+            session.close();
         }
     }
 
     public void delete(Map<String, String> parameterMap) {
         delete(ConversionHelper.getInt(parameterMap.get("id"), -1));
-    }
-
-    /**
-     * Queries for list with given param object
-     *
-     * @param sqlId
-     * @param param objectIdentifier
-     * @return
-     */
-    private List<Map<String,Object>> queryForList(String sqlId, Object param) {
-        try {
-            client = getSqlMapClient();
-            List<Map<String,Object>> results = client.queryForList(sqlId, param);
-            return results;
-        } catch (Exception e) {
-            LOG.error(e, "Couldn't query list. SqlId:", sqlId, " - Param:", param);
-        }
-        return Collections.emptyList();
     }
 
 }

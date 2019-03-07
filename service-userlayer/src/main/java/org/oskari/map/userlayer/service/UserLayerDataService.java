@@ -8,7 +8,7 @@ import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.geometry.WKTHelper;
 import fi.nls.oskari.map.layer.OskariLayerService;
-import fi.nls.oskari.map.layer.OskariLayerServiceIbatisImpl;
+import fi.nls.oskari.map.layer.OskariLayerServiceMybatisImpl;
 import fi.nls.oskari.map.layer.formatters.LayerJSONFormatterUSERLAYER;
 import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.service.ServiceRuntimeException;
@@ -40,7 +40,7 @@ import java.util.List;
 public class UserLayerDataService {
 
     private static final Logger log = LogFactory.getLogger(UserLayerDataService.class);
-    private static final OskariLayerService mapLayerService = new OskariLayerServiceIbatisImpl();
+    private static final OskariLayerService mapLayerService = new OskariLayerServiceMybatisImpl();
     private static final LayerJSONFormatterUSERLAYER FORMATTER = new LayerJSONFormatterUSERLAYER();
 
     private static final String USERLAYER_LAYER_PREFIX = "userlayer_";

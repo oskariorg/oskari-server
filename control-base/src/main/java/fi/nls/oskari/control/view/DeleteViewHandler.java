@@ -7,7 +7,7 @@ import fi.nls.oskari.domain.map.view.View;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.view.ViewService;
-import fi.nls.oskari.map.view.ViewServiceIbatisImpl;
+import fi.nls.oskari.map.view.AppSetupServiceMybatisImpl;
 import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.ResponseHelper;
 import org.json.JSONObject;
@@ -15,7 +15,7 @@ import org.json.JSONObject;
 @OskariActionRoute("DeleteView")
 public class DeleteViewHandler extends RestActionHandler {
 
-    private ViewService vs = new ViewServiceIbatisImpl();
+    private ViewService vs = new AppSetupServiceMybatisImpl();
     private static final Logger log = LogFactory.getLogger(DeleteViewHandler.class);
 
     @Override

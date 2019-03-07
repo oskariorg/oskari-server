@@ -22,7 +22,7 @@ import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.layer.OskariLayerService;
-import fi.nls.oskari.map.layer.OskariLayerServiceIbatisImpl;
+import fi.nls.oskari.map.layer.OskariLayerServiceMybatisImpl;
 import fi.nls.oskari.util.ResponseHelper;
 import fi.nls.oskari.util.IOHelper;
 import java.net.HttpURLConnection;
@@ -89,6 +89,6 @@ public class GetFeatureForCropping extends ActionHandler {
 	public void init() {
 		super.init();
 
-		mapLayerService = new OskariLayerServiceIbatisImpl();
+		mapLayerService = new OskariLayerServiceMybatisImpl();
 	}
 }

@@ -13,7 +13,7 @@ import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.domain.map.wfs.WFSLayerConfiguration;
 import fi.nls.oskari.map.data.domain.OskariLayerResource;
 import fi.nls.oskari.map.layer.OskariLayerService;
-import fi.nls.oskari.map.layer.OskariLayerServiceIbatisImpl;
+import fi.nls.oskari.map.layer.OskariLayerServiceMybatisImpl;
 import fi.nls.oskari.permission.domain.Resource;
 import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.IOHelper;
@@ -52,7 +52,7 @@ public abstract class AbstractFeatureHandler extends RestActionHandler {
     @Override
     public void init() {
         super.init();
-        layerService = new OskariLayerServiceIbatisImpl();
+        layerService = new OskariLayerServiceMybatisImpl();
         permissionsService = new PermissionsServiceIbatisImpl();
         layerConfigurationService = new WFSLayerConfigurationServiceIbatisImpl();
     }

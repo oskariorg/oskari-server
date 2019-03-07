@@ -5,7 +5,7 @@ import fi.nls.oskari.domain.map.view.Bundle;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.view.BundleService;
-import fi.nls.oskari.map.view.BundleServiceIbatisImpl;
+import fi.nls.oskari.map.view.BundleServiceMybatisImpl;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.view.modifier.ModifierParams;
@@ -14,7 +14,7 @@ import org.json.JSONObject;
 public abstract class WFSHighlightParamHandler extends ParamHandler {
 
     private static final Logger log = LogFactory.getLogger(WFSHighlightParamHandler.class);
-    private static final BundleService bundleService = new BundleServiceIbatisImpl();
+    private static final BundleService bundleService = new BundleServiceMybatisImpl();
 
     protected static final String PARM__WFS_FEATURE_ID = "wfsFeature";
     protected static final String PARM__NATIONAL_CADASTRAL_REFERENCE_HIGHLIGHT = "nationalCadastralReferenceHighlight";

@@ -6,9 +6,9 @@ import fi.nls.oskari.domain.map.view.View;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.layer.OskariLayerService;
-import fi.nls.oskari.map.layer.OskariLayerServiceIbatisImpl;
+import fi.nls.oskari.map.layer.OskariLayerServiceMybatisImpl;
 import fi.nls.oskari.map.view.ViewService;
-import fi.nls.oskari.map.view.ViewServiceIbatisImpl;
+import fi.nls.oskari.map.view.AppSetupServiceMybatisImpl;
 import org.flywaydb.core.api.migration.jdbc.JdbcMigration;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -22,8 +22,8 @@ import java.util.List;
  */
 public class V1_0_4__change_mappfull_state_selected_map_layers implements JdbcMigration {
     private static final Logger LOG = LogFactory.getLogger(V1_0_4__change_mappfull_state_selected_map_layers.class);
-    private static final ViewService VIEW_SERVICE = new ViewServiceIbatisImpl();
-    private static final OskariLayerService LAYER_SERVICE = new OskariLayerServiceIbatisImpl();
+    private static final ViewService VIEW_SERVICE = new AppSetupServiceMybatisImpl();
+    private static final OskariLayerService LAYER_SERVICE = new OskariLayerServiceMybatisImpl();
 
     private static final String OSM_WMS_WORLDWIDE_URL = "http://129.206.228.72/cached/osm";
     private static final String OSM_WMS_WORLDWIDE_NAME = "osm_auto:all";

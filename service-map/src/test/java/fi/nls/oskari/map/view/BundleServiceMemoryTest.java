@@ -10,7 +10,7 @@ import static org.junit.Assert.*;
 
 public class BundleServiceMemoryTest {
 
-    private BundleService bundleService;
+    private BundleServiceMemory bundleService;
 
     @Before
     public void init() {

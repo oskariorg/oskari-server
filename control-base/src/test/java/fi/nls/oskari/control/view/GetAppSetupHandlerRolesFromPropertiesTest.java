@@ -12,11 +12,11 @@ import fi.nls.oskari.domain.map.DataProvider;
 import fi.nls.oskari.domain.map.view.View;
 import fi.nls.oskari.domain.map.view.ViewTypes;
 import fi.nls.oskari.map.layer.DataProviderService;
-import fi.nls.oskari.map.layer.DataProviderServiceIbatisImpl;
+import fi.nls.oskari.map.layer.DataProviderServiceMybatisImpl;
 import fi.nls.oskari.map.view.BundleService;
-import fi.nls.oskari.map.view.BundleServiceIbatisImpl;
+import fi.nls.oskari.map.view.BundleServiceMybatisImpl;
 import fi.nls.oskari.map.view.ViewService;
-import fi.nls.oskari.map.view.ViewServiceIbatisImpl;
+import fi.nls.oskari.map.view.AppSetupServiceMybatisImpl;
 import fi.nls.oskari.util.DuplicateException;
 import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.view.modifier.ViewModifier;
@@ -136,7 +136,7 @@ public class GetAppSetupHandlerRolesFromPropertiesTest extends JSONActionRouteTe
      */
     private void mockViewService() {
 
-        viewService = mock(ViewServiceIbatisImpl.class);
+        viewService = mock(AppSetupServiceMybatisImpl.class);
         // id 2 for guest user
         doReturn(2L).when(viewService).getDefaultViewId(getGuestUser());
         // id 1 for logged in user
@@ -158,7 +158,7 @@ public class GetAppSetupHandlerRolesFromPropertiesTest extends JSONActionRouteTe
 
     private void mockBundleService() throws Exception {
 
-        bundleService = mock(BundleServiceIbatisImpl.class);
+        bundleService = mock(BundleServiceMybatisImpl.class);
         doReturn(
                 BundleTestHelper.loadBundle("integration.admin-layerselector")
         ).when(bundleService).getBundleTemplateByName(ViewModifier.BUNDLE_ADMINLAYERSELECTOR);
@@ -173,7 +173,7 @@ public class GetAppSetupHandlerRolesFromPropertiesTest extends JSONActionRouteTe
 
         // return mocked  bundle service if a new one is created (in paramhandlers for example)
         // classes doing this must be listed in PrepareForTest annotation
-        whenNew(BundleServiceIbatisImpl.class).withNoArguments().
+        whenNew(BundleServiceMybatisImpl.class).withNoArguments().
                 thenAnswer(new Answer<Object>() {
                     public Object answer(InvocationOnMock invocation) throws Throwable {
                         return bundleService;
@@ -198,7 +198,7 @@ public class GetAppSetupHandlerRolesFromPropertiesTest extends JSONActionRouteTe
                 });
 
         // TODO: mock MapLayerWorker.getSelectedLayersStructure() instead to return a valid JSON structure
-        final DataProviderService groupService = mock(DataProviderServiceIbatisImpl.class);
+        final DataProviderService groupService = mock(DataProviderServiceMybatisImpl.class);
         DataProvider group = mock(DataProvider.class);
         group.setName("en", "Testing");
         doReturn(group).when(groupService).find(anyInt());
@@ -206,7 +206,7 @@ public class GetAppSetupHandlerRolesFromPropertiesTest extends JSONActionRouteTe
 
         // return mocked  bundle service if a new one is created (in paramhandlers for example)
         // classes doing this must be listed in PrepareForTest annotation
-        whenNew(DataProviderServiceIbatisImpl.class).withNoArguments().
+        whenNew(DataProviderServiceMybatisImpl.class).withNoArguments().
                 thenAnswer(new Answer<Object>() {
                     public Object answer(InvocationOnMock invocation) throws Throwable {
                         return groupService;

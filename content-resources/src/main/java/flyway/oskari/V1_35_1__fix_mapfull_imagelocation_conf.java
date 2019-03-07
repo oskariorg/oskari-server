@@ -5,7 +5,7 @@ import fi.nls.oskari.domain.map.view.View;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.view.ViewService;
-import fi.nls.oskari.map.view.ViewServiceIbatisImpl;
+import fi.nls.oskari.map.view.AppSetupServiceMybatisImpl;
 import org.flywaydb.core.api.migration.jdbc.JdbcMigration;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -30,7 +30,7 @@ public class V1_35_1__fix_mapfull_imagelocation_conf implements JdbcMigration {
     private int updatedViewCount = 0;
 
     public void migrate(Connection connection) throws Exception{
-        service =  new ViewServiceIbatisImpl();
+        service =  new AppSetupServiceMybatisImpl();
         try {
             updateViews(connection);
         }

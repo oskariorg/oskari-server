@@ -8,7 +8,7 @@ import fi.nls.oskari.domain.map.view.View;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.view.ViewService;
-import fi.nls.oskari.map.view.ViewServiceIbatisImpl;
+import fi.nls.oskari.map.view.AppSetupServiceMybatisImpl;
 import fi.nls.oskari.service.UserService;
 import fi.nls.oskari.util.PropertyUtil;
 import org.flywaydb.core.api.migration.jdbc.JdbcMigration;
@@ -57,7 +57,7 @@ public class V1_33_5__replace_deprecated_bundles_with_new_versions implements Jd
     private ViewService service = null;
 
     public void migrate(Connection connection) throws Exception {
-        service =  new ViewServiceIbatisImpl();
+        service =  new AppSetupServiceMybatisImpl();
         try {
             updateViews(connection);
         }

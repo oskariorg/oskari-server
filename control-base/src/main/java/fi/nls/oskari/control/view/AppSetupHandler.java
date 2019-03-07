@@ -112,11 +112,11 @@ public class AppSetupHandler extends RestActionHandler {
         permissionHelper.init();
 
         if (viewService == null) {
-            setViewService(new ViewServiceIbatisImpl());
+            setViewService(new AppSetupServiceMybatisImpl());
         }
 
         if (bundleService == null) {
-            setBundleService(new BundleServiceIbatisImpl());
+            setBundleService(new BundleServiceMybatisImpl());
         }
         try {
             getPublishTemplate();

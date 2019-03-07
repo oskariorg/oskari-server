@@ -27,7 +27,7 @@ import fi.nls.oskari.domain.User;
 import fi.nls.oskari.domain.map.MaplayerGroup;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.map.layer.OskariLayerService;
-import fi.nls.oskari.map.layer.OskariLayerServiceIbatisImpl;
+import fi.nls.oskari.map.layer.OskariLayerServiceMybatisImpl;
 import fi.nls.oskari.map.layer.group.link.OskariLayerGroupLink;
 import fi.nls.oskari.map.layer.group.link.OskariLayerGroupLinkService;
 import fi.nls.oskari.map.layer.group.link.OskariLayerGroupLinkServiceMybatisImpl;
@@ -75,7 +75,7 @@ public class GetMapLayerGroupsHandler extends ActionHandler {
     public void init() {
         // setup services if they haven't been initialized
         if (layerService == null) {
-            setLayerService(new OskariLayerServiceIbatisImpl());
+            setLayerService(new OskariLayerServiceMybatisImpl());
         }
         if (permissionsService == null) {
             setPermissionsService(new PermissionsServiceIbatisImpl());
