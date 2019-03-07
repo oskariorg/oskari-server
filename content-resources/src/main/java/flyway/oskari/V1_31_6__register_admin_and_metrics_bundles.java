@@ -1,6 +1,6 @@
 package flyway.oskari;
 
-import fi.nls.oskari.db.BundleHelper;
+import fi.nls.oskari.db.BundleHelper_pre1_52;
 import fi.nls.oskari.domain.map.view.Bundle;
 import org.flywaydb.core.api.migration.jdbc.JdbcMigration;
 
@@ -20,13 +20,13 @@ public class V1_31_6__register_admin_and_metrics_bundles implements JdbcMigratio
 
         Bundle admin = new Bundle();
         admin.setName(ADMIN);
-        admin.setStartup(BundleHelper.getDefaultBundleStartup(ADMIN, ADMIN, "Generic Admin"));
-        BundleHelper.registerBundle(admin, connection);
+        admin.setStartup(BundleHelper_pre1_52.getDefaultBundleStartup(ADMIN, ADMIN, "Generic Admin"));
+        BundleHelper_pre1_52.registerBundle(admin, connection);
 
         Bundle metrics = new Bundle();
         metrics.setName(METRICS);
-        metrics.setStartup(BundleHelper.getDefaultBundleStartup(ADMIN, METRICS, "Admin metrics panel"));
-        BundleHelper.registerBundle(metrics, connection);
+        metrics.setStartup(BundleHelper_pre1_52.getDefaultBundleStartup(ADMIN, METRICS, "Admin metrics panel"));
+        BundleHelper_pre1_52.registerBundle(metrics, connection);
 
     }
 }

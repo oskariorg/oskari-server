@@ -2,9 +2,9 @@ package flyway.oskari;
 
 import java.sql.Connection;
 
+import fi.nls.oskari.db.BundleHelper_pre1_52;
 import org.flywaydb.core.api.migration.jdbc.JdbcMigration;
 
-import fi.nls.oskari.db.BundleHelper;
 import fi.nls.oskari.domain.map.view.Bundle;
 
 public class V1_45_17__register_download_basket_bundle implements JdbcMigration{
@@ -18,7 +18,7 @@ public class V1_45_17__register_download_basket_bundle implements JdbcMigration{
 		downloadBasket.setConfig("{}");
 		downloadBasket.setState("{}");
 		downloadBasket.setName(DOWNLOAD_BASKET);
-		downloadBasket.setStartup(BundleHelper.getDefaultBundleStartup(NAMESPACE, DOWNLOAD_BASKET, "Download basket"));
-		BundleHelper.registerBundle(downloadBasket);
+		downloadBasket.setStartup(BundleHelper_pre1_52.getDefaultBundleStartup(NAMESPACE, DOWNLOAD_BASKET, "Download basket"));
+		BundleHelper_pre1_52.registerBundle(downloadBasket);
 	}
 }

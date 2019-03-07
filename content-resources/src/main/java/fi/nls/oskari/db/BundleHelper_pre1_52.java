@@ -14,29 +14,38 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class BundleHelper {
+/**
+ * @deprecated Use BundleHelper instead
+ */
+public class BundleHelper_pre1_52 {
 
-    private static final Logger LOG = LogFactory.getLogger(BundleHelper.class);
+    private static final Logger LOG = LogFactory.getLogger(BundleHelper_pre1_52.class);
     private static final BundleService SERVICE = new BundleServiceMybatisImpl();
 
-    private BundleHelper() {
+    private static final String BUNDLE_STARTUP_TEMPLATE = "BundleHelper-startup.json";
+    private static String startupTemplate = "";
+    static {
+        try {
+            startupTemplate = IOHelper.readString(BundleHelper_pre1_52.class.getResourceAsStream(BUNDLE_STARTUP_TEMPLATE));
+        } catch (IOException ex) {
+            throw new OskariRuntimeException("Error reading startup template", ex);
+        }
     }
 
-    /**
-     * @deprecated startup is no longer used for bundles
-     * @param namespace
-     * @param bundleid
-     * @param title
-     * @return
-     */
+    private BundleHelper_pre1_52() {
+    }
+
     public static String getDefaultBundleStartup(final String namespace, final String bundleid, final String title) {
-        return null;
+        final String ns = namespace == null ? "framework" : namespace;
+        final String path = "/Oskari/packages/%s/bundle/";
+        return getBundleStartup(String.format(path, ns), bundleid, title);
     }
     public static String getBundleStartup(final String path, final String bundleid, final String title) {
         if(bundleid == null) {
             throw new OskariRuntimeException("Missing bundleid");
         }
-        return null;
+        final String label = title == null ? bundleid : title;
+        return String.format(startupTemplate, label, bundleid, bundleid, bundleid, path);
     }
 
     public static boolean isBundleRegistered(final String id) {
@@ -64,17 +73,18 @@ public class BundleHelper {
         }
 
         try(PreparedStatement statement =
-                    conn.prepareStatement("INSERT INTO oskari_bundle(name, config, state) VALUES(?,?,?)")) {
+                    conn.prepareStatement("INSERT INTO portti_bundle(name, startup, config, state) VALUES(?,?,?,?)")) {
             statement.setString(1,bundle.getName());
-            statement.setString(2,bundle.getConfig());
-            statement.setString(3,bundle.getState());
+            statement.setString(2,bundle.getStartup());
+            statement.setString(3,bundle.getConfig());
+            statement.setString(4,bundle.getState());
             statement.execute();
         }
     }
 
     public static Bundle getRegisteredBundle(final String id, Connection conn) throws SQLException {
         try(PreparedStatement statement =
-                    conn.prepareStatement("SELECT id, name, config, state FROM oskari_bundle WHERE name=?")) {
+                    conn.prepareStatement("SELECT id, name, startup, config, state FROM portti_bundle WHERE name=?")) {
             statement.setString(1, id);
             try (ResultSet rs = statement.executeQuery()) {
                 if(!rs.next()) {
@@ -83,6 +93,7 @@ public class BundleHelper {
                 Bundle b = new Bundle();
                 b.setBundleId(rs.getLong("id"));
                 b.setName(rs.getString("name"));
+                b.setStartup(rs.getString("startup"));
                 b.setConfig(rs.getString("config"));
                 b.setState(rs.getString("state"));
                 return b;

@@ -1,6 +1,6 @@
 package flyway.oskari;
 
-import fi.nls.oskari.db.BundleHelper;
+import fi.nls.oskari.db.BundleHelper_pre1_52;
 import fi.nls.oskari.domain.Role;
 import fi.nls.oskari.domain.User;
 import fi.nls.oskari.domain.map.view.Bundle;
@@ -166,12 +166,12 @@ public class V1_33_5__replace_deprecated_bundles_with_new_versions implements Jd
     }
 
     public void switchFeaturedataBundles(Connection conn, final long viewId) throws SQLException {
-        Bundle oldBundle = BundleHelper.getRegisteredBundle(BUNDLE_FEATUREDATA, conn);
+        Bundle oldBundle = BundleHelper_pre1_52.getRegisteredBundle(BUNDLE_FEATUREDATA, conn);
         if(oldBundle == null) {
             // not even registered so migration not needed
             return;
         }
-        Bundle newBundle = BundleHelper.getRegisteredBundle(BUNDLE_FEATUREDATA2, conn);
+        Bundle newBundle = BundleHelper_pre1_52.getRegisteredBundle(BUNDLE_FEATUREDATA2, conn);
         if(newBundle == null) {
             throw new RuntimeException("Bundle not registered: " + BUNDLE_FEATUREDATA2);
         }
