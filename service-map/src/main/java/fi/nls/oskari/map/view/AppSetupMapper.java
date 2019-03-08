@@ -2,9 +2,7 @@ package fi.nls.oskari.map.view;
 
 import fi.nls.oskari.domain.map.view.Bundle;
 import fi.nls.oskari.domain.map.view.View;
-import org.apache.ibatis.annotations.Delete;
-import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.Update;
+import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 import java.util.Map;
@@ -19,7 +17,13 @@ public interface AppSetupMapper {
     View getViewWithConfByViewName(String viewName);
     List<View> getViewsWithConfByUserId(long userId);
     List<Bundle> getBundlesByViewId(long viewId);
-    long addView(View view);
+
+    @Insert("INSERT INTO portti_view ( name, \"description\", type, application_dev_prefix, page, application, " +
+            "            uuid, only_uuid, domain, lang, creator, is_public, is_default, metadata) " +
+            "        VALUES ( #{name}, #{description}, #{type}, #{developmentPath}, #{page}, #{application}, '${uuid}', true, " +
+            "        #{pubDomain}, #{lang}, #{creator}, #{isPublic}, #{isDefault}, #{metadataAsString} )")
+    @Options(useGeneratedKeys=true, keyColumn = "id")
+    void addView(View view);
 
     @Update("UPDATE portti_view SET is_public = #{isPublic} WHERE id = #{id}")
     void updateAccessFlag(View view);

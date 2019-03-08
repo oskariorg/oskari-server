@@ -97,8 +97,7 @@ public class AppSetupServiceMybatisImpl extends ViewService {
             LOG.debug("Global default view id from properties:" , property);
             return property;
         }
-        final SqlSession session = factory.openSession();
-        try {
+        try (final SqlSession session = factory.openSession()) {
             final AppSetupMapper mapper = session.getMapper(AppSetupMapper.class);
             Long database = mapper.getDefaultViewId(ViewTypes.DEFAULT);
             if (database != null) {
@@ -106,8 +105,6 @@ public class AppSetupServiceMybatisImpl extends ViewService {
             }
         } catch (Exception e) {
             LOG.warn(e, "Exception while init deafult view id");
-        } finally {
-            session.close();
         }
         return -1;
     }
@@ -139,8 +136,7 @@ public class AppSetupServiceMybatisImpl extends ViewService {
 
     public List<View> getViews(int page, int pageSize) {
         LOG.debug("Get views");
-        final SqlSession session = factory.openSession();
-        try {
+        try (final SqlSession session = factory.openSession()) {
             final AppSetupMapper mapper = session.getMapper(AppSetupMapper.class);
             final Map<String, Object> params = new HashMap<>();
             params.put("limit", pageSize);
@@ -148,8 +144,6 @@ public class AppSetupServiceMybatisImpl extends ViewService {
             return mapper.getViews(params);
         } catch (Exception e) {
             LOG.warn(e, "");
-        } finally {
-            session.close();
         }
         return Collections.emptyList();
     }
@@ -159,14 +153,11 @@ public class AppSetupServiceMybatisImpl extends ViewService {
         if (viewId < 1) {
             return null;
         }
-        final SqlSession session = factory.openSession();
-        try {
+        try (final SqlSession session = factory.openSession()) {
             final AppSetupMapper mapper = session.getMapper(AppSetupMapper.class);
             return mapper.getViewWithConfByViewId(viewId);
         } catch (Exception e) {
             LOG.warn(e, "Exception while getting view with conf by view id: " + viewId);
-        } finally {
-            session.close();
         }
         return null;
     }
@@ -176,16 +167,13 @@ public class AppSetupServiceMybatisImpl extends ViewService {
             return null;
         }
 
-        final SqlSession session = factory.openSession();
-        try {
+        try (final SqlSession session = factory.openSession()) {
             final AppSetupMapper mapper = session.getMapper(AppSetupMapper.class);
             View view = mapper.getViewWithConfByUuId(uuId);
-            setBundlesForView(view);
+            view.setBundles(mapper.getBundlesByViewId(view.getId()));
             return view;
         } catch (Exception e) {
             LOG.warn(e, "Exception while getting view with config by uuid: " + uuId);
-        } finally {
-            session.close();
         }
         return null;
     }
@@ -195,97 +183,68 @@ public class AppSetupServiceMybatisImpl extends ViewService {
         if (oldId < 1) {
             return null;
         }
-        final SqlSession session = factory.openSession();
-        try {
+        try (final SqlSession session = factory.openSession()) {
             final AppSetupMapper mapper = session.getMapper(AppSetupMapper.class);
             return mapper.getViewWithConfByOldId(oldId);
         } catch (Exception e) {
             LOG.warn(e, "Exception while getting view with config by old id");
-        } finally {
-            session.close();
         }
         return null;
     }
 
     public View getViewWithConf(String viewName) {
         LOG.debug("Get view with conf by view name: " + viewName);
-        final SqlSession session = factory.openSession();
-        try {
+        try (final SqlSession session = factory.openSession()) {
             final AppSetupMapper mapper = session.getMapper(AppSetupMapper.class);
             return mapper.getViewWithConfByViewName(viewName);
         } catch (Exception e) {
             LOG.warn(e, "Exception while getting view with conf by view name");
-        } finally {
-            session.close();
         }
         return null;
     }
 
     public List<View> getViewsForUser(long userId) {
         LOG.debug("Get views for user with id: " + userId);
-        final SqlSession session = factory.openSession();
-        try {
+        try (final SqlSession session = factory.openSession()) {
             final AppSetupMapper mapper = session.getMapper(AppSetupMapper.class);
             List<View> views = mapper.getViewsWithConfByUserId(userId);
             LOG.debug("Found", views.size(), "views for user", userId);
+            return views;
         } catch (Exception e) {
-            LOG.warn(e, "");
-        } finally {
-            session.close();
+            LOG.warn(e, "Error getting views for user", userId);
         }
 
         return Collections.emptyList();
     }
 
-    private void setBundlesForView(View view) {
-        LOG.debug("Set bundles for view");
-        if (view == null) {
-            return;
-        }
-        final SqlSession session = factory.openSession();
-        try {
-            final AppSetupMapper mapper = session.getMapper(AppSetupMapper.class);
-            List<Bundle> bundles = mapper.getBundlesByViewId(view.getId());
-            view.setBundles(bundles);
-        } catch (Exception e) {
-            LOG.warn(e, "");
-        } finally {
-            session.close();
-        }
-    }
-
     public long addView(View view) throws ViewException {
-        final SqlSession session = factory.openSession();
-        try {
+        try (final SqlSession session = factory.openSession()) {
             final AppSetupMapper mapper = session.getMapper(AppSetupMapper.class);
             view.setUuid(UUID.randomUUID().toString());
-            Object ret = mapper.addView(view);
-            long id = ((Long) ret).longValue();
+            mapper.addView(view);
+            long id = view.getId();
             LOG.info("Inserted view with id", id);
-            view.setId(id);
             for (Bundle bundle : view.getBundles()) {
-                addBundleForView(view.getId(), bundle);
+                bundle.setViewId(id);
+                mapper.addBundle(bundle);
             }
             session.commit();
             return id;
         } catch (Exception e) {
             LOG.warn(e, "Exception while adding a new view");
-        } finally {
-            session.close();
         }
         return -1;
     }
 
     public void updateAccessFlag(View view) {
         LOG.debug("Update access flag");
-        final SqlSession session = factory.openSession();
-        try {
+
+        try (final SqlSession session = factory.openSession()) {
             final AppSetupMapper mapper = session.getMapper(AppSetupMapper.class);
             mapper.updateAccessFlag(view);
+            session.commit();
         } catch (Exception e) {
             LOG.warn(e, "Exception while updating access flag");
-        } finally {
-            session.close();
         }
     }
 
@@ -294,71 +253,61 @@ public class AppSetupServiceMybatisImpl extends ViewService {
         if (view == null) {
             throw new DeleteViewException("Couldn't find a view with id:" + id);
         }
-        final SqlSession session = factory.openSession();
-        try {
+        try (final SqlSession session = factory.openSession()) {
             final AppSetupMapper mapper = session.getMapper(AppSetupMapper.class);
             mapper.deleteBundleByView(id);
             mapper.deleteView(id);
             session.commit();
         } catch (Exception e) {
             throw new DeleteViewException("Error deleting a view with id:" + id, e);
-        } finally {
-            session.close();
         }
     }
 
     public void deleteViewByUserId(long userId) throws DeleteViewException {
         LOG.debug("Delete view by user id: " + userId);
-        final SqlSession session = factory.openSession();
-        try {
+
+        try (final SqlSession session = factory.openSession()) {
             final AppSetupMapper mapper = session.getMapper(AppSetupMapper.class);
             mapper.deleteViewByUser(userId);
             session.commit();
         } catch (Exception e) {
             throw new DeleteViewException("Error deleting a view with user id:" + userId, e);
-        } finally {
-            session.close();
         }
     }
 
     public void resetUsersDefaultViews(long userId) {
         LOG.debug("Reset users default views for user id : " + userId);
-        final SqlSession session = factory.openSession();
-        try {
+
+        try (final SqlSession session = factory.openSession()) {
             final AppSetupMapper mapper = session.getMapper(AppSetupMapper.class);
             mapper.resetUsersDefaultViews(userId);
+            session.commit();
         } catch (Exception e) {
             LOG.warn(e, "Exception while resetting users default views");
-        } finally {
-            session.close();
         }
     }
 
     public void updateView(View view) {
         LOG.debug("Update view");
-        final SqlSession session = factory.openSession();
-        try {
+
+        try (final SqlSession session = factory.openSession()) {
             final AppSetupMapper mapper = session.getMapper(AppSetupMapper.class);
             mapper.update(view);
             session.commit();
         } catch (Exception e) {
             LOG.warn(e, "Exception while updating view");
-        } finally {
-            session.close();
         }
     }
 
     public void updateViewUsage(View view) {
         LOG.debug("Update view usage");
-        final SqlSession session = factory.openSession();
-        try {
+
+        try (final SqlSession session = factory.openSession()) {
             final AppSetupMapper mapper = session.getMapper(AppSetupMapper.class);
             mapper.updateUsage(view);
             session.commit();
         } catch (Exception e) {
             LOG.warn(e, "Exception while updating view usage");
-        } finally {
-            session.close();
         }
     }
 
@@ -366,33 +315,17 @@ public class AppSetupServiceMybatisImpl extends ViewService {
         LOG.debug("Update published view");
         long id = view.getId();
 
-        final SqlSession session = factory.openSession();
-        try {
+        try (final SqlSession session = factory.openSession()) {
             final AppSetupMapper mapper = session.getMapper(AppSetupMapper.class);
             updateView(view);
             mapper.deleteBundleByView(id);
             for (Bundle bundle : view.getBundles()) {
-                addBundleForView(view.getId(), bundle);
+                bundle.setViewId(id);
+                mapper.addBundle(bundle);
             }
             session.commit();
         } catch (Exception e) {
             throw new ViewException("Error updating a view with id:" + id, e);
-        } finally {
-            session.close();
-        }
-    }
-
-    public void addBundleForView(final long viewId, final Bundle bundle) {
-        final SqlSession session = factory.openSession();
-        try {
-            bundle.setViewId(viewId);
-            final AppSetupMapper mapper = session.getMapper(AppSetupMapper.class);
-            mapper.addBundle(bundle);
-            LOG.debug("Added bundle to view", bundle.getName());
-        } catch (Exception e) {
-            LOG.warn(e, "Exception while adding bundle for view");
-        } finally {
-            session.close();
         }
     }
 
@@ -408,18 +341,16 @@ public class AppSetupServiceMybatisImpl extends ViewService {
         params.put("state", bundle.getState());
         params.put("bundleinstance", bundle.getBundleinstance());
 
-        final SqlSession session = factory.openSession();
-        try {
+        try (final SqlSession session = factory.openSession()) {
             final AppSetupMapper mapper = session.getMapper(AppSetupMapper.class);
             final int numUpdated = mapper.updateBundleSettingsInView(params);
             if(numUpdated == 0) {
                 // not updated, bundle not found
                 throw new ViewException("Failed to update - bundle not found in view?");
             }
+            session.commit();
         } catch (Exception e) {
             throw new ViewException("Failed to update", e);
-        } finally {
-            session.close();
         }
     }
 
@@ -475,14 +406,11 @@ public class AppSetupServiceMybatisImpl extends ViewService {
     @Override
     public List<Long> getSystemDefaultViewIds() throws ServiceException {
         LOG.debug("Get system default view ids");
-        final SqlSession session = factory.openSession();
-        try {
+        try (final SqlSession session = factory.openSession()) {
             final AppSetupMapper mapper = session.getMapper(AppSetupMapper.class);
             return mapper.getDefaultViewIds();
         } catch (Exception e) {
             throw new ServiceException(e.getMessage(), e);
-        } finally {
-            session.close();
         }
     }
 
@@ -500,8 +428,7 @@ public class AppSetupServiceMybatisImpl extends ViewService {
         LOG.debug("Get personalized default view id");
         if (!user.isGuest() && user.getId() != -1) {
 
-            final SqlSession session = factory.openSession();
-            try {
+            try (final SqlSession session = factory.openSession()) {
                 final AppSetupMapper mapper = session.getMapper(AppSetupMapper.class);
                 Long queryResult = mapper.geDefaultViewIdByUserId(user.getId());
                 if (queryResult != null) {
@@ -509,8 +436,6 @@ public class AppSetupServiceMybatisImpl extends ViewService {
                 }
             } catch (Exception e) {
                 LOG.warn(e, "Exception while getting personalized default view id");
-            } finally {
-                session.close();
             }
         }
         return -1;

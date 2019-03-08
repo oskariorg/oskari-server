@@ -264,14 +264,6 @@ public class ViewServiceMemory extends ViewService {
     }
 
     @Override
-    public void addBundleForView(long viewId, Bundle bundle) {
-        View view = find((int) viewId);
-        if (view != null) {
-            view.addBundle(bundle);
-        }
-    }
-
-    @Override
     public void updateBundleSettingsForView(long viewId, Bundle bundle)
             throws ViewException {
         View view = find((int) viewId);

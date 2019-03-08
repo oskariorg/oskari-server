@@ -107,14 +107,6 @@
         ORDER BY s.seqno ASC
     </select>
 
-    <insert id="addView" parameterType="View" useGeneratedKeys="true">
-        INSERT INTO portti_view ( name, "description", type, application_dev_prefix, page, application,
-            uuid, only_uuid, domain, lang, creator, is_public, is_default, metadata)
-        VALUES ( #{name}, #{description}, #{type}, #{developmentPath}, #{page}, #{application}, '${uuid}', true,
-        #{pubDomain}, #{lang}, #{creator}, #{isPublic}, #{isDefault}, #{metadataAsString} )
-        RETURNING id
-    </insert>
-
     <update id="update"
                parameterType="View">
         UPDATE portti_view
@@ -136,7 +128,6 @@
                parameterType="Bundle">
         INSERT INTO portti_view_bundle_seq (view_id, bundle_id, seqno, state, config, bundleinstance)
         VALUES ( #{viewId}, #{bundleId}, #{seqNo}, #{state}, #{config}, #{bundleinstance})
-        RETURNING view_id
     </insert>
 
     <update id="updateBundleSettingsInView"
