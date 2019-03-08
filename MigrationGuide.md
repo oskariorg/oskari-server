@@ -4,8 +4,10 @@
 
 Class renaming:
 
-- BundleServiceIbatisImpl is now BundleServiceMybatisImpl.
-- ViewServiceIbatisImpl is now AppSetupServiceMybatisImpl.
+- BundleServiceIbatisImpl is now BundleServiceMybatisImpl
+- ViewServiceIbatisImpl is now AppSetupServiceMybatisImpl
+- DataProviderServiceIbatisImpl is now DataProviderServiceMybatisImpl
+- OskariLayerServiceIbatisImpl is now OskariLayerServiceMybatisImpl
 
 These might be used in app-specific migrations so you will need to update references to these.
 
