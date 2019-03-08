@@ -64,7 +64,7 @@ public class BundleHelper {
         }
 
         try(PreparedStatement statement =
-                    conn.prepareStatement("INSERT INTO oskari_bundle(name, config, state) VALUES(?,?,?)")) {
+                    conn.prepareStatement("INSERT INTO portti_bundle(name, config, state) VALUES(?,?,?)")) {
             statement.setString(1,bundle.getName());
             statement.setString(2,bundle.getConfig());
             statement.setString(3,bundle.getState());
@@ -74,7 +74,7 @@ public class BundleHelper {
 
     public static Bundle getRegisteredBundle(final String id, Connection conn) throws SQLException {
         try(PreparedStatement statement =
-                    conn.prepareStatement("SELECT id, name, config, state FROM oskari_bundle WHERE name=?")) {
+                    conn.prepareStatement("SELECT id, name, config, state FROM portti_bundle WHERE name=?")) {
             statement.setString(1, id);
             try (ResultSet rs = statement.executeQuery()) {
                 if(!rs.next()) {

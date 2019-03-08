@@ -41,7 +41,7 @@
             resultType="java.lang.Long"
             parameterType="java.lang.String">
         SELECT   MAX(id)
-        FROM   oskari_view
+        FROM   portti_view
         WHERE   is_default = TRUE
         AND   type = #{type}
     </select>
@@ -52,7 +52,7 @@
         SELECT   id, name, description, type, uuid, only_uuid,
         application, page, application_dev_prefix, creator,
         is_public, is_default, domain, lang, old_id, metadata
-        FROM   oskari_view
+        FROM   portti_view
         ORDER BY created ASC
         OFFSET $offset$ limit $limit$
     </select>
@@ -63,7 +63,7 @@
         SELECT   id, name, description, type, uuid, only_uuid,
         application, page, application_dev_prefix, creator,
         is_public, is_default, domain, lang, old_id, metadata
-        FROM   oskari_view
+        FROM   portti_view
         WHERE   id = #{id}
     </select>
 
@@ -73,7 +73,7 @@
         SELECT   id, name, description, type, uuid, only_uuid,
         application, page, application_dev_prefix, creator,
         is_public, is_default, domain, lang, old_id, metadata
-        FROM   oskari_view
+        FROM   portti_view
         WHERE   uuid::text = #{uuId}
     </select>
 
@@ -83,7 +83,7 @@
         SELECT   id, name, description, type, uuid, only_uuid,
         application, page, application_dev_prefix, creator,
         is_public, is_default, domain, lang, old_id, metadata
-        FROM   oskari_view
+        FROM   portti_view
         WHERE   old_id = #{old_id}
     </select>
 
@@ -93,7 +93,7 @@
         SELECT   id, name, description, type, uuid, only_uuid,
         application, page, application_dev_prefix, creator,
         is_public, is_default, domain, lang, old_id, metadata
-        FROM   oskari_view
+        FROM   portti_view
         WHERE   name = #{name}
     </select>
 
@@ -102,7 +102,7 @@
         SELECT   id, name, description, type, uuid, only_uuid,
         application, page, application_dev_prefix, creator,
         is_public, is_default, domain, lang, old_id, metadata
-        FROM   oskari_view
+        FROM   portti_view
         WHERE   creator = #{user_id}
         ORDER BY   name ASC
     </select>
@@ -111,13 +111,13 @@
             parameterType="java.lang.Long"
             resultMap="bundle">
         SELECT   s.view_id, s.bundle_id, s.seqno, s.state, s.config, s.startup, s.bundleinstance, b.name
-        FROM   oskari_view_bundle_seq s, oskari_bundle b
+        FROM   portti_view_bundle_seq s, portti_bundle b
         WHERE   view_id = #{view_id} AND s.bundle_id = b.id
         ORDER BY s.seqno ASC
     </select>
 
     <insert id="addView" parameterType="View" useGeneratedKeys="true">
-        INSERT INTO oskari_view ( name, "description", type, application_dev_prefix, page, application,
+        INSERT INTO portti_view ( name, "description", type, application_dev_prefix, page, application,
             uuid, only_uuid, domain, lang, creator, is_public, is_default, metadata)
         VALUES ( #{name}, #{description}, #{type}, #{developmentPath}, #{page}, #{application}, '$uuid$', true,
         #{pubDomain}, #{lang}, #{creator}, #{isPublic}, #{isDefault}, #{metadataAsString} )
@@ -126,30 +126,30 @@
 
     <update id="updateAccess"
                parameterType="View">
-        UPDATE oskari_view
+        UPDATE portti_view
         SET is_public = #{isPublic}
         WHERE id = {id}
     </update>
 
     <delete id="deleteBundleByView"
                parameterType="java.lang.Long">
-        DELETE FROM oskari_view_bundle_seq WHERE view_id = #{id}
+        DELETE FROM portti_view_bundle_seq WHERE view_id = #{id}
     </delete>
 
     <delete id="deleteView"
         parameterType="java.lang.Long">
-        DELETE FROM oskari_view WHERE id = #{id}
+        DELETE FROM portti_view WHERE id = #{id}
     </delete>
 
     <delete id="deleteViewByUser"
                parameterType="java.lang.Long">
-        DELETE FROM oskari_view
+        DELETE FROM portti_view
         WHERE creator = #{userId}
     </delete>
 
     <update id="resetUsersDefaultViews"
                parameterType="java.lang.Long">
-        UPDATE oskari_view
+        UPDATE portti_view
         SET is_default = FALSE
         WHERE creator = #{userId}
         AND type = 'USER';
@@ -157,7 +157,7 @@
 
     <update id="update"
                parameterType="View">
-        UPDATE oskari_view
+        UPDATE portti_view
         SET name = #{name}, description = #{description},
         application = #{application}, page = #{page}, application_dev_prefix = #{developmentPath},
         domain = #{pubDomain}, lang = #{lang}, is_public = #{isPublic}, is_default = #{isDefault}, metadata = #{metadataAsString}
@@ -166,22 +166,22 @@
 
     <update id="updateUsage"
                parameterType="View">
-        UPDATE oskari_view
+        UPDATE portti_view
         SET used=now(),
-        usagecount=(SELECT usagecount+1 FROM oskari_view WHERE id=#{id})
+        usagecount=(SELECT usagecount+1 FROM portti_view WHERE id=#{id})
         WHERE id=#{id};
     </update>
 
     <insert id="addBundle"
                parameterType="Bundle">
-        INSERT INTO oskari_view_bundle_seq (view_id, bundle_id, seqno, state, config, bundleinstance)
+        INSERT INTO portti_view_bundle_seq (view_id, bundle_id, seqno, state, config, bundleinstance)
         VALUES ( #{viewId}, #{bundleId}, #{seqNo}, #{state}, #{config}, #{bundleinstance})
         RETURNING view_id
     </insert>
 
     <update id="updateBundleSettingsInView"
             parameterType="java.util.Map">
-        UPDATE oskari_view_bundle_seq SET
+        UPDATE portti_view_bundle_seq SET
         config = #{config},
         state = #{state},
         bundleinstance = #{bundleinstance}
@@ -191,7 +191,7 @@
     <select id="getDefaultViewIds"
             resultType="java.lang.Long">
         SELECT id
-        FROM   oskari_view
+        FROM   portti_view
         WHERE  is_default = TRUE
         AND    type = 'DEFAULT'
         AND    creator = -1;
@@ -201,7 +201,7 @@
             resultType="java.lang.Long"
             parameterType="java.lang.Long">
         SELECT   MAX(id)
-        FROM   oskari_view
+        FROM   portti_view
         WHERE   is_default = TRUE
         AND   type = 'USER'
         AND   creator = #{userId};
