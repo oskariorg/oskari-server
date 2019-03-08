@@ -1,5 +1,14 @@
 # Migration guide
 
+## 1.52.0
+
+Class renaming:
+
+- BundleServiceIbatisImpl is now BundleServiceMybatisImpl.
+- ViewServiceIbatisImpl is now AppSetupServiceMybatisImpl.
+
+These might be used in app-specific migrations so you will need to update references to these.
+
 ## 1.51.0
 
 ### Logging configuration changes required
