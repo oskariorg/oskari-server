@@ -426,7 +426,7 @@
         params = #{params},
         options = #{options},
         attributes = #{attributes},
-        capabilities = #{cababilities},
+        capabilities = #{capabilities},
 
         gfi_xslt = #{gfiXslt},
         gfi_type= #{gfiType},
@@ -495,9 +495,9 @@
 
         values (#{parentId},#{type},#{baseMap},#{internal},#{dataproviderId},#{name},#{url},#{locale},
         #{opacity},#{style},#{minScale},#{maxScale},#{legendImage},#{metadataId},#{params},#{options},
-        #{attributes},#{cababilities},#{gfiXslt},#{gfiType},#{gfiContent},#{realtime},#{refreshRate},
-        #{uesrname},#{password},#{version},#{srs_name},#{created},#{updated},#{cababilitiesLastUpdated},
-        #{cababilitiesUpdateRateSec})
+        #{attributes},#{capabilities},#{gfiXslt},#{gfiType},#{gfiContent},#{realtime},#{refreshRate},
+        #{username},#{password},#{version},#{srs_name},#{created},#{updated},#{capabilitiesLastUpdated},
+        #{capabilitiesUpdateRateSec})
     </insert>
 
     <delete id="delete" parameterType="int">
