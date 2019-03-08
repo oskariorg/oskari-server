@@ -37,15 +37,6 @@
         <result property="bundleinstance" column="bundleinstance" />
     </resultMap>
 
-    <select id="getDefaultViewId"
-            resultType="java.lang.Long"
-            parameterType="java.lang.String">
-        SELECT   MAX(id)
-        FROM   portti_view
-        WHERE   is_default = TRUE
-        AND   type = #{type}
-    </select>
-
     <select id="getViews"
             parameterType="java.util.Map"
             resultMap="viewWithConf">
@@ -124,37 +115,6 @@
         RETURNING id
     </insert>
 
-    <update id="updateAccess"
-               parameterType="View">
-        UPDATE portti_view
-        SET is_public = #{isPublic}
-        WHERE id = {id}
-    </update>
-
-    <delete id="deleteBundleByView"
-               parameterType="java.lang.Long">
-        DELETE FROM portti_view_bundle_seq WHERE view_id = #{id}
-    </delete>
-
-    <delete id="deleteView"
-        parameterType="java.lang.Long">
-        DELETE FROM portti_view WHERE id = #{id}
-    </delete>
-
-    <delete id="deleteViewByUser"
-               parameterType="java.lang.Long">
-        DELETE FROM portti_view
-        WHERE creator = #{userId}
-    </delete>
-
-    <update id="resetUsersDefaultViews"
-               parameterType="java.lang.Long">
-        UPDATE portti_view
-        SET is_default = FALSE
-        WHERE creator = #{userId}
-        AND type = 'USER';
-    </update>
-
     <update id="update"
                parameterType="View">
         UPDATE portti_view
@@ -187,24 +147,5 @@
         bundleinstance = #{bundleinstance}
         WHERE view_id = #{view_id} AND bundle_id = #{bundle_id}
     </update>
-
-    <select id="getDefaultViewIds"
-            resultType="java.lang.Long">
-        SELECT id
-        FROM   portti_view
-        WHERE  is_default = TRUE
-        AND    type = 'DEFAULT'
-        AND    creator = -1;
-    </select>
-
-    <select id="geDefaultViewIdByUserId"
-            resultType="java.lang.Long"
-            parameterType="java.lang.Long">
-        SELECT   MAX(id)
-        FROM   portti_view
-        WHERE   is_default = TRUE
-        AND   type = 'USER'
-        AND   creator = #{userId};
-    </select>
 
 </mapper>

@@ -101,7 +101,9 @@ public class AppSetupServiceMybatisImpl extends ViewService {
         try {
             final AppSetupMapper mapper = session.getMapper(AppSetupMapper.class);
             Long database = mapper.getDefaultViewId(ViewTypes.DEFAULT);
-            return database;
+            if (database != null) {
+                return database;
+            }
         } catch (Exception e) {
             LOG.warn(e, "Exception while init deafult view id");
         } finally {
@@ -501,9 +503,9 @@ public class AppSetupServiceMybatisImpl extends ViewService {
             final SqlSession session = factory.openSession();
             try {
                 final AppSetupMapper mapper = session.getMapper(AppSetupMapper.class);
-                Object queryResult = mapper.geDefaultViewIdByUserId(user.getId());
+                Long queryResult = mapper.geDefaultViewIdByUserId(user.getId());
                 if (queryResult != null) {
-                    return (Long) queryResult;
+                    return queryResult;
                 }
             } catch (Exception e) {
                 LOG.warn(e, "Exception while getting personalized default view id");
