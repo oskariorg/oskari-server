@@ -45,7 +45,7 @@
         is_public, is_default, domain, lang, old_id, metadata
         FROM   portti_view
         ORDER BY created ASC
-        OFFSET $offset$ limit $limit$
+        OFFSET ${offset} limit ${limit}
     </select>
 
     <select id="getViewWithConfByViewId"
@@ -110,7 +110,7 @@
     <insert id="addView" parameterType="View" useGeneratedKeys="true">
         INSERT INTO portti_view ( name, "description", type, application_dev_prefix, page, application,
             uuid, only_uuid, domain, lang, creator, is_public, is_default, metadata)
-        VALUES ( #{name}, #{description}, #{type}, #{developmentPath}, #{page}, #{application}, '$uuid$', true,
+        VALUES ( #{name}, #{description}, #{type}, #{developmentPath}, #{page}, #{application}, '${uuid}', true,
         #{pubDomain}, #{lang}, #{creator}, #{isPublic}, #{isDefault}, #{metadataAsString} )
         RETURNING id
     </insert>
