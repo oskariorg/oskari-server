@@ -1,7 +1,11 @@
 package org.oskari.service.mvt;
 
 import java.math.BigDecimal;
+import java.util.List;
+import java.util.Map;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.opengis.feature.Property;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.type.Name;
@@ -18,6 +22,7 @@ public class SimpleFeatureConverter implements IUserDataConverter {
     private static final Logger LOG = LogFactory.getLogger(SimpleFeatureConverter.class);
 
     private static final String KEY_ID = "_oid";
+    private static final String COMPLEX_PROP_PREFIX = "$";
 
     @Override
     public void addTags(Object userData, MvtLayerProps layerProps, Builder featureBuilder) {
@@ -39,27 +44,65 @@ public class SimpleFeatureConverter implements IUserDataConverter {
             }
             String prop = name.getLocalPart();
             Object value = p.getValue();
-            if (value == null) {
+
+            String mvtProp = convertPropertyNameToMVT(prop, value);
+            Object mvtValue = convertValueToMVT(value);
+            if (mvtValue == null) {
+                LOG.debug("Skipping", id + "." + prop,
+                        "could not handle class:", value.getClass());
                 continue;
             }
-            if (value instanceof BigDecimal) {
-                value = ((BigDecimal) value).doubleValue();
-            }
 
-            int valueIndex = layerProps.addValue(value);
+            int valueIndex = layerProps.addValue(mvtValue);
             if (valueIndex < 0) {
                 // Value wasn't IN (Boolean,Integer,Long,Float,Double,String)
                 // => Can't be encoded to MVT
                 // TODO: Check how dates and datetimes are handled
-                LOG.debug("Skipping", id + "." + prop,
+                LOG.warn("Skipping", id + "." + prop,
                         "value type not valid for MVT encoding, class:", value.getClass());
                 continue;
             }
 
-            int keyIndex = layerProps.addKey(prop);
+            int keyIndex = layerProps.addKey(mvtProp);
             featureBuilder.addTags(keyIndex);
             featureBuilder.addTags(valueIndex);
         }
+    }
+
+    private String convertPropertyNameToMVT(String prop, Object value) {
+        if (value == null
+                || value instanceof Boolean
+                || value instanceof Map
+                || value instanceof List) {
+            return COMPLEX_PROP_PREFIX + prop;
+        }
+        return prop;
+    }
+
+    private Object convertValueToMVT(Object value) {
+        if (value == null) {
+            return "null";
+        }
+        if (value instanceof Integer
+                || value instanceof Long
+                || value instanceof Float
+                || value instanceof Double
+                || value instanceof String) {
+            return value;
+        }
+        if (value instanceof Boolean) {
+            return (Boolean) value ? "true" : "false";
+        }
+        if (value instanceof BigDecimal) {
+            return ((BigDecimal) value).doubleValue();
+        }
+        if (value instanceof Map) {
+            return new JSONObject((Map) value).toString();
+        }
+        if (value instanceof List) {
+            return new JSONArray((List) value).toString();
+        }
+        return null;
     }
 
     private void addId(MvtLayerProps layerProps, Builder featureBuilder, String id) {
