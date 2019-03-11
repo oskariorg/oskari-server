@@ -17,7 +17,7 @@ import org.oskari.service.util.ServiceFactory;
 import java.util.*;
 
 @OskariActionRoute("GetLocalizedPropertyNames")
-public class GetLocalizedPropertyNames extends ActionHandler {
+public class GetLocalizedPropertyNamesHandler extends ActionHandler {
 
     private PermissionHelper permissionHelper;
     private WFSLayerConfigurationService wfsLayerService;
