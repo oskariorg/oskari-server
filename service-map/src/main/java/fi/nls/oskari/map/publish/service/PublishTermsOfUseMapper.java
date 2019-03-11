@@ -7,14 +7,9 @@ import org.apache.ibatis.annotations.Results;
 import org.apache.ibatis.annotations.Select;
 
 public interface PublishTermsOfUseMapper {
-    @Insert("insert into oskari_terms_of_use_for_publishing userid, agreed, time) values (#{userid}, #{agreed}, #{time})")
+    @Insert("insert into oskari_terms_of_use_for_publishing (userid, agreed, time) values (#{userid}, #{agreed}, #{time})")
     void insertTermsOfUse(TermsOfUse tou);
 
-    @Select("select user, agreed, time from oskari_terms_of_use_for_publishing WHERE userid = #{userId}")
-    @Results({
-            @Result(property = "user", column = "user"),
-            @Result(property = "agreed", column = "agreed"),
-            @Result(property = "time", column = "time")
-    })
+    @Select("select userid, agreed, time from oskari_terms_of_use_for_publishing WHERE userid = #{userId}")
     TermsOfUse findByUserId(final long userId);
 }

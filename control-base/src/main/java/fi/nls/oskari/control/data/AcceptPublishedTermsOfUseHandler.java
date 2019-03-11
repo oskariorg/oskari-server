@@ -17,8 +17,7 @@ public class AcceptPublishedTermsOfUseHandler  extends RestActionHandler {
     @Override
     public void handlePost(ActionParameters params) throws ActionException {
         if(!params.getUser().isGuest()) {
-            final int id = service.setUserAgreed(params.getUser().getId());
-            ResponseHelper.writeResponse(params, id != -1);            
+            ResponseHelper.writeResponse(params, service.setUserAgreed(params.getUser().getId()));
         }
         else {
             ResponseHelper.writeResponse(params, false);

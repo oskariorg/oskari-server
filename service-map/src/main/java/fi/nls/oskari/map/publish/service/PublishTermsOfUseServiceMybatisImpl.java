@@ -46,22 +46,20 @@ public class PublishTermsOfUseServiceMybatisImpl extends PublishTermsOfUseServic
         return new SqlSessionFactoryBuilder().build(configuration);
     }
 
-    public int insert(final TermsOfUse termsOfUse) {
+    public boolean insert(final TermsOfUse termsOfUse) {
         log.debug("Insert terms of use");
-        final SqlSession session = factory.openSession();
-        try {
+        try (final SqlSession session = factory.openSession()) {
             final PublishTermsOfUseMapper mapper = session.getMapper(PublishTermsOfUseMapper.class);
             mapper.insertTermsOfUse(termsOfUse);
             session.commit();
+            return true;
         } catch (Exception e) {
-            log.warn("Unable to insert terms of use");
-        } finally {
-            session.close();
+            log.warn("Unable to insert terms of use:", e.getMessage());
         }
-        return -1;
+        return false;
     }
 
-    public int setUserAgreed(final long userId) {
+    public boolean setUserAgreed(final long userId) {
         log.debug("Set user agreed to terms of use for user id: " + userId);
         try {
             final TermsOfUse accepted = findByUserId(userId);
@@ -75,19 +73,17 @@ public class PublishTermsOfUseServiceMybatisImpl extends PublishTermsOfUseServic
         } catch (Exception e) {
             log.warn("Unable to set agreed to terms of use for user id: " + userId);
         }
-        return -1;
+        return false;
     }
 
     public TermsOfUse findByUserId(final long userId) {
         log.debug("Find terms of use for user id: " + userId);
-        final SqlSession session = factory.openSession();
-        try {
+
+        try (final SqlSession session = factory.openSession()) {
             final PublishTermsOfUseMapper mapper = session.getMapper(PublishTermsOfUseMapper.class);
             return mapper.findByUserId(userId);
         } catch (Exception e) {
             log.warn("Unable to find agreed terms of use for user id: " + userId);
-        } finally {
-            session.close();
         }
         return null;
     }
