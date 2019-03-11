@@ -1,6 +1,6 @@
 package flyway.oskari;
 
-import fi.nls.oskari.db.BundleHelper;
+import fi.nls.oskari.db.BundleHelper_pre1_52;
 import fi.nls.oskari.domain.Role;
 import fi.nls.oskari.domain.User;
 import fi.nls.oskari.domain.map.view.Bundle;
@@ -8,8 +8,8 @@ import fi.nls.oskari.domain.map.view.View;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.view.ViewService;
-import fi.nls.oskari.map.view.AppSetupServiceMybatisImpl;
 import fi.nls.oskari.service.UserService;
+import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.PropertyUtil;
 import org.flywaydb.core.api.migration.jdbc.JdbcMigration;
 
@@ -17,9 +17,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 /**
  * This is a rare exception to the rule of not updating views automatically. The previous upgrades didn't update views
@@ -54,16 +52,13 @@ public class V1_33_5__replace_deprecated_bundles_with_new_versions implements Jd
     private static final boolean PROP_FORCE_USER_SERVICE = PropertyUtil.getOptional("V1_33_5.force.user.service", false);
 
     private int updatedViewCount = 0;
-    private ViewService service = null;
 
     public void migrate(Connection connection) throws Exception {
-        service =  new AppSetupServiceMybatisImpl();
         try {
             updateViews(connection);
         }
         finally {
             LOG.info("Updated views:", updatedViewCount);
-            service = null;
         }
     }
 
@@ -128,8 +123,66 @@ public class V1_33_5__replace_deprecated_bundles_with_new_versions implements Jd
     }
 
     private long getDefaultViewId(Connection conn, long userId) throws SQLException  {
-        return service.getSystemDefaultViewId(getRolesForUser(userId, conn));
+        return getSystemDefaultViewId(conn, getRolesForUser(userId, conn));
     }
+
+    public long getSystemDefaultViewId(Connection conn, Collection<Role> roles) throws SQLException {
+        if (roles == null) {
+            LOG.debug("Tried to get default view for <null> roles");
+        } else {
+            String[] defaultViewRoles = PropertyUtil.getCommaSeparatedList("view.default.roles");
+            Map<String, Long> roleToDefaultViewId =  initDefaultViewsByRole(defaultViewRoles);
+            // Check the roles in given order and return the first match
+            for (String defaultViewRole : defaultViewRoles) {
+                if (Role.hasRoleWithName(roles, defaultViewRole)) {
+                    Long rolesDefaultViewId = roleToDefaultViewId.get(defaultViewRole);
+                    if (rolesDefaultViewId != null) {
+                        LOG.debug("Default view found for role", defaultViewRole, ":", rolesDefaultViewId);
+                        return rolesDefaultViewId;
+                    }
+                }
+            }
+        }
+        LOG.debug("No role based default views matched user roles:", roles, ". Defaulting to global default.");
+        return initDefaultViewId(conn);
+    }
+
+    private long initDefaultViewId(Connection conn) throws SQLException {
+        LOG.debug("Init default view id");
+        long property = ConversionHelper.getLong(PropertyUtil.get("view.default"), -1);
+        if (property != -1) {
+            LOG.debug("Global default view id from properties:" , property);
+            return property;
+        }
+        final String sql = "SELECT   MAX(id) FROM   portti_view WHERE   is_default = TRUE AND   type = 'DEFAULT';";
+        try (PreparedStatement statement = conn.prepareStatement(sql)) {
+            try (ResultSet rs = statement.executeQuery()) {
+                rs.next();
+                return rs.getLong("id");
+            }
+        }
+    }
+
+    private Map<String, Long> initDefaultViewsByRole(String[] roles) {
+        if (roles.length == 0) {
+            return Collections.emptyMap();
+        }
+        Map<String, Long> roleToDefaultViewId = new HashMap<>();
+        for (String role : roles) {
+            String roleViewIdStr = PropertyUtil.get("view.default." + role);
+            long roleViewId = ConversionHelper.getLong(roleViewIdStr, -1);
+            if (roleViewId != -1) {
+                roleToDefaultViewId.put(role, roleViewId);
+                LOG.debug("Added default view", roleViewId, "for role", role);
+            } else {
+                LOG.info("Failed to set default view id for role", role,
+                        "property missing or value invalid");
+            }
+        }
+        return roleToDefaultViewId;
+    }
+
+
 
     private Collection<Role> getRolesForUser(long userId, Connection conn) throws SQLException {
         if(PROP_FORCE_USER_ROLE != null) {
@@ -166,12 +219,12 @@ public class V1_33_5__replace_deprecated_bundles_with_new_versions implements Jd
     }
 
     public void switchFeaturedataBundles(Connection conn, final long viewId) throws SQLException {
-        Bundle oldBundle = BundleHelper.getRegisteredBundle(BUNDLE_FEATUREDATA, conn);
+        Bundle oldBundle = BundleHelper_pre1_52.getRegisteredBundle(BUNDLE_FEATUREDATA, conn);
         if(oldBundle == null) {
             // not even registered so migration not needed
             return;
         }
-        Bundle newBundle = BundleHelper.getRegisteredBundle(BUNDLE_FEATUREDATA2, conn);
+        Bundle newBundle = BundleHelper_pre1_52.getRegisteredBundle(BUNDLE_FEATUREDATA2, conn);
         if(newBundle == null) {
             throw new RuntimeException("Bundle not registered: " + BUNDLE_FEATUREDATA2);
         }

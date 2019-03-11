@@ -6,7 +6,6 @@ import fi.nls.oskari.domain.map.view.Bundle;
 import fi.nls.oskari.domain.map.view.View;
 import fi.nls.oskari.service.OskariComponent;
 import fi.nls.oskari.service.ServiceException;
-import java.sql.SQLException;
 import java.util.Collection;
 import java.util.List;
 
@@ -73,9 +72,6 @@ public abstract class ViewService extends OskariComponent {
 
     public abstract void updatePublishedView(View view)
             throws ViewException;
-
-    public abstract void addBundleForView(final long viewId, final Bundle bundle)
-            throws SQLException;
 
     /**
      * Updates bundle settings for single bundle in given view.

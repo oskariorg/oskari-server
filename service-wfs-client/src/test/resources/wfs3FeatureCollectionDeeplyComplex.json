@@ -1,0 +1,34 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "id": "ABC_112",
+      "properties": {
+        "foo": "bar",
+        "a": {
+          "foo": [
+            {
+              "bar": true
+            },
+            {
+              "baz": true
+            },
+            {
+              "qux": {
+                "deep": "sure"
+              }
+            }
+          ]
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          21.3587384,
+          61.3939013
+        ]
+      }
+    }
+  ]
+}

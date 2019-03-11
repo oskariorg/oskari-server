@@ -19,7 +19,7 @@ public class FlywayHelper {
     public static List<Long> getViewIdsForTypes(Connection connection, String... types)
             throws SQLException {
         ArrayList<Long> ids = new ArrayList<>();
-        StringBuilder sql = new StringBuilder("SELECT id FROM oskari_view");
+        StringBuilder sql = new StringBuilder("SELECT id FROM portti_view");
         if (types != null && types.length > 0) {
             sql.append(" WHERE type IN (?");
             for (int i = 1; i < types.length; ++i) {
@@ -51,8 +51,8 @@ public class FlywayHelper {
 
     public static boolean viewContainsBundle(Connection connection, String bundle, Long viewId)
             throws SQLException {
-        final String sql ="SELECT * FROM oskari_view_bundle_seq " +
-                "WHERE bundle_id = (SELECT id FROM oskari_bundle WHERE name=?) " +
+        final String sql ="SELECT * FROM portti_view_bundle_seq " +
+                "WHERE bundle_id = (SELECT id FROM portti_bundle WHERE name=?) " +
                 "AND view_id=?";
 
         try (final PreparedStatement statement =
@@ -67,8 +67,8 @@ public class FlywayHelper {
 
     public static Bundle getBundleFromView(Connection connection, String bundle, Long viewId)
             throws SQLException {
-        final String sql ="SELECT * FROM oskari_view_bundle_seq " +
-                "WHERE bundle_id = (SELECT id FROM oskari_bundle WHERE name=?) " +
+        final String sql ="SELECT * FROM portti_view_bundle_seq " +
+                "WHERE bundle_id = (SELECT id FROM portti_bundle WHERE name=?) " +
                 "AND view_id=?";
 
         try (final PreparedStatement statement =
@@ -81,7 +81,6 @@ public class FlywayHelper {
                     b.setViewId(viewId);
                     b.setName(bundle);
                     b.setBundleId(rs.getLong("bundle_id"));
-                    b.setStartup(rs.getString("startup"));
                     b.setConfig(rs.getString("config"));
                     b.setState(rs.getString("state"));
                     b.setSeqNo(rs.getInt("seqno"));
@@ -95,7 +94,7 @@ public class FlywayHelper {
 
     public static Bundle updateBundleInView(Connection connection, Bundle bundle, Long viewId)
             throws SQLException {
-        final String sql = "UPDATE oskari_view_bundle_seq SET " +
+        final String sql = "UPDATE portti_view_bundle_seq SET " +
                 "config=?, " +
                 "state=?, " +
                 "seqno=?, " +
@@ -118,15 +117,14 @@ public class FlywayHelper {
 
     public static void addBundleWithDefaults(Connection connection, Long viewId, String bundleid)
             throws SQLException {
-        final String sql ="INSERT INTO oskari_view_bundle_seq" +
-                "(view_id, bundle_id, seqno, config, state, startup, bundleinstance) " +
+        final String sql ="INSERT INTO portti_view_bundle_seq" +
+                "(view_id, bundle_id, seqno, config, state, bundleinstance) " +
                 "VALUES (" +
                 "?, " +
-                "(SELECT id FROM oskari_bundle WHERE name=?), " +
-                "(SELECT max(seqno)+1 FROM oskari_view_bundle_seq WHERE view_id=?), " +
-                "(SELECT config FROM oskari_bundle WHERE name=?), " +
-                "(SELECT state FROM oskari_bundle WHERE name=?),  " +
-                "(SELECT startup FROM oskari_bundle WHERE name=?), " +
+                "(SELECT id FROM portti_bundle WHERE name=?), " +
+                "(SELECT max(seqno)+1 FROM portti_view_bundle_seq WHERE view_id=?), " +
+                "(SELECT config FROM portti_bundle WHERE name=?), " +
+                "(SELECT state FROM portti_bundle WHERE name=?),  " +
                 "?)";
         try(final PreparedStatement statement =
                     connection.prepareStatement(sql)) {
@@ -136,7 +134,6 @@ public class FlywayHelper {
             statement.setString(4, bundleid);
             statement.setString(5, bundleid);
             statement.setString(6, bundleid);
-            statement.setString(7, bundleid);
             statement.execute();
         }
     }

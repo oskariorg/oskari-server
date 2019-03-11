@@ -1,0 +1,53 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "id": "P_10000001",
+      "properties": {
+        "placeId": 10000001,
+        "placeVersionId": 3,
+        "placeType": 1010110,
+        "tm35MapSheet": "M3233D4",
+        "placeCreationTime": "2008-12-05T22:00:00Z",
+        "placeNameDeletionTime": null,
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          21.3587384,
+          61.3939013
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "P_10000002",
+      "properties": {
+        "placeId": 10000002,
+        "placeVersionId": 3,
+        "placeType": 1010110,
+        "tm35MapSheet": "M3233D4",
+        "placeCreationTime": "2008-12-05T22:00:00Z",
+        "placeNameDeletionTime": null,
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          21.362337,
+          61.3927611
+        ]
+      }
+    }
+  ],
+  "timeStamp": "2019-02-13T06:57:56.906Z",
+  "links": [
+    {
+      "href": "https://beta-paikkatieto.maanmittauslaitos.fi/geographic-names/wfs3/v1/collections/places/items?bbox=21.350000%2C61.350000%2C21.400000%2C61.400000&limit=1000&lang=fin",
+      "rel": "self",
+      "type": "application/geo+json",
+      "title": "This document"
+    }
+  ],
+  "numberReturned": 2
+}

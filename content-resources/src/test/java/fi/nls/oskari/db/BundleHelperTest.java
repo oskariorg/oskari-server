@@ -19,7 +19,7 @@ public class BundleHelperTest {
             throws Exception {
         final String startupJson = IOHelper.readString(getClass().getResourceAsStream(STARTUP_TEST_FILE));
         JSONObject expected = JSONHelper.createJSONObject(startupJson);
-        JSONObject actual = JSONHelper.createJSONObject(BundleHelper.getDefaultBundleStartup("mynamespace", "mybundle", "Title"));
+        JSONObject actual = JSONHelper.createJSONObject(BundleHelper_pre1_52.getDefaultBundleStartup("mynamespace", "mybundle", "Title"));
         assertTrue(JSONHelper.isEqual(expected, actual));
     }
 }

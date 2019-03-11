@@ -11,8 +11,6 @@ import fi.nls.oskari.domain.User;
 import fi.nls.oskari.domain.map.DataProvider;
 import fi.nls.oskari.domain.map.view.View;
 import fi.nls.oskari.domain.map.view.ViewTypes;
-import fi.nls.oskari.map.data.service.PublishedMapRestrictionService;
-import fi.nls.oskari.map.data.service.PublishedMapRestrictionServiceImpl;
 import fi.nls.oskari.map.layer.DataProviderService;
 import fi.nls.oskari.map.layer.DataProviderServiceMybatisImpl;
 import fi.nls.oskari.map.view.BundleService;
@@ -62,7 +60,6 @@ public class GetAppSetupHandlerRolesFromPropertiesTest extends JSONActionRouteTe
 
     private ViewService viewService = null;
     private BundleService bundleService = null;
-    private PublishedMapRestrictionService restrictionService = null;
 
     @BeforeClass
     public static void addLocales() throws Exception {
@@ -81,14 +78,12 @@ public class GetAppSetupHandlerRolesFromPropertiesTest extends JSONActionRouteTe
 
         mockViewService();
         mockBundleService();
-        restrictionService = mock(PublishedMapRestrictionServiceImpl.class);
         mockInternalServices();
 
 
 
         handler.setViewService(viewService);
         handler.setBundleService(bundleService);
-        handler.setPublishedMapRestrictionService(restrictionService);
 
         try {
            PropertyUtil.addProperty("actionhandler.GetAppSetup.dynamic.bundles","admin-layerselector, admin-layerrights");

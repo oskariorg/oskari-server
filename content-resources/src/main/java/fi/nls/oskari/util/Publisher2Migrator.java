@@ -1,6 +1,6 @@
 package fi.nls.oskari.util;
 
-import fi.nls.oskari.db.BundleHelper;
+import fi.nls.oskari.db.BundleHelper_pre1_52;
 import fi.nls.oskari.domain.map.view.Bundle;
 import fi.nls.oskari.domain.map.view.View;
 import fi.nls.oskari.domain.map.view.ViewTypes;
@@ -67,7 +67,7 @@ public class Publisher2Migrator {
 
     private void updateMetadata(Connection conn, long viewId, JSONObject metadata) throws SQLException {
 
-        final String sql = "UPDATE oskari_view SET metadata=? where id=?";
+        final String sql = "UPDATE portti_view SET metadata=? where id=?";
         try(PreparedStatement statement = conn.prepareStatement(sql)) {
             statement.setString(1, metadata.toString(2));
             statement.setLong(2, viewId);
@@ -78,17 +78,17 @@ public class Publisher2Migrator {
 
     /**
      * Generate the metadata block that publisher2 uses to return the editor state:
-	"metadata": {
-		"domain": "localhost",
-		"name": "test",
-		"language": "fi",
-		"preview": "desktop",
-		"toolLayout": "userlayout",
-		"style": {
-			"font": "georgia",
-			"toolStyle": "3d-light"
-		}
-	}
+     "metadata": {
+     "domain": "localhost",
+     "name": "test",
+     "language": "fi",
+     "preview": "desktop",
+     "toolLayout": "userlayout",
+     "style": {
+     "font": "georgia",
+     "toolStyle": "3d-light"
+     }
+     }
      */
     public JSONObject createViewMetadata(View view) {
         JSONObject metadata = new JSONObject();
@@ -174,8 +174,8 @@ public class Publisher2Migrator {
         List<Long> idList = new ArrayList<>();
 
         final PreparedStatement statement =
-                conn.prepareStatement("SELECT view_id FROM oskari_view_bundle_seq " +
-                        "WHERE bundle_id = (SELECT id FROM oskari_bundle WHERE name=?)");
+                conn.prepareStatement("SELECT view_id FROM portti_view_bundle_seq " +
+                        "WHERE bundle_id = (SELECT id FROM portti_bundle WHERE name=?)");
         statement.setString(1, BUNDLE_PUBLISHER_OLD);
         try (ResultSet rs = statement.executeQuery()) {
             while(rs.next()) {
@@ -188,9 +188,9 @@ public class Publisher2Migrator {
     }
 
     public void switchPublisherBundles(final long viewId, Connection conn) throws SQLException {
-        Bundle oldBundle = BundleHelper.getRegisteredBundle(BUNDLE_PUBLISHER_OLD, conn);
-        Bundle newBundle = BundleHelper.getRegisteredBundle(BUNDLE_PUBLISHER_NEW, conn);
-        final String sql = "UPDATE oskari_view_bundle_seq " +
+        Bundle oldBundle = BundleHelper_pre1_52.getRegisteredBundle(BUNDLE_PUBLISHER_OLD, conn);
+        Bundle newBundle = BundleHelper_pre1_52.getRegisteredBundle(BUNDLE_PUBLISHER_NEW, conn);
+        final String sql = "UPDATE portti_view_bundle_seq " +
                 "SET " +
                 "    bundle_id=?, " +
                 "    startup=?, " +

@@ -11,8 +11,6 @@ import fi.nls.oskari.domain.map.view.View;
 import fi.nls.oskari.domain.map.view.ViewTypes;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.map.data.service.PublishedMapRestrictionService;
-import fi.nls.oskari.map.data.service.PublishedMapRestrictionServiceImpl;
 import fi.nls.oskari.map.view.*;
 import fi.nls.oskari.map.view.util.ViewHelper;
 import fi.nls.oskari.util.*;
@@ -32,7 +30,6 @@ public class GetAppSetupHandler extends ActionHandler {
 
     private ViewService viewService = null;
     private BundleService bundleService = null;
-    private PublishedMapRestrictionService restrictionService = null;
 
     private static final Logger log = LogFactory.getLogger(GetAppSetupHandler.class);
 
@@ -62,9 +59,6 @@ public class GetAppSetupHandler extends ActionHandler {
     public void setBundleService(final BundleService service) {
         bundleService = service;
     }
-    public void setPublishedMapRestrictionService(final PublishedMapRestrictionService service) {
-        restrictionService = service;
-    }
 
     public void init() {
         // setup services if they haven't been initialized
@@ -73,9 +67,6 @@ public class GetAppSetupHandler extends ActionHandler {
         }
         if(bundleService == null) {
             setBundleService(new BundleServiceMybatisImpl());
-        }
-        if(restrictionService == null) {
-            setPublishedMapRestrictionService(new PublishedMapRestrictionServiceImpl());
         }
         // Returns names of @OskariViewModifier annotated classes of type ParamHandler from classpath
         paramHandlers.addAll(ParamControl.getHandlerKeys());
@@ -186,35 +177,6 @@ public class GetAppSetupHandler extends ActionHandler {
                         "Denied access to published view in domain: "
                                 + pubDomain + " for referer " + referer);
             }
-
-            // Check View lock
-            if (restrictionService.isPublishedMapLocked((int) viewId)) {
-                throw new ActionDeniedException("View with id" + viewId
-                        + "is locked!");
-            }
-
-            // Check usage count -
-            // // FIXME: we cannot use the current user -> the publisher is the
-            // one we are interested in!!!!
-            /*
-private String UNRESTRICTED_USAGE_ROLE = "";
-UNRESTRICTED_USAGE_ROLE = PropertyUtil.get("view.published.usage.unrestrictedRoles");
-            if (!params.getUser().hasRole(UNRESTRICTED_USAGE_ROLE)) {
-                final List<Integer> viewIdList = new ArrayList<Integer>();
-                // get all view for view creator
-                final List<View> viewList = viewService.getViewsForUser(view
-                        .getCreator());
-                for (View v : viewList) {
-                    viewIdList.add((int) v.getId());
-                }
-                if (restrictionService.isServiceCountExceeded(viewIdList)) {
-                    throw new ActionDeniedException(
-                            "Denied access to published view" + viewId
-                                    + " - service count for user" + userId
-                                    + "exceeded!");
-                }
-            }
-            */
         }
 
         // Update view for latest usage timestamp and opened count number

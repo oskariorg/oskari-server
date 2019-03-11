@@ -2,9 +2,6 @@ dist: trusty
 language: java
 sudo: false
 install: true
-addons:
-  sonarcloud:
-    organization: "oskari"
 jdk:
   - oraclejdk8
   - openjdk8
@@ -20,7 +17,7 @@ notifications:
   slack: oskari:N5vZf0lzsIGpQ8nAPRfHgQ91
   webhooks:
     urls:
-      - secure: "VMrF0iHhaTi9pliXrBDjKVG8XzpKbrZeyIX1I38+zgWiH0LzoG7ciRVghiAF1grFK1/B8hhplr6vhMVPlxTsIYJQFLIsvbjjnYJmxEYuhODZZPn9trtaEjCwW0wbi0sdEry7bXi2bM2yUqA6Jl9lFeLA2TCudQ4ou5XjATtzMzo="
+      - secure: "jFL9lnYQWrHe+3b749MfPQEpqhqY6Cr7nI48Zkj2wSDhMfuTId2ujawAoXDZGUcqmWVMR4T4uQnhpRX05jEQkTkSweAWV7TefJF4YH/5s2wq85K0KpvNpueWwYrc0ZCYi4o62ls1/BXYkLQm2+OyY620jI+GpxaAzIc7jt7aFDg="
 
 
 before_install: "echo \"MAVEN_OPTS='-Xms1g -Xmx2g'\" > ~/.mavenrc"

@@ -1,6 +1,6 @@
 package flyway.oskari;
 
-import fi.nls.oskari.db.BundleHelper;
+import fi.nls.oskari.db.BundleHelper_pre1_52;
 import fi.nls.oskari.domain.map.view.Bundle;
 import org.flywaydb.core.api.migration.jdbc.JdbcMigration;
 
@@ -17,7 +17,7 @@ public class V1_42_0__register_maprotator_bundle implements JdbcMigration {
         // BundleHelper checks if these bundles are already registered
         Bundle bundle = new Bundle();
         bundle.setName(NAME);
-        bundle.setStartup(BundleHelper.getBundleStartup("/Oskari/packages/mapping/ol3/", NAME, "OL3 map rotation"));
-        BundleHelper.registerBundle(bundle, connection);
+        bundle.setStartup(BundleHelper_pre1_52.getBundleStartup("/Oskari/packages/mapping/ol3/", NAME, "OL3 map rotation"));
+        BundleHelper_pre1_52.registerBundle(bundle, connection);
     }
 }

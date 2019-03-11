@@ -1,6 +1,6 @@
 package flyway.oskari;
 
-import fi.nls.oskari.db.BundleHelper;
+import fi.nls.oskari.db.BundleHelper_pre1_52;
 import fi.nls.oskari.domain.map.view.Bundle;
 import org.flywaydb.core.api.migration.jdbc.JdbcMigration;
 
@@ -17,7 +17,7 @@ public class V1_40_3__register_feedback_bundle implements JdbcMigration {
         // BundleHelper checks if these bundles are already registered
         Bundle admin = new Bundle();
         admin.setName(NAME);
-        admin.setStartup(BundleHelper.getDefaultBundleStartup(null, NAME, "Open 311 service"));
-        BundleHelper.registerBundle(admin, connection);
+        admin.setStartup(BundleHelper_pre1_52.getDefaultBundleStartup(null, NAME, "Open 311 service"));
+        BundleHelper_pre1_52.registerBundle(admin, connection);
     }
 }

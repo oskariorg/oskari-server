@@ -1,6 +1,6 @@
 package flyway.oskari;
 
-import fi.nls.oskari.db.BundleHelper;
+import fi.nls.oskari.db.BundleHelper_pre1_52;
 import fi.nls.oskari.domain.map.view.Bundle;
 import org.flywaydb.core.api.migration.jdbc.JdbcMigration;
 
@@ -20,12 +20,12 @@ public class V1_33_0_1__register_wfs_search_bundles implements JdbcMigration {
         // BundleHelper checks if these bundles are already registered
         Bundle admin = new Bundle();
         admin.setName(ADMIN);
-        admin.setStartup(BundleHelper.getDefaultBundleStartup(NAMESPACE, ADMIN, "WFS Search channel admin"));
-        BundleHelper.registerBundle(admin, connection);
+        admin.setStartup(BundleHelper_pre1_52.getDefaultBundleStartup(NAMESPACE, ADMIN, "WFS Search channel admin"));
+        BundleHelper_pre1_52.registerBundle(admin, connection);
 
         Bundle search = new Bundle();
         search.setName(SEARCH);
-        search.setStartup(BundleHelper.getDefaultBundleStartup(NAMESPACE, SEARCH, "SearchFromChannelsBundle"));
-        BundleHelper.registerBundle(search, connection);
+        search.setStartup(BundleHelper_pre1_52.getDefaultBundleStartup(NAMESPACE, SEARCH, "SearchFromChannelsBundle"));
+        BundleHelper_pre1_52.registerBundle(search, connection);
     }
 }

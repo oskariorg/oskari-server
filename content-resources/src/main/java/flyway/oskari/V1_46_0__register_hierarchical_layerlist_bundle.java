@@ -1,6 +1,6 @@
 package flyway.oskari;
 
-import fi.nls.oskari.db.BundleHelper;
+import fi.nls.oskari.db.BundleHelper_pre1_52;
 import fi.nls.oskari.domain.map.view.Bundle;
 import org.flywaydb.core.api.migration.jdbc.JdbcMigration;
 
@@ -15,7 +15,7 @@ public class V1_46_0__register_hierarchical_layerlist_bundle implements JdbcMigr
         // BundleHelper checks if these bundles are already registered
         Bundle bundle = new Bundle();
         bundle.setName(BUNDLE_ID);
-        bundle.setStartup(BundleHelper.getDefaultBundleStartup(NAMESPACE, BUNDLE_ID, "Hierarchical layerlist"));
-        BundleHelper.registerBundle(bundle, connection);
+        bundle.setStartup(BundleHelper_pre1_52.getDefaultBundleStartup(NAMESPACE, BUNDLE_ID, "Hierarchical layerlist"));
+        BundleHelper_pre1_52.registerBundle(bundle, connection);
     }
 }
