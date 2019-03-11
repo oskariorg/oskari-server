@@ -14,8 +14,8 @@ public interface OskariLayerMapper {
     List<Map<String,Object>> findByParentId(int parentId);
     List<Map<String,Object>> findAll();
     List<Map<String,Object>> findAllWithPositiveUpdateRateSec();
-    void update(final OskariLayer layer);
-    int insert(final OskariLayer layer);
-    void delete(final int layerId);
+    int update(final OskariLayer layer);
+    void insert(final OskariLayer layer);
+    int delete(final int layerId);
 
 }

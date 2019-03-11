@@ -449,7 +449,7 @@
         WHERE id = #{id}
     </update>
 
-    <insert id="insert" parameterType="OskariLayer" useGeneratedKeys="true">
+    <insert id="insert" parameterType="OskariLayer" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
         insert into oskari_maplayer (
         parentId,
         type,
