@@ -44,6 +44,10 @@ public class SimpleFeatureConverter implements IUserDataConverter {
             }
             String prop = name.getLocalPart();
             Object value = p.getValue();
+            if (value == null) {
+                LOG.debug("Skipping", id + "." + prop, "value is null");
+                continue;
+            }
 
             String mvtProp = convertPropertyNameToMVT(prop, value);
             Object mvtValue = convertValueToMVT(value);
@@ -57,7 +61,6 @@ public class SimpleFeatureConverter implements IUserDataConverter {
             if (valueIndex < 0) {
                 // Value wasn't IN (Boolean,Integer,Long,Float,Double,String)
                 // => Can't be encoded to MVT
-                // TODO: Check how dates and datetimes are handled
                 LOG.warn("Skipping", id + "." + prop,
                         "value type not valid for MVT encoding, class:", value.getClass());
                 continue;
@@ -70,31 +73,20 @@ public class SimpleFeatureConverter implements IUserDataConverter {
     }
 
     private String convertPropertyNameToMVT(String prop, Object value) {
-        if (value == null
-                || value instanceof Boolean
-                || value instanceof Map
-                || value instanceof List) {
+        if (value instanceof Map || value instanceof List) {
             return COMPLEX_PROP_PREFIX + prop;
         }
         return prop;
     }
 
     private Object convertValueToMVT(Object value) {
-        if (value == null) {
-            return "null";
-        }
-        if (value instanceof Integer
+        if (value instanceof Boolean
+                || value instanceof Integer
                 || value instanceof Long
                 || value instanceof Float
                 || value instanceof Double
                 || value instanceof String) {
             return value;
-        }
-        if (value instanceof Boolean) {
-            return (Boolean) value ? "true" : "false";
-        }
-        if (value instanceof BigDecimal) {
-            return ((BigDecimal) value).doubleValue();
         }
         if (value instanceof Map) {
             return new JSONObject((Map) value).toString();
@@ -102,6 +94,10 @@ public class SimpleFeatureConverter implements IUserDataConverter {
         if (value instanceof List) {
             return new JSONArray((List) value).toString();
         }
+        if (value instanceof BigDecimal) {
+            return ((BigDecimal) value).doubleValue();
+        }
+        // TODO: Handle dates and timestamps
         return null;
     }
 
