@@ -16,6 +16,7 @@ import org.geotools.feature.DefaultFeatureCollection;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
 import org.opengis.feature.simple.SimpleFeature;
+import org.opengis.filter.Filter;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.oskari.service.mvt.SimpleFeaturesMVTEncoder;
 import org.oskari.service.mvt.TileCoord;
@@ -32,6 +33,7 @@ import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.ActionHandler;
 import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.control.ActionParamsException;
+import fi.nls.oskari.control.feature.MyPlacesWFSHelper;
 import fi.nls.oskari.control.layer.PermissionHelper;
 import fi.nls.oskari.domain.User;
 import fi.nls.oskari.domain.map.OskariLayer;
@@ -57,6 +59,7 @@ public class GetWFSVectorTileHandler extends ActionHandler {
     private final ComputeOnceCache<byte[]> tileCache = new ComputeOnceCache<>(256, TimeUnit.MINUTES.toMillis(5));
 
     private PermissionHelper permissionHelper;
+    private MyPlacesWFSHelper myPlacesHelper;
     private CachingWFSClient wfsClient;
 
     @Override
@@ -64,18 +67,21 @@ public class GetWFSVectorTileHandler extends ActionHandler {
         this.permissionHelper = new PermissionHelper(
                 ServiceFactory.getMapLayerService(),
                 ServiceFactory.getPermissionsService());
+        this.myPlacesHelper = new MyPlacesWFSHelper();
         this.wfsClient = new CachingWFSClient();
     }
 
     @Override
     public void handleAction(ActionParameters params) throws ActionException {
-        final int layerId = params.getRequiredParamInt(ActionConstants.PARAM_ID);
+        final String id = params.getRequiredParam(ActionConstants.PARAM_ID);
+        final int layerId = getLayerId(id);
         final String srs = params.getRequiredParam(ActionConstants.PARAM_SRS);
         final int z = params.getRequiredParamInt(PARAM_Z);
         final int x = params.getRequiredParamInt(PARAM_X);
         final int y = params.getRequiredParamInt(PARAM_Y);
 
         final OskariLayer layer = findLayer(layerId, params.getUser());
+        final String uuid = params.getUser().getUuid();
         final WFSTileGrid grid = KNOWN_TILE_GRIDS.get(srs);
         validateTile(grid, z, x, y);
         validateScaleDenominator(layer, grid, z);
@@ -87,16 +93,27 @@ public class GetWFSVectorTileHandler extends ActionHandler {
             throw new ActionParamsException("Invalid srs!");
         }
 
-        final String cacheKey = getCacheKey(layerId, srs, z, x, y);
+        final String cacheKey = getCacheKey(id, srs, z, x, y);
         final byte[] resp;
         try {
-            resp = tileCache.get(cacheKey, __ -> createTile(layer, crs, grid, z, x, y));
+            resp = tileCache.get(cacheKey, __ -> createTile(id, uuid, layer, crs, grid, z, x, y));
         } catch (ServiceRuntimeException e) {
             throw new ActionException(e.getMessage());
         }
         params.getResponse().addHeader("Access-Control-Allow-Origin", "*");
         params.getResponse().addHeader("Content-Encoding", "gzip");
         ResponseHelper.writeResponse(params, 200, MVT_CONTENT_TYPE, resp);
+    }
+
+    private int getLayerId(String id) throws ActionParamsException {
+        if (myPlacesHelper.isMyPlacesLayer(id)) {
+            return myPlacesHelper.getMyPlacesLayerId();
+        }
+        try {
+            return Integer.parseInt(id);
+        } catch (NumberFormatException e) {
+            throw new ActionParamsException("Invalid id");
+        }
     }
 
     private OskariLayer findLayer(int layerId, User user) throws ActionException {
@@ -159,8 +176,8 @@ public class GetWFSVectorTileHandler extends ActionHandler {
         return resolution * 1000 / 0.28; // OGC WMTS 0.28 mm/px
     }
 
-    private String getCacheKey(int layerId, String srs, int z, int x, int y) {
-        return "WFS_" + layerId + "_" + srs + "_" + z + "_" + x + "_" + y;
+    private String getCacheKey(String id, String srs, int z, int x, int y) {
+        return "WFS_" + id + "_" + srs + "_" + z + "_" + x + "_" + y;
     }
 
     /**
@@ -168,7 +185,7 @@ public class GetWFSVectorTileHandler extends ActionHandler {
      * @return an MVT tile as a GZipped byte array
      * @throws ActionException
      */
-    private byte[] createTile(OskariLayer layer, CoordinateReferenceSystem crs,
+    private byte[] createTile(String id, String uuid, OskariLayer layer, CoordinateReferenceSystem crs,
             WFSTileGrid grid, int z, int x, int y) throws ServiceRuntimeException {
         // Find nearest higher resolution
         int targetZ = grid.getZForResolution(8, -1);
@@ -198,7 +215,7 @@ public class GetWFSVectorTileHandler extends ActionHandler {
 
         SimpleFeatureCollection sfc = null;
         for (TileCoord tile : wfsTiles) {
-            SimpleFeatureCollection tileFeatures = getFeatures(layer, crs, grid, tile);
+            SimpleFeatureCollection tileFeatures = getFeatures(id, uuid, layer, crs, grid, tile);
             if (tileFeatures == null) {
                 throw new ServiceRuntimeException("Failed to get features from service");
             }
@@ -214,18 +231,25 @@ public class GetWFSVectorTileHandler extends ActionHandler {
         }
     }
 
-    private SimpleFeatureCollection getFeatures(OskariLayer layer, CoordinateReferenceSystem crs,
+    private SimpleFeatureCollection getFeatures(String id, String uuid, OskariLayer layer, CoordinateReferenceSystem crs,
             WFSTileGrid grid, TileCoord tile) {
         String endPoint = layer.getUrl();
         String version = layer.getVersion();
         String typeName = layer.getName();
-        String user = layer.getUsername();
-        String pass = layer.getPassword();
+        String username = layer.getUsername();
+        String password = layer.getPassword();
         double[] box = grid.getTileExtent(tile);
         Envelope envelope = new Envelope(box[0], box[2], box[1], box[3]);
         ReferencedEnvelope bbox = new ReferencedEnvelope(envelope, crs);
         int maxFeatures = 10000;
-        return wfsClient.tryGetFeatures(endPoint, version, user, pass, typeName, bbox, crs, maxFeatures);
+
+        Filter filter = null;
+        if (myPlacesHelper.isMyPlacesLayer(layer)) {
+            int categoryId = myPlacesHelper.getCategoryId(id);
+            filter = myPlacesHelper.getFilter(categoryId, uuid, bbox);
+        }
+
+        return wfsClient.tryGetFeatures(endPoint, version, username, password, typeName, bbox, crs, maxFeatures, filter);
     }
 
     public static SimpleFeatureCollection union(SimpleFeatureCollection a, SimpleFeatureCollection b) {

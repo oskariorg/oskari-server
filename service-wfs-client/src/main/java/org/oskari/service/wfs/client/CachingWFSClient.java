@@ -2,6 +2,7 @@ package org.oskari.service.wfs.client;
 
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.geometry.jts.ReferencedEnvelope;
+import org.opengis.filter.Filter;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
 import com.vividsolutions.jts.geom.Envelope;
@@ -24,12 +25,13 @@ public class CachingWFSClient {
 
     public SimpleFeatureCollection tryGetFeatures(String endPoint, String version,
             String user, String pass, String typeName,
-            ReferencedEnvelope bbox, CoordinateReferenceSystem crs, Integer maxFeatures) {
+            ReferencedEnvelope bbox, CoordinateReferenceSystem crs,
+            Integer maxFeatures, Filter filter) {
         String key = getCacheKey(endPoint, typeName, bbox, crs, maxFeatures);
         return cache.get(key, __ -> OskariWFSClient.tryGetFeatures(
                 endPoint, version,
                 user, pass, typeName,
-                bbox, crs, maxFeatures));
+                bbox, crs, maxFeatures, filter));
     }
 
     private String getCacheKey(String endPoint, String typeName, Envelope bbox,
