@@ -60,7 +60,7 @@ public class MyPlacesWFSHelper {
         Filter uuidEquals = ff.equals(_uuid, ff.literal(uuid));
 
         Filter publisherNameNotNull = ff.not(ff.isNull(_publisherName));
-        Filter publisherNameNotEmpty = ff.notEqual(_publisherName, ff.literal("''"));
+        Filter publisherNameNotEmpty = ff.notEqual(_publisherName, ff.literal(""));
         Filter publisherNameNotNullNotEmpty = ff.and(publisherNameNotNull, publisherNameNotEmpty);
 
         Filter uuidEqualsOrPublished = ff.or(uuidEquals, publisherNameNotNullNotEmpty);
