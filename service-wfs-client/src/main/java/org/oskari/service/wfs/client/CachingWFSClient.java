@@ -1,5 +1,7 @@
 package org.oskari.service.wfs.client;
 
+import java.util.concurrent.TimeUnit;
+
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.opengis.filter.Filter;
@@ -7,20 +9,20 @@ import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
 import com.vividsolutions.jts.geom.Envelope;
 
+import fi.nls.oskari.cache.CacheManager;
 import fi.nls.oskari.cache.ComputeOnceCache;
 
 public class CachingWFSClient {
 
-    private static final int DEFAULT_LIMIT = 100;
+    private static final String CACHE_NAME = CachingWFSClient.class.getName();
+    private static final int CACHE_SIZE_LIMIT = 100;
+    private static final long CACHE_EXPIRATION = TimeUnit.MINUTES.toMillis(5L);
 
     private final ComputeOnceCache<SimpleFeatureCollection> cache;
 
     public CachingWFSClient() {
-        this(DEFAULT_LIMIT);
-    }
-
-    public CachingWFSClient(int cacheSize) {
-        cache = new ComputeOnceCache<>(cacheSize);
+        cache = (ComputeOnceCache<SimpleFeatureCollection>) CacheManager.getCache(CACHE_NAME,
+                () -> new ComputeOnceCache<SimpleFeatureCollection>(CACHE_SIZE_LIMIT, CACHE_EXPIRATION));
     }
 
     public SimpleFeatureCollection tryGetFeatures(String endPoint, String version,
