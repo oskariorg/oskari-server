@@ -27,6 +27,7 @@ import org.oskari.service.wfs.client.CachingWFSClient;
 import com.vividsolutions.jts.geom.Envelope;
 
 import fi.nls.oskari.annotation.OskariActionRoute;
+import fi.nls.oskari.cache.CacheManager;
 import fi.nls.oskari.cache.ComputeOnceCache;
 import fi.nls.oskari.control.ActionConstants;
 import fi.nls.oskari.control.ActionException;
@@ -49,6 +50,9 @@ public class GetWFSVectorTileHandler extends ActionHandler {
     protected static final String PARAM_Z = "z";
     protected static final String PARAM_X = "x";
     protected static final String PARAM_Y = "y";
+    
+    private static final int CACHE_LIMIT = 256;
+    private static final long CACHE_EXPIRATION = TimeUnit.MINUTES.toMillis(5);
 
     private static final Map<String, WFSTileGrid> KNOWN_TILE_GRIDS;
     static {
@@ -57,8 +61,7 @@ public class GetWFSVectorTileHandler extends ActionHandler {
         KNOWN_TILE_GRIDS.put("EPSG:3857", new WFSTileGrid(new double[] { -20037508.3427892, -20037508.3427892, 20037508.3427892, 20037508.3427892 }, 18));
     }
 
-    private final ComputeOnceCache<byte[]> tileCache = new ComputeOnceCache<>(256, TimeUnit.MINUTES.toMillis(5));
-
+    private ComputeOnceCache<byte[]> tileCache;
     private PermissionHelper permissionHelper;
     private MyPlacesWFSHelper myPlacesHelper;
     private UserLayerWFSHelper userlayerHelper;
@@ -66,6 +69,8 @@ public class GetWFSVectorTileHandler extends ActionHandler {
 
     @Override
     public void init() {
+        tileCache = (ComputeOnceCache<byte[]>) CacheManager.getCache(getClass().getName(),
+                () -> new ComputeOnceCache<byte[]>(CACHE_LIMIT, CACHE_EXPIRATION));
         this.permissionHelper = new PermissionHelper(
                 ServiceFactory.getMapLayerService(),
                 ServiceFactory.getPermissionsService());
