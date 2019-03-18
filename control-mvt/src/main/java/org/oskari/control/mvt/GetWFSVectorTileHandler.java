@@ -236,8 +236,8 @@ public class GetWFSVectorTileHandler extends ActionHandler {
         String endPoint = layer.getUrl();
         String version = layer.getVersion();
         String typeName = layer.getName();
-        String username = layer.getUsername();
-        String password = layer.getPassword();
+        String user = layer.getUsername();
+        String pass = layer.getPassword();
         double[] box = grid.getTileExtent(tile);
         Envelope envelope = new Envelope(box[0], box[2], box[1], box[3]);
         ReferencedEnvelope bbox = new ReferencedEnvelope(envelope, crs);
@@ -249,7 +249,7 @@ public class GetWFSVectorTileHandler extends ActionHandler {
             filter = myPlacesHelper.getFilter(categoryId, uuid, bbox);
         }
 
-        return wfsClient.tryGetFeatures(endPoint, version, username, password, typeName, bbox, crs, maxFeatures, filter);
+        return wfsClient.tryGetFeatures(endPoint, version, user, pass, typeName, bbox, crs, maxFeatures, filter);
     }
 
     public static SimpleFeatureCollection union(SimpleFeatureCollection a, SimpleFeatureCollection b) {

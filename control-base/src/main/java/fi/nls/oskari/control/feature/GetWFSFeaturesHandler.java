@@ -218,8 +218,8 @@ public class GetWFSFeaturesHandler extends ActionHandler {
         String endPoint = layer.getUrl();
         String version = layer.getVersion();
         String typeName = layer.getName();
-        String username = layer.getUsername();
-        String password = layer.getPassword();
+        String user = layer.getUsername();
+        String pass = layer.getPassword();
         // TODO: Figure out the maxFeatures from the layer
         int maxFeatures = 10000;
 
@@ -229,7 +229,7 @@ public class GetWFSFeaturesHandler extends ActionHandler {
             filter = myPlacesHelper.getFilter(categoryId, uuid, bbox);
         }
 
-        return OskariWFSClient.tryGetFeatures(endPoint, version, username, password, typeName, bbox, crs, maxFeatures, filter);
+        return OskariWFSClient.tryGetFeatures(endPoint, version, user, pass, typeName, bbox, crs, maxFeatures, filter);
     }
 
     /**
