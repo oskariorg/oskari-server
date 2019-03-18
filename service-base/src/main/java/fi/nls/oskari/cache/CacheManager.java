@@ -3,6 +3,7 @@ package fi.nls.oskari.cache;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.function.Supplier;
 
 /**
  * Generic cache factory for Oskari.
@@ -37,13 +38,17 @@ public class CacheManager {
      * @return
      */
     public static <T> Cache<T> getCache(final String name) {
+        return getCache(name, () -> new Cache<>());
+    }
+
+    public static <T> Cache<T> getCache(final String name, final Supplier<? extends Cache<T>> supplier) {
         final Cache existing = CACHE_STORE.get(name);
         if (existing != null) {
             return existing;
         }
 
         // create a new one
-        final Cache<T> cache = new Cache<T>();
+        final Cache<T> cache = supplier.get();
         cache.setName(name);
         CACHE_STORE.put(name, cache);
         return cache;
