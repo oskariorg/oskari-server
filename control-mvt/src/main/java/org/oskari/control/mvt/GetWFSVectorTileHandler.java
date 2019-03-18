@@ -74,13 +74,12 @@ public class GetWFSVectorTileHandler extends ActionHandler {
     @Override
     public void handleAction(ActionParameters params) throws ActionException {
         final String id = params.getRequiredParam(ActionConstants.PARAM_ID);
-        final int layerId = getLayerId(id);
         final String srs = params.getRequiredParam(ActionConstants.PARAM_SRS);
         final int z = params.getRequiredParamInt(PARAM_Z);
         final int x = params.getRequiredParamInt(PARAM_X);
         final int y = params.getRequiredParamInt(PARAM_Y);
 
-        final OskariLayer layer = findLayer(layerId, params.getUser());
+        final OskariLayer layer = findLayer(id, params.getUser());
         final String uuid = params.getUser().getUuid();
         final WFSTileGrid grid = KNOWN_TILE_GRIDS.get(srs);
         validateTile(grid, z, x, y);
@@ -105,6 +104,15 @@ public class GetWFSVectorTileHandler extends ActionHandler {
         ResponseHelper.writeResponse(params, 200, MVT_CONTENT_TYPE, resp);
     }
 
+    private OskariLayer findLayer(String id, User user) throws ActionException {
+        int layerId = getLayerId(id);
+        OskariLayer layer = permissionHelper.getLayer(layerId, user);
+        if (!OskariLayer.TYPE_WFS.equals(layer.getType())) {
+            throw new ActionParamsException("Specified layer is not a WFS layer");
+        }
+        return layer;
+    }
+
     private int getLayerId(String id) throws ActionParamsException {
         if (myPlacesHelper.isMyPlacesLayer(id)) {
             return myPlacesHelper.getMyPlacesLayerId();
@@ -114,14 +122,6 @@ public class GetWFSVectorTileHandler extends ActionHandler {
         } catch (NumberFormatException e) {
             throw new ActionParamsException("Invalid id");
         }
-    }
-
-    private OskariLayer findLayer(int layerId, User user) throws ActionException {
-        OskariLayer layer = permissionHelper.getLayer(layerId, user);
-        if (!OskariLayer.TYPE_WFS.equals(layer.getType())) {
-            throw new ActionParamsException("Specified layer is not a WFS layer");
-        }
-        return layer;
     }
 
     private void validateTile(WFSTileGrid grid, int z, int x, int y)
