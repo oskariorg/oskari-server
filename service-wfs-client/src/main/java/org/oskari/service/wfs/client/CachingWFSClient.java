@@ -27,6 +27,13 @@ public class CachingWFSClient {
             String user, String pass, String typeName,
             ReferencedEnvelope bbox, CoordinateReferenceSystem crs,
             Integer maxFeatures, Filter filter) {
+        if (filter != null) {
+            // Don't cache requests with a Filter
+            return OskariWFSClient.tryGetFeatures(
+                    endPoint, version,
+                    user, pass, typeName,
+                    bbox, crs, maxFeatures, filter);
+        }
         String key = getCacheKey(endPoint, typeName, bbox, crs, maxFeatures);
         return cache.get(key, __ -> OskariWFSClient.tryGetFeatures(
                 endPoint, version,
