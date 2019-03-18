@@ -83,9 +83,8 @@ public class GetWFSFeaturesHandler extends ActionHandler {
         }
 
         String id = params.getRequiredParam(ActionConstants.PARAM_ID);
-        int layerId = getLayerId(id);
         String bboxStr = params.getRequiredParam(PARAM_BBOX);
-        OskariLayer layer = findLayer(layerId, params.getUser());
+        OskariLayer layer = findLayer(id, params.getUser());
         String uuid = params.getUser().getUuid();
 
         String targetSRS = params.getHttpParam(ActionConstants.PARAM_SRS, "EPSG:3857");
@@ -111,17 +110,6 @@ public class GetWFSFeaturesHandler extends ActionHandler {
             }
         } catch (IOException e) {
             ResponseHelper.writeError(params, ERR_GEOJSON_ENCODE_FAIL);
-        }
-    }
-
-    private int getLayerId(String id) throws ActionParamsException {
-        if (myPlacesHelper.isMyPlacesLayer(id)) {
-            return myPlacesHelper.getMyPlacesLayerId();
-        }
-        try {
-            return Integer.parseInt(id);
-        } catch (NumberFormatException e) {
-            throw new ActionParamsException("Invalid id");
         }
     }
 
@@ -157,12 +145,24 @@ public class GetWFSFeaturesHandler extends ActionHandler {
         }
     }
 
-    private OskariLayer findLayer(int layerId, User user) throws ActionException {
+    private OskariLayer findLayer(String id, User user) throws ActionException {
+        int layerId = getLayerId(id);
         OskariLayer layer = permissionHelper.getLayer(layerId, user);
         if (!OskariLayer.TYPE_WFS.equals(layer.getType())) {
             throw new ActionParamsException(ERR_LAYER_TYPE_NOT_WFS);
         }
         return layer;
+    }
+
+    private int getLayerId(String id) throws ActionParamsException {
+        if (myPlacesHelper.isMyPlacesLayer(id)) {
+            return myPlacesHelper.getMyPlacesLayerId();
+        }
+        try {
+            return Integer.parseInt(id);
+        } catch (NumberFormatException e) {
+            throw new ActionParamsException("Invalid id");
+        }
     }
 
     protected SimpleFeatureCollection getFeatures(String id, String uuid, OskariLayer layer, ReferencedEnvelope bbox,
