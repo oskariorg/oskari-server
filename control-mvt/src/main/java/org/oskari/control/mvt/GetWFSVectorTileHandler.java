@@ -232,6 +232,14 @@ public class GetWFSVectorTileHandler extends ActionHandler {
             }
             sfc = union(sfc, tileFeatures);
         }
+        
+        if (userlayerHelper.isUserlayerLayer(layer)) {
+            try {
+                sfc = userlayerHelper.retype(sfc);
+            } catch (Exception e) {
+                throw new ServiceRuntimeException("Failed to post-process user layer", e);
+            }
+        }
 
         double[] bbox = grid.getTileExtent(new TileCoord(z, x, y));
         byte[] encoded = SimpleFeaturesMVTEncoder.encodeToByteArray(sfc, layer.getName(), bbox, 4096, 256);
