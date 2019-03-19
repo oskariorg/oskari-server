@@ -9,6 +9,7 @@ import org.geotools.geojson.feature.FeatureJSON;
 import org.geotools.geojson.geom.GeometryJSON;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
+import org.opengis.filter.Filter;
 import org.opengis.geometry.DirectPosition;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.oskari.service.util.ServiceFactory;
@@ -54,6 +55,7 @@ public class GetWFSFeaturesHandler extends ActionHandler {
     private static final int NUM_DECIMAL_PLACES_OTHER = 2; // For metric projections: 10mm precision, max error 5mm
 
     private PermissionHelper permissionHelper;
+    private MyPlacesWFSHelper myPlacesHelper;
 
     private CoordinateReferenceSystem nativeCRS;
 
@@ -68,6 +70,9 @@ public class GetWFSFeaturesHandler extends ActionHandler {
                     ServiceFactory.getMapLayerService(),
                     ServiceFactory.getPermissionsService());
         };
+        if (myPlacesHelper == null) {
+            myPlacesHelper = new MyPlacesWFSHelper();
+        }
     }
 
     @Override
@@ -77,9 +82,10 @@ public class GetWFSFeaturesHandler extends ActionHandler {
             throw new ActionException(ERR_NATIVE_CRS_UNAVAILABLE);
         }
 
-        int layerId = params.getRequiredParamInt(ActionConstants.PARAM_ID);
+        String id = params.getRequiredParam(ActionConstants.PARAM_ID);
         String bboxStr = params.getRequiredParam(PARAM_BBOX);
-        OskariLayer layer = findLayer(layerId, params.getUser());
+        OskariLayer layer = findLayer(id, params.getUser());
+        String uuid = params.getUser().getUuid();
 
         String targetSRS = params.getHttpParam(ActionConstants.PARAM_SRS, "EPSG:3857");
         CoordinateReferenceSystem targetCRS;
@@ -92,7 +98,7 @@ public class GetWFSFeaturesHandler extends ActionHandler {
         // TODO: Figure out if layer supports targetSrsName
         // If it does let the WFS service do the transformation
         ReferencedEnvelope bbox = parseBbox(bboxStr, targetCRS);
-        SimpleFeatureCollection fc = getFeatures(layer, bbox, nativeCRS, targetCRS);
+        SimpleFeatureCollection fc = getFeatures(id, uuid, layer, bbox, nativeCRS, targetCRS);
         try {
             if (fc.isEmpty()) {
                 ResponseHelper.writeResponse(params, 200, GEOJSON_CONTENT_TYPE, EMPTY_GEOJSON_FEATURE_COLLECTION);
@@ -139,7 +145,8 @@ public class GetWFSFeaturesHandler extends ActionHandler {
         }
     }
 
-    private OskariLayer findLayer(int layerId, User user) throws ActionException {
+    private OskariLayer findLayer(String id, User user) throws ActionException {
+        int layerId = getLayerId(id);
         OskariLayer layer = permissionHelper.getLayer(layerId, user);
         if (!OskariLayer.TYPE_WFS.equals(layer.getType())) {
             throw new ActionParamsException(ERR_LAYER_TYPE_NOT_WFS);
@@ -147,7 +154,18 @@ public class GetWFSFeaturesHandler extends ActionHandler {
         return layer;
     }
 
-    protected SimpleFeatureCollection getFeatures(OskariLayer layer, ReferencedEnvelope bbox,
+    private int getLayerId(String id) throws ActionParamsException {
+        if (myPlacesHelper.isMyPlacesLayer(id)) {
+            return myPlacesHelper.getMyPlacesLayerId();
+        }
+        try {
+            return Integer.parseInt(id);
+        } catch (NumberFormatException e) {
+            throw new ActionParamsException("Invalid id");
+        }
+    }
+
+    protected SimpleFeatureCollection getFeatures(String id, String uuid, OskariLayer layer, ReferencedEnvelope bbox,
             CoordinateReferenceSystem nativeCRS, CoordinateReferenceSystem targetCRS) throws ActionException {
         boolean needsTransform = !CRS.equalsIgnoreMetadata(nativeCRS, targetCRS);
 
@@ -162,7 +180,7 @@ public class GetWFSFeaturesHandler extends ActionHandler {
             }
         }
 
-        SimpleFeatureCollection features = getFeatures(layer, requestBbox, nativeCRS);
+        SimpleFeatureCollection features = getFeatures(id, uuid, layer, requestBbox, nativeCRS);
         if (!needsTransform) {
             return features;
         }
@@ -195,7 +213,7 @@ public class GetWFSFeaturesHandler extends ActionHandler {
         return true;
     }
 
-    private SimpleFeatureCollection getFeatures(OskariLayer layer, ReferencedEnvelope bbox,
+    private SimpleFeatureCollection getFeatures(String id, String uuid, OskariLayer layer, ReferencedEnvelope bbox,
             CoordinateReferenceSystem crs) {
         String endPoint = layer.getUrl();
         String version = layer.getVersion();
@@ -204,7 +222,14 @@ public class GetWFSFeaturesHandler extends ActionHandler {
         String pass = layer.getPassword();
         // TODO: Figure out the maxFeatures from the layer
         int maxFeatures = 10000;
-        return OskariWFSClient.tryGetFeatures(endPoint, version, user, pass, typeName, bbox, crs, maxFeatures);
+
+        Filter filter = null;
+        if (myPlacesHelper.isMyPlacesLayer(layer)) {
+            int categoryId = myPlacesHelper.getCategoryId(id);
+            filter = myPlacesHelper.getFilter(categoryId, uuid, bbox);
+        }
+
+        return OskariWFSClient.tryGetFeatures(endPoint, version, user, pass, typeName, bbox, crs, maxFeatures, filter);
     }
 
     /**

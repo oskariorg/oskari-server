@@ -2,6 +2,7 @@ package org.oskari.service.wfs.client;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -14,8 +15,11 @@ import java.util.Map;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.feature.DefaultFeatureCollection;
 import org.geotools.feature.FeatureIterator;
+import org.geotools.filter.v1_0.OGCConfiguration;
 import org.geotools.geometry.jts.ReferencedEnvelope;
+import org.geotools.xml.Encoder;
 import org.opengis.feature.simple.SimpleFeature;
+import org.opengis.filter.Filter;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
 import fi.nls.oskari.log.LogFactory;
@@ -33,21 +37,26 @@ public class OskariWFS110Client {
 
     private OskariWFS110Client() {}
 
+    public static SimpleFeatureCollection tryGetFeatures(String endPoint, String user, String pass,
+            String typeName, ReferencedEnvelope bbox, CoordinateReferenceSystem crs, Integer maxFeatures) {
+        return tryGetFeatures(endPoint, user, pass, typeName, bbox, crs, maxFeatures, null);
+    }
+
     /**
      * @return SimpleFeatureCollection containing the parsed Features, or null if all fails
      */
     public static SimpleFeatureCollection tryGetFeatures(String endPoint, String user, String pass,
-            String typeName, ReferencedEnvelope bbox, CoordinateReferenceSystem crs, Integer maxFeatures) {
+            String typeName, ReferencedEnvelope bbox, CoordinateReferenceSystem crs, Integer maxFeatures, Filter filter) {
         // First try GeoJSON
         try {
-            return getFeaturesGeoJSON(endPoint, user, pass, typeName, bbox, crs, maxFeatures);
+            return getFeaturesGeoJSON(endPoint, user, pass, typeName, bbox, crs, maxFeatures, filter);
         } catch (Exception e) {
             LOG.warn(e, "Failed to read WFS response as GeoJSON");
         }
 
         // Fallback to GML
         try {
-            return getFeaturesGML(endPoint, user, pass, typeName, bbox, crs, maxFeatures);
+            return getFeaturesGML(endPoint, user, pass, typeName, bbox, crs, maxFeatures, filter);
         } catch (Exception e) {
             LOG.warn(e, "Failed to read WFS response as GML");
         }
@@ -56,8 +65,8 @@ public class OskariWFS110Client {
     }
 
     public static SimpleFeatureCollection getFeaturesGeoJSON(String endPoint, String user, String pass,
-            String typeName, ReferencedEnvelope bbox, CoordinateReferenceSystem crs, Integer maxFeatures) throws Exception {
-        Map<String, String> query = getQueryParams(typeName, bbox, crs, maxFeatures);
+            String typeName, ReferencedEnvelope bbox, CoordinateReferenceSystem crs, Integer maxFeatures, Filter filter) throws Exception {
+        Map<String, String> query = getQueryParams(typeName, bbox, crs, maxFeatures, filter);
         query.put("OUTPUTFORMAT", "application/json");
         HttpURLConnection conn = IOHelper.getConnection(endPoint, user, pass, query);
         conn = IOHelper.followRedirect(conn, user, pass, query, MAX_REDIRECTS);
@@ -83,8 +92,8 @@ public class OskariWFS110Client {
     }
 
     public static SimpleFeatureCollection getFeaturesGML(String endPoint, String user, String pass, String typeName,
-            ReferencedEnvelope bbox, CoordinateReferenceSystem crs, Integer maxFeatures) throws Exception {
-        Map<String, String> query = getQueryParams(typeName, bbox, crs, maxFeatures);
+            ReferencedEnvelope bbox, CoordinateReferenceSystem crs, Integer maxFeatures, Filter filter) throws Exception {
+        Map<String, String> query = getQueryParams(typeName, bbox, crs, maxFeatures, filter);
         HttpURLConnection conn = IOHelper.getConnection(endPoint, user, pass, query);
         conn = IOHelper.followRedirect(conn, user, pass, query, MAX_REDIRECTS);
         if (conn.getResponseCode() != 200) {
@@ -97,14 +106,18 @@ public class OskariWFS110Client {
     }
 
     protected static Map<String, String> getQueryParams(String typeName, ReferencedEnvelope bbox,
-            CoordinateReferenceSystem crs, Integer maxFeatures) {
+            CoordinateReferenceSystem crs, Integer maxFeatures, Filter filter) {
         Map<String, String> parameters = new LinkedHashMap<>();
         parameters.put("SERVICE", "WFS");
         parameters.put("VERSION", "1.1.0");
         parameters.put("REQUEST", "GetFeature");
         parameters.put("TYPENAME", typeName);
         parameters.put("SRSNAME", crs.getIdentifiers().iterator().next().toString());
-        parameters.put("BBOX", getBBOX(bbox));
+        if (filter == null) {
+            parameters.put("BBOX", getBBOX(bbox));
+        } else {
+            parameters.put("FILTER", getFilter(filter));
+        }
         if (maxFeatures != null) {
             parameters.put("MAXFEATURES", maxFeatures.toString());
         }
@@ -124,6 +137,20 @@ public class OskariWFS110Client {
                 bbox.getMinX(), bbox.getMinY(),
                 bbox.getMaxX(), bbox.getMaxY(),
                 srsName);
+    }
+
+    protected static String getFilter(Filter filter) {
+        if (filter == null) {
+            return null;
+        }
+        try {
+            Encoder encoder = new Encoder(new OGCConfiguration());
+            encoder.setOmitXMLDeclaration(true);
+            return encoder.encodeAsString(filter, org.geotools.filter.v1_0.OGC.Filter);
+        } catch (IOException e) {
+            LOG.warn("Failed to encode filter!");
+        }
+        return null;
     }
 
 }

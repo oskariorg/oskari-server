@@ -1,8 +1,10 @@
 package fi.nls.oskari.cache;
 
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.function.Supplier;
 
 /**
  * Generic cache factory for Oskari.
@@ -27,7 +29,7 @@ import java.util.concurrent.ConcurrentMap;
  */
 public class CacheManager {
 
-    private static ConcurrentMap<String, Cache> CACHE_STORE = new ConcurrentHashMap<String, Cache>();
+    private static final ConcurrentMap<String, Cache> CACHE_STORE = new ConcurrentHashMap<>();
 
     /**
      * Returns a cache matching name or creates one if it doesn't exist.
@@ -37,16 +39,27 @@ public class CacheManager {
      * @return
      */
     public static <T> Cache<T> getCache(final String name) {
-        final Cache existing = CACHE_STORE.get(name);
-        if (existing != null) {
-            return existing;
-        }
+        return getCache(name, () -> new Cache<>());
+    }
 
-        // create a new one
-        final Cache<T> cache = new Cache<T>();
-        cache.setName(name);
-        CACHE_STORE.put(name, cache);
-        return cache;
+    /**
+     * Returns a cache matching name or creates one if it doesn't exist
+     * by calling the provided supplier function.
+     *
+     * @param name name of the cache
+     * @param supplier function which creates a new cache if one doesn't exists for the key
+     * @param <T>  type mapping for cache
+     * @return
+     */
+    @SuppressWarnings("unchecked")
+    public static <T1 extends Cache<T2>, T2> T1 getCache(final String name, final Supplier<T1> supplier) {
+        Objects.requireNonNull(name);
+        Objects.requireNonNull(supplier);
+        return (T1) CACHE_STORE.computeIfAbsent(name, __ -> {
+            Cache<T2> cache = supplier.get();
+            cache.setName(name);
+            return cache;
+        });
     }
 
     /**
@@ -57,10 +70,12 @@ public class CacheManager {
     }
 
     /**
+     * @deprecated to be removed, use {@link #getCache(String)}
+     *
      * Registers cache manually to manager.
      * @return true if successful, false if params missing or a cache already exists with same name
      */
-    public static boolean addCache(final String name, final Cache cache) {
+    public static <T> boolean addCache(final String name, final Cache<T> cache) {
         if (null == name || null == cache || CACHE_STORE.containsKey(name)) {
             return false;
         }
