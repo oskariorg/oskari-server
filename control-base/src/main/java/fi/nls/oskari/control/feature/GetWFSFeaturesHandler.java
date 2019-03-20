@@ -56,6 +56,7 @@ public class GetWFSFeaturesHandler extends ActionHandler {
 
     private PermissionHelper permissionHelper;
     private MyPlacesWFSHelper myPlacesHelper;
+    private UserLayerWFSHelper userlayerHelper;
 
     private CoordinateReferenceSystem nativeCRS;
 
@@ -72,6 +73,9 @@ public class GetWFSFeaturesHandler extends ActionHandler {
         };
         if (myPlacesHelper == null) {
             myPlacesHelper = new MyPlacesWFSHelper();
+        }
+        if (userlayerHelper == null) {
+            userlayerHelper = new UserLayerWFSHelper();
         }
     }
 
@@ -158,6 +162,9 @@ public class GetWFSFeaturesHandler extends ActionHandler {
         if (myPlacesHelper.isMyPlacesLayer(id)) {
             return myPlacesHelper.getMyPlacesLayerId();
         }
+        if (userlayerHelper.isUserlayerLayer(id)) {
+            return userlayerHelper.getUserlayerLayerId();
+        }
         try {
             return Integer.parseInt(id);
         } catch (NumberFormatException e) {
@@ -227,6 +234,9 @@ public class GetWFSFeaturesHandler extends ActionHandler {
         if (myPlacesHelper.isMyPlacesLayer(layer)) {
             int categoryId = myPlacesHelper.getCategoryId(id);
             filter = myPlacesHelper.getFilter(categoryId, uuid, bbox);
+        } else if (userlayerHelper.isUserlayerLayer(layer)) {
+            int userlayerId = userlayerHelper.getUserlayerId(id);
+            filter = userlayerHelper.getFilter(userlayerId, uuid, bbox);
         }
 
         return OskariWFSClient.tryGetFeatures(endPoint, version, user, pass, typeName, bbox, crs, maxFeatures, filter);

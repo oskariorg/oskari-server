@@ -27,6 +27,7 @@ import org.oskari.service.wfs.client.CachingWFSClient;
 import com.vividsolutions.jts.geom.Envelope;
 
 import fi.nls.oskari.annotation.OskariActionRoute;
+import fi.nls.oskari.cache.CacheManager;
 import fi.nls.oskari.cache.ComputeOnceCache;
 import fi.nls.oskari.control.ActionConstants;
 import fi.nls.oskari.control.ActionException;
@@ -34,6 +35,7 @@ import fi.nls.oskari.control.ActionHandler;
 import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.control.ActionParamsException;
 import fi.nls.oskari.control.feature.MyPlacesWFSHelper;
+import fi.nls.oskari.control.feature.UserLayerWFSHelper;
 import fi.nls.oskari.control.layer.PermissionHelper;
 import fi.nls.oskari.domain.User;
 import fi.nls.oskari.domain.map.OskariLayer;
@@ -48,6 +50,9 @@ public class GetWFSVectorTileHandler extends ActionHandler {
     protected static final String PARAM_Z = "z";
     protected static final String PARAM_X = "x";
     protected static final String PARAM_Y = "y";
+    
+    private static final int CACHE_LIMIT = 256;
+    private static final long CACHE_EXPIRATION = TimeUnit.MINUTES.toMillis(5);
 
     private static final Map<String, WFSTileGrid> KNOWN_TILE_GRIDS;
     static {
@@ -56,18 +61,21 @@ public class GetWFSVectorTileHandler extends ActionHandler {
         KNOWN_TILE_GRIDS.put("EPSG:3857", new WFSTileGrid(new double[] { -20037508.3427892, -20037508.3427892, 20037508.3427892, 20037508.3427892 }, 18));
     }
 
-    private final ComputeOnceCache<byte[]> tileCache = new ComputeOnceCache<>(256, TimeUnit.MINUTES.toMillis(5));
-
+    private ComputeOnceCache<byte[]> tileCache;
     private PermissionHelper permissionHelper;
     private MyPlacesWFSHelper myPlacesHelper;
+    private UserLayerWFSHelper userlayerHelper;
     private CachingWFSClient wfsClient;
 
     @Override
     public void init() {
+        tileCache = CacheManager.getCache(getClass().getName(),
+                () -> new ComputeOnceCache<>(CACHE_LIMIT, CACHE_EXPIRATION));
         this.permissionHelper = new PermissionHelper(
                 ServiceFactory.getMapLayerService(),
                 ServiceFactory.getPermissionsService());
         this.myPlacesHelper = new MyPlacesWFSHelper();
+        this.userlayerHelper = new UserLayerWFSHelper();
         this.wfsClient = new CachingWFSClient();
     }
 
@@ -116,6 +124,9 @@ public class GetWFSVectorTileHandler extends ActionHandler {
     private int getLayerId(String id) throws ActionParamsException {
         if (myPlacesHelper.isMyPlacesLayer(id)) {
             return myPlacesHelper.getMyPlacesLayerId();
+        }
+        if (userlayerHelper.isUserlayerLayer(id)) {
+            return userlayerHelper.getUserlayerLayerId();
         }
         try {
             return Integer.parseInt(id);
@@ -221,6 +232,14 @@ public class GetWFSVectorTileHandler extends ActionHandler {
             }
             sfc = union(sfc, tileFeatures);
         }
+        
+        if (userlayerHelper.isUserlayerLayer(layer)) {
+            try {
+                sfc = userlayerHelper.retype(sfc);
+            } catch (Exception e) {
+                throw new ServiceRuntimeException("Failed to post-process user layer", e);
+            }
+        }
 
         double[] bbox = grid.getTileExtent(new TileCoord(z, x, y));
         byte[] encoded = SimpleFeaturesMVTEncoder.encodeToByteArray(sfc, layer.getName(), bbox, 4096, 256);
@@ -247,6 +266,9 @@ public class GetWFSVectorTileHandler extends ActionHandler {
         if (myPlacesHelper.isMyPlacesLayer(layer)) {
             int categoryId = myPlacesHelper.getCategoryId(id);
             filter = myPlacesHelper.getFilter(categoryId, uuid, bbox);
+        } else if (userlayerHelper.isUserlayerLayer(layer)) {
+            int userlayerId = userlayerHelper.getUserlayerId(id);
+            filter = userlayerHelper.getFilter(userlayerId, uuid, bbox);
         }
 
         return wfsClient.tryGetFeatures(endPoint, version, user, pass, typeName, bbox, crs, maxFeatures, filter);
