@@ -69,8 +69,8 @@ public class GetWFSVectorTileHandler extends ActionHandler {
 
     @Override
     public void init() {
-        tileCache = (ComputeOnceCache<byte[]>) CacheManager.getCache(getClass().getName(),
-                () -> new ComputeOnceCache<byte[]>(CACHE_LIMIT, CACHE_EXPIRATION));
+        tileCache = CacheManager.getCache(getClass().getName(),
+                () -> new ComputeOnceCache<>(CACHE_LIMIT, CACHE_EXPIRATION));
         this.permissionHelper = new PermissionHelper(
                 ServiceFactory.getMapLayerService(),
                 ServiceFactory.getPermissionsService());
