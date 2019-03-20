@@ -1,4 +1,4 @@
-package org.oskari.service.wfs.client.geojson;
+package org.oskari.service.wfs3.geojson;
 
 import java.io.IOException;
 import java.util.ArrayDeque;
@@ -11,23 +11,23 @@ import java.util.Map;
 import org.json.simple.parser.ContentHandler;
 import org.json.simple.parser.ParseException;
 
-public class JSONArrayOfObjectsHandler implements ContentHandler {
+public class JSONObjectHandler implements ContentHandler {
 
     private Deque<String> keyStack;
     private String currentKey;
     private Deque<Object> objectStack;
     private Object currentObject;
 
-    public JSONArrayOfObjectsHandler() {
+    public JSONObjectHandler() {
         this.keyStack = new ArrayDeque<>();
         this.objectStack = new ArrayDeque<>();
     }
 
     @SuppressWarnings("unchecked")
-    public List<Object> getJSONArray() {
-        List<Object> jsonArray = (List<Object>) currentObject;
+    public Map<String, Object> getJSONObject() {
+        Map<String, Object> jsonObject = (Map<String, Object>) currentObject;
         currentObject = null;
-        return jsonArray;
+        return jsonObject;
     }
 
     @Override
@@ -42,10 +42,9 @@ public class JSONArrayOfObjectsHandler implements ContentHandler {
 
     @Override
     public boolean startObject() throws ParseException, IOException {
-        if (currentObject == null) {
-            throw new ParseException(0);
+        if (currentObject != null) {
+            objectStack.push(currentObject);
         }
-        objectStack.push(currentObject);
         currentObject = new HashMap<String, Object>();
         return true;
     }
@@ -83,9 +82,10 @@ public class JSONArrayOfObjectsHandler implements ContentHandler {
 
     @Override
     public boolean startArray() throws ParseException, IOException {
-        if (currentObject != null) {
-            objectStack.push(currentObject);
+        if (currentObject == null) {
+            throw new ParseException(0);
         }
+        objectStack.push(currentObject);
         currentObject = new ArrayList<Object>();
         return true;
     }

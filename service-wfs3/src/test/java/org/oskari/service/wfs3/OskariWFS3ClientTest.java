@@ -1,4 +1,4 @@
-package org.oskari.service.wfs.client;
+package org.oskari.service.wfs3;
 
 import static org.junit.Assert.assertEquals;
 
@@ -10,6 +10,7 @@ import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.oskari.service.wfs3.OskariWFS3Client;
 
 import com.vividsolutions.jts.geom.Envelope;
 

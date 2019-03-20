@@ -13,14 +13,14 @@ import java.util.Locale;
 import java.util.Map;
 
 import org.geotools.data.simple.SimpleFeatureCollection;
+import org.geotools.data.simple.SimpleFeatureIterator;
 import org.geotools.feature.DefaultFeatureCollection;
-import org.geotools.feature.FeatureIterator;
 import org.geotools.filter.v1_0.OGCConfiguration;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.xml.Encoder;
-import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.filter.Filter;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.oskari.service.wfs3.geojson.WFS3FeatureCollectionIterator;
 
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
@@ -82,7 +82,7 @@ public class OskariWFS110Client {
 
         try (InputStream in = conn.getInputStream();
                 Reader utf8Reader = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8));
-                FeatureIterator<SimpleFeature> it = new FeatureCollectionIterator(utf8Reader)) {
+                SimpleFeatureIterator it = new WFS3FeatureCollectionIterator(utf8Reader)) {
             DefaultFeatureCollection features = new DefaultFeatureCollection(null, null);
             while (it.hasNext()) {
                 features.add(it.next());

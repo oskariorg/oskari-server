@@ -1,4 +1,4 @@
-package org.oskari.service.wfs.client;
+package org.oskari.service.wfs3;
 
 import java.util.Objects;
 

@@ -1,4 +1,4 @@
-package org.oskari.service.wfs.client.geojson;
+package org.oskari.service.wfs3.geojson;
 
 import static org.junit.Assert.assertEquals;
 
@@ -8,7 +8,7 @@ import java.util.Map;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.junit.Test;
-import org.oskari.service.wfs.client.geojson.JSONObjectHandler;
+import org.oskari.service.wfs3.geojson.JSONObjectHandler;
 
 public class JSONObjectHandlerTest {
 

@@ -5,9 +5,11 @@ import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.control.ActionParamsException;
 import fi.nls.oskari.domain.User;
+import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.util.DuplicateException;
 import fi.nls.oskari.util.PropertyUtil;
+import fi.nls.oskari.wfs.GetGtWFSCapabilities;
 import fi.nls.test.control.JSONActionRouteTest;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -126,4 +128,5 @@ public class GetWSCapabilitiesHandlerTest extends JSONActionRouteTest {
 
         fail("Should not get his far without url parameter");
     }
+    
 }

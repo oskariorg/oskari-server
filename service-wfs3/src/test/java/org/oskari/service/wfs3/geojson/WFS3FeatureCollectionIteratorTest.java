@@ -1,4 +1,4 @@
-package org.oskari.service.wfs.client.geojson;
+package org.oskari.service.wfs3.geojson;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -17,7 +17,8 @@ import java.util.Map;
 
 import org.junit.Test;
 import org.opengis.feature.simple.SimpleFeature;
-import org.oskari.service.wfs.client.WFS3Link;
+import org.oskari.service.wfs3.WFS3Link;
+import org.oskari.service.wfs3.geojson.WFS3FeatureCollectionIterator;
 
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.io.ParseException;

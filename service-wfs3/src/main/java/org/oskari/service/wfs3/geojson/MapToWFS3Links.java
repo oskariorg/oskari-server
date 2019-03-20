@@ -1,10 +1,10 @@
-package org.oskari.service.wfs.client.geojson;
+package org.oskari.service.wfs3.geojson;
 
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import org.oskari.service.wfs.client.WFS3Link;
+import org.oskari.service.wfs3.WFS3Link;
 
 class MapToWFS3Links {
 

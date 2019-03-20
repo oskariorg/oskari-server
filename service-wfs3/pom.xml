@@ -7,18 +7,14 @@
         <version>1.52.0-SNAPSHOT</version>
     </parent>
     <groupId>org.oskari</groupId>
-    <artifactId>service-wfs-client</artifactId>
-    <description>Utilities for accessing WFS 1.1.0 services</description>
+    <artifactId>service-wfs3</artifactId>
+    <description>When working with WFS 3 services</description>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
     <dependencies>
-        <dependency>
-            <groupId>org.oskari</groupId>
-            <artifactId>service-wfs3</artifactId>
-        </dependency>
         <dependency>
             <groupId>fi.nls.oskari</groupId>
             <artifactId>service-logging</artifactId>
@@ -30,10 +26,6 @@
         <dependency>
             <groupId>org.geotools</groupId>
             <artifactId>gt-main</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.geotools</groupId>
-            <artifactId>gt-xml</artifactId>
         </dependency>
         <dependency>
             <groupId>org.geotools</groupId>
