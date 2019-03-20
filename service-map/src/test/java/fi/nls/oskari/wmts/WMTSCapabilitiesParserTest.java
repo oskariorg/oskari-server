@@ -37,9 +37,11 @@ public class WMTSCapabilitiesParserTest {
     final String capabilitiesInput_NLS = ResourceHelper.readStringResource("WMTSCapabilitiesParserTest-input-NLS.xml", this);
     final String capabilitiesInput_Tampere = ResourceHelper.readStringResource("WMTSCapabilitiesParserTest-input-tampere.xml", this);
     final String capabilitiesInput_Spain = ResourceHelper.readStringResource("WMTSCapabilitiesParserTest-input-spain.xml", this);
+    final String capabilitiesInput_IS = ResourceHelper.readStringResource("WMTSCapabilitiesParserTest-input-is.xml", this);
     final String expectedJSON_NLS = ResourceHelper.readStringResource("WMTSCapabilitiesParserTest-expected-results-NLS.json", this);
     final String expectedJSON_tampere = ResourceHelper.readStringResource("WMTSCapabilitiesParserTest-expected-results-tampere.json", this);
     final String expectedJSON_Spain = ResourceHelper.readStringResource("WMTSCapabilitiesParserTest-expected-results-spain.json", this);
+    final String expectedJSON_IS = ResourceHelper.readStringResource("WMTSCapabilitiesParserTest-expected-results-is.json", this);
 
     @Test
     public void testASDIParsing() throws Exception {
@@ -82,6 +84,14 @@ public class WMTSCapabilitiesParserTest {
         WMTSCapabilities caps = WMTSCapabilitiesParser.parseCapabilities(capabilitiesInput_Spain);
         JSONObject expected = JSONHelper.createJSONObject(expectedJSON_Spain);
         JSONObject actual = WMTSCapabilitiesParser.asJSON(caps, "http://oskari.testing.fi", "EPSG:3067");
+        compareMatrixSets(expected, actual);
+    }
+
+    @Test
+    public void testAsJSON_IS() throws Exception {
+        WMTSCapabilities caps = WMTSCapabilitiesParser.parseCapabilities(capabilitiesInput_IS);
+        JSONObject expected = JSONHelper.createJSONObject(expectedJSON_IS);
+        JSONObject actual = WMTSCapabilitiesParser.asJSON(caps, "http://oskari.testing.fi", "EPSG3057");
         compareMatrixSets(expected, actual);
     }
 

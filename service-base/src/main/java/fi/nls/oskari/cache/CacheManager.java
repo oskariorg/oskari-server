@@ -52,11 +52,11 @@ public class CacheManager {
      * @return
      */
     @SuppressWarnings("unchecked")
-    public static <T> Cache<T> getCache(final String name, final Supplier<? extends Cache<T>> supplier) {
+    public static <T1 extends Cache<T2>, T2> T1 getCache(final String name, final Supplier<T1> supplier) {
         Objects.requireNonNull(name);
         Objects.requireNonNull(supplier);
-        return (Cache<T>) CACHE_STORE.computeIfAbsent(name, __ -> {
-            Cache<T> cache = supplier.get();
+        return (T1) CACHE_STORE.computeIfAbsent(name, __ -> {
+            Cache<T2> cache = supplier.get();
             cache.setName(name);
             return cache;
         });

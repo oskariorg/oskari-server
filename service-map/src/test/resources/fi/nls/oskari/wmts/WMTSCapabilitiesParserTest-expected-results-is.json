@@ -1,0 +1,134 @@
+{"layers": [
+    {
+        "title": "LMI_Landslag",
+        "TileMatrixSetLinks": {
+            "EPSG3057": [],
+            "EPSG3857": []
+        },
+        "style": "default",
+        "name": "LMI_Landslag",
+        "tileMatrixSetId": "EPSG3057",
+        "styles": [
+            {
+                "title": "default",
+                "name": "default"
+            }
+        ],
+        "layerName": "LMI_Landslag",
+        "type": "wmtslayer",
+        "url": "http://oskari.testing.fi",
+        "formats": {
+            "available": []
+        },
+        "isQueryable": false
+    }
+], "matrixSets": {
+    "EPSG3857": {
+        "matrixIds": [
+            {
+                "topLeftCorner": {
+                    "lon": -20026376.390000,
+                    "lat":  21167033.900000
+                },
+                "identifier": "0",
+                "scaleDenominator": 25000000.00000000372529029846,
+                "tileWidth": 256,
+                "tileHeight": 256,
+                "matrixWidth": 23,
+                "matrixHeight": 23
+            },
+            {
+                "topLeftCorner": {
+                    "lon": -20026376.390000,
+                    "lat":  20091833.900000
+                },
+                "identifier": "1",
+                "scaleDenominator": 20000000.00000000000000000000,
+                "tileWidth": 256,
+                "tileHeight": 256,
+                "matrixWidth": 28,
+                "matrixHeight": 28
+            },
+            {
+                "topLeftCorner": {
+                    "lon": -20026376.390000,
+                    "lat":  20808633.900000
+                },
+                "identifier": "2",
+                "scaleDenominator": 15000000.00000000186264514923,
+                "tileWidth": 256,
+                "tileHeight": 256,
+                "matrixWidth": 38,
+                "matrixHeight": 38
+            },
+            {
+                "topLeftCorner": {
+                    "lon": -20026376.390000,
+                    "lat":  20091833.900000
+                },
+                "identifier": "3",
+                "scaleDenominator": 10000000.00000000000000000000,
+                "tileWidth": 256,
+                "tileHeight": 256,
+                "matrixWidth": 56,
+                "matrixHeight": 56
+            },
+            {
+                "topLeftCorner": {
+                    "lon": -20026376.390000,
+                    "lat":  20091833.900000
+                },
+                "identifier": "4",
+                "scaleDenominator": 5000000.00000000000000000000,
+                "tileWidth": 256,
+                "tileHeight": 256,
+                "matrixWidth": 112,
+                "matrixHeight": 112
+            }
+        ],
+        "projection": "urn:ogc:def:crs:EPSG:6.3:3857",
+        "identifier": "EPSG3857"
+    },
+    "EPSG3057": {
+        "matrixIds": [
+            {
+                "topLeftCorner": {
+                    "lon": -2350000.000000,
+                    "lat":  3976000.000000
+                },
+                "identifier": "0",
+                "scaleDenominator": 25000000.00000000372529029846,
+                "tileWidth": 256,
+                "tileHeight": 256,
+                "matrixWidth": 4,
+                "matrixHeight": 3
+            },
+            {
+                "topLeftCorner": {
+                    "lon": -2350000.000000,
+                    "lat":  2900800.000000
+                },
+                "identifier": "1",
+                "scaleDenominator": 20000000.00000000000000000000,
+                "tileWidth": 256,
+                "tileHeight": 256,
+                "matrixWidth": 4,
+                "matrixHeight": 3
+            },
+            {
+                "topLeftCorner": {
+                    "lon": -2350000.000000,
+                    "lat":  2900800.000000
+                },
+                "identifier": "2",
+                "scaleDenominator": 15000000.00000000186264514923,
+                "tileWidth": 256,
+                "tileHeight": 256,
+                "matrixWidth": 6,
+                "matrixHeight": 4
+            }
+        ],
+        "projection": "urn:ogc:def:crs:EPSG:6.3:3057",
+        "identifier": "EPSG3057"
+    }
+}}

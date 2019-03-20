@@ -21,8 +21,8 @@ public class CachingWFSClient {
     private final ComputeOnceCache<SimpleFeatureCollection> cache;
 
     public CachingWFSClient() {
-        cache = (ComputeOnceCache<SimpleFeatureCollection>) CacheManager.getCache(CACHE_NAME,
-                () -> new ComputeOnceCache<SimpleFeatureCollection>(CACHE_SIZE_LIMIT, CACHE_EXPIRATION));
+        cache = CacheManager.getCache(CACHE_NAME,
+                () -> new ComputeOnceCache<>(CACHE_SIZE_LIMIT, CACHE_EXPIRATION));
     }
 
     public SimpleFeatureCollection tryGetFeatures(String endPoint, String version,

@@ -37,6 +37,11 @@ public class OskariWFS110Client {
 
     private OskariWFS110Client() {}
 
+    public static SimpleFeatureCollection tryGetFeatures(String endPoint, String user, String pass,
+            String typeName, ReferencedEnvelope bbox, CoordinateReferenceSystem crs, Integer maxFeatures) {
+        return tryGetFeatures(endPoint, user, pass, typeName, bbox, crs, maxFeatures, null);
+    }
+
     /**
      * @return SimpleFeatureCollection containing the parsed Features, or null if all fails
      */
