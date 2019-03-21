@@ -17,8 +17,8 @@ import java.util.Map;
 
 import org.junit.Test;
 import org.opengis.feature.simple.SimpleFeature;
-import org.oskari.service.wfs3.WFS3Link;
 import org.oskari.service.wfs3.geojson.WFS3FeatureCollectionIterator;
+import org.oskari.service.wfs3.model.WFS3Link;
 
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.io.ParseException;
