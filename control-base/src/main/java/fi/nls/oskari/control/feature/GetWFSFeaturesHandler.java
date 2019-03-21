@@ -13,8 +13,8 @@ import org.opengis.filter.Filter;
 import org.opengis.geometry.DirectPosition;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.oskari.service.util.ServiceFactory;
-import org.oskari.service.wfs.client.CoordinateTransformer;
 import org.oskari.service.wfs.client.OskariWFSClient;
+import org.oskari.service.wfs3.CoordinateTransformer;
 
 import com.vividsolutions.jts.geom.Envelope;
 

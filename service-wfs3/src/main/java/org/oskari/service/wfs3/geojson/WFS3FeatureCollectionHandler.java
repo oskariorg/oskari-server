@@ -1,4 +1,4 @@
-package org.oskari.service.wfs.client.geojson;
+package org.oskari.service.wfs3.geojson;
 
 import java.io.IOException;
 import java.util.ArrayDeque;
@@ -9,7 +9,7 @@ import java.util.Map;
 
 import org.json.simple.parser.ParseException;
 import org.opengis.feature.simple.SimpleFeature;
-import org.oskari.service.wfs.client.WFS3Link;
+import org.oskari.service.wfs3.model.WFS3Link;
 
 public class WFS3FeatureCollectionHandler extends NOPContentHandler {
 

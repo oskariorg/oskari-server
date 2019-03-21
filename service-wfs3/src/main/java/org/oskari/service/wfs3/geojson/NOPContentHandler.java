@@ -1,4 +1,4 @@
-package org.oskari.service.wfs.client.geojson;
+package org.oskari.service.wfs3.geojson;
 
 import java.io.IOException;
 

@@ -4,6 +4,7 @@ import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.opengis.filter.Filter;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.oskari.service.wfs3.OskariWFS3Client;
 
 public class OskariWFSClient {
 

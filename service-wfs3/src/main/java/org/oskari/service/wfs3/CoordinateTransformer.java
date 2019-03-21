@@ -1,4 +1,4 @@
-package org.oskari.service.wfs.client;
+package org.oskari.service.wfs3;
 
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.data.simple.SimpleFeatureIterator;

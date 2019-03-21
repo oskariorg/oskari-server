@@ -448,6 +448,12 @@
                 <version>${fi.nls.oskari.version}</version>
             </dependency>
 
+            <dependency>
+                <groupId>org.oskari</groupId>
+                <artifactId>service-wfs3</artifactId>
+                <version>${fi.nls.oskari.version}</version>
+            </dependency>
+            
             <!-- Spring -->
             <dependency>
                 <groupId>org.springframework.security.extensions</groupId>
@@ -1230,6 +1236,7 @@
         <module>service-mvt</module>
 
         <module>service-wfs-client</module>
+        <module>service-wfs3</module>
     </modules>
 
 </project>

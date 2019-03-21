@@ -11,11 +11,10 @@ import java.nio.charset.StandardCharsets;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.data.simple.SimpleFeatureIterator;
 import org.geotools.feature.DefaultFeatureCollection;
-import org.geotools.feature.FeatureIterator;
 import org.junit.Test;
 import org.opengis.feature.Property;
 import org.opengis.feature.simple.SimpleFeature;
-import org.oskari.service.wfs.client.FeatureCollectionIterator;
+import org.oskari.service.wfs3.geojson.WFS3FeatureCollectionIterator;
 
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.MultiLineString;
@@ -27,7 +26,7 @@ public class UserLayerWFSHelperTest {
         DefaultFeatureCollection original = new DefaultFeatureCollection(null, null);
         try (InputStream in = getClass().getResourceAsStream("geojson.json");
                 Reader utf8Reader = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8));
-                FeatureIterator<SimpleFeature> it = new FeatureCollectionIterator(utf8Reader)) {
+                SimpleFeatureIterator it = new WFS3FeatureCollectionIterator(utf8Reader)) {
             while (it.hasNext()) {
                 original.add(it.next());
             }

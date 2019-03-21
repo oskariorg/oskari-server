@@ -1,4 +1,4 @@
-package org.oskari.service.wfs.client;
+package org.oskari.service.wfs3;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -17,7 +17,7 @@ import org.geotools.feature.DefaultFeatureCollection;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
-import org.oskari.service.wfs.client.geojson.WFS3FeatureCollectionIterator;
+import org.oskari.service.wfs3.geojson.WFS3FeatureCollectionIterator;
 
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;

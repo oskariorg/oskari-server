@@ -1,27 +1,31 @@
-package org.oskari.service.wfs.client;
+package org.oskari.service.wfs3.geojson;
 
 import java.io.IOException;
 import java.io.Reader;
 
-import org.geotools.feature.FeatureIterator;
-import org.geotools.geojson.feature.FeatureCollectionHandler;
+import org.geotools.data.simple.SimpleFeatureIterator;
 import org.json.simple.parser.JSONParser;
 import org.opengis.feature.simple.SimpleFeature;
 
 /**
- * Extracted from org.geotools.geojson.feature.FeatureJSON$FeatureIterator
- * Use this when you don't want to init FeatureJSON (and GeometryJSON and GeometryFactory etc...)
+ * Customized version of org.geotools.geojson.feature.FeatureJSON$FeatureIterator
+ * creates a modified FeatureCollectionHandler implementation that can handle "links"
+ * object in WFS 3 GeoJSON responses
  */
-public class FeatureCollectionIterator implements FeatureIterator<SimpleFeature> {
+public class WFS3FeatureCollectionIterator implements SimpleFeatureIterator {
 
-    private Reader reader;
-    private JSONParser parser;
-    private FeatureCollectionHandler handler;
+    private final Reader reader;
+    private final JSONParser parser;
+    private WFS3FeatureCollectionHandler handler;
     private SimpleFeature next;
 
-    public FeatureCollectionIterator(Reader reader) {
+    public WFS3FeatureCollectionIterator(Reader reader) {
         this.reader = reader;
         this.parser = new JSONParser();
+    }
+
+    public WFS3FeatureCollectionHandler getHandler() {
+        return handler;
     }
 
     public boolean hasNext() {
@@ -29,7 +33,7 @@ public class FeatureCollectionIterator implements FeatureIterator<SimpleFeature>
             return true;
         }
         if (handler == null) {
-            handler = new FeatureCollectionHandler();
+            handler = new WFS3FeatureCollectionHandler();
         }
         next = readNext();
         return next != null;
@@ -44,7 +48,7 @@ public class FeatureCollectionIterator implements FeatureIterator<SimpleFeature>
     SimpleFeature readNext() {
         try {
             parser.parse(reader, handler, true);
-            return handler.getValue();
+            return handler.getFeature();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

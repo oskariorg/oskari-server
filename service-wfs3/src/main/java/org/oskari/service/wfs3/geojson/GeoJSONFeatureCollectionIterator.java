@@ -1,31 +1,27 @@
-package org.oskari.service.wfs.client.geojson;
+package org.oskari.service.wfs3.geojson;
 
 import java.io.IOException;
 import java.io.Reader;
 
-import org.geotools.data.simple.SimpleFeatureIterator;
+import org.geotools.feature.FeatureIterator;
+import org.geotools.geojson.feature.FeatureCollectionHandler;
 import org.json.simple.parser.JSONParser;
 import org.opengis.feature.simple.SimpleFeature;
 
 /**
- * Customized version of org.geotools.geojson.feature.FeatureJSON$FeatureIterator
- * creates a modified FeatureCollectionHandler implementation that can handle "links"
- * object in WFS 3 GeoJSON responses
+ * Extracted from org.geotools.geojson.feature.FeatureJSON$FeatureIterator
+ * Use this when you don't want to init FeatureJSON (and GeometryJSON and GeometryFactory etc...)
  */
-public class WFS3FeatureCollectionIterator implements SimpleFeatureIterator {
+public class GeoJSONFeatureCollectionIterator implements FeatureIterator<SimpleFeature> {
 
-    private final Reader reader;
-    private final JSONParser parser;
-    private WFS3FeatureCollectionHandler handler;
+    private Reader reader;
+    private JSONParser parser;
+    private FeatureCollectionHandler handler;
     private SimpleFeature next;
 
-    public WFS3FeatureCollectionIterator(Reader reader) {
+    public GeoJSONFeatureCollectionIterator(Reader reader) {
         this.reader = reader;
         this.parser = new JSONParser();
-    }
-
-    public WFS3FeatureCollectionHandler getHandler() {
-        return handler;
     }
 
     public boolean hasNext() {
@@ -33,7 +29,7 @@ public class WFS3FeatureCollectionIterator implements SimpleFeatureIterator {
             return true;
         }
         if (handler == null) {
-            handler = new WFS3FeatureCollectionHandler();
+            handler = new FeatureCollectionHandler();
         }
         next = readNext();
         return next != null;
@@ -48,7 +44,7 @@ public class WFS3FeatureCollectionIterator implements SimpleFeatureIterator {
     SimpleFeature readNext() {
         try {
             parser.parse(reader, handler, true);
-            return handler.getFeature();
+            return handler.getValue();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
