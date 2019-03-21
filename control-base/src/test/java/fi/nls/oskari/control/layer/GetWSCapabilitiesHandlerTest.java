@@ -126,5 +126,4 @@ public class GetWSCapabilitiesHandlerTest extends JSONActionRouteTest {
 
         fail("Should not get his far without url parameter");
     }
-
 }
