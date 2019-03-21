@@ -5,35 +5,44 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.junit.Ignore;
+import org.junit.Before;
 import org.junit.Test;
 import org.oskari.service.wfs3.model.WFS3CollectionInfo;
-import org.oskari.service.wfs3.model.WFS3Exception;
+import org.oskari.service.wfs3.model.WFS3Content;
+import org.oskari.service.wfs3.model.WFS3ReqClasses;
 
 public class WFS3ServiceTest {
 
-    @Test
-    @Ignore("Depends on outside service")
-    public void testJSONWorks() throws WFS3Exception, IOException {
-        String url = "https://beta-paikkatieto.maanmittauslaitos.fi/geographic-names/wfs3/v1/";
-        WFS3Service expected = WFS3Service.fromURL(url);
-        byte[] jsonExpected = WFS3Service.toJSON(expected);
-        WFS3Service actual = WFS3Service.fromJSON(jsonExpected);
-        assertEquals(expected, actual);
+    private WFS3Service service;
+
+    @Before
+    public void setup() throws Exception {
+        WFS3ReqClasses reqClasses;
+        try (InputStream in = getClass().getClassLoader().getResourceAsStream("wfs3Conformance.json")) {
+            reqClasses = WFS3Service.load(in, WFS3ReqClasses.class);
+        }
+        WFS3Content content;
+        try (InputStream in = getClass().getClassLoader().getResourceAsStream("wfs3Content.json")) {
+            content = WFS3Service.load(in, WFS3Content.class);
+        }
+        service = new WFS3Service(reqClasses, content);
     }
 
     @Test
-    @Ignore("Depends on outside service")
-    public void testBasicParsingWorks() throws WFS3Exception, IOException {
-        String url = "https://beta-paikkatieto.maanmittauslaitos.fi/geographic-names/wfs3/v1/";
-        WFS3Service service = WFS3Service.fromURL(url);
+    public void testToJsonFromJson() throws IOException {
+        byte[] json = WFS3Service.toJSON(service);
+        assertEquals(service, WFS3Service.fromJSON(json));
+    }
 
+    @Test
+    public void testCollectionsWereParsedCorrectly() throws Exception {
         List<String> expected = Stream.of("placenames", "places", "mapnames", "placenames_simple")
                 .sorted()
                 .collect(Collectors.toList());

@@ -18,8 +18,10 @@ import org.oskari.service.wfs3.model.WFS3ReqClasses;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import fi.nls.oskari.util.IOHelper;
@@ -91,13 +93,18 @@ public class WFS3Service {
         int sc = conn.getResponseCode();
         if (sc == 200) {
             try (InputStream in = conn.getInputStream()) {
-                return OM.readValue(in, clazz);
+                return load(in, clazz);
             }
         } else {
             try (InputStream err = conn.getErrorStream()) {
-                throw OM.readValue(err, WFS3Exception.class);
+                throw load(err, WFS3Exception.class);
             }
         }
+    }
+
+    static <T> T load(InputStream in, Class<T> clazz)
+            throws JsonParseException, JsonMappingException, IOException {
+        return OM.readValue(in, clazz);
     }
 
     public boolean conformsTo(WFS3ConformanceClass req) {
