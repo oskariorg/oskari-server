@@ -13,6 +13,7 @@ import org.geotools.data.DataUtilities;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.feature.DefaultFeatureCollection;
 import org.geotools.xml.DOMParser;
+import org.geotools.xml.Parser;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.w3c.dom.Document;
@@ -51,6 +52,15 @@ public class OskariGML extends GML {
          */
         root.removeAttribute("numberOfFeatures");
         root.removeAttribute("wfs:numberOfFeatures");
+        /**
+         * Remove schemaLocation information
+         * Complex schemas are tedious to parse and if they happen to be
+         * behind authorization there's no way for us to control the authorization
+         * information done when fetching other <xsd:include>'d schemas
+         */
+        root.removeAttribute("schemaLocation");
+        root.removeAttribute("xsi:schemaLocation");
+
         DOMParser parser = new DOMParser(new OskariWFSConfiguration(username, password), doc);
         Object obj = parser.parse();
         return toFeatureCollection(obj);
