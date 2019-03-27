@@ -46,6 +46,10 @@ public class PermissionHelper {
         if (layer == null) {
             throw new ActionParamsException("Layer not found for id: " + layerId);
         }
+        if(layer.isInternal()) {
+            // myplaces etc don't have resources
+            return layer;
+        }
 
         // Check permissions
         final Resource resource = getResource(layer);
