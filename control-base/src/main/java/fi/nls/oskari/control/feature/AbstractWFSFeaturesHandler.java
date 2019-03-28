@@ -53,9 +53,6 @@ public abstract class AbstractWFSFeaturesHandler extends ActionHandler {
         this.wfsClient = new CachingWFSClient();
     }
 
-    @Override
-    public abstract void handleAction(ActionParameters params) throws ActionException;
-
     protected CoordinateReferenceSystem getNativeCRS() {
         if (nativeCRS == null) {
             try {
