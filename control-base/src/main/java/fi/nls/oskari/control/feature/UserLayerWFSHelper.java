@@ -72,7 +72,7 @@ public class UserLayerWFSHelper {
 
         Filter uuidEquals = ff.equals(_uuid, ff.literal(uuid));
 /*
-// FIXME: Referencing publisher name requires the layer is oskari:my_places_categories instead of oskari:my_places
+// FIXME: Referencing publisher name requires the layer is oskari:user_layer_data_style instead of oskari:vuser_layer_data
 // which brings more attributes that we want AND breaks transport
 // TODO: We might need to check if the use has right to view the layer that is not his/her own in another way
 // Leaving this logic out means that guests won't see the published user content layer
