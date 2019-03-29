@@ -10,19 +10,17 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
+import fi.nls.oskari.control.feature.AbstractWFSFeaturesHandler;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.data.simple.SimpleFeatureIterator;
 import org.geotools.feature.DefaultFeatureCollection;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
 import org.opengis.feature.simple.SimpleFeature;
-import org.opengis.filter.Filter;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.oskari.service.mvt.SimpleFeaturesMVTEncoder;
 import org.oskari.service.mvt.TileCoord;
 import org.oskari.service.mvt.WFSTileGrid;
-import org.oskari.service.util.ServiceFactory;
-import org.oskari.service.wfs.client.CachingWFSClient;
 
 import com.vividsolutions.jts.geom.Envelope;
 
@@ -31,20 +29,15 @@ import fi.nls.oskari.cache.CacheManager;
 import fi.nls.oskari.cache.ComputeOnceCache;
 import fi.nls.oskari.control.ActionConstants;
 import fi.nls.oskari.control.ActionException;
-import fi.nls.oskari.control.ActionHandler;
 import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.control.ActionParamsException;
-import fi.nls.oskari.control.feature.MyPlacesWFSHelper;
-import fi.nls.oskari.control.feature.UserLayerWFSHelper;
-import fi.nls.oskari.control.layer.PermissionHelper;
-import fi.nls.oskari.domain.User;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.service.ServiceRuntimeException;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.ResponseHelper;
 
 @OskariActionRoute("GetWFSVectorTile")
-public class GetWFSVectorTileHandler extends ActionHandler {
+public class GetWFSVectorTileHandler extends AbstractWFSFeaturesHandler {
 
     protected static final String MVT_CONTENT_TYPE = "application/vnd.mapbox-vector-tile";
     protected static final String PARAM_Z = "z";
@@ -62,21 +55,12 @@ public class GetWFSVectorTileHandler extends ActionHandler {
     }
 
     private ComputeOnceCache<byte[]> tileCache;
-    private PermissionHelper permissionHelper;
-    private MyPlacesWFSHelper myPlacesHelper;
-    private UserLayerWFSHelper userlayerHelper;
-    private CachingWFSClient wfsClient;
 
     @Override
     public void init() {
+        super.init();
         tileCache = CacheManager.getCache(getClass().getName(),
                 () -> new ComputeOnceCache<>(CACHE_LIMIT, CACHE_EXPIRATION));
-        this.permissionHelper = new PermissionHelper(
-                ServiceFactory.getMapLayerService(),
-                ServiceFactory.getPermissionsService());
-        this.myPlacesHelper = new MyPlacesWFSHelper();
-        this.userlayerHelper = new UserLayerWFSHelper();
-        this.wfsClient = new CachingWFSClient();
     }
 
     @Override
@@ -112,28 +96,6 @@ public class GetWFSVectorTileHandler extends ActionHandler {
         ResponseHelper.writeResponse(params, 200, MVT_CONTENT_TYPE, resp);
     }
 
-    private OskariLayer findLayer(String id, User user) throws ActionException {
-        int layerId = getLayerId(id);
-        OskariLayer layer = permissionHelper.getLayer(layerId, user);
-        if (!OskariLayer.TYPE_WFS.equals(layer.getType())) {
-            throw new ActionParamsException("Specified layer is not a WFS layer");
-        }
-        return layer;
-    }
-
-    private int getLayerId(String id) throws ActionParamsException {
-        if (myPlacesHelper.isMyPlacesLayer(id)) {
-            return myPlacesHelper.getMyPlacesLayerId();
-        }
-        if (userlayerHelper.isUserlayerLayer(id)) {
-            return userlayerHelper.getUserlayerLayerId();
-        }
-        try {
-            return Integer.parseInt(id);
-        } catch (NumberFormatException e) {
-            throw new ActionParamsException("Invalid id");
-        }
-    }
 
     private void validateTile(WFSTileGrid grid, int z, int x, int y)
             throws ActionParamsException {
@@ -232,14 +194,7 @@ public class GetWFSVectorTileHandler extends ActionHandler {
             }
             sfc = union(sfc, tileFeatures);
         }
-        
-        if (userlayerHelper.isUserlayerLayer(layer)) {
-            try {
-                sfc = userlayerHelper.retype(sfc);
-            } catch (Exception e) {
-                throw new ServiceRuntimeException("Failed to post-process user layer", e);
-            }
-        }
+
 
         double[] bbox = grid.getTileExtent(new TileCoord(z, x, y));
         byte[] encoded = SimpleFeaturesMVTEncoder.encodeToByteArray(sfc, layer.getName(), bbox, 4096, 256);
@@ -252,26 +207,10 @@ public class GetWFSVectorTileHandler extends ActionHandler {
 
     private SimpleFeatureCollection getFeatures(String id, String uuid, OskariLayer layer, CoordinateReferenceSystem crs,
             WFSTileGrid grid, TileCoord tile) {
-        String endPoint = layer.getUrl();
-        String version = layer.getVersion();
-        String typeName = layer.getName();
-        String user = layer.getUsername();
-        String pass = layer.getPassword();
         double[] box = grid.getTileExtent(tile);
         Envelope envelope = new Envelope(box[0], box[2], box[1], box[3]);
         ReferencedEnvelope bbox = new ReferencedEnvelope(envelope, crs);
-        int maxFeatures = 10000;
-
-        Filter filter = null;
-        if (myPlacesHelper.isMyPlacesLayer(layer)) {
-            int categoryId = myPlacesHelper.getCategoryId(id);
-            filter = myPlacesHelper.getFilter(categoryId, uuid, bbox);
-        } else if (userlayerHelper.isUserlayerLayer(layer)) {
-            int userlayerId = userlayerHelper.getUserlayerId(id);
-            filter = userlayerHelper.getFilter(userlayerId, uuid, bbox);
-        }
-
-        return wfsClient.tryGetFeatures(endPoint, version, user, pass, typeName, bbox, crs, maxFeatures, filter);
+        return getFeatures(id, uuid, layer, bbox, crs);
     }
 
     public static SimpleFeatureCollection union(SimpleFeatureCollection a, SimpleFeatureCollection b) {

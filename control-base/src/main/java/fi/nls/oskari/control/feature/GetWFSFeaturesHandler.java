@@ -9,11 +9,8 @@ import org.geotools.geojson.feature.FeatureJSON;
 import org.geotools.geojson.geom.GeometryJSON;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
-import org.opengis.filter.Filter;
 import org.opengis.geometry.DirectPosition;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
-import org.oskari.service.util.ServiceFactory;
-import org.oskari.service.wfs.client.OskariWFSClient;
 import org.oskari.service.wfs3.CoordinateTransformer;
 
 import com.vividsolutions.jts.geom.Envelope;
@@ -21,19 +18,15 @@ import com.vividsolutions.jts.geom.Envelope;
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.ActionConstants;
 import fi.nls.oskari.control.ActionException;
-import fi.nls.oskari.control.ActionHandler;
 import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.control.ActionParamsException;
-import fi.nls.oskari.control.layer.PermissionHelper;
-import fi.nls.oskari.domain.User;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.util.ResponseHelper;
 
 @OskariActionRoute("GetWFSFeatures")
-public class GetWFSFeaturesHandler extends ActionHandler {
+public class GetWFSFeaturesHandler extends AbstractWFSFeaturesHandler {
 
     private static final Logger LOG = LogFactory.getLogger(GetWFSFeaturesHandler.class);
 
@@ -54,30 +47,7 @@ public class GetWFSFeaturesHandler extends ActionHandler {
     private static final int NUM_DECIMAL_PLACES_DEGREE = 7; // For WGS84: 11.132mm precision at equator, more precise elsewhere, max error 5.5mm  
     private static final int NUM_DECIMAL_PLACES_OTHER = 2; // For metric projections: 10mm precision, max error 5mm
 
-    private PermissionHelper permissionHelper;
-    private MyPlacesWFSHelper myPlacesHelper;
-    private UserLayerWFSHelper userlayerHelper;
-
     private CoordinateReferenceSystem nativeCRS;
-
-    protected void setPermissionHelper(PermissionHelper permissionHelper) {
-        this.permissionHelper = permissionHelper;
-    }
-
-    @Override
-    public void init() {
-        if (permissionHelper == null) {
-            permissionHelper = new PermissionHelper(
-                    ServiceFactory.getMapLayerService(),
-                    ServiceFactory.getPermissionsService());
-        };
-        if (myPlacesHelper == null) {
-            myPlacesHelper = new MyPlacesWFSHelper();
-        }
-        if (userlayerHelper == null) {
-            userlayerHelper = new UserLayerWFSHelper();
-        }
-    }
 
     @Override
     public void handleAction(ActionParameters params) throws ActionException {
@@ -117,18 +87,6 @@ public class GetWFSFeaturesHandler extends ActionHandler {
         }
     }
 
-    private CoordinateReferenceSystem getNativeCRS() {
-        if (nativeCRS == null) {
-            try {
-                String nativeSrs = PropertyUtil.get(PROPERTY_NATIVE_SRS, "EPSG:4326");
-                nativeCRS = CRS.decode(nativeSrs, true);
-            } catch (Exception e) {
-                LOG.error(e, "Failed to decode Native CRS!");
-            }
-        }
-        return nativeCRS;
-    }
-
     protected ReferencedEnvelope parseBbox(String bbox, CoordinateReferenceSystem crs) throws ActionParamsException {
         String[] a = bbox.split(",", 4);
         if (a.length != 4) {
@@ -146,29 +104,6 @@ public class GetWFSFeaturesHandler extends ActionHandler {
             return new ReferencedEnvelope(envelope, crs);
         } catch (NumberFormatException e) {
             throw new ActionParamsException(ERR_BBOX_INVALID);
-        }
-    }
-
-    private OskariLayer findLayer(String id, User user) throws ActionException {
-        int layerId = getLayerId(id);
-        OskariLayer layer = permissionHelper.getLayer(layerId, user);
-        if (!OskariLayer.TYPE_WFS.equals(layer.getType())) {
-            throw new ActionParamsException(ERR_LAYER_TYPE_NOT_WFS);
-        }
-        return layer;
-    }
-
-    private int getLayerId(String id) throws ActionParamsException {
-        if (myPlacesHelper.isMyPlacesLayer(id)) {
-            return myPlacesHelper.getMyPlacesLayerId();
-        }
-        if (userlayerHelper.isUserlayerLayer(id)) {
-            return userlayerHelper.getUserlayerLayerId();
-        }
-        try {
-            return Integer.parseInt(id);
-        } catch (NumberFormatException e) {
-            throw new ActionParamsException("Invalid id");
         }
     }
 
@@ -218,28 +153,6 @@ public class GetWFSFeaturesHandler extends ActionHandler {
             return false;
         }
         return true;
-    }
-
-    private SimpleFeatureCollection getFeatures(String id, String uuid, OskariLayer layer, ReferencedEnvelope bbox,
-            CoordinateReferenceSystem crs) {
-        String endPoint = layer.getUrl();
-        String version = layer.getVersion();
-        String typeName = layer.getName();
-        String user = layer.getUsername();
-        String pass = layer.getPassword();
-        // TODO: Figure out the maxFeatures from the layer
-        int maxFeatures = 10000;
-
-        Filter filter = null;
-        if (myPlacesHelper.isMyPlacesLayer(layer)) {
-            int categoryId = myPlacesHelper.getCategoryId(id);
-            filter = myPlacesHelper.getFilter(categoryId, uuid, bbox);
-        } else if (userlayerHelper.isUserlayerLayer(layer)) {
-            int userlayerId = userlayerHelper.getUserlayerId(id);
-            filter = userlayerHelper.getFilter(userlayerId, uuid, bbox);
-        }
-
-        return OskariWFSClient.tryGetFeatures(endPoint, version, user, pass, typeName, bbox, crs, maxFeatures, filter);
     }
 
     /**
