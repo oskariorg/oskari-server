@@ -21,14 +21,10 @@ import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.control.ActionParamsException;
 import fi.nls.oskari.domain.map.OskariLayer;
-import fi.nls.oskari.log.LogFactory;
-import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.util.ResponseHelper;
 
 @OskariActionRoute("GetWFSFeatures")
 public class GetWFSFeaturesHandler extends AbstractWFSFeaturesHandler {
-
-    private static final Logger LOG = LogFactory.getLogger(GetWFSFeaturesHandler.class);
 
     protected static final String ERR_NATIVE_CRS_UNAVAILABLE = "Failed to find system native CRS";
     protected static final String ERR_BBOX_INVALID = "Invalid bbox";
@@ -42,8 +38,6 @@ public class GetWFSFeaturesHandler extends AbstractWFSFeaturesHandler {
 
     private static final int NUM_DECIMAL_PLACES_DEGREE = 7; // For WGS84: 11.132mm precision at equator, more precise elsewhere, max error 5.5mm  
     private static final int NUM_DECIMAL_PLACES_OTHER = 2; // For metric projections: 10mm precision, max error 5mm
-
-    private CoordinateReferenceSystem nativeCRS;
 
     @Override
     public void handleAction(ActionParameters params) throws ActionException {
