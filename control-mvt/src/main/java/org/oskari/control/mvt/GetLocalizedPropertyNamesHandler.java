@@ -2,8 +2,7 @@ package org.oskari.control.mvt;
 
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.*;
-import fi.nls.oskari.control.layer.PermissionHelper;
-import fi.nls.oskari.domain.User;
+import fi.nls.oskari.control.feature.AbstractWFSFeaturesHandler;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.domain.map.wfs.WFSLayerConfiguration;
 import fi.nls.oskari.service.ServiceRuntimeException;
@@ -17,32 +16,30 @@ import org.oskari.service.util.ServiceFactory;
 import java.util.*;
 
 @OskariActionRoute("GetLocalizedPropertyNames")
-public class GetLocalizedPropertyNamesHandler extends ActionHandler {
+public class GetLocalizedPropertyNamesHandler extends AbstractWFSFeaturesHandler {
 
-    private PermissionHelper permissionHelper;
     private WFSLayerConfigurationService wfsLayerService;
 
     @Override
     public void init() {
-        this.permissionHelper = new PermissionHelper(
-                ServiceFactory.getMapLayerService(),
-                ServiceFactory.getPermissionsService());
+        super.init();
         this.wfsLayerService = ServiceFactory.getWfsLayerService();
     }
 
     @Override
     public void handleAction(ActionParameters params) throws ActionException {
-        final int layerId = params.getRequiredParamInt(ActionConstants.PARAM_ID);
-        String language = params.getHttpParam(ActionConstants.PARAM_LANGUAGE, PropertyUtil.getDefaultLanguage());
-        JSONObject response = new JSONObject();
+        final String layerId = params.getRequiredParam(ActionConstants.PARAM_ID);
 
-        checkLayerPermissions(layerId, params.getUser());
-        WFSLayerConfiguration layerConf = wfsLayerService.findConfiguration(layerId);
+        OskariLayer layer = findLayer(layerId, params.getUser());
+        WFSLayerConfiguration layerConf = wfsLayerService.findConfiguration(layer.getId());
+
+        JSONObject response = new JSONObject();
         if (layerConf == null) {
             ResponseHelper.writeResponse(params, response);
             return;
         }
 
+        String language = params.getHttpParam(ActionConstants.PARAM_LANGUAGE, PropertyUtil.getDefaultLanguage());
         List<String> propNames = layerConf.getSelectedFeatureParams(language);
         List<String> localizedPropNames = layerConf.getFeatureParamsLocales(language);
         if (localizedPropNames.isEmpty() && !propNames.isEmpty() && language != PropertyUtil.getDefaultLanguage()) {
@@ -56,12 +53,5 @@ public class GetLocalizedPropertyNamesHandler extends ActionHandler {
             }
         }
         ResponseHelper.writeResponse(params, response);
-    }
-
-    private void checkLayerPermissions(int layerId, User user) throws ActionException {
-        OskariLayer layer = permissionHelper.getLayer(layerId, user);
-        if (!OskariLayer.TYPE_WFS.equals(layer.getType())) {
-            throw new ActionParamsException("Specified layer is not a WFS layer");
-        }
     }
 }

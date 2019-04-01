@@ -21,33 +21,23 @@ import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.control.ActionParamsException;
 import fi.nls.oskari.domain.map.OskariLayer;
-import fi.nls.oskari.log.LogFactory;
-import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.util.ResponseHelper;
 
 @OskariActionRoute("GetWFSFeatures")
 public class GetWFSFeaturesHandler extends AbstractWFSFeaturesHandler {
 
-    private static final Logger LOG = LogFactory.getLogger(GetWFSFeaturesHandler.class);
-
     protected static final String ERR_NATIVE_CRS_UNAVAILABLE = "Failed to find system native CRS";
-    protected static final String ERR_LAYER_TYPE_NOT_WFS = "Specified layer is not a WFS layer";
     protected static final String ERR_BBOX_INVALID = "Invalid bbox";
     protected static final String ERR_BBOX_OUT_OF_CRS = "bbox not within CRS extent";
-    protected static final String ERR_CRS_DECODE_FAIL = "Failed to decode CRS";
-    protected static final String ERR_TRANSFORM_FIND_FAIL = "Failed to find CRS transformation";
     protected static final String ERR_REPOJECTION_FAIL = "Reprojection failed";
     protected static final String ERR_GEOJSON_ENCODE_FAIL = "Failed to write GeoJSON";
 
     private static final String GEOJSON_CONTENT_TYPE = "application/vnd.geo+json";
-    private static final String PROPERTY_NATIVE_SRS = "oskari.native.srs";
     private static final String PARAM_BBOX = "bbox";
     private static final byte[] EMPTY_GEOJSON_FEATURE_COLLECTION = "{\"type\": \"FeatureCollection\", \"features\": []}".getBytes(StandardCharsets.UTF_8);
 
     private static final int NUM_DECIMAL_PLACES_DEGREE = 7; // For WGS84: 11.132mm precision at equator, more precise elsewhere, max error 5.5mm  
     private static final int NUM_DECIMAL_PLACES_OTHER = 2; // For metric projections: 10mm precision, max error 5mm
-
-    private CoordinateReferenceSystem nativeCRS;
 
     @Override
     public void handleAction(ActionParameters params) throws ActionException {
