@@ -29,6 +29,7 @@ public abstract class AbstractWFSFeaturesHandler extends ActionHandler {
     private PermissionHelper permissionHelper;
     private MyPlacesWFSHelper myPlacesHelper;
     private UserLayerWFSHelper userlayerHelper;
+    private AnalysisWFSHelper analysisWFSHelper;
 
     private CoordinateReferenceSystem nativeCRS;
     private CachingWFSClient wfsClient;
@@ -49,6 +50,9 @@ public abstract class AbstractWFSFeaturesHandler extends ActionHandler {
         }
         if (userlayerHelper == null) {
             userlayerHelper = new UserLayerWFSHelper();
+        }
+        if (analysisWFSHelper == null) {
+            analysisWFSHelper = new AnalysisWFSHelper();
         }
         this.wfsClient = new CachingWFSClient();
     }
@@ -80,6 +84,9 @@ public abstract class AbstractWFSFeaturesHandler extends ActionHandler {
         }
         if (userlayerHelper.isUserlayerLayer(id)) {
             return userlayerHelper.getUserlayerLayerId();
+        }
+        if (analysisWFSHelper.isLayer(id)) {
+            return analysisWFSHelper.getLayerId();
         }
         try {
             return Integer.parseInt(id);
@@ -134,6 +141,9 @@ public abstract class AbstractWFSFeaturesHandler extends ActionHandler {
         } else if (userlayerHelper.isUserlayerLayer(layer)) {
             int userlayerId = userlayerHelper.getUserlayerId(id);
             filter = userlayerHelper.getFilter(userlayerId, uuid, bbox);
+        } else if (analysisWFSHelper.isLayer(layer)) {
+            int userlayerId = analysisWFSHelper.getId(id);
+            filter = analysisWFSHelper.getFilter(userlayerId, uuid, bbox);
         }
 
         SimpleFeatureCollection sfc = wfsClient.tryGetFeatures(endPoint, version, user, pass, typeName, bbox, crs, maxFeatures, filter);
