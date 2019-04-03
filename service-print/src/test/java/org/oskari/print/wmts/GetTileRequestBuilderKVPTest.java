@@ -87,7 +87,7 @@ public class GetTileRequestBuilderKVPTest {
         String expected = "foo?SERVICE=WMTS"
                 + "&VERSION=1.0.0"
                 + "&REQUEST=GetTile"
-                + "&LAYER=foo+bar"
+                + "&LAYER=foo%20bar"
                 + "&STYLE="
                 + "&FORMAT=image%2Fpng"
                 + "&TILEMATRIXSET=ETRS-TM35FIN"
