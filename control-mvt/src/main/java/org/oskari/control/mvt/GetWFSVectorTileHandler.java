@@ -114,6 +114,10 @@ public class GetWFSVectorTileHandler extends AbstractWFSFeaturesHandler {
         if (z > grid.getMaxZoom()) {
             throw new ActionParamsException("z must be <= " + grid.getMaxZoom());
         }
+        if (z < 7) {
+            // we always request features with z 8 and anything below 7 will trigger too many requests to services
+            throw new ActionParamsException("z must be > 6");
+        }
         int matrixWidthHeight = WFSTileGrid.getMatrixSize(z);
         if (x >= matrixWidthHeight) {
             throw new ActionParamsException("x must be < " + matrixWidthHeight + " (z = " + z + ")");
@@ -165,6 +169,7 @@ public class GetWFSVectorTileHandler extends AbstractWFSFeaturesHandler {
 
         List<TileCoord> wfsTiles;
         int dz = z - targetZ;
+
         if (dz < 0) {
             int d = (int) Math.pow(2, -dz);
             int targetX1 = x * d;
