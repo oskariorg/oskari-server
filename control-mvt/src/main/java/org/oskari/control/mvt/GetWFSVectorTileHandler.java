@@ -165,12 +165,14 @@ public class GetWFSVectorTileHandler extends AbstractWFSFeaturesHandler {
     private byte[] createTile(String id, String uuid, OskariLayer layer, CoordinateReferenceSystem crs,
             WFSTileGrid grid, int z, int x, int y) throws ServiceRuntimeException {
         // Find nearest higher resolution
+        // always fetch at z 8 so we don't cache same features on multiple zoom levels
         int targetZ = grid.getZForResolution(8, -1);
 
         List<TileCoord> wfsTiles;
         int dz = z - targetZ;
 
         if (dz < 0) {
+            // get adjacent tiles so we can unify z=8 tiles to create z7 etc tiles
             int d = (int) Math.pow(2, -dz);
             int targetX1 = x * d;
             int targetY1 = y * d;
@@ -183,8 +185,10 @@ public class GetWFSVectorTileHandler extends AbstractWFSFeaturesHandler {
                 }
             }
         } else if (dz == 0) {
+            // this is the sweet spot - just get the features that was requested
             wfsTiles = Collections.singletonList(new TileCoord(z, x, y));
         } else {
+            // recalculate x/y to match a z=8 tile
             int div = (int) Math.pow(2, dz);
             int targetX = x / div;
             int targetY = y / div;
@@ -197,10 +201,11 @@ public class GetWFSVectorTileHandler extends AbstractWFSFeaturesHandler {
             if (tileFeatures == null) {
                 throw new ServiceRuntimeException("Failed to get features from service");
             }
+            // merge z=8 tiles to create featureCollection for z=7 etc
             sfc = union(sfc, tileFeatures);
         }
 
-
+        // sfc always has features for z<=8 so we need to clip to smaller tiles based on requested x,y,z
         double[] bbox = grid.getTileExtent(new TileCoord(z, x, y));
         byte[] encoded = SimpleFeaturesMVTEncoder.encodeToByteArray(sfc, layer.getName(), bbox, 4096, 256);
         try {
