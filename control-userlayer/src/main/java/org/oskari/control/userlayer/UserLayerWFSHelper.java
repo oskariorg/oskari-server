@@ -1,4 +1,4 @@
-package fi.nls.oskari.control.feature;
+package org.oskari.control.userlayer;
 
 import java.util.Arrays;
 import java.util.Iterator;

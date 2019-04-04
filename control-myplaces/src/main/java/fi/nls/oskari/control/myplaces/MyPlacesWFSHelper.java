@@ -1,4 +1,4 @@
-package fi.nls.oskari.control.feature;
+package fi.nls.oskari.control.myplaces;
 
 import java.util.Arrays;
 
