@@ -1,5 +1,6 @@
 package fi.nls.oskari.control.feature;
 
+import fi.nls.oskari.annotation.Oskari;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.util.PropertyUtil;
 import org.geotools.factory.CommonFactoryFinder;
@@ -8,10 +9,12 @@ import org.geotools.referencing.CRS;
 import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory;
 import org.opengis.filter.expression.Expression;
+import org.oskari.service.user.UserLayerService;
 
 import java.util.Arrays;
 
-public class AnalysisWFSHelper {
+@Oskari
+public class AnalysisWFSHelper extends UserLayerService {
 
     public static final String PROP_ANALYSIS_BASELAYER_ID = "analysis.baselayer.id";
     public static final String PREFIX_ANALYSIS = "analysis_";
@@ -33,23 +36,20 @@ public class AnalysisWFSHelper {
         this.userlayerLayerId = PropertyUtil.getOptional(PROP_ANALYSIS_BASELAYER_ID, -2);
     }
 
-    public int getLayerId() {
+    public int getBaselayerId() {
         return userlayerLayerId;
     }
 
-    public boolean isLayer(OskariLayer layer) {
-        return layer.getId() == userlayerLayerId;
-    }
-
-    public boolean isLayer(String layerId) {
+    public boolean isUserContentLayer(String layerId) {
         return layerId.startsWith(PREFIX_ANALYSIS);
     }
 
-    public int getId(String layerId) {
+    public int parseId(String layerId) {
         return Integer.parseInt(layerId.substring(layerId.lastIndexOf('_') + 1));
     }
 
-    public Filter getFilter(int layerId, String uuid, ReferencedEnvelope bbox) {
+    public Filter getWFSFilter(String analysisLayerId, String uuid, ReferencedEnvelope bbox) {
+        int layerId = parseId(analysisLayerId);
         Expression _layerId = ff.property(ATTR_LAYER_ID);
         Expression _uuid = ff.property(ATTR_UUID);
 

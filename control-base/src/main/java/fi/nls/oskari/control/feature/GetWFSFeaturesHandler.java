@@ -111,7 +111,7 @@ public class GetWFSFeaturesHandler extends AbstractWFSFeaturesHandler {
                 throw new ActionException(ERR_REPOJECTION_FAIL, e);
             }
         }
-
+        // FIXME: getFeatures caches based on bbox -> skip caching here since we get the bbox from user!!
         SimpleFeatureCollection features = getFeatures(id, uuid, layer, requestBbox, nativeCRS);
         if (!needsTransform) {
             return features;

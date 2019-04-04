@@ -33,7 +33,7 @@ public class UserLayerWFSHelperTest {
         }
 
         SimpleFeature f = null;
-        SimpleFeatureCollection retyped = new UserLayerWFSHelper().retype(original);
+        SimpleFeatureCollection retyped = new UserLayerWFSHelper().postProcess(original);
         try (SimpleFeatureIterator it = retyped.features()) {
             while (it.hasNext()) {
                 SimpleFeature feature = it.next();
