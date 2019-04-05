@@ -15,7 +15,11 @@ import fi.nls.oskari.cache.ComputeOnceCache;
 public class CachingWFSClient {
 
     private static final String CACHE_NAME = CachingWFSClient.class.getName();
-    private static final int CACHE_SIZE_LIMIT = 100;
+    // one user on z 7 will trigger about ~100 requests to the service since tiles are always loaded as z 8
+    // so this is enough for 100 users looking at different layers/areas without cache overflowing
+    // or 20 users looking at 5 wfs layers each on z 7
+    // consider using Redis for caching (how much does serialization/deserialization to GeoJSON add?)
+    private static final int CACHE_SIZE_LIMIT = 10000;
     private static final long CACHE_EXPIRATION = TimeUnit.MINUTES.toMillis(5L);
 
     private final ComputeOnceCache<SimpleFeatureCollection> cache;
