@@ -1,7 +1,10 @@
-package fi.nls.oskari.control.feature;
+package fi.nls.oskari.control.myplaces;
 
 import java.util.Arrays;
 
+import fi.nls.oskari.annotation.Oskari;
+import fi.nls.oskari.domain.User;
+import fi.nls.oskari.service.ServiceException;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
@@ -11,8 +14,10 @@ import org.opengis.filter.expression.Expression;
 
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.util.PropertyUtil;
+import org.oskari.service.user.UserLayerService;
 
-public class MyPlacesWFSHelper {
+@Oskari
+public class MyPlacesWFSHelper extends UserLayerService {
 
     public static final String PROP_MYPLACES_BASELAYER_ID = "myplaces.baselayer.id";
 
@@ -34,7 +39,14 @@ public class MyPlacesWFSHelper {
         this.myPlacesLayerId = PropertyUtil.getOptional(PROP_MYPLACES_BASELAYER_ID, -2);
     }
 
-    public int getMyPlacesLayerId() {
+    public void getLayers(User user) throws ServiceException {
+        throw new ServiceException("Not implemented");
+    }
+    public void getLayer(String layerId, User user) throws ServiceException {
+        throw new ServiceException("Not implemented");
+    }
+
+    public int getBaselayerId() {
         return myPlacesLayerId;
     }
 
@@ -42,15 +54,16 @@ public class MyPlacesWFSHelper {
         return layer.getId() == myPlacesLayerId;
     }
 
-    public boolean isMyPlacesLayer(String layerId) {
+    public boolean isUserContentLayer(String layerId) {
         return layerId.startsWith(PREFIX_MYPLACES);
     }
 
-    public int getCategoryId(String layerId) {
+    public int parseId(String layerId) {
         return Integer.parseInt(layerId.substring(PREFIX_MYPLACES.length()));
     }
 
-    public Filter getFilter(int categoryId, String uuid, ReferencedEnvelope bbox) {
+    public Filter getWFSFilter(String layerId, String uuid, ReferencedEnvelope bbox) {
+        int categoryId = parseId(layerId);
         Expression _categoryId = ff.property(MYPLACES_ATTR_CATEGORY_ID);
         Expression _uuid = ff.property(MYPLACES_ATTR_UUID);
 

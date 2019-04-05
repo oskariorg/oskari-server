@@ -1,4 +1,4 @@
-package fi.nls.oskari.control.feature;
+package org.oskari.control.userlayer;
 
 import static org.junit.Assert.assertEquals;
 
@@ -14,6 +14,7 @@ import org.geotools.feature.DefaultFeatureCollection;
 import org.junit.Test;
 import org.opengis.feature.Property;
 import org.opengis.feature.simple.SimpleFeature;
+import org.oskari.control.userlayer.UserLayerWFSHelper;
 import org.oskari.service.wfs3.geojson.WFS3FeatureCollectionIterator;
 
 import com.vividsolutions.jts.geom.Geometry;
@@ -33,7 +34,7 @@ public class UserLayerWFSHelperTest {
         }
 
         SimpleFeature f = null;
-        SimpleFeatureCollection retyped = new UserLayerWFSHelper().retype(original);
+        SimpleFeatureCollection retyped = new UserLayerWFSHelper().postProcess(original);
         try (SimpleFeatureIterator it = retyped.features()) {
             while (it.hasNext()) {
                 SimpleFeature feature = it.next();

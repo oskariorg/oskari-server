@@ -1,8 +1,9 @@
-package fi.nls.oskari.control.feature;
+package org.oskari.control.userlayer;
 
 import java.util.Arrays;
 import java.util.Iterator;
 
+import fi.nls.oskari.annotation.Oskari;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.data.simple.SimpleFeatureIterator;
 import org.geotools.factory.CommonFactoryFinder;
@@ -24,8 +25,10 @@ import com.vividsolutions.jts.geom.Geometry;
 
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.util.PropertyUtil;
+import org.oskari.service.user.UserLayerService;
 
-public class UserLayerWFSHelper {
+@Oskari
+public class UserLayerWFSHelper extends UserLayerService {
 
     public static final String PROP_USERLAYER_BASELAYER_ID = "userlayer.baselayer.id";
     public static final String PREFIX_USERLAYER = "userlayer_";
@@ -48,7 +51,7 @@ public class UserLayerWFSHelper {
         this.userlayerLayerId = PropertyUtil.getOptional(PROP_USERLAYER_BASELAYER_ID, -2);
     }
 
-    public int getUserlayerLayerId() {
+    public int getBaselayerId() {
         return userlayerLayerId;
     }
 
@@ -56,15 +59,16 @@ public class UserLayerWFSHelper {
         return layer.getId() == userlayerLayerId;
     }
 
-    public boolean isUserlayerLayer(String layerId) {
+    public boolean isUserContentLayer(String layerId) {
         return layerId.startsWith(PREFIX_USERLAYER);
     }
 
-    public int getUserlayerId(String layerId) {
+    public int parseId(String layerId) {
         return Integer.parseInt(layerId.substring(PREFIX_USERLAYER.length()));
     }
 
-    public Filter getFilter(int userlayerId, String uuid, ReferencedEnvelope bbox) {
+    public Filter getWFSFilter(String layerId, String uuid, ReferencedEnvelope bbox) {
+        int userlayerId = parseId(layerId);
         Expression _userlayerId = ff.property(USERLAYER_ATTR_USER_LAYER_ID);
         Expression _uuid = ff.property(USERLAYER_ATTR_UUID);
 
@@ -94,7 +98,7 @@ public class UserLayerWFSHelper {
         return ff.and(Arrays.asList(userlayerIdEquals, uuidEqualsOrPublished, bboxFilter));
     }
 
-    public SimpleFeatureCollection retype(SimpleFeatureCollection sfc) throws Exception {
+    public SimpleFeatureCollection postProcess(SimpleFeatureCollection sfc) throws Exception {
         SimpleFeatureBuilder builder = null;
         DefaultFeatureCollection fc = null;
 

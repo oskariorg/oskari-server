@@ -6,6 +6,7 @@ import fi.nls.oskari.domain.User;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.service.ServiceRuntimeException;
 import fi.nls.oskari.util.PropertyUtil;
 import org.geotools.data.simple.SimpleFeatureCollection;
@@ -13,9 +14,15 @@ import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
 import org.opengis.filter.Filter;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.oskari.service.user.UserLayerService;
 import org.oskari.service.util.ServiceFactory;
 import org.oskari.service.wfs.client.CachingWFSClient;
 import org.oskari.service.wfs3.CoordinateTransformer;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Map;
+import java.util.Optional;
 
 
 public abstract class AbstractWFSFeaturesHandler extends ActionHandler {
@@ -27,11 +34,10 @@ public abstract class AbstractWFSFeaturesHandler extends ActionHandler {
     private static final String PROPERTY_NATIVE_SRS = "oskari.native.srs";
 
     private PermissionHelper permissionHelper;
-    private MyPlacesWFSHelper myPlacesHelper;
-    private UserLayerWFSHelper userlayerHelper;
 
     private CoordinateReferenceSystem nativeCRS;
     private CachingWFSClient wfsClient;
+    private Collection<UserLayerService> userContentProcessors = new ArrayList<>();
 
     protected void setPermissionHelper(PermissionHelper permissionHelper) {
         this.permissionHelper = permissionHelper;
@@ -44,13 +50,11 @@ public abstract class AbstractWFSFeaturesHandler extends ActionHandler {
                     ServiceFactory.getMapLayerService(),
                     ServiceFactory.getPermissionsService());
         };
-        if (myPlacesHelper == null) {
-            myPlacesHelper = new MyPlacesWFSHelper();
-        }
-        if (userlayerHelper == null) {
-            userlayerHelper = new UserLayerWFSHelper();
-        }
         this.wfsClient = new CachingWFSClient();
+        // clear so running init() again doesn't accumulate processors
+        userContentProcessors.clear();
+        Map<String, UserLayerService> processorMap = OskariComponentManager.getComponentsOfType(UserLayerService.class);
+        userContentProcessors.addAll(processorMap.values());
     }
 
     protected CoordinateReferenceSystem getNativeCRS() {
@@ -75,11 +79,13 @@ public abstract class AbstractWFSFeaturesHandler extends ActionHandler {
     }
 
     private int getLayerId(String id) throws ActionParamsException {
-        if (myPlacesHelper.isMyPlacesLayer(id)) {
-            return myPlacesHelper.getMyPlacesLayerId();
-        }
-        if (userlayerHelper.isUserlayerLayer(id)) {
-            return userlayerHelper.getUserlayerLayerId();
+        int userLayerId = userContentProcessors.stream()
+                .filter(proc -> proc.isUserContentLayer(id))
+                .findAny()
+                .map(UserLayerService::getBaselayerId)
+                .orElse(-1);
+        if(userLayerId != -1) {
+            return userLayerId;
         }
         try {
             return Integer.parseInt(id);
@@ -127,19 +133,17 @@ public abstract class AbstractWFSFeaturesHandler extends ActionHandler {
         // TODO: Figure out the maxFeatures from the layer
         int maxFeatures = 10000;
 
-        Filter filter = null;
-        if (myPlacesHelper.isMyPlacesLayer(layer)) {
-            int categoryId = myPlacesHelper.getCategoryId(id);
-            filter = myPlacesHelper.getFilter(categoryId, uuid, bbox);
-        } else if (userlayerHelper.isUserlayerLayer(layer)) {
-            int userlayerId = userlayerHelper.getUserlayerId(id);
-            filter = userlayerHelper.getFilter(userlayerId, uuid, bbox);
-        }
+        // Find out if we need custom filter or postProcessing for features
+        Optional<UserLayerService> processor =
+                userContentProcessors.stream()
+                .filter(proc -> proc.isUserContentLayer(id))
+                .findAny();
+        Filter filter = processor.map(proc-> proc.getWFSFilter(id, uuid, bbox)).orElse(null);
 
         SimpleFeatureCollection sfc = wfsClient.tryGetFeatures(endPoint, version, user, pass, typeName, bbox, crs, maxFeatures, filter);
-        if (userlayerHelper.isUserlayerLayer(layer)) {
+        if(processor.isPresent()) {
             try {
-                sfc = userlayerHelper.retype(sfc);
+                sfc = processor.get().postProcess(sfc);
             } catch (Exception e) {
                 throw new ServiceRuntimeException("Failed to post-process user layer", e);
             }
