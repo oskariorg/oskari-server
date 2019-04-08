@@ -1,16 +1,16 @@
 package org.oskari.control.mvt;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 import fi.nls.oskari.control.feature.AbstractWFSFeaturesHandler;
+import fi.nls.oskari.control.view.modifier.bundle.BundleHandler;
+import fi.nls.oskari.control.view.modifier.bundle.MapfullHandler;
+import fi.nls.oskari.log.LogFactory;
+import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.util.PropertyUtil;
+import fi.nls.oskari.view.modifier.ViewModifierManager;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.data.simple.SimpleFeatureIterator;
 import org.geotools.feature.DefaultFeatureCollection;
@@ -35,6 +35,7 @@ import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.service.ServiceRuntimeException;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.ResponseHelper;
+import org.oskari.service.mvt.WFSTileGridProperties;
 
 @OskariActionRoute("GetWFSVectorTile")
 public class GetWFSVectorTileHandler extends AbstractWFSFeaturesHandler {
@@ -43,24 +44,23 @@ public class GetWFSVectorTileHandler extends AbstractWFSFeaturesHandler {
     protected static final String PARAM_Z = "z";
     protected static final String PARAM_X = "x";
     protected static final String PARAM_Y = "y";
-    
+
     private static final int CACHE_LIMIT = 256;
     private static final long CACHE_EXPIRATION = TimeUnit.MINUTES.toMillis(5);
 
-    private static final Map<String, WFSTileGrid> KNOWN_TILE_GRIDS;
-    static {
-        KNOWN_TILE_GRIDS = new HashMap<>();
-        KNOWN_TILE_GRIDS.put("EPSG:3067", new WFSTileGrid(new double[] { -548576, 6291456, -548576 + (8192*256), 6291456 + (8192*256) }, 15));
-        KNOWN_TILE_GRIDS.put("EPSG:3857", new WFSTileGrid(new double[] { -20037508.3427892, -20037508.3427892, 20037508.3427892, 20037508.3427892 }, 18));
-    }
-
     private ComputeOnceCache<byte[]> tileCache;
+    private WFSTileGridProperties tileGridProperties;
 
     @Override
     public void init() {
         super.init();
         tileCache = CacheManager.getCache(getClass().getName(),
                 () -> new ComputeOnceCache<>(CACHE_LIMIT, CACHE_EXPIRATION));
+        tileGridProperties = new WFSTileGridProperties();
+
+        final Map<String, BundleHandler> handlers = ViewModifierManager.getModifiersOfType(BundleHandler.class);
+        MapfullHandler handler = (MapfullHandler)handlers.get("mapfull");
+        handler.registerPluginHandler(WFSVectorLayerPluginViewModifier.PLUGIN_NAME, new WFSVectorLayerPluginViewModifier());
     }
 
     @Override
@@ -73,7 +73,7 @@ public class GetWFSVectorTileHandler extends AbstractWFSFeaturesHandler {
 
         final OskariLayer layer = findLayer(id, params.getUser());
         final String uuid = params.getUser().getUuid();
-        final WFSTileGrid grid = KNOWN_TILE_GRIDS.get(srs);
+        final WFSTileGrid grid = tileGridProperties.getTileGrid(srs.toUpperCase());
         validateTile(grid, z, x, y);
         validateScaleDenominator(layer, grid, z);
 

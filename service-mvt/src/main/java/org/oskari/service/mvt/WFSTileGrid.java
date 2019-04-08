@@ -6,6 +6,7 @@ public class WFSTileGrid {
 
     private final double originX;
     private final double originY;
+    private final double[] origin;
     private final double[] resolutions;
 
     public WFSTileGrid(double[] extent, int maxZoom) {
@@ -17,13 +18,26 @@ public class WFSTileGrid {
 
         this.originX = extent[0];
         this.originY = extent[3];
+        this.origin = new double[]{this.originX, this.originY};
 
         this.resolutions = new double[maxZoom + 1];
 
         resolutions[0] = w / TILE_SIZE;
-        for (int i = 1; i < maxZoom; i++) {
+        for (int i = 1; i <= maxZoom; i++) {
             resolutions[i] = resolutions[i - 1] / 2;
         }
+    }
+
+    public double[] getOrigin() {
+        return origin;
+    }
+
+    public double[] getResolutions() {
+        return resolutions;
+    }
+
+    public double getTileSize() {
+        return TILE_SIZE;
     }
 
     public int getMaxZoom() {
