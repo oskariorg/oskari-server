@@ -67,7 +67,7 @@ public class MetadataCatalogueChannelSearchService extends SearchChannel {
     private final static List<MetadataField> fields = new ArrayList<MetadataField>();
 
     private MetadataCatalogueResultParser RESULT_PARSER = null;
-    private final MetadataCatalogueQueryHelper QUERY_HELPER = new MetadataCatalogueQueryHelper();
+    private final MetadataCatalogueQueryHelperDeegreeImpl QUERY_HELPER = new MetadataCatalogueQueryHelperDeegreeImpl();
 
     private OskariLayerService mapLayerService = OskariComponentManager.getComponentOfType(OskariLayerService.class);
 

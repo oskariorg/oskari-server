@@ -24,9 +24,7 @@ import org.deegree.ogcwebservices.csw.discovery.Query;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.geojson.feature.FeatureJSON;
 import org.geotools.geometry.jts.ReferencedEnvelope;
-import org.geotools.referencing.CRS;
 import org.json.JSONObject;
-import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
 import java.io.ByteArrayInputStream;
 import java.io.StringWriter;
@@ -36,14 +34,14 @@ import java.util.*;
 /**
  * Helper class for creating search queries for MetadataCatalogue
  */
-public class MetadataCatalogueQueryHelper {
+public class MetadataCatalogueQueryHelperDeegreeImpl {
 
     private static final String GCO_NAMESPACE = "gco";
     private static final String GMD_NAMESPACE = "gmd";
     public final static String TARGET_SRS = "EPSG:4326";
     public final static String SPATIAL_OPERATOR = "INTERSECTS";
 
-    private static final Logger log = LogFactory.getLogger(MetadataCatalogueQueryHelper.class);
+    private static final Logger log = LogFactory.getLogger(MetadataCatalogueQueryHelperDeegreeImpl.class);
     private final static char WILDCARD_CHARACTER = '*';
 
     private static final Map<String, Integer> opMap = new HashMap<String, Integer>();
