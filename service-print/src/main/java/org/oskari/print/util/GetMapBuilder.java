@@ -93,6 +93,9 @@ public class GetMapBuilder {
 
     public GetMapBuilder layer(String layer, String style) {
         layers.add(layer);
+        if (style == null) {
+            style = "";
+        }
         styles.add(style);
         return this;
     }

@@ -289,9 +289,7 @@ public class GetPrintHandler extends ActionHandler {
         layer.setUsername(oskariLayer.getUsername());
         layer.setPassword(oskariLayer.getPassword());
         layer.setOpacity(opacity);
-        if (requestedLayer.getStyle() != null && !requestedLayer.getStyle().isEmpty()) {
-            layer.setStyle(requestedLayer.getStyle());
-        }
+        layer.setStyle(requestedLayer.getStyle());
         return layer;
     }
 

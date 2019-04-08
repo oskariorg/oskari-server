@@ -35,7 +35,7 @@ public class CommandLoadImageWMS extends CommandLoadImageBase {
     public BufferedImage run() throws Exception {
         final String request = new GetMapBuilder().endPoint(layer.getUrl())
                 .version(layer.getVersion())
-                .layer(layer.getName())
+                .layer(layer.getName(), layer.getStyle())
                 .bbox(bbox)
                 .crs(srsName)
                 .width(width)
