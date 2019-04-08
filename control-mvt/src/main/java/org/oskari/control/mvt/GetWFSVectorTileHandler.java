@@ -81,8 +81,8 @@ public class GetWFSVectorTileHandler extends AbstractWFSFeaturesHandler {
         final OskariLayer layer = findLayer(id, params.getUser());
         final String uuid = params.getUser().getUuid();
 
-        final WFSTileGrid knownGrid = KNOWN_TILE_GRIDS.get(srs.toUpperCase());
-        final WFSTileGrid grid = knownGrid != null ? knownGrid : tileGridProperties.getTileGrid(srs.toUpperCase());
+        final WFSTileGrid gridFromProps = tileGridProperties.getTileGrid(srs.toUpperCase());
+        final WFSTileGrid grid = gridFromProps != null ? gridFromProps : KNOWN_TILE_GRIDS.get(srs.toUpperCase());
         validateTile(grid, z, x, y);
         validateScaleDenominator(layer, grid, z);
 
