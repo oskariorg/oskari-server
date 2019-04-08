@@ -35,6 +35,7 @@ import org.oskari.map.userlayer.service.UserLayerDbService;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
@@ -77,10 +78,8 @@ public class MapfullHandler extends BundleHandler {
     private static final UserLayerDataService userLayerDataService = new UserLayerDataService();
     private static OskariLayerService mapLayerService;
 
-    private static final LogoPluginHandler LOGO_PLUGIN_HANDLER = new LogoPluginHandler();
-    private static final WfsLayerPluginHandler WFSLAYER_PLUGIN_HANDLER = new WfsLayerPluginHandler();
-
     private static JSONObject epsgMap = null;
+    private HashMap<String, PluginHandler> pluginHandlers = null;
 
 
     public void init() {
@@ -89,6 +88,13 @@ public class MapfullHandler extends BundleHandler {
         mapLayerService = OskariComponentManager.getComponentOfType(OskariLayerService.class);
         epsgInit();
         svgInit();
+        pluginHandlers = new HashMap<>();
+        registerPluginHandler(LogoPluginHandler.PLUGIN_NAME, new LogoPluginHandler());
+        registerPluginHandler(WfsLayerPluginHandler.PLUGIN_NAME, new WfsLayerPluginHandler());
+    }
+
+    public void registerPluginHandler (String pluginId, PluginHandler handler) {
+        pluginHandlers.put(pluginId, handler);
     }
 
     public boolean modifyBundle(final ModifierParams params) throws ModifierException {
@@ -138,12 +144,12 @@ public class MapfullHandler extends BundleHandler {
             removePlugin(PLUGIN_GEOLOCATION, mapfullConfig);
         }
 
-        // setup URLs for LogoPlugin if available
-        LOGO_PLUGIN_HANDLER.setupLogoPluginConfig(getPlugin(LOGO_PLUGIN_HANDLER.PLUGIN_NAME, mapfullConfig));
-
-        // setup isPublished view for mapwfs2 plugin
-        WFSLAYER_PLUGIN_HANDLER.setupWfsLayerPluginConfig(getPlugin(WFSLAYER_PLUGIN_HANDLER.PLUGIN_NAME, mapfullConfig),
-                                                          params.getViewType());
+        pluginHandlers.entrySet().stream().forEach(entry -> {
+            JSONObject pluginJSON = getPlugin(entry.getKey(), mapfullConfig);
+            if (pluginJSON != null) {
+                entry.getValue().modifyPlugin(pluginJSON, params, mapSRS);
+            }
+        });
 
         return false;
     }
