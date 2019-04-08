@@ -19,11 +19,11 @@ public class WFSTileGridProperties {
         tileGridMap = new HashMap<>();
         final String[] srs = PropertyUtil.getCommaSeparatedList(WFS_MVT_PROPERTY_NAMESPACE + ".srs");
         if (srs.length != 0) {
-            Arrays.stream(srs).forEach(cur -> addKnownTileGrid(cur));
+            Arrays.stream(srs).forEach(cur -> addTileGrid(cur));
         }
     }
 
-    private void addKnownTileGrid (String srs) {
+    private void addTileGrid (String srs) {
         String srsCode = srs.toUpperCase();
         String srsNamespace = WFS_MVT_PROPERTY_NAMESPACE + "." + srsCode.replace("EPSG:", "");
         try {

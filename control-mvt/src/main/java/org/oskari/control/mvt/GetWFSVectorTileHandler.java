@@ -45,6 +45,13 @@ public class GetWFSVectorTileHandler extends AbstractWFSFeaturesHandler {
     protected static final String PARAM_X = "x";
     protected static final String PARAM_Y = "y";
 
+    private static final Map<String, WFSTileGrid> KNOWN_TILE_GRIDS;
+    static {
+        KNOWN_TILE_GRIDS = new HashMap<>();
+        KNOWN_TILE_GRIDS.put("EPSG:3067", new WFSTileGrid(new double[] { -548576, 6291456, -548576 + (8192*256), 6291456 + (8192*256) }, 15));
+        KNOWN_TILE_GRIDS.put("EPSG:3857", new WFSTileGrid(new double[] { -20037508.3427892, -20037508.3427892, 20037508.3427892, 20037508.3427892 }, 18));
+    }
+
     private static final int CACHE_LIMIT = 256;
     private static final long CACHE_EXPIRATION = TimeUnit.MINUTES.toMillis(5);
 
@@ -73,7 +80,9 @@ public class GetWFSVectorTileHandler extends AbstractWFSFeaturesHandler {
 
         final OskariLayer layer = findLayer(id, params.getUser());
         final String uuid = params.getUser().getUuid();
-        final WFSTileGrid grid = tileGridProperties.getTileGrid(srs.toUpperCase());
+
+        final WFSTileGrid knownGrid = KNOWN_TILE_GRIDS.get(srs.toUpperCase());
+        final WFSTileGrid grid = knownGrid != null ? knownGrid : tileGridProperties.getTileGrid(srs.toUpperCase());
         validateTile(grid, z, x, y);
         validateScaleDenominator(layer, grid, z);
 
