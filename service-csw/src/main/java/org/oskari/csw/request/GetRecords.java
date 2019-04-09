@@ -1,48 +1,70 @@
 package org.oskari.csw.request;
 
 import fi.nls.oskari.service.ServiceRuntimeException;
-import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.filter.v1_1.OGCConfiguration;
 import org.geotools.xml.Encoder;
 import org.opengis.filter.Filter;
-import org.opengis.filter.FilterFactory;
-import org.opengis.filter.expression.Expression;
 
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.List;
 
 public class GetRecords {
 
-    private FilterFactory filterFactory;
-    private XMLStreamWriter xsw;
-    private List<Filter> filters = new ArrayList<>();
-
-    private final ByteArrayOutputStream stream = new ByteArrayOutputStream();
-    private final XMLOutputFactory xof = XMLOutputFactory.newFactory();
+    private static final XMLOutputFactory xof = XMLOutputFactory.newFactory();
     private static final String CSW_URI = "http://www.opengis.net/cat/csw/2.0.2";
     private static final String GMD_URI = "http://www.isotc211.org/2005/gmd";
 
     private static final String CSW_VERSION = "2.0.2";
     private static final String CONSTRAINT_VERSION = "1.1.0";
 
+    private GetRecords() {}
+
+    /**
+     * Builds a GetRecords request payload for CSW-service with the given filters.
+     * @param filter required
+     * @return
+     */
+    public static String createRequest(Filter filter) {
+        if (filter == null) {
+            throw new ServiceRuntimeException("Filter is required");
+        }
+        final ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        XMLStreamWriter xsw = getWriter(stream);
+        startDocument(xsw);
+        writeRawXMLUnsafe(xsw, stream, getFilterAsString(filter));
+        endDocument(xsw);
+        return getAsString(stream);
+    }
+
+    /**
+     * Nothing fancy. Just wrapping possible exception to a runtime exception.
+     * @param stream
+     * @return
+     */
+    private static XMLStreamWriter getWriter(OutputStream stream) {
+        try {
+            return xof.createXMLStreamWriter(stream);
+        } catch (XMLStreamException e) {
+            throw new ServiceRuntimeException("Couldn't create stream writer", e);
+        }
+    }
+
     /**
      *
      <csw:GetRecords xmlns:csw="http://www.opengis.net/cat/csw/2.0.2" service="CSW" version="2.0.2">
-         <csw:Query typeNames="csw:Record">
-            <ElementSetName typeNames="csw:Record">full</ElementSetName>
-            <csw:Constraint version="1.1.0">
-                ...
+     <csw:Query typeNames="csw:Record">
+     <ElementSetName typeNames="csw:Record">full</ElementSetName>
+     <csw:Constraint version="1.1.0">
+     ...
      */
-    public GetRecords() {
+    private static void startDocument(XMLStreamWriter xsw) {
         try {
-            xsw = xof.createXMLStreamWriter(stream);
             xsw.writeStartDocument();
             xsw.writeStartElement("csw", "GetRecords", CSW_URI);
             xsw.writeNamespace("csw", CSW_URI);
@@ -77,19 +99,9 @@ public class GetRecords {
 
             xsw.writeStartElement(CSW_URI, "Constraint");
             xsw.writeAttribute("version", CONSTRAINT_VERSION);
-
         } catch (XMLStreamException e) {
             throw new ServiceRuntimeException("Couldn't create GetRecords request", e);
         }
-        filterFactory = CommonFactoryFinder.getFilterFactory();
-    }
-
-    public void setFilters(List<Filter> filters) {
-        this.filters = filters;
-    }
-    public void addEqualFilter(String name, String value) {
-        Expression _property = filterFactory.property(name);
-        filters.add(filterFactory.equals(_property, filterFactory.literal(value)));
     }
 
     /**
@@ -100,43 +112,46 @@ public class GetRecords {
      </csw:GetRecords>
      * @return
      */
-    public String getXML() {
-        Filter filter;
-        if (filters.isEmpty()) {
-            throw new ServiceRuntimeException("Can't create GetRecords request without filters");
-        } else if (filters.size() == 1) {
-            filter = filters.get(0);
-        } else {
-            filter = filterFactory.and(filters);
-        }
-
+    private static void endDocument(XMLStreamWriter xsw) {
         try {
-            writeRawXML(getFilterAsString(filter));
             xsw.writeEndElement(); // Constraint
             xsw.writeEndElement(); // Query
             xsw.writeEndElement(); // GetRecords
             xsw.writeEndDocument();
             xsw.close();
-            return new String (stream.toByteArray(), Charset.forName("UTF-8"));
         } catch (XMLStreamException e) {
             throw new ServiceRuntimeException("Couldn't create GetRecords request", e);
         }
     }
 
+    /**
+     * Serialize the filter to get a String that can be injected into the stream.
+     * @param filter generated with Geotools
+     * @return String that can be injected to XML document
+     */
     private static String getFilterAsString(Filter filter) {
         if (filter == null) {
-            return null;
+            throw new ServiceRuntimeException("Tried to serialize null-filter");
         }
         try {
             Encoder encoder = new Encoder(new OGCConfiguration());
             encoder.setOmitXMLDeclaration(true);
             return encoder.encodeAsString(filter, org.geotools.filter.v1_0.OGC.Filter);
         } catch (IOException e) {
-            throw new ServiceRuntimeException("Couldn't create GetRecords request", e);
+            throw new ServiceRuntimeException("Couldn't serialize filter to string", e);
         }
     }
 
-    private void writeRawXML(String injectUnsafe) {
+    /**
+     * Injects any string in the middle of the XML document.
+     *
+     * Unsafe because injecting invalid XML-fragment as string makes the whole document invalid
+     * and you can do it with this method.
+     * @param xsw
+     * @param stream
+     * @param injectUnsafe XML fragment to inject in the middle of the stream.
+     */
+    private static void writeRawXMLUnsafe(XMLStreamWriter xsw, OutputStream stream, String injectUnsafe) {
         try {
             // Following line is very important!!
             // without it unescaped data will appear inside the previously opened tag.
@@ -147,8 +162,16 @@ public class GetRecords {
             osw.write(injectUnsafe);
             osw.flush();
         } catch (XMLStreamException | IOException e) {
-            throw new ServiceRuntimeException("Couldn't create GetRecords request", e);
+            throw new ServiceRuntimeException("Couldn't write raw XML to GetRecords request", e);
         }
     }
 
+    /**
+     * Serialize stream to get a String
+     * @param stream
+     * @return
+     */
+    private static String getAsString(ByteArrayOutputStream stream) {
+        return new String (stream.toByteArray(), Charset.forName("UTF-8"));
+    }
 }

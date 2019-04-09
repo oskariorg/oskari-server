@@ -5,6 +5,7 @@ import fi.mml.portti.service.search.SearchCriteria;
 import fi.nls.oskari.control.metadata.MetadataField;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.service.ServiceRuntimeException;
 import fi.nls.oskari.util.JSONHelper;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.geometry.DirectPosition2D;
@@ -47,16 +48,23 @@ public class MetadataCatalogueQueryHelper {
     }
 
     public String getQueryPayload(SearchCriteria searchCriteria) {
-        final GetRecords request = getRecordsQuery(searchCriteria);
-        if (request == null) {
+        final List<Filter> filters = getRecordsQuery(searchCriteria);
+        if (filters.isEmpty()) {
             // no point in making the query without GetRecords, but throw exception instead?
+            //throw new ServiceRuntimeException("Can't create GetRecords request without filters");
             return null;
         }
-        return request.getXML();
+        Filter filter;
+        if (filters.size() == 1) {
+            filter = filters.get(0);
+        } else {
+            filter = filterFactory.and(filters);
+        }
+
+        return GetRecords.createRequest(filter);
     }
 
-    public GetRecords getRecordsQuery(SearchCriteria searchCriteria) {
-        GetRecords request = new GetRecords();
+    public List<Filter> getRecordsQuery(SearchCriteria searchCriteria) {
         final List<Filter> list = new ArrayList<>();
         final List<Filter> theOrList = new ArrayList<>();
 
@@ -83,9 +91,7 @@ public class MetadataCatalogueQueryHelper {
         } else if (theOrList.size() > 1) {
             list.add(filterFactory.or(theOrList));
         }
-        // set filter to request
-        request.setFilters(list);
-        return request;
+        return list;
     }
 
     private Filter getFilterForField(SearchCriteria searchCriteria, MetadataField field) {
