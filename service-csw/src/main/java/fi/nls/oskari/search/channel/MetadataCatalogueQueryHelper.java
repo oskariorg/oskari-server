@@ -196,6 +196,26 @@ Deegree impl was something like:
  <gml:upperCorner>17.24 48.42</gml:upperCorner>
  </gml:Envelope>
  </ogc:Intersects>
+
+
+
+        sb.append( "<ogc:" ).append( getOperatorName() );
+        sb.append( " xmlns:gml='http://www.opengis.net/gml' " ).append( ">" );
+
+        if ( super.getPropertyName() != null ) {
+            sb.append( super.getPropertyName().toXML() );
+        }
+
+        sb.append( "<gml:Envelope xmlns:gml=\"http://www.opengis.net/gml\">" );
+        sb.append( "<gml:lowerCorner>" + getLowerCorner() + "</gml:lowerCorner>" );
+        sb.append( "<gml:upperCorner>" + getUpperCorner() + "</gml:upperCorner>" );
+        sb.append( "</gml:Envelope>" );
+
+        if ( super.getDistance() > 0 ) {
+            sb.append( "<ogc:Distance units=\"m\">" ).append( super.getDistance() ).append( "</ogc:Distance>" );
+        }
+        sb.append( "</ogc:" ).append( getOperatorName() ).append( ">" );
+
  */
         return createGeometryFilter(searchCriterion);
     }
