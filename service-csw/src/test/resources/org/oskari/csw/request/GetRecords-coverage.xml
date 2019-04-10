@@ -1,0 +1,25 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<csw:GetRecords xmlns:csw="http://www.opengis.net/cat/csw/2.0.2" xmlns:gmd="http://www.isotc211.org/2005/gmd"
+                xmlns:gml="http://www.opengis.net/gml" xmlns:ows="http://www.opengis.net/ows"
+                xmlns:ogc="http://www.opengis.net/ogc"
+                service="CSW" version="2.0.2" maxRecords="10000" startPosition="1" resultType="results"
+                outputFormat="application/xml" outputSchema="http://www.isotc211.org/2005/gmd">
+    <csw:Query typeNames="gmd:MD_Metadata">
+        <csw:ElementSetName>full</csw:ElementSetName>
+        <csw:Constraint version="1.1.0">
+            <ogc:Filter
+                    xmlns:gml="http://www.opengis.net/gml" xmlns:ogc="http://www.opengis.net/ogc">
+                <ogc:Intersects>
+                    <ogc:PropertyName>ows:BoundingBox</ogc:PropertyName>
+                    <gml:Polygon>
+                        <gml:outerBoundaryIs>
+                            <gml:LinearRing>
+                                <gml:coordinates>60.221574152011996,24.873325138003043 60.2581829340143,24.87095018214024 60.26075965186076,25.03817179390941 60.2241470707045,25.04036051763867 60.221574152011996,24.873325138003043</gml:coordinates>
+                            </gml:LinearRing>
+                        </gml:outerBoundaryIs>
+                    </gml:Polygon>
+                </ogc:Intersects>
+            </ogc:Filter>
+        </csw:Constraint>
+    </csw:Query>
+</csw:GetRecords>

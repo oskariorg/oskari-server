@@ -1,7 +1,7 @@
 package org.oskari.csw.request;
 
 import fi.nls.oskari.service.ServiceRuntimeException;
-import org.geotools.filter.v1_1.OGCConfiguration;
+import org.geotools.filter.v1_0.OGCConfiguration;
 import org.geotools.xml.Encoder;
 import org.opengis.filter.Filter;
 
