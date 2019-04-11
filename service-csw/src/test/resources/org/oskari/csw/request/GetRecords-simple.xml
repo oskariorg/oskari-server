@@ -5,7 +5,7 @@
                 outputSchema="http://www.isotc211.org/2005/gmd">
     <csw:Query typeNames="gmd:MD_Metadata">
         <csw:ElementSetName>full</csw:ElementSetName>
-        <csw:Constraint version="1.1.0">
+        <csw:Constraint version="1.0.0">
             <ogc:Filter
                     xmlns:ogc="http://www.opengis.net/ogc">
                 <ogc:PropertyIsEqualTo>

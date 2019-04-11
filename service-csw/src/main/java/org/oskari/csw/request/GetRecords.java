@@ -21,7 +21,7 @@ public class GetRecords {
     private static final String GMD_URI = "http://www.isotc211.org/2005/gmd";
 
     private static final String CSW_VERSION = "2.0.2";
-    private static final String CONSTRAINT_VERSION = "1.1.0";
+    private static final String CONSTRAINT_VERSION = "1.0.0";
 
     private GetRecords() {}
 

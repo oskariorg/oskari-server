@@ -61,12 +61,15 @@ public class MetadataCatalogueQueryHelper {
         return GetRecords.createRequest(filter);
     }
 
-    public List<Filter> getFiltersForQuery(SearchCriteria searchCriteria) {
+    private List<Filter> getFiltersForQuery(SearchCriteria searchCriteria) {
         final List<Filter> list = new ArrayList<>();
         final List<Filter> theOrList = new ArrayList<>();
 
         // user input
-        list.add(createLikeFilter(searchCriteria.getSearchString(), "csw:anyText"));
+        Filter userInput = createLikeFilter(searchCriteria.getSearchString(), "csw:anyText");
+        if (userInput != null) {
+            list.add(userInput);
+        }
 
         for (MetadataField field : MetadataCatalogueChannelSearchService.getFields()) {
             final Filter operation = getFilterForField(searchCriteria, field);
@@ -202,7 +205,7 @@ public class MetadataCatalogueQueryHelper {
     }
 
     /* "{"type":"FeatureCollection","features":[{"type":"Feature","properties":{},"geometry":{"type":"Polygon","coordinates":[[[382186.81433571,6677985.8855768],[382186.81433571,6682065.8855768],[391446.81433571,6682065.8855768],[391446.81433571,6677985.8855768],[382186.81433571,6677985.8855768]]]}}],"crs":{"type":"name","properties":{"name":"EPSG:3067"}}}" */
-    public Filter createGeometryFilter(final String searchCriterion) {
+    private Filter createGeometryFilter(final String searchCriterion) {
             try {
                 JSONObject geojson = JSONHelper.createJSONObject(searchCriterion);
                 String sourceSRS = getSRS(geojson);
@@ -212,7 +215,7 @@ public class MetadataCatalogueQueryHelper {
                 }
                 Geometry geom = GeoJSONReader.toGeometry(features.optJSONObject(0).optJSONObject("geometry"));
                 CoordinateReferenceSystem sourceCRS = CRS.decode(sourceSRS);
-                CoordinateReferenceSystem targetCRS = CRS.decode(TARGET_SRS);
+                CoordinateReferenceSystem targetCRS = CRS.decode(TARGET_SRS, true);
 
                 MathTransform transform = CRS.findMathTransform(sourceCRS, targetCRS, true);
                 Geometry transformed = JTS.transform(geom, transform);

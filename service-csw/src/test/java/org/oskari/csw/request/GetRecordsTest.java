@@ -1,5 +1,6 @@
 package org.oskari.csw.request;
 
+import com.vividsolutions.jts.geom.Envelope;
 import com.vividsolutions.jts.geom.Geometry;
 import fi.nls.oskari.search.channel.MetadataCatalogueQueryHelper;
 import fi.nls.oskari.service.ServiceRuntimeException;
@@ -9,6 +10,7 @@ import org.custommonkey.xmlunit.Diff;
 import org.custommonkey.xmlunit.XMLUnit;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.geometry.jts.JTS;
+import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -75,7 +77,7 @@ public class GetRecordsTest {
     public void testCoverageFilter() throws IOException, SAXException {
 
         // build filter
-        String input = "{\"type\":\"FeatureCollection\",\"features\":[{\"type\":\"Feature\",\"properties\":{},\"geometry\":{\"type\":\"Polygon\",\"coordinates\":[[[382186.81433571,6677985.8855768],[382186.81433571,6682065.8855768],[391446.81433571,6682065.8855768],[391446.81433571,6677985.8855768],[382186.81433571,6677985.8855768]]]}}],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:3067\"}}}";
+        String input = "{\"type\":\"FeatureCollection\",\"features\":[{\"type\":\"Feature\",\"geometry\":{\"type\":\"Polygon\",\"coordinates\":[[[292864,6845440],[292864,6781952],[393216,6781952],[393216,6845440],[292864,6845440]]]},\"properties\":{\"area\":\"Alue ei saa muodostaa silmukkaa. Piirrä risteämätön alue nähdäksesi mittaustuloksen.\"},\"id\":\"drawFeature3\"}],\"crs\":\"EPSG:3067\"}";
         Filter filter = createGeometryFilter(input);
         String request = org.oskari.csw.request.GetRecords.createRequest(filter);
 
@@ -107,7 +109,7 @@ public class GetRecordsTest {
         return filterFactory.equals(_property, filterFactory.literal(searchCriterion));
     }
 
-    public Filter createGeometryFilter(final String searchCriterion) {
+    private Filter createGeometryFilter(final String searchCriterion) {
         try {
             JSONObject geojson = JSONHelper.createJSONObject(searchCriterion);
 
@@ -117,14 +119,14 @@ public class GetRecordsTest {
             }
             Geometry geom = GeoJSONReader.toGeometry(features.optJSONObject(0).optJSONObject("geometry"));
             CoordinateReferenceSystem sourceCRS = CRS.decode("EPSG:3067");
-            CoordinateReferenceSystem targetCRS = CRS.decode(MetadataCatalogueQueryHelper.TARGET_SRS);
+            CoordinateReferenceSystem targetCRS = CRS.decode(MetadataCatalogueQueryHelper.TARGET_SRS, true);
 
             MathTransform transform = CRS.findMathTransform(sourceCRS, targetCRS, true);
             Geometry transformed = JTS.transform(geom, transform);
 
             return filterFactory.intersects(
                     filterFactory.property("ows:BoundingBox"),
-                    filterFactory.literal( transformed ));
+                    filterFactory.literal(transformed));
         } catch (Exception e) {
             throw new ServiceRuntimeException("Can't create GetRecords request with coverage filter", e);
         }

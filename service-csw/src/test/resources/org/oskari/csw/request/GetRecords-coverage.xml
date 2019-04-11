@@ -6,7 +6,7 @@
                 outputFormat="application/xml" outputSchema="http://www.isotc211.org/2005/gmd">
     <csw:Query typeNames="gmd:MD_Metadata">
         <csw:ElementSetName>full</csw:ElementSetName>
-        <csw:Constraint version="1.1.0">
+        <csw:Constraint version="1.0.0">
             <ogc:Filter
                     xmlns:gml="http://www.opengis.net/gml" xmlns:ogc="http://www.opengis.net/ogc">
                 <ogc:Intersects>
@@ -14,7 +14,7 @@
                     <gml:Polygon>
                         <gml:outerBoundaryIs>
                             <gml:LinearRing>
-                                <gml:coordinates>60.221574152011996,24.873325138003043 60.2581829340143,24.87095018214024 60.26075965186076,25.03817179390941 60.2241470707045,25.04036051763867 60.221574152011996,24.873325138003043</gml:coordinates>
+                                <gml:coordinates>23.083853558742444,61.68603143255835 23.154502321133286,61.11738336517864 25.015612251028788,61.15751214782019 24.979072737465852,61.727115825195206 23.083853558742444,61.68603143255835</gml:coordinates>
                             </gml:LinearRing>
                         </gml:outerBoundaryIs>
                     </gml:Polygon>
