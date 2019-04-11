@@ -44,7 +44,7 @@ public class GetWFSFeaturesHandlerTest {
         CoordinateReferenceSystem nativeCRS = CRS.decode("EPSG:3067", true);
         Envelope envelope = new Envelope(2775356, 2875356, 8441866, 8541866);
         ReferencedEnvelope bbox = new ReferencedEnvelope(envelope, webMercator);
-        SimpleFeatureCollection sfc = handler.features.getFeatures(id, null, layer, bbox, nativeCRS, webMercator, Optional.empty());
+        SimpleFeatureCollection sfc = handler.featureClient.getFeatures(id, null, layer, bbox, nativeCRS, webMercator, Optional.empty());
         CoordinateReferenceSystem actualCRS = sfc.getSchema().getGeometryDescriptor().getCoordinateReferenceSystem();
         assertTrue(CRS.equalsIgnoreMetadata(webMercator, actualCRS));
     }

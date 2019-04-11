@@ -230,7 +230,7 @@ public class GetWFSVectorTileHandler extends AbstractWFSFeaturesHandler {
         double[] box = grid.getTileExtent(tile);
         Envelope envelope = new Envelope(box[0], box[2], box[1], box[3]);
         ReferencedEnvelope bbox = new ReferencedEnvelope(envelope, crs);
-        return features.getFeatures(id, uuid, layer, bbox, crs, processor);
+        return featureClient.getFeatures(id, uuid, layer, bbox, crs, processor);
     }
 
     public static SimpleFeatureCollection union(SimpleFeatureCollection a, SimpleFeatureCollection b) {

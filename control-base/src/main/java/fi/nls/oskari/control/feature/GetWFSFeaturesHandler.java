@@ -67,7 +67,7 @@ public class GetWFSFeaturesHandler extends AbstractWFSFeaturesHandler {
 
         SimpleFeatureCollection fc;
         try {
-            fc = features.getFeatures(id, uuid, layer, bbox, targetCRS, contentProcessor);
+            fc = featureClient.getFeatures(id, uuid, layer, bbox, targetCRS, contentProcessor);
         } catch (ServiceRuntimeException e) {
             ResponseHelper.writeError(params, ERR_FAILED_TO_RETRIEVE_FEATURES);
             return;
@@ -107,7 +107,7 @@ public class GetWFSFeaturesHandler extends AbstractWFSFeaturesHandler {
             double x2 = Double.parseDouble(a[2]);
             double y2 = Double.parseDouble(a[3]);
             Envelope envelope = new Envelope(x1, x2, y1, y2);
-            if (!features.isWithin(crs, envelope)) {
+            if (!featureClient.isWithin(crs, envelope)) {
                 throw new ActionParamsException(ERR_BBOX_OUT_OF_CRS);
             }
             return new ReferencedEnvelope(envelope, crs);

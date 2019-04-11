@@ -9,7 +9,7 @@ import fi.nls.oskari.service.OskariComponentManager;
 import org.oskari.service.user.UserLayerService;    
 import org.oskari.service.util.ServiceFactory;
 import org.oskari.service.wfs.client.CachingOskariWFSClient;
-import org.oskari.service.wfs.client.OskariFeaturesClient;
+import org.oskari.service.wfs.client.OskariFeatureClient;
 import org.oskari.service.wfs.client.OskariWFSClient;
 
 import java.util.Collection;
@@ -21,7 +21,7 @@ public abstract class AbstractWFSFeaturesHandler extends ActionHandler {
     protected static final String ERR_INVALID_ID = "Invalid id";
     protected static final String ERR_LAYER_TYPE_NOT_WFS = "Specified layer is not a WFS layer";
 
-    protected OskariFeaturesClient features;
+    protected OskariFeatureClient featureClient;
     protected PermissionHelper permissionHelper;
     protected Collection<UserLayerService> userContentProcessors;
 
@@ -31,8 +31,8 @@ public abstract class AbstractWFSFeaturesHandler extends ActionHandler {
 
     @Override
     public void init() {
-        if (features == null) {
-            features = new OskariFeaturesClient(createWFSClient());
+        if (featureClient == null) {
+            featureClient = new OskariFeatureClient(createWFSClient());
         }
         if (permissionHelper == null) {
             permissionHelper = new PermissionHelper(

@@ -19,7 +19,7 @@ import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.service.ServiceRuntimeException;
 import fi.nls.oskari.util.PropertyUtil;
 
-public class OskariFeaturesClient {
+public class OskariFeatureClient {
 
     protected static final String PROPERTY_NATIVE_SRS = "oskari.native.srs";
     protected static final String ERR_REPOJECTION_FAIL = "Reprojection failed";
@@ -28,7 +28,7 @@ public class OskariFeaturesClient {
     private OskariWFSClient wfsClient;
     private CoordinateReferenceSystem nativeCRS;
 
-    public OskariFeaturesClient(OskariWFSClient wfsClient) {
+    public OskariFeatureClient(OskariWFSClient wfsClient) {
         this.wfsClient = Objects.requireNonNull(wfsClient);
     }
 
