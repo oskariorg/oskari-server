@@ -1,16 +1,16 @@
 package org.oskari.csw.request;
 
-import com.vividsolutions.jts.geom.Envelope;
 import com.vividsolutions.jts.geom.Geometry;
 import fi.nls.oskari.search.channel.MetadataCatalogueQueryHelper;
 import fi.nls.oskari.service.ServiceRuntimeException;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.JSONHelper;
+import org.custommonkey.xmlunit.DetailedDiff;
 import org.custommonkey.xmlunit.Diff;
+import org.custommonkey.xmlunit.Difference;
 import org.custommonkey.xmlunit.XMLUnit;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.geometry.jts.JTS;
-import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -25,6 +25,7 @@ import org.oskari.geojson.GeoJSONReader;
 import org.xml.sax.SAXException;
 
 import java.io.IOException;
+import java.util.List;
 
 import static org.junit.Assert.*;
 
@@ -84,7 +85,21 @@ public class GetRecordsTest {
         // read expected result and compare
         String expected = IOHelper.readString(getClass().getResourceAsStream("GetRecords-coverage.xml"));
         Diff xmlDiff = new Diff(request, expected);
-        assertTrue("Should get expected coverage request" + xmlDiff, xmlDiff.similar());
+        //for getting detailed differences between two xml files
+        DetailedDiff detailXmlDiff = new DetailedDiff(xmlDiff);
+
+        List<Difference> differences = detailXmlDiff.getAllDifferences();
+        boolean isJava11 = System.getProperty("java.version").indexOf("11.") != -1;
+        if(isJava11 && differences.size() == 1) {
+            // Java 11 produces different results for transforms than Java 8
+            // The expected result is produced with Java 8
+            /// if the only thing that's different is the coordinates everything is fine
+            final String coordinatesPath = "/GetRecords[1]/Query[1]/Constraint[1]/Filter[1]/Intersects[1]/Polygon[1]/outerBoundaryIs[1]/LinearRing[1]/coordinates[1]/text()";
+            /// if something else fails differs than coordinates -> we have a problem
+            assertNotEquals("Something else than coordinates transform differ in expected and result", coordinatesPath, differences.get(0).getTestNodeDetail().getXpathLocation());
+        } else {
+            assertTrue("Should get expected coverage request" + xmlDiff, xmlDiff.similar());
+        }
     }
 
     private Filter createLikeFilter(final String searchCriterion,
