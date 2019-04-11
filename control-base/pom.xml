@@ -90,10 +90,6 @@
             <artifactId>service-wfs-client</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.oskari</groupId>
-            <artifactId>service-features</artifactId>
-        </dependency>
-        <dependency>
             <groupId>org.geotools</groupId>
             <artifactId>gt-epsg-hsql</artifactId>
             <scope>test</scope>
