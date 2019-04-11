@@ -450,6 +450,12 @@
 
             <dependency>
                 <groupId>org.oskari</groupId>
+                <artifactId>service-features</artifactId>
+                <version>${fi.nls.oskari.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.oskari</groupId>
                 <artifactId>service-wfs3</artifactId>
                 <version>${fi.nls.oskari.version}</version>
             </dependency>
@@ -1237,6 +1243,7 @@
 
         <module>service-wfs-client</module>
         <module>service-wfs3</module>
+        <module>service-features</module>
     </modules>
 
 </project>

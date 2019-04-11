@@ -7,10 +7,10 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
-import fi.nls.oskari.control.feature.AbstractWFSFeaturesHandler;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.data.simple.SimpleFeatureIterator;
 import org.geotools.feature.DefaultFeatureCollection;
@@ -21,6 +21,7 @@ import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.oskari.service.mvt.SimpleFeaturesMVTEncoder;
 import org.oskari.service.mvt.TileCoord;
 import org.oskari.service.mvt.WFSTileGrid;
+import org.oskari.service.user.UserLayerService;
 
 import com.vividsolutions.jts.geom.Envelope;
 
@@ -31,6 +32,7 @@ import fi.nls.oskari.control.ActionConstants;
 import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.control.ActionParamsException;
+import fi.nls.oskari.control.feature.AbstractWFSFeaturesHandler;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.service.ServiceRuntimeException;
 import fi.nls.oskari.util.IOHelper;
@@ -71,7 +73,8 @@ public class GetWFSVectorTileHandler extends AbstractWFSFeaturesHandler {
         final int x = params.getRequiredParamInt(PARAM_X);
         final int y = params.getRequiredParamInt(PARAM_Y);
 
-        final OskariLayer layer = findLayer(id, params.getUser());
+        final Optional<UserLayerService> contentProcessor = getUserContentProsessor(id);
+        final OskariLayer layer = findLayer(id, params.getUser(), contentProcessor);
         final String uuid = params.getUser().getUuid();
         final WFSTileGrid grid = KNOWN_TILE_GRIDS.get(srs);
         validateTile(grid, z, x, y);
@@ -87,7 +90,7 @@ public class GetWFSVectorTileHandler extends AbstractWFSFeaturesHandler {
         final String cacheKey = getCacheKey(id, srs, z, x, y);
         final byte[] resp;
         try {
-            resp = tileCache.get(cacheKey, __ -> createTile(id, uuid, layer, crs, grid, z, x, y));
+            resp = tileCache.get(cacheKey, __ -> createTile(id, uuid, layer, crs, grid, z, x, y, contentProcessor));
         } catch (ServiceRuntimeException e) {
             throw new ActionException(e.getMessage());
         }
@@ -163,7 +166,8 @@ public class GetWFSVectorTileHandler extends AbstractWFSFeaturesHandler {
      * @throws ActionException
      */
     private byte[] createTile(String id, String uuid, OskariLayer layer, CoordinateReferenceSystem crs,
-            WFSTileGrid grid, int z, int x, int y) throws ServiceRuntimeException {
+            WFSTileGrid grid, int z, int x, int y,
+            Optional<UserLayerService> contentProcessor) throws ServiceRuntimeException {
         // Find nearest higher resolution
         // always fetch at z 8 so we don't cache same features on multiple zoom levels
         int targetZ = grid.getZForResolution(8, -1);
@@ -197,7 +201,7 @@ public class GetWFSVectorTileHandler extends AbstractWFSFeaturesHandler {
 
         SimpleFeatureCollection sfc = null;
         for (TileCoord tile : wfsTiles) {
-            SimpleFeatureCollection tileFeatures = getFeatures(id, uuid, layer, crs, grid, tile);
+            SimpleFeatureCollection tileFeatures = getFeatures(id, uuid, layer, crs, grid, tile, contentProcessor);
             if (tileFeatures == null) {
                 throw new ServiceRuntimeException("Failed to get features from service");
             }
@@ -215,12 +219,13 @@ public class GetWFSVectorTileHandler extends AbstractWFSFeaturesHandler {
         }
     }
 
-    private SimpleFeatureCollection getFeatures(String id, String uuid, OskariLayer layer, CoordinateReferenceSystem crs,
-            WFSTileGrid grid, TileCoord tile) {
+    private SimpleFeatureCollection getFeatures(String id, String uuid, OskariLayer layer,
+            CoordinateReferenceSystem crs, WFSTileGrid grid, TileCoord tile,
+            Optional<UserLayerService> processor) throws ServiceRuntimeException {
         double[] box = grid.getTileExtent(tile);
         Envelope envelope = new Envelope(box[0], box[2], box[1], box[3]);
         ReferencedEnvelope bbox = new ReferencedEnvelope(envelope, crs);
-        return getFeatures(id, uuid, layer, bbox, crs);
+        return features.getFeatures(id, uuid, layer, bbox, crs, processor);
     }
 
     public static SimpleFeatureCollection union(SimpleFeatureCollection a, SimpleFeatureCollection b) {

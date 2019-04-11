@@ -12,39 +12,34 @@ import com.vividsolutions.jts.geom.Envelope;
 import fi.nls.oskari.cache.CacheManager;
 import fi.nls.oskari.cache.ComputeOnceCache;
 
-public class CachingWFSClient {
+public class CachingOskariWFSClient extends OskariWFSClient {
 
-    private static final String CACHE_NAME = CachingWFSClient.class.getName();
-    // one user on z 7 will trigger about ~100 requests to the service since tiles are always loaded as z 8
-    // so this is enough for 100 users looking at different layers/areas without cache overflowing
-    // or 20 users looking at 5 wfs layers each on z 7
-    // consider using Redis for caching (how much does serialization/deserialization to GeoJSON add?)
+    private static final String CACHE_NAME = CachingOskariWFSClient.class.getName();
     private static final int CACHE_SIZE_LIMIT = 10000;
     private static final long CACHE_EXPIRATION = TimeUnit.MINUTES.toMillis(5L);
 
+    // Consider using Redis for caching (how much does serialization/deserialization to GeoJSON add?)
     private final ComputeOnceCache<SimpleFeatureCollection> cache;
 
-    public CachingWFSClient() {
+    public CachingOskariWFSClient() {
         cache = CacheManager.getCache(CACHE_NAME,
                 () -> new ComputeOnceCache<>(CACHE_SIZE_LIMIT, CACHE_EXPIRATION));
     }
 
-    public SimpleFeatureCollection tryGetFeatures(String endPoint, String version,
+    @Override
+    public SimpleFeatureCollection getFeatures(String endPoint, String version,
             String user, String pass, String typeName,
             ReferencedEnvelope bbox, CoordinateReferenceSystem crs,
             Integer maxFeatures, Filter filter) {
         if (filter != null) {
             // Don't cache requests with a Filter
-            return OskariWFSClient.tryGetFeatures(
-                    endPoint, version,
-                    user, pass, typeName,
-                    bbox, crs, maxFeatures, filter);
+            super.getFeatures(endPoint, version, user, pass,
+                    typeName, bbox, crs, maxFeatures, filter);
         }
         String key = getCacheKey(endPoint, typeName, bbox, crs, maxFeatures);
-        return cache.get(key, __ -> OskariWFSClient.tryGetFeatures(
-                endPoint, version,
-                user, pass, typeName,
-                bbox, crs, maxFeatures, filter));
+        return cache.get(key,
+                __ -> super.getFeatures(endPoint, version, user, pass,
+                        typeName, bbox, crs, maxFeatures, filter));
     }
 
     private String getCacheKey(String endPoint, String typeName, Envelope bbox,

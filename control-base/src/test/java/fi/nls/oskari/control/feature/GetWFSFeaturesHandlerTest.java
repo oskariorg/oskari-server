@@ -4,6 +4,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.util.Optional;
+
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
@@ -16,7 +18,6 @@ import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
 import com.vividsolutions.jts.geom.Envelope;
 
-import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.ActionParamsException;
 import fi.nls.oskari.domain.map.OskariLayer;
 
@@ -27,12 +28,15 @@ public class GetWFSFeaturesHandlerTest {
     @Before
     public void init() {
         handler = new GetWFSFeaturesHandler();
+        handler.init();
     }
 
     @Test
     @Ignore("Depends on an outside resource")
-    public void testGetFeatures() throws ActionException, NoSuchAuthorityCodeException, FactoryException {
+    public void testGetFeatures() throws Exception {
+        String id = "10";
         OskariLayer layer = new OskariLayer();
+        layer.setId(Integer.parseInt(id));
         layer.setType(OskariLayer.TYPE_WFS);
         layer.setUrl("https://geo.stat.fi/geoserver/tilastointialueet/wfs");
         layer.setName("tilastointialueet:kunta1000k");
@@ -40,7 +44,7 @@ public class GetWFSFeaturesHandlerTest {
         CoordinateReferenceSystem nativeCRS = CRS.decode("EPSG:3067", true);
         Envelope envelope = new Envelope(2775356, 2875356, 8441866, 8541866);
         ReferencedEnvelope bbox = new ReferencedEnvelope(envelope, webMercator);
-        SimpleFeatureCollection sfc = handler.getFeatures(Integer.toString(layer.getId()), null, layer, bbox, nativeCRS, webMercator);
+        SimpleFeatureCollection sfc = handler.features.getFeatures(id, null, layer, bbox, nativeCRS, webMercator, Optional.empty());
         CoordinateReferenceSystem actualCRS = sfc.getSchema().getGeometryDescriptor().getCoordinateReferenceSystem();
         assertTrue(CRS.equalsIgnoreMetadata(webMercator, actualCRS));
     }
