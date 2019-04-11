@@ -90,13 +90,15 @@ public class GetRecordsTest {
 
         List<Difference> differences = detailXmlDiff.getAllDifferences();
         boolean isJava11 = System.getProperty("java.version").startsWith("11.");
-        if(isJava11 && differences.size() == 1) {
+        if (isJava11 && differences.size() == 1) {
             // Java 11 produces different results for transforms than Java 8
             // The expected result is produced with Java 8
-            /// if the only thing that's different is the coordinates everything is fine
-            final String coordinatesPath = "/GetRecords[1]/Query[1]/Constraint[1]/Filter[1]/Intersects[1]/Polygon[1]/outerBoundaryIs[1]/LinearRing[1]/coordinates[1]/text()";
-            /// if something else fails differs than coordinates -> we have a problem
-            assertNotEquals("Something else than coordinates transform differ in expected and result", coordinatesPath, differences.get(0).getTestNodeDetail().getXpathLocation());
+            // if the only thing that's different is the content of coordinates everything is fine
+            final String coordinatesPath =
+                    "/GetRecords[1]/Query[1]/Constraint[1]/Filter[1]/Intersects[1]/Polygon[1]/outerBoundaryIs[1]/LinearRing[1]/coordinates[1]/text()";
+            // if the difference is NOT the coordinates -> we have a problem
+            assertNotEquals("Something else than coordinates transform differ in expected and result",
+                    coordinatesPath, differences.get(0).getTestNodeDetail().getXpathLocation());
         } else {
             assertTrue("Should get expected coverage request" + xmlDiff, xmlDiff.similar());
         }
