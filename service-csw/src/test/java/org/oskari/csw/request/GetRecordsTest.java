@@ -89,7 +89,8 @@ public class GetRecordsTest {
         DetailedDiff detailXmlDiff = new DetailedDiff(xmlDiff);
 
         List<Difference> differences = detailXmlDiff.getAllDifferences();
-        if(differences.size() == 1) {
+        boolean isJava11 = System.getProperty("java.version").indexOf("11.") != -1;
+        if(isJava11 && differences.size() == 1) {
             // Java 11 produces different results for transforms than Java 8
             // The expected result is produced with Java 8
             /// if the only thing that's different is the coordinates everything is fine
