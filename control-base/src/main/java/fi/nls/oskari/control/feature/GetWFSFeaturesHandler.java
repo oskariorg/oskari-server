@@ -90,7 +90,7 @@ public class GetWFSFeaturesHandler extends AbstractWFSFeaturesHandler {
     }
 
     @Override
-    protected OskariWFSClient getWFSClient() {
+    protected OskariWFSClient createWFSClient() {
         // Override the default functionality, return non-caching OskariWFSClient
         return new OskariWFSClient();
     }

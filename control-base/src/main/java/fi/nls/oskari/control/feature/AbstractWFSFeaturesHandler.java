@@ -32,7 +32,7 @@ public abstract class AbstractWFSFeaturesHandler extends ActionHandler {
     @Override
     public void init() {
         if (features == null) {
-            features = new OskariFeaturesClient(getWFSClient());
+            features = new OskariFeaturesClient(createWFSClient());
         }
         if (permissionHelper == null) {
             permissionHelper = new PermissionHelper(
@@ -43,7 +43,7 @@ public abstract class AbstractWFSFeaturesHandler extends ActionHandler {
         this.userContentProcessors = components.values();
     }
 
-    protected OskariWFSClient getWFSClient() {
+    protected OskariWFSClient createWFSClient() {
         return new CachingOskariWFSClient();
     }
 
