@@ -5,12 +5,13 @@ import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
+import fi.nls.oskari.view.modifier.ModifierParams;
 import org.json.JSONObject;
 
 /**
  *  modifier for WfsLayerPlugin config
  */
-public class WfsLayerPluginHandler {
+public class WfsLayerPluginHandler implements PluginHandler {
 
     private static final Logger LOGGER = LogFactory.getLogger(WfsLayerPluginHandler.class);
     public static final String PLUGIN_NAME = "Oskari.mapframework.bundle.mapwfs2.plugin.WfsLayerPlugin";
@@ -25,15 +26,21 @@ public class WfsLayerPluginHandler {
     private static final String PORT = PropertyUtil.getOptional("oskari.transport.port");
     private static final String PATH = PropertyUtil.getOptional("oskari.transport.url");
 
+    @Override
+    public boolean modifyPlugin(final JSONObject plugin,
+                                final ModifierParams params,
+                                final String mapSrs) {
+        return setupWfsLayerPluginConfig(plugin, params.getViewType());
+    }
 
-    public JSONObject setupWfsLayerPluginConfig(final JSONObject originalPlugin, final String viewType) {
+    private boolean setupWfsLayerPluginConfig(final JSONObject originalPlugin, final String viewType) {
         if(originalPlugin == null) {
             LOGGER.debug("Tried to modify WfsLayerPlugin, but plugin didn't exist!");
-            return null;
+            return false;
         }
         if(!PLUGIN_NAME.equals(originalPlugin.optString(KEY_ID))) {
             LOGGER.debug("Tried to modify WfsLayerPlugin, but given JSON isn't WfsLayerPlugin!");
-            return null;
+            return false;
         }
 
         JSONObject config = getConfig(originalPlugin);
@@ -50,7 +57,7 @@ public class WfsLayerPluginHandler {
         if(PATH != null && !config.has(KEY_PATH)) {
             JSONHelper.putValue(config, KEY_PATH, PATH);
         }
-        return originalPlugin;
+        return true;
     }
 
     private JSONObject getConfig(JSONObject original) {

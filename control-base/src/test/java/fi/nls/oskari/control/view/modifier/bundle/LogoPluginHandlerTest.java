@@ -24,22 +24,23 @@ public class LogoPluginHandlerTest extends TestCase {
 
     @Test
     public void testSetupLogoPluginConfigNullValue() {
-        JSONObject modified = handler.setupLogoPluginConfig(null);
-        assertNull("Should return null if given null", modified);
+        JSONObject plugin = null;
+        boolean success = handler.modifyPlugin(plugin, null, null);
+        assertFalse("Should return false if given null", success);
     }
 
     @Test
     public void testSetupLogoPluginConfigWrongPlugin() {
         JSONObject pluginConfig = JSONHelper.createJSONObject(LogoPluginHandler.KEY_ID, "Wrong plugin");
-        JSONObject modified = handler.setupLogoPluginConfig(pluginConfig);
-        assertNull("Should return null if given wrong plugin", modified);
+        boolean success = handler.modifyPlugin(pluginConfig, null,  null);
+        assertFalse("Should return false if given wrong plugin", success);
     }
 
     @Test
     public void testSetupLogoPluginConfigNoProperties() {
         JSONObject pluginConfig = ResourceHelper.readJSONResource("LogoPluginConfig-empty.json", this);
-        JSONObject modified = handler.setupLogoPluginConfig(pluginConfig);
-        JSONTestHelper.shouldEqual(modified, ResourceHelper.readJSONResource("LogoPluginConfig-empty-expected.json", this));
+        handler.modifyPlugin(pluginConfig, null,  null);
+        JSONTestHelper.shouldEqual(pluginConfig, ResourceHelper.readJSONResource("LogoPluginConfig-empty-expected.json", this));
     }
 
     @Test
@@ -47,8 +48,8 @@ public class LogoPluginHandlerTest extends TestCase {
         PropertyUtil.addProperty("oskari.map.url", "/");
         PropertyUtil.addProperty("oskari.map.terms.url", "http://my.map.net/terms");
         JSONObject pluginConfig = ResourceHelper.readJSONResource("LogoPluginConfig-empty.json", this);
-        JSONObject modified = handler.setupLogoPluginConfig(pluginConfig);
-        JSONTestHelper.shouldEqual(modified, ResourceHelper.readJSONResource("LogoPluginConfig-expected-config-simple.json", this));
+        handler.modifyPlugin(pluginConfig, null,  null);
+        JSONTestHelper.shouldEqual(pluginConfig, ResourceHelper.readJSONResource("LogoPluginConfig-expected-config-simple.json", this));
     }
 
     @Test
@@ -58,8 +59,8 @@ public class LogoPluginHandlerTest extends TestCase {
         PropertyUtil.addProperty("oskari.map.terms.url.en", "/terms");
         PropertyUtil.addProperty("oskari.map.terms.url.fi", "/ehdot");
         JSONObject pluginConfig = ResourceHelper.readJSONResource("LogoPluginConfig-empty.json", this);
-        JSONObject modified = handler.setupLogoPluginConfig(pluginConfig);
-        JSONTestHelper.shouldEqual(modified, ResourceHelper.readJSONResource("LogoPluginConfig-expected-config-localized.json", this));
+        handler.modifyPlugin(pluginConfig, null,  null);
+        JSONTestHelper.shouldEqual(pluginConfig, ResourceHelper.readJSONResource("LogoPluginConfig-expected-config-localized.json", this));
     }
 
     @Test
@@ -71,8 +72,8 @@ public class LogoPluginHandlerTest extends TestCase {
         PropertyUtil.addProperty("oskari.map.terms.url.fi", "/ehdot");
         // this provides existing mapurl
         JSONObject pluginConfig = ResourceHelper.readJSONResource("LogoPluginConfig-existing-config.json", this);
-        JSONObject modified = handler.setupLogoPluginConfig(pluginConfig);
+        handler.modifyPlugin(pluginConfig, null,  null);
         // check that only terms url has been updated
-        JSONTestHelper.shouldEqual(modified, ResourceHelper.readJSONResource("LogoPluginConfig-existing-config-expected.json", this));
+        JSONTestHelper.shouldEqual(pluginConfig, ResourceHelper.readJSONResource("LogoPluginConfig-existing-config-expected.json", this));
     }
 }
