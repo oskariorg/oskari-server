@@ -69,8 +69,8 @@ public class GetWFSFeaturesHandler extends AbstractWFSFeaturesHandler {
         try {
             fc = featureClient.getFeatures(id, uuid, layer, bbox, targetCRS, contentProcessor);
         } catch (ServiceRuntimeException e) {
-            ResponseHelper.writeError(params, ERR_FAILED_TO_RETRIEVE_FEATURES);
-            return;
+            // ActionParamsException because we don't want to log stacktrace of these  
+            throw new ActionParamsException(ERR_FAILED_TO_RETRIEVE_FEATURES, e);
         }
 
         if (fc.isEmpty()) {
