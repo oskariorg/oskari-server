@@ -95,9 +95,9 @@ public class GetRecordsTest {
             // The expected result is produced with Java 8
             // if the only thing that's different is the content of coordinates everything is fine
             final String coordinatesPath =
-                    "/GetRecords[1]/Query[1]/Constraint[1]/Filter[1]/Intersects[1]/Polygon[1]/outerBoundaryIs[1]/LinearRing[1]/coordinates[1]/text()";
+                    "/GetRecords[1]/Query[1]/Constraint[1]/Filter[1]/Intersects[1]/Polygon[1]/outerBoundaryIs[1]/LinearRing[1]/coordinates[1]/text()[1]";
             // if the difference is NOT the coordinates -> we have a problem
-            assertNotEquals("Something else than coordinates transform differ in expected and result",
+            assertEquals("Something else than coordinates transform differ in expected and result",
                     coordinatesPath, differences.get(0).getTestNodeDetail().getXpathLocation());
         } else {
             assertTrue("Should get expected coverage request" + xmlDiff, xmlDiff.similar());
