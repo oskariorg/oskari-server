@@ -393,7 +393,7 @@ public class IOHelper {
             log.info("Nothing to write to connection:", con.getURL());
             return;
         }
-        writeToConnection(con, postData.getBytes());
+        writeToConnection(con, postData.getBytes(StandardCharsets.UTF_8));
     }
 
     /**
@@ -703,6 +703,10 @@ public class IOHelper {
     public static HttpURLConnection post(HttpURLConnection conn, String contentType,
             byte[] body) throws IOException {
         return send(conn, "POST", contentType, body);
+    }
+    public static HttpURLConnection post(HttpURLConnection conn, String contentType,
+                                         String body) throws IOException {
+        return send(conn, "POST", contentType, body.getBytes(StandardCharsets.UTF_8));
     }
 
     public static HttpURLConnection post(HttpURLConnection conn, String contentType,
