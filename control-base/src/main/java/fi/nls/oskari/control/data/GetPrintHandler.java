@@ -228,8 +228,9 @@ public class GetPrintHandler extends AbstractWFSFeaturesHandler {
             throws ActionException {
         LayerProperties[] requestedLayers = parseLayersProperties(mapLayers);
         List<PrintLayer> printLayers = new ArrayList<>();
+        int zIndex = 0;
         for (LayerProperties requestedLayer : requestedLayers) {
-            printLayers.add(getPrintLayer(requestedLayer, user));
+            printLayers.add(getPrintLayer(zIndex++, requestedLayer, user));
         }
         printLayers.removeIf(layer -> layer.getOpacity() <= 0);
         return printLayers;
@@ -259,7 +260,7 @@ public class GetPrintHandler extends AbstractWFSFeaturesHandler {
         return new LayerProperties(id, opacity, style);
     }
 
-    private PrintLayer getPrintLayer(LayerProperties requestedLayer, User user)
+    private PrintLayer getPrintLayer(int zIndex, LayerProperties requestedLayer, User user)
             throws ActionException {
         String layerId = requestedLayer.id;
 
@@ -268,7 +269,7 @@ public class GetPrintHandler extends AbstractWFSFeaturesHandler {
 
         int opacity = getOpacity(requestedLayer.opacity, layer.getOpacity());
 
-        PrintLayer printLayer = new PrintLayer();
+        PrintLayer printLayer = new PrintLayer(zIndex);
         printLayer.setOskariLayer(layer);
         printLayer.setStyle(requestedLayer.style);
         printLayer.setOpacity(opacity);

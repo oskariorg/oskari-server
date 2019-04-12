@@ -8,11 +8,20 @@ import fi.nls.oskari.domain.map.OskariLayer;
 
 public class PrintLayer {
 
+    private final int zIndex;
     private OskariLayer oskariLayer;
     private String style;
     private int opacity;
     private Optional<UserLayerService> processor;
     private PrintTile[] tiles;
+
+    public PrintLayer(int zIndex) {
+        this.zIndex = zIndex;
+    }
+
+    public int getZIndex() {
+        return zIndex;
+    }
 
     public void setOskariLayer(OskariLayer oskariLayer) {
         this.oskariLayer = oskariLayer;

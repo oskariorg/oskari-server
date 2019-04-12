@@ -52,11 +52,11 @@ public class PrintServiceTest {
         kiinteistotunnukset.setUrl("https://karttamoottori.maanmittauslaitos.fi/kiinteisto/wmts");
         kiinteistotunnukset.setStyle("default");
 
-        PrintLayer bg = new PrintLayer();
+        PrintLayer bg = new PrintLayer(0);
         bg.setOskariLayer(ortokuva_vaaravari);
         bg.setOpacity(100);
 
-        PrintLayer fg = new PrintLayer();
+        PrintLayer fg = new PrintLayer(1);
         fg.setOskariLayer(kiinteistotunnukset);
         fg.setOpacity(100);
 
@@ -114,11 +114,11 @@ public class PrintServiceTest {
         kiinteistotunnukset.setUrl("https://karttamoottori.maanmittauslaitos.fi/kiinteisto/wmts");
         kiinteistotunnukset.setStyle("default");
 
-        PrintLayer bg = new PrintLayer();
+        PrintLayer bg = new PrintLayer(0);
         bg.setOskariLayer(taustakartta);
         bg.setOpacity(100);
 
-        PrintLayer fg = new PrintLayer();
+        PrintLayer fg = new PrintLayer(1);
         fg.setOskariLayer(kiinteistotunnukset);
         fg.setOpacity(30);
 
