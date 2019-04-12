@@ -64,7 +64,7 @@ public class GetRecordsTest {
     public void testMultiFilter() throws IOException, SAXException {
         // build filter
         Filter equalfilter = createEqualsFilter("my value", "myprop");
-        Filter likefilter = createEqualsFilter("input*", "query");
+        Filter likefilter = createLikeFilter("input*", "query");
 
         String request = org.oskari.csw.request.GetRecords.createRequest(filterFactory.and(equalfilter, likefilter));
 

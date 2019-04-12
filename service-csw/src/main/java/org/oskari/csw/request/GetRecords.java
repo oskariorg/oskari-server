@@ -8,10 +8,7 @@ import org.opengis.filter.Filter;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
+import java.io.*;
 import java.nio.charset.Charset;
 
 public class GetRecords {
@@ -34,22 +31,22 @@ public class GetRecords {
         if (filter == null) {
             throw new ServiceRuntimeException("Filter is required");
         }
-        final ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        XMLStreamWriter xsw = getWriter(stream);
+        final StringWriter writer = new StringWriter();
+        XMLStreamWriter xsw = getXMLWriter(writer);
         startDocument(xsw);
-        writeRawXMLUnsafe(xsw, stream, getFilterAsString(filter));
+        writeRawXMLUnsafe(xsw, writer, getFilterAsString(filter));
         endDocument(xsw);
-        return getAsString(stream);
+        return writer.toString();
     }
 
     /**
      * Nothing fancy. Just wrapping possible exception to a runtime exception.
-     * @param stream
+     * @param writer
      * @return
      */
-    private static XMLStreamWriter getWriter(OutputStream stream) {
+    private static XMLStreamWriter getXMLWriter(Writer writer) {
         try {
-            return xof.createXMLStreamWriter(stream);
+            return xof.createXMLStreamWriter(writer);
         } catch (XMLStreamException e) {
             throw new ServiceRuntimeException("Couldn't create stream writer", e);
         }
@@ -147,31 +144,21 @@ public class GetRecords {
      *
      * Unsafe because injecting invalid XML-fragment as string makes the whole document invalid
      * and you can do it with this method.
-     * @param xsw
-     * @param stream
+     * @param xsw XML writer
+     * @param writer The "parent" writer
      * @param injectUnsafe XML fragment to inject in the middle of the stream.
      */
-    private static void writeRawXMLUnsafe(XMLStreamWriter xsw, OutputStream stream, String injectUnsafe) {
+    private static void writeRawXMLUnsafe(XMLStreamWriter xsw, Writer writer, String injectUnsafe) {
         try {
             // Following line is very important!!
             // without it unescaped data will appear inside the previously opened tag.
             xsw.writeCharacters("");
             xsw.flush();
 
-            OutputStreamWriter osw = new OutputStreamWriter(stream);
-            osw.write(injectUnsafe);
-            osw.flush();
+            writer.write(injectUnsafe);
+            writer.flush();
         } catch (XMLStreamException | IOException e) {
             throw new ServiceRuntimeException("Couldn't write raw XML to GetRecords request", e);
         }
-    }
-
-    /**
-     * Serialize stream to get a String
-     * @param stream
-     * @return
-     */
-    private static String getAsString(ByteArrayOutputStream stream) {
-        return new String (stream.toByteArray(), Charset.forName("UTF-8"));
     }
 }
