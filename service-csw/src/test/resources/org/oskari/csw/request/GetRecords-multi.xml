@@ -13,10 +13,10 @@
                         <ogc:PropertyName>myprop</ogc:PropertyName>
                         <ogc:Literal>my value</ogc:Literal>
                     </ogc:PropertyIsEqualTo>
-                    <ogc:PropertyIsEqualTo>
+                    <ogc:PropertyIsLike escape="/" singleChar="?" wildCard="*">
                         <ogc:PropertyName>query</ogc:PropertyName>
                         <ogc:Literal>input*</ogc:Literal>
-                    </ogc:PropertyIsEqualTo>
+                    </ogc:PropertyIsLike>
                 </ogc:And>
             </ogc:Filter>
         </csw:Constraint>
