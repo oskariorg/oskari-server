@@ -36,35 +36,41 @@ public class PrintServiceTest {
         request.setHeight(512);
         request.setResolution(2);
 
+        OskariLayer ortokuva_vaaravari = new OskariLayer();
+        ortokuva_vaaravari.setId(1);
+        ortokuva_vaaravari.setName("ortokuva_vaaravari");
+        ortokuva_vaaravari.setType(OskariLayer.TYPE_WMTS);
+        ortokuva_vaaravari.setVersion("1.0.0");
+        ortokuva_vaaravari.setUrl("https://karttamoottori.maanmittauslaitos.fi/maasto/wmts");
+        ortokuva_vaaravari.setStyle("default");
+
+        OskariLayer kiinteistotunnukset = new OskariLayer();
+        kiinteistotunnukset.setId(2);
+        kiinteistotunnukset.setName("kiinteistotunnukset");
+        kiinteistotunnukset.setType(OskariLayer.TYPE_WMTS);
+        kiinteistotunnukset.setVersion("1.0.0");
+        kiinteistotunnukset.setUrl("https://karttamoottori.maanmittauslaitos.fi/kiinteisto/wmts");
+        kiinteistotunnukset.setStyle("default");
+
         PrintLayer bg = new PrintLayer();
-        bg.setId(1);
-        bg.setName("ortokuva_vaaravari");
-        bg.setType(OskariLayer.TYPE_WMTS);
-        bg.setVersion("1.0.0");
-        bg.setUrl("https://karttamoottori.maanmittauslaitos.fi/maasto/wmts");
-        bg.setStyle("default");
+        bg.setOskariLayer(ortokuva_vaaravari);
         bg.setOpacity(100);
 
         PrintLayer fg = new PrintLayer();
-        fg.setId(2);
-        fg.setName("kiinteistotunnukset");
-        fg.setType(OskariLayer.TYPE_WMTS);
-        fg.setVersion("1.0.0");
-        fg.setUrl("https://karttamoottori.maanmittauslaitos.fi/kiinteisto/wmts");
-        fg.setStyle("default");
+        fg.setOskariLayer(kiinteistotunnukset);
         fg.setOpacity(100);
 
         request.setLayers(Arrays.asList(bg, fg));
 
-        String dataBg = CapabilitiesCacheService.getFromService(bg.getUrl(), bg.getType(), bg.getUsername(), bg.getPassword(), bg.getVersion());
+        String dataBg = CapabilitiesCacheService.getFromService(bg.getUrl(), bg.getType(), bg.getVersion(), bg.getUsername(), bg.getPassword());
         OskariLayerCapabilities answerBg = new OskariLayerCapabilities(1L, bg.getUrl(), bg.getType(), bg.getVersion(), dataBg, null, null);
 
-        String dataFg = CapabilitiesCacheService.getFromService(fg.getUrl(), fg.getType(), fg.getUsername(), fg.getPassword(), fg.getVersion());
+        String dataFg = CapabilitiesCacheService.getFromService(fg.getUrl(), fg.getType(), fg.getVersion(), fg.getUsername(), fg.getPassword());
         OskariLayerCapabilities answerFg = new OskariLayerCapabilities(1L, fg.getUrl(), fg.getType(), fg.getVersion(), dataFg, null, null);
 
         CapabilitiesCacheService mock = Mockito.mock(CapabilitiesCacheService.class);
-        Mockito.when(mock.find(bg.getUrl(), bg.getType(), bg.getVersion())).thenReturn(answerBg);
-        Mockito.when(mock.find(fg.getUrl(), fg.getType(), fg.getVersion())).thenReturn(answerFg);
+        Mockito.when(mock.getCapabilities(bg.getUrl(), bg.getType(), bg.getVersion(), bg.getUsername(), bg.getPassword())).thenReturn(answerBg);
+        Mockito.when(mock.getCapabilities(fg.getUrl(), fg.getType(), fg.getVersion(), fg.getUsername(), fg.getPassword())).thenReturn(answerFg);
 
         PrintService service = new PrintService(mock);
         BufferedImage img = service.getPNG(request);
@@ -92,22 +98,28 @@ public class PrintServiceTest {
         request.setShowLogo(true);
         request.setShowScale(true);
 
+        OskariLayer taustakartta = new OskariLayer();
+        taustakartta.setId(1);
+        taustakartta.setName("taustakartta");
+        taustakartta.setType(OskariLayer.TYPE_WMTS);
+        taustakartta.setVersion("1.0.0");
+        taustakartta.setUrl("https://karttamoottori.maanmittauslaitos.fi/maasto/wmts");
+        taustakartta.setStyle("default");
+
+        OskariLayer kiinteistotunnukset = new OskariLayer();
+        kiinteistotunnukset.setId(2);
+        kiinteistotunnukset.setType(OskariLayer.TYPE_WMTS);
+        kiinteistotunnukset.setVersion("1.0.0");
+        kiinteistotunnukset.setName("kiinteistotunnukset");
+        kiinteistotunnukset.setUrl("https://karttamoottori.maanmittauslaitos.fi/kiinteisto/wmts");
+        kiinteistotunnukset.setStyle("default");
+
         PrintLayer bg = new PrintLayer();
-        bg.setId(1);
-        bg.setName("taustakartta");
-        bg.setType(OskariLayer.TYPE_WMTS);
-        bg.setVersion("1.0.0");
-        bg.setUrl("https://karttamoottori.maanmittauslaitos.fi/maasto/wmts");
-        bg.setStyle("default");
+        bg.setOskariLayer(taustakartta);
         bg.setOpacity(100);
 
         PrintLayer fg = new PrintLayer();
-        fg.setId(2);
-        fg.setType(OskariLayer.TYPE_WMTS);
-        fg.setVersion("1.0.0");
-        fg.setName("kiinteistotunnukset");
-        fg.setUrl("https://karttamoottori.maanmittauslaitos.fi/kiinteisto/wmts");
-        fg.setStyle("default");
+        fg.setOskariLayer(kiinteistotunnukset);
         fg.setOpacity(30);
 
         request.setLayers(Arrays.asList(bg, fg));
@@ -119,8 +131,8 @@ public class PrintServiceTest {
         OskariLayerCapabilities answerFg = new OskariLayerCapabilities(1L, fg.getUrl(), fg.getType(), fg.getVersion(), dataFg, null, null);
 
         CapabilitiesCacheService mock = Mockito.mock(CapabilitiesCacheService.class);
-        Mockito.when(mock.getCapabilities(bg.getUrl(), bg.getType(), bg.getVersion(), null, null)).thenReturn(answerBg);
-        Mockito.when(mock.getCapabilities(fg.getUrl(), fg.getType(), fg.getVersion(), null, null)).thenReturn(answerFg);
+        Mockito.when(mock.getCapabilities(bg.getUrl(), bg.getType(), bg.getVersion(), bg.getUsername(), bg.getPassword())).thenReturn(answerBg);
+        Mockito.when(mock.getCapabilities(fg.getUrl(), fg.getType(), fg.getVersion(), fg.getUsername(), fg.getPassword())).thenReturn(answerFg);
 
         PrintService service = new PrintService(mock);
         PDDocument doc = new PDDocument();
