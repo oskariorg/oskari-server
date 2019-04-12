@@ -67,7 +67,6 @@ public class GetRecordsTest {
         Filter likefilter = createLikeFilter("input*", "query");
 
         String request = org.oskari.csw.request.GetRecords.createRequest(filterFactory.and(equalfilter, likefilter));
-//        System.out.println(request);
 
         // read expected result and compare
         String expected = IOHelper.readString(getClass().getResourceAsStream("GetRecords-multi.xml"));
