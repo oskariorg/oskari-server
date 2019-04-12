@@ -1,6 +1,7 @@
 package fi.nls.oskari.map.analysis.service;
 
 import fi.nls.oskari.db.DatasourceHelper;
+import fi.nls.oskari.domain.map.UserDataStyle;
 import fi.nls.oskari.domain.map.analysis.Analysis;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
@@ -49,6 +50,7 @@ public class AnalysisDbServiceMybatisImpl implements AnalysisDbService {
 
         final Configuration configuration = new Configuration(environment);
         configuration.getTypeAliasRegistry().registerAlias(Analysis.class);
+        configuration.getTypeAliasRegistry().registerAlias(UserDataStyle.class);
         configuration.setLazyLoadingEnabled(true);
         configuration.addMapper(AnalysisMapper.class);
 
