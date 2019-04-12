@@ -16,12 +16,15 @@ import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.feature.DefaultFeatureCollection;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
+import org.opengis.geometry.MismatchedDimensionException;
+import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.opengis.referencing.operation.TransformException;
 import org.oskari.service.wfs3.geojson.WFS3FeatureCollectionIterator;
 
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.service.ServiceException;
+import fi.nls.oskari.service.ServiceRuntimeException;
 import fi.nls.oskari.util.IOHelper;
 
 /**
@@ -49,66 +52,58 @@ public class OskariWFS3Client {
 
     private OskariWFS3Client() {}
 
-    public static SimpleFeatureCollection tryGetFeatures(String endPoint, String user, String pass,
-            String collectionId, ReferencedEnvelope bbox, CoordinateReferenceSystem crs, Integer limit) {
-        try {
-            return getFeatures(endPoint, user, pass, collectionId, bbox, crs, limit);
-        } catch (Exception e) {
-            LOG.warn(e, "Failed to get features");
-            return null;
-        }
-    }
-
     public static SimpleFeatureCollection getFeatures(String endPoint,
             String user, String pass,
             String collectionId, ReferencedEnvelope bbox,
-            CoordinateReferenceSystem crs, Integer limit) throws ServiceException, IOException {
+            CoordinateReferenceSystem crs, Integer limit) throws ServiceRuntimeException {
         String path = getItemsPath(endPoint, collectionId);
         Map<String, String> query = getQueryParams(bbox, limit);
         Map<String, String> headers = new HashMap<>();
         headers.put("Accept", CONTENT_TYPE_GEOJSON);
 
         DefaultFeatureCollection features = new DefaultFeatureCollection();
-
-        HttpURLConnection conn = IOHelper.getConnection(path, user, pass, query, headers);
-        conn = IOHelper.followRedirect(conn, user, pass, query, headers, MAX_REDIRECTS);
-        validateResponse(conn, CONTENT_TYPE_GEOJSON);
-        String next = readFeaturesTo(conn, features);
-
-        // Check if there's a link with rel="next"
-        // => While the next link exists there's a next page to be read
-        while (next != null) {
-            // Blindly follow the next link, don't use the initial queryParameters
-            conn = IOHelper.getConnection(next, user, pass, null, headers);
-            conn = IOHelper.followRedirect(conn, user, pass, null, headers, MAX_REDIRECTS);
+        try {
+            HttpURLConnection conn = IOHelper.getConnection(path, user, pass, query, headers);
+            conn = IOHelper.followRedirect(conn, user, pass, query, headers, MAX_REDIRECTS);
             validateResponse(conn, CONTENT_TYPE_GEOJSON);
-            next = readFeaturesTo(conn, features);
-        }
+            String next = readFeaturesTo(conn, features);
 
-        // Features are in CRS84
-        // Check if we need to transform them to the requested CRS
-        if (CRS.equalsIgnoreMetadata(getCRS84(), crs)) {
-            return features;
+            // Check if there's a link with rel="next"
+            // => While the next link exists there's a next page to be read
+            while (next != null) {
+                // Blindly follow the next link, don't use the initial queryParameters
+                conn = IOHelper.getConnection(next, user, pass, null, headers);
+                conn = IOHelper.followRedirect(conn, user, pass, null, headers, MAX_REDIRECTS);
+                validateResponse(conn, CONTENT_TYPE_GEOJSON);
+                next = readFeaturesTo(conn, features);
+            }
+        } catch (IOException e) {
+            throw new ServiceRuntimeException("IOException occured", e);
         }
 
         try {
+            // Features are in CRS84
+            // Check if we need to transform them to the requested CRS
+            if (CRS.equalsIgnoreMetadata(getCRS84(), crs)) {
+                return features;
+            }
             CoordinateTransformer coordTransformer = new CoordinateTransformer(getCRS84(), crs);
             return coordTransformer.transform(features);
-        } catch (Exception e) {
-            throw new ServiceException("Failed to transform features");
+        } catch (FactoryException | MismatchedDimensionException | TransformException e) {
+            throw new ServiceRuntimeException("Failed to transform features");
         }
     }
 
     private static void validateResponse(HttpURLConnection conn, String expectedContentType)
-            throws ServiceException, IOException {
+            throws ServiceRuntimeException, IOException {
         if (conn.getResponseCode() != 200) {
-            throw new ServiceException("Unexpected status code " + conn.getResponseCode());
+            throw new ServiceRuntimeException("Unexpected status code " + conn.getResponseCode());
         }
 
         if (expectedContentType != null) {
             String contentType = conn.getContentType();
             if (contentType != null && !expectedContentType.equals(contentType)) {
-                throw new ServiceException("Unexpected content type " + contentType);
+                throw new ServiceRuntimeException("Unexpected content type " + contentType);
             }
         }
     }
@@ -142,7 +137,7 @@ public class OskariWFS3Client {
     }
 
     protected static Map<String, String> getQueryParams(ReferencedEnvelope bbox, Integer limit)
-            throws ServiceException {
+            throws ServiceRuntimeException {
         // Linked not needed, but look better when logging the requests
         Map<String, String> parameters = new LinkedHashMap<>();
         if (bbox != null) {
@@ -153,7 +148,7 @@ public class OskariWFS3Client {
                 try {
                     bbox = bbox.transform(getCRS84(), true, 5);
                 } catch (Exception e) {
-                    throw new ServiceException("Failed to transform bbox to CRS84");
+                    throw new ServiceRuntimeException("Failed to transform bbox to CRS84");
                 }
             }
             String bboxStr = String.format(Locale.US, "%f,%f,%f,%f",

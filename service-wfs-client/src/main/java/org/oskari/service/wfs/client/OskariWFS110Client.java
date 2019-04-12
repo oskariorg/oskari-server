@@ -24,6 +24,7 @@ import org.oskari.service.wfs3.geojson.WFS3FeatureCollectionIterator;
 
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.service.ServiceRuntimeException;
 import fi.nls.oskari.util.IOHelper;
 
 /**
@@ -37,15 +38,10 @@ public class OskariWFS110Client {
 
     private OskariWFS110Client() {}
 
-    public static SimpleFeatureCollection tryGetFeatures(String endPoint, String user, String pass,
-            String typeName, ReferencedEnvelope bbox, CoordinateReferenceSystem crs, Integer maxFeatures) {
-        return tryGetFeatures(endPoint, user, pass, typeName, bbox, crs, maxFeatures, null);
-    }
-
     /**
      * @return SimpleFeatureCollection containing the parsed Features, or null if all fails
      */
-    public static SimpleFeatureCollection tryGetFeatures(String endPoint, String user, String pass,
+    public static SimpleFeatureCollection getFeatures(String endPoint, String user, String pass,
             String typeName, ReferencedEnvelope bbox, CoordinateReferenceSystem crs, Integer maxFeatures, Filter filter) {
         // First try GeoJSON
         try {
@@ -61,7 +57,7 @@ public class OskariWFS110Client {
             LOG.warn(e, "Failed to read WFS response as GML");
         }
 
-        return null;
+        throw new ServiceRuntimeException("Unable to get features");
     }
 
     public static SimpleFeatureCollection getFeaturesGeoJSON(String endPoint, String user, String pass,

@@ -11,6 +11,7 @@ import fi.nls.oskari.util.ResponseHelper;
 import fi.nls.oskari.wfs.WFSLayerConfigurationService;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.oskari.service.user.UserLayerService;
 import org.oskari.service.util.ServiceFactory;
 
 import java.util.*;
@@ -29,8 +30,8 @@ public class GetLocalizedPropertyNamesHandler extends AbstractWFSFeaturesHandler
     @Override
     public void handleAction(ActionParameters params) throws ActionException {
         final String layerId = params.getRequiredParam(ActionConstants.PARAM_ID);
-
-        OskariLayer layer = findLayer(layerId, params.getUser());
+        Optional<UserLayerService> contentProcessor = getUserContentProsessor(layerId);
+        OskariLayer layer = findLayer(layerId, params.getUser(), contentProcessor);
         WFSLayerConfiguration layerConf = wfsLayerService.findConfiguration(layer.getId());
 
         JSONObject response = new JSONObject();
