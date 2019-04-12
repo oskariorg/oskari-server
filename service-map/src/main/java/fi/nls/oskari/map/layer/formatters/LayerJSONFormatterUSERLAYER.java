@@ -25,35 +25,36 @@ public class LayerJSONFormatterUSERLAYER extends LayerJSONFormatter {
     private static Logger log = LogFactory.getLogger(LayerJSONFormatterUSERLAYER.class);
 
     /**
-     *
      * @param layer
      * @param lang
      * @param isSecure
-     * @param ulayer     data in user_layer table
+     * @param ulayer   data in user_layer table
      * @return
      */
     public JSONObject getJSON(OskariLayer layer,
-                                     final String lang,
-                                     final boolean isSecure,
-                                     final String crs,
-                                     UserLayer ulayer) {
+                              final String lang,
+                              final boolean isSecure,
+                              final String crs,
+                              UserLayer ulayer) {
         // set geometry before parsing layerJson
         layer.setGeometry(ulayer.getWkt());
         final JSONObject layerJson = getBaseJSON(layer, lang, isSecure, crs);
         JSONHelper.putValue(layerJson, "isQueryable", true);
-        JSONHelper.putValue(layerJson, "name",ulayer.getLayer_name());
-        JSONHelper.putValue(layerJson, "description",ulayer.getLayer_desc());
-        JSONHelper.putValue(layerJson, "source",ulayer.getLayer_source());
+        JSONHelper.putValue(layerJson, "name", ulayer.getLayer_name());
+        JSONHelper.putValue(layerJson, "description", ulayer.getLayer_desc());
+        JSONHelper.putValue(layerJson, "source", ulayer.getLayer_source());
+        JSONObject options = JSONHelper.getJSONObject(layerJson, "options");
+        JSONHelper.putValue(options, "styles", ulayer.getStyle().getStyleForLayerOptions());
         JSONArray fields = JSONHelper.createJSONArray(ulayer.getFields());
-        try{
+        try {
             JSONHelper.putValue(layerJson, "fields", getFieldsNames(fields));
-        }catch (IllegalArgumentException e){
+        } catch (IllegalArgumentException e) {
             JSONHelper.putValue(layerJson, "fields", new JSONArray());
             log.warn("Couldn't put fields array to layerJson", e);
         }
         try {
             JSONHelper.putValue(layerJson, "fieldLocales", getLocalizedFields(lang, fields));
-        }catch (IllegalArgumentException e){
+        } catch (IllegalArgumentException e) {
             // do nothing
         }
         // user layer rendering url - override DB url if property is defined

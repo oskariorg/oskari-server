@@ -7,7 +7,7 @@ import org.json.JSONObject;
 import fi.mml.map.mapwindow.util.OskariLayerWorker;
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.domain.map.userlayer.UserLayer;
-import fi.nls.oskari.domain.map.userlayer.UserLayerStyle;
+import fi.nls.oskari.domain.map.UserDataStyle;
 import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.ResponseHelper;
@@ -40,7 +40,7 @@ public class EditUserLayerHandler extends RestActionHandler {
         userLayer.setLayer_desc(params.getHttpParam(PARAM_DESC, userLayer.getLayer_desc()));
         userLayer.setLayer_source(params.getHttpParam(PARAM_SOURCE, userLayer.getLayer_source()));
 
-        final UserLayerStyle style = new UserLayerStyle();
+        final UserDataStyle style = new UserDataStyle();
         style.setId(userLayer.getId());
         updateStyleProperties(style, params.getHttpParam(PARAM_STYLE), params.getHttpParam("useOskariStyle", false));
 
@@ -54,7 +54,7 @@ public class EditUserLayerHandler extends RestActionHandler {
         ResponseHelper.writeResponse(params, ulayer);
     }
 
-    private void updateStyleProperties(UserLayerStyle style, String styleJSON, boolean useOskariStyle) throws ActionParamsException {
+    private void updateStyleProperties(UserDataStyle style, String styleJSON, boolean useOskariStyle) throws ActionParamsException {
         try {
             JSONObject stylejs = JSONHelper.createJSONObject(styleJSON);
             // This becomes redundant when oskari style json is used only

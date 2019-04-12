@@ -5,7 +5,7 @@ import fi.nls.oskari.annotation.Oskari;
 import fi.nls.oskari.db.DatasourceHelper;
 import fi.nls.oskari.domain.map.userlayer.UserLayer;
 import fi.nls.oskari.domain.map.userlayer.UserLayerData;
-import fi.nls.oskari.domain.map.userlayer.UserLayerStyle;
+import fi.nls.oskari.domain.map.UserDataStyle;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.service.ServiceException;
@@ -45,13 +45,13 @@ public class UserLayerDbServiceMybatisImpl extends UserLayerDbService {
         final Configuration configuration = new Configuration(environment);
         configuration.getTypeAliasRegistry().registerAlias(UserLayer.class);
         configuration.getTypeAliasRegistry().registerAlias(UserLayerData.class);
-        configuration.getTypeAliasRegistry().registerAlias(UserLayerStyle.class);
+        configuration.getTypeAliasRegistry().registerAlias(UserDataStyle.class);
         configuration.setLazyLoadingEnabled(true);
         configuration.addMapper(UserLayerMapper.class);
         return new SqlSessionFactoryBuilder().build(configuration);
     }
 
-    public int insertUserLayer(final UserLayer userLayer, final UserLayerStyle userLayerStyle, final List<UserLayerData> userLayerDataList) throws UserLayerException {
+    public int insertUserLayer(final UserLayer userLayer, final UserDataStyle userLayerStyle, final List<UserLayerData> userLayerDataList) throws UserLayerException {
         try (SqlSession session = factory.openSession(ExecutorType.BATCH)) {
             int count = 0;
             final UserLayerMapper mapper = getMapper(session);
@@ -193,7 +193,7 @@ public class UserLayerDbServiceMybatisImpl extends UserLayerDbService {
         }
     }
 
-    public int updateUserLayerStyleCols(final UserLayerStyle userLayerStyle) {
+    public int updateUserLayerStyleCols(final UserDataStyle userLayerStyle) {
         try (SqlSession session = factory.openSession()) {
             final UserLayerMapper mapper = getMapper(session);
             int result = mapper.updateUserLayerStyleCols(userLayerStyle);
@@ -205,7 +205,7 @@ public class UserLayerDbServiceMybatisImpl extends UserLayerDbService {
         }
     }
 
-    public UserLayerStyle getUserLayerStyleById(long id) {
+    public UserDataStyle getUserLayerStyleById(long id) {
         try (SqlSession session = factory.openSession()) {
             return getMapper(session).findUserLayerStyle(id);
         } catch (Exception e) {
