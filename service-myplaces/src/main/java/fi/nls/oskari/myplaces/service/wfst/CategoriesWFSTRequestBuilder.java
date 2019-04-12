@@ -7,6 +7,7 @@ import java.util.List;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
+import fi.nls.oskari.domain.map.UserDataStyle;
 import org.oskari.wfst.WFSTRequestBuilder;
 
 import fi.nls.oskari.domain.map.MyPlaceCategory;
@@ -120,6 +121,7 @@ public class CategoriesWFSTRequestBuilder extends WFSTRequestBuilder {
 
     private static void insertCategory(XMLStreamWriter xsw,
             MyPlaceCategory category, String handle) throws XMLStreamException {
+        UserDataStyle style = category.getStyle();
         xsw.writeStartElement(WFS, "Insert");
         xsw.writeAttribute("typeName", TYPENAME_CATEGORIES);
         if (handle != null && !handle.isEmpty()) {
@@ -130,22 +132,23 @@ public class CategoriesWFSTRequestBuilder extends WFSTRequestBuilder {
 
         writeTextElement(xsw, OSKARI, "default", Boolean.toString(category.isDefault()));
         writeTextElement(xsw, OSKARI, "category_name", category.getCategory_name());
-        writeTextElement(xsw, OSKARI, "stroke_width", category.getStroke_width());
-        writeTextElement(xsw, OSKARI, "stroke_color", category.getStroke_color());
-        writeTextElement(xsw, OSKARI, "fill_color", category.getFill_color());
         writeTextElement(xsw, OSKARI, "uuid", category.getUuid());
-        writeTextElement(xsw, OSKARI, "dot_color", category.getDot_color());
-        writeTextElement(xsw, OSKARI, "dot_size", category.getDot_size());
-        writeTextElement(xsw, OSKARI, "border_width", category.getBorder_width());
-        writeTextElement(xsw, OSKARI, "border_color", category.getBorder_color());
         writeTextElement(xsw, OSKARI, "publisher_name", category.getPublisher_name());
-        writeTextElement(xsw, OSKARI, "dot_shape", category.getDot_shape());
-        writeTextElement(xsw, OSKARI, "stroke_linejoin", category.getStroke_linejoin());
-        writeTextElement(xsw, OSKARI, "fill_pattern", category.getFill_pattern());
-        writeTextElement(xsw, OSKARI, "stroke_linecap", category.getStroke_linecap());
-        writeTextElement(xsw, OSKARI, "stroke_dasharray", category.getStroke_dasharray());
-        writeTextElement(xsw, OSKARI, "border_linejoin", category.getBorder_linejoin());
-        writeTextElement(xsw, OSKARI, "border_dasharray", category.getBorder_dasharray());
+        // STYLE
+        writeTextElement(xsw, OSKARI, "stroke_width", style.getStroke_width());
+        writeTextElement(xsw, OSKARI, "stroke_color", style.getStroke_color());
+        writeTextElement(xsw, OSKARI, "fill_color", style.getFill_color());
+        writeTextElement(xsw, OSKARI, "dot_color", style.getDot_color());
+        writeTextElement(xsw, OSKARI, "dot_size", style.getDot_size());
+        writeTextElement(xsw, OSKARI, "border_width", style.getBorder_width());
+        writeTextElement(xsw, OSKARI, "border_color", style.getBorder_color());
+        writeTextElement(xsw, OSKARI, "dot_shape", style.getDot_shape());
+        writeTextElement(xsw, OSKARI, "stroke_linejoin", style.getStroke_linejoin());
+        writeTextElement(xsw, OSKARI, "fill_pattern", style.getFill_pattern());
+        writeTextElement(xsw, OSKARI, "stroke_linecap", style.getStroke_linecap());
+        writeTextElement(xsw, OSKARI, "stroke_dasharray", style.getStroke_dasharray());
+        writeTextElement(xsw, OSKARI, "border_linejoin", style.getBorder_linejoin());
+        writeTextElement(xsw, OSKARI, "border_dasharray", style.getBorder_dasharray());
 
         xsw.writeEndElement(); // Close <feature:categories>
         xsw.writeEndElement(); // Close <wfs:Insert>
@@ -153,27 +156,29 @@ public class CategoriesWFSTRequestBuilder extends WFSTRequestBuilder {
 
     private static void updateCategory(XMLStreamWriter xsw, MyPlaceCategory category)
             throws XMLStreamException {
+        UserDataStyle style = category.getStyle();
         xsw.writeStartElement(WFS, "Update");
         xsw.writeAttribute("typeName", TYPENAME_CATEGORIES);
 
         writeProperty(xsw, "default", Boolean.toString(category.isDefault()));
         writeProperty(xsw, "category_name", category.getCategory_name());
-        writeProperty(xsw, "stroke_width", category.getStroke_width());
-        writeProperty(xsw, "stroke_color", category.getStroke_color());
-        writeProperty(xsw, "fill_color", category.getFill_color());
-        writeProperty(xsw, "uuid", category.getUuid());
-        writeProperty(xsw, "dot_color", category.getDot_color());
-        writeProperty(xsw, "dot_size", category.getDot_size());
-        writeProperty(xsw, "border_width", category.getBorder_width());
-        writeProperty(xsw, "border_color", category.getBorder_color());
         writeProperty(xsw, "publisher_name", category.getPublisher_name());
-        writeProperty(xsw, "dot_shape", category.getDot_shape());
-        writeProperty(xsw, "stroke_linejoin", category.getStroke_linejoin());
-        writeProperty(xsw, "fill_pattern", category.getFill_pattern());
-        writeProperty(xsw, "stroke_linecap", category.getStroke_linecap());
-        writeProperty(xsw, "stroke_dasharray", category.getStroke_dasharray());
-        writeProperty(xsw, "border_linejoin", category.getBorder_linejoin());
-        writeProperty(xsw, "border_dasharray", category.getBorder_dasharray());
+        writeProperty(xsw, "uuid", category.getUuid());
+        // STYLE
+        writeProperty(xsw, "stroke_width", style.getStroke_width());
+        writeProperty(xsw, "stroke_color", style.getStroke_color());
+        writeProperty(xsw, "fill_color", style.getFill_color());
+        writeProperty(xsw, "dot_color", style.getDot_color());
+        writeProperty(xsw, "dot_size", style.getDot_size());
+        writeProperty(xsw, "border_width", style.getBorder_width());
+        writeProperty(xsw, "border_color", style.getBorder_color());
+        writeProperty(xsw, "dot_shape", style.getDot_shape());
+        writeProperty(xsw, "stroke_linejoin", style.getStroke_linejoin());
+        writeProperty(xsw, "fill_pattern", style.getFill_pattern());
+        writeProperty(xsw, "stroke_linecap", style.getStroke_linecap());
+        writeProperty(xsw, "stroke_dasharray", style.getStroke_dasharray());
+        writeProperty(xsw, "border_linejoin", style.getBorder_linejoin());
+        writeProperty(xsw, "border_dasharray", style.getBorder_dasharray());
 
         writeFeatureIdFilter(xsw, prefixId(category.getId()));
 

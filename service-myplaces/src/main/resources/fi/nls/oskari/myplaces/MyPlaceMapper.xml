@@ -6,17 +6,11 @@
 <mapper namespace="fi.nls.oskari.myplaces.MyPlaceMapper">
 
     <resultMap id="CategoryResult" type="MyPlaceCategory">
-	    <result property="id" column="id" /> 
-	    <result property="category_name" column="category_name" />
-        <result property="stroke_width" column="stroke_width" />
-        <result property="stroke_color" column="stroke_color" />
-        <result property="fill_color" column="fill_color" />
+	    <result property="id" column="id" />
         <result property="uuid" column="uuid" />
-        <result property="dot_color" column="dot_color" />
-        <result property="dot_size" column="dot_size" />
-        <result property="border_width" column="border_width" />
-        <result property="border_color" column="border_color" />
         <result property="publisher_name" column="publisher_name" />
+        <result property="category_name" column="category_name" />
+        <association property="style" column = "id" select = "findCategoryStyle" fetchType="eager"/>
     </resultMap>
 
     <resultMap id="PlaceResult" type="MyPlace">
@@ -51,14 +45,7 @@
         select 
             id, 
             category_name,
-            stroke_width,
-            stroke_color,
-            fill_color,
             uuid,
-            dot_color,
-            dot_size,
-            border_width,
-            border_color,
             publisher_name
 	    from 
 	        categories 
@@ -71,14 +58,7 @@
         select 
             id, 
             category_name,
-            stroke_width,
-            stroke_color,
-            fill_color,
             uuid,
-            dot_color,
-            dot_size,
-            border_width,
-            border_color,
             publisher_name
         from 
             categories 
@@ -93,14 +73,7 @@
         select 
             id, 
             category_name,
-            stroke_width,
-            stroke_color,
-            fill_color,
             uuid,
-            dot_color,
-            dot_size,
-            border_width,
-            border_color,
             publisher_name
         from 
             categories
@@ -146,5 +119,27 @@
                     my_places.category_id = categories.id and
                     categories.publisher_name is not null
           ]]>       
+    </select>
+    <select id="findCategoryStyle" resultType="UserDataStyle" useCache="false">
+        SELECT
+            id,
+            stroke_width,
+            stroke_color,
+            fill_color,
+            dot_color,
+            dot_size,
+            border_width,
+            border_color,
+            dot_shape,
+            stroke_linejoin,
+            fill_pattern,
+            stroke_linecap,
+            stroke_dasharray,
+            border_linejoin,
+            border_dasharray
+        FROM
+            categories
+        WHERE
+            id = #{id}
     </select>
 </mapper>
