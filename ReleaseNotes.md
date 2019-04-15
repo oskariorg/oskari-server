@@ -1,6 +1,15 @@
 # Release Notes
 
+## 1.51.1
+
+For a full list of changes see: https://github.com/oskariorg/oskari-server/milestone/17?closed=1
+
+- Fixes for my places and userlayer line/border styles
+- Fix metadata search/CSW integration
+
 ## 1.51.0
+
+For a full list of changes see: https://github.com/oskariorg/oskari-server/milestone/15?closed=1
 
 - Changed logging implementation to log4j version 2.x. See MigrationGuide.md for configuration changes.
 - Statistical data sources, region sets and indicators can now fallback to unlocalized name instead of assuming each language having a localized value.
