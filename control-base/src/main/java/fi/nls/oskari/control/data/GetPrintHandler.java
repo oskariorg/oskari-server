@@ -14,6 +14,7 @@ import org.apache.pdfbox.pdmodel.PDDocument;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.opengis.referencing.FactoryException;
 import org.oskari.print.PrintService;
 import org.oskari.print.request.PrintFormat;
 import org.oskari.print.request.PrintLayer;
@@ -122,7 +123,11 @@ public class GetPrintHandler extends AbstractWFSFeaturesHandler {
         PrintRequest request = new PrintRequest();
 
         request.setUser(params.getUser());
-        request.setSrsName(params.getRequiredParam(PARM_SRSNAME));
+        try {
+            request.setSrsName(params.getRequiredParam(PARM_SRSNAME));
+        } catch (FactoryException e) {
+            throw new ActionParamsException("Invalid value for param: " + PARM_SRSNAME);
+        }
         request.setResolution(params.getRequiredParamDouble(PARM_RESOLUTION));
         request.setTitle(params.getHttpParam(PARM_TITLE));
         request.setShowLogo(params.getHttpParam(PARM_LOGO, false));
@@ -143,7 +148,7 @@ public class GetPrintHandler extends AbstractWFSFeaturesHandler {
 
         request.setLayers(layers);
 
-        // TODO: REMOVE ME
+        // TODO: REMOVE ME?
         setTiles(layers, params.getHttpParam(PARM_TILES));
 
         return request;

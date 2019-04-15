@@ -9,6 +9,7 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Future;
 import org.oskari.print.loader.AsyncImageLoader;
 import org.oskari.print.request.PrintLayer;
@@ -29,7 +30,7 @@ public class PNG {
 
         final List<PrintLayer> layers = request.getLayers();
 
-        List<Future<BufferedImage>> images = AsyncImageLoader.initLayers(request, tmsCache);
+        Map<Integer, Future<BufferedImage>> images = AsyncImageLoader.initLayers(request, tmsCache);
 
         BufferedImage canvas = new BufferedImage(width, height,
                 BufferedImage.TYPE_INT_ARGB);
@@ -38,7 +39,10 @@ public class PNG {
         try {
             for (int i = 0; i < layers.size(); i++) {
                 PrintLayer layer = layers.get(i);
-                Future<BufferedImage> image = images.get(i);
+                Future<BufferedImage> image = images.get(layer.getZIndex());
+                if (image == null) {
+                    continue;
+                }
                 BufferedImage bi = image.get();
                 if (bi == null) {
                     continue;

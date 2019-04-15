@@ -12,20 +12,27 @@ import org.apache.pdfbox.pdmodel.PDDocument;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Mockito;
+import org.opengis.referencing.FactoryException;
+import org.opengis.referencing.NoSuchAuthorityCodeException;
 import org.oskari.print.request.PrintFormat;
 import org.oskari.print.request.PrintLayer;
 import org.oskari.print.request.PrintRequest;
+import org.oskari.service.wfs.client.OskariFeatureClient;
+import org.oskari.service.wfs.client.OskariWFSClient;
 
+import fi.nls.oskari.domain.User;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.service.capabilities.CapabilitiesCacheService;
 import fi.nls.oskari.service.capabilities.OskariLayerCapabilities;
+import fi.nls.oskari.util.DuplicateException;
+import fi.nls.oskari.util.PropertyUtil;
 
 public class PrintServiceTest {
 
     @Test
     @Ignore("Depends on karttamoottori.maanmittauslaitos.fi, doesn't test anything")
-    public void testPNG() throws ServiceException, IOException {
+    public void testPNG() throws ServiceException, IOException, NoSuchAuthorityCodeException, FactoryException {
         PrintRequest request = new PrintRequest();
         request.setFormat(PrintFormat.PNG);
 
@@ -81,7 +88,7 @@ public class PrintServiceTest {
 
     @Test
     @Ignore("Depends on karttamoottori.maanmittauslaitos.fi, doesn't test anything")
-    public void testPDF() throws ServiceException, IOException {
+    public void testPDF() throws ServiceException, IOException, NoSuchAuthorityCodeException, FactoryException {
         PrintRequest request = new PrintRequest();
         request.setFormat(PrintFormat.PDF);
 
@@ -134,6 +141,67 @@ public class PrintServiceTest {
         Mockito.when(mock.getCapabilities(bg.getUrl(), bg.getType(), bg.getVersion(), bg.getUsername(), bg.getPassword())).thenReturn(answerBg);
         Mockito.when(mock.getCapabilities(fg.getUrl(), fg.getType(), fg.getVersion(), fg.getUsername(), fg.getPassword())).thenReturn(answerFg);
 
+        PrintService service = new PrintService(mock);
+        PDDocument doc = new PDDocument();
+        service.getPDF(request, doc);
+        File file = File.createTempFile("print-test", ".pdf");
+        doc.save(file);
+        doc.close();
+        Desktop.getDesktop().open(file);
+    }
+    
+    @Test
+    public void testPDFVector() throws ServiceException, IOException, NoSuchAuthorityCodeException, FactoryException, DuplicateException {
+        PropertyUtil.addProperty("oskari.native.srs", "EPSG:3067", true);
+
+        PrintRequest request = new PrintRequest();
+        request.setFormat(PrintFormat.PDF);
+
+        request.setFeatureClient(new OskariFeatureClient(new OskariWFSClient()));
+        request.setUser(new User());
+        
+        request.setEast(500000);
+        request.setNorth(6750000);
+        request.setSrsName("EPSG:3067");
+
+        request.setTitle("Hello world!");
+
+        request.setWidth(PDF.mmToPx(210 - 20));
+        request.setHeight(PDF.mmToPx(297 - 30));
+        request.setResolution(2);
+
+        request.setShowLogo(true);
+        request.setShowScale(true);
+
+        OskariLayer taustakartta = new OskariLayer();
+        taustakartta.setId(1);
+        taustakartta.setName("taustakartta");
+        taustakartta.setType(OskariLayer.TYPE_WMTS);
+        taustakartta.setVersion("1.0.0");
+        taustakartta.setUrl("https://karttamoottori.maanmittauslaitos.fi/maasto/wmts");
+        taustakartta.setStyle("default");
+
+        PrintLayer bg = new PrintLayer(0);
+        bg.setOskariLayer(taustakartta);
+        bg.setOpacity(100);
+        
+        OskariLayer tieviiva = new OskariLayer();
+        tieviiva.setId(2);
+        tieviiva.setName("tieviiva");
+        tieviiva.setType(OskariLayer.TYPE_WFS);
+        tieviiva.setVersion("3.0.0");
+        tieviiva.setUrl("http://visukysely01.nls.fi:8080/mtkgml");
+
+        PrintLayer fg = new PrintLayer(1);
+        fg.setOskariLayer(tieviiva);
+        fg.setOpacity(100);
+
+        request.setLayers(Arrays.asList(fg));
+
+        // String dataBg = CapabilitiesCacheService.getFromService(bg.getUrl(), bg.getType(), bg.getUsername(), bg.getPassword(), bg.getVersion());
+        // OskariLayerCapabilities answerBg = new OskariLayerCapabilities(1L, bg.getUrl(), bg.getType(), bg.getVersion(), dataBg, null, null);
+        CapabilitiesCacheService mock = Mockito.mock(CapabilitiesCacheService.class);
+        // Mockito.when(mock.getCapabilities(bg.getUrl(), bg.getType(), bg.getVersion(), bg.getUsername(), bg.getPassword())).thenReturn(answerBg);
         PrintService service = new PrintService(mock);
         PDDocument doc = new PDDocument();
         service.getPDF(request, doc);

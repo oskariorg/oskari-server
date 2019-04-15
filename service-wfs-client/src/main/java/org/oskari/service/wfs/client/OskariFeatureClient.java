@@ -15,7 +15,6 @@ import org.oskari.service.wfs3.CoordinateTransformer;
 import com.vividsolutions.jts.geom.Envelope;
 
 import fi.nls.oskari.domain.map.OskariLayer;
-import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.service.ServiceRuntimeException;
 import fi.nls.oskari.util.PropertyUtil;
 
@@ -26,27 +25,28 @@ public class OskariFeatureClient {
     protected static final String ERR_NATIVE_SRS_DECODE_FAIL = "Failed to decode Native CRS";
 
     private OskariWFSClient wfsClient;
-    private CoordinateReferenceSystem nativeCRS;
+    private CoordinateReferenceSystem _nativeCRS;
 
     public OskariFeatureClient(OskariWFSClient wfsClient) {
         this.wfsClient = Objects.requireNonNull(wfsClient);
     }
 
-    protected CoordinateReferenceSystem getNativeCRS() {
-        if (nativeCRS == null) {
+    private CoordinateReferenceSystem getNativeCRS() {
+        if (_nativeCRS == null) {
             try {
                 String nativeSrs = PropertyUtil.get(PROPERTY_NATIVE_SRS, "EPSG:4326");
-                nativeCRS = CRS.decode(nativeSrs, true);
+                _nativeCRS = CRS.decode(nativeSrs, true);
             } catch (Exception e) {
                 throw new ServiceRuntimeException(ERR_NATIVE_SRS_DECODE_FAIL, e);
             }
         }
-        return nativeCRS;
+        return _nativeCRS;
     }
 
-    public SimpleFeatureCollection getFeatures(String id, String uuid, OskariLayer layer, ReferencedEnvelope bbox,
-            CoordinateReferenceSystem nativeCRS, CoordinateReferenceSystem targetCRS,
-            Optional<UserLayerService> processor) throws ServiceException {
+    public SimpleFeatureCollection getFeatures(String id, String uuid, OskariLayer layer,
+            ReferencedEnvelope bbox, CoordinateReferenceSystem targetCRS,
+            Optional<UserLayerService> processor) throws ServiceRuntimeException {
+        CoordinateReferenceSystem nativeCRS = getNativeCRS();
         boolean needsTransform = !CRS.equalsIgnoreMetadata(nativeCRS, targetCRS);
 
         // Request features in nativeCRS (of the installation)
@@ -56,11 +56,11 @@ public class OskariFeatureClient {
             try {
                 requestBbox = bbox.transform(nativeCRS, true);
             } catch (Exception e) {
-                throw new ServiceException(ERR_REPOJECTION_FAIL, e);
+                throw new ServiceRuntimeException(ERR_REPOJECTION_FAIL, e);
             }
         }
 
-        SimpleFeatureCollection features = getFeatures(id, uuid, layer, requestBbox, nativeCRS, processor);
+        SimpleFeatureCollection features = getFeaturesNoTransform(id, uuid, layer, requestBbox, nativeCRS, processor);
         if (!needsTransform) {
             return features;
         }
@@ -70,11 +70,11 @@ public class OskariFeatureClient {
             CoordinateTransformer transformer = new CoordinateTransformer(nativeCRS, targetCRS);
             return transformer.transform(features);
         } catch (Exception e) {
-            throw new ServiceException(ERR_REPOJECTION_FAIL, e);
+            throw new ServiceRuntimeException(ERR_REPOJECTION_FAIL, e);
         }
     }
 
-    public SimpleFeatureCollection getFeatures(String id, String uuid, OskariLayer layer,
+    private SimpleFeatureCollection getFeaturesNoTransform(String id, String uuid, OskariLayer layer,
             ReferencedEnvelope bbox, CoordinateReferenceSystem crs,
             Optional<UserLayerService> processor) throws ServiceRuntimeException {
         String endPoint = layer.getUrl();

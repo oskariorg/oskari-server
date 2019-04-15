@@ -20,6 +20,7 @@ import com.vividsolutions.jts.geom.Envelope;
 
 import fi.nls.oskari.control.ActionParamsException;
 import fi.nls.oskari.domain.map.OskariLayer;
+import fi.nls.oskari.util.PropertyUtil;
 
 public class GetWFSFeaturesHandlerTest {
 
@@ -41,10 +42,10 @@ public class GetWFSFeaturesHandlerTest {
         layer.setUrl("https://geo.stat.fi/geoserver/tilastointialueet/wfs");
         layer.setName("tilastointialueet:kunta1000k");
         CoordinateReferenceSystem webMercator = CRS.decode("EPSG:3857", true);
-        CoordinateReferenceSystem nativeCRS = CRS.decode("EPSG:3067", true);
+        PropertyUtil.addProperty("oskari.native.srs", "EPSG:3067", true);
         Envelope envelope = new Envelope(2775356, 2875356, 8441866, 8541866);
         ReferencedEnvelope bbox = new ReferencedEnvelope(envelope, webMercator);
-        SimpleFeatureCollection sfc = handler.featureClient.getFeatures(id, null, layer, bbox, nativeCRS, webMercator, Optional.empty());
+        SimpleFeatureCollection sfc = handler.featureClient.getFeatures(id, null, layer, bbox, webMercator, Optional.empty());
         CoordinateReferenceSystem actualCRS = sfc.getSchema().getGeometryDescriptor().getCoordinateReferenceSystem();
         assertTrue(CRS.equalsIgnoreMetadata(webMercator, actualCRS));
     }

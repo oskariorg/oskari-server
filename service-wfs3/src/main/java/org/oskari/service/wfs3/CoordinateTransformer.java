@@ -59,6 +59,9 @@ public class CoordinateTransformer {
         try (SimpleFeatureIterator it = sfc.features()) {
             while (it.hasNext()) {
                 SimpleFeature f = it.next();
+                if (f.getAttributeCount() > newSchema.getAttributeCount()) {
+                    System.out.println("WTF");
+                }
                 for (int i = 0; i < f.getAttributeCount(); i++) {
                     b.set(i, f.getAttribute(i));
                 }

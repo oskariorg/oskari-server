@@ -9,6 +9,7 @@ import fi.nls.oskari.domain.map.OskariLayer;
 public class PrintLayer {
 
     private final int zIndex;
+    private String layerId;
     private OskariLayer oskariLayer;
     private String style;
     private int opacity;
@@ -21,6 +22,18 @@ public class PrintLayer {
 
     public int getZIndex() {
         return zIndex;
+    }
+
+    public String getLayerId() {
+        return layerId;
+    }
+
+    public void setLayerId(String layerId) {
+        this.layerId = layerId;
+    }
+
+    public OskariLayer getOskariLayer() {
+        return oskariLayer;
     }
 
     public void setOskariLayer(OskariLayer oskariLayer) {
@@ -80,7 +93,7 @@ public class PrintLayer {
     }
 
     public Optional<UserLayerService> getProcessor() {
-        return processor;
+        return processor == null ? Optional.empty() : processor;
     }
 
     public void setProcessor(Optional<UserLayerService> processor) {

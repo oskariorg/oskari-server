@@ -8,8 +8,12 @@ import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
@@ -26,15 +30,27 @@ import org.apache.pdfbox.pdmodel.graphics.image.LosslessFactory;
 import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
 import org.apache.pdfbox.pdmodel.graphics.optionalcontent.PDOptionalContentGroup;
 import org.apache.pdfbox.pdmodel.graphics.state.PDExtendedGraphicsState;
+import org.apache.pdfbox.util.Matrix;
+import org.geotools.data.simple.SimpleFeatureCollection;
+import org.geotools.data.simple.SimpleFeatureIterator;
 import org.geotools.referencing.CRS;
+import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.oskari.print.loader.AsyncFeatureLoader;
 import org.oskari.print.loader.AsyncImageLoader;
 import org.oskari.print.request.PrintLayer;
 import org.oskari.print.request.PrintRequest;
 import org.oskari.print.util.PDFBoxUtil;
 import org.oskari.print.util.Units;
 import org.oskari.print.wmts.WMTSCapabilitiesCache;
+
+import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.CoordinateSequence;
+import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.LineString;
+import com.vividsolutions.jts.geom.Point;
+import com.vividsolutions.jts.geom.Polygon;
 
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
@@ -140,7 +156,8 @@ public class PDF {
         float mapHeight = pixelsToPoints(mapHeightPx);
 
         // Init requests to run in the background
-        List<Future<BufferedImage>> layerImages = AsyncImageLoader.initLayers(request, wmtsCapsCache);
+        Map<Integer, Future<BufferedImage>> layerImages = AsyncImageLoader.initLayers(request, wmtsCapsCache);
+        Map<Integer, Future<SimpleFeatureCollection>> featureCollections = AsyncFeatureLoader.initLayers(request);
 
         PDPage page = new PDPage(pageSize);
         doc.addPage(page);
@@ -154,7 +171,7 @@ public class PDF {
             drawLogo(doc, stream, request);
             drawScale(stream, request);
             drawDate(stream, request, pageSize);
-            drawLayers(doc, stream, request.getLayers(), layerImages,
+            drawLayers(doc, stream, request, layerImages, featureCollections,
                     x, y, mapWidth, mapHeight);
             drawBorder(stream, x, y, mapWidth, mapHeight);
         }
@@ -351,37 +368,171 @@ public class PDF {
     }
 
     private static void drawLayers(PDDocument doc, PDPageContentStream stream,
-            List<PrintLayer> layers, List<Future<BufferedImage>> images,
+            PrintRequest request,
+            Map<Integer, Future<BufferedImage>> layerImages,
+            Map<Integer, Future<SimpleFeatureCollection>> featureCollections,
             float x, float y, float w, float h) throws IOException {
-        for (int i = 0; i < layers.size(); i++) {
-            PrintLayer layer = layers.get(i);
-            Future<BufferedImage> image = images.get(i);
-            try {
-                BufferedImage bi = image.get();
-                if (bi == null) {
-                    continue;
+        List<PrintLayer> layers = request.getLayers();
+
+        Collections.sort(layers, Comparator.comparing(PrintLayer::getZIndex));
+
+        for (PrintLayer layer : layers) {
+            int zIndex = layer.getZIndex();
+            Future<BufferedImage> futureImage = layerImages.get(zIndex);
+            if (futureImage != null) {
+                drawImageLayer(doc, stream, layer, futureImage, x, y, w, h);
+            } else {
+                Future<SimpleFeatureCollection> futureFc = featureCollections.get(zIndex);
+                if (futureFc != null) {
+                    drawVectorLayer(doc, stream, request, layer, futureFc, x, y, w, h);
                 }
-                PDImageXObject imgObject = LosslessFactory.createFromImage(doc, bi);
+            }
 
-                // Set layer (Optional Content Group)
-                PDOptionalContentGroup ocg = PDFBoxUtil.getOCG(doc, layer.getName());
-                PDFBoxUtil.setOCG(imgObject, ocg);
+        }
+    }
 
-                int opacity = layer.getOpacity();
+    private static void drawImageLayer(PDDocument doc, PDPageContentStream stream,
+            PrintLayer layer, Future<BufferedImage> future,
+            float x, float y, float w, float h) throws IOException {
+        try {
+            BufferedImage bi = future.get();
+            if (bi != null) {
+                drawImageLayer(doc, stream, layer, bi, x, y, w, h);
+            }
+        } catch (InterruptedException | ExecutionException e) {
+            LOG.warn(e);
+            throw new IOException(e.getMessage());
+        }
+    }
 
-                if (opacity < 100) {
-                    stream.saveGraphicsState();
-                    PDExtendedGraphicsState gs = new PDExtendedGraphicsState();
-                    gs.setNonStrokingAlphaConstant(0.01f * opacity);
-                    stream.setGraphicsStateParameters(gs);
-                    stream.drawImage(imgObject, x, y, w, h);
-                    stream.restoreGraphicsState();
-                } else {
-                    stream.drawImage(imgObject, x, y, w, h);
-                }
-            } catch (InterruptedException | ExecutionException e) {
-                LOG.warn(e);
-                throw new IOException(e.getMessage());
+    private static void drawImageLayer(PDDocument doc, PDPageContentStream stream,
+            PrintLayer layer, BufferedImage bi,
+            float x, float y, float w, float h) throws IOException {
+        PDImageXObject imgObject = LosslessFactory.createFromImage(doc, bi);
+
+        // Set layer (Optional Content Group)
+        PDOptionalContentGroup ocg = PDFBoxUtil.getOCG(doc, layer.getName());
+        PDFBoxUtil.setOCG(imgObject, ocg);
+
+        int opacity = layer.getOpacity();
+
+        if (opacity < 100) {
+            stream.saveGraphicsState();
+            PDExtendedGraphicsState gs = new PDExtendedGraphicsState();
+            gs.setNonStrokingAlphaConstant(0.01f * opacity);
+            stream.setGraphicsStateParameters(gs);
+            stream.drawImage(imgObject, x, y, w, h);
+            stream.restoreGraphicsState();
+        } else {
+            stream.drawImage(imgObject, x, y, w, h);
+        }
+    }
+
+    private static void drawVectorLayer(PDDocument doc, PDPageContentStream stream,
+            PrintRequest request, PrintLayer layer,
+            Future<SimpleFeatureCollection> future,
+            float x, float y, float w, float h) throws IOException {
+        try {
+            Matrix matrix = getMatrix(request, x, y, w, h);
+            SimpleFeatureCollection fc = future.get();
+            if (fc != null && !fc.isEmpty()) {
+                drawVectorLayer(stream, matrix, layer, fc);
+            }
+        } catch (InterruptedException | ExecutionException e) {
+            LOG.warn(e);
+            throw new IOException(e.getMessage());
+        }
+    }
+
+    private static Matrix getMatrix(PrintRequest request, float x, float y, float w, float h) {
+        Matrix tm = Matrix.getTranslateInstance(x, y);
+        double[] bbox = request.getBoundingBox();
+        float widthNature = Math.abs((float) (bbox[2] - bbox[0]));
+        float heightNature = Math.abs((float) (bbox[3] - bbox[1]));
+        float sx = w / widthNature;
+        float sy = h / heightNature;
+        tm.scale(sx, sy);
+        tm.translate((float) bbox[0], (float) bbox[1]);
+        return tm;
+    }
+
+    private static void drawVectorLayer(PDPageContentStream stream,
+            Matrix matrix, PrintLayer layer, SimpleFeatureCollection fc) throws IOException {
+        stream.saveGraphicsState();
+        stream.transform(matrix);
+        setStyle(stream, layer);
+        drawFeatures(stream, fc);
+        stream.restoreGraphicsState();
+    }
+
+    private static void setStyle(PDPageContentStream stream, PrintLayer layer) throws IOException {
+        int opacity = layer.getOpacity();
+        if (opacity < 100) {
+            float alpha = 0.01f * opacity;
+            PDExtendedGraphicsState gs = new PDExtendedGraphicsState();
+            gs.setStrokingAlphaConstant(alpha);
+            gs.setNonStrokingAlphaConstant(alpha);
+            stream.setGraphicsStateParameters(gs);
+        }
+    }
+
+    private static void drawFeatures(PDPageContentStream stream, SimpleFeatureCollection fc)
+            throws NoSuchElementException, IOException {
+        try (SimpleFeatureIterator it = fc.features()) {
+            while (it.hasNext()) {
+                drawFeature(stream, it.next());
+            }
+        }
+    }
+
+    private static void drawFeature(PDPageContentStream stream, SimpleFeature f)
+            throws IOException {
+        Geometry g = (Geometry) f.getDefaultGeometry();
+        if (g == null) {
+            return;
+        }
+        if (g instanceof Point) {
+            drawFeature(stream, f, (Point) g);
+        } else if (g instanceof LineString) {
+            drawFeature(stream, f, (LineString) g);
+        } else if (g instanceof Polygon) {
+            drawFeature(stream, f, (Polygon) g);
+        }
+    }
+
+    private static void drawFeature(PDPageContentStream stream, SimpleFeature f, Point g)
+            throws IOException {
+        Coordinate c = g.getCoordinate();
+        stream.addRect((float) c.x - 5f, (float) c.y - 5f, 10, 10);
+        stream.fillAndStroke();
+    }
+
+    private static void drawFeature(PDPageContentStream stream, SimpleFeature f, LineString g) throws IOException {
+        add(stream, g.getCoordinateSequence());
+        stream.stroke();
+    }
+
+    private static void drawFeature(PDPageContentStream stream, SimpleFeature f, Polygon g) throws IOException {
+        LineString exterior = g.getExteriorRing();
+        add(stream, exterior.getCoordinateSequence());
+        stream.closePath();
+
+        final int n = g.getNumInteriorRing();
+        for (int i = 0; i < n; i++) {
+            add(stream, g.getInteriorRingN(i).getCoordinateSequence());
+            stream.closePath();
+        }
+
+        stream.fillAndStroke();
+    }
+
+    private static void add(PDPageContentStream stream, CoordinateSequence csq) throws IOException {
+        final int n = csq.size();
+        for (int i = 0; i < n; i++) {
+            if (i == 0) {
+                stream.moveTo((float) csq.getX(i), (float) csq.getY(i));
+            } else {
+                stream.lineTo((float) csq.getX(i), (float) csq.getY(i));
             }
         }
     }
