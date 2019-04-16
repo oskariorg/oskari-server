@@ -49,7 +49,7 @@ public class UserDataStyle {
         JSONObject featStyle = JSONHelper.createJSONObject("featureStyle", parseUserLayerStyleToOskariJSON());
         return JSONHelper.createJSONObject("default", featStyle);
     }
-
+    // This becomes redundant when oskari style json is used only
     public void populateFromJSON(final JSONObject stylejs) throws JSONException {
         try {
             // {"area":{"fillColor":"FFDC00","lineColor":"CC9900","size":"2"},"line":{"color":"CC9900","size":"2"},"dot":{"color":"CC9900","size":"4"}}
@@ -103,7 +103,7 @@ public class UserDataStyle {
             throw new JSONException(e);
         }
     }
-
+    // This becomes redundant when oskari style json is used only
     public JSONObject parseUserLayerStyle2JSON(){
         JSONObject json = new JSONObject();
         //dot

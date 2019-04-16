@@ -51,10 +51,11 @@ public class UserLayerDbServiceMybatisImpl extends UserLayerDbService {
         return new SqlSessionFactoryBuilder().build(configuration);
     }
 
-    public int insertUserLayer(final UserLayer userLayer, final UserDataStyle userLayerStyle, final List<UserLayerData> userLayerDataList) throws UserLayerException {
+    public int insertUserLayer(final UserLayer userLayer, final List<UserLayerData> userLayerDataList) throws UserLayerException {
         try (SqlSession session = factory.openSession(ExecutorType.BATCH)) {
             int count = 0;
             final UserLayerMapper mapper = getMapper(session);
+            UserDataStyle userLayerStyle = userLayer.getStyle();
             mapper.insertUserLayerStyleRow(userLayerStyle);
             session.flushStatements();
             log.debug("got style id", userLayerStyle.getId());

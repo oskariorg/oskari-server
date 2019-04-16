@@ -119,7 +119,7 @@ public class UserLayerDataService {
         try{
             style.setId(1);  // for default, even if style should be always valued
             if (styleObject != null) {
-                style.populateFromJSON(styleObject);
+                style.populateFromOskariJSON(styleObject);
             }
             return style;
         } catch (JSONException e) {

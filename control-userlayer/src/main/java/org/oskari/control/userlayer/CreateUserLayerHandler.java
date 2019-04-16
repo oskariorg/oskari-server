@@ -391,11 +391,11 @@ public class CreateUserLayerHandler extends RestActionHandler {
     private UserLayer store(SimpleFeatureCollection fc, String uuid, Map<String, String> formParams)
             throws UserLayerException {
             UserLayer userLayer = createUserLayer(fc, uuid, formParams);
-            UserDataStyle userLayerStyle = createUserLayerStyle(formParams);
+            userLayer.setStyle(createUserLayerStyle(formParams));
             List<UserLayerData> userLayerDataList = UserLayerDataService.createUserLayerData(fc, uuid);
             userLayer.setFeatures_count(userLayerDataList.size());
             userLayer.setFeatures_skipped(fc.size() - userLayerDataList.size());
-            userLayerService.insertUserLayer(userLayer, userLayerStyle, userLayerDataList);
+            userLayerService.insertUserLayer(userLayer, userLayerDataList);
             return userLayer;
     }
 
