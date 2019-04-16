@@ -1,4 +1,4 @@
-package fi.nls.oskari.myplaces.handler;
+package fi.nls.oskari.control.myplaces.handler;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;

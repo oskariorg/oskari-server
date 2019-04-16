@@ -1,4 +1,4 @@
-package fi.nls.oskari.control.myplaces;
+package fi.nls.oskari.control.myplaces.handler;
 
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.ActionException;
