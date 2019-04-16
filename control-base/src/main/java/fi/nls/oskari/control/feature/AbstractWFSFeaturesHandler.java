@@ -60,7 +60,7 @@ public abstract class AbstractWFSFeaturesHandler extends ActionHandler {
             throw new ActionParamsException(ERR_LAYER_TYPE_NOT_WFS);
         }
         if (processor.isPresent() && !processor.get().hasPermission(id, user)) {
-            throw new ActionDeniedException("Layer not permitted");
+            throw new ActionDeniedException("User doesn't have permissions for requested layer");
         }
         return layer;
     }
