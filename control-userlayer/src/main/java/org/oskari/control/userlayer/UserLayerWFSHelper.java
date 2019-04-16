@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.Iterator;
 
 import fi.nls.oskari.annotation.Oskari;
+import fi.nls.oskari.domain.User;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.data.simple.SimpleFeatureIterator;
 import org.geotools.factory.CommonFactoryFinder;
@@ -127,6 +128,10 @@ public class UserLayerWFSHelper extends UserLayerService {
         }
 
         return fc;
+    }
+
+    public boolean hasPermission(String id, User user) {
+        return true;
     }
 
     private SimpleFeatureType createType(Name name, JSONObject properties) throws JSONException {

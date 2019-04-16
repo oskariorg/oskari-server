@@ -1,6 +1,7 @@
 package fi.nls.oskari.control.feature;
 
 import fi.nls.oskari.annotation.Oskari;
+import fi.nls.oskari.domain.User;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.util.PropertyUtil;
 import org.geotools.factory.CommonFactoryFinder;
@@ -64,4 +65,9 @@ public class AnalysisWFSHelper extends UserLayerService {
 
         return ff.and(Arrays.asList(userlayerIdEquals, uuidEquals, bboxFilter));
     }
+
+    public boolean hasPermission(String id, User user) {
+        return true;
+    }
+
 }

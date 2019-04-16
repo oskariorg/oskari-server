@@ -92,4 +92,8 @@ public class MyPlacesWFSHelper extends UserLayerService {
         return ff.and(Arrays.asList(categoryIdEquals, uuidEqualsOrPublished, bboxFilter));
     }
 
+    public boolean hasPermission(String id, User user) {
+        return true;
+    }
+
 }
