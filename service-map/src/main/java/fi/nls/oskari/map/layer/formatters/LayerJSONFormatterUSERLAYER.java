@@ -43,8 +43,8 @@ public class LayerJSONFormatterUSERLAYER extends LayerJSONFormatter {
         JSONHelper.putValue(layerJson, "name", ulayer.getLayer_name());
         JSONHelper.putValue(layerJson, "description", ulayer.getLayer_desc());
         JSONHelper.putValue(layerJson, "source", ulayer.getLayer_source());
-        JSONObject options = JSONHelper.getJSONObject(layerJson, "options");
-        JSONHelper.putValue(options, "styles", ulayer.getStyle().getStyleForLayerOptions());
+        JSONHelper.putValue(layerJson, "options",
+                JSONHelper.createJSONObject("styles", ulayer.getStyle().getStyleForLayerOptions()));
         JSONArray fields = JSONHelper.createJSONArray(ulayer.getFields());
         try {
             JSONHelper.putValue(layerJson, "fields", getFieldsNames(fields));
