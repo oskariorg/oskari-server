@@ -59,6 +59,9 @@ public abstract class AbstractWFSFeaturesHandler extends ActionHandler {
         if (!OskariLayer.TYPE_WFS.equals(layer.getType())) {
             throw new ActionParamsException(ERR_LAYER_TYPE_NOT_WFS);
         }
+        if (processor.isPresent() && !processor.get().hasPermission(id, user)) {
+            throw new ActionDeniedException("Layer not permitted");
+        }
         return layer;
     }
     

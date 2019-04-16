@@ -18,4 +18,8 @@ public abstract class UserLayerService extends OskariComponent {
         // do nothing, but allows overriding
         return sfc;
     }
+
+    public boolean hasPermission(String id, User user) {
+        return true;
+    }
 }
