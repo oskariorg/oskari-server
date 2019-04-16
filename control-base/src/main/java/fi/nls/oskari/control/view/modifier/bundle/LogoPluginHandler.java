@@ -4,6 +4,7 @@ import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
+import fi.nls.oskari.view.modifier.ModifierParams;
 import org.json.JSONObject;
 
 import java.util.Map;
@@ -11,7 +12,7 @@ import java.util.Map;
 /**
  * Helper for
  */
-public class LogoPluginHandler {
+public class LogoPluginHandler implements PluginHandler {
 
     private static final Logger LOGGER = LogFactory.getLogger(LogoPluginHandler.class);
     public static final String PLUGIN_NAME = "Oskari.mapframework.bundle.mapmodule.plugin.LogoPlugin";
@@ -20,21 +21,28 @@ public class LogoPluginHandler {
     public static final String KEY_MAP_URL = "mapUrlPrefix";
     public static final String KEY_TERMS_URL = "termsUrl";
 
-    public JSONObject setupLogoPluginConfig(final JSONObject originalPlugin) {
+    @Override
+    public boolean modifyPlugin(final JSONObject plugin,
+                                final ModifierParams params,
+                                final String mapSrs) {
+        return setupLogoPluginConfig(plugin);
+    }
+
+    private boolean setupLogoPluginConfig(final JSONObject originalPlugin) {
         if(originalPlugin == null) {
             LOGGER.debug("Tried to modify LogoPlugin URLS, but plugin didn't exist!");
-            return null;
+            return false;
         }
         if(!PLUGIN_NAME.equals(originalPlugin.optString(KEY_ID))) {
             LOGGER.debug("Tried to modify LogoPlugin URLS, but given JSON isn't LogoPlugin!");
-            return null;
+            return false;
         }
 
         JSONObject config = getConfig(originalPlugin);
         setupMapUrl(config);
         setupTerms(config);
 
-        return originalPlugin;
+        return true;
     }
 
     private JSONObject getConfig(JSONObject original) {

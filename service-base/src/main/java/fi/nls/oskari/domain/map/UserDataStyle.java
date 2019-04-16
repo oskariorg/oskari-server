@@ -165,7 +165,6 @@ public class UserDataStyle {
         JSONHelper.putValue(fill, "area", fillArea);
         JSONHelper.putValue(json, "fill", fill);
 
-
         return json;
     }
     private String dashToUserDataStyle (String dashArray) {

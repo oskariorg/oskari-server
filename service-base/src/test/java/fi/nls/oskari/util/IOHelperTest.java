@@ -72,7 +72,7 @@ public class IOHelperTest {
         params.remove("foo+bar");
 
         params.put("key1", "baz qux");
-        assertEquals("Space characters are replaced by '+' in form encoding", "key1=baz+qux", IOHelper.getParams(params));
+        assertEquals("Space characters are replaced by '%20' in encoding", "key1=baz%20qux", IOHelper.getParams(params));
     }
 
     @Test

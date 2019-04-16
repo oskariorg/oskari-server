@@ -135,7 +135,6 @@ public class ActionControl {
                     throw (ActionException) ex;
                 }
                 else {
-                    ex.printStackTrace();
                     throw new ActionException("Unhandled exception occured", ex);
                 }
             } finally {
