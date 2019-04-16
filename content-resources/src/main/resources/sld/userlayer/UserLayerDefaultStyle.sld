@@ -568,7 +568,7 @@
                                 <ogc:Literal>-1</ogc:Literal>
                             </ogc:PropertyIsEqualTo>
                             <ogc:PropertyIsEqualTo>
-                                <ogc:PropertyName>stroke_dasharray</ogc:PropertyName>
+                                <ogc:PropertyName>border_dasharray</ogc:PropertyName>
                                 <ogc:Literal></ogc:Literal>
                             </ogc:PropertyIsEqualTo>
                             <ogc:Not>
@@ -609,7 +609,7 @@
                                 <ogc:Literal>-1</ogc:Literal>
                             </ogc:PropertyIsEqualTo>
                             <ogc:PropertyIsNotEqualTo>
-                                <ogc:PropertyName>stroke_dasharray</ogc:PropertyName>
+                                <ogc:PropertyName>border_dasharray</ogc:PropertyName>
                                 <ogc:Literal></ogc:Literal>
                             </ogc:PropertyIsNotEqualTo>
                             <ogc:Not>
@@ -651,7 +651,7 @@
                                 <ogc:Literal>0</ogc:Literal>
                             </ogc:PropertyIsEqualTo>
                             <ogc:PropertyIsEqualTo>
-                                <ogc:PropertyName>stroke_dasharray</ogc:PropertyName>
+                                <ogc:PropertyName>border_dasharray</ogc:PropertyName>
                                 <ogc:Literal></ogc:Literal>
                             </ogc:PropertyIsEqualTo>
                             <ogc:Not>
@@ -703,7 +703,7 @@
                                 <ogc:Literal>0</ogc:Literal>
                             </ogc:PropertyIsEqualTo>
                             <ogc:PropertyIsNotEqualTo>
-                                <ogc:PropertyName>stroke_dasharray</ogc:PropertyName>
+                                <ogc:PropertyName>border_dasharray</ogc:PropertyName>
                                 <ogc:Literal></ogc:Literal>
                             </ogc:PropertyIsNotEqualTo>
                             <ogc:Not>
@@ -756,7 +756,7 @@
                                 <ogc:Literal>1</ogc:Literal>
                             </ogc:PropertyIsEqualTo>
                             <ogc:PropertyIsEqualTo>
-                                <ogc:PropertyName>stroke_dasharray</ogc:PropertyName>
+                                <ogc:PropertyName>border_dasharray</ogc:PropertyName>
                                 <ogc:Literal></ogc:Literal>
                             </ogc:PropertyIsEqualTo>
                             <ogc:Not>
@@ -808,7 +808,7 @@
                                 <ogc:Literal>1</ogc:Literal>
                             </ogc:PropertyIsEqualTo>
                             <ogc:PropertyIsNotEqualTo>
-                                <ogc:PropertyName>stroke_dasharray</ogc:PropertyName>
+                                <ogc:PropertyName>border_dasharray</ogc:PropertyName>
                                 <ogc:Literal></ogc:Literal>
                             </ogc:PropertyIsNotEqualTo>
                             <ogc:Not>
@@ -861,7 +861,7 @@
                                 <ogc:Literal>2</ogc:Literal>
                             </ogc:PropertyIsEqualTo>
                             <ogc:PropertyIsEqualTo>
-                                <ogc:PropertyName>stroke_dasharray</ogc:PropertyName>
+                                <ogc:PropertyName>border_dasharray</ogc:PropertyName>
                                 <ogc:Literal></ogc:Literal>
                             </ogc:PropertyIsEqualTo>
                             <ogc:Not>
@@ -913,7 +913,7 @@
                                 <ogc:Literal>2</ogc:Literal>
                             </ogc:PropertyIsEqualTo>
                             <ogc:PropertyIsNotEqualTo>
-                                <ogc:PropertyName>stroke_dasharray</ogc:PropertyName>
+                                <ogc:PropertyName>border_dasharray</ogc:PropertyName>
                                 <ogc:Literal></ogc:Literal>
                             </ogc:PropertyIsNotEqualTo>
                             <ogc:Not>
@@ -966,7 +966,7 @@
                                 <ogc:Literal>3</ogc:Literal>
                             </ogc:PropertyIsEqualTo>
                             <ogc:PropertyIsEqualTo>
-                                <ogc:PropertyName>stroke_dasharray</ogc:PropertyName>
+                                <ogc:PropertyName>border_dasharray</ogc:PropertyName>
                                 <ogc:Literal></ogc:Literal>
                             </ogc:PropertyIsEqualTo>
                             <ogc:Not>
@@ -1018,7 +1018,7 @@
                                 <ogc:Literal>3</ogc:Literal>
                             </ogc:PropertyIsEqualTo>
                             <ogc:PropertyIsNotEqualTo>
-                                <ogc:PropertyName>stroke_dasharray</ogc:PropertyName>
+                                <ogc:PropertyName>border_dasharray</ogc:PropertyName>
                                 <ogc:Literal></ogc:Literal>
                             </ogc:PropertyIsNotEqualTo>
                             <ogc:Not>
