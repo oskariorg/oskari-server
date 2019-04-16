@@ -79,7 +79,7 @@ public class MyPlaceCategoryHelper {
         json.writeFieldName("features");
         json.writeStartArray();
         for (MyPlaceCategory category : categories) {
-            toGeoJSONFeature(json, category);
+            toGeoJSONFeature(json, category, true);
         }
         json.writeEndArray();
         json.writeEndObject();
