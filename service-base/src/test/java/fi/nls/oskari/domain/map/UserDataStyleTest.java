@@ -1,16 +1,16 @@
-package fi.nls.oskari.domain.map.userlayer;
+package fi.nls.oskari.domain.map;
 
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Test;
 
 import fi.nls.oskari.util.JSONHelper;
 
-public class UserLayerStyleTest {
-    
-    private UserLayerStyle getStyle (){
-        UserLayerStyle style = new UserLayerStyle();
+public class UserDataStyleTest {
+    private UserDataStyle getStyle (){
+        UserDataStyle style = new UserDataStyle();
         style.setId(1);
         style.setDot_shape("1");
         style.setDot_color("#010101");
@@ -28,14 +28,13 @@ public class UserLayerStyleTest {
         style.setBorder_width(1);
         style.setFill_color(null); //no fill color
         style.setFill_pattern(-1);
-        
         return style;
     }
     @Test
     public void testJSONparsing(){
-        UserLayerStyle style = getStyle();
+        UserDataStyle style = getStyle();
         JSONObject json = style.parseUserLayerStyle2JSON();
-        UserLayerStyle style2 = new UserLayerStyle();
+        UserDataStyle style2 = new UserDataStyle();
         try {
             style2.populateFromJSON(json);
         } catch (JSONException e) {
@@ -45,14 +44,16 @@ public class UserLayerStyleTest {
     }
     @Test
     public void testOskariJSONParsing() {
-        UserLayerStyle style = getStyle();
+        UserDataStyle style = getStyle();
         JSONObject json = style.parseUserLayerStyleToOskariJSON();
-        UserLayerStyle style2 = new UserLayerStyle();
+        UserDataStyle style2 = new UserDataStyle();
         try {
+            assertEquals("dash", json.getJSONObject("stroke").getString("lineDash"));
             style2.populateFromOskariJSON(json);
         } catch (JSONException e) {
             e.printStackTrace();
         }
+        assertEquals("5 2", style2.getStroke_dasharray());
         assertTrue(JSONHelper.isEqual(json, style2.parseUserLayerStyleToOskariJSON()));
     }
 }

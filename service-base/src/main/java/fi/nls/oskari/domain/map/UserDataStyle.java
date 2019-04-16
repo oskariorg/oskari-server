@@ -1,4 +1,4 @@
-package fi.nls.oskari.domain.map.userlayer;
+package fi.nls.oskari.domain.map;
 
 import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.JSONHelper;
@@ -6,7 +6,7 @@ import fi.nls.oskari.util.JSONHelper;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class UserLayerStyle {
+public class UserDataStyle {
 
     private long id;
     private long stroke_width;
@@ -23,6 +23,32 @@ public class UserLayerStyle {
     private String stroke_dasharray;
     private String border_linejoin;
     private String border_dasharray;
+
+    public void initDefaultStyle () {
+        //point
+        setDot_color("#000000");
+        setDot_size(3);
+        setDot_shape("1");
+        //line
+        setStroke_width(1);
+        setStroke_dasharray("");
+        setStroke_linecap("butt");
+        setStroke_linejoin("mitre");
+        setStroke_color("#3233ff");
+        //area
+        setFill_pattern(-1);
+        setBorder_dasharray("");
+        setBorder_linejoin("mitre");
+        setBorder_width(1);
+        setBorder_color("#000000");
+        setFill_color("#ffde00");
+        setFill_pattern(-1);
+    }
+
+    public JSONObject getStyleForLayerOptions() {
+        JSONObject featStyle = JSONHelper.createJSONObject("featureStyle", parseUserLayerStyleToOskariJSON());
+        return JSONHelper.createJSONObject("default", featStyle);
+    }
 
     public void populateFromJSON(final JSONObject stylejs) throws JSONException {
         try {
@@ -59,7 +85,7 @@ public class UserLayerStyle {
             setStroke_width(style.getJSONObject("stroke").optInt("width"));
             setStroke_linejoin(style.getJSONObject("stroke").getString("lineJoin"));
             setStroke_linecap(style.getJSONObject("stroke").getString("lineCap"));
-            setStroke_dasharray(style.getJSONObject("stroke").getString("lineDash"));
+            setStroke_dasharray(dashToUserDataStyle(style.getJSONObject("stroke").getString("lineDash")));
 
             // null is valid color value for "no fill"
             setFill_color(style.getJSONObject("fill").isNull("color") ? null : style.getJSONObject("fill")
@@ -71,7 +97,7 @@ public class UserLayerStyle {
                     optString("pattern"), -1));
             setBorder_width(style.getJSONObject("stroke").getJSONObject("area").optInt("width"));
             setBorder_linejoin(style.getJSONObject("stroke").getJSONObject("area").optString("lineJoin"));
-            setBorder_dasharray(style.getJSONObject("stroke").getJSONObject("area").optString("lineDash"));
+            setBorder_dasharray(dashToUserDataStyle(style.getJSONObject("stroke").getJSONObject("area").optString("lineDash")));
 
         } catch (Exception e) {
             throw new JSONException(e);
@@ -121,14 +147,14 @@ public class UserLayerStyle {
         JSONObject stroke = new JSONObject();
         JSONHelper.putValue(stroke, "color", getStroke_color());
         JSONHelper.putValue(stroke, "width", getStroke_width());
-        JSONHelper.putValue(stroke, "lineDash", getStroke_dasharray());
+        JSONHelper.putValue(stroke, "lineDash", dashToOskariJSON(getStroke_dasharray()));
         JSONHelper.putValue(stroke, "lineCap", getStroke_linecap());
         JSONHelper.putValue(stroke, "lineJoin", getStroke_linejoin());
         // area
         JSONObject strokeArea = new JSONObject();
         JSONHelper.putValue(strokeArea, "color", getBorder_color());
         JSONHelper.putValue(strokeArea, "width", getBorder_width());
-        JSONHelper.putValue(strokeArea, "lineDash", getBorder_dasharray());
+        JSONHelper.putValue(strokeArea, "lineDash", dashToOskariJSON(getBorder_dasharray()));
         JSONHelper.putValue(strokeArea, "lineJoin", getBorder_linejoin());
         JSONHelper.putValue(stroke, "area", strokeArea);
         JSONHelper.putValue(json, "stroke", stroke);
@@ -141,6 +167,31 @@ public class UserLayerStyle {
 
 
         return json;
+    }
+    private String dashToUserDataStyle (String dashArray) {
+        switch (dashArray) {
+            case "solid":
+                return "";
+            case "dash":
+                return "5 2";
+            case "double":
+                return "D";
+        }
+        return "";
+    }
+    private String dashToOskariJSON (String dashArray) {
+        if (dashArray == null) {
+            return "";
+        }
+        switch (dashArray) {
+            case "":
+                return "solid";
+            case "D":
+                return "double"; // TODO: "solid" ??
+            case "5 2":
+                return "dash";
+        }
+        return "solid";
     }
 
     public long getId() {
