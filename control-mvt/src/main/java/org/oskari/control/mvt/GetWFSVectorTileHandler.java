@@ -20,9 +20,7 @@ import org.oskari.service.mvt.TileCoord;
 import org.oskari.service.mvt.WFSTileGrid;
 import org.oskari.service.user.UserLayerService;
 
-import com.vividsolutions.jts.awt.PointShapeFactory.Point;
 import com.vividsolutions.jts.geom.Envelope;
-import com.vividsolutions.jts.geom.MultiPoint;
 
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.cache.CacheManager;
@@ -54,7 +52,6 @@ public class GetWFSVectorTileHandler extends AbstractWFSFeaturesHandler {
 
     private static final int TILE_EXTENT = 4096;
     private static final int TILE_BUFFER = 256;
-    private static final int TILE_BUFFER_POINT = 2048;
 
     private static final int CACHE_LIMIT = 256;
     private static final long CACHE_EXPIRATION = TimeUnit.MINUTES.toMillis(5);
@@ -222,8 +219,7 @@ public class GetWFSVectorTileHandler extends AbstractWFSFeaturesHandler {
 
         // sfc always has features for z<=8 so we need to clip to smaller tiles based on requested x,y,z
         double[] bbox = grid.getTileExtent(new TileCoord(z, x, y));
-        int buffer = SimpleFeaturesMVTEncoder.isPointFeaturesOnly(sfc) ? TILE_BUFFER_POINT : TILE_BUFFER;
-        byte[] encoded = SimpleFeaturesMVTEncoder.encodeToByteArray(sfc, layer.getName(), bbox, TILE_EXTENT, buffer);
+        byte[] encoded = SimpleFeaturesMVTEncoder.encodeToByteArray(sfc, layer.getName(), bbox, TILE_EXTENT, TILE_BUFFER);
         try {
             return IOHelper.gzip(encoded).toByteArray();
         } catch (IOException e) {
@@ -236,7 +232,12 @@ public class GetWFSVectorTileHandler extends AbstractWFSFeaturesHandler {
             Optional<UserLayerService> processor) throws ServiceRuntimeException {
         double[] box = grid.getTileExtent(tile);
         Envelope envelope = new Envelope(box[0], box[2], box[1], box[3]);
-        ReferencedEnvelope bbox = new ReferencedEnvelope(envelope, crs);
+        Envelope bufferedEnvelope = new Envelope(envelope);
+        double bufferSizePercent = (double) TILE_BUFFER / (double) TILE_EXTENT;
+        double deltaX = bufferSizePercent * envelope.getWidth();
+        double deltaY = bufferSizePercent * envelope.getHeight();
+        bufferedEnvelope.expandBy(deltaX, deltaY);
+        ReferencedEnvelope bbox = new ReferencedEnvelope(bufferedEnvelope, crs);
         return featureClient.getFeatures(id, uuid, layer, bbox, crs, processor);
     }
 
