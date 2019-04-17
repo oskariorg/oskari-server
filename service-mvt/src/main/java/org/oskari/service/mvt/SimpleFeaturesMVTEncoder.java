@@ -8,7 +8,6 @@ import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.data.simple.SimpleFeatureIterator;
 import org.opengis.feature.simple.SimpleFeature;
 
-import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Envelope;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryFactory;
@@ -123,10 +122,19 @@ public class SimpleFeaturesMVTEncoder {
                     continue;
                 }
                 Envelope geomEnvelope = geom.getEnvelopeInternal();
-
-                // Check that tileEnvelope and geomEnvelope are not disjoint
-                if (!tileEnvelope.intersects(geomEnvelope)) {
-                    continue;
+                if (geom instanceof Point || geom instanceof MultiPoint) {
+                    /* Always return Point Features in buffer zone
+                     * Some clients for example OpenLayers want this
+                     * @see https://github.com/openlayers/openlayers/issues/6275
+                     */
+                    if (!clipEnvelope.intersects(geomEnvelope)) {
+                        continue;
+                    }
+                } else {
+                    // Check that tileEnvelope and geomEnvelope are not disjoint
+                    if (!tileEnvelope.intersects(geomEnvelope)) {
+                        continue;
+                    }
                 }
 
                 // Simplify the geometry to reduce number of vertices
@@ -178,9 +186,14 @@ public class SimpleFeaturesMVTEncoder {
 
     private static Geometry within(Geometry geom, Envelope rect, RectangleIntersects rectIntersects) {
         if (geom instanceof Point) {
+            return geom;
+            /* Always return Point Features in buffer zone
+             * Some clients for example OpenLayers want this
+             * @see https://github.com/openlayers/openlayers/issues/6275
             Coordinate c = ((Point) geom).getCoordinate();
             boolean within = c.x >= rect.getMinX() && c.x <= rect.getMaxX() && c.y >= rect.getMinY() && c.y <= rect.getMaxY();
             return within ? geom : null;
+            */
         }
 
         if (geom instanceof LineString) {
@@ -217,6 +230,10 @@ public class SimpleFeaturesMVTEncoder {
         }
 
         if (geom instanceof MultiPoint) {
+            return geom;
+            /* Always return all the Point Features in buffer zone
+             * Some clients for example OpenLayers want this
+             * @see https://github.com/openlayers/openlayers/issues/6275
             MultiPoint multi = (MultiPoint) geom;
             int num = multi.getNumGeometries();
             Point[] subGeomsWithin = new Point[num];
@@ -237,6 +254,7 @@ public class SimpleFeaturesMVTEncoder {
                 return geom;
             }
             return GF.createMultiPoint(Arrays.copyOf(subGeomsWithin, n));
+            */
         }
 
         if (geom instanceof MultiLineString) {
