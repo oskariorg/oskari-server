@@ -32,19 +32,6 @@ public class SimpleFeaturesMVTEncoder {
 
     private static final GeometryFactory GF = new GeometryFactory();
 
-    public static boolean isPointFeaturesOnly(SimpleFeatureCollection fc) {
-        try (SimpleFeatureIterator it = fc.features()) {
-            while (it.hasNext()) {
-                SimpleFeature f = it.next();
-                Class<?> geomClass = f.getDefaultGeometry().getClass();
-                if (geomClass != Point.class && geomClass != MultiPoint.class) {
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
-
     public static byte[] encodeToByteArray(SimpleFeatureCollection sfc,
             String layer, double[] bbox, int extent, int buffer) {
         return encode(sfc, layer, bbox, extent, buffer).toByteArray();
