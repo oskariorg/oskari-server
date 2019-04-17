@@ -222,7 +222,7 @@ public class GetWFSVectorTileHandler extends AbstractWFSFeaturesHandler {
 
         // sfc always has features for z<=8 so we need to clip to smaller tiles based on requested x,y,z
         double[] bbox = grid.getTileExtent(new TileCoord(z, x, y));
-        int buffer = isPointMultipointFeaturesOnly(sfc) ? TILE_BUFFER_POINT : TILE_BUFFER;
+        int buffer = SimpleFeaturesMVTEncoder.isPointFeaturesOnly(sfc) ? TILE_BUFFER_POINT : TILE_BUFFER;
         byte[] encoded = SimpleFeaturesMVTEncoder.encodeToByteArray(sfc, layer.getName(), bbox, TILE_EXTENT, buffer);
         try {
             return IOHelper.gzip(encoded).toByteArray();
@@ -277,19 +277,6 @@ public class GetWFSVectorTileHandler extends AbstractWFSFeaturesHandler {
 
             return union;
         }
-    }
-
-    private boolean isPointMultipointFeaturesOnly(SimpleFeatureCollection fc) {
-        try (SimpleFeatureIterator it = fc.features()) {
-            while (it.hasNext()) {
-                SimpleFeature f = it.next();
-                Class<?> geomClass = f.getDefaultGeometry().getClass();
-                if (geomClass != Point.class && geomClass != MultiPoint.class) {
-                    return false;
-                }
-            }
-        }
-        return true;
     }
 
 }

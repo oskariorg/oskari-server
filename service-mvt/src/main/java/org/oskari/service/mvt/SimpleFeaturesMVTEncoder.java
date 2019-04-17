@@ -32,6 +32,19 @@ public class SimpleFeaturesMVTEncoder {
 
     private static final GeometryFactory GF = new GeometryFactory();
 
+    public static boolean isPointFeaturesOnly(SimpleFeatureCollection fc) {
+        try (SimpleFeatureIterator it = fc.features()) {
+            while (it.hasNext()) {
+                SimpleFeature f = it.next();
+                Class<?> geomClass = f.getDefaultGeometry().getClass();
+                if (geomClass != Point.class && geomClass != MultiPoint.class) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
     public static byte[] encodeToByteArray(SimpleFeatureCollection sfc,
             String layer, double[] bbox, int extent, int buffer) {
         return encode(sfc, layer, bbox, extent, buffer).toByteArray();
@@ -88,7 +101,7 @@ public class SimpleFeaturesMVTEncoder {
         return JtsAdapter.createTileGeom(geoms, tileEnvelope, clipEnvelope, GF,
                 new MvtLayerParams(256, extent), new GeomMinSizeFilter(6, 6)).mvtGeoms;
     }
-    */
+     */
 
     public static List<Geometry> asMVTGeoms(SimpleFeatureCollection sfc, double[] bbox, int extent, int buffer) {
         Envelope tileEnvelope = new Envelope(bbox[0], bbox[2], bbox[1], bbox[3]);
@@ -110,7 +123,7 @@ public class SimpleFeaturesMVTEncoder {
         double scaleX = (double) extent / tileEnvelope.getWidth();
         double scaleY = -((double) extent / tileEnvelope.getHeight());
         ToMVTSpace snapToGrid = new ToMVTSpace(translateX, translateY, scaleX, scaleY);
-        
+
         GeometryEditor editor = new GeometryEditor(GF);
 
         List<Geometry> mvtGeoms = new ArrayList<>();
@@ -193,7 +206,7 @@ public class SimpleFeaturesMVTEncoder {
             Coordinate c = ((Point) geom).getCoordinate();
             boolean within = c.x >= rect.getMinX() && c.x <= rect.getMaxX() && c.y >= rect.getMinY() && c.y <= rect.getMaxY();
             return within ? geom : null;
-            */
+             */
         }
 
         if (geom instanceof LineString) {
@@ -254,7 +267,7 @@ public class SimpleFeaturesMVTEncoder {
                 return geom;
             }
             return GF.createMultiPoint(Arrays.copyOf(subGeomsWithin, n));
-            */
+             */
         }
 
         if (geom instanceof MultiLineString) {
