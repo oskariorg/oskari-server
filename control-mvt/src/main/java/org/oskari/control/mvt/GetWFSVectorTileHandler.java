@@ -20,7 +20,9 @@ import org.oskari.service.mvt.TileCoord;
 import org.oskari.service.mvt.WFSTileGrid;
 import org.oskari.service.user.UserLayerService;
 
+import com.vividsolutions.jts.awt.PointShapeFactory.Point;
 import com.vividsolutions.jts.geom.Envelope;
+import com.vividsolutions.jts.geom.MultiPoint;
 
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.cache.CacheManager;
@@ -51,7 +53,8 @@ public class GetWFSVectorTileHandler extends AbstractWFSFeaturesHandler {
     }
 
     private static final int TILE_EXTENT = 4096;
-    private static final int TILE_BUFFER = 512;
+    private static final int TILE_BUFFER = 256;
+    private static final int TILE_BUFFER_POINT = 2048;
 
     private static final int CACHE_LIMIT = 256;
     private static final long CACHE_EXPIRATION = TimeUnit.MINUTES.toMillis(5);
@@ -219,7 +222,8 @@ public class GetWFSVectorTileHandler extends AbstractWFSFeaturesHandler {
 
         // sfc always has features for z<=8 so we need to clip to smaller tiles based on requested x,y,z
         double[] bbox = grid.getTileExtent(new TileCoord(z, x, y));
-        byte[] encoded = SimpleFeaturesMVTEncoder.encodeToByteArray(sfc, layer.getName(), bbox, TILE_EXTENT, TILE_BUFFER);
+        int buffer = isPointMultipointFeaturesOnly(sfc) ? TILE_BUFFER_POINT : TILE_BUFFER;
+        byte[] encoded = SimpleFeaturesMVTEncoder.encodeToByteArray(sfc, layer.getName(), bbox, TILE_EXTENT, buffer);
         try {
             return IOHelper.gzip(encoded).toByteArray();
         } catch (IOException e) {
@@ -275,5 +279,17 @@ public class GetWFSVectorTileHandler extends AbstractWFSFeaturesHandler {
         }
     }
 
+    private boolean isPointMultipointFeaturesOnly(SimpleFeatureCollection fc) {
+        try (SimpleFeatureIterator it = fc.features()) {
+            while (it.hasNext()) {
+                SimpleFeature f = it.next();
+                Class<?> geomClass = f.getDefaultGeometry().getClass();
+                if (geomClass != Point.class && geomClass != MultiPoint.class) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
 
 }
