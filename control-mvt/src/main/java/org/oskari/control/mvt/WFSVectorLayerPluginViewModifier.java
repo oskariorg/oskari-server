@@ -11,6 +11,8 @@ import org.json.JSONObject;
 import org.oskari.service.mvt.WFSTileGrid;
 import org.oskari.service.mvt.WFSTileGridProperties;
 
+import java.util.HashMap;
+
 /**
  *  modifier for WfsVectorLayerPlugin config
  */
@@ -21,10 +23,14 @@ public class WFSVectorLayerPluginViewModifier implements PluginHandler {
     public static final String KEY_ID = "id";
     public static final String KEY_CONFIG = "config";
 
-    private WFSTileGridProperties tileGridProperties;
+    private HashMap<String, WFSTileGrid> tileGrids = new HashMap<>();
+    private HashMap<String, Integer> minZoomLevels = new HashMap<>();
 
-    public WFSVectorLayerPluginViewModifier() {
-        tileGridProperties = new WFSTileGridProperties();
+    public void setMinZoomLevelForSRS(String srsName, int minZoomLevel) {
+        minZoomLevels.put(srsName.toUpperCase(), minZoomLevel);
+    }
+    public void setTileGridForSRS(String srsName, WFSTileGrid tileGrid) {
+        tileGrids.put(srsName.toUpperCase(), tileGrid);
     }
 
     @Override
@@ -34,7 +40,7 @@ public class WFSVectorLayerPluginViewModifier implements PluginHandler {
         return setupPluginConfig(plugin, mapSrs);
     }
 
-    public boolean setupPluginConfig(JSONObject plugin, String mapSrs) {
+    private boolean setupPluginConfig(JSONObject plugin, String mapSrs) {
         if(plugin == null) {
             LOGGER.debug("Tried to modify WfsVectorLayerPlugin, but plugin didn't exist!");
             return false;
@@ -43,27 +49,37 @@ public class WFSVectorLayerPluginViewModifier implements PluginHandler {
             LOGGER.debug("Tried to modify WfsVectorLayerPlugin, but given JSON isn't WfsVectorLayerPlugin!");
             return false;
         }
-
-        WFSTileGrid tileGrid = tileGridProperties.getTileGrid(mapSrs);
-        if (tileGrid == null) {
+        if (mapSrs == null) {
+            LOGGER.debug("Tried to modify WfsVectorLayerPlugin, but map has no srsName!");
             return false;
         }
+
         JSONObject config = getConfig(plugin);
-        JSONArray resolutionArray = new JSONArray();
-        try {
-            for (double resolution : tileGrid.getResolutions()) {
-                resolutionArray.put(resolution);
-            }
-        }
-        catch (JSONException ex) {
-            LOGGER.debug("Tried to modify WfsVectorLayerPlugin, but could not create resolution array", ex);
-            return false;
-        }
-        JSONHelper.put(config, "resolutions", resolutionArray);
-        JSONHelper.putValue(config, "tileSize", tileGrid.getTileSize());
-        JSONHelper.putValue(config, "origin", tileGrid.getOrigin());
 
-        return false;
+        Integer minZoomLevel = this.minZoomLevels.get(mapSrs.toUpperCase());
+        if (minZoomLevel != null) {
+            JSONHelper.putValue(config, "minZoomLevel", minZoomLevel);
+        }
+
+        WFSTileGrid tileGrid = tileGrids.get(mapSrs.toUpperCase());
+        if (tileGrid != null) {
+            JSONArray resolutionArray = new JSONArray();
+            try {
+                for (double resolution : tileGrid.getResolutions()) {
+                    resolutionArray.put(resolution);
+                }
+            }
+            catch (JSONException ex) {
+                LOGGER.debug("Tried to modify WfsVectorLayerPlugin, but could not create resolution array", ex);
+                return false;
+            }
+
+            JSONHelper.put(config, "resolutions", resolutionArray);
+            JSONHelper.putValue(config, "tileSize", tileGrid.getTileSize());
+            JSONHelper.putValue(config, "origin", tileGrid.getOrigin());
+        }
+
+        return true;
     }
 
     private JSONObject getConfig(JSONObject original) {

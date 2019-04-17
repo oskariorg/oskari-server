@@ -43,6 +43,7 @@ public class GetWFSVectorTileHandler extends AbstractWFSFeaturesHandler {
     protected static final String PARAM_X = "x";
     protected static final String PARAM_Y = "y";
 
+    private static final int DEFAULT_MIN_ZOOM_LEVEL = 7;
     private static final Map<String, WFSTileGrid> KNOWN_TILE_GRIDS;
     static {
         KNOWN_TILE_GRIDS = new HashMap<>();
@@ -64,8 +65,19 @@ public class GetWFSVectorTileHandler extends AbstractWFSFeaturesHandler {
         tileGridProperties = new WFSTileGridProperties();
 
         final Map<String, BundleHandler> handlers = ViewModifierManager.getModifiersOfType(BundleHandler.class);
-        MapfullHandler handler = (MapfullHandler)handlers.get("mapfull");
-        handler.registerPluginHandler(WFSVectorLayerPluginViewModifier.PLUGIN_NAME, new WFSVectorLayerPluginViewModifier());
+        MapfullHandler mapfullHandler = (MapfullHandler)handlers.get("mapfull");
+        WFSVectorLayerPluginViewModifier pluginHandler = new WFSVectorLayerPluginViewModifier();
+        mapfullHandler.registerPluginHandler(WFSVectorLayerPluginViewModifier.PLUGIN_NAME, pluginHandler);
+
+        Map<String, WFSTileGrid> propTileGrids = tileGridProperties.getTileGridMap();
+        KNOWN_TILE_GRIDS.keySet().stream().forEach(srsName -> {
+            pluginHandler.setMinZoomLevelForSRS(srsName, DEFAULT_MIN_ZOOM_LEVEL);
+            pluginHandler.setTileGridForSRS(srsName, KNOWN_TILE_GRIDS.get(srsName));
+        });
+        propTileGrids.keySet().stream().forEach(srsName -> {
+            pluginHandler.setMinZoomLevelForSRS(srsName, DEFAULT_MIN_ZOOM_LEVEL);
+            pluginHandler.setTileGridForSRS(srsName, propTileGrids.get(srsName));
+        });
     }
 
     @Override

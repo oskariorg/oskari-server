@@ -7,6 +7,7 @@ import fi.nls.oskari.util.PropertyUtil;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 public class WFSTileGridProperties {
 
@@ -45,6 +46,10 @@ public class WFSTileGridProperties {
 
     public WFSTileGrid getTileGrid(String srs) {
         return tileGridMap.get(srs.toUpperCase());
+    }
+
+    public Map<String, WFSTileGrid> getTileGridMap() {
+        return tileGridMap;
     }
 
 }
