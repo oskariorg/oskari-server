@@ -1,8 +1,10 @@
 package org.oskari.service.wfs3;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.data.simple.SimpleFeatureIterator;
-import org.geotools.feature.DefaultFeatureCollection;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
 import org.geotools.geometry.jts.JTS;
@@ -15,6 +17,7 @@ import org.opengis.referencing.NoSuchAuthorityCodeException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.MathTransform;
 import org.opengis.referencing.operation.TransformException;
+import org.oskari.geojson.GeoJSONFeatureCollection;
 
 import com.vividsolutions.jts.geom.Geometry;
 
@@ -55,7 +58,7 @@ public class CoordinateTransformer {
 
         SimpleFeatureType newSchema = SimpleFeatureTypeBuilder.retype(sfc.getSchema(), to);
         SimpleFeatureBuilder b = new SimpleFeatureBuilder(newSchema);
-        DefaultFeatureCollection fc = new DefaultFeatureCollection(null, newSchema);
+        List<SimpleFeature> fc = new ArrayList<>();
         try (SimpleFeatureIterator it = sfc.features()) {
             while (it.hasNext()) {
                 SimpleFeature f = it.next();
@@ -71,7 +74,7 @@ public class CoordinateTransformer {
                 fc.add(copy);
             }
         }
-        return fc;
+        return new GeoJSONFeatureCollection(fc, newSchema);
     }
 
 }

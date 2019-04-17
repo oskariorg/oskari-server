@@ -89,7 +89,7 @@ public class GeoJSONReader2 {
             if (o != null && o instanceof Map) {
                 try {
                     properties.put(key, toGeometry((Map<String, Object>) o));
-                } catch (IllegalArgumentException ignore) {
+                } catch (Exception ignore) {
                     // My bad - it probably wasn't a geometry property
                 }
             }

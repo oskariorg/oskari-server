@@ -1,10 +1,20 @@
 package org.oskari.geojson;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
+import org.geotools.data.simple.SimpleFeatureCollection;
+import org.geotools.data.simple.SimpleFeatureIterator;
 import org.geotools.referencing.CRS;
+import org.hamcrest.core.Is;
 import org.junit.Test;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
@@ -14,6 +24,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.CoordinateSequence;
+import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryCollection;
 import com.vividsolutions.jts.geom.LineString;
 import com.vividsolutions.jts.geom.MultiLineString;
@@ -21,6 +32,7 @@ import com.vividsolutions.jts.geom.MultiPoint;
 import com.vividsolutions.jts.geom.MultiPolygon;
 import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.Polygon;
+import com.vividsolutions.jts.io.WKTReader;
 
 import fi.nls.test.util.ResourceHelper;
 
@@ -178,6 +190,107 @@ public class GeoJSONReader2Test {
         c = cs.getCoordinate(1);
         assertEquals(102.0, c.x, 1e6);
         assertEquals(1.0, c.y, 1e6);
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testDeeplyComplex() throws Exception {
+        // We delved too greedily and too deep
+        Map<String, Object> json = loadJSONResource("featureCollectionDeeplyComplex.json");
+        CoordinateReferenceSystem crs84 = CRS.decode("EPSG:4326", true);
+        SimpleFeatureType schema = GeoJSONSchemaDetector.getSchema(json, crs84);
+        SimpleFeatureCollection fc = GeoJSONReader2.toFeatureCollection(json, schema);
+        try (SimpleFeatureIterator it = fc.features()) {
+            assertTrue(it.hasNext()); 
+            SimpleFeature f1 = it.next();
+            assertFalse(it.hasNext());
+            assertNotNull(f1);
+            assertEquals("ABC_112", f1.getID());
+            assertEquals("bar", f1.getAttribute("foo"));
+            Map<String, Object> a = (Map<String, Object>) f1.getAttribute("a");
+            List<Object> foo = (List<Object>) a.get("foo");
+            Map<String, Object> fooThe3rd = (Map<String, Object>) foo.get(2);
+            Map<String, Object> qux = (Map<String, Object>) fooThe3rd.get("qux");
+            assertEquals("sure", qux.get("deep"));
+            Geometry expectedGeometry = new WKTReader().read("POINT (21.3587384 61.3939013)");
+            assertEquals(expectedGeometry, f1.getDefaultGeometry());
+        }
+    }
+
+    @Test
+    public void testSimpleArrayComplexProperty() throws Exception {
+        // Simple arrays (arrays of numbers, Strings, booleans (not objects)
+        Map<String, Object> json = loadJSONResource("featureCollectionSimpleArray.json");
+        CoordinateReferenceSystem crs84 = CRS.decode("EPSG:4326", true);
+        SimpleFeatureType schema = GeoJSONSchemaDetector.getSchema(json, crs84);
+        SimpleFeatureCollection fc = GeoJSONReader2.toFeatureCollection(json, schema);
+        try (SimpleFeatureIterator it = fc.features()) {
+            assertTrue(it.hasNext()); 
+            SimpleFeature f1 = it.next();
+            assertFalse(it.hasNext());
+            assertNotNull(f1);
+            assertEquals("ABC_123", f1.getID());
+            assertEquals("bar", f1.getAttribute("foo"));
+            List<Integer> expectedSimpleArray = Arrays.asList(1, 2, 3);
+            assertThat(expectedSimpleArray, Is.is(f1.getAttribute("mySimpleIntArray")));
+            Geometry expectedGeometry = new WKTReader().read("POINT (21.3743445 61.3764872)");
+            assertEquals(expectedGeometry, f1.getDefaultGeometry());
+        }
+    }
+
+    @Test
+    public void testComplexProperties() throws Exception {
+        Map<String, Object> json = loadJSONResource("featureCollectionComplex.json");
+        CoordinateReferenceSystem crs84 = CRS.decode("EPSG:4326", true);
+        SimpleFeatureType schema = GeoJSONSchemaDetector.getSchema(json, crs84);
+        SimpleFeatureCollection fc = GeoJSONReader2.toFeatureCollection(json, schema);
+        try (SimpleFeatureIterator it = fc.features()) {
+            SimpleFeature f1 = it.hasNext() ? it.next() : null;
+            SimpleFeature f2 = it.hasNext() ? it.next() : null;
+            assertFalse(it.hasNext());
+
+            assertNotNull(f1);
+            assertNotNull(f2);
+            assertEquals("P_10000001", f1.getID());
+            assertEquals("P_10000002", f2.getID());
+
+            
+            assertEquals(10000001, f1.getAttribute("placeId"));  
+            assertEquals(3, f1.getAttribute("placeVersionId"));
+            assertEquals(1010110, f1.getAttribute("placeType"));
+            assertEquals("M3233D4", f1.getAttribute("tm35MapSheet"));
+            assertEquals("2008-12-05T22:00:00Z", f1.getAttribute("placeCreationTime"));
+            assertNull(f1.getAttribute("placeNameDeletionTime"));
+
+            Geometry expected = new WKTReader().read("POINT (21.3587384 61.3939013)");
+            assertEquals(expected, f1.getDefaultGeometry());
+
+            @SuppressWarnings("unchecked")
+            List<Map<String, Object>> placenames = (List<Map<String, Object>>) f1.getAttribute("name");
+            assertEquals(1, placenames.size());
+            Map<String, Object> placename = placenames.get(0);
+            assertEquals(40000001, placename.get("placeNameId"));
+            assertEquals(1, placename.get("placeNameVersionId"));
+            assertEquals("Isokloppa", placename.get("spelling"));
+            assertEquals("fin", placename.get("language"));
+        }
+    }
+
+    @Test
+    public void testMultipleGeometries() throws Exception {
+        Map<String, Object> json = loadJSONResource("featureCollectionMultipleGeometries.json");
+        CoordinateReferenceSystem crs84 = CRS.decode("EPSG:4326", true);
+        SimpleFeatureType schema = GeoJSONSchemaDetector.getSchema(json, crs84);
+        SimpleFeatureCollection fc = GeoJSONReader2.toFeatureCollection(json, schema);
+        try (SimpleFeatureIterator it = fc.features()) {
+            SimpleFeature f = it.hasNext() ? it.next() : null;
+            assertFalse(it.hasNext());
+            assertNotNull(f);
+            assertEquals("feature.0", f.getID());
+            WKTReader wkt = new WKTReader();
+            assertEquals(wkt.read("LINESTRING (1.1 1.2, 1.3 1.4)"), f.getAttribute("otherGeometry"));
+            assertEquals(wkt.read("POINT (0.1 0.1)"), f.getDefaultGeometry());
+        }
     }
 
 }

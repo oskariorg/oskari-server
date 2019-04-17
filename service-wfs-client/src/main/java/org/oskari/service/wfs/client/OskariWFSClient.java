@@ -16,7 +16,7 @@ public class OskariWFSClient {
             String endPoint, String version,
             String user, String pass,
             String typeName, ReferencedEnvelope bbox,
-            CoordinateReferenceSystem crs, Integer maxFeatures,
+            CoordinateReferenceSystem crs, int maxFeatures,
             Filter filter) throws ServiceRuntimeException {
         switch (version) {
         case WFS_3_VERSION:
