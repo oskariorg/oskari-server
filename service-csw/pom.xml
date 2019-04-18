@@ -29,10 +29,6 @@
 			<artifactId>oskari-control</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.deegree</groupId>
-			<artifactId>deegree</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>javax.vecmath</groupId>
 			<artifactId>vecmath</artifactId>
 		</dependency>

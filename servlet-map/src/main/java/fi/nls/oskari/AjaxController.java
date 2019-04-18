@@ -36,7 +36,7 @@ public class AjaxController {
         } catch (ActionParamsException e) {
             // For cases where we dont want a stack trace
             log.error("Couldn't handle action:", route, ". Message: ", e.getMessage(), ". Parameters: ", params.getRequest().getParameterMap());
-            ResponseHelper.writeError(params, e.getMessage(), HttpServletResponse.SC_NOT_IMPLEMENTED, e.getOptions());
+            ResponseHelper.writeError(params, e.getMessage(), HttpServletResponse.SC_BAD_REQUEST, e.getOptions());
         } catch (ActionDeniedException e) {
             // User tried to execute action he/she is not authorized to execute or session had expired
             if(params.getUser().isGuest()) {

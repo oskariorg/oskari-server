@@ -101,7 +101,6 @@
         <mvt.version>2.0.0</mvt.version>
         <!-- gt-xsd-kml.version>9.3</gt-xsd-kml.version -->
         <flexjson.version>2.0</flexjson.version>
-        <deegree.version>2</deegree.version>
 
         <mybatis.version>3.4.6</mybatis.version>
         <pdfbox.version>2.0.12</pdfbox.version>
@@ -806,11 +805,6 @@
                 <artifactId>gt-xsd-kml</artifactId>
                 <version>${geotools.version}</version>
                 <!-- version>${gt-xsd-kml.version}</version -->
-            </dependency>
-            <dependency>
-                <groupId>org.deegree</groupId>
-                <artifactId>deegree</artifactId>
-                <version>${deegree.version}</version>
             </dependency>
 
             <dependency>

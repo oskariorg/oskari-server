@@ -1,26 +1,30 @@
 package org.oskari.service.wfs3;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
 import java.net.HttpURLConnection;
-import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.geotools.data.simple.SimpleFeatureCollection;
-import org.geotools.feature.DefaultFeatureCollection;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
+import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.geometry.MismatchedDimensionException;
-import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.opengis.referencing.operation.MathTransform;
 import org.opengis.referencing.operation.TransformException;
-import org.oskari.service.wfs3.geojson.WFS3FeatureCollectionIterator;
+import org.oskari.geojson.GeoJSONReader2;
+import org.oskari.geojson.GeoJSONSchemaDetector;
+import org.oskari.service.wfs3.model.WFS3Link;
+
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
@@ -33,8 +37,14 @@ import fi.nls.oskari.util.IOHelper;
 public class OskariWFS3Client {
 
     private static final Logger LOG = LogFactory.getLogger(OskariWFS3Client.class);
+
+    protected static final int PAGE_SIZE = 1000;
+
     private static final String CONTENT_TYPE_GEOJSON = "application/geo+json";
     private static final int MAX_REDIRECTS = 5;
+    private static final ObjectMapper OM = new ObjectMapper();
+    private static final TypeReference<HashMap<String, Object>> TYPE_REF = new TypeReference<HashMap<String, Object>>() {};
+
 
     private static CoordinateReferenceSystem CRS84;
     protected static CoordinateReferenceSystem getCRS84() {
@@ -53,44 +63,77 @@ public class OskariWFS3Client {
     private OskariWFS3Client() {}
 
     public static SimpleFeatureCollection getFeatures(String endPoint,
-            String user, String pass,
-            String collectionId, ReferencedEnvelope bbox,
-            CoordinateReferenceSystem crs, Integer limit) throws ServiceRuntimeException {
+            String user, String pass, String collectionId,
+            ReferencedEnvelope bbox, CoordinateReferenceSystem crs, int hardLimit) throws ServiceRuntimeException {
         String path = getItemsPath(endPoint, collectionId);
-        Map<String, String> query = getQueryParams(bbox, limit);
+        Map<String, String> query = getQueryParams(bbox, hardLimit);
         Map<String, String> headers = new HashMap<>();
         headers.put("Accept", CONTENT_TYPE_GEOJSON);
 
-        DefaultFeatureCollection features = new DefaultFeatureCollection();
+        MathTransform transform;
+        try {
+            transform = CRS.equalsIgnoreMetadata(getCRS84(), crs) ? null : CRS.findMathTransform(getCRS84(), crs);
+        } catch (Exception e) {
+            throw new ServiceRuntimeException("Coordinate transformation failure", e);
+        }
+
+        List<SimpleFeatureCollection> pages = new ArrayList<>();
+        int numFeatures = 0;
+
+        SimpleFeatureType schema;
         try {
             HttpURLConnection conn = IOHelper.getConnection(path, user, pass, query, headers);
             conn = IOHelper.followRedirect(conn, user, pass, query, headers, MAX_REDIRECTS);
-            validateResponse(conn, CONTENT_TYPE_GEOJSON);
-            String next = readFeaturesTo(conn, features);
 
-            // Check if there's a link with rel="next"
-            // => While the next link exists there's a next page to be read
-            while (next != null) {
+            validateResponse(conn, CONTENT_TYPE_GEOJSON);
+            Map<String, Object> geojson = readMap(conn);
+            schema = GeoJSONSchemaDetector.getSchema(geojson, crs);
+            SimpleFeatureCollection sfc = GeoJSONReader2.toFeatureCollection(geojson, schema, transform);
+            numFeatures += sfc.size();
+            pages.add(sfc);
+            String next = getNextHref(geojson);
+
+            while (next != null && numFeatures < hardLimit) {
                 // Blindly follow the next link, don't use the initial queryParameters
                 conn = IOHelper.getConnection(next, user, pass, null, headers);
                 conn = IOHelper.followRedirect(conn, user, pass, null, headers, MAX_REDIRECTS);
+
                 validateResponse(conn, CONTENT_TYPE_GEOJSON);
-                next = readFeaturesTo(conn, features);
+                geojson = readMap(conn);
+                sfc = GeoJSONReader2.toFeatureCollection(geojson, schema, transform);
+                numFeatures += sfc.size();
+                pages.add(sfc);
+                next = getNextHref(geojson);
             }
         } catch (IOException e) {
             throw new ServiceRuntimeException("IOException occured", e);
+        } catch (MismatchedDimensionException | TransformException e) {
+            throw new ServiceRuntimeException("Projection transformation failed", e);
         }
 
-        try {
-            // Features are in CRS84
-            // Check if we need to transform them to the requested CRS
-            if (CRS.equalsIgnoreMetadata(getCRS84(), crs)) {
-                return features;
-            }
-            CoordinateTransformer coordTransformer = new CoordinateTransformer(getCRS84(), crs);
-            return coordTransformer.transform(features);
-        } catch (FactoryException | MismatchedDimensionException | TransformException e) {
-            throw new ServiceRuntimeException("Failed to transform features");
+        if (pages.size() == 1) {
+            return pages.get(0);
+        }
+        return new PaginatedFeatureCollection(pages, schema, "FeatureCollection", hardLimit);
+    }
+
+    @SuppressWarnings("unchecked")
+    private static String getNextHref(Map<String, Object> geojson) {
+        // Check if there's a link with rel="next"
+        Object _links = geojson.get("links");
+        if (_links != null && _links instanceof List) {
+            return toLinks((List<Object>) _links).stream()
+                    .filter(link -> "next".equals(link.getRel()))
+                    .findAny()
+                    .map(WFS3Link::getHref)
+                    .orElse(null);
+        }
+        return null;
+    }
+
+    private static Map<String, Object> readMap(HttpURLConnection conn) throws IOException {
+        try (InputStream in = conn.getInputStream()) {
+            return OM.readValue(in, TYPE_REF);
         }
     }
 
@@ -108,22 +151,6 @@ public class OskariWFS3Client {
         }
     }
 
-    private static String readFeaturesTo(HttpURLConnection conn, DefaultFeatureCollection fc)
-            throws IOException {
-        try (InputStream in = conn.getInputStream();
-                Reader reader = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8));
-                WFS3FeatureCollectionIterator it = new WFS3FeatureCollectionIterator(reader)) {
-            while (it.hasNext()) {
-                fc.add(it.next());
-            }
-            return it.getHandler().getLinks().stream()
-                    .filter(link -> "next".equals(link.getRel()))
-                    .findAny()
-                    .map(link -> link.getHref())
-                    .orElse(null);
-        }
-    }
-
     private static String getItemsPath(String endPoint, String collectionId) {
         StringBuilder path = new StringBuilder(endPoint);
         // Remove (all) trailing / characters
@@ -136,7 +163,7 @@ public class OskariWFS3Client {
         return path.toString();
     }
 
-    protected static Map<String, String> getQueryParams(ReferencedEnvelope bbox, Integer limit)
+    protected static Map<String, String> getQueryParams(ReferencedEnvelope bbox, int hardLimit)
             throws ServiceRuntimeException {
         // Linked not needed, but look better when logging the requests
         Map<String, String> parameters = new LinkedHashMap<>();
@@ -156,10 +183,26 @@ public class OskariWFS3Client {
                     bbox.getMaxX(), bbox.getMaxY());
             parameters.put("bbox", bboxStr);
         }
-        if (limit != null) {
-            parameters.put("limit", limit.toString());
-        }
+        parameters.put("limit", Integer.toString(Math.min(PAGE_SIZE, hardLimit)));
         return parameters;
     }
+
+    @SuppressWarnings("unchecked")
+    protected static List<WFS3Link> toLinks(List<Object> arrayOflinks) {
+        return arrayOflinks.stream()
+                .map(obj -> (Map<String, String>) obj)
+                .map(OskariWFS3Client::toLink)
+                .collect(Collectors.toList());
+    }
+
+    protected static WFS3Link toLink(Map<String, String> map) {
+        String href = map.get("href");
+        String rel = map.get("rel");
+        String type = map.get("type");
+        String hreflang = map.get("hreflang");
+        String title = map.get("title");
+        return new WFS3Link(href, rel, type, hreflang, title);
+    }
+
 
 }
