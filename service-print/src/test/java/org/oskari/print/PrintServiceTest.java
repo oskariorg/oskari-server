@@ -17,8 +17,7 @@ import org.opengis.referencing.NoSuchAuthorityCodeException;
 import org.oskari.print.request.PrintFormat;
 import org.oskari.print.request.PrintLayer;
 import org.oskari.print.request.PrintRequest;
-import org.oskari.service.wfs.client.OskariFeatureClient;
-import org.oskari.service.wfs.client.OskariWFSClient;
+import org.oskari.print.wmts.WMTSCapabilitiesCache;
 
 import fi.nls.oskari.domain.User;
 import fi.nls.oskari.domain.map.OskariLayer;
@@ -79,7 +78,9 @@ public class PrintServiceTest {
         Mockito.when(mock.getCapabilities(bg.getUrl(), bg.getType(), bg.getVersion(), bg.getUsername(), bg.getPassword())).thenReturn(answerBg);
         Mockito.when(mock.getCapabilities(fg.getUrl(), fg.getType(), fg.getVersion(), fg.getUsername(), fg.getPassword())).thenReturn(answerFg);
 
-        PrintService service = new PrintService(mock);
+        WMTSCapabilitiesCache cache = new WMTSCapabilitiesCache(mock);
+        PrintService service = new PrintService(cache);
+
         BufferedImage img = service.getPNG(request);
         File file = File.createTempFile("print-test", ".png");
         ImageIO.write(img, "png", file);
@@ -141,7 +142,9 @@ public class PrintServiceTest {
         Mockito.when(mock.getCapabilities(bg.getUrl(), bg.getType(), bg.getVersion(), bg.getUsername(), bg.getPassword())).thenReturn(answerBg);
         Mockito.when(mock.getCapabilities(fg.getUrl(), fg.getType(), fg.getVersion(), fg.getUsername(), fg.getPassword())).thenReturn(answerFg);
 
-        PrintService service = new PrintService(mock);
+        WMTSCapabilitiesCache cache = new WMTSCapabilitiesCache(mock);
+        PrintService service = new PrintService(cache);
+
         PDDocument doc = new PDDocument();
         service.getPDF(request, doc);
         File file = File.createTempFile("print-test", ".pdf");
@@ -157,7 +160,6 @@ public class PrintServiceTest {
         PrintRequest request = new PrintRequest();
         request.setFormat(PrintFormat.PDF);
 
-        request.setFeatureClient(new OskariFeatureClient(new OskariWFSClient()));
         request.setUser(new User());
         
         request.setEast(500000);
@@ -202,7 +204,9 @@ public class PrintServiceTest {
         // OskariLayerCapabilities answerBg = new OskariLayerCapabilities(1L, bg.getUrl(), bg.getType(), bg.getVersion(), dataBg, null, null);
         CapabilitiesCacheService mock = Mockito.mock(CapabilitiesCacheService.class);
         // Mockito.when(mock.getCapabilities(bg.getUrl(), bg.getType(), bg.getVersion(), bg.getUsername(), bg.getPassword())).thenReturn(answerBg);
-        PrintService service = new PrintService(mock);
+        WMTSCapabilitiesCache cache = new WMTSCapabilitiesCache(mock);
+        PrintService service = new PrintService(cache);
+
         PDDocument doc = new PDDocument();
         service.getPDF(request, doc);
         File file = File.createTempFile("print-test", ".pdf");

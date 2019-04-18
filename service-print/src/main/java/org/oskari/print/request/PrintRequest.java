@@ -4,15 +4,12 @@ import java.util.List;
 
 import org.geotools.referencing.CRS;
 import org.opengis.referencing.FactoryException;
-import org.opengis.referencing.NoSuchAuthorityCodeException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
-import org.oskari.service.wfs.client.OskariFeatureClient;
 
 import fi.nls.oskari.domain.User;
 
 public class PrintRequest {
 
-    private OskariFeatureClient featureClient;
     private User user;
     private double east;
     private double north;
@@ -31,14 +28,6 @@ public class PrintRequest {
     private List<PrintLayer> layers;
     private String scaleText;
     
-    public OskariFeatureClient getFeatureClient() {
-        return featureClient;
-    }
-
-    public void setFeatureClient(OskariFeatureClient featureClient) {
-        this.featureClient = featureClient;
-    }
-
     public User getUser() {
         return user;
     }

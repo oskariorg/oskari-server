@@ -21,21 +21,17 @@ import org.oskari.print.request.PrintLayer;
 import org.oskari.print.request.PrintRequest;
 import org.oskari.print.request.PrintTile;
 import org.oskari.service.user.UserLayerService;
-import org.oskari.service.util.ServiceFactory;
 import org.oskari.service.wfs.client.OskariWFSClient;
 
-import fi.mml.portti.service.db.permissions.PermissionsService;
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.control.ActionParamsException;
 import fi.nls.oskari.control.feature.AbstractWFSFeaturesHandler;
-import fi.nls.oskari.control.layer.PermissionHelper;
 import fi.nls.oskari.domain.User;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.map.layer.OskariLayerService;
 import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.ResponseHelper;
@@ -78,22 +74,18 @@ public class GetPrintHandler extends AbstractWFSFeaturesHandler {
     private static final int MARGIN_WIDTH = 10 * 2;
     private static final int MARGIN_HEIGHT = 15 * 2;
 
-    private final PrintService printService;
+    private PrintService printService;
 
     public static int mmToPx(int mm) {
         return (int) Math.round((OGC_DPI * mm) / MM_PER_INCH);
     }
 
-    public GetPrintHandler() {
-        this(ServiceFactory.getMapLayerService(),
-                ServiceFactory.getPermissionsService(),
-                new PrintService());
-    }
-
-    public GetPrintHandler(OskariLayerService layerService,
-            PermissionsService permissionService, PrintService printService) {
-        this.permissionHelper = new PermissionHelper(layerService, permissionService);
-        this.printService = printService;
+    @Override
+    public void init() {
+        super.init();
+        if (printService == null) {
+            printService = new PrintService(featureClient);
+        }
     }
 
     @Override

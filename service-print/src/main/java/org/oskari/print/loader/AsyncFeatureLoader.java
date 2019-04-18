@@ -19,8 +19,8 @@ public class AsyncFeatureLoader {
 
     public static final String GROUP_KEY = "LoadFeatureFromURL";
 
-    public static Map<Integer, Future<SimpleFeatureCollection>> initLayers(PrintRequest request)
-            throws ServiceException {
+    public static Map<Integer, Future<SimpleFeatureCollection>> initLayers(PrintRequest request,
+            OskariFeatureClient featureClient) throws ServiceException {
         Map<Integer, Future<SimpleFeatureCollection>> featureCollections = new HashMap<>();
 
         List<PrintLayer> requestedLayers = request.getLayers();
@@ -28,7 +28,6 @@ public class AsyncFeatureLoader {
             return featureCollections;
         }
         
-        OskariFeatureClient featureClient = request.getFeatureClient();
         String uuid = request.getUser().getUuid();
 
         CoordinateReferenceSystem crs = request.getCrs();

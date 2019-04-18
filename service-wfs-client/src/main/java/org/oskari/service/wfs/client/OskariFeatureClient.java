@@ -25,27 +25,26 @@ public class OskariFeatureClient {
     protected static final String ERR_NATIVE_SRS_DECODE_FAIL = "Failed to decode Native CRS";
 
     private OskariWFSClient wfsClient;
-    private CoordinateReferenceSystem _nativeCRS;
+    private CoordinateReferenceSystem nativeCRS;
 
     public OskariFeatureClient(OskariWFSClient wfsClient) {
         this.wfsClient = Objects.requireNonNull(wfsClient);
     }
 
     private CoordinateReferenceSystem getNativeCRS() {
-        if (_nativeCRS == null) {
+        if (nativeCRS == null) {
             try {
                 String nativeSrs = PropertyUtil.get(PROPERTY_NATIVE_SRS, "EPSG:4326");
-                _nativeCRS = CRS.decode(nativeSrs, true);
+                nativeCRS = CRS.decode(nativeSrs, true);
             } catch (Exception e) {
                 throw new ServiceRuntimeException(ERR_NATIVE_SRS_DECODE_FAIL, e);
             }
         }
-        return _nativeCRS;
+        return nativeCRS;
     }
 
-    public SimpleFeatureCollection getFeatures(String id, String uuid, OskariLayer layer,
-            ReferencedEnvelope bbox, CoordinateReferenceSystem targetCRS,
-            Optional<UserLayerService> processor) throws ServiceRuntimeException {
+    public SimpleFeatureCollection getFeatures(String id, String uuid, OskariLayer layer, ReferencedEnvelope bbox,
+            CoordinateReferenceSystem targetCRS, Optional<UserLayerService> processor) throws ServiceRuntimeException {
         CoordinateReferenceSystem nativeCRS = getNativeCRS();
         boolean needsTransform = !CRS.equalsIgnoreMetadata(nativeCRS, targetCRS);
 

@@ -44,6 +44,7 @@ import org.oskari.print.request.PrintRequest;
 import org.oskari.print.util.PDFBoxUtil;
 import org.oskari.print.util.Units;
 import org.oskari.print.wmts.WMTSCapabilitiesCache;
+import org.oskari.service.wfs.client.OskariFeatureClient;
 
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.CoordinateSequence;
@@ -139,9 +140,12 @@ public class PDF {
     }
 
     /**
-     * This method should be called via PrintService
+     * This method should be called (only) via PrintService
      */
-    protected static void getPDF(PrintRequest request, PDDocument doc, WMTSCapabilitiesCache wmtsCapsCache)
+    protected static void getPDF(PrintRequest request,
+            WMTSCapabilitiesCache wmtsCapsCache,
+            OskariFeatureClient featureClient,
+            PDDocument doc)
             throws IOException, ServiceException {
         int mapWidthPx = request.getWidth();
         int mapHeightPx = request.getHeight();
@@ -157,7 +161,7 @@ public class PDF {
 
         // Init requests to run in the background
         Map<Integer, Future<BufferedImage>> layerImages = AsyncImageLoader.initLayers(request, wmtsCapsCache);
-        Map<Integer, Future<SimpleFeatureCollection>> featureCollections = AsyncFeatureLoader.initLayers(request);
+        Map<Integer, Future<SimpleFeatureCollection>> featureCollections = AsyncFeatureLoader.initLayers(request, featureClient);
 
         PDPage page = new PDPage(pageSize);
         doc.addPage(page);
