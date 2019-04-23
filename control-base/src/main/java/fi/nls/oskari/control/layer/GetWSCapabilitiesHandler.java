@@ -87,7 +87,7 @@ public class GetWSCapabilitiesHandler extends ActionHandler {
                             .map(collectionInfo -> toOskariLayer(url, collectionInfo))
                             .map(layer -> wfsLayerToJSON(layer, currentCrs))
                             .collect(Collectors.toList());
-                    return JSONHelper.createJSONObject("features", new JSONArray(layers));
+                    return JSONHelper.createJSONObject("layers", new JSONArray(layers));
                 } else {
                     return GetGtWFSCapabilities.getWFSCapabilities(url, version, user, pw, currentCrs);
                 }
@@ -132,6 +132,8 @@ public class GetWSCapabilitiesHandler extends ActionHandler {
         JSONObject obj = formatter.getJSON(layer, lang, false, crs);
         // NOTE! Important to remove id since this is at template
         obj.remove("id");
+        // Admin layer tools needs for listing layers
+        JSONHelper.putValue(obj, "title", layer.getName());
         return obj;
     }
 
