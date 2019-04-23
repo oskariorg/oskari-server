@@ -51,6 +51,9 @@ public class GetWFSVectorTileHandler extends AbstractWFSFeaturesHandler {
         KNOWN_TILE_GRIDS.put("EPSG:3857", new WFSTileGrid(new double[] { -20037508.3427892, -20037508.3427892, 20037508.3427892, 20037508.3427892 }, 18));
     }
 
+    private static final int TILE_EXTENT = 4096;
+    private static final int TILE_BUFFER = 256;
+
     private static final int CACHE_LIMIT = 256;
     private static final long CACHE_EXPIRATION = TimeUnit.MINUTES.toMillis(5);
 
@@ -228,7 +231,7 @@ public class GetWFSVectorTileHandler extends AbstractWFSFeaturesHandler {
 
         // sfc always has features for z<=8 so we need to clip to smaller tiles based on requested x,y,z
         double[] bbox = grid.getTileExtent(new TileCoord(z, x, y));
-        byte[] encoded = SimpleFeaturesMVTEncoder.encodeToByteArray(sfc, layer.getName(), bbox, 4096, 256);
+        byte[] encoded = SimpleFeaturesMVTEncoder.encodeToByteArray(sfc, layer.getName(), bbox, TILE_EXTENT, TILE_BUFFER);
         try {
             return IOHelper.gzip(encoded).toByteArray();
         } catch (IOException e) {
@@ -241,7 +244,12 @@ public class GetWFSVectorTileHandler extends AbstractWFSFeaturesHandler {
             Optional<UserLayerService> processor) throws ServiceRuntimeException {
         double[] box = grid.getTileExtent(tile);
         Envelope envelope = new Envelope(box[0], box[2], box[1], box[3]);
-        ReferencedEnvelope bbox = new ReferencedEnvelope(envelope, crs);
+        Envelope bufferedEnvelope = new Envelope(envelope);
+        double bufferSizePercent = (double) TILE_BUFFER / (double) TILE_EXTENT;
+        double deltaX = bufferSizePercent * envelope.getWidth();
+        double deltaY = bufferSizePercent * envelope.getHeight();
+        bufferedEnvelope.expandBy(deltaX, deltaY);
+        ReferencedEnvelope bbox = new ReferencedEnvelope(bufferedEnvelope, crs);
         return featureClient.getFeatures(id, uuid, layer, bbox, crs, processor);
     }
 
@@ -283,6 +291,5 @@ public class GetWFSVectorTileHandler extends AbstractWFSFeaturesHandler {
             return union;
         }
     }
-
 
 }
