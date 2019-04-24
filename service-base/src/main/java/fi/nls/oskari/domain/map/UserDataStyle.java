@@ -1,4 +1,4 @@
-package fi.nls.oskari.domain.map.userlayer;
+package fi.nls.oskari.domain.map;
 
 import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.JSONHelper;
@@ -6,7 +6,7 @@ import fi.nls.oskari.util.JSONHelper;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class UserLayerStyle {
+public class UserDataStyle {
 
     private long id;
     private long stroke_width;
@@ -24,6 +24,32 @@ public class UserLayerStyle {
     private String border_linejoin;
     private String border_dasharray;
 
+    public void initDefaultStyle () {
+        //point
+        setDot_color("#000000");
+        setDot_size(3);
+        setDot_shape("1");
+        //line
+        setStroke_width(1);
+        setStroke_dasharray("");
+        setStroke_linecap("butt");
+        setStroke_linejoin("mitre");
+        setStroke_color("#3233ff");
+        //area
+        setFill_pattern(-1);
+        setBorder_dasharray("");
+        setBorder_linejoin("mitre");
+        setBorder_width(1);
+        setBorder_color("#000000");
+        setFill_color("#ffde00");
+        setFill_pattern(-1);
+    }
+
+    public JSONObject getStyleForLayerOptions() {
+        JSONObject featStyle = JSONHelper.createJSONObject("featureStyle", parseUserLayerStyleToOskariJSON());
+        return JSONHelper.createJSONObject("default", featStyle);
+    }
+    // This becomes redundant when oskari style json is used only
     public void populateFromJSON(final JSONObject stylejs) throws JSONException {
         try {
             // {"area":{"fillColor":"FFDC00","lineColor":"CC9900","size":"2"},"line":{"color":"CC9900","size":"2"},"dot":{"color":"CC9900","size":"4"}}
@@ -77,7 +103,7 @@ public class UserLayerStyle {
             throw new JSONException(e);
         }
     }
-
+    // This becomes redundant when oskari style json is used only
     public JSONObject parseUserLayerStyle2JSON(){
         JSONObject json = new JSONObject();
         //dot
@@ -160,7 +186,7 @@ public class UserLayerStyle {
             case "":
                 return "solid";
             case "D":
-                return "double";
+                return "double"; // TODO: "solid" ??
             case "5 2":
                 return "dash";
         }

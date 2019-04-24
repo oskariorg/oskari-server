@@ -3,7 +3,7 @@ package org.oskari.map.userlayer.service;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.domain.map.userlayer.UserLayer;
 import fi.nls.oskari.domain.map.userlayer.UserLayerData;
-import fi.nls.oskari.domain.map.userlayer.UserLayerStyle;
+import fi.nls.oskari.domain.map.UserDataStyle;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.geometry.WKTHelper;
@@ -113,13 +113,13 @@ public class UserLayerDataService {
         return JSONHelper.getStringFromJSON(jsfields, "[]");
     }
 
-    public static UserLayerStyle createUserLayerStyle(JSONObject styleObject)
+    public static UserDataStyle createUserLayerStyle(JSONObject styleObject)
             throws UserLayerException {
-        final UserLayerStyle style = new UserLayerStyle();
+        final UserDataStyle style = new UserDataStyle();
         try{
             style.setId(1);  // for default, even if style should be always valued
             if (styleObject != null) {
-                style.populateFromJSON(styleObject);
+                style.populateFromOskariJSON(styleObject);
             }
             return style;
         } catch (JSONException e) {

@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import fi.nls.oskari.domain.map.UserDataStyle;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -50,8 +51,7 @@ public class MyPlaceCategoryHelper {
         }
     }
 
-    public static MyPlaceCategory parseFromGeoJSON(JSONObject properties)
-            throws JSONException {
+    public static MyPlaceCategory parseFromGeoJSON(JSONObject properties) throws JSONException {
         MyPlaceCategory category = new MyPlaceCategory();
 
         category.setUuid(JSONHelper.optString(properties, "uuid"));
@@ -60,24 +60,11 @@ public class MyPlaceCategoryHelper {
         // Everything is optional except category_name
         category.setCategory_name(JSONHelper.getString(properties, "category_name"));
         category.setDefault(properties.optBoolean("default"));
-
-        category.setStroke_width(properties.optInt("stroke_width"));
-        category.setStroke_color(JSONHelper.optString(properties, "stroke_color"));
-        category.setStroke_linejoin(JSONHelper.optString(properties, "stroke_linejoin"));
-        category.setStroke_linecap(JSONHelper.optString(properties, "stroke_linecap"));
-        category.setStroke_dasharray(JSONHelper.optString(properties, "stroke_dasharray"));
-
-        category.setFill_color(JSONHelper.optString(properties, "fill_color"));
-        category.setFill_pattern(properties.optInt("fill_pattern"));
-
-        category.setDot_color(JSONHelper.optString(properties, "dot_color"));
-        category.setDot_size(properties.optInt("dot_size"));
-        category.setDot_shape(JSONHelper.optString(properties, "dot_shape"));
-
-        category.setBorder_width(properties.optInt("border_width"));
-        category.setBorder_color(JSONHelper.optString(properties, "border_color"));
-        category.setBorder_linejoin(JSONHelper.optString(properties, "border_linejoin"));
-        category.setBorder_dasharray(JSONHelper.optString(properties, "border_dasharray"));
+        if (properties.has("style")) { // parse from oskari style
+            category.getStyle().populateFromOskariJSON(properties.getJSONObject("style"));
+        } else {
+            category.mapPropertiesToStyle(properties);
+        }
 
         return category;
     }
@@ -92,15 +79,17 @@ public class MyPlaceCategoryHelper {
         json.writeFieldName("features");
         json.writeStartArray();
         for (MyPlaceCategory category : categories) {
-            toGeoJSONFeature(json, category);
+            toGeoJSONFeature(json, category, true);
         }
         json.writeEndArray();
         json.writeEndObject();
         json.close();
         return baos;
     }
-
-    private static void toGeoJSONFeature(JsonGenerator json, MyPlaceCategory category)
+    private static void toGeoJSONFeature(JsonGenerator json, MyPlaceCategory category) throws IOException {
+        toGeoJSONFeature(json, category, false);
+    }
+    private static void toGeoJSONFeature(JsonGenerator json, MyPlaceCategory category, boolean useOskariStyle)
             throws IOException {
         json.writeStartObject();
         json.writeStringField("type", "Feature");
@@ -115,24 +104,30 @@ public class MyPlaceCategoryHelper {
         json.writeStringField("category_name", category.getCategory_name());
         json.writeStringField("publisher_name", category.getPublisher_name());
         json.writeBooleanField("default", category.isDefault());
+        // Style
+        UserDataStyle style = category.getStyle();
+        if (useOskariStyle) {
+            json.writeFieldName("style");
+            json.writeRawValue(style.parseUserLayerStyleToOskariJSON().toString());
+        } else {
+            json.writeStringField("stroke_color", style.getStroke_color());
+            json.writeStringField("stroke_dasharray", style.getStroke_dasharray());
+            json.writeStringField("stroke_linecap", style.getStroke_linecap());
+            json.writeStringField("stroke_linejoin", style.getStroke_linejoin());
+            json.writeNumberField("stroke_width", style.getStroke_width());
 
-        json.writeStringField("stroke_color", category.getStroke_color());
-        json.writeStringField("stroke_dasharray", category.getStroke_dasharray());
-        json.writeStringField("stroke_linecap", category.getStroke_linecap());
-        json.writeStringField("stroke_linejoin", category.getStroke_linejoin());
-        json.writeNumberField("stroke_width", category.getStroke_width());
+            json.writeStringField("fill_color", style.getFill_color());
+            json.writeNumberField("fill_pattern", style.getFill_pattern());
 
-        json.writeStringField("fill_color", category.getFill_color());
-        json.writeNumberField("fill_pattern", category.getFill_pattern());
+            json.writeStringField("dot_color", style.getDot_color());
+            json.writeStringField("dot_shape", style.getDot_shape());
+            json.writeNumberField("dot_size", style.getDot_size());
 
-        json.writeStringField("dot_color", category.getDot_color());
-        json.writeStringField("dot_shape", category.getDot_shape());
-        json.writeNumberField("dot_size", category.getDot_size());
-
-        json.writeStringField("border_color", category.getBorder_color());
-        json.writeStringField("border_dasharray", category.getBorder_dasharray());
-        json.writeStringField("border_linejoin", category.getBorder_linejoin());
-        json.writeNumberField("border_width", category.getBorder_width());
+            json.writeStringField("border_color", style.getBorder_color());
+            json.writeStringField("border_dasharray", style.getBorder_dasharray());
+            json.writeStringField("border_linejoin", style.getBorder_linejoin());
+            json.writeNumberField("border_width", style.getBorder_width());
+        }
         json.writeEndObject();
 
         json.writeEndObject();

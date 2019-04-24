@@ -16,6 +16,7 @@
         <result property="publisher_name" column="publisher_name" />
         <result property="style_id" column="style_id" />
         <result property="wkt" column = "wkt" />
+        <association property="style" column = "style_id" select = "findUserLayerStyle" fetchType="eager"/>
     </resultMap>
 	<!-- UserLayer related -->
 	<insert id="insertUserLayerRow" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
@@ -163,7 +164,7 @@
         WHERE id = #{id}
     </update>
 
-	<select id="findUserLayerStyle" resultType="UserLayerStyle" useCache="false">
+	<select id="findUserLayerStyle" resultType="UserDataStyle" useCache="false">
         SELECT
         id,
         stroke_width,
