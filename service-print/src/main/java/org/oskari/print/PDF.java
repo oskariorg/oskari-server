@@ -1,9 +1,11 @@
 package org.oskari.print;
 
+import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Paths;
@@ -13,12 +15,12 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.NoSuchElementException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
 import javax.imageio.ImageIO;
 
+import org.apache.pdfbox.cos.COSName;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
@@ -26,11 +28,11 @@ import org.apache.pdfbox.pdmodel.PDPageContentStream.AppendMode;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.apache.pdfbox.pdmodel.font.PDType1Font;
+import org.apache.pdfbox.pdmodel.graphics.form.PDFormXObject;
 import org.apache.pdfbox.pdmodel.graphics.image.LosslessFactory;
 import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
 import org.apache.pdfbox.pdmodel.graphics.optionalcontent.PDOptionalContentGroup;
 import org.apache.pdfbox.pdmodel.graphics.state.PDExtendedGraphicsState;
-import org.apache.pdfbox.util.Matrix;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.data.simple.SimpleFeatureIterator;
 import org.geotools.referencing.CRS;
@@ -49,9 +51,14 @@ import org.oskari.service.wfs.client.OskariFeatureClient;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.CoordinateSequence;
 import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.GeometryCollection;
 import com.vividsolutions.jts.geom.LineString;
+import com.vividsolutions.jts.geom.MultiLineString;
+import com.vividsolutions.jts.geom.MultiPoint;
+import com.vividsolutions.jts.geom.MultiPolygon;
 import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.Polygon;
+import com.vividsolutions.jts.geom.util.AffineTransformation;
 
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
@@ -145,8 +152,7 @@ public class PDF {
     protected static void getPDF(PrintRequest request,
             WMTSCapabilitiesCache wmtsCapsCache,
             OskariFeatureClient featureClient,
-            PDDocument doc)
-            throws IOException, ServiceException {
+            PDDocument doc) throws IOException, ServiceException {
         int mapWidthPx = request.getWidth();
         int mapHeightPx = request.getHeight();
 
@@ -379,6 +385,7 @@ public class PDF {
         List<PrintLayer> layers = request.getLayers();
 
         Collections.sort(layers, Comparator.comparing(PrintLayer::getZIndex));
+        AffineTransformation transformation = getTransform(request.getBoundingBox(), w, h);
 
         for (PrintLayer layer : layers) {
             int zIndex = layer.getZIndex();
@@ -388,10 +395,9 @@ public class PDF {
             } else {
                 Future<SimpleFeatureCollection> futureFc = featureCollections.get(zIndex);
                 if (futureFc != null) {
-                    drawVectorLayer(doc, stream, request, layer, futureFc, x, y, w, h);
+                    drawVectorLayer(doc, stream, layer, futureFc, transformation, x, y, w, h);
                 }
             }
-
         }
     }
 
@@ -432,41 +438,71 @@ public class PDF {
         }
     }
 
-    private static void drawVectorLayer(PDDocument doc, PDPageContentStream stream,
-            PrintRequest request, PrintLayer layer,
-            Future<SimpleFeatureCollection> future,
-            float x, float y, float w, float h) throws IOException {
+    private static AffineTransformation getTransform(double[] bbox, float w, float h) {
+        double widthNature = Math.abs((bbox[2] - bbox[0]));
+        double heightNature = Math.abs((bbox[3] - bbox[1]));
+
+        // Scale everything to PDF points
+        double sx = (double) w / widthNature;
+        double sy = (double) h / heightNature;
+
+        // Move the origo from (0, 0) to (bbox[0], bbox[1])
+        // by translating all coordinates (-bbox[0], -bbox[1])
+        // and by taking scaling into account
+        double tx = sx * -bbox[0];
+        double ty = sy * -bbox[1];
+
+        // List out all the parameters explicitly because JTS AffineTransformation uses
+        // an unorthodox order for the parameters (compared to java.awt.geom.AffineTransform)
+        double m00 = sx;
+        double m10 = 0;
+        double m01 = 0;
+        double m11 = sy;
+        double m02 = tx;
+        double m12 = ty;
+        return new AffineTransformation(m00, m01, m02, m10, m11, m12);
+    }
+
+    private static void drawVectorLayer(PDDocument doc, PDPageContentStream pageStream,
+            PrintLayer layer, Future<SimpleFeatureCollection> futureFc,
+            AffineTransformation transform, float x, float y, float w, float h) throws IOException {
+        SimpleFeatureCollection fc;
         try {
-            Matrix matrix = getMatrix(request, x, y, w, h);
-            SimpleFeatureCollection fc = future.get();
-            if (fc != null && !fc.isEmpty()) {
-                drawVectorLayer(stream, matrix, layer, fc);
+            fc = futureFc.get();
+            if (fc == null || fc.isEmpty()) {
+                return;
             }
         } catch (InterruptedException | ExecutionException e) {
             LOG.warn(e);
             throw new IOException(e.getMessage());
         }
-    }
 
-    private static Matrix getMatrix(PrintRequest request, float x, float y, float w, float h) {
-        Matrix tm = Matrix.getTranslateInstance(x, y);
-        double[] bbox = request.getBoundingBox();
-        float widthNature = Math.abs((float) (bbox[2] - bbox[0]));
-        float heightNature = Math.abs((float) (bbox[3] - bbox[1]));
-        float sx = w / widthNature;
-        float sy = h / heightNature;
-        tm.scale(sx, sy);
-        tm.translate((float) bbox[0], (float) bbox[1]);
-        return tm;
-    }
+        // Create a Form XObject
+        PDFormXObject form = new PDFormXObject(doc);
+        // Don't draw outside the bbox (PDF renderer will do the clipping for us)
+        form.setBBox(new PDRectangle(w, h));
+        // Draw the form in the correct place
+        form.setMatrix(AffineTransform.getTranslateInstance(x, y));
+        // Make the form Optional Content ("layer" that can be hidden)
+        PDOptionalContentGroup ocg = PDFBoxUtil.getOCG(doc, layer.getName());
+        PDFBoxUtil.setOCG(form, ocg);
 
-    private static void drawVectorLayer(PDPageContentStream stream,
-            Matrix matrix, PrintLayer layer, SimpleFeatureCollection fc) throws IOException {
-        stream.saveGraphicsState();
-        stream.transform(matrix);
-        setStyle(stream, layer);
-        drawFeatures(stream, fc);
-        stream.restoreGraphicsState();
+        try (OutputStream out = form.getContentStream().createOutputStream(COSName.FLATE_DECODE);
+                PDPageContentStream stream = new PDPageContentStream(doc, form, out)) {
+
+            // TODO: foreach "rule" (combination of filter and "style"):
+            // - Set drawing style
+            // - draw features that match the filter
+
+            try (SimpleFeatureIterator it = fc.features()) {
+                while (it.hasNext()) {
+                    setStyle(stream, layer);
+                    drawFeature(stream, transform, it.next());
+                }
+            }
+        }
+
+        pageStream.drawForm(form);
     }
 
     private static void setStyle(PDPageContentStream stream, PrintLayer layer) throws IOException {
@@ -476,74 +512,113 @@ public class PDF {
             PDExtendedGraphicsState gs = new PDExtendedGraphicsState();
             gs.setStrokingAlphaConstant(alpha);
             gs.setNonStrokingAlphaConstant(alpha);
+            setDrawingStyle(gs, layer);
             stream.setGraphicsStateParameters(gs);
+        } else {
+            setDrawingStyle(stream, layer);
         }
     }
 
-    private static void drawFeatures(PDPageContentStream stream, SimpleFeatureCollection fc)
-            throws NoSuchElementException, IOException {
-        try (SimpleFeatureIterator it = fc.features()) {
-            while (it.hasNext()) {
-                drawFeature(stream, it.next());
-            }
-        }
+    private static void setDrawingStyle(PDExtendedGraphicsState gs, PrintLayer layer) {
+        // TODO
     }
 
-    private static void drawFeature(PDPageContentStream stream, SimpleFeature f)
-            throws IOException {
+    private static void setDrawingStyle(PDPageContentStream stream, PrintLayer layer) {
+        // TODO
+    }
+
+    private static void drawFeature(PDPageContentStream stream, AffineTransformation transform,
+            SimpleFeature f) throws IOException {
         Geometry g = (Geometry) f.getDefaultGeometry();
         if (g == null) {
             return;
         }
+        // Transform the Geometry to PDF coordinate space
+        // We could also do the opposite with the PDF CTM
+        // but this way we can better control the floating
+        // point imprecision issues
+        g = transform.transform(g);
+        draw(stream, g);
+    }
+
+    private static void draw(PDPageContentStream stream, Geometry g) throws IOException {
         if (g instanceof Point) {
-            drawFeature(stream, f, (Point) g);
+            draw(stream, (Point) g);
         } else if (g instanceof LineString) {
-            drawFeature(stream, f, (LineString) g);
+            draw(stream, (LineString) g);
         } else if (g instanceof Polygon) {
-            drawFeature(stream, f, (Polygon) g);
+            draw(stream, (Polygon) g);
+        } else if (g instanceof MultiPoint) {
+            draw(stream, (MultiPoint) g);
+        } else if (g instanceof MultiLineString) {
+            draw(stream, (MultiLineString) g);
+        } else if (g instanceof MultiPolygon) {
+            draw(stream, (MultiPolygon) g);
+        } else if (g instanceof GeometryCollection) {
+            draw(stream, (GeometryCollection) g);
         }
     }
 
-    private static void drawFeature(PDPageContentStream stream, SimpleFeature f, Point g)
+    private static void draw(PDPageContentStream stream, Point g)
             throws IOException {
+        // TODO: Draw something meaningful instead of a filling and stroking a rectangle
         Coordinate c = g.getCoordinate();
         stream.addRect((float) c.x - 5f, (float) c.y - 5f, 10, 10);
         stream.fillAndStroke();
     }
 
-    private static void drawFeature(PDPageContentStream stream, SimpleFeature f, LineString g) throws IOException {
+    private static void draw(PDPageContentStream stream, LineString g) throws IOException {
         add(stream, g.getCoordinateSequence());
         stream.stroke();
     }
 
-    private static void drawFeature(PDPageContentStream stream, SimpleFeature f, Polygon g) throws IOException {
-        LineString exterior = g.getExteriorRing();
-        add(stream, exterior.getCoordinateSequence());
-        stream.closePath();
-
-        final int n = g.getNumInteriorRing();
-        for (int i = 0; i < n; i++) {
+    private static void draw(PDPageContentStream stream, Polygon g) throws IOException {
+        add(stream, g.getExteriorRing().getCoordinateSequence());
+        for (int i = 0; i < g.getNumInteriorRing(); i++) {
             add(stream, g.getInteriorRingN(i).getCoordinateSequence());
-            stream.closePath();
         }
+        stream.fillAndStrokeEvenOdd();
+    }
 
-        stream.fillAndStroke();
+    private static void draw(PDPageContentStream stream, MultiPoint g) throws IOException {
+        for (int i = 0; i < g.getNumGeometries(); i++) {
+            draw(stream, (Point) g.getGeometryN(i));
+        }
+    }
+
+    private static void draw(PDPageContentStream stream, MultiLineString g) throws IOException {
+        for (int i = 0; i < g.getNumGeometries(); i++) {
+            draw(stream, (LineString) g.getGeometryN(i));
+        }
+    }
+
+    private static void draw(PDPageContentStream stream, MultiPolygon g) throws IOException {
+        for (int i = 0; i < g.getNumGeometries(); i++) {
+            draw(stream, (Polygon) g.getGeometryN(i));
+        }
+    }
+
+    private static void draw(PDPageContentStream stream, GeometryCollection g) throws IOException {
+        for (int i = 0; i < g.getNumGeometries(); i++) {
+            draw(stream, g.getGeometryN(i));
+        }
     }
 
     private static void add(PDPageContentStream stream, CoordinateSequence csq) throws IOException {
-        final int n = csq.size();
-        for (int i = 0; i < n; i++) {
+        for (int i = 0; i < csq.size(); i++) {
+            float x = (float) csq.getX(i);
+            float y = (float) csq.getY(i);
             if (i == 0) {
-                stream.moveTo((float) csq.getX(i), (float) csq.getY(i));
+                stream.moveTo(x, y);
             } else {
-                stream.lineTo((float) csq.getX(i), (float) csq.getY(i));
+                stream.lineTo(x, y);
             }
         }
+        stream.closePath();
     }
 
     private static void drawBorder(PDPageContentStream stream,
-            float x, float y, float mapWidthPt, float mapHeightPt)
-                    throws IOException {
+            float x, float y, float mapWidthPt, float mapHeightPt) throws IOException {
         stream.saveGraphicsState();
         stream.setLineWidth(0.5f);
         stream.addRect(x, y, mapWidthPt, mapHeightPt);

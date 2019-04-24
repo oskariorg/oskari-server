@@ -152,8 +152,9 @@ public class PrintServiceTest {
         doc.close();
         Desktop.getDesktop().open(file);
     }
-    
+
     @Test
+    @Ignore("Depends on outside resources, doesn't test anything")
     public void testPDFVector() throws ServiceException, IOException, NoSuchAuthorityCodeException, FactoryException, DuplicateException {
         PropertyUtil.addProperty("oskari.native.srs", "EPSG:3067", true);
 
@@ -161,16 +162,16 @@ public class PrintServiceTest {
         request.setFormat(PrintFormat.PDF);
 
         request.setUser(new User());
-        
-        request.setEast(500000);
-        request.setNorth(6750000);
+
+        request.setEast(385940);
+        request.setNorth(6672046);
         request.setSrsName("EPSG:3067");
 
         request.setTitle("Hello world!");
 
         request.setWidth(PDF.mmToPx(210 - 20));
         request.setHeight(PDF.mmToPx(297 - 30));
-        request.setResolution(2);
+        request.setResolution(1);
 
         request.setShowLogo(true);
         request.setShowScale(true);
@@ -186,7 +187,7 @@ public class PrintServiceTest {
         PrintLayer bg = new PrintLayer(0);
         bg.setOskariLayer(taustakartta);
         bg.setOpacity(100);
-        
+
         OskariLayer tieviiva = new OskariLayer();
         tieviiva.setId(2);
         tieviiva.setName("tieviiva");
@@ -198,12 +199,23 @@ public class PrintServiceTest {
         fg.setOskariLayer(tieviiva);
         fg.setOpacity(100);
 
-        request.setLayers(Arrays.asList(fg));
+        OskariLayer rakennus = new OskariLayer();
+        rakennus.setId(3);
+        rakennus.setName("rakennus");
+        rakennus.setType(OskariLayer.TYPE_WFS);
+        rakennus.setVersion("3.0.0");
+        rakennus.setUrl("http://visukysely01.nls.fi:8080/mtkgml");
 
-        // String dataBg = CapabilitiesCacheService.getFromService(bg.getUrl(), bg.getType(), bg.getUsername(), bg.getPassword(), bg.getVersion());
-        // OskariLayerCapabilities answerBg = new OskariLayerCapabilities(1L, bg.getUrl(), bg.getType(), bg.getVersion(), dataBg, null, null);
+        PrintLayer fg2 = new PrintLayer(2);
+        fg2.setOskariLayer(rakennus);
+        fg2.setOpacity(100);
+
+        request.setLayers(Arrays.asList(bg, fg, fg2));
+
+        String dataBg = CapabilitiesCacheService.getFromService(bg.getUrl(), bg.getType(), bg.getUsername(), bg.getPassword(), bg.getVersion());
+        OskariLayerCapabilities answerBg = new OskariLayerCapabilities(1L, bg.getUrl(), bg.getType(), bg.getVersion(), dataBg, null, null);
         CapabilitiesCacheService mock = Mockito.mock(CapabilitiesCacheService.class);
-        // Mockito.when(mock.getCapabilities(bg.getUrl(), bg.getType(), bg.getVersion(), bg.getUsername(), bg.getPassword())).thenReturn(answerBg);
+        Mockito.when(mock.getCapabilities(bg.getUrl(), bg.getType(), bg.getVersion(), bg.getUsername(), bg.getPassword())).thenReturn(answerBg);
         WMTSCapabilitiesCache cache = new WMTSCapabilitiesCache(mock);
         PrintService service = new PrintService(cache);
 
