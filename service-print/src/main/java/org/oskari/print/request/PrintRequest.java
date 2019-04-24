@@ -58,7 +58,7 @@ public class PrintRequest {
 
     public void setSrsName(String srsName) throws FactoryException {
         this.srsName = srsName;
-        this.crs = CRS.decode(srsName);
+        this.crs = CRS.decode(srsName, true);
     }
 
     public CoordinateReferenceSystem getCrs() {
