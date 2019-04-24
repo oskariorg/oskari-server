@@ -18,6 +18,7 @@ public class LayerJSONFormatterUSERLAYER extends LayerJSONFormatter {
     private static final String USERLAYER_RENDERING_ELEMENT = "userlayer.rendering.element";
     private static final String DEFAULT_GEOMETRY_NAME = "the_geom";
     private static final String DEFAULT_LOCALES_LANGUAGE = "en";
+    private static final String DEFAULT_RENDER_MODE = "vector";
 
     private static final String PROPERTY_RENDERING_URL = PropertyUtil.getOptional(USERLAYER_RENDERING_URL);
     final String userlayerRenderingElement = PropertyUtil.get(USERLAYER_RENDERING_ELEMENT);
@@ -59,7 +60,7 @@ public class LayerJSONFormatterUSERLAYER extends LayerJSONFormatter {
         // user layer rendering url - override DB url if property is defined
         JSONHelper.putValue(layerJson, "url", getUserLayerTileUrl());
         JSONHelper.putValue(layerJson, "renderingElement", userlayerRenderingElement);
-
+        JSONHelper.putValue(layerJson, "options", getOptionsWithRenderMode(layerJson));
         return layerJson;
     }
 
@@ -117,6 +118,20 @@ public class LayerJSONFormatterUSERLAYER extends LayerJSONFormatter {
             return jsarray;
         } catch (Exception e) {
             throw new IllegalArgumentException("Couldn't create locales JSONArray from fields");
+        }
+    }
+    private static JSONObject getOptionsWithRenderMode(JSONObject layerJson) {
+        try {
+            JSONObject options = layerJson.optJSONObject("options");
+            if (options == null) {
+                options = new JSONObject();
+            }
+            if (!options.has("renderMode")) {
+                options.put("renderMode", DEFAULT_RENDER_MODE);
+            }
+            return options;
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Couldn't set default render mode for user layer");
         }
     }
 }
