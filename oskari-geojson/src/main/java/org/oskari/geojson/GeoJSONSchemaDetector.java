@@ -21,19 +21,18 @@ public class GeoJSONSchemaDetector {
 
     @SuppressWarnings("unchecked")
     public static SimpleFeatureType getSchema(Map<String, Object> json, CoordinateReferenceSystem crs) {
-        Map<String, Class<?>> bindings = new HashMap<>();
+        GeoJSONReader2.replaceMapsWithGeometries(json);
 
+        Map<String, Class<?>> bindings = new HashMap<>();
         String type = GeoJSONUtil.getString(json, GeoJSON.TYPE);
         switch (type) {
         case GeoJSON.FEATURE_COLLECTION:
-            GeoJSONReader2.replaceFeatureCollectionsMapsWithGeometries(json);
             List<Object> features = GeoJSONUtil.getList(json, GeoJSON.FEATURES);
             for (Object feature : features) {
                 addAttributes((Map<String, Object>) feature, bindings);
             }
             break;
         case GeoJSON.FEATURE:
-            GeoJSONReader2.replaceFeaturesMapWithGeometries(json);
             addAttributes(json, bindings);
             break;
         default:
