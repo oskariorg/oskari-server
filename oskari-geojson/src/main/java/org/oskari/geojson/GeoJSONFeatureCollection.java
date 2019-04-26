@@ -56,7 +56,7 @@ public class GeoJSONFeatureCollection implements SimpleFeatureCollection {
             bounds = new ReferencedEnvelope();
             features.stream()
                     .map(f -> f.getBounds())
-                    .filter(BoundingBox::isEmpty)
+                    .filter(bbox -> !bbox.isEmpty())
                     .forEach(bbox -> bounds.include(bbox));
         }
         return bounds;
