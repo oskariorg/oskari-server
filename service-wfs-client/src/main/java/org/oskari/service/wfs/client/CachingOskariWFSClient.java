@@ -30,7 +30,7 @@ public class CachingOskariWFSClient extends OskariWFSClient {
     public SimpleFeatureCollection getFeatures(String endPoint, String version,
             String user, String pass, String typeName,
             ReferencedEnvelope bbox, CoordinateReferenceSystem crs,
-            Integer maxFeatures, Filter filter) {
+            int maxFeatures, Filter filter) {
         if (filter != null) {
             // Don't cache requests with a Filter
             super.getFeatures(endPoint, version, user, pass,
@@ -43,9 +43,9 @@ public class CachingOskariWFSClient extends OskariWFSClient {
     }
 
     private String getCacheKey(String endPoint, String typeName, Envelope bbox,
-            CoordinateReferenceSystem crs, Integer maxFeatures) {
+            CoordinateReferenceSystem crs, int maxFeatures) {
         String bboxStr = bbox != null ? bbox.toString() : "null";
-        String maxFeaturesStr = maxFeatures != null ? maxFeatures.toString() : "null";
+        String maxFeaturesStr = Integer.toString(maxFeatures);
         return String.join(",", endPoint, typeName, bboxStr,
                 crs.getIdentifiers().iterator().next().toString(), maxFeaturesStr);
     }

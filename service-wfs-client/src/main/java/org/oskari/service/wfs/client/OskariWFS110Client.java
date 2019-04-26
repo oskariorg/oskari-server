@@ -1,26 +1,26 @@
 package org.oskari.service.wfs.client;
 
 import java.io.BufferedInputStream;
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
 import java.net.HttpURLConnection;
-import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Map;
 
 import org.geotools.data.simple.SimpleFeatureCollection;
-import org.geotools.data.simple.SimpleFeatureIterator;
-import org.geotools.feature.DefaultFeatureCollection;
 import org.geotools.filter.v1_0.OGCConfiguration;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.xml.Encoder;
+import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.filter.Filter;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
-import org.oskari.service.wfs3.geojson.WFS3FeatureCollectionIterator;
+import org.oskari.geojson.GeoJSONReader2;
+import org.oskari.geojson.GeoJSONSchemaDetector;
+
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
@@ -35,6 +35,8 @@ public class OskariWFS110Client {
     private static final Logger LOG = LogFactory.getLogger(OskariWFS110Client.class);
     private static final OskariGML OSKARI_GML = new OskariGML();
     private static final int MAX_REDIRECTS = 5;
+    private static final ObjectMapper OM = new ObjectMapper();
+    private static final TypeReference<HashMap<String, Object>> TYPE_REF = new TypeReference<HashMap<String, Object>>() {};
 
     private OskariWFS110Client() {}
 
@@ -42,7 +44,7 @@ public class OskariWFS110Client {
      * @return SimpleFeatureCollection containing the parsed Features, or null if all fails
      */
     public static SimpleFeatureCollection getFeatures(String endPoint, String user, String pass,
-            String typeName, ReferencedEnvelope bbox, CoordinateReferenceSystem crs, Integer maxFeatures, Filter filter) {
+            String typeName, ReferencedEnvelope bbox, CoordinateReferenceSystem crs, int maxFeatures, Filter filter) {
         // First try GeoJSON
         try {
             return getFeaturesGeoJSON(endPoint, user, pass, typeName, bbox, crs, maxFeatures, filter);
@@ -61,7 +63,7 @@ public class OskariWFS110Client {
     }
 
     public static SimpleFeatureCollection getFeaturesGeoJSON(String endPoint, String user, String pass,
-            String typeName, ReferencedEnvelope bbox, CoordinateReferenceSystem crs, Integer maxFeatures, Filter filter) throws Exception {
+            String typeName, ReferencedEnvelope bbox, CoordinateReferenceSystem crs, int maxFeatures, Filter filter) throws Exception {
         Map<String, String> query = getQueryParams(typeName, bbox, crs, maxFeatures, filter);
         query.put("OUTPUTFORMAT", "application/json");
         HttpURLConnection conn = IOHelper.getConnection(endPoint, user, pass, query);
@@ -76,19 +78,19 @@ public class OskariWFS110Client {
             throw new Exception("Unexpected content type " + contentType);
         }
 
-        try (InputStream in = conn.getInputStream();
-                Reader utf8Reader = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8));
-                SimpleFeatureIterator it = new WFS3FeatureCollectionIterator(utf8Reader)) {
-            DefaultFeatureCollection features = new DefaultFeatureCollection(null, null);
-            while (it.hasNext()) {
-                features.add(it.next());
-            }
-            return features;
+        Map<String, Object> geojson = readMap(conn);
+        SimpleFeatureType schema = GeoJSONSchemaDetector.getSchema(geojson, crs);
+        return GeoJSONReader2.toFeatureCollection(geojson, schema);
+    }
+
+    private static Map<String, Object> readMap(HttpURLConnection conn) throws IOException {
+        try (InputStream in = conn.getInputStream()) {
+            return OM.readValue(in, TYPE_REF);
         }
     }
 
     public static SimpleFeatureCollection getFeaturesGML(String endPoint, String user, String pass, String typeName,
-            ReferencedEnvelope bbox, CoordinateReferenceSystem crs, Integer maxFeatures, Filter filter) throws Exception {
+            ReferencedEnvelope bbox, CoordinateReferenceSystem crs, int maxFeatures, Filter filter) throws Exception {
         Map<String, String> query = getQueryParams(typeName, bbox, crs, maxFeatures, filter);
         HttpURLConnection conn = IOHelper.getConnection(endPoint, user, pass, query);
         conn = IOHelper.followRedirect(conn, user, pass, query, MAX_REDIRECTS);
@@ -102,7 +104,7 @@ public class OskariWFS110Client {
     }
 
     protected static Map<String, String> getQueryParams(String typeName, ReferencedEnvelope bbox,
-            CoordinateReferenceSystem crs, Integer maxFeatures, Filter filter) {
+            CoordinateReferenceSystem crs, int maxFeatures, Filter filter) {
         Map<String, String> parameters = new LinkedHashMap<>();
         parameters.put("SERVICE", "WFS");
         parameters.put("VERSION", "1.1.0");
@@ -114,9 +116,7 @@ public class OskariWFS110Client {
         } else {
             parameters.put("FILTER", getFilter(filter));
         }
-        if (maxFeatures != null) {
-            parameters.put("MAXFEATURES", maxFeatures.toString());
-        }
+        parameters.put("MAXFEATURES", Integer.toString(maxFeatures));
         return parameters;
     }
 
