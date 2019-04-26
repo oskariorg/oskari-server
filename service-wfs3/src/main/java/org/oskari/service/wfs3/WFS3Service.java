@@ -3,13 +3,9 @@ package org.oskari.service.wfs3;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
+import org.geotools.referencing.CRS;
 import org.oskari.service.wfs3.model.WFS3CollectionInfo;
 import org.oskari.service.wfs3.model.WFS3ConformanceClass;
 import org.oskari.service.wfs3.model.WFS3Content;
@@ -27,7 +23,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import fi.nls.oskari.util.IOHelper;
 
 public class WFS3Service {
-
     private static final ObjectMapper OM;
     static {
         OM = new ObjectMapper();
@@ -119,6 +114,29 @@ public class WFS3Service {
         return content.getCollections().stream()
                 .filter(c -> c.getId().equals(id))
                 .findAny();
+    }
+    public Set<String> getSupportedEpsgCodes (String collectionId) throws NoSuchElementException {
+        Set<String> epsgs = new HashSet<>();
+        WFS3CollectionInfo collection = getCollection(collectionId).get();
+        for (String crs : collection.getCrs()) {
+            String epsg = convertCrsToEpsg(crs);
+            if (epsg != null) {
+                epsgs.add(epsg);
+            }
+        }
+        return epsgs;
+    }
+
+    public static String convertCrsToEpsg (String crs) {
+        if (crs.toUpperCase().contains("CRS84")){
+            return "EPSG:4326"; // same projection, but axis order differs
+        }
+        try {
+            return CRS.lookupIdentifier(CRS.decode(crs), false);
+        } catch (Exception e) {
+            // not valid EPSG projection
+        }
+        return null;
     }
 
     @Override
