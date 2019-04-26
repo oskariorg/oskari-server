@@ -43,7 +43,7 @@ import java.util.Locale;
 @EnableWebMvc
 @ComponentScan(
         excludeFilters = @ComponentScan.Filter(type= FilterType.ASSIGNABLE_TYPE, value={SpringConfig.class}),
-        basePackages="fi.nls.oskari")
+        basePackages="fi.nls.oskari, org.oskari")
 public class SpringConfig extends WebMvcConfigurerAdapter implements ApplicationListener<ContextRefreshedEvent> {
 
     private static final Logger LOG = LogFactory.getLogger(SpringConfig.class);
