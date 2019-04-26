@@ -17,6 +17,10 @@ import java.io.IOException;
 public class OskariAuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
     private Logger log = LogFactory.getLogger(OskariAuthenticationSuccessHandler.class);
     private OskariUserHelper helper = new OskariUserHelper();
+    public OskariAuthenticationSuccessHandler() {
+        super();
+        setUseReferer(true);
+    }
 
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication)
             throws IOException, javax.servlet.ServletException {
