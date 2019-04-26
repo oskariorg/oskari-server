@@ -21,6 +21,8 @@ public class GeoJSONSchemaDetector {
 
     @SuppressWarnings("unchecked")
     public static SimpleFeatureType getSchema(Map<String, Object> json, CoordinateReferenceSystem crs) {
+        // FIXME: This creates a side-effect by modifying the input as well as returning the SimpleFeatureType.
+        // Might cause problems later on...
         GeoJSONReader2.replaceMapsWithGeometries(json);
 
         Map<String, Class<?>> bindings = new HashMap<>();
