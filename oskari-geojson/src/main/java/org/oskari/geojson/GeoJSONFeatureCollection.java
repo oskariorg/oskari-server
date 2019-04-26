@@ -15,6 +15,7 @@ import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.filter.Filter;
 import org.opengis.filter.sort.SortBy;
+import org.opengis.geometry.BoundingBox;
 import org.opengis.util.ProgressListener;
 
 public class GeoJSONFeatureCollection implements SimpleFeatureCollection {
@@ -22,6 +23,7 @@ public class GeoJSONFeatureCollection implements SimpleFeatureCollection {
     private final List<SimpleFeature> features;
     private final SimpleFeatureType schema;
     private final String collectionId;
+    private ReferencedEnvelope bounds;
 
     public GeoJSONFeatureCollection(List<SimpleFeature> features, SimpleFeatureType schema) {
         this(features, schema, null);
@@ -50,7 +52,19 @@ public class GeoJSONFeatureCollection implements SimpleFeatureCollection {
 
     @Override
     public ReferencedEnvelope getBounds() {
-        throw new UnsupportedOperationException();
+        // "borrowed" from:
+        // https://github.com/geotools/geotools/blob/20.3/modules/library/main/src/main/java/org/geotools/feature/DefaultFeatureCollection.java#L133
+        if (bounds == null) {
+            bounds = new ReferencedEnvelope();
+
+            for (Iterator i = features.iterator(); i.hasNext(); ) {
+                BoundingBox geomBounds = ((SimpleFeature) i.next()).getBounds();
+                if (!geomBounds.isEmpty()) {
+                    bounds.include(geomBounds);
+                }
+            }
+        }
+        return bounds;
     }
 
     @Override
