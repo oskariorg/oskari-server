@@ -1,8 +1,11 @@
 package fi.nls.oskari.control.layer;
 
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
+import fi.mml.map.mapwindow.util.OskariLayerWorker;
+import fi.nls.oskari.domain.map.wfs.WFSLayerConfiguration;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.oskari.service.wfs3.WFS3Service;
@@ -82,12 +85,12 @@ public class GetWSCapabilitiesHandler extends ActionHandler {
                 return GetGtWMSCapabilities.getWMSCapabilities(capabilitiesService, url, user, pw, version, currentCrs);
             case OskariLayer.TYPE_WFS:
                 if (VERSION_WFS3.equals(version)) {
-                    WFS3Service service = WFS3Service.fromURL(url, type, version);
+                    WFS3Service service = WFS3Service.fromURL(url, user, pw);
                     List<JSONObject> layers = service.getCollections().stream()
                             .map(collectionInfo -> toOskariLayer(url, collectionInfo))
-                            .map(layer -> wfsLayerToJSON(layer, currentCrs))
+                            .map(layer -> wfsLayerToJSON(layer, currentCrs, user, pw))
                             .collect(Collectors.toList());
-                    return JSONHelper.createJSONObject("features", new JSONArray(layers));
+                    return JSONHelper.createJSONObject("layers", new JSONArray(layers));
                 } else {
                     return GetGtWFSCapabilities.getWFSCapabilities(url, version, user, pw, currentCrs);
                 }
@@ -122,17 +125,50 @@ public class GetWSCapabilitiesHandler extends ActionHandler {
         for (String lang : PropertyUtil.getSupportedLanguages()) {
             layer.setName(lang, title);
         }
-
+        JSONObject capabilities = layer.getCapabilities();
+        Set<String> epsgs = collection.getCrs()
+                .stream()
+                .map(WFS3Service::convertCrsToEpsg)
+                .filter(epsg -> epsg != null)
+                .collect(Collectors.toSet());
+        JSONHelper.put(capabilities, "srs", new JSONArray(epsgs));
         return layer;
     }
 
-    private JSONObject wfsLayerToJSON(OskariLayer layer, String crs) {
+    private JSONObject wfsLayerToJSON(OskariLayer layer, String crs, String user, String pw) {
         LayerJSONFormatterWFS formatter = new LayerJSONFormatterWFS();
         String lang = PropertyUtil.getDefaultLanguage();
         JSONObject obj = formatter.getJSON(layer, lang, false, crs);
+        OskariLayerWorker.modifyCommonFieldsForEditing(obj, layer);
+        WFSLayerConfiguration lc = layerToWfs30LayerConfiguration(layer, crs, user, pw);
+        JSONObject admin = JSONHelper.getJSONObject(obj, "admin");
+        JSONHelper.putValue(admin, "passthrough", JSONHelper.createJSONObject(lc.getAsJSON()));
         // NOTE! Important to remove id since this is at template
         obj.remove("id");
+        // Admin layer tools needs for listing layers
+        JSONHelper.putValue(obj, "title", layer.getName());
         return obj;
+    }
+
+    private WFSLayerConfiguration layerToWfs30LayerConfiguration (OskariLayer layer, String crs, String user, String pw) {
+        final WFSLayerConfiguration lc = new WFSLayerConfiguration();
+        // Use defaults for now, modify if needed
+        String name = layer.getName();
+        lc.setDefaults();
+        lc.setURL(layer.getUrl());
+        lc.setUsername(user);
+        lc.setPassword(pw);
+        lc.setLayerName(name); // or WFS3CollectionInfo getTitle()
+        lc.setLayerId("layer_" + name);
+        lc.setSRSName(crs);
+        lc.setGMLGeometryProperty("geometry");
+        lc.setWFSVersion(VERSION_WFS3);
+        lc.setFeatureElement(name);
+        lc.setFeatureNamespace("");
+        lc.setFeatureNamespaceURI("");
+        lc.setJobType("default");
+        return lc;
+
     }
 
 }

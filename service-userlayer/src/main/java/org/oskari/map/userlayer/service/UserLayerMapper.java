@@ -2,7 +2,7 @@ package org.oskari.map.userlayer.service;
 
 import fi.nls.oskari.domain.map.userlayer.UserLayer;
 import fi.nls.oskari.domain.map.userlayer.UserLayerData;
-import fi.nls.oskari.domain.map.userlayer.UserLayerStyle;
+import fi.nls.oskari.domain.map.UserDataStyle;
 import fi.nls.oskari.service.ServiceException;
 import org.apache.ibatis.annotations.Param;
 
@@ -20,13 +20,13 @@ public interface UserLayerMapper {
     public String getUserLayerBbox (final long userLayerId);
 
     //UserLayerStyle related
-    public void insertUserLayerStyleRow(final UserLayerStyle userLayerStyle);
+    public void insertUserLayerStyleRow(final UserDataStyle userLayerStyle);
     public void deleteUserLayerStyleRow(final long id);
-    public UserLayerStyle findUserLayerStyle(final long id);
-    public int updateUserLayerStyleCols (final UserLayerStyle userLayeStyle);
+    public UserDataStyle findUserLayerStyle(final long id);
+    public int updateUserLayerStyleCols (final UserDataStyle userLayerStyle);
 
     //UserLayerData related
-    public void insertUserLayerDataRow(@Param ("user_layer_data") final UserLayerData userLayeData, @Param("user_layer_id") final long userLayerId);
+    public void insertUserLayerDataRow(@Param ("user_layer_data") final UserLayerData userLayerData, @Param("user_layer_id") final long userLayerId);
     public int updateUserLayerDataCols(final UserLayerData userLayerData);
     public void deleteUserLayerDataByLayerId (final long userLayerId);
     public void deleteUserLayerDataRow (final long id);

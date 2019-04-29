@@ -17,6 +17,7 @@ import fi.nls.oskari.control.ActionParamsException;
 import fi.nls.oskari.control.RestActionHandler;
 import fi.nls.oskari.domain.User;
 import fi.nls.oskari.domain.map.MyPlaceCategory;
+import fi.nls.oskari.domain.map.UserDataStyle;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.myplaces.MyPlaceCategoryHelper;
@@ -182,24 +183,9 @@ public class MyPlacesLayersHandler extends RestActionHandler {
         MyPlaceCategory category = new MyPlaceCategory();
         category.setCategory_name("");
         category.setDefault(true);
-        //point
-        category.setDot_color("#000000");
-        category.setDot_size(3);
-        category.setDot_shape("1");
-        //line
-        category.setStroke_width(1);
-        category.setStroke_dasharray("");
-        category.setStroke_linecap("butt");
-        category.setStroke_linejoin("mitre");
-        category.setStroke_color("#3233ff");
-        //area
-        category.setFill_pattern(-1);
-        category.setBorder_dasharray("");
-        category.setBorder_linejoin("mitre");
-        category.setBorder_width(1);
-        category.setBorder_color("#000000");
-        category.setFill_color("#ffde00");
-        category.setFill_pattern(-1);
+        UserDataStyle style = category.getStyle();
+        style.initDefaultStyle();
+        category.setStyle(style);
 
         return category;
     }

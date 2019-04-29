@@ -18,6 +18,7 @@ public class LayerJSONFormatterUSERLAYER extends LayerJSONFormatter {
     private static final String USERLAYER_RENDERING_ELEMENT = "userlayer.rendering.element";
     private static final String DEFAULT_GEOMETRY_NAME = "the_geom";
     private static final String DEFAULT_LOCALES_LANGUAGE = "en";
+    private static final String DEFAULT_RENDER_MODE = "vector";
 
     private static final String PROPERTY_RENDERING_URL = PropertyUtil.getOptional(USERLAYER_RENDERING_URL);
     final String userlayerRenderingElement = PropertyUtil.get(USERLAYER_RENDERING_ELEMENT);
@@ -25,41 +26,42 @@ public class LayerJSONFormatterUSERLAYER extends LayerJSONFormatter {
     private static Logger log = LogFactory.getLogger(LayerJSONFormatterUSERLAYER.class);
 
     /**
-     *
      * @param layer
      * @param lang
      * @param isSecure
-     * @param ulayer     data in user_layer table
+     * @param ulayer   data in user_layer table
      * @return
      */
     public JSONObject getJSON(OskariLayer layer,
-                                     final String lang,
-                                     final boolean isSecure,
-                                     final String crs,
-                                     UserLayer ulayer) {
+                              final String lang,
+                              final boolean isSecure,
+                              final String crs,
+                              UserLayer ulayer) {
         // set geometry before parsing layerJson
         layer.setGeometry(ulayer.getWkt());
         final JSONObject layerJson = getBaseJSON(layer, lang, isSecure, crs);
         JSONHelper.putValue(layerJson, "isQueryable", true);
-        JSONHelper.putValue(layerJson, "name",ulayer.getLayer_name());
-        JSONHelper.putValue(layerJson, "description",ulayer.getLayer_desc());
-        JSONHelper.putValue(layerJson, "source",ulayer.getLayer_source());
+        JSONHelper.putValue(layerJson, "name", ulayer.getLayer_name());
+        JSONHelper.putValue(layerJson, "description", ulayer.getLayer_desc());
+        JSONHelper.putValue(layerJson, "source", ulayer.getLayer_source());
+        JSONHelper.putValue(layerJson, "options",
+                JSONHelper.createJSONObject("styles", ulayer.getStyle().getStyleForLayerOptions()));
         JSONArray fields = JSONHelper.createJSONArray(ulayer.getFields());
-        try{
+        try {
             JSONHelper.putValue(layerJson, "fields", getFieldsNames(fields));
-        }catch (IllegalArgumentException e){
+        } catch (IllegalArgumentException e) {
             JSONHelper.putValue(layerJson, "fields", new JSONArray());
             log.warn("Couldn't put fields array to layerJson", e);
         }
         try {
             JSONHelper.putValue(layerJson, "fieldLocales", getLocalizedFields(lang, fields));
-        }catch (IllegalArgumentException e){
+        } catch (IllegalArgumentException e) {
             // do nothing
         }
         // user layer rendering url - override DB url if property is defined
         JSONHelper.putValue(layerJson, "url", getUserLayerTileUrl());
         JSONHelper.putValue(layerJson, "renderingElement", userlayerRenderingElement);
-
+        JSONHelper.putValue(layerJson, "options", getOptionsWithRenderMode(layerJson));
         return layerJson;
     }
 
@@ -117,6 +119,20 @@ public class LayerJSONFormatterUSERLAYER extends LayerJSONFormatter {
             return jsarray;
         } catch (Exception e) {
             throw new IllegalArgumentException("Couldn't create locales JSONArray from fields");
+        }
+    }
+    private static JSONObject getOptionsWithRenderMode(JSONObject layerJson) {
+        try {
+            JSONObject options = layerJson.optJSONObject("options");
+            if (options == null) {
+                options = new JSONObject();
+            }
+            if (!options.has("renderMode")) {
+                options.put("renderMode", DEFAULT_RENDER_MODE);
+            }
+            return options;
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Couldn't set default render mode for user layer");
         }
     }
 }

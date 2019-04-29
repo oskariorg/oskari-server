@@ -43,12 +43,16 @@ public class GetWFSVectorTileHandler extends AbstractWFSFeaturesHandler {
     protected static final String PARAM_X = "x";
     protected static final String PARAM_Y = "y";
 
+    private static final int DEFAULT_MIN_ZOOM_LEVEL = 7;
     private static final Map<String, WFSTileGrid> KNOWN_TILE_GRIDS;
     static {
         KNOWN_TILE_GRIDS = new HashMap<>();
         KNOWN_TILE_GRIDS.put("EPSG:3067", new WFSTileGrid(new double[] { -548576, 6291456, -548576 + (8192*256), 6291456 + (8192*256) }, 15));
         KNOWN_TILE_GRIDS.put("EPSG:3857", new WFSTileGrid(new double[] { -20037508.3427892, -20037508.3427892, 20037508.3427892, 20037508.3427892 }, 18));
     }
+
+    private static final int TILE_EXTENT = 4096;
+    private static final int TILE_BUFFER = 256;
 
     private static final int CACHE_LIMIT = 256;
     private static final long CACHE_EXPIRATION = TimeUnit.MINUTES.toMillis(5);
@@ -64,8 +68,19 @@ public class GetWFSVectorTileHandler extends AbstractWFSFeaturesHandler {
         tileGridProperties = new WFSTileGridProperties();
 
         final Map<String, BundleHandler> handlers = ViewModifierManager.getModifiersOfType(BundleHandler.class);
-        MapfullHandler handler = (MapfullHandler)handlers.get("mapfull");
-        handler.registerPluginHandler(WFSVectorLayerPluginViewModifier.PLUGIN_NAME, new WFSVectorLayerPluginViewModifier());
+        MapfullHandler mapfullHandler = (MapfullHandler)handlers.get("mapfull");
+        WFSVectorLayerPluginViewModifier pluginHandler = new WFSVectorLayerPluginViewModifier();
+        mapfullHandler.registerPluginHandler(WFSVectorLayerPluginViewModifier.PLUGIN_NAME, pluginHandler);
+
+        Map<String, WFSTileGrid> propTileGrids = tileGridProperties.getTileGridMap();
+        KNOWN_TILE_GRIDS.keySet().stream().forEach(srsName -> {
+            pluginHandler.setMinZoomLevelForSRS(srsName, DEFAULT_MIN_ZOOM_LEVEL);
+            pluginHandler.setTileGridForSRS(srsName, KNOWN_TILE_GRIDS.get(srsName));
+        });
+        propTileGrids.keySet().stream().forEach(srsName -> {
+            pluginHandler.setMinZoomLevelForSRS(srsName, DEFAULT_MIN_ZOOM_LEVEL);
+            pluginHandler.setTileGridForSRS(srsName, propTileGrids.get(srsName));
+        });
     }
 
     @Override
@@ -216,7 +231,7 @@ public class GetWFSVectorTileHandler extends AbstractWFSFeaturesHandler {
 
         // sfc always has features for z<=8 so we need to clip to smaller tiles based on requested x,y,z
         double[] bbox = grid.getTileExtent(new TileCoord(z, x, y));
-        byte[] encoded = SimpleFeaturesMVTEncoder.encodeToByteArray(sfc, layer.getName(), bbox, 4096, 256);
+        byte[] encoded = SimpleFeaturesMVTEncoder.encodeToByteArray(sfc, layer.getName(), bbox, TILE_EXTENT, TILE_BUFFER);
         try {
             return IOHelper.gzip(encoded).toByteArray();
         } catch (IOException e) {
@@ -229,7 +244,12 @@ public class GetWFSVectorTileHandler extends AbstractWFSFeaturesHandler {
             Optional<UserLayerService> processor) throws ServiceRuntimeException {
         double[] box = grid.getTileExtent(tile);
         Envelope envelope = new Envelope(box[0], box[2], box[1], box[3]);
-        ReferencedEnvelope bbox = new ReferencedEnvelope(envelope, crs);
+        Envelope bufferedEnvelope = new Envelope(envelope);
+        double bufferSizePercent = (double) TILE_BUFFER / (double) TILE_EXTENT;
+        double deltaX = bufferSizePercent * envelope.getWidth();
+        double deltaY = bufferSizePercent * envelope.getHeight();
+        bufferedEnvelope.expandBy(deltaX, deltaY);
+        ReferencedEnvelope bbox = new ReferencedEnvelope(bufferedEnvelope, crs);
         return featureClient.getFeatures(id, uuid, layer, bbox, crs, processor);
     }
 
@@ -271,6 +291,5 @@ public class GetWFSVectorTileHandler extends AbstractWFSFeaturesHandler {
             return union;
         }
     }
-
 
 }

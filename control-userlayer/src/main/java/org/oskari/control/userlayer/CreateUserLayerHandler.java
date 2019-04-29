@@ -39,7 +39,7 @@ import fi.mml.map.mapwindow.util.OskariLayerWorker;
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.domain.map.userlayer.UserLayer;
 import fi.nls.oskari.domain.map.userlayer.UserLayerData;
-import fi.nls.oskari.domain.map.userlayer.UserLayerStyle;
+import fi.nls.oskari.domain.map.UserDataStyle;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.service.ServiceException;
@@ -391,11 +391,11 @@ public class CreateUserLayerHandler extends RestActionHandler {
     private UserLayer store(SimpleFeatureCollection fc, String uuid, Map<String, String> formParams)
             throws UserLayerException {
             UserLayer userLayer = createUserLayer(fc, uuid, formParams);
-            UserLayerStyle userLayerStyle = createUserLayerStyle(formParams);
+            userLayer.setStyle(createUserLayerStyle(formParams));
             List<UserLayerData> userLayerDataList = UserLayerDataService.createUserLayerData(fc, uuid);
             userLayer.setFeatures_count(userLayerDataList.size());
             userLayer.setFeatures_skipped(fc.size() - userLayerDataList.size());
-            userLayerService.insertUserLayer(userLayer, userLayerStyle, userLayerDataList);
+            userLayerService.insertUserLayer(userLayer, userLayerDataList);
             return userLayer;
     }
 
@@ -406,7 +406,7 @@ public class CreateUserLayerHandler extends RestActionHandler {
         return UserLayerDataService.createUserLayer(fc, uuid, name, desc, source);
     }
 
-    private UserLayerStyle createUserLayerStyle(Map<String, String> formParams)
+    private UserDataStyle createUserLayerStyle(Map<String, String> formParams)
             throws UserLayerException {
         JSONObject styleObject = null;
         if (formParams.containsKey(KEY_STYLE)) {
