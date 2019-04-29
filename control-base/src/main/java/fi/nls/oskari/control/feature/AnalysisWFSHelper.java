@@ -66,7 +66,7 @@ public class AnalysisWFSHelper extends UserLayerService {
         return ff.and(Arrays.asList(userlayerIdEquals, uuidEquals, bboxFilter));
     }
 
-    public boolean hasPermission(String id, User user) {
+    public boolean hasViewPermission(String id, User user) {
         return true;
     }
 

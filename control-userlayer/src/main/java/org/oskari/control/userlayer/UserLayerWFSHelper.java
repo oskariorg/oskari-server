@@ -135,7 +135,7 @@ public class UserLayerWFSHelper extends UserLayerService {
         return new GeoJSONFeatureCollection(fc, schema);
     }
 
-    public boolean hasPermission(String id, User user) {
+    public boolean hasViewPermission(String id, User user) {
         UserLayer layer = getLayer(parseId(id));
         if (layer == null) {
             return false;
