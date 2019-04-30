@@ -115,8 +115,11 @@ public class UserLayerDbServiceMybatisImpl extends UserLayerDbService {
         return cache.get(Long.toString(id));
     }
 
-    private void cache(UserLayer layer) {
-        cache.put(Long.toString(layer.getId()), layer);
+    private UserLayer cache(UserLayer layer) {
+        if (layer != null) {
+            cache.put(Long.toString(layer.getId()), layer);
+        }
+        return layer;
     }
 
     /**
@@ -132,8 +135,7 @@ public class UserLayerDbServiceMybatisImpl extends UserLayerDbService {
         }
         try (SqlSession session = factory.openSession()) {
             layer = getMapper(session).findUserLayer(id);
-            cache(layer);
-            return layer;
+            return cache(layer);
         } catch (Exception e) {
             log.error(e, "Failed to get userLayer with id:", id);
             return null;
@@ -211,7 +213,9 @@ public class UserLayerDbServiceMybatisImpl extends UserLayerDbService {
             session.commit();
             // update data in cache
             UserLayer layer = getFromCache(id);
-            layer.setPublisher_name(name);
+            if (layer != null) {
+                layer.setPublisher_name(name);
+            }
             return result;
         } catch (Exception e) {
             log.error(e, "Failed to update publisher name:", name, "id:", id, "uuid", uuid);
