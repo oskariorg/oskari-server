@@ -207,7 +207,7 @@ public class MyPlacesServiceMybatisImpl extends MyPlacesService {
             session.commit();
             // update data in cache
             MyPlaceCategory layer = getFromCache(id);
-            if (layer != null) {
+            if (layer != null && rows > 0) {
                 layer.setPublisher_name(name);
             }
             return rows;
