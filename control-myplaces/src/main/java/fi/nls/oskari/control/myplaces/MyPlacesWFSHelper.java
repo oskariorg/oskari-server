@@ -4,6 +4,10 @@ import java.util.Arrays;
 
 import fi.nls.oskari.annotation.Oskari;
 import fi.nls.oskari.domain.User;
+import fi.nls.oskari.domain.map.MyPlaceCategory;
+import fi.nls.oskari.domain.map.userlayer.UserLayer;
+import fi.nls.oskari.myplaces.MyPlacesService;
+import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.service.ServiceException;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.geometry.jts.ReferencedEnvelope;
@@ -29,6 +33,7 @@ public class MyPlacesWFSHelper extends UserLayerService {
 
     private FilterFactory ff;
     private int myPlacesLayerId;
+    private MyPlacesService service;
 
     public MyPlacesWFSHelper() {
         init();
@@ -93,7 +98,18 @@ public class MyPlacesWFSHelper extends UserLayerService {
     }
 
     public boolean hasViewPermission(String id, User user) {
-        return true;
+        MyPlaceCategory layer = getLayer(parseId(id));
+        if (layer == null) {
+            return false;
+        }
+        return layer.isOwnedBy(user.getUuid()) || layer.isPublished();
     }
 
+    private MyPlaceCategory getLayer(int id) {
+        if (service == null) {
+            // might cause problems with timing of components being initialized if done in init/constructor
+            service = OskariComponentManager.getComponentOfType(MyPlacesService.class);
+        }
+        return service.findCategory(id);
+    }
 }
