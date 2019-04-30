@@ -84,7 +84,7 @@ public class ResponseHelper {
      * @param baos ByteArrayOutputStream containing the response body
      */
     public static final void writeResponse(ActionParameters params, int sc, String contentType,
-            ByteArrayOutputStream baos) {
+                                           ByteArrayOutputStream baos) {
         final int len = baos.size();
         final HttpServletResponse resp = params.getResponse();
         resp.setStatus(sc);
@@ -95,6 +95,18 @@ public class ResponseHelper {
         } catch (IOException e) {
             LOG.warn(e);
         }
+    }
+
+    /**
+     * Writes out the given response.
+     *
+     * @param params reference to ActionParams
+     * @param sc HTTP Status Code to send
+     * @param contentType of the response
+     * @param content String containing the response body
+     */
+    public static final void writeResponse(ActionParameters params, int sc, String contentType, String content) {
+        writeResponse(params, sc, contentType, content.getBytes(StandardCharsets.UTF_8));
     }
 
     /**
