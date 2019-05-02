@@ -44,7 +44,7 @@ public class OskariFeatureClient {
         return nativeCRS;
     }
 
-    public SimpleFeatureCollection getFeatures(String id, String uuid, OskariLayer layer, ReferencedEnvelope bbox,
+    public SimpleFeatureCollection getFeatures(String id, OskariLayer layer, ReferencedEnvelope bbox,
             CoordinateReferenceSystem nativeCRS, CoordinateReferenceSystem targetCRS,
             Optional<UserLayerService> processor) throws ServiceException {
         boolean needsTransform = !CRS.equalsIgnoreMetadata(nativeCRS, targetCRS);
@@ -60,7 +60,7 @@ public class OskariFeatureClient {
             }
         }
 
-        SimpleFeatureCollection features = getFeatures(id, uuid, layer, requestBbox, nativeCRS, processor);
+        SimpleFeatureCollection features = getFeatures(id, layer, requestBbox, nativeCRS, processor);
         if (!needsTransform) {
             return features;
         }
@@ -74,7 +74,7 @@ public class OskariFeatureClient {
         }
     }
 
-    public SimpleFeatureCollection getFeatures(String id, String uuid, OskariLayer layer,
+    public SimpleFeatureCollection getFeatures(String id, OskariLayer layer,
             ReferencedEnvelope bbox, CoordinateReferenceSystem crs,
             Optional<UserLayerService> processor) throws ServiceRuntimeException {
         String endPoint = layer.getUrl();
