@@ -28,7 +28,6 @@ public class AnalysisWFSHelper extends UserLayerService {
 
     protected static final String ATTR_GEOMETRY = "geometry";
     private static final String ATTR_LAYER_ID = "analysis_id";
-    private static final String ATTR_UUID = "uuid";
 
     private FilterFactory ff;
     private int analysisLayerId;
@@ -55,7 +54,7 @@ public class AnalysisWFSHelper extends UserLayerService {
         return Integer.parseInt(layerId.substring(layerId.lastIndexOf('_') + 1));
     }
 
-    public Filter getWFSFilter(String analysisLayerId, String uuid, ReferencedEnvelope bbox) {
+    public Filter getWFSFilter(String analysisLayerId, ReferencedEnvelope bbox) {
         int layerId = parseId(analysisLayerId);
         Expression _layerId = ff.property(ATTR_LAYER_ID);
 

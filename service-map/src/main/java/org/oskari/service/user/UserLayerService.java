@@ -13,7 +13,14 @@ public abstract class UserLayerService extends OskariComponent {
     public abstract boolean isUserContentLayer(String layerId);
     public abstract int getBaselayerId();
     public abstract int parseId(String layerId);
-    public abstract Filter getWFSFilter(String layerId, String userUuid, ReferencedEnvelope bbox);
+
+    /**
+     * Assumes that layer permissions are checked elsewhere in the code with hasViewPermission() for example
+     * @param layerId
+     * @param bbox
+     * @return
+     */
+    public abstract Filter getWFSFilter(String layerId, ReferencedEnvelope bbox);
     public SimpleFeatureCollection postProcess(SimpleFeatureCollection sfc) throws Exception {
         // do nothing, but allows overriding
         return sfc;

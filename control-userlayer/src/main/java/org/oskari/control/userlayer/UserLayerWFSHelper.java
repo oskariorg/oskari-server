@@ -39,8 +39,6 @@ public class UserLayerWFSHelper extends UserLayerService {
 
     protected static final String USERLAYER_ATTR_GEOMETRY = "geometry";
     private static final String USERLAYER_ATTR_USER_LAYER_ID = "user_layer_id";
-    private static final String USERLAYER_ATTR_UUID = "uuid";
-    private static final String USERLAYER_ATTR_PUBLISHER_NAME = "publisher_name";
     private static final String USERLAYER_ATTR_PROPERTY_JSON = "property_json";
 
     private FilterFactory ff;
@@ -72,21 +70,18 @@ public class UserLayerWFSHelper extends UserLayerService {
         return Integer.parseInt(layerId.substring(PREFIX_USERLAYER.length()));
     }
 
-    public Filter getWFSFilter(String layerId, String uuid, ReferencedEnvelope bbox) {
+    public Filter getWFSFilter(String layerId,ReferencedEnvelope bbox) {
         int userlayerId = parseId(layerId);
         Expression _userlayerId = ff.property(USERLAYER_ATTR_USER_LAYER_ID);
-        Expression _uuid = ff.property(USERLAYER_ATTR_UUID);
 
         Filter userlayerIdEquals = ff.equals(_userlayerId, ff.literal(userlayerId));
-
-        Filter uuidEquals = ff.equals(_uuid, ff.literal(uuid));
 
         Filter bboxFilter = ff.bbox(USERLAYER_ATTR_GEOMETRY,
                 bbox.getMinX(), bbox.getMinY(),
                 bbox.getMaxX(), bbox.getMaxY(),
                 CRS.toSRS(bbox.getCoordinateReferenceSystem()));
 
-        return ff.and(Arrays.asList(userlayerIdEquals, uuidEquals, bboxFilter));
+        return ff.and(Arrays.asList(userlayerIdEquals, bboxFilter));
     }
 
     @SuppressWarnings("unchecked")

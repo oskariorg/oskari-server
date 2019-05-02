@@ -85,7 +85,7 @@ public class OskariFeatureClient {
         // TODO: Figure out the maxFeatures from the layer
         int maxFeatures = 10000;
 
-        Filter filter = processor.map(proc -> proc.getWFSFilter(id, uuid, bbox)).orElse(null);
+        Filter filter = processor.map(proc -> proc.getWFSFilter(id, bbox)).orElse(null);
 
         SimpleFeatureCollection sfc = wfsClient.getFeatures(endPoint, version, user, pass, typeName, bbox, crs, maxFeatures, filter);
 

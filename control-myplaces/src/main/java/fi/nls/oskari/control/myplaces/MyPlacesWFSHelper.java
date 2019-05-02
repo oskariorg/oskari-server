@@ -28,8 +28,6 @@ public class MyPlacesWFSHelper extends UserLayerService {
     private static final String PREFIX_MYPLACES = "myplaces_";
     private static final String MYPLACES_ATTR_GEOMETRY = "oskari:geometry";
     private static final String MYPLACES_ATTR_CATEGORY_ID = "oskari:category_id";
-    private static final String MYPLACES_ATTR_UUID = "oskari:uuid";
-    private static final String MYPLACES_ATTR_PUBLISHER_NAME = "oskari:publisher_name";
 
     private FilterFactory ff;
     private int myPlacesLayerId;
@@ -67,19 +65,17 @@ public class MyPlacesWFSHelper extends UserLayerService {
         return Integer.parseInt(layerId.substring(PREFIX_MYPLACES.length()));
     }
 
-    public Filter getWFSFilter(String layerId, String uuid, ReferencedEnvelope bbox) {
+    public Filter getWFSFilter(String layerId, ReferencedEnvelope bbox) {
         int categoryId = parseId(layerId);
         Expression _categoryId = ff.property(MYPLACES_ATTR_CATEGORY_ID);
-        Expression _uuid = ff.property(MYPLACES_ATTR_UUID);
 
         Filter categoryIdEquals = ff.equals(_categoryId, ff.literal(categoryId));
-        Filter uuidEquals = ff.equals(_uuid, ff.literal(uuid));
         Filter bboxFilter = ff.bbox(MYPLACES_ATTR_GEOMETRY,
                 bbox.getMinX(), bbox.getMinY(),
                 bbox.getMaxX(), bbox.getMaxY(),
                 CRS.toSRS(bbox.getCoordinateReferenceSystem()));
 
-        return ff.and(Arrays.asList(categoryIdEquals, uuidEquals, bboxFilter));
+        return ff.and(Arrays.asList(categoryIdEquals, bboxFilter));
     }
 
     public boolean hasViewPermission(String id, User user) {
