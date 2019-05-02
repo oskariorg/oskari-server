@@ -67,7 +67,7 @@ public class AnalysisWFSHelper extends UserLayerService {
     }
 
     public boolean hasViewPermission(String id, User user) {
-        return true;
+        return false;
     }
 
 }
