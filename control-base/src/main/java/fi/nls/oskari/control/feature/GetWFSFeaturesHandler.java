@@ -1,7 +1,7 @@
 package fi.nls.oskari.control.feature;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 
@@ -80,10 +80,10 @@ public class GetWFSFeaturesHandler extends AbstractWFSFeaturesHandler {
         }
 
         try {
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            StringWriter writer = new StringWriter();
             int decimals = getNumDecimals(targetCRS);
-            new FeatureJSON(new GeometryJSON(decimals)).writeFeatureCollection(fc, baos);
-            ResponseHelper.writeResponse(params, 200, GEOJSON_CONTENT_TYPE, baos);
+            new FeatureJSON(new GeometryJSON(decimals)).writeFeatureCollection(fc, writer);
+            ResponseHelper.writeResponse(params, 200, GEOJSON_CONTENT_TYPE, writer.getBuffer().toString());
         } catch (IOException e) {
             ResponseHelper.writeError(params, ERR_GEOJSON_ENCODE_FAIL);
         }
