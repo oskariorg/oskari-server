@@ -2,6 +2,8 @@ package org.oskari.map.userlayer.service;
 
 
 import fi.nls.oskari.annotation.Oskari;
+import fi.nls.oskari.cache.Cache;
+import fi.nls.oskari.cache.CacheManager;
 import fi.nls.oskari.db.DatasourceHelper;
 import fi.nls.oskari.domain.map.userlayer.UserLayer;
 import fi.nls.oskari.domain.map.userlayer.UserLayerData;
@@ -17,6 +19,7 @@ import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
 
 import javax.sql.DataSource;
 import java.util.List;
+import java.util.Optional;
 
 @Oskari
 public class UserLayerDbServiceMybatisImpl extends UserLayerDbService {
@@ -24,6 +27,7 @@ public class UserLayerDbServiceMybatisImpl extends UserLayerDbService {
     private static final Logger log = LogFactory.getLogger(UserLayerDbServiceMybatisImpl.class);
     private static final String USERLAYER_MYBATIS_BATCH_SIZE = "userlayer.mybatis.batch.size";
     final int batchSize = PropertyUtil.getOptional(USERLAYER_MYBATIS_BATCH_SIZE, 1000);
+    private final Cache<UserLayer> cache;
     private SqlSessionFactory factory = null;
 
 
@@ -36,6 +40,7 @@ public class UserLayerDbServiceMybatisImpl extends UserLayerDbService {
         } else {
             log.error("Couldn't get datasource for userlayer");
         }
+        cache = CacheManager.getCache(getClass().getName());
     }
 
     private SqlSessionFactory initializeMyBatis(final DataSource dataSource) {
@@ -78,6 +83,7 @@ public class UserLayerDbServiceMybatisImpl extends UserLayerDbService {
             if (count == 0) throw new UserLayerException("UserLayer doesn't contain features", UserLayerException.ErrorType.NO_FEATURES);
             log.debug("stored:", count, "rows");
             session.commit();
+            cache(userLayer);
             return count;
         } catch (Exception e) {
             log.error(e, "Rolling back, failed to insert userlayer with id:", +userLayer.getId());
@@ -105,6 +111,17 @@ public class UserLayerDbServiceMybatisImpl extends UserLayerDbService {
         }
     }
 
+    private UserLayer getFromCache(long id) {
+        return cache.get(Long.toString(id));
+    }
+
+    private UserLayer cache(UserLayer layer) {
+        if (layer != null) {
+            cache.put(Long.toString(layer.getId()), layer);
+        }
+        return layer;
+    }
+
     /**
      * Get UserLayer row  by id
      *
@@ -112,8 +129,13 @@ public class UserLayerDbServiceMybatisImpl extends UserLayerDbService {
      * @return userLayer object
      */
     public UserLayer getUserLayerById(long id) {
+        UserLayer layer = getFromCache(id);
+        if (layer != null) {
+            return layer;
+        }
         try (SqlSession session = factory.openSession()) {
-            return getMapper(session).findUserLayer(id);
+            layer = getMapper(session).findUserLayer(id);
+            return cache(layer);
         } catch (Exception e) {
             log.error(e, "Failed to get userLayer with id:", id);
             return null;
@@ -139,6 +161,7 @@ public class UserLayerDbServiceMybatisImpl extends UserLayerDbService {
     public void deleteUserLayerById(final long id) throws ServiceException {
         final UserLayer userLayer = getUserLayerById(id);
         deleteUserLayer(userLayer);
+        cache.remove(Long.toString(id));
     }
 
     public void deleteUserLayer(final UserLayer userLayer) throws ServiceException {
@@ -151,6 +174,7 @@ public class UserLayerDbServiceMybatisImpl extends UserLayerDbService {
             mapper.deleteUserLayerRow(userLayer.getId());
             mapper.deleteUserLayerStyleRow(userLayer.getStyle_id());
             session.commit();
+            cache.remove(Long.toString(userLayer.getId()));
         } catch (Exception e) {
             log.error(e, "Error deleting userLayer with id:", userLayer.getId());
             throw new ServiceException("Error deleting userLayer with id:" + userLayer.getId(), e);
@@ -187,6 +211,11 @@ public class UserLayerDbServiceMybatisImpl extends UserLayerDbService {
             final UserLayerMapper mapper = getMapper(session);
             int result = mapper.updatePublisherName(id, uuid, name);
             session.commit();
+            // update data in cache
+            UserLayer layer = getFromCache(id);
+            if (layer != null && result > 0) {
+                layer.setPublisher_name(name);
+            }
             return result;
         } catch (Exception e) {
             log.error(e, "Failed to update publisher name:", name, "id:", id, "uuid", uuid);
