@@ -2,6 +2,8 @@ package fi.nls.oskari.control.feature;
 
 import fi.mml.portti.domain.permissions.Permissions;
 import fi.nls.oskari.annotation.Oskari;
+import fi.nls.oskari.cache.CacheManager;
+import fi.nls.oskari.cache.ComputeOnceCache;
 import fi.nls.oskari.domain.User;
 import fi.nls.oskari.domain.map.analysis.Analysis;
 import fi.nls.oskari.map.analysis.domain.AnalysisLayer;
@@ -32,6 +34,7 @@ public class AnalysisWFSHelper extends UserLayerService {
     private FilterFactory ff;
     private int analysisLayerId;
     private AnalysisDbService service;
+    private ComputeOnceCache<Set<String>> permissionsCache;
 
     public AnalysisWFSHelper() {
         init();
@@ -40,6 +43,11 @@ public class AnalysisWFSHelper extends UserLayerService {
     public void init() {
         this.ff = CommonFactoryFinder.getFilterFactory();
         this.analysisLayerId = PropertyUtil.getOptional(PROP_ANALYSIS_BASELAYER_ID, -2);
+
+        // One minute cache to get most of the requests from going to db but also a workaround the issue that:
+        // FIXME: this is not the right place to cache permissions.
+        long expireInOneMinute = 60L * 1000L;
+        permissionsCache = CacheManager.getCache(getClass().getName(),() -> new ComputeOnceCache<>(100, expireInOneMinute));
     }
 
     public int getBaselayerId() {
@@ -77,10 +85,17 @@ public class AnalysisWFSHelper extends UserLayerService {
         if (layer.isOwnedBy(user.getUuid())) {
             return true;
         }
-        // TODO: caching for permissions
-        final Set<String> permissions = ServiceFactory.getPermissionsService().getResourcesWithGrantedPermissions(
-                AnalysisLayer.TYPE, user, Permissions.PERMISSION_TYPE_VIEW_PUBLISHED);
+
+        // caching for permissions
+        final Set<String> permissions = getPermissionsForUser(user);
         return permissions.contains("analysis+" + layerId);
+    }
+
+    private Set<String> getPermissionsForUser(User user) {
+        return permissionsCache.get(Long.toString(user.getId()),
+                __ ->
+                        ServiceFactory.getPermissionsService().getResourcesWithGrantedPermissions(
+                                AnalysisLayer.TYPE, user, Permissions.PERMISSION_TYPE_VIEW_PUBLISHED));
     }
 
     private Analysis getLayer(int id) {
