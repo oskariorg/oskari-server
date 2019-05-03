@@ -77,7 +77,7 @@ public class AnalysisWFSHelper extends UserLayerService {
         if (layer.isOwnedBy(user.getUuid())) {
             return true;
         }
-        // TODO: caching
+        // TODO: caching for permissions
         final Set<String> permissions = ServiceFactory.getPermissionsService().getResourcesWithGrantedPermissions(
                 AnalysisLayer.TYPE, user, Permissions.PERMISSION_TYPE_VIEW_PUBLISHED);
         return permissions.contains("analysis+" + layerId);
@@ -88,7 +88,6 @@ public class AnalysisWFSHelper extends UserLayerService {
             // might cause problems with timing of components being initialized if done in init/constructor
             service = new AnalysisDbServiceMybatisImpl();
         }
-        // TODO: caching
         return service.getAnalysisById(id);
     }
 }
