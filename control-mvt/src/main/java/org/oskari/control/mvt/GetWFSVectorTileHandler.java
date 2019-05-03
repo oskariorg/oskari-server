@@ -93,7 +93,6 @@ public class GetWFSVectorTileHandler extends AbstractWFSFeaturesHandler {
 
         final Optional<UserLayerService> contentProcessor = getUserContentProsessor(id);
         final OskariLayer layer = findLayer(id, params.getUser(), contentProcessor);
-        final String uuid = params.getUser().getUuid();
 
         final WFSTileGrid gridFromProps = tileGridProperties.getTileGrid(srs.toUpperCase());
         final WFSTileGrid grid = gridFromProps != null ? gridFromProps : KNOWN_TILE_GRIDS.get(srs.toUpperCase());
@@ -111,10 +110,10 @@ public class GetWFSVectorTileHandler extends AbstractWFSFeaturesHandler {
         final byte[] resp;
         try {
             if (contentProcessor.isPresent() && contentProcessor.get().isUserContentLayer(id)) {
-                // Skip cache
-                resp = createTile(id, uuid, layer, crs, grid, z, x, y, contentProcessor);
+                // Don't cache user content tiles
+                resp = createTile(id, layer, crs, grid, z, x, y, contentProcessor);
             } else {
-                resp = tileCache.get(cacheKey, __ -> createTile(id, uuid, layer, crs, grid, z, x, y, contentProcessor));
+                resp = tileCache.get(cacheKey, __ -> createTile(id, layer, crs, grid, z, x, y, contentProcessor));
             }
         } catch (ServiceRuntimeException e) {
             throw new ActionException(e.getMessage());
@@ -190,7 +189,7 @@ public class GetWFSVectorTileHandler extends AbstractWFSFeaturesHandler {
      * @return an MVT tile as a GZipped byte array
      * @throws ActionException
      */
-    private byte[] createTile(String id, String uuid, OskariLayer layer, CoordinateReferenceSystem crs,
+    private byte[] createTile(String id, OskariLayer layer, CoordinateReferenceSystem crs,
             WFSTileGrid grid, int z, int x, int y,
             Optional<UserLayerService> contentProcessor) throws ServiceRuntimeException {
         // Find nearest higher resolution
@@ -226,7 +225,7 @@ public class GetWFSVectorTileHandler extends AbstractWFSFeaturesHandler {
 
         SimpleFeatureCollection sfc = null;
         for (TileCoord tile : wfsTiles) {
-            SimpleFeatureCollection tileFeatures = getFeatures(id, uuid, layer, crs, grid, tile, contentProcessor);
+            SimpleFeatureCollection tileFeatures = getFeatures(id, layer, crs, grid, tile, contentProcessor);
             if (tileFeatures == null) {
                 throw new ServiceRuntimeException("Failed to get features from service");
             }
@@ -244,7 +243,7 @@ public class GetWFSVectorTileHandler extends AbstractWFSFeaturesHandler {
         }
     }
 
-    private SimpleFeatureCollection getFeatures(String id, String uuid, OskariLayer layer,
+    private SimpleFeatureCollection getFeatures(String id, OskariLayer layer,
             CoordinateReferenceSystem crs, WFSTileGrid grid, TileCoord tile,
             Optional<UserLayerService> processor) throws ServiceRuntimeException {
         double[] box = grid.getTileExtent(tile);
@@ -255,7 +254,7 @@ public class GetWFSVectorTileHandler extends AbstractWFSFeaturesHandler {
         double deltaY = bufferSizePercent * envelope.getHeight();
         bufferedEnvelope.expandBy(deltaX, deltaY);
         ReferencedEnvelope bbox = new ReferencedEnvelope(bufferedEnvelope, crs);
-        return featureClient.getFeatures(id, uuid, layer, bbox, crs, processor);
+        return featureClient.getFeatures(id, layer, bbox, crs, processor);
     }
 
     public static SimpleFeatureCollection union(SimpleFeatureCollection a, SimpleFeatureCollection b) {

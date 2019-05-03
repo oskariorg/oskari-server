@@ -6,6 +6,9 @@ import java.util.Iterator;
 import java.util.List;
 
 import fi.nls.oskari.annotation.Oskari;
+import fi.nls.oskari.domain.User;
+import fi.nls.oskari.domain.map.userlayer.UserLayer;
+import fi.nls.oskari.service.OskariComponentManager;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.data.simple.SimpleFeatureIterator;
 import org.geotools.factory.CommonFactoryFinder;
@@ -25,6 +28,7 @@ import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.util.PropertyUtil;
 
 import org.oskari.geojson.GeoJSONFeatureCollection;
+import org.oskari.map.userlayer.service.UserLayerDbService;
 import org.oskari.service.user.UserLayerService;
 
 @Oskari
@@ -35,12 +39,11 @@ public class UserLayerWFSHelper extends UserLayerService {
 
     protected static final String USERLAYER_ATTR_GEOMETRY = "geometry";
     private static final String USERLAYER_ATTR_USER_LAYER_ID = "user_layer_id";
-    private static final String USERLAYER_ATTR_UUID = "uuid";
-    private static final String USERLAYER_ATTR_PUBLISHER_NAME = "publisher_name";
     private static final String USERLAYER_ATTR_PROPERTY_JSON = "property_json";
 
     private FilterFactory ff;
     private int userlayerLayerId;
+    private UserLayerDbService service;
 
     public UserLayerWFSHelper() {
         init();
@@ -67,35 +70,18 @@ public class UserLayerWFSHelper extends UserLayerService {
         return Integer.parseInt(layerId.substring(PREFIX_USERLAYER.length()));
     }
 
-    public Filter getWFSFilter(String layerId, String uuid, ReferencedEnvelope bbox) {
+    public Filter getWFSFilter(String layerId,ReferencedEnvelope bbox) {
         int userlayerId = parseId(layerId);
         Expression _userlayerId = ff.property(USERLAYER_ATTR_USER_LAYER_ID);
-        Expression _uuid = ff.property(USERLAYER_ATTR_UUID);
 
         Filter userlayerIdEquals = ff.equals(_userlayerId, ff.literal(userlayerId));
-
-        Filter uuidEquals = ff.equals(_uuid, ff.literal(uuid));
-/*
-// FIXME: Referencing publisher name requires the layer is oskari:user_layer_data_style instead of oskari:vuser_layer_data
-// which brings more attributes that we want AND breaks transport
-// TODO: We might need to check if the use has right to view the layer that is not his/her own in another way
-// Leaving this logic out means that guests won't see the published user content layer
-        Expression _publisherName = ff.property(USERLAYER_ATTR_PUBLISHER_NAME);
-        Filter publisherNameNotNull = ff.not(ff.isNull(_publisherName));
-        Filter publisherNameNotEmpty = ff.notEqual(_publisherName, ff.literal(""));
-        Filter publisherNameNotNullNotEmpty = ff.and(publisherNameNotNull, publisherNameNotEmpty);
-
-        Filter uuidEqualsOrPublished = ff.or(uuidEquals, publisherNameNotNullNotEmpty);
- */
-
-        Filter uuidEqualsOrPublished = uuidEquals;
 
         Filter bboxFilter = ff.bbox(USERLAYER_ATTR_GEOMETRY,
                 bbox.getMinX(), bbox.getMinY(),
                 bbox.getMaxX(), bbox.getMaxY(),
                 CRS.toSRS(bbox.getCoordinateReferenceSystem()));
 
-        return ff.and(Arrays.asList(userlayerIdEquals, uuidEqualsOrPublished, bboxFilter));
+        return ff.and(Arrays.asList(userlayerIdEquals, bboxFilter));
     }
 
     @SuppressWarnings("unchecked")
@@ -142,6 +128,22 @@ public class UserLayerWFSHelper extends UserLayerService {
         }
 
         return new GeoJSONFeatureCollection(fc, schema);
+    }
+
+    public boolean hasViewPermission(String id, User user) {
+        UserLayer layer = getLayer(parseId(id));
+        if (layer == null) {
+            return false;
+        }
+        return layer.isOwnedBy(user.getUuid()) || layer.isPublished();
+    }
+
+    private UserLayer getLayer(int id) {
+        if (service == null) {
+            // might cause problems with timing of components being initialized if done in init/constructor
+            service = OskariComponentManager.getComponentOfType(UserLayerDbService.class);
+        }
+        return service.getUserLayerById(id);
     }
 
     private SimpleFeatureType createType(SimpleFeatureType schema, JSONObject properties) throws JSONException {

@@ -51,7 +51,6 @@ public class GetWFSFeaturesHandler extends AbstractWFSFeaturesHandler {
 
         Optional<UserLayerService> contentProcessor = getUserContentProsessor(id);
         OskariLayer layer = findLayer(id, params.getUser(), contentProcessor);
-        String uuid = params.getUser().getUuid();
 
         String targetSRS = params.getHttpParam(ActionConstants.PARAM_SRS, "EPSG:3857");
         CoordinateReferenceSystem targetCRS;
@@ -67,7 +66,7 @@ public class GetWFSFeaturesHandler extends AbstractWFSFeaturesHandler {
 
         SimpleFeatureCollection fc;
         try {
-            fc = featureClient.getFeatures(id, uuid, layer, bbox, targetCRS, contentProcessor);
+            fc = featureClient.getFeatures(id, layer, bbox, targetCRS, contentProcessor);
         } catch (ServiceRuntimeException e) {
             // ActionParamsException because we don't want to log stacktrace of these  
             throw new ActionParamsException(ERR_FAILED_TO_RETRIEVE_FEATURES, e);
