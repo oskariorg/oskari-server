@@ -148,14 +148,14 @@ public class AnalysisWFSHelper extends UserLayerService {
     private SimpleFeatureType createType(SimpleFeatureType schema, SimpleFeature f) {
         SimpleFeatureTypeBuilder typeBuilder = new SimpleFeatureTypeBuilder();
         typeBuilder.setName(schema.getName());
+        typeBuilder.setDefaultGeometry(schema.getGeometryDescriptor().getLocalName());
         f.getFeatureType().getAttributeDescriptors().stream()
                 .filter(attr -> isVisibleProperty(attr.getLocalName()))
                 .forEach(attr -> typeBuilder.add(attr));
-        typeBuilder.setDefaultGeometry(schema.getGeometryDescriptor().getLocalName());
         return typeBuilder.buildFeatureType();
     }
 
     private boolean isVisibleProperty(String name) {
-        return !HIDDEN_PROPERTIES.stream().anyMatch(propName -> propName.equals(name));
+        return HIDDEN_PROPERTIES.stream().noneMatch(propName -> propName.equals(name));
     }
 }

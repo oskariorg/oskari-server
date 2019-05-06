@@ -136,10 +136,11 @@ public class MyPlacesWFSHelper extends UserLayerService {
     private SimpleFeatureType createType(SimpleFeatureType schema, SimpleFeature f) {
         SimpleFeatureTypeBuilder typeBuilder = new SimpleFeatureTypeBuilder();
         typeBuilder.setName(schema.getName());
+        typeBuilder.setDefaultGeometry(schema.getGeometryDescriptor().getLocalName());
         f.getFeatureType().getAttributeDescriptors().stream()
                 .filter(attr -> isVisibleProperty(attr.getLocalName()))
                 .forEach(attr -> typeBuilder.add(attr));
-        typeBuilder.setDefaultGeometry(schema.getGeometryDescriptor().getLocalName());
+        typeBuilder.add(schema.getGeometryDescriptor());
         return typeBuilder.buildFeatureType();
     }
 
