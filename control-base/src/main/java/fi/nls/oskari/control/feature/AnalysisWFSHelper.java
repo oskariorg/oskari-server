@@ -10,16 +10,26 @@ import fi.nls.oskari.map.analysis.domain.AnalysisLayer;
 import fi.nls.oskari.map.analysis.service.AnalysisDbService;
 import fi.nls.oskari.map.analysis.service.AnalysisDbServiceMybatisImpl;
 import fi.nls.oskari.util.PropertyUtil;
+import org.geotools.data.simple.SimpleFeatureCollection;
+import org.geotools.data.simple.SimpleFeatureIterator;
 import org.geotools.factory.CommonFactoryFinder;
+import org.geotools.feature.simple.SimpleFeatureBuilder;
+import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
+import org.opengis.feature.simple.SimpleFeature;
+import org.opengis.feature.simple.SimpleFeatureType;
+import org.opengis.feature.type.AttributeDescriptor;
 import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory;
 import org.opengis.filter.expression.Expression;
+import org.oskari.geojson.GeoJSONFeatureCollection;
 import org.oskari.service.user.UserLayerService;
 import org.oskari.service.util.ServiceFactory;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Set;
 
 @Oskari
@@ -30,6 +40,8 @@ public class AnalysisWFSHelper extends UserLayerService {
 
     protected static final String ATTR_GEOMETRY = "geometry";
     private static final String ATTR_LAYER_ID = "analysis_id";
+
+    private static final List<String> HIDDEN_PROPERTIES = Arrays.asList(ATTR_LAYER_ID, "created", "bbox", "uuid");
 
     private FilterFactory ff;
     private int analysisLayerId;
@@ -104,5 +116,46 @@ public class AnalysisWFSHelper extends UserLayerService {
             service = new AnalysisDbServiceMybatisImpl();
         }
         return service.getAnalysisById(id);
+    }
+
+    public SimpleFeatureCollection postProcess(SimpleFeatureCollection sfc) throws Exception {
+        List<SimpleFeature> fc = new ArrayList<>();
+        SimpleFeatureType schema;
+
+        try (SimpleFeatureIterator it = sfc.features()) {
+            if (!it.hasNext()) {
+                return sfc;
+            }
+            SimpleFeature ftr = it.next();
+            schema = createType(sfc.getSchema(), ftr);
+            SimpleFeatureBuilder builder = new SimpleFeatureBuilder(schema);
+            List<AttributeDescriptor> attributes = schema.getAttributeDescriptors();
+            attributes.stream().forEach(attr ->
+                    builder.set(attr.getLocalName(), ftr.getAttribute(attr.getLocalName())));
+            fc.add(builder.buildFeature(ftr.getID()));
+
+            while (it.hasNext()) {
+                SimpleFeature f = it.next();
+                attributes.stream().forEach(attr ->
+                        builder.set(attr.getLocalName(), f.getAttribute(attr.getLocalName())));
+                fc.add(builder.buildFeature(f.getID()));
+            }
+        }
+
+        return new GeoJSONFeatureCollection(fc, schema);
+    }
+
+    private SimpleFeatureType createType(SimpleFeatureType schema, SimpleFeature f) {
+        SimpleFeatureTypeBuilder typeBuilder = new SimpleFeatureTypeBuilder();
+        typeBuilder.setName(schema.getName());
+        f.getFeatureType().getAttributeDescriptors().stream()
+                .filter(attr -> isVisibleProperty(attr.getLocalName()))
+                .forEach(attr -> typeBuilder.add(attr));
+        typeBuilder.setDefaultGeometry(schema.getGeometryDescriptor().getLocalName());
+        return typeBuilder.buildFeatureType();
+    }
+
+    private boolean isVisibleProperty(String name) {
+        return !HIDDEN_PROPERTIES.stream().anyMatch(propName -> propName.equals(name));
     }
 }

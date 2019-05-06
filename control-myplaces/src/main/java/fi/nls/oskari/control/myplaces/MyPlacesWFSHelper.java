@@ -1,23 +1,33 @@
 package fi.nls.oskari.control.myplaces;
 
-import java.util.Arrays;
+import java.util.*;
 
 import fi.nls.oskari.annotation.Oskari;
 import fi.nls.oskari.domain.User;
 import fi.nls.oskari.domain.map.MyPlaceCategory;
-import fi.nls.oskari.domain.map.userlayer.UserLayer;
 import fi.nls.oskari.myplaces.MyPlacesService;
 import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.service.ServiceException;
+import org.geotools.data.simple.SimpleFeatureCollection;
+import org.geotools.data.simple.SimpleFeatureIterator;
 import org.geotools.factory.CommonFactoryFinder;
+import org.geotools.feature.simple.SimpleFeatureBuilder;
+import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.opengis.feature.Property;
+import org.opengis.feature.simple.SimpleFeature;
+import org.opengis.feature.simple.SimpleFeatureType;
+import org.opengis.feature.type.AttributeDescriptor;
 import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory;
 import org.opengis.filter.expression.Expression;
 
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.util.PropertyUtil;
+import org.oskari.geojson.GeoJSONFeatureCollection;
 import org.oskari.service.user.UserLayerService;
 
 @Oskari
@@ -28,6 +38,8 @@ public class MyPlacesWFSHelper extends UserLayerService {
     private static final String PREFIX_MYPLACES = "myplaces_";
     private static final String MYPLACES_ATTR_GEOMETRY = "oskari:geometry";
     private static final String MYPLACES_ATTR_CATEGORY_ID = "oskari:category_id";
+
+    private static final List<String> VISIBLE_PROPERTIES = Arrays.asList("image_url", "link", "name", "place_desc");
 
     private FilterFactory ff;
     private int myPlacesLayerId;
@@ -92,5 +104,46 @@ public class MyPlacesWFSHelper extends UserLayerService {
             service = OskariComponentManager.getComponentOfType(MyPlacesService.class);
         }
         return service.findCategory(id);
+    }
+
+    public SimpleFeatureCollection postProcess(SimpleFeatureCollection sfc) throws Exception {
+        List<SimpleFeature> fc = new ArrayList<>();
+        SimpleFeatureType schema;
+
+        try (SimpleFeatureIterator it = sfc.features()) {
+            if (!it.hasNext()) {
+                return sfc;
+            }
+            SimpleFeature ftr = it.next();
+            schema = createType(sfc.getSchema(), ftr);
+            SimpleFeatureBuilder builder = new SimpleFeatureBuilder(schema);
+            List<AttributeDescriptor> attributes = schema.getAttributeDescriptors();
+            attributes.stream().forEach(attr ->
+                    builder.set(attr.getLocalName(), ftr.getAttribute(attr.getLocalName())));
+            fc.add(builder.buildFeature(ftr.getID()));
+
+            while (it.hasNext()) {
+                SimpleFeature f = it.next();
+                attributes.stream().forEach(attr ->
+                        builder.set(attr.getLocalName(), f.getAttribute(attr.getLocalName())));
+                fc.add(builder.buildFeature(f.getID()));
+            }
+        }
+
+        return new GeoJSONFeatureCollection(fc, schema);
+    }
+
+    private SimpleFeatureType createType(SimpleFeatureType schema, SimpleFeature f) {
+        SimpleFeatureTypeBuilder typeBuilder = new SimpleFeatureTypeBuilder();
+        typeBuilder.setName(schema.getName());
+        f.getFeatureType().getAttributeDescriptors().stream()
+                .filter(attr -> isVisibleProperty(attr.getLocalName()))
+                .forEach(attr -> typeBuilder.add(attr));
+        typeBuilder.setDefaultGeometry(schema.getGeometryDescriptor().getLocalName());
+        return typeBuilder.buildFeatureType();
+    }
+
+    private boolean isVisibleProperty(String name) {
+        return VISIBLE_PROPERTIES.stream().anyMatch(propName -> propName.equals(name));
     }
 }
