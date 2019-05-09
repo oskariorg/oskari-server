@@ -43,7 +43,8 @@ public class GetWFSVectorTileHandler extends AbstractWFSFeaturesHandler {
     protected static final String PARAM_X = "x";
     protected static final String PARAM_Y = "y";
 
-    private static final int DEFAULT_MIN_ZOOM_LEVEL = 7;
+    private static final int DEFAULT_CACHE_ZOOM_LEVEL = 8;
+    private static final int MIN_ZOOM_OVER_CACHE_ZOOM = 1;
     private static final Map<String, WFSTileGrid> KNOWN_TILE_GRIDS;
     static {
         KNOWN_TILE_GRIDS = new HashMap<>();
@@ -53,12 +54,14 @@ public class GetWFSVectorTileHandler extends AbstractWFSFeaturesHandler {
 
     private static final int TILE_EXTENT = 4096;
     private static final int TILE_BUFFER = 256;
+    private static final int TILE_SIZE_IN_NATURE = 8192;
 
     private static final int CACHE_LIMIT = 256;
     private static final long CACHE_EXPIRATION = TimeUnit.MINUTES.toMillis(5);
 
     private ComputeOnceCache<byte[]> tileCache;
     private WFSTileGridProperties tileGridProperties;
+    private Map<String, Integer> cacheZLevels;
 
     @Override
     public void init() {
@@ -66,21 +69,16 @@ public class GetWFSVectorTileHandler extends AbstractWFSFeaturesHandler {
         tileCache = CacheManager.getCache(getClass().getName(),
                 () -> new ComputeOnceCache<>(CACHE_LIMIT, CACHE_EXPIRATION));
         tileGridProperties = new WFSTileGridProperties();
-
+        cacheZLevels = new HashMap<>();
         final Map<String, BundleHandler> handlers = ViewModifierManager.getModifiersOfType(BundleHandler.class);
         MapfullHandler mapfullHandler = (MapfullHandler)handlers.get("mapfull");
         WFSVectorLayerPluginViewModifier pluginHandler = new WFSVectorLayerPluginViewModifier();
         mapfullHandler.registerPluginHandler(WFSVectorLayerPluginViewModifier.PLUGIN_NAME, pluginHandler);
 
         Map<String, WFSTileGrid> propTileGrids = tileGridProperties.getTileGridMap();
-        KNOWN_TILE_GRIDS.keySet().stream().forEach(srsName -> {
-            pluginHandler.setMinZoomLevelForSRS(srsName, DEFAULT_MIN_ZOOM_LEVEL);
-            pluginHandler.setTileGridForSRS(srsName, KNOWN_TILE_GRIDS.get(srsName));
-        });
-        propTileGrids.keySet().stream().forEach(srsName -> {
-            pluginHandler.setMinZoomLevelForSRS(srsName, DEFAULT_MIN_ZOOM_LEVEL);
-            pluginHandler.setTileGridForSRS(srsName, propTileGrids.get(srsName));
-        });
+
+        KNOWN_TILE_GRIDS.entrySet().stream().forEach(set -> setGridToModifiers(pluginHandler, set.getKey(), set.getValue()));
+        propTileGrids.entrySet().stream().forEach(set -> setGridToModifiers(pluginHandler, set.getKey(), set.getValue()));
     }
 
     @Override
@@ -94,10 +92,11 @@ public class GetWFSVectorTileHandler extends AbstractWFSFeaturesHandler {
         final Optional<UserLayerService> contentProcessor = getUserContentProsessor(id);
         final OskariLayer layer = findLayer(id, params.getUser(), contentProcessor);
         final String uuid = params.getUser().getUuid();
-
         final WFSTileGrid gridFromProps = tileGridProperties.getTileGrid(srs.toUpperCase());
         final WFSTileGrid grid = gridFromProps != null ? gridFromProps : KNOWN_TILE_GRIDS.get(srs.toUpperCase());
-        validateTile(grid, z, x, y);
+        final int targetZ = cacheZLevels.getOrDefault(srs, DEFAULT_CACHE_ZOOM_LEVEL);
+        final int minZoom =  targetZ - MIN_ZOOM_OVER_CACHE_ZOOM;
+        validateTile(grid, z, x, y, minZoom);
         validateScaleDenominator(layer, grid, z);
 
         final CoordinateReferenceSystem crs;
@@ -110,7 +109,7 @@ public class GetWFSVectorTileHandler extends AbstractWFSFeaturesHandler {
         final String cacheKey = getCacheKey(id, srs, z, x, y);
         final byte[] resp;
         try {
-            resp = tileCache.get(cacheKey, __ -> createTile(id, uuid, layer, crs, grid, z, x, y, contentProcessor));
+            resp = tileCache.get(cacheKey, __ -> createTile(id, uuid, layer, crs, grid, targetZ, z, x, y, contentProcessor));
         } catch (ServiceRuntimeException e) {
             throw new ActionException(e.getMessage());
         }
@@ -118,9 +117,14 @@ public class GetWFSVectorTileHandler extends AbstractWFSFeaturesHandler {
         params.getResponse().addHeader("Content-Encoding", "gzip");
         ResponseHelper.writeResponse(params, 200, MVT_CONTENT_TYPE, resp);
     }
+    private void setGridToModifiers (WFSVectorLayerPluginViewModifier handler, String srsName, WFSTileGrid grid) {
+        int z = grid.getZForResolution(TILE_SIZE_IN_NATURE / WFSTileGrid.TILE_SIZE, 0);
+        cacheZLevels.put(srsName, z);
+        handler.setMinZoomLevelForSRS(srsName, z - MIN_ZOOM_OVER_CACHE_ZOOM);
+        handler.setTileGridForSRS(srsName, grid);
+    }
 
-
-    private void validateTile(WFSTileGrid grid, int z, int x, int y)
+    private void validateTile(WFSTileGrid grid, int z, int x, int y, int minZoom)
             throws ActionParamsException {
         if (grid == null) {
             throw new ActionParamsException("Unknown srs");
@@ -137,9 +141,9 @@ public class GetWFSVectorTileHandler extends AbstractWFSFeaturesHandler {
         if (z > grid.getMaxZoom()) {
             throw new ActionParamsException("z must be <= " + grid.getMaxZoom());
         }
-        if (z < 7) {
-            // we always request features with z 8 and anything below 7 will trigger too many requests to services
-            throw new ActionParamsException("z must be > 6");
+        if (z < minZoom) {
+            // we always request features with cacheZLevel and anything below minZoom will trigger too many requests to services
+            throw new ActionParamsException("z must be >= " + minZoom);
         }
         int matrixWidthHeight = WFSTileGrid.getMatrixSize(z);
         if (x >= matrixWidthHeight) {
@@ -186,17 +190,15 @@ public class GetWFSVectorTileHandler extends AbstractWFSFeaturesHandler {
      * @throws ActionException
      */
     private byte[] createTile(String id, String uuid, OskariLayer layer, CoordinateReferenceSystem crs,
-            WFSTileGrid grid, int z, int x, int y,
+            WFSTileGrid grid, int targetZ, int z, int x, int y,
             Optional<UserLayerService> contentProcessor) throws ServiceRuntimeException {
-        // Find nearest higher resolution
-        // always fetch at z 8 so we don't cache same features on multiple zoom levels
-        int targetZ = grid.getZForResolution(8, -1);
 
         List<TileCoord> wfsTiles;
+        // always fetch at targetZ so we don't cache same features on multiple zoom levels
         int dz = z - targetZ;
 
         if (dz < 0) {
-            // get adjacent tiles so we can unify z=8 tiles to create z7 etc tiles
+            // get adjacent tiles so we can unify targetZ tiles to create targetZ-1 etc tiles
             int d = (int) Math.pow(2, -dz);
             int targetX1 = x * d;
             int targetY1 = y * d;
@@ -212,7 +214,7 @@ public class GetWFSVectorTileHandler extends AbstractWFSFeaturesHandler {
             // this is the sweet spot - just get the features that was requested
             wfsTiles = Collections.singletonList(new TileCoord(z, x, y));
         } else {
-            // recalculate x/y to match a z=8 tile
+            // recalculate x/y to match a targetZ tile
             int div = (int) Math.pow(2, dz);
             int targetX = x / div;
             int targetY = y / div;
@@ -225,11 +227,11 @@ public class GetWFSVectorTileHandler extends AbstractWFSFeaturesHandler {
             if (tileFeatures == null) {
                 throw new ServiceRuntimeException("Failed to get features from service");
             }
-            // merge z=8 tiles to create featureCollection for z=7 etc
+            // merge targetZ tiles to create featureCollection for targetZ-1 etc
             sfc = union(sfc, tileFeatures);
         }
 
-        // sfc always has features for z<=8 so we need to clip to smaller tiles based on requested x,y,z
+        // sfc always has features for z<=targetZ so we need to clip to smaller tiles based on requested x,y,z
         double[] bbox = grid.getTileExtent(new TileCoord(z, x, y));
         byte[] encoded = SimpleFeaturesMVTEncoder.encodeToByteArray(sfc, layer.getName(), bbox, TILE_EXTENT, TILE_BUFFER);
         try {
