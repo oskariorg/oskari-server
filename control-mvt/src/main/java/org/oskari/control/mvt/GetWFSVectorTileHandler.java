@@ -109,7 +109,12 @@ public class GetWFSVectorTileHandler extends AbstractWFSFeaturesHandler {
         final String cacheKey = getCacheKey(id, srs, z, x, y);
         final byte[] resp;
         try {
-            resp = tileCache.get(cacheKey, __ -> createTile(id, layer, crs, grid, z, x, y, contentProcessor));
+            if (contentProcessor.isPresent() && contentProcessor.get().isUserContentLayer(id)) {
+                // Don't cache user content tiles
+                resp = createTile(id, layer, crs, grid, z, x, y, contentProcessor);
+            } else {
+                resp = tileCache.get(cacheKey, __ -> createTile(id, layer, crs, grid, z, x, y, contentProcessor));
+            }
         } catch (ServiceRuntimeException e) {
             throw new ActionException(e.getMessage());
         }

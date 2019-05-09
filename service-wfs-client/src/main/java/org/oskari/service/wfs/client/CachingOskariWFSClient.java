@@ -33,7 +33,7 @@ public class CachingOskariWFSClient extends OskariWFSClient {
             int maxFeatures, Filter filter) {
         if (filter != null) {
             // Don't cache requests with a Filter
-            super.getFeatures(endPoint, version, user, pass,
+            return super.getFeatures(endPoint, version, user, pass,
                     typeName, bbox, crs, maxFeatures, filter);
         }
         String key = getCacheKey(endPoint, typeName, bbox, crs, maxFeatures);
