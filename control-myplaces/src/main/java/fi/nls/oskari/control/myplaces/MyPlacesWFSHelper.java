@@ -1,19 +1,30 @@
 package fi.nls.oskari.control.myplaces;
 
-import java.util.Arrays;
+import java.util.*;
 
 import fi.nls.oskari.annotation.Oskari;
 import fi.nls.oskari.domain.User;
+import fi.nls.oskari.domain.map.MyPlaceCategory;
+import fi.nls.oskari.myplaces.MyPlacesService;
+import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.service.ServiceException;
+import org.geotools.data.simple.SimpleFeatureCollection;
+import org.geotools.data.simple.SimpleFeatureIterator;
 import org.geotools.factory.CommonFactoryFinder;
+import org.geotools.feature.simple.SimpleFeatureBuilder;
+import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
+import org.opengis.feature.simple.SimpleFeature;
+import org.opengis.feature.simple.SimpleFeatureType;
+import org.opengis.feature.type.AttributeDescriptor;
 import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory;
 import org.opengis.filter.expression.Expression;
 
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.util.PropertyUtil;
+import org.oskari.geojson.GeoJSONFeatureCollection;
 import org.oskari.service.user.UserLayerService;
 
 @Oskari
@@ -24,11 +35,12 @@ public class MyPlacesWFSHelper extends UserLayerService {
     private static final String PREFIX_MYPLACES = "myplaces_";
     private static final String MYPLACES_ATTR_GEOMETRY = "oskari:geometry";
     private static final String MYPLACES_ATTR_CATEGORY_ID = "oskari:category_id";
-    private static final String MYPLACES_ATTR_UUID = "oskari:uuid";
-    private static final String MYPLACES_ATTR_PUBLISHER_NAME = "oskari:publisher_name";
+
+    private static final List<String> VISIBLE_PROPERTIES = Arrays.asList("image_url", "link", "name", "place_desc");
 
     private FilterFactory ff;
     private int myPlacesLayerId;
+    private MyPlacesService service;
 
     public MyPlacesWFSHelper() {
         init();
@@ -62,34 +74,74 @@ public class MyPlacesWFSHelper extends UserLayerService {
         return Integer.parseInt(layerId.substring(PREFIX_MYPLACES.length()));
     }
 
-    public Filter getWFSFilter(String layerId, String uuid, ReferencedEnvelope bbox) {
+    public Filter getWFSFilter(String layerId, ReferencedEnvelope bbox) {
         int categoryId = parseId(layerId);
         Expression _categoryId = ff.property(MYPLACES_ATTR_CATEGORY_ID);
-        Expression _uuid = ff.property(MYPLACES_ATTR_UUID);
 
         Filter categoryIdEquals = ff.equals(_categoryId, ff.literal(categoryId));
-
-        Filter uuidEquals = ff.equals(_uuid, ff.literal(uuid));
-
-/*
-// FIXME: Referencing publisher name requires the layer is oskari:my_places_categories instead of oskari:my_places
-// which brings more attributes that we want AND breaks transport
-// TODO: We might need to check if the use has right to view the layer that is not his/her own in another way
-// Leaving this logic out means that guests won't see the published user content layer
-        Expression _publisherName = ff.property(MYPLACES_ATTR_PUBLISHER_NAME);
-        Filter publisherNameNotNull = ff.not(ff.isNull(_publisherName));
-        Filter publisherNameNotEmpty = ff.notEqual(_publisherName, ff.literal(""));
-        Filter publisherNameNotNullNotEmpty = ff.and(publisherNameNotNull, publisherNameNotEmpty);
-        Filter uuidEqualsOrPublished = ff.or(uuidEquals, publisherNameNotNullNotEmpty);
-*/
-        Filter uuidEqualsOrPublished = uuidEquals;
-
         Filter bboxFilter = ff.bbox(MYPLACES_ATTR_GEOMETRY,
                 bbox.getMinX(), bbox.getMinY(),
                 bbox.getMaxX(), bbox.getMaxY(),
                 CRS.toSRS(bbox.getCoordinateReferenceSystem()));
 
-        return ff.and(Arrays.asList(categoryIdEquals, uuidEqualsOrPublished, bboxFilter));
+        return ff.and(Arrays.asList(categoryIdEquals, bboxFilter));
     }
 
+    public boolean hasViewPermission(String id, User user) {
+        MyPlaceCategory layer = getLayer(parseId(id));
+        if (layer == null) {
+            return false;
+        }
+        return layer.isOwnedBy(user.getUuid()) || layer.isPublished();
+    }
+
+    private MyPlaceCategory getLayer(int id) {
+        if (service == null) {
+            // might cause problems with timing of components being initialized if done in init/constructor
+            service = OskariComponentManager.getComponentOfType(MyPlacesService.class);
+        }
+        return service.findCategory(id);
+    }
+
+    public SimpleFeatureCollection postProcess(SimpleFeatureCollection sfc) throws Exception {
+        List<SimpleFeature> fc = new ArrayList<>();
+        SimpleFeatureType schema;
+
+        try (SimpleFeatureIterator it = sfc.features()) {
+            if (!it.hasNext()) {
+                return sfc;
+            }
+            SimpleFeature ftr = it.next();
+            schema = createType(sfc.getSchema(), ftr);
+            SimpleFeatureBuilder builder = new SimpleFeatureBuilder(schema);
+            List<AttributeDescriptor> attributes = schema.getAttributeDescriptors();
+            attributes.stream().forEach(attr ->
+                    builder.set(attr.getLocalName(), ftr.getAttribute(attr.getLocalName())));
+            fc.add(builder.buildFeature(ftr.getID()));
+
+            while (it.hasNext()) {
+                SimpleFeature f = it.next();
+                attributes.stream().forEach(attr ->
+                        builder.set(attr.getLocalName(), f.getAttribute(attr.getLocalName())));
+                fc.add(builder.buildFeature(f.getID()));
+            }
+        }
+
+        return new GeoJSONFeatureCollection(fc, schema);
+    }
+
+    private SimpleFeatureType createType(SimpleFeatureType schema, SimpleFeature f) {
+        SimpleFeatureTypeBuilder typeBuilder = new SimpleFeatureTypeBuilder();
+        typeBuilder.setName(schema.getName());
+        typeBuilder.setDefaultGeometry(schema.getGeometryDescriptor().getLocalName());
+        f.getFeatureType().getAttributeDescriptors().stream()
+                .filter(attr -> isVisibleProperty(attr.getLocalName()))
+                .forEach(attr -> typeBuilder.add(attr));
+        typeBuilder.add(schema.getGeometryDescriptor());
+        return typeBuilder.buildFeatureType();
+    }
+
+    private boolean isVisibleProperty(String name) {
+        return VISIBLE_PROPERTIES.stream().anyMatch(propName -> propName.equals(name));
+    }
 }

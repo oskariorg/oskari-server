@@ -173,8 +173,6 @@ public class UserDataStyle {
                 return "";
             case "dash":
                 return "5 2";
-            case "double":
-                return "D";
         }
         return "";
     }
@@ -185,8 +183,6 @@ public class UserDataStyle {
         switch (dashArray) {
             case "":
                 return "solid";
-            case "D":
-                return "double"; // TODO: "solid" ??
             case "5 2":
                 return "dash";
         }

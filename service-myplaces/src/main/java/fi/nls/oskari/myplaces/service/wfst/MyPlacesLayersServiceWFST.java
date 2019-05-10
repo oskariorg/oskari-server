@@ -9,6 +9,9 @@ import java.util.Optional;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.stream.XMLStreamException;
 
+import fi.nls.oskari.cache.Cache;
+import fi.nls.oskari.cache.CacheManager;
+import fi.nls.oskari.myplaces.MyPlacesServiceMybatisImpl;
 import org.json.JSONException;
 import org.oskari.wfst.response.InsertedFeature;
 import org.oskari.wfst.response.TransactionResponseParser_110;
@@ -94,7 +97,12 @@ public class MyPlacesLayersServiceWFST extends BaseServiceWFST implements MyPlac
             CategoriesWFSTRequestBuilder.updateCategories(baos, categories);
             HttpURLConnection conn = getConnection();
             IOHelper.post(conn, APPLICATION_XML, baos);
-            return readTransactionResp(conn).getTotalUpdated();
+            int updated = readTransactionResp(conn).getTotalUpdated();
+            // remove from cache
+            Cache<MyPlaceCategory> cache = CacheManager.getCache(MyPlacesServiceMybatisImpl.class.getName());
+            categories.stream().forEach(layer -> cache.remove(Long.toString(layer.getId())));
+
+            return updated;
         } catch (XMLStreamException e) {
             throw new ServiceException("Failed to create WFS-T request", e);
         } catch (IOException e) {
@@ -110,7 +118,15 @@ public class MyPlacesLayersServiceWFST extends BaseServiceWFST implements MyPlac
             CategoriesWFSTRequestBuilder.deleteCategories(baos, ids);
             HttpURLConnection conn = getConnection();
             IOHelper.post(conn, APPLICATION_XML, baos);
-            return readTransactionResp(conn).getTotalDeleted();
+            int removed = readTransactionResp(conn).getTotalDeleted();
+
+            // remove from cache
+            Cache<MyPlaceCategory> cache = CacheManager.getCache(MyPlacesServiceMybatisImpl.class.getName());
+            for (long id: ids) {
+                cache.remove(Long.toString(id));
+            }
+
+            return removed;
         } catch (XMLStreamException e) {
             throw new ServiceException("Failed to create WFS-T request", e);
         } catch (IOException e) {

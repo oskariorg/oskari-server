@@ -1,7 +1,7 @@
 package fi.nls.oskari.control.feature;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 
@@ -51,7 +51,6 @@ public class GetWFSFeaturesHandler extends AbstractWFSFeaturesHandler {
 
         Optional<UserLayerService> contentProcessor = getUserContentProsessor(id);
         OskariLayer layer = findLayer(id, params.getUser(), contentProcessor);
-        String uuid = params.getUser().getUuid();
 
         String targetSRS = params.getHttpParam(ActionConstants.PARAM_SRS, "EPSG:3857");
         CoordinateReferenceSystem targetCRS;
@@ -67,7 +66,7 @@ public class GetWFSFeaturesHandler extends AbstractWFSFeaturesHandler {
 
         SimpleFeatureCollection fc;
         try {
-            fc = featureClient.getFeatures(id, uuid, layer, bbox, targetCRS, contentProcessor);
+            fc = featureClient.getFeatures(id, layer, bbox, targetCRS, contentProcessor);
         } catch (ServiceRuntimeException e) {
             // ActionParamsException because we don't want to log stacktrace of these  
             throw new ActionParamsException(ERR_FAILED_TO_RETRIEVE_FEATURES, e);
@@ -80,10 +79,10 @@ public class GetWFSFeaturesHandler extends AbstractWFSFeaturesHandler {
         }
 
         try {
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            StringWriter writer = new StringWriter();
             int decimals = getNumDecimals(targetCRS);
-            new FeatureJSON(new GeometryJSON(decimals)).writeFeatureCollection(fc, baos);
-            ResponseHelper.writeResponse(params, 200, GEOJSON_CONTENT_TYPE, baos);
+            new FeatureJSON(new GeometryJSON(decimals)).writeFeatureCollection(fc, writer);
+            ResponseHelper.writeResponse(params, 200, GEOJSON_CONTENT_TYPE, writer.getBuffer().toString());
         } catch (IOException e) {
             ResponseHelper.writeError(params, ERR_GEOJSON_ENCODE_FAIL);
         }

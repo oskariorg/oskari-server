@@ -1,4 +1,4 @@
-package fi.nls.oskari.control.myplaces;
+package fi.nls.oskari.control.myplaces.handler;
 
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.ActionException;
@@ -24,15 +24,9 @@ public class PublishMyPlaceLayerHandler extends RestActionHandler {
     @Override
     public void handlePost(ActionParameters params) throws ActionException {
         final User user = params.getUser();
-        final long id = ConversionHelper.getLong(params.getRequest().getParameter("id"), -1);
-        if(id == -1) {
-            throw new ActionException("Missing id for category publish");
-        }
-        
-        final String makePublicStr = params.getHttpParam("makePublic");
-        if(makePublicStr == null) {
-            throw new ActionException("Missing boolean for category publish");
-        }
+
+        final long id = params.getRequiredParamLong("id");
+        final String makePublicStr = params.getRequiredParam("makePublic");
         
         final String uuid = user.getUuid();
         String name = null;

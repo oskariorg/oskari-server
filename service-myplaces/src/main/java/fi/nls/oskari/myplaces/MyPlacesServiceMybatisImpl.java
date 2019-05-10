@@ -3,11 +3,14 @@ package fi.nls.oskari.myplaces;
 import fi.mml.portti.service.db.permissions.PermissionsService;
 import fi.mml.portti.service.db.permissions.PermissionsServiceIbatisImpl;
 import fi.nls.oskari.annotation.Oskari;
+import fi.nls.oskari.cache.Cache;
+import fi.nls.oskari.cache.CacheManager;
 import fi.nls.oskari.db.DatasourceHelper;
 import fi.nls.oskari.domain.User;
 import fi.nls.oskari.domain.map.MyPlace;
 import fi.nls.oskari.domain.map.MyPlaceCategory;
 import fi.nls.oskari.domain.map.UserDataStyle;
+import fi.nls.oskari.domain.map.userlayer.UserLayer;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.permission.domain.Resource;
@@ -33,6 +36,7 @@ public class MyPlacesServiceMybatisImpl extends MyPlacesService {
             MyPlacesServiceMybatisImpl.class);
 
     private PermissionsService permissionsService = new PermissionsServiceIbatisImpl();
+    private final Cache<MyPlaceCategory> cache;
 
     private SqlSessionFactory factory = null;
 
@@ -46,6 +50,18 @@ public class MyPlacesServiceMybatisImpl extends MyPlacesService {
         else {
             LOG.error("Couldn't get datasource for myplaces");
         }
+        cache = CacheManager.getCache(getClass().getName());
+    }
+
+    private MyPlaceCategory getFromCache(long id) {
+        return cache.get(Long.toString(id));
+    }
+
+    private MyPlaceCategory cache(MyPlaceCategory layer) {
+        if (layer != null) {
+            cache.put(Long.toString(layer.getId()), layer);
+        }
+        return layer;
     }
 
     private SqlSessionFactory initializeMyBatis(final DataSource dataSource) {
@@ -97,8 +113,7 @@ public class MyPlacesServiceMybatisImpl extends MyPlacesService {
      */
     public boolean canModifyPlace(final User user, final long placeId) {
 
-        final SqlSession session = factory.openSession();
-        try {
+        try (final SqlSession session = factory.openSession()) {
             final MyPlaceMapper mapper = session.getMapper(MyPlaceMapper.class);
             MyPlace place =  mapper.findPlace(placeId);
             if(place == null) {
@@ -108,8 +123,6 @@ public class MyPlacesServiceMybatisImpl extends MyPlacesService {
 
         } catch (Exception e) {
             LOG.warn(e, "Exception when trying to load place with id:", placeId);
-        } finally {
-            session.close();
         }
         return false;
     }
@@ -137,7 +150,7 @@ public class MyPlacesServiceMybatisImpl extends MyPlacesService {
     public boolean canModifyCategory(final User user, final long categoryId) {
         LOG.debug("canModifyCategory - categoryId:", categoryId, "- User:", user);
         try {
-            MyPlaceCategory cat =  findCategory(categoryId);
+            MyPlaceCategory cat = findCategory(categoryId);
             if(cat == null) {
                 return false;
             }
@@ -150,26 +163,25 @@ public class MyPlacesServiceMybatisImpl extends MyPlacesService {
     }
     public List<MyPlaceCategory> getCategories() {
 
-        final SqlSession session = factory.openSession();
-        try {
+        try (final SqlSession session = factory.openSession()) {
             final MyPlaceMapper mapper = session.getMapper(MyPlaceMapper.class);
             return mapper.findAll();
         } catch (Exception e) {
             LOG.error(e, "Failed to load categories");
-        } finally {
-            session.close();
         }
         return Collections.emptyList();
     }
     public MyPlaceCategory findCategory(long id) {
-        final SqlSession session = factory.openSession();
-        try {
+        MyPlaceCategory layer = getFromCache(id);
+        if (layer != null) {
+            return layer;
+        }
+        try (final SqlSession session = factory.openSession()) {
             final MyPlaceMapper mapper = session.getMapper(MyPlaceMapper.class);
-            return  mapper.find(id);
+            layer = mapper.find(id);
+            return cache(layer);
         } catch (Exception e) {
             LOG.warn(e, "Exception when trying to load category with id:", id);
-        } finally {
-            session.close();
         }
         return null;
     }
@@ -189,29 +201,28 @@ public class MyPlacesServiceMybatisImpl extends MyPlacesService {
         data.put("uuid", uuid);
         data.put("id", id);
 
-        final SqlSession session = factory.openSession();
-        try {
+        try (final SqlSession session = factory.openSession()) {
             final MyPlaceMapper mapper = session.getMapper(MyPlaceMapper.class);
             int rows = mapper.updatePublisherName(data);
             session.commit();
+            // update data in cache
+            MyPlaceCategory layer = getFromCache(id);
+            if (layer != null && rows > 0) {
+                layer.setPublisher_name(name);
+            }
             return rows;
         } catch (Exception e) {
             LOG.error(e, "Failed to update publisher name", data);
-        } finally {
-            session.close();
         }
         return 0;
     }
 
     public List<MyPlaceCategory> getMyPlaceLayersById(List<Long> idList) {
-        final SqlSession session = factory.openSession();
-        try {
+        try (final SqlSession session = factory.openSession()) {
             final MyPlaceMapper mapper = session.getMapper(MyPlaceMapper.class);
             return mapper.findByIds(idList);
         } catch (Exception e) {
             LOG.error(e, "Failed load list", idList);
-        } finally {
-            session.close();
         }
         return Collections.emptyList();
     }
@@ -219,28 +230,22 @@ public class MyPlacesServiceMybatisImpl extends MyPlacesService {
     public List<MyPlaceCategory> getMyPlaceLayersBySearchKey(final String search) {
         Map<String, Object> data = new HashMap<String, Object>();
         data.put("searchKey", search + ":*");
-        final SqlSession session = factory.openSession();
-        try {
+        try (final SqlSession session = factory.openSession()) {
             final MyPlaceMapper mapper = session.getMapper(MyPlaceMapper.class);
             return mapper.freeFind(data);
         } catch (Exception e) {
             LOG.error(e, "Failed searchwith", search);
-        } finally {
-            session.close();
         }
         return Collections.emptyList();
     }
 
 
     public void deleteByUid(final String uid) {
-        final SqlSession session = factory.openSession();
-        try {
+        try (final SqlSession session = factory.openSession()) {
             final MyPlaceMapper mapper = session.getMapper(MyPlaceMapper.class);
             mapper.deleteByUid(uid);
         } catch (Exception e) {
             LOG.error(e, "Failed delete by uid ", uid);
-        } finally {
-            session.close();
         }
     }
 }
