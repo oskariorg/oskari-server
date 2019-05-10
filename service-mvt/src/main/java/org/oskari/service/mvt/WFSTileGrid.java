@@ -3,7 +3,6 @@ package org.oskari.service.mvt;
 public class WFSTileGrid {
 
     public static final int TILE_SIZE = 256;
-
     private final double originX;
     private final double originY;
     private final double[] origin;
@@ -70,9 +69,9 @@ public class WFSTileGrid {
                 case -1:
                     return z - 1;
                 case  0:
-                    double dcurr = Math.abs(resolutions[z - 1] - resolution);
-                    double dnext = Math.abs(resolutions[z] - resolution);
-                    return dcurr < dnext ? z : z + 1;
+                    double dcurr = Math.abs(resolutions[z] - resolution);
+                    double dprev = Math.abs(resolutions[z - 1] - resolution);
+                    return dcurr < dprev ? z : z - 1;
                 case  1:
                     return z;
                 }
