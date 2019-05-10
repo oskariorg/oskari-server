@@ -1,0 +1,140 @@
+{
+    "size": 25,
+    "totalElements": 3,
+    "totalPages": 1,
+    "pageNumber": 1,
+    "attributes": [
+        {
+            "id": "Nature",
+            "codes": [
+                {
+                    "code": "E",
+                    "description": "Estimated data",
+                    "sdmx": "E"
+                }
+            ]
+        },
+        {
+            "id": "Units",
+            "codes": [
+                {
+                    "code": "PERCENT",
+                    "description": "Percentage",
+                    "sdmx": "PERCENT"
+                }
+            ]
+        }
+    ],
+    "dimensions": [
+        {
+            "id": "Reporting Type",
+            "codes": [
+                {
+                    "code": "N",
+                    "description": "National",
+                    "sdmx": "N"
+                },
+                {
+                    "code": "G",
+                    "description": "Global",
+                    "sdmx": "G"
+                }
+            ]
+        }
+    ],
+    "data": [
+        {
+            "goal": [
+                "7"
+            ],
+            "target": [
+                "7.2"
+            ],
+            "indicator": [
+                "7.2.1"
+            ],
+            "series": "EG_FEC_RNEW",
+            "seriesDescription": "Renewable energy share in the total final energy consumption (%)",
+            "seriesCount": "4624",
+            "geoAreaCode": "246",
+            "geoAreaName": "Finland",
+            "timePeriodStart": 2015.0,
+            "value": "43.1",
+            "valueType": "Float",
+            "time_detail": null,
+            "source": "IEA (2018), World Energy Balances",
+            "footnotes": [
+                ""
+            ],
+            "attributes": {
+                "Nature": "E",
+                "Units": "PERCENT"
+            },
+            "dimensions": {
+                "Reporting Type": "G"
+            }
+        },
+        {
+            "goal": [
+                "7"
+            ],
+            "target": [
+                "7.2"
+            ],
+            "indicator": [
+                "7.2.1"
+            ],
+            "series": "EG_FEC_RNEW",
+            "seriesDescription": "Renewable energy share in the total final energy consumption (%)",
+            "seriesCount": "4624",
+            "geoAreaCode": "578",
+            "geoAreaName": "Norway",
+            "timePeriodStart": 2015.0,
+            "value": "58.31",
+            "valueType": "Float",
+            "time_detail": null,
+            "source": "IEA (2018), World Energy Balances",
+            "footnotes": [
+                ""
+            ],
+            "attributes": {
+                "Nature": "E",
+                "Units": "PERCENT"
+            },
+            "dimensions": {
+                "Reporting Type": "G"
+            }
+        },
+        {
+            "goal": [
+                "7"
+            ],
+            "target": [
+                "7.2"
+            ],
+            "indicator": [
+                "7.2.1"
+            ],
+            "series": "EG_FEC_RNEW",
+            "seriesDescription": "Renewable energy share in the total final energy consumption (%)",
+            "seriesCount": "4624",
+            "geoAreaCode": "752",
+            "geoAreaName": "Sweden",
+            "timePeriodStart": 2015.0,
+            "value": "53.1",
+            "valueType": "Float",
+            "time_detail": null,
+            "source": "IEA (2018), World Energy Balances",
+            "footnotes": [
+                ""
+            ],
+            "attributes": {
+                "Nature": "E",
+                "Units": "PERCENT"
+            },
+            "dimensions": {
+                "Reporting Type": "G"
+            }
+        }
+    ]
+}
