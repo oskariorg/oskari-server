@@ -44,6 +44,11 @@ public class GetWFSVectorTileHandler extends AbstractWFSFeaturesHandler {
     protected static final String PARAM_X = "x";
     protected static final String PARAM_Y = "y";
 
+    // Resolution (metres per px) we are aiming for with the WFS requests
+    // This value is used to find the zoom level that is closest to the resolution specified here
+    // For ETRS-TME35FIN TileGrid this translates to z=8
+    private static final int TARGET_ZOOM_LEVEL_RESOLUTION = 8192 / 256;
+
     private static final int DEFAULT_CACHE_ZOOM_LEVEL = 8;
     private static final int MIN_ZOOM_OVER_CACHE_ZOOM = 1;
     private static final Map<String, WFSTileGrid> KNOWN_TILE_GRIDS;
@@ -56,7 +61,6 @@ public class GetWFSVectorTileHandler extends AbstractWFSFeaturesHandler {
     private static final int TILE_EXTENT = 4096;
     private static final int TILE_BUFFER = 256;
     private static final int TILE_BUFFER_POINT = 1024;
-    private static final int TILE_SIZE_IN_NATURE = 8192;
 
     private static final int CACHE_LIMIT = 256;
     private static final long CACHE_EXPIRATION = TimeUnit.MINUTES.toMillis(5);
@@ -124,8 +128,9 @@ public class GetWFSVectorTileHandler extends AbstractWFSFeaturesHandler {
         params.getResponse().addHeader("Content-Encoding", "gzip");
         ResponseHelper.writeResponse(params, 200, MVT_CONTENT_TYPE, resp);
     }
+
     private void setGridToModifiers (WFSVectorLayerPluginViewModifier handler, String srsName, WFSTileGrid grid) {
-        int z = grid.getZForResolution(TILE_SIZE_IN_NATURE / WFSTileGrid.TILE_SIZE, 0);
+        int z = grid.getZForResolution(TARGET_ZOOM_LEVEL_RESOLUTION, 0);
         cacheZLevels.put(srsName, z);
         handler.setMinZoomLevelForSRS(srsName, z - MIN_ZOOM_OVER_CACHE_ZOOM);
         handler.setTileGridForSRS(srsName, grid);
