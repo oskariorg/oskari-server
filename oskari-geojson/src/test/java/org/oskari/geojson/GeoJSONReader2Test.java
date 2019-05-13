@@ -293,4 +293,16 @@ public class GeoJSONReader2Test {
         }
     }
 
+    @Test
+    public void testEmptyFeatureCollection() throws Exception {
+        Map<String, Object> json = loadJSONResource("featureCollectionEmpty.json");
+        CoordinateReferenceSystem crs84 = CRS.decode("EPSG:4326", true);
+        SimpleFeatureType schema = GeoJSONSchemaDetector.getSchema(json, crs84);
+        assertNull(schema);
+        SimpleFeatureCollection fc = GeoJSONReader2.toFeatureCollection(json, schema);
+        try (SimpleFeatureIterator it = fc.features()) {
+            assertFalse(it.hasNext());
+        }
+    }
+
 }
