@@ -199,52 +199,10 @@ public class GetWFSVectorTileHandler extends AbstractWFSFeaturesHandler {
     private byte[] createTile(String id, OskariLayer layer, CoordinateReferenceSystem crs,
             WFSTileGrid grid, int targetZ, int z, int x, int y,
             Optional<UserLayerService> contentProcessor) throws ServiceRuntimeException {
-        // Tiles to fetch
-        int x1;
-        int y1;
-        int x2;
-        int y2;
-
-        // always fetch at targetZ so we don't cache same features on multiple zoom levels
-        int dz = z - targetZ;
-
-        if (dz < 0) {
-            // get adjacent tiles so we can unify targetZ tiles to create targetZ-1 etc tiles
-            int d = (int) Math.pow(2, -dz);
-            x1 = x * d;
-            y1 = y * d;
-            x2 = (x+1) * d;
-            y2 = (y+1) * d;
-        } else if (dz == 0) {
-            // this is the sweet spot zoom level wise
-            x1 = x;
-            y1 = y;
-            x2 = x;
-            y2 = y;
-        } else {
-            // recalculate x/y to match a targetZ tile
-            int div = (int) Math.pow(2, dz);
-            x1 = x / div;
-            y1 = y / div;
-            x2 = x1;
-            y2 = x1;
-        }
-        // Get buffer tiles
-        y1--;
-        y1--;
-        x2++;
-        y2++;
-
-        int tileZ = targetZ;
-        List<TileCoord> wfsTiles = new ArrayList<>();
-        for (int tileX = x1; tileX < x2; tileX++) {
-            for (int tileY = y1; tileY < y2; tileY++) {
-                wfsTiles.add(new TileCoord(tileZ, tileX, tileY));
-            }
-        }
+        List<TileCoord> tilesToLoad = getTilesToLoad(targetZ, z, x, y);
 
         DefaultFeatureCollection sfc = new DefaultFeatureCollection();
-        for (TileCoord tile : wfsTiles) {
+        for (TileCoord tile : tilesToLoad) {
             SimpleFeatureCollection tileFeatures = getFeatures(id, layer, crs, grid, tile, contentProcessor);
             if (tileFeatures == null) {
                 throw new ServiceRuntimeException("Failed to get features from service");
@@ -263,6 +221,56 @@ public class GetWFSVectorTileHandler extends AbstractWFSFeaturesHandler {
         } catch (IOException e) {
             throw new ServiceRuntimeException("Unexpected IOException occured");
         }
+    }
+
+    protected static List<TileCoord> getTilesToLoad(int targetZ, int z, int x, int y) {
+        int x1;
+        int y1;
+        int x2;
+        int y2;
+
+        // Always load tiles at zoom level targetZ so that we don't cache same features on multiple zoom levels
+        // Also we can reduce the amount of requests we make to the background services, for example for
+        // high zoom levels we can send only one request and use the cached FeatureCollection for multiple tiles
+        int dz = z - targetZ;
+
+        if (dz == 0) {
+            // this is the sweet spot zoom level wise
+            // Load the target tile and the tiles next to (around) it (buffer)
+            x1 = x - 1;
+            y1 = y - 1;
+            x2 = x + 1;
+            y2 = y + 1;
+        } else if (dz < 0) {
+            // Calculate all tiles inside our target tile
+            int d = (int) Math.pow(2, -dz);
+            x1 = x * d;
+            y1 = y * d;
+            x2 = (x+1) * d;
+            y2 = (y+1) * d;
+            // And include tiles around them (buffer)
+            x1--;
+            y1--;
+        } else {
+            // Calculate the tile (of lower zoom level) which contains the target tile
+            int div = (int) Math.pow(2, dz);
+            x1 = x / div;
+            y1 = y / div;
+            // And include tiles around them (buffer)
+            x2 = x1 + 1;
+            y2 = y1 + 1;
+            x1--;
+            y1--;
+        }
+
+        int tileZ = targetZ;
+        List<TileCoord> wfsTiles = new ArrayList<>();
+        for (int tileX = x1; tileX <= x2; tileX++) {
+            for (int tileY = y1; tileY <= y2; tileY++) {
+                wfsTiles.add(new TileCoord(tileZ, tileX, tileY));
+            }
+        }
+        return wfsTiles;
     }
 
     private SimpleFeatureCollection getFeatures(String id, OskariLayer layer,
