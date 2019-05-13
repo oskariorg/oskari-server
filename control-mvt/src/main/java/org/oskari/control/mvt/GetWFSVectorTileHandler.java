@@ -209,6 +209,11 @@ public class GetWFSVectorTileHandler extends AbstractWFSFeaturesHandler {
             int targetY1 = y * d;
             int targetX2 = (x+1) * d;
             int targetY2 = (y+1) * d;
+            // Get buffer tiles
+            targetX1--;
+            targetY1--;
+            targetX2++;
+            targetY2++;
             wfsTiles = new ArrayList<>();
             for (int targetX = targetX1; targetX < targetX2; targetX++) {
                 for (int targetY = targetY1; targetY < targetY2; targetY++) {
@@ -216,14 +221,34 @@ public class GetWFSVectorTileHandler extends AbstractWFSFeaturesHandler {
                 }
             }
         } else if (dz == 0) {
-            // this is the sweet spot - just get the features that was requested
-            wfsTiles = Collections.singletonList(new TileCoord(z, x, y));
+            // this is the sweet spot zoom level wise
+            // Get buffer tiles
+            int targetX1 = x - 1;
+            int targetY1 = y - 1;
+            int targetX2 = x + 1;
+            int targetY2 = y + 1;
+            wfsTiles = new ArrayList<>();
+            for (int targetX = targetX1; targetX < targetX2; targetX++) {
+                for (int targetY = targetY1; targetY < targetY2; targetY++) {
+                    wfsTiles.add(new TileCoord(targetZ, targetX, targetY));
+                }
+            }
         } else {
             // recalculate x/y to match a targetZ tile
             int div = (int) Math.pow(2, dz);
-            int targetX = x / div;
-            int targetY = y / div;
-            wfsTiles = Collections.singletonList(new TileCoord(targetZ, targetX, targetY));
+            int targetX1 = x / div;
+            int targetY1 = y / div;
+            // Get buffer tiles
+            int targetX2 = targetX1 + 1;
+            int targetY2 = targetY1 + 1;
+            targetX1--;
+            targetY1--;
+            wfsTiles = new ArrayList<>();
+            for (int targetX = targetX1; targetX < targetX2; targetX++) {
+                for (int targetY = targetY1; targetY < targetY2; targetY++) {
+                    wfsTiles.add(new TileCoord(targetZ, targetX, targetY));
+                }
+            }
         }
 
         SimpleFeatureCollection sfc = null;
@@ -252,10 +277,6 @@ public class GetWFSVectorTileHandler extends AbstractWFSFeaturesHandler {
         double[] box = grid.getTileExtent(tile);
         Envelope envelope = new Envelope(box[0], box[2], box[1], box[3]);
         Envelope bufferedEnvelope = new Envelope(envelope);
-        double bufferSizePercent = (double) TILE_BUFFER / (double) TILE_EXTENT;
-        double deltaX = bufferSizePercent * envelope.getWidth();
-        double deltaY = bufferSizePercent * envelope.getHeight();
-        bufferedEnvelope.expandBy(deltaX, deltaY);
         ReferencedEnvelope bbox = new ReferencedEnvelope(bufferedEnvelope, crs);
         return featureClient.getFeatures(id, layer, bbox, crs, processor);
     }
