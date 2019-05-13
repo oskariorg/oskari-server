@@ -130,4 +130,34 @@ public class SimpleFeaturesMVTEncoderTest {
         assertEquals(0, geom.size());
     }
 
+    @Test
+    public void whenPolygonIsClippedItRemains() {
+        GeometryFactory gf = new GeometryFactory();
+
+        Coordinate[] ca = new Coordinate[4];
+        ca[0] = new Coordinate(-20,  10);
+        ca[1] = new Coordinate( 20, -10);
+        ca[2] = new Coordinate(-20, -10);
+        ca[3] = new Coordinate(-20,  10);
+        LinearRing exterior = gf.createLinearRing(ca);
+
+        Polygon p = gf.createPolygon(exterior, null);
+
+        double[] bbox = { 0, 0, 100, 100 };
+        SimpleFeatureTypeBuilder tBuilder = new SimpleFeatureTypeBuilder();
+        tBuilder.setName("test");
+        tBuilder.add("geom", Polygon.class);
+        SimpleFeatureType featureType = tBuilder.buildFeatureType();
+
+        SimpleFeatureBuilder fBuilder = new SimpleFeatureBuilder(featureType);
+        fBuilder.set("geom", p);
+        SimpleFeature f = fBuilder.buildFeature(null);
+
+        DefaultFeatureCollection fc = new DefaultFeatureCollection("test");
+        fc.add(f);
+
+        List<Geometry> geom = SimpleFeaturesMVTEncoder.asMVTGeoms(fc, bbox, 4096, 0);
+        assertEquals(1, geom.size());
+    }
+
 }

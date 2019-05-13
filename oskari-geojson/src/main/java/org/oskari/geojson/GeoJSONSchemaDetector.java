@@ -3,6 +3,7 @@ package org.oskari.geojson;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
 import org.opengis.feature.simple.SimpleFeatureType;
@@ -39,6 +40,11 @@ public class GeoJSONSchemaDetector {
             break;
         default:
             throw new IllegalArgumentException("Invalid type");
+        }
+
+        if (bindings.isEmpty()) {
+            // Empty FeatureCollection
+            return null;
         }
 
         SimpleFeatureTypeBuilder sftb = new SimpleFeatureTypeBuilder();
