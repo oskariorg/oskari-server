@@ -13,14 +13,15 @@ import org.geotools.data.simple.SimpleFeatureIterator;
 import org.geotools.feature.DefaultFeatureCollection;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
-import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.oskari.service.mvt.SimpleFeaturesMVTEncoder;
 import org.oskari.service.mvt.TileCoord;
 import org.oskari.service.mvt.WFSTileGrid;
 import org.oskari.service.user.UserLayerService;
 
+import com.vividsolutions.jts.awt.PointShapeFactory.Point;
 import com.vividsolutions.jts.geom.Envelope;
+import com.vividsolutions.jts.geom.MultiPoint;
 
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.cache.CacheManager;
@@ -54,6 +55,7 @@ public class GetWFSVectorTileHandler extends AbstractWFSFeaturesHandler {
 
     private static final int TILE_EXTENT = 4096;
     private static final int TILE_BUFFER = 256;
+    private static final int TILE_BUFFER_POINT = 1024;
     private static final int TILE_SIZE_IN_NATURE = 8192;
 
     private static final int CACHE_LIMIT = 256;
@@ -251,19 +253,21 @@ public class GetWFSVectorTileHandler extends AbstractWFSFeaturesHandler {
             }
         }
 
-        SimpleFeatureCollection sfc = null;
+        DefaultFeatureCollection sfc = new DefaultFeatureCollection();
         for (TileCoord tile : wfsTiles) {
             SimpleFeatureCollection tileFeatures = getFeatures(id, layer, crs, grid, tile, contentProcessor);
             if (tileFeatures == null) {
                 throw new ServiceRuntimeException("Failed to get features from service");
             }
-            // merge targetZ tiles to create featureCollection for targetZ-1 etc
-            sfc = union(sfc, tileFeatures);
+            addAll(sfc, tileFeatures);
         }
 
-        // sfc always has features for z<=targetZ so we need to clip to smaller tiles based on requested x,y,z
+        String mvtLayer = layer.getName();
         double[] bbox = grid.getTileExtent(new TileCoord(z, x, y));
-        byte[] encoded = SimpleFeaturesMVTEncoder.encodeToByteArray(sfc, layer.getName(), bbox, TILE_EXTENT, TILE_BUFFER);
+        int extent = TILE_EXTENT;
+        int buffer = isOnlyPointFeatures(sfc) ? TILE_BUFFER_POINT : TILE_BUFFER;
+
+        byte[] encoded = SimpleFeaturesMVTEncoder.encodeToByteArray(sfc, mvtLayer, bbox, extent, buffer);
         try {
             return IOHelper.gzip(encoded).toByteArray();
         } catch (IOException e) {
@@ -281,43 +285,17 @@ public class GetWFSVectorTileHandler extends AbstractWFSFeaturesHandler {
         return featureClient.getFeatures(id, layer, bbox, crs, processor);
     }
 
-    public static SimpleFeatureCollection union(SimpleFeatureCollection a, SimpleFeatureCollection b) {
-        if (a == null) {
-            return b;
+    private static void addAll(DefaultFeatureCollection sfc, SimpleFeatureCollection toAdd) {
+        try (SimpleFeatureIterator it = toAdd.features()) {
+            while (it.hasNext()) {
+                sfc.add(it.next());
+            }
         }
-        if (b == null) {
-            return a;
-        }
-        try (SimpleFeatureIterator iterA = a.features();
-                SimpleFeatureIterator iterB = b.features()) {
-            if (!iterA.hasNext()) {
-                return b;
-            }
-            if (!iterB.hasNext()) {
-                return a;
-            }
+    }
 
-            Set<String> ids = new HashSet<>();
-            DefaultFeatureCollection union = new DefaultFeatureCollection();
-
-            while (iterA.hasNext()) {
-                SimpleFeature f = iterA.next();
-                String id = f.getID();
-                if (id != null && ids.add(id)) {
-                    union.add(f);
-                }
-            }
-
-            while (iterB.hasNext()) {
-                SimpleFeature f = iterB.next();
-                String id = f.getID();
-                if (id != null && ids.add(id)) {
-                    union.add(f);
-                }
-            }
-
-            return union;
-        }
+    private boolean isOnlyPointFeatures(SimpleFeatureCollection sfc) {
+        Class<?> binding = sfc.getSchema().getGeometryDescriptor().getType().getBinding();
+        return binding == Point.class || binding == MultiPoint.class;
     }
 
 }
