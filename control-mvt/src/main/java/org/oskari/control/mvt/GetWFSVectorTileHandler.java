@@ -19,9 +19,9 @@ import org.oskari.service.mvt.TileCoord;
 import org.oskari.service.mvt.WFSTileGrid;
 import org.oskari.service.user.UserLayerService;
 
-import com.vividsolutions.jts.awt.PointShapeFactory.Point;
 import com.vividsolutions.jts.geom.Envelope;
 import com.vividsolutions.jts.geom.MultiPoint;
+import com.vividsolutions.jts.geom.Point;
 
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.cache.CacheManager;
@@ -199,57 +199,47 @@ public class GetWFSVectorTileHandler extends AbstractWFSFeaturesHandler {
     private byte[] createTile(String id, OskariLayer layer, CoordinateReferenceSystem crs,
             WFSTileGrid grid, int targetZ, int z, int x, int y,
             Optional<UserLayerService> contentProcessor) throws ServiceRuntimeException {
+        // Tiles to fetch
+        int x1;
+        int y1;
+        int x2;
+        int y2;
 
-        List<TileCoord> wfsTiles;
         // always fetch at targetZ so we don't cache same features on multiple zoom levels
         int dz = z - targetZ;
 
         if (dz < 0) {
             // get adjacent tiles so we can unify targetZ tiles to create targetZ-1 etc tiles
             int d = (int) Math.pow(2, -dz);
-            int targetX1 = x * d;
-            int targetY1 = y * d;
-            int targetX2 = (x+1) * d;
-            int targetY2 = (y+1) * d;
-            // Get buffer tiles
-            targetX1--;
-            targetY1--;
-            targetX2++;
-            targetY2++;
-            wfsTiles = new ArrayList<>();
-            for (int targetX = targetX1; targetX < targetX2; targetX++) {
-                for (int targetY = targetY1; targetY < targetY2; targetY++) {
-                    wfsTiles.add(new TileCoord(targetZ, targetX, targetY));
-                }
-            }
+            x1 = x * d;
+            y1 = y * d;
+            x2 = (x+1) * d;
+            y2 = (y+1) * d;
         } else if (dz == 0) {
             // this is the sweet spot zoom level wise
-            // Get buffer tiles
-            int targetX1 = x - 1;
-            int targetY1 = y - 1;
-            int targetX2 = x + 1;
-            int targetY2 = y + 1;
-            wfsTiles = new ArrayList<>();
-            for (int targetX = targetX1; targetX < targetX2; targetX++) {
-                for (int targetY = targetY1; targetY < targetY2; targetY++) {
-                    wfsTiles.add(new TileCoord(targetZ, targetX, targetY));
-                }
-            }
+            x1 = x;
+            y1 = y;
+            x2 = x;
+            y2 = y;
         } else {
             // recalculate x/y to match a targetZ tile
             int div = (int) Math.pow(2, dz);
-            int targetX1 = x / div;
-            int targetY1 = y / div;
-            // Get buffer tiles
-            int targetX2 = targetX1 + 1;
-            int targetY2 = targetY1 + 1;
-            targetX1--;
-            targetY1--;
-            wfsTiles = new ArrayList<>();
-            for (int targetX = targetX1; targetX < targetX2; targetX++) {
-                for (int targetY = targetY1; targetY < targetY2; targetY++) {
-                    wfsTiles.add(new TileCoord(targetZ, targetX, targetY));
-                }
+            x1 = x / div;
+            y1 = y / div;
+            x2 = x1;
+            y2 = x1;
+        }
+        // Get buffer tiles
+        y1--;
+        y1--;
+        x2++;
+        y2++;
+
+        int tileZ = targetZ;
+        List<TileCoord> wfsTiles = new ArrayList<>();
+        for (int tileX = x1; tileX < x2; tileX++) {
+            for (int tileY = y1; tileY < y2; tileY++) {
+                wfsTiles.add(new TileCoord(tileZ, tileX, tileY));
             }
         }
 
