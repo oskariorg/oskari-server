@@ -16,24 +16,21 @@ import org.oskari.service.user.UserLayerService;
 import org.oskari.service.wfs.client.OskariWFSClient;
 
 import fi.nls.oskari.annotation.OskariActionRoute;
+import fi.nls.oskari.control.ActionCommonException;
 import fi.nls.oskari.control.ActionConstants;
 import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.control.ActionParamsException;
 import fi.nls.oskari.domain.map.OskariLayer;
-import fi.nls.oskari.log.LogFactory;
-import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.service.ServiceRuntimeException;
 import fi.nls.oskari.util.ResponseHelper;
 
 @OskariActionRoute("GetWFSFeatures")
 public class GetWFSFeaturesHandler extends AbstractWFSFeaturesHandler {
 
-    private static final Logger LOG = LogFactory.getLogger(GetWFSFeaturesHandler.class);
-
     protected static final String ERR_BBOX_INVALID = "Invalid bbox";
-    protected static final String ERR_GEOJSON_ENCODE_FAIL = "Failed to write GeoJSON";
     protected static final String ERR_FAILED_TO_RETRIEVE_FEATURES = "Failed to retrieve features";
+    protected static final String ERR_GEOJSON_ENCODE_FAIL = "Failed to write GeoJSON";
 
     private static final String PARAM_BBOX = "bbox";
 
@@ -70,8 +67,7 @@ public class GetWFSFeaturesHandler extends AbstractWFSFeaturesHandler {
         try {
             fc = featureClient.getFeatures(id, layer, bbox, targetCRS, contentProcessor);
         } catch (ServiceRuntimeException e) {
-            LOG.debug(e, e.getMessage());
-            throw new ActionException(ERR_FAILED_TO_RETRIEVE_FEATURES);
+            throw new ActionCommonException(ERR_FAILED_TO_RETRIEVE_FEATURES);
         }
 
         if (fc.isEmpty()) {
@@ -87,7 +83,7 @@ public class GetWFSFeaturesHandler extends AbstractWFSFeaturesHandler {
             new FeatureJSON(new GeometryJSON(decimals)).writeFeatureCollection(fc, writer);
             ResponseHelper.writeResponse(params, 200, GEOJSON_CONTENT_TYPE, baos);
         } catch (IOException e) {
-            ResponseHelper.writeError(params, ERR_GEOJSON_ENCODE_FAIL);
+            throw new ActionCommonException(ERR_GEOJSON_ENCODE_FAIL, e);
         }
     }
 
