@@ -35,7 +35,7 @@ public class UnsdIndicatorDataRequestTest {
         Asserts.assertNotNull(json, "Targets response is null.");
         assertNotEquals("Targets response is empty.", "", json);
 
-        JSONObject goal = new UnsdParser().getFirstObject(json);
+        JSONObject goal = getFirstObject(json);
         assertTrue("Goal has no targets.", goal.has("targets"));
 
         JSONArray targets = goal.getJSONArray("targets");
@@ -43,6 +43,16 @@ public class UnsdIndicatorDataRequestTest {
             JSONObject target = targets.getJSONObject(i);
             assertTrue("Target has no indicators", target.has("indicators"));
         }
+    }
+
+    public JSONObject getFirstObject (String json) throws JSONException {
+        JSONObject obj;
+        try {
+            obj = new JSONObject(json);
+        } catch (JSONException ex) {
+            obj = JSONHelper.createJSONArray(json).getJSONObject(0);
+        }
+        return obj;
     }
 
     @Test

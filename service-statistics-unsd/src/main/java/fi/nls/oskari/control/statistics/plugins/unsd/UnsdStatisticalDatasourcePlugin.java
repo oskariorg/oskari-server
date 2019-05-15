@@ -5,7 +5,6 @@ import fi.nls.oskari.control.statistics.plugins.StatisticalDatasourcePlugin;
 import fi.nls.oskari.control.statistics.plugins.db.DatasourceLayer;
 import fi.nls.oskari.control.statistics.plugins.db.StatisticalDatasource;
 import fi.nls.oskari.control.statistics.plugins.unsd.parser.RegionMapper;
-import fi.nls.oskari.control.statistics.plugins.unsd.parser.UnsdIndicator;
 import fi.nls.oskari.control.statistics.plugins.unsd.parser.UnsdParser;
 import fi.nls.oskari.control.statistics.plugins.unsd.requests.UnsdRequest;
 import fi.nls.oskari.log.LogFactory;
@@ -41,11 +40,15 @@ public class UnsdStatisticalDatasourcePlugin extends StatisticalDatasourcePlugin
         UnsdRequest request = new UnsdRequest(config);
         request.setGoal(config.getGoal());
         String targetsResponse = request.getTargets();
-        List<UnsdIndicator> indicators = parser.parseIndicators(targetsResponse);
-        for (UnsdIndicator ind : indicators) {
+        List<StatisticalIndicator> indicators = parser.parseIndicators(targetsResponse);
+
+        // all indicators under goal have same dimensions
+        String dimensions = request.getDimensions();
+        for (StatisticalIndicator ind : indicators) {
             request.setIndicator(ind.getId());
-            parser.mergeDimensions(ind, request.getDimensions());
-            parser.mergeSource(ind, request.getIndicatorData(null));
+            // we parse it multiple times to make copies
+            ind.setDataModel(parser.parseDimensions(dimensions));
+            ind.setSource(parser.parseSource(request.getIndicatorData(null)));
             onIndicatorProcessed(ind);
         }
         LOG.info("Parsed indicator response.");
@@ -59,11 +62,14 @@ public class UnsdStatisticalDatasourcePlugin extends StatisticalDatasourcePlugin
         indicatorValuesFetcher = new UnsdIndicatorValuesFetcher();
         indicatorValuesFetcher.init(config);
         regionMapper = new RegionMapper();
+        /*
         try {
+            // optimization for getting just the countries we need
             initAreaCodes(source.getLayers());
         } catch (JSONException e) {
             LOG.error("Error parsing UNSD statistical layer regions: " + e.getMessage(), e);
         }
+        */
     }
 
     private void initAreaCodes (List<DatasourceLayer> layers) throws JSONException {
@@ -76,6 +82,7 @@ public class UnsdStatisticalDatasourcePlugin extends StatisticalDatasourcePlugin
             for (int i = 0; i < 0; i++) {
                 areaCodes.add(regions.getString(i));
             }
+            // FIXME: need to map country code to a digit in the datasource......
             // TODO; Get codes from RegionSetHelper
             // RegionSet - layerId
             // RegionSetHelper - RegionSet

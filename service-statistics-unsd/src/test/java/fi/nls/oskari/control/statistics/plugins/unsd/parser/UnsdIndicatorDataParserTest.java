@@ -1,6 +1,8 @@
 package fi.nls.oskari.control.statistics.plugins.unsd.parser;
 
 import fi.nls.oskari.control.statistics.data.IndicatorValue;
+import fi.nls.oskari.control.statistics.data.StatisticalIndicator;
+import fi.nls.oskari.control.statistics.data.StatisticalIndicatorDataModel;
 import fi.nls.test.util.ResourceHelper;
 import org.json.JSONException;
 import org.junit.Test;
@@ -29,15 +31,16 @@ public class UnsdIndicatorDataParserTest {
 
     @Test
     public void testIndicatorMetadata() throws JSONException {
-        List<UnsdIndicator> indicators = parser.parseGoalIndicators(targetResponse);
+        List<StatisticalIndicator> indicators = parser.parseIndicators(targetResponse);
         assertFalse("Did not parse any indicator codes from target response.", indicators.isEmpty());
 
-        UnsdIndicator indicator = indicators.get(0);
-        parser.mergeDimensions(indicator, dimensionsResponse);
-        assertNotEquals("Indicator doesn't have any dimensions.", indicator.getDataModel().getDimensions().size(), 0);
+        StatisticalIndicator indicator = indicators.get(0);
 
-        parser.mergeSource(indicator, dataResponseUnlimited);
-        assertNotNull("Indicator doesn't have source.", indicator.getSource());
+        StatisticalIndicatorDataModel model = parser.parseDimensions(dimensionsResponse);
+        assertNotEquals("Indicator doesn't have any dimensions.", model.getDimensions().size(), 0);
+
+        Map<String, String> sources = parser.parseSource(dataResponseUnlimited);
+        assertNotNull("Indicator doesn't have source.", sources.get("en"));
     }
 
     @Test
