@@ -3,6 +3,7 @@ package fi.nls.oskari.control.statistics.plugins.unsd.requests;
 import fi.nls.oskari.control.statistics.plugins.unsd.UnsdConfig;
 import fi.nls.oskari.control.statistics.plugins.unsd.parser.UnsdParser;
 import fi.nls.oskari.util.JSONHelper;
+import fi.nls.test.util.TestHelper;
 import org.junit.runner.RunWith;
 import org.powermock.modules.junit4.PowerMockRunner;
 
@@ -26,6 +27,10 @@ public class UnsdIndicatorDataRequestTest {
 
     @Test
     public void testRequestTargets() throws JSONException {
+
+        org.junit.Assume.assumeTrue(TestHelper.canDoHttp());
+        org.junit.Assume.assumeTrue(TestHelper.redisAvailable());
+
         String json = request.getTargets();
         Asserts.assertNotNull(json, "Targets response is null.");
         assertNotEquals("Targets response is empty.", "", json);
@@ -42,6 +47,9 @@ public class UnsdIndicatorDataRequestTest {
 
     @Test
     public void testRequestDimensions() throws JSONException {
+        org.junit.Assume.assumeTrue(TestHelper.canDoHttp());
+        org.junit.Assume.assumeTrue(TestHelper.redisAvailable());
+
         String json = request.getDimensions();
         JSONArray dimensions = JSONHelper.createJSONArray(json);
         for (int i = 0; i < dimensions.length(); i++) {
