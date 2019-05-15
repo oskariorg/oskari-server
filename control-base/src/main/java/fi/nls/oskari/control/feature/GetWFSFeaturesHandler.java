@@ -1,7 +1,8 @@
 package fi.nls.oskari.control.feature;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.StringWriter;
+import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 
@@ -14,9 +15,8 @@ import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.oskari.service.user.UserLayerService;
 import org.oskari.service.wfs.client.OskariWFSClient;
 
-import com.vividsolutions.jts.geom.Envelope;
-
 import fi.nls.oskari.annotation.OskariActionRoute;
+import fi.nls.oskari.control.ActionCommonException;
 import fi.nls.oskari.control.ActionConstants;
 import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.ActionParameters;
@@ -29,13 +29,12 @@ import fi.nls.oskari.util.ResponseHelper;
 public class GetWFSFeaturesHandler extends AbstractWFSFeaturesHandler {
 
     protected static final String ERR_BBOX_INVALID = "Invalid bbox";
-    protected static final String ERR_BBOX_OUT_OF_CRS = "bbox not within CRS extent";
-    protected static final String ERR_GEOJSON_ENCODE_FAIL = "Failed to write GeoJSON";
     protected static final String ERR_FAILED_TO_RETRIEVE_FEATURES = "Failed to retrieve features";
+    protected static final String ERR_GEOJSON_ENCODE_FAIL = "Failed to write GeoJSON";
 
     private static final String PARAM_BBOX = "bbox";
 
-    private static final String GEOJSON_CONTENT_TYPE = "application/vnd.geo+json";
+    private static final String GEOJSON_CONTENT_TYPE = "application/vnd.geo+json; charset=utf-8";
     private static final byte[] EMPTY_GEOJSON_FEATURE_COLLECTION =
             "{\"type\": \"FeatureCollection\", \"features\": []}".getBytes(StandardCharsets.UTF_8);
 
@@ -68,8 +67,7 @@ public class GetWFSFeaturesHandler extends AbstractWFSFeaturesHandler {
         try {
             fc = featureClient.getFeatures(id, layer, bbox, targetCRS, contentProcessor);
         } catch (ServiceRuntimeException e) {
-            // ActionParamsException because we don't want to log stacktrace of these  
-            throw new ActionParamsException(ERR_FAILED_TO_RETRIEVE_FEATURES, e);
+            throw new ActionCommonException(ERR_FAILED_TO_RETRIEVE_FEATURES);
         }
 
         if (fc.isEmpty()) {
@@ -79,12 +77,13 @@ public class GetWFSFeaturesHandler extends AbstractWFSFeaturesHandler {
         }
 
         try {
-            StringWriter writer = new StringWriter();
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            OutputStreamWriter writer = new OutputStreamWriter(baos, StandardCharsets.UTF_8);
             int decimals = getNumDecimals(targetCRS);
             new FeatureJSON(new GeometryJSON(decimals)).writeFeatureCollection(fc, writer);
-            ResponseHelper.writeResponse(params, 200, GEOJSON_CONTENT_TYPE, writer.getBuffer().toString());
+            ResponseHelper.writeResponse(params, 200, GEOJSON_CONTENT_TYPE, baos);
         } catch (IOException e) {
-            ResponseHelper.writeError(params, ERR_GEOJSON_ENCODE_FAIL);
+            throw new ActionCommonException(ERR_GEOJSON_ENCODE_FAIL, e);
         }
     }
 
@@ -105,11 +104,7 @@ public class GetWFSFeaturesHandler extends AbstractWFSFeaturesHandler {
             double y1 = Double.parseDouble(a[1]);
             double x2 = Double.parseDouble(a[2]);
             double y2 = Double.parseDouble(a[3]);
-            Envelope envelope = new Envelope(x1, x2, y1, y2);
-            if (!featureClient.isWithin(crs, envelope)) {
-                throw new ActionParamsException(ERR_BBOX_OUT_OF_CRS);
-            }
-            return new ReferencedEnvelope(envelope, crs);
+            return new ReferencedEnvelope(x1, x2, y1, y2, crs);
         } catch (NumberFormatException e) {
             throw new ActionParamsException(ERR_BBOX_INVALID);
         }
