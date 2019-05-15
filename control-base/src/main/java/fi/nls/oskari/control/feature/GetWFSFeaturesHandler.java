@@ -14,8 +14,6 @@ import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.oskari.service.user.UserLayerService;
 import org.oskari.service.wfs.client.OskariWFSClient;
 
-import com.vividsolutions.jts.geom.Envelope;
-
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.ActionConstants;
 import fi.nls.oskari.control.ActionException;
@@ -29,7 +27,6 @@ import fi.nls.oskari.util.ResponseHelper;
 public class GetWFSFeaturesHandler extends AbstractWFSFeaturesHandler {
 
     protected static final String ERR_BBOX_INVALID = "Invalid bbox";
-    protected static final String ERR_BBOX_OUT_OF_CRS = "bbox not within CRS extent";
     protected static final String ERR_GEOJSON_ENCODE_FAIL = "Failed to write GeoJSON";
     protected static final String ERR_FAILED_TO_RETRIEVE_FEATURES = "Failed to retrieve features";
 
@@ -105,11 +102,7 @@ public class GetWFSFeaturesHandler extends AbstractWFSFeaturesHandler {
             double y1 = Double.parseDouble(a[1]);
             double x2 = Double.parseDouble(a[2]);
             double y2 = Double.parseDouble(a[3]);
-            Envelope envelope = new Envelope(x1, x2, y1, y2);
-            if (!featureClient.isWithin(crs, envelope)) {
-                throw new ActionParamsException(ERR_BBOX_OUT_OF_CRS);
-            }
-            return new ReferencedEnvelope(envelope, crs);
+            return new ReferencedEnvelope(x1, x2, y1, y2, crs);
         } catch (NumberFormatException e) {
             throw new ActionParamsException(ERR_BBOX_INVALID);
         }
