@@ -3,7 +3,6 @@ package fi.nls.oskari.control.feature;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
-import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 
@@ -22,11 +21,15 @@ import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.control.ActionParamsException;
 import fi.nls.oskari.domain.map.OskariLayer;
+import fi.nls.oskari.log.LogFactory;
+import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.service.ServiceRuntimeException;
 import fi.nls.oskari.util.ResponseHelper;
 
 @OskariActionRoute("GetWFSFeatures")
 public class GetWFSFeaturesHandler extends AbstractWFSFeaturesHandler {
+
+    private static final Logger LOG = LogFactory.getLogger(GetWFSFeaturesHandler.class);
 
     protected static final String ERR_BBOX_INVALID = "Invalid bbox";
     protected static final String ERR_GEOJSON_ENCODE_FAIL = "Failed to write GeoJSON";
@@ -67,8 +70,9 @@ public class GetWFSFeaturesHandler extends AbstractWFSFeaturesHandler {
         try {
             fc = featureClient.getFeatures(id, layer, bbox, targetCRS, contentProcessor);
         } catch (ServiceRuntimeException e) {
-            // ActionParamsException because we don't want to log stacktrace of these  
-            throw new ActionParamsException(ERR_FAILED_TO_RETRIEVE_FEATURES, e);
+            LOG.debug(e, e.getMessage());
+            // throw ActionParamsException because we don't want to log stacktrace of these
+            throw new ActionParamsException(ERR_FAILED_TO_RETRIEVE_FEATURES);
         }
 
         if (fc.isEmpty()) {
