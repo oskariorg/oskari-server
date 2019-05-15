@@ -74,8 +74,13 @@ public class OskariWFS110Client {
 
         String contentType = conn.getContentType();
         if (contentType != null && !contentType.contains("json")) {
-            // TODO: Handle WFS Error responses
-            throw new Exception("Unexpected content type " + contentType);
+            if (contentType.contains("xml")) {
+                try (InputStream in = new BufferedInputStream(conn.getInputStream())) {
+                    
+                }
+            } else {
+                throw new Exception("Unexpected content type " + contentType);
+            }
         }
 
         Map<String, Object> geojson = readMap(conn);
