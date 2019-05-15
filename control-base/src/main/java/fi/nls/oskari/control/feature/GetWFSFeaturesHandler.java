@@ -1,6 +1,8 @@
 package fi.nls.oskari.control.feature;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
 import java.util.Optional;
@@ -32,7 +34,7 @@ public class GetWFSFeaturesHandler extends AbstractWFSFeaturesHandler {
 
     private static final String PARAM_BBOX = "bbox";
 
-    private static final String GEOJSON_CONTENT_TYPE = "application/vnd.geo+json";
+    private static final String GEOJSON_CONTENT_TYPE = "application/vnd.geo+json; charset=utf-8";
     private static final byte[] EMPTY_GEOJSON_FEATURE_COLLECTION =
             "{\"type\": \"FeatureCollection\", \"features\": []}".getBytes(StandardCharsets.UTF_8);
 
@@ -76,10 +78,11 @@ public class GetWFSFeaturesHandler extends AbstractWFSFeaturesHandler {
         }
 
         try {
-            StringWriter writer = new StringWriter();
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            OutputStreamWriter writer = new OutputStreamWriter(baos, StandardCharsets.UTF_8);
             int decimals = getNumDecimals(targetCRS);
             new FeatureJSON(new GeometryJSON(decimals)).writeFeatureCollection(fc, writer);
-            ResponseHelper.writeResponse(params, 200, GEOJSON_CONTENT_TYPE, writer.getBuffer().toString());
+            ResponseHelper.writeResponse(params, 200, GEOJSON_CONTENT_TYPE, baos);
         } catch (IOException e) {
             ResponseHelper.writeError(params, ERR_GEOJSON_ENCODE_FAIL);
         }
