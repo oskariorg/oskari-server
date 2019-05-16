@@ -120,13 +120,12 @@ public class UnsdParser {
                 JSONObject dimension = dimensions.getJSONObject(i);
                 String id = dimension.optString("id");
                 JSONArray codes = dimension.optJSONArray("codes");
-                Collection<String> allowedValues = new ArrayList<>();
+                StatisticalIndicatorDataDimension selector = new StatisticalIndicatorDataDimension(id);
                 for (int j = 0; j < codes.length(); j++) {
                     JSONObject code = codes.getJSONObject(j);
-                    allowedValues.add(code.getString("code"));
+                    selector.addAllowedValue(code.getString("code"), code.getString("description"));
                 }
-                if (allowedValues.size() > 0) {
-                    StatisticalIndicatorDataDimension selector = new StatisticalIndicatorDataDimension(id, allowedValues);
+                if(!selector.getAllowedValues().isEmpty()) {
                     selectors.addDimension(selector);
                 }
             }
