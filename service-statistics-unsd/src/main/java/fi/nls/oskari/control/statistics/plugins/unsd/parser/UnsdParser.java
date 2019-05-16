@@ -154,27 +154,4 @@ public class UnsdParser {
         }
         return sources;
     }
-
-    public boolean isLastPage (String indicatorDataResponse) {
-        try {
-            JSONObject response = JSONHelper.createJSONObject(indicatorDataResponse);
-            int totalPages = response.getInt("totalPages");
-            int pageNumber = response.getInt("pageNumber");
-            return pageNumber == totalPages;
-        } catch (JSONException e) {
-            throw new ServiceRuntimeException("Error parsing UNSD indicator data page info: " + e.getMessage(), e);
-        }
-    }
-
-    public Map<String, IndicatorValue> parseIndicatorData (String indicatorDataResponse) throws JSONException {
-        Map<String, IndicatorValue> results = new HashMap<>();
-        JSONObject response = JSONHelper.createJSONObject(indicatorDataResponse);
-        JSONArray dataArray = response.getJSONArray("data");
-        for (int i = 0; i < dataArray.length(); i++) {
-            JSONObject data = dataArray.getJSONObject(i);
-            results.put(data.getString("geoAreaCode"), new IndicatorValueFloat(data.getDouble("value")));
-        }
-        return results;
-    }
-
 }

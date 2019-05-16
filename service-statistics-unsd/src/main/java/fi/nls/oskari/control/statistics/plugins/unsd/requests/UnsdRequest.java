@@ -3,23 +3,15 @@ package fi.nls.oskari.control.statistics.plugins.unsd.requests;
 import fi.nls.oskari.control.statistics.data.StatisticalIndicatorDataModel;
 import fi.nls.oskari.control.statistics.plugins.APIException;
 import fi.nls.oskari.control.statistics.plugins.unsd.UnsdConfig;
-import fi.nls.oskari.log.LogFactory;
-import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.util.IOHelper;
 
-import java.io.StringWriter;
-import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
-import java.net.URLEncoder;
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * Base class for UNSD statistics queries.
  */
 public class UnsdRequest {
-
-    private static final Logger log = LogFactory.getLogger(UnsdRequest.class);
 
     private static final String PLACEHOLDER_GOAL = "{goalCode}";
     private static final String PARAM_INDICATOR = "indicator";
@@ -52,10 +44,6 @@ public class UnsdRequest {
             page = 1;
         }
         page++;
-    }
-
-    public String[] getAreaCodes() {
-        return areaCodes;
     }
 
     public void setAreaCodes(String[] areaCodes) {

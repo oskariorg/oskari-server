@@ -1,11 +1,16 @@
 package fi.nls.oskari.control.statistics.plugins.unsd;
 
 import fi.nls.oskari.control.statistics.data.IndicatorValue;
+import fi.nls.oskari.control.statistics.data.IndicatorValueFloat;
 import fi.nls.oskari.control.statistics.data.StatisticalIndicatorDataModel;
 import fi.nls.oskari.control.statistics.plugins.APIException;
 import fi.nls.oskari.control.statistics.plugins.unsd.parser.UnsdParser;
 import fi.nls.oskari.control.statistics.plugins.unsd.requests.UnsdRequest;
+import fi.nls.oskari.service.ServiceRuntimeException;
+import fi.nls.oskari.util.JSONHelper;
+import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.List;
@@ -13,12 +18,10 @@ import java.util.Map;
 
 
 public class UnsdIndicatorValuesFetcher {
-    private UnsdParser parser;
     private UnsdConfig config;
 
     public void init(UnsdConfig config) {
         this.config = config;
-        this.parser = new UnsdParser();
     }
 
     /**
@@ -38,8 +41,8 @@ public class UnsdIndicatorValuesFetcher {
         while(!allFetched) {
             try {
                 response = request.getIndicatorData(selectors);
-                result.putAll(parser.parseIndicatorData(response));
-                allFetched = parser.isLastPage(response);
+                result.putAll(parseIndicatorData(response));
+                allFetched = isLastPage(response);
                 if (!allFetched) {
                     request.nextPage();
                     response = request.getIndicatorData(selectors);
@@ -51,4 +54,28 @@ public class UnsdIndicatorValuesFetcher {
         return result;
     }
 
+    private boolean isLastPage (String indicatorDataResponse) {
+        try {
+            JSONObject response = JSONHelper.createJSONObject(indicatorDataResponse);
+            int totalPages = response.getInt("totalPages");
+            if (totalPages < 1) {
+                return true;
+            }
+            int pageNumber = response.getInt("pageNumber");
+            return pageNumber == totalPages;
+        } catch (JSONException e) {
+            throw new ServiceRuntimeException("Error parsing UNSD indicator data page info: " + e.getMessage(), e);
+        }
+    }
+
+    private Map<String, IndicatorValue> parseIndicatorData (String indicatorDataResponse) throws JSONException {
+        Map<String, IndicatorValue> results = new HashMap<>();
+        JSONObject response = JSONHelper.createJSONObject(indicatorDataResponse);
+        JSONArray dataArray = response.getJSONArray("data");
+        for (int i = 0; i < dataArray.length(); i++) {
+            JSONObject data = dataArray.getJSONObject(i);
+            results.put(data.getString("geoAreaCode"), new IndicatorValueFloat(data.getDouble("value")));
+        }
+        return results;
+    }
 }
