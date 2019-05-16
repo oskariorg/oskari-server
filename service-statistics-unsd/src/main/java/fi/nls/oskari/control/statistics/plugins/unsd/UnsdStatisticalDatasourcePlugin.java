@@ -85,11 +85,13 @@ public class UnsdStatisticalDatasourcePlugin extends StatisticalDatasourcePlugin
             // TODO; Get codes from RegionSetHelper
             // RegionSet - layerId
             // RegionSetHelper - RegionSet
+            /*
             layerAreaCodes.put(layer.getMaplayerId(), areaCodes.stream()
                     .map(code -> regionMapper.getUNSDAreaCode(code))
                     .filter(code -> !code.isEmpty())
                     .collect(Collectors.toList())
             );
+            */
         }
     }
 

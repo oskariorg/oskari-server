@@ -148,7 +148,7 @@ public class UnsdRequest {
     private String getUrl(String path, Map<String, String> params) {
         String url = IOHelper.constructUrl(config.getUrl() + "/" + path, params);
         if (areaCodes != null && areaCodes.length > 0) {
-            return IOHelper.addUrlParams(url, "areaCode", areaCodes);
+            return IOHelper.addUrlParam(url, "areaCode", areaCodes);
         }
         return url;
     }
