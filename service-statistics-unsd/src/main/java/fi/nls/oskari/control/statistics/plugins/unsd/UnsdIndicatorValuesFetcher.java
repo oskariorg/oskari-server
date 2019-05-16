@@ -54,7 +54,7 @@ public class UnsdIndicatorValuesFetcher {
         return result;
     }
 
-    private boolean isLastPage (String indicatorDataResponse) {
+    protected boolean isLastPage (String indicatorDataResponse) {
         try {
             JSONObject response = JSONHelper.createJSONObject(indicatorDataResponse);
             int totalPages = response.getInt("totalPages");
@@ -68,7 +68,7 @@ public class UnsdIndicatorValuesFetcher {
         }
     }
 
-    private Map<String, IndicatorValue> parseIndicatorData (String indicatorDataResponse) throws JSONException {
+    protected Map<String, IndicatorValue> parseIndicatorData (String indicatorDataResponse) throws JSONException {
         Map<String, IndicatorValue> results = new HashMap<>();
         JSONObject response = JSONHelper.createJSONObject(indicatorDataResponse);
         JSONArray dataArray = response.getJSONArray("data");

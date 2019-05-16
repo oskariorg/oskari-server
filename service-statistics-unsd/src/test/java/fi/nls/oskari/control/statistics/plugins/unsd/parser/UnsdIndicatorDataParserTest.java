@@ -43,21 +43,5 @@ public class UnsdIndicatorDataParserTest {
         assertNotNull("Indicator doesn't have source.", sources.get("en"));
     }
 
-    @Test
-    public void testIndicatorData() throws JSONException {
-        Map<String, IndicatorValue> valuesByRegion = parser.parseIndicatorData(dataResponseUnlimited);
-        assertFalse("Did not parse any data from response.", valuesByRegion.isEmpty());
-    }
-
-    @Test
-    public void testIndicatorDataPages() throws JSONException {
-        Boolean lastPage = parser.isLastPage(dataResponse2015AreaLimited);
-        assertNotNull("Could not parse page info", lastPage);
-        assertTrue("The response wasn't the last page.", lastPage);
-
-        lastPage = parser.isLastPage(dataResponseUnlimited);
-        assertNotNull("Could not parse page info", lastPage);
-        assertFalse("The response was the last page.", lastPage);
-    }
 }
 
