@@ -952,13 +952,7 @@ public class IOHelper {
      * @param value
      * @return
      */
-    public static String addUrlParam(final String url, String key, String value) {
-        final Map<String, String> params = new HashMap<>(1);
-        params.put(key, value);
-        return constructUrl(url, params);
-    }
-
-    public static String addUrlParams(final String url, String key, String[] value) {
+    public static String addUrlParam(final String url, String key, String... value) {
         final Map<String, String[]> params = new HashMap<>(1);
         params.put(key, value);
         final String queryString = getParamsMultiValue(params);
