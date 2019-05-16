@@ -14,6 +14,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -29,7 +30,7 @@ public class UnsdStatisticalDatasourcePlugin extends StatisticalDatasourcePlugin
     /**
      * Maps the UNSD area codes to Oskari layers.
      */
-    private Map<Long, List<String>> layerAreaCodes;
+    private Map<Long, String[]> layerAreaCodes = new HashMap<>();
 
     @Override
     public void update() {
@@ -98,7 +99,7 @@ public class UnsdStatisticalDatasourcePlugin extends StatisticalDatasourcePlugin
             StatisticalIndicatorDataModel params,
             StatisticalIndicatorLayer regionset) {
 
-        List<String> areaCodes = layerAreaCodes.get(regionset.getOskariLayerId());
+        String[] areaCodes = layerAreaCodes.get(regionset.getOskariLayerId());
         return indicatorValuesFetcher.get(params, indicator.getId(), areaCodes);
     }
 }

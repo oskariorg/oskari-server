@@ -27,7 +27,7 @@ public class UnsdIndicatorValuesFetcher {
      * @param areaCodes        List of areas we are interested in
      * @return
      */
-    public Map<String, IndicatorValue> get(StatisticalIndicatorDataModel selectors, String indicator, List<String> areaCodes) {
+    public Map<String, IndicatorValue> get(StatisticalIndicatorDataModel selectors, String indicator, String[] areaCodes) {
         UnsdRequest request = new UnsdRequest(config);
         request.setIndicator(indicator);
         request.setAreaCodes(areaCodes);

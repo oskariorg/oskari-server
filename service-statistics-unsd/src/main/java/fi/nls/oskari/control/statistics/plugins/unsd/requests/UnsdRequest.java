@@ -33,7 +33,7 @@ public class UnsdRequest {
     private String goal;
     private String indicator;
     private Integer page;
-    private List<String> areaCodes;
+    private String[] areaCodes;
 
     public UnsdRequest(UnsdConfig config) {
         this.config = config;
@@ -54,11 +54,11 @@ public class UnsdRequest {
         page++;
     }
 
-    public List<String> getAreaCodes() {
+    public String[] getAreaCodes() {
         return areaCodes;
     }
 
-    public void setAreaCodes(List<String> areaCodes) {
+    public void setAreaCodes(String[] areaCodes) {
         this.areaCodes = areaCodes;
     }
 
@@ -146,43 +146,11 @@ public class UnsdRequest {
     }
 
     private String getUrl(String path, Map<String, String> params) {
-        StringWriter writer = new StringWriter();
-        writer.write(config.getUrl());
-        writer.write("/");
-        writer.write(path);
-
-        if ((areaCodes == null || areaCodes.isEmpty()) && (params == null || params.isEmpty())) {
-            return writer.toString();
+        String url = IOHelper.constructUrl(config.getUrl() + "/" + path, params);
+        if (areaCodes != null && areaCodes.length > 0) {
+            return IOHelper.addUrlParams(url, "areaCode", areaCodes);
         }
-
-        writer.write("?");
-        boolean isFirstParam = true;
-
-        if (areaCodes != null && !areaCodes.isEmpty()) {
-            writer.write(areaCodes.stream()
-                    .map(code -> "areaCode=" + code)
-                    .collect(Collectors.joining("&")));
-            isFirstParam = false;
-        }
-
-        if (params == null || params.isEmpty()) {
-            return writer.toString();
-        }
-
-        for (Map.Entry<String, String> keyValue : params.entrySet()) {
-            try {
-                if (!isFirstParam) {
-                    writer.write("&");
-                    isFirstParam = false;
-                }
-                writer.write(URLEncoder.encode(keyValue.getKey(), "UTF-8"));
-                writer.write("=");
-                writer.write(URLEncoder.encode(keyValue.getValue(), "UTF-8"));
-            } catch (UnsupportedEncodingException e) {
-                throw new APIException("Error while encoding request parameters.", e);
-            }
-        }
-        return writer.toString();
+        return url;
     }
 
     private String getData(String path, Map<String, String> params) throws APIException {
