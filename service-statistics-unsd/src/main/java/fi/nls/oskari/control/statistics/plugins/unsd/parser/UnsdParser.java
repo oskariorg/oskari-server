@@ -3,6 +3,7 @@ package fi.nls.oskari.control.statistics.plugins.unsd.parser;
 import fi.nls.oskari.control.statistics.data.*;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.service.ServiceRuntimeException;
 import fi.nls.oskari.util.JSONHelper;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -154,16 +155,15 @@ public class UnsdParser {
         return sources;
     }
 
-    public Boolean isLastPage (String indicatorDataResponse) {
+    public boolean isLastPage (String indicatorDataResponse) {
         try {
             JSONObject response = JSONHelper.createJSONObject(indicatorDataResponse);
             int totalPages = response.getInt("totalPages");
             int pageNumber = response.getInt("pageNumber");
             return pageNumber == totalPages;
         } catch (JSONException e) {
-            LOG.error("Error parsing UNSD indicator data page info: " + e.getMessage(), e);
+            throw new ServiceRuntimeException("Error parsing UNSD indicator data page info: " + e.getMessage(), e);
         }
-        return null;
     }
 
     public Map<String, IndicatorValue> parseIndicatorData (String indicatorDataResponse) throws JSONException {
