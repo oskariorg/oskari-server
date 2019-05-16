@@ -31,9 +31,6 @@ public class UnsdStatisticalDatasourcePlugin extends StatisticalDatasourcePlugin
      */
     private Map<Long, List<String>> layerAreaCodes;
 
-    public UnsdStatisticalDatasourcePlugin() {
-    }
-
     @Override
     public void update() {
         // get the indicator listing
@@ -49,6 +46,7 @@ public class UnsdStatisticalDatasourcePlugin extends StatisticalDatasourcePlugin
             // we parse it multiple times to make copies
             ind.setDataModel(parser.parseDimensions(dimensions));
             ind.setSource(parser.parseSource(request.getIndicatorData(null)));
+            getSource().getLayers().stream().forEach(l -> ind.addLayer(l));
             onIndicatorProcessed(ind);
         }
         LOG.info("Parsed indicator response.");
