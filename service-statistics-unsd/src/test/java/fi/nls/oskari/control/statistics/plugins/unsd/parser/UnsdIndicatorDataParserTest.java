@@ -34,8 +34,6 @@ public class UnsdIndicatorDataParserTest {
         List<StatisticalIndicator> indicators = parser.parseIndicators(targetResponse);
         assertFalse("Did not parse any indicator codes from target response.", indicators.isEmpty());
 
-        StatisticalIndicator indicator = indicators.get(0);
-
         StatisticalIndicatorDataModel model = parser.parseDimensions(dimensionsResponse);
         assertNotEquals("Indicator doesn't have any dimensions.", model.getDimensions().size(), 0);
 

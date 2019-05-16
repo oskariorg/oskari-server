@@ -1,42 +1,51 @@
 package fi.nls.oskari.control.statistics.plugins.unsd.parser;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
+import fi.nls.oskari.control.statistics.plugins.unsd.CountryRegion;
+import fi.nls.oskari.service.ServiceRuntimeException;
+import fi.nls.oskari.util.IOHelper;
+
+import java.io.IOException;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class RegionMapper {
 
-    private static String[] ALPHA_2_REGION_CODES = new String[]{
-            "CA",
-            "NO",
-            "US",
-            "GL",
-            "DK",
-            "SE",
-            "IS",
-            "FI"
-    };
-    private Map<String, String> regionsToUnsd = new HashMap<>();
-    private Map<String, String> unsdToRegions = new HashMap<>();
+    private List<CountryRegion> countries;
 
     public RegionMapper() {
-        init();
+        String file = readResource();
+        countries = Arrays.stream(file.split("\r\n"))
+                .map(row -> parseRow(row))
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .collect(Collectors.toList());
     }
 
-    public void init() {
-        Arrays.stream(ALPHA_2_REGION_CODES).forEach(a2Code -> {
-            Locale locale = new Locale("", a2Code);
-            regionsToUnsd.put(a2Code, locale.getISO3Country());
-            unsdToRegions.put(locale.getISO3Country(), a2Code);
-        });
+    private String readResource() {
+        try {
+            return IOHelper.readString(getClass().getResourceAsStream("/M49codes.csv"));
+        } catch (IOException ex) {
+            throw new ServiceRuntimeException("Unable to read M49 country mapping", ex);
+        }
     }
 
-    public String getRegionCode(String unsdAreaCode) {
-        return unsdToRegions.get(unsdAreaCode);
-    }
-    public String getUNSDAreaCode(String regionCode) {
-        return regionsToUnsd.get(regionCode);
+
+    private static Optional<CountryRegion> parseRow(String row) {
+        // FI;FIN;246;Finland
+        String[] data = row.split(";");
+        if (data.length != 4) {
+            return Optional.empty();
+        }
+
+        CountryRegion c = new CountryRegion(data[0].trim(), data[1].trim(), data[2].trim(), data[3].trim());
+        if (c.isValid()) {
+            return Optional.of(c);
+        }
+        return Optional.empty();
     }
 
+
+    public Optional<CountryRegion> find(String anyCode) {
+        return countries.stream().filter(c -> c.matches(anyCode)).findFirst();
+    }
 }

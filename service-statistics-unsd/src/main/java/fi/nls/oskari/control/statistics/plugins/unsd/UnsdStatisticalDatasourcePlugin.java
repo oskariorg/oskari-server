@@ -13,10 +13,7 @@ import fi.nls.oskari.util.JSONHelper;
 import org.json.JSONArray;
 import org.json.JSONException;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class UnsdStatisticalDatasourcePlugin extends StatisticalDatasourcePlugin {
@@ -61,37 +58,32 @@ public class UnsdStatisticalDatasourcePlugin extends StatisticalDatasourcePlugin
         indicatorValuesFetcher = new UnsdIndicatorValuesFetcher();
         indicatorValuesFetcher.init(config);
         regionMapper = new RegionMapper();
-        /*
-        try {
-            // optimization for getting just the countries we need
-            initAreaCodes(source.getLayers());
-        } catch (JSONException e) {
-            LOG.error("Error parsing UNSD statistical layer regions: " + e.getMessage(), e);
-        }
-        */
+        // optimization for getting data just for the countries we are showing
+        initAreaCodes(source.getLayers());
     }
 
-    private void initAreaCodes (List<DatasourceLayer> layers) throws JSONException {
+    private void initAreaCodes (List<DatasourceLayer> layers)  {
+        // TODO; Get codes from RegionSetHelper
+        // RegionSet - layerId
+        // RegionSetHelper - RegionSet
+        String[] ALPHA_2_REGION_CODES = new String[]{
+                "CA",
+                "NO",
+                "US",
+                "GL",
+                "DK",
+                "SE",
+                "IS",
+                "FI"
+        };
+        List<String> countries = Arrays.stream(ALPHA_2_REGION_CODES)
+                .map(code -> regionMapper.find(code))
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .map(c -> c.m49).collect(Collectors.toList());
+
         for (DatasourceLayer layer : layers) {
-            JSONArray regions = JSONHelper.createJSONArray(layer.getConfig("regions"));
-            if (regions == null) {
-                return;
-            }
-            List<String> areaCodes = new ArrayList<>();
-            for (int i = 0; i < 0; i++) {
-                areaCodes.add(regions.getString(i));
-            }
-            // FIXME: need to map country code to a digit in the datasource......
-            // TODO; Get codes from RegionSetHelper
-            // RegionSet - layerId
-            // RegionSetHelper - RegionSet
-            /*
-            layerAreaCodes.put(layer.getMaplayerId(), areaCodes.stream()
-                    .map(code -> regionMapper.getUNSDAreaCode(code))
-                    .filter(code -> !code.isEmpty())
-                    .collect(Collectors.toList())
-            );
-            */
+            layerAreaCodes.put(layer.getMaplayerId(), countries.toArray(new String[0]));
         }
     }
 
@@ -102,6 +94,18 @@ public class UnsdStatisticalDatasourcePlugin extends StatisticalDatasourcePlugin
             StatisticalIndicatorLayer regionset) {
 
         String[] areaCodes = layerAreaCodes.get(regionset.getOskariLayerId());
-        return indicatorValuesFetcher.get(params, indicator.getId(), areaCodes);
+        // FIXME: map codes back to region ids before returning
+        Map<String, IndicatorValue> values = indicatorValuesFetcher.get(params, indicator.getId(), areaCodes);
+        List<CountryRegion> regions = values.keySet().stream().map(m49 -> regionMapper.find(m49))
+                .filter(Optional::isPresent)
+                .map(Optional::get).collect(Collectors.toList());
+        Map<String, IndicatorValue> updated = new HashMap<>();
+                regions.stream().forEach( c -> {
+            IndicatorValue value = values.get(Integer.toString(c.m49woleadingZeroes));
+            // FIXME: check if the region code from layer is iso2 or iso3 or m49
+            updated.put(c.iso2, value);
+        });
+
+        return updated;
     }
 }
