@@ -11,7 +11,7 @@ public class ExceptionReportParserTest {
     @Test
     public void happyCase() throws Exception {
         try (InputStream in = getClass().getClassLoader().getResourceAsStream("exceptionReport.xml")) {
-            OWSException exception = ExceptionReportParser.parse(in);
+            OWSException exception = OWSExceptionReportParser.parse(in);
             assertEquals("InvalidParameterValue", exception.getExceptionCode());
             assertEquals("outputFormat", exception.getLocator());
             assertEquals("Failed to find response for output format application/json11", exception.getExceptionText());

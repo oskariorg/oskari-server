@@ -12,7 +12,7 @@ import org.w3c.dom.Node;
 
 import fi.nls.oskari.util.XmlHelper;
 
-public class ExceptionReportParser {
+public class OWSExceptionReportParser {
 
     public static OWSException parse(InputStream in) throws Exception {
         DocumentBuilderFactory dbf = XmlHelper.newDocumentBuilderFactory();
