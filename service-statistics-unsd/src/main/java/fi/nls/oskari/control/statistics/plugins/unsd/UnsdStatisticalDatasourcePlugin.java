@@ -10,6 +10,7 @@ import fi.nls.oskari.control.statistics.plugins.unsd.requests.UnsdRequest;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.util.JSONHelper;
+import fi.nls.oskari.util.PropertyUtil;
 import org.json.JSONArray;
 import org.json.JSONException;
 
@@ -63,9 +64,15 @@ public class UnsdStatisticalDatasourcePlugin extends StatisticalDatasourcePlugin
     }
 
     private void initAreaCodes (List<DatasourceLayer> layers)  {
-        // TODO; Get codes from RegionSetHelper
+        // TODO; Get codes from RegionSetHelper?
         // RegionSet - layerId
         // RegionSetHelper - RegionSet
+        String[] regionWhitelist = PropertyUtil.getCommaSeparatedList("unsd.region.whitelist");
+        if (regionWhitelist.length == 0) {
+            // no whitelist -> get data for all regions
+            return;
+        }
+        /*
         String[] ALPHA_2_REGION_CODES = new String[]{
                 "CA",
                 "NO",
@@ -77,7 +84,8 @@ public class UnsdStatisticalDatasourcePlugin extends StatisticalDatasourcePlugin
                 "FI",
                 "RU"
         };
-        List<String> countries = Arrays.stream(ALPHA_2_REGION_CODES)
+        */
+        List<String> countries = Arrays.stream(regionWhitelist)
                 .map(code -> regionMapper.find(code))
                 .filter(Optional::isPresent)
                 .map(Optional::get)
@@ -95,7 +103,7 @@ public class UnsdStatisticalDatasourcePlugin extends StatisticalDatasourcePlugin
             StatisticalIndicatorLayer regionset) {
 
         String[] areaCodes = layerAreaCodes.get(regionset.getOskariLayerId());
-        // FIXME: map codes back to region ids before returning
+        // map m49 codes back to region ids (iso2 etc) before returning
         Map<String, IndicatorValue> values = indicatorValuesFetcher.get(params, indicator.getId(), areaCodes);
         List<CountryRegion> regions = values.keySet().stream().map(m49 -> regionMapper.find(m49))
                 .filter(Optional::isPresent)
@@ -103,7 +111,8 @@ public class UnsdStatisticalDatasourcePlugin extends StatisticalDatasourcePlugin
         Map<String, IndicatorValue> updated = new HashMap<>();
                 regions.stream().forEach( c -> {
             IndicatorValue value = values.get(Integer.toString(c.m49woleadingZeroes));
-            // FIXME: check if the region code from layer is iso2 or iso3 or m49
+            // TODO: check if the region code from layer is iso2 or iso3 or m49
+            // Now always assumes iso2
             updated.put(c.iso2, value);
         });
 
