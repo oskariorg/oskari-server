@@ -910,27 +910,27 @@ public class IOHelper {
      * @return constructed url including additional parameters
      */
     public static String constructUrl(final String url, Map<String, String> params) {
-        if(params == null) {
+        if(params == null || params.isEmpty()) {
             return url;
         }
-        if(params.isEmpty()) {
+
+        final String queryString = getParams(params);
+        return addQueryString(url, queryString);
+    }
+
+    public static String addQueryString(String url, String queryString) {
+        if (queryString == null || queryString.trim().isEmpty()) {
             return url;
         }
         final StringBuilder urlBuilder = new StringBuilder(url);
-
-        if(!url.contains("?")) {
-            urlBuilder.append("?");
+        char lastChar = urlBuilder.charAt(urlBuilder.length()-1);
+        if (!url.contains("?")) {
+            lastChar = '?';
+            urlBuilder.append(lastChar);
         }
-        else {
-            final char lastChar = urlBuilder.charAt(urlBuilder.length()-1);
-            if((lastChar != '&' && lastChar != '?')) {
-                urlBuilder.append("&");
-            }
-        }
-        final String queryString = getParams(params);
-        if(queryString.isEmpty()) {
-            // drop last character ('?' or '&')
-            return urlBuilder.substring(0, urlBuilder.length()-1);
+        else if (lastChar != '&' && lastChar != '?') {
+            lastChar = '&';
+            urlBuilder.append(lastChar);
         }
         return urlBuilder.append(queryString).toString();
     }
@@ -952,10 +952,12 @@ public class IOHelper {
      * @param value
      * @return
      */
-    public static String addUrlParam(final String url, String key, String value) {
-        final Map<String, String> params = new HashMap<>(1);
+    public static String addUrlParam(final String url, String key, String... value) {
+        final Map<String, String[]> params = new HashMap<>(1);
         params.put(key, value);
-        return constructUrl(url, params);
+        final String queryString = getParamsMultiValue(params);
+        return addQueryString(url, queryString);
+
     }
 
     public static String getParams(Map<String, String> kvps) {
