@@ -74,7 +74,8 @@ public class UnsdStatisticalDatasourcePlugin extends StatisticalDatasourcePlugin
                 "DK",
                 "SE",
                 "IS",
-                "FI"
+                "FI",
+                "RU"
         };
         List<String> countries = Arrays.stream(ALPHA_2_REGION_CODES)
                 .map(code -> regionMapper.find(code))
