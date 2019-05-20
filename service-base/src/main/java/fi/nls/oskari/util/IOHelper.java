@@ -10,6 +10,7 @@ import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
 import java.security.cert.X509Certificate;
@@ -17,6 +18,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
@@ -100,6 +102,20 @@ public class IOHelper {
             return readString(new GZIPInputStream(conn.getInputStream()), charset);
         }
         return readString(conn.getInputStream(), charset);
+    }
+
+
+    public static List<String> readLines(InputStream in) throws IOException {
+        return readLines(in, StandardCharsets.UTF_8);
+    }
+
+    public static List<String> readLines(InputStream in, Charset cs) throws IOException {
+        try (BufferedReader br = new BufferedReader(
+                new InputStreamReader(in, cs))) {
+            return br.lines().collect(Collectors.toList());
+        } finally {
+            in.close();
+        }
     }
 
     /**

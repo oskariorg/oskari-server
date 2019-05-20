@@ -1,0 +1,158 @@
+{
+    "size": 25,
+    "totalElements": 3,
+    "totalPages": 1,
+    "pageNumber": 1,
+    "attributes": [
+        {
+            "id": "Nature",
+            "codes": [
+                {
+                    "code": "E",
+                    "description": "Estimated data",
+                    "sdmx": "E"
+                }
+            ]
+        },
+        {
+            "id": "Units",
+            "codes": [
+                {
+                    "code": "PERCENT",
+                    "description": "Percentage",
+                    "sdmx": "PERCENT"
+                }
+            ]
+        }
+    ],
+    "dimensions": [
+        {
+            "id": "Reporting Type",
+            "codes": [
+                {
+                    "code": "N",
+                    "description": "National",
+                    "sdmx": "N"
+                },
+                {
+                    "code": "G",
+                    "description": "Global",
+                    "sdmx": "G"
+                }
+            ]
+        }
+    ],
+    "data": [
+        {
+            "goal": "7",
+            "target": "7.2",
+            "indicator": "7.2.1",
+            "series": "EG_FEC_RNEW",
+            "seriesDescription": "Renewable energy share in the total final energy consumption (%)",
+            "seriesCount": "4624",
+            "geoAreaCode": "246",
+            "geoAreaName": "Finland",
+            "bounds": null,
+            "age": null,
+            "freq": null,
+            "sex": null,
+            "location": null,
+            "source": "IEA (2018), World Energy Balances",
+            "units": "PERCENT",
+            "level_status": null,
+            "name_of_international_agreement": null,
+            "education_level": null,
+            "type_of_product": null,
+            "type_of_facilities": null,
+            "name_of_international_institution": null,
+            "type_of_occupation": null,
+            "tariff_regime_status": null,
+            "mode_of_transportation": null,
+            "type_of_mobile_technology": null,
+            "name_of_non_communicable_disease": null,
+            "type_of_skill": null,
+            "type_of_speed": null,
+            "migratory_status": null,
+            "disability_status": null,
+            "hazard_type": null,
+            "ihr_capacity": null,
+            "reporting_type": null,
+            "cities": null,
+            "years": "[{\"year\":\"[1974]\",\"value\":\"\"},{\"year\":\"[1978]\",\"value\":\"\"},{\"year\":\"[1979]\",\"value\":\"\"},{\"year\":\"[1981]\",\"value\":\"\"},{\"year\":\"[1983]\",\"value\":\"\"},{\"year\":\"[1985]\",\"value\":\"\"},{\"year\":\"[1986]\",\"value\":\"\"},{\"year\":\"[1987]\",\"value\":\"\"},{\"year\":\"[1988]\",\"value\":\"\"},{\"year\":\"[1989]\",\"value\":\"\"},{\"year\":\"[1990]\",\"value\":\"\"},{\"year\":\"[1991]\",\"value\":\"\"},{\"year\":\"[1992]\",\"value\":\"\"},{\"year\":\"[1993]\",\"value\":\"\"},{\"year\":\"[1994]\",\"value\":\"\"},{\"year\":\"[1995]\",\"value\":\"\"},{\"year\":\"[1996]\",\"value\":\"\"},{\"year\":\"[1997]\",\"value\":\"\"},{\"year\":\"[1998]\",\"value\":\"\"},{\"year\":\"[1999]\",\"value\":\"\"},{\"year\":\"[2000]\",\"value\":\"31.68\",\"valueType\":\"Float\",\"footnotes\":\"\",\"Nature\":\"E\",\"Source Type\":\"\",\"UnitMultiplier\":\"\",\"Units\":\"PERCENT\",\"Management Level\":\"\"},{\"year\":\"[2001]\",\"value\":\"29.25\",\"valueType\":\"Float\",\"footnotes\":\"\",\"Nature\":\"E\",\"Source Type\":\"\",\"UnitMultiplier\":\"\",\"Units\":\"PERCENT\",\"Management Level\":\"\"},{\"year\":\"[2002]\",\"value\":\"29.52\",\"valueType\":\"Float\",\"footnotes\":\"\",\"Nature\":\"E\",\"Source Type\":\"\",\"UnitMultiplier\":\"\",\"Units\":\"PERCENT\",\"Management Level\":\"\"},{\"year\":\"[2003]\",\"value\":\"28.35\",\"valueType\":\"Float\",\"footnotes\":\"\",\"Nature\":\"E\",\"Source Type\":\"\",\"UnitMultiplier\":\"\",\"Units\":\"PERCENT\",\"Management Level\":\"\"},{\"year\":\"[2004]\",\"value\":\"31.1\",\"valueType\":\"Float\",\"footnotes\":\"\",\"Nature\":\"E\",\"Source Type\":\"\",\"UnitMultiplier\":\"\",\"Units\":\"PERCENT\",\"Management Level\":\"\"},{\"year\":\"[2005]\",\"value\":\"31.52\",\"valueType\":\"Float\",\"footnotes\":\"\",\"Nature\":\"E\",\"Source Type\":\"\",\"UnitMultiplier\":\"\",\"Units\":\"PERCENT\",\"Management Level\":\"\"},{\"year\":\"[2006]\",\"value\":\"31.25\",\"valueType\":\"Float\",\"footnotes\":\"\",\"Nature\":\"E\",\"Source Type\":\"\",\"UnitMultiplier\":\"\",\"Units\":\"PERCENT\",\"Management Level\":\"\"},{\"year\":\"[2007]\",\"value\":\"31.8\",\"valueType\":\"Float\",\"footnotes\":\"\",\"Nature\":\"E\",\"Source Type\":\"\",\"UnitMultiplier\":\"\",\"Units\":\"PERCENT\",\"Management Level\":\"\"},{\"year\":\"[2008]\",\"value\":\"34.74\",\"valueType\":\"Float\",\"footnotes\":\"\",\"Nature\":\"E\",\"Source Type\":\"\",\"UnitMultiplier\":\"\",\"Units\":\"PERCENT\",\"Management Level\":\"\"},{\"year\":\"[2009]\",\"value\":\"32.61\",\"valueType\":\"Float\",\"footnotes\":\"\",\"Nature\":\"E\",\"Source Type\":\"\",\"UnitMultiplier\":\"\",\"Units\":\"PERCENT\",\"Management Level\":\"\"},{\"year\":\"[2010]\",\"value\":\"33.59\",\"valueType\":\"Float\",\"footnotes\":\"\",\"Nature\":\"E\",\"Source Type\":\"\",\"UnitMultiplier\":\"\",\"Units\":\"PERCENT\",\"Management Level\":\"\"},{\"year\":\"[2011]\",\"value\":\"35.27\",\"valueType\":\"Float\",\"footnotes\":\"\",\"Nature\":\"E\",\"Source Type\":\"\",\"UnitMultiplier\":\"\",\"Units\":\"PERCENT\",\"Management Level\":\"\"},{\"year\":\"[2012]\",\"value\":\"38.81\",\"valueType\":\"Float\",\"footnotes\":\"\",\"Nature\":\"E\",\"Source Type\":\"\",\"UnitMultiplier\":\"\",\"Units\":\"PERCENT\",\"Management Level\":\"\"},{\"year\":\"[2013]\",\"value\":\"38.51\",\"valueType\":\"Float\",\"footnotes\":\"\",\"Nature\":\"E\",\"Source Type\":\"\",\"UnitMultiplier\":\"\",\"Units\":\"PERCENT\",\"Management Level\":\"\"},{\"year\":\"[2014]\",\"value\":\"41.25\",\"valueType\":\"Float\",\"footnotes\":\"\",\"Nature\":\"E\",\"Source Type\":\"\",\"UnitMultiplier\":\"\",\"Units\":\"PERCENT\",\"Management Level\":\"\"},{\"year\":\"[2015]\",\"value\":\"43.1\",\"valueType\":\"Float\",\"footnotes\":\"\",\"Nature\":\"E\",\"Source Type\":\"\",\"UnitMultiplier\":\"\",\"Units\":\"PERCENT\",\"Management Level\":\"\"},{\"year\":\"[2016]\",\"value\":\"42.03\",\"valueType\":\"Float\",\"footnotes\":\"\",\"Nature\":\"E\",\"Source Type\":\"\",\"UnitMultiplier\":\"\",\"Units\":\"PERCENT\",\"Management Level\":\"\"},{\"year\":\"[2017]\",\"value\":\"\"},{\"year\":\"[2018]\",\"value\":\"\"},{\"year\":\"[2019]\",\"value\":\"\"}]"
+        },
+        {
+            "goal": "7",
+            "target": "7.2",
+            "indicator": "7.2.1",
+            "series": "EG_FEC_RNEW",
+            "seriesDescription": "Renewable energy share in the total final energy consumption (%)",
+            "seriesCount": "4624",
+            "geoAreaCode": "578",
+            "geoAreaName": "Norway",
+            "bounds": null,
+            "age": null,
+            "freq": null,
+            "sex": null,
+            "location": null,
+            "source": "IEA (2018), World Energy Balances",
+            "units": "PERCENT",
+            "level_status": null,
+            "name_of_international_agreement": null,
+            "education_level": null,
+            "type_of_product": null,
+            "type_of_facilities": null,
+            "name_of_international_institution": null,
+            "type_of_occupation": null,
+            "tariff_regime_status": null,
+            "mode_of_transportation": null,
+            "type_of_mobile_technology": null,
+            "name_of_non_communicable_disease": null,
+            "type_of_skill": null,
+            "type_of_speed": null,
+            "migratory_status": null,
+            "disability_status": null,
+            "hazard_type": null,
+            "ihr_capacity": null,
+            "reporting_type": null,
+            "cities": null,
+            "years": "[{\"year\":\"[1974]\",\"value\":\"\"},{\"year\":\"[1978]\",\"value\":\"\"},{\"year\":\"[1979]\",\"value\":\"\"},{\"year\":\"[1981]\",\"value\":\"\"},{\"year\":\"[1983]\",\"value\":\"\"},{\"year\":\"[1985]\",\"value\":\"\"},{\"year\":\"[1986]\",\"value\":\"\"},{\"year\":\"[1987]\",\"value\":\"\"},{\"year\":\"[1988]\",\"value\":\"\"},{\"year\":\"[1989]\",\"value\":\"\"},{\"year\":\"[1990]\",\"value\":\"\"},{\"year\":\"[1991]\",\"value\":\"\"},{\"year\":\"[1992]\",\"value\":\"\"},{\"year\":\"[1993]\",\"value\":\"\"},{\"year\":\"[1994]\",\"value\":\"\"},{\"year\":\"[1995]\",\"value\":\"\"},{\"year\":\"[1996]\",\"value\":\"\"},{\"year\":\"[1997]\",\"value\":\"\"},{\"year\":\"[1998]\",\"value\":\"\"},{\"year\":\"[1999]\",\"value\":\"\"},{\"year\":\"[2000]\",\"value\":\"60.18\",\"valueType\":\"Float\",\"footnotes\":\"\",\"Nature\":\"E\",\"Source Type\":\"\",\"UnitMultiplier\":\"\",\"Units\":\"PERCENT\",\"Management Level\":\"\"},{\"year\":\"[2001]\",\"value\":\"59.6\",\"valueType\":\"Float\",\"footnotes\":\"\",\"Nature\":\"E\",\"Source Type\":\"\",\"UnitMultiplier\":\"\",\"Units\":\"PERCENT\",\"Management Level\":\"\"},{\"year\":\"[2002]\",\"value\":\"59.49\",\"valueType\":\"Float\",\"footnotes\":\"\",\"Nature\":\"E\",\"Source Type\":\"\",\"UnitMultiplier\":\"\",\"Units\":\"PERCENT\",\"Management Level\":\"\"},{\"year\":\"[2003]\",\"value\":\"56.25\",\"valueType\":\"Float\",\"footnotes\":\"\",\"Nature\":\"E\",\"Source Type\":\"\",\"UnitMultiplier\":\"\",\"Units\":\"PERCENT\",\"Management Level\":\"\"},{\"year\":\"[2004]\",\"value\":\"56.87\",\"valueType\":\"Float\",\"footnotes\":\"\",\"Nature\":\"E\",\"Source Type\":\"\",\"UnitMultiplier\":\"\",\"Units\":\"PERCENT\",\"Management Level\":\"\"},{\"year\":\"[2005]\",\"value\":\"58.59\",\"valueType\":\"Float\",\"footnotes\":\"\",\"Nature\":\"E\",\"Source Type\":\"\",\"UnitMultiplier\":\"\",\"Units\":\"PERCENT\",\"Management Level\":\"\"},{\"year\":\"[2006]\",\"value\":\"57.06\",\"valueType\":\"Float\",\"footnotes\":\"\",\"Nature\":\"E\",\"Source Type\":\"\",\"UnitMultiplier\":\"\",\"Units\":\"PERCENT\",\"Management Level\":\"\"},{\"year\":\"[2007]\",\"value\":\"57.39\",\"valueType\":\"Float\",\"footnotes\":\"\",\"Nature\":\"E\",\"Source Type\":\"\",\"UnitMultiplier\":\"\",\"Units\":\"PERCENT\",\"Management Level\":\"\"},{\"year\":\"[2008]\",\"value\":\"58.49\",\"valueType\":\"Float\",\"footnotes\":\"\",\"Nature\":\"E\",\"Source Type\":\"\",\"UnitMultiplier\":\"\",\"Units\":\"PERCENT\",\"Management Level\":\"\"},{\"year\":\"[2009]\",\"value\":\"56.77\",\"valueType\":\"Float\",\"footnotes\":\"\",\"Nature\":\"E\",\"Source Type\":\"\",\"UnitMultiplier\":\"\",\"Units\":\"PERCENT\",\"Management Level\":\"\"},{\"year\":\"[2010]\",\"value\":\"56.53\",\"valueType\":\"Float\",\"footnotes\":\"\",\"Nature\":\"E\",\"Source Type\":\"\",\"UnitMultiplier\":\"\",\"Units\":\"PERCENT\",\"Management Level\":\"\"},{\"year\":\"[2011]\",\"value\":\"56.51\",\"valueType\":\"Float\",\"footnotes\":\"\",\"Nature\":\"E\",\"Source Type\":\"\",\"UnitMultiplier\":\"\",\"Units\":\"PERCENT\",\"Management Level\":\"\"},{\"year\":\"[2012]\",\"value\":\"57.49\",\"valueType\":\"Float\",\"footnotes\":\"\",\"Nature\":\"E\",\"Source Type\":\"\",\"UnitMultiplier\":\"\",\"Units\":\"PERCENT\",\"Management Level\":\"\"},{\"year\":\"[2013]\",\"value\":\"57.74\",\"valueType\":\"Float\",\"footnotes\":\"\",\"Nature\":\"E\",\"Source Type\":\"\",\"UnitMultiplier\":\"\",\"Units\":\"PERCENT\",\"Management Level\":\"\"},{\"year\":\"[2014]\",\"value\":\"57.56\",\"valueType\":\"Float\",\"footnotes\":\"\",\"Nature\":\"E\",\"Source Type\":\"\",\"UnitMultiplier\":\"\",\"Units\":\"PERCENT\",\"Management Level\":\"\"},{\"year\":\"[2015]\",\"value\":\"58.31\",\"valueType\":\"Float\",\"footnotes\":\"\",\"Nature\":\"E\",\"Source Type\":\"\",\"UnitMultiplier\":\"\",\"Units\":\"PERCENT\",\"Management Level\":\"\"},{\"year\":\"[2016]\",\"value\":\"59.51\",\"valueType\":\"Float\",\"footnotes\":\"\",\"Nature\":\"E\",\"Source Type\":\"\",\"UnitMultiplier\":\"\",\"Units\":\"PERCENT\",\"Management Level\":\"\"},{\"year\":\"[2017]\",\"value\":\"\"},{\"year\":\"[2018]\",\"value\":\"\"},{\"year\":\"[2019]\",\"value\":\"\"}]"
+        },
+        {
+            "goal": "7",
+            "target": "7.2",
+            "indicator": "7.2.1",
+            "series": "EG_FEC_RNEW",
+            "seriesDescription": "Renewable energy share in the total final energy consumption (%)",
+            "seriesCount": "4624",
+            "geoAreaCode": "752",
+            "geoAreaName": "Sweden",
+            "bounds": null,
+            "age": null,
+            "freq": null,
+            "sex": null,
+            "location": null,
+            "source": "IEA (2018), World Energy Balances",
+            "units": "PERCENT",
+            "level_status": null,
+            "name_of_international_agreement": null,
+            "education_level": null,
+            "type_of_product": null,
+            "type_of_facilities": null,
+            "name_of_international_institution": null,
+            "type_of_occupation": null,
+            "tariff_regime_status": null,
+            "mode_of_transportation": null,
+            "type_of_mobile_technology": null,
+            "name_of_non_communicable_disease": null,
+            "type_of_skill": null,
+            "type_of_speed": null,
+            "migratory_status": null,
+            "disability_status": null,
+            "hazard_type": null,
+            "ihr_capacity": null,
+            "reporting_type": null,
+            "cities": null,
+            "years": "[{\"year\":\"[1974]\",\"value\":\"\"},{\"year\":\"[1978]\",\"value\":\"\"},{\"year\":\"[1979]\",\"value\":\"\"},{\"year\":\"[1981]\",\"value\":\"\"},{\"year\":\"[1983]\",\"value\":\"\"},{\"year\":\"[1985]\",\"value\":\"\"},{\"year\":\"[1986]\",\"value\":\"\"},{\"year\":\"[1987]\",\"value\":\"\"},{\"year\":\"[1988]\",\"value\":\"\"},{\"year\":\"[1989]\",\"value\":\"\"},{\"year\":\"[1990]\",\"value\":\"\"},{\"year\":\"[1991]\",\"value\":\"\"},{\"year\":\"[1992]\",\"value\":\"\"},{\"year\":\"[1993]\",\"value\":\"\"},{\"year\":\"[1994]\",\"value\":\"\"},{\"year\":\"[1995]\",\"value\":\"\"},{\"year\":\"[1996]\",\"value\":\"\"},{\"year\":\"[1997]\",\"value\":\"\"},{\"year\":\"[1998]\",\"value\":\"\"},{\"year\":\"[1999]\",\"value\":\"\"},{\"year\":\"[2000]\",\"value\":\"40.01\",\"valueType\":\"Float\",\"footnotes\":\"\",\"Nature\":\"E\",\"Source Type\":\"\",\"UnitMultiplier\":\"\",\"Units\":\"PERCENT\",\"Management Level\":\"\"},{\"year\":\"[2001]\",\"value\":\"37.66\",\"valueType\":\"Float\",\"footnotes\":\"\",\"Nature\":\"E\",\"Source Type\":\"\",\"UnitMultiplier\":\"\",\"Units\":\"PERCENT\",\"Management Level\":\"\"},{\"year\":\"[2002]\",\"value\":\"36.15\",\"valueType\":\"Float\",\"footnotes\":\"\",\"Nature\":\"E\",\"Source Type\":\"\",\"UnitMultiplier\":\"\",\"Units\":\"PERCENT\",\"Management Level\":\"\"},{\"year\":\"[2003]\",\"value\":\"34.91\",\"valueType\":\"Float\",\"footnotes\":\"\",\"Nature\":\"E\",\"Source Type\":\"\",\"UnitMultiplier\":\"\",\"Units\":\"PERCENT\",\"Management Level\":\"\"},{\"year\":\"[2004]\",\"value\":\"35.82\",\"valueType\":\"Float\",\"footnotes\":\"\",\"Nature\":\"E\",\"Source Type\":\"\",\"UnitMultiplier\":\"\",\"Units\":\"PERCENT\",\"Management Level\":\"\"},{\"year\":\"[2005]\",\"value\":\"40.03\",\"valueType\":\"Float\",\"footnotes\":\"\",\"Nature\":\"E\",\"Source Type\":\"\",\"UnitMultiplier\":\"\",\"Units\":\"PERCENT\",\"Management Level\":\"\"},{\"year\":\"[2006]\",\"value\":\"41.18\",\"valueType\":\"Float\",\"footnotes\":\"\",\"Nature\":\"E\",\"Source Type\":\"\",\"UnitMultiplier\":\"\",\"Units\":\"PERCENT\",\"Management Level\":\"\"},{\"year\":\"[2007]\",\"value\":\"42.94\",\"valueType\":\"Float\",\"footnotes\":\"\",\"Nature\":\"E\",\"Source Type\":\"\",\"UnitMultiplier\":\"\",\"Units\":\"PERCENT\",\"Management Level\":\"\"},{\"year\":\"[2008]\",\"value\":\"44.87\",\"valueType\":\"Float\",\"footnotes\":\"\",\"Nature\":\"E\",\"Source Type\":\"\",\"UnitMultiplier\":\"\",\"Units\":\"PERCENT\",\"Management Level\":\"\"},{\"year\":\"[2009]\",\"value\":\"47.08\",\"valueType\":\"Float\",\"footnotes\":\"\",\"Nature\":\"E\",\"Source Type\":\"\",\"UnitMultiplier\":\"\",\"Units\":\"PERCENT\",\"Management Level\":\"\"},{\"year\":\"[2010]\",\"value\":\"45.98\",\"valueType\":\"Float\",\"footnotes\":\"\",\"Nature\":\"E\",\"Source Type\":\"\",\"UnitMultiplier\":\"\",\"Units\":\"PERCENT\",\"Management Level\":\"\"},{\"year\":\"[2011]\",\"value\":\"46.44\",\"valueType\":\"Float\",\"footnotes\":\"\",\"Nature\":\"E\",\"Source Type\":\"\",\"UnitMultiplier\":\"\",\"Units\":\"PERCENT\",\"Management Level\":\"\"},{\"year\":\"[2012]\",\"value\":\"49.9\",\"valueType\":\"Float\",\"footnotes\":\"\",\"Nature\":\"E\",\"Source Type\":\"\",\"UnitMultiplier\":\"\",\"Units\":\"PERCENT\",\"Management Level\":\"\"},{\"year\":\"[2013]\",\"value\":\"48.78\",\"valueType\":\"Float\",\"footnotes\":\"\",\"Nature\":\"E\",\"Source Type\":\"\",\"UnitMultiplier\":\"\",\"Units\":\"PERCENT\",\"Management Level\":\"\"},{\"year\":\"[2014]\",\"value\":\"49.63\",\"valueType\":\"Float\",\"footnotes\":\"\",\"Nature\":\"E\",\"Source Type\":\"\",\"UnitMultiplier\":\"\",\"Units\":\"PERCENT\",\"Management Level\":\"\"},{\"year\":\"[2015]\",\"value\":\"53.1\",\"valueType\":\"Float\",\"footnotes\":\"\",\"Nature\":\"E\",\"Source Type\":\"\",\"UnitMultiplier\":\"\",\"Units\":\"PERCENT\",\"Management Level\":\"\"},{\"year\":\"[2016]\",\"value\":\"51.35\",\"valueType\":\"Float\",\"footnotes\":\"\",\"Nature\":\"E\",\"Source Type\":\"\",\"UnitMultiplier\":\"\",\"Units\":\"PERCENT\",\"Management Level\":\"\"},{\"year\":\"[2017]\",\"value\":\"\"},{\"year\":\"[2018]\",\"value\":\"\"},{\"year\":\"[2019]\",\"value\":\"\"}]"
+        }
+    ]
+}
