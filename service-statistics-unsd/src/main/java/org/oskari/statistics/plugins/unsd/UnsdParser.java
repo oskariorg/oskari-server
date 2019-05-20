@@ -1,9 +1,8 @@
-package fi.nls.oskari.control.statistics.plugins.unsd.parser;
+package org.oskari.statistics.plugins.unsd;
 
 import fi.nls.oskari.control.statistics.data.*;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.service.ServiceRuntimeException;
 import fi.nls.oskari.util.JSONHelper;
 import org.json.JSONArray;
 import org.json.JSONException;

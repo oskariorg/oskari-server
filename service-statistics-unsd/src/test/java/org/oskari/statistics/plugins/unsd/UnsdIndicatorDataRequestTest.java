@@ -1,7 +1,5 @@
-package fi.nls.oskari.control.statistics.plugins.unsd.requests;
+package org.oskari.statistics.plugins.unsd;
 
-import fi.nls.oskari.control.statistics.plugins.unsd.UnsdConfig;
-import fi.nls.oskari.control.statistics.plugins.unsd.parser.UnsdParser;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.test.util.TestHelper;
 import org.junit.runner.RunWith;

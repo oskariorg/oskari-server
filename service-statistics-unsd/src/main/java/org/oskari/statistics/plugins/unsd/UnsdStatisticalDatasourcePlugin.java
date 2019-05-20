@@ -1,18 +1,12 @@
-package fi.nls.oskari.control.statistics.plugins.unsd;
+package org.oskari.statistics.plugins.unsd;
 
 import fi.nls.oskari.control.statistics.data.*;
 import fi.nls.oskari.control.statistics.plugins.StatisticalDatasourcePlugin;
 import fi.nls.oskari.control.statistics.plugins.db.DatasourceLayer;
 import fi.nls.oskari.control.statistics.plugins.db.StatisticalDatasource;
-import fi.nls.oskari.control.statistics.plugins.unsd.parser.RegionMapper;
-import fi.nls.oskari.control.statistics.plugins.unsd.parser.UnsdParser;
-import fi.nls.oskari.control.statistics.plugins.unsd.requests.UnsdRequest;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
-import org.json.JSONArray;
-import org.json.JSONException;
 
 import java.util.*;
 import java.util.stream.Collectors;

@@ -1,6 +1,5 @@
-package fi.nls.oskari.control.statistics.plugins.unsd.parser;
+package org.oskari.statistics.plugins.unsd;
 
-import fi.nls.oskari.control.statistics.data.IndicatorValue;
 import fi.nls.oskari.control.statistics.data.StatisticalIndicator;
 import fi.nls.oskari.control.statistics.data.StatisticalIndicatorDataModel;
 import fi.nls.test.util.ResourceHelper;

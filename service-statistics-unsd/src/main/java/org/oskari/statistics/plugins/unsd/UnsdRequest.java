@@ -1,8 +1,7 @@
-package fi.nls.oskari.control.statistics.plugins.unsd.requests;
+package org.oskari.statistics.plugins.unsd;
 
 import fi.nls.oskari.control.statistics.data.StatisticalIndicatorDataModel;
 import fi.nls.oskari.control.statistics.plugins.APIException;
-import fi.nls.oskari.control.statistics.plugins.unsd.UnsdConfig;
 import fi.nls.oskari.util.IOHelper;
 
 import java.net.HttpURLConnection;

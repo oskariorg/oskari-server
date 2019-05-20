@@ -1,11 +1,9 @@
-package fi.nls.oskari.control.statistics.plugins.unsd;
+package org.oskari.statistics.plugins.unsd;
 
 import fi.nls.oskari.control.statistics.data.IndicatorValue;
 import fi.nls.oskari.control.statistics.data.IndicatorValueFloat;
 import fi.nls.oskari.control.statistics.data.StatisticalIndicatorDataModel;
 import fi.nls.oskari.control.statistics.plugins.APIException;
-import fi.nls.oskari.control.statistics.plugins.unsd.parser.UnsdParser;
-import fi.nls.oskari.control.statistics.plugins.unsd.requests.UnsdRequest;
 import fi.nls.oskari.service.ServiceRuntimeException;
 import fi.nls.oskari.util.JSONHelper;
 import org.json.JSONArray;
@@ -13,7 +11,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 

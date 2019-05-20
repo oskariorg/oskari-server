@@ -1,6 +1,5 @@
-package fi.nls.oskari.control.statistics.plugins.unsd.parser;
+package org.oskari.statistics.plugins.unsd;
 
-import fi.nls.oskari.control.statistics.plugins.unsd.CountryRegion;
 import fi.nls.oskari.service.ServiceRuntimeException;
 import fi.nls.oskari.util.IOHelper;
 

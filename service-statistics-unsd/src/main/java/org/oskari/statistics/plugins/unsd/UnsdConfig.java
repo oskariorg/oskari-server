@@ -1,4 +1,4 @@
-package fi.nls.oskari.control.statistics.plugins.unsd;
+package org.oskari.statistics.plugins.unsd;
 
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
