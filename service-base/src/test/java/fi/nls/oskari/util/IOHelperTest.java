@@ -2,8 +2,13 @@ package fi.nls.oskari.util;
 
 import org.junit.Test;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static org.junit.Assert.assertEquals;
 
@@ -91,6 +96,20 @@ public class IOHelperTest {
         params.put("key3", new String[]{ "foobar", "baz+qux" });
         assertEquals("Values are URL encoded, keys with multiple values appear as multiple ${key}=${value1} entries",
                 "key1=foo&key2=bar&key3=foobar&key3=baz%2Bqux", IOHelper.getParamsMultiValue(params));
+    }
+
+    @Test
+    public void testReadString() throws IOException {
+        String expected = "foobar;baz;qux;whatIsThat\r\n\nErrorFoo    öäöäöäöäöä";
+        byte[] in = expected.getBytes(StandardCharsets.UTF_8);
+        String actual = IOHelper.readString(new ByteArrayInputStream(in));
+        assertEquals(expected, actual);
+
+        String longString = Collections.nCopies(1000, expected).stream()
+                .collect(Collectors.joining("::"));
+        in = longString.getBytes(StandardCharsets.UTF_8);
+        String actualLongString = IOHelper.readString(new ByteArrayInputStream(in));
+        assertEquals(longString, actualLongString);
     }
 
 }
