@@ -65,26 +65,12 @@ public class UnsdStatisticalDatasourcePlugin extends StatisticalDatasourcePlugin
 
     private void initAreaCodes (List<DatasourceLayer> layers)  {
         // TODO; Get codes from RegionSetHelper?
-        // RegionSet - layerId
-        // RegionSetHelper - RegionSet
         String[] regionWhitelist = PropertyUtil.getCommaSeparatedList("unsd.region.whitelist");
         if (regionWhitelist.length == 0) {
             // no whitelist -> get data for all regions
             return;
         }
-        /*
-        String[] ALPHA_2_REGION_CODES = new String[]{
-                "CA",
-                "NO",
-                "US",
-                "GL",
-                "DK",
-                "SE",
-                "IS",
-                "FI",
-                "RU"
-        };
-        */
+
         List<String> countries = Arrays.stream(regionWhitelist)
                 .map(code -> regionMapper.find(code))
                 .filter(Optional::isPresent)
