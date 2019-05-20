@@ -32,20 +32,13 @@ public class UnsdConfig {
     public long getId() {
         return datasourceId;
     }
+
     public String getUrl() {
         return url;
     }
 
-    public void setUrl(String url) {
-        this.url = url;
-    }
-
     public String getGoal() {
         return goal;
-    }
-
-    public void setGoal(String goal) {
-        this.goal = goal;
     }
 
     public String getTimeVariableId() {

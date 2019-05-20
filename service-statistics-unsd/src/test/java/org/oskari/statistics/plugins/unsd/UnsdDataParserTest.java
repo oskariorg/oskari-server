@@ -3,8 +3,10 @@ package org.oskari.statistics.plugins.unsd;
 import fi.nls.oskari.control.statistics.data.IndicatorValue;
 import fi.nls.oskari.control.statistics.data.StatisticalIndicator;
 import fi.nls.oskari.control.statistics.data.StatisticalIndicatorDataModel;
+import fi.nls.oskari.util.JSONHelper;
 import fi.nls.test.util.ResourceHelper;
 import org.json.JSONException;
+import org.json.JSONObject;
 import org.junit.Test;
 
 import java.util.List;
@@ -18,10 +20,10 @@ public class UnsdDataParserTest {
             "TargetList.json", UnsdDataParserTest.class);
     private static String dimensionsResponse = ResourceHelper.readStringResource(
             "Dimensions.json", UnsdDataParserTest.class);
-    private static String dataResponseUnlimited = ResourceHelper.readStringResource(
-            "IndicatorData.json", UnsdDataParserTest.class);
-    private static String dataResponse2015AreaLimited = ResourceHelper.readStringResource(
-            "IndicatorData2015.json", UnsdDataParserTest.class);
+    private static JSONObject dataResponseUnlimited = JSONHelper.createJSONObject(ResourceHelper.readStringResource(
+            "IndicatorData.json", UnsdDataParserTest.class));
+    private static JSONObject dataResponse2015AreaLimited = JSONHelper.createJSONObject(ResourceHelper.readStringResource(
+            "IndicatorData2015.json", UnsdDataParserTest.class));
 
     @Test
     public void testIndicatorMetadata() throws JSONException {
@@ -42,7 +44,7 @@ public class UnsdDataParserTest {
     }
 
     @Test
-    public void testIndicatorDataPages()  {
+    public void testIndicatorDataPages() throws JSONException {
         Boolean lastPage = UnsdDataParser.isLastPage(dataResponse2015AreaLimited);
         assertNotNull("Could not parse page info", lastPage);
         assertTrue("The response wasn't the last page.", lastPage);

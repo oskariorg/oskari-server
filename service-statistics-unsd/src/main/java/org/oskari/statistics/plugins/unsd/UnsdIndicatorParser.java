@@ -1,6 +1,8 @@
 package org.oskari.statistics.plugins.unsd;
 
-import fi.nls.oskari.control.statistics.data.*;
+import fi.nls.oskari.control.statistics.data.StatisticalIndicator;
+import fi.nls.oskari.control.statistics.data.StatisticalIndicatorDataDimension;
+import fi.nls.oskari.control.statistics.data.StatisticalIndicatorDataModel;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.util.JSONHelper;
@@ -119,7 +121,7 @@ public class UnsdIndicatorParser {
                     JSONObject code = codes.getJSONObject(j);
                     selector.addAllowedValue(code.getString("code"), code.getString("description"));
                 }
-                if(!selector.getAllowedValues().isEmpty()) {
+                if (!selector.getAllowedValues().isEmpty()) {
                     selectors.addDimension(selector);
                 }
             }
@@ -130,10 +132,9 @@ public class UnsdIndicatorParser {
         return null;
     }
 
-    public static Map<String, String> parseSource(String indicatorDataResponse) {
+    public static Map<String, String> parseSource(JSONObject jsonObject) {
         Map<String, String> sources = new HashMap<>();
         try {
-            JSONObject jsonObject = JSONHelper.createJSONObject(indicatorDataResponse);
             if (!jsonObject.has("data")) {
                 return sources;
             }

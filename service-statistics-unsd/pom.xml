@@ -9,7 +9,7 @@
         <version>1.52.0-SNAPSHOT</version>
 	</parent>
 
-    <groupId>fi.nls.oskari.service</groupId>
+    <groupId>org.oskari.service</groupId>
     <artifactId>oskari-statistics-unsd</artifactId>
     <packaging>jar</packaging>
     <name>Statistics Service for UNSD</name>

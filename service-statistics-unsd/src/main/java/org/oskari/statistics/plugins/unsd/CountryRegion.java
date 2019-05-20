@@ -7,16 +7,8 @@ import java.util.Map;
 
 public class CountryRegion implements Comparable<CountryRegion> {
 
-    public enum Type {
-        ISO2,
-        ISO3,
-        M49,
-        M49_WO_LEADING
-    }
-
     private String name;
     private Map<Type, String> codes = new HashMap<>();
-
     public CountryRegion(String name) {
         if (name != null) {
             name = name.trim();
@@ -29,7 +21,7 @@ public class CountryRegion implements Comparable<CountryRegion> {
             code = "";
         }
         codes.put(type, code.trim());
-        if(type.equals(Type.M49)) {
+        if (type.equals(Type.M49)) {
             // When getting data these are without the leading zeroes
             addCode(Type.M49_WO_LEADING, Integer.toString(ConversionHelper.getInt(code, -999)));
         }
@@ -64,5 +56,12 @@ public class CountryRegion implements Comparable<CountryRegion> {
     public int compareTo(CountryRegion o) {
         // dummy impl
         return name.compareTo(o.name);
+    }
+
+    public enum Type {
+        ISO2,
+        ISO3,
+        M49,
+        M49_WO_LEADING
     }
 }

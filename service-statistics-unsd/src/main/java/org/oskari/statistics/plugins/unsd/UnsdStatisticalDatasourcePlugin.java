@@ -1,12 +1,17 @@
 package org.oskari.statistics.plugins.unsd;
 
-import fi.nls.oskari.control.statistics.data.*;
+import fi.nls.oskari.control.statistics.data.IndicatorValue;
+import fi.nls.oskari.control.statistics.data.StatisticalIndicator;
+import fi.nls.oskari.control.statistics.data.StatisticalIndicatorDataModel;
+import fi.nls.oskari.control.statistics.data.StatisticalIndicatorLayer;
 import fi.nls.oskari.control.statistics.plugins.StatisticalDatasourcePlugin;
 import fi.nls.oskari.control.statistics.plugins.db.DatasourceLayer;
 import fi.nls.oskari.control.statistics.plugins.db.StatisticalDatasource;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
+import org.json.JSONObject;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -30,15 +35,17 @@ public class UnsdStatisticalDatasourcePlugin extends StatisticalDatasourcePlugin
         UnsdRequest request = new UnsdRequest(config);
         request.setGoal(config.getGoal());
         String targetsResponse = request.getTargets();
-        List<StatisticalIndicator> indicators = parser.parseIndicators(targetsResponse);
+        List<StatisticalIndicator> indicators = UnsdIndicatorParser.parseIndicators(targetsResponse);
 
         // all indicators under goal have same dimensions
         String dimensions = request.getDimensions();
         for (StatisticalIndicator ind : indicators) {
             request.setIndicator(ind.getId());
             // we parse it multiple times to make copies
-            ind.setDataModel(parser.parseDimensions(dimensions));
-            ind.setSource(parser.parseSource(request.getIndicatorData(null)));
+            ind.setDataModel(UnsdIndicatorParser.parseDimensions(dimensions));
+
+            JSONObject dataResponse = JSONHelper.createJSONObject(request.getIndicatorData(null));
+            ind.setSource(UnsdIndicatorParser.parseSource(dataResponse));
             getSource().getLayers().stream().forEach(l -> ind.addLayer(l));
             onIndicatorProcessed(ind);
         }
@@ -56,7 +63,7 @@ public class UnsdStatisticalDatasourcePlugin extends StatisticalDatasourcePlugin
         initAreaCodes(source.getLayers());
     }
 
-    private void initAreaCodes (List<DatasourceLayer> layers)  {
+    private void initAreaCodes(List<DatasourceLayer> layers) {
         // TODO; Get codes from RegionSetHelper?
         String[] regionWhitelist = PropertyUtil.getCommaSeparatedList("unsd.region.whitelist");
         if (regionWhitelist.length == 0) {
@@ -90,7 +97,7 @@ public class UnsdStatisticalDatasourcePlugin extends StatisticalDatasourcePlugin
                 .filter(Optional::isPresent)
                 .map(Optional::get).collect(Collectors.toList());
         Map<String, IndicatorValue> updated = new HashMap<>();
-                regions.stream().forEach( c -> {
+        regions.stream().forEach(c -> {
             IndicatorValue value = values.get(c.getCode(CountryRegion.Type.M49_WO_LEADING));
             // TODO: check if the region code from layer is iso2 or iso3 or m49
             // Now always assumes iso2

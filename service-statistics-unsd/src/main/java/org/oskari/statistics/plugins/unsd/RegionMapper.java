@@ -4,7 +4,8 @@ import fi.nls.oskari.service.ServiceRuntimeException;
 import fi.nls.oskari.util.IOHelper;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class RegionMapper {
@@ -18,15 +19,6 @@ public class RegionMapper {
                 .map(Optional::get)
                 .collect(Collectors.toList());
     }
-
-    private List<String> readResource() {
-        try {
-            return IOHelper.readLines(getClass().getResourceAsStream("/M49codes.csv"));
-        } catch (IOException ex) {
-            throw new ServiceRuntimeException("Unable to read M49 country mapping", ex);
-        }
-    }
-
 
     private static Optional<CountryRegion> parseRow(String row) {
         // FI;FIN;246;Finland
@@ -45,6 +37,13 @@ public class RegionMapper {
         return Optional.empty();
     }
 
+    private List<String> readResource() {
+        try {
+            return IOHelper.readLines(getClass().getResourceAsStream("/M49codes.csv"));
+        } catch (IOException ex) {
+            throw new ServiceRuntimeException("Unable to read M49 country mapping", ex);
+        }
+    }
 
     public Optional<CountryRegion> find(String anyCode) {
         return countries.stream().filter(c -> c.matches(anyCode)).findFirst();

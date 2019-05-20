@@ -5,7 +5,9 @@ import fi.nls.oskari.control.statistics.plugins.APIException;
 import fi.nls.oskari.util.IOHelper;
 
 import java.net.HttpURLConnection;
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Base class for UNSD statistics queries.
@@ -55,46 +57,46 @@ public class UnsdRequest {
      * @return json response
      * model:
      * [{
-     *   "code": "string",
-     *   "title": "string",
-     *   "description": "string",
-     *   "uri": "string",
-     *   "targets": [
-     *     {
-     *       "goal": "string",
-     *       "code": "string",
-     *       "title": "string",
-     *       "description": "string",
-     *       "uri": "string",
-     *       "indicators": [
-     *         {
-     *           "goal": "string",
-     *           "target": "string",
-     *           "code": "string",
-     *           "description": "string",
-     *           "tier": "string",
-     *           "uri": "string",
-     *           "series": [
-     *             {
-     *               "goal": [
-     *                 "string"
-     *               ],
-     *               "target": [
-     *                 "string"
-     *               ],
-     *               "indicator": [
-     *                 "string"
-     *               ],
-     *               "release": "string",
-     *               "code": "string",
-     *               "description": "string",
-     *               "uri": "string"
-     *             }
-     *           ]
-     *         }
-     *       ]
-     *     }
-     *   ]
+     * "code": "string",
+     * "title": "string",
+     * "description": "string",
+     * "uri": "string",
+     * "targets": [
+     * {
+     * "goal": "string",
+     * "code": "string",
+     * "title": "string",
+     * "description": "string",
+     * "uri": "string",
+     * "indicators": [
+     * {
+     * "goal": "string",
+     * "target": "string",
+     * "code": "string",
+     * "description": "string",
+     * "tier": "string",
+     * "uri": "string",
+     * "series": [
+     * {
+     * "goal": [
+     * "string"
+     * ],
+     * "target": [
+     * "string"
+     * ],
+     * "indicator": [
+     * "string"
+     * ],
+     * "release": "string",
+     * "code": "string",
+     * "description": "string",
+     * "uri": "string"
+     * }
+     * ]
+     * }
+     * ]
+     * }
+     * ]
      * }]
      */
     public String getTargets() {
@@ -104,15 +106,16 @@ public class UnsdRequest {
 
     /**
      * To get goal dimensions
+     *
      * @return json response
      * model:
      * [{
-     *     "id": "string",
-     *     "codes": [{
-     *         "code": "string",
-     *             "description": "string",
-     *             "sdmx": "string"
-     *     }]
+     * "id": "string",
+     * "codes": [{
+     * "code": "string",
+     * "description": "string",
+     * "sdmx": "string"
+     * }]
      * }]
      */
     public String getDimensions() {
@@ -151,8 +154,8 @@ public class UnsdRequest {
         } finally {
             try {
                 con.disconnect();
+            } catch (Exception ignored) {
             }
-            catch (Exception ignored) {}
         }
     }
 }
