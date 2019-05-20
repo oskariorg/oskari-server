@@ -26,7 +26,10 @@ public class RegionMapper {
         if (data.length != 4) {
             return Optional.empty();
         }
-
+        String name = data[3];
+        if (name == null || name.trim().isEmpty()) {
+            return Optional.empty();
+        }
         CountryRegion c = new CountryRegion(data[3]);
         c.addCode(CountryRegion.Type.ISO2, data[0]);
         c.addCode(CountryRegion.Type.ISO3, data[1]);

@@ -4,16 +4,15 @@ import fi.nls.oskari.util.ConversionHelper;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class CountryRegion implements Comparable<CountryRegion> {
 
     private String name;
     private Map<Type, String> codes = new HashMap<>();
+
     public CountryRegion(String name) {
-        if (name != null) {
-            name = name.trim();
-        }
-        this.name = name;
+        this.name = Objects.requireNonNull(name).trim();
     }
 
     public void addCode(Type type, String code) {
@@ -41,11 +40,7 @@ public class CountryRegion implements Comparable<CountryRegion> {
     public boolean isValid() {
         return !getCode(Type.M49).isEmpty()
                 && !getCode(Type.ISO2).isEmpty()
-                && hasValue(name);
-    }
-
-    private boolean hasValue(String s) {
-        return s != null && !s.trim().isEmpty();
+                && !name.isEmpty();
     }
 
     public String toString() {
