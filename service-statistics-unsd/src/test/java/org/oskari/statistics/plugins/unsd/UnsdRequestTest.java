@@ -14,11 +14,11 @@ import org.junit.Test;
 import org.powermock.utils.Asserts;
 
 @RunWith(PowerMockRunner.class)
-public class UnsdIndicatorDataRequestTest {
+public class UnsdRequestTest {
 
     private UnsdRequest request;
 
-    public UnsdIndicatorDataRequestTest() {
+    public UnsdRequestTest() {
         request = new UnsdRequest(new UnsdConfig());
         request.setGoal("1");
     }

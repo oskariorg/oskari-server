@@ -15,8 +15,8 @@ public class UnsdStatisticalDatasourcePlugin extends StatisticalDatasourcePlugin
     private final static Logger LOG = LogFactory.getLogger(UnsdStatisticalDatasourcePlugin.class);
 
     private UnsdConfig config;
-    private UnsdParser parser;
-    private UnsdIndicatorValuesFetcher indicatorValuesFetcher;
+    private UnsdIndicatorParser parser;
+    private UnsdDataParser indicatorValuesFetcher;
     private RegionMapper regionMapper;
 
     /**
@@ -49,8 +49,8 @@ public class UnsdStatisticalDatasourcePlugin extends StatisticalDatasourcePlugin
     public void init(StatisticalDatasource source) {
         super.init(source);
         config = new UnsdConfig(source.getConfigJSON(), source.getId());
-        parser = new UnsdParser();
-        indicatorValuesFetcher = new UnsdIndicatorValuesFetcher(config);
+        parser = new UnsdIndicatorParser();
+        indicatorValuesFetcher = new UnsdDataParser(config);
         regionMapper = new RegionMapper();
         // optimization for getting data just for the countries we are showing
         initAreaCodes(source.getLayers());

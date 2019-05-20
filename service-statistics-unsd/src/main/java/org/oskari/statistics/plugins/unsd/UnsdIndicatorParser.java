@@ -10,13 +10,13 @@ import org.json.JSONObject;
 
 import java.util.*;
 
-public class UnsdParser {
+public class UnsdIndicatorParser {
 
-    private final static Logger LOG = LogFactory.getLogger(UnsdParser.class);
+    private final static Logger LOG = LogFactory.getLogger(UnsdIndicatorParser.class);
 
     private static final String LANG = "en";
 
-    public List<StatisticalIndicator> parseIndicators(String indicatorsResponse) {
+    public static List<StatisticalIndicator> parseIndicators(String indicatorsResponse) {
         try {
             JSONArray indicators = new JSONArray(indicatorsResponse);
             return parseIndicators(indicators);
@@ -26,7 +26,7 @@ public class UnsdParser {
         return Collections.emptyList();
     }
 
-    public List<StatisticalIndicator> parseIndicators(JSONArray goals) {
+    public static List<StatisticalIndicator> parseIndicators(JSONArray goals) {
         // array of goal.targets[target.indicators]
         List<StatisticalIndicator> indicatorList = new ArrayList<>();
         if (goals == null) {
@@ -44,7 +44,7 @@ public class UnsdParser {
         return indicatorList;
     }
 
-    private Optional<List<StatisticalIndicator>> parseIndicatorsResultItem(JSONObject item) {
+    private static Optional<List<StatisticalIndicator>> parseIndicatorsResultItem(JSONObject item) {
         if (item == null) {
             return Optional.empty();
         }
@@ -58,7 +58,7 @@ public class UnsdParser {
         return parseIndicator(item).map(ind -> Collections.singletonList(ind));
     }
 
-    private boolean isIndicator(JSONObject item) {
+    private static boolean isIndicator(JSONObject item) {
         if (item == null) {
             return false;
         }
@@ -69,7 +69,7 @@ public class UnsdParser {
         return id.split("\\.").length == 3;
     }
 
-    private List<StatisticalIndicator> parseFromGoal(JSONObject goal) {
+    private static List<StatisticalIndicator> parseFromGoal(JSONObject goal) {
         List<StatisticalIndicator> indicatorList = new ArrayList<>();
         if (goal == null || !goal.has("targets")) {
             return indicatorList;
@@ -83,7 +83,7 @@ public class UnsdParser {
         return indicatorList;
     }
 
-    private List<StatisticalIndicator> parseFromTarget(JSONObject target, String goalDescription) {
+    private static List<StatisticalIndicator> parseFromTarget(JSONObject target, String goalDescription) {
         List<StatisticalIndicator> indicatorList = new ArrayList<>();
         if (target == null || !target.has("indicators")) {
             return indicatorList;
@@ -98,7 +98,7 @@ public class UnsdParser {
         return indicatorList;
     }
 
-    private Optional<StatisticalIndicator> parseIndicator(JSONObject item, String... parentDescriptions) {
+    private static Optional<StatisticalIndicator> parseIndicator(JSONObject item, String... parentDescriptions) {
         if (!isIndicator(item)) {
             return Optional.empty();
         }
@@ -111,7 +111,7 @@ public class UnsdParser {
     }
 
 
-    public StatisticalIndicatorDataModel parseDimensions(String dimensionsResponse) {
+    public static StatisticalIndicatorDataModel parseDimensions(String dimensionsResponse) {
         try {
             JSONArray dimensions = JSONHelper.createJSONArray(dimensionsResponse);
             StatisticalIndicatorDataModel selectors = new StatisticalIndicatorDataModel();
@@ -135,7 +135,7 @@ public class UnsdParser {
         return null;
     }
 
-    public Map<String, String> parseSource(String indicatorDataResponse) {
+    public static Map<String, String> parseSource(String indicatorDataResponse) {
         Map<String, String> sources = new HashMap<>();
         try {
             JSONObject jsonObject = JSONHelper.createJSONObject(indicatorDataResponse);

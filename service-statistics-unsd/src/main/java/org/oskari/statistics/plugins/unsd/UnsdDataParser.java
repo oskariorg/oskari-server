@@ -14,10 +14,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 
-public class UnsdIndicatorValuesFetcher {
+public class UnsdDataParser {
     private UnsdConfig config;
 
-    public UnsdIndicatorValuesFetcher(UnsdConfig config) {
+    public UnsdDataParser(UnsdConfig config) {
         this.config = config;
     }
 
