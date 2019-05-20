@@ -50,8 +50,7 @@ public class UnsdStatisticalDatasourcePlugin extends StatisticalDatasourcePlugin
         super.init(source);
         config = new UnsdConfig(source.getConfigJSON(), source.getId());
         parser = new UnsdParser();
-        indicatorValuesFetcher = new UnsdIndicatorValuesFetcher();
-        indicatorValuesFetcher.init(config);
+        indicatorValuesFetcher = new UnsdIndicatorValuesFetcher(config);
         regionMapper = new RegionMapper();
         // optimization for getting data just for the countries we are showing
         initAreaCodes(source.getLayers());

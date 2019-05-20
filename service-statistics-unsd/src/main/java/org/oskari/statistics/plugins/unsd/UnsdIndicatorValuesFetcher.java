@@ -17,7 +17,7 @@ import java.util.Map;
 public class UnsdIndicatorValuesFetcher {
     private UnsdConfig config;
 
-    public void init(UnsdConfig config) {
+    public UnsdIndicatorValuesFetcher(UnsdConfig config) {
         this.config = config;
     }
 
@@ -51,7 +51,7 @@ public class UnsdIndicatorValuesFetcher {
         return result;
     }
 
-    protected boolean isLastPage (String indicatorDataResponse) {
+    protected static boolean isLastPage (String indicatorDataResponse) {
         try {
             JSONObject response = JSONHelper.createJSONObject(indicatorDataResponse);
             int totalPages = response.getInt("totalPages");
@@ -65,7 +65,7 @@ public class UnsdIndicatorValuesFetcher {
         }
     }
 
-    protected Map<String, IndicatorValue> parseIndicatorData (String indicatorDataResponse) throws JSONException {
+    protected static Map<String, IndicatorValue> parseIndicatorData (String indicatorDataResponse) throws JSONException {
         Map<String, IndicatorValue> results = new HashMap<>();
         JSONObject response = JSONHelper.createJSONObject(indicatorDataResponse);
         JSONArray dataArray = response.getJSONArray("data");
