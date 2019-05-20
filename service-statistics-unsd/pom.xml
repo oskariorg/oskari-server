@@ -10,7 +10,7 @@
 	</parent>
 
     <groupId>org.oskari.service</groupId>
-    <artifactId>oskari-statistics-unsd</artifactId>
+    <artifactId>service-statistics-unsd</artifactId>
     <packaging>jar</packaging>
     <name>Statistics Service for UNSD</name>
 

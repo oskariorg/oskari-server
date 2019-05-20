@@ -2,8 +2,7 @@ package org.oskari.statistics.plugins.unsd;
 
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.test.util.TestHelper;
-import org.junit.runner.RunWith;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.junit.Ignore;
 
 import static org.junit.Assert.*;
 
@@ -13,7 +12,6 @@ import org.json.JSONObject;
 import org.junit.Test;
 import org.powermock.utils.Asserts;
 
-@RunWith(PowerMockRunner.class)
 public class UnsdRequestTest {
 
     private UnsdRequest request;
@@ -24,6 +22,7 @@ public class UnsdRequestTest {
     }
 
     @Test
+    @Ignore("Requires external HTTP requests to be made")
     public void testRequestTargets() throws JSONException {
 
         org.junit.Assume.assumeTrue(TestHelper.canDoHttp());
@@ -54,6 +53,7 @@ public class UnsdRequestTest {
     }
 
     @Test
+    @Ignore("Requires external HTTP requests to be made")
     public void testRequestDimensions() throws JSONException {
         org.junit.Assume.assumeTrue(TestHelper.canDoHttp());
         org.junit.Assume.assumeTrue(TestHelper.redisAvailable());
