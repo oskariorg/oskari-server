@@ -13,17 +13,16 @@ public class RegionMapper {
     private List<CountryRegion> countries;
 
     public RegionMapper() {
-        String file = readResource();
-        countries = Arrays.stream(file.split("\r\n"))
+        countries = readResource().stream()
                 .map(row -> parseRow(row))
                 .filter(Optional::isPresent)
                 .map(Optional::get)
                 .collect(Collectors.toList());
     }
 
-    private String readResource() {
+    private List<String> readResource() {
         try {
-            return IOHelper.readString(getClass().getResourceAsStream("/M49codes.csv"));
+            return IOHelper.readLines(getClass().getResourceAsStream("/M49codes.csv"));
         } catch (IOException ex) {
             throw new ServiceRuntimeException("Unable to read M49 country mapping", ex);
         }
