@@ -1,17 +1,19 @@
 package org.oskari.statistics.plugins.unsd;
 
-import fi.nls.oskari.log.LogFactory;
-import fi.nls.oskari.log.Logger;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
-public class UnsdConfig {
+import java.time.Year;
+import java.util.HashSet;
+import java.util.Set;
 
-    private final static Logger LOG = LogFactory.getLogger(UnsdConfig.class);
+public class UnsdConfig {
 
     private long datasourceId;
     private String url = "https://unstats.un.org/SDGAPI/v1/sdg";
     private String goal = "1";
     private String timeVariableId = "timePeriod";
+    private Set<String> years = new HashSet<>();
 
     public UnsdConfig() {
         this(new JSONObject(), -1l);
@@ -27,6 +29,23 @@ public class UnsdConfig {
         // allow override with db config
         goal = json.optString("goal", goal);
         timeVariableId = json.optString("timeVariable", timeVariableId);
+
+        // setup timePeriod
+        JSONArray timePeriodValues = json.optJSONArray(timeVariableId);
+        if (timePeriodValues != null) {
+            for (int i = 0; i < timePeriodValues.length(); i++) {
+                int year = timePeriodValues.optInt(i, -1);
+                if ( year != -1 ) {
+                    years.add(Integer.toString(year));
+                }
+            }
+        } else {
+            int currentYear = Year.now().getValue();
+            // reasonable range for data
+            for (int year = 2000; year < currentYear - 1; year ++) {
+                years.add(Integer.toString(year));
+            }
+        }
     }
 
     public long getId() {
@@ -43,5 +62,9 @@ public class UnsdConfig {
 
     public String getTimeVariableId() {
         return timeVariableId;
+    }
+
+    public Set<String> getTimePeriod() {
+        return years;
     }
 }

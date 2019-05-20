@@ -108,6 +108,8 @@ public class UnsdIndicatorParser {
     }
 
 
+    // Includes only dimensions that the service provides per goal
+    // Timeperiod is added by calling generateTimePeriod() after this has been called
     public static StatisticalIndicatorDataModel parseDimensions(String dimensionsResponse) {
         try {
             JSONArray dimensions = JSONHelper.createJSONArray(dimensionsResponse);
@@ -130,6 +132,16 @@ public class UnsdIndicatorParser {
             LOG.error("Error parsing selectors for indicator: " + e.getMessage(), e);
         }
         return null;
+    }
+
+    // Generates a timePeriod dimension for selectors.
+    // The datasource doesn't report this as being selector like it does for other selectors in the metadata.
+    public static StatisticalIndicatorDataDimension generateTimePeriod(String name, Set<String> years) {
+        StatisticalIndicatorDataDimension selector = new StatisticalIndicatorDataDimension(name);
+        for (String year: years) {
+            selector.addAllowedValue(year);
+        }
+        return selector;
     }
 
     public static Map<String, String> parseSource(JSONObject jsonObject) {

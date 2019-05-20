@@ -43,6 +43,11 @@ public class UnsdStatisticalDatasourcePlugin extends StatisticalDatasourcePlugin
             request.setIndicator(ind.getId());
             // we parse it multiple times to make copies
             ind.setDataModel(UnsdIndicatorParser.parseDimensions(dimensions));
+            // generate time period based on config. The datasource doesn't tell which years it has data for :(
+            ind.getDataModel().addDimension(
+                    UnsdIndicatorParser.generateTimePeriod(
+                            config.getTimeVariableId(), config.getTimePeriod()));
+            ind.getDataModel().setTimeVariable(config.getTimeVariableId());
 
             JSONObject dataResponse = JSONHelper.createJSONObject(request.getIndicatorData(null));
             ind.setSource(UnsdIndicatorParser.parseSource(dataResponse));
