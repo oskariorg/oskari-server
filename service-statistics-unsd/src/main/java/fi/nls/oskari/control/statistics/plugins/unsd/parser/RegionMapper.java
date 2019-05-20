@@ -36,7 +36,10 @@ public class RegionMapper {
             return Optional.empty();
         }
 
-        CountryRegion c = new CountryRegion(data[0].trim(), data[1].trim(), data[2].trim(), data[3].trim());
+        CountryRegion c = new CountryRegion(data[3]);
+        c.addCode(CountryRegion.Type.ISO2, data[0]);
+        c.addCode(CountryRegion.Type.ISO3, data[1]);
+        c.addCode(CountryRegion.Type.M49, data[2]);
         if (c.isValid()) {
             return Optional.of(c);
         }

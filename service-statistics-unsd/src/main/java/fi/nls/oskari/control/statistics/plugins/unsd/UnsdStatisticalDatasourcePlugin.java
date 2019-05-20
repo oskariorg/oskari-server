@@ -75,7 +75,8 @@ public class UnsdStatisticalDatasourcePlugin extends StatisticalDatasourcePlugin
                 .map(code -> regionMapper.find(code))
                 .filter(Optional::isPresent)
                 .map(Optional::get)
-                .map(c -> c.m49).collect(Collectors.toList());
+                .map(c -> c.getCode(CountryRegion.Type.M49))
+                .collect(Collectors.toList());
 
         for (DatasourceLayer layer : layers) {
             layerAreaCodes.put(layer.getMaplayerId(), countries.toArray(new String[0]));
@@ -91,15 +92,16 @@ public class UnsdStatisticalDatasourcePlugin extends StatisticalDatasourcePlugin
         String[] areaCodes = layerAreaCodes.get(regionset.getOskariLayerId());
         // map m49 codes back to region ids (iso2 etc) before returning
         Map<String, IndicatorValue> values = indicatorValuesFetcher.get(params, indicator.getId(), areaCodes);
-        List<CountryRegion> regions = values.keySet().stream().map(m49 -> regionMapper.find(m49))
+        List<CountryRegion> regions = values.keySet().stream()
+                .map(m49 -> regionMapper.find(m49))
                 .filter(Optional::isPresent)
                 .map(Optional::get).collect(Collectors.toList());
         Map<String, IndicatorValue> updated = new HashMap<>();
                 regions.stream().forEach( c -> {
-            IndicatorValue value = values.get(Integer.toString(c.m49woleadingZeroes));
+            IndicatorValue value = values.get(c.getCode(CountryRegion.Type.M49_WO_LEADING));
             // TODO: check if the region code from layer is iso2 or iso3 or m49
             // Now always assumes iso2
-            updated.put(c.iso2, value);
+            updated.put(c.getCode(CountryRegion.Type.ISO2), value);
         });
 
         return updated;
