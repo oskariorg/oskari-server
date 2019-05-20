@@ -9,6 +9,12 @@ public class CountryRegion implements Comparable<CountryRegion> {
     String iso3;
     String name;
 
+    enum Type {
+        ISO2,
+        ISO3,
+        M49
+    }
+
     public CountryRegion(String iso2, String iso3, String m49, String name) {
         this.iso2 = iso2;
         this.iso3 = iso3;

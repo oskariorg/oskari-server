@@ -9,7 +9,7 @@ public class UnsdConfig {
     private final static Logger LOG = LogFactory.getLogger(UnsdConfig.class);
 
     private long datasourceId;
-    private String url;
+    private String url = "https://unstats.un.org/SDGAPI/v1/sdg";
     private String goal = "1";
     private String timeVariableId = "timePeriod";
 
@@ -23,7 +23,7 @@ public class UnsdConfig {
     }
 
     private void init(JSONObject json) {
-        url = json.optString("url", null);
+        url = json.optString("url", url);
         // allow override with db config
         goal = json.optString("goal", goal);
         timeVariableId = json.optString("timeVariable", timeVariableId);
@@ -33,10 +33,6 @@ public class UnsdConfig {
         return datasourceId;
     }
     public String getUrl() {
-        if(url == null) {
-            // default
-            return "https://unstats.un.org/SDGAPI/v1/sdg";
-        }
         return url;
     }
 
