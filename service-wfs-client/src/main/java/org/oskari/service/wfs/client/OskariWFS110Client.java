@@ -1,6 +1,7 @@
 package org.oskari.service.wfs.client;
 
 import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -47,50 +48,26 @@ public class OskariWFS110Client {
             String typeName, ReferencedEnvelope bbox, CoordinateReferenceSystem crs, int maxFeatures, Filter filter) {
         // First try GeoJSON
         Map<String, String> query = getQueryParams(typeName, bbox, crs, maxFeatures, filter);
-
         query.put("OUTPUTFORMAT", "application/json");
-        HttpURLConnection conn;
+
+        byte[] response = getResponse(endPoint, user, pass, query);
         try {
-            conn = getConnection(endPoint, user, pass, query);
+            return parseGeoJSON(new ByteArrayInputStream(response), crs);
         } catch (Exception e) {
-            LOG.debug(e);
-            throw new ServiceRuntimeException("Unable to get features");
-        }
-
-        Map<String, Object> geojson = null;
-        try (InputStream in = new BufferedInputStream(conn.getInputStream())) {
-            try {
-                in.mark(8192);
-                geojson = OM.readValue(in, TYPE_REF);
-            } catch (Exception e) {
-                in.reset();
-                if (!isOutputFormatInvalid(in)) {
-                    throw new ServiceRuntimeException("Unable to get features");
-                }
+            if (!isOutputFormatInvalid(new ByteArrayInputStream(response))) {
+                // If we can not determine that the exception was due to bad
+                // outputFormat parameter then don't bother trying GML
+                throw new ServiceRuntimeException("Unable to get features");
             }
-        } catch (IOException e) {
-            LOG.debug(e);
+            LOG.debug(e, "Failed to parse GeoJSON response");
         }
 
-        if (geojson != null) {
-            try {
-                SimpleFeatureType schema = GeoJSONSchemaDetector.getSchema(geojson, crs);
-                return GeoJSONReader2.toFeatureCollection(geojson, schema);
-            } catch (Exception e) {
-                LOG.debug(e);
-            }
-        }
-
+        // Fallback to GML
         query.remove("OUTPUTFORMAT");
-        try {
-            conn = getConnection(endPoint, user, pass, query);
-        } catch (Exception e) {
-            LOG.debug(e);
-            throw new ServiceRuntimeException("Unable to get features");
-        }
+        response = getResponse(endPoint, user, pass, query);
 
-        try (InputStream in = new BufferedInputStream(conn.getInputStream())) {
-            return OSKARI_GML.decodeFeatureCollection(in, user, pass);
+        try {
+            return OSKARI_GML.decodeFeatureCollection(new ByteArrayInputStream(response), user, pass);
         } catch (Exception e) {
             throw new ServiceRuntimeException("Unable to get features");
         }
@@ -105,10 +82,14 @@ public class OskariWFS110Client {
         if (contentType != null && !contentType.contains("json")) {
             throw new Exception("Unexpected content type " + contentType);
         }
-        Map<String, Object> geojson;
         try (InputStream in = new BufferedInputStream(conn.getInputStream())) {
-            geojson = OM.readValue(in, TYPE_REF);
+            return parseGeoJSON(in, crs);
         }
+    }
+
+    private static SimpleFeatureCollection parseGeoJSON(InputStream in, CoordinateReferenceSystem crs) throws Exception {
+        Map<String, Object> geojson = OM.readValue(in, TYPE_REF);
+        in.close();
         SimpleFeatureType schema = GeoJSONSchemaDetector.getSchema(geojson, crs);
         return GeoJSONReader2.toFeatureCollection(geojson, schema);
     }
@@ -139,8 +120,17 @@ public class OskariWFS110Client {
         return parameters;
     }
 
-    protected static HttpURLConnection getConnection(String endPoint,
-            String user, String pass, Map<String, String> query) throws Exception {
+    protected static byte[] getResponse(String endPoint, String user, String pass, Map<String, String> query) {
+        try {
+            HttpURLConnection conn = getConnection(endPoint, user, pass, query);
+            return IOHelper.readBytes(conn);
+        } catch (Exception e) {
+            LOG.debug(e);
+            throw new ServiceRuntimeException("Unable to read response");
+        }
+    }
+
+    protected static HttpURLConnection getConnection(String endPoint, String user, String pass, Map<String, String> query) throws Exception {
         HttpURLConnection conn = IOHelper.getConnection(endPoint, user, pass, query);
         conn = IOHelper.followRedirect(conn, user, pass, query, MAX_REDIRECTS);
         if (conn.getResponseCode() != 200) {
@@ -183,6 +173,7 @@ public class OskariWFS110Client {
             OWSException ex = OWSExceptionReportParser.parse(in);
             return isExceptionDueToInvalidOutputFormat(ex);
         } catch (Exception e) {
+            LOG.debug(e);
             return false;
         }
     }
