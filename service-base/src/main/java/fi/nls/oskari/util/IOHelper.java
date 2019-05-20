@@ -106,7 +106,7 @@ public class IOHelper {
 
 
     public static List<String> readLines(InputStream in) throws IOException {
-        return readLines(in, Charset.forName(CHARSET_UTF8));
+        return readLines(in, StandardCharsets.UTF_8);
     }
 
     public static List<String> readLines(InputStream in, Charset cs) throws IOException {
