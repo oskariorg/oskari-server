@@ -7,12 +7,9 @@ import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
 import org.opengis.filter.Filter;
-import org.opengis.geometry.DirectPosition;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.oskari.service.user.UserLayerService;
 import org.oskari.service.wfs3.CoordinateTransformer;
-
-import com.vividsolutions.jts.geom.Envelope;
 
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.service.ServiceException;
@@ -98,25 +95,6 @@ public class OskariFeatureClient {
         }
 
         return sfc;
-    }
-
-    public boolean isWithin(CoordinateReferenceSystem targetCRS, Envelope bbox) {
-        org.opengis.geometry.Envelope targetCRSEnvelope = CRS.getEnvelope(targetCRS);
-        DirectPosition lc = targetCRSEnvelope.getLowerCorner();
-        if (bbox.getMinX() < lc.getOrdinate(0)) {
-            return false;
-        }
-        if (bbox.getMinY() < lc.getOrdinate(1)) {
-            return false;
-        }
-        DirectPosition uc = targetCRSEnvelope.getUpperCorner();
-        if (bbox.getMaxX() > uc.getOrdinate(0)) {
-            return false;
-        }
-        if (bbox.getMaxY() > uc.getOrdinate(1)) {
-            return false;
-        }
-        return true;
     }
 
 }

@@ -46,6 +46,17 @@ public class AjaxController {
                 log.error("Action was denied:", route, ", Error msg:", e.getMessage(), ". User: ", params.getUser(), ". Parameters: ", params.getRequest().getParameterMap());
             }
             ResponseHelper.writeError(params, e.getMessage(), HttpServletResponse.SC_FORBIDDEN, e.getOptions());
+        } catch (ActionCommonException e) {
+            Throwable error = e;
+            if (e.getCause() != null) {
+                error = e.getCause();
+            }
+            if (log.isDebugEnabled()) {
+                log.debug(error, "Couldn't handle action:", route, "Message: ", e.getMessage(), ". Parameters: ", params.getRequest().getParameterMap());
+            } else {
+                log.error("Couldn't handle action:", route, ". Message: ", e.getMessage(), ". Parameters: ", params.getRequest().getParameterMap());
+            }
+            ResponseHelper.writeError(params, e.getMessage());
         } catch (ActionException e) {
             // Internal failure -> print stack trace
             Throwable error = e;
