@@ -12,13 +12,13 @@ import java.util.*;
  */
 public class UnsdRequest {
 
-    private static final String PLACEHOLDER_GOAL = "{goalCode}";
     private static final String PARAM_INDICATOR = "indicator";
     private static final String PARAM_PAGE = "page";
-    private static final String PATH_GOAL = "Goal/" + PLACEHOLDER_GOAL;
-    private static final String PATH_TARGETS = PATH_GOAL + "/Target/List";
+
+    private static final String PLACEHOLDER_GOAL = "{goalCode}";
+    private static final String PATH_TARGETS = "Goal/{goalCode}/Target/List";
+    private static final String PATH_DIMENSIONS = "Goal/{goalCode}/Dimensions";
     private static final String PATH_INDICATOR_DATA = "Indicator/Data/";
-    private static final String PATH_DIMENSIONS = PATH_GOAL + "/Dimensions";
 
     private UnsdConfig config;
     private String goal;

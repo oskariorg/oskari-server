@@ -4,7 +4,6 @@ import fi.nls.oskari.control.statistics.data.IndicatorValue;
 import fi.nls.oskari.control.statistics.data.IndicatorValueFloat;
 import fi.nls.oskari.control.statistics.data.StatisticalIndicatorDataModel;
 import fi.nls.oskari.control.statistics.plugins.APIException;
-import fi.nls.oskari.service.ServiceRuntimeException;
 import fi.nls.oskari.util.JSONHelper;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -33,41 +32,32 @@ public class UnsdDataParser {
         request.setAreaCodes(areaCodes);
 
         Map<String, IndicatorValue> result = new HashMap<>();
-        boolean allFetched = false;
-        String response;
-        while(!allFetched) {
-            try {
-                response = request.getIndicatorData(selectors);
+        try {
+            while(true) {
+                JSONObject response = JSONHelper.createJSONObject(request.getIndicatorData(selectors));
                 result.putAll(parseIndicatorData(response));
-                allFetched = isLastPage(response);
-                if (!allFetched) {
-                    request.nextPage();
-                    response = request.getIndicatorData(selectors);
+                if (isLastPage(response)) {
+                    break;
                 }
-            } catch (JSONException ex) {
-                throw new APIException("Error during parsing UNSD data response.", ex);
+                request.nextPage();
             }
+        } catch (JSONException ex) {
+            throw new APIException("Error during parsing UNSD data response.", ex);
         }
         return result;
     }
 
-    protected static boolean isLastPage (String indicatorDataResponse) {
-        try {
-            JSONObject response = JSONHelper.createJSONObject(indicatorDataResponse);
-            int totalPages = response.getInt("totalPages");
-            if (totalPages < 1) {
-                return true;
-            }
-            int pageNumber = response.getInt("pageNumber");
-            return pageNumber == totalPages;
-        } catch (JSONException e) {
-            throw new ServiceRuntimeException("Error parsing UNSD indicator data page info: " + e.getMessage(), e);
+    protected static boolean isLastPage (JSONObject response) throws JSONException {
+        int totalPages = response.getInt("totalPages");
+        if (totalPages < 1) {
+            return true;
         }
+        int pageNumber = response.getInt("pageNumber");
+        return pageNumber >= totalPages;
     }
 
-    protected static Map<String, IndicatorValue> parseIndicatorData (String indicatorDataResponse) throws JSONException {
+    protected static Map<String, IndicatorValue> parseIndicatorData (JSONObject response) throws JSONException {
         Map<String, IndicatorValue> results = new HashMap<>();
-        JSONObject response = JSONHelper.createJSONObject(indicatorDataResponse);
         JSONArray dataArray = response.getJSONArray("data");
         for (int i = 0; i < dataArray.length(); i++) {
             JSONObject data = dataArray.getJSONObject(i);

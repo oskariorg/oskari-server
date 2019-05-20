@@ -32,14 +32,9 @@ public class UnsdIndicatorParser {
         if (goals == null) {
             return indicatorList;
         }
-        try {
-            for (int i = 0; i < goals.length(); i++) {
-                JSONObject item = goals.getJSONObject(i);
-                parseIndicatorsResultItem(item)
-                        .ifPresent(list -> indicatorList.addAll(list));
-            }
-        } catch (JSONException e) {
-            LOG.error("Error parsing UNSD indicators: " + e.getMessage(), e);
+        for (int i = 0; i < goals.length(); i++) {
+            parseIndicatorsResultItem(goals.optJSONObject(i))
+                    .ifPresent(list -> indicatorList.addAll(list));
         }
         return indicatorList;
     }
