@@ -45,7 +45,8 @@ public class OskariWFS110Client {
      * @return SimpleFeatureCollection containing the parsed Features, or null if all fails
      */
     public static SimpleFeatureCollection getFeatures(String endPoint, String user, String pass,
-            String typeName, ReferencedEnvelope bbox, CoordinateReferenceSystem crs, int maxFeatures, Filter filter) {
+            String typeName, ReferencedEnvelope bbox, CoordinateReferenceSystem crs,
+            int maxFeatures, Filter filter) {
         // First try GeoJSON
         Map<String, String> query = getQueryParams(typeName, bbox, crs, maxFeatures, filter);
         query.put("OUTPUTFORMAT", "application/json");
@@ -53,13 +54,12 @@ public class OskariWFS110Client {
         byte[] response = getResponse(endPoint, user, pass, query);
         try {
             return parseGeoJSON(new ByteArrayInputStream(response), crs);
-        } catch (Exception e) {
+        } catch (IOException e) {
             if (!isOutputFormatInvalid(new ByteArrayInputStream(response))) {
                 // If we can not determine that the exception was due to bad
                 // outputFormat parameter then don't bother trying GML
-                throw new ServiceRuntimeException("Unable to get features");
+                throw new ServiceRuntimeException("Unable to parse GeoJSON", e);
             }
-            LOG.debug(e, "Failed to parse GeoJSON response");
         }
 
         // Fallback to GML
@@ -69,33 +69,36 @@ public class OskariWFS110Client {
         try {
             return OSKARI_GML.decodeFeatureCollection(new ByteArrayInputStream(response), user, pass);
         } catch (Exception e) {
-            throw new ServiceRuntimeException("Unable to get features");
+            throw new ServiceRuntimeException("Unable to parse GML", e);
         }
     }
 
     public static SimpleFeatureCollection getFeaturesGeoJSON(String endPoint, String user, String pass,
-            String typeName, ReferencedEnvelope bbox, CoordinateReferenceSystem crs, int maxFeatures, Filter filter) throws Exception {
+            String typeName, ReferencedEnvelope bbox, CoordinateReferenceSystem crs,
+            int maxFeatures, Filter filter) throws IOException {
         Map<String, String> query = getQueryParams(typeName, bbox, crs, maxFeatures, filter);
         query.put("OUTPUTFORMAT", "application/json");
         HttpURLConnection conn = getConnection(endPoint, user, pass, query);
         String contentType = conn.getContentType();
         if (contentType != null && !contentType.contains("json")) {
-            throw new Exception("Unexpected content type " + contentType);
+            throw new ServiceRuntimeException("Unexpected content type " + contentType);
         }
         try (InputStream in = new BufferedInputStream(conn.getInputStream())) {
             return parseGeoJSON(in, crs);
         }
     }
 
-    private static SimpleFeatureCollection parseGeoJSON(InputStream in, CoordinateReferenceSystem crs) throws Exception {
+    private static SimpleFeatureCollection parseGeoJSON(InputStream in,
+            CoordinateReferenceSystem crs) throws IOException {
         Map<String, Object> geojson = OM.readValue(in, TYPE_REF);
         in.close();
         SimpleFeatureType schema = GeoJSONSchemaDetector.getSchema(geojson, crs);
         return GeoJSONReader2.toFeatureCollection(geojson, schema);
     }
 
-    public static SimpleFeatureCollection getFeaturesGML(String endPoint, String user, String pass, String typeName,
-            ReferencedEnvelope bbox, CoordinateReferenceSystem crs, int maxFeatures, Filter filter) throws Exception {
+    public static SimpleFeatureCollection getFeaturesGML(String endPoint, String user, String pass,
+            String typeName, ReferencedEnvelope bbox, CoordinateReferenceSystem crs,
+            int maxFeatures, Filter filter) throws Exception {
         Map<String, String> query = getQueryParams(typeName, bbox, crs, maxFeatures, filter);
         HttpURLConnection conn = getConnection(endPoint, user, pass, query);
         try (InputStream in = new BufferedInputStream(conn.getInputStream())) {
@@ -120,21 +123,23 @@ public class OskariWFS110Client {
         return parameters;
     }
 
-    protected static byte[] getResponse(String endPoint, String user, String pass, Map<String, String> query) {
+    protected static byte[] getResponse(String endPoint,
+            String user, String pass, Map<String, String> query) {
         try {
             HttpURLConnection conn = getConnection(endPoint, user, pass, query);
             return IOHelper.readBytes(conn);
-        } catch (Exception e) {
-            LOG.debug(e);
-            throw new ServiceRuntimeException("Unable to read response");
+        } catch (IOException e) {
+            throw new ServiceRuntimeException("Unable to read response", e);
         }
     }
 
-    protected static HttpURLConnection getConnection(String endPoint, String user, String pass, Map<String, String> query) throws Exception {
+    protected static HttpURLConnection getConnection(String endPoint,
+            String user, String pass, Map<String, String> query) throws IOException {
         HttpURLConnection conn = IOHelper.getConnection(endPoint, user, pass, query);
         conn = IOHelper.followRedirect(conn, user, pass, query, MAX_REDIRECTS);
-        if (conn.getResponseCode() != 200) {
-            throw new Exception("Unexpected status code " + conn.getResponseCode());
+        int sc = conn.getResponseCode();
+        if (sc != 200) {
+            throw new ServiceRuntimeException("Unexpected status code " + sc);
         }
         return conn;
     }
@@ -163,9 +168,8 @@ public class OskariWFS110Client {
             encoder.setOmitXMLDeclaration(true);
             return encoder.encodeAsString(filter, org.geotools.filter.v1_0.OGC.Filter);
         } catch (IOException e) {
-            LOG.warn("Failed to encode filter!");
+            throw new ServiceRuntimeException("Failed to encode filter!", e);
         }
-        return null;
     }
 
     protected static boolean isOutputFormatInvalid(InputStream in) {
@@ -180,7 +184,7 @@ public class OskariWFS110Client {
 
     protected static boolean isExceptionDueToInvalidOutputFormat(OWSException ex) {
         if (ex.getExceptionCode().equalsIgnoreCase("InvalidParameterValue")) {
-            if (ex.getLocator() != null && ex.getLocator().equalsIgnoreCase("outputFormat")) {
+            if ("outputFormat".equalsIgnoreCase(ex.getLocator())) {
                 return true;
             }
         }
