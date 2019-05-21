@@ -305,4 +305,32 @@ public class GeoJSONReader2Test {
         }
     }
 
+    @Test
+    public void testDifferentIdTypes() throws Exception {
+        Map<String, Object> json = loadJSONResource("featureCollectionDifferentId.json");
+        CoordinateReferenceSystem crs84 = CRS.decode("EPSG:4326", true);
+        SimpleFeatureType schema = GeoJSONSchemaDetector.getSchema(json, crs84);
+        assertNotNull(schema);
+        SimpleFeatureCollection fc = GeoJSONReader2.toFeatureCollection(json, schema);
+        try (SimpleFeatureIterator it = fc.features()) {
+            it.hasNext();
+            SimpleFeature f1 = it.next();
+            it.hasNext();
+            SimpleFeature f2 = it.next();
+            it.hasNext();
+            SimpleFeature f3 = it.next();
+            it.hasNext();
+            SimpleFeature f4 = it.next();
+
+            assertNotNull(f1.getID());
+            assertEquals(10000001, f1.getAttribute("placeId"));
+            assertNotNull(f2.getID());
+            assertEquals(10000002, f2.getAttribute("placeId"));
+            assertEquals("123", f3.getID());
+            assertEquals(10000003, f3.getAttribute("placeId"));
+            assertEquals("ABC_321", f4.getID());
+            assertEquals(10000004, f4.getAttribute("placeId"));
+        }
+    }
+
 }
