@@ -1,5 +1,7 @@
+const DEBUG = false;
 const MAX_CONCURRENT_REQUESTS = 6;
 const LIMIT_CONCURRENT_REQUESTS = 2;
+const PRIO_TRAFFIC_LIMIT = 3;
 
 const LOW_PRIO_REQUESTS = ['GetLayerTile', 'GetWFSFeatures', 'GetWFSVectorTile'];
 const lowPrioTester = new RegExp('^.*(\\/action\\?action_route=)(' + LOW_PRIO_REQUESTS.join('|') + ')\\&.*$');
@@ -12,7 +14,7 @@ const requestNextFromQueue = () => {
     if (lowPrioQueue.length === 0) {
         return;
     }
-    const pendingLimit = pendingHighPrioRequestCount >= MAX_CONCURRENT_REQUESTS ? LIMIT_CONCURRENT_REQUESTS : MAX_CONCURRENT_REQUESTS;
+    const pendingLimit = pendingHighPrioRequestCount >= PRIO_TRAFFIC_LIMIT ? LIMIT_CONCURRENT_REQUESTS : MAX_CONCURRENT_REQUESTS;
     if (pendingLowPrioRequestCount >= pendingLimit) {
         return;
     }
@@ -24,6 +26,9 @@ const requestNextFromQueue = () => {
 };
 
 const debugLog = () => {
+    if (!DEBUG) {
+        return;
+    }
     console.debug(
         'Pending high: ' + pendingHighPrioRequestCount +
         ', low: ' + pendingLowPrioRequestCount +
