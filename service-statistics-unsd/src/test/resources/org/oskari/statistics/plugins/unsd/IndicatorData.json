@@ -1,0 +1,822 @@
+{
+    "size": 25,
+    "totalElements": 4624,
+    "totalPages": 185,
+    "pageNumber": 1,
+    "attributes": [
+        {
+            "id": "Nature",
+            "codes": [
+                {
+                    "code": "E",
+                    "description": "Estimated data",
+                    "sdmx": "E"
+                }
+            ]
+        },
+        {
+            "id": "Units",
+            "codes": [
+                {
+                    "code": "PERCENT",
+                    "description": "Percentage",
+                    "sdmx": "PERCENT"
+                }
+            ]
+        }
+    ],
+    "dimensions": [
+        {
+            "id": "Reporting Type",
+            "codes": [
+                {
+                    "code": "N",
+                    "description": "National",
+                    "sdmx": "N"
+                },
+                {
+                    "code": "G",
+                    "description": "Global",
+                    "sdmx": "G"
+                }
+            ]
+        }
+    ],
+    "data": [
+        {
+            "goal": [
+                "7"
+            ],
+            "target": [
+                "7.2"
+            ],
+            "indicator": [
+                "7.2.1"
+            ],
+            "series": "EG_FEC_RNEW",
+            "seriesDescription": "Renewable energy share in the total final energy consumption (%)",
+            "seriesCount": "4624",
+            "geoAreaCode": "4",
+            "geoAreaName": "Afghanistan",
+            "timePeriodStart": 2000.0,
+            "value": "54.24",
+            "valueType": "Float",
+            "time_detail": null,
+            "source": "Energy Balances, UN Statistics Division (2018)",
+            "footnotes": [
+                ""
+            ],
+            "attributes": {
+                "Nature": "E",
+                "Units": "PERCENT"
+            },
+            "dimensions": {
+                "Reporting Type": "G"
+            }
+        },
+        {
+            "goal": [
+                "7"
+            ],
+            "target": [
+                "7.2"
+            ],
+            "indicator": [
+                "7.2.1"
+            ],
+            "series": "EG_FEC_RNEW",
+            "seriesDescription": "Renewable energy share in the total final energy consumption (%)",
+            "seriesCount": "4624",
+            "geoAreaCode": "4",
+            "geoAreaName": "Afghanistan",
+            "timePeriodStart": 2001.0,
+            "value": "54.06",
+            "valueType": "Float",
+            "time_detail": null,
+            "source": "Energy Balances, UN Statistics Division (2018)",
+            "footnotes": [
+                ""
+            ],
+            "attributes": {
+                "Nature": "E",
+                "Units": "PERCENT"
+            },
+            "dimensions": {
+                "Reporting Type": "G"
+            }
+        },
+        {
+            "goal": [
+                "7"
+            ],
+            "target": [
+                "7.2"
+            ],
+            "indicator": [
+                "7.2.1"
+            ],
+            "series": "EG_FEC_RNEW",
+            "seriesDescription": "Renewable energy share in the total final energy consumption (%)",
+            "seriesCount": "4624",
+            "geoAreaCode": "4",
+            "geoAreaName": "Afghanistan",
+            "timePeriodStart": 2002.0,
+            "value": "43.77",
+            "valueType": "Float",
+            "time_detail": null,
+            "source": "Energy Balances, UN Statistics Division (2018)",
+            "footnotes": [
+                ""
+            ],
+            "attributes": {
+                "Nature": "E",
+                "Units": "PERCENT"
+            },
+            "dimensions": {
+                "Reporting Type": "G"
+            }
+        },
+        {
+            "goal": [
+                "7"
+            ],
+            "target": [
+                "7.2"
+            ],
+            "indicator": [
+                "7.2.1"
+            ],
+            "series": "EG_FEC_RNEW",
+            "seriesDescription": "Renewable energy share in the total final energy consumption (%)",
+            "seriesCount": "4624",
+            "geoAreaCode": "4",
+            "geoAreaName": "Afghanistan",
+            "timePeriodStart": 2003.0,
+            "value": "42.28",
+            "valueType": "Float",
+            "time_detail": null,
+            "source": "Energy Balances, UN Statistics Division (2018)",
+            "footnotes": [
+                ""
+            ],
+            "attributes": {
+                "Nature": "E",
+                "Units": "PERCENT"
+            },
+            "dimensions": {
+                "Reporting Type": "G"
+            }
+        },
+        {
+            "goal": [
+                "7"
+            ],
+            "target": [
+                "7.2"
+            ],
+            "indicator": [
+                "7.2.1"
+            ],
+            "series": "EG_FEC_RNEW",
+            "seriesDescription": "Renewable energy share in the total final energy consumption (%)",
+            "seriesCount": "4624",
+            "geoAreaCode": "4",
+            "geoAreaName": "Afghanistan",
+            "timePeriodStart": 2004.0,
+            "value": "49.84",
+            "valueType": "Float",
+            "time_detail": null,
+            "source": "Energy Balances, UN Statistics Division (2018)",
+            "footnotes": [
+                ""
+            ],
+            "attributes": {
+                "Nature": "E",
+                "Units": "PERCENT"
+            },
+            "dimensions": {
+                "Reporting Type": "G"
+            }
+        },
+        {
+            "goal": [
+                "7"
+            ],
+            "target": [
+                "7.2"
+            ],
+            "indicator": [
+                "7.2.1"
+            ],
+            "series": "EG_FEC_RNEW",
+            "seriesDescription": "Renewable energy share in the total final energy consumption (%)",
+            "seriesCount": "4624",
+            "geoAreaCode": "4",
+            "geoAreaName": "Afghanistan",
+            "timePeriodStart": 2005.0,
+            "value": "40.86",
+            "valueType": "Float",
+            "time_detail": null,
+            "source": "Energy Balances, UN Statistics Division (2018)",
+            "footnotes": [
+                ""
+            ],
+            "attributes": {
+                "Nature": "E",
+                "Units": "PERCENT"
+            },
+            "dimensions": {
+                "Reporting Type": "G"
+            }
+        },
+        {
+            "goal": [
+                "7"
+            ],
+            "target": [
+                "7.2"
+            ],
+            "indicator": [
+                "7.2.1"
+            ],
+            "series": "EG_FEC_RNEW",
+            "seriesDescription": "Renewable energy share in the total final energy consumption (%)",
+            "seriesCount": "4624",
+            "geoAreaCode": "4",
+            "geoAreaName": "Afghanistan",
+            "timePeriodStart": 2006.0,
+            "value": "37.14",
+            "valueType": "Float",
+            "time_detail": null,
+            "source": "Energy Balances, UN Statistics Division (2018)",
+            "footnotes": [
+                ""
+            ],
+            "attributes": {
+                "Nature": "E",
+                "Units": "PERCENT"
+            },
+            "dimensions": {
+                "Reporting Type": "G"
+            }
+        },
+        {
+            "goal": [
+                "7"
+            ],
+            "target": [
+                "7.2"
+            ],
+            "indicator": [
+                "7.2.1"
+            ],
+            "series": "EG_FEC_RNEW",
+            "seriesDescription": "Renewable energy share in the total final energy consumption (%)",
+            "seriesCount": "4624",
+            "geoAreaCode": "4",
+            "geoAreaName": "Afghanistan",
+            "timePeriodStart": 2007.0,
+            "value": "33.86",
+            "valueType": "Float",
+            "time_detail": null,
+            "source": "Energy Balances, UN Statistics Division (2018)",
+            "footnotes": [
+                ""
+            ],
+            "attributes": {
+                "Nature": "E",
+                "Units": "PERCENT"
+            },
+            "dimensions": {
+                "Reporting Type": "G"
+            }
+        },
+        {
+            "goal": [
+                "7"
+            ],
+            "target": [
+                "7.2"
+            ],
+            "indicator": [
+                "7.2.1"
+            ],
+            "series": "EG_FEC_RNEW",
+            "seriesDescription": "Renewable energy share in the total final energy consumption (%)",
+            "seriesCount": "4624",
+            "geoAreaCode": "4",
+            "geoAreaName": "Afghanistan",
+            "timePeriodStart": 2008.0,
+            "value": "21.34",
+            "valueType": "Float",
+            "time_detail": null,
+            "source": "Energy Balances, UN Statistics Division (2018)",
+            "footnotes": [
+                ""
+            ],
+            "attributes": {
+                "Nature": "E",
+                "Units": "PERCENT"
+            },
+            "dimensions": {
+                "Reporting Type": "G"
+            }
+        },
+        {
+            "goal": [
+                "7"
+            ],
+            "target": [
+                "7.2"
+            ],
+            "indicator": [
+                "7.2.1"
+            ],
+            "series": "EG_FEC_RNEW",
+            "seriesDescription": "Renewable energy share in the total final energy consumption (%)",
+            "seriesCount": "4624",
+            "geoAreaCode": "4",
+            "geoAreaName": "Afghanistan",
+            "timePeriodStart": 2009.0,
+            "value": "17.81",
+            "valueType": "Float",
+            "time_detail": null,
+            "source": "Energy Balances, UN Statistics Division (2018)",
+            "footnotes": [
+                ""
+            ],
+            "attributes": {
+                "Nature": "E",
+                "Units": "PERCENT"
+            },
+            "dimensions": {
+                "Reporting Type": "G"
+            }
+        },
+        {
+            "goal": [
+                "7"
+            ],
+            "target": [
+                "7.2"
+            ],
+            "indicator": [
+                "7.2.1"
+            ],
+            "series": "EG_FEC_RNEW",
+            "seriesDescription": "Renewable energy share in the total final energy consumption (%)",
+            "seriesCount": "4624",
+            "geoAreaCode": "4",
+            "geoAreaName": "Afghanistan",
+            "timePeriodStart": 2010.0,
+            "value": "14.84",
+            "valueType": "Float",
+            "time_detail": null,
+            "source": "Energy Balances, UN Statistics Division (2018)",
+            "footnotes": [
+                ""
+            ],
+            "attributes": {
+                "Nature": "E",
+                "Units": "PERCENT"
+            },
+            "dimensions": {
+                "Reporting Type": "G"
+            }
+        },
+        {
+            "goal": [
+                "7"
+            ],
+            "target": [
+                "7.2"
+            ],
+            "indicator": [
+                "7.2.1"
+            ],
+            "series": "EG_FEC_RNEW",
+            "seriesDescription": "Renewable energy share in the total final energy consumption (%)",
+            "seriesCount": "4624",
+            "geoAreaCode": "4",
+            "geoAreaName": "Afghanistan",
+            "timePeriodStart": 2011.0,
+            "value": "11.48",
+            "valueType": "Float",
+            "time_detail": null,
+            "source": "Energy Balances, UN Statistics Division (2018)",
+            "footnotes": [
+                ""
+            ],
+            "attributes": {
+                "Nature": "E",
+                "Units": "PERCENT"
+            },
+            "dimensions": {
+                "Reporting Type": "G"
+            }
+        },
+        {
+            "goal": [
+                "7"
+            ],
+            "target": [
+                "7.2"
+            ],
+            "indicator": [
+                "7.2.1"
+            ],
+            "series": "EG_FEC_RNEW",
+            "seriesDescription": "Renewable energy share in the total final energy consumption (%)",
+            "seriesCount": "4624",
+            "geoAreaCode": "4",
+            "geoAreaName": "Afghanistan",
+            "timePeriodStart": 2012.0,
+            "value": "13.97",
+            "valueType": "Float",
+            "time_detail": null,
+            "source": "Energy Balances, UN Statistics Division (2018)",
+            "footnotes": [
+                ""
+            ],
+            "attributes": {
+                "Nature": "E",
+                "Units": "PERCENT"
+            },
+            "dimensions": {
+                "Reporting Type": "G"
+            }
+        },
+        {
+            "goal": [
+                "7"
+            ],
+            "target": [
+                "7.2"
+            ],
+            "indicator": [
+                "7.2.1"
+            ],
+            "series": "EG_FEC_RNEW",
+            "seriesDescription": "Renewable energy share in the total final energy consumption (%)",
+            "seriesCount": "4624",
+            "geoAreaCode": "4",
+            "geoAreaName": "Afghanistan",
+            "timePeriodStart": 2013.0,
+            "value": "16.33",
+            "valueType": "Float",
+            "time_detail": null,
+            "source": "Energy Balances, UN Statistics Division (2018)",
+            "footnotes": [
+                ""
+            ],
+            "attributes": {
+                "Nature": "E",
+                "Units": "PERCENT"
+            },
+            "dimensions": {
+                "Reporting Type": "G"
+            }
+        },
+        {
+            "goal": [
+                "7"
+            ],
+            "target": [
+                "7.2"
+            ],
+            "indicator": [
+                "7.2.1"
+            ],
+            "series": "EG_FEC_RNEW",
+            "seriesDescription": "Renewable energy share in the total final energy consumption (%)",
+            "seriesCount": "4624",
+            "geoAreaCode": "4",
+            "geoAreaName": "Afghanistan",
+            "timePeriodStart": 2014.0,
+            "value": "19.31",
+            "valueType": "Float",
+            "time_detail": null,
+            "source": "Energy Balances, UN Statistics Division (2018)",
+            "footnotes": [
+                ""
+            ],
+            "attributes": {
+                "Nature": "E",
+                "Units": "PERCENT"
+            },
+            "dimensions": {
+                "Reporting Type": "G"
+            }
+        },
+        {
+            "goal": [
+                "7"
+            ],
+            "target": [
+                "7.2"
+            ],
+            "indicator": [
+                "7.2.1"
+            ],
+            "series": "EG_FEC_RNEW",
+            "seriesDescription": "Renewable energy share in the total final energy consumption (%)",
+            "seriesCount": "4624",
+            "geoAreaCode": "4",
+            "geoAreaName": "Afghanistan",
+            "timePeriodStart": 2015.0,
+            "value": "18.36",
+            "valueType": "Float",
+            "time_detail": null,
+            "source": "Energy Balances, UN Statistics Division (2018)",
+            "footnotes": [
+                ""
+            ],
+            "attributes": {
+                "Nature": "E",
+                "Units": "PERCENT"
+            },
+            "dimensions": {
+                "Reporting Type": "G"
+            }
+        },
+        {
+            "goal": [
+                "7"
+            ],
+            "target": [
+                "7.2"
+            ],
+            "indicator": [
+                "7.2.1"
+            ],
+            "series": "EG_FEC_RNEW",
+            "seriesDescription": "Renewable energy share in the total final energy consumption (%)",
+            "seriesCount": "4624",
+            "geoAreaCode": "4",
+            "geoAreaName": "Afghanistan",
+            "timePeriodStart": 2016.0,
+            "value": "20.75",
+            "valueType": "Float",
+            "time_detail": null,
+            "source": "Energy Balances, UN Statistics Division (2018)",
+            "footnotes": [
+                ""
+            ],
+            "attributes": {
+                "Nature": "E",
+                "Units": "PERCENT"
+            },
+            "dimensions": {
+                "Reporting Type": "G"
+            }
+        },
+        {
+            "goal": [
+                "7"
+            ],
+            "target": [
+                "7.2"
+            ],
+            "indicator": [
+                "7.2.1"
+            ],
+            "series": "EG_FEC_RNEW",
+            "seriesDescription": "Renewable energy share in the total final energy consumption (%)",
+            "seriesCount": "4624",
+            "geoAreaCode": "2",
+            "geoAreaName": "Africa",
+            "timePeriodStart": 2000.0,
+            "value": "60.84",
+            "valueType": "Float",
+            "time_detail": null,
+            "source": "IEA (2018), World Energy Balances; Energy Balances, UN Statistics Division (2018)",
+            "footnotes": [
+                ""
+            ],
+            "attributes": {
+                "Nature": "E",
+                "Units": "PERCENT"
+            },
+            "dimensions": {
+                "Reporting Type": "G"
+            }
+        },
+        {
+            "goal": [
+                "7"
+            ],
+            "target": [
+                "7.2"
+            ],
+            "indicator": [
+                "7.2.1"
+            ],
+            "series": "EG_FEC_RNEW",
+            "seriesDescription": "Renewable energy share in the total final energy consumption (%)",
+            "seriesCount": "4624",
+            "geoAreaCode": "2",
+            "geoAreaName": "Africa",
+            "timePeriodStart": 2001.0,
+            "value": "60.42",
+            "valueType": "Float",
+            "time_detail": null,
+            "source": "IEA (2018), World Energy Balances; Energy Balances, UN Statistics Division (2018)",
+            "footnotes": [
+                ""
+            ],
+            "attributes": {
+                "Nature": "E",
+                "Units": "PERCENT"
+            },
+            "dimensions": {
+                "Reporting Type": "G"
+            }
+        },
+        {
+            "goal": [
+                "7"
+            ],
+            "target": [
+                "7.2"
+            ],
+            "indicator": [
+                "7.2.1"
+            ],
+            "series": "EG_FEC_RNEW",
+            "seriesDescription": "Renewable energy share in the total final energy consumption (%)",
+            "seriesCount": "4624",
+            "geoAreaCode": "2",
+            "geoAreaName": "Africa",
+            "timePeriodStart": 2002.0,
+            "value": "60.01",
+            "valueType": "Float",
+            "time_detail": null,
+            "source": "IEA (2018), World Energy Balances; Energy Balances, UN Statistics Division (2018)",
+            "footnotes": [
+                ""
+            ],
+            "attributes": {
+                "Nature": "E",
+                "Units": "PERCENT"
+            },
+            "dimensions": {
+                "Reporting Type": "G"
+            }
+        },
+        {
+            "goal": [
+                "7"
+            ],
+            "target": [
+                "7.2"
+            ],
+            "indicator": [
+                "7.2.1"
+            ],
+            "series": "EG_FEC_RNEW",
+            "seriesDescription": "Renewable energy share in the total final energy consumption (%)",
+            "seriesCount": "4624",
+            "geoAreaCode": "2",
+            "geoAreaName": "Africa",
+            "timePeriodStart": 2003.0,
+            "value": "59.38",
+            "valueType": "Float",
+            "time_detail": null,
+            "source": "IEA (2018), World Energy Balances; Energy Balances, UN Statistics Division (2018)",
+            "footnotes": [
+                ""
+            ],
+            "attributes": {
+                "Nature": "E",
+                "Units": "PERCENT"
+            },
+            "dimensions": {
+                "Reporting Type": "G"
+            }
+        },
+        {
+            "goal": [
+                "7"
+            ],
+            "target": [
+                "7.2"
+            ],
+            "indicator": [
+                "7.2.1"
+            ],
+            "series": "EG_FEC_RNEW",
+            "seriesDescription": "Renewable energy share in the total final energy consumption (%)",
+            "seriesCount": "4624",
+            "geoAreaCode": "2",
+            "geoAreaName": "Africa",
+            "timePeriodStart": 2004.0,
+            "value": "59.39",
+            "valueType": "Float",
+            "time_detail": null,
+            "source": "IEA (2018), World Energy Balances; Energy Balances, UN Statistics Division (2018)",
+            "footnotes": [
+                ""
+            ],
+            "attributes": {
+                "Nature": "E",
+                "Units": "PERCENT"
+            },
+            "dimensions": {
+                "Reporting Type": "G"
+            }
+        },
+        {
+            "goal": [
+                "7"
+            ],
+            "target": [
+                "7.2"
+            ],
+            "indicator": [
+                "7.2.1"
+            ],
+            "series": "EG_FEC_RNEW",
+            "seriesDescription": "Renewable energy share in the total final energy consumption (%)",
+            "seriesCount": "4624",
+            "geoAreaCode": "2",
+            "geoAreaName": "Africa",
+            "timePeriodStart": 2005.0,
+            "value": "58.28",
+            "valueType": "Float",
+            "time_detail": null,
+            "source": "IEA (2018), World Energy Balances; Energy Balances, UN Statistics Division (2018)",
+            "footnotes": [
+                ""
+            ],
+            "attributes": {
+                "Nature": "E",
+                "Units": "PERCENT"
+            },
+            "dimensions": {
+                "Reporting Type": "G"
+            }
+        },
+        {
+            "goal": [
+                "7"
+            ],
+            "target": [
+                "7.2"
+            ],
+            "indicator": [
+                "7.2.1"
+            ],
+            "series": "EG_FEC_RNEW",
+            "seriesDescription": "Renewable energy share in the total final energy consumption (%)",
+            "seriesCount": "4624",
+            "geoAreaCode": "2",
+            "geoAreaName": "Africa",
+            "timePeriodStart": 2006.0,
+            "value": "58.15",
+            "valueType": "Float",
+            "time_detail": null,
+            "source": "IEA (2018), World Energy Balances; Energy Balances, UN Statistics Division (2018)",
+            "footnotes": [
+                ""
+            ],
+            "attributes": {
+                "Nature": "E",
+                "Units": "PERCENT"
+            },
+            "dimensions": {
+                "Reporting Type": "G"
+            }
+        },
+        {
+            "goal": [
+                "7"
+            ],
+            "target": [
+                "7.2"
+            ],
+            "indicator": [
+                "7.2.1"
+            ],
+            "series": "EG_FEC_RNEW",
+            "seriesDescription": "Renewable energy share in the total final energy consumption (%)",
+            "seriesCount": "4624",
+            "geoAreaCode": "2",
+            "geoAreaName": "Africa",
+            "timePeriodStart": 2007.0,
+            "value": "57.49",
+            "valueType": "Float",
+            "time_detail": null,
+            "source": "IEA (2018), World Energy Balances; Energy Balances, UN Statistics Division (2018)",
+            "footnotes": [
+                ""
+            ],
+            "attributes": {
+                "Nature": "E",
+                "Units": "PERCENT"
+            },
+            "dimensions": {
+                "Reporting Type": "G"
+            }
+        }
+    ]
+}

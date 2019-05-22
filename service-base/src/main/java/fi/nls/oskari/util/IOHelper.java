@@ -10,6 +10,7 @@ import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
 import java.security.cert.X509Certificate;
@@ -17,6 +18,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
@@ -37,6 +39,7 @@ public class IOHelper {
 
     public static final String CHARSET_UTF8 = "UTF-8";
     public static final String DEFAULT_CHARSET = CHARSET_UTF8;
+    public static final Charset DEFAULT_CHARSET_CS = StandardCharsets.UTF_8;
     public static final String CONTENTTYPE_FORM_URLENCODED = "application/x-www-form-urlencoded";
     public static final String CONTENT_TYPE_JSON = "application/json";
     public static final String CONTENT_TYPE_XML = "application/xml";
@@ -102,39 +105,72 @@ public class IOHelper {
         return readString(conn.getInputStream(), charset);
     }
 
-    /**
-     * Reads the given input stream and converts its contents to a string using given charset
-     * @param is
-     * @param charset
-     * @return
-     * @throws IOException
-     */
-    public static String readString(InputStream is, final String charset)
-            throws IOException {
-        /*
-         * To convert the InputStream to String we use the Reader.read(char[]
-         * buffer) method. We iterate until the Reader return -1 which means
-         * there's no more data to read. We use the StringWriter class to
-         * produce the string.
-         */
 
-        if (is == null) {
+    public static List<String> readLines(InputStream in) throws IOException {
+        return readLines(in, StandardCharsets.UTF_8);
+    }
+
+    public static List<String> readLines(InputStream in, Charset cs) throws IOException {
+        try (BufferedReader br = new BufferedReader(
+                new InputStreamReader(in, cs))) {
+            return br.lines().collect(Collectors.toList());
+        } finally {
+            in.close();
+        }
+    }
+
+    /**
+     * Reads the given InputStream and converts its contents to a String using given charset
+     * Also closes the InputStream
+     * @param in the InputStream, if null then an empty String is returned
+     * @param charset if null then DEFAULT_CHARSET is used
+     * @return InputStream's contents as a String
+     */
+    public static String readString(InputStream is, String charset) throws IOException {
+        Charset cs = charset == null ? DEFAULT_CHARSET_CS : Charset.forName(charset);
+        return readString(is, cs);
+    }
+
+    /**
+     * Reads the given InputStream and converts its contents to a String using given charset
+     * Also closes the InputStream
+     * @param in the InputStream, if null then an empty String is returned
+     * @param cs if null then DEFAULT_CHARSET_CS is used
+     * @return InputStream's contents as a String
+     */
+    public static String readString(InputStream in, Charset cs) throws IOException {
+        if (in == null) {
             return "";
         }
+        if (cs == null) {
+            cs = DEFAULT_CHARSET_CS;
+        }
 
-        final Writer writer = new StringWriter();
-        final char[] buffer = new char[1024];
-        try {
-            final Reader reader = new BufferedReader(new InputStreamReader(is,
-                    charset == null ? DEFAULT_CHARSET : charset ));
+        char[] str = new char[512];
+        int capacity = str.length;
+        int len = 0;
+
+        char[] buf = new char[4096];
+        try (Reader reader = new InputStreamReader(in, cs)) {
             int n;
-            while ((n = reader.read(buffer)) != -1) {
-                writer.write(buffer, 0, n);
+            while ((n = reader.read(buf, 0, 4096)) != -1) {
+                int sizeRequired = len + n;
+                if (sizeRequired > capacity) {
+                    int newCapacity = Math.max(sizeRequired, capacity * 2);
+                    char[] tmp = new char[newCapacity];
+                    System.arraycopy(str, 0, tmp, 0, len);
+                    str = tmp;
+                    capacity = newCapacity;
+                }
+                System.arraycopy(buf, 0, str, len, n);
+                len += n;
             }
         } finally {
-            is.close();
+            // InputStreamReader#close probably already closed this but let's be explicit
+            in.close();
         }
-        return writer.toString();
+
+        return new String(str, 0, len);
     }
 
     /**
@@ -910,27 +946,27 @@ public class IOHelper {
      * @return constructed url including additional parameters
      */
     public static String constructUrl(final String url, Map<String, String> params) {
-        if(params == null) {
+        if(params == null || params.isEmpty()) {
             return url;
         }
-        if(params.isEmpty()) {
+
+        final String queryString = getParams(params);
+        return addQueryString(url, queryString);
+    }
+
+    public static String addQueryString(String url, String queryString) {
+        if (queryString == null || queryString.trim().isEmpty()) {
             return url;
         }
         final StringBuilder urlBuilder = new StringBuilder(url);
-
-        if(!url.contains("?")) {
-            urlBuilder.append("?");
+        char lastChar = urlBuilder.charAt(urlBuilder.length()-1);
+        if (!url.contains("?")) {
+            lastChar = '?';
+            urlBuilder.append(lastChar);
         }
-        else {
-            final char lastChar = urlBuilder.charAt(urlBuilder.length()-1);
-            if((lastChar != '&' && lastChar != '?')) {
-                urlBuilder.append("&");
-            }
-        }
-        final String queryString = getParams(params);
-        if(queryString.isEmpty()) {
-            // drop last character ('?' or '&')
-            return urlBuilder.substring(0, urlBuilder.length()-1);
+        else if (lastChar != '&' && lastChar != '?') {
+            lastChar = '&';
+            urlBuilder.append(lastChar);
         }
         return urlBuilder.append(queryString).toString();
     }
@@ -952,10 +988,12 @@ public class IOHelper {
      * @param value
      * @return
      */
-    public static String addUrlParam(final String url, String key, String value) {
-        final Map<String, String> params = new HashMap<>(1);
+    public static String addUrlParam(final String url, String key, String... value) {
+        final Map<String, String[]> params = new HashMap<>(1);
         params.put(key, value);
-        return constructUrl(url, params);
+        final String queryString = getParamsMultiValue(params);
+        return addQueryString(url, queryString);
+
     }
 
     public static String getParams(Map<String, String> kvps) {

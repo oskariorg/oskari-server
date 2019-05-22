@@ -270,6 +270,11 @@
                 <version>${fi.nls.oskari.service.version}</version>
             </dependency>
             <dependency>
+                <groupId>org.oskari.service</groupId>
+                <artifactId>service-statistics-unsd</artifactId>
+                <version>${fi.nls.oskari.service.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>fi.nls.oskari.service</groupId>
                 <artifactId>service-csw</artifactId>
                 <version>${fi.nls.oskari.service.version}</version>
@@ -1195,6 +1200,7 @@
         <module>service-statistics-kapa</module>
         <module>service-statistics-eurostat</module>
         <module>service-statistics-pxweb</module>
+        <module>service-statistics-unsd</module>
         <module>control-statistics</module>
 
         <!-- oskari map -->
