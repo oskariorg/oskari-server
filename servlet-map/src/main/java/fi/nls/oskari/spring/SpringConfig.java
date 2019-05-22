@@ -133,7 +133,7 @@ public class SpringConfig extends WebMvcConfigurerAdapter implements Application
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/xhr-priorizer.js").addResourceLocations("classpath:service-workers/xhr-priorizer.js");
+        registry.addResourceHandler("/xhr-prioritizer.js").addResourceLocations("classpath:service-workers/xhr-prioritizer.js");
     }
 
     @Bean
