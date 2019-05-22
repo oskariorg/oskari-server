@@ -19,7 +19,7 @@ For a full list of changes see: https://github.com/oskariorg/oskari-server/miles
 
 This is the first version including the new WFS-integration system:
 - Due to replace the current "transport" webapp removing Jetty requirement as server software
-- Reads in WFS 1.1.0 and WFS 3.0,0
+- Reads in WFS 1.1.0 and WFS 3.0.0
 - Outputs GeoJSON or Mapbox vector tiles (user selectable by admin to optimize for service content)
 - My places, userlayers and analysis (user generated content) are supported by the new system
 - Supports feature caching (and protects services with circuit breaker like transport)
