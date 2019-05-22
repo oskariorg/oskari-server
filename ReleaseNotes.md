@@ -1,6 +1,6 @@
 # Release Notes
 
-## 1.52.2
+## 1.52.0
 
 For a full list of changes see: https://github.com/oskariorg/oskari-server/milestone/16?closed=1
 
