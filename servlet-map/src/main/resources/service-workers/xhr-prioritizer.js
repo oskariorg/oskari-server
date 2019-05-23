@@ -1,31 +1,31 @@
-const DEBUG = false;
-const MAX_CONCURRENT_REQUESTS = 6;
-const LIMIT_CONCURRENT_REQUESTS = 2;
-const PRIO_TRAFFIC_LIMIT = 3;
+var DEBUG = true;
+var MAX_CONCURRENT_REQUESTS = 6;
+var LIMIT_CONCURRENT_REQUESTS = 2;
+var PRIO_TRAFFIC_LIMIT = 3;
 
-const LOW_PRIO_REQUESTS = ['GetLayerTile', 'GetWFSFeatures', 'GetWFSVectorTile'];
-const lowPrioTester = new RegExp('^.*(\\/action\\?action_route=)(' + LOW_PRIO_REQUESTS.join('|') + ')\\&.*$');
+var LOW_PRIO_REQUESTS = ['GetLayerTile', 'GetWFSFeatures', 'GetWFSVectorTile'];
+var lowPrioTester = new RegExp('^.*(\\/action\\?action_route=)(' + LOW_PRIO_REQUESTS.join('|') + ')\\&.*$');
 
-let pendingHighPrioRequestCount = 0;
-let pendingLowPrioRequestCount = 0;
-let lowPrioQueue = [];
+var pendingHighPrioRequestCount = 0;
+var pendingLowPrioRequestCount = 0;
+var lowPrioQueue = [];
 
-const requestNextFromQueue = () => {
+function requestNextFromQueue () {
     if (lowPrioQueue.length === 0) {
         return;
     }
-    const pendingLimit = pendingHighPrioRequestCount >= PRIO_TRAFFIC_LIMIT ? LIMIT_CONCURRENT_REQUESTS : MAX_CONCURRENT_REQUESTS;
+    var pendingLimit = pendingHighPrioRequestCount >= PRIO_TRAFFIC_LIMIT ? LIMIT_CONCURRENT_REQUESTS : MAX_CONCURRENT_REQUESTS;
     if (pendingLowPrioRequestCount >= pendingLimit) {
         return;
     }
-    let unusedLimit = pendingLimit - pendingLowPrioRequestCount;
+    var unusedLimit = pendingLimit - pendingLowPrioRequestCount;
     while (unusedLimit !== 0 && lowPrioQueue.length !== 0) {
         fetchLowPrioFromServer();
         unusedLimit--;
     }
 };
 
-const debugLog = () => {
+function debugLog () {
     if (!DEBUG) {
         return;
     }
@@ -35,38 +35,43 @@ const debugLog = () => {
         ', queued: ' + lowPrioQueue.length);
 };
 
-const fetchLowPrioFromServer = () => {
-    const { event, resolveHandle: resolve } = lowPrioQueue.shift();
+function fetchLowPrioFromServer () {
+    var entry = lowPrioQueue.shift();
+    var event = entry.event;
+    var resolve = entry.resolve;
     pendingLowPrioRequestCount++;
+    resolve(fetch(event.request).then(lowPrioFetchDone, lowPrioFetchDone));
     debugLog();
-    const response = fetch(event.request)
-        .finally(() => {
-            pendingLowPrioRequestCount--;
-            requestNextFromQueue();
-        });
-    resolve(response);
 };
 
-self.addEventListener('fetch', event => {
+function lowPrioFetchDone (response) {
+    pendingLowPrioRequestCount--;
+    requestNextFromQueue();
+    return response;
+};
+
+function decreaseHighPrioPendingCount (response) {
+    pendingHighPrioRequestCount--;
+    return response;
+};
+
+self.addEventListener('fetch', function (event) {
     if (!lowPrioTester.test(event.request.url)) {
         pendingHighPrioRequestCount++;
+        event.respondWith(fetch(event.request).then(decreaseHighPrioPendingCount, decreaseHighPrioPendingCount));
         debugLog();
-        const response = fetch(event.request).finally(() => {
-            pendingHighPrioRequestCount--;
-        });
-        event.respondWith(response);
         return;
     }
-    let resolveHandle;
-    const promise = new Promise((resolve, reject) => {
+    var resolveHandle;
+    var promise = new Promise(function (resolve, reject) {
         resolveHandle = resolve;
     });
-    lowPrioQueue.push({ event, resolveHandle });
+    lowPrioQueue.push({ event: event, resolve: resolveHandle });
     requestNextFromQueue();
     event.respondWith(promise);
 });
 
-self.addEventListener('activate', event => {
+self.addEventListener('activate', function () {
     pendingHighPrioRequestCount = 0;
     pendingLowPrioRequestCount = 0;
     lowPrioQueue = [];
