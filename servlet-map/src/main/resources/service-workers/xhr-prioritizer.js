@@ -1,4 +1,4 @@
-var DEBUG = true;
+var DEBUG = false;
 var MAX_CONCURRENT_REQUESTS = 6;
 var LIMIT_CONCURRENT_REQUESTS = 2;
 var PRIO_TRAFFIC_LIMIT = 3;
