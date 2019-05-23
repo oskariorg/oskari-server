@@ -61,6 +61,18 @@ public abstract class MyPlacesService extends OskariComponent {
         return MYPLACES_CLIENT_WMS_URL;
     }
 
+    // FIXME: remove hard-coded name from server side
+    // This is a quick fix for common supported languages
+    // frontend does this, but embedded maps don't have the same code as layers are shown with WMS
+    private String getLayerUIName(String lang) {
+        if (lang.equalsIgnoreCase("fi")) {
+            return "Oma karttataso";
+        } else if (lang.equalsIgnoreCase("sv")) {
+            return "Mitt kartlager";
+        }
+        return "My map layer";
+    }
+
     public JSONObject getCategoryAsWmsLayerJSON(final MyPlaceCategory mpLayer,
                                                 final String lang, final boolean useDirectURL,
                                                 final String uuid, final boolean modifyURLs) {
@@ -68,7 +80,11 @@ public abstract class MyPlacesService extends OskariComponent {
         final OskariLayer layer = new OskariLayer();
         layer.setName(MYPLACES_WMS_NAME);
         layer.setType(OskariLayer.TYPE_WMS);
-        layer.setName(lang, mpLayer.getCategory_name());
+        String name = mpLayer.getCategory_name();
+        if (name == null || name.isEmpty())  {
+            name = getLayerUIName(lang);
+        }
+        layer.setName(lang, name);
 
         /*
 Version 1.1.0 works better as it has fixed coordinate order, the OL3 default 1.3.0 causes problems with some setups like:

@@ -9,12 +9,13 @@ For a full list of changes see: https://github.com/oskariorg/oskari-server/miles
 - Login now redirects to the referrer page (page where the login was submitted from) instead of root page to allow views like embedded maps have login functionality.
 - Fixed and issue with userlayer SLD to show correct line styles for polygons. Requires manual migration for transport based service to work properly (SLDs are not used by the new WFS-system).
 - Fixed an issue where having 3rd party cookie support disabled might lead to embedded maps not starting properly
+- Fixed an issue where the users default my places layer was shown without a name in embedded maps if it hadn't been renamed from the default
 - Added initial support for thematic datasource UN stats (https://unstats.un.org/home/)
 - Most of the database operations have been moved from Ibatis to Mybatis. The remaining ones will be migrated at a later date and any new ones should use Mybatis.
 - Spring configurations/annotations are now scanned from org.oskari.* packages in addition to fi.nls.oskari.*
 - Compilation of codebase is now tested with OpenJDK 8 & 11 and Oracle Java 11
-- French localizations added
 - Removed support for double line style for features as it hasn't been implemented
+- French localizations added
 - Library updates
 
 This is the first version including the new WFS-integration system:
