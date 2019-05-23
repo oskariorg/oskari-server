@@ -13,7 +13,7 @@ These might be used in app-specific migrations so you will need to update refere
 
 ### Userlayer SLD update
 
-There was a small issue on the SLD for userlayes where polygon border style was rendered with line style.
+There was a small issue on the SLD for userlayers where polygon border style was rendered with line style.
 To fix this you will need to manually update the SLD on the GeoServer Oskari uses to store userlayers. The SLD to use
 can be found here: https://github.com/oskariorg/oskari-server/blob/master/content-resources/src/main/resources/sld/userlayer/UserLayerDefaultStyle.sld
 
