@@ -1,5 +1,33 @@
 # Release Notes
 
+## 1.52.0
+
+For a full list of changes see: https://github.com/oskariorg/oskari-server/milestone/16?closed=1
+
+- WMS-layers can now be printed with non-default styles
+- CSV/Excel export of feature data now supports numeric data properly
+- Login now redirects to the referrer page (page where the login was submitted from) instead of root page to allow views like embedded maps have login functionality.
+- Fixed and issue with userlayer SLD to show correct line styles for polygons. Requires manual migration for transport based service to work properly (SLDs are not used by the new WFS-system).
+- Fixed an issue where having 3rd party cookie support disabled might lead to embedded maps not starting properly
+- Added initial support for thematic datasource UN stats (https://unstats.un.org/home/)
+- Most of the database operations have been moved from Ibatis to Mybatis. The remaining ones will be migrated at a later date and any new ones should use Mybatis.
+- Spring configurations/annotations are now scanned from org.oskari.* packages in addition to fi.nls.oskari.*
+- Compilation of codebase is now tested with OpenJDK 8 & 11 and Oracle Java 11
+- French localizations added
+- Removed support for double line style for features as it hasn't been implemented
+- Library updates
+
+This is the first version including the new WFS-integration system:
+- Due to replace the current "transport" webapp removing Jetty requirement as server software
+- Reads in WFS 1.1.0 and WFS 3.0.0
+- Outputs GeoJSON or Mapbox vector tiles (user selectable by admin to optimize for service content)
+- My places, userlayers and analysis (user generated content) are supported by the new system
+- Supports feature caching (and protects services with circuit breaker like transport)
+- Configuration options added to enable custom tile grids to be used with MVT (Works for EPSG:3857 and EPSG:3067 out of the box)
+- Doesn't support printing WFS-layers yet
+- Doesn't support WFS 2.0.0 yet
+- See migration guide for details how to test it out (not enabled by default on this release)
+
 ## 1.51.1
 
 For a full list of changes see: https://github.com/oskariorg/oskari-server/milestone/17?closed=1
