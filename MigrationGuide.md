@@ -2,7 +2,7 @@
 
 ## 1.52.0
 
-Class renaming:
+### Class renaming:
 
 - BundleServiceIbatisImpl is now BundleServiceMybatisImpl
 - ViewServiceIbatisImpl is now AppSetupServiceMybatisImpl
@@ -10,6 +10,47 @@ Class renaming:
 - OskariLayerServiceIbatisImpl is now OskariLayerServiceMybatisImpl
 
 These might be used in app-specific migrations so you will need to update references to these.
+
+### Userlayer SLD update
+
+There was a small issue on the SLD for userlayes where polygon border style was rendered with line style.
+To fix this you will need to manually update the SLD on the GeoServer Oskari uses to store userlayers. The SLD to use
+can be found here: https://github.com/oskariorg/oskari-server/blob/master/content-resources/src/main/resources/sld/userlayer/UserLayerDefaultStyle.sld
+
+### Optional: New WFS-integration system
+
+This version includes a new implementation for interacting with WFS-based map layers that will replace the current "transport" webapp in the future.
+It supports WFS 3.0 endpoints and hands the features as vectors instead of images to the frontend.
+We would appreciate any feedback on the new implementation and testing it should not be a huge pain to setup.
+
+Replace 'Oskari.mapframework.bundle.mapwfs2.plugin.WfsLayerPlugin' with 'Oskari.wfsvector.WfsVectorLayerPlugin' on mapfull bundle configurations.
+You can do this by modifying the applications/[your app folder]/index.js on your applications frontend code to change the appsetup it gets from the server:
+
+```
+jQuery(document).ready(function() {
+    Oskari.app.loadAppSetup(ajaxUrl + 'action_route=GetAppSetup', window.controlParams, function() {
+        jQuery('#mapdiv').append('Unable to start');
+    }, function() {
+         // App started
+    }, function(appSetup) {
+        // modify the appsetup we got from server
+        var plugins = JSON.stringify(appSetup.configuration.mapfull.conf.plugins);
+        var pluginRemoved = plugins.split('Oskari.mapframework.bundle.mapwfs2.plugin.WfsLayerPlugin');
+        var modifiedPlugins = pluginRemoved.join('Oskari.wfsvector.WfsVectorLayerPlugin');
+        appSetup.configuration.mapfull.conf.plugins = JSON.parse(modifiedPlugins);
+    });
+});
+```
+
+OR you can use this Flyway migration as an example for your own instance to test it out:
+
+https://github.com/nls-oskari/kartta.paikkatietoikkuna.fi/blob/develop/server-extension/src/main/java/flyway/paikkis/V2_36__use_wfs_vector_layer_plugin.java
+
+You will also need to add "wfsvector" after "mapwfs2" bundle import in applications/[your app folder]/main.js on the frontend of your app:
+```
+import 'oskari-loader!oskari-frontend/packages/mapping/ol3/mapwfs2/bundle.js';
+import 'oskari-loader!oskari-frontend/packages/mapping/ol3/wfsvector/bundle.js';
+```
 
 ## 1.51.0
 
