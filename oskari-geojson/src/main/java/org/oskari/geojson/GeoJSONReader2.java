@@ -161,7 +161,9 @@ public class GeoJSONReader2 {
 
         builder.reset();
 
-        String id = GeoJSONUtil.getString(json, GeoJSON.ID);
+        Object _id = json.get(GeoJSON.ID);
+        // If id is null SimpleFeatureBuilder will create one
+        String id = _id != null ? _id.toString() : null;
 
         Object geom = json.get(GeoJSON.GEOMETRY);
         if (geom != null) {
