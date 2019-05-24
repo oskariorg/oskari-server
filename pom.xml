@@ -1205,7 +1205,6 @@
 
         <!-- oskari map -->
         <module>servlet-map</module>
-        <module>servlet-saml-config</module>
 
         <!-- transport  -->
         <module>service-datamodel</module>
