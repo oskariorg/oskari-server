@@ -1,0 +1,89 @@
+[
+    {
+        "code": "7",
+        "title": "Ensure access to affordable, reliable, sustainable and modern energy for all",
+        "description": "Goal 7 seeks to promote broader energy access and increased use of renewable energy, including through enhanced international cooperation and expanded infrastructure and technology for clean energy.",
+        "uri": "/v1/sdg/Goal/7",
+        "targets": [
+            {
+                "goal": null,
+                "code": "7.1",
+                "title": "By 2030, ensure universal access to affordable, reliable and modern energy services",
+                "description": "By 2030, ensure universal access to affordable, reliable and modern energy services",
+                "uri": "/v1/Target/7.1",
+                "indicators": [
+                    {
+                        "goal": null,
+                        "target": null,
+                        "code": "7.1.1",
+                        "description": "Proportion of population with access to electricity",
+                        "tier": "1",
+                        "uri": "/v1/Indicator/7.1.1",
+                        "series": []
+                    },
+                    {
+                        "goal": null,
+                        "target": null,
+                        "code": "7.1.2",
+                        "description": "Proportion of population with primary reliance on clean fuels and technology",
+                        "tier": "1",
+                        "uri": "/v1/Indicator/7.1.2",
+                        "series": []
+                    }
+                ]
+            },
+            {
+                "goal": null,
+                "code": "7.2",
+                "title": "By 2030, increase substantially the share of renewable energy in the global energy mix",
+                "description": "By 2030, increase substantially the share of renewable energy in the global energy mix",
+                "uri": "/v1/Target/7.2",
+                "indicators": [
+                    {
+                        "goal": null,
+                        "target": null,
+                        "code": "7.2.1",
+                        "description": "Renewable energy share in the total final energy consumption",
+                        "tier": "1",
+                        "uri": "/v1/Indicator/7.2.1",
+                        "series": []
+                    }
+                ]
+            },
+            {
+                "goal": null,
+                "code": "7.3",
+                "title": "By 2030, double the global rate of improvement in energy efficiency",
+                "description": "By 2030, double the global rate of improvement in energy efficiency",
+                "uri": "/v1/Target/7.3",
+                "indicators": [
+                    {
+                        "goal": null,
+                        "target": null,
+                        "code": "7.3.1",
+                        "description": "Energy intensity measured in terms of primary energy and GDP",
+                        "tier": "1",
+                        "uri": "/v1/Indicator/7.3.1",
+                        "series": []
+                    }
+                ]
+            },
+            {
+                "goal": null,
+                "code": "7.a",
+                "title": "By 2030, enhance international cooperation to facilitate access to clean energy research and technology, including renewable energy, energy efficiency and advanced and cleaner fossil-fuel technology, and promote investment in energy infrastructure and clean energy technology",
+                "description": "By 2030, enhance international cooperation to facilitate access to clean energy research and technology, including renewable energy, energy efficiency and advanced and cleaner fossil-fuel technology, and promote investment in energy infrastructure and clean energy technology",
+                "uri": "/v1/Target/7.a",
+                "indicators": []
+            },
+            {
+                "goal": null,
+                "code": "7.b",
+                "title": "By 2030, expand infrastructure and upgrade technology for supplying modern and sustainable energy services for all in developing countries, in particular least developed countries, small island developing States and landlocked developing countries, in accordance with their respective programmes of support",
+                "description": "By 2030, expand infrastructure and upgrade technology for supplying modern and sustainable energy services for all in developing countries, in particular least developed countries, small island developing States and landlocked developing countries, in accordance with their respective programmes of support",
+                "uri": "/v1/Target/7.b",
+                "indicators": []
+            }
+        ]
+    }
+]

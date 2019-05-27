@@ -1,8 +1,6 @@
 package fi.nls.oskari.control.feature;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.util.Optional;
 
@@ -12,13 +10,10 @@ import org.geotools.referencing.CRS;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.opengis.referencing.FactoryException;
-import org.opengis.referencing.NoSuchAuthorityCodeException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
 import com.vividsolutions.jts.geom.Envelope;
 
-import fi.nls.oskari.control.ActionParamsException;
 import fi.nls.oskari.domain.map.OskariLayer;
 
 public class GetWFSFeaturesHandlerTest {
@@ -47,17 +42,6 @@ public class GetWFSFeaturesHandlerTest {
         SimpleFeatureCollection sfc = handler.featureClient.getFeatures(id, layer, bbox, nativeCRS, webMercator, Optional.empty());
         CoordinateReferenceSystem actualCRS = sfc.getSchema().getGeometryDescriptor().getCoordinateReferenceSystem();
         assertTrue(CRS.equalsIgnoreMetadata(webMercator, actualCRS));
-    }
-
-    @Test
-    public void testBboxOutOfBounds() throws NoSuchAuthorityCodeException, FactoryException {
-        CoordinateReferenceSystem crs = CRS.decode("EPSG:3857");
-        try {
-            handler.parseBbox("20040000,20040000,20041000,20041000", crs);
-            fail();
-        } catch (ActionParamsException e) {
-            assertEquals(GetWFSFeaturesHandler.ERR_BBOX_OUT_OF_CRS, e.getMessage());
-        }
     }
 
 }

@@ -2,6 +2,7 @@ package org.oskari.service.mvt;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.geotools.data.simple.SimpleFeatureCollection;
@@ -91,6 +92,10 @@ public class SimpleFeaturesMVTEncoder {
      */
 
     public static List<Geometry> asMVTGeoms(SimpleFeatureCollection sfc, double[] bbox, int extent, int buffer) {
+        if (sfc.isEmpty()) {
+            return Collections.emptyList();
+        }
+
         Envelope tileEnvelope = new Envelope(bbox[0], bbox[2], bbox[1], bbox[3]);
         Envelope clipEnvelope = new Envelope(tileEnvelope);
         if (buffer > 0) {

@@ -13,7 +13,6 @@ import org.geotools.data.simple.SimpleFeatureIterator;
 import org.geotools.feature.DefaultFeatureCollection;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
-import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.oskari.service.mvt.SimpleFeaturesMVTEncoder;
 import org.oskari.service.mvt.TileCoord;
@@ -21,6 +20,8 @@ import org.oskari.service.mvt.WFSTileGrid;
 import org.oskari.service.user.UserLayerService;
 
 import com.vividsolutions.jts.geom.Envelope;
+import com.vividsolutions.jts.geom.MultiPoint;
+import com.vividsolutions.jts.geom.Point;
 
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.cache.CacheManager;
@@ -43,7 +44,13 @@ public class GetWFSVectorTileHandler extends AbstractWFSFeaturesHandler {
     protected static final String PARAM_X = "x";
     protected static final String PARAM_Y = "y";
 
-    private static final int DEFAULT_MIN_ZOOM_LEVEL = 7;
+    // Resolution (metres per px) we are aiming for with the WFS requests
+    // This value is used to find the zoom level that is closest to the resolution specified here
+    // For ETRS-TME35FIN TileGrid this translates to z=8
+    private static final int TARGET_ZOOM_LEVEL_RESOLUTION = 8192 / 256;
+
+    private static final int DEFAULT_CACHE_ZOOM_LEVEL = 8;
+    private static final int MIN_ZOOM_OVER_CACHE_ZOOM = 1;
     private static final Map<String, WFSTileGrid> KNOWN_TILE_GRIDS;
     static {
         KNOWN_TILE_GRIDS = new HashMap<>();
@@ -53,12 +60,14 @@ public class GetWFSVectorTileHandler extends AbstractWFSFeaturesHandler {
 
     private static final int TILE_EXTENT = 4096;
     private static final int TILE_BUFFER = 256;
+    private static final int TILE_BUFFER_POINT = 1024;
 
     private static final int CACHE_LIMIT = 256;
     private static final long CACHE_EXPIRATION = TimeUnit.MINUTES.toMillis(5);
 
     private ComputeOnceCache<byte[]> tileCache;
     private WFSTileGridProperties tileGridProperties;
+    private Map<String, Integer> cacheZLevels;
 
     @Override
     public void init() {
@@ -66,21 +75,16 @@ public class GetWFSVectorTileHandler extends AbstractWFSFeaturesHandler {
         tileCache = CacheManager.getCache(getClass().getName(),
                 () -> new ComputeOnceCache<>(CACHE_LIMIT, CACHE_EXPIRATION));
         tileGridProperties = new WFSTileGridProperties();
-
+        cacheZLevels = new HashMap<>();
         final Map<String, BundleHandler> handlers = ViewModifierManager.getModifiersOfType(BundleHandler.class);
         MapfullHandler mapfullHandler = (MapfullHandler)handlers.get("mapfull");
         WFSVectorLayerPluginViewModifier pluginHandler = new WFSVectorLayerPluginViewModifier();
         mapfullHandler.registerPluginHandler(WFSVectorLayerPluginViewModifier.PLUGIN_NAME, pluginHandler);
 
         Map<String, WFSTileGrid> propTileGrids = tileGridProperties.getTileGridMap();
-        KNOWN_TILE_GRIDS.keySet().stream().forEach(srsName -> {
-            pluginHandler.setMinZoomLevelForSRS(srsName, DEFAULT_MIN_ZOOM_LEVEL);
-            pluginHandler.setTileGridForSRS(srsName, KNOWN_TILE_GRIDS.get(srsName));
-        });
-        propTileGrids.keySet().stream().forEach(srsName -> {
-            pluginHandler.setMinZoomLevelForSRS(srsName, DEFAULT_MIN_ZOOM_LEVEL);
-            pluginHandler.setTileGridForSRS(srsName, propTileGrids.get(srsName));
-        });
+
+        KNOWN_TILE_GRIDS.entrySet().stream().forEach(set -> setGridToModifiers(pluginHandler, set.getKey(), set.getValue()));
+        propTileGrids.entrySet().stream().forEach(set -> setGridToModifiers(pluginHandler, set.getKey(), set.getValue()));
     }
 
     @Override
@@ -96,7 +100,9 @@ public class GetWFSVectorTileHandler extends AbstractWFSFeaturesHandler {
 
         final WFSTileGrid gridFromProps = tileGridProperties.getTileGrid(srs.toUpperCase());
         final WFSTileGrid grid = gridFromProps != null ? gridFromProps : KNOWN_TILE_GRIDS.get(srs.toUpperCase());
-        validateTile(grid, z, x, y);
+        final int targetZ = cacheZLevels.getOrDefault(srs, DEFAULT_CACHE_ZOOM_LEVEL);
+        final int minZoom =  targetZ - MIN_ZOOM_OVER_CACHE_ZOOM;
+        validateTile(grid, z, x, y, minZoom);
         validateScaleDenominator(layer, grid, z);
 
         final CoordinateReferenceSystem crs;
@@ -111,9 +117,9 @@ public class GetWFSVectorTileHandler extends AbstractWFSFeaturesHandler {
         try {
             if (contentProcessor.isPresent() && contentProcessor.get().isUserContentLayer(id)) {
                 // Don't cache user content tiles
-                resp = createTile(id, layer, crs, grid, z, x, y, contentProcessor);
+                resp = createTile(id, layer, crs, grid, targetZ, z, x, y, contentProcessor);
             } else {
-                resp = tileCache.get(cacheKey, __ -> createTile(id, layer, crs, grid, z, x, y, contentProcessor));
+                resp = tileCache.get(cacheKey, __ -> createTile(id, layer, crs, grid, targetZ, z, x, y, contentProcessor));
             }
         } catch (ServiceRuntimeException e) {
             throw new ActionException(e.getMessage());
@@ -123,8 +129,14 @@ public class GetWFSVectorTileHandler extends AbstractWFSFeaturesHandler {
         ResponseHelper.writeResponse(params, 200, MVT_CONTENT_TYPE, resp);
     }
 
+    private void setGridToModifiers (WFSVectorLayerPluginViewModifier handler, String srsName, WFSTileGrid grid) {
+        int z = grid.getZForResolution(TARGET_ZOOM_LEVEL_RESOLUTION, 0);
+        cacheZLevels.put(srsName, z);
+        handler.setMinZoomLevelForSRS(srsName, z - MIN_ZOOM_OVER_CACHE_ZOOM);
+        handler.setTileGridForSRS(srsName, grid);
+    }
 
-    private void validateTile(WFSTileGrid grid, int z, int x, int y)
+    private void validateTile(WFSTileGrid grid, int z, int x, int y, int minZoom)
             throws ActionParamsException {
         if (grid == null) {
             throw new ActionParamsException("Unknown srs");
@@ -141,9 +153,9 @@ public class GetWFSVectorTileHandler extends AbstractWFSFeaturesHandler {
         if (z > grid.getMaxZoom()) {
             throw new ActionParamsException("z must be <= " + grid.getMaxZoom());
         }
-        if (z < 7) {
-            // we always request features with z 8 and anything below 7 will trigger too many requests to services
-            throw new ActionParamsException("z must be > 6");
+        if (z < minZoom) {
+            // we always request features with cacheZLevel and anything below minZoom will trigger too many requests to services
+            throw new ActionParamsException("z must be >= " + minZoom);
         }
         int matrixWidthHeight = WFSTileGrid.getMatrixSize(z);
         if (x >= matrixWidthHeight) {
@@ -190,57 +202,80 @@ public class GetWFSVectorTileHandler extends AbstractWFSFeaturesHandler {
      * @throws ActionException
      */
     private byte[] createTile(String id, OskariLayer layer, CoordinateReferenceSystem crs,
-            WFSTileGrid grid, int z, int x, int y,
+            WFSTileGrid grid, int targetZ, int z, int x, int y,
             Optional<UserLayerService> contentProcessor) throws ServiceRuntimeException {
-        // Find nearest higher resolution
-        // always fetch at z 8 so we don't cache same features on multiple zoom levels
-        int targetZ = grid.getZForResolution(8, -1);
+        List<TileCoord> tilesToLoad = getTilesToLoad(targetZ, z, x, y);
 
-        List<TileCoord> wfsTiles;
-        int dz = z - targetZ;
-
-        if (dz < 0) {
-            // get adjacent tiles so we can unify z=8 tiles to create z7 etc tiles
-            int d = (int) Math.pow(2, -dz);
-            int targetX1 = x * d;
-            int targetY1 = y * d;
-            int targetX2 = (x+1) * d;
-            int targetY2 = (y+1) * d;
-            wfsTiles = new ArrayList<>();
-            for (int targetX = targetX1; targetX < targetX2; targetX++) {
-                for (int targetY = targetY1; targetY < targetY2; targetY++) {
-                    wfsTiles.add(new TileCoord(targetZ, targetX, targetY));
-                }
-            }
-        } else if (dz == 0) {
-            // this is the sweet spot - just get the features that was requested
-            wfsTiles = Collections.singletonList(new TileCoord(z, x, y));
-        } else {
-            // recalculate x/y to match a z=8 tile
-            int div = (int) Math.pow(2, dz);
-            int targetX = x / div;
-            int targetY = y / div;
-            wfsTiles = Collections.singletonList(new TileCoord(targetZ, targetX, targetY));
-        }
-
-        SimpleFeatureCollection sfc = null;
-        for (TileCoord tile : wfsTiles) {
+        DefaultFeatureCollection sfc = new DefaultFeatureCollection();
+        for (TileCoord tile : tilesToLoad) {
             SimpleFeatureCollection tileFeatures = getFeatures(id, layer, crs, grid, tile, contentProcessor);
             if (tileFeatures == null) {
                 throw new ServiceRuntimeException("Failed to get features from service");
             }
-            // merge z=8 tiles to create featureCollection for z=7 etc
-            sfc = union(sfc, tileFeatures);
+            addAll(sfc, tileFeatures);
         }
 
-        // sfc always has features for z<=8 so we need to clip to smaller tiles based on requested x,y,z
+        String mvtLayer = layer.getName();
         double[] bbox = grid.getTileExtent(new TileCoord(z, x, y));
-        byte[] encoded = SimpleFeaturesMVTEncoder.encodeToByteArray(sfc, layer.getName(), bbox, TILE_EXTENT, TILE_BUFFER);
+        int extent = TILE_EXTENT;
+        int buffer = isOnlyPointFeatures(sfc) ? TILE_BUFFER_POINT : TILE_BUFFER;
+
+        byte[] encoded = SimpleFeaturesMVTEncoder.encodeToByteArray(sfc, mvtLayer, bbox, extent, buffer);
         try {
             return IOHelper.gzip(encoded).toByteArray();
         } catch (IOException e) {
             throw new ServiceRuntimeException("Unexpected IOException occured");
         }
+    }
+
+    protected static List<TileCoord> getTilesToLoad(int targetZ, int z, int x, int y) {
+        int x1;
+        int y1;
+        int x2;
+        int y2;
+
+        // Always load tiles at zoom level targetZ so that we don't cache same features on multiple zoom levels
+        // Also we can reduce the amount of requests we make to the background services, for example for
+        // high zoom levels we can send only one request and use the cached FeatureCollection for multiple tiles
+        int dz = z - targetZ;
+
+        if (dz == 0) {
+            // this is the sweet spot zoom level wise
+            // Load the target tile and the tiles next to (around) it (buffer)
+            x1 = x - 1;
+            y1 = y - 1;
+            x2 = x + 1;
+            y2 = y + 1;
+        } else if (dz < 0) {
+            // Calculate all tiles inside our target tile
+            int d = (int) Math.pow(2, -dz);
+            x1 = x * d;
+            y1 = y * d;
+            x2 = (x+1) * d;
+            y2 = (y+1) * d;
+            // And include tiles around them (buffer)
+            x1--;
+            y1--;
+        } else {
+            // Calculate the tile (of lower zoom level) which contains the target tile
+            int div = (int) Math.pow(2, dz);
+            x1 = x / div;
+            y1 = y / div;
+            // And include tiles around them (buffer)
+            x2 = x1 + 1;
+            y2 = y1 + 1;
+            x1--;
+            y1--;
+        }
+
+        int tileZ = targetZ;
+        List<TileCoord> wfsTiles = new ArrayList<>();
+        for (int tileX = x1; tileX <= x2; tileX++) {
+            for (int tileY = y1; tileY <= y2; tileY++) {
+                wfsTiles.add(new TileCoord(tileZ, tileX, tileY));
+            }
+        }
+        return wfsTiles;
     }
 
     private SimpleFeatureCollection getFeatures(String id, OskariLayer layer,
@@ -249,51 +284,21 @@ public class GetWFSVectorTileHandler extends AbstractWFSFeaturesHandler {
         double[] box = grid.getTileExtent(tile);
         Envelope envelope = new Envelope(box[0], box[2], box[1], box[3]);
         Envelope bufferedEnvelope = new Envelope(envelope);
-        double bufferSizePercent = (double) TILE_BUFFER / (double) TILE_EXTENT;
-        double deltaX = bufferSizePercent * envelope.getWidth();
-        double deltaY = bufferSizePercent * envelope.getHeight();
-        bufferedEnvelope.expandBy(deltaX, deltaY);
         ReferencedEnvelope bbox = new ReferencedEnvelope(bufferedEnvelope, crs);
         return featureClient.getFeatures(id, layer, bbox, crs, processor);
     }
 
-    public static SimpleFeatureCollection union(SimpleFeatureCollection a, SimpleFeatureCollection b) {
-        if (a == null) {
-            return b;
+    private static void addAll(DefaultFeatureCollection sfc, SimpleFeatureCollection toAdd) {
+        try (SimpleFeatureIterator it = toAdd.features()) {
+            while (it.hasNext()) {
+                sfc.add(it.next());
+            }
         }
-        if (b == null) {
-            return a;
-        }
-        try (SimpleFeatureIterator iterA = a.features();
-                SimpleFeatureIterator iterB = b.features()) {
-            if (!iterA.hasNext()) {
-                return b;
-            }
-            if (!iterB.hasNext()) {
-                return a;
-            }
+    }
 
-            Set<String> ids = new HashSet<>();
-            DefaultFeatureCollection union = new DefaultFeatureCollection();
-
-            while (iterA.hasNext()) {
-                SimpleFeature f = iterA.next();
-                String id = f.getID();
-                if (id != null && ids.add(id)) {
-                    union.add(f);
-                }
-            }
-
-            while (iterB.hasNext()) {
-                SimpleFeature f = iterB.next();
-                String id = f.getID();
-                if (id != null && ids.add(id)) {
-                    union.add(f);
-                }
-            }
-
-            return union;
-        }
+    private boolean isOnlyPointFeatures(SimpleFeatureCollection sfc) {
+        Class<?> binding = sfc.getSchema().getGeometryDescriptor().getType().getBinding();
+        return binding == Point.class || binding == MultiPoint.class;
     }
 
 }

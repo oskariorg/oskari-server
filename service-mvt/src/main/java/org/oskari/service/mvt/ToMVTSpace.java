@@ -1,13 +1,10 @@
 package org.oskari.service.mvt;
 
-import java.util.Arrays;
-
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.LineString;
 import com.vividsolutions.jts.geom.LinearRing;
-import com.vividsolutions.jts.geom.MultiPoint;
 import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.util.GeometryEditor.GeometryEditorOperation;
 
@@ -40,72 +37,83 @@ public class ToMVTSpace implements GeometryEditorOperation {
     }
 
     public Geometry edit(Geometry geometry, GeometryFactory factory) {
+        // This function is called by GeometryEditor which handles all other cases
+
         if (geometry instanceof LinearRing) {
-            Coordinate[] coords = ((LinearRing) geometry).getCoordinates();
-            Coordinate[] edited = edit(coords, true, 4);
-            if (edited == null) {
-                // Too few points remaining
-                return null;
-            }
-            return factory.createLinearRing(edited);
+            return edit((LinearRing) geometry, factory);
         }
 
         if (geometry instanceof LineString) {
-            Coordinate[] coords = ((LineString) geometry).getCoordinates();
-            Coordinate[] edited = edit(coords, false, 2);
-            if (edited == null) {
-                // Too few points remaining
-                return null;
-            }
-            return factory.createLineString(edited);
-        }
-        
-        if (geometry instanceof MultiPoint) {
-            Coordinate[] points = ((MultiPoint) geometry).getCoordinates();
-            Coordinate[] edited = edit(points, false, 0);
-            if (edited == null) {
-                return null;
-            }
-            if (edited.length == 1) {
-                return factory.createPoint(edited[0]);
-            }
-            return factory.createMultiPoint(edited);
+            return edit((LineString) geometry, factory);
         }
 
         if (geometry instanceof Point) {
-            Coordinate coord = ((Point) geometry).getCoordinate();
-            int x = (int) Math.round(sx * (coord.x - tx));
-            int y = (int) Math.round(sy * (coord.y - ty));
-            return factory.createPoint(new Coordinate(x, y));
+            Coordinate c = ((Point) geometry).getCoordinate();
+            return factory.createPoint(translateAndScale(c));
         }
 
         return geometry;
     }
 
-    public Coordinate[] edit(Coordinate[] coords, boolean mustClose, int minNumPoints) {
-        Coordinate[] edited = new Coordinate[coords.length];
-        int n = 0;
-
-        int x0 = Integer.MAX_VALUE;
-        int y0 = Integer.MAX_VALUE;
-        for (Coordinate coord : coords) {
-            int x = (int) Math.round(sx * (coord.x - tx));
-            int y = (int) Math.round(sy * (coord.y - ty));
-            if (x == x0 && y == y0) {
-                continue;
-            }
-            edited[n++] = new Coordinate(x, y);
-            x0 = x;
-            y0 = y;
-        }
-
-        if (n < minNumPoints) {
+    private LinearRing edit(LinearRing linearRing, GeometryFactory factory) {
+        Coordinate[] coords = linearRing.getCoordinates();
+        Coordinate[] edited = translateAndScale(coords);
+        edited = removeDuplicates(edited);
+        if (edited.length < 4) {
             return null;
         }
-        if (n == edited.length) {
-            return edited;
+        return factory.createLinearRing(edited);
+    }
+
+    private LineString edit(LineString lineString, GeometryFactory factory) {
+        Coordinate[] coords = lineString.getCoordinates();
+        Coordinate[] edited = translateAndScale(coords);
+        edited = removeDuplicates(edited);
+        if (edited.length < 2) {
+            return null;
         }
-        return Arrays.copyOf(edited, n);
+        return factory.createLineString(edited);
+    }
+
+    private Coordinate[] translateAndScale(Coordinate[] coords) {
+        Coordinate[] edited = new Coordinate[coords.length];
+        for (int i = 0; i < coords.length; i++) {
+            edited[i] = translateAndScale(coords[i]);
+        }
+        return edited;
+    }
+
+    private Coordinate translateAndScale(Coordinate c) {
+        double x = Math.round(sx * (c.x - tx));
+        double y = Math.round(sy * (c.y - ty));
+        return new Coordinate(x, y);
+    }
+
+    private Coordinate[] removeDuplicates(Coordinate[] coords) {
+        int n = 1;
+        Coordinate prev = coords[0];
+        for (int i = 1; i < coords.length; i++) {
+            Coordinate c = coords[i];
+            if (prev.x != c.x || prev.y != c.y) {
+                n++;
+                prev = c;
+            }
+        }
+        if (n == coords.length) {
+            return coords;
+        }
+        Coordinate[] noDuplicates = new Coordinate[n];
+        prev = coords[0];
+        noDuplicates[0] = prev;
+        n = 1;
+        for (int i = 1; i < coords.length; i++) {
+            Coordinate c = coords[i];
+            if (prev.x != c.x || prev.y != c.y) {
+                noDuplicates[n++] = c;
+                prev = c;
+            }
+        }
+        return noDuplicates;
     }
 
 }

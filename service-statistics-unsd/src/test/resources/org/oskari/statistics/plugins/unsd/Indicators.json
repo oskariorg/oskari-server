@@ -1,0 +1,1469 @@
+[
+    {
+        "goal": "1",
+        "target": "1.1",
+        "code": "1.1.1",
+        "description": "Proportion of population below the international poverty line, by sex, age, employment status and geographical location (urban/rural)",
+        "tier": "1",
+        "uri": "/v1/sdg/Indicator/1.1.1",
+        "series": []
+    },
+    {
+        "goal": "1",
+        "target": "1.2",
+        "code": "1.2.1",
+        "description": "Proportion of population living below the national poverty line, by sex and age",
+        "tier": "1",
+        "uri": "/v1/sdg/Indicator/1.2.1",
+        "series": []
+    },
+    {
+        "goal": "1",
+        "target": "1.3",
+        "code": "1.3.1",
+        "description": "Proportion of population covered by social protection floors/systems, by sex, distinguishing children, unemployed persons, older persons, persons with disabilities, pregnant women, newborns, work-injury victims and the poor and the vulnerable",
+        "tier": "1",
+        "uri": "/v1/sdg/Indicator/1.3.1",
+        "series": []
+    },
+    {
+        "goal": "1",
+        "target": "1.5",
+        "code": "1.5.1",
+        "description": "Number of deaths, missing persons and directly affected persons attributed to disasters per 100,000 population",
+        "tier": "1",
+        "uri": "/v1/sdg/Indicator/1.5.1",
+        "series": []
+    },
+    {
+        "goal": "1",
+        "target": "1.5",
+        "code": "1.5.2",
+        "description": "Direct economic loss attributed to disasters in relation to global gross domestic product (GDP)",
+        "tier": "1",
+        "uri": "/v1/sdg/Indicator/1.5.2",
+        "series": []
+    },
+    {
+        "goal": "1",
+        "target": "1.5",
+        "code": "1.5.3",
+        "description": "Number of countries that adopt and implement national disaster risk reduction strategies in line with the Sendai Framework for Disaster Risk Reduction 2015-2030",
+        "tier": "1",
+        "uri": "/v1/sdg/Indicator/1.5.3",
+        "series": []
+    },
+    {
+        "goal": "1",
+        "target": "1.5",
+        "code": "1.5.4",
+        "description": "Proportion of local governments that adopt and implement local disaster risk reduction strategies in line with national disaster risk reduction strategies",
+        "tier": "2",
+        "uri": "/v1/sdg/Indicator/1.5.4",
+        "series": []
+    },
+    {
+        "goal": "1",
+        "target": "1.a",
+        "code": "1.a.2",
+        "description": "Proportion of total government spending on essential services (education, health and social protection)",
+        "tier": "2",
+        "uri": "/v1/sdg/Indicator/1.a.2",
+        "series": []
+    },
+    {
+        "goal": "2",
+        "target": "2.1",
+        "code": "2.1.1",
+        "description": "Prevalence of undernourishment",
+        "tier": "1",
+        "uri": "/v1/sdg/Indicator/2.1.1",
+        "series": []
+    },
+    {
+        "goal": "2",
+        "target": "2.1",
+        "code": "2.1.2",
+        "description": "Prevalence of moderate or severe food insecurity in the population, based on the Food Insecurity Experience Scale (FIES)",
+        "tier": "1",
+        "uri": "/v1/sdg/Indicator/2.1.2",
+        "series": []
+    },
+    {
+        "goal": "2",
+        "target": "2.2",
+        "code": "2.2.1",
+        "description": "Prevalence of stunting (height for age <-2 standard deviation from the median of the World Health Organization (WHO) Child Growth Standards) among children under 5 years of age",
+        "tier": "1",
+        "uri": "/v1/sdg/Indicator/2.2.1",
+        "series": []
+    },
+    {
+        "goal": "2",
+        "target": "2.2",
+        "code": "2.2.2",
+        "description": "Prevalence of malnutrition (weight for height >+2 or <-2 standard deviation from the median of the WHO Child Growth Standards) among children under 5 years of age, by type (wasting and overweight)",
+        "tier": "1",
+        "uri": "/v1/sdg/Indicator/2.2.2",
+        "series": []
+    },
+    {
+        "goal": "2",
+        "target": "2.5",
+        "code": "2.5.1",
+        "description": "Number of plant and animal genetic resources for food and agriculture secured in either medium or long-term conservation facilities",
+        "tier": "1",
+        "uri": "/v1/sdg/Indicator/2.5.1",
+        "series": []
+    },
+    {
+        "goal": "2",
+        "target": "2.5",
+        "code": "2.5.2",
+        "description": "Proportion of local breeds classified as being at risk, not-at-risk or at unknown level of risk of extinction",
+        "tier": "1",
+        "uri": "/v1/sdg/Indicator/2.5.2",
+        "series": []
+    },
+    {
+        "goal": "2",
+        "target": "2.a",
+        "code": "2.a.1",
+        "description": "The agriculture orientation index for government expenditures",
+        "tier": "1",
+        "uri": "/v1/sdg/Indicator/2.a.1",
+        "series": []
+    },
+    {
+        "goal": "2",
+        "target": "2.a",
+        "code": "2.a.2",
+        "description": "Total official flows (official development assistance plus other official flows) to the agriculture sector",
+        "tier": "1",
+        "uri": "/v1/sdg/Indicator/2.a.2",
+        "series": []
+    },
+    {
+        "goal": "2",
+        "target": "2.b",
+        "code": "2.b.1",
+        "description": "Agricultural export subsidies",
+        "tier": "1",
+        "uri": "/v1/sdg/Indicator/2.b.1",
+        "series": []
+    },
+    {
+        "goal": "2",
+        "target": "2.c",
+        "code": "2.c.1",
+        "description": "Indicator of food price anomalies",
+        "tier": "1",
+        "uri": "/v1/sdg/Indicator/2.c.1",
+        "series": []
+    },
+    {
+        "goal": "3",
+        "target": "3.1",
+        "code": "3.1.1",
+        "description": "Maternal mortality ratio",
+        "tier": "1",
+        "uri": "/v1/sdg/Indicator/3.1.1",
+        "series": []
+    },
+    {
+        "goal": "3",
+        "target": "3.1",
+        "code": "3.1.2",
+        "description": "Proportion of births attended by skilled health personnel",
+        "tier": "1",
+        "uri": "/v1/sdg/Indicator/3.1.2",
+        "series": []
+    },
+    {
+        "goal": "3",
+        "target": "3.2",
+        "code": "3.2.1",
+        "description": "Under-five mortality rate",
+        "tier": "1",
+        "uri": "/v1/sdg/Indicator/3.2.1",
+        "series": []
+    },
+    {
+        "goal": "3",
+        "target": "3.2",
+        "code": "3.2.2",
+        "description": "Neonatal mortality rate",
+        "tier": "1",
+        "uri": "/v1/sdg/Indicator/3.2.2",
+        "series": []
+    },
+    {
+        "goal": "3",
+        "target": "3.3",
+        "code": "3.3.1",
+        "description": "Number of new HIV infections per 1,000 uninfected population, by sex, age and key populations",
+        "tier": "1",
+        "uri": "/v1/sdg/Indicator/3.3.1",
+        "series": []
+    },
+    {
+        "goal": "3",
+        "target": "3.3",
+        "code": "3.3.2",
+        "description": "Tuberculosis incidence per 100,000 population",
+        "tier": "1",
+        "uri": "/v1/sdg/Indicator/3.3.2",
+        "series": []
+    },
+    {
+        "goal": "3",
+        "target": "3.3",
+        "code": "3.3.3",
+        "description": "Malaria incidence per 1,000 population",
+        "tier": "1",
+        "uri": "/v1/sdg/Indicator/3.3.3",
+        "series": []
+    },
+    {
+        "goal": "3",
+        "target": "3.3",
+        "code": "3.3.5",
+        "description": "Number of people requiring interventions against neglected tropical diseases",
+        "tier": "1",
+        "uri": "/v1/sdg/Indicator/3.3.5",
+        "series": []
+    },
+    {
+        "goal": "3",
+        "target": "3.3",
+        "code": "3.3.4",
+        "description": "Hepatitis B incidence per 100,000 population",
+        "tier": "1",
+        "uri": "/v1/sdg/Indicator/3.3.4",
+        "series": []
+    },
+    {
+        "goal": "3",
+        "target": "3.4",
+        "code": "3.4.1",
+        "description": "Mortality rate attributed to cardiovascular disease, cancer, diabetes or chronic respiratory disease",
+        "tier": "1",
+        "uri": "/v1/sdg/Indicator/3.4.1",
+        "series": []
+    },
+    {
+        "goal": "3",
+        "target": "3.4",
+        "code": "3.4.2",
+        "description": "Suicide mortality rate",
+        "tier": "1",
+        "uri": "/v1/sdg/Indicator/3.4.2",
+        "series": []
+    },
+    {
+        "goal": "3",
+        "target": "3.5",
+        "code": "3.5.2",
+        "description": "Harmful use of alcohol, defined according to the national context as alcohol per capita consumption (aged 15 years and older) within a calendar year in litres of pure alcohol",
+        "tier": "1",
+        "uri": "/v1/sdg/Indicator/3.5.2",
+        "series": []
+    },
+    {
+        "goal": "3",
+        "target": "3.6",
+        "code": "3.6.1",
+        "description": "Death rate due to road traffic injuries",
+        "tier": "1",
+        "uri": "/v1/sdg/Indicator/3.6.1",
+        "series": []
+    },
+    {
+        "goal": "3",
+        "target": "3.7",
+        "code": "3.7.1",
+        "description": "Proportion of women of reproductive age (aged 15-49 years) who have their need for family planning satisfied with modern methods",
+        "tier": "1",
+        "uri": "/v1/sdg/Indicator/3.7.1",
+        "series": []
+    },
+    {
+        "goal": "3",
+        "target": "3.7",
+        "code": "3.7.2",
+        "description": "Adolescent birth rate (aged 10-14 years; aged 15-19 years) per 1,000 women in that age group",
+        "tier": "1",
+        "uri": "/v1/sdg/Indicator/3.7.2",
+        "series": []
+    },
+    {
+        "goal": "3",
+        "target": "3.8",
+        "code": "3.8.2",
+        "description": "Proportion of population with large household expenditures on health as a share of total household expenditure or income",
+        "tier": "2",
+        "uri": "/v1/sdg/Indicator/3.8.2",
+        "series": []
+    },
+    {
+        "goal": "3",
+        "target": "3.8",
+        "code": "3.8.1",
+        "description": " Coverage of essential health services (defined as the average coverage of essential services based on tracer interventions that include reproductive, maternal, newborn and child health, infectious diseases, non-communicable diseases and service capacity and access, among the general and the most disadvantaged population)",
+        "tier": "2",
+        "uri": "/v1/sdg/Indicator/3.8.1",
+        "series": []
+    },
+    {
+        "goal": "3",
+        "target": "3.9",
+        "code": "3.9.1",
+        "description": "Mortality rate attributed to household and ambient air pollution",
+        "tier": "1",
+        "uri": "/v1/sdg/Indicator/3.9.1",
+        "series": []
+    },
+    {
+        "goal": "3",
+        "target": "3.9",
+        "code": "3.9.2",
+        "description": "Mortality rate attributed to unsafe water, unsafe sanitation and lack of hygiene (exposure to unsafe Water, Sanitation and Hygiene for All (WASH) services)",
+        "tier": "1",
+        "uri": "/v1/sdg/Indicator/3.9.2",
+        "series": []
+    },
+    {
+        "goal": "3",
+        "target": "3.9",
+        "code": "3.9.3",
+        "description": "Mortality rate attributed to unintentional poisoning",
+        "tier": "1",
+        "uri": "/v1/sdg/Indicator/3.9.3",
+        "series": []
+    },
+    {
+        "goal": "3",
+        "target": "3.a",
+        "code": "3.a.1",
+        "description": "Age-standardized prevalence of current tobacco use among persons aged 15 years and older",
+        "tier": "1",
+        "uri": "/v1/sdg/Indicator/3.a.1",
+        "series": []
+    },
+    {
+        "goal": "3",
+        "target": "3.b",
+        "code": "3.b.2",
+        "description": "Total net official development assistance to medical research and basic health sectors",
+        "tier": "1",
+        "uri": "/v1/sdg/Indicator/3.b.2",
+        "series": []
+    },
+    {
+        "goal": "3",
+        "target": "3.b",
+        "code": "3.b.1",
+        "description": "Proportion of the target population covered by all vaccines included in their national programme",
+        "tier": "2",
+        "uri": "/v1/sdg/Indicator/3.b.1",
+        "series": []
+    },
+    {
+        "goal": "3",
+        "target": "3.c",
+        "code": "3.c.1",
+        "description": "Health worker density and distribution",
+        "tier": "1",
+        "uri": "/v1/sdg/Indicator/3.c.1",
+        "series": []
+    },
+    {
+        "goal": "3",
+        "target": "3.d",
+        "code": "3.d.1",
+        "description": "International Health Regulations (IHR) capacity and health emergency preparedness",
+        "tier": "1",
+        "uri": "/v1/sdg/Indicator/3.d.1",
+        "series": []
+    },
+    {
+        "goal": "4",
+        "target": "4.1",
+        "code": "4.1.1",
+        "description": "Proportion of children and young people: (a) in grades 2/3; (b) at the end of primary; and (c) at the end of lower secondary achieving at least a minimum proficiency level in (i) reading and (ii) mathematics, by sex",
+        "tier": "1",
+        "uri": "/v1/sdg/Indicator/4.1.1",
+        "series": []
+    },
+    {
+        "goal": "4",
+        "target": "4.2",
+        "code": "4.2.1",
+        "description": "Proportion of children under 5 years of age who are developmentally on track in health, learning and psychosocial well-being, by sex",
+        "tier": "1",
+        "uri": "/v1/sdg/Indicator/4.2.1",
+        "series": []
+    },
+    {
+        "goal": "4",
+        "target": "4.2",
+        "code": "4.2.2",
+        "description": "Participation rate in organized learning (one year before the official primary entry age), by sex",
+        "tier": "1",
+        "uri": "/v1/sdg/Indicator/4.2.2",
+        "series": []
+    },
+    {
+        "goal": "4",
+        "target": "4.3",
+        "code": "4.3.1",
+        "description": "Participation rate of youth and adults in formal and non-formal education and training in the previous 12 months, by sex",
+        "tier": "1",
+        "uri": "/v1/sdg/Indicator/4.3.1",
+        "series": []
+    },
+    {
+        "goal": "4",
+        "target": "4.4",
+        "code": "4.4.1",
+        "description": "Proportion of youth and adults with information and communications technology (ICT) skills, by type of skill",
+        "tier": "1",
+        "uri": "/v1/sdg/Indicator/4.4.1",
+        "series": []
+    },
+    {
+        "goal": "4",
+        "target": "4.5",
+        "code": "4.5.1",
+        "description": "Parity indices (female/male, rural/urban, bottom/top wealth quintile and others such as disability status, indigenous peoples and conflict-affected, as data become available) for all education indicators on this list that can be disaggregated",
+        "tier": "1",
+        "uri": "/v1/sdg/Indicator/4.5.1",
+        "series": []
+    },
+    {
+        "goal": "4",
+        "target": "4.6",
+        "code": "4.6.1",
+        "description": "Proportion of population in a given age group achieving at least a fixed level of proficiency in functional (a) literacy and (b) numeracy skills, by sex",
+        "tier": "1",
+        "uri": "/v1/sdg/Indicator/4.6.1",
+        "series": []
+    },
+    {
+        "goal": "4",
+        "target": "4.a",
+        "code": "4.a.1",
+        "description": "Proportion of schools with access to: (a) electricity; (b) the Internet for pedagogical purposes; (c) computers for pedagogical purposes; (d) adapted infrastructure and materials for students with disabilities; (e) basic drinking water; (f) single-sex basic sanitation facilities; and (g) basic handwashing facilities (as per the WASH indicator definitions)",
+        "tier": "1",
+        "uri": "/v1/sdg/Indicator/4.a.1",
+        "series": []
+    },
+    {
+        "goal": "4",
+        "target": "4.b",
+        "code": "4.b.1",
+        "description": "Volume of official development assistance flows for scholarships by sector and type of study",
+        "tier": "1",
+        "uri": "/v1/sdg/Indicator/4.b.1",
+        "series": []
+    },
+    {
+        "goal": "4",
+        "target": "4.c",
+        "code": "4.c.1",
+        "description": "Proportion of teachers in: (a) pre-primary; (b) primary; (c) lower secondary; and (d) upper secondary education who have received at least the minimum organized teacher training (e.g. pedagogical training) pre-service or in-service required for teaching at the relevant level in a given country",
+        "tier": "1",
+        "uri": "/v1/sdg/Indicator/4.c.1",
+        "series": []
+    },
+    {
+        "goal": "5",
+        "target": "5.2",
+        "code": "5.2.1",
+        "description": "Proportion of ever-partnered women and girls aged 15 years and older subjected to physical, sexual or psychological violence by a current or former intimate partner in the previous 12 months, by form of violence and by age",
+        "tier": "1",
+        "uri": "/v1/sdg/Indicator/5.2.1",
+        "series": []
+    },
+    {
+        "goal": "5",
+        "target": "5.3",
+        "code": "5.3.1",
+        "description": "Proportion of women aged 20-24 years who were married or in a union before age 15 and before age 18",
+        "tier": "1",
+        "uri": "/v1/sdg/Indicator/5.3.1",
+        "series": []
+    },
+    {
+        "goal": "5",
+        "target": "5.3",
+        "code": "5.3.2",
+        "description": "Proportion of girls and women aged 15-49 years who have undergone female genital mutilation/cutting, by age",
+        "tier": "1",
+        "uri": "/v1/sdg/Indicator/5.3.2",
+        "series": []
+    },
+    {
+        "goal": "5",
+        "target": "5.4",
+        "code": "5.4.1",
+        "description": "Proportion of time spent on unpaid domestic and care work, by sex, age and location",
+        "tier": "1",
+        "uri": "/v1/sdg/Indicator/5.4.1",
+        "series": []
+    },
+    {
+        "goal": "5",
+        "target": "5.5",
+        "code": "5.5.1",
+        "description": "Proportion of seats held by women in (a) national parliaments and (b) local governments",
+        "tier": "1",
+        "uri": "/v1/sdg/Indicator/5.5.1",
+        "series": []
+    },
+    {
+        "goal": "5",
+        "target": "5.5",
+        "code": "5.5.2",
+        "description": "Proportion of women in managerial positions",
+        "tier": "1",
+        "uri": "/v1/sdg/Indicator/5.5.2",
+        "series": []
+    },
+    {
+        "goal": "5",
+        "target": "5.6",
+        "code": "5.6.1",
+        "description": "Proportion of women aged 15-49 years who make their own informed decisions regarding sexual relations, contraceptive use and reproductive health care",
+        "tier": "1",
+        "uri": "/v1/sdg/Indicator/5.6.1",
+        "series": []
+    },
+    {
+        "goal": "5",
+        "target": "5.b",
+        "code": "5.b.1",
+        "description": "Proportion of individuals who own a mobile telephone, by sex",
+        "tier": "1",
+        "uri": "/v1/sdg/Indicator/5.b.1",
+        "series": []
+    },
+    {
+        "goal": "6",
+        "target": "6.1",
+        "code": "6.1.1",
+        "description": "Proportion of population using safely managed drinking water services",
+        "tier": "1",
+        "uri": "/v1/sdg/Indicator/6.1.1",
+        "series": []
+    },
+    {
+        "goal": "6",
+        "target": "6.2",
+        "code": "6.2.1",
+        "description": "Proportion of population using safely managed sanitation services, including a hand-washing facility with soap and water",
+        "tier": "1",
+        "uri": "/v1/sdg/Indicator/6.2.1",
+        "series": []
+    },
+    {
+        "goal": "6",
+        "target": "6.3",
+        "code": "6.3.2",
+        "description": "Proportion of bodies of water with good ambient water quality",
+        "tier": "3",
+        "uri": "/v1/sdg/Indicator/6.3.2",
+        "series": []
+    },
+    {
+        "goal": "6",
+        "target": "6.3",
+        "code": "6.3.1",
+        "description": "Proportion of wastewater safely treated",
+        "tier": "2",
+        "uri": "/v1/sdg/Indicator/6.3.1",
+        "series": []
+    },
+    {
+        "goal": "6",
+        "target": "6.4",
+        "code": "6.4.2",
+        "description": "Level of water stress: freshwater withdrawal as a proportion of available freshwater resources",
+        "tier": "1",
+        "uri": "/v1/sdg/Indicator/6.4.2",
+        "series": []
+    },
+    {
+        "goal": "6",
+        "target": "6.4",
+        "code": "6.4.1",
+        "description": "Change in water-use efficiency over time",
+        "tier": "2",
+        "uri": "/v1/sdg/Indicator/6.4.1",
+        "series": []
+    },
+    {
+        "goal": "6",
+        "target": "6.5",
+        "code": "6.5.1",
+        "description": "Degree of integrated water resources management implementation (0-100)",
+        "tier": "1",
+        "uri": "/v1/sdg/Indicator/6.5.1",
+        "series": []
+    },
+    {
+        "goal": "6",
+        "target": "6.5",
+        "code": "6.5.2",
+        "description": "Proportion of transboundary basin area with an operational arrangement for water cooperation",
+        "tier": "2",
+        "uri": "/v1/sdg/Indicator/6.5.2",
+        "series": []
+    },
+    {
+        "goal": "6",
+        "target": "6.6",
+        "code": "6.6.1",
+        "description": "Change in the extent of water-related ecosystems over time",
+        "tier": "2",
+        "uri": "/v1/sdg/Indicator/6.6.1",
+        "series": []
+    },
+    {
+        "goal": "6",
+        "target": "6.a",
+        "code": "6.a.1",
+        "description": "Amount of water- and sanitation-related official development assistance that is part of a government-coordinated spending plan",
+        "tier": "1",
+        "uri": "/v1/sdg/Indicator/6.a.1",
+        "series": []
+    },
+    {
+        "goal": "6",
+        "target": "6.b",
+        "code": "6.b.1",
+        "description": "Proportion of local administrative units with established and operational policies and procedures for participation of local communities in water and sanitation management",
+        "tier": "1",
+        "uri": "/v1/sdg/Indicator/6.b.1",
+        "series": []
+    },
+    {
+        "goal": "7",
+        "target": "7.1",
+        "code": "7.1.1",
+        "description": "Proportion of population with access to electricity",
+        "tier": "1",
+        "uri": "/v1/sdg/Indicator/7.1.1",
+        "series": []
+    },
+    {
+        "goal": "7",
+        "target": "7.1",
+        "code": "7.1.2",
+        "description": "Proportion of population with primary reliance on clean fuels and technology",
+        "tier": "1",
+        "uri": "/v1/sdg/Indicator/7.1.2",
+        "series": []
+    },
+    {
+        "goal": "7",
+        "target": "7.2",
+        "code": "7.2.1",
+        "description": "Renewable energy share in the total final energy consumption",
+        "tier": "1",
+        "uri": "/v1/sdg/Indicator/7.2.1",
+        "series": []
+    },
+    {
+        "goal": "7",
+        "target": "7.3",
+        "code": "7.3.1",
+        "description": "Energy intensity measured in terms of primary energy and GDP",
+        "tier": "1",
+        "uri": "/v1/sdg/Indicator/7.3.1",
+        "series": []
+    },
+    {
+        "goal": "8",
+        "target": "8.2",
+        "code": "8.2.1",
+        "description": "Annual growth rate of real GDP per employed person",
+        "tier": "1",
+        "uri": "/v1/sdg/Indicator/8.2.1",
+        "series": []
+    },
+    {
+        "goal": "8",
+        "target": "8.3",
+        "code": "8.3.1",
+        "description": "Proportion of informal employment in non‑agriculture employment, by sex",
+        "tier": "1",
+        "uri": "/v1/sdg/Indicator/8.3.1",
+        "series": []
+    },
+    {
+        "goal": "8",
+        "target": "8.4",
+        "code": "8.4.1",
+        "description": "Material footprint, material footprint per capita, and material footprint per GDP",
+        "tier": "1",
+        "uri": "/v1/sdg/Indicator/8.4.1",
+        "series": []
+    },
+    {
+        "goal": "8",
+        "target": "8.4",
+        "code": "8.4.2",
+        "description": "Domestic material consumption, domestic material consumption per capita, and domestic material consumption per GDP",
+        "tier": "1",
+        "uri": "/v1/sdg/Indicator/8.4.2",
+        "series": []
+    },
+    {
+        "goal": "8",
+        "target": "8.5",
+        "code": "8.5.1",
+        "description": "Average hourly earnings of female and male employees, by occupation, age and persons with disabilities",
+        "tier": "1",
+        "uri": "/v1/sdg/Indicator/8.5.1",
+        "series": []
+    },
+    {
+        "goal": "8",
+        "target": "8.5",
+        "code": "8.5.2",
+        "description": "Unemployment rate, by sex, age and persons with disabilities",
+        "tier": "1",
+        "uri": "/v1/sdg/Indicator/8.5.2",
+        "series": []
+    },
+    {
+        "goal": "8",
+        "target": "8.6",
+        "code": "8.6.1",
+        "description": "Proportion of youth (aged 15-24 years) not in education, employment or training",
+        "tier": "1",
+        "uri": "/v1/sdg/Indicator/8.6.1",
+        "series": []
+    },
+    {
+        "goal": "8",
+        "target": "8.7",
+        "code": "8.7.1",
+        "description": "Proportion and number of children aged 5‑17 years engaged in child labour, by sex and age",
+        "tier": "1",
+        "uri": "/v1/sdg/Indicator/8.7.1",
+        "series": []
+    },
+    {
+        "goal": "8",
+        "target": "8.1",
+        "code": "8.1.1",
+        "description": "Annual growth rate of real GDP per capita",
+        "tier": "1",
+        "uri": "/v1/sdg/Indicator/8.1.1",
+        "series": []
+    },
+    {
+        "goal": "8",
+        "target": "8.8",
+        "code": "8.8.1",
+        "description": "Frequency rates of fatal and non-fatal occupational injuries, by sex and migrant status",
+        "tier": "1",
+        "uri": "/v1/sdg/Indicator/8.8.1",
+        "series": []
+    },
+    {
+        "goal": "8",
+        "target": "8.10",
+        "code": "8.10.1",
+        "description": "(a) Number of commercial bank branches per 100,000 adults and (b) number of automated teller machines (ATMs) per 100,000 adults",
+        "tier": "1",
+        "uri": "/v1/sdg/Indicator/8.10.1",
+        "series": []
+    },
+    {
+        "goal": "8",
+        "target": "8.10",
+        "code": "8.10.2",
+        "description": "Proportion of adults (15 years and older) with an account at a bank or other financial institution or with a mobile-money-service provider",
+        "tier": "1",
+        "uri": "/v1/sdg/Indicator/8.10.2",
+        "series": []
+    },
+    {
+        "goal": "8",
+        "target": "8.a",
+        "code": "8.a.1",
+        "description": "Aid for Trade commitments and disbursements",
+        "tier": "1",
+        "uri": "/v1/sdg/Indicator/8.a.1",
+        "series": []
+    },
+    {
+        "goal": "9",
+        "target": "9.1",
+        "code": "9.1.2",
+        "description": "Passenger and freight volumes, by mode of transport",
+        "tier": "1",
+        "uri": "/v1/sdg/Indicator/9.1.2",
+        "series": []
+    },
+    {
+        "goal": "9",
+        "target": "9.2",
+        "code": "9.2.1",
+        "description": "Manufacturing value added as a proportion of GDP and per capita",
+        "tier": "1",
+        "uri": "/v1/sdg/Indicator/9.2.1",
+        "series": []
+    },
+    {
+        "goal": "9",
+        "target": "9.2",
+        "code": "9.2.2",
+        "description": "Manufacturing employment as a proportion of total employment",
+        "tier": "1",
+        "uri": "/v1/sdg/Indicator/9.2.2",
+        "series": []
+    },
+    {
+        "goal": "9",
+        "target": "9.3",
+        "code": "9.3.1",
+        "description": "Proportion of small-scale industries in total industry value added",
+        "tier": "2",
+        "uri": "/v1/sdg/Indicator/9.3.1",
+        "series": []
+    },
+    {
+        "goal": "9",
+        "target": "9.3",
+        "code": "9.3.2",
+        "description": "Proportion of small-scale industries with a loan or line of credit",
+        "tier": "2",
+        "uri": "/v1/sdg/Indicator/9.3.2",
+        "series": []
+    },
+    {
+        "goal": "9",
+        "target": "9.4",
+        "code": "9.4.1",
+        "description": "CO2 emission per unit of value added",
+        "tier": "1",
+        "uri": "/v1/sdg/Indicator/9.4.1",
+        "series": []
+    },
+    {
+        "goal": "9",
+        "target": "9.5",
+        "code": "9.5.1",
+        "description": "Research and development expenditure as a proportion of GDP",
+        "tier": "1",
+        "uri": "/v1/sdg/Indicator/9.5.1",
+        "series": []
+    },
+    {
+        "goal": "9",
+        "target": "9.5",
+        "code": "9.5.2",
+        "description": "Researchers (in full-time equivalent) per million inhabitants",
+        "tier": "1",
+        "uri": "/v1/sdg/Indicator/9.5.2",
+        "series": []
+    },
+    {
+        "goal": "9",
+        "target": "9.a",
+        "code": "9.a.1",
+        "description": "Total official international support (official development assistance plus other official flows) to infrastructure",
+        "tier": "1",
+        "uri": "/v1/sdg/Indicator/9.a.1",
+        "series": []
+    },
+    {
+        "goal": "9",
+        "target": "9.b",
+        "code": "9.b.1",
+        "description": "Proportion of medium and high-tech industry value added in total value added",
+        "tier": "1",
+        "uri": "/v1/sdg/Indicator/9.b.1",
+        "series": []
+    },
+    {
+        "goal": "9",
+        "target": "9.c",
+        "code": "9.c.1",
+        "description": "Proportion of population covered by a mobile network, by technology",
+        "tier": "1",
+        "uri": "/v1/sdg/Indicator/9.c.1",
+        "series": []
+    },
+    {
+        "goal": "10",
+        "target": "10.1",
+        "code": "10.1.1",
+        "description": "Growth rates of household expenditure or income per capita among the bottom 40 per cent of the population and the total population",
+        "tier": "1",
+        "uri": "/v1/sdg/Indicator/10.1.1",
+        "series": []
+    },
+    {
+        "goal": "10",
+        "target": "10.4",
+        "code": "10.4.1",
+        "description": "Labour share of GDP, comprising wages and social protection transfers",
+        "tier": "1",
+        "uri": "/v1/sdg/Indicator/10.4.1",
+        "series": []
+    },
+    {
+        "goal": "10",
+        "target": "10.5",
+        "code": "10.5.1",
+        "description": "Financial Soundness Indicators",
+        "tier": "1",
+        "uri": "/v1/sdg/Indicator/10.5.1",
+        "series": []
+    },
+    {
+        "goal": "10",
+        "target": "10.6",
+        "code": "10.6.1",
+        "description": "Proportion of members and voting rights of developing countries in international organizations",
+        "tier": "1",
+        "uri": "/v1/sdg/Indicator/10.6.1",
+        "series": []
+    },
+    {
+        "goal": "10",
+        "target": "10.a",
+        "code": "10.a.1",
+        "description": "Proportion of tariff lines applied to imports from least developed countries and developing countries with zero-tariff",
+        "tier": "1",
+        "uri": "/v1/sdg/Indicator/10.a.1",
+        "series": []
+    },
+    {
+        "goal": "10",
+        "target": "10.b",
+        "code": "10.b.1",
+        "description": "Total resource flows for development, by recipient and donor countries and type of flow (e.g. official development assistance, foreign direct investment and other flows)",
+        "tier": "1",
+        "uri": "/v1/sdg/Indicator/10.b.1",
+        "series": []
+    },
+    {
+        "goal": "10",
+        "target": "10.c",
+        "code": "10.c.1",
+        "description": "Remittance costs as a proportion of the amount remitted",
+        "tier": "1",
+        "uri": "/v1/sdg/Indicator/10.c.1",
+        "series": []
+    },
+    {
+        "goal": "11",
+        "target": "11.1",
+        "code": "11.1.1",
+        "description": "Proportion of urban population living in slums, informal settlements or inadequate housing",
+        "tier": "1",
+        "uri": "/v1/sdg/Indicator/11.1.1",
+        "series": []
+    },
+    {
+        "goal": "11",
+        "target": "11.5",
+        "code": "11.5.1",
+        "description": "Number of deaths, missing persons and directly affected persons attributed to disasters per 100,000 population",
+        "tier": "1",
+        "uri": "/v1/sdg/Indicator/11.5.1",
+        "series": []
+    },
+    {
+        "goal": "11",
+        "target": "11.5",
+        "code": "11.5.2",
+        "description": "Direct economic loss in relation to global GDP, damage to critical infrastructure and number of disruptions to basic services, attributed to disasters",
+        "tier": "1",
+        "uri": "/v1/sdg/Indicator/11.5.2",
+        "series": []
+    },
+    {
+        "goal": "11",
+        "target": "11.6",
+        "code": "11.6.1",
+        "description": "Proportion of urban solid waste regularly collected and with adequate final discharge out of total urban solid waste generated, by cities",
+        "tier": "1",
+        "uri": "/v1/sdg/Indicator/11.6.1",
+        "series": []
+    },
+    {
+        "goal": "11",
+        "target": "11.6",
+        "code": "11.6.2",
+        "description": "Annual mean levels of fine particulate matter (e.g. PM2.5 and PM10) in cities (population weighted)",
+        "tier": "1",
+        "uri": "/v1/sdg/Indicator/11.6.2",
+        "series": []
+    },
+    {
+        "goal": "11",
+        "target": "11.b",
+        "code": "11.b.1",
+        "description": "Number of countries that adopt and implement national disaster risk reduction strategies in line with the Sendai Framework for Disaster Risk Reduction 2015-2030",
+        "tier": "1",
+        "uri": "/v1/sdg/Indicator/11.b.1",
+        "series": []
+    },
+    {
+        "goal": "11",
+        "target": "11.b",
+        "code": "11.b.2",
+        "description": "Proportion of local governments that adopt and implement local disaster risk reduction strategies in line with national disaster risk reduction strategies",
+        "tier": "2",
+        "uri": "/v1/sdg/Indicator/11.b.2",
+        "series": []
+    },
+    {
+        "goal": "12",
+        "target": "12.1",
+        "code": "12.1.1",
+        "description": "Number of countries with sustainable consumption and production (SCP) national action plans or SCP mainstreamed as a priority or a target into national policies",
+        "tier": "2",
+        "uri": "/v1/sdg/Indicator/12.1.1",
+        "series": []
+    },
+    {
+        "goal": "12",
+        "target": "12.2",
+        "code": "12.2.1",
+        "description": "Material footprint, material footprint per capita, and material footprint per GDP",
+        "tier": "1",
+        "uri": "/v1/sdg/Indicator/12.2.1",
+        "series": []
+    },
+    {
+        "goal": "12",
+        "target": "12.2",
+        "code": "12.2.2",
+        "description": "Domestic material consumption, domestic material consumption per capita, and domestic material consumption per GDP",
+        "tier": "1",
+        "uri": "/v1/sdg/Indicator/12.2.2",
+        "series": []
+    },
+    {
+        "goal": "12",
+        "target": "12.4",
+        "code": "12.4.1",
+        "description": "Number of parties to international multilateral environmental agreements on hazardous waste, and other chemicals that meet their commitments and obligations in transmitting information as required by each relevant agreement",
+        "tier": "1",
+        "uri": "/v1/sdg/Indicator/12.4.1",
+        "series": []
+    },
+    {
+        "goal": "12",
+        "target": "12.c",
+        "code": "12.c.1",
+        "description": "Amount of fossil-fuel subsidies per unit of GDP (production and consumption) and as a proportion of total national expenditure on fossil fuels",
+        "tier": "2",
+        "uri": "/v1/sdg/Indicator/12.c.1",
+        "series": []
+    },
+    {
+        "goal": "13",
+        "target": "13.1",
+        "code": "13.1.1",
+        "description": "Number of deaths, missing persons and directly affected persons attributed to disasters per 100,000 population",
+        "tier": "1",
+        "uri": "/v1/sdg/Indicator/13.1.1",
+        "series": []
+    },
+    {
+        "goal": "13",
+        "target": "13.1",
+        "code": "13.1.2",
+        "description": "Number of countries that adopt and implement national disaster risk reduction strategies in line with the Sendai Framework for Disaster Risk Reduction 2015-2030",
+        "tier": "1",
+        "uri": "/v1/sdg/Indicator/13.1.2",
+        "series": []
+    },
+    {
+        "goal": "13",
+        "target": "13.1",
+        "code": "13.1.3",
+        "description": "Proportion of local governments that adopt and implement local disaster risk reduction strategies in line with national disaster risk reduction strategies",
+        "tier": "2",
+        "uri": "/v1/sdg/Indicator/13.1.3",
+        "series": []
+    },
+    {
+        "goal": "14",
+        "target": "14.6",
+        "code": "14.6.1",
+        "description": "Degree of implementation of international instruments aiming to combat illegal, unreported and unregulated fishing",
+        "tier": "2",
+        "uri": "/v1/sdg/Indicator/14.6.1",
+        "series": []
+    },
+    {
+        "goal": "14",
+        "target": "14.a",
+        "code": "14.a.1",
+        "description": "Proportion of total research budget allocated to research in the field of marine technology",
+        "tier": "2",
+        "uri": "/v1/sdg/Indicator/14.a.1",
+        "series": []
+    },
+    {
+        "goal": "14",
+        "target": "14.4",
+        "code": "14.4.1",
+        "description": "Proportion of fish stocks within biologically sustainable levels",
+        "tier": "1",
+        "uri": "/v1/sdg/Indicator/14.4.1",
+        "series": []
+    },
+    {
+        "goal": "14",
+        "target": "14.b",
+        "code": "14.b.1",
+        "description": "Degree of application of a legal/regulatory/policy/institutional framework which recognizes and protects access rights for small‐scale fisheries",
+        "tier": "2",
+        "uri": "/v1/sdg/Indicator/14.b.1",
+        "series": []
+    },
+    {
+        "goal": "14",
+        "target": "14.5",
+        "code": "14.5.1",
+        "description": "Coverage of protected areas in relation to marine areas",
+        "tier": "1",
+        "uri": "/v1/sdg/Indicator/14.5.1",
+        "series": []
+    },
+    {
+        "goal": "15",
+        "target": "15.1",
+        "code": "15.1.1",
+        "description": "Forest area as a proportion of total land area",
+        "tier": "1",
+        "uri": "/v1/sdg/Indicator/15.1.1",
+        "series": []
+    },
+    {
+        "goal": "15",
+        "target": "15.1",
+        "code": "15.1.2",
+        "description": "Proportion of important sites for terrestrial and freshwater biodiversity that are covered by protected areas, by ecosystem type",
+        "tier": "1",
+        "uri": "/v1/sdg/Indicator/15.1.2",
+        "series": []
+    },
+    {
+        "goal": "15",
+        "target": "15.2",
+        "code": "15.2.1",
+        "description": "Progress towards sustainable forest management",
+        "tier": "1",
+        "uri": "/v1/sdg/Indicator/15.2.1",
+        "series": []
+    },
+    {
+        "goal": "15",
+        "target": "15.4",
+        "code": "15.4.1",
+        "description": "Coverage by protected areas of important sites for mountain biodiversity",
+        "tier": "1",
+        "uri": "/v1/sdg/Indicator/15.4.1",
+        "series": []
+    },
+    {
+        "goal": "15",
+        "target": "15.4",
+        "code": "15.4.2",
+        "description": "Mountain Green Cover Index",
+        "tier": "1",
+        "uri": "/v1/sdg/Indicator/15.4.2",
+        "series": []
+    },
+    {
+        "goal": "15",
+        "target": "15.5",
+        "code": "15.5.1",
+        "description": "Red List Index",
+        "tier": "1",
+        "uri": "/v1/sdg/Indicator/15.5.1",
+        "series": []
+    },
+    {
+        "goal": "15",
+        "target": "15.6",
+        "code": "15.6.1",
+        "description": "Number of countries that have adopted legislative, administrative and policy frameworks to ensure fair and equitable sharing of benefits",
+        "tier": "1",
+        "uri": "/v1/sdg/Indicator/15.6.1",
+        "series": []
+    },
+    {
+        "goal": "15",
+        "target": "15.a",
+        "code": "15.a.1",
+        "description": "Official development assistance and public expenditure on conservation and sustainable use of biodiversity and ecosystems",
+        "tier": "1",
+        "uri": "/v1/sdg/Indicator/15.a.1",
+        "series": []
+    },
+    {
+        "goal": "15",
+        "target": "15.b",
+        "code": "15.b.1",
+        "description": "Official development assistance and public expenditure on conservation and sustainable use of biodiversity and ecosystems",
+        "tier": "1",
+        "uri": "/v1/sdg/Indicator/15.b.1",
+        "series": []
+    },
+    {
+        "goal": "16",
+        "target": "16.1",
+        "code": "16.1.1",
+        "description": "Number of victims of intentional homicide per 100,000 population, by sex and age",
+        "tier": "1",
+        "uri": "/v1/sdg/Indicator/16.1.1",
+        "series": []
+    },
+    {
+        "goal": "16",
+        "target": "16.2",
+        "code": "16.2.1",
+        "description": "Proportion of children aged 1-17 years who experienced any physical punishment and/or psychological aggression by caregivers in the past month",
+        "tier": "1",
+        "uri": "/v1/sdg/Indicator/16.2.1",
+        "series": []
+    },
+    {
+        "goal": "16",
+        "target": "16.2",
+        "code": "16.2.2",
+        "description": "Number of victims of human trafficking per 100,000 population, by sex, age and form of exploitation",
+        "tier": "1",
+        "uri": "/v1/sdg/Indicator/16.2.2",
+        "series": []
+    },
+    {
+        "goal": "16",
+        "target": "16.2",
+        "code": "16.2.3",
+        "description": "Proportion of young women and men aged 18‑29 years who experienced sexual violence by age 18",
+        "tier": "1",
+        "uri": "/v1/sdg/Indicator/16.2.3",
+        "series": []
+    },
+    {
+        "goal": "16",
+        "target": "16.3",
+        "code": "16.3.2",
+        "description": "Unsentenced detainees as a proportion of overall prison population",
+        "tier": "1",
+        "uri": "/v1/sdg/Indicator/16.3.2",
+        "series": []
+    },
+    {
+        "goal": "16",
+        "target": "16.5",
+        "code": "16.5.2",
+        "description": "Proportion of businesses that had at least one contact with a public official and that paid a bribe to a public official, or were asked for a bribe by those public officials during the previous 12 months",
+        "tier": "1",
+        "uri": "/v1/sdg/Indicator/16.5.2",
+        "series": []
+    },
+    {
+        "goal": "16",
+        "target": "16.6",
+        "code": "16.6.1",
+        "description": "Primary government expenditures as a proportion of original approved budget, by sector (or by budget codes or similar)",
+        "tier": "2",
+        "uri": "/v1/sdg/Indicator/16.6.1",
+        "series": []
+    },
+    {
+        "goal": "16",
+        "target": "16.8",
+        "code": "16.8.1",
+        "description": "Proportion of members and voting rights of developing countries in international organizations",
+        "tier": "1",
+        "uri": "/v1/sdg/Indicator/16.8.1",
+        "series": []
+    },
+    {
+        "goal": "16",
+        "target": "16.9",
+        "code": "16.9.1",
+        "description": "Proportion of children under 5 years of age whose births have been registered with a civil authority, by age",
+        "tier": "1",
+        "uri": "/v1/sdg/Indicator/16.9.1",
+        "series": []
+    },
+    {
+        "goal": "16",
+        "target": "16.10",
+        "code": "16.10.1",
+        "description": "Number of verified cases of killing, kidnapping, enforced disappearance, arbitrary detention and torture of journalists, associated media personnel, trade unionists and human rights advocates in the previous 12 months",
+        "tier": "1",
+        "uri": "/v1/sdg/Indicator/16.10.1",
+        "series": []
+    },
+    {
+        "goal": "16",
+        "target": "16.10",
+        "code": "16.10.2",
+        "description": "Number of countries that adopt and implement constitutional, statutory and/or policy guarantees for public access to information",
+        "tier": "1",
+        "uri": "/v1/sdg/Indicator/16.10.2",
+        "series": []
+    },
+    {
+        "goal": "16",
+        "target": "16.a",
+        "code": "16.a.1",
+        "description": "Existence of independent national human rights institutions in compliance with the Paris Principles",
+        "tier": "1",
+        "uri": "/v1/sdg/Indicator/16.a.1",
+        "series": []
+    },
+    {
+        "goal": "17",
+        "target": "17.2",
+        "code": "17.2.1",
+        "description": "Net official development assistance, total and to least developed countries, as a proportion of the Organization for Economic Cooperation and Development (OECD) Development Assistance Committee donors’ gross national income (GNI)",
+        "tier": "1",
+        "uri": "/v1/sdg/Indicator/17.2.1",
+        "series": []
+    },
+    {
+        "goal": "17",
+        "target": "17.3",
+        "code": "17.3.2",
+        "description": "Volume of remittances (in United States dollars) as a proportion of total GDP",
+        "tier": "1",
+        "uri": "/v1/sdg/Indicator/17.3.2",
+        "series": []
+    },
+    {
+        "goal": "17",
+        "target": "17.4",
+        "code": "17.4.1",
+        "description": "Debt service as a proportion of exports of goods and services",
+        "tier": "1",
+        "uri": "/v1/sdg/Indicator/17.4.1",
+        "series": []
+    },
+    {
+        "goal": "17",
+        "target": "17.6",
+        "code": "17.6.2",
+        "description": "Fixed Internet broadband subscriptions per 100 inhabitants, by speed",
+        "tier": "1",
+        "uri": "/v1/sdg/Indicator/17.6.2",
+        "series": []
+    },
+    {
+        "goal": "17",
+        "target": "17.8",
+        "code": "17.8.1",
+        "description": "Proportion of individuals using the Internet",
+        "tier": "1",
+        "uri": "/v1/sdg/Indicator/17.8.1",
+        "series": []
+    },
+    {
+        "goal": "17",
+        "target": "17.9",
+        "code": "17.9.1",
+        "description": "Dollar value of financial and technical assistance (including through North-South, South-South and triangular cooperation) committed to developing countries",
+        "tier": "1",
+        "uri": "/v1/sdg/Indicator/17.9.1",
+        "series": []
+    },
+    {
+        "goal": "17",
+        "target": "17.10",
+        "code": "17.10.1",
+        "description": "Worldwide weighted tariff-average",
+        "tier": "1",
+        "uri": "/v1/sdg/Indicator/17.10.1",
+        "series": []
+    },
+    {
+        "goal": "17",
+        "target": "17.11",
+        "code": "17.11.1",
+        "description": "Developing countries’ and least developed countries’ share of global exports",
+        "tier": "1",
+        "uri": "/v1/sdg/Indicator/17.11.1",
+        "series": []
+    },
+    {
+        "goal": "17",
+        "target": "17.12",
+        "code": "17.12.1",
+        "description": "Average tariffs faced by developing countries, least developed countries and small island developing States",
+        "tier": "1",
+        "uri": "/v1/sdg/Indicator/17.12.1",
+        "series": []
+    },
+    {
+        "goal": "17",
+        "target": "17.15",
+        "code": "17.15.1",
+        "description": "Extent of use of country-owned results frameworks and planning tools by providers of development cooperation",
+        "tier": "1",
+        "uri": "/v1/sdg/Indicator/17.15.1",
+        "series": []
+    },
+    {
+        "goal": "17",
+        "target": "17.16",
+        "code": "17.16.1",
+        "description": "Number of countries reporting progress in multi-stakeholder development effectiveness monitoring frameworks that support the achievement of the sustainable development goals",
+        "tier": "1",
+        "uri": "/v1/sdg/Indicator/17.16.1",
+        "series": []
+    },
+    {
+        "goal": "17",
+        "target": "17.18",
+        "code": "17.18.2",
+        "description": "Number of countries that have national statistical legislation that complies with the Fundamental Principles of Official Statistics",
+        "tier": "1",
+        "uri": "/v1/sdg/Indicator/17.18.2",
+        "series": []
+    },
+    {
+        "goal": "17",
+        "target": "17.18",
+        "code": "17.18.3",
+        "description": "Number of countries with a national statistical plan that is fully funded and under implementation, by source of funding",
+        "tier": "1",
+        "uri": "/v1/sdg/Indicator/17.18.3",
+        "series": []
+    },
+    {
+        "goal": "17",
+        "target": "17.19",
+        "code": "17.19.1",
+        "description": "Dollar value of all resources made available to strengthen statistical capacity in developing countries",
+        "tier": "1",
+        "uri": "/v1/sdg/Indicator/17.19.1",
+        "series": []
+    },
+    {
+        "goal": "17",
+        "target": "17.19",
+        "code": "17.19.2",
+        "description": "Proportion of countries that (a) have conducted at least one population and housing census in the last 10 years; and (b) have achieved 100 per cent birth registration and 80 per cent death registration",
+        "tier": "1",
+        "uri": "/v1/sdg/Indicator/17.19.2",
+        "series": []
+    }
+]

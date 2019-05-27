@@ -195,6 +195,8 @@ public class MapController {
 
 
         JSONHelper.putValue(controlParams, PARAM_SECURE, request.getParameter(PARAM_SECURE));
+        // pass language as control param so we don't have to rely on cookie for getting the same language for GetAppSetup
+        JSONHelper.putValue(controlParams, PARAM_LANGUAGE, params.getLocale().getLanguage());
         JSONHelper.putValue(controlParams, GetAppSetupHandler.PARAM_NO_SAVED_STATE, request.getParameter(GetAppSetupHandler.PARAM_NO_SAVED_STATE));
         model.addAttribute(KEY_CONTROL_PARAMS, controlParams.toString());
 
