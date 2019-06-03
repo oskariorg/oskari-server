@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import javax.imageio.ImageIO;
 
@@ -13,31 +14,30 @@ import org.apache.pdfbox.pdmodel.PDDocument;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.opengis.referencing.FactoryException;
 import org.oskari.print.PrintService;
 import org.oskari.print.request.PrintFormat;
 import org.oskari.print.request.PrintLayer;
 import org.oskari.print.request.PrintRequest;
 import org.oskari.print.request.PrintTile;
-import org.oskari.service.util.ServiceFactory;
+import org.oskari.service.user.UserLayerService;
+import org.oskari.service.wfs.client.OskariWFSClient;
 
-import fi.mml.portti.service.db.permissions.PermissionsService;
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.ActionException;
-import fi.nls.oskari.control.ActionHandler;
 import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.control.ActionParamsException;
-import fi.nls.oskari.control.layer.PermissionHelper;
+import fi.nls.oskari.control.feature.AbstractWFSFeaturesHandler;
 import fi.nls.oskari.domain.User;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.map.layer.OskariLayerService;
 import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.ResponseHelper;
 
 @OskariActionRoute("GetPrint")
-public class GetPrintHandler extends ActionHandler {
+public class GetPrintHandler extends AbstractWFSFeaturesHandler {
 
     private static final Logger LOG = LogFactory.getLogger(GetPrintHandler.class);
 
@@ -74,23 +74,24 @@ public class GetPrintHandler extends ActionHandler {
     private static final int MARGIN_WIDTH = 10 * 2;
     private static final int MARGIN_HEIGHT = 15 * 2;
 
-    private final PermissionHelper permissionHelper;
-    private final PrintService printService;
+    private PrintService printService;
 
     public static int mmToPx(int mm) {
         return (int) Math.round((OGC_DPI * mm) / MM_PER_INCH);
     }
 
-    public GetPrintHandler() {
-        this(ServiceFactory.getMapLayerService(),
-                ServiceFactory.getPermissionsService(),
-                new PrintService());
+    @Override
+    public void init() {
+        super.init();
+        if (printService == null) {
+            printService = new PrintService(featureClient);
+        }
     }
 
-    public GetPrintHandler(OskariLayerService layerService,
-            PermissionsService permissionService, PrintService printService) {
-        this.permissionHelper = new PermissionHelper(layerService, permissionService);
-        this.printService = printService;
+    @Override
+    protected OskariWFSClient createWFSClient() {
+        // Don't cache features
+        return new OskariWFSClient();
     }
 
     public void handleAction(ActionParameters params) throws ActionException {
@@ -114,7 +115,11 @@ public class GetPrintHandler extends ActionHandler {
         PrintRequest request = new PrintRequest();
 
         request.setUser(params.getUser());
-        request.setSrsName(params.getRequiredParam(PARM_SRSNAME));
+        try {
+            request.setSrsName(params.getRequiredParam(PARM_SRSNAME));
+        } catch (FactoryException e) {
+            throw new ActionParamsException("Invalid value for param: " + PARM_SRSNAME);
+        }
         request.setResolution(params.getRequiredParamDouble(PARM_RESOLUTION));
         request.setTitle(params.getHttpParam(PARM_TITLE));
         request.setShowLogo(params.getHttpParam(PARM_LOGO, false));
@@ -127,25 +132,20 @@ public class GetPrintHandler extends ActionHandler {
 
         List<PrintLayer> layers = getLayers(params.getRequiredParam(PARM_MAPLAYERS),
                 params.getUser());
-        if(request.isScaleText()) {
-            layers = filterLayersWithSupportOwnScale(layers);
+
+        if (request.isScaleText()) {
+            // Remove WMTS layers - they do not support arbitrary scales
+            layers.removeIf(l -> OskariLayer.TYPE_WMTS.equals(l.getType()));
         }
+
         request.setLayers(layers);
+
+        // TODO: REMOVE ME?
         setTiles(layers, params.getHttpParam(PARM_TILES));
 
         return request;
     }
 
-
-    private List<PrintLayer> filterLayersWithSupportOwnScale(List<PrintLayer> layers) {
-        List<PrintLayer> filtered = new ArrayList<>();
-        for (PrintLayer layer : layers) {
-            if (!layer.getType().equals(OskariLayer.TYPE_WMTS)) {
-                filtered.add(layer);
-            }
-        }
-        return filtered;
-    }
 
     private void setPagesize(ActionParameters params, PrintRequest request)
             throws ActionParamsException {
@@ -224,28 +224,12 @@ public class GetPrintHandler extends ActionHandler {
     private List<PrintLayer> getLayers(String mapLayers, User user)
             throws ActionException {
         LayerProperties[] requestedLayers = parseLayersProperties(mapLayers);
-
-        List<PrintLayer> printLayers = new ArrayList<>(requestedLayers.length);
+        List<PrintLayer> printLayers = new ArrayList<>();
+        int zIndex = 0;
         for (LayerProperties requestedLayer : requestedLayers) {
-            String layerId = requestedLayer.getId();
-            int id = ConversionHelper.getInt(layerId, -1);
-            PrintLayer printLayer = null;
-            if (id != -1) {
-                OskariLayer oskariLayer = permissionHelper.getLayer(id, user);
-                printLayer = createPrintLayer(oskariLayer, requestedLayer);
-            } else {
-                for (ProxyPrintLayer p : ProxyPrintLayer.values()) {
-                    if (layerId.startsWith(p.prefix)) {
-                        printLayer = createProxyLayer(p, requestedLayer);
-                        break;
-                    }
-                }
-            }
-            if (printLayer != null) {
-                printLayers.add(printLayer);
-            }
+            printLayers.add(getPrintLayer(zIndex++, requestedLayer, user));
         }
-
+        printLayers.removeIf(layer -> layer.getOpacity() <= 0);
         return printLayers;
     }
 
@@ -273,24 +257,21 @@ public class GetPrintHandler extends ActionHandler {
         return new LayerProperties(id, opacity, style);
     }
 
-    private PrintLayer createPrintLayer(OskariLayer oskariLayer, LayerProperties requestedLayer) {
-        int opacity = getOpacity(requestedLayer.getOpacity(), oskariLayer.getOpacity());
-        if (opacity <= 0) {
-            // Ignore fully transparent layers
-            return null;
-        }
+    private PrintLayer getPrintLayer(int zIndex, LayerProperties requestedLayer, User user)
+            throws ActionException {
+        String layerId = requestedLayer.id;
 
-        PrintLayer layer = new PrintLayer();
-        layer.setId(oskariLayer.getId());
-        layer.setType(oskariLayer.getType());
-        layer.setUrl(oskariLayer.getUrl());
-        layer.setVersion(oskariLayer.getVersion());
-        layer.setName(oskariLayer.getName());
-        layer.setUsername(oskariLayer.getUsername());
-        layer.setPassword(oskariLayer.getPassword());
-        layer.setOpacity(opacity);
-        layer.setStyle(requestedLayer.getStyle());
-        return layer;
+        Optional<UserLayerService> processor = getUserContentProsessor(layerId);
+        OskariLayer layer = findLayer(layerId, user, processor);
+
+        int opacity = getOpacity(requestedLayer.opacity, layer.getOpacity());
+
+        PrintLayer printLayer = new PrintLayer(zIndex);
+        printLayer.setOskariLayer(layer);
+        printLayer.setStyle(requestedLayer.style);
+        printLayer.setOpacity(opacity);
+        printLayer.setProcessor(processor);
+        return printLayer;
     }
 
     private int getOpacity(Integer requestedOpacity, Integer layersDefaultOpacity) {
@@ -334,14 +315,16 @@ public class GetPrintHandler extends ActionHandler {
             return;
         }
 
-        final PrintLayer layer = findById(layers, layerId);
-        if (layer == null) {
-            LOG.info("Could not find layerId:", layerId);
-            return;
-        }
+        Optional<PrintLayer> layer = layers.stream()
+                .filter(l -> l.getId() == layerId)
+                .findAny();
 
-        final JSONArray tilesArray = layersTiles.getJSONArray(key);
-        layer.setTiles(parseTiles(tilesArray));
+        if (layer.isPresent()) {
+            JSONArray tilesArray = layersTiles.getJSONArray(key);
+            layer.get().setTiles(parseTiles(tilesArray));
+        } else {
+            LOG.info("Could not find layerId:", layerId);
+        }
     }
 
     private PrintTile[] parseTiles(JSONArray tilesArray) throws JSONException, ActionParamsException {
@@ -357,15 +340,6 @@ public class GetPrintHandler extends ActionHandler {
         return tiles;
     }
 
-    private PrintLayer findById(List<PrintLayer> layers, int id) {
-        for (PrintLayer l : layers) {
-            if (l.getId() == id) {
-                return l;
-            }
-        }
-        return null;
-    }
-
     private double[] toDoubleArray(JSONArray array) throws JSONException {
         final int n = array.length();
         final double[] arr = new double[n];
@@ -373,32 +347,6 @@ public class GetPrintHandler extends ActionHandler {
             arr[i] = array.getDouble(i);
         }
         return arr;
-    }
-
-    private PrintLayer createProxyLayer(ProxyPrintLayer p, LayerProperties requestedLayer) {
-        int opacity = requestedLayer.getOpacity() != null ? requestedLayer.getOpacity() : 100;
-        if (opacity <= 0) {
-            // Ignore fully transparent layers
-            LOG.info("Ignoring zero opacity layer:", requestedLayer.getId());
-            return null;
-        }
-
-        int lastUnderscore = requestedLayer.getId().lastIndexOf('_');
-        String layerId = requestedLayer.getId().substring(lastUnderscore + 1);
-        int id = ConversionHelper.getInt(layerId, -1);
-        if (id < 0) {
-            // Ignore layers with negative id
-            LOG.info("Failed to parse integer id from:", requestedLayer.getId());
-            return null;
-        }
-
-        PrintLayer layer = new PrintLayer();
-        layer.setId(id);
-        layer.setType(p.type);
-        layer.setVersion("1.3.0");
-        layer.setName(p.layerName);
-        layer.setOpacity(opacity);
-        return layer;
     }
 
     private void handlePNG(PrintRequest pr, ActionParameters params) throws ActionException {
@@ -423,46 +371,16 @@ public class GetPrintHandler extends ActionHandler {
         }
     }
 
-    public static class LayerProperties {
+    private static class LayerProperties {
 
         private final String id;
         private final Integer opacity;
         private final String style;
 
-        public LayerProperties(String id, Integer opacity, String style) {
+        private LayerProperties(String id, Integer opacity, String style) {
             this.id = id;
             this.opacity = opacity;
             this.style = style;
-        }
-
-        public String getId() {
-            return id;
-        }
-
-        public Integer getOpacity() {
-            return opacity;
-        }
-
-        public String getStyle() {
-            return style;
-        }
-
-    }
-    
-    private enum ProxyPrintLayer {
-        
-        MyPlaces("myplaces_", "myplaces", "oskari:my_places_categories"),
-        UserLayer("userlayer_", OskariLayer.TYPE_USERLAYER, "oskari:user_layer_data_style"),
-        Analysis("analysis_", OskariLayer.TYPE_ANALYSIS, "oskari:analysis_data_style");
-        
-        private final String prefix;
-        private final String type;
-        private final String layerName;
-        
-        private ProxyPrintLayer(String prefix, String type, String layerName) {
-            this.prefix = prefix;
-            this.type = type;
-            this.layerName = layerName;
         }
 
     }

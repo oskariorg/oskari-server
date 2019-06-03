@@ -32,6 +32,7 @@ public class GetLocalizedPropertyNamesHandler extends AbstractWFSFeaturesHandler
         final String layerId = params.getRequiredParam(ActionConstants.PARAM_ID);
         Optional<UserLayerService> contentProcessor = getUserContentProsessor(layerId);
         OskariLayer layer = findLayer(layerId, params.getUser(), contentProcessor);
+        requireWFSLayer(layer);
         WFSLayerConfiguration layerConf = wfsLayerService.findConfiguration(layer.getId());
 
         JSONObject response = new JSONObject();

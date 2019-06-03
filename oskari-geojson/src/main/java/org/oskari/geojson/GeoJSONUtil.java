@@ -35,7 +35,8 @@ public class GeoJSONUtil {
     }
 
     public static String getString(Map<String, Object> map, String key) {
-        return (String) map.get(key);
+        Object o = map.get(key);
+        return o == null ? null : o.toString();
     }
 
     public static double getDouble(List<Object> list, int i) {

@@ -12,7 +12,6 @@ import org.oskari.service.user.UserLayerService;
 import org.oskari.service.wfs3.CoordinateTransformer;
 
 import fi.nls.oskari.domain.map.OskariLayer;
-import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.service.ServiceRuntimeException;
 import fi.nls.oskari.util.PropertyUtil;
 
@@ -29,7 +28,7 @@ public class OskariFeatureClient {
         this.wfsClient = Objects.requireNonNull(wfsClient);
     }
 
-    protected CoordinateReferenceSystem getNativeCRS() {
+    private CoordinateReferenceSystem getNativeCRS() {
         if (nativeCRS == null) {
             try {
                 String nativeSrs = PropertyUtil.get(PROPERTY_NATIVE_SRS, "EPSG:4326");
@@ -42,8 +41,9 @@ public class OskariFeatureClient {
     }
 
     public SimpleFeatureCollection getFeatures(String id, OskariLayer layer, ReferencedEnvelope bbox,
-            CoordinateReferenceSystem nativeCRS, CoordinateReferenceSystem targetCRS,
-            Optional<UserLayerService> processor) throws ServiceException {
+            CoordinateReferenceSystem targetCRS, Optional<UserLayerService> processor) throws ServiceRuntimeException {
+        CoordinateReferenceSystem nativeCRS = getNativeCRS();
+
         boolean needsTransform = !CRS.equalsIgnoreMetadata(nativeCRS, targetCRS);
 
         // Request features in nativeCRS (of the installation)
@@ -53,11 +53,12 @@ public class OskariFeatureClient {
             try {
                 requestBbox = bbox.transform(nativeCRS, true);
             } catch (Exception e) {
-                throw new ServiceException(ERR_REPOJECTION_FAIL, e);
+                throw new ServiceRuntimeException(ERR_REPOJECTION_FAIL, e);
             }
         }
 
-        SimpleFeatureCollection features = getFeatures(id, layer, requestBbox, nativeCRS, processor);
+        SimpleFeatureCollection features = getFeaturesNoTransform(id, layer, requestBbox, nativeCRS, processor);
+
         if (!needsTransform) {
             return features;
         }
@@ -67,11 +68,12 @@ public class OskariFeatureClient {
             CoordinateTransformer transformer = new CoordinateTransformer(nativeCRS, targetCRS);
             return transformer.transform(features);
         } catch (Exception e) {
-            throw new ServiceException(ERR_REPOJECTION_FAIL, e);
+            throw new ServiceRuntimeException(ERR_REPOJECTION_FAIL, e);
         }
     }
 
-    public SimpleFeatureCollection getFeatures(String id, OskariLayer layer,
+
+    private SimpleFeatureCollection getFeaturesNoTransform(String id, OskariLayer layer,
             ReferencedEnvelope bbox, CoordinateReferenceSystem crs,
             Optional<UserLayerService> processor) throws ServiceRuntimeException {
         String endPoint = layer.getUrl();

@@ -16,6 +16,9 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
 
+/**
+ * Base class for ActionHandlers that want to deal with vector layers
+ */
 public abstract class AbstractWFSFeaturesHandler extends ActionHandler {
 
     protected static final String ERR_INVALID_ID = "Invalid id";
@@ -64,11 +67,17 @@ public abstract class AbstractWFSFeaturesHandler extends ActionHandler {
         }
         return layer;
     }
+
+    protected void requireWFSLayer(OskariLayer layer) throws ActionParamsException {
+        if (!OskariLayer.TYPE_WFS.equals(layer.getType())) {
+            throw new ActionParamsException(ERR_LAYER_TYPE_NOT_WFS);
+        }
+    }
     
     private int getLayerId(String id, Optional<UserLayerService> processor) throws ActionParamsException {
         try {
             return processor.map(UserLayerService::getBaselayerId)
-                .orElseGet(() -> Integer.parseInt(id));
+                    .orElseGet(() -> Integer.parseInt(id));
         } catch (NumberFormatException e) {
             throw new ActionParamsException(ERR_INVALID_ID);
         }
