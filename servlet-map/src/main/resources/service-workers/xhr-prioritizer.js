@@ -26,12 +26,12 @@ function requestNextFromQueue () {
 };
 
 function debugLog () {
-    if (!DEBUG) {
+    if (!DEBUG || !console) {
         return;
     }
     console.debug(
-        'Pending high: ' + pendingHighPrioRequestCount +
-        ', low: ' + pendingLowPrioRequestCount +
+        'Pending higher prio requests: ' + pendingHighPrioRequestCount +
+        ', lower: ' + pendingLowPrioRequestCount +
         ', queued: ' + lowPrioQueue.length);
 };
 

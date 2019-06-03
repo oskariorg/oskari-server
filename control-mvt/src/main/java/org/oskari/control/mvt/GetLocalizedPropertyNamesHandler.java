@@ -11,6 +11,7 @@ import fi.nls.oskari.util.ResponseHelper;
 import fi.nls.oskari.wfs.WFSLayerConfigurationService;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.json.JSONArray;
 import org.oskari.service.user.UserLayerService;
 import org.oskari.service.util.ServiceFactory;
 
@@ -34,8 +35,7 @@ public class GetLocalizedPropertyNamesHandler extends AbstractWFSFeaturesHandler
         OskariLayer layer = findLayer(layerId, params.getUser(), contentProcessor);
         requireWFSLayer(layer);
         WFSLayerConfiguration layerConf = wfsLayerService.findConfiguration(layer.getId());
-
-        JSONObject response = new JSONObject();
+        JSONArray response = new JSONArray();
         if (layerConf == null) {
             ResponseHelper.writeResponse(params, response);
             return;
@@ -49,7 +49,10 @@ public class GetLocalizedPropertyNamesHandler extends AbstractWFSFeaturesHandler
         }
         for (int i = 0; i < propNames.size() && i < localizedPropNames.size(); i++) {
             try {
-                response.put(propNames.get(i), localizedPropNames.get(i));
+                JSONObject prop = new JSONObject();
+                prop.put("name", propNames.get(i));
+                prop.put("locale", localizedPropNames.get(i));
+                response.put(prop);
             } catch (JSONException ex) {
                 throw new ServiceRuntimeException("Unexpected JSONException occurred");
             }
