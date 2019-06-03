@@ -94,8 +94,12 @@ public class RegionSetHelper {
             try (FeatureIterator<SimpleFeature> it = FJ.streamFeatureCollection(utf8Reader)) {
                 while (it.hasNext()) {
                     SimpleFeature f = it.next();
-                    transform(f, transform);
-                    fc.add(f);
+                    try {
+                        transform(f, transform);
+                        fc.add(f);
+                    } catch (Exception e) {
+                        LOG.debug(e, "Invalid region", f);
+                    }
                 }
             }
         }

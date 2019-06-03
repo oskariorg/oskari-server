@@ -21,6 +21,7 @@ import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 import org.springframework.web.servlet.i18n.CookieLocaleResolver;
 import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
@@ -128,6 +129,11 @@ public class SpringConfig extends WebMvcConfigurerAdapter implements Application
         ActionControl.teardown();
         WebappHelper.teardown();
         cleanupIbatis();
+    }
+
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        registry.addResourceHandler("/xhr-prioritizer.js").addResourceLocations("classpath:service-workers/xhr-prioritizer.js");
     }
 
     @Bean
