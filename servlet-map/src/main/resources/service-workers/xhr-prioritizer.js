@@ -6,6 +6,8 @@ var PRIO_TRAFFIC_LIMIT = 3;
 var LOW_PRIO_REQUESTS = ['GetLayerTile', 'GetWFSFeatures', 'GetWFSVectorTile'];
 var lowPrioTester = new RegExp('^.*(\\/action\\?action_route=)(' + LOW_PRIO_REQUESTS.join('|') + ')\\&.*$');
 
+var mixedContentTester = new RegExp('^(http:\/\/)');
+
 var pendingHighPrioRequestCount = 0;
 var pendingLowPrioRequestCount = 0;
 var lowPrioQueue = [];
@@ -56,6 +58,10 @@ function decreaseHighPrioPendingCount (response) {
 };
 
 self.addEventListener('fetch', function (event) {
+    if (mixedContentTester.test(event.request.url)) {
+        // Allow it go through as a warning, making a fetch would block it.
+        return;
+    }
     if (!lowPrioTester.test(event.request.url)) {
         pendingHighPrioRequestCount++;
         event.respondWith(fetch(event.request).then(decreaseHighPrioPendingCount, decreaseHighPrioPendingCount));
