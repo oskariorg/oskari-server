@@ -14,6 +14,9 @@ import org.powermock.utils.Asserts;
 
 public class UnsdRequestTest {
 
+    private static final int EXPECTED_INDICATOR_RESPONSE_DATA_SIZE = 250;
+    private static final String INDICATOR = "1.5.2";
+
     private UnsdRequest request;
 
     public UnsdRequestTest() {
@@ -42,7 +45,7 @@ public class UnsdRequestTest {
         }
     }
 
-    public JSONObject getFirstObject (String json) throws JSONException {
+    public JSONObject getFirstObject(String json) throws JSONException {
         JSONObject obj;
         try {
             obj = new JSONObject(json);
@@ -65,5 +68,20 @@ public class UnsdRequestTest {
             assertNotNull("dimension has no id", dimension.optString("id", null));
             assertNotNull("dimension has no codes", dimension.optJSONArray("codes"));
         }
+    }
+
+    @Test
+    @Ignore("Requires external HTTP requests to be made")
+    public void testIndicatorDataResponseDataSize() throws JSONException {
+        org.junit.Assume.assumeTrue(TestHelper.canDoHttp());
+        org.junit.Assume.assumeTrue(TestHelper.redisAvailable());
+
+        request.setIndicator(INDICATOR);
+        String response = request.getIndicatorData(null);
+        JSONObject indicatorData = getFirstObject(response);
+        int sizeAttribute = (int) indicatorData.get("size");
+        JSONArray data = (JSONArray) indicatorData.get("data");
+        assertEquals(EXPECTED_INDICATOR_RESPONSE_DATA_SIZE, sizeAttribute);
+        assertEquals(EXPECTED_INDICATOR_RESPONSE_DATA_SIZE, data.length());
     }
 }
