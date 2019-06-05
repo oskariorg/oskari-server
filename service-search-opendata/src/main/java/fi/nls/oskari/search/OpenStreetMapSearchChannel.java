@@ -31,6 +31,7 @@ public class OpenStreetMapSearchChannel extends SearchChannel {
     public final static String SERVICE_SRS = "EPSG:4326";
 
     private static final String PROPERTY_SERVICE_URL = "search.channel.OPENSTREETMAP_CHANNEL.service.url";
+    private static final String PROPERTY_BBOX = "search.channel.OPENSTREETMAP_CHANNEL.search.bbox";
 
 
     @Override
@@ -52,9 +53,22 @@ public class OpenStreetMapSearchChannel extends SearchChannel {
             return new JSONArray();
         }
         StringBuffer buf = new StringBuffer(serviceURL);
-        if(serviceURL.indexOf("?") > 0)buf.append("&format=json&addressdetails=1");
-        else buf.append("?format=json&addressdetails=1");
-        // buf.append("&countrycodes=fi");
+        if(serviceURL.indexOf("?") > 0) {
+            buf.append("&format=json&addressdetails=1");
+        }
+        else {
+            buf.append("?format=json&addressdetails=1");
+        }
+
+        String filterBBOX = PropertyUtil.get(PROPERTY_BBOX);
+        if(filterBBOX != null) {
+            buf.append("&bounded=1");
+            buf.append("&viewbox=");
+            buf.append(filterBBOX);
+        } else {
+            log.debug("Search BBOX not configured. Add property with key",PROPERTY_BBOX);
+        }
+
         buf.append("&accept-language=");
         buf.append(searchCriteria.getLocale());
         int maxResults = getMaxResults(searchCriteria.getMaxResults());
