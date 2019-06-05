@@ -60,7 +60,7 @@ public class OpenStreetMapSearchChannel extends SearchChannel {
         if (maxResults > 0) {
             params.put("limit", Integer.toString(maxResults));
         }
-        params.put("q", URLEncoder.encode(searchCriteria.getSearchString(),"UTF-8"));
+        params.put("q", searchCriteria.getSearchString());
 
         return IOHelper.constructUrl(serviceURL, params);
     }
