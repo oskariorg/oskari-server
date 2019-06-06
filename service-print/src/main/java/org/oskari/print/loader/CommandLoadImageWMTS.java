@@ -16,11 +16,14 @@ import org.oskari.print.wmts.GetTileRequestBuilderREST;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.geometry.ProjectionHelper;
+import fi.nls.oskari.map.layer.OskariLayerService;
+import fi.nls.oskari.map.layer.OskariLayerServiceMybatisImpl;
 import fi.nls.oskari.wmts.domain.ResourceUrl;
 import fi.nls.oskari.wmts.domain.TileMatrix;
 import fi.nls.oskari.wmts.domain.TileMatrixSet;
 import fi.nls.oskari.wmts.domain.WMTSCapabilities;
 import fi.nls.oskari.wmts.domain.WMTSCapabilitiesLayer;
+import java.util.HashMap;
 
 /**
  * HystrixCommand that loads tiles from a WMTS service
@@ -44,6 +47,8 @@ public class CommandLoadImageWMTS extends CommandLoadImageBase {
     private final double resolution;
     private final String srs;
     private final WMTSCapabilities capabilities;
+    
+    private final OskariLayerService layerService = new OskariLayerServiceMybatisImpl();
 
     public CommandLoadImageWMTS(PrintLayer layer,
             int width,
@@ -190,10 +195,29 @@ public class CommandLoadImageWMTS extends CommandLoadImageBase {
     }
 
     private TileMatrixSet getTileMatrixSet() throws IllegalArgumentException {
+        HashMap<String, TileMatrixSet> possibleTileMatrixSets = new HashMap<>();
+
         for (TileMatrixSet tms : capabilities.getTileMatrixSets()) {
-            if (srs.equals(ProjectionHelper.shortSyntaxEpsg(tms.getCrs()))) {
-                return tms;
+            String key = tms.getTileMatrixMap().keySet().iterator().next();
+            possibleTileMatrixSets.put(key, tms);
+        }
+
+        String alternativeTileMatrixSet = layerService.find(layer.getId()).getOptions().optString("useThisAlternativeTileMatrixSet", null);
+        String tileMatrixSetToUse = srs;
+        if (alternativeTileMatrixSet != null && !alternativeTileMatrixSet.isEmpty()) {
+            tileMatrixSetToUse = alternativeTileMatrixSet;
+        }
+        
+        TileMatrixSet setToReturn = null;
+        for (String key : possibleTileMatrixSets.keySet()) {
+            if (key.contains(tileMatrixSetToUse)) {
+                setToReturn = possibleTileMatrixSets.get(key);
+                break;
             }
+        }
+
+        if (setToReturn != null) {
+            return setToReturn;
         }
         throw new IllegalArgumentException("Could not find TileMatrixSet for the requested crs");
     }
