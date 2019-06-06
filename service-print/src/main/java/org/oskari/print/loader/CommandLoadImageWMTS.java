@@ -201,7 +201,15 @@ public class CommandLoadImageWMTS extends CommandLoadImageBase {
             String key = tms.getTileMatrixMap().keySet().iterator().next();
             possibleTileMatrixSets.put(key, tms);
         }
+        
+        if (possibleTileMatrixSets.size() <= 0) {
+            throw new NullPointerException("Could not find any TileMatrixSets");
+        }
 
+        if (possibleTileMatrixSets.size() == 1) {
+            return possibleTileMatrixSets.entrySet().iterator().next().getValue();
+        }
+        
         String alternativeTileMatrixSet = layerService.find(layer.getId()).getOptions().optString("useThisAlternativeTileMatrixSet", null);
         String tileMatrixSetToUse = srs;
         if (alternativeTileMatrixSet != null && !alternativeTileMatrixSet.isEmpty()) {
