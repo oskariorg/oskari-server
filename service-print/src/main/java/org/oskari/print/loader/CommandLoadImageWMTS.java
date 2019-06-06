@@ -24,20 +24,23 @@ import fi.nls.oskari.wmts.domain.TileMatrixSet;
 import fi.nls.oskari.wmts.domain.WMTSCapabilities;
 import fi.nls.oskari.wmts.domain.WMTSCapabilitiesLayer;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import org.json.JSONObject;
 
 /**
- * HystrixCommand that loads tiles from a WMTS service
- * and combines them to a single BufferedImage
+ * HystrixCommand that loads tiles from a WMTS service and combines them to a
+ * single BufferedImage
  */
 public class CommandLoadImageWMTS extends CommandLoadImageBase {
 
     private static final Logger LOG = LogFactory.getLogger(CommandLoadImageWMTS.class);
     private static final double EPSILON = 0.015625;
 
-    private static final String[] FORMAT_TO_USE = new String[] {
-            "image/png",
-            "image/png8",
-            "image/jpeg"
+    private static final String[] FORMAT_TO_USE = new String[]{
+        "image/png",
+        "image/png8",
+        "image/jpeg"
     };
 
     private final PrintLayer layer;
@@ -47,7 +50,7 @@ public class CommandLoadImageWMTS extends CommandLoadImageBase {
     private final double resolution;
     private final String srs;
     private final WMTSCapabilities capabilities;
-    
+
     private final OskariLayerService layerService = new OskariLayerServiceMybatisImpl();
 
     public CommandLoadImageWMTS(PrintLayer layer,
@@ -108,8 +111,8 @@ public class CommandLoadImageWMTS extends CommandLoadImageBase {
             countTileRows--;
         }
 
-        List<Future<BufferedImage>> futureTiles =
-                new ArrayList<Future<BufferedImage>>(countTileRows * countTileCols);
+        List<Future<BufferedImage>> futureTiles
+                = new ArrayList<Future<BufferedImage>>(countTileRows * countTileCols);
 
         ResourceUrl tileResourceUrl = layerCapabilities.getResourceUrlByType("tile");
         GetTileRequestBuilder requestBuilder;
@@ -195,32 +198,46 @@ public class CommandLoadImageWMTS extends CommandLoadImageBase {
     }
 
     private TileMatrixSet getTileMatrixSet() throws IllegalArgumentException {
-        HashMap<String, TileMatrixSet> possibleTileMatrixSets = new HashMap<>();
+        List<TileMatrixSet> possibleTileMatrixSets = new ArrayList<>();
 
         for (TileMatrixSet tms : capabilities.getTileMatrixSets()) {
             String key = tms.getTileMatrixMap().keySet().iterator().next();
-            possibleTileMatrixSets.put(key, tms);
+            possibleTileMatrixSets.add(tms);
         }
-        
-        if (possibleTileMatrixSets.size() <= 0) {
+
+        if (possibleTileMatrixSets.isEmpty()) {
             throw new NullPointerException("Could not find any TileMatrixSets");
         }
 
         if (possibleTileMatrixSets.size() == 1) {
-            return possibleTileMatrixSets.entrySet().iterator().next().getValue();
+            return possibleTileMatrixSets.get(0);
         }
-        
-        String alternativeTileMatrixSet = layerService.find(layer.getId()).getOptions().optString("useThisAlternativeTileMatrixSet", null);
-        String tileMatrixSetToUse = srs;
-        if (alternativeTileMatrixSet != null && !alternativeTileMatrixSet.isEmpty()) {
-            tileMatrixSetToUse = alternativeTileMatrixSet;
+
+        HashMap<String, String> alternativeTileMatrixSets = new HashMap<>();
+        JSONObject useThisTileMatrixSetInstead = layerService.find(layer.getId()).getOptions().optJSONObject("useThisAlternativeTileMatrixSet");
+
+        if (useThisTileMatrixSetInstead == null) {
+            alternativeTileMatrixSets.put(srs, srs);
+        } else if (useThisTileMatrixSetInstead.length() > 0) {
+            Iterator iterator = useThisTileMatrixSetInstead.keys();
+            while (iterator.hasNext()) {
+                String nextKey = (String) iterator.next();
+                alternativeTileMatrixSets.put(nextKey, useThisTileMatrixSetInstead.optString(nextKey));
+            }
+
         }
-        
+
         TileMatrixSet setToReturn = null;
-        for (String key : possibleTileMatrixSets.keySet()) {
-            if (key.contains(tileMatrixSetToUse)) {
-                setToReturn = possibleTileMatrixSets.get(key);
-                break;
+        for (TileMatrixSet tms : possibleTileMatrixSets) {
+            String tileMatrixSetName = tms.getTileMatrixMap().keySet().iterator().next();
+            for (Map.Entry<String, String> entry : alternativeTileMatrixSets.entrySet()) {
+                String key = entry.getKey();
+                String value = entry.getValue();
+                if (tileMatrixSetName.contains(key) || tileMatrixSetName.contains(value)) {
+                    setToReturn = tms;
+                    break;
+                }
+
             }
         }
 
