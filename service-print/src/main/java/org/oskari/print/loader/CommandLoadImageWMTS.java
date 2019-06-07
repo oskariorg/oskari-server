@@ -23,9 +23,6 @@ import fi.nls.oskari.wmts.domain.TileMatrix;
 import fi.nls.oskari.wmts.domain.TileMatrixSet;
 import fi.nls.oskari.wmts.domain.WMTSCapabilities;
 import fi.nls.oskari.wmts.domain.WMTSCapabilitiesLayer;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
 import org.json.JSONObject;
 
 /**
@@ -217,34 +214,22 @@ public class CommandLoadImageWMTS extends CommandLoadImageBase {
     }
 
     private TileMatrixSet determineTileMatrixSetToUse(List<TileMatrixSet> possibleTileMatrixSets) throws IllegalArgumentException {
-        HashMap<String, String> alternativeTileMatrixSets = new HashMap<>();
         JSONObject useThisTileMatrixSetInstead = layerService.find(layer.getId()).getOptions().optJSONObject("useThisAlternativeTileMatrixSet");
-
         if (useThisTileMatrixSetInstead == null) {
             return possibleTileMatrixSets.get(0);
-        } else if (useThisTileMatrixSetInstead.length() > 0) {
-            Iterator iterator = useThisTileMatrixSetInstead.keys();
-            while (iterator.hasNext()) {
-                String nextKey = (String) iterator.next();
-                alternativeTileMatrixSets.put(nextKey, useThisTileMatrixSetInstead.optString(nextKey));
-            }
-
-        }
-
+        } 
+        
         TileMatrixSet setToReturn = null;
         for (TileMatrixSet tms : possibleTileMatrixSets) {
-            String tileMatrixSetName = tms.getTileMatrixMap().keySet().iterator().next();
-            for (Map.Entry<String, String> entry : alternativeTileMatrixSets.entrySet()) {
-                String key = entry.getKey();
-                String value = entry.getValue();
-                if (tileMatrixSetName.contains(key) || tileMatrixSetName.contains(value)) {
+            String tileMatrixSetName = tms.getTileMatrixMap().keySet().iterator().next();            
+            for (int i = 0; i < useThisTileMatrixSetInstead.length(); i++) {
+                String key = (String) useThisTileMatrixSetInstead.keys().next();
+                if (tileMatrixSetName.contains(useThisTileMatrixSetInstead.optString(key, "Something not in tmsName."))) {
                     setToReturn = tms;
-                    break;
+                    break;                    
                 }
-
             }
         }
-
         if (setToReturn != null) {
             return setToReturn;
         }
