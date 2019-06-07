@@ -201,8 +201,9 @@ public class CommandLoadImageWMTS extends CommandLoadImageBase {
         List<TileMatrixSet> possibleTileMatrixSets = new ArrayList<>();
 
         for (TileMatrixSet tms : capabilities.getTileMatrixSets()) {
-            String key = tms.getTileMatrixMap().keySet().iterator().next();
-            possibleTileMatrixSets.add(tms);
+            if (srs.equals(ProjectionHelper.shortSyntaxEpsg(tms.getCrs()))) {
+                possibleTileMatrixSets.add(tms);
+            }
         }
 
         if (possibleTileMatrixSets.isEmpty()) {
@@ -215,7 +216,7 @@ public class CommandLoadImageWMTS extends CommandLoadImageBase {
         return determineTileMatrixSetToUse(possibleTileMatrixSets);
     }
 
-    private TileMatrixSet determineTileMatrixSetToUse(List<TileMatrixSet> possibleTileMatrixSets) {
+    private TileMatrixSet determineTileMatrixSetToUse(List<TileMatrixSet> possibleTileMatrixSets) throws IllegalArgumentException {
         HashMap<String, String> alternativeTileMatrixSets = new HashMap<>();
         JSONObject useThisTileMatrixSetInstead = layerService.find(layer.getId()).getOptions().optJSONObject("useThisAlternativeTileMatrixSet");
 
