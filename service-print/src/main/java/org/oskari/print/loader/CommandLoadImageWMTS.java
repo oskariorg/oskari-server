@@ -206,7 +206,7 @@ public class CommandLoadImageWMTS extends CommandLoadImageBase {
         }
 
         if (possibleTileMatrixSets.isEmpty()) {
-            throw new NullPointerException("Could not find any TileMatrixSets");
+            throw new IllegalArgumentException("Could not find TileMatrixSet for the requested crs");
         }
 
         if (possibleTileMatrixSets.size() == 1) {
