@@ -220,7 +220,7 @@ public class CommandLoadImageWMTS extends CommandLoadImageBase {
         JSONObject useThisTileMatrixSetInstead = layerService.find(layer.getId()).getOptions().optJSONObject("useThisAlternativeTileMatrixSet");
 
         if (useThisTileMatrixSetInstead == null) {
-            alternativeTileMatrixSets.put(srs, srs);
+            return possibleTileMatrixSets.get(0);
         } else if (useThisTileMatrixSetInstead.length() > 0) {
             Iterator iterator = useThisTileMatrixSetInstead.keys();
             while (iterator.hasNext()) {
