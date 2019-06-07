@@ -215,25 +215,16 @@ public class CommandLoadImageWMTS extends CommandLoadImageBase {
 
     private TileMatrixSet determineTileMatrixSetToUse(List<TileMatrixSet> possibleTileMatrixSets) throws IllegalArgumentException {
         JSONObject useThisTileMatrixSetInstead = layerService.find(layer.getId()).getOptions().optJSONObject("useThisAlternativeTileMatrixSet");
-        if (useThisTileMatrixSetInstead == null) {
+        String id = useThisTileMatrixSetInstead.optString(srs);
+        if (id == null) {
             return possibleTileMatrixSets.get(0);
-        } 
-        
-        TileMatrixSet setToReturn = null;
+        }
         for (TileMatrixSet tms : possibleTileMatrixSets) {
-            String tileMatrixSetName = tms.getTileMatrixMap().keySet().iterator().next();            
-            for (int i = 0; i < useThisTileMatrixSetInstead.length(); i++) {
-                String key = (String) useThisTileMatrixSetInstead.keys().next();
-                if (tileMatrixSetName.contains(useThisTileMatrixSetInstead.optString(key, "Something not in tmsName."))) {
-                    setToReturn = tms;
-                    break;                    
-                }
+            if (tms.getId().equals(id)) {
+                return tms;
             }
         }
-        if (setToReturn != null) {
-            return setToReturn;
-        }
-        throw new IllegalArgumentException("Could not find TileMatrixSet for the requested crs");
+        throw new IllegalArgumentException("Could not find TileMatrixSet with id " + id + " for layer " + layer.getId());
     }
 
     private GetTileRequestBuilder getTileRequestBuilderREST(String tileMatrixSetId, String tileMatrixId, ResourceUrl tileResourceUrl) {
