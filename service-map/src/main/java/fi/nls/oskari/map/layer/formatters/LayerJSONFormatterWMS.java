@@ -143,11 +143,6 @@ public class LayerJSONFormatterWMS extends LayerJSONFormatter {
             JSONHelper.putValue(layerJson, KEY_VERSION, JSONHelper.getStringFromJSON(capabilities, KEY_VERSION, null));
         }
 
-        Set<String> srs = getSRSs(attrs, capabilities);
-        if (srs != null) {
-            JSONHelper.putValue(layerJson, KEY_SRS, new JSONArray(srs));
-        }
-
         // copy time from capabilities to attributes
         // timedata is merged into attributes  (times:{start:,end:,interval:}  or times: []
         // only reason for this is that admin can see the values offered by service
@@ -157,28 +152,6 @@ public class LayerJSONFormatterWMS extends LayerJSONFormatter {
                     JSONHelper.createJSONObject(KEY_TIMES, JSONHelper.get(capabilities, KEY_TIMES))));
         }
 
-    }
-
-    /**
-     * Merge forced SRSs from attributes and the ones parsed from
-     * GetCapabilities response into one Set of unique values
-     * @param attributes of OskariLayer in question, can be null
-     * @param capabilities of OskariLayer in question, can be null
-     * @return null iff attributes.forcedSRS and capabilities.srs are both null
-     *         otherwise a Set containing both (can be empty)
-     */
-    protected static Set<String> getSRSs(JSONObject attributes, JSONObject capabilities) {
-        JSONArray jsonForcedSRS = attributes != null ? attributes.optJSONArray(KEY_ATTRIBUTE_FORCED_SRS): null;
-        JSONArray jsonCapabilitiesSRS = capabilities != null ? capabilities.optJSONArray(KEY_SRS): null;
-        if (jsonForcedSRS == null && jsonCapabilitiesSRS == null) {
-            log.debug("No SRS information found from either attributes or capabilities");
-            return null;
-        }
-        Set<String> srs = new HashSet<>();
-        srs.addAll(JSONHelper.getArrayAsList(jsonForcedSRS));
-        srs.addAll(JSONHelper.getArrayAsList(jsonCapabilitiesSRS));
-        log.debug("SRSs from attributes and capabilities:", StringUtils.join(srs, ','));
-        return srs;
     }
 
     /**
