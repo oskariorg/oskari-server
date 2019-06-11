@@ -37,20 +37,17 @@ public class UnsdStatisticalDatasourcePlugin extends StatisticalDatasourcePlugin
         String targetsResponse = request.getTargets();
         List<StatisticalIndicator> indicators = UnsdIndicatorParser.parseIndicators(targetsResponse);
 
-        // all indicators under goal have same dimensions
-        String dimensions = request.getDimensions();
         for (StatisticalIndicator ind : indicators) {
             request.setIndicator(ind.getId());
-            // we parse it multiple times to make copies
-            ind.setDataModel(UnsdIndicatorParser.parseDimensions(dimensions));
+            JSONObject dataResponse = JSONHelper.createJSONObject(request.getIndicatorData(null));
+            ind.setSource(UnsdIndicatorParser.parseSource(dataResponse));
+            // Parse indicator specific dimensions from indicator data response
+            ind.setDataModel(UnsdIndicatorParser.parseDimensions(dataResponse));
             // generate time period based on config. The datasource doesn't tell which years it has data for :(
             ind.getDataModel().addDimension(
                     UnsdIndicatorParser.generateTimePeriod(
                             config.getTimeVariableId(), config.getTimePeriod()));
             ind.getDataModel().setTimeVariable(config.getTimeVariableId());
-
-            JSONObject dataResponse = JSONHelper.createJSONObject(request.getIndicatorData(null));
-            ind.setSource(UnsdIndicatorParser.parseSource(dataResponse));
             getSource().getLayers().stream().forEach(l -> ind.addLayer(l));
             onIndicatorProcessed(ind);
         }

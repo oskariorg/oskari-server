@@ -107,12 +107,11 @@ public class UnsdIndicatorParser {
         return Optional.of(ind);
     }
 
-
-    // Includes only dimensions that the service provides per goal
+    // Includes dimensions from getIndicatorData response
     // Timeperiod is added by calling generateTimePeriod() after this has been called
-    public static StatisticalIndicatorDataModel parseDimensions(String dimensionsResponse) {
+    public static StatisticalIndicatorDataModel parseDimensions(JSONObject jsonObject) {
         try {
-            JSONArray dimensions = JSONHelper.createJSONArray(dimensionsResponse);
+            JSONArray dimensions = jsonObject.getJSONArray("dimensions");
             StatisticalIndicatorDataModel selectors = new StatisticalIndicatorDataModel();
             for (int i = 0; i < dimensions.length(); i++) {
                 JSONObject dimension = dimensions.getJSONObject(i);
