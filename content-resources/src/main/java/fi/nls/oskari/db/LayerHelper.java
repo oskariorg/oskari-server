@@ -119,6 +119,11 @@ public class LayerHelper {
         if (options != null) {
             layer.setOptions(options);
         }
+        // handle attributes, check for null to avoid overwriting empty JS Object Literal
+        final JSONObject attributes = json.optJSONObject("attributes");
+        if (attributes != null) {
+            layer.setAttributes(attributes);
+        }
 
         // setup data producer/layergroup
         final DataProvider dataProvider = dataProviderService.findByName(orgName);

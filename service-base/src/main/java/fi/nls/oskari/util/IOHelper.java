@@ -50,7 +50,7 @@ public class IOHelper {
 
     private static int CONNECTION_TIMEOUT_MS = 3000;
     private static int READ_TIMEOUT_MS = 60000;
-    private static String MY_DOMAIN = "http://localhost:2373";
+    private static String MY_DOMAIN = "http://localhost:8080";
 
     private static boolean trustAllCerts = false;
     private static boolean trustAllHosts = false;

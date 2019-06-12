@@ -16,6 +16,8 @@ public class UnsdRequest {
 
     private static final String PARAM_INDICATOR = "indicator";
     private static final String PARAM_PAGE = "page";
+    private static final String PARAM_PAGE_SIZE = "pageSize";
+    private static final String PAGE_SIZE = "250";
 
     private static final String PLACEHOLDER_GOAL = "{goalCode}";
     private static final String PATH_TARGETS = "Goal/{goalCode}/Target/List";
@@ -128,6 +130,7 @@ public class UnsdRequest {
         if (page != null) {
             params.put(PARAM_PAGE, page.toString());
         }
+        params.put(PARAM_PAGE_SIZE, PAGE_SIZE);
         if (selectors != null) {
             selectors.getDimensions().stream().forEach(
                     dimension -> params.put(dimension.getId(), dimension.getValue()));

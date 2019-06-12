@@ -145,7 +145,7 @@ public class SpringConfig extends WebMvcConfigurerAdapter implements Application
         // found, instead of throwing a NoSuchMessageException
         messageSource.setUseCodeAsDefaultMessage(true);
         messageSource.setFallbackToSystemLocale(false);
-        //messageSource.setDefaultEncoding("UTF-8");
+        messageSource.setDefaultEncoding("UTF-8");
         // # -1 : never reload, 0 always reload
         boolean isDevMode = PropertyUtil.getOptional("development", true);
         if(isDevMode) {
