@@ -10,8 +10,6 @@ import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.map.layer.OskariLayerService;
 import fi.nls.oskari.map.layer.OskariLayerServiceMybatisImpl;
-import fi.nls.oskari.permission.domain.Permission;
-import fi.nls.oskari.permission.domain.Resource;
 import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.service.capabilities.CapabilitiesCacheService;
 import fi.nls.oskari.util.PropertyUtil;
@@ -21,6 +19,8 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.oskari.permissions.model.Permission;
+import org.oskari.permissions.model.Resource;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.util.HashMap;

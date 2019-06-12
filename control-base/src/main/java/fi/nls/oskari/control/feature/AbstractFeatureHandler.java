@@ -11,14 +11,11 @@ import fi.nls.oskari.control.RestActionHandler;
 import fi.nls.oskari.domain.User;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.domain.map.wfs.WFSLayerConfiguration;
-import fi.nls.oskari.map.data.domain.OskariLayerResource;
 import fi.nls.oskari.map.layer.OskariLayerService;
 import fi.nls.oskari.map.layer.OskariLayerServiceMybatisImpl;
-import fi.nls.oskari.permission.domain.Resource;
 import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.wfs.WFSLayerConfigurationService;
-import fi.nls.oskari.wfs.WFSLayerConfigurationServiceIbatisImpl;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.auth.AuthScope;
@@ -34,6 +31,9 @@ import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.oskari.permissions.model.OskariLayerResource;
+import org.oskari.permissions.model.Resource;
+import org.oskari.service.util.ServiceFactory;
 
 import java.io.IOException;
 import java.io.StringWriter;
@@ -52,9 +52,9 @@ public abstract class AbstractFeatureHandler extends RestActionHandler {
     @Override
     public void init() {
         super.init();
-        layerService = new OskariLayerServiceMybatisImpl();
-        permissionsService = new PermissionsServiceIbatisImpl();
-        layerConfigurationService = new WFSLayerConfigurationServiceIbatisImpl();
+        layerService = ServiceFactory.getMapLayerService();
+        permissionsService = ServiceFactory.getPermissionsService();
+        layerConfigurationService = ServiceFactory.getWfsLayerService();
     }
 
     protected OskariLayer getLayer(String id) throws ActionParamsException {

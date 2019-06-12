@@ -1,5 +1,8 @@
 package fi.nls.oskari.control.layer;
 
+import org.oskari.permissions.model.OskariLayerResource;
+import org.oskari.permissions.model.Resource;
+
 import fi.mml.portti.domain.permissions.Permissions;
 import fi.mml.portti.service.db.permissions.PermissionsService;
 import fi.nls.oskari.cache.Cache;
@@ -11,9 +14,7 @@ import fi.nls.oskari.domain.User;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.map.data.domain.OskariLayerResource;
 import fi.nls.oskari.map.layer.OskariLayerService;
-import fi.nls.oskari.permission.domain.Resource;
 
 /**
  * Created by SMAKINEN on 27.8.2015.

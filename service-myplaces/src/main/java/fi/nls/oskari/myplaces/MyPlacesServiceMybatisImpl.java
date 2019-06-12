@@ -13,7 +13,6 @@ import fi.nls.oskari.domain.map.UserDataStyle;
 import fi.nls.oskari.domain.map.userlayer.UserLayer;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.permission.domain.Resource;
 import fi.nls.oskari.util.ConversionHelper;
 import org.apache.ibatis.mapping.Environment;
 import org.apache.ibatis.session.Configuration;
@@ -22,6 +21,7 @@ import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.apache.ibatis.transaction.TransactionFactory;
 import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
+import org.oskari.permissions.model.Resource;
 
 import javax.sql.DataSource;
 import java.util.Collections;
