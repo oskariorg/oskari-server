@@ -55,7 +55,7 @@ public interface ResourceMapper {
     List<Permission> findPermissionsByResourceId(@Param("resourceId") int resourceId);
 
     @Insert("INSERT INTO oskari_resource (resource_type, resource_mapping) VALUES (#{type},#{mapping})")
-    @Options(useGeneratedKeys=true)
+    @Options(useGeneratedKeys=true, keyColumn="id", keyProperty="id")
     void insertResource(Resource resource);
 
     @Delete("DELETE FROM oskari_resource WHERE id=#{id}")
