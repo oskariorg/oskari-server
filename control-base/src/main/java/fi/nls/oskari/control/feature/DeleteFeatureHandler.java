@@ -5,13 +5,23 @@ import fi.nls.oskari.control.ActionDeniedException;
 import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.control.ActionParamsException;
+import fi.nls.oskari.domain.map.Feature;
 import fi.nls.oskari.domain.map.OskariLayer;
+import fi.nls.oskari.log.LogFactory;
+import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.util.ResponseHelper;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.opengis.referencing.FactoryException;
+
+import javax.xml.stream.XMLStreamException;
+import java.io.ByteArrayOutputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 @OskariActionRoute("DeleteFeature")
 public class DeleteFeatureHandler extends AbstractFeatureHandler {
+    private static Logger LOG = LogFactory.getLogger(DeleteFeatureHandler.class);
 
     @Override
     public void handlePost(ActionParameters params) throws ActionException {
@@ -24,40 +34,39 @@ public class DeleteFeatureHandler extends AbstractFeatureHandler {
             throw new ActionDeniedException("User doesn't have edit permission for layer: " + layer.getId());
         }
 
-        String payload = createPayload(layer.getName(), getFeatureId(jsonObject));
-        String responseString = postPayload(layer, payload);
-        flushLayerTilesCache(layer.getId());
-
-        if (responseString.indexOf("Exception") > -1) {
-            // FIXME: throwing an exception would be better. Just need to sync the change with frontend
-            ResponseHelper.writeResponse(params, "Exception");
-        } else if (responseString.indexOf("<wfs:totalDeleted>1</wfs:totalDeleted>") > -1) {
-            // FIXME: empty response? why?
-            ResponseHelper.writeResponse(params, "");
-        } else {
-            throw new ActionParamsException("Unexpected response from service: " + responseString);
-        }
-    }
-
-    private String getFeatureId(JSONObject json) throws ActionParamsException {
         try {
-            return json.getString("featureId");
+            String payload = createPayload(jsonObject);
+            String responseString = postPayload(layer, payload);
+            flushLayerTilesCache(layer.getId());
+
+            if (responseString.indexOf("Exception") > -1) {
+                throw new ActionException("Cannot delete feature");
+            } else if (responseString.indexOf("<wfs:totalDeleted>1</wfs:totalDeleted>") > -1) {
+                ResponseHelper.writeResponse(params, "Feature deleted");
+            } else {
+                throw new ActionException("Unexpected response from service: " + responseString);
+            }
         } catch (JSONException e) {
-            throw new ActionParamsException("Error getting featureId from payload");
+            LOG.error(e, "JSON processing error");
+            throw new ActionException("JSON processing error", e);
+        } catch (XMLStreamException e) {
+            LOG.error(e, "Failed to create WFS-T request");
+            throw new ActionException("Failed to create WFS-T request", e);
+        } catch (FactoryException e) {
+            LOG.error(e, "Failed to create WFS-T request (crs)");
+            throw new ActionException("Failed to create WFS-T request (crs)", e);
         }
     }
 
-    protected String createPayload(String layerName, String featureId) {
-        // TODO: rewrite
-        StringBuilder requestData = new StringBuilder(
-                "<wfs:Transaction service='WFS' version='1.1.0'" +
-                        " xmlns:ogc='http://www.opengis.net/ogc'" +
-                        " xmlns:wfs='http://www.opengis.net/wfs'>" +
-                        "<wfs:Delete typeName='" + layerName + "'>" +
-                            "<ogc:Filter><ogc:FeatureId fid='" + featureId + "'/></ogc:Filter>" +
-                        "</wfs:Delete></wfs:Transaction>");
-        return requestData.toString();
+    protected String createPayload(JSONObject jsonObject) throws ActionParamsException, JSONException,
+            XMLStreamException, FactoryException {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        List<Feature> features = new ArrayList<>();
+        Feature feature = getFeature(jsonObject);
+        features.add(feature);
+        FeatureWFSTRequestBuilder.deleteFeatures(baos, features);
 
+        return baos.toString();
     }
 }
 

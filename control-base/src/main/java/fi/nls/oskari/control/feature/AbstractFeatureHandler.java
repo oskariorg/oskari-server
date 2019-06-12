@@ -1,5 +1,6 @@
 package fi.nls.oskari.control.feature;
 
+import com.vividsolutions.jts.geom.*;
 import fi.mml.portti.domain.permissions.Permissions;
 import fi.mml.portti.service.db.permissions.PermissionsService;
 import fi.mml.portti.service.db.permissions.PermissionsServiceIbatisImpl;
@@ -9,6 +10,7 @@ import fi.nls.oskari.control.ActionHandler;
 import fi.nls.oskari.control.ActionParamsException;
 import fi.nls.oskari.control.RestActionHandler;
 import fi.nls.oskari.domain.User;
+import fi.nls.oskari.domain.map.Feature;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.domain.map.wfs.WFSLayerConfiguration;
 import fi.nls.oskari.map.data.domain.OskariLayerResource;
@@ -17,6 +19,7 @@ import fi.nls.oskari.map.layer.OskariLayerServiceMybatisImpl;
 import fi.nls.oskari.permission.domain.Resource;
 import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.IOHelper;
+import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.wfs.WFSLayerConfigurationService;
 import fi.nls.oskari.wfs.WFSLayerConfigurationServiceIbatisImpl;
 import org.apache.http.HttpEntity;
@@ -31,12 +34,17 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
+import org.geotools.referencing.CRS;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.opengis.referencing.FactoryException;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
 import java.io.IOException;
 import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 
@@ -47,7 +55,9 @@ public abstract class AbstractFeatureHandler extends RestActionHandler {
     private OskariLayerService layerService;
     private PermissionsService permissionsService;
     private WFSLayerConfigurationService layerConfigurationService;
-    private static final Set<String> ALLOWED_GEOM_TYPES = ConversionHelper.asSet("multipoint", "multilinestring", "multipolygon");
+    private static final Set<String> ALLOWED_GEOM_TYPES = ConversionHelper.asSet("multipoint",
+            "multilinestring", "multipolygon");
+    private GeometryFactory gf = new GeometryFactory();
 
     @Override
     public void init() {
@@ -112,91 +122,131 @@ public abstract class AbstractFeatureHandler extends RestActionHandler {
         return ALLOWED_GEOM_TYPES.contains(type);
     }
 
-    protected String getGeometry(String geometryType, JSONArray data, String srsName) throws ActionParamsException, JSONException {
+    protected Feature getFeature(JSONObject jsonObject) throws ActionParamsException, JSONException, FactoryException {
+        Feature feature = new Feature();
+        OskariLayer layer = getLayer(jsonObject.optString("layerId"));
+        String srsName = JSONHelper.getStringFromJSON(jsonObject, "srsName", "EPSG:3067");
+        CoordinateReferenceSystem crs = CRS.decode(srsName);
+        WFSLayerConfiguration lc = getWFSConfiguration(layer.getId());
+
+        feature.setLayerName(layer.getName());
+        feature.setNamespace(lc.getFeatureNamespace());
+        feature.setNamespaceURI(lc.getFeatureNamespaceURI());
+        feature.setGMLGeometryProperty(lc.getGMLGeometryProperty());
+        feature.setId(jsonObject.getString("featureId"));
+
+        if(jsonObject.has("featureFields")) {
+            JSONArray jsonArray = jsonObject.getJSONArray("featureFields");
+            for (int i = 0; i < jsonArray.length(); i++) {
+                JSONObject property = jsonArray.getJSONObject(i);
+                if(property.getString("value").isEmpty()) {
+                    continue;
+                }
+                feature.addProperty(property.getString("key"), property.getString("value"));
+            }
+        }
+
+        if (jsonObject.has("geometries")) {
+            JSONObject geometries = jsonObject.getJSONObject("geometries");
+            String geometryType = geometries.getString("type");
+            if(!isAllowedGeomType(geometryType)) {
+                throw new ActionParamsException("Invalid geometry type: " + geometryType);
+            }
+            JSONArray data = geometries.getJSONArray("data");
+            feature.setGeometry(getGeometry(geometryType, data, getSrid(srsName, 3067)));
+        }
+        return feature;
+    }
+
+    protected int getSrid(String srsName, int defaultValue) {
+        if (srsName != null) {
+            int i = srsName.lastIndexOf(':');
+            if (i > 0) {
+                srsName = srsName.substring(i + 1);
+            }
+            try {
+                return Integer.parseInt(srsName);
+            } catch (NumberFormatException ignroe) {}
+        }
+        return defaultValue;
+    }
+
+
+    protected Geometry getGeometry(String geometryType, JSONArray data, int srid) throws ActionParamsException, JSONException {
         if ("multipoint".equals(geometryType)) {
-            return getMultipoint(srsName, data);
+            return getMultipoint(srid, data);
         } else if ("multilinestring".equals(geometryType)) {
-            return getMultiLineStringGeometries(srsName, data);
+            return getMultiLineStringGeometries(srid, data);
         } else if ("multipolygon".equals(geometryType)) {
-            return getMultiPolygonGeometries(srsName, data);
+            return getMultiPolygonGeometries(srid, data);
         }
         throw new ActionParamsException("Unknown type");
     }
 
-    protected String getMultipoint(String srsName, JSONArray data) throws JSONException {
-        StringWriter writer = new StringWriter();
-        writer.append("<gml:MultiPoint xmlns:gml=\"http://www.opengis.net/gml\" srsName=\"");
-        writer.append(srsName);
-        writer.append("\">");
+    protected Geometry getMultipoint(int srid, JSONArray data) throws JSONException {
+        List<Point> points = new ArrayList<>();
         for (int i = 0; i < data.length(); i++) {
-            writer.append("<gml:pointMember><gml:Point><gml:coordinates decimal=\".\" cs=\",\" ts=\" \">"
-                    + data.getJSONObject(i).getString("x") + "," + data.getJSONObject(i).getString("y")
-                    + "</gml:coordinates></gml:Point></gml:pointMember>");
+            Point point = gf.createPoint(new Coordinate(
+                    Double.parseDouble(data.getJSONObject(i).getString("y")),
+                    Double.parseDouble(data.getJSONObject(i).getString("x")))
+            );
+            points.add(point);
         }
-        writer.append("</gml:MultiPoint>");
-        return writer.toString();
+        Geometry geometry = gf.createMultiPoint(points.toArray(new Point[points.size()]));
+        geometry.setSRID(srid);
+
+        return geometry;
     }
 
-    protected String getMultiLineStringGeometries(String srsName, JSONArray data) throws JSONException {
-        StringWriter writer = new StringWriter();
-        writer.append("<gml:MultiLineString xmlns:gml=\"http://www.opengis.net/gml\" srsName=\"");
-        writer.append(srsName);
-        writer.append("\">");
+    protected Geometry getMultiLineStringGeometries(int srid, JSONArray data) throws JSONException {
+        List<LineString> lines = new ArrayList<>();
+        
         for (int lineIndex = 0; lineIndex < data.length(); lineIndex++) {
-            writer.append("<gml:lineStringMember><gml:LineString><gml:coordinates decimal=\".\" cs=\",\" ts=\" \">");
+            List<Coordinate> coordinates = new ArrayList<>();
             JSONArray lineCoordinates = data.getJSONArray(lineIndex);
             for (int coordinateIndex = 0; coordinateIndex < lineCoordinates.length(); coordinateIndex++) {
-                JSONObject coord = lineCoordinates.getJSONObject(coordinateIndex);
-                writer.append(coord.getString("x") + "," + coord.getString("y"));
-                if (coordinateIndex < (lineCoordinates.length() - 1)) {
-                    writer.append(" ");
-                }
+                Coordinate coordinate = new Coordinate(
+                        Double.parseDouble(lineCoordinates.getJSONObject(coordinateIndex).getString("y")),
+                        Double.parseDouble(lineCoordinates.getJSONObject(coordinateIndex).getString("x"))
+                );
+                coordinates.add(coordinate);
             }
-            writer.append("</gml:coordinates></gml:LineString></gml:lineStringMember>");
+            LineString lineString = gf.createLineString(coordinates.toArray(new Coordinate[coordinates.size()]));
+            lines.add(lineString);
         }
-        writer.append("</gml:MultiLineString>");
-        return writer.toString();
+        Geometry geometry  = gf.createMultiLineString(lines.toArray(new LineString[lines.size()]));
+        geometry.setSRID(srid);
+
+        return geometry;
     }
 
-    protected String getMultiPolygonGeometries(String srsName, JSONArray data) throws JSONException {
-        StringWriter writer = new StringWriter();
-        writer.append("<gml:MultiPolygon xmlns:gml=\"http://www.opengis.net/gml\" srsName=\"");
-        writer.append(srsName);
-        writer.append("\">");
-
+    protected Geometry getMultiPolygonGeometries(int srid, JSONArray data) throws JSONException {
+        List<Polygon> polygons = new ArrayList<>();
         for (int polygonIdx = 0; polygonIdx < data.length(); polygonIdx++) {
-            writer.append("<gml:polygonMember><gml:Polygon>");
             JSONArray linearRings = data.getJSONArray(polygonIdx);
             for (int ringIndex = 0; ringIndex < linearRings.length(); ringIndex++) {
-                boolean isExteriorRing = ringIndex == 0;
-                if (isExteriorRing) {
-                    writer.append("<gml:exterior>");
-                } else {
-                    writer.append("<gml:interior>");
-                }
-                writer.append("<gml:LinearRing><gml:posList>");
 
+                List<Coordinate> coordinates = new ArrayList<>();
                 JSONArray currentRing = linearRings.getJSONArray(ringIndex);
+
                 for (int coordinateIndex = 0; coordinateIndex < currentRing.length(); coordinateIndex++) {
-                    JSONObject coord = currentRing.getJSONObject(coordinateIndex);
-                    writer.append(coord.getString("x") + " " + coord.getString("y"));
-                    if (coordinateIndex < (currentRing.length() - 1)) {
-                        writer.append(" ");
-                    }
+                    Coordinate coordinate = new Coordinate(
+                            Double.parseDouble(currentRing.getJSONObject(coordinateIndex).getString("y")),
+                            Double.parseDouble(currentRing.getJSONObject(coordinateIndex).getString("x"))
+                    );
+                    coordinates.add(coordinate);
                 }
 
-                writer.append("</gml:posList></gml:LinearRing>");
-                if (isExteriorRing) {
-                    writer.append("</gml:exterior>");
-                } else {
-                    writer.append("</gml:interior>");
-                }
+                Polygon polygon = gf.createPolygon(coordinates.toArray(new Coordinate[coordinates.size()]));
+                polygons.add(polygon);
             }
-            writer.append("</gml:Polygon></gml:polygonMember>");
         }
 
-        writer.append("</gml:MultiPolygon>");
-        return writer.toString();
+        Geometry geometry = gf.createMultiPolygon(polygons.toArray(new Polygon[polygons.size()]));
+        geometry.setSRID(srid);
+
+        return geometry;
+
     }
 
     protected void flushLayerTilesCache(int layerId) {
