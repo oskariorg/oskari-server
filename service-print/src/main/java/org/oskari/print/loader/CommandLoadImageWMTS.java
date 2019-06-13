@@ -215,6 +215,11 @@ public class CommandLoadImageWMTS extends CommandLoadImageBase {
 
     private TileMatrixSet determineTileMatrixSetToUse(List<TileMatrixSet> possibleTileMatrixSets) throws IllegalArgumentException {
         JSONObject useThisTileMatrixSetInstead = layerService.find(layer.getId()).getAttributes().optJSONObject("preferredTileMatrix");
+        
+        if (useThisTileMatrixSetInstead == null) {
+            return possibleTileMatrixSets.get(0);
+        }
+        
         String id = useThisTileMatrixSetInstead.optString(srs);
         if (id == null) {
             return possibleTileMatrixSets.get(0);
