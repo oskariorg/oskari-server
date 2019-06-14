@@ -6,7 +6,7 @@ package org.oskari.permissions.model;
 public class Permission {
 
     private int id = -1;
-    private PermissionType type;
+    private String type;
     private PermissionExternalType externalType;
     private int externalId;
 
@@ -18,16 +18,17 @@ public class Permission {
         this.id = id;
     }
 
-    public PermissionType getType() {
+    public String getType() {
         return type;
     }
 
     public void setType(String type) {
-        setType(PermissionType.valueOf(type));
+        this.type = type;
+
     }
 
     public void setType(PermissionType type) {
-        this.type = type;
+        setType(type.name());
     }
 
     public PermissionExternalType getExternalType() {
@@ -55,11 +56,11 @@ public class Permission {
     }
 
     public boolean isOfType(String permissionType) {
-        return isOfType(PermissionType.valueOf(permissionType));
+        return type.equals(permissionType);
     }
 
     public boolean isOfType(PermissionType permissionType) {
-        return type == permissionType;
+        return isOfType(permissionType.name());
     }
 
     /**

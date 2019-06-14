@@ -13,7 +13,7 @@ import fi.nls.oskari.domain.User;
 public class Resource {
 
     private int id = -1;
-    private ResourceType type;
+    private String  type;
     private String mapping;
     private List<Permission> permissions;
 
@@ -26,15 +26,15 @@ public class Resource {
     }
 
     public String getType() {
-        return type.name();
+        return type;
     }
 
     public void setType(String type) {
-        setType(ResourceType.valueOf(type));
+        this.type =  type;
     }
 
     public void setType(ResourceType type) {
-        this.type = type;
+        setType(type.name());
     }
 
     public String getMapping() {
@@ -76,7 +76,7 @@ public class Resource {
 
     public boolean hasPermission(User user, PermissionType permissionType) {
         boolean userHasRoleWithId = getPermissions().stream()
-                .filter(p -> p.getType() == permissionType)
+                .filter(p -> p.isOfType(permissionType))
                 .filter(p -> p.getExternalType() == PermissionExternalType.ROLE)
                 .filter(p -> user.hasRoleWithId(p.getExternalId()))
                 .findAny()
@@ -87,7 +87,7 @@ public class Resource {
         }
 
         return getPermissions().stream()
-                .filter(p -> p.getType() == permissionType)
+                .filter(p -> p.isOfType(permissionType))
                 .filter(p -> p.getExternalType() == PermissionExternalType.USER)
                 .filter(p -> p.getExternalId() == user.getId())
                 .findAny()
@@ -96,7 +96,7 @@ public class Resource {
 
     public boolean hasPermission(Role role, PermissionType permissionType) {
         return getPermissions().stream()
-                .filter(p -> p.getType() == permissionType)
+                .filter(p -> p.isOfType(permissionType))
                 .filter(p -> p.getExternalType() == PermissionExternalType.ROLE)
                 .filter(p -> p.getExternalId() == role.getId())
                 .findAny()
@@ -108,6 +108,6 @@ public class Resource {
     }
 
     public void removePermissionsOfType(PermissionType permissionType) {
-        getPermissions().removeIf(p -> p.getType() == permissionType);
+        getPermissions().removeIf(p -> p.isOfType(permissionType));
     }
 }
