@@ -1,16 +1,21 @@
 package org.oskari.statistics.plugins.unsd;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import fi.nls.oskari.control.statistics.data.StatisticalIndicator;
 import fi.nls.oskari.control.statistics.data.StatisticalIndicatorDataDimension;
 import fi.nls.oskari.control.statistics.data.StatisticalIndicatorDataModel;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.util.JSONHelper;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.*;
 
 public class UnsdIndicatorParser {
 
@@ -131,16 +136,6 @@ public class UnsdIndicatorParser {
             LOG.error("Error parsing selectors for indicator: " + e.getMessage(), e);
         }
         return null;
-    }
-
-    // Generates a timePeriod dimension for selectors.
-    // The datasource doesn't report this as being selector like it does for other selectors in the metadata.
-    public static StatisticalIndicatorDataDimension generateTimePeriod(String name, Set<String> years) {
-        StatisticalIndicatorDataDimension selector = new StatisticalIndicatorDataDimension(name);
-        for (String year: years) {
-            selector.addAllowedValue(year);
-        }
-        return selector;
     }
 
     public static Map<String, String> parseSource(JSONObject jsonObject) {
