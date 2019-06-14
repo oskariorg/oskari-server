@@ -19,6 +19,15 @@
             <groupId>fi.nls.oskari.service</groupId>
             <artifactId>oskari-base</artifactId>
         </dependency>
+        <dependency>
+            <groupId>fi.nls.oskari.service</groupId>
+            <artifactId>oskari-mybatis</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>fi.nls.oskari</groupId>
+            <artifactId>shared-test-resources</artifactId>
+			<scope>test</scope>
+        </dependency>
     </dependencies>
     <build>
     	<pluginManagement>

@@ -4,14 +4,24 @@ import fi.nls.oskari.cache.JedisManager;
 import fi.nls.oskari.db.DatasourceHelper;
 import fi.nls.oskari.service.ServiceRuntimeException;
 import fi.nls.oskari.util.PropertyUtil;
+import org.h2.jdbcx.JdbcDataSource;
 
 import javax.sql.DataSource;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.HttpURLConnection;
+import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.sql.Connection;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
 /**
@@ -110,4 +120,55 @@ public class TestHelper {
         }
         return null;
     }
+
+    public static DataSource createMemDBforUnitTest() {
+        JdbcDataSource ds = new JdbcDataSource();
+        ds.setURL("jdbc:h2:mem:test;MODE=PostgreSQL;DB_CLOSE_DELAY=-1");
+        return ds;
+    }
+    public static DataSource createMemDBforUnitTest(Class clazz, String sqlFile) throws SQLException, IOException, URISyntaxException {
+
+        DataSource ds = createMemDBforUnitTest();
+        if (clazz == null && sqlFile == null) {
+            return ds;
+        }
+        List<String> schema = readAllLines(clazz, "schema.sql");
+        List<String> sqls = splitIntoStatements(schema);
+        try (Connection c = ds.getConnection();
+             Statement s = c.createStatement()) {
+            for (String sql : sqls) {
+                s.execute(sql);
+            }
+        }
+        return ds;
+    }
+
+
+    private static List<String> readAllLines(Class clazz, String resource) throws IOException, URISyntaxException {
+        Path path = Paths.get(clazz.getClassLoader().getResource(resource).toURI());
+        return Files.readAllLines(path, StandardCharsets.UTF_8);
+    }
+
+    private static List<String> splitIntoStatements(List<String> lines) {
+        List<String> statements = new ArrayList<>();
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < lines.size(); i++) {
+            String line = lines.get(i).trim();
+            if (line.isEmpty()) {
+                continue;
+            }
+            int j = line.indexOf(';');
+            if (j < 0) {
+                sb.append(line).append(' ');
+                continue;
+            }
+            if (j > 0) {
+                sb.append(line.substring(0, j));
+            }
+            statements.add(sb.toString());
+            sb.setLength(0);
+        }
+        return statements;
+    }
+
 }
