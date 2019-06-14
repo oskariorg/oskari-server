@@ -1,34 +1,21 @@
 package org.oskari.permissions;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertTrue;
-
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
-import org.h2.jdbcx.JdbcDataSource;
+import fi.nls.oskari.domain.map.OskariLayer;
+import fi.nls.test.util.ResourceHelper;
+import fi.nls.test.util.TestHelper;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.oskari.permissions.model.OskariLayerResource;
-import org.oskari.permissions.model.Permission;
-import org.oskari.permissions.model.PermissionExternalType;
-import org.oskari.permissions.model.PermissionType;
-import org.oskari.permissions.model.Resource;
+import org.oskari.permissions.model.*;
 
-import fi.nls.oskari.domain.map.OskariLayer;
+import javax.sql.DataSource;
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.sql.SQLException;
+import java.util.List;
+import java.util.Optional;
+
+import static org.junit.Assert.*;
 
 public class PermissionServiceMybatisImplTest {
 
@@ -40,16 +27,8 @@ public class PermissionServiceMybatisImplTest {
 
     @BeforeClass
     public static void init() throws SQLException, IOException, URISyntaxException {
-        JdbcDataSource ds = new JdbcDataSource();
-        ds.setURL("jdbc:h2:mem:test;MODE=PostgreSQL;DB_CLOSE_DELAY=-1");
-        List<String> schema = readAllLines("schema.sql");
-        List<String> sqls = splitIntoStatements(schema);
-        try (Connection c = ds.getConnection();
-                Statement s = c.createStatement()) {
-            for (String sql : sqls) {
-                s.execute(sql);
-            }
-        }
+        List<String> sqls = ResourceHelper.readSqlStatements(PermissionServiceMybatisImplTest.class, "/schema.sql");
+        DataSource ds = TestHelper.createMemDBforUnitTest(sqls);
         permissionService = new PermissionServiceMybatisImpl(ds);
     }
 
@@ -109,32 +88,4 @@ public class PermissionServiceMybatisImplTest {
                 .findAny()
                 .get();
     }
-
-    private static List<String> readAllLines(String resource) throws IOException, URISyntaxException {
-        Path path = Paths.get(PermissionServiceMybatisImplTest.class.getClassLoader().getResource(resource).toURI());
-        return Files.readAllLines(path, StandardCharsets.UTF_8);
-    }
-
-    private static List<String> splitIntoStatements(List<String> lines) {
-        List<String> statements = new ArrayList<>();
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < lines.size(); i++) {
-            String line = lines.get(i).trim();
-            if (line.isEmpty()) {
-                continue;
-            }
-            int j = line.indexOf(';');
-            if (j < 0) {
-                sb.append(line).append(' ');
-                continue;
-            }
-            if (j > 0) {
-                sb.append(line.substring(0, j));
-            }
-            statements.add(sb.toString());
-            sb.setLength(0);
-        }
-        return statements;
-    }
-
 }
