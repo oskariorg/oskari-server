@@ -4,6 +4,7 @@ import fi.nls.oskari.cache.JedisManager;
 import fi.nls.oskari.db.DatasourceHelper;
 import fi.nls.oskari.service.ServiceRuntimeException;
 import fi.nls.oskari.util.PropertyUtil;
+import org.h2.jdbcx.JdbcDataSource;
 
 import javax.sql.DataSource;
 import java.io.File;
@@ -11,7 +12,10 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.sql.Connection;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.List;
 import java.util.Properties;
 
 /**
@@ -109,5 +113,19 @@ public class TestHelper {
             System.err.println("Error reading properties from " + propFileLocation);
         }
         return null;
+    }
+
+    public static DataSource createMemDBforUnitTest(List<String> sqlStatementsForInit) throws SQLException {
+        JdbcDataSource ds = new JdbcDataSource();
+        ds.setURL("jdbc:h2:mem:test;MODE=PostgreSQL;DB_CLOSE_DELAY=-1");
+        if (sqlStatementsForInit != null ) {
+            try (Connection c = ds.getConnection();
+                 Statement s = c.createStatement()) {
+                for (String sql : sqlStatementsForInit) {
+                    s.execute(sql);
+                }
+            }
+        }
+        return ds;
     }
 }
