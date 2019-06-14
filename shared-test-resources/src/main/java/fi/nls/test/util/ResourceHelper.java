@@ -149,7 +149,7 @@ public class ResourceHelper {
 
     public static List<String> readSqlStatements(Class clazz, String resource) throws IOException, URISyntaxException {
         Path path = Paths.get(clazz.getResource(resource).toURI());
-        return Files.readAllLines(path, StandardCharsets.UTF_8);
+        return splitIntoStatements(Files.readAllLines(path, StandardCharsets.UTF_8));
     }
 
     private static List<String> splitIntoStatements(List<String> lines) {
