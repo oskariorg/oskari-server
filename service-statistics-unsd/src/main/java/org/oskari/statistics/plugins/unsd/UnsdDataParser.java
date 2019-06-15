@@ -124,14 +124,14 @@ public class UnsdDataParser {
             LOG.error("Error parsing time period selectors for indicator: " + e.getMessage(), e);
         }
     }
-
-    private static Integer getTimeperiodYear(JSONObject o) throws JSONException {
-        return ((Double) o.get(TIME_PERIOD_START_KEY)).intValue();
-    }
-
-    private List<IdNamePair> getSortedListOfYearsThatBelongToSeveralGeoAreas(
+    
+    public static List<IdNamePair> getSortedListOfYearsThatBelongToSeveralGeoAreas(
             Map<Integer, Integer> countOfAreaCodesForYear) {
         return (List<IdNamePair>) (countOfAreaCodesForYear.entrySet().stream().filter(e -> e.getValue() > 1)
                 .map(e -> new IdNamePair(String.valueOf(e.getKey()), null))).sorted().collect(Collectors.toList());
+    }
+
+    private static Integer getTimeperiodYear(JSONObject o) throws JSONException {
+        return ((Double) o.get(TIME_PERIOD_START_KEY)).intValue();
     }
 }
