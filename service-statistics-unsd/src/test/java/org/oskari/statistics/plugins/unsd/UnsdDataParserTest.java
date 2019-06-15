@@ -5,6 +5,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -36,26 +37,40 @@ public class UnsdDataParserTest {
     private static final List<IdNamePair> EXPECTED_DIMENSION_ALLOWED_VALUES = Arrays
             .asList(new IdNamePair[] { new IdNamePair("N", null), new IdNamePair("G", null) });
 
-    private static final Map<Integer,Integer> EXPECTED_TIMEPERIOD_DIMENSION_ALLOWED_VALUES = new HashMap<>(); 
+    private static final Map<Integer,Integer> EXPECTED_TIMEPERIOD_DIMENSION_ALLOWED_VALUES = new HashMap<>();
+    private static final Map<Integer,Integer> TIMEPERIOD_FILTER_AND_SORT_TEST_INPUT;
+    private static final List <IdNamePair> EXPECTED_TIMEPERIOD_FILTERED_AND_SORTED_VALUES = new ArrayList<>();
     
     static {
         EXPECTED_TIMEPERIOD_DIMENSION_ALLOWED_VALUES.put(2000, 2);
-        EXPECTED_TIMEPERIOD_DIMENSION_ALLOWED_VALUES.put(2001, 2);
         EXPECTED_TIMEPERIOD_DIMENSION_ALLOWED_VALUES.put(2002, 2);
-        EXPECTED_TIMEPERIOD_DIMENSION_ALLOWED_VALUES.put(2003, 2);
-        EXPECTED_TIMEPERIOD_DIMENSION_ALLOWED_VALUES.put(2004, 2);
+        EXPECTED_TIMEPERIOD_DIMENSION_ALLOWED_VALUES.put(2001, 2);
         EXPECTED_TIMEPERIOD_DIMENSION_ALLOWED_VALUES.put(2005, 2);
         EXPECTED_TIMEPERIOD_DIMENSION_ALLOWED_VALUES.put(2006, 2);
+        EXPECTED_TIMEPERIOD_DIMENSION_ALLOWED_VALUES.put(2004, 2);
         EXPECTED_TIMEPERIOD_DIMENSION_ALLOWED_VALUES.put(2007, 2);
-        EXPECTED_TIMEPERIOD_DIMENSION_ALLOWED_VALUES.put(2008, 1);
         EXPECTED_TIMEPERIOD_DIMENSION_ALLOWED_VALUES.put(2009, 1);
         EXPECTED_TIMEPERIOD_DIMENSION_ALLOWED_VALUES.put(2010, 1);
         EXPECTED_TIMEPERIOD_DIMENSION_ALLOWED_VALUES.put(2011, 1);
-        EXPECTED_TIMEPERIOD_DIMENSION_ALLOWED_VALUES.put(2012, 1);
         EXPECTED_TIMEPERIOD_DIMENSION_ALLOWED_VALUES.put(2013, 1);
+        EXPECTED_TIMEPERIOD_DIMENSION_ALLOWED_VALUES.put(2008, 1);
         EXPECTED_TIMEPERIOD_DIMENSION_ALLOWED_VALUES.put(2014, 1);
         EXPECTED_TIMEPERIOD_DIMENSION_ALLOWED_VALUES.put(2015, 1);
         EXPECTED_TIMEPERIOD_DIMENSION_ALLOWED_VALUES.put(2016, 1);
+        EXPECTED_TIMEPERIOD_DIMENSION_ALLOWED_VALUES.put(2012, 1);
+        EXPECTED_TIMEPERIOD_DIMENSION_ALLOWED_VALUES.put(2003, 2);
+        
+        // Same map can be used as input in filter and sort test
+        TIMEPERIOD_FILTER_AND_SORT_TEST_INPUT = EXPECTED_TIMEPERIOD_DIMENSION_ALLOWED_VALUES;
+        
+        EXPECTED_TIMEPERIOD_FILTERED_AND_SORTED_VALUES.add(new IdNamePair("2000",null));
+        EXPECTED_TIMEPERIOD_FILTERED_AND_SORTED_VALUES.add(new IdNamePair("2001",null));
+        EXPECTED_TIMEPERIOD_FILTERED_AND_SORTED_VALUES.add(new IdNamePair("2002",null));
+        EXPECTED_TIMEPERIOD_FILTERED_AND_SORTED_VALUES.add(new IdNamePair("2003",null));
+        EXPECTED_TIMEPERIOD_FILTERED_AND_SORTED_VALUES.add(new IdNamePair("2004",null));
+        EXPECTED_TIMEPERIOD_FILTERED_AND_SORTED_VALUES.add(new IdNamePair("2005",null));
+        EXPECTED_TIMEPERIOD_FILTERED_AND_SORTED_VALUES.add(new IdNamePair("2006",null));
+        EXPECTED_TIMEPERIOD_FILTERED_AND_SORTED_VALUES.add(new IdNamePair("2007",null));
     }
 
     @Test
@@ -115,5 +130,12 @@ public class UnsdDataParserTest {
             assertEquals(String.format("For year %s", e.getKey()),
                     e.getValue(), countOfAreaCodesForYear.get(e.getKey()));
         });
+    }
+    
+    @Test
+    public void testIndicatorTimePeriodFilteringAndSorting() {
+        List <IdNamePair> result = UnsdDataParser.getSortedListOfYearsThatBelongToSeveralGeoAreas(TIMEPERIOD_FILTER_AND_SORT_TEST_INPUT);
+        assertNotNull(result);
+        assertEquals(EXPECTED_TIMEPERIOD_FILTERED_AND_SORTED_VALUES, result);
     }
 }
