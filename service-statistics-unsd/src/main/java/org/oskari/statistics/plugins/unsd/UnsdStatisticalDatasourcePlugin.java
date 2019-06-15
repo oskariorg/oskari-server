@@ -29,37 +29,6 @@ public class UnsdStatisticalDatasourcePlugin extends StatisticalDatasourcePlugin
     private Map<Long, String[]> layerAreaCodes = new HashMap<>();
 
     @Override
-    public void update() {
-        // get the indicator listing
-        UnsdRequest request = new UnsdRequest(config);
-        request.setGoal(config.getGoal());
-        String targetsResponse = request.getTargets();
-        List<StatisticalIndicator> indicators = UnsdIndicatorParser.parseIndicators(targetsResponse);
-        // Resolve indicator dimensions parallel
-        indicators = indicators.parallelStream().map(ind -> resolveIndicatorDimensions(ind))
-                .sorted((ind1, ind2) -> ind1.getId().compareTo(ind2.getId())).collect(Collectors.toList());
-        // And write to cache serially to preserve sorted order
-        indicators.forEach(ind -> onIndicatorProcessed(ind));
-        LOG.info("Indicators handled.");
-    }
-
-    private StatisticalIndicator resolveIndicatorDimensions(StatisticalIndicator ind) {
-        UnsdRequest request = new UnsdRequest(config);
-        request.setGoal(config.getGoal());
-        request.setIndicator(ind.getId());
-        JSONObject dataResponse = JSONHelper.createJSONObject(request.getIndicatorData(null));
-        ind.setSource(UnsdIndicatorParser.parseSource(dataResponse));
-        // Parse indicator specific dimensions from indicator data response
-        ind.setDataModel(UnsdIndicatorParser.parseDimensions(dataResponse));
-        // Parse time period from indicator data responses(from all pages)
-        ind.getDataModel().addDimension(indicatorValuesFetcher
-                .getTimeperiodDimensionFromIndicatorData(config.getTimeVariableId(), ind.getId()));
-        ind.getDataModel().setTimeVariable(config.getTimeVariableId());
-        getSource().getLayers().stream().forEach(l -> ind.addLayer(l));
-        return ind;
-    }
-
-    @Override
     public void init(StatisticalDatasource source) {
         super.init(source);
         config = new UnsdConfig(source.getConfigJSON(), source.getId());
@@ -68,22 +37,24 @@ public class UnsdStatisticalDatasourcePlugin extends StatisticalDatasourcePlugin
         // optimization for getting data just for the countries we are showing
         initAreaCodes(source.getLayers());
     }
+    
+    @Override
+    public void update() {
+        // get the indicator listing
+        UnsdRequest request = new UnsdRequest(config);
+        request.setGoal(config.getGoal());
+        String targetsResponse = request.getTargets();
+        List<StatisticalIndicator> indicators = UnsdIndicatorParser.parseIndicators(targetsResponse);
+        indicators = resolveDimensionsForAllIndicatorsOfGoal(indicators);
+        // And write to cache serially to preserve sorted order
+        indicators.forEach(ind -> onIndicatorProcessed(ind));
+        LOG.info("Indicators handled.");
+    }
 
-    private void initAreaCodes(List<DatasourceLayer> layers) {
-        // TODO; Get codes from RegionSetHelper?
-        String[] regionWhitelist = PropertyUtil.getCommaSeparatedList("unsd.region.whitelist");
-        if (regionWhitelist.length == 0) {
-            // no whitelist -> get data for all regions
-            return;
-        }
-
-        List<String> countries = Arrays.stream(regionWhitelist).map(code -> regionMapper.find(code))
-                .filter(Optional::isPresent).map(Optional::get).map(c -> c.getCode(CountryRegion.Type.M49))
-                .collect(Collectors.toList());
-
-        for (DatasourceLayer layer : layers) {
-            layerAreaCodes.put(layer.getMaplayerId(), countries.toArray(new String[0]));
-        }
+    private List<StatisticalIndicator> resolveDimensionsForAllIndicatorsOfGoal(List<StatisticalIndicator> indicators) {
+        // Resolve dimensions parallel for indicators
+        return indicators.parallelStream().map(ind -> resolveDimensionsForSingleIndicator(ind))
+                .sorted((ind1, ind2) -> ind1.getId().compareTo(ind2.getId())).collect(Collectors.toList());
     }
 
     @Override
@@ -104,5 +75,38 @@ public class UnsdStatisticalDatasourcePlugin extends StatisticalDatasourcePlugin
         });
 
         return updated;
+    }
+    
+    private void initAreaCodes(List<DatasourceLayer> layers) {
+        // TODO; Get codes from RegionSetHelper?
+        String[] regionWhitelist = PropertyUtil.getCommaSeparatedList("unsd.region.whitelist");
+        if (regionWhitelist.length == 0) {
+            // no whitelist -> get data for all regions
+            return;
+        }
+
+        List<String> countries = Arrays.stream(regionWhitelist).map(code -> regionMapper.find(code))
+                .filter(Optional::isPresent).map(Optional::get).map(c -> c.getCode(CountryRegion.Type.M49))
+                .collect(Collectors.toList());
+
+        for (DatasourceLayer layer : layers) {
+            layerAreaCodes.put(layer.getMaplayerId(), countries.toArray(new String[0]));
+        }
+    }
+    
+    private StatisticalIndicator resolveDimensionsForSingleIndicator(StatisticalIndicator ind) {
+        UnsdRequest request = new UnsdRequest(config);
+        request.setGoal(config.getGoal());
+        request.setIndicator(ind.getId());
+        JSONObject dataResponse = JSONHelper.createJSONObject(request.getIndicatorData(null));
+        ind.setSource(UnsdIndicatorParser.parseSource(dataResponse));
+        // Parse indicator specific dimensions from indicator data response
+        ind.setDataModel(UnsdIndicatorParser.parseDimensions(dataResponse));
+        // Parse time period from indicator data responses(from all pages)
+        ind.getDataModel().addDimension(indicatorValuesFetcher
+                .getTimeperiodDimensionFromIndicatorData(config.getTimeVariableId(), ind.getId()));
+        ind.getDataModel().setTimeVariable(config.getTimeVariableId());
+        getSource().getLayers().stream().forEach(l -> ind.addLayer(l));
+        return ind;
     }
 }
