@@ -110,7 +110,7 @@ public class UnsdDataParser {
             JSONArray data = response.getJSONArray(DATA_KEY);
             for (int i = 0; i < data.length(); i++) {
                 JSONObject o = (JSONObject) data.get(i);
-                Integer year = getTimeperiodYear(o);
+                Integer year = o.getInt(TIME_PERIOD_START_KEY);
                 countOfAreaCodesForYear.merge(year, 1, Integer::sum);
             }
         } catch (JSONException e) {
@@ -122,9 +122,5 @@ public class UnsdDataParser {
             Map<Integer, Integer> countOfAreaCodesForYear) {
         return (List<IdNamePair>) (countOfAreaCodesForYear.entrySet().stream().filter(e -> e.getValue() > 1)
                 .map(e -> new IdNamePair(String.valueOf(e.getKey()), null))).sorted().collect(Collectors.toList());
-    }
-
-    private static Integer getTimeperiodYear(JSONObject o) throws JSONException {
-        return ((Double) o.get(TIME_PERIOD_START_KEY)).intValue();
     }
 }
