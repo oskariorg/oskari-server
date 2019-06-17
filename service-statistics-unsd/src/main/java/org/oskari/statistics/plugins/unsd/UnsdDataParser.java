@@ -121,6 +121,6 @@ public class UnsdDataParser {
     public static List<IdNamePair> getSortedListOfYearsThatBelongToSeveralGeoAreas(
             Map<Integer, Integer> countOfAreaCodesForYear) {
         return (List<IdNamePair>) (countOfAreaCodesForYear.entrySet().stream().filter(e -> e.getValue() > 1)
-                .map(e -> new IdNamePair(String.valueOf(e.getKey()), null))).sorted().collect(Collectors.toList());
+                .map(e -> e.getKey()).sorted().map(year -> new IdNamePair(String.valueOf(year), null))).collect(Collectors.toList());
     }
 }
