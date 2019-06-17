@@ -111,14 +111,7 @@ public class UnsdDataParser {
             for (int i = 0; i < data.length(); i++) {
                 JSONObject o = (JSONObject) data.get(i);
                 Integer year = getTimeperiodYear(o);
-
-                if (countOfAreaCodesForYear.containsKey(year)) {
-                    Integer count = countOfAreaCodesForYear.get(year);
-                    count++;
-                    countOfAreaCodesForYear.put(year, count);
-                } else {
-                    countOfAreaCodesForYear.put(year, 1);
-                }
+                countOfAreaCodesForYear.merge(year, 1, Integer::sum);
             }
         } catch (JSONException e) {
             LOG.error("Error parsing time period selectors for indicator: " + e.getMessage(), e);
