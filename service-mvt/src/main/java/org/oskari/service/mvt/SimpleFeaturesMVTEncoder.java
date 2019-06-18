@@ -156,23 +156,26 @@ public class SimpleFeaturesMVTEncoder {
                     continue;
                 }
 
-                if (buffer > 0) {
-                    try {
-                        // Calculate the intersection with our buffered envelope
-                        geom = tileClipGeom.intersection(geom);
-                        if (geom == null || geom.isEmpty()) {
-                            // Which might exist - skip the geometry
-                            continue;
-                        }
-                        // Make sure the geometry still intersects with the actual tileEnvelope
-                        geom = within(geom, tileEnvelope, rectIntersects);
-                        if (geom == null || geom.isEmpty()) {
-                            continue;
-                        }
-                    } catch (TopologyException ignore) {
-                        // Calculating the intersection failed
+                try {
+                    // Calculate the intersection with our buffered envelope
+                    geom = tileClipGeom.intersection(geom);
+                    if (geom == null || geom.isEmpty()) {
+                        // Which might exist - skip the geometry
                         continue;
                     }
+                } catch (TopologyException ignore) {
+                    // Calculating the intersection failed
+                    continue;
+                }
+
+                // We just clipped it with the buffered envelope so the geometry most probably changed
+                // Make sure the geometry still intersects with the actual tileEnvelope.
+                // TODO: Figure out whether or not this is actually necessary
+                // Luckily within() is almost free for other than (Multi)Polygons
+                // and even for those it's not that expensive anyway
+                geom = within(geom, tileEnvelope, rectIntersects);
+                if (geom == null || geom.isEmpty()) {
+                    continue;
                 }
 
                 // Snap the geometry to MVT grid (integer coordinates)
@@ -208,10 +211,9 @@ public class SimpleFeaturesMVTEncoder {
         if (geom instanceof Polygon) {
             Polygon polygon = (Polygon) geom;
             LinearRing exterior = (LinearRing) polygon.getExteriorRing();
-            if (!rectIntersects.intersects(exterior)) {
-                if (!polygon.covers(GF.toGeometry(rect))) {
-                    return null;
-                }
+            Polygon exteriorRingAsPolygon = GF.createPolygon(exterior);
+            if (!rectIntersects.intersects(exteriorRingAsPolygon)) {
+                return null;
             }
             int numInteriorRing = polygon.getNumInteriorRing();
             if (numInteriorRing == 0) {
@@ -221,12 +223,12 @@ public class SimpleFeaturesMVTEncoder {
             int n = 0;
             for (int i = 0; i < numInteriorRing; i++) {
                 LinearRing interiorRing = (LinearRing) polygon.getInteriorRingN(i);
-                if (rectIntersects.intersects(interiorRing)) {
+                if (rectIntersects.intersects(GF.createPolygon(interiorRing))) {
                     interiorRings[n++] = interiorRing;
                 }
             }
             if (n == 0) {
-                return GF.createPolygon(exterior);
+                return exteriorRingAsPolygon;
             }
             if (n == numInteriorRing) {
                 return geom;
