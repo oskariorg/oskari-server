@@ -16,25 +16,28 @@ import org.oskari.print.wmts.GetTileRequestBuilderREST;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.geometry.ProjectionHelper;
+import fi.nls.oskari.map.layer.OskariLayerService;
+import fi.nls.oskari.map.layer.OskariLayerServiceMybatisImpl;
 import fi.nls.oskari.wmts.domain.ResourceUrl;
 import fi.nls.oskari.wmts.domain.TileMatrix;
 import fi.nls.oskari.wmts.domain.TileMatrixSet;
 import fi.nls.oskari.wmts.domain.WMTSCapabilities;
 import fi.nls.oskari.wmts.domain.WMTSCapabilitiesLayer;
+import org.json.JSONObject;
 
 /**
- * HystrixCommand that loads tiles from a WMTS service
- * and combines them to a single BufferedImage
+ * HystrixCommand that loads tiles from a WMTS service and combines them to a
+ * single BufferedImage
  */
 public class CommandLoadImageWMTS extends CommandLoadImageBase {
 
     private static final Logger LOG = LogFactory.getLogger(CommandLoadImageWMTS.class);
     private static final double EPSILON = 0.015625;
 
-    private static final String[] FORMAT_TO_USE = new String[] {
-            "image/png",
-            "image/png8",
-            "image/jpeg"
+    private static final String[] FORMAT_TO_USE = new String[]{
+        "image/png",
+        "image/png8",
+        "image/jpeg"
     };
 
     private final PrintLayer layer;
@@ -44,6 +47,8 @@ public class CommandLoadImageWMTS extends CommandLoadImageBase {
     private final double resolution;
     private final String srs;
     private final WMTSCapabilities capabilities;
+
+    private final OskariLayerService layerService = new OskariLayerServiceMybatisImpl();
 
     public CommandLoadImageWMTS(PrintLayer layer,
             int width,
@@ -103,8 +108,8 @@ public class CommandLoadImageWMTS extends CommandLoadImageBase {
             countTileRows--;
         }
 
-        List<Future<BufferedImage>> futureTiles =
-                new ArrayList<Future<BufferedImage>>(countTileRows * countTileCols);
+        List<Future<BufferedImage>> futureTiles
+                = new ArrayList<Future<BufferedImage>>(countTileRows * countTileCols);
 
         ResourceUrl tileResourceUrl = layerCapabilities.getResourceUrlByType("tile");
         GetTileRequestBuilder requestBuilder;
@@ -190,12 +195,41 @@ public class CommandLoadImageWMTS extends CommandLoadImageBase {
     }
 
     private TileMatrixSet getTileMatrixSet() throws IllegalArgumentException {
+        List<TileMatrixSet> possibleTileMatrixSets = new ArrayList<>();
+
         for (TileMatrixSet tms : capabilities.getTileMatrixSets()) {
             if (srs.equals(ProjectionHelper.shortSyntaxEpsg(tms.getCrs()))) {
+                possibleTileMatrixSets.add(tms);
+            }
+        }
+
+        if (possibleTileMatrixSets.isEmpty()) {
+            throw new IllegalArgumentException("Could not find TileMatrixSet for the requested crs");
+        }
+
+        if (possibleTileMatrixSets.size() == 1) {
+            return possibleTileMatrixSets.get(0);
+        }
+        return determineTileMatrixSetToUse(possibleTileMatrixSets);
+    }
+
+    private TileMatrixSet determineTileMatrixSetToUse(List<TileMatrixSet> possibleTileMatrixSets) throws IllegalArgumentException {
+        JSONObject useThisTileMatrixSetInstead = layerService.find(layer.getId()).getAttributes().optJSONObject("preferredTileMatrix");
+        
+        if (useThisTileMatrixSetInstead == null) {
+            return possibleTileMatrixSets.get(0);
+        }
+        
+        String id = useThisTileMatrixSetInstead.optString(srs);
+        if (id == null) {
+            return possibleTileMatrixSets.get(0);
+        }
+        for (TileMatrixSet tms : possibleTileMatrixSets) {
+            if (tms.getId().equals(id)) {
                 return tms;
             }
         }
-        throw new IllegalArgumentException("Could not find TileMatrixSet for the requested crs");
+        throw new IllegalArgumentException("Could not find TileMatrixSet with id " + id + " for layer " + layer.getId());
     }
 
     private GetTileRequestBuilder getTileRequestBuilderREST(String tileMatrixSetId, String tileMatrixId, ResourceUrl tileResourceUrl) {
