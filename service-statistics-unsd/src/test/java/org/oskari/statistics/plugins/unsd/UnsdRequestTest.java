@@ -14,7 +14,7 @@ import org.powermock.utils.Asserts;
 
 public class UnsdRequestTest {
 
-    private static final int EXPECTED_INDICATOR_RESPONSE_DATA_SIZE = 250;
+    private static final int EXPECTED_INDICATOR_RESPONSE_DATA_SIZE = 2500;
     private static final String INDICATOR = "1.5.2";
 
     private UnsdRequest request;

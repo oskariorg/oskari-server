@@ -17,7 +17,7 @@ public class UnsdRequest {
     private static final String PARAM_INDICATOR = "indicator";
     private static final String PARAM_PAGE = "page";
     private static final String PARAM_PAGE_SIZE = "pageSize";
-    private static final String PAGE_SIZE = "250";
+    private static final String PAGE_SIZE = "2500";
 
     private static final String PLACEHOLDER_GOAL = "{goalCode}";
     private static final String PATH_TARGETS = "Goal/{goalCode}/Target/List";
