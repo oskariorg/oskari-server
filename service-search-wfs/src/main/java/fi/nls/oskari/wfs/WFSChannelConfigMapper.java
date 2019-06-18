@@ -30,7 +30,7 @@ public interface WFSChannelConfigMapper {
 
     @Insert("INSERT INTO oskari_wfs_search_channels (wfs_layer_id, locale, config, params_for_search, is_default) " +
             "VALUES (#{WFSLayerId}, #{locale}, #{config}, #{paramsForSearch}, #{isDefault})")
-    @Options(useGeneratedKeys=true)
+    @Options(useGeneratedKeys=true, keyColumn = "id", keyProperty = "id")
     void insert(final WFSSearchChannelsConfiguration config);
 
     @Update("UPDATE oskari_wfs_search_channels SET " +
