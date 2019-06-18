@@ -16,7 +16,7 @@ public interface BundleMapper {
     Bundle getBundleTemplateByName(final String name);
 
     @Insert("insert into portti_bundle (name, startup, config, state ) values ( #{name}, #{startup}, #{config}, #{state} )")
-    @Options(useGeneratedKeys=true)
+    @Options(useGeneratedKeys=true, keyColumn = "id", keyProperty = "id")
     long addBundleTemplate(final Bundle bundle);
 
 }
