@@ -2,7 +2,6 @@ package fi.nls.oskari.control.admin;
 
 import fi.mml.portti.domain.permissions.Permissions;
 import fi.mml.portti.service.db.permissions.PermissionsService;
-import fi.mml.portti.service.db.permissions.PermissionsServiceIbatisImpl;
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.*;
 import fi.nls.oskari.domain.Role;
@@ -12,13 +11,9 @@ import fi.nls.oskari.domain.map.view.Bundle;
 import fi.nls.oskari.domain.map.view.View;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.map.data.domain.OskariLayerResource;
 import fi.nls.oskari.map.layer.OskariLayerService;
-import fi.nls.oskari.map.layer.OskariLayerServiceMybatisImpl;
 import fi.nls.oskari.map.view.ViewException;
 import fi.nls.oskari.map.view.ViewService;
-import fi.nls.oskari.map.view.AppSetupServiceMybatisImpl;
-import fi.nls.oskari.permission.domain.Resource;
 import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.service.UserService;
 import fi.nls.oskari.util.ConversionHelper;
@@ -27,6 +22,9 @@ import fi.nls.oskari.util.ResponseHelper;
 import fi.nls.oskari.view.modifier.ViewModifier;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.oskari.permissions.model.OskariLayerResource;
+import org.oskari.permissions.model.Resource;
+import org.oskari.service.util.ServiceFactory;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -47,10 +45,10 @@ public class SystemViewsHandler extends RestActionHandler {
     private final static String DEFAULT_SRS = "EPSG:3067";
 
     public void init() {
-        viewService = new AppSetupServiceMybatisImpl();
+        viewService = ServiceFactory.getViewService();
 
-        layerService = new OskariLayerServiceMybatisImpl();
-        permissionsService = new PermissionsServiceIbatisImpl();
+        layerService = ServiceFactory.getMapLayerService();
+        permissionsService = ServiceFactory.getPermissionsService();
     }
 
     /**

@@ -21,11 +21,8 @@ import fi.nls.oskari.map.analysis.domain.AnalysisMethodParams;
 import fi.nls.oskari.map.analysis.domain.SpatialJoinStatisticsMethodParams;
 import fi.nls.oskari.map.analysis.service.AnalysisDataService;
 import fi.nls.oskari.map.analysis.service.AnalysisWebProcessingService;
-import fi.nls.oskari.map.data.domain.OskariLayerResource;
 import fi.nls.oskari.map.layer.OskariLayerService;
 import fi.nls.oskari.map.layer.OskariLayerServiceMybatisImpl;
-import fi.nls.oskari.permission.domain.Permission;
-import fi.nls.oskari.permission.domain.Resource;
 import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.service.UserService;
 import fi.nls.oskari.util.ConversionHelper;
@@ -34,6 +31,10 @@ import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.util.ResponseHelper;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.oskari.permissions.model.OskariLayerResource;
+import org.oskari.permissions.model.Permission;
+import org.oskari.permissions.model.Resource;
+import org.oskari.service.util.ServiceFactory;
 
 import java.net.URL;
 import java.util.*;
@@ -46,9 +47,9 @@ public class CreateAnalysisLayerHandler extends RestActionHandler {
     private AnalysisDataService analysisDataService = new AnalysisDataService();
     private AnalysisWebProcessingService wpsService = new AnalysisWebProcessingService();
     private AnalysisParser analysisParser = new AnalysisParser();
-    private OskariLayerService mapLayerService = new OskariLayerServiceMybatisImpl();
+    private OskariLayerService mapLayerService = ServiceFactory.getMapLayerService();
 
-    private static PermissionsService permissionsService = new PermissionsServiceIbatisImpl();
+    private static PermissionsService permissionsService = ServiceFactory.getPermissionsService();
 
     private static final String PARAM_ANALYSE = "analyse";
     private static final String PARAM_FILTER1 = "filter1";
