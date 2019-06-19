@@ -1,13 +1,16 @@
 package org.oskari.permissions;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import javax.sql.DataSource;
 
+import fi.nls.oskari.domain.Role;
+import fi.nls.oskari.domain.User;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.oskari.permissions.model.Permission;
+import org.oskari.permissions.model.PermissionExternalType;
 import org.oskari.permissions.model.Resource;
 import org.oskari.permissions.model.ResourceType;
 
@@ -76,14 +79,43 @@ public class PermissionServiceMybatisImpl extends PermissionService {
     }
 
 
-    private void setPermissions(int resourceId, List<Permission> permissions) {
+    public Set<String> getResourcesWithGrantedPermissions(String resourceType, User user, String permissionsType) {
+
+        // user role based permissions
+        final Set<Long> roleIds = user.getRoles().stream()
+                .map(Role::getId)
+                .collect(Collectors.toSet());
+
+        final Set<String> groupPermissions =
+                getResourcesWithGrantedPermissions(
+                        resourceType, roleIds, PermissionExternalType.ROLE, permissionsType);
+
+        if (!user.isGuest()) {
+            // user id based permissions are only valid for non-guests
+            Set<String> userPermissions =
+                    getResourcesWithGrantedPermissions(
+                            resourceType, Collections.singleton(user.getId()), PermissionExternalType.USER, permissionsType);
+            groupPermissions.addAll(userPermissions);
+        }
+        return groupPermissions;
+    }
+
+    private Set<String> getResourcesWithGrantedPermissions(
+            String resourceType,
+            Set<Long> externalId,
+            PermissionExternalType externalIdType,
+            String permissionsType) {
+
+        if(externalId == null || externalId.isEmpty()) {
+            return Collections.emptySet();
+        }
+
         try (SqlSession session = factory.openSession(false)) {
             ResourceMapper mapper = session.getMapper(MAPPER);
-            mapper.deletePermissions(resourceId);
-            for (Permission permission : permissions) {
-                mapper.insertPermission(permission, resourceId);
-            }
-            session.commit();
+            String commaseparatedIds = String.join(",", externalId.stream()
+                    .map(num -> Long.toString(num)).collect(Collectors.toSet()));
+            return mapper.findMappingsForPermission(
+                    resourceType, externalIdType, permissionsType, commaseparatedIds);
         }
     }
 
@@ -94,6 +126,17 @@ public class PermissionServiceMybatisImpl extends PermissionService {
             mapper.insertResource(resource);
             for (Permission permission : resource.getPermissions()) {
                 mapper.insertPermission(permission, resource.getId());
+            }
+            session.commit();
+        }
+    }
+
+    private void setPermissions(int resourceId, List<Permission> permissions) {
+        try (SqlSession session = factory.openSession(false)) {
+            ResourceMapper mapper = session.getMapper(MAPPER);
+            mapper.deletePermissions(resourceId);
+            for (Permission permission : permissions) {
+                mapper.insertPermission(permission, resourceId);
             }
             session.commit();
         }

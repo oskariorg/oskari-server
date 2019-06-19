@@ -1,6 +1,7 @@
 package org.oskari.permissions;
 
 import java.util.List;
+import java.util.Set;
 
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
@@ -12,6 +13,7 @@ import org.apache.ibatis.annotations.ResultMap;
 import org.apache.ibatis.annotations.Results;
 import org.apache.ibatis.annotations.Select;
 import org.oskari.permissions.model.Permission;
+import org.oskari.permissions.model.PermissionExternalType;
 import org.oskari.permissions.model.Resource;
 import org.oskari.permissions.model.ResourceType;
 
@@ -39,6 +41,21 @@ public interface ResourceMapper {
             + "WHERE resource_type = #{type} "
             + "AND resource_mapping = #{mapping}")
     Resource findByTypeAndMapping(@Param("type") String type, @Param("mapping") String mapping);
+
+    @Select("select distinct\n" +
+            "            r.resource_mapping\n" +
+            "        from\n" +
+            "            oskari_resource r, oskari_permission p\n" +
+            "        where\n" +
+            "            r.id=p.oskari_resource_id\n" +
+            "            and r.resource_type=#{resourceType}\n" +
+            "            and p.external_type=#{externalType}\n" +
+            "            and p.permission=#{permission}\n" +
+            "            and p.external_id IN (#{external_id})")
+    Set<String> findMappingsForPermission(@Param("resourceType") String resourceType,
+                                          @Param("externalType") PermissionExternalType externalType,
+                                          @Param("permission") String permission,
+                                          @Param("external_id") String external_id);
 
     @Results({
         @Result(property="id", column="id", id=true),
