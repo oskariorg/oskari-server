@@ -22,7 +22,6 @@ import com.vividsolutions.jts.geom.Polygon;
 import com.vividsolutions.jts.geom.TopologyException;
 import com.vividsolutions.jts.geom.util.GeometryEditor;
 import com.vividsolutions.jts.operation.predicate.RectangleIntersects;
-import com.vividsolutions.jts.simplify.TopologyPreservingSimplifier;
 import com.wdtinc.mapbox_vector_tile.VectorTile;
 import com.wdtinc.mapbox_vector_tile.adapt.jts.IUserDataConverter;
 import com.wdtinc.mapbox_vector_tile.adapt.jts.JtsAdapter;
@@ -104,11 +103,15 @@ public class SimpleFeaturesMVTEncoder {
             double deltaY = bufferSizePercent * tileEnvelope.getHeight();
             clipEnvelope.expandBy(deltaX, deltaY);
         }
-        Geometry tileEnvelopeGeom = GF.toGeometry(tileEnvelope);
-        Geometry tileClipGeom = GF.toGeometry(clipEnvelope);
+
+        Envelope mvtEnvelope = new Envelope(0, extent, 0, extent);
+        Envelope mvtBufferEnvelope = new Envelope(-buffer, extent + buffer, -buffer, extent + buffer);
+        Geometry tileEnvelopeGeom = GF.toGeometry(mvtEnvelope);
+        Geometry tileClipGeom = GF.toGeometry(mvtBufferEnvelope);
+
         RectangleIntersects rectIntersects = new RectangleIntersects((Polygon) tileEnvelopeGeom);
 
-        double res = tileEnvelope.getWidth() / extent;
+        // double res = tileEnvelope.getWidth() / extent;
 
         double translateX = tileEnvelope.getMinX();
         double translateY = tileEnvelope.getMaxY();
@@ -142,11 +145,10 @@ public class SimpleFeaturesMVTEncoder {
                     }
                 }
 
-                // Simplify the geometry to reduce number of vertices
-                // Use resolution as tolerance
-                geom = TopologyPreservingSimplifier.simplify(geom, res);
+                // Snap the geometry to MVT grid (integer coordinates)
+                geom = editor.edit(geom, snapToGrid);
                 if (geom == null || geom.isEmpty()) {
-                    // Geometry disappeared as a result of simplification
+                    // Which might make the geometry disappear (for example LineString collapsed to a Point)
                     continue;
                 }
 
@@ -178,12 +180,7 @@ public class SimpleFeaturesMVTEncoder {
                     continue;
                 }
 
-                // Snap the geometry to MVT grid (integer coordinates)
-                geom = editor.edit(geom, snapToGrid);
-                if (geom == null || geom.isEmpty()) {
-                    // Which might make the geometry disappear (for example LineString degenerated to a Point)
-                    continue;
-                }
+
 
                 geom.setUserData(sf);
                 mvtGeoms.add(geom);
