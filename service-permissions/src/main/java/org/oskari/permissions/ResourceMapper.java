@@ -38,7 +38,7 @@ public interface ResourceMapper {
             + "FROM oskari_resource "
             + "WHERE resource_type = #{type} "
             + "AND resource_mapping = #{mapping}")
-    Resource findByTypeAndMapping(@Param("type") ResourceType type, @Param("mapping") String mapping);
+    Resource findByTypeAndMapping(@Param("type") String type, @Param("mapping") String mapping);
 
     @Results({
         @Result(property="id", column="id", id=true),
@@ -67,6 +67,6 @@ public interface ResourceMapper {
     void insertPermission(@Param("permission") Permission permission, @Param("resourceId") int resourceId);
 
     @Delete("DELETE FROM oskari_permission WHERE oskari_resource_id=#{id}")
-    void deletePermissions(Resource resource);
+    void deletePermissions(int resourceId);
 
 }
