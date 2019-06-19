@@ -1,12 +1,9 @@
 package org.oskari.permissions;
 
-import java.util.*;
-import java.util.stream.Collectors;
-
-import javax.sql.DataSource;
-
+import fi.nls.oskari.db.DatasourceHelper;
 import fi.nls.oskari.domain.Role;
 import fi.nls.oskari.domain.User;
+import fi.nls.oskari.mybatis.MyBatisHelper;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.oskari.permissions.model.Permission;
@@ -14,8 +11,12 @@ import org.oskari.permissions.model.PermissionExternalType;
 import org.oskari.permissions.model.Resource;
 import org.oskari.permissions.model.ResourceType;
 
-import fi.nls.oskari.db.DatasourceHelper;
-import fi.nls.oskari.mybatis.MyBatisHelper;
+import javax.sql.DataSource;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class PermissionServiceMybatisImpl extends PermissionService {
 
@@ -51,12 +52,12 @@ public class PermissionServiceMybatisImpl extends PermissionService {
     }
 
     private Optional<Resource> findResource(final Resource resource) {
-        if(resource == null) {
+        if (resource == null) {
             return null;
         }
 
         // try to find with id
-        if(resource.getId() != -1) {
+        if (resource.getId() != -1) {
             // check mapping for existing by id
             return findResource(resource.getId());
         }
@@ -65,13 +66,13 @@ public class PermissionServiceMybatisImpl extends PermissionService {
     }
 
     public void saveResource(Resource resource) {
-        if(resource == null) {
+        if (resource == null) {
             throw new IllegalArgumentException("Tried to save null resource");
         }
         // ensure resource is in db
         Optional<Resource> res = findResource(resource);
 
-        if(res.isPresent()) {
+        if (res.isPresent()) {
             setPermissions(res.get().getId(), resource.getPermissions());
         } else {
             insertResource(resource);
@@ -106,7 +107,7 @@ public class PermissionServiceMybatisImpl extends PermissionService {
             PermissionExternalType externalIdType,
             String permissionsType) {
 
-        if(externalId == null || externalId.isEmpty()) {
+        if (externalId == null || externalId.isEmpty()) {
             return Collections.emptySet();
         }
 
