@@ -81,7 +81,7 @@ public interface UserIndicatorMapper {
     @Insert("INSERT INTO oskari_user_indicator"
             + " (user_id, title, source, description, published)"
             + " VALUES (#{userId}, #{title}, #{source}, #{description}, #{published})")
-    @Options(useGeneratedKeys=true)
+    @Options(useGeneratedKeys=true, keyColumn = "id", keyProperty = "id")
     void addIndicator(UserIndicatorDataRow row);
 
     @Update("update oskari_user_indicator set" +
