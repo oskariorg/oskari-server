@@ -2,6 +2,7 @@ package org.oskari.service.mvt;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.BitSet;
 import java.util.Collections;
 import java.util.List;
 
@@ -11,6 +12,7 @@ import org.opengis.feature.simple.SimpleFeature;
 
 import com.vividsolutions.jts.geom.Envelope;
 import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.GeometryCollection;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.LineString;
 import com.vividsolutions.jts.geom.LinearRing;
@@ -22,6 +24,7 @@ import com.vividsolutions.jts.geom.Polygon;
 import com.vividsolutions.jts.geom.TopologyException;
 import com.vividsolutions.jts.geom.util.GeometryEditor;
 import com.vividsolutions.jts.operation.predicate.RectangleIntersects;
+import com.vividsolutions.jts.simplify.VWSimplifier;
 import com.wdtinc.mapbox_vector_tile.VectorTile;
 import com.wdtinc.mapbox_vector_tile.adapt.jts.IUserDataConverter;
 import com.wdtinc.mapbox_vector_tile.adapt.jts.JtsAdapter;
@@ -104,14 +107,10 @@ public class SimpleFeaturesMVTEncoder {
             clipEnvelope.expandBy(deltaX, deltaY);
         }
 
-        Envelope mvtEnvelope = new Envelope(0, extent, 0, extent);
-        Envelope mvtBufferEnvelope = new Envelope(-buffer, extent + buffer, -buffer, extent + buffer);
-        Geometry tileEnvelopeGeom = GF.toGeometry(mvtEnvelope);
-        Geometry tileClipGeom = GF.toGeometry(mvtBufferEnvelope);
+        RectangleIntersects tileIntersects = new RectangleIntersects((Polygon) GF.toGeometry(tileEnvelope));
 
-        RectangleIntersects rectIntersects = new RectangleIntersects((Polygon) tileEnvelopeGeom);
-
-        // double res = tileEnvelope.getWidth() / extent;
+        Envelope mvtBufferedEnvelope = new Envelope(-buffer, extent + buffer, -buffer, extent + buffer);
+        Geometry mvtClipGeom = GF.toGeometry(mvtBufferedEnvelope);
 
         double translateX = tileEnvelope.getMinX();
         double translateY = tileEnvelope.getMaxY();
@@ -129,18 +128,29 @@ public class SimpleFeaturesMVTEncoder {
                 if (geom == null || geom.isEmpty()) {
                     continue;
                 }
-                Envelope geomEnvelope = geom.getEnvelopeInternal();
-                if (geom instanceof Point || geom instanceof MultiPoint) {
-                    /* Always return Point Features in buffer zone
-                     * Some clients for example OpenLayers want this
-                     * @see https://github.com/openlayers/openlayers/issues/6275
-                     */
-                    if (!clipEnvelope.intersects(geomEnvelope)) {
+
+                geom = multiGeometriesWithOneGeometryToSingle(geom);
+
+                if (geom instanceof Point) {
+                    // Check that clipEnvelope (buffered) and the geometry's envelope are not disjoint
+                    if (!clipEnvelope.intersects(geom.getEnvelopeInternal())) {
                         continue;
                     }
+                } else if (geom instanceof MultiPoint) {
+                    // Check that clipEnvelope (buffered) and the geometry's envelope are not disjoint
+                    if (!clipEnvelope.intersects(geom.getEnvelopeInternal())) {
+                        continue;
+                    }
+                    geom = removePointsOutsideOfEnvelope((MultiPoint) geom, clipEnvelope);
                 } else {
-                    // Check that tileEnvelope and geomEnvelope are not disjoint
-                    if (!tileEnvelope.intersects(geomEnvelope)) {
+                    // Check that tileEnvelope and geometry's envelope are not disjoint
+                    if (!tileEnvelope.intersects(geom.getEnvelopeInternal())) {
+                        continue;
+                    }
+
+                    // Remove parts of the geometry that are disjoint with our tileEnvelope
+                    geom = notDisjoint(tileIntersects, geom);
+                    if (geom == null || geom.isEmpty()) {
                         continue;
                     }
                 }
@@ -152,35 +162,22 @@ public class SimpleFeaturesMVTEncoder {
                     continue;
                 }
 
-                // Make sure the geometry actually intersects with our tileEnvelope
-                geom = within(geom, tileEnvelope, rectIntersects);
-                if (geom == null || geom.isEmpty()) {
-                    continue;
-                }
+                geom = multiGeometriesWithOneGeometryToSingle(geom);
 
-                try {
-                    // Calculate the intersection with our buffered envelope
-                    geom = tileClipGeom.intersection(geom);
-                    if (geom == null || geom.isEmpty()) {
-                        // Which might exist - skip the geometry
+                if (!(geom instanceof Point || geom instanceof MultiPoint)) {
+                    geom = VWSimplifier.simplify(geom, 0.5);
+                    try {
+                        // Calculate the intersection with our buffered envelope
+                        geom = mvtClipGeom.intersection(geom);
+                        if (geom == null || geom.isEmpty()) {
+                            // Which might not exist - skip the geometry
+                            continue;
+                        }
+                    } catch (TopologyException ignore) {
+                        // Calculating the intersection failed
                         continue;
                     }
-                } catch (TopologyException ignore) {
-                    // Calculating the intersection failed
-                    continue;
                 }
-
-                // We just clipped it with the buffered envelope so the geometry most probably changed
-                // Make sure the geometry still intersects with the actual tileEnvelope.
-                // TODO: Figure out whether or not this is actually necessary
-                // Luckily within() is almost free for other than (Multi)Polygons
-                // and even for those it's not that expensive anyway
-                geom = within(geom, tileEnvelope, rectIntersects);
-                if (geom == null || geom.isEmpty()) {
-                    continue;
-                }
-
-
 
                 geom.setUserData(sf);
                 mvtGeoms.add(geom);
@@ -189,18 +186,7 @@ public class SimpleFeaturesMVTEncoder {
         return mvtGeoms;
     }
 
-    private static Geometry within(Geometry geom, Envelope rect, RectangleIntersects rectIntersects) {
-        if (geom instanceof Point) {
-            return geom;
-            /* Always return Point Features in buffer zone
-             * Some clients for example OpenLayers want this
-             * @see https://github.com/openlayers/openlayers/issues/6275
-            Coordinate c = ((Point) geom).getCoordinate();
-            boolean within = c.x >= rect.getMinX() && c.x <= rect.getMaxX() && c.y >= rect.getMinY() && c.y <= rect.getMaxY();
-            return within ? geom : null;
-             */
-        }
-
+    private static Geometry notDisjoint(RectangleIntersects rectIntersects, Geometry geom) {
         if (geom instanceof LineString) {
             return rectIntersects.intersects(geom) ? geom : null;
         }
@@ -233,41 +219,13 @@ public class SimpleFeaturesMVTEncoder {
             return GF.createPolygon(exterior, Arrays.copyOf(interiorRings, n));
         }
 
-        if (geom instanceof MultiPoint) {
-            return geom;
-            /* Always return all the Point Features in buffer zone
-             * Some clients for example OpenLayers want this
-             * @see https://github.com/openlayers/openlayers/issues/6275
-            MultiPoint multi = (MultiPoint) geom;
-            int num = multi.getNumGeometries();
-            Point[] subGeomsWithin = new Point[num];
-            int n = 0;
-            for (int i = 0; i < num; i++) {
-                Geometry subGeom = within(multi.getGeometryN(i), rect, rectIntersects);
-                if (subGeom != null) {
-                    subGeomsWithin[n++] = (Point) subGeom;
-                }
-            }
-            if (n == 0) {
-                return null;
-            }
-            if (n == 1) {
-                return subGeomsWithin[0];
-            }
-            if (n == num) {
-                return geom;
-            }
-            return GF.createMultiPoint(Arrays.copyOf(subGeomsWithin, n));
-             */
-        }
-
         if (geom instanceof MultiLineString) {
             MultiLineString multi = (MultiLineString) geom;
             int num = multi.getNumGeometries();
             LineString[] subGeomsWithin = new LineString[num];
             int n = 0;
             for (int i = 0; i < num; i++) {
-                Geometry subGeom = within(multi.getGeometryN(i), rect, rectIntersects);
+                Geometry subGeom = notDisjoint(rectIntersects, multi.getGeometryN(i));
                 if (subGeom != null) {
                     subGeomsWithin[n++] = (LineString) subGeom;
                 }
@@ -290,7 +248,7 @@ public class SimpleFeaturesMVTEncoder {
             Polygon[] subGeomsWithin = new Polygon[num];
             int n = 0;
             for (int i = 0; i < num; i++) {
-                Geometry subGeom = within(multi.getGeometryN(i), rect, rectIntersects);
+                Geometry subGeom = notDisjoint(rectIntersects, multi.getGeometryN(i));
                 if (subGeom != null) {
                     subGeomsWithin[n++] = (Polygon) subGeom;
                 }
@@ -307,8 +265,43 @@ public class SimpleFeaturesMVTEncoder {
             return GF.createMultiPolygon(Arrays.copyOf(subGeomsWithin, n));
         }
 
-        // TODO handle
         return null;
+    }
+
+    private static Geometry multiGeometriesWithOneGeometryToSingle(Geometry geom) {
+        if (geom instanceof GeometryCollection) {
+            GeometryCollection c = (GeometryCollection) geom;
+            if (c.getNumGeometries() == 1) {
+                return c.getGeometryN(0);
+            }
+        }
+        return geom;
+    }
+
+    private static Geometry removePointsOutsideOfEnvelope(MultiPoint mp, Envelope envelope) {
+        BitSet indexes = new BitSet(mp.getNumGeometries());
+        for (int i = 0; i < mp.getNumGeometries(); i++) {
+            Point p = (Point) mp.getGeometryN(i);
+            if (envelope.contains(p.getCoordinate())) {
+                indexes.set(i);
+            }
+        }
+        int len = indexes.length();
+        if (len == 0) {
+            return null;
+        }
+        if (len == 1) {
+            return mp.getGeometryN(indexes.nextSetBit(0));
+        }
+        if (len == mp.getNumGeometries()) {
+            return mp;
+        }
+        Point[] points = new Point[len];
+        int j = 0;
+        for (int i = indexes.nextSetBit(0); i >= 0; i = indexes.nextSetBit(i+1)) {
+            points[j++] = (Point) mp.getGeometryN(i);
+        }
+        return GF.createMultiPoint(points);
     }
 
 }

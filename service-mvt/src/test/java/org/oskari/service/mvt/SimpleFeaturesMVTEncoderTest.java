@@ -250,10 +250,10 @@ public class SimpleFeaturesMVTEncoderTest {
     }
 
     @Test
-    public void test() throws Exception {
+    public void testNahkela() throws Exception {
         WFSTileGrid grid = new WFSTileGrid(new double[] { -548576, 6291456, -548576 + (8192*256), 6291456 + (8192*256) }, 15);
         Map<String, Object> json;
-        try (InputStream in = getClass().getClassLoader().getResourceAsStream("suuralue.json")) {
+        try (InputStream in = getClass().getClassLoader().getResourceAsStream("nahkela.json")) {
             ObjectMapper om = new ObjectMapper();
             json = om.readValue(in, new TypeReference<HashMap<String, Object>>() {});
         }
@@ -266,4 +266,20 @@ public class SimpleFeaturesMVTEncoderTest {
         assertEquals(1, mvtGeoms.size());
     }
 
+    @Test
+    public void testHyryla() throws Exception {
+        WFSTileGrid grid = new WFSTileGrid(new double[] { -548576, 6291456, -548576 + (8192*256), 6291456 + (8192*256) }, 15);
+        Map<String, Object> json;
+        try (InputStream in = getClass().getClassLoader().getResourceAsStream("hyryla.json")) {
+            ObjectMapper om = new ObjectMapper();
+            json = om.readValue(in, new TypeReference<HashMap<String, Object>>() {});
+        }
+        CoordinateReferenceSystem crs = CRS.decode("EPSG:3067");
+        SimpleFeatureType schema = GeoJSONSchemaDetector.getSchema(json, crs);
+
+        SimpleFeatureCollection sfc = GeoJSONReader2.toFeatureCollection(json, schema);
+        double[] bbox = grid.getTileExtent(new TileCoord(11, 917, 1651));
+        List<Geometry> mvtGeoms = SimpleFeaturesMVTEncoder.asMVTGeoms(sfc, bbox, 4096, 256);
+        assertEquals(1, mvtGeoms.size());
+    }
 }

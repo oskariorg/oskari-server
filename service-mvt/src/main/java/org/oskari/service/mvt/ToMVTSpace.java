@@ -7,7 +7,6 @@ import com.vividsolutions.jts.geom.LineString;
 import com.vividsolutions.jts.geom.LinearRing;
 import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.util.GeometryEditor.GeometryEditorOperation;
-import com.vividsolutions.jts.simplify.DouglasPeuckerSimplifier;
 
 /**
  * This translates the real-world coordinates of a geometry to the inner
@@ -63,12 +62,7 @@ public class ToMVTSpace implements GeometryEditorOperation {
         if (edited.length < 4) {
             return null;
         }
-        LinearRing ring = factory.createLinearRing(edited);
-        Geometry simplified = DouglasPeuckerSimplifier.simplify(ring, 0);
-        if (simplified instanceof LinearRing) {
-            return (LinearRing) simplified;
-        }
-        return null;
+        return factory.createLinearRing(edited);
     }
 
     private LineString edit(LineString lineString, GeometryFactory factory) {
@@ -78,12 +72,7 @@ public class ToMVTSpace implements GeometryEditorOperation {
         if (edited.length < 2) {
             return null;
         }
-        LineString line = factory.createLineString(edited);
-        Geometry simplified = DouglasPeuckerSimplifier.simplify(line, 0);
-        if (simplified instanceof LineString) {
-            return (LineString) simplified;
-        }
-        return null;
+        return factory.createLineString(edited);
     }
 
     private Coordinate[] translateAndScale(Coordinate[] coords) {
