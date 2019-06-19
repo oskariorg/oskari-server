@@ -2,9 +2,6 @@ package fi.nls.oskari.db;
 
 import fi.mml.map.mapwindow.service.db.OskariMapLayerGroupService;
 import fi.mml.map.mapwindow.service.db.OskariMapLayerGroupServiceIbatisImpl;
-import fi.mml.portti.domain.permissions.Permissions;
-import fi.mml.portti.service.db.permissions.PermissionsService;
-import fi.mml.portti.service.db.permissions.PermissionsServiceIbatisImpl;
 import fi.nls.oskari.domain.Role;
 import fi.nls.oskari.domain.map.DataProvider;
 import fi.nls.oskari.domain.map.MaplayerGroup;
@@ -24,8 +21,11 @@ import fi.nls.oskari.util.JSONHelper;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.oskari.permissions.PermissionService;
+import org.oskari.permissions.PermissionServiceMybatisImpl;
 import org.oskari.permissions.model.OskariLayerResource;
 import org.oskari.permissions.model.Permission;
+import org.oskari.permissions.model.PermissionExternalType;
 import org.oskari.permissions.model.Resource;
 
 import java.io.IOException;
@@ -38,7 +38,7 @@ public class LayerHelper {
     private static final OskariMapLayerGroupService groupService = new OskariMapLayerGroupServiceIbatisImpl();
     private static final OskariLayerGroupLinkService linkService = new OskariLayerGroupLinkServiceMybatisImpl();
     private static final DataProviderService dataProviderService = new DataProviderServiceMybatisImpl();
-    private static final PermissionsService permissionsService = new PermissionsServiceIbatisImpl();
+    private static final PermissionService permissionsService = new PermissionServiceMybatisImpl();
     private static final MybatisRoleService roleService = new MybatisRoleService();
 
     public static int setupLayer(final String layerfile) throws IOException, JSONException {
@@ -165,13 +165,13 @@ public class LayerHelper {
             }
             for (int i = 0; i < permissionTypes.length(); ++i) {
                 final Permission permission = new Permission();
-                permission.setExternalType(Permissions.EXTERNAL_TYPE_ROLE);
-                permission.setExternalId("" + role.getId());
+                permission.setExternalType(PermissionExternalType.ROLE);
+                permission.setExternalId((int) role.getId());
                 final String type = permissionTypes.optString(i);
                 permission.setType(type);
                 res.addPermission(permission);
             }
         }
-        permissionsService.saveResourcePermissions(res);
+        permissionsService.saveResource(res);
     }
 }
