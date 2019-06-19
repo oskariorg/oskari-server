@@ -68,11 +68,10 @@ public class PermissionServiceMybatisImpl extends PermissionService {
         // ensure resource is in db
         Optional<Resource> res = findResource(resource);
 
-        if(res.isEmpty()) {
-            insertResource(resource);
-            return;
-        } else {
+        if(res.isPresent()) {
             setPermissions(res.get().getId(), resource.getPermissions());
+        } else {
+            insertResource(resource);
         }
     }
 
