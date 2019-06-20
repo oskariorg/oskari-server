@@ -22,6 +22,8 @@ import fi.nls.oskari.map.layer.OskariLayerService;
 import fi.nls.oskari.map.layer.OskariLayerServiceMybatisImpl;
 import fi.nls.oskari.map.layer.formatters.LayerJSONFormatter;
 import fi.nls.oskari.util.JSONHelper;
+import org.oskari.permissions.PermissionService;
+import org.oskari.permissions.PermissionServiceMybatisImpl;
 
 /**
  * Worker class for rendering json objects from domain objects
@@ -39,6 +41,7 @@ public class OskariLayerWorker {
 
     private static OskariLayerService mapLayerService = new OskariLayerServiceMybatisImpl();
     private static PermissionsService permissionsService = new PermissionsServiceIbatisImpl();
+    private static PermissionService permissionService = new PermissionServiceMybatisImpl();
 
     private final static LayerJSONFormatter FORMATTER = new LayerJSONFormatter();
 
@@ -87,7 +90,7 @@ public class OskariLayerWorker {
 
         final String permissionType = getPermissionType(isPublished);
         long start = System.currentTimeMillis();
-        final Set<String> resources = permissionsService.getResourcesWithGrantedPermissions(
+        final Set<String> resources = permissionService.getResourcesWithGrantedPermissions(
                 Permissions.RESOURCE_TYPE_MAP_LAYER, user, permissionType);
         log.debug("View permissions loaded in", System.currentTimeMillis() - start, "ms");
 

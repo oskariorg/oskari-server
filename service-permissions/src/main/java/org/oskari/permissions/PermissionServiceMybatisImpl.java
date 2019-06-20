@@ -32,6 +32,19 @@ public class PermissionServiceMybatisImpl extends PermissionService {
         this.factory = MyBatisHelper.initMyBatis(ds, MAPPER);
     }
 
+
+    public List<Resource> findResourcesByUser(User user) {
+        try (SqlSession session = factory.openSession()) {
+            List<Resource> all = session.getMapper(MAPPER).findAll();
+            /*
+            all.stream().filter(resource -> {
+                resource.user.getRoles()
+            })
+            */
+            return all;
+        }
+    }
+
     @Override
     public Optional<Resource> findResource(int id) {
         try (SqlSession session = factory.openSession()) {
@@ -87,7 +100,7 @@ public class PermissionServiceMybatisImpl extends PermissionService {
                 .map(Role::getId)
                 .collect(Collectors.toSet());
 
-        final Set<String> groupPermissions =
+        final Set<String> rolePermissions =
                 getResourcesWithGrantedPermissions(
                         resourceType, roleIds, PermissionExternalType.ROLE, permissionsType);
 
@@ -96,9 +109,9 @@ public class PermissionServiceMybatisImpl extends PermissionService {
             Set<String> userPermissions =
                     getResourcesWithGrantedPermissions(
                             resourceType, Collections.singleton(user.getId()), PermissionExternalType.USER, permissionsType);
-            groupPermissions.addAll(userPermissions);
+            rolePermissions.addAll(userPermissions);
         }
-        return groupPermissions;
+        return rolePermissions;
     }
 
     private Set<String> getResourcesWithGrantedPermissions(
