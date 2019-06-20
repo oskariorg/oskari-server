@@ -3,6 +3,8 @@ package org.oskari.permissions.model;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import fi.nls.oskari.domain.Role;
 import fi.nls.oskari.domain.User;
@@ -70,11 +72,17 @@ public class Resource {
         permissions.add(permission);
     }
 
-    public boolean hasPermission(User user, String permissionType) {
-        return hasPermission(user, PermissionType.valueOf(permissionType));
+    public Set<String> getPermissionTypes() {
+        return getPermissions().stream()
+                .map(p -> p.getType())
+                .collect(Collectors.toSet());
     }
 
     public boolean hasPermission(User user, PermissionType permissionType) {
+        return hasPermission(user, permissionType.name());
+    }
+
+    public boolean hasPermission(User user, String permissionType) {
         boolean userHasRoleWithId = getPermissions().stream()
                 .filter(p -> p.isOfType(permissionType))
                 .filter(p -> p.getExternalType() == PermissionExternalType.ROLE)
@@ -109,5 +117,13 @@ public class Resource {
 
     public void removePermissionsOfType(PermissionType permissionType) {
         getPermissions().removeIf(p -> p.isOfType(permissionType));
+    }
+
+    public boolean isOfType(ResourceType type) {
+        return isOfType(type.name());
+    }
+
+    public boolean isOfType(String permissionType) {
+        return type.equals(permissionType);
     }
 }

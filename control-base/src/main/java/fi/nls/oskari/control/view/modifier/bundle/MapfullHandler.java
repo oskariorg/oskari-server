@@ -2,8 +2,6 @@ package fi.nls.oskari.control.view.modifier.bundle;
 
 import fi.mml.map.mapwindow.util.OskariLayerWorker;
 import fi.mml.portti.domain.permissions.Permissions;
-import fi.mml.portti.service.db.permissions.PermissionsService;
-import fi.mml.portti.service.db.permissions.PermissionsServiceIbatisImpl;
 import fi.nls.oskari.analysis.AnalysisHelper;
 import fi.nls.oskari.annotation.OskariViewModifier;
 import fi.nls.oskari.domain.User;
@@ -31,6 +29,8 @@ import org.json.JSONObject;
 import org.json.JSONTokener;
 import org.oskari.map.userlayer.service.UserLayerDataService;
 import org.oskari.map.userlayer.service.UserLayerDbService;
+import org.oskari.permissions.PermissionService;
+import org.oskari.permissions.PermissionServiceMybatisImpl;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -43,7 +43,7 @@ import java.util.Set;
 public class MapfullHandler extends BundleHandler {
 
     private static final Logger LOGGER = LogFactory.getLogger(MapfullHandler.class);
-    private static PermissionsService permissionsService = new PermissionsServiceIbatisImpl();
+    private static PermissionService permissionsService = new PermissionServiceMybatisImpl();
 
     // FIXME: default srs is hardcoded into frontend if srs is not defined in mapOptions!!
     public static final String DEFAULT_MAP_SRS = "EPSG:3067";

@@ -31,6 +31,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
+import org.oskari.permissions.PermissionService;
+import org.oskari.permissions.PermissionServiceMybatisImpl;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
@@ -183,7 +185,7 @@ public class GetAppSetupHandlerRolesFromPropertiesTest extends JSONActionRouteTe
 
     private void mockInternalServices() throws Exception {
 
-        final PermissionsService service = mock(PermissionsServiceIbatisImpl.class);
+        final PermissionService service = mock(PermissionServiceMybatisImpl.class);
         doReturn(
                 Collections.emptySet()
         ).when(service).getResourcesWithGrantedPermissions(anyString(), any(User.class), anyString());

@@ -1,6 +1,7 @@
 package fi.nls.oskari.domain.map;
 
 import fi.nls.oskari.util.IOHelper;
+import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
 import org.json.JSONObject;
 
@@ -313,6 +314,15 @@ public class OskariLayer extends JSONLocalizedNameAndTitle implements Comparable
 
     public void setOptions(JSONObject options) {
         this.options = options;
+    }
+
+    public void addAttribute(String key, Object value) {
+        JSONObject attrib = getAttributes();
+        if (attrib == null) {
+            attrib = new JSONObject();
+        }
+        JSONHelper.putValue(attrib, key, value);
+        setAttributes(attrib);
     }
 
     public JSONObject getAttributes() {

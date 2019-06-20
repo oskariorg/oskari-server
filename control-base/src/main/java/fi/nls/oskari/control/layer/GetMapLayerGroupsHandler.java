@@ -7,7 +7,6 @@ import static fi.nls.oskari.control.ActionConstants.PARAM_SRS;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import fi.nls.oskari.util.JSONHelper;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -15,10 +14,6 @@ import org.json.JSONObject;
 import fi.mml.map.mapwindow.service.db.OskariMapLayerGroupService;
 import fi.mml.map.mapwindow.service.db.OskariMapLayerGroupServiceIbatisImpl;
 import fi.mml.map.mapwindow.util.OskariLayerWorker;
-import fi.mml.map.mapwindow.util.PermissionCollection;
-import fi.mml.portti.domain.permissions.Permissions;
-import fi.mml.portti.service.db.permissions.PermissionsService;
-import fi.mml.portti.service.db.permissions.PermissionsServiceIbatisImpl;
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.ActionHandler;
@@ -26,13 +21,13 @@ import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.domain.User;
 import fi.nls.oskari.domain.map.MaplayerGroup;
 import fi.nls.oskari.domain.map.OskariLayer;
-import fi.nls.oskari.map.layer.OskariLayerService;
-import fi.nls.oskari.map.layer.OskariLayerServiceMybatisImpl;
 import fi.nls.oskari.map.layer.group.link.OskariLayerGroupLink;
 import fi.nls.oskari.map.layer.group.link.OskariLayerGroupLinkService;
 import fi.nls.oskari.map.layer.group.link.OskariLayerGroupLinkServiceMybatisImpl;
 import fi.nls.oskari.util.EnvHelper;
 import fi.nls.oskari.util.ResponseHelper;
+import org.oskari.permissions.PermissionService;
+import org.oskari.permissions.PermissionServiceMybatisImpl;
 
 /**
  * Get all map layer groups registered in Oskari database
@@ -50,16 +45,10 @@ public class GetMapLayerGroupsHandler extends ActionHandler {
             OskariLayer.TYPE_WMTS,
             OskariLayer.TYPE_ARCGIS93);
 
-    private OskariLayerService layerService;
-    private PermissionsService permissionsService;
+    private PermissionService permissionsService;
     private OskariMapLayerGroupService groupService;
     private OskariLayerGroupLinkService linkService;
-
-    public void setLayerService(OskariLayerService layerService) {
-        this.layerService = layerService;
-    }
-
-    public void setPermissionsService(PermissionsService permissionsService) {
+    public void setPermissionsService(PermissionService permissionsService) {
         this.permissionsService = permissionsService;
     }
 
@@ -74,11 +63,8 @@ public class GetMapLayerGroupsHandler extends ActionHandler {
     @Override
     public void init() {
         // setup services if they haven't been initialized
-        if (layerService == null) {
-            setLayerService(new OskariLayerServiceMybatisImpl());
-        }
         if (permissionsService == null) {
-            setPermissionsService(new PermissionsServiceIbatisImpl());
+            setPermissionsService(new PermissionServiceMybatisImpl());
         }
         if (groupService == null) {
             setGroupService(new OskariMapLayerGroupServiceIbatisImpl());
@@ -93,26 +79,16 @@ public class GetMapLayerGroupsHandler extends ActionHandler {
         final User user = params.getUser();
         final String lang = params.getHttpParam(PARAM_LANGUAGE, params.getLocale().getLanguage());
         final String crs = params.getHttpParam(PARAM_SRS);
-        final boolean forceProxy = params.getHttpParam(PARAM_FORCE_PROXY, false);
         final boolean isSecure = EnvHelper.isSecure(params);
         final boolean isPublished = false;
 
-        List<OskariLayer> layers = getLayersWithResources(user, isPublished);
+        List<OskariLayer> layers = OskariLayerWorker.getLayersForUser(user, isPublished);
 
-        if (forceProxy) {
-            layers.forEach(lyr -> {
-                if (PROXY_LYR_TYPES.contains(lyr.getType())) {
-                    JSONObject attributes = lyr.getAttributes();
-                    if (attributes == null) {
-                        attributes = new JSONObject();
-                    }
-                    JSONHelper.putValue(attributes, "forceProxy",true);
-                    lyr.setAttributes(attributes);
-                }
-            });
+        if (params.getHttpParam(PARAM_FORCE_PROXY, false)) {
+            layers.stream()
+                .filter(layer -> PROXY_LYR_TYPES.contains(layer.getType()))
+                .forEach(layer -> layer.addAttribute("forceProxy", true));
         }
-
-        PermissionCollection permissionCollection = OskariLayerWorker.getPermissionCollection(user);
 
         int[] sortedLayerIds = layers.stream().mapToInt(OskariLayer::getId).toArray();
         Arrays.sort(sortedLayerIds);
@@ -124,19 +100,12 @@ public class GetMapLayerGroupsHandler extends ActionHandler {
                 .collect(Collectors.groupingBy(OskariLayerGroupLink::getGroupId));
 
         try {
-            JSONObject response = OskariLayerWorker.getListOfMapLayers(layers, user, lang, isSecure, crs, permissionCollection);
+            JSONObject response = OskariLayerWorker.getListOfMapLayers(layers, user, lang, crs, isPublished, isSecure);
             response.put(KEY_GROUPS, getGroupJSON(groupsByParentId, linksByGroupId, sortedLayerIds, -1));
             ResponseHelper.writeResponse(params, response);
         } catch (JSONException e) {
             throw new ActionException("Failed to add groups", e);
         }
-    }
-
-    private List<OskariLayer> getLayersWithResources(User user, boolean isPublished) {
-        String permissionType = OskariLayerWorker.getPermissionType(isPublished);
-        Set<String> resources = permissionsService.getResourcesWithGrantedPermissions(
-                Permissions.RESOURCE_TYPE_MAP_LAYER, user, permissionType);
-        return OskariLayerWorker.filterLayersWithResources(layerService.findAll(), resources);
     }
 
     /**

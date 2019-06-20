@@ -33,13 +33,7 @@ public interface ResourceMapper {
             + "WHERE id = #{id}")
     Resource findById(@Param("id") int id);
 
-    @Results(id = "ResourceResult", value = {
-            @Result(property="id", column="id", id=true),
-            @Result(property="type", column="resource_type"),
-            @Result(property="mapping", column="resource_mapping"),
-            @Result(property="permissions", column="id",
-                    javaType=List.class, many=@Many(select="findPermissionsByResourceId"))
-    })
+    @ResultMap("ResourceResult")
     @Select("SELECT id,"
             + "resource_type,"
             + "resource_mapping "

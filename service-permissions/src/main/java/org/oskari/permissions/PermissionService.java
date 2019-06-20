@@ -1,5 +1,6 @@
 package org.oskari.permissions;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -15,6 +16,7 @@ public abstract class PermissionService extends OskariComponent {
     public abstract Optional<Resource> findResource(int id);
     public abstract Optional<Resource> findResource(ResourceType type, String mapping);
     public abstract Optional<Resource> findResource(String type, String mapping);
+    public abstract List<Resource> findResourcesByUser(User user);
 
 
     public abstract Set<String>
