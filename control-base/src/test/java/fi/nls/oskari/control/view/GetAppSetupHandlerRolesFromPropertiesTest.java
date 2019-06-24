@@ -17,6 +17,7 @@ import fi.nls.oskari.map.view.BundleService;
 import fi.nls.oskari.map.view.BundleServiceMybatisImpl;
 import fi.nls.oskari.map.view.ViewService;
 import fi.nls.oskari.map.view.AppSetupServiceMybatisImpl;
+import fi.nls.oskari.mybatis.MyBatisHelper;
 import fi.nls.oskari.util.DuplicateException;
 import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.view.modifier.ViewModifier;
@@ -54,7 +55,7 @@ import static org.powermock.api.mockito.PowerMockito.whenNew;
  * To change this template use File | Settings | File Templates.
  */
 @RunWith(PowerMockRunner.class)
-@PrepareForTest(value = {WFSHighlightParamHandler.class, OskariLayerWorker.class, PropertyUtil.class, MapfullHandler.class})
+@PrepareForTest(value = {WFSHighlightParamHandler.class, OskariLayerWorker.class, PropertyUtil.class, MapfullHandler.class, MyBatisHelper.class})
 @PowerMockIgnore({"com.sun.org.apache.xalan.*", "com.sun.org.apache.xerces.*", "javax.xml.*", "org.w3c.dom.*", "org.xml.*", "com.sun.org.apache.xml.*"})
 public class GetAppSetupHandlerRolesFromPropertiesTest extends JSONActionRouteTest {
 
@@ -186,15 +187,14 @@ public class GetAppSetupHandlerRolesFromPropertiesTest extends JSONActionRouteTe
     private void mockInternalServices() throws Exception {
 
         final PermissionService service = mock(PermissionServiceMybatisImpl.class);
-        doReturn(
-                Collections.emptySet()
-        ).when(service).getResourcesWithGrantedPermissions(anyString(), any(User.class), anyString());
+        // permission check is skipped here so just mock the call
+        doReturn(Collections.emptyList()).when(service).findResourcesByUser(any(User.class));
 
         // return mocked  bundle service if a new one is created (in paramhandlers for example)
         // classes doing this must be listed in PrepareForTest annotation
-        whenNew(PermissionsServiceIbatisImpl.class).withNoArguments().
+        whenNew(PermissionServiceMybatisImpl.class).withNoArguments().
                 thenAnswer(new Answer<Object>() {
-                    public Object answer(InvocationOnMock invocation) throws Throwable {
+                    public Object answer(InvocationOnMock invocation) {
                         return service;
                     }
                 });

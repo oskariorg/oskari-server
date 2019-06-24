@@ -43,7 +43,7 @@ import java.util.Set;
 public class MapfullHandler extends BundleHandler {
 
     private static final Logger LOGGER = LogFactory.getLogger(MapfullHandler.class);
-    private static PermissionService permissionsService = new PermissionServiceMybatisImpl();
+    private static PermissionService permissionsService;
 
     // FIXME: default srs is hardcoded into frontend if srs is not defined in mapOptions!!
     public static final String DEFAULT_MAP_SRS = "EPSG:3067";
@@ -86,6 +86,7 @@ public class MapfullHandler extends BundleHandler {
         myPlaceService = OskariComponentManager.getComponentOfType(MyPlacesService.class);
         userLayerService = OskariComponentManager.getComponentOfType(UserLayerDbService.class);
         mapLayerService = OskariComponentManager.getComponentOfType(OskariLayerService.class);
+        permissionsService = new PermissionServiceMybatisImpl();
         epsgInit();
         svgInit();
         pluginHandlers = new HashMap<>();

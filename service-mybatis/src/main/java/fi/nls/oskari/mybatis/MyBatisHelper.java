@@ -19,8 +19,8 @@ public class MyBatisHelper {
 
     public static Configuration getConfig(DataSource ds, Class<?>... mappers) {
         if (ds == null) {
-            ds = getTestDS();
-            //throw new NullPointerException("Tried initializing MyBatis without a datasource");
+            //ds = getTestDS();
+            throw new NullPointerException("Tried initializing MyBatis without a datasource");
         }
         final TransactionFactory transactionFactory = new JdbcTransactionFactory();
         final Environment environment = new Environment("development", transactionFactory, ds);
@@ -30,6 +30,10 @@ public class MyBatisHelper {
         return configuration;
     }
 
+    /**
+     * Work in progress. This could be used to init mem-based database for unit tests.
+     * @return
+     */
     private static DataSource getTestDS() {
         try {
             // try to dig up TestHelper that is only available while testing to get a mem-based datasource

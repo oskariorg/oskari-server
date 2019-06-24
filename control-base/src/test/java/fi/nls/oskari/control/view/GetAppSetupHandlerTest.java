@@ -254,38 +254,18 @@ public class GetAppSetupHandlerTest extends JSONActionRouteTest {
     private void mockInternalServices() throws Exception {
 
         final PermissionService service = mock(PermissionServiceMybatisImpl.class);
-        doReturn(
-                Collections.emptySet()
-        ).when(service).getResourcesWithGrantedPermissions(anyString(), any(User.class), anyString());
+        // permission check is skipped here so just mock the call
+        doReturn(Collections.emptyList()).when(service).findResourcesByUser(any(User.class));
 
         // return mocked  bundle service if a new one is created (in paramhandlers for example)
         // classes doing this must be listed in PrepareForTest annotation
-        whenNew(PermissionsServiceIbatisImpl.class).withNoArguments().
+        whenNew(PermissionServiceMybatisImpl.class).withNoArguments().
                 thenAnswer(new Answer<Object>() {
-                    public Object answer(InvocationOnMock invocation) throws Throwable {
+                    public Object answer(InvocationOnMock invocation) {
                         return service;
                     }
                 });
 
-
-/*
-    public static JSONObject getSelectedLayersStructure(List<String> layerList,
-                                                        User user, String lang, String remoteIp, boolean isPublished) {
-                                                        */
-        // TODO: mock MapLayerWorker.getSelectedLayersStructure() instead to return a valid JSON structure
-        //BaseIbatisService.class
-        //SqlMapClient client = null;
-        //protected SqlMapClient getSqlMapClient()
-/*
-        final BaseIbatisService ibatisBase = mock(BaseIbatisService.class);
-        whenNew(BaseIbatisService.class).withNoArguments().
-                thenAnswer(new Answer<Object>() {
-                    public Object answer(InvocationOnMock invocation) throws Throwable {
-                        return ibatisBase;
-                    }
-                });
-*/
-        //Whitebox.newInstance(OskariLayerServiceIbatisImpl.class);
         suppress(constructor(OskariLayerServiceMybatisImpl.class));
         final OskariLayerServiceMybatisImpl layerService = mock(OskariLayerServiceMybatisImpl.class);
         doReturn(null).when(layerService).find(anyInt());
