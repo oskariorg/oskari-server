@@ -12,6 +12,7 @@ import org.apache.ibatis.annotations.Result;
 import org.apache.ibatis.annotations.ResultMap;
 import org.apache.ibatis.annotations.Results;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.mapping.FetchType;
 import org.oskari.permissions.model.Permission;
 import org.oskari.permissions.model.PermissionExternalType;
 import org.oskari.permissions.model.Resource;
@@ -24,7 +25,7 @@ public interface ResourceMapper {
             @Result(property="type", column="resource_type"),
             @Result(property="mapping", column="resource_mapping"),
             @Result(property="permissions", column="id",
-            javaType=List.class, many=@Many(select="findPermissionsByResourceId"))
+            javaType=List.class, many=@Many(select="findPermissionsByResourceId", fetchType= FetchType.EAGER))
     })
     @Select("SELECT id,"
             + "resource_type,"
@@ -66,8 +67,8 @@ public interface ResourceMapper {
 
     @Results({
         @Result(property="id", column="id", id=true),
-        @Result(property="type", column="external_type"),
-        @Result(property="externalType", column="permission"),
+        @Result(property="type", column="permission"),
+        @Result(property="externalType", column="external_type"),
         @Result(property="externalId", column="external_id")
     })
     @Select("SELECT id,"
@@ -85,7 +86,7 @@ public interface ResourceMapper {
     @Delete("DELETE FROM oskari_resource WHERE id=#{id}")
     void deleteResource(Resource resource);
 
-    @Insert("INSERT INTO oskari_permission (oskari_resource_id, external_type, permission, external_id) "
+    @Insert("INSERT INTO oskari_permission (oskari_resource_id, permission, external_type, external_id) "
             + "VALUES (#{resourceId},#{permission.type},#{permission.externalType},#{permission.externalId})")
     @Options(useGeneratedKeys=true, keyColumn="id", keyProperty="permission.id")
     void insertPermission(@Param("permission") Permission permission, @Param("resourceId") int resourceId);
