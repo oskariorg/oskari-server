@@ -1,5 +1,6 @@
 package org.oskari.permissions;
 
+import fi.nls.oskari.annotation.Oskari;
 import fi.nls.oskari.db.DatasourceHelper;
 import fi.nls.oskari.domain.Role;
 import fi.nls.oskari.domain.User;
@@ -18,6 +19,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+@Oskari
 public class PermissionServiceMybatisImpl extends PermissionService {
 
     private static final Class<ResourceMapper> MAPPER = ResourceMapper.class;
