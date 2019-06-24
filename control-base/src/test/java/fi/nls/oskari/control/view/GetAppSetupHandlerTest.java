@@ -1,8 +1,6 @@
 package fi.nls.oskari.control.view;
 
 import fi.mml.map.mapwindow.util.OskariLayerWorker;
-import fi.mml.portti.service.db.permissions.PermissionsService;
-import fi.mml.portti.service.db.permissions.PermissionsServiceIbatisImpl;
 import fi.nls.oskari.control.ActionConstants;
 import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.control.view.modifier.bundle.MapfullHandler;
@@ -19,9 +17,13 @@ import fi.nls.oskari.map.view.BundleService;
 import fi.nls.oskari.map.view.BundleServiceMybatisImpl;
 import fi.nls.oskari.map.view.ViewService;
 import fi.nls.oskari.map.view.AppSetupServiceMybatisImpl;
+import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.util.DuplicateException;
 import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.view.modifier.ViewModifier;
+import fi.nls.oskari.wfs.WFSSearchChannelsConfiguration;
+import fi.nls.oskari.wfs.WFSSearchChannelsService;
+import fi.nls.oskari.wfs.WFSSearchChannelsServiceMybatisImpl;
 import fi.nls.test.control.JSONActionRouteTest;
 import fi.nls.test.util.ResourceHelper;
 import fi.nls.test.view.BundleTestHelper;
@@ -36,14 +38,12 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.oskari.permissions.PermissionService;
 import org.oskari.permissions.PermissionServiceMybatisImpl;
+import org.oskari.permissions.model.ResourceType;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
 
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
@@ -185,7 +185,10 @@ public class GetAppSetupHandlerTest extends JSONActionRouteTest {
         final ActionParameters params = createActionParams(parameters);
         handler.handleAction(params);
 
-        // coordinates should be set as in param and geolocation plugin should have been removed from config
+        JSONObject responseState = getResponseJSON().optJSONObject("configuration").optJSONObject("mapfull").optJSONObject("state");
+        assertEquals("Should have requested east", "123", responseState.opt("east"));
+        assertEquals("Should have requested north", "456", responseState.opt("north"));
+        // coordinates should be set as in param and Oskari.mapframework.bundle.mapmodule.plugin.GeoLocationPlugin plugin should have been removed from config
         verifyResponseContent(ResourceHelper.readJSONResource("GetAppSetupHandlerTest-coordinate-params.json", this));
     }
 
@@ -214,6 +217,9 @@ public class GetAppSetupHandlerTest extends JSONActionRouteTest {
         doReturn(2L).when(viewService).getDefaultViewId(getGuestUser());
         // id 1 for logged in user
         doReturn(1L).when(viewService).getDefaultViewId(getLoggedInUser());
+
+        // id 1 for default
+        doReturn(1L).when(viewService).getDefaultViewId();
 
         final View dummyView = ViewTestHelper.createMockView("framework.mapfull");
         dummyView.setType(ViewTypes.USER);
@@ -256,6 +262,7 @@ public class GetAppSetupHandlerTest extends JSONActionRouteTest {
         final PermissionService service = mock(PermissionServiceMybatisImpl.class);
         // permission check is skipped here so just mock the call
         doReturn(Collections.emptyList()).when(service).findResourcesByUser(any(User.class));
+        doReturn(Optional.empty()).when(service).findResource(eq(ResourceType.maplayer.name()), any(String.class));
 
         // return mocked  bundle service if a new one is created (in paramhandlers for example)
         // classes doing this must be listed in PrepareForTest annotation
@@ -263,6 +270,16 @@ public class GetAppSetupHandlerTest extends JSONActionRouteTest {
                 thenAnswer(new Answer<Object>() {
                     public Object answer(InvocationOnMock invocation) {
                         return service;
+                    }
+                });
+
+
+        final WFSSearchChannelsService searchService = mock(WFSSearchChannelsServiceMybatisImpl.class);
+        doReturn(Collections.emptyList()).when(searchService).findChannels();
+        whenNew(WFSSearchChannelsServiceMybatisImpl.class).withNoArguments().
+                thenAnswer(new Answer<Object>() {
+                    public Object answer(InvocationOnMock invocation) {
+                        return searchService;
                     }
                 });
 

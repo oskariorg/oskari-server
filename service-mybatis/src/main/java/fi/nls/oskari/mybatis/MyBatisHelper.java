@@ -19,7 +19,9 @@ public class MyBatisHelper {
 
     public static Configuration getConfig(DataSource ds, Class<?>... mappers) {
         if (ds == null) {
-            //ds = getTestDS();
+            // ds = getTestDS();
+        }
+        if (ds == null) {
             throw new NullPointerException("Tried initializing MyBatis without a datasource");
         }
         final TransactionFactory transactionFactory = new JdbcTransactionFactory();
@@ -41,7 +43,7 @@ public class MyBatisHelper {
             Method m = helper.getMethod("createMemDBforUnitTest", List.class);
             return (DataSource) m.invoke(null, (Object) Collections.emptyList());
         } catch (Exception e) {
-            throw new RuntimeException("Not testing");
+            throw new RuntimeException("Tried to create mem-based db for testing but test libraries not in classpath");
         }
     }
 

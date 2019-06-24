@@ -34,11 +34,13 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.oskari.permissions.PermissionService;
 import org.oskari.permissions.PermissionServiceMybatisImpl;
+import org.oskari.permissions.model.ResourceType;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.util.Collections;
+import java.util.Optional;
 import java.util.Properties;
 
 import static org.junit.Assert.fail;
@@ -189,6 +191,7 @@ public class GetAppSetupHandlerRolesFromPropertiesTest extends JSONActionRouteTe
         final PermissionService service = mock(PermissionServiceMybatisImpl.class);
         // permission check is skipped here so just mock the call
         doReturn(Collections.emptyList()).when(service).findResourcesByUser(any(User.class));
+        doReturn(Optional.empty()).when(service).findResource(eq(ResourceType.maplayer.name()), any(String.class));
 
         // return mocked  bundle service if a new one is created (in paramhandlers for example)
         // classes doing this must be listed in PrepareForTest annotation

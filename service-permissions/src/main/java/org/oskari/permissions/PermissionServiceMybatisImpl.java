@@ -4,6 +4,8 @@ import fi.nls.oskari.annotation.Oskari;
 import fi.nls.oskari.db.DatasourceHelper;
 import fi.nls.oskari.domain.Role;
 import fi.nls.oskari.domain.User;
+import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.mybatis.MyBatisHelper;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
@@ -23,6 +25,7 @@ import java.util.stream.Collectors;
 public class PermissionServiceMybatisImpl extends PermissionService {
 
     private static final Class<ResourceMapper> MAPPER = ResourceMapper.class;
+    private static final Logger LOG = LogFactory.getLogger(PermissionServiceMybatisImpl.class);
 
     private final SqlSessionFactory factory;
 
@@ -31,7 +34,12 @@ public class PermissionServiceMybatisImpl extends PermissionService {
     }
 
     public PermissionServiceMybatisImpl(DataSource ds) {
-        this.factory = MyBatisHelper.initMyBatis(ds, MAPPER);
+        if (ds == null) {
+            LOG.warn("DataSource was null, all future calls will throw NPEs!");
+            factory = null;
+        } else {
+            factory = MyBatisHelper.initMyBatis(ds, MAPPER);
+        }
     }
 
 

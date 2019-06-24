@@ -8,6 +8,7 @@ import fi.nls.oskari.domain.Role;
 import fi.nls.oskari.domain.map.view.Bundle;
 import fi.nls.oskari.domain.map.view.View;
 import fi.nls.oskari.domain.map.view.ViewTypes;
+import fi.nls.oskari.map.analysis.service.AnalysisDbService;
 import fi.nls.oskari.map.view.BundleService;
 import fi.nls.oskari.map.view.BundleServiceMybatisImpl;
 import fi.nls.oskari.map.view.ViewService;
@@ -27,6 +28,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.oskari.map.userlayer.service.UserLayerDbService;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
@@ -76,6 +78,8 @@ public class AppSetupHandlerTest extends JSONActionRouteTest {
         // set mocked services
         handler.setViewService(viewService);
         handler.setMyPlacesService(myPlaceService);
+        handler.setUserLayerService(mock(UserLayerDbService.class));
+        handler.setAnalysisService(mock(AnalysisDbService.class));
         handler.setPermissionsService(permissionsService);
         handler.setBundleService(bundleService);
 
@@ -175,5 +179,6 @@ public class AppSetupHandlerTest extends JSONActionRouteTest {
 
         assertNotNull("View should have bundle that has been whitelisted", view.getBundleByName(BUNDLE_WHITELISTED));
     }
-	
+
 }
+
