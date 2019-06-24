@@ -103,6 +103,9 @@ public class Resource {
     }
 
     public boolean hasPermission(Role role, PermissionType permissionType) {
+        return hasPermission(role, permissionType.name());
+    }
+    public boolean hasPermission(Role role, String permissionType) {
         return getPermissions().stream()
                 .filter(p -> p.isOfType(permissionType))
                 .filter(p -> p.getExternalType() == PermissionExternalType.ROLE)
