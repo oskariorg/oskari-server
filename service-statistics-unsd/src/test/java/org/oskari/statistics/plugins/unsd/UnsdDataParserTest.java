@@ -8,8 +8,10 @@ import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -37,29 +39,29 @@ public class UnsdDataParserTest {
     private static final List<IdNamePair> EXPECTED_DIMENSION_ALLOWED_VALUES = Arrays
             .asList(new IdNamePair[] { new IdNamePair("N", null), new IdNamePair("G", null) });
 
-    private static final Map<Integer,Integer> EXPECTED_TIMEPERIOD_DIMENSION_ALLOWED_VALUES = new HashMap<>();
-    private static final Map<Integer,Integer> TIMEPERIOD_FILTER_AND_SORT_TEST_INPUT;
+    private static final Map<Integer,Set <Integer>> EXPECTED_TIMEPERIOD_DIMENSION_ALLOWED_VALUES = new HashMap<>();
+    private static final Map<Integer,Set<Integer>> TIMEPERIOD_FILTER_AND_SORT_TEST_INPUT;
     private static final List <IdNamePair> EXPECTED_TIMEPERIOD_FILTERED_AND_SORTED_VALUES = new ArrayList<>();
     
     static {
-        EXPECTED_TIMEPERIOD_DIMENSION_ALLOWED_VALUES.put(2000, 2);
-        EXPECTED_TIMEPERIOD_DIMENSION_ALLOWED_VALUES.put(2002, 2);
-        EXPECTED_TIMEPERIOD_DIMENSION_ALLOWED_VALUES.put(2001, 2);
-        EXPECTED_TIMEPERIOD_DIMENSION_ALLOWED_VALUES.put(2005, 2);
-        EXPECTED_TIMEPERIOD_DIMENSION_ALLOWED_VALUES.put(2006, 2);
-        EXPECTED_TIMEPERIOD_DIMENSION_ALLOWED_VALUES.put(2004, 2);
-        EXPECTED_TIMEPERIOD_DIMENSION_ALLOWED_VALUES.put(2007, 2);
-        EXPECTED_TIMEPERIOD_DIMENSION_ALLOWED_VALUES.put(2009, 1);
-        EXPECTED_TIMEPERIOD_DIMENSION_ALLOWED_VALUES.put(2010, 1);
-        EXPECTED_TIMEPERIOD_DIMENSION_ALLOWED_VALUES.put(2011, 1);
-        EXPECTED_TIMEPERIOD_DIMENSION_ALLOWED_VALUES.put(2013, 1);
-        EXPECTED_TIMEPERIOD_DIMENSION_ALLOWED_VALUES.put(2008, 1);
-        EXPECTED_TIMEPERIOD_DIMENSION_ALLOWED_VALUES.put(2014, 1);
-        EXPECTED_TIMEPERIOD_DIMENSION_ALLOWED_VALUES.put(2015, 1);
-        EXPECTED_TIMEPERIOD_DIMENSION_ALLOWED_VALUES.put(2016, 1);
-        EXPECTED_TIMEPERIOD_DIMENSION_ALLOWED_VALUES.put(2012, 1);
-        EXPECTED_TIMEPERIOD_DIMENSION_ALLOWED_VALUES.put(2003, 2);
-        
+        EXPECTED_TIMEPERIOD_DIMENSION_ALLOWED_VALUES.put(2000, new HashSet<Integer>(Arrays.asList(new Integer[]{2,4})));
+        EXPECTED_TIMEPERIOD_DIMENSION_ALLOWED_VALUES.put(2002, new HashSet<Integer>(Arrays.asList(new Integer[]{2,4})));
+        EXPECTED_TIMEPERIOD_DIMENSION_ALLOWED_VALUES.put(2001, new HashSet<Integer>(Arrays.asList(new Integer[]{2,4})));
+        EXPECTED_TIMEPERIOD_DIMENSION_ALLOWED_VALUES.put(2005, new HashSet<Integer>(Arrays.asList(new Integer[]{2,4})));
+        EXPECTED_TIMEPERIOD_DIMENSION_ALLOWED_VALUES.put(2006, new HashSet<Integer>(Arrays.asList(new Integer[]{2,4})));
+        EXPECTED_TIMEPERIOD_DIMENSION_ALLOWED_VALUES.put(2004, new HashSet<Integer>(Arrays.asList(new Integer[]{2,4})));
+        EXPECTED_TIMEPERIOD_DIMENSION_ALLOWED_VALUES.put(2007, new HashSet<Integer>(Arrays.asList(new Integer[]{2,4})));
+        EXPECTED_TIMEPERIOD_DIMENSION_ALLOWED_VALUES.put(2009, new HashSet<Integer>(Arrays.asList(new Integer[]{4})));
+        EXPECTED_TIMEPERIOD_DIMENSION_ALLOWED_VALUES.put(2010, new HashSet<Integer>(Arrays.asList(new Integer[]{4})));
+        EXPECTED_TIMEPERIOD_DIMENSION_ALLOWED_VALUES.put(2011, new HashSet<Integer>(Arrays.asList(new Integer[]{4})));
+        EXPECTED_TIMEPERIOD_DIMENSION_ALLOWED_VALUES.put(2013, new HashSet<Integer>(Arrays.asList(new Integer[]{4})));
+        EXPECTED_TIMEPERIOD_DIMENSION_ALLOWED_VALUES.put(2008, new HashSet<Integer>(Arrays.asList(new Integer[]{4})));
+        EXPECTED_TIMEPERIOD_DIMENSION_ALLOWED_VALUES.put(2014, new HashSet<Integer>(Arrays.asList(new Integer[]{4})));
+        EXPECTED_TIMEPERIOD_DIMENSION_ALLOWED_VALUES.put(2015, new HashSet<Integer>(Arrays.asList(new Integer[]{4})));
+        EXPECTED_TIMEPERIOD_DIMENSION_ALLOWED_VALUES.put(2016, new HashSet<Integer>(Arrays.asList(new Integer[]{4})));
+        EXPECTED_TIMEPERIOD_DIMENSION_ALLOWED_VALUES.put(2012, new HashSet<Integer>(Arrays.asList(new Integer[]{4})));
+        EXPECTED_TIMEPERIOD_DIMENSION_ALLOWED_VALUES.put(2003, new HashSet<Integer>(Arrays.asList(new Integer[]{2,4})));
+      
         // Same map can be used as input in filter and sort test
         TIMEPERIOD_FILTER_AND_SORT_TEST_INPUT = EXPECTED_TIMEPERIOD_DIMENSION_ALLOWED_VALUES;
         
@@ -120,15 +122,15 @@ public class UnsdDataParserTest {
 
     @Test
     public void testIndicatorTimePeriodDimensionValues() {
-        Map<Integer, Integer> countOfAreaCodesForYear = new HashMap<>();
-        UnsdDataParser.parseTimePeriod(countOfAreaCodesForYear, dataResponseUnlimited);
-        assertNotNull(countOfAreaCodesForYear);
-        assertEquals(EXPECTED_TIMEPERIOD_DIMENSION_ALLOWED_VALUES.size(), countOfAreaCodesForYear.keySet().size());
+        Map<Integer, Set<Integer>> geoAreaCodesForYears = new HashMap<>();
+        UnsdDataParser.parseTimePeriod(geoAreaCodesForYears, dataResponseUnlimited);
+        assertNotNull(geoAreaCodesForYears);
+        assertEquals(EXPECTED_TIMEPERIOD_DIMENSION_ALLOWED_VALUES.size(), geoAreaCodesForYears.keySet().size());
         EXPECTED_TIMEPERIOD_DIMENSION_ALLOWED_VALUES.entrySet().forEach(e -> {
             assertTrue(String.format("Expected key %s not found", e.getKey()),
-                    countOfAreaCodesForYear.containsKey(e.getKey()));
+                    geoAreaCodesForYears.containsKey(e.getKey()));
             assertEquals(String.format("For year %s", e.getKey()),
-                    e.getValue(), countOfAreaCodesForYear.get(e.getKey()));
+                    e.getValue(), geoAreaCodesForYears.get(e.getKey()));
         });
     }
     

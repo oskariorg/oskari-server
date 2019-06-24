@@ -1,5 +1,18 @@
 package org.oskari.statistics.plugins.unsd;
 
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import fi.nls.oskari.control.statistics.data.IdNamePair;
 import fi.nls.oskari.control.statistics.data.IndicatorValue;
 import fi.nls.oskari.control.statistics.data.IndicatorValueFloat;
@@ -9,19 +22,12 @@ import fi.nls.oskari.control.statistics.plugins.APIException;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.util.JSONHelper;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 public class UnsdDataParser {
 
     private static final String DATA_KEY = "data";
     private static final String TIME_PERIOD_START_KEY = "timePeriodStart";
+    private static final String GEO_AREA_CODE_KEY = "geoAreaCode";
     private static final Logger LOG = LogFactory.getLogger(UnsdDataParser.class);
 
     private UnsdConfig config;
@@ -77,17 +83,18 @@ public class UnsdDataParser {
     }
 
     public StatisticalIndicatorDataDimension getTimeperiodDimensionFromIndicatorData(String timePeriodDimensionId,
-            String indicator) {
+            String indicator, String[] areaCodes) {
         UnsdRequest request = new UnsdRequest(config);
         request.setIndicator(indicator);
+        request.setAreaCodes(areaCodes);
 
         StatisticalIndicatorDataDimension selector = new StatisticalIndicatorDataDimension(timePeriodDimensionId);
-        Map<Integer, Integer> countOfAreaCodesForYear = new HashMap<>();
+        Map<Integer,  Set<Integer>> geoAreaCodesForYears = new HashMap<>();
 
         try {
             while (true) {
                 JSONObject response = JSONHelper.createJSONObject(request.getIndicatorData(null));
-                parseTimePeriod(countOfAreaCodesForYear, response);
+                parseTimePeriod(geoAreaCodesForYears, response);
                 if (isLastPage(response)) {
                     break;
                 }
@@ -95,7 +102,7 @@ public class UnsdDataParser {
             }
 
             List<IdNamePair> allowedValues = getSortedListOfYearsThatBelongToSeveralGeoAreas(
-                    countOfAreaCodesForYear);
+                    geoAreaCodesForYears);
 
             selector.setAllowedValues(allowedValues);
             return selector;
@@ -105,13 +112,17 @@ public class UnsdDataParser {
         }
     }
 
-    public static void parseTimePeriod(Map<Integer, Integer> countOfAreaCodesForYear, JSONObject response) {
+    public static void parseTimePeriod(Map<Integer, Set<Integer>> geoAreaCodesForYears, JSONObject response) {
         try {
             JSONArray data = response.getJSONArray(DATA_KEY);
             for (int i = 0; i < data.length(); i++) {
                 JSONObject o = (JSONObject) data.get(i);
                 Integer year = o.getInt(TIME_PERIOD_START_KEY);
-                countOfAreaCodesForYear.merge(year, 1, Integer::sum);
+                Integer geoAreaCode = o.getInt(GEO_AREA_CODE_KEY);
+
+                geoAreaCodesForYears.merge(year, new HashSet<Integer>(Arrays.asList(geoAreaCode)), (oldSet,newSet) -> {
+                    return Stream.of(oldSet,newSet).flatMap(x -> x.stream()).collect(Collectors.toSet());
+                });
             }
         } catch (JSONException e) {
             LOG.error("Error parsing time period selectors for indicator: " + e.getMessage(), e);
@@ -119,8 +130,9 @@ public class UnsdDataParser {
     }
     
     public static List<IdNamePair> getSortedListOfYearsThatBelongToSeveralGeoAreas(
-            Map<Integer, Integer> countOfAreaCodesForYear) {
-        return (List<IdNamePair>) (countOfAreaCodesForYear.entrySet().stream().filter(e -> e.getValue() > 1)
+            Map<Integer,  Set<Integer>> countOfAreaCodesForYear) {
+        return (List<IdNamePair>) (countOfAreaCodesForYear.entrySet().stream().filter(e ->
+            e.getValue().size() > 1)
                 .map(e -> e.getKey()).sorted().map(year -> new IdNamePair(String.valueOf(year), null))).collect(Collectors.toList());
     }
 }
