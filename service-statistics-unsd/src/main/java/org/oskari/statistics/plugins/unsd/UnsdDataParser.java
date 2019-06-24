@@ -28,6 +28,7 @@ public class UnsdDataParser {
     private static final String DATA_KEY = "data";
     private static final String TIME_PERIOD_START_KEY = "timePeriodStart";
     private static final String GEO_AREA_CODE_KEY = "geoAreaCode";
+    private static final String SUPPORTED_VALUE_TYPE = "Float";
     private static final Logger LOG = LogFactory.getLogger(UnsdDataParser.class);
 
     private UnsdConfig config;
@@ -50,11 +51,10 @@ public class UnsdDataParser {
         JSONArray dataArray = response.getJSONArray("data");
         for (int i = 0; i < dataArray.length(); i++) {
             JSONObject data = dataArray.getJSONObject(i);
-            String valueType = data.getString("valueType");
-            if("Float".equals(valueType)){
+            if(dataObjectValueTypeIsSupported(data)){
                 results.put(data.getString("geoAreaCode"), new IndicatorValueFloat(data.getDouble("value")));
             } else {
-                LOG.error(String.format("Not supported valueType %s received.",valueType));
+                LOG.error(String.format("Not supported valueType %s received.",data.getString("valueType")));
             }
         }
         return results;
@@ -125,15 +125,21 @@ public class UnsdDataParser {
                 Integer year = o.getInt(TIME_PERIOD_START_KEY);
                 Integer geoAreaCode = o.getInt(GEO_AREA_CODE_KEY);
 
-                geoAreaCodesForYears.merge(year, new HashSet<Integer>(Arrays.asList(geoAreaCode)), (oldSet,newSet) -> {
-                    return Stream.of(oldSet,newSet).flatMap(x -> x.stream()).collect(Collectors.toSet());
-                });
+                if(dataObjectValueTypeIsSupported(o)) {
+                    geoAreaCodesForYears.merge(year, new HashSet<Integer>(Arrays.asList(geoAreaCode)), (oldSet,newSet) -> {
+                        return Stream.of(oldSet,newSet).flatMap(x -> x.stream()).collect(Collectors.toSet());
+                    });
+                }
             }
         } catch (JSONException e) {
             LOG.error("Error parsing time period selectors for indicator: " + e.getMessage(), e);
         }
     }
     
+    private static boolean dataObjectValueTypeIsSupported(JSONObject o) throws JSONException {
+        return SUPPORTED_VALUE_TYPE.equals(o.getString("valueType"));
+    }
+
     public static List<IdNamePair> getSortedListOfYearsThatBelongToSeveralGeoAreas(
             Map<Integer,  Set<Integer>> countOfAreaCodesForYear) {
         return (List<IdNamePair>) (countOfAreaCodesForYear.entrySet().stream().filter(e ->
