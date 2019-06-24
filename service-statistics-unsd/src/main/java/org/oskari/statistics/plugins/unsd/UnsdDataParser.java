@@ -50,7 +50,12 @@ public class UnsdDataParser {
         JSONArray dataArray = response.getJSONArray("data");
         for (int i = 0; i < dataArray.length(); i++) {
             JSONObject data = dataArray.getJSONObject(i);
-            results.put(data.getString("geoAreaCode"), new IndicatorValueFloat(data.getDouble("value")));
+            String valueType = data.getString("valueType");
+            if("Float".equals(valueType)){
+                results.put(data.getString("geoAreaCode"), new IndicatorValueFloat(data.getDouble("value")));
+            } else {
+                LOG.error(String.format("Not supported valueType %s received.",valueType));
+            }
         }
         return results;
     }
