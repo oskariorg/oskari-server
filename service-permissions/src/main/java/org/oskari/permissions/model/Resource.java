@@ -92,6 +92,8 @@ public class Resource {
 
         if (userHasRoleWithId) {
             return true;
+        } else if(user.isGuest()) {
+            return false;
         }
 
         return getPermissions().stream()
