@@ -3,16 +3,16 @@ package fi.nls.oskari.control.data;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 import javax.imageio.ImageIO;
 
+import fi.nls.oskari.service.OskariComponentManager;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.oskari.permissions.PermissionService;
 import org.oskari.print.PrintService;
 import org.oskari.print.request.PrintFormat;
 import org.oskari.print.request.PrintLayer;
@@ -20,7 +20,6 @@ import org.oskari.print.request.PrintRequest;
 import org.oskari.print.request.PrintTile;
 import org.oskari.service.util.ServiceFactory;
 
-import fi.mml.portti.service.db.permissions.PermissionsService;
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.ActionHandler;
@@ -83,12 +82,12 @@ public class GetPrintHandler extends ActionHandler {
 
     public GetPrintHandler() {
         this(ServiceFactory.getMapLayerService(),
-                ServiceFactory.getPermissionsService(),
+                OskariComponentManager.getComponentOfType(PermissionService.class),
                 new PrintService());
     }
 
     public GetPrintHandler(OskariLayerService layerService,
-            PermissionsService permissionService, PrintService printService) {
+                           PermissionService permissionService, PrintService printService) {
         this.permissionHelper = new PermissionHelper(layerService, permissionService);
         this.printService = printService;
     }
