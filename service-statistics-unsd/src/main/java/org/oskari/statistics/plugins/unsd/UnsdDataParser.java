@@ -1,13 +1,11 @@
 package org.oskari.statistics.plugins.unsd;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -28,6 +26,7 @@ public class UnsdDataParser {
     private static final String DATA_KEY = "data";
     private static final String TIME_PERIOD_START_KEY = "timePeriodStart";
     private static final String GEO_AREA_CODE_KEY = "geoAreaCode";
+    private static final String VALUE_TYPE_KEY  = "valueType";
     private static final String SUPPORTED_VALUE_TYPE = "Float";
     private static final Logger LOG = LogFactory.getLogger(UnsdDataParser.class);
 
@@ -51,10 +50,11 @@ public class UnsdDataParser {
         JSONArray dataArray = response.getJSONArray("data");
         for (int i = 0; i < dataArray.length(); i++) {
             JSONObject data = dataArray.getJSONObject(i);
-            if(dataObjectValueTypeIsSupported(data)){
-                results.put(data.getString("geoAreaCode"), new IndicatorValueFloat(data.getDouble("value")));
+            String valueType = data.optString(VALUE_TYPE_KEY);
+            if(dataObjectValueTypeIsSupported(valueType)){
+                results.put(data.getString(GEO_AREA_CODE_KEY), new IndicatorValueFloat(data.getDouble("value")));
             } else {
-                LOG.error(String.format("Not supported valueType %s received.",data.getString("valueType")));
+                LOG.error(String.format("Not supported valueType %s received.",valueType));
             }
         }
         return results;
@@ -122,13 +122,14 @@ public class UnsdDataParser {
             JSONArray data = response.getJSONArray(DATA_KEY);
             for (int i = 0; i < data.length(); i++) {
                 JSONObject o = (JSONObject) data.get(i);
-                Integer year = o.getInt(TIME_PERIOD_START_KEY);
-                Integer geoAreaCode = o.getInt(GEO_AREA_CODE_KEY);
-
-                if(dataObjectValueTypeIsSupported(o)) {
-                    geoAreaCodesForYears.merge(year, new HashSet<Integer>(Arrays.asList(geoAreaCode)), (oldSet,newSet) -> {
-                        return Stream.of(oldSet,newSet).flatMap(x -> x.stream()).collect(Collectors.toSet());
-                    });
+                String valueType = o.optString(VALUE_TYPE_KEY);
+ 
+                if(dataObjectValueTypeIsSupported(valueType)) {
+                    Integer year = o.getInt(TIME_PERIOD_START_KEY);
+                    Integer geoAreaCode = o.getInt(GEO_AREA_CODE_KEY);
+                    geoAreaCodesForYears.computeIfAbsent(year, k -> new HashSet<>()).add(geoAreaCode);
+                } else {
+                    LOG.error(String.format("Not supported valueType %s received.",valueType));
                 }
             }
         } catch (JSONException e) {
@@ -136,8 +137,8 @@ public class UnsdDataParser {
         }
     }
     
-    private static boolean dataObjectValueTypeIsSupported(JSONObject o) throws JSONException {
-        return SUPPORTED_VALUE_TYPE.equals(o.getString("valueType"));
+    private static boolean dataObjectValueTypeIsSupported(String valueType) throws JSONException {
+        return SUPPORTED_VALUE_TYPE.equals(valueType);
     }
 
     public static List<IdNamePair> getSortedListOfYearsThatBelongToSeveralGeoAreas(
