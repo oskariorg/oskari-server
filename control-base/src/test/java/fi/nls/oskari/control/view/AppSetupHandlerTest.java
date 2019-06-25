@@ -1,7 +1,5 @@
 package fi.nls.oskari.control.view;
 
-import fi.mml.portti.service.db.permissions.PermissionsService;
-import fi.mml.portti.service.db.permissions.PermissionsServiceIbatisImpl;
 import fi.nls.oskari.control.ActionConstants;
 import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.domain.Role;
@@ -29,6 +27,8 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.oskari.map.userlayer.service.UserLayerDbService;
+import org.oskari.permissions.PermissionService;
+import org.oskari.permissions.PermissionServiceMybatisImpl;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
@@ -50,7 +50,7 @@ public class AppSetupHandlerTest extends JSONActionRouteTest {
     private AppSetupHandler handler = null;
     private ViewService viewService = null;
     private MyPlacesService myPlaceService = null;
-    private PermissionsService permissionsService = null;
+    private PermissionService permissionsService = null;
     private UserService userService = null;
     private BundleService bundleService = null;
 
@@ -71,7 +71,7 @@ public class AppSetupHandlerTest extends JSONActionRouteTest {
         handler = new AppSetupHandler();
     	mockViewService();
         myPlaceService = mock(MyPlacesServiceMybatisImpl.class);
-        permissionsService = mock(PermissionsServiceIbatisImpl.class);
+        permissionsService = mock(PermissionServiceMybatisImpl.class);
         mockBundleService();
         mockUserService();
 

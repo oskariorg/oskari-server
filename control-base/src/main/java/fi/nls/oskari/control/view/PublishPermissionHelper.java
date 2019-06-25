@@ -1,7 +1,5 @@
 package fi.nls.oskari.control.view;
 
-import fi.mml.portti.domain.permissions.Permissions;
-import fi.mml.portti.service.db.permissions.PermissionsService;
 import fi.nls.oskari.analysis.AnalysisHelper;
 import fi.nls.oskari.cache.JedisManager;
 import fi.nls.oskari.control.ActionDeniedException;
@@ -28,13 +26,12 @@ import fi.nls.oskari.util.ConversionHelper;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.oskari.map.userlayer.service.UserLayerDbService;
-import org.oskari.permissions.model.Permission;
-import org.oskari.permissions.model.Resource;
+import org.oskari.permissions.PermissionService;
+import org.oskari.permissions.model.*;
 import org.oskari.service.util.ServiceFactory;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 /**
@@ -48,7 +45,7 @@ public class PublishPermissionHelper {
     private AnalysisDbService analysisService = null;
     private UserLayerDbService userLayerService = null;
     private OskariLayerService layerService = null;
-    private PermissionsService permissionsService = null;
+    private PermissionService permissionsService = null;
 
     private static final String PREFIX_MYPLACES = "myplaces_";
     private static final String PREFIX_ANALYSIS = "analysis_";
@@ -68,7 +65,7 @@ public class PublishPermissionHelper {
         }
 
         if (permissionsService == null) {
-            setPermissionsService(ServiceFactory.getPermissionsService());
+            setPermissionsService(OskariComponentManager.getComponentOfType(PermissionService.class));
         }
 
         if (layerService == null) {
@@ -88,7 +85,7 @@ public class PublishPermissionHelper {
         userLayerService = service;
     }
 
-    public void setPermissionsService(final PermissionsService service) {
+    public void setPermissionsService(final PermissionService service) {
         permissionsService = service;
     }
     public void setOskariLayerService(final OskariLayerService service) {
@@ -108,15 +105,14 @@ public class PublishPermissionHelper {
             // add DRAW permission for all roles currently in the system
             for(Role role: UserService.getInstance().getRoles()) {
                 final Permission perm = new Permission();
-                perm.setExternalType(Permissions.EXTERNAL_TYPE_ROLE);
-                perm.setExternalId("" + role.getId());
+                perm.setRoleId((int) role.getId());
                 perm.setType(myPlaceService.PERMISSION_TYPE_DRAW);
                 resource.addPermission(perm);
             }
         } catch (Exception e) {
             LOG.error(e, "Error generating DRAW permissions for myplaces layer");
         }
-        permissionsService.saveResourcePermissions(resource);
+        permissionsService.saveResource(resource);
     }
 
 
@@ -193,7 +189,7 @@ public class PublishPermissionHelper {
         }
 
         final Set<String> permissions = permissionsService.getResourcesWithGrantedPermissions(
-                AnalysisLayer.TYPE, user, Permissions.PERMISSION_TYPE_PUBLISH);
+                ResourceType.analysislayer, user, PermissionType.PUBLISH);
         LOG.debug("Analysis layer publish permissions", permissions);
         final String permissionKey = "analysis+"+analysis.getId();
 
@@ -240,13 +236,8 @@ public class PublishPermissionHelper {
             LOG.warn("Couldn't find layer with id:", id);
             return false;
         }
-        Long permissionId = Long.valueOf(id);
-        final List<Long> list = new ArrayList<>();
-        list.add(permissionId);
-        final Map<Long, List<Permissions>> map = permissionsService.getPermissionsForLayers(list, Permissions.PERMISSION_TYPE_PUBLISH);
-        List<Permissions> permissions = map.get(permissionId);
-        boolean hasPermission = permissionsService.permissionGrantedForRolesOrUser(
-                user, permissions, Permissions.PERMISSION_TYPE_PUBLISH);
+        boolean hasPermission = permissionsService.findResource(ResourceType.maplayer, new OskariLayerResource(layer).getMapping())
+                .filter(r -> r.hasPermission(user, PermissionType.PUBLISH)).isPresent();
         if (!hasPermission) {
             LOG.warn("User tried to publish layer with no publish permission. LayerID:", layerId, "- User:", user);
         }

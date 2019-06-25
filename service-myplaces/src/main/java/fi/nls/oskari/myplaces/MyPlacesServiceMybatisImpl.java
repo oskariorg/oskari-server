@@ -22,6 +22,7 @@ import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.apache.ibatis.transaction.TransactionFactory;
 import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
 import org.oskari.permissions.model.Resource;
+import org.oskari.permissions.model.ResourceType;
 
 import javax.sql.DataSource;
 import java.util.Collections;
@@ -97,7 +98,7 @@ public class MyPlacesServiceMybatisImpl extends MyPlacesService {
 
     public Resource getResource(final String myplacesLayerId) {
         final Resource resource = new Resource();
-        resource.setType(RESOURCE_TYPE_MYPLACES);
+        resource.setType(ResourceType.myplaces);
         resource.setMapping(myplacesLayerId);
         final Resource dbRes = permissionsService.findResource(resource);
         if(dbRes == null) {

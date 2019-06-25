@@ -15,7 +15,6 @@ import java.util.List;
 
 public abstract class MyPlacesService extends OskariComponent {
 
-    public static final String RESOURCE_TYPE_MYPLACES = "myplaces";
     public static final String PERMISSION_TYPE_DRAW = "DRAW";
     public static final String MYPLACES_LAYERID_PREFIX = "myplaces_";
 
