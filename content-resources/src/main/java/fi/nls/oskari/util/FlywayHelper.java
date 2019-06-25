@@ -137,4 +137,16 @@ public class FlywayHelper {
             statement.execute();
         }
     }
+    
+    public static void removeBundleFromView(Connection connection, String bundleName, Long viewId)
+            throws SQLException {
+        final String sql ="DELETE FROM portti_view_bundle_seq " +
+                "WHERE bundle_id = (SELECT id FROM portti_bundle WHERE name=?) AND view_id=?";
+        try(final PreparedStatement statement =
+                    connection.prepareStatement(sql)) {
+            statement.setString(1, bundleName);
+            statement.setLong(2, viewId);
+            statement.execute();
+        }
+    }
 }
