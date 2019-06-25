@@ -1,18 +1,14 @@
 package fi.nls.oskari.control.feature;
 
-import fi.mml.portti.domain.permissions.Permissions;
-import fi.mml.portti.service.db.permissions.PermissionsService;
-import fi.mml.portti.service.db.permissions.PermissionsServiceIbatisImpl;
 import fi.nls.oskari.cache.JedisManager;
 import fi.nls.oskari.control.ActionException;
-import fi.nls.oskari.control.ActionHandler;
 import fi.nls.oskari.control.ActionParamsException;
 import fi.nls.oskari.control.RestActionHandler;
 import fi.nls.oskari.domain.User;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.domain.map.wfs.WFSLayerConfiguration;
 import fi.nls.oskari.map.layer.OskariLayerService;
-import fi.nls.oskari.map.layer.OskariLayerServiceMybatisImpl;
+import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.wfs.WFSLayerConfigurationService;
@@ -31,8 +27,10 @@ import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.oskari.permissions.PermissionService;
 import org.oskari.permissions.model.OskariLayerResource;
-import org.oskari.permissions.model.Resource;
+import org.oskari.permissions.model.PermissionType;
+import org.oskari.permissions.model.ResourceType;
 import org.oskari.service.util.ServiceFactory;
 
 import java.io.IOException;
@@ -45,7 +43,7 @@ public abstract class AbstractFeatureHandler extends RestActionHandler {
     public final static String CACHKE_KEY_PREFIX = "WFSImage_";
 
     private OskariLayerService layerService;
-    private PermissionsService permissionsService;
+    private PermissionService permissionsService;
     private WFSLayerConfigurationService layerConfigurationService;
     private static final Set<String> ALLOWED_GEOM_TYPES = ConversionHelper.asSet("multipoint", "multilinestring", "multipolygon");
 
@@ -53,7 +51,7 @@ public abstract class AbstractFeatureHandler extends RestActionHandler {
     public void init() {
         super.init();
         layerService = ServiceFactory.getMapLayerService();
-        permissionsService = ServiceFactory.getPermissionsService();
+        permissionsService = OskariComponentManager.getComponentOfType(PermissionService.class);
         layerConfigurationService = ServiceFactory.getWfsLayerService();
     }
 
@@ -66,8 +64,8 @@ public abstract class AbstractFeatureHandler extends RestActionHandler {
     }
 
     protected boolean canEdit(OskariLayer layer, User user) {
-        final Resource resource = permissionsService.findResource(new OskariLayerResource(layer));
-        return resource.hasPermission(user, Permissions.PERMISSION_TYPE_EDIT_LAYER_CONTENT);
+        return permissionsService.findResource(ResourceType.maplayer, new OskariLayerResource(layer).getMapping())
+                .filter(r -> r.hasPermission(user, PermissionType.EDIT_LAYER_CONTENT)).isPresent();
     }
 
     protected int getLayerId(String layerId) throws ActionParamsException {
