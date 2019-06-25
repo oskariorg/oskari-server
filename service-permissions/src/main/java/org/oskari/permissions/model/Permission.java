@@ -55,6 +55,16 @@ public class Permission {
         setExternalId(Integer.parseInt(externalId));
     }
 
+    public void setRoleId(int roleId) {
+        setExternalType(PermissionExternalType.ROLE);
+        setExternalId(roleId);
+    }
+
+    public void setUserId(int userId) {
+        setExternalType(PermissionExternalType.USER);
+        setExternalId(userId);
+    }
+
     public boolean isOfType(String permissionType) {
         return type.equals(permissionType);
     }
