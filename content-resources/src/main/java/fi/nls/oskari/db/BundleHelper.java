@@ -91,14 +91,14 @@ public class BundleHelper {
         }
     }
 
-    public static void removeBundle(final Bundle bundle, Connection conn) throws SQLException {
-        if (isBundleRegistered(bundle.getName(), conn)) {
+    public static void unregisterBundle(final String bundleName, Connection conn) throws SQLException {
+        if (isBundleRegistered(bundleName, conn)) {
             try (PreparedStatement statement = conn.prepareStatement("DELETE FROM portti_bundle WHERE name=?")) {
-                statement.setString(1, bundle.getName());
+                statement.setString(1, bundleName);
                 statement.execute();
             }
         } else {
-            LOG.info("Bundle", bundle.getName(), "not registered - Skipping!");
+            LOG.info("Bundle", bundleName, "not registered - Skipping!");
         }
     }
 }
