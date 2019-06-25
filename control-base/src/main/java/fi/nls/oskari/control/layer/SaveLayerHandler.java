@@ -4,8 +4,6 @@ import fi.mml.map.mapwindow.service.wms.LayerNotFoundInCapabilitiesException;
 import fi.mml.map.mapwindow.service.wms.WebMapService;
 import fi.mml.map.mapwindow.service.wms.WebMapServiceParseException;
 import fi.mml.map.mapwindow.util.OskariLayerWorker;
-import fi.mml.portti.domain.permissions.Permissions;
-import fi.mml.portti.service.db.permissions.PermissionsService;
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.cache.JedisManager;
 import fi.nls.oskari.control.*;
@@ -21,6 +19,7 @@ import fi.nls.oskari.map.layer.group.link.OskariLayerGroupLink;
 import fi.nls.oskari.map.layer.group.link.OskariLayerGroupLinkService;
 import fi.nls.oskari.map.view.ViewService;
 import fi.nls.oskari.map.view.util.ViewHelper;
+import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.service.capabilities.CapabilitiesCacheService;
 import fi.nls.oskari.service.capabilities.OskariLayerCapabilitiesHelper;
@@ -32,8 +31,8 @@ import fi.nls.oskari.wmts.WMTSCapabilitiesParser;
 import fi.nls.oskari.wmts.domain.WMTSCapabilities;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.oskari.permissions.model.OskariLayerResource;
-import org.oskari.permissions.model.Permission;
+import org.oskari.permissions.PermissionService;
+import org.oskari.permissions.model.*;
 import org.oskari.service.util.ServiceFactory;
 import org.oskari.service.wfs3.WFS3Service;
 
@@ -59,7 +58,7 @@ public class SaveLayerHandler extends RestActionHandler {
     private OskariLayerService mapLayerService = ServiceFactory.getMapLayerService();
     private ViewService viewService = ServiceFactory.getViewService();
     private WFSLayerConfigurationService wfsLayerService = ServiceFactory.getWfsLayerService();
-    private PermissionsService permissionsService = ServiceFactory.getPermissionsService();
+    private PermissionService permissionsService;
     private DataProviderService dataProviderService = ServiceFactory.getDataProviderService();
     private OskariLayerGroupLinkService layerGroupLinkService = ServiceFactory.getOskariLayerGroupLinkService();
     private CapabilitiesCacheService capabilitiesService = ServiceFactory.getCapabilitiesCacheService();
@@ -140,6 +139,10 @@ public class SaveLayerHandler extends RestActionHandler {
     private static final String WFS1_1_0_VERSION = "1.1.0";
     private static final String WFS3_0_0_VERSION = "3.0.0";
 
+    public void init() {
+        permissionsService = OskariComponentManager.getComponentOfType(PermissionService.class);
+    }
+
     @Override
     public void handlePost(ActionParameters params) throws ActionException {
 
@@ -185,9 +188,10 @@ public class SaveLayerHandler extends RestActionHandler {
                 final OskariLayer ml = mapLayerService.find(layer_id);
                 if (ml == null) {
                     // layer wasn't found
-                    throw new ActionException(ERROR_NO_LAYER_WITH_ID + layer_id);
+                    throw new ActionParamsException(ERROR_NO_LAYER_WITH_ID + layer_id);
                 }
-                if (!permissionsService.hasEditPermissionForLayerByLayerId(params.getUser(), ml.getId())) {
+
+                if (!userHasEditPermission(params.getUser(), ml)) {
                     throw new ActionDeniedException(ERROR_OPERATION_NOT_PERMITTED + layer_id);
                 }
 
@@ -235,7 +239,7 @@ public class SaveLayerHandler extends RestActionHandler {
             // ************** INSERT ************************
             else {
 
-                if (!permissionsService.hasAddLayerPermission(params.getUser())) {
+                if (!userHasAddPermission(params.getUser())) {
                     throw new ActionDeniedException(ERROR_OPERATION_NOT_PERMITTED + layer_id);
                 }
 
@@ -301,6 +305,16 @@ public class SaveLayerHandler extends RestActionHandler {
         }
     }
 
+    private boolean userHasEditPermission(User user, OskariLayer layer) {
+        return user.isAdmin() || permissionsService.findResource(ResourceType.maplayer, new OskariLayerResource(layer).getMapping())
+                .filter(r -> r.hasPermission(user, PermissionType.EDIT_LAYER)).isPresent();
+    }
+
+    private boolean userHasAddPermission(User user) {
+        return user.isAdmin() || permissionsService.findResource(ResourceType.functionality, "generic-functionality")
+                .filter(r -> r.hasPermission(user, PermissionType.ADD_MAPLAYER)).isPresent();
+    }
+
     private static int[] getMaplayerGroupIds(String maplayerGroups) {
         return Arrays.stream(maplayerGroups.split(","))
                 .mapToInt(gid -> ConversionHelper.getInt(gid, -1))
@@ -323,14 +337,14 @@ public class SaveLayerHandler extends RestActionHandler {
      * @param param
      * @return
      */
-    private Set<Long> getPermissionSet(final String param) {
+    private Set<Integer> getPermissionSet(final String param) {
         if(param == null) {
             return Collections.emptySet();
         }
-        final Set<Long> set = new HashSet<Long>();
+        final Set<Integer> set = new HashSet<>();
         final String[] roleIds = param.split(",");
         for (String externalId : roleIds) {
-            final long extId = ConversionHelper.getLong(externalId, -1);
+            final int extId = ConversionHelper.getInt(externalId, -1);
             if (extId != -1) {
                 set.add(extId);
             }
@@ -668,79 +682,51 @@ public class SaveLayerHandler extends RestActionHandler {
         return url;
     }
 
-    private void addPermissionsForRoles(final OskariLayer ml, final User user, final String[] externalIds) {
-
-        OskariLayerResource res = new OskariLayerResource(ml);
-        // insert permissions
-        for (String externalId : externalIds) {
-            final long extId = ConversionHelper.getLong(externalId, -1);
-            if (extId != -1 && user.hasRoleWithId(extId)) {
-                Permission permission = new Permission();
-                permission.setExternalType(Permissions.EXTERNAL_TYPE_ROLE);
-                permission.setExternalId(externalId);
-                permission.setType(Permissions.PERMISSION_TYPE_VIEW_LAYER);
-                res.addPermission(permission);
-
-                permission = new Permission();
-                permission.setExternalType(Permissions.EXTERNAL_TYPE_ROLE);
-                permission.setExternalId(externalId);
-                permission.setType(Permissions.PERMISSION_TYPE_EDIT_LAYER);
-                res.addPermission(permission);
-            }
-        }
-        permissionsService.saveResourcePermissions(res);
-    }
-
     private void addPermissionsForRoles(final OskariLayer ml,
-                                        final Set<Long> externalIds,
-                                        final Set<Long> publishRoleIds,
-                                        final Set<Long> downloadRoleIds,
-                                        final Set<Long> viewEmbeddedRoleIds) {
+                                        final Set<Integer> externalIds,
+                                        final Set<Integer> publishRoleIds,
+                                        final Set<Integer> downloadRoleIds,
+                                        final Set<Integer> viewEmbeddedRoleIds) {
 
         OskariLayerResource res = new OskariLayerResource(ml);
         // insert permissions
-        LOG.debug("Adding permission", Permissions.PERMISSION_TYPE_VIEW_LAYER, "for roles:", externalIds);
-        for (long externalId : externalIds) {
+        LOG.debug("Adding permission", PermissionType.VIEW_LAYER, "for roles:", externalIds);
+        for (int externalId : externalIds) {
             Permission permission = new Permission();
-            permission.setExternalType(Permissions.EXTERNAL_TYPE_ROLE);
-            permission.setExternalId(Long.toString(externalId));
-            permission.setType(Permissions.PERMISSION_TYPE_VIEW_LAYER);
+            permission.setRoleId(externalId);
+            permission.setType(PermissionType.VIEW_LAYER);
             res.addPermission(permission);
 
             permission = new Permission();
-            permission.setExternalType(Permissions.EXTERNAL_TYPE_ROLE);
-            permission.setExternalId(Long.toString(externalId));
-            permission.setType(Permissions.PERMISSION_TYPE_EDIT_LAYER);
+            permission.setRoleId(externalId);
+            permission.setType(PermissionType.EDIT_LAYER);
             res.addPermission(permission);
         }
 
-        LOG.debug("Adding permission", Permissions.PERMISSION_TYPE_PUBLISH, "for roles:", publishRoleIds);
-        for (long externalId : publishRoleIds) {
+        LOG.debug("Adding permission", PermissionType.PUBLISH, "for roles:", publishRoleIds);
+        for (int externalId : publishRoleIds) {
             Permission permission = new Permission();
-            permission.setExternalType(Permissions.EXTERNAL_TYPE_ROLE);
-            permission.setExternalId(Long.toString(externalId));
-            permission.setType(Permissions.PERMISSION_TYPE_PUBLISH);
+            permission.setRoleId(externalId);
+            permission.setType(PermissionType.PUBLISH);
             res.addPermission(permission);
         }
 
-        LOG.debug("Adding permission", Permissions.PERMISSION_TYPE_DOWNLOAD, "for roles:", downloadRoleIds);
-        for (long externalId : downloadRoleIds) {
+        LOG.debug("Adding permission", PermissionType.DOWNLOAD, "for roles:", downloadRoleIds);
+        for (int externalId : downloadRoleIds) {
             Permission permission = new Permission();
-            permission.setExternalType(Permissions.EXTERNAL_TYPE_ROLE);
-            permission.setExternalId(Long.toString(externalId));
-            permission.setType(Permissions.PERMISSION_TYPE_DOWNLOAD);
+            permission.setRoleId(externalId);
+            permission.setType(PermissionType.DOWNLOAD);
             res.addPermission(permission);
         }
 
-        LOG.debug("Adding permission", Permissions.PERMISSION_TYPE_VIEW_PUBLISHED, "for roles:", viewEmbeddedRoleIds);
-        for (long externalId : viewEmbeddedRoleIds) {
+        LOG.debug("Adding permission", PermissionType.VIEW_PUBLISHED, "for roles:", viewEmbeddedRoleIds);
+        for (int externalId : viewEmbeddedRoleIds) {
             Permission permission = new Permission();
-            permission.setExternalType(Permissions.EXTERNAL_TYPE_ROLE);
-            permission.setExternalId(Long.toString(externalId));
-            permission.setType(Permissions.PERMISSION_TYPE_VIEW_PUBLISHED);
+            permission.setRoleId(externalId);
+            permission.setType(PermissionType.VIEW_PUBLISHED);
             res.addPermission(permission);
         }
 
-        permissionsService.saveResourcePermissions(res);
+        permissionsService.insertResource(res);
     }
 }

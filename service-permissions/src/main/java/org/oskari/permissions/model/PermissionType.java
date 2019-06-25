@@ -7,5 +7,6 @@ public enum PermissionType {
     EDIT_LAYER_CONTENT,
     VIEW_PUBLISHED,
     DOWNLOAD,
-    EXECUTE
+    EXECUTE,
+    ADD_MAPLAYER
 }
