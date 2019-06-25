@@ -1,7 +1,5 @@
 package fi.nls.oskari.control.layer;
 
-import fi.mml.portti.service.db.permissions.PermissionsService;
-import fi.mml.portti.service.db.permissions.PermissionsServiceIbatisImpl;
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.cache.JedisManager;
 import fi.nls.oskari.control.*;
@@ -20,11 +18,10 @@ import fi.nls.oskari.wfs.WFSLayerConfigurationServiceIbatisImpl;
  * 
  */
 @OskariActionRoute("DeleteLayer")
-public class DeleteLayerHandler extends RestActionHandler {
+public class DeleteLayerHandler extends AbstractLayerAdminHandler {
 
     private static final Logger log = LogFactory.getLogger(DeleteLayerHandler.class);
     private static final OskariLayerService mapLayerService = new OskariLayerServiceMybatisImpl();
-    private PermissionsService permissionsService = new PermissionsServiceIbatisImpl();
     WFSLayerConfigurationService wfsLayerService = new WFSLayerConfigurationServiceIbatisImpl();
 
     private static final String PARAM_LAYER_ID = "layer_id";
@@ -37,7 +34,7 @@ public class DeleteLayerHandler extends RestActionHandler {
             throw new ActionParamsException("Layer not found - id: " + id);
         }
 
-        if(!permissionsService.hasEditPermissionForLayerByLayerId(params.getUser(), layer.getId())) {
+        if(!userHasEditPermission(params.getUser(), layer)) {
             throw new ActionDeniedException("Unauthorized user tried to remove layer - id: " + layer.getId());
         }
 
@@ -46,9 +43,8 @@ public class DeleteLayerHandler extends RestActionHandler {
             if(layer.getType().equals(OskariLayer.TYPE_WFS))
             {
                 wfsLayerService.delete(layer.getId());
-                //final String key[] = {WFSLayerConfiguration.KEY + Integer.toString(layer.getId())};
-                JedisManager.delAll(WFSLayerConfiguration.KEY + Integer.toString(layer.getId()));
-                JedisManager.delAll(WFSLayerConfiguration.IMAGE_KEY + Integer.toString(layer.getId()));
+                JedisManager.delAll(WFSLayerConfiguration.KEY + layer.getId());
+                JedisManager.delAll(WFSLayerConfiguration.IMAGE_KEY + layer.getId());
             }
         } catch (Exception e) {
             throw new ActionException("Couldn't delete map layer - id:" + layer.getId(), e);

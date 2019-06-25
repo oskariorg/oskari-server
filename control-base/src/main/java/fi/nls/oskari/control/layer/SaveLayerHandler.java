@@ -7,7 +7,6 @@ import fi.mml.map.mapwindow.util.OskariLayerWorker;
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.cache.JedisManager;
 import fi.nls.oskari.control.*;
-import fi.nls.oskari.domain.User;
 import fi.nls.oskari.domain.map.DataProvider;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.domain.map.wfs.WFSLayerConfiguration;
@@ -48,7 +47,7 @@ import static fi.nls.oskari.control.ActionConstants.PARAM_SRS;
  * Admin insert/update of WMS map layer
  */
 @OskariActionRoute("SaveLayer")
-public class SaveLayerHandler extends RestActionHandler {
+public class SaveLayerHandler extends AbstractLayerAdminHandler {
 
     private class SaveResult {
         long layerId = -1;
@@ -58,7 +57,6 @@ public class SaveLayerHandler extends RestActionHandler {
     private OskariLayerService mapLayerService = ServiceFactory.getMapLayerService();
     private ViewService viewService = ServiceFactory.getViewService();
     private WFSLayerConfigurationService wfsLayerService = ServiceFactory.getWfsLayerService();
-    private PermissionService permissionsService;
     private DataProviderService dataProviderService = ServiceFactory.getDataProviderService();
     private OskariLayerGroupLinkService layerGroupLinkService = ServiceFactory.getOskariLayerGroupLinkService();
     private CapabilitiesCacheService capabilitiesService = ServiceFactory.getCapabilitiesCacheService();
@@ -138,10 +136,6 @@ public class SaveLayerHandler extends RestActionHandler {
     private static final String OSKARI_FEATURE_ENGINE = "oskari-feature-engine";
     private static final String WFS1_1_0_VERSION = "1.1.0";
     private static final String WFS3_0_0_VERSION = "3.0.0";
-
-    public void init() {
-        permissionsService = OskariComponentManager.getComponentOfType(PermissionService.class);
-    }
 
     @Override
     public void handlePost(ActionParameters params) throws ActionException {
@@ -303,16 +297,6 @@ public class SaveLayerHandler extends RestActionHandler {
                 throw new ActionException(ERROR_UPDATE_OR_INSERT_FAILED, e);
             }
         }
-    }
-
-    private boolean userHasEditPermission(User user, OskariLayer layer) {
-        return user.isAdmin() || permissionsService.findResource(ResourceType.maplayer, new OskariLayerResource(layer).getMapping())
-                .filter(r -> r.hasPermission(user, PermissionType.EDIT_LAYER)).isPresent();
-    }
-
-    private boolean userHasAddPermission(User user) {
-        return user.isAdmin() || permissionsService.findResource(ResourceType.functionality, "generic-functionality")
-                .filter(r -> r.hasPermission(user, PermissionType.ADD_MAPLAYER)).isPresent();
     }
 
     private static int[] getMaplayerGroupIds(String maplayerGroups) {
@@ -727,6 +711,6 @@ public class SaveLayerHandler extends RestActionHandler {
             res.addPermission(permission);
         }
 
-        permissionsService.insertResource(res);
+        getPermissionsService().insertResource(res);
     }
 }
