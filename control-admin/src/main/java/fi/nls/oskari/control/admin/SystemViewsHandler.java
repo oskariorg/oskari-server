@@ -1,7 +1,5 @@
 package fi.nls.oskari.control.admin;
 
-import fi.mml.portti.domain.permissions.Permissions;
-import fi.mml.portti.service.db.permissions.PermissionsService;
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.*;
 import fi.nls.oskari.domain.Role;
@@ -9,21 +7,23 @@ import fi.nls.oskari.domain.User;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.domain.map.view.Bundle;
 import fi.nls.oskari.domain.map.view.View;
-import fi.nls.oskari.log.LogFactory;
-import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.layer.OskariLayerService;
 import fi.nls.oskari.map.view.ViewException;
 import fi.nls.oskari.map.view.ViewService;
+import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.service.UserService;
 import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.JSONHelper;
+import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.util.ResponseHelper;
 import fi.nls.oskari.view.modifier.ViewModifier;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.oskari.permissions.PermissionService;
 import org.oskari.permissions.model.OskariLayerResource;
-import org.oskari.permissions.model.Resource;
+import org.oskari.permissions.model.PermissionType;
+import org.oskari.permissions.model.ResourceType;
 import org.oskari.service.util.ServiceFactory;
 
 import java.util.ArrayList;
@@ -35,20 +35,18 @@ import static fi.nls.oskari.control.ActionConstants.*;
 @OskariActionRoute("SystemViews")
 public class SystemViewsHandler extends RestActionHandler {
 
-    private Logger log = LogFactory.getLogger(SystemViewsHandler.class);
     private ViewService viewService;
     private OskariLayerService layerService;
-    private PermissionsService permissionsService;
+    private PermissionService permissionsService;
 
     private static final String ERROR_CODE_GUEST_NOT_AVAILABLE = "guest_not_available";
-    // is the default in frontend code
-    private final static String DEFAULT_SRS = "EPSG:3067";
+    private final static String DEFAULT_SRS = PropertyUtil.get("oskari.native.srs", "EPSG:4326");
 
     public void init() {
         viewService = ServiceFactory.getViewService();
 
         layerService = ServiceFactory.getMapLayerService();
-        permissionsService = ServiceFactory.getPermissionsService();
+        permissionsService = OskariComponentManager.getComponentOfType(PermissionService.class);
     }
 
     /**
@@ -195,8 +193,9 @@ public class SystemViewsHandler extends RestActionHandler {
         try {
             User guest = UserService.getInstance().getGuestUser();
             for(OskariLayer layer : layers) {
-                final Resource resource = permissionsService.findResource(new OskariLayerResource(layer));
-                if(!resource.hasPermission(guest, Permissions.PERMISSION_TYPE_VIEW_LAYER)) {
+                boolean notAvailableForGuestUsers = permissionsService.findResource(ResourceType.maplayer, new OskariLayerResource(layer).getMapping())
+                        .filter(r -> !r.hasPermission(guest, PermissionType.VIEW_LAYER)).isPresent();
+                if(notAvailableForGuestUsers) {
                     notAvailable.add(Integer.toString(layer.getId()));
                 }
             }
