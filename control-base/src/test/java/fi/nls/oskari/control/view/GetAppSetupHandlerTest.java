@@ -10,6 +10,7 @@ import fi.nls.oskari.domain.User;
 import fi.nls.oskari.domain.map.DataProvider;
 import fi.nls.oskari.domain.map.view.View;
 import fi.nls.oskari.domain.map.view.ViewTypes;
+import fi.nls.oskari.map.analysis.domain.AnalysisLayer;
 import fi.nls.oskari.map.layer.DataProviderService;
 import fi.nls.oskari.map.layer.DataProviderServiceMybatisImpl;
 import fi.nls.oskari.map.layer.OskariLayerServiceMybatisImpl;
@@ -21,7 +22,6 @@ import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.util.DuplicateException;
 import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.view.modifier.ViewModifier;
-import fi.nls.oskari.wfs.WFSSearchChannelsConfiguration;
 import fi.nls.oskari.wfs.WFSSearchChannelsService;
 import fi.nls.oskari.wfs.WFSSearchChannelsServiceMybatisImpl;
 import fi.nls.test.control.JSONActionRouteTest;
@@ -38,7 +38,9 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.oskari.permissions.PermissionService;
 import org.oskari.permissions.PermissionServiceMybatisImpl;
+import org.oskari.permissions.model.PermissionType;
 import org.oskari.permissions.model.ResourceType;
+import org.oskari.service.util.ServiceFactory;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
@@ -63,7 +65,7 @@ import static org.powermock.api.support.membermodification.MemberModifier.suppre
  * To change this template use File | Settings | File Templates.
  */
 @RunWith(PowerMockRunner.class)
-@PrepareForTest(value = {WFSHighlightParamHandler.class, OskariLayerWorker.class, PropertyUtil.class, MapfullHandler.class})
+@PrepareForTest(value = {WFSHighlightParamHandler.class, OskariLayerWorker.class, PropertyUtil.class, MapfullHandler.class, ServiceFactory.class})
 @PowerMockIgnore({"com.sun.org.apache.xalan.*", "com.sun.org.apache.xerces.*", "javax.xml.*", "org.w3c.dom.*", "org.xml.*", "com.sun.org.apache.xml.*"})
 public class GetAppSetupHandlerTest extends JSONActionRouteTest {
 
@@ -72,8 +74,6 @@ public class GetAppSetupHandlerTest extends JSONActionRouteTest {
     private ViewService viewService = null;
     private BundleService bundleService = null;
 
-    //propertyutilsilla propertyt, checkataan että jsoniin tulee lisää bundlea.
-    //
     @BeforeClass
     public static void addLocales() throws Exception {
         Properties properties = new Properties();
@@ -86,10 +86,11 @@ public class GetAppSetupHandlerTest extends JSONActionRouteTest {
         } catch (DuplicateException e) {
             fail("Should not throw exception" + e.getStackTrace());
         }
+        // To get fresh start for components
+        OskariComponentManager.teardown();
     }
     @Before
     public void setUp() throws Exception {
-
         mockViewService();
         mockBundleService();
         mockInternalServices();
@@ -102,6 +103,8 @@ public class GetAppSetupHandlerTest extends JSONActionRouteTest {
     @AfterClass
     public static void teardown() {
         PropertyUtil.clearProperties();
+        // To get fresh start for components
+        OskariComponentManager.teardown();
     }
 
     @Test
@@ -263,6 +266,8 @@ public class GetAppSetupHandlerTest extends JSONActionRouteTest {
         // permission check is skipped here so just mock the call
         doReturn(Collections.emptyList()).when(service).findResourcesByUser(any(User.class));
         doReturn(Optional.empty()).when(service).findResource(eq(ResourceType.maplayer.name()), any(String.class));
+        doReturn(Collections.emptySet()).when(service).getResourcesWithGrantedPermissions(eq(AnalysisLayer.TYPE), any(User.class), eq(PermissionType.VIEW_PUBLISHED.name()));
+
 
         // return mocked  bundle service if a new one is created (in paramhandlers for example)
         // classes doing this must be listed in PrepareForTest annotation

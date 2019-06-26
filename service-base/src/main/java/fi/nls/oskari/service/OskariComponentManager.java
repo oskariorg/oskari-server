@@ -111,5 +111,6 @@ public class OskariComponentManager {
                 LOG.error(ex, "OskariComponent teardown failed! Skipping", comp.getClass().getCanonicalName());
             }
         }
+        COMPONENTS.clear();
     }
 }

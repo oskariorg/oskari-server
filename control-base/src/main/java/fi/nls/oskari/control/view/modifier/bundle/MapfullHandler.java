@@ -1,7 +1,6 @@
 package fi.nls.oskari.control.view.modifier.bundle;
 
 import fi.mml.map.mapwindow.util.OskariLayerWorker;
-import fi.mml.portti.domain.permissions.Permissions;
 import fi.nls.oskari.analysis.AnalysisHelper;
 import fi.nls.oskari.annotation.OskariViewModifier;
 import fi.nls.oskari.domain.User;
@@ -30,6 +29,8 @@ import org.json.JSONTokener;
 import org.oskari.map.userlayer.service.UserLayerDataService;
 import org.oskari.map.userlayer.service.UserLayerDbService;
 import org.oskari.permissions.PermissionService;
+import org.oskari.permissions.model.PermissionType;
+import org.oskari.service.util.ServiceFactory;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -85,7 +86,8 @@ public class MapfullHandler extends BundleHandler {
         myPlaceService = OskariComponentManager.getComponentOfType(MyPlacesService.class);
         userLayerService = OskariComponentManager.getComponentOfType(UserLayerDbService.class);
         mapLayerService = OskariComponentManager.getComponentOfType(OskariLayerService.class);
-        permissionsService = OskariComponentManager.getComponentOfType(PermissionService.class);
+        // to prevent mocking issues in JUnit tests....
+        permissionsService = ServiceFactory.getPermissionsService(); // OskariComponentManager.getComponentOfType(PermissionService.class);
         epsgInit();
         svgInit();
         pluginHandlers = new HashMap<>();
@@ -350,7 +352,7 @@ public class MapfullHandler extends BundleHandler {
 
         final boolean analyseBundlePresent = bundleIds.contains(BUNDLE_ANALYSE);
         final Set<String> permissions = permissionsService.getResourcesWithGrantedPermissions(
-                AnalysisLayer.TYPE, user, Permissions.PERMISSION_TYPE_VIEW_PUBLISHED);
+                AnalysisLayer.TYPE, user, PermissionType.VIEW_PUBLISHED.name());
         LOGGER.debug("Analysis layer permissions for published view", permissions);
 
         for (Long id : publishedAnalysis) {

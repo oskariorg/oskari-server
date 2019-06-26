@@ -31,7 +31,7 @@ public class GetLayerIds extends ActionHandler {
 
     private static final String LAYER_IDS = "layerIds";
 
-    private static final List<Integer> extra_layers = new ArrayList<>();
+    private final List<Integer> extra_layers = new ArrayList<>();
 
     @Override
     public void init() {

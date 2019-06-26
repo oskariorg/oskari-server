@@ -1,8 +1,6 @@
 package fi.nls.oskari.control.view;
 
 import fi.mml.map.mapwindow.util.OskariLayerWorker;
-import fi.mml.portti.service.db.permissions.PermissionsService;
-import fi.mml.portti.service.db.permissions.PermissionsServiceIbatisImpl;
 import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.control.view.modifier.bundle.MapfullHandler;
 import fi.nls.oskari.control.view.modifier.param.WFSHighlightParamHandler;
@@ -17,7 +15,7 @@ import fi.nls.oskari.map.view.BundleService;
 import fi.nls.oskari.map.view.BundleServiceMybatisImpl;
 import fi.nls.oskari.map.view.ViewService;
 import fi.nls.oskari.map.view.AppSetupServiceMybatisImpl;
-import fi.nls.oskari.mybatis.MyBatisHelper;
+import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.util.DuplicateException;
 import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.view.modifier.ViewModifier;
@@ -35,6 +33,7 @@ import org.mockito.stubbing.Answer;
 import org.oskari.permissions.PermissionService;
 import org.oskari.permissions.PermissionServiceMybatisImpl;
 import org.oskari.permissions.model.ResourceType;
+import org.oskari.service.util.ServiceFactory;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
@@ -57,7 +56,7 @@ import static org.powermock.api.mockito.PowerMockito.whenNew;
  * To change this template use File | Settings | File Templates.
  */
 @RunWith(PowerMockRunner.class)
-@PrepareForTest(value = {WFSHighlightParamHandler.class, OskariLayerWorker.class, PropertyUtil.class, MapfullHandler.class, MyBatisHelper.class})
+@PrepareForTest(value = {WFSHighlightParamHandler.class, OskariLayerWorker.class, PropertyUtil.class, MapfullHandler.class, ServiceFactory.class})
 @PowerMockIgnore({"com.sun.org.apache.xalan.*", "com.sun.org.apache.xerces.*", "javax.xml.*", "org.w3c.dom.*", "org.xml.*", "com.sun.org.apache.xml.*"})
 public class GetAppSetupHandlerRolesFromPropertiesTest extends JSONActionRouteTest {
 
@@ -76,6 +75,8 @@ public class GetAppSetupHandlerRolesFromPropertiesTest extends JSONActionRouteTe
         } catch (DuplicateException e) {
             fail("Should not throw exception" + e.getStackTrace());
         }
+        // To get fresh start for components
+        OskariComponentManager.teardown();
     }
 
     @Before
@@ -104,6 +105,8 @@ public class GetAppSetupHandlerRolesFromPropertiesTest extends JSONActionRouteTe
     @AfterClass
     public static void teardown() {
         PropertyUtil.clearProperties();
+        // To get fresh start for components
+        OskariComponentManager.teardown();
     }
 
     @Test
