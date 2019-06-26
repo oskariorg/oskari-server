@@ -116,12 +116,12 @@ public class Resource {
                 .isPresent();
     }
 
-    public void removePermissionsOfType(String permissionType) {
-        removePermissionsOfType(PermissionType.valueOf(permissionType));
+    public void removePermissionsOfType(PermissionType permissionType, PermissionExternalType idType, int externalId) {
+        removePermissionsOfType(permissionType.name(), idType, externalId);
     }
 
-    public void removePermissionsOfType(PermissionType permissionType) {
-        getPermissions().removeIf(p -> p.isOfType(permissionType));
+    public void removePermissionsOfType(String permissionType, PermissionExternalType idType, int externalId) {
+        getPermissions().removeIf(p -> p.isOfType(permissionType) && p.getExternalType().equals(idType) && p.getExternalId() == externalId);
     }
 
     public boolean isOfType(ResourceType type) {

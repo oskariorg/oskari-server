@@ -44,10 +44,11 @@ public class ResourceTest {
         assertFalse(resource.hasPermission(guest, PermissionType.EDIT_LAYER));
 
         resource.addPermission(getPermision(PermissionType.DOWNLOAD, guest));
+        resource.addPermission(getPermision(PermissionType.DOWNLOAD, admin));
         assertTrue(resource.hasPermission(guest, PermissionType.DOWNLOAD));
         assertFalse(resource.hasPermission(guest, PermissionType.EDIT_LAYER));
 
-        resource.removePermissionsOfType(PermissionType.DOWNLOAD);
+        resource.removePermissionsOfType(PermissionType.DOWNLOAD, PermissionExternalType.ROLE, (int) guest.getId());
         assertFalse(resource.hasPermission(guest, PermissionType.DOWNLOAD));
         assertFalse(resource.hasPermission(guest, PermissionType.EDIT_LAYER));
 
@@ -70,7 +71,7 @@ public class ResourceTest {
         assertFalse(resource.hasPermission(user, PermissionType.EDIT_LAYER));
 
         user.addRole(admin);
-        assertFalse(resource.hasPermission(user, PermissionType.DOWNLOAD));
+        assertTrue(resource.hasPermission(user, PermissionType.DOWNLOAD));
         assertTrue(resource.hasPermission(user, PermissionType.EDIT_LAYER));
     }
 

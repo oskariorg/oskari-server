@@ -76,7 +76,7 @@ public class PermissionServiceMybatisImpl extends PermissionService {
 
     private Optional<Resource> findResource(final Resource resource) {
         if (resource == null) {
-            return null;
+            return Optional.empty();
         }
 
         // try to find with id
