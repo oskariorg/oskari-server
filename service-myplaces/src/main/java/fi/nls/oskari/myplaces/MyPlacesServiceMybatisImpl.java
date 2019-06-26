@@ -1,7 +1,5 @@
 package fi.nls.oskari.myplaces;
 
-import fi.mml.portti.service.db.permissions.PermissionsService;
-import fi.mml.portti.service.db.permissions.PermissionsServiceIbatisImpl;
 import fi.nls.oskari.annotation.Oskari;
 import fi.nls.oskari.cache.Cache;
 import fi.nls.oskari.cache.CacheManager;
@@ -10,9 +8,9 @@ import fi.nls.oskari.domain.User;
 import fi.nls.oskari.domain.map.MyPlace;
 import fi.nls.oskari.domain.map.MyPlaceCategory;
 import fi.nls.oskari.domain.map.UserDataStyle;
-import fi.nls.oskari.domain.map.userlayer.UserLayer;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.util.ConversionHelper;
 import org.apache.ibatis.mapping.Environment;
 import org.apache.ibatis.session.Configuration;
@@ -21,6 +19,7 @@ import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.apache.ibatis.transaction.TransactionFactory;
 import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
+import org.oskari.permissions.PermissionService;
 import org.oskari.permissions.model.Resource;
 import org.oskari.permissions.model.ResourceType;
 
@@ -36,7 +35,6 @@ public class MyPlacesServiceMybatisImpl extends MyPlacesService {
     private static final Logger LOG = LogFactory.getLogger(
             MyPlacesServiceMybatisImpl.class);
 
-    private PermissionsService permissionsService = new PermissionsServiceIbatisImpl();
     private final Cache<MyPlaceCategory> cache;
 
     private SqlSessionFactory factory = null;
@@ -52,6 +50,11 @@ public class MyPlacesServiceMybatisImpl extends MyPlacesService {
             LOG.error("Couldn't get datasource for myplaces");
         }
         cache = CacheManager.getCache(getClass().getName());
+    }
+
+    private PermissionService getPermissionsService() {
+        // Working around timing issues with runtime fetching instead of getting reference on constructor
+        return OskariComponentManager.getComponentOfType(PermissionService.class);
     }
 
     private MyPlaceCategory getFromCache(long id) {
@@ -97,14 +100,12 @@ public class MyPlacesServiceMybatisImpl extends MyPlacesService {
     }
 
     public Resource getResource(final String myplacesLayerId) {
-        final Resource resource = new Resource();
-        resource.setType(ResourceType.myplaces);
-        resource.setMapping(myplacesLayerId);
-        final Resource dbRes = permissionsService.findResource(resource);
-        if(dbRes == null) {
-            return resource;
-        }
-        return dbRes;
+        return getPermissionsService().findResource(ResourceType.myplaces, myplacesLayerId).orElseGet(() -> {
+                    final Resource resource = new Resource();
+                    resource.setType(ResourceType.myplaces);
+                    resource.setMapping(myplacesLayerId);
+                    return resource;
+        });
     }
 
     /**
