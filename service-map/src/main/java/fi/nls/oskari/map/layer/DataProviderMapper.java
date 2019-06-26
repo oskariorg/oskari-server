@@ -30,7 +30,7 @@ public interface DataProviderMapper {
     void delete(int id);
 
     @Insert("insert into oskari_dataprovider (locale) values (#{locale})")
-    @Options(useGeneratedKeys=true)
+    @Options(useGeneratedKeys=true, keyColumn = "id", keyProperty = "id")
     void insert(final DataProvider dataProvider);
 
 }

@@ -20,7 +20,6 @@ public class UnsdStatisticalDatasourcePlugin extends StatisticalDatasourcePlugin
     private final static Logger LOG = LogFactory.getLogger(UnsdStatisticalDatasourcePlugin.class);
 
     private UnsdConfig config;
-    private UnsdIndicatorParser parser;
     private UnsdDataParser indicatorValuesFetcher;
     private RegionMapper regionMapper;
 
@@ -30,77 +29,46 @@ public class UnsdStatisticalDatasourcePlugin extends StatisticalDatasourcePlugin
     private Map<Long, String[]> layerAreaCodes = new HashMap<>();
 
     @Override
+    public void init(StatisticalDatasource source) {
+        super.init(source);
+        config = new UnsdConfig(source.getConfigJSON(), source.getId());
+        indicatorValuesFetcher = new UnsdDataParser(config);
+        regionMapper = new RegionMapper();
+        // optimization for getting data just for the countries we are showing
+        initAreaCodes(source.getLayers());
+    }
+    
+    @Override
     public void update() {
         // get the indicator listing
         UnsdRequest request = new UnsdRequest(config);
         request.setGoal(config.getGoal());
         String targetsResponse = request.getTargets();
         List<StatisticalIndicator> indicators = UnsdIndicatorParser.parseIndicators(targetsResponse);
+        indicators = resolveDimensionsForAllIndicatorsOfGoal(indicators);
+        // And write to cache serially to preserve sorted order
+        indicators.forEach(ind -> onIndicatorProcessed(ind));
+        LOG.info(String.format("Indicators handled for goal %s.", config.getGoal()));
+    }
 
-        // all indicators under goal have same dimensions
-        String dimensions = request.getDimensions();
-        for (StatisticalIndicator ind : indicators) {
-            request.setIndicator(ind.getId());
-            // we parse it multiple times to make copies
-            ind.setDataModel(UnsdIndicatorParser.parseDimensions(dimensions));
-            // generate time period based on config. The datasource doesn't tell which years it has data for :(
-            ind.getDataModel().addDimension(
-                    UnsdIndicatorParser.generateTimePeriod(
-                            config.getTimeVariableId(), config.getTimePeriod()));
-            ind.getDataModel().setTimeVariable(config.getTimeVariableId());
+    private List<StatisticalIndicator> resolveDimensionsForAllIndicatorsOfGoal(List<StatisticalIndicator> indicators) {
 
-            JSONObject dataResponse = JSONHelper.createJSONObject(request.getIndicatorData(null));
-            ind.setSource(UnsdIndicatorParser.parseSource(dataResponse));
-            getSource().getLayers().stream().forEach(l -> ind.addLayer(l));
-            onIndicatorProcessed(ind);
-        }
-        LOG.info("Parsed indicator response.");
+        String[] areaCodes = layerAreaCodes.get(this.getSource().getLayers().get(0).getMaplayerId());
+
+        // Resolve dimensions parallel for indicators
+        return indicators.parallelStream().map(ind -> resolveDimensionsForSingleIndicator(ind, areaCodes))
+                .sorted((ind1, ind2) -> ind1.getId().compareTo(ind2.getId())).collect(Collectors.toList());
     }
 
     @Override
-    public void init(StatisticalDatasource source) {
-        super.init(source);
-        config = new UnsdConfig(source.getConfigJSON(), source.getId());
-        parser = new UnsdIndicatorParser();
-        indicatorValuesFetcher = new UnsdDataParser(config);
-        regionMapper = new RegionMapper();
-        // optimization for getting data just for the countries we are showing
-        initAreaCodes(source.getLayers());
-    }
-
-    private void initAreaCodes(List<DatasourceLayer> layers) {
-        // TODO; Get codes from RegionSetHelper?
-        String[] regionWhitelist = PropertyUtil.getCommaSeparatedList("unsd.region.whitelist");
-        if (regionWhitelist.length == 0) {
-            // no whitelist -> get data for all regions
-            return;
-        }
-
-        List<String> countries = Arrays.stream(regionWhitelist)
-                .map(code -> regionMapper.find(code))
-                .filter(Optional::isPresent)
-                .map(Optional::get)
-                .map(c -> c.getCode(CountryRegion.Type.M49))
-                .collect(Collectors.toList());
-
-        for (DatasourceLayer layer : layers) {
-            layerAreaCodes.put(layer.getMaplayerId(), countries.toArray(new String[0]));
-        }
-    }
-
-    @Override
-    public Map<String, IndicatorValue> getIndicatorValues(
-            StatisticalIndicator indicator,
-            StatisticalIndicatorDataModel params,
-            StatisticalIndicatorLayer regionset) {
+    public Map<String, IndicatorValue> getIndicatorValues(StatisticalIndicator indicator,
+            StatisticalIndicatorDataModel params, StatisticalIndicatorLayer regionset) {
 
         String[] areaCodes = layerAreaCodes.get(regionset.getOskariLayerId());
         // map m49 codes back to region ids (iso2 etc) before returning
         Map<String, IndicatorValue> values = indicatorValuesFetcher.get(params, indicator.getId(), areaCodes);
-        List<CountryRegion> regions = values.keySet().stream()
-                .map(m49 -> regionMapper.find(m49))
-                .filter(Optional::isPresent)
-                .map(Optional::get).collect(Collectors.toList());
+        List<CountryRegion> regions = values.keySet().stream().map(m49 -> regionMapper.find(m49))
+                .filter(Optional::isPresent).map(Optional::get).collect(Collectors.toList());
         Map<String, IndicatorValue> updated = new HashMap<>();
         regions.stream().forEach(c -> {
             IndicatorValue value = values.get(c.getCode(CountryRegion.Type.M49_WO_LEADING));
@@ -110,5 +78,39 @@ public class UnsdStatisticalDatasourcePlugin extends StatisticalDatasourcePlugin
         });
 
         return updated;
+    }
+    
+    private void initAreaCodes(List<DatasourceLayer> layers) {
+        // TODO; Get codes from RegionSetHelper?
+        String[] regionWhitelist = PropertyUtil.getCommaSeparatedList("unsd.region.whitelist");
+        if (regionWhitelist.length == 0) {
+            // no whitelist -> get data for all regions
+            return;
+        }
+
+        List<String> countries = Arrays.stream(regionWhitelist).map(code -> regionMapper.find(code))
+                .filter(Optional::isPresent).map(Optional::get).map(c -> c.getCode(CountryRegion.Type.M49))
+                .collect(Collectors.toList());
+
+        for (DatasourceLayer layer : layers) {
+            layerAreaCodes.put(layer.getMaplayerId(), countries.toArray(new String[0]));
+        }
+    }
+    
+    private StatisticalIndicator resolveDimensionsForSingleIndicator(StatisticalIndicator ind, String[] areaCodes) {
+        UnsdRequest request = new UnsdRequest(config);
+        request.setGoal(config.getGoal());
+        request.setIndicator(ind.getId());
+        request.setAreaCodes(areaCodes);
+        JSONObject dataResponse = JSONHelper.createJSONObject(request.getIndicatorData(null));
+        ind.setSource(UnsdIndicatorParser.parseSource(dataResponse));
+        // Parse indicator specific dimensions from indicator data response
+        ind.setDataModel(UnsdIndicatorParser.parseDimensions(dataResponse));
+        // Parse time period from indicator data responses(from all pages)
+        ind.getDataModel().addDimension(indicatorValuesFetcher
+                .getTimeperiodDimensionFromIndicatorData(config.getTimeVariableId(), ind.getId(),areaCodes));
+        ind.getDataModel().setTimeVariable(config.getTimeVariableId());
+        getSource().getLayers().stream().forEach(l -> ind.addLayer(l));
+        return ind;
     }
 }
