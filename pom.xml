@@ -102,7 +102,7 @@
         <!-- gt-xsd-kml.version>9.3</gt-xsd-kml.version -->
         <flexjson.version>2.0</flexjson.version>
 
-        <mybatis.version>3.4.6</mybatis.version>
+        <mybatis.version>3.5.1</mybatis.version>
         <pdfbox.version>2.0.12</pdfbox.version>
         <hystrix.version>1.5.18</hystrix.version>
         <!-- Test deps versions -->
@@ -112,6 +112,8 @@
         <log4j.version>2.11.1</log4j.version>
         <slf4j.version>1.7.12</slf4j.version>
         <metrics.version>4.0.3</metrics.version>
+        <h2database.version>1.4.199</h2database.version>
+
     </properties>
 
     <dependencies>
@@ -623,6 +625,12 @@
                 <groupId>org.postgresql</groupId>
                 <artifactId>postgresql</artifactId>
                 <version>${postgresql.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.h2database</groupId>
+                <artifactId>h2</artifactId>
+                <version>${h2database.version}</version>
             </dependency>
 
             <dependency>
@@ -1146,7 +1154,7 @@
                     <plugin>
                         <groupId>org.owasp</groupId>
                         <artifactId>dependency-check-maven</artifactId>
-                        <version>2.1.1</version>
+                        <version>5.0.0</version>
                         <executions>
                             <execution>
                                 <goals>

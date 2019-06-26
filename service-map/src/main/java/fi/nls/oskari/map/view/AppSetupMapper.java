@@ -22,7 +22,7 @@ public interface AppSetupMapper {
             "            uuid, only_uuid, domain, lang, creator, is_public, is_default, metadata) " +
             "        VALUES ( #{name}, #{description}, #{type}, #{developmentPath}, #{page}, #{application}, '${uuid}', true, " +
             "        #{pubDomain}, #{lang}, #{creator}, #{isPublic}, #{isDefault}, #{metadataAsString} )")
-    @Options(useGeneratedKeys=true, keyColumn = "id")
+    @Options(useGeneratedKeys=true, keyColumn = "id", keyProperty = "id")
     void addView(View view);
 
     @Update("UPDATE portti_view SET is_public = #{isPublic} WHERE id = #{id}")
