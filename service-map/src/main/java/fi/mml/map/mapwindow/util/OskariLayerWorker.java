@@ -31,7 +31,7 @@ public class OskariLayerWorker {
     public static final String PUBLICATION_PERMISSION_OK = "publication_permission_ok";
     public static final String DOWNLOAD_PERMISSION_OK = "download_permission_ok";
 
-    private static Logger log = LogFactory.getLogger(OskariLayerWorker.class);
+    private static final Logger LOG = LogFactory.getLogger(OskariLayerWorker.class);
 
     private static OskariLayerService mapLayerService = new OskariLayerServiceMybatisImpl();
     private static PermissionService permissionService = new PermissionServiceMybatisImpl();
@@ -85,8 +85,12 @@ public class OskariLayerWorker {
     }
 
     public static List<OskariLayer> getLayersForUser(User user, boolean isPublished) {
+        long start = System.currentTimeMillis();
         List<OskariLayer> layers = mapLayerService.findAll();
+        LOG.info("Layers read in", System.currentTimeMillis() - start, "ms");
+        start = System.currentTimeMillis();
         List<Resource> resources = permissionService.findResourcesByUser(user);
+        LOG.info("Permissions read in", System.currentTimeMillis() - start, "ms");
         return filterLayersWithResources(layers, new PermissionSet(resources), user, isPublished);
     }
 
@@ -129,11 +133,11 @@ public class OskariLayerWorker {
 
                 layersList.put(layerJson);
             } catch(Exception ex) {
-                log.error(ex);
+                LOG.error(ex);
             }
         }
-        log.debug("Created JSON in", System.currentTimeMillis() - start, "ms");
-        log.debug("Returning", layersList.length(), "/", layers.size(),"layers");
+        LOG.info("Created JSON in", System.currentTimeMillis() - start, "ms");
+        LOG.info("Returning", layersList.length(), "/", layers.size(),"layers");
 
         final JSONObject result = new JSONObject();
         JSONHelper.putValue(result, KEY_LAYERS, layersList);
@@ -162,7 +166,7 @@ public class OskariLayerWorker {
         try {
             return layers.getJSONObject(0);
         } catch (Exception e) {
-            log.warn("Error creating layer JSON:", obj);
+            LOG.warn("Error creating layer JSON:", obj);
         }
         return null;
     }
