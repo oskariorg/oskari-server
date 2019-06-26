@@ -48,12 +48,15 @@ public class UnsdStatisticalDatasourcePlugin extends StatisticalDatasourcePlugin
         indicators = resolveDimensionsForAllIndicatorsOfGoal(indicators);
         // And write to cache serially to preserve sorted order
         indicators.forEach(ind -> onIndicatorProcessed(ind));
-        LOG.info("Indicators handled.");
+        LOG.info(String.format("Indicators handled for goal %s.", config.getGoal()));
     }
 
     private List<StatisticalIndicator> resolveDimensionsForAllIndicatorsOfGoal(List<StatisticalIndicator> indicators) {
+
+        String[] areaCodes = layerAreaCodes.get(this.getSource().getLayers().get(0).getMaplayerId());
+
         // Resolve dimensions parallel for indicators
-        return indicators.parallelStream().map(ind -> resolveDimensionsForSingleIndicator(ind))
+        return indicators.parallelStream().map(ind -> resolveDimensionsForSingleIndicator(ind, areaCodes))
                 .sorted((ind1, ind2) -> ind1.getId().compareTo(ind2.getId())).collect(Collectors.toList());
     }
 
@@ -94,17 +97,18 @@ public class UnsdStatisticalDatasourcePlugin extends StatisticalDatasourcePlugin
         }
     }
     
-    private StatisticalIndicator resolveDimensionsForSingleIndicator(StatisticalIndicator ind) {
+    private StatisticalIndicator resolveDimensionsForSingleIndicator(StatisticalIndicator ind, String[] areaCodes) {
         UnsdRequest request = new UnsdRequest(config);
         request.setGoal(config.getGoal());
         request.setIndicator(ind.getId());
+        request.setAreaCodes(areaCodes);
         JSONObject dataResponse = JSONHelper.createJSONObject(request.getIndicatorData(null));
         ind.setSource(UnsdIndicatorParser.parseSource(dataResponse));
         // Parse indicator specific dimensions from indicator data response
         ind.setDataModel(UnsdIndicatorParser.parseDimensions(dataResponse));
         // Parse time period from indicator data responses(from all pages)
         ind.getDataModel().addDimension(indicatorValuesFetcher
-                .getTimeperiodDimensionFromIndicatorData(config.getTimeVariableId(), ind.getId()));
+                .getTimeperiodDimensionFromIndicatorData(config.getTimeVariableId(), ind.getId(),areaCodes));
         ind.getDataModel().setTimeVariable(config.getTimeVariableId());
         getSource().getLayers().stream().forEach(l -> ind.addLayer(l));
         return ind;
