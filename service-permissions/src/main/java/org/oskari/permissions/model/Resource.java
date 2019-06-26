@@ -124,6 +124,10 @@ public class Resource {
         getPermissions().removeIf(p -> p.isOfType(permissionType) && p.getExternalType().equals(idType) && p.getExternalId() == externalId);
     }
 
+    public void removePermissionsFromAllUsers(String permissionType) {
+        getPermissions().removeIf(p -> p.isOfType(permissionType));
+    }
+
     public boolean isOfType(ResourceType type) {
         return isOfType(type.name());
     }

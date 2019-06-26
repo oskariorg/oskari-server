@@ -14,7 +14,6 @@ import fi.nls.oskari.domain.map.userlayer.UserLayer;
 import fi.nls.oskari.domain.map.wfs.WFSLayerConfiguration;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.map.analysis.domain.AnalysisLayer;
 import fi.nls.oskari.map.analysis.service.AnalysisDbService;
 import fi.nls.oskari.map.analysis.service.AnalysisDbServiceMybatisImpl;
 import fi.nls.oskari.map.layer.OskariLayerService;
@@ -99,7 +98,7 @@ public class PublishPermissionHelper {
         Resource resource = myPlaceService.getResource(drawLayerId);
         if(resource.hasPermission(user, myPlaceService.PERMISSION_TYPE_DRAW)) {
             // clear up any previous DRAW permissions
-            resource.removePermissionsOfType(myPlaceService.PERMISSION_TYPE_DRAW);
+            resource.removePermissionsFromAllUsers(myPlaceService.PERMISSION_TYPE_DRAW);
         }
         try {
             // add DRAW permission for all roles currently in the system
