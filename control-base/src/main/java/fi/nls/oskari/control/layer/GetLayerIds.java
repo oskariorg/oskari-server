@@ -70,19 +70,17 @@ public class GetLayerIds extends ActionHandler {
         List<OskariLayer> layers = OskariLayerWorker.getLayersForUser(params.getUser(), true);
 
         try {
-            JSONObject json = new JSONObject();
             // get layerIds
-            Set<Integer> availableLayerIds = layers.stream()
-                    .map(OskariLayer::getId).collect(Collectors.toSet());
+            List<Integer> availableLayerIds = layers.stream()
+                    .map(OskariLayer::getId).collect(Collectors.toList());
             // add user content (internal) base layers
             availableLayerIds.addAll(extra_layers);
-            JSONHelper.putValue(json, LAYER_IDS, new JSONArray(availableLayerIds));
-
             // put to cache
             log.debug("saving session:", jsessionid);
-            WFSLayerPermissionsStore permissions = WFSLayerPermissionsStore.setJSON(json.toString());
+            WFSLayerPermissionsStore permissions = new WFSLayerPermissionsStore();
+            permissions.setLayerIds(availableLayerIds);
             permissions.save(jsessionid);
-            ResponseHelper.writeResponse(params, json.opt(LAYER_IDS).toString());
+            ResponseHelper.writeResponse(params, new JSONArray(availableLayerIds).toString());
 
         } catch (Exception e) {
             log.error(e, "Error writing layer id list");
