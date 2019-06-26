@@ -11,12 +11,12 @@ import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.analysis.service.AnalysisDbService;
 import fi.nls.oskari.map.analysis.service.AnalysisDbServiceMybatisImpl;
+import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.ResponseHelper;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.oskari.permissions.PermissionService;
-import org.oskari.permissions.PermissionServiceMybatisImpl;
 import org.oskari.permissions.model.PermissionType;
 import org.oskari.permissions.model.ResourceType;
 
@@ -31,9 +31,15 @@ public class GetAnalysisLayersHandler extends ActionHandler {
 
     private static final Logger LOG = LogFactory.getLogger(GetAnalysisLayersHandler.class);
     private static final AnalysisDbService analysisService = new AnalysisDbServiceMybatisImpl();
-    private static PermissionService permissionsService = new PermissionServiceMybatisImpl();
+    private PermissionService permissionsService;
 
     private static final String JSKEY_ANALYSISLAYERS = "analysislayers";
+
+    @Override
+    public void init() {
+        super.init();
+        permissionsService = OskariComponentManager.getComponentOfType(PermissionService.class);
+    }
 
     @Override
     public void handleAction(ActionParameters params) throws ActionException {

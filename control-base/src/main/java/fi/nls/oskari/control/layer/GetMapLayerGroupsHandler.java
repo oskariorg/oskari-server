@@ -7,6 +7,7 @@ import static fi.nls.oskari.control.ActionConstants.PARAM_SRS;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import fi.nls.oskari.service.OskariComponentManager;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -27,7 +28,6 @@ import fi.nls.oskari.map.layer.group.link.OskariLayerGroupLinkServiceMybatisImpl
 import fi.nls.oskari.util.EnvHelper;
 import fi.nls.oskari.util.ResponseHelper;
 import org.oskari.permissions.PermissionService;
-import org.oskari.permissions.PermissionServiceMybatisImpl;
 
 /**
  * Get all map layer groups registered in Oskari database
@@ -64,7 +64,7 @@ public class GetMapLayerGroupsHandler extends ActionHandler {
     public void init() {
         // setup services if they haven't been initialized
         if (permissionsService == null) {
-            setPermissionsService(new PermissionServiceMybatisImpl());
+            setPermissionsService(OskariComponentManager.getComponentOfType(PermissionService.class));
         }
         if (groupService == null) {
             setGroupService(new OskariMapLayerGroupServiceIbatisImpl());

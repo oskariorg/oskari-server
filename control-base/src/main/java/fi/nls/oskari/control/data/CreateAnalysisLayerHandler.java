@@ -19,6 +19,7 @@ import fi.nls.oskari.map.analysis.domain.SpatialJoinStatisticsMethodParams;
 import fi.nls.oskari.map.analysis.service.AnalysisDataService;
 import fi.nls.oskari.map.analysis.service.AnalysisWebProcessingService;
 import fi.nls.oskari.map.layer.OskariLayerService;
+import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.service.UserService;
 import fi.nls.oskari.util.ConversionHelper;
@@ -28,7 +29,6 @@ import fi.nls.oskari.util.ResponseHelper;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.oskari.permissions.PermissionService;
-import org.oskari.permissions.PermissionServiceMybatisImpl;
 import org.oskari.permissions.model.*;
 import org.oskari.service.util.ServiceFactory;
 
@@ -45,7 +45,7 @@ public class CreateAnalysisLayerHandler extends RestActionHandler {
     private AnalysisParser analysisParser = new AnalysisParser();
     private OskariLayerService mapLayerService = ServiceFactory.getMapLayerService();
 
-    private static PermissionService permissionsService = new PermissionServiceMybatisImpl();//ServiceFactory.getPermissionsService();
+    private PermissionService permissionsService;
 
     private static final String PARAM_ANALYSE = "analyse";
     private static final String PARAM_FILTER1 = "filter1";
@@ -79,8 +79,14 @@ public class CreateAnalysisLayerHandler extends RestActionHandler {
 
     final private static String GEOSERVER_PROXY_BASE_URL = PropertyUtil.getOptional("analysis.baseproxy.url");
 
+    @Override
+    public void init() {
+        super.init();
+        permissionsService = OskariComponentManager.getComponentOfType(PermissionService.class);
+    }
+
     private AnalysisLayer getAggregateLayer(String analyse, String filter1, String filter2,
-                                      String baseUrl, AnalysisLayer analysisLayer, String outputFormat) throws ActionParamsException {
+                                            String baseUrl, AnalysisLayer analysisLayer, String outputFormat) throws ActionParamsException {
         try {
             return analysisParser.parseSwitch2UnionLayer(analysisLayer, analyse, filter1, filter2, baseUrl, outputFormat);
         } catch (ServiceException e) {

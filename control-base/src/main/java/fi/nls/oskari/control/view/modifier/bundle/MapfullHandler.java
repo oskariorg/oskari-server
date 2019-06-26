@@ -30,7 +30,6 @@ import org.json.JSONTokener;
 import org.oskari.map.userlayer.service.UserLayerDataService;
 import org.oskari.map.userlayer.service.UserLayerDbService;
 import org.oskari.permissions.PermissionService;
-import org.oskari.permissions.PermissionServiceMybatisImpl;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -86,7 +85,7 @@ public class MapfullHandler extends BundleHandler {
         myPlaceService = OskariComponentManager.getComponentOfType(MyPlacesService.class);
         userLayerService = OskariComponentManager.getComponentOfType(UserLayerDbService.class);
         mapLayerService = OskariComponentManager.getComponentOfType(OskariLayerService.class);
-        permissionsService = new PermissionServiceMybatisImpl();
+        permissionsService = OskariComponentManager.getComponentOfType(PermissionService.class);
         epsgInit();
         svgInit();
         pluginHandlers = new HashMap<>();
