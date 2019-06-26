@@ -12,6 +12,7 @@ import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.ResponseHelper;
 import fi.nls.oskari.util.XmlHelper;
 import org.apache.http.client.ClientProtocolException;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.opengis.referencing.FactoryException;
@@ -38,20 +39,29 @@ public class InsertFeatureHandler extends AbstractFeatureHandler {
     public void handlePost(ActionParameters params) throws ActionException {
         params.requireLoggedInUser();
 
-        JSONObject jsonPayload = params.getHttpParamAsJSON("featureData");
-        OskariLayer layer = getLayer(jsonPayload.optString("layerId"));
+        try {
+            JSONArray paramFeatures = new JSONArray(params.getHttpParam("featureData"));
+            JSONArray updatedFeatureIds = new JSONArray();
+            for (int i = 0; i < paramFeatures.length(); i++) {
+                JSONObject featureJSON = paramFeatures.getJSONObject(i);
+                OskariLayer layer = getLayer(featureJSON.optString("layerId"));
 
-        if (!canEdit(layer, params.getUser())) {
-            throw new ActionDeniedException("User doesn't have edit permission for layer: " + layer.getId());
+                if (!canEdit(layer, params.getUser())) {
+                    throw new ActionDeniedException("User doesn't have edit permission for layer: " + layer.getId());
+                }
+
+                final String wfstMessage = createWFSTMessage(featureJSON);
+                LOG.debug("Inserting feature to service at", layer.getUrl(), "with payload", wfstMessage);
+                final String responseString = postPayload(layer, wfstMessage);
+                updatedFeatureIds.put(parseFeatureIdFromResponse(responseString));
+
+                flushLayerTilesCache(layer.getId());
+            }
+            ResponseHelper.writeResponse(params, JSONHelper.createJSONObject("fids", updatedFeatureIds));
+        } catch (JSONException e) {
+            LOG.error(e, "JSON processing error");
+            throw new ActionException("JSON processing error", e);
         }
-
-        final String wfstMessage = createWFSTMessage(jsonPayload);
-        LOG.debug("Inserting feature to service at", layer.getUrl(), "with payload", wfstMessage);
-        final String responseString = postPayload(layer, wfstMessage);
-        final String updatedFeatureId = parseFeatureIdFromResponse(responseString);
-
-        flushLayerTilesCache(layer.getId());
-        ResponseHelper.writeResponse(params, JSONHelper.createJSONObject("fid", updatedFeatureId));
     }
 
     private String createWFSTMessage(JSONObject jsonPayload)
