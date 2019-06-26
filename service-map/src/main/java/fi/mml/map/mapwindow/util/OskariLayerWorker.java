@@ -3,6 +3,7 @@ package fi.mml.map.mapwindow.util;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import fi.nls.oskari.util.ConversionHelper;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -119,7 +120,7 @@ public class OskariLayerWorker {
                 final String permissionKey = getPermissionKey(layer);
                 JSONObject permissions = getPermissions(user, permissionKey, permissionSet);
                 JSONHelper.putValue(layerJson, "permissions", permissions);
-                if(permissions.optBoolean("edit")) {
+                if(permissions.optBoolean(PermissionType.EDIT_LAYER.getJsonKey())) {
                     // has edit rights, alter JSON/add info for admin bundle
                     modifyCommonFieldsForEditing(layerJson, layer);
                 } else {
@@ -212,20 +213,34 @@ public class OskariLayerWorker {
         }
         Resource resource = res.get();
         if (resource.hasPermission(user, PermissionType.PUBLISH)) {
-            JSONHelper.putValue(permission, "publish", PUBLICATION_PERMISSION_OK);
+            JSONHelper.putValue(permission, PermissionType.PUBLISH.getJsonKey(), PUBLICATION_PERMISSION_OK);
         }
 
         if (resource.hasPermission(user, PermissionType.DOWNLOAD)) {
-            JSONHelper.putValue(permission, "download", DOWNLOAD_PERMISSION_OK);
+            JSONHelper.putValue(permission, PermissionType.DOWNLOAD.getJsonKey(), DOWNLOAD_PERMISSION_OK);
         }
+        Set<String> PERMISSIONS_TO_SKIP = ConversionHelper.asSet(
+                PermissionType.PUBLISH,
+                PermissionType.DOWNLOAD,
+                PermissionType.VIEW_LAYER,
+                PermissionType.VIEW_PUBLISHED).stream().map(PermissionType::name).collect(Collectors.toSet());
         Set<String> otherAvailablePermissionTypes = resource.getPermissionTypes()
-                .stream().filter(type -> !type.equals(PermissionType.PUBLISH.name())
-                        && !type.equals(PermissionType.DOWNLOAD.name())).collect(Collectors.toSet());
+                .stream().filter(type -> !PERMISSIONS_TO_SKIP.contains(type)).collect(Collectors.toSet());
 
         otherAvailablePermissionTypes.stream()
                 .filter(permType -> resource.hasPermission(user, permType))
-                .forEach(permType -> JSONHelper.putValue(permission, permType, true));
-
+                .forEach(permType -> {
+                    try {
+                        permType = PermissionType.valueOf(permType).getJsonKey();
+                    } catch (IllegalArgumentException notFoundIgnored) {
+                        // thrown if this wasn't a value in the enum but an extension permission
+                    }
+                    JSONHelper.putValue(permission, permType, true);
+                });
+        if (user.isAdmin()) {
+            // admins can always edit layers
+            JSONHelper.putValue(permission, PermissionType.EDIT_LAYER.getJsonKey(), true);
+        }
         return permission;
     }
 

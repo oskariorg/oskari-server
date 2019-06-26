@@ -11,6 +11,7 @@ import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.control.ActionParamsException;
 import fi.nls.oskari.domain.map.userlayer.UserLayer;
+import org.oskari.permissions.model.PermissionType;
 
 public class UserLayerHandlerHelper {
 
@@ -29,8 +30,8 @@ public class UserLayerHandlerHelper {
 
     public static JSONObject getPermissions() {
         final JSONObject permissions = new JSONObject();
-        JSONHelper.putValue(permissions, "publish", OskariLayerWorker.PUBLICATION_PERMISSION_OK);
-        JSONHelper.putValue(permissions, "download", OskariLayerWorker.DOWNLOAD_PERMISSION_OK);
+        JSONHelper.putValue(permissions, PermissionType.PUBLISH.getJsonKey(), OskariLayerWorker.PUBLICATION_PERMISSION_OK);
+        JSONHelper.putValue(permissions, PermissionType.DOWNLOAD.getJsonKey(), OskariLayerWorker.DOWNLOAD_PERMISSION_OK);
         return permissions;
     }
 }

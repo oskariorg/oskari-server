@@ -1,12 +1,24 @@
 package org.oskari.permissions.model;
 
 public enum PermissionType {
-    PUBLISH,
+    PUBLISH("publish"),
     VIEW_LAYER,
-    EDIT_LAYER,
+    EDIT_LAYER("edit"),
     EDIT_LAYER_CONTENT,
     VIEW_PUBLISHED,
-    DOWNLOAD,
+    DOWNLOAD("download"),
     EXECUTE,
-    ADD_MAPLAYER
+    ADD_MAPLAYER;
+
+    private String jsonKey;
+
+    PermissionType() {
+        jsonKey = this.name();
+    }
+    PermissionType(String jsonName) {
+        jsonKey = jsonName;
+    }
+    public String getJsonKey() {
+        return jsonKey;
+    }
 }
