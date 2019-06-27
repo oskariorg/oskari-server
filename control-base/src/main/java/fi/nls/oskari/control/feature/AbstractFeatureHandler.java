@@ -14,6 +14,7 @@ import fi.nls.oskari.domain.map.Feature;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.domain.map.wfs.WFSLayerConfiguration;
 import fi.nls.oskari.map.data.domain.OskariLayerResource;
+import fi.nls.oskari.map.geometry.ProjectionHelper;
 import fi.nls.oskari.map.layer.OskariLayerService;
 import fi.nls.oskari.map.layer.OskariLayerServiceMybatisImpl;
 import fi.nls.oskari.permission.domain.Resource;
@@ -139,9 +140,6 @@ public abstract class AbstractFeatureHandler extends RestActionHandler {
             JSONArray jsonArray = jsonObject.getJSONArray("featureFields");
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject property = jsonArray.getJSONObject(i);
-                if(property.getString("value").isEmpty()) {
-                    continue;
-                }
                 feature.addProperty(property.getString("key"), property.getString("value"));
             }
         }
@@ -153,7 +151,12 @@ public abstract class AbstractFeatureHandler extends RestActionHandler {
                 throw new ActionParamsException("Invalid geometry type: " + geometryType);
             }
             JSONArray data = geometries.getJSONArray("data");
-            feature.setGeometry(getGeometry(geometryType, data, getSrid(srsName, 3067)));
+            Geometry geometry = getGeometry(geometryType, data, getSrid(srsName, 3067));
+            if(ProjectionHelper.isFirstAxisNorth(crs)) {
+                // reverse xy
+                ProjectionHelper.flipFeatureYX(geometry);
+            }
+            feature.setGeometry(geometry);
         }
         return feature;
     }
@@ -187,8 +190,8 @@ public abstract class AbstractFeatureHandler extends RestActionHandler {
         List<Point> points = new ArrayList<>();
         for (int i = 0; i < data.length(); i++) {
             Point point = gf.createPoint(new Coordinate(
-                    Double.parseDouble(data.getJSONObject(i).getString("y")),
-                    Double.parseDouble(data.getJSONObject(i).getString("x")))
+                    Double.parseDouble(data.getJSONObject(i).getString("x")),
+                    Double.parseDouble(data.getJSONObject(i).getString("y")))
             );
             points.add(point);
         }
@@ -206,8 +209,8 @@ public abstract class AbstractFeatureHandler extends RestActionHandler {
             JSONArray lineCoordinates = data.getJSONArray(lineIndex);
             for (int coordinateIndex = 0; coordinateIndex < lineCoordinates.length(); coordinateIndex++) {
                 Coordinate coordinate = new Coordinate(
-                        Double.parseDouble(lineCoordinates.getJSONObject(coordinateIndex).getString("y")),
-                        Double.parseDouble(lineCoordinates.getJSONObject(coordinateIndex).getString("x"))
+                        Double.parseDouble(lineCoordinates.getJSONObject(coordinateIndex).getString("x")),
+                        Double.parseDouble(lineCoordinates.getJSONObject(coordinateIndex).getString("y"))
                 );
                 coordinates.add(coordinate);
             }
@@ -231,8 +234,8 @@ public abstract class AbstractFeatureHandler extends RestActionHandler {
 
                 for (int coordinateIndex = 0; coordinateIndex < currentRing.length(); coordinateIndex++) {
                     Coordinate coordinate = new Coordinate(
-                            Double.parseDouble(currentRing.getJSONObject(coordinateIndex).getString("y")),
-                            Double.parseDouble(currentRing.getJSONObject(coordinateIndex).getString("x"))
+                            Double.parseDouble(currentRing.getJSONObject(coordinateIndex).getString("x")),
+                            Double.parseDouble(currentRing.getJSONObject(coordinateIndex).getString("y"))
                     );
                     coordinates.add(coordinate);
                 }
