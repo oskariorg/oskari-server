@@ -1,10 +1,6 @@
 package org.oskari.statistics.plugins.unsd;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import org.json.JSONArray;
@@ -137,14 +133,17 @@ public class UnsdDataParser {
         }
     }
     
-    private static boolean dataObjectValueTypeIsSupported(String valueType) throws JSONException {
+    private static boolean dataObjectValueTypeIsSupported(String valueType) {
         return SUPPORTED_VALUE_TYPE.equals(valueType);
     }
 
     public static List<IdNamePair> getSortedListOfYearsThatBelongToSeveralGeoAreas(
             Map<Integer,  Set<Integer>> countOfAreaCodesForYear) {
-        return (List<IdNamePair>) (countOfAreaCodesForYear.entrySet().stream().filter(e ->
-            e.getValue().size() > 1)
-                .map(e -> e.getKey()).sorted().map(year -> new IdNamePair(String.valueOf(year), null))).collect(Collectors.toList());
+        return countOfAreaCodesForYear.entrySet().stream()
+                .filter(e -> e.getValue().size() > 1)
+                .map(e -> e.getKey())
+                .sorted(Comparator.reverseOrder())
+                .map(year -> new IdNamePair(String.valueOf(year), null))
+                .collect(Collectors.toList());
     }
 }
