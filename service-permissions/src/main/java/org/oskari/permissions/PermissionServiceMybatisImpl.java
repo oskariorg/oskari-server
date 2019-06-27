@@ -136,8 +136,9 @@ public class PermissionServiceMybatisImpl extends PermissionService {
 
         try (SqlSession session = factory.openSession(false)) {
             ResourceMapper mapper = session.getMapper(MAPPER);
-            String commaseparatedIds = String.join(",", externalId.stream()
-                    .map(num -> Long.toString(num)).collect(Collectors.toSet()));
+            String commaseparatedIds = externalId.stream()
+                    .map(num -> Long.toString(num))
+                    .collect(Collectors.joining(","));
             return mapper.findMappingsForPermission(
                     resourceType, externalIdType, permissionsType, commaseparatedIds);
         }
