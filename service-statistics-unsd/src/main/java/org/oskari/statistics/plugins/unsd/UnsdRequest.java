@@ -151,6 +151,8 @@ public class UnsdRequest {
         try {
             final String url = getUrl(path, params);
             con = IOHelper.getConnection(url);
+            // 30 seconds as this might take a while and we are _usually_ doing this on the background thread
+            con.setReadTimeout(30000);
             return IOHelper.readString(con.getInputStream());
         } catch (Exception e) {
             throw new APIException("Couldn't request data from the UNSD server", e);
