@@ -7,6 +7,10 @@ jdk:
   - openjdk11
   - oraclejdk11
 
+matrix:
+  allow_failures:
+    - jdk: oraclejdk11
+
 addons:
   apt:
     packages:
