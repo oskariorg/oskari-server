@@ -61,10 +61,9 @@ public class DeleteFeatureHandler extends AbstractFeatureHandler {
     protected String createPayload(JSONObject jsonObject) throws ActionParamsException, JSONException,
             XMLStreamException, FactoryException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        List<Feature> features = new ArrayList<>();
+
         Feature feature = getFeature(jsonObject);
-        features.add(feature);
-        FeatureWFSTRequestBuilder.deleteFeatures(baos, features);
+        FeatureWFSTRequestBuilder.deleteFeature(baos, feature);
 
         return baos.toString();
     }

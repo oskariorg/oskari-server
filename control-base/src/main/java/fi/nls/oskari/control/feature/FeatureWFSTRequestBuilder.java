@@ -10,50 +10,16 @@ import org.oskari.wfst.WFSTRequestBuilder;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 import java.io.*;
-import java.util.List;
 import java.util.Map;
 
 public class FeatureWFSTRequestBuilder extends WFSTRequestBuilder {
     private final static Logger LOG = LogFactory.getLogger(FeatureWFSTRequestBuilder.class);
 
-    public static void updateFeatures(OutputStream out, List<Feature> features)
+    public static void updateFeature(OutputStream out, Feature feature)
             throws XMLStreamException {
         XMLStreamWriter xsw = XOF.createXMLStreamWriter(out);
         writeStartTransaction(xsw, "1.1.0");
-        for (Feature feature : features) {
-            updateFeature(xsw, feature);
-        }
-        xsw.writeEndElement();
-        xsw.writeEndDocument();
-        xsw.close();
-    }
 
-    public static void insertFeatures(OutputStream out, List<Feature> features)
-            throws XMLStreamException {
-        XMLStreamWriter xsw = XOF.createXMLStreamWriter(out);
-        writeStartTransaction(xsw, "1.1.0");
-        for (Feature feature : features) {
-            insertFeature(xsw, feature);
-        }
-        xsw.writeEndElement();
-        xsw.writeEndDocument();
-        xsw.close();
-    }
-
-    public static void deleteFeatures(OutputStream out, List<Feature> features)
-            throws XMLStreamException {
-        XMLStreamWriter xsw = XOF.createXMLStreamWriter(out);
-        writeStartTransaction(xsw, "1.1.0");
-        for (Feature feature : features) {
-            deleteFeature(xsw, feature);
-        }
-        xsw.writeEndElement();
-        xsw.writeEndDocument();
-        xsw.close();
-    }
-
-    private static void updateFeature(XMLStreamWriter xsw, Feature feature)
-            throws XMLStreamException {
         xsw.writeStartElement(WFS, "Update");
         xsw.writeAttribute("typeName", feature.getLayerName());
 
@@ -72,14 +38,19 @@ public class FeatureWFSTRequestBuilder extends WFSTRequestBuilder {
         }
 
         addGeometries(xsw, feature, true);
-
         writeFeatureIdFilter(xsw, feature.getId());
-
         xsw.writeEndElement(); // close <wfs:Update>
+
+        xsw.writeEndElement();
+        xsw.writeEndDocument();
+        xsw.close();
     }
 
-    private static void insertFeature(XMLStreamWriter xsw, Feature feature)
+    public static void insertFeature(OutputStream out, Feature feature)
             throws XMLStreamException {
+        XMLStreamWriter xsw = XOF.createXMLStreamWriter(out);
+        writeStartTransaction(xsw, "1.1.0");
+
         xsw.writeStartElement(WFS, "Insert");
         xsw.writeStartElement(feature.getLayerName());
         xsw.writeAttribute("xmlns:" + feature.getNamespace(), feature.getNamespaceURI());
@@ -91,17 +62,27 @@ public class FeatureWFSTRequestBuilder extends WFSTRequestBuilder {
         }
 
         addGeometries(xsw, feature, false);
-
         xsw.writeEndElement();
         xsw.writeEndElement(); // close <wfs:Insert>
+
+        xsw.writeEndElement();
+        xsw.writeEndDocument();
+        xsw.close();
     }
 
-    private static void deleteFeature(XMLStreamWriter xsw, Feature feature)
+    public static void deleteFeature(OutputStream out, Feature feature)
             throws XMLStreamException {
+        XMLStreamWriter xsw = XOF.createXMLStreamWriter(out);
+        writeStartTransaction(xsw, "1.1.0");
+
         xsw.writeStartElement(WFS, "Delete");
         xsw.writeAttribute("typeName", feature.getLayerName());
         writeFeatureIdFilter(xsw, feature.getId());
         xsw.writeEndElement(); // close <wfs:Delete>
+
+        xsw.writeEndElement();
+        xsw.writeEndDocument();
+        xsw.close();
     }
 
     private static void addGeometries(XMLStreamWriter xsw, Feature feature, boolean isUpdate) throws XMLStreamException {

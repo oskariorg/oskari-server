@@ -26,6 +26,7 @@ public class SaveFeatureHandler extends AbstractFeatureHandler {
     @Override
     public void handlePost(ActionParameters params) throws ActionException {
         params.requireLoggedInUser();
+        List<String> exceptions = new ArrayList<>();
 
         try {
             JSONArray paramFeatures = new JSONArray(params.getHttpParam("featureData"));
@@ -40,10 +41,8 @@ public class SaveFeatureHandler extends AbstractFeatureHandler {
                 }
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
-                List<Feature> features = new ArrayList<>();
                 Feature feature = getFeature(featureJSON);
-                features.add(feature);
-                FeatureWFSTRequestBuilder.updateFeatures(baos, features);
+                FeatureWFSTRequestBuilder.updateFeature(baos, feature);
 
                 final String wfstMessage = baos.toString();
                 LOG.debug("Updating feature to service at", layer.getUrl(), "with payload", wfstMessage);
@@ -52,10 +51,14 @@ public class SaveFeatureHandler extends AbstractFeatureHandler {
                 flushLayerTilesCache(layer.getId());
 
                 if (responseString.indexOf("Exception") > -1) {
-                    throw new ActionException("Cannot save feature: " + responseString);
-                } else if (responseString.indexOf("<wfs:totalUpdated>1</wfs:totalUpdated>") > -1) {
-                    ResponseHelper.writeResponse(params, "Feature updated");
+                    exceptions.add(responseString);
                 }
+            }
+
+            if(exceptions.size() > 0 ) {
+                throw new ActionException("Cannot save feature(s): " + exceptions.toString());
+            } else {
+                ResponseHelper.writeResponse(params, "Feature updated");
             }
         } catch (JSONException e) {
             LOG.error(e, "JSON processing error");

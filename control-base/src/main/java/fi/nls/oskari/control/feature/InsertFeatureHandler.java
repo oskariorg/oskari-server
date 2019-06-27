@@ -69,10 +69,8 @@ public class InsertFeatureHandler extends AbstractFeatureHandler {
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         try {
-            List<Feature> features = new ArrayList<>();
             Feature feature = getFeature(jsonPayload);
-            features.add(feature);
-            FeatureWFSTRequestBuilder.insertFeatures(baos, features);
+            FeatureWFSTRequestBuilder.insertFeature(baos, feature);
         } catch (XMLStreamException e) {
             LOG.error(e, "Failed to create WFS-T request");
             throw new ActionException("Failed to create WFS-T request", e);
