@@ -46,7 +46,7 @@ public class EditUserLayerHandler extends RestActionHandler {
         userLayerDbService.updateUserLayerStyleCols(style);
 
         JSONObject ulayer = UserLayerDataService.parseUserLayer2JSON(userLayer, mapSrs);
-        JSONObject permissions = OskariLayerWorker.getAllowedPermissions();
+        JSONObject permissions = UserLayerHandlerHelper.getPermissions();
         JSONHelper.putValue(ulayer, "permissions", permissions);
 
         ResponseHelper.writeResponse(params, ulayer);

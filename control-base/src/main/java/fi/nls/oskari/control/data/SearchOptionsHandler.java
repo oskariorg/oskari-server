@@ -24,10 +24,15 @@ public class SearchOptionsHandler extends ActionHandler {
     private SearchService searchService;
     private Set<String> blacklist = new HashSet<>();
 
+    public void setSearchService(SearchService service) {
+        searchService = service;
+    }
     @Override
     public void init() {
         super.init();
-        searchService = OskariComponentManager.getComponentOfType(SearchService.class);
+        if(searchService == null) {
+            searchService = OskariComponentManager.getComponentOfType(SearchService.class);
+        }
         String[] blacklistedChannelIDs = PropertyUtil.getCommaSeparatedList("actionhandler.SearchOptions.blacklist");
         if(blacklist.isEmpty()) {
             for(String id : blacklistedChannelIDs) {
@@ -35,6 +40,7 @@ public class SearchOptionsHandler extends ActionHandler {
             }
         }
     }
+
     public void handleAction(final ActionParameters params) throws ActionException {
 
         Map<String, SearchableChannel> channels =  searchService.getAvailableChannels();
