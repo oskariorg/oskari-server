@@ -80,7 +80,7 @@ public class OskariLayerWorker {
      */
     public static JSONObject getListOfMapLayers(final List<OskariLayer> layers, final User user,
             final String lang, final String crs, final boolean isPublished, final boolean isSecure) {
-        List<Resource> resources = permissionService.findResourcesByUser(user);
+        List<Resource> resources = permissionService.findResourcesByUser(user, ResourceType.maplayer);
         return getListOfMapLayers(layers, user, lang, isSecure, crs, new PermissionSet(resources));
     }
 
@@ -89,7 +89,7 @@ public class OskariLayerWorker {
         List<OskariLayer> layers = mapLayerService.findAll();
         LOG.info("Layers read in", System.currentTimeMillis() - start, "ms");
         start = System.currentTimeMillis();
-        List<Resource> resources = permissionService.findResourcesByUser(user);
+        List<Resource> resources = permissionService.findResourcesByUser(user, ResourceType.maplayer);
         LOG.info("Permissions read in", System.currentTimeMillis() - start, "ms");
         return filterLayersWithResources(layers, new PermissionSet(resources), user, isPublished);
     }

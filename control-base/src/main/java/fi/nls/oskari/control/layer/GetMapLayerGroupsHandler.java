@@ -7,6 +7,7 @@ import static fi.nls.oskari.control.ActionConstants.PARAM_SRS;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import fi.nls.oskari.map.layer.OskariLayerService;
 import fi.nls.oskari.service.OskariComponentManager;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -27,8 +28,6 @@ import fi.nls.oskari.map.layer.group.link.OskariLayerGroupLinkService;
 import fi.nls.oskari.map.layer.group.link.OskariLayerGroupLinkServiceMybatisImpl;
 import fi.nls.oskari.util.EnvHelper;
 import fi.nls.oskari.util.ResponseHelper;
-import org.oskari.permissions.PermissionService;
-
 /**
  * Get all map layer groups registered in Oskari database
  */
@@ -45,11 +44,11 @@ public class GetMapLayerGroupsHandler extends ActionHandler {
             OskariLayer.TYPE_WMTS,
             OskariLayer.TYPE_ARCGIS93);
 
-    private PermissionService permissionsService;
+    private OskariLayerService layerService;
     private OskariMapLayerGroupService groupService;
     private OskariLayerGroupLinkService linkService;
-    public void setPermissionsService(PermissionService permissionsService) {
-        this.permissionsService = permissionsService;
+    public void setLayerService(OskariLayerService service) {
+        this.layerService = service;
     }
 
     public void setGroupService(OskariMapLayerGroupService groupService) {
@@ -63,8 +62,8 @@ public class GetMapLayerGroupsHandler extends ActionHandler {
     @Override
     public void init() {
         // setup services if they haven't been initialized
-        if (permissionsService == null) {
-            setPermissionsService(OskariComponentManager.getComponentOfType(PermissionService.class));
+        if (layerService == null) {
+            setLayerService(OskariComponentManager.getComponentOfType(OskariLayerService.class));
         }
         if (groupService == null) {
             setGroupService(new OskariMapLayerGroupServiceIbatisImpl());
@@ -82,24 +81,25 @@ public class GetMapLayerGroupsHandler extends ActionHandler {
         final boolean isSecure = EnvHelper.isSecure(params);
         final boolean isPublished = false;
 
-        List<OskariLayer> layers = OskariLayerWorker.getLayersForUser(user, isPublished);
-
-        if (params.getHttpParam(PARAM_FORCE_PROXY, false)) {
-            layers.stream()
-                .filter(layer -> PROXY_LYR_TYPES.contains(layer.getType()))
-                .forEach(layer -> layer.addAttribute("forceProxy", true));
-        }
-
-        int[] sortedLayerIds = layers.stream().mapToInt(OskariLayer::getId).toArray();
-        Arrays.sort(sortedLayerIds);
-
         Map<Integer, List<MaplayerGroup>> groupsByParentId = groupService.findAll().stream()
                 .collect(Collectors.groupingBy(MaplayerGroup::getParentId));
 
         Map<Integer, List<OskariLayerGroupLink>> linksByGroupId = linkService.findAll().stream()
                 .collect(Collectors.groupingBy(OskariLayerGroupLink::getGroupId));
 
+
+        // Get all layers instead of using OskariLayerWorker.getLayersForUser() so we don't check permissions twice
+        List<OskariLayer> layers = layerService.findAll();
+        if (params.getHttpParam(PARAM_FORCE_PROXY, false)) {
+            layers.stream()
+                    .filter(layer -> PROXY_LYR_TYPES.contains(layer.getType()))
+                    .forEach(layer -> layer.addAttribute("forceProxy", true));
+        }
+
+        int[] sortedLayerIds = layers.stream().mapToInt(OskariLayer::getId).toArray();
+        Arrays.sort(sortedLayerIds);
         try {
+            // getListOfMapLayers checks permissions
             JSONObject response = OskariLayerWorker.getListOfMapLayers(layers, user, lang, crs, isPublished, isSecure);
             response.put(KEY_GROUPS, getGroupJSON(groupsByParentId, linksByGroupId, sortedLayerIds, -1));
             ResponseHelper.writeResponse(params, response);
