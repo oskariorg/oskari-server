@@ -56,11 +56,21 @@ public class SaveFeatureHandler extends AbstractFeatureHandler {
 
             flushLayerTilesCache(layers);
 
-            if(exceptions.size() > 0 ) {
-                throw new ActionException("Cannot save feature(s): " + exceptions.toString());
-            } else {
-                ResponseHelper.writeResponse(params, "Feature updated");
+
+            if(exceptions.size() == paramFeatures.length()) {
+                throw new ActionException("Cannot save features: " + exceptions.toString());
             }
+
+            JSONObject response = new JSONObject();
+            response.put("success", true);
+
+            if( exceptions.size() == 0) {
+                ResponseHelper.writeResponse(params, response);
+            } else {
+                response.put("messageKey", "cannot_save_all_features");
+                ResponseHelper.writeResponse(params, response);
+            }
+
         } catch (JSONException e) {
             LOG.error(e, "JSON processing error");
             throw new ActionException("JSON processing error", e);
