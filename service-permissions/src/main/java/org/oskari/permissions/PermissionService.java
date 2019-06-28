@@ -17,6 +17,7 @@ public abstract class PermissionService extends OskariComponent {
     public abstract Optional<Resource> findResource(ResourceType type, String mapping);
     public abstract Optional<Resource> findResource(String type, String mapping);
     public abstract List<Resource> findResourcesByUser(User user);
+    public abstract List<Resource> findResourcesByUser(User user, ResourceType type);
 
 
     public abstract Set<String>

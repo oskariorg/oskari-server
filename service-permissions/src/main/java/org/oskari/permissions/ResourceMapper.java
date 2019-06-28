@@ -46,6 +46,14 @@ public interface ResourceMapper {
             + "resource_type,"
             + "resource_mapping "
             + "FROM oskari_resource "
+            + "WHERE resource_type = #{type}")
+    List<Resource> findByType(String type);
+
+    @ResultMap("ResourceResult")
+    @Select("SELECT id,"
+            + "resource_type,"
+            + "resource_mapping "
+            + "FROM oskari_resource "
             + "WHERE resource_type = #{type} "
             + "AND resource_mapping = #{mapping}")
     Resource findByTypeAndMapping(@Param("type") String type, @Param("mapping") String mapping);

@@ -54,6 +54,12 @@ public class PermissionServiceMybatisImpl extends PermissionService {
             return all;
         }
     }
+    public List<Resource> findResourcesByUser(User user, ResourceType type) {
+        try (SqlSession session = factory.openSession()) {
+            List<Resource> all = session.getMapper(MAPPER).findByType(type.name());
+            return all;
+        }
+    }
 
     @Override
     public Optional<Resource> findResource(int id) {
