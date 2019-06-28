@@ -25,7 +25,7 @@ public class WFSLayerPermissionsStore {
 
 	public static final String KEY = "Permission_";
 
-	private List<Long> layerIds;
+	private List<Integer> layerIds;
 
 	/**
 	 * Constructs object without parameters
@@ -38,7 +38,7 @@ public class WFSLayerPermissionsStore {
 	 *
 	 * @return layerIds
 	 */
-	public List<Long> getLayerIds() {
+	public List<Integer> getLayerIds() {
 		return layerIds;
 	}
 
@@ -47,7 +47,7 @@ public class WFSLayerPermissionsStore {
 	 *
 	 * @param layerIds
 	 */
-	public void setLayerIds(List<Long> layerIds) {
+	public void setLayerIds(List<Integer> layerIds) {
 		this.layerIds = layerIds;
 	}
 

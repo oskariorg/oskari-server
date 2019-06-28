@@ -46,7 +46,7 @@ public class GetUserLayersHandler extends ActionHandler {
             for (UserLayer ul : list) {
                 // Parse userlayer data to userlayer
                 final JSONObject userLayer = UserLayerDataService.parseUserLayer2JSON(ul, baseLayer, mapSrs);
-                JSONObject permissions = OskariLayerWorker.getAllowedPermissions();
+                JSONObject permissions = UserLayerHandlerHelper.getPermissions();
                 JSONHelper.putValue(userLayer, "permissions", permissions);
                 layers.put(userLayer);
             }

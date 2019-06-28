@@ -6,6 +6,7 @@ import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.control.ActionParamsException;
 import fi.nls.oskari.domain.User;
 import fi.nls.oskari.service.ServiceException;
+import fi.nls.oskari.service.capabilities.CapabilitiesCacheService;
 import fi.nls.oskari.util.DuplicateException;
 import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.test.control.JSONActionRouteTest;
@@ -24,6 +25,7 @@ import java.util.Properties;
 
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import static org.mockito.Mockito.mock;
 
 
 /**
@@ -33,7 +35,7 @@ import static org.junit.Assert.fail;
 @PowerMockIgnore({"com.sun.org.apache.xalan.*", "com.sun.org.apache.xerces.*", "javax.xml.*", "org.w3c.dom.*", "org.xml.*", "com.sun.org.apache.xml.*"})
 public class GetWSCapabilitiesHandlerTest extends JSONActionRouteTest {
 
-    final private  GetWSCapabilitiesHandler handler = new  GetWSCapabilitiesHandler();
+    final private  GetWSCapabilitiesHandler handler = new  GetWSCapabilitiesHandler(mock(CapabilitiesCacheService.class));
 
     @BeforeClass
     public static void addLocales() throws Exception {

@@ -1,14 +1,13 @@
 package fi.nls.oskari.control.feature;
 
-import fi.mml.portti.domain.permissions.Permissions;
 import fi.nls.oskari.annotation.Oskari;
 import fi.nls.oskari.cache.CacheManager;
 import fi.nls.oskari.cache.ComputeOnceCache;
 import fi.nls.oskari.domain.User;
 import fi.nls.oskari.domain.map.analysis.Analysis;
-import fi.nls.oskari.map.analysis.domain.AnalysisLayer;
 import fi.nls.oskari.map.analysis.service.AnalysisDbService;
 import fi.nls.oskari.map.analysis.service.AnalysisDbServiceMybatisImpl;
+import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.util.PropertyUtil;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.data.simple.SimpleFeatureIterator;
@@ -24,8 +23,10 @@ import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory;
 import org.opengis.filter.expression.Expression;
 import org.oskari.geojson.GeoJSONFeatureCollection;
+import org.oskari.permissions.PermissionService;
+import org.oskari.permissions.model.PermissionType;
+import org.oskari.permissions.model.ResourceType;
 import org.oskari.service.user.UserLayerService;
-import org.oskari.service.util.ServiceFactory;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -106,8 +107,8 @@ public class AnalysisWFSHelper extends UserLayerService {
     private Set<String> getPermissionsForUser(User user) {
         return permissionsCache.get(Long.toString(user.getId()),
                 __ ->
-                        ServiceFactory.getPermissionsService().getResourcesWithGrantedPermissions(
-                                AnalysisLayer.TYPE, user, Permissions.PERMISSION_TYPE_VIEW_PUBLISHED));
+                        OskariComponentManager.getComponentOfType(PermissionService.class).getResourcesWithGrantedPermissions(
+                                ResourceType.analysislayer, user, PermissionType.VIEW_PUBLISHED));
     }
 
     private Analysis getLayer(int id) {

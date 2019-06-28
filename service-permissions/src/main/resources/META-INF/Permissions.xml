@@ -8,8 +8,8 @@
 
     <!-- Use type aliases to avoid typing the full classname every time. -->
     <typeAlias alias="Permissions" type="fi.mml.portti.domain.permissions.Permissions" />
-    <typeAlias alias="Resource" type="fi.nls.oskari.permission.domain.Resource" />
-    <typeAlias alias="Permission" type="fi.nls.oskari.permission.domain.Permission" />
+    <typeAlias alias="Resource" type="org.oskari.permissions.model.Resource" />
+    <typeAlias alias="Permission" type="org.oskari.permissions.model.Permission" />
 
 
     <resultMap id="permissionsResult" class="HashMap">

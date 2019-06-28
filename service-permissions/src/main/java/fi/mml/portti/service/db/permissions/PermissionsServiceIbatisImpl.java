@@ -7,13 +7,14 @@ import fi.nls.oskari.domain.Role;
 import fi.nls.oskari.domain.User;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.permission.domain.Permission;
-import fi.nls.oskari.permission.domain.Resource;
 import fi.nls.oskari.service.db.BaseIbatisService;
 import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.PropertyUtil;
 
 import java.util.*;
+
+import org.oskari.permissions.model.Permission;
+import org.oskari.permissions.model.Resource;
 
 public class PermissionsServiceIbatisImpl extends BaseIbatisService<Permissions> implements PermissionsService {		
 	

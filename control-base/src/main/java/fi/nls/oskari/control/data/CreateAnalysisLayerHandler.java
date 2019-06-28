@@ -1,9 +1,6 @@
 package fi.nls.oskari.control.data;
 
-import fi.mml.map.mapwindow.util.OskariLayerWorker;
 import fi.mml.portti.domain.permissions.Permissions;
-import fi.mml.portti.service.db.permissions.PermissionsService;
-import fi.mml.portti.service.db.permissions.PermissionsServiceIbatisImpl;
 import fi.nls.oskari.analysis.AnalysisHelper;
 import fi.nls.oskari.analysis.AnalysisParser;
 import fi.nls.oskari.annotation.OskariActionRoute;
@@ -21,11 +18,8 @@ import fi.nls.oskari.map.analysis.domain.AnalysisMethodParams;
 import fi.nls.oskari.map.analysis.domain.SpatialJoinStatisticsMethodParams;
 import fi.nls.oskari.map.analysis.service.AnalysisDataService;
 import fi.nls.oskari.map.analysis.service.AnalysisWebProcessingService;
-import fi.nls.oskari.map.data.domain.OskariLayerResource;
 import fi.nls.oskari.map.layer.OskariLayerService;
-import fi.nls.oskari.map.layer.OskariLayerServiceMybatisImpl;
-import fi.nls.oskari.permission.domain.Permission;
-import fi.nls.oskari.permission.domain.Resource;
+import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.service.UserService;
 import fi.nls.oskari.util.ConversionHelper;
@@ -34,6 +28,9 @@ import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.util.ResponseHelper;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.oskari.permissions.PermissionService;
+import org.oskari.permissions.model.*;
+import org.oskari.service.util.ServiceFactory;
 
 import java.net.URL;
 import java.util.*;
@@ -46,9 +43,9 @@ public class CreateAnalysisLayerHandler extends RestActionHandler {
     private AnalysisDataService analysisDataService = new AnalysisDataService();
     private AnalysisWebProcessingService wpsService = new AnalysisWebProcessingService();
     private AnalysisParser analysisParser = new AnalysisParser();
-    private OskariLayerService mapLayerService = new OskariLayerServiceMybatisImpl();
+    private OskariLayerService mapLayerService = ServiceFactory.getMapLayerService();
 
-    private static PermissionsService permissionsService = new PermissionsServiceIbatisImpl();
+    private PermissionService permissionsService;
 
     private static final String PARAM_ANALYSE = "analyse";
     private static final String PARAM_FILTER1 = "filter1";
@@ -82,8 +79,14 @@ public class CreateAnalysisLayerHandler extends RestActionHandler {
 
     final private static String GEOSERVER_PROXY_BASE_URL = PropertyUtil.getOptional("analysis.baseproxy.url");
 
+    @Override
+    public void init() {
+        super.init();
+        permissionsService = OskariComponentManager.getComponentOfType(PermissionService.class);
+    }
+
     private AnalysisLayer getAggregateLayer(String analyse, String filter1, String filter2,
-                                      String baseUrl, AnalysisLayer analysisLayer, String outputFormat) throws ActionParamsException {
+                                            String baseUrl, AnalysisLayer analysisLayer, String outputFormat) throws ActionParamsException {
         try {
             return analysisParser.parseSwitch2UnionLayer(analysisLayer, analyse, filter1, filter2, baseUrl, outputFormat);
         } catch (ServiceException e) {
@@ -210,20 +213,20 @@ public class CreateAnalysisLayerHandler extends RestActionHandler {
         analysisLayer.setNativeFields(analysis);
 
         // copy permissions from source layer to new analysis
-        final Resource sourceResource =
+        final Optional<Resource> sourceResource =
                 getSourcePermission(analysisParser.getSourceLayerId(analyseJson), params.getUser());
-        if(sourceResource != null) {
+        if(sourceResource.isPresent()) {
             final Resource analysisResource = new Resource();
             analysisResource.setType(AnalysisLayer.TYPE);
             analysisResource.setMapping("analysis", Long.toString(analysis.getId()));
-            for(Permission p : sourceResource.getPermissions()) {
+            for(Permission p : sourceResource.get().getPermissions()) {
                 // check if user has role matching permission?
                 if(p.isOfType(Permissions.PERMISSION_TYPE_PUBLISH) || p.isOfType(Permissions.PERMISSION_TYPE_VIEW_PUBLISHED) || p.isOfType(Permissions.PERMISSION_TYPE_DOWNLOAD)) {
                     analysisResource.addPermission(p.clonePermission());
                 }
             }
             log.debug("Trying to save permissions for analysis", analysisResource, analysisResource.getPermissions());
-            permissionsService.saveResourcePermissions(analysisResource);
+            permissionsService.insertResource(analysisResource);
         }
         else {
             log.warn("Couldn't get source permissions for analysis, result will have none");
@@ -242,12 +245,14 @@ public class CreateAnalysisLayerHandler extends RestActionHandler {
         }
         JSONHelper.putValue(analysisLayerJSON, "mergeLayers", mlayers);
 
-        Set<String> permissionsList = permissionsService.getPublishPermissions(AnalysisLayer.TYPE);
-        Set<String> downloadPermissionsList = permissionsService.getDownloadPermissions(AnalysisLayer.TYPE);
-        Set<String> editAccessList = null;
+        Set<String> publishPermission = permissionsService.getResourcesWithGrantedPermissions(ResourceType.analysislayer, params.getUser(), PermissionType.PUBLISH);
+        Set<String> downloadPermission = permissionsService.getResourcesWithGrantedPermissions(ResourceType.analysislayer, params.getUser(), PermissionType.DOWNLOAD);
         String permissionKey = "analysis+" + analysis.getId();
-        JSONObject permissions = OskariLayerWorker.getPermissions(params.getUser(), permissionKey, permissionsList, downloadPermissionsList, editAccessList);
-        JSONHelper.putValue(analysisLayerJSON, "permissions", permissions);
+
+        JSONHelper.putValue(analysisLayerJSON, "permissions",
+                AnalysisHelper.getAnalysisPermissions(
+                        publishPermission.contains(permissionKey),
+                        downloadPermission.contains(permissionKey)));
 
         ResponseHelper.writeResponse(params, analysisLayerJSON);
     }
@@ -280,7 +285,7 @@ public class CreateAnalysisLayerHandler extends RestActionHandler {
         return featureSet;
     }
 
-    private Resource getSourcePermission(final String layerId, final User user) throws ActionParamsException {
+    private Optional<Resource> getSourcePermission(final String layerId, final User user) throws ActionParamsException {
         if(layerId == null) {
             throw new ActionParamsException("Missing source layer id");
         }
@@ -290,7 +295,7 @@ public class CreateAnalysisLayerHandler extends RestActionHandler {
             final Resource resource = new Resource();
             resource.setType(AnalysisLayer.TYPE);
             resource.setMapping("analysis", Long.toString(AnalysisHelper.getAnalysisIdFromLayerId(layerId)));
-            return permissionsService.findResource(resource);
+            return permissionsService.findResource(ResourceType.analysislayer, Long.toString(AnalysisHelper.getAnalysisIdFromLayerId(layerId)));
         }
         else if (layerId.startsWith(AnalysisParser.MYPLACES_LAYER_PREFIX)  || layerId.equals("-1") || layerId.startsWith(AnalysisParser.USERLAYER_PREFIX)) {
 
@@ -310,11 +315,11 @@ public class CreateAnalysisLayerHandler extends RestActionHandler {
                     perm.setType(Permissions.PERMISSION_TYPE_VIEW_PUBLISHED);
                     resource.addPermission(perm);
                 }
-            }catch (Exception e) {
+            } catch (Exception e) {
                 log.error("Something went wrong when generating source permissions for myplaces layer or temporary or user data layer");
 
             }
-            return resource;
+            return Optional.of(resource);
         }
         // default to usual layer
         int id = ConversionHelper.getInt(layerId, -1);
@@ -323,7 +328,7 @@ public class CreateAnalysisLayerHandler extends RestActionHandler {
         }
         final OskariLayer layer = mapLayerService.find(id);
         // copy permissions from source layer to new analysis
-        return permissionsService.getResource(Permissions.RESOURCE_TYPE_MAP_LAYER, new OskariLayerResource(layer).getMapping());
+        return permissionsService.findResource(ResourceType.maplayer, new OskariLayerResource(layer).getMapping());
     }
 
 

@@ -1,5 +1,8 @@
 package org.oskari.control.userlayer;
 
+import fi.mml.map.mapwindow.util.OskariLayerWorker;
+import fi.nls.oskari.util.JSONHelper;
+import org.json.JSONObject;
 import org.oskari.map.userlayer.service.UserLayerDbService;
 
 import fi.nls.oskari.control.ActionConstants;
@@ -8,6 +11,7 @@ import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.control.ActionParamsException;
 import fi.nls.oskari.domain.map.userlayer.UserLayer;
+import org.oskari.permissions.model.PermissionType;
 
 public class UserLayerHandlerHelper {
 
@@ -22,5 +26,12 @@ public class UserLayerHandlerHelper {
             throw new ActionDeniedException("UserLayer belongs to another user");
         }
         return userLayer;
+    }
+
+    public static JSONObject getPermissions() {
+        final JSONObject permissions = new JSONObject();
+        JSONHelper.putValue(permissions, PermissionType.PUBLISH.getJsonKey(), OskariLayerWorker.PUBLICATION_PERMISSION_OK);
+        JSONHelper.putValue(permissions, PermissionType.DOWNLOAD.getJsonKey(), OskariLayerWorker.DOWNLOAD_PERMISSION_OK);
+        return permissions;
     }
 }

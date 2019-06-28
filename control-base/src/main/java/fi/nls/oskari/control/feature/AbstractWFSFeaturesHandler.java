@@ -6,7 +6,8 @@ import fi.nls.oskari.domain.User;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.service.OskariComponentManager;
 
-import org.oskari.service.user.UserLayerService;    
+import org.oskari.permissions.PermissionService;
+import org.oskari.service.user.UserLayerService;
 import org.oskari.service.util.ServiceFactory;
 import org.oskari.service.wfs.client.CachingOskariWFSClient;
 import org.oskari.service.wfs.client.OskariFeatureClient;
@@ -37,7 +38,7 @@ public abstract class AbstractWFSFeaturesHandler extends ActionHandler {
         if (permissionHelper == null) {
             permissionHelper = new PermissionHelper(
                     ServiceFactory.getMapLayerService(),
-                    ServiceFactory.getPermissionsService());
+                    OskariComponentManager.getComponentOfType(PermissionService.class));
         };
         Map<String, UserLayerService> components = OskariComponentManager.getComponentsOfType(UserLayerService.class);
         this.userContentProcessors = components.values();

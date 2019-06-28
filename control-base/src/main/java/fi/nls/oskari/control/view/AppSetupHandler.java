@@ -1,6 +1,5 @@
 package fi.nls.oskari.control.view;
 
-import fi.mml.portti.service.db.permissions.PermissionsService;
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.*;
 import fi.nls.oskari.domain.User;
@@ -23,6 +22,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.oskari.map.userlayer.service.UserLayerDbService;
+import org.oskari.permissions.PermissionService;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -91,7 +91,7 @@ public class AppSetupHandler extends RestActionHandler {
     }
 
 
-    public void setPermissionsService(final PermissionsService service) {
+    public void setPermissionsService(final PermissionService service) {
         permissionHelper.setPermissionsService(service);
     }
     public void setOskariLayerService(final OskariLayerService service) {

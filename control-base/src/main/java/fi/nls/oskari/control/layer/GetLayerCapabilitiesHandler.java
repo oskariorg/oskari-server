@@ -6,12 +6,14 @@ import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.ActionHandler;
 import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.domain.map.OskariLayer;
+import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.service.capabilities.CapabilitiesCacheService;
 import fi.nls.oskari.util.ResponseHelper;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.oskari.permissions.PermissionService;
 import org.oskari.service.util.ServiceFactory;
 
 import java.nio.charset.StandardCharsets;
@@ -29,7 +31,7 @@ public class GetLayerCapabilitiesHandler extends ActionHandler {
         if (permissionHelper == null) {
             permissionHelper = new PermissionHelper(
                     ServiceFactory.getMapLayerService(),
-                    ServiceFactory.getPermissionsService());
+                    OskariComponentManager.getComponentOfType(PermissionService.class));
         }
         if (capabilitiesService == null) {
             capabilitiesService = ServiceFactory.getCapabilitiesCacheService();
