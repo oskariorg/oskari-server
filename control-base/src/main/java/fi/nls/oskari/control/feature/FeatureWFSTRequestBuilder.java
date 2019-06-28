@@ -37,7 +37,7 @@ public class FeatureWFSTRequestBuilder extends WFSTRequestBuilder {
             xsw.writeEndElement();
         }
 
-        addGeometries(xsw, feature, true);
+        writeGeometryProperty(xsw, feature);
         writeFeatureIdFilter(xsw, feature.getId());
         xsw.writeEndElement(); // close <wfs:Update>
 
@@ -61,7 +61,12 @@ public class FeatureWFSTRequestBuilder extends WFSTRequestBuilder {
             xsw.writeEndElement();
         }
 
-        addGeometries(xsw, feature, false);
+        if (feature.hasGeometry()) {
+            xsw.writeStartElement(feature.getGMLGeometryProperty());
+            GML3Writer.writeGeometry(xsw, feature.getGeometry());
+            xsw.writeEndElement();
+        }
+
         xsw.writeEndElement();
         xsw.writeEndElement(); // close <wfs:Insert>
 
@@ -85,15 +90,8 @@ public class FeatureWFSTRequestBuilder extends WFSTRequestBuilder {
         xsw.close();
     }
 
-    private static void addGeometries(XMLStreamWriter xsw, Feature feature, boolean isUpdate) throws XMLStreamException {
+    private static void writeGeometryProperty(XMLStreamWriter xsw, Feature feature) throws XMLStreamException {
         if(!feature.hasGeometry()) {
-            return;
-        }
-
-        if(isUpdate == false) {
-            xsw.writeStartElement(feature.getGMLGeometryProperty());
-            GML3Writer.writeGeometry(xsw, feature.getGeometry());
-            xsw.writeEndElement();
             return;
         }
 
