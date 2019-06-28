@@ -20,12 +20,13 @@ import org.oskari.permissions.model.ResourceType;
 
 public interface ResourceMapper {
 
+    // TODO: Join tables in SQL and map the result -> improves performance by ~5x
     @Results(id = "ResourceResult", value = {
             @Result(property="id", column="id", id=true),
             @Result(property="type", column="resource_type"),
             @Result(property="mapping", column="resource_mapping"),
             @Result(property="permissions", column="id",
-            javaType=List.class, many=@Many(select="findPermissionsByResourceId", fetchType= FetchType.EAGER))
+                    javaType=List.class, many=@Many(select="findPermissionsByResourceId", fetchType= FetchType.EAGER))
     })
     @Select("SELECT id,"
             + "resource_type,"

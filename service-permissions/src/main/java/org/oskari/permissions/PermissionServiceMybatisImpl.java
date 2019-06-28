@@ -42,7 +42,7 @@ public class PermissionServiceMybatisImpl extends PermissionService {
         }
     }
 
-
+    // TODO: add userId and user.getRoles() to query
     public List<Resource> findResourcesByUser(User user) {
         try (SqlSession session = factory.openSession()) {
             List<Resource> all = session.getMapper(MAPPER).findAll();
@@ -54,6 +54,7 @@ public class PermissionServiceMybatisImpl extends PermissionService {
             return all;
         }
     }
+    // TODO: add userId and user.getRoles() to query
     public List<Resource> findResourcesByUser(User user, ResourceType type) {
         try (SqlSession session = factory.openSession()) {
             List<Resource> all = session.getMapper(MAPPER).findByType(type.name());
