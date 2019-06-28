@@ -18,6 +18,7 @@ import javax.xml.stream.XMLStreamException;
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @OskariActionRoute("SaveFeature")
 public class SaveFeatureHandler extends AbstractFeatureHandler {
@@ -31,14 +32,13 @@ public class SaveFeatureHandler extends AbstractFeatureHandler {
         try {
             JSONArray paramFeatures = new JSONArray(params.getHttpParam("featureData"));
 
+            Map<Integer, OskariLayer> layers = getLayers(paramFeatures);
+            hasUserPermissionEditLayers(layers, params.getUser());
+
             for (int i = 0; i < paramFeatures.length(); i++) {
                 JSONObject featureJSON = paramFeatures.getJSONObject(i);
 
                 OskariLayer layer = getLayer(featureJSON.optString("layerId"));
-
-                if (!canEdit(layer, params.getUser())) {
-                    throw new ActionDeniedException("User doesn't have edit permission for layer: " + layer.getId());
-                }
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
                 Feature feature = getFeature(featureJSON);
@@ -48,12 +48,13 @@ public class SaveFeatureHandler extends AbstractFeatureHandler {
                 LOG.debug("Updating feature to service at", layer.getUrl(), "with payload", wfstMessage);
 
                 String responseString = postPayload(layer, wfstMessage);
-                flushLayerTilesCache(layer.getId());
 
                 if (responseString.indexOf("Exception") > -1) {
                     exceptions.add(responseString);
                 }
             }
+
+            flushLayerTilesCache(layers);
 
             if(exceptions.size() > 0 ) {
                 throw new ActionException("Cannot save feature(s): " + exceptions.toString());

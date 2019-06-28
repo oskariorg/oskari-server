@@ -4,6 +4,8 @@ import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.ActionDeniedException;
 import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.ActionParameters;
+import fi.nls.oskari.control.ActionParamsException;
+import fi.nls.oskari.domain.User;
 import fi.nls.oskari.domain.map.Feature;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.log.LogFactory;
@@ -29,7 +31,9 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @OskariActionRoute("InsertFeature")
 public class InsertFeatureHandler extends AbstractFeatureHandler {
@@ -42,21 +46,22 @@ public class InsertFeatureHandler extends AbstractFeatureHandler {
         try {
             JSONArray paramFeatures = new JSONArray(params.getHttpParam("featureData"));
             JSONArray updatedFeatureIds = new JSONArray();
+
+            Map<Integer, OskariLayer> layers = getLayers(paramFeatures);
+            hasUserPermissionEditLayers(layers, params.getUser());
+
             for (int i = 0; i < paramFeatures.length(); i++) {
                 JSONObject featureJSON = paramFeatures.getJSONObject(i);
                 OskariLayer layer = getLayer(featureJSON.optString("layerId"));
-
-                if (!canEdit(layer, params.getUser())) {
-                    throw new ActionDeniedException("User doesn't have edit permission for layer: " + layer.getId());
-                }
 
                 final String wfstMessage = createWFSTMessage(featureJSON);
                 LOG.debug("Inserting feature to service at", layer.getUrl(), "with payload", wfstMessage);
                 final String responseString = postPayload(layer, wfstMessage);
                 updatedFeatureIds.put(parseFeatureIdFromResponse(responseString));
-
-                flushLayerTilesCache(layer.getId());
             }
+
+            flushLayerTilesCache(layers);
+
             ResponseHelper.writeResponse(params, JSONHelper.createJSONObject("fids", updatedFeatureIds));
         } catch (JSONException e) {
             LOG.error(e, "JSON processing error");

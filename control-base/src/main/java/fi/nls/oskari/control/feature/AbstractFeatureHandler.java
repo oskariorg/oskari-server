@@ -5,10 +5,7 @@ import fi.mml.portti.domain.permissions.Permissions;
 import fi.mml.portti.service.db.permissions.PermissionsService;
 import fi.mml.portti.service.db.permissions.PermissionsServiceIbatisImpl;
 import fi.nls.oskari.cache.JedisManager;
-import fi.nls.oskari.control.ActionException;
-import fi.nls.oskari.control.ActionHandler;
-import fi.nls.oskari.control.ActionParamsException;
-import fi.nls.oskari.control.RestActionHandler;
+import fi.nls.oskari.control.*;
 import fi.nls.oskari.domain.User;
 import fi.nls.oskari.domain.map.Feature;
 import fi.nls.oskari.domain.map.OskariLayer;
@@ -43,15 +40,12 @@ import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
 import java.io.IOException;
-import java.io.StringWriter;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 
 public abstract class AbstractFeatureHandler extends RestActionHandler {
 
-    public final static String CACHKE_KEY_PREFIX = "WFSImage_";
+    public final static String CACHE_KEY_PREFIX = "WFSImage_";
 
     private OskariLayerService layerService;
     private PermissionsService permissionsService;
@@ -253,9 +247,36 @@ public abstract class AbstractFeatureHandler extends RestActionHandler {
     }
 
     protected void flushLayerTilesCache(int layerId) {
-        Set<String> keys = JedisManager.keys(CACHKE_KEY_PREFIX + Integer.toString(layerId));
+        Set<String> keys = JedisManager.keys(CACHE_KEY_PREFIX + Integer.toString(layerId));
         for (String key : keys) {
             JedisManager.delAll(key);
+        }
+    }
+
+    protected void flushLayerTilesCache(Map<Integer, OskariLayer> layers) {
+        for (Integer layerId : layers.keySet()) {
+            Set<String> keys = JedisManager.keys(CACHE_KEY_PREFIX + Integer.toString(layerId));
+            for (String key : keys) {
+                JedisManager.delAll(key);
+            }
+        }
+    }
+
+    protected Map<Integer, OskariLayer> getLayers(JSONArray paramFeatures) throws JSONException, ActionParamsException {
+        Map<Integer, OskariLayer> layers = new HashMap<>();
+        for (int i = 0; i < paramFeatures.length(); i++) {
+            JSONObject featureJSON = paramFeatures.getJSONObject(i);
+            OskariLayer layer = getLayer(featureJSON.optString("layerId"));
+            layers.put(layer.getId(), layer);
+        }
+        return layers;
+    }
+
+    protected void hasUserPermissionEditLayers(Map<Integer, OskariLayer> layers, User user) throws ActionDeniedException {
+        for (Integer layerId : layers.keySet()) {
+            if (!canEdit(layers.get(layerId), user)) {
+                throw new ActionDeniedException("User doesn't have edit permission for layer: " + layerId);
+            }
         }
     }
 }
