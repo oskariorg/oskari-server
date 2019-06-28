@@ -72,10 +72,11 @@ public class InsertFeatureHandler extends AbstractFeatureHandler {
     private String createWFSTMessage(JSONObject jsonPayload)
             throws ActionException {
 
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
         try {
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
             Feature feature = getFeature(jsonPayload);
             FeatureWFSTRequestBuilder.insertFeature(baos, feature);
+            return baos.toString();
         } catch (XMLStreamException e) {
             LOG.error(e, "Failed to create WFS-T request");
             throw new ActionException("Failed to create WFS-T request", e);
@@ -86,8 +87,6 @@ public class InsertFeatureHandler extends AbstractFeatureHandler {
             LOG.error(e, "Failed to create WFS-T request (crs)");
             throw new ActionException("Failed to create WFS-T request (crs)", e);
         }
-
-        return baos.toString();
     }
 
     private String parseFeatureIdFromResponse(String response)
