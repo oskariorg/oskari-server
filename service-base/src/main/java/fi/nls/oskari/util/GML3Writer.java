@@ -140,7 +140,7 @@ public class GML3Writer {
 
     private static void writeLinearRing(XMLStreamWriter xsw, LinearRing linearRing)
             throws XMLStreamException {
-        xsw.writeStartElement(GMLConstants.GML_NAMESPACE, GMLConstants.GML_COORDINATES);
+        xsw.writeStartElement(GMLConstants.GML_NAMESPACE, GMLConstants.GML_LINEARRING);
         writePosList(xsw, linearRing.getCoordinates());
         xsw.writeEndElement();
     }
