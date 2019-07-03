@@ -728,6 +728,10 @@
                         <groupId>org.apache.james</groupId>
                         <artifactId>apache-mime4j-core</artifactId>
                     </exclusion>
+                    <exclusion>
+                        <groupId>org.apache.geronimo.specs</groupId>
+                        <artifactId>geronimo-activation_1.1_spec</artifactId>
+                    </exclusion>
                 </exclusions>
             </dependency>
             <dependency>
