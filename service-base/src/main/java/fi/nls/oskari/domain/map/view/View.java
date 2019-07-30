@@ -264,6 +264,7 @@ public class View implements Serializable {
         view.setPage(getPage());
         view.setPubDomain(getPubDomain());
         view.setIsDefault(isDefault());
+        view.setMetadata(getMetadata());
         for(Bundle bundle : getBundles()) {
             view.addBundle(bundle.clone());
         }

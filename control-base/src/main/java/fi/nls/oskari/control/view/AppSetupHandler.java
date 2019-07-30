@@ -44,6 +44,7 @@ public class AppSetupHandler extends RestActionHandler {
 
     static final String KEY_PUBDATA = "pubdata";
     static final String KEY_METADATA = "metadata";
+    static final String KEY_PUBLISH_TEMPLATE_UUID = "publishTemplateUuid";
     static final String KEY_VIEWCONFIG = "configuration";
     static final String PARAM_PUBLISHER_VIEW_UUID = "publishedFrom";
 
@@ -204,8 +205,9 @@ public class AppSetupHandler extends RestActionHandler {
 
         final User user = params.getUser();
 
-        final String viewUuid = params.getHttpParam(PARAM_UUID);
-        final View view = getBaseView(viewUuid, user);
+        final String publishedFromUuid = params.getRequiredParam(PARAM_PUBLISHER_VIEW_UUID);
+        String viewUuid = params.getHttpParam(PARAM_UUID);
+        final View view = getBaseView(viewUuid, user, publishedFromUuid);
         LOG.debug("Processing view with UUID: " + view.getUuid());
 
         // Parse stuff sent by JS
@@ -431,14 +433,18 @@ public class AppSetupHandler extends RestActionHandler {
         }
     }
 
-    private View getBaseView(final String viewUuid, final User user) throws ActionException {
+    private View getBaseView(final String viewUuid, final User user, final String publishedFromUuid) throws ActionException {
 
         if (user.isGuest()) {
             throw new ActionDeniedException("Trying to publish map, but couldn't determine user");
         }
 
+        // Check original view's metadata for template view uuid
+        View publishedFromView = viewService.getViewWithConfByUuId(publishedFromUuid);
+        String templateUuid = publishedFromView.getMetadata().optString(KEY_PUBLISH_TEMPLATE_UUID);
+
         // Get publisher defaults
-        final View templateView = getPublishTemplate();
+        final View templateView = templateUuid.isEmpty() ? getPublishTemplate() : viewService.getViewWithConfByUuId(templateUuid);
 
         // clone a blank view based on template (so template doesn't get updated!!)
         final View view = templateView.cloneBasicInfo();
