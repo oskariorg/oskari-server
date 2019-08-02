@@ -497,6 +497,15 @@
                 <groupId>org.apache.xmlbeans</groupId>
                 <artifactId>xmlbeans</artifactId>
                 <version>${xmlbeans.version}</version>
+                <exclusions>
+                    <!-- exclude stax-api
+                    	Reason: xml-apis lib provide newer version of classes which are used (causing conflict if we have both)
+                    -->
+                    <exclusion>
+                        <groupId>stax</groupId>
+                        <artifactId>stax-api</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
 
             <dependency>
@@ -701,6 +710,13 @@
                     <exclusion>
                         <groupId>org.apache.james</groupId>
                         <artifactId>apache-mime4j-core</artifactId>
+                    </exclusion>
+                    <!-- exclude stax-api
+                    	Reason: xml-apis lib provide newer version of classes which are used (causing conflict if we have both)
+                    -->
+                    <exclusion>
+                        <groupId>org.apache.geronimo.specs</groupId>
+                        <artifactId>geronimo-stax-api_1.0_spec</artifactId>
                     </exclusion>
                 </exclusions>
             </dependency>
