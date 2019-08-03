@@ -113,7 +113,7 @@
         <slf4j.version>1.7.12</slf4j.version>
         <metrics.version>4.0.3</metrics.version>
         <h2database.version>1.4.199</h2database.version>
-
+        <xom.version>1.2.5</xom.version>
     </properties>
 
     <dependencies>
@@ -928,6 +928,12 @@
                 <groupId>org.apache.logging.log4j</groupId>
                 <artifactId>log4j-core</artifactId>
                 <version>${log4j.version}</version>
+            </dependency>
+            <dependency>
+		<groupId>xom</groupId>
+		<artifactId>xom</artifactId>
+		<version>${xom.version}</version>
+		<scope>provided</scope>
             </dependency>
         </dependencies>
     </dependencyManagement>
