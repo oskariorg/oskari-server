@@ -98,7 +98,9 @@ public class JSONActionRouteTest {
         // mock the session
         HttpSession session = mock(HttpSession.class);
         doReturn("testkey").when(session).getId();
+        // Return mock session when calling getSession without or with boolean parameter.
         doReturn(session).when(req).getSession();
+        doReturn(session).when(req).getSession(false);
 
         doReturn(new Vector(parameters.keySet()).elements()).when(req).getParameterNames();
         if(!response.toString().isEmpty()) {
