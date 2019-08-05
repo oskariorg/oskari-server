@@ -59,6 +59,13 @@
 			<groupId>javax.mail</groupId>
 			<artifactId>javax.mail-api</artifactId>
 			<version>1.5.4</version>
+			<exclusions>
+				<!-- Exclude activation to use newer classes from javax.activation-api (causing conflict if we have both) -->
+				<exclusion>
+					<groupId>javax.activation</groupId>
+					<artifactId>activation</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 
 		 <dependency>
