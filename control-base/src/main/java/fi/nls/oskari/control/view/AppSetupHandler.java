@@ -224,8 +224,7 @@ public class AppSetupHandler extends RestActionHandler {
         }
 
         // setup map state
-        setupMapState(view, user, viewdata.optJSONObject(ViewModifier.BUNDLE_MAPFULL),
-                params.getRequiredParam(PARAM_PUBLISHER_VIEW_UUID));
+        setupMapState(view, user, viewdata.optJSONObject(ViewModifier.BUNDLE_MAPFULL), publishedFromUuid);
 
         // check if we need to add divmanazer
         for(String bundleid : BUNDLE_REQUIRES_DIVMANAZER) {
