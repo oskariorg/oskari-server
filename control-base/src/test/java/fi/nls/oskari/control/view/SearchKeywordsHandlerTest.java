@@ -1,10 +1,7 @@
 package fi.nls.oskari.control.view;
 
-import fi.mml.portti.service.db.permissions.PermissionsService;
-import fi.mml.portti.service.db.permissions.PermissionsServiceIbatisImpl;
 import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.control.ontology.SearchKeywordsHandler;
-import fi.nls.oskari.domain.User;
 import fi.nls.oskari.ontology.domain.Keyword;
 import fi.nls.oskari.ontology.service.KeywordService;
 import fi.nls.oskari.ontology.service.KeywordServiceMybatisImpl;
@@ -31,7 +28,6 @@ public class SearchKeywordsHandlerTest extends JSONActionRouteTest {
     final private SearchKeywordsHandler handler = new SearchKeywordsHandler();
 
     private KeywordService keywordService = null;
-    private PermissionsService permissionsService = null;
 
     @BeforeClass
     public static void addLocales() throws Exception {
@@ -52,10 +48,8 @@ public class SearchKeywordsHandlerTest extends JSONActionRouteTest {
     @Before
     public void setUp() throws Exception {
         keywordService = mock(KeywordServiceMybatisImpl.class);
-        permissionsService = mock(PermissionsServiceIbatisImpl.class);
 
         handler.setService(keywordService);
-        handler.setPermissionsService(permissionsService);
         handler.init();
     }
 
@@ -105,7 +99,6 @@ public class SearchKeywordsHandlerTest extends JSONActionRouteTest {
         // test a response that doesn't have a layer because the user doesn't have permissions for it.
         // mock response from services
         doReturn(createKeyword(1l, "test", 1l, 2l)).when(keywordService).findExactKeyword(anyString(), anyString());
-        doReturn(getPermissionsList(1l)).when(permissionsService).getListOfMaplayerIdsForViewPermissionByUser(any(User.class), anyBoolean());
         // do unmocked calls simply return a new<Whatever>?
         // check that the response doesn't have layers
         Map<String, String> parameters = new HashMap<String, String>();
@@ -142,8 +135,6 @@ public class SearchKeywordsHandlerTest extends JSONActionRouteTest {
         siblings.add(createKeyword(5l, "sibling", 2l));
         doReturn(siblings).when(keywordService).findSiblings(anyLong(), anyString());
 
-        doReturn(getPermissionsList(1l)).when(permissionsService).getListOfMaplayerIdsForViewPermissionByUser(any(User.class), anyBoolean());
-
         Map<String, String> parameters = new HashMap<String, String>();
         parameters.put("keyword", "test");
         parameters.put("lang", "fi");
@@ -158,7 +149,6 @@ public class SearchKeywordsHandlerTest extends JSONActionRouteTest {
     @Test
     public void testNonPermittedLayerDoesNotBlockParentInclusion() throws Exception {
         doReturn(createKeyword(1l, "test", 1l)).when(keywordService).findExactKeyword(anyString(), anyString());
-        doReturn(getPermissionsList(2l)).when(permissionsService).getListOfMaplayerIdsForViewPermissionByUser(any(User.class), anyBoolean());
         List<Keyword> parents = new ArrayList<Keyword>();
         parents.add(createKeyword(4l, "parent", 2l));
         doReturn(parents).when(keywordService).findParents(anyLong(), anyString());

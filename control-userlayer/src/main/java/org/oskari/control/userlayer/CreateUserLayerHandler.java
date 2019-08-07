@@ -420,7 +420,7 @@ public class CreateUserLayerHandler extends RestActionHandler {
         JSONObject userLayer = UserLayerDataService.parseUserLayer2JSON(ulayer, mapSrs);
 
         JSONHelper.putValue(userLayer, "featuresCount", ulayer.getFeatures_count());
-        JSONObject permissions = OskariLayerWorker.getAllowedPermissions();
+        JSONObject permissions = UserLayerHandlerHelper.getPermissions();
         JSONHelper.putValue(userLayer, "permissions", permissions);
         //add warning if features were skipped
         if (ulayer.getFeatures_skipped() > 0) {

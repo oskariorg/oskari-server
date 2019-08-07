@@ -64,7 +64,7 @@ public class OskariComponentManager {
             }
         }
     }
-    public static <MOD extends OskariComponent> MOD getComponentOfType(final Class<MOD> clazz) {
+    public synchronized static <MOD extends OskariComponent> MOD getComponentOfType(final Class<MOD> clazz) {
         Map<String, MOD> map = getComponentsOfType(clazz);
         if(map.isEmpty()) {
             throw new NoSuchElementException("Coudldn't find component of type " + clazz.getName());
@@ -79,7 +79,7 @@ public class OskariComponentManager {
      * @param clazz A OskariComponent subclass we are interested in
      * @return unmodifiable map of components matching the given type
      */
-    public static <MOD extends OskariComponent> Map<String, MOD> getComponentsOfType(final Class clazz) {
+    public synchronized static <MOD extends OskariComponent> Map<String, MOD> getComponentsOfType(final Class clazz) {
         if(COMPONENTS.isEmpty()) {
             addDefaultComponents();
         }
@@ -111,5 +111,6 @@ public class OskariComponentManager {
                 LOG.error(ex, "OskariComponent teardown failed! Skipping", comp.getClass().getCanonicalName());
             }
         }
+        COMPONENTS.clear();
     }
 }

@@ -2,8 +2,7 @@ package fi.nls.oskari.control.ontology;
 
 import fi.mml.map.mapwindow.service.wms.WebMapService;
 import fi.mml.map.mapwindow.service.wms.WebMapServiceFactory;
-import fi.mml.portti.service.db.permissions.PermissionsService;
-import fi.mml.portti.service.db.permissions.PermissionsServiceIbatisImpl;
+import fi.mml.map.mapwindow.util.OskariLayerWorker;
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.ActionHandler;
@@ -23,6 +22,7 @@ import org.json.JSONObject;
 import org.oskari.service.util.ServiceFactory;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author SMAKINEN
@@ -32,14 +32,10 @@ public class SearchKeywordsHandler extends ActionHandler {
 
     private static final Logger log = LogFactory.getLogger(SearchKeywordsHandler.class);
     private KeywordService service = null;
-    private PermissionsService permissionsService = null;
 
     public void init() {
         if (service == null) {
             setService(new KeywordServiceMybatisImpl());
-        }
-        if (permissionsService == null) {
-            setPermissionsService(new PermissionsServiceIbatisImpl());
         }
     }
 
@@ -47,9 +43,6 @@ public class SearchKeywordsHandler extends ActionHandler {
         this.service = service;
     }
 
-    public void setPermissionsService(PermissionsService permissionsService) {
-        this.permissionsService = permissionsService;
-    }
 
     private static boolean listsOverlap(List<Long> list1, List<Long> list2) {
         for (Long long1 : list1) {
@@ -76,11 +69,8 @@ public class SearchKeywordsHandler extends ActionHandler {
             throw new ActionParamsException("Lang was null!");
         }
 
-        List<Map<String,Object>> permittedLayers =  permissionsService.getListOfMaplayerIdsForViewPermissionByUser(params.getUser(), false);
-        List<Long> idList = new ArrayList<Long>();
-        for (Map<String,Object> entry : permittedLayers) {
-            idList.add(Long.parseLong(String.valueOf(entry.get("id"))));
-        }
+        List<Long> idList =  OskariLayerWorker.getLayersForUser(params.getUser(), false).stream()
+                .map(layer -> (long) layer.getId()).collect(Collectors.toList());
 
         log.debug("Permitted layers: ", idList);
 
