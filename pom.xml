@@ -475,18 +475,44 @@
                 <groupId>org.springframework.security</groupId>
                 <artifactId>spring-security-web</artifactId>
                 <version>${spring-security.version}</version>
+                <exclusions>
+                    <!-- exclude aopalliance
+                    Reason: Same classes are included in spring-aop (causing conflict if we have both)
+                    -->
+                    <exclusion>
+                        <groupId>aopalliance</groupId>
+                        <artifactId>aopalliance</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.springframework.security</groupId>
                 <artifactId>spring-security-config</artifactId>
                 <version>${spring-security.version}</version>
+                 <exclusions>
+                    <!-- exclude aopalliance
+                    Reason: Same classes are included in spring-aop (causing conflict if we have both)
+                    -->
+                    <exclusion>
+                        <groupId>aopalliance</groupId>
+                        <artifactId>aopalliance</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
-                <groupId>org.springframework.security</groupId>
-                <artifactId>spring-security-crypto</artifactId>
-                <version>${spring-security.version}</version>
-            </dependency>
-
+								<groupId>org.springframework.security</groupId>
+								<artifactId>spring-security-core</artifactId>
+								<version>${spring-security.version}</version>
+								<exclusions>
+                    <!-- exclude aopalliance
+                    Reason: Same classes are included in spring-aop (causing conflict if we have both)
+                    -->
+                    <exclusion>
+                        <groupId>aopalliance</groupId>
+                        <artifactId>aopalliance</artifactId>
+                    </exclusion>
+                </exclusions>
+						</dependency>
             <dependency>
                 <groupId>xerces</groupId>
                 <artifactId>xercesImpl</artifactId>
@@ -701,6 +727,10 @@
                     <exclusion>
                         <groupId>org.apache.james</groupId>
                         <artifactId>apache-mime4j-core</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.apache.geronimo.specs</groupId>
+                        <artifactId>geronimo-activation_1.1_spec</artifactId>
                     </exclusion>
                 </exclusions>
             </dependency>
