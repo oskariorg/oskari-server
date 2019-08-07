@@ -113,7 +113,7 @@
         <slf4j.version>1.7.12</slf4j.version>
         <metrics.version>4.0.3</metrics.version>
         <h2database.version>1.4.199</h2database.version>
-
+        <xom.version>1.2.5</xom.version>
     </properties>
 
     <dependencies>
@@ -523,6 +523,15 @@
                 <groupId>org.apache.xmlbeans</groupId>
                 <artifactId>xmlbeans</artifactId>
                 <version>${xmlbeans.version}</version>
+                <exclusions>
+                    <!-- exclude stax-api
+                    	Reason: xml-apis lib provide newer version of classes which are used (causing conflict if we have both)
+                    -->
+                    <exclusion>
+                        <groupId>stax</groupId>
+                        <artifactId>stax-api</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
 
             <dependency>
@@ -727,6 +736,13 @@
                     <exclusion>
                         <groupId>org.apache.james</groupId>
                         <artifactId>apache-mime4j-core</artifactId>
+                    </exclusion>
+                    <!-- exclude stax-api
+                    	Reason: xml-apis lib provide newer version of classes which are used (causing conflict if we have both)
+                     -->
+                    <exclusion>
+                        <groupId>org.apache.geronimo.specs</groupId>
+                        <artifactId>geronimo-stax-api_1.0_spec</artifactId>
                     </exclusion>
                     <exclusion>
                         <groupId>org.apache.geronimo.specs</groupId>
@@ -942,6 +958,12 @@
                 <groupId>org.apache.logging.log4j</groupId>
                 <artifactId>log4j-core</artifactId>
                 <version>${log4j.version}</version>
+            </dependency>
+            <dependency>
+		<groupId>xom</groupId>
+		<artifactId>xom</artifactId>
+		<version>${xom.version}</version>
+		<scope>provided</scope>
             </dependency>
         </dependencies>
     </dependencyManagement>
