@@ -3,6 +3,9 @@ package fi.nls.oskari.myplaces;
 import fi.nls.oskari.domain.User;
 import fi.nls.oskari.domain.map.MyPlaceCategory;
 import fi.nls.oskari.domain.map.OskariLayer;
+import fi.nls.oskari.log.LogFactory;
+import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.map.layer.formatters.LayerJSONFormatterWFS;
 import fi.nls.oskari.map.layer.formatters.LayerJSONFormatterWMS;
 import fi.nls.oskari.service.OskariComponent;
 import fi.nls.oskari.util.JSONHelper;
@@ -22,7 +25,10 @@ public abstract class MyPlacesService extends OskariComponent {
 
     private static String MYPLACES_WMS_NAME = PropertyUtil.get("myplaces.xmlns.prefix", "ows") + ":my_places_categories";
     private static String MYPLACES_ACTUAL_WMS_URL = PropertyUtil.get("myplaces.wms.url");
-    private static final LayerJSONFormatterWMS JSON_FORMATTER = new LayerJSONFormatterWMS();
+    private static String MYPLACES_CLUSTERING = PropertyUtil.getOptional("myplaces.clustering.distance");
+    private static final LayerJSONFormatterWMS JSON_FORMATTER_WMS = new LayerJSONFormatterWMS();
+    private static final LayerJSONFormatterWFS JSON_FORMATTER_WFS = new LayerJSONFormatterWFS();
+    private static final Logger LOGGER = LogFactory.getLogger(MyPlacesService.class);
 
     public abstract List<MyPlaceCategory> getCategories();
 
@@ -112,7 +118,38 @@ java.lang.RuntimeException: Unable to encode filter [[ geometry bbox POLYGON ((4
         // enable gfi
         capabilities.setQueryable(true);
 
-        JSONObject myPlaceLayer = JSON_FORMATTER.getJSON(layer, lang, modifyURLs, null, capabilities);
+        JSONObject myPlaceLayer = JSON_FORMATTER_WMS.getJSON(layer, lang, modifyURLs, null, capabilities);
+        // flag with metaType for frontend
+        JSONHelper.putValue(myPlaceLayer, "metaType", "published");
+        JSONHelper.putValue(myPlaceLayer, "id", MYPLACES_LAYERID_PREFIX + mpLayer.getId());
+        return myPlaceLayer;
+    }
+
+    public JSONObject getCategoryAsWfsLayerJSON(final MyPlaceCategory mpLayer, final String lang) {
+
+        final OskariLayer layer = new OskariLayer();
+        layer.setName(MYPLACES_WMS_NAME);
+        layer.setType(OskariLayer.TYPE_WFS);
+        String name = mpLayer.getCategory_name();
+        if (name == null || name.isEmpty())  {
+            name = getLayerUIName(lang);
+        }
+        layer.setName(lang, name);
+        layer.setVersion("1.1.0");
+        layer.setTitle(lang, mpLayer.getPublisher_name());
+        layer.setOpacity(50);
+        JSONObject options = JSONHelper.createJSONObject("renderMode", "vector");
+        if (MYPLACES_CLUSTERING != null) {
+            try {
+                int clusteringDist = Integer.parseInt(MYPLACES_CLUSTERING);
+                JSONHelper.putValue(options, "clusteringDistance", clusteringDist);
+            } catch (NumberFormatException nfe) {
+                LOGGER.warn("Couldn't setup clustering for my places", nfe);
+            }
+        }
+        layer.setOptions(options);
+
+        JSONObject myPlaceLayer = JSON_FORMATTER_WFS.getJSON(layer, lang, false, null);
         // flag with metaType for frontend
         JSONHelper.putValue(myPlaceLayer, "metaType", "published");
         JSONHelper.putValue(myPlaceLayer, "id", MYPLACES_LAYERID_PREFIX + mpLayer.getId());

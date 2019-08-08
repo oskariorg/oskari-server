@@ -93,6 +93,7 @@ public class MapfullHandler extends BundleHandler {
         pluginHandlers = new HashMap<>();
         registerPluginHandler(LogoPluginHandler.PLUGIN_NAME, new LogoPluginHandler());
         registerPluginHandler(WfsLayerPluginHandler.PLUGIN_NAME, new WfsLayerPluginHandler());
+        registerPluginHandler(MyPlacesLayerPluginHandler.PLUGIN_NAME, new MyPlacesLayerPluginHandler());
     }
 
     public void registerPluginHandler (String pluginId, PluginHandler handler) {
@@ -418,8 +419,11 @@ public class MapfullHandler extends BundleHandler {
                 continue;
             }
 
-            final JSONObject myPlaceLayer = myPlaceService.getCategoryAsWmsLayerJSON(
-                    mpLayer, lang, useDirectURL, user.getUuid(), modifyURLs);
+            // final JSONObject myPlaceLayer = myPlaceService.getCategoryAsWmsLayerJSON(
+            //        mpLayer, lang, useDirectURL, user.getUuid(), modifyURLs);
+
+            final JSONObject myPlaceLayer = myPlaceService.getCategoryAsWfsLayerJSON(mpLayer, lang);
+
             if (myPlaceLayer != null) {
                 layerList.put(myPlaceLayer);
             }
