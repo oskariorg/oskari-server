@@ -3,6 +3,7 @@ package fi.nls.oskari.myplaces;
 import fi.nls.oskari.domain.User;
 import fi.nls.oskari.domain.map.MyPlaceCategory;
 import fi.nls.oskari.domain.map.OskariLayer;
+import fi.nls.oskari.domain.map.UserDataStyle;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.layer.formatters.LayerJSONFormatterWFS;
@@ -11,6 +12,7 @@ import fi.nls.oskari.service.OskariComponent;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.wms.WMSCapabilities;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.oskari.permissions.model.Resource;
 
@@ -28,6 +30,7 @@ public abstract class MyPlacesService extends OskariComponent {
     private static String MYPLACES_CLUSTERING = PropertyUtil.getOptional("myplaces.clustering.distance");
     private static final LayerJSONFormatterWMS JSON_FORMATTER_WMS = new LayerJSONFormatterWMS();
     private static final LayerJSONFormatterWFS JSON_FORMATTER_WFS = new LayerJSONFormatterWFS();
+    private static final UserDataStyle USER_DATA_STYLE = new UserDataStyle();
     private static final Logger LOGGER = LogFactory.getLogger(MyPlacesService.class);
 
     public abstract List<MyPlaceCategory> getCategories();
@@ -139,6 +142,42 @@ java.lang.RuntimeException: Unable to encode filter [[ geometry bbox POLYGON ((4
         layer.setTitle(lang, mpLayer.getPublisher_name());
         layer.setOpacity(50);
         JSONObject options = JSONHelper.createJSONObject("renderMode", "vector");
+
+        JSONObject styleOptions = mpLayer.getStyle().getStyleForLayerOptions();
+        JSONObject defaultStyleDef = JSONHelper.getJSONObject(styleOptions, "default");
+        JSONObject style = JSONHelper.getJSONObject(defaultStyleDef, "featureStyle");
+
+        JSONArray labelProperty = new JSONArray();
+        labelProperty.put("attention_text");
+        labelProperty.put("name");
+        JSONObject textFill = JSONHelper.createJSONObject("color", "#000000");
+        JSONObject textStroke = JSONHelper.createJSONObject("color", "#FFFFFF");
+        JSONHelper.putValue(textStroke, "width", 2);
+
+        JSONObject text = JSONHelper.createJSONObject("font", "bold 14px sans-serif");
+        JSONHelper.putValue(text, "labelProperty", labelProperty);
+        JSONHelper.putValue(text, "textAlign", "left");
+        JSONHelper.putValue(text, "offsetX", "10");
+        JSONHelper.putValue(text, "fill", textFill);
+        JSONHelper.putValue(text, "stroke", textStroke);
+        JSONHelper.putValue(style, "text", text);
+
+        JSONHelper.putValue(options,"styles", styleOptions);
+
+        /*
+        text = {
+                font: 'bold 14px sans-serif',
+                labelProperty: ['attention_text', 'name'],
+                textAlign: 'left',
+                offsetX: 10,
+                fill: { color: '#000000' },
+                stroke: {
+                    color: '#FFFFFF',
+                    width: 2
+                }
+            }
+         */
+
         if (MYPLACES_CLUSTERING != null) {
             try {
                 int clusteringDist = Integer.parseInt(MYPLACES_CLUSTERING);
