@@ -413,11 +413,12 @@ public class TransformationService {
     // build wfs:Insert element
     sb.append(WFSTINSERTSTART);
     // add geometry node
-    
-    // change namespace of geometry and it's child elements from feature to gml
-    
-    sb.append(nodeToString(geometry).replace(geomcol,
-                                             "gml:geometry"));
+    String g = nodeToString(geometry);
+    // change geom tag to geometry
+    g = g.replace(geomcol,"gml:geometry");
+    // change namespace of geometry's child elements from feature to gml
+    g = g.replace("feature:", "gml:");
+    sb.append(g);
     // add text feature nodes (1-based)
     for (int j = 0; j < textFeatures.size(); j++) {
         sb
