@@ -16,7 +16,6 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.io.ByteArrayInputStream;
@@ -46,7 +45,9 @@ public class TransformationService {
 
     private static final String WFSTINSERTEND = "       </feature:analysis_data>\n"
             + "   </wfs:Insert>\n";
-
+    
+    private static final String FEATURE_MEMBER_TAG_NAME = "feature:featureMember";
+    private static final String FEATURE_MEMBERS_TAG_NAME = "feature:featureMembers";
 
     public String wpsFeatureCollectionToWfst(final  String wps , String uuid, long analysis_id,
             List<String> fields, Map<String,String> fieldTypes, String geometryProperty, String ns_prefix)
@@ -68,10 +69,10 @@ public class TransformationService {
         // NodeList featureMembers =
         // wpsDoc.getDocumentElement().getChildNodes();
         NodeList featureMembers = wpsDoc
-                .getElementsByTagName("gml:featureMember");
+                .getElementsByTagName(FEATURE_MEMBER_TAG_NAME);
         if (featureMembers.getLength() == 0) {
             featureMembers = wpsDoc
-                    .getElementsByTagName("gml:featureMembers");
+                    .getElementsByTagName(FEATURE_MEMBERS_TAG_NAME);
             if (featureMembers.getLength() > 0) members_case = true;
         }
         if(members_case){
@@ -80,7 +81,7 @@ public class TransformationService {
         }
         for (int i = 0; i < featureMembers.getLength(); i++) {
             // we're only interested in featureMembers... or features
-            if (!"gml:featureMember".equals(featureMembers.item(i)
+            if (!FEATURE_MEMBER_TAG_NAME.equals(featureMembers.item(i)
                     .getNodeName()) &&  !members_case ) {
                 continue;
             }
@@ -412,8 +413,11 @@ public class TransformationService {
     // build wfs:Insert element
     sb.append(WFSTINSERTSTART);
     // add geometry node
+    
+    // change namespace of geometry and it's child elements from feature to gml
+    
     sb.append(nodeToString(geometry).replace(geomcol,
-                                             "feature:geometry"));
+                                             "gml:geometry"));
     // add text feature nodes (1-based)
     for (int j = 0; j < textFeatures.size(); j++) {
         sb
