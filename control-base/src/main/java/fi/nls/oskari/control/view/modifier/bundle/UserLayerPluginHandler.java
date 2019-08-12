@@ -8,27 +8,27 @@ import fi.nls.oskari.view.modifier.ModifierParams;
 import org.json.JSONObject;
 
 /**
- *  Modifier for MyPlacesLayerPluginHandler config
+ *  Modifier for UserLayerPluginHandler config
  */
-public class MyPlacesLayerPluginHandler implements PluginHandler {
+public class UserLayerPluginHandler implements PluginHandler {
 
-    private static final Logger LOGGER = LogFactory.getLogger(MyPlacesLayerPluginHandler.class);
-    public static final String PLUGIN_NAME = "Oskari.mapframework.bundle.mapmyplaces.plugin.MyPlacesLayerPlugin";
+    private static final Logger LOGGER = LogFactory.getLogger(UserLayerPluginHandler.class);
+    public static final String PLUGIN_NAME = "Oskari.mapframework.bundle.myplacesimport.plugin.UserLayersLayerPlugin";
     public static final String KEY_ID = "id";
     public static final String KEY_CONFIG = "config";
     public static final String KEY_CLUSTERING_DISTANCE = "clusteringDistance";
-    private static String CLUSTERING_DISTANCE = PropertyUtil.getOptional("myplaces.clustering.distance");
+    private static String CLUSTERING_DISTANCE = PropertyUtil.getOptional("userlayer.clustering.distance");
 
     @Override
     public boolean modifyPlugin(final JSONObject plugin,
                                 final ModifierParams params,
                                 final String mapSrs) {
         if(plugin == null) {
-            LOGGER.debug("Tried to modify MyPlacesLayerPlugin, but plugin didn't exist!");
+            LOGGER.debug("Tried to modify UserLayersLayerPlugin, but plugin didn't exist!");
             return false;
         }
         if(!PLUGIN_NAME.equals(plugin.optString(KEY_ID))) {
-            LOGGER.debug("Tried to modify MyPlacesLayerPlugin, but given JSON isn't MyPlacesLayerPlugin!");
+            LOGGER.debug("Tried to modify UserLayersLayerPlugin, but given JSON isn't UserLayersLayerPlugin!");
             return false;
         }
         if (CLUSTERING_DISTANCE == null) {
