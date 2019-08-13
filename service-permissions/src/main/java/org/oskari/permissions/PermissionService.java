@@ -5,6 +5,8 @@ import java.util.Optional;
 import java.util.Set;
 
 import fi.nls.oskari.domain.User;
+import fi.nls.oskari.util.ConversionHelper;
+import fi.nls.oskari.util.PropertyUtil;
 import org.oskari.permissions.model.PermissionType;
 import org.oskari.permissions.model.Resource;
 import org.oskari.permissions.model.ResourceType;
@@ -13,10 +15,27 @@ import fi.nls.oskari.service.OskariComponent;
 
 public abstract class PermissionService extends OskariComponent {
 
+    private Set<String> DYNAMIC_PERMISSIONS;
+
+    public PermissionService() {
+        // add any additional permissions
+        DYNAMIC_PERMISSIONS = ConversionHelper.asSet(PropertyUtil.getCommaSeparatedList("permission.types"));
+    }
+    /**
+     * Configure additional permissions with oskari-ext.properties:
+     *
+     *   permission.types = EDIT_LAYER_CONTENT
+     *   permission.EDIT_LAYER_CONTENT.name.fi=Muokkaa tasoa
+     *   permission.EDIT_LAYER_CONTENT.name.en=Edit layer
+     * @return
+     */
+    public Set<String> getAdditionalPermissions() {
+        return DYNAMIC_PERMISSIONS;
+    }
+
     public abstract Optional<Resource> findResource(int id);
     public abstract Optional<Resource> findResource(ResourceType type, String mapping);
     public abstract Optional<Resource> findResource(String type, String mapping);
-    public abstract List<Resource> findResourcesByUser(User user);
     public abstract List<Resource> findResourcesByUser(User user, ResourceType type);
 
 

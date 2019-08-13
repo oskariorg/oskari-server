@@ -39,12 +39,7 @@ public class PermissionServiceMybatisImplPerfTest {
     @Test
     public void findRes() {
         long start = System.currentTimeMillis();
-        List<Resource> list = permissionService.findResourcesByUser(new GuestUser());
-        System.out.println(System.currentTimeMillis() - start);
-        System.out.println(list.size());
-
-        start = System.currentTimeMillis();
-        list = permissionService.findResourcesByUser(new GuestUser(), ResourceType.maplayer);
+        List<Resource> list = permissionService.findResourcesByUser(new GuestUser(), ResourceType.maplayer);
         System.out.println(System.currentTimeMillis() - start);
         System.out.println(list.size());
     }
