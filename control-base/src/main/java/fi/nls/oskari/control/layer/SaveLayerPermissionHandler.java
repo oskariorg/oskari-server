@@ -2,7 +2,10 @@ package fi.nls.oskari.control.layer;
 
 import fi.mml.portti.domain.permissions.Permissions;
 import fi.nls.oskari.annotation.OskariActionRoute;
-import fi.nls.oskari.control.*;
+import fi.nls.oskari.control.ActionException;
+import fi.nls.oskari.control.ActionParameters;
+import fi.nls.oskari.control.ActionParamsException;
+import fi.nls.oskari.control.RestActionHandler;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.service.OskariComponentManager;
@@ -11,7 +14,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.oskari.permissions.PermissionService;
-import org.oskari.permissions.model.*;
+import org.oskari.permissions.model.Permission;
+import org.oskari.permissions.model.Resource;
+import org.oskari.permissions.model.ResourceType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,9 +25,8 @@ import java.util.Optional;
 @OskariActionRoute("SaveLayerPermission")
 public class SaveLayerPermissionHandler extends RestActionHandler {
 
-    private static String PARAMETER_PERMISSION_DATA = "resource";
-
     private final static Logger log = LogFactory.getLogger(SaveLayerPermissionHandler.class);
+    private static String PARAMETER_PERMISSION_DATA = "resource";
     private PermissionService permissionsService;
 
     public void init() {
@@ -56,16 +60,16 @@ public class SaveLayerPermissionHandler extends RestActionHandler {
                 final int roleId = Integer.parseInt(layerPermission.getString("roleId"));
                 JSONArray perm = layerPermission.getJSONArray("permissions");
                 for (int j = 0; j < perm.length(); j++) {
-                	JSONObject obj = perm.getJSONObject(j);
-                	if (!obj.getBoolean("value")) {
-                	    // permission was not granted
-                	    return;
-                	}
-                	Permission permission = new Permission();
+                    JSONObject obj = perm.getJSONObject(j);
+                    if (!obj.getBoolean("value")) {
+                        // permission was not granted
+                        return;
+                    }
+                    Permission permission = new Permission();
                     permission.setRoleId(roleId);
                     permission.setType(obj.getString("key"));
                     resource.addPermission(permission);
-            	}
+                }
                 permissionsService.saveResource(resource);
                 layerMappings.add(resource.getMapping());
             }
