@@ -91,8 +91,14 @@ public class IOHelper {
      * @throws IOException
      */
     public static String readString(HttpURLConnection conn) throws IOException {
-        // addRequestProperty() will not overwrite if something else has been set so it's safe here
-        conn.addRequestProperty(HEADER_ACCEPT_ENCODING, ENCODING_GZIP);
+        try {
+            // addRequestProperty() will not overwrite if something else has been set so it's safe here
+            conn.addRequestProperty(HEADER_ACCEPT_ENCODING, ENCODING_GZIP);
+        } catch (IllegalStateException ignored) {
+            log.ignore("Tried to add gzip header but connection was opened already so we are too late", ignored);
+            // too late to add headers, something was posted as payload already.
+            // Just skip and move on to reading the response
+        }
         return readString(conn, DEFAULT_CHARSET);
     }
     /**
