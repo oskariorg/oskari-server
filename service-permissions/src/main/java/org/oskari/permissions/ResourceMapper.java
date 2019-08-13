@@ -16,7 +16,6 @@ import org.apache.ibatis.mapping.FetchType;
 import org.oskari.permissions.model.Permission;
 import org.oskari.permissions.model.PermissionExternalType;
 import org.oskari.permissions.model.Resource;
-import org.oskari.permissions.model.ResourceType;
 
 public interface ResourceMapper {
 
