@@ -1,6 +1,7 @@
 package org.oskari.permissions;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
@@ -33,10 +34,35 @@ public abstract class PermissionService extends OskariComponent {
         return DYNAMIC_PERMISSIONS;
     }
 
+    /**
+     * Names can be configured as instructed in getAdditionalPermissions() or with
+     *   permission.EDIT_LAYER_CONTENT.name = Name for all languages
+     *
+     * @param permissionId
+     * @param lang
+     * @return
+     */
+    public String getPermissionName(String permissionId, String lang) {
+        final String property = "permission." + permissionId + ".name";
+        final Object obj = PropertyUtil.getLocalizableProperty(property, permissionId);
+        if(obj instanceof String) {
+            return (String) obj;
+        }
+        else if(obj instanceof Map) {
+            String tmp = (String)((Map) obj).get(lang);
+            if(tmp != null) {
+                return tmp;
+            }
+            // TODO: Should we try other languages?
+        }
+        return permissionId;
+    }
+
     public abstract Optional<Resource> findResource(int id);
     public abstract Optional<Resource> findResource(ResourceType type, String mapping);
     public abstract Optional<Resource> findResource(String type, String mapping);
     public abstract List<Resource> findResourcesByUser(User user, ResourceType type);
+    public abstract List<Resource> findResourcesByType(ResourceType type);
 
 
     public abstract Set<String>
