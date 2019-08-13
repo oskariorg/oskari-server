@@ -4,7 +4,6 @@ import fi.nls.oskari.analysis.AnalysisHelper;
 import fi.nls.oskari.domain.User;
 import fi.nls.oskari.domain.map.UserDataStyle;
 import fi.nls.oskari.domain.map.analysis.Analysis;
-import fi.nls.oskari.domain.map.analysis.AnalysisStyle;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.analysis.domain.*;
