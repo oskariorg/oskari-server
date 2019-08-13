@@ -221,7 +221,7 @@ public class CreateAnalysisLayerHandler extends RestActionHandler {
             analysisResource.setMapping("analysis", Long.toString(analysis.getId()));
             for(Permission p : sourceResource.get().getPermissions()) {
                 // check if user has role matching permission?
-                if(p.isOfType(Permissions.PERMISSION_TYPE_PUBLISH) || p.isOfType(Permissions.PERMISSION_TYPE_VIEW_PUBLISHED) || p.isOfType(Permissions.PERMISSION_TYPE_DOWNLOAD)) {
+                if(p.isOfType(PermissionType.PUBLISH) || p.isOfType(PermissionType.VIEW_PUBLISHED) || p.isOfType(PermissionType.DOWNLOAD)) {
                     analysisResource.addPermission(p.clonePermission());
                 }
             }
@@ -302,17 +302,15 @@ public class CreateAnalysisLayerHandler extends RestActionHandler {
             final Resource resource = new Resource();
             // permission to publish for self
             final Permission permPublish = new Permission();
-            permPublish.setExternalType(Permissions.EXTERNAL_TYPE_USER);
-            permPublish.setExternalId("" + user.getId());
-            permPublish.setType(Permissions.PERMISSION_TYPE_PUBLISH);
+            permPublish.setUserId((int) user.getId());
+            permPublish.setType(PermissionType.PUBLISH);
             resource.addPermission(permPublish);
             try {
                 // add VIEW_PUBLISHED for all roles currently in the system
                 for(Role role: UserService.getInstance().getRoles()) {
                     final Permission perm = new Permission();
-                    perm.setExternalType(Permissions.EXTERNAL_TYPE_ROLE);
-                    perm.setExternalId("" + role.getId());
-                    perm.setType(Permissions.PERMISSION_TYPE_VIEW_PUBLISHED);
+                    perm.setRoleId((int) role.getId());
+                    perm.setType(PermissionType.VIEW_PUBLISHED);
                     resource.addPermission(perm);
                 }
             } catch (Exception e) {
