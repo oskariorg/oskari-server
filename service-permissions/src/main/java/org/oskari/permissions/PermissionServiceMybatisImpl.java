@@ -46,10 +46,28 @@ public class PermissionServiceMybatisImpl extends PermissionService {
     public List<Resource> findResourcesByUser(User user, ResourceType type) {
         // TODO: add userId and user.getRoles() to query and remove filtering on code
         List<Resource> all = findResourcesByType(type);
-
         return all.stream()
-                .filter(resource -> resource.hasPermission(user, type.name()))
+                .filter(resource -> hasUserAnyPermission(user, resource))
                 .collect(Collectors.toList());
+    }
+
+    private boolean hasUserAnyPermission(User user, Resource resource) {
+        return resource.getPermissions().stream()
+                .anyMatch(p -> hasUserPermission(user, p));
+    }
+
+    private boolean hasUserPermission(User user, Permission permission) {
+        boolean userHasRoleWithId = permission.getExternalType() == PermissionExternalType.ROLE
+                && user.hasRoleWithId(permission.getExternalId());
+
+        if (userHasRoleWithId) {
+            return true;
+        } else if(user.isGuest()) {
+            return false;
+        }
+
+        return permission.getExternalType() == PermissionExternalType.USER
+                && user.getId() == permission.getExternalId();
     }
 
     /**
