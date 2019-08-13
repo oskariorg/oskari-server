@@ -1,90 +1,109 @@
 package fi.nls.oskari.control.layer;
 
-import java.util.*;
-import java.util.Map.Entry;
-
-import fi.nls.oskari.util.ConversionHelper;
-import fi.nls.oskari.util.JSONHelper;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.oskari.permissions.model.OskariLayerResource;
-
-import fi.mml.portti.domain.permissions.Permissions;
-import fi.mml.portti.service.db.permissions.PermissionsService;
-import fi.mml.portti.service.db.permissions.PermissionsServiceIbatisImpl;
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.ActionHandler;
 import fi.nls.oskari.control.ActionParameters;
+import fi.nls.oskari.control.ActionParamsException;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.map.layer.OskariLayerService;
-import fi.nls.oskari.map.layer.OskariLayerServiceMybatisImpl;
+import fi.nls.oskari.service.OskariComponentManager;
+import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.util.ResponseHelper;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.oskari.permissions.PermissionService;
+import org.oskari.permissions.model.*;
 
-import static fi.nls.oskari.control.ActionConstants.*;
+import java.util.*;
+
+import static fi.nls.oskari.control.ActionConstants.KEY_ID;
+import static fi.nls.oskari.control.ActionConstants.KEY_NAME;
+
 /**
-
-Configuring additional permission types in oskari-ext.properties
-
-permission.types = EDIT_LAYER_CONTENT
-permission.EDIT_LAYER_CONTENT.name.fi=Muokkaa tasoa
-permission.EDIT_LAYER_CONTENT.name.en=Edit layer
-
+ * Configuring additional permission types in oskari-ext.properties
+ * <p>
+ * permission.types = EDIT_LAYER_CONTENT
+ * permission.EDIT_LAYER_CONTENT.name.fi=Muokkaa tasoa
+ * permission.EDIT_LAYER_CONTENT.name.en=Edit layer
  */
 @OskariActionRoute("GetPermissionsLayerHandlers")
 public class GetPermissionsLayerHandlers extends ActionHandler {
 
-    private static OskariLayerService mapLayerService = new OskariLayerServiceMybatisImpl();
-    private static PermissionsService permissionsService = new PermissionsServiceIbatisImpl();
     private static String JSON_NAMES_SPACE = "namespace";
     private static String JSON_RESOURCE_NAME = "resourceName";
     private static String JSON_RESOURCE = "resource";
-
-    private static final Set<String> PERMISSIONS =
-            ConversionHelper.asSet(Permissions.PERMISSION_TYPE_VIEW_LAYER, Permissions.PERMISSION_TYPE_VIEW_PUBLISHED,
-                    Permissions.PERMISSION_TYPE_PUBLISH, Permissions.PERMISSION_TYPE_DOWNLOAD);
+    private OskariLayerService mapLayerService;
+    private PermissionService permissionsService;
+    private Set<String> availablePermissionTypes;
 
     @Override
     public void init() {
         super.init();
-
-        // add any additional permissions
-        PERMISSIONS.addAll(permissionsService.getAdditionalPermissions());
+        mapLayerService = OskariComponentManager.getComponentOfType(OskariLayerService.class);
+        permissionsService = OskariComponentManager.getComponentOfType(PermissionService.class);
+        // Just so we don't need to do this on the first request
+        availablePermissionTypes = getAvailablePermissions();
     }
 
+    private Set<String> getAvailablePermissions() {
+        if (availablePermissionTypes != null) {
+            return availablePermissionTypes;
+        }
+
+        availablePermissionTypes = new HashSet<>();
+        // add default permissions
+        // we could iterate these but it's more than the UI can handle at the moment and some of them don't make sense to be set per layer (like ADD_MAPLAYER)
+        for (PermissionType type : PermissionType.values()) {
+            if (type.isLayerSpecific()) {
+                availablePermissionTypes.add(type.name());
+            }
+        }
+        // add any additional permissions
+        availablePermissionTypes.addAll(permissionsService.getAdditionalPermissions());
+        return availablePermissionTypes;
+    }
+
+    private PermissionExternalType validateType(String type) throws ActionParamsException {
+        if (PermissionExternalType.ROLE.name().equalsIgnoreCase(type)) {
+            return PermissionExternalType.ROLE;
+        }
+        throw new ActionParamsException("Only role-based permissions supported currently");
+    }
 
     @Override
     public void handleAction(ActionParameters params) throws ActionException {
-    	
-    	// require admin user
+
+        // require admin user
         params.requireAdminUser();
 
-        final String externalId = params.getRequiredParam("externalId");
-        final String externalType = params.getRequiredParam("externalType");
+        validateType(params.getRequiredParam("externalType"));
+        final int roleId = params.getRequiredParamInt("externalId");
 
-        Map<String, Set<String>> resourcesMap = new HashMap<>();
 
         final JSONArray permissionNames = new JSONArray();
-    	for (String id : PERMISSIONS)
-    	{
+        for (String id : getAvailablePermissions()) {
             JSONObject perm = new JSONObject();
             JSONHelper.putValue(perm, KEY_ID, id);
             JSONHelper.putValue(perm, KEY_NAME, permissionsService.getPermissionName(id, params.getLocale().getLanguage()));
             permissionNames.put(perm);
-            // list resources having the permission
-            Set<String> val = permissionsService.getResourcesWithGrantedPermissions(Permissions.RESOURCE_TYPE_MAP_LAYER, externalId, externalType, id);
-        	resourcesMap.put(id, val);
-    	}
+        }
         final JSONObject root = new JSONObject();
         JSONHelper.putValue(root, "names", permissionNames);
 
         final List<OskariLayer> layers = mapLayerService.findAll();
         Collections.sort(layers);
 
+        List<Resource> resources = permissionsService.findResourcesByType(ResourceType.maplayer);
+        PermissionSet permissions = new PermissionSet(resources);
 
         for (OskariLayer layer : layers) {
+            if (layer.isInternal()) {
+                // skip internal layers
+                continue;
+            }
             try {
                 final OskariLayerResource res = new OskariLayerResource(layer);
                 JSONObject realJson = new JSONObject();
@@ -92,15 +111,16 @@ public class GetPermissionsLayerHandlers extends ActionHandler {
                 realJson.put(KEY_NAME, layer.getName(PropertyUtil.getDefaultLanguage()));
                 realJson.put(JSON_NAMES_SPACE, res.getNamespace());
                 realJson.put(JSON_RESOURCE_NAME, res.getName());
-                final String permissionMapping = res.getMapping();
 
+                Optional<Resource> layerResource = permissions.get(ResourceType.maplayer, res.getMapping());
                 JSONArray jsonResults = new JSONArray();
-                for (Entry<String, Set<String>> resource : resourcesMap.entrySet())
-                {
-                	JSONObject layerJson = new JSONObject();
-                    layerJson.put(KEY_ID, resource.getKey());
-                    layerJson.put("allow", resource.getValue().contains(permissionMapping));
-                	jsonResults.put(layerJson);
+                for (String permission : getAvailablePermissions()) {
+                    JSONObject layerJson = new JSONObject();
+                    layerJson.put(KEY_ID, permission);
+                    layerJson.put("allow", layerResource
+                            .map(r -> r.hasRolePermission(roleId, permission))
+                            .orElse(false));
+                    jsonResults.put(layerJson);
                 }
                 realJson.put("permissions", jsonResults);
 
@@ -108,7 +128,6 @@ public class GetPermissionsLayerHandlers extends ActionHandler {
             } catch (JSONException e) {
                 throw new ActionException("Something is wrong with doPermissionResourcesJson ajax reguest", e);
             }
-
         }
 
         ResponseHelper.writeResponse(params, root.toString());
