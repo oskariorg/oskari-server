@@ -50,16 +50,15 @@ public abstract class StatisticalDatasourceFactory extends OskariComponent {
             PermissionService permissionService = OskariComponentManager.getComponentOfType(PermissionService.class);
             List<OskariLayer> layers = layerService.findByIdList(layerIdList);
 
-            Map<Integer, Set<Long>> rolesForLayers = new HashMap<>();
-            layers.forEach(layer -> {
+            // layer id -> set of role ids that have permissions
+            Map<String, Set<Long>> rolesForLayers = new HashMap<>();
+            layers.forEach(layer ->
                 permissionService.findResource(ResourceType.maplayer, new OskariLayerResource(layer).getMapping())
-                        .ifPresent( res -> {
-                            rolesForLayers.put(layer.getId(), getRoleIdsForLayer(res.getPermissions()));
-                        });
-
-            });
+                        .ifPresent( res ->
+                                rolesForLayers.put(Integer.toString(layer.getId()), getRoleIdsForLayer(res.getPermissions())))
+            );
             //  Adds roles that are permitted to see the regionset for the layer
-            layerRows.forEach( dsLayer -> dsLayer.addRoles(rolesForLayers.getOrDefault(dsLayer.getMaplayerId(), Collections.emptySet())));
+            layerRows.forEach( dsLayer -> dsLayer.addRoles(rolesForLayers.getOrDefault(Long.toString(dsLayer.getMaplayerId()), Collections.emptySet())));
             source.setLayers(layerRows);
         }
     }
