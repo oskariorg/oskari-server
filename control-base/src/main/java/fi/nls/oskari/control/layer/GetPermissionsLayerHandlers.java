@@ -53,7 +53,7 @@ public class GetPermissionsLayerHandlers extends ActionHandler {
             return availablePermissionTypes;
         }
 
-        availablePermissionTypes = new HashSet<>();
+        availablePermissionTypes = new LinkedHashSet <>();
         // add default permissions
         // we could iterate these but it's more than the UI can handle at the moment and some of them don't make sense to be set per layer (like ADD_MAPLAYER)
         for (PermissionType type : PermissionType.values()) {

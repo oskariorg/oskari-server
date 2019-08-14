@@ -1,14 +1,14 @@
 package org.oskari.permissions.model;
 
 public enum PermissionType {
-    PUBLISH("publish", true),
     VIEW_LAYER(true),
+    VIEW_PUBLISHED(true),
+    PUBLISH("publish", true),
+    DOWNLOAD("download", true),
     // false because UI breaks...
     EDIT_LAYER("edit", false),
     // false because UI breaks...
     EDIT_LAYER_CONTENT,
-    VIEW_PUBLISHED(true),
-    DOWNLOAD("download", true),
     EXECUTE,
     ADD_MAPLAYER;
 
