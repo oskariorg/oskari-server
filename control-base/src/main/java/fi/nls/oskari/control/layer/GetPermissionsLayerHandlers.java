@@ -55,7 +55,8 @@ public class GetPermissionsLayerHandlers extends ActionHandler {
 
         availablePermissionTypes = new LinkedHashSet <>();
         // add default permissions
-        // we could iterate these but it's more than the UI can handle at the moment and some of them don't make sense to be set per layer (like ADD_MAPLAYER)
+        // we could add all but it's more than the UI can handle at the moment and some of them don't make sense
+        // to be set per layer (like ADD_MAPLAYER)
         for (PermissionType type : PermissionType.values()) {
             if (type.isLayerSpecific()) {
                 availablePermissionTypes.add(type.name());
