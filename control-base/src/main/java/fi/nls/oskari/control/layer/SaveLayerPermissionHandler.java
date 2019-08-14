@@ -1,6 +1,5 @@
 package fi.nls.oskari.control.layer;
 
-import fi.mml.portti.domain.permissions.Permissions;
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.ActionParameters;
@@ -15,6 +14,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.oskari.permissions.PermissionService;
 import org.oskari.permissions.model.Permission;
+import org.oskari.permissions.model.PermissionExternalType;
 import org.oskari.permissions.model.Resource;
 import org.oskari.permissions.model.ResourceType;
 
@@ -38,10 +38,6 @@ public class SaveLayerPermissionHandler extends RestActionHandler {
         // only accept admins
         params.requireAdminUser();
 
-        final Permissions permissions = new Permissions();
-        permissions.setExternalIdType(Permissions.EXTERNAL_TYPE_ROLE);
-        permissions.getUniqueResourceName().setType(Permissions.RESOURCE_TYPE_MAP_LAYER);
-
         final JSONArray resources = parseJSONArray(params.getHttpParam(PARAMETER_PERMISSION_DATA));
         final List<String> layerMappings = new ArrayList<>();
 
@@ -54,21 +50,21 @@ public class SaveLayerPermissionHandler extends RestActionHandler {
                     throw new ActionParamsException("Resource not found: " + layerMapping);
                 }
                 Resource resource = dbResource.get();
-                // clear previous
-                resource.setPermissions(null);
-
                 final int roleId = Integer.parseInt(layerPermission.getString("roleId"));
                 JSONArray perm = layerPermission.getJSONArray("permissions");
                 for (int j = 0; j < perm.length(); j++) {
                     JSONObject obj = perm.getJSONObject(j);
+                    String permissionId = obj.getString("key");
                     if (!obj.getBoolean("value")) {
-                        // permission was not granted
-                        return;
+                        // permission was REMOVED
+                        resource.removePermissionsOfType(permissionId, PermissionExternalType.ROLE, roleId);
+                    } else {
+                        // permission was GRANTED
+                        Permission permission = new Permission();
+                        permission.setRoleId(roleId);
+                        permission.setType(permissionId);
+                        resource.addPermission(permission);
                     }
-                    Permission permission = new Permission();
-                    permission.setRoleId(roleId);
-                    permission.setType(obj.getString("key"));
-                    resource.addPermission(permission);
                 }
                 permissionsService.saveResource(resource);
                 layerMappings.add(resource.getMapping());
