@@ -80,7 +80,8 @@ public class GetLayerIds extends ActionHandler {
             WFSLayerPermissionsStore permissions = new WFSLayerPermissionsStore();
             permissions.setLayerIds(availableLayerIds);
             permissions.save(jsessionid);
-            ResponseHelper.writeResponse(params, new JSONArray(availableLayerIds).toString());
+            // transport assumes that the response can be given to WFSLayerPermissionsStore.setJSON()
+            ResponseHelper.writeResponse(params, permissions.getAsJSON());
 
         } catch (Exception e) {
             log.error(e, "Error writing layer id list");
