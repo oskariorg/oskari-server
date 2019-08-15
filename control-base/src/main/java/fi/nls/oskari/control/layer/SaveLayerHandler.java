@@ -711,6 +711,6 @@ public class SaveLayerHandler extends AbstractLayerAdminHandler {
             res.addPermission(permission);
         }
 
-        getPermissionsService().insertResource(res);
+        getPermissionsService().saveResource(res);
     }
 }
