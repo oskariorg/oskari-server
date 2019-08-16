@@ -264,7 +264,6 @@ public class GetAppSetupHandlerTest extends JSONActionRouteTest {
 
         final PermissionService service = mock(PermissionServiceMybatisImpl.class);
         // permission check is skipped here so just mock the call
-        doReturn(Collections.emptyList()).when(service).findResourcesByUser(any(User.class));
         doReturn(Optional.empty()).when(service).findResource(eq(ResourceType.maplayer.name()), any(String.class));
         doReturn(Collections.emptySet()).when(service).getResourcesWithGrantedPermissions(eq(AnalysisLayer.TYPE), any(User.class), eq(PermissionType.VIEW_PUBLISHED.name()));
 

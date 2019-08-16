@@ -108,10 +108,14 @@ public class Resource {
         return hasPermission(role, permissionType.name());
     }
     public boolean hasPermission(Role role, String permissionType) {
+        return hasRolePermission(role.getId(), permissionType);
+    }
+
+    public boolean hasRolePermission(long roleId, String permissionType) {
         return getPermissions().stream()
                 .filter(p -> p.isOfType(permissionType))
                 .filter(p -> p.getExternalType() == PermissionExternalType.ROLE)
-                .filter(p -> p.getExternalId() == role.getId())
+                .filter(p -> p.getExternalId() == roleId)
                 .findAny()
                 .isPresent();
     }

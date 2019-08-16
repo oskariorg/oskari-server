@@ -193,7 +193,6 @@ public class GetAppSetupHandlerRolesFromPropertiesTest extends JSONActionRouteTe
 
         final PermissionService service = mock(PermissionServiceMybatisImpl.class);
         // permission check is skipped here so just mock the call
-        doReturn(Collections.emptyList()).when(service).findResourcesByUser(any(User.class));
         doReturn(Optional.empty()).when(service).findResource(eq(ResourceType.maplayer.name()), any(String.class));
 
         // return mocked  bundle service if a new one is created (in paramhandlers for example)
