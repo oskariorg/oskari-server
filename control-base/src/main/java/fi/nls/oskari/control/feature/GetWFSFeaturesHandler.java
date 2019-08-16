@@ -72,7 +72,7 @@ public class GetWFSFeaturesHandler extends AbstractWFSFeaturesHandler {
                 fc = featureClient.getFeatures(id, layer, bbox, nativeCRS, targetCRS, contentProcessor);
             }
             else {
-                fc = featureClient.getFeatures(id, layer, bbox, targetCRS, null);
+                fc = featureClient.getFeatures(id, layer, bbox, targetCRS, contentProcessor);
             }
         } catch (ServiceRuntimeException e) {
             throw new ActionCommonException(ERR_FAILED_TO_RETRIEVE_FEATURES, e);
