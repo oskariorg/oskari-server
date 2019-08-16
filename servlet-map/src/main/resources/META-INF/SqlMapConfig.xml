@@ -19,7 +19,6 @@ PUBLIC "-//ibatis.apache.org//DTD SQL Map Config 2.0//EN"
   </transactionManager>
 
   <sqlMap resource="META-INF/MaplayerGroup.xml" />
-  <sqlMap resource="META-INF/Permissions.xml" />
   <sqlMap resource="META-INF/WFSLayerConfiguration.xml" />
 
 </sqlMapConfig>

@@ -1,6 +1,5 @@
 package fi.nls.oskari.control.data;
 
-import fi.mml.portti.domain.permissions.Permissions;
 import fi.nls.oskari.analysis.AnalysisHelper;
 import fi.nls.oskari.analysis.AnalysisParser;
 import fi.nls.oskari.annotation.OskariActionRoute;
