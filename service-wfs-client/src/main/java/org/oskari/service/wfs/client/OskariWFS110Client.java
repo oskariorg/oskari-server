@@ -5,6 +5,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Locale;
@@ -38,6 +39,7 @@ public class OskariWFS110Client {
     private static final int MAX_REDIRECTS = 5;
     private static final ObjectMapper OM = new ObjectMapper();
     private static final TypeReference<HashMap<String, Object>> TYPE_REF = new TypeReference<HashMap<String, Object>>() {};
+    private static final String EXC_HANDLING_OUTPUTFORMAT = "outputformat";
 
     private OskariWFS110Client() {}
 
@@ -58,7 +60,9 @@ public class OskariWFS110Client {
             if (!isOutputFormatInvalid(new ByteArrayInputStream(response))) {
                 // If we can not determine that the exception was due to bad
                 // outputFormat parameter then don't bother trying GML
-                throw new ServiceRuntimeException("Unable to parse GeoJSON", e);
+                final String url = IOHelper.constructUrl(endPoint, query);
+                LOG.debug("Response from", url, "was:\n", new String(response, StandardCharsets.UTF_8));
+                throw new ServiceRuntimeException("Unable to parse GeoJSON from " + url, e);
             }
         }
 
@@ -69,7 +73,9 @@ public class OskariWFS110Client {
         try {
             return OSKARI_GML.decodeFeatureCollection(new ByteArrayInputStream(response), user, pass);
         } catch (Exception e) {
-            throw new ServiceRuntimeException("Unable to parse GML", e);
+            final String url = IOHelper.constructUrl(endPoint, query);
+            LOG.debug("Response from", url, "was:\n", new String(response, StandardCharsets.UTF_8));
+            throw new ServiceRuntimeException("Unable to parse GML from " + url, e);
         }
     }
 
@@ -181,9 +187,25 @@ public class OskariWFS110Client {
         }
     }
 
+    /**
+     * We might get:
+     * <ows:ExceptionReport xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ows="http://www.opengis.net/ows" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.opengis.net/ows http://schemas.opengis.net/ows/1.1.0/owsExceptionReport.xsd" version="1.1.0">
+     * <ows:Exception exceptionCode="InvalidParameterValue" locator="Unknown">
+     * <ows:ExceptionText>
+     * <![CDATA[ OutputFormat 'application/json' not supported. ]]>
+     * </ows:ExceptionText>
+     * </ows:Exception>
+     * </ows:ExceptionReport>
+     * @param ex
+     * @return
+     */
     protected static boolean isExceptionDueToInvalidOutputFormat(OWSException ex) {
         if (ex.getExceptionCode().equalsIgnoreCase("InvalidParameterValue")) {
-            if ("outputFormat".equalsIgnoreCase(ex.getLocator())) {
+            if (EXC_HANDLING_OUTPUTFORMAT.equalsIgnoreCase(ex.getLocator())) {
+                return true;
+            }
+            if (ex.getExceptionText() != null &&
+                    ex.getExceptionText().toLowerCase().contains(EXC_HANDLING_OUTPUTFORMAT)) {
                 return true;
             }
         }
