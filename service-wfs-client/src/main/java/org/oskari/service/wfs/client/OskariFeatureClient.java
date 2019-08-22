@@ -29,7 +29,7 @@ public class OskariFeatureClient {
         this.wfsClient = Objects.requireNonNull(wfsClient);
     }
 
-    protected CoordinateReferenceSystem getNativeCRS() {
+    public CoordinateReferenceSystem getNativeCRS() {
         if (nativeCRS == null) {
             try {
                 String nativeSrs = PropertyUtil.get(PROPERTY_NATIVE_SRS, "EPSG:4326");
@@ -43,7 +43,7 @@ public class OskariFeatureClient {
 
     public SimpleFeatureCollection getFeatures(String id, OskariLayer layer, ReferencedEnvelope bbox,
             CoordinateReferenceSystem nativeCRS, CoordinateReferenceSystem targetCRS,
-            Optional<UserLayerService> processor) throws ServiceException {
+            Optional<UserLayerService> processor) throws ServiceRuntimeException {
         boolean needsTransform = !CRS.equalsIgnoreMetadata(nativeCRS, targetCRS);
 
         // Request features in nativeCRS (of the installation)
@@ -53,7 +53,7 @@ public class OskariFeatureClient {
             try {
                 requestBbox = bbox.transform(nativeCRS, true);
             } catch (Exception e) {
-                throw new ServiceException(ERR_REPOJECTION_FAIL, e);
+                throw new ServiceRuntimeException(ERR_REPOJECTION_FAIL, e);
             }
         }
 
@@ -67,7 +67,7 @@ public class OskariFeatureClient {
             CoordinateTransformer transformer = new CoordinateTransformer(nativeCRS, targetCRS);
             return transformer.transform(features);
         } catch (Exception e) {
-            throw new ServiceException(ERR_REPOJECTION_FAIL, e);
+            throw new ServiceRuntimeException(ERR_REPOJECTION_FAIL, e);
         }
     }
 
