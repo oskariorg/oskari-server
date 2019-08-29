@@ -1,9 +1,10 @@
 package org.oskari.print.request;
 
 import java.util.Optional;
-
+import org.json.JSONObject;
 import org.oskari.service.user.UserLayerService;
-
+import org.oskari.print.util.StyleUtil;
+import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.domain.map.OskariLayer;
 
 public class PrintLayer {
@@ -15,6 +16,7 @@ public class PrintLayer {
     private int opacity;
     private Optional<UserLayerService> processor;
     private PrintTile[] tiles;
+    private JSONObject customStyle;
 
     public PrintLayer(int zIndex) {
         this.zIndex = zIndex;
@@ -98,6 +100,37 @@ public class PrintLayer {
 
     public void setProcessor(Optional<UserLayerService> processor) {
         this.processor = processor;
+    }
+
+    public void setCustomStyle (JSONObject customStyle) { this.customStyle = customStyle; }
+
+    public JSONObject getCustomStyle () { return customStyle; }
+
+    public JSONObject getOskariStyle () {
+        if (customStyle != null) {
+            return customStyle;
+        }
+        if (processor.isPresent()){
+            return processor.get().getOskariStyle(layerId);
+        }
+        JSONObject defaultStyle = StyleUtil.getDefaultOskariStyle();
+        if (StyleUtil.OSKARI_DEFAULT.equals(style)){
+            return defaultStyle;
+        }
+        JSONObject options = oskariLayer.getOptions();
+        JSONObject styles = JSONHelper.getJSONObject(options, StyleUtil.STYLES_JSON_KEY);
+        if (styles == null) {
+            return defaultStyle;
+        }
+        if (styles.has(style)){
+            JSONObject namedStyle = JSONHelper.getJSONObject(
+                    JSONHelper.getJSONObject(
+                            JSONHelper.getJSONObject(styles, style),
+                            getOskariLayer().getName()),
+                    "featureStyle");
+            return JSONHelper.merge(defaultStyle, namedStyle);
+        }
+        return defaultStyle;
     }
 
 }

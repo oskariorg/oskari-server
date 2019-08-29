@@ -10,6 +10,7 @@ import java.util.Optional;
 
 import javax.imageio.ImageIO;
 
+import fi.nls.oskari.util.JSONHelper;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -53,6 +54,7 @@ public class GetPrintHandler extends AbstractWFSFeaturesHandler {
     private static final String PARM_LOGO = "pageLogo";
     private static final String PARM_DATE = "pageDate";
     private static final String PARM_SCALE_TEXT = "scaleText";
+    private static final String PARM_CUSTOM_STYLES = "customStyles";
 
     private static final String ALLOWED_FORMATS = Arrays.toString(new String[] {
             PrintFormat.PDF.contentType, PrintFormat.PNG.contentType
@@ -130,8 +132,7 @@ public class GetPrintHandler extends AbstractWFSFeaturesHandler {
         setCoordinates(params.getRequiredParam(PARM_COORD), request);
         setFormat(params.getRequiredParam(PARM_FORMAT), request);
 
-        List<PrintLayer> layers = getLayers(params.getRequiredParam(PARM_MAPLAYERS),
-                params.getUser());
+        List<PrintLayer> layers = getLayers(params);
 
         if (request.isScaleText()) {
             // Remove WMTS layers - they do not support arbitrary scales
@@ -221,15 +222,27 @@ public class GetPrintHandler extends AbstractWFSFeaturesHandler {
         req.setFormat(format);
     }
 
-    private List<PrintLayer> getLayers(String mapLayers, User user)
+    private List<PrintLayer> getLayers(ActionParameters params)
             throws ActionException {
+        String mapLayers = params.getRequiredParam(PARM_MAPLAYERS);
+        User user = params.getUser();
         LayerProperties[] requestedLayers = parseLayersProperties(mapLayers);
+        JSONObject customStyles = params.getHttpParamAsJSON(PARM_CUSTOM_STYLES);
         List<PrintLayer> printLayers = new ArrayList<>();
         int zIndex = 0;
         for (LayerProperties requestedLayer : requestedLayers) {
             printLayers.add(getPrintLayer(zIndex++, requestedLayer, user));
         }
         printLayers.removeIf(layer -> layer.getOpacity() <= 0);
+        // set custom styles
+        if (customStyles != null){
+            printLayers.forEach(l -> {
+                String id = l.getLayerId();
+                if (customStyles.has(id)) {
+                    l.setCustomStyle(JSONHelper.getJSONObject(customStyles, id));
+                }
+            });
+        }
         return printLayers;
     }
 
@@ -267,6 +280,7 @@ public class GetPrintHandler extends AbstractWFSFeaturesHandler {
         int opacity = getOpacity(requestedLayer.opacity, layer.getOpacity());
 
         PrintLayer printLayer = new PrintLayer(zIndex);
+        printLayer.setLayerId(layerId);
         printLayer.setOskariLayer(layer);
         printLayer.setStyle(requestedLayer.style);
         printLayer.setOpacity(opacity);
