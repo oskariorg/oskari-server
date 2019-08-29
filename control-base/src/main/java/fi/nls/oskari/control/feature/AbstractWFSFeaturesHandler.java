@@ -60,7 +60,7 @@ public abstract class AbstractWFSFeaturesHandler extends ActionHandler {
         int layerId = getLayerId(id, processor);
         OskariLayer layer = permissionHelper.getLayer(layerId, user);
         if (!OskariLayer.TYPE_WFS.equals(layer.getType())) {
-            throw new ActionParamsException(ERR_LAYER_TYPE_NOT_WFS);
+            return layer;
         }
         if (processor.isPresent() && !processor.get().hasViewPermission(id, user)) {
             throw new ActionDeniedException("User doesn't have permissions for requested layer");
