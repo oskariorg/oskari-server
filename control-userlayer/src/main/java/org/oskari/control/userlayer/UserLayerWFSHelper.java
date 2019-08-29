@@ -145,6 +145,13 @@ public class UserLayerWFSHelper extends UserLayerService {
         }
         return service.getUserLayerById(id);
     }
+    public JSONObject getOskariStyle (String id) {
+        UserLayer layer = getLayer(parseId(id));
+        if (layer == null) {
+            return new JSONObject();
+        }
+        return layer.getStyle().parseUserLayerStyleToOskariJSON();
+    }
 
     private SimpleFeatureType createType(SimpleFeatureType schema, JSONObject properties) throws JSONException {
         SimpleFeatureTypeBuilder typeBuilder = new SimpleFeatureTypeBuilder();
