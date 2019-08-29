@@ -110,7 +110,7 @@ public class PrintLayer {
         if (customStyle != null) {
             return customStyle;
         }
-        if (processor.isPresent()){
+        if (getProcessor().isPresent()){
             return processor.get().getOskariStyle(layerId);
         }
         JSONObject defaultStyle = StyleUtil.getDefaultOskariStyle();

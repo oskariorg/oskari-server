@@ -210,7 +210,7 @@ public class PDF {
             doc.addPage(page);
             try (PDPageContentStream stream = new PDPageContentStream(doc, page, AppendMode.APPEND, false)) {
                 AffineTransformation transformation = getTransform(bbox, mapWidth, mapHeight);
-                drawVectorLayer(doc, stream, layer, ffc, transformation, 0, 0, mapWidth, mapHeight); //requ w,h
+                drawVectorLayer(doc, stream, layer, ffc, transformation, 0, 0, mapWidth, mapHeight);
             }
             PDFRenderer renderer = new PDFRenderer(doc);
             float scale = h / mapHeight;
