@@ -1,5 +1,18 @@
 # Migration guide
 
+## 1.53.0
+
+### PermissionService migrated to MyBatis
+
+Also class packages have been changed a bit so manual updates is required for server-extensions referencing PermissionService.
+
+- fi.nls.oskari.map.data.domain.OskariLayerResource is now org.oskari.permissions.model.OskariLayerResource
+- fi.nls.oskari.permission.domain.Permission is now org.oskari.permissions.model.Permission
+- fi.nls.oskari.permission.domain.Resource is now org.oskari.permissions.model.Resource
+
+See https://github.com/nls-oskari/kartta.paikkatietoikkuna.fi/pull/102 for example and
+https://github.com/oskariorg/oskari-server/pull/271 for details about the change.
+
 ## 1.52.0
 
 ### Class renaming:

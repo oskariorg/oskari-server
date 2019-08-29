@@ -5,6 +5,13 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.*;
+import java.net.URISyntaxException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author SMAKINEN
@@ -138,5 +145,32 @@ public class ResourceHelper {
             is.close();
         }
         return writer.toString();
+    }
+
+    public static List<String> readSqlStatements(Class clazz, String resource) throws IOException, URISyntaxException {
+        Path path = Paths.get(clazz.getResource(resource).toURI());
+        return splitIntoStatements(Files.readAllLines(path, StandardCharsets.UTF_8));
+    }
+
+    private static List<String> splitIntoStatements(List<String> lines) {
+        List<String> statements = new ArrayList<>();
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < lines.size(); i++) {
+            String line = lines.get(i).trim();
+            if (line.isEmpty()) {
+                continue;
+            }
+            int j = line.indexOf(';');
+            if (j < 0) {
+                sb.append(line).append(' ');
+                continue;
+            }
+            if (j > 0) {
+                sb.append(line.substring(0, j));
+            }
+            statements.add(sb.toString());
+            sb.setLength(0);
+        }
+        return statements;
     }
 }

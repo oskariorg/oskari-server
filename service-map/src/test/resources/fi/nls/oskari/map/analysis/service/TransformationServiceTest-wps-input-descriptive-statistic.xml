@@ -1,0 +1,416 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<wfs:FeatureCollection
+	xmlns:wfs="http://www.opengis.net/wfs"
+	xmlns:feature="http://www.opengis.net/gml"
+	xmlns:ogc="http://www.opengis.net/ogc"
+	xmlns:ows="http://www.opengis.net/ows"
+	xmlns:xlink="http://www.w3.org/1999/xlink"
+	xmlns:xs="http://www.w3.org/2001/XMLSchema">
+	<feature:boundedBy>
+		<feature:Envelope srsDimension="2"
+			srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+			<feature:lowerCorner>391810.529 6673138.0936</feature:lowerCorner>
+			<feature:upperCorner>391892.8962 6673237.9559</feature:upperCorner>
+		</feature:Envelope>
+	</feature:boundedBy>
+	<feature:featureMember>
+		<feature:analysis_data
+			feature:id="fid--74e66f5b_16c84cead53_-7feb">
+			<feature:boundedBy>
+				<feature:Envelope srsDimension="2"
+					srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+					<feature:lowerCorner>391810.529 6673138.0936</feature:lowerCorner>
+					<feature:upperCorner>391892.8962 6673237.9559</feature:upperCorner>
+				</feature:Envelope>
+			</feature:boundedBy>
+			<feature:geom>
+				<feature:MultiPoint srsDimension="2"
+					srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+					<feature:pointMember>
+						<feature:Point srsDimension="2">
+							<feature:pos>391820.455 6673185.7874</feature:pos>
+						</feature:Point>
+					</feature:pointMember>
+					<feature:pointMember>
+						<feature:Point srsDimension="2">
+							<feature:pos>391892.8962 6673138.0936</feature:pos>
+						</feature:Point>
+					</feature:pointMember>
+					<feature:pointMember>
+						<feature:Point srsDimension="2">
+							<feature:pos>391810.529 6673237.9559</feature:pos>
+						</feature:Point>
+					</feature:pointMember>
+				</feature:MultiPoint>
+			</feature:geom>
+			<feature:___>kkonn</feature:___>
+			<feature:Kohteiden_lukumäärä>3</feature:Kohteiden_lukumäärä>
+			<feature:Summa>14</feature:Summa>
+			<feature:Pienin_arvo>2</feature:Pienin_arvo>
+			<feature:Suurin_arvo>10</feature:Suurin_arvo>
+			<feature:Keskiarvo>4.666666666666667</feature:Keskiarvo>
+			<feature:Keskihajonta>3.7712361663282534</feature:Keskihajonta>
+			<feature:Mediaani>2</feature:Mediaani>
+		</feature:analysis_data>
+	</feature:featureMember>
+	<feature:featureMember>
+		<feature:analysis_data
+			feature:id="fid--74e66f5b_16c84cead53_-7feb">
+			<feature:boundedBy>
+				<feature:Envelope srsDimension="2"
+					srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+					<feature:lowerCorner>391810.529 6673138.0936</feature:lowerCorner>
+					<feature:upperCorner>391892.8962 6673237.9559</feature:upperCorner>
+				</feature:Envelope>
+			</feature:boundedBy>
+			<feature:geom>
+				<feature:MultiPoint srsDimension="2"
+					srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+					<feature:pointMember>
+						<feature:Point srsDimension="2">
+							<feature:pos>391820.455 6673185.7874</feature:pos>
+						</feature:Point>
+					</feature:pointMember>
+					<feature:pointMember>
+						<feature:Point srsDimension="2">
+							<feature:pos>391892.8962 6673138.0936</feature:pos>
+						</feature:Point>
+					</feature:pointMember>
+					<feature:pointMember>
+						<feature:Point srsDimension="2">
+							<feature:pos>391810.529 6673237.9559</feature:pos>
+						</feature:Point>
+					</feature:pointMember>
+				</feature:MultiPoint>
+			</feature:geom>
+			<feature:___>lkmhapa</feature:___>
+			<feature:Kohteiden_lukumäärä>3</feature:Kohteiden_lukumäärä>
+			<feature:Summa>5</feature:Summa>
+			<feature:Pienin_arvo>1</feature:Pienin_arvo>
+			<feature:Suurin_arvo>3</feature:Suurin_arvo>
+			<feature:Keskiarvo>1.6666666666666667</feature:Keskiarvo>
+			<feature:Keskihajonta>0.9428090415820634</feature:Keskihajonta>
+			<feature:Mediaani>1</feature:Mediaani>
+		</feature:analysis_data>
+	</feature:featureMember>
+	<feature:featureMember>
+		<feature:analysis_data
+			feature:id="fid--74e66f5b_16c84cead53_-7feb">
+			<feature:boundedBy>
+				<feature:Envelope srsDimension="2"
+					srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+					<feature:lowerCorner>391810.529 6673138.0936</feature:lowerCorner>
+					<feature:upperCorner>391892.8962 6673237.9559</feature:upperCorner>
+				</feature:Envelope>
+			</feature:boundedBy>
+			<feature:geom>
+				<feature:MultiPoint srsDimension="2"
+					srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+					<feature:pointMember>
+						<feature:Point srsDimension="2">
+							<feature:pos>391820.455 6673185.7874</feature:pos>
+						</feature:Point>
+					</feature:pointMember>
+					<feature:pointMember>
+						<feature:Point srsDimension="2">
+							<feature:pos>391892.8962 6673138.0936</feature:pos>
+						</feature:Point>
+					</feature:pointMember>
+					<feature:pointMember>
+						<feature:Point srsDimension="2">
+							<feature:pos>391810.529 6673237.9559</feature:pos>
+						</feature:Point>
+					</feature:pointMember>
+				</feature:MultiPoint>
+			</feature:geom>
+			<feature:___>lkmjk</feature:___>
+			<feature:Kohteiden_lukumäärä>3</feature:Kohteiden_lukumäärä>
+			<feature:Summa>1</feature:Summa>
+			<feature:Pienin_arvo>0</feature:Pienin_arvo>
+			<feature:Suurin_arvo>1</feature:Suurin_arvo>
+			<feature:Keskiarvo>0.3333333333333333</feature:Keskiarvo>
+			<feature:Keskihajonta>0.4714045207910317</feature:Keskihajonta>
+			<feature:Mediaani>0</feature:Mediaani>
+		</feature:analysis_data>
+	</feature:featureMember>
+	<feature:featureMember>
+		<feature:analysis_data
+			feature:id="fid--74e66f5b_16c84cead53_-7feb">
+			<feature:boundedBy>
+				<feature:Envelope srsDimension="2"
+					srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+					<feature:lowerCorner>391810.529 6673138.0936</feature:lowerCorner>
+					<feature:upperCorner>391892.8962 6673237.9559</feature:upperCorner>
+				</feature:Envelope>
+			</feature:boundedBy>
+			<feature:geom>
+				<feature:MultiPoint srsDimension="2"
+					srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+					<feature:pointMember>
+						<feature:Point srsDimension="2">
+							<feature:pos>391820.455 6673185.7874</feature:pos>
+						</feature:Point>
+					</feature:pointMember>
+					<feature:pointMember>
+						<feature:Point srsDimension="2">
+							<feature:pos>391892.8962 6673138.0936</feature:pos>
+						</feature:Point>
+					</feature:pointMember>
+					<feature:pointMember>
+						<feature:Point srsDimension="2">
+							<feature:pos>391810.529 6673237.9559</feature:pos>
+						</feature:Point>
+					</feature:pointMember>
+				</feature:MultiPoint>
+			</feature:geom>
+			<feature:___>lkmlaka</feature:___>
+			<feature:Kohteiden_lukumäärä>3</feature:Kohteiden_lukumäärä>
+			<feature:Summa>0</feature:Summa>
+			<feature:Pienin_arvo>0</feature:Pienin_arvo>
+			<feature:Suurin_arvo>0</feature:Suurin_arvo>
+			<feature:Keskiarvo>0</feature:Keskiarvo>
+			<feature:Keskihajonta>0</feature:Keskihajonta>
+			<feature:Mediaani>0</feature:Mediaani>
+		</feature:analysis_data>
+	</feature:featureMember>
+	<feature:featureMember>
+		<feature:analysis_data
+			feature:id="fid--74e66f5b_16c84cead53_-7feb">
+			<feature:boundedBy>
+				<feature:Envelope srsDimension="2"
+					srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+					<feature:lowerCorner>391810.529 6673138.0936</feature:lowerCorner>
+					<feature:upperCorner>391892.8962 6673237.9559</feature:upperCorner>
+				</feature:Envelope>
+			</feature:boundedBy>
+			<feature:geom>
+				<feature:MultiPoint srsDimension="2"
+					srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+					<feature:pointMember>
+						<feature:Point srsDimension="2">
+							<feature:pos>391820.455 6673185.7874</feature:pos>
+						</feature:Point>
+					</feature:pointMember>
+					<feature:pointMember>
+						<feature:Point srsDimension="2">
+							<feature:pos>391892.8962 6673138.0936</feature:pos>
+						</feature:Point>
+					</feature:pointMember>
+					<feature:pointMember>
+						<feature:Point srsDimension="2">
+							<feature:pos>391810.529 6673237.9559</feature:pos>
+						</feature:Point>
+					</feature:pointMember>
+				</feature:MultiPoint>
+			</feature:geom>
+			<feature:___>lkmmo</feature:___>
+			<feature:Kohteiden_lukumäärä>3</feature:Kohteiden_lukumäärä>
+			<feature:Summa>0</feature:Summa>
+			<feature:Pienin_arvo>0</feature:Pienin_arvo>
+			<feature:Suurin_arvo>0</feature:Suurin_arvo>
+			<feature:Keskiarvo>0</feature:Keskiarvo>
+			<feature:Keskihajonta>0</feature:Keskihajonta>
+			<feature:Mediaani>0</feature:Mediaani>
+		</feature:analysis_data>
+	</feature:featureMember>
+	<feature:featureMember>
+		<feature:analysis_data
+			feature:id="fid--74e66f5b_16c84cead53_-7feb">
+			<feature:boundedBy>
+				<feature:Envelope srsDimension="2"
+					srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+					<feature:lowerCorner>391810.529 6673138.0936</feature:lowerCorner>
+					<feature:upperCorner>391892.8962 6673237.9559</feature:upperCorner>
+				</feature:Envelope>
+			</feature:boundedBy>
+			<feature:geom>
+				<feature:MultiPoint srsDimension="2"
+					srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+					<feature:pointMember>
+						<feature:Point srsDimension="2">
+							<feature:pos>391820.455 6673185.7874</feature:pos>
+						</feature:Point>
+					</feature:pointMember>
+					<feature:pointMember>
+						<feature:Point srsDimension="2">
+							<feature:pos>391892.8962 6673138.0936</feature:pos>
+						</feature:Point>
+					</feature:pointMember>
+					<feature:pointMember>
+						<feature:Point srsDimension="2">
+							<feature:pos>391810.529 6673237.9559</feature:pos>
+						</feature:Point>
+					</feature:pointMember>
+				</feature:MultiPoint>
+			</feature:geom>
+			<feature:___>lkmmp</feature:___>
+			<feature:Kohteiden_lukumäärä>3</feature:Kohteiden_lukumäärä>
+			<feature:Summa>0</feature:Summa>
+			<feature:Pienin_arvo>0</feature:Pienin_arvo>
+			<feature:Suurin_arvo>0</feature:Suurin_arvo>
+			<feature:Keskiarvo>0</feature:Keskiarvo>
+			<feature:Keskihajonta>0</feature:Keskihajonta>
+			<feature:Mediaani>0</feature:Mediaani>
+		</feature:analysis_data>
+	</feature:featureMember>
+	<feature:featureMember>
+		<feature:analysis_data
+			feature:id="fid--74e66f5b_16c84cead53_-7feb">
+			<feature:boundedBy>
+				<feature:Envelope srsDimension="2"
+					srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+					<feature:lowerCorner>391810.529 6673138.0936</feature:lowerCorner>
+					<feature:upperCorner>391892.8962 6673237.9559</feature:upperCorner>
+				</feature:Envelope>
+			</feature:boundedBy>
+			<feature:geom>
+				<feature:MultiPoint srsDimension="2"
+					srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+					<feature:pointMember>
+						<feature:Point srsDimension="2">
+							<feature:pos>391820.455 6673185.7874</feature:pos>
+						</feature:Point>
+					</feature:pointMember>
+					<feature:pointMember>
+						<feature:Point srsDimension="2">
+							<feature:pos>391892.8962 6673138.0936</feature:pos>
+						</feature:Point>
+					</feature:pointMember>
+					<feature:pointMember>
+						<feature:Point srsDimension="2">
+							<feature:pos>391810.529 6673237.9559</feature:pos>
+						</feature:Point>
+					</feature:pointMember>
+				</feature:MultiPoint>
+			</feature:geom>
+			<feature:___>lkmmuukulk</feature:___>
+			<feature:Kohteiden_lukumäärä>3</feature:Kohteiden_lukumäärä>
+			<feature:Summa>0</feature:Summa>
+			<feature:Pienin_arvo>0</feature:Pienin_arvo>
+			<feature:Suurin_arvo>0</feature:Suurin_arvo>
+			<feature:Keskiarvo>0</feature:Keskiarvo>
+			<feature:Keskihajonta>0</feature:Keskihajonta>
+			<feature:Mediaani>0</feature:Mediaani>
+		</feature:analysis_data>
+	</feature:featureMember>
+	<feature:featureMember>
+		<feature:analysis_data
+			feature:id="fid--74e66f5b_16c84cead53_-7feb">
+			<feature:boundedBy>
+				<feature:Envelope srsDimension="2"
+					srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+					<feature:lowerCorner>391810.529 6673138.0936</feature:lowerCorner>
+					<feature:upperCorner>391892.8962 6673237.9559</feature:upperCorner>
+				</feature:Envelope>
+			</feature:boundedBy>
+			<feature:geom>
+				<feature:MultiPoint srsDimension="2"
+					srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+					<feature:pointMember>
+						<feature:Point srsDimension="2">
+							<feature:pos>391820.455 6673185.7874</feature:pos>
+						</feature:Point>
+					</feature:pointMember>
+					<feature:pointMember>
+						<feature:Point srsDimension="2">
+							<feature:pos>391892.8962 6673138.0936</feature:pos>
+						</feature:Point>
+					</feature:pointMember>
+					<feature:pointMember>
+						<feature:Point srsDimension="2">
+							<feature:pos>391810.529 6673237.9559</feature:pos>
+						</feature:Point>
+					</feature:pointMember>
+				</feature:MultiPoint>
+			</feature:geom>
+			<feature:___>lkmpp</feature:___>
+			<feature:Kohteiden_lukumäärä>3</feature:Kohteiden_lukumäärä>
+			<feature:Summa>0</feature:Summa>
+			<feature:Pienin_arvo>0</feature:Pienin_arvo>
+			<feature:Suurin_arvo>0</feature:Suurin_arvo>
+			<feature:Keskiarvo>0</feature:Keskiarvo>
+			<feature:Keskihajonta>0</feature:Keskihajonta>
+			<feature:Mediaani>0</feature:Mediaani>
+		</feature:analysis_data>
+	</feature:featureMember>
+	<feature:featureMember>
+		<feature:analysis_data
+			feature:id="fid--74e66f5b_16c84cead53_-7feb">
+			<feature:boundedBy>
+				<feature:Envelope srsDimension="2"
+					srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+					<feature:lowerCorner>391810.529 6673138.0936</feature:lowerCorner>
+					<feature:upperCorner>391892.8962 6673237.9559</feature:upperCorner>
+				</feature:Envelope>
+			</feature:boundedBy>
+			<feature:geom>
+				<feature:MultiPoint srsDimension="2"
+					srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+					<feature:pointMember>
+						<feature:Point srsDimension="2">
+							<feature:pos>391820.455 6673185.7874</feature:pos>
+						</feature:Point>
+					</feature:pointMember>
+					<feature:pointMember>
+						<feature:Point srsDimension="2">
+							<feature:pos>391892.8962 6673138.0936</feature:pos>
+						</feature:Point>
+					</feature:pointMember>
+					<feature:pointMember>
+						<feature:Point srsDimension="2">
+							<feature:pos>391810.529 6673237.9559</feature:pos>
+						</feature:Point>
+					</feature:pointMember>
+				</feature:MultiPoint>
+			</feature:geom>
+			<feature:___>x</feature:___>
+			<feature:Kohteiden_lukumäärä>3</feature:Kohteiden_lukumäärä>
+			<feature:Summa>1175523.8802</feature:Summa>
+			<feature:Pienin_arvo>391810.529</feature:Pienin_arvo>
+			<feature:Suurin_arvo>391892.8962</feature:Suurin_arvo>
+			<feature:Keskiarvo>391841.2934</feature:Keskiarvo>
+			<feature:Keskihajonta>36.71301399487297</feature:Keskihajonta>
+			<feature:Mediaani>391820.455</feature:Mediaani>
+		</feature:analysis_data>
+	</feature:featureMember>
+	<feature:featureMember>
+		<feature:analysis_data
+			feature:id="fid--74e66f5b_16c84cead53_-7feb">
+			<feature:boundedBy>
+				<feature:Envelope srsDimension="2"
+					srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+					<feature:lowerCorner>391810.529 6673138.0936</feature:lowerCorner>
+					<feature:upperCorner>391892.8962 6673237.9559</feature:upperCorner>
+				</feature:Envelope>
+			</feature:boundedBy>
+			<feature:geom>
+				<feature:MultiPoint srsDimension="2"
+					srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+					<feature:pointMember>
+						<feature:Point srsDimension="2">
+							<feature:pos>391820.455 6673185.7874</feature:pos>
+						</feature:Point>
+					</feature:pointMember>
+					<feature:pointMember>
+						<feature:Point srsDimension="2">
+							<feature:pos>391892.8962 6673138.0936</feature:pos>
+						</feature:Point>
+					</feature:pointMember>
+					<feature:pointMember>
+						<feature:Point srsDimension="2">
+							<feature:pos>391810.529 6673237.9559</feature:pos>
+						</feature:Point>
+					</feature:pointMember>
+				</feature:MultiPoint>
+			</feature:geom>
+			<feature:___>y</feature:___>
+			<feature:Kohteiden_lukumäärä>3</feature:Kohteiden_lukumäärä>
+			<feature:Summa>2.0019561836900003E7</feature:Summa>
+			<feature:Pienin_arvo>6673138.0936</feature:Pienin_arvo>
+			<feature:Suurin_arvo>6673237.9559</feature:Suurin_arvo>
+			<feature:Keskiarvo>6673187.278966668</feature:Keskiarvo>
+			<feature:Keskihajonta>40.78225364591238</feature:Keskihajonta>
+			<feature:Mediaani>6673185.7874</feature:Mediaani>
+		</feature:analysis_data>
+	</feature:featureMember>
+</wfs:FeatureCollection>

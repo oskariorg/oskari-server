@@ -1,5 +1,6 @@
 package fi.nls.oskari.analysis;
 
+import fi.mml.map.mapwindow.util.OskariLayerWorker;
 import fi.nls.oskari.domain.map.analysis.Analysis;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
@@ -9,6 +10,7 @@ import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.oskari.permissions.model.PermissionType;
 
 /**
  * Provides utility methods for analysis
@@ -179,6 +181,18 @@ public class AnalysisHelper {
         }
 
         return json;
+    }
+
+    public static JSONObject getAnalysisPermissions(boolean hasPublish, boolean hasDownload) {
+
+        final JSONObject permissions = new JSONObject();
+        if (hasPublish) {
+            JSONHelper.putValue(permissions, PermissionType.PUBLISH.getJsonKey(), OskariLayerWorker.PUBLICATION_PERMISSION_OK);
+        }
+        if (hasDownload) {
+            JSONHelper.putValue(permissions, PermissionType.DOWNLOAD.getJsonKey(), OskariLayerWorker.DOWNLOAD_PERMISSION_OK);
+        }
+        return permissions;
     }
 
     private static JSONArray getAnalyseFields(Analysis analysis) {

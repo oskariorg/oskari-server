@@ -1,8 +1,6 @@
 package fi.nls.oskari.control.view;
 
 import fi.mml.map.mapwindow.util.OskariLayerWorker;
-import fi.mml.portti.service.db.permissions.PermissionsService;
-import fi.mml.portti.service.db.permissions.PermissionsServiceIbatisImpl;
 import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.control.view.modifier.bundle.MapfullHandler;
 import fi.nls.oskari.control.view.modifier.param.WFSHighlightParamHandler;
@@ -17,6 +15,7 @@ import fi.nls.oskari.map.view.BundleService;
 import fi.nls.oskari.map.view.BundleServiceMybatisImpl;
 import fi.nls.oskari.map.view.ViewService;
 import fi.nls.oskari.map.view.AppSetupServiceMybatisImpl;
+import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.util.DuplicateException;
 import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.view.modifier.ViewModifier;
@@ -31,11 +30,16 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
+import org.oskari.permissions.PermissionService;
+import org.oskari.permissions.PermissionServiceMybatisImpl;
+import org.oskari.permissions.model.ResourceType;
+import org.oskari.service.util.ServiceFactory;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.util.Collections;
+import java.util.Optional;
 import java.util.Properties;
 
 import static org.junit.Assert.fail;
@@ -52,7 +56,7 @@ import static org.powermock.api.mockito.PowerMockito.whenNew;
  * To change this template use File | Settings | File Templates.
  */
 @RunWith(PowerMockRunner.class)
-@PrepareForTest(value = {WFSHighlightParamHandler.class, OskariLayerWorker.class, PropertyUtil.class, MapfullHandler.class})
+@PrepareForTest(value = {WFSHighlightParamHandler.class, OskariLayerWorker.class, PropertyUtil.class, MapfullHandler.class, ServiceFactory.class})
 @PowerMockIgnore({"com.sun.org.apache.xalan.*", "com.sun.org.apache.xerces.*", "javax.xml.*", "org.w3c.dom.*", "org.xml.*", "com.sun.org.apache.xml.*"})
 public class GetAppSetupHandlerRolesFromPropertiesTest extends JSONActionRouteTest {
 
@@ -71,6 +75,8 @@ public class GetAppSetupHandlerRolesFromPropertiesTest extends JSONActionRouteTe
         } catch (DuplicateException e) {
             fail("Should not throw exception" + e.getStackTrace());
         }
+        // To get fresh start for components
+        OskariComponentManager.teardown();
     }
 
     @Before
@@ -99,6 +105,8 @@ public class GetAppSetupHandlerRolesFromPropertiesTest extends JSONActionRouteTe
     @AfterClass
     public static void teardown() {
         PropertyUtil.clearProperties();
+        // To get fresh start for components
+        OskariComponentManager.teardown();
     }
 
     @Test
@@ -183,16 +191,15 @@ public class GetAppSetupHandlerRolesFromPropertiesTest extends JSONActionRouteTe
 
     private void mockInternalServices() throws Exception {
 
-        final PermissionsService service = mock(PermissionsServiceIbatisImpl.class);
-        doReturn(
-                Collections.emptySet()
-        ).when(service).getResourcesWithGrantedPermissions(anyString(), any(User.class), anyString());
+        final PermissionService service = mock(PermissionServiceMybatisImpl.class);
+        // permission check is skipped here so just mock the call
+        doReturn(Optional.empty()).when(service).findResource(eq(ResourceType.maplayer.name()), any(String.class));
 
         // return mocked  bundle service if a new one is created (in paramhandlers for example)
         // classes doing this must be listed in PrepareForTest annotation
-        whenNew(PermissionsServiceIbatisImpl.class).withNoArguments().
+        whenNew(PermissionServiceMybatisImpl.class).withNoArguments().
                 thenAnswer(new Answer<Object>() {
-                    public Object answer(InvocationOnMock invocation) throws Throwable {
+                    public Object answer(InvocationOnMock invocation) {
                         return service;
                     }
                 });

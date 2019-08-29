@@ -5,8 +5,9 @@ import fi.nls.oskari.control.ActionDeniedException;
 import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.control.ActionParamsException;
+import fi.nls.oskari.domain.User;
+import fi.nls.oskari.domain.map.Feature;
 import fi.nls.oskari.domain.map.OskariLayer;
-import fi.nls.oskari.domain.map.wfs.WFSLayerConfiguration;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.util.JSONHelper;
@@ -16,6 +17,7 @@ import org.apache.http.client.ClientProtocolException;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.opengis.referencing.FactoryException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -24,8 +26,14 @@ import org.xml.sax.SAXException;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.stream.XMLStreamException;
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @OskariActionRoute("InsertFeature")
 public class InsertFeatureHandler extends AbstractFeatureHandler {
@@ -35,46 +43,50 @@ public class InsertFeatureHandler extends AbstractFeatureHandler {
     public void handlePost(ActionParameters params) throws ActionException {
         params.requireLoggedInUser();
 
-        JSONObject jsonPayload = params.getHttpParamAsJSON("featureData");
-        OskariLayer layer = getLayer(jsonPayload.optString("layerId"));
+        try {
+            JSONArray paramFeatures = new JSONArray(params.getHttpParam("featureData"));
+            JSONArray updatedFeatureIds = new JSONArray();
 
-        if (!canEdit(layer, params.getUser())) {
-            throw new ActionDeniedException("User doesn't have edit permission for layer: " + layer.getId());
+            Map<Integer, OskariLayer> layers = getLayers(paramFeatures);
+            hasUserPermissionEditLayers(layers, params.getUser());
+
+            for (int i = 0; i < paramFeatures.length(); i++) {
+                JSONObject featureJSON = paramFeatures.getJSONObject(i);
+                OskariLayer layer = getLayer(featureJSON.optString("layerId"));
+
+                final String wfstMessage = createWFSTMessage(featureJSON);
+                LOG.debug("Inserting feature to service at", layer.getUrl(), "with payload", wfstMessage);
+                final String responseString = postPayload(layer, wfstMessage);
+                updatedFeatureIds.put(parseFeatureIdFromResponse(responseString));
+            }
+
+            flushLayerTilesCache(layers);
+
+            ResponseHelper.writeResponse(params, JSONHelper.createJSONObject("fids", updatedFeatureIds));
+        } catch (JSONException e) {
+            LOG.error(e, "JSON processing error");
+            throw new ActionException("JSON processing error", e);
         }
-
-        final WFSLayerConfiguration wfsMetadata = getWFSConfiguration(layer.getId());
-        final String wfstMessage = createWFSTMessage(jsonPayload, layer, wfsMetadata);
-        LOG.debug("Inserting feature to service at", layer.getUrl(), "with payload", wfstMessage);
-        final String responseString = postPayload(layer, wfstMessage);
-        final String updatedFeatureId = parseFeatureIdFromResponse(responseString);
-
-        flushLayerTilesCache(layer.getId());
-        ResponseHelper.writeResponse(params, JSONHelper.createJSONObject("fid", updatedFeatureId));
     }
 
-    private String createWFSTMessage(JSONObject jsonPayload, OskariLayer layer, WFSLayerConfiguration wfsMetadata)
+    private String createWFSTMessage(JSONObject jsonPayload)
             throws ActionException {
-        final String srsName = JSONHelper.getStringFromJSON(jsonPayload, "srsName", "http://www.opengis.net/gml/srs/epsg.xml#3067");
-        // TODO: rewrite to use wfs-t related code under myplaces OR atleast using an xml lib
-        final StringBuilder requestData = new StringBuilder("<wfs:Transaction service='WFS' version='1.1.0' xmlns:ogc='http://www.opengis.net/ogc' xmlns:wfs='http://www.opengis.net/wfs'><wfs:Insert><" + layer.getName() + " xmlns:" + wfsMetadata.getFeatureNamespace() + "='" + wfsMetadata.getFeatureNamespaceURI() + "'>");
-        try {
-            final JSONArray jsonArray = jsonPayload.getJSONArray("featureFields");
-            for (int i = 0; i < jsonArray.length(); i++) {
-                String key = jsonArray.getJSONObject(i).getString("key");
-                String value = jsonArray.getJSONObject(i).getString("value");
-                if (value.isEmpty() == false) {
-                    requestData.append("<" + key + ">" + value + "</" + key + ">");
-                }
-            }
 
-            if (jsonPayload.has("geometries")) {
-                insertGeometries(wfsMetadata.getGMLGeometryProperty(), requestData, jsonPayload.getJSONObject("geometries"), srsName);
-            }
-        } catch (JSONException ex) {
-            throw new ActionParamsException("Couldn't create WFS-T message from params", jsonPayload.toString(), ex);
+        try {
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            Feature feature = getFeature(jsonPayload);
+            FeatureWFSTRequestBuilder.insertFeature(baos, feature);
+            return baos.toString();
+        } catch (XMLStreamException e) {
+            LOG.error(e, "Failed to create WFS-T request");
+            throw new ActionException("Failed to create WFS-T request", e);
+        } catch (JSONException e) {
+            LOG.error(e, "JSON processing error");
+            throw new ActionException("JSON processing error", e);
+        } catch (FactoryException e) {
+            LOG.error(e, "Failed to create WFS-T request (crs)");
+            throw new ActionException("Failed to create WFS-T request (crs)", e);
         }
-        requestData.append("</" + layer.getName() + "></wfs:Insert></wfs:Transaction>");
-        return requestData.toString();
     }
 
     private String parseFeatureIdFromResponse(String response)
@@ -82,11 +94,11 @@ public class InsertFeatureHandler extends AbstractFeatureHandler {
 
         if (response == null || response.indexOf("Exception") > -1) {
             LOG.error("Exception from WFS-T insert operation", response);
-            throw new ActionParamsException("WFS-T operation failed");
+            throw new ActionException("WFS-T operation failed");
         }
 
         if (response.indexOf("<wfs:totalInserted>1</wfs:totalInserted>") == -1) {
-            throw new ActionParamsException("Didn't get the expected response from service", response);
+            throw new ActionException("Didn't get the expected response from service " + response);
         }
 
         try {
@@ -112,17 +124,6 @@ public class InsertFeatureHandler extends AbstractFeatureHandler {
             LOG.error(ex, "SAX processing error");
             throw new ActionException("SAX processing error", ex);
         }
-    }
-
-    protected void insertGeometries(String geometryProperty, StringBuilder requestData, JSONObject geometries, String srsName) throws ActionParamsException, JSONException {
-        String geometryType = geometries.getString("type");
-        if(!isAllowedGeomType(geometryType)) {
-            throw new ActionParamsException("Invalid geometry type: " + geometryProperty);
-        }
-        JSONArray data = geometries.getJSONArray("data");
-        requestData.append("<" + geometryProperty + ">");
-        requestData.append(getGeometry(geometryType, data, srsName));
-        requestData.append("</" + geometryProperty + ">");
     }
 }
 

@@ -1,6 +1,5 @@
 package fi.nls.oskari.map.analysis.domain;
 
-import fi.mml.portti.domain.permissions.Permissions;
 import fi.nls.oskari.domain.map.analysis.Analysis;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -21,17 +20,16 @@ public class AnalysisLayer {
     private String inputAnalysisId = null;
     private String inputCategoryId = null;
     private String inputUserdataId = null;
-    
-    private List<Permissions> permissions = null;
+
     private String orgName = "";
     private String inspire = "";
     private Integer opacity;
     private Double minScale;
     private Double maxScale;
-    private List<String> fields = new ArrayList<String>();
-    private List<String> locales = new ArrayList<String>();
-    private Map<String, String> fieldsMap = new ConcurrentHashMap<String, String>();
-    private Map<String, String> fieldtypeMap = new ConcurrentHashMap<String, String>();
+    private List<String> fields = new ArrayList<>();
+    private List<String> locales = new ArrayList<>();
+    private Map<String, String> fieldsMap = new ConcurrentHashMap<>();
+    private Map<String, String> fieldtypeMap = new ConcurrentHashMap<>();
 
     private List<String> aggreFunctions;
     private String style;
@@ -89,14 +87,6 @@ public class AnalysisLayer {
 
     public void setInputAnalysisId(String inputAnalysisId) {
         this.inputAnalysisId = inputAnalysisId;
-    }
-
-    public List<Permissions> getPermissions() {
-        return permissions;
-    }
-
-    public void setPermissions(List<Permissions> permissions) {
-        this.permissions = permissions;
     }
 
     public String getOrgName() {

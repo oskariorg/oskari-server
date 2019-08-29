@@ -13,6 +13,9 @@ import org.geotools.data.simple.SimpleFeatureIterator;
 import org.geotools.feature.DefaultFeatureCollection;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
+import org.opengis.feature.simple.SimpleFeatureType;
+import org.opengis.feature.type.GeometryDescriptor;
+import org.opengis.feature.type.GeometryType;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.oskari.service.mvt.SimpleFeaturesMVTEncoder;
 import org.oskari.service.mvt.TileCoord;
@@ -20,6 +23,7 @@ import org.oskari.service.mvt.WFSTileGrid;
 import org.oskari.service.user.UserLayerService;
 
 import com.vividsolutions.jts.geom.Envelope;
+import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.MultiPoint;
 import com.vividsolutions.jts.geom.Point;
 
@@ -30,6 +34,7 @@ import fi.nls.oskari.control.ActionConstants;
 import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.control.ActionParamsException;
+
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.service.ServiceRuntimeException;
 import fi.nls.oskari.util.IOHelper;
@@ -298,8 +303,35 @@ public class GetWFSVectorTileHandler extends AbstractWFSFeaturesHandler {
     }
 
     private boolean isOnlyPointFeatures(SimpleFeatureCollection sfc) {
-        Class<?> binding = sfc.getSchema().getGeometryDescriptor().getType().getBinding();
+        SimpleFeatureType sft = sfc.getSchema();
+        if (sft == null) {
+            return isOnlyPointFeaturesIterate(sfc);
+        }
+        GeometryDescriptor geomDesc = sft.getGeometryDescriptor();
+        if (geomDesc == null) {
+            return isOnlyPointFeaturesIterate(sfc);
+        }
+        GeometryType geomType = geomDesc.getType();
+        if (geomType == null) {
+            return isOnlyPointFeaturesIterate(sfc);
+        }
+        Class<?> binding = geomType.getBinding();
+        if (binding == null) {
+            return isOnlyPointFeaturesIterate(sfc);
+        }
         return binding == Point.class || binding == MultiPoint.class;
+    }
+
+    private boolean isOnlyPointFeaturesIterate(SimpleFeatureCollection sfc) {
+        SimpleFeatureIterator it = sfc.features();
+        while (it.hasNext()) {
+            Geometry g = (Geometry) it.next().getDefaultGeometry();
+            if (g == null || g instanceof Point || g instanceof MultiPoint) {
+                continue;
+            }
+            return false;
+        }
+        return true;
     }
 
 }

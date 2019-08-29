@@ -28,7 +28,8 @@ public class OskariFeatureClient {
         this.wfsClient = Objects.requireNonNull(wfsClient);
     }
 
-    private CoordinateReferenceSystem getNativeCRS() {
+    public CoordinateReferenceSystem getNativeCRS() {
+
         if (nativeCRS == null) {
             try {
                 String nativeSrs = PropertyUtil.get(PROPERTY_NATIVE_SRS, "EPSG:4326");
@@ -43,7 +44,6 @@ public class OskariFeatureClient {
     public SimpleFeatureCollection getFeatures(String id, OskariLayer layer, ReferencedEnvelope bbox,
             CoordinateReferenceSystem targetCRS, Optional<UserLayerService> processor) throws ServiceRuntimeException {
         CoordinateReferenceSystem nativeCRS = getNativeCRS();
-
         boolean needsTransform = !CRS.equalsIgnoreMetadata(nativeCRS, targetCRS);
 
         // Request features in nativeCRS (of the installation)

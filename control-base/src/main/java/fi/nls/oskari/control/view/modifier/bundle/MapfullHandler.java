@@ -1,9 +1,6 @@
 package fi.nls.oskari.control.view.modifier.bundle;
 
 import fi.mml.map.mapwindow.util.OskariLayerWorker;
-import fi.mml.portti.domain.permissions.Permissions;
-import fi.mml.portti.service.db.permissions.PermissionsService;
-import fi.mml.portti.service.db.permissions.PermissionsServiceIbatisImpl;
 import fi.nls.oskari.analysis.AnalysisHelper;
 import fi.nls.oskari.annotation.OskariViewModifier;
 import fi.nls.oskari.domain.User;
@@ -31,6 +28,9 @@ import org.json.JSONObject;
 import org.json.JSONTokener;
 import org.oskari.map.userlayer.service.UserLayerDataService;
 import org.oskari.map.userlayer.service.UserLayerDbService;
+import org.oskari.permissions.PermissionService;
+import org.oskari.permissions.model.PermissionType;
+import org.oskari.service.util.ServiceFactory;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -43,7 +43,7 @@ import java.util.Set;
 public class MapfullHandler extends BundleHandler {
 
     private static final Logger LOGGER = LogFactory.getLogger(MapfullHandler.class);
-    private static PermissionsService permissionsService = new PermissionsServiceIbatisImpl();
+    private static PermissionService permissionsService;
 
     // FIXME: default srs is hardcoded into frontend if srs is not defined in mapOptions!!
     public static final String DEFAULT_MAP_SRS = "EPSG:3067";
@@ -69,7 +69,7 @@ public class MapfullHandler extends BundleHandler {
 
     private static final String PLUGIN_LAYERSELECTION = "Oskari.mapframework.bundle.mapmodule.plugin.LayerSelectionPlugin";
     private static final String PLUGIN_GEOLOCATION = "Oskari.mapframework.bundle.mapmodule.plugin.GeoLocationPlugin";
-    public static final String PLUGIN_SEARCH = "Oskari.mapframework.bundle.mapmodule.plugin.SearchPlugin";
+    public static final String PLUGIN_WFSVECTORLAYER = "Oskari.wfsvector.WfsVectorLayerPlugin";
     public static final String EPSG_PROJ4_FORMATS = "epsg_proj4_formats.json";
 
     private static MyPlacesService myPlaceService = null;
@@ -86,11 +86,15 @@ public class MapfullHandler extends BundleHandler {
         myPlaceService = OskariComponentManager.getComponentOfType(MyPlacesService.class);
         userLayerService = OskariComponentManager.getComponentOfType(UserLayerDbService.class);
         mapLayerService = OskariComponentManager.getComponentOfType(OskariLayerService.class);
+        // to prevent mocking issues in JUnit tests....
+        permissionsService = ServiceFactory.getPermissionsService(); // OskariComponentManager.getComponentOfType(PermissionService.class);
         epsgInit();
         svgInit();
         pluginHandlers = new HashMap<>();
         registerPluginHandler(LogoPluginHandler.PLUGIN_NAME, new LogoPluginHandler());
         registerPluginHandler(WfsLayerPluginHandler.PLUGIN_NAME, new WfsLayerPluginHandler());
+        registerPluginHandler(MyPlacesLayerPluginHandler.PLUGIN_NAME, new MyPlacesLayerPluginHandler());
+        registerPluginHandler(UserLayerPluginHandler.PLUGIN_NAME, new UserLayerPluginHandler());
     }
 
     public void registerPluginHandler (String pluginId, PluginHandler handler) {
@@ -123,7 +127,8 @@ public class MapfullHandler extends BundleHandler {
                 useDirectURLForMyplaces,
                 params.isModifyURLs(),
                 mapSRS,
-                forceProxy);
+                forceProxy,
+                JSONHelper.getJSONArray(mapfullConfig, KEY_PLUGINS));
 
         setProjDefsForMapConfig(mapfullConfig, mapSRS);
         // overwrite layers
@@ -169,7 +174,7 @@ public class MapfullHandler extends BundleHandler {
                                                final String mapSRS) {
         return getFullLayerConfig(
                 layersArray, user, lang, viewID, viewType, bundleIds,
-                useDirectURLForMyplaces, modifyURLs, mapSRS, false);
+                useDirectURLForMyplaces, modifyURLs, mapSRS, false, null);
     }
 
     /**
@@ -247,6 +252,7 @@ public class MapfullHandler extends BundleHandler {
      * @param useDirectURLForMyplaces
      * @param modifyURLs              false to keep urls as is, true to modify them for easier proxy forwards
      * @param forceProxy              false to keep urls as is, true to proxy all layers
+     * @param plugins
      * @return
      */
     public static JSONArray getFullLayerConfig(final JSONArray layersArray,
@@ -255,7 +261,8 @@ public class MapfullHandler extends BundleHandler {
                                                final boolean useDirectURLForMyplaces,
                                                final boolean modifyURLs,
                                                final String mapSRS,
-                                               final boolean forceProxy) {
+                                               final boolean forceProxy,
+                                               final JSONArray plugins) {
 
         // Create a list of layer ids
         final List<Integer> layerIdList = new ArrayList<>();
@@ -333,7 +340,7 @@ public class MapfullHandler extends BundleHandler {
 
         // construct layers JSON
         final JSONArray prefetch = getLayersArray(struct);
-        appendMyPlacesLayers(prefetch, publishedMyPlaces, user, viewID, lang, bundleIds, useDirectURLForMyplaces, modifyURLs);
+        appendMyPlacesLayers(prefetch, publishedMyPlaces, user, viewID, lang, bundleIds, useDirectURLForMyplaces, modifyURLs, plugins);
         appendAnalysisLayers(prefetch, publishedAnalysis, user, viewID, lang, bundleIds, useDirectURLForMyplaces, modifyURLs);
         appendUserLayers(prefetch, publishedUserLayers, user, viewID, bundleIds, mapSRS);
         return prefetch;
@@ -350,7 +357,7 @@ public class MapfullHandler extends BundleHandler {
 
         final boolean analyseBundlePresent = bundleIds.contains(BUNDLE_ANALYSE);
         final Set<String> permissions = permissionsService.getResourcesWithGrantedPermissions(
-                AnalysisLayer.TYPE, user, Permissions.PERMISSION_TYPE_VIEW_PUBLISHED);
+                AnalysisLayer.TYPE, user, PermissionType.VIEW_PUBLISHED.name());
         LOGGER.debug("Analysis layer permissions for published view", permissions);
 
         for (Long id : publishedAnalysis) {
@@ -393,7 +400,8 @@ public class MapfullHandler extends BundleHandler {
                                              final String lang,
                                              final Set<String> bundleIds,
                                              final boolean useDirectURL,
-                                             final boolean modifyURLs) {
+                                             final boolean modifyURLs,
+                                             final JSONArray plugins) {
         if (publishedMyPlaces.isEmpty()) {
             return;
         }
@@ -416,8 +424,13 @@ public class MapfullHandler extends BundleHandler {
                 continue;
             }
 
-            final JSONObject myPlaceLayer = myPlaceService.getCategoryAsWmsLayerJSON(
-                    mpLayer, lang, useDirectURL, user.getUuid(), modifyURLs);
+            JSONObject myPlaceLayer = null;
+            if (plugins != null && plugins.toString().indexOf(PLUGIN_WFSVECTORLAYER) != -1) {
+                myPlaceLayer = myPlaceService.getCategoryAsWfsLayerJSON(mpLayer, lang);
+            } else {
+                myPlaceLayer = myPlaceService.getCategoryAsWmsLayerJSON(
+                        mpLayer, lang, useDirectURL, user.getUuid(), modifyURLs);
+            }
             if (myPlaceLayer != null) {
                 layerList.put(myPlaceLayer);
             }

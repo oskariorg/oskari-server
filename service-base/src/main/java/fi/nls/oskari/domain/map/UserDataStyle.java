@@ -5,6 +5,10 @@ import fi.nls.oskari.util.JSONHelper;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.json.simple.JSONArray;
+
+import java.util.Arrays;
+import java.util.stream.Collectors;
 
 public class UserDataStyle {
 
@@ -23,6 +27,29 @@ public class UserDataStyle {
     private String stroke_dasharray;
     private String border_linejoin;
     private String border_dasharray;
+
+    private String text_fill_color;
+    private String text_stroke_color;
+    private Integer text_stroke_width;
+    private String[] text_label_property;
+    private String text_label;
+    private String text_align;
+    private Integer text_offset_x;
+    private Integer text_offset_y;
+    private String font;
+
+
+    private static final String KEY_DEFAULT_STYLE = "default";
+    private static final String KEY_FEATURE_STYLE = "featureStyle";
+    private static final String KEY_RENDER_MODE = "renderMode";
+    private static final String KEY_LABEL_PROPERTY = "labelProperty";
+    private static final String KEY_COLOR = "color";
+    private static final String KEY_TEXT_ALIGN = "textAlign";
+    private static final String KEY_OFFSET_X = "10";
+    private static final String KEY_FILL = "fill";
+    private static final String KEY_STROKE = "stroke";
+    private static final String KEY_TEXT = "text";
+    private static final String KEY_FONT = "font";
 
     public void initDefaultStyle () {
         //point
@@ -43,6 +70,15 @@ public class UserDataStyle {
         setBorder_color("#000000");
         setFill_color("#ffde00");
         setFill_pattern(-1);
+    }
+
+    public void populateDefaultTextStyle() {
+        setFont("bold 14px sans-serif");
+        setText_fill_color("#000000");
+        setText_stroke_color("#FFFFFF");
+        setText_stroke_width(2);
+        setText_align("left");
+        setText_offset_x(10);
     }
 
     public JSONObject getStyleForLayerOptions() {
@@ -164,6 +200,24 @@ public class UserDataStyle {
         JSONHelper.putValue(fillArea, "pattern", getFill_pattern());
         JSONHelper.putValue(fill, "area", fillArea);
         JSONHelper.putValue(json, "fill", fill);
+        // text
+        if (text_label != null || text_label_property != null) {
+            JSONObject text = JSONHelper.createJSONObject( "font", font);
+            JSONHelper.putValue(text, "textAlign", text_align);
+            JSONHelper.putValue(text, "offsetX", text_offset_x);
+            JSONObject textStroke = JSONHelper.createJSONObject( "color", text_stroke_color);
+            JSONHelper.putValue(stroke, "width", text_stroke_width);
+            JSONHelper.putValue(text, "stroke", textStroke);
+            JSONHelper.putValue(text, "fill", JSONHelper.createJSONObject("color", text_fill_color));
+            if (text_label != null) {
+                JSONHelper.putValue(text, "label", text_label);
+            } else if (text_label_property != null) {
+                JSONArray properties = new JSONArray();
+                properties.addAll(Arrays.asList(text_label_property));
+                JSONHelper.putValue(text, "labelProperty", properties);
+            }
+            JSONHelper.putValue(json, "text", text);
+        }
 
         return json;
     }
@@ -292,5 +346,90 @@ public class UserDataStyle {
 
     public void setBorder_dasharray(String border_dasharray) {
         this.border_dasharray = border_dasharray;
+    }
+
+    public String getText_stroke_color() {
+        return text_stroke_color;
+    }
+
+    public void setText_stroke_color(String text_stroke_color) {
+        this.text_stroke_color = text_stroke_color;
+    }
+
+    public String getText_fill_color() {
+        return text_fill_color;
+    }
+
+    public void setText_fill_color(String text_fill_color) {
+        this.text_fill_color = text_fill_color;
+    }
+
+    public String[] getText_label_property() {
+        return text_label_property;
+    }
+
+    public void setText_label_property(String text_label_property) {
+        this.text_label_property = new String[]{text_label_property};
+        if (text_label_property != null && this.font == null) {
+            this.populateDefaultTextStyle();
+        }
+    }
+
+    public void setText_label_property(String[] text_label_property) {
+        this.text_label_property = text_label_property;
+        if (text_label_property != null && this.font == null) {
+            this.populateDefaultTextStyle();
+        }
+    }
+
+    public String getText_label() {
+        return text_label;
+    }
+
+    public void setText_label(String text_label) {
+        this.text_label = text_label;
+        if (text_label != null && this.font == null) {
+            this.populateDefaultTextStyle();
+        }
+    }
+
+    public String getText_align() {
+        return text_align;
+    }
+
+    public void setText_align(String text_align) {
+        this.text_align = text_align;
+    }
+
+    public Integer getText_offset_x() {
+        return text_offset_x;
+    }
+
+    public void setText_offset_x(Integer text_offset_x) {
+        this.text_offset_x = text_offset_x;
+    }
+
+    public Integer getText_offset_y() {
+        return text_offset_y;
+    }
+
+    public void setText_offset_y(Integer text_offset_y) {
+        this.text_offset_y = text_offset_y;
+    }
+
+    public String getFont() {
+        return font;
+    }
+
+    public void setFont(String font) {
+        this.font = font;
+    }
+
+    public Integer getText_stroke_width() {
+        return text_stroke_width;
+    }
+
+    public void setText_stroke_width(Integer text_stroke_width) {
+        this.text_stroke_width = text_stroke_width;
     }
 }

@@ -1,5 +1,6 @@
 package fi.nls.oskari.control.data;
 
+import fi.mml.portti.service.search.SearchService;
 import fi.nls.oskari.domain.User;
 import fi.nls.oskari.search.channel.SearchChannel;
 import fi.nls.oskari.search.channel.SearchableChannel;
@@ -32,12 +33,18 @@ public class SearchOptionsHandlerTest extends JSONActionRouteTest {
         }
     }
 
+    private SearchOptionsHandler getHandler() {
+        SearchOptionsHandler handler = new SearchOptionsHandler();
+        handler.setSearchService(mock(SearchService.class));
+        handler.init();
+        return handler;
+    }
+
     @Test
     public void testShouldBeIncludedNonTextualSearch() throws Exception {
         SearchChannel channel = mock(SearchChannel.class);
         mockCapabilities(channel, false);
-        SearchOptionsHandler handler = new SearchOptionsHandler();
-        handler.init();
+        SearchOptionsHandler handler = getHandler();
         assertFalse("Channel should not permitted if there's no textual capabilities", handler.shouldBeIncluded(channel, getGuestUser()));
     }
     @Test
@@ -45,8 +52,7 @@ public class SearchOptionsHandlerTest extends JSONActionRouteTest {
         SearchChannel channel = mock(SearchChannel.class);
         mockCapabilities(channel, true);
         doReturn(true).when(channel).hasPermission(getGuestUser());
-        SearchOptionsHandler handler = new SearchOptionsHandler();
-        handler.init();
+        SearchOptionsHandler handler = getHandler();
         assertTrue("Channel should be permitted if there's textual capabilities, no blacklist and user is permitted", handler.shouldBeIncluded(channel, getGuestUser()));
     }
 
@@ -57,8 +63,7 @@ public class SearchOptionsHandlerTest extends JSONActionRouteTest {
         mockCapabilities(channel, true);
         doReturn(false).when(channel).hasPermission(getGuestUser());
         doReturn(true).when(channel).hasPermission(getLoggedInUser());
-        SearchOptionsHandler handler = new SearchOptionsHandler();
-        handler.init();
+        SearchOptionsHandler handler = getHandler();
         assertFalse("Channel should not permitted for guest", handler.shouldBeIncluded(channel, getGuestUser()));
         assertTrue("Channel should be permitted for user", handler.shouldBeIncluded(channel, getLoggedInUser()));
     }
@@ -73,15 +78,13 @@ public class SearchOptionsHandlerTest extends JSONActionRouteTest {
         // blacklisted - should not be allowed
         PropertyUtil.addProperty("actionhandler.SearchOptions.blacklist", "TestChannel");
 
-        SearchOptionsHandler handler = new SearchOptionsHandler();
-        handler.init();
+        SearchOptionsHandler handler = getHandler();
         assertFalse("Channel should not permitted for guest", handler.shouldBeIncluded(channel, getGuestUser()));
         assertFalse("Channel should be permitted for user", handler.shouldBeIncluded(channel, getLoggedInUser()));
 
         // clear blacklist - should be allowed
         PropertyUtil.clearProperties();
-        handler = new SearchOptionsHandler();
-        handler.init();
+        handler = getHandler();
         assertTrue("Channel should not permitted for guest", handler.shouldBeIncluded(channel, getGuestUser()));
         assertTrue("Channel should be permitted for user", handler.shouldBeIncluded(channel, getLoggedInUser()));
 

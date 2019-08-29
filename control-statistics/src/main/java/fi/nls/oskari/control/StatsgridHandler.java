@@ -56,8 +56,6 @@ public class StatsgridHandler extends BundleHandler {
     private static final String KEY_INFO = "info";
     private static final String KEY_REGIONSETS = "regionsets";
 
-    private static final StatisticalDatasourcePluginManager pluginManager = StatisticalDatasourcePluginManager.getInstance();
-
     public boolean modifyBundle(final ModifierParams params) throws ModifierException {
         final JSONObject config = getBundleConfig(params.getConfig());
 
@@ -66,12 +64,14 @@ public class StatsgridHandler extends BundleHandler {
         }
         final String language = params.getLocale().getLanguage();
 
-        List<JSONObject> sources = pluginManager.getDatasources().stream()
+        List<StatisticalDatasource> datasources = StatisticalDatasourcePluginManager.getInstance().getDatasources();
+
+        List<JSONObject> sources = datasources.stream()
                 .map(src -> toJSON(src, language))
                 .collect(Collectors.toList());
         JSONHelper.putValue(config, KEY_DATASOURCES, new JSONArray(sources));
 
-        Collection<JSONObject> regionsets = pluginManager.getDatasources().stream()
+        Collection<JSONObject> regionsets = datasources.stream()
                 // get layers from sources
                 .map(src -> src.getLayers())
                 .flatMap(layerList -> layerList.stream())

@@ -134,6 +134,8 @@ public class SpringConfig extends WebMvcConfigurerAdapter implements Application
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/xhr-prioritizer.js").addResourceLocations("classpath:service-workers/xhr-prioritizer.js");
+        String faviconPath = PropertyUtil.get("favicon.path", "classpath:favicon.ico");
+        registry.addResourceHandler("/favicon.ico").addResourceLocations(faviconPath);
     }
 
     @Bean
@@ -145,7 +147,7 @@ public class SpringConfig extends WebMvcConfigurerAdapter implements Application
         // found, instead of throwing a NoSuchMessageException
         messageSource.setUseCodeAsDefaultMessage(true);
         messageSource.setFallbackToSystemLocale(false);
-        //messageSource.setDefaultEncoding("UTF-8");
+        messageSource.setDefaultEncoding("UTF-8");
         // # -1 : never reload, 0 always reload
         boolean isDevMode = PropertyUtil.getOptional("development", true);
         if(isDevMode) {

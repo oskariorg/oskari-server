@@ -36,6 +36,7 @@ public class IOHelper {
     public static final String HEADER_REFERER = "Referer";
     public static final String HEADER_ACCEPT = "Accept";
     public static final String HEADER_ACCEPT_CHARSET = "Accept-Charset";
+    public static final String HEADER_ACCEPT_ENCODING = "Accept-Encoding";
 
     public static final String CHARSET_UTF8 = "UTF-8";
     public static final String DEFAULT_CHARSET = CHARSET_UTF8;
@@ -43,6 +44,7 @@ public class IOHelper {
     public static final String CONTENTTYPE_FORM_URLENCODED = "application/x-www-form-urlencoded";
     public static final String CONTENT_TYPE_JSON = "application/json";
     public static final String CONTENT_TYPE_XML = "application/xml";
+    public static final String ENCODING_GZIP = "gzip";
     private static final Logger log = LogFactory.getLogger(IOHelper.class);
 
     private static SSLSocketFactory TRUSTED_FACTORY;
@@ -50,7 +52,7 @@ public class IOHelper {
 
     private static int CONNECTION_TIMEOUT_MS = 3000;
     private static int READ_TIMEOUT_MS = 60000;
-    private static String MY_DOMAIN = "http://localhost:2373";
+    private static String MY_DOMAIN = "http://localhost:8080";
 
     private static boolean trustAllCerts = false;
     private static boolean trustAllHosts = false;
@@ -89,6 +91,14 @@ public class IOHelper {
      * @throws IOException
      */
     public static String readString(HttpURLConnection conn) throws IOException {
+        try {
+            // addRequestProperty() will not overwrite if something else has been set so it's safe here
+            conn.addRequestProperty(HEADER_ACCEPT_ENCODING, ENCODING_GZIP);
+        } catch (IllegalStateException ignored) {
+            log.ignore("Tried to add gzip header but connection was opened already so we are too late", ignored);
+            // too late to add headers, something was posted as payload already.
+            // Just skip and move on to reading the response
+        }
         return readString(conn, DEFAULT_CHARSET);
     }
     /**
@@ -99,7 +109,7 @@ public class IOHelper {
      * @throws IOException
      */
     public static String readString(HttpURLConnection conn, final String charset) throws IOException {
-        if("gzip".equals(conn.getContentEncoding())) {
+        if(ENCODING_GZIP.equals(conn.getContentEncoding())) {
             return readString(new GZIPInputStream(conn.getInputStream()), charset);
         }
         return readString(conn.getInputStream(), charset);
@@ -180,7 +190,7 @@ public class IOHelper {
      * @throws IOException
      */
     public static byte[] readBytes(HttpURLConnection conn) throws IOException {
-        if("gzip".equals(conn.getContentEncoding())) {
+        if(ENCODING_GZIP.equals(conn.getContentEncoding())) {
             return readBytes(new GZIPInputStream(conn.getInputStream()));
         }
         return readBytes(conn.getInputStream());

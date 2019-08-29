@@ -19,7 +19,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
+import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.HashMap;
+import java.util.Map;
 
 @Oskari(OpenStreetMapSearchChannel.ID)
 public class OpenStreetMapSearchChannel extends SearchChannel {
@@ -31,13 +34,35 @@ public class OpenStreetMapSearchChannel extends SearchChannel {
     public final static String SERVICE_SRS = "EPSG:4326";
 
     private static final String PROPERTY_SERVICE_URL = "search.channel.OPENSTREETMAP_CHANNEL.service.url";
-
+    private static final String PROPERTY_BBOX = "search.channel.OPENSTREETMAP_CHANNEL.search.bbox";
 
     @Override
     public void init() {
         super.init();
         serviceURL = PropertyUtil.get(PROPERTY_SERVICE_URL, "https://nominatim.openstreetmap.org/search");
         log.debug("ServiceURL set to " + serviceURL);
+    }
+
+    private String getUrl(SearchCriteria searchCriteria) throws UnsupportedEncodingException {
+        Map<String, String> params = new HashMap<>();
+        params.put("format", "json");
+        params.put("addressdetails", "1");
+
+        String filterBBOX = PropertyUtil.getOptional(PROPERTY_BBOX);
+        if(filterBBOX != null) {
+            params.put("bounded", "1");
+            params.put("viewbox", filterBBOX);
+        } else {
+            log.debug("Search BBOX not configured. Add property with key", PROPERTY_BBOX);
+        }
+        params.put("accept-language", searchCriteria.getLocale());
+        int maxResults = getMaxResults(searchCriteria.getMaxResults());
+        if (maxResults > 0) {
+            params.put("limit", Integer.toString(maxResults));
+        }
+        params.put("q", searchCriteria.getSearchString());
+
+        return IOHelper.constructUrl(serviceURL, params);
     }
 
     /**
@@ -48,22 +73,13 @@ public class OpenStreetMapSearchChannel extends SearchChannel {
      */
     private JSONArray getData(SearchCriteria searchCriteria) throws Exception {
         if (serviceURL == null) {
-            log.warn("ServiceURL not configured. Add property with key",PROPERTY_SERVICE_URL);
+            log.warn("ServiceURL not configured. Add property with key", PROPERTY_SERVICE_URL);
             return new JSONArray();
         }
-        StringBuffer buf = new StringBuffer(serviceURL);
-        if(serviceURL.indexOf("?") > 0)buf.append("&format=json&addressdetails=1");
-        else buf.append("?format=json&addressdetails=1");
-        // buf.append("&countrycodes=fi");
-        buf.append("&accept-language=");
-        buf.append(searchCriteria.getLocale());
-        int maxResults = getMaxResults(searchCriteria.getMaxResults());
-        if (maxResults > 0) {
-            buf.append("&limit="+Integer.toString(maxResults));
-        }
-        buf.append("&q=");
-        buf.append(URLEncoder.encode(searchCriteria.getSearchString(),"UTF-8"));
-        String data = IOHelper.readString(getConnection(buf.toString()));
+
+        String url = getUrl(searchCriteria);
+
+        String data = IOHelper.readString(getConnection(url));
         log.debug("DATA: " + data);
         return JSONHelper.createJSONArray(data);
     }

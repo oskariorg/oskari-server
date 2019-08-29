@@ -3,19 +3,22 @@ package fi.nls.oskari.myplaces;
 import fi.nls.oskari.domain.User;
 import fi.nls.oskari.domain.map.MyPlaceCategory;
 import fi.nls.oskari.domain.map.OskariLayer;
+import fi.nls.oskari.domain.map.UserDataStyle;
+import fi.nls.oskari.log.LogFactory;
+import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.map.layer.formatters.LayerJSONFormatterWFS;
 import fi.nls.oskari.map.layer.formatters.LayerJSONFormatterWMS;
-import fi.nls.oskari.permission.domain.Resource;
 import fi.nls.oskari.service.OskariComponent;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.wms.WMSCapabilities;
 import org.json.JSONObject;
+import org.oskari.permissions.model.Resource;
 
 import java.util.List;
 
 public abstract class MyPlacesService extends OskariComponent {
 
-    public static final String RESOURCE_TYPE_MYPLACES = "myplaces";
     public static final String PERMISSION_TYPE_DRAW = "DRAW";
     public static final String MYPLACES_LAYERID_PREFIX = "myplaces_";
 
@@ -23,7 +26,13 @@ public abstract class MyPlacesService extends OskariComponent {
 
     private static String MYPLACES_WMS_NAME = PropertyUtil.get("myplaces.xmlns.prefix", "ows") + ":my_places_categories";
     private static String MYPLACES_ACTUAL_WMS_URL = PropertyUtil.get("myplaces.wms.url");
-    private static final LayerJSONFormatterWMS JSON_FORMATTER = new LayerJSONFormatterWMS();
+    private static String MYPLACES_CLUSTERING = PropertyUtil.getOptional("myplaces.clustering.distance");
+    private static final LayerJSONFormatterWMS JSON_FORMATTER_WMS = new LayerJSONFormatterWMS();
+    private static final LayerJSONFormatterWFS JSON_FORMATTER_WFS = new LayerJSONFormatterWFS();
+    private static final Logger LOGGER = LogFactory.getLogger(MyPlacesService.class);
+
+    private static final String KEY_CLUSTERING_DISTANCE = "clusteringDistance";
+    private static final String KEY_STYLES = "styles";
 
     public abstract List<MyPlaceCategory> getCategories();
 
@@ -113,7 +122,44 @@ java.lang.RuntimeException: Unable to encode filter [[ geometry bbox POLYGON ((4
         // enable gfi
         capabilities.setQueryable(true);
 
-        JSONObject myPlaceLayer = JSON_FORMATTER.getJSON(layer, lang, modifyURLs, null, capabilities);
+        JSONObject myPlaceLayer = JSON_FORMATTER_WMS.getJSON(layer, lang, modifyURLs, null, capabilities);
+        // flag with metaType for frontend
+        JSONHelper.putValue(myPlaceLayer, "metaType", "published");
+        JSONHelper.putValue(myPlaceLayer, "id", MYPLACES_LAYERID_PREFIX + mpLayer.getId());
+        return myPlaceLayer;
+    }
+
+    public JSONObject getCategoryAsWfsLayerJSON(final MyPlaceCategory mpLayer, final String lang) {
+
+        final OskariLayer layer = new OskariLayer();
+        layer.setName(MYPLACES_WMS_NAME);
+        layer.setType(OskariLayer.TYPE_WFS);
+        String name = mpLayer.getCategory_name();
+        if (name == null || name.isEmpty())  {
+            name = getLayerUIName(lang);
+        }
+        layer.setName(lang, name);
+        layer.setVersion("1.1.0");
+        layer.setTitle(lang, mpLayer.getPublisher_name());
+        layer.setOpacity(50);
+
+        UserDataStyle style = mpLayer.getStyle();
+        style.setText_label_property(new String[]{"attention_text", "name"});
+
+        JSONObject options = JSONHelper.createJSONObject("renderMode", "vector");
+        JSONHelper.putValue(options, KEY_STYLES, style.getStyleForLayerOptions());
+
+        if (MYPLACES_CLUSTERING != null) {
+            try {
+                int clusteringDist = Integer.parseInt(MYPLACES_CLUSTERING);
+                JSONHelper.putValue(options, KEY_CLUSTERING_DISTANCE, clusteringDist);
+            } catch (NumberFormatException nfe) {
+                LOGGER.warn("Couldn't setup clustering for my places", nfe);
+            }
+        }
+        layer.setOptions(options);
+
+        JSONObject myPlaceLayer = JSON_FORMATTER_WFS.getJSON(layer, lang, false, null);
         // flag with metaType for frontend
         JSONHelper.putValue(myPlaceLayer, "metaType", "published");
         JSONHelper.putValue(myPlaceLayer, "id", MYPLACES_LAYERID_PREFIX + mpLayer.getId());

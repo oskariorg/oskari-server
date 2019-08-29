@@ -102,8 +102,8 @@
         <!-- gt-xsd-kml.version>9.3</gt-xsd-kml.version -->
         <flexjson.version>2.0</flexjson.version>
 
-        <mybatis.version>3.4.6</mybatis.version>
         <pdfbox.version>2.0.16</pdfbox.version>
+        <mybatis.version>3.5.1</mybatis.version>
         <hystrix.version>1.5.18</hystrix.version>
         <!-- Test deps versions -->
         <powermock.version>2.0.0</powermock.version>
@@ -112,6 +112,8 @@
         <log4j.version>2.11.1</log4j.version>
         <slf4j.version>1.7.12</slf4j.version>
         <metrics.version>4.0.3</metrics.version>
+        <h2database.version>1.4.199</h2database.version>
+        <xom.version>1.2.5</xom.version>
     </properties>
 
     <dependencies>
@@ -473,18 +475,44 @@
                 <groupId>org.springframework.security</groupId>
                 <artifactId>spring-security-web</artifactId>
                 <version>${spring-security.version}</version>
+                <exclusions>
+                    <!-- exclude aopalliance
+                    Reason: Same classes are included in spring-aop (causing conflict if we have both)
+                    -->
+                    <exclusion>
+                        <groupId>aopalliance</groupId>
+                        <artifactId>aopalliance</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.springframework.security</groupId>
                 <artifactId>spring-security-config</artifactId>
                 <version>${spring-security.version}</version>
+                 <exclusions>
+                    <!-- exclude aopalliance
+                    Reason: Same classes are included in spring-aop (causing conflict if we have both)
+                    -->
+                    <exclusion>
+                        <groupId>aopalliance</groupId>
+                        <artifactId>aopalliance</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
-                <groupId>org.springframework.security</groupId>
-                <artifactId>spring-security-crypto</artifactId>
-                <version>${spring-security.version}</version>
-            </dependency>
-
+								<groupId>org.springframework.security</groupId>
+								<artifactId>spring-security-core</artifactId>
+								<version>${spring-security.version}</version>
+								<exclusions>
+                    <!-- exclude aopalliance
+                    Reason: Same classes are included in spring-aop (causing conflict if we have both)
+                    -->
+                    <exclusion>
+                        <groupId>aopalliance</groupId>
+                        <artifactId>aopalliance</artifactId>
+                    </exclusion>
+                </exclusions>
+						</dependency>
             <dependency>
                 <groupId>xerces</groupId>
                 <artifactId>xercesImpl</artifactId>
@@ -495,6 +523,15 @@
                 <groupId>org.apache.xmlbeans</groupId>
                 <artifactId>xmlbeans</artifactId>
                 <version>${xmlbeans.version}</version>
+                <exclusions>
+                    <!-- exclude stax-api
+                    	Reason: xml-apis lib provide newer version of classes which are used (causing conflict if we have both)
+                    -->
+                    <exclusion>
+                        <groupId>stax</groupId>
+                        <artifactId>stax-api</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
 
             <dependency>
@@ -626,6 +663,12 @@
             </dependency>
 
             <dependency>
+                <groupId>com.h2database</groupId>
+                <artifactId>h2</artifactId>
+                <version>${h2database.version}</version>
+            </dependency>
+
+            <dependency>
                 <groupId>de.odysseus.staxon</groupId>
                 <artifactId>staxon</artifactId>
                 <version>${staxon.version}</version>
@@ -693,6 +736,17 @@
                     <exclusion>
                         <groupId>org.apache.james</groupId>
                         <artifactId>apache-mime4j-core</artifactId>
+                    </exclusion>
+                    <!-- exclude stax-api
+                    	Reason: xml-apis lib provide newer version of classes which are used (causing conflict if we have both)
+                     -->
+                    <exclusion>
+                        <groupId>org.apache.geronimo.specs</groupId>
+                        <artifactId>geronimo-stax-api_1.0_spec</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.apache.geronimo.specs</groupId>
+                        <artifactId>geronimo-activation_1.1_spec</artifactId>
                     </exclusion>
                 </exclusions>
             </dependency>
@@ -904,6 +958,12 @@
                 <groupId>org.apache.logging.log4j</groupId>
                 <artifactId>log4j-core</artifactId>
                 <version>${log4j.version}</version>
+            </dependency>
+            <dependency>
+		<groupId>xom</groupId>
+		<artifactId>xom</artifactId>
+		<version>${xom.version}</version>
+		<scope>provided</scope>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -1146,7 +1206,7 @@
                     <plugin>
                         <groupId>org.owasp</groupId>
                         <artifactId>dependency-check-maven</artifactId>
-                        <version>2.1.1</version>
+                        <version>5.0.0</version>
                         <executions>
                             <execution>
                                 <goals>

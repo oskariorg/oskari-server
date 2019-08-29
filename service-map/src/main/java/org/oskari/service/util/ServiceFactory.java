@@ -2,8 +2,6 @@ package org.oskari.service.util;
 
 import fi.mml.map.mapwindow.service.db.OskariMapLayerGroupServiceIbatisImpl;
 import fi.mml.map.mapwindow.service.db.OskariMapLayerGroupService;
-import fi.mml.portti.service.db.permissions.PermissionsService;
-import fi.mml.portti.service.db.permissions.PermissionsServiceIbatisImpl;
 import fi.mml.portti.service.search.SearchService;
 import fi.mml.portti.service.search.SearchServiceImpl;
 import fi.nls.oskari.map.layer.DataProviderService;
@@ -18,6 +16,8 @@ import fi.nls.oskari.service.capabilities.CapabilitiesCacheService;
 import fi.nls.oskari.service.capabilities.CapabilitiesCacheServiceMybatisImpl;
 import fi.nls.oskari.wfs.WFSLayerConfigurationService;
 import fi.nls.oskari.wfs.WFSLayerConfigurationServiceIbatisImpl;
+import org.oskari.permissions.PermissionService;
+import org.oskari.permissions.PermissionServiceMybatisImpl;
 
 public class ServiceFactory {
 
@@ -26,7 +26,7 @@ public class ServiceFactory {
     private static ViewService viewService;
     private static OskariMapLayerGroupService oskariMapLayerGroupService;
     private static OskariLayerGroupLinkService layerGroupLinkService;
-    private static PermissionsService permissionsService;
+    private static PermissionService permissionsService;
     private static SearchService searchService;
     private static CapabilitiesCacheService capabilitiesCacheService;
     private static WFSLayerConfigurationService wfsLayerService;
@@ -66,9 +66,9 @@ public class ServiceFactory {
         return layerGroupLinkService;
     }
 
-    public static PermissionsService getPermissionsService() {
+    public static PermissionService getPermissionsService() {
         if (permissionsService == null) {
-            permissionsService = new PermissionsServiceIbatisImpl();
+            permissionsService = new PermissionServiceMybatisImpl();
         }
         return permissionsService;
     }
