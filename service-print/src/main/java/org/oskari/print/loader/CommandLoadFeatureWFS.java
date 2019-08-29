@@ -60,7 +60,7 @@ public class CommandLoadFeatureWFS extends HystrixCommand<SimpleFeatureCollectio
             String id = layer.getLayerId();
             OskariLayer oskariLayer = layer.getOskariLayer();
             Optional<UserLayerService> processor = layer.getProcessor();
-            return featureClient.getFeatures(id, uuid, oskariLayer, bbox, crs, processor);
+            return featureClient.getFeatures(id, oskariLayer, bbox, crs, processor);
         } catch (Exception e) {
             e.printStackTrace();
             throw e;

@@ -40,11 +40,9 @@ public class GetWFSFeaturesHandlerTest {
         PropertyUtil.addProperty("oskari.native.srs", "EPSG:3067", true);
         Envelope envelope = new Envelope(2775356, 2875356, 8441866, 8541866);
         ReferencedEnvelope bbox = new ReferencedEnvelope(envelope, webMercator);
-<<<<<<< HEAD
-        SimpleFeatureCollection sfc = handler.featureClient.getFeatures(id, layer, bbox, nativeCRS, webMercator, Optional.empty());
-=======
-        SimpleFeatureCollection sfc = handler.featureClient.getFeatures(id, null, layer, bbox, webMercator, Optional.empty());
->>>>>>> 4b660b92c3e95bc7b5f40862b8e51d42c211fed9
+
+        SimpleFeatureCollection sfc = handler.featureClient.getFeatures(id, layer, bbox, webMercator, Optional.empty());
+
         CoordinateReferenceSystem actualCRS = sfc.getSchema().getGeometryDescriptor().getCoordinateReferenceSystem();
         assertTrue(CRS.equalsIgnoreMetadata(webMercator, actualCRS));
     }
