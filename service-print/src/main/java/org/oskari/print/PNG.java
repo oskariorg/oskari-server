@@ -11,10 +11,14 @@ import java.awt.image.BufferedImage;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Future;
+
+import org.geotools.data.simple.SimpleFeatureCollection;
+import org.oskari.print.loader.AsyncFeatureLoader;
 import org.oskari.print.loader.AsyncImageLoader;
 import org.oskari.print.request.PrintLayer;
 import org.oskari.print.request.PrintRequest;
 import org.oskari.print.wmts.WMTSCapabilitiesCache;
+import org.oskari.service.wfs.client.OskariFeatureClient;
 
 public class PNG {
 
@@ -23,7 +27,7 @@ public class PNG {
     /**
      * This method should be called via PrintService
      */
-    protected static BufferedImage getBufferedImage(PrintRequest request, WMTSCapabilitiesCache tmsCache)
+    protected static BufferedImage getBufferedImage(PrintRequest request, WMTSCapabilitiesCache tmsCache, OskariFeatureClient featureClient)
             throws ServiceException {
         final int width = request.getWidth();
         final int height = request.getHeight();
@@ -31,7 +35,7 @@ public class PNG {
         final List<PrintLayer> layers = request.getLayers();
 
         Map<Integer, Future<BufferedImage>> images = AsyncImageLoader.initLayers(request, tmsCache);
-
+        Map<Integer, Future<SimpleFeatureCollection>> featureCollections = AsyncFeatureLoader.initLayers(request, featureClient);
         BufferedImage canvas = new BufferedImage(width, height,
                 BufferedImage.TYPE_INT_ARGB);
 
@@ -39,15 +43,22 @@ public class PNG {
         try {
             for (int i = 0; i < layers.size(); i++) {
                 PrintLayer layer = layers.get(i);
-                Future<BufferedImage> image = images.get(layer.getZIndex());
+                int zIndex = layer.getZIndex();
+                Future<BufferedImage> image = images.get(zIndex);
+                BufferedImage bi = null;
+                float alpha = 1f;
                 if (image == null) {
-                    continue;
+                    // try vectorlayer, opacity handled in vector styles
+                    Future<SimpleFeatureCollection> futureFc = featureCollections.get(zIndex);
+                    bi = PDF.getVectorLayerImage(layer, futureFc, request.getBoundingBox(), width, height);
+                } else {
+                    bi = image.get();
+                    alpha = getAlpha(layer.getOpacity());
                 }
-                BufferedImage bi = image.get();
+
                 if (bi == null) {
                     continue;
                 }
-                float alpha = getAlpha(layer.getOpacity());
                 g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha));
                 g2d.drawImage(bi, 0, 0, null);
             }

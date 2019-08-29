@@ -43,7 +43,7 @@ public class PrintService {
     }
 
     public BufferedImage getPNG(PrintRequest request) throws ServiceException {
-        return PNG.getBufferedImage(request, wmtsCapsCache);
+        return PNG.getBufferedImage(request, wmtsCapsCache, featureClient);
     }
 
     public void getPDF(PrintRequest request, PDDocument doc)
