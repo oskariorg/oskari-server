@@ -41,26 +41,14 @@ public class AsyncImageLoader {
                 images.put(layer.getZIndex(), new CommandLoadImageWMTS(layer, width, height, bbox, srsName,
                         wmtsCapsCache.get(layer), request.getResolution()).queue());
                 break;
-            case "myplaces":
-                images.put(layer.getZIndex(), new CommandLoadImageMyPlaces(request.getUser(),
-                        layer, width, height, bbox, srsName).queue());
-                break;
-            case OskariLayer.TYPE_USERLAYER:
-                images.put(layer.getZIndex(), new CommandLoadImageUserLayer(request.getUser(),
-                        layer, width, height, bbox, srsName).queue());
-                break;
-            case OskariLayer.TYPE_ANALYSIS:
-                images.put(layer.getZIndex(), new CommandLoadImageAnalysis(request.getUser(),
-                        layer, width, height, bbox, srsName).queue());
-                break;
             case OskariLayer.TYPE_ARCGIS93:
                 images.put(layer.getZIndex(), new CommandLoadImageArcGISREST(layer,
                         width, height, bbox, srsName).queue());
                 break;
             }
+
         }
 
         return images;
     }
-
 }
