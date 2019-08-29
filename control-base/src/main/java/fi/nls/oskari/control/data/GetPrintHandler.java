@@ -3,31 +3,19 @@ package fi.nls.oskari.control.data;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-<<<<<<< HEAD
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-
 import javax.imageio.ImageIO;
 
-import fi.nls.oskari.util.JSONHelper;
-=======
-import java.util.*;
-
-import javax.imageio.ImageIO;
-
-import fi.nls.oskari.service.OskariComponentManager;
->>>>>>> 2eaa3331281ab9ab101c5d794cc215fc0fd73a8c
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-<<<<<<< HEAD
+
 import org.opengis.referencing.FactoryException;
-=======
-import org.oskari.permissions.PermissionService;
->>>>>>> 2eaa3331281ab9ab101c5d794cc215fc0fd73a8c
 import org.oskari.print.PrintService;
 import org.oskari.print.request.PrintFormat;
 import org.oskari.print.request.PrintLayer;
@@ -48,6 +36,7 @@ import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.ResponseHelper;
+import fi.nls.oskari.util.JSONHelper;
 
 @OskariActionRoute("GetPrint")
 public class GetPrintHandler extends AbstractWFSFeaturesHandler {

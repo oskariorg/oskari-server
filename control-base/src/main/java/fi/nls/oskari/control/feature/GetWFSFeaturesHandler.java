@@ -66,15 +66,7 @@ public class GetWFSFeaturesHandler extends AbstractWFSFeaturesHandler {
 
         SimpleFeatureCollection fc;
         try {
-            if (contentProcessor.isPresent()) {
-                // User content layer. Make the search in native crs.
-                // Geoserver BBOX filter doesn't work for other projections.
-                CoordinateReferenceSystem nativeCRS = featureClient.getNativeCRS();
-                fc = featureClient.getFeatures(id, layer, bbox, nativeCRS, targetCRS, contentProcessor);
-            }
-            else {
-                fc = featureClient.getFeatures(id, layer, bbox, targetCRS, contentProcessor);
-            }
+            fc = featureClient.getFeatures(id, layer, bbox, targetCRS, contentProcessor);
         } catch (ServiceRuntimeException e) {
             throw new ActionCommonException(ERR_FAILED_TO_RETRIEVE_FEATURES, e);
         }

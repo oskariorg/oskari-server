@@ -28,8 +28,7 @@ public class OskariFeatureClient {
         this.wfsClient = Objects.requireNonNull(wfsClient);
     }
 
-    public CoordinateReferenceSystem getNativeCRS() {
-
+    private CoordinateReferenceSystem getNativeCRS() {
         if (nativeCRS == null) {
             try {
                 String nativeSrs = PropertyUtil.get(PROPERTY_NATIVE_SRS, "EPSG:4326");
