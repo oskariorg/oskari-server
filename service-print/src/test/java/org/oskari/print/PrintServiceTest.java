@@ -9,6 +9,8 @@ import java.util.Arrays;
 import javax.imageio.ImageIO;
 
 import org.apache.pdfbox.pdmodel.PDDocument;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -41,6 +43,7 @@ public class PrintServiceTest {
         request.setWidth(512);
         request.setHeight(512);
         request.setResolution(2);
+        request.setUser(new User());
 
         OskariLayer ortokuva_vaaravari = new OskariLayer();
         ortokuva_vaaravari.setId(1);
@@ -66,7 +69,19 @@ public class PrintServiceTest {
         fg.setOskariLayer(kiinteistotunnukset);
         fg.setOpacity(100);
 
-        request.setLayers(Arrays.asList(bg, fg));
+        OskariLayer rakennus = new OskariLayer();
+        rakennus.setId(3);
+        rakennus.setName("rakennus");
+        rakennus.setType(OskariLayer.TYPE_WFS);
+        rakennus.setVersion("3.0.0");
+        rakennus.setUrl("http://visukysely01.nls.fi:8080/mtkgml");
+
+        PrintLayer fg2 = new PrintLayer(2);
+        fg2.setOskariLayer(rakennus);
+        fg2.setOpacity(80);
+        fg2.setStyle("default");
+
+        request.setLayers(Arrays.asList(bg, fg, fg2));
 
         String dataBg = CapabilitiesCacheService.getFromService(bg.getUrl(), bg.getType(), bg.getVersion(), bg.getUsername(), bg.getPassword());
         OskariLayerCapabilities answerBg = new OskariLayerCapabilities(1L, bg.getUrl(), bg.getType(), bg.getVersion(), dataBg, null, null);
@@ -155,7 +170,7 @@ public class PrintServiceTest {
 
     @Test
     @Ignore("Depends on outside resources, doesn't test anything")
-    public void testPDFVector() throws ServiceException, IOException, NoSuchAuthorityCodeException, FactoryException, DuplicateException {
+    public void testPDFVector() throws ServiceException, IOException, NoSuchAuthorityCodeException, FactoryException, DuplicateException, JSONException {
         PropertyUtil.addProperty("oskari.native.srs", "EPSG:3067", true);
 
         PrintRequest request = new PrintRequest();
@@ -194,10 +209,17 @@ public class PrintServiceTest {
         tieviiva.setType(OskariLayer.TYPE_WFS);
         tieviiva.setVersion("3.0.0");
         tieviiva.setUrl("http://visukysely01.nls.fi:8080/mtkgml");
+        JSONObject opt = new JSONObject("" +
+                "{\"styles\":{\"StyleName\":{\"tieviiva\":{\"featureStyle\":" +
+                "{\"stroke\":{\"color\":\"#ff0000\",\"width\":2,\"lineDash\": \"dot\"}}" +
+                "}}}}"
+        );
+        tieviiva.setOptions(opt);
 
         PrintLayer fg = new PrintLayer(1);
         fg.setOskariLayer(tieviiva);
         fg.setOpacity(100);
+        fg.setStyle("StyleName");
 
         OskariLayer rakennus = new OskariLayer();
         rakennus.setId(3);
@@ -205,10 +227,18 @@ public class PrintServiceTest {
         rakennus.setType(OskariLayer.TYPE_WFS);
         rakennus.setVersion("3.0.0");
         rakennus.setUrl("http://visukysely01.nls.fi:8080/mtkgml");
+        JSONObject opt2 = new JSONObject("" +
+                "{\"styles\":{\"StyleName\":{\"rakennus\":{\"featureStyle\":" +
+                "{\"fill\":{\"color\":\"#00ff00\",\"area\":{\"pattern\": 2}}}," +
+                "\"stroke\":{\"area\":{\"color\":\"#0000ff\"}}}" +
+                "}}}}"
+        );
+        rakennus.setOptions(opt2);
 
         PrintLayer fg2 = new PrintLayer(2);
         fg2.setOskariLayer(rakennus);
-        fg2.setOpacity(100);
+        fg2.setOpacity(50);
+        fg2.setStyle("StyleName");
 
         request.setLayers(Arrays.asList(bg, fg, fg2));
 
