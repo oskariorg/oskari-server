@@ -2,6 +2,15 @@
 
 ## 1.53.0
 
+### Disabled CSRF protection on webapp level
+
+The previous cross-site request forgery protection used cookies and http headers to detect if a given request to the server
+was legit. Because certain browsers block 3rd party cookies by default this didn't really work on embedded maps.
+ Java libraries don't yet support adding SameSite-flag on cookies which is the current solution to protect against
+ CSRF attacks. You should configure your reverse-proxy to modify cookies to have SameSite=lax flag.
+
+Here's an example how to do this with nginx: https://github.com/oskariorg/sample-configs/commit/e3802ccd84d866dc1643f7dfc98f80bf6fe5cde9
+
 ### PermissionService migrated to MyBatis
 
 Also class packages have been changed a bit so manual updates is required for server-extensions referencing PermissionService.
