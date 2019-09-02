@@ -39,6 +39,7 @@ public class StyleUtil {
     private static final float PNG_SIZE = 32f;
     public static final String OSKARI_DEFAULT = "default";
     public static final String STYLES_JSON_KEY = "styles";
+    public static final float [] LINE_PATTERN_SOLID = new float[0];
 
     public static final Map<String, Integer> LINE_CAP_STYLE  = new HashMap<String, Integer>() {{
         put("butt",0);
@@ -152,7 +153,7 @@ public class StyleUtil {
                 pattern = new float[]{5, 1 + strokeWidth,  1, 1 + strokeWidth};
                 break;
             default:
-                pattern = new float[]{};
+                pattern = LINE_PATTERN_SOLID;
         }
         return pattern;
     }

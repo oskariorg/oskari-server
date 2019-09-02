@@ -22,6 +22,8 @@ import java.util.concurrent.Future;
 
 import javax.imageio.ImageIO;
 
+import org.apache.pdfbox.pdmodel.graphics.PDLineDashPattern;
+import org.apache.pdfbox.pdmodel.graphics.state.RenderingMode;
 import org.apache.pdfbox.rendering.ImageType;
 import org.apache.pdfbox.rendering.PDFRenderer;
 import org.apache.pdfbox.pdmodel.PDResources;
@@ -550,18 +552,19 @@ public class PDF {
         Function polygonFunc = ff.function("in2", ff.function("geometryType", ff.property(geomName)), ff.literal("Polygon"), ff.literal("MultiPolygon"));
 
         JSONObject oskariStyle = layer.getOskariStyle();
+
         rules.add(new PrintVectorRule(
-                PrintVectorRule.RuleType.POINT,
-                ff.equals(pointFunc, ff.literal(true)),
-                StyleUtil.getPointStyle(oskariStyle, doc)));
+                PrintVectorRule.RuleType.POLYGON,
+                ff.equals(polygonFunc, ff.literal(true)),
+                StyleUtil.getPolygonStyle(oskariStyle, resources)));
         rules.add(new PrintVectorRule(
                 PrintVectorRule.RuleType.LINE,
                 ff.equals(lineFunc, ff.literal(true)),
                 StyleUtil.getLineStyle(oskariStyle)));
         rules.add(new PrintVectorRule(
-                PrintVectorRule.RuleType.POLYGON,
-                ff.equals(polygonFunc, ff.literal(true)),
-                StyleUtil.getPolygonStyle(oskariStyle, resources)));
+                PrintVectorRule.RuleType.POINT,
+                ff.equals(pointFunc, ff.literal(true)),
+                StyleUtil.getPointStyle(oskariStyle, doc)));
 
         return rules;
     }
@@ -615,7 +618,12 @@ public class PDF {
                 }
             }
             if (label.isEmpty()) return;
-            setLabelStyle(stream, style);
+            //setLabelStyle(stream);
+
+            //setLabelStyle's white background (stroke) creates blurry text
+            //use black fill color only for now
+            stream.setNonStrokingColor(Color.BLACK);
+
             drawLabel(stream, g, label);
             //reset style
             setDrawingStyle(stream, style);
@@ -657,11 +665,12 @@ public class PDF {
             }
         }
     }
-    private static void setLabelStyle (PDPageContentStream stream, PDPrintStyle style ) throws IOException  {
-        stream.setFont(PDType1Font.HELVETICA_BOLD, 12);
+    private static void setLabelStyle (PDPageContentStream stream) throws IOException  {
+        stream.setLineDashPattern(StyleUtil.LINE_PATTERN_SOLID, 0);
+        stream.setRenderingMode(RenderingMode.FILL_STROKE);
         stream.setNonStrokingColor(Color.BLACK);
         stream.setStrokingColor(Color.WHITE);
-        stream.setLineWidth(2);
+        stream.setLineWidth(0.2f);
     }
     private static Coordinate getLineCentroid (LineString line) {
         int i = line.getNumPoints()/2;
@@ -669,6 +678,7 @@ public class PDF {
     }
     private static void drawLabel (PDPageContentStream stream, Coordinate c, String label) throws IOException {
         stream.beginText();
+        stream.setFont(PDType1Font.HELVETICA_BOLD, 12);
         stream.newLineAtOffset ((float) c.x + 8f, (float) c.y - 4f);
         stream.showText(label);
         stream.endText();
