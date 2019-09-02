@@ -38,6 +38,7 @@ public class SaveLayerPermissionHandler extends RestActionHandler {
                 final JSONObject layerPermission = resources.getJSONObject(i);
 
                 permissions.setExternalId(layerPermission.getString("roleId"));
+                permissions.getUniqueResourceName().setId(layerPermission.getString("layerId"));
                 permissions.getUniqueResourceName().setNamespace(layerPermission.getString("namespace"));
                 permissions.getUniqueResourceName().setName(layerPermission.getString("resourceName"));
                 

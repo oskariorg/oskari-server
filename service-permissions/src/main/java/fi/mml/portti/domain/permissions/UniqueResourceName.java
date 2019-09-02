@@ -4,28 +4,43 @@ public class UniqueResourceName {
 	private String name;
 	private String namespace;
 	private String type;
+	private String id;
 	
 	@Override
 	public boolean equals(Object o) {
         if( !(o instanceof UniqueResourceName)) {
             return false;
         }
-		UniqueResourceName u2 = (UniqueResourceName) o;
-		return this.getName().equals(u2.getName()) 
-			&& this.getNamespace().equals(u2.getNamespace()) 
-			&& this.getType().equals(u2.getType());
+        return this.toString().equals(o.toString());
+	}
+
+	public int compareTo (UniqueResourceName urn) {
+		if (!getType().equals(urn.getType())) {
+			return getType().compareTo(urn.getType());
+		}
+		if (!getId().equals(urn.getId())) {
+			return getId().compareTo(urn.getId());
+		}
+		if (!getName().equals(urn.getName())) {
+			return getName().compareTo(urn.getName());
+		}
+		return getNamespace().compareTo(urn.getNamespace());
 	}
 
     @Override
     public int hashCode() {
-        int result = name.hashCode();
-        result = 31 * result + namespace.hashCode();
+        int result = id != null ?
+				id.hashCode() :
+				31 * name.hashCode() + namespace.hashCode();
         result = 31 * result + type.hashCode();
         return result;
     }
 
     public String toString() {
-		return "name=" + name + ", namespace=" + namespace + ", type=" + type;
+		String str = id != null ?
+				"id=" + id :
+				"name=" + name + ", namespace=" + namespace;
+		return str + ", type=" + type;
 	}
 
 	public String getName() {
@@ -62,5 +77,24 @@ public class UniqueResourceName {
 
 	public void setType(String type) {
 		this.type = type;
+	}
+
+	public String getId() {
+		if (id == null) {
+			return "";
+		}
+
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	public String getResourceMapping () {
+		if (id != null) {
+			return id;
+		}
+		return getNamespace() + "+" + getName();
 	}
 }

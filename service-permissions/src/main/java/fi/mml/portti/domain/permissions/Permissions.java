@@ -46,17 +46,7 @@ public class Permissions implements Comparable<Permissions> {
 				} else if (p.getUniqueResourceName() == null) {
 					return 1;
 				} else {
-					if (this.getUniqueResourceName().getType().equals(p.getUniqueResourceName().getType())) {
-						if (this.getUniqueResourceName().getNamespace().equals(p.getUniqueResourceName().getNamespace())) {
-							return this.getUniqueResourceName().getName()
-								.compareTo(p.getUniqueResourceName().getName());
-						}
-						
-						return this.getUniqueResourceName().getNamespace()
-							.compareTo(p.getUniqueResourceName().getNamespace());
-					}
-					
-					return this.getUniqueResourceName().getType().compareTo(p.getUniqueResourceName().getType());
+					return this.getUniqueResourceName().compareTo(p.getUniqueResourceName());
 				}
 			}
 			

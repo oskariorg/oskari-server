@@ -92,18 +92,18 @@ public class PermissionHelper {
      */
     private Resource getResource(final OskariLayer layer) {
 
-        final Resource layerResource = new OskariLayerResource(layer);
-        Resource resource = resourceCache.get(layerResource.getMapping());
+        String mapping = Integer.toString(layer.getId());
+        Resource resource = resourceCache.get(mapping);
         if (resource != null) {
             return resource;
         }
-        Optional<Resource> dbRes = permissionsService.findResource(ResourceType.maplayer, layerResource.getMapping());
+        Optional<Resource> dbRes = permissionsService.findResource(ResourceType.maplayer, mapping);
         if (!dbRes.isPresent()) {
             LOG.warn("Permissions not found for layer:", layer.getId());
         } else {
             resource = dbRes.get();
             LOG.debug("Caching a layer permission resource", resource, "Permissions", resource.getPermissions());
-            resourceCache.put(layerResource.getMapping(), resource);
+            resourceCache.put(mapping, resource);
         }
 
         return resource;

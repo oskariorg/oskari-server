@@ -29,9 +29,9 @@ public class V1_54_0__layer_resource_mapping_change implements JdbcMigration {
 
     private List<Permission> getPermissions(Connection conn, String mapping) throws SQLException {
         List<Permission> list = new ArrayList<>();
-        String sql = "SELECT p.external_type, p.external_id, p.permission " +
+        String sql = "SELECT external_type, external_id, permission " +
                 "FROM oskari_permission " +
-                "WHERE oskari_resource_id = " +
+                "WHERE oskari_resource_id IN " +
                 "(SELECT id FROM oskari_resource WHERE resource_type = 'maplayer' AND resource_mapping = ?)";
 
         try(PreparedStatement statement = conn.prepareStatement(sql)) {
@@ -74,7 +74,7 @@ public class V1_54_0__layer_resource_mapping_change implements JdbcMigration {
 
     private void insertLayerResource(Connection conn, Layer layer) throws SQLException {
         int resourceId = 0;
-        String fetchIdSql = "NEXTVAL('oskari_resource_id_seq')";
+        String fetchIdSql = "SELECT NEXTVAL('oskari_resource_id_seq')";
         try (PreparedStatement statement = conn.prepareStatement(fetchIdSql)) {
             ResultSet rs = statement.executeQuery();
             while (rs.next()) {
@@ -101,6 +101,7 @@ public class V1_54_0__layer_resource_mapping_change implements JdbcMigration {
                 statement.setString(2, permission.permission);
                 statement.setString(3, permission.type);
                 statement.setLong(4, permission.extId);
+                statement.execute();
             }
         }
     }
@@ -143,4 +144,3 @@ public class V1_54_0__layer_resource_mapping_change implements JdbcMigration {
     }
 
 }
-`
