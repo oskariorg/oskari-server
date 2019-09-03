@@ -16,6 +16,7 @@ import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
+import org.json.JSONObject;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.AttributeDescriptor;
@@ -102,6 +103,13 @@ public class AnalysisWFSHelper extends UserLayerService {
         // caching for permissions
         final Set<String> permissions = getPermissionsForUser(user);
         return permissions.contains("analysis+" + layerId);
+    }
+    public JSONObject getOskariStyle (String id) {
+        Analysis layer = getLayer(parseId(id));
+        if (layer == null) {
+            return new JSONObject();
+        }
+        return layer.getStyle().parseUserLayerStyleToOskariJSON();
     }
 
     private Set<String> getPermissionsForUser(User user) {

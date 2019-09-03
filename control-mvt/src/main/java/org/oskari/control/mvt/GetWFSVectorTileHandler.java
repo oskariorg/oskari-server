@@ -102,6 +102,7 @@ public class GetWFSVectorTileHandler extends AbstractWFSFeaturesHandler {
 
         final Optional<UserLayerService> contentProcessor = getUserContentProsessor(id);
         final OskariLayer layer = findLayer(id, params.getUser(), contentProcessor);
+        requireWFSLayer(layer);
 
         final WFSTileGrid gridFromProps = tileGridProperties.getTileGrid(srs.toUpperCase());
         final WFSTileGrid grid = gridFromProps != null ? gridFromProps : KNOWN_TILE_GRIDS.get(srs.toUpperCase());
