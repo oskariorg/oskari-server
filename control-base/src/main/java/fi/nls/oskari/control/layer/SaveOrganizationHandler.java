@@ -6,13 +6,11 @@ import fi.nls.oskari.domain.map.DataProvider;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.layer.DataProviderService;
-import fi.nls.oskari.util.ConversionHelper;
-import fi.nls.oskari.util.JSONHelper;
-import fi.nls.oskari.util.RequestHelper;
-import fi.nls.oskari.util.ResponseHelper;
+import fi.nls.oskari.util.*;
 
 import javax.servlet.http.HttpServletRequest;
 
+import fi.nls.oskari.utils.AuditLog;
 import org.json.JSONObject;
 import org.oskari.service.util.ServiceFactory;
 
@@ -60,12 +58,22 @@ public class SaveOrganizationHandler extends RestActionHandler {
                     throw new ActionDeniedException("Unauthorized user tried to update layer dataprovider - id=" + dataProvider.getId());
                 }
                 dataProviderService.update(dataProvider);
+                AuditLog.user(params.getClientIp(), params.getUser())
+                        .withParam("id", dataProvider.getId())
+                        .withParam("name", dataProvider.getName(PropertyUtil.getDefaultLanguage()))
+                        .updated(AuditLog.ResourceType.DATAPROVIDER);
+
                 ResponseHelper.writeResponse(params, dataProvider.getAsJSON());
             }
             // ************** INSERT ************************
             else if (params.getUser().isAdmin()) {
                 final int id = dataProviderService.insert(dataProvider);
                 dataProvider.setId(id);
+                AuditLog.user(params.getClientIp(), params.getUser())
+                        .withParam("id", dataProvider.getId())
+                        .withParam("name", dataProvider.getName(PropertyUtil.getDefaultLanguage()))
+                        .added(AuditLog.ResourceType.DATAPROVIDER);
+
                 ResponseHelper.writeResponse(params, dataProvider.getAsJSON());
             } else {
                 throw new ActionDeniedException("Unauthorized user tried to update layer dataprovider - id=" + dataProvider.getId());

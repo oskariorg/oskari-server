@@ -9,7 +9,9 @@ import fi.nls.oskari.map.layer.group.link.OskariLayerGroupLinkService;
 import fi.nls.oskari.map.layer.group.link.OskariLayerGroupLinkServiceMybatisImpl;
 import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.JSONHelper;
+import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.util.ResponseHelper;
+import fi.nls.oskari.utils.AuditLog;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -93,6 +95,10 @@ public class MapLayerGroupsHandler extends RestActionHandler {
         final int id = oskariMapLayerGroupService.insert(maplayerGroup);
         // check insert by loading from DB
         final MaplayerGroup savedMapLayerGroup = oskariMapLayerGroupService.find(id);
+        AuditLog.user(params.getClientIp(), params.getUser())
+                .withParam("id", id)
+                .withParam("name", maplayerGroup.getName(PropertyUtil.getDefaultLanguage()))
+                .added(AuditLog.ResourceType.MAPLAYER_GROUP);
         ResponseHelper.writeResponse(params, savedMapLayerGroup.getAsJSON());
     }
 
@@ -109,6 +115,12 @@ public class MapLayerGroupsHandler extends RestActionHandler {
             maplayerGroup.setId(params.getRequiredParamInt(PARAM_ID));
         }
         oskariMapLayerGroupService.update(maplayerGroup);
+
+        AuditLog.user(params.getClientIp(), params.getUser())
+                .withParam("id", maplayerGroup.getId())
+                .withParam("name", maplayerGroup.getName(PropertyUtil.getDefaultLanguage()))
+                .updated(AuditLog.ResourceType.MAPLAYER_GROUP);
+
         ResponseHelper.writeResponse(params, maplayerGroup.getAsJSON());
     }
 
@@ -126,6 +138,12 @@ public class MapLayerGroupsHandler extends RestActionHandler {
             throw new ActionParamsException("Maplayers linked to maplayer group", JSONHelper.createJSONObject("code", "not_empty"));
         }
         oskariMapLayerGroupService.delete(groupId);
+
+        AuditLog.user(params.getClientIp(), params.getUser())
+                .withParam("id", maplayerGroup.getId())
+                .withParam("name", maplayerGroup.getName(PropertyUtil.getDefaultLanguage()))
+                .deleted(AuditLog.ResourceType.MAPLAYER_GROUP);
+
         ResponseHelper.writeResponse(params, maplayerGroup.getAsJSON());
     }
 

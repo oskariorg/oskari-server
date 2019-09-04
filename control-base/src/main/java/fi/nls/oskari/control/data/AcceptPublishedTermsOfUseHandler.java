@@ -8,6 +8,7 @@ import fi.nls.oskari.control.RestActionHandler;
 import fi.nls.oskari.map.publish.service.PublishTermsOfUseService;
 import fi.nls.oskari.map.publish.service.PublishTermsOfUseServiceMybatisImpl;
 import fi.nls.oskari.util.ResponseHelper;
+import fi.nls.oskari.utils.AuditLog;
 
 @OskariActionRoute("AcceptPublishedTermsOfUse")
 public class AcceptPublishedTermsOfUseHandler  extends RestActionHandler {
@@ -18,6 +19,9 @@ public class AcceptPublishedTermsOfUseHandler  extends RestActionHandler {
     public void handlePost(ActionParameters params) throws ActionException {
         if(!params.getUser().isGuest()) {
             ResponseHelper.writeResponse(params, service.setUserAgreed(params.getUser().getId()));
+
+            AuditLog.user(params.getClientIp(), params.getUser())
+                    .updated(AuditLog.ResourceType.TERMS_OF_USE);
         }
         else {
             ResponseHelper.writeResponse(params, false);

@@ -1,6 +1,7 @@
 package org.oskari.control.userlayer;
 
 import fi.nls.oskari.control.RestActionHandler;
+import fi.nls.oskari.utils.AuditLog;
 import org.json.JSONObject;
 import org.oskari.map.userlayer.service.UserLayerDbService;
 
@@ -39,6 +40,10 @@ public class DeleteUserLayerHandler extends RestActionHandler {
         try {
             UserLayer userLayer = UserLayerHandlerHelper.getUserLayer(userLayerDbService, params);
             userLayerDbService.deleteUserLayer(userLayer);
+
+            AuditLog.user(params.getClientIp(), params.getUser())
+                    .withParam("id", userLayer.getId())
+                    .deleted(AuditLog.ResourceType.USERLAYER);
             JSONObject response = JSONHelper.createJSONObject("result", "success");
             ResponseHelper.writeResponse(params, response);
         } catch (ServiceException ex) {

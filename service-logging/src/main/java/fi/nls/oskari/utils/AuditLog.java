@@ -12,7 +12,16 @@ public class AuditLog {
 
     public enum ResourceType {
         MAPLAYER,
-        MYPLACES
+        MAPLAYER_GROUP,
+        MAPLAYER_PERMISSION,
+        DATAPROVIDER,
+        MYPLACES,
+        USERLAYER,
+        ANALYSIS,
+        SYSTEM_VIEW,
+        USER_VIEW,
+        EMBEDDED_VIEW,
+        TERMS_OF_USE
     }
 
     private static final Log4JLogger LOGGER = new Log4JLogger("AUDIT");
@@ -24,9 +33,11 @@ public class AuditLog {
         ip = remote;
         this.email = email;
     }
+
     public static AuditLog guest(String remote) {
         return user(remote, "");
     }
+
     public static AuditLog user(String remote, User user) {
         String email = null;
         if (!user.isGuest()) {
@@ -38,6 +49,7 @@ public class AuditLog {
     public static AuditLog user(String remote, String email) {
         return new AuditLog(remote, email);
     }
+
     public AuditLog withParams(Map<String, String[]> params) {
         if (params == null) {
             return this;
@@ -55,11 +67,20 @@ public class AuditLog {
         return this;
     }
 
+    public AuditLog withMsg(String msg) {
+        withParam("message", msg);
+        return this;
+    }
+
     /*
      * Actual logging. Probably write out JSON so it can be parsed easily
      */
     public void wasDenied(String msg) {
         LOGGER.warn(email, ip, "unauthorized", msg, params);
+    }
+
+    public void errored(ResourceType type) {
+        errored(type.name());
     }
 
     public void errored(String msg) {
@@ -73,6 +94,7 @@ public class AuditLog {
     public void added(ResourceType type) {
         added(type.name());
     }
+
     public void added(String msg) {
         LOGGER.info(email, ip, "added", msg, params);
     }
@@ -80,6 +102,7 @@ public class AuditLog {
     public void updated(ResourceType type) {
         updated(type.name());
     }
+
     public void updated(String msg) {
         LOGGER.info(email, ip, "updated", msg, params);
     }
@@ -87,6 +110,7 @@ public class AuditLog {
     public void deleted(ResourceType type) {
         deleted(type.name());
     }
+
     public void deleted(String msg) {
         LOGGER.info(email, ip, "deleted", msg, params);
     }

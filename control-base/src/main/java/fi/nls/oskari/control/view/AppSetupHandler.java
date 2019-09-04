@@ -17,6 +17,7 @@ import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.util.ResponseHelper;
+import fi.nls.oskari.utils.AuditLog;
 import fi.nls.oskari.view.modifier.ViewModifier;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -264,7 +265,21 @@ public class AppSetupHandler extends RestActionHandler {
         final Bundle myplaces = setupBundle(view, viewdata, ViewModifier.BUNDLE_PUBLISHEDMYPLACES2, false);
         handleMyplacesDrawLayer(myplaces, user);
 
-        return saveView(view);
+        boolean isNew = view.getId() == -1;
+        AuditLog audit = AuditLog.user(params.getClientIp(), params.getUser())
+                .withParam("name", view.getName())
+                .withParam("domain", view.getPubDomain());
+
+        View savedView = saveView(view);
+        // we might not have uuid before saving
+        audit.withParam("uuid", view.getUuid());
+        if(isNew) {
+            audit.added(AuditLog.ResourceType.EMBEDDED_VIEW);
+        } else {
+            audit.updated(AuditLog.ResourceType.EMBEDDED_VIEW);
+        }
+
+        return savedView;
     }
 
     private void setupToolbarStyleInfo(final View view) throws ActionParamsException {

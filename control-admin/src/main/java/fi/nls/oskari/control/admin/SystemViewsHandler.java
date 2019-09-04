@@ -17,6 +17,7 @@ import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.util.ResponseHelper;
+import fi.nls.oskari.utils.AuditLog;
 import fi.nls.oskari.view.modifier.ViewModifier;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -145,6 +146,10 @@ public class SystemViewsHandler extends RestActionHandler {
 
         try {
             viewService.updateBundleSettingsForView(view.getId(), mapfull);
+
+            AuditLog.user(params.getClientIp(), params.getUser())
+                    .withParam("id", view.getId())
+                    .updated(AuditLog.ResourceType.SYSTEM_VIEW);
         } catch (ViewException ex) {
             throw new ActionException("Error updating view settings", ex);
         }
@@ -208,9 +213,6 @@ public class SystemViewsHandler extends RestActionHandler {
 
     @Override
     public void preProcess(ActionParameters params) throws ActionException {
-        if (!params.getUser().isAdmin()) {
-            throw new ActionDeniedException("Admin only");
-        }
+        params.requireAdminUser();
     }
-
 }

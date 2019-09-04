@@ -9,6 +9,7 @@ import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.ResponseHelper;
+import fi.nls.oskari.utils.AuditLog;
 
 /**
  * Deletes analysis data if it belongs to current user.
@@ -53,6 +54,9 @@ public class DeleteAnalysisDataHandler extends RestActionHandler {
         try {
             // remove analysis
             analysisDataService.deleteAnalysis(analysis);
+            AuditLog.user(params.getClientIp(), params.getUser())
+                    .withParam("id", id)
+                    .deleted(AuditLog.ResourceType.ANALYSIS);
             // write static response to notify success {"result" : "success"}
             ResponseHelper.writeResponse(params, JSONHelper.createJSONObject("result", "success"));
         } catch (ServiceException ex) {
