@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.util.Arrays;
 import java.util.List;
 
+import fi.nls.oskari.utils.AuditLog;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -101,6 +102,12 @@ public class MyPlacesFeaturesHandler extends RestActionHandler {
             LOG.warn(e);
             throw new ActionException("Failed to insert features");
         }
+        for (MyPlace place : places) {
+            AuditLog.user(params.getClientIp(), params.getUser())
+                    .withParam("id", place.getId())
+                    .withParam("name", place.getName())
+                    .added(AuditLog.ResourceType.MYPLACES);
+        }
 
         try {
             ResponseHelper.writeResponse(params, featureService.getFeaturesByMyPlaceId(ids, crs));
@@ -129,6 +136,13 @@ public class MyPlacesFeaturesHandler extends RestActionHandler {
         } catch (ServiceException e) {
             LOG.warn(e);
             throw new ActionException("Failed to update features");
+        }
+
+        for (MyPlace place : places) {
+            AuditLog.user(params.getClientIp(), params.getUser())
+                    .withParam("id", place.getId())
+                    .withParam("name", place.getName())
+                    .updated(AuditLog.ResourceType.MYPLACES);
         }
 
         try {
@@ -161,6 +175,10 @@ public class MyPlacesFeaturesHandler extends RestActionHandler {
             LOG.warn(e);
             throw new ActionException("Failed to delete features");
         }
+
+        AuditLog.user(params.getClientIp(), params.getUser())
+                .withParam("id", featureIds)
+                .deleted(AuditLog.ResourceType.MYPLACES);
 
         JSONObject response = new JSONObject();
         JSONHelper.putValue(response, JSKEY_DELETED, deleted);

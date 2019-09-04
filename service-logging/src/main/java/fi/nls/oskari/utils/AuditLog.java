@@ -16,6 +16,7 @@ public class AuditLog {
         MAPLAYER_PERMISSION,
         DATAPROVIDER,
         MYPLACES,
+        MYPLACES_LAYER,
         USERLAYER,
         ANALYSIS,
         SYSTEM_VIEW,

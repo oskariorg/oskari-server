@@ -30,11 +30,6 @@ public class UserFeedbackHandler extends RestActionHandler {
     private final RatingService ratingService = new RatingServiceMybatisImpl();
 
     @Override
-    public void init() {
-
-    }
-
-    @Override
     public void handleGet(ActionParameters params) throws ActionException {
         JSONArray result = new JSONArray();
         try {

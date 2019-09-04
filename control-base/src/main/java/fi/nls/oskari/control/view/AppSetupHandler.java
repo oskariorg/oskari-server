@@ -333,6 +333,7 @@ public class AppSetupHandler extends RestActionHandler {
         mapfullBundle.setState(mapfullState.toString());
 
         // setup layers based on user rights (double check for user rights)
+        // TODO: AuditLog user generated content going public by calling getPublishableLayers()
         final JSONArray selectedLayers = permissionHelper.getPublishableLayers(mapfullState.optJSONArray(KEY_SELLAYERS), user);
 
         // Override template layer selections
