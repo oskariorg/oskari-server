@@ -11,7 +11,9 @@ import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.service.UserService;
 import fi.nls.oskari.util.JSONHelper;
+import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.util.ResponseHelper;
+import fi.nls.oskari.utils.AuditLog;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -62,6 +64,11 @@ public class ManageRolesHandler extends RestActionHandler {
 
         try {
             final Role role =  userService.insertRole(roleName);
+            AuditLog.user(params.getClientIp(), params.getUser())
+                    .withParam("id", role.getId())
+                    .withParam("name", role.getName())
+                    .withMsg("Role")
+                    .added(AuditLog.ResourceType.USER);
             ResponseHelper.writeResponse(params, role2Json(role));
         } catch (Exception se) {
             throw new ActionException(se.getMessage(), se);
@@ -77,6 +84,10 @@ public class ManageRolesHandler extends RestActionHandler {
         }
         try {
             userService.deleteRole(id);
+            AuditLog.user(params.getClientIp(), params.getUser())
+                    .withParam("id", id)
+                    .withMsg("Role")
+                    .deleted(AuditLog.ResourceType.USER);
         } catch (ServiceException se) {
             throw new ActionException(se.getMessage(), se);
         }
@@ -84,9 +95,7 @@ public class ManageRolesHandler extends RestActionHandler {
 
     @Override
     public void preProcess(ActionParameters params) throws ActionException {
-        if (!params.getUser().isAdmin()) {
-            throw new ActionDeniedException("Admin only");
-        }
+        params.requireAdminUser();
     }
 
     private JSONObject roles2JsonArray(Role[] roles) throws JSONException {

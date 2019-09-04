@@ -51,9 +51,7 @@ public class SearchChannelHandler extends RestActionHandler {
 
     @Override
     public void preProcess(ActionParameters params) throws ActionException {
-        if (!params.getUser().isAdmin()) {
-            throw new ActionDeniedException("Admin only");
-        }
+        params.requireAdminUser();
     }
 
 }

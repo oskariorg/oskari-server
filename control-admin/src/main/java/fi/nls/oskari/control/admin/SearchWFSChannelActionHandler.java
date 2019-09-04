@@ -12,7 +12,9 @@ import fi.nls.oskari.search.channel.WFSChannelHandler;
 import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.JSONHelper;
+import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.util.ResponseHelper;
+import fi.nls.oskari.utils.AuditLog;
 import fi.nls.oskari.wfs.WFSSearchChannelsConfiguration;
 import fi.nls.oskari.wfs.WFSSearchChannelsService;
 import org.json.JSONArray;
@@ -91,6 +93,11 @@ public class SearchWFSChannelActionHandler extends RestActionHandler {
         try {
             JSONObject response = new JSONObject();
             channelService.delete(channelId);
+
+            AuditLog.user(params.getClientIp(), params.getUser())
+                    .withParam("id", channelId)
+                    .withMsg("WFS Search channel")
+                    .deleted(AuditLog.ResourceType.SEARCH);
             JSONHelper.putValue(response, "success", true);
             ResponseHelper.writeResponse(params, response);
         } catch (Exception ex) {
@@ -109,6 +116,12 @@ public class SearchWFSChannelActionHandler extends RestActionHandler {
 
             JSONObject response = new JSONObject();
             channelService.update(conf);
+
+            AuditLog.user(params.getClientIp(), params.getUser())
+                    .withParam("id", conf.getId())
+                    .withParam("name", conf.getName(PropertyUtil.getDefaultLanguage()))
+                    .withMsg("WFS Search channel")
+                    .updated(AuditLog.ResourceType.SEARCH);
             JSONHelper.putValue(response, "success", true);
             ResponseHelper.writeResponse(params, response);
         } catch (Exception ex) {
@@ -124,6 +137,11 @@ public class SearchWFSChannelActionHandler extends RestActionHandler {
         try {
             WFSSearchChannelsConfiguration conf = parseConfig(params);
             long newId = channelService.insert(conf);
+            AuditLog.user(params.getClientIp(), params.getUser())
+                    .withParam("id", conf.getId())
+                    .withParam("name", conf.getName(PropertyUtil.getDefaultLanguage()))
+                    .withMsg("WFS Search channel")
+                    .added(AuditLog.ResourceType.SEARCH);
             JSONObject response = new JSONObject();
             JSONHelper.putValue(response, "success", newId > 0);
             ResponseHelper.writeResponse(params, response);

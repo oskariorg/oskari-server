@@ -10,7 +10,9 @@ import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.util.JSONHelper;
+import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.util.ResponseHelper;
+import fi.nls.oskari.utils.AuditLog;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.oskari.statistics.user.StatisticalIndicatorService;
@@ -51,10 +53,20 @@ public class DeleteIndicatorHandler extends RestActionHandler {
             indicatorService.deleteIndicatorData(id, regionset, year);
             LOG.info("Deleted indicator data for indicator:", id, "year:", year, "regionset:", regionset);
             StatisticsHelper.flushDataFromCache(datasourceId, Integer.toString(id), regionset, selectors);
+
+            AuditLog.user(params.getClientIp(), params.getUser())
+                    .withParam("id", id)
+                    .withParam("ds", datasourceId)
+                    .withMsg("Data removed")
+                    .updated(AuditLog.ResourceType.STATISTICAL_DATA);
         } else {
             // remove the whole indicator
             removeIndicator(id, params.getUser().getId());
             LOG.info("Deleted indicator", id);
+            AuditLog.user(params.getClientIp(), params.getUser())
+                    .withParam("id", id)
+                    .withParam("ds", datasourceId)
+                    .deleted(AuditLog.ResourceType.STATISTICAL_DATA);
         }
 
         StatisticalDatasourcePlugin datasource = StatisticalDatasourcePluginManager.getInstance().getPlugin(datasourceId);

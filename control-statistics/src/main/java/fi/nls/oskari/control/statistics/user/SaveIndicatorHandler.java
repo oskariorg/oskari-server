@@ -6,6 +6,8 @@ import fi.nls.oskari.control.statistics.data.*;
 import fi.nls.oskari.control.statistics.plugins.StatisticalDatasourcePlugin;
 import fi.nls.oskari.control.statistics.plugins.StatisticalDatasourcePluginManager;
 import fi.nls.oskari.service.OskariComponentManager;
+import fi.nls.oskari.util.PropertyUtil;
+import fi.nls.oskari.utils.AuditLog;
 import org.json.JSONException;
 import org.oskari.statistics.user.StatisticalIndicatorService;
 import fi.nls.oskari.annotation.OskariActionRoute;
@@ -51,6 +53,11 @@ public class SaveIndicatorHandler extends RestActionHandler {
             throw new ActionException("Couldn't save indicator", ex);
         }
 
+        AuditLog.user(params.getClientIp(), params.getUser())
+                .withParam("id", id)
+                .withParam("ds", datasourceId)
+                .withParam("name", indicator.getName(PropertyUtil.getDefaultLanguage()))
+                .added(AuditLog.ResourceType.STATISTICAL_DATA);
         try {
             ResponseHelper.writeResponse(params, StatisticsHelper.toJSON(savedIndicator));
         } catch (JSONException shouldNeverHappen) {

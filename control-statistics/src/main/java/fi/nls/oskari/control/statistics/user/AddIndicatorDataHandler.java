@@ -14,7 +14,9 @@ import fi.nls.oskari.control.statistics.plugins.StatisticalDatasourcePluginManag
 import fi.nls.oskari.control.statistics.plugins.db.DatasourceLayer;
 import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.util.JSONHelper;
+import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.util.ResponseHelper;
+import fi.nls.oskari.utils.AuditLog;
 import org.json.JSONObject;
 import org.oskari.statistics.user.StatisticalIndicatorService;
 
@@ -81,6 +83,12 @@ public class AddIndicatorDataHandler extends RestActionHandler {
             throw new ActionException("Couldn't save data", ex);
         }
 
+        AuditLog.user(params.getClientIp(), params.getUser())
+                .withParam("id", indicatorId)
+                .withParam("ds", datasourceId)
+                .withParam("name", indicator.getName(PropertyUtil.getDefaultLanguage()))
+                .withMsg("Data added")
+                .updated(AuditLog.ResourceType.STATISTICAL_DATA);
         if (datasource.canCache()) {
             // TODO: flush/update caches (also metadata and listing)
             // Not an issue for now since user indicators are not cached and they are are the

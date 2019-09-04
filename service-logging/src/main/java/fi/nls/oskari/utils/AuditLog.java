@@ -22,7 +22,10 @@ public class AuditLog {
         SYSTEM_VIEW,
         USER_VIEW,
         EMBEDDED_VIEW,
-        TERMS_OF_USE
+        TERMS_OF_USE,
+        SEARCH,
+        USER,
+        STATISTICAL_DATA
     }
 
     private static final Log4JLogger LOGGER = new Log4JLogger("AUDIT");
