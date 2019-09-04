@@ -23,6 +23,7 @@ import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.service.capabilities.CapabilitiesCacheService;
 import fi.nls.oskari.service.capabilities.OskariLayerCapabilitiesHelper;
 import fi.nls.oskari.util.*;
+import fi.nls.oskari.utils.AuditLog;
 import fi.nls.oskari.wfs.GetGtWFSCapabilities;
 import fi.nls.oskari.wfs.WFSLayerConfigurationService;
 import fi.nls.oskari.wfs.util.WFSParserConfigs;
@@ -194,6 +195,13 @@ public class SaveLayerHandler extends AbstractLayerAdminHandler {
                 ml.setUpdated(new Date(System.currentTimeMillis()));
                 mapLayerService.update(ml);
 
+                AuditLog.user(params.getClientIp(), params.getUser())
+                        .withParam("id", ml.getId())
+                        .withParam("uiName", ml.getName(PropertyUtil.getDefaultLanguage()))
+                        .withParam("url", ml.getUrl())
+                        .withParam("name", ml.getName())
+                        .updated(AuditLog.ResourceType.MAPLAYER);
+
                 String maplayerGroups = params.getHttpParam(PARAM_MAPLAYER_GROUPS);
                 if (maplayerGroups != null) {
                     int[] groupIds = getMaplayerGroupIds(maplayerGroups);
@@ -246,6 +254,13 @@ public class SaveLayerHandler extends AbstractLayerAdminHandler {
 
                 int id = mapLayerService.insert(ml);
                 ml.setId(id);
+
+                AuditLog.user(params.getClientIp(), params.getUser())
+                        .withParam("id", ml.getId())
+                        .withParam("uiName", ml.getName(PropertyUtil.getDefaultLanguage()))
+                        .withParam("url", ml.getUrl())
+                        .withParam("name", ml.getName())
+                        .added(AuditLog.ResourceType.MAPLAYER);
 
                 String maplayerGroups = params.getHttpParam(PARAM_MAPLAYER_GROUPS);
                 if (maplayerGroups != null && !maplayerGroups.isEmpty()) {

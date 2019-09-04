@@ -10,6 +10,11 @@ import java.util.Map;
 //  .deleted("My places")
 public class AuditLog {
 
+    public enum ResourceType {
+        MAPLAYER,
+        MYPLACES
+    }
+
     private static final Log4JLogger LOGGER = new Log4JLogger("AUDIT");
     private final String ip;
     private final String email;
@@ -65,14 +70,23 @@ public class AuditLog {
         LOGGER.warn(email, ip, "invalid params", msg, params);
     }
 
+    public void added(ResourceType type) {
+        added(type.name());
+    }
     public void added(String msg) {
         LOGGER.info(email, ip, "added", msg, params);
     }
 
+    public void updated(ResourceType type) {
+        updated(type.name());
+    }
     public void updated(String msg) {
         LOGGER.info(email, ip, "updated", msg, params);
     }
 
+    public void deleted(ResourceType type) {
+        deleted(type.name());
+    }
     public void deleted(String msg) {
         LOGGER.info(email, ip, "deleted", msg, params);
     }

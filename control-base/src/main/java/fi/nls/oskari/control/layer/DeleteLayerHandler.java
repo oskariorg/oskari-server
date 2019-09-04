@@ -9,6 +9,8 @@ import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.layer.OskariLayerService;
 import fi.nls.oskari.map.layer.OskariLayerServiceMybatisImpl;
+import fi.nls.oskari.util.PropertyUtil;
+import fi.nls.oskari.utils.AuditLog;
 import fi.nls.oskari.wfs.WFSLayerConfigurationService;
 import fi.nls.oskari.wfs.WFSLayerConfigurationServiceIbatisImpl;
 
@@ -40,6 +42,14 @@ public class DeleteLayerHandler extends AbstractLayerAdminHandler {
 
         try {
             mapLayerService.delete(layer.getId());
+
+            AuditLog.user(params.getClientIp(), params.getUser())
+                    .withParam("id", layer.getId())
+                    .withParam("uiName", layer.getName(PropertyUtil.getDefaultLanguage()))
+                    .withParam("url", layer.getUrl())
+                    .withParam("name", layer.getName())
+                    .deleted(AuditLog.ResourceType.MAPLAYER);
+
             if(layer.getType().equals(OskariLayer.TYPE_WFS))
             {
                 wfsLayerService.delete(layer.getId());
