@@ -1,11 +1,10 @@
 package org.oskari.control.userlayer;
 
 import fi.nls.oskari.control.*;
-import fi.nls.oskari.utils.AuditLog;
+import org.oskari.log.AuditLog;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import fi.mml.map.mapwindow.util.OskariLayerWorker;
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.domain.map.userlayer.UserLayer;
 import fi.nls.oskari.domain.map.UserDataStyle;

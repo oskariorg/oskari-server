@@ -11,7 +11,7 @@ import fi.nls.oskari.map.view.ViewService;
 import fi.nls.oskari.map.view.AppSetupServiceMybatisImpl;
 import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.ResponseHelper;
-import fi.nls.oskari.utils.AuditLog;
+import org.oskari.log.AuditLog;
 import org.json.JSONObject;
 
 @OskariActionRoute("DeleteView")

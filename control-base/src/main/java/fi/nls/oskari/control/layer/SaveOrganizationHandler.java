@@ -10,7 +10,7 @@ import fi.nls.oskari.util.*;
 
 import javax.servlet.http.HttpServletRequest;
 
-import fi.nls.oskari.utils.AuditLog;
+import org.oskari.log.AuditLog;
 import org.json.JSONObject;
 import org.oskari.service.util.ServiceFactory;
 

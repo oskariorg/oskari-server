@@ -1,4 +1,4 @@
-package fi.nls.oskari.utils;
+package org.oskari.log;
 
 import fi.nls.oskari.domain.User;
 import fi.nls.oskari.log.LogFactory;

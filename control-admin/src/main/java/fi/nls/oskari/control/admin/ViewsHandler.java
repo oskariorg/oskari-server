@@ -12,7 +12,7 @@ import fi.nls.oskari.map.view.*;
 import fi.nls.oskari.map.view.util.ViewHelper;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.ResponseHelper;
-import fi.nls.oskari.utils.AuditLog;
+import org.oskari.log.AuditLog;
 import org.json.JSONException;
 import org.json.JSONObject;
 

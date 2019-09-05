@@ -5,9 +5,8 @@ import java.util.List;
 import java.util.Set;
 
 import fi.nls.oskari.control.*;
-import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.PropertyUtil;
-import fi.nls.oskari.utils.AuditLog;
+import org.oskari.log.AuditLog;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;

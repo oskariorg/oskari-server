@@ -1,7 +1,7 @@
 package fi.nls.oskari.control.data;
 
 import fi.nls.oskari.control.*;
-import fi.nls.oskari.utils.AuditLog;
+import org.oskari.log.AuditLog;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;

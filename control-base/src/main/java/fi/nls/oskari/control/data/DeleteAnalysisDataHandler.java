@@ -9,7 +9,7 @@ import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.ResponseHelper;
-import fi.nls.oskari.utils.AuditLog;
+import org.oskari.log.AuditLog;
 
 /**
  * Deletes analysis data if it belongs to current user.

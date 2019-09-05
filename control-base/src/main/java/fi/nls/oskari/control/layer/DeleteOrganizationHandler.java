@@ -4,12 +4,12 @@ import fi.nls.oskari.control.*;
 import fi.nls.oskari.domain.map.DataProvider;
 import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.util.ResponseHelper;
-import fi.nls.oskari.utils.AuditLog;
+import org.oskari.log.AuditLog;
 import org.oskari.service.util.ServiceFactory;
 
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.map.layer.DataProviderService;
-import fi.nls.oskari.util.ConversionHelper;
+
 import static fi.nls.oskari.control.ActionConstants.PARAM_ID;
 
 /**

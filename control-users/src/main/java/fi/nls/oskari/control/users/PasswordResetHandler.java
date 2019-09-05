@@ -18,7 +18,7 @@ import fi.nls.oskari.service.UserService;
 import fi.nls.oskari.spring.SpringContextHolder;
 import fi.nls.oskari.user.MybatisUserService;
 import fi.nls.oskari.util.ResponseHelper;
-import fi.nls.oskari.utils.AuditLog;
+import org.oskari.log.AuditLog;
 import org.springframework.context.MessageSource;
 
 import javax.servlet.http.HttpServletRequest;

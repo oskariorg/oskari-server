@@ -11,7 +11,7 @@ import fi.nls.oskari.myplaces.MyPlacesService;
 import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.ResponseHelper;
-import fi.nls.oskari.utils.AuditLog;
+import org.oskari.log.AuditLog;
 
 @OskariActionRoute("PublishMyPlaceLayer")
 public class PublishMyPlaceLayerHandler extends RestActionHandler {
