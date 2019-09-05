@@ -140,7 +140,9 @@ public class AuditLog {
 
     private String getJSON(String resource, Op operation) {
         JSONObject json = JSONHelper.createJSONObject("ip", ip);
-        JSONHelper.putValue(json, "email", email);
+        if (email != null && !email.isEmpty()) {
+            JSONHelper.putValue(json, "user", email);
+        }
         JSONHelper.putValue(json, "resource", resource);
         JSONHelper.putValue(json, "op", operation.name());
         if (params != null) {
