@@ -81,7 +81,7 @@ public class OskariLayerWorker {
     public static JSONObject getListOfMapLayers(final List<OskariLayer> layers, final User user,
             final String lang, final String crs, final boolean isPublished, final boolean isSecure) {
         List<Resource> resources = permissionService.findResourcesByUser(user, ResourceType.maplayer);
-        return getListOfMapLayers(layers, user, lang, isSecure, crs, new PermissionSet(resources));
+        return getListOfMapLayers(layers, user, lang, isSecure, crs, isPublished, new PermissionSet(resources));
     }
 
     public static List<OskariLayer> getLayersForUser(User user, boolean isPublished) {
@@ -110,8 +110,9 @@ public class OskariLayerWorker {
             final String lang,
             final boolean isSecure,
             final String crs,
+            final boolean isPublished,
             final PermissionSet permissionSet) {
-        final List<OskariLayer> filtered = filterLayersWithResources(layers, permissionSet, user, false);
+        final List<OskariLayer> filtered = filterLayersWithResources(layers, permissionSet, user, isPublished);
         final JSONArray layersList = new JSONArray();
         long start = System.currentTimeMillis();
         for (OskariLayer layer : filtered) {
