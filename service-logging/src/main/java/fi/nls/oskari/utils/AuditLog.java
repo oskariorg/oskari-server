@@ -1,6 +1,8 @@
 package fi.nls.oskari.utils;
 
 import fi.nls.oskari.domain.User;
+import fi.nls.oskari.log.LogFactory;
+import fi.nls.oskari.log.Logger;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -28,7 +30,7 @@ public class AuditLog {
         STATISTICAL_DATA
     }
 
-    private static final Log4JLogger LOGGER = new Log4JLogger("AUDIT");
+    private static final Logger LOGGER = LogFactory.getLogger("AUDIT");
     private final String ip;
     private final String email;
     private Map<String, Object> params;
