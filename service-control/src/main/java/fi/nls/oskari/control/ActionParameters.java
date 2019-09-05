@@ -255,7 +255,10 @@ public class ActionParameters {
      * @return
      */
     public String getClientIp() {
-        final HttpServletRequest hsr = getRequest();
+        return getClientIp(getRequest());
+    }
+
+    public static String getClientIp(HttpServletRequest hsr) {
         final String ip = hsr.getHeader("x-forwarded-for");
         try {
             return ip != null ? ip : hsr.getRemoteAddr();

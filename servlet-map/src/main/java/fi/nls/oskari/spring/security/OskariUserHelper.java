@@ -1,10 +1,12 @@
 package fi.nls.oskari.spring.security;
 
+import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.domain.Role;
 import fi.nls.oskari.domain.User;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.service.UserService;
+import fi.nls.oskari.utils.AuditLog;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -59,7 +61,7 @@ public class OskariUserHelper {
      * @param httpRequest
      * @param username
      */
-    public void setupSession(final HttpServletRequest httpRequest, final String username)  {
+    private void setupSession(final HttpServletRequest httpRequest, final String username)  {
         final User user = getLoggedInUser(httpRequest);
         if(user != null && !user.isGuest()) {
             // user is already logged in
@@ -71,6 +73,10 @@ public class OskariUserHelper {
             log.debug("Got user from service:", loadedUser);
             if(loadedUser != null) {
                 httpRequest.getSession(true).setAttribute(User.class.getName(), loadedUser);
+
+                AuditLog.user(ActionParameters.getClientIp(httpRequest), user.getEmail())
+                        .withMsg("Login")
+                        .updated(AuditLog.ResourceType.USER);
             }
             else {
                 log.error("Login user check failed! Got user from principal, but can't find it in Oskari db:", username);
