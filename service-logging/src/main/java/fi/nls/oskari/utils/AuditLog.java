@@ -3,13 +3,15 @@ package fi.nls.oskari.utils;
 import fi.nls.oskari.domain.User;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.util.JSONHelper;
+import org.json.JSONObject;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
 
 // AuditLog.user("127.0.0.1", "me@my.com")
 //  .withParam("id", 123)
-//  .deleted("My places")
+//  .deleted(AuditLog.ResourceType.MYPLACES)
 public class AuditLog {
 
     public enum ResourceType {
@@ -30,9 +32,24 @@ public class AuditLog {
         STATISTICAL_DATA
     }
 
+    enum Op {
+        ERROR,
+        INVALID_PARAMS,
+        UNAUTHORIZED,
+        ADDED,
+        UPDATED,
+        DELETED
+    }
+
+    enum Level {
+        INFO,
+        WARN
+    }
+
     private static final Logger LOGGER = LogFactory.getLogger("AUDIT");
     private final String ip;
     private final String email;
+    private String message;
     private Map<String, Object> params;
 
     private AuditLog(String remote, String email) {
@@ -74,7 +91,7 @@ public class AuditLog {
     }
 
     public AuditLog withMsg(String msg) {
-        withParam("message", msg);
+        message = msg;
         return this;
     }
 
@@ -82,7 +99,7 @@ public class AuditLog {
      * Actual logging. Probably write out JSON so it can be parsed easily
      */
     public void wasDenied(String msg) {
-        LOGGER.warn(email, ip, "unauthorized", msg, params);
+        send(Level.WARN, getJSON(msg, Op.UNAUTHORIZED));
     }
 
     public void errored(ResourceType type) {
@@ -90,11 +107,11 @@ public class AuditLog {
     }
 
     public void errored(String msg) {
-        LOGGER.warn(email, ip, "unsuccessful", msg, params);
+        send(Level.WARN, getJSON(msg, Op.ERROR));
     }
 
     public void usedInvalidParams(String msg) {
-        LOGGER.warn(email, ip, "invalid params", msg, params);
+        send(Level.INFO, getJSON(msg, Op.INVALID_PARAMS));
     }
 
     public void added(ResourceType type) {
@@ -102,7 +119,7 @@ public class AuditLog {
     }
 
     public void added(String msg) {
-        LOGGER.info(email, ip, "added", msg, params);
+        send(Level.INFO, getJSON(msg, Op.ADDED));
     }
 
     public void updated(ResourceType type) {
@@ -110,7 +127,7 @@ public class AuditLog {
     }
 
     public void updated(String msg) {
-        LOGGER.info(email, ip, "updated", msg, params);
+        send(Level.INFO, getJSON(msg, Op.UPDATED));
     }
 
     public void deleted(ResourceType type) {
@@ -118,6 +135,33 @@ public class AuditLog {
     }
 
     public void deleted(String msg) {
-        LOGGER.info(email, ip, "deleted", msg, params);
+        send(Level.INFO, getJSON(msg, Op.DELETED));
+    }
+
+    private String getJSON(String resource, Op operation) {
+        JSONObject json = JSONHelper.createJSONObject("ip", ip);
+        JSONHelper.putValue(json, "email", email);
+        JSONHelper.putValue(json, "resource", resource);
+        JSONHelper.putValue(json, "op", operation.name());
+        if (params != null) {
+            JSONHelper.putValue(json, "params", params);
+        }
+        if (message != null) {
+            JSONHelper.putValue(json, "msg", message);
+        }
+        return json.toString();
+    }
+
+    private void send(Level lvl, String json) {
+        switch (lvl) {
+            case INFO:
+                LOGGER.info(json);
+                break;
+            case WARN:
+                LOGGER.warn(json);
+                break;
+            default:
+                LOGGER.debug(json);
+        }
     }
 }
