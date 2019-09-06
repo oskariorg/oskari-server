@@ -1,6 +1,7 @@
 package fi.nls.oskari.control.data;
 
 import fi.nls.oskari.control.*;
+import org.oskari.log.AuditLog;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -72,6 +73,9 @@ public class LayerAndGroupOrderHandler extends RestActionHandler {
             } else {
                 updateLayerAndGroupOrders(orders, parentID);
             }
+            AuditLog.user(params.getClientIp(), params.getUser())
+                    .withMsg("Changed order")
+                    .updated(AuditLog.ResourceType.MAPLAYER_GROUP);
         } catch (JSONException e) {
             log.warn(e);
             throw new ActionParamsException("Cannot save orders!");

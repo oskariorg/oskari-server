@@ -1,4 +1,4 @@
-package fi.mml.portti.domain.permissions;
+package fi.nls.oskari.util;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.core.JsonGenerationException;

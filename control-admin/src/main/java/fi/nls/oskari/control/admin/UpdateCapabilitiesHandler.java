@@ -5,7 +5,8 @@ import java.util.List;
 import java.util.Set;
 
 import fi.nls.oskari.control.*;
-import fi.nls.oskari.util.ConversionHelper;
+import fi.nls.oskari.util.PropertyUtil;
+import org.oskari.log.AuditLog;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -88,9 +89,18 @@ public class UpdateCapabilitiesHandler extends RestActionHandler {
         List<OskariLayer> layers = getLayersToUpdate(layerId);
         Set<String> systemCRSs = getSystemCRSs();
 
+        for (OskariLayer layer : layers) {
+            AuditLog.user(params.getClientIp(), params.getUser())
+                    .withParam("id", layer.getId())
+                    .withParam("name", layer.getName(PropertyUtil.getDefaultLanguage()))
+                    .withParam("url", layer.getUrl())
+                    .withParam("name", layer.getName())
+                    .withMsg("Capabilities update")
+                    .updated(AuditLog.ResourceType.MAPLAYER);
+        }
+
         List<CapabilitiesUpdateResult> result =
                 capabilitiesUpdateService.updateCapabilities(layers, systemCRSs);
-
         JSONObject response = createResponse(result, layerId, params);
         ResponseHelper.writeResponse(params, response);
     }

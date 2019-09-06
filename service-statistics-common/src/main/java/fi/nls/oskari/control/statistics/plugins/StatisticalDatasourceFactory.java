@@ -73,7 +73,7 @@ public abstract class StatisticalDatasourceFactory extends OskariComponent {
             return Collections.emptySet();
         }
         return permissions.stream()
-                .filter(p -> p.getExternalType().equals(PermissionExternalType.ROLE))
+                .filter(p -> PermissionExternalType.ROLE.equals(p.getExternalType()))
                 .map(p -> (long) p.getExternalId())
                 .collect(Collectors.toSet());
     }

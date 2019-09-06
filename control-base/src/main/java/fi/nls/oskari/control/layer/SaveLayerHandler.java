@@ -18,11 +18,11 @@ import fi.nls.oskari.map.layer.group.link.OskariLayerGroupLink;
 import fi.nls.oskari.map.layer.group.link.OskariLayerGroupLinkService;
 import fi.nls.oskari.map.view.ViewService;
 import fi.nls.oskari.map.view.util.ViewHelper;
-import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.service.capabilities.CapabilitiesCacheService;
 import fi.nls.oskari.service.capabilities.OskariLayerCapabilitiesHelper;
 import fi.nls.oskari.util.*;
+import org.oskari.log.AuditLog;
 import fi.nls.oskari.wfs.GetGtWFSCapabilities;
 import fi.nls.oskari.wfs.WFSLayerConfigurationService;
 import fi.nls.oskari.wfs.util.WFSParserConfigs;
@@ -30,7 +30,6 @@ import fi.nls.oskari.wmts.WMTSCapabilitiesParser;
 import fi.nls.oskari.wmts.domain.WMTSCapabilities;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.oskari.permissions.PermissionService;
 import org.oskari.permissions.model.*;
 import org.oskari.service.util.ServiceFactory;
 import org.oskari.service.wfs3.WFS3Service;
@@ -194,6 +193,13 @@ public class SaveLayerHandler extends AbstractLayerAdminHandler {
                 ml.setUpdated(new Date(System.currentTimeMillis()));
                 mapLayerService.update(ml);
 
+                AuditLog.user(params.getClientIp(), params.getUser())
+                        .withParam("id", ml.getId())
+                        .withParam("uiName", ml.getName(PropertyUtil.getDefaultLanguage()))
+                        .withParam("url", ml.getUrl())
+                        .withParam("name", ml.getName())
+                        .updated(AuditLog.ResourceType.MAPLAYER);
+
                 String maplayerGroups = params.getHttpParam(PARAM_MAPLAYER_GROUPS);
                 if (maplayerGroups != null) {
                     int[] groupIds = getMaplayerGroupIds(maplayerGroups);
@@ -246,6 +252,13 @@ public class SaveLayerHandler extends AbstractLayerAdminHandler {
 
                 int id = mapLayerService.insert(ml);
                 ml.setId(id);
+
+                AuditLog.user(params.getClientIp(), params.getUser())
+                        .withParam("id", ml.getId())
+                        .withParam("uiName", ml.getName(PropertyUtil.getDefaultLanguage()))
+                        .withParam("url", ml.getUrl())
+                        .withParam("name", ml.getName())
+                        .added(AuditLog.ResourceType.MAPLAYER);
 
                 String maplayerGroups = params.getHttpParam(PARAM_MAPLAYER_GROUPS);
                 if (maplayerGroups != null && !maplayerGroups.isEmpty()) {
@@ -711,6 +724,6 @@ public class SaveLayerHandler extends AbstractLayerAdminHandler {
             res.addPermission(permission);
         }
 
-        getPermissionsService().insertResource(res);
+        getPermissionsService().saveResource(res);
     }
 }

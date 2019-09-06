@@ -8,6 +8,7 @@ import fi.nls.oskari.domain.map.MyPlaceCategory;
 import fi.nls.oskari.myplaces.MyPlacesService;
 import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.service.ServiceException;
+import fi.nls.oskari.util.JSONHelper;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.data.simple.SimpleFeatureIterator;
 import org.geotools.factory.CommonFactoryFinder;
@@ -15,6 +16,8 @@ import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.AttributeDescriptor;
@@ -102,7 +105,20 @@ public class MyPlacesWFSHelper extends UserLayerService {
         }
         return service.findCategory(id);
     }
-
+    public JSONObject getOskariStyle (String id) {
+        MyPlaceCategory layer = getLayer(parseId(id));
+        if (layer == null) {
+            return new JSONObject();
+        }
+        JSONObject style = layer.getStyle().parseUserLayerStyleToOskariJSON();
+        JSONObject text = new JSONObject();
+        JSONArray props = new JSONArray();
+        props.put("attention_text");
+        props.put("name");
+        JSONHelper.put(text, "labelProperty", props);
+        JSONHelper.putValue(style, "text", text);
+        return style;
+    }
     public SimpleFeatureCollection postProcess(SimpleFeatureCollection sfc) throws Exception {
         List<SimpleFeature> fc = new ArrayList<>();
         SimpleFeatureType schema;

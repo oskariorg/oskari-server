@@ -1,10 +1,10 @@
 package org.oskari.control.userlayer;
 
 import fi.nls.oskari.control.*;
+import org.oskari.log.AuditLog;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import fi.mml.map.mapwindow.util.OskariLayerWorker;
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.domain.map.userlayer.UserLayer;
 import fi.nls.oskari.domain.map.UserDataStyle;
@@ -44,6 +44,10 @@ public class EditUserLayerHandler extends RestActionHandler {
 
         userLayerDbService.updateUserLayerCols(userLayer);
         userLayerDbService.updateUserLayerStyleCols(style);
+
+        AuditLog.user(params.getClientIp(), params.getUser())
+                .withParam("id", userLayer.getId())
+                .updated(AuditLog.ResourceType.USERLAYER);
 
         JSONObject ulayer = UserLayerDataService.parseUserLayer2JSON(userLayer, mapSrs);
         JSONObject permissions = UserLayerHandlerHelper.getPermissions();

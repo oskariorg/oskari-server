@@ -11,6 +11,7 @@ import org.geotools.geometry.jts.JTS;
 import org.geotools.referencing.CRS;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
+import org.opengis.feature.type.AttributeDescriptor;
 import org.opengis.geometry.MismatchedDimensionException;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.NoSuchAuthorityCodeException;
@@ -62,8 +63,9 @@ public class CoordinateTransformer {
         try (SimpleFeatureIterator it = sfc.features()) {
             while (it.hasNext()) {
                 SimpleFeature f = it.next();
-                for (int i = 0; i < f.getAttributeCount(); i++) {
-                    b.set(i, f.getAttribute(i));
+                for (int i = 0; i < newSchema.getAttributeCount(); i++) {
+                    AttributeDescriptor ad = newSchema.getDescriptor(i);
+                    b.set(i, f.getAttribute(ad.getLocalName()));
                 }
                 SimpleFeature copy = b.buildFeature(f.getID());
                 Object g = f.getDefaultGeometry();

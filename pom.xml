@@ -102,8 +102,8 @@
         <!-- gt-xsd-kml.version>9.3</gt-xsd-kml.version -->
         <flexjson.version>2.0</flexjson.version>
 
+        <pdfbox.version>2.0.16</pdfbox.version>
         <mybatis.version>3.5.1</mybatis.version>
-        <pdfbox.version>2.0.12</pdfbox.version>
         <hystrix.version>1.5.18</hystrix.version>
         <!-- Test deps versions -->
         <powermock.version>2.0.0</powermock.version>

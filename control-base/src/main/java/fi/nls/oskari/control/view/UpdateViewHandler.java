@@ -11,6 +11,7 @@ import fi.nls.oskari.map.view.AppSetupServiceMybatisImpl;
 import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.RequestHelper;
 import fi.nls.oskari.util.ResponseHelper;
+import org.oskari.log.AuditLog;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -52,6 +53,12 @@ public class UpdateViewHandler extends RestActionHandler {
             }
 
             vs.updateView(view);
+
+            AuditLog.user(params.getClientIp(), params.getUser())
+                    .withParam("id", view.getId())
+                    .withParam("name", view.getName())
+                    .withParam("default", view.isDefault())
+                    .updated(AuditLog.ResourceType.USER_VIEW);
     
             try {
                 JSONObject resp = new JSONObject();

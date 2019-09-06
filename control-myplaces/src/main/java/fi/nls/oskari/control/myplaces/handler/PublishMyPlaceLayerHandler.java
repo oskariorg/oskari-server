@@ -11,6 +11,7 @@ import fi.nls.oskari.myplaces.MyPlacesService;
 import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.ResponseHelper;
+import org.oskari.log.AuditLog;
 
 @OskariActionRoute("PublishMyPlaceLayer")
 public class PublishMyPlaceLayerHandler extends RestActionHandler {
@@ -26,11 +27,12 @@ public class PublishMyPlaceLayerHandler extends RestActionHandler {
         final User user = params.getUser();
 
         final long id = params.getRequiredParamLong("id");
-        final String makePublicStr = params.getRequiredParam("makePublic");
+        final boolean isPublic = ConversionHelper.getBoolean(
+                params.getRequiredParam("makePublic"), false);
         
         final String uuid = user.getUuid();
         String name = null;
-        if (ConversionHelper.getBoolean(makePublicStr, false)) {
+        if (isPublic) {
             name = user.getScreenname();
         }
         
@@ -38,7 +40,12 @@ public class PublishMyPlaceLayerHandler extends RestActionHandler {
         // to unpublish the name is left as null
         final long updatedRows = myPlaceService.updatePublisherName(id, uuid, name);
         log.debug("Published category:", id, "- uuid:", uuid, "- name", name, " -> updated rows", updatedRows);
-        
+
+        AuditLog.user(params.getClientIp(), params.getUser())
+                .withParam("id", id)
+                .withParam("public", isPublic)
+                .updated(AuditLog.ResourceType.MYPLACES_LAYER);
+
         ResponseHelper.writeResponse(params, updatedRows == 1);
     }
 }

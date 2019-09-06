@@ -50,6 +50,7 @@ public class GetWFSFeaturesHandler extends AbstractWFSFeaturesHandler {
 
         Optional<UserLayerService> contentProcessor = getUserContentProsessor(id);
         OskariLayer layer = findLayer(id, params.getUser(), contentProcessor);
+        requireWFSLayer(layer);
 
         String targetSRS = params.getHttpParam(ActionConstants.PARAM_SRS, "EPSG:3857");
         CoordinateReferenceSystem targetCRS;

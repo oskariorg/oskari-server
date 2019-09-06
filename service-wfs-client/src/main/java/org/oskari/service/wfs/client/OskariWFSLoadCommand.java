@@ -1,5 +1,8 @@
 package org.oskari.service.wfs.client;
 
+import fi.nls.oskari.log.LogFactory;
+import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.service.ServiceRuntimeException;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.opengis.filter.Filter;
@@ -16,6 +19,7 @@ import fi.nls.oskari.util.PropertyUtil;
 
 public class OskariWFSLoadCommand extends HystrixCommand<SimpleFeatureCollection> {
 
+    private static final Logger LOG = LogFactory.getLogger(OskariWFSLoadCommand.class);
     private static final String WFS_3_VERSION = "3.0.0";
     private static final String GROUP_KEY = "wfs";
 
@@ -73,4 +77,9 @@ public class OskariWFSLoadCommand extends HystrixCommand<SimpleFeatureCollection
         }
     }
 
+    public SimpleFeatureCollection getFallback() {
+        LOG.debug("Error getting features from", endPoint, "Events completed:\n", getExecutionEvents());
+        // handler expects an Exception or SimpleFeatureCollection. If we don't throw an exception a null value is returned.
+        throw new ServiceRuntimeException("Error getting features from " + endPoint, getExceptionFromThrowable(getExecutionException()));
+    }
 }

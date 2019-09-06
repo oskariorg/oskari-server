@@ -34,6 +34,7 @@ public class PermissionServiceMybatisImpl extends PermissionService {
     }
 
     public PermissionServiceMybatisImpl(DataSource ds) {
+        super();
         if (ds == null) {
             LOG.warn("DataSource was null, all future calls will throw NPEs!");
             factory = null;
@@ -42,23 +43,41 @@ public class PermissionServiceMybatisImpl extends PermissionService {
         }
     }
 
-    // TODO: add userId and user.getRoles() to query
-    public List<Resource> findResourcesByUser(User user) {
-        try (SqlSession session = factory.openSession()) {
-            List<Resource> all = session.getMapper(MAPPER).findAll();
-            /*
-            all.stream().filter(resource -> {
-                resource.user.getRoles()
-            })
-            */
-            return all;
-        }
-    }
-    // TODO: add userId and user.getRoles() to query
     public List<Resource> findResourcesByUser(User user, ResourceType type) {
+        // TODO: add userId and user.getRoles() to query and remove filtering on code
+        List<Resource> all = findResourcesByType(type);
+        return all.stream()
+                .filter(resource -> hasUserAnyPermission(user, resource))
+                .collect(Collectors.toList());
+    }
+
+    private boolean hasUserAnyPermission(User user, Resource resource) {
+        return resource.getPermissions().stream()
+                .anyMatch(p -> hasUserPermission(user, p));
+    }
+
+    private boolean hasUserPermission(User user, Permission permission) {
+        boolean userHasRoleWithId = permission.getExternalType() == PermissionExternalType.ROLE
+                && user.hasRoleWithId(permission.getExternalId());
+
+        if (userHasRoleWithId) {
+            return true;
+        } else if(user.isGuest()) {
+            return false;
+        }
+
+        return permission.getExternalType() == PermissionExternalType.USER
+                && user.getId() == permission.getExternalId();
+    }
+
+    /**
+     * For admin ui/listing permissions for resources
+     * @param type
+     * @return
+     */
+    public List<Resource> findResourcesByType(ResourceType type) {
         try (SqlSession session = factory.openSession()) {
-            List<Resource> all = session.getMapper(MAPPER).findByType(type.name());
-            return all;
+            return session.getMapper(MAPPER).findByType(type.name());
         }
     }
 

@@ -20,6 +20,7 @@ import java.util.zip.ZipInputStream;
 import javax.servlet.http.HttpServletRequest;
 
 import fi.nls.oskari.control.*;
+import org.oskari.log.AuditLog;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
@@ -35,7 +36,6 @@ import org.oskari.map.userlayer.service.UserLayerDbService;
 import org.oskari.map.userlayer.service.UserLayerDbServiceMybatisImpl;
 import org.oskari.map.userlayer.service.UserLayerException;
 
-import fi.mml.map.mapwindow.util.OskariLayerWorker;
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.domain.map.userlayer.UserLayer;
 import fi.nls.oskari.domain.map.userlayer.UserLayerData;
@@ -135,6 +135,12 @@ public class CreateUserLayerHandler extends RestActionHandler {
             formParams = getFormParams(fileItems);
             log.debug("Parsed form parameters:", formParams);
             UserLayer userLayer = store(fc, params.getUser().getUuid(), formParams);
+
+            AuditLog.user(params.getClientIp(), params.getUser())
+                    .withParam("filename", zipFile.getName())
+                    .withParam("id", userLayer.getId())
+                    .added(AuditLog.ResourceType.USERLAYER);
+
             writeResponse(params, userLayer);
         } catch (UserLayerException e) {
             if (!validFiles.isEmpty()){ // avoid to override with empty list
@@ -143,6 +149,12 @@ public class CreateUserLayerHandler extends RestActionHandler {
             log.error("User uuid:", params.getUser().getUuid(),
                     "zip:", zipFile == null ? "no file" : zipFile.getName(),
                     "info:", e.getOptions().toString());
+
+            AuditLog.user(params.getClientIp(), params.getUser())
+                    .withParam("filename", zipFile.getName())
+                    .withMsg(e.getMessage())
+                    .errored(AuditLog.ResourceType.USERLAYER);
+
             throw new ActionParamsException(e.getMessage(), e.getOptions());
         } catch (ActionException e) {
             log.error("User uuid:", params.getUser().getUuid(),

@@ -2,6 +2,10 @@ package org.oskari.print.request;
 
 import java.util.List;
 
+import org.geotools.referencing.CRS;
+import org.opengis.referencing.FactoryException;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
+
 import fi.nls.oskari.domain.User;
 
 public class PrintRequest {
@@ -10,6 +14,7 @@ public class PrintRequest {
     private double east;
     private double north;
     private String srsName;
+    private CoordinateReferenceSystem crs;
     private double resolution;
     private int width;
     private int height;
@@ -22,7 +27,7 @@ public class PrintRequest {
     private String title;
     private List<PrintLayer> layers;
     private String scaleText;
-
+    
     public User getUser() {
         return user;
     }
@@ -51,8 +56,13 @@ public class PrintRequest {
         return srsName;
     }
 
-    public void setSrsName(String srsName) {
+    public void setSrsName(String srsName) throws FactoryException {
         this.srsName = srsName;
+        this.crs = CRS.decode(srsName, true);
+    }
+
+    public CoordinateReferenceSystem getCrs() {
+        return crs;
     }
 
     public double getResolution() {
@@ -154,5 +164,19 @@ public class PrintRequest {
     public boolean isScaleText(){
         return (this.scaleText != null && !this.scaleText.isEmpty());
     }
+    
+    public double[] getBoundingBox() {
+        double halfResolution = resolution * 0.5;
 
+        double widthHalf = width * halfResolution;
+        double heightHalf = height * halfResolution;
+
+        return new double[] {
+                east - widthHalf,
+                north - heightHalf,
+                east + widthHalf,
+                north + heightHalf
+        };
+    }
+    
 }

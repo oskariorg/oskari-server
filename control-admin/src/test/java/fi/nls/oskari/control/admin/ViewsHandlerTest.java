@@ -44,7 +44,7 @@ public class ViewsHandlerTest extends JSONActionRouteTest {
             views.handleAction(params);
             fail("ActionDeniedException should have been thrown");
         } catch (ActionException e) {
-            assertEquals("Admin only", e.getMessage());
+            assertEquals("Session expired", e.getMessage());
         }
     }
 

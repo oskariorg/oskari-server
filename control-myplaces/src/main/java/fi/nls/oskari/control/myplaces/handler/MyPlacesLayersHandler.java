@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.util.Arrays;
 import java.util.List;
 
+import org.oskari.log.AuditLog;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -97,6 +98,12 @@ public class MyPlacesLayersHandler extends RestActionHandler {
             throw new ActionException("Failed to insert layers");
         }
 
+        for (MyPlaceCategory layer : categories) {
+            AuditLog.user(params.getClientIp(), params.getUser())
+                    .withParam("id", layer.getId())
+                    .withParam("name", layer.getCategory_name())
+                    .added(AuditLog.ResourceType.MYPLACES_LAYER);
+        }
         ByteArrayOutputStream baos;
         try {
             baos = MyPlaceCategoryHelper.toGeoJSONFeatureCollection(categories);
@@ -126,6 +133,12 @@ public class MyPlacesLayersHandler extends RestActionHandler {
         } catch (ServiceException e) {
             LOG.warn(e);
             throw new ActionException("Failed to update layers");
+        }
+        for (MyPlaceCategory layer : categories) {
+            AuditLog.user(params.getClientIp(), params.getUser())
+                    .withParam("id", layer.getId())
+                    .withParam("name", layer.getCategory_name())
+                    .updated(AuditLog.ResourceType.MYPLACES_LAYER);
         }
 
         ByteArrayOutputStream baos;
@@ -160,6 +173,10 @@ public class MyPlacesLayersHandler extends RestActionHandler {
             LOG.warn(e);
             throw new ActionException("Failed to delete layers");
         }
+
+        AuditLog.user(params.getClientIp(), params.getUser())
+                .withParam("id", layerIds)
+                .deleted(AuditLog.ResourceType.MYPLACES_LAYER);
 
         JSONObject response = new JSONObject();
         JSONHelper.putValue(response, JSKEY_DELETED, deleted);
