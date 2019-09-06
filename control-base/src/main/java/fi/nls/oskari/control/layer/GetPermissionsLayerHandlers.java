@@ -32,6 +32,8 @@ import static fi.nls.oskari.control.ActionConstants.KEY_NAME;
 @OskariActionRoute("GetPermissionsLayerHandlers")
 public class GetPermissionsLayerHandlers extends ActionHandler {
 
+    private static String JSON_NAMES_SPACE = "namespace";
+    private static String JSON_RESOURCE_NAME = "resourceName";
     private static String JSON_RESOURCE = "resource";
     private OskariLayerService mapLayerService;
     private PermissionService permissionsService;
@@ -108,6 +110,8 @@ public class GetPermissionsLayerHandlers extends ActionHandler {
                 JSONObject realJson = new JSONObject();
                 realJson.put(KEY_ID, layer.getId());
                 realJson.put(KEY_NAME, layer.getName(PropertyUtil.getDefaultLanguage()));
+                realJson.put(JSON_NAMES_SPACE, Integer.toString(layer.getId()));
+                realJson.put(JSON_RESOURCE_NAME, Integer.toString(layer.getId()));
 
                 Optional<Resource> layerResource = permissions.get(ResourceType.maplayer, res.getMapping());
                 JSONArray jsonResults = new JSONArray();
