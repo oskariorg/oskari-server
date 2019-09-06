@@ -38,8 +38,6 @@ public class GetPermissionsLayerHandlers extends ActionHandler {
 
     private static OskariLayerService mapLayerService = new OskariLayerServiceMybatisImpl();
     private static PermissionsService permissionsService = new PermissionsServiceIbatisImpl();
-    private static String JSON_NAMES_SPACE = "namespace";
-    private static String JSON_RESOURCE_NAME = "resourceName";
     private static String JSON_RESOURCE = "resource";
 
     private static final Set<String> PERMISSIONS =
@@ -90,8 +88,6 @@ public class GetPermissionsLayerHandlers extends ActionHandler {
                 JSONObject realJson = new JSONObject();
                 realJson.put(KEY_ID, layer.getId());
                 realJson.put(KEY_NAME, layer.getName(PropertyUtil.getDefaultLanguage()));
-                realJson.put(JSON_NAMES_SPACE, res.getNamespace());
-                realJson.put(JSON_RESOURCE_NAME, res.getName());
                 final String permissionMapping = res.getMapping();
 
                 JSONArray jsonResults = new JSONArray();
