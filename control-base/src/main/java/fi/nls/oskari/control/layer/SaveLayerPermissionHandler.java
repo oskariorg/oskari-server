@@ -9,6 +9,7 @@ import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.util.ResponseHelper;
+import org.oskari.log.AuditLog;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -67,6 +68,9 @@ public class SaveLayerPermissionHandler extends RestActionHandler {
                     }
                 }
                 permissionsService.saveResource(resource);
+                AuditLog.user(params.getClientIp(), params.getUser())
+                        .withParam("id", resource.getMapping())
+                        .updated(AuditLog.ResourceType.MAPLAYER_PERMISSION);
                 layerMappings.add(resource.getMapping());
             }
             // TODO: previously didn't respond at all. Should respond with updated data

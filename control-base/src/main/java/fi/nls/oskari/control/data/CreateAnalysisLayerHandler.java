@@ -25,6 +25,7 @@ import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.util.ResponseHelper;
+import org.oskari.log.AuditLog;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.oskari.permissions.PermissionService;
@@ -253,6 +254,12 @@ public class CreateAnalysisLayerHandler extends RestActionHandler {
                         publishPermission.contains(permissionKey),
                         downloadPermission.contains(permissionKey)));
 
+        AuditLog.user(params.getClientIp(), params.getUser())
+                .withParam("id", analysisLayer.getId())
+                .withParam("uiName", analysisLayer.getName())
+                // there can be multiple srcId at least in methodParams.layerId is one place that can have it
+                .withParam("srcId", analyseJson.opt("layerId"))
+                .added(AuditLog.ResourceType.ANALYSIS);
         ResponseHelper.writeResponse(params, analysisLayerJSON);
     }
 

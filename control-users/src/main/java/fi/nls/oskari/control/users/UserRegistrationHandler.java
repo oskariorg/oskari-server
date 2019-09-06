@@ -13,6 +13,7 @@ import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.service.UserService;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.ResponseHelper;
+import org.oskari.log.AuditLog;
 import org.json.JSONObject;
 
 import java.util.Iterator;
@@ -101,6 +102,10 @@ public class UserRegistrationHandler extends RestActionHandler {
             userService.setUserPassword(user.getScreenname(), password);
             // cleanup the token
             registerTokenService.removeTokenByUUID(uuid);
+
+			AuditLog.user(params.getClientIp(), params.getUser())
+					.withParam("email", token.getEmail())
+					.added(AuditLog.ResourceType.USER);
 		} catch (ServiceException se) {
 			throw new ActionException(se.getMessage(), se);
 		}
@@ -118,6 +123,9 @@ public class UserRegistrationHandler extends RestActionHandler {
 				throw new ActionParamsException("User doesn't exist.");
 			}
 			userService.deleteUser(sessionUser.getId());
+			AuditLog.user(params.getClientIp(), params.getUser())
+					.withParam("email", retUser.getEmail())
+					.deleted(AuditLog.ResourceType.USER);
             // logout for current user
 			params.getRequest().getSession().invalidate();
 		} catch (ServiceException se) {
@@ -137,6 +145,9 @@ public class UserRegistrationHandler extends RestActionHandler {
 			throw new ActionException(se.getMessage(), se);
 		}
 
+		AuditLog.user(params.getClientIp(), params.getUser())
+				.withParam("email", user.getEmail())
+				.updated(AuditLog.ResourceType.USER);
 		ResponseHelper.writeResponse(params, user2Json(user));
 	}
 	

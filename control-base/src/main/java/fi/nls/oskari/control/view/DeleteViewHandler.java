@@ -4,12 +4,14 @@ import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.*;
 import fi.nls.oskari.domain.User;
 import fi.nls.oskari.domain.map.view.View;
+import fi.nls.oskari.domain.map.view.ViewTypes;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.view.ViewService;
 import fi.nls.oskari.map.view.AppSetupServiceMybatisImpl;
 import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.ResponseHelper;
+import org.oskari.log.AuditLog;
 import org.json.JSONObject;
 
 @OskariActionRoute("DeleteView")
@@ -34,6 +36,16 @@ public class DeleteViewHandler extends RestActionHandler {
             log.debug("Deleting view:", view);
             try {
                 vs.deleteViewById(viewId);
+                AuditLog audit = AuditLog.user(params.getClientIp(), params.getUser())
+                        .withParam("uuid", view.getUuid())
+                        .withParam("name", view.getName());
+                if (ViewTypes.USER.equals(view.getType())) {
+                    audit.deleted(AuditLog.ResourceType.USER_VIEW);
+                } else {
+                    audit.withParam("domain", view.getPubDomain())
+                        .deleted(AuditLog.ResourceType.EMBEDDED_VIEW);
+                }
+
                 JSONObject resp = new JSONObject();
                 if (viewId >= 0) {
                     resp.put("id", viewId);

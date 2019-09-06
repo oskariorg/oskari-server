@@ -13,6 +13,7 @@ import fi.nls.oskari.map.view.ViewService;
 import fi.nls.oskari.map.view.AppSetupServiceMybatisImpl;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.ResponseHelper;
+import org.oskari.log.AuditLog;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.json.JSONObject;
 
@@ -51,6 +52,13 @@ public class SaveViewHandler extends RestActionHandler {
 
             final long newViewId = viewService.addView(view);
             view.setId(newViewId);
+
+            AuditLog.user(params.getClientIp(), params.getUser())
+                    .withParam("id", view.getId())
+                    .withParam("name", view.getName())
+                    .withParam("default", view.isDefault())
+                    .added(AuditLog.ResourceType.USER_VIEW);
+
         } catch (ViewException e) {
             throw new ActionException("Error when trying add published view", e);
         }
