@@ -106,14 +106,13 @@ public class GetPermissionsLayerHandlers extends ActionHandler {
                 continue;
             }
             try {
-                final OskariLayerResource res = new OskariLayerResource(layer);
                 JSONObject realJson = new JSONObject();
                 realJson.put(KEY_ID, layer.getId());
                 realJson.put(KEY_NAME, layer.getName(PropertyUtil.getDefaultLanguage()));
                 realJson.put(JSON_NAMES_SPACE, Integer.toString(layer.getId()));
                 realJson.put(JSON_RESOURCE_NAME, Integer.toString(layer.getId()));
 
-                Optional<Resource> layerResource = permissions.get(ResourceType.maplayer, res.getMapping());
+                Optional<Resource> layerResource = permissions.get(ResourceType.maplayer, Integer.toString(layer.getId()));
                 JSONArray jsonResults = new JSONArray();
                 for (String permission : getAvailablePermissions()) {
                     JSONObject layerJson = new JSONObject();
