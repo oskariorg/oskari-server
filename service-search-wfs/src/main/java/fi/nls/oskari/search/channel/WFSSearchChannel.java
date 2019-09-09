@@ -7,7 +7,6 @@ import fi.nls.oskari.cache.Cache;
 import fi.nls.oskari.cache.CacheManager;
 import fi.nls.oskari.domain.SelectItem;
 import fi.nls.oskari.domain.User;
-import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.map.geometry.WKTHelper;
 import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.util.JSONHelper;
@@ -15,7 +14,6 @@ import org.geotools.geojson.geom.GeometryJSON;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.oskari.permissions.PermissionService;
-import org.oskari.permissions.model.OskariLayerResource;
 import org.oskari.permissions.model.PermissionType;
 import org.oskari.permissions.model.Resource;
 import org.oskari.permissions.model.ResourceType;
@@ -73,8 +71,8 @@ public class WFSSearchChannel extends SearchChannel {
         final String cacheKey = config.getUrl() + config.getLayerName();
         Resource resource = cache.get(cacheKey);
         if(resource == null) {
-            Optional<Resource> maybeResource = getPermissionService().findResource(ResourceType.maplayer,
-                    new OskariLayerResource(config.getId()).getMapping());
+            Optional<Resource> maybeResource =
+                    getPermissionService().findResource(ResourceType.maplayer, Integer.toString(config.getId()));
             if(!maybeResource.isPresent()) {
                 return false;
             }

@@ -15,12 +15,15 @@ Here's an example how to do this with nginx: https://github.com/oskariorg/sample
 
 Also class packages have been changed a bit so manual updates is required for server-extensions referencing PermissionService.
 
-- fi.nls.oskari.map.data.domain.OskariLayerResource is now org.oskari.permissions.model.OskariLayerResource
 - fi.nls.oskari.permission.domain.Permission is now org.oskari.permissions.model.Permission
 - fi.nls.oskari.permission.domain.Resource is now org.oskari.permissions.model.Resource
+- fi.nls.oskari.map.data.domain.OskariLayerResource is now org.oskari.permissions.model.OskariLayerResource and is now deprecated.
 
 See https://github.com/nls-oskari/kartta.paikkatietoikkuna.fi/pull/102 for example and
 https://github.com/oskariorg/oskari-server/pull/271 for details about the change.
+
+OskariLayerResource has been deprecated since it now longer serves any purpose. The mapping of layer permissions mapping
+ has been changed from type+url+name to use the layer id.
 
 ## 1.52.0
 

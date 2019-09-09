@@ -22,7 +22,6 @@ import fi.nls.oskari.view.modifier.ViewModifier;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.oskari.permissions.PermissionService;
-import org.oskari.permissions.model.OskariLayerResource;
 import org.oskari.permissions.model.PermissionType;
 import org.oskari.permissions.model.ResourceType;
 import org.oskari.service.util.ServiceFactory;
@@ -198,7 +197,7 @@ public class SystemViewsHandler extends RestActionHandler {
         try {
             User guest = UserService.getInstance().getGuestUser();
             for(OskariLayer layer : layers) {
-                boolean notAvailableForGuestUsers = permissionsService.findResource(ResourceType.maplayer, new OskariLayerResource(layer).getMapping())
+                boolean notAvailableForGuestUsers = permissionsService.findResource(ResourceType.maplayer, Integer.toString(layer.getId()))
                         .filter(r -> !r.hasPermission(guest, PermissionType.VIEW_LAYER)).isPresent();
                 if(notAvailableForGuestUsers) {
                     notAvailable.add(Integer.toString(layer.getId()));

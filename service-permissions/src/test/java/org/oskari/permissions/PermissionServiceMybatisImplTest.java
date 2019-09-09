@@ -1,6 +1,5 @@
 package org.oskari.permissions;
 
-import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.test.util.ResourceHelper;
 import fi.nls.test.util.TestHelper;
 import org.junit.Before;
