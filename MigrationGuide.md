@@ -22,8 +22,9 @@ Also class packages have been changed a bit so manual updates is required for se
 See https://github.com/nls-oskari/kartta.paikkatietoikkuna.fi/pull/102 for example and
 https://github.com/oskariorg/oskari-server/pull/271 for details about the change.
 
-OskariLayerResource has been deprecated since it now longer serves any purpose. The mapping of layer permissions mapping
- has been changed from type+url+name to use the layer id.
+OskariLayerResource has been deprecated since it no longer serves any purpose. The mapping of layer permissions mapping
+ has been changed from type+url+name to use the layer id. Note that this might break some old migrations that use it
+ if run on an empty database
 
 ## 1.52.0
 
