@@ -684,8 +684,9 @@ public class SaveLayerHandler extends AbstractLayerAdminHandler {
                                         final Set<Integer> publishRoleIds,
                                         final Set<Integer> downloadRoleIds,
                                         final Set<Integer> viewEmbeddedRoleIds) {
-
-        OskariLayerResource res = new OskariLayerResource(ml);
+        Resource res = new Resource();
+        res.setType(ResourceType.maplayer);
+        res.setMapping(Integer.toString(ml.getId()));
         // insert permissions
         LOG.debug("Adding permission", PermissionType.VIEW_LAYER, "for roles:", externalIds);
         for (int externalId : externalIds) {

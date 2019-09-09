@@ -43,7 +43,6 @@ import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
 import org.oskari.permissions.PermissionService;
-import org.oskari.permissions.model.OskariLayerResource;
 import org.oskari.permissions.model.PermissionType;
 import org.oskari.permissions.model.ResourceType;
 import org.oskari.service.util.ServiceFactory;
@@ -81,7 +80,7 @@ public abstract class AbstractFeatureHandler extends RestActionHandler {
     }
 
     protected boolean canEdit(OskariLayer layer, User user) {
-        return permissionsService.findResource(ResourceType.maplayer, new OskariLayerResource(layer).getMapping())
+        return permissionsService.findResource(ResourceType.maplayer, Integer.toString(layer.getId()))
                 .filter(r -> r.hasPermission(user, PermissionType.EDIT_LAYER_CONTENT)).isPresent();
     }
 

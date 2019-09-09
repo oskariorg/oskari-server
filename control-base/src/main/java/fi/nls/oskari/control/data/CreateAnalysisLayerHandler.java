@@ -332,7 +332,7 @@ public class CreateAnalysisLayerHandler extends RestActionHandler {
         }
         final OskariLayer layer = mapLayerService.find(id);
         // copy permissions from source layer to new analysis
-        return permissionsService.findResource(ResourceType.maplayer, new OskariLayerResource(layer).getMapping());
+        return permissionsService.findResource(ResourceType.maplayer, Integer.toString(layer.getId()));
     }
 
 

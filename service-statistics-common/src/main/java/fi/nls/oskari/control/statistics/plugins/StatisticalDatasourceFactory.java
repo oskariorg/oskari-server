@@ -17,7 +17,6 @@ import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.apache.ibatis.transaction.TransactionFactory;
 import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
 import org.oskari.permissions.PermissionService;
-import org.oskari.permissions.model.OskariLayerResource;
 import org.oskari.permissions.model.Permission;
 import org.oskari.permissions.model.PermissionExternalType;
 import org.oskari.permissions.model.ResourceType;
@@ -53,7 +52,7 @@ public abstract class StatisticalDatasourceFactory extends OskariComponent {
             // layer id -> set of role ids that have permissions
             Map<String, Set<Long>> rolesForLayers = new HashMap<>();
             layers.forEach(layer ->
-                permissionService.findResource(ResourceType.maplayer, new OskariLayerResource(layer).getMapping())
+                permissionService.findResource(ResourceType.maplayer, Integer.toString(layer.getId()))
                         .ifPresent( res ->
                                 rolesForLayers.put(Integer.toString(layer.getId()), getRoleIdsForLayer(res.getPermissions())))
             );

@@ -235,7 +235,7 @@ public class PublishPermissionHelper {
             LOG.warn("Couldn't find layer with id:", id);
             return false;
         }
-        boolean hasPermission = permissionsService.findResource(ResourceType.maplayer, new OskariLayerResource(layer).getMapping())
+        boolean hasPermission = permissionsService.findResource(ResourceType.maplayer, Integer.toString(layer.getId()))
                 .filter(r -> r.hasPermission(user, PermissionType.PUBLISH)).isPresent();
         if (!hasPermission) {
             LOG.warn("User tried to publish layer with no publish permission. LayerID:", layerId, "- User:", user);

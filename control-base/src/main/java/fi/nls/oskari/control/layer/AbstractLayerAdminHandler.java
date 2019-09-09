@@ -5,7 +5,6 @@ import fi.nls.oskari.domain.User;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.service.OskariComponentManager;
 import org.oskari.permissions.PermissionService;
-import org.oskari.permissions.model.OskariLayerResource;
 import org.oskari.permissions.model.PermissionType;
 import org.oskari.permissions.model.ResourceType;
 
@@ -23,7 +22,7 @@ public abstract class AbstractLayerAdminHandler extends RestActionHandler {
     }
 
     protected boolean userHasEditPermission(User user, OskariLayer layer) {
-        return user.isAdmin() || permissionsService.findResource(ResourceType.maplayer, new OskariLayerResource(layer).getMapping())
+        return user.isAdmin() || permissionsService.findResource(ResourceType.maplayer, Integer.toString(layer.getId()))
                 .filter(r -> r.hasPermission(user, PermissionType.EDIT_LAYER)).isPresent();
     }
 

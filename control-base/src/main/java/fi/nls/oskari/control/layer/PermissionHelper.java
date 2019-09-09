@@ -1,7 +1,6 @@
 package fi.nls.oskari.control.layer;
 
 import org.oskari.permissions.PermissionService;
-import org.oskari.permissions.model.OskariLayerResource;
 import org.oskari.permissions.model.PermissionType;
 import org.oskari.permissions.model.Resource;
 

@@ -23,10 +23,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.oskari.permissions.PermissionService;
 import org.oskari.permissions.PermissionServiceMybatisImpl;
-import org.oskari.permissions.model.OskariLayerResource;
-import org.oskari.permissions.model.Permission;
-import org.oskari.permissions.model.PermissionExternalType;
-import org.oskari.permissions.model.Resource;
+import org.oskari.permissions.model.*;
 
 import java.io.IOException;
 import java.util.Iterator;
@@ -57,7 +54,7 @@ public class LayerHelper {
             // layer doesn't exist, insert it
             int id = service.insert(layer);
             layer.setId(id);
-            setupLayerPermissions(json.getJSONObject("role_permissions"), layer);
+            setupLayerPermissions(json.getJSONObject("role_permissions"), id);
 
             final String groupName = json.getString("inspiretheme");
             // handle inspiretheme
@@ -143,13 +140,15 @@ public class LayerHelper {
         "Administrator" : ["VIEW_LAYER"]
     }
     */
-    private static void setupLayerPermissions(JSONObject permissions, OskariLayer layer) {
+    private static void setupLayerPermissions(JSONObject permissions, int layerId) {
 
         // setup rights
         if(permissions == null) {
             return;
         }
-        final Resource res = new OskariLayerResource(layer);
+        final Resource res = new Resource();
+        res.setType(ResourceType.maplayer);
+        res.setMapping(Integer.toString(layerId));
 
         final Iterator<String> roleNames = permissions.keys();
         while(roleNames.hasNext()) {
