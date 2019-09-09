@@ -20,6 +20,7 @@ import static org.junit.Assert.*;
 public class PermissionServiceMybatisImplTest {
 
     private static PermissionServiceMybatisImpl permissionService;
+    private static int DUMMY_ID = -1;
 
     private Resource myResource;
     private Permission myPermission;
@@ -34,7 +35,7 @@ public class PermissionServiceMybatisImplTest {
 
     @Before
     public void setup() {
-        myResource = new OskariLayerResource(OskariLayer.TYPE_WFS, "http://www.foo.bar/wfs", "foo:bar");
+        myResource = new OskariLayerResource(DUMMY_ID);
 
         myPermission = new Permission();
         myPermission.setExternalId(100);

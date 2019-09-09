@@ -45,7 +45,7 @@ public class SaveLayerPermissionHandler extends RestActionHandler {
         try {
             for (int i = 0; i < resources.length(); i++) {
                 final JSONObject layerPermission = resources.getJSONObject(i);
-                final String layerMapping = layerPermission.getString("namespace") + "+" + layerPermission.getString("resourceName");
+                final String layerMapping = layerPermission.getString("namespace");
                 final Optional<Resource> dbResource = permissionsService.findResource(ResourceType.maplayer, layerMapping);
                 if (!dbResource.isPresent()) {
                     throw new ActionParamsException("Resource not found: " + layerMapping);

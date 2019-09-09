@@ -146,7 +146,7 @@ public class OskariLayerWorker {
     }
 
     public static String getPermissionKey(OskariLayer layer) {
-        return layer.getType() + "+" + layer.getUrl() + "+" + layer.getName();
+        return Integer.toString(layer.getId());
     }
 
     /**

@@ -7,26 +7,17 @@ import fi.nls.oskari.domain.map.OskariLayer;
  */
 public class OskariLayerResource extends Resource {
 
-    private final String namespace;
-    private final String name;
-
     public OskariLayerResource(OskariLayer layer) {
-        this(layer.getType(), layer.getUrl(), layer.getName());
+        this(layer.getId());
     }
 
-    public OskariLayerResource(String type, String url, String name) {
+    public OskariLayerResource(int layerId) {
+        this(Integer.toString(layerId));
+    }
+
+    public OskariLayerResource(String layerId) {
+        setMapping(layerId);
         setType(ResourceType.maplayer);
-        this.namespace = type + "+" + url;
-        this.name = name;
-        setMapping(namespace, name);
-    }
-
-    public String getNamespace() {
-        return namespace;
-    }
-
-    public String getName() {
-        return name;
     }
 
 }
