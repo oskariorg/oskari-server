@@ -39,7 +39,8 @@ public class MyPlacesWFSHelper extends UserLayerService {
     private static final String MYPLACES_ATTR_GEOMETRY = "oskari:geometry";
     private static final String MYPLACES_ATTR_CATEGORY_ID = "oskari:category_id";
 
-    private static final List<String> VISIBLE_PROPERTIES = Arrays.asList("image_url", "link", "name", "place_desc");
+    private static final List<String> WHITELISTED_PROPERTIES = Arrays.asList(
+            "image_url", "link", "name", "place_desc", "attention_text");
 
     private FilterFactory ff;
     private int myPlacesLayerId;
@@ -158,6 +159,6 @@ public class MyPlacesWFSHelper extends UserLayerService {
     }
 
     private boolean isVisibleProperty(String name) {
-        return VISIBLE_PROPERTIES.stream().anyMatch(propName -> propName.equals(name));
+        return WHITELISTED_PROPERTIES.stream().anyMatch(propName -> propName.equals(name));
     }
 }
