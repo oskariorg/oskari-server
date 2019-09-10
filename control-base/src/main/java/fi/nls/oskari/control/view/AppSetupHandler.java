@@ -299,9 +299,6 @@ public class AppSetupHandler extends RestActionHandler {
 
         // setup basic info about view
         final String domain = JSONHelper.getStringFromJSON(view.getMetadata(), KEY_DOMAIN, null);
-        if(domain == null || domain.trim().isEmpty()) {
-            throw new ActionParamsException("Domain missing from metadata");
-        }
         final String name = JSONHelper.getStringFromJSON(view.getMetadata(), KEY_NAME, "Published map " + System.currentTimeMillis());
         final String language = JSONHelper.getStringFromJSON(view.getMetadata(), KEY_LANGUAGE, PropertyUtil.getDefaultLanguage());
 
