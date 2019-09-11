@@ -95,7 +95,7 @@ public class OskariGML extends GML {
                     return collection;
                 }
             }
-            return null; // nothing found
+            return new DefaultFeatureCollection(); // nothing found, return empty collection
         } else {
             throw new ClassCastException(
                     obj.getClass()
