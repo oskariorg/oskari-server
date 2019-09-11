@@ -21,6 +21,7 @@ public class OskariWFSLoadCommand extends HystrixCommand<SimpleFeatureCollection
 
     private static final Logger LOG = LogFactory.getLogger(OskariWFSLoadCommand.class);
     private static final String WFS_3_VERSION = "3.0.0";
+    private static final String WFS_2_VERSION = "2.0.0";
     private static final String GROUP_KEY = "wfs";
 
     private final String endPoint;
@@ -72,6 +73,8 @@ public class OskariWFSLoadCommand extends HystrixCommand<SimpleFeatureCollection
         switch (version) {
         case WFS_3_VERSION:
             return OskariWFS3Client.getFeatures(endPoint, user, pass, typeName, bbox, crs, maxFeatures);
+        case WFS_2_VERSION:
+            return OskariWFS2Client.getFeatures(endPoint, user, pass, typeName, bbox, crs, maxFeatures, filter);
         default:
             return OskariWFS110Client.getFeatures(endPoint, user, pass, typeName, bbox, crs, maxFeatures, filter);
         }
