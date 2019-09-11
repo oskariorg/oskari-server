@@ -45,7 +45,6 @@ public class OskariWFS110Client {
         try {
             return OskariWFSClient.parseGeoJSON(new ByteArrayInputStream(response), crs);
         } catch (IOException e) {
-            //TODO kannattaako siirtää endpoint, query
             if (!OskariWFSClient.isOutputFormatInvalid(new ByteArrayInputStream(response))) {
                 // If we can not determine that the exception was due to bad
                 // outputFormat parameter then don't bother trying GML
