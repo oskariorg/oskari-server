@@ -4,7 +4,7 @@ import java.awt.Color;
 import java.util.List;
 
 import org.apache.pdfbox.pdmodel.graphics.color.PDColor;
-import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
+import org.apache.pdfbox.pdmodel.graphics.form.PDFormXObject;
 
 public class PDPrintStyle {
     private Color lineColor;
@@ -14,9 +14,7 @@ public class PDPrintStyle {
     private int lineJoin;
     private int lineCap;
     private PDColor fillPattern;
-    private PDImageXObject icon;
-    private float iconOffsetX;
-    private float iconOffsetY;
+    private PDFormXObject icon;
     private List<String> labelProperty;
 
     public PDPrintStyle () {
@@ -79,28 +77,12 @@ public class PDPrintStyle {
         this.lineCap = lineCap;
     }
 
-    public PDImageXObject getIcon() {
+    public PDFormXObject getIcon() {
         return icon;
     }
 
-    public void setIcon(PDImageXObject icon) {
+    public void setIcon(PDFormXObject icon) {
         this.icon = icon;
-    }
-
-    public float getIconOffsetX() {
-        return iconOffsetX;
-    }
-
-    public void setIconOffsetX(float iconOffsetX) {
-        this.iconOffsetX = iconOffsetX;
-    }
-
-    public float getIconOffsetY() {
-        return iconOffsetY;
-    }
-
-    public void setIconOffsetY(float iconOffsetY) {
-        this.iconOffsetY = iconOffsetY;
     }
 
     public List<String> getLabelProperty() {

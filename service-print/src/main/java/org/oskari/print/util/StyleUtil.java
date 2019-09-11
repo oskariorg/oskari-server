@@ -1,7 +1,7 @@
 package org.oskari.print.util;
 
 import java.awt.Color;
-import java.awt.image.BufferedImage;
+import java.awt.geom.AffineTransform;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -10,33 +10,35 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.List;
+
 import fi.nls.oskari.util.IOHelper;
 import org.apache.batik.transcoder.TranscoderException;
 import org.apache.batik.transcoder.TranscoderInput;
 import org.apache.batik.transcoder.TranscoderOutput;
-import org.apache.batik.transcoder.image.PNGTranscoder;
+import org.apache.fop.svg.PDFTranscoder;
 import org.apache.pdfbox.cos.COSName;
+import org.apache.pdfbox.multipdf.LayerUtility;
 import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDPage;
+import org.apache.pdfbox.pdmodel.graphics.form.PDFormXObject;
 import org.apache.pdfbox.pdmodel.PDPatternContentStream;
 import org.apache.pdfbox.pdmodel.PDResources;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.apache.pdfbox.pdmodel.graphics.color.PDColor;
 import org.apache.pdfbox.pdmodel.graphics.color.PDDeviceRGB;
 import org.apache.pdfbox.pdmodel.graphics.color.PDPattern;
-import org.apache.pdfbox.pdmodel.graphics.image.LosslessFactory;
-import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
 import org.apache.pdfbox.pdmodel.graphics.pattern.PDTilingPattern;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.oskari.print.PDF;
 import org.oskari.print.request.PDPrintStyle;
 import fi.nls.oskari.util.JSONHelper;
 
-import javax.imageio.ImageIO;
-
 public class StyleUtil {
     private static final String SVG_MARKERS_JSON = "svg-markers.json";
-    private static final float PNG_SIZE = 32f;
+    private static final float ICON_SIZE = 32f;
+    private static final double ICON_OFFSET = ICON_SIZE/2.0;
     public static final String OSKARI_DEFAULT = "default";
     public static final String STYLES_JSON_KEY = "styles";
     public static final float [] LINE_PATTERN_SOLID = new float[0];
@@ -86,17 +88,7 @@ public class StyleUtil {
         String fillColor = JSONHelper.optString(JSONHelper.getJSONObject(image, "fill"), "color");
         style.setFillColor(ColorUtil.parseColor(fillColor));
         int size = image.optInt("size", 3);
-        float scale = size < 1 || size > 5 ? 1f : 0.6f +  size /10f;
-        JSONObject marker = getMarker(shape);
-        double defaultOffset = PNG_SIZE / 2;
-        style.setIconOffsetX((float) marker.optDouble("offsetX", defaultOffset) * scale);
-        style.setIconOffsetY((float) marker.optDouble("offsetY", defaultOffset) * scale);
-        try {
-            String markerData = JSONHelper.getString(marker, "data").replace("$fill", fillColor);
-            style.setIcon(createIcon(markerData, doc, scale));
-        } catch (Exception e) {
-            throw new IOException ("Failed to create marker icon: " + shape);
-        }
+        style.setIcon(getIcon(doc, shape, fillColor, size));
         style.setLabelProperty(getLabelStyle(oskariStyle));
         return style;
     }
@@ -122,6 +114,15 @@ public class StyleUtil {
         }
         return null;
     }
+    public static PDFormXObject getIcon (PDDocument doc, int shape, String fillColor, int size) throws IOException {
+        try {
+            JSONObject marker = getMarker(shape);
+            return createIcon(doc, marker, fillColor, size);
+        } catch (Exception e) {
+            throw new IOException ("Failed to create marker icon: " + shape);
+        }
+    }
+
     // TODO: get marker data from EnvHelper
     public static JSONObject getMarker (int index) throws IOException {
         try (InputStream is = PDF.class.getResourceAsStream(SVG_MARKERS_JSON)) {
@@ -157,19 +158,29 @@ public class StyleUtil {
         }
         return pattern;
     }
+    private static PDFormXObject createIcon (PDDocument doc, JSONObject marker, String fillColor, int size) throws JSONException, IOException, TranscoderException {
+        String markerData = JSONHelper.getString(marker, "data").replace("$fill", fillColor);
+        double scale = size < 1 || size > 5 ? 1 : 0.6 +  size /10.0;
+        double x =  marker.optDouble("offsetX", ICON_OFFSET) * scale;
+        double y = marker.optDouble("offsetY", ICON_OFFSET) * scale;
 
-    private static PDImageXObject createIcon (String data, PDDocument doc, float scale) throws IOException, TranscoderException {
-        byte[] svgBytes = data.getBytes();
-        PNGTranscoder transcoder = new PNGTranscoder();
-        transcoder.addTranscodingHint(PNGTranscoder.KEY_HEIGHT, PNG_SIZE * scale);
-        transcoder.addTranscodingHint(PNGTranscoder.KEY_WIDTH, PNG_SIZE * scale);
-        TranscoderInput in = new TranscoderInput(new ByteArrayInputStream(svgBytes));
-        ByteArrayOutputStream os = new ByteArrayOutputStream();
-        TranscoderOutput out = new TranscoderOutput(os);
-        transcoder.transcode(in, out);
-        BufferedImage bufferedImage = ImageIO.read( new ByteArrayInputStream(os.toByteArray()));
-        os.close();
-        return LosslessFactory.createFromImage(doc, bufferedImage);
+        PDFTranscoder transcoder = new PDFTranscoder();
+        TranscoderInput in = new TranscoderInput(new ByteArrayInputStream(markerData.getBytes()));
+
+        try (ByteArrayOutputStream os = new ByteArrayOutputStream()){
+            TranscoderOutput out = new TranscoderOutput(os);
+            transcoder.transcode(in, out);
+            PDDocument tempDoc = PDDocument.load(os.toByteArray());
+            PDPage page = tempDoc.getPage(0);
+
+            double d = page.getBBox().getHeight() / ICON_SIZE;
+            scale = scale / d;
+
+            LayerUtility layerUtil = new LayerUtility(doc);
+            PDFormXObject form = layerUtil.importPageAsForm(tempDoc, page);
+            form.setMatrix(new AffineTransform(scale, 0, 0, scale, -x, -y ));
+            return form;
+        }
     }
 
     private static PDColor createFillPattern(PDResources resources, int fillPattern, Color fillColor) throws IOException {
