@@ -56,6 +56,8 @@ public class GetPrintHandler extends AbstractWFSFeaturesHandler {
     private static final String PARM_DATE = "pageDate";
     private static final String PARM_SCALE_TEXT = "scaleText";
     private static final String PARM_CUSTOM_STYLES = "customStyles";
+    private static final String PARM_MARKERS = "markers";
+
 
     private static final String ALLOWED_FORMATS = Arrays.toString(new String[] {
             PrintFormat.PDF.contentType, PrintFormat.PNG.contentType
@@ -142,7 +144,7 @@ public class GetPrintHandler extends AbstractWFSFeaturesHandler {
         }
 
         request.setLayers(layers);
-
+        request.setMarkers(params.getHttpParam(PARM_MARKERS, ""));
         // TODO: REMOVE ME?
         setTiles(layers, params.getHttpParam(PARM_TILES));
 
@@ -233,7 +235,12 @@ public class GetPrintHandler extends AbstractWFSFeaturesHandler {
         List<PrintLayer> printLayers = new ArrayList<>();
         int zIndex = 0;
         for (LayerProperties requestedLayer : requestedLayers) {
-            printLayers.add(getPrintLayer(zIndex++, requestedLayer, user));
+            try {
+                printLayers.add(getPrintLayer(zIndex++, requestedLayer, user));
+            } catch (ActionException ex) {
+                // invalid layer id or user doesn't have permission, skip layer
+                LOG.debug("Failed to add print layer:", requestedLayer.id);
+            }
         }
         printLayers.removeIf(layer -> layer.getOpacity() <= 0);
         // set custom styles

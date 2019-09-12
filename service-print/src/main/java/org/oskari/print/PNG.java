@@ -31,6 +31,7 @@ public class PNG {
             throws ServiceException {
         final int width = request.getWidth();
         final int height = request.getHeight();
+        final double [] bbox = request.getBoundingBox();
 
         final List<PrintLayer> layers = request.getLayers();
 
@@ -50,7 +51,7 @@ public class PNG {
                 if (image == null) {
                     // try vectorlayer, opacity handled in vector styles
                     Future<SimpleFeatureCollection> futureFc = featureCollections.get(zIndex);
-                    bi = PDF.getVectorLayerImage(layer, futureFc, request.getBoundingBox(), width, height);
+                    bi = PDF.getVectorLayerImage(layer, futureFc, bbox, width, height);
                 } else {
                     bi = image.get();
                     alpha = getAlpha(layer.getOpacity());
@@ -60,6 +61,11 @@ public class PNG {
                     continue;
                 }
                 g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha));
+                g2d.drawImage(bi, 0, 0, null);
+            }
+            BufferedImage bi = PDF.getMarkersImage(request.getMarkers(), bbox, width, height);
+            if (bi != null) {
+                g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1f));
                 g2d.drawImage(bi, 0, 0, null);
             }
         } catch (Exception e) {

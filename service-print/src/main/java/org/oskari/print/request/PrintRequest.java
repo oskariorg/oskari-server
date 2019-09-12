@@ -26,6 +26,7 @@ public class PrintRequest {
     private boolean showDate;
     private String title;
     private List<PrintLayer> layers;
+    private String markers;
     private String scaleText;
     
     public User getUser() {
@@ -143,6 +144,14 @@ public class PrintRequest {
 
     public void setLayers(List<PrintLayer> layers) {
         this.layers = layers;
+    }
+
+    public String getMarkers() {
+        return markers;
+    }
+
+    public void setMarkers(String markers) {
+        this.markers = markers;
     }
 
     public boolean isShowLogo() {
