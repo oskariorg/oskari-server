@@ -193,6 +193,7 @@ public class GetGtWFSCapabilities {
             }
             //Loop featypes
             Map<String, ArrayList<WFS2FeatureType>> featuretypes = new HashMap<String, ArrayList<WFS2FeatureType>>();
+            JSONArray errorTypes = new JSONArray();
             for (int i = 0; i < featypes.getLength(); i++) {
                 String nameval = null;
                 String titleval = null;
@@ -204,7 +205,7 @@ public class GetGtWFSCapabilities {
                 nameval = scanChildNode(featypes.item(i).getChildNodes(), name, nameval);
                 titleval = scanChildNode(featypes.item(i).getChildNodes(), title, titleval);
                 srsval = scanChildNode(featypes.item(i).getChildNodes(), srs, srsval);
-                String[] otherSrsval  = scanChildNodes(featypes.item(i).getChildNodes(), OtherSrs);
+                String[] otherSrsval = scanChildNodes(featypes.item(i).getChildNodes(), OtherSrs);
 
                 if (nameval != null) {
                     if (titleval == null) {
@@ -229,18 +230,24 @@ public class GetGtWFSCapabilities {
                         }
                         final String extraAppend = isCurrentCRSinCapabilities(tmpft, currentCrs);
                         // Try to parse describe feature type response of wfs 2.0.0 service at least namespaceUri and geometry property
-                        parseWfs2xDescribeFeatureType(tmpft, IOHelper.getURL(getDescribeFeatureTypeUrl(rurl, version, nameval), user, pw));
+                        try {
+                            parseWfs2xDescribeFeatureType(tmpft, IOHelper.getURL(getDescribeFeatureTypeUrl(rurl, version, nameval), user, pw));
+                        } catch (Exception e) {
+                            addLayerWithError(errorTypes, nameval, titleval, e.getMessage());
+                            continue;
+                        }
                         // Append parser type to title
                         parserConfigType2Title(feaconf, tmpft, parseConfigs, extraAppend);
                         lft.add(tmpft);
                         featuretypes.put(nameval, lft);
                     }
                 }
-
             }
+
             if (featypes.getLength() > 0) {
                 capabilities.put("status", "OK");
                 capabilities.put("FeatureTypeList", featuretypes);
+                capabilities.put("ErrorTypeList", errorTypes);
             } else {
                 capabilities.put("status", "FAILED");
                 capabilities.put("exception", "No featuretypes found - url: " + rurl);
@@ -263,14 +270,23 @@ public class GetGtWFSCapabilities {
         if (capa == null) {
             return null;
         }
+        JSONObject layer = null;
         if (capa.containsKey("WFSDataStore")) {
             WFSDataStore data = (WFSDataStore) capa.get("WFSDataStore");
-            return parseWfs1xLayer(data, version, rurl, user, pw);
+            layer = parseWfs1xLayer(data, version, rurl, user, pw);
         } else if (capa.containsKey("FeatureTypeList")) {
             Map<String, ArrayList<WFS2FeatureType>> data = (Map<String, ArrayList<WFS2FeatureType>>) capa.get("FeatureTypeList");
-            return parseWfs2xLayer(data, version, rurl, user, pw);
+            layer = parseWfs2xLayer(data, version, rurl, user, pw);
         }
-        return null;
+        // add layers that failed in DescripeFeatureType request
+        if (layer != null && capa.containsKey("FailedTypeList")) {
+            JSONArray json = (JSONArray) capa.get("FailedTypeList");
+            JSONArray target = JSONHelper.getJSONArray(layer, KEY_LAYERS_WITH_ERRORS);
+            for (int i = 0; i < json.length(); i++) {
+                target.put(JSONHelper.getJSONObject(json, i));
+            }
+        }
+        return layer;
 
     }
 
@@ -345,12 +361,7 @@ public class GetGtWFSCapabilities {
                                     }
                                 }
                             } catch (ServiceException se) {
-                                JSONObject errorLayer = new JSONObject();
-                                JSONHelper.putValue(errorLayer, "title", fea2x.getTitle());
-                                JSONHelper.putValue(errorLayer, "layerName", typeName);
-                                JSONHelper.putValue(errorLayer, "errorMessage", se.getMessage());
-                                layersWithErrors.put(errorLayer);
-
+                                addLayerWithError(layersWithErrors, typeName, fea2x.getTitle(), se.getMessage());
                             }
                         }
                 }
@@ -362,7 +373,13 @@ public class GetGtWFSCapabilities {
             throw new ServiceException("Couldn't parse wfs 2.x capabilities layer", ex);
         }
     }
-
+    private static void addLayerWithError (JSONArray target, String name, String title, String error) {
+        JSONObject errorLayer = new JSONObject();
+        JSONHelper.putValue(errorLayer, "title", title);
+        JSONHelper.putValue(errorLayer, "layerName", name);
+        JSONHelper.putValue(errorLayer, "errorMessage", error);
+        target.put(errorLayer);
+    }
     /**
      * Parse layer wfs 1.x
      *
@@ -398,12 +415,7 @@ public class GetGtWFSCapabilities {
                             layers.put(temp);
                         }
                     } catch (ServiceException se) {
-                        JSONObject errorLayer = new JSONObject();
-                        JSONHelper.putValue(errorLayer, "title", getFeaturetypeTitle(data, typeName));
-                        JSONHelper.putValue(errorLayer, "layerName", typeName);
-                        JSONHelper.putValue(errorLayer, "errorMessage", se.getMessage());
-                        layersWithErrors.put(errorLayer);
-
+                        addLayerWithError(layersWithErrors, typeName, getFeaturetypeTitle(data, typeName), se.getMessage());
                     }
                 }
             }
@@ -898,7 +910,7 @@ public class GetGtWFSCapabilities {
      * @param ft
      * @param data
      */
-    public static void parseWfs2xDescribeFeatureType(WFS2FeatureType ft, final String data) {
+    public static void parseWfs2xDescribeFeatureType(WFS2FeatureType ft, final String data) throws ServiceException{
 
         try {
             // GetCapabilities request
@@ -950,6 +962,7 @@ public class GetGtWFSCapabilities {
 
         } catch (Exception ex) {
             log.debug(ex, "WFS 2.0.0 DescribeFeaturetype failed ");
+            throw new ServiceException("WFS 2.0.0 DescribeFeatureType failed");
         }
     }
 
