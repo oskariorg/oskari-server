@@ -54,10 +54,13 @@ public class GetPrintHandler extends AbstractWFSFeaturesHandler {
     private static final String PARM_SCALE = "pageScale";
     private static final String PARM_LOGO = "pageLogo";
     private static final String PARM_DATE = "pageDate";
+    private static final String PARM_SHOW_TIMESERIES_TIME = "pageTimeSeriesTime";
     private static final String PARM_SCALE_TEXT = "scaleText";
     private static final String PARM_CUSTOM_STYLES = "customStyles";
     private static final String PARM_MARKERS = "markers";
-
+    private static final String PARM_TIME = "time";
+    private static final String PARM_FORMATTED_TIME = "formattedTime";
+    private static final String PARM_TIMESERIES_LABEL = "timeseriesPrintLabel";
 
     private static final String ALLOWED_FORMATS = Arrays.toString(new String[] {
             PrintFormat.PDF.contentType, PrintFormat.PNG.contentType
@@ -132,6 +135,11 @@ public class GetPrintHandler extends AbstractWFSFeaturesHandler {
         request.setShowScale(params.getHttpParam(PARM_SCALE, false));
         request.setShowDate(params.getHttpParam(PARM_DATE, false));
         request.setScaleText(params.getHttpParam(PARM_SCALE_TEXT, ""));
+        request.setShowTimeSeriesTime(params.getHttpParam(PARM_SHOW_TIMESERIES_TIME, false));
+        request.setTime(params.getHttpParam(PARM_TIME, ""));
+        request.setFormattedTime(params.getHttpParam(PARM_FORMATTED_TIME, ""));
+        request.setTimeseriesLabel(params.getHttpParam(PARM_TIMESERIES_LABEL, ""));
+
         setPagesize(params, request);
         setCoordinates(params.getRequiredParam(PARM_COORD), request);
         setFormat(params.getRequiredParam(PARM_FORMAT), request);
