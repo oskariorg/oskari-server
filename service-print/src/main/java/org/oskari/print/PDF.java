@@ -11,29 +11,24 @@ import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
-import java.util.ArrayList;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
 import javax.imageio.ImageIO;
 
-import org.apache.pdfbox.pdmodel.graphics.state.RenderingMode;
-import org.apache.pdfbox.rendering.ImageType;
-import org.apache.pdfbox.rendering.PDFRenderer;
-import org.apache.pdfbox.pdmodel.PDResources;
-import org.apache.pdfbox.util.Matrix;
-import org.json.JSONObject;
-
+import org.apache.commons.lang.StringUtils;
 import org.apache.pdfbox.cos.COSName;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.PDPageContentStream.AppendMode;
+import org.apache.pdfbox.pdmodel.PDResources;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.apache.pdfbox.pdmodel.font.PDType1Font;
@@ -42,21 +37,26 @@ import org.apache.pdfbox.pdmodel.graphics.image.LosslessFactory;
 import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
 import org.apache.pdfbox.pdmodel.graphics.optionalcontent.PDOptionalContentGroup;
 import org.apache.pdfbox.pdmodel.graphics.state.PDExtendedGraphicsState;
+import org.apache.pdfbox.pdmodel.graphics.state.RenderingMode;
+import org.apache.pdfbox.rendering.ImageType;
+import org.apache.pdfbox.rendering.PDFRenderer;
+import org.apache.pdfbox.util.Matrix;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.data.simple.SimpleFeatureIterator;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.referencing.CRS;
+import org.json.JSONObject;
 import org.opengis.feature.simple.SimpleFeature;
-import org.opengis.filter.expression.Function;
 import org.opengis.filter.FilterFactory2;
+import org.opengis.filter.expression.Function;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.oskari.print.loader.AsyncFeatureLoader;
 import org.oskari.print.loader.AsyncImageLoader;
+import org.oskari.print.request.PDPrintStyle;
 import org.oskari.print.request.PrintLayer;
 import org.oskari.print.request.PrintRequest;
 import org.oskari.print.request.PrintVectorRule;
-import org.oskari.print.request.PDPrintStyle;
 import org.oskari.print.util.PDFBoxUtil;
 import org.oskari.print.util.StyleUtil;
 import org.oskari.print.util.Units;
@@ -126,6 +126,7 @@ public class PDF {
     private static final PDFont FONT_BOLD = PDType1Font.HELVETICA_BOLD;
     private static final float FONT_SIZE = 12f;
     private static final float FONT_SIZE_SCALE = 10f;
+    private static final float FONT_SIZE_TIMESERIES = 10f;
 
     private static final float OFFSET_DATE_RIGHT = PDFBoxUtil.mmToPt(40);
     private static final float OFFSET_DATE_TOP = PDFBoxUtil.mmToPt(10);
@@ -136,6 +137,10 @@ public class PDF {
 
     private static final float OFFSET_SCALE_LEFT = PDFBoxUtil.mmToPt(40);
     private static final float OFFSET_SCALE_BOTTOM = PDFBoxUtil.mmToPt(5);
+
+    private static final float OFFSET_TIMESERIES_RIGHT = PDFBoxUtil.mmToPt(50);
+    private static final float OFFSET_TIMESERIES_LABEL_BOTTOM = PDFBoxUtil.mmToPt(10);
+    private static final float OFFSET_TIME_IN_TIMESERIES_BOTTOM = PDFBoxUtil.mmToPt(5);
 
     private static final double[] SCALE_LINE_DISTANCES_METRES = new double[24];
 
@@ -202,6 +207,7 @@ public class PDF {
             drawLogo(doc, stream, request);
             drawScale(stream, request);
             drawDate(stream, request, pageSize);
+            drawTimeseriesTexts(stream, request, pageSize);
             drawLayers(doc, stream, request, layerImages, featureCollections,
                     x, y, mapWidth, mapHeight);
             drawBorder(stream, x, y, mapWidth, mapHeight);
@@ -330,6 +336,22 @@ public class PDF {
         float x = pageSize.getWidth() - OFFSET_DATE_RIGHT;
         float y = pageSize.getHeight() - OFFSET_DATE_TOP;
         PDFBoxUtil.drawText(stream, date, FONT, FONT_SIZE, x, y);
+    }
+
+    private static void drawTimeseriesTexts(PDPageContentStream stream,
+            PrintRequest request, PDRectangle pageSize) throws IOException {
+        if (!request.isShowTimeSeriesTime()
+                || StringUtils.isEmpty(request.getTimeseriesLabel())
+                    || StringUtils.isEmpty(request.getFormattedTime())) {
+            return;
+        }
+
+        float x = pageSize.getWidth() - OFFSET_TIMESERIES_RIGHT;
+
+        PDFBoxUtil.drawText(stream, request.getTimeseriesLabel(), FONT, FONT_SIZE_TIMESERIES,
+                x, OFFSET_TIMESERIES_LABEL_BOTTOM);
+        PDFBoxUtil.drawText(stream, request.getFormattedTime(), FONT, FONT_SIZE_TIMESERIES,
+                x, OFFSET_TIME_IN_TIMESERIES_BOTTOM);
     }
 
     private static void drawScale(PDPageContentStream stream, PrintRequest request)
