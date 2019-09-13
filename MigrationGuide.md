@@ -20,7 +20,7 @@ Note! You also need to add an import to the frontend code for your apps main.js:
 
     // this should already be there:
     import 'oskari-loader!oskari-frontend/packages/mapping/ol3/mapwfs2/bundle.js';
-    // Replace it with this row:
+    // Add this row under it:
     import 'oskari-loader!oskari-frontend/packages/mapping/ol3/wfsvector/bundle.js';
 
 ### Disabled CSRF protection on webapp level
