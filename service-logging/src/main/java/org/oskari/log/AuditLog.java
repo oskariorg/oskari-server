@@ -15,6 +15,7 @@ import java.util.Map;
 public class AuditLog {
 
     public enum ResourceType {
+        GENERIC,
         MAPLAYER,
         MAPLAYER_GROUP,
         MAPLAYER_PERMISSION,
@@ -98,6 +99,9 @@ public class AuditLog {
     /*
      * Actual logging. Probably write out JSON so it can be parsed easily
      */
+    public void wasDenied(ResourceType type) {
+        wasDenied(type.name());
+    }
     public void wasDenied(String msg) {
         send(Level.WARN, getJSON(msg, Op.UNAUTHORIZED));
     }
@@ -110,6 +114,9 @@ public class AuditLog {
         send(Level.WARN, getJSON(msg, Op.ERROR));
     }
 
+    public void usedInvalidParams(ResourceType type) {
+        usedInvalidParams(type.name());
+    }
     public void usedInvalidParams(String msg) {
         send(Level.INFO, getJSON(msg, Op.INVALID_PARAMS));
     }

@@ -39,7 +39,8 @@ public class AjaxController {
             log.error("Couldn't handle action:", route, ". Message: ", e.getMessage(), ". Parameters: ", params.getRequest().getParameterMap());
             AuditLog.user(params.getClientIp(), params.getUser())
                     .withParams(params.getRequest().getParameterMap())
-                    .usedInvalidParams(e.getMessage());
+                    .withMsg(e.getMessage())
+                    .usedInvalidParams(AuditLog.ResourceType.GENERIC);
             ResponseHelper.writeError(params, e.getMessage(), HttpServletResponse.SC_BAD_REQUEST, e.getOptions());
         } catch (ActionDeniedException e) {
             // User tried to execute action he/she is not authorized to execute or session had expired
@@ -51,7 +52,8 @@ public class AjaxController {
             }
             AuditLog.user(params.getClientIp(), params.getUser())
                     .withParams(params.getRequest().getParameterMap())
-                    .wasDenied(e.getMessage());
+                    .withMsg(e.getMessage())
+                    .wasDenied(AuditLog.ResourceType.GENERIC);
             ResponseHelper.writeError(params, e.getMessage(), HttpServletResponse.SC_FORBIDDEN, e.getOptions());
         } catch (ActionCommonException e) {
             Throwable error = e;
@@ -74,7 +76,8 @@ public class AjaxController {
             log.error(error, "Couldn't handle action:", route, "Message: ", e.getMessage(), ". Parameters: ", params.getRequest().getParameterMap());
             AuditLog.user(params.getClientIp(), params.getUser())
                     .withParams(params.getRequest().getParameterMap())
-                    .errored(error.getMessage());
+                    .withMsg(error.getMessage())
+                    .errored(AuditLog.ResourceType.GENERIC);
             ResponseHelper.writeError(params, e.getMessage());
         }
     }
