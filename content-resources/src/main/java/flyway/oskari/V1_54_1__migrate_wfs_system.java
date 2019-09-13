@@ -86,7 +86,7 @@ public class V1_54_1__migrate_wfs_system implements JdbcMigration {
     }
 
     private void updateBundle(Bundle bundle, Connection conn) throws SQLException {
-        final String sql = "UPDATE portti_view_bundle_seq SET config=?, where view_id=? AND bundle_id=?";
+        final String sql = "UPDATE portti_view_bundle_seq SET config=? where view_id=? AND bundle_id=?";
         try(PreparedStatement statement = conn.prepareStatement(sql)) {
             statement.setString(1, bundle.config.toString());
             statement.setLong(2, bundle.view);
