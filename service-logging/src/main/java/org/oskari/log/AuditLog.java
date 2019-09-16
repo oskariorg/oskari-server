@@ -4,6 +4,7 @@ import fi.nls.oskari.domain.User;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.util.JSONHelper;
+import fi.nls.oskari.util.PropertyUtil;
 import org.json.JSONObject;
 
 import java.util.LinkedHashMap;
@@ -49,13 +50,20 @@ public class AuditLog {
 
     private static final Logger LOGGER = LogFactory.getLogger("AUDIT");
     private final String ip;
-    private final String email;
+    private final String user;
     private String message;
     private Map<String, Object> params;
 
-    private AuditLog(String remote, String email) {
+    private enum Ident {
+        UNSET,
+        EMAIL,
+        NICK
+    }
+    private static Ident userIdentityType = Ident.UNSET;
+
+    private AuditLog(String remote, String user) {
         ip = remote;
-        this.email = email;
+        this.user = user;
     }
 
     public static AuditLog guest(String remote) {
@@ -63,15 +71,11 @@ public class AuditLog {
     }
 
     public static AuditLog user(String remote, User user) {
-        String email = null;
-        if (!user.isGuest()) {
-            email = user.getEmail();
-        }
-        return user(remote, email);
+        return user(remote, getUserIdentity(user));
     }
 
-    public static AuditLog user(String remote, String email) {
-        return new AuditLog(remote, email);
+    public static AuditLog user(String remote, String user) {
+        return new AuditLog(remote, user);
     }
 
     public AuditLog withParams(Map<String, String[]> params) {
@@ -145,10 +149,30 @@ public class AuditLog {
         send(Level.INFO, getJSON(msg, Op.DELETED));
     }
 
+    private static String getUserIdentity(User user) {
+        // guest always null
+        if (user.isGuest()) {
+            return null;
+        }
+        // setup for future calls
+        if (Ident.UNSET == userIdentityType) {
+            if (PropertyUtil.getOptional("audit.user.email", false)) {
+                userIdentityType = Ident.EMAIL;
+            } else {
+                userIdentityType = Ident.NICK;
+            }
+        }
+        // email or username
+        if(Ident.EMAIL == userIdentityType) {
+            return user.getEmail();
+        }
+        return user.getScreenname();
+    }
+
     private String getJSON(String resource, Op operation) {
         JSONObject json = JSONHelper.createJSONObject("ip", ip);
-        if (email != null && !email.isEmpty()) {
-            JSONHelper.putValue(json, "user", email);
+        if (user != null && !user.isEmpty()) {
+            JSONHelper.putValue(json, "user", user);
         }
         JSONHelper.putValue(json, "resource", resource);
         JSONHelper.putValue(json, "op", operation.name());
