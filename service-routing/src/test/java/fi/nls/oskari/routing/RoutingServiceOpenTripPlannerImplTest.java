@@ -63,7 +63,7 @@ public class RoutingServiceOpenTripPlannerImplTest {
                 LOGGER.warn("Cannot set error message to route response", ex);
             }
         }
-        System.out.print(response.toJSON());
+        LOGGER.debug(response.toJSON());
 
     }
 
@@ -101,7 +101,7 @@ public class RoutingServiceOpenTripPlannerImplTest {
                 LOGGER.warn("Cannot set error message to route response", ex);
             }
         }
-        System.out.print(response.toJSON());
+        LOGGER.debug(response.toJSON());
 
     }
 }
