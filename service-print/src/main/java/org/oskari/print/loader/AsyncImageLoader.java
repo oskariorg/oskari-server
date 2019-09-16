@@ -35,7 +35,7 @@ public class AsyncImageLoader {
             switch (layer.getType()) { 
             case OskariLayer.TYPE_WMS:
                 images.put(layer.getZIndex(), new CommandLoadImageWMS(layer, 
-                        width, height, bbox, srsName).queue());
+                        width, height, bbox, srsName,request.getTime()).queue());
                 break;
             case OskariLayer.TYPE_WMTS:
                 images.put(layer.getZIndex(), new CommandLoadImageWMTS(layer, width, height, bbox, srsName,
