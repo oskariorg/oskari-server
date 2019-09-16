@@ -2,6 +2,27 @@
 
 ## 1.53.0
 
+### Migration to the new WFS integration backend
+
+This version includes a migration that will change the database migrating all apps to use a new WFS integration backend.
+The change is described here https://github.com/oskariorg/oskari-docs/issues/109
+
+You should backup your database before upgrading so you can restore it if you have some functionality in your app that is NOT
+compatible with the new system. Add this to oskari-ext.properties to continue using the transport for WFS-layers on this version:
+
+    flyway.1.53.wfs.optout=true
+
+It is heavily recommended that you migrate and report any problems you might encounter at this point.
+On this version you can still opt-out of the migration but the next version will force the migration and remove
+ references to the transport webapp. You can consider the transport webapp deprecated.
+
+Note! You also need to add an import to the frontend code for your apps main.js:
+
+    // this should already be there:
+    import 'oskari-loader!oskari-frontend/packages/mapping/ol3/mapwfs2/bundle.js';
+    // Add this row under it:
+    import 'oskari-loader!oskari-frontend/packages/mapping/ol3/wfsvector/bundle.js';
+
 ### Disabled CSRF protection on webapp level
 
 The previous cross-site request forgery protection used cookies and http headers to detect if a given request to the server
