@@ -93,11 +93,11 @@ public class TestGroovyFeatureEngine {
         }
 
         public void run() {
-            System.out.println(Thread.currentThread().getName() + " Start.");
+            // System.out.println(Thread.currentThread().getName() + " Start.");
 
             processCommand();
 
-            System.out.println(Thread.currentThread().getName() + " End.");
+            // System.out.println(Thread.currentThread().getName() + " End.");
 
         }
 
@@ -256,10 +256,10 @@ public class TestGroovyFeatureEngine {
             }
         }
 
-        System.out.println("Finished all threads");
+        // System.out.println("Finished all threads");
 
         for (int i = 0; i < nJobs; i++) {
-            System.out.println("#" + i + " -> " + jobs[i].getCount());
+            // System.out.println("#" + i + " -> " + jobs[i].getCount());
             assertTrue(jobs[i].getCount() == 65);
         }
 

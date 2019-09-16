@@ -247,7 +247,7 @@ public class ArcGisFilter {
      */
     public HashMap<String, String> initCoordinateFilter(Coordinate coordinate, String mapSrs) {
         if (coordinate == null || this.defaultBuffer == 0.0d) {
-            System.out.println("coordinate filter fail");
+            // System.out.println("coordinate filter fail");
             log.error("Failed to create coordinate filter (coordinate or default buffer is unset)");
             return null;
         }
