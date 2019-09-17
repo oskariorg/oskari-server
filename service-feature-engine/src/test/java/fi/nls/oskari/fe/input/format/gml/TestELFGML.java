@@ -389,7 +389,7 @@ public class TestELFGML extends TestHelper {
             inp.close();
         }
 
-        System.out.println(outputProcessor.getFeatureCount());
+        // System.out.println(outputProcessor.getFeatureCount());
         assertTrue(outputProcessor.getFeatureCount() == 65);
 
     }

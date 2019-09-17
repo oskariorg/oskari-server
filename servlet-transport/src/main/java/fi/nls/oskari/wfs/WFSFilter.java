@@ -302,7 +302,7 @@ public class WFSFilter {
         Filter filter = ff.intersects(ff.property(layer
                 .getGMLGeometryProperty()), ff.literal(polygon));
 
-        System.out.println("coordinate filter success");
+        LOG.debug("coordinate filter success");
         return filter;
     }
 

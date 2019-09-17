@@ -134,7 +134,7 @@ public class WFSFilterTest {
             StAXOMBuilder staxOMBuilder = XMLHelper.createBuilder(filterStr);
             filter = staxOMBuilder.getDocumentElement();
         }
-        System.out.println(filter.toString());
+        // System.out.println(filter.toString());
 		assertEquals("Should get expected resultGeoJsonComplex", resultGeoJsonComplex, filter.toString());
 	}
 	
@@ -169,7 +169,7 @@ public class WFSFilterTest {
         layer.setGMLGeometryProperty("the_geom");
         Filter f = wfsFilter.initGeoJSONFilter(geoJson, "EPSG:3067", layer);
         assertNotNull(f);
-        System.out.println("F on " + f);
+        // System.out.println("F on " + f);
 	}
 
 	//@Test(expected = ClassCastException.class) - works in gt 14.2
@@ -197,6 +197,6 @@ at org.geotools.geojson.geom.GeometryHandlerBase.coordinate(GeometryHandlerBase.
 at org.geotools.geojson.geom.PointHandler.endObject(PointHandler.java:50)
 at org.json.simple.parser.JSONParser.parse(Unknown Source)
          */
-		System.out.println("Failed on " + thisFails);
+		// System.out.println("Failed on " + thisFails);
 	}
 }
