@@ -25,6 +25,11 @@
             <groupId>fi.nls.oskari.service</groupId>
             <artifactId>oskari-control-base</artifactId>
         </dependency>
+        
+        <dependency>
+            <groupId>org.oskari</groupId>
+            <artifactId>control-mvt</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>org.oskari</groupId>
