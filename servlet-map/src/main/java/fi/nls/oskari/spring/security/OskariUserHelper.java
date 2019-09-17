@@ -74,7 +74,7 @@ public class OskariUserHelper {
             if(loadedUser != null) {
                 httpRequest.getSession(true).setAttribute(User.class.getName(), loadedUser);
 
-                AuditLog.user(ActionParameters.getClientIp(httpRequest), user.getEmail())
+                AuditLog.user(ActionParameters.getClientIp(httpRequest), loadedUser)
                         .withMsg("Login")
                         .updated(AuditLog.ResourceType.USER);
             }
