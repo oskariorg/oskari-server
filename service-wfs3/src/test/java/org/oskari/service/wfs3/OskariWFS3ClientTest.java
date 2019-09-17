@@ -13,7 +13,6 @@ import org.geotools.referencing.CRS;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
-import org.opengis.referencing.operation.MathTransform;
 
 import com.vividsolutions.jts.geom.Envelope;
 import com.vividsolutions.jts.geom.Geometry;
@@ -81,24 +80,19 @@ public class OskariWFS3ClientTest {
 
     @Ignore("Depends on outside service, results might vary")
     @Test
-    public void testGetFeaturesTransformingToEPSG3067() throws Exception {
-        String endPoint = "https://dev-paikkatieto.maanmittauslaitos.fi/geographic-names/wfs3/v1/";
+    public void testGetFeaturesServiceSupportingCRS_EPSG3067() throws Exception {
+        String endPoint = "https://beta-paikkatieto.maanmittauslaitos.fi/maastotiedot/wfs3/v1/";
         String user = null;
         String pass = null;
-        String collectionId = "places";
-        CoordinateReferenceSystem crs84 = OskariWFS3Client.getCRS84();
-        Envelope envelope = new Envelope(21.35, 21.40, 61.35, 61.40);
-        ReferencedEnvelope bbox = new ReferencedEnvelope(envelope, crs84);
+        String collectionId = "rakennus";
         CoordinateReferenceSystem epsg3067 = CRS.decode("EPSG:3067");
-        MathTransform transform = CRS.findMathTransform(crs84, epsg3067);
-        Envelope transformedEnvelope = JTS.transform(bbox, transform);
-        Geometry transformedEnvelopeGeom = JTS.toGeometry(transformedEnvelope);
+        ReferencedEnvelope bbox = new ReferencedEnvelope(500000, 6822000, 501000, 6823000, epsg3067);
         int limit = 10;
         SimpleFeatureCollection sfc = OskariWFS3Client.getFeatures(endPoint, user, pass, collectionId, bbox, epsg3067, limit);
         try (SimpleFeatureIterator it = sfc.features()) {
             while (it.hasNext()) {
                 Geometry geometryEnvelope = ((Geometry) it.next().getDefaultGeometry()).getEnvelope();
-                assertTrue(geometryEnvelope.within(transformedEnvelopeGeom));
+                assertTrue(geometryEnvelope.within(JTS.toGeometry(bbox)));
             }
         }
     }
