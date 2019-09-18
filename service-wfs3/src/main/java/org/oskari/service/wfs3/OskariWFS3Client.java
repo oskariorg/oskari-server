@@ -87,7 +87,8 @@ public class OskariWFS3Client {
 
             validateResponse(conn, CONTENT_TYPE_GEOJSON);
             Map<String, Object> geojson = readMap(conn);
-            schema = GeoJSONSchemaDetector.getSchema(geojson, crs);
+            boolean ignoreGeometryProperties = true;
+            schema = GeoJSONSchemaDetector.getSchema(geojson, crs, ignoreGeometryProperties);
             SimpleFeatureCollection sfc = GeoJSONReader2.toFeatureCollection(geojson, schema, transform);
             numFeatures += sfc.size();
             pages.add(sfc);
