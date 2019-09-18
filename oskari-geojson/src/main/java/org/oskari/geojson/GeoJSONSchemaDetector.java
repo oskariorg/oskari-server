@@ -31,26 +31,19 @@ public class GeoJSONSchemaDetector {
 
         // Map feature.geometry fields to JTS Geometries
         replaceGeometry(json, GeoJSONReader2::toGeometry);
-        if (ignoreGeometryProperties) {
-            // Remove properties of type Map<String, Object> that were mappable to JTS geometries, otherwise leave as is
-            replaceMapProperties(json, it -> {
-                try {
-                    GeoJSONReader2.toGeometry(it);
-                    return null;
-                } catch (Exception e) {
-                    return it;
-                }
-            });
-        } else {
+        replaceMapProperties(json, it -> {
             // Map properties of type Map<String, Object> to JTS geometries if possible, otherwise leave as is
-            replaceMapProperties(json, it -> {
-                try {
-                    return GeoJSONReader2.toGeometry(it);
-                } catch (Exception e) {
-                    return it;
+            try {
+                Geometry g = GeoJSONReader2.toGeometry(it);
+                if (ignoreGeometryProperties) {
+                    // If we want to ignore them return null to remove them from the properties map
+                    return null;
                 }
-            });
-        }
+                return g;
+            } catch (Exception e) {
+                return it;
+            }
+        });
 
         Map<String, Class<?>> bindings = new HashMap<>();
         String type = GeoJSONUtil.getString(json, GeoJSON.TYPE);
