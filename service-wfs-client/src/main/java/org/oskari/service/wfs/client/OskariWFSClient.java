@@ -79,7 +79,8 @@ public class OskariWFSClient {
     protected static SimpleFeatureCollection parseGeoJSON(InputStream in,
                                                         CoordinateReferenceSystem crs) throws IOException {
         Map<String, Object> geojson = OM.readValue(in, TYPE_REF);
-        SimpleFeatureType schema = GeoJSONSchemaDetector.getSchema(geojson, crs);
+        boolean ignoreGeometryProperties = true;
+        SimpleFeatureType schema = GeoJSONSchemaDetector.getSchema(geojson, crs, ignoreGeometryProperties);
         return GeoJSONReader2.toFeatureCollection(geojson, schema);
     }
 
