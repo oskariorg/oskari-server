@@ -1,5 +1,29 @@
 # Release Notes
 
+## 1.53.0
+
+For a full list of changes see: https://github.com/oskariorg/oskari-server/milestone/18?closed=1
+
+- New WFS-integration backend is now the default replacing the transport webapp! Requires manual updates. See [migration guide](MigrationGuide.md)
+- Lots of improvements over 1.52 to the new WFS-integration backend
+- CSRF protection has been removed from the webapp as the implementation was problematic with 3rd party cookie blocking.
+  Instructions for configuring nginx to handle CSRF has been added.  See [migration guide](MigrationGuide.md)
+- Permissions system has been rewritten. Modifying layer url or technical name no longer loses permissions set for the layer
+- Added frontend request priority queue implementation using Service Worker (Service Worker code is in the server repository)
+- Audit log implementation has been added
+- AppSetups can now use specific publish template to override the global template
+- Printing WFS-layers now use true vector features for PDFs
+- Improvements on printing WMTS-layers
+- Oskari now has a default favicon (customizable in oskari-ext.properties)
+- More services migrated from Ibatis to Mybatis
+- Fixes to analysis functionality
+- User session timeout handling improvements
+- OpenStreetMap search channel now supports limiting queries to certain bbox
+- Server-side localizations are now in UTF-8 to support more languages
+- Improvements on parsing indicators from the thematic datasource UN stats (https://unstats.un.org/home/)
+- Improvements for handling problematic regions from statistical region sets
+- Library updates
+
 ## 1.52.0
 
 For a full list of changes see: https://github.com/oskariorg/oskari-server/milestone/16?closed=1
