@@ -65,14 +65,20 @@ public class WFSSearchChannel extends SearchChannel {
         return config.getLocale();
     }
 
+    /**
+     * USing WFS search channel is permitted if the user has the VIEW_LAYER permission for the
+     * WFS-layer that is used for searching.
+     * @param user
+     * @return
+     */
     public boolean hasPermission(User user) {
         // check if user roles have VIEW_LAYER permission to wfslayer
         Cache<Resource> cache = CacheManager.getCache(this.getClass().getName());
-        final String cacheKey = config.getUrl() + config.getLayerName();
+        final String cacheKey = Integer.toString(config.getWFSLayerId());
         Resource resource = cache.get(cacheKey);
         if(resource == null) {
             Optional<Resource> maybeResource =
-                    getPermissionService().findResource(ResourceType.maplayer, Integer.toString(config.getId()));
+                    getPermissionService().findResource(ResourceType.maplayer, cacheKey);
             if(!maybeResource.isPresent()) {
                 return false;
             }
