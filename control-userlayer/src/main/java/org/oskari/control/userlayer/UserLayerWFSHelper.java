@@ -86,15 +86,16 @@ public class UserLayerWFSHelper extends UserLayerService {
 
     @SuppressWarnings("unchecked")
     public SimpleFeatureCollection postProcess(SimpleFeatureCollection sfc) throws Exception {
+        if (sfc.isEmpty()) {
+            // return early as no need for processing and getSchema() throws npe if we move forward
+            return sfc;
+        }
         List<SimpleFeature> fc = new ArrayList<>();
         SimpleFeatureType schema;
 
         String geomAttrName = sfc.getSchema().getGeometryDescriptor().getLocalName();
 
         try (SimpleFeatureIterator it = sfc.features()) {
-            if (!it.hasNext()) {
-                return sfc;
-            }
             SimpleFeature f = it.next();
 
             String property_json = (String) f.getAttribute(USERLAYER_ATTR_PROPERTY_JSON);
