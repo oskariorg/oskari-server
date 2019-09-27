@@ -15,6 +15,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -24,6 +25,7 @@ public class OskariWFS2Client {
 
     private static final Logger LOG = LogFactory.getLogger(OskariWFS2Client.class);
     private static final OskariGML32 OSKARI_GML32 = new OskariGML32();
+    private static final String JSON_OUTPUT_FORMAT = "application/json";
 
     private OskariWFS2Client() {}
 
@@ -32,24 +34,29 @@ public class OskariWFS2Client {
      */
     public static SimpleFeatureCollection getFeatures(String endPoint, String user, String pass,
                                                       String typeName, ReferencedEnvelope bbox, CoordinateReferenceSystem crs,
-                                                      int maxFeatures, Filter filter) {
+                                                      int maxFeatures, Filter filter, List<String> formats) {
         // First try GeoJSON
         Map<String, String> query = getQueryParams(typeName, bbox, crs, maxFeatures, filter);
-        query.put("OUTPUTFORMAT", "application/json");
+
+
         byte[] response = new byte[]{};
-        try {
-            response = OskariWFSClient.getResponse(endPoint, user, pass, query);
-            return OskariWFSClient.parseGeoJSON(new ByteArrayInputStream(response), crs);
-        } catch (ServiceRuntimeException e) {
-            if (!"400".equals(e.getMessageKey())) throw e;
-            // fallback to gml
-        } catch (IOException e) {
-            if (!OskariWFSClient.isOutputFormatInvalid(new ByteArrayInputStream(response))) {
-                // If we can not determine that the exception was due to bad
-                // outputFormat parameter then don't bother trying GML
-                final String url = IOHelper.constructUrl(endPoint, query);
-                LOG.debug("Response from", url, "was:\n", new String(response, StandardCharsets.UTF_8));
-                throw new ServiceRuntimeException("Unable to parse GeoJSON from " + url, e);
+        if (formats.isEmpty() || formats.contains(JSON_OUTPUT_FORMAT)) {
+            try {
+                query.put("OUTPUTFORMAT", JSON_OUTPUT_FORMAT);
+                response = OskariWFSClient.getResponse(endPoint, user, pass, query);
+                return OskariWFSClient.parseGeoJSON(new ByteArrayInputStream(response), crs);
+                // allowed formats may not be parsed from capabilities
+            } catch (ServiceRuntimeException e) {
+                if (!"400".equals(e.getMessageKey())) throw e;
+                // fallback to gml
+            } catch (IOException e) {
+                if (!OskariWFSClient.isOutputFormatInvalid(new ByteArrayInputStream(response))) {
+                    // If we can not determine that the exception was due to bad
+                    // outputFormat parameter then don't bother trying GML
+                    final String url = IOHelper.constructUrl(endPoint, query);
+                    LOG.debug("Response from", url, "was:\n", new String(response, StandardCharsets.UTF_8));
+                    throw new ServiceRuntimeException("Unable to parse GeoJSON from " + url, e);
+                }
             }
         }
 

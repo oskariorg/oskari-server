@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -34,9 +35,9 @@ public class OskariWFSClient {
             String user, String pass,
             String typeName, ReferencedEnvelope bbox,
             CoordinateReferenceSystem crs, int maxFeatures,
-            Filter filter) throws ServiceRuntimeException {
+            Filter filter, List<String> formats) throws ServiceRuntimeException {
         return new OskariWFSLoadCommand(endPoint, version, user, pass,
-                typeName, bbox, crs, maxFeatures, filter).execute();
+                typeName, bbox, crs, maxFeatures, filter, formats).execute();
     }
 
     // Common methods for WFS 1.1.0 and 2.0.0 clients

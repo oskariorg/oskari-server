@@ -1,11 +1,16 @@
 package org.oskari.service.wfs.client;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+import fi.nls.oskari.util.JSONHelper;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.opengis.filter.Filter;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.oskari.service.user.UserLayerService;
@@ -18,6 +23,9 @@ import fi.nls.oskari.util.PropertyUtil;
 public class OskariFeatureClient {
 
     protected static final String PROPERTY_NATIVE_SRS = "oskari.native.srs";
+    protected static final String PROPERTY_FORMATS = "formats";
+    protected static final String PROPERTY_AVAILABLE = "available";
+    protected static final String PROPERTY_FORCE_GML = "forceGML";
     protected static final String ERR_REPOJECTION_FAIL = "Reprojection failed";
     protected static final String ERR_NATIVE_SRS_DECODE_FAIL = "Failed to decode Native CRS";
 
@@ -80,12 +88,23 @@ public class OskariFeatureClient {
         String typeName = layer.getName();
         String user = layer.getUsername();
         String pass = layer.getPassword();
+
+        List <String> formats =  new ArrayList<>();
+        JSONObject attributes = layer.getAttributes();
+        JSONObject capa = layer.getCapabilities();
+        if (attributes.has(PROPERTY_FORCE_GML) && attributes.optBoolean(PROPERTY_FORCE_GML, false)) {
+            formats.add(getForcedGMLFormat(version));
+        } else if (capa.has(PROPERTY_FORMATS)) {
+            JSONArray arr = JSONHelper.getEmptyIfNull(
+                    JSONHelper.getJSONArray(JSONHelper.getJSONObject(capa, PROPERTY_FORMATS), PROPERTY_AVAILABLE));
+            formats = JSONHelper.getArrayAsList(arr);
+        }
         // TODO: Figure out the maxFeatures from the layer
         int maxFeatures = 10000;
 
         Filter filter = processor.map(proc -> proc.getWFSFilter(id, bbox)).orElse(null);
 
-        SimpleFeatureCollection sfc = wfsClient.getFeatures(endPoint, version, user, pass, typeName, bbox, crs, maxFeatures, filter);
+        SimpleFeatureCollection sfc = wfsClient.getFeatures(endPoint, version, user, pass, typeName, bbox, crs, maxFeatures, filter, formats);
 
         if (processor.isPresent()) {
             try {
@@ -97,5 +116,8 @@ public class OskariFeatureClient {
 
         return sfc;
     }
-
+    private static String getForcedGMLFormat (String version) {
+        if ("2.0.0".equals(version)) return "application/gml+xml; version=3.2";
+        return "text/xml; subtype=gml/3.1.1";
+    }
 }

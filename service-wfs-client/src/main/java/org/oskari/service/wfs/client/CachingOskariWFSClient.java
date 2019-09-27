@@ -1,5 +1,6 @@
 package org.oskari.service.wfs.client;
 
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import org.geotools.data.simple.SimpleFeatureCollection;
@@ -30,16 +31,16 @@ public class CachingOskariWFSClient extends OskariWFSClient {
     public SimpleFeatureCollection getFeatures(String endPoint, String version,
             String user, String pass, String typeName,
             ReferencedEnvelope bbox, CoordinateReferenceSystem crs,
-            int maxFeatures, Filter filter) {
+            int maxFeatures, Filter filter, List<String> formats) {
         if (filter != null) {
             // Don't cache requests with a Filter
             return super.getFeatures(endPoint, version, user, pass,
-                    typeName, bbox, crs, maxFeatures, filter);
+                    typeName, bbox, crs, maxFeatures, filter,  formats);
         }
         String key = getCacheKey(endPoint, typeName, bbox, crs, maxFeatures);
         return cache.get(key,
                 __ -> super.getFeatures(endPoint, version, user, pass,
-                        typeName, bbox, crs, maxFeatures, filter));
+                        typeName, bbox, crs, maxFeatures, filter, formats));
     }
 
     private String getCacheKey(String endPoint, String typeName, Envelope bbox,
