@@ -36,21 +36,23 @@ public class OskariWFS110Client {
      */
     public static SimpleFeatureCollection getFeatures(String endPoint, String user, String pass,
             String typeName, ReferencedEnvelope bbox, CoordinateReferenceSystem crs,
-            int maxFeatures, Filter filter) {
+            int maxFeatures, Filter filter, boolean forceGML) {
         // First try GeoJSON
         Map<String, String> query = getQueryParams(typeName, bbox, crs, maxFeatures, filter);
-        query.put("OUTPUTFORMAT", "application/json");
-
-        byte[] response = OskariWFSClient.getResponse(endPoint, user, pass, query);
-        try {
-            return OskariWFSClient.parseGeoJSON(new ByteArrayInputStream(response), crs);
-        } catch (IOException e) {
-            if (!OskariWFSClient.isOutputFormatInvalid(new ByteArrayInputStream(response))) {
-                // If we can not determine that the exception was due to bad
-                // outputFormat parameter then don't bother trying GML
-                final String url = IOHelper.constructUrl(endPoint, query);
-                LOG.debug("Response from", url, "was:\n", new String(response, StandardCharsets.UTF_8));
-                throw new ServiceRuntimeException("Unable to parse GeoJSON from " + url, e);
+        byte[] response;
+        if (!forceGML) {
+            query.put("OUTPUTFORMAT", "application/json");
+            response = OskariWFSClient.getResponse(endPoint, user, pass, query);
+            try {
+                return OskariWFSClient.parseGeoJSON(new ByteArrayInputStream(response), crs);
+            } catch (IOException e) {
+                if (!OskariWFSClient.isOutputFormatInvalid(new ByteArrayInputStream(response))) {
+                    // If we can not determine that the exception was due to bad
+                    // outputFormat parameter then don't bother trying GML
+                    final String url = IOHelper.constructUrl(endPoint, query);
+                    LOG.debug("Response from", url, "was:\n", new String(response, StandardCharsets.UTF_8));
+                    throw new ServiceRuntimeException("Unable to parse GeoJSON from " + url, e);
+                }
             }
         }
 
