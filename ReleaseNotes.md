@@ -1,5 +1,14 @@
 # Release Notes
 
+## 1.53.1
+
+For a full list of changes see: https://github.com/oskariorg/oskari-server/milestone/20?closed=1
+
+- Fix WFS-based search channels permission checks
+- Fix backend for the content-editor functionality for services requiring authentication
+- Fix an issue with empty userlayer tiles
+- Allow admins to force the new WFS-backend to use GML as outputFormat instead of preferring JSON (usable for services that don't handle outputFormat parameter properly)
+
 ## 1.53.0
 
 For a full list of changes see: https://github.com/oskariorg/oskari-server/milestone/18?closed=1
