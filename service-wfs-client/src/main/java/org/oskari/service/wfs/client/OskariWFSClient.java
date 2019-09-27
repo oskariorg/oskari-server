@@ -34,9 +34,9 @@ public class OskariWFSClient {
             String user, String pass,
             String typeName, ReferencedEnvelope bbox,
             CoordinateReferenceSystem crs, int maxFeatures,
-            Filter filter) throws ServiceRuntimeException {
+            Filter filter, boolean forceGML) throws ServiceRuntimeException {
         return new OskariWFSLoadCommand(endPoint, version, user, pass,
-                typeName, bbox, crs, maxFeatures, filter).execute();
+                typeName, bbox, crs, maxFeatures, filter, forceGML).execute();
     }
 
     // Common methods for WFS 1.1.0 and 2.0.0 clients
