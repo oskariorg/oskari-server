@@ -546,7 +546,7 @@ public class MapfullHandler extends BundleHandler {
 
     private void removeMyLocationPluginAutoCenter(final JSONObject mapfullConfig) {
         JSONObject plugin = getPlugin(PLUGIN_MYLOCATION, mapfullConfig);
-        if (plugin == null && !plugin.has(KEY_CONFIG)) {
+        if (plugin == null) {
             return;
         }
         try {
