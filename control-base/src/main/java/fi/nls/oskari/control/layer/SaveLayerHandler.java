@@ -32,7 +32,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.oskari.permissions.model.*;
 import org.oskari.service.util.ServiceFactory;
-import org.oskari.service.wfs3.WFS3Service;
+import org.oskari.service.wfs3.WFS3Capabilities;
 
 import javax.servlet.http.HttpServletRequest;
 import java.net.MalformedURLException;
@@ -647,24 +647,15 @@ public class SaveLayerHandler extends AbstractLayerAdminHandler {
             ml.setAttributes(attributes);
         }
 
-        // Get supported projections
-
-        Set<String> crss = new HashSet<>();
-        if (WFS3_0_0_VERSION.equals(ml.getVersion())) {
-            try {
-                WFS3Service service = WFS3Service.fromURL(ml.getUrl(), ml.getUsername(), ml.getPassword());
-                crss = service.getSupportedEpsgCodes(ml.getName());
-            } catch (Exception e) {
-                LOG.warn("Couldn't get supported projections for WFS3 layer:", ml.getName(), e.getMessage());
+        try {
+            if (WFS3_0_0_VERSION.equals(ml.getVersion())) {
+                ml.setCapabilities(WFS3Capabilities.getLayerCapabilities(ml));
+            } else {
+                ml.setCapabilities(GetGtWFSCapabilities.getLayerCapabilities(ml));
             }
-        } else {
-            Map<String, Object> capa = GetGtWFSCapabilities.getGtDataStoreCapabilities(
-                    ml.getUrl(), ml.getVersion(), ml.getUsername(), ml.getPassword(), ml.getSrs_name());
-            crss = GetGtWFSCapabilities.parseProjections(capa, ml.getName());
+        } catch (Exception e) {
+            LOG.warn("Couldn't update capabilities for WFS (" + ml.getVersion() + ") layer:", ml.getName(), e.getMessage());
         }
-        JSONObject capabilities = new JSONObject();
-        JSONHelper.put(capabilities, "srs", new JSONArray(crss));
-        ml.setCapabilities(capabilities);
         ml.setCapabilitiesLastUpdated(new Date());
     }
 
