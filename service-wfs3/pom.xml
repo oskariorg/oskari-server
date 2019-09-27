@@ -4,7 +4,7 @@
     <parent>
         <groupId>fi.nls.oskari</groupId>
         <artifactId>oskari-parent</artifactId>
-        <version>1.53.1</version>
+        <version>1.54.0-SNAPSHOT</version>
     </parent>
     <groupId>org.oskari</groupId>
     <artifactId>service-wfs3</artifactId>
