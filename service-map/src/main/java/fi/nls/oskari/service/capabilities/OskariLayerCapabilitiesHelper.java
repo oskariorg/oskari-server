@@ -10,6 +10,7 @@ import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.layer.formatters.LayerJSONFormatter;
 import fi.nls.oskari.map.layer.formatters.LayerJSONFormatterWMS;
 import fi.nls.oskari.map.layer.formatters.LayerJSONFormatterWMTS;
+import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.wfs.GetGtWFSCapabilities;
 import fi.nls.oskari.wmts.domain.ResourceUrl;
@@ -123,15 +124,15 @@ public class OskariLayerCapabilitiesHelper {
 
     public static void setPropertiesFromCapabilitiesWFS(OskariLayer ml,
             Set<String> systemCRSs) {
-        Map<String, Object> capa = GetGtWFSCapabilities.getGtDataStoreCapabilities(
-                ml.getUrl(), ml.getVersion(),
-                ml.getUsername(), ml.getPassword(), ml.getSrs_name());
-        Set<String> capabilitiesCRSs = GetGtWFSCapabilities.parseProjections(capa, ml.getName());
-        Set<String> crss = LayerJSONFormatter.getCRSsToStore(systemCRSs, capabilitiesCRSs);
-
-        JSONObject capabilities = new JSONObject();
-        JSONHelper.put(capabilities, LayerJSONFormatter.KEY_SRS, new JSONArray(crss));
-        ml.setCapabilities(capabilities);
+        try {
+            if ("3.0.0".equals(ml.getVersion())){
+                // TODO WFS3
+            } else {
+                ml.setCapabilities(GetGtWFSCapabilities.getLayerCapabilities(ml));
+            }
+        } catch (ServiceException e) {
+            LOG.warn("Failed to get capabilities for layer: " + ml.getName());
+        }
         ml.setCapabilitiesLastUpdated(new Date());
     }
 }
