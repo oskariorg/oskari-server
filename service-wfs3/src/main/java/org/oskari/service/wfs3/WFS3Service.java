@@ -115,17 +115,6 @@ public class WFS3Service {
                 .filter(c -> c.getId().equals(id))
                 .findAny();
     }
-    public Set<String> getSupportedEpsgCodes (String collectionId) throws NoSuchElementException {
-        Set<String> epsgs = new HashSet<>();
-        WFS3CollectionInfo collection = getCollection(collectionId).get();
-        for (String crs : collection.getCrs()) {
-            String epsg = convertCrsToEpsg(crs);
-            if (epsg != null) {
-                epsgs.add(epsg);
-            }
-        }
-        return epsgs;
-    }
 
     public static String convertCrsToEpsg (String crs) {
         if (crs.toUpperCase().contains("CRS84")){
