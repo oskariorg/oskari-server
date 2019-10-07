@@ -87,7 +87,7 @@ public class GetWSCapabilitiesHandler extends ActionHandler {
                 if (VERSION_WFS3.equals(version)) {
                     WFS3Service service = WFS3Service.fromURL(url, user, pw);
                     List<JSONObject> layers = service.getCollections().stream()
-                            .map(collectionInfo -> toOskariLayer(url, collectionInfo))
+                            .map(collectionInfo -> toOskariLayer(url, service, collectionInfo))
                             .map(layer -> wfsLayerToJSON(layer, currentCrs, user, pw))
                             .collect(Collectors.toList());
                     return JSONHelper.createJSONObject("layers", new JSONArray(layers));
@@ -112,7 +112,7 @@ public class GetWSCapabilitiesHandler extends ActionHandler {
         }
     }
 
-    private OskariLayer toOskariLayer(String url, WFS3CollectionInfo collection) {
+    private OskariLayer toOskariLayer(String url, WFS3Service service, WFS3CollectionInfo collection) {
         OskariLayer layer = new OskariLayer();
         layer.setType(OskariLayer.TYPE_WFS);
         layer.setVersion(VERSION_WFS3);
@@ -126,11 +126,7 @@ public class GetWSCapabilitiesHandler extends ActionHandler {
             layer.setName(lang, title);
         }
         JSONObject capabilities = layer.getCapabilities();
-        Set<String> epsgs = collection.getCrs()
-                .stream()
-                .map(WFS3Service::convertCrsToEpsg)
-                .filter(epsg -> epsg != null)
-                .collect(Collectors.toSet());
+        Set<String> epsgs = service.getSupportedEpsgCodes(collection.getId());
         JSONHelper.put(capabilities, "srs", new JSONArray(epsgs));
         return layer;
     }

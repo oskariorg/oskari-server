@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import org.geotools.referencing.CRS;
 import org.oskari.service.wfs3.model.WFS3CollectionInfo;
@@ -115,28 +116,32 @@ public class WFS3Service {
                 .filter(c -> c.getId().equals(id))
                 .findAny();
     }
-    public Set<String> getSupportedEpsgCodes (String collectionId) throws NoSuchElementException {
-        Set<String> epsgs = new HashSet<>();
-        WFS3CollectionInfo collection = getCollection(collectionId).get();
-        for (String crs : collection.getCrs()) {
-            String epsg = convertCrsToEpsg(crs);
-            if (epsg != null) {
-                epsgs.add(epsg);
-            }
-        }
-        return epsgs;
+
+    public Set<String> getSupportedCrsURIs(String collectionId) throws NoSuchElementException {
+        return getCollection(collectionId)
+                .map(collection -> collection.getCrs())
+                .map(list -> (Set<String>) new HashSet<>(list))
+                .orElseThrow(() -> new NoSuchElementException());
     }
 
-    public static String convertCrsToEpsg (String crs) {
-        if (crs.toUpperCase().contains("CRS84")){
+    public Set<String> getSupportedEpsgCodes(String collectionId) throws NoSuchElementException {
+        return getSupportedCrsURIs(collectionId).stream()
+                .map(WFS3Service::convertCrsToEpsg)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toSet());
+    }
+
+    private static String convertCrsToEpsg(String crs) {
+        if ("http://www.opengis.net/def/crs/OGC/1.3/CRS84".equals(crs)) {
             return "EPSG:4326"; // same projection, but axis order differs
         }
         try {
             return CRS.lookupIdentifier(CRS.decode(crs), false);
         } catch (Exception e) {
-            // not valid EPSG projection
+            // Either failed - maybe the code is invalid
+            // Only thing certain is that we can not use this
+            return null;
         }
-        return null;
     }
 
     @Override

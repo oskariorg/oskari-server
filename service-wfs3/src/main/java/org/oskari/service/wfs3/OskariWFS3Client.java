@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -16,8 +15,10 @@ import java.util.stream.Collectors;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
+import org.json.JSONObject;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.geometry.MismatchedDimensionException;
+import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.MathTransform;
 import org.opengis.referencing.operation.TransformException;
@@ -28,10 +29,12 @@ import org.oskari.service.wfs3.model.WFS3Link;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.service.ServiceRuntimeException;
 import fi.nls.oskari.util.IOHelper;
+import fi.nls.oskari.util.JSONHelper;
 
 /**
  * Client code for WFS 3 Core services
@@ -40,12 +43,8 @@ public class OskariWFS3Client {
 
     private static final Logger LOG = LogFactory.getLogger(OskariWFS3Client.class);
 
-    // Don't have one yet
-    private static final String CONFORMANCE_CRS = "TBD";
-
     protected static final int PAGE_SIZE = 1000;
 
-    private static final String CONTENT_TYPE_JSON = "application/json";
     private static final String CONTENT_TYPE_GEOJSON = "application/geo+json";
     private static final int MAX_REDIRECTS = 5;
     private static final ObjectMapper OM = new ObjectMapper();
@@ -67,10 +66,9 @@ public class OskariWFS3Client {
     }
 
     private OskariWFS3Client() {}
-
-    public static SimpleFeatureCollection getFeatures(String endPoint,
-            String user, String pass, String collectionId,
-            ReferencedEnvelope bbox, CoordinateReferenceSystem crs, int hardLimit) throws ServiceRuntimeException {
+    
+    public static SimpleFeatureCollection getFeatures(OskariLayer layer,
+            ReferencedEnvelope bbox, CoordinateReferenceSystem crs) throws ServiceRuntimeException {
         /* Servers can not yet implement this since no requirement URI is standardized yet
         boolean crsExtension;
         try {
@@ -79,21 +77,40 @@ public class OskariWFS3Client {
             throw new ServiceRuntimeException("IOException occured", e);
         }
          */
-
-        String crsURI = getCrsURI(endPoint, user, pass, collectionId, crs);
-
-        MathTransform transform = null;
+        
+        String crsURI = getCrsURI(layer, crs);
+        MathTransform transformCRS84ToTargetCRS = null;
         if (crsURI == null) {
             try {
-                transform = CRS.equalsIgnoreMetadata(getCRS84(), crs) ? null : CRS.findMathTransform(getCRS84(), crs);
+                // Service doesn't support outputting the collection in the targetCRS
+                transformCRS84ToTargetCRS = CRS.equalsIgnoreMetadata(getCRS84(), crs) ? null : CRS.findMathTransform(getCRS84(), crs);
             } catch (Exception e) {
                 throw new ServiceRuntimeException("Coordinate transformation failure", e);
             }
         }
 
+        String bboxCrsURI = null;
+        if (bbox != null) {
+            bboxCrsURI = getCrsURI(layer, bbox.getCoordinateReferenceSystem());
+            if (bboxCrsURI == null) {
+                try {
+                    // Server doesn't support bboxes CRS - transform bbox to CRS84
+                    bbox = transformEnvelope(bbox, getCRS84());
+                } catch (Exception e) {
+                    throw new ServiceRuntimeException("bbox coordinate transformation failure", e);
+                }
+            }
+        }
+
+        String endPoint = layer.getUrl();
+        String collectionId = layer.getName();
+        String user = layer.getUsername();
+        String pass = layer.getPassword();
+        // TODO: FIXME!
+        int hardLimit = 10000;
+
         String path = getItemsPath(endPoint, collectionId);
-        CoordinateReferenceSystem bboxCRS = crsURI != null ? safeCRSDecode(crsURI) : getCRS84();
-        Map<String, String> query = getQueryParams(bbox, crsURI, bboxCRS, hardLimit);
+        Map<String, String> query = getQueryParams(crsURI, bbox, bboxCrsURI, hardLimit);
         Map<String, String> headers = Collections.singletonMap("Accept", CONTENT_TYPE_GEOJSON);
 
         List<SimpleFeatureCollection> pages = new ArrayList<>();
@@ -108,7 +125,7 @@ public class OskariWFS3Client {
             Map<String, Object> geojson = readMap(conn);
             boolean ignoreGeometryProperties = true;
             schema = GeoJSONSchemaDetector.getSchema(geojson, crs, ignoreGeometryProperties);
-            SimpleFeatureCollection sfc = GeoJSONReader2.toFeatureCollection(geojson, schema, transform);
+            SimpleFeatureCollection sfc = GeoJSONReader2.toFeatureCollection(geojson, schema, transformCRS84ToTargetCRS);
             numFeatures += sfc.size();
             pages.add(sfc);
             String next = getLinkHref(geojson, "next");
@@ -120,7 +137,7 @@ public class OskariWFS3Client {
 
                 validateResponse(conn, CONTENT_TYPE_GEOJSON);
                 geojson = readMap(conn);
-                sfc = GeoJSONReader2.toFeatureCollection(geojson, schema, transform);
+                sfc = GeoJSONReader2.toFeatureCollection(geojson, schema, transformCRS84ToTargetCRS);
                 numFeatures += sfc.size();
                 pages.add(sfc);
                 next = getLinkHref(geojson, "next");
@@ -137,54 +154,31 @@ public class OskariWFS3Client {
         return new PaginatedFeatureCollection(pages, schema, "FeatureCollection", hardLimit);
     }
 
+    private static ReferencedEnvelope transformEnvelope(ReferencedEnvelope env, CoordinateReferenceSystem to)
+            throws TransformException, FactoryException {
+        if (CRS.equalsIgnoreMetadata(env.getCoordinateReferenceSystem(), to)) {
+            return env;
+        }
+        return env.transform(to, true, 5);
+    }
+
     /**
-     * @return URI matching the requested crs if the collection supports it,
+     * @return URI matching the requested crs if the layer supports it,
      *          null otherwise
      */
-    private static String getCrsURI(String endPoint, String user, String pass,
-            String collectionId, CoordinateReferenceSystem crs) {
-        Map<String, Object> collectionJSON;
-        try {
-            String collectionPath = getCollectionsPath(endPoint, collectionId);
-            collectionJSON = getJSON(collectionPath, user, pass, null);
-        } catch (IOException e) {
-            throw new ServiceRuntimeException("Failed to get collection metadata");
-        }
-        if (!collectionJSON.containsKey("crs")) {
+    private static String getCrsURI(OskariLayer layer, CoordinateReferenceSystem crs) {
+        JSONObject capabilities = layer.getCapabilities();
+        if (capabilities == null) {
             return null;
         }
-        Collection<String> supportedCRS = (Collection<String>) collectionJSON.get("crs");
-        for (String crsURI : supportedCRS) {
+        List<String> crsURIs = JSONHelper.getArrayAsList(capabilities.optJSONArray("crs-uri"));
+        for (String crsURI : crsURIs) {
             CoordinateReferenceSystem tmp = safeCRSDecode(crsURI);
-            if (tmp == null) {
-                continue;
-            }
-            if (CRS.equalsIgnoreMetadata(tmp, crs)) {
+            if (tmp != null && CRS.equalsIgnoreMetadata(tmp, crs)) {
                 return crsURI;
             }
         }
         return null;
-    }
-
-    private static boolean checkCRSExtension(String endPoint, String user, String pass) throws IOException {
-        String conformancePath = getConformancePath(endPoint, user, pass);
-        Map<String, Object> conformanceJSON = getJSON(conformancePath, user, pass, null);
-        Collection<String> conformsTo = (Collection<String>) conformanceJSON.get("conformsTo");
-        return conformsTo.contains(CONFORMANCE_CRS);
-    }
-
-    private static String getConformancePath(String endPoint, String user, String pass) throws ServiceRuntimeException, IOException {
-        String landingPagePath = endPoint;
-        Map<String, Object> json = getJSON(landingPagePath, user, pass, null);
-        return getLinkHref(json, "conformance");
-    }
-
-    private static Map<String, Object> getJSON(String path, String user, String pass, Map<String, String> queryParams) throws IOException {
-        Map<String, String> headers = Collections.singletonMap("Accept", CONTENT_TYPE_JSON);
-        HttpURLConnection conn = IOHelper.getConnection(path, user, pass, null, headers);
-        conn = IOHelper.followRedirect(conn, user, pass, null, headers, MAX_REDIRECTS);
-        validateResponse(conn, CONTENT_TYPE_JSON);
-        return readMap(conn);
     }
 
     @SuppressWarnings("unchecked")
@@ -236,26 +230,17 @@ public class OskariWFS3Client {
         return getCollectionsPath(endPoint, collectionId) + "/items";
     }
 
-    protected static Map<String, String> getQueryParams(ReferencedEnvelope bbox, String crsURI, CoordinateReferenceSystem crs, int hardLimit)
+    protected static Map<String, String> getQueryParams(String crsURI, ReferencedEnvelope bbox, String bboxCrsURI, int hardLimit)
             throws ServiceRuntimeException {
-        // Linked not needed, but look better when logging the requests
+        // Linked not needed, but looks better when logging the requests
         Map<String, String> parameters = new LinkedHashMap<>();
+        parameters.put("crs", crsURI);
         if (bbox != null) {
-            if (!CRS.equalsIgnoreMetadata(bbox.getCoordinateReferenceSystem(), crs)) {
-                try {
-                    bbox = bbox.transform(crs, true, 5);
-                } catch (Exception e) {
-                    throw new ServiceRuntimeException("Failed to transform bbox to CRS84");
-                }
-            }
             String bboxStr = String.format(Locale.US, "%f,%f,%f,%f",
                     bbox.getMinX(), bbox.getMinY(),
                     bbox.getMaxX(), bbox.getMaxY());
             parameters.put("bbox", bboxStr);
-            if (crsURI != null) {
-                parameters.put("crs", crsURI);
-                parameters.put("bbox-crs", crsURI);
-            }
+            parameters.put("bbox-crs", crsURI);
         }
         parameters.put("limit", Integer.toString(Math.min(PAGE_SIZE, hardLimit)));
         return parameters;

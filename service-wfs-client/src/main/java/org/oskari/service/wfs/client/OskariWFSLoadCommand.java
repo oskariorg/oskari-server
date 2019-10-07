@@ -1,7 +1,6 @@
 package org.oskari.service.wfs.client;
 
-import fi.nls.oskari.log.LogFactory;
-import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.service.ServiceRuntimeException;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.geometry.jts.ReferencedEnvelope;
@@ -19,28 +18,20 @@ import fi.nls.oskari.util.PropertyUtil;
 
 public class OskariWFSLoadCommand extends HystrixCommand<SimpleFeatureCollection> {
 
-    private static final Logger LOG = LogFactory.getLogger(OskariWFSLoadCommand.class);
     private static final String WFS_3_VERSION = "3.0.0";
     private static final String WFS_2_VERSION = "2.0.0";
     private static final String GROUP_KEY = "wfs";
 
-    private final String endPoint;
-    private final String version;
-    private final String user;
-    private final String pass;
-    private final String typeName;
+    private final OskariLayer layer;
     private final ReferencedEnvelope bbox;
     private final CoordinateReferenceSystem crs;
-    private final int maxFeatures;
     private final Filter filter;
-    private final boolean forceGML;
 
-    public OskariWFSLoadCommand(String endPoint, String version, String user, String pass,
-            String typeName, ReferencedEnvelope bbox, CoordinateReferenceSystem crs,
-            int maxFeatures, Filter filter, boolean forceGML) {
-        this(endPoint, version, user, pass, typeName, bbox, crs, maxFeatures, filter, forceGML, Setter
+    public OskariWFSLoadCommand(OskariLayer layer, ReferencedEnvelope bbox,
+            CoordinateReferenceSystem crs, Filter filter) {
+        this(layer, bbox, crs, filter, Setter
                 .withGroupKey(HystrixCommandGroupKey.Factory.asKey(GROUP_KEY))
-                .andCommandKey(HystrixCommandKey.Factory.asKey(endPoint))
+                .andCommandKey(HystrixCommandKey.Factory.asKey(layer.getUrl()))
                 .andThreadPoolPropertiesDefaults(
                         HystrixThreadPoolProperties.Setter()
                         .withCoreSize(PropertyUtil.getOptional("oskari." + GROUP_KEY + ".job.pool.size", 10))
@@ -54,37 +45,30 @@ public class OskariWFSLoadCommand extends HystrixCommand<SimpleFeatureCollection
                         .withCircuitBreakerSleepWindowInMilliseconds(PropertyUtil.getOptional("oskari." + GROUP_KEY + ".sleepwindow", 20000))));
     }
 
-    public OskariWFSLoadCommand(String endPoint, String version, String user, String pass,
-            String typeName, ReferencedEnvelope bbox, CoordinateReferenceSystem crs,
-            int maxFeatures, Filter filter, boolean forceGML, Setter setter) {
+
+    public OskariWFSLoadCommand(OskariLayer layer, ReferencedEnvelope bbox,
+            CoordinateReferenceSystem crs, Filter filter, Setter setter) {
         super(setter);
-        this.endPoint = endPoint;
-        this.version = version;
-        this.user = user;
-        this.pass = pass;
-        this.typeName = typeName;
+        this.layer = layer;
         this.bbox = bbox;
         this.crs = crs;
-        this.maxFeatures = maxFeatures;
         this.filter = filter;
-        this.forceGML = forceGML;
     }
 
     @Override
     protected SimpleFeatureCollection run() throws Exception {
-        switch (version) {
+        switch (layer.getVersion()) {
         case WFS_3_VERSION:
-            return OskariWFS3Client.getFeatures(endPoint, user, pass, typeName, bbox, crs, maxFeatures);
+            return OskariWFS3Client.getFeatures(layer, bbox, crs);
         case WFS_2_VERSION:
-            return OskariWFS2Client.getFeatures(endPoint, user, pass, typeName, bbox, crs, maxFeatures, filter, forceGML);
+            return OskariWFS2Client.getFeatures(layer, bbox, crs, filter);
         default:
-            return OskariWFS110Client.getFeatures(endPoint, user, pass, typeName, bbox, crs, maxFeatures, filter, forceGML);
+            return OskariWFS110Client.getFeatures(layer, bbox, crs, filter);
         }
     }
 
     public SimpleFeatureCollection getFallback() {
-        LOG.debug("Error getting features from", endPoint, "Events completed:\n", getExecutionEvents());
         // handler expects an Exception or SimpleFeatureCollection. If we don't throw an exception a null value is returned.
-        throw new ServiceRuntimeException("Error getting features from " + endPoint, getExceptionFromThrowable(getExecutionException()));
+        throw new ServiceRuntimeException("Error getting features from " + layer.getUrl(), getExceptionFromThrowable(getExecutionException()));
     }
 }
