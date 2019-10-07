@@ -33,11 +33,12 @@ public class OskariWFSLoadCommand extends HystrixCommand<SimpleFeatureCollection
     private final CoordinateReferenceSystem crs;
     private final int maxFeatures;
     private final Filter filter;
+    private final boolean forceGML;
 
     public OskariWFSLoadCommand(String endPoint, String version, String user, String pass,
             String typeName, ReferencedEnvelope bbox, CoordinateReferenceSystem crs,
-            int maxFeatures, Filter filter) {
-        this(endPoint, version, user, pass, typeName, bbox, crs, maxFeatures, filter, Setter
+            int maxFeatures, Filter filter, boolean forceGML) {
+        this(endPoint, version, user, pass, typeName, bbox, crs, maxFeatures, filter, forceGML, Setter
                 .withGroupKey(HystrixCommandGroupKey.Factory.asKey(GROUP_KEY))
                 .andCommandKey(HystrixCommandKey.Factory.asKey(endPoint))
                 .andThreadPoolPropertiesDefaults(
@@ -55,7 +56,7 @@ public class OskariWFSLoadCommand extends HystrixCommand<SimpleFeatureCollection
 
     public OskariWFSLoadCommand(String endPoint, String version, String user, String pass,
             String typeName, ReferencedEnvelope bbox, CoordinateReferenceSystem crs,
-            int maxFeatures, Filter filter, Setter setter) {
+            int maxFeatures, Filter filter, boolean forceGML, Setter setter) {
         super(setter);
         this.endPoint = endPoint;
         this.version = version;
@@ -66,6 +67,7 @@ public class OskariWFSLoadCommand extends HystrixCommand<SimpleFeatureCollection
         this.crs = crs;
         this.maxFeatures = maxFeatures;
         this.filter = filter;
+        this.forceGML = forceGML;
     }
 
     @Override
@@ -74,9 +76,9 @@ public class OskariWFSLoadCommand extends HystrixCommand<SimpleFeatureCollection
         case WFS_3_VERSION:
             return OskariWFS3Client.getFeatures(endPoint, user, pass, typeName, bbox, crs, maxFeatures);
         case WFS_2_VERSION:
-            return OskariWFS2Client.getFeatures(endPoint, user, pass, typeName, bbox, crs, maxFeatures, filter);
+            return OskariWFS2Client.getFeatures(endPoint, user, pass, typeName, bbox, crs, maxFeatures, filter, forceGML);
         default:
-            return OskariWFS110Client.getFeatures(endPoint, user, pass, typeName, bbox, crs, maxFeatures, filter);
+            return OskariWFS110Client.getFeatures(endPoint, user, pass, typeName, bbox, crs, maxFeatures, filter, forceGML);
         }
     }
 

@@ -20,6 +20,7 @@ public class OskariFeatureClient {
     protected static final String PROPERTY_NATIVE_SRS = "oskari.native.srs";
     protected static final String ERR_REPOJECTION_FAIL = "Reprojection failed";
     protected static final String ERR_NATIVE_SRS_DECODE_FAIL = "Failed to decode Native CRS";
+    protected static final String PROPERTY_FORCE_GML = "forceGML";
 
     private OskariWFSClient wfsClient;
     private CoordinateReferenceSystem nativeCRS;
@@ -85,7 +86,9 @@ public class OskariFeatureClient {
 
         Filter filter = processor.map(proc -> proc.getWFSFilter(id, bbox)).orElse(null);
 
-        SimpleFeatureCollection sfc = wfsClient.getFeatures(endPoint, version, user, pass, typeName, bbox, crs, maxFeatures, filter);
+        boolean forceGML =  layer.getAttributes().optBoolean(PROPERTY_FORCE_GML, false);
+        SimpleFeatureCollection sfc = wfsClient.getFeatures(endPoint, version, user, pass, typeName, bbox, crs, maxFeatures, filter, forceGML);
+
 
         if (processor.isPresent()) {
             try {

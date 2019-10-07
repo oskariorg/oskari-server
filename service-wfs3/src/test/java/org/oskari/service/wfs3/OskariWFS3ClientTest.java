@@ -24,7 +24,7 @@ public class OskariWFS3ClientTest {
     @Ignore("Depends on outside service, results might vary")
     @Test
     public void testGetFeaturesHardLimit() throws ServiceException, IOException {
-        String endPoint = "https://dev-paikkatieto.maanmittauslaitos.fi/geographic-names/wfs3/v1/";
+        String endPoint = "https://beta-paikkatieto.maanmittauslaitos.fi/geographic-names/wfs3/v1/";
         String user = null;
         String pass = null;
         String collectionId = "places";
@@ -60,7 +60,7 @@ public class OskariWFS3ClientTest {
     @Ignore("Depends on outside service, results might vary")
     @Test
     public void testGetFeaturesHardLimitPaging() throws ServiceException, IOException {
-        String endPoint = "https://dev-paikkatieto.maanmittauslaitos.fi/geographic-names/wfs3/v1/";
+        String endPoint = "https://beta-paikkatieto.maanmittauslaitos.fi/geographic-names/wfs3/v1/";
         String user = null;
         String pass = null;
         String collectionId = "places";

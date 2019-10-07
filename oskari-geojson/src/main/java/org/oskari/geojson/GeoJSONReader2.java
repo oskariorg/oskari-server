@@ -37,74 +37,6 @@ public class GeoJSONReader2 {
 
     private static final GeometryFactory GF = new GeometryFactory();
 
-    /**
-     * Replaces geometries that are currently represented as Map<String, Object>
-     * with JTS Geometries in the map
-     * Replaces both the default geometries ('geometry' key) as well as entries
-     * in the properties map that were eligible geometries
-     */
-    public static void replaceMapsWithGeometries(Map<String, Object> geojson) {
-        String type = GeoJSONUtil.getString(geojson, GeoJSON.TYPE);
-        if (type == null) {
-            throw new IllegalArgumentException("Invalid GeoJSON object, missing 'type'");
-        }
-        switch (type) {
-        case GeoJSON.FEATURE_COLLECTION:
-            replaceMapsWithGeometriesFeatureCollection(geojson);
-            break;
-        case GeoJSON.FEATURE:
-            replaceMapsWithGeometriesFeature(geojson);
-            break;
-        default:
-            throw new IllegalArgumentException("Not GeoJSON FeatureCollection or Feature");
-        }
-    }
-
-    private static void replaceMapsWithGeometriesFeatureCollection(Map<String, Object> featureCollection) {
-        String type = GeoJSONUtil.getString(featureCollection, GeoJSON.TYPE);
-        if (!GeoJSON.FEATURE_COLLECTION.equals(type)) {
-            throw new IllegalArgumentException("type was not " + GeoJSON.FEATURE_COLLECTION);
-        }
-
-        List<Object> features = GeoJSONUtil.getList(featureCollection, GeoJSON.FEATURES);
-        for (int i = 0; i < features.size(); i++) {
-            Map<String, Object> feature = GeoJSONUtil.getMap(features, i);
-            replaceMapsWithGeometriesFeature(feature);
-        }
-    }
-
-    @SuppressWarnings("unchecked")
-    private static void replaceMapsWithGeometriesFeature(Map<String, Object> feature) {
-        String type = GeoJSONUtil.getString(feature, GeoJSON.TYPE);
-        if (!GeoJSON.FEATURE.equals(type)) {
-            throw new IllegalArgumentException("type was not " + GeoJSON.FEATURE);
-        }
-
-        Object geometry = feature.get(GeoJSON.GEOMETRY);
-        if (geometry != null && geometry instanceof Map) {
-            geometry = toGeometry((Map<String, Object>) geometry);
-            feature.put(GeoJSON.GEOMETRY, geometry);
-        }
-
-        Map<String, Object> properties = GeoJSONUtil.getMap(feature, GeoJSON.PROPERTIES);
-        if (properties == null) {
-            return;
-        }
-        for (String key : properties.keySet()) {
-            if (GeoJSONUtil.DEFAULT_GEOMETRY_ATTRIBUTE_NAME.equals(key)) {
-                continue;
-            }
-            Object o = properties.get(key);
-            if (o != null && o instanceof Map) {
-                try {
-                    properties.put(key, toGeometry((Map<String, Object>) o));
-                } catch (Exception ignore) {
-                    // My bad - it probably wasn't a geometry property
-                }
-            }
-        }
-    }
-
     public static SimpleFeatureCollection toFeatureCollection(Map<String, Object> json, SimpleFeatureType schema) {
         try {
             return toFeatureCollection(json, schema, null);
@@ -211,6 +143,9 @@ public class GeoJSONReader2 {
 
     public static Geometry toGeometry(Map<String, Object> geometry) {
         String geomType = GeoJSONUtil.getString(geometry, GeoJSON.TYPE);
+        if (geomType == null) {
+            throw new IllegalArgumentException("Invalid geometry type");
+        }
         switch (geomType) {
         case GeoJSON.POINT:
             return toPoint(geometry);
