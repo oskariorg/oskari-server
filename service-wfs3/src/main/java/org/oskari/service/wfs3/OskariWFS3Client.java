@@ -159,7 +159,7 @@ public class OskariWFS3Client {
         if (CRS.equalsIgnoreMetadata(env.getCoordinateReferenceSystem(), to)) {
             return env;
         }
-        return env.transform(to, true, 5);
+        return env.transform(to, true);
     }
 
     /**
@@ -234,13 +234,17 @@ public class OskariWFS3Client {
             throws ServiceRuntimeException {
         // Linked not needed, but looks better when logging the requests
         Map<String, String> parameters = new LinkedHashMap<>();
-        parameters.put("crs", crsURI);
+        if (crsURI != null) {
+            parameters.put("crs", crsURI);
+        }
         if (bbox != null) {
             String bboxStr = String.format(Locale.US, "%f,%f,%f,%f",
                     bbox.getMinX(), bbox.getMinY(),
                     bbox.getMaxX(), bbox.getMaxY());
             parameters.put("bbox", bboxStr);
-            parameters.put("bbox-crs", crsURI);
+            if (bboxCrsURI != null) {
+                parameters.put("bbox-crs", bboxCrsURI);
+            }
         }
         parameters.put("limit", Integer.toString(Math.min(PAGE_SIZE, hardLimit)));
         return parameters;

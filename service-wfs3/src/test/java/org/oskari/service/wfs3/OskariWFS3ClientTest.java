@@ -1,6 +1,7 @@
 package org.oskari.service.wfs3;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
@@ -88,9 +89,9 @@ public class OskariWFS3ClientTest {
         layer.setName("rakennus");
         layer.setCapabilities(JSONHelper.createJSONObject("crs-uri", new JSONArray(Arrays.asList("http://www.opengis.net/def/crs/EPSG/0/3067"))));
         CoordinateReferenceSystem epsg3067 = CRS.decode("EPSG:3067");
-        ReferencedEnvelope bbox = new ReferencedEnvelope(500000, 6822000, 501000, 6823000, epsg3067);
-        int limit = 10;
+        ReferencedEnvelope bbox = new ReferencedEnvelope(500000, 501000, 6822000, 6823000, epsg3067);
         SimpleFeatureCollection sfc = OskariWFS3Client.getFeatures(layer, bbox, epsg3067);
+        assertFalse(sfc.isEmpty());
         try (SimpleFeatureIterator it = sfc.features()) {
             while (it.hasNext()) {
                 Geometry geometryEnvelope = ((Geometry) it.next().getDefaultGeometry()).getEnvelope();
