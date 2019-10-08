@@ -34,6 +34,9 @@ public interface ResourceMapper {
             + "WHERE id = #{id}")
     Resource findById(@Param("id") int id);
 
+    @Select("SELECT EXISTS (SELECT 1 FROM oskari_resource WHERE id = #{id})")
+    boolean existsById(@Param("id") int id);
+
     @ResultMap("ResourceResult")
     @Select("SELECT id,"
             + "resource_type,"
@@ -57,6 +60,9 @@ public interface ResourceMapper {
             + "WHERE resource_type = #{type} "
             + "AND resource_mapping = #{mapping}")
     Resource findByTypeAndMapping(@Param("type") String type, @Param("mapping") String mapping);
+
+    @Select("SELECT EXISTS (SELECT 1 FROM oskari_resource WHERE resource_type = #{type} AND resource_mapping = #{mapping})")
+    boolean existsByTypeAndMapping(@Param("type") String type, @Param("mapping") String mapping);
 
     @Select("select distinct\n" +
             "            r.resource_mapping\n" +
