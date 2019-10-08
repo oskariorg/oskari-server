@@ -11,6 +11,7 @@ import com.vividsolutions.jts.geom.Envelope;
 
 import fi.nls.oskari.cache.CacheManager;
 import fi.nls.oskari.cache.ComputeOnceCache;
+import fi.nls.oskari.domain.map.OskariLayer;
 
 public class CachingOskariWFSClient extends OskariWFSClient {
 
@@ -22,32 +23,26 @@ public class CachingOskariWFSClient extends OskariWFSClient {
     private final ComputeOnceCache<SimpleFeatureCollection> cache;
 
     public CachingOskariWFSClient() {
-        cache = CacheManager.getCache(CACHE_NAME,
-                () -> new ComputeOnceCache<>(CACHE_SIZE_LIMIT, CACHE_EXPIRATION));
+        cache = CacheManager.getCache(CACHE_NAME, () -> new ComputeOnceCache<>(CACHE_SIZE_LIMIT, CACHE_EXPIRATION));
     }
 
     @Override
-    public SimpleFeatureCollection getFeatures(String endPoint, String version,
-            String user, String pass, String typeName,
-            ReferencedEnvelope bbox, CoordinateReferenceSystem crs,
-            int maxFeatures, Filter filter, boolean forceGML) {
+    public SimpleFeatureCollection getFeatures(OskariLayer layer,
+            ReferencedEnvelope bbox, CoordinateReferenceSystem crs, Filter filter) {
         if (filter != null) {
             // Don't cache requests with a Filter
-            return super.getFeatures(endPoint, version, user, pass,
-                    typeName, bbox, crs, maxFeatures, filter, forceGML);
+            return super.getFeatures(layer, bbox, crs, filter);
         }
-        String key = getCacheKey(endPoint, typeName, bbox, crs, maxFeatures);
-        return cache.get(key,
-                __ -> super.getFeatures(endPoint, version, user, pass,
-                        typeName, bbox, crs, maxFeatures, filter, forceGML));
+        String key = getCacheKey(layer, bbox, crs);
+        return cache.get(key, __ -> super.getFeatures(layer, bbox, crs, filter));
     }
 
-    private String getCacheKey(String endPoint, String typeName, Envelope bbox,
-            CoordinateReferenceSystem crs, int maxFeatures) {
+    private String getCacheKey(OskariLayer layer, Envelope bbox, CoordinateReferenceSystem crs) {
+        String endPoint = layer.getUrl();
+        String typeName = layer.getName();
         String bboxStr = bbox != null ? bbox.toString() : "null";
-        String maxFeaturesStr = Integer.toString(maxFeatures);
-        return String.join(",", endPoint, typeName, bboxStr,
-                crs.getIdentifiers().iterator().next().toString(), maxFeaturesStr);
+        String crsStr = crs.getIdentifiers().iterator().next().toString();
+        return String.join(",", endPoint, typeName, bboxStr, crsStr);
     }
 
 }

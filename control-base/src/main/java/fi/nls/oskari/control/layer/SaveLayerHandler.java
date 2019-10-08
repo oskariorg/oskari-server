@@ -648,12 +648,15 @@ public class SaveLayerHandler extends AbstractLayerAdminHandler {
         }
 
         // Get supported projections
-
+        JSONObject capabilities = new JSONObject();
         Set<String> crss = new HashSet<>();
         if (WFS3_0_0_VERSION.equals(ml.getVersion())) {
             try {
                 WFS3Service service = WFS3Service.fromURL(ml.getUrl(), ml.getUsername(), ml.getPassword());
-                crss = service.getSupportedEpsgCodes(ml.getName());
+                String collectionId = ml.getName();
+                crss = service.getSupportedEpsgCodes(collectionId);
+                Set<String> crsUri = service.getSupportedCrsURIs(collectionId);
+                JSONHelper.put(capabilities, "crs-uri", new JSONArray(crsUri));
             } catch (Exception e) {
                 LOG.warn("Couldn't get supported projections for WFS3 layer:", ml.getName(), e.getMessage());
             }
@@ -662,7 +665,7 @@ public class SaveLayerHandler extends AbstractLayerAdminHandler {
                     ml.getUrl(), ml.getVersion(), ml.getUsername(), ml.getPassword(), ml.getSrs_name());
             crss = GetGtWFSCapabilities.parseProjections(capa, ml.getName());
         }
-        JSONObject capabilities = new JSONObject();
+
         JSONHelper.put(capabilities, "srs", new JSONArray(crss));
         ml.setCapabilities(capabilities);
         ml.setCapabilitiesLastUpdated(new Date());

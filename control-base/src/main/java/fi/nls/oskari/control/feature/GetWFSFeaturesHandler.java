@@ -60,8 +60,6 @@ public class GetWFSFeaturesHandler extends AbstractWFSFeaturesHandler {
             throw new ActionParamsException("Invalid " + ActionConstants.PARAM_SRS);
         }
 
-        // TODO: Figure out if layer supports targetSrsName
-        // If it does let the WFS service do the transformation
         ReferencedEnvelope bbox = parseBbox(bboxStr, targetCRS);
 
         SimpleFeatureCollection fc;

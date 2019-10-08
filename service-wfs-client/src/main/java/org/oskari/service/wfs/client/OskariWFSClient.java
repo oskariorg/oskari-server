@@ -2,6 +2,8 @@ package org.oskari.service.wfs.client;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.util.IOHelper;
@@ -29,14 +31,9 @@ public class OskariWFSClient {
     private static final ObjectMapper OM = new ObjectMapper();
     private static final int MAX_REDIRECTS = 5;
 
-    public SimpleFeatureCollection getFeatures(
-            String endPoint, String version,
-            String user, String pass,
-            String typeName, ReferencedEnvelope bbox,
-            CoordinateReferenceSystem crs, int maxFeatures,
-            Filter filter, boolean forceGML) throws ServiceRuntimeException {
-        return new OskariWFSLoadCommand(endPoint, version, user, pass,
-                typeName, bbox, crs, maxFeatures, filter, forceGML).execute();
+    public SimpleFeatureCollection getFeatures(OskariLayer layer,
+            ReferencedEnvelope bbox, CoordinateReferenceSystem crs, Filter filter) throws ServiceRuntimeException {
+        return new OskariWFSLoadCommand(layer, bbox, crs, filter).execute();
     }
 
     // Common methods for WFS 1.1.0 and 2.0.0 clients

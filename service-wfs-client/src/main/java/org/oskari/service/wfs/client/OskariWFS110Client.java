@@ -16,6 +16,7 @@ import org.geotools.xml.Encoder;
 import org.opengis.filter.Filter;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
+import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.service.ServiceRuntimeException;
@@ -27,20 +28,30 @@ import fi.nls.oskari.util.IOHelper;
 public class OskariWFS110Client {
 
     private static final Logger LOG = LogFactory.getLogger(OskariWFS110Client.class);
+
     private static final OskariGML OSKARI_GML = new OskariGML();
+    private static final String PROPERTY_FORCE_GML = "forceGML";
 
     private OskariWFS110Client() {}
 
     /**
      * @return SimpleFeatureCollection containing the parsed Features, or null if all fails
      */
-    public static SimpleFeatureCollection getFeatures(String endPoint, String user, String pass,
-            String typeName, ReferencedEnvelope bbox, CoordinateReferenceSystem crs,
-            int maxFeatures, Filter filter, boolean forceGML) {
-        // First try GeoJSON
+    public static SimpleFeatureCollection getFeatures(OskariLayer layer,
+            ReferencedEnvelope bbox, CoordinateReferenceSystem crs, Filter filter) {
+        String endPoint = layer.getUrl();
+        String typeName = layer.getName();
+        String user = layer.getUsername();
+        String pass = layer.getPassword();
+
+        // TODO: FIXME!
+        int maxFeatures = 10000;
+        boolean forceGML = layer.getAttributes().optBoolean(PROPERTY_FORCE_GML, false);
+
         Map<String, String> query = getQueryParams(typeName, bbox, crs, maxFeatures, filter);
         byte[] response;
         if (!forceGML) {
+            // First try GeoJSON
             query.put("OUTPUTFORMAT", "application/json");
             response = OskariWFSClient.getResponse(endPoint, user, pass, query);
             try {

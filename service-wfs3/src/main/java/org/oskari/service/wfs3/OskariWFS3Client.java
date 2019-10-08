@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -14,8 +15,10 @@ import java.util.stream.Collectors;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
+import org.json.JSONObject;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.geometry.MismatchedDimensionException;
+import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.MathTransform;
 import org.opengis.referencing.operation.TransformException;
@@ -26,10 +29,12 @@ import org.oskari.service.wfs3.model.WFS3Link;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.service.ServiceRuntimeException;
 import fi.nls.oskari.util.IOHelper;
+import fi.nls.oskari.util.JSONHelper;
 
 /**
  * Client code for WFS 3 Core services
@@ -61,21 +66,52 @@ public class OskariWFS3Client {
     }
 
     private OskariWFS3Client() {}
-
-    public static SimpleFeatureCollection getFeatures(String endPoint,
-            String user, String pass, String collectionId,
-            ReferencedEnvelope bbox, CoordinateReferenceSystem crs, int hardLimit) throws ServiceRuntimeException {
-        String path = getItemsPath(endPoint, collectionId);
-        Map<String, String> query = getQueryParams(bbox, hardLimit);
-        Map<String, String> headers = new HashMap<>();
-        headers.put("Accept", CONTENT_TYPE_GEOJSON);
-
-        MathTransform transform;
+    
+    public static SimpleFeatureCollection getFeatures(OskariLayer layer,
+            ReferencedEnvelope bbox, CoordinateReferenceSystem crs) throws ServiceRuntimeException {
+        /* Servers can not yet implement this since no requirement URI is standardized yet
+        boolean crsExtension;
         try {
-            transform = CRS.equalsIgnoreMetadata(getCRS84(), crs) ? null : CRS.findMathTransform(getCRS84(), crs);
-        } catch (Exception e) {
-            throw new ServiceRuntimeException("Coordinate transformation failure", e);
+            crsExtension = checkCRSExtension(endPoint, user, pass);
+        } catch (IOException e) {
+            throw new ServiceRuntimeException("IOException occured", e);
         }
+         */
+        
+        String crsURI = getCrsURI(layer, crs);
+        MathTransform transformCRS84ToTargetCRS = null;
+        if (crsURI == null) {
+            try {
+                // Service doesn't support outputting the collection in the targetCRS
+                transformCRS84ToTargetCRS = CRS.equalsIgnoreMetadata(getCRS84(), crs) ? null : CRS.findMathTransform(getCRS84(), crs);
+            } catch (Exception e) {
+                throw new ServiceRuntimeException("Coordinate transformation failure", e);
+            }
+        }
+
+        String bboxCrsURI = null;
+        if (bbox != null) {
+            bboxCrsURI = getCrsURI(layer, bbox.getCoordinateReferenceSystem());
+            if (bboxCrsURI == null) {
+                try {
+                    // Server doesn't support bboxes CRS - transform bbox to CRS84
+                    bbox = transformEnvelope(bbox, getCRS84());
+                } catch (Exception e) {
+                    throw new ServiceRuntimeException("bbox coordinate transformation failure", e);
+                }
+            }
+        }
+
+        String endPoint = layer.getUrl();
+        String collectionId = layer.getName();
+        String user = layer.getUsername();
+        String pass = layer.getPassword();
+        // TODO: FIXME!
+        int hardLimit = 10000;
+
+        String path = getItemsPath(endPoint, collectionId);
+        Map<String, String> query = getQueryParams(crsURI, bbox, bboxCrsURI, hardLimit);
+        Map<String, String> headers = Collections.singletonMap("Accept", CONTENT_TYPE_GEOJSON);
 
         List<SimpleFeatureCollection> pages = new ArrayList<>();
         int numFeatures = 0;
@@ -89,10 +125,10 @@ public class OskariWFS3Client {
             Map<String, Object> geojson = readMap(conn);
             boolean ignoreGeometryProperties = true;
             schema = GeoJSONSchemaDetector.getSchema(geojson, crs, ignoreGeometryProperties);
-            SimpleFeatureCollection sfc = GeoJSONReader2.toFeatureCollection(geojson, schema, transform);
+            SimpleFeatureCollection sfc = GeoJSONReader2.toFeatureCollection(geojson, schema, transformCRS84ToTargetCRS);
             numFeatures += sfc.size();
             pages.add(sfc);
-            String next = getNextHref(geojson);
+            String next = getLinkHref(geojson, "next");
 
             while (next != null && numFeatures < hardLimit) {
                 // Blindly follow the next link, don't use the initial queryParameters
@@ -101,10 +137,10 @@ public class OskariWFS3Client {
 
                 validateResponse(conn, CONTENT_TYPE_GEOJSON);
                 geojson = readMap(conn);
-                sfc = GeoJSONReader2.toFeatureCollection(geojson, schema, transform);
+                sfc = GeoJSONReader2.toFeatureCollection(geojson, schema, transformCRS84ToTargetCRS);
                 numFeatures += sfc.size();
                 pages.add(sfc);
-                next = getNextHref(geojson);
+                next = getLinkHref(geojson, "next");
             }
         } catch (IOException e) {
             throw new ServiceRuntimeException("IOException occured", e);
@@ -118,13 +154,40 @@ public class OskariWFS3Client {
         return new PaginatedFeatureCollection(pages, schema, "FeatureCollection", hardLimit);
     }
 
+    private static ReferencedEnvelope transformEnvelope(ReferencedEnvelope env, CoordinateReferenceSystem to)
+            throws TransformException, FactoryException {
+        if (CRS.equalsIgnoreMetadata(env.getCoordinateReferenceSystem(), to)) {
+            return env;
+        }
+        return env.transform(to, true);
+    }
+
+    /**
+     * @return URI matching the requested crs if the layer supports it,
+     *          null otherwise
+     */
+    private static String getCrsURI(OskariLayer layer, CoordinateReferenceSystem crs) {
+        JSONObject capabilities = layer.getCapabilities();
+        if (capabilities == null) {
+            return null;
+        }
+        List<String> crsURIs = JSONHelper.getArrayAsList(capabilities.optJSONArray("crs-uri"));
+        for (String crsURI : crsURIs) {
+            CoordinateReferenceSystem tmp = safeCRSDecode(crsURI);
+            if (tmp != null && CRS.equalsIgnoreMetadata(tmp, crs)) {
+                return crsURI;
+            }
+        }
+        return null;
+    }
+
     @SuppressWarnings("unchecked")
-    private static String getNextHref(Map<String, Object> geojson) {
+    private static String getLinkHref(Map<String, Object> json, String rel) {
         // Check if there's a link with rel="next"
-        Object _links = geojson.get("links");
+        Object _links = json.get("links");
         if (_links != null && _links instanceof List) {
             return toLinks((List<Object>) _links).stream()
-                    .filter(link -> "next".equals(link.getRel()))
+                    .filter(link -> rel.equals(link.getRel()))
                     .findAny()
                     .map(WFS3Link::getHref)
                     .orElse(null);
@@ -152,7 +215,7 @@ public class OskariWFS3Client {
         }
     }
 
-    private static String getItemsPath(String endPoint, String collectionId) {
+    private static String getCollectionsPath(String endPoint, String collectionId) {
         StringBuilder path = new StringBuilder(endPoint);
         // Remove (all) trailing / characters
         while (path.charAt(path.length() - 1) == '/') {
@@ -160,32 +223,39 @@ public class OskariWFS3Client {
         }
         path.append("/collections/");
         path.append(collectionId);
-        path.append("/items");
         return path.toString();
     }
 
-    protected static Map<String, String> getQueryParams(ReferencedEnvelope bbox, int hardLimit)
+    private static String getItemsPath(String endPoint, String collectionId) {
+        return getCollectionsPath(endPoint, collectionId) + "/items";
+    }
+
+    protected static Map<String, String> getQueryParams(String crsURI, ReferencedEnvelope bbox, String bboxCrsURI, int hardLimit)
             throws ServiceRuntimeException {
-        // Linked not needed, but look better when logging the requests
+        // Linked not needed, but looks better when logging the requests
         Map<String, String> parameters = new LinkedHashMap<>();
+        if (crsURI != null) {
+            parameters.put("crs", crsURI);
+        }
         if (bbox != null) {
-            // All WFS3 services must support CRS84 for 'bbox'
-            // But not all of them will support the CRS extension
-            // => Best we request in CRS84 and do the transformation ourselves
-            if (!CRS.equalsIgnoreMetadata(bbox.getCoordinateReferenceSystem(), getCRS84())) {
-                try {
-                    bbox = bbox.transform(getCRS84(), true, 5);
-                } catch (Exception e) {
-                    throw new ServiceRuntimeException("Failed to transform bbox to CRS84");
-                }
-            }
             String bboxStr = String.format(Locale.US, "%f,%f,%f,%f",
                     bbox.getMinX(), bbox.getMinY(),
                     bbox.getMaxX(), bbox.getMaxY());
             parameters.put("bbox", bboxStr);
+            if (bboxCrsURI != null) {
+                parameters.put("bbox-crs", bboxCrsURI);
+            }
         }
         parameters.put("limit", Integer.toString(Math.min(PAGE_SIZE, hardLimit)));
         return parameters;
+    }
+
+    private static CoordinateReferenceSystem safeCRSDecode(String code) {
+        try {
+            return CRS.decode(code);
+        } catch (Exception ignore) {
+            return null;
+        }
     }
 
     @SuppressWarnings("unchecked")
