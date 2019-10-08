@@ -1,6 +1,8 @@
 package org.oskari.permissions;
 
 import fi.nls.oskari.annotation.Oskari;
+import fi.nls.oskari.cache.Cache;
+import fi.nls.oskari.cache.CacheManager;
 import fi.nls.oskari.db.DatasourceHelper;
 import fi.nls.oskari.domain.Role;
 import fi.nls.oskari.domain.User;
@@ -28,6 +30,7 @@ public class PermissionServiceMybatisImpl extends PermissionService {
     private static final Logger LOG = LogFactory.getLogger(PermissionServiceMybatisImpl.class);
 
     private final SqlSessionFactory factory;
+    private final Cache<Resource> cache;
 
     public PermissionServiceMybatisImpl() {
         this(DatasourceHelper.getInstance().getDataSource());
@@ -41,6 +44,7 @@ public class PermissionServiceMybatisImpl extends PermissionService {
         } else {
             factory = MyBatisHelper.initMyBatis(ds, MAPPER);
         }
+        cache = CacheManager.getCache(PermissionServiceMybatisImpl.class.getName());
     }
 
     public List<Resource> findResourcesByUser(User user, ResourceType type) {
@@ -95,39 +99,46 @@ public class PermissionServiceMybatisImpl extends PermissionService {
 
     @Override
     public Optional<Resource> findResource(String type, String mapping) {
-        try (SqlSession session = factory.openSession()) {
-            return Optional.ofNullable(session.getMapper(MAPPER).findByTypeAndMapping(type, mapping));
-        }
-    }
-
-    private Optional<Resource> findResource(final Resource resource) {
+        String cacheKey = getCacheKey(type, mapping);
+        Resource resource = cache.get(cacheKey);
         if (resource == null) {
-            return Optional.empty();
+            try (SqlSession session = factory.openSession()) {
+                resource = session.getMapper(MAPPER).findByTypeAndMapping(type, mapping);
+            }
+            if (resource != null) {
+                cache.put(cacheKey, resource);
+            }
         }
-
-        // try to find with id
-        if (resource.getId() != -1) {
-            // check mapping for existing by id
-            return findResource(resource.getId());
-        }
-        // try to find with mapping
-        return findResource(resource.getType(), resource.getMapping());
+        return Optional.ofNullable(resource);
     }
 
+    @Override
     public void saveResource(Resource resource) {
         if (resource == null) {
             throw new IllegalArgumentException("Tried to save null resource");
         }
-        // ensure resource is in db
-        Optional<Resource> res = findResource(resource);
 
-        if (res.isPresent()) {
-            setPermissions(res.get().getId(), resource.getPermissions());
+        if (exists(resource)) {
+            setPermissions(resource.getId(), resource.getPermissions());
+            cache.put(getCacheKey(resource), resource);
         } else {
             insertResource(resource);
         }
     }
 
+    private boolean exists(Resource resource) {
+        String cacheKey = getCacheKey(resource);
+        if (cache.get(cacheKey) != null) {
+            return true;
+        }
+        try (SqlSession session = factory.openSession()) {
+            // Prefer searching by id
+            if (resource.getId() != -1) {
+                return session.getMapper(MAPPER).existsById(resource.getId());
+            }
+            return session.getMapper(MAPPER).existsByTypeAndMapping(resource.getType(), resource.getMapping());
+        }
+    }
 
     public Set<String> getResourcesWithGrantedPermissions(String resourceType, User user, String permissionsType) {
 
@@ -180,6 +191,7 @@ public class PermissionServiceMybatisImpl extends PermissionService {
             }
             session.commit();
         }
+        cache.put(getCacheKey(resource), resource);
     }
 
     private void setPermissions(int resourceId, List<Permission> permissions) {
@@ -201,6 +213,15 @@ public class PermissionServiceMybatisImpl extends PermissionService {
             mapper.deleteResource(resource);
             session.commit();
         }
+        cache.remove(getCacheKey(resource));
+    }
+
+    private String getCacheKey(Resource resource) {
+        return getCacheKey(resource.getType(), resource.getMapping());
+    }
+
+    private String getCacheKey(String type, String mapping) {
+        return type + "_" + mapping;
     }
 
 }

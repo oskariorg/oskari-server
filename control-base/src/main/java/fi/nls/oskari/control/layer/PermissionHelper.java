@@ -24,9 +24,7 @@ import java.util.Optional;
 public class PermissionHelper {
 
     private static final Logger LOG = LogFactory.getLogger(PermissionHelper.class);
-    private static final String RESOURCE_CACHE_NAME = "permission_resources";
     private static final String LAYER_CACHE_NAME = "layer_resources";
-    private final Cache<Resource> resourceCache = CacheManager.getCache(PermissionHelper.class.getName() + RESOURCE_CACHE_NAME);
     private final Cache<OskariLayer> layerCache = CacheManager.getCache(PermissionHelper.class.getName() + LAYER_CACHE_NAME);
     private OskariLayerService layerService;
     private PermissionService permissionsService;
@@ -85,26 +83,13 @@ public class PermissionHelper {
         return layer;
     }
 
-    /**
-     * Gets resource from cache
-     * @return resource
-     */
     private Resource getResource(final OskariLayer layer) {
-
         String mapping = Integer.toString(layer.getId());
-        Resource resource = resourceCache.get(mapping);
-        if (resource != null) {
-            return resource;
-        }
-        Optional<Resource> dbRes = permissionsService.findResource(ResourceType.maplayer, mapping);
-        if (!dbRes.isPresent()) {
+        Optional<Resource> resource = permissionsService.findResource(ResourceType.maplayer, mapping);
+        if (!resource.isPresent()) {
             LOG.warn("Permissions not found for layer:", layer.getId());
-        } else {
-            resource = dbRes.get();
-            LOG.debug("Caching a layer permission resource", resource, "Permissions", resource.getPermissions());
-            resourceCache.put(mapping, resource);
+            return null;
         }
-
-        return resource;
+        return resource.get();
     }
 }
