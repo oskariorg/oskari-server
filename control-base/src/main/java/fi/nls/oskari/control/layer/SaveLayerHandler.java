@@ -32,7 +32,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.oskari.permissions.model.*;
 import org.oskari.service.util.ServiceFactory;
-import org.oskari.service.wfs3.WFS3Capabilities;
+import org.oskari.service.wfs3.WFS3Service;
 
 import javax.servlet.http.HttpServletRequest;
 import java.net.MalformedURLException;
@@ -618,7 +618,7 @@ public class SaveLayerHandler extends AbstractLayerAdminHandler {
             String currentCrs = params.getHttpParam(PARAM_SRS_NAME, ml.getSrs_name());
             String data = CapabilitiesCacheService.getFromService(ml);
             WMTSCapabilities caps = WMTSCapabilitiesParser.parseCapabilities(data);
-            OskariLayerCapabilitiesHelper.setPropertiesFromCapabilitiesWMTS(caps, ml, currentCrs, systemCRSs);
+            OskariLayerCapabilitiesHelper.setPropertiesFromCapabilitiesWMTS(caps, ml, systemCRSs);
             capabilitiesService.save(ml, data);
             return true;
         } catch (Exception ex) {
@@ -649,9 +649,10 @@ public class SaveLayerHandler extends AbstractLayerAdminHandler {
 
         try {
             if (WFS3_0_0_VERSION.equals(ml.getVersion())) {
-                ml.setCapabilities(WFS3Capabilities.getLayerCapabilities(ml));
+                WFS3Service service = WFS3Service.fromURL(ml.getUrl(), ml.getUsername(), ml.getPassword());
+                OskariLayerCapabilitiesHelper.setPropertiesFromCapabilitiesWFS(service, ml, systemCRSs);
             } else {
-                ml.setCapabilities(GetGtWFSCapabilities.getLayerCapabilities(ml));
+                ml.setCapabilities(GetGtWFSCapabilities.getLayerCapabilities(ml, systemCRSs));
             }
         } catch (Exception e) {
             LOG.warn("Couldn't update capabilities for WFS (" + ml.getVersion() + ") layer:", ml.getName(), e.getMessage());

@@ -95,16 +95,15 @@ public class GetGtWFSCapabilities {
 
         return parseLayer(capa, wfs_version, rurl, user, pw);
     }
-    public static JSONObject getLayerCapabilities (OskariLayer ml) throws ServiceException {
+    public static JSONObject getLayerCapabilities (OskariLayer ml, Set<String> systemCRSs) throws ServiceException {
         Map<String, Object> capa = GetGtWFSCapabilities.getGtDataStoreCapabilities(
                 ml.getUrl(), ml.getVersion(), ml.getUsername(), ml.getPassword(), ml.getSrs_name());
-        return getLayerCapabilities (capa, ml.getName());
+        return getLayerCapabilities (capa, ml.getName(), systemCRSs);
     }
-    public static JSONObject getLayerCapabilities (Map<String, Object> capa, String layerName) {
+    public static JSONObject getLayerCapabilities (Map<String, Object> capa, String layerName, Set<String> systemCRSs) {
         JSONObject capaJSON = new JSONObject(); // override
-        Set<String> crss = GetGtWFSCapabilities.parseProjections(capa, layerName);
-        // FIXME: filter crs if needed. moved from OskariLayerCapabilitiesHelper.
-        //crss = LayerJSONFormatter.getCRSsToStore(systemCRSs, crss);
+        Set<String> capaCRSs = GetGtWFSCapabilities.parseProjections(capa, layerName);
+        Set<String> crss = FORMATTER.getCRSsToStore(systemCRSs, capaCRSs);
         JSONHelper.put(capaJSON, "srs", new JSONArray(crss));
         if (capa.containsKey(KEY_ALLOWED_FORMATS)) {
             JSONObject formats = JSONHelper.createJSONObject(KEY_JSON_CAPA_AVAILABLE, capa.get(KEY_ALLOWED_FORMATS));
@@ -388,7 +387,8 @@ public class GetGtWFSCapabilities {
                     for (WFS2FeatureType fea2x: feaList) {
                             String typeName = fea2x.getName();
                             try {
-                                JSONObject capaJSON = getLayerCapabilities(capa, typeName);
+                                // no need to filter with system crss because capabilities are updated on save
+                                JSONObject capaJSON = getLayerCapabilities(capa, typeName, null);
                                 String title = fea2x.getTitle();
                                 JSONObject temp = layerToOskariLayerJson(fea2x, title, capaJSON, version, typeName, rurl, user, pw);
                                 if (temp != null) {
@@ -449,7 +449,8 @@ public class GetGtWFSCapabilities {
                 // Loop feature types
                 for (String typeName : typeNames) {
                     try {
-                        JSONObject capaJSON = getLayerCapabilities(capa, typeName);
+                        // no need to filter with system crss because capabilities are updated on save
+                        JSONObject capaJSON = getLayerCapabilities(capa, typeName, null);
                         SimpleFeatureType sft = getSchema(data, typeName);
                         JSONObject temp;
                         // try own DescribeFeature request and parsing (WFS2FeatureType)

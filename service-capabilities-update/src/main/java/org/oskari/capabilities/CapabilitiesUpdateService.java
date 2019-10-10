@@ -148,7 +148,7 @@ public class CapabilitiesUpdateService {
         boolean shouldSaveCapabilities = false;
         for (OskariLayer layer : layers) {
             try {
-                OskariLayerCapabilitiesHelper.setPropertiesFromCapabilitiesWMTS(wmts, layer, null, systemCRSs);
+                OskariLayerCapabilitiesHelper.setPropertiesFromCapabilitiesWMTS(wmts, layer, systemCRSs);
                 shouldSaveCapabilities = true;
                 layerService.update(layer);
                 results.add(CapabilitiesUpdateResult.ok(layer));

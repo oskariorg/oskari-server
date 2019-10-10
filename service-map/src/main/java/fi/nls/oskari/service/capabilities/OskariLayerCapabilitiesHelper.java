@@ -7,28 +7,31 @@ import fi.mml.map.mapwindow.service.wms.WebMapServiceParseException;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.map.layer.formatters.LayerJSONFormatter;
+import fi.nls.oskari.map.layer.formatters.LayerJSONFormatterWFS;
 import fi.nls.oskari.map.layer.formatters.LayerJSONFormatterWMS;
 import fi.nls.oskari.map.layer.formatters.LayerJSONFormatterWMTS;
 import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.util.JSONHelper;
-import fi.nls.oskari.wfs.GetGtWFSCapabilities;
 import fi.nls.oskari.wmts.domain.ResourceUrl;
 import fi.nls.oskari.wmts.domain.WMTSCapabilities;
 import fi.nls.oskari.wmts.domain.WMTSCapabilitiesLayer;
 
+import java.io.IOException;
+import java.util.Collections;
 import java.util.Date;
-import java.util.Map;
 import java.util.Set;
 
+import org.geotools.data.simple.SimpleFeatureSource;
+import org.geotools.data.wfs.WFSDataStore;
+import org.geotools.data.wfs.internal.WFSGetCapabilities;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.oskari.service.wfs3.WFS3Service;
 
+import static fi.nls.oskari.service.capabilities.CapabilitiesConstants.KEY_STYLES;
 public class OskariLayerCapabilitiesHelper {
 
     private static final Logger LOG = LogFactory.getLogger(OskariLayerCapabilitiesHelper.class);
-
-    private static final String KEY_STYLES = "styles";
     private static final String KEY_NAME = "name";
 
     /**
@@ -83,16 +86,16 @@ public class OskariLayerCapabilitiesHelper {
     }
 
     /**
-     * @deprecated use {@link #setPropertiesFromCapabilitiesWMTS(WMTSCapabilities, OskariLayer, String, Set)}
+     * @deprecated use {@link #setPropertiesFromCapabilitiesWMTS(WMTSCapabilities, OskariLayer, Set)}
      */
     @Deprecated
     public static void setPropertiesFromCapabilitiesWMTS(WMTSCapabilities caps,
             OskariLayer ml, String crs) {
-        setPropertiesFromCapabilitiesWMTS(caps, ml, crs, null);
+        setPropertiesFromCapabilitiesWMTS(caps, ml, Collections.emptySet());
     }
 
     public static void setPropertiesFromCapabilitiesWMTS(WMTSCapabilities caps,
-            OskariLayer ml, String crs, Set<String> systemCRSs) {
+            OskariLayer ml, Set<String> systemCRSs) {
         int id = ml.getId();
         String name = ml.getName();
 
@@ -122,17 +125,28 @@ public class OskariLayerCapabilitiesHelper {
         ml.setCapabilitiesLastUpdated(new Date());
     }
 
-    public static void setPropertiesFromCapabilitiesWFS(OskariLayer ml,
-            Set<String> systemCRSs) {
+    public static void setPropertiesFromCapabilitiesWFS(WFSDataStore data, OskariLayer ml,
+                                                        Set<String> systemCRSs) throws ServiceException {
+
         try {
-            if ("3.0.0".equals(ml.getVersion())){
-                // TODO WFS3
-            } else {
-                ml.setCapabilities(GetGtWFSCapabilities.getLayerCapabilities(ml));
-            }
-        } catch (ServiceException e) {
-            LOG.warn("Failed to get capabilities for layer: " + ml.getName());
+            SimpleFeatureSource source = data.getFeatureSource(ml.getName());
+            WFSGetCapabilities capa = data.getWfsClient().getCapabilities();
+            setPropertiesFromCapabilitiesWFS(capa, source, ml, systemCRSs);
+        }catch (IOException e) {
+            throw new IllegalArgumentException("Can't find layer: " + ml.getName());
         }
+
+    }
+    public static void setPropertiesFromCapabilitiesWFS(WFSGetCapabilities capa, SimpleFeatureSource source, OskariLayer ml,
+                                                        Set<String> systemCRSs) throws ServiceException {
+        ml.setCapabilities(LayerJSONFormatterWFS.createCapabilitiesJSON(capa, source, systemCRSs));
+        ml.setCapabilitiesLastUpdated(new Date());
+
+    }
+    public static void setPropertiesFromCapabilitiesWFS(WFS3Service service, OskariLayer ml,
+                                                        Set<String> systemCRSs) {
+
+        ml.setCapabilities(LayerJSONFormatterWFS.createCapabilitiesJSON(service, ml.getName(), systemCRSs));
         ml.setCapabilitiesLastUpdated(new Date());
     }
 }

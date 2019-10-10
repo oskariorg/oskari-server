@@ -24,7 +24,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.net.HttpURLConnection;
 import java.util.*;
 
+import fi.nls.oskari.service.capabilities.CapabilitiesConstants;
 import static fi.nls.oskari.control.ActionConstants.KEY_ID;
+
 
 @OskariActionRoute("GetLayerTile")
 public class GetLayerTileHandler extends ActionHandler {
@@ -134,7 +136,7 @@ public class GetLayerTileHandler extends ActionHandler {
 
     private String getURL(final ActionParameters params, final OskariLayer layer) {
         if (params.getHttpParam(LEGEND, false)) {
-            return this.getLegendURL(layer, params.getHttpParam(LayerJSONFormatterWMS.KEY_STYLE, null));
+            return this.getLegendURL(layer, params.getHttpParam(CapabilitiesConstants.KEY_STYLE, null));
         }
         final HttpServletRequest httpRequest = params.getRequest();
         if(OskariLayer.TYPE_WMTS.equalsIgnoreCase(layer.getType())) {
@@ -186,9 +188,9 @@ public class GetLayerTileHandler extends ActionHandler {
         if (style_name != null) {
             // Get Capabilities style url
             JSONObject json = layer.getCapabilities();
-            if (json.has(LayerJSONFormatter.KEY_STYLES)) {
+            if (json.has(CapabilitiesConstants.KEY_STYLES)) {
 
-                JSONArray styles = JSONHelper.getJSONArray(json, LayerJSONFormatter.KEY_STYLES);
+                JSONArray styles = JSONHelper.getJSONArray(json, CapabilitiesConstants.KEY_STYLES);
                 for (int i = 0; i < styles.length(); i++) {
                     final JSONObject style = JSONHelper.getJSONObject(styles, i);
                     if (JSONHelper.getStringFromJSON(style, NAME, "").equals(style_name)) {

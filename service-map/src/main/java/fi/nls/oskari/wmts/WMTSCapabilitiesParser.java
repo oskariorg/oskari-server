@@ -29,8 +29,6 @@ import org.json.JSONObject;
 
 public class WMTSCapabilitiesParser {
 
-    private static final String KEY_LAYERS_WITH_REMARKS = "layersWithRemarks";
-
     public static WMTSCapabilities parseCapabilities(String xml)
             throws IllegalArgumentException, XMLStreamException {
         OMElement doc = XmlHelper.parseXML(xml);
@@ -283,7 +281,7 @@ public class WMTSCapabilitiesParser {
             String matrixsetid = getMatrixSetId(layer.getLinks(), currentCrs);
             if (matrixsetid == null) {
                 JSONHelper.putValue(layerJson, "title", layer.getTitle() + "  *");
-                JSONHelper.putValue(result, KEY_LAYERS_WITH_REMARKS, "true");
+                JSONHelper.putValue(result, "layersWithRemarks", "true");
             } else {
                 JSONHelper.putValue(layerJson, "tileMatrixSetId", matrixsetid);
             }
@@ -305,12 +303,11 @@ public class WMTSCapabilitiesParser {
 
     /**
      * Get tile matrix set id of current crs
-     * @param caps
      * @param links
      * @param currentCrs
      * @return
      */
-    private static String getMatrixSetId(List<TileMatrixLink> links, String currentCrs) {
+    protected static String getMatrixSetId(List<TileMatrixLink> links, String currentCrs) {
         for (TileMatrixLink link : links) {
             TileMatrixSet tms = link.getTileMatrixSet();
             String tmsCrs = tms.getCrs();

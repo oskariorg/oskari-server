@@ -34,9 +34,6 @@ import java.util.logging.Level;
 public class GetGtWMSCapabilities {
 
     private static final Logger log = LogFactory.getLogger(GetGtWMSCapabilities.class);
-    private final static String KEY_GROUPS = "groups";
-    private final static String KEY_LAYERS = "layers";
-    private static final String KEY_LAYERS_WITH_REMARKS = "layersWithRemarks";
 
     private final static String GROUP_LAYER_TYPE = "grouplayer";
     private final static LayerJSONFormatterWMS FORMATTER = new LayerJSONFormatterWMS();
@@ -77,8 +74,7 @@ public class GetGtWMSCapabilities {
         try {
             /*check url validity*/
             new URL(rurl);
-            final String type = OskariLayer.TYPE_WMS;
-            final OskariLayerCapabilities capabilities = service.getCapabilities(rurl, type, version, user, pwd);
+            final OskariLayerCapabilities capabilities = service.getCapabilities(rurl, OskariLayer.TYPE_WMS, version, user, pwd);
             final String data = capabilities.getData();
             WMSCapabilities caps = createCapabilities(data);
             // caps to json
@@ -158,8 +154,8 @@ public class GetGtWMSCapabilities {
 
                 JSONArray groups = new JSONArray();
                 JSONArray layers = new JSONArray();
-                groupNode.put(KEY_GROUPS, groups);
-                groupNode.put(KEY_LAYERS, layers);
+                groupNode.put("groups", groups);
+                groupNode.put("layers", layers);
                 if (layer.getName() != null && !layer.getName().isEmpty()) {
                     // add self to layers if we have a wmsName so
                     // the group node layers are selectable as well on frontend
@@ -178,7 +174,7 @@ public class GetGtWMSCapabilities {
                             layers.put(child);
                             // Simple remark check
                             if(child.has("title")  && JSONHelper.getStringFromJSON(child,"title","").indexOf("*") > -1){
-                                groupNode.put(KEY_LAYERS_WITH_REMARKS, "true");
+                                groupNode.put("layersWithRemarks", "true");
                             }
                         }
                     }
@@ -193,7 +189,7 @@ public class GetGtWMSCapabilities {
                     //handle the case where there actually is just one layer
                     final JSONObject node = new JSONObject();
                     JSONArray layers = new JSONArray();
-                    node.put(KEY_LAYERS, layers);
+                    node.put("layers", layers);
                     layers.put(layerToOskariLayerJson(layer, rurl, caps, capabilitiesXML, currentCrs));
                     return node;
                 }
