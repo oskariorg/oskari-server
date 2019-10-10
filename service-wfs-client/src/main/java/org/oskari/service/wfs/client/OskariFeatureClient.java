@@ -19,12 +19,11 @@ import org.oskari.service.wfs3.CoordinateTransformer;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.service.ServiceRuntimeException;
 import fi.nls.oskari.util.PropertyUtil;
+import static fi.nls.oskari.service.capabilities.CapabilitiesConstants.KEY_FEATURE_OUTPUT_FORMATS;
 
 public class OskariFeatureClient {
 
     protected static final String PROPERTY_NATIVE_SRS = "oskari.native.srs";
-    protected static final String PROPERTY_FORMATS = "formats";
-    protected static final String PROPERTY_AVAILABLE = "available";
     protected static final String PROPERTY_FORCE_GML = "forceGML";
     protected static final String ERR_REPOJECTION_FAIL = "Reprojection failed";
     protected static final String ERR_NATIVE_SRS_DECODE_FAIL = "Failed to decode Native CRS";
@@ -94,9 +93,9 @@ public class OskariFeatureClient {
         JSONObject capa = layer.getCapabilities();
         if (attributes.has(PROPERTY_FORCE_GML) && attributes.optBoolean(PROPERTY_FORCE_GML, false)) {
             formats.add(getForcedGMLFormat(version));
-        } else if (capa.has(PROPERTY_FORMATS)) {
+        } else if (capa.has(KEY_FEATURE_OUTPUT_FORMATS)) {
             JSONArray arr = JSONHelper.getEmptyIfNull(
-                    JSONHelper.getJSONArray(JSONHelper.getJSONObject(capa, PROPERTY_FORMATS), PROPERTY_AVAILABLE));
+                    JSONHelper.getJSONArray(capa, KEY_FEATURE_OUTPUT_FORMATS));
             formats = JSONHelper.getArrayAsList(arr);
         }
         // TODO: Figure out the maxFeatures from the layer
