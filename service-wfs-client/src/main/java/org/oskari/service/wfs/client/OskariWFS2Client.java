@@ -39,8 +39,7 @@ public class OskariWFS2Client {
         String user = layer.getUsername();
         String pass = layer.getPassword();
 
-        // TODO: FIXME!
-        int maxFeatures = 10000;
+        int maxFeatures = OskariWFSClient.getMaxFeatures(layer);
 
         Map<String, String> query = getQueryParams(typeName, bbox, crs, maxFeatures, filter);
 

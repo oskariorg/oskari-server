@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import static fi.nls.oskari.service.capabilities.CapabilitiesConstants.KEY_FEATURE_OUTPUT_FORMATS;
+import static fi.nls.oskari.service.capabilities.CapabilitiesConstants.KEY_MAX_FEATURES;
 
 public class OskariWFSClient {
     private static final Logger LOG = LogFactory.getLogger(OskariWFS110Client.class);
@@ -36,6 +37,7 @@ public class OskariWFSClient {
     private static final int MAX_REDIRECTS = 5;
     private static final String PROPERTY_FORCE_GML = "forceGML";
     private static final String JSON_OUTPUT_FORMAT = "application/json";
+    private static final int DEFAULT_MAX_FEATURES = 10000;
 
     public SimpleFeatureCollection getFeatures(OskariLayer layer,
             ReferencedEnvelope bbox, CoordinateReferenceSystem crs, Filter filter) throws ServiceRuntimeException {
@@ -95,6 +97,9 @@ public class OskariWFSClient {
             return formats.contains(JSON_OUTPUT_FORMAT);
         }
         return true;
+    }
+    protected static int getMaxFeatures(OskariLayer layer) {
+        return layer.getCapabilities().optInt(KEY_MAX_FEATURES, DEFAULT_MAX_FEATURES);
     }
 
     protected static boolean isOutputFormatInvalid(InputStream in) {
