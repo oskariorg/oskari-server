@@ -302,6 +302,18 @@ public class OskariLayerServiceMybatisImpl extends OskariLayerService {
         }
         return Collections.emptyList();
     }
+    public List<String> findAllLayerNames () {
+        final SqlSession session = factory.openSession();
+        try {
+            final OskariLayerMapper mapper = session.getMapper(OskariLayerMapper.class);
+            return mapper.findAllNames();
+        } catch (Exception e) {
+            LOG.warn(e, "Exception while getting oskari layer names");
+        } finally {
+            session.close();
+        }
+        return Collections.emptyList();
+    }
 
     public void update(final OskariLayer layer) {
         LOG.debug("update layer");
