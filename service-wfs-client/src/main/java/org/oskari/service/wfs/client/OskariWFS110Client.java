@@ -47,7 +47,7 @@ public class OskariWFS110Client {
         int maxFeatures = 10000;
         Map<String, String> query = getQueryParams(typeName, bbox, crs, maxFeatures, filter);
         byte[] response;
-        if (OskariWFSClient.skipGeoJSON(layer)) {
+        if (OskariWFSClient.tryGeoJSON(layer)) {
             // First try GeoJSON
             query.put("OUTPUTFORMAT", "application/json");
             response = OskariWFSClient.getResponse(endPoint, user, pass, query);

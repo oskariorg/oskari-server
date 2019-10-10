@@ -46,7 +46,7 @@ public class OskariWFS2Client {
 
         byte[] response = new byte[0];
 
-        if (OskariWFSClient.skipGeoJSON(layer)) {
+        if (OskariWFSClient.tryGeoJSON(layer)) {
             // First try GeoJSON
             query.put("OUTPUTFORMAT", "application/json");
             try {

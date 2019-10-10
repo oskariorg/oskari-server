@@ -86,15 +86,15 @@ public class OskariWFSClient {
         SimpleFeatureType schema = GeoJSONSchemaDetector.getSchema(geojson, crs, ignoreGeometryProperties);
         return GeoJSONReader2.toFeatureCollection(geojson, schema);
     }
-    protected static boolean skipGeoJSON (OskariLayer layer) {
-        if(layer.getAttributes().optBoolean(PROPERTY_FORCE_GML, false)) return true;
+    protected static boolean tryGeoJSON (OskariLayer layer) {
+        if(layer.getAttributes().optBoolean(PROPERTY_FORCE_GML, false)) return false;
 
         JSONObject capa = layer.getCapabilities();
         if (capa.has(KEY_FEATURE_OUTPUT_FORMATS)) {
             List<String> formats = JSONHelper.getArrayAsList(JSONHelper.getJSONArray(capa, KEY_FEATURE_OUTPUT_FORMATS));
-            return !formats.contains(JSON_OUTPUT_FORMAT);
+            return formats.contains(JSON_OUTPUT_FORMAT);
         }
-        return false;
+        return true;
     }
 
     protected static boolean isOutputFormatInvalid(InputStream in) {
