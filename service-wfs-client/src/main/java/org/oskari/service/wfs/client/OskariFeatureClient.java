@@ -90,8 +90,4 @@ public class OskariFeatureClient {
 
         return sfc;
     }
-    private static String getForcedGMLFormat (String version) {
-        if ("2.0.0".equals(version)) return "application/gml+xml; version=3.2";
-        return "text/xml; subtype=gml/3.1.1";
-    }
 }

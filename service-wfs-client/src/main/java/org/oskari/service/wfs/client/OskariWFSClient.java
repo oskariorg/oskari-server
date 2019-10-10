@@ -7,8 +7,10 @@ import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.util.IOHelper;
+import fi.nls.oskari.util.JSONHelper;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.geometry.jts.ReferencedEnvelope;
+import org.json.JSONObject;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.filter.Filter;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
@@ -24,6 +26,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import static fi.nls.oskari.service.capabilities.CapabilitiesConstants.KEY_FEATURE_OUTPUT_FORMATS;
 
 public class OskariWFSClient {
     private static final Logger LOG = LogFactory.getLogger(OskariWFS110Client.class);
@@ -31,6 +34,8 @@ public class OskariWFSClient {
     private static final TypeReference<HashMap<String, Object>> TYPE_REF = new TypeReference<HashMap<String, Object>>() {};
     private static final ObjectMapper OM = new ObjectMapper();
     private static final int MAX_REDIRECTS = 5;
+    private static final String PROPERTY_FORCE_GML = "forceGML";
+    private static final String JSON_OUTPUT_FORMAT = "application/json";
 
     public SimpleFeatureCollection getFeatures(OskariLayer layer,
             ReferencedEnvelope bbox, CoordinateReferenceSystem crs, Filter filter) throws ServiceRuntimeException {
@@ -80,6 +85,16 @@ public class OskariWFSClient {
         boolean ignoreGeometryProperties = true;
         SimpleFeatureType schema = GeoJSONSchemaDetector.getSchema(geojson, crs, ignoreGeometryProperties);
         return GeoJSONReader2.toFeatureCollection(geojson, schema);
+    }
+    protected static boolean skipGeoJSON (OskariLayer layer) {
+        if(layer.getAttributes().optBoolean(PROPERTY_FORCE_GML, false)) return true;
+
+        JSONObject capa = layer.getCapabilities();
+        if (capa.has(KEY_FEATURE_OUTPUT_FORMATS)) {
+            List<String> formats = JSONHelper.getArrayAsList(JSONHelper.getJSONArray(capa, KEY_FEATURE_OUTPUT_FORMATS));
+            return !formats.contains(JSON_OUTPUT_FORMAT);
+        }
+        return false;
     }
 
     protected static boolean isOutputFormatInvalid(InputStream in) {
