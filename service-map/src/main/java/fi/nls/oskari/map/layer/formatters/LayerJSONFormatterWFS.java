@@ -148,18 +148,12 @@ public class LayerJSONFormatterWFS extends LayerJSONFormatter {
     }
     public static JSONObject createCapabilitiesJSON (WFS3Service service, String collectionId, Set<String> systemCRSs) {
         JSONObject capabilities = new JSONObject(); // override
-        //String collectionId = collection.getId();
-        /*Set<String> capabilitiesCRSs = collection.getCrs()
-                .stream()
-                .map(WFS3Service::convertCrsToEpsg)
-                .filter(epsg -> epsg != null)
-                .collect(Collectors.toSet());*/
-        //Set<String> capabilitiesCRSs = service.getSupportedEpsgCodes(collecionId);
-        //Set<String> crsUri  = service.getSupportedCrsURIs(collectionId);
-        //JSONHelper.put(capabilities, KEY_CRS_URI, new JSONArray(crsUri));
+        Set<String> crsUri  = service.getSupportedCrsURIs(collectionId);
+        JSONHelper.put(capabilities, KEY_CRS_URI, new JSONArray(crsUri));
+        Set<String> capabilitiesCRSs = service.getSupportedEpsgCodes(collectionId);
+        Set<String> crss = getCRSsToStore(systemCRSs, capabilitiesCRSs);
+        JSONHelper.putValue(capabilities, KEY_SRS, new JSONArray(crss));
         Set<String> formats = service.getSupportedFormats(collectionId);
-        //final Set<String> crss = getCRSsToStore(systemCRSs, capabilitiesCRSs);
-        //JSONHelper.putValue(capabilities, KEY_SRS, new JSONArray(crss));
         JSONHelper.put(capabilities, KEY_FEATURE_OUTPUT_FORMATS, new JSONArray(formats));
         return capabilities;
     }

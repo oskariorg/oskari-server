@@ -17,7 +17,7 @@ public class CapabilitiesConstants {
     public static final String KEY_LAYER_COVERAGE = "geom";
     public static final String KEY_ISQUERYABLE = "isQueryable";
     public static final String KEY_KEYWORDS = "keywords";
-    public static final String KEY_SRS_URI = "crs-uri";
+    public static final String KEY_CRS_URI = "crs-uri";
     public static final String KEY_TIMES = "times";
     public static final String KEY_LEGEND = "legend";
     public static final String KEY_VALUE = "value";
