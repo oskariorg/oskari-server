@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import org.geotools.referencing.CRS;
 import org.oskari.service.wfs3.model.WFS3CollectionInfo;
@@ -114,6 +115,16 @@ public class WFS3Service {
         return content.getCollections().stream()
                 .filter(c -> c.getId().equals(id))
                 .findAny();
+    }
+    public Set<String> getSupportedFormats (String collectionId) {
+        return getCollection(collectionId)
+                .orElseThrow(() -> new NoSuchElementException())
+                .getLinks()
+                .stream()
+                .filter (link -> "item".equals(link.getRel()))
+                .map(item -> item.getType())
+                .filter (Objects::nonNull)
+                .collect(Collectors.toSet());
     }
 
     public static String convertCrsToEpsg (String crs) {
