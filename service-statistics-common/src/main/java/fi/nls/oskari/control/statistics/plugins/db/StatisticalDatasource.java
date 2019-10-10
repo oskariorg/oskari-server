@@ -20,7 +20,7 @@ public class StatisticalDatasource {
     private String plugin;
     private List<DatasourceLayer> layers = new ArrayList<>();
     private long maxUpdateDuration = TimeUnit.HOURS.toMillis(6);
-    private long updateInterval = 1000 * 60 * 60 * 24;
+    private long updateInterval = TimeUnit.HOURS.toMillis(24);
     private long cachePeriod = updateInterval * 7;
     private JSONObject hints;
 
