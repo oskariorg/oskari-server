@@ -1019,6 +1019,9 @@ public class IOHelper {
             if (key == null || key.isEmpty()) {
                 continue;
             }
+            if (value == null) {
+                continue;
+            }
             final String keyEnc = urlEncodePayload(key);
             final String valueEnc = urlEncodePayload(value);
             if (!first) {

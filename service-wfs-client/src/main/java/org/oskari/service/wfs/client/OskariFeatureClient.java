@@ -1,16 +1,11 @@
 package org.oskari.service.wfs.client;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-import fi.nls.oskari.util.JSONHelper;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
-import org.json.JSONArray;
-import org.json.JSONObject;
 import org.opengis.filter.Filter;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.oskari.service.user.UserLayerService;
@@ -19,7 +14,6 @@ import org.oskari.service.wfs3.CoordinateTransformer;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.service.ServiceRuntimeException;
 import fi.nls.oskari.util.PropertyUtil;
-import static fi.nls.oskari.service.capabilities.CapabilitiesConstants.KEY_FEATURE_OUTPUT_FORMATS;
 
 public class OskariFeatureClient {
 
@@ -82,28 +76,9 @@ public class OskariFeatureClient {
     private SimpleFeatureCollection getFeaturesNoTransform(String id, OskariLayer layer,
             ReferencedEnvelope bbox, CoordinateReferenceSystem crs,
             Optional<UserLayerService> processor) throws ServiceRuntimeException {
-        String endPoint = layer.getUrl();
-        String version = layer.getVersion();
-        String typeName = layer.getName();
-        String user = layer.getUsername();
-        String pass = layer.getPassword();
-
-        List <String> formats =  new ArrayList<>();
-        JSONObject attributes = layer.getAttributes();
-        JSONObject capa = layer.getCapabilities();
-        if (attributes.has(PROPERTY_FORCE_GML) && attributes.optBoolean(PROPERTY_FORCE_GML, false)) {
-            formats.add(getForcedGMLFormat(version));
-        } else if (capa.has(KEY_FEATURE_OUTPUT_FORMATS)) {
-            JSONArray arr = JSONHelper.getEmptyIfNull(
-                    JSONHelper.getJSONArray(capa, KEY_FEATURE_OUTPUT_FORMATS));
-            formats = JSONHelper.getArrayAsList(arr);
-        }
-        // TODO: Figure out the maxFeatures from the layer
-        int maxFeatures = 10000;
 
         Filter filter = processor.map(proc -> proc.getWFSFilter(id, bbox)).orElse(null);
-
-        SimpleFeatureCollection sfc = wfsClient.getFeatures(endPoint, version, user, pass, typeName, bbox, crs, maxFeatures, filter, formats);
+        SimpleFeatureCollection sfc = wfsClient.getFeatures(layer, bbox, crs, filter);
 
         if (processor.isPresent()) {
             try {

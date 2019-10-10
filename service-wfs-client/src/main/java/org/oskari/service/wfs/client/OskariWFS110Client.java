@@ -7,7 +7,6 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.nio.charset.StandardCharsets;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.geotools.data.simple.SimpleFeatureCollection;
@@ -17,6 +16,7 @@ import org.geotools.xml.Encoder;
 import org.opengis.filter.Filter;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
+import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.service.ServiceRuntimeException;
@@ -28,28 +28,34 @@ import fi.nls.oskari.util.IOHelper;
 public class OskariWFS110Client {
 
     private static final Logger LOG = LogFactory.getLogger(OskariWFS110Client.class);
+
     private static final OskariGML OSKARI_GML = new OskariGML();
-    private static final String JSON_OUTPUT_FORMAT = "application/json";
+    private static final String PROPERTY_FORCE_GML = "forceGML";
 
     private OskariWFS110Client() {}
 
     /**
      * @return SimpleFeatureCollection containing the parsed Features, or null if all fails
      */
-    public static SimpleFeatureCollection getFeatures(String endPoint, String user, String pass,
-            String typeName, ReferencedEnvelope bbox, CoordinateReferenceSystem crs,
-            int maxFeatures, Filter filter, List<String> formats) {
+    public static SimpleFeatureCollection getFeatures(OskariLayer layer,
+            ReferencedEnvelope bbox, CoordinateReferenceSystem crs, Filter filter) {
+        String endPoint = layer.getUrl();
+        String typeName = layer.getName();
+        String user = layer.getUsername();
+        String pass = layer.getPassword();
 
-        byte[] response;
+        // TODO: FIXME!
+        int maxFeatures = 10000;
+        boolean forceGML = layer.getAttributes().optBoolean(PROPERTY_FORCE_GML, false);
+
         Map<String, String> query = getQueryParams(typeName, bbox, crs, maxFeatures, filter);
-        // First try GeoJSON
-        if (formats.isEmpty() || formats.contains(JSON_OUTPUT_FORMAT)) {
-            query.put("OUTPUTFORMAT", JSON_OUTPUT_FORMAT);
-
+        byte[] response;
+        if (!forceGML) {
+            // First try GeoJSON
+            query.put("OUTPUTFORMAT", "application/json");
             response = OskariWFSClient.getResponse(endPoint, user, pass, query);
             try {
                 return OskariWFSClient.parseGeoJSON(new ByteArrayInputStream(response), crs);
-            // allowed formats may not be parsed from capabilities
             } catch (IOException e) {
                 if (!OskariWFSClient.isOutputFormatInvalid(new ByteArrayInputStream(response))) {
                     // If we can not determine that the exception was due to bad

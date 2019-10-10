@@ -1,14 +1,11 @@
 package fi.nls.oskari.domain.map;
 
-import fi.nls.oskari.util.ConversionHelper;
-import fi.nls.oskari.util.JSONHelper;
+import java.util.Arrays;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.json.simple.JSONArray;
 
-import java.util.Arrays;
-import java.util.stream.Collectors;
+import fi.nls.oskari.util.JSONHelper;
 
 public class UserDataStyle {
 
@@ -37,19 +34,6 @@ public class UserDataStyle {
     private Integer text_offset_x;
     private Integer text_offset_y;
     private String font;
-
-
-    private static final String KEY_DEFAULT_STYLE = "default";
-    private static final String KEY_FEATURE_STYLE = "featureStyle";
-    private static final String KEY_RENDER_MODE = "renderMode";
-    private static final String KEY_LABEL_PROPERTY = "labelProperty";
-    private static final String KEY_COLOR = "color";
-    private static final String KEY_TEXT_ALIGN = "textAlign";
-    private static final String KEY_OFFSET_X = "10";
-    private static final String KEY_FILL = "fill";
-    private static final String KEY_STROKE = "stroke";
-    private static final String KEY_TEXT = "text";
-    private static final String KEY_FONT = "font";
 
     public void initDefaultStyle () {
         //point
@@ -85,160 +69,137 @@ public class UserDataStyle {
         JSONObject featStyle = JSONHelper.createJSONObject("featureStyle", parseUserLayerStyleToOskariJSON());
         return JSONHelper.createJSONObject("default", featStyle);
     }
-    // This becomes redundant when oskari style json is used only
-    public void populateFromJSON(final JSONObject stylejs) throws JSONException {
+
+    public void populateFromOskariJSON(JSONObject json) throws JSONException {
         try {
-            // {"area":{"fillColor":"FFDC00","lineColor":"CC9900","size":"2"},"line":{"color":"CC9900","size":"2"},"dot":{"color":"CC9900","size":"4"}}
-            JSONObject areaSubObject = stylejs.getJSONObject("area");
+            // image
+            JSONObject image = json.getJSONObject("image");
+            setDot_color(image.getJSONObject("fill").optString("color"));
+            setDot_shape(image.optString("shape"));
+            setDot_size(image.optInt("size"));
 
-            setBorder_color(areaSubObject.isNull("lineColor") ? null : areaSubObject.optString("lineColor")); // null is valid color value for "no stroke"
-            setBorder_width(areaSubObject.optInt("lineWidth"));
-            setDot_color(stylejs.getJSONObject("dot").optString("color"));
-            setDot_size(stylejs.getJSONObject("dot").optInt("size"));
-            setFill_color(areaSubObject.isNull("fillColor") ? null : areaSubObject.optString("fillColor")); // null is valid color value for "no fill"
-            setStroke_color(stylejs.getJSONObject("line").optString("color"));
-            setStroke_width(stylejs.getJSONObject("line").optInt("width"));
-            setDot_shape(stylejs.getJSONObject("dot").optString("shape"));
-            setStroke_linejoin(stylejs.getJSONObject("line").optString("corner"));
-            setFill_pattern(ConversionHelper.getInt(areaSubObject.optString("fillStyle"), -1));
-            setStroke_linecap(stylejs.getJSONObject("line").optString("cap"));
-            setStroke_dasharray(stylejs.getJSONObject("line").optString("style"));
-            setBorder_linejoin(areaSubObject.optString("lineCorner"));
-            setBorder_dasharray(areaSubObject.optString("lineStyle"));
-        } catch (Exception ex) {
-            throw new JSONException(ex);
-        }
+            // stroke
+            JSONObject stroke = json.getJSONObject("stroke");
+            setStroke_color(stroke.optString("color"));
+            setStroke_width(stroke.optInt("width"));
+            setStroke_dasharray(dashToUserDataStyle(stroke.getString("lineDash")));
+            setStroke_linecap(stroke.getString("lineCap"));
+            setStroke_linejoin(stroke.getString("lineJoin"));
 
-    }
+            // stroke.area
+            JSONObject strokeArea = stroke.getJSONObject("area");
+            setBorder_color(strokeArea.optString("color", null));
+            setBorder_width(strokeArea.optInt("width"));
+            setBorder_linejoin(strokeArea.optString("lineJoin"));
+            setBorder_dasharray(dashToUserDataStyle(json.getJSONObject("stroke").getJSONObject("area").optString("lineDash")));
 
-    public void populateFromOskariJSON(final JSONObject style) throws JSONException {
-        try {
-            setDot_color(style.getJSONObject("image").getJSONObject("fill").optString("color"));
-            setDot_shape(style.getJSONObject("image").optString("shape"));
-            setDot_size(style.getJSONObject("image").optInt("size"));
+            // fill
+            JSONObject fill = json.getJSONObject("fill");
+            setFill_color(fill.optString("color", null));
+            setFill_pattern(fill.getJSONObject("area").optInt("pattern", -1));
 
-            setStroke_color(style.getJSONObject("stroke").optString("color"));
-            setStroke_width(style.getJSONObject("stroke").optInt("width"));
-            setStroke_linejoin(style.getJSONObject("stroke").getString("lineJoin"));
-            setStroke_linecap(style.getJSONObject("stroke").getString("lineCap"));
-            setStroke_dasharray(dashToUserDataStyle(style.getJSONObject("stroke").getString("lineDash")));
-
-            // null is valid color value for "no fill"
-            setFill_color(style.getJSONObject("fill").isNull("color") ? null : style.getJSONObject("fill")
-                    .optString("color"));
-            // null is valid color value for "no stroke"
-            setBorder_color(style.getJSONObject("stroke").getJSONObject("area").isNull("color") ? null : style
-                    .getJSONObject("stroke").getJSONObject("area").optString("color"));
-            setFill_pattern(ConversionHelper.getInt(style.getJSONObject("fill").getJSONObject("area").
-                    optString("pattern"), -1));
-            setBorder_width(style.getJSONObject("stroke").getJSONObject("area").optInt("width"));
-            setBorder_linejoin(style.getJSONObject("stroke").getJSONObject("area").optString("lineJoin"));
-            setBorder_dasharray(dashToUserDataStyle(style.getJSONObject("stroke").getJSONObject("area").optString("lineDash")));
-
+            // text
+            JSONObject text = json.getJSONObject("text");
+            if (text != null) {
+                JSONObject textFill = text.getJSONObject("fill");
+                setText_fill_color(textFill.optString("color", null));
+                JSONObject textStroke = text.getJSONObject("stroke");
+                setText_stroke_color(textStroke.optString("color", null));
+                setText_stroke_width(textStroke.optInt("width"));
+                setFont(text.optString("font"));
+                setText_align(text.optString("textAlign"));
+                setText_offset_x(text.optInt("offsetX"));
+                setText_offset_y(text.optInt("offsetY"));
+                setText_label(text.optString("labelText"));
+                setText_label_property(text.optString("labelProperty"));
+            }
         } catch (Exception e) {
             throw new JSONException(e);
         }
     }
-    // This becomes redundant when oskari style json is used only
-    public JSONObject parseUserLayerStyle2JSON(){
-        JSONObject json = new JSONObject();
-        //dot
-        JSONObject dot = new JSONObject();
-        JSONHelper.putValue(dot, "shape", getDot_shape());
-        JSONHelper.putValue(dot, "color", getDot_color());
-        JSONHelper.putValue(dot, "size", getDot_size());
-        JSONHelper.putValue(json, "dot", dot);
-        //line
-        JSONObject line = new JSONObject();
-        JSONHelper.putValue(line, "style", getStroke_dasharray());
-        JSONHelper.putValue(line, "cap", getStroke_linecap());
-        JSONHelper.putValue(line, "corner", getStroke_linejoin());
-        JSONHelper.putValue(line, "width", getStroke_width());
-        JSONHelper.putValue(line, "color", getStroke_color());
-        JSONHelper.putValue(json, "line", line);
-        //area
-        JSONObject area = new JSONObject();
-        JSONHelper.putValue(area, "lineStyle", getBorder_dasharray());
-        JSONHelper.putValue(area, "lineCorner", getBorder_linejoin());
-        JSONHelper.putValue(area, "lineWidth", getBorder_width());
-        JSONHelper.putValue(area, "lineColor", getBorder_color());
-        JSONHelper.putValue(area, "fillStyle", getFill_pattern());
-        JSONHelper.putValue(area, "fillColor", getFill_color());
-        JSONHelper.putValue(json, "area", area);
-
-        return json;
-    }
 
     public JSONObject parseUserLayerStyleToOskariJSON() {
         JSONObject json = new JSONObject();
-        // dot
+
+        // image
         JSONObject image = new JSONObject();
+        JSONHelper.putValue(json, "image", image);
         JSONObject imageFill = new JSONObject();
         JSONHelper.putValue(imageFill, "color", getDot_color());
         JSONHelper.putValue(image, "fill", imageFill);
         JSONHelper.putValue(image, "shape", getDot_shape());
         JSONHelper.putValue(image, "size", getDot_size());
-        JSONHelper.putValue(json, "image", image);
-        // line
+
+        // stroke
         JSONObject stroke = new JSONObject();
+        JSONHelper.putValue(json, "stroke", stroke);
         JSONHelper.putValue(stroke, "color", getStroke_color());
         JSONHelper.putValue(stroke, "width", getStroke_width());
         JSONHelper.putValue(stroke, "lineDash", dashToOskariJSON(getStroke_dasharray()));
         JSONHelper.putValue(stroke, "lineCap", getStroke_linecap());
         JSONHelper.putValue(stroke, "lineJoin", getStroke_linejoin());
-        // area
+
+        // stroke.area
         JSONObject strokeArea = new JSONObject();
+        JSONHelper.putValue(stroke, "area", strokeArea);
         JSONHelper.putValue(strokeArea, "color", getBorder_color());
         JSONHelper.putValue(strokeArea, "width", getBorder_width());
         JSONHelper.putValue(strokeArea, "lineDash", dashToOskariJSON(getBorder_dasharray()));
         JSONHelper.putValue(strokeArea, "lineJoin", getBorder_linejoin());
-        JSONHelper.putValue(stroke, "area", strokeArea);
-        JSONHelper.putValue(json, "stroke", stroke);
+
+        // fill
         JSONObject fill = new JSONObject();
+        JSONHelper.putValue(json, "fill", fill);
         JSONHelper.putValue(fill, "color", getFill_color());
         JSONObject fillArea = new JSONObject();
         JSONHelper.putValue(fillArea, "pattern", getFill_pattern());
         JSONHelper.putValue(fill, "area", fillArea);
-        JSONHelper.putValue(json, "fill", fill);
+
         // text
         if (text_label != null || text_label_property != null) {
-            JSONObject text = JSONHelper.createJSONObject( "font", font);
+            JSONObject text = new JSONObject();
+            JSONHelper.putValue(json, "text", text);
+
+            JSONObject textFill = new JSONObject();
+            JSONHelper.putValue(textFill, "color", text_fill_color);
+            JSONHelper.putValue(text, "fill", textFill);
+
+            JSONObject textStroke = new JSONObject();
+            JSONHelper.putValue(textStroke, "color", text_stroke_color);
+            JSONHelper.putValue(textStroke, "width", text_stroke_width);
+            JSONHelper.putValue(text, "stroke", textStroke);
+
+            JSONHelper.putValue(text, "font", font);
             JSONHelper.putValue(text, "textAlign", text_align);
             JSONHelper.putValue(text, "offsetX", text_offset_x);
-            JSONObject textStroke = JSONHelper.createJSONObject( "color", text_stroke_color);
-            JSONHelper.putValue(stroke, "width", text_stroke_width);
-            JSONHelper.putValue(text, "stroke", textStroke);
-            JSONHelper.putValue(text, "fill", JSONHelper.createJSONObject("color", text_fill_color));
-            if (text_label != null) {
-                JSONHelper.putValue(text, "label", text_label);
-            } else if (text_label_property != null) {
-                JSONArray properties = new JSONArray();
-                properties.addAll(Arrays.asList(text_label_property));
-                JSONHelper.putValue(text, "labelProperty", properties);
-            }
-            JSONHelper.putValue(json, "text", text);
+            JSONHelper.putValue(text, "offsetY", text_offset_y);
+
+            JSONHelper.putValue(text, "labelText", text_label);
+            JSONHelper.putValue(text, "labelProperty", text_label_property == null ? null : text_label_property[0]);
         }
 
         return json;
     }
+
     private String dashToUserDataStyle (String dashArray) {
         switch (dashArray) {
-            case "solid":
-                return "";
-            case "dash":
-                return "5 2";
+        case "solid":
+            return "";
+        case "dash":
+            return "5 2";
         }
         return "";
     }
+
     private String dashToOskariJSON (String dashArray) {
         if (dashArray == null) {
             return "";
         }
         switch (dashArray) {
-            case "":
-                return "solid";
-            case "5 2":
-                return "dash";
+        case "":
+            return "solid";
+        case "5 2":
+            return "dash";
         }
         return "solid";
     }
@@ -431,5 +392,166 @@ public class UserDataStyle {
 
     public void setText_stroke_width(Integer text_stroke_width) {
         this.text_stroke_width = text_stroke_width;
+    }
+    /**
+     * Generated
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (!(obj instanceof UserDataStyle)) {
+            return false;
+        }
+        UserDataStyle other = (UserDataStyle) obj;
+        if (border_color == null) {
+            if (other.border_color != null) {
+                return false;
+            }
+        } else if (!border_color.equals(other.border_color)) {
+            return false;
+        }
+        if (border_dasharray == null) {
+            if (other.border_dasharray != null) {
+                return false;
+            }
+        } else if (!border_dasharray.equals(other.border_dasharray)) {
+            return false;
+        }
+        if (border_linejoin == null) {
+            if (other.border_linejoin != null) {
+                return false;
+            }
+        } else if (!border_linejoin.equals(other.border_linejoin)) {
+            return false;
+        }
+        if (border_width != other.border_width) {
+            return false;
+        }
+        if (dot_color == null) {
+            if (other.dot_color != null) {
+                return false;
+            }
+        } else if (!dot_color.equals(other.dot_color)) {
+            return false;
+        }
+        if (dot_shape == null) {
+            if (other.dot_shape != null) {
+                return false;
+            }
+        } else if (!dot_shape.equals(other.dot_shape)) {
+            return false;
+        }
+        if (dot_size != other.dot_size) {
+            return false;
+        }
+        if (fill_color == null) {
+            if (other.fill_color != null) {
+                return false;
+            }
+        } else if (!fill_color.equals(other.fill_color)) {
+            return false;
+        }
+        if (fill_pattern != other.fill_pattern) {
+            return false;
+        }
+        if (font == null) {
+            if (other.font != null) {
+                return false;
+            }
+        } else if (!font.equals(other.font)) {
+            return false;
+        }
+        if (id != other.id) {
+            return false;
+        }
+        if (stroke_color == null) {
+            if (other.stroke_color != null) {
+                return false;
+            }
+        } else if (!stroke_color.equals(other.stroke_color)) {
+            return false;
+        }
+        if (stroke_dasharray == null) {
+            if (other.stroke_dasharray != null) {
+                return false;
+            }
+        } else if (!stroke_dasharray.equals(other.stroke_dasharray)) {
+            return false;
+        }
+        if (stroke_linecap == null) {
+            if (other.stroke_linecap != null) {
+                return false;
+            }
+        } else if (!stroke_linecap.equals(other.stroke_linecap)) {
+            return false;
+        }
+        if (stroke_linejoin == null) {
+            if (other.stroke_linejoin != null) {
+                return false;
+            }
+        } else if (!stroke_linejoin.equals(other.stroke_linejoin)) {
+            return false;
+        }
+        if (stroke_width != other.stroke_width) {
+            return false;
+        }
+        if (text_align == null) {
+            if (other.text_align != null) {
+                return false;
+            }
+        } else if (!text_align.equals(other.text_align)) {
+            return false;
+        }
+        if (text_fill_color == null) {
+            if (other.text_fill_color != null) {
+                return false;
+            }
+        } else if (!text_fill_color.equals(other.text_fill_color)) {
+            return false;
+        }
+        if (text_label == null) {
+            if (other.text_label != null) {
+                return false;
+            }
+        } else if (!text_label.equals(other.text_label)) {
+            return false;
+        }
+        if (!Arrays.equals(text_label_property, other.text_label_property)) {
+            return false;
+        }
+        if (text_offset_x == null) {
+            if (other.text_offset_x != null) {
+                return false;
+            }
+        } else if (!text_offset_x.equals(other.text_offset_x)) {
+            return false;
+        }
+        if (text_offset_y == null) {
+            if (other.text_offset_y != null) {
+                return false;
+            }
+        } else if (!text_offset_y.equals(other.text_offset_y)) {
+            return false;
+        }
+        if (text_stroke_color == null) {
+            if (other.text_stroke_color != null) {
+                return false;
+            }
+        } else if (!text_stroke_color.equals(other.text_stroke_color)) {
+            return false;
+        }
+        if (text_stroke_width == null) {
+            if (other.text_stroke_width != null) {
+                return false;
+            }
+        } else if (!text_stroke_width.equals(other.text_stroke_width)) {
+            return false;
+        }
+        return true;
     }
 }

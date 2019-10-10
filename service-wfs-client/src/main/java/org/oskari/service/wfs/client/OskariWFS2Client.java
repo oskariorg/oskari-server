@@ -1,5 +1,6 @@
 package org.oskari.service.wfs.client;
 
+import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.service.ServiceRuntimeException;
@@ -15,7 +16,6 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -24,28 +24,36 @@ import java.util.Map;
 public class OskariWFS2Client {
 
     private static final Logger LOG = LogFactory.getLogger(OskariWFS2Client.class);
+
     private static final OskariGML32 OSKARI_GML32 = new OskariGML32();
-    private static final String JSON_OUTPUT_FORMAT = "application/json";
+    private static final String PROPERTY_FORCE_GML = "forceGML";
 
     private OskariWFS2Client() {}
 
     /**
      * @return SimpleFeatureCollection containing the parsed Features, or null if all fails
      */
-    public static SimpleFeatureCollection getFeatures(String endPoint, String user, String pass,
-                                                      String typeName, ReferencedEnvelope bbox, CoordinateReferenceSystem crs,
-                                                      int maxFeatures, Filter filter, List<String> formats) {
-        // First try GeoJSON
+    public static SimpleFeatureCollection getFeatures(OskariLayer layer,
+            ReferencedEnvelope bbox, CoordinateReferenceSystem crs, Filter filter) {
+        String endPoint = layer.getUrl();
+        String typeName = layer.getName();
+        String user = layer.getUsername();
+        String pass = layer.getPassword();
+
+        // TODO: FIXME!
+        int maxFeatures = 10000;
+        boolean forceGML = layer.getAttributes().optBoolean(PROPERTY_FORCE_GML, false);
+
         Map<String, String> query = getQueryParams(typeName, bbox, crs, maxFeatures, filter);
 
+        byte[] response = new byte[0];
 
-        byte[] response = new byte[]{};
-        if (formats.isEmpty() || formats.contains(JSON_OUTPUT_FORMAT)) {
+        if (!forceGML) {
+            // First try GeoJSON
+            query.put("OUTPUTFORMAT", "application/json");
             try {
-                query.put("OUTPUTFORMAT", JSON_OUTPUT_FORMAT);
                 response = OskariWFSClient.getResponse(endPoint, user, pass, query);
                 return OskariWFSClient.parseGeoJSON(new ByteArrayInputStream(response), crs);
-                // allowed formats may not be parsed from capabilities
             } catch (ServiceRuntimeException e) {
                 if (!"400".equals(e.getMessageKey())) throw e;
                 // fallback to gml
@@ -74,7 +82,7 @@ public class OskariWFS2Client {
     }
 
     protected static Map<String, String> getQueryParams(String typeName, ReferencedEnvelope bbox,
-                                                        CoordinateReferenceSystem crs, int maxFeatures, Filter filter) {
+            CoordinateReferenceSystem crs, int maxFeatures, Filter filter) {
         Map<String, String> parameters = new LinkedHashMap<>();
         parameters.put("SERVICE", "WFS");
         parameters.put("VERSION", "2.0.0");

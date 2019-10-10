@@ -22,18 +22,6 @@ import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.wfs.WFSLayerConfigurationService;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.auth.AuthScope;
-import org.apache.http.auth.Credentials;
-import org.apache.http.auth.UsernamePasswordCredentials;
-import org.apache.http.client.CredentialsProvider;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.BasicCredentialsProvider;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.util.EntityUtils;
 import org.geotools.referencing.CRS;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -49,6 +37,7 @@ import org.oskari.service.util.ServiceFactory;
 
 
 import java.io.IOException;
+import java.net.HttpURLConnection;
 import java.util.*;
 
 
@@ -93,29 +82,17 @@ public abstract class AbstractFeatureHandler extends RestActionHandler {
     }
 
     protected String postPayload(OskariLayer layer, String payload) throws ActionException {
-
-        CredentialsProvider credsProvider = new BasicCredentialsProvider();
-        Credentials credentials = new UsernamePasswordCredentials(layer.getUsername(), layer.getPassword());
-        credsProvider.setCredentials(AuthScope.ANY, credentials);
-
-        HttpClientBuilder httpClientBuilder = HttpClientBuilder.create();
-        httpClientBuilder.setDefaultCredentialsProvider(credsProvider);
-
-        HttpPost request = new HttpPost(layer.getUrl());
-        request.addHeader(IOHelper.HEADER_CONTENTTYPE, IOHelper.CONTENT_TYPE_XML);
-        request.setEntity(new StringEntity(payload, "UTF-8"));
-
-        HttpClient httpClient = httpClientBuilder.build();
         try {
-            HttpResponse response = httpClient.execute(request);
-            HttpEntity entity = response.getEntity();
-            String responseString = EntityUtils.toString(entity, "UTF-8");
+            HttpURLConnection conn = IOHelper.getConnection(layer.getUrl(), layer.getUsername(), layer.getPassword());
+            IOHelper.writeHeader(conn, IOHelper.HEADER_CONTENTTYPE, IOHelper.CONTENT_TYPE_XML);
+            IOHelper.writeToConnection(conn, payload);
+            String responseString = IOHelper.readString(conn);
             if (responseString == null) {
                 throw new ActionParamsException("Didn't get any response from service");
             }
             return responseString;
-        } catch (IOException ex) {
-            throw new ActionException("Error posting the WFS-T message to service", ex);
+        } catch (IOException e) {
+            throw new ActionException("Error posting the WFS-T message to service", e);
         }
     }
 

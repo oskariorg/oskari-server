@@ -112,6 +112,7 @@ public class GetWSCapabilitiesHandler extends ActionHandler {
             throw new ActionException("Capabilities parsing failed: " + e.getMessage(), e);
         }
     }
+
     public static JSONObject getWFS3Capabilities(String url, String user, String pw, String currentCrs) throws WFS3Exception, IOException {
         WFS3Service service = WFS3Service.fromURL(url, user, pw);
         List<JSONObject> layers = service.getCollections().stream()
@@ -133,7 +134,6 @@ public class GetWSCapabilitiesHandler extends ActionHandler {
             layer.setName(lang, title);
         }
         OskariLayerCapabilitiesHelper.setPropertiesFromCapabilitiesWFS(service, layer, systemCRSs);
-
         return layer;
     }
     private static JSONObject wfsLayerToJSON(OskariLayer layer, String crs, String user, String pw) {

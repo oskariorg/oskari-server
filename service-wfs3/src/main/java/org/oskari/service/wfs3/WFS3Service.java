@@ -116,6 +116,7 @@ public class WFS3Service {
                 .filter(c -> c.getId().equals(id))
                 .findAny();
     }
+
     public Set<String> getSupportedFormats (String collectionId) {
         return getCollection(collectionId)
                 .orElseThrow(() -> new NoSuchElementException())
@@ -127,16 +128,31 @@ public class WFS3Service {
                 .collect(Collectors.toSet());
     }
 
-    public static String convertCrsToEpsg (String crs) {
-        if (crs.toUpperCase().contains("CRS84")){
+    public Set<String> getSupportedCrsURIs(String collectionId) throws NoSuchElementException {
+        return getCollection(collectionId)
+                .map(collection -> collection.getCrs())
+                .map(list -> (Set<String>) new HashSet<>(list))
+                .orElseThrow(() -> new NoSuchElementException());
+    }
+
+    public Set<String> getSupportedEpsgCodes(String collectionId) throws NoSuchElementException {
+        return getSupportedCrsURIs(collectionId).stream()
+                .map(WFS3Service::convertCrsToEpsg)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toSet());
+    }
+
+    private static String convertCrsToEpsg(String crs) {
+        if ("http://www.opengis.net/def/crs/OGC/1.3/CRS84".equals(crs)) {
             return "EPSG:4326"; // same projection, but axis order differs
         }
         try {
             return CRS.lookupIdentifier(CRS.decode(crs), false);
         } catch (Exception e) {
-            // not valid EPSG projection
+            // Either failed - maybe the code is invalid
+            // Only thing certain is that we can not use this
+            return null;
         }
-        return null;
     }
 
     @Override
