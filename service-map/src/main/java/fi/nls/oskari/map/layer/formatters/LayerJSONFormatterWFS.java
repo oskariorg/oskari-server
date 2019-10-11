@@ -119,13 +119,17 @@ public class LayerJSONFormatterWFS extends LayerJSONFormatter {
                 json = WFSCapabilitiesParser110.parse(
                         (net.opengis.wfs.WFSCapabilitiesType) parsedCapa);
             } else {
-                json = new JSONObject();
+                throw new ServiceException("Invalid WFSCapabilitiesType");
             }
-            SimpleFeatureType sft = source.getSchema();
-            GeometryDescriptor geom = sft.getGeometryDescriptor();
-            if (geom != null) {
-                JSONHelper.putValue(json, CapabilitiesConstants.KEY_GEOM_NAME, geom.getLocalName());
-            } // TODO: else sft.getTypes().filter(known geom types)
+            // Schema is used only to parse geometry property name
+            // skip if failed to get schema or can't find default geometry property
+            try {
+                SimpleFeatureType sft = source.getSchema();
+                GeometryDescriptor geom = sft.getGeometryDescriptor();
+                if (geom != null) {
+                    JSONHelper.putValue(json, CapabilitiesConstants.KEY_GEOM_NAME, geom.getLocalName());
+                } // TODO: else sft.getTypes().filter(known geom types)
+            } catch (Exception e) {}
 
             ResourceInfo info = source.getInfo();
             // TODO is there more than default crs
