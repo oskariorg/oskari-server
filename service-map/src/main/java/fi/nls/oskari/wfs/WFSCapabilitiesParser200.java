@@ -2,7 +2,6 @@ package fi.nls.oskari.wfs;
 
 import fi.nls.oskari.util.JSONHelper;
 import net.opengis.wfs20.WFSCapabilitiesType;
-import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -36,9 +35,8 @@ public class WFSCapabilitiesParser200 extends WFSCapabilitiesService {
                     .filter(Objects::nonNull)
                     .filter(p -> p.getName().toLowerCase().equals(OUTPUT_FORMAT))
                     .findFirst();
-            List<DomainType> constraints = featureOp.get().getConstraint();
 
-            if (format != null) {
+            if (format.isPresent()) {
                 Optional<AllowedValuesType> avt = format.get().eContents()
                         .stream()
                         .filter(e -> e instanceof AllowedValuesType)
@@ -53,6 +51,7 @@ public class WFSCapabilitiesParser200 extends WFSCapabilitiesService {
                     JSONHelper.put(json, KEY_FEATURE_OUTPUT_FORMATS, new JSONArray(WFSCapabilitiesService.getFormatsToStore(formats)));
                 }
             }
+            List<DomainType> constraints = featureOp.get().getConstraint();
             Optional<DomainType> count = constraints
                     .stream()
                     .filter(Objects::nonNull)
