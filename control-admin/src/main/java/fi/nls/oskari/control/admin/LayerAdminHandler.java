@@ -638,6 +638,7 @@ public class LayerAdminHandler extends AbstractLayerAdminHandler {
         JSONHelper.put(results, CapabilitiesConstants.KEY_LAYERS, layers);
         JSONHelper.put(results, CapabilitiesConstants.KEY_EXISTING_LAYERS, exists);
         JSONHelper.put(results, CapabilitiesConstants.KEY_UNSUPPORTED_LAYERS, unsupported);
+        JSONHelper.put(results, CapabilitiesConstants.KEY_NO_CAPA_LAYERS, capaFailed);
 
         JSONHelper.putValue(results, CapabilitiesConstants.KEY_ERROR_LAYERS,
                 capabilities.getOrDefault(CapabilitiesConstants.KEY_ERROR_LAYERS, new JSONArray()));

@@ -29,6 +29,7 @@ public class CapabilitiesConstants {
     public static final String KEY_UNSUPPORTED_LAYERS = "unsupportedLayers";
     public static final String KEY_ERROR_LAYERS = "layersWithErrors";
     public static final String KEY_EXISTING_LAYERS = "existingLayers";
+    public static final String KEY_NO_CAPA_LAYERS = "capabilitiesFailed";
     public static final String KEY_XML = "xml";
     public static final String KEY_WMTS_MATRIXSET = "matrixSets";
     public static final String KEY_WMS_GROUPS = "groups";
