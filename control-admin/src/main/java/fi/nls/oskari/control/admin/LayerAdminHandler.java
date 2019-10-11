@@ -266,6 +266,8 @@ public class LayerAdminHandler extends AbstractLayerAdminHandler {
         JSONHelper.putValue(layer, KEY_MAX_SCALE, ml.getMaxScale());
         JSONHelper.putValue(layer, KEY_STYLE, ml.getStyle());
         JSONHelper.putValue(layer, KEY_PARENT_ID, ml.getParentId());
+        JSONHelper.putValue(layer, KEY_VERSION, ml.getVersion());
+
 
         JSONHelper.putValue(layer, KEY_PARAMS ,ml.getParams());
         JSONHelper.putValue(layer, KEY_OPTIONS, ml.getOptions());
@@ -627,6 +629,11 @@ public class LayerAdminHandler extends AbstractLayerAdminHandler {
         JSONArray unsupported = new JSONArray();
         JSONArray capaFailed = new JSONArray();
         JSONHelper.putValue(results, CapabilitiesConstants.KEY_TITLE, capabilities.getOrDefault(CapabilitiesConstants.KEY_TITLE, ""));
+        if (capabilities.containsKey(CapabilitiesConstants.KEY_VERSION)) {
+            JSONHelper.putValue(results, CapabilitiesConstants.KEY_VERSION,
+                    capabilities.get(CapabilitiesConstants.KEY_VERSION));
+        }
+
         List<String> layerNames = mapLayerService.findAllLayerNames();
         for (OskariLayer ml : (List<OskariLayer>) capabilities.get(CapabilitiesConstants.KEY_LAYERS)) {
             validateCapabilities(ml, currentSrs, unsupported, capaFailed);
