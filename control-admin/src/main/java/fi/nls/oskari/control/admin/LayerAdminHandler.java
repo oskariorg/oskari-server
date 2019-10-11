@@ -662,7 +662,8 @@ public class LayerAdminHandler extends AbstractLayerAdminHandler {
     private void validateCapabilities (OskariLayer ml, String currentSrs, JSONArray unsupported, JSONArray capaFailed) {
         String layerName = ml.getName();
         JSONObject capa = ml.getCapabilities();
-        if (capa.names().length() == 0) {
+
+        if (capa.length() == 0) {
             capaFailed.put(layerName);
             return;
         }
