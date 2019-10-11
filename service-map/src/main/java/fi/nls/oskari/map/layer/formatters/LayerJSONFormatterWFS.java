@@ -19,6 +19,7 @@ import org.geotools.referencing.CRS;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.opengis.feature.simple.SimpleFeatureType;
+import org.opengis.feature.type.GeometryDescriptor;
 import org.oskari.service.wfs3.WFS3Service;
 
 import java.util.Collections;
@@ -121,9 +122,10 @@ public class LayerJSONFormatterWFS extends LayerJSONFormatter {
                 json = new JSONObject();
             }
             SimpleFeatureType sft = source.getSchema();
-            String geomName = sft.getGeometryDescriptor().getLocalName();
-            // if geomName == null -> sft.getTypes().filter(known geom types)
-            JSONHelper.putValue(json, CapabilitiesConstants.KEY_GEOM_NAME, geomName);
+            GeometryDescriptor geom = sft.getGeometryDescriptor();
+            if (geom != null) {
+                JSONHelper.putValue(json, CapabilitiesConstants.KEY_GEOM_NAME, geom.getLocalName());
+            } // TODO: else sft.getTypes().filter(known geom types)
 
             ResourceInfo info = source.getInfo();
             // TODO is there more than default crs
