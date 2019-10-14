@@ -15,7 +15,6 @@ import org.oskari.permissions.model.PermissionType;
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.ActionParameters;
-import fi.nls.oskari.control.ActionParamsException;
 import fi.nls.oskari.control.RestActionHandler;
 import fi.nls.oskari.domain.Role;
 import fi.nls.oskari.log.LogFactory;
@@ -42,44 +41,38 @@ public class GetAllRolesAndPermissionTypesHandler extends RestActionHandler {
     public void init() {
         try {
             userService = UserService.getInstance();
-        } catch (Exception ex) {
+        } catch (ServiceException ex) {
             log.error(ex, "Unable to initialize User service!");
+            throw new RuntimeException(ex);
         }
+        
         try {
             permissionsService = OskariComponentManager.getComponentOfType(PermissionService.class);
         } catch (Exception ex) {
             log.error(ex, "Unable to initialize permission service!");
+            throw new RuntimeException(ex);
         }
     }
 
     @Override
     public void preProcess(ActionParameters params) throws ActionException {
         params.requireAdminUser();
-
-        if (userService == null) {
-            throw new ActionParamsException("User service not initialized");
-        }
-        if (permissionsService == null) {
-            throw new ActionParamsException("PermissionsService service not initialized");
-        }
     }
 
     @Override
     public void handleGet(ActionParameters params) throws ActionException {
         try {
-            
             final JSONObject root = new JSONObject();
-            getRoles(root);
-            getPermissionTypes(root,params.getLocale().getLanguage());
+            JSONHelper.putValue(root, JSKEY_ROLES, getRoles());
+            JSONHelper.putValue(root, JSKEY_PERMISSION_TYPES, getPermissionTypes(params.getLocale().getLanguage()));
             ResponseHelper.writeResponse(params, root);
         } catch (Exception e) {
             throw new ActionException("Something went wrong getting roles and permission types from the platform", e);
         }
     }
 
-    private void getRoles(final JSONObject root) throws ServiceException, JSONException  {
+    private JSONArray getRoles() throws ServiceException, JSONException  {
         final Role[] roles = userService.getRoles();
-
         final JSONArray rolesJSON = new JSONArray();
 
         for (Role role : roles) {
@@ -88,12 +81,10 @@ public class GetAllRolesAndPermissionTypesHandler extends RestActionHandler {
             external.put(JSKEY_NAME, role.getName());
             rolesJSON.put(external);
         }
-
-        
-        root.put(JSKEY_ROLES, rolesJSON);
+        return rolesJSON;
     }  
     
-    private void getPermissionTypes(JSONObject root, String language) {
+    private JSONArray getPermissionTypes(String language) {
         
         final JSONArray permissionNames = new JSONArray();
         for (String id : getAvailablePermissions()) {
@@ -102,8 +93,7 @@ public class GetAllRolesAndPermissionTypesHandler extends RestActionHandler {
             JSONHelper.putValue(perm, KEY_NAME, permissionsService.getPermissionName(id, language));
             permissionNames.put(perm);
         }
-        JSONHelper.putValue(root, JSKEY_PERMISSION_TYPES, permissionNames);
-        
+       return permissionNames;
     }
     
     private Set<String> getAvailablePermissions() {
