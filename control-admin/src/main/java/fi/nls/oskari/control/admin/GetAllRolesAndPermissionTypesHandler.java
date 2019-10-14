@@ -17,10 +17,9 @@ import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.control.RestActionHandler;
 import fi.nls.oskari.domain.Role;
-import fi.nls.oskari.log.LogFactory;
-import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.service.ServiceException;
+import fi.nls.oskari.service.ServiceRuntimeException;
 import fi.nls.oskari.service.UserService;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.ResponseHelper;
@@ -28,7 +27,6 @@ import fi.nls.oskari.util.ResponseHelper;
 @OskariActionRoute("GetAllRolesAndPermissionTypes")
 public class GetAllRolesAndPermissionTypesHandler extends RestActionHandler {
     
-    private Logger log = LogFactory.getLogger(GetAllRolesAndPermissionTypesHandler.class);
     private UserService userService = null;
     private PermissionService permissionsService = null;
 
@@ -42,15 +40,13 @@ public class GetAllRolesAndPermissionTypesHandler extends RestActionHandler {
         try {
             userService = UserService.getInstance();
         } catch (ServiceException ex) {
-            log.error(ex, "Unable to initialize User service!");
-            throw new RuntimeException(ex);
+            throw new ServiceRuntimeException("Exception occured while initializing user service",ex);
         }
         
         try {
             permissionsService = OskariComponentManager.getComponentOfType(PermissionService.class);
         } catch (Exception ex) {
-            log.error(ex, "Unable to initialize permission service!");
-            throw new RuntimeException(ex);
+            throw new ServiceRuntimeException("Exception occured while initializing permission service",ex);
         }
     }
 
