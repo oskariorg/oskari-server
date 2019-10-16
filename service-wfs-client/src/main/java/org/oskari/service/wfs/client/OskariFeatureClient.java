@@ -41,7 +41,7 @@ public class OskariFeatureClient {
     }
 
     public SimpleFeatureCollection getFeatures(String id, OskariLayer layer, ReferencedEnvelope bbox,
-            CoordinateReferenceSystem targetCRS, Optional<UserLayerService> processor) throws ServiceRuntimeException {
+            CoordinateReferenceSystem targetCRS, Optional<UserLayerService> processor) {
         CoordinateReferenceSystem nativeCRS = getNativeCRS();
         boolean needsTransform = !CRS.equalsIgnoreMetadata(nativeCRS, targetCRS);
 
@@ -71,10 +71,9 @@ public class OskariFeatureClient {
         }
     }
 
-
     private SimpleFeatureCollection getFeaturesNoTransform(String id, OskariLayer layer,
             ReferencedEnvelope bbox, CoordinateReferenceSystem crs,
-            Optional<UserLayerService> processor) throws ServiceRuntimeException {
+            Optional<UserLayerService> processor) {
         Filter filter = processor.map(proc -> proc.getWFSFilter(id, bbox)).orElse(null);
 
         SimpleFeatureCollection sfc = wfsClient.getFeatures(layer, bbox, crs, filter);

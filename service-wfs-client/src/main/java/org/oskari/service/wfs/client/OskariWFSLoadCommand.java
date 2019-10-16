@@ -1,7 +1,6 @@
 package org.oskari.service.wfs.client;
 
 import fi.nls.oskari.domain.map.OskariLayer;
-import fi.nls.oskari.service.ServiceRuntimeException;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.opengis.filter.Filter;
@@ -67,8 +66,4 @@ public class OskariWFSLoadCommand extends HystrixCommand<SimpleFeatureCollection
         }
     }
 
-    public SimpleFeatureCollection getFallback() {
-        // handler expects an Exception or SimpleFeatureCollection. If we don't throw an exception a null value is returned.
-        throw new ServiceRuntimeException("Error getting features from " + layer.getUrl(), getExceptionFromThrowable(getExecutionException()));
-    }
 }
