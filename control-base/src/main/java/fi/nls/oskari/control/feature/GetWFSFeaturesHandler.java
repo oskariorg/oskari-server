@@ -113,10 +113,10 @@ public class GetWFSFeaturesHandler extends AbstractWFSFeaturesHandler {
             return featureClient.getFeatures(id, layer, bbox, targetCRS, contentProcessor);
         } catch (HystrixRuntimeException e) {
             if (e.getFailureType() == FailureType.SHORTCIRCUIT) {
-                throw new ActionCommonException(ERR_SHORT_CIRCUIT, e);
+                throw new ActionCommonException(ERR_SHORT_CIRCUIT);
             }
             if (e.getFailureType() == FailureType.TIMEOUT) {
-                throw new ActionCommonException(ERR_TIMEOUT, e);
+                throw new ActionCommonException(ERR_TIMEOUT);
             }
             if (e.getCause() != null) {
                 if (e.getCause() instanceof ServiceRuntimeException) {
