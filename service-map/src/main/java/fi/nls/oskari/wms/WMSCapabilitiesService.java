@@ -10,6 +10,7 @@ import fi.nls.oskari.service.capabilities.CapabilitiesCacheService;
 import fi.nls.oskari.service.capabilities.OskariLayerCapabilities;
 import fi.nls.oskari.service.capabilities.OskariLayerCapabilitiesHelper;
 
+import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
 import org.geotools.data.ows.Layer;
 import org.geotools.data.ows.Service;
@@ -18,6 +19,8 @@ import org.geotools.data.wms.xml.MetadataURL;
 import org.geotools.data.wms.xml.WMSSchema;
 import org.geotools.xml.DocumentFactory;
 import org.geotools.xml.handlers.DocumentHandler;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.oskari.service.util.ServiceFactory;
 
 import java.io.ByteArrayInputStream;
@@ -25,6 +28,7 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.logging.Level;
+import java.util.stream.Collectors;
 
 import static fi.nls.oskari.service.capabilities.CapabilitiesConstants.*;
 
@@ -48,90 +52,81 @@ public class WMSCapabilitiesService {
     public Map<String, Object> getCapabilitiesResults (final String url, final String version, final String user, final String pwd,
                                                               final Set<String> systemCRSs) throws ServiceException {
         try {
+            final Map<String, Object> result = new HashMap<>();
             final OskariLayerCapabilities capabilities = capabilitiesService.getCapabilities(url, OskariLayer.TYPE_WMS, version, user, pwd);
-            final String data = capabilities.getData();
-            WMSCapabilities caps = createCapabilities(data);
-            Map<String, Object> toReturn = parseCapabilities(caps.getLayer(), url, caps, data, systemCRSs, false);
+            final String xml = capabilities.getData();
+            WMSCapabilities caps = createCapabilities(xml);
+            final String metadataUrl = getMetaDataUrl(caps.getService());
+
+            List <OskariLayer> layers = caps.getLayerList()
+                    .stream()
+                    .filter(WMSCapabilitiesService::isActualLayer)
+                    .map(layer -> layerToOskariLayer(layer, url, version, user, pwd, metadataUrl, xml, systemCRSs))
+                    .collect(Collectors.toList());
+            Layer capabilitiesLayer = caps.getLayer();
+            result.put(KEY_TITLE, capabilitiesLayer.getTitle());
+            result.put(KEY_VERSION, caps.getVersion());
+            result.put(KEY_LAYERS, layers);
+            result.put(KEY_WMS_STRUCTURE, parseStructureJson(capabilitiesLayer));
+
             if (capabilities.getId() == null) {
                 capabilitiesService.save(capabilities);
             }
-            return toReturn;
+            return result;
         } catch (Exception ex) {
             throw new ServiceException("Couldn't read/get wms capabilities response from url: " + url, ex);
         }
 
     }
-    public static Map<String, Object> parseCapabilities(Layer layer, String url, WMSCapabilities caps, String capabilitiesXML, Set<String> systemCRSs, boolean recursiveCall)
-            throws ServiceException {
-        final Map<String, Object> result = new HashMap<>();
-        if (layer == null) {
-            throw new ServiceException("Failed to get capabilities");
-        }
-        try {
-            result.put(KEY_TITLE, layer.getTitle());
-            result.put(KEY_VERSION, caps.getVersion());
-            List<Layer> sublayers = layer.getLayerChildren();
-            if (sublayers != null && !sublayers.isEmpty()) {
-                // note that this group layer is NOT the same as Oskari groupMap but a
-                // presentational group "root" node which will be handled in admin bundle
-                result.put(KEY_WMS_TYPE, WMS_GROUP_LAYER_TYPE);
-                List <Map<String, Object>> groups = new ArrayList();
-                List <OskariLayer> layers = new ArrayList();
-                result.put(KEY_WMS_GROUPS, groups);
-                result.put(KEY_LAYERS, layers);
-                String layerName = layer.getName();
-                if (layerName != null && !layerName.isEmpty()) {
-                    // add self to layers if we have a wmsName so
-                    // the group node layers are selectable as well on frontend
-                    final OskariLayer self = layerToOskariLayer(layer, url, caps, capabilitiesXML, systemCRSs);
-                    result.put(KEY_WMS_SELF_LAYER, self);
-                }
+    private static boolean isActualLayer (Layer layer) {
+        String layerName = layer.getName();
+        return layerName != null && !layerName.isEmpty();
+    }
+
+    private static JSONArray parseStructureJson (Layer layer) {
+        JSONArray layers = new JSONArray();
+        List<Layer> sublayers = layer.getLayerChildren();
+        boolean isLayer = isActualLayer(layer);
+        if (sublayers != null && !sublayers.isEmpty()) {
+            if (isLayer) { // group layer
+                JSONObject groupLayer = new JSONObject();
+                JSONHelper.putValue(groupLayer, KEY_LAYER_NAME, layer.getName());
+                JSONArray childs = new JSONArray();
                 for (Layer sublayer : sublayers ) {
-                    if (sublayer != null) {
-                        final Map<String, Object> child = parseCapabilities(sublayer, url, caps, capabilitiesXML, systemCRSs, true);
-                        final String type = (String) child.get(KEY_WMS_TYPE);
-                        if (WMS_GROUP_LAYER_TYPE.equals(type)) {
-                            groups.add(child);
-                        } else {
-                            layers.addAll((List) child.get(KEY_LAYERS));
-                        }
-                    }
+                    JSONHelper.putAll(childs, parseStructureJson(sublayer));
                 }
-                return result;
+                JSONHelper.putValue(groupLayer, KEY_WMS_STRUCTURE, childs);
+                layers.put(groupLayer);
             } else {
-                //handle a single layer or a sublayer (=recursive call)
-                if (recursiveCall) {
-                    return Collections.singletonMap(KEY_LAYERS,
-                            Collections.singletonList(layerToOskariLayer(layer, url, caps, capabilitiesXML,  systemCRSs)));
-                } else {
-                    //handle the case where there actually is just one layer
-                    result.put(KEY_WMS_TYPE, OskariLayer.TYPE_WMS);
-                    result.put(KEY_LAYERS,
-                            Collections.singletonList(layerToOskariLayer(layer, url, caps, capabilitiesXML, systemCRSs)));
-                    return result;
+                for (Layer sublayer : sublayers ) {
+                    JSONHelper.putAll(layers, parseStructureJson(sublayer));
                 }
             }
-        } catch (Exception ex) {
-            throw new ServiceException("Couldn't parse wms capabilities layer", ex);
+        } else if(isLayer) {
+            layers.put(layer.getName());
         }
+        return layers;
     }
-    public static OskariLayer layerToOskariLayer(Layer capabilitiesLayer, String rurl, WMSCapabilities caps, String capabilitiesXML,
-                                                 Set<String> systemCRSs) {
+    public static OskariLayer layerToOskariLayer(Layer capabilitiesLayer, String url, String version, String user, String pw,
+                                                 String metadataUrl, String capabilitiesXML, Set<String> systemCRSs) {
 
         final OskariLayer oskariLayer = new OskariLayer();
         final String layerName = capabilitiesLayer.getName();
         oskariLayer.setType(OskariLayer.TYPE_WMS);
-        oskariLayer.setUrl(rurl);
+        oskariLayer.setUrl(url);
         // THIS IS ON PURPOSE: min -> max, max -> min
         oskariLayer.setMaxScale(capabilitiesLayer.getScaleDenominatorMin());
         oskariLayer.setMinScale(capabilitiesLayer.getScaleDenominatorMax());
         oskariLayer.setName(layerName);
-        oskariLayer.setVersion(caps.getVersion());
+        oskariLayer.setVersion(version);
+        oskariLayer.setUsername(user);
+        oskariLayer.setPassword(pw);
 
         // setup UI names for all supported languages
         final String[] languages = PropertyUtil.getSupportedLanguages();
+        String title = capabilitiesLayer.getTitle();
         for (String lang : languages) {
-            oskariLayer.setName(lang, capabilitiesLayer.getTitle());
+            oskariLayer.setName(lang, title);
         }
 
         // JSON formatter will parse uuid from url
@@ -139,7 +134,7 @@ public class WMSCapabilitiesService {
         OnlineResource xlink:type="simple" xlink:href="http://www.paikkatietohakemisto.fi/geonetwork/srv/en/main.home?uuid=a22ec97f-d418-4957-9b9d-e8b4d2ec3eac"/>
         <inspire_common:MetadataUrl xsi:type="inspire_common:resourceLocatorType"><inspire_common:URL>http://www.paikkatietohakemisto.fi/geonetwork/srv/fi/iso19139.xml?uuid=a22ec97f-d418-4957-9b9d-e8b4d2ec3eac</inspire_common:URL>
         */
-        oskariLayer.setMetadataId(getMetaDataUrl(caps.getService()));
+        oskariLayer.setMetadataId(metadataUrl);
         final List<MetadataURL> meta = capabilitiesLayer.getMetadataURL();
         if (meta != null) {
             if (meta.size() > 0 && meta.get(0).getUrl() != null) {
@@ -148,7 +143,9 @@ public class WMSCapabilitiesService {
         }
 
         try {
-            WebMapService wmsImpl = WebMapServiceFactory.createFromXML(oskariLayer.getName(), capabilitiesXML);
+            // TODO: could we use (to get rid of capabilitiesXML):
+            //WebMapService wmsImpl = WebMapServiceFactory.buildWebMapService(oskariLayer);
+            WebMapService wmsImpl = WebMapServiceFactory.createFromXML(layerName, capabilitiesXML);
             OskariLayerCapabilitiesHelper.setPropertiesFromCapabilitiesWMS(wmsImpl, oskariLayer, systemCRSs);
         } catch (Exception ex) {
             log.warn ("Couldn't parse capabilities for WMS layer:", layerName, "message:", ex.getMessage());

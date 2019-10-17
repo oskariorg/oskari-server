@@ -3,7 +3,6 @@ package fi.nls.oskari.service.capabilities;
 public class CapabilitiesConstants {
     public static final String WFS3_VERSION = "3.0.0";
     public static final String WFS_DEFAULT_VERSION = "1.1.0";
-    public static final String WMS_GROUP_LAYER_TYPE = "grouplayer";
 
     // OskariLayer capabilities json
     public static final String KEY_STYLES = "styles";
@@ -32,9 +31,8 @@ public class CapabilitiesConstants {
     public static final String KEY_NO_CAPA_LAYERS = "capabilitiesFailed";
     public static final String KEY_XML = "xml";
     public static final String KEY_WMTS_MATRIXSET = "matrixSets";
-    public static final String KEY_WMS_GROUPS = "groups";
-    public static final String KEY_WMS_TYPE = "type";
-    public static final String KEY_WMS_SELF_LAYER = "self";
+    public static final String KEY_WMS_STRUCTURE = "structure";
+    public static final String KEY_LAYER_NAME = "name";
 
     // both
     public static final String KEY_VERSION= "version";
