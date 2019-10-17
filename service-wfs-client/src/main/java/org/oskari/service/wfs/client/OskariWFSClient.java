@@ -30,6 +30,7 @@ import static fi.nls.oskari.service.capabilities.CapabilitiesConstants.KEY_FEATU
 import static fi.nls.oskari.service.capabilities.CapabilitiesConstants.KEY_MAX_FEATURES;
 
 public class OskariWFSClient {
+
     private static final Logger LOG = LogFactory.getLogger(OskariWFS110Client.class);
     private static final String EXC_HANDLING_OUTPUTFORMAT = "outputformat";
     private static final TypeReference<HashMap<String, Object>> TYPE_REF = new TypeReference<HashMap<String, Object>>() {};
@@ -40,7 +41,7 @@ public class OskariWFSClient {
     private static final int DEFAULT_MAX_FEATURES = 10000;
 
     public SimpleFeatureCollection getFeatures(OskariLayer layer,
-            ReferencedEnvelope bbox, CoordinateReferenceSystem crs, Filter filter) throws ServiceRuntimeException {
+            ReferencedEnvelope bbox, CoordinateReferenceSystem crs, Filter filter) {
         return new OskariWFSLoadCommand(layer, bbox, crs, filter).execute();
     }
 
