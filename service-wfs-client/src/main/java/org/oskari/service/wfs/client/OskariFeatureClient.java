@@ -18,7 +18,6 @@ import fi.nls.oskari.util.PropertyUtil;
 public class OskariFeatureClient {
 
     protected static final String PROPERTY_NATIVE_SRS = "oskari.native.srs";
-    protected static final String PROPERTY_FORCE_GML = "forceGML";
     protected static final String ERR_REPOJECTION_FAIL = "Reprojection failed";
     protected static final String ERR_NATIVE_SRS_DECODE_FAIL = "Failed to decode Native CRS";
 
