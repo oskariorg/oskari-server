@@ -1,7 +1,5 @@
 package fi.nls.oskari.control.admin;
 
-import fi.nls.oskari.control.ActionDeniedException;
-import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.RestActionHandler;
 import fi.nls.oskari.domain.Role;
 import fi.nls.oskari.domain.User;
@@ -38,7 +36,11 @@ public abstract class AbstractLayerAdminHandler extends RestActionHandler {
         capabilitiesRoles = PropertyUtil.getCommaSeparatedList("actionhandler.GetWSCapabilitiesHandler.roles");
         permissionsService = OskariComponentManager.getComponentOfType(PermissionService.class);
         availablePermissionTypes = getAvailablePermissions();
-
+        try {
+            userService = UserService.getInstance();
+        } catch (ServiceException se) {
+            log.error(se, "Unable to initialize User service!");
+        }
     }
 
     protected PermissionService getPermissionsService() {
@@ -58,7 +60,7 @@ public abstract class AbstractLayerAdminHandler extends RestActionHandler {
     }
 
     protected boolean userHasAddPermission(User user) {
-        return user.isAdmin() || permissionsService.findResource(ResourceType.functionality, "generic-functionality")
+        return user.isAdmin() || permissionsService.findResource(ResourceType.functionality, PermissionService.GENERIC_FUNCTIONALITY)
                 .filter(r -> r.hasPermission(user, PermissionType.ADD_MAPLAYER)).isPresent();
     }
     protected boolean userHasCapabilitiesPermission(User user) {
@@ -69,20 +71,20 @@ public abstract class AbstractLayerAdminHandler extends RestActionHandler {
         return (int) role.getId();
 
     }
-    protected JSONObject getPermissionsForLayer (User user, OskariLayer layer) throws ActionException, ServiceException {
-        if(!userHasEditPermission(user, layer)) throw new ActionDeniedException("User doesn't have edit permission for layer: " + layer.getId());
-        JSONObject permissions = new JSONObject();
+    protected Map<Role, List<String>> getPermissionsGroupByRole (User user, OskariLayer layer) throws ServiceException {
+        Map<Role, List<String>> permissions = new HashMap<>();
         String key = Integer.toString(layer.getId());
-        Resource res = permissionsService.findResource(ResourceType.maplayer, key).orElseThrow(()-> new ServiceException("Can't find permissions for maplayer with mapping key: " + key));
+        Resource res = permissionsService.findResource(ResourceType.maplayer, key)
+                .orElseThrow(()-> new ServiceException("Can't find permissions for maplayer with mapping key: " + key));
 
         for (Role role : getAvailableRoles(user)) {
-            JSONArray permissionsForRole = new JSONArray();
+            List<String> permissionsForRole = new ArrayList<>();
             for (String permission : getAvailablePermissions()){
                 if (res.hasPermission(role, permission)) {
-                    permissionsForRole.put(permission);
+                    permissionsForRole.add(permission);
                 }
             }
-            JSONHelper.put(permissions, role.getName(), permissionsForRole);
+            permissions.put(role, permissionsForRole);
         }
         return permissions;
     }

@@ -244,7 +244,10 @@ public class LayerAdminHandler extends AbstractLayerAdminHandler {
                 .collect(Collectors.toList());
         JSONHelper.put(layer, KEY_GROUPS, new JSONArray(groupLinks));
         try {
-            JSONObject permissions = getPermissionsForLayer(user, ml);
+            JSONObject permissions = new JSONObject();
+            getPermissionsGroupByRole(user, ml).entrySet()
+                    .stream()
+                    .forEach(e -> JSONHelper.put(permissions, e.getKey().getName(), new JSONArray(e.getValue())));
             JSONHelper.putValue(layer, KEY_ROLE_PERMISSIONS, permissions);
         } catch (Exception e) {
             LOG.warn("Failed to get permission roles for layer:", ml.getId());
@@ -605,9 +608,7 @@ public class LayerAdminHandler extends AbstractLayerAdminHandler {
             switch (type) {
                 case OskariLayer.TYPE_WMS:
                     capabilities = wmsCapabilities.getCapabilitiesResults(url, version, username, password, systemCRSs);
-                    // TODO: parse loop groups and add to response or return all layers in one list and jsonobject for
-                    //JSONHelper.putValue(results, KEY_WMS_GROUPS, capabilities.get(KEY_WMS_GROUPS));
-                    JSONHelper.putValue(results, CapabilitiesConstants.KEY_WMS_TYPE, capabilities.get(CapabilitiesConstants.KEY_WMS_TYPE));
+                    JSONHelper.putValue(results, CapabilitiesConstants.KEY_WMS_STRUCTURE, capabilities.get(CapabilitiesConstants.KEY_WMS_STRUCTURE));
                     break;
                 case OskariLayer.TYPE_WFS:
                     capabilities = WFSCapabilitiesService.getCapabilitiesResults (url, version, username, password, systemCRSs);
@@ -624,7 +625,7 @@ public class LayerAdminHandler extends AbstractLayerAdminHandler {
             throw new ActionException("Capabilities parsing failed: " + e.getMessage(), e);
         }
 
-        JSONArray layers = new JSONArray();
+        JSONObject layers = new JSONObject();
         JSONArray exists = new JSONArray();
         JSONArray unsupported = new JSONArray();
         JSONArray capaFailed = new JSONArray();
@@ -637,12 +638,13 @@ public class LayerAdminHandler extends AbstractLayerAdminHandler {
         List<String> layerNames = mapLayerService.findAllLayerNames();
         for (OskariLayer ml : (List<OskariLayer>) capabilities.get(CapabilitiesConstants.KEY_LAYERS)) {
             validateCapabilities(ml, currentSrs, unsupported, capaFailed);
-            layers.put(parseOskariLayer(ml));
-            if (layerNames.contains(ml.getName())) {
+            String layerName = ml.getName();
+            JSONHelper.putValue(layers, layerName, parseOskariLayer(ml));
+            if (layerNames.contains(layerName)) {
                 exists.put(ml.getName());
             }
         }
-        JSONHelper.put(results, CapabilitiesConstants.KEY_LAYERS, layers);
+        JSONHelper.putValue(results, CapabilitiesConstants.KEY_LAYERS, layers);
         JSONHelper.put(results, CapabilitiesConstants.KEY_EXISTING_LAYERS, exists);
         JSONHelper.put(results, CapabilitiesConstants.KEY_UNSUPPORTED_LAYERS, unsupported);
         JSONHelper.put(results, CapabilitiesConstants.KEY_NO_CAPA_LAYERS, capaFailed);
