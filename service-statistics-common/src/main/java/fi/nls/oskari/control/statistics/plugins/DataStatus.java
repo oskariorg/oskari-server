@@ -38,8 +38,8 @@ public class DataStatus {
 
     private JSONObject toJSON() {
         JSONObject json = new JSONObject();
-        JSONHelper.putValue(json, KEY_LAST, lastUpdate.toEpochMilli());
-        JSONHelper.putValue(json, KEY_START, updateStarted.toEpochMilli());
+        JSONHelper.putValue(json, KEY_LAST, lastUpdate == null ? -1 : lastUpdate.toEpochMilli());
+        JSONHelper.putValue(json, KEY_START, updateStarted == null ? -1 : updateStarted.toEpochMilli());
         return json;
     }
 
