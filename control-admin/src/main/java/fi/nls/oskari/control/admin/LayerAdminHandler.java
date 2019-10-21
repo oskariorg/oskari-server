@@ -600,7 +600,6 @@ public class LayerAdminHandler extends AbstractLayerAdminHandler {
         final String password = params.getHttpParam(PARAM_PASSWORD, "");
         final String currentSrs = params.getHttpParam(PARAM_CURRENT_SRS, PropertyUtil.get("oskari.native.srs", "EPSG:4326"));
         validateUrl(url);
-
         JSONObject results = new JSONObject();
         Map<String, Object> capabilities;
         Set <String> systemCRSs = getSystemCRSs();
@@ -626,7 +625,6 @@ public class LayerAdminHandler extends AbstractLayerAdminHandler {
         }
 
         JSONObject layers = new JSONObject();
-        JSONArray exists = new JSONArray();
         JSONArray unsupported = new JSONArray();
         JSONArray capaFailed = new JSONArray();
         JSONHelper.putValue(results, CapabilitiesConstants.KEY_TITLE, capabilities.getOrDefault(CapabilitiesConstants.KEY_TITLE, ""));
@@ -634,20 +632,16 @@ public class LayerAdminHandler extends AbstractLayerAdminHandler {
             JSONHelper.putValue(results, CapabilitiesConstants.KEY_VERSION,
                     capabilities.get(CapabilitiesConstants.KEY_VERSION));
         }
-
-        List<String> layerNames = mapLayerService.findAllLayerNames();
         for (OskariLayer ml : (List<OskariLayer>) capabilities.get(CapabilitiesConstants.KEY_LAYERS)) {
             validateCapabilities(ml, currentSrs, unsupported, capaFailed);
-            String layerName = ml.getName();
-            JSONHelper.putValue(layers, layerName, parseOskariLayer(ml));
-            if (layerNames.contains(layerName)) {
-                exists.put(ml.getName());
-            }
+            JSONHelper.putValue(layers, ml.getName(), parseOskariLayer(ml));
         }
         JSONHelper.putValue(results, CapabilitiesConstants.KEY_LAYERS, layers);
-        JSONHelper.put(results, CapabilitiesConstants.KEY_EXISTING_LAYERS, exists);
         JSONHelper.put(results, CapabilitiesConstants.KEY_UNSUPPORTED_LAYERS, unsupported);
         JSONHelper.put(results, CapabilitiesConstants.KEY_NO_CAPA_LAYERS, capaFailed);
+
+        Map<String, List<Integer>> exists = mapLayerService.findNamesAndIdsByUrl(url);
+        JSONHelper.putValue(results, CapabilitiesConstants.KEY_EXISTING_LAYERS, exists);
 
         JSONHelper.putValue(results, CapabilitiesConstants.KEY_ERROR_LAYERS,
                 capabilities.getOrDefault(CapabilitiesConstants.KEY_ERROR_LAYERS, new JSONArray()));

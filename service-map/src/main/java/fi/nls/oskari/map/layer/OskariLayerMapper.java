@@ -15,7 +15,8 @@ public interface OskariLayerMapper {
     List<Map<String,Object>> findByParentId(int parentId);
     List<Map<String,Object>> findAll();
     List<Map<String,Object>> findAllWithPositiveUpdateRateSec();
-    @Select ("select name from oskari_maplayer") List<String> findAllNames();
+    @Select ("select id, name from oskari_maplayer where url like #{url} ||'%'")
+    List<Map<String,Object>> findIdAndNameByUrl(final String url);
     int update(final OskariLayer layer);
     void insert(final OskariLayer layer);
     int delete(final int layerId);

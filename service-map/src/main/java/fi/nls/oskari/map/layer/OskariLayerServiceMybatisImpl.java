@@ -19,6 +19,7 @@ import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
 
 import javax.sql.DataSource;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Oskari("OskariLayerService")
 public class OskariLayerServiceMybatisImpl extends OskariLayerService {
@@ -302,17 +303,24 @@ public class OskariLayerServiceMybatisImpl extends OskariLayerService {
         }
         return Collections.emptyList();
     }
-    public List<String> findAllLayerNames () {
+    public Map<String, List<Integer>> findNamesAndIdsByUrl (final String url) {
         final SqlSession session = factory.openSession();
         try {
             final OskariLayerMapper mapper = session.getMapper(OskariLayerMapper.class);
-            return mapper.findAllNames();
+            List<Map<String, Object>> results = mapper.findIdAndNameByUrl(url);
+            Map<String, List<Integer>> map = new HashMap<>();
+            for (Map<String, Object> result : results) {
+                String layerName = (String) result.get("name");
+                map.putIfAbsent(layerName, new ArrayList<>());
+                map.get(layerName).add((int) result.get("id"));
+            }
+            return map;
         } catch (Exception e) {
-            LOG.warn(e, "Exception while getting oskari layer names");
+            LOG.warn(e, "Exception while getting oskari layer names and ids for url:", url);
         } finally {
             session.close();
         }
-        return Collections.emptyList();
+        return Collections.emptyMap();
     }
 
     public void update(final OskariLayer layer) {
