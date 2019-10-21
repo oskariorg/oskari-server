@@ -270,7 +270,7 @@ public class LayerAdminHandler extends AbstractLayerAdminHandler {
         JSONHelper.putValue(layer, KEY_STYLE, ml.getStyle());
         JSONHelper.putValue(layer, KEY_PARENT_ID, ml.getParentId());
         JSONHelper.putValue(layer, KEY_VERSION, ml.getVersion());
-
+        JSONHelper.putValue(layer, KEY_LAYER_TYPE, ml.getType());
 
         JSONHelper.putValue(layer, KEY_PARAMS ,ml.getParams());
         JSONHelper.putValue(layer, KEY_OPTIONS, ml.getOptions());
