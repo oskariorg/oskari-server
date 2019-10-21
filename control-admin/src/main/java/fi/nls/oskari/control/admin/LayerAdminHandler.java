@@ -521,13 +521,22 @@ public class LayerAdminHandler extends AbstractLayerAdminHandler {
     }
 
     private String validateUrl(final String url) throws ActionParamsException {
+        // TODO remove query part with ? check or with URL object
+        String baseUrl = url.contains("?") ? url.substring(0, url.indexOf("?")) : url;
+        baseUrl = baseUrl.endsWith("/") ? baseUrl.substring(0, baseUrl.length() - 1) : baseUrl;
         try {
             // check that it's a valid url by creating an URL object...
-            new URL(url);
+            URL u = new URL(url);
+            String host = u.getProtocol() + "://" + u.getHost();
+            String path = u.getPath();
+            if (path.endsWith("/")){
+                path = path.substring(0, path.length() - 1);
+            }
+            //return u.getPort() != -1 ? host + ":" + u.getPort() + path : host +  path;
         } catch (MalformedURLException e) {
             throw new ActionParamsException("Invalid url: " + url, ERROR_INVALID_FIELD_VALUE );
         }
-        return url;
+        return baseUrl;
     }
 
     private void addMapLayerGroupds (final int layerId, final JSONObject layer) throws ActionException {
@@ -593,13 +602,12 @@ public class LayerAdminHandler extends AbstractLayerAdminHandler {
     private JSONObject getLayersFromService(ActionParameters params) throws ActionException {
         User user = params.getUser();
         requireAdd(user);
-        final String url = params.getRequiredParam(PARAM_CAPABILITIES_URL, "Parameter: " + PARAM_CAPABILITIES_URL + " is missing.");
+        final String url = validateUrl(params.getRequiredParam(PARAM_CAPABILITIES_URL, "Parameter: " + PARAM_CAPABILITIES_URL + " is missing."));
         final String type = params.getRequiredParam(PARAM_TYPE, "Parameter: " + PARAM_TYPE + " is missing.");
         final String version = params.getRequiredParam(PARAM_VERSION, "Parameter: " + PARAM_VERSION + " is missing.");
         final String username = params.getHttpParam(PARAM_USERNAME, "");
         final String password = params.getHttpParam(PARAM_PASSWORD, "");
         final String currentSrs = params.getHttpParam(PARAM_CURRENT_SRS, PropertyUtil.get("oskari.native.srs", "EPSG:4326"));
-        validateUrl(url);
         JSONObject results = new JSONObject();
         Map<String, Object> capabilities;
         Set <String> systemCRSs = getSystemCRSs();
