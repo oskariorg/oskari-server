@@ -4,6 +4,8 @@ import fi.nls.oskari.domain.map.OskariLayer;
 
 import java.util.List;
 import java.util.Map;
+
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
 public interface OskariLayerMapper {
@@ -15,8 +17,8 @@ public interface OskariLayerMapper {
     List<Map<String,Object>> findByParentId(int parentId);
     List<Map<String,Object>> findAll();
     List<Map<String,Object>> findAllWithPositiveUpdateRateSec();
-    @Select ("select id, name from oskari_maplayer where url like #{url} ||'%'")
-    List<Map<String,Object>> findIdAndNameByUrl(final String url);
+    @Select ("select id, name from oskari_maplayer where type = #{type} and url like #{url} ||'%'")
+    List<Map<String,Object>> findIdAndNameByUrl(@Param("url") final String url, @Param("type") final String type);
     int update(final OskariLayer layer);
     void insert(final OskariLayer layer);
     int delete(final int layerId);

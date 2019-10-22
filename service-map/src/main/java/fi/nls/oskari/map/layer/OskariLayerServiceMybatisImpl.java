@@ -303,11 +303,11 @@ public class OskariLayerServiceMybatisImpl extends OskariLayerService {
         }
         return Collections.emptyList();
     }
-    public Map<String, List<Integer>> findNamesAndIdsByUrl (final String url) {
+    public Map<String, List<Integer>> findNamesAndIdsByUrl (final String url, final String type) {
         final SqlSession session = factory.openSession();
         try {
             final OskariLayerMapper mapper = session.getMapper(OskariLayerMapper.class);
-            List<Map<String, Object>> results = mapper.findIdAndNameByUrl(url);
+            List<Map<String, Object>> results = mapper.findIdAndNameByUrl(url, type);
             Map<String, List<Integer>> map = new HashMap<>();
             for (Map<String, Object> result : results) {
                 String layerName = (String) result.get("name");

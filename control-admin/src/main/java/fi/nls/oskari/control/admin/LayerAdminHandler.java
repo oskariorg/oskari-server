@@ -112,6 +112,8 @@ public class LayerAdminHandler extends AbstractLayerAdminHandler {
     private static final String ERROR_MANDATORY_FIELD_MISSING = "mandatory_field_missing";
     private static final String ERROR_INVALID_FIELD_VALUE = "invalid_field_value";
 
+    private static final List<String> OWS_SERVICES = Arrays.asList("ows", "wms", "wmts", "wfs");
+
     private OskariLayerService mapLayerService = ServiceFactory.getMapLayerService();
     private ViewService viewService = ServiceFactory.getViewService();
     private DataProviderService dataProviderService = ServiceFactory.getDataProviderService();
@@ -271,6 +273,7 @@ public class LayerAdminHandler extends AbstractLayerAdminHandler {
         JSONHelper.putValue(layer, KEY_PARENT_ID, ml.getParentId());
         JSONHelper.putValue(layer, KEY_VERSION, ml.getVersion());
         JSONHelper.putValue(layer, KEY_LAYER_TYPE, ml.getType());
+        JSONHelper.putValue(layer, KEY_OPACITY, ml.getOpacity());
 
         JSONHelper.putValue(layer, KEY_PARAMS ,ml.getParams());
         JSONHelper.putValue(layer, KEY_OPTIONS, ml.getOptions());
@@ -648,7 +651,8 @@ public class LayerAdminHandler extends AbstractLayerAdminHandler {
         JSONHelper.put(results, CapabilitiesConstants.KEY_UNSUPPORTED_LAYERS, unsupported);
         JSONHelper.put(results, CapabilitiesConstants.KEY_NO_CAPA_LAYERS, capaFailed);
 
-        Map<String, List<Integer>> exists = mapLayerService.findNamesAndIdsByUrl(url);
+        String existingUrl = removeOWSServiceFromUrl(url);
+        Map<String, List<Integer>> exists = mapLayerService.findNamesAndIdsByUrl(existingUrl, type);
         JSONHelper.putValue(results, CapabilitiesConstants.KEY_EXISTING_LAYERS, exists);
 
         JSONHelper.putValue(results, CapabilitiesConstants.KEY_ERROR_LAYERS,
@@ -683,5 +687,13 @@ public class LayerAdminHandler extends AbstractLayerAdminHandler {
         if (!srs.contains(currentSrs)){
             unsupported.put(layerName);
         }
+    }
+    private String removeOWSServiceFromUrl (String url) {
+        for (String ows : OWS_SERVICES) {
+            if (url.toLowerCase().endsWith(ows)) {
+                return url.substring(0, url.length() - ows.length());
+            }
+        }
+        return url;
     }
 }
