@@ -658,6 +658,8 @@ public class LayerAdminHandler extends AbstractLayerAdminHandler {
         JSONHelper.putValue(results, CapabilitiesConstants.KEY_ERROR_LAYERS,
                 capabilities.getOrDefault(CapabilitiesConstants.KEY_ERROR_LAYERS, new JSONArray()));
 
+        // FIXME: Move code for permissions to GetAllRolesAndPermissionTypes route (https://github.com/oskariorg/oskari-server/pull/462)
+        // Remove from here after the code has been moved
         JSONHelper.putValue(results, KEY_ROLE_PERMISSIONS, getPermissionTemplateJson(user));
 
         return results;
