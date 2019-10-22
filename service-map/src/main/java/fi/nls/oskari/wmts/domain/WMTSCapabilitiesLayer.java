@@ -1,8 +1,9 @@
 package fi.nls.oskari.wmts.domain;
 
 import fi.nls.oskari.domain.map.OskariLayer;
-import fi.nls.oskari.map.layer.formatters.LayerJSONFormatterWMS;
+import fi.nls.oskari.map.layer.formatters.LayerJSONFormatter;
 import fi.nls.oskari.util.JSONHelper;
+import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.wms.WMSStyle;
 import java.util.List;
 import java.util.Set;
@@ -110,7 +111,7 @@ public class WMTSCapabilitiesLayer {
         } catch (Exception ignored) {}
 
         // using layer json formatter to get the same JSON here
-        JSONHelper.putValue(obj, "formats", LayerJSONFormatterWMS.getFormatsJSON(getInfoFormats()));
+        JSONHelper.putValue(obj, "formats", LayerJSONFormatter.getFormatsJSON(getFormats()));
 
         final JSONObject jsonMatrixLinks = new JSONObject();
         JSONHelper.putValue(obj, "TileMatrixSetLinks", jsonMatrixLinks);
@@ -133,5 +134,22 @@ public class WMTSCapabilitiesLayer {
         }
 
         return obj;
+    }
+    // get as OskariLayer without capabilities object
+    public OskariLayer getOskariLayer(String url, String matrixsetId) {
+        final OskariLayer layer = new OskariLayer();
+        layer.setType(OskariLayer.TYPE_WMTS);
+        layer.setName(getId());
+        layer.setUrl(url);
+
+        // TODO: setup min/maxscale based on tilematrix?
+        List<TileMatrixLimits> limits = getLimits(matrixsetId);
+        final String[] languages = PropertyUtil.getSupportedLanguages();
+        for (String lang : languages) {
+            layer.setName(lang, getTitle());
+        }
+        layer.setStyle(getDefaultStyle());
+
+        return layer;
     }
 }

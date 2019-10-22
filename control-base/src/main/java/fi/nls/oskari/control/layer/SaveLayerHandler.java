@@ -618,7 +618,7 @@ public class SaveLayerHandler extends AbstractLayerAdminHandler {
             String currentCrs = params.getHttpParam(PARAM_SRS_NAME, ml.getSrs_name());
             String data = CapabilitiesCacheService.getFromService(ml);
             WMTSCapabilities caps = WMTSCapabilitiesParser.parseCapabilities(data);
-            OskariLayerCapabilitiesHelper.setPropertiesFromCapabilitiesWMTS(caps, ml, currentCrs, systemCRSs);
+            OskariLayerCapabilitiesHelper.setPropertiesFromCapabilitiesWMTS(caps, ml, systemCRSs);
             capabilitiesService.save(ml, data);
             return true;
         } catch (Exception ex) {
@@ -647,27 +647,16 @@ public class SaveLayerHandler extends AbstractLayerAdminHandler {
             ml.setAttributes(attributes);
         }
 
-        // Get supported projections
-        JSONObject capabilities = new JSONObject();
-        Set<String> crss = new HashSet<>();
-        if (WFS3_0_0_VERSION.equals(ml.getVersion())) {
-            try {
+        try {
+            if (WFS3_0_0_VERSION.equals(ml.getVersion())) {
                 WFS3Service service = WFS3Service.fromURL(ml.getUrl(), ml.getUsername(), ml.getPassword());
-                String collectionId = ml.getName();
-                crss = service.getSupportedEpsgCodes(collectionId);
-                Set<String> crsUri = service.getSupportedCrsURIs(collectionId);
-                JSONHelper.put(capabilities, "crs-uri", new JSONArray(crsUri));
-            } catch (Exception e) {
-                LOG.warn("Couldn't get supported projections for WFS3 layer:", ml.getName(), e.getMessage());
+                OskariLayerCapabilitiesHelper.setPropertiesFromCapabilitiesWFS(service, ml, systemCRSs);
+            } else {
+                ml.setCapabilities(GetGtWFSCapabilities.getLayerCapabilities(ml, systemCRSs));
             }
-        } else {
-            Map<String, Object> capa = GetGtWFSCapabilities.getGtDataStoreCapabilities(
-                    ml.getUrl(), ml.getVersion(), ml.getUsername(), ml.getPassword(), ml.getSrs_name());
-            crss = GetGtWFSCapabilities.parseProjections(capa, ml.getName());
+        } catch (Exception e) {
+            LOG.warn("Couldn't update capabilities for WFS (" + ml.getVersion() + ") layer:", ml.getName(), e.getMessage());
         }
-
-        JSONHelper.put(capabilities, "srs", new JSONArray(crss));
-        ml.setCapabilities(capabilities);
         ml.setCapabilitiesLastUpdated(new Date());
     }
 

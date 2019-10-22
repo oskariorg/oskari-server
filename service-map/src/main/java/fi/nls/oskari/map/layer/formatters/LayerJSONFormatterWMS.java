@@ -8,12 +8,11 @@ import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
 
-import org.apache.commons.lang.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.*;
-
+import static fi.nls.oskari.service.capabilities.CapabilitiesConstants.*;
 /**
  * Created with IntelliJ IDEA.
  * User: SMAKINEN
@@ -24,24 +23,9 @@ import java.util.*;
 public class LayerJSONFormatterWMS extends LayerJSONFormatter {
 
     private static Logger log = LogFactory.getLogger(LayerJSONFormatterWMS.class);
-
-    public static final String KEY_STYLE = "style";
-    public static final String KEY_LEGEND = "legend";
-    public static final String KEY_TIMES = "times";
-    public static final String KEY_VALUE = "value";
-    public static final String KEY_FORMATS = "formats";
     public static final String KEY_GFICONTENT = "gfiContent";
     public static final String KEY_LEGENDIMAGE = "legendImage";
-    public static final String KEY_VERSION = "version";
-    public static final String KEY_ISQUERYABLE = "isQueryable";
     public static final String KEY_ATTRIBUTES = "attributes";
-    public static final String KEY_GEOM = "geom";
-
-    // There working only plain text and html so ranked up
-    private static String[] SUPPORTED_GET_FEATURE_INFO_FORMATS = new String[] {
-            "text/html", "text/plain", "application/vnd.ogc.se_xml",
-            "application/vnd.ogc.gml", "application/vnd.ogc.wms_xml",
-            "text/xml" };
 
 
     public JSONObject getJSON(OskariLayer layer,
@@ -176,7 +160,7 @@ public class LayerJSONFormatterWMS extends LayerJSONFormatter {
         JSONObject formats = getFormatsJSON(wms);
         JSONHelper.putValue(capabilities, KEY_FORMATS, formats);
         JSONHelper.putValue(capabilities, KEY_VERSION, wms.getVersion());
-        JSONHelper.putValue(capabilities, KEY_GEOM, wms.getGeom());
+        JSONHelper.putValue(capabilities, KEY_LAYER_COVERAGE, wms.getGeom());
 
         final Set<String> capabilitiesCRSs = getCRSs(wms);
         final Set<String> crss = getCRSsToStore(systemCRSs, capabilitiesCRSs);
@@ -269,43 +253,7 @@ public class LayerJSONFormatterWMS extends LayerJSONFormatter {
         return getFormatsJSON(formats);
     }
 
-    public static JSONObject getFormatsJSON(final Collection<String> formats) {
-        final JSONObject formatJSON = new JSONObject();
-        final JSONArray available = new JSONArray();
-        JSONHelper.putValue(formatJSON, "available", available);
-        if(formats == null) {
-            return formatJSON;
-        }
-        // simple but inefficient...
-        // We support the following formats. Formats are presented
-        // in order of preference.
-        // 'application/vnd.ogc.se_xml' == GML
-        // 'application/vnd.ogc.gml' == GML
-        // 'application/vnd.ogc.wms_xml' == text/xml
-        // 'text/xml'
-        // 'text/html'
-        // 'text/plain'
-        try {
-            String value = null;
-            for (String supported : SUPPORTED_GET_FEATURE_INFO_FORMATS) {
-                if (formats.contains(supported)) {
-                    if(value == null) {
-                        // get the first one as default
-                        value = supported;
-                    }
-                    // gather list of supported formats
-                    available.put(supported);
-                }
-            }
-            // default format
-            JSONHelper.putValue(formatJSON, KEY_VALUE, value);
-            return formatJSON;
 
-        } catch (Exception e) {
-            log.warn(e, "Couldn't parse formats for layer");
-        }
-        return formatJSON;
-    }
 
     /**
      * Constructs a unique set of coordinate ref systems supported by the WMS service

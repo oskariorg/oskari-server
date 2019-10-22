@@ -15,6 +15,7 @@ import org.oskari.permissions.model.ResourceType;
 import fi.nls.oskari.service.OskariComponent;
 
 public abstract class PermissionService extends OskariComponent {
+    public static final String GENERIC_FUNCTIONALITY = "generic-functionality";
 
     private Set<String> DYNAMIC_PERMISSIONS;
 

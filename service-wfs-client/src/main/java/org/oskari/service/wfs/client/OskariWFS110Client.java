@@ -30,7 +30,6 @@ public class OskariWFS110Client {
     private static final Logger LOG = LogFactory.getLogger(OskariWFS110Client.class);
 
     private static final OskariGML OSKARI_GML = new OskariGML();
-    private static final String PROPERTY_FORCE_GML = "forceGML";
 
     private OskariWFS110Client() {}
 
@@ -44,13 +43,10 @@ public class OskariWFS110Client {
         String user = layer.getUsername();
         String pass = layer.getPassword();
 
-        // TODO: FIXME!
-        int maxFeatures = 10000;
-        boolean forceGML = layer.getAttributes().optBoolean(PROPERTY_FORCE_GML, false);
-
+        int maxFeatures = OskariWFSClient.getMaxFeatures(layer);
         Map<String, String> query = getQueryParams(typeName, bbox, crs, maxFeatures, filter);
         byte[] response;
-        if (!forceGML) {
+        if (OskariWFSClient.tryGeoJSON(layer)) {
             // First try GeoJSON
             query.put("OUTPUTFORMAT", "application/json");
             response = OskariWFSClient.getResponse(endPoint, user, pass, query);
@@ -66,7 +62,6 @@ public class OskariWFS110Client {
                 }
             }
         }
-
         // Fallback to GML
         query.remove("OUTPUTFORMAT");
         response = OskariWFSClient.getResponse(endPoint, user, pass, query);

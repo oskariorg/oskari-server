@@ -1,22 +1,18 @@
 package fi.nls.oskari.control.layer;
 
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 import fi.mml.map.mapwindow.util.OskariLayerWorker;
 import fi.nls.oskari.domain.map.wfs.WFSLayerConfiguration;
+import fi.nls.oskari.map.layer.formatters.LayerJSONFormatterWFS;
+import fi.nls.oskari.service.capabilities.OskariLayerCapabilitiesHelper;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.oskari.service.wfs3.WFS3Service;
-import org.oskari.service.wfs3.model.WFS3CollectionInfo;
 
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.*;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.map.layer.formatters.LayerJSONFormatterWFS;
 import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.service.capabilities.CapabilitiesCacheService;
 import fi.nls.oskari.service.capabilities.OskariLayerCapabilities;
@@ -27,6 +23,16 @@ import fi.nls.oskari.wfs.GetGtWFSCapabilities;
 import fi.nls.oskari.wms.GetGtWMSCapabilities;
 import fi.nls.oskari.wmts.WMTSCapabilitiesParser;
 import fi.nls.oskari.wmts.domain.WMTSCapabilities;
+import org.oskari.service.wfs3.WFS3Service;
+import org.oskari.service.wfs3.model.WFS3CollectionInfo;
+import org.oskari.service.wfs3.model.WFS3Exception;
+
+import java.io.IOException;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import static fi.nls.oskari.service.capabilities.CapabilitiesConstants.KEY_LAYERS;
 
 /**
  * Get capabilites for layer and returns JSON formatted as Oskari layers
@@ -77,7 +83,7 @@ public class GetWSCapabilitiesHandler extends ActionHandler {
         ResponseHelper.writeResponse(params, capabilities);
     }
 
-    protected JSONObject getCapabilities(String url, String type, String version,
+    private JSONObject getCapabilities(String url, String type, String version,
             String user, String pw, String currentCrs) throws ActionException {
         try {
             switch (type) {
@@ -85,12 +91,7 @@ public class GetWSCapabilitiesHandler extends ActionHandler {
                 return GetGtWMSCapabilities.getWMSCapabilities(capabilitiesService, url, user, pw, version, currentCrs);
             case OskariLayer.TYPE_WFS:
                 if (VERSION_WFS3.equals(version)) {
-                    WFS3Service service = WFS3Service.fromURL(url, user, pw);
-                    List<JSONObject> layers = service.getCollections().stream()
-                            .map(collectionInfo -> toOskariLayer(url, service, collectionInfo))
-                            .map(layer -> wfsLayerToJSON(layer, currentCrs, user, pw))
-                            .collect(Collectors.toList());
-                    return JSONHelper.createJSONObject("layers", new JSONArray(layers));
+                    return getWFS3Capabilities(url, user, pw, currentCrs);
                 } else {
                     return GetGtWFSCapabilities.getWFSCapabilities(url, version, user, pw, currentCrs);
                 }
@@ -108,11 +109,19 @@ public class GetWSCapabilitiesHandler extends ActionHandler {
                 throw new ActionParamsException("Couldn't determine operation based on parameters");
             }
         } catch (Exception e) {
-            throw new ActionException("WMS Capabilities parsing failed: ", e);
+            throw new ActionException("Capabilities parsing failed: " + e.getMessage(), e);
         }
     }
 
-    private OskariLayer toOskariLayer(String url, WFS3Service service, WFS3CollectionInfo collection) {
+    public static JSONObject getWFS3Capabilities(String url, String user, String pw, String currentCrs) throws WFS3Exception, IOException {
+        WFS3Service service = WFS3Service.fromURL(url, user, pw);
+        List<JSONObject> layers = service.getCollections().stream()
+                .map(collectionInfo -> toOskariLayer(url, service, collectionInfo, null))
+                .map(layer -> wfsLayerToJSON(layer, currentCrs, user, pw))
+                .collect(Collectors.toList());
+        return JSONHelper.createJSONObject(KEY_LAYERS, new JSONArray(layers));
+    }
+    private static OskariLayer toOskariLayer(String url, WFS3Service service, WFS3CollectionInfo collection, Set<String> systemCRSs) {
         OskariLayer layer = new OskariLayer();
         layer.setType(OskariLayer.TYPE_WFS);
         layer.setVersion(VERSION_WFS3);
@@ -120,18 +129,14 @@ public class GetWSCapabilitiesHandler extends ActionHandler {
         layer.setName(collection.getId());
         layer.setMaxScale(1d);
         layer.setMinScale(1500000d);
-
         String title = collection.getTitle() != null ? collection.getTitle() : collection.getId();
         for (String lang : PropertyUtil.getSupportedLanguages()) {
             layer.setName(lang, title);
         }
-        JSONObject capabilities = layer.getCapabilities();
-        Set<String> epsgs = service.getSupportedEpsgCodes(collection.getId());
-        JSONHelper.put(capabilities, "srs", new JSONArray(epsgs));
+        OskariLayerCapabilitiesHelper.setPropertiesFromCapabilitiesWFS(service, layer, systemCRSs);
         return layer;
     }
-
-    private JSONObject wfsLayerToJSON(OskariLayer layer, String crs, String user, String pw) {
+    private static JSONObject wfsLayerToJSON(OskariLayer layer, String crs, String user, String pw) {
         LayerJSONFormatterWFS formatter = new LayerJSONFormatterWFS();
         String lang = PropertyUtil.getDefaultLanguage();
         JSONObject obj = formatter.getJSON(layer, lang, false, crs);
@@ -145,8 +150,7 @@ public class GetWSCapabilitiesHandler extends ActionHandler {
         JSONHelper.putValue(obj, "title", layer.getName());
         return obj;
     }
-
-    private WFSLayerConfiguration layerToWfs30LayerConfiguration (OskariLayer layer, String crs, String user, String pw) {
+    private static WFSLayerConfiguration layerToWfs30LayerConfiguration (OskariLayer layer, String crs, String user, String pw) {
         final WFSLayerConfiguration lc = new WFSLayerConfiguration();
         // Use defaults for now, modify if needed
         String name = layer.getName();
@@ -164,7 +168,5 @@ public class GetWSCapabilitiesHandler extends ActionHandler {
         lc.setFeatureNamespaceURI("");
         lc.setJobType("default");
         return lc;
-
     }
-
 }

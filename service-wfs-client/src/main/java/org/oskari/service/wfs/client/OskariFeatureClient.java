@@ -88,5 +88,4 @@ public class OskariFeatureClient {
 
         return sfc;
     }
-
 }

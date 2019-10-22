@@ -1,5 +1,6 @@
 package fi.nls.oskari.map.layer.formatters;
 
+import fi.nls.oskari.wms.WMSStyle;
 import fi.nls.oskari.wmts.domain.WMTSCapabilities;
 
 import fi.nls.oskari.domain.map.OskariLayer;
@@ -12,10 +13,9 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.*;
+import static fi.nls.oskari.service.capabilities.CapabilitiesConstants.*;
 
 public class LayerJSONFormatterWMTS extends LayerJSONFormatter {
-
-    public static final String KEY_TILEMATRIXIDS = "tileMatrixIds";
 
     public JSONObject getJSON(OskariLayer layer,
                               final String lang,
@@ -25,7 +25,7 @@ public class LayerJSONFormatterWMTS extends LayerJSONFormatter {
         final JSONObject layerJson = getBaseJSON(layer, lang, isSecure, crs);
 
         String crsForTileMatrixSet = crs != null ? crs : layer.getSrs_name();
-        String tileMatrixSetId = LayerJSONFormatterWMTS.getTileMatrixSetId(layer.getCapabilities(), crsForTileMatrixSet);
+        String tileMatrixSetId = getTileMatrixSetId(layer.getCapabilities(), crsForTileMatrixSet);
         JSONHelper.putValue(layerJson, "tileMatrixSetId", tileMatrixSetId);
 
         // TODO: parse tileMatrixSetData for styles and set default style name from the one where isDefault = true
@@ -58,7 +58,7 @@ public class LayerJSONFormatterWMTS extends LayerJSONFormatter {
             }
         }
 
-        Set<String> srs = LayerJSONFormatterWMS.getSRSs(layer.getAttributes(), layer.getCapabilities());
+        Set<String> srs = getSRSs(layer.getAttributes(), layer.getCapabilities());
         if (srs != null) {
             JSONHelper.putValue(layerJson, KEY_SRS, new JSONArray(srs));
         }
@@ -88,13 +88,23 @@ public class LayerJSONFormatterWMTS extends LayerJSONFormatter {
             return capabilities;
         }
 
-        List<JSONObject> tileMatrix = LayerJSONFormatterWMTS.createTileMatrixArray(layer);
+        List<JSONObject> tileMatrix = createTileMatrixArray(layer);
         JSONHelper.putValue(capabilities, KEY_TILEMATRIXIDS, new JSONArray(tileMatrix));
 
         final Set<String> capabilitiesCRSs = getCRSs(layer);
         final Set<String> crss = getCRSsToStore(systemCRSs, capabilitiesCRSs);
         JSONHelper.putValue(capabilities, KEY_SRS, new JSONArray(crss));
 
+        JSONHelper.putValue(capabilities, KEY_FORMATS, getFormatsJSON(layer.getFormats()));
+        JSONHelper.putValue(capabilities, KEY_ISQUERYABLE, layer.getInfoFormats().size() > 0);
+
+        final JSONArray styles = new JSONArray();
+        try {
+            for(WMSStyle style : layer.getStyles()) {
+                styles.put(style.toJSON());
+            }
+        } catch (Exception ignored) {}
+        JSONHelper.put(capabilities, KEY_STYLES, styles);
         return capabilities;
     }
 
@@ -141,8 +151,8 @@ public class LayerJSONFormatterWMTS extends LayerJSONFormatter {
      * Get matrix id by current crs
      */
     public static String getTileMatrixSetId(final JSONObject capabilities, final String crs) {
-        if (capabilities.has("tileMatrixIds")) {
-            JSONArray jsa = JSONHelper.getJSONArray(capabilities, "tileMatrixIds");
+        if (capabilities.has(KEY_TILEMATRIXIDS)) {
+            JSONArray jsa = JSONHelper.getJSONArray(capabilities, KEY_TILEMATRIXIDS);
 
             for (int i = 0, size = jsa.length(); i < size; i++) {
                 JSONObject js = JSONHelper.getJSONObject(jsa, i);

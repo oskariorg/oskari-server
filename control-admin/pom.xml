@@ -37,6 +37,10 @@
             <artifactId>service-capabilities-update</artifactId>
         </dependency>
         <dependency>
+            <groupId>fi.nls.oskari.service</groupId>
+            <artifactId>oskari-control-base</artifactId>
+        </dependency>
+        <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>
             <scope>provided</scope>

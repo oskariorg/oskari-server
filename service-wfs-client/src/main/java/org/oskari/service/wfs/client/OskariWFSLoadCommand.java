@@ -44,7 +44,6 @@ public class OskariWFSLoadCommand extends HystrixCommand<SimpleFeatureCollection
                         .withCircuitBreakerSleepWindowInMilliseconds(PropertyUtil.getOptional("oskari." + GROUP_KEY + ".sleepwindow", 20000))));
     }
 
-
     public OskariWFSLoadCommand(OskariLayer layer, ReferencedEnvelope bbox,
             CoordinateReferenceSystem crs, Filter filter, Setter setter) {
         super(setter);

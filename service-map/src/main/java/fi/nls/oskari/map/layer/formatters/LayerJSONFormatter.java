@@ -13,10 +13,9 @@ import org.json.JSONObject;
 import org.oskari.utils.common.Sets;
 
 import java.net.URL;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
+
+import static fi.nls.oskari.service.capabilities.CapabilitiesConstants.*;
 
 /**
  * Created with IntelliJ IDEA.
@@ -28,16 +27,18 @@ import java.util.Set;
 public class LayerJSONFormatter {
 
     public static final String PROPERTY_AJAXURL = "oskari.ajax.url.prefix";
-    public static final String KEY_STYLES = "styles";
-    public static final String KEY_SRS = "srs";
-    public static final String KEY_LAYER_COVERAGE = "geom";
     public static final String KEY_ATTRIBUTE_FORCED_SRS = "forcedSRS";
     public static final String KEY_ATTRIBUTE_IGNORE_COVERAGE = "ignoreCoverage";
-
     private static final String KEY_ID = "id";
     private static final String KEY_TYPE = "type";
     private static final String KEY_ADMIN = "admin";
     protected static final String[] STYLE_KEYS ={"name", "title", "legend"};
+
+    // There working only plain text and html so ranked up
+    private static String[] SUPPORTED_GET_FEATURE_INFO_FORMATS = new String[] {
+            "text/html", "text/plain", "application/vnd.ogc.se_xml",
+            "application/vnd.ogc.gml", "application/vnd.ogc.wms_xml",
+            "text/xml" };
 
     private static Logger log = LogFactory.getLogger(LayerJSONFormatter.class);
     // map different layer types for JSON formatting
@@ -265,10 +266,38 @@ public class LayerJSONFormatter {
         log.debug("SRSs from attributes and capabilities:", StringUtils.join(srs, ','));
         return srs;
     }
+    public static JSONObject getFormatsJSON(final Collection<String> formats) {
+        final JSONObject formatJSON = new JSONObject();
+        final JSONArray available = new JSONArray();
+        JSONHelper.putValue(formatJSON, KEY_AVAILABLE, available);
+        if(formats == null) {
+            return formatJSON;
+        }
+        try {
+            String value = null;
+            for (String supported : SUPPORTED_GET_FEATURE_INFO_FORMATS) {
+                if (formats.contains(supported)) {
+                    if(value == null) {
+                        // get the first one as default
+                        value = supported;
+                    }
+                    // gather list of supported formats
+                    available.put(supported);
+                }
+            }
+            // default format
+            JSONHelper.putValue(formatJSON, KEY_VALUE, value);
+            return formatJSON;
+
+        } catch (Exception e) {
+            log.warn(e, "Couldn't parse formats for layer");
+        }
+        return formatJSON;
+    }
 
     public static Set<String> getCRSsToStore(Set<String> systemCRSs,
             Set<String> capabilitiesCRSs) {
-        if (systemCRSs == null) {
+        if (systemCRSs == null || systemCRSs.isEmpty()) {
             return capabilitiesCRSs;
         }
         return Sets.intersection(systemCRSs, capabilitiesCRSs);

@@ -7,8 +7,10 @@ import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.util.IOHelper;
+import fi.nls.oskari.util.JSONHelper;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.geometry.jts.ReferencedEnvelope;
+import org.json.JSONObject;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.filter.Filter;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
@@ -21,8 +23,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import static fi.nls.oskari.service.capabilities.CapabilitiesConstants.KEY_FEATURE_OUTPUT_FORMATS;
+import static fi.nls.oskari.service.capabilities.CapabilitiesConstants.KEY_MAX_FEATURES;
 
 public class OskariWFSClient {
 
@@ -31,6 +36,9 @@ public class OskariWFSClient {
     private static final TypeReference<HashMap<String, Object>> TYPE_REF = new TypeReference<HashMap<String, Object>>() {};
     private static final ObjectMapper OM = new ObjectMapper();
     private static final int MAX_REDIRECTS = 5;
+    private static final String PROPERTY_FORCE_GML = "forceGML";
+    private static final String JSON_OUTPUT_FORMAT = "application/json";
+    private static final int DEFAULT_MAX_FEATURES = 10000;
 
     public SimpleFeatureCollection getFeatures(OskariLayer layer,
             ReferencedEnvelope bbox, CoordinateReferenceSystem crs, Filter filter) {
@@ -80,6 +88,19 @@ public class OskariWFSClient {
         boolean ignoreGeometryProperties = true;
         SimpleFeatureType schema = GeoJSONSchemaDetector.getSchema(geojson, crs, ignoreGeometryProperties);
         return GeoJSONReader2.toFeatureCollection(geojson, schema);
+    }
+    protected static boolean tryGeoJSON (OskariLayer layer) {
+        if(layer.getAttributes().optBoolean(PROPERTY_FORCE_GML, false)) return false;
+
+        JSONObject capa = layer.getCapabilities();
+        if (capa.has(KEY_FEATURE_OUTPUT_FORMATS)) {
+            List<String> formats = JSONHelper.getArrayAsList(JSONHelper.getJSONArray(capa, KEY_FEATURE_OUTPUT_FORMATS));
+            return formats.contains(JSON_OUTPUT_FORMAT);
+        }
+        return true;
+    }
+    protected static int getMaxFeatures(OskariLayer layer) {
+        return layer.getCapabilities().optInt(KEY_MAX_FEATURES, DEFAULT_MAX_FEATURES);
     }
 
     protected static boolean isOutputFormatInvalid(InputStream in) {

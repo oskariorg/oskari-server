@@ -117,6 +117,17 @@ public class WFS3Service {
                 .findAny();
     }
 
+    public Set<String> getSupportedFormats (String collectionId) {
+        return getCollection(collectionId)
+                .orElseThrow(() -> new NoSuchElementException())
+                .getLinks()
+                .stream()
+                .filter (link -> "item".equals(link.getRel()))
+                .map(item -> item.getType())
+                .filter (Objects::nonNull)
+                .collect(Collectors.toSet());
+    }
+
     public Set<String> getSupportedCrsURIs(String collectionId) throws NoSuchElementException {
         return getCollection(collectionId)
                 .map(collection -> collection.getCrs())

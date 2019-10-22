@@ -32,6 +32,10 @@
             <artifactId>oskari-utils</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.oskari</groupId>
+            <artifactId>service-wfs3</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.apache.ws.commons.axiom</groupId>
             <artifactId>axiom-api</artifactId>
         </dependency>

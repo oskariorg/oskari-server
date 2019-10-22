@@ -58,7 +58,7 @@ public class WMTSCapabilitiesParserTest {
         options.put("format", "REST");
         assertTrue(options.has("format"));
 
-        OskariLayerCapabilitiesHelper.setPropertiesFromCapabilitiesWMTS(caps, layer, "EPSG:3575", crss);
+        OskariLayerCapabilitiesHelper.setPropertiesFromCapabilitiesWMTS(caps, layer, crss);
 
         assertFalse("'format' value should have been removed since the layer doesn't support RESTful WMTS", options.has("format"));
     }

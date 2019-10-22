@@ -278,6 +278,17 @@ public class JSONHelper {
         }
         return false;
     }
+    public static final boolean putAll(final JSONArray toArray, JSONArray fromArray) {
+        try {
+            for (int i = 0; i < fromArray.length(); i++) {
+                toArray.put(fromArray.get(i));
+            }
+            return true;
+        } catch (Exception ignore) {
+            log.warn("Can't put values from json array to another json array");
+        }
+        return false;
+    }
 
     /**
      * Returns an empty array if JSONArray couldn't be created if second parameter is true. For false
