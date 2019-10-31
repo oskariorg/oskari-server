@@ -12,6 +12,7 @@ import org.geotools.GML;
 import org.geotools.data.DataUtilities;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.feature.DefaultFeatureCollection;
+import org.geotools.gml3.GMLConfiguration;
 import org.geotools.xml.DOMParser;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
@@ -59,8 +60,13 @@ public class OskariGML extends GML {
          */
         root.removeAttribute("schemaLocation");
         root.removeAttribute("xsi:schemaLocation");
-
-        DOMParser parser = new DOMParser(new OskariWFSConfiguration(username, password), doc);
+        OskariWFSConfiguration conf = new OskariWFSConfiguration(username, password);
+        for (Object dep : conf.allDependencies()) {
+            if (dep instanceof GMLConfiguration) {
+                ((GMLConfiguration) dep).setExtendedArcSurfaceSupport(true);
+            }
+        }
+        DOMParser parser = new DOMParser(conf, doc);
         Object obj = parser.parse();
         return toFeatureCollection(obj);
     }
