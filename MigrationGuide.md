@@ -1,5 +1,19 @@
 # Migration guide
 
+## 1.54.0
+
+### Bundle path changes related to OpenLayers map engine upgrade
+
+In this version OpenLayers map engine is upgraded to version 6.
+As a part of mentioned upgrade, version number is dropped from mapping bundle paths.
+All mapping bundle imports from oskari-frontend containing 'ol3' folder in import path needs to be fixed as follows:
+
+    // Example of old import containing 'ol3' in import path:
+    import 'oskari-loader!oskari-frontend/packages/mapping/ol3/mapmodule/bundle.js';
+    // Replace it with this row:
+    import 'oskari-loader!oskari-frontend/packages/mapping/ol/mapmodule/bundle.js';
+
+
 ## 1.53.0
 
 ### Migration to the new WFS integration backend
