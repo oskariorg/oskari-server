@@ -220,10 +220,7 @@ public class AppSetupServiceMybatisImpl extends ViewService {
     public long addView(View view) throws ViewException {
         try (final SqlSession session = factory.openSession()) {
             final AppSetupMapper mapper = session.getMapper(AppSetupMapper.class);
-            if (view.getUuid() == null || view.getUuid().trim().isEmpty()) {
-                // generate uuid if one doesn't exist
-                view.setUuid(UUID.randomUUID().toString());
-            }
+            view.setUuid(UUID.randomUUID().toString());
             mapper.addView(view);
             long id = view.getId();
             LOG.info("Inserted view with id", id);
