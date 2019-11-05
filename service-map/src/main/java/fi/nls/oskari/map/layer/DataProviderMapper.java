@@ -24,7 +24,7 @@ public interface DataProviderMapper {
     List<DataProvider> findAll();
 
     @Update("update oskari_dataprovider set locale = #{locale} where id = #{id}")
-    void update(JSONObject locale, int id);
+    void update(@Param("locale") JSONObject locale, @Param("id") int id);
 
     @Delete("delete from oskari_dataprovider where id = #{id}")
     void delete(int id);
