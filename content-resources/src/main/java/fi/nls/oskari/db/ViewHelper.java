@@ -87,8 +87,10 @@ public class ViewHelper {
             view.setIsPublic(viewJSON.optBoolean("public", false));
             // onlyUuid doesn't work since the sql uses hardcoded "true". Needs more testing twith existing views to change the defaults.
             view.setOnlyForUuId(viewJSON.optBoolean("onlyUuid", true));
-            view.setName(viewJSON.getString("name"));
+            // This enables creative uses of uuid like having uuid=simplemap
+            view.setUuid(viewJSON.getString("uuid"));
             view.setType(viewJSON.getString("type"));
+            view.setName(viewJSON.getString("name"));
             view.setIsDefault(viewJSON.optBoolean("default"));
             final JSONObject oskari = JSONHelper.getJSONObject(viewJSON, "oskari");
             view.setPage(oskari.getString("page"));
