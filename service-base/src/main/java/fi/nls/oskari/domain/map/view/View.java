@@ -17,7 +17,7 @@ public class View implements Serializable {
     private String name = null;
     private String description = null;
     private String uuid = null;
-    private boolean onlyForUuId = false;
+    private boolean onlyForUuId = true;
     private JSONObject metadata = null;
     private List<Bundle> bundles = new ArrayList<Bundle>();
 

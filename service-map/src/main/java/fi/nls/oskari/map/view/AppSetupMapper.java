@@ -20,7 +20,7 @@ public interface AppSetupMapper {
 
     @Insert("INSERT INTO portti_view ( name, \"description\", type, application_dev_prefix, page, application, " +
             "            uuid, only_uuid, domain, lang, creator, is_public, is_default, metadata) " +
-            "        VALUES ( #{name}, #{description}, #{type}, #{developmentPath}, #{page}, #{application}, '${uuid}', true, " +
+            "        VALUES ( #{name}, #{description}, #{type}, #{developmentPath}, #{page}, #{application}, '${uuid}', ${onlyForUuId}, " +
             "        #{pubDomain}, #{lang}, #{creator}, #{isPublic}, #{isDefault}, #{metadataAsString} )")
     @Options(useGeneratedKeys=true, keyColumn = "id", keyProperty = "id")
     void addView(View view);

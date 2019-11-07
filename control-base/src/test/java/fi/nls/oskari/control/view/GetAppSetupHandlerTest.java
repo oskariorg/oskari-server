@@ -226,6 +226,7 @@ public class GetAppSetupHandlerTest extends JSONActionRouteTest {
 
         final View dummyView = ViewTestHelper.createMockView("framework.mapfull");
         dummyView.setType(ViewTypes.USER);
+        dummyView.setOnlyForUuId(false);
         doReturn(dummyView).when(viewService).getViewWithConfByOldId(anyLong());
         doReturn(dummyView).when(viewService).getViewWithConf(anyLong());
         doReturn(dummyView).when(viewService).getViewWithConfByUuId(anyString());
