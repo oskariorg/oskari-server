@@ -20,7 +20,7 @@ Build with:
     
 Run OWASP check with:
 
-    mvn dependency-check:aggregate -P owasp-check
+    mvn -P owasp-check
 
 ## License
 

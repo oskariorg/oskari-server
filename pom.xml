@@ -1201,21 +1201,48 @@
         <profile>
             <id>owasp-check</id>
             <build>
+                <defaultGoal>dependency-check:aggregate</defaultGoal>
                 <plugins>
                     <plugin>
                         <groupId>org.owasp</groupId>
                         <artifactId>dependency-check-maven</artifactId>
                         <version>5.0.0</version>
+                        <configuration>
+                            <format>ALL</format>
+                            <failOnError>false</failOnError>
+                        </configuration>
                         <executions>
                             <execution>
                                 <goals>
                                     <goal>check</goal>
+                                    <goal>aggregate</goal>
                                 </goals>
                             </execution>
                         </executions>
                     </plugin>
                 </plugins>
             </build>
+            <reporting>
+                <plugins>
+                    <plugin>
+                        <groupId>org.owasp</groupId>
+                        <artifactId>dependency-check-maven</artifactId>
+                        <version>5.0.0</version>
+                        <configuration>
+                            <format>ALL</format>
+                            <failOnError>false</failOnError>
+                        </configuration>
+                        <reportSets>
+                            <reportSet>
+                                <id>dependency-check-aggregate</id>
+                                <reports>
+                                    <report>aggregate</report>
+                                </reports>
+                            </reportSet>
+                        </reportSets>
+                    </plugin>
+                </plugins>
+            </reporting>
         </profile>
     </profiles>
     <modules>
