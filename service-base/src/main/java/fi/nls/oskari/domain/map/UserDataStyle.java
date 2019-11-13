@@ -101,11 +101,15 @@ public class UserDataStyle {
             // text
             JSONObject text = json.getJSONObject("text");
             if (text != null) {
-                JSONObject textFill = text.getJSONObject("fill");
-                setText_fill_color(textFill.optString("color", null));
-                JSONObject textStroke = text.getJSONObject("stroke");
-                setText_stroke_color(textStroke.optString("color", null));
-                setText_stroke_width(textStroke.optInt("width"));
+                JSONObject textFill = text.optJSONObject("fill");
+                if (textFill != null) {
+                    setText_fill_color(textFill.optString("color", null));
+                }
+                JSONObject textStroke = text.optJSONObject("stroke");
+                if (textStroke != null) {
+                    setText_stroke_color(textStroke.optString("color", null));
+                    setText_stroke_width(textStroke.optInt("width"));
+                }
                 setFont(text.optString("font"));
                 setText_align(text.optString("textAlign"));
                 setText_offset_x(text.optInt("offsetX"));
