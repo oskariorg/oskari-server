@@ -88,4 +88,14 @@ public class UpdateCapabilitiesJob extends ScheduledJob {
         return false;
     }
 
+    @Override
+    public String getCronLine() {
+        String line = super.getCronLine();
+        if(line != null) {
+            // use property if specified
+            return line;
+        }
+        // default if not specified (daily)
+        return "0 0 0 * * ?";
+    }
 }
