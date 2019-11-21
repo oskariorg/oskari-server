@@ -7,13 +7,15 @@ import java.util.Collection;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.dom.DOMSource;
 
 import org.geotools.GML;
 import org.geotools.data.DataUtilities;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.feature.DefaultFeatureCollection;
 import org.geotools.gml3.GMLConfiguration;
-import org.geotools.xml.DOMParser;
+import org.geotools.xml.Parser;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.w3c.dom.Document;
@@ -58,16 +60,22 @@ public class OskariGML extends GML {
          * behind authorization there's no way for us to control the authorization
          * information done when fetching other <xsd:include>'d schemas
          */
-        root.removeAttribute("schemaLocation");
-        root.removeAttribute("xsi:schemaLocation");
+        //root.removeAttribute("schemaLocation");
+        //root.removeAttribute("xsi:schemaLocation");
         OskariWFSConfiguration conf = new OskariWFSConfiguration(username, password);
         for (Object dep : conf.allDependencies()) {
             if (dep instanceof GMLConfiguration) {
                 ((GMLConfiguration) dep).setExtendedArcSurfaceSupport(true);
             }
         }
-        DOMParser parser = new DOMParser(conf, doc);
-        Object obj = parser.parse();
+
+        Parser parser = new Parser(conf);
+        Object obj = null;
+        try {
+            obj = parser.parse(new DOMSource(doc));
+        } catch (TransformerException e) {
+            new IOException(e.getCause());
+        }
         return toFeatureCollection(obj);
     }
 
