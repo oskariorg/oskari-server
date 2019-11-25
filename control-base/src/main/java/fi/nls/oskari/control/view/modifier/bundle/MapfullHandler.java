@@ -551,7 +551,7 @@ public class MapfullHandler extends BundleHandler {
         }
         try {
             JSONObject config = plugin.getJSONObject(KEY_CONFIG);
-            if(config.has(KEY_CENTER_MAP_AUTOMATICALLY)) {
+            if(config != null && config.has(KEY_CENTER_MAP_AUTOMATICALLY)) {
                 config.remove(KEY_CENTER_MAP_AUTOMATICALLY);
             }
         } catch (JSONException jsonex) {
