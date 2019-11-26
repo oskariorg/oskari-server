@@ -149,4 +149,19 @@ public class FlywayHelper {
             statement.execute();
         }
     }
+    public static List<Long> get3DApplicationViewIds(Connection connection)
+            throws SQLException {
+        ArrayList<Long> ids = new ArrayList<>();
+        StringBuilder sql = new StringBuilder("SELECT id FROM portti_view WHERE application IN ('geoportal-3D','embedded-3D') AND type IN ('DEFAULT','PUBLISH')");
+
+        try (final PreparedStatement statement =
+                     connection.prepareStatement(sql.toString())) {
+            try (ResultSet rs = statement.executeQuery()) {
+                while (rs.next()) {
+                    ids.add(rs.getLong("id"));
+                }
+            }
+        }
+        return ids;
+    }
 }
