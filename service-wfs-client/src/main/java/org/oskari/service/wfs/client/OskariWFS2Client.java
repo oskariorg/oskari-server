@@ -103,6 +103,8 @@ public class OskariWFS2Client {
         try {
             Encoder encoder = new Encoder(new FESConfiguration());
             encoder.setOmitXMLDeclaration(true);
+            // https://docs.geoserver.org/stable/en/user/filter/syntax.html
+            // ilter Encoding 2.0 is used in WFS 2.0
             return encoder.encodeAsString(filter, org.geotools.filter.v2_0.FES.Filter);
         } catch (IOException e) {
             throw new ServiceRuntimeException("Failed to encode filter!", e);

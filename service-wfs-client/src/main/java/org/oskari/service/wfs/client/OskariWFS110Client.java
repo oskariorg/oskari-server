@@ -124,7 +124,9 @@ public class OskariWFS110Client {
         try {
             Encoder encoder = new Encoder(new OGCConfiguration());
             encoder.setOmitXMLDeclaration(true);
-            return encoder.encodeAsString(filter, org.geotools.filter.v1_0.OGC.Filter);
+            // https://docs.geoserver.org/stable/en/user/filter/syntax.html
+            // Filter Encoding 1.1 is used in WFS 1.1
+            return encoder.encodeAsString(filter, org.geotools.filter.v1_1.OGC.Filter);
         } catch (IOException e) {
             throw new ServiceRuntimeException("Failed to encode filter!", e);
         }
