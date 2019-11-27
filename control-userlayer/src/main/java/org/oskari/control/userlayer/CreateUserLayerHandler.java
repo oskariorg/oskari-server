@@ -68,7 +68,6 @@ public class CreateUserLayerHandler extends RestActionHandler {
     private static final String PROPERTY_USERLAYER_MAX_FILE_SIZE_MB = "userlayer.max.filesize.mb";
     private static final String PROPERTY_TARGET_EPSG = "oskari.native.srs";
     private static final int MAX_FILES_IN_ZIP = 10;
-    private static final long FILE_SIZE_LIMIT = 1024*1024*100; // Max size of unzipped data, 100MB
 
     private static final Charset[] POSSIBLE_CHARSETS_USED_IN_ZIP_FILE_NAMES = {
             StandardCharsets.UTF_8,
@@ -83,7 +82,7 @@ public class CreateUserLayerHandler extends RestActionHandler {
     private static final String KEY_SOURCE = "layer-source";
     private static final String KEY_STYLE = "layer-style";
 
-    private static final int KB = 1024 * 1024;
+    private static final int KB = 1024;
     private static final int MB = 1024 * KB;
 
     // Store files smaller than 128kb in memory instead of writing them to disk
@@ -93,7 +92,8 @@ public class CreateUserLayerHandler extends RestActionHandler {
 
     private final DiskFileItemFactory diskFileItemFactory = new DiskFileItemFactory(MAX_SIZE_MEMORY, null);
     private final String targetEPSG = PropertyUtil.get(PROPERTY_TARGET_EPSG, "EPSG:4326");
-    private final int userlayerMaxFileSize = PropertyUtil.getOptional(PROPERTY_USERLAYER_MAX_FILE_SIZE_MB, 10) * MB;
+    private static final int userlayerMaxFileSize = PropertyUtil.getOptional(PROPERTY_USERLAYER_MAX_FILE_SIZE_MB, 10) * MB;
+    private static final long FILE_SIZE_LIMIT = 15 * userlayerMaxFileSize; // Max size of unzipped data, 15 * the zip size
 
     private UserLayerDbService userLayerService;
 
