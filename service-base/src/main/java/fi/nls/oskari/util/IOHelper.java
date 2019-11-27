@@ -250,11 +250,11 @@ public class IOHelper {
         final byte[] buffer = new byte[BUFFER_SIZE];
         int read = 0;
         while ((read = in.read(buffer, 0, BUFFER_SIZE)) != -1) {
-            out.write(buffer, 0, read);
-            total += read;
-            if (sizeLimit > -1 && total + BUFFER_SIZE > sizeLimit) {
+            if (sizeLimit > -1 && total + read > sizeLimit) {
                 throw new IOException("Size limit reached: " + humanReadableByteCount(sizeLimit));
             }
+            out.write(buffer, 0, read);
+            total += read;
         }
     }
 
