@@ -1,10 +1,6 @@
 package org.oskari.control.userlayer;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
@@ -72,6 +68,7 @@ public class CreateUserLayerHandler extends RestActionHandler {
     private static final String PROPERTY_USERLAYER_MAX_FILE_SIZE_MB = "userlayer.max.filesize.mb";
     private static final String PROPERTY_TARGET_EPSG = "oskari.native.srs";
     private static final int MAX_FILES_IN_ZIP = 10;
+    private static final long FILE_SIZE_LIMIT = 1024*1024*100; // Max size of unzipped data, 100MB
 
     private static final Charset[] POSSIBLE_CHARSETS_USED_IN_ZIP_FILE_NAMES = {
             StandardCharsets.UTF_8,
@@ -372,7 +369,7 @@ public class CreateUserLayerHandler extends RestActionHandler {
                 name = "a" + name.substring(name.lastIndexOf('.'));
                 File file = new File(dir, name);
                 try (FileOutputStream fos = new FileOutputStream(file)) {
-                    IOHelper.copy(zis, fos);
+                    IOHelper.copy(zis, fos, FILE_SIZE_LIMIT);
                 }
                 if (mainFile == null) {
                     String ext = getFileExt(name);
