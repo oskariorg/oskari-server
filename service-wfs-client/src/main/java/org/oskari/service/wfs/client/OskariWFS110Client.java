@@ -10,7 +10,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.geotools.data.simple.SimpleFeatureCollection;
-import org.geotools.filter.v1_0.OGCConfiguration;
+import org.geotools.filter.v1_1.OGCConfiguration;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.xml.Encoder;
 import org.opengis.filter.Filter;
