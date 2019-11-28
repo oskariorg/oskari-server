@@ -6,7 +6,6 @@ import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.service.ServiceRuntimeException;
 import fi.nls.oskari.util.IOHelper;
 import org.geotools.data.simple.SimpleFeatureCollection;
-import org.geotools.filter.v2_0.FESConfiguration;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.xml.Encoder;
 import org.opengis.filter.Filter;
@@ -101,7 +100,9 @@ public class OskariWFS2Client {
             return null;
         }
         try {
-            Encoder encoder = new Encoder(new FESConfiguration());
+            // https://docs.geoserver.org/stable/en/user/filter/syntax.html
+            // Filter Encoding 2.0 is used in WFS 2.0
+            Encoder encoder = new Encoder(new org.geotools.filter.v2_0.FESConfiguration());
             encoder.setOmitXMLDeclaration(true);
             return encoder.encodeAsString(filter, org.geotools.filter.v2_0.FES.Filter);
         } catch (IOException e) {

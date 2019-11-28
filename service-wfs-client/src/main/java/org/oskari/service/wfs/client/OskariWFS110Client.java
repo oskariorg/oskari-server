@@ -10,7 +10,6 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.geotools.data.simple.SimpleFeatureCollection;
-import org.geotools.filter.v1_0.OGCConfiguration;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.xml.Encoder;
 import org.opengis.filter.Filter;
@@ -122,9 +121,11 @@ public class OskariWFS110Client {
             return null;
         }
         try {
-            Encoder encoder = new Encoder(new OGCConfiguration());
+            // https://docs.geoserver.org/stable/en/user/filter/syntax.html
+            // Filter Encoding 1.1 is used in WFS 1.1
+            Encoder encoder = new Encoder(new org.geotools.filter.v1_1.OGCConfiguration());
             encoder.setOmitXMLDeclaration(true);
-            return encoder.encodeAsString(filter, org.geotools.filter.v1_0.OGC.Filter);
+            return encoder.encodeAsString(filter, org.geotools.filter.v1_1.OGC.Filter);
         } catch (IOException e) {
             throw new ServiceRuntimeException("Failed to encode filter!", e);
         }
