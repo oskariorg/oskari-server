@@ -30,8 +30,7 @@ public class V1_54_1__migrate_wfs_system implements JdbcMigration {
     private static final String MIGRATION_PROP_NAME = "flyway.1.53.wfs.optout";
 
     public void migrate(Connection connection) throws Exception {
-        final boolean optout = PropertyUtil.getOptional(MIGRATION_PROP_NAME, false);
-        if (optout) {
+        if (optOut()) {
             LOG.warn("Skipping migration to new wfs system. This will be forced on the next version.");
             return;
         }
@@ -41,6 +40,10 @@ public class V1_54_1__migrate_wfs_system implements JdbcMigration {
             updateBundle(mapfull, connection);
         }
         connection.commit();
+    }
+
+    public boolean optOut() {
+        return PropertyUtil.getOptional(MIGRATION_PROP_NAME, false);
     }
 
     private List<Bundle> getMapfullBundles(Connection conn) throws SQLException {

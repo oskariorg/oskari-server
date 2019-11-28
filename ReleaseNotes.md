@@ -1,5 +1,23 @@
 # Release Notes
 
+## 1.54.0
+
+For a full list of changes see: https://github.com/oskariorg/oskari-server/milestone/20?closed=1
+
+- Fixed an issue where cached data was not flushed after changes in permissions
+- Fixed an issue with user content label styling
+- Improved background processing for statistical maps functionality
+- Fixed an issue in data provider renaming
+- Reduced logging for WFS-backend on common error scenarios
+- Added support for arcs and surface geometries on the new WFS-backend
+- Improved parsing for WFS-services that use mixed geometry types
+- Enabled setup-scripts to insert appsetups that can be loaded with id-reference (instead of uuid)
+- Added a default schedule for background capabilities update worker (so configuring automatic updates as admin actually does something)
+- Added new action routes to get instance roles, permission types and layers in preparation for new admin functionality
+
+Note! The transport code has not been removed from this release but it hasn't been tested either. Use at your own discretion as it is going to be removed in the near future.
+The forced migration has been added to this version.
+
 ## 1.53.1
 
 For a full list of changes see: https://github.com/oskariorg/oskari-server/milestone/20?closed=1
