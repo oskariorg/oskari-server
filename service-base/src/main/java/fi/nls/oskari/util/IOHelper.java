@@ -228,15 +228,49 @@ public class IOHelper {
      * @throws IOException
      */
     public static void copy(InputStream in, OutputStream out) throws IOException {
+        copy(in, out, -1);
+    }
+
+    /**
+     * Copies data from InputStream to OutputStream
+     * Does not close either of the streams
+     * Does nothing if either InputStream or OutputStream is null
+     *
+     * @param in
+     * @param out
+     * @param sizeLimit limit the amount of bytes we are willing to copy before failing (negative number for no limit)
+     * @throws IOException
+     */
+    public static void copy(InputStream in, OutputStream out, long sizeLimit) throws IOException {
         if (in == null || out == null) {
             return;
         }
-
-        final byte[] buffer = new byte[4096];
+        int BUFFER_SIZE = 4096;
+        long total = 0;
+        final byte[] buffer = new byte[BUFFER_SIZE];
         int read = 0;
-        while ((read = in.read(buffer, 0, 4096)) != -1) {
+        while ((read = in.read(buffer, 0, BUFFER_SIZE)) != -1) {
+            if (sizeLimit > -1 && total + read > sizeLimit) {
+                throw new IOException("Size limit reached: " + humanReadableByteCount(sizeLimit));
+            }
             out.write(buffer, 0, read);
+            total += read;
         }
+    }
+
+    protected static String humanReadableByteCount(long bytes) {
+        return humanReadableByteCount(bytes, false);
+    }
+
+    // FROM https://programming.guide/java/formatting-byte-size-to-human-readable-format.html
+    protected static String humanReadableByteCount(long bytes, boolean si) {
+        int unit = si ? 1000 : 1024;
+        if (bytes < unit) {
+            return bytes + " B";
+        }
+        int exp = (int) (Math.log(bytes) / Math.log(unit));
+        String pre = (si ? "kMGTPE" : "KMGTPE").charAt(exp-1) + (si ? "" : "i");
+        return String.format("%.1f %sB", bytes / Math.pow(unit, exp), pre);
     }
 
     /**

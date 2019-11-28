@@ -1,10 +1,6 @@
 package org.oskari.control.userlayer;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
@@ -86,7 +82,7 @@ public class CreateUserLayerHandler extends RestActionHandler {
     private static final String KEY_SOURCE = "layer-source";
     private static final String KEY_STYLE = "layer-style";
 
-    private static final int KB = 1024 * 1024;
+    private static final int KB = 1024;
     private static final int MB = 1024 * KB;
 
     // Store files smaller than 128kb in memory instead of writing them to disk
@@ -96,7 +92,8 @@ public class CreateUserLayerHandler extends RestActionHandler {
 
     private final DiskFileItemFactory diskFileItemFactory = new DiskFileItemFactory(MAX_SIZE_MEMORY, null);
     private final String targetEPSG = PropertyUtil.get(PROPERTY_TARGET_EPSG, "EPSG:4326");
-    private final int userlayerMaxFileSize = PropertyUtil.getOptional(PROPERTY_USERLAYER_MAX_FILE_SIZE_MB, 10) * MB;
+    private static final int userlayerMaxFileSize = PropertyUtil.getOptional(PROPERTY_USERLAYER_MAX_FILE_SIZE_MB, 10) * MB;
+    private static final long FILE_SIZE_LIMIT = 15 * userlayerMaxFileSize; // Max size of unzipped data, 15 * the zip size
 
     private UserLayerDbService userLayerService;
 
@@ -372,7 +369,7 @@ public class CreateUserLayerHandler extends RestActionHandler {
                 name = "a" + name.substring(name.lastIndexOf('.'));
                 File file = new File(dir, name);
                 try (FileOutputStream fos = new FileOutputStream(file)) {
-                    IOHelper.copy(zis, fos);
+                    IOHelper.copy(zis, fos, FILE_SIZE_LIMIT);
                 }
                 if (mainFile == null) {
                     String ext = getFileExt(name);
