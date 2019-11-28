@@ -2,7 +2,7 @@
 
 ## 1.54.0
 
-For a full list of changes see: https://github.com/oskariorg/oskari-server/milestone/20?closed=1
+For a full list of changes see: https://github.com/oskariorg/oskari-server/milestone/19?closed=1
 
 - Fixed an issue where cached data was not flushed after changes in permissions
 - Fixed an issue with filters in the new WFS-system that caused problems with GeoServer stability
