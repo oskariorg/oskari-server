@@ -5,19 +5,20 @@
 For a full list of changes see: https://github.com/oskariorg/oskari-server/milestone/19?closed=1
 
 - Fixed an issue where cached data was not flushed after changes in permissions
-- Fixed an issue with filters in the new WFS-system that caused problems with GeoServer stability
-- Fixed an issue with user content label styling
 - Improved background processing for statistical maps functionality
-- Fixed an issue in data provider renaming
-- Reduced logging for WFS-backend on common error scenarios
-- Added support for arcs and surface geometries on the new WFS-backend
+- The forced migration to the new WFS-system has been added (transport is no longer used)
+- Fixed an issue with filters in the new WFS-system that caused problems with GeoServer stability
+- Added support for arcs and surface geometries on the new WFS-system
 - Improved parsing for WFS-services that use mixed geometry types
+- Reduced logging for WFS-system on common error scenarios
+- Fixed an issue with user content label styling
+- Fixed an issue in data provider renaming
 - Enabled setup-scripts to insert appsetups that can be loaded with id-reference (instead of uuid)
 - Added a default schedule for background capabilities update worker (so configuring automatic updates as admin actually does something)
 - Added new action routes to get instance roles, permission types and layers in preparation for new admin functionality
 
-Note! The transport code has not been removed from this release but it hasn't been tested either. Use at your own discretion as it is going to be removed in the near future.
-The forced migration has been added to this version.
+Note! The transport code has not been removed from this release but it hasn't been tested either.
+If you must and are willing to put in the effort to go around the forced migration you can try using it but know that it will be removed in the near future.
 
 ## 1.53.1
 
