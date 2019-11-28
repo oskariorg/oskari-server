@@ -5,6 +5,7 @@
 For a full list of changes see: https://github.com/oskariorg/oskari-server/milestone/20?closed=1
 
 - Fixed an issue where cached data was not flushed after changes in permissions
+- Fixed an issue with filters in the new WFS-system that caused problems with GeoServer stability
 - Fixed an issue with user content label styling
 - Improved background processing for statistical maps functionality
 - Fixed an issue in data provider renaming
