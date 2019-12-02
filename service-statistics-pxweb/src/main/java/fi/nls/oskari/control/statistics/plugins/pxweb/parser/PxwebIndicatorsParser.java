@@ -244,8 +244,7 @@ public class PxwebIndicatorsParser {
         if(path == null) {
             return nextPart;
         }
-        String url = path + "/" +  IOHelper.urlEncode(nextPart).replace("+", "%20").replace("%2F", "/");
-        return url.replaceAll("//", "/");
+        return path + "/" + nextPart;
     }
 
     protected String loadUrl(String url) throws IOException {
