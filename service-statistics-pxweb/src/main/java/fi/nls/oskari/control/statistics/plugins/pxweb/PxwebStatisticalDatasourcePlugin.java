@@ -114,7 +114,7 @@ public class PxwebStatisticalDatasourcePlugin extends StatisticalDatasourcePlugi
         String indicatorId = indicator.getId();
         if(config.hasIndicatorKey()) {
             // indicatorId will be something.px::[value of indicatorKey]
-            int separatorIndex = indicatorId.lastIndexOf("::");
+            int separatorIndex = indicatorId.lastIndexOf(PxwebConfig.ID_SEPARATOR);
             if(separatorIndex == -1) {
                 throw new ServiceRuntimeException("Unidentified indicator id: " + indicatorId);
             }

@@ -217,7 +217,7 @@ public class PxwebIndicatorsParser {
     }
 
     private String createIndicatorId(PxTableItem table, String item) {
-        return createIndicatorId(table) + "::" + item;
+        return createIndicatorId(table) + PxwebConfig.ID_SEPARATOR + item;
     }
 
     protected StatisticalIndicatorDataModel getModel(PxTableItem table) {
