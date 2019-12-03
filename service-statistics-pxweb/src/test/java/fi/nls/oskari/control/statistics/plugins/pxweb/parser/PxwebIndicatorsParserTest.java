@@ -74,9 +74,10 @@ public class PxwebIndicatorsParserTest {
      * PX-file refs are treated as indicators.
      */
     @Test
+    @Ignore("Assumes network connectivity")
     public void testParseConfigWithoutIndicatorKey() throws Exception {
         PxwebIndicatorsParser parser = getParser("config2folderstruct_tk.json");
-        PropertyUtil.addProperty("oskari.locales", "en, fi, sv");
+        PropertyUtil.addProperty("oskari.locales", "en, fi, sv", true);
         List<StatisticalIndicator> indicators = parser.parse(getLayers());
 
         int expectedCount = 2;
@@ -97,9 +98,10 @@ public class PxwebIndicatorsParserTest {
      * PX-file refs are treated as indicators.
      */
     @Test
+    @Ignore("Assumes network connectivity")
     public void testParseConfigWithIndicatorKey() throws Exception {
         PxwebIndicatorsParser parser = getParser("config2folderstruct_tk_indicator_key.json");
-        PropertyUtil.addProperty("oskari.locales", "en, fi, sv");
+        PropertyUtil.addProperty("oskari.locales", "en, fi, sv", true);
         List<StatisticalIndicator> indicators = parser.parse(getLayers());
 
         int expectedCount = 32;
@@ -120,7 +122,7 @@ public class PxwebIndicatorsParserTest {
      * TODO: Should indicator id be prefixed with the path it was found in (relative to root url configuration)?
      */
     @Test
-    //@Ignore("Assumes network connectivity")
+    @Ignore("Assumes network connectivity")
     public void testParseConfigWithoutIndicatorKeyHKI() throws Exception {
         PxwebIndicatorsParser parser = getParser("config2folderstruct_hki.json");
         List<StatisticalIndicator> indicators = parser.parse(getLayers());
