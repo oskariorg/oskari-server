@@ -50,29 +50,20 @@ public class IOHelper {
     private static SSLSocketFactory TRUSTED_FACTORY;
     private static HostnameVerifier TRUSTED_VERIFIER;
 
-    private static int CONNECTION_TIMEOUT_MS = 3000;
-    private static int READ_TIMEOUT_MS = 60000;
-    private static String MY_DOMAIN = "http://localhost:8080";
-
-    private static boolean trustAllCerts = false;
-    private static boolean trustAllHosts = false;
-
-    static {
-        CONNECTION_TIMEOUT_MS = PropertyUtil.getOptional("oskari.connection.timeout", CONNECTION_TIMEOUT_MS);
-        READ_TIMEOUT_MS = PropertyUtil.getOptional("oskari.read.timeout", READ_TIMEOUT_MS);
-        trustAllCerts = "true".equals(PropertyUtil.getOptional("oskari.trustAllCerts"));
-        trustAllHosts = "true".equals(PropertyUtil.getOptional("oskari.trustAllHosts"));
-        MY_DOMAIN = PropertyUtil.get("oskari.domain", MY_DOMAIN);
-    }
-
     public static int getConnectionTimeoutMs() {
-        return CONNECTION_TIMEOUT_MS;
+        return PropertyUtil.getOptional("oskari.connection.timeout", 3000);
     }
     public static int getReadTimeoutMs() {
-        return READ_TIMEOUT_MS;
+        return PropertyUtil.getOptional("oskari.read.timeout", 60000);
+    }
+    private static boolean getTrustAllCerts() {
+        return "true".equals(PropertyUtil.getOptional("oskari.trustAllCerts"));
+    }
+    private static boolean getTrustAllHosts() {
+        return "true".equals(PropertyUtil.getOptional("oskari.trustAllHosts"));
     }
     public static String getMyDomain() {
-        return MY_DOMAIN;
+        return PropertyUtil.get("oskari.domain", "http://localhost:8080");
     }
     /**
      * Reads the given input stream and converts its contents to a string using #DEFAULT_CHARSET
@@ -132,7 +123,7 @@ public class IOHelper {
     /**
      * Reads the given InputStream and converts its contents to a String using given charset
      * Also closes the InputStream
-     * @param in the InputStream, if null then an empty String is returned
+     * @param is the InputStream, if null then an empty String is returned
      * @param charset if null then DEFAULT_CHARSET is used
      * @return InputStream's contents as a String
      */
@@ -314,11 +305,11 @@ public class IOHelper {
         log.debug("Opening connection to", pUrl);
         final URL url = new URL(pUrl);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-        conn.setConnectTimeout(CONNECTION_TIMEOUT_MS);
-        conn.setReadTimeout(READ_TIMEOUT_MS);
+        conn.setConnectTimeout(getConnectionTimeoutMs());
+        conn.setReadTimeout(getReadTimeoutMs());
         conn.setRequestProperty(HEADER_ACCEPT_CHARSET, CHARSET_UTF8);
-        if(trustAllCerts) trustAllCerts(conn);
-        if(trustAllHosts) trustAllHosts(conn);
+        if(getTrustAllCerts()) trustAllCerts(conn);
+        if(getTrustAllHosts()) trustAllHosts(conn);
         return conn;
     }
 
