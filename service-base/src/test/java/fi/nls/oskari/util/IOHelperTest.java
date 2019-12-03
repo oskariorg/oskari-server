@@ -120,8 +120,6 @@ public class IOHelperTest {
     public void testHumanReadableBytes() {
         long hundredMegsInBytes = 1024*1024*100;
         assertEquals("100,0 MiB", ignoreNumberFormatting(IOHelper.humanReadableByteCount(hundredMegsInBytes)));
-        assertEquals("100,0 MiB", ignoreNumberFormatting(IOHelper.humanReadableByteCount(hundredMegsInBytes, false)));
-        assertEquals("104,9 MB", ignoreNumberFormatting(IOHelper.humanReadableByteCount(hundredMegsInBytes, true)));
     }
 
     private String ignoreNumberFormatting(String str) {
