@@ -7,7 +7,7 @@ import org.flywaydb.core.api.migration.jdbc.JdbcMigration;
 import fi.nls.oskari.db.BundleHelper;
 import fi.nls.oskari.domain.map.view.Bundle;
 
-public class V1_54_2__register_3d_camera_controls_bundle implements JdbcMigration {
+public class V1_55_0__register_3d_camera_controls_bundle implements JdbcMigration {
 
 	private static final String BUNDLE_ID = "camera-controls-3d";
 
