@@ -11,6 +11,8 @@ import java.util.Set;
  */
 public class PxwebConfig {
 
+    public static final String ID_SEPARATOR = "::";
+
     private long datasourceId;
     private String url;
     private String regionKey;

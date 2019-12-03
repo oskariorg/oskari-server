@@ -46,7 +46,7 @@ public class PxwebIndicatorsParser {
             // No id for indicator, assume the service has a separate indicator key config.
             indicatorList = parsePxFileToMultipleIndicators(path, languages);
         } else {
-            indicatorList = parseStructuredService(null, languages);
+            indicatorList = parseStructuredService(path, languages);
         }
         setupLayers(indicatorList, layers, url);
         return indicatorList;
@@ -75,11 +75,12 @@ public class PxwebIndicatorsParser {
             languages.forEach(lang -> {
                 try {
                     PxTableItem table = getPxTable(path, lang, item.id);
-                    StatisticalIndicator ind = indicatorMap.get(item.id);
+                    String indicatorId = createIndicatorId(table);
+                    StatisticalIndicator ind = indicatorMap.get(indicatorId);
                     if (ind == null) {
                         ind = new StatisticalIndicator();
-                        ind.setId(item.id);
-                        indicatorMap.put(item.id, ind);
+                        ind.setId(indicatorId);
+                        indicatorMap.put(indicatorId, ind);
                         indicators.add(ind);
                     }
                     ind.addName(lang, item.text);
@@ -195,7 +196,7 @@ public class PxwebIndicatorsParser {
         }
         for(IdNamePair item: indicatorList.getLabels()) {
             StatisticalIndicator indicator = new StatisticalIndicator();
-            indicator.setId(table.getId() + "::" + item.getKey());
+            indicator.setId(createIndicatorId(table, item.getKey()));
             indicator.addName(lang, item.getValue());
             indicator.addDescription(lang, table.getTitle());
             indicator.setDataModel(selectors);
@@ -203,6 +204,20 @@ public class PxwebIndicatorsParser {
         }
 
         return list;
+    }
+
+    private String createIndicatorId(PxTableItem table) {
+        if (table.getPath() != null) {
+            if (table.getPath().endsWith(".px")) {
+                return table.getPath();
+            }
+            return table.getPath() + "/" + table.getId();
+        }
+        return table.getId();
+    }
+
+    private String createIndicatorId(PxTableItem table, String item) {
+        return createIndicatorId(table) + PxwebConfig.ID_SEPARATOR + item;
     }
 
     protected StatisticalIndicatorDataModel getModel(PxTableItem table) {
