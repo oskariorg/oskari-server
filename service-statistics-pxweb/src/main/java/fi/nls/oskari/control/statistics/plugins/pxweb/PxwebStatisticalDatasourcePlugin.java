@@ -33,12 +33,18 @@ public class PxwebStatisticalDatasourcePlugin extends StatisticalDatasourcePlugi
     @Override
     public void update() {
         List<StatisticalIndicator> indicators = indicatorsParser.parse(getSource().getLayers());
+        int skippedIndicators = 0;
         for (StatisticalIndicator ind : indicators) {
             if(!ind.getDataModel().isHasRegionInfo()) {
                 // skip indicators without region info
+                skippedIndicators++;
                 continue;
             }
             onIndicatorProcessed(ind);
+        }
+        if (skippedIndicators > 0) {
+            LOG.info("Updated datasource:", config.getUrl(), "with", skippedIndicators,
+                    "of", indicators.size(), "indicators skipped for not having region info.");
         }
     }
 
