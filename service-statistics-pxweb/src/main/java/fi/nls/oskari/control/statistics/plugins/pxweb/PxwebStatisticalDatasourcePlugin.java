@@ -34,6 +34,10 @@ public class PxwebStatisticalDatasourcePlugin extends StatisticalDatasourcePlugi
     public void update() {
         List<StatisticalIndicator> indicators = indicatorsParser.parse(getSource().getLayers());
         for (StatisticalIndicator ind : indicators) {
+            if(!ind.getDataModel().isHasRegionInfo()) {
+                // skip indicators without region info
+                continue;
+            }
             onIndicatorProcessed(ind);
         }
     }

@@ -41,7 +41,7 @@ public class PxwebIndicatorsParser {
         final String url = getUrl(path);
 
         Collection<String> languages = getLanguages();
-        List<StatisticalIndicator> indicatorList = null;
+        List<StatisticalIndicator> indicatorList;
         if(url.endsWith(".px")) {
             // No id for indicator, assume the service has a separate indicator key config.
             indicatorList = parsePxFileToMultipleIndicators(path, languages);
@@ -226,6 +226,9 @@ public class PxwebIndicatorsParser {
         selectors.setTimeVariable(config.getTimeVariableId());
         for (VariablesItem item: table.getSelectors()) {
             if(config.getIgnoredVariables().contains(item.getCode())) {
+                if(item.getCode().equals(config.getRegionKey())) {
+                    selectors.setHasRegionInfo(true);
+                }
                 continue;
             }
             StatisticalIndicatorDataDimension selector = new StatisticalIndicatorDataDimension(item.getCode());
