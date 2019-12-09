@@ -15,6 +15,7 @@ public class StatisticalIndicatorDataModel {
      * The dimensions have a defined order.
      */
     private List<StatisticalIndicatorDataDimension> dimensions = new ArrayList<>();
+    private boolean hasRegionInfo = false;
 
     // this is the id of the dimension that re-presents time -> enables time-series analyzes
     private String timeVariable;
@@ -48,6 +49,16 @@ public class StatisticalIndicatorDataModel {
     @Override
     public String toString() {
         return "{" + String.valueOf(dimensions) + "}";
+    }
+
+    @JsonIgnore
+    public void setHasRegionInfo(boolean hasRegionInfo) {
+        this.hasRegionInfo = hasRegionInfo;
+    }
+
+    @JsonIgnore
+    public boolean isHasRegionInfo() {
+        return hasRegionInfo;
     }
 
     @JsonIgnore
