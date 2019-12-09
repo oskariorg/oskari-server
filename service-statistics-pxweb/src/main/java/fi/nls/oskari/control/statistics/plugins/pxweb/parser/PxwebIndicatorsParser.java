@@ -84,7 +84,11 @@ public class PxwebIndicatorsParser {
                         indicators.add(ind);
                     }
                     ind.addName(lang, item.text);
-                    ind.setDataModel(getModel(table));
+                    if (ind.getDataModel() == null) {
+                        // only populate model for first (== primary) language as it doesn't support localized labels for variables/selectors
+                        // TODO: add "mergeModels(lang, model)" that would populate localized labels for variables
+                        ind.setDataModel(getModel(table));
+                    }
                 } catch (IOException e) {
                     LOG.error(e, "Error getting indicators from Pxweb datasource:", config.getUrl());
                 }
