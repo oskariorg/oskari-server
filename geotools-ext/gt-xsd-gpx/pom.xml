@@ -10,9 +10,8 @@
         <relativePath>../../pom.xml</relativePath>
     </parent>
 
-    <groupId>org.getoools.xsd</groupId>
+    <groupId>org.oskari</groupId>
     <artifactId>gt-xsd-gpx</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
     <name>GPX XML Support</name>
     <description>GPX XML support for Geotools</description>
 

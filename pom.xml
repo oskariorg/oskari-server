@@ -864,6 +864,11 @@
                 <version>${geotools.version}</version>
                 <!-- version>${gt-xsd-kml.version}</version -->
             </dependency>
+            <dependency>
+                <groupId>org.oskari</groupId>
+                <artifactId>gt-xsd-gpx</artifactId>
+                <version>${project.version}</version>
+            </dependency>
 
             <dependency>
                 <groupId>javax.xml</groupId>
