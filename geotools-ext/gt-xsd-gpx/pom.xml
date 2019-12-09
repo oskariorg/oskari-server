@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>fi.nls.oskari</groupId>
+        <artifactId>oskari-parent</artifactId>
+        <version>1.55.0-SNAPSHOT</version>
+        <relativePath>../../pom.xml</relativePath>
+    </parent>
+
+    <groupId>org.getoools.xsd</groupId>
+    <artifactId>gt-xsd-gpx</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <name>GPX XML Support</name>
+    <description>GPX XML support for Geotools</description>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.geotools.xsd</groupId>
+            <artifactId>gt-xsd-core</artifactId>
+            <version>${geotools.version}</version>
+        </dependency>
+        <!-- gt-xsd-core:tests was added in GeoTools 20.0 -->
+        <!-- Remove the comment when updating GeoTools version -->
+        <!--
+        <dependency>
+            <groupId>org.geotools.xsd</groupId>
+            <artifactId>gt-xsd-core</artifactId>
+            <classifier>tests</classifier>
+            <scope>test</scope>
+            <version>${geotools.version}</version>
+        </dependency>
+         -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <!--
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.geotools.maven</groupId>
+                <artifactId>xmlcodegen</artifactId>
+                <version>${geotools.version}</version>
+                <configuration>
+                    <schemaLocation>gpx.xsd</schemaLocation>
+                    <schemaSourceDirectory>${basedir}/src/main/resources/org/geotools/gpx</schemaSourceDirectory>
+                    <destinationPackage>org.geotools.gpx</destinationPackage>
+                    <targetPrefix>gpx</targetPrefix>
+                    <generateTypeBindings>true</generateTypeBindings>
+                    <generateAttributeBindings>true</generateAttributeBindings>
+                    <generateTests>true</generateTests>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+    -->
+
+</project>
