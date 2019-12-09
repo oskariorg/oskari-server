@@ -107,6 +107,10 @@ import com.vividsolutions.jts.geom.MultiLineString;
  */
 public class TrkTypeBinding extends AbstractComplexBinding {
 
+    public static final String FEATURE_TYPE_NAME_TRACKS = "tracks";
+
+    private static final String ATTR_NAME_GEOM = "geom";
+
     private GeometryFactory gf;
     private SimpleFeatureType trkFt;
     private SimpleFeatureBuilder fb;
@@ -114,9 +118,9 @@ public class TrkTypeBinding extends AbstractComplexBinding {
     public TrkTypeBinding(GeometryFactory gf) {
         this.gf = gf;
         SimpleFeatureTypeBuilder sftb = new SimpleFeatureTypeBuilder();
-        sftb.setName("tracks");
-        sftb.setDefaultGeometry("geom");
-        sftb.add("geom", MultiLineString.class, DefaultGeographicCRS.WGS84);
+        sftb.setName(FEATURE_TYPE_NAME_TRACKS);
+        sftb.setDefaultGeometry(ATTR_NAME_GEOM);
+        sftb.add(ATTR_NAME_GEOM, MultiLineString.class, DefaultGeographicCRS.WGS84);
         for (GPXField field : GPXField.getCachedValues()) {
             field.addBinding(sftb);
         }
@@ -151,7 +155,7 @@ public class TrkTypeBinding extends AbstractComplexBinding {
         List<LineString> trackSegments = node.getChildValues(LineString.class);
         MultiLineString geom = gf.createMultiLineString(trackSegments.toArray(new LineString[0]));
         fb.reset();
-        fb.set("geom", geom);
+        fb.set(ATTR_NAME_GEOM, geom);
         for (GPXField field : GPXField.getCachedValues()) {
             field.parse(fb, node);
         }

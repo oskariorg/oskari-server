@@ -109,6 +109,10 @@ import com.vividsolutions.jts.geom.Point;
  */
 public class RteTypeBinding extends AbstractComplexBinding {
 
+    public static final String FEATURE_TYPE_NAME_ROUTES = "routes";
+
+    private static final String ATTR_NAME_GEOM = "geom";
+
     private GeometryFactory gf;
     private SimpleFeatureType rteFt;
     private SimpleFeatureBuilder fb;
@@ -116,9 +120,9 @@ public class RteTypeBinding extends AbstractComplexBinding {
     public RteTypeBinding(GeometryFactory gf) {
         this.gf = gf;
         SimpleFeatureTypeBuilder sftb = new SimpleFeatureTypeBuilder();
-        sftb.setName("routes");
-        sftb.setDefaultGeometry("geom");
-        sftb.add("geom", LineString.class, DefaultGeographicCRS.WGS84);
+        sftb.setName(FEATURE_TYPE_NAME_ROUTES);
+        sftb.setDefaultGeometry(ATTR_NAME_GEOM);
+        sftb.add(ATTR_NAME_GEOM, LineString.class, DefaultGeographicCRS.WGS84);
         for (GPXField field : GPXField.getCachedValues()) {
             field.addBinding(sftb);
         }
@@ -151,7 +155,7 @@ public class RteTypeBinding extends AbstractComplexBinding {
      */
     public Object parse(ElementInstance instance, Node node, Object value) throws Exception {
         fb.reset();
-        fb.set("geom", parseRtept(node));
+        fb.set(ATTR_NAME_GEOM, parseRtept(node));
         for (GPXField field : GPXField.getCachedValues()) {
             field.parse(fb, node);
         }

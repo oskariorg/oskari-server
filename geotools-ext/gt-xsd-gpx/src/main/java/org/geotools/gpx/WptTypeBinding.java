@@ -196,6 +196,10 @@ import com.vividsolutions.jts.geom.Point;
  */
 public class WptTypeBinding extends AbstractComplexBinding {
 
+    public static final String FEATURE_TYPE_NAME_WAYPOINTS = "waypoints";
+
+    private static final String ATTR_NAME_GEOM = "geom";
+
     private GeometryFactory gf;
     private SimpleFeatureType wptFt;
     private SimpleFeatureBuilder fb;
@@ -203,9 +207,9 @@ public class WptTypeBinding extends AbstractComplexBinding {
     public WptTypeBinding(GeometryFactory gf) {
         this.gf = gf;
         SimpleFeatureTypeBuilder sftb = new SimpleFeatureTypeBuilder();
-        sftb.setName("waypoints");
-        sftb.setDefaultGeometry("geom");
-        sftb.add("geom", Point.class, DefaultGeographicCRS.WGS84);
+        sftb.setName(FEATURE_TYPE_NAME_WAYPOINTS);
+        sftb.setDefaultGeometry(ATTR_NAME_GEOM);
+        sftb.add(ATTR_NAME_GEOM, Point.class, DefaultGeographicCRS.WGS84);
         for (GPXField field : GPXField.getCachedValues()) {
             field.addBinding(sftb);
         }
@@ -238,7 +242,7 @@ public class WptTypeBinding extends AbstractComplexBinding {
      */
     public Object parse(ElementInstance instance, Node node, Object value) throws Exception {
         fb.reset();
-        fb.set("geom", parsePoint(node));
+        fb.set(ATTR_NAME_GEOM, parsePoint(node));
         for (GPXField field : GPXField.getCachedValues()) {
             field.parse(fb, node);
         }
