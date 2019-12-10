@@ -672,7 +672,7 @@ public class SaveLayerHandler extends AbstractLayerAdminHandler {
     }
 
     private void addPermissionsForRoles(final OskariLayer ml,
-                                        final Set<Integer> externalIds,
+                                        final Set<Integer> viewRoleIds,
                                         final Set<Integer> publishRoleIds,
                                         final Set<Integer> downloadRoleIds,
                                         final Set<Integer> viewEmbeddedRoleIds) {
@@ -680,16 +680,11 @@ public class SaveLayerHandler extends AbstractLayerAdminHandler {
         res.setType(ResourceType.maplayer);
         res.setMapping(Integer.toString(ml.getId()));
         // insert permissions
-        LOG.debug("Adding permission", PermissionType.VIEW_LAYER, "for roles:", externalIds);
-        for (int externalId : externalIds) {
+        LOG.debug("Adding permission", PermissionType.VIEW_LAYER, "for roles:", viewRoleIds);
+        for (int externalId : viewRoleIds) {
             Permission permission = new Permission();
             permission.setRoleId(externalId);
             permission.setType(PermissionType.VIEW_LAYER);
-            res.addPermission(permission);
-
-            permission = new Permission();
-            permission.setRoleId(externalId);
-            permission.setType(PermissionType.EDIT_LAYER);
             res.addPermission(permission);
         }
 
