@@ -58,6 +58,10 @@
             <version>${geotools.major}.1</version>
         </dependency>
         <dependency>
+            <groupId>org.oskari</groupId>
+            <artifactId>gt-xsd-gpx</artifactId>
+        </dependency>
+        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <scope>test</scope>

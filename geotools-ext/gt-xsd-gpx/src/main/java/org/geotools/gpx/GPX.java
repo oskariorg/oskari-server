@@ -100,16 +100,20 @@ public final class GPX extends XSD {
             new QName("http://www.topografix.com/GPX/1/1","ptType");
     /** @generated */
     public static final QName rteType =
-            new QName("http://www.topografix.com/GPX/1/1","rteType");
+            new QName("http://www.topografix.com/GPX/1/1","rte");
+    public static final QName rteptType =
+            new QName("http://www.topografix.com/GPX/1/1","rtept");
     /** @generated */
     public static final QName trksegType =
-            new QName("http://www.topografix.com/GPX/1/1","trksegType");
+            new QName("http://www.topografix.com/GPX/1/1","trkseg");
+    public static final QName trkptType =
+            new QName("http://www.topografix.com/GPX/1/1","trkpt");
     /** @generated */
     public static final QName trkType =
-            new QName("http://www.topografix.com/GPX/1/1","trkType");
+            new QName("http://www.topografix.com/GPX/1/1","trk");
     /** @generated */
     public static final QName wptType =
-            new QName("http://www.topografix.com/GPX/1/1","wptType");
+            new QName("http://www.topografix.com/GPX/1/1","wpt");
 
     /* Elements */
     /** @generated */

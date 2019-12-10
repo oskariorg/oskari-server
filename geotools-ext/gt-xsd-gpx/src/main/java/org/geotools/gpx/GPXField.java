@@ -17,7 +17,11 @@ public enum GPXField implements GPXParseableField {
             String href = null;
             Node linkNode = node.getChild("link");
             if (linkNode != null) {
-                href = linkNode.getAttributeValue("href").toString();
+                Object hrefAttr = linkNode.getAttributeValue("href");
+                if (hrefAttr == null) {
+                    throw new IllegalArgumentException("href attribute required for link");
+                }
+                href = hrefAttr.toString();
             } else {
                 // Try GPX 1.0
                 Object url = node.getChildValue("url");

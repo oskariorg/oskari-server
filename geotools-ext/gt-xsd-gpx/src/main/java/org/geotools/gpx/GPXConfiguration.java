@@ -53,8 +53,10 @@ public class GPXConfiguration extends Configuration {
         // container.registerComponentImplementation(GPX.ptsegType,PtsegTypeBinding.class);
         // container.registerComponentImplementation(GPX.ptType,PtTypeBinding.class);
         container.registerComponentImplementation(GPX.rteType,RteTypeBinding.class);
+        container.registerComponentImplementation(GPX.rteptType,RteTypeBinding.class);
         container.registerComponentImplementation(GPX.trksegType,TrksegTypeBinding.class);
         container.registerComponentImplementation(GPX.trkType,TrkTypeBinding.class);
+        container.registerComponentImplementation(GPX.trkptType,WptTypeBinding.class);
         container.registerComponentImplementation(GPX.wptType,WptTypeBinding.class);
     }
 }
