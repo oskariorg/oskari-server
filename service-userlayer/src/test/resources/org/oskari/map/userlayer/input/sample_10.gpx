@@ -1,0 +1,38 @@
+<gpx version="1.0" xmlns="http://www.topografix.com/GPX/1/0">
+  <wpt lat="61.90" lon="25.10">
+	<name>wpt name</name>
+	<cmt>wpt cmt</cmt>
+	<desc>wpt desc</desc>
+	<src>wpt src</src>
+	<url>http://my.wpt.link</url>
+	<urlname>wpt link text</urlname>
+	<type>WayPoint</type>
+  </wpt>
+  <trk>
+	<name>trk name</name>
+	<cmt>trk cmt</cmt>
+	<desc>trk desc</desc>
+	<src>trk src</src>
+	<url>http://my.trk.link</url>
+    <urlname>wpt link text</urlname>
+	<type>Track</type>
+    <trkseg>
+      <trkpt lat="60.90" lon="27.0">
+        <ele>135.00</ele>
+        <time>2009-05-19T04:00:30Z</time>
+      </trkpt>
+      <trkpt lat="61.90" lon="27.0">
+        <ele>135.00</ele>
+        <time>2009-05-19T04:00:31Z</time>
+      </trkpt>
+      <trkpt lat="62.90" lon="27.0">
+        <ele>135.00</ele>
+        <time>2009-05-19T04:00:32Z</time>
+      </trkpt>
+      <trkpt lat="63.90" lon="27.0">
+        <ele>152.00</ele>
+        <time>2009-05-19T04:46:27Z</time>
+      </trkpt>
+    </trkseg>
+  </trk>
+</gpx>
