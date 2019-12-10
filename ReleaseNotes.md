@@ -1,5 +1,13 @@
 # Release Notes
 
+## 1.54.1
+
+For a full list of changes see: https://github.com/oskariorg/oskari-server/milestone/22?closed=1
+
+Fixes an issue with permissions handling and removes all EDIT_LAYER permissions from database. If you ARE using this permission
+you can skip the migration but its heavily recommended to run it. All layers with VIEW_LAYER permission have had this permission
+so it's unlikely that it is used properly at this moment.
+
 ## 1.54.0
 
 For a full list of changes see: https://github.com/oskariorg/oskari-server/milestone/19?closed=1
