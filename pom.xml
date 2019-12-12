@@ -1326,6 +1326,7 @@
         <module>service-wfs-client</module>
         <module>service-wfs3</module>
         <module>geotools-ext/gt-xsd-gpx</module>
+        <module>gt-mif</module>
     </modules>
 
 </project>
