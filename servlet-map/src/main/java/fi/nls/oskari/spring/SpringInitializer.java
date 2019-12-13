@@ -3,7 +3,9 @@ package fi.nls.oskari.spring;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.servlet.WebappHelper;
+import fi.nls.oskari.spring.session.RedisSessionConfig;
 import fi.nls.oskari.util.PropertyUtil;
+import org.springframework.session.web.context.AbstractHttpSessionApplicationInitializer;
 import org.springframework.web.WebApplicationInitializer;
 import org.springframework.web.context.ContextLoaderListener;
 import org.springframework.web.context.WebApplicationContext;
@@ -17,7 +19,7 @@ import javax.servlet.ServletRegistration;
 /**
  * Programmatic initialization of webapp ("web.xml")
  */
-public class SpringInitializer implements WebApplicationInitializer {
+public class SpringInitializer extends AbstractHttpSessionApplicationInitializer {
 
     private Logger log = LogFactory.getLogger(SpringInitializer.class);
 
@@ -33,6 +35,21 @@ public class SpringInitializer implements WebApplicationInitializer {
         dispatcher.setLoadOnStartup(1);
         dispatcher.addMapping("/");
         dispatcher.setAsyncSupported(true);
+        if (isRedisSessionActived(context)) {
+            // only start handling sessions if redis is used to store them.
+            // Otherwise just use session tracking provided by the servlet container (Jetty/Tomcat)
+            super.onStartup(servletContext);
+        }
+    }
+
+    private boolean isRedisSessionActived(WebApplicationContext context) {
+        String[] profiles = context.getEnvironment().getActiveProfiles();
+        for (String profile: profiles) {
+            if (profile.equalsIgnoreCase(RedisSessionConfig.PROFILE)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private AnnotationConfigWebApplicationContext getContext() {
