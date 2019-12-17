@@ -1314,12 +1314,6 @@
         <!-- oskari map -->
         <module>servlet-map</module>
 
-        <!-- transport  -->
-        <module>service-datamodel</module>
-        <module>geoserver-ext/OskariMarkFactory</module>
-        <module>service-feature-engine</module>
-        <module>servlet-transport</module>
-
         <!-- setup -->
         <module>webapp-setup</module>
 
