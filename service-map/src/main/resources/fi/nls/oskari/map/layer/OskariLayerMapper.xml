@@ -183,7 +183,7 @@
 
     </select>
 
-    <select id="findByUuId"
+    <select id="findByUuid"
             parameterType="String"
             resultType="java.util.HashMap">
 
