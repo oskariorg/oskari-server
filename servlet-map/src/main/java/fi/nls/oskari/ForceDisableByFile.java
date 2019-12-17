@@ -1,8 +1,9 @@
-package org.oskari.status;
+package fi.nls.oskari;
 
 import fi.nls.oskari.annotation.Oskari;
 import fi.nls.oskari.service.OskariComponent;
 import fi.nls.oskari.util.PropertyUtil;
+import org.oskari.status.AppStatus;
 
 import java.io.File;
 

@@ -9,8 +9,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -35,9 +37,10 @@ public class StatusController {
     }
 
     @RequestMapping("/status")
+    @ResponseBody
     public Collection<AppStatus> status(@OskariParam ActionParameters params) {
         if (!params.getUser().isAdmin()) {
-            return null;
+            return Collections.emptyList();
         }
         return getChecks();
     }
