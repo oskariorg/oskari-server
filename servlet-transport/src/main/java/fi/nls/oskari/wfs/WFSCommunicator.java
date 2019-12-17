@@ -13,7 +13,7 @@ import fi.nls.oskari.work.JobType;
 import org.apache.axiom.om.*;
 import org.apache.axiom.om.impl.builder.StAXOMBuilder;
 import org.geotools.feature.FeatureCollection;
-import org.geotools.xml.Parser;
+import org.geotools.xsd.Parser;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.referencing.operation.MathTransform;

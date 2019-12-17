@@ -1,7 +1,7 @@
 package fi.nls.oskari.fe.input.format.gml;
 
-import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.Point;
+import org.locationtech.jts.geom.Geometry;
+import org.locationtech.jts.geom.Point;
 import fi.nls.oskari.fe.engine.GroovyFeatureEngine;
 import fi.nls.oskari.fe.input.XMLInputProcessor;
 import fi.nls.oskari.fe.input.format.gml.recipe.GroovyParserRecipe;

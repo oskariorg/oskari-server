@@ -1,6 +1,6 @@
 package fi.nls.oskari.fe.input.format.gml.recipe;
 
-import com.vividsolutions.jts.geom.Geometry;
+import org.locationtech.jts.geom.Geometry;
 import fi.nls.oskari.eu.elf.recipe.universal.ELF_path_parse_worker;
 import fi.nls.oskari.fe.input.InputProcessor;
 import fi.nls.oskari.fe.input.format.gml.FEPullParser;

@@ -6,7 +6,7 @@ package fi.nls.oskari.fi.rysp.generic;
  * - test driver e.g. \service-feature-engine\src\test\java\fi\nls\oskari\eu\elf\addresses\TestJacksonParser.java
  * */
 
-import com.vividsolutions.jts.geom.Geometry;
+import org.locationtech.jts.geom.Geometry;
 import fi.nls.oskari.fe.generic.FeExceptionChecker;
 import fi.nls.oskari.fe.input.format.gml.recipe.JacksonParserRecipe;
 import fi.nls.oskari.fe.input.format.gml.recipe.JacksonParserRecipe.GML31;

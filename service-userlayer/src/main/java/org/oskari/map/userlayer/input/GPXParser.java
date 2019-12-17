@@ -17,7 +17,7 @@ import org.geotools.data.store.ReprojectingFeatureCollection;
 import org.geotools.gpx.GPX;
 import org.geotools.gpx.GPXConfiguration;
 import org.geotools.referencing.CRS;
-import org.geotools.xml.PullParser;
+import org.geotools.xsd.PullParser;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;

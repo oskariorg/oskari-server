@@ -1,6 +1,6 @@
 package fi.nls.oskari.wfs;
 
-import com.vividsolutions.jts.geom.Geometry;
+import org.locationtech.jts.geom.Geometry;
 import fi.nls.oskari.pojo.SessionStore;
 import fi.nls.test.util.TestHelper;
 import fi.nls.oskari.wfs.pojo.WFSLayerStore;

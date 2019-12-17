@@ -1,7 +1,7 @@
 package org.geotools.gpx;
 
 import org.geotools.feature.simple.SimpleFeatureBuilder;
-import org.geotools.xml.Node;
+import org.geotools.xsd.Node;
 
 public interface GPXParseableField {
 

@@ -1,7 +1,7 @@
 package fi.nls.oskari.control.feature;
 
 
-import com.vividsolutions.jts.geom.*;
+import org.locationtech.jts.geom.*;
 import fi.nls.oskari.cache.JedisManager;
 import fi.nls.oskari.control.*;
 

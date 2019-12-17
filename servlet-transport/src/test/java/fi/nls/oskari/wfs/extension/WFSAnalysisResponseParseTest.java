@@ -7,8 +7,8 @@ package fi.nls.oskari.wfs.extension;
  */
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.Point;
+import org.locationtech.jts.geom.Geometry;
+import org.locationtech.jts.geom.Point;
 import fi.nls.oskari.cache.JedisManager;
 import fi.nls.oskari.pojo.SessionStore;
 import fi.nls.oskari.transport.TransportService;

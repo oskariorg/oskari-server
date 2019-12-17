@@ -17,8 +17,8 @@
  */
 package org.geoserver.wps.oskari.oskari;
 
-import com.vividsolutions.jts.densify.Densifier;
-import com.vividsolutions.jts.geom.*;
+import org.locationtech.jts.densify.Densifier;
+import org.locationtech.jts.geom.*;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.data.simple.SimpleFeatureIterator;
 import org.geotools.factory.CommonFactoryFinder;
@@ -105,7 +105,7 @@ public class IntersectionFeatureCollection2 implements GSProcess {
                             + ") and second (" + secondGeomType.getName() + ") collection must be polygonal");
         }
         if (!isGeometryTypeIn(firstGeomType, MultiPolygon.class, Polygon.class,
-                MultiLineString.class, LineString.class) && !firstGeomType.isAssignableFrom(com.vividsolutions.jts.geom.Geometry.class)  ) {
+                MultiLineString.class, LineString.class) && !firstGeomType.isAssignableFrom(org.locationtech.jts.geom.Geometry.class)  ) {
             throw new IllegalArgumentException(
                     "First feature collection must be polygonal or linear. Was: " + firstGeomType.getName());
         }

@@ -5,7 +5,7 @@ import fi.nls.oskari.log.Logger;
 import org.geotools.referencing.CRS;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
-import javax.measure.unit.Unit;
+import javax.measure.Unit;
 import java.util.HashMap;
 
 public class Units {
@@ -27,7 +27,7 @@ public class Units {
         metersPerUnits.put("ft", 0.3048d);                      // Feet
         metersPerUnits.put("foot", 0.3048d);                    // Feet
         metersPerUnits.put("Foot", 0.3048d);                    // Feet
-        metersPerUnits.put("foot_survey_us", 0.3048d);          // Feet
+        metersPerUnits.put("ft_survey_us", 0.3048d);          // Feet
         metersPerUnits.put("mi", 1609.344d);                    // Miles
         metersPerUnits.put("Mile", 1609.344d);                  // Miles
         metersPerUnits.put("km", 1000.0d);                      // Kilometers
