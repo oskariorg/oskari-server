@@ -4,8 +4,8 @@ import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import org.geotools.sld.SLDConfiguration;
 import org.geotools.styling.*;
-import org.geotools.xml.Configuration;
-import org.geotools.xml.Parser;
+import org.geotools.xsd.Configuration;
+import org.geotools.xsd.Parser;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;

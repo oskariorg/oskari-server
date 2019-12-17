@@ -3,7 +3,7 @@ package fi.nls.oskari.fe.input.format.gml.recipe;
 import fi.nls.oskari.fe.input.format.gml.FEPullParser;
 import fi.nls.oskari.fe.input.format.gml.FEPullParser.PullParserHandler;
 import org.codehaus.staxmate.in.SMInputCursor;
-import org.geotools.xml.Configuration;
+import org.geotools.xsd.Configuration;
 import org.xml.sax.SAXException;
 
 import javax.xml.namespace.QName;

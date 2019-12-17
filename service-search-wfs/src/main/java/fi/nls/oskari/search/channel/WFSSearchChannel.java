@@ -20,11 +20,11 @@ import org.oskari.permissions.model.ResourceType;
 
 import fi.nls.oskari.wfs.WFSSearchChannelsConfiguration;
 
-import com.vividsolutions.jts.geom.LineString;
-import com.vividsolutions.jts.geom.MultiLineString;
-import com.vividsolutions.jts.geom.MultiPoint;
-import com.vividsolutions.jts.geom.MultiPolygon;
-import com.vividsolutions.jts.geom.Polygon;
+import org.locationtech.jts.geom.LineString;
+import org.locationtech.jts.geom.MultiLineString;
+import org.locationtech.jts.geom.MultiPoint;
+import org.locationtech.jts.geom.MultiPolygon;
+import org.locationtech.jts.geom.Polygon;
 
 import fi.mml.portti.service.search.ChannelSearchResult;
 import fi.mml.portti.service.search.SearchCriteria;
@@ -232,7 +232,7 @@ public class WFSSearchChannel extends SearchChannel {
                         item.setLat(Double.toString(lineGeom.getCentroid().getCoordinate().y));
                         item.setLon(Double.toString(lineGeom.getCentroid().getCoordinate().x));
                     } else if (geomType.equals(GT_GEOM_POINT)) {
-                        com.vividsolutions.jts.geom.Point pointGeom = geom.readPoint(featuresObj_geometry.toString());
+                        org.locationtech.jts.geom.Point pointGeom = geom.readPoint(featuresObj_geometry.toString());
                         item.addValue(PARAM_GEOMETRY, WKTHelper.getWKT(pointGeom));
                         item.setLat(Double.toString(pointGeom.getCentroid().getCoordinate().y));
                         item.setLon(Double.toString(pointGeom.getCentroid().getCoordinate().x));

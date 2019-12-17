@@ -1,11 +1,11 @@
 package fi.nls.oskari.fe.input.format.gml.recipe;
 
-import com.vividsolutions.jts.geom.CoordinateSequenceFactory;
-import com.vividsolutions.jts.geom.GeometryFactory;
-import com.vividsolutions.jts.geom.impl.CoordinateArraySequenceFactory;
+import org.locationtech.jts.geom.CoordinateSequenceFactory;
+import org.locationtech.jts.geom.GeometryFactory;
+import org.locationtech.jts.geom.impl.CoordinateArraySequenceFactory;
 import org.geotools.gml3.GML;
 import org.geotools.gml3.bindings.X_CurveTypeBinding;
-import org.geotools.xml.Configuration;
+import org.geotools.xsd.Configuration;
 import org.picocontainer.MutablePicoContainer;
 
 public class GML31_Configuration extends org.geotools.gml3.GMLConfiguration {

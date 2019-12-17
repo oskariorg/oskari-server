@@ -1,6 +1,6 @@
 package fi.nls.oskari.work.fe;
 
-import com.vividsolutions.jts.geom.Geometry;
+import org.locationtech.jts.geom.Geometry;
 import fi.nls.oskari.fe.iri.Resource;
 import fi.nls.oskari.fe.output.OutputProcessor;
 import fi.nls.oskari.fe.schema.XSDDatatype;

@@ -16,16 +16,16 @@
  */
 package org.geotools.gml3.bindings;
 
-import com.vividsolutions.jts.geom.GeometryFactory;
-import com.vividsolutions.jts.geom.LineString;
+import org.locationtech.jts.geom.GeometryFactory;
+import org.locationtech.jts.geom.LineString;
 import org.geotools.geometry.jts.CompoundCurvedGeometry;
 import org.geotools.geometry.jts.CurvedGeometry;
 import org.geotools.geometry.jts.CurvedGeometryFactory;
 import org.geotools.gml3.ArcParameters;
 import org.geotools.gml3.GML;
-import org.geotools.xml.AbstractComplexBinding;
-import org.geotools.xml.ElementInstance;
-import org.geotools.xml.Node;
+import org.geotools.xsd.AbstractComplexBinding;
+import org.geotools.xsd.ElementInstance;
+import org.geotools.xsd.Node;
 
 import javax.xml.namespace.QName;
 import java.util.Arrays;

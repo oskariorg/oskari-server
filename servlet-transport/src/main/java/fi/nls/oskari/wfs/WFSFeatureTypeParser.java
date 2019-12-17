@@ -1,6 +1,6 @@
 package fi.nls.oskari.wfs;
 
-import com.vividsolutions.jts.geom.*;
+import org.locationtech.jts.geom.*;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.util.JSONHelper;

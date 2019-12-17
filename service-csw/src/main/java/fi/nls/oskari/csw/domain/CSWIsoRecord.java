@@ -1,7 +1,7 @@
 package fi.nls.oskari.csw.domain;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.vividsolutions.jts.geom.GeometryCollection;
+import org.locationtech.jts.geom.GeometryCollection;
 import fi.nls.oskari.util.JSONHelper;
 import org.json.JSONArray;
 import org.json.JSONObject;

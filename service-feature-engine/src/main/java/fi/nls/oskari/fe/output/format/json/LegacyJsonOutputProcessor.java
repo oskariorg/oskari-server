@@ -1,7 +1,7 @@
 package fi.nls.oskari.fe.output.format.json;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.vividsolutions.jts.geom.Geometry;
+import org.locationtech.jts.geom.Geometry;
 import fi.nls.oskari.fe.gml.util.GeometryProperty;
 import fi.nls.oskari.fe.iri.Resource;
 import fi.nls.oskari.fe.output.AbstractOutputStreamProcessor;

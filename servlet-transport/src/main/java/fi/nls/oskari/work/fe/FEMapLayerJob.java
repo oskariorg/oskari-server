@@ -1,6 +1,6 @@
 package fi.nls.oskari.work.fe;
 
-import com.vividsolutions.jts.geom.Geometry;
+import org.locationtech.jts.geom.Geometry;
 import fi.nls.oskari.domain.map.wfs.WFSSLDStyle;
 import fi.nls.oskari.eu.elf.recipe.universal.ELF_path_parse_worker;
 import fi.nls.oskari.fe.engine.FEEngineManager;

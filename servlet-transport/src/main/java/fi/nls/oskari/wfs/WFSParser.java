@@ -1,7 +1,7 @@
 package fi.nls.oskari.wfs;
 
-import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.Point;
+import org.locationtech.jts.geom.Geometry;
+import org.locationtech.jts.geom.Point;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.wfs.pojo.WFSLayerStore;
@@ -16,8 +16,8 @@ import org.geotools.feature.SchemaException;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.geotools.geometry.jts.JTS;
 import org.geotools.geometry.jts.ReferencedEnvelope;
-import org.geotools.resources.Classes;
-import org.geotools.xml.Parser;
+import org.geotools.util.Classes;
+import org.geotools.xsd.Parser;
 import org.opengis.feature.Property;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;

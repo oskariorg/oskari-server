@@ -105,7 +105,7 @@ public class IntersectionFeatureCollection2 implements GeoServerProcess {
                             + ") and second (" + secondGeomType.getName() + ") collection must be polygonal");
         }
         if (!isGeometryTypeIn(firstGeomType, MultiPolygon.class, Polygon.class,
-                MultiLineString.class, LineString.class) && !firstGeomType.isAssignableFrom(com.vividsolutions.jts.geom.Geometry.class)  ) {
+                MultiLineString.class, LineString.class) && !firstGeomType.isAssignableFrom(org.locationtech.jts.geom.Geometry.class)  ) {
             throw new IllegalArgumentException(
                     "First feature collection must be polygonal or linear. Was: " + firstGeomType.getName());
         }

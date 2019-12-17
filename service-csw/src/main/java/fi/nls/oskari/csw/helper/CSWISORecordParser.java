@@ -1,6 +1,6 @@
 package fi.nls.oskari.csw.helper;
 
-import com.vividsolutions.jts.geom.*;
+import org.locationtech.jts.geom.*;
 import fi.nls.oskari.csw.domain.CSWIsoRecord;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;

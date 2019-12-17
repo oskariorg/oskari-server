@@ -1,6 +1,6 @@
 package fi.nls.oskari.arcgis;
 
-import com.vividsolutions.jts.geom.Coordinate;
+import org.locationtech.jts.geom.Coordinate;
 import fi.nls.oskari.arcgis.pojo.ArcGisFeature;
 import fi.nls.oskari.arcgis.pojo.ArcGisLayerStore;
 import fi.nls.oskari.arcgis.pojo.ArcGisProperty;

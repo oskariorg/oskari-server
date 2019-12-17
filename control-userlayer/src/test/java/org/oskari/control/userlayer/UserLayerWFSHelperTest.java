@@ -19,7 +19,7 @@ import org.oskari.geojson.GeoJSONSchemaDetector;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.vividsolutions.jts.geom.MultiLineString;
+import org.locationtech.jts.geom.MultiLineString;
 
 public class UserLayerWFSHelperTest {
 

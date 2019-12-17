@@ -7,7 +7,7 @@ import fi.nls.oskari.wfs.util.HttpHelper;
 import fi.nls.oskari.wfs.util.XMLHelper;
 import org.eclipse.xsd.XSDSchema;
 import org.eclipse.xsd.util.XSDSchemaLocator;
-import org.geotools.xml.Schemas;
+import org.geotools.xsd.Schemas;
 
 import java.io.BufferedInputStream;
 import java.util.Iterator;

@@ -2,7 +2,7 @@ package fi.nls.oskari.fe.output.format.jsonld;
 
 import com.fasterxml.jackson.core.JsonGenerationException;
 import com.github.jsonldjava.utils.JSONUtils;
-import com.vividsolutions.jts.geom.Geometry;
+import org.locationtech.jts.geom.Geometry;
 import fi.nls.oskari.fe.iri.Resource;
 import fi.nls.oskari.fe.output.AbstractOutputStreamProcessor;
 import fi.nls.oskari.fe.output.OutputProcessor;

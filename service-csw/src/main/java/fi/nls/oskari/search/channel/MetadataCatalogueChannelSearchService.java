@@ -1,14 +1,14 @@
 package fi.nls.oskari.search.channel;
 
-import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.Polygon;
+import org.locationtech.jts.geom.Geometry;
+import org.locationtech.jts.geom.Polygon;
 import org.geotools.geometry.jts.JTS;
 import org.geotools.referencing.CRS;
 import org.opengis.referencing.operation.MathTransform;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
-import com.vividsolutions.jts.geom.LineString;
-import com.vividsolutions.jts.geom.CoordinateSequence;
-import com.vividsolutions.jts.geom.GeometryFactory;
+import org.locationtech.jts.geom.LineString;
+import org.locationtech.jts.geom.CoordinateSequence;
+import org.locationtech.jts.geom.GeometryFactory;
 import fi.mml.portti.service.search.ChannelSearchResult;
 import fi.mml.portti.service.search.IllegalSearchCriteriaException;
 import fi.mml.portti.service.search.SearchCriteria;

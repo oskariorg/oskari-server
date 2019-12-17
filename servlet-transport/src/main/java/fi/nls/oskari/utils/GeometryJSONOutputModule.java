@@ -3,7 +3,7 @@ package fi.nls.oskari.utils;
 import com.fasterxml.jackson.core.Version;
 import com.fasterxml.jackson.databind.Module;
 import com.fasterxml.jackson.databind.module.SimpleModule;
-import com.vividsolutions.jts.geom.Geometry;
+import org.locationtech.jts.geom.Geometry;
 
 @SuppressWarnings("serial")
 public class GeometryJSONOutputModule extends SimpleModule {

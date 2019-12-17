@@ -1,7 +1,7 @@
 package fi.nls.oskari.work.arcgis;
 
-import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.Point;
+import org.locationtech.jts.geom.Geometry;
+import org.locationtech.jts.geom.Point;
 import fi.nls.oskari.arcgis.ArcGisCommunicator;
 import fi.nls.oskari.arcgis.ArcGisFilter;
 import fi.nls.oskari.arcgis.ArcGisImage;

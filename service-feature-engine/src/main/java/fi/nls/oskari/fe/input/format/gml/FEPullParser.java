@@ -1,9 +1,9 @@
 package fi.nls.oskari.fe.input.format.gml;
 
-import org.geotools.xml.Configuration;
-import org.geotools.xml.impl.ElementHandler;
-import org.geotools.xml.impl.NodeImpl;
-import org.geotools.xml.impl.ParserHandler;
+import org.geotools.xsd.Configuration;
+import org.geotools.xsd.impl.ElementHandler;
+import org.geotools.xsd.impl.NodeImpl;
+import org.geotools.xsd.impl.ParserHandler;
 import org.xml.sax.SAXException;
 
 import javax.xml.namespace.QName;

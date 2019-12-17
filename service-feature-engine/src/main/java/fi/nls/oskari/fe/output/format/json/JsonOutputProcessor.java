@@ -9,7 +9,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.module.SimpleModule;
-import com.vividsolutions.jts.geom.Geometry;
+import org.locationtech.jts.geom.Geometry;
 import fi.nls.oskari.fe.iri.Resource;
 import fi.nls.oskari.fe.output.AbstractOutputStreamProcessor;
 import fi.nls.oskari.fe.output.OutputProcessor;

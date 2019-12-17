@@ -1,8 +1,8 @@
 package fi.nls.oskari.work;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.Point;
+import org.locationtech.jts.geom.Geometry;
+import org.locationtech.jts.geom.Point;
 import fi.nls.oskari.map.geometry.ProjectionHelper;
 import fi.nls.oskari.pojo.SessionStore;
 import fi.nls.oskari.service.ServiceRuntimeException;

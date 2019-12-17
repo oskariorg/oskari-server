@@ -1,6 +1,6 @@
 package fi.nls.oskari.search.channel;
 
-import com.vividsolutions.jts.geom.Geometry;
+import org.locationtech.jts.geom.Geometry;
 import fi.mml.portti.service.search.SearchCriteria;
 import fi.nls.oskari.control.metadata.MetadataField;
 import fi.nls.oskari.log.LogFactory;

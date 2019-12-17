@@ -1,6 +1,6 @@
 package fi.nls.oskari.fe.output.format.png.geotools;
 
-import com.vividsolutions.jts.geom.Geometry;
+import org.locationtech.jts.geom.Geometry;
 import fi.nls.oskari.fe.iri.Resource;
 import fi.nls.oskari.fe.output.AbstractOutputStreamProcessor;
 import fi.nls.oskari.fe.output.OutputProcessor;
@@ -23,8 +23,8 @@ import org.geotools.renderer.lite.StreamingRenderer;
 import org.geotools.sld.SLDConfiguration;
 import org.geotools.styling.*;
 import org.geotools.styling.Stroke;
-import org.geotools.xml.Configuration;
-import org.geotools.xml.Parser;
+import org.geotools.xsd.Configuration;
+import org.geotools.xsd.Parser;
 import org.json.JSONObject;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
