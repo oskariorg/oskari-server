@@ -12,8 +12,9 @@ public class ForceDisableByFile extends AppStatus {
 
     private String fileToCheck;
 
+    private static final String PROP_FILE_REF = "disablefile.path";
     public void init() {
-        fileToCheck = PropertyUtil.get("disablefile.path", null);
+        fileToCheck = PropertyUtil.get(PROP_FILE_REF, null);
     }
 
     public boolean isEnabled() {
@@ -37,7 +38,7 @@ public class ForceDisableByFile extends AppStatus {
     }
 
     public String getDescription() {
-        return "Checks if a configured file exists.";
+        return "Checks if a configured disabling-file (oskari-ext.properties: " + PROP_FILE_REF + ") exists.";
     }
 
     /**
