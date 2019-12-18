@@ -26,6 +26,9 @@ public class ForceDisableByFile extends AppStatus {
      * @return
      */
     public Level getLevel() {
+        if (!isEnabled()) {
+            return Level.OK;
+        }
         File status = new File(fileToCheck);
         if(status.exists()) {
             return Level.BROKEN;
@@ -34,7 +37,7 @@ public class ForceDisableByFile extends AppStatus {
     }
 
     public String getDescription() {
-        return "Checks if file '" + fileToCheck + "' exists.";
+        return "Checks if a configured file exists.";
     }
 
     /**
@@ -42,6 +45,9 @@ public class ForceDisableByFile extends AppStatus {
      * @return
      */
     public String getReason() {
+        if (isOk()) {
+            return "";
+        }
         return fileToCheck + " file exists";
     }
 
