@@ -89,9 +89,11 @@ public class OskariWFSClient {
             // Try to parse the same response as GML
             fc = parseGML(response, crs, url, user, pass, gmlDecoder);
             if (fc != null) {
+                LOG.info("Requested JSON but got GML. Possibly misconfigured service for", url);
                 return fc;
             }
             // Okay I guess it wasn't a GML FeatureCollection either - move on
+            LOG.info("Requested JSON but didn't get a parseable result. Possibly misconfigured service for", url);
         }
 
         // Fallback to to requesting GML
