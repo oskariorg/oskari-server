@@ -40,6 +40,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import static fi.nls.oskari.service.capabilities.CapabilitiesConstants.KEY_FEATURE_OUTPUT_FORMATS;
+
 
 /**
  * Methods for parsing WFS capabilities data
@@ -106,8 +108,7 @@ public class GetGtWFSCapabilities {
         Set<String> crss = FORMATTER.getCRSsToStore(systemCRSs, capaCRSs);
         JSONHelper.put(capaJSON, "srs", new JSONArray(crss));
         if (capa.containsKey(KEY_ALLOWED_FORMATS)) {
-            JSONObject formats = JSONHelper.createJSONObject(KEY_JSON_CAPA_AVAILABLE, capa.get(KEY_ALLOWED_FORMATS));
-            JSONHelper.putValue(capaJSON, KEY_JSON_CAPA_FORMATS, formats);
+            JSONHelper.putValue(capaJSON, KEY_FEATURE_OUTPUT_FORMATS, capa.get(KEY_ALLOWED_FORMATS));
         }
         return capaJSON;
     }
