@@ -1,19 +1,14 @@
 package org.oskari.service.wfs.client;
 
 import fi.nls.oskari.domain.map.OskariLayer;
-import fi.nls.oskari.log.LogFactory;
-import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.service.ServiceRuntimeException;
-import fi.nls.oskari.util.IOHelper;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.xml.Encoder;
 import org.opengis.filter.Filter;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -22,14 +17,13 @@ import java.util.Map;
  */
 public class OskariWFS2Client {
 
-    private static final Logger LOG = LogFactory.getLogger(OskariWFS2Client.class);
-
     private static final OskariGML32 OSKARI_GML32 = new OskariGML32();
 
     private OskariWFS2Client() {}
 
     /**
      * @return SimpleFeatureCollection containing the parsed Features, or null if all fails
+     * @throws ServiceRuntimeException if everything fails
      */
     public static SimpleFeatureCollection getFeatures(OskariLayer layer,
             ReferencedEnvelope bbox, CoordinateReferenceSystem crs, Filter filter) {
@@ -37,44 +31,10 @@ public class OskariWFS2Client {
         String typeName = layer.getName();
         String user = layer.getUsername();
         String pass = layer.getPassword();
-
+        boolean tryGeoJSON = OskariWFSClient.tryGeoJSON(layer);
         int maxFeatures = OskariWFSClient.getMaxFeatures(layer);
-
         Map<String, String> query = getQueryParams(typeName, bbox, crs, maxFeatures, filter);
-
-        byte[] response = new byte[0];
-
-        if (OskariWFSClient.tryGeoJSON(layer)) {
-            // First try GeoJSON
-            query.put("OUTPUTFORMAT", "application/json");
-            try {
-                response = OskariWFSClient.getResponse(endPoint, user, pass, query);
-                return OskariWFSClient.parseGeoJSON(new ByteArrayInputStream(response), crs);
-            } catch (ServiceRuntimeException e) {
-                if (!"400".equals(e.getMessageKey())) throw e;
-                // fallback to gml
-            } catch (IOException e) {
-                if (!OskariWFSClient.isOutputFormatInvalid(new ByteArrayInputStream(response))) {
-                    // If we can not determine that the exception was due to bad
-                    // outputFormat parameter then don't bother trying GML
-                    final String url = IOHelper.constructUrl(endPoint, query);
-                    LOG.debug("Response from", url, "was:\n", new String(response, StandardCharsets.UTF_8));
-                    throw new ServiceRuntimeException("Unable to parse GeoJSON from " + url, e);
-                }
-            }
-        }
-
-        // Fallback to GML
-        query.remove("OUTPUTFORMAT");
-        response = OskariWFSClient.getResponse(endPoint, user, pass, query);
-
-        try {
-            return OSKARI_GML32.decodeFeatureCollection(new ByteArrayInputStream(response), user, pass);
-        } catch (Exception e) {
-            final String url = IOHelper.constructUrl(endPoint, query);
-            LOG.debug("Response from", url, "was:\n", new String(response, StandardCharsets.UTF_8));
-            throw new ServiceRuntimeException("Unable to parse GML from " + url, e);
-        }
+        return OskariWFSClient.getFeatures(endPoint, user, pass, query, crs, tryGeoJSON, OSKARI_GML32);
     }
 
     protected static Map<String, String> getQueryParams(String typeName, ReferencedEnvelope bbox,
