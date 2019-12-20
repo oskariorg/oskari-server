@@ -34,7 +34,7 @@ import net.opengis.wfs.FeatureCollectionType;
  * SimpleFeatureCollection simpleFeatureCollection(Collection<?>
  * are marked private in the GML class, so they are copy-pasted over
  */
-public class OskariGML extends GML {
+public class OskariGML extends GML implements OskariGMLDecoder {
 
     public OskariGML() {
         super(Version.WFS1_1);
