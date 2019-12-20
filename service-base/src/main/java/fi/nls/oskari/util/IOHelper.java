@@ -1136,6 +1136,19 @@ public class IOHelper {
     }
 
     /**
+     * Deprecated, misleading name,
+     * use getInputOrErrorStream(HttpURLConnection) instead
+     */
+    @Deprecated
+    public static InputStream getInputStream(HttpURLConnection conn) {
+        try {
+            return conn.getInputStream();
+        } catch (IOException e) {
+            return conn.getErrorStream();
+        }
+    }
+
+    /**
      * Ignore HttpURLConnection response fully 
      * Useful for example when the status code or the content type
      * wasn't what was expected. Allows HttpURLConnection
