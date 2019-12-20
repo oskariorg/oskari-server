@@ -93,7 +93,7 @@ public class OskariWFSClient {
                 return fc;
             }
             // Okay I guess it wasn't a GML FeatureCollection either - move on
-            LOG.info("Requested JSON but didn't get a parseable result. Possibly misconfigured service for", url);
+            LOG.warn("Requested JSON but didn't get a parseable result. Making a new request for GML. Possibly misconfigured service for", url);
         }
 
         // Fallback to to requesting GML
