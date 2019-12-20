@@ -170,38 +170,4 @@ public class OskariWFSClient {
         return layer.getCapabilities().optInt(KEY_MAX_FEATURES, DEFAULT_MAX_FEATURES);
     }
 
-    protected static boolean isOutputFormatInvalid(InputStream in) {
-        try {
-            OWSException ex = OWSExceptionReportParser.parse(in);
-            return isExceptionDueToInvalidOutputFormat(ex);
-        } catch (Exception e) {
-            LOG.debug(e);
-            return false;
-        }
-    }
-
-    /**
-     * We might get:
-     * <ows:ExceptionReport xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ows="http://www.opengis.net/ows" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.opengis.net/ows http://schemas.opengis.net/ows/1.1.0/owsExceptionReport.xsd" version="1.1.0">
-     * <ows:Exception exceptionCode="InvalidParameterValue" locator="Unknown">
-     * <ows:ExceptionText>
-     * <![CDATA[ OutputFormat 'application/json' not supported. ]]>
-     * </ows:ExceptionText>
-     * </ows:Exception>
-     * </ows:ExceptionReport>
-     * @param ex
-     * @return
-     */
-    protected static boolean isExceptionDueToInvalidOutputFormat(OWSException ex) {
-        if (ex.getExceptionCode().equalsIgnoreCase("InvalidParameterValue")) {
-            if (EXC_HANDLING_OUTPUTFORMAT.equalsIgnoreCase(ex.getLocator())) {
-                return true;
-            }
-            if (ex.getExceptionText() != null &&
-                    ex.getExceptionText().toLowerCase().contains(EXC_HANDLING_OUTPUTFORMAT)) {
-                return true;
-            }
-        }
-        return false;
-    }
 }
