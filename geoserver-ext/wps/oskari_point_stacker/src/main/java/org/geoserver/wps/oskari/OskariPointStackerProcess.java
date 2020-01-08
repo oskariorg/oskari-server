@@ -35,7 +35,7 @@ import org.geotools.process.ProcessException;
 import org.geotools.process.factory.DescribeParameter;
 import org.geotools.process.factory.DescribeProcess;
 import org.geotools.process.factory.DescribeResult;
-import org.geotools.process.gs.GSProcess;
+import org.geoserver.wps.gs.GeoServerProcess;
 import org.geotools.referencing.CRS;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
@@ -74,7 +74,7 @@ import java.util.*;
  * 
  */
 @DescribeProcess(title = "Oskari Point Stacker", description = "Aggregates a collection of points over a grid into one point per grid cell.")
-public class OskariPointStackerProcess implements GSProcess {
+public class OskariPointStackerProcess implements GeoServerProcess {
     
     public enum PreserveLocation { 
         /**
