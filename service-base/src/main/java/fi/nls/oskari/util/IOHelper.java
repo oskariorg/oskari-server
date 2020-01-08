@@ -76,7 +76,7 @@ public class IOHelper {
     }
 
     /**
-     * Reads the given input stream and converts its contents to a string using #DEFAULT_CHARSET
+     * Reads the InputStream of HttpURLConnection and converts its contents to a string using #DEFAULT_CHARSET
      * @param conn
      * @return
      * @throws IOException
@@ -93,19 +93,19 @@ public class IOHelper {
         return readString(conn, DEFAULT_CHARSET);
     }
     /**
-     * Reads the given input stream and converts its contents to a string using given charset
+     * Reads the InputStream of HttpURLConnection and converts its contents to a string using given charset
      * @param conn connection used to get inputstream and detect gzip encoding
      * @param charset
      * @return
      * @throws IOException
      */
     public static String readString(HttpURLConnection conn, final String charset) throws IOException {
-        if(ENCODING_GZIP.equals(conn.getContentEncoding())) {
-            return readString(new GZIPInputStream(conn.getInputStream()), charset);
+        try (InputStream in = conn.getInputStream()) {
+            try (InputStream inner = isResponseGZIPd(conn) ? new GZIPInputStream(in) : in) {
+                return readString(inner, charset);
+            }
         }
-        return readString(conn.getInputStream(), charset);
     }
-
 
     public static List<String> readLines(InputStream in) throws IOException {
         return readLines(in, StandardCharsets.UTF_8);
@@ -175,17 +175,36 @@ public class IOHelper {
     }
 
     /**
-     * Reads the given input stream and returns its contents as a byte array.
+     * Reads the InputStream of HttpURLConnection to a byte array and returns that
      * @param conn used to get inputstream and detect possible gzip encoding
      * @return
      * @throws IOException
      */
     public static byte[] readBytes(HttpURLConnection conn) throws IOException {
-        if(ENCODING_GZIP.equals(conn.getContentEncoding())) {
-            return readBytes(new GZIPInputStream(conn.getInputStream()));
+        try (InputStream in = conn.getInputStream()) {
+            try (InputStream inner = isResponseGZIPd(conn) ? new GZIPInputStream(in) : in) {
+                return readBytes(inner);
+            }
         }
-        return readBytes(conn.getInputStream());
     }
+
+    /**
+     * Reads the InputStream of HttpURLConnection to given OutputStream
+     * @param conn used to get inputstream and detect possible gzip encoding
+     * @throws IOException
+     */
+    public static void readBytesTo(HttpURLConnection conn, OutputStream out) throws IOException {
+        try (InputStream in = conn.getInputStream()) {
+            try (InputStream inner = isResponseGZIPd(conn) ? new GZIPInputStream(in) : in) {
+                copy(inner, out);
+            }
+        }
+    }
+
+    private static boolean isResponseGZIPd(HttpURLConnection conn) {
+        return ENCODING_GZIP.equals(conn.getContentEncoding());
+    }
+
     /**
      * Reads the given input stream and returns its contents as a byte array.
      * @param is
@@ -1116,6 +1135,11 @@ public class IOHelper {
         return s;
     }
 
+    /**
+     * Deprecated, misleading name,
+     * use getInputOrErrorStream(HttpURLConnection) instead
+     */
+    @Deprecated
     public static InputStream getInputStream(HttpURLConnection conn) {
         try {
             return conn.getInputStream();
@@ -1131,10 +1155,18 @@ public class IOHelper {
      * pooling method to keep the underlying TCP connection alive 
      */
     public static void closeSilently(HttpURLConnection c) {
-        try (InputStream in = getInputStream(c)) {
+        try (InputStream in = getInputOrErrorStream(c)) {
             readFullyIgnoring(in);
         } catch (IOException ignore) {
             // Ignore
+        }
+    }
+
+    private static InputStream getInputOrErrorStream(HttpURLConnection conn) {
+        try {
+            return conn.getInputStream();
+        } catch (IOException e) {
+            return conn.getErrorStream();
         }
     }
 
