@@ -20,6 +20,7 @@ import fi.nls.oskari.map.layer.group.link.OskariLayerGroupLinkService;
 import fi.nls.oskari.map.view.ViewService;
 import fi.nls.oskari.map.view.util.ViewHelper;
 import fi.nls.oskari.service.ServiceException;
+import fi.nls.oskari.service.ServiceUnauthorizedException;
 import fi.nls.oskari.service.capabilities.CapabilitiesConstants;
 import fi.nls.oskari.service.capabilities.OskariLayerCapabilitiesHelper;
 import fi.nls.oskari.util.*;
@@ -41,6 +42,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.*;
 import java.util.stream.Collectors;
+
+import javax.servlet.http.HttpServletResponse;
 
 @OskariActionRoute("LayerAdmin")
 public class LayerAdminHandler extends AbstractLayerAdminHandler {
@@ -193,10 +196,32 @@ public class LayerAdminHandler extends AbstractLayerAdminHandler {
             return;
         }
         //GetCapabilities
-        JSONObject results = getLayersFromService(params);
-        ResponseHelper.writeResponse(params, results);
-
+        try {
+        	JSONObject results = getLayersFromService(params);
+        	ResponseHelper.writeResponse(params, results);
+		} catch (Exception e) {
+			if(isServiceUnauthrorizedException(e)) {
+				ResponseHelper.writeError(params, e.getMessage(), HttpServletResponse.SC_UNAUTHORIZED);
+			} else {
+				ResponseHelper.writeError(params, e.getMessage());
+			}
+		}
     }
+    
+    private boolean isServiceUnauthrorizedException(Throwable t) {
+    	return getRootCause(t) instanceof ServiceUnauthorizedException;
+    }
+    
+    private Throwable getRootCause(Throwable e) {
+        Throwable cause = null;
+        Throwable result = e;
+
+        while(null != (cause = result.getCause())  && (result != cause) ) {
+            result = cause;
+        }
+        return result;
+    }
+    
     @Override
     public void handleDelete (ActionParameters params) throws ActionException {
         final int id = params.getRequiredParamInt(PARAM_LAYER_ID);

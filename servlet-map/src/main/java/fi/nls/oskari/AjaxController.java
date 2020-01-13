@@ -3,6 +3,7 @@ package fi.nls.oskari;
 import fi.nls.oskari.control.*;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.service.ServiceUnauthorizedException;
 import fi.nls.oskari.spring.extension.OskariParam;
 import fi.nls.oskari.util.ResponseHelper;
 import org.oskari.log.AuditLog;
@@ -69,17 +70,18 @@ public class AjaxController {
             ResponseHelper.writeError(params, e.getMessage());
         } catch (ActionException e) {
             // Internal failure -> print stack trace
-            Throwable error = e;
-            if(e.getCause() != null) {
-                error = e.getCause();
-            }
+        	Throwable error = e;
+        	if(e.getCause() != null) {
+        		error = e.getCause();
+        	}
             log.error(error, "Couldn't handle action:", route, "Message: ", e.getMessage(), ". Parameters: ", params.getRequest().getParameterMap());
             AuditLog.user(params.getClientIp(), params.getUser())
                     .withParams(params.getRequest().getParameterMap())
                     .withMsg(error.getMessage())
                     .errored(AuditLog.ResourceType.GENERIC);
+            
+           
             ResponseHelper.writeError(params, e.getMessage());
-        }
+        } 
     }
-
 }

@@ -4,7 +4,7 @@ import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.service.ServiceException;
-
+import fi.nls.oskari.service.ServiceUnauthorizedException;
 import fi.nls.oskari.service.capabilities.OskariLayerCapabilitiesHelper;
 import fi.nls.oskari.util.PropertyUtil;
 import org.geotools.data.DataStoreFinder;
@@ -48,7 +48,7 @@ public class WFSCapabilitiesService {
     }
 
     private static WFSDataStore getDataStore (String url, String version,
-                                                String user, String pw) throws ServiceException {
+                                                String user, String pw) throws ServiceException, ServiceUnauthorizedException {
         try {
             Map connectionParameters = new HashMap();
             connectionParameters.put("WFSDataStoreFactory:GET_CAPABILITIES_URL", getUrl(url, version));
@@ -59,12 +59,24 @@ public class WFSCapabilitiesService {
             }
             //  connection
             return (WFSDataStore) DataStoreFinder.getDataStore(connectionParameters);
-            //TODO: try to catch wrong version or unauthorized
+            //TODO: try to catch wrong version
             //IllegalStateException: Unable to parse GetCapabilities document
-            //IOException: Server returned HTTP response code: 401 for URL: xxx
-        } catch (Exception ex) {
+        } catch (IOException e) {
+			if (isUnauthorizedException(e)) {
+				throw new ServiceUnauthorizedException("Unauthorized response received from url: " + url + " Message: " + e.getMessage());
+			}else {
+				throw new ServiceException("Couldn't read/get wfs capabilities response from url: " + url + " Message: " + e.getMessage());
+			}
+		} 
+        catch (Exception ex) {
             throw new ServiceException("Couldn't read/get wfs capabilities response from url: " + url + " Message: " + ex.getMessage());
         }
+    }
+    
+    private static boolean isUnauthorizedException(IOException e) {
+    	return e.getMessage() != null && (
+    			e.getMessage().contains("Server returned HTTP response code: 401") ||
+    				e.getMessage().contains("Server returned HTTP response code: 403"))	;
     }
 
     private static String getUrl(String url, String version) throws ServiceException {
