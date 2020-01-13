@@ -80,26 +80,8 @@ public class AjaxController {
                     .withMsg(error.getMessage())
                     .errored(AuditLog.ResourceType.GENERIC);
             
-            if (isServiceUnauthrorizedException(e)) {
-            	ResponseHelper.writeError(params, e.getMessage(), HttpServletResponse.SC_UNAUTHORIZED);
-            } else {
-            	ResponseHelper.writeError(params, e.getMessage());
-            }
-            
+           
+            ResponseHelper.writeError(params, e.getMessage());
         } 
-    }
-    
-    private boolean isServiceUnauthrorizedException(Throwable t) {
-    	return getRootCause(t) instanceof ServiceUnauthorizedException;
-    }
-    
-    private Throwable getRootCause(Throwable e) {
-        Throwable cause = null;
-        Throwable result = e;
-
-        while(null != (cause = result.getCause())  && (result != cause) ) {
-            result = cause;
-        }
-        return result;
     }
 }
