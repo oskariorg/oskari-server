@@ -17,10 +17,33 @@ public class V1_55_2__migrate_wfslayers implements JdbcMigration {
     public void migrate(Connection conn) throws Exception {
         // read previous config from portti_wfs_layer
         List<WFSConfig> configs = getCurrentConfigs(conn);
-        // migrate config to oskari_maplayer.attributes merging the current with the new one
+        /*
+        Migrates portti_wfs_layer:
+        - selected_feature_params
+        - feature_params_locales
+        - feature_namespace_url
+        - max_features
+
+        To oskari_maplayer.attributes merging the current with the new attributes.
+
+        The feature_namespace and feature_element are already available as oskari_maplayer.name so we don't need to migrate those.
+        We might need to migrate wps_params. It might be used in analysis.
+         */
         List<LayerAttributes> list = migrateAttributes(conn, configs);
         // update in db
         updateAttrs(conn, list);
+
+        /*
+        After this migration we change WFSLayerConfigurationService to return stuff from oskari_maplayer and can drop some tables:
+
+        - portti_wfs_template_model
+        - portti_wfs_layers_styles
+        - portti_wfs_layer_style
+        - oskari_wfs_parser_config
+        - portti_wfs_layer
+
+        After that we can migrate code to use OskariLayerService instead of WFSLayerConfigurationService
+        */
     }
 
     private List<LayerAttributes> migrateAttributes(Connection conn, List<WFSConfig> configs) throws SQLException {
