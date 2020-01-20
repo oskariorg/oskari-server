@@ -118,7 +118,7 @@ public class WFSLayerConfiguration {
     private int templateModelId = 0;  //id of portti_wfs_template_model row (FE configs when jobtype=feature-engine
     private String jobType;
     private String requestImpulse;
-    private JSONObject attributes = new JSONObject();
+    private WFSLayerAttributes attrs;
 
 	private double minScale;
 	private double maxScale;
@@ -490,14 +490,17 @@ public class WFSLayerConfiguration {
     }
 
     public JSONObject getAttributes() {
-        return attributes;
+        if (attrs == null) {
+            return null;
+        }
+        return attrs.getAttributes();
     }
 
     public void setAttributes(JSONObject attributes) {
-        this.attributes = attributes;
+        this.attrs = new WFSLayerAttributes(attributes);
     }
     public void setAttributes(String attributes) {
-        this.attributes = attributes != null ? JSONHelper.createJSONObject(attributes) : null;
+        this.setAttributes(JSONHelper.createJSONObject(attributes));
     }
 
 
@@ -820,15 +823,23 @@ public class WFSLayerConfiguration {
 
 
     public  boolean isReverseXY(String epsg) {
-        if(this.attributes != null && this.attributes.has("reverseXY")){
-            return JSONHelper.getJSONObject(this.attributes, "reverseXY").has(epsg.toUpperCase());
+	    JSONObject attributes = getAttributes();
+	    if (attributes == null) {
+	        return false;
+        }
+        if(attributes.has("reverseXY")){
+            return JSONHelper.getJSONObject(attributes, "reverseXY").has(epsg.toUpperCase());
         }
         return false;
     }
 
     public boolean isLongSrsName(String epsg) {
-        if(this.attributes != null && this.attributes.has("longSrsName")){
-            return JSONHelper.getJSONObject(this.attributes, "longSrsName").has(epsg.toUpperCase());
+        JSONObject attributes = getAttributes();
+        if (attributes == null) {
+            return false;
+        }
+        if(attributes.has("longSrsName")){
+            return JSONHelper.getJSONObject(attributes, "longSrsName").has(epsg.toUpperCase());
         }
         return false;
     }
