@@ -69,6 +69,8 @@ public class WFSLayerAttributes {
         }
         attributes = wfsAttrs;
         // Preparse
+        maxFeatures = wfsAttrs.optInt("maxFeatures", 1);
+        namespaceURL = wfsAttrs.optString("namespaceURL");
         JSONObject data = wfsAttrs.optJSONObject("data");
         if (data != null) {
             locales = data.optJSONObject("locale");

@@ -1,5 +1,6 @@
 package fi.nls.oskari.domain.map.wfs;
 
+import fi.nls.oskari.util.JSONHelper;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Test;
@@ -157,26 +158,30 @@ public class WFSLayerAttributesTest {
         assertFalse("Filter wasn't given", attrs.hasFilter());
         assertFalse("Localization wasn't given", attrs.getLocalization("en").isPresent());
     }
-// Work-in-progress:
+
     @Test
     public void testSimpleFilter() throws JSONException {
-        WFSLayerAttributes attrs = new WFSLayerAttributes(new JSONObject(attributesSimpleFilter));
-        System.out.println(attrs.getSelectedAttributes().size());
-        System.out.println(attrs.getMaxFeatures());
-        System.out.println(attrs.getNamespaceURL());
-        System.out.println(attrs.getAttributes());
-        System.out.println(attrs.hasFilter());
-        System.out.println(attrs.getLocalization("en").isPresent());
+        JSONObject input = new JSONObject(attributesSimpleFilter);
+        WFSLayerAttributes attrs = new WFSLayerAttributes(input);
+        assertEquals("11 attributes selected", 11, attrs.getSelectedAttributes().size());
+        assertEquals("Max features set", 100, attrs.getMaxFeatures());
+        assertEquals("Namespace set", "http://oskari.org", attrs.getNamespaceURL());
+        assertTrue("Input & output match", JSONHelper.isEqual(input, attrs.getAttributes()));
+        assertTrue("Filter was given", attrs.hasFilter());
+        assertFalse("English locale wasn't given", attrs.getLocalization("en").isPresent());
     }
 
     @Test
     public void testLocalizedFilter() throws JSONException {
-        WFSLayerAttributes attrs = new WFSLayerAttributes(new JSONObject(attributesLocalizedFilter));
-        System.out.println(attrs.getSelectedAttributes().size());
-        System.out.println(attrs.getMaxFeatures());
-        System.out.println(attrs.getNamespaceURL());
-        System.out.println(attrs.getAttributes());
-        System.out.println(attrs.hasFilter());
-        System.out.println(attrs.getLocalization("en").isPresent());
+        JSONObject input = new JSONObject(attributesLocalizedFilter);
+        WFSLayerAttributes attrs = new WFSLayerAttributes(input);
+
+        assertEquals("11 attributes selected for default lang", 11, attrs.getSelectedAttributes().size());
+        assertEquals("11 attributes selected for sv lang", 11, attrs.getSelectedAttributes("sv").size());
+        assertEquals("Max features set", 100, attrs.getMaxFeatures());
+        assertEquals("Namespace set", "http://oskari.org", attrs.getNamespaceURL());
+        assertTrue("Input & output match", JSONHelper.isEqual(input, attrs.getAttributes()));
+        assertTrue("Filter was given", attrs.hasFilter());
+        assertTrue("English locale wasn't given", attrs.getLocalization("en").isPresent());
     }
 }
