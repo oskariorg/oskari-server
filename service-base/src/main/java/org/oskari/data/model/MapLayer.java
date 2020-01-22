@@ -25,7 +25,8 @@ public class MapLayer {
     double maxscale = -1;
 
     String legend_image;
-    String metadataid; // tarvitaanko?
+    String metadataid;
+    boolean internal;
 
     Map<String, String> params;
     // opts and attributes can be deep nested structure -> Object
@@ -36,30 +37,20 @@ public class MapLayer {
     String gfi_xslt;
     String gfi_content;
 
-    String coverageAreaWKT; // == geometry -> get from capabilities/CSW
-    @Deprecated
-    String geometry;
-
     boolean base_map;
     boolean realtime; // -> move to options
-    boolean refresh_rate; // -> move to options
-    int capabilities_update_rate_sec = -1;
+    int refresh_rate; // -> move to options
+    int capabilities_update_rate_sec = -1; // -> move to attributes?
 
     // for admin functionality
     int dataprovider_id = -1;
     // for initial db content
     String dataprovider;
-    // old key for initial db content
-    @Deprecated
-    String organization;
 
     // for admin functionality
     Set<Integer> group_ids;
     // for initial db content
     Set<String> groups;
-    // old key for initial db content
-    @Deprecated
-    String inspiretheme;
 
     /*
     "role_permissions": {
@@ -140,6 +131,7 @@ public class MapLayer {
         this.srs = srs;
     }
 
+    @Deprecated
     public void setSrs_name(String srs_name) {
         this.srs = srs_name;
     }
@@ -240,18 +232,6 @@ public class MapLayer {
         this.gfi_content = gfi_content;
     }
 
-    public String getCoverageAreaWKT() {
-        return coverageAreaWKT;
-    }
-
-    public void setCoverageAreaWKT(String coverageAreaWKT) {
-        this.coverageAreaWKT = coverageAreaWKT;
-    }
-
-    public void setGeometry(String geometry) {
-        this.coverageAreaWKT = geometry;
-    }
-
     public boolean isBase_map() {
         return base_map;
     }
@@ -268,11 +248,11 @@ public class MapLayer {
         this.realtime = realtime;
     }
 
-    public boolean isRefresh_rate() {
+    public int getRefresh_rate() {
         return refresh_rate;
     }
 
-    public void setRefresh_rate(boolean refresh_rate) {
+    public void setRefresh_rate(int refresh_rate) {
         this.refresh_rate = refresh_rate;
     }
 
@@ -301,6 +281,7 @@ public class MapLayer {
     }
 
 
+    @Deprecated
     public void setOrganization(String organization) {
         this.dataprovider = organization;
     }
@@ -321,10 +302,19 @@ public class MapLayer {
         this.groups = groups;
     }
 
+    @Deprecated
     public void setInspiretheme(String inspiretheme) {
         Set<String> groups = new HashSet<>();
         groups.add(inspiretheme);
         setGroups(groups);
+    }
+
+    public boolean isInternal() {
+        return internal;
+    }
+
+    public void setInternal(boolean internal) {
+        this.internal = internal;
     }
 
     public Map<String, Set<String>> getRole_permissions() {
