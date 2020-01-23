@@ -6,56 +6,56 @@ import java.util.Set;
 
 public class MapLayer {
 
-    int id = -1;
-    String type;
-    String url;
-    String username;
-    String password;
-    String version;
-    String name;
-    Map<String, Map<String, String>> locale;
+    private int id = -1;
+    private String type;
+    private String url;
+    private String username;
+    private String password;
+    private String version;
+    private String name;
+    private Map<String, Map<String, String>> locale;
 
-    String srs;
+    private String srs;
 
-    int opacity = 100;
-    String style;
-    double minscale = -1;
-    double maxscale = -1;
+    private int opacity = 100;
+    private String style;
+    private double minscale = -1;
+    private double maxscale = -1;
 
-    String legend_image;
-    String metadataid;
-    boolean internal;
+    private String legend_image;
+    private String metadataid;
+    private boolean internal;
 
-    Map<String, String> params;
+    private Map<String, String> params;
     // opts and attributes can be deep nested structure -> Object
-    Map<String, Object> options;
-    Map<String, Object> attributes;
+    private Map<String, Object> options;
+    private Map<String, Object> attributes;
 
-    String gfi_type;
-    String gfi_xslt;
-    String gfi_content;
+    private String gfi_type;
+    private String gfi_xslt;
+    private String gfi_content;
 
-    boolean base_map;
-    boolean realtime; // -> move to options
-    int refresh_rate; // -> move to options
-    int capabilities_update_rate_sec = -1; // -> move to attributes?
-
-    // for admin functionality
-    int dataprovider_id = -1;
-    // for initial db content
-    String dataprovider;
+    private boolean base_map;
+    private boolean realtime; // -> move to options
+    private int refresh_rate; // -> move to options
+    private int capabilities_update_rate_sec = -1; // -> move to attributes?
 
     // for admin functionality
-    Set<Integer> group_ids;
+    private int dataprovider_id = -1;
     // for initial db content
-    Set<String> groups;
+    private String dataprovider;
+
+    // for admin functionality
+    private Set<Integer> group_ids;
+    // for initial db content
+    private Set<String> groups;
 
     /*
     "role_permissions": {
         "Guest" : ["VIEW_LAYER", "VIEW_PUBLISHED"],
         "User" : ["VIEW_LAYER", "VIEW_PUBLISHED", "PUBLISH"]
     }*/
-    Map<String, Set<String>> role_permissions;
+    private Map<String, Set<String>> role_permissions;
 
     public int getId() {
         return id;
