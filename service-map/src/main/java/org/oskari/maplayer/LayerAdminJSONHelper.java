@@ -20,11 +20,11 @@ public class LayerAdminJSONHelper {
         OBJECT_MAPPER.setSerializationInclusion(JsonInclude.Include.NON_NULL);
     }
 
-    public static MapLayer readJSON(String layerJSON) throws ServiceException {
+    public static MapLayer readJSON(String layerJSON) {
         try {
             return OBJECT_MAPPER.readValue(layerJSON, MapLayer.class);
         } catch (Exception ex) {
-            throw new ServiceException("Coudn't parse layer from: " + layerJSON, ex);
+            throw new ServiceRuntimeException("Coudn't parse layer from: " + layerJSON, ex);
         }
     }
     public static OskariLayer fromJSON(MapLayer model) {
