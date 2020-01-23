@@ -20,11 +20,14 @@ public class LayerAdminJSONHelper {
         OBJECT_MAPPER.setSerializationInclusion(JsonInclude.Include.NON_NULL);
     }
 
-    private static DataProviderService getDataProviderService() {
-        return OskariComponentManager.getComponentOfType(DataProviderService.class);
+    public static MapLayer readJSON(String layerJSON) throws ServiceException {
+        try {
+            return OBJECT_MAPPER.readValue(layerJSON, MapLayer.class);
+        } catch (Exception ex) {
+            throw new ServiceException("Coudn't parse layer from: " + layerJSON, ex);
+        }
     }
-
-    private OskariLayer fromJSON(MapLayer model) {
+    public static OskariLayer fromJSON(MapLayer model) {
         OskariLayer layer = new OskariLayer();
         layer.setId(model.getId());
         layer.setType(model.getType());
@@ -71,7 +74,7 @@ public class LayerAdminJSONHelper {
         return layer;
     }
 
-    private int getDataProviderId(MapLayer model) {
+    private static int getDataProviderId(MapLayer model) {
         DataProvider provider = null;
         if (model.getDataprovider_id() > 0) {
             provider = getDataProviderService().find(model.getDataprovider_id());
@@ -84,11 +87,7 @@ public class LayerAdminJSONHelper {
         return provider.getId();
     }
 
-    public static MapLayer readJSON(String layerJSON) throws ServiceException {
-        try {
-            return OBJECT_MAPPER.readValue(layerJSON, MapLayer.class);
-        } catch (Exception ex) {
-            throw new ServiceException("Coudn't parse layer from: " + layerJSON, ex);
-        }
+    private static DataProviderService getDataProviderService() {
+        return OskariComponentManager.getComponentOfType(DataProviderService.class);
     }
 }
