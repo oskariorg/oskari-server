@@ -311,18 +311,24 @@ public class ActionParameters {
         return getRequest().getSession().getId();
     }
 
+    public String getPayLoad() throws ActionParamsException {
+        HttpServletRequest req = this.getRequest();
+        try (InputStream in = req.getInputStream()) {
+            final byte[] json = IOHelper.readBytes(in);
+            return new String(json, StandardCharsets.UTF_8);
+        } catch (Exception e) {
+            throw new ActionParamsException("Unable to read payload", e);
+        }
+    }
     /**
      * Get play load JSON
      * @return
      */
     public JSONObject getPayLoadJSON() throws ActionParamsException {
-        HttpServletRequest req = this.getRequest();
-        try (InputStream in = req.getInputStream()) {
-            final byte[] json = IOHelper.readBytes(in);
-            final String jsonString = new String(json, StandardCharsets.UTF_8);
-            return new JSONObject(jsonString);
-        } catch (Exception exception) {
-            throw new ActionParamsException("Cannot get payload JSON");
+        try {
+            return new JSONObject(getPayLoad());
+        } catch (JSONException e) {
+            throw new ActionParamsException("Cannot get payload JSON", e);
         }
     }
 }
