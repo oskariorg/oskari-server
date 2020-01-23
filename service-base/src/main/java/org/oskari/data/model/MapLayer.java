@@ -16,8 +16,6 @@ public class MapLayer {
     Map<String, Map<String, String>> locale;
 
     String srs;
-    @Deprecated
-    String srs_name;
 
     int opacity = 100;
     String style;
