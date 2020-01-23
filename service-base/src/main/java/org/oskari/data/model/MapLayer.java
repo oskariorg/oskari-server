@@ -37,7 +37,7 @@ public class MapLayer {
 
     private boolean base_map;
     private boolean realtime; // -> move to options
-    private int refresh_rate; // -> move to options
+    private int refresh_rate = -1; // -> move to options
     private int capabilities_update_rate_sec = -1; // -> move to attributes?
 
     // for admin functionality
