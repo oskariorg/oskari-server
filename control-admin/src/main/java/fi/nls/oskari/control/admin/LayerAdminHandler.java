@@ -213,13 +213,14 @@ public class LayerAdminHandler extends AbstractLayerAdminHandler {
     }
     
     private Throwable getRootCause(Throwable e) {
-        Throwable cause = null;
-        Throwable result = e;
-
-        while(null != (cause = result.getCause())  && (result != cause) ) {
-            result = cause;
+        if (e == null) {
+            return null;
         }
-        return result;
+        Throwable cause = e.getCause();
+        if (e == cause || cause == null) {
+            return e;
+        }
+        return getRootCause(cause);
     }
     
     @Override
