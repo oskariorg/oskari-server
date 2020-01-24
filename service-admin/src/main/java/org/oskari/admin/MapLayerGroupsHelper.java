@@ -13,7 +13,14 @@ import java.util.stream.Collectors;
 
 public class MapLayerGroupsHelper {
 
-    public static List<MaplayerGroup> findGroups(Set<String> groups) {
+    /**
+     * This method is dangerous since find a group named "a" will find pretty much every group in the database.
+     * It's up to the caller to have "specific enough" name to find.
+     * Note! matches any part of the locale json for name (SQL ~= locale LIKE '%input%'
+     * @param groups
+     * @return
+     */
+    public static List<MaplayerGroup> findGroupsForNames_dangerzone_(Set<String> groups) {
         if (groups == null) {
             return Collections.emptyList();
         }

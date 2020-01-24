@@ -23,6 +23,7 @@ public class MapLayerPermissionsHelper {
     */
     public static void setLayerPermissions(int layerId, Map<String, Set<String>> permissions) {
         if (permissions == null || permissions.isEmpty()) {
+            // TODO: should we clear the layer permissions here for consistency?
             return;
         }
         final Resource res = new Resource();

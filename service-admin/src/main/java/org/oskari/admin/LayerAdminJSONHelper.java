@@ -68,8 +68,8 @@ public class LayerAdminJSONHelper {
         layer.setInternal(model.isInternal());
 
         // TODO: handle sublayers layer.getSublayers()
-        // TODO: handle groups
-        // TODO: role_permissions
+        // TODO: handle groups -> MapLayerGroupsHelper.findGroupsForNames_dangerzone_() + setGroupsForLayer()
+        // TODO: role_permissions -> MapLayerPermissionsHelper.setLayerPermissions()
         return layer;
     }
 

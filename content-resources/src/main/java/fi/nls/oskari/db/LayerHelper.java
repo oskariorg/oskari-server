@@ -40,7 +40,7 @@ public class LayerHelper {
             MapLayerPermissionsHelper.setLayerPermissions(id, layer.getRole_permissions());
 
             if (layer.getGroups() != null) {
-                List<MaplayerGroup> groups = MapLayerGroupsHelper.findGroups(layer.getGroups());
+                List<MaplayerGroup> groups = MapLayerGroupsHelper.findGroupsForNames_dangerzone_(layer.getGroups());
                 if (layer.getGroups().size() != groups.size()) {
                     log.warn("Couldn't find all the layer groups for layer.");
                 }
