@@ -31,6 +31,7 @@ import fi.nls.oskari.wms.WMSCapabilitiesService;
 import fi.nls.oskari.wmts.WMTSCapabilitiesService;
 import org.geotools.data.wfs.WFSDataStore;
 import org.json.JSONException;
+import org.oskari.admin.LayerCapabilitiesHelper;
 import org.oskari.log.AuditLog;
 import fi.nls.oskari.wmts.domain.WMTSCapabilities;
 import org.json.JSONArray;
@@ -53,12 +54,7 @@ public class LayerAdminHandler extends AbstractLayerAdminHandler {
         boolean keywords = true;
     }
     private static final String PARAM_LAYER_ID = "id";
-    private static final String PARAM_CAPABILITIES_URL = "url";
     private static final String PARAM_CURRENT_SRS = "srs";
-    private static final String PARAM_VERSION = "version";
-    private static final String PARAM_USERNAME = "user";
-    private static final String PARAM_PASSWORD = "pw";
-    private static final String PARAM_TYPE = "type";
 
     private static final String KEY_LAYER_FOR_ADMIN = "layer";
     private static final String KEY_LAYER_FOR_LIST = "layerForList";
@@ -108,14 +104,9 @@ public class LayerAdminHandler extends AbstractLayerAdminHandler {
     private static final String KEY_PERMISSIONS_FAIL = "insertPermissionsFail";
     private static final String KEY_KEYWORDS_FAIL = "insertKeywordsFail";
 
-    private static final String ERROR_INSERT_FAILED = "insert_failed";
-    private static final String ERROR_UPDATE_FAILED = "update_failed";
     private static final String ERROR_NO_LAYER_WITH_ID = "layer_not_found";
-    private static final String ERROR_OPERATION_NOT_PERMITTED = "not_permitted";
     private static final String ERROR_MANDATORY_FIELD_MISSING = "mandatory_field_missing";
     private static final String ERROR_INVALID_FIELD_VALUE = "invalid_field_value";
-
-    private static final List<String> OWS_SERVICES = Arrays.asList("ows", "wms", "wmts", "wfs");
 
     private OskariLayerService mapLayerService = ServiceFactory.getMapLayerService();
     private ViewService viewService = ServiceFactory.getViewService();
@@ -124,7 +115,6 @@ public class LayerAdminHandler extends AbstractLayerAdminHandler {
     private OskariLayerGroupLinkService layerGroupLinkService = ServiceFactory.getOskariLayerGroupLinkService();
     private WMTSCapabilitiesService wmtsCapabilities = new WMTSCapabilitiesService();
     private WMSCapabilitiesService wmsCapabilities = new WMSCapabilitiesService();
-    private Set<String> systemCRSs;
 
     // needed only for cleaning layer from portti_wfs_layer when wfs layer is deleted
     private WFSLayerConfigurationService wfsLayerService = new WFSLayerConfigurationServiceIbatisImpl();
@@ -183,46 +173,16 @@ public class LayerAdminHandler extends AbstractLayerAdminHandler {
     @Override
     public void handleGet(ActionParameters params) throws ActionException {
         // If params has layerId then requested layer for editing
-        final int layerId = params.getHttpParam(PARAM_LAYER_ID, -1);
+        final int layerId = params.getRequiredParamInt(PARAM_LAYER_ID);
+        OskariLayer ml = getMapLayer(params.getUser(), layerId);
+        JSONObject response = new JSONObject();
+        if(!updateCapabilities(ml)) {
+            JSONHelper.putValue(response, KEY_RESPONSE_WARN, KEY_UPDATE_CAPA_FAIL);
+        }
+        JSONHelper.putValue(response, KEY_LAYER_FOR_ADMIN, getLayerForEdit(params.getUser(), ml));
+        ResponseHelper.writeResponse(params, response);
+    }
 
-        if (layerId > 0) {
-            OskariLayer ml = getMapLayer(params.getUser(), layerId);
-            JSONObject response = new JSONObject();
-            if(!updateCapabilities(ml)) {
-                JSONHelper.putValue(response, KEY_RESPONSE_WARN, KEY_UPDATE_CAPA_FAIL);
-            }
-            JSONHelper.putValue(response, KEY_LAYER_FOR_ADMIN, getLayerForEdit(params.getUser(), ml));
-            ResponseHelper.writeResponse(params, response);
-            return;
-        }
-        //GetCapabilities
-        try {
-        	JSONObject results = getLayersFromService(params);
-        	ResponseHelper.writeResponse(params, results);
-		} catch (Exception e) {
-			if(isServiceUnauthrorizedException(e)) {
-				ResponseHelper.writeError(params, e.getMessage(), HttpServletResponse.SC_UNAUTHORIZED);
-			} else {
-				ResponseHelper.writeError(params, e.getMessage());
-			}
-		}
-    }
-    
-    private boolean isServiceUnauthrorizedException(Throwable t) {
-    	return getRootCause(t) instanceof ServiceUnauthorizedException;
-    }
-    
-    private Throwable getRootCause(Throwable e) {
-        if (e == null) {
-            return null;
-        }
-        Throwable cause = e.getCause();
-        if (e == cause || cause == null) {
-            return e;
-        }
-        return getRootCause(cause);
-    }
-    
     @Override
     public void handleDelete (ActionParameters params) throws ActionException {
         final int id = params.getRequiredParamInt(PARAM_LAYER_ID);
@@ -526,22 +486,7 @@ public class LayerAdminHandler extends AbstractLayerAdminHandler {
 
     private boolean updateCapabilities (OskariLayer ml) {
         try {
-            final Set<String> systemCRSs = ViewHelper.getSystemCRSs(viewService);
-
-            switch (ml.getType()) {
-                case OskariLayer.TYPE_WFS:
-                    WFSDataStore wfs = WFSCapabilitiesService.getDataStore (ml);
-                    OskariLayerCapabilitiesHelper.setPropertiesFromCapabilitiesWFS(wfs, ml, systemCRSs);
-                    break;
-                case OskariLayer.TYPE_WMS:
-                    WebMapService wms = wmsCapabilities.updateCapabilities(ml);
-                    OskariLayerCapabilitiesHelper.setPropertiesFromCapabilitiesWMS(wms, ml, systemCRSs);
-                    break;
-                case OskariLayer.TYPE_WMTS:
-                    WMTSCapabilities wmts = wmtsCapabilities.updateCapabilities(ml);
-                    OskariLayerCapabilitiesHelper.setPropertiesFromCapabilitiesWMTS(wmts, ml, systemCRSs);
-                    break;
-            }
+            LayerCapabilitiesHelper.updateCapabilities(ml);
             return true;
         } catch (Exception e) {
             LOG.error("Failed to set capabilities for layer:", ml, e.getMessage());
@@ -628,100 +573,4 @@ public class LayerAdminHandler extends AbstractLayerAdminHandler {
     }
 
 
-    private JSONObject getLayersFromService(ActionParameters params) throws ActionException {
-        User user = params.getUser();
-        requireAdd(user);
-        final String url = validateUrl(params.getRequiredParam(PARAM_CAPABILITIES_URL, "Parameter: " + PARAM_CAPABILITIES_URL + " is missing."));
-        final String type = params.getRequiredParam(PARAM_TYPE, "Parameter: " + PARAM_TYPE + " is missing.");
-        final String version = params.getRequiredParam(PARAM_VERSION, "Parameter: " + PARAM_VERSION + " is missing.");
-        final String username = params.getHttpParam(PARAM_USERNAME, "");
-        final String password = params.getHttpParam(PARAM_PASSWORD, "");
-        final String currentSrs = params.getHttpParam(PARAM_CURRENT_SRS, PropertyUtil.get("oskari.native.srs", "EPSG:4326"));
-        JSONObject results = new JSONObject();
-        Map<String, Object> capabilities;
-        Set <String> systemCRSs = getSystemCRSs();
-        try {
-            switch (type) {
-                case OskariLayer.TYPE_WMS:
-                    capabilities = wmsCapabilities.getCapabilitiesResults(url, version, username, password, systemCRSs);
-                    JSONHelper.putValue(results, CapabilitiesConstants.KEY_WMS_STRUCTURE, capabilities.get(CapabilitiesConstants.KEY_WMS_STRUCTURE));
-                    break;
-                case OskariLayer.TYPE_WFS:
-                    capabilities = WFSCapabilitiesService.getCapabilitiesResults (url, version, username, password, systemCRSs);
-                    break;
-                case OskariLayer.TYPE_WMTS:
-                    capabilities = wmtsCapabilities.getCapabilitiesResults(url, version, username, password, currentSrs, systemCRSs);
-                    JSONHelper.putValue(results, CapabilitiesConstants.KEY_WMTS_MATRIXSET, capabilities.get(CapabilitiesConstants.KEY_WMTS_MATRIXSET));
-                    // TODO if raw xml is needed then add to results
-                    break;
-                default:
-                    throw new ActionParamsException("Couldn't determine operation based on parameters");
-            }
-        } catch (ServiceException e) {
-            throw new ActionException("Capabilities parsing failed: " + e.getMessage(), e);
-        }
-
-        JSONObject layers = new JSONObject();
-        JSONArray unsupported = new JSONArray();
-        JSONArray capaFailed = new JSONArray();
-        JSONHelper.putValue(results, CapabilitiesConstants.KEY_TITLE, capabilities.getOrDefault(CapabilitiesConstants.KEY_TITLE, ""));
-        if (capabilities.containsKey(CapabilitiesConstants.KEY_VERSION)) {
-            JSONHelper.putValue(results, CapabilitiesConstants.KEY_VERSION,
-                    capabilities.get(CapabilitiesConstants.KEY_VERSION));
-        }
-        for (OskariLayer ml : (List<OskariLayer>) capabilities.get(CapabilitiesConstants.KEY_LAYERS)) {
-            validateCapabilities(ml, currentSrs, unsupported, capaFailed);
-            JSONHelper.putValue(layers, ml.getName(), parseOskariLayer(ml));
-        }
-        JSONHelper.putValue(results, CapabilitiesConstants.KEY_LAYERS, layers);
-        JSONHelper.put(results, CapabilitiesConstants.KEY_UNSUPPORTED_LAYERS, unsupported);
-        JSONHelper.put(results, CapabilitiesConstants.KEY_NO_CAPA_LAYERS, capaFailed);
-
-        String existingUrl = removeOWSServiceFromUrl(url);
-        Map<String, List<Integer>> exists = mapLayerService.findNamesAndIdsByUrl(existingUrl, type);
-        JSONHelper.putValue(results, CapabilitiesConstants.KEY_EXISTING_LAYERS, exists);
-
-        JSONHelper.putValue(results, CapabilitiesConstants.KEY_ERROR_LAYERS,
-                capabilities.getOrDefault(CapabilitiesConstants.KEY_ERROR_LAYERS, new JSONArray()));
-
-        // FIXME: Move code for permissions to GetAllRolesAndPermissionTypes route (https://github.com/oskariorg/oskari-server/pull/462)
-        // Remove from here after the code has been moved
-        JSONHelper.putValue(results, KEY_ROLE_PERMISSIONS, getPermissionTemplateJson(user));
-
-        return results;
-
-    }
-    private Set<String> getSystemCRSs() throws ActionException {
-        if (systemCRSs != null) {
-            return systemCRSs;
-        }
-        try {
-            systemCRSs = ViewHelper.getSystemCRSs(viewService);
-            return systemCRSs;
-        } catch (ServiceException e) {
-            throw new ActionException("Failed to get systemCRSs", e);
-        }
-    }
-    // TODO handle here or in frontend
-    private void validateCapabilities (OskariLayer ml, String currentSrs, JSONArray unsupported, JSONArray capaFailed) {
-        String layerName = ml.getName();
-        JSONObject capa = ml.getCapabilities();
-
-        if (capa.length() == 0) {
-            capaFailed.put(layerName);
-            return;
-        }
-        List<String> srs = JSONHelper.getArrayAsList(JSONHelper.getJSONArray(capa, CapabilitiesConstants.KEY_SRS));
-        if (!srs.contains(currentSrs)){
-            unsupported.put(layerName);
-        }
-    }
-    private String removeOWSServiceFromUrl (String url) {
-        for (String ows : OWS_SERVICES) {
-            if (url.toLowerCase().endsWith(ows)) {
-                return url.substring(0, url.length() - ows.length());
-            }
-        }
-        return url;
-    }
 }
