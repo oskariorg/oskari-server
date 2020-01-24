@@ -14,9 +14,9 @@ import java.util.stream.Collectors;
 public class MapLayerGroupsHelper {
 
     /**
-     * This method is dangerous since find a group named "a" will find pretty much every group in the database.
-     * It's up to the caller to have "specific enough" name to find.
-     * Note! matches any part of the locale json for name (SQL ~= locale LIKE '%input%'
+     * This method is dangerous since searching for a group named "a" will find pretty much every group in the database.
+     * It's up to the caller to have "specific enough" name to look for.
+     * Note! matches any part of the locale json for name (SQL ~= locale LIKE '%input%')
      * @param groups
      * @return
      */
