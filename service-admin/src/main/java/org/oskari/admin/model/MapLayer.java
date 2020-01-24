@@ -1,4 +1,4 @@
-package org.oskari.admin;
+package org.oskari.admin.model;
 
 import java.util.HashSet;
 import java.util.Map;
