@@ -97,7 +97,7 @@ public class WFSCapabilitiesService {
         }
     }
 
-    public static Map<String, Object> getCapabilitiesWFS (String url, String version,
+    private static Map<String, Object> getCapabilitiesWFS (String url, String version,
                                            String user, String pw, Set<String> systemCRSs) throws ServiceException, IOException {
         WFSDataStore data = getDataStore(url, version, user, pw);
         String title = data.getInfo().getTitle();
@@ -113,7 +113,7 @@ public class WFSCapabilitiesService {
                 OskariLayer ml = toOskariLayer(layerName, layerTitle, version, url, user, pw);
                 try {
                     OskariLayerCapabilitiesHelper.setPropertiesFromCapabilitiesWFS(capa, source, ml, systemCRSs);
-                }catch (ServiceException e) {} //list layer even capabilities fails
+                } catch (ServiceException e) {} //list layer even capabilities fails
                 layers.add(ml);
             } catch (Exception e) {
                 String error = e.getMessage();
@@ -130,7 +130,7 @@ public class WFSCapabilitiesService {
         return results;
     }
 
-    public static Map<String, Object> getCapabilitiesWFS3 (String url, String user, String pw, Set<String> systemCRSs) throws WFS3Exception, IOException {
+    private static Map<String, Object> getCapabilitiesWFS3 (String url, String user, String pw, Set<String> systemCRSs) throws WFS3Exception, IOException {
         WFS3Service service = WFS3Service.fromURL(url, user, pw);
         List<OskariLayer> layers = new ArrayList<>();
 
