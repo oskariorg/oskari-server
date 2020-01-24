@@ -37,6 +37,7 @@ public class LayerHelper {
             // layer doesn't exist, insert it
             final OskariLayer oskariLayer = LayerAdminJSONHelper.fromJSON(layer);
             int id = layerService.insert(oskariLayer);
+            // TODO: add info from capabilities?
             MapLayerPermissionsHelper.setLayerPermissions(id, layer.getRole_permissions());
 
             if (layer.getGroups() != null) {
