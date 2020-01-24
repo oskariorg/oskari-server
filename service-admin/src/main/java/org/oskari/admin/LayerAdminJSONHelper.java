@@ -1,4 +1,4 @@
-package org.oskari.maplayer;
+package org.oskari.admin;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.DeserializationFeature;
