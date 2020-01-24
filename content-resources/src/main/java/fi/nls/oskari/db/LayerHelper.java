@@ -1,38 +1,27 @@
 package fi.nls.oskari.db;
 
-import fi.mml.map.mapwindow.service.db.OskariMapLayerGroupService;
-import fi.mml.map.mapwindow.service.db.OskariMapLayerGroupServiceIbatisImpl;
-import fi.nls.oskari.domain.Role;
 import fi.nls.oskari.domain.map.MaplayerGroup;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.layer.OskariLayerService;
 import fi.nls.oskari.map.layer.OskariLayerServiceMybatisImpl;
-import fi.nls.oskari.map.layer.group.link.OskariLayerGroupLink;
-import fi.nls.oskari.map.layer.group.link.OskariLayerGroupLinkService;
-import fi.nls.oskari.map.layer.group.link.OskariLayerGroupLinkServiceMybatisImpl;
-import fi.nls.oskari.user.MybatisRoleService;
 import fi.nls.oskari.util.IOHelper;
+import org.oskari.admin.MapLayerGroupsHelper;
+import org.oskari.admin.MapLayerPermissionsHelper;
 import org.oskari.data.model.MapLayer;
-import org.oskari.maplayer.LayerAdminJSONHelper;
-import org.oskari.permissions.PermissionService;
-import org.oskari.permissions.PermissionServiceMybatisImpl;
-import org.oskari.permissions.model.*;
+import org.oskari.admin.LayerAdminJSONHelper;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.stream.Collectors;
 
+// Service-admin provides helpers for inserting layers BUT this helper has been used in multiple migrations for setting
+// up initial content so keeping it as compatibility solution
 public class LayerHelper {
 
     private static final Logger log = LogFactory.getLogger(LayerHelper.class);
     private static final OskariLayerService layerService = new OskariLayerServiceMybatisImpl();
-    private static final OskariMapLayerGroupService groupService = new OskariMapLayerGroupServiceIbatisImpl();
-    private static final OskariLayerGroupLinkService linkService = new OskariLayerGroupLinkServiceMybatisImpl();
-    private static final PermissionService permissionsService = new PermissionServiceMybatisImpl();
-    private static final MybatisRoleService roleService = new MybatisRoleService();
 
     public static int setupLayer(final String layerfile) throws IOException {
         final String jsonStr = IOHelper.readString(DBHandler.getInputStreamFromResource("/json/layers/" + layerfile));
@@ -48,60 +37,19 @@ public class LayerHelper {
             // layer doesn't exist, insert it
             final OskariLayer oskariLayer = LayerAdminJSONHelper.fromJSON(layer);
             int id = layerService.insert(oskariLayer);
-            oskariLayer.setId(id);
-            setupLayerPermissions(layer.getRole_permissions(), id);
+            MapLayerPermissionsHelper.setLayerPermissions(id, layer.getRole_permissions());
 
-            Set<String> groups = layer.getGroups();
-            if (groups == null) {
-                return id;
-            }
-            for (String groupName : groups) {
-
-                final MaplayerGroup group = groupService.findByName(groupName);
-                if (group == null) {
-                    log.warn("Didn't find match for group:", groupName);
-                } else {
-                    linkService.insert(new OskariLayerGroupLink(id, group.getId()));
+            if (layer.getGroups() != null) {
+                List<MaplayerGroup> groups = MapLayerGroupsHelper.findGroups(layer.getGroups());
+                if (layer.getGroups().size() != groups.size()) {
+                    log.warn("Couldn't find all the layer groups for layer.");
                 }
+                MapLayerGroupsHelper.setGroupsForLayer(id, groups.stream()
+                        .map(g -> g.getId())
+                        .collect(Collectors.toList()));
             }
             return id;
         }
     }
 
-    /*
-    "role_permissions": {
-        "Guest" : ["VIEW_LAYER"],
-        "User" : ["VIEW_LAYER"],
-        "Administrator" : ["VIEW_LAYER"]
-    }
-    */
-    private static void setupLayerPermissions(Map<String, Set<String>> permissions, int layerId) {
-        // setup rights
-        if(permissions == null || permissions.isEmpty()) {
-            return;
-        }
-        final Resource res = new Resource();
-        res.setType(ResourceType.maplayer);
-        res.setMapping(Integer.toString(layerId));
-
-        for(String roleName : permissions.keySet()) {
-            final Role role = roleService.findRoleByName(roleName);
-            if(role == null) {
-                log.warn("Couldn't find matching role in DB:", roleName, "- Skipping!");
-                continue;
-            }
-            final Set<String> permissionTypes = permissions.get(roleName);
-            if(permissionTypes == null) {
-                continue;
-            }
-            for (String type: permissionTypes) {
-                final Permission permission = new Permission();
-                permission.setExternalType(PermissionExternalType.ROLE);
-                permission.setExternalId((int) role.getId());
-                permission.setType(type);
-                res.addPermission(permission);
-            }
-        }
-        permissionsService.saveResource(res);
-    }
 }
