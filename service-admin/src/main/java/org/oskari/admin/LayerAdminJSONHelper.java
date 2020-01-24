@@ -8,8 +8,10 @@ import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.map.layer.DataProviderService;
 import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.service.ServiceRuntimeException;
+import fi.nls.oskari.util.JSONHelper;
 import org.json.JSONObject;
 import org.oskari.admin.model.MapLayer;
+import org.oskari.admin.model.MapLayerAdminOutput;
 
 public class LayerAdminJSONHelper {
 
@@ -26,6 +28,7 @@ public class LayerAdminJSONHelper {
             throw new ServiceRuntimeException("Coudn't parse layer from: " + layerJSON, ex);
         }
     }
+
     public static OskariLayer fromJSON(MapLayer model) {
         OskariLayer layer = new OskariLayer();
         layer.setId(model.getId());
@@ -72,6 +75,51 @@ public class LayerAdminJSONHelper {
         // TODO: role_permissions -> MapLayerPermissionsHelper.setLayerPermissions()
         return layer;
     }
+
+
+    public static MapLayerAdminOutput toJSON(OskariLayer layer) {
+        MapLayerAdminOutput out = new MapLayerAdminOutput();
+        out.setId(layer.getId());
+        out.setType(layer.getType());
+        out.setUrl(layer.getUrl());
+        out.setUsername(layer.getUsername());
+        out.setPassword(layer.getPassword());
+        out.setVersion(layer.getVersion());
+        out.setName(layer.getName());
+        out.setLocale(JSONHelper.getObjectAsMap(layer.getLocale()));
+
+        out.setSrs(layer.getSrs_name());
+        out.setOpacity(layer.getOpacity());
+        out.setStyle(layer.getStyle());
+        out.setMinscale(layer.getMinScale());
+        out.setMaxscale(layer.getMaxScale());
+
+        layer.setLegendImage(layer.getLegendImage());
+        layer.setMetadataId(layer.getMetadataId());
+
+        out.setParams(JSONHelper.getObjectAsMap(layer.getParams()));
+        out.setAttributes(JSONHelper.getObjectAsMap(layer.getAttributes()));
+        out.setOptions(JSONHelper.getObjectAsMap(layer.getOptions()));
+
+        out.setGfi_type(layer.getGfiType());
+        out.setGfi_xslt(layer.getGfiXslt());
+        out.setGfi_content(layer.getGfiContent());
+
+        out.setBase_map(layer.isBaseMap());
+        out.setRealtime(layer.getRealtime());
+        out.setRefresh_rate(layer.getRefreshRate());
+        out.setCapabilities_update_rate_sec(layer.getCapabilitiesUpdateRateSec());
+
+        out.setDataprovider_id(layer.getDataproviderId());
+        out.setInternal(layer.isInternal()); // we might not need to write this
+        out.setCapabilities(JSONHelper.getObjectAsMap(layer.getCapabilities()));
+
+        // TODO: handle sublayers layer.getSublayers()
+        // TODO: handle groups -> MapLayerGroupsHelper.findGroupsForNames_dangerzone_() + setGroupsForLayer()
+        // TODO: role_permissions -> MapLayerPermissionsHelper.setLayerPermissions()
+        return out;
+    }
+
 
     private static int getDataProviderId(MapLayer model) {
         DataProvider provider = null;
