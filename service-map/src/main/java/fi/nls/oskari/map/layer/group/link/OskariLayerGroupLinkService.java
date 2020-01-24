@@ -1,21 +1,23 @@
 package fi.nls.oskari.map.layer.group.link;
 
+import fi.nls.oskari.service.OskariComponent;
+
 import java.util.List;
 
-public interface OskariLayerGroupLinkService {
+public abstract class OskariLayerGroupLinkService extends OskariComponent {
 
-    public List<OskariLayerGroupLink> findAll();
+    public abstract List<OskariLayerGroupLink> findAll();
 
-    public List<OskariLayerGroupLink> findByLayerId(int layerId);
-    public List<OskariLayerGroupLink> findByGroupId(int groupId);
+    public abstract List<OskariLayerGroupLink> findByLayerId(int layerId);
+    public abstract List<OskariLayerGroupLink> findByGroupId(int groupId);
 
-    public void insert(OskariLayerGroupLink link);
-    public void insertAll(List<OskariLayerGroupLink> links);
+    public abstract void insert(OskariLayerGroupLink link);
+    public abstract void insertAll(List<OskariLayerGroupLink> links);
 
-    public void deleteLink(int layerId, int groupId);
-    public void deleteLinksByLayerId(int layerId);
+    public abstract void deleteLink(int layerId, int groupId);
+    public abstract void deleteLinksByLayerId(int layerId);
 
-    public void replace(OskariLayerGroupLink old, OskariLayerGroupLink link);
-    public boolean hasLinks(int groupId);
+    public abstract void replace(OskariLayerGroupLink old, OskariLayerGroupLink link);
+    public abstract boolean hasLinks(int groupId);
 
 }
