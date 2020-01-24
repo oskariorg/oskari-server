@@ -9,7 +9,6 @@ import fi.nls.oskari.map.layer.DataProviderService;
 import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.service.ServiceRuntimeException;
 import org.json.JSONObject;
-import org.oskari.data.model.MapLayer;
 
 public class LayerAdminJSONHelper {
 

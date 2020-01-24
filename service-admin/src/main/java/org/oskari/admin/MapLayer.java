@@ -1,9 +1,12 @@
-package org.oskari.data.model;
+package org.oskari.admin;
 
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * Used as input data model for inserting layers via Flyway or the admin UI.
+ */
 public class MapLayer {
 
     private int id = -1;

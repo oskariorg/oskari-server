@@ -1,9 +1,10 @@
 package org.oskari.admin;
 
-import org.oskari.data.model.MapLayer;
-
 import java.util.Map;
 
+/**
+ * Used as ouput data model for layers in the admin UI.
+ */
 public class MapLayerAdminOutput extends MapLayer {
 
     private Map<String, Object> capabilities;
