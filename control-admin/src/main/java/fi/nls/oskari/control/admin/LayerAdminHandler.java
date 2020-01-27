@@ -27,6 +27,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.oskari.admin.LayerAdminJSONHelper;
 import org.oskari.admin.LayerCapabilitiesHelper;
+import org.oskari.admin.model.MapLayer;
 import org.oskari.admin.model.MapLayerAdminOutput;
 import org.oskari.log.AuditLog;
 import org.oskari.permissions.model.Permission;
@@ -39,6 +40,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.*;
 import java.util.stream.Collectors;
+
+import static org.oskari.admin.LayerAdminJSONHelper.readJSON;
 
 @OskariActionRoute("LayerAdmin")
 public class LayerAdminHandler extends AbstractLayerAdminHandler {
@@ -83,10 +86,8 @@ public class LayerAdminHandler extends AbstractLayerAdminHandler {
     private static final String KEY_GFI_XSLT = "gfi_xslt";
     private static final String KEY_GFI_TYPE = "gfi_type";
     // Response from service
-    private static final String KEY_RESPONSE_WARN = "warn";
     private static final String KEY_UPDATE_CAPA_FAIL = "updateCapabilitiesFail";
     private static final String KEY_PERMISSIONS_FAIL = "insertPermissionsFail";
-    private static final String KEY_KEYWORDS_FAIL = "insertKeywordsFail";
     private static final String ERROR_NO_LAYER_WITH_ID = "layer_not_found";
     private static final String ERROR_MANDATORY_FIELD_MISSING = "mandatory_field_missing";
     private static final String ERROR_INVALID_FIELD_VALUE = "invalid_field_value";
@@ -119,10 +120,10 @@ public class LayerAdminHandler extends AbstractLayerAdminHandler {
 
     @Override
     public void handlePost(ActionParameters params) throws ActionException {
-        JSONObject layer = params.getPayLoadJSON();
+        MapLayer layer = LayerAdminJSONHelper.readJSON(params.getPayLoad());
         Result result;
         try {
-            if (layer.optInt(KEY_LAYER_ID) > 0) {
+            if (layer.getId() != null && layer.getId() > 0) {
                 result = updateLayer(params, layer);
             } else {
                 result = insertLayer(params, layer);
@@ -245,8 +246,8 @@ public class LayerAdminHandler extends AbstractLayerAdminHandler {
      * @throws ActionException
      * @throws JSONException   if mandatory field is missing or invalid type
      */
-    private Result updateLayer(final ActionParameters params, final JSONObject layer) throws ActionException, JSONException {
-        final int layerId = layer.getInt(KEY_LAYER_ID);
+    private Result updateLayer(final ActionParameters params, final MapLayer layer) throws ActionException, JSONException {
+        final int layerId = layer.getId();
         Result result = new Result();
         result.id = layerId;
         User user = params.getUser();
@@ -257,13 +258,13 @@ public class LayerAdminHandler extends AbstractLayerAdminHandler {
 
         // delete old layer groups before adding new ones
         layerGroupLinkService.deleteLinksByLayerId(layerId);
-        addMapLayerGroupds(layerId, layer);
+        // addMapLayerGroupds(layerId, layer);
 
         mapLayerService.update(ml);
         writeAuditLogUpdate(params, ml);
 
         removePermissions(user, layerId);
-        result.permissions = addPermissionsForRoles(user, layerId, layer);
+        result.permissions = addPermissionsForRoles(user, layerId, layer.getRole_permissions());
 
         // TODO is this needed
         // Remove old redis data of WFSLayer_xx
@@ -279,14 +280,15 @@ public class LayerAdminHandler extends AbstractLayerAdminHandler {
      * @throws ActionException
      * @throws JSONException   if mandatory field is missing or invalid type
      */
-    private Result insertLayer(final ActionParameters params, final JSONObject layer) throws ActionException, JSONException {
+    private Result insertLayer(final ActionParameters params, MapLayer layer) throws ActionException, JSONException {
         Result result = new Result();
         final User user = params.getUser();
         requireAdd(user);
         final OskariLayer ml = new OskariLayer();
         ml.setCreated(new Date(System.currentTimeMillis()));
-        ml.setType(layer.getString(KEY_LAYER_TYPE));
-        ml.setParentId(layer.optInt(KEY_PARENT_ID, ml.getParentId()));
+        // TODO: validate value!
+        ml.setType(layer.getType());
+        //ml.setParentId(layer.optInt(KEY_PARENT_ID, ml.getParentId()));
         handleRequestToMapLayer(ml, layer);
 
 
@@ -294,14 +296,14 @@ public class LayerAdminHandler extends AbstractLayerAdminHandler {
         result.id = layerId;
         ml.setId(layerId);
         writeAuditLogInsert(params, ml);
-        addMapLayerGroupds(layerId, layer);
+        //addMapLayerGroupds(layerId, layer);
 
         if (ml.isCollection()) {
             // update the name with the id for permission mapping
             ml.setName(layerId + "_group");
             mapLayerService.update(ml);
         }
-        result.permissions = addPermissionsForRoles(user, layerId, layer);
+        result.permissions = addPermissionsForRoles(user, layerId, layer.getRole_permissions());
         // insert keywords
         // TODO: only this requires oskari-control-base dependency
         GetLayerKeywords glk = new GetLayerKeywords();
@@ -315,6 +317,13 @@ public class LayerAdminHandler extends AbstractLayerAdminHandler {
         return result;
     }
 
+    private String getOrDefaultStr(String input, String defaultValue) {
+        if (input != null) {
+            return input;
+        }
+        return defaultValue;
+    }
+
     /**
      * Handles common request for insert and update
      *
@@ -323,43 +332,36 @@ public class LayerAdminHandler extends AbstractLayerAdminHandler {
      * @throws ActionException
      * @throws JSONException   if mandatory field is missing or invalid type
      */
-    private void handleRequestToMapLayer(OskariLayer ml, final JSONObject layer) throws ActionException, JSONException {
-        ml.setName(layer.getString(KEY_LAYER_NAME));
-        ml.setVersion(layer.optString(KEY_VERSION, ml.getVersion()));
+    private void handleRequestToMapLayer(OskariLayer ml, MapLayer layer) throws ActionException, JSONException {
+        ml.setName(layer.getName());
+        // TODO: should we rather modify OskariMaplayer setters so they won't accept null value over existing value?
+        ml.setVersion(getOrDefaultStr(layer.getVersion(), ml.getVersion()));
+        Map<String, Map<String, String>> locale = layer.getLocale();
+        for (String lang: locale.keySet()) {
+            Map<String, String> langLocale = locale.getOrDefault(lang, Collections.emptyMap());
+            // TODO: check that name is given
+            ml.setName(lang, langLocale.get(KEY_LOCALIZED_NAME));  // mandatory
+            ml.setTitle(lang, langLocale.get(KEY_LOCALIZED_TITLE));
 
-        JSONObject locale = layer.getJSONObject(KEY_LOCALE);
-        Iterator langKeys = locale.keys();
-        while (langKeys.hasNext()) {
-            String key = (String) langKeys.next();
-            JSONObject lang = locale.getJSONObject(key);
-            ml.setName(key, lang.getString(KEY_LOCALIZED_NAME)); // mandatory
-            String title = lang.optString(KEY_LOCALIZED_TITLE);
-            if (!title.isEmpty()) {
-                ml.setTitle(key, title);
-            }
         }
-        // TODO: or without validation we could set:
-        //ml.setLocale(layer.getJSONObject(KEY_LOCALE));
 
         // Add dataprovider
-        DataProvider provider = dataProviderService.find(layer.optInt(KEY_PROVIDER_ID));
-        if (provider == null) {
-            provider = dataProviderService.findByName(layer.optString(KEY_PROVIDER_NAME));
-        }
+        DataProvider provider = dataProviderService.find(layer.getDataprovider_id());
         // dataProviders is Set so is safety to use add also to update layer
         ml.addDataprovider(provider);
 
         if (ml.isCollection()) {
-            // ulr is needed for permission mapping, name is updated after we get the layer id
+            // url is needed for permission mapping, name is updated after we get the layer id
             ml.setUrl(ml.getType());
             // the rest is not relevant for collection layers
             return;
         }
 
-        ml.setUrl(layer.getString(KEY_LAYER_URL));
+        ml.setUrl(layer.getUrl());
         validateUrl(ml.getSimplifiedUrl(true));
 
-        ml.setSrs_name(layer.optString(KEY_LAYER_SRS, PropertyUtil.get("oskari.native.srs", "EPSG:4326")));
+        ml.setSrs_name(getOrDefaultStr(layer.getSrs(), PropertyUtil.get("oskari.native.srs", "EPSG:4326")));
+        /*
         ml.setBaseMap(layer.optBoolean(KEY_IS_BASE, ml.isBaseMap()));
         ml.setOpacity(layer.optInt(KEY_OPACITY, ml.getOpacity()));
         ml.setStyle(layer.optString(KEY_STYLE, ml.getStyle()));
@@ -402,6 +404,7 @@ public class LayerAdminHandler extends AbstractLayerAdminHandler {
         if (OskariLayer.TYPE_WMS.equals(ml.getType())) {
             handleWMSSpecific(ml, layer);
         }
+        */
     }
 
     private void handleWMSSpecific(OskariLayer ml, JSONObject layer) {
@@ -466,10 +469,13 @@ public class LayerAdminHandler extends AbstractLayerAdminHandler {
         layerGroupLinkService.insertAll(links);
     }
 
-    private boolean addPermissionsForRoles(final User user, final int layerId, final JSONObject layer) {
-        if (!user.isAdmin()) return false;
-        Map<String, JSONArray> permissions = JSONHelper.getObjectAsMap(JSONHelper.getJSONObject(layer, KEY_PERMISSIONS));
-        if (permissions.isEmpty()) return false;
+    private boolean addPermissionsForRoles(final User user, final int layerId, final Map<String, Set<String>> permissions) {
+        if (!user.isAdmin()) {
+            return false;
+        }
+        if (permissions == null) {
+            return false;
+        }
         Resource res = new Resource();
         res.setType(ResourceType.maplayer);
         res.setMapping(Integer.toString(layerId));
@@ -481,11 +487,14 @@ public class LayerAdminHandler extends AbstractLayerAdminHandler {
         return true;
     }
 
-    private void setPermission(Resource res, String roleName, JSONArray permissions) {
+    private void setPermission(Resource res, String roleName, Set<String> permissions) {
+        if (permissions == null) {
+            return;
+        }
         try {
             int id = getRoleId(roleName);
-            for (int i = 0; i < permissions.length(); i++) {
-                PermissionType type = PermissionType.valueOf(permissions.getString(i));
+            for (String permissionType: permissions) {
+                PermissionType type = PermissionType.valueOf(permissionType);
                 LOG.debug("Adding permissions:", type, "for role:", roleName);
                 Permission permission = new Permission();
                 permission.setRoleId(id);
