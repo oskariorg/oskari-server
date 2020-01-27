@@ -80,6 +80,7 @@ public class GetAppSetupHandlerTest extends JSONActionRouteTest {
         try {
             properties.load(GetAppSetupHandlerTest.class.getResourceAsStream("test.properties"));
             PropertyUtil.addProperties(properties);
+            PropertyUtil.addProperty("oskari.user.service", "fi.nls.oskari.service.DummyUserService", true);
             String locales = PropertyUtil.getNecessary("oskari.locales");
             if (locales == null)
                 fail("No darned locales");

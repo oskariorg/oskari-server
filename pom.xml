@@ -456,7 +456,13 @@
                 <artifactId>service-wfs3</artifactId>
                 <version>${fi.nls.oskari.version}</version>
             </dependency>
-            
+
+            <dependency>
+                <groupId>org.oskari</groupId>
+                <artifactId>service-admin</artifactId>
+                <version>${fi.nls.oskari.version}</version>
+            </dependency>
+
             <!-- Spring -->
             <dependency>
                 <groupId>org.springframework.security.extensions</groupId>
@@ -1270,6 +1276,7 @@
         <module>service-map</module>
         <module>service-myplaces</module>
         <module>service-rating</module>
+        <module>service-admin</module>
         <module>service-capabilities-update</module>
 
         <module>service-search</module>
