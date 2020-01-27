@@ -91,7 +91,7 @@ public class LayerCapabilitiesHelper {
     }
 
     // not used currently but this seems The place for this
-    private static void updateCapabilities(OskariLayer ml) throws ServiceException {
+    public static void updateCapabilities(OskariLayer ml) throws ServiceException {
         switch (ml.getType()) {
             case OskariLayer.TYPE_WFS:
                 WFSDataStore wfs = WFSCapabilitiesService.getDataStore(ml);

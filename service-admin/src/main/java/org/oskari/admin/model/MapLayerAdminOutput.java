@@ -7,6 +7,7 @@ import java.util.Map;
  */
 public class MapLayerAdminOutput extends MapLayer {
 
+    private String warn;
     private Map<String, Object> capabilities;
 
     public Map<String, Object> getCapabilities() {
@@ -15,5 +16,17 @@ public class MapLayerAdminOutput extends MapLayer {
 
     public void setCapabilities(Map<String, Object> capabilities) {
         this.capabilities = capabilities;
+    }
+
+    /**
+     * Possible warning message that capabilities coulnt' be updated
+     * @return
+     */
+    public String getWarn() {
+        return warn;
+    }
+
+    public void setWarn(String warn) {
+        this.warn = warn;
     }
 }

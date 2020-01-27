@@ -7,7 +7,6 @@ import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.JSONHelper;
 import org.json.JSONObject;
 import org.junit.Test;
-import org.oskari.admin.model.MapLayer;
 
 import static org.junit.Assert.*;
 

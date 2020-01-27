@@ -9,7 +9,8 @@ import java.util.Set;
  */
 public class MapLayer {
 
-    private int id = -1;
+    // Integer so it can be null and not part of output
+    private Integer id;
     private String type;
     private String url;
     private String username;
@@ -60,11 +61,11 @@ public class MapLayer {
     }*/
     private Map<String, Set<String>> role_permissions;
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

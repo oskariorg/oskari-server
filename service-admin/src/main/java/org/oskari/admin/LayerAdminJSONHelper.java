@@ -29,6 +29,14 @@ public class LayerAdminJSONHelper {
         }
     }
 
+    public static String writeJSON(MapLayer layer) {
+        try {
+            return OBJECT_MAPPER.writeValueAsString(layer);
+        } catch (Exception ex) {
+            throw new ServiceRuntimeException("Coudn't write layer to JSON", ex);
+        }
+    }
+
     public static OskariLayer fromJSON(MapLayer model) {
         OskariLayer layer = new OskariLayer();
         layer.setId(model.getId());
