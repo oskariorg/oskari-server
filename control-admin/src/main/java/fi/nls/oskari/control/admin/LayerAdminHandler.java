@@ -1,11 +1,13 @@
 package fi.nls.oskari.control.admin;
 
 import fi.mml.map.mapwindow.service.db.OskariMapLayerGroupService;
-import fi.mml.map.mapwindow.service.wms.WebMapService;
 import fi.mml.map.mapwindow.util.OskariLayerWorker;
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.cache.JedisManager;
-import fi.nls.oskari.control.*;
+import fi.nls.oskari.control.ActionDeniedException;
+import fi.nls.oskari.control.ActionException;
+import fi.nls.oskari.control.ActionParameters;
+import fi.nls.oskari.control.ActionParamsException;
 import fi.nls.oskari.domain.User;
 import fi.nls.oskari.domain.map.DataProvider;
 import fi.nls.oskari.domain.map.MaplayerGroup;
@@ -17,26 +19,20 @@ import fi.nls.oskari.map.layer.DataProviderService;
 import fi.nls.oskari.map.layer.OskariLayerService;
 import fi.nls.oskari.map.layer.group.link.OskariLayerGroupLink;
 import fi.nls.oskari.map.layer.group.link.OskariLayerGroupLinkService;
-import fi.nls.oskari.map.view.ViewService;
-import fi.nls.oskari.map.view.util.ViewHelper;
-import fi.nls.oskari.service.ServiceException;
-import fi.nls.oskari.service.ServiceUnauthorizedException;
-import fi.nls.oskari.service.capabilities.CapabilitiesConstants;
-import fi.nls.oskari.service.capabilities.OskariLayerCapabilitiesHelper;
 import fi.nls.oskari.util.*;
-import fi.nls.oskari.wfs.WFSCapabilitiesService;
 import fi.nls.oskari.wfs.WFSLayerConfigurationService;
 import fi.nls.oskari.wfs.WFSLayerConfigurationServiceIbatisImpl;
-import fi.nls.oskari.wms.WMSCapabilitiesService;
-import fi.nls.oskari.wmts.WMTSCapabilitiesService;
-import org.geotools.data.wfs.WFSDataStore;
-import org.json.JSONException;
-import org.oskari.admin.LayerCapabilitiesHelper;
-import org.oskari.log.AuditLog;
-import fi.nls.oskari.wmts.domain.WMTSCapabilities;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
-import org.oskari.permissions.model.*;
+import org.oskari.admin.LayerAdminJSONHelper;
+import org.oskari.admin.LayerCapabilitiesHelper;
+import org.oskari.admin.model.MapLayerAdminOutput;
+import org.oskari.log.AuditLog;
+import org.oskari.permissions.model.Permission;
+import org.oskari.permissions.model.PermissionType;
+import org.oskari.permissions.model.Resource;
+import org.oskari.permissions.model.ResourceType;
 import org.oskari.service.util.ServiceFactory;
 
 import java.net.MalformedURLException;
@@ -44,18 +40,10 @@ import java.net.URL;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import javax.servlet.http.HttpServletResponse;
-
 @OskariActionRoute("LayerAdmin")
 public class LayerAdminHandler extends AbstractLayerAdminHandler {
-    private class Result {
-        int id;
-        boolean permissions = true;
-        boolean keywords = true;
-    }
     private static final String PARAM_LAYER_ID = "id";
     private static final String PARAM_CURRENT_SRS = "srs";
-
     private static final String KEY_LAYER_FOR_ADMIN = "layer";
     private static final String KEY_LAYER_FOR_LIST = "layerForList";
     // Common
@@ -67,11 +55,9 @@ public class LayerAdminHandler extends AbstractLayerAdminHandler {
     private static final String KEY_INSPIRE_THEME = "inspiretheme";
     private static final String KEY_PROVIDER_NAME = "organization";
     private static final String KEY_PROVIDER_ID = "organization_id";
-    private static final String KEY_ROLE_PERMISSIONS = "role_permissions";
     private static final String KEY_PERMISSIONS = "permissions";
     private static final String KEY_LAYER_TYPE = "type";
     private static final String KEY_PARENT_ID = "parentid";
-
     private static final String KEY_LOCALIZED_NAME = "name";
     private static final String KEY_LOCALIZED_TITLE = "subtitle";
     private static final String KEY_LOCALE = "locale";
@@ -91,39 +77,48 @@ public class LayerAdminHandler extends AbstractLayerAdminHandler {
     private static final String KEY_USERNAME = "username";
     private static final String KEY_PASSWORD = "password";
     private static final String KEY_CAPABILITIES = "capabilities";
-
     // WMS / WMTS
     private static final String KEY_LEGEND_IMAGE = "legend_image";
     private static final String KEY_GFI_CONTENT = "gfi_content";
     private static final String KEY_GFI_XSLT = "gfi_xslt";
     private static final String KEY_GFI_TYPE = "gfi_type";
-
     // Response from service
     private static final String KEY_RESPONSE_WARN = "warn";
     private static final String KEY_UPDATE_CAPA_FAIL = "updateCapabilitiesFail";
     private static final String KEY_PERMISSIONS_FAIL = "insertPermissionsFail";
     private static final String KEY_KEYWORDS_FAIL = "insertKeywordsFail";
-
     private static final String ERROR_NO_LAYER_WITH_ID = "layer_not_found";
     private static final String ERROR_MANDATORY_FIELD_MISSING = "mandatory_field_missing";
     private static final String ERROR_INVALID_FIELD_VALUE = "invalid_field_value";
-
+    private static final Logger LOG = LogFactory.getLogger(LayerAdminHandler.class);
     private OskariLayerService mapLayerService = ServiceFactory.getMapLayerService();
-    private ViewService viewService = ServiceFactory.getViewService();
     private DataProviderService dataProviderService = ServiceFactory.getDataProviderService();
     private OskariMapLayerGroupService groupService = ServiceFactory.getOskariMapLayerGroupService();
     private OskariLayerGroupLinkService layerGroupLinkService = ServiceFactory.getOskariLayerGroupLinkService();
-    private WMTSCapabilitiesService wmtsCapabilities = new WMTSCapabilitiesService();
-    private WMSCapabilitiesService wmsCapabilities = new WMSCapabilitiesService();
 
     // needed only for cleaning layer from portti_wfs_layer when wfs layer is deleted
     private WFSLayerConfigurationService wfsLayerService = new WFSLayerConfigurationServiceIbatisImpl();
 
-    private static final Logger LOG = LogFactory.getLogger(LayerAdminHandler.class);
+    /**
+     * Get layer for editing or list available layers for adding new layer
+     *
+     * @param params
+     * @throws ActionException
+     */
+    @Override
+    public void handleGet(ActionParameters params) throws ActionException {
+        // If params has layerId then requested layer for editing
+        final int layerId = params.getRequiredParamInt(PARAM_LAYER_ID);
+        OskariLayer ml = getMapLayer(params.getUser(), layerId);
+        MapLayerAdminOutput output = getLayerForEdit(params.getUser(), ml);
+        if (!updateCapabilities(ml)) {
+            output.setWarn(KEY_UPDATE_CAPA_FAIL);
+        }
+        writeResponse(params, output);
+    }
 
     @Override
     public void handlePost(ActionParameters params) throws ActionException {
-        User user = params.getUser();
         JSONObject layer = params.getPayLoadJSON();
         Result result;
         try {
@@ -140,57 +135,30 @@ public class LayerAdminHandler extends AbstractLayerAdminHandler {
         if (ml == null) {
             throw new ActionParamsException("Couldn't get the saved layer from DB - id:" + result.id, ERROR_NO_LAYER_WITH_ID);
         }
-        JSONObject response = new JSONObject();
 
-        JSONObject forAdmin = getLayerForEdit(user, ml);
-        JSONHelper.putValue(response, KEY_LAYER_FOR_ADMIN, forAdmin);
-        // construct response as layer json to add/update layerlist
-        String currentSrs = layer.optString(PARAM_CURRENT_SRS, ml.getSrs_name());
-        JSONObject forList = OskariLayerWorker.getMapLayerJSON(ml, params.getUser(), params.getLocale().getLanguage(), currentSrs);
-        JSONHelper.putValue(response, KEY_LAYER_FOR_LIST, forList);
-        addWarningsToResponse(response, result);
-
-        ResponseHelper.writeResponse(params, response);
-    }
-    private void addWarningsToResponse(JSONObject response, Result result) {
-        JSONArray arr = new JSONArray();
+        MapLayerAdminOutput output = getLayerForEdit(params.getUser(), ml);
         if (!result.permissions) {
-            arr.put(KEY_PERMISSIONS_FAIL);
+            // NOTE! only tell if permissions failed, this probably needs some refactoring to be useful
+            output.setWarn(KEY_PERMISSIONS_FAIL);
         }
-        if (!result.keywords) {
-            arr.put(KEY_KEYWORDS_FAIL);
-        }
-        if (arr.length() > 0) {
-            JSONHelper.put(response, KEY_RESPONSE_WARN, arr);
-        }
+
+        writeResponse(params, output);
     }
 
-    /**
-     * Get layer for editing or list available layers for adding new layer
-     * @param params
-     * @throws ActionException
-     */
-    @Override
-    public void handleGet(ActionParameters params) throws ActionException {
-        // If params has layerId then requested layer for editing
-        final int layerId = params.getRequiredParamInt(PARAM_LAYER_ID);
-        OskariLayer ml = getMapLayer(params.getUser(), layerId);
-        JSONObject response = new JSONObject();
-        if(!updateCapabilities(ml)) {
-            JSONHelper.putValue(response, KEY_RESPONSE_WARN, KEY_UPDATE_CAPA_FAIL);
-        }
-        JSONHelper.putValue(response, KEY_LAYER_FOR_ADMIN, getLayerForEdit(params.getUser(), ml));
-        ResponseHelper.writeResponse(params, response);
+    private void writeResponse(ActionParameters params, MapLayerAdminOutput output) {
+        params.getResponse().setCharacterEncoding("UTF-8");
+        params.getResponse().setContentType("application/json;charset=UTF-8");
+        ResponseHelper.writeResponse(params, LayerAdminJSONHelper.writeJSON(output));
     }
 
     @Override
-    public void handleDelete (ActionParameters params) throws ActionException {
+    public void handleDelete(ActionParameters params) throws ActionException {
         final int id = params.getRequiredParamInt(PARAM_LAYER_ID);
         final OskariLayer ml = getMapLayer(params.getUser(), id);
         final String type = ml.getType();
         try {
             mapLayerService.delete(id);
-            if(OskariLayer.TYPE_WFS.equals(type)) {
+            if (OskariLayer.TYPE_WFS.equals(type)) {
                 wfsLayerService.delete(id);
                 JedisManager.delAll(WFSLayerConfiguration.KEY + id);
                 JedisManager.delAll(WFSLayerConfiguration.IMAGE_KEY + id);
@@ -201,12 +169,13 @@ public class LayerAdminHandler extends AbstractLayerAdminHandler {
         }
     }
 
-    private void requireAdd (User user) throws ActionDeniedException {
+    private void requireAdd(User user) throws ActionDeniedException {
         if (!userHasAddPermission(user)) {
             throw new ActionDeniedException("User doesn't have add layer permission");
         }
     }
-    private OskariLayer getMapLayer (User user, final int layerId) throws ActionParamsException, ActionDeniedException {
+
+    private OskariLayer getMapLayer(User user, final int layerId) throws ActionParamsException, ActionDeniedException {
         final OskariLayer ml = mapLayerService.find(layerId);
         if (ml == null) {
             // layer wasn't found
@@ -218,68 +187,29 @@ public class LayerAdminHandler extends AbstractLayerAdminHandler {
         }
         return ml;
     }
-    private JSONObject getLayerForEdit (User user, final OskariLayer ml) {
 
-        JSONObject layer = parseOskariLayer(ml);
-        JSONHelper.putValue(layer, KEY_LAYER_ID, ml.getId());
-        // Add data provider
-        JSONHelper.putValue(layer, KEY_PROVIDER_NAME, ml.getGroup().getName(PropertyUtil.getDefaultLanguage()));
-        JSONHelper.putValue(layer, KEY_PROVIDER_ID, ml.getDataproviderId());
+    private MapLayerAdminOutput getLayerForEdit(User user, final OskariLayer ml) {
+        MapLayerAdminOutput layer = LayerAdminJSONHelper.toJSON(ml);
         // Add maplayer groups
-        List<Integer> groupLinks = layerGroupLinkService.findByLayerId(ml.getId())
+        Set<Integer> groupLinks = layerGroupLinkService.findByLayerId(ml.getId())
                 .stream()
                 .map(gl -> gl.getGroupId())
-                .collect(Collectors.toList());
-        JSONHelper.put(layer, KEY_GROUPS, new JSONArray(groupLinks));
+                .collect(Collectors.toSet());
+        layer.setGroup_ids(groupLinks);
         try {
-            JSONObject permissions = new JSONObject();
+            Map<String, Set<String>> rolePermissions = new HashMap<>();
             getPermissionsGroupByRole(user, ml).entrySet()
                     .stream()
-                    .forEach(e -> JSONHelper.put(permissions, e.getKey().getName(), new JSONArray(e.getValue())));
-            JSONHelper.putValue(layer, KEY_ROLE_PERMISSIONS, permissions);
+                    .forEach(e -> rolePermissions.put(e.getKey().getName(), e.getValue()));
+
+            layer.setRole_permissions(rolePermissions);
         } catch (Exception e) {
             LOG.warn("Failed to get permission roles for layer:", ml.getId());
         }
         return layer;
     }
 
-    private JSONObject parseOskariLayer (OskariLayer ml) {
-        JSONObject layer = new JSONObject();
-        // Note! don't add layer id here
-        JSONHelper.putValue(layer, KEY_LAYER_NAME, ml.getName());
-        JSONHelper.putValue(layer, KEY_LAYER_URL, ml.getUrl());
-        JSONHelper.putValue(layer, KEY_LAYER_SRS, ml.getSrs_name());
-        JSONHelper.putValue(layer, KEY_USERNAME, ml.getUsername());
-        JSONHelper.putValue(layer, KEY_PASSWORD, ml.getPassword());
-        JSONHelper.putValue(layer, KEY_LOCALE, ml.getLocale());
-        JSONHelper.putValue(layer, KEY_IS_BASE, ml.isBaseMap());
-        JSONHelper.putValue(layer, KEY_MIN_SCALE, ml.getMinScale());
-        JSONHelper.putValue(layer, KEY_MAX_SCALE, ml.getMaxScale());
-        JSONHelper.putValue(layer, KEY_STYLE, ml.getStyle());
-        JSONHelper.putValue(layer, KEY_PARENT_ID, ml.getParentId());
-        JSONHelper.putValue(layer, KEY_VERSION, ml.getVersion());
-        JSONHelper.putValue(layer, KEY_LAYER_TYPE, ml.getType());
-        JSONHelper.putValue(layer, KEY_OPACITY, ml.getOpacity());
-
-        JSONHelper.putValue(layer, KEY_PARAMS ,ml.getParams());
-        JSONHelper.putValue(layer, KEY_OPTIONS, ml.getOptions());
-        JSONHelper.putValue(layer, KEY_CAPABILITIES, ml.getCapabilities());
-        JSONHelper.putValue(layer, KEY_ATTRIBUTES, ml.getAttributes());
-
-        JSONHelper.putValue(layer, KEY_CAPABILITIES_UPDATE_RATE, ml.getCapabilitiesUpdateRateSec());
-        JSONHelper.putValue(layer, KEY_LEGEND_IMAGE, ml.getLegendImage());
-        JSONHelper.putValue(layer, KEY_REALTIME, ml.getRealtime());
-        JSONHelper.putValue(layer, KEY_METADATA_ID, ml.getMetadataId());
-        JSONHelper.putValue(layer, KEY_REFRESH_RATE, ml.getRefreshRate());
-
-        if (OskariLayer.TYPE_WMS.equals(ml.getType())){
-            JSONHelper.putValue(layer, KEY_GFI_XSLT, ml.getGfiXslt());
-            JSONHelper.putValue(layer, KEY_GFI_TYPE, ml.getGfiType());
-        }
-        return layer;
-    }
-
-    private void writeAuditLogUpdate (ActionParameters params, OskariLayer ml) {
+    private void writeAuditLogUpdate(ActionParameters params, OskariLayer ml) {
         if (ml == null) return;
         AuditLog.user(params.getClientIp(), params.getUser())
                 .withParam("id", ml.getId())
@@ -289,7 +219,7 @@ public class LayerAdminHandler extends AbstractLayerAdminHandler {
                 .updated(AuditLog.ResourceType.MAPLAYER);
     }
 
-    private void writeAuditLogInsert (ActionParameters params, OskariLayer ml) {
+    private void writeAuditLogInsert(ActionParameters params, OskariLayer ml) {
         if (ml == null) return;
         AuditLog.user(params.getClientIp(), params.getUser())
                 .withParam("id", ml.getId())
@@ -299,7 +229,7 @@ public class LayerAdminHandler extends AbstractLayerAdminHandler {
                 .added(AuditLog.ResourceType.MAPLAYER);
     }
 
-    private void writeAuditLogDelete (ActionParameters params, OskariLayer ml) {
+    private void writeAuditLogDelete(ActionParameters params, OskariLayer ml) {
         if (ml == null) return;
         AuditLog.user(params.getClientIp(), params.getUser())
                 .withParam("id", ml.getId())
@@ -308,12 +238,12 @@ public class LayerAdminHandler extends AbstractLayerAdminHandler {
                 .withParam("name", ml.getName())
                 .deleted(AuditLog.ResourceType.MAPLAYER);
     }
+
     /**
-     *
      * @param layer
      * @return
      * @throws ActionException
-     * @throws JSONException if mandatory field is missing or invalid type
+     * @throws JSONException   if mandatory field is missing or invalid type
      */
     private Result updateLayer(final ActionParameters params, final JSONObject layer) throws ActionException, JSONException {
         final int layerId = layer.getInt(KEY_LAYER_ID);
@@ -322,7 +252,7 @@ public class LayerAdminHandler extends AbstractLayerAdminHandler {
         User user = params.getUser();
         OskariLayer ml = getMapLayer(user, layerId);
 
-        handleRequestToMapLayer (ml, layer);
+        handleRequestToMapLayer(ml, layer);
         ml.setUpdated(new Date(System.currentTimeMillis()));
 
         // delete old layer groups before adding new ones
@@ -344,11 +274,10 @@ public class LayerAdminHandler extends AbstractLayerAdminHandler {
     }
 
     /**
-     *
      * @param layer
      * @return
      * @throws ActionException
-     * @throws JSONException if mandatory field is missing or invalid type
+     * @throws JSONException   if mandatory field is missing or invalid type
      */
     private Result insertLayer(final ActionParameters params, final JSONObject layer) throws ActionException, JSONException {
         Result result = new Result();
@@ -367,7 +296,7 @@ public class LayerAdminHandler extends AbstractLayerAdminHandler {
         writeAuditLogInsert(params, ml);
         addMapLayerGroupds(layerId, layer);
 
-        if(ml.isCollection()) {
+        if (ml.isCollection()) {
             // update the name with the id for permission mapping
             ml.setName(layerId + "_group");
             mapLayerService.update(ml);
@@ -388,10 +317,11 @@ public class LayerAdminHandler extends AbstractLayerAdminHandler {
 
     /**
      * Handles common request for insert and update
+     *
      * @param ml
      * @param layer
      * @throws ActionException
-     * @throws JSONException if mandatory field is missing or invalid type
+     * @throws JSONException   if mandatory field is missing or invalid type
      */
     private void handleRequestToMapLayer(OskariLayer ml, final JSONObject layer) throws ActionException, JSONException {
         ml.setName(layer.getString(KEY_LAYER_NAME));
@@ -402,10 +332,10 @@ public class LayerAdminHandler extends AbstractLayerAdminHandler {
         while (langKeys.hasNext()) {
             String key = (String) langKeys.next();
             JSONObject lang = locale.getJSONObject(key);
-            ml.setName (key, lang.getString(KEY_LOCALIZED_NAME)); // mandatory
+            ml.setName(key, lang.getString(KEY_LOCALIZED_NAME)); // mandatory
             String title = lang.optString(KEY_LOCALIZED_TITLE);
             if (!title.isEmpty()) {
-                ml.setTitle (key, title);
+                ml.setTitle(key, title);
             }
         }
         // TODO: or without validation we could set:
@@ -419,7 +349,7 @@ public class LayerAdminHandler extends AbstractLayerAdminHandler {
         // dataProviders is Set so is safety to use add also to update layer
         ml.addDataprovider(provider);
 
-        if(ml.isCollection()) {
+        if (ml.isCollection()) {
             // ulr is needed for permission mapping, name is updated after we get the layer id
             ml.setUrl(ml.getType());
             // the rest is not relevant for collection layers
@@ -432,7 +362,7 @@ public class LayerAdminHandler extends AbstractLayerAdminHandler {
         ml.setSrs_name(layer.optString(KEY_LAYER_SRS, PropertyUtil.get("oskari.native.srs", "EPSG:4326")));
         ml.setBaseMap(layer.optBoolean(KEY_IS_BASE, ml.isBaseMap()));
         ml.setOpacity(layer.optInt(KEY_OPACITY, ml.getOpacity()));
-        ml.setStyle(layer.optString(KEY_STYLE, ml.getStyle() ));
+        ml.setStyle(layer.optString(KEY_STYLE, ml.getStyle()));
         ml.setMinScale(layer.optDouble(KEY_MIN_SCALE, ml.getMinScale()));
         ml.setMaxScale(layer.optDouble(KEY_MAX_SCALE, ml.getMaxScale()));
         ml.setLegendImage(layer.optString(KEY_LEGEND_IMAGE, ml.getLegendImage()));
@@ -452,24 +382,24 @@ public class LayerAdminHandler extends AbstractLayerAdminHandler {
         if (gfiContent != null) {
             // Clean GFI content
             final String[] tags = PropertyUtil.getCommaSeparatedList("gficontent.whitelist");
-            HashMap<String,String[]> attributes = new HashMap<String, String[]>();
-            HashMap<String[],String[]> protocols = new HashMap<String[], String[]>();
+            HashMap<String, String[]> attributes = new HashMap<String, String[]>();
+            HashMap<String[], String[]> protocols = new HashMap<String[], String[]>();
             String[] allAttributes = PropertyUtil.getCommaSeparatedList("gficontent.whitelist.attr");
             if (allAttributes.length > 0) {
-                attributes.put(":all",allAttributes);
+                attributes.put(":all", allAttributes);
             }
             List<String> attrProps = PropertyUtil.getPropertyNamesStartingWith("gficontent.whitelist.attr.");
             for (String attrProp : attrProps) {
                 String[] parts = attrProp.split("\\.");
-                if (parts[parts.length-2].equals("protocol")) {
-                    protocols.put(new String[]{parts[parts.length-3],parts[parts.length-1]},PropertyUtil.getCommaSeparatedList(attrProp));
+                if (parts[parts.length - 2].equals("protocol")) {
+                    protocols.put(new String[]{parts[parts.length - 3], parts[parts.length - 1]}, PropertyUtil.getCommaSeparatedList(attrProp));
                 } else {
-                    attributes.put(parts[parts.length-1],PropertyUtil.getCommaSeparatedList(attrProp));
+                    attributes.put(parts[parts.length - 1], PropertyUtil.getCommaSeparatedList(attrProp));
                 }
             }
             ml.setGfiContent(RequestHelper.cleanHTMLString(gfiContent, tags, attributes, protocols));
         }
-        if (OskariLayer.TYPE_WMS.equals(ml.getType())){
+        if (OskariLayer.TYPE_WMS.equals(ml.getType())) {
             handleWMSSpecific(ml, layer);
         }
     }
@@ -477,14 +407,14 @@ public class LayerAdminHandler extends AbstractLayerAdminHandler {
     private void handleWMSSpecific(OskariLayer ml, JSONObject layer) {
         // Do NOT modify the 'xslt' parameter
         final String xslt = layer.optString(KEY_GFI_XSLT);
-        if(xslt != null) {
+        if (xslt != null) {
             // TODO: some validation of XSLT data
             ml.setGfiXslt(xslt);
         }
         ml.setGfiType(layer.optString(KEY_GFI_TYPE, ml.getGfiType()));
     }
 
-    private boolean updateCapabilities (OskariLayer ml) {
+    private boolean updateCapabilities(OskariLayer ml) {
         try {
             LayerCapabilitiesHelper.updateCapabilities(ml);
             return true;
@@ -503,22 +433,23 @@ public class LayerAdminHandler extends AbstractLayerAdminHandler {
             URL u = new URL(url);
             String host = u.getProtocol() + "://" + u.getHost();
             String path = u.getPath();
-            if (path.endsWith("/")){
+            if (path.endsWith("/")) {
                 path = path.substring(0, path.length() - 1);
             }
             //return u.getPort() != -1 ? host + ":" + u.getPort() + path : host +  path;
         } catch (MalformedURLException e) {
-            throw new ActionParamsException("Invalid url: " + url, ERROR_INVALID_FIELD_VALUE );
+            throw new ActionParamsException("Invalid url: " + url, ERROR_INVALID_FIELD_VALUE);
         }
         return baseUrl;
     }
 
-    private void addMapLayerGroupds (final int layerId, final JSONObject layer) throws ActionException {
-        if (!layer.has(KEY_GROUPS)&&!layer.has(KEY_INSPIRE_THEME)) throw new ActionParamsException("Groups missing", ERROR_MANDATORY_FIELD_MISSING);
+    private void addMapLayerGroupds(final int layerId, final JSONObject layer) throws ActionException {
+        if (!layer.has(KEY_GROUPS) && !layer.has(KEY_INSPIRE_THEME))
+            throw new ActionParamsException("Groups missing", ERROR_MANDATORY_FIELD_MISSING);
         Set<Integer> groupIds = new HashSet<>();
         groupIds.addAll(JSONHelper.getArrayAsList(layer.optJSONArray(KEY_GROUPS)));
         String inspiretheme = layer.optString(KEY_INSPIRE_THEME);
-        if (!inspiretheme.isEmpty()){
+        if (!inspiretheme.isEmpty()) {
             MaplayerGroup group = groupService.findByName(inspiretheme);
             if (group == null) {
                 LOG.warn("Didn't find match for theme:", inspiretheme);
@@ -528,8 +459,8 @@ public class LayerAdminHandler extends AbstractLayerAdminHandler {
         }
         List<OskariLayerGroupLink> links = groupIds
                 .stream()
-                .filter (id -> id > 0)
-                .map (id -> new OskariLayerGroupLink(layerId, id))
+                .filter(id -> id > 0)
+                .map(id -> new OskariLayerGroupLink(layerId, id))
                 .collect(Collectors.toList());
         if (links.isEmpty()) throw new ActionParamsException("Couldn't find any valid maplayer group");
         layerGroupLinkService.insertAll(links);
@@ -538,7 +469,7 @@ public class LayerAdminHandler extends AbstractLayerAdminHandler {
     private boolean addPermissionsForRoles(final User user, final int layerId, final JSONObject layer) {
         if (!user.isAdmin()) return false;
         Map<String, JSONArray> permissions = JSONHelper.getObjectAsMap(JSONHelper.getJSONObject(layer, KEY_PERMISSIONS));
-        if(permissions.isEmpty()) return false;
+        if (permissions.isEmpty()) return false;
         Resource res = new Resource();
         res.setType(ResourceType.maplayer);
         res.setMapping(Integer.toString(layerId));
@@ -549,10 +480,11 @@ public class LayerAdminHandler extends AbstractLayerAdminHandler {
         getPermissionsService().saveResource(res);
         return true;
     }
-    private void setPermission (Resource res, String roleName, JSONArray permissions) {
+
+    private void setPermission(Resource res, String roleName, JSONArray permissions) {
         try {
             int id = getRoleId(roleName);
-            for (int i = 0; i < permissions.length() ; i++ ) {
+            for (int i = 0; i < permissions.length(); i++) {
                 PermissionType type = PermissionType.valueOf(permissions.getString(i));
                 LOG.debug("Adding permissions:", type, "for role:", roleName);
                 Permission permission = new Permission();
@@ -564,12 +496,19 @@ public class LayerAdminHandler extends AbstractLayerAdminHandler {
             LOG.warn("Failed to add permissions for role:", roleName, e.getMessage());
         }
     }
-    private void removePermissions (final User user, final int layerId) {
+
+    private void removePermissions(final User user, final int layerId) {
         if (!user.isAdmin()) return;
         Optional<Resource> res = getPermissionsService().findResource(ResourceType.maplayer, Integer.toString(layerId));
-        if (res.isPresent()){
+        if (res.isPresent()) {
             getPermissionsService().deleteResource(res.get());
         }
+    }
+
+    private class Result {
+        int id;
+        boolean permissions = true;
+        boolean keywords = true;
     }
 
 

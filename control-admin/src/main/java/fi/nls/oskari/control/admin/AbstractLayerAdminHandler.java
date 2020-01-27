@@ -71,14 +71,14 @@ public abstract class AbstractLayerAdminHandler extends RestActionHandler {
         return (int) role.getId();
 
     }
-    protected Map<Role, List<String>> getPermissionsGroupByRole (User user, OskariLayer layer) throws ServiceException {
-        Map<Role, List<String>> permissions = new HashMap<>();
+    protected Map<Role, Set<String>> getPermissionsGroupByRole (User user, OskariLayer layer) throws ServiceException {
+        Map<Role, Set<String>> permissions = new HashMap<>();
         String key = Integer.toString(layer.getId());
         Resource res = permissionsService.findResource(ResourceType.maplayer, key)
                 .orElseThrow(()-> new ServiceException("Can't find permissions for maplayer with mapping key: " + key));
 
         for (Role role : getAvailableRoles(user)) {
-            List<String> permissionsForRole = new ArrayList<>();
+            Set<String> permissionsForRole = new HashSet<>();
             for (String permission : getAvailablePermissions()){
                 if (res.hasPermission(role, permission)) {
                     permissionsForRole.add(permission);
