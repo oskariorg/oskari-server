@@ -39,7 +39,11 @@ public class LayerAdminJSONHelper {
 
     public static OskariLayer fromJSON(MapLayer model) {
         OskariLayer layer = new OskariLayer();
-        layer.setId(model.getId());
+        Integer id = model.getId();
+        if (id != null) {
+            // unboxing null Integer to int causes NPE so not calling setId() with null value
+            layer.setId(model.getId());
+        }
         layer.setType(model.getType());
         layer.setUrl(model.getUrl());
         layer.setUsername(model.getUsername());
@@ -134,10 +138,10 @@ public class LayerAdminJSONHelper {
         if (model.getDataprovider_id() > 0) {
             provider = getDataProviderService().find(model.getDataprovider_id());
         } else if (model.getDataprovider() != null) {
-            provider = getDataProviderService().find(model.getDataprovider_id());
+            provider = getDataProviderService().findByName(model.getDataprovider());
         }
         if (provider == null) {
-            throw new ServiceRuntimeException("Couln't find data provider for layer");
+            throw new ServiceRuntimeException("Couln't find data provider for layer (" + model.getDataprovider_id() + "/" + model.getDataprovider() + ")");
         }
         return provider.getId();
     }
