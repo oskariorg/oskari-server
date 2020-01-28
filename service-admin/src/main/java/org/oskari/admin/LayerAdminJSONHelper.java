@@ -39,12 +39,19 @@ public class LayerAdminJSONHelper {
 
     public static OskariLayer fromJSON(MapLayer model) {
         OskariLayer layer = new OskariLayer();
-        layer.setId(model.getId());
+        Integer id = model.getId();
+        if (id != null) {
+            // unboxing null Integer to int causes NPE so not calling setId() with null value
+            layer.setId(model.getId());
+        }
         layer.setType(model.getType());
         layer.setUrl(model.getUrl());
         layer.setUsername(model.getUsername());
         layer.setPassword(model.getPassword());
-        layer.setVersion(model.getVersion());
+        if (model.getVersion() != null) {
+            // version has non-null requirement in db (empty string is ok)
+            layer.setVersion(model.getVersion());
+        }
         layer.setName(model.getName());
         layer.setLocale(new JSONObject(model.getLocale()));
 
@@ -75,7 +82,9 @@ public class LayerAdminJSONHelper {
         layer.setRefreshRate(model.getRefresh_rate());
         layer.setCapabilitiesUpdateRateSec(model.getCapabilities_update_rate_sec());
 
-        layer.setDataproviderId(getDataProviderId(model));
+        DataProvider provider = getDataProvider(model);
+        layer.addDataprovider(provider);
+        layer.setDataproviderId(provider.getId());
         layer.setInternal(model.isInternal());
 
         // TODO: handle sublayers layer.getSublayers()
@@ -118,7 +127,12 @@ public class LayerAdminJSONHelper {
         out.setRefresh_rate(layer.getRefreshRate());
         out.setCapabilities_update_rate_sec(layer.getCapabilitiesUpdateRateSec());
 
-        out.setDataprovider_id(layer.getDataproviderId());
+        DataProvider provider = layer.getGroup();
+        if (provider != null) {
+            out.setDataprovider_id(provider.getId());
+        } else {
+            out.setDataprovider_id(layer.getDataproviderId());
+        }
         out.setInternal(layer.isInternal()); // we might not need to write this
         out.setCapabilities(JSONHelper.getObjectAsMap(layer.getCapabilities()));
 
@@ -129,17 +143,17 @@ public class LayerAdminJSONHelper {
     }
 
 
-    private static int getDataProviderId(MapLayer model) {
+    private static DataProvider getDataProvider(MapLayer model) {
         DataProvider provider = null;
         if (model.getDataprovider_id() > 0) {
             provider = getDataProviderService().find(model.getDataprovider_id());
         } else if (model.getDataprovider() != null) {
-            provider = getDataProviderService().find(model.getDataprovider_id());
+            provider = getDataProviderService().findByName(model.getDataprovider());
         }
         if (provider == null) {
-            throw new ServiceRuntimeException("Couln't find data provider for layer");
+            throw new ServiceRuntimeException("Couln't find data provider for layer (" + model.getDataprovider_id() + "/" + model.getDataprovider() + ")");
         }
-        return provider.getId();
+        return provider;
     }
 
     private static DataProviderService getDataProviderService() {
