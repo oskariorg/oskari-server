@@ -48,7 +48,10 @@ public class LayerAdminJSONHelper {
         layer.setUrl(model.getUrl());
         layer.setUsername(model.getUsername());
         layer.setPassword(model.getPassword());
-        layer.setVersion(model.getVersion());
+        if (model.getVersion() != null) {
+            // version is non-null in db (empty string is ok)
+            layer.setVersion(model.getVersion());
+        }
         layer.setName(model.getName());
         layer.setLocale(new JSONObject(model.getLocale()));
 
