@@ -79,7 +79,10 @@ public class LayerAdminJSONHelper {
         layer.setRefreshRate(model.getRefresh_rate());
         layer.setCapabilitiesUpdateRateSec(model.getCapabilities_update_rate_sec());
 
-        layer.setDataproviderId(getDataProviderId(model));
+        // FIX
+        DataProvider provider = getDataProvider(model);
+        layer.addDataprovider(provider);
+        layer.setDataproviderId(provider.getId());
         layer.setInternal(model.isInternal());
 
         // TODO: handle sublayers layer.getSublayers()
@@ -122,7 +125,12 @@ public class LayerAdminJSONHelper {
         out.setRefresh_rate(layer.getRefreshRate());
         out.setCapabilities_update_rate_sec(layer.getCapabilitiesUpdateRateSec());
 
-        out.setDataprovider_id(layer.getDataproviderId());
+        DataProvider provider = layer.getGroup();
+        if (provider != null) {
+            out.setDataprovider_id(provider.getId());
+        } else {
+            out.setDataprovider_id(layer.getDataproviderId());
+        }
         out.setInternal(layer.isInternal()); // we might not need to write this
         out.setCapabilities(JSONHelper.getObjectAsMap(layer.getCapabilities()));
 
@@ -133,7 +141,7 @@ public class LayerAdminJSONHelper {
     }
 
 
-    private static int getDataProviderId(MapLayer model) {
+    private static DataProvider getDataProvider(MapLayer model) {
         DataProvider provider = null;
         if (model.getDataprovider_id() > 0) {
             provider = getDataProviderService().find(model.getDataprovider_id());
@@ -143,7 +151,7 @@ public class LayerAdminJSONHelper {
         if (provider == null) {
             throw new ServiceRuntimeException("Couln't find data provider for layer (" + model.getDataprovider_id() + "/" + model.getDataprovider() + ")");
         }
-        return provider.getId();
+        return provider;
     }
 
     private static DataProviderService getDataProviderService() {
