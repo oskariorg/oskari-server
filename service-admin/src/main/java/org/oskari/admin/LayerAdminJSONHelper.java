@@ -49,7 +49,7 @@ public class LayerAdminJSONHelper {
         layer.setUsername(model.getUsername());
         layer.setPassword(model.getPassword());
         if (model.getVersion() != null) {
-            // version is non-null in db (empty string is ok)
+            // version has non-null requirement in db (empty string is ok)
             layer.setVersion(model.getVersion());
         }
         layer.setName(model.getName());
@@ -82,7 +82,6 @@ public class LayerAdminJSONHelper {
         layer.setRefreshRate(model.getRefresh_rate());
         layer.setCapabilitiesUpdateRateSec(model.getCapabilities_update_rate_sec());
 
-        // FIX
         DataProvider provider = getDataProvider(model);
         layer.addDataprovider(provider);
         layer.setDataproviderId(provider.getId());
