@@ -132,7 +132,8 @@ public abstract class AbstractFeatureHandler extends RestActionHandler {
             }
             JSONArray data = geometries.getJSONArray("data");
             Geometry geometry = getGeometry(geometryType, data, getSrid(srsName, 3067));
-            if(ProjectionHelper.isFirstAxisNorth(crs)) {
+            //TODO: ProjectinHelper doesn't function like it should
+            if(ProjectionHelper.isFirstAxisNorth(crs) || srsName.equals("EPSG:3879")) {
                 // reverse xy
                 ProjectionHelper.flipFeatureYX(geometry);
             }
