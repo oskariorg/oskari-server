@@ -41,8 +41,6 @@ import java.net.URL;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static org.oskari.admin.LayerAdminJSONHelper.readJSON;
-
 @OskariActionRoute("LayerAdmin")
 public class LayerAdminHandler extends AbstractLayerAdminHandler {
     private static final String PARAM_LAYER_ID = "id";
@@ -101,14 +99,13 @@ public class LayerAdminHandler extends AbstractLayerAdminHandler {
     private WFSLayerConfigurationService wfsLayerService = new WFSLayerConfigurationServiceIbatisImpl();
 
     /**
-     * Get layer for editing or list available layers for adding new layer
+     * Get layer for edit (admin)
      *
      * @param params
      * @throws ActionException
      */
     @Override
     public void handleGet(ActionParameters params) throws ActionException {
-        // If params has layerId then requested layer for editing
         final int layerId = params.getRequiredParamInt(PARAM_LAYER_ID);
         OskariLayer ml = getMapLayer(params.getUser(), layerId);
         MapLayerAdminOutput output = getLayerForEdit(params.getUser(), ml);
@@ -281,13 +278,14 @@ public class LayerAdminHandler extends AbstractLayerAdminHandler {
      * @throws JSONException   if mandatory field is missing or invalid type
      */
     private Result insertLayer(final ActionParameters params, MapLayer layer) throws ActionException, JSONException {
-        Result result = new Result();
-        final User user = params.getUser();
-        requireAdd(user);
-        final OskariLayer ml = new OskariLayer();
+        if (!userHasAddPermission(params.getUser())) {
+            throw new ActionDeniedException("User doesn't have add layer permission");
+        }
+        final OskariLayer ml = LayerAdminJSONHelper.fromJSON(layer);
+        // TODO: validate values!
         ml.setCreated(new Date(System.currentTimeMillis()));
-        // TODO: validate value!
-        ml.setType(layer.getType());
+
+        Result result = new Result();
         //ml.setParentId(layer.optInt(KEY_PARENT_ID, ml.getParentId()));
         handleRequestToMapLayer(ml, layer);
 
@@ -303,7 +301,7 @@ public class LayerAdminHandler extends AbstractLayerAdminHandler {
             ml.setName(layerId + "_group");
             mapLayerService.update(ml);
         }
-        result.permissions = addPermissionsForRoles(user, layerId, layer.getRole_permissions());
+        result.permissions = addPermissionsForRoles(params.getUser(), layerId, layer.getRole_permissions());
         // insert keywords
         // TODO: only this requires oskari-control-base dependency
         GetLayerKeywords glk = new GetLayerKeywords();
@@ -336,13 +334,14 @@ public class LayerAdminHandler extends AbstractLayerAdminHandler {
         ml.setName(layer.getName());
         // TODO: should we rather modify OskariMaplayer setters so they won't accept null value over existing value?
         ml.setVersion(getOrDefaultStr(layer.getVersion(), ml.getVersion()));
+
+        validateLocale(layer.getLocale());
         Map<String, Map<String, String>> locale = layer.getLocale();
         for (String lang: locale.keySet()) {
             Map<String, String> langLocale = locale.getOrDefault(lang, Collections.emptyMap());
             // TODO: check that name is given
             ml.setName(lang, langLocale.get(KEY_LOCALIZED_NAME));  // mandatory
             ml.setTitle(lang, langLocale.get(KEY_LOCALIZED_TITLE));
-
         }
 
         // Add dataprovider
@@ -380,31 +379,41 @@ public class LayerAdminHandler extends AbstractLayerAdminHandler {
         if (layer.has(KEY_USERNAME)) ml.setUsername(layer.getString(KEY_USERNAME));
         if (layer.has(KEY_CAPABILITIES)) ml.setCapabilities(layer.getJSONObject(KEY_CAPABILITIES));
 
-        final String gfiContent = layer.optString(KEY_GFI_CONTENT);
-        if (gfiContent != null) {
-            // Clean GFI content
-            final String[] tags = PropertyUtil.getCommaSeparatedList("gficontent.whitelist");
-            HashMap<String, String[]> attributes = new HashMap<String, String[]>();
-            HashMap<String[], String[]> protocols = new HashMap<String[], String[]>();
-            String[] allAttributes = PropertyUtil.getCommaSeparatedList("gficontent.whitelist.attr");
-            if (allAttributes.length > 0) {
-                attributes.put(":all", allAttributes);
-            }
-            List<String> attrProps = PropertyUtil.getPropertyNamesStartingWith("gficontent.whitelist.attr.");
-            for (String attrProp : attrProps) {
-                String[] parts = attrProp.split("\\.");
-                if (parts[parts.length - 2].equals("protocol")) {
-                    protocols.put(new String[]{parts[parts.length - 3], parts[parts.length - 1]}, PropertyUtil.getCommaSeparatedList(attrProp));
-                } else {
-                    attributes.put(parts[parts.length - 1], PropertyUtil.getCommaSeparatedList(attrProp));
-                }
-            }
-            ml.setGfiContent(RequestHelper.cleanHTMLString(gfiContent, tags, attributes, protocols));
-        }
-        if (OskariLayer.TYPE_WMS.equals(ml.getType())) {
-            handleWMSSpecific(ml, layer);
-        }
+        ml.setGfiContent(layer.optString(KEY_GFI_CONTENT));
         */
+    }
+
+    private void validateLocale(Map<String, Map<String, String>> locale) throws ActionParamsException {
+        String lang = PropertyUtil.getDefaultLanguage();
+        Map<String, String> langLocale = locale.getOrDefault(lang, Collections.emptyMap());
+        if (langLocale.get(KEY_LOCALIZED_NAME) == null) {
+            // name for default language is required
+            throw new ActionParamsException("Name missing for default language: " + lang);
+        }
+    }
+
+    private String cleanGFIContent(String gfiContent) {
+        if (gfiContent == null) {
+            return null;
+        }
+        // Clean GFI content
+        final String[] tags = PropertyUtil.getCommaSeparatedList("gficontent.whitelist");
+        HashMap<String, String[]> attributes = new HashMap<String, String[]>();
+        HashMap<String[], String[]> protocols = new HashMap<String[], String[]>();
+        String[] allAttributes = PropertyUtil.getCommaSeparatedList("gficontent.whitelist.attr");
+        if (allAttributes.length > 0) {
+            attributes.put(":all", allAttributes);
+        }
+        List<String> attrProps = PropertyUtil.getPropertyNamesStartingWith("gficontent.whitelist.attr.");
+        for (String attrProp : attrProps) {
+            String[] parts = attrProp.split("\\.");
+            if (parts[parts.length - 2].equals("protocol")) {
+                protocols.put(new String[]{parts[parts.length - 3], parts[parts.length - 1]}, PropertyUtil.getCommaSeparatedList(attrProp));
+            } else {
+                attributes.put(parts[parts.length - 1], PropertyUtil.getCommaSeparatedList(attrProp));
+            }
+        }
+        return RequestHelper.cleanHTMLString(gfiContent, tags, attributes, protocols);
     }
 
     private void handleWMSSpecific(OskariLayer ml, JSONObject layer) {
