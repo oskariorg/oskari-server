@@ -86,14 +86,14 @@ public class DataProviderHandler extends RestActionHandler {
 				throw new ActionParamsException("Dataprovider not found with id " + id);
 			}
 			
-			List<Integer> layerIdsToBeDeleted = deleteLayers ? layers.stream().map(OskariLayer::getId)
-					.collect(Collectors.toList()) : new ArrayList<Integer>();
+			List<String> layerNamesToBeDeleted = deleteLayers ? layers.stream().map(OskariLayer::getName)
+					.collect(Collectors.toList()) : new ArrayList<String>();
 			
 			dataProviderService.delete(id);
 
 			AuditLog.user(params.getClientIp(), params.getUser()).withParam("id", dataProvider.getId())
 					.withParam("name", dataProvider.getName(PropertyUtil.getDefaultLanguage()))
-					.withMsg("map layers " + layerIdsToBeDeleted + " deleted with data provider" )
+					.withMsg("map layers " + layerNamesToBeDeleted + " deleted with data provider" )
 					.deleted(AuditLog.ResourceType.DATAPROVIDER);
 
 			// write deleted organization as response
