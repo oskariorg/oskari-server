@@ -30,8 +30,6 @@ public abstract class AbstractLayerAdminHandler extends RestActionHandler {
     private String[] capabilitiesRoles;
     private Set<String> availablePermissionTypes;
 
-
-
     public void init() {
         capabilitiesRoles = PropertyUtil.getCommaSeparatedList("actionhandler.GetWSCapabilitiesHandler.roles");
         permissionsService = OskariComponentManager.getComponentOfType(PermissionService.class);

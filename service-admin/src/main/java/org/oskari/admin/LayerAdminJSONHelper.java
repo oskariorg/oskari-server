@@ -17,10 +17,7 @@ import org.oskari.admin.model.MapLayerAdminOutput;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class LayerAdminJSONHelper {
 
@@ -96,6 +93,8 @@ public class LayerAdminJSONHelper {
         layer.addDataprovider(provider);
         layer.setDataproviderId(provider.getId());
         layer.setInternal(model.isInternal());
+
+        layer.setCreated(new Date(System.currentTimeMillis()));
 
         // TODO: handle sublayers layer.getSublayers()
         // TODO: handle groups -> MapLayerGroupsHelper.findGroupsForNames_dangerzone_() + setGroupsForLayer()
