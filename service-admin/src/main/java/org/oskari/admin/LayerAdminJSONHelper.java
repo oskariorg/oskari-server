@@ -9,9 +9,18 @@ import fi.nls.oskari.map.layer.DataProviderService;
 import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.service.ServiceRuntimeException;
 import fi.nls.oskari.util.JSONHelper;
+import fi.nls.oskari.util.PropertyUtil;
+import fi.nls.oskari.util.RequestHelper;
 import org.json.JSONObject;
 import org.oskari.admin.model.MapLayer;
 import org.oskari.admin.model.MapLayerAdminOutput;
+
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class LayerAdminJSONHelper {
 
@@ -38,6 +47,7 @@ public class LayerAdminJSONHelper {
     }
 
     public static OskariLayer fromJSON(MapLayer model) {
+        // TODO: add more validation for values
         OskariLayer layer = new OskariLayer();
         Integer id = model.getId();
         if (id != null) {
@@ -45,7 +55,7 @@ public class LayerAdminJSONHelper {
             layer.setId(model.getId());
         }
         layer.setType(model.getType());
-        layer.setUrl(model.getUrl());
+        layer.setUrl(LayerValidator.validateUrl(model.getUrl()));
         layer.setUsername(model.getUsername());
         layer.setPassword(model.getPassword());
         if (model.getVersion() != null) {
@@ -53,7 +63,7 @@ public class LayerAdminJSONHelper {
             layer.setVersion(model.getVersion());
         }
         layer.setName(model.getName());
-        layer.setLocale(new JSONObject(model.getLocale()));
+        layer.setLocale(new JSONObject(LayerValidator.validateLocale(model.getLocale())));
 
         layer.setSrs_name(model.getSrs());
         layer.setOpacity(model.getOpacity());
@@ -75,7 +85,7 @@ public class LayerAdminJSONHelper {
 
         layer.setGfiType(model.getGfi_type());
         layer.setGfiXslt(model.getGfi_xslt());
-        layer.setGfiContent(model.getGfi_content());
+        layer.setGfiContent(LayerValidator.cleanGFIContent(model.getGfi_content()));
 
         layer.setBaseMap(model.isBase_map());
         layer.setRealtime(model.isRealtime());
@@ -92,7 +102,6 @@ public class LayerAdminJSONHelper {
         // TODO: role_permissions -> MapLayerPermissionsHelper.setLayerPermissions()
         return layer;
     }
-
 
     public static MapLayerAdminOutput toJSON(OskariLayer layer) {
         MapLayerAdminOutput out = new MapLayerAdminOutput();
@@ -130,7 +139,7 @@ public class LayerAdminJSONHelper {
         DataProvider provider = layer.getGroup();
         if (provider != null) {
             out.setDataprovider_id(provider.getId());
-        } else {
+        } else if (layer.getDataproviderId() != null) {
             out.setDataprovider_id(layer.getDataproviderId());
         }
         out.setInternal(layer.isInternal()); // we might not need to write this
@@ -141,7 +150,6 @@ public class LayerAdminJSONHelper {
         // TODO: role_permissions -> MapLayerPermissionsHelper.setLayerPermissions()
         return out;
     }
-
 
     private static DataProvider getDataProvider(MapLayer model) {
         DataProvider provider = null;
