@@ -28,7 +28,7 @@ public class OskariLayer extends JSONLocalizedNameAndTitle implements Comparable
 
     private boolean isBaseMap = false;
     private boolean isInternal = false;
-    private int dataproviderId;
+    private Integer dataproviderId;
 
     private String name;
     private String url;
@@ -91,6 +91,10 @@ public class OskariLayer extends JSONLocalizedNameAndTitle implements Comparable
             dataProviders.add(dataProvider);
             setDataproviderId(dataProvider.getId());
         }
+    }
+    public void removeDataprovider(final int id) {
+        dataProviders.removeIf(d -> d.getId() == id);
+        setDataproviderId(null);
     }
 
     public int compareTo(OskariLayer l) {
@@ -243,11 +247,11 @@ public class OskariLayer extends JSONLocalizedNameAndTitle implements Comparable
         isInternal = internal;
     }
 
-    public int getDataproviderId() {
+    public Integer getDataproviderId() {
         return dataproviderId;
     }
 
-    public void setDataproviderId(int dataproviderId) {
+    public void setDataproviderId(Integer dataproviderId) {
         this.dataproviderId = dataproviderId;
     }
 

@@ -150,6 +150,22 @@ public class ActionParameters {
             throw new ActionParamsException(errMsg);
         }
     }
+    /**
+     * Returns a cleaned up (think XSS) value for the requested parameter
+     * @param key parameter name
+     * @return cleaned up value for the parameter as boolean
+     * @throws ActionParamsException if parameter is not found, is empty or can't be parsed as double
+     */
+    public boolean getRequiredParamBoolean(final String key) throws ActionParamsException {
+        final String errMsg = "Required parameter '" + key + "' missing!";
+        final String val = getRequiredParam(key, errMsg);
+
+        try {
+            return Boolean.parseBoolean(val);
+        } catch (Exception e) {
+            throw new ActionParamsException(errMsg);
+        }
+    }
 
 
     /**
