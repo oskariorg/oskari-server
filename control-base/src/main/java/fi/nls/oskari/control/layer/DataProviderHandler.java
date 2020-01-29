@@ -1,6 +1,8 @@
 package fi.nls.oskari.control.layer;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.oskari.log.AuditLog;
 import org.oskari.service.util.ServiceFactory;
@@ -52,70 +54,52 @@ public class DataProviderHandler extends RestActionHandler {
 		if (!dataProviderService.hasPermissionToUpdate(params.getUser(), id)) {
 			throw new ActionDeniedException("Unauthorized user tried to remove data provider id=" + id);
 		}
-
-		if (deleteLayers) {
-			deleteDataProviderAndLayers(id, params);
-		} else {
-			deleteDataProvider(id, params);
+		
+		List<OskariLayer> layers = mapLayerService.findByDataProviderId(id);
+		
+		if (!deleteLayers) {
+			removeProviderFromLayers(layers, id);
 		}
+		deleteDataProvider(layers, deleteLayers, id, params);
+	}
+
+	private void removeProviderFromLayers(List<OskariLayer> layers, int id) {
+		
+		layers.forEach(layer -> {
+			layer.removeDataprovider(id);
+			mapLayerService.update(layer);
+		});
 	}
 
 	/**
-	 * Method deletes data provider. Data provider is removed from map layers
-	 * belonging to the data provider prior delete.
+	 * Method deletes data provider.
+	 * Cascade in db will handle that layers for the data provider are also deleted
 	 *
-	 * @param int              id
+	 * @param int id
 	 * @param ActionParameters params
 	 * @throws ActionException
 	 */
-	private void deleteDataProvider(int id, ActionParameters params) throws ActionException {
+	private void deleteDataProvider(List<OskariLayer> layers, boolean deleteLayers, int id, ActionParameters params) throws ActionException {
 		try {
 			DataProvider dataProvider = dataProviderService.find(id);
 			if (dataProvider == null) {
 				throw new ActionParamsException("Dataprovider not found with id " + id);
 			}
-			List<OskariLayer> layers = mapLayerService.findByDataProviderId(id);
-			layers.stream().forEach(layer -> {
-				layer.removeDataprovider(id);
-				mapLayerService.update(layer);
-			});
+			
+			List<Integer> layerIdsToBeDeleted = deleteLayers ? layers.stream().map(OskariLayer::getId)
+					.collect(Collectors.toList()) : new ArrayList<Integer>();
+			
 			dataProviderService.delete(id);
+
 			AuditLog.user(params.getClientIp(), params.getUser()).withParam("id", dataProvider.getId())
 					.withParam("name", dataProvider.getName(PropertyUtil.getDefaultLanguage()))
+					.withMsg("map layers " + layerIdsToBeDeleted + " deleted with data provider" )
 					.deleted(AuditLog.ResourceType.DATAPROVIDER);
 
 			// write deleted organization as response
 			ResponseHelper.writeResponse(params, dataProvider.getAsJSON());
 		} catch (Exception e) {
 			throw new ActionException("Couldn't delete data provider with id:" + id, e);
-		}
-	}
-
-	/**
-	 * Method deletes data provider and map layers which belong to the data
-	 * provider.
-	 *
-	 * @param int              id
-	 * @param ActionParameters params
-	 * @throws ActionException
-	 */
-	private void deleteDataProviderAndLayers(int id, ActionParameters params) throws ActionException {
-		try {
-			DataProvider organization = dataProviderService.find(id);
-			if (organization == null) {
-				throw new ActionParamsException("Dataprovider not found with id " + id);
-			}
-			// cascade in db will handle that layers are deleted
-			dataProviderService.delete(id);
-
-			AuditLog.user(params.getClientIp(), params.getUser()).withParam("id", organization.getId())
-					.withParam("name", organization.getName(PropertyUtil.getDefaultLanguage()))
-					.deleted(AuditLog.ResourceType.DATAPROVIDER);
-
-			// write deleted organization as response
-			ResponseHelper.writeResponse(params, organization.getAsJSON());
-		} catch (Exception e) {
-			throw new ActionException("Couldn't delete data provider and its map layers - id:" + id, e);
 		}
 	}
 }

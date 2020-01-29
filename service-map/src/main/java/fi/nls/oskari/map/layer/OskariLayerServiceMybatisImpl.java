@@ -314,15 +314,13 @@ public class OskariLayerServiceMybatisImpl extends OskariLayerService {
     @Override
 	public List<OskariLayer> findByDataProviderId(int dataProviderId) {
     	LOG.debug("Find by data provider id: " + dataProviderId);
-        final SqlSession session = factory.openSession();
-        try {
+
+        try (SqlSession session = factory.openSession()){
             final OskariLayerMapper mapper = session.getMapper(OskariLayerMapper.class);
             List<Map<String,Object>> result = mapper.findByDataProviderId(dataProviderId);
             return mapDataList(result);
         } catch (Exception e) {
             LOG.warn(e, "Exception while getting oskari layers with dataprovider id");
-        } finally {
-            session.close();
         }
         return Collections.emptyList();
 	}

@@ -157,13 +157,12 @@ public class ActionParameters {
      * @throws ActionParamsException if parameter is not found, is empty or can't be parsed as double
      */
     public boolean getRequiredParamBoolean(final String key) throws ActionParamsException {
-        final String errMsg = "Required parameter '" + key + "' missing!";
-        final String val = getRequiredParam(key, errMsg);
+        final String val = getRequiredParam(key);
 
         try {
             return Boolean.parseBoolean(val);
         } catch (Exception e) {
-            throw new ActionParamsException(errMsg);
+            throw new ActionParamsException(e.getMessage());
         }
     }
 
