@@ -10,6 +10,7 @@ import org.oskari.permissions.model.Resource;
 import org.oskari.permissions.model.ResourceType;
 
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 public class MapLayerPermissionsHelper {
@@ -50,6 +51,13 @@ public class MapLayerPermissionsHelper {
             }
         }
         getPermissionService().saveResource(res);
+    }
+
+    public static void removePermissions(final int layerId) {
+        Optional<Resource> res = getPermissionService().findResource(ResourceType.maplayer, Integer.toString(layerId));
+        if (res.isPresent()) {
+            getPermissionService().deleteResource(res.get());
+        }
     }
 
     private static MybatisRoleService getRoleService() {

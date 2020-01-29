@@ -6,6 +6,7 @@ import fi.nls.oskari.map.layer.group.link.OskariLayerGroupLink;
 import fi.nls.oskari.map.layer.group.link.OskariLayerGroupLinkService;
 import fi.nls.oskari.service.OskariComponentManager;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -31,7 +32,14 @@ public class MapLayerGroupsHelper {
                 .collect(Collectors.toList());
     }
 
-    public static void setGroupsForLayer(int layerId, List<Integer> groups) {
+    public static Set<Integer> findGroupIdsForLayer(int layerId) {
+        return getLayerGroupLinkService().findByLayerId(layerId)
+                .stream()
+                .map(gl -> gl.getGroupId())
+                .collect(Collectors.toSet());
+    }
+
+    public static void setGroupsForLayer(int layerId, Collection<Integer> groups) {
         OskariLayerGroupLinkService service = getLayerGroupLinkService();
         // remove existing groups
         service.deleteLinksByLayerId(layerId);
@@ -41,6 +49,7 @@ public class MapLayerGroupsHelper {
         }
         // insert new ones
         List<OskariLayerGroupLink> links = groups.stream()
+                .filter(id -> id != null)
                 .map(groupId -> new OskariLayerGroupLink(layerId, groupId))
                 .collect(Collectors.toList());
         service.insertAll(links);
