@@ -16,6 +16,7 @@ public abstract class OskariLayerGroupLinkService extends OskariComponent {
 
     public abstract void deleteLink(int layerId, int groupId);
     public abstract void deleteLinksByLayerId(int layerId);
+    public abstract void deleteLinksByGroupId(int groupId);
 
     public abstract void replace(OskariLayerGroupLink old, OskariLayerGroupLink link);
     public abstract boolean hasLinks(int groupId);

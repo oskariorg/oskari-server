@@ -120,4 +120,12 @@ public class OskariLayerGroupLinkServiceMybatisImpl extends OskariLayerGroupLink
             return getMapper(session).hasLinks(groupId);
         }
     }
+
+	@Override
+	public void deleteLinksByGroupId(int groupId) {
+		 try (SqlSession session = factory.openSession()) {
+	            getMapper(session).deleteByGroupId(groupId);
+	            session.commit();
+	     }
+	}
 }
