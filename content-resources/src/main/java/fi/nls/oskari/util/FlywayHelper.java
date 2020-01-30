@@ -49,6 +49,40 @@ public class FlywayHelper {
         return getViewIdsForTypes(connection, ViewTypes.DEFAULT, ViewTypes.USER);
     }
 
+    public static List<Long> getUserAndDefaultViewIds (Connection conn, String applicationName)
+            throws SQLException {
+        return getViewIdsForApplication(conn, applicationName, ViewTypes.DEFAULT, ViewTypes.USER);
+    }
+
+    public static List<Long> getViewIdsForApplication(Connection conn, String applicationName, String... types)
+            throws SQLException {
+        ArrayList<Long> ids = new ArrayList<>();
+        StringBuilder sql = new StringBuilder("SELECT id FROM portti_view WHERE application=?");
+        if (types != null && types.length > 0) {
+            sql.append(" AND type IN (?");
+            for (int i = 1; i < types.length; ++i) {
+                sql.append(", ?");
+            }
+            sql.append(")");
+
+        }
+        try (final PreparedStatement statement =
+                     conn.prepareStatement(sql.toString())) {
+            statement.setString(1, applicationName);
+            if (types != null) {
+                for (int i = 0; i < types.length; ++i) {
+                    statement.setString(i + 2, types[i]);
+                }
+            }
+            try (ResultSet rs = statement.executeQuery()) {
+                while (rs.next()) {
+                    ids.add(rs.getLong("id"));
+                }
+            }
+        }
+        return ids;
+    }
+
     public static boolean viewContainsBundle(Connection connection, String bundle, Long viewId)
             throws SQLException {
         final String sql ="SELECT * FROM portti_view_bundle_seq " +
