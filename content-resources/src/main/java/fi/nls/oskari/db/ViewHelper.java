@@ -8,6 +8,7 @@ import fi.nls.oskari.map.view.BundleService;
 import fi.nls.oskari.map.view.BundleServiceMybatisImpl;
 import fi.nls.oskari.map.view.ViewService;
 import fi.nls.oskari.map.view.AppSetupServiceMybatisImpl;
+import fi.nls.oskari.service.ServiceRuntimeException;
 import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.JSONHelper;
@@ -48,8 +49,8 @@ public class ViewHelper {
             return viewId;
         } catch (Exception ex) {
             log.error(ex, "Unable to insert view! ");
+            throw new ServiceRuntimeException("Unable to insert appsetup", ex);
         }
-        return -1;
     }
 
     public static Set<Integer> setupLayers(JSONObject viewJSON)
@@ -64,6 +65,7 @@ public class ViewHelper {
                     selectedLayerIds.add(LayerHelper.setupLayer(layerfile));
                 } catch (Exception ex) {
                     log.warn("Unable to setup layers from:", layerfile);
+                    throw ex;
                 }
             }
         }

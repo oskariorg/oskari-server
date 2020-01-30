@@ -1,5 +1,23 @@
 package fi.nls.oskari.map.layer;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+
+import javax.sql.DataSource;
+
+import org.apache.ibatis.mapping.Environment;
+import org.apache.ibatis.session.Configuration;
+import org.apache.ibatis.session.SqlSession;
+import org.apache.ibatis.session.SqlSessionFactory;
+import org.apache.ibatis.session.SqlSessionFactoryBuilder;
+import org.apache.ibatis.transaction.TransactionFactory;
+import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
+
 import fi.nls.oskari.annotation.Oskari;
 import fi.nls.oskari.db.DatasourceHelper;
 import fi.nls.oskari.domain.map.DataProvider;
@@ -9,17 +27,6 @@ import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.mybatis.JSONObjectMybatisTypeHandler;
 import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.JSONHelper;
-import org.apache.ibatis.mapping.Environment;
-import org.apache.ibatis.session.Configuration;
-import org.apache.ibatis.session.SqlSession;
-import org.apache.ibatis.session.SqlSessionFactory;
-import org.apache.ibatis.session.SqlSessionFactoryBuilder;
-import org.apache.ibatis.transaction.TransactionFactory;
-import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
-
-import javax.sql.DataSource;
-import java.util.*;
-import java.util.stream.Collectors;
 
 @Oskari("OskariLayerService")
 public class OskariLayerServiceMybatisImpl extends OskariLayerService {
@@ -303,6 +310,21 @@ public class OskariLayerServiceMybatisImpl extends OskariLayerService {
         }
         return Collections.emptyList();
     }
+    
+    @Override
+	public List<OskariLayer> findByDataProviderId(int dataProviderId) {
+    	LOG.debug("Find by data provider id: " + dataProviderId);
+
+        try (SqlSession session = factory.openSession()){
+            final OskariLayerMapper mapper = session.getMapper(OskariLayerMapper.class);
+            List<Map<String,Object>> result = mapper.findByDataProviderId(dataProviderId);
+            return mapDataList(result);
+        } catch (Exception e) {
+            LOG.warn(e, "Exception while getting oskari layers with dataprovider id");
+        }
+        return Collections.emptyList();
+	}
+    
     public Map<String, List<Integer>> findNamesAndIdsByUrl (final String url, final String type) {
         final SqlSession session = factory.openSession();
         try {
@@ -369,5 +391,4 @@ public class OskariLayerServiceMybatisImpl extends OskariLayerService {
     public void delete(Map<String, String> parameterMap) {
         delete(ConversionHelper.getInt(parameterMap.get("id"), -1));
     }
-
 }
