@@ -21,6 +21,7 @@ import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.JSONHelper;
+import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.wfs.WFSLayerConfigurationService;
 import org.geotools.referencing.CRS;
 import org.json.JSONArray;
@@ -104,6 +105,7 @@ public abstract class AbstractFeatureHandler extends RestActionHandler {
     }
 
     protected Feature getFeature(JSONObject jsonObject) throws ActionParamsException, JSONException, FactoryException {
+        boolean flipFeature = PropertyUtil.getOptional("actionhandler.AbstractFeatureHandler.forceXY", false);
         Feature feature = new Feature();
         OskariLayer layer = getLayer(jsonObject.optString("layerId"));
         String srsName = JSONHelper.getStringFromJSON(jsonObject, "srsName", "EPSG:3067");
@@ -132,7 +134,8 @@ public abstract class AbstractFeatureHandler extends RestActionHandler {
             }
             JSONArray data = geometries.getJSONArray("data");
             Geometry geometry = getGeometry(geometryType, data, getSrid(srsName, 3067));
-            if(ProjectionHelper.isFirstAxisNorth(crs)) {
+
+            if(ProjectionHelper.isFirstAxisNorth(crs) || flipFeature) {
                 // reverse xy
                 ProjectionHelper.flipFeatureYX(geometry);
             }
