@@ -1,0 +1,34 @@
+{
+  "type": "wmslayer",
+  "url": "http://oskari.org/basemap",
+  "name": "basemap",
+  "locale": {
+    "en": {
+      "name": "Oskari.org background map"
+    }
+  },
+  "opacity": 100,
+  "minscale": -1.0,
+  "maxscale": -1.0,
+  "base_map": false,
+  "realtime": false,
+  "internal": false,
+  "refresh_rate": -1,
+  "capabilities_update_rate_sec": -1,
+  "dataprovider_id": -1,
+  "dataprovider": "Oskari.org",
+  "groups": [
+    "Background maps"
+  ],
+  "role_permissions": {
+    "Guest": [
+      "VIEW_PUBLISHED",
+      "VIEW_LAYER"
+    ],
+    "User": [
+      "VIEW_PUBLISHED",
+      "PUBLISH",
+      "VIEW_LAYER"
+    ]
+  }
+}
