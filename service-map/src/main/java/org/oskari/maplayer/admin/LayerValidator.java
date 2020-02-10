@@ -1,8 +1,8 @@
-package org.oskari.admin;
+package org.oskari.maplayer.admin;
 
 import fi.nls.oskari.service.ServiceRuntimeException;
 import fi.nls.oskari.util.PropertyUtil;
-import fi.nls.oskari.util.RequestHelper;
+import org.oskari.util.HtmlHelper;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -58,7 +58,7 @@ public class LayerValidator {
                 attributes.put(parts[parts.length - 1], PropertyUtil.getCommaSeparatedList(attrProp));
             }
         }
-        return RequestHelper.cleanHTMLString(gfiContent, tags, attributes, protocols);
+        return HtmlHelper.cleanHTMLString(gfiContent, tags, attributes, protocols);
     }
 
 }

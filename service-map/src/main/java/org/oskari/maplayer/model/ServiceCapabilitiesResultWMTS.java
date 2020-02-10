@@ -1,4 +1,4 @@
-package org.oskari.admin.model;
+package org.oskari.maplayer.model;
 
 public class ServiceCapabilitiesResultWMTS extends ServiceCapabilitiesResult {
 

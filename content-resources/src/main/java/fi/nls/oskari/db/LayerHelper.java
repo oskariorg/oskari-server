@@ -9,8 +9,8 @@ import fi.nls.oskari.map.layer.OskariLayerServiceMybatisImpl;
 import fi.nls.oskari.util.IOHelper;
 import org.oskari.admin.MapLayerGroupsHelper;
 import org.oskari.admin.MapLayerPermissionsHelper;
-import org.oskari.admin.model.MapLayer;
-import org.oskari.admin.LayerAdminJSONHelper;
+import org.oskari.maplayer.model.MapLayer;
+import org.oskari.maplayer.admin.LayerAdminJSONHelper;
 
 import java.io.IOException;
 import java.util.List;

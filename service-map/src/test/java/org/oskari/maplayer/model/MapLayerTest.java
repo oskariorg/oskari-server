@@ -1,4 +1,4 @@
-package org.oskari.admin.model;
+package org.oskari.maplayer.model;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -7,6 +7,7 @@ import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.JSONHelper;
 import org.json.JSONObject;
 import org.junit.Test;
+import org.oskari.maplayer.model.MapLayer;
 
 import static org.junit.Assert.*;
 
