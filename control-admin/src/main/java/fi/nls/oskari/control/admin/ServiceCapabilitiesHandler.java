@@ -12,7 +12,7 @@ import fi.nls.oskari.service.ServiceUnauthorizedException;
 import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.util.ResponseHelper;
 import org.oskari.admin.LayerCapabilitiesHelper;
-import org.oskari.admin.model.ServiceCapabilitiesResult;
+import org.oskari.maplayer.model.ServiceCapabilitiesResult;
 
 import javax.servlet.http.HttpServletResponse;
 import java.net.MalformedURLException;

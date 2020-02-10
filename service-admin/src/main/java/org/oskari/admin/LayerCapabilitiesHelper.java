@@ -14,9 +14,10 @@ import fi.nls.oskari.wms.WMSCapabilitiesService;
 import fi.nls.oskari.wmts.WMTSCapabilitiesService;
 import fi.nls.oskari.wmts.domain.WMTSCapabilities;
 import org.geotools.data.wfs.WFSDataStore;
-import org.oskari.admin.model.ServiceCapabilitiesResult;
-import org.oskari.admin.model.ServiceCapabilitiesResultWMS;
-import org.oskari.admin.model.ServiceCapabilitiesResultWMTS;
+import org.oskari.maplayer.admin.LayerAdminJSONHelper;
+import org.oskari.maplayer.model.ServiceCapabilitiesResult;
+import org.oskari.maplayer.model.ServiceCapabilitiesResultWMS;
+import org.oskari.maplayer.model.ServiceCapabilitiesResultWMTS;
 
 import java.util.Arrays;
 import java.util.List;
@@ -45,10 +46,10 @@ public class LayerCapabilitiesHelper {
     }
 
     private static ServiceCapabilitiesResult getWMSCapabilities(String url, String version, String username, String password, String currentSRS) throws ServiceException {
-        ServiceCapabilitiesResultWMS capabilitiesResult = new ServiceCapabilitiesResultWMS();
-        Map<String, Object> capabilities = wmsCapabilities.getCapabilitiesResults(url, version, username, password, getSystemCRSs());
-        setCommonFields(url, OskariLayer.TYPE_WMS, capabilitiesResult, capabilities, currentSRS);
-        capabilitiesResult.setStructure(capabilities.get(CapabilitiesConstants.KEY_WMS_STRUCTURE));
+        ServiceCapabilitiesResultWMS capabilitiesResult = wmsCapabilities.getCapabilitiesResults(url, version, username, password, getSystemCRSs());
+        capabilitiesResult.setCurrentSrs(currentSRS);
+        String existingUrl = removeOWSServiceFromUrl(url);
+        capabilitiesResult.setExistingLayers(getOskariLayerService().findNamesAndIdsByUrl(existingUrl, OskariLayer.TYPE_WMS));
         return capabilitiesResult;
     }
 

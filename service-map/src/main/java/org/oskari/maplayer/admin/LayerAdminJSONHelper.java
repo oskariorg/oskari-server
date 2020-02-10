@@ -1,4 +1,4 @@
-package org.oskari.admin;
+package org.oskari.maplayer.admin;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -9,14 +9,10 @@ import fi.nls.oskari.map.layer.DataProviderService;
 import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.service.ServiceRuntimeException;
 import fi.nls.oskari.util.JSONHelper;
-import fi.nls.oskari.util.PropertyUtil;
-import fi.nls.oskari.util.RequestHelper;
 import org.json.JSONObject;
-import org.oskari.admin.model.MapLayer;
-import org.oskari.admin.model.MapLayerAdminOutput;
+import org.oskari.maplayer.model.MapLayer;
+import org.oskari.maplayer.model.MapLayerAdminOutput;
 
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.*;
 
 public class LayerAdminJSONHelper {
@@ -104,7 +100,9 @@ public class LayerAdminJSONHelper {
 
     public static MapLayerAdminOutput toJSON(OskariLayer layer) {
         MapLayerAdminOutput out = new MapLayerAdminOutput();
-        out.setId(layer.getId());
+        if (layer.getId() != -1) {
+            out.setId(layer.getId());
+        }
         out.setType(layer.getType());
         out.setUrl(layer.getUrl());
         out.setUsername(layer.getUsername());

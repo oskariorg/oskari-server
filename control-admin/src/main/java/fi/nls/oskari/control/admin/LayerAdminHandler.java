@@ -16,12 +16,12 @@ import fi.nls.oskari.util.GetLayerKeywords;
 import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.util.ResponseHelper;
 import org.json.JSONException;
-import org.oskari.admin.LayerAdminJSONHelper;
+import org.oskari.maplayer.admin.LayerAdminJSONHelper;
 import org.oskari.admin.LayerCapabilitiesHelper;
 import org.oskari.admin.MapLayerGroupsHelper;
 import org.oskari.admin.MapLayerPermissionsHelper;
-import org.oskari.admin.model.MapLayer;
-import org.oskari.admin.model.MapLayerAdminOutput;
+import org.oskari.maplayer.model.MapLayer;
+import org.oskari.maplayer.model.MapLayerAdminOutput;
 import org.oskari.log.AuditLog;
 import org.oskari.service.util.ServiceFactory;
 
