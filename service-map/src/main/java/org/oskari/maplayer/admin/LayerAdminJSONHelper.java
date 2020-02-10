@@ -100,7 +100,9 @@ public class LayerAdminJSONHelper {
 
     public static MapLayerAdminOutput toJSON(OskariLayer layer) {
         MapLayerAdminOutput out = new MapLayerAdminOutput();
-        out.setId(layer.getId());
+        if (layer.getId() != -1) {
+            out.setId(layer.getId());
+        }
         out.setType(layer.getType());
         out.setUrl(layer.getUrl());
         out.setUsername(layer.getUsername());
