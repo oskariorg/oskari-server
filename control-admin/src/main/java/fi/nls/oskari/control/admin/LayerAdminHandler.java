@@ -63,9 +63,9 @@ public class LayerAdminHandler extends AbstractLayerAdminHandler {
     @Override
     public void handlePost(ActionParameters params) throws ActionException {
         MapLayer layer = LayerAdminJSONHelper.readJSON(params.getPayLoad());
-        boolean isNew = layer.getId() != null && layer.getId() > 0;
+        boolean isExisting = layer.getId() != null && layer.getId() > 0;
         Result result;
-        if (isNew) {
+        if (isExisting) {
             result = updateLayer(params, layer);
         } else {
             result = insertLayer(params, layer);
@@ -84,10 +84,10 @@ public class LayerAdminHandler extends AbstractLayerAdminHandler {
                 .withParam("url", ml.getUrl())
                 .withParam("name", ml.getName());
 
-        if (isNew) {
-            audit.added(AuditLog.ResourceType.MAPLAYER);
-        } else {
+        if (isExisting) {
             audit.updated(AuditLog.ResourceType.MAPLAYER);
+        } else {
+            audit.added(AuditLog.ResourceType.MAPLAYER);
         }
 
         MapLayerAdminOutput output = getLayerForEdit(params.getUser(), ml);
