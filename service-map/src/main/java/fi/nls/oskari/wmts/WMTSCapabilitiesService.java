@@ -37,7 +37,7 @@ public class WMTSCapabilitiesService {
         }
         // start building result
         ServiceCapabilitiesResultWMTS results = new ServiceCapabilitiesResultWMTS();
-        results.setTitle("");
+        results.setVersion(version);
         // results.setLayersWithErrors((List<String>) capabilities.get(CapabilitiesConstants.KEY_ERROR_LAYERS));
         List<OskariLayer> layers = new ArrayList<>();
         // List<String> unsupportedLayers = new ArrayList<>();
