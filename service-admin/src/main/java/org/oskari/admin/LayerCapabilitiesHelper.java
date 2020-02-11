@@ -55,7 +55,7 @@ public class LayerCapabilitiesHelper {
         String existingUrl = removeOWSServiceFromUrl(url);
         return getOskariLayerService().findNamesAndIdsByUrl(existingUrl, type);
     }
-    
+
     private static String removeOWSServiceFromUrl(String url) {
         for (String ows : OWS_SERVICES) {
             if (url.toLowerCase().endsWith(ows)) {
