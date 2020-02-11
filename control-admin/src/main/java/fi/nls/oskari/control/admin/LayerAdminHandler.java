@@ -295,7 +295,7 @@ public class LayerAdminHandler extends AbstractLayerAdminHandler {
             ml.setOptions(new JSONObject(layer.getOptions()));
         }
 
-        ml.setGfiContent(getOrDefaultStr(layer.getGfi_content(), ml.getGfiContent()));
+        ml.setGfiContent(getOrDefaultStr(LayerValidator.cleanGFIContent(layer.getGfi_content()), ml.getGfiContent()));
         ml.setGfiXslt(getOrDefaultStr(layer.getGfi_xslt(), ml.getGfiXslt()));
         ml.setGfiType(getOrDefaultStr(layer.getGfi_type(), ml.getGfiType()));
 
