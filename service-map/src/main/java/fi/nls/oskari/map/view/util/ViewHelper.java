@@ -86,14 +86,14 @@ public class ViewHelper {
                     bundle.put("conf", new JSONObject(conf));
                 }
                 else {
-                    log.info("Could not get configuration fragment for bundle '", name, "'");
+                    log.debug("Could not get configuration fragment for bundle '", name, "'");
                 }
                 // setup state for bundle
                 if (state != null) {
                     bundle.put("state", new JSONObject(state));
                 }
                 else {
-                    log.info("Could not get state fragment for bundle '", name, "'");
+                    log.debug("Could not get state fragment for bundle '", name, "'");
                 }
             } catch (Exception ex) {
                 log.error("Malformed JSON in configuration fragment for bundle", name, conf);
