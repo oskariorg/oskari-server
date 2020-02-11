@@ -33,54 +33,28 @@ public class LayerCapabilitiesHelper {
 
     // Hiding ugliness
     public static ServiceCapabilitiesResult getCapabilitiesResults(String url, String type, String version, String username, String password, String currentSRS) throws ServiceException {
+        ServiceCapabilitiesResult results = getCapabilitiesResultForType(url, type, version, username, password, currentSRS);
+        results.setCurrentSrs(currentSRS);
+        results.setExistingLayers(getExistingLayers(url, type));
+        return results;
+    }
+    private static ServiceCapabilitiesResult getCapabilitiesResultForType(String url, String type, String version, String username, String password, String currentSRS) throws ServiceException {
         switch (type) {
             case OskariLayer.TYPE_WMS:
-                return getWMSCapabilities(url, version, username, password, currentSRS);
+                return wmsCapabilities.getCapabilitiesResults(url, version, username, password, getSystemCRSs());
             case OskariLayer.TYPE_WFS:
-                return getWFSCapabilities(url, version, username, password, currentSRS);
+                return WFSCapabilitiesService.getCapabilitiesResults(url, version, username, password, getSystemCRSs());
             case OskariLayer.TYPE_WMTS:
-                return getWMTSCapabilities(url, version, username, password, currentSRS);
+                return wmtsCapabilities.getCapabilitiesResults(url, version, username, password, currentSRS, getSystemCRSs());
             default:
                 throw new ServiceException("Couldn't determine operation based on parameters");
         }
     }
 
-    private static ServiceCapabilitiesResult getWMSCapabilities(String url, String version, String username, String password, String currentSRS) throws ServiceException {
-        ServiceCapabilitiesResultWMS capabilitiesResult = wmsCapabilities.getCapabilitiesResults(url, version, username, password, getSystemCRSs());
-        capabilitiesResult.setCurrentSrs(currentSRS);
+    private static Map<String, List<Integer>> getExistingLayers(String url, String type) {
         String existingUrl = removeOWSServiceFromUrl(url);
-        capabilitiesResult.setExistingLayers(getOskariLayerService().findNamesAndIdsByUrl(existingUrl, OskariLayer.TYPE_WMS));
-        return capabilitiesResult;
+        return getOskariLayerService().findNamesAndIdsByUrl(existingUrl, type);
     }
-
-    private static ServiceCapabilitiesResult getWFSCapabilities(String url, String version, String username, String password, String currentSRS) throws ServiceException {
-        ServiceCapabilitiesResult capabilitiesResult = new ServiceCapabilitiesResult();
-        Map<String, Object> capabilities = WFSCapabilitiesService.getCapabilitiesResults(url, version, username, password, getSystemCRSs());
-        setCommonFields(url, OskariLayer.TYPE_WFS, capabilitiesResult, capabilities, currentSRS);
-        return capabilitiesResult;
-    }
-
-    private static ServiceCapabilitiesResult getWMTSCapabilities(String url, String version, String username, String password, String currentSRS) throws ServiceException {
-        ServiceCapabilitiesResultWMTS capabilitiesResult = new ServiceCapabilitiesResultWMTS();
-        Map<String, Object> capabilities = wmtsCapabilities.getCapabilitiesResults(url, version, username, password, currentSRS, getSystemCRSs());
-        setCommonFields(url, OskariLayer.TYPE_WMTS, capabilitiesResult, capabilities, currentSRS);
-        capabilitiesResult.setMatrixSets(capabilities.get(CapabilitiesConstants.KEY_WMTS_MATRIXSET));
-        return capabilitiesResult;
-    }
-
-    private static void setCommonFields(String url, String type, ServiceCapabilitiesResult capabilitiesResult, Map<String, Object> capabilities, String currentSRS) {
-        capabilitiesResult.setTitle((String) capabilities.getOrDefault(CapabilitiesConstants.KEY_TITLE, ""));
-        capabilitiesResult.setVersion((String) capabilities.get(CapabilitiesConstants.KEY_VERSION));
-        capabilitiesResult.setCurrentSrs(currentSRS);
-
-        List<OskariLayer> layers = (List<OskariLayer>) capabilities.get(CapabilitiesConstants.KEY_LAYERS);
-        capabilitiesResult.setLayers(layers.stream().map(l -> LayerAdminJSONHelper.toJSON(l)).collect(Collectors.toList()));
-
-        String existingUrl = removeOWSServiceFromUrl(url);
-        capabilitiesResult.setExistingLayers(getOskariLayerService().findNamesAndIdsByUrl(existingUrl, type));
-        capabilitiesResult.setLayersWithErrors((List<String>) capabilities.get(CapabilitiesConstants.KEY_ERROR_LAYERS));
-    }
-
 
     private static String removeOWSServiceFromUrl(String url) {
         for (String ows : OWS_SERVICES) {

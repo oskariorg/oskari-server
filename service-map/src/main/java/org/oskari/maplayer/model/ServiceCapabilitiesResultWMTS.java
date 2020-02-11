@@ -1,13 +1,17 @@
 package org.oskari.maplayer.model;
 
+import fi.nls.oskari.wmts.domain.TileMatrixSet;
+
+import java.util.Collection;
+
 public class ServiceCapabilitiesResultWMTS extends ServiceCapabilitiesResult {
 
-    private Object matrixSets;
+    private Collection<TileMatrixSet> matrixSets;
 
-    public Object getMatrixSets() {
+    public Collection<TileMatrixSet> getMatrixSets() {
         return matrixSets;
     }
-    public void setMatrixSets(Object matrixSets) {
+    public void setMatrixSets(Collection<TileMatrixSet> matrixSets) {
         this.matrixSets = matrixSets;
     }
 }

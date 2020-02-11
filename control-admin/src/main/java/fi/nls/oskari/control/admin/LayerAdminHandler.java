@@ -16,10 +16,12 @@ import fi.nls.oskari.util.GetLayerKeywords;
 import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.util.ResponseHelper;
 import org.json.JSONException;
+import org.json.JSONObject;
 import org.oskari.maplayer.admin.LayerAdminJSONHelper;
 import org.oskari.admin.LayerCapabilitiesHelper;
 import org.oskari.admin.MapLayerGroupsHelper;
 import org.oskari.admin.MapLayerPermissionsHelper;
+import org.oskari.maplayer.admin.LayerValidator;
 import org.oskari.maplayer.model.MapLayer;
 import org.oskari.maplayer.model.MapLayerAdminOutput;
 import org.oskari.log.AuditLog;
@@ -61,8 +63,9 @@ public class LayerAdminHandler extends AbstractLayerAdminHandler {
     @Override
     public void handlePost(ActionParameters params) throws ActionException {
         MapLayer layer = LayerAdminJSONHelper.readJSON(params.getPayLoad());
+        boolean isNew = layer.getId() != null && layer.getId() > 0;
         Result result;
-        if (layer.getId() != null && layer.getId() > 0) {
+        if (isNew) {
             result = updateLayer(params, layer);
         } else {
             result = insertLayer(params, layer);
@@ -73,6 +76,18 @@ public class LayerAdminHandler extends AbstractLayerAdminHandler {
         OskariLayer ml = mapLayerService.find(result.id);
         if (ml == null) {
             throw new ActionParamsException("Couldn't get the saved layer from DB - id:" + result.id, ERROR_NO_LAYER_WITH_ID);
+        }
+
+        AuditLog audit = AuditLog.user(params.getClientIp(), params.getUser())
+                .withParam("id", ml.getId())
+                .withParam("uiName", ml.getName(PropertyUtil.getDefaultLanguage()))
+                .withParam("url", ml.getUrl())
+                .withParam("name", ml.getName());
+
+        if (isNew) {
+            audit.added(AuditLog.ResourceType.MAPLAYER);
+        } else {
+            audit.updated(AuditLog.ResourceType.MAPLAYER);
         }
 
         MapLayerAdminOutput output = getLayerForEdit(params.getUser(), ml);
@@ -155,25 +170,20 @@ public class LayerAdminHandler extends AbstractLayerAdminHandler {
      * @throws JSONException   if mandatory field is missing or invalid type
      */
     private Result updateLayer(final ActionParameters params, final MapLayer layer) throws ActionException {
-        final int layerId = layer.getId();
-        OskariLayer ml = getMapLayer(params.getUser(), layer.getId());
         // also checks that user has permission to update
+        OskariLayer ml = getMapLayer(params.getUser(), layer.getId());
+
+        Result result = new Result();
+        result.id = ml.getId();
 
         mergeInputToOskariLayer(ml, layer);
+        updateCapabilities(ml);
 
         mapLayerService.update(ml);
 
-        AuditLog.user(params.getClientIp(), params.getUser())
-                .withParam("id", ml.getId())
-                .withParam("uiName", ml.getName(PropertyUtil.getDefaultLanguage()))
-                .withParam("url", ml.getUrl())
-                .withParam("name", ml.getName())
-                .updated(AuditLog.ResourceType.MAPLAYER);
-
+        // TODO: removes all permissions but non-admins don't send all permissions back
+        // Should we remove just the permissions that we get from frontend?
         MapLayerPermissionsHelper.removePermissions(ml.getId());
-
-        Result result = new Result();
-        result.id = layerId;
 
         return result;
     }
@@ -200,13 +210,6 @@ public class LayerAdminHandler extends AbstractLayerAdminHandler {
             ml.setName(layerId + "_group");
             mapLayerService.update(ml);
         }
-
-        AuditLog.user(params.getClientIp(), params.getUser())
-                .withParam("id", ml.getId())
-                .withParam("uiName", ml.getName(PropertyUtil.getDefaultLanguage()))
-                .withParam("url", ml.getUrl())
-                .withParam("name", ml.getName())
-                .added(AuditLog.ResourceType.MAPLAYER);
 
         Result result = new Result();
         result.id = layerId;
@@ -241,56 +244,68 @@ public class LayerAdminHandler extends AbstractLayerAdminHandler {
      * @throws JSONException   if mandatory field is missing or invalid type
      */
     private void mergeInputToOskariLayer(OskariLayer ml, MapLayer layer) {
+        ml.setUpdated(new Date(System.currentTimeMillis()));
         ml.setName(layer.getName());
         // TODO: should we rather modify OskariMaplayer setters so they won't accept null value over existing value?
         ml.setVersion(getOrDefaultStr(layer.getVersion(), ml.getVersion()));
 
         Map<String, Map<String, String>> locale = layer.getLocale();
-        for (String lang : locale.keySet()) {
-            Map<String, String> langLocale = locale.getOrDefault(lang, Collections.emptyMap());
-            // TODO: check that name is given
-            ml.setName(lang, langLocale.get(KEY_LOCALIZED_NAME));  // mandatory
-            ml.setTitle(lang, langLocale.get(KEY_LOCALIZED_TITLE));
+        if (locale != null) {
+            LayerValidator.validateLocale(locale);
+            for (String lang : locale.keySet()) {
+                Map<String, String> langLocale = locale.getOrDefault(lang, Collections.emptyMap());
+                // at least name in default lang is required - validation done in LayerAdmin is given
+                ml.setName(lang, langLocale.get(KEY_LOCALIZED_NAME));
+                ml.setTitle(lang, langLocale.get(KEY_LOCALIZED_TITLE));
+            }
         }
 
-        // Add dataprovider
-        DataProvider provider = dataProviderService.find(layer.getDataprovider_id());
-        // dataProviders is Set so is safety to use add also to update layer
-        ml.addDataprovider(provider);
+        if (layer.getDataprovider_id() != -1) {
+            // Add dataprovider
+            DataProvider provider = dataProviderService.find(layer.getDataprovider_id());
+            // dataProviders is Set so is safety to use add also to update layer
+            ml.setDataprovider(provider);
+        }
 
         if (ml.isCollection()) {
-            // url is needed for permission mapping, name is updated after we get the layer id
+            // just for consistency - no real meaning for these
+            ml.setName(ml.getId() + "_group");
             ml.setUrl(ml.getType());
             // the rest is not relevant for collection layers
             return;
         }
 
-        ml.setUrl(layer.getUrl());
+        ml.setUrl(getOrDefaultStr(layer.getUrl(), ml.getUrl()));
+        ml.setUsername(getOrDefaultStr(layer.getUsername(), ml.getUsername()));
+        ml.setPassword(getOrDefaultStr(layer.getPassword(), ml.getPassword()));
+        ml.setSrs_name(getOrDefaultStr(layer.getSrs(),
+                getOrDefaultStr(ml.getSrs_name(),
+                        PropertyUtil.get("oskari.native.srs", "EPSG:4326"))));
 
-        ml.setSrs_name(getOrDefaultStr(layer.getSrs(), PropertyUtil.get("oskari.native.srs", "EPSG:4326")));
+        ml.setStyle(getOrDefaultStr(layer.getStyle(), ml.getStyle()));
+        ml.setLegendImage(getOrDefaultStr(layer.getLegend_image(), ml.getLegendImage()));
+        ml.setMetadataId(getOrDefaultStr(layer.getMetadataid(), ml.getMetadataId()));
+        if (layer.getAttributes() != null) {
+            ml.setAttributes(new JSONObject(layer.getAttributes()));
+        }
+        if (layer.getParams() != null) {
+            ml.setParams(new JSONObject(layer.getParams()));
+        }
+        if (layer.getOptions() != null) {
+            ml.setOptions(new JSONObject(layer.getOptions()));
+        }
 
-        ml.setUpdated(new Date(System.currentTimeMillis()));
-        /*
-        ml.setBaseMap(layer.optBoolean(KEY_IS_BASE, ml.isBaseMap()));
-        ml.setOpacity(layer.optInt(KEY_OPACITY, ml.getOpacity()));
-        ml.setStyle(layer.optString(KEY_STYLE, ml.getStyle()));
-        ml.setMinScale(layer.optDouble(KEY_MIN_SCALE, ml.getMinScale()));
-        ml.setMaxScale(layer.optDouble(KEY_MAX_SCALE, ml.getMaxScale()));
-        ml.setLegendImage(layer.optString(KEY_LEGEND_IMAGE, ml.getLegendImage()));
-        ml.setMetadataId(layer.optString(KEY_METADATA_ID, ml.getMetadataId()));
-        ml.setCapabilitiesUpdateRateSec(layer.optInt(KEY_CAPABILITIES_UPDATE_RATE, ml.getCapabilitiesUpdateRateSec()));
-        ml.setRealtime(layer.optBoolean(KEY_REALTIME, ml.getRealtime()));
-        ml.setRefreshRate(layer.optInt(KEY_REFRESH_RATE, ml.getRefreshRate()));
+        ml.setGfiContent(getOrDefaultStr(LayerValidator.cleanGFIContent(layer.getGfi_content()), ml.getGfiContent()));
+        ml.setGfiXslt(getOrDefaultStr(layer.getGfi_xslt(), ml.getGfiXslt()));
+        ml.setGfiType(getOrDefaultStr(layer.getGfi_type(), ml.getGfiType()));
 
-        if (layer.has(KEY_ATTRIBUTES)) ml.setAttributes(layer.getJSONObject(KEY_ATTRIBUTES));
-        if (layer.has(KEY_PARAMS)) ml.setParams(layer.getJSONObject(KEY_PARAMS));
-        if (layer.has(KEY_OPTIONS)) ml.setOptions(layer.getJSONObject(KEY_OPTIONS));
-        if (layer.has(KEY_PASSWORD)) ml.setPassword(layer.getString(KEY_PASSWORD));
-        if (layer.has(KEY_USERNAME)) ml.setUsername(layer.getString(KEY_USERNAME));
-        if (layer.has(KEY_CAPABILITIES)) ml.setCapabilities(layer.getJSONObject(KEY_CAPABILITIES));
-
-        ml.setGfiContent(layer.optString(KEY_GFI_CONTENT));
-        */
+        // TODO: make nullable so these are NOT reset to default if not given?
+        ml.setOpacity(layer.getOpacity());
+        ml.setMinScale(layer.getMinscale());
+        ml.setMaxScale(layer.getMaxscale());
+        ml.setCapabilitiesUpdateRateSec(layer.getCapabilities_update_rate_sec());
+        ml.setRealtime(layer.isRealtime());
+        ml.setRefreshRate(layer.getRefresh_rate());
     }
 
     private boolean updateCapabilities(OskariLayer ml) {
