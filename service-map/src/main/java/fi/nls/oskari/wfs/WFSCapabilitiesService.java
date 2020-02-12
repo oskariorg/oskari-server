@@ -11,6 +11,8 @@ import org.geotools.data.DataStoreFinder;
 import org.geotools.data.simple.SimpleFeatureSource;
 import org.geotools.data.wfs.WFSDataStore;
 import org.geotools.data.wfs.internal.WFSGetCapabilities;
+import org.oskari.maplayer.admin.LayerAdminJSONHelper;
+import org.oskari.maplayer.model.ServiceCapabilitiesResult;
 import org.oskari.service.wfs3.WFS3Service;
 import org.oskari.service.wfs3.model.WFS3CollectionInfo;
 import org.oskari.service.wfs3.model.WFS3Exception;
@@ -18,6 +20,7 @@ import org.oskari.utils.common.Sets;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static fi.nls.oskari.service.capabilities.CapabilitiesConstants.*;
 
@@ -84,8 +87,8 @@ public class WFSCapabilitiesService {
         String baseUrl = url.contains("?") ? url.substring(0, url.indexOf("?")) : url;
         return baseUrl + "?service=WFS&request=GetCapabilities&version="+ version;
     }
-    public static Map<String, Object> getCapabilitiesResults (String url, String version, String user, String pw,
-                                                              Set<String> systemCRSs)
+    public static ServiceCapabilitiesResult getCapabilitiesResults (String url, String version, String user, String pw,
+                                                                    Set<String> systemCRSs)
                                                                 throws ServiceException {
         try {
             if (WFS3_VERSION.equals(version)) {
@@ -97,11 +100,12 @@ public class WFSCapabilitiesService {
         }
     }
 
-    public static Map<String, Object> getCapabilitiesWFS (String url, String version,
+    private static ServiceCapabilitiesResult getCapabilitiesWFS (String url, String version,
                                            String user, String pw, Set<String> systemCRSs) throws ServiceException, IOException {
         WFSDataStore data = getDataStore(url, version, user, pw);
-        String title = data.getInfo().getTitle();
-        String responseVersion = data.getInfo().getVersion();
+        ServiceCapabilitiesResult result = new ServiceCapabilitiesResult();
+        result.setTitle(data.getInfo().getTitle());
+        result.setVersion(data.getInfo().getVersion());
         String layerNames[] = data.getTypeNames();
         List<OskariLayer> layers = new ArrayList<>();
         List<String> layersWithErrors = new ArrayList<>();
@@ -113,7 +117,7 @@ public class WFSCapabilitiesService {
                 OskariLayer ml = toOskariLayer(layerName, layerTitle, version, url, user, pw);
                 try {
                     OskariLayerCapabilitiesHelper.setPropertiesFromCapabilitiesWFS(capa, source, ml, systemCRSs);
-                }catch (ServiceException e) {} //list layer even capabilities fails
+                } catch (ServiceException e) {} //list layer even capabilities fails
                 layers.add(ml);
             } catch (Exception e) {
                 String error = e.getMessage();
@@ -121,16 +125,15 @@ public class WFSCapabilitiesService {
                 layersWithErrors.add(layerName); // TODO should we use Map (layerName, error) and pass error also to frontend
             }
         }
-        Map<String, Object> results = new HashMap<>();
-        results.put(KEY_VERSION, responseVersion);
-        results.put(KEY_TITLE, title);
-        results.put(KEY_LAYERS, layers);
-        results.put(KEY_ERROR_LAYERS, layersWithErrors);
+        result.setLayersWithErrors(layersWithErrors);
+        result.setLayers(layers.stream()
+                .map(l -> LayerAdminJSONHelper.toJSON(l))
+                .collect(Collectors.toList()));
 
-        return results;
+        return result;
     }
 
-    public static Map<String, Object> getCapabilitiesWFS3 (String url, String user, String pw, Set<String> systemCRSs) throws WFS3Exception, IOException {
+    private static ServiceCapabilitiesResult getCapabilitiesWFS3 (String url, String user, String pw, Set<String> systemCRSs) throws WFS3Exception, IOException {
         WFS3Service service = WFS3Service.fromURL(url, user, pw);
         List<OskariLayer> layers = new ArrayList<>();
 
@@ -141,8 +144,13 @@ public class WFSCapabilitiesService {
             OskariLayerCapabilitiesHelper.setPropertiesFromCapabilitiesWFS(service, ml, systemCRSs);
             layers.add(ml);
         }
+        ServiceCapabilitiesResult result = new ServiceCapabilitiesResult();
+        result.setVersion(WFS3_VERSION);
+        result.setLayers(layers.stream()
+                .map(l -> LayerAdminJSONHelper.toJSON(l))
+                .collect(Collectors.toList()));
         // Do we need to parse title from WFS3Content.links
-        return Collections.singletonMap( KEY_LAYERS, layers);
+        return result;
     }
     private static OskariLayer toOskariLayer(String layerName, String title, String version,
                                              String url, String user, String pw) {

@@ -1,10 +1,12 @@
 package fi.nls.oskari.user;
 
+import fi.nls.oskari.annotation.Oskari;
 import fi.nls.oskari.db.DatasourceHelper;
 import fi.nls.oskari.domain.Role;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.mybatis.MyBatisHelper;
+import fi.nls.oskari.service.OskariComponent;
 import fi.nls.oskari.service.ServiceRuntimeException;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.SqlSession;
@@ -15,14 +17,23 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class MybatisRoleService {
+@Oskari
+public class MybatisRoleService extends OskariComponent {
 
     private static final Logger log = LogFactory.getLogger(MybatisRoleService.class);
 
     private SqlSessionFactory factory = null;
 
     public MybatisRoleService() {
-        factory = initializeMyBatis(DatasourceHelper.getInstance().getDataSource());
+        final DatasourceHelper helper = DatasourceHelper.getInstance();
+        DataSource dataSource = helper.getDataSource();
+        if (dataSource == null) {
+            dataSource = helper.createDataSource();
+        }
+        if (dataSource == null) {
+            log.error("Couldn't get datasource for data provider service");
+        }
+        factory = initializeMyBatis(dataSource);
     }
 
     private SqlSessionFactory initializeMyBatis(final DataSource dataSource) {

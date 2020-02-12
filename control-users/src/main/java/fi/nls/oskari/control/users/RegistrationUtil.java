@@ -23,8 +23,8 @@ public class RegistrationUtil {
     }
 
     public static boolean isValidEmail(String email) {
-        // TODO: validate email syntax
-        return email != null && !email.isEmpty();
+        String regex = "^[\\w-_\\.+]*[\\w-_\\.]\\@([\\w]+\\.)+[\\w]+[\\w]$";
+        return email != null && !email.isEmpty() && email.matches(regex);
     }
 
     public static boolean isPasswordOk(String passwd) {
