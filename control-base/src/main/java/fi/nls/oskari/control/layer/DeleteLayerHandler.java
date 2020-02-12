@@ -53,8 +53,6 @@ public class DeleteLayerHandler extends AbstractLayerAdminHandler {
             if(layer.getType().equals(OskariLayer.TYPE_WFS))
             {
                 wfsLayerService.delete(layer.getId());
-                JedisManager.delAll(WFSLayerConfiguration.KEY + layer.getId());
-                JedisManager.delAll(WFSLayerConfiguration.IMAGE_KEY + layer.getId());
             }
         } catch (Exception e) {
             throw new ActionException("Couldn't delete map layer - id:" + layer.getId(), e);

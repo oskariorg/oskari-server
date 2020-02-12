@@ -224,11 +224,6 @@ public class SaveLayerHandler extends AbstractLayerAdminHandler {
 
                     // Styles setup
                     handleWfsLayerStyles(params, wfsl);
-
-
-                    // Remove old redis data of WFSLayer_xx, new wfs conf data is inserted automatically
-                    JedisManager.delAll(WFSLayerConfiguration.KEY + Integer.toString(ml.getId()));
-                    JedisManager.delAll(WFSLayerConfiguration.IMAGE_KEY + Integer.toString(ml.getId()));
                 }
 
                 LOG.debug(ml);
