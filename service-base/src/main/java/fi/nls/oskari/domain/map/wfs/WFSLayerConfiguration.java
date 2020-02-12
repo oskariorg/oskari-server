@@ -11,6 +11,7 @@ import org.json.JSONObject;
 import javax.xml.namespace.QName;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Handles layer's configuration
@@ -96,9 +97,7 @@ public class WFSLayerConfiguration {
 	private String GMLVersion;
     private boolean GML2Separator; // if srs url is in old format (# => :)
 	private String WFSVersion;
-	private int maxFeatures;
 	private String featureNamespace;
-	private String featureNamespaceURI;
     private String geometryNamespaceURI;
 	private String featureElement;
     private String outputFormat;
@@ -251,11 +250,11 @@ public class WFSLayerConfiguration {
 	}
 
 	public int getMaxFeatures() {
-		return maxFeatures;
+		return attrs.getMaxFeatures();
 	}
 
 	public void setMaxFeatures(int maxFeatures) {
-		this.maxFeatures = maxFeatures;
+		this.attrs.setMaxFeatures(maxFeatures);
 	}
 
 	public String getFeatureNamespace() {
@@ -267,11 +266,11 @@ public class WFSLayerConfiguration {
 	}
 
 	public String getFeatureNamespaceURI() {
-		return featureNamespaceURI;
+		return attrs.getNamespaceURL();
 	}
 
 	public void setFeatureNamespaceURI(String featureNamespaceURI) {
-		this.featureNamespaceURI = featureNamespaceURI;
+		attrs.setNamespaceURL(featureNamespaceURI);
 	}
 
     public String getGeometryNamespaceURI() {
@@ -317,15 +316,9 @@ public class WFSLayerConfiguration {
 	}
 
 	public void setSelectedFeatureParams(String selectedFeatureParams) {
+        // FIXME: remove and refactor code to modify attributes
         this.selectedFeatureParams = JSONHelper.createJSONObject(selectedFeatureParams);
 	}
-
-    public void addSelectedFeatureParams(String key, List<String> paramNames) {
-        if(selectedFeatureParams == null) {
-            selectedFeatureParams = new JSONObject();
-        }
-        JSONHelper.putValue(selectedFeatureParams, key, new JSONArray(paramNames));
-    }
 
     /**
      * Tries to get selected feature params for given key. Defaults to DEFAULT_LOCALE if key has no
@@ -334,17 +327,7 @@ public class WFSLayerConfiguration {
      * @return
      */
     public List<String> getSelectedFeatureParams(String key) {
-        if(getSelectedFeatureParams() == null) {
-            return new ArrayList<String>(0);
-        }
-        JSONArray params = getSelectedFeatureParams().optJSONArray(key);
-        if(params == null) {
-            params = getSelectedFeatureParams().optJSONArray(KEY_DEFAULT);
-        }
-        if(params == null) {
-            return new ArrayList<String>(0);
-        }
-        return JSONHelper.getArrayAsList(params);
+        return attrs.getSelectedAttributes(key);
     }
 
 	public JSONObject getFeatureParamsLocales() {
@@ -352,17 +335,19 @@ public class WFSLayerConfiguration {
 	}
 
     public List<String> getFeatureParamsLocales(String key) {
-        if(getFeatureParamsLocales() == null) {
-            return new ArrayList<String>(0);
-        }
-        JSONArray params = getFeatureParamsLocales().optJSONArray(key);
-        if(params == null) {
-            params = getFeatureParamsLocales().optJSONArray(KEY_DEFAULT);
-        }
-        if(params == null) {
-            return new ArrayList<String>(0);
-        }
-        return JSONHelper.getArrayAsList(params);
+        JSONObject locale = attrs.getLocalization(key)
+                .orElse(attrs.getLocalization()
+                        .orElse(new JSONObject()));
+        // return a list with as many labels as there were feature params
+        // default to param if localization is not there
+        // TODO: refactor rest of the code to use the locale map/JSON instead of 2 separate lists
+        return getSelectedFeatureParams(key).stream().map(param -> {
+            String label = locale.optString(param);
+            if (label == null) {
+                return param;
+            }
+            return label;
+        }).collect(Collectors.toList());
     }
 
     public void addFeatureParamsLocales(String key, List<String> paramNames) {
@@ -652,7 +637,7 @@ public class WFSLayerConfiguration {
 
 	public List<WFSSLDStyle> getSLDStyles() {
         if(SLDStyles == null) {
-            SLDStyles = new ArrayList<WFSSLDStyle>();
+            SLDStyles = new ArrayList<>();
         }
 		return SLDStyles;
 	}
@@ -691,17 +676,6 @@ public class WFSLayerConfiguration {
     public void setParseConfig(String parseConfig) {
         this.parseConfig = parseConfig != null ? JSONHelper.createJSONObject(parseConfig) : null;
     }
-
-    public void save() {
-        final String key = KEY + this.layerId;
-        final String json = getAsJSON();
-        log.debug("Writing WFS to Redis:", key, "->", json);
-		JedisManager.setex(key, JedisManager.EXPIRY_TIME_DAY, json); // expire in 1 day
-	}
-
-	public void destroy() {
-		JedisManager.del(KEY + this.layerId);
-	}
 
     private String getLayerFriendlyName() {
         if(this.getNameLocales() == null) return "";

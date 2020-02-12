@@ -90,6 +90,10 @@ public class WFSLayerAttributes {
             }
         }
     }
+    public Optional<JSONObject> getLocalization() {
+        return getLocalization(PropertyUtil.getDefaultLanguage());
+    }
+
     public Optional<JSONObject> getLocalization(String lang) {
         if (locales == null) {
             return Optional.empty();
@@ -124,6 +128,12 @@ public class WFSLayerAttributes {
 
     public void setMaxFeatures(int maxFeatures) {
         this.maxFeatures = maxFeatures;
+        JSONHelper.putValue(this.attributes, "maxFeatures", maxFeatures);
+    }
+
+    public void setNamespaceURL(String namespaceURL) {
+        this.namespaceURL = namespaceURL;
+        JSONHelper.putValue(this.attributes, "namespaceURL", namespaceURL);
     }
 
     public JSONObject getAttributes() {
