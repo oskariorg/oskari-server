@@ -485,6 +485,7 @@ public class WFSLayerConfiguration {
         this.attrs = new WFSLayerAttributes(attributes);
     }
     public void setAttributes(String attributes) {
+        // TODO: merge existing to prevent setter call order to break things
         this.setAttributes(JSONHelper.createJSONObject(attributes));
     }
 
