@@ -117,7 +117,7 @@ public class WFSLayerConfiguration {
     private int templateModelId = 0;  //id of portti_wfs_template_model row (FE configs when jobtype=feature-engine
     private String jobType;
     private String requestImpulse;
-    private WFSLayerAttributes attrs;
+    private WFSLayerAttributes attrs = new WFSLayerAttributes(new JSONObject());
 
 	private double minScale;
 	private double maxScale;
