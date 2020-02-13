@@ -11,7 +11,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
 
-public class V1_55_2__migrate_wfslayers implements JdbcMigration {
+public class V1_55_5__migrate_wfslayers implements JdbcMigration {
 
     @Override
     public void migrate(Connection conn) throws Exception {

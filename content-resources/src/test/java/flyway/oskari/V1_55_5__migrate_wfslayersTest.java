@@ -5,7 +5,7 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-public class V1_55_2__migrate_wfslayersTest {
+public class V1_55_5__migrate_wfslayersTest {
 
     final String params = "{\n" +
             "  \"default\": [\"kunta\",\"grd_id\",\"id_nro\",\"xkoord\",\"ykoord\",\"vaesto\",\"miehet\",\"naiset\",\"ika_0_14\",\"ika_15_64\",\"ika_65_\"],\n" +
@@ -28,32 +28,32 @@ public class V1_55_2__migrate_wfslayersTest {
 
     @Test
     public void migrateAttributesMultiLang() throws Exception {
-        V1_55_2__migrate_wfslayers migration = new V1_55_2__migrate_wfslayers();
-        V1_55_2__migrate_wfslayers.WFSConfig conf = migration.createConfig(params, locales, "http://oskari.org", 123, 100);
+        V1_55_5__migrate_wfslayers migration = new V1_55_5__migrate_wfslayers();
+        V1_55_5__migrate_wfslayers.WFSConfig conf = migration.createConfig(params, locales, "http://oskari.org", 123, 100);
         JSONObject current = new JSONObject();
         current.put("randomKey", "for testing");
-        V1_55_2__migrate_wfslayers.LayerAttributes attrs =  migration.migrateAttributes(conf, current);
+        V1_55_5__migrate_wfslayers.LayerAttributes attrs =  migration.migrateAttributes(conf, current);
         assertEquals(expectedDataMultiLang, attrs.attrs);
         System.out.println(attrs.attrs);
     }
 
     @Test
     public void migrateAttributesSingle() throws Exception {
-        V1_55_2__migrate_wfslayers migration = new V1_55_2__migrate_wfslayers();
-        V1_55_2__migrate_wfslayers.WFSConfig conf = migration.createConfig(paramsSingle, locales, "http://oskari.org", 123, 100);
+        V1_55_5__migrate_wfslayers migration = new V1_55_5__migrate_wfslayers();
+        V1_55_5__migrate_wfslayers.WFSConfig conf = migration.createConfig(paramsSingle, locales, "http://oskari.org", 123, 100);
         JSONObject current = new JSONObject();
         current.put("randomKey", "for testing");
-        V1_55_2__migrate_wfslayers.LayerAttributes attrs =  migration.migrateAttributes(conf, current);
+        V1_55_5__migrate_wfslayers.LayerAttributes attrs =  migration.migrateAttributes(conf, current);
         assertEquals(expectedSingle, attrs.attrs);
         System.out.println(attrs.attrs);
     }
     @Test
     public void migrateAttributesNoData() throws Exception {
-        V1_55_2__migrate_wfslayers migration = new V1_55_2__migrate_wfslayers();
-        V1_55_2__migrate_wfslayers.WFSConfig conf = migration.createConfig(null, locales, "http://oskari.org", 123, 100);
+        V1_55_5__migrate_wfslayers migration = new V1_55_5__migrate_wfslayers();
+        V1_55_5__migrate_wfslayers.WFSConfig conf = migration.createConfig(null, locales, "http://oskari.org", 123, 100);
         JSONObject current = new JSONObject();
         current.put("randomKey", "for testing");
-        V1_55_2__migrate_wfslayers.LayerAttributes attrs =  migration.migrateAttributes(conf, current);
+        V1_55_5__migrate_wfslayers.LayerAttributes attrs =  migration.migrateAttributes(conf, current);
         assertEquals(expectedNoData, attrs.attrs);
     }
 }
