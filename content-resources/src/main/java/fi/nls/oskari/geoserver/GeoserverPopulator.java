@@ -133,7 +133,6 @@ public class GeoserverPopulator {
 
         // setup WFS conf with defaults
         WFSLayerConfiguration conf = LayerHelper.getConfig(baseLayer, NAMESPACE);
-        conf.setFeatureElement("my_places");
         conf.setSelectedFeatureParams("{\"default\": [\"name\", \"place_desc\",\"link\", \"image_url\"],\"fi\": [\"name\", \"place_desc\",\"link\", \"image_url\"]}");
         conf.setFeatureParamsLocales("{\"default\": [\"name\", \"description\",\"link\", \"image\"],\"fi\": [\"nimi\", \"kuvaus\",\"linkki\", \"kuva-linkki\"]}");
         WFS_SERVICE.insert(conf);
@@ -167,7 +166,6 @@ public class GeoserverPopulator {
         // setup WFS conf with defaults
         WFSLayerConfiguration conf = LayerHelper.getConfig(baseLayer, NAMESPACE);
         conf.setFeatureParamsLocales("{}");
-        conf.setFeatureElement("analysis_data");
         WFS_SERVICE.insert(conf);
         return baseLayer.getId();
     }
@@ -199,7 +197,6 @@ public class GeoserverPopulator {
         // setup WFS conf with defaults
         WFSLayerConfiguration conf = LayerHelper.getConfig(baseLayer, NAMESPACE);
         conf.setFeatureParamsLocales("{}");
-        conf.setFeatureElement("vuser_layer_data");
         WFS_SERVICE.insert(conf);
         return baseLayer.getId();
     }

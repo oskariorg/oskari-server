@@ -163,8 +163,6 @@ public class GetWSCapabilitiesHandler extends ActionHandler {
         lc.setSRSName(crs);
         lc.setGMLGeometryProperty("geometry");
         lc.setWFSVersion(VERSION_WFS3);
-        lc.setFeatureElement(name);
-        lc.setFeatureNamespace("");
         lc.setFeatureNamespaceURI("");
         lc.setJobType("default");
         return lc;

@@ -710,13 +710,8 @@ public class GetGtWFSCapabilities {
             // if (schema.getCoordinateReferenceSystem() != null)
             // lc.setSRSName("EPSG:"+Integer.toString(CRS.lookupEpsgCode(schema.getCoordinateReferenceSystem(), true)));
 
-            //lc.setGMLVersion();
             lc.setWFSVersion(DEFAULT_VERSION);
-            //lc.setMaxFeatures(data.getMaxFeatures());
-            lc.setFeatureNamespace(xmlns);
             lc.setFeatureNamespaceURI(schema.getName().getNamespaceURI());
-
-            lc.setFeatureElement(name);
 
             return lc;
         } catch (Exception ex) {
@@ -742,7 +737,7 @@ public class GetGtWFSCapabilities {
         lc.setURL(rurl);
         lc.setUsername(user);
         lc.setPassword(pw);
-        lc.setLayerName(featype.getTitle());
+        lc.setLayerName(featype.getName());
 
         try {
 
@@ -756,7 +751,6 @@ public class GetGtWFSCapabilities {
 
             lc.setLayerId("layer_" + name);
             lc.setWFSVersion(WFS2_0_0_VERSION);
-            lc.setFeatureNamespace(xmlns);
             if (featype.getNsUri() != null) {
                 lc.setFeatureNamespaceURI(featype.getNsUri());
             }
@@ -765,7 +759,6 @@ public class GetGtWFSCapabilities {
                 lc.setGMLGeometryProperty(featype.getGeomPropertyName());
             }
 
-            lc.setFeatureElement(name);
             // WFS 2.0 parser items
             lc.setTemplateName(featype.getName());
             lc.setTemplateType(featype.getTemplateType());
@@ -801,7 +794,7 @@ public class GetGtWFSCapabilities {
         lc.setUsername(user);
         lc.setPassword(pw);
 
-        lc.setLayerName(featype.getTitle());
+        lc.setLayerName(featype.getName());
 
 
         try {
@@ -827,12 +820,9 @@ public class GetGtWFSCapabilities {
             //lc.setGMLVersion();
             lc.setWFSVersion(DEFAULT_VERSION);
             //lc.setMaxFeatures(data.getMaxFeatures());
-            lc.setFeatureNamespace(xmlns);
             if (featype.getNsUri() != null) {
                 lc.setFeatureNamespaceURI(featype.getNsUri());
             }
-
-            lc.setFeatureElement(name);
 
             return lc;
         } catch (Exception ex) {

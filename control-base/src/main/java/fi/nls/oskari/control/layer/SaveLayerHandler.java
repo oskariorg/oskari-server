@@ -470,8 +470,6 @@ public class SaveLayerHandler extends AbstractLayerAdminHandler {
         wfsl.setGMLVersion(params.getHttpParam(PARAM_GML_VERSION));
         wfsl.setSRSName(params.getHttpParam(PARAM_SRS_NAME));
         wfsl.setWFSVersion(params.getHttpParam(PARAM_WFS_VERSION, params.getHttpParam(PARAM_VERSION)));
-        wfsl.setFeatureElement(params.getHttpParam(PARAM_FEATURE_ELEMENT));
-        wfsl.setFeatureNamespace(params.getHttpParam(PARAM_FEATURE_NAMESPACE));
         wfsl.setFeatureNamespaceURI(params.getHttpParam(PARAM_FEATURE_NAMESCAPE_URI));
         wfsl.setFeatureParamsLocales(params.getHttpParam(PARAM_FEATURE_PARAMS_LOCALES));
         wfsl.setFeatureType(params.getHttpParam(PARAM_FEATURE_TYPE));

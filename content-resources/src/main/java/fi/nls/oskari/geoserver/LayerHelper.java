@@ -53,7 +53,6 @@ public class LayerHelper {
         conf.setGMLVersion("3.1.1");
         conf.setGML2Separator(false);
         conf.setMaxFeatures(2000);
-        conf.setFeatureNamespace(namespace);
         conf.setFeatureParamsLocales("{\"default\": [\"name\", \"place_desc\",\"link\", \"image_url\"],\"fi\": [\"name\", \"place_desc\",\"link\", \"image_url\"]}");
         conf.setGeometryType("2d");
         conf.setGetMapTiles(false);
