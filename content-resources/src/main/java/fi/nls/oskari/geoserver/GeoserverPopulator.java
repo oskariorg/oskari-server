@@ -138,9 +138,6 @@ public class GeoserverPopulator {
         // insert
         LayerHelper.insert(baseLayer);
 
-        // setup WFS conf with defaults
-        WFSLayerConfiguration conf = LayerHelper.getConfig(baseLayer, NAMESPACE);
-        WFS_SERVICE.insert(conf);
         return baseLayer.getId();
     }
 
@@ -205,9 +202,6 @@ public class GeoserverPopulator {
         // insert
         LayerHelper.insert(baseLayer);
 
-        // setup WFS conf with defaults
-        WFSLayerConfiguration conf = LayerHelper.getConfig(baseLayer, NAMESPACE);
-        WFS_SERVICE.insert(conf);
         return baseLayer.getId();
     }
 
@@ -236,9 +230,6 @@ public class GeoserverPopulator {
         // insert
         LayerHelper.insert(baseLayer);
 
-        // setup WFS conf with defaults
-        WFSLayerConfiguration conf = LayerHelper.getConfig(baseLayer, NAMESPACE);
-        WFS_SERVICE.insert(conf);
         return baseLayer.getId();
     }
 

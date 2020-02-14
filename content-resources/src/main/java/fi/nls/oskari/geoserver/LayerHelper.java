@@ -45,20 +45,4 @@ public class LayerHelper {
         LAYER_SERVICE.update(layer);
     }
 
-    public static WFSLayerConfiguration getConfig(OskariLayer layer, String namespace) {
-
-        WFSLayerConfiguration conf = new WFSLayerConfiguration();
-        conf.setLayerId("" + layer.getId());
-        conf.setLayerName(layer.getName());
-        conf.setGMLGeometryProperty("geometry");
-        conf.setGMLVersion("3.1.1");
-        conf.setGML2Separator(false);
-        conf.setGeometryType("2d");
-
-        conf.setFeatureType("");
-        conf.setGeometryNamespaceURI("");
-        conf.setWps_params("{}");
-        return conf;
-    }
-
 }
