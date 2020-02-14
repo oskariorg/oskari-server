@@ -52,7 +52,6 @@ public class V1_55_5__migrate_wfslayers implements JdbcMigration {
             try {
                 list.add(migrateAttributes(data, getCurrentAttributes(conn, data.layerId)));
             } catch (SQLException ignored) {
-                LOG.war
                 // ignored as db might be out of sync and layer in portti_wfs_layer might not exist in oskari_maplayer
             }
         }
