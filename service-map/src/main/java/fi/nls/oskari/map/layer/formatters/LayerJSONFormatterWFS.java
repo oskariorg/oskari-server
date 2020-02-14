@@ -1,6 +1,7 @@
 package fi.nls.oskari.map.layer.formatters;
 
 import fi.nls.oskari.domain.map.OskariLayer;
+import fi.nls.oskari.domain.map.wfs.WFSLayerAttributes;
 import fi.nls.oskari.domain.map.wfs.WFSLayerConfiguration;
 import fi.nls.oskari.domain.map.wfs.WFSSLDStyle;
 import fi.nls.oskari.log.LogFactory;
@@ -40,8 +41,6 @@ public class LayerJSONFormatterWFS extends LayerJSONFormatter {
     private static final String KEY_WMS_LAYER_ID = "WMSLayerId";
 
     private static Logger log = LogFactory.getLogger(LayerJSONFormatterWFS.class);
-    private static WFSLayerConfigurationService wfsService = new WFSLayerConfigurationServiceIbatisImpl();
-
 
     public JSONObject getJSON(OskariLayer layer,
                                      final String lang,
@@ -49,8 +48,7 @@ public class LayerJSONFormatterWFS extends LayerJSONFormatter {
                                      final String crs) {
 
         final JSONObject layerJson = getBaseJSON(layer, lang, isSecure, crs);
-        final WFSLayerConfiguration wfsConf = wfsService.findConfiguration(layer.getId());
-        JSONHelper.putValue(layerJson, KEY_STYLES, getStyles(wfsConf));
+        JSONHelper.putValue(layerJson, KEY_STYLES, getStyles(layer.getOptions()));
         // Use maplayer setup
         if(layer.getStyle() == null || layer.getStyle().isEmpty() ){
             JSONHelper.putValue(layerJson, KEY_STYLE, "default");
@@ -59,7 +57,8 @@ public class LayerJSONFormatterWFS extends LayerJSONFormatter {
             JSONHelper.putValue(layerJson, KEY_STYLE, layer.getStyle());
         }
         JSONHelper.putValue(layerJson, KEY_ISQUERYABLE, true);
-        JSONHelper.putValue(layerJson, KEY_WPS_PARAMS, getWpsParams(wfsConf) );
+        WFSLayerAttributes attr = new WFSLayerAttributes(layer.getAttributes());
+        JSONHelper.putValue(layerJson, KEY_WPS_PARAMS, getWpsParams(attr.getWpsParams()) );
 
         return layerJson;
     }
@@ -69,24 +68,10 @@ public class LayerJSONFormatterWFS extends LayerJSONFormatter {
      *
      * @param  wfsConf wfs layer configuration
      */
-    private JSONArray getStyles(WFSLayerConfiguration wfsConf) {
+    private JSONArray getStyles(JSONObject options) {
 
         JSONArray arr = new JSONArray();
-        if (wfsConf == null) return arr;
-
-        final List<WFSSLDStyle> styleList = wfsConf.getSLDStyles();
-        if (styleList == null) return arr;
-
-        try {
-            for (WFSSLDStyle style : styleList) {
-                JSONObject obj = createStylesJSON(style.getName(), style.getName(), style.getName());
-                if (obj.length() > 0) {
-                    arr.put(obj);
-                }
-            }
-        } catch (Exception e) {
-          log.warn("Failed to query wfs styles via SQL client");
-        }
+        // TODO: parse styles from options
         return arr;
     }
 
@@ -95,12 +80,12 @@ public class LayerJSONFormatterWFS extends LayerJSONFormatter {
      *
      * @param  wfsConf wfs layer configuration
      */
-    private JSONObject getWpsParams(WFSLayerConfiguration wfsConf) {
+    private JSONObject getWpsParams(String wpsParams) {
 
         JSONObject json = new JSONObject();
-        if (wfsConf == null) return json;
+        if (wpsParams == null) return json;
 
-        return JSONHelper.createJSONObject(wfsConf.getWps_params());
+        return JSONHelper.createJSONObject(wpsParams);
 
     }
 

@@ -1,6 +1,7 @@
 package fi.nls.oskari.domain.map.wfs;
 
 import fi.nls.oskari.cache.JedisManager;
+import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.util.JSONHelper;
@@ -469,5 +470,21 @@ public class WFSLayerConfiguration {
             return JSONHelper.getJSONObject(attributes, "longSrsName").has(epsg.toUpperCase());
         }
         return false;
+    }
+
+    public static WFSLayerConfiguration fromOskariLayer(OskariLayer layer) {
+        WFSLayerConfiguration conf = new WFSLayerConfiguration();
+        conf.setAttributes(layer.getAttributes());
+        conf.setCapabilities(layer.getCapabilities());
+        conf.setLayerId("" + layer.getId());
+        conf.setURL(layer.getUrl());
+        conf.setLayerName(layer.getName());
+        conf.setUsername(layer.getUsername());
+        conf.setPassword(layer.getPassword());
+        conf.setSRSName(layer.getSrs_name());
+        //conf.setGeometryNamespaceURI();
+        //conf.setGeometryType();
+        //conf.setPublished();
+        return conf;
     }
 }
