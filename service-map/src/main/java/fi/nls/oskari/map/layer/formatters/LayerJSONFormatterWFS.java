@@ -60,9 +60,6 @@ public class LayerJSONFormatterWFS extends LayerJSONFormatter {
         }
         JSONHelper.putValue(layerJson, KEY_ISQUERYABLE, true);
         JSONHelper.putValue(layerJson, KEY_WPS_PARAMS, getWpsParams(wfsConf) );
-        if(wfsConf != null){
-            JSONHelper.putValue(layerJson, KEY_WMS_LAYER_ID, wfsConf.getWMSLayerId() );
-        }
 
         return layerJson;
     }

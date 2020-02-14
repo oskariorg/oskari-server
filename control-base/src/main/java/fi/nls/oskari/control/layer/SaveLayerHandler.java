@@ -465,21 +465,12 @@ public class SaveLayerHandler extends AbstractLayerAdminHandler {
         wfsl.setGML2Separator(ConversionHelper.getBoolean(params.getHttpParam(PARAM_GML2_SEPARATOR), wfsl.isGML2Separator()));
         wfsl.setGMLGeometryProperty(params.getHttpParam(PARAM_GML_GEOMETRY_PROPERTY));
         wfsl.setGMLVersion(params.getHttpParam(PARAM_GML_VERSION));
-        wfsl.setSRSName(params.getHttpParam(PARAM_SRS_NAME));
-        wfsl.setWFSVersion(params.getHttpParam(PARAM_WFS_VERSION, params.getHttpParam(PARAM_VERSION)));
         wfsl.setFeatureNamespaceURI(params.getHttpParam(PARAM_FEATURE_NAMESCAPE_URI));
         wfsl.setFeatureType(params.getHttpParam(PARAM_FEATURE_TYPE));
         wfsl.setGeometryNamespaceURI(params.getHttpParam(PARAM_GEOMETRY_NAMESPACE_URI));
         wfsl.setGeometryType(params.getHttpParam(PARAM_GEOMETRY_TYPE));
-        wfsl.setGetFeatureInfo(ConversionHelper.getBoolean(params.getHttpParam(PARAM_GET_FEATURE_INFO), wfsl.isGetFeatureInfo()));
-        wfsl.setGetHighlightImage(ConversionHelper.getBoolean(params.getHttpParam(PARAM_GET_HIGHLIGHT_IMAGE), wfsl.isGetHighlightImage()));
-        wfsl.setGetMapTiles(ConversionHelper.getBoolean(params.getHttpParam(PARAM_GET_MAP_TILES), wfsl.isGetMapTiles()));
         wfsl.setLayerName(params.getHttpParam(PARAM_LAYER_NAME));
         wfsl.setMaxFeatures(ConversionHelper.getInt(params.getHttpParam(PARAM_MAX_FEATURES), wfsl.getMaxFeatures()));
-        wfsl.setOutputFormat(params.getHttpParam(PARAM_OUTPUT_FORMAT));
-        wfsl.setTileBuffer(params.getHttpParam(PARAM_TILE_BUFFER));
-        wfsl.setTileRequest(ConversionHelper.getBoolean(params.getHttpParam(PARAM_TILE_REQUEST), wfsl.isTileRequest()));
-        wfsl.setJobType(params.getHttpParam(PARAM_JOB_TYPE));
     }
 
     /**

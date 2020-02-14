@@ -20,8 +20,6 @@ import java.util.stream.Collectors;
  */
 public class WFSLayerConfiguration {
 
-    public final static String KEY = "WFSLayer_";
-    public final static String IMAGE_KEY = "WFSImage_";
     protected final static String LAYER_ID = "layerId";
     protected final static String URL_PARAM = "URL";
     protected final static String USERNAME = "username";
@@ -120,27 +118,6 @@ public class WFSLayerConfiguration {
 
     private List<WFSSLDStyle> SLDStyles = new ArrayList<WFSSLDStyle>(); // id, name, xml
 
-    public static String getCache(String layerId) {
-        return JedisManager.get(KEY + layerId);
-    }
-
-    /**
-     * Constructs a QName for feature element.
-     *
-     * @return
-     */
-    public QName getFeatureElementQName() {
-        /*
-        old db table        | new db table
-        portti_feature_type | portti_wfs_layer field
-        --------------------------------------------
-        namespace_uri       | feature_namespace_uri
-        localpart           | feature_element
-        name prefix         | feature_namespace
-        */
-        return new QName(getFeatureNamespaceURI(), getFeatureElement(), getFeatureNamespace());
-    }
-
     public int getId() {
         return id;
     }
@@ -225,10 +202,6 @@ public class WFSLayerConfiguration {
         return WFSVersion;
     }
 
-    public void setWFSVersion(String wFSVersion) {
-        WFSVersion = wFSVersion;
-    }
-
     public int getMaxFeatures() {
         return attrs.getMaxFeatures();
     }
@@ -281,19 +254,6 @@ public class WFSLayerConfiguration {
             return split[0];
         }
         return split[1];
-    }
-
-    /**
-     * Gets output format
-     *
-     * @return output format
-     */
-    public String getOutputFormat() {
-        return outputFormat;
-    }
-
-    public void setOutputFormat(String outputFormat) {
-        this.outputFormat = outputFormat;
     }
 
     public JSONObject getFeatureType() {
@@ -388,78 +348,6 @@ public class WFSLayerConfiguration {
     }
 
     /**
-     * Checks if should get map tiles
-     *
-     * @return <code>true</code> if should get map tiles; <code>false</code>
-     * otherwise.
-     */
-    public boolean isGetMapTiles() {
-        return getMapTiles;
-    }
-
-    public void setGetMapTiles(boolean getMapTiles) {
-        this.getMapTiles = getMapTiles;
-    }
-
-    public boolean isGetHighlightImage() {
-        return getHighlightImage;
-    }
-
-    public void setGetHighlightImage(boolean getHighlightImage) {
-        this.getHighlightImage = getHighlightImage;
-    }
-
-    public boolean isGetFeatureInfo() {
-        return getFeatureInfo;
-    }
-
-    public void setGetFeatureInfo(boolean getFeatureInfo) {
-        this.getFeatureInfo = getFeatureInfo;
-    }
-
-    public boolean isTileRequest() {
-        return tileRequest;
-    }
-
-    public void setTileRequest(boolean tileRequest) {
-        this.tileRequest = tileRequest;
-    }
-
-    public JSONObject getTileBuffer() {
-        return tileBuffer;
-    }
-
-    public void setTileBuffer(String tileBuffer) {
-        this.tileBuffer = JSONHelper.createJSONObject(tileBuffer);
-    }
-
-    public double getTileBuffer(final String key) {
-        return getTileBuffer(key, DEFAULT_TILE_BUFFER);
-    }
-
-    public double getTileBuffer(final String key, final double defaultValue) {
-        if (tileBuffer == null) {
-            return defaultValue;
-        }
-        return tileBuffer.optDouble(key, defaultValue);
-    }
-
-    public void addTileBuffer(String key, double value) {
-        if (tileBuffer == null) {
-            tileBuffer = new JSONObject();
-        }
-        JSONHelper.putValue(tileBuffer, key, value);
-    }
-
-    public String getWMSLayerId() {
-        return WMSLayerId;
-    }
-
-    public void setWMSLayerId(String wMSLayerId) {
-        WMSLayerId = wMSLayerId;
-    }
-
-    /**
      * Get wps params for WFS layer eg {input_type:gs_vector}
      * (default is {})
      *
@@ -478,22 +366,6 @@ public class WFSLayerConfiguration {
         this.wps_params = wps_params;
     }
 
-    public String getJobType() {
-        return this.jobType;
-    }
-
-    public void setJobType(String type) {
-        this.jobType = type;
-    }
-
-    public String getRequestImpulse() {
-        return this.requestImpulse;
-    }
-
-    public void setRequestImpulse(String param) {
-        this.requestImpulse = param;
-    }
-
     public JSONObject getAttributes() {
         if (attrs == null) {
             return null;
@@ -510,144 +382,12 @@ public class WFSLayerConfiguration {
         this.setAttributes(JSONHelper.createJSONObject(attributes));
     }
 
-    /**
-     * Gets min scale
-     *
-     * @return min scale
-     */
-    public double getMinScale() {
-        return minScale;
-    }
-
-    /**
-     * Sets min scale
-     *
-     * @param minScale
-     */
-    public void setMinScale(double minScale) {
-        this.minScale = minScale;
-    }
-
-    /**
-     * Gets max scale
-     *
-     * @return max scale
-     */
-    public double getMaxScale() {
-        return maxScale;
-    }
-
-    /**
-     * Sets max scale
-     *
-     * @param maxScale
-     */
-    public void setMaxScale(double maxScale) {
-        this.maxScale = maxScale;
-    }
-
     public boolean isPublished() {
         return isPublished;
     }
 
     public void setPublished(boolean isPublished) {
         this.isPublished = isPublished;
-    }
-
-    public String getUuid() {
-        return uuid;
-    }
-
-    public void setUuid(String uuid) {
-        this.uuid = uuid;
-    }
-
-    /**
-     * Get Template model id (row id of portti_wfs_template_model table)
-     *
-     * @return
-     */
-    public int getTemplateModelId() {
-        return templateModelId;
-    }
-
-    /**
-     * Set template id
-     *
-     * @param templateModelId
-     */
-    public void setTemplateModelId(int templateModelId) {
-        this.templateModelId = templateModelId;
-    }
-
-    /**
-     * Gets template name
-     *
-     * @return template name
-     */
-    public String getTemplateName() {
-        return templateName;
-    }
-
-    /**
-     * Sets template name
-     *
-     * @param templateName
-     */
-    public void setTemplateName(String templateName) {
-        this.templateName = templateName;
-    }
-
-    /**
-     * Gets template description
-     *
-     * @return template description
-     */
-    public String getTemplateDescription() {
-        return templateDescription;
-    }
-
-    /**
-     * Sets template description
-     *
-     * @param templateDescription
-     */
-    public void setTemplateDescription(String templateDescription) {
-        this.templateDescription = templateDescription;
-    }
-
-    /**
-     * Gets template type
-     *
-     * @return template type
-     */
-    public String getTemplateType() {
-        return templateType;
-    }
-
-    /**
-     * Sets template type
-     *
-     * @param templateType
-     */
-    public void setTemplateType(String templateType) {
-        this.templateType = templateType;
-    }
-
-    public String getRequestTemplate() {
-        return requestTemplate;
-    }
-
-    public void setRequestTemplate(String requestTemplate) {
-        this.requestTemplate = requestTemplate;
-    }
-
-    public String getResponseTemplate() {
-        return responseTemplate;
-    }
-
-    public void setResponseTemplate(String responseTemplate) {
-        this.responseTemplate = responseTemplate;
     }
 
     public String getSelectionSLDStyle() {
@@ -692,13 +432,6 @@ public class WFSLayerConfiguration {
         getSLDStyles().add(style);
     }
 
-    public JSONObject getParseConfig() {
-        return parseConfig;
-    }
-
-    public void setParseConfig(String parseConfig) {
-        this.parseConfig = parseConfig != null ? JSONHelper.createJSONObject(parseConfig) : null;
-    }
 
     public JSONObject getAsJSONObject() {
         final JSONObject root = new JSONObject();
@@ -721,35 +454,13 @@ public class WFSLayerConfiguration {
         JSONHelper.putValue(root, FEATURE_NAMESPACE_URI, this.getFeatureNamespaceURI());
         JSONHelper.putValue(root, GEOMETRY_NAMESPACE_URI, this.getGeometryNamespaceURI());
         JSONHelper.putValue(root, FEATURE_ELEMENT, this.getFeatureElement());
-        JSONHelper.putValue(root, OUTPUT_FORMAT, this.getOutputFormat());
 
         JSONHelper.putValue(root, FEATURE_TYPE, this.getFeatureType());
-        JSONHelper.putValue(root, SELECTED_FEATURE_PARAMS, getSelectedFeatureParams());
-        JSONHelper.putValue(root, FEATURE_PARAMS_LOCALES, getFeatureParamsLocales());
         JSONHelper.putValue(root, GEOMETRY_TYPE, this.getGeometryType());
-        JSONHelper.putValue(root, GET_MAP_TILES, this.isGetMapTiles());
-        JSONHelper.putValue(root, GET_HIGHLIGHT_IMAGE, this.isGetHighlightImage());
-        JSONHelper.putValue(root, GET_FEATURE_INFO, this.isGetFeatureInfo());
-        JSONHelper.putValue(root, TILE_REQUEST, this.isTileRequest());
-        JSONHelper.putValue(root, TILE_BUFFER, getTileBuffer());
-        JSONHelper.putValue(root, WMS_LAYER_ID, this.getWMSLayerId());
-        JSONHelper.putValue(root, JOB_TYPE, this.getJobType());
-        JSONHelper.putValue(root, REQUEST_IMPULSE, this.getRequestImpulse());
         JSONHelper.putValue(root, ATTRIBUTES, this.getAttributes() != null ? this.getAttributes().toString() : null);
-
-        JSONHelper.putValue(root, MIN_SCALE, this.getMinScale());
-        JSONHelper.putValue(root, MAX_SCALE, this.getMaxScale());
-
         JSONHelper.putValue(root, IS_PUBLISHED, this.isPublished());
-        JSONHelper.putValue(root, UUID, this.getUuid());
 
-        JSONHelper.putValue(root, TEMPLATE_NAME, this.getTemplateName());
-        JSONHelper.putValue(root, TEMPLATE_DESCRIPTION, this.getTemplateDescription());
-        JSONHelper.putValue(root, TEMPLATE_TYPE, this.getTemplateType());
-        JSONHelper.putValue(root, REQUEST_TEMPLATE, this.getRequestTemplate());
-        JSONHelper.putValue(root, RESPONSE_TEMPLATE, this.getResponseTemplate());
         JSONHelper.putValue(root, SELECTION_SLD_STYLE, this.getSelectionSLDStyle());
-        JSONHelper.putValue(root, PARSE_CONFIG, this.getParseConfig() != null ? this.getParseConfig().toString() : null);
 
         // styles
         final JSONObject styleList = new JSONObject();
@@ -773,23 +484,14 @@ public class WFSLayerConfiguration {
     }
 
     public void setDefaults() {
-        this.setSRSName("EPSG:3067");
         this.setGMLVersion("3.1.1");
         this.setGML2Separator(false);
-        this.setWFSVersion("1.1.0");
         this.setAttributes(JSONHelper.createJSONObject("maxFeatures", 2000));
         this.setGeometryNamespaceURI("");
         //this.setOutputFormat("");
         this.setFeatureType("{}");
         this.setGeometryType("2d");
-        this.setGetMapTiles(true);
-        this.setGetHighlightImage(true);
-        this.setGetFeatureInfo(true);
-        this.setTileRequest(false);
-        this.setTileBuffer("{}");
         this.setWps_params("{}");
-        this.setMinScale(15000000d);
-        this.setMaxScale(1d);
         this.setPublished(false);
     }
 
@@ -797,10 +499,7 @@ public class WFSLayerConfiguration {
         setDefaults();
         this.setGMLVersion("3.2.1");
         this.setGML2Separator(false);
-        this.setWFSVersion("2.0.0");
         this.setGMLGeometryProperty("geometry");
-        this.setJobType("oskari-feature-engine");
-        this.setTileBuffer("{ \"default\" : 1, \"oskari_custom\" : 1}");
 
     }
 

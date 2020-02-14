@@ -54,15 +54,10 @@ public class LayerHelper {
         conf.setGMLVersion("3.1.1");
         conf.setGML2Separator(false);
         conf.setGeometryType("2d");
-        conf.setGetMapTiles(false);
-        conf.setGetFeatureInfo(true);
-        conf.setTileRequest(false);
-        conf.setGetHighlightImage(true);
 
         conf.setFeatureType("");
         conf.setGeometryNamespaceURI("");
         conf.setWps_params("{}");
-        conf.setTileBuffer("{}");
         return conf;
     }
 

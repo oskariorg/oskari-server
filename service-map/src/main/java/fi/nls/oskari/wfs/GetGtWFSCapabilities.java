@@ -710,7 +710,6 @@ public class GetGtWFSCapabilities {
             // if (schema.getCoordinateReferenceSystem() != null)
             // lc.setSRSName("EPSG:"+Integer.toString(CRS.lookupEpsgCode(schema.getCoordinateReferenceSystem(), true)));
 
-            lc.setWFSVersion(DEFAULT_VERSION);
             lc.setFeatureNamespaceURI(schema.getName().getNamespaceURI());
 
             return lc;
@@ -750,7 +749,6 @@ public class GetGtWFSCapabilities {
             }
 
             lc.setLayerId("layer_" + name);
-            lc.setWFSVersion(WFS2_0_0_VERSION);
             if (featype.getNsUri() != null) {
                 lc.setFeatureNamespaceURI(featype.getNsUri());
             }
@@ -758,14 +756,6 @@ public class GetGtWFSCapabilities {
             if (geomName != null) {
                 lc.setGMLGeometryProperty(featype.getGeomPropertyName());
             }
-
-            // WFS 2.0 parser items
-            lc.setTemplateName(featype.getName());
-            lc.setTemplateType(featype.getTemplateType());
-            lc.setResponseTemplate(featype.getResponseTemplate());
-            lc.setParseConfig(featype.getParseConfig());
-            lc.setRequestTemplate(featype.getRequestTemplate());
-
 
             return lc;
         } catch (Exception ex) {
@@ -818,7 +808,6 @@ public class GetGtWFSCapabilities {
 
 
             //lc.setGMLVersion();
-            lc.setWFSVersion(DEFAULT_VERSION);
             //lc.setMaxFeatures(data.getMaxFeatures());
             if (featype.getNsUri() != null) {
                 lc.setFeatureNamespaceURI(featype.getNsUri());
