@@ -49,7 +49,12 @@ public class V1_55_5__migrate_wfslayers implements JdbcMigration {
     private List<LayerAttributes> migrateAttributes(Connection conn, List<WFSConfig> configs) throws SQLException {
         List<LayerAttributes> list = new ArrayList<>();
         for(WFSConfig data : configs) {
-            list.add(migrateAttributes(data, getCurrentAttributes(conn, data.layerId)));
+            try {
+                list.add(migrateAttributes(data, getCurrentAttributes(conn, data.layerId)));
+            } catch (SQLException ignored) {
+                LOG.war
+                // ignored as db might be out of sync and layer in portti_wfs_layer might not exist in oskari_maplayer
+            }
         }
         return list;
     }
@@ -133,11 +138,11 @@ public class V1_55_5__migrate_wfslayers implements JdbcMigration {
                 return createJSON(rs.getString("attributes"));
             }
         }
-        throw new SQLException("No such layer");
+        throw new SQLException("No such layer:" + layerId);
     }
 
     private List<WFSConfig> getCurrentConfigs(Connection conn) throws SQLException {
-        String sql = "select selected_feature_params, feature_params_locales, maplayer_id, feature_namespace_url, max_features, wps_params from portti_wfs_layer";
+        String sql = "select selected_feature_params, feature_params_locales, maplayer_id, feature_namespace_uri, max_features, wps_params from portti_wfs_layer";
         List<WFSConfig> list = new ArrayList<>();
 
         try (PreparedStatement ps = conn.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
@@ -145,7 +150,7 @@ public class V1_55_5__migrate_wfslayers implements JdbcMigration {
                 WFSConfig config = new WFSConfig();
                 config.selectedAttrs = rs.getString("selected_feature_params");
                 config.localeAttrs = rs.getString("feature_params_locales");
-                config.namespaceURL = rs.getString("feature_namespace_url");
+                config.namespaceURL = rs.getString("feature_namespace_uri");
                 config.layerId = rs.getInt("maplayer_id");
                 config.maxFeatures = rs.getInt("max_features");
                 config.wps_params = rs.getString("wps_params");
