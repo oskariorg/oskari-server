@@ -73,7 +73,6 @@ public class WFSLayerConfiguration {
     private static final String KEY_DEFAULT = "default";
     private int id = -1;
     private String layerId;
-    private String nameLocales;
     private String URL;
     private String username;
     private String password;
@@ -156,14 +155,6 @@ public class WFSLayerConfiguration {
 
     public void setLayerId(String layerId) {
         this.layerId = layerId;
-    }
-
-    public String getNameLocales() {
-        return nameLocales;
-    }
-
-    public void setNameLocales(String nameLocales) {
-        this.nameLocales = nameLocales;
     }
 
     public String getURL() {
@@ -709,19 +700,10 @@ public class WFSLayerConfiguration {
         this.parseConfig = parseConfig != null ? JSONHelper.createJSONObject(parseConfig) : null;
     }
 
-    private String getLayerFriendlyName() {
-        if (this.getNameLocales() == null) return "";
-        final JSONObject loc = JSONHelper.createJSONObject(this.getNameLocales());
-        final JSONObject langName = JSONHelper.getJSONObject(loc, PropertyUtil.getDefaultLanguage());
-        return JSONHelper.getStringFromJSON(langName, "name", "");
-    }
-
     public JSONObject getAsJSONObject() {
         final JSONObject root = new JSONObject();
 
         JSONHelper.putValue(root, LAYER_ID, this.getLayerId());
-        // just for debugging so we see the layers UI name in redis
-        JSONHelper.putValue(root, LAYER_FRIENDLY_NAME, getLayerFriendlyName());
 
         JSONHelper.putValue(root, URL_PARAM, this.getURL());
         JSONHelper.putValue(root, USERNAME, this.getUsername());
@@ -795,7 +777,7 @@ public class WFSLayerConfiguration {
         this.setGMLVersion("3.1.1");
         this.setGML2Separator(false);
         this.setWFSVersion("1.1.0");
-        this.setMaxFeatures(2000);
+        this.setAttributes(JSONHelper.createJSONObject("maxFeatures", 2000));
         this.setGeometryNamespaceURI("");
         //this.setOutputFormat("");
         this.setFeatureType("{}");

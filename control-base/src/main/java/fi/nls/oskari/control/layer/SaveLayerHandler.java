@@ -274,9 +274,6 @@ public class SaveLayerHandler extends AbstractLayerAdminHandler {
                     wfsl.setLayerId(Integer.toString(id));
                     wfsl.setAttributes(ml.getAttributes());
                     handleRequestToWfsLayer(params, wfsl);
-                    if(wfsl.getJobType() != null && wfsl.getJobType().equals(OSKARI_FEATURE_ENGINE)){
-                        handleFESpesificToWfsLayer(params, wfsl);
-                    }
                     int idwfsl = wfsLayerService.insert(wfsl);
                     wfsl.setId(idwfsl);
 
@@ -483,38 +480,6 @@ public class SaveLayerHandler extends AbstractLayerAdminHandler {
         wfsl.setTileBuffer(params.getHttpParam(PARAM_TILE_BUFFER));
         wfsl.setTileRequest(ConversionHelper.getBoolean(params.getHttpParam(PARAM_TILE_REQUEST), wfsl.isTileRequest()));
         wfsl.setJobType(params.getHttpParam(PARAM_JOB_TYPE));
-    }
-
-    private void handleFESpesificToWfsLayer(  final ActionParameters params, WFSLayerConfiguration wfsl) throws ActionException, ServiceException {
-        if (wfsl == null) {
-            return;
-        }
-
-        if(!wfsl.getWFSVersion().equals(WFS1_1_0_VERSION)) {
-            wfsl.setRequestTemplate(params.getHttpParam(PARAM_REQUEST_TEMPLATE));
-            wfsl.setResponseTemplate(params.getHttpParam(PARAM_RESPONSE_TEMPLATE));
-            wfsl.setParseConfig(params.getHttpParam(PARAM_PARSE_CONFIG));
-            wfsl.setTemplateName(params.getHttpParam(PARAM_TEMPLATE_NAME));
-            wfsl.setTemplateType(params.getHttpParam(PARAM_TEMPLATE_TYPE));
-            wfsl.setTemplateDescription("FE parser model - wfs version : " + wfsl.getWFSVersion());
-            Map<String, String> model = new HashMap<String, String>();
-
-            model.put("name", wfsl.getFeatureNamespace() + ":" + wfsl.getFeatureElement());
-            model.put("description", wfsl.getTemplateDescription());
-            model.put("type", wfsl.getTemplateType());
-            model.put("request_template", wfsl.getRequestTemplate());
-            model.put("response_template", wfsl.getResponseTemplate());
-            model.put("parse_config", wfsl.getParseConfig().toString());
-
-            int model_id = wfsLayerService.insertTemplateModel(model);
-
-            wfsl.setTemplateModelId(model_id);
-        }
-        else {
-            //TODO: fe save config support for wfs 1.1.0
-            wfsl.setJobType(OSKARI_FEATURE_ENGINE);
-            wfsl.setTileBuffer("{ \"default\" : 1, \"oskari_custom\" : 1}");;
-        }
     }
 
     /**
