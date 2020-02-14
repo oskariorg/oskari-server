@@ -15,8 +15,6 @@ import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.OskariRuntimeException;
 import fi.nls.oskari.util.PropertyUtil;
-import fi.nls.oskari.wfs.WFSLayerConfigurationService;
-import fi.nls.oskari.wfs.WFSLayerConfigurationServiceIbatisImpl;
 import org.geotools.referencing.CRS;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -33,8 +31,6 @@ public class GeoserverPopulator {
 
     public static final String NAMESPACE = "oskari";
     private static final Logger LOG = LogFactory.getLogger(GeoserverPopulator.class);
-
-    private static final WFSLayerConfigurationService WFS_SERVICE = new WFSLayerConfigurationServiceIbatisImpl();
 
     public static final String KEY_URL = "url";
     public static final String KEY_USER = "user";

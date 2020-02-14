@@ -23,7 +23,6 @@ import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
-import fi.nls.oskari.wfs.WFSLayerConfigurationService;
 import org.geotools.referencing.CRS;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -49,7 +48,7 @@ public abstract class AbstractFeatureHandler extends RestActionHandler {
 
     private OskariLayerService layerService;
     private PermissionService permissionsService;
-    private WFSLayerConfigurationService layerConfigurationService;
+
     private static final Set<String> ALLOWED_GEOM_TYPES = ConversionHelper.asSet("multipoint",
             "multilinestring", "multipolygon");
     private GeometryFactory gf = new GeometryFactory();
@@ -59,7 +58,6 @@ public abstract class AbstractFeatureHandler extends RestActionHandler {
         super.init();
         layerService = ServiceFactory.getMapLayerService();
         permissionsService = OskariComponentManager.getComponentOfType(PermissionService.class);
-        layerConfigurationService = ServiceFactory.getWfsLayerService();
     }
 
     protected OskariLayer getLayer(String id) throws ActionParamsException {
