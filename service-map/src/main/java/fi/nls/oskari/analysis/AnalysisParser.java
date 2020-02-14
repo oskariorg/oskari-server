@@ -3,7 +3,6 @@ package fi.nls.oskari.analysis;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.domain.map.wfs.WFSLayerAttributes;
 import fi.nls.oskari.domain.map.wfs.WFSLayerCapabilities;
-import fi.nls.oskari.domain.map.wfs.WFSLayerConfiguration;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.analysis.domain.*;
@@ -16,8 +15,6 @@ import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.wfs.WFSFilterBuilder;
-import fi.nls.oskari.wfs.WFSLayerConfigurationService;
-import fi.nls.oskari.wfs.WFSLayerConfigurationServiceIbatisImpl;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -30,7 +27,6 @@ public class AnalysisParser {
 
     private static final Logger log = LogFactory
             .getLogger(AnalysisParser.class);
-    private WFSLayerConfigurationService layerConfigurationService = new WFSLayerConfigurationServiceIbatisImpl();
     private AnalysisDataService analysisDataService = new AnalysisDataService();
     private static final TransformationService transformationService = new TransformationService();
 

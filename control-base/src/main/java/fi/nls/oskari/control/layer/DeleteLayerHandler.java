@@ -4,15 +4,12 @@ import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.cache.JedisManager;
 import fi.nls.oskari.control.*;
 import fi.nls.oskari.domain.map.OskariLayer;
-import fi.nls.oskari.domain.map.wfs.WFSLayerConfiguration;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.layer.OskariLayerService;
 import fi.nls.oskari.map.layer.OskariLayerServiceMybatisImpl;
 import fi.nls.oskari.util.PropertyUtil;
 import org.oskari.log.AuditLog;
-import fi.nls.oskari.wfs.WFSLayerConfigurationService;
-import fi.nls.oskari.wfs.WFSLayerConfigurationServiceIbatisImpl;
 
 /**
  * Admin WMS layer delete for single layer, for base/group layers -> use DeleteOrganizationHandler
@@ -24,7 +21,6 @@ public class DeleteLayerHandler extends AbstractLayerAdminHandler {
 
     private static final Logger log = LogFactory.getLogger(DeleteLayerHandler.class);
     private static final OskariLayerService mapLayerService = new OskariLayerServiceMybatisImpl();
-    WFSLayerConfigurationService wfsLayerService = new WFSLayerConfigurationServiceIbatisImpl();
 
     private static final String PARAM_LAYER_ID = "layer_id";
 
@@ -50,10 +46,6 @@ public class DeleteLayerHandler extends AbstractLayerAdminHandler {
                     .withParam("name", layer.getName())
                     .deleted(AuditLog.ResourceType.MAPLAYER);
 
-            if(layer.getType().equals(OskariLayer.TYPE_WFS))
-            {
-                wfsLayerService.delete(layer.getId());
-            }
         } catch (Exception e) {
             throw new ActionException("Couldn't delete map layer - id:" + layer.getId(), e);
         }

@@ -14,7 +14,6 @@ import fi.nls.oskari.domain.map.Feature;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.domain.map.wfs.WFSLayerAttributes;
 import fi.nls.oskari.domain.map.wfs.WFSLayerCapabilities;
-import fi.nls.oskari.domain.map.wfs.WFSLayerConfiguration;
 
 import fi.nls.oskari.map.geometry.ProjectionHelper;
 
@@ -65,10 +64,6 @@ public abstract class AbstractFeatureHandler extends RestActionHandler {
 
     protected OskariLayer getLayer(String id) throws ActionParamsException {
         return layerService.find(getLayerId(id));
-    }
-
-    protected WFSLayerConfiguration getWFSConfiguration(int id) throws ActionParamsException {
-        return layerConfigurationService.findConfiguration(id);
     }
 
     protected boolean canEdit(OskariLayer layer, User user) {

@@ -9,7 +9,6 @@ import fi.nls.oskari.cache.JedisManager;
 import fi.nls.oskari.control.*;
 import fi.nls.oskari.domain.map.DataProvider;
 import fi.nls.oskari.domain.map.OskariLayer;
-import fi.nls.oskari.domain.map.wfs.WFSLayerConfiguration;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.layer.DataProviderService;
@@ -24,7 +23,6 @@ import fi.nls.oskari.service.capabilities.OskariLayerCapabilitiesHelper;
 import fi.nls.oskari.util.*;
 import org.oskari.log.AuditLog;
 import fi.nls.oskari.wfs.GetGtWFSCapabilities;
-import fi.nls.oskari.wfs.WFSLayerConfigurationService;
 import fi.nls.oskari.wmts.WMTSCapabilitiesParser;
 import fi.nls.oskari.wmts.domain.WMTSCapabilities;
 import org.json.JSONArray;
@@ -54,7 +52,6 @@ public class SaveLayerHandler extends AbstractLayerAdminHandler {
 
     private OskariLayerService mapLayerService = ServiceFactory.getMapLayerService();
     private ViewService viewService = ServiceFactory.getViewService();
-    private WFSLayerConfigurationService wfsLayerService = ServiceFactory.getWfsLayerService();
     private DataProviderService dataProviderService = ServiceFactory.getDataProviderService();
     private OskariLayerGroupLinkService layerGroupLinkService = ServiceFactory.getOskariLayerGroupLinkService();
     private CapabilitiesCacheService capabilitiesService = ServiceFactory.getCapabilitiesCacheService();

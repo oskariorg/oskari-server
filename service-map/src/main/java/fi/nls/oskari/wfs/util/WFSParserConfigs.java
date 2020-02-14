@@ -1,6 +1,5 @@
 package fi.nls.oskari.wfs.util;
 
-import fi.nls.oskari.domain.map.wfs.WFSLayerConfiguration;
 import fi.nls.oskari.domain.map.wfs.WFSParserConfig;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
