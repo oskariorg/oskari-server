@@ -46,14 +46,6 @@ public class WFSLayerConfigurationServiceIbatisImpl extends BaseIbatisService<WF
         return configs;
     }
 
-    public synchronized int insertTemplateModel(final Map<String,String> map) throws ServiceException {
-        return  queryForObject(getNameSpace() + ".insertTemplateModel", map);
-    }
-
-
-    public synchronized int insertSLDStyle(final Map<String, Integer> map) throws ServiceException {
-        return  queryForObject(getNameSpace() + ".insertSLDStyle", map);
-    }
 
     public void update(final WFSLayerConfiguration layer) {
         try {
@@ -62,59 +54,6 @@ public class WFSLayerConfigurationServiceIbatisImpl extends BaseIbatisService<WF
             throw new RuntimeException("Failed to update", e);
         }
     }
-
-    public synchronized List<Integer> insertSLDStyles(final int id, final List<Integer> lnks) {
-        SqlMapClient client = null;
-        List<Integer> ids = new ArrayList<Integer>();
-        try {
-            client = getSqlMapClient();
-            client.startTransaction();
-            // Remove old links for the wfs layer
-            // remove wfs layer
-            client.delete(getNameSpace() + ".removeLayerSLDStyles", id);
-            for (Integer lnk : lnks) {
-                Map<String, Integer> styleLink = new HashMap<String, Integer>();
-                styleLink.put("id", id);
-                styleLink.put("sld_style_id", lnk);
-                Object rowId = client.insert(getNameSpace() + ".insertLayerSLDStyles", styleLink);
-                ids.add(0);
-            }
-
-
-            client.commitTransaction();
-            return ids;
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to insert SLD styles", e);
-        } finally {
-            if (client != null) {
-                try {
-                    client.endTransaction();
-                } catch (SQLException ignored) { }
-            }
-        }
-    }
-
-    public synchronized int insert(final WFSLayerConfiguration layer) {
-        SqlMapClient client = null;
-        try {
-            client = getSqlMapClient();
-            client.startTransaction();
-            client.insert(getNameSpace() + ".insert", layer);
-            Integer id = (Integer) client.queryForObject(getNameSpace()
-                    + ".maxId");
-            client.commitTransaction();
-            return id;
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to insert", e);
-        } finally {
-            if (client != null) {
-                try {
-                    client.endTransaction();
-                } catch (SQLException ignored) { }
-            }
-        }
-    }
-
 
     public void delete(final int id)  {
         long maplayer_id = Long.valueOf(id);

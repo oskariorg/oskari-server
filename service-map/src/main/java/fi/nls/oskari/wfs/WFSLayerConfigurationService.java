@@ -15,7 +15,4 @@ public interface WFSLayerConfigurationService extends BaseService<WFSLayerConfig
     public WFSLayerConfiguration findConfiguration(int id);
     public List<WFSSLDStyle> findWFSLayerStyles(final int layerId);
     public List<WFSParserConfig> findWFSParserConfigs(String name);
-    public int insertTemplateModel(Map<String,String> map ) throws ServiceException;
-    public List<Integer> insertSLDStyles(final int id, final List<Integer> lnks) throws ServiceException;
-    public int insertSLDStyle(Map<String,Integer> map ) throws ServiceException;
 }

@@ -22,8 +22,7 @@
         <result property="GMLVersion" column="gml_version"/>
         <result property="GML2Separator" column="gml2_separator"/>
         <result property="geometryNamespaceURI" column="geometry_namespace_uri"/>
-        
-        <result property="featureType" column="feature_type"/>
+
         <result property="geometryType" column="geometry_type"/>
 
 		<result property="minScale" column="minscale"/>
@@ -41,29 +40,10 @@
        <parameter property="GMLGeometryProperty"/>
        <parameter property="GMLVersion"/>
        <parameter property="GML2Separator"/>
-       <parameter property="maxFeatures"/>
        <parameter property="featureNamespace"/>
        <parameter property="featureNamespaceURI"/>
        <parameter property="geometryNamespaceURI"/>
        <parameter property="featureElement"/>
-
-       <parameter property="outputFormat"/>
-       <parameter property="featureType" jdbcType="VARCHAR" javaType="org.json.JSONObject"/>
-       <parameter property="selectedFeatureParams" jdbcType="VARCHAR" javaType="org.json.JSONObject"/>
-       <parameter property="featureParamsLocales" jdbcType="VARCHAR" javaType="org.json.JSONObject"/>
-       <parameter property="geometryType"/>
-       <parameter property="getMapTiles"/>
-       <parameter property="getHighlightImage"/>
-       <parameter property="getFeatureInfo"/>
-       <parameter property="tileRequest"/>
-       <parameter property="tileBuffer" jdbcType="VARCHAR" javaType="org.json.JSONObject"/>
-
-       <parameter property="WMSLayerId"/>
-       <parameter property="wps_params"/>
-       <parameter property="templateModelId"/>
-       <parameter property="jobType"/>
-       <parameter property="requestImpulse"/>
-
     </parameterMap>
 
     <parameterMap id="LayerUpdateParameter" class="WFSLayerConfiguration">
@@ -98,8 +78,6 @@
 			map.version,
 
             l.geometry_namespace_uri,
-
-			l.feature_type,
 
 			l.geometry_type,
 			
@@ -136,37 +114,6 @@
     </select>
     <statement id="delete" parameterClass="java.lang.Long">
         delete from portti_wfs_layer where maplayer_id=#maplayer_id#;
-    </statement>
-
-    <statement id="insert" parameterMap="LayerInsertParameter" >
-        <!--  resultClass="java.lang.Integer" -->
-        insert into portti_wfs_layer (
-        maplayer_id,
-        layer_name,
-        gml_geometry_property,
-        gml_version,
-        gml2_separator,
-        max_features,
-        feature_namespace,
-        feature_namespace_uri,
-        geometry_namespace_uri,
-        feature_element,
-        output_format,
-        feature_type,
-        selected_feature_params,
-        feature_params_locales,
-        geometry_type,
-        get_map_tiles,
-        get_highlight_image,
-        get_feature_info,
-        tile_request,
-        tile_buffer,
-        wms_layer_id,
-        wps_params,
-        wfs_template_model_id,
-        job_type,
-        request_impulse)
-        values (CAST(? as BigInt),?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,CAST(? as Int),?,?)
     </statement>
 
     <statement id="update" parameterMap="LayerUpdateParameter">
