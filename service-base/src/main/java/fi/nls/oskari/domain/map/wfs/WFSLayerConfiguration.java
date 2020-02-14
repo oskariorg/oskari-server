@@ -25,7 +25,6 @@ public class WFSLayerConfiguration {
     protected final static String USERNAME = "username";
     protected final static String PASSWORD = "password";
     protected final static String LAYER_NAME = "layerName";
-    protected final static String LAYER_FRIENDLY_NAME = "uiName";
     protected final static String GML_GEOMETRY_PROPERTY = "GMLGeometryProperty";
     protected final static String SRS_NAME = "SRSName";
     protected final static String GML_VERSION = "GMLVersion";
@@ -36,30 +35,14 @@ public class WFSLayerConfiguration {
     protected final static String FEATURE_NAMESPACE_URI = "featureNamespaceURI";
     protected static final String GEOMETRY_NAMESPACE_URI = "geometryNamespaceURI";
     protected final static String FEATURE_ELEMENT = "featureElement";
-    protected final static String OUTPUT_FORMAT = "outputFormat";
     protected final static String FEATURE_TYPE = "featureType";
     protected final static String SELECTED_FEATURE_PARAMS = "selectedFeatureParams";
     protected final static String FEATURE_PARAMS_LOCALES = "featureParamsLocales";
     protected final static String GEOMETRY_TYPE = "geometryType";
-    protected final static String GET_MAP_TILES = "getMapTiles";
-    protected static final String GET_HIGHLIGHT_IMAGE = "getHighlightImage";
-    protected final static String GET_FEATURE_INFO = "getFeatureInfo";
-    protected final static String TILE_REQUEST = "tileRequest";
-    protected final static String TILE_BUFFER = "tileBuffer";
-    protected final static String WMS_LAYER_ID = "WMSLayerId";
-    protected final static String JOB_TYPE = "jobType";
-    protected static final String REQUEST_IMPULSE = "requestImpulse";
     protected static final String ATTRIBUTES = "attributes";
     protected final static String MIN_SCALE = "minScale";
     protected final static String MAX_SCALE = "maxScale";
     protected final static String IS_PUBLISHED = "isPublished";
-    protected final static String UUID = "uuid";
-    protected final static String TEMPLATE_NAME = "templateName";
-    protected final static String TEMPLATE_DESCRIPTION = "templateDescription";
-    protected final static String TEMPLATE_TYPE = "templateType";
-    protected final static String REQUEST_TEMPLATE = "requestTemplate";
-    protected final static String RESPONSE_TEMPLATE = "responseTemplate";
-    protected final static String PARSE_CONFIG = "parseConfig";
     protected final static String SELECTION_SLD_STYLE = "selectionSLDStyle";
     protected final static String STYLES = "styles";
     protected final static String ID = "id";
@@ -67,7 +50,6 @@ public class WFSLayerConfiguration {
     protected final static String SLD_STYLE = "SLDStyle";
     private static final Logger log = LogFactory
             .getLogger(WFSLayerConfiguration.class);
-    private static final double DEFAULT_TILE_BUFFER = 0.0d;
     private static final String KEY_DEFAULT = "default";
     private int id = -1;
     private String layerId;
@@ -83,21 +65,11 @@ public class WFSLayerConfiguration {
     private boolean GML2Separator; // if srs url is in old format (# => :)
     private String WFSVersion;
     private String geometryNamespaceURI;
-    private String outputFormat;
 
+    private String geometryType;
     private JSONObject featureType;
 
-    private String geometryType; // 2D/3D
-    private boolean getMapTiles; // if tile images are drawn and send
-    private boolean getHighlightImage; // if highlight image is drawn and send
-    private boolean getFeatureInfo; // if feature json is send
-    private boolean tileRequest; // if tile requests are made (map request default)
-    private JSONObject tileBuffer;
-    private String WMSLayerId;
     private String wps_params;  // WPS params for WFS layer eg {input_type:gs_vector}
-    private int templateModelId = 0;  //id of portti_wfs_template_model row (FE configs when jobtype=feature-engine
-    private String jobType;
-    private String requestImpulse;
     private WFSLayerAttributes attrs = new WFSLayerAttributes(new JSONObject());
 
     private double minScale;
@@ -105,14 +77,6 @@ public class WFSLayerConfiguration {
 
     private boolean isPublished = false;
     private String uuid;
-
-    // Template Model
-    private String templateName;
-    private String templateDescription;
-    private String templateType;
-    private String requestTemplate;
-    private String responseTemplate;
-    private JSONObject parseConfig;
 
     private String selectionSLDStyle;
 
