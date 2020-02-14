@@ -471,7 +471,6 @@ public class SaveLayerHandler extends AbstractLayerAdminHandler {
         wfsl.setSRSName(params.getHttpParam(PARAM_SRS_NAME));
         wfsl.setWFSVersion(params.getHttpParam(PARAM_WFS_VERSION, params.getHttpParam(PARAM_VERSION)));
         wfsl.setFeatureNamespaceURI(params.getHttpParam(PARAM_FEATURE_NAMESCAPE_URI));
-        wfsl.setFeatureParamsLocales(params.getHttpParam(PARAM_FEATURE_PARAMS_LOCALES));
         wfsl.setFeatureType(params.getHttpParam(PARAM_FEATURE_TYPE));
         wfsl.setGeometryNamespaceURI(params.getHttpParam(PARAM_GEOMETRY_NAMESPACE_URI));
         wfsl.setGeometryType(params.getHttpParam(PARAM_GEOMETRY_TYPE));
@@ -481,7 +480,6 @@ public class SaveLayerHandler extends AbstractLayerAdminHandler {
         wfsl.setLayerName(params.getHttpParam(PARAM_LAYER_NAME));
         wfsl.setMaxFeatures(ConversionHelper.getInt(params.getHttpParam(PARAM_MAX_FEATURES), wfsl.getMaxFeatures()));
         wfsl.setOutputFormat(params.getHttpParam(PARAM_OUTPUT_FORMAT));
-        wfsl.setSelectedFeatureParams(params.getHttpParam(PARAM_SELECTED_FEATURE_PARAMS));
         wfsl.setTileBuffer(params.getHttpParam(PARAM_TILE_BUFFER));
         wfsl.setTileRequest(ConversionHelper.getBoolean(params.getHttpParam(PARAM_TILE_REQUEST), wfsl.isTileRequest()));
         wfsl.setJobType(params.getHttpParam(PARAM_JOB_TYPE));

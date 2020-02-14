@@ -7,6 +7,7 @@ import fi.nls.oskari.map.layer.DataProviderService;
 import fi.nls.oskari.map.layer.DataProviderServiceMybatisImpl;
 import fi.nls.oskari.map.layer.OskariLayerService;
 import fi.nls.oskari.map.layer.OskariLayerServiceMybatisImpl;
+import org.json.JSONObject;
 
 import java.util.List;
 
@@ -53,7 +54,6 @@ public class LayerHelper {
         conf.setGMLVersion("3.1.1");
         conf.setGML2Separator(false);
         conf.setMaxFeatures(2000);
-        conf.setFeatureParamsLocales("{\"default\": [\"name\", \"place_desc\",\"link\", \"image_url\"],\"fi\": [\"name\", \"place_desc\",\"link\", \"image_url\"]}");
         conf.setGeometryType("2d");
         conf.setGetMapTiles(false);
         conf.setGetFeatureInfo(true);
@@ -63,7 +63,6 @@ public class LayerHelper {
         conf.setFeatureNamespaceURI("http://www.oskari.org");
 
         conf.setFeatureType("");
-        conf.setSelectedFeatureParams("{}");
         conf.setGeometryNamespaceURI("");
         conf.setWps_params("{}");
         conf.setTileBuffer("{}");

@@ -85,14 +85,10 @@ public class WFSLayerConfiguration {
     private String GMLVersion;
     private boolean GML2Separator; // if srs url is in old format (# => :)
     private String WFSVersion;
-    private String featureNamespace;
     private String geometryNamespaceURI;
-    private String featureElement;
     private String outputFormat;
 
     private JSONObject featureType;
-    private JSONObject selectedFeatureParams; // if needed?
-    private JSONObject featureParamsLocales;
 
     private String geometryType; // 2D/3D
     private boolean getMapTiles; // if tile images are drawn and send
@@ -247,6 +243,9 @@ public class WFSLayerConfiguration {
     }
 
     public void setMaxFeatures(int maxFeatures) {
+        if (getAttributes() == null) {
+            setAttributes(new JSONObject());
+        }
         this.attrs.setMaxFeatures(maxFeatures);
     }
 
@@ -267,6 +266,9 @@ public class WFSLayerConfiguration {
     }
 
     public void setFeatureNamespaceURI(String featureNamespaceURI) {
+        if (getAttributes() == null) {
+            setAttributes(new JSONObject());
+        }
         attrs.setNamespaceURL(featureNamespaceURI);
     }
 
@@ -319,12 +321,28 @@ public class WFSLayerConfiguration {
     }
 
     public JSONObject getSelectedFeatureParams() {
-        return selectedFeatureParams;
-    }
-
-    public void setSelectedFeatureParams(String selectedFeatureParams) {
-        // FIXME: remove and refactor code to modify attributes
-        this.selectedFeatureParams = JSONHelper.createJSONObject(selectedFeatureParams);
+        JSONObject attributes = attrs.getAttributes();
+        if (attributes == null) {
+            return new JSONObject();
+        }
+        JSONObject data = attributes.optJSONObject("data");
+        if (data == null) {
+            return new JSONObject();
+        }
+        if (!data.has("filter")) {
+            return new JSONObject();
+        }
+        JSONObject filterObj = data.optJSONObject("filter");
+        if (filterObj != null) {
+            return filterObj;
+        }
+        JSONArray filterarray = data.optJSONArray("filter");
+        if (filterarray == null) {
+            return new JSONObject();
+        }
+        JSONObject value = new JSONObject();
+        JSONHelper.putValue(value, "default", filterarray);
+        return value;
     }
 
     /**
@@ -339,11 +357,19 @@ public class WFSLayerConfiguration {
     }
 
     public JSONObject getFeatureParamsLocales() {
-        return featureParamsLocales;
-    }
-
-    public void setFeatureParamsLocales(String featureParamsLocales) {
-        this.featureParamsLocales = JSONHelper.createJSONObject(featureParamsLocales);
+        JSONObject attributes = attrs.getAttributes();
+        if (attributes == null) {
+            return new JSONObject();
+        }
+        JSONObject data = attributes.optJSONObject("data");
+        if (data == null) {
+            return new JSONObject();
+        }
+        JSONObject locale = data.optJSONObject("locale");
+        if (locale == null) {
+            return new JSONObject();
+        }
+        return locale;
     }
 
     public List<String> getFeatureParamsLocales(String key) {
@@ -360,13 +386,6 @@ public class WFSLayerConfiguration {
             }
             return label;
         }).collect(Collectors.toList());
-    }
-
-    public void addFeatureParamsLocales(String key, List<String> paramNames) {
-        if (featureParamsLocales == null) {
-            featureParamsLocales = new JSONObject();
-        }
-        JSONHelper.putValue(featureParamsLocales, key, new JSONArray(paramNames));
     }
 
     public String getGeometryType() {
@@ -780,8 +799,6 @@ public class WFSLayerConfiguration {
         this.setGeometryNamespaceURI("");
         //this.setOutputFormat("");
         this.setFeatureType("{}");
-        this.setSelectedFeatureParams("{}");
-        this.setFeatureParamsLocales("{}");
         this.setGeometryType("2d");
         this.setGetMapTiles(true);
         this.setGetHighlightImage(true);
