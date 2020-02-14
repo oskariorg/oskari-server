@@ -1,5 +1,9 @@
 package fi.nls.oskari.control.layer;
 
+import fi.nls.oskari.control.ActionParamsException;
+import fi.nls.oskari.domain.map.OskariLayer;
+import fi.nls.oskari.domain.map.wfs.WFSLayerAttributes;
+import fi.nls.oskari.map.layer.OskariLayerService;
 import org.json.JSONObject;
 
 import fi.nls.oskari.annotation.OskariActionRoute;
@@ -17,6 +21,7 @@ import fi.nls.oskari.util.ResponseHelper;
 import fi.nls.oskari.wfs.WFSLayerConfigurationService;
 import fi.nls.oskari.wfs.WFSLayerConfigurationServiceIbatisImpl;
 import fi.nls.oskari.util.WFSDescribeFeatureHelper;
+import org.oskari.service.util.ServiceFactory;
 
 /**
  * Get WMS capabilites and return JSON
@@ -25,7 +30,7 @@ import fi.nls.oskari.util.WFSDescribeFeatureHelper;
 public class GetWFSDescribeFeatureHandler extends ActionHandler {
 
     private static final Logger log = LogFactory.getLogger(GetWFSDescribeFeatureHandler.class);
-    private final WFSLayerConfigurationService layerConfigurationService = new WFSLayerConfigurationServiceIbatisImpl();
+    private final OskariLayerService layerService = ServiceFactory.getMapLayerService();
 
     private static final String PARM_LAYER_ID = "layer_id";
     private static final String PARM_SIMPLE = "simple";
@@ -40,44 +45,44 @@ public class GetWFSDescribeFeatureHandler extends ActionHandler {
     final String myplacesBaseLayerId = PropertyUtil.get(MYPLACES_BASELAYER_ID);
     final String userlayerBaseLayerId = PropertyUtil.get(USERLAYER_BASELAYER_ID);
 
-    @Override
-    public void init() {
-        super.init();
-    }
-
     public void handleAction(ActionParameters params) throws ActionException {
-        final String layer_id = params.getHttpParam(PARM_LAYER_ID, "");
-        final Boolean simpleType = params.getHttpParam(PARM_SIMPLE, false);
+        final String layer_id = params.getRequiredParam(PARM_LAYER_ID);
+        final boolean simpleType = params.getHttpParam(PARM_SIMPLE, false);
         int id = getLayerId(layer_id);
-        JSONObject response = new JSONObject();
 
-        try {
-	        if (id != -1) {
-	            // Get wfs layer configuration ala Oskari
-	            WFSLayerConfiguration lc = layerConfigurationService.findConfiguration(id);
-	            if (lc != null) {
-	                // Get wfs feature property names  (gml properties excluded)
-                    if(simpleType){
-                        // types are generalized to text or numeric
-                        response = getFeatureTypesTextOrNumeric(lc, layer_id);
-                    } else {
-                        // returns xsd types for properties
-                        response = WFSDescribeFeatureHelper.getWFSFeaturePropertyTypes(lc, layer_id);
-                    }
-	                // Add WPS params
-	                JSONHelper.putValue(response, WPS_PARAMS, JSONHelper.createJSONObject(lc.getWps_params()));
-	            }
-	
-	        } else if (layer_id.indexOf(ANALYSIS_PREFIX) > -1) {
-	            // Set analysis layer field types
-	            response = WFSDescribeFeatureHelper.getAnalysisFeaturePropertyTypes(layer_id);
-	        }
-        } catch (ServiceException ex) {
-        	
+        if (id != -1) {
+            ResponseHelper.writeResponse(params, getResponse(id, simpleType));
+        } else if (layer_id.indexOf(ANALYSIS_PREFIX) > -1) {
+            // Set analysis layer field types
+            ResponseHelper.writeResponse(params, WFSDescribeFeatureHelper.getAnalysisFeaturePropertyTypes(layer_id));
         }
 
-        ResponseHelper.writeResponse(params, response);
+        ResponseHelper.writeResponse(params, new JSONObject());
+    }
 
+    private JSONObject getResponse(int id, boolean simpleType) throws ActionException {
+        // Get wfs layer configuration ala Oskari
+        OskariLayer layer = layerService.find(id);
+        if (layer == null) {
+            throw new ActionParamsException("Layer not found: " + id);
+        }
+        JSONObject response = new JSONObject();
+        // Get wfs feature property names  (gml properties excluded)
+        if(simpleType){
+            // types are generalized to text or numeric
+            response = getFeatureTypesTextOrNumeric(layer, "" + id);
+        } else {
+            // returns xsd types for properties
+            try {
+                response = WFSDescribeFeatureHelper.getWFSFeaturePropertyTypes(layer, "" + id);
+            } catch (ServiceException ex) {
+                throw new ActionException("Problem with layer: " + id, ex);
+            }
+        }
+        // Add WPS params
+        WFSLayerAttributes attrs = new WFSLayerAttributes(layer.getAttributes());
+        JSONHelper.putValue(response, WPS_PARAMS, JSONHelper.createJSONObject(attrs.getWpsParams()));
+        return response;
     }
 
     private int getLayerId(final String layer_id) {
@@ -100,9 +105,9 @@ public class GetWFSDescribeFeatureHandler extends ActionHandler {
      * @return  JSON object  (feature property names and text/numeric typing of property)
      * @throws ActionException
      */
-    private JSONObject getFeatureTypesTextOrNumeric(WFSLayerConfiguration lc, String layer_id) throws ActionException {
+    private JSONObject getFeatureTypesTextOrNumeric(OskariLayer layer, String layer_id) throws ActionException {
         try {
-            return WFSDescribeFeatureHelper.getFeatureTypesTextOrNumeric(lc, layer_id);
+            return WFSDescribeFeatureHelper.getFeatureTypesTextOrNumeric(layer, layer_id);
         } catch (ServiceException ex) {
             throw new ActionException("Error getting properties", ex);
         }

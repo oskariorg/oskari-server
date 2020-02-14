@@ -67,10 +67,9 @@ public class WFSLayerConfiguration {
     private String geometryNamespaceURI;
 
     private String geometryType;
-    private JSONObject featureType;
 
-    private String wps_params;  // WPS params for WFS layer eg {input_type:gs_vector}
     private WFSLayerAttributes attrs = new WFSLayerAttributes(new JSONObject());
+    private WFSLayerCapabilities caps = new WFSLayerCapabilities(new JSONObject());
 
     private double minScale;
     private double maxScale;
@@ -131,11 +130,17 @@ public class WFSLayerConfiguration {
     }
 
     public String getGMLGeometryProperty() {
-        return GMLGeometryProperty;
+        if (caps == null) {
+            return null;
+        }
+        return caps.getGeometryAttribute();
     }
 
     public void setGMLGeometryProperty(String gMLGeometryProperty) {
-        GMLGeometryProperty = gMLGeometryProperty;
+        if (caps == null) {
+            setCapabilities(new JSONObject());
+        }
+        caps.setGeometryAttribute(gMLGeometryProperty);
     }
 
     public String getSRSName() {
@@ -168,13 +173,6 @@ public class WFSLayerConfiguration {
 
     public int getMaxFeatures() {
         return attrs.getMaxFeatures();
-    }
-
-    public void setMaxFeatures(int maxFeatures) {
-        if (getAttributes() == null) {
-            setAttributes(new JSONObject());
-        }
-        this.attrs.setMaxFeatures(maxFeatures);
     }
 
     public String getFeatureNamespace() {
@@ -218,21 +216,6 @@ public class WFSLayerConfiguration {
             return split[0];
         }
         return split[1];
-    }
-
-    public JSONObject getFeatureType() {
-        return featureType;
-    }
-
-    public void setFeatureType(String featureType) {
-        this.featureType = JSONHelper.createJSONObject(featureType);
-    }
-
-    public void addFeatureType(String key, final String value) {
-        if (featureType == null) {
-            featureType = new JSONObject();
-        }
-        JSONHelper.putValue(featureType, key, value);
     }
 
     public JSONObject getSelectedFeatureParams() {
@@ -318,17 +301,12 @@ public class WFSLayerConfiguration {
      * @return
      */
     public String getWps_params() {
-        return wps_params;
+        if (attrs == null) {
+            return "{}";
+        }
+        return attrs.getWpsParams();
     }
 
-    /**
-     * Set wps_params (basic field value in portti_wfs_layer)
-     *
-     * @param wps_params
-     */
-    public void setWps_params(String wps_params) {
-        this.wps_params = wps_params;
-    }
 
     public JSONObject getAttributes() {
         if (attrs == null) {
@@ -344,6 +322,14 @@ public class WFSLayerConfiguration {
     public void setAttributes(String attributes) {
         // TODO: merge existing to prevent setter call order to break things
         this.setAttributes(JSONHelper.createJSONObject(attributes));
+    }
+
+    public void setCapabilities(JSONObject capabilities) {
+        this.caps = new WFSLayerCapabilities(capabilities);
+    }
+    public void setCapabilities(String capabilities) {
+        // TODO: merge existing to prevent setter call order to break things
+        this.setCapabilities(JSONHelper.createJSONObject(capabilities));
     }
 
     public boolean isPublished() {
@@ -419,7 +405,6 @@ public class WFSLayerConfiguration {
         JSONHelper.putValue(root, GEOMETRY_NAMESPACE_URI, this.getGeometryNamespaceURI());
         JSONHelper.putValue(root, FEATURE_ELEMENT, this.getFeatureElement());
 
-        JSONHelper.putValue(root, FEATURE_TYPE, this.getFeatureType());
         JSONHelper.putValue(root, GEOMETRY_TYPE, this.getGeometryType());
         JSONHelper.putValue(root, ATTRIBUTES, this.getAttributes() != null ? this.getAttributes().toString() : null);
         JSONHelper.putValue(root, IS_PUBLISHED, this.isPublished());
@@ -452,10 +437,7 @@ public class WFSLayerConfiguration {
         this.setGML2Separator(false);
         this.setAttributes(JSONHelper.createJSONObject("maxFeatures", 2000));
         this.setGeometryNamespaceURI("");
-        //this.setOutputFormat("");
-        this.setFeatureType("{}");
         this.setGeometryType("2d");
-        this.setWps_params("{}");
         this.setPublished(false);
     }
 

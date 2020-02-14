@@ -81,44 +81,6 @@ public class WFSParserConfigs {
     }
 
     /**
-     * Get default parser config and fill placehorders
-     *
-     * @param wfsl
-     * @return
-     */
-    public JSONArray getDefaultFeatureTypeConfig(WFSLayerConfiguration wfsl) {
-        if (wfsl == null) return null;
-        JSONArray default_conf = JSONHelper.getJSONArray(this.config, "default");
-        try {
-            // Set place holder values
-            JSONObject conf = JSONHelper.getJSONObject(default_conf, 0);
-            if (conf != null) {
-                conf.remove("feature_namespace_uri");
-                conf.put("feature_namespace_uri", wfsl.getFeatureNamespaceURI());
-                JSONObject pconf = conf.optJSONObject("parse_config");
-                if (pconf != null) {
-                    pconf.remove("root");
-                    JSONObject rootns = new JSONObject();
-                    rootns.put("rootNS", wfsl.getFeatureNamespaceURI());
-                    rootns.put("name", wfsl.getFeatureElement());
-                    pconf.put("root", rootns);
-                    JSONArray paths = pconf.optJSONArray("paths");
-                    // Gml id is always there
-                    paths.getJSONObject(0).remove("path");
-                    paths.getJSONObject(0).put("path", "/" + wfsl.getFeatureNamespace() + ":" + wfsl.getFeatureElement() + "/@gml:id");
-
-                    return default_conf;
-                }
-
-
-            }
-        } catch (Exception e) {
-            log.debug("Creating default fe parser configs failed", e);
-        }
-        return null;
-    }
-
-    /**
      * Read initial parser configs for wfs feature types
      * Seed configs are defined in oskari_wfs_parser_config table
      */

@@ -162,7 +162,6 @@ public class GetWSCapabilitiesHandler extends ActionHandler {
         lc.setLayerId("layer_" + name);
         lc.setSRSName(crs);
         lc.setGMLGeometryProperty("geometry");
-        lc.setFeatureNamespaceURI("");
         return lc;
     }
 }

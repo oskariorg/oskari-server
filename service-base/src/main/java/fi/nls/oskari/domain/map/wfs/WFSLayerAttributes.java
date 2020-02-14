@@ -62,6 +62,7 @@ public class WFSLayerAttributes {
     private String namespaceURL;
     private int maxFeatures = -1;
     private JSONObject attributes;
+    private String wpsParams;
 
     public WFSLayerAttributes(JSONObject wfsAttrs) {
         if(wfsAttrs == null) {
@@ -71,6 +72,7 @@ public class WFSLayerAttributes {
         // Preparse
         maxFeatures = wfsAttrs.optInt("maxFeatures", 1);
         namespaceURL = wfsAttrs.optString("namespaceURL");
+        wpsParams = wfsAttrs.optString("wpsParams");
         JSONObject data = wfsAttrs.optJSONObject("data");
         if (data != null) {
             locales = data.optJSONObject("locale");
@@ -120,6 +122,9 @@ public class WFSLayerAttributes {
 
     public String getNamespaceURL() {
         return namespaceURL;
+    }
+    public String getWpsParams() {
+        return wpsParams;
     }
 
     public int getMaxFeatures() {

@@ -17,8 +17,7 @@
         <result property="password" column="password"/>
 
         <result property="layerName" column="name"/>
-      
-        <result property="GMLGeometryProperty" column="gml_geometry_property"/>
+
         <result property="SRSName" column="srs_name"/>
         <result property="GMLVersion" column="gml_version"/>
         <result property="GML2Separator" column="gml2_separator"/>
@@ -27,11 +26,10 @@
         <result property="featureType" column="feature_type"/>
         <result property="geometryType" column="geometry_type"/>
 
-        <result property="wps_params" column="wps_params"/>
-        
 		<result property="minScale" column="minscale"/>
 		<result property="maxScale" column="maxscale"/>
         <result property="attributes" column="attributes" jdbcType="VARCHAR" javaType="org.json.JSONObject"/>
+        <result property="capabilities" column="capabilities" jdbcType="VARCHAR" javaType="org.json.JSONObject"/>
 
 		<result property="selectionSLDStyle" column="selection_sld_style"/>
     </resultMap>
@@ -94,7 +92,6 @@
 			map.username,
 			map.password,
             map.name,
-			l.gml_geometry_property,
   			map.srs_name,
 			l.gml_version,
             l.gml2_separator,
@@ -105,12 +102,12 @@
 			l.feature_type,
 
 			l.geometry_type,
-			l.wps_params,
 			
 			map.minscale,
 			map.maxscale,
 
   			map.attributes,
+            map.capabilities,
   			
   			ss.sld_style as selection_sld_style
   			

@@ -67,6 +67,7 @@ public class V1_55_5__migrate_wfslayers implements JdbcMigration {
         try {
             current.put("namespaceURL", conf.namespaceURL);
             current.put("maxFeatures", conf.maxFeatures);
+            current.put("wpsParams", conf.wps_params);
             JSONObject selected = createJSON(conf.selectedAttrs);
             JSONObject locales = createJSON(conf.localeAttrs);
 
@@ -136,7 +137,7 @@ public class V1_55_5__migrate_wfslayers implements JdbcMigration {
     }
 
     private List<WFSConfig> getCurrentConfigs(Connection conn) throws SQLException {
-        String sql = "select selected_feature_params, feature_params_locales, maplayer_id, feature_namespace_url, max_features from portti_wfs_layer";
+        String sql = "select selected_feature_params, feature_params_locales, maplayer_id, feature_namespace_url, max_features, wps_params from portti_wfs_layer";
         List<WFSConfig> list = new ArrayList<>();
 
         try (PreparedStatement ps = conn.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
@@ -147,6 +148,7 @@ public class V1_55_5__migrate_wfslayers implements JdbcMigration {
                 config.namespaceURL = rs.getString("feature_namespace_url");
                 config.layerId = rs.getInt("maplayer_id");
                 config.maxFeatures = rs.getInt("max_features");
+                config.wps_params = rs.getString("wps_params");
                 list.add(config);
             }
         }
@@ -227,6 +229,7 @@ public class V1_55_5__migrate_wfslayers implements JdbcMigration {
         String selectedAttrs;
         String localeAttrs;
         String namespaceURL;
+        String wps_params;
         int layerId = -1;
         int maxFeatures = -1;
     }

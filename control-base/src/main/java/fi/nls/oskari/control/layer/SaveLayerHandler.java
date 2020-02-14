@@ -25,7 +25,6 @@ import fi.nls.oskari.util.*;
 import org.oskari.log.AuditLog;
 import fi.nls.oskari.wfs.GetGtWFSCapabilities;
 import fi.nls.oskari.wfs.WFSLayerConfigurationService;
-import fi.nls.oskari.wfs.util.WFSParserConfigs;
 import fi.nls.oskari.wmts.WMTSCapabilitiesParser;
 import fi.nls.oskari.wmts.domain.WMTSCapabilities;
 import org.json.JSONArray;
@@ -59,7 +58,6 @@ public class SaveLayerHandler extends AbstractLayerAdminHandler {
     private DataProviderService dataProviderService = ServiceFactory.getDataProviderService();
     private OskariLayerGroupLinkService layerGroupLinkService = ServiceFactory.getOskariLayerGroupLinkService();
     private CapabilitiesCacheService capabilitiesService = ServiceFactory.getCapabilitiesCacheService();
-    private WFSParserConfigs wfsParserConfigs = new WFSParserConfigs();
     private static final Logger LOG = LogFactory.getLogger(SaveLayerHandler.class);
 
     private static final String PARAM_LAYER_ID = "layer_id";
@@ -208,24 +206,6 @@ public class SaveLayerHandler extends AbstractLayerAdminHandler {
                     layerGroupLinkService.insertAll(links);
                 }
 
-                //TODO: WFS spesific property update
-                if (OskariLayer.TYPE_WFS.equals(ml.getType())) {
-                    final WFSLayerConfiguration wfsl = wfsLayerService.findConfiguration(ml.getId());
-                    wfsl.setAttributes(ml.getAttributes());
-                    handleRequestToWfsLayer(params, wfsl);
-
-                    // TODO: WFS field management implementation
-                    // TODO: WFS2 spesific edits
-                    /* if(wfsl.getJobType() != null && wfsl.getJobType().equals(OSKARI_FEATURE_ENGINE)){
-                        handleFESpesificToWfsLayer(params, wfsl);
-                    }  */
-                    //wfsLayerService.update(wfsl);
-
-
-                    // Styles setup
-                    handleWfsLayerStyles(params, wfsl);
-                }
-
                 LOG.debug(ml);
                 result.layerId = ml.getId();
                 return result;
@@ -243,7 +223,6 @@ public class SaveLayerHandler extends AbstractLayerAdminHandler {
                 ml.setCreated(currentDate);
                 ml.setUpdated(currentDate);
                 result.capabilitiesUpdated = handleRequestToMapLayer(params, ml);
-                validateInsertLayer(params, ml);
 
                 int id = mapLayerService.insert(ml);
                 ml.setId(id);
@@ -266,19 +245,6 @@ public class SaveLayerHandler extends AbstractLayerAdminHandler {
                     // update the name with the id for permission mapping
                     ml.setName(ml.getId() + "_group");
                     mapLayerService.update(ml);
-                }
-                // Wfs
-                if(OskariLayer.TYPE_WFS.equals(ml.getType())) {
-                    final WFSLayerConfiguration wfsl = new WFSLayerConfiguration();
-                    wfsl.setDefaults();
-                    wfsl.setLayerId(Integer.toString(id));
-                    wfsl.setAttributes(ml.getAttributes());
-                    handleRequestToWfsLayer(params, wfsl);
-                    int idwfsl = wfsLayerService.insert(wfsl);
-                    wfsl.setId(idwfsl);
-
-                    // Styles setup
-                    handleWfsLayerStyles(params, wfsl);
                 }
 
                 addPermissionsForRoles(ml,
@@ -461,83 +427,6 @@ public class SaveLayerHandler extends AbstractLayerAdminHandler {
         }
     }
 
-    private void handleRequestToWfsLayer(final ActionParameters params, WFSLayerConfiguration wfsl) throws ActionException {
-        wfsl.setGML2Separator(ConversionHelper.getBoolean(params.getHttpParam(PARAM_GML2_SEPARATOR), wfsl.isGML2Separator()));
-        wfsl.setGMLGeometryProperty(params.getHttpParam(PARAM_GML_GEOMETRY_PROPERTY));
-        wfsl.setGMLVersion(params.getHttpParam(PARAM_GML_VERSION));
-        wfsl.setFeatureNamespaceURI(params.getHttpParam(PARAM_FEATURE_NAMESCAPE_URI));
-        wfsl.setFeatureType(params.getHttpParam(PARAM_FEATURE_TYPE));
-        wfsl.setGeometryNamespaceURI(params.getHttpParam(PARAM_GEOMETRY_NAMESPACE_URI));
-        wfsl.setGeometryType(params.getHttpParam(PARAM_GEOMETRY_TYPE));
-        wfsl.setLayerName(params.getHttpParam(PARAM_LAYER_NAME));
-        wfsl.setMaxFeatures(ConversionHelper.getInt(params.getHttpParam(PARAM_MAX_FEATURES), wfsl.getMaxFeatures()));
-    }
-
-    /**
-     *  Inserts/updates sld style links to single wfs layer
-     * @param params
-     * @param wfsl
-     * @throws ActionException
-     * @throws ServiceException
-     */
-    private void handleWfsLayerStyles(final ActionParameters params, WFSLayerConfiguration wfsl) throws ActionException, ServiceException {
-
-
-        if (wfsl != null && params.getHttpParam(PARAM_STYLE_SELECTION) != null) {
-            JSONObject selectedStyles = JSONHelper.createJSONObject(params.getHttpParam(PARAM_STYLE_SELECTION));
-            JSONArray styles = JSONHelper.getJSONArray(selectedStyles, "selectedStyles");
-            List<Integer> sldIds = new ArrayList<Integer>();
-            for (int i = 0; i < styles.length(); i++) {
-                JSONObject stylelnk = JSONHelper.getJSONObject(styles, i);
-                int lnk = ConversionHelper.getInt(JSONHelper.getStringFromJSON(stylelnk, "id", "0"), 0);
-                if (lnk != 0) {
-                    sldIds.add(lnk);
-                }
-
-            }
-            //TODO: define a case to remove all styles  and update single style
-            if (sldIds.size() > 0) {
-                // Removes old links and insert new ones
-                List<Integer> ids = wfsLayerService.insertSLDStyles(wfsl.getId(), sldIds);
-            }
-        }
-    }
-
-    /**
-     * Check before maplayer insert that all data is valid for specific layer types
-     *
-     * @param params
-     * @param ml
-     * @throws ActionException
-     */
-    private void validateInsertLayer(final ActionParameters params, OskariLayer ml) throws ActionException {
-
-        if (!OskariLayer.TYPE_WFS.equals(ml.getType())) {
-            return;
-        }
-        if(params.getHttpParam(PARAM_JOB_TYPE) != null && params.getHttpParam(PARAM_JOB_TYPE).equals(OSKARI_FEATURE_ENGINE) ) {
-            try {
-
-                JSONArray feaconf = wfsParserConfigs.getFeatureTypeConfig(params.getHttpParam(PARAM_FEATURE_NAMESPACE) + ":" + params.getHttpParam(PARAM_FEATURE_ELEMENT));
-                if (feaconf == null) {
-                    feaconf = wfsParserConfigs.getFeatureTypeConfig("default");
-                }
-
-                if (feaconf == null) {
-                    throw new ActionException(ERROR_FE_PARSER_CONFIG_MISSING);
-                }
-            } catch (Exception e) {
-                if (e instanceof ActionException) {
-                    throw (ActionException) e;
-                } else {
-                    throw new ActionException(ERROR_FE_PARSER_CONFIG_MISSING, e);
-                }
-
-            }
-        }
-
-    }
-
     private boolean handleWMSSpecific(final ActionParameters params, OskariLayer ml, Set<String> systemCRSs) {
         // Do NOT modify the 'xslt' parameter
         HttpServletRequest request = params.getRequest();
@@ -577,22 +466,7 @@ public class SaveLayerHandler extends AbstractLayerAdminHandler {
     private void handleWFSSpecific(final ActionParameters params, OskariLayer ml, Set<String> systemCRSs) throws ActionException {
         // These are only in insert
         ml.setSrs_name(params.getHttpParam(PARAM_SRS_NAME, ml.getSrs_name()));
-        ml.setVersion(params.getHttpParam(PARAM_WFS_VERSION,ml.getVersion()));
-
-        // Put manual Refresh mode to attributes if true
-        JSONObject attributes = ml.getAttributes();
-        attributes.remove(PARAM_MANUAL_REFRESH);
-        if(ConversionHelper.getOnOffBoolean(params.getHttpParam(PARAM_MANUAL_REFRESH, "off"), false)){
-            JSONHelper.putValue(attributes, PARAM_MANUAL_REFRESH, true);
-            ml.setAttributes(attributes);
-        }
-        // Put resolveDepth mode to attributes if true (solves xlink:href links in GetFeature)
-        attributes = ml.getAttributes();
-        attributes.remove(PARAM_RESOLVE_DEPTH);
-        if(ConversionHelper.getOnOffBoolean(params.getHttpParam(PARAM_RESOLVE_DEPTH, "off"), false)){
-            JSONHelper.putValue(attributes, PARAM_RESOLVE_DEPTH, true);
-            ml.setAttributes(attributes);
-        }
+        ml.setVersion(params.getHttpParam(PARAM_VERSION, params.getHttpParam(PARAM_WFS_VERSION, ml.getVersion())));
 
         try {
             if (WFS3_0_0_VERSION.equals(ml.getVersion())) {

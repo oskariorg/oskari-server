@@ -12,6 +12,8 @@ import fi.nls.oskari.control.RestActionHandler;
 import fi.nls.oskari.domain.User;
 import fi.nls.oskari.domain.map.Feature;
 import fi.nls.oskari.domain.map.OskariLayer;
+import fi.nls.oskari.domain.map.wfs.WFSLayerAttributes;
+import fi.nls.oskari.domain.map.wfs.WFSLayerCapabilities;
 import fi.nls.oskari.domain.map.wfs.WFSLayerConfiguration;
 
 import fi.nls.oskari.map.geometry.ProjectionHelper;
@@ -110,12 +112,13 @@ public abstract class AbstractFeatureHandler extends RestActionHandler {
         OskariLayer layer = getLayer(jsonObject.optString("layerId"));
         String srsName = JSONHelper.getStringFromJSON(jsonObject, "srsName", "EPSG:3067");
         CoordinateReferenceSystem crs = CRS.decode(srsName);
-        WFSLayerConfiguration lc = getWFSConfiguration(layer.getId());
+        WFSLayerAttributes attrs = new WFSLayerAttributes(layer.getAttributes());
+        WFSLayerCapabilities caps = new WFSLayerCapabilities(layer.getCapabilities());
 
         feature.setLayerName(layer.getName());
-        feature.setNamespace(lc.getFeatureNamespace());
-        feature.setNamespaceURI(lc.getFeatureNamespaceURI());
-        feature.setGMLGeometryProperty(lc.getGMLGeometryProperty());
+        feature.setNamespace("oskari");
+        feature.setNamespaceURI(attrs.getNamespaceURL());
+        feature.setGMLGeometryProperty(caps.getGeometryAttribute());
         feature.setId(jsonObject.getString("featureId"));
 
         if(jsonObject.has("featureFields")) {
