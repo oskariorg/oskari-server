@@ -320,17 +320,8 @@ public class WFSLayerConfiguration {
         this.attrs = new WFSLayerAttributes(attributes);
     }
 
-    public void setAttributes(String attributes) {
-        // TODO: merge existing to prevent setter call order to break things
-        this.setAttributes(JSONHelper.createJSONObject(attributes));
-    }
-
     public void setCapabilities(JSONObject capabilities) {
         this.caps = new WFSLayerCapabilities(capabilities);
-    }
-    public void setCapabilities(String capabilities) {
-        // TODO: merge existing to prevent setter call order to break things
-        this.setCapabilities(JSONHelper.createJSONObject(capabilities));
     }
 
     public boolean isPublished() {
