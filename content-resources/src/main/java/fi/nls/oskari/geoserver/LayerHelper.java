@@ -53,14 +53,11 @@ public class LayerHelper {
         conf.setGMLGeometryProperty("geometry");
         conf.setGMLVersion("3.1.1");
         conf.setGML2Separator(false);
-        conf.setMaxFeatures(2000);
         conf.setGeometryType("2d");
         conf.setGetMapTiles(false);
         conf.setGetFeatureInfo(true);
         conf.setTileRequest(false);
         conf.setGetHighlightImage(true);
-
-        conf.setFeatureNamespaceURI("http://www.oskari.org");
 
         conf.setFeatureType("");
         conf.setGeometryNamespaceURI("");

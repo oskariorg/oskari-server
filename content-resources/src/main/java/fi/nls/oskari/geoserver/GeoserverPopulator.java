@@ -125,7 +125,7 @@ public class GeoserverPopulator {
             baseLayer.setInternal(true);
             baseLayer.setLocale(JSONHelper.createJSONObject("{ fi:{name:\"Omat paikat\"},sv:{name:\"My places\"},en:{name:\"My places\"}}"));
             baseLayer.setOpacity(50);
-            baseLayer.setAttributes(createMyplacesAttributes());
+            baseLayer.setAttributes(addMyplacesAttributes(createUserContentAttributes()));
         }
         // setup data producer/layergroup since original doesn't have one
         baseLayer.addDataprovider(LayerHelper.getDataprovider());
@@ -144,8 +144,14 @@ public class GeoserverPopulator {
         return baseLayer.getId();
     }
 
-    private static JSONObject createMyplacesAttributes() {
+    private static JSONObject createUserContentAttributes() {
         JSONObject attributes = new JSONObject();
+        JSONHelper.putValue(attributes, "maxFeatures", 2000);
+        JSONHelper.putValue(attributes, "namespaceURL", "http://www.oskari.org");
+        return attributes;
+    }
+
+    private static JSONObject addMyplacesAttributes(JSONObject attributes) {
         JSONObject data = new JSONObject();
         JSONHelper.putValue(attributes, "data", data);
 
@@ -186,6 +192,7 @@ public class GeoserverPopulator {
             baseLayer.setInternal(true);
             baseLayer.setLocale(JSONHelper.createJSONObject("{ fi:{name:\"Analyysitaso\"},sv:{name:\"Analys\"},en:{name:\"Analyse\"}}"));
             baseLayer.setOpacity(50);
+            baseLayer.setAttributes(createUserContentAttributes());
         }
         // setup data producer/layergroup since original doesn't have one
         baseLayer.addDataprovider(LayerHelper.getDataprovider());
@@ -216,6 +223,7 @@ public class GeoserverPopulator {
             baseLayer.setInternal(true);
             baseLayer.setLocale(JSONHelper.createJSONObject("{ fi:{name:\"Omat aineistot\"},sv:{name:\"User layers\"},en:{name:\"User layers\"}}"));
             baseLayer.setOpacity(80);
+            baseLayer.setAttributes(createUserContentAttributes());
         }
         // setup data producer/layergroup since original doesn't have one
         baseLayer.addDataprovider(LayerHelper.getDataprovider());
