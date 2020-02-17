@@ -136,14 +136,14 @@ public class GeoserverPopulator {
         return baseLayer.getId();
     }
 
-    private static JSONObject createUserContentAttributes() {
+    public static JSONObject createUserContentAttributes() {
         JSONObject attributes = new JSONObject();
         JSONHelper.putValue(attributes, "maxFeatures", 2000);
         JSONHelper.putValue(attributes, "namespaceURL", "http://www.oskari.org");
         return attributes;
     }
 
-    private static JSONObject addMyplacesAttributes(JSONObject attributes) {
+    public static JSONObject addMyplacesAttributes(JSONObject attributes) {
         JSONObject data = new JSONObject();
         JSONHelper.putValue(attributes, "data", data);
 
