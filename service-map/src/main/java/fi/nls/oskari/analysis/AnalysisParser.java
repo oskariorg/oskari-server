@@ -171,30 +171,11 @@ public class AnalysisParser {
 
         //------------------LAYER_UNION -----------------------
         if (LAYER_UNION.equals(analysisMethod)) {
-                JSONArray sids = analyseMethodParams.optJSONArray(JSON_KEY_LAYERS);
-                // Loop merge layers - get analysis ids
-                List<Long> ids = new ArrayList<Long>();
-                List<String> mergelays = new ArrayList<String>();
-                if (sids == null) {
-                    throw new ServiceException("merge layers missing");
-                } else {
-                    try {
-                        for (int i = 0; i < sids.length(); i++) {
-                            Long aid = this.getAnalysisId(sids.getString(i));
-                            if (aid > 0)
-                            {
-                                ids.add(aid);
-                                mergelays.add(sids.getString(i));
-                            }
-                        }
-                    } catch (JSONException e) {
-                        throw new ServiceException("Merge layers missing.");
-                    }
-                    // Merge analysis Ids
-                    analysisLayer.setMergeAnalysisIds(ids);
-                    // Merge analysis Layers
-                    analysisLayer.setMergeAnalysisLayers(mergelays);
-                }
+            JSONArray layerIds = analyseMethodParams.optJSONArray(JSON_KEY_LAYERS);
+            if (layerIds == null) {
+                throw new ServiceException(getRequiredErrorMsgFor(JSON_KEY_LAYERS));
+            }
+            createUnionAnalyseParams(layerIds, analysisLayer);
         }
         //------------------ BUFFER -----------------------
         else if (BUFFER.equals(analysisMethod)) {
@@ -547,6 +528,30 @@ public class AnalysisParser {
         }
 
         return analysisLayer;
+    }
+
+    private void createUnionAnalyseParams(JSONArray layerIds, AnalysisLayer layer) throws ServiceException {
+        if (layerIds == null) {
+            throw new ServiceException(getRequiredErrorMsgFor(JSON_KEY_LAYERS));
+        }
+        // Loop merge layers - get analysis ids
+        List<Long> ids = new ArrayList<>();
+        List<String> mergelays = new ArrayList<>();
+        for (int i = 0; i < layerIds.length(); i++) {
+            String id = layerIds.optString(i);
+            String userContentId = getUserContentAnalysisInputId(id);
+            if (userContentId == null) {
+                continue;
+            }
+
+            ids.add(ConversionHelper.getLong(userContentId, -1));
+            mergelays.add(id);
+        }
+
+        // Merge analysis Ids
+        layer.setMergeAnalysisIds(ids);
+        // Merge analysis Layers
+        layer.setMergeAnalysisLayers(mergelays);
     }
 
     /** Returns the final wps method id
@@ -1435,20 +1440,6 @@ public class AnalysisParser {
             return sids[sids.length-1];
         }
         return null;
-    }
-    private Long getAnalysisId(String sid) {
-
-        long id = 0;
-        try {
-            String sids[] = sid.split("_");
-            if (sids.length > 1) {
-
-               id= Long.parseLong( sids[sids.length-1]);
-            }
-        } catch (Exception e) {
-           id=0;
-        }
-        return id;
     }
 
     /**
