@@ -3,7 +3,8 @@ package fi.nls.oskari.wfs;
 import fi.mml.map.mapwindow.util.OskariLayerWorker;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.domain.map.wfs.WFS2FeatureType;
-import fi.nls.oskari.domain.map.wfs.WFSLayerConfiguration;
+import fi.nls.oskari.domain.map.wfs.WFSLayerAttributes;
+import fi.nls.oskari.domain.map.wfs.WFSLayerCapabilities;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.geometry.ProjectionHelper;
@@ -569,6 +570,8 @@ public class GetGtWFSCapabilities {
         final OskariLayer oskariLayer = new OskariLayer();
         oskariLayer.setType(OskariLayer.TYPE_WFS);
         oskariLayer.setUrl(rurl);
+        oskariLayer.setUsername(user);
+        oskariLayer.setPassword(pw);
         // THIS IS ON PURPOSE: min -> max, max -> min
         oskariLayer.setMaxScale(1d);
         oskariLayer.setMinScale(1500000d);
@@ -587,30 +590,29 @@ public class GetGtWFSCapabilities {
 
         try {
 
+            //FIXME  merge oskarilayer and wfsLayer
+            WFSCapabilities lc = null;
+            if (WFS2_0_0_VERSION.equals(version)) {
+                lc = GetGtWFSCapabilities.layerToWfs20LayerConfiguration(fea2type);
+            } else if (fea2type != null) {
+                // WFS 1.x  Geotools parse FAILED
+                lc = GetGtWFSCapabilities.layerToWfs1xLayerConfiguration(fea2type);
+            } else if (sft != null) {
+                // WFS 1.x  Geotools parse OK
+                lc = GetGtWFSCapabilities.layerToWfsLayerConfiguration(sft, typeName);
+            }
+            if (lc == null) {
+                throw new RuntimeException("Couldn't parse wfs capabilities");
+            }
+            capa.putOpt(WFSLayerCapabilities.KEY_GEOMETRYFIELD, lc.geometryfield);
+            oskariLayer.addAttribute(WFSLayerAttributes.KEY_NAMESPACEURL, lc.namespaceURL);
+
+            // NOTE! Important to remove id since this is at template
             JSONObject json = FORMATTER.getJSON(oskariLayer, PropertyUtil.getDefaultLanguage(), false, null);
             // add/modify admin specific fields
             OskariLayerWorker.modifyCommonFieldsForEditing(json, oskariLayer);
             // for admin ui only
             JSONHelper.putValue(json, "title", title);
-            //FIXME  merge oskarilayer and wfsLayer
-            WFSLayerConfiguration lc = null;
-            if (WFS2_0_0_VERSION.equals(version)) {
-                if (fea2type != null) {
-                    lc = GetGtWFSCapabilities.layerToWfs20LayerConfiguration(fea2type, rurl, user, pw);
-                }
-            } else if (fea2type != null) {
-                // WFS 1.x  Geotools parse FAILED
-                lc = GetGtWFSCapabilities.layerToWfs1xLayerConfiguration(fea2type, rurl, user, pw);
-            } else if (sft != null) {
-                // WFS 1.x  Geotools parse OK
-                lc = GetGtWFSCapabilities.layerToWfsLayerConfiguration(sft, typeName, rurl, user, pw);
-            }
-            if(lc == null) {
-                throw new RuntimeException("Couldn't parse wfs capabilities");
-            }
-            JSONHelper.putValue(json.getJSONObject("admin"), "passthrough", JSONHelper.createJSONObject(lc.getAsJSON()));
-
-            // NOTE! Important to remove id since this is at template
             json.remove("id");
             // ---------------
             return json;
@@ -659,50 +661,24 @@ public class GetGtWFSCapabilities {
      * @return WFSLayerConfiguration  wfs feature type properties for wfs service and oskari rendering
      * @throws fi.nls.oskari.service.ServiceException
      */
-    public static WFSLayerConfiguration layerToWfsLayerConfiguration(SimpleFeatureType schema, String typeName, String rurl,
-                                                                     String user, String pw)
+    public static WFSCapabilities layerToWfsLayerConfiguration(SimpleFeatureType schema, String typeName)
             throws ServiceException {
 
-        final WFSLayerConfiguration lc = new WFSLayerConfiguration();
-        lc.setDefaults();
-
-
-        lc.setURL(rurl);
-        lc.setUsername(user);
-        lc.setPassword(pw);
-
-        lc.setLayerName(typeName);
-
-
-        try {
-
-            String[] nameParts = schema.getName().getLocalPart().split(schema.getName().getSeparator());
-            String xmlns = "";
-            String name = nameParts[0];
-            if (nameParts.length > 1) {
-                xmlns = nameParts[0];
-                name = nameParts[1];
-            }
-
-            lc.setLayerId("layer_" + name);
-
-            // fails if doesn't have a geometry column
-            lc.setGMLGeometryProperty(getFeaturetypeGeometryName(schema));
-
-            //TODO add srs check support later
-            // seems this is not needed here since it isn't used,
-            // but could be used for checking for valid crs so leaving it in code
-            // if (schema.getCoordinateReferenceSystem() != null)
-            // lc.setSRSName("EPSG:"+Integer.toString(CRS.lookupEpsgCode(schema.getCoordinateReferenceSystem(), true)));
-
-            lc.setFeatureNamespaceURI(schema.getName().getNamespaceURI());
-
-            return lc;
-        } catch (Exception ex) {
-            log.warn(ex, "Couldn't get wfs feature source data");
-            throw new ServiceException(ex.getMessage());
+        if (schema == null) {
+            return null;
         }
 
+        //TODO add srs check support later
+        // seems this is not needed here since it isn't used,
+        // but could be used for checking for valid crs so leaving it in code
+        // if (schema.getCoordinateReferenceSystem() != null)
+        // lc.setSRSName("EPSG:"+Integer.toString(CRS.lookupEpsgCode(schema.getCoordinateReferenceSystem(), true)));
+
+        final WFSCapabilities props = new WFSCapabilities();
+        props.featureType = typeName;
+        props.namespaceURL = schema.getName().getNamespaceURI();
+        props.geometryfield = getFeaturetypeGeometryName(schema);
+        return props;
     }
 
     /**
@@ -712,42 +688,17 @@ public class GetGtWFSCapabilities {
      * @return WFSLayerConfiguration  wfs feature type properties for wfs service and oskari rendering
      * @throws fi.nls.oskari.service.ServiceException
      */
-    public static WFSLayerConfiguration layerToWfs20LayerConfiguration(WFS2FeatureType featype, String rurl, String user,
-                                                                       String pw)
+    public static WFSCapabilities layerToWfs20LayerConfiguration(WFS2FeatureType featype)
             throws ServiceException {
-
-        final WFSLayerConfiguration lc = new WFSLayerConfiguration();
-        lc.setWFS20Defaults();
-        lc.setURL(rurl);
-        lc.setUsername(user);
-        lc.setPassword(pw);
-        lc.setLayerName(featype.getName());
-
-        try {
-
-            String[] nameParts = featype.getName().split(":");
-            String xmlns = "";
-            String name = nameParts[0];
-            if (nameParts.length > 1) {
-                xmlns = nameParts[0];
-                name = nameParts[1];
-            }
-
-            lc.setLayerId("layer_" + name);
-            if (featype.getNsUri() != null) {
-                lc.setFeatureNamespaceURI(featype.getNsUri());
-            }
-            String geomName = featype.getGeomPropertyName();
-            if (geomName != null) {
-                lc.setGMLGeometryProperty(featype.getGeomPropertyName());
-            }
-
-            return lc;
-        } catch (Exception ex) {
-            log.warn(ex, "Couldn't get wfs feature source data");
-            throw new ServiceException(ex.getMessage());
+        if (featype == null) {
+            return null;
         }
 
+        final WFSCapabilities props = new WFSCapabilities();
+        props.featureType = featype.getName();
+        props.namespaceURL = featype.getNsUri();
+        props.geometryfield = featype.getGeomPropertyName();
+        return props;
     }
 
     /**
@@ -757,54 +708,18 @@ public class GetGtWFSCapabilities {
      * @return WFSLayerConfiguration  wfs feature type properties for wfs service and oskari rendering
      * @throws fi.nls.oskari.service.ServiceException
      */
-    public static WFSLayerConfiguration layerToWfs1xLayerConfiguration(WFS2FeatureType featype, String rurl, String user,
-                                                                       String pw)
+    public static WFSCapabilities layerToWfs1xLayerConfiguration(WFS2FeatureType featype)
             throws ServiceException {
 
-        final WFSLayerConfiguration lc = new WFSLayerConfiguration();
-        lc.setDefaults();
-
-
-        lc.setURL(rurl);
-        lc.setUsername(user);
-        lc.setPassword(pw);
-
-        lc.setLayerName(featype.getName());
-
-
-        try {
-
-            String[] nameParts = featype.getName().split(":");
-            String xmlns = "";
-            String name = nameParts[0];
-            if (nameParts.length > 1) {
-                xmlns = nameParts[0];
-                name = nameParts[1];
-            }
-
-            lc.setLayerId("layer_" + name);
-            String geomName = featype.getGeomPropertyName();
-            if (geomName != null) {
-                lc.setGMLGeometryProperty(geomName);
-            }
-
-            // Use oskari front srs
-            //  lc.setSRSName(featype.getDefaultSrs());
-
-
-            //lc.setGMLVersion();
-            //lc.setMaxFeatures(data.getMaxFeatures());
-            if (featype.getNsUri() != null) {
-                lc.setFeatureNamespaceURI(featype.getNsUri());
-            }
-
-            return lc;
-        } catch (Exception ex) {
-            log.warn(ex, "Couldn't get wfs 1.x.0 feature source data");
-            //return null;
-            throw new ServiceException(ex.getMessage());
+        if (featype == null) {
+            return null;
         }
 
+        final WFSCapabilities props = new WFSCapabilities();
+        props.featureType = featype.getName();
+        props.namespaceURL = featype.getNsUri();
+        props.geometryfield = featype.getGeomPropertyName();
+        return props;
     }
 
 

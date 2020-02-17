@@ -56,6 +56,9 @@ import java.util.*;
  * }
  */
 public class WFSLayerAttributes {
+    public static final String KEY_NAMESPACEURL = "namespaceURL";
+    public static final String KEY_MAXFEATURES = "maxFeatures";
+    public static final String KEY_WPS_PARAMS = "wpsParams";
 
     private Map<String, List<String>> params = new HashMap<>();
     private JSONObject locales = null;
