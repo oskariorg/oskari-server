@@ -773,10 +773,24 @@ public class AnalysisParser {
         WFSLayerAttributes attrs = new WFSLayerAttributes(layer.getAttributes());
         params.setMaxFeatures(String.valueOf(attrs.getMaxFeatures()));
         params.setVersion(layer.getVersion());
-        params.setXmlns("xmlns:oskari=\"" + attrs.getNamespaceURL() + "\"");
+        params.setXmlns("xmlns:" + getNamespacePrefix(layer) + "=\"" + attrs.getNamespaceURL() + "\"");
         params.setGeom(getGeometryField(layer));
     }
 
+    public String getNamespacePrefix(OskariLayer layer) {
+        if (layer == null) {
+            return "oskari";
+        }
+        String name = layer.getName();
+        if (name == null || name.isEmpty()) {
+            return getNamespacePrefix(null);
+        }
+        String[] split = name.split(":");
+        if (split.length == 1) {
+            return getNamespacePrefix(null);
+        }
+        return split[1];
+    }
     /**
      * Parses AGGREGATE method parameters for WPS execute xml variables
      *
@@ -894,7 +908,7 @@ public class AnalysisParser {
             // Variable values of  input 2
             method.setHref2(baseUrl.replace("&", "&amp;") + String.valueOf(lc2.getId()));
             method.setTypeName2(lc2.getName());
-            method.setXmlns2("xmlns:oskari=\"" + getNamespaceURL(lc2) + "\"");
+            method.setXmlns2("xmlns:" + getNamespacePrefix(lc2) + "=\"" + getNamespaceURL(lc2) + "\"");
             method.setGeom2(getGeometryField(lc2));
             method.setGeojson2(gjson2);
 
@@ -937,7 +951,7 @@ public class AnalysisParser {
             // Variable values of  input 2
             method.setHref2(baseUrl.replace("&", "&amp;") + String.valueOf(lc2.getId()));
             method.setTypeName2(lc2.getName());
-            method.setXmlns2("xmlns:oskari=\"" + getNamespaceURL(lc2) + "\"");
+            method.setXmlns2("xmlns:" + getNamespacePrefix(lc2) + "=\"" + getNamespaceURL(lc2) + "\"");
             method.setGeom2(getGeometryField(lc2));
             method.setGeojson2(gjson2);
 
@@ -997,7 +1011,7 @@ public class AnalysisParser {
             // Variable values of  input 2
             method.setHref2(baseUrl.replace("&", "&amp;") + String.valueOf(lc2.getId()));
             method.setTypeName2(lc2.getName());
-            method.setXmlns2("xmlns:oskari=\"" + getNamespaceURL(lc2) + "\"");
+            method.setXmlns2("xmlns:" + getNamespacePrefix(lc2) + "=\"" + getNamespaceURL(lc2) + "\"");
             method.setGeom2(geometryField);
             method.setGeojson2(gjson2);
 
@@ -1050,7 +1064,7 @@ public class AnalysisParser {
             baseUrl = baseUrl.replace("&", "&amp;");
             method.setHref2(baseUrl + String.valueOf(lc2.getId()));
             method.setTypeName2(lc2.getName());
-            method.setXmlns2("xmlns:oskari=\"" + getNamespaceURL(lc2) + "\"");
+            method.setXmlns2("xmlns:" + getNamespacePrefix(lc2) + "=\"" + getNamespaceURL(lc2) + "\"");
 
             method.setGeom2(getGeometryField(lc2));
             final JSONObject params = json.getJSONObject(JSON_KEY_METHODPARAMS);
