@@ -13,7 +13,6 @@ import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.util.XmlHelper;
-import fi.nls.oskari.wfs.util.WFSParserConfigs;
 import org.geotools.data.DataStore;
 import org.geotools.data.DataStoreFinder;
 import org.geotools.data.wfs.WFSDataStore;
@@ -186,7 +185,6 @@ public class GetGtWFSCapabilities {
     public static Map<String, Object> getGtDataStoreCapabilities_2_x(final String rurl, final String version,
                                                                      String user, String pw, String currentCrs)
                                                                         throws ServiceException {
-        WFSParserConfigs parseConfigs = new WFSParserConfigs();
         Map<String, Object> capabilities = new HashMap<String, Object>();
         try {
             // GetCapabilities request
@@ -223,36 +221,23 @@ public class GetGtWFSCapabilities {
                     if (titleval == null) {
                         titleval = nameval;
                     }
-                    // Loop configs
-                    JSONArray feaconffa = parseConfigs.getFeatureTypeConfig(nameval);
-                    int count = 1;
-                    if (feaconffa != null) {
-                        count = feaconffa.length();
-                    }
                     ArrayList<WFS2FeatureType> lft = new ArrayList<WFS2FeatureType>();
-                    for (int k = 0; k < count; k++) {
-                        JSONObject feaconf = JSONHelper.getJSONObject(feaconffa, k);
-
-                        WFS2FeatureType tmpft = new WFS2FeatureType();
-                        tmpft.setName(nameval);
-                        tmpft.setTitle(titleval);
-                        tmpft.setDefaultSrs(srsval);
-                        if (otherSrsval.length > 0) {
-                            tmpft.setOtherSrs(otherSrsval);
-                        }
-                        final String extraAppend = isCurrentCRSinCapabilities(tmpft, currentCrs);
-                        // Try to parse describe feature type response of wfs 2.0.0 service at least namespaceUri and geometry property
-                        try {
-                            parseWfs2xDescribeFeatureType(tmpft, IOHelper.getURL(getDescribeFeatureTypeUrl(rurl, version, nameval), user, pw));
-                        } catch (Exception e) {
-                            addLayerWithError(errorTypes, nameval, titleval, e.getMessage());
-                            continue;
-                        }
-                        // Append parser type to title
-                        parserConfigType2Title(feaconf, tmpft, parseConfigs, extraAppend);
-                        lft.add(tmpft);
-                        featuretypes.put(nameval, lft);
+                    WFS2FeatureType tmpft = new WFS2FeatureType();
+                    tmpft.setName(nameval);
+                    tmpft.setTitle(titleval);
+                    tmpft.setDefaultSrs(srsval);
+                    if (otherSrsval.length > 0) {
+                        tmpft.setOtherSrs(otherSrsval);
                     }
+                    // Try to parse describe feature type response of wfs 2.0.0 service at least namespaceUri and geometry property
+                    try {
+                        parseWfs2xDescribeFeatureType(tmpft, IOHelper.getURL(getDescribeFeatureTypeUrl(rurl, version, nameval), user, pw));
+                    } catch (Exception e) {
+                        addLayerWithError(errorTypes, nameval, titleval, e.getMessage());
+                        continue;
+                    }
+                    lft.add(tmpft);
+                    featuretypes.put(nameval, lft);
                 }
             }
             List<String> formats = parseGetFeatureFormats(doc);
@@ -1027,38 +1012,6 @@ public class GetGtWFSCapabilities {
             log.debug(ex, "WFS 1.1.0 DescribeFeaturetype parse failed ");
         }
         return ft;
-    }
-
-    /**
-     * Set parser config items to featuretype and parser type information to layer title
-     *
-     * @param ft            featuretype items
-     * @param parserConfigs parser configurations in oskari_wfs_parse_config table
-     */
-    public static void parserConfigType2Title(JSONObject feaconf, WFS2FeatureType ft, WFSParserConfigs parserConfigs,
-                                              final String extraApped) {
-
-        String type = "Unknown";
-        String title = "Unknown";
-        if (feaconf == null) {
-            // Get default parser config
-            JSONArray feaconffa = parserConfigs.getDefaultFeatureTypeConfig(ft.getNsUri(), ft.getName());
-            feaconf = JSONHelper.getJSONObject(feaconffa, 0);
-        }
-
-        if (feaconf != null) {
-            type = JSONHelper.getStringFromJSON(feaconf, "type", "Default Path");
-            title = JSONHelper.getStringFromJSON(feaconf, "title", "Parser");
-            ft.setTemplateType(type);
-            ft.setResponseTemplate(JSONHelper.getStringFromJSON(feaconf, "response_template", null));
-            ft.setRequestTemplate(JSONHelper.getStringFromJSON(feaconf, "request_template", null));
-            JSONObject pconf = JSONHelper.getJSONObject(feaconf, "parse_config");
-            if (pconf != null) {
-                ft.setParseConfig(pconf.toString());
-            }
-        }
-        ft.setTitle(ft.getTitle() + " (" + type + " " + title + " )" + extraApped);
-
     }
 
     /**
