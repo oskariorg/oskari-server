@@ -310,9 +310,8 @@ public class AnalysisParser {
                     this.parseFilter(lc, filter1, analysisLayer
                             .getInputAnalysisId(), analysisLayer.getInputCategoryId(), analysisLayer.getInputUserdataId()));
             // WFS Query properties
-            WFSLayerCapabilities caps = new WFSLayerCapabilities(lc.getCapabilities());
             analysisLayer.getAnalysisMethodParams().setProperties(
-                    this.parseProperties(analysisLayer.getFields(), "oskari", caps.getGeometryAttribute()));
+                    this.parseProperties(analysisLayer.getFields(), "oskari", getGeometryField(lc)));
         }
         //------------------ ZONESECTOR ------------------------------------------
         else if (ZONESECTOR.equals(analysisMethod)) {
@@ -334,9 +333,8 @@ public class AnalysisParser {
                     this.parseFilter(lc, filter1, analysisLayer
                             .getInputAnalysisId(), analysisLayer.getInputCategoryId(), analysisLayer.getInputUserdataId()));
             // WFS Query properties
-            WFSLayerCapabilities caps = new WFSLayerCapabilities(lc.getCapabilities());
             analysisLayer.getAnalysisMethodParams().setProperties(
-                    this.parseProperties(analysisLayer.getFields(), "oskari", caps.getGeometryAttribute()));
+                    this.parseProperties(analysisLayer.getFields(), "oskari", getGeometryField(lc)));
         }
         //------------------ INTERSECT -----------------------
         else if (INTERSECT.equals(analysisMethod)) {
@@ -391,9 +389,8 @@ public class AnalysisParser {
                         .getAnalysisInputId(params), null, null));
             }
             // WFS Query properties
-            WFSLayerCapabilities caps = new WFSLayerCapabilities(lc.getCapabilities());
             analysisLayer.getAnalysisMethodParams().setProperties(
-                    this.parseProperties(analysisLayer.getFields(), "oskari", caps.getGeometryAttribute()));
+                    this.parseProperties(analysisLayer.getFields(), "oskari", getGeometryField(lc)));
 
             analysisLayer.setAnalysisMethodParams(method);
         }
@@ -450,9 +447,8 @@ public class AnalysisParser {
                         .getAnalysisInputId(params), null, null));
             }
             // WFS Query properties
-            WFSLayerCapabilities caps = new WFSLayerCapabilities(lc.getCapabilities());
             method.setProperties(this.parseProperties(
-                    analysisLayer.getFields(), "oskari", caps.getGeometryAttribute()));
+                    analysisLayer.getFields(), "oskari", getGeometryField(lc)));
 
             analysisLayer.setAnalysisMethodParams(method);
         }
@@ -507,9 +503,8 @@ public class AnalysisParser {
                         .getAnalysisInputId(params), null, null));
             }
             // WFS Query properties
-            WFSLayerCapabilities caps = new WFSLayerCapabilities(lc.getCapabilities());
             method.setProperties(
-                    this.parseProperties(analysisLayer.getFields(), "oskari", caps.getGeometryAttribute()));
+                    this.parseProperties(analysisLayer.getFields(), "oskari", getGeometryField(lc)));
 
             analysisLayer.setAnalysisMethodParams(method);
         }
@@ -761,12 +756,12 @@ public class AnalysisParser {
         return method;
     }
 
-    private String getWPSParams(OskariLayer layer) {
-        WFSLayerAttributes attr = new WFSLayerAttributes(layer.getAttributes());
-        return attr.getWpsParams();
-    }
-
     private void parseCommonParams(OskariLayer layer, AnalysisMethodParams params, String baseUrl) {
+        params.setOutputFormat(DEFAULT_OUTPUT_FORMAT);
+        params.setSrsName(getSRS(layer));
+        if(layer == null) {
+            return;
+        }
         params.setLayer_id(layer.getId());
         params.setServiceUrl(layer.getUrl());
         params.setServiceUser(layer.getUsername());
@@ -776,13 +771,10 @@ public class AnalysisParser {
         params.setTypeName(layer.getName());
 
         WFSLayerAttributes attrs = new WFSLayerAttributes(layer.getAttributes());
-        WFSLayerCapabilities caps = new WFSLayerCapabilities(layer.getCapabilities());
         params.setMaxFeatures(String.valueOf(attrs.getMaxFeatures()));
-        params.setSrsName(layer.getSrs_name());
-        params.setOutputFormat(DEFAULT_OUTPUT_FORMAT);
         params.setVersion(layer.getVersion());
         params.setXmlns("xmlns:oskari=\"" + attrs.getNamespaceURL() + "\"");
-        params.setGeom(caps.getGeometryAttribute());
+        params.setGeom(getGeometryField(layer));
     }
 
     /**
@@ -902,10 +894,8 @@ public class AnalysisParser {
             // Variable values of  input 2
             method.setHref2(baseUrl.replace("&", "&amp;") + String.valueOf(lc2.getId()));
             method.setTypeName2(lc2.getName());
-            WFSLayerAttributes attrs = new WFSLayerAttributes(lc2.getAttributes());
-            WFSLayerCapabilities caps = new WFSLayerCapabilities(lc2.getCapabilities());
-            method.setXmlns2("xmlns:oskari=\"" + attrs.getNamespaceURL() + "\"");
-            method.setGeom2(caps.getGeometryAttribute());
+            method.setXmlns2("xmlns:oskari=\"" + getNamespaceURL(lc2) + "\"");
+            method.setGeom2(getGeometryField(lc2));
             method.setGeojson2(gjson2);
 
 
@@ -944,13 +934,11 @@ public class AnalysisParser {
         try {
 
             parseMethodParams( method, lc, json, gjson, baseUrl);
-            WFSLayerAttributes attrs = new WFSLayerAttributes(lc2.getAttributes());
-            WFSLayerCapabilities caps = new WFSLayerCapabilities(lc2.getCapabilities());
             // Variable values of  input 2
             method.setHref2(baseUrl.replace("&", "&amp;") + String.valueOf(lc2.getId()));
             method.setTypeName2(lc2.getName());
-            method.setXmlns2("xmlns:oskari=\"" + attrs.getNamespaceURL() + "\"");
-            method.setGeom2(caps.getGeometryAttribute());
+            method.setXmlns2("xmlns:oskari=\"" + getNamespaceURL(lc2) + "\"");
+            method.setGeom2(getGeometryField(lc2));
             method.setGeojson2(gjson2);
 
 
@@ -1005,14 +993,12 @@ public class AnalysisParser {
                 catch (Exception e){
                 }
             }
-
-            WFSLayerAttributes attrs = new WFSLayerAttributes(lc2.getAttributes());
-            WFSLayerCapabilities caps = new WFSLayerCapabilities(lc2.getCapabilities());
+            String geometryField = getGeometryField(lc2);
             // Variable values of  input 2
             method.setHref2(baseUrl.replace("&", "&amp;") + String.valueOf(lc2.getId()));
             method.setTypeName2(lc2.getName());
-            method.setXmlns2("xmlns:oskari=\"" + attrs.getNamespaceURL() + "\"");
-            method.setGeom2(caps.getGeometryAttribute());
+            method.setXmlns2("xmlns:oskari=\"" + getNamespaceURL(lc2) + "\"");
+            method.setGeom2(geometryField);
             method.setGeojson2(gjson2);
 
 
@@ -1026,7 +1012,7 @@ public class AnalysisParser {
             String [] layer2_properties = (params.getJSONArray("featuresB1").toString().replace("[","").replace("]","").replace("\"","")).split(",");
             // WFS Query properties
             method.setProperties2(this.parseProperties(
-                    Arrays.asList(layer2_properties), "oskari", caps.getGeometryAttribute()));
+                    Arrays.asList(layer2_properties), "oskari", geometryField));
 
         } catch (Exception e) {
             throw new ServiceException("Spatial-join-statistics  analysis parameters missing.");
@@ -1064,11 +1050,9 @@ public class AnalysisParser {
             baseUrl = baseUrl.replace("&", "&amp;");
             method.setHref2(baseUrl + String.valueOf(lc2.getId()));
             method.setTypeName2(lc2.getName());
-            WFSLayerAttributes attrs = new WFSLayerAttributes(lc2.getAttributes());
-            WFSLayerCapabilities caps = new WFSLayerCapabilities(lc2.getCapabilities());
-            method.setXmlns2("xmlns:oskari=\"" + attrs.getNamespaceURL() + "\"");
+            method.setXmlns2("xmlns:oskari=\"" + getNamespaceURL(lc2) + "\"");
 
-            method.setGeom2(caps.getGeometryAttribute());
+            method.setGeom2(getGeometryField(lc2));
             final JSONObject params = json.getJSONObject(JSON_KEY_METHODPARAMS);
             Object no_data = params.opt(JSON_KEY_NO_DATA);
             if (no_data != null) {
@@ -1279,11 +1263,40 @@ public class AnalysisParser {
         }
 
         // Build filter
-        WFSLayerCapabilities caps = new WFSLayerCapabilities(lc.getCapabilities());
-        final String wfs_filter = WFSFilterBuilder.parseWfsFilter(filter_js,
-                lc.getSrs_name(), caps.getGeometryAttribute());
+        return WFSFilterBuilder.parseWfsFilter(filter_js,
+                getSRS(lc), getGeometryField(lc));
+    }
 
-        return wfs_filter;
+    private String getNamespaceURL(OskariLayer layer) {
+        if (layer != null) {
+            WFSLayerAttributes attr = new WFSLayerAttributes(layer.getAttributes());
+            return attr.getNamespaceURL();
+        }
+        return "http://oskari.org";
+    }
+    private String getWPSParams(OskariLayer layer) {
+        if (layer != null) {
+            WFSLayerAttributes attr = new WFSLayerAttributes(layer.getAttributes());
+            return attr.getWpsParams();
+        }
+        return null;
+    }
+
+    private String getSRS(OskariLayer layer) {
+        if (layer != null) {
+            return layer.getSrs_name();
+        }
+        // feature user has drawn
+        return PropertyUtil.get("oskari.native.srs", "EPSG:3857");
+    }
+
+    private String getGeometryField(OskariLayer layer) {
+        if (layer != null) {
+            WFSLayerCapabilities caps = new WFSLayerCapabilities(layer.getCapabilities());
+            return caps.getGeometryAttribute();
+        }
+        // feature user has drawn
+        return "geometry";
     }
 
     private String parseProperties(List<String> props, String ns,
