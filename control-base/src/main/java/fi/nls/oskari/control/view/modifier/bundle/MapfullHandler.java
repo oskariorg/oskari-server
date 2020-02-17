@@ -549,16 +549,10 @@ public class MapfullHandler extends BundleHandler {
         if (plugin == null) {
             return;
         }
-        try {
-            JSONObject config = plugin.getJSONObject(KEY_CONFIG);
-            if(config != null && config.has(KEY_CENTER_MAP_AUTOMATICALLY)) {
-                config.remove(KEY_CENTER_MAP_AUTOMATICALLY);
-            }
-        } catch (JSONException jsonex) {
-            LOGGER.error("Problem trying to modify "
-                    + PLUGIN_MYLOCATION + " " + KEY_CENTER_MAP_AUTOMATICALLY + ".", jsonex);
+        JSONObject config = plugin.optJSONObject(KEY_CONFIG);
+        if(config != null && config.has(KEY_CENTER_MAP_AUTOMATICALLY)) {
+            config.remove(KEY_CENTER_MAP_AUTOMATICALLY);
         }
-
     }
 
     private void removePlugin(final String pluginClassName,

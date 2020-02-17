@@ -49,10 +49,8 @@
         <fi.nls.oskari.service.version>${project.version}</fi.nls.oskari.service.version>
 
         <spring.version>4.3.25.RELEASE</spring.version>
-        <!-- saml 1.0.3.RELEASE uses security 4.2.5, check saml-extension for upgrades before updating security
-            Tested with 4.2.6.
-        -->
         <spring-security.version>4.2.13.RELEASE</spring-security.version>
+        <spring.session.version>1.3.5.RELEASE</spring.session.version>
 
         <javax.servlet.version>3.1.0</javax.servlet.version>
         <javax.servlet.jsp.version>2.0</javax.servlet.jsp.version>
@@ -499,10 +497,10 @@
                 </exclusions>
             </dependency>
             <dependency>
-								<groupId>org.springframework.security</groupId>
-								<artifactId>spring-security-core</artifactId>
-								<version>${spring-security.version}</version>
-								<exclusions>
+                <groupId>org.springframework.security</groupId>
+                <artifactId>spring-security-core</artifactId>
+                <version>${spring-security.version}</version>
+                <exclusions>
                     <!-- exclude aopalliance
                     Reason: Same classes are included in spring-aop (causing conflict if we have both)
                     -->
@@ -511,7 +509,17 @@
                         <artifactId>aopalliance</artifactId>
                     </exclusion>
                 </exclusions>
-						</dependency>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.session</groupId>
+                <artifactId>spring-session</artifactId>
+                <version>${spring.session.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.session</groupId>
+                <artifactId>spring-session-data-redis</artifactId>
+                <version>${spring.session.version}</version>
+            </dependency>
             <dependency>
                 <groupId>xerces</groupId>
                 <artifactId>xercesImpl</artifactId>
