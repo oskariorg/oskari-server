@@ -199,8 +199,19 @@ public abstract class AnalysisMethodParams {
         this.typeName = typeName;
     }
 
+    public String getFeatureElement() {
+        String name = getTypeName();
+        if (name == null) {
+            return null;
+        }
+        String[] split = name.split(":");
+        if (split.length == 1) {
+            return split[0];
+        }
+        return split[1];
+    }
     public String getLocalTypeName() {
-        return localTypeName;
+        return getFeatureElement();
     }
 
     public void setLocalTypeName(String localTypeName) {

@@ -107,12 +107,6 @@ public class LayerAdminHandler extends AbstractLayerAdminHandler {
         try {
             mapLayerService.delete(id);
 
-            // TODO: this will be made unnecessary when transport is cleaned out
-            if (OskariLayer.TYPE_WFS.equals(ml.getType())) {
-                // needed only for cleaning layer from portti_wfs_layer when wfs layer is deleted
-                ServiceFactory.getWfsLayerService().delete(id);
-            }
-
             MapLayerPermissionsHelper.removePermissions(id);
 
             AuditLog.user(params.getClientIp(), params.getUser())

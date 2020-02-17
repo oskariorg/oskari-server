@@ -1,7 +1,6 @@
 package fi.nls.oskari.wfs;
 
 import fi.nls.oskari.domain.map.OskariLayer;
-import fi.nls.oskari.domain.map.wfs.WFSLayerConfiguration;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.service.ServiceException;
@@ -12,6 +11,7 @@ import org.geotools.xml.Parser;
 
 import java.net.HttpURLConnection;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -21,7 +21,6 @@ import java.util.Map;
 public class WFSCapabilitiesParser {
 
     private static final Logger log = LogFactory.getLogger(WFSCapabilitiesParser.class);
-    private WFSLayerConfigurationService wfsService = new WFSLayerConfigurationServiceIbatisImpl();
     private final Object EMPTY_OBJECT = new Object();
     private final String[] EMPTY_RESULT = new String[0];
     private final String locale = PropertyUtil.getDefaultLanguage();
@@ -29,18 +28,6 @@ public class WFSCapabilitiesParser {
     public String[] getKeywordsForLayer(OskariLayer layer) throws ServiceException {
         if(!OskariLayer.TYPE_WFS.equals(layer.getType())) {
             return EMPTY_RESULT;
-        }
-        WFSLayerConfiguration conf = wfsService.findConfiguration(layer.getId());
-        if(conf == null) {
-            log.warn("Unable to map layer to wfs configuration");
-            return EMPTY_RESULT;
-        }
-        String url = conf.getURL();
-        if(url.indexOf('?') == -1) {
-            url = url + "?";
-        }
-        else {
-            url = url + "&";
         }
         final GMLConfiguration configuration = new GMLConfiguration();
         final Parser parser = new Parser(configuration);
@@ -50,11 +37,16 @@ public class WFSCapabilitiesParser {
 
         final Map response;
         try {
-            final HttpURLConnection con = IOHelper.getConnection(url + "service=WFS&version=" +
-                    conf.getWFSVersion() + "&request=GetCapabilities",
-                    conf.getUsername(), conf.getPassword());
 
-            response =(Map) parser.parse(con.getInputStream());
+            Map<String, String> params = new HashMap<>();
+            params.put("service", "WFS");
+            params.put("request", "GetCapabilities");
+            params.put("version", layer.getVersion());
+
+            final HttpURLConnection con = IOHelper.getConnection(IOHelper.constructUrl(layer.getUrl(), params),
+                    layer.getUsername(), layer.getPassword());
+
+            response = (Map) parser.parse(con.getInputStream());
         } catch (Exception ex) {
             throw new ServiceException("Error getting capabilities for layer", ex);
         }
@@ -69,7 +61,7 @@ public class WFSCapabilitiesParser {
             for(Object o : list) {
                 final Object name = safeTraverseParsedObjectAsMap(o, "Name");
                 //log.debug("FeatureType name:", name, "should match:", conf.getLayerName());
-                if(conf.getLayerName() == null || !conf.getLayerName().equals(name)) {
+                if(layer.getName() == null || !layer.getName().equals(name)) {
                     // not this layer
                     continue;
                 }

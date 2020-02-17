@@ -14,8 +14,6 @@ import fi.nls.oskari.map.view.ViewService;
 import fi.nls.oskari.map.view.AppSetupServiceMybatisImpl;
 import fi.nls.oskari.service.capabilities.CapabilitiesCacheService;
 import fi.nls.oskari.service.capabilities.CapabilitiesCacheServiceMybatisImpl;
-import fi.nls.oskari.wfs.WFSLayerConfigurationService;
-import fi.nls.oskari.wfs.WFSLayerConfigurationServiceIbatisImpl;
 import org.oskari.permissions.PermissionService;
 import org.oskari.permissions.PermissionServiceMybatisImpl;
 
@@ -29,7 +27,6 @@ public class ServiceFactory {
     private static PermissionService permissionsService;
     private static SearchService searchService;
     private static CapabilitiesCacheService capabilitiesCacheService;
-    private static WFSLayerConfigurationService wfsLayerService;
 
     public static DataProviderService getDataProviderService() {
         if (dataProviderService == null) {
@@ -85,12 +82,5 @@ public class ServiceFactory {
             capabilitiesCacheService = new CapabilitiesCacheServiceMybatisImpl();
         }
         return capabilitiesCacheService;
-    }
-
-    public static WFSLayerConfigurationService getWfsLayerService() {
-        if (wfsLayerService == null) {
-            wfsLayerService = new WFSLayerConfigurationServiceIbatisImpl();
-        }
-        return wfsLayerService;
     }
 }

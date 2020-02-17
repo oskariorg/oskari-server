@@ -2,11 +2,11 @@ package fi.nls.oskari.geoserver;
 
 import fi.nls.oskari.domain.map.DataProvider;
 import fi.nls.oskari.domain.map.OskariLayer;
-import fi.nls.oskari.domain.map.wfs.WFSLayerConfiguration;
 import fi.nls.oskari.map.layer.DataProviderService;
 import fi.nls.oskari.map.layer.DataProviderServiceMybatisImpl;
 import fi.nls.oskari.map.layer.OskariLayerService;
 import fi.nls.oskari.map.layer.OskariLayerServiceMybatisImpl;
+import org.json.JSONObject;
 
 import java.util.List;
 
@@ -42,33 +42,6 @@ public class LayerHelper {
 
     public static void update(OskariLayer layer) {
         LAYER_SERVICE.update(layer);
-    }
-
-    public static WFSLayerConfiguration getConfig(OskariLayer layer, String namespace) {
-
-        WFSLayerConfiguration conf = new WFSLayerConfiguration();
-        conf.setLayerId("" + layer.getId());
-        conf.setLayerName(layer.getName());
-        conf.setGMLGeometryProperty("geometry");
-        conf.setGMLVersion("3.1.1");
-        conf.setGML2Separator(false);
-        conf.setMaxFeatures(2000);
-        conf.setFeatureNamespace(namespace);
-        conf.setFeatureParamsLocales("{\"default\": [\"name\", \"place_desc\",\"link\", \"image_url\"],\"fi\": [\"name\", \"place_desc\",\"link\", \"image_url\"]}");
-        conf.setGeometryType("2d");
-        conf.setGetMapTiles(false);
-        conf.setGetFeatureInfo(true);
-        conf.setTileRequest(false);
-        conf.setGetHighlightImage(true);
-
-        conf.setFeatureNamespaceURI("http://www.oskari.org");
-
-        conf.setFeatureType("");
-        conf.setSelectedFeatureParams("{}");
-        conf.setGeometryNamespaceURI("");
-        conf.setWps_params("{}");
-        conf.setTileBuffer("{}");
-        return conf;
     }
 
 }

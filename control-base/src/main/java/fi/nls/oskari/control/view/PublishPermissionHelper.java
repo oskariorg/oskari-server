@@ -11,7 +11,6 @@ import fi.nls.oskari.domain.map.MyPlaceCategory;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.domain.map.analysis.Analysis;
 import fi.nls.oskari.domain.map.userlayer.UserLayer;
-import fi.nls.oskari.domain.map.wfs.WFSLayerConfiguration;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.analysis.service.AnalysisDbService;
@@ -166,8 +165,6 @@ public class PublishPermissionHelper {
         for (MyPlaceCategory place : myPlacesLayers) {
             if (place.isOwnedBy(userUuid)) {
                 myPlaceService.updatePublisherName(categoryId, userUuid, publisherName); // make it public
-                // IMPORTANT! delete layer data from redis so transport will get updated layer data
-                JedisManager.del(WFSLayerConfiguration.KEY + layerId);
                 return true;
             }
         }
@@ -197,8 +194,6 @@ public class PublishPermissionHelper {
         if (hasPermission) {
             // write publisher name for analysis
             analysisService.updatePublisherName(analysisId, user.getUuid(), user.getScreenname());
-            // IMPORTANT! delete layer data from redis so transport will get updated layer data
-            JedisManager.del(WFSLayerConfiguration.KEY + layerId);
         } else {
             LOG.warn("Found analysis layer in selected that isn't publishable any more! Permissionkey:", permissionKey, "User:", user);
         }
@@ -214,8 +209,6 @@ public class PublishPermissionHelper {
         final UserLayer userLayer = userLayerService.getUserLayerById(id);
         if (userLayer.isOwnedBy(user.getUuid())) {
             userLayerService.updatePublisherName(id, user.getUuid(), user.getScreenname());
-            // IMPORTANT! delete layer data from redis so transport will get updated layer data
-            JedisManager.del(WFSLayerConfiguration.KEY + layerId);
             return true;
         } else {
             return false;
