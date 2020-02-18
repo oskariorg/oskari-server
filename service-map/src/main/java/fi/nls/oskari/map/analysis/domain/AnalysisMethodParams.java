@@ -186,10 +186,22 @@ public abstract class AnalysisMethodParams {
         this.srsName = srsName;
     }
 
+    /**
+     * This is used to add namespace on the WPS templates and might break things and looks like it's not needed.
+     * FIXME: remove the method as it always returns empty to "fix" WPS templates
+     * @return
+     */
+    @Deprecated
     public String getXmlns() {
-        return xmlns;
+        //return xmlns;
+        return "";
     }
 
+    /**
+     * Don't use this as it's not needed and might break things instead
+     * @param xmlns
+     */
+    @Deprecated
     public void setXmlns(String xmlns) {
         this.xmlns = xmlns;
     }
@@ -417,6 +429,7 @@ public abstract class AnalysisMethodParams {
             reference1 = reference1.replace(OUTPUTFORMAT, this.getOutputFormat());
             reference1 = reference1.replace(VERSION, this.getVersion());
             reference1 = reference1.replace(SRSNAME, this.getSrsName());
+            // FIXME: this is always "" as looks like this isn't needed and might actually break things if added
             reference1 = reference1.replace(XMLNS, this.getXmlns());
             reference1 = reference1.replace(TYPENAME, this.getTypeName());
             reference1 = reference1.replace(GEOJSONFEATURES, this.getGeojson());

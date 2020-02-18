@@ -76,6 +76,7 @@ public class AggregateMethodParams extends AnalysisMethodParams {
         doctemp = doctemp.replace(OUTPUTFORMAT, this.getOutputFormat());
         doctemp = doctemp.replace(VERSION, this.getVersion());
         doctemp = doctemp.replace(SRSNAME, this.getSrsName());
+        // FIXME: this is always "" as looks like this isn't needed and might actually break things if added
         doctemp = doctemp.replace(XMLNS, this.getXmlns());
         doctemp = doctemp.replace(TYPENAME, this.getTypeName());
         doctemp = doctemp.replace(AGGREFUNCTIONS, this.buildAggreFunctions());
