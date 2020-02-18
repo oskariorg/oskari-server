@@ -190,11 +190,11 @@ public class AnalysisParser {
             analysisLayer.setAnalysisMethodParams(method);
 
             // WFS filter
-            analysisLayer.getAnalysisMethodParams().setFilter(
+            method.setFilter(
                     this.parseFilter(wfsLayer, filter1, analysisLayer
                             .getInputAnalysisId(), analysisLayer.getInputCategoryId(), analysisLayer.getInputUserdataId()));
             // WFS Query properties
-            analysisLayer.getAnalysisMethodParams().setProperties(
+            method.setProperties(
                     this.parseProperties(analysisLayer.getFields(), "oskari", getGeometryField(wfsLayer)));
         }
         //------------------ ZONESECTOR ------------------------------------------
@@ -1733,26 +1733,24 @@ public class AnalysisParser {
      * @param analysisLayer
      */
     public void removeTextTypeFields(AnalysisLayer analysisLayer) {
-
-        try {
-            List<String> fields = analysisLayer.getFields();
-            Map<String,String> fieldTypes = analysisLayer.getFieldtypeMap();
-            List<String> newfields = new ArrayList<String>();
-            if (fields != null  && fieldTypes  != null ) {
-                for (int i = 0; i < fields.size(); i++) {
-                    if (fieldTypes.containsKey(fields.get(i)) && fieldTypes.get(fields.get(i)).equals(NUMERIC_FIELD_TYPE)) {
-                            newfields.add(fields.get(i));
-                    }
-
-                }
-                analysisLayer.setFields(newfields);
-            }
-
-
-        } catch (Exception e) {
-            LOG.warn("Remove text type input fields  failed ", e);
-
+        List<String> fields = analysisLayer.getFields();
+        Map<String,String> fieldTypes = analysisLayer.getFieldtypeMap();
+        if (fields == null || fieldTypes  == null ) {
+            // nothing to do
+            return;
         }
 
+        try {
+            List<String> newfields = new ArrayList<>();
+            for (int i = 0; i < fields.size(); i++) {
+                String fieldType = fieldTypes.get(fields.get(i));
+                if (NUMERIC_FIELD_TYPE.equals(fieldType)) {
+                    newfields.add(fields.get(i));
+                }
+            }
+            analysisLayer.setFields(newfields);
+        } catch (Exception e) {
+            LOG.warn("Remove text type input fields  failed ", e);
+        }
     }
 }
