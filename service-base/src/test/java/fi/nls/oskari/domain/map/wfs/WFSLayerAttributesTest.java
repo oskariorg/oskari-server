@@ -152,7 +152,7 @@ public class WFSLayerAttributesTest {
     public void testEmptyParam() {
         WFSLayerAttributes attrs = new WFSLayerAttributes(null);
         assertTrue("No attributes selected", attrs.getSelectedAttributes().isEmpty());
-        assertEquals("No featurecount set", -1, attrs.getMaxFeatures());
+        assertEquals("No featurecount set", 100000, attrs.getMaxFeatures());
         assertNull("No url set", attrs.getNamespaceURL());
         assertNull("Params was null", attrs.getAttributes());
         assertFalse("Filter wasn't given", attrs.hasFilter());
