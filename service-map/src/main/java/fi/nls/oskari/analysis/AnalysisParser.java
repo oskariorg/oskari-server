@@ -1027,14 +1027,7 @@ public class AnalysisParser {
 
             parseMethodParams( method, lc, json, gjson, baseUrl);
             final JSONObject params = json.getJSONObject(JSON_KEY_METHODPARAMS);
-            Object no_data = params.opt(JSON_KEY_NO_DATA);
-            if(no_data != null){
-                try {
-                    method.setNoDataValue(no_data.toString());
-                }
-                catch (Exception e){
-                }
-            }
+            method.setNoDataValue(params.optString(JSON_KEY_NO_DATA, null));
             String geometryField = getGeometryField(lc2);
             // Variable values of  input 2
             method.setHref2(baseUrl.replace("&", "&amp;") + String.valueOf(lc2.getId()));
