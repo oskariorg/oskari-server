@@ -9,6 +9,8 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPathExpressionException;
 import java.io.IOException;
 
+import static fi.nls.oskari.analysis.AnalysisParser.BUFFER;
+
 public class BufferMethodParams extends AnalysisMethodParams {
 
     private final String analysisMethodTemplate = "analysis-layer-wps-buffer.xml";
@@ -41,6 +43,9 @@ public class BufferMethodParams extends AnalysisMethodParams {
         this.attributeName = attributeName;
     }
 
+    public BufferMethodParams() {
+        setMethod(BUFFER);
+    }
     /**
      * DEPRECATED - NOT IN USE
      * @return

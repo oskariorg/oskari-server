@@ -108,6 +108,9 @@ public abstract class AnalysisMethodParams {
     }
 
     public void setHref(String href) {
+        if(href != null) {
+            href = href.replace("&", "&amp;");
+        }
         this.href = href;
     }
 

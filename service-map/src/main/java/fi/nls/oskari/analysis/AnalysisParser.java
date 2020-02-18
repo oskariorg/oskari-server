@@ -130,8 +130,6 @@ public class AnalysisParser {
         final String geojson = getGeoJSONInput(json, json.optString(JSON_KEY_NAME,"feature"));
         AnalysisLayer analysisLayer = getLayerBasedOnInput(json, geojson);
 
-        OskariLayer lc = null;
-
         String analysisMethod = getAnalysisMethod(json);
         analysisLayer.setMethod(analysisMethod);
 
@@ -175,27 +173,29 @@ public class AnalysisParser {
             if (layerIds == null) {
                 throw new ServiceException(getRequiredErrorMsgFor(JSON_KEY_LAYERS));
             }
-            createUnionAnalyseParams(layerIds, analysisLayer);
+            // only works for combining user content layers? Why?
+            setupUnionAnalyseParams(layerIds, analysisLayer);
         }
         //------------------ BUFFER -----------------------
         else if (BUFFER.equals(analysisMethod)) {
             // when WPS method is vec:BufferFeatureCollection
 
             // Set params for WPS execute
+            BufferMethodParams method = createBufferParams(analyseMethodParams);
 
-            BufferMethodParams method = this.parseBufferParams(lc, json, geojson,
-                    baseUrl);
-
+            setupBBox(method, json.optJSONObject("bbox"));
+            parseCommonParams(wfsLayer, method, baseUrl);
+            method.setGeojson(geojson);
             method.setWps_reference_type(analysisLayer.getInputType());
             analysisLayer.setAnalysisMethodParams(method);
 
             // WFS filter
             analysisLayer.getAnalysisMethodParams().setFilter(
-                    this.parseFilter(lc, filter1, analysisLayer
+                    this.parseFilter(wfsLayer, filter1, analysisLayer
                             .getInputAnalysisId(), analysisLayer.getInputCategoryId(), analysisLayer.getInputUserdataId()));
             // WFS Query properties
             analysisLayer.getAnalysisMethodParams().setProperties(
-                    this.parseProperties(analysisLayer.getFields(), "oskari", getGeometryField(lc)));
+                    this.parseProperties(analysisLayer.getFields(), "oskari", getGeometryField(wfsLayer)));
         }
         //------------------ ZONESECTOR ------------------------------------------
         else if (ZONESECTOR.equals(analysisMethod)) {
@@ -203,7 +203,7 @@ public class AnalysisParser {
 
             // Set params for WPS execute
 
-            ZoneSectorMethodParams method = this.parseZoneSectorParams(lc, json, geojson,
+            ZoneSectorMethodParams method = this.parseZoneSectorParams(wfsLayer, json, geojson,
                     baseUrl);
 
             method.setWps_reference_type(analysisLayer.getInputType());
@@ -214,11 +214,11 @@ public class AnalysisParser {
 
             // WFS filter
             analysisLayer.getAnalysisMethodParams().setFilter(
-                    this.parseFilter(lc, filter1, analysisLayer
+                    this.parseFilter(wfsLayer, filter1, analysisLayer
                             .getInputAnalysisId(), analysisLayer.getInputCategoryId(), analysisLayer.getInputUserdataId()));
             // WFS Query properties
             analysisLayer.getAnalysisMethodParams().setProperties(
-                    this.parseProperties(analysisLayer.getFields(), "oskari", getGeometryField(lc)));
+                    this.parseProperties(analysisLayer.getFields(), "oskari", getGeometryField(wfsLayer)));
         }
         //------------------ INTERSECT -----------------------
         else if (INTERSECT.equals(analysisMethod)) {
@@ -231,7 +231,7 @@ public class AnalysisParser {
 
             // Set params for WPS execute
 
-            IntersectMethodParams method = this.parseIntersectParams(lc, lc2,
+            IntersectMethodParams method = this.parseIntersectParams(wfsLayer, lc2,
                     json, geojson, geojson2, baseUrl);
             //TODO: better input type mapping
             method.setWps_reference_type(analysisLayer.getInputType());
@@ -246,14 +246,14 @@ public class AnalysisParser {
                 method.setWps_reference_type2(ANALYSIS_INPUT_TYPE_WFS);
             }
             // Set WFS input type, other than analysis_ , myplaces_ and -userlayer - default is REFERENCE
-            analysisLayer.setInputType(getWpsInputLayerType(getWPSParams(lc), analysisLayer.getInputType()));
+            analysisLayer.setInputType(getWpsInputLayerType(getWPSParams(wfsLayer), analysisLayer.getInputType()));
 
             // Set mode intersect or contains
             method.setIntersection_mode(JSONHelper.getStringFromJSON(analyseMethodParams, JSON_KEY_OPERATOR, "intersect"));
 
             // WFS filter
 
-            method.setFilter(this.parseFilter(lc, filter1, analysisLayer
+            method.setFilter(this.parseFilter(wfsLayer, filter1, analysisLayer
                     .getInputAnalysisId(), analysisLayer.getInputCategoryId(), analysisLayer.getInputUserdataId()));
 
             if (sid.indexOf(MYPLACES_LAYER_PREFIX) == 0) {
@@ -268,7 +268,7 @@ public class AnalysisParser {
             }
             // WFS Query properties
             analysisLayer.getAnalysisMethodParams().setProperties(
-                    this.parseProperties(analysisLayer.getFields(), "oskari", getGeometryField(lc)));
+                    this.parseProperties(analysisLayer.getFields(), "oskari", getGeometryField(wfsLayer)));
 
             analysisLayer.setAnalysisMethodParams(method);
         }
@@ -283,7 +283,7 @@ public class AnalysisParser {
 
             // Set params for WPS execute
 
-            IntersectJoinMethodParams method = this.parseIntersectJoinParams(lc, lc2,
+            IntersectJoinMethodParams method = this.parseIntersectJoinParams(wfsLayer, lc2,
                     json, geojson, geojson2, baseUrl);
             //TODO: better input type mapping
             method.setWps_reference_type(analysisLayer.getInputType());
@@ -298,14 +298,14 @@ public class AnalysisParser {
                 method.setWps_reference_type2(ANALYSIS_INPUT_TYPE_WFS);
             }
             // Set WFS input type, other than analysis_ , myplaces_ and -userlayer - default is REFERENCE
-            analysisLayer.setInputType(getWpsInputLayerType(getWPSParams(lc), analysisLayer.getInputType()));
+            analysisLayer.setInputType(getWpsInputLayerType(getWPSParams(wfsLayer), analysisLayer.getInputType()));
 
             // Set mode intersect or contains
             method.setIntersection_mode(JSONHelper.getStringFromJSON(analyseMethodParams, JSON_KEY_OPERATOR, "intersect"));
 
             // WFS filter
 
-            method.setFilter(this.parseFilter(lc, filter1, analysisLayer
+            method.setFilter(this.parseFilter(wfsLayer, filter1, analysisLayer
                     .getInputAnalysisId(), analysisLayer.getInputCategoryId(), analysisLayer.getInputUserdataId()));
 
             if (sid.indexOf(MYPLACES_LAYER_PREFIX) == 0) {
@@ -320,7 +320,7 @@ public class AnalysisParser {
             }
             // WFS Query properties
             method.setProperties(this.parseProperties(
-                    analysisLayer.getFields(), "oskari", getGeometryField(lc)));
+                    analysisLayer.getFields(), "oskari", getGeometryField(wfsLayer)));
 
             analysisLayer.setAnalysisMethodParams(method);
         }
@@ -335,7 +335,7 @@ public class AnalysisParser {
 
             // Set params for WPS execute
 
-            SpatialJoinStatisticsMethodParams method = this.parseSpatialJoinStatisticsParams(lc, lc2,
+            SpatialJoinStatisticsMethodParams method = this.parseSpatialJoinStatisticsParams(wfsLayer, lc2,
                     json, geojson, geojson2, baseUrl);
             //TODO: better input type mapping
             method.setWps_reference_type(analysisLayer.getInputType());
@@ -350,12 +350,12 @@ public class AnalysisParser {
                 method.setWps_reference_type2(ANALYSIS_INPUT_TYPE_WFS);
             }
             // Set WFS input type, other than analysis_ , myplaces_ and -userlayer - default is REFERENCE
-            analysisLayer.setInputType(getWpsInputLayerType(getWPSParams(lc), analysisLayer.getInputType()));
+            analysisLayer.setInputType(getWpsInputLayerType(getWPSParams(wfsLayer), analysisLayer.getInputType()));
 
 
             // WFS filter
 
-            method.setFilter(this.parseFilter(lc, filter1, analysisLayer
+            method.setFilter(this.parseFilter(wfsLayer, filter1, analysisLayer
                     .getInputAnalysisId(), analysisLayer.getInputCategoryId(), analysisLayer.getInputUserdataId()));
 
             if (sid.indexOf(MYPLACES_LAYER_PREFIX) == 0) {
@@ -370,7 +370,7 @@ public class AnalysisParser {
             }
             // WFS Query properties
             method.setProperties(
-                    this.parseProperties(analysisLayer.getFields(), "oskari", getGeometryField(lc)));
+                    this.parseProperties(analysisLayer.getFields(), "oskari", getGeometryField(wfsLayer)));
 
             analysisLayer.setAnalysisMethodParams(method);
         }
@@ -413,7 +413,7 @@ public class AnalysisParser {
 
             // Set params for WPS execute
 
-            DifferenceMethodParams method = this.parseDifferenceParams(lc, lc2,
+            DifferenceMethodParams method = this.parseDifferenceParams(wfsLayer, lc2,
                     json, geojson, geojson2, baseUrl);
 
             // Layers must be under same wfs service
@@ -492,7 +492,7 @@ public class AnalysisParser {
                         "Aggregate field parameter missing.");
             }
 
-            AggregateMethodParams method = this.parseAggregateParams(lc, json, geojson,
+            AggregateMethodParams method = this.parseAggregateParams(wfsLayer, json, geojson,
                         baseUrl, aggre_field, analysisLayer.getAggreFunctions());
 
 
@@ -506,19 +506,19 @@ public class AnalysisParser {
             // WFS filter
 
             analysisLayer.getAnalysisMethodParams().setFilter(
-                    this.parseFilter(lc, filter1, analysisLayer
+                    this.parseFilter(wfsLayer, filter1, analysisLayer
                             .getInputAnalysisId(), analysisLayer.getInputCategoryId(), analysisLayer.getInputUserdataId()));
             //------------------ UNION -----------------------
         } else if (UNION.equals(analysisMethod)) {
 
             // Set params for WPS execute
 
-            UnionMethodParams method = this.parseUnionParams(lc, json, geojson, baseUrl);
+            UnionMethodParams method = this.parseUnionParams(wfsLayer, json, geojson, baseUrl);
             method.setWps_reference_type(analysisLayer.getInputType());
 
             // WFS filter
 
-            method.setFilter(this.parseFilter(lc, filter1, analysisLayer
+            method.setFilter(this.parseFilter(wfsLayer, filter1, analysisLayer
                     .getInputAnalysisId(), analysisLayer.getInputCategoryId(), analysisLayer.getInputUserdataId()));
 
             analysisLayer.setAnalysisMethodParams(method);
@@ -530,7 +530,7 @@ public class AnalysisParser {
         return analysisLayer;
     }
 
-    private void createUnionAnalyseParams(JSONArray layerIds, AnalysisLayer layer) throws ServiceException {
+    private void setupUnionAnalyseParams(JSONArray layerIds, AnalysisLayer layer) throws ServiceException {
         if (layerIds == null) {
             throw new ServiceException(getRequiredErrorMsgFor(JSON_KEY_LAYERS));
         }
@@ -717,37 +717,30 @@ public class AnalysisParser {
                 .ifPresent(key -> fields.put(key));
         return fields;
     }
+
+    private void setupBBox(AnalysisMethodParams params, final JSONObject bbox) throws ServiceException {
+        if (bbox == null) {
+            throw new ServiceException(getRequiredErrorMsgFor("bbox"));
+        }
+
+        params.setX_lower(bbox.optString("left"));
+        params.setY_lower(bbox.optString("bottom"));
+        params.setX_upper(bbox.optString("right"));
+        params.setY_upper(bbox.optString("top"));
+    }
     /**
      * Parses BUFFER method parameters for WPS execute xml variables
      *
-     * @param lc
-     *            WFS layer configuration
-     * @param json
-     *            Method parameters and layer info from the front
-     * @param baseUrl
-     *            Url for Geoserver WPS reference input (input
-     *            FeatureCollection)
+     * @param methodParams to get distance from
      * @return BufferMethodParams parameters for WPS execution
      ************************************************************************/
-    private BufferMethodParams parseBufferParams(OskariLayer lc,
-                                                 JSONObject json, String geojson, String baseUrl) throws ServiceException {
+    private BufferMethodParams createBufferParams(JSONObject methodParams) throws ServiceException {
         final BufferMethodParams method = new BufferMethodParams();
-        method.setMethod(BUFFER);
-        //
-        try {
-            parseCommonParams(lc, method, baseUrl);
-            final JSONObject params = json.getJSONObject(JSON_KEY_METHODPARAMS);
-            final JSONObject bbox = json.getJSONObject("bbox");
-            method.setX_lower(bbox.optString("left"));
-            method.setY_lower(bbox.optString("bottom"));
-            method.setX_upper(bbox.optString("right"));
-            method.setY_upper(bbox.optString("top"));
+        method.setDistance(methodParams.optString(JSON_KEY_DISTANCE));
 
-            method.setDistance(params.optString(JSON_KEY_DISTANCE));
-            method.setGeojson(geojson);
-
-        } catch (JSONException e) {
-            throw new ServiceException("Method parameters missing.");
+        if (method.getDistance() == null) {
+            // it's possible to use negative buffer so just checking that you can copy a feature
+            throw new ServiceException(getRequiredErrorMsgFor(JSON_KEY_DISTANCE));
         }
 
         return method;
@@ -802,7 +795,6 @@ public class AnalysisParser {
         params.setServiceUrl(layer.getUrl());
         params.setServiceUser(layer.getUsername());
         params.setServicePw(layer.getPassword());
-        baseUrl = baseUrl.replace("&", "&amp;");
         params.setHref(baseUrl + layer.getId());
         params.setTypeName(layer.getName());
 
