@@ -25,7 +25,7 @@ import java.util.*;
 
 public class AnalysisParser {
 
-    private static final Logger log = LogFactory
+    private static final Logger LOG = LogFactory
             .getLogger(AnalysisParser.class);
     private AnalysisDataService analysisDataService = new AnalysisDataService();
     private static final TransformationService transformationService = new TransformationService();
@@ -143,7 +143,7 @@ public class AnalysisParser {
         if (wfsLayer == null) {
             throw new ServiceException("Input layer not found");
         }
-        log.debug("got wfs layer", wfsLayer);
+        LOG.debug("got wfs layer", wfsLayer);
 
         analysisLayer.setMinScale(wfsLayer.getMinScale());
         analysisLayer.setMaxScale(wfsLayer.getMaxScale());
@@ -801,7 +801,7 @@ public class AnalysisParser {
         WFSLayerAttributes attrs = new WFSLayerAttributes(layer.getAttributes());
         params.setMaxFeatures(String.valueOf(attrs.getMaxFeatures()));
         params.setVersion(layer.getVersion());
-        params.setXmlns("xmlns:" + getNamespacePrefix(layer) + "=\"" + attrs.getNamespaceURL() + "\"");
+        params.setXmlns("xmlns:" + getNamespacePrefix(layer) + "=\"" + getNamespaceURL(layer) + "\"");
         params.setGeom(getGeometryField(layer));
     }
 
@@ -817,7 +817,7 @@ public class AnalysisParser {
         if (split.length == 1) {
             return getNamespacePrefix(null);
         }
-        return split[1];
+        return split[0];
     }
     /**
      * Parses AGGREGATE method parameters for WPS execute xml variables
@@ -1203,7 +1203,7 @@ public class AnalysisParser {
             return aggreResult.toString();
 
         } catch (JSONException e) {
-            log.error(e, "XML to JSON failed", response);
+            LOG.error(e, "XML to JSON failed", response);
         }
 
         return "{}";
@@ -1294,7 +1294,7 @@ public class AnalysisParser {
                 }
             }
         } catch (JSONException e) {
-            log.warn(e, "JSON parse failed");
+            LOG.warn(e, "JSON parse failed");
         }
 
         // Build filter
@@ -1305,8 +1305,11 @@ public class AnalysisParser {
     private String getNamespaceURL(OskariLayer layer) {
         if (layer != null) {
             WFSLayerAttributes attr = new WFSLayerAttributes(layer.getAttributes());
-            return attr.getNamespaceURL();
+            if (attr.getNamespaceURL() != null) {
+                return attr.getNamespaceURL();
+            }
         }
+        LOG.info("Couldn't get namespace url from layer");
         return "http://oskari.org";
     }
     private String getWPSParams(OskariLayer layer) {
@@ -1318,9 +1321,10 @@ public class AnalysisParser {
     }
 
     private String getSRS(OskariLayer layer) {
-        if (layer != null) {
+        if (layer != null && layer.getSrs_name() != null) {
             return layer.getSrs_name();
         }
+        LOG.info("Couldn't get srs from layer");
         // feature user has drawn
         return PropertyUtil.get("oskari.native.srs", "EPSG:3857");
     }
@@ -1328,8 +1332,11 @@ public class AnalysisParser {
     private String getGeometryField(OskariLayer layer) {
         if (layer != null) {
             WFSLayerCapabilities caps = new WFSLayerCapabilities(layer.getCapabilities());
-            return caps.getGeometryAttribute();
+            if (caps.getGeometryAttribute() != null) {
+                return caps.getGeometryAttribute();
+            }
         }
+        LOG.info("Couldn't get geometry name from layer");
         // feature user has drawn
         return "geometry";
     }
@@ -1341,7 +1348,7 @@ public class AnalysisParser {
             return WFSFilterBuilder.parseProperties(props, ns, geom_prop);
 
         } catch (Exception e) {
-            log.warn(e, "Properties parse failed");
+            LOG.warn(e, "Properties parse failed");
         }
 
         return null;
@@ -1469,7 +1476,7 @@ public class AnalysisParser {
                     "srsDimension=\"2\"");
 
         } catch (Exception e) {
-            log.debug("Harmonizing element names failed: ", e);
+            LOG.debug("Harmonizing element names failed: ", e);
         }
         return featureSet;
     }
@@ -1491,7 +1498,7 @@ public class AnalysisParser {
             }
             return al2;
         } catch (Exception e) {
-            log.debug("WPS method switch failed: ", e);
+            LOG.debug("WPS method switch failed: ", e);
             return null;
         }
 
@@ -1502,7 +1509,7 @@ public class AnalysisParser {
             // Add aggregate results to FeatureCollection ( only to one feature)
             featureSet = transformationService.mergePropertiesToFeatures(featureSet, analysisLayer.getResult(), rowOrder, colOrder);
         } catch (ServiceException e) {
-            log.debug("Feature property insert to FeatureCollection failed: ", e);
+            LOG.debug("Feature property insert to FeatureCollection failed: ", e);
         }
         return featureSet;
     }
@@ -1556,7 +1563,7 @@ public class AnalysisParser {
             }
             return jsona;
         } catch (Exception e) {
-            log.debug("Json resultset reordering failed: ", e);
+            LOG.debug("Json resultset reordering failed: ", e);
         }
         return jsona;
     }
@@ -1699,7 +1706,7 @@ public class AnalysisParser {
                         spparams.setLocalemap(localemap);
                     }
                 } catch (Exception e) {
-                    log.warn("Locales for spatialjoin aggregate failed ", e);
+                    LOG.warn("Locales for spatialjoin aggregate failed ", e);
 
                 }
                 Map<String, String> fieldTypes = analysisLayer.getFieldtypeMap();
@@ -1716,7 +1723,7 @@ public class AnalysisParser {
 
 
         } catch (Exception e) {
-            log.warn("WPS geometry property name fix failed ", e);
+            LOG.warn("WPS geometry property name fix failed ", e);
 
         }
 
@@ -1743,7 +1750,7 @@ public class AnalysisParser {
 
 
         } catch (Exception e) {
-            log.warn("Remove text type input fields  failed ", e);
+            LOG.warn("Remove text type input fields  failed ", e);
 
         }
 
