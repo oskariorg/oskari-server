@@ -73,9 +73,9 @@ public class WFSLayerAttributes {
         }
         attributes = wfsAttrs;
         // Preparse
-        maxFeatures = wfsAttrs.optInt("maxFeatures", 1);
-        namespaceURL = wfsAttrs.optString("namespaceURL");
-        wpsParams = wfsAttrs.optString("wpsParams");
+        maxFeatures = wfsAttrs.optInt("maxFeatures", -1);
+        namespaceURL = wfsAttrs.optString("namespaceURL", null);
+        wpsParams = wfsAttrs.optString("wpsParams", null);
         JSONObject data = wfsAttrs.optJSONObject("data");
         if (data != null) {
             locales = data.optJSONObject("locale");
