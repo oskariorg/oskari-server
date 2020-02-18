@@ -98,7 +98,9 @@ public class BufferMethodParams extends AnalysisMethodParams {
         doctemp = doctemp.replace(OUTPUTFORMAT, this.getOutputFormat());
         doctemp = doctemp.replace(VERSION, this.getVersion());
         doctemp = doctemp.replace(SRSNAME, this.getSrsName());
-        doctemp = doctemp.replace(XMLNS, this.getXmlns());
+        //doctemp = doctemp.replace(XMLNS, this.getXmlns());
+        // looks like this isn't needed and might actually break things if added
+        doctemp = doctemp.replace(XMLNS, "");
         doctemp = doctemp.replace(TYPENAME, this.getTypeName());
         doctemp = doctemp.replace(DISTANCE, this.getDistance());
         doctemp = doctemp.replace(ATTRIBUTENAME, "");
