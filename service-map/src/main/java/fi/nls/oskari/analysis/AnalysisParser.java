@@ -188,12 +188,11 @@ public class AnalysisParser {
             analysisLayer.setAnalysisMethodParams(method);
 
             // WFS filter
-            method.setFilter(
-                    this.parseFilter(wfsLayer, filter1, analysisLayer
+            method.setFilter(createWFSQueryFilter(wfsLayer, filter1, analysisLayer
                             .getInputAnalysisId(), analysisLayer.getInputCategoryId(), analysisLayer.getInputUserdataId()));
             // WFS Query properties
             method.setProperties(
-                    this.createPartialWFSQueryForAttributes(analysisLayer.getFields(), "oskari", getGeometryField(wfsLayer)));
+                    createPartialWFSQueryForAttributes(analysisLayer.getFields(), "oskari", getGeometryField(wfsLayer)));
         }
         //------------------ ZONESECTOR ------------------------------------------
         else if (ZONESECTOR.equals(analysisMethod)) {
@@ -212,7 +211,7 @@ public class AnalysisParser {
 
             // WFS filter
             analysisLayer.getAnalysisMethodParams().setFilter(
-                    this.parseFilter(wfsLayer, filter1, analysisLayer
+                    this.createWFSQueryFilter(wfsLayer, filter1, analysisLayer
                             .getInputAnalysisId(), analysisLayer.getInputCategoryId(), analysisLayer.getInputUserdataId()));
             // WFS Query properties
             analysisLayer.getAnalysisMethodParams().setProperties(
@@ -251,17 +250,17 @@ public class AnalysisParser {
 
             // WFS filter
 
-            method.setFilter(this.parseFilter(wfsLayer, filter1, analysisLayer
+            method.setFilter(this.createWFSQueryFilter(wfsLayer, filter1, analysisLayer
                     .getInputAnalysisId(), analysisLayer.getInputCategoryId(), analysisLayer.getInputUserdataId()));
 
             if (sid.indexOf(MYPLACES_LAYER_PREFIX) == 0) {
-                method.setFilter2(this.parseFilter(lc2, filter2, null, this
+                method.setFilter2(this.createWFSQueryFilter(lc2, filter2, null, this
                         .getAnalysisInputId(analyseMethodParams), null));
             } else if (sid.indexOf(USERLAYER_PREFIX) == 0) {
-                method.setFilter2(this.parseFilter(lc2, filter2, null, null, this
+                method.setFilter2(this.createWFSQueryFilter(lc2, filter2, null, null, this
                         .getAnalysisInputId(analyseMethodParams)));
             } else {
-                method.setFilter2(this.parseFilter(lc2, filter2, this
+                method.setFilter2(this.createWFSQueryFilter(lc2, filter2, this
                         .getAnalysisInputId(analyseMethodParams), null, null));
             }
             // WFS Query properties
@@ -303,17 +302,17 @@ public class AnalysisParser {
 
             // WFS filter
 
-            method.setFilter(this.parseFilter(wfsLayer, filter1, analysisLayer
+            method.setFilter(this.createWFSQueryFilter(wfsLayer, filter1, analysisLayer
                     .getInputAnalysisId(), analysisLayer.getInputCategoryId(), analysisLayer.getInputUserdataId()));
 
             if (sid.indexOf(MYPLACES_LAYER_PREFIX) == 0) {
-                method.setFilter2(this.parseFilter(lc2, filter2, null, this
+                method.setFilter2(this.createWFSQueryFilter(lc2, filter2, null, this
                         .getAnalysisInputId(analyseMethodParams), null));
             } else if (sid.indexOf(USERLAYER_PREFIX) == 0) {
-                method.setFilter2(this.parseFilter(lc2, filter2, null, null, this
+                method.setFilter2(this.createWFSQueryFilter(lc2, filter2, null, null, this
                         .getAnalysisInputId(analyseMethodParams)));
             } else {
-                method.setFilter2(this.parseFilter(lc2, filter2, this
+                method.setFilter2(this.createWFSQueryFilter(lc2, filter2, this
                         .getAnalysisInputId(analyseMethodParams), null, null));
             }
             // WFS Query properties
@@ -353,17 +352,17 @@ public class AnalysisParser {
 
             // WFS filter
 
-            method.setFilter(this.parseFilter(wfsLayer, filter1, analysisLayer
+            method.setFilter(this.createWFSQueryFilter(wfsLayer, filter1, analysisLayer
                     .getInputAnalysisId(), analysisLayer.getInputCategoryId(), analysisLayer.getInputUserdataId()));
 
             if (sid.indexOf(MYPLACES_LAYER_PREFIX) == 0) {
-                method.setFilter2(this.parseFilter(lc2, filter2, null, this
+                method.setFilter2(this.createWFSQueryFilter(lc2, filter2, null, this
                         .getAnalysisInputId(analyseMethodParams), null));
             } else if (sid.indexOf(USERLAYER_PREFIX) == 0) {
-                method.setFilter2(this.parseFilter(lc2, filter2, null, null, this
+                method.setFilter2(this.createWFSQueryFilter(lc2, filter2, null, null, this
                         .getAnalysisInputId(analyseMethodParams)));
             } else {
-                method.setFilter2(this.parseFilter(lc2, filter2, this
+                method.setFilter2(this.createWFSQueryFilter(lc2, filter2, this
                         .getAnalysisInputId(analyseMethodParams), null, null));
             }
             // WFS Query properties
@@ -504,7 +503,7 @@ public class AnalysisParser {
             // WFS filter
 
             analysisLayer.getAnalysisMethodParams().setFilter(
-                    this.parseFilter(wfsLayer, filter1, analysisLayer
+                    this.createWFSQueryFilter(wfsLayer, filter1, analysisLayer
                             .getInputAnalysisId(), analysisLayer.getInputCategoryId(), analysisLayer.getInputUserdataId()));
             //------------------ UNION -----------------------
         } else if (UNION.equals(analysisMethod)) {
@@ -516,7 +515,7 @@ public class AnalysisParser {
 
             // WFS filter
 
-            method.setFilter(this.parseFilter(wfsLayer, filter1, analysisLayer
+            method.setFilter(this.createWFSQueryFilter(wfsLayer, filter1, analysisLayer
                     .getInputAnalysisId(), analysisLayer.getInputCategoryId(), analysisLayer.getInputUserdataId()));
 
             analysisLayer.setAnalysisMethodParams(method);
@@ -1143,8 +1142,8 @@ public class AnalysisParser {
      * @return String WFS filter xml
      * @throws fi.nls.oskari.service.ServiceException
      ************************************************************************/
-    private String parseFilter(OskariLayer lc, String filter,
-                               String analysisId, String categoryId, String userdataId) throws ServiceException {
+    private String createWFSQueryFilter(OskariLayer lc, String filter,
+                                        String analysisId, String categoryId, String userdataId) {
 
         JSONObject filter_js = null;
         try {
