@@ -227,7 +227,6 @@ public class AnalysisParser {
 
 
             // Set params for WPS execute
-
             IntersectMethodParams method = this.parseIntersectParams(wfsLayer, lc2,
                     json, geojson, geojson2, baseUrl);
             //TODO: better input type mapping
@@ -716,8 +715,11 @@ public class AnalysisParser {
     }
 
     private void setupBBox(AnalysisMethodParams params, final JSONObject bbox, boolean isRequired) throws ServiceException {
-        if (isRequired && bbox == null) {
-            throw new ServiceException(getRequiredErrorMsgFor("bbox"));
+        if (bbox == null) {
+            if (isRequired) {
+                throw new ServiceException(getRequiredErrorMsgFor("bbox"));
+            }
+            return;
         }
         params.setX_lower(bbox.optString("left"));
         params.setY_lower(bbox.optString("bottom"));
