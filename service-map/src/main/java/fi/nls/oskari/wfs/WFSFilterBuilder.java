@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Date: 6.8.2013
@@ -481,18 +482,14 @@ public class WFSFilterBuilder {
     }
 
     public static String parseProperties(List<String> props, String ns, String geom_prop) {
-        String query = "";
-        for (String prop : props) {
-            String temp = PROPERTY_TEMPLATE.replace(PROPERTY_PROPERTY, ns + ":"
-                    + prop);
-            query = query + temp;
+        if (props == null || props.isEmpty()) {
+            return "";
         }
-        if(!query.isEmpty()) {
-            // geometry is not retreaved, if this is lacking
-            String temp = PROPERTY_TEMPLATE.replace(PROPERTY_PROPERTY, geom_prop);
-            query = query + temp;
-        }
+        String query = props.stream()
+                .map(featureAttribute -> PROPERTY_TEMPLATE.replace(PROPERTY_PROPERTY, ns + ":" + featureAttribute))
+                .collect(Collectors.joining());
 
-        return query;
+        // if we are filtering out a given set of featureAttributes -> we want to include geometry to the query as well
+        return query + PROPERTY_TEMPLATE.replace(PROPERTY_PROPERTY, geom_prop);
     }
 }

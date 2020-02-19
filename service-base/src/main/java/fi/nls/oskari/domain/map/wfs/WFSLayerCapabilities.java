@@ -18,7 +18,7 @@ public class WFSLayerCapabilities {
 
     public String getGeometryAttribute() {
         // CapabilitiesConstants.KEY_GEOM_NAME
-        return capabilities.optString(KEY_GEOMETRYFIELD);
+        return capabilities.optString(KEY_GEOMETRYFIELD, null);
     }
     public void setGeometryAttribute(String attr) {
         // CapabilitiesConstants.KEY_GEOM_NAME

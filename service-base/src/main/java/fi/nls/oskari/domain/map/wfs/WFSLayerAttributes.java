@@ -63,19 +63,22 @@ public class WFSLayerAttributes {
     private Map<String, List<String>> params = new HashMap<>();
     private JSONObject locales = null;
     private String namespaceURL;
-    private int maxFeatures = -1;
+    private int maxFeatures = 100000;
     private JSONObject attributes;
     private String wpsParams;
 
     public WFSLayerAttributes(JSONObject wfsAttrs) {
-        if(wfsAttrs == null) {
+        if (wfsAttrs == null) {
             return;
         }
         attributes = wfsAttrs;
-        // Preparse
-        maxFeatures = wfsAttrs.optInt("maxFeatures", 1);
-        namespaceURL = wfsAttrs.optString("namespaceURL");
-        wpsParams = wfsAttrs.optString("wpsParams");
+        // Preparsing JSON to
+        // responses for -1 or 0 for maxfeatures (in xml payloads):
+        // Parsing failed for maxFeatures: java.lang.IllegalArgumentException: Value '-1' must be non-negative (0 or above)
+        // Parsing failed for maxFeatures: java.lang.IllegalArgumentException: positiveInteger value '0' must be positive.
+        maxFeatures = wfsAttrs.optInt("maxFeatures", maxFeatures);
+        namespaceURL = wfsAttrs.optString("namespaceURL", namespaceURL);
+        wpsParams = wfsAttrs.optString("wpsParams", wpsParams);
         JSONObject data = wfsAttrs.optJSONObject("data");
         if (data != null) {
             locales = data.optJSONObject("locale");
