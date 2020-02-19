@@ -11,6 +11,7 @@ import fi.nls.oskari.map.analysis.service.TransformationService;
 import fi.nls.oskari.map.layer.OskariLayerService;
 import fi.nls.oskari.map.layer.OskariLayerServiceMybatisImpl;
 import fi.nls.oskari.service.ServiceException;
+import fi.nls.oskari.service.ServiceRuntimeException;
 import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
@@ -1577,59 +1578,57 @@ public class AnalysisParser {
      * @param analysisLayer
      */
     public void fixTypeNames(AnalysisLayer analysisLayer, JSONObject analysejs) {
-
-        try {
-
-            AnalysisMethodParams params = analysisLayer.getAnalysisMethodParams();
-            if (params.getMethod().equals(AnalysisParser.SPATIAL_JOIN_STATISTICS)) {
-                Map<String, String> localemap = new HashMap<String, String>();
-                SpatialJoinStatisticsMethodParams spparams = (SpatialJoinStatisticsMethodParams) params;
-                if (analysisLayer.getAnalysisMethodParams() instanceof SpatialJoinStatisticsMethodParams) {
-
-                }
-                try {
-                    JSONArray locales = analysejs.getJSONObject(JSON_KEY_METHODPARAMS)
-                            .optJSONArray(JSON_KEY_LOCALE);
-
-                    if (locales != null) {
-                        for (int i = 0; i < locales.length(); i++) {
-                            JSONObject locale = locales.getJSONObject(i);
-                            String id = locale.getString("id");
-                            String label = locale.getString("label");
-
-                            if (SPATIALJOIN_AGGREGATE_FIELDS != null) {
-                                for (int k = 0; k < SPATIALJOIN_AGGREGATE_FIELDS.size(); k++) {
-                                    if (id.toLowerCase().indexOf(SPATIALJOIN_AGGREGATE_FIELDS.get(k).toLowerCase()) > -1) {
-                                        //Localized new sp aggregate field name
-                                        localemap.put(SPATIALJOIN_AGGREGATE_FIELDS.get(k), label);
-                                    }
-                                }
-                            }
-                        }
-                        spparams.setLocalemap(localemap);
-                    }
-                } catch (Exception e) {
-                    LOG.warn("Locales for spatialjoin aggregate failed ", e);
-
-                }
-                Map<String, String> fieldTypes = analysisLayer.getFieldtypeMap();
-                for (int k = 0; k < SPATIALJOIN_AGGREGATE_FIELDS.size(); k++) {
-                    fieldTypes.put(SPATIALJOIN_AGGREGATE_FIELDS.get(k), NUMERIC_FIELD_TYPE);
-                }
-                analysisLayer.setFieldsMap(fieldTypes);
-            } else if (params.getMethod().equals(AnalysisParser.DIFFERENCE)) {
-                // For time being 1st numeric value is used for rendering
-                Map<String, String> fieldTypes = new HashMap<String, String>();
-                fieldTypes.put(AnalysisParser.DELTA_FIELD_NAME, NUMERIC_FIELD_TYPE);
-                analysisLayer.setFieldtypeMap(fieldTypes);
-            }
-
-
-        } catch (Exception e) {
-            LOG.warn("WPS geometry property name fix failed ", e);
-
+        AnalysisMethodParams params = analysisLayer.getAnalysisMethodParams();
+        if (DIFFERENCE.equals(params.getMethod())) {
+            // For time being 1st numeric value is used for rendering
+            Map<String, String> fieldTypes = new HashMap<String, String>();
+            fieldTypes.put(AnalysisParser.DELTA_FIELD_NAME, NUMERIC_FIELD_TYPE);
+            analysisLayer.setFieldtypeMap(fieldTypes);
+            return;
         }
 
+        if (!SPATIAL_JOIN_STATISTICS.equals(params.getMethod())) {
+            return;
+        }
+        if (!(params instanceof SpatialJoinStatisticsMethodParams)) {
+            throw new ServiceRuntimeException("Got the wrong type of params (expected SpatialJoinStatisticsMethodParams)");
+        }
+        SpatialJoinStatisticsMethodParams spparams = (SpatialJoinStatisticsMethodParams) params;
+        spparams.setLocalemap(constructLocale(analysejs.optJSONObject(JSON_KEY_METHODPARAMS)));
+
+        Map<String, String> fieldTypes = new HashMap<>(SPATIALJOIN_AGGREGATE_FIELDS.size());
+        SPATIALJOIN_AGGREGATE_FIELDS.stream()
+                .forEach(field -> fieldTypes.put(field, NUMERIC_FIELD_TYPE));
+        Map<String, String> existingTypes = analysisLayer.getFieldtypeMap();
+        if (existingTypes == null) {
+            existingTypes = fieldTypes;
+        } else {
+            existingTypes.putAll(fieldTypes);
+        }
+
+        // TODO: is this correct? build fieldsMap based on fieldTypeMap?
+        analysisLayer.setFieldsMap(existingTypes);
+    }
+
+    private Map<String, String> constructLocale(JSONObject methodParams) throws ServiceRuntimeException {
+        Map<String, String> localemap = new HashMap<>();
+        JSONArray locales = methodParams.optJSONArray(JSON_KEY_LOCALE);
+        if (locales == null) {
+            return localemap;
+        }
+        try {
+            for (int i = 0; i < locales.length(); i++) {
+                JSONObject locale = locales.getJSONObject(i);
+                String id = locale.getString("id");
+                String label = locale.getString("label");
+                SPATIALJOIN_AGGREGATE_FIELDS.stream()
+                        .filter(field -> id.toLowerCase().indexOf(field) > -1)
+                        .forEach(field -> localemap.put(field, label));
+            }
+            return localemap;
+        } catch (JSONException e) {
+            throw new ServiceRuntimeException("Unable to parse locale from method params", e);
+        }
     }
     /**
      * Removes text type fields out of input parameters
