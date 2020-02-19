@@ -193,7 +193,7 @@ public class AnalysisParser {
                             .getInputAnalysisId(), analysisLayer.getInputCategoryId(), analysisLayer.getInputUserdataId()));
             // WFS Query properties
             method.setProperties(
-                    this.parseProperties(analysisLayer.getFields(), "oskari", getGeometryField(wfsLayer)));
+                    this.createPartialWFSQueryForAttributes(analysisLayer.getFields(), "oskari", getGeometryField(wfsLayer)));
         }
         //------------------ ZONESECTOR ------------------------------------------
         else if (ZONESECTOR.equals(analysisMethod)) {
@@ -216,7 +216,7 @@ public class AnalysisParser {
                             .getInputAnalysisId(), analysisLayer.getInputCategoryId(), analysisLayer.getInputUserdataId()));
             // WFS Query properties
             analysisLayer.getAnalysisMethodParams().setProperties(
-                    this.parseProperties(analysisLayer.getFields(), "oskari", getGeometryField(wfsLayer)));
+                    this.createPartialWFSQueryForAttributes(analysisLayer.getFields(), "oskari", getGeometryField(wfsLayer)));
         }
         //------------------ INTERSECT -----------------------
         else if (INTERSECT.equals(analysisMethod)) {
@@ -266,7 +266,7 @@ public class AnalysisParser {
             }
             // WFS Query properties
             analysisLayer.getAnalysisMethodParams().setProperties(
-                    this.parseProperties(analysisLayer.getFields(), "oskari", getGeometryField(wfsLayer)));
+                    this.createPartialWFSQueryForAttributes(analysisLayer.getFields(), "oskari", getGeometryField(wfsLayer)));
 
             analysisLayer.setAnalysisMethodParams(method);
         }
@@ -317,7 +317,7 @@ public class AnalysisParser {
                         .getAnalysisInputId(analyseMethodParams), null, null));
             }
             // WFS Query properties
-            method.setProperties(this.parseProperties(
+            method.setProperties(this.createPartialWFSQueryForAttributes(
                     analysisLayer.getFields(), "oskari", getGeometryField(wfsLayer)));
 
             analysisLayer.setAnalysisMethodParams(method);
@@ -368,7 +368,7 @@ public class AnalysisParser {
             }
             // WFS Query properties
             method.setProperties(
-                    this.parseProperties(analysisLayer.getFields(), "oskari", getGeometryField(wfsLayer)));
+                    this.createPartialWFSQueryForAttributes(analysisLayer.getFields(), "oskari", getGeometryField(wfsLayer)));
 
             analysisLayer.setAnalysisMethodParams(method);
         }
@@ -988,7 +988,7 @@ public class AnalysisParser {
             // 2nd layer properties to retain in analysis layer
             String [] layer2_properties = (params.getJSONArray("featuresB1").toString().replace("[","").replace("]","").replace("\"","")).split(",");
             // WFS Query properties
-            method.setProperties2(this.parseProperties(
+            method.setProperties2(this.createPartialWFSQueryForAttributes(
                     Arrays.asList(layer2_properties), "oskari", geometryField));
 
         } catch (Exception e) {
@@ -1263,7 +1263,7 @@ public class AnalysisParser {
         return "geometry";
     }
 
-    private String parseProperties(List<String> props, String ns, String geom_prop) {
+    private String createPartialWFSQueryForAttributes(List<String> props, String ns, String geom_prop) {
         try {
             return WFSFilterBuilder.parseProperties(props, ns, geom_prop);
         } catch (Exception e) {
